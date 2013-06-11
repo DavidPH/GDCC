@@ -1,0 +1,12 @@
+Game Data Compiler Collection (GDCC)
+
+A collection of programs for compiling/processing source code for use by video
+games. This includes compiling to bytecode as well as preprocessing definition
+data. The programs are meant to be suitable for use in automated build systems.
+
+
+GDCC-MageDefs
+
+Processes plain text files into MageCraft NTS format by stripping comments and
+replacing runs of whitespace with nulls.
+
