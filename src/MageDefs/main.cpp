@@ -10,6 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
+#include "GDCC/CommentBuf.hpp"
 #include "GDCC/Option.hpp"
 
 #include <fstream>
@@ -78,23 +79,24 @@ static void MakeDefs()
 //
 static void ProcessFile(std::ostream &out, char const *inName)
 {
-   std::ifstream in{inName};
+   std::filebuf fbuf;
 
-   if(!in)
+   if(!fbuf.open(inName, std::ios_base::in))
    {
       std::cerr << "couldn't open '" << Option::Output.data << "' for reading";
       throw EXIT_FAILURE;
    }
 
+   GDCC::CommentBufLine<'#'> cbuf{fbuf};
+
+   std::istream in{&cbuf};
    in.unsetf(std::ios_base::skipws);
 
    char c, p = '\0';
 
    while(in >> c)
    {
-      if(c == '#')
-         while(in >> c && c != '\n') {}
-      else if(c == '\\')
+      if(c == '\\')
          out << (in >> p, p);
       else if(!std::isspace(c))
          out << (p = c);
