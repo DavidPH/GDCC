@@ -10,8 +10,10 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "GDCC/CommentBuf.hpp"
+#include "IStream.hpp"
+
 #include "GDCC/Option.hpp"
+#include "GDCC/Token.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -87,24 +89,9 @@ static void ProcessFile(std::ostream &out, char const *inName)
       throw EXIT_FAILURE;
    }
 
-   GDCC::CommentBufLine<'#'> cbuf{fbuf};
-
-   std::istream in{&cbuf};
-   in.unsetf(std::ios_base::skipws);
-
-   char c, p = '\0';
-
-   while(in >> c)
-   {
-      if(c == '\\')
-         out << (in >> p, p);
-      else if(!std::isspace(c))
-         out << (p = c);
-      else if(p)
-         out << (p = '\0');
-   }
-
-   if(p) out << (p = '\0');
+   MageDefs::IStream in{fbuf};
+   for(GDCC::Token tok; in >> tok;)
+      out << tok.str << '\0';
 }
 
 

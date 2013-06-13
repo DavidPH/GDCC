@@ -31,10 +31,18 @@ namespace GDCC
    class CommentBufLine final : public Buf
    {
    public:
-      explicit CommentBufLine(Buf &buf_) : buf{buf_}, pbc{EOF} {}
+      explicit CommentBufLine(Buf &buf_) : buf{buf_}, pbc{EOF}, pbb{EOF} {}
 
    protected:
-      virtual int pbackfail(int c) {return pbc == EOF ? pbc = c : EOF;}
+      //
+      // pbackfail
+      //
+      virtual int pbackfail(int c)
+      {
+         pbc = c == EOF ? pbb : c;
+         pbb = EOF;
+         return pbc;
+      }
 
       //
       // uflow
@@ -43,8 +51,8 @@ namespace GDCC
       {
          int c;
 
-         if((c = pbc) != EOF) return pbc = EOF, c;
-         if((c = buf.sbumpc()) != Start) return c;
+         if(pbc != EOF) return pbb = pbc, pbc = EOF, pbb;
+         if((c = buf.sbumpc()) != Start) return pbb = c;
 
          do {if((c = buf.sbumpc()) == EOF) return EOF;} while(c != '\n');
          return uflow();
@@ -55,6 +63,8 @@ namespace GDCC
       //
       virtual int underflow()
       {
+         pbb = EOF;
+
          if(pbc != EOF) return pbc;
          if((pbc = buf.sbumpc()) != Start) return pbc;
 
@@ -64,7 +74,8 @@ namespace GDCC
 
    private:
       Buf &buf;
-      int  pbc;
+      int  pbc; // putback char
+      int  pbb; // putback buffer
    };
 }
 

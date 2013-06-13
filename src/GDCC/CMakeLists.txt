@@ -11,6 +11,7 @@
 
 add_library(gdcc
    Option.cpp
+   String.cpp
 )
 
 target_link_libraries(gdcc gdcc-option)
