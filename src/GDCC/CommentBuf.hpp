@@ -49,13 +49,11 @@ namespace GDCC
       //
       virtual int uflow()
       {
-         int c;
-
          if(pbc != EOF) return pbb = pbc, pbc = EOF, pbb;
-         if((c = buf.sbumpc()) != Start) return pbb = c;
+         if((pbb = buf.sbumpc()) != Start) return pbb;
 
-         do {if((c = buf.sbumpc()) == EOF) return EOF;} while(c != '\n');
-         return uflow();
+         do {pbb = buf.sbumpc();} while(pbb != EOF && pbb != '\n');
+         return pbb;
       }
 
       //
@@ -68,8 +66,8 @@ namespace GDCC
          if(pbc != EOF) return pbc;
          if((pbc = buf.sbumpc()) != Start) return pbc;
 
-         do {if((pbc = buf.sbumpc()) == EOF) return EOF;} while(pbc != '\n');
-         return underflow();
+         do {pbc = buf.sbumpc();} while(pbc != EOF && pbc != '\n');
+         return pbc;
       }
 
    private:
