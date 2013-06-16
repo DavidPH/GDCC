@@ -11,6 +11,7 @@
 
 add_library(gdcc
    Option.cpp
+   ParseString.cpp
    String.cpp
 )
 

@@ -30,6 +30,21 @@ namespace GDCC
 namespace MageDefs
 {
    //
+   // FeatureHold
+   //
+   template<typename T, void(T::*D)(), void(T::*E)()> class FeatureHold
+   {
+   public:
+      FeatureHold(FeatureHold const &) = delete;
+      FeatureHold(FeatureHold &&hold) : str{hold.str} {hold.str = nullptr;}
+      explicit FeatureHold(T &str_) : str{&str_} {(str->*D)();}
+      ~FeatureHold() {if(str) (str->*E)();}
+
+   private:
+      T *str;
+   };
+
+   //
    // IStream
    //
    class IStream : public std::istream
@@ -41,6 +56,9 @@ namespace MageDefs
       void disableComments() {rdbuf(&buf);}
 
       void enableComments() {rdbuf(&cbuf);}
+
+      FeatureHold<IStream, &IStream::disableComments, &IStream::enableComments> holdComments()
+         {return FeatureHold<IStream, &IStream::disableComments, &IStream::enableComments>(*this);}
 
    protected:
       std::streambuf            &buf;

@@ -10,6 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
+GDCC_StringList(ERR_UntermString, "unterminated string literal")
+
 #undef GDCC_StringList
 
 // EOF

@@ -12,9 +12,11 @@
 
 #include "IStream.hpp"
 
+#include "GDCC/Parse.hpp"
 #include "GDCC/Token.hpp"
 
 #include <cctype>
+#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -64,17 +66,22 @@ namespace MageDefs
       // Quoted string token.
       if(c == '"')
       {
-         std::string str;
+         auto hold = in.holdComments();
 
-         in.disableComments();
-         while((c = in.get()) != EOF && c != '"')
-            str += static_cast<char>(c);
-         in.enableComments();
+         try
+         {
+            std::string str  = GDCC::ParseStringC(GDCC::ReadStringC(in, '"'));
+            std::size_t hash = GDCC::HashString(str.data(), str.size());
+            out.str = GDCC::AddString(str.data(), str.size(), hash);
+            out.tok = GDCC::TOK_String;
 
-         std::size_t hash = GDCC::HashString(str.data(), str.size());
-         out.str = GDCC::AddString(str.data(), str.size(), hash);
-         out.tok = GDCC::TOK_String;
-         return in;
+            return in;
+         }
+         catch(GDCC::ParseError const &e)
+         {
+            std::cerr << "ERROR: " << e.what() << '\n';
+            throw EXIT_FAILURE;
+         }
       }
 
       // Other character token.
