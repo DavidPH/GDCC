@@ -6,14 +6,14 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Comment-stripping streambufs.
+// Streambuf-wrapping streambuf.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__CommentBuf_H__
-#define GDCC__CommentBuf_H__
+#ifndef GDCC__WrapperBuf_H__
+#define GDCC__WrapperBuf_H__
 
-#include "WrapperBuf.hpp"
+#include <streambuf>
 
 
 //----------------------------------------------------------------------------|
@@ -23,20 +23,24 @@
 namespace GDCC
 {
    //
-   // CommentBufLine
+   // WrapperBuf
    //
-   // Handles line-oriented comments started by a single character.
-   //
-   template<char Start, typename Buf = std::streambuf>
-   class CommentBufLine final : public WrapperBuf<Buf>
+   template<typename Buf = std::streambuf>
+   class WrapperBuf : public std::streambuf
    {
    public:
-      explicit CommentBufLine(Buf &buf_) : WrapperBuf<Buf>{buf_} {}
+      explicit WrapperBuf(Buf &buf_) : buf{buf_}, pbc{EOF}, pbb{EOF} {}
 
    protected:
-      using WrapperBuf<Buf>::buf;
-      using WrapperBuf<Buf>::pbc;
-      using WrapperBuf<Buf>::pbb;
+      //
+      // pbackfail
+      //
+      virtual int pbackfail(int c)
+      {
+         pbc = c == EOF ? pbb : c;
+         pbb = EOF;
+         return pbc;
+      }
 
       //
       // uflow
@@ -44,10 +48,7 @@ namespace GDCC
       virtual int uflow()
       {
          if(pbc != EOF) return pbb = pbc, pbc = EOF, pbb;
-         if((pbb = buf.sbumpc()) != Start) return pbb;
-
-         do {pbb = buf.sbumpc();} while(pbb != EOF && pbb != '\n');
-         return pbb;
+         return pbb = buf.sbumpc();
       }
 
       //
@@ -56,13 +57,14 @@ namespace GDCC
       virtual int underflow()
       {
          if(pbc != (pbb = EOF)) return pbc;
-         if((pbc = buf.sbumpc()) != Start) return pbc;
-
-         do {pbc = buf.sbumpc();} while(pbc != EOF && pbc != '\n');
-         return pbc;
+         return pbc = buf.sbumpc();
       }
+
+      Buf &buf;
+      int  pbc; // putback char
+      int  pbb; // putback buffer
    };
 }
 
-#endif//GDCC__CommentBuf_H__
+#endif//GDCC__WrapperBuf_H__
 

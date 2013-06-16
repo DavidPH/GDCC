@@ -89,7 +89,7 @@ static void ProcessFile(std::ostream &out, char const *inName)
       throw EXIT_FAILURE;
    }
 
-   MageDefs::IStream in{fbuf};
+   MageDefs::IStream in{fbuf, GDCC::AddString(inName)};
    for(GDCC::Token tok; in >> tok;)
       out << tok.str << '\0';
 }

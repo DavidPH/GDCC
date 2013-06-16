@@ -6,13 +6,14 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Comment-stripping streambufs.
+// Origin-tracking streambuf.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__CommentBuf_H__
-#define GDCC__CommentBuf_H__
+#ifndef GDCC__OriginBuf_H__
+#define GDCC__OriginBuf_H__
 
+#include "Origin.hpp"
 #include "WrapperBuf.hpp"
 
 
@@ -23,15 +24,16 @@
 namespace GDCC
 {
    //
-   // CommentBufLine
+   // OriginBuf
    //
-   // Handles line-oriented comments started by a single character.
-   //
-   template<char Start, typename Buf = std::streambuf>
-   class CommentBufLine final : public WrapperBuf<Buf>
+   template<typename Buf = std::streambuf>
+   class OriginBuf final : public WrapperBuf<Buf>
    {
    public:
-      explicit CommentBufLine(Buf &buf_) : WrapperBuf<Buf>{buf_} {}
+      OriginBuf(Buf &buf_, String file, std::size_t line = 1) :
+         WrapperBuf<Buf>{buf_}, pos{file, line} {}
+
+      Origin getOrigin() const {return pos;}
 
    protected:
       using WrapperBuf<Buf>::buf;
@@ -44,9 +46,8 @@ namespace GDCC
       virtual int uflow()
       {
          if(pbc != EOF) return pbb = pbc, pbc = EOF, pbb;
-         if((pbb = buf.sbumpc()) != Start) return pbb;
+         if((pbb = buf.sbumpc()) == '\n') ++pos.line;
 
-         do {pbb = buf.sbumpc();} while(pbb != EOF && pbb != '\n');
          return pbb;
       }
 
@@ -56,13 +57,15 @@ namespace GDCC
       virtual int underflow()
       {
          if(pbc != (pbb = EOF)) return pbc;
-         if((pbc = buf.sbumpc()) != Start) return pbc;
+         if((pbc = buf.sbumpc()) == '\n') ++pos.line;
 
-         do {pbc = buf.sbumpc();} while(pbc != EOF && pbc != '\n');
          return pbc;
       }
+
+   private:
+      Origin pos;
    };
 }
 
-#endif//GDCC__CommentBuf_H__
+#endif//GDCC__OriginBuf_H__
 

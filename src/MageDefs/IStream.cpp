@@ -48,6 +48,8 @@ namespace MageDefs
       int c = in.get();
       while(std::isspace(c)) c = in.get();
 
+      out.pos = in.getOrigin();
+
       // Identifier/number token.
       if(IsIdentifierC(c))
       {
@@ -79,7 +81,7 @@ namespace MageDefs
          }
          catch(GDCC::ParseError const &e)
          {
-            std::cerr << "ERROR: " << e.what() << '\n';
+            std::cerr << "ERROR: " << out.pos << ": " << e.what() << '\n';
             throw EXIT_FAILURE;
          }
       }

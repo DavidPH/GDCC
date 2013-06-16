@@ -14,6 +14,7 @@
 #define MageDefs__IStream_H__
 
 #include "GDCC/CommentBuf.hpp"
+#include "GDCC/OriginBuf.hpp"
 
 #include <istream>
 
@@ -50,19 +51,24 @@ namespace MageDefs
    class IStream : public std::istream
    {
    public:
-      explicit IStream(std::streambuf &buf_) : std::istream{&cbuf}, buf{buf_},
-         cbuf{buf} {unsetf(std::ios_base::skipws);}
+      explicit IStream(std::streambuf &buf, GDCC::String file) :
+         std::istream{&cbuf}, obuf{buf, file}, cbuf{obuf} {}
 
-      void disableComments() {rdbuf(&buf);}
+      void disableComments() {rdbuf(&obuf);}
 
       void enableComments() {rdbuf(&cbuf);}
+
+      GDCC::Origin getOrigin() const {return obuf.getOrigin();}
 
       FeatureHold<IStream, &IStream::disableComments, &IStream::enableComments> holdComments()
          {return FeatureHold<IStream, &IStream::disableComments, &IStream::enableComments>(*this);}
 
    protected:
-      std::streambuf            &buf;
-      GDCC::CommentBufLine<'#'> cbuf;
+      typedef GDCC::OriginBuf<>               OBuf;
+      typedef GDCC::CommentBufLine<'#', OBuf> CBuf;
+
+      OBuf obuf;
+      CBuf cbuf;
    };
 }
 

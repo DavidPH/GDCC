@@ -35,5 +35,23 @@ namespace GDCC
    };
 }
 
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+namespace GDCC
+{
+   std::ostream &operator << (std::ostream &out, Origin const &in);
+
+   //
+   // operator std::ostream << Origin
+   //
+   inline std::ostream &operator << (std::ostream &out, Origin const &in)
+   {
+      return out << in.file << ':' << in.line;
+   }
+}
+
 #endif//GDCC__Origin_H__
 
