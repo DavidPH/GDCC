@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Root CMake file for sub-projects and libraries.
+## CMake file for GDCC-IR library.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -16,9 +16,16 @@ include_directories(BEFORE .)
 ## Targets                                                                    |
 ##
 
-add_subdirectory(GDCC)
-add_subdirectory(MageDefs)
-add_subdirectory(Option)
+add_library(gdcc-ir
+   Arg.cpp
+   Exp/ValueGlyph.cpp
+   Function.cpp
+   Glyph.cpp
+   Type.cpp
+   Value.cpp
+)
+
+target_link_libraries(gdcc-ir gdcc gmpxx gmp)
 
 ## EOF
 

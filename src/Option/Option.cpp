@@ -186,7 +186,7 @@ namespace Option
    //
    // Exception::Error
    //
-   void Exception::Error(char const *opt, int optf, char const *format, ...) [[noreturn]]
+   [[noreturn]] void Exception::Error(char const *opt, int optf, char const *format, ...)
    {
       va_list args;
       std::size_t len, pos;

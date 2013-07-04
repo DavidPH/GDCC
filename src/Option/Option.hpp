@@ -43,8 +43,7 @@ namespace Option
 
       virtual char const *what() const noexcept {return msg.get() ? msg.get() : "";}
 
-
-      static void Error(char const *opt, int optf, char const *format, ...) [[noreturn]];
+      [[noreturn]] static void Error(char const *opt, int optf, char const *format, ...);
 
    private:
       explicit Exception(std::unique_ptr<char const[]> &&msg_) : msg{std::move(msg_)} {}

@@ -6,8 +6,17 @@
 
 
 ##----------------------------------------------------------------------------|
+## Environment Configuration                                                  |
+##
+
+include_directories(BEFORE .)
+
+
+##----------------------------------------------------------------------------|
 ## Targets                                                                    |
 ##
+
+add_subdirectory(IR)
 
 add_library(gdcc
    Option.cpp

@@ -14,6 +14,7 @@
 #define GDCC__String_H__
 
 #include <cstddef>
+#include <functional>
 #include <ostream>
 
 
@@ -46,13 +47,15 @@ namespace GDCC
       explicit String(std::size_t num_) : num{num_} {}
       constexpr String(StringIndex num_) : num{num_} {}
 
-      explicit constexpr operator bool () {return num != STRNULL;}
-      explicit constexpr operator std::size_t () {return num;}
-      explicit constexpr operator StringIndex ()
+      explicit constexpr operator bool () const {return num != STRNULL;}
+      explicit constexpr operator std::size_t () const {return num;}
+      explicit constexpr operator StringIndex () const
          {return num < STRMAX ? static_cast<StringIndex>(num) : STRNULL;}
 
-      constexpr bool operator == (StringIndex num_) {return num == num_;}
-      constexpr bool operator != (StringIndex num_) {return num != num_;}
+      constexpr bool operator == (String const &str) const {return str.num == num;}
+      constexpr bool operator == (StringIndex num_) const {return num == num_;}
+      constexpr bool operator != (String const &str) const {return str.num != num;}
+      constexpr bool operator != (StringIndex num_) const {return num != num_;}
 
       String &operator = (StringIndex num_) {num = num_; return *this;}
 
@@ -80,6 +83,18 @@ namespace GDCC
       std::size_t hash;
       std::size_t num;
       std::size_t next;
+   };
+}
+
+namespace std
+{
+   //
+   // hash<GDCC::String>
+   //
+   template<> struct hash<GDCC::String>
+   {
+      constexpr size_t operator () (GDCC::String const &str) const
+         {return static_cast<size_t>(str);}
    };
 }
 
