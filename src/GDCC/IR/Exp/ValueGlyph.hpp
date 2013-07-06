@@ -13,9 +13,9 @@
 #ifndef GDCC__IR__Exp__ValueGlyph_H__
 #define GDCC__IR__Exp__ValueGlyph_H__
 
-#include "Exp.hpp"
+#include "../Exp.hpp"
 
-#include "Glyph.hpp"
+#include "../Glyph.hpp"
 
 
 //----------------------------------------------------------------------------|

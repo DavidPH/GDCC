@@ -14,8 +14,9 @@
 #define GDCC__IR__Statement_H__
 
 #include "Arg.hpp"
-#include "Array.hpp"
 #include "Code.hpp"
+
+#include "../Array.hpp"
 
 
 //----------------------------------------------------------------------------|

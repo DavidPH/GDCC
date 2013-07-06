@@ -13,8 +13,9 @@
 #ifndef GDCC__IR__Block_H__
 #define GDCC__IR__Block_H__
 
-#include "List.hpp"
 #include "Statement.hpp"
+
+#include "../List.hpp"
 
 
 //----------------------------------------------------------------------------|

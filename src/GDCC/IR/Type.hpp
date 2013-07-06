@@ -13,9 +13,10 @@
 #ifndef GDCC__IR__Type_H__
 #define GDCC__IR__Type_H__
 
-#include "Array.hpp"
-#include "String.hpp"
 #include "Types.hpp"
+
+#include "../Array.hpp"
+#include "../String.hpp"
 
 #include <memory>
 

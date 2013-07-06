@@ -13,9 +13,10 @@
 #ifndef GDCC__IR__Exp_H__
 #define GDCC__IR__Exp_H__
 
-#include "Counter.hpp"
-#include "Origin.hpp"
 #include "Value.hpp"
+
+#include "../Counter.hpp"
+#include "../Origin.hpp"
 
 
 //----------------------------------------------------------------------------|

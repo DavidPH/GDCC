@@ -13,7 +13,7 @@
 #ifndef GDCC__IR__Addr_H__
 #define GDCC__IR__Addr_H__
 
-#include "String.hpp"
+#include "../String.hpp"
 
 
 //----------------------------------------------------------------------------|
