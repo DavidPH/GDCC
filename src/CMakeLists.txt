@@ -9,13 +9,14 @@
 ## Environment Configuration                                                  |
 ##
 
-include_directories(BEFORE .)
+include_directories(.)
 
 
 ##----------------------------------------------------------------------------|
 ## Targets                                                                    |
 ##
 
+add_subdirectory(Asm)
 add_subdirectory(GDCC)
 add_subdirectory(MageDefs)
 add_subdirectory(Option)

@@ -69,22 +69,22 @@ namespace GDCC
       public:
          explicit Function(String glyph);
 
-         Block       block;
-         CallType    ctype;
-         String      glyph;
-         String      label;
-         Linkage     linka;
-         Array<Type> localArs;
-         Array<Type> localReg;
-         Array<Type> param;
-         Type        retrn;
-         ScriptType  stype;
-         FastI       valueInt;
-         String      valueStr;
+         Block      block;
+         CallType   ctype;
+         String     glyph;
+         String     label;
+         Linkage    linka;
+         FastU      localArs;
+         FastU      localReg;
+         FastU      param;
+         FastU      retrn;
+         ScriptType stype;
+         FastI      valueInt;
+         String     valueStr;
 
-         bool        exdef    : 1;
-         bool        sflagNet : 1;
-         bool        sflagClS : 1;
+         bool       exdef    : 1;
+         bool       sflagNet : 1;
+         bool       sflagClS : 1;
 
 
          static Function *Find(String glyph);

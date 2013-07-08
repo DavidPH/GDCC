@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for GDCC library.
+## CMake file for Asm executable.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -9,16 +9,15 @@
 ## Targets                                                                    |
 ##
 
-add_subdirectory(IR)
+add_executable(gdcc-as
+   main.cpp
 
-add_library(gdcc
-   Option.cpp
-   ParseNumber.cpp
-   ParseString.cpp
-   String.cpp
+   IStream.cpp
+   ParseExp.cpp
+   ParseFunction.cpp
 )
 
-target_link_libraries(gdcc gdcc-option)
+target_link_libraries(gdcc-as gdcc-ir)
 
 ## EOF
 

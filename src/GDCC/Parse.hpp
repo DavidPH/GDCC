@@ -18,6 +18,7 @@
 #include <istream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 
 //----------------------------------------------------------------------------|
@@ -49,9 +50,13 @@ namespace GDCC
 {
    char ParseEscapeC(std::istream &in);
 
+   std::pair<int, char const *> ParseNumberPrefixC(char const *in);
+
    std::string ParseStringC(std::string const &in);
 
    void ReadEscapeC(std::istream &in, std::string &out);
+
+   std::string ReadNumberC(std::istream &in);
 
    std::string ReadStringC(std::istream &in, char term);
 }
