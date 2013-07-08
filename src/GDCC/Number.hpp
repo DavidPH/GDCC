@@ -6,12 +6,15 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Intermediary Representation types.
+// Numeric typedefs.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__IR__Types_H__
-#define GDCC__IR__Types_H__
+#ifndef GDCC__Number_H__
+#define GDCC__Number_H__
+
+#include <cstdint>
+#include <gmpxx.h>
 
 
 //----------------------------------------------------------------------------|
@@ -20,24 +23,16 @@
 
 namespace GDCC
 {
-   namespace IR
-   {
-      //
-      // Linkage
-      //
-      enum class Linkage
-      {
-         None,
-         ExtACS,
-         ExtASM,
-         ExtC,
-         ExtCXX,
-         ExtDS,
-         IntC,
-         IntCXX,
-      };
-   }
+   // Unlimited precision numeric types.
+   typedef mpf_class Float;
+   typedef mpz_class Integ;
+
+   // Faster, native numeric types.
+   // FastU shall be suitable for storing the sizes of the target's objects.
+   typedef long double    FastF;
+   typedef std:: intmax_t FastI;
+   typedef std::uintmax_t FastU;
 }
 
-#endif//GDCC__IR__Types_H__
+#endif//GDCC__Number_H__
 

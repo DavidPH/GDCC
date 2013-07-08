@@ -14,9 +14,8 @@
 #define Asm__Parse_H__
 
 #include "GDCC/Counter.hpp"
+#include "GDCC/Number.hpp"
 #include "GDCC/Token.hpp"
-
-#include "GDCC/IR/Types.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -52,11 +51,11 @@ namespace Asm
 
    GDCC::CounterRef<GDCC::IR::Exp> ParseExp(IStream &in);
 
-   GDCC::IR::FastU ParseFastU(IStream &in);
+   GDCC::FastU ParseFastU(IStream &in);
 
    void ParseFunction(IStream &in, GDCC::IR::Function &func);
 
-   GDCC::IR::Integ ParseInteg(IStream &in);
+   GDCC::Integ ParseInteg(IStream &in);
 
    void ParseStatement(IStream &in, GDCC::IR::Block &block);
 }

@@ -16,6 +16,7 @@
 #include "Types.hpp"
 
 #include "../Array.hpp"
+#include "../Number.hpp"
 #include "../String.hpp"
 
 #include <memory>

@@ -44,17 +44,17 @@ namespace Asm
    //
    // ParseFastU
    //
-   GDCC::IR::FastU ParseFastU(IStream &in)
+   GDCC::FastU ParseFastU(IStream &in)
    {
       auto i = ParseInteg(in);
 
-      return static_cast<GDCC::IR::FastU>(i);
+      return static_cast<GDCC::FastU>(i);
    }
 
    //
    // ParseInteg
    //
-   GDCC::IR::Integ ParseInteg(IStream &in)
+   GDCC::Integ ParseInteg(IStream &in)
    {
       auto exp = ParseExp(in);
       auto val = exp->getValue();
