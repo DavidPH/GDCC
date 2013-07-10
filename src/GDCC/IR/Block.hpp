@@ -43,8 +43,8 @@ namespace GDCC
             {return setArgs().addStatement(code);}
 
          template<typename... Args>
-         Block &addStatementArgs(Code code, Args const &...args)
-            {return setArgs(args...).addStatement(code);}
+         Block &addStatementArgs(Code code, Args &&...args)
+            {return setArgs(std::forward<Args>(args)...).addStatement(code);}
 
          Itr begin() {return static_cast<Itr>(head.next);}
          Itr end() {return static_cast<Itr>(&head);}
