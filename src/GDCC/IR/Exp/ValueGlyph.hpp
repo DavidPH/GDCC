@@ -50,24 +50,5 @@ namespace GDCC
    }
 }
 
-
-//----------------------------------------------------------------------------|
-// Global Functions                                                           |
-//
-
-namespace GDCC
-{
-   namespace IR
-   {
-      //
-      // ExpCreate_ValueGlyph
-      //
-      inline Exp::Ref ExpCreate_ValueGlyph(Glyph glyph, Origin pos)
-      {
-         return static_cast<Exp::Ref>(new Exp_ValueGlyph(glyph, pos));
-      }
-   }
-}
-
 #endif//GDCC__IR__Exp__ValueGlyph_H__
 

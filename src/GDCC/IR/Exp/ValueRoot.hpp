@@ -13,7 +13,7 @@
 #ifndef GDCC__IR__Exp__ValueRoot_H__
 #define GDCC__IR__Exp__ValueRoot_H__
 
-#include "Exp.hpp"
+#include "../Exp.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -50,33 +50,6 @@ namespace GDCC
 
          virtual Value v_getValue() const {return value;}
       };
-   }
-}
-
-
-//----------------------------------------------------------------------------|
-// Global Functions                                                           |
-//
-
-namespace GDCC
-{
-   namespace IR
-   {
-      //
-      // ExpCreate_ValueRoot
-      //
-      inline Exp::Ref ExpCreate_ValueRoot(Value const &value, Origin pos)
-      {
-         return static_cast<Exp::Ref>(new Exp_ValueRoot(value, pos));
-      }
-
-      //
-      // ExpCreate_ValueRoot
-      //
-      inline Exp::Ref ExpCreate_ValueRoot(Value &&value, Origin pos)
-      {
-         return static_cast<Exp::Ref>(new Exp_ValueRoot(std::move(value), pos));
-      }
    }
 }
 

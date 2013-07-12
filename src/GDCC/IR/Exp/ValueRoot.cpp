@@ -6,11 +6,11 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Intermediary Representation expression: glyph.
+// Intermediary Representation expression: value primitive.
 //
 //-----------------------------------------------------------------------------
 
-#include "ValueGlyph.hpp"
+#include "ValueRoot.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -22,22 +22,19 @@ namespace GDCC
    namespace IR
    {
       //
-      // Exp_ValueGlyph::v_getValue
+      // ExpCreate_ValueRoot
       //
-      Value Exp_ValueGlyph::v_getValue() const
+      Exp::Ref ExpCreate_ValueRoot(Value const &value, Origin pos)
       {
-         if(auto value = glyph.getData().value)
-            return value->getValue();
-         else
-            return Value();
+         return static_cast<Exp::Ref>(new Exp_ValueRoot(value, pos));
       }
 
       //
-      // ExpCreate_ValueGlyph
+      // ExpCreate_ValueRoot
       //
-      Exp::Ref ExpCreate_ValueGlyph(Glyph glyph, Origin pos)
+      Exp::Ref ExpCreate_ValueRoot(Value &&value, Origin pos)
       {
-         return static_cast<Exp::Ref>(new Exp_ValueGlyph(glyph, pos));
+         return static_cast<Exp::Ref>(new Exp_ValueRoot(std::move(value), pos));
       }
    }
 }
