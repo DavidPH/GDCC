@@ -13,11 +13,13 @@
 #ifndef GDCC__Parse_H__
 #define GDCC__Parse_H__
 
+#include "Number.hpp"
 #include "String.hpp"
 
 #include <istream>
 #include <stdexcept>
 #include <string>
+#include <tuple>
 #include <utility>
 
 
@@ -48,9 +50,24 @@ namespace GDCC
 
 namespace GDCC
 {
+   bool IsDigit(char c, unsigned base);
+
+   Integ MergeNumberFixedC(Integ valI, Integ valF, FastI valE, std::size_t digF,
+      unsigned base);
+
    char ParseEscapeC(std::istream &in);
 
-   std::pair<int, char const *> ParseNumberPrefixC(char const *in);
+   std::pair<char const */*end*/, unsigned /*base*/>
+   ParseNumberBaseC(char const *in);
+
+   std::pair<char const */*end*/, FastI /*val*/>
+   ParseNumberExpC(char const *in);
+
+   std::tuple<char const */*end*/, FastU /*val*/, std::size_t /*len*/>
+   ParseNumberFastU(char const *in, unsigned base);
+
+   std::tuple<char const */*end*/, Integ /*val*/, std::size_t /*len*/>
+   ParseNumberInteg(char const *in, unsigned base);
 
    std::string ParseStringC(std::string const &in);
 
@@ -59,6 +76,8 @@ namespace GDCC
    std::string ReadNumberC(std::istream &in);
 
    std::string ReadStringC(std::istream &in, char term);
+
+   unsigned ToDigit(char c);
 }
 
 #endif//GDCC__Parse_H__

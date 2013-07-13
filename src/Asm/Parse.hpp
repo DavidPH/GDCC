@@ -35,6 +35,7 @@ namespace GDCC
       class Block;
       class Exp;
       class Function;
+      class Value;
    }
 }
 
@@ -56,6 +57,8 @@ namespace Asm
    void ParseFunction(IStream &in, GDCC::IR::Function &func);
 
    GDCC::Integ ParseInteg(IStream &in);
+
+   GDCC::IR::Value ParseNumber(GDCC::Token tok);
 
    void ParseStatement(IStream &in, GDCC::IR::Block &block);
 }
