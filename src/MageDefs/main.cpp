@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 
    try
    {
-      GDCC::InitOptions(argc, argv, "gdcc-magedefs", "v0.0.0");
+      GDCC::InitOptions(argc, argv, "gdcc-magedefs");
 
       MakeDefs();
    }

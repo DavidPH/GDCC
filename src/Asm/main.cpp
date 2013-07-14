@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 
    try
    {
-      GDCC::InitOptions(argc, argv, "gdcc-as", "v0.0.0");
+      GDCC::InitOptions(argc, argv, "gdcc-as");
       MakeAsm();
    }
    catch(int e)

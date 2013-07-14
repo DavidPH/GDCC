@@ -52,11 +52,11 @@ namespace GDCC
    //
    // InitOptions
    //
-   void InitOptions(int argc, char const *const *argv, char const *program,
-      char const *version)
+   void InitOptions(int argc, char const *const *argv, char const *program)
    {
       if(program) Option::Option::Help_Program = program;
-      if(version) Option::Option::Help_Version = version;
+
+      Option::Option::Help_Version = "v0.0.0";
 
       if(argc <= 1)
       {
