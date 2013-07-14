@@ -27,6 +27,7 @@
 namespace GDCC
 {
    struct MoveType {};
+   struct PackType {};
 
    //
    // Array
@@ -48,17 +49,23 @@ namespace GDCC
       using size_type              = std::size_t;
 
 
-      Array() : p{nullptr}, s{0} {}
-      Array(Array const &a) : p{Cpy(a.p, a.s)}, s{a.s} {}
-      Array(Array &&a) : p{a.p}, s{a.s} {a.p = nullptr; a.s = 0;}
-      explicit Array(size_type s_) : p{New(s_)}, s{s_} {}
-      ~Array() {Del(p, s);}
+      Array() : p{nullptr}, e{nullptr} {}
+      Array(Array const &a) : p{Cpy(a.p, a.e)}, e{p + a.size()} {}
+      Array(Array &&a) : p{a.p}, e{a.e} {a.p = a.e = nullptr;}
+      explicit Array(size_type s) : p{New(s)}, e{p + s} {}
+      ~Array() {Del(p, e);}
 
-      template<typename T2>
-      Array(T2 const *p_, size_type s_) : p{Cpy(p_, s_)}, s{s_} {}
+      template<typename Itr>
+      Array(Itr first, Itr last) : p{Cpy(first, last)},
+         e{p + std::distance(first, last)} {}
 
-      template<typename T2>
-      Array(MoveType, T2 const *p_, size_type s_) : p{Mov(p_, s_)}, s{s_} {}
+      template<typename Itr>
+      Array(MoveType, Itr first, Itr last) : p{Mov(first, last)},
+         e{p + std::distance(first, last)} {}
+
+      template<typename... Args>
+      Array(PackType, Args &&...args) : p{Pak(std::forward(args)...)},
+         e{p + sizeof...(Args)} {}
 
       // operator Array[]
             reference operator [] (size_type i)       {return p[i];}
@@ -66,20 +73,20 @@ namespace GDCC
 
       // copy assignment
       Array &operator = (Array const &a)
-         {pointer n = Cpy(a.p, a.s); Del(p, s); p = n; s = a.s; return *this;}
+         {pointer n = Cpy(a.p, a.e); Del(p, e); p = n; e = p + a.size(); return *this;}
 
       // move assignment
       Array &operator = (Array &&a) {swap(a); return *this;}
 
       // at
             reference at(size_type i)
-         {if(i < s) return p[i]; throw std::out_of_range("GDCC::Array::at");}
+         {if(i < size()) return p[i]; throw std::out_of_range("GDCC::Array::at");}
       const_reference at(size_type i) const
-         {if(i < s) return p[i]; throw std::out_of_range("GDCC::Array::at");}
+         {if(i < size()) return p[i]; throw std::out_of_range("GDCC::Array::at");}
 
       // back
-            reference back()       {return p[s - 1];}
-      const_reference back() const {return p[s - 1];}
+            reference back()       {return *(e - 1);}
+      const_reference back() const {return *(e - 1);}
 
       // begin
             iterator begin()       {return p;}
@@ -89,14 +96,14 @@ namespace GDCC
       const_iterator cbegin() const {return p;}
 
       // cend
-      const_iterator cend() const {return p + s;}
+      const_iterator cend() const {return e;}
 
       // clear
-      void clear() {Del(p, s); p = nullptr; s = 0;}
+      void clear() {Del(p, e); p = e = nullptr;}
 
       // crbegin
       const_reverse_iterator crbegin() const
-         {return static_cast<const_reverse_iterator>(p + s);}
+         {return static_cast<const_reverse_iterator>(e);}
 
       // crend
       const_reverse_iterator crend() const
@@ -107,27 +114,27 @@ namespace GDCC
       const_pointer data() const {return p;}
 
       // empty
-      bool empty() const {return s != 0;}
+      bool empty() const {return p != e;}
 
       // end
-            iterator end()       {return p + s;}
-      const_iterator end() const {return p + s;}
+            iterator end()       {return e;}
+      const_iterator end() const {return e;}
 
       // fill
       void fill(const_reference v) {for(auto &i : *this) i = v;}
 
       // front
-            reference front()       {return p[0];}
-      const_reference front() const {return p[0];}
+            reference front()       {return *p;}
+      const_reference front() const {return *p;}
 
       // max_size
       size_type max_size() const {return std::numeric_limits<size_type>::max();}
 
       // rbegin
             reverse_iterator rbegin()
-         {return static_cast<      reverse_iterator>(p + s);}
+         {return static_cast<      reverse_iterator>(e);}
       const_reverse_iterator rbegin() const
-         {return static_cast<const_reverse_iterator>(p + s);}
+         {return static_cast<const_reverse_iterator>(e);}
 
       // rend
             reverse_iterator rend()
@@ -136,26 +143,27 @@ namespace GDCC
          {return static_cast<const_reverse_iterator>(p);}
 
       // size
-      size_type size() const {return s;}
+      size_type size() const {return e - p;}
 
       // swap
-      void swap(Array  &a) {std::swap(p, a.p); std::swap(s, a.s);}
-      void swap(Array &&a) {std::swap(p, a.p); std::swap(s, a.s);}
+      void swap(Array  &a) {std::swap(p, a.p); std::swap(e, a.e);}
+      void swap(Array &&a) {std::swap(p, a.p); std::swap(e, a.e);}
 
 
       //
       // Cpy
       //
-      template<typename T2>
-      static pointer Cpy(T2 const *p, size_type s)
+      template<typename Itr>
+      static pointer Cpy(Itr first, Itr last)
       {
+         size_type s = std::distance(first, last);
          if(!s) return nullptr;
 
          pointer n = static_cast<pointer>(::operator new(s * sizeof(value_type))), i = n;
 
          try
          {
-            while(s--) new(i++) value_type(*p++);
+            while(s--) new(i++) value_type(*first++);
          }
          catch(...)
          {
@@ -170,26 +178,28 @@ namespace GDCC
       //
       // Del
       //
-      static void Del(pointer p, size_type s)
+      template<typename Itr>
+      static void Del(Itr first, Itr last)
       {
-         for(pointer i = p; s--;) i++->~value_type();
+         for(Itr itr = first; itr != last;) itr++->~value_type();
 
-         ::operator delete(p);
+         ::operator delete(first);
       }
 
       //
       // Mov
       //
-      template<typename T2>
-      static pointer Mov(T2 const *p, size_type s)
+      template<typename Itr>
+      static pointer Mov(Itr first, Itr last)
       {
+         size_type s = std::distance(first, last);
          if(!s) return nullptr;
 
          pointer n = static_cast<pointer>(::operator new(s * sizeof(value_type))), i = n;
 
          try
          {
-            while(s--) new(i++) value_type(std::move(*p++));
+            while(s--) new(i++) value_type(std::move(*first++));
          }
          catch(...)
          {
@@ -206,6 +216,8 @@ namespace GDCC
       //
       static pointer New(size_type s)
       {
+         if(!s) return nullptr;
+
          pointer n = static_cast<pointer>(::operator new(s * sizeof(value_type))), i = n;
 
          try
@@ -238,8 +250,7 @@ namespace GDCC
       }
 
    private:
-      pointer   p;
-      size_type s;
+      pointer p, e;
 
       //
       // UnPak
@@ -271,6 +282,7 @@ namespace GDCC
 namespace GDCC
 {
    constexpr MoveType Move = {};
+   constexpr PackType Pack = {};
 }
 
 

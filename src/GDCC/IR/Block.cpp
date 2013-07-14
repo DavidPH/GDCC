@@ -26,7 +26,7 @@ namespace GDCC
       //
       Block &Block::addStatement(Code code)
       {
-         head.labs = Array<String>(labs.data(), labs.size());
+         head.labs = Array<String>(Move, labs.begin(), labs.end());
          labs.clear();
          new Statement(&head, code);
          return *this;

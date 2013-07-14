@@ -81,8 +81,8 @@ namespace GDCC
       //
       // ArgPtr2 copy constructor
       //
-      ArgPtr2::ArgPtr2(ArgPtr2 const &arg) : arr{Array<Arg>::Cpy(arg.arr, 2)},
-         idx{arr + 1}, off{arg.off}
+      ArgPtr2::ArgPtr2(ArgPtr2 const &arg) :
+         arr{Array<Arg>::Cpy(arg.arr, arg.arr + 2)}, idx{arr + 1}, off{arg.off}
       {
       }
 
@@ -132,7 +132,7 @@ namespace GDCC
       //
       ArgPtr2::~ArgPtr2()
       {
-         if(arr) Array<Arg>::Del(arr, 2);
+         if(arr) Array<Arg>::Del(arr, arr + 2);
       }
 
       //

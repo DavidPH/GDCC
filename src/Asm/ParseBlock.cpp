@@ -64,7 +64,7 @@ namespace Asm
             args.push_back(ParseArg(in));
          }
 
-         block.setArgs(GDCC::Array<GDCC::IR::Arg>(GDCC::Move, args.data(), args.size()));
+         block.setArgs(GDCC::Array<GDCC::IR::Arg>(GDCC::Move, args.begin(), args.end()));
          block.addStatement(code);
 
          break;
