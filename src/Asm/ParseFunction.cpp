@@ -104,6 +104,16 @@ namespace Asm
    {
       for(GDCC::Token tok; in >> tok;) switch(static_cast<GDCC::StringIndex>(tok.str))
       {
+      case GDCC::STR_block:
+         while(in >> tok && tok.tok == GDCC::TOK_EOL) {}
+         if(tok.tok != GDCC::TOK_BraceO)
+         {
+            std::cerr << "ERROR: " << tok.pos << ": expected {\n";
+            throw EXIT_FAILURE;
+         }
+         ParseBlock(in, func.block, GDCC::TOK_BraceC);
+         break;
+
       case GDCC::STR_ctype:
          func.ctype = ParseCallType(SkipEqual(in));
          break;

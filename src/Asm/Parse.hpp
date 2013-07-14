@@ -59,8 +59,6 @@ namespace Asm
    GDCC::Integ ParseInteg(IStream &in);
 
    GDCC::IR::Value ParseNumber(GDCC::Token tok);
-
-   void ParseStatement(IStream &in, GDCC::IR::Block &block);
 }
 
 #endif//Asm__Parse_H__

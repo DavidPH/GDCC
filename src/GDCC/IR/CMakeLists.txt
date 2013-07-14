@@ -11,6 +11,7 @@
 
 add_library(gdcc-ir
    Arg.cpp
+   Block.cpp
    Exp/ValueGlyph.cpp
    Exp/ValueRoot.cpp
    Function.cpp

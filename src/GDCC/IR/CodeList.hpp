@@ -19,6 +19,9 @@ GDCC_IR_CodeList(Call)
 // Move dst src
 GDCC_IR_CodeList(Move_W)
 
+// Retn src num
+GDCC_IR_CodeList(Retn)
+
 #undef GDCC_IR_CodeList
 
 // EOF

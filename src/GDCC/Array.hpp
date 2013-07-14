@@ -26,6 +26,8 @@
 
 namespace GDCC
 {
+   struct MoveType {};
+
    //
    // Array
    //
@@ -54,6 +56,9 @@ namespace GDCC
 
       template<typename T2>
       Array(T2 const *p_, size_type s_) : p{Cpy(p_, s_)}, s{s_} {}
+
+      template<typename T2>
+      Array(MoveType, T2 const *p_, size_type s_) : p{Mov(p_, s_)}, s{s_} {}
 
       // operator Array[]
             reference operator [] (size_type i)       {return p[i];}
@@ -256,6 +261,16 @@ namespace GDCC
          catch(...) {n->~value_type(); throw;}
       }
    };
+}
+
+
+//----------------------------------------------------------------------------|
+// Global Variables                                                           |
+//
+
+namespace GDCC
+{
+   constexpr MoveType Move = {};
 }
 
 

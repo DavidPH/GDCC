@@ -37,16 +37,17 @@ namespace GDCC
          Statement(Statement const &) = delete;
          Statement(Statement &&) = delete;
          Statement(Statement *head, Code code_) : pos{head->pos}, next{head},
-            prev{head->prev}, args{std::move(head->args)}, code{code_}
-            {next->prev = this; prev->next = this;}
+            prev{head->prev}, args{std::move(head->args)}, labs{std::move(head->labs)},
+            code{code_} {next->prev = this; prev->next = this;}
          ~Statement() {next->prev = prev; prev->next = next;}
 
          Origin pos;
 
          Statement *next, *prev;
 
-         Array<Arg> args;
-         Code       code;
+         Array<Arg>    args;
+         Array<String> labs;
+         Code          code;
       };
    }
 }

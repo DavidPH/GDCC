@@ -37,7 +37,9 @@ namespace GDCC
 
          ~Block() {while(head.next != &head) delete head.next;}
 
-         Block &addStatement(Code code) {new Statement(&head, code); return *this;}
+         Block &addLabel(String lab) {labs.push_back(lab); return *this;}
+
+         Block &addStatement(Code code);
 
          Block &addStatementArgs(Code code)
             {return setArgs().addStatement(code);}
@@ -83,7 +85,8 @@ namespace GDCC
             unpackArgs(argv + 1, std::forward<Args>(args)...);
          }
 
-         Statement head;
+         std::vector<String> labs;
+         Statement           head;
       };
    }
 }

@@ -13,6 +13,8 @@ add_executable(gdcc-as
    main.cpp
 
    IStream.cpp
+   ParseArg.cpp
+   ParseBlock.cpp
    ParseExp.cpp
    ParseFunction.cpp
 )
