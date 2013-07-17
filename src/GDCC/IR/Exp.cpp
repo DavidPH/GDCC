@@ -6,11 +6,13 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Intermediary Representation expression: value primitive.
+// Intermediary Representation expression base.
 //
 //-----------------------------------------------------------------------------
 
-#include "ValueRoot.hpp"
+#include "Exp.hpp"
+
+#include "OArchive.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -22,27 +24,30 @@ namespace GDCC
    namespace IR
    {
       //
-      // Exp_ValueRoot::v_writeIR
+      // Exp::v_writeIR
       //
-      OArchive &Exp_ValueRoot::v_writeIR(OArchive &out) const
+      OArchive &Exp::v_writeIR(OArchive &out) const
       {
-         return Super::v_writeIR(out) << value;
+         return out << pos;
       }
 
       //
-      // ExpCreate_ValueRoot
+      // Exp::writeIR
       //
-      Exp::Ref ExpCreate_ValueRoot(Value const &value, Origin pos)
+      OArchive &Exp::writeIR(OArchive &out) const
       {
-         return static_cast<Exp::Ref>(new Exp_ValueRoot(value, pos));
+         return v_writeIR(out << getName());
       }
 
       //
-      // ExpCreate_ValueRoot
+      // operator OArchive << Exp const *
       //
-      Exp::Ref ExpCreate_ValueRoot(Value &&value, Origin pos)
+      OArchive &operator << (OArchive &out, Exp const *in)
       {
-         return static_cast<Exp::Ref>(new Exp_ValueRoot(std::move(value), pos));
+         if(in)
+            return in->writeIR(out << true);
+         else
+            return out << false;
       }
    }
 }

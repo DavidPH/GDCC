@@ -12,6 +12,8 @@
 
 #include "Glyph.hpp"
 
+#include "OArchive.hpp"
+
 #include <unordered_map>
 
 
@@ -46,6 +48,26 @@ namespace GDCC
       GlyphData &Glyph::GetData(String str)
       {
          return GlyphMap[str];
+      }
+
+      //
+      // OArchive::writeTablesGlyphs
+      //
+      OArchive &OArchive::writeTablesGlyphs()
+      {
+         auto begin = GlyphMap.begin();
+         auto end   = GlyphMap.end();
+
+         *this << GlyphMap.size();
+
+         for(auto itr = begin; itr != end; ++itr)
+         {
+            auto const &data = itr->second;
+
+            *this << itr->first << data.type << data.value;
+         }
+
+         return *this;
       }
    }
 }

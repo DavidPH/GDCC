@@ -6,38 +6,29 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Intermediary Representation types.
+// Source position/origin information.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__IR__Types_H__
-#define GDCC__IR__Types_H__
+#include "Origin.hpp"
+
+#include "IR/OArchive.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Types                                                                      |
+// Global Functions                                                           |
 //
 
 namespace GDCC
 {
-   namespace IR
+   //
+   // operator IR::OArchive << Origin
+   //
+   IR::OArchive &operator << (IR::OArchive &out, Origin const &in)
    {
-      //
-      // Linkage
-      //
-      enum class Linkage
-      {
-         None,
-         ExtACS,
-         ExtASM,
-         ExtC,
-         ExtCXX,
-         ExtDS,
-         IntC,
-         IntCXX,
-      };
+      return out << in.file << in.line;
    }
 }
 
-#endif//GDCC__IR__Types_H__
+// EOF
 

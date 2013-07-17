@@ -6,12 +6,12 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Intermediary Representation code handling.
+// Linkage type handling.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__IR__Code_H__
-#define GDCC__IR__Code_H__
+#ifndef GDCC__IR__Types_H__
+#define GDCC__IR__Types_H__
 
 
 //----------------------------------------------------------------------------|
@@ -25,13 +25,18 @@ namespace GDCC
       class OArchive;
 
       //
-      // Code
+      // Linkage
       //
-      enum class Code
+      enum class Linkage
       {
-         #define GDCC_IR_CodeList(name) name,
-         #include "CodeList.hpp"
-         None
+         None,
+         ExtACS,
+         ExtASM,
+         ExtC,
+         ExtCXX,
+         ExtDS,
+         IntC,
+         IntCXX,
       };
    }
 }
@@ -45,9 +50,9 @@ namespace GDCC
 {
    namespace IR
    {
-      OArchive &operator << (OArchive &out, Code in);
+      OArchive &operator << (OArchive &out, Linkage in);
    }
 }
 
-#endif//GDCC__IR__Code_H__
+#endif//GDCC__IR__Types_H__
 

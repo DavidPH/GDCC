@@ -34,6 +34,8 @@ namespace GDCC
          GDCC_CounterPreamble(GDCC::IR::Exp_ValueGlyph, GDCC::IR::Exp);
 
       public:
+         virtual String getName() const {return STR_ValueGlyph;}
+
          Glyph const glyph;
 
 
@@ -46,6 +48,8 @@ namespace GDCC
          virtual Type v_getType() const {return glyph.getData().type;}
 
          virtual Value v_getValue() const;
+
+         virtual OArchive &v_writeIR(OArchive &out) const;
       };
    }
 }

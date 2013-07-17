@@ -52,5 +52,18 @@ namespace GDCC
    }
 }
 
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace IR
+   {
+      OArchive &operator << (OArchive &out, Statement const &in);
+   }
+}
+
 #endif//GDCC__IR__Statement_H__
 

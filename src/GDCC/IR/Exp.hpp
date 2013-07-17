@@ -37,9 +37,13 @@ namespace GDCC
          GDCC_CounterPreambleAbstract(GDCC::IR::Exp, GDCC::Counter);
 
       public:
+         virtual String getName() const = 0;
+
          Type getType() const {return v_getType();}
 
          Value getValue() const {return v_getValue();}
+
+         OArchive &writeIR(OArchive &out) const;
 
          Origin const pos;
 
@@ -50,6 +54,8 @@ namespace GDCC
          virtual Type v_getType() const = 0;
 
          virtual Value v_getValue() const = 0;
+
+         virtual OArchive &v_writeIR(OArchive &out) const;
       };
    }
 }
@@ -63,6 +69,8 @@ namespace GDCC
 {
    namespace IR
    {
+      OArchive &operator << (OArchive &out, Exp const *in);
+
       Exp::Ref ExpCreate_ValueGlyph(Glyph glyph, Origin pos);
 
       Exp::Ref ExpCreate_ValueRoot(Value const &value, Origin pos);

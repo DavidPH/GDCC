@@ -12,6 +12,9 @@
 
 #include "Function.hpp"
 
+#include "Linkage.hpp"
+#include "OArchive.hpp"
+
 #include <unordered_map>
 
 
@@ -76,6 +79,71 @@ namespace GDCC
             std::forward_as_tuple(glyph), std::forward_as_tuple(glyph)).first;
 
          return itr->second;
+      }
+
+      //
+      // operator OArchive << CallType
+      //
+      OArchive &operator << (OArchive &out, CallType in)
+      {
+         switch(in)
+         {
+         case CallType::None:    return out << STR_None;
+         case CallType::Action:  return out << STR_Action;
+         case CallType::AsmFunc: return out << STR_AsmFunc;
+         case CallType::LangACS: return out << STR_LangACS;
+         case CallType::LangASM: return out << STR_LangASM;
+         case CallType::LangAXX: return out << STR_LangAXX;
+         case CallType::LangC:   return out << STR_LangC;
+         case CallType::LangCXX: return out << STR_LangCXX;
+         case CallType::LangDS:  return out << STR_LangDS;
+         case CallType::Native:  return out << STR_Native;
+         case CallType::Script:  return out << STR_Script;
+         case CallType::ScriptI: return out << STR_ScriptI;
+         case CallType::ScriptS: return out << STR_ScriptS;
+         case CallType::Special: return out << STR_Special;
+         }
+      }
+
+      //
+      // operator OArchive << Function
+      //
+      OArchive &operator << (OArchive &out, Function const &in)
+      {
+         return out << in.block << in.ctype << in.label << in.linka << in.linka
+            << in.localArs << in.localReg << in.param << in.retrn << in.stype
+            << in.valueInt << in.valueStr << in.exdef << in.sflagNet << in.sflagClS;
+      }
+
+      //
+      // operator OArchive << ScriptType
+      //
+      OArchive &operator << (OArchive &out, ScriptType in)
+      {
+         switch(in)
+         {
+         case ScriptType::None:       return out << STR_None;
+         case ScriptType::Death:      return out << STR_Death;
+         case ScriptType::Disconnect: return out << STR_Disconnect;
+         case ScriptType::Enter:      return out << STR_Enter;
+         case ScriptType::Lightning:  return out << STR_Lightning;
+         case ScriptType::Open:       return out << STR_Open;
+         case ScriptType::Respawn:    return out << STR_Respawn;
+         case ScriptType::Return:     return out << STR_Return;
+         case ScriptType::Unloading:  return out << STR_Unloading;
+         }
+      }
+
+      //
+      // OArchive::writeTablesFuncts
+      //
+      OArchive &OArchive::writeTablesFuncts()
+      {
+         *this << FuncMap.size();
+         for(auto const &itr : FuncMap)
+            *this << itr.first << itr.second;
+
+         return *this;
       }
    }
 }

@@ -29,6 +29,8 @@
    { \
       using ArgPtr1::ArgPtr1; \
       \
+      using ArgPtr1::writeIR; \
+      \
       using ArgPtr1::idx; \
       using ArgPtr1::off; \
       \
@@ -46,6 +48,8 @@
    struct Arg_##name : private ArgPtr2 \
    { \
       using ArgPtr2::ArgPtr2; \
+      \
+      using ArgPtr2::writeIR; \
       \
       using ArgPtr2::arr; \
       using ArgPtr2::idx; \
@@ -85,6 +89,8 @@ namespace GDCC
          ArgPtr1 &operator = (ArgPtr1 const &arg);
          ArgPtr1 &operator = (ArgPtr1 &&arg);
 
+         OArchive &writeIR(OArchive &out) const;
+
          Arg     *idx;
          Exp::Ref off;
       };
@@ -105,6 +111,8 @@ namespace GDCC
          ArgPtr2 &operator = (ArgPtr2 const &arg);
          ArgPtr2 &operator = (ArgPtr2 &&arg);
 
+         OArchive &writeIR(OArchive &out) const;
+
          Arg     *arr;
          Arg     *idx;
          Exp::Ref off;
@@ -122,6 +130,7 @@ namespace GDCC
       //
       struct Arg_Cpy
       {
+         OArchive &writeIR(OArchive &out) const {return out;}
       };
 
       //
@@ -133,6 +142,8 @@ namespace GDCC
       {
          explicit Arg_Lit(Exp *value_) : value{value_} {}
 
+         OArchive &writeIR(OArchive &out) const;
+
          Exp::Ref value;
       };
 
@@ -143,6 +154,7 @@ namespace GDCC
       //
       struct Arg_Nul
       {
+         OArchive &writeIR(OArchive &out) const {return out;}
       };
 
       //
@@ -150,6 +162,7 @@ namespace GDCC
       //
       struct Arg_Stk
       {
+         OArchive &writeIR(OArchive &out) const {return out;}
       };
 
       //
@@ -329,6 +342,23 @@ namespace GDCC
             #include "AddrList.hpp"
          };
       };
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace IR
+   {
+      #define GDCC_IR_AddrList(name) \
+         OArchive &operator << (OArchive &out, Arg_##name const &in);
+      #include "AddrList.hpp"
+
+      OArchive &operator << (OArchive &out, Arg const &in);
    }
 }
 

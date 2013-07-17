@@ -32,6 +32,8 @@ namespace GDCC
          GDCC_CounterPreamble(GDCC::IR::Exp_ValueRoot, GDCC::IR::Exp);
 
       public:
+         virtual String getName() const {return STR_ValueRoot;}
+
          Type const type;
          Value const value;
 
@@ -49,6 +51,8 @@ namespace GDCC
          virtual Type v_getType() const {return type;}
 
          virtual Value v_getValue() const {return value;}
+
+         virtual OArchive &v_writeIR(OArchive &out) const;
       };
    }
 }

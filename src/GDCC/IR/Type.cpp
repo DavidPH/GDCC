@@ -12,6 +12,10 @@
 
 #include "Type.hpp"
 
+#include "Addr.hpp"
+#include "Function.hpp"
+#include "OArchive.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -60,6 +64,81 @@ namespace GDCC
          }
 
          return value;
+      }
+
+      //
+      // operator OArchive << TypeBase
+      //
+      OArchive &operator << (OArchive &out, TypeBase in)
+      {
+         switch(in)
+         {
+            #define GDCC_IR_TypeList(name) \
+               case TypeBase::name: return out << STR_##name;
+            #include "TypeList.hpp"
+         }
+      }
+
+      //
+      // operator OArchive << Type_Empty
+      //
+      OArchive &operator << (OArchive &out, Type_Empty const &)
+      {
+         return out;
+      }
+
+      //
+      // operator OArchive << Type_Fixed
+      //
+      OArchive &operator << (OArchive &out, Type_Fixed const &in)
+      {
+         return out << in.bitsI << in.bitsF << in.bitsS << in.satur;
+      }
+
+      //
+      // operator OArchive << Type_Float
+      //
+      OArchive &operator << (OArchive &out, Type_Float const &in)
+      {
+         return out << in.bitsI << in.bitsF << in.bitsS << in.satur;
+      }
+
+      //
+      // operator OArchive << Type_Funct
+      //
+      OArchive &operator << (OArchive &out, Type_Funct const &in)
+      {
+         return out << in.callT;
+      }
+
+      //
+      // operator OArchive << Type_Multi
+      //
+      OArchive &operator << (OArchive &out, Type_Multi const &in)
+      {
+         return out << in.types;
+      }
+
+      //
+      // operator OArchive << Type_Point
+      //
+      OArchive &operator << (OArchive &out, Type_Point const &in)
+      {
+         return out << in.reprB << in.reprO;
+      }
+
+      //
+      // operator OArchive << Type
+      //
+      OArchive &operator << (OArchive &out, Type const &in)
+      {
+         out << in.t;
+         switch(in.t)
+         {
+            #define GDCC_IR_TypeList(name) \
+               case TypeBase::name: return out << in.t##name;
+            #include "TypeList.hpp"
+         }
       }
    }
 }

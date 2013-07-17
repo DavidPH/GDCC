@@ -17,6 +17,7 @@
 #include "GDCC/Token.hpp"
 
 #include "GDCC/IR/Function.hpp"
+#include "GDCC/IR/Linkage.hpp"
 
 #include <iostream>
 

@@ -24,6 +24,11 @@
 
 namespace GDCC
 {
+   namespace IR
+   {
+      class OArchive;
+   }
+
    class StringData;
 
    //
@@ -105,6 +110,7 @@ namespace std
 
 namespace GDCC
 {
+   IR::OArchive &operator << (IR::OArchive &out, String in);
    std::ostream &operator << (std::ostream &out, String in);
 
    constexpr bool operator == (StringIndex l, String const &r) {return r == l;}

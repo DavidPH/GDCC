@@ -24,6 +24,8 @@ namespace GDCC
 {
    namespace IR
    {
+      enum class Linkage;
+
       //
       // CallType
       //
@@ -91,6 +93,21 @@ namespace GDCC
 
          static Function &Get(String glyph);
       };
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace IR
+   {
+      OArchive &operator << (OArchive &out, CallType in);
+      OArchive &operator << (OArchive &out, Function const &in);
+      OArchive &operator << (OArchive &out, ScriptType in);
    }
 }
 

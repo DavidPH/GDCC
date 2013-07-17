@@ -24,6 +24,8 @@ namespace GDCC
 {
    namespace IR
    {
+      class OArchive;
+
       //
       // AddrBase
       //
@@ -45,6 +47,19 @@ namespace GDCC
          AddrBase base;
          String   name;
       };
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace IR
+   {
+      OArchive &operator << (OArchive &out, AddrBase in);
    }
 }
 

@@ -13,6 +13,7 @@ add_subdirectory(IR)
 
 add_library(gdcc
    Option.cpp
+   Origin.cpp
    ParseNumber.cpp
    ParseString.cpp
    String.cpp

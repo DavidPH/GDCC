@@ -79,6 +79,14 @@ namespace GDCC
       }
 
       //
+      // ArgPtr1::writeIR
+      //
+      OArchive &ArgPtr1::writeIR(OArchive &out) const
+      {
+         return out << *idx << off;
+      }
+
+      //
       // ArgPtr2 copy constructor
       //
       ArgPtr2::ArgPtr2(ArgPtr2 const &arg) :
@@ -155,6 +163,36 @@ namespace GDCC
          idx = arg.idx; arg.idx = nullptr;
          off = arg.off;
          return *this;
+      }
+
+      //
+      // ArgPtr2::writeIR
+      //
+      OArchive &ArgPtr2::writeIR(OArchive &out) const
+      {
+         return out << *arr << *idx << off;
+      }
+
+      //
+      // Arg_Lit::writeIR
+      //
+      OArchive &Arg_Lit::writeIR(OArchive &out) const
+      {
+         return out << value;
+      }
+
+      //
+      // operator OArchive << Arg
+      //
+      OArchive &operator << (OArchive &out, Arg const &in)
+      {
+         out << in.a;
+         switch(in.a)
+         {
+            #define GDCC_IR_AddrList(name) \
+               case ArgBase::name: return in.a##name.writeIR(out);
+            #include "AddrList.hpp"
+         }
       }
    }
 }

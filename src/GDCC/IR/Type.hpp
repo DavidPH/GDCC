@@ -13,8 +13,6 @@
 #ifndef GDCC__IR__Type_H__
 #define GDCC__IR__Type_H__
 
-#include "Types.hpp"
-
 #include "../Array.hpp"
 #include "../Number.hpp"
 #include "../String.hpp"
@@ -214,6 +212,25 @@ namespace GDCC
             #include "TypeList.hpp"
          };
       };
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace IR
+   {
+      OArchive &operator << (OArchive &out, TypeBase in);
+
+      #define GDCC_IR_TypeList(name) \
+         OArchive &operator << (OArchive &out, Type_##name const &in);
+      #include "TypeList.hpp"
+
+      OArchive &operator << (OArchive &out, Type const &in);
    }
 }
 

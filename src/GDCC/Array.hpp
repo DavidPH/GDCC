@@ -26,6 +26,11 @@
 
 namespace GDCC
 {
+   namespace IR
+   {
+      class OArchive;
+   }
+
    struct MoveType {};
    struct PackType {};
 
@@ -298,6 +303,9 @@ namespace std
 
 namespace GDCC
 {
+   template<typename T>
+   IR::OArchive &operator << (IR::OArchive &out, Array<T> const &in);
+
    template<typename T> bool operator == (Array<T> const &l, Array<T> const &r);
    template<typename T> bool operator != (Array<T> const &l, Array<T> const &r);
    template<typename T> bool operator <  (Array<T> const &l, Array<T> const &r);
@@ -308,6 +316,15 @@ namespace GDCC
 
 namespace GDCC
 {
+   template<typename T>
+   IR::OArchive &operator << (IR::OArchive &out, Array<T> const &in)
+   {
+      out << in.size();
+      for(auto const &i : in)
+         out << i;
+      return out;
+   }
+
    //
    // operator Array == Array
    //

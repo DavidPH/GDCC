@@ -42,6 +42,7 @@ namespace GDCC
 
 namespace GDCC
 {
+   IR::OArchive &operator << (IR::OArchive &out, Origin const &in);
    std::ostream &operator << (std::ostream &out, Origin const &in);
 
    //

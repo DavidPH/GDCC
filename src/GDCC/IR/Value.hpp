@@ -221,5 +221,24 @@ namespace GDCC
    }
 }
 
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace IR
+   {
+      OArchive &operator << (OArchive &out, ValueBase in);
+
+      #define GDCC_IR_TypeList(name) \
+         OArchive &operator << (OArchive &out, Value_##name const &in);
+      #include "TypeList.hpp"
+
+      OArchive &operator << (OArchive &out, Value const &in);
+   }
+}
+
 #endif//GDCC__IR__Value_H__
 

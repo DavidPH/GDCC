@@ -33,6 +33,14 @@ namespace GDCC
       }
 
       //
+      // Exp_ValueGlyph::v_writeIR
+      //
+      OArchive &Exp_ValueGlyph::v_writeIR(OArchive &out) const
+      {
+         return Super::v_writeIR(out) << glyph;
+      }
+
+      //
       // ExpCreate_ValueGlyph
       //
       Exp::Ref ExpCreate_ValueGlyph(Glyph glyph, Origin pos)

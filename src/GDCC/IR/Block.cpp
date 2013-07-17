@@ -12,6 +12,8 @@
 
 #include "Block.hpp"
 
+#include "OArchive.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -30,6 +32,25 @@ namespace GDCC
          labs.clear();
          new Statement(&head, code);
          return *this;
+      }
+
+      //
+      // Block::writeIR
+      //
+      OArchive &Block::writeIR(OArchive &out) const
+      {
+         out << labs << head << size();
+         for(auto const &stmnt : *this)
+            out << stmnt;
+         return out;
+      }
+
+      //
+      // operator OArchive << Block
+      //
+      OArchive &operator << (OArchive &out, Block const &in)
+      {
+         return in.writeIR(out);
       }
    }
 }

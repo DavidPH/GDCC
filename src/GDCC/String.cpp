@@ -12,6 +12,8 @@
 
 #include "String.hpp"
 
+#include "IR/OArchive.hpp"
+
 #include <cstring>
 #include <memory>
 #include <vector>
@@ -40,6 +42,36 @@ static std::vector<GDCC::StringData> StringTable =
 
 namespace GDCC
 {
+   namespace IR
+   {
+      //
+      // OArchive::writeTablesString
+      //
+      OArchive &OArchive::writeTablesString()
+      {
+         auto begin = StringTable.begin();
+         auto end   = StringTable.end();
+
+         std::advance(begin, GDCC::STRMAX);
+         *this << std::distance(begin, end);
+
+         for(auto itr = begin; itr != end; ++itr)
+         {
+            for(auto ci = itr->str, ce = ci + itr->len; ci != ce; ++ci)
+            {
+               if(*ci)
+                  out << *ci;
+               else
+                  out << '\xC0' << '\x80';
+            }
+
+            out << '\0';
+         }
+
+         return *this;
+      }
+   }
+
    //
    // String::GetData
    //
@@ -80,6 +112,14 @@ namespace GDCC
 
       next = StringTableHash[hashMod];
       StringTableHash[hashMod] = num;
+   }
+
+   //
+   // operator IR::OArchive << String
+   //
+   IR::OArchive &operator << (IR::OArchive &out, String in)
+   {
+      return out << static_cast<std::size_t>(in);
    }
 
    //

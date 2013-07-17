@@ -17,6 +17,7 @@
 #include "GDCC/Token.hpp"
 
 #include "GDCC/IR/Function.hpp"
+#include "GDCC/IR/OArchive.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -38,6 +39,15 @@ static void MakeAsm()
       ProcessFile(*arg);
 
    // Write IR data.
+   std::fstream out{Option::Output.data, std::ios_base::binary | std::ios_base::out};
+
+   if(!out)
+   {
+      std::cerr << "couldn't open '" << Option::Output.data << "' for writing";
+      throw EXIT_FAILURE;
+   }
+
+   GDCC::IR::OArchive(out).writeHeader().writeTables();
 }
 
 //

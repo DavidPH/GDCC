@@ -25,6 +25,7 @@ namespace GDCC
    namespace IR
    {
       class GlyphData;
+      class OArchive;
 
       class Glyph
       {
@@ -57,6 +58,33 @@ namespace GDCC
          Type     type;
          Exp::Ptr value;
       };
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace IR
+   {
+      OArchive &operator << (OArchive &out, Glyph in);
+   }
+}
+
+namespace GDCC
+{
+   namespace IR
+   {
+      //
+      // operator OArchive << Glyph
+      //
+      inline OArchive &operator << (OArchive &out, Glyph in)
+      {
+         return out << static_cast<String>(in);
+      }
    }
 }
 
