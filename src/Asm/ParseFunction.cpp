@@ -113,6 +113,7 @@ namespace Asm
             throw EXIT_FAILURE;
          }
          ParseBlock(in, func.block, GDCC::TOK_BraceC);
+         func.exdef = false;
          break;
 
       case GDCC::STR_ctype:
