@@ -79,8 +79,16 @@ namespace GDCC
          template<typename T>
          IArchive &getNumber(T &out)
          {
-            std::istringstream in{get()};
-            in >> std::hex >> out;
+            auto s = get();
+
+            if(*s)
+            {
+               std::istringstream in{s};
+               in >> std::hex >> out;
+            }
+            else
+               out = 0;
+
             return *this;
          }
 

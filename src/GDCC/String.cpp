@@ -208,7 +208,8 @@ namespace GDCC
          out = in.stab[n];
       else
       {
-         std::cerr << "invalid String\n";
+         std::cerr << "invalid String: " << std::hex << n + STRMAX << "/("
+            << STRMAX << '+' << in.stab.size() << ")\n";
          throw EXIT_FAILURE;
       }
 

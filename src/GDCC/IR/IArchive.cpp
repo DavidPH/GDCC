@@ -38,7 +38,7 @@ namespace GDCC
 
          *si++ = data.data();
          for(auto ci = data.begin(), ce = data.end(); ci != ce; ++ci)
-            if(!*ci) *si++ = &ci[1];
+            if(!*ci && ci + 1 != ce) *si++ = &ci[1];
       }
 
       //
