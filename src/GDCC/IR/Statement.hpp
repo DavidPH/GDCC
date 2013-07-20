@@ -33,7 +33,7 @@ namespace GDCC
       class Statement
       {
       public:
-         Statement() = default;
+         Statement() : next{this}, prev{this} {}
          Statement(Statement const &) = delete;
          Statement(Statement &&stmnt);
          explicit Statement(Statement *head) : next{head}, prev{head->prev}
