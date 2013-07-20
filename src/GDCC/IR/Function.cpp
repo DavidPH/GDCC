@@ -52,7 +52,7 @@ namespace GDCC
          valueInt{0},
          valueStr{STRNULL},
 
-         exdef   {false},
+         exdef   {true},
          sflagNet{false},
          sflagClS{false}
       {
