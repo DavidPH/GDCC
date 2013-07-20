@@ -29,11 +29,11 @@ namespace GDCC
       }
 
       //
-      // Exp_ValueRoot::v_writeIR
+      // Exp_ValueRoot::v_putIR
       //
-      OArchive &Exp_ValueRoot::v_writeIR(OArchive &out) const
+      OArchive &Exp_ValueRoot::v_putIR(OArchive &out) const
       {
-         return Super::v_writeIR(out) << type << value;
+         return Super::v_putIR(out) << type << value;
       }
 
       //

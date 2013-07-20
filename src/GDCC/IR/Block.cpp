@@ -36,33 +36,14 @@ namespace GDCC
       }
 
       //
-      // Block::getIR
-      //
-      IArchive &Block::getIR(IArchive &in)
-      {
-         in >> labs >> head;
-         for(auto count = GetIR<size_type>(in); count--;)
-            in >> *new Statement(&head);
-         return in;
-      }
-
-      //
-      // Block::writeIR
-      //
-      OArchive &Block::writeIR(OArchive &out) const
-      {
-         out << labs << head << size();
-         for(auto const &stmnt : *this)
-            out << stmnt;
-         return out;
-      }
-
-      //
       // operator OArchive << Block
       //
       OArchive &operator << (OArchive &out, Block const &in)
       {
-         return in.writeIR(out);
+         out << in.labs << in.head << in.size();
+         for(auto const &i : in)
+            out << i;
+         return out;
       }
 
       //
@@ -70,7 +51,10 @@ namespace GDCC
       //
       IArchive &operator >> (IArchive &in, Block &out)
       {
-         return out.getIR(in);
+         in >> out.labs >> out.head;
+         for(auto count = GetIR<Block::size_type>(in); count--;)
+            in >> *new Statement(&out.head);
+         return in;
       }
    }
 }

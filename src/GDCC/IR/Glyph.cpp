@@ -83,9 +83,9 @@ namespace GDCC
       }
 
       //
-      // OArchive::writeTablesGlyphs
+      // OArchive::putTablesGlyphs
       //
-      OArchive &OArchive::writeTablesGlyphs()
+      OArchive &OArchive::putTablesGlyphs()
       {
          *this << GlyphMap.size();
 

@@ -34,19 +34,19 @@ namespace GDCC
       }
 
       //
-      // Exp::v_writeIR
+      // Exp::v_putIR
       //
-      OArchive &Exp::v_writeIR(OArchive &out) const
+      OArchive &Exp::v_putIR(OArchive &out) const
       {
          return out << pos;
       }
 
       //
-      // Exp::writeIR
+      // Exp::putIR
       //
-      OArchive &Exp::writeIR(OArchive &out) const
+      OArchive &Exp::putIR(OArchive &out) const
       {
-         return v_writeIR(out << getName());
+         return v_putIR(out << getName());
       }
 
       //
@@ -83,7 +83,7 @@ namespace GDCC
       OArchive &operator << (OArchive &out, Exp const *in)
       {
          if(in)
-            return in->writeIR(out);
+            return in->putIR(out);
          else
             return out << STR_None;
       }

@@ -225,9 +225,9 @@ namespace GDCC
       }
 
       //
-      // OArchive::writeTablesFuncts
+      // OArchive::putTablesFuncts
       //
-      OArchive &OArchive::writeTablesFuncts()
+      OArchive &OArchive::putTablesFuncts()
       {
          *this << FuncMap.size();
          for(auto const &itr : FuncMap)

@@ -44,7 +44,7 @@ namespace GDCC
 
          Value getValue() const {return v_getValue();}
 
-         OArchive &writeIR(OArchive &out) const;
+         OArchive &putIR(OArchive &out) const;
 
          Origin const pos;
 
@@ -57,7 +57,7 @@ namespace GDCC
 
          virtual Value v_getValue() const = 0;
 
-         virtual OArchive &v_writeIR(OArchive &out) const;
+         virtual OArchive &v_putIR(OArchive &out) const;
       };
 
       //

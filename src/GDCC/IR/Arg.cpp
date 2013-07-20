@@ -89,9 +89,9 @@ namespace GDCC
       }
 
       //
-      // ArgPtr1::writeIR
+      // ArgPtr1::putIR
       //
-      OArchive &ArgPtr1::writeIR(OArchive &out) const
+      OArchive &ArgPtr1::putIR(OArchive &out) const
       {
          return out << off << *idx;
       }
@@ -184,9 +184,9 @@ namespace GDCC
       }
 
       //
-      // ArgPtr2::writeIR
+      // ArgPtr2::putIR
       //
-      OArchive &ArgPtr2::writeIR(OArchive &out) const
+      OArchive &ArgPtr2::putIR(OArchive &out) const
       {
          return out << off << *arr << *idx;
       }
@@ -220,7 +220,7 @@ namespace GDCC
          switch(in.a)
          {
             #define GDCC_IR_AddrList(name) \
-               case ArgBase::name: return in.a##name.writeIR(out);
+               case ArgBase::name: return in.a##name.putIR(out);
             #include "AddrList.hpp"
          }
       }

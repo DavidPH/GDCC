@@ -67,8 +67,6 @@ namespace GDCC
                iterator end()       {return static_cast<      iterator>(&head);}
          const_iterator end() const {return static_cast<const_iterator>(&head);}
 
-         IArchive &getIR(IArchive &in);
-
          Block &setArgs() {head.args.clear(); return *this;}
 
          Block &setArgs(Array<Arg> const &argv) {head.args = argv; return *this;}
@@ -89,7 +87,10 @@ namespace GDCC
 
          size_type size() const {return std::distance(begin(), end());}
 
-         OArchive &writeIR(OArchive &out) const;
+
+         friend OArchive &operator << (OArchive &out, Block const &in);
+
+         friend IArchive &operator >> (IArchive &in, Block &out);
 
       private:
          void unpackArgs(Arg *argv, Arg const &arg0) {*argv = arg0;}

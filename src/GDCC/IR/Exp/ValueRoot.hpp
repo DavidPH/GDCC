@@ -55,7 +55,7 @@ namespace GDCC
 
          virtual Value v_getValue() const {return value;}
 
-         virtual OArchive &v_writeIR(OArchive &out) const;
+         virtual OArchive &v_putIR(OArchive &out) const;
       };
    }
 }

@@ -43,11 +43,11 @@ namespace GDCC
       }
 
       //
-      // Exp_ValueGlyph::v_writeIR
+      // Exp_ValueGlyph::v_putIR
       //
-      OArchive &Exp_ValueGlyph::v_writeIR(OArchive &out) const
+      OArchive &Exp_ValueGlyph::v_putIR(OArchive &out) const
       {
-         return Super::v_writeIR(out) << glyph;
+         return Super::v_putIR(out) << glyph;
       }
 
       //

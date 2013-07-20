@@ -47,7 +47,7 @@ static void MakeAsm()
       throw EXIT_FAILURE;
    }
 
-   GDCC::IR::OArchive(out).writeHeader().writeTables();
+   GDCC::IR::OArchive(out).putHeader().putTables();
 }
 
 //

@@ -30,7 +30,7 @@
       using ArgPtr1::ArgPtr1; \
       \
       using ArgPtr1::getIR; \
-      using ArgPtr1::writeIR; \
+      using ArgPtr1::putIR; \
       \
       using ArgPtr1::idx; \
       using ArgPtr1::off; \
@@ -51,7 +51,7 @@
       using ArgPtr2::ArgPtr2; \
       \
       using ArgPtr2::getIR; \
-      using ArgPtr2::writeIR; \
+      using ArgPtr2::putIR; \
       \
       using ArgPtr2::arr; \
       using ArgPtr2::idx; \
@@ -94,7 +94,7 @@ namespace GDCC
 
          IArchive &getIR(IArchive &in);
 
-         OArchive &writeIR(OArchive &out) const;
+         OArchive &putIR(OArchive &out) const;
 
          Arg     *idx;
          Exp::Ref off;
@@ -119,7 +119,7 @@ namespace GDCC
 
          IArchive &getIR(IArchive &in);
 
-         OArchive &writeIR(OArchive &out) const;
+         OArchive &putIR(OArchive &out) const;
 
          Arg     *arr;
          Arg     *idx;
@@ -143,7 +143,7 @@ namespace GDCC
 
          IArchive &getIR(IArchive &in) {return in;}
 
-         OArchive &writeIR(OArchive &out) const {return out;}
+         OArchive &putIR(OArchive &out) const {return out;}
       };
 
       //
@@ -158,7 +158,7 @@ namespace GDCC
 
          IArchive &getIR(IArchive &in) {return in >> value;}
 
-         OArchive &writeIR(OArchive &out) const {return out << value;}
+         OArchive &putIR(OArchive &out) const {return out << value;}
 
          Exp::Ref value;
       };
@@ -175,7 +175,7 @@ namespace GDCC
 
          IArchive &getIR(IArchive &in) {return in;}
 
-         OArchive &writeIR(OArchive &out) const {return out;}
+         OArchive &putIR(OArchive &out) const {return out;}
       };
 
       //
@@ -188,7 +188,7 @@ namespace GDCC
 
          IArchive &getIR(IArchive &in) {return in;}
 
-         OArchive &writeIR(OArchive &out) const {return out;}
+         OArchive &putIR(OArchive &out) const {return out;}
       };
 
       //
@@ -402,7 +402,7 @@ namespace GDCC
    {
       #define GDCC_IR_AddrList(name) \
          inline OArchive &operator << (OArchive &out, Arg_##name const &in) \
-            {return in.writeIR(out);}
+            {return in.putIR(out);}
       #include "AddrList.hpp"
 
       OArchive &operator << (OArchive &out, Arg const &in);

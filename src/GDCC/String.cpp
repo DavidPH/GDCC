@@ -101,9 +101,9 @@ namespace GDCC
       }
 
       //
-      // OArchive::writeTablesString
+      // OArchive::putTablesString
       //
-      OArchive &OArchive::writeTablesString()
+      OArchive &OArchive::putTablesString()
       {
          auto begin = StringTable.begin();
          auto end   = StringTable.end();

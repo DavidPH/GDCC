@@ -52,7 +52,7 @@ namespace GDCC
 
          virtual Value v_getValue() const;
 
-         virtual OArchive &v_writeIR(OArchive &out) const;
+         virtual OArchive &v_putIR(OArchive &out) const;
       };
    }
 }
