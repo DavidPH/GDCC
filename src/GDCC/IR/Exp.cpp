@@ -12,7 +12,10 @@
 
 #include "Exp.hpp"
 
+#include "IArchive.hpp"
 #include "OArchive.hpp"
+
+#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -23,6 +26,13 @@ namespace GDCC
 {
    namespace IR
    {
+      //
+      // Exp constructor
+      //
+      Exp::Exp(IArchive &in) : pos{GetIR(in, pos)}
+      {
+      }
+
       //
       // Exp::v_writeIR
       //
@@ -40,14 +50,42 @@ namespace GDCC
       }
 
       //
+      // GetIR_T<Exp::Ptr>::GetIR_F
+      //
+      Exp::Ptr GetIR_T<Exp::Ptr>::GetIR_F(IArchive &in)
+      {
+         switch(GetIR<StringIndex>(in))
+         {
+         case STR_ValueGlyph: return ExpGetIR_ValueGlyph(in);
+         case STR_ValueRoot:  return ExpGetIR_ValueRoot (in);
+
+         default:
+            std::cerr << "invalid Exp\n";
+            throw EXIT_FAILURE;
+         }
+      }
+
+      //
+      // GetIR_T<Exp::Ref>::GetIR_F
+      //
+      Exp::Ref GetIR_T<Exp::Ref>::GetIR_F(IArchive &in)
+      {
+         if(auto exp = GetIR<Exp::Ptr>(in))
+            return static_cast<Exp::Ref>(exp);
+
+         std::cerr << "invalid Exp::Ref\n";
+         throw EXIT_FAILURE;
+      }
+
+      //
       // operator OArchive << Exp const *
       //
       OArchive &operator << (OArchive &out, Exp const *in)
       {
          if(in)
-            return in->writeIR(out << true);
+            return in->writeIR(out);
          else
-            return out << false;
+            return out << STR_None;
       }
    }
 }

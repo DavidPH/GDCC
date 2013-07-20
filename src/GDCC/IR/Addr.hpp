@@ -60,6 +60,8 @@ namespace GDCC
    namespace IR
    {
       OArchive &operator << (OArchive &out, AddrBase in);
+
+      IArchive &operator >> (IArchive &in, AddrBase &out);
    }
 }
 

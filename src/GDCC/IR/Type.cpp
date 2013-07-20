@@ -14,7 +14,10 @@
 
 #include "Addr.hpp"
 #include "Function.hpp"
+#include "IArchive.hpp"
 #include "OArchive.hpp"
+
+#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -64,6 +67,64 @@ namespace GDCC
          }
 
          return value;
+      }
+
+      //
+      // Type_Empty constructor
+      //
+      Type_Empty::Type_Empty(IArchive &)
+      {
+      }
+
+      //
+      // Type_Fixed constructor
+      //
+      Type_Fixed::Type_Fixed(IArchive &in) : bitsI{GetIR(in, bitsI)},
+         bitsF{GetIR(in, bitsF)}, bitsS{GetIR<bool>(in)}, satur{GetIR<bool>(in)}
+      {
+      }
+
+      //
+      // Type_Float constructor
+      //
+      Type_Float::Type_Float(IArchive &in) : bitsI{GetIR(in, bitsI)},
+         bitsF{GetIR(in, bitsF)}, bitsS{GetIR<bool>(in)}, satur{GetIR<bool>(in)}
+      {
+      }
+
+      //
+      // Type_Funct constructor
+      //
+      Type_Funct::Type_Funct(IArchive &in) : callT{GetIR(in, callT)}
+      {
+      }
+
+      //
+      // Type_Multi constructor
+      //
+      Type_Multi::Type_Multi(IArchive &in) : types{GetIR(in, types)}
+      {
+      }
+
+      //
+      // Type_Point constructor
+      //
+      Type_Point::Type_Point(IArchive &in) : reprB{GetIR(in, reprB)},
+         reprO{GetIR(in, reprO)}
+      {
+      }
+
+      //
+      // Type constructor
+      //
+      Type::Type(IArchive &in)
+      {
+         switch(in >> t, t)
+         {
+            #define GDCC_IR_TypeList(name) \
+               case TypeBase::name: new(&t##name) Type_##name(in); return;
+            #include "TypeList.hpp"
+         }
       }
 
       //
@@ -137,6 +198,90 @@ namespace GDCC
          {
             #define GDCC_IR_TypeList(name) \
                case TypeBase::name: return out << in.t##name;
+            #include "TypeList.hpp"
+         }
+      }
+
+      //
+      // operator IArchive >> TypeBase
+      //
+      IArchive &operator >> (IArchive &in, TypeBase &out)
+      {
+         switch(GetIR<StringIndex>(in))
+         {
+            #define GDCC_IR_TypeList(name) \
+               case STR_##name: out = TypeBase::name; return in;
+            #include "TypeList.hpp"
+
+         default:
+            std::cerr << "invalid TypeBase\n";
+            throw EXIT_FAILURE;
+         }
+      }
+
+      //
+      // operator IArchive >> Type_Empty
+      //
+      IArchive &operator >> (IArchive &in, Type_Empty &)
+      {
+         return in;
+      }
+
+      //
+      // operator IArchive >> Type_Fixed
+      //
+      IArchive &operator >> (IArchive &in, Type_Fixed &out)
+      {
+         in >> out.bitsI >> out.bitsF;
+         out.bitsS = GetIR<bool>(in);
+         out.satur = GetIR<bool>(in);
+         return in;
+      }
+
+      //
+      // operator IArchive >> Type_Float
+      //
+      IArchive &operator >> (IArchive &in, Type_Float &out)
+      {
+         in >> out.bitsI >> out.bitsF;
+         out.bitsS = GetIR<bool>(in);
+         out.satur = GetIR<bool>(in);
+         return in;
+      }
+
+      //
+      // operator IArchive >> Type_Funct
+      //
+      IArchive &operator >> (IArchive &in, Type_Funct &out)
+      {
+         return in >> out.callT;
+      }
+
+      //
+      // operator IArchive >> Type_Multi
+      //
+      IArchive &operator >> (IArchive &in, Type_Multi &out)
+      {
+         return in >> out.types;
+      }
+
+      //
+      // operator IArchive >> Type_Point
+      //
+      IArchive &operator >> (IArchive &in, Type_Point &out)
+      {
+         return in >> out.reprB >> out.reprO;
+      }
+
+      //
+      // operator IArchive >> Type
+      //
+      IArchive &operator >> (IArchive &in, Type &out)
+      {
+         switch(GetIR<TypeBase>(in))
+         {
+            #define GDCC_IR_TypeList(name) \
+               case TypeBase::name: out = Type_##name(in); return in;
             #include "TypeList.hpp"
          }
       }

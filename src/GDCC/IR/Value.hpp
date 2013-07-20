@@ -33,6 +33,10 @@ namespace GDCC
       //
       struct Value_Empty
       {
+         Value_Empty() = default;
+
+         explicit Value_Empty(IArchive &in);
+
          Type_Empty vtype;
       };
 
@@ -51,6 +55,8 @@ namespace GDCC
          Value_Fixed(Integ &&value_, Type_Fixed const &vtype_) :
             vtype{vtype_}, value{std::move(value_)} {clamp();}
 
+         explicit Value_Fixed(IArchive &in);
+
          Value_Fixed &clamp() {vtype.clamp(value); return *this;}
 
          Type_Fixed vtype;
@@ -62,6 +68,10 @@ namespace GDCC
       //
       struct Value_Float
       {
+         Value_Float() = default;
+
+         explicit Value_Float(IArchive &in);
+
          Type_Float vtype;
          Float      value;
       };
@@ -71,6 +81,10 @@ namespace GDCC
       //
       struct Value_Funct
       {
+         Value_Funct() = default;
+
+         explicit Value_Funct(IArchive &in);
+
          Type_Funct vtype;
          FastU      value;
       };
@@ -91,6 +105,8 @@ namespace GDCC
          Value_Multi(Array<Value> &&value_, Type_Multi &&vtype_) :
             vtype{std::move(vtype_)}, value{std::move(value_)} {}
 
+         explicit Value_Multi(IArchive &in);
+
          Type_Multi   vtype;
          Array<Value> value;
       };
@@ -100,6 +116,10 @@ namespace GDCC
       //
       struct Value_Point
       {
+         Value_Point() = default;
+
+         explicit Value_Point(IArchive &in);
+
          Type_Point vtype;
          FastU      value;
          AddrBase   addrB;
@@ -113,6 +133,8 @@ namespace GDCC
       {
       public:
          Value() : v{ValueBase::Empty}, vEmpty{} {}
+
+         explicit Value(IArchive &in);
 
          //
          // copy constructor

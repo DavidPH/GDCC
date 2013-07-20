@@ -12,6 +12,7 @@
 
 #include "Glyph.hpp"
 
+#include "IArchive.hpp"
 #include "OArchive.hpp"
 
 #include <unordered_map>
@@ -51,23 +52,63 @@ namespace GDCC
       }
 
       //
+      // IArchive::getTablesGlyphs
+      //
+      IArchive &IArchive::getTablesGlyphs()
+      {
+         auto count = getNumber<std::size_t>();
+
+         String name;
+         GlyphData newData;
+
+         while(count--)
+         {
+            *this >> name >> newData;
+            auto &oldData = Glyph::GetData(name);
+
+            if(newData.type.t != TypeBase::Empty)
+            {
+               if(oldData.type.t == TypeBase::Empty)
+                  oldData.type = newData.type;
+            }
+
+            if(newData.value)
+            {
+               if(!oldData.value)
+                  oldData.value = newData.value;
+            }
+         }
+
+         return *this;
+      }
+
+      //
       // OArchive::writeTablesGlyphs
       //
       OArchive &OArchive::writeTablesGlyphs()
       {
-         auto begin = GlyphMap.begin();
-         auto end   = GlyphMap.end();
-
          *this << GlyphMap.size();
 
-         for(auto itr = begin; itr != end; ++itr)
-         {
-            auto const &data = itr->second;
-
-            *this << itr->first << data.type << data.value;
-         }
+         for(auto const &itr : GlyphMap)
+            *this << itr.first << itr.second;
 
          return *this;
+      }
+
+      //
+      // operator OArchive << GlyphData
+      //
+      OArchive &operator << (OArchive &out, GlyphData const &in)
+      {
+         return out << in.type << in.value;
+      }
+
+      //
+      // operator IArchive >> GlyphData
+      //
+      IArchive &operator >> (IArchive &in, GlyphData &out)
+      {
+         return in >> out.type >> out.value;
       }
    }
 }

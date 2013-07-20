@@ -22,11 +22,18 @@ namespace GDCC
    namespace IR
    {
       //
+      // Exp_ValueRoot constructor
+      //
+      Exp_ValueRoot::Exp_ValueRoot(IArchive &in) : Super{in}, type{in}, value{in}
+      {
+      }
+
+      //
       // Exp_ValueRoot::v_writeIR
       //
       OArchive &Exp_ValueRoot::v_writeIR(OArchive &out) const
       {
-         return Super::v_writeIR(out) << value;
+         return Super::v_writeIR(out) << type << value;
       }
 
       //
@@ -43,6 +50,14 @@ namespace GDCC
       Exp::Ref ExpCreate_ValueRoot(Value &&value, Origin pos)
       {
          return static_cast<Exp::Ref>(new Exp_ValueRoot(std::move(value), pos));
+      }
+
+      //
+      // ExpGetIR_ValueRoot
+      //
+      Exp::Ref ExpGetIR_ValueRoot(IArchive &in)
+      {
+         return static_cast<Exp::Ref>(new Exp_ValueRoot(in));
       }
    }
 }

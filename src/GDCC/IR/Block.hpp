@@ -48,6 +48,8 @@ namespace GDCC
 
          ~Block() {while(head.next != &head) delete head.next;}
 
+         Block &operator = (Block &&block) = default;
+
          Block &addLabel(String lab) {labs.push_back(lab); return *this;}
 
          Block &addStatement(Code code);
@@ -64,6 +66,8 @@ namespace GDCC
 
                iterator end()       {return static_cast<      iterator>(&head);}
          const_iterator end() const {return static_cast<const_iterator>(&head);}
+
+         IArchive &getIR(IArchive &in);
 
          Block &setArgs() {head.args.clear(); return *this;}
 
@@ -119,6 +123,8 @@ namespace GDCC
    namespace IR
    {
       OArchive &operator << (OArchive &out, Block const &in);
+
+      IArchive &operator >> (IArchive &in, Block &out);
    }
 }
 

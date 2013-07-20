@@ -22,6 +22,7 @@ namespace GDCC
 {
    namespace IR
    {
+      class IArchive;
       class OArchive;
 
       //
@@ -51,6 +52,8 @@ namespace GDCC
    namespace IR
    {
       OArchive &operator << (OArchive &out, Linkage in);
+
+      IArchive &operator >> (IArchive &in, Linkage &out);
    }
 }
 

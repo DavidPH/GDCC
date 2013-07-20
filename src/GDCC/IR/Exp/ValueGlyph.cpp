@@ -12,6 +12,8 @@
 
 #include "ValueGlyph.hpp"
 
+#include "../IArchive.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -21,6 +23,14 @@ namespace GDCC
 {
    namespace IR
    {
+      //
+      // Exp_ValueGlyph constructor
+      //
+      Exp_ValueGlyph::Exp_ValueGlyph(IArchive &in) : Super{in},
+         glyph{GetIR(in, glyph)}
+      {
+      }
+
       //
       // Exp_ValueGlyph::v_getValue
       //
@@ -46,6 +56,14 @@ namespace GDCC
       Exp::Ref ExpCreate_ValueGlyph(Glyph glyph, Origin pos)
       {
          return static_cast<Exp::Ref>(new Exp_ValueGlyph(glyph, pos));
+      }
+
+      //
+      // ExpGetIR_ValueGlyph
+      //
+      Exp::Ref ExpGetIR_ValueGlyph(IArchive &in)
+      {
+         return static_cast<Exp::Ref>(new Exp_ValueGlyph(in));
       }
    }
 }

@@ -28,6 +28,7 @@ namespace GDCC
 {
    namespace IR
    {
+      class IArchive;
       class OArchive;
    }
 
@@ -162,9 +163,7 @@ namespace GDCC
       static pointer Cpy(Itr first, Itr last)
       {
          size_type s = std::distance(first, last);
-         if(!s) return nullptr;
-
-         pointer n = static_cast<pointer>(::operator new(s * sizeof(value_type))), i = n;
+         pointer   n = Raw(s), i = n;
 
          try
          {
@@ -198,9 +197,7 @@ namespace GDCC
       static pointer Mov(Itr first, Itr last)
       {
          size_type s = std::distance(first, last);
-         if(!s) return nullptr;
-
-         pointer n = static_cast<pointer>(::operator new(s * sizeof(value_type))), i = n;
+         pointer   n = Raw(s), i = n;
 
          try
          {
@@ -221,9 +218,7 @@ namespace GDCC
       //
       static pointer New(size_type s)
       {
-         if(!s) return nullptr;
-
-         pointer n = static_cast<pointer>(::operator new(s * sizeof(value_type))), i = n;
+         pointer n = Raw(s), i = n;
 
          try
          {
@@ -246,12 +241,22 @@ namespace GDCC
       static pointer Pak(Args &&...args)
       {
          constexpr size_type s = sizeof...(Args);
-         pointer n = static_cast<pointer>(::operator new(s * sizeof(value_type)));
+         pointer n = Raw(s);
 
          try {UnPak(n, std::forward<Args>(args)...);}
          catch(...) {::operator delete(n); throw;}
 
          return n;
+      }
+
+      //
+      // Raw
+      //
+      static pointer Raw(size_type s)
+      {
+         if(!s) return nullptr;
+
+         return static_cast<pointer>(::operator new(s * sizeof(value_type)));
       }
 
    private:
@@ -306,6 +311,9 @@ namespace GDCC
    template<typename T>
    IR::OArchive &operator << (IR::OArchive &out, Array<T> const &in);
 
+   template<typename T>
+   IR::IArchive &operator >> (IR::IArchive &in, Array<T> &out);
+
    template<typename T> bool operator == (Array<T> const &l, Array<T> const &r);
    template<typename T> bool operator != (Array<T> const &l, Array<T> const &r);
    template<typename T> bool operator <  (Array<T> const &l, Array<T> const &r);
@@ -316,6 +324,9 @@ namespace GDCC
 
 namespace GDCC
 {
+   //
+   // operator IR::OArchive << Array
+   //
    template<typename T>
    IR::OArchive &operator << (IR::OArchive &out, Array<T> const &in)
    {
@@ -323,6 +334,18 @@ namespace GDCC
       for(auto const &i : in)
          out << i;
       return out;
+   }
+
+   //
+   // operator IR::IArchive >> Array
+   //
+   template<typename T>
+   IR::IArchive &operator >> (IR::IArchive &in, Array<T> &out)
+   {
+      typename Array<T>::size_type s; in >> s;
+      for(auto &o : (out = Array<T>(s)))
+         in >> o;
+      return in;
    }
 
    //

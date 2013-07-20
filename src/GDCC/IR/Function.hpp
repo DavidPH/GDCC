@@ -108,6 +108,10 @@ namespace GDCC
       OArchive &operator << (OArchive &out, CallType in);
       OArchive &operator << (OArchive &out, Function const &in);
       OArchive &operator << (OArchive &out, ScriptType in);
+
+      IArchive &operator >> (IArchive &in, CallType &out);
+      IArchive &operator >> (IArchive &in, Function &out);
+      IArchive &operator >> (IArchive &in, ScriptType &out);
    }
 }
 

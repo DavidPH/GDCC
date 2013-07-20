@@ -29,6 +29,7 @@
    { \
       using ArgPtr1::ArgPtr1; \
       \
+      using ArgPtr1::getIR; \
       using ArgPtr1::writeIR; \
       \
       using ArgPtr1::idx; \
@@ -49,6 +50,7 @@
    { \
       using ArgPtr2::ArgPtr2; \
       \
+      using ArgPtr2::getIR; \
       using ArgPtr2::writeIR; \
       \
       using ArgPtr2::arr; \
@@ -84,10 +86,13 @@ namespace GDCC
          ArgPtr1(ArgPtr1 &&arg);
          ArgPtr1(Arg const &idx, Exp *off);
          ArgPtr1(Arg &&idx, Exp *off);
+         explicit ArgPtr1(IArchive &in);
          ~ArgPtr1();
 
          ArgPtr1 &operator = (ArgPtr1 const &arg);
          ArgPtr1 &operator = (ArgPtr1 &&arg);
+
+         IArchive &getIR(IArchive &in);
 
          OArchive &writeIR(OArchive &out) const;
 
@@ -106,10 +111,13 @@ namespace GDCC
          ArgPtr2(Arg const &arr, Arg &&idx, Exp *off);
          ArgPtr2(Arg &&arr, Arg const &idx, Exp *off);
          ArgPtr2(Arg &&arr, Arg &&idx, Exp *off);
+         explicit ArgPtr2(IArchive &in);
          ~ArgPtr2();
 
          ArgPtr2 &operator = (ArgPtr2 const &arg);
          ArgPtr2 &operator = (ArgPtr2 &&arg);
+
+         IArchive &getIR(IArchive &in);
 
          OArchive &writeIR(OArchive &out) const;
 
@@ -130,6 +138,11 @@ namespace GDCC
       //
       struct Arg_Cpy
       {
+         Arg_Cpy() = default;
+         explicit Arg_Cpy(IArchive &) {}
+
+         IArchive &getIR(IArchive &in) {return in;}
+
          OArchive &writeIR(OArchive &out) const {return out;}
       };
 
@@ -141,8 +154,11 @@ namespace GDCC
       struct Arg_Lit
       {
          explicit Arg_Lit(Exp *value_) : value{value_} {}
+         explicit Arg_Lit(IArchive &in);
 
-         OArchive &writeIR(OArchive &out) const;
+         IArchive &getIR(IArchive &in) {return in >> value;}
+
+         OArchive &writeIR(OArchive &out) const {return out << value;}
 
          Exp::Ref value;
       };
@@ -154,6 +170,11 @@ namespace GDCC
       //
       struct Arg_Nul
       {
+         Arg_Nul() = default;
+         explicit Arg_Nul(IArchive &) {}
+
+         IArchive &getIR(IArchive &in) {return in;}
+
          OArchive &writeIR(OArchive &out) const {return out;}
       };
 
@@ -162,6 +183,11 @@ namespace GDCC
       //
       struct Arg_Stk
       {
+         Arg_Stk() = default;
+         explicit Arg_Stk(IArchive &) {}
+
+         IArchive &getIR(IArchive &in) {return in;}
+
          OArchive &writeIR(OArchive &out) const {return out;}
       };
 
@@ -287,6 +313,8 @@ namespace GDCC
             Arg(Arg_##name      &&arg) : a{ArgBase::name}, a##name(std::move(arg)) {}
          #include "AddrList.hpp"
 
+         explicit Arg(IArchive &in);
+
          //
          // destructor
          //
@@ -334,6 +362,24 @@ namespace GDCC
             return *this;
          }
 
+         //
+         // cast assignments
+         //
+         #define GDCC_IR_AddrList(name) \
+            Arg &operator = (Arg_##name const &arg) \
+            { \
+               if(a == ArgBase::name) a##name = arg; \
+               else new((this->~Arg(), this)) Arg(arg); \
+               return *this; \
+            } \
+            Arg &operator = (Arg_##name &&arg) \
+            { \
+               if(a == ArgBase::name) a##name = std::move(arg); \
+               else new((this->~Arg(), this)) Arg(std::move(arg)); \
+               return *this; \
+            }
+         #include "AddrList.hpp"
+
          ArgBase a;
 
          union
@@ -355,10 +401,18 @@ namespace GDCC
    namespace IR
    {
       #define GDCC_IR_AddrList(name) \
-         OArchive &operator << (OArchive &out, Arg_##name const &in);
+         inline OArchive &operator << (OArchive &out, Arg_##name const &in) \
+            {return in.writeIR(out);}
       #include "AddrList.hpp"
 
       OArchive &operator << (OArchive &out, Arg const &in);
+
+      #define GDCC_IR_AddrList(name) \
+         inline IArchive &operator >> (IArchive &in, Arg_##name &out) \
+            {return out.getIR(in);}
+      #include "AddrList.hpp"
+
+      IArchive &operator >> (IArchive &in, Arg &out);
    }
 }
 

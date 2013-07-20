@@ -13,6 +13,7 @@
 #include "Value.hpp"
 
 #include "Addr.hpp"
+#include "IArchive.hpp"
 #include "OArchive.hpp"
 
 
@@ -50,6 +51,62 @@ namespace GDCC
             value >>= value_.vtype.bitsF - vtype.bitsF;
 
          clamp();
+      }
+
+      //
+      // Value_Empty constructor
+      //
+      Value_Empty::Value_Empty(IArchive &in) : vtype{in}
+      {
+      }
+
+      //
+      // Value_Fixed constructor
+      //
+      Value_Fixed::Value_Fixed(IArchive &in) : vtype{in}, value{GetIR(in, value)}
+      {
+      }
+
+      //
+      // Value_Float constructor
+      //
+      Value_Float::Value_Float(IArchive &in) : vtype{in}, value{GetIR(in, value)}
+      {
+      }
+
+      //
+      // Value_Funct constructor
+      //
+      Value_Funct::Value_Funct(IArchive &in) : vtype{in}, value{GetIR(in, value)}
+      {
+      }
+
+      //
+      // Value_Multi constructor
+      //
+      Value_Multi::Value_Multi(IArchive &in) : vtype{in}, value{GetIR(in, value)}
+      {
+      }
+
+      //
+      // Value_Point constructor
+      //
+      Value_Point::Value_Point(IArchive &in) : vtype{in}, value{GetIR(in, value)},
+         addrB{GetIR(in, addrB)}, addrN{GetIR(in, addrN)}
+      {
+      }
+
+      //
+      // Value constructor
+      //
+      Value::Value(IArchive &in)
+      {
+         switch(in >> v, v)
+         {
+            #define GDCC_IR_TypeList(name) \
+               case ValueBase::name: new(&v##name) Value_##name(in); return;
+            #include "TypeList.hpp"
+         }
       }
 
       //
@@ -110,6 +167,67 @@ namespace GDCC
          {
             #define GDCC_IR_TypeList(name) \
                case ValueBase::name: return out << in.v##name;
+            #include "TypeList.hpp"
+         }
+      }
+
+      //
+      // operator IArchive >> Value_Empty
+      //
+      IArchive &operator >> (IArchive &in, Value_Empty &out)
+      {
+         return in >> out.vtype;
+      }
+
+      //
+      // operator IArchive >> Value_Fixed
+      //
+      IArchive &operator >> (IArchive &in, Value_Fixed &out)
+      {
+         return in >> out.vtype >> out.value;
+      }
+
+      //
+      // operator IArchive >> Value_Float
+      //
+      IArchive &operator >> (IArchive &in, Value_Float &out)
+      {
+         return in >> out.vtype >> out.value;
+      }
+
+      //
+      // operator IArchive >> Value_Funct
+      //
+      IArchive &operator >> (IArchive &in, Value_Funct &out)
+      {
+         return in >> out.vtype >> out.value;
+      }
+
+      //
+      // operator IArchive >> Value_Multi
+      //
+      IArchive &operator >> (IArchive &in, Value_Multi &out)
+      {
+         return in >> out.vtype >> out.value;
+      }
+
+      //
+      // operator IArchive >> Value_Point
+      //
+      IArchive &operator >> (IArchive &in, Value_Point &out)
+      {
+         return in >> out.vtype >> out.value >> out.addrB >> out.addrN;
+      }
+
+      //
+      // operator IArchive >> Value
+      //
+      IArchive &operator >> (IArchive &in, Value &out)
+      {
+         switch(GetIR<ValueBase>(in))
+         {
+            #define GDCC_IR_TypeList(name) \
+               case ValueBase::name: out = Value_##name(in); return in;
             #include "TypeList.hpp"
          }
       }

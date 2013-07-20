@@ -12,6 +12,8 @@
 
 #include "Arg.hpp"
 
+#include "IArchive.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -51,6 +53,14 @@ namespace GDCC
       }
 
       //
+      // ArgPtr1 constructor
+      //
+      ArgPtr1::ArgPtr1(IArchive &in) : off{GetIR(in, off)}
+      {
+         idx = new Arg(in);
+      }
+
+      //
       // ArgPtr1 destructor
       //
       ArgPtr1::~ArgPtr1()
@@ -83,7 +93,7 @@ namespace GDCC
       //
       OArchive &ArgPtr1::writeIR(OArchive &out) const
       {
-         return out << *idx << off;
+         return out << off << *idx;
       }
 
       //
@@ -136,6 +146,14 @@ namespace GDCC
       }
 
       //
+      // ArgPtr2 constructor
+      //
+      ArgPtr2::ArgPtr2(IArchive &in) : off{GetIR(in, off)}
+      {
+         idx = (arr = Array<Arg>::Pak(in, in)) + 1;
+      }
+
+      //
       // ArgPtr2 destructor
       //
       ArgPtr2::~ArgPtr2()
@@ -170,15 +188,27 @@ namespace GDCC
       //
       OArchive &ArgPtr2::writeIR(OArchive &out) const
       {
-         return out << *arr << *idx << off;
+         return out << off << *arr << *idx;
       }
 
       //
-      // Arg_Lit::writeIR
+      // Arg_Lit constructor
       //
-      OArchive &Arg_Lit::writeIR(OArchive &out) const
+      Arg_Lit::Arg_Lit(IArchive &in) : value{GetIR(in, value)}
       {
-         return out << value;
+      }
+
+      //
+      // Arg constructor
+      //
+      Arg::Arg(IArchive &in)
+      {
+         switch(in >> a, a)
+         {
+            #define GDCC_IR_AddrList(name) \
+               case ArgBase::name: new(&a##name) Arg_##name(in); return;
+            #include "AddrList.hpp"
+         }
       }
 
       //
@@ -191,6 +221,19 @@ namespace GDCC
          {
             #define GDCC_IR_AddrList(name) \
                case ArgBase::name: return in.a##name.writeIR(out);
+            #include "AddrList.hpp"
+         }
+      }
+
+      //
+      // operator IArchive >> Arg
+      //
+      IArchive &operator >> (IArchive &in, Arg &out)
+      {
+         switch(GetIR<ArgBase>(in))
+         {
+            #define GDCC_IR_AddrList(name) \
+               case ArgBase::name: out = Arg_##name(in); return in;
             #include "AddrList.hpp"
          }
       }

@@ -19,6 +19,7 @@ add_library(gdcc-ir
    Exp/ValueRoot.cpp
    Function.cpp
    Glyph.cpp
+   IArchive.cpp
    Linkage.cpp
    Statement.cpp
    Type.cpp

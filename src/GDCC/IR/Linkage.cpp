@@ -12,7 +12,11 @@
 
 #include "Linkage.hpp"
 
+#include "IArchive.hpp"
+
 #include "../String.hpp"
+
+#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -38,6 +42,28 @@ namespace GDCC
          case Linkage::ExtDS:  return out << STR_ExtDS;
          case Linkage::IntC:   return out << STR_IntC;
          case Linkage::IntCXX: return out << STR_IntCXX;
+         }
+      }
+
+      //
+      // operator IArchive >> Linkage
+      //
+      IArchive &operator >> (IArchive &in, Linkage &out)
+      {
+         switch(GetIR<StringIndex>(in))
+         {
+         case STR_None:   out = Linkage::None;   return in;
+         case STR_ExtACS: out = Linkage::ExtACS; return in;
+         case STR_ExtASM: out = Linkage::ExtASM; return in;
+         case STR_ExtC:   out = Linkage::ExtC;   return in;
+         case STR_ExtCXX: out = Linkage::ExtCXX; return in;
+         case STR_ExtDS:  out = Linkage::ExtDS;  return in;
+         case STR_IntC:   out = Linkage::IntC;   return in;
+         case STR_IntCXX: out = Linkage::IntCXX; return in;
+
+         default:
+            std::cerr << "invalid Linkage\n";
+            throw EXIT_FAILURE;
          }
       }
    }

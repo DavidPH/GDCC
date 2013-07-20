@@ -12,9 +12,11 @@
 
 #include "String.hpp"
 
+#include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
 #include <cstring>
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -37,6 +39,47 @@ static std::vector<GDCC::StringData> StringTable =
 
 
 //----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+//
+// AddStringNTS
+//
+// Adds a string that may contain \xC0\x80 nulls.
+//
+static GDCC::String AddStringNTS(char const *str)
+{
+   GDCC::Array<char> tmp;
+   std::size_t       len    = 0;
+   std::size_t       hash   = 0;
+   bool              hasNul = false;
+
+   for(auto s = str; *s; ++s, ++len)
+   {
+      if(s[0] == '\xC0' && s[1] == '\x80')
+         hasNul = true, ++s;
+   }
+
+   if(hasNul)
+   {
+      tmp = GDCC::Array<char>(len);
+      for(auto s = tmp.begin(), e = tmp.end(); s != e; ++s, ++str)
+      {
+         if(str[0] == '\xC0' && str[1] == '\x80')
+            *s = '\0', ++str;
+         else
+            *s = *str;
+      }
+
+      str = tmp.data();
+   }
+
+   hash = GDCC::HashString(str, len, hash);
+   return GDCC::AddString(str, len, hash);
+}
+
+
+//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
@@ -44,6 +87,19 @@ namespace GDCC
 {
    namespace IR
    {
+      //
+      // IArchive::getTablesString
+      //
+      IArchive &IArchive::getTablesString()
+      {
+         auto count = getNumber<std::size_t>();
+
+         for(auto &s : (stab = Array<String>(count)))
+            s = AddStringNTS(get());
+
+         return *this;
+      }
+
       //
       // OArchive::writeTablesString
       //
@@ -123,12 +179,49 @@ namespace GDCC
    }
 
    //
+   // operator IR::OArchive << StringIndex
+   //
+   IR::OArchive &operator << (IR::OArchive &out, StringIndex in)
+   {
+      return out << static_cast<std::size_t>(in);
+   }
+
+   //
    // operator std::ostream << String
    //
    std::ostream &operator << (std::ostream &out, String in)
    {
       auto const &data = in.getData();
       return out.write(data.str, data.len);
+   }
+
+   //
+   // operator IR::IArchive >> String
+   //
+   IR::IArchive &operator >> (IR::IArchive &in, String &out)
+   {
+      auto n = in.getNumber<std::size_t>();
+
+      if(n < STRMAX)
+         out = static_cast<String>(n);
+      else if((n -= STRMAX) < in.stab.size())
+         out = in.stab[n];
+      else
+      {
+         std::cerr << "invalid String\n";
+         throw EXIT_FAILURE;
+      }
+
+      return in;
+   }
+
+   //
+   // operator IR::IArchive >> StringIndex
+   //
+   IR::IArchive &operator >> (IR::IArchive &in, StringIndex &out)
+   {
+      out = static_cast<StringIndex>(IR::GetIR<String>(in));
+      return in;
    }
 
    //

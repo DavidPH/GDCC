@@ -33,13 +33,17 @@ namespace GDCC
       class Statement
       {
       public:
-         Statement() : pos{STRNULL, 0}, next{this}, prev{this}, code{Code::None} {}
+         Statement() = default;
          Statement(Statement const &) = delete;
-         Statement(Statement &&) = delete;
+         Statement(Statement &&stmnt);
+         explicit Statement(Statement *head) : next{head}, prev{head->prev}
+            {next->prev = prev->next = this;}
          Statement(Statement *head, Code code_) : pos{head->pos}, next{head},
             prev{head->prev}, args{std::move(head->args)}, labs{std::move(head->labs)},
             code{code_} {next->prev = this; prev->next = this;}
          ~Statement() {next->prev = prev; prev->next = next;}
+
+         Statement &operator = (Statement &&stmnt);
 
          Origin pos;
 
@@ -62,6 +66,8 @@ namespace GDCC
    namespace IR
    {
       OArchive &operator << (OArchive &out, Statement const &in);
+
+      IArchive &operator >> (IArchive &in, Statement &out);
    }
 }
 

@@ -41,9 +41,12 @@ namespace GDCC
 
          friend Exp::Ref ExpCreate_ValueGlyph(Glyph glyph, Origin pos);
 
+         friend Exp::Ref ExpGetIR_ValueGlyph(IArchive &in);
+
       protected:
          Exp_ValueGlyph(Exp_ValueGlyph const &) = default;
          Exp_ValueGlyph(Glyph glyph_, Origin pos_) : Super{pos_}, glyph{glyph_} {}
+         explicit Exp_ValueGlyph(IArchive &in);
 
          virtual Type v_getType() const {return glyph.getData().type;}
 

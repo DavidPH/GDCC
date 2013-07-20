@@ -24,6 +24,7 @@ namespace GDCC
 {
    namespace IR
    {
+      class Glyph;
       class GlyphData;
       class OArchive;
 
@@ -43,6 +44,9 @@ namespace GDCC
 
          GlyphData &getData() const {return GetData(str);}
 
+
+         friend OArchive &operator << (OArchive &out, Glyph const &in);
+         friend IArchive &operator >> (IArchive &in, Glyph &out);
 
          static GlyphData *FindData(String str);
 
@@ -70,7 +74,11 @@ namespace GDCC
 {
    namespace IR
    {
-      OArchive &operator << (OArchive &out, Glyph in);
+      OArchive &operator << (OArchive &out, Glyph const &in);
+      OArchive &operator << (OArchive &out, GlyphData const &in);
+
+      IArchive &operator >> (IArchive &in, Glyph &out);
+      IArchive &operator >> (IArchive &in, GlyphData &out);
    }
 }
 
@@ -81,9 +89,17 @@ namespace GDCC
       //
       // operator OArchive << Glyph
       //
-      inline OArchive &operator << (OArchive &out, Glyph in)
+      inline OArchive &operator << (OArchive &out, Glyph const &in)
       {
-         return out << static_cast<String>(in);
+         return out << in.str;
+      }
+
+      //
+      // operator OArchive >> Glyph
+      //
+      inline IArchive &operator >> (IArchive &in, Glyph &out)
+      {
+         return in >> out.str;
       }
    }
 }

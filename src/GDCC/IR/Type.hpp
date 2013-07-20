@@ -46,6 +46,9 @@ namespace GDCC
       //
       struct Type_Empty
       {
+         Type_Empty() = default;
+
+         explicit Type_Empty(IArchive &in);
       };
 
       //
@@ -54,8 +57,11 @@ namespace GDCC
       struct Type_Fixed
       {
          Type_Fixed() = default;
+
          Type_Fixed(FastU bitsI_, FastU bitsF_, bool bitsS_, bool satur_) :
             bitsI{bitsI_}, bitsF{bitsF_}, bitsS{bitsS_}, satur{satur_} {}
+
+         explicit Type_Fixed(IArchive &in);
 
          Integ &clamp(Integ &value);
 
@@ -71,8 +77,11 @@ namespace GDCC
       struct Type_Float
       {
          Type_Float() = default;
+
          Type_Float(FastU bitsI_, FastU bitsF_, bool bitsS_, bool satur_) :
             bitsI{bitsI_}, bitsF{bitsF_}, bitsS{bitsS_}, satur{satur_} {}
+
+         explicit Type_Float(IArchive &in);
 
          FastU bitsI;
          FastU bitsF;
@@ -86,7 +95,10 @@ namespace GDCC
       struct Type_Funct
       {
          Type_Funct() = default;
+
          explicit Type_Funct(CallType callT_) : callT{callT_} {}
+
+         explicit Type_Funct(IArchive &in);
 
          CallType callT;
       };
@@ -97,8 +109,11 @@ namespace GDCC
       struct Type_Multi
       {
          Type_Multi() = default;
+
          explicit Type_Multi(Array<Type> const &types_) : types{types_} {}
          explicit Type_Multi(Array<Type> &&types_) : types{std::move(types_)} {}
+
+         explicit Type_Multi(IArchive &in);
 
          Array<Type> types;
       };
@@ -109,7 +124,9 @@ namespace GDCC
       struct Type_Point
       {
          Type_Point() = default;
+
          Type_Point(AddrBase reprB_, FastU reprO_) : reprB{reprB_}, reprO{reprO_} {}
+         explicit Type_Point(IArchive &in);
 
          AddrBase reprB;
          FastU    reprO;
@@ -156,6 +173,8 @@ namespace GDCC
             Type(Type_##name const &type) : t{TypeBase::name}, t##name(          type ) {} \
             Type(Type_##name      &&type) : t{TypeBase::name}, t##name(std::move(type)) {}
          #include "TypeList.hpp"
+
+         explicit Type(IArchive &in);
 
          //
          // destructor
@@ -231,6 +250,14 @@ namespace GDCC
       #include "TypeList.hpp"
 
       OArchive &operator << (OArchive &out, Type const &in);
+
+      IArchive &operator >> (IArchive &in, TypeBase &out);
+
+      #define GDCC_IR_TypeList(name) \
+         IArchive &operator >> (IArchive &in, Type_##name &out);
+      #include "TypeList.hpp"
+
+      IArchive &operator >> (IArchive &in, Type &out);
    }
 }
 

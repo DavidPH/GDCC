@@ -26,6 +26,7 @@ namespace GDCC
 {
    namespace IR
    {
+      class IArchive;
       class OArchive;
    }
 
@@ -110,8 +111,12 @@ namespace std
 
 namespace GDCC
 {
-   IR::OArchive &operator << (IR::OArchive &out, String in);
-   std::ostream &operator << (std::ostream &out, String in);
+   IR::OArchive &operator << (IR::OArchive &out, String      in);
+   IR::OArchive &operator << (IR::OArchive &out, StringIndex in);
+   std::ostream &operator << (std::ostream &out, String      in);
+
+   IR::IArchive &operator >> (IR::IArchive &in, String      &out);
+   IR::IArchive &operator >> (IR::IArchive &in, StringIndex &out);
 
    constexpr bool operator == (StringIndex l, String const &r) {return r == l;}
    constexpr bool operator != (StringIndex l, String const &r) {return r != l;}

@@ -12,7 +12,11 @@
 
 #include "Code.hpp"
 
+#include "IArchive.hpp"
+
 #include "../String.hpp"
+
+#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -34,6 +38,24 @@ namespace GDCC
                case Code::name: return out << STR_##name;
             #include "CodeList.hpp"
          case Code::None: return out << STR_None;
+         }
+      }
+
+      //
+      // operator IArchive >> Code
+      //
+      IArchive &operator >> (IArchive &in, Code &out)
+      {
+         switch(GetIR<StringIndex>(in))
+         {
+            #define GDCC_IR_CodeList(name) \
+               case STR_##name: out = Code::name; return in;
+            #include "CodeList.hpp"
+         case STR_None: out = Code::None; return in;
+
+         default:
+            std::cerr << "invalid Code\n";
+            throw EXIT_FAILURE;
          }
       }
    }

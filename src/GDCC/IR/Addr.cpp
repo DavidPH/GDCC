@@ -12,6 +12,10 @@
 
 #include "Addr.hpp"
 
+#include "IArchive.hpp"
+
+#include <iostream>
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -31,6 +35,23 @@ namespace GDCC
             #define GDCC_IR_AddrList(name) \
                case AddrBase::name: return out << STR_##name;
             #include "AddrList.hpp"
+         }
+      }
+
+      //
+      // operator IArchive >> AddrBase
+      //
+      IArchive &operator >> (IArchive &in, AddrBase &out)
+      {
+         switch(GetIR<StringIndex>(in))
+         {
+            #define GDCC_IR_AddrList(name) \
+               case STR_##name: out = AddrBase::name; return in;
+            #include "AddrList.hpp"
+
+         default:
+            std::cerr << "invalid AddrBase\n";
+            throw EXIT_FAILURE;
          }
       }
    }

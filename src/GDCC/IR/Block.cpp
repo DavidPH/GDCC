@@ -12,6 +12,7 @@
 
 #include "Block.hpp"
 
+#include "IArchive.hpp"
 #include "OArchive.hpp"
 
 
@@ -35,6 +36,17 @@ namespace GDCC
       }
 
       //
+      // Block::getIR
+      //
+      IArchive &Block::getIR(IArchive &in)
+      {
+         in >> labs >> head;
+         for(auto count = GetIR<size_type>(in); count--;)
+            in >> *new Statement(&head);
+         return in;
+      }
+
+      //
       // Block::writeIR
       //
       OArchive &Block::writeIR(OArchive &out) const
@@ -51,6 +63,14 @@ namespace GDCC
       OArchive &operator << (OArchive &out, Block const &in)
       {
          return in.writeIR(out);
+      }
+
+      //
+      // operator IArchive >> Block
+      //
+      IArchive &operator >> (IArchive &in, Block &out)
+      {
+         return out.getIR(in);
       }
    }
 }

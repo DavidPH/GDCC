@@ -41,12 +41,15 @@ namespace GDCC
          friend Exp::Ref ExpCreate_ValueRoot(Value const &value, Origin pos);
          friend Exp::Ref ExpCreate_ValueRoot(Value &&value, Origin pos);
 
+         friend Exp::Ref ExpGetIR_ValueRoot(IArchive &in);
+
       protected:
          Exp_ValueRoot(Exp_ValueRoot const &) = default;
          Exp_ValueRoot(Value const &value_, Origin pos_) : Super{pos_},
             type{value_.getType()}, value{value_} {}
          Exp_ValueRoot(Value &&value_, Origin pos_) : Super{pos_},
             type{value_.getType()}, value{std::move(value_)} {}
+         explicit Exp_ValueRoot(IArchive &in);
 
          virtual Type v_getType() const {return type;}
 
