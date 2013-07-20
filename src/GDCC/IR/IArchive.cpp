@@ -46,9 +46,9 @@ namespace GDCC
       //
       IArchive &IArchive::getHeader()
       {
-         if(!std::strcmp(get(), "MgC_NTS")  ||
-            !std::strcmp(get(), "GDCC::IR") ||
-            !std::strcmp(get(), ""))
+         if(std::strcmp(get(), "MgC_NTS")  ||
+            std::strcmp(get(), "GDCC::IR") ||
+            std::strcmp(get(), ""))
          {
             std::cerr << "not IR\n";
             throw EXIT_FAILURE;
