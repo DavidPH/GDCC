@@ -235,6 +235,14 @@ namespace GDCC
 
          return *this;
       }
+
+      //
+      // FunctionRange
+      //
+      GDCC::Range<std::unordered_map<String, Function>::iterator> FunctionRange()
+      {
+         return MakeRange(FuncMap.begin(), FuncMap.end());
+      }
    }
 }
 

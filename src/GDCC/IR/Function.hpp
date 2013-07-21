@@ -15,6 +15,10 @@
 
 #include "Block.hpp"
 
+#include "../Utility.hpp"
+
+#include <unordered_map>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -112,6 +116,8 @@ namespace GDCC
       IArchive &operator >> (IArchive &in, CallType &out);
       IArchive &operator >> (IArchive &in, Function &out);
       IArchive &operator >> (IArchive &in, ScriptType &out);
+
+      GDCC::Range<std::unordered_map<String, Function>::iterator> FunctionRange();
    }
 }
 

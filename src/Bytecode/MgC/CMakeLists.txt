@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for Asm executable.
+## CMake file for GDCC-IR library.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -9,11 +9,11 @@
 ## Targets                                                                    |
 ##
 
-add_executable(gdcc-ld
-   main.cpp
+add_library(gdcc-bc-mgc
+   Info.cpp
 )
 
-target_link_libraries(gdcc-ld gdcc-ir gdcc-bc-mgc)
+target_link_libraries(gdcc-bc-mgc gdcc-bc)
 
 ## EOF
 

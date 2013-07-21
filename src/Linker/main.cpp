@@ -10,6 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
+#include "Bytecode/MgC/Info.hpp"
+
 #include "GDCC/Option.hpp"
 
 #include "GDCC/IR/IArchive.hpp"
@@ -60,12 +62,26 @@ static void MakeLinker()
       }
 
       GDCC::IR::OArchive(out).putHeader().putTables();
+
+      return;
    }
-   else
+
+   std::unique_ptr<Bytecode::Info> info;
+
+   // TODO: Target info selection.
+   info.reset(new Bytecode::MgC::Info);
+
+   info->translate();
+
+   std::fstream out{Option::Output.data, std::ios_base::binary | std::ios_base::out};
+
+   if(!out)
    {
-      std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
+      std::cerr << "couldn't open '" << Option::Output.data << "' for writing";
       throw EXIT_FAILURE;
    }
+
+   info->put(out);
 }
 
 //
