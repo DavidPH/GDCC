@@ -12,6 +12,8 @@
 
 #include "Info.hpp"
 
+#include "GDCC/IR/Function.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -24,7 +26,8 @@ namespace Bytecode
    //
    void Info::translate()
    {
-      // TODO
+      for(auto &itr : GDCC::IR::FunctionRange())
+         translateBlock(itr.second.block);
    }
 }
 

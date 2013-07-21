@@ -13,6 +13,8 @@
 #ifndef GDCC__IR__Code_H__
 #define GDCC__IR__Code_H__
 
+#include <ostream>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -47,6 +49,7 @@ namespace GDCC
    namespace IR
    {
       OArchive &operator << (OArchive &out, Code in);
+      std::ostream &operator << (std::ostream &out, Code in);
 
       IArchive &operator >> (IArchive &in, Code &out);
    }

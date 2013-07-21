@@ -42,6 +42,20 @@ namespace GDCC
       }
 
       //
+      // operator std::ostream << Code
+      //
+      std::ostream &operator << (std::ostream &out, Code in)
+      {
+         switch(in)
+         {
+            #define GDCC_IR_CodeList(name) \
+               case Code::name: return out << "Code::" #name;
+            #include "CodeList.hpp"
+         case Code::None: return out << "Code::None";
+         }
+      }
+
+      //
       // operator IArchive >> Code
       //
       IArchive &operator >> (IArchive &in, Code &out)

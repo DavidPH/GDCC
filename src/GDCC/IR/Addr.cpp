@@ -39,6 +39,19 @@ namespace GDCC
       }
 
       //
+      // operator std::ostream << AddrBase
+      //
+      std::ostream &operator << (std::ostream &out, AddrBase in)
+      {
+         switch(in)
+         {
+            #define GDCC_IR_AddrList(name) \
+               case AddrBase::name: return out << #name;
+            #include "AddrList.hpp"
+         }
+      }
+
+      //
       // operator IArchive >> AddrBase
       //
       IArchive &operator >> (IArchive &in, AddrBase &out)

@@ -150,6 +150,35 @@ namespace Bytecode
             out << ')' << '\0';
             break;
 
+         case GDCC::IR::ArgBase::LocArs:
+            switch(stmnt.args[1].aLocArs.idx->a)
+            {
+            case GDCC::IR::ArgBase::Lit:
+               out << "push_dat" << '\0' << '(' << '\0';
+                  out << '+' << '\0';
+                     putExp(out, stmnt.args[1].aLocArs.off);
+                     putExp(out, stmnt.args[1].aLocArs.idx->aLit.value);
+               out << ')' << '\0';
+               break;
+
+            case GDCC::IR::ArgBase::Stk:
+               out << "push_ptr" << '\0' << '(' << '\0';
+                  putExp(out, stmnt.args[1].aLocArs.off);
+               out << ')' << '\0';
+               break;
+
+            default:
+               std::cerr << "bad Code::Move_W(Stk, LocArs(?))\n";
+               throw EXIT_FAILURE;
+            }
+            break;
+
+         case GDCC::IR::ArgBase::LocReg:
+            out << "push_reg" << '\0' << '(' << '\0';
+               putExp(out, stmnt.args[1].aLocReg.idx->aLit.value);
+            out << ')' << '\0';
+            break;
+
          default:
             std::cerr << "bad Code::Move_W(Stk, ?)\n";
             throw EXIT_FAILURE;
@@ -160,6 +189,35 @@ namespace Bytecode
          {
          case GDCC::IR::ArgBase::Nul:
             out << "drop_nul" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
+         case GDCC::IR::ArgBase::LocArs:
+            switch(stmnt.args[0].aLocArs.idx->a)
+            {
+            case GDCC::IR::ArgBase::Lit:
+               out << "drop_dat" << '\0' << '(' << '\0';
+                  out << '+' << '\0';
+                     putExp(out, stmnt.args[0].aLocArs.off);
+                     putExp(out, stmnt.args[0].aLocArs.idx->aLit.value);
+               out << ')' << '\0';
+               break;
+
+            case GDCC::IR::ArgBase::Stk:
+               out << "drop_ptr" << '\0' << '(' << '\0';
+                  putExp(out, stmnt.args[0].aLocArs.off);
+               out << ')' << '\0';
+               break;
+
+            default:
+               std::cerr << "bad Code::Move_W(LocArs(?), Stk)\n";
+               throw EXIT_FAILURE;
+            }
+            break;
+
+         case GDCC::IR::ArgBase::LocReg:
+            out << "drop_reg" << '\0' << '(' << '\0';
+               putExp(out, stmnt.args[0].aLocReg.idx->aLit.value);
+            out << ')' << '\0';
             break;
 
          default:
@@ -190,14 +248,6 @@ namespace Bytecode
             std::cerr << "bad Value\n";
             throw EXIT_FAILURE;
          }
-      }
-
-      //
-      // Info::translateBlock
-      //
-      void Info::translateBlock(GDCC::IR::Block &)
-      {
-         // TODO
       }
    }
 }
