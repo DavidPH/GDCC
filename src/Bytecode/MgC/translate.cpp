@@ -247,7 +247,7 @@ namespace Bytecode
          default:
          badcase:
             std::cerr << "ERROR: " << stmnt.pos << ": bad Code::Move_W("
-               << stmnt.args[0].a << ',' << stmnt.args[1].a << '\n';
+               << stmnt.args[0].a << ',' << stmnt.args[1].a << ")\n";
             throw EXIT_FAILURE;
          }
       }
