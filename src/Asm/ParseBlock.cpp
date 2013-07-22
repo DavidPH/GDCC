@@ -40,6 +40,8 @@ namespace Asm
          break;
 
       case GDCC::TOK_Identifier:
+         block.setOrigin(tok.pos);
+
          switch(static_cast<GDCC::StringIndex>(tok.str))
          {
             #define GDCC_IR_CodeList(c) \
