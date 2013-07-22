@@ -116,22 +116,97 @@ namespace Bytecode
             out << "nop" << '\0' << '(' << '\0' << ')' << '\0';
             break;
 
+         case GDCC::IR::Code::AddU_W:
+            out << "addu_stk" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
          case GDCC::IR::Code::Call:
             out << "call_stk" << '\0' << '(' << '\0';
                putExp(out, stmnt.args[1].aLit.value);
             out << ')' << '\0';
             break;
 
+         case GDCC::IR::Code::Cjmp_Nil:
+            out << "cjmp_stk_nil" << '\0' << '(' << '\0';
+               putExp(out, stmnt.args[1].aLit.value);
+            out << ')' << '\0';
+            break;
+
+         case GDCC::IR::Code::Cjmp_Tru:
+            out << "cjmp_stk_tru" << '\0' << '(' << '\0';
+               putExp(out, stmnt.args[1].aLit.value);
+            out << ')' << '\0';
+            break;
+
+         case GDCC::IR::Code::CmpU_EQ_W:
+            out << "cmpu_stk_eq" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
+         case GDCC::IR::Code::CmpU_GE_W:
+            out << "cmpu_stk_ge" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
+         case GDCC::IR::Code::CmpU_GT_W:
+            out << "cmpu_stk_gt" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
+         case GDCC::IR::Code::CmpU_LE_W:
+            out << "cmpu_stk_le" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
+         case GDCC::IR::Code::CmpU_LT_W:
+            out << "cmpu_stk_lt" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
+         case GDCC::IR::Code::CmpU_NE_W:
+            out << "cmpu_stk_ne" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
+         case GDCC::IR::Code::Jump:
+            putStatement_Jump(out, stmnt);
+            break;
+
          case GDCC::IR::Code::Move_W:
             putStatement_Move_W(out, stmnt);
+            break;
+
+         case GDCC::IR::Code::NotU_W:
+            out << "notu_stk" << '\0' << '(' << '\0' << ')' << '\0';
             break;
 
          case GDCC::IR::Code::Retn:
             out << "retn" << '\0' << '(' << '\0' << ')' << '\0';
             break;
 
+         case GDCC::IR::Code::SubU_W:
+            out << "subu_stk" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
          default:
             std::cerr << "bad Code\n";
+            throw EXIT_FAILURE;
+         }
+      }
+
+      //
+      // Info::putStatement_Jump
+      //
+      void Info::putStatement_Jump(std::ostream &out, GDCC::IR::Statement const &stmnt)
+      {
+         switch(stmnt.args[0].a)
+         {
+         case GDCC::IR::ArgBase::Lit:
+            out << "jump_imm" << '\0' << '(' << '\0';
+               putExp(out, stmnt.args[0].aLit.value);
+            out << ')' << '\0';
+            break;
+
+         case GDCC::IR::ArgBase::Stk:
+            out << "jump_stk" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
+         default:
+            std::cerr << "bad Code::Jump(?)\n";
             throw EXIT_FAILURE;
          }
       }

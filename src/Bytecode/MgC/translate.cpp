@@ -105,12 +105,43 @@ namespace Bytecode
          case GDCC::IR::Code::Nop:
             break;
 
+         case GDCC::IR::Code::AddU_W:
+         case GDCC::IR::Code::CmpU_EQ_W:
+         case GDCC::IR::Code::CmpU_GE_W:
+         case GDCC::IR::Code::CmpU_GT_W:
+         case GDCC::IR::Code::CmpU_LE_W:
+         case GDCC::IR::Code::CmpU_LT_W:
+         case GDCC::IR::Code::CmpU_NE_W:
+         case GDCC::IR::Code::SubU_W:
+            CheckArgC(stmnt, 3);
+            CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
+            CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Stk);
+            CheckArgB(stmnt, 2, GDCC::IR::ArgBase::Stk);
+            break;
+
          case GDCC::IR::Code::Call:
             translateStatement_Call(stmnt);
             break;
 
+         case GDCC::IR::Code::Cjmp_Nil:
+         case GDCC::IR::Code::Cjmp_Tru:
+            CheckArgC(stmnt, 2);
+            CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
+            CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Lit);
+            break;
+
+         case GDCC::IR::Code::Jump:
+            translateStatement_Jump(stmnt);
+            break;
+
          case GDCC::IR::Code::Move_W:
             translateStatement_Move_W(stmnt);
+            break;
+
+         case GDCC::IR::Code::NotU_W:
+            CheckArgC(stmnt, 2);
+            CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
+            CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Stk);
             break;
 
          case GDCC::IR::Code::Retn:
@@ -144,6 +175,25 @@ namespace Bytecode
 
          default:
             std::cerr << "ERROR: " << stmnt.pos << ": bad Arg for Code::Call[0]: "
+               << stmnt.args[0].a << '\n';
+            throw EXIT_FAILURE;
+         }
+      }
+
+      //
+      // Info::translateStatement_Jump
+      //
+      void Info::translateStatement_Jump(GDCC::IR::Statement &stmnt)
+      {
+         CheckArgC(stmnt, 1);
+
+         switch(stmnt.args[0].a)
+         {
+         case GDCC::IR::ArgBase::Lit: break;
+         case GDCC::IR::ArgBase::Stk: break;
+
+         default:
+            std::cerr << "ERROR: " << stmnt.pos << ": bad Arg for Code::Jump[0]: "
                << stmnt.args[0].a << '\n';
             throw EXIT_FAILURE;
          }

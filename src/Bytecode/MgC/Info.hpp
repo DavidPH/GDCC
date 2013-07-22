@@ -44,10 +44,12 @@ namespace Bytecode
          void putValue(std::ostream &out, GDCC::IR::Value const &val);
 
          void putStatement(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putStatement_Jump(std::ostream &out, GDCC::IR::Statement const &stmnt);
          void putStatement_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt);
 
          void translateStatement(GDCC::IR::Statement &stmnt);
          void translateStatement_Call(GDCC::IR::Statement &stmnt);
+         void translateStatement_Jump(GDCC::IR::Statement &stmnt);
          void translateStatement_Move_W(GDCC::IR::Statement &stmnt);
       };
    }
