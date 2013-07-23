@@ -44,9 +44,16 @@ namespace GDCC
          labs = std::move(stmnt.labs);
          code = std::move(stmnt.code);
 
-         // Unlink stmnt and relink this.
-         next->prev = prev->next = this;
-         stmnt.next = stmnt.prev = &stmnt;
+         // If stmnt is in a list...
+         if(stmnt.next != &stmnt)
+         {
+            // ... Unlink stmnt and relink this.
+            next->prev = prev->next = this;
+            stmnt.next = stmnt.prev = &stmnt;
+         }
+         else
+            // Otherwise, just reset links.
+            next = prev = this;
 
          return *this;
       }
