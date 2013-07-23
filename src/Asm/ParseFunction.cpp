@@ -77,6 +77,30 @@ static GDCC::IR::Linkage ParseLinkage(Asm::IStream &in)
 }
 
 //
+// ParseScriptType
+//
+static GDCC::IR::ScriptType ParseScriptType(Asm::IStream &in)
+{
+   GDCC::Token tok;
+   switch(static_cast<GDCC::StringIndex>((in >> tok, tok).str))
+   {
+   case GDCC::STR_None:       return GDCC::IR::ScriptType::None;
+   case GDCC::STR_Death:      return GDCC::IR::ScriptType::Death;
+   case GDCC::STR_Disconnect: return GDCC::IR::ScriptType::Disconnect;
+   case GDCC::STR_Enter:      return GDCC::IR::ScriptType::Enter;
+   case GDCC::STR_Lightning:  return GDCC::IR::ScriptType::Lightning;
+   case GDCC::STR_Open:       return GDCC::IR::ScriptType::Open;
+   case GDCC::STR_Respawn:    return GDCC::IR::ScriptType::Respawn;
+   case GDCC::STR_Return:     return GDCC::IR::ScriptType::Return;
+   case GDCC::STR_Unloading:  return GDCC::IR::ScriptType::Unloading;
+
+   default:
+      std::cerr << "ERROR: " << tok.pos << ": bad function stype: '" << tok.str << "'\n";
+      throw EXIT_FAILURE;
+   }
+}
+
+//
 // SkipEqual
 //
 static Asm::IStream &SkipEqual(Asm::IStream &in)
@@ -130,6 +154,14 @@ namespace Asm
 
       case GDCC::STR_retrn:
          func.retrn = ParseFastU(SkipEqual(in));
+         break;
+
+      case GDCC::STR_stype:
+         func.stype = ParseScriptType(SkipEqual(in));
+         break;
+
+      case GDCC::STR_valueInt:
+         func.valueInt = ParseFastI(SkipEqual(in));
          break;
 
       default:

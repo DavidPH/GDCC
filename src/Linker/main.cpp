@@ -10,7 +10,10 @@
 //
 //-----------------------------------------------------------------------------
 
+#include "Bytecode/Platform.hpp"
+
 #include "Bytecode/MgC/Info.hpp"
+#include "Bytecode/ZDACS/Info.hpp"
 
 #include "GDCC/Option.hpp"
 
@@ -68,8 +71,20 @@ static void MakeLinker()
 
    std::unique_ptr<Bytecode::Info> info;
 
-   // TODO: Target info selection.
-   info.reset(new Bytecode::MgC::Info);
+   switch(Bytecode::TargetCur)
+   {
+   case Bytecode::Target::None:
+      std::cerr << "must specify target\n";
+      throw EXIT_FAILURE;
+
+   case Bytecode::Target::MageCraft:
+      info.reset(new Bytecode::MgC::Info);
+      break;
+
+   case Bytecode::Target::ZDoom:
+      info.reset(new Bytecode::ZDACS::Info);
+      break;
+   }
 
    info->translate();
 

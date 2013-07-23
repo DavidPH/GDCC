@@ -52,6 +52,7 @@ namespace Asm
 
    GDCC::CounterRef<GDCC::IR::Exp> ParseExp(IStream &in);
 
+   GDCC::FastI ParseFastI(IStream &in);
    GDCC::FastU ParseFastU(IStream &in);
 
    void ParseFunction(IStream &in, GDCC::IR::Function &func);

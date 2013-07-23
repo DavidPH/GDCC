@@ -83,6 +83,16 @@ namespace Asm
    }
 
    //
+   // ParseFastI
+   //
+   GDCC::FastI ParseFastI(IStream &in)
+   {
+      auto i = ParseInteg(in);
+
+      return static_cast<GDCC::FastI>(i);
+   }
+
+   //
    // ParseFastU
    //
    GDCC::FastU ParseFastU(IStream &in)

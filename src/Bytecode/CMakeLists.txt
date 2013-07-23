@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for GDCC library.
+## CMake file for GDCC-Bytecode library.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -10,9 +10,11 @@
 ##
 
 add_subdirectory(MgC)
+add_subdirectory(ZDACS)
 
 add_library(gdcc-bc
    Info.cpp
+   Platform.cpp
 )
 
 target_link_libraries(gdcc-bc gdcc-ir)

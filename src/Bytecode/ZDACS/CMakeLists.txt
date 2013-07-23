@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for Asm executable.
+## CMake file for GDCC-Bytecode-ZDACS library.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -9,11 +9,12 @@
 ## Targets                                                                    |
 ##
 
-add_executable(gdcc-ld
-   main.cpp
+add_library(gdcc-bc-zdacs
+   put.cpp
+   translate.cpp
 )
 
-target_link_libraries(gdcc-ld gdcc-ir gdcc-bc-mgc gdcc-bc-zdacs)
+target_link_libraries(gdcc-bc-zdacs gdcc-bc)
 
 ## EOF
 
