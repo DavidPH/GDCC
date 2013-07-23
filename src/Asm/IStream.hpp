@@ -14,6 +14,7 @@
 #define Asm__IStream_H__
 
 #include "GDCC/CommentBuf.hpp"
+#include "GDCC/EscapeBuf.hpp"
 #include "GDCC/FeatureHold.hpp"
 #include "GDCC/OriginBuf.hpp"
 
@@ -38,7 +39,7 @@ namespace Asm
    {
    public:
       IStream(std::streambuf &buf, GDCC::String file) : std::istream{&cbuf},
-         obuf{buf, file}, cbuf{obuf} {}
+         obuf{buf, file}, ebuf{obuf}, cbuf{ebuf} {}
 
       void disableComments() {rdbuf(&obuf);}
 
@@ -50,10 +51,12 @@ namespace Asm
          {return GDCC::FeatureHold<IStream, &IStream::disableComments, &IStream::enableComments>(*this);}
 
    protected:
-      typedef GDCC::OriginBuf<>               OBuf;
-      typedef GDCC::CommentBufLine<';', OBuf> CBuf;
+      typedef GDCC::OriginBuf<>                      OBuf;
+      typedef GDCC::EscapeBufStrip<'\n', '\\', OBuf> EBuf;
+      typedef GDCC::CommentBufLine<';', EBuf>        CBuf;
 
       OBuf obuf;
+      EBuf ebuf;
       CBuf cbuf;
    };
 }
