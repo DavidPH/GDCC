@@ -18,42 +18,6 @@
 
 
 //----------------------------------------------------------------------------|
-// Static Functions                                                           |
-//
-
-//
-// CheckArg
-//
-// Checks Arg properties common to all uses for the target.
-//
-static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin const &pos)
-{
-   switch(arg.a)
-   {
-   case GDCC::IR::ArgBase::Lit: break;
-   case GDCC::IR::ArgBase::Nul: break;
-   case GDCC::IR::ArgBase::Stk: break;
-
-   case GDCC::IR::ArgBase::LocArs:
-      CheckArg(*arg.aLocArs.idx, pos);
-      break;
-
-   case GDCC::IR::ArgBase::LocReg:
-      if(arg.aLocReg.idx->a != GDCC::IR::ArgBase::Lit)
-      {
-         std::cerr << "ERROR: " << pos << ": LocReg.idx must be Lit\n";
-         throw EXIT_FAILURE;
-      }
-      break;
-
-   default:
-      std::cerr << "ERROR: " << pos << ": MgC cannot use Arg: " << arg.a << '\n';
-      throw EXIT_FAILURE;
-   }
-}
-
-
-//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 

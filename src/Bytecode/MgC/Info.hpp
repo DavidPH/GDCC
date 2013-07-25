@@ -50,6 +50,9 @@ namespace Bytecode
          void translateStatement_Call(GDCC::IR::Statement &stmnt);
          void translateStatement_Jump(GDCC::IR::Statement &stmnt);
          void translateStatement_Move_W(GDCC::IR::Statement &stmnt);
+
+
+         static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin const &pos);
       };
    }
 }

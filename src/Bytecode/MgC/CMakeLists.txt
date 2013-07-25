@@ -11,6 +11,7 @@
 
 add_library(gdcc-bc-mgc
    Info.cpp
+   put.cpp
    translate.cpp
 )
 
