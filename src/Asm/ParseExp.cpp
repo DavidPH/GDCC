@@ -89,7 +89,7 @@ namespace Asm
    {
       auto i = ParseInteg(in);
 
-      return static_cast<GDCC::FastI>(i);
+      return number_cast<GDCC::FastI>(i);
    }
 
    //
@@ -99,7 +99,7 @@ namespace Asm
    {
       auto i = ParseInteg(in);
 
-      return static_cast<GDCC::FastU>(i);
+      return number_cast<GDCC::FastU>(i);
    }
 
    //

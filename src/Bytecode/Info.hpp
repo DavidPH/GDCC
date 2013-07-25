@@ -24,6 +24,9 @@ namespace GDCC
 {
    namespace IR
    {
+      enum class AddrBase;
+
+      class Arg;
       class Block;
       class Exp;
       class Function;
@@ -31,6 +34,9 @@ namespace GDCC
       class Value;
       class Statement;
    }
+
+   struct Origin;
+   class String;
 }
 
 namespace Bytecode
@@ -50,7 +56,17 @@ namespace Bytecode
       virtual void put(std::ostream &out) = 0;
 
       virtual void translate();
-      virtual void translateBlock(GDCC::IR::Block &block) = 0;
+      virtual void translateBlock(GDCC::IR::Block &block);
+      virtual void translateFunction(GDCC::IR::Function &func);
+      virtual void translateStatement(GDCC::IR::Statement &stmnt) = 0;
+
+   protected:
+      static void CheckArgB(GDCC::IR::Arg const &arg, GDCC::IR::AddrBase b, GDCC::Origin pos);
+      static void CheckArgB(GDCC::IR::Statement &stmnt, std::size_t a, GDCC::IR::AddrBase b);
+
+      static void CheckArgC(GDCC::IR::Statement &stmnt, std::size_t c);
+
+      static bool IsExp0(GDCC::IR::Exp const *exp);
    };
 }
 

@@ -19,6 +19,9 @@ GDCC_IR_CodeList(AddU_W)
 // Call src numArg numRet
 GDCC_IR_CodeList(Call)
 
+// Casm src arg...
+GDCC_IR_CodeList(Casm)
+
 // Cjmp dat lab
 GDCC_IR_CodeList(Cjmp_Nil)
 GDCC_IR_CodeList(Cjmp_Tru)

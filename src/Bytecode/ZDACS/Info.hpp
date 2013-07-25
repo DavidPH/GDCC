@@ -15,6 +15,9 @@
 
 #include "../Info.hpp"
 
+#include "GDCC/Counter.hpp"
+#include "GDCC/Number.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -30,9 +33,43 @@ namespace Bytecode
       class Info : public InfoBase
       {
       public:
+         Info();
+
          virtual void put(std::ostream &out);
 
-         virtual void translateBlock(GDCC::IR::Block &block);
+         virtual void translateFunction(GDCC::IR::Function &func);
+         virtual void translateStatement(GDCC::IR::Statement &stmnt);
+
+      protected:
+         void putByte(std::ostream &out, GDCC::FastU i);
+
+         void putChunk(std::ostream &out);
+         void putChunkSFLG(std::ostream &out);
+         void putChunkSPTR(std::ostream &out);
+         void putChunkSVCT(std::ostream &out);
+
+         void putExpWord(std::ostream &out, GDCC::IR::Exp const *exp);
+
+         void putHWord(std::ostream &out, GDCC::FastU i);
+
+         void putStatement(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putStatement_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt);
+
+         void putWord(std::ostream &out, GDCC::FastU i);
+
+         void translateStatement_Move_W(GDCC::IR::Statement &stmnt);
+
+
+         static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin pos);
+
+         static GDCC::CounterRef<GDCC::IR::Exp> ResolveGlyph(GDCC::String glyph);
+         static GDCC::FastU ResolveValue(GDCC::IR::Value const &val);
+
+
+         GDCC::FastU jumpPos;
+         GDCC::FastU numChunkSFLG;
+         GDCC::FastU numChunkSPTR;
+         GDCC::FastU numChunkSVCT;
       };
    }
 }

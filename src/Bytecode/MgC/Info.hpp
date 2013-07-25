@@ -32,7 +32,7 @@ namespace Bytecode
       public:
          virtual void put(std::ostream &out);
 
-         virtual void translateBlock(GDCC::IR::Block &block);
+         virtual void translateStatement(GDCC::IR::Statement &stmnt);
 
       protected:
          void putExp(std::ostream &out, GDCC::IR::Exp const *exp);
@@ -47,7 +47,6 @@ namespace Bytecode
          void putStatement_Jump(std::ostream &out, GDCC::IR::Statement const &stmnt);
          void putStatement_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt);
 
-         void translateStatement(GDCC::IR::Statement &stmnt);
          void translateStatement_Call(GDCC::IR::Statement &stmnt);
          void translateStatement_Jump(GDCC::IR::Statement &stmnt);
          void translateStatement_Move_W(GDCC::IR::Statement &stmnt);

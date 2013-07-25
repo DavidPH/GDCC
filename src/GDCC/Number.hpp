@@ -34,5 +34,18 @@ namespace GDCC
    typedef std::uintmax_t FastU;
 }
 
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+template<typename T>
+T number_cast(GDCC::Integ const &i);
+
+template<>
+inline GDCC::FastI number_cast<GDCC::FastI>(GDCC::Integ const &i) {return i.get_si();}
+template<>
+inline GDCC::FastU number_cast<GDCC::FastU>(GDCC::Integ const &i) {return i.get_ui();}
+
 #endif//GDCC__Number_H__
 

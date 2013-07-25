@@ -52,31 +52,6 @@ static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin const &pos)
    }
 }
 
-//
-// CheckArgB
-//
-static void CheckArgB(GDCC::IR::Statement &stmnt, std::size_t a, GDCC::IR::ArgBase b)
-{
-   if(stmnt.args[a].a != b)
-   {
-      std::cerr << "ERROR: " << stmnt.pos << ": " << stmnt.code
-         << " must have " << b << " args[" << a << "]\n";
-      throw EXIT_FAILURE;
-   }
-}
-
-//
-// CheckArgC
-//
-static void CheckArgC(GDCC::IR::Statement &stmnt, std::size_t c)
-{
-   if(stmnt.args.size() < 2)
-   {
-      std::cerr << "ERROR: " << stmnt.pos << ": bad argc for " << stmnt.code
-         << ": " << stmnt.args.size() << " < " << c << '\n';
-   }
-}
-
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -86,15 +61,6 @@ namespace Bytecode
 {
    namespace MgC
    {
-      //
-      // Info::translateBlock
-      //
-      void Info::translateBlock(GDCC::IR::Block &block)
-      {
-         for(auto &stmnt : block)
-            translateStatement(stmnt);
-      }
-
       //
       // Info::translateStatement
       //
