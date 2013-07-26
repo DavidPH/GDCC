@@ -76,7 +76,8 @@ namespace Bytecode
 
          case GDCC::IR::Code::Retn:
             CheckArgC(stmnt, 1);
-            CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
+            for(auto i = stmnt.args.size(); i--;)
+               CheckArgB(stmnt, i, GDCC::IR::ArgBase::Stk);
             break;
 
          default:
@@ -93,6 +94,9 @@ namespace Bytecode
       {
          CheckArgC(stmnt, 2);
          CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Lit);
+
+         for(auto i = stmnt.args.size(); i-- != 2;)
+            CheckArgB(stmnt, i, GDCC::IR::ArgBase::Stk);
 
          switch(stmnt.args[0].a)
          {

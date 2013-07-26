@@ -117,7 +117,7 @@ namespace Bytecode
 
          case GDCC::IR::Code::Call:
             out << "call_stk" << '\0' << '(' << '\0';
-               putExp(out, stmnt.args[1].aLit.value);
+               out << (stmnt.args.size() - 2) << '\0';
             out << ')' << '\0';
             break;
 
