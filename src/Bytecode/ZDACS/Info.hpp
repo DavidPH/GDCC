@@ -54,10 +54,12 @@ namespace Bytecode
 
          void putStatement(std::ostream &out, GDCC::IR::Statement const &stmnt);
          void putStatement_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putStatement_Retn(std::ostream &out, GDCC::IR::Statement const &stmnt);
 
          void putWord(std::ostream &out, GDCC::FastU i);
 
          void translateStatement_Move_W(GDCC::IR::Statement &stmnt);
+         void translateStatement_Retn(GDCC::IR::Statement &stmnt);
 
 
          static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin pos);

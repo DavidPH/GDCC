@@ -51,6 +51,7 @@ namespace Bytecode
    class Info
    {
    public:
+      Info() : curFunc{nullptr} {}
       virtual ~Info() {}
 
       virtual void put(std::ostream &out) = 0;
@@ -61,6 +62,9 @@ namespace Bytecode
       virtual void translateStatement(GDCC::IR::Statement &stmnt) = 0;
 
    protected:
+      GDCC::IR::Function *curFunc;
+
+
       static void CheckArgB(GDCC::IR::Arg const &arg, GDCC::IR::AddrBase b, GDCC::Origin pos);
       static void CheckArgB(GDCC::IR::Statement &stmnt, std::size_t a, GDCC::IR::AddrBase b);
 

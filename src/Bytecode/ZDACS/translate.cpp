@@ -43,7 +43,7 @@ namespace Bytecode
             data.value = val;
          }
 
-         translateBlock(func.block);
+         InfoBase::translateFunction(func);
 
          if(!func.exdef) switch(func.ctype)
          {
@@ -95,6 +95,10 @@ namespace Bytecode
 
          case GDCC::IR::Code::Move_W:
             translateStatement_Move_W(stmnt);
+            break;
+
+         case GDCC::IR::Code::Retn:
+            translateStatement_Retn(stmnt);
             break;
 
          default:
@@ -171,6 +175,36 @@ namespace Bytecode
          badcase:
             std::cerr << "ERROR: " << stmnt.pos << ": bad Code::Move_W("
                << stmnt.args[0].a << ',' << stmnt.args[1].a << ")\n";
+            throw EXIT_FAILURE;
+         }
+      }
+
+      //
+      // Info::translateStatement_Retn
+      //
+      void Info::translateStatement_Retn(GDCC::IR::Statement &stmnt)
+      {
+         for(auto n = stmnt.args.size(); n--;)
+            CheckArgB(stmnt, n, GDCC::IR::ArgBase::Stk);
+
+         switch(curFunc->ctype)
+         {
+         case GDCC::IR::CallType::Script:
+         case GDCC::IR::CallType::ScriptI:
+         case GDCC::IR::CallType::ScriptS:
+            if(stmnt.args.size() == 0)
+               jumpPos += 4;
+            else if(stmnt.args.size() == 1)
+               jumpPos += 8;
+            else
+            {
+               std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
+               throw EXIT_FAILURE;
+            }
+            break;
+
+         default:
+            std::cerr << "ERROR: " << stmnt.pos << ": bad Code::Retn\n";
             throw EXIT_FAILURE;
          }
       }

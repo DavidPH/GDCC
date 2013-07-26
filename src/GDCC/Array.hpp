@@ -70,7 +70,7 @@ namespace GDCC
          e{p + std::distance(first, last)} {}
 
       template<typename... Args>
-      Array(PackType, Args &&...args) : p{Pak(std::forward(args)...)},
+      Array(PackType, Args &&...args) : p{Pak(std::forward<Args>(args)...)},
          e{p + sizeof...(Args)} {}
 
       // operator Array[]

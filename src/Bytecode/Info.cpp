@@ -46,7 +46,17 @@ namespace Bytecode
    //
    void Info::translateFunction(GDCC::IR::Function &func)
    {
-      translateBlock(func.block);
+      try
+      {
+         curFunc = &func;
+         translateBlock(func.block);
+         curFunc = nullptr;
+      }
+      catch(...)
+      {
+         curFunc = nullptr;
+         throw;
+      }
    }
 
    //

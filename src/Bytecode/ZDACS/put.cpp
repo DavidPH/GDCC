@@ -37,9 +37,14 @@ namespace Bytecode
          out.write("GDCC::BC", 8);
 
          // Put statements.
-         for(auto const &func : GDCC::IR::FunctionRange())
+         for(auto &func : GDCC::IR::FunctionRange()) try
+         {
+            curFunc = &func.second;
             for(auto const &stmnt : func.second.block)
                putStatement(out, stmnt);
+            curFunc = nullptr;
+         }
+         catch(...) {curFunc = nullptr; throw;}
 
          // Put chunks.
          putChunk(out);
@@ -194,6 +199,10 @@ namespace Bytecode
             putStatement_Move_W(out, stmnt);
             break;
 
+         case GDCC::IR::Code::Retn:
+            putStatement_Retn(out, stmnt);
+            break;
+
          default:
             std::cerr << "ERROR: " << stmnt.pos << ": cannot put Code for ZDACS: "
                << stmnt.code << '\n';
@@ -275,6 +284,38 @@ namespace Bytecode
          else
          {
             std::cerr << "bad Code::Move_W\n";
+            throw EXIT_FAILURE;
+         }
+      }
+
+      //
+      // Info::putStatement_Retn
+      //
+      void Info::putStatement_Retn(std::ostream &out, GDCC::IR::Statement const &stmnt)
+      {
+         switch(curFunc->ctype)
+         {
+         case GDCC::IR::CallType::Script:
+         case GDCC::IR::CallType::ScriptI:
+         case GDCC::IR::CallType::ScriptS:
+            if(stmnt.args.size() == 0)
+            {
+               putWord(out, 1); // terminate
+            }
+            else if(stmnt.args.size() == 1)
+            {
+               putWord(out, 257); // setresultvalue
+               putWord(out,   1); // terminate
+            }
+            else
+            {
+               std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
+               throw EXIT_FAILURE;
+            }
+            break;
+
+         default:
+            std::cerr << "ERROR: " << stmnt.pos << ": bad Code::Retn\n";
             throw EXIT_FAILURE;
          }
       }
