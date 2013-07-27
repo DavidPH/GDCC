@@ -41,16 +41,16 @@ GDCC_IR_CodeList(Cjmp_Tru)
 
 // Cmp* dst lop rop
 GDCC_IR_CodeList(CmpI_EQ_W)
-GDCC_IR_CodeList(CmpU_EQ_W)
 GDCC_IR_CodeList(CmpI_GE_W)
-GDCC_IR_CodeList(CmpU_GE_W)
 GDCC_IR_CodeList(CmpI_GT_W)
-GDCC_IR_CodeList(CmpU_GT_W)
 GDCC_IR_CodeList(CmpI_LE_W)
-GDCC_IR_CodeList(CmpU_LE_W)
 GDCC_IR_CodeList(CmpI_LT_W)
-GDCC_IR_CodeList(CmpU_LT_W)
 GDCC_IR_CodeList(CmpI_NE_W)
+GDCC_IR_CodeList(CmpU_EQ_W)
+GDCC_IR_CodeList(CmpU_GE_W)
+GDCC_IR_CodeList(CmpU_GT_W)
+GDCC_IR_CodeList(CmpU_LE_W)
+GDCC_IR_CodeList(CmpU_LT_W)
 GDCC_IR_CodeList(CmpU_NE_W)
 
 // Cnat src ret arg...
