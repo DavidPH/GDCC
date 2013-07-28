@@ -27,9 +27,9 @@ namespace Bytecode
    namespace ZDACS
    {
       //
-      // Info::translateFunction
+      // Info::trFunc
       //
-      void Info::translateFunction(GDCC::IR::Function &func)
+      void Info::trFunc(GDCC::IR::Function &func)
       {
          // Generate label glyph.
          {
@@ -43,7 +43,7 @@ namespace Bytecode
             data.value = val;
          }
 
-         InfoBase::translateFunction(func);
+         InfoBase::trFunc(func);
 
          if(!func.exdef) switch(func.ctype)
          {
@@ -60,9 +60,9 @@ namespace Bytecode
       }
 
       //
-      // Info::translateStatement
+      // Info::trStmnt
       //
-      void Info::translateStatement(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt(GDCC::IR::Statement &stmnt)
       {
          // Generate label glyphs.
          if(!stmnt.labs.empty())
@@ -139,7 +139,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Cspe:
-            translateStatement_Cspe(stmnt);
+            trStmnt_Cspe(stmnt);
             break;
 
          case GDCC::IR::Code::InvU_W:
@@ -152,11 +152,11 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Move_W:
-            translateStatement_Move_W(stmnt);
+            trStmnt_Move_W(stmnt);
             break;
 
          case GDCC::IR::Code::Retn:
-            translateStatement_Retn(stmnt);
+            trStmnt_Retn(stmnt);
             break;
 
          case GDCC::IR::Code::Swap_W:
@@ -174,9 +174,9 @@ namespace Bytecode
       }
 
       //
-      // Info::translateStatement_Cspe
+      // Info::trStmnt_Cspe
       //
-      void Info::translateStatement_Cspe(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt_Cspe(GDCC::IR::Statement &stmnt)
       {
          CheckArgC(stmnt, 2);
          CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Lit);
@@ -229,9 +229,9 @@ namespace Bytecode
       }
 
       //
-      // Info::translateStatement_Move_W
+      // Info::trStmnt_Move_W
       //
-      void Info::translateStatement_Move_W(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt_Move_W(GDCC::IR::Statement &stmnt)
       {
          CheckArgC(stmnt, 2);
          CheckArg(stmnt.args[0], stmnt.pos);
@@ -239,7 +239,45 @@ namespace Bytecode
 
          switch(stmnt.args[0].a)
          {
+         case GDCC::IR::ArgBase::GblArr:
+            switch(stmnt.args[1].a)
+            {
+            case GDCC::IR::ArgBase::Stk:
+               trStmnt_Move_W__Arr_Stk(stmnt, stmnt.args[0].aGblArr);
+               break;
+
+            default: goto badcase;
+            }
+            break;
+
          case GDCC::IR::ArgBase::GblReg:
+            switch(stmnt.args[1].a)
+            {
+            case GDCC::IR::ArgBase::Stk: jumpPos += 8; break;
+            default: goto badcase;
+            }
+            break;
+
+         case GDCC::IR::ArgBase::LocReg:
+            switch(stmnt.args[1].a)
+            {
+            case GDCC::IR::ArgBase::Stk: jumpPos += 8; break;
+            default: goto badcase;
+            }
+            break;
+
+         case GDCC::IR::ArgBase::MapArr:
+            switch(stmnt.args[1].a)
+            {
+            case GDCC::IR::ArgBase::Stk:
+               trStmnt_Move_W__Arr_Stk(stmnt, stmnt.args[0].aMapArr);
+               break;
+
+            default: goto badcase;
+            }
+            break;
+
+         case GDCC::IR::ArgBase::MapReg:
             switch(stmnt.args[1].a)
             {
             case GDCC::IR::ArgBase::Stk: jumpPos += 8; break;
@@ -263,22 +301,30 @@ namespace Bytecode
             case GDCC::IR::ArgBase::LocReg: jumpPos += 8; break;
             case GDCC::IR::ArgBase::MapReg: jumpPos += 8; break;
             case GDCC::IR::ArgBase::WldReg: jumpPos += 8; break;
+
+            case GDCC::IR::ArgBase::GblArr:
+               trStmnt_Move_W__Stk_Arr(stmnt, stmnt.args[1].aGblArr);
+               break;
+
+            case GDCC::IR::ArgBase::MapArr:
+               trStmnt_Move_W__Stk_Arr(stmnt, stmnt.args[1].aMapArr);
+               break;
+
+            case GDCC::IR::ArgBase::WldArr:
+               trStmnt_Move_W__Stk_Arr(stmnt, stmnt.args[1].aWldArr);
+               break;
+
             default: goto badcase;
             }
             break;
 
-         case GDCC::IR::ArgBase::LocReg:
+         case GDCC::IR::ArgBase::WldArr:
             switch(stmnt.args[1].a)
             {
-            case GDCC::IR::ArgBase::Stk: jumpPos += 8; break;
-            default: goto badcase;
-            }
-            break;
+            case GDCC::IR::ArgBase::Stk:
+               trStmnt_Move_W__Arr_Stk(stmnt, stmnt.args[0].aWldArr);
+               break;
 
-         case GDCC::IR::ArgBase::MapReg:
-            switch(stmnt.args[1].a)
-            {
-            case GDCC::IR::ArgBase::Stk: jumpPos += 8; break;
             default: goto badcase;
             }
             break;
@@ -300,9 +346,29 @@ namespace Bytecode
       }
 
       //
-      // Info::translateStatement_Retn
+      // Info::trStmnt_Move_W__Arr_Stk
       //
-      void Info::translateStatement_Retn(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt_Move_W__Arr_Stk(GDCC::IR::Statement &stmnt, GDCC::IR::ArgPtr2 const &arr)
+      {
+         CheckArgB(*arr.idx, GDCC::IR::ArgBase::Stk, stmnt.pos);
+
+         jumpPos += IsExp0(arr.off) ? 24 : 12;
+      }
+
+      //
+      // Info::trStmnt_Move_W__Stk_Arr
+      //
+      void Info::trStmnt_Move_W__Stk_Arr(GDCC::IR::Statement &stmnt, GDCC::IR::ArgPtr2 const &arr)
+      {
+         CheckArgB(*arr.idx, GDCC::IR::ArgBase::Stk, stmnt.pos);
+
+         jumpPos += IsExp0(arr.off) ? 20 : 8;
+      }
+
+      //
+      // Info::trStmnt_Retn
+      //
+      void Info::trStmnt_Retn(GDCC::IR::Statement &stmnt)
       {
          for(auto n = stmnt.args.size(); n--;)
             CheckArgB(stmnt, n, GDCC::IR::ArgBase::Stk);

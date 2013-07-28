@@ -32,24 +32,23 @@ namespace Bytecode
       public:
          virtual void put(std::ostream &out);
 
-         virtual void translateStatement(GDCC::IR::Statement &stmnt);
-
       protected:
          void putExp(std::ostream &out, GDCC::IR::Exp const *exp);
 
          void putGlyph(std::ostream &out, GDCC::IR::Glyph glyph);
 
-         void putFunction(std::ostream &out, GDCC::IR::Function const &func);
+         void putFunc(std::ostream &out, GDCC::IR::Function const &func);
 
          void putValue(std::ostream &out, GDCC::IR::Value const &val);
 
-         void putStatement(std::ostream &out, GDCC::IR::Statement const &stmnt);
-         void putStatement_Jump(std::ostream &out, GDCC::IR::Statement const &stmnt);
-         void putStatement_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putStmnt(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putStmnt_Jump(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putStmnt_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt);
 
-         void translateStatement_Call(GDCC::IR::Statement &stmnt);
-         void translateStatement_Jump(GDCC::IR::Statement &stmnt);
-         void translateStatement_Move_W(GDCC::IR::Statement &stmnt);
+         virtual void trStmnt(GDCC::IR::Statement &stmnt);
+         void trStmnt_Call(GDCC::IR::Statement &stmnt);
+         void trStmnt_Jump(GDCC::IR::Statement &stmnt);
+         void trStmnt_Move_W(GDCC::IR::Statement &stmnt);
 
 
          static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin const &pos);

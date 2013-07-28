@@ -38,7 +38,7 @@ namespace Bytecode
          for(auto const &itr : GDCC::IR::FunctionRange())
          {
             if(!itr.second.exdef)
-               putFunction(out, itr.second);
+               putFunc(out, itr.second);
          }
       }
 
@@ -64,9 +64,9 @@ namespace Bytecode
       }
 
       //
-      // Info::putFunction
+      // Info::putFunc
       //
-      void Info::putFunction(std::ostream &out, GDCC::IR::Function const &func)
+      void Info::putFunc(std::ostream &out, GDCC::IR::Function const &func)
       {
          // Put the function header.
          out << "function" << '\0' << func.glyph << '\0'
@@ -82,7 +82,7 @@ namespace Bytecode
             << '{' << '\0';
 
          for(auto const &stmnt : func.block)
-            putStatement(out, stmnt);
+            putStmnt(out, stmnt);
 
          out << '}' << '\0';
       }
@@ -96,9 +96,9 @@ namespace Bytecode
       }
 
       //
-      // Info::putStatement
+      // Info::putStmnt
       //
-      void Info::putStatement(std::ostream &out, GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt(std::ostream &out, GDCC::IR::Statement const &stmnt)
       {
          // Put labels.
          for(auto lab : stmnt.labs)
@@ -158,11 +158,11 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Jump:
-            putStatement_Jump(out, stmnt);
+            putStmnt_Jump(out, stmnt);
             break;
 
          case GDCC::IR::Code::Move_W:
-            putStatement_Move_W(out, stmnt);
+            putStmnt_Move_W(out, stmnt);
             break;
 
          case GDCC::IR::Code::NotU_W:
@@ -184,9 +184,9 @@ namespace Bytecode
       }
 
       //
-      // Info::putStatement_Jump
+      // Info::putStmnt_Jump
       //
-      void Info::putStatement_Jump(std::ostream &out, GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt_Jump(std::ostream &out, GDCC::IR::Statement const &stmnt)
       {
          switch(stmnt.args[0].a)
          {
@@ -207,9 +207,9 @@ namespace Bytecode
       }
 
       //
-      // Info::putStatement_Move_W
+      // Info::putStmnt_Move_W
       //
-      void Info::putStatement_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt)
       {
          // push_?
          if(stmnt.args[0].a == GDCC::IR::ArgBase::Stk) switch(stmnt.args[1].a)

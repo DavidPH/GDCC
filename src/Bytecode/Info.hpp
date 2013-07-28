@@ -27,6 +27,7 @@ namespace GDCC
       enum class AddrBase;
 
       class Arg;
+      struct ArgPtr2;
       class Block;
       class Exp;
       class Function;
@@ -56,12 +57,13 @@ namespace Bytecode
 
       virtual void put(std::ostream &out) = 0;
 
-      virtual void translate();
-      virtual void translateBlock(GDCC::IR::Block &block);
-      virtual void translateFunction(GDCC::IR::Function &func);
-      virtual void translateStatement(GDCC::IR::Statement &stmnt) = 0;
+      virtual void tr();
 
    protected:
+      virtual void trBlock(GDCC::IR::Block &block);
+      virtual void trFunc(GDCC::IR::Function &func);
+      virtual void trStmnt(GDCC::IR::Statement &stmnt) = 0;
+
       GDCC::IR::Function *curFunc;
 
 

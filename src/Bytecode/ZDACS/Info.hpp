@@ -37,9 +37,6 @@ namespace Bytecode
 
          virtual void put(std::ostream &out);
 
-         virtual void translateFunction(GDCC::IR::Function &func);
-         virtual void translateStatement(GDCC::IR::Statement &stmnt);
-
       protected:
          void putByte(std::ostream &out, GDCC::FastU i);
 
@@ -52,16 +49,23 @@ namespace Bytecode
 
          void putHWord(std::ostream &out, GDCC::FastU i);
 
-         void putStatement(std::ostream &out, GDCC::IR::Statement const &stmnt);
-         void putStatement_Cspe(std::ostream &out, GDCC::IR::Statement const &stmnt);
-         void putStatement_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt);
-         void putStatement_Retn(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putStmnt(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putStmnt_Cspe(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putStmnt_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putStmnt_Move_W__Arr_Stk(std::ostream &out, GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i);
+         void putStmnt_Move_W__Stk_Arr(std::ostream &out, GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i);
+         void putStmnt_Retn(std::ostream &out, GDCC::IR::Statement const &stmnt);
 
          void putWord(std::ostream &out, GDCC::FastU i);
 
-         void translateStatement_Cspe(GDCC::IR::Statement &stmnt);
-         void translateStatement_Move_W(GDCC::IR::Statement &stmnt);
-         void translateStatement_Retn(GDCC::IR::Statement &stmnt);
+         virtual void trFunc(GDCC::IR::Function &func);
+
+         virtual void trStmnt(GDCC::IR::Statement &stmnt);
+         void trStmnt_Cspe(GDCC::IR::Statement &stmnt);
+         void trStmnt_Move_W(GDCC::IR::Statement &stmnt);
+         void trStmnt_Move_W__Arr_Stk(GDCC::IR::Statement &stmnt, GDCC::IR::ArgPtr2 const &arr);
+         void trStmnt_Move_W__Stk_Arr(GDCC::IR::Statement &stmnt, GDCC::IR::ArgPtr2 const &arr);
+         void trStmnt_Retn(GDCC::IR::Statement &stmnt);
 
 
          static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin pos);

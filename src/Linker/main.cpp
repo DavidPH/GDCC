@@ -86,7 +86,7 @@ static void MakeLinker()
       break;
    }
 
-   info->translate();
+   info->tr();
 
    std::fstream out{Option::Output.data, std::ios_base::binary | std::ios_base::out};
 

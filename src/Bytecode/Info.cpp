@@ -24,32 +24,32 @@
 namespace Bytecode
 {
    //
-   // Info::translate
+   // Info::tr
    //
-   void Info::translate()
+   void Info::tr()
    {
       for(auto &itr : GDCC::IR::FunctionRange())
-         translateFunction(itr.second);
+         trFunc(itr.second);
    }
 
    //
-   // Info::translateBlock
+   // Info::trBlock
    //
-   void Info::translateBlock(GDCC::IR::Block &block)
+   void Info::trBlock(GDCC::IR::Block &block)
    {
       for(auto &stmnt : block)
-         translateStatement(stmnt);
+         trStmnt(stmnt);
    }
 
    //
-   // Info::translateFunction
+   // Info::trFunc
    //
-   void Info::translateFunction(GDCC::IR::Function &func)
+   void Info::trFunc(GDCC::IR::Function &func)
    {
       try
       {
          curFunc = &func;
-         translateBlock(func.block);
+         trBlock(func.block);
          curFunc = nullptr;
       }
       catch(...)

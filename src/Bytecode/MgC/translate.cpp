@@ -26,9 +26,9 @@ namespace Bytecode
    namespace MgC
    {
       //
-      // Info::translateStatement
+      // Info::trStmnt
       //
-      void Info::translateStatement(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt(GDCC::IR::Statement &stmnt)
       {
          switch(stmnt.code)
          {
@@ -50,7 +50,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Call:
-            translateStatement_Call(stmnt);
+            trStmnt_Call(stmnt);
             break;
 
          case GDCC::IR::Code::Cjmp_Nil:
@@ -61,11 +61,11 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Jump:
-            translateStatement_Jump(stmnt);
+            trStmnt_Jump(stmnt);
             break;
 
          case GDCC::IR::Code::Move_W:
-            translateStatement_Move_W(stmnt);
+            trStmnt_Move_W(stmnt);
             break;
 
          case GDCC::IR::Code::NotU_W:
@@ -88,9 +88,9 @@ namespace Bytecode
       }
 
       //
-      // Info::translateStatement_Call
+      // Info::trStmnt_Call
       //
-      void Info::translateStatement_Call(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt_Call(GDCC::IR::Statement &stmnt)
       {
          CheckArgC(stmnt, 2);
          CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Lit);
@@ -115,9 +115,9 @@ namespace Bytecode
       }
 
       //
-      // Info::translateStatement_Jump
+      // Info::trStmnt_Jump
       //
-      void Info::translateStatement_Jump(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt_Jump(GDCC::IR::Statement &stmnt)
       {
          CheckArgC(stmnt, 1);
 
@@ -134,9 +134,9 @@ namespace Bytecode
       }
 
       //
-      // Info::translateStatement_Move_W
+      // Info::trStmnt_Move_W
       //
-      void Info::translateStatement_Move_W(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt_Move_W(GDCC::IR::Statement &stmnt)
       {
          CheckArgC(stmnt, 2);
          CheckArg(stmnt.args[0], stmnt.pos);

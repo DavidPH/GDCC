@@ -41,7 +41,7 @@ namespace Bytecode
          {
             curFunc = &func.second;
             for(auto const &stmnt : func.second.block)
-               putStatement(out, stmnt);
+               putStmnt(out, stmnt);
             curFunc = nullptr;
          }
          catch(...) {curFunc = nullptr; throw;}
@@ -180,9 +180,9 @@ namespace Bytecode
       }
 
       //
-      // Info::putStatement
+      // Info::putStmnt
       //
-      void Info::putStatement(std::ostream &out, GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt(std::ostream &out, GDCC::IR::Statement const &stmnt)
       {
          switch(stmnt.code)
          {
@@ -237,7 +237,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Cspe:
-            putStatement_Cspe(out, stmnt);
+            putStmnt_Cspe(out, stmnt);
             break;
 
          case GDCC::IR::Code::DivI_W:
@@ -257,7 +257,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Move_W:
-            putStatement_Move_W(out, stmnt);
+            putStmnt_Move_W(out, stmnt);
             break;
 
          case GDCC::IR::Code::MulI_W:
@@ -285,7 +285,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Retn:
-            putStatement_Retn(out, stmnt);
+            putStmnt_Retn(out, stmnt);
             break;
 
          case GDCC::IR::Code::ShLU_W:
@@ -313,9 +313,9 @@ namespace Bytecode
       }
 
       //
-      // Info::putStatement_Cspe
+      // Info::putStmnt_Cspe
       //
-      void Info::putStatement_Cspe(std::ostream &out, GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt_Cspe(std::ostream &out, GDCC::IR::Statement const &stmnt)
       {
          auto ret = ResolveValue(stmnt.args[1].aLit.value->getValue());
 
@@ -400,13 +400,17 @@ namespace Bytecode
       }
 
       //
-      // Info::putStatement_Move_W
+      // Info::putStmnt_Move_W
       //
-      void Info::putStatement_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt)
       {
          // push_?
          if(stmnt.args[0].a == GDCC::IR::ArgBase::Stk) switch(stmnt.args[1].a)
          {
+         case GDCC::IR::ArgBase::GblArr:
+            putStmnt_Move_W__Stk_Arr(out, stmnt.args[1].aGblArr, 235); // pushglobalarray
+            break;
+
          case GDCC::IR::ArgBase::GblReg:
             putWord(out, 182); // pushglobalvar
             putExpWord(out, stmnt.args[1].aGblReg.idx->aLit.value);
@@ -422,9 +426,17 @@ namespace Bytecode
             putExpWord(out, stmnt.args[1].aLocReg.idx->aLit.value);
             break;
 
+         case GDCC::IR::ArgBase::MapArr:
+            putStmnt_Move_W__Stk_Arr(out, stmnt.args[1].aMapArr, 207); // pushmaparray
+            break;
+
          case GDCC::IR::ArgBase::MapReg:
             putWord(out, 29); // pushmapvar
             putExpWord(out, stmnt.args[1].aMapReg.idx->aLit.value);
+            break;
+
+         case GDCC::IR::ArgBase::WldArr:
+            putStmnt_Move_W__Stk_Arr(out, stmnt.args[1].aWldArr, 226); // pushworldarray
             break;
 
          case GDCC::IR::ArgBase::WldReg:
@@ -440,6 +452,10 @@ namespace Bytecode
          // drop_?
          else if(stmnt.args[1].a == GDCC::IR::ArgBase::Stk) switch(stmnt.args[0].a)
          {
+         case GDCC::IR::ArgBase::GblArr:
+            putStmnt_Move_W__Arr_Stk(out, stmnt.args[1].aGblArr, 236); // assignglobalarray
+            break;
+
          case GDCC::IR::ArgBase::GblReg:
             putWord(out, 181); // assignglobalvar
             putExpWord(out, stmnt.args[0].aGblReg.idx->aLit.value);
@@ -450,6 +466,10 @@ namespace Bytecode
             putExpWord(out, stmnt.args[0].aLocReg.idx->aLit.value);
             break;
 
+         case GDCC::IR::ArgBase::MapArr:
+            putStmnt_Move_W__Arr_Stk(out, stmnt.args[1].aMapArr, 208); // assignmaparray
+            break;
+
          case GDCC::IR::ArgBase::MapReg:
             putWord(out, 26); // assignmapvar
             putExpWord(out, stmnt.args[0].aMapReg.idx->aLit.value);
@@ -457,6 +477,10 @@ namespace Bytecode
 
          case GDCC::IR::ArgBase::Nul:
             putWord(out, 54); // drop
+            break;
+
+         case GDCC::IR::ArgBase::WldArr:
+            putStmnt_Move_W__Arr_Stk(out, stmnt.args[1].aWldArr, 227); // assignworldarray
             break;
 
          case GDCC::IR::ArgBase::WldReg:
@@ -478,9 +502,44 @@ namespace Bytecode
       }
 
       //
-      // Info::putStatement_Retn
+      // Info::putStmnt_Move_W__Arr_Stk
       //
-      void Info::putStatement_Retn(std::ostream &out, GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt_Move_W__Arr_Stk(std::ostream &out,
+         GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i)
+      {
+         if(!IsExp0(arr.off))
+         {
+            putWord(out, 3); // pushnumber
+            putExpWord(out, arr.off);
+            putWord(out, 14); // add
+         }
+
+         putWord(out, 217); // swap
+         putWord(out, i);
+         putExpWord(out, arr.arr->aLit.value);
+      }
+
+      //
+      // Info::putStmnt_Move_W__Stk_Arr
+      //
+      void Info::putStmnt_Move_W__Stk_Arr(std::ostream &out,
+         GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i)
+      {
+         if(!IsExp0(arr.off))
+         {
+            putWord(out, 3); // pushnumber
+            putExpWord(out, arr.off);
+            putWord(out, 14); // add
+         }
+
+         putWord(out, i);
+         putExpWord(out, arr.arr->aLit.value);
+      }
+
+      //
+      // Info::putStmnt_Retn
+      //
+      void Info::putStmnt_Retn(std::ostream &out, GDCC::IR::Statement const &stmnt)
       {
          switch(curFunc->ctype)
          {

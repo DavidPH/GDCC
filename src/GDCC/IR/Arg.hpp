@@ -25,7 +25,7 @@
 // GDCC_IR_MakeArgPtr1
 //
 #define GDCC_IR_MakeArgPtr1(name) \
-   struct Arg_##name : private ArgPtr1 \
+   struct Arg_##name : ArgPtr1 \
    { \
       using ArgPtr1::ArgPtr1; \
       \
@@ -46,7 +46,7 @@
 // GDCC_IR_MakeArgPtr2
 //
 #define GDCC_IR_MakeArgPtr2(name) \
-   struct Arg_##name : private ArgPtr2 \
+   struct Arg_##name : ArgPtr2 \
    { \
       using ArgPtr2::ArgPtr2; \
       \
