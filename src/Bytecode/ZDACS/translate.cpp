@@ -86,11 +86,69 @@ namespace Bytecode
             jumpPos += 4;
             break;
 
+         case GDCC::IR::Code::AddI_W:
+         case GDCC::IR::Code::AddU_W:
+         case GDCC::IR::Code::AndU_W:
+         case GDCC::IR::Code::DivI_W:
+         case GDCC::IR::Code::DivX_W:
+         case GDCC::IR::Code::ModI_W:
+         case GDCC::IR::Code::MulI_W:
+         case GDCC::IR::Code::MulX_W:
+         case GDCC::IR::Code::OrIU_W:
+         case GDCC::IR::Code::OrXU_W:
+         case GDCC::IR::Code::ShLU_W:
+         case GDCC::IR::Code::ShRI_W:
+         case GDCC::IR::Code::SubI_W:
+         case GDCC::IR::Code::SubU_W:
+            CheckArgC(stmnt, 3);
+            CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
+            CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Stk);
+            CheckArgB(stmnt, 2, GDCC::IR::ArgBase::Stk);
+            jumpPos += 4;
+            break;
+
          case GDCC::IR::Code::Casm:
             CheckArgC(stmnt, 1);
             for(auto n = stmnt.args.size(); --n;)
                CheckArgB(stmnt, n, GDCC::IR::ArgBase::Lit);
             jumpPos += stmnt.args.size() * 4;
+            break;
+
+         case GDCC::IR::Code::CmpI_EQ_W:
+         case GDCC::IR::Code::CmpI_GE_W:
+         case GDCC::IR::Code::CmpI_GT_W:
+         case GDCC::IR::Code::CmpI_LE_W:
+         case GDCC::IR::Code::CmpI_LT_W:
+         case GDCC::IR::Code::CmpI_NE_W:
+         case GDCC::IR::Code::CmpU_EQ_W:
+         case GDCC::IR::Code::CmpU_NE_W:
+            CheckArgC(stmnt, 3);
+            CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
+            CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Stk);
+            CheckArgB(stmnt, 2, GDCC::IR::ArgBase::Stk);
+            jumpPos += 4;
+            break;
+
+         case GDCC::IR::Code::Cnat:
+            CheckArgC(stmnt, 2);
+            CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Lit);
+            CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Lit);
+            for(auto n = stmnt.args.size(); n-- != 2;)
+               CheckArgB(stmnt, n, GDCC::IR::ArgBase::Stk);
+            jumpPos += 12;
+            break;
+
+         case GDCC::IR::Code::Cspe:
+            translateStatement_Cspe(stmnt);
+            break;
+
+         case GDCC::IR::Code::InvU_W:
+         case GDCC::IR::Code::NegI_W:
+         case GDCC::IR::Code::NotU_W:
+            CheckArgC(stmnt, 2);
+            CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
+            CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Stk);
+            jumpPos += 4;
             break;
 
          case GDCC::IR::Code::Move_W:
@@ -101,9 +159,71 @@ namespace Bytecode
             translateStatement_Retn(stmnt);
             break;
 
+         case GDCC::IR::Code::Swap_W:
+            CheckArgC(stmnt, 2);
+            CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
+            CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Stk);
+            jumpPos += 4;
+            break;
+
          default:
             std::cerr << "ERROR: " << stmnt.pos << ": cannot translate Code for ZDACS: "
                << stmnt.code << '\n';
+            throw EXIT_FAILURE;
+         }
+      }
+
+      //
+      // Info::translateStatement_Cspe
+      //
+      void Info::translateStatement_Cspe(GDCC::IR::Statement &stmnt)
+      {
+         CheckArgC(stmnt, 2);
+         CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Lit);
+         CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Lit);
+
+         auto ret = ResolveValue(stmnt.args[1].aLit.value->getValue());
+
+         if(ret > 1)
+         {
+            std::cerr << "ERROR: " << stmnt.pos << ": bad Cspe ret\n";
+            throw EXIT_FAILURE;
+         }
+
+         // Too many call args.
+         if(stmnt.args.size() > 7)
+         {
+            std::cerr << "ERROR: " << stmnt.pos << ": bad Cspe arg count\n";
+            throw EXIT_FAILURE;
+         }
+
+         // No call args.
+         if(stmnt.args.size() == 2)
+         {
+            jumpPos += ret ? 48 : 12;
+            return;
+         }
+
+         switch(stmnt.args[2].a)
+         {
+         case GDCC::IR::ArgBase::Lit:
+            for(auto n = stmnt.args.size(); n-- != 3;)
+               CheckArgB(stmnt, n, GDCC::IR::ArgBase::Lit);
+            jumpPos += 8 + (stmnt.args.size() - 2) * (ret ? 8 : 4);
+            break;
+
+         case GDCC::IR::ArgBase::Stk:
+            for(auto n = stmnt.args.size(); n-- != 3;)
+               CheckArgB(stmnt, n, GDCC::IR::ArgBase::Stk);
+            jumpPos += 8;
+
+            // Dummy args.
+            if(ret) jumpPos += (7 - stmnt.args.size()) * 8;
+
+            break;
+
+         default:
+            std::cerr << "ERROR: " << stmnt.pos << ": bad Cspe\n";
             throw EXIT_FAILURE;
          }
       }

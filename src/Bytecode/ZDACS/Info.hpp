@@ -53,11 +53,13 @@ namespace Bytecode
          void putHWord(std::ostream &out, GDCC::FastU i);
 
          void putStatement(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putStatement_Cspe(std::ostream &out, GDCC::IR::Statement const &stmnt);
          void putStatement_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt);
          void putStatement_Retn(std::ostream &out, GDCC::IR::Statement const &stmnt);
 
          void putWord(std::ostream &out, GDCC::FastU i);
 
+         void translateStatement_Cspe(GDCC::IR::Statement &stmnt);
          void translateStatement_Move_W(GDCC::IR::Statement &stmnt);
          void translateStatement_Retn(GDCC::IR::Statement &stmnt);
 

@@ -190,22 +190,211 @@ namespace Bytecode
             putWord(out, 0);
             break;
 
+         case GDCC::IR::Code::AddI_W:
+         case GDCC::IR::Code::AddU_W:
+            putWord(out, 14); // add
+            break;
+
+         case GDCC::IR::Code::AndU_W:
+            putWord(out, 72); // andbitwise
+            break;
+
          case GDCC::IR::Code::Casm:
             for(auto const &arg : stmnt.args)
                putExpWord(out, arg.aLit.value);
+            break;
+
+         case GDCC::IR::Code::CmpI_EQ_W:
+         case GDCC::IR::Code::CmpU_EQ_W:
+            putWord(out, 19); // eq
+            break;
+
+         case GDCC::IR::Code::CmpI_GE_W:
+            putWord(out, 24); // ge
+            break;
+
+         case GDCC::IR::Code::CmpI_GT_W:
+            putWord(out, 22); // gt
+            break;
+
+         case GDCC::IR::Code::CmpI_LE_W:
+            putWord(out, 23); // le
+            break;
+
+         case GDCC::IR::Code::CmpI_LT_W:
+            putWord(out, 21); // lt
+            break;
+
+         case GDCC::IR::Code::CmpI_NE_W:
+         case GDCC::IR::Code::CmpU_NE_W:
+            putWord(out, 20); // ne
+            break;
+
+         case GDCC::IR::Code::Cnat:
+            putWord(out, 351); // callfunc
+            putExpWord(out, stmnt.args[0].aLit.value);
+            putWord(out, stmnt.args.size() - 2);
+            break;
+
+         case GDCC::IR::Code::Cspe:
+            putStatement_Cspe(out, stmnt);
+            break;
+
+         case GDCC::IR::Code::DivI_W:
+            putWord(out, 17); // divide
+            break;
+
+         case GDCC::IR::Code::DivX_W:
+            putWord(out, 137); // fixeddiv
+            break;
+
+         case GDCC::IR::Code::InvU_W:
+            putWord(out, 330); // negatebinary
+            break;
+
+         case GDCC::IR::Code::ModI_W:
+            putWord(out, 18); // modulus
             break;
 
          case GDCC::IR::Code::Move_W:
             putStatement_Move_W(out, stmnt);
             break;
 
+         case GDCC::IR::Code::MulI_W:
+            putWord(out, 16); // multiply
+            break;
+
+         case GDCC::IR::Code::MulX_W:
+            putWord(out, 136); // fixedmul
+            break;
+
+         case GDCC::IR::Code::NegI_W:
+            putWord(out, 78); // unaryminus
+            break;
+
+         case GDCC::IR::Code::NotU_W:
+            putWord(out, 75); // negatelogical
+            break;
+
+         case GDCC::IR::Code::OrIU_W:
+            putWord(out, 73); // orbitwise
+            break;
+
+         case GDCC::IR::Code::OrXU_W:
+            putWord(out, 74); // eorbitwise
+            break;
+
          case GDCC::IR::Code::Retn:
             putStatement_Retn(out, stmnt);
+            break;
+
+         case GDCC::IR::Code::ShLU_W:
+            putWord(out, 76); // lshift
+            break;
+
+         case GDCC::IR::Code::ShRI_W:
+            putWord(out, 77); // rshift
+            break;
+
+         case GDCC::IR::Code::SubI_W:
+         case GDCC::IR::Code::SubU_W:
+            putWord(out, 15); // subtract
+            break;
+
+         case GDCC::IR::Code::Swap_W:
+            putWord(out, 217); // swap
             break;
 
          default:
             std::cerr << "ERROR: " << stmnt.pos << ": cannot put Code for ZDACS: "
                << stmnt.code << '\n';
+            throw EXIT_FAILURE;
+         }
+      }
+
+      //
+      // Info::putStatement_Cspe
+      //
+      void Info::putStatement_Cspe(std::ostream &out, GDCC::IR::Statement const &stmnt)
+      {
+         auto ret = ResolveValue(stmnt.args[1].aLit.value->getValue());
+
+         GDCC::IR::ArgBase a;
+         if(stmnt.args.size() == 2)
+            a = ret ? GDCC::IR::ArgBase::Stk : GDCC::IR::ArgBase::Lit;
+         else
+            a = stmnt.args[2].a;
+
+         switch(a)
+         {
+         case GDCC::IR::ArgBase::Lit:
+            if(ret)
+            {
+               for(auto const &arg : GDCC::MakeRange(stmnt.args.begin() + 2, stmnt.args.end()))
+               {
+                  putWord(out, 3); // pushnumber
+                  putExpWord(out, arg.aLit.value);
+               }
+
+               putWord(out, 263); break; // lspec5result
+               putExpWord(out, stmnt.args[0].aLit.value);
+
+               break;
+            }
+
+            switch(stmnt.args.size() - 2)
+            {
+            case 0: putWord(out,  9); break; // lspec1direct
+            case 1: putWord(out,  9); break; // lspec1direct
+            case 2: putWord(out, 10); break; // lspec2direct
+            case 3: putWord(out, 11); break; // lspec3direct
+            case 4: putWord(out, 12); break; // lspec4direct
+            case 5: putWord(out, 13); break; // lspec5direct
+            }
+
+            putExpWord(out, stmnt.args[0].aLit.value);
+
+            // Dummy arg.
+            if(stmnt.args.size() == 2)
+               putWord(out, 0);
+
+            for(auto const &arg : GDCC::MakeRange(stmnt.args.begin() + 2, stmnt.args.end()))
+               putExpWord(out, arg.aLit.value);
+
+            break;
+
+         case GDCC::IR::ArgBase::Stk:
+            if(ret)
+            {
+               switch(stmnt.args.size() - 2)
+               {
+               case 0: putWord(out, 3); putWord(out, 0); // pushnumber
+               case 1: putWord(out, 3); putWord(out, 0); // pushnumber
+               case 2: putWord(out, 3); putWord(out, 0); // pushnumber
+               case 3: putWord(out, 3); putWord(out, 0); // pushnumber
+               case 4: putWord(out, 3); putWord(out, 0); // pushnumber
+               case 5: putWord(out, 263); break; // lspec5result
+               }
+            }
+            else
+            {
+               switch(stmnt.args.size() - 2)
+               {
+               case 0: putWord(out, 3); putWord(out, 0); // pushnumber
+               case 1: putWord(out, 4); break; // lspec1
+               case 2: putWord(out, 5); break; // lspec2
+               case 3: putWord(out, 6); break; // lspec3
+               case 4: putWord(out, 7); break; // lspec4
+               case 5: putWord(out, 8); break; // lspec5
+               }
+            }
+
+            putExpWord(out, stmnt.args[0].aLit.value);
+
+            break;
+
+         default:
+            std::cerr << "ERROR: " << stmnt.pos << ": bad Cspe\n";
             throw EXIT_FAILURE;
          }
       }
