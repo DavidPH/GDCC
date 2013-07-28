@@ -29,9 +29,9 @@ namespace GDCC
 
    // Faster, native numeric types.
    // FastU shall be suitable for storing the sizes of the target's objects.
-   typedef long double    FastF;
-   typedef std:: intmax_t FastI;
-   typedef std::uintmax_t FastU;
+   typedef long double   FastF;
+   typedef   signed long FastI;
+   typedef unsigned long FastU;
 }
 
 

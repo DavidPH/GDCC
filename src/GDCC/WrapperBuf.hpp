@@ -29,7 +29,7 @@ namespace GDCC
    class WrapperBuf : public std::streambuf
    {
    public:
-      explicit WrapperBuf(Buf &buf_) : buf{buf_}, pbc{EOF}, pbb{EOF} {}
+      explicit WrapperBuf(Buf &buf_) : buf(buf_), pbc{EOF}, pbb{EOF} {}
 
    protected:
       //

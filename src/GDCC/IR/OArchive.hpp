@@ -33,7 +33,7 @@ namespace GDCC
       class OArchive
       {
       public:
-         explicit OArchive(std::ostream &out_) : out{out_} {}
+         explicit OArchive(std::ostream &out_) : out(out_) {}
 
          OArchive &operator << (bool in) {return putString(in ? "1" : "0");}
 
