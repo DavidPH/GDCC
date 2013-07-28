@@ -12,7 +12,7 @@
 add_library(gdcc-bc-zdacs
    Info.cpp
    put.cpp
-   translate.cpp
+   tr.cpp
 )
 
 target_link_libraries(gdcc-bc-zdacs gdcc-bc)
