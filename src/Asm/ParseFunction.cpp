@@ -17,7 +17,6 @@
 #include "GDCC/Token.hpp"
 
 #include "GDCC/IR/Function.hpp"
-#include "GDCC/IR/Linkage.hpp"
 
 #include <iostream>
 
@@ -50,28 +49,6 @@ static GDCC::IR::CallType ParseCallType(Asm::IStream &in)
 
    default:
       std::cerr << "ERROR: " << tok.pos << ": bad function ctype: '" << tok.str << "'\n";
-      throw EXIT_FAILURE;
-   }
-}
-
-//
-// ParseLinkage
-//
-static GDCC::IR::Linkage ParseLinkage(Asm::IStream &in)
-{
-   GDCC::Token tok;
-   switch(static_cast<GDCC::StringIndex>((in >> tok, tok).str))
-   {
-   case GDCC::STR_ExtACS: return GDCC::IR::Linkage::ExtACS;
-   case GDCC::STR_ExtASM: return GDCC::IR::Linkage::ExtASM;
-   case GDCC::STR_ExtC:   return GDCC::IR::Linkage::ExtC;
-   case GDCC::STR_ExtCXX: return GDCC::IR::Linkage::ExtCXX;
-   case GDCC::STR_ExtDS:  return GDCC::IR::Linkage::ExtDS;
-   case GDCC::STR_IntC:   return GDCC::IR::Linkage::IntC;
-   case GDCC::STR_IntCXX: return GDCC::IR::Linkage::IntCXX;
-
-   default:
-      std::cerr << "ERROR: " << tok.pos << ": bad function linka: '" << tok.str << "'\n";
       throw EXIT_FAILURE;
    }
 }
@@ -149,7 +126,7 @@ namespace Asm
          break;
 
       case GDCC::STR_linka:
-         func.linka = ParseLinkage(SkipEqual(in));
+         func.linka = ParseLinkage((SkipEqual(in) >> tok, tok));
          break;
 
       case GDCC::STR_retrn:

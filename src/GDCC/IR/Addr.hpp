@@ -36,13 +36,13 @@ namespace GDCC
       };
 
       //
-      // AddressSpace
+      // AddrSpace
       //
-      class AddressSpace
+      class AddrSpace
       {
       public:
-         AddressSpace() = default;
-         constexpr AddressSpace(AddrBase base_, String name_) : base{base_}, name{name_} {}
+         AddrSpace() = default;
+         constexpr AddrSpace(AddrBase base_, String name_) : base{base_}, name{name_} {}
 
          AddrBase base;
          String   name;

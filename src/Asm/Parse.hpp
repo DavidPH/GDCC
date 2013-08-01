@@ -31,11 +31,16 @@ namespace GDCC
 {
    namespace IR
    {
+      enum class AddrBase;
+      enum class Linkage;
+
       class Arg;
       class Block;
       class Exp;
       class Function;
+      class Object;
       class Value;
+      class Value_Multi;
    }
 }
 
@@ -46,6 +51,8 @@ namespace GDCC
 
 namespace Asm
 {
+   GDCC::IR::AddrBase ParseAddrBase(GDCC::Token const &tok);
+
    GDCC::IR::Arg ParseArg(IStream &in);
 
    void ParseBlock(IStream &in, GDCC::IR::Block &block, GDCC::TokenType end);
@@ -58,6 +65,12 @@ namespace Asm
    void ParseFunction(IStream &in, GDCC::IR::Function &func);
 
    GDCC::Integ ParseInteg(IStream &in);
+
+   GDCC::IR::Linkage ParseLinkage(GDCC::Token const &tok);
+
+   void ParseObject(IStream &in, GDCC::IR::Object &obj);
+
+   GDCC::IR::Value_Multi ParseMulti(IStream &in);
 
    GDCC::IR::Value ParseNumber(GDCC::Token tok);
 }

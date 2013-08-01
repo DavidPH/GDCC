@@ -76,6 +76,9 @@ namespace Asm
       case GDCC::TOK_String:
          return GDCC::IR::ExpCreate_ValueGlyph(static_cast<GDCC::IR::Glyph>(tok.str), tok.pos);
 
+      case GDCC::TOK_BrackO:
+         return GDCC::IR::ExpCreate_ValueRoot(ParseMulti(in), tok.pos);
+
       default:
          std::cerr << "ERROR: " << tok.pos << ": expected expression\n";
          throw EXIT_FAILURE;
@@ -119,6 +122,33 @@ namespace Asm
          std::cerr << "stub\n";
          throw EXIT_FAILURE;
       }
+   }
+
+   //
+   // ParseMulti
+   //
+   GDCC::IR::Value_Multi ParseMulti(IStream &in)
+   {
+      GDCC::Token tok;
+      std::vector<GDCC::IR::Value> val;
+
+      do val.emplace_back(ParseExp(in)->getValue());
+      while((in >> tok, tok).tok == GDCC::TOK_Comma);
+
+      if(tok.tok != GDCC::TOK_BrackC)
+      {
+         std::cerr << "ERROR: " << tok.pos << ": expected ]\n";
+         throw EXIT_FAILURE;
+      }
+
+      GDCC::Array<GDCC::IR::Value> vals{GDCC::Move, val.begin(), val.end()};
+      GDCC::Array<GDCC::IR::Type> types{vals.size()};
+
+      for(std::size_t i = 0, e = vals.size(); i != e; ++i)
+         types[i] = vals[i].getType();
+
+      return GDCC::IR::Value_Multi(std::move(vals),
+         GDCC::IR::Type_Multi(std::move(types)));
    }
 
    //

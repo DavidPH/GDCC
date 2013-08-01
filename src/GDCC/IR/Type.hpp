@@ -65,6 +65,8 @@ namespace GDCC
 
          Integ &clamp(Integ &value);
 
+         FastU getBits() const {return bitsI + bitsF + bitsS;}
+
          FastU bitsI;
          FastU bitsF;
          bool  bitsS : 1;

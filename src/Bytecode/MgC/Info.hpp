@@ -39,6 +39,10 @@ namespace Bytecode
 
          void putFunc(std::ostream &out, GDCC::IR::Function const &func);
 
+         void putObj(std::ostream &out, GDCC::IR::Object const &obj);
+         void putObjValue(std::ostream &out, GDCC::IR::Value const &val);
+         void putObjValue_Multi(std::ostream &out, GDCC::IR::Value_Multi const &val);
+
          void putValue(std::ostream &out, GDCC::IR::Value const &val);
 
          void putStmnt(std::ostream &out, GDCC::IR::Statement const &stmnt);

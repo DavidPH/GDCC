@@ -102,6 +102,8 @@ namespace GDCC
             getTablesString();
             getTablesGlyphs();
             getTablesFuncts();
+            getTablesSpaces();
+            getTablesObject();
 
             return *this;
          }
@@ -112,6 +114,8 @@ namespace GDCC
       private:
          IArchive &getTablesFuncts();
          IArchive &getTablesGlyphs();
+         IArchive &getTablesObject();
+         IArchive &getTablesSpaces();
          IArchive &getTablesString();
 
          std::vector<char>   data;

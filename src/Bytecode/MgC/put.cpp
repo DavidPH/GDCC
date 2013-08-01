@@ -13,6 +13,7 @@
 #include "Info.hpp"
 
 #include "GDCC/IR/Function.hpp"
+#include "GDCC/IR/Object.hpp"
 
 #include "GDCC/IR/Exp/ValueGlyph.hpp"
 #include "GDCC/IR/Exp/ValueRoot.hpp"
@@ -34,6 +35,12 @@ namespace Bytecode
       void Info::put(std::ostream &out)
       {
          out << std::hex << "MgC_NTS" << '\0' << "CODEDEFS" << '\0' << '\0';
+
+         for(auto const &itr : GDCC::IR::Space::LocArs.obset)
+         {
+            if(!itr->exdef)
+               putObj(out, *itr);
+         }
 
          for(auto const &itr : GDCC::IR::FunctionRange())
          {
@@ -93,6 +100,93 @@ namespace Bytecode
       void Info::putGlyph(std::ostream &out, GDCC::IR::Glyph glyph)
       {
          out << '$' << static_cast<GDCC::String>(glyph) << '\0';
+      }
+
+      //
+      // Info::putObj
+      //
+      void Info::putObj(std::ostream &out, GDCC::IR::Object const &obj)
+      {
+         out << "data" << '\0' << obj.glyph << '\0' << obj.words << '\0';
+
+         if(obj.initi)
+         {
+            out << '(' << '\0';
+            putObjValue(out, obj.initi->getValue());
+            out << ')' << '\0';
+         }
+         else
+            out << ';' << '\0';
+      }
+
+      //
+      // Info::putObjValue
+      //
+      void Info::putObjValue(std::ostream &out, GDCC::IR::Value const &val)
+      {
+         switch(val.v)
+         {
+         case GDCC::IR::ValueBase::Fixed:
+            out << val.vFixed.value << '\0';
+            break;
+
+         case GDCC::IR::ValueBase::Multi:
+            putObjValue_Multi(out, val.vMulti);
+            break;
+
+         default:
+            std::cerr << "bad ObjValue\n";
+            throw EXIT_FAILURE;
+         }
+      }
+
+      //
+      // Info::putObjValue_Multi
+      //
+      void Info::putObjValue_Multi(std::ostream &out, GDCC::IR::Value_Multi const &val)
+      {
+         std::size_t i = 0, e = val.value.size();
+         GDCC::FastU bucket = 0, bucketBits = 0;
+         GDCC::FastU bits;
+
+         auto flushBucket = [&]()
+         {
+            if(!bucketBits) return;
+
+            out << bucket << '\0';
+
+            if(i != e) out << ',' << '\0';
+
+            bucket     = 0;
+            bucketBits = 0;
+         };
+
+         auto writeBucket = [&](GDCC::FastU value)
+         {
+            if(bucketBits + bits > 32)
+               flushBucket();
+
+            value <<= bucketBits;
+            bucket |= value;
+            bucketBits += bits;
+         };
+
+         for(; i != e; ++i) switch(val.value[i].v)
+         {
+         case GDCC::IR::ValueBase::Fixed:
+            bits = val.value[i].vFixed.vtype.getBits();
+            if(bits > 32) goto defcase;
+            writeBucket(number_cast<GDCC::FastU>(val.value[i].vFixed.value));
+            break;
+
+         default:
+         defcase:
+            flushBucket();
+            putObjValue(out, val.value[i]);
+            break;
+         }
+
+         flushBucket();
       }
 
       //

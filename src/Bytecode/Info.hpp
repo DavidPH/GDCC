@@ -32,7 +32,9 @@ namespace GDCC
       class Exp;
       class Function;
       class Glyph;
+      class Object;
       class Value;
+      class Value_Multi;
       class Statement;
    }
 

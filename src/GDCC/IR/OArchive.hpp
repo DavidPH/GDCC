@@ -92,6 +92,8 @@ namespace GDCC
             putTablesString();
             putTablesGlyphs();
             putTablesFuncts();
+            putTablesSpaces();
+            putTablesObject();
 
             return *this;
          }
@@ -99,6 +101,8 @@ namespace GDCC
       private:
          OArchive &putTablesFuncts();
          OArchive &putTablesGlyphs();
+         OArchive &putTablesObject();
+         OArchive &putTablesSpaces();
          OArchive &putTablesString();
 
          std::ostream &out;
