@@ -39,6 +39,7 @@ namespace GDCC
       class Exp;
       class Function;
       class Object;
+      class Space;
       class Value;
       class Value_Multi;
    }
@@ -73,6 +74,8 @@ namespace Asm
    GDCC::IR::Value_Multi ParseMulti(IStream &in);
 
    GDCC::IR::Value ParseNumber(GDCC::Token tok);
+
+   void ParseSpace(IStream &in, GDCC::IR::Space &space);
 }
 
 #endif//Asm__Parse_H__

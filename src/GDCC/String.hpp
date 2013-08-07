@@ -102,6 +102,15 @@ namespace std
       constexpr size_t operator () (GDCC::String const &str) const
          {return static_cast<size_t>(str);}
    };
+
+   //
+   // less<GDCC::String>
+   //
+   template<> struct less<GDCC::String>
+   {
+      constexpr size_t operator () (GDCC::String const &l, GDCC::String const &r) const
+         {return static_cast<size_t>(l) < static_cast<size_t>(r);}
+   };
 }
 
 

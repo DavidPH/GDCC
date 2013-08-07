@@ -14,6 +14,7 @@
 
 #include "GDCC/IR/Function.hpp"
 #include "GDCC/IR/Glyph.hpp"
+#include "GDCC/IR/Object.hpp"
 
 #include <iostream>
 
@@ -31,17 +32,8 @@ namespace Bytecode
       //
       void Info::trFunc(GDCC::IR::Function &func)
       {
-         // Generate label glyph.
-         {
-            auto type = GDCC::IR::Type_Fixed(32, 0, false, false);
-            auto val = GDCC::IR::ExpCreate_ValueRoot(
-               GDCC::IR::Value_Fixed(jumpPos, type), GDCC::Origin(GDCC::STRNULL, 0));
-
-            auto &data = GDCC::IR::Glyph::GetData(func.label);
-
-            data.type  = type;
-            data.value = val;
-         }
+         // Back label glyph.
+         BackGlyphWord(func.label, jumpPos);
 
          InfoBase::trFunc(func);
 
@@ -60,6 +52,115 @@ namespace Bytecode
       }
 
       //
+      // Info::trSpace
+      //
+      void Info::trSpace(GDCC::IR::Space &space)
+      {
+         //
+         // allocMapReg
+         //
+         // Handles the unusual rules for allocating map registers.
+         //
+         auto allocMapReg = [](GDCC::IR::Object *self)
+         {
+            if(!self->space) return;
+
+            for(;; ++self->value)
+            {
+               auto lo = self->value;
+               auto hi = self->words + lo;
+
+               for(auto const &obj : self->space->obset)
+               {
+                  if(obj->alloc || obj == self)
+                     continue;
+
+                  auto objLo = obj->value;
+                  auto objHi = obj->words + objLo;
+
+                  if((objLo <= lo && lo < objHi) || (objLo < hi && hi < objHi))
+                     goto nextValue;
+
+                  if((lo <= objLo && objLo < hi) || (lo < objHi && objHi < hi))
+                     goto nextValue;
+               }
+
+               for(auto const &itr : GDCC::IR::Space::MapArs)
+               {
+                  if(lo <= itr.second.value && itr.second.value < hi)
+                     goto nextValue;
+               }
+
+               break;
+
+            nextValue:;
+            }
+
+            self->alloc = false;
+         };
+
+         //
+         // trSpaceAlloc
+         //
+         auto trSpaceAlloc = [](GDCC::IR::Space &sp)
+         {
+            for(auto const &obj : sp.obset)
+            {
+               if(obj->alloc)
+                  obj->allocValue();
+
+               // Back address glyph.
+               BackGlyphWord(obj->glyph, obj->value);
+            }
+         };
+
+         switch(space.space)
+         {
+         case GDCC::IR::AddrBase::GblReg:
+         case GDCC::IR::AddrBase::LocArs:
+         case GDCC::IR::AddrBase::WldReg:
+            trSpaceAlloc(space);
+            break;
+
+         case GDCC::IR::AddrBase::MapReg:
+            for(auto const &obj : space.obset)
+            {
+               if(obj->alloc)
+                  allocMapReg(obj);
+
+               // Back address glyph.
+               BackGlyphWord(obj->glyph, obj->value);
+            }
+            break;
+
+         case GDCC::IR::AddrBase::MapArr:
+            if(space.exdef)
+               ++numChunkAIMP;
+            else
+               ++numChunkARAY;
+
+         case GDCC::IR::AddrBase::GblArr:
+         case GDCC::IR::AddrBase::WldArr:
+            // Allocate addresses for any sub-objects.
+            trSpaceAlloc(space);
+
+            // Even external arrays need an index.
+            if(space.alloc)
+               space.allocValue();
+
+            space.allocWords();
+
+            // Back address glyph.
+            BackGlyphWord(space.glyph, space.value);
+
+            break;
+
+         default:
+            break;
+         }
+      }
+
+      //
       // Info::trStmnt
       //
       void Info::trStmnt(GDCC::IR::Statement &stmnt)
@@ -67,15 +168,14 @@ namespace Bytecode
          // Generate label glyphs.
          if(!stmnt.labs.empty())
          {
-            auto type = GDCC::IR::Type_Fixed(32, 0, false, false);
             auto val = GDCC::IR::ExpCreate_ValueRoot(
-               GDCC::IR::Value_Fixed(jumpPos, type), stmnt.pos);
+               GDCC::IR::Value_Fixed(jumpPos, TypeWord), stmnt.pos);
 
             for(auto const &lab : stmnt.labs)
             {
                auto &data = GDCC::IR::Glyph::GetData(lab);
 
-               data.type  = type;
+               data.type  = TypeWord;
                data.value = val;
             }
          }

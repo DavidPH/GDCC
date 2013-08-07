@@ -10,6 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
+GDCC_StringList(, "")
+
 GDCC_StringList(ACSE, "ACSE")
 GDCC_StringList(Action, "Action")
 GDCC_StringList(AddI_W, "AddI_W")
@@ -99,6 +101,7 @@ GDCC_StringList(ScriptI, "ScriptI")
 GDCC_StringList(ScriptS, "ScriptS")
 GDCC_StringList(ShLU_W, "ShLU_W")
 GDCC_StringList(ShRI_W, "ShRI_W")
+GDCC_StringList(Space, "Space")
 GDCC_StringList(Special, "Special")
 GDCC_StringList(Stk, "Stk")
 GDCC_StringList(StrArr, "StrArr")
@@ -114,6 +117,7 @@ GDCC_StringList(WldArr, "WldArr")
 GDCC_StringList(WldArs, "WldArs")
 GDCC_StringList(WldReg, "WldReg")
 GDCC_StringList(ZDoom, "ZDoom")
+GDCC_StringList(alloc, "alloc")
 GDCC_StringList(block, "block")
 GDCC_StringList(ctype, "ctype")
 GDCC_StringList(exdef, "exdef")

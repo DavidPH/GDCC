@@ -13,6 +13,8 @@
 #ifndef GDCC__Utility_H__
 #define GDCC__Utility_H__
 
+#include <functional>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -20,6 +22,20 @@
 
 namespace GDCC
 {
+   //
+   // LessMem
+   //
+   template<typename T, typename KT, KT T::*P, typename Cmp = std::less<KT>>
+   struct LessMem : private Cmp
+   {
+      using Cmp::Cmp;
+
+      constexpr bool operator () (T const &l, T const &r) const
+         {return Cmp::operator()(l.*P, r.*P);}
+      constexpr bool operator () (T const *l, T const *r) const
+         {return Cmp::operator()(l->*P, r->*P);}
+   };
+
    //
    // Range
    //

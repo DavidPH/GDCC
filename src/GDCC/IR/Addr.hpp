@@ -59,10 +59,12 @@ namespace GDCC
 {
    namespace IR
    {
-      OArchive &operator << (OArchive &out, AddrBase in);
+      OArchive &operator << (OArchive &out, AddrBase  in);
+      OArchive &operator << (OArchive &out, AddrSpace in);
       std::ostream &operator << (std::ostream &out, AddrBase in);
 
-      IArchive &operator >> (IArchive &in, AddrBase &out);
+      IArchive &operator >> (IArchive &in, AddrBase  &out);
+      IArchive &operator >> (IArchive &in, AddrSpace &out);
    }
 }
 

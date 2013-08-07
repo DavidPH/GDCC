@@ -39,6 +39,14 @@ namespace GDCC
       }
 
       //
+      // operator OArchive << AddrSpace
+      //
+      OArchive &operator << (OArchive &out, AddrSpace in)
+      {
+         return out << in.base << in.name;
+      }
+
+      //
       // operator std::ostream << AddrBase
       //
       std::ostream &operator << (std::ostream &out, AddrBase in)
@@ -66,6 +74,14 @@ namespace GDCC
             std::cerr << "invalid AddrBase\n";
             throw EXIT_FAILURE;
          }
+      }
+
+      //
+      // operator IArchive >> AddrSpace
+      //
+      IArchive &operator >> (IArchive &in, AddrSpace &out)
+      {
+         return in >> out.base >> out.name;
       }
    }
 }

@@ -35,7 +35,10 @@ namespace GDCC
       class Object;
       class Value;
       class Value_Multi;
+      class Space;
       class Statement;
+      class Type;
+      struct Type_Fixed;
    }
 
    struct Origin;
@@ -64,6 +67,7 @@ namespace Bytecode
    protected:
       virtual void trBlock(GDCC::IR::Block &block);
       virtual void trFunc(GDCC::IR::Function &func);
+      virtual void trSpace(GDCC::IR::Space &space);
       virtual void trStmnt(GDCC::IR::Statement &stmnt) = 0;
 
       GDCC::IR::Function *curFunc;

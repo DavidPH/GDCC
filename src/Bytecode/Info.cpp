@@ -13,6 +13,7 @@
 #include "Info.hpp"
 
 #include "GDCC/IR/Function.hpp"
+#include "GDCC/IR/Object.hpp"
 
 #include <iostream>
 
@@ -28,6 +29,15 @@ namespace Bytecode
    //
    void Info::tr()
    {
+      for(auto &itr : GDCC::IR::Space::GblArs) trSpace(itr.second);
+      for(auto &itr : GDCC::IR::Space::MapArs) trSpace(itr.second);
+      for(auto &itr : GDCC::IR::Space::WldArs) trSpace(itr.second);
+
+      trSpace(GDCC::IR::Space::GblReg);
+      trSpace(GDCC::IR::Space::LocArs);
+      trSpace(GDCC::IR::Space::MapReg);
+      trSpace(GDCC::IR::Space::WldReg);
+
       for(auto &itr : GDCC::IR::FunctionRange())
          trFunc(itr.second);
    }
@@ -57,6 +67,13 @@ namespace Bytecode
          curFunc = nullptr;
          throw;
       }
+   }
+
+   //
+   // Info::trSpace
+   //
+   void Info::trSpace(GDCC::IR::Space &)
+   {
    }
 
    //

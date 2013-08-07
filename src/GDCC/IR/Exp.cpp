@@ -56,6 +56,8 @@ namespace GDCC
       {
          switch(GetIR<StringIndex>(in))
          {
+         case STR_None: return nullptr;
+
          case STR_ValueGlyph: return ExpGetIR_ValueGlyph(in);
          case STR_ValueRoot:  return ExpGetIR_ValueRoot (in);
 

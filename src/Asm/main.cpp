@@ -64,6 +64,17 @@ static bool ParseTLK(Asm::IStream &in)
 
    switch(static_cast<GDCC::StringIndex>(tok.str))
    {
+   case GDCC::STR_Function:
+      in >> tok;
+      if(tok.tok != GDCC::TOK_Identifier && tok.tok != GDCC::TOK_String)
+      {
+         std::cerr << "ERROR: " << tok.pos << ": expected identifier or string\n";
+         throw EXIT_FAILURE;
+      }
+
+      Asm::ParseFunction(in, GDCC::IR::Function::Get(tok.str));
+      return true;
+
    case GDCC::STR_Object:
       as.base = Asm::ParseAddrBase((in >> tok, tok));
       as.name = (in >> tok, tok).str;
@@ -78,15 +89,11 @@ static bool ParseTLK(Asm::IStream &in)
 
       return true;
 
-   case GDCC::STR_Function:
-      in >> tok;
-      if(tok.tok != GDCC::TOK_Identifier && tok.tok != GDCC::TOK_String)
-      {
-         std::cerr << "ERROR: " << tok.pos << ": expected identifier or string\n";
-         throw EXIT_FAILURE;
-      }
+   case GDCC::STR_Space:
+      as.base = Asm::ParseAddrBase((in >> tok, tok));
+      as.name = (in >> tok, tok).str;
 
-      Asm::ParseFunction(in, GDCC::IR::Function::Get(tok.str));
+      Asm::ParseSpace(in, GDCC::IR::Space::Get(as));
       return true;
 
    default:

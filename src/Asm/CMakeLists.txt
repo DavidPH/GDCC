@@ -19,6 +19,7 @@ add_executable(gdcc-as
    ParseExp.cpp
    ParseFunction.cpp
    ParseObject.cpp
+   ParseSpace.cpp
 )
 
 target_link_libraries(gdcc-as gdcc-ir)

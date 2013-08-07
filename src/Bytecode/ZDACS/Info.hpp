@@ -37,10 +37,14 @@ namespace Bytecode
 
          virtual void put(std::ostream &out);
 
+
+         static GDCC::IR::Type_Fixed const TypeWord;
+
       protected:
          void putByte(std::ostream &out, GDCC::FastU i);
 
          void putChunk(std::ostream &out);
+         void putChunkARAY(std::ostream &out);
          void putChunkSFLG(std::ostream &out);
          void putChunkSPTR(std::ostream &out);
          void putChunkSVCT(std::ostream &out);
@@ -60,6 +64,8 @@ namespace Bytecode
 
          virtual void trFunc(GDCC::IR::Function &func);
 
+         virtual void trSpace(GDCC::IR::Space &space);
+
          virtual void trStmnt(GDCC::IR::Statement &stmnt);
          void trStmnt_Cspe(GDCC::IR::Statement &stmnt);
          void trStmnt_Move_W(GDCC::IR::Statement &stmnt);
@@ -68,6 +74,8 @@ namespace Bytecode
          void trStmnt_Retn(GDCC::IR::Statement &stmnt);
 
 
+         static void BackGlyphWord(GDCC::String glyph, GDCC::FastU val);
+
          static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin pos);
 
          static GDCC::CounterRef<GDCC::IR::Exp> ResolveGlyph(GDCC::String glyph);
@@ -75,6 +83,8 @@ namespace Bytecode
 
 
          GDCC::FastU jumpPos;
+         GDCC::FastU numChunkAIMP;
+         GDCC::FastU numChunkARAY;
          GDCC::FastU numChunkSFLG;
          GDCC::FastU numChunkSPTR;
          GDCC::FastU numChunkSVCT;

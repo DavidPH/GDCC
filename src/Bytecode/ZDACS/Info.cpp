@@ -19,6 +19,19 @@
 
 
 //----------------------------------------------------------------------------|
+// Global Variables                                                           |
+//
+
+namespace Bytecode
+{
+   namespace ZDACS
+   {
+      GDCC::IR::Type_Fixed const Info::TypeWord{32, 0, false, false};
+   }
+}
+
+
+//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
@@ -31,10 +44,24 @@ namespace Bytecode
       //
       Info::Info() :
          jumpPos{16}, // HACK: Should be calculated.
+         numChunkAIMP{0},
+         numChunkARAY{0},
          numChunkSFLG{0},
          numChunkSPTR{0},
          numChunkSVCT{0}
       {
+      }
+
+      //
+      // Info::BackGlyphWord
+      //
+      void Info::BackGlyphWord(GDCC::String glyph, GDCC::FastU val)
+      {
+         auto &data = GDCC::IR::Glyph::GetData(glyph);
+
+         data.type  = TypeWord;
+         data.value = GDCC::IR::ExpCreate_ValueRoot(
+            GDCC::IR::Value_Fixed(val, TypeWord), GDCC::Origin(GDCC::STRNULL, 0));
       }
 
       //

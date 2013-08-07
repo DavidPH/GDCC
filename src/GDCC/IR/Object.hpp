@@ -17,9 +17,10 @@
 
 #include "../Counter.hpp"
 #include "../Number.hpp"
+#include "../Utility.hpp"
 
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <set>
 
 
 //----------------------------------------------------------------------------|
@@ -47,6 +48,8 @@ namespace GDCC
          explicit Object(String name, Space *space);
          ~Object();
 
+         void allocValue();
+
          String  glyph;
          ExpPtr  initi;
          Linkage linka;
@@ -55,6 +58,7 @@ namespace GDCC
          FastU   words;
 
          bool    alias : 1;
+         bool    alloc : 1;
          bool    exdef : 1;
 
 
@@ -67,26 +71,42 @@ namespace GDCC
       class Space
       {
       public:
-         using ObSet = std::unordered_set<Object *>;
+         using ObSet = std::set<Object *, LessMem<Object, String, &Object::glyph>>;
+
+         using SpaceMap = std::map<String, Space>;
 
 
          explicit Space(AddrSpace as);
 
+         void allocValue();
+         void allocWords();
+
          Object &get(String name) {return Object::Get(name, this);}
 
-         String   glyph;
-         Linkage  linka;
-         ObSet    obset;
-         AddrBase space;
-         FastU    value;
-         FastU    words;
+         String    glyph;
+         Linkage   linka;
+         ObSet     obset;
+         AddrBase  space;
+         SpaceMap *spmap;
+         FastU     value;
+         FastU     words;
 
-         bool     exdef : 1;
+         bool      alloc : 1;
+         bool      exdef : 1;
 
 
          static Space *Find(AddrSpace as);
 
+         static Space &Get(AddrSpace as);
+
+         static Space GblReg;
          static Space LocArs;
+         static Space MapReg;
+         static Space WldReg;
+
+         static SpaceMap GblArs;
+         static SpaceMap MapArs;
+         static SpaceMap WldArs;
       };
    }
 }
