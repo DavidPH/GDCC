@@ -64,9 +64,9 @@ namespace GDCC
             Object newObj{name, nullptr}; *this >> newObj;
             auto  &oldObj = Object::Get(name, space);
 
-            if(oldObj.exdef)
+            if(!oldObj.defin)
             {
-               if(!newObj.exdef)
+               if(newObj.defin)
                {
                   oldObj.initi = newObj.initi;
                   oldObj.value = newObj.value;
@@ -74,7 +74,7 @@ namespace GDCC
 
                   oldObj.alias = newObj.alias;
                   oldObj.alloc = newObj.alloc;
-                  oldObj.exdef = newObj.exdef;
+                  oldObj.defin = newObj.defin;
                }
             }
          }
@@ -93,15 +93,15 @@ namespace GDCC
             Space     newSpace{space}; *this >> newSpace;
             Space    &oldSpace = Space::Get(space);
 
-            if(oldSpace.exdef)
+            if(!oldSpace.defin)
             {
-               if(!newSpace.exdef)
+               if(newSpace.defin)
                {
                   oldSpace.value = newSpace.value;
                   oldSpace.words = newSpace.words;
 
                   oldSpace.alloc = newSpace.alloc;
-                  oldSpace.exdef = newSpace.exdef;
+                  oldSpace.defin = newSpace.defin;
                }
             }
          }
@@ -154,7 +154,7 @@ namespace GDCC
 
          alias{false},
          alloc{false},
-         exdef{true}
+         defin{false}
       {
          if(space)
             space->obset.emplace(this);
@@ -230,7 +230,7 @@ namespace GDCC
          words{0},
 
          alloc{false},
-         exdef{true}
+         defin{false}
       {
          switch(space)
          {
@@ -380,7 +380,7 @@ namespace GDCC
       OArchive &operator << (OArchive &out, Object const &in)
       {
          return out << in.initi << in.linka << in.value << in.words << in.alias
-            << in.alloc << in.exdef;
+            << in.alloc << in.defin;
       }
 
       //
@@ -388,7 +388,7 @@ namespace GDCC
       //
       OArchive &operator << (OArchive &out, Space const &in)
       {
-         return out << in.linka << in.value << in.words << in.alloc << in.exdef;
+         return out << in.linka << in.value << in.words << in.alloc << in.defin;
       }
 
       //
@@ -411,7 +411,7 @@ namespace GDCC
 
          out.alias = GetIR<bool>(in);
          out.alloc = GetIR<bool>(in);
-         out.exdef = GetIR<bool>(in);
+         out.defin = GetIR<bool>(in);
 
          return in;
       }
@@ -424,7 +424,7 @@ namespace GDCC
          in >> out.linka >> out.value >> out.words;
 
          out.alloc = GetIR<bool>(in);
-         out.exdef = GetIR<bool>(in);
+         out.defin = GetIR<bool>(in);
 
          return in;
       }

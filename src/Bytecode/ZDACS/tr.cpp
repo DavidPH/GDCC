@@ -37,7 +37,7 @@ namespace Bytecode
 
          InfoBase::trFunc(func);
 
-         if(!func.exdef) switch(func.ctype)
+         if(func.defin) switch(func.ctype)
          {
          case GDCC::IR::CallType::LangACS:
             func.valueInt = numChunkFUNC++;
@@ -140,10 +140,10 @@ namespace Bytecode
             break;
 
          case GDCC::IR::AddrBase::MapArr:
-            if(space.exdef)
-               ++numChunkAIMP;
-            else
+            if(space.defin)
                ++numChunkARAY;
+            else
+               ++numChunkAIMP;
 
          case GDCC::IR::AddrBase::GblArr:
          case GDCC::IR::AddrBase::WldArr:

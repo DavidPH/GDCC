@@ -53,7 +53,7 @@ namespace GDCC
          valueStr{STRNULL},
 
          alloc   {false},
-         exdef   {true},
+         defin   {false},
          sflagNet{false},
          sflagClS{false}
       {
@@ -95,9 +95,9 @@ namespace GDCC
             Function newFunc{name}; *this >> newFunc;
             auto    &oldFunc = Function::Get(name);
 
-            if(oldFunc.exdef)
+            if(!oldFunc.defin)
             {
-               if(!newFunc.exdef)
+               if(newFunc.defin)
                   oldFunc = std::move(newFunc);
             }
          }
@@ -148,7 +148,7 @@ namespace GDCC
       {
          return out << in.block << in.ctype << in.label << in.linka << in.linka
             << in.localArs << in.localReg << in.param << in.retrn << in.stype
-            << in.valueInt << in.valueStr << in.alloc << in.exdef << in.sflagNet
+            << in.valueInt << in.valueStr << in.alloc << in.defin << in.sflagNet
             << in.sflagClS;
       }
 
@@ -209,7 +209,7 @@ namespace GDCC
             >> out.valueInt >> out.valueStr;
 
          out.alloc    = GetIR<bool>(in);
-         out.exdef    = GetIR<bool>(in);
+         out.defin    = GetIR<bool>(in);
          out.sflagNet = GetIR<bool>(in);
          out.sflagClS = GetIR<bool>(in);
 

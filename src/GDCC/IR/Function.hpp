@@ -89,7 +89,7 @@ namespace GDCC
          String     valueStr;
 
          bool       alloc    : 1;
-         bool       exdef    : 1;
+         bool       defin    : 1;
          bool       sflagNet : 1;
          bool       sflagClS : 1;
 

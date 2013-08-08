@@ -57,8 +57,8 @@ namespace Asm
          obj.alloc = ParseFastU(SkipEqual(in));
          break;
 
-      case GDCC::STR_exdef:
-         obj.exdef = ParseFastU(SkipEqual(in));
+      case GDCC::STR_defin:
+         obj.defin = ParseFastU(SkipEqual(in));
          break;
 
       case GDCC::STR_initi:

@@ -57,8 +57,8 @@ namespace Asm
          space.alloc = ParseFastU(SkipEqual(in));
          break;
 
-      case GDCC::STR_exdef:
-         space.exdef = ParseFastU(SkipEqual(in));
+      case GDCC::STR_defin:
+         space.defin = ParseFastU(SkipEqual(in));
          break;
 
       case GDCC::STR_linka:

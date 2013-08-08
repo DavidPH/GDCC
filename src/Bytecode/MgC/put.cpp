@@ -38,13 +38,13 @@ namespace Bytecode
 
          for(auto const &itr : GDCC::IR::Space::LocArs.obset)
          {
-            if(!itr->exdef)
+            if(itr->defin)
                putObj(out, *itr);
          }
 
          for(auto const &itr : GDCC::IR::FunctionRange())
          {
-            if(!itr.second.exdef)
+            if(itr.second.defin)
                putFunc(out, itr.second);
          }
       }

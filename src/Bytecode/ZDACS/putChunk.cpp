@@ -52,7 +52,7 @@ namespace Bytecode
          {
             auto const &space = itr.second;
 
-            if(space.exdef) continue;
+            if(!space.defin) continue;
 
             putWord(out, space.value);
             putWord(out, space.words);
@@ -125,10 +125,10 @@ namespace Bytecode
             putByte(out, !!func.retrn);
             putByte(out, 0);
 
-            if(func.exdef)
-               putWord(out, 0);
-            else
+            if(func.defin)
                putExpWord(out, ResolveGlyph(func.label));
+            else
+               putWord(out, 0);
          }
       }
 
@@ -151,7 +151,7 @@ namespace Bytecode
                func.ctype != GDCC::IR::CallType::ScriptS)
                continue;
 
-            if(func.exdef) continue;
+            if(!func.defin) continue;
 
             GDCC::FastU flags = 0;
 
@@ -184,7 +184,7 @@ namespace Bytecode
                func.ctype != GDCC::IR::CallType::ScriptS)
                continue;
 
-            if(func.exdef) continue;
+            if(!func.defin) continue;
 
             putHWord(out, func.valueInt);
 
@@ -225,7 +225,7 @@ namespace Bytecode
                func.ctype != GDCC::IR::CallType::ScriptS)
                continue;
 
-            if(func.exdef) continue;
+            if(!func.defin) continue;
 
             if(func.localReg <= 20) continue;
 

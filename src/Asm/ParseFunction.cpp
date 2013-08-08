@@ -124,8 +124,8 @@ namespace Asm
          func.ctype = ParseCallType(SkipEqual(in));
          break;
 
-      case GDCC::STR_exdef:
-         func.exdef = ParseFastU(SkipEqual(in));
+      case GDCC::STR_defin:
+         func.defin = ParseFastU(SkipEqual(in));
          break;
 
       case GDCC::STR_label:

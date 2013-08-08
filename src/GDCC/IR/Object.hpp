@@ -59,7 +59,7 @@ namespace GDCC
 
          bool    alias : 1;
          bool    alloc : 1;
-         bool    exdef : 1;
+         bool    defin : 1;
 
 
          static Object &Get(String name, Space *space);
@@ -92,7 +92,7 @@ namespace GDCC
          FastU     words;
 
          bool      alloc : 1;
-         bool      exdef : 1;
+         bool      defin : 1;
 
 
          static Space *Find(AddrSpace as);
