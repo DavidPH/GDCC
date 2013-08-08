@@ -46,10 +46,25 @@ namespace Bytecode
          jumpPos{16}, // HACK: Should be calculated.
          numChunkAIMP{0},
          numChunkARAY{0},
+         numChunkFNAM{1},
+         numChunkFUNC{1},
          numChunkSFLG{0},
          numChunkSPTR{0},
          numChunkSVCT{0}
       {
+      }
+
+      //
+      // Info::BackGlyphFunc
+      //
+      void Info::BackGlyphFunc(GDCC::String glyph, GDCC::FastU val, GDCC::IR::CallType ctype)
+      {
+         auto &data = GDCC::IR::Glyph::GetData(glyph);
+
+         data.type  = TypeWord;
+         data.value = GDCC::IR::ExpCreate_ValueRoot(
+            GDCC::IR::Value_Funct(val, GDCC::IR::Type_Funct(ctype)),
+            GDCC::Origin(GDCC::STRNULL, 0));
       }
 
       //
@@ -136,7 +151,9 @@ namespace Bytecode
                return number_cast<GDCC::FastI>(val.vFixed.value);
             else
                return number_cast<GDCC::FastU>(val.vFixed.value);
-            break;
+
+         case GDCC::IR::ValueBase::Funct:
+             return val.vFunct.value;
 
          default:
             std::cerr << "ERROR: bad Value\n";

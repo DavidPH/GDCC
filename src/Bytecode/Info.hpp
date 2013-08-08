@@ -25,6 +25,7 @@ namespace GDCC
    namespace IR
    {
       enum class AddrBase;
+      enum class CallType;
 
       class Arg;
       struct ArgPtr2;
@@ -34,7 +35,7 @@ namespace GDCC
       class Glyph;
       class Object;
       class Value;
-      class Value_Multi;
+      struct Value_Multi;
       class Space;
       class Statement;
       class Type;

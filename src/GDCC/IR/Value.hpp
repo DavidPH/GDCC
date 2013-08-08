@@ -83,6 +83,9 @@ namespace GDCC
       {
          Value_Funct() = default;
 
+         Value_Funct(FastU value_, Type_Funct const &vtype_) :
+            vtype{vtype_}, value{value_} {}
+
          explicit Value_Funct(IArchive &in);
 
          Type_Funct vtype;

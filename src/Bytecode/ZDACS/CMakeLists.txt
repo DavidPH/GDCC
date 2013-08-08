@@ -13,7 +13,9 @@ add_library(gdcc-bc-zdacs
    Info.cpp
    put.cpp
    putChunk.cpp
+   putStmnt.cpp
    tr.cpp
+   trStmnt.cpp
 )
 
 target_link_libraries(gdcc-bc-zdacs gdcc-bc)

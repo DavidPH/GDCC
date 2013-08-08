@@ -106,6 +106,10 @@ namespace Asm
    {
       for(GDCC::Token tok; in >> tok;) switch(static_cast<GDCC::StringIndex>(tok.str))
       {
+      case GDCC::STR_alloc:
+         func.alloc = ParseFastU(SkipEqual(in));
+         break;
+
       case GDCC::STR_block:
          while(in >> tok && tok.tok == GDCC::TOK_EOL) {}
          if(tok.tok != GDCC::TOK_BraceO)
@@ -114,11 +118,14 @@ namespace Asm
             throw EXIT_FAILURE;
          }
          ParseBlock(in, func.block, GDCC::TOK_BraceC);
-         func.exdef = false;
          break;
 
       case GDCC::STR_ctype:
          func.ctype = ParseCallType(SkipEqual(in));
+         break;
+
+      case GDCC::STR_exdef:
+         func.exdef = ParseFastU(SkipEqual(in));
          break;
 
       case GDCC::STR_label:
@@ -127,6 +134,18 @@ namespace Asm
 
       case GDCC::STR_linka:
          func.linka = ParseLinkage((SkipEqual(in) >> tok, tok));
+         break;
+
+      case GDCC::STR_localArs:
+         func.localArs = ParseFastU(SkipEqual(in));
+         break;
+
+      case GDCC::STR_localReg:
+         func.localReg = ParseFastU(SkipEqual(in));
+         break;
+
+      case GDCC::STR_param:
+         func.param = ParseFastU(SkipEqual(in));
          break;
 
       case GDCC::STR_retrn:
@@ -139,6 +158,10 @@ namespace Asm
 
       case GDCC::STR_valueInt:
          func.valueInt = ParseFastI(SkipEqual(in));
+         break;
+
+      case GDCC::STR_valueStr:
+         func.valueStr = (SkipEqual(in) >> tok, tok).str;
          break;
 
       default:

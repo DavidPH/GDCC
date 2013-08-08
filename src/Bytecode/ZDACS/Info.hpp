@@ -45,6 +45,8 @@ namespace Bytecode
 
          void putChunk(std::ostream &out);
          void putChunkARAY(std::ostream &out);
+         void putChunkFNAM(std::ostream &out);
+         void putChunkFUNC(std::ostream &out);
          void putChunkSFLG(std::ostream &out);
          void putChunkSPTR(std::ostream &out);
          void putChunkSVCT(std::ostream &out);
@@ -54,10 +56,12 @@ namespace Bytecode
          void putHWord(std::ostream &out, GDCC::FastU i);
 
          void putStmnt(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putStmnt_Call(std::ostream &out, GDCC::IR::Statement const &stmnt);
          void putStmnt_Cspe(std::ostream &out, GDCC::IR::Statement const &stmnt);
          void putStmnt_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt);
          void putStmnt_Move_W__Arr_Stk(std::ostream &out, GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i);
          void putStmnt_Move_W__Stk_Arr(std::ostream &out, GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i);
+         void putStmnt_Move_W__Stk_Lit(std::ostream &out, GDCC::IR::Exp const *exp);
          void putStmnt_Retn(std::ostream &out, GDCC::IR::Statement const &stmnt);
 
          void putWord(std::ostream &out, GDCC::FastU i);
@@ -67,6 +71,7 @@ namespace Bytecode
          virtual void trSpace(GDCC::IR::Space &space);
 
          virtual void trStmnt(GDCC::IR::Statement &stmnt);
+         void trStmnt_Call(GDCC::IR::Statement &stmnt);
          void trStmnt_Cspe(GDCC::IR::Statement &stmnt);
          void trStmnt_Move_W(GDCC::IR::Statement &stmnt);
          void trStmnt_Move_W__Arr_Stk(GDCC::IR::Statement &stmnt, GDCC::IR::ArgPtr2 const &arr);
@@ -74,6 +79,7 @@ namespace Bytecode
          void trStmnt_Retn(GDCC::IR::Statement &stmnt);
 
 
+         static void BackGlyphFunc(GDCC::String glyph, GDCC::FastU val, GDCC::IR::CallType ctype);
          static void BackGlyphWord(GDCC::String glyph, GDCC::FastU val);
 
          static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin pos);
@@ -85,6 +91,8 @@ namespace Bytecode
          GDCC::FastU jumpPos;
          GDCC::FastU numChunkAIMP;
          GDCC::FastU numChunkARAY;
+         GDCC::FastU numChunkFNAM;
+         GDCC::FastU numChunkFUNC;
          GDCC::FastU numChunkSFLG;
          GDCC::FastU numChunkSPTR;
          GDCC::FastU numChunkSVCT;

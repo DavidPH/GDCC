@@ -39,6 +39,12 @@ namespace Bytecode
 
          if(!func.exdef) switch(func.ctype)
          {
+         case GDCC::IR::CallType::LangACS:
+            func.valueInt = numChunkFUNC++;
+            ++numChunkFNAM;
+            BackGlyphFunc(func.glyph, func.valueInt, func.ctype);
+            break;
+
          case GDCC::IR::CallType::Script:
          case GDCC::IR::CallType::ScriptI:
          case GDCC::IR::CallType::ScriptS:
@@ -205,6 +211,10 @@ namespace Bytecode
             CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Stk);
             CheckArgB(stmnt, 2, GDCC::IR::ArgBase::Stk);
             jumpPos += 4;
+            break;
+
+         case GDCC::IR::Code::Call:
+            trStmnt_Call(stmnt);
             break;
 
          case GDCC::IR::Code::Casm:
@@ -475,6 +485,18 @@ namespace Bytecode
 
          switch(curFunc->ctype)
          {
+         case GDCC::IR::CallType::LangACS:
+            if(stmnt.args.size() == 0)
+               jumpPos += 4;
+            else if(stmnt.args.size() == 1)
+               jumpPos += 4;
+            else
+            {
+               std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
+               throw EXIT_FAILURE;
+            }
+            break;
+
          case GDCC::IR::CallType::Script:
          case GDCC::IR::CallType::ScriptI:
          case GDCC::IR::CallType::ScriptS:

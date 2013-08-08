@@ -31,6 +31,8 @@ namespace Bytecode
       void Info::putChunk(std::ostream &out)
       {
          putChunkARAY(out);
+         putChunkFNAM(out);
+         putChunkFUNC(out);
          putChunkSFLG(out);
          putChunkSPTR(out);
          putChunkSVCT(out);
@@ -54,6 +56,79 @@ namespace Bytecode
 
             putWord(out, space.value);
             putWord(out, space.words);
+         }
+      }
+
+      //
+      // Info::putChunkFNAM
+      //
+      void Info::putChunkFNAM(std::ostream &out)
+      {
+         if(numChunkFNAM == 1) return;
+
+         GDCC::Array<GDCC::String> strarr{numChunkFNAM};
+         GDCC::Array<GDCC::FastU>  stroff{numChunkFNAM};
+         auto stritr = strarr.begin();
+         auto offitr = stroff.begin();
+         std::size_t off = numChunkFNAM * 4 + 4;
+
+         *stritr++ = GDCC::STR_;
+         *offitr++ = off; off += 1;
+         for(auto const &itr : GDCC::IR::FunctionRange())
+         {
+            auto const &func = itr.second;
+
+            if(func.ctype != GDCC::IR::CallType::LangACS)
+               continue;
+
+            *stritr++ = func.glyph;
+            *offitr++ = off; off += func.glyph.getData().len + 1;
+         }
+
+         out.write("FNAM", 4);
+         putWord(out, off);
+
+         putWord(out, numChunkFNAM);
+
+         for(auto const &i : stroff)
+            putWord(out, i);
+
+         for(auto const &s : strarr)
+         {
+            auto const &data = s.getData();
+            out.write(data.str, data.len + 1);
+         }
+      }
+
+      //
+      // Info::putChunkFUNC
+      //
+      void Info::putChunkFUNC(std::ostream &out)
+      {
+         if(numChunkFUNC == 1) return;
+
+         out.write("FUNC", 4);
+         putWord(out, numChunkFUNC * 8);
+
+         // Write dummy function 0.
+         out.write("\0\0\0\0\0\0\0\0", 8);
+
+         for(auto const &itr : GDCC::IR::FunctionRange())
+         {
+            auto const &func = itr.second;
+
+            if(func.ctype != GDCC::IR::CallType::LangACS)
+               continue;
+
+            putByte(out, func.param);
+            putByte(out, std::max(func.localReg, func.param));
+            putByte(out, !!func.retrn);
+            putByte(out, 0);
+
+            if(func.exdef)
+               putWord(out, 0);
+            else
+               putExpWord(out, ResolveGlyph(func.label));
          }
       }
 

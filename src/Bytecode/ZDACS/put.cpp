@@ -51,6 +51,14 @@ namespace Bytecode
       }
 
       //
+      // Info::putByte
+      //
+      void Info::putByte(std::ostream &out, GDCC::FastU i)
+      {
+         out.put(i & 0xFF);
+      }
+
+      //
       // Info::putExpWord
       //
       void Info::putExpWord(std::ostream &out, GDCC::IR::Exp const *exp)
@@ -63,8 +71,8 @@ namespace Bytecode
       //
       void Info::putHWord(std::ostream &out, GDCC::FastU i)
       {
-         out.put((i >>  0) & 0xFF);
-         out.put((i >>  8) & 0xFF);
+         out.put((i >> 0) & 0xFF);
+         out.put((i >> 8) & 0xFF);
       }
 
       //
@@ -85,6 +93,10 @@ namespace Bytecode
 
          case GDCC::IR::Code::AndU_W:
             putWord(out, 72); // andbitwise
+            break;
+
+         case GDCC::IR::Code::Call:
+            putStmnt_Call(out, stmnt);
             break;
 
          case GDCC::IR::Code::Casm:
@@ -305,8 +317,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::ArgBase::Lit:
-            putWord(out, 3); // pushnumber
-            putExpWord(out, stmnt.args[1].aLit.value);
+            putStmnt_Move_W__Stk_Lit(out, stmnt.args[1].aLit.value);
             break;
 
          case GDCC::IR::ArgBase::LocReg:
@@ -431,6 +442,20 @@ namespace Bytecode
       {
          switch(curFunc->ctype)
          {
+         case GDCC::IR::CallType::LangACS:
+            if(stmnt.args.size() == 0)
+               putWord(out, 205); // returnvoid
+
+            else if(stmnt.args.size() == 1)
+               putWord(out, 206); // returnval
+
+            else
+            {
+               std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
+               throw EXIT_FAILURE;
+            }
+            break;
+
          case GDCC::IR::CallType::Script:
          case GDCC::IR::CallType::ScriptI:
          case GDCC::IR::CallType::ScriptS:

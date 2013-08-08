@@ -52,6 +52,7 @@ namespace GDCC
          valueInt{0},
          valueStr{STRNULL},
 
+         alloc   {false},
          exdef   {true},
          sflagNet{false},
          sflagClS{false}
@@ -81,6 +82,39 @@ namespace GDCC
             std::forward_as_tuple(glyph), std::forward_as_tuple(glyph)).first;
 
          return itr->second;
+      }
+
+      //
+      // IArchive::getTablesFuncts
+      //
+      IArchive &IArchive::getTablesFuncts()
+      {
+         for(auto count = GetIR<std::size_t>(*this); count--;)
+         {
+            String   name;          *this >> name;
+            Function newFunc{name}; *this >> newFunc;
+            auto    &oldFunc = Function::Get(name);
+
+            if(oldFunc.exdef)
+            {
+               if(!newFunc.exdef)
+                  oldFunc = std::move(newFunc);
+            }
+         }
+
+         return *this;
+      }
+
+      //
+      // OArchive::putTablesFuncts
+      //
+      OArchive &OArchive::putTablesFuncts()
+      {
+         *this << FuncMap.size();
+         for(auto const &itr : FuncMap)
+            *this << itr.first << itr.second;
+
+         return *this;
       }
 
       //
@@ -114,7 +148,8 @@ namespace GDCC
       {
          return out << in.block << in.ctype << in.label << in.linka << in.linka
             << in.localArs << in.localReg << in.param << in.retrn << in.stype
-            << in.valueInt << in.valueStr << in.exdef << in.sflagNet << in.sflagClS;
+            << in.valueInt << in.valueStr << in.alloc << in.exdef << in.sflagNet
+            << in.sflagClS;
       }
 
       //
@@ -173,6 +208,7 @@ namespace GDCC
             >> out.localArs >> out.localReg >> out.param >> out.retrn >> out.stype
             >> out.valueInt >> out.valueStr;
 
+         out.alloc    = GetIR<bool>(in);
          out.exdef    = GetIR<bool>(in);
          out.sflagNet = GetIR<bool>(in);
          out.sflagClS = GetIR<bool>(in);
@@ -201,39 +237,6 @@ namespace GDCC
             std::cerr << "invalid ScriptType\n";
             throw EXIT_FAILURE;
          }
-      }
-
-      //
-      // IArchive::getTablesFuncts
-      //
-      IArchive &IArchive::getTablesFuncts()
-      {
-         for(auto count = GetIR<std::size_t>(*this); count--;)
-         {
-            String   name;          *this >> name;
-            Function newFunc{name}; *this >> newFunc;
-            auto    &oldFunc = Function::Get(name);
-
-            if(oldFunc.exdef)
-            {
-               if(!newFunc.exdef)
-                  oldFunc = std::move(newFunc);
-            }
-         }
-
-         return *this;
-      }
-
-      //
-      // OArchive::putTablesFuncts
-      //
-      OArchive &OArchive::putTablesFuncts()
-      {
-         *this << FuncMap.size();
-         for(auto const &itr : FuncMap)
-            *this << itr.first << itr.second;
-
-         return *this;
       }
 
       //
