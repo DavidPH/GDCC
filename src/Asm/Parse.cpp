@@ -12,7 +12,10 @@
 
 #include "Parse.hpp"
 
+#include "IStream.hpp"
+
 #include "GDCC/IR/Addr.hpp"
+#include "GDCC/IR/Function.hpp"
 #include "GDCC/IR/Linkage.hpp"
 
 #include <iostream>
@@ -42,6 +45,33 @@ namespace Asm
    }
 
    //
+   // ParseCallType
+   //
+   GDCC::IR::CallType ParseCallType(GDCC::Token const &tok)
+   {
+      switch(static_cast<GDCC::StringIndex>(tok.str))
+      {
+      case GDCC::STR_Action:  return GDCC::IR::CallType::Action;
+      case GDCC::STR_AsmFunc: return GDCC::IR::CallType::AsmFunc;
+      case GDCC::STR_LangACS: return GDCC::IR::CallType::LangACS;
+      case GDCC::STR_LangASM: return GDCC::IR::CallType::LangASM;
+      case GDCC::STR_LangAXX: return GDCC::IR::CallType::LangAXX;
+      case GDCC::STR_LangC:   return GDCC::IR::CallType::LangC;
+      case GDCC::STR_LangCXX: return GDCC::IR::CallType::LangCXX;
+      case GDCC::STR_LangDS:  return GDCC::IR::CallType::LangDS;
+      case GDCC::STR_Native:  return GDCC::IR::CallType::Native;
+      case GDCC::STR_Script:  return GDCC::IR::CallType::Script;
+      case GDCC::STR_ScriptI: return GDCC::IR::CallType::ScriptI;
+      case GDCC::STR_ScriptS: return GDCC::IR::CallType::ScriptS;
+      case GDCC::STR_Special: return GDCC::IR::CallType::Special;
+
+      default:
+         std::cerr << "ERROR: " << tok.pos << ": bad CallType: '" << tok.str << "'\n";
+         throw EXIT_FAILURE;
+      }
+   }
+
+   //
    // ParseLinkage
    //
    GDCC::IR::Linkage ParseLinkage(GDCC::Token const &tok)
@@ -60,6 +90,44 @@ namespace Asm
          std::cerr << "ERROR: " << tok.pos << ": bad Linkage: '" << tok.str << "'\n";
          throw EXIT_FAILURE;
       }
+   }
+
+   //
+   // ParseScriptType
+   //
+   GDCC::IR::ScriptType ParseScriptType(GDCC::Token const &tok)
+   {
+      switch(static_cast<GDCC::StringIndex>(tok.str))
+      {
+      case GDCC::STR_None:       return GDCC::IR::ScriptType::None;
+      case GDCC::STR_Death:      return GDCC::IR::ScriptType::Death;
+      case GDCC::STR_Disconnect: return GDCC::IR::ScriptType::Disconnect;
+      case GDCC::STR_Enter:      return GDCC::IR::ScriptType::Enter;
+      case GDCC::STR_Lightning:  return GDCC::IR::ScriptType::Lightning;
+      case GDCC::STR_Open:       return GDCC::IR::ScriptType::Open;
+      case GDCC::STR_Respawn:    return GDCC::IR::ScriptType::Respawn;
+      case GDCC::STR_Return:     return GDCC::IR::ScriptType::Return;
+      case GDCC::STR_Unloading:  return GDCC::IR::ScriptType::Unloading;
+
+      default:
+         std::cerr << "ERROR: " << tok.pos << ": bad ScriptType: '" << tok.str << "'\n";
+         throw EXIT_FAILURE;
+      }
+   }
+
+   //
+   // SkipEqual
+   //
+   IStream &SkipEqual(IStream &in)
+   {
+      GDCC::Token tok;
+      if((in >> tok, tok).tok != GDCC::TOK_Equal)
+      {
+         std::cerr << "ERROR: " << tok.pos << ": expected =\n";
+         throw EXIT_FAILURE;
+      }
+
+      return in;
    }
 }
 

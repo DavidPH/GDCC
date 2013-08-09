@@ -130,6 +130,22 @@ namespace GDCC
       };
 
       //
+      // Value_StrEn
+      //
+      struct Value_StrEn
+      {
+         Value_StrEn() = default;
+
+         Value_StrEn(FastU value_, Type_StrEn vtype_) :
+            vtype{vtype_}, value{value_} {}
+
+         explicit Value_StrEn(IArchive &in);
+
+         Type_StrEn vtype;
+         FastU      value;
+      };
+
+      //
       // Value
       //
       class Value

@@ -23,6 +23,7 @@ add_library(gdcc-ir
    Linkage.cpp
    Object.cpp
    Statement.cpp
+   StrEnt.cpp
    Type.cpp
    Value.cpp
 )

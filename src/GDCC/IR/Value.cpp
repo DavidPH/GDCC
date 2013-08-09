@@ -97,6 +97,13 @@ namespace GDCC
       }
 
       //
+      // Value_StrEn constructor
+      //
+      Value_StrEn::Value_StrEn(IArchive &in) : vtype{in}, value{GetIR(in, value)}
+      {
+      }
+
+      //
       // Value constructor
       //
       Value::Value(IArchive &in)
@@ -155,6 +162,14 @@ namespace GDCC
       OArchive &operator << (OArchive &out, Value_Point const &in)
       {
          return out << in.vtype << in.value << in.addrB << in.addrN;
+      }
+
+      //
+      // operator OArchive << Value_StrEn
+      //
+      OArchive &operator << (OArchive &out, Value_StrEn const &in)
+      {
+         return out << in.vtype << in.value;
       }
 
       //
@@ -217,6 +232,14 @@ namespace GDCC
       IArchive &operator >> (IArchive &in, Value_Point &out)
       {
          return in >> out.vtype >> out.value >> out.addrB >> out.addrN;
+      }
+
+      //
+      // operator IArchive >> Value_StrEn
+      //
+      IArchive &operator >> (IArchive &in, Value_StrEn &out)
+      {
+         return in >> out.vtype >> out.value;
       }
 
       //

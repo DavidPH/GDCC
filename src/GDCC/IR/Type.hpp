@@ -135,6 +135,16 @@ namespace GDCC
       };
 
       //
+      // Type_StrEn
+      //
+      struct Type_StrEn
+      {
+         Type_StrEn() = default;
+
+         explicit Type_StrEn(IArchive &in);
+      };
+
+      //
       // Type
       //
       class Type

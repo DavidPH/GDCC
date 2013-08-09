@@ -86,6 +86,12 @@ namespace Bytecode
             putWord(out, ResolveValue(val));
             break;
 
+         case GDCC::IR::ValueBase::StrEn:
+            putWord(out, 3); // pushnumber
+            putWord(out, ResolveValue(val));
+            putWord(out, 225); // tagstring
+            break;
+
          default:
             putWord(out, 3); // pushnumber
             putWord(out, ResolveValue(val));

@@ -38,6 +38,7 @@ namespace GDCC
       struct Value_Multi;
       class Space;
       class Statement;
+      class StrEnt;
       class Type;
       struct Type_Fixed;
    }
@@ -70,6 +71,7 @@ namespace Bytecode
       virtual void trFunc(GDCC::IR::Function &func);
       virtual void trSpace(GDCC::IR::Space &space);
       virtual void trStmnt(GDCC::IR::Statement &stmnt) = 0;
+      virtual void trStr(GDCC::IR::StrEnt &str);
 
       GDCC::IR::Function *curFunc;
 

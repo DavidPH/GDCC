@@ -19,6 +19,7 @@
 #include "GDCC/IR/Function.hpp"
 #include "GDCC/IR/OArchive.hpp"
 #include "GDCC/IR/Object.hpp"
+#include "GDCC/IR/StrEnt.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -94,6 +95,11 @@ static bool ParseTLK(Asm::IStream &in)
       as.name = (in >> tok, tok).str;
 
       Asm::ParseSpace(in, GDCC::IR::Space::Get(as));
+      return true;
+
+   case GDCC::STR_StrEnt:
+      in >> tok;
+      Asm::ParseStrEnt(in, GDCC::IR::StrEnt::Get(tok.str));
       return true;
 
    default:

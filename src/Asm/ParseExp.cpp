@@ -31,7 +31,7 @@
 //
 static std::tuple<char const */*end*/, bool /*fixed*/, bool /*bitsS*/,
    GDCC::FastU /*bitsI*/, GDCC::FastU /*bitsF*/, bool /*satur*/>
-ParseSuffix(char const *s, GDCC::Token tok)
+ParseSuffix(char const *s, GDCC::Token const &tok)
 {
    GDCC::FastU bitsF;
    GDCC::FastU bitsI;
@@ -154,7 +154,7 @@ namespace Asm
    //
    // ParseNumber
    //
-   GDCC::IR::Value ParseNumber(GDCC::Token tok)
+   GDCC::IR::Value ParseNumber(GDCC::Token const &tok)
    {
       // Read prefix.
       char const *s;

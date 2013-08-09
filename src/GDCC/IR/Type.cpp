@@ -115,6 +115,13 @@ namespace GDCC
       }
 
       //
+      // Type_StrEn constructor
+      //
+      Type_StrEn::Type_StrEn(IArchive &)
+      {
+      }
+
+      //
       // Type constructor
       //
       Type::Type(IArchive &in)
@@ -186,6 +193,14 @@ namespace GDCC
       OArchive &operator << (OArchive &out, Type_Point const &in)
       {
          return out << in.reprB << in.reprO;
+      }
+
+      //
+      // operator OArchive << Type_StrEn
+      //
+      OArchive &operator << (OArchive &out, Type_StrEn const &)
+      {
+         return out;
       }
 
       //
@@ -271,6 +286,14 @@ namespace GDCC
       IArchive &operator >> (IArchive &in, Type_Point &out)
       {
          return in >> out.reprB >> out.reprO;
+      }
+
+      //
+      // operator IArchive >> Type_StrEn
+      //
+      IArchive &operator >> (IArchive &in, Type_StrEn &)
+      {
+         return in;
       }
 
       //

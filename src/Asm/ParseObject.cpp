@@ -21,26 +21,6 @@
 
 
 //----------------------------------------------------------------------------|
-// Static Functions                                                           |
-//
-
-//
-// SkipEqual
-//
-static Asm::IStream &SkipEqual(Asm::IStream &in)
-{
-   GDCC::Token tok;
-   if((in >> tok, tok).tok != GDCC::TOK_Equal)
-   {
-      std::cerr << "ERROR: " << tok.pos << ": expected =\n";
-      throw EXIT_FAILURE;
-   }
-
-   return in;
-}
-
-
-//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 

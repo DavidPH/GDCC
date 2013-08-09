@@ -16,6 +16,7 @@ GDCC_IR_TypeList(Float)
 GDCC_IR_TypeList(Funct)
 GDCC_IR_TypeList(Multi)
 GDCC_IR_TypeList(Point)
+GDCC_IR_TypeList(StrEn)
 
 #undef GDCC_IR_TypeList
 

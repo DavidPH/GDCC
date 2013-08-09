@@ -15,6 +15,7 @@
 
 #include "../Info.hpp"
 
+#include "GDCC/Array.hpp"
 #include "GDCC/Counter.hpp"
 #include "GDCC/Number.hpp"
 
@@ -44,11 +45,14 @@ namespace Bytecode
          void putByte(std::ostream &out, GDCC::FastU i);
 
          void putChunk(std::ostream &out);
+         void putChunk(std::ostream &out, char const *name,
+            GDCC::Array<GDCC::String> const &strs, bool junk);
          void putChunkARAY(std::ostream &out);
          void putChunkFNAM(std::ostream &out);
          void putChunkFUNC(std::ostream &out);
          void putChunkSFLG(std::ostream &out);
          void putChunkSPTR(std::ostream &out);
+         void putChunkSTRL(std::ostream &out);
          void putChunkSVCT(std::ostream &out);
 
          void putExpWord(std::ostream &out, GDCC::IR::Exp const *exp);
@@ -78,8 +82,11 @@ namespace Bytecode
          void trStmnt_Move_W__Stk_Arr(GDCC::IR::Statement &stmnt, GDCC::IR::ArgPtr2 const &arr);
          void trStmnt_Retn(GDCC::IR::Statement &stmnt);
 
+         virtual void trStr(GDCC::IR::StrEnt &str);
+
 
          static void BackGlyphFunc(GDCC::String glyph, GDCC::FastU val, GDCC::IR::CallType ctype);
+         static void BackGlyphStr(GDCC::String glyph, GDCC::FastU val);
          static void BackGlyphWord(GDCC::String glyph, GDCC::FastU val);
 
          static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin pos);
@@ -95,6 +102,7 @@ namespace Bytecode
          GDCC::FastU numChunkFUNC;
          GDCC::FastU numChunkSFLG;
          GDCC::FastU numChunkSPTR;
+         GDCC::FastU numChunkSTRL;
          GDCC::FastU numChunkSVCT;
       };
    }

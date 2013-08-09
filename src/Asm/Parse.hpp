@@ -32,7 +32,9 @@ namespace GDCC
    namespace IR
    {
       enum class AddrBase;
+      enum class CallType;
       enum class Linkage;
+      enum class ScriptType;
 
       class Arg;
       class Block;
@@ -40,6 +42,7 @@ namespace GDCC
       class Function;
       class Object;
       class Space;
+      class StrEnt;
       class Value;
       class Value_Multi;
    }
@@ -58,6 +61,8 @@ namespace Asm
 
    void ParseBlock(IStream &in, GDCC::IR::Block &block, GDCC::TokenType end);
 
+   GDCC::IR::CallType ParseCallType(GDCC::Token const &tok);
+
    GDCC::CounterRef<GDCC::IR::Exp> ParseExp(IStream &in);
 
    GDCC::FastI ParseFastI(IStream &in);
@@ -73,9 +78,15 @@ namespace Asm
 
    GDCC::IR::Value_Multi ParseMulti(IStream &in);
 
-   GDCC::IR::Value ParseNumber(GDCC::Token tok);
+   GDCC::IR::Value ParseNumber(GDCC::Token const &tok);
+
+   GDCC::IR::ScriptType ParseScriptType(GDCC::Token const &tok);
 
    void ParseSpace(IStream &in, GDCC::IR::Space &space);
+
+   void ParseStrEnt(IStream &in, GDCC::IR::StrEnt &str);
+
+   IStream &SkipEqual(IStream &in);
 }
 
 #endif//Asm__Parse_H__

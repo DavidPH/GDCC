@@ -15,6 +15,7 @@
 #include "GDCC/IR/Function.hpp"
 #include "GDCC/IR/Glyph.hpp"
 #include "GDCC/IR/Object.hpp"
+#include "GDCC/IR/StrEnt.hpp"
 
 #include <iostream>
 
@@ -407,10 +408,15 @@ namespace Bytecode
             switch(stmnt.args[1].a)
             {
             case GDCC::IR::ArgBase::GblReg: jumpPos += 8; break;
-            case GDCC::IR::ArgBase::Lit:    jumpPos += 8; break;
             case GDCC::IR::ArgBase::LocReg: jumpPos += 8; break;
             case GDCC::IR::ArgBase::MapReg: jumpPos += 8; break;
             case GDCC::IR::ArgBase::WldReg: jumpPos += 8; break;
+
+            case GDCC::IR::ArgBase::Lit:
+               jumpPos += 8;
+               if(stmnt.args[1].aLit.value->getType().t == GDCC::IR::TypeBase::StrEn)
+                  jumpPos += 4;
+               break;
 
             case GDCC::IR::ArgBase::GblArr:
                trStmnt_Move_W__Stk_Arr(stmnt, stmnt.args[1].aGblArr);
@@ -515,6 +521,23 @@ namespace Bytecode
             std::cerr << "ERROR: " << stmnt.pos << ": bad Code::Retn\n";
             throw EXIT_FAILURE;
          }
+      }
+
+      //
+      // Info::trStr
+      //
+      void Info::trStr(GDCC::IR::StrEnt &str)
+      {
+         if(!str.defin) return;
+
+         if(str.alloc)
+            str.allocValue();
+
+         // Back address glyph.
+         BackGlyphStr(str.glyph, str.valueInt);
+
+         if(numChunkSTRL <= str.valueInt)
+            numChunkSTRL = str.valueInt + 1;
       }
    }
 }

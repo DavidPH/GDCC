@@ -14,6 +14,7 @@
 
 #include "GDCC/IR/Function.hpp"
 #include "GDCC/IR/Object.hpp"
+#include "GDCC/IR/StrEnt.hpp"
 
 #include <iostream>
 
@@ -40,6 +41,9 @@ namespace Bytecode
 
       for(auto &itr : GDCC::IR::FunctionRange())
          trFunc(itr.second);
+
+      for(auto &itr : GDCC::IR::StrEntRange())
+         trStr(itr.second);
    }
 
    //
@@ -73,6 +77,13 @@ namespace Bytecode
    // Info::trSpace
    //
    void Info::trSpace(GDCC::IR::Space &)
+   {
+   }
+
+   //
+   // Info::trStr
+   //
+   void Info::trStr(GDCC::IR::StrEnt &)
    {
    }
 

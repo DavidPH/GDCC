@@ -50,6 +50,7 @@ namespace Bytecode
          numChunkFUNC{1},
          numChunkSFLG{0},
          numChunkSPTR{0},
+         numChunkSTRL{0},
          numChunkSVCT{0}
       {
       }
@@ -64,6 +65,19 @@ namespace Bytecode
          data.type  = TypeWord;
          data.value = GDCC::IR::ExpCreate_ValueRoot(
             GDCC::IR::Value_Funct(val, GDCC::IR::Type_Funct(ctype)),
+            GDCC::Origin(GDCC::STRNULL, 0));
+      }
+
+      //
+      // Info::BackGlyphStr
+      //
+      void Info::BackGlyphStr(GDCC::String glyph, GDCC::FastU val)
+      {
+         auto &data = GDCC::IR::Glyph::GetData(glyph);
+
+         data.type  = TypeWord;
+         data.value = GDCC::IR::ExpCreate_ValueRoot(
+            GDCC::IR::Value_StrEn(val, GDCC::IR::Type_StrEn()),
             GDCC::Origin(GDCC::STRNULL, 0));
       }
 
@@ -153,6 +167,9 @@ namespace Bytecode
                return number_cast<GDCC::FastU>(val.vFixed.value);
 
          case GDCC::IR::ValueBase::Funct:
+             return val.vFunct.value;
+
+         case GDCC::IR::ValueBase::StrEn:
              return val.vFunct.value;
 
          default:
