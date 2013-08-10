@@ -33,6 +33,11 @@ namespace Bytecode
       //
       void Info::trFunc(GDCC::IR::Function &func)
       {
+         static GDCC::IR::CallType const FuncTypes[] =
+         {
+            GDCC::IR::CallType::LangACS,
+         };
+
          // Back label glyph.
          BackGlyphWord(func.label, jumpPos);
 
@@ -41,17 +46,49 @@ namespace Bytecode
          if(func.defin) switch(func.ctype)
          {
          case GDCC::IR::CallType::LangACS:
-            func.valueInt = numChunkFUNC++;
-            ++numChunkFNAM;
+            if(func.alloc)
+               func.allocValue(FuncTypes);
+
+            if(numChunkFUNC <= func.valueInt)
+               numChunkFUNC = func.valueInt + 1;
+
+            if(numChunkFNAM <= func.valueInt)
+               numChunkFNAM = func.valueInt + 1;
+
             BackGlyphFunc(func.glyph, func.valueInt, func.ctype);
+
             break;
 
          case GDCC::IR::CallType::Script:
+            func.ctype = GDCC::IR::CallType::ScriptI;
+
          case GDCC::IR::CallType::ScriptI:
-         case GDCC::IR::CallType::ScriptS:
-            if(func.sflagClS || func.sflagNet) ++numChunkSFLG;
+            if(func.alloc)
+               func.allocValue(GDCC::IR::CallType::ScriptI);
+
             ++numChunkSPTR;
+
+            if(func.sflagClS || func.sflagNet) ++numChunkSFLG;
             if(func.localReg > 20) ++numChunkSVCT;
+
+            BackGlyphWord(func.glyph, func.valueInt);
+
+            break;
+
+         case GDCC::IR::CallType::ScriptS:
+            if(func.alloc)
+               func.allocValue(GDCC::IR::CallType::ScriptS);
+
+            ++numChunkSPTR;
+
+            if(func.sflagClS || func.sflagNet) ++numChunkSFLG;
+            if(func.localReg > 20) ++numChunkSVCT;
+
+            if(numChunkSNAM <= func.valueInt)
+               numChunkSNAM = func.valueInt + 1;
+
+            // TODO: Back the function's glyph with a string index.
+
             break;
 
          default: break;

@@ -34,6 +34,7 @@ namespace Bytecode
          putChunkFNAM(out);
          putChunkFUNC(out);
          putChunkSFLG(out);
+         putChunkSNAM(out);
          putChunkSPTR(out);
          putChunkSTRL(out);
          putChunkSVCT(out);
@@ -204,6 +205,30 @@ namespace Bytecode
       }
 
       //
+      // Info::putChunkSNAM
+      //
+      void Info::putChunkSNAM(std::ostream &out)
+      {
+         if(!numChunkSNAM) return;
+
+         GDCC::Array<GDCC::String> strs{numChunkSNAM};
+
+         for(auto &str : strs) str = GDCC::STR_;
+
+         for(auto const &itr : GDCC::IR::FunctionRange())
+         {
+            auto const &func = itr.second;
+
+            if(func.ctype != GDCC::IR::CallType::ScriptS)
+               continue;
+
+            strs[func.valueInt] = func.valueStr;
+         }
+
+         putChunk(out, "SNAM", strs, false);
+      }
+
+      //
       // Info::putChunkSPTR
       //
       void Info::putChunkSPTR(std::ostream &out)
@@ -224,7 +249,10 @@ namespace Bytecode
 
             if(!func.defin) continue;
 
-            putHWord(out, func.valueInt);
+            if(func.ctype == GDCC::IR::CallType::ScriptS)
+               putHWord(out, -static_cast<GDCC::FastI>(func.valueInt) - 1);
+            else
+               putHWord(out, func.valueInt);
 
             switch(func.stype)
             {

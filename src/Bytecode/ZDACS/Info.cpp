@@ -46,9 +46,10 @@ namespace Bytecode
          jumpPos{16}, // HACK: Should be calculated.
          numChunkAIMP{0},
          numChunkARAY{0},
-         numChunkFNAM{1},
-         numChunkFUNC{1},
+         numChunkFNAM{0},
+         numChunkFUNC{0},
          numChunkSFLG{0},
+         numChunkSNAM{0},
          numChunkSPTR{0},
          numChunkSTRL{0},
          numChunkSVCT{0}

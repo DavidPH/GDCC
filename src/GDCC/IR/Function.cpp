@@ -60,6 +60,31 @@ namespace GDCC
       }
 
       //
+      // Function::allocValue
+      //
+      void Function::allocValue(CallType const *ctypeVec, std::size_t ctypeLen)
+      {
+         for(;; ++valueInt)
+         {
+            for(auto const &itr : FuncMap)
+            {
+               auto const &func = itr.second;
+               if(&func != this && !func.alloc && func.valueInt == valueInt)
+               {
+                  for(auto ctypeItr : MakeRange(ctypeVec, ctypeVec + ctypeLen))
+                     if(func.ctype == ctypeItr) goto nextValue;
+               }
+            }
+
+            break;
+
+         nextValue:;
+         }
+
+         alloc = false;
+      }
+
+      //
       // Function::Find
       //
       Function *Function::Find(String glyph)

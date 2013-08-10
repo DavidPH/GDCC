@@ -75,6 +75,14 @@ namespace GDCC
       public:
          explicit Function(String glyph);
 
+         void allocValue(CallType ctypeVec) {allocValue(&ctypeVec, 1);}
+
+         template<std::size_t ctypeLen>
+         void allocValue(CallType const (&ctypeVec)[ctypeLen])
+            {allocValue(ctypeVec, ctypeLen);}
+
+         void allocValue(CallType const *ctypeVec, std::size_t ctypeLen);
+
          Block      block;
          CallType   ctype;
          String     glyph;
@@ -85,7 +93,7 @@ namespace GDCC
          FastU      param;
          FastU      retrn;
          ScriptType stype;
-         FastI      valueInt;
+         FastU      valueInt;
          String     valueStr;
 
          bool       alloc    : 1;
