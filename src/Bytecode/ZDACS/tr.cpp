@@ -175,14 +175,39 @@ namespace Bytecode
 
                // Back address glyph.
                BackGlyphWord(obj->glyph, obj->value);
+
+               if(!obj->defin)
+                  ++numChunkMIMP;
+
+               if(obj->defin && numChunkMEXP <= obj->value)
+                  numChunkMEXP = obj->value + 1;
             }
             break;
 
          case GDCC::IR::AddrBase::MapArr:
+            // Allocate addresses for any sub-objects.
+            trSpaceAlloc(space);
+
+            // Even external arrays need an index.
+            if(space.alloc)
+               space.allocValue();
+
+            space.allocWords();
+
             if(space.defin)
+            {
                ++numChunkARAY;
+
+               if(numChunkMEXP <= space.value)
+                  numChunkMEXP = space.value + 1;
+            }
             else
                ++numChunkAIMP;
+
+            // Back address glyph.
+            BackGlyphWord(space.glyph, space.value);
+
+            break;
 
          case GDCC::IR::AddrBase::GblArr:
          case GDCC::IR::AddrBase::WldArr:

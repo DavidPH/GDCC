@@ -76,6 +76,15 @@ namespace GDCC
                   oldObj.alloc = newObj.alloc;
                   oldObj.defin = newObj.defin;
                }
+               else
+               {
+                  if(!oldObj.initi) oldObj.initi = newObj.initi;
+                  if(!oldObj.value) oldObj.value = newObj.value;
+                  if(!oldObj.words) oldObj.words = newObj.words;
+
+                  if(!oldObj.alias) oldObj.alias = newObj.alias;
+                  if(!oldObj.alloc) oldObj.alloc = newObj.alloc;
+               }
             }
          }
 
@@ -102,6 +111,13 @@ namespace GDCC
 
                   oldSpace.alloc = newSpace.alloc;
                   oldSpace.defin = newSpace.defin;
+               }
+               else
+               {
+                  if(!oldSpace.value) oldSpace.value = newSpace.value;
+                  if(!oldSpace.words) oldSpace.words = newSpace.words;
+
+                  if(!oldSpace.alloc) oldSpace.alloc = newSpace.alloc;
                }
             }
          }

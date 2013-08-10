@@ -50,9 +50,12 @@ namespace Bytecode
          void putChunk(std::ostream &out);
          void putChunk(std::ostream &out, char const *name,
             GDCC::Array<GDCC::String> const &strs, bool junk);
+         void putChunkAIMP(std::ostream &out);
          void putChunkARAY(std::ostream &out);
          void putChunkFNAM(std::ostream &out);
          void putChunkFUNC(std::ostream &out);
+         void putChunkMEXP(std::ostream &out);
+         void putChunkMIMP(std::ostream &out);
          void putChunkSFLG(std::ostream &out);
          void putChunkSNAM(std::ostream &out);
          void putChunkSPTR(std::ostream &out);
@@ -106,6 +109,8 @@ namespace Bytecode
          GDCC::FastU numChunkARAY;
          GDCC::FastU numChunkFNAM;
          GDCC::FastU numChunkFUNC;
+         GDCC::FastU numChunkMEXP;
+         GDCC::FastU numChunkMIMP;
          GDCC::FastU numChunkSFLG;
          GDCC::FastU numChunkSNAM;
          GDCC::FastU numChunkSPTR;

@@ -122,8 +122,7 @@ namespace GDCC
 
             if(!oldFunc.defin)
             {
-               if(newFunc.defin)
-                  oldFunc = std::move(newFunc);
+               oldFunc = std::move(newFunc);
             }
          }
 

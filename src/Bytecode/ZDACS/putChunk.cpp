@@ -30,9 +30,12 @@ namespace Bytecode
       //
       void Info::putChunk(std::ostream &out)
       {
+         putChunkAIMP(out);
          putChunkARAY(out);
          putChunkFNAM(out);
          putChunkFUNC(out);
+         putChunkMEXP(out);
+         putChunkMIMP(out);
          putChunkSFLG(out);
          putChunkSNAM(out);
          putChunkSPTR(out);
@@ -79,6 +82,36 @@ namespace Bytecode
          for(auto const &str : strs)
          {
             auto const &data = str.getData();
+            out.write(data.str, data.len + 1);
+         }
+      }
+
+      //
+      // Info::putChunkAIMP
+      //
+      void Info::putChunkAIMP(std::ostream &out)
+      {
+         if(!numChunkAIMP) return;
+
+         GDCC::Array<GDCC::IR::Space const *> imps{numChunkAIMP};
+
+         auto itr = imps.begin();
+         for(auto const &sp : GDCC::IR::Space::MapArs)
+            if(!sp.second.defin) *itr++ = &sp.second;
+
+         GDCC::FastU size = numChunkAIMP * 8;
+         for(auto const &imp : imps)
+            size += imp->glyph.getData().len + 1;
+
+         out.write("AIMP", 4);
+         putWord(out, size);
+
+         for(auto const &imp : imps)
+         {
+            auto const &data = imp->glyph.getData();
+
+            putWord(out, imp->value);
+            putWord(out, imp->words);
             out.write(data.str, data.len + 1);
          }
       }
@@ -168,6 +201,54 @@ namespace Bytecode
             }
             else
                out.write("\0\0\0\0\0\0\0\0", 8);
+         }
+      }
+
+      //
+      // Info::putChunkMEXP
+      //
+      void Info::putChunkMEXP(std::ostream &out)
+      {
+         if(!numChunkMEXP) return;
+
+         GDCC::Array<GDCC::String> strs{numChunkMEXP};
+         for(auto &str : strs) str = GDCC::STR_;
+
+         for(auto const &obj : GDCC::IR::Space::MapReg.obset)
+            if(obj->defin) strs[obj->value] = obj->glyph;
+
+         for(auto const &itr : GDCC::IR::Space::MapArs)
+            if(itr.second.defin) strs[itr.second.value] = itr.second.glyph;
+
+         putChunk(out, "MEXP", strs, false);
+      }
+
+      //
+      // Info::putChunkMIMP
+      //
+      void Info::putChunkMIMP(std::ostream &out)
+      {
+         if(!numChunkMIMP) return;
+
+         GDCC::Array<GDCC::IR::Object const *> imps{numChunkMIMP};
+
+         auto itr = imps.begin();
+         for(auto const &obj : GDCC::IR::Space::MapReg.obset)
+            if(!obj->defin) *itr++ = obj;
+
+         GDCC::FastU size = numChunkMIMP * 4;
+         for(auto const &imp : imps)
+            size += imp->glyph.getData().len + 1;
+
+         out.write("MIMP", 4);
+         putWord(out, size);
+
+         for(auto const &imp : imps)
+         {
+            auto const &data = imp->glyph.getData();
+
+            putWord(out, imp->value);
+            out.write(data.str, data.len + 1);
          }
       }
 

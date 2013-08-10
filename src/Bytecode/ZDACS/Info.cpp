@@ -48,6 +48,8 @@ namespace Bytecode
          numChunkARAY{0},
          numChunkFNAM{0},
          numChunkFUNC{0},
+         numChunkMEXP{0},
+         numChunkMIMP{0},
          numChunkSFLG{0},
          numChunkSNAM{0},
          numChunkSPTR{0},
