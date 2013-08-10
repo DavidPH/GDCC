@@ -11,6 +11,7 @@
 
 add_library(gdcc-bc-zdacs
    Info.cpp
+   gen.cpp
    put.cpp
    putChunk.cpp
    putStmnt.cpp

@@ -62,11 +62,19 @@ namespace Bytecode
       Info() : curFunc{nullptr} {}
       virtual ~Info() {}
 
+      virtual void gen();
+
       virtual void put(std::ostream &out) = 0;
 
       virtual void tr();
 
    protected:
+      virtual void genBlock(GDCC::IR::Block &block);
+      virtual void genFunc(GDCC::IR::Function &func);
+      virtual void genSpace(GDCC::IR::Space &space);
+      virtual void genStmnt(GDCC::IR::Statement &stmnt);
+      virtual void genStr(GDCC::IR::StrEnt &str);
+
       virtual void trBlock(GDCC::IR::Block &block);
       virtual void trFunc(GDCC::IR::Function &func);
       virtual void trSpace(GDCC::IR::Space &space);

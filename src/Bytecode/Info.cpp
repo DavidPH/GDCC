@@ -26,6 +26,75 @@
 namespace Bytecode
 {
    //
+   // Info::gen
+   //
+   void Info::gen()
+   {
+      for(auto &itr : GDCC::IR::Space::GblArs) genSpace(itr.second);
+      for(auto &itr : GDCC::IR::Space::MapArs) genSpace(itr.second);
+      for(auto &itr : GDCC::IR::Space::WldArs) genSpace(itr.second);
+
+      genSpace(GDCC::IR::Space::GblReg);
+      genSpace(GDCC::IR::Space::LocArs);
+      genSpace(GDCC::IR::Space::MapReg);
+      genSpace(GDCC::IR::Space::WldReg);
+
+      for(auto &itr : GDCC::IR::FunctionRange())
+         genFunc(itr.second);
+
+      for(auto &itr : GDCC::IR::StrEntRange())
+         genStr(itr.second);
+   }
+
+   //
+   // Info::genBlock
+   //
+   void Info::genBlock(GDCC::IR::Block &block)
+   {
+      for(auto &stmnt : block)
+         genStmnt(stmnt);
+   }
+
+   //
+   // Info::genFunc
+   //
+   void Info::genFunc(GDCC::IR::Function &func)
+   {
+      try
+      {
+         curFunc = &func;
+         genBlock(func.block);
+         curFunc = nullptr;
+      }
+      catch(...)
+      {
+         curFunc = nullptr;
+         throw;
+      }
+   }
+
+   //
+   // Info::genSpace
+   //
+   void Info::genSpace(GDCC::IR::Space &)
+   {
+   }
+
+   //
+   // Info::genStmnt
+   //
+   void Info::genStmnt(GDCC::IR::Statement &)
+   {
+   }
+
+   //
+   // Info::genStr
+   //
+   void Info::genStr(GDCC::IR::StrEnt &)
+   {
+   }
+
+   //
    // Info::tr
    //
    void Info::tr()

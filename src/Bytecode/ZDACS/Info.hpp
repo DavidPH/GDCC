@@ -42,6 +42,9 @@ namespace Bytecode
          static GDCC::IR::Type_Fixed const TypeWord;
 
       protected:
+         virtual void genFunc(GDCC::IR::Function &func);
+         virtual void genStr(GDCC::IR::StrEnt &str);
+
          void putByte(std::ostream &out, GDCC::FastU i);
 
          void putChunk(std::ostream &out);

@@ -77,7 +77,6 @@ namespace GDCC
          alloc{false},
          defin{false}
       {
-         Glyph::GetData(glyph).type = Type_StrEn();
       }
 
       //
