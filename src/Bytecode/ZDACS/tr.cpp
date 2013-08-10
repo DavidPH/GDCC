@@ -87,7 +87,8 @@ namespace Bytecode
             if(numChunkSNAM <= func.valueInt)
                numChunkSNAM = func.valueInt + 1;
 
-            // TODO: Back the function's glyph with a string index.
+            if(auto str = GDCC::IR::StrEnt::FindValue(func.valueStr))
+               BackGlyphGlyph(func.glyph, str->glyph);
 
             break;
 
@@ -450,9 +451,7 @@ namespace Bytecode
             case GDCC::IR::ArgBase::WldReg: jumpPos += 8; break;
 
             case GDCC::IR::ArgBase::Lit:
-               jumpPos += 8;
-               if(stmnt.args[1].aLit.value->getType().t == GDCC::IR::TypeBase::StrEn)
-                  jumpPos += 4;
+               trStmnt_Move_W__Stk_Lit(stmnt, stmnt.args[1].aLit.value);
                break;
 
             case GDCC::IR::ArgBase::GblArr:

@@ -74,6 +74,22 @@ namespace Bytecode
             throw EXIT_FAILURE;
          }
       }
+
+      //
+      // Info::trStmnt_Move_W__Stk_Lit
+      //
+      void Info::trStmnt_Move_W__Stk_Lit(GDCC::IR::Statement &, GDCC::IR::Exp const *exp)
+      {
+         auto type = exp->getType();
+
+         switch(type.t)
+         {
+         case GDCC::IR::TypeBase::Funct: jumpPos += 8; break;
+         case GDCC::IR::TypeBase::StrEn: jumpPos += 12; break;
+
+         default: jumpPos += 8; break;
+         }
+      }
    }
 }
 

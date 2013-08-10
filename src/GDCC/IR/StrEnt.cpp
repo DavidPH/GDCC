@@ -118,6 +118,18 @@ namespace GDCC
       }
 
       //
+      // StrEnt::FindValue
+      //
+      StrEnt *StrEnt::FindValue(String value)
+      {
+         for(auto &itr : Table)
+            if(itr.second.valueStr == value && itr.second.alias && itr.second.defin)
+               return &itr.second;
+
+         return nullptr;
+      }
+
+      //
       // StrEnt::Get
       //
       StrEnt &StrEnt::Get(String glyph)

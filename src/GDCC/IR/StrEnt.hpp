@@ -47,6 +47,8 @@ namespace GDCC
          bool defin : 1;
 
 
+         static StrEnt *FindValue(String value);
+
          static StrEnt &Get(String glyph);
       };
    }

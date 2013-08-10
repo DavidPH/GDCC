@@ -81,12 +81,14 @@ namespace Bytecode
          void trStmnt_Move_W(GDCC::IR::Statement &stmnt);
          void trStmnt_Move_W__Arr_Stk(GDCC::IR::Statement &stmnt, GDCC::IR::ArgPtr2 const &arr);
          void trStmnt_Move_W__Stk_Arr(GDCC::IR::Statement &stmnt, GDCC::IR::ArgPtr2 const &arr);
+         void trStmnt_Move_W__Stk_Lit(GDCC::IR::Statement &stmnt, GDCC::IR::Exp const *exp);
          void trStmnt_Retn(GDCC::IR::Statement &stmnt);
 
          virtual void trStr(GDCC::IR::StrEnt &str);
 
 
          static void BackGlyphFunc(GDCC::String glyph, GDCC::FastU val, GDCC::IR::CallType ctype);
+         static void BackGlyphGlyph(GDCC::String glyph, GDCC::String val);
          static void BackGlyphStr(GDCC::String glyph, GDCC::FastU val);
          static void BackGlyphWord(GDCC::String glyph, GDCC::FastU val);
 

@@ -63,9 +63,22 @@ namespace Bytecode
       {
          auto &data = GDCC::IR::Glyph::GetData(glyph);
 
-         data.type  = TypeWord;
+         data.type  = GDCC::IR::Type_Funct(ctype);
          data.value = GDCC::IR::ExpCreate_ValueRoot(
             GDCC::IR::Value_Funct(val, GDCC::IR::Type_Funct(ctype)),
+            GDCC::Origin(GDCC::STRNULL, 0));
+      }
+
+      //
+      // Info::BackGlyphGlyph
+      //
+      void Info::BackGlyphGlyph(GDCC::String glyph, GDCC::String val)
+      {
+         auto &data = GDCC::IR::Glyph::GetData(glyph);
+
+         data.type  = GDCC::IR::Glyph::GetData(val).type;
+         data.value = GDCC::IR::ExpCreate_ValueGlyph(
+            static_cast<GDCC::IR::Glyph>(val),
             GDCC::Origin(GDCC::STRNULL, 0));
       }
 
@@ -76,7 +89,7 @@ namespace Bytecode
       {
          auto &data = GDCC::IR::Glyph::GetData(glyph);
 
-         data.type  = TypeWord;
+         data.type  = GDCC::IR::Type_StrEn();
          data.value = GDCC::IR::ExpCreate_ValueRoot(
             GDCC::IR::Value_StrEn(val, GDCC::IR::Type_StrEn()),
             GDCC::Origin(GDCC::STRNULL, 0));
