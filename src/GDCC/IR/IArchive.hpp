@@ -102,6 +102,7 @@ namespace GDCC
             getTablesString();
             getTablesGlyphs();
             getTablesFuncts();
+            getTablesImport();
             getTablesSpaces();
             getTablesObject();
             getTablesStrEnt();
@@ -115,6 +116,7 @@ namespace GDCC
       private:
          IArchive &getTablesFuncts();
          IArchive &getTablesGlyphs();
+         IArchive &getTablesImport();
          IArchive &getTablesObject();
          IArchive &getTablesSpaces();
          IArchive &getTablesStrEnt();

@@ -92,6 +92,7 @@ namespace GDCC
             putTablesString();
             putTablesGlyphs();
             putTablesFuncts();
+            putTablesImport();
             putTablesSpaces();
             putTablesObject();
             putTablesStrEnt();
@@ -102,6 +103,7 @@ namespace GDCC
       private:
          OArchive &putTablesFuncts();
          OArchive &putTablesGlyphs();
+         OArchive &putTablesImport();
          OArchive &putTablesObject();
          OArchive &putTablesSpaces();
          OArchive &putTablesStrEnt();

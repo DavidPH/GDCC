@@ -40,6 +40,7 @@ namespace GDCC
       class Block;
       class Exp;
       class Function;
+      class Import;
       class Object;
       class Space;
       class StrEnt;
@@ -69,6 +70,8 @@ namespace Asm
    GDCC::FastU ParseFastU(IStream &in);
 
    void ParseFunction(IStream &in, GDCC::IR::Function &func);
+
+   void ParseImport(IStream &in, GDCC::IR::Import &imp);
 
    GDCC::Integ ParseInteg(IStream &in);
 

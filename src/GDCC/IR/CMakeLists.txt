@@ -20,6 +20,7 @@ add_library(gdcc-ir
    Function.cpp
    Glyph.cpp
    IArchive.cpp
+   Import.cpp
    Linkage.cpp
    Object.cpp
    Statement.cpp

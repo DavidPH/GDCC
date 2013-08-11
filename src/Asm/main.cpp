@@ -17,6 +17,7 @@
 #include "GDCC/Token.hpp"
 
 #include "GDCC/IR/Function.hpp"
+#include "GDCC/IR/Import.hpp"
 #include "GDCC/IR/OArchive.hpp"
 #include "GDCC/IR/Object.hpp"
 #include "GDCC/IR/StrEnt.hpp"
@@ -74,6 +75,11 @@ static bool ParseTLK(Asm::IStream &in)
       }
 
       Asm::ParseFunction(in, GDCC::IR::Function::Get(tok.str));
+      return true;
+
+   case GDCC::STR_Import:
+      in >> tok;
+      Asm::ParseImport(in, GDCC::IR::Import::Get(tok.str));
       return true;
 
    case GDCC::STR_Object:

@@ -18,6 +18,7 @@ add_executable(gdcc-as
    ParseBlock.cpp
    ParseExp.cpp
    ParseFunction.cpp
+   ParseImport.cpp
    ParseObject.cpp
    ParseSpace.cpp
    ParseStrEnt.cpp

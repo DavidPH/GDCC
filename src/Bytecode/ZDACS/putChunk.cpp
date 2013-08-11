@@ -13,6 +13,7 @@
 #include "Info.hpp"
 
 #include "GDCC/IR/Function.hpp"
+#include "GDCC/IR/Import.hpp"
 #include "GDCC/IR/Object.hpp"
 #include "GDCC/IR/StrEnt.hpp"
 
@@ -34,6 +35,7 @@ namespace Bytecode
          putChunkARAY(out);
          putChunkFNAM(out);
          putChunkFUNC(out);
+         putChunkLOAD(out);
          putChunkMEXP(out);
          putChunkMIMP(out);
          putChunkSFLG(out);
@@ -201,6 +203,30 @@ namespace Bytecode
             }
             else
                out.write("\0\0\0\0\0\0\0\0", 8);
+         }
+      }
+
+      //
+      // Info::putChunkLOAD
+      //
+      void Info::putChunkLOAD(std::ostream &out)
+      {
+         numChunkLOAD = GDCC::IR::ImportRange().size();
+
+         if(!numChunkLOAD) return;
+
+         GDCC::FastU size = 0;
+
+         for(auto const &imp : GDCC::IR::ImportRange())
+            size += imp.glyph.getData().len + 1;
+
+         out.write("LOAD", 4);
+         putWord(out, size);
+
+         for(auto const &imp : GDCC::IR::ImportRange())
+         {
+            auto const &data = imp.glyph.getData();
+            out.write(data.str, data.len + 1);
          }
       }
 
