@@ -61,7 +61,7 @@ namespace Bytecode
          // Calculate size of chunk.
          off = base;
          for(auto const &str : strs)
-            off += str.getData().len + 1;
+            off += lenString(str);
 
          // Write chunk header.
          out.write(name, 4);
@@ -77,15 +77,12 @@ namespace Bytecode
          for(auto const &str : strs)
          {
             putWord(out, off);
-            off += str.getData().len + 1;
+            off += lenString(str);
          }
 
          // Write strings.
          for(auto const &str : strs)
-         {
-            auto const &data = str.getData();
-            out.write(data.str, data.len + 1);
-         }
+            putString(out, str);
       }
 
       //
@@ -103,18 +100,16 @@ namespace Bytecode
 
          GDCC::FastU size = numChunkAIMP * 8;
          for(auto const &imp : imps)
-            size += imp->glyph.getData().len + 1;
+            size += lenString(imp->glyph);
 
          out.write("AIMP", 4);
          putWord(out, size);
 
          for(auto const &imp : imps)
          {
-            auto const &data = imp->glyph.getData();
-
             putWord(out, imp->value);
             putWord(out, imp->words);
-            out.write(data.str, data.len + 1);
+            putString(out, imp->glyph);
          }
       }
 
@@ -218,16 +213,13 @@ namespace Bytecode
          GDCC::FastU size = 0;
 
          for(auto const &imp : GDCC::IR::ImportRange())
-            size += imp.glyph.getData().len + 1;
+            size += lenString(imp.glyph);
 
          out.write("LOAD", 4);
          putWord(out, size);
 
          for(auto const &imp : GDCC::IR::ImportRange())
-         {
-            auto const &data = imp.glyph.getData();
-            out.write(data.str, data.len + 1);
-         }
+            putString(out, imp.glyph);
       }
 
       //
@@ -264,17 +256,15 @@ namespace Bytecode
 
          GDCC::FastU size = numChunkMIMP * 4;
          for(auto const &imp : imps)
-            size += imp->glyph.getData().len + 1;
+            size += lenString(imp->glyph);
 
          out.write("MIMP", 4);
          putWord(out, size);
 
          for(auto const &imp : imps)
          {
-            auto const &data = imp->glyph.getData();
-
             putWord(out, imp->value);
-            out.write(data.str, data.len + 1);
+            putString(out, imp->glyph);
          }
       }
 

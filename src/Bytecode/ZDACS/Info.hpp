@@ -45,6 +45,8 @@ namespace Bytecode
          virtual void genFunc(GDCC::IR::Function &func);
          virtual void genStr(GDCC::IR::StrEnt &str);
 
+         std::size_t lenString(GDCC::String str);
+
          void putByte(std::ostream &out, GDCC::FastU i);
 
          void putChunk(std::ostream &out);
@@ -75,6 +77,8 @@ namespace Bytecode
          void putStmnt_Move_W__Stk_Arr(std::ostream &out, GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i);
          void putStmnt_Move_W__Stk_Lit(std::ostream &out, GDCC::IR::Exp const *exp);
          void putStmnt_Retn(std::ostream &out, GDCC::IR::Statement const &stmnt);
+
+         void putString(std::ostream &out, GDCC::String str);
 
          void putWord(std::ostream &out, GDCC::FastU i);
 

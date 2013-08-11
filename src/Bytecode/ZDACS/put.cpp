@@ -482,6 +482,34 @@ namespace Bytecode
       }
 
       //
+      // Info::putString
+      //
+      void Info::putString(std::ostream &out, GDCC::String str)
+      {
+         auto const &data = str.getData();
+
+         for(auto i = data.str, e = i + data.len; i != e; ++i) switch(*i)
+         {
+         case '\0':
+            if('0' <= i[1] && i[1] <= '7')
+               out.write("\\000", 4);
+            else
+               out.write("\\0", 2);
+            break;
+
+         case '\\':
+            out.write("\\\\", 2);
+            break;
+
+         default:
+            out.put(*i);
+            break;
+         }
+
+         out.put('\0');
+      };
+
+      //
       // Info::putWord
       //
       void Info::putWord(std::ostream &out, GDCC::FastU i)

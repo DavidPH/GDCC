@@ -60,6 +60,35 @@ namespace Bytecode
       }
 
       //
+      // Info::lenString
+      //
+      std::size_t Info::lenString(GDCC::String str)
+      {
+         auto const &data = str.getData();
+         std::size_t len = 0;
+
+         for(auto i = data.str, e = i + data.len; i != e; ++i) switch(*i)
+         {
+         case '\0':
+            if('0' <= i[1] && i[1] <= '7')
+               len += 4;
+            else
+               len += 2;
+            break;
+
+         case '\\':
+            len += 2;
+            break;
+
+         default:
+            len += 1;
+            break;
+         }
+
+         return len + 1;
+      };
+
+      //
       // Info::BackGlyphFunc
       //
       void Info::BackGlyphFunc(GDCC::String glyph, GDCC::FastU val, GDCC::IR::CallType ctype)
