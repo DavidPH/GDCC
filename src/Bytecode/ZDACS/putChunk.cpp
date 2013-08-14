@@ -32,12 +32,17 @@ namespace Bytecode
       void Info::putChunk(std::ostream &out)
       {
          putChunkAIMP(out);
+         putChunkAINI(out);
          putChunkARAY(out);
+         putChunkASTR(out);
+         putChunkATAG(out);
          putChunkFNAM(out);
          putChunkFUNC(out);
          putChunkLOAD(out);
          putChunkMEXP(out);
          putChunkMIMP(out);
+         putChunkMINI(out);
+         putChunkMSTR(out);
          putChunkSFLG(out);
          putChunkSNAM(out);
          putChunkSPTR(out);
@@ -114,6 +119,24 @@ namespace Bytecode
       }
 
       //
+      // Info::putChunkAINI
+      //
+      void Info::putChunkAINI(std::ostream &out)
+      {
+         if(!numChunkAINI) return;
+
+         for(auto const &itr : init) if(itr.first->space == GDCC::IR::AddrBase::MapArr)
+         {
+            out.write("AINI", 4);
+            putWord(out, itr.second.vals.size() * 4 + 4);
+            putWord(out, itr.first->value);
+
+            for(auto const &i : itr.second.vals)
+               putWord(out, i.val);
+         }
+      }
+
+      //
       // Info::putChunkARAY
       //
       void Info::putChunkARAY(std::ostream &out)
@@ -131,6 +154,52 @@ namespace Bytecode
 
             putWord(out, space.value);
             putWord(out, space.words);
+         }
+      }
+
+      //
+      // Info::putChunkASTR
+      //
+      void Info::putChunkASTR(std::ostream &out)
+      {
+         if(!numChunkASTR) return;
+
+         out.write("ASTR", 4);
+         putWord(out, numChunkASTR * 4);
+
+         for(auto const &itr : init) if(itr.first->space == GDCC::IR::AddrBase::MapArr)
+         {
+            if(itr.second.needTag && itr.second.onlyStr)
+               putWord(out, itr.first->value);
+         }
+      }
+
+      //
+      // Info::putChunkATAG
+      //
+      void Info::putChunkATAG(std::ostream &out)
+      {
+         if(!numChunkATAG) return;
+
+         for(auto const &itr : init) if(itr.first->space == GDCC::IR::AddrBase::MapArr)
+         {
+            auto const &ini = itr.second;
+
+            if(!ini.needTag || ini.onlyStr) continue;
+
+            out.write("ATAG", 4);
+            putWord(out, ini.vals.size() + 5);
+
+            putByte(out, 0); // version
+            putWord(out, itr.first->value);
+
+            for(auto const &i : itr.second.vals) switch(i.tag)
+            {
+            case InitTag::Empty: putByte(out, 0); break;
+            case InitTag::Fixed: putByte(out, 0); break;
+            case InitTag::Funct: putByte(out, 2); break;
+            case InitTag::StrEn: putByte(out, 1); break;
+            }
          }
       }
 
@@ -266,6 +335,40 @@ namespace Bytecode
             putWord(out, imp->value);
             putString(out, imp->glyph);
          }
+      }
+
+      //
+      // Info::putChunkMINI
+      //
+      void Info::putChunkMINI(std::ostream &out)
+      {
+         if(!numChunkMINI) return;
+
+         auto const &ini = init[&GDCC::IR::Space::MapReg];
+
+         for(std::size_t i = 0, e = ini.vals.size(); i != e; ++i) if(ini.vals[i].val)
+         {
+            out.write("MINI", 4);
+            putWord(out, 8);
+            putWord(out, i);
+            putWord(out, ini.vals[i].val);
+         }
+      }
+
+      //
+      // Info::putChunkMSTR
+      //
+      void Info::putChunkMSTR(std::ostream &out)
+      {
+         if(!numChunkMSTR) return;
+
+         out.write("MSTR", 4);
+         putWord(out, numChunkMSTR * 4);
+
+         auto const &ini = init[&GDCC::IR::Space::MapReg];
+
+         for(std::size_t i = 0, e = ini.vals.size(); i != e; ++i)
+            if(ini.vals[i].tag == InitTag::StrEn) putWord(out, i);
       }
 
       //

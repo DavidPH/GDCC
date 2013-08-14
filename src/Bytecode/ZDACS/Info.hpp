@@ -19,6 +19,8 @@
 #include "GDCC/Counter.hpp"
 #include "GDCC/Number.hpp"
 
+#include <unordered_map>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -38,10 +40,49 @@ namespace Bytecode
 
          virtual void put(std::ostream &out);
 
+         virtual void tr();
+
 
          static GDCC::IR::Type_Fixed const TypeWord;
 
       protected:
+         //
+         // InitTag
+         //
+         enum class InitTag
+         {
+            Empty,
+            Fixed,
+            Funct,
+            StrEn,
+         };
+
+         //
+         // InitVal
+         //
+         struct InitVal
+         {
+            InitVal() : val{0}, tag{InitTag::Empty} {}
+
+            GDCC::FastU val;
+            InitTag     tag;
+         };
+
+         //
+         // InitData
+         //
+         class InitData
+         {
+         public:
+            InitData() : needTag{false}, onlyStr{true} {}
+
+            GDCC::Array<InitVal> vals;
+
+            bool needTag : 1;
+            bool onlyStr : 1;
+         };
+
+
          virtual void genFunc(GDCC::IR::Function &func);
          virtual void genStr(GDCC::IR::StrEnt &str);
 
@@ -53,12 +94,17 @@ namespace Bytecode
          void putChunk(std::ostream &out, char const *name,
             GDCC::Array<GDCC::String> const &strs, bool junk);
          void putChunkAIMP(std::ostream &out);
+         void putChunkAINI(std::ostream &out);
          void putChunkARAY(std::ostream &out);
+         void putChunkASTR(std::ostream &out);
+         void putChunkATAG(std::ostream &out);
          void putChunkFNAM(std::ostream &out);
          void putChunkFUNC(std::ostream &out);
          void putChunkLOAD(std::ostream &out);
          void putChunkMEXP(std::ostream &out);
          void putChunkMIMP(std::ostream &out);
+         void putChunkMINI(std::ostream &out);
+         void putChunkMSTR(std::ostream &out);
          void putChunkSFLG(std::ostream &out);
          void putChunkSNAM(std::ostream &out);
          void putChunkSPTR(std::ostream &out);
@@ -85,6 +131,8 @@ namespace Bytecode
          virtual void trFunc(GDCC::IR::Function &func);
 
          virtual void trSpace(GDCC::IR::Space &space);
+         void trSpaceIniti(GDCC::IR::Space &space);
+         void trSpaceInitiValue(InitVal *&data, InitVal const *end, GDCC::IR::Value const &val);
 
          virtual void trStmnt(GDCC::IR::Statement &stmnt);
          void trStmnt_Call(GDCC::IR::Statement &stmnt);
@@ -109,14 +157,21 @@ namespace Bytecode
          static GDCC::FastU ResolveValue(GDCC::IR::Value const &val);
 
 
+         std::unordered_map<GDCC::IR::Space const *, InitData> init;
+
          GDCC::FastU jumpPos;
          GDCC::FastU numChunkAIMP;
+         GDCC::FastU numChunkAINI;
          GDCC::FastU numChunkARAY;
+         GDCC::FastU numChunkASTR;
+         GDCC::FastU numChunkATAG;
          GDCC::FastU numChunkFNAM;
          GDCC::FastU numChunkFUNC;
          GDCC::FastU numChunkLOAD;
          GDCC::FastU numChunkMEXP;
          GDCC::FastU numChunkMIMP;
+         GDCC::FastU numChunkMINI;
+         GDCC::FastU numChunkMSTR;
          GDCC::FastU numChunkSFLG;
          GDCC::FastU numChunkSNAM;
          GDCC::FastU numChunkSPTR;

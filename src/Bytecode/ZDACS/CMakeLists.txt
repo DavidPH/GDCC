@@ -16,6 +16,7 @@ add_library(gdcc-bc-zdacs
    putChunk.cpp
    putStmnt.cpp
    tr.cpp
+   trSpace.cpp
    trStmnt.cpp
 )
 

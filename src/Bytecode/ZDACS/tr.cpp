@@ -28,6 +28,18 @@ namespace Bytecode
    namespace ZDACS
    {
       //
+      // Info::tr
+      //
+      void Info::tr()
+      {
+         InfoBase::tr();
+
+         for(auto &itr : GDCC::IR::Space::MapArs) trSpaceIniti(itr.second);
+
+         trSpaceIniti(GDCC::IR::Space::MapReg);
+      }
+
+      //
       // Info::trFunc
       //
       void Info::trFunc(GDCC::IR::Function &func)
@@ -181,6 +193,9 @@ namespace Bytecode
                if(obj->defin && numChunkMEXP <= obj->value)
                   numChunkMEXP = obj->value + 1;
             }
+
+            space.allocWords();
+
             break;
 
          case GDCC::IR::AddrBase::MapArr:

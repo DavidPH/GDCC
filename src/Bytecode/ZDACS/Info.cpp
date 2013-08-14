@@ -45,12 +45,17 @@ namespace Bytecode
       Info::Info() :
          jumpPos{16}, // HACK: Should be calculated.
          numChunkAIMP{0},
+         numChunkAINI{0},
          numChunkARAY{0},
+         numChunkASTR{0},
+         numChunkATAG{0},
          numChunkFNAM{0},
          numChunkFUNC{0},
          numChunkLOAD{0},
          numChunkMEXP{0},
          numChunkMIMP{0},
+         numChunkMINI{0},
+         numChunkMSTR{0},
          numChunkSFLG{0},
          numChunkSNAM{0},
          numChunkSPTR{0},
