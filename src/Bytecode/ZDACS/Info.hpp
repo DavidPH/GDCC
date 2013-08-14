@@ -45,6 +45,7 @@ namespace Bytecode
 
          static GDCC::IR::Type_Fixed const TypeWord;
 
+         static bool UseChunkSTRE;
          static bool UseFakeACS0;
 
       protected:
@@ -111,7 +112,7 @@ namespace Bytecode
 
          std::size_t lenString(GDCC::String str);
 
-         void putByte(GDCC::FastU i);
+         void putByte(GDCC::FastU i) {out->put(i & 0xFF);}
 
          void putChunk();
          void putChunk(char const *name, GDCC::Array<GDCC::String> const &strs, bool junk);
@@ -150,6 +151,7 @@ namespace Bytecode
          void putStmnt_Retn(GDCC::IR::Statement const &stmnt);
 
          void putString(GDCC::String str);
+         void putString(GDCC::String str, GDCC::FastU key);
 
          void putWord(GDCC::FastU i);
 

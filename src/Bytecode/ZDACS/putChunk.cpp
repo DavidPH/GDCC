@@ -88,7 +88,16 @@ namespace Bytecode
          }
 
          // Write strings.
-         for(auto const &str : strs)
+         if(junk && UseChunkSTRE)
+         {
+            off = base;
+            for(auto const &str : strs)
+            {
+               putString(str, off * 157135);
+               off += lenString(str);
+            }
+         }
+         else for(auto const &str : strs)
             putString(str);
       }
 
@@ -524,7 +533,7 @@ namespace Bytecode
          for(auto const &itr : GDCC::IR::StrEntRange()) if(itr.second.defin)
             strs[itr.second.valueInt] = itr.second.valueStr;
 
-         putChunk("STRL", strs, true);
+         putChunk(UseChunkSTRE ? "STRE" : "STRL", strs, true);
       }
 
       //

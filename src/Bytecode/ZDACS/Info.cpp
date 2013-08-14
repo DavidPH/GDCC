@@ -30,17 +30,26 @@ namespace Bytecode
    {
       GDCC::IR::Type_Fixed const Info::TypeWord{32, 0, false, false};
 
-      bool Info::UseFakeACS0 = false;
+      bool Info::UseChunkSTRE = false;
+      bool Info::UseFakeACS0  = false;
    }
 }
 
 namespace Option
 {
    //
-   // --bc-fake-ACS0
+   // --bc-zdacs-chunk-STRE
    //
-   OptionDPtr<bool> FakeACS0Opt{'\0', "bc-fake-ACS0", "output",
-      "Generates a fake ACS0 header.", nullptr, &Bytecode::ZDACS::Info::UseFakeACS0};
+   OptionDPtr<bool> ChunkSTREOpt{'\0', "bc-zdacs-chunk-STRE", "output",
+      "Generates an encrypted string table.", nullptr,
+      &Bytecode::ZDACS::Info::UseChunkSTRE};
+
+   //
+   // --bc-zdacs-fake-ACS0
+   //
+   OptionDPtr<bool> FakeACS0Opt{'\0', "bc-zdacs-fake-ACS0", "output",
+      "Generates a fake ACS0 header.", nullptr,
+      &Bytecode::ZDACS::Info::UseFakeACS0};
 }
 
 

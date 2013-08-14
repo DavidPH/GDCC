@@ -64,14 +64,6 @@ namespace Bytecode
       }
 
       //
-      // Info::putByte
-      //
-      void Info::putByte(GDCC::FastU i)
-      {
-         out->put(i & 0xFF);
-      }
-
-      //
       // Info::putExpWord
       //
       void Info::putExpWord(GDCC::IR::Exp const *exp)
@@ -114,6 +106,52 @@ namespace Bytecode
          }
 
          putByte('\0');
+      };
+
+      //
+      // Info::putString
+      //
+      // Handles STRE "encrypted" strings.
+      //
+      void Info::putString(GDCC::String str, GDCC::FastU key)
+      {
+         std::size_t idx = 0;
+
+         //
+         // putChar
+         //
+         auto putChar = [&](unsigned char c)
+         {
+            putByte(c ^ (idx++ / 2 + key));
+         };
+
+         auto const &data = str.getData();
+
+         for(auto i = data.str, e = i + data.len; i != e; ++i) switch(*i)
+         {
+         case '\0':
+            putChar('\\');
+            putChar('0');
+
+            if('0' <= i[1] && i[1] <= '7')
+            {
+               putChar('0');
+               putChar('0');
+            }
+
+            break;
+
+         case '\\':
+            putChar('\\');
+            putChar('\\');
+            break;
+
+         default:
+            putChar(*i);
+            break;
+         }
+
+         putChar('\0');
       };
 
       //
