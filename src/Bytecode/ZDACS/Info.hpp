@@ -88,45 +88,47 @@ namespace Bytecode
 
          std::size_t lenString(GDCC::String str);
 
-         void putByte(std::ostream &out, GDCC::FastU i);
+         void putByte(GDCC::FastU i);
 
-         void putChunk(std::ostream &out);
-         void putChunk(std::ostream &out, char const *name,
+         void putChunk();
+         void putChunk(char const *name,
             GDCC::Array<GDCC::String> const &strs, bool junk);
-         void putChunkAIMP(std::ostream &out);
-         void putChunkAINI(std::ostream &out);
-         void putChunkARAY(std::ostream &out);
-         void putChunkASTR(std::ostream &out);
-         void putChunkATAG(std::ostream &out);
-         void putChunkFNAM(std::ostream &out);
-         void putChunkFUNC(std::ostream &out);
-         void putChunkLOAD(std::ostream &out);
-         void putChunkMEXP(std::ostream &out);
-         void putChunkMIMP(std::ostream &out);
-         void putChunkMINI(std::ostream &out);
-         void putChunkMSTR(std::ostream &out);
-         void putChunkSFLG(std::ostream &out);
-         void putChunkSNAM(std::ostream &out);
-         void putChunkSPTR(std::ostream &out);
-         void putChunkSTRL(std::ostream &out);
-         void putChunkSVCT(std::ostream &out);
+         void putChunkAIMP();
+         void putChunkAINI();
+         void putChunkARAY();
+         void putChunkASTR();
+         void putChunkATAG();
+         void putChunkFNAM();
+         void putChunkFUNC();
+         void putChunkLOAD();
+         void putChunkMEXP();
+         void putChunkMIMP();
+         void putChunkMINI();
+         void putChunkMSTR();
+         void putChunkSFLG();
+         void putChunkSNAM();
+         void putChunkSPTR();
+         void putChunkSTRL();
+         void putChunkSVCT();
 
-         void putExpWord(std::ostream &out, GDCC::IR::Exp const *exp);
+         void putData(char const *str, std::size_t len) {out->write(str, len);}
 
-         void putHWord(std::ostream &out, GDCC::FastU i);
+         void putExpWord(GDCC::IR::Exp const *exp);
 
-         void putStmnt(std::ostream &out, GDCC::IR::Statement const &stmnt);
-         void putStmnt_Call(std::ostream &out, GDCC::IR::Statement const &stmnt);
-         void putStmnt_Cspe(std::ostream &out, GDCC::IR::Statement const &stmnt);
-         void putStmnt_Move_W(std::ostream &out, GDCC::IR::Statement const &stmnt);
-         void putStmnt_Move_W__Arr_Stk(std::ostream &out, GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i);
-         void putStmnt_Move_W__Stk_Arr(std::ostream &out, GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i);
-         void putStmnt_Move_W__Stk_Lit(std::ostream &out, GDCC::IR::Exp const *exp);
-         void putStmnt_Retn(std::ostream &out, GDCC::IR::Statement const &stmnt);
+         void putHWord(GDCC::FastU i);
 
-         void putString(std::ostream &out, GDCC::String str);
+         void putStmnt(GDCC::IR::Statement const &stmnt);
+         void putStmnt_Call(GDCC::IR::Statement const &stmnt);
+         void putStmnt_Cspe(GDCC::IR::Statement const &stmnt);
+         void putStmnt_Move_W(GDCC::IR::Statement const &stmnt);
+         void putStmnt_Move_W__Arr_Stk(GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i);
+         void putStmnt_Move_W__Stk_Arr(GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i);
+         void putStmnt_Move_W__Stk_Lit(GDCC::IR::Exp const *exp);
+         void putStmnt_Retn(GDCC::IR::Statement const &stmnt);
 
-         void putWord(std::ostream &out, GDCC::FastU i);
+         void putString(GDCC::String str);
+
+         void putWord(GDCC::FastU i);
 
          virtual void trFunc(GDCC::IR::Function &func);
 

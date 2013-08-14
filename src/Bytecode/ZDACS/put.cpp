@@ -28,56 +28,60 @@ namespace Bytecode
       //
       // Info::put
       //
-      void Info::put(std::ostream &out)
+      void Info::put(std::ostream &out_)
       {
+         out = &out_;
+
          // Put header.
-         out.write("ACSE", 4);
-         putWord(out, jumpPos);
-         out.write("GDCC::BC", 8);
+         putData("ACSE", 4);
+         putWord(jumpPos);
+         putData("GDCC::BC", 8);
 
          // Put statements.
          for(auto &func : GDCC::IR::FunctionRange()) try
          {
             curFunc = &func.second;
             for(auto const &stmnt : func.second.block)
-               putStmnt(out, stmnt);
+               putStmnt(stmnt);
             curFunc = nullptr;
          }
          catch(...) {curFunc = nullptr; throw;}
 
          // Put chunks.
-         putChunk(out);
+         putChunk();
+
+         out = nullptr;
       }
 
       //
       // Info::putByte
       //
-      void Info::putByte(std::ostream &out, GDCC::FastU i)
+      void Info::putByte(GDCC::FastU i)
       {
-         out.put(i & 0xFF);
+         out->put(i & 0xFF);
       }
 
       //
       // Info::putExpWord
       //
-      void Info::putExpWord(std::ostream &out, GDCC::IR::Exp const *exp)
+      void Info::putExpWord(GDCC::IR::Exp const *exp)
       {
-         putWord(out, ResolveValue(exp->getValue()));
+         putWord(ResolveValue(exp->getValue()));
       }
 
       //
       // Info::putHWord
       //
-      void Info::putHWord(std::ostream &out, GDCC::FastU i)
+      void Info::putHWord(GDCC::FastU i)
       {
-         out.put((i >> 0) & 0xFF);
-         out.put((i >> 8) & 0xFF);
+         out->put((i >> 0) & 0xFF);
+         out->put((i >> 8) & 0xFF);
       }
 
       //
       // Info::putString
       //
-      void Info::putString(std::ostream &out, GDCC::String str)
+      void Info::putString(GDCC::String str)
       {
          auto const &data = str.getData();
 
@@ -85,32 +89,32 @@ namespace Bytecode
          {
          case '\0':
             if('0' <= i[1] && i[1] <= '7')
-               out.write("\\000", 4);
+               putData("\\000", 4);
             else
-               out.write("\\0", 2);
+               putData("\\0", 2);
             break;
 
          case '\\':
-            out.write("\\\\", 2);
+            putData("\\\\", 2);
             break;
 
          default:
-            out.put(*i);
+            putByte(*i);
             break;
          }
 
-         out.put('\0');
+         putByte('\0');
       };
 
       //
       // Info::putWord
       //
-      void Info::putWord(std::ostream &out, GDCC::FastU i)
+      void Info::putWord(GDCC::FastU i)
       {
-         out.put((i >>  0) & 0xFF);
-         out.put((i >>  8) & 0xFF);
-         out.put((i >> 16) & 0xFF);
-         out.put((i >> 24) & 0xFF);
+         out->put((i >>  0) & 0xFF);
+         out->put((i >>  8) & 0xFF);
+         out->put((i >> 16) & 0xFF);
+         out->put((i >> 24) & 0xFF);
       }
    }
 }

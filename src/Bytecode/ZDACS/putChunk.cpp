@@ -29,32 +29,31 @@ namespace Bytecode
       //
       // Info::putChunk
       //
-      void Info::putChunk(std::ostream &out)
+      void Info::putChunk()
       {
-         putChunkAIMP(out);
-         putChunkAINI(out);
-         putChunkARAY(out);
-         putChunkASTR(out);
-         putChunkATAG(out);
-         putChunkFNAM(out);
-         putChunkFUNC(out);
-         putChunkLOAD(out);
-         putChunkMEXP(out);
-         putChunkMIMP(out);
-         putChunkMINI(out);
-         putChunkMSTR(out);
-         putChunkSFLG(out);
-         putChunkSNAM(out);
-         putChunkSPTR(out);
-         putChunkSTRL(out);
-         putChunkSVCT(out);
+         putChunkAIMP();
+         putChunkAINI();
+         putChunkARAY();
+         putChunkASTR();
+         putChunkATAG();
+         putChunkFNAM();
+         putChunkFUNC();
+         putChunkLOAD();
+         putChunkMEXP();
+         putChunkMIMP();
+         putChunkMINI();
+         putChunkMSTR();
+         putChunkSFLG();
+         putChunkSNAM();
+         putChunkSPTR();
+         putChunkSTRL();
+         putChunkSVCT();
       }
 
       //
       // Info::putChunk
       //
-      void Info::putChunk(std::ostream &out, char const *name,
-         GDCC::Array<GDCC::String> const &strs, bool junk)
+      void Info::putChunk(char const *name, GDCC::Array<GDCC::String> const &strs, bool junk)
       {
          std::size_t base;
          std::size_t off;
@@ -69,31 +68,31 @@ namespace Bytecode
             off += lenString(str);
 
          // Write chunk header.
-         out.write(name, 4);
-         putWord(out, off);
+         putData(name, 4);
+         putWord(off);
 
          // Write string count.
-         if(junk) putWord(out, 0);
-         putWord(out, strs.size());
-         if(junk) putWord(out, 0);
+         if(junk) putWord(0);
+         putWord(strs.size());
+         if(junk) putWord(0);
 
          // Write string offsets.
          off = base;
          for(auto const &str : strs)
          {
-            putWord(out, off);
+            putWord(off);
             off += lenString(str);
          }
 
          // Write strings.
          for(auto const &str : strs)
-            putString(out, str);
+            putString(str);
       }
 
       //
       // Info::putChunkAIMP
       //
-      void Info::putChunkAIMP(std::ostream &out)
+      void Info::putChunkAIMP()
       {
          if(!numChunkAIMP) return;
 
@@ -107,44 +106,44 @@ namespace Bytecode
          for(auto const &imp : imps)
             size += lenString(imp->glyph);
 
-         out.write("AIMP", 4);
-         putWord(out, size);
+         putData("AIMP", 4);
+         putWord(size);
 
          for(auto const &imp : imps)
          {
-            putWord(out, imp->value);
-            putWord(out, imp->words);
-            putString(out, imp->glyph);
+            putWord(imp->value);
+            putWord(imp->words);
+            putString(imp->glyph);
          }
       }
 
       //
       // Info::putChunkAINI
       //
-      void Info::putChunkAINI(std::ostream &out)
+      void Info::putChunkAINI()
       {
          if(!numChunkAINI) return;
 
          for(auto const &itr : init) if(itr.first->space == GDCC::IR::AddrBase::MapArr)
          {
-            out.write("AINI", 4);
-            putWord(out, itr.second.vals.size() * 4 + 4);
-            putWord(out, itr.first->value);
+            putData("AINI", 4);
+            putWord(itr.second.vals.size() * 4 + 4);
+            putWord(itr.first->value);
 
             for(auto const &i : itr.second.vals)
-               putWord(out, i.val);
+               putWord(i.val);
          }
       }
 
       //
       // Info::putChunkARAY
       //
-      void Info::putChunkARAY(std::ostream &out)
+      void Info::putChunkARAY()
       {
          if(!numChunkARAY) return;
 
-         out.write("ARAY", 4);
-         putWord(out, numChunkARAY * 8);
+         putData("ARAY", 4);
+         putWord(numChunkARAY * 8);
 
          for(auto const &itr : GDCC::IR::Space::MapArs)
          {
@@ -152,32 +151,32 @@ namespace Bytecode
 
             if(!space.defin) continue;
 
-            putWord(out, space.value);
-            putWord(out, space.words);
+            putWord(space.value);
+            putWord(space.words);
          }
       }
 
       //
       // Info::putChunkASTR
       //
-      void Info::putChunkASTR(std::ostream &out)
+      void Info::putChunkASTR()
       {
          if(!numChunkASTR) return;
 
-         out.write("ASTR", 4);
-         putWord(out, numChunkASTR * 4);
+         putData("ASTR", 4);
+         putWord(numChunkASTR * 4);
 
          for(auto const &itr : init) if(itr.first->space == GDCC::IR::AddrBase::MapArr)
          {
             if(itr.second.needTag && itr.second.onlyStr)
-               putWord(out, itr.first->value);
+               putWord(itr.first->value);
          }
       }
 
       //
       // Info::putChunkATAG
       //
-      void Info::putChunkATAG(std::ostream &out)
+      void Info::putChunkATAG()
       {
          if(!numChunkATAG) return;
 
@@ -187,18 +186,18 @@ namespace Bytecode
 
             if(!ini.needTag || ini.onlyStr) continue;
 
-            out.write("ATAG", 4);
-            putWord(out, ini.vals.size() + 5);
+            putData("ATAG", 4);
+            putWord(ini.vals.size() + 5);
 
-            putByte(out, 0); // version
-            putWord(out, itr.first->value);
+            putByte(0); // version
+            putWord(itr.first->value);
 
             for(auto const &i : itr.second.vals) switch(i.tag)
             {
-            case InitTag::Empty: putByte(out, 0); break;
-            case InitTag::Fixed: putByte(out, 0); break;
-            case InitTag::Funct: putByte(out, 2); break;
-            case InitTag::StrEn: putByte(out, 1); break;
+            case InitTag::Empty: putByte(0); break;
+            case InitTag::Fixed: putByte(0); break;
+            case InitTag::Funct: putByte(2); break;
+            case InitTag::StrEn: putByte(1); break;
             }
          }
       }
@@ -206,7 +205,7 @@ namespace Bytecode
       //
       // Info::putChunkFNAM
       //
-      void Info::putChunkFNAM(std::ostream &out)
+      void Info::putChunkFNAM()
       {
          if(!numChunkFNAM) return;
 
@@ -224,13 +223,13 @@ namespace Bytecode
             strs[func.valueInt] = func.glyph;
          }
 
-         putChunk(out, "FNAM", strs, false);
+         putChunk("FNAM", strs, false);
       }
 
       //
       // Info::putChunkFUNC
       //
-      void Info::putChunkFUNC(std::ostream &out)
+      void Info::putChunkFUNC()
       {
          if(!numChunkFUNC) return;
 
@@ -248,32 +247,32 @@ namespace Bytecode
             funcs[func.valueInt] = &func;
          }
 
-         out.write("FUNC", 4);
-         putWord(out, numChunkFUNC * 8);
+         putData("FUNC", 4);
+         putWord(numChunkFUNC * 8);
 
          for(auto func : funcs)
          {
             if(func)
             {
-               putByte(out, func->param);
-               putByte(out, std::max(func->localReg, func->param));
-               putByte(out, !!func->retrn);
-               putByte(out, 0);
+               putByte(func->param);
+               putByte(std::max(func->localReg, func->param));
+               putByte(!!func->retrn);
+               putByte(0);
 
                if(func->defin)
-                  putExpWord(out, ResolveGlyph(func->label));
+                  putExpWord(ResolveGlyph(func->label));
                else
-                  putWord(out, 0);
+                  putWord(0);
             }
             else
-               out.write("\0\0\0\0\0\0\0\0", 8);
+               putData("\0\0\0\0\0\0\0\0", 8);
          }
       }
 
       //
       // Info::putChunkLOAD
       //
-      void Info::putChunkLOAD(std::ostream &out)
+      void Info::putChunkLOAD()
       {
          numChunkLOAD = GDCC::IR::ImportRange().size();
 
@@ -284,17 +283,17 @@ namespace Bytecode
          for(auto const &imp : GDCC::IR::ImportRange())
             size += lenString(imp.glyph);
 
-         out.write("LOAD", 4);
-         putWord(out, size);
+         putData("LOAD", 4);
+         putWord(size);
 
          for(auto const &imp : GDCC::IR::ImportRange())
-            putString(out, imp.glyph);
+            putString(imp.glyph);
       }
 
       //
       // Info::putChunkMEXP
       //
-      void Info::putChunkMEXP(std::ostream &out)
+      void Info::putChunkMEXP()
       {
          if(!numChunkMEXP) return;
 
@@ -307,13 +306,13 @@ namespace Bytecode
          for(auto const &itr : GDCC::IR::Space::MapArs)
             if(itr.second.defin) strs[itr.second.value] = itr.second.glyph;
 
-         putChunk(out, "MEXP", strs, false);
+         putChunk("MEXP", strs, false);
       }
 
       //
       // Info::putChunkMIMP
       //
-      void Info::putChunkMIMP(std::ostream &out)
+      void Info::putChunkMIMP()
       {
          if(!numChunkMIMP) return;
 
@@ -327,20 +326,20 @@ namespace Bytecode
          for(auto const &imp : imps)
             size += lenString(imp->glyph);
 
-         out.write("MIMP", 4);
-         putWord(out, size);
+         putData("MIMP", 4);
+         putWord(size);
 
          for(auto const &imp : imps)
          {
-            putWord(out, imp->value);
-            putString(out, imp->glyph);
+            putWord(imp->value);
+            putString(imp->glyph);
          }
       }
 
       //
       // Info::putChunkMINI
       //
-      void Info::putChunkMINI(std::ostream &out)
+      void Info::putChunkMINI()
       {
          if(!numChunkMINI) return;
 
@@ -348,38 +347,38 @@ namespace Bytecode
 
          for(std::size_t i = 0, e = ini.vals.size(); i != e; ++i) if(ini.vals[i].val)
          {
-            out.write("MINI", 4);
-            putWord(out, 8);
-            putWord(out, i);
-            putWord(out, ini.vals[i].val);
+            putData("MINI", 4);
+            putWord(8);
+            putWord(i);
+            putWord(ini.vals[i].val);
          }
       }
 
       //
       // Info::putChunkMSTR
       //
-      void Info::putChunkMSTR(std::ostream &out)
+      void Info::putChunkMSTR()
       {
          if(!numChunkMSTR) return;
 
-         out.write("MSTR", 4);
-         putWord(out, numChunkMSTR * 4);
+         putData("MSTR", 4);
+         putWord(numChunkMSTR * 4);
 
          auto const &ini = init[&GDCC::IR::Space::MapReg];
 
          for(std::size_t i = 0, e = ini.vals.size(); i != e; ++i)
-            if(ini.vals[i].tag == InitTag::StrEn) putWord(out, i);
+            if(ini.vals[i].tag == InitTag::StrEn) putWord(i);
       }
 
       //
       // Info::putChunkSFLG
       //
-      void Info::putChunkSFLG(std::ostream &out)
+      void Info::putChunkSFLG()
       {
          if(!numChunkSFLG) return;
 
-         out.write("SFLG", 4);
-         putWord(out, numChunkSFLG * 4);
+         putData("SFLG", 4);
+         putWord(numChunkSFLG * 4);
 
          for(auto const &itr : GDCC::IR::FunctionRange())
          {
@@ -399,15 +398,15 @@ namespace Bytecode
 
             if(!flags) continue;
 
-            putHWord(out, func.valueInt);
-            putHWord(out, flags);
+            putHWord(func.valueInt);
+            putHWord(flags);
          }
       }
 
       //
       // Info::putChunkSNAM
       //
-      void Info::putChunkSNAM(std::ostream &out)
+      void Info::putChunkSNAM()
       {
          if(!numChunkSNAM) return;
 
@@ -425,18 +424,18 @@ namespace Bytecode
             strs[func.valueInt] = func.valueStr;
          }
 
-         putChunk(out, "SNAM", strs, false);
+         putChunk("SNAM", strs, false);
       }
 
       //
       // Info::putChunkSPTR
       //
-      void Info::putChunkSPTR(std::ostream &out)
+      void Info::putChunkSPTR()
       {
          if(!numChunkSPTR) return;
 
-         out.write("SPTR", 4);
-         putWord(out, numChunkSPTR * 12);
+         putData("SPTR", 4);
+         putWord(numChunkSPTR * 12);
 
          for(auto const &itr : GDCC::IR::FunctionRange())
          {
@@ -450,32 +449,32 @@ namespace Bytecode
             if(!func.defin) continue;
 
             if(func.ctype == GDCC::IR::CallType::ScriptS)
-               putHWord(out, -static_cast<GDCC::FastI>(func.valueInt) - 1);
+               putHWord(-static_cast<GDCC::FastI>(func.valueInt) - 1);
             else
-               putHWord(out, func.valueInt);
+               putHWord(func.valueInt);
 
             switch(func.stype)
             {
-            case GDCC::IR::ScriptType::None:       putHWord(out,  0); break;
-            case GDCC::IR::ScriptType::Death:      putHWord(out,  3); break;
-            case GDCC::IR::ScriptType::Disconnect: putHWord(out, 14); break;
-            case GDCC::IR::ScriptType::Enter:      putHWord(out,  4); break;
-            case GDCC::IR::ScriptType::Lightning:  putHWord(out, 12); break;
-            case GDCC::IR::ScriptType::Open:       putHWord(out,  1); break;
-            case GDCC::IR::ScriptType::Respawn:    putHWord(out,  2); break;
-            case GDCC::IR::ScriptType::Return:     putHWord(out, 15); break;
-            case GDCC::IR::ScriptType::Unloading:  putHWord(out, 13); break;
+            case GDCC::IR::ScriptType::None:       putHWord( 0); break;
+            case GDCC::IR::ScriptType::Death:      putHWord( 3); break;
+            case GDCC::IR::ScriptType::Disconnect: putHWord(14); break;
+            case GDCC::IR::ScriptType::Enter:      putHWord( 4); break;
+            case GDCC::IR::ScriptType::Lightning:  putHWord(12); break;
+            case GDCC::IR::ScriptType::Open:       putHWord( 1); break;
+            case GDCC::IR::ScriptType::Respawn:    putHWord( 2); break;
+            case GDCC::IR::ScriptType::Return:     putHWord(15); break;
+            case GDCC::IR::ScriptType::Unloading:  putHWord(13); break;
             }
 
-            putExpWord(out, ResolveGlyph(func.label));
-            putWord(out, func.param);
+            putExpWord(ResolveGlyph(func.label));
+            putWord(func.param);
          }
       }
 
       //
       // Info::putChunkSTRL
       //
-      void Info::putChunkSTRL(std::ostream &out)
+      void Info::putChunkSTRL()
       {
          if(!numChunkSTRL) return;
 
@@ -486,18 +485,18 @@ namespace Bytecode
          for(auto const &itr : GDCC::IR::StrEntRange()) if(itr.second.defin)
             strs[itr.second.valueInt] = itr.second.valueStr;
 
-         putChunk(out, "STRL", strs, true);
+         putChunk("STRL", strs, true);
       }
 
       //
       // Info::putChunkSVCT
       //
-      void Info::putChunkSVCT(std::ostream &out)
+      void Info::putChunkSVCT()
       {
          if(!numChunkSVCT) return;
 
-         out.write("SVCT", 4);
-         putWord(out, numChunkSFLG * 4);
+         putData("SVCT", 4);
+         putWord(numChunkSFLG * 4);
 
          for(auto const &itr : GDCC::IR::FunctionRange())
          {
@@ -512,8 +511,8 @@ namespace Bytecode
 
             if(func.localReg <= 20) continue;
 
-            putHWord(out, func.valueInt);
-            putHWord(out, func.localReg);
+            putHWord(func.valueInt);
+            putHWord(func.localReg);
          }
       }
    }

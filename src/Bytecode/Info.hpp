@@ -59,7 +59,7 @@ namespace Bytecode
    class Info
    {
    public:
-      Info() : curFunc{nullptr} {}
+      Info() : curFunc{nullptr}, out{nullptr} {}
       virtual ~Info() {}
 
       virtual void gen();
@@ -82,6 +82,7 @@ namespace Bytecode
       virtual void trStr(GDCC::IR::StrEnt &str);
 
       GDCC::IR::Function *curFunc;
+      std::ostream       *out;
 
 
       static void CheckArgB(GDCC::IR::Arg const &arg, GDCC::IR::AddrBase b, GDCC::Origin pos);
