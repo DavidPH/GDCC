@@ -457,7 +457,7 @@ namespace Bytecode
          if(!numChunkSPTR) return;
 
          putData("SPTR", 4);
-         putWord(numChunkSPTR * 12);
+         putWord(numChunkSPTR * (UseFakeACS0 ? 8 : 12));
 
          for(auto const &itr : GDCC::IR::FunctionRange())
          {
@@ -470,26 +470,43 @@ namespace Bytecode
 
             if(!func.defin) continue;
 
-            if(func.ctype == GDCC::IR::CallType::ScriptS)
-               putHWord(-static_cast<GDCC::FastI>(func.valueInt) - 1);
-            else
-               putHWord(func.valueInt);
+            GDCC::FastU stype, value;
 
+            // Convert script type.
             switch(func.stype)
             {
-            case GDCC::IR::ScriptType::None:       putHWord( 0); break;
-            case GDCC::IR::ScriptType::Death:      putHWord( 3); break;
-            case GDCC::IR::ScriptType::Disconnect: putHWord(14); break;
-            case GDCC::IR::ScriptType::Enter:      putHWord( 4); break;
-            case GDCC::IR::ScriptType::Lightning:  putHWord(12); break;
-            case GDCC::IR::ScriptType::Open:       putHWord( 1); break;
-            case GDCC::IR::ScriptType::Respawn:    putHWord( 2); break;
-            case GDCC::IR::ScriptType::Return:     putHWord(15); break;
-            case GDCC::IR::ScriptType::Unloading:  putHWord(13); break;
+            case GDCC::IR::ScriptType::None:       stype =  0; break;
+            case GDCC::IR::ScriptType::Death:      stype =  3; break;
+            case GDCC::IR::ScriptType::Disconnect: stype = 14; break;
+            case GDCC::IR::ScriptType::Enter:      stype =  4; break;
+            case GDCC::IR::ScriptType::Lightning:  stype = 12; break;
+            case GDCC::IR::ScriptType::Open:       stype =  1; break;
+            case GDCC::IR::ScriptType::Respawn:    stype =  2; break;
+            case GDCC::IR::ScriptType::Return:     stype = 15; break;
+            case GDCC::IR::ScriptType::Unloading:  stype = 13; break;
             }
 
-            putExpWord(ResolveGlyph(func.label));
-            putWord(func.param);
+            // Convert script index.
+            if(func.ctype == GDCC::IR::CallType::ScriptS)
+               value = -static_cast<GDCC::FastI>(func.valueInt) - 1;
+            else
+               value = func.valueInt;
+
+            // Write entry.
+            if(UseFakeACS0)
+            {
+               putHWord(value);
+               putByte(stype);
+               putByte(func.param);
+               putExpWord(ResolveGlyph(func.label));
+            }
+            else
+            {
+               putHWord(value);
+               putHWord(stype);
+               putExpWord(ResolveGlyph(func.label));
+               putWord(func.param);
+            }
          }
       }
 

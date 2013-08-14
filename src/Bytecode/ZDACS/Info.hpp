@@ -45,6 +45,8 @@ namespace Bytecode
 
          static GDCC::IR::Type_Fixed const TypeWord;
 
+         static bool UseFakeACS0;
+
       protected:
          //
          // InitTag
@@ -86,13 +88,33 @@ namespace Bytecode
          virtual void genFunc(GDCC::IR::Function &func);
          virtual void genStr(GDCC::IR::StrEnt &str);
 
+         GDCC::FastU lenChunk();
+         GDCC::FastU lenChunk(char const *name, GDCC::Array<GDCC::String> const &strs, bool junk);
+         GDCC::FastU lenChunkAIMP();
+         GDCC::FastU lenChunkAINI();
+         GDCC::FastU lenChunkARAY();
+         GDCC::FastU lenChunkASTR();
+         GDCC::FastU lenChunkATAG();
+         GDCC::FastU lenChunkCODE();
+         GDCC::FastU lenChunkFNAM();
+         GDCC::FastU lenChunkFUNC();
+         GDCC::FastU lenChunkLOAD();
+         GDCC::FastU lenChunkMEXP();
+         GDCC::FastU lenChunkMIMP();
+         GDCC::FastU lenChunkMINI();
+         GDCC::FastU lenChunkMSTR();
+         GDCC::FastU lenChunkSFLG();
+         GDCC::FastU lenChunkSNAM();
+         GDCC::FastU lenChunkSPTR();
+         GDCC::FastU lenChunkSTRL();
+         GDCC::FastU lenChunkSVCT();
+
          std::size_t lenString(GDCC::String str);
 
          void putByte(GDCC::FastU i);
 
          void putChunk();
-         void putChunk(char const *name,
-            GDCC::Array<GDCC::String> const &strs, bool junk);
+         void putChunk(char const *name, GDCC::Array<GDCC::String> const &strs, bool junk);
          void putChunkAIMP();
          void putChunkAINI();
          void putChunkARAY();
@@ -148,20 +170,6 @@ namespace Bytecode
 
          virtual void trStr(GDCC::IR::StrEnt &str);
 
-
-         static void BackGlyphFunc(GDCC::String glyph, GDCC::FastU val, GDCC::IR::CallType ctype);
-         static void BackGlyphGlyph(GDCC::String glyph, GDCC::String val);
-         static void BackGlyphStr(GDCC::String glyph, GDCC::FastU val);
-         static void BackGlyphWord(GDCC::String glyph, GDCC::FastU val);
-
-         static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin pos);
-
-         static GDCC::FastU CodeBase();
-
-         static GDCC::CounterRef<GDCC::IR::Exp> ResolveGlyph(GDCC::String glyph);
-         static GDCC::FastU ResolveValue(GDCC::IR::Value const &val);
-
-
          std::unordered_map<GDCC::IR::Space const *, InitData> init;
 
          GDCC::FastU numChunkAIMP;
@@ -182,6 +190,19 @@ namespace Bytecode
          GDCC::FastU numChunkSPTR;
          GDCC::FastU numChunkSTRL;
          GDCC::FastU numChunkSVCT;
+
+
+         static void BackGlyphFunc(GDCC::String glyph, GDCC::FastU val, GDCC::IR::CallType ctype);
+         static void BackGlyphGlyph(GDCC::String glyph, GDCC::String val);
+         static void BackGlyphStr(GDCC::String glyph, GDCC::FastU val);
+         static void BackGlyphWord(GDCC::String glyph, GDCC::FastU val);
+
+         static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin pos);
+
+         static GDCC::FastU CodeBase();
+
+         static GDCC::CounterRef<GDCC::IR::Exp> ResolveGlyph(GDCC::String glyph);
+         static GDCC::FastU ResolveValue(GDCC::IR::Value const &val);
       };
    }
 }

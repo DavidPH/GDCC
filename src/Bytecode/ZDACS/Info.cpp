@@ -15,6 +15,8 @@
 #include "GDCC/IR/Arg.hpp"
 #include "GDCC/IR/Glyph.hpp"
 
+#include "Option/Option.hpp"
+
 #include <iostream>
 
 
@@ -27,7 +29,18 @@ namespace Bytecode
    namespace ZDACS
    {
       GDCC::IR::Type_Fixed const Info::TypeWord{32, 0, false, false};
+
+      bool Info::UseFakeACS0 = false;
    }
+}
+
+namespace Option
+{
+   //
+   // --bc-fake-ACS0
+   //
+   OptionDPtr<bool> FakeACS0Opt{'\0', "bc-fake-ACS0", "output",
+      "Generates a fake ACS0 header.", nullptr, &Bytecode::ZDACS::Info::UseFakeACS0};
 }
 
 

@@ -33,12 +33,32 @@ namespace Bytecode
          out = &out_;
 
          // Put header.
-         putData("ACSE", 4);
-         putWord(16);
+         if(UseFakeACS0)
+         {
+            putData("ACS\0", 4);
+            putWord(24 + lenChunk());
+         }
+         else
+         {
+            putData("ACSE", 4);
+            putWord(16);
+         }
+
+         // <shamelessplug>
          putData("GDCC::BC", 8);
+         // </shamelessplug>
 
          // Put chunks.
          putChunk();
+
+         // Put (real) header.
+         if(UseFakeACS0)
+         {
+            putWord(16);
+            putData("ACSE", 4);
+            putWord(0);
+            putWord(0);
+         }
 
          out = nullptr;
       }
