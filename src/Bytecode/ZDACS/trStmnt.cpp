@@ -375,7 +375,7 @@ namespace Bytecode
       {
          CheckArgB(*arr.idx, GDCC::IR::ArgBase::Stk, stmnt.pos);
 
-         jumpPos += IsExp0(arr.off) ? 24 : 12;
+         jumpPos += IsExp0(arr.off) ? 12 : 24;
       }
 
       //
@@ -385,7 +385,7 @@ namespace Bytecode
       {
          CheckArgB(*arr.idx, GDCC::IR::ArgBase::Stk, stmnt.pos);
 
-         jumpPos += IsExp0(arr.off) ? 20 : 8;
+         jumpPos += IsExp0(arr.off) ? 8 : 20;
       }
 
       //
