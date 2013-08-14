@@ -52,7 +52,7 @@ namespace Bytecode
          func = &func_;
 
          // Back label glyph.
-         BackGlyphWord(func->label, jumpPos);
+         BackGlyphWord(func->label, CodeBase() + numChunkCODE);
 
          trBlock(func->block);
 

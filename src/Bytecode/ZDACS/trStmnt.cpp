@@ -35,7 +35,7 @@ namespace Bytecode
          if(!stmnt.labs.empty())
          {
             auto val = GDCC::IR::ExpCreate_ValueRoot(
-               GDCC::IR::Value_Fixed(jumpPos, TypeWord), stmnt.pos);
+               GDCC::IR::Value_Fixed(CodeBase() + numChunkCODE, TypeWord), stmnt.pos);
 
             for(auto const &lab : stmnt.labs)
             {
@@ -49,7 +49,7 @@ namespace Bytecode
          switch(stmnt.code)
          {
          case GDCC::IR::Code::Nop:
-            jumpPos += 4;
+            numChunkCODE += 4;
             break;
 
          case GDCC::IR::Code::AddI_W:
@@ -70,7 +70,7 @@ namespace Bytecode
             CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
             CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Stk);
             CheckArgB(stmnt, 2, GDCC::IR::ArgBase::Stk);
-            jumpPos += 4;
+            numChunkCODE += 4;
             break;
 
          case GDCC::IR::Code::Call:
@@ -81,7 +81,7 @@ namespace Bytecode
             CheckArgC(stmnt, 1);
             for(auto n = stmnt.args.size(); --n;)
                CheckArgB(stmnt, n, GDCC::IR::ArgBase::Lit);
-            jumpPos += stmnt.args.size() * 4;
+            numChunkCODE += stmnt.args.size() * 4;
             break;
 
          case GDCC::IR::Code::CmpI_EQ_W:
@@ -96,7 +96,7 @@ namespace Bytecode
             CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
             CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Stk);
             CheckArgB(stmnt, 2, GDCC::IR::ArgBase::Stk);
-            jumpPos += 4;
+            numChunkCODE += 4;
             break;
 
          case GDCC::IR::Code::Cnat:
@@ -105,7 +105,7 @@ namespace Bytecode
             CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Lit);
             for(auto n = stmnt.args.size(); n-- != 2;)
                CheckArgB(stmnt, n, GDCC::IR::ArgBase::Stk);
-            jumpPos += 12;
+            numChunkCODE += 12;
             break;
 
          case GDCC::IR::Code::Cspe:
@@ -118,7 +118,7 @@ namespace Bytecode
             CheckArgC(stmnt, 2);
             CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
             CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Stk);
-            jumpPos += 4;
+            numChunkCODE += 4;
             break;
 
          case GDCC::IR::Code::Move_W:
@@ -133,7 +133,7 @@ namespace Bytecode
             CheckArgC(stmnt, 2);
             CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
             CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Stk);
-            jumpPos += 4;
+            numChunkCODE += 4;
             break;
 
          default:
@@ -159,10 +159,10 @@ namespace Bytecode
          {
          case GDCC::IR::ArgBase::Lit:
             if(ret == 0)
-               jumpPos += 8;
+               numChunkCODE += 8;
 
             else if(ret == 1)
-               jumpPos += 8;
+               numChunkCODE += 8;
 
             else
             {
@@ -174,10 +174,10 @@ namespace Bytecode
 
          case GDCC::IR::ArgBase::Stk:
             if(ret == 0)
-               jumpPos += 8;
+               numChunkCODE += 8;
 
             else if(ret == 1)
-               jumpPos += 4;
+               numChunkCODE += 4;
 
             else
             {
@@ -220,7 +220,7 @@ namespace Bytecode
          // No call args.
          if(stmnt.args.size() == 2)
          {
-            jumpPos += ret ? 48 : 12;
+            numChunkCODE += ret ? 48 : 12;
             return;
          }
 
@@ -229,16 +229,16 @@ namespace Bytecode
          case GDCC::IR::ArgBase::Lit:
             for(auto n = stmnt.args.size(); n-- != 3;)
                CheckArgB(stmnt, n, GDCC::IR::ArgBase::Lit);
-            jumpPos += 8 + (stmnt.args.size() - 2) * (ret ? 8 : 4);
+            numChunkCODE += 8 + (stmnt.args.size() - 2) * (ret ? 8 : 4);
             break;
 
          case GDCC::IR::ArgBase::Stk:
             for(auto n = stmnt.args.size(); n-- != 3;)
                CheckArgB(stmnt, n, GDCC::IR::ArgBase::Stk);
-            jumpPos += 8;
+            numChunkCODE += 8;
 
             // Dummy args.
-            if(ret) jumpPos += (7 - stmnt.args.size()) * 8;
+            if(ret) numChunkCODE += (7 - stmnt.args.size()) * 8;
 
             break;
 
@@ -273,7 +273,7 @@ namespace Bytecode
          case GDCC::IR::ArgBase::GblReg:
             switch(stmnt.args[1].a)
             {
-            case GDCC::IR::ArgBase::Stk: jumpPos += 8; break;
+            case GDCC::IR::ArgBase::Stk: numChunkCODE += 8; break;
             default: goto badcase;
             }
             break;
@@ -281,7 +281,7 @@ namespace Bytecode
          case GDCC::IR::ArgBase::LocReg:
             switch(stmnt.args[1].a)
             {
-            case GDCC::IR::ArgBase::Stk: jumpPos += 8; break;
+            case GDCC::IR::ArgBase::Stk: numChunkCODE += 8; break;
             default: goto badcase;
             }
             break;
@@ -300,7 +300,7 @@ namespace Bytecode
          case GDCC::IR::ArgBase::MapReg:
             switch(stmnt.args[1].a)
             {
-            case GDCC::IR::ArgBase::Stk: jumpPos += 8; break;
+            case GDCC::IR::ArgBase::Stk: numChunkCODE += 8; break;
             default: goto badcase;
             }
             break;
@@ -308,7 +308,7 @@ namespace Bytecode
          case GDCC::IR::ArgBase::Nul:
             switch(stmnt.args[1].a)
             {
-            case GDCC::IR::ArgBase::Stk: jumpPos += 4; break;
+            case GDCC::IR::ArgBase::Stk: numChunkCODE += 4; break;
             default: goto badcase;
             }
             break;
@@ -316,10 +316,10 @@ namespace Bytecode
          case GDCC::IR::ArgBase::Stk:
             switch(stmnt.args[1].a)
             {
-            case GDCC::IR::ArgBase::GblReg: jumpPos += 8; break;
-            case GDCC::IR::ArgBase::LocReg: jumpPos += 8; break;
-            case GDCC::IR::ArgBase::MapReg: jumpPos += 8; break;
-            case GDCC::IR::ArgBase::WldReg: jumpPos += 8; break;
+            case GDCC::IR::ArgBase::GblReg: numChunkCODE += 8; break;
+            case GDCC::IR::ArgBase::LocReg: numChunkCODE += 8; break;
+            case GDCC::IR::ArgBase::MapReg: numChunkCODE += 8; break;
+            case GDCC::IR::ArgBase::WldReg: numChunkCODE += 8; break;
 
             case GDCC::IR::ArgBase::Lit:
                trStmnt_Move_W__Stk_Lit(stmnt, stmnt.args[1].aLit.value);
@@ -355,7 +355,7 @@ namespace Bytecode
          case GDCC::IR::ArgBase::WldReg:
             switch(stmnt.args[1].a)
             {
-            case GDCC::IR::ArgBase::Stk: jumpPos += 8; break;
+            case GDCC::IR::ArgBase::Stk: numChunkCODE += 8; break;
             default: goto badcase;
             }
             break;
@@ -375,7 +375,7 @@ namespace Bytecode
       {
          CheckArgB(*arr.idx, GDCC::IR::ArgBase::Stk, stmnt.pos);
 
-         jumpPos += IsExp0(arr.off) ? 12 : 24;
+         numChunkCODE += IsExp0(arr.off) ? 12 : 24;
       }
 
       //
@@ -385,7 +385,7 @@ namespace Bytecode
       {
          CheckArgB(*arr.idx, GDCC::IR::ArgBase::Stk, stmnt.pos);
 
-         jumpPos += IsExp0(arr.off) ? 8 : 20;
+         numChunkCODE += IsExp0(arr.off) ? 8 : 20;
       }
 
       //
@@ -397,10 +397,10 @@ namespace Bytecode
 
          switch(type.t)
          {
-         case GDCC::IR::TypeBase::Funct: jumpPos += 8; break;
-         case GDCC::IR::TypeBase::StrEn: jumpPos += 12; break;
+         case GDCC::IR::TypeBase::Funct: numChunkCODE +=  8; break;
+         case GDCC::IR::TypeBase::StrEn: numChunkCODE += 12; break;
 
-         default: jumpPos += 8; break;
+         default: numChunkCODE += 8; break;
          }
       }
 
@@ -416,9 +416,9 @@ namespace Bytecode
          {
          case GDCC::IR::CallType::LangACS:
             if(stmnt.args.size() == 0)
-               jumpPos += 4;
+               numChunkCODE += 4;
             else if(stmnt.args.size() == 1)
-               jumpPos += 4;
+               numChunkCODE += 4;
             else
             {
                std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
@@ -430,9 +430,9 @@ namespace Bytecode
          case GDCC::IR::CallType::ScriptI:
          case GDCC::IR::CallType::ScriptS:
             if(stmnt.args.size() == 0)
-               jumpPos += 4;
+               numChunkCODE += 4;
             else if(stmnt.args.size() == 1)
-               jumpPos += 8;
+               numChunkCODE += 8;
             else
             {
                std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';

@@ -31,6 +31,9 @@ namespace Bytecode
       //
       void Info::putChunk()
       {
+         // Not a real ACSE chunk, but it should be.
+         putChunkCODE();
+
          putChunkAIMP();
          putChunkAINI();
          putChunkARAY();
@@ -200,6 +203,25 @@ namespace Bytecode
             case InitTag::StrEn: putByte(1); break;
             }
          }
+      }
+
+      //
+      // Info::putChunkCODE
+      //
+      void Info::putChunkCODE()
+      {
+         putData("CODE", 4);
+         putWord(numChunkCODE);
+
+         // Put statements.
+         for(auto &itr : GDCC::IR::FunctionRange()) try
+         {
+            func = &itr.second;
+            for(auto const &stmnt : itr.second.block)
+               putStmnt(stmnt);
+            func = nullptr;
+         }
+         catch(...) {func = nullptr; throw;}
       }
 
       //

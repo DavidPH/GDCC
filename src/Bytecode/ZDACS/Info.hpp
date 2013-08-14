@@ -98,6 +98,7 @@ namespace Bytecode
          void putChunkARAY();
          void putChunkASTR();
          void putChunkATAG();
+         void putChunkCODE();
          void putChunkFNAM();
          void putChunkFUNC();
          void putChunkLOAD();
@@ -155,18 +156,20 @@ namespace Bytecode
 
          static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin pos);
 
+         static GDCC::FastU CodeBase();
+
          static GDCC::CounterRef<GDCC::IR::Exp> ResolveGlyph(GDCC::String glyph);
          static GDCC::FastU ResolveValue(GDCC::IR::Value const &val);
 
 
          std::unordered_map<GDCC::IR::Space const *, InitData> init;
 
-         GDCC::FastU jumpPos;
          GDCC::FastU numChunkAIMP;
          GDCC::FastU numChunkAINI;
          GDCC::FastU numChunkARAY;
          GDCC::FastU numChunkASTR;
          GDCC::FastU numChunkATAG;
+         GDCC::FastU numChunkCODE;
          GDCC::FastU numChunkFNAM;
          GDCC::FastU numChunkFUNC;
          GDCC::FastU numChunkLOAD;

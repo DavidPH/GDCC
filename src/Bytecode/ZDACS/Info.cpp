@@ -43,12 +43,12 @@ namespace Bytecode
       // Info default constructor
       //
       Info::Info() :
-         jumpPos{16}, // HACK: Should be calculated.
          numChunkAIMP{0},
          numChunkAINI{0},
          numChunkARAY{0},
          numChunkASTR{0},
          numChunkATAG{0},
+         numChunkCODE{0},
          numChunkFNAM{0},
          numChunkFUNC{0},
          numChunkLOAD{0},
@@ -190,6 +190,14 @@ namespace Bytecode
             std::cerr << "ERROR: " << pos << ": ZDACS cannot use Arg: " << arg.a << '\n';
             throw EXIT_FAILURE;
          }
+      }
+
+      //
+      // Info::CodeBase
+      //
+      GDCC::FastU Info::CodeBase()
+      {
+         return 24;
       }
 
       //

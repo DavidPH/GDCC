@@ -34,18 +34,8 @@ namespace Bytecode
 
          // Put header.
          putData("ACSE", 4);
-         putWord(jumpPos);
+         putWord(16);
          putData("GDCC::BC", 8);
-
-         // Put statements.
-         for(auto &itr : GDCC::IR::FunctionRange()) try
-         {
-            func = &itr.second;
-            for(auto const &stmnt : itr.second.block)
-               putStmnt(stmnt);
-            func = nullptr;
-         }
-         catch(...) {func = nullptr; throw;}
 
          // Put chunks.
          putChunk();
