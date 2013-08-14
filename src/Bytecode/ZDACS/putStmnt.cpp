@@ -463,7 +463,7 @@ namespace Bytecode
       //
       void Info::putStmnt_Retn(GDCC::IR::Statement const &stmnt)
       {
-         switch(curFunc->ctype)
+         switch(func->ctype)
          {
          case GDCC::IR::CallType::LangACS:
             if(stmnt.args.size() == 0)

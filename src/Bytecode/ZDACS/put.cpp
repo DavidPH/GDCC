@@ -38,14 +38,14 @@ namespace Bytecode
          putData("GDCC::BC", 8);
 
          // Put statements.
-         for(auto &func : GDCC::IR::FunctionRange()) try
+         for(auto &itr : GDCC::IR::FunctionRange()) try
          {
-            curFunc = &func.second;
-            for(auto const &stmnt : func.second.block)
+            func = &itr.second;
+            for(auto const &stmnt : itr.second.block)
                putStmnt(stmnt);
-            curFunc = nullptr;
+            func = nullptr;
          }
-         catch(...) {curFunc = nullptr; throw;}
+         catch(...) {func = nullptr; throw;}
 
          // Put chunks.
          putChunk();

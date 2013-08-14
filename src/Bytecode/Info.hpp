@@ -59,7 +59,7 @@ namespace Bytecode
    class Info
    {
    public:
-      Info() : curFunc{nullptr}, out{nullptr} {}
+      Info() : func{nullptr}, out{nullptr} {}
       virtual ~Info() {}
 
       virtual void gen();
@@ -81,7 +81,7 @@ namespace Bytecode
       virtual void trStmnt(GDCC::IR::Statement &stmnt) = 0;
       virtual void trStr(GDCC::IR::StrEnt &str);
 
-      GDCC::IR::Function *curFunc;
+      GDCC::IR::Function *func;
       std::ostream       *out;
 
 

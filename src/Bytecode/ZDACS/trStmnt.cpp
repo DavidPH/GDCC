@@ -412,7 +412,7 @@ namespace Bytecode
          for(auto n = stmnt.args.size(); n--;)
             CheckArgB(stmnt, n, GDCC::IR::ArgBase::Stk);
 
-         switch(curFunc->ctype)
+         switch(func->ctype)
          {
          case GDCC::IR::CallType::LangACS:
             if(stmnt.args.size() == 0)

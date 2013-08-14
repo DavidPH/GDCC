@@ -58,17 +58,17 @@ namespace Bytecode
    //
    // Info::genFunc
    //
-   void Info::genFunc(GDCC::IR::Function &func)
+   void Info::genFunc(GDCC::IR::Function &func_)
    {
       try
       {
-         curFunc = &func;
-         genBlock(func.block);
-         curFunc = nullptr;
+         func = &func_;
+         genBlock(func->block);
+         func = nullptr;
       }
       catch(...)
       {
-         curFunc = nullptr;
+         func = nullptr;
          throw;
       }
    }
@@ -127,17 +127,17 @@ namespace Bytecode
    //
    // Info::trFunc
    //
-   void Info::trFunc(GDCC::IR::Function &func)
+   void Info::trFunc(GDCC::IR::Function &func_)
    {
       try
       {
-         curFunc = &func;
-         trBlock(func.block);
-         curFunc = nullptr;
+         func = &func_;
+         trBlock(func->block);
+         func = nullptr;
       }
       catch(...)
       {
-         curFunc = nullptr;
+         func = nullptr;
          throw;
       }
    }

@@ -37,7 +37,7 @@ namespace Bytecode
 
          void putGlyph(GDCC::IR::Glyph glyph);
 
-         void putFunc(GDCC::IR::Function const &func);
+         void putFunc(GDCC::IR::Function &func);
 
          void putObj(GDCC::IR::Object const &obj);
          void putObjValue(GDCC::IR::Value const &val);

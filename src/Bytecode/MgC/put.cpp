@@ -44,7 +44,7 @@ namespace Bytecode
                putObj(*itr);
          }
 
-         for(auto const &itr : GDCC::IR::FunctionRange())
+         for(auto &itr : GDCC::IR::FunctionRange())
          {
             if(itr.second.defin)
                putFunc(itr.second);
@@ -77,25 +77,29 @@ namespace Bytecode
       //
       // Info::putFunc
       //
-      void Info::putFunc(GDCC::IR::Function const &func)
+      void Info::putFunc(GDCC::IR::Function &func_)
       {
+         func = &func_;
+
          // Put the function header.
-         *out << "function" << '\0' << func.glyph << '\0'
+         *out << "function" << '\0' << func->glyph << '\0'
             << '{' << '\0'
-               << "argCount" << '\0' << '=' << '\0' << func.param    << '\0' << ';' << '\0'
-               << "label"    << '\0' << '=' << '\0' << func.label    << '\0' << ';' << '\0'
-               << "regCount" << '\0' << '=' << '\0' << func.localReg << '\0' << ';' << '\0'
-               << "retCount" << '\0' << '=' << '\0' << func.retrn    << '\0' << ';' << '\0'
+               << "argCount" << '\0' << '=' << '\0' << func->param    << '\0' << ';' << '\0'
+               << "label"    << '\0' << '=' << '\0' << func->label    << '\0' << ';' << '\0'
+               << "regCount" << '\0' << '=' << '\0' << func->localReg << '\0' << ';' << '\0'
+               << "retCount" << '\0' << '=' << '\0' << func->retrn    << '\0' << ';' << '\0'
             << '}' << '\0';
 
          // Put the function code.
-         *out << "code" << '\0' << func.label << '\0'
+         *out << "code" << '\0' << func->label << '\0'
             << '{' << '\0';
 
-         for(auto const &stmnt : func.block)
+         for(auto const &stmnt : func->block)
             putStmnt(stmnt);
 
          *out << '}' << '\0';
+
+         func = nullptr;
       }
 
       //
