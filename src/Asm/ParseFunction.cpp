@@ -78,6 +78,14 @@ namespace Asm
          func.retrn = ParseFastU(SkipEqual(in));
          break;
 
+      case GDCC::STR_sflagClS:
+         func.sflagClS = ParseFastU(SkipEqual(in));
+         break;
+
+      case GDCC::STR_sflagNet:
+         func.sflagNet = ParseFastU(SkipEqual(in));
+         break;
+
       case GDCC::STR_stype:
          func.stype = ParseScriptType((SkipEqual(in) >> tok, tok));
          break;

@@ -33,6 +33,10 @@ namespace Asm
    {
       for(GDCC::Token tok; in >> tok;) switch(static_cast<GDCC::StringIndex>(tok.str))
       {
+      case GDCC::STR_alias:
+         obj.alias = ParseFastU(SkipEqual(in));
+         break;
+
       case GDCC::STR_alloc:
          obj.alloc = ParseFastU(SkipEqual(in));
          break;
