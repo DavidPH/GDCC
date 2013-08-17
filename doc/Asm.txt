@@ -1,0 +1,974 @@
+###############################################################################
+Assembly Language Specification
+###############################################################################
+
+This file describes the assembly language used by gdcc-as. By necessity it also
+describes the intermediary representation system of GDCC, as the assembler is a
+direct interface to it.
+
+===============================================================================
+Declarations
+===============================================================================
+
+  assembly-unit:
+    declaration(opt) assembly-unit(opt)
+
+  declaration:
+    new-line
+    function-declaration
+    import-declaration
+    object-declaration
+    space-declaration
+    strent-declaration
+
+An assembly file is a series of declarations.
+
+===========================================================
+Functions
+===========================================================
+
+  function-declaration:
+    <Function> string function-argument-list(opt) new-line
+
+  function-argument-list:
+    function-argument function-argument-list(opt)
+
+  function-argument:
+    <alloc> = expression
+    <block> new-line { statement-list(opt) }
+    <ctype> = call-type-specifier
+    <defin> = expression
+    <label> = string
+    <linka> = linkage-specifier
+    <localArs> = expression
+    <localReg> = expression
+    <param> = expression
+    <retrn> = expression
+    <sflagClS> = expression
+    <sflagNet> = expression
+    <stype> = script-type-specifier
+    <valueInt> = expression
+    <valueStr> = string
+
+  statement-list:
+    statement statement-list(opt)
+
+Defines a function. This includes ACS scripts, which are distinguished by the
+call type.
+
+-----------------------------------------------------------
+alloc (boolean)
+-----------------------------------------------------------
+
+If 1, then the function will be given a generated valueInt if needed.
+
+-----------------------------------------------------------
+block
+-----------------------------------------------------------
+
+Sets the block of statements associated with the function.
+
+-----------------------------------------------------------
+ctype
+-----------------------------------------------------------
+
+Sets the function's call type.
+
+-----------------------------------------------------------
+defin (boolean)
+-----------------------------------------------------------
+
+If 1, then the function is considered defined. Otherwise, it is considered
+external and needing import.
+
+-----------------------------------------------------------
+label
+-----------------------------------------------------------
+
+Sets the label for the function's entry point. The label will be used for the
+function's first statement and must not be explicitly defined.
+
+-----------------------------------------------------------
+linka
+-----------------------------------------------------------
+
+Sets the function's linkage.
+
+-----------------------------------------------------------
+localArs
+-----------------------------------------------------------
+
+Sets the number of words to allocate for addressable locals.
+
+-----------------------------------------------------------
+localReg
+-----------------------------------------------------------
+
+Sets the number of words to allocate for register locals.
+
+This must include register locals that are also function arguments, but does not
+need to include function arguments that are not register locals.
+
+-----------------------------------------------------------
+param
+-----------------------------------------------------------
+
+Sets the number of parameter words.
+
+-----------------------------------------------------------
+retrn
+-----------------------------------------------------------
+
+Sets the number of return words.
+
+-----------------------------------------------------------
+sflagClS (boolean)
+-----------------------------------------------------------
+
+Sets the "clientside" script flag.
+
+-----------------------------------------------------------
+sflagNet (boolean)
+-----------------------------------------------------------
+
+Sets the "net" script flag.
+
+-----------------------------------------------------------
+stype
+-----------------------------------------------------------
+
+Sets the script type of the function.
+
+-----------------------------------------------------------
+valueInt
+-----------------------------------------------------------
+
+Sets the function's integer value. Usually the index or ACS script number.
+
+-----------------------------------------------------------
+valueStr
+-----------------------------------------------------------
+
+Sets the function's string value. Only meaningful for ACS named scripts.
+
+===========================================================
+Imports
+===========================================================
+
+  import-declaration:
+    <Import> string new-line
+
+Specifies a library to link with at load-time.
+
+===========================================================
+Objects
+===========================================================
+
+  object-declaration:
+    <Object> address-specifier string string object-argument-list(opt) new-line
+
+  object-argument-list:
+    object-argument object-argument-list(opt)
+
+  object-argument:
+    <alias> = expression
+    <alloc> = expression
+    <defin> = expression
+    <initi> = expression
+    <linka> = linkage-specifier
+    <value> = expression
+    <words> = expression
+
+Defines an object. The address and first string indicate the space the object is
+in. The containing space must already be defined.
+
+-----------------------------------------------------------
+alias (boolean)
+-----------------------------------------------------------
+
+If 1, then the object may share an address with an object or sub-object with
+equivalent initializer.
+
+-----------------------------------------------------------
+alloc
+-----------------------------------------------------------
+
+If 1, then the object will be given a generated value if needed.
+
+-----------------------------------------------------------
+defin (boolean)
+-----------------------------------------------------------
+
+If 1, then the object is considered defined. Otherwise, it is considered
+external and needing import.
+
+-----------------------------------------------------------
+initi
+-----------------------------------------------------------
+
+Sets the initial state of the object.
+
+-----------------------------------------------------------
+linka
+-----------------------------------------------------------
+
+Sets the object's linkage.
+
+-----------------------------------------------------------
+value
+-----------------------------------------------------------
+
+Sets the objects's integer value. Usually the starting memory index.
+
+-----------------------------------------------------------
+words
+-----------------------------------------------------------
+
+Sets the number of words needed for the object.
+
+===========================================================
+Spaces
+===========================================================
+
+  space-declaration:
+    <Space> address-specifier string space-argument-list(opt) new-line
+
+  space-argument-list:
+    space-argument space-argument-list(opt)
+
+  space-argument:
+    <alloc> = expression
+    <defin> = expression
+    <linka> = linkage-specifier
+    <value> = expression
+    <words> = expression
+
+Defines an address space to contain objects.
+
+-----------------------------------------------------------
+alloc
+-----------------------------------------------------------
+
+If 1, then the space will be given a generated value if needed.
+
+-----------------------------------------------------------
+defin
+-----------------------------------------------------------
+
+If 1, then the space is considered defined. Otherwise, it is considered external
+and needing import.
+
+-----------------------------------------------------------
+linka
+-----------------------------------------------------------
+
+Sets the space's linkage.
+
+-----------------------------------------------------------
+value
+-----------------------------------------------------------
+
+Sets the space's integer value. Usually the index.
+
+-----------------------------------------------------------
+words
+-----------------------------------------------------------
+
+Sets the number of words needed for the space.
+
+===========================================================
+String Entries
+===========================================================
+
+  strent-declaration:
+    <StrEnt> string strent-argument-list(opt) new-line
+
+  strent-argument-list:
+    strent-argument strent-argument-list(opt)
+
+  strent-argument:
+    <alias> = expression
+    <alloc> = expression
+    <defin> = expression
+    <valueInt> = expression
+    <valueStr> = string
+
+Defines a target string table entry.
+
+-----------------------------------------------------------
+alias
+-----------------------------------------------------------
+
+If 1, then the string entry may share an address with an equivalent string
+entry.
+
+-----------------------------------------------------------
+alloc
+-----------------------------------------------------------
+
+If 1, then the string entry will be given a generated value if needed.
+
+-----------------------------------------------------------
+defin
+-----------------------------------------------------------
+
+If 1, then the string entry is considered defined. Otherwise, it is considered
+external and needing import.
+
+-----------------------------------------------------------
+valueInt
+-----------------------------------------------------------
+
+Sets the string entry's integer value.
+
+-----------------------------------------------------------
+valueStr
+-----------------------------------------------------------
+
+Sets the string entry's string value.
+
+===============================================================================
+Statements
+===============================================================================
+
+  statement:
+    statement-label-list(opt) statement-name argument-list(opt) new-line
+
+  statement-label-list:
+    string statement-label-list(opt)
+
+  argument-list:
+    , argument argument-list(opt)
+
+A statement is the IR's instruction.
+
+===========================================================
+Statement Names
+===========================================================
+
+  statement-name:
+    <Nop>
+    <AddI_W>
+    <AddU_W>
+    <AndU_W>
+    <Call>
+    <Casm>
+    <Cjmp_Nil>
+    <Cjmp_Tru>
+    <CmpI_EQ_W>
+    <CmpI_GE_W>
+    <CmpI_GT_W>
+    <CmpI_LE_W>
+    <CmpI_LT_W>
+    <CmpI_NE_W>
+    <CmpU_EQ_W>
+    <CmpU_GE_W>
+    <CmpU_GT_W>
+    <CmpU_LE_W>
+    <CmpU_LT_W>
+    <CmpU_NE_W>
+    <Cnat>
+    <Cspe>
+    <DivI_W>
+    <DivX_W>
+    <InvU_W>
+    <Jump>
+    <ModI_W>
+    <Move_W>
+    <MulI_W>
+    <MulX_W>
+    <NegI_W>
+    <NotU_W>
+    <OrIU_W>
+    <OrXU_W>
+    <Retn>
+    <ShLU_W>
+    <ShRI_W>
+    <SubI_W>
+    <SubU_W>
+    <Swap_W>
+
+===========================================================
+Arguments
+===========================================================
+
+  argument:
+    <Cpy> ( )
+    <Far> ( argument , expression )
+    <GblArr> ( argument , argument , expression )
+    <GblArs> ( argument , expression )
+    <GblReg> ( argument , expression )
+    <Gen> ( argument , expression )
+    <Lit> ( expression )
+    <Loc> ( argument , expression )
+    <LocArs> ( argument , expression )
+    <LocReg> ( argument , expression )
+    <MapArr> ( argument , argument , expression )
+    <MapArs> ( argument , expression )
+    <MapReg> ( argument , expression )
+    <Nul> ( )
+    <Stk> ( )
+    <StrArr> ( argument , argument , expression )
+    <StrArs> ( argument , expression )
+    <Vaa> ( argument , expression )
+    <WldArr> ( argument , argument , expression )
+    <WldArs> ( argument , expression )
+    <WldReg> ( argument , expression )
+
+===============================================================================
+Expressions
+===============================================================================
+
+  expression:
+    aggregate
+    identifier
+    number
+    string
+
+===========================================================
+Aggregates
+===========================================================
+
+  aggregate:
+    [ expression-list ]
+
+  expression-list:
+    expression
+    expression , expression-list
+
+Results in a multi-part value. Each sub-expression has its own type.
+
+===========================================================
+Identifiers
+===========================================================
+
+  identifier:
+    non-digit
+    identifier non-digit
+    identifier digit
+
+  non-digit: one of
+    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+    a b c d e f g h i j k l m n o p q r s t u v w x y z
+    _
+
+  digit: one of
+    0 1 2 3 4 5 6 7 8 9
+
+As an expression, an identifier indicates a glyph to be resolved.
+
+===========================================================
+Numbers
+===========================================================
+
+  number:
+    decimal-number number-suffix(opt)
+    hexadecimal-number number-suffix(opt)
+    octal-number number-suffix(opt)
+
+  decimal-number:
+    decimal-base decimal-fractional(opt) decimal-exponent(opt)
+    decimal-integral(opt) decimal-fractional decimal-exponent(opt)
+
+  hexadecimal-number:
+    hexadecimal-base hexadecimal-fractional(opt) hexadecimal-exponent(opt)
+
+  octal-number:
+    octal-base decimal-exponent(opt)
+
+  number-suffix:
+    _ number-suffix-f(opt) number-suffix-s(opt) decimal-integral
+      decimal-fractional number-suffix-s(opt)
+
+  number-suffix-f: one of
+    <F> <f>
+
+  number-suffix-s: one of
+    <S> <s>
+
+  decimal-base:
+    decimal-prefix decimal-integral(opt)
+
+  decimal-fractional:
+    . decimal-integral(opt)
+
+  decimal-exponent:
+    <E> sign(opt) decimal-integral
+    <e> sign(opt) decimal-integral
+    hexadecimal-exponent
+
+  decimal-integral:
+    digit decimal-integral(opt)
+
+  decimal-prefix: one of
+    1 2 3 4 5 6 7 8 9
+
+  hexadecimal-base:
+    hexadecimal-prefix hexadecimal-integral(opt)
+
+  hexadecimal-fractional:
+    . hexadecimal-integral(opt)
+
+  hexadecimal-exponent:
+    <P> sign(opt) decimal-integral
+    <p> sign(opt) decimal-integral
+
+  hexadecimal-integral:
+    hexadecimal-digit hexadecimal-integral(opt)
+
+  hexadecimal-digit: one of
+    0 1 2 3 4 5 6 7 8 9 A B C D E F a b c d e f
+
+  octal-base:
+    octal-prefix octal-integral(opt)
+
+  octal-prefix:
+    0
+
+  octal-integral:
+    octal-digit octal-integral(opt)
+
+  octal-digit: one of
+    0 1 2 3 4 5 6 7
+
+  sign: one of
+    + -
+
+===========================================================
+Strings
+===========================================================
+
+  string:
+    " char-sequence(opt) "
+
+  char-sequence:
+    char char-sequence(opt)
+
+  char:
+    any character except double-quote, backslash, or new-line
+    escape-sequence
+
+  escape-sequence:
+    hexadecimal-escape-sequence
+    octal-escape-sequence
+    simple-escape-sequence
+
+  hexadecimal-escape-sequence:
+    \x hexadecimal-digit
+    hexadecimal-escape-sequence hexadecimal-digit
+
+  octal-escape-sequence:
+    \ octal-digit
+    \ octal-digit octal-digit
+    \ octal-digit octal-digit octal-digit
+
+  simple-escape-sequence: one of
+    \' \" \? \\ \a \b \f \n \r \t \v
+
+As an expression, a string indicates a glyph to be resolved.
+
+===============================================================================
+Specifiers
+===============================================================================
+
+  address-specifier:
+    <Cpy>
+    <Far>
+    <GblArr>
+    <GblArs>
+    <GblReg>
+    <Gen>
+    <Lit>
+    <Loc>
+    <LocArs>
+    <LocReg>
+    <MapArr>
+    <MapArs>
+    <MapReg>
+    <Nul>
+    <Stk>
+    <StrArr>
+    <StrArs>
+    <Vaa>
+    <WldArr>
+    <WldArs>
+    <WldReg>
+
+  call-type-specifier:
+    <Action>
+    <AsmFunc>
+    <LangACS>
+    <LangASM>
+    <LangAXX>
+    <LangC>
+    <LangCXX>
+    <LangDS>
+    <Native>
+    <Script>
+    <ScriptI>
+    <ScriptS>
+    <Special>
+
+  linkage-specifier:
+    <ExtACS>
+    <ExtASM>
+    <ExtC>
+    <ExtCXX>
+    <ExtDS>
+    <IntC>
+    <IntCXX>
+
+  script-type-specifier:
+    <None>
+    <Death>
+    <Disconnect>
+    <Enter>
+    <Lightning>
+    <Open>
+    <Respawn>
+    <Return>
+    <Unloading>
+
+===============================================================================
+Grammar
+===============================================================================
+
+  assembly-unit:
+    declaration(opt) assembly-unit(opt)
+
+  declaration:
+    function-declaration
+    import-declaration
+    object-declaration
+    space-declaration
+    strent-declaration
+
+  function-declaration:
+    <Function> string function-argument-list(opt) new-line
+
+  function-argument-list:
+    function-argument function-argument-list(opt)
+
+  function-argument:
+    <alloc> = expression
+    <block> new-line { statement-list(opt) }
+    <ctype> = call-type-specifier
+    <defin> = expression
+    <label> = string
+    <linka> = linkage-specifier
+    <localArs> = expression
+    <localReg> = expression
+    <param> = expression
+    <retrn> = expression
+    <sflagClS> = expression
+    <sflagNet> = expression
+    <stype> = script-type-specifier
+    <valueInt> = expression
+    <valueStr> = string
+
+  import-declaration:
+    <Import> string new-line
+
+  object-declaration:
+    <Object> address-specifier string string object-argument-list(opt) new-line
+
+  object-argument-list:
+    object-argument object-argument-list(opt)
+
+  object-argument:
+    <alias> = expression
+    <alloc> = expression
+    <defin> = expression
+    <initi> = expression
+    <linka> = linkage-specifier
+    <value> = expression
+    <words> = expression
+
+  space-declaration:
+    <Space> address-specifier string space-argument-list(opt) new-line
+
+  space-argument-list:
+    space-argument space-argument-list(opt)
+
+  space-argument:
+    <alloc> = expression
+    <defin> = expression
+    <linka> = linkage-specifier
+    <value> = expression
+    <words> = expression
+
+  strent-declaration:
+    <StrEnt> string strent-argument-list(opt) new-line
+
+  strent-argument-list:
+    strent-argument strent-argument-list(opt)
+
+  strent-argument:
+    <alias> = expression
+    <alloc> = expression
+    <defin> = expression
+    <valueInt> = expression
+    <valueStr> = string
+
+  statement-list:
+    statement statement-list(opt)
+
+  statement:
+    statement-name argument-list(opt) new-line
+
+  statement-name:
+    <Nop>
+    <AddI_W>
+    <AddU_W>
+    <AndU_W>
+    <Call>
+    <Casm>
+    <Cjmp_Nil>
+    <Cjmp_Tru>
+    <CmpI_EQ_W>
+    <CmpI_GE_W>
+    <CmpI_GT_W>
+    <CmpI_LE_W>
+    <CmpI_LT_W>
+    <CmpI_NE_W>
+    <CmpU_EQ_W>
+    <CmpU_GE_W>
+    <CmpU_GT_W>
+    <CmpU_LE_W>
+    <CmpU_LT_W>
+    <CmpU_NE_W>
+    <Cnat>
+    <Cspe>
+    <DivI_W>
+    <DivX_W>
+    <InvU_W>
+    <Jump>
+    <ModI_W>
+    <Move_W>
+    <MulI_W>
+    <MulX_W>
+    <NegI_W>
+    <NotU_W>
+    <OrIU_W>
+    <OrXU_W>
+    <Retn>
+    <ShLU_W>
+    <ShRI_W>
+    <SubI_W>
+    <SubU_W>
+    <Swap_W>
+
+  argument-list:
+    , argument argument-list(opt)
+
+  argument:
+    <Cpy> ( )
+    <Far> ( argument , expression )
+    <GblArr> ( argument , argument , expression )
+    <GblArs> ( argument , expression )
+    <GblReg> ( argument , expression )
+    <Gen> ( argument , expression )
+    <Lit> ( expression )
+    <Loc> ( argument , expression )
+    <LocArs> ( argument , expression )
+    <LocReg> ( argument , expression )
+    <MapArr> ( argument , argument , expression )
+    <MapArs> ( argument , expression )
+    <MapReg> ( argument , expression )
+    <Nul> ( )
+    <Stk> ( )
+    <StrArr> ( argument , argument , expression )
+    <StrArs> ( argument , expression )
+    <Vaa> ( argument , expression )
+    <WldArr> ( argument , argument , expression )
+    <WldArs> ( argument , expression )
+    <WldReg> ( argument , expression )
+
+  expression:
+    aggregate
+    identifier
+    number
+    string
+
+  aggregate:
+    [ expression-list ]
+
+  expression-list:
+    expression
+    expression , expression-list
+
+  identifier:
+    non-digit
+    identifier non-digit
+    identifier digit
+
+  non-digit: one of
+    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+    a b c d e f g h i j k l m n o p q r s t u v w x y z
+    _
+
+  digit: one of
+    0 1 2 3 4 5 6 7 8 9
+
+  number:
+    decimal-number number-suffix(opt)
+    hexadecimal-number number-suffix(opt)
+    octal-number number-suffix(opt)
+
+  decimal-number:
+    decimal-base decimal-fractional(opt) decimal-exponent(opt)
+    decimal-integral(opt) decimal-fractional decimal-exponent(opt)
+
+  hexadecimal-number:
+    hexadecimal-base hexadecimal-fractional(opt) hexadecimal-exponent(opt)
+
+  octal-number:
+    octal-base decimal-exponent(opt)
+
+  number-suffix:
+    _ number-suffix-f(opt) number-suffix-s(opt) decimal-integral
+      decimal-fractional number-suffix-s(opt)
+
+  number-suffix-f: one of
+    <F> <f>
+
+  number-suffix-s: one of
+    <S> <s>
+
+  decimal-base:
+    decimal-prefix decimal-integral(opt)
+
+  decimal-fractional:
+    . decimal-integral(opt)
+
+  decimal-exponent:
+    <E> sign(opt) decimal-integral
+    <e> sign(opt) decimal-integral
+    hexadecimal-exponent
+
+  decimal-integral:
+    digit decimal-integral(opt)
+
+  decimal-prefix: one of
+    1 2 3 4 5 6 7 8 9
+
+  hexadecimal-base:
+    hexadecimal-prefix hexadecimal-integral(opt)
+
+  hexadecimal-fractional:
+    . hexadecimal-integral(opt)
+
+  hexadecimal-exponent:
+    <P> sign(opt) decimal-integral
+    <p> sign(opt) decimal-integral
+
+  hexadecimal-integral:
+    hexadecimal-digit hexadecimal-integral(opt)
+
+  hexadecimal-digit: one of
+    0 1 2 3 4 5 6 7 8 9 A B C D E F a b c d e f
+
+  octal-base:
+    octal-prefix octal-integral(opt)
+
+  octal-prefix:
+    0
+
+  octal-integral:
+    octal-digit octal-integral(opt)
+
+  octal-digit: one of
+    0 1 2 3 4 5 6 7
+
+  sign: one of
+    + -
+
+  string:
+    " char-sequence(opt) "
+
+  char-sequence:
+    char char-sequence(opt)
+
+  char:
+    any character except double-quote, backslash, or new-line
+    escape-sequence
+
+  escape-sequence:
+    hexadecimal-escape-sequence
+    octal-escape-sequence
+    simple-escape-sequence
+
+  hexadecimal-escape-sequence:
+    \x hexadecimal-digit
+    hexadecimal-escape-sequence hexadecimal-digit
+
+  octal-escape-sequence:
+    \ octal-digit
+    \ octal-digit octal-digit
+    \ octal-digit octal-digit octal-digit
+
+  simple-escape-sequence: one of
+    \' \" \? \\ \a \b \f \n \r \t \v
+
+  address-specifier:
+    <Cpy>
+    <Far>
+    <GblArr>
+    <GblArs>
+    <GblReg>
+    <Gen>
+    <Lit>
+    <Loc>
+    <LocArs>
+    <LocReg>
+    <MapArr>
+    <MapArs>
+    <MapReg>
+    <Nul>
+    <Stk>
+    <StrArr>
+    <StrArs>
+    <Vaa>
+    <WldArr>
+    <WldArs>
+    <WldReg>
+
+  call-type-specifier:
+    <Action>
+    <AsmFunc>
+    <LangACS>
+    <LangASM>
+    <LangAXX>
+    <LangC>
+    <LangCXX>
+    <LangDS>
+    <Native>
+    <Script>
+    <ScriptI>
+    <ScriptS>
+    <Special>
+
+  linkage-specifier:
+    <ExtACS>
+    <ExtASM>
+    <ExtC>
+    <ExtCXX>
+    <ExtDS>
+    <IntC>
+    <IntCXX>
+
+  script-type-specifier:
+    <None>
+    <Death>
+    <Disconnect>
+    <Enter>
+    <Lightning>
+    <Open>
+    <Respawn>
+    <Return>
+    <Unloading>
+
+###############################################################################
+EOF
+###############################################################################
+
