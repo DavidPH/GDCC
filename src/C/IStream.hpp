@@ -17,6 +17,7 @@
 #include "GDCC/EscapeBuf.hpp"
 #include "GDCC/FeatureHold.hpp"
 #include "GDCC/OriginBuf.hpp"
+#include "GDCC/TrigraphBuf.hpp"
 
 #include <istream>
 
@@ -39,7 +40,7 @@ namespace C
    {
    public:
       IStream(std::streambuf &buf, GDCC::String file) : std::istream{&cbuf},
-         obuf{buf, file}, ebuf{obuf}, cbuf{ebuf} {}
+         obuf{buf, file}, tbuf{obuf}, ebuf{tbuf}, cbuf{ebuf} {}
 
       void disableComments() {rdbuf(&obuf);}
 
@@ -52,10 +53,12 @@ namespace C
 
    protected:
       using OBuf = GDCC::OriginBuf<>;
-      using EBuf = GDCC::EscapeBufStrip<'\n', '\\', OBuf>;
+      using TBuf = GDCC::TrigraphBuf<OBuf>;
+      using EBuf = GDCC::EscapeBufStrip<'\n', '\\', TBuf>;
       using CBuf = GDCC::CommentBufC<EBuf>;
 
       OBuf obuf;
+      TBuf tbuf;
       EBuf ebuf;
       CBuf cbuf;
    };
