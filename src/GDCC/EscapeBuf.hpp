@@ -25,50 +25,32 @@ namespace GDCC
    //
    // EscapeBufStrip
    //
-   template<char Escape = '\n', char Start = '\\', typename Buf = std::streambuf>
-   class EscapeBufStrip final : public WrapperBuf<Buf>
+   template<char Escape = '\n', char Start = '\\', typename Src = std::streambuf>
+   class EscapeBufStrip final : public WrapperBuf<Src>
    {
    public:
-      explicit EscapeBufStrip(Buf &buf_) : WrapperBuf<Buf>{buf_} {}
+      using Super = WrapperBuf<Src>;
+
+
+      explicit EscapeBufStrip(Src &src_) : Super{src_} {}
 
    protected:
-      using WrapperBuf<Buf>::buf;
-      using WrapperBuf<Buf>::pbc;
-      using WrapperBuf<Buf>::pbb;
-
-      //
-      // uflow
-      //
-      virtual int uflow()
-      {
-         if(pbc != EOF) return pbb = pbc, pbc = EOF, pbb;
-         if((pbb = buf.sbumpc()) != Start) return pbb;
-
-         // Check for escape character.
-         int c = buf.sgetc();
-         if(c == Escape) return buf.sbumpc(), uflow();
-         if(c == EOF) return pbb = Escape;
-
-         // Otherwise, carry on.
-         return pbb;
-      }
+      using Super::src;
 
       //
       // underflow
       //
       virtual int underflow()
       {
-         if(pbc != (pbb = EOF)) return pbc;
-         if((pbc = buf.sbumpc()) != Start) return pbc;
+         int c = Super::underflow();
 
-         // Check for escape character.
-         int c = buf.sgetc();
-         if(c == Escape) return buf.sbumpc(), underflow();
-         if(c == EOF) return pbc = Escape;
+         if(c == Start)
+         {
+            if(src.sgetc() == Escape) return this->gbump(1), src.sbumpc(), underflow();
+            if(src.sgetc() == EOF) return *this->gptr() = Escape;
+         }
 
-         // Otherwise, carry on.
-         buf.sungetc();
-         return pbc;
+         return c;
       }
    };
 }

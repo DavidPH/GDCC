@@ -26,40 +26,27 @@ namespace GDCC
    //
    // OriginBuf
    //
-   template<typename Buf = std::streambuf>
-   class OriginBuf final : public WrapperBuf<Buf>
+   template<typename Src = std::streambuf>
+   class OriginBuf final : public WrapperBuf<Src>
    {
    public:
-      OriginBuf(Buf &buf_, String file, std::size_t line = 1) :
-         WrapperBuf<Buf>{buf_}, pos{file, line} {}
+      using Super = WrapperBuf<Src>;
+
+
+      OriginBuf(Src &src_, String file, std::size_t line = 1) :
+         Super{src_}, pos{file, line} {}
 
       Origin getOrigin() const {return pos;}
 
    protected:
-      using WrapperBuf<Buf>::buf;
-      using WrapperBuf<Buf>::pbc;
-      using WrapperBuf<Buf>::pbb;
-
-      //
-      // uflow
-      //
-      virtual int uflow()
-      {
-         if(pbc != EOF) return pbb = pbc, pbc = EOF, pbb;
-         if((pbb = buf.sbumpc()) == '\n') ++pos.line;
-
-         return pbb;
-      }
-
       //
       // underflow
       //
       virtual int underflow()
       {
-         if(pbc != (pbb = EOF)) return pbc;
-         if((pbc = buf.sbumpc()) == '\n') ++pos.line;
-
-         return pbc;
+         int c = Super::underflow();
+         if(c == '\n') ++pos.line;
+         return c;
       }
 
    private:

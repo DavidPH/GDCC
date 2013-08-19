@@ -27,39 +27,30 @@ namespace GDCC
    //
    // Handles line-oriented comments started by a single character.
    //
-   template<char Start, typename Buf = std::streambuf>
-   class CommentBufLine final : public WrapperBuf<Buf>
+   template<char Start, typename Src = std::streambuf>
+   class CommentBufLine final : public WrapperBuf<Src>
    {
    public:
-      explicit CommentBufLine(Buf &buf_) : WrapperBuf<Buf>{buf_} {}
+      using Super = WrapperBuf<Src>;
+
+
+      explicit CommentBufLine(Src &src_) : Super{src_} {}
 
    protected:
-      using WrapperBuf<Buf>::buf;
-      using WrapperBuf<Buf>::pbc;
-      using WrapperBuf<Buf>::pbb;
-
-      //
-      // uflow
-      //
-      virtual int uflow()
-      {
-         if(pbc != EOF) return pbb = pbc, pbc = EOF, pbb;
-         if((pbb = buf.sbumpc()) != Start) return pbb;
-
-         do {pbb = buf.sbumpc();} while(pbb != EOF && pbb != '\n');
-         return pbb;
-      }
+      using Super::src;
 
       //
       // underflow
       //
       virtual int underflow()
       {
-         if(pbc != (pbb = EOF)) return pbc;
-         if((pbc = buf.sbumpc()) != Start) return pbc;
-
-         do {pbc = buf.sbumpc();} while(pbc != EOF && pbc != '\n');
-         return pbc;
+         int c = Super::underflow();
+         if(c == Start)
+         {
+            while(c != '\n') c = src.sbumpc();
+            *this->gptr() = c;
+         }
+         return c;
       }
    };
 }
