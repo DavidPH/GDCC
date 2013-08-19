@@ -38,12 +38,12 @@ namespace C
    class IStream : public std::istream
    {
    public:
-      IStream(std::streambuf &buf, GDCC::String file) : std::istream{&ebuf},
-         obuf{buf, file}, ebuf{obuf} {}
+      IStream(std::streambuf &buf, GDCC::String file) : std::istream{&cbuf},
+         obuf{buf, file}, ebuf{obuf}, cbuf{ebuf} {}
 
       void disableComments() {rdbuf(&obuf);}
 
-      void enableComments() {rdbuf(&obuf);}
+      void enableComments() {rdbuf(&cbuf);}
 
       GDCC::Origin getOrigin() const {return obuf.getOrigin();}
 
@@ -51,11 +51,13 @@ namespace C
          {return GDCC::FeatureHold<IStream, &IStream::disableComments, &IStream::enableComments>(*this);}
 
    protected:
-      typedef GDCC::OriginBuf<>                      OBuf;
-      typedef GDCC::EscapeBufStrip<'\n', '\\', OBuf> EBuf;
+      using OBuf = GDCC::OriginBuf<>;
+      using EBuf = GDCC::EscapeBufStrip<'\n', '\\', OBuf>;
+      using CBuf = GDCC::CommentBufC<EBuf>;
 
       OBuf obuf;
       EBuf ebuf;
+      CBuf cbuf;
    };
 }
 
