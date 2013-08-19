@@ -33,7 +33,7 @@ namespace Asm
       for(GDCC::Token tok; in >> tok;) switch(static_cast<GDCC::StringIndex>(tok.str))
       {
       default:
-         if(tok.tok == GDCC::TOK_EOL) return;
+         if(tok.tok == GDCC::TOK_LnEnd) return;
 
          std::cerr << "ERROR: " << tok.pos << ": bad Import argument: '"
             << tok.str << "'\n";

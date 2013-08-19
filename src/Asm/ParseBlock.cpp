@@ -39,7 +39,7 @@ namespace Asm
          block.addLabel(tok.str);
          break;
 
-      case GDCC::TOK_Identifier:
+      case GDCC::TOK_Identi:
          block.setOrigin(tok.pos);
 
          switch(static_cast<GDCC::StringIndex>(tok.str))
@@ -55,7 +55,7 @@ namespace Asm
 
          args.clear();
 
-         while(in >> tok && tok.tok != GDCC::TOK_EOL)
+         while(in >> tok && tok.tok != GDCC::TOK_LnEnd)
          {
             if(tok.tok != GDCC::TOK_Comma)
             {
@@ -71,7 +71,7 @@ namespace Asm
 
          break;
 
-      case GDCC::TOK_EOL:
+      case GDCC::TOK_LnEnd:
          break;
 
       default:

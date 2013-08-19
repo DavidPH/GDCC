@@ -207,7 +207,7 @@ GDCC_StringList(TOK_ParenO, "(")
 GDCC_StringList(TOK_ParenC, ")")
 
 // Whitespace tokens.
-GDCC_StringList(TOK_EOL, "\\n")
+GDCC_StringList(TOK_LnEnd, "\\n")
 GDCC_StringList(TOK_Space, " ")
 GDCC_StringList(TOK_Tabul, "\\t")
 

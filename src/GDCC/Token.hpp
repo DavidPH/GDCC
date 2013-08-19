@@ -36,9 +36,9 @@ namespace GDCC
    enum TokenType
    {
       // String tokens.
-      TOK_Character,
+      TOK_Charac,
       TOK_Header,
-      TOK_Identifier,
+      TOK_Identi,
       TOK_Number,
       TOK_String,
       TOK_WSpace,
@@ -104,7 +104,7 @@ namespace GDCC
       TOK_ParenC, // )
 
       // Whitespace tokens.
-      TOK_EOL,   // \n
+      TOK_LnEnd, // \n
       TOK_Space, // ' '
       TOK_Tabul, // \t
 

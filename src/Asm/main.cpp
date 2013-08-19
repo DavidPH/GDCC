@@ -62,13 +62,13 @@ static bool ParseTLK(Asm::IStream &in)
    GDCC::Token tok;
    if(!(in >> tok)) return false;
 
-   if(tok.tok == GDCC::TOK_EOL) return true;
+   if(tok.tok == GDCC::TOK_LnEnd) return true;
 
    switch(static_cast<GDCC::StringIndex>(tok.str))
    {
    case GDCC::STR_Function:
       in >> tok;
-      if(tok.tok != GDCC::TOK_Identifier && tok.tok != GDCC::TOK_String)
+      if(tok.tok != GDCC::TOK_Identi && tok.tok != GDCC::TOK_String)
       {
          std::cerr << "ERROR: " << tok.pos << ": expected identifier or string\n";
          throw EXIT_FAILURE;

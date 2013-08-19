@@ -64,7 +64,7 @@ static void ProcessFile(char const *inName)
 
    for(GDCC::Token tok; in >> tok;) switch(tok.tok)
    {
-   case GDCC::TOK_EOL: std::cout << "EOL\n"; break;
+   case GDCC::TOK_LnEnd: std::cout << "EOL\n"; break;
 
    default: std::cout << tok.tok << '(' << tok.str << ") ";
    }

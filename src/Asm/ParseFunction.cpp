@@ -37,7 +37,7 @@ namespace Asm
          break;
 
       case GDCC::STR_block:
-         while(in >> tok && tok.tok == GDCC::TOK_EOL) {}
+         while(in >> tok && tok.tok == GDCC::TOK_LnEnd) {}
          if(tok.tok != GDCC::TOK_BraceO)
          {
             std::cerr << "ERROR: " << tok.pos << ": expected {\n";
@@ -99,7 +99,7 @@ namespace Asm
          break;
 
       default:
-         if(tok.tok == GDCC::TOK_EOL) return;
+         if(tok.tok == GDCC::TOK_LnEnd) return;
 
          std::cerr << "ERROR: " << tok.pos << ": bad function argument: '"
             << tok.str << "'\n";

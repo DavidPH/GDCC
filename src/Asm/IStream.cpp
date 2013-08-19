@@ -47,7 +47,7 @@ namespace Asm
       case ']':  GDCC_Token_SetStrTok(out, BrackC); return in;
       case '(':  GDCC_Token_SetStrTok(out, ParenO); return in;
       case ')':  GDCC_Token_SetStrTok(out, ParenC); return in;
-      case '\n': GDCC_Token_SetStrTok(out, EOL);    return in;
+      case '\n': GDCC_Token_SetStrTok(out, LnEnd);  return in;
       }
 
       // Quoted string/character token.
@@ -60,7 +60,7 @@ namespace Asm
             std::string str  = GDCC::ParseStringC(GDCC::ReadStringC(in, c));
             std::size_t hash = GDCC::HashString(str.data(), str.size());
             out.str = GDCC::AddString(str.data(), str.size(), hash);
-            out.tok = c == '"' ? GDCC::TOK_String : GDCC::TOK_Character;
+            out.tok = c == '"' ? GDCC::TOK_String : GDCC::TOK_Charac;
 
             return in;
          }
@@ -95,7 +95,7 @@ namespace Asm
 
          std::size_t hash = GDCC::HashString(str.data(), str.size());
          out.str = GDCC::AddString(str.data(), str.size(), hash);
-         out.tok = GDCC::TOK_Identifier;
+         out.tok = GDCC::TOK_Identi;
          return in;
       }
 

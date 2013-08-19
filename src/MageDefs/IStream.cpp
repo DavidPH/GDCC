@@ -61,7 +61,7 @@ namespace MageDefs
 
          std::size_t hash = GDCC::HashString(str.data(), str.size());
          out.str = GDCC::AddString(str.data(), str.size(), hash);
-         out.tok = GDCC::TOK_Identifier;
+         out.tok = GDCC::TOK_Identi;
          return in;
       }
 
@@ -93,7 +93,7 @@ namespace MageDefs
 
          std::size_t hash = GDCC::HashString(str, 1);
          out.str = GDCC::AddString(str, 1, hash);
-         out.tok = GDCC::TOK_Character;
+         out.tok = GDCC::TOK_Charac;
          return in;
       }
 

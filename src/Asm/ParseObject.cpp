@@ -62,7 +62,7 @@ namespace Asm
          break;
 
       default:
-         if(tok.tok == GDCC::TOK_EOL) return;
+         if(tok.tok == GDCC::TOK_LnEnd) return;
 
          std::cerr << "ERROR: " << tok.pos << ": bad Object argument: '"
             << tok.str << "'\n";
