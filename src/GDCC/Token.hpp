@@ -37,13 +37,63 @@ namespace GDCC
    {
       // String tokens.
       TOK_Character,
+      TOK_Header,
       TOK_Identifier,
       TOK_Number,
       TOK_String,
+      TOK_WSpace,
 
       // Simple tokens.
-      TOK_Comma, // ,
-      TOK_Equal, // =
+      TOK_Add,    // +
+      TOK_Add2,   // ++
+      TOK_AddEq,  // +=
+      TOK_And,    // &
+      TOK_And2,   // &&
+      TOK_And2Eq, // &&=
+      TOK_AndEq,  // &=
+      TOK_CmpEQ,  // ==
+      TOK_CmpGE,  // >=
+      TOK_CmpGT,  // >
+      TOK_CmpLE,  // <=
+      TOK_CmpLT,  // <
+      TOK_CmpNE,  // !=
+      TOK_Colon,  // :
+      TOK_Colon2, // ::
+      TOK_Comma,  // ,
+      TOK_Div,    // /
+      TOK_DivEq,  // /=
+      TOK_Dot,    // .
+      TOK_Dot2,   // ..
+      TOK_Dot3,   // ...
+      TOK_DotPtr, // .*
+      TOK_Equal,  // =
+      TOK_Hash,   // #
+      TOK_Hash2,  // ##
+      TOK_Inv,    // ~
+      TOK_Mem,    // ->
+      TOK_MemPtr, // ->*
+      TOK_Mod,    // %
+      TOK_ModEq,  // %=
+      TOK_Mul,    // *
+      TOK_MulEq,  // *=
+      TOK_Not,    // !
+      TOK_OrI,    // |
+      TOK_OrI2,   // ||
+      TOK_OrI2Eq, // ||=
+      TOK_OrIEq,  // |=
+      TOK_OrX,    // ^
+      TOK_OrX2,   // ^^
+      TOK_OrX2Eq, // ^^=
+      TOK_OrXEq,  // ^=
+      TOK_Query,  // ?
+      TOK_Semico, // ;
+      TOK_ShL,    // <<
+      TOK_ShLEq,  // <<=
+      TOK_ShR,    // >>
+      TOK_ShREq,  // >>=
+      TOK_Sub,    // -
+      TOK_Sub2,   // --
+      TOK_SubEq,  // -=
 
       // Paired tokens.
       TOK_BraceO, // {
@@ -54,9 +104,19 @@ namespace GDCC
       TOK_ParenC, // )
 
       // Whitespace tokens.
-      TOK_EOL, // \n
+      TOK_EOL,   // \n
+      TOK_Space, // ' '
+      TOK_Tabul, // \t
 
-      TOK_EOF
+      TOK_EOF,
+
+      // Alternate spelling aliases.
+      TOK_DG_BraceO = TOK_BraceO, // <%
+      TOK_DG_BraceC = TOK_BraceC, // %>
+      TOK_DG_BrackO = TOK_BrackO, // <:
+      TOK_DG_BrackC = TOK_BrackC, // :>
+      TOK_DG_Hash   = TOK_Hash,   // %:
+      TOK_DG_Hash2  = TOK_Hash2,  // %:%:
    };
 
    //
@@ -67,6 +127,12 @@ namespace GDCC
       Token() = default;
       Token(String str_, TokenType tok_) : pos{STRNULL, 0}, str{str_}, tok{tok_} {}
       Token(Origin pos_, String str_, TokenType tok_) : pos{pos_}, str{str_}, tok{tok_} {}
+
+      constexpr bool operator == (Token const &t) const
+         {return pos == t.pos && str == t.str && tok == t.tok;}
+
+      constexpr bool operator != (Token const &t) const
+         {return pos != t.pos || str != t.str || tok != t.tok;}
 
       Token &setStrTok(String str_, TokenType tok_) {str = str_; tok = tok_; return *this;}
 
