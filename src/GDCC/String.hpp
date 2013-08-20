@@ -130,6 +130,10 @@ namespace GDCC
    constexpr bool operator == (StringIndex l, String const &r) {return r == l;}
    constexpr bool operator != (StringIndex l, String const &r) {return r != l;}
 
+   String operator + (String l, String r);
+
+   inline String &operator += (String &l, String r) {return l = l + r;}
+
    String AddString(char const *str);
    String AddString(char const *str, std::size_t len, std::size_t hash);
 

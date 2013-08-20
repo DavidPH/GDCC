@@ -12,6 +12,8 @@
 
 #include "Parse.hpp"
 
+#include "StringBuf.hpp"
+
 #include <sstream>
 
 
@@ -133,6 +135,26 @@ namespace GDCC
       }
 
       return buf;
+   }
+
+   //
+   // ParseStringC
+   //
+   String ParseStringC(String inStr)
+   {
+      StringStream in{inStr};
+      std::string buf;
+      int term = in.get();
+
+      for(int c; (c = in.get()) != EOF && c != term;)
+      {
+         if(c == '\\')
+            buf += ParseEscapeC(in);
+         else
+            buf += static_cast<char>(c);
+      }
+
+      return AddString(buf.data(), buf.size(), HashString(buf.data(), buf.size()));
    }
 
    //

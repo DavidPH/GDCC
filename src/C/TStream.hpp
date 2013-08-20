@@ -13,10 +13,13 @@
 #ifndef C__TStream_H__
 #define C__TStream_H__
 
+#include "ConcatTBuf.hpp"
 #include "IStream.hpp"
+#include "StringTBuf.hpp"
 
 #include "GDCC/StreamTBuf.hpp"
 #include "GDCC/TokenStream.hpp"
+#include "GDCC/WSpaceTBuf.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -31,14 +34,20 @@ namespace C
    class TStream : public GDCC::TokenStream
    {
    public:
-      TStream(std::streambuf &buf, GDCC::String file) : GDCC::TokenStream{&tbuf},
-         istr{buf, file}, tbuf{istr} {}
+      TStream(std::streambuf &buf, GDCC::String file) : GDCC::TokenStream{&cbuf},
+         istr{buf, file}, tbuf{istr}, wbuf{tbuf}, sbuf{wbuf}, cbuf{sbuf} {}
 
    protected:
+      using CBuf = ConcatTBuf;
+      using SBuf = StringTBuf;
+      using WBuf = GDCC::WSpaceTBuf;
       using TBuf = GDCC::StreamTBuf<IStream>;
 
       IStream istr;
       TBuf    tbuf;
+      WBuf    wbuf;
+      SBuf    sbuf;
+      CBuf    cbuf;
    };
 }
 

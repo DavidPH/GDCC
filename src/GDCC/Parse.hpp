@@ -70,6 +70,7 @@ namespace GDCC
    ParseNumberInteg(char const *in, unsigned base);
 
    std::string ParseStringC(std::string const &in);
+   String ParseStringC(String in);
 
    void ReadEscapeC(std::istream &in, std::string &out);
 

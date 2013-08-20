@@ -226,6 +226,43 @@ namespace GDCC
    }
 
    //
+   // operator String + String
+   //
+   String operator + (String l, String r)
+   {
+      auto const &ld = l.getData();
+      auto const &rd = r.getData();
+
+      std::size_t len  = ld.len + rd.len;
+      std::size_t hash = HashString(rd.str, rd.len, ld.hash);
+
+      for(auto num = StringTableHash[hash % StringTableHashC]; num;)
+      {
+         auto const &entry = StringTable[num];
+
+         if(entry.hash == hash && entry.len == len &&
+            !std::memcmp(entry.str,          ld.str, ld.len) &&
+            !std::memcmp(entry.str + ld.len, rd.str, rd.len))
+            return String(num);
+
+         num = entry.next;
+      }
+
+      char *newstr;
+      std::size_t num = StringTable.size();
+
+      newstr = new char[len + 1];
+      std::memcpy(newstr,          ld.str, ld.len);
+      std::memcpy(newstr + ld.len, rd.str, rd.len);
+      newstr[len] = '\0';
+
+      StringTableAlloc.emplace_back(newstr);
+      StringTable.emplace_back(newstr, len, hash, num);
+
+      return String(num);
+   }
+
+   //
    // AddString
    //
    String AddString(char const *str)
