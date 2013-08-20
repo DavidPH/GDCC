@@ -41,6 +41,8 @@ namespace GDCC
 
          for(;;) switch((buf[0] = src.get()).tok)
          {
+         case TOK_WSpace:
+
          case TOK_LnEnd:
          case TOK_Space:
          case TOK_Tabul:

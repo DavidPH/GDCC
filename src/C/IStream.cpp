@@ -48,8 +48,8 @@ namespace C
       case '(':  GDCC_Token_SetStrTok(out, ParenO); return in;
       case ')':  GDCC_Token_SetStrTok(out, ParenC); return in;
       case '\n': GDCC_Token_SetStrTok(out, LnEnd);  return in;
-      case ' ':  GDCC_Token_SetStrTok(out, Space);  return in;
-      case '\t': GDCC_Token_SetStrTok(out, Tabul);  return in;
+    //case ' ':  GDCC_Token_SetStrTok(out, Space);  return in;
+    //case '\t': GDCC_Token_SetStrTok(out, Tabul);  return in;
 
       case '+':
          c = in.get();
@@ -149,6 +149,21 @@ namespace C
          c = in.get();
          if(c == '#') return GDCC_Token_SetStrTok(out, Hash2), in;
          in.unget();  return GDCC_Token_SetStrTok(out, Hash), in;
+      }
+
+      // Whitespace token.
+      if(std::isspace(c))
+      {
+         std::string str;
+
+         do str += static_cast<char>(c);
+         while((c = in.get()) != EOF && (std::isspace(c) && c != '\n'));
+         if(c != EOF) in.unget();
+
+         std::size_t hash = GDCC::HashString(str.data(), str.size());
+         out.str = GDCC::AddString(str.data(), str.size(), hash);
+         out.tok = GDCC::TOK_WSpace;
+         return in;
       }
 
       // Quoted string/character token.
