@@ -125,8 +125,8 @@ namespace GDCC
    struct Token
    {
       Token() = default;
-      Token(String str_, TokenType tok_) : pos{STRNULL, 0}, str{str_}, tok{tok_} {}
-      Token(Origin pos_, String str_, TokenType tok_) : pos{pos_}, str{str_}, tok{tok_} {}
+      constexpr Token(Origin pos_, String str_, TokenType tok_) :
+         pos{pos_}, str{str_}, tok{tok_} {}
 
       constexpr bool operator == (Token const &t) const
          {return pos == t.pos && str == t.str && tok == t.tok;}
@@ -140,6 +140,16 @@ namespace GDCC
       String    str;
       TokenType tok;
    };
+}
+
+
+//----------------------------------------------------------------------------|
+// Global Variables                                                           |
+//
+
+namespace GDCC
+{
+   constexpr Token TokenEOF{Origin(STRNULL, 0), STRNULL, TOK_EOF};
 }
 
 #endif//GDCC__Token_H__

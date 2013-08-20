@@ -25,30 +25,26 @@ namespace GDCC
    //
    // StreamTBuf
    //
-   template<typename IS, std::size_t BufSize = 1>
+   template<typename Src, std::size_t BufSize = 1>
    class StreamTBuf : public TokenBuf
    {
    public:
-      explicit StreamTBuf(IS &in_) : in(in_) {}
+      explicit StreamTBuf(Src &src_) : src(src_) {}
 
    protected:
       //
-      // v_get
+      // underflow
       //
-      virtual Token v_get()
+      virtual void underflow()
       {
-         if(!in) return TokenBuf::v_get();
-
          Token *itr = buf;
-         while((in >> *itr++) && itr != buf + BufSize) {}
+         if(src) while((src >> *itr++) && itr != buf + BufSize) {}
 
-         sett(buf, buf+1, itr);
-
-         return *buf;
+         sett(buf, buf, itr);
       }
 
       Token buf[BufSize];
-      IS &in;
+      Src &src;
    };
 }
 

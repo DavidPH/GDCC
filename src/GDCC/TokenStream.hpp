@@ -38,9 +38,21 @@ namespace GDCC
       //
       // get
       //
-      Token get()
+      Token const &get()
       {
-         auto tok = buf->get();
+         auto const &tok = buf->get();
+         if(tok.tok == TOK_EOF)
+            eof = true;
+
+         return tok;
+      }
+
+      //
+      // peek
+      //
+      Token const &peek()
+      {
+         auto const &tok = buf->peek();
          if(tok.tok == TOK_EOF)
             eof = true;
 
@@ -50,9 +62,9 @@ namespace GDCC
       //
       // unget
       //
-      void unget(Token const &tok)
+      void unget()
       {
-         if(!buf->unget(tok))
+         if(!buf->unget())
             err = true;
       }
 

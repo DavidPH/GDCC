@@ -34,21 +34,32 @@ namespace GDCC
       //
       // get
       //
-      Token get()
+      Token const &get()
       {
-         if(tcurr == tfrnt)
-            return v_get();
+         if(tcurr == tfrnt && (underflow(), tcurr == tfrnt))
+            return TokenEOF;
 
          return *tcurr++;
       }
 
       //
+      // peek
+      //
+      Token const &peek()
+      {
+         if(tcurr == tfrnt && (underflow(), tcurr == tfrnt))
+            return TokenEOF;
+
+         return *tcurr;
+      }
+
+      //
       // unget
       //
-      bool unget(Token const &tok)
+      bool unget()
       {
-         if(tcurr == tback || *(tcurr - 1) != tok)
-            return v_unget(tok);
+         if(tcurr == tback)
+            return false;
 
          return --tcurr, true;
       }
@@ -61,9 +72,7 @@ namespace GDCC
       Token *tend() const {return tfrnt;}
       Token *tptr() const {return tcurr;}
 
-      virtual Token v_get() {return Token(Origin(STRNULL, 0), STRNULL, TOK_EOF);}
-
-      virtual bool v_unget(Token const &/*tok*/) {return false;}
+      virtual void underflow() {}
 
    private:
       Token *tback, *tcurr, *tfrnt;

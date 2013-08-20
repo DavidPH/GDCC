@@ -28,7 +28,7 @@ namespace GDCC
    struct Origin
    {
       Origin() = default;
-      Origin(String file_, std::size_t line_) : file{file_}, line{line_} {}
+      constexpr Origin(String file_, std::size_t line_) : file{file_}, line{line_} {}
 
       constexpr bool operator == (Origin const &pos) const
          {return file == pos.file && line == pos.line;}
