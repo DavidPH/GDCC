@@ -31,6 +31,8 @@ namespace GDCC
       TokenStream() : buf{nullptr} {}
       explicit TokenStream(TokenBuf *buf_) : buf{buf_}, eof{false}, err{false} {}
 
+      virtual ~TokenStream() {}
+
       explicit operator bool () const {return buf && !eof && !err;}
 
       TokenStream &operator >> (Token &out) {out = get(); return *this;}
@@ -57,6 +59,20 @@ namespace GDCC
             eof = true;
 
          return tok;
+      }
+
+      TokenBuf *tkbuf() const {return buf;}
+
+      //
+      // tkbuf
+      //
+      TokenBuf *tkbuf(TokenBuf *buf_)
+      {
+         auto oldbuf = buf;
+         buf = buf_;
+         eof = false;
+         err = false;
+         return oldbuf;
       }
 
       //

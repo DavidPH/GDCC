@@ -20,17 +20,78 @@
 
 
 //----------------------------------------------------------------------------|
+// Global Variables                                                           |
+//
+
+namespace C
+{
+   bool IStream::NeedHeader = false;
+}
+
+
+//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
 namespace C
 {
    //
+   // IStream::GetHeader
+   //
+   bool IStream::GetHeader(std::istream &in, GDCC::Token &out)
+   {
+      while(std::isspace(in.peek())) in.get();
+
+      int c = in.get();
+
+      // System header.
+      if(c == '<')
+      {
+         std::string str;
+
+         while((c = in.get()) != EOF && c != '>')
+            str += static_cast<char>(c);
+
+         std::size_t hash = GDCC::HashString(str.data(), str.size());
+         out.str = GDCC::AddString(str.data(), str.size(), hash);
+         out.tok = GDCC::TOK_Header;
+
+         return true;
+      }
+
+      // String header.
+      if(c == '"')
+      {
+         std::string str;
+
+         while((c = in.get()) != EOF && c != '"')
+            str += static_cast<char>(c);
+
+         std::size_t hash = GDCC::HashString(str.data(), str.size());
+         out.str = GDCC::AddString(str.data(), str.size(), hash);
+         out.tok = GDCC::TOK_String;
+
+         return true;
+      }
+
+      in.unget();
+      return false;
+   }
+
+   //
    // operator IStream >> GDCC::Token
    //
    IStream &operator >> (IStream &in, GDCC::Token &out)
    {
       out.pos = in.getOrigin();
+
+      // Possibly check for special header token.
+      if(IStream::NeedHeader)
+      {
+         IStream::NeedHeader = false;
+         if(IStream::GetHeader(in, out))
+            return in;
+      }
 
       int c = in.get();
 

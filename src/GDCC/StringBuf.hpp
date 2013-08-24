@@ -39,6 +39,15 @@ namespace GDCC
          char *str = const_cast<char *>(dat.str);
          setg(str, str, str + dat.len);
       }
+
+      //
+      // constructor
+      //
+      StringBuf(char const *str_, std::size_t len)
+      {
+         char *str = const_cast<char *>(str_);
+         setg(str, str, str + len);
+      }
    };
 
    //

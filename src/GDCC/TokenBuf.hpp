@@ -65,6 +65,8 @@ namespace GDCC
       }
 
    protected:
+      void bumpt(std::size_t n) {tcurr += n;}
+
       void sett(Token *tback_, Token *tcurr_, Token *tfrnt_)
          {tback = tback_; tcurr = tcurr_; tfrnt = tfrnt_;}
 

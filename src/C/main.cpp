@@ -10,6 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
+#include "Macro.hpp"
 #include "TStream.hpp"
 
 #include "GDCC/Option.hpp"
@@ -60,14 +61,15 @@ static void ProcessFile(char const *inName)
       throw EXIT_FAILURE;
    }
 
-   C::TStream in{fbuf, GDCC::AddString(inName)};
+   auto inStr = GDCC::AddString(inName);
 
-   for(GDCC::Token tok; in >> tok;) switch(tok.tok)
-   {
-   case GDCC::TOK_LnEnd: std::cout << "EOL\n"; break;
+   C::Macro::Reset();
+   C::Macro::LinePush(C::Macro::Stringize(inStr));
 
-   default: std::cout << tok.tok << '(' << tok.str << ") ";
-   }
+   C::TStream in{fbuf, inStr};
+
+   for(GDCC::Token tok; in >> tok;)
+      std::cout << tok.tok << '(' << tok.str << ") ";
 
    std::cout << std::endl;
 }

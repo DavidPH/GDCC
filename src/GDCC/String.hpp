@@ -30,8 +30,6 @@ namespace GDCC
       class OArchive;
    }
 
-   class StringData;
-
    //
    // StringIndex
    //
@@ -41,6 +39,29 @@ namespace GDCC
       #define GDCC_StringList(name, str) STR_##name,
       #include "StringList.hpp"
       STRMAX
+   };
+
+   //
+   // StringData
+   //
+   class StringData
+   {
+   public:
+      explicit StringData(StringIndex num);
+      StringData(char const *str, StringIndex num);
+      StringData(char const *str, std::size_t len, std::size_t hash, std::size_t num);
+
+      char const *begin() const {return str;}
+
+      char const *end() const {return str + len;}
+
+      std::size_t size() const {return len;}
+
+      char const *str;
+      std::size_t len;
+      std::size_t hash;
+      std::size_t num;
+      std::size_t next;
    };
 
    //
@@ -65,30 +86,19 @@ namespace GDCC
 
       String &operator = (StringIndex num_) {num = num_; return *this;}
 
+      char const *begin() const {return GetData(num).str;}
+
+      char const *end() const {auto const &d = GetData(num); return d.str + d.len;}
+
       StringData const &getData() const {return GetData(num);}
+
+      std::size_t size() const {return GetData(num).len;}
 
    private:
       std::size_t num;
 
 
       static StringData const &GetData(std::size_t num);
-   };
-
-   //
-   // StringData
-   //
-   class StringData
-   {
-   public:
-      explicit StringData(StringIndex num);
-      StringData(char const *str, StringIndex num);
-      StringData(char const *str, std::size_t len, std::size_t hash, std::size_t num);
-
-      char const *str;
-      std::size_t len;
-      std::size_t hash;
-      std::size_t num;
-      std::size_t next;
    };
 }
 

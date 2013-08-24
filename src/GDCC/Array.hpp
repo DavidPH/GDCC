@@ -353,7 +353,7 @@ namespace GDCC
    //
    template<typename T> bool operator == (Array<T> const &l, Array<T> const &r)
    {
-      return std::equal(l.begin(), l.end(), r.begin(), r.end());
+      return std::equal(l.begin(), l.end(), r.begin());
    }
 
    //
@@ -361,7 +361,7 @@ namespace GDCC
    //
    template<typename T> bool operator != (Array<T> const &l, Array<T> const &r)
    {
-      return !std::equal(l.begin(), l.end(), r.begin(), r.end());
+      return !std::equal(l.begin(), l.end(), r.begin());
    }
 
    //

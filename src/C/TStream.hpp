@@ -14,7 +14,11 @@
 #define C__TStream_H__
 
 #include "ConcatTBuf.hpp"
+#include "ConditionDTBuf.hpp"
 #include "IStream.hpp"
+#include "IncludeDTBuf.hpp"
+#include "MacroDTBuf.hpp"
+#include "Pragma.hpp"
 #include "StringTBuf.hpp"
 
 #include "GDCC/StreamTBuf.hpp"
@@ -29,25 +33,56 @@
 namespace C
 {
    //
-   // TStream
+   // IncStream
    //
-   class TStream : public GDCC::TokenStream
+   class IncStream : public GDCC::TokenStream
    {
    public:
-      TStream(std::streambuf &buf, GDCC::String file) : GDCC::TokenStream{&cbuf},
-         istr{buf, file}, tbuf{istr}, wbuf{tbuf}, sbuf{wbuf}, cbuf{sbuf} {}
+      IncStream(std::streambuf &buf, GDCC::String file) : GDCC::TokenStream{&pbuf},
+         istr{buf, file}, tbuf{istr}, cdir{tbuf}, ddir{cdir}, edir{ddir},
+         idir{edir}, ldir{idir}, pdir{ldir}, udir{pdir}, pbuf{udir} {}
 
    protected:
-      using CBuf = ConcatTBuf;
-      using SBuf = StringTBuf;
-      using WBuf = GDCC::WSpaceTBuf;
+      using IStr = IStream;
       using TBuf = GDCC::StreamTBuf<IStream>;
+      using CDir = ConditionDTBuf;
+      using DDir = DefineDTBuf;
+      using EDir = ErrorDTBuf;
+      using IDir = IncludeDTBuf;
+      using LDir = LineDTBuf;
+      using PDir = PragmaDTBuf;
+      using UDir = UndefDTBuf;
+      using PBuf = PragmaTBuf;
 
-      IStream istr;
-      TBuf    tbuf;
-      WBuf    wbuf;
-      SBuf    sbuf;
-      CBuf    cbuf;
+      IStr istr;
+      TBuf tbuf;
+      CDir cdir;
+      DDir ddir;
+      EDir edir;
+      IDir idir;
+      LDir ldir;
+      PDir pdir;
+      UDir udir;
+      PBuf pbuf;
+   };
+
+   //
+   // TStream
+   //
+   class TStream : public IncStream
+   {
+   public:
+      TStream(std::streambuf &buf, GDCC::String file) : IncStream{buf, file},
+         wbuf{pbuf}, sbuf{wbuf}, cbuf{sbuf} {tkbuf(&cbuf);}
+
+   protected:
+      using WBuf = GDCC::WSpaceTBuf;
+      using SBuf = StringTBuf;
+      using CBuf = ConcatTBuf;
+
+      WBuf wbuf;
+      SBuf sbuf;
+      CBuf cbuf;
    };
 }
 

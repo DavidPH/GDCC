@@ -39,8 +39,9 @@ namespace C
    class IStream : public std::istream
    {
    public:
-      IStream(std::streambuf &buf, GDCC::String file) : std::istream{&cbuf},
-         obuf{buf, file}, tbuf{obuf}, ebuf{tbuf}, cbuf{ebuf} {}
+      IStream(std::streambuf &buf, GDCC::String file, std::size_t line = 1) :
+         std::istream{&cbuf}, obuf{buf, file, line}, tbuf{obuf}, ebuf{tbuf},
+         cbuf{ebuf} {}
 
       void disableComments() {rdbuf(&obuf);}
 
@@ -50,6 +51,11 @@ namespace C
 
       GDCC::FeatureHold<IStream, &IStream::disableComments, &IStream::enableComments> holdComments()
          {return GDCC::FeatureHold<IStream, &IStream::disableComments, &IStream::enableComments>(*this);}
+
+
+      static bool GetHeader(std::istream &in, GDCC::Token &out);
+
+      static bool NeedHeader;
 
    protected:
       using OBuf = GDCC::OriginBuf<>;
