@@ -16,6 +16,7 @@
 #include "GDCC/Array.hpp"
 #include "GDCC/String.hpp"
 #include "GDCC/Token.hpp"
+#include "GDCC/Utility.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -55,6 +56,13 @@ namespace C
 
       bool operator != (Macro const &other) const {return !(*this == other);}
 
+      // Expands an object-like macro.
+      void expand(std::vector<GDCC::Token> &out, GDCC::Token const &tok) const;
+
+      // Expands a function-like macro.
+      void expand(std::vector<GDCC::Token> &out, GDCC::Token const &tok,
+         GDCC::Range<GDCC::Token const *> argRng) const;
+
       Args args;
       List list;
 
@@ -64,6 +72,9 @@ namespace C
       // Adds a macro.
       static void Add(Name name, Macro const &macro);
       static void Add(Name name, Macro &&macro);
+
+      // Concatenates two tokens.
+      static GDCC::Token Concat(GDCC::Token const &l, GDCC::Token const &r);
 
       // Gets the macro by the specified name or null if not defined.
       static Macro const *Get(GDCC::Token const &tok);
@@ -80,6 +91,8 @@ namespace C
       // Adds a __FILE__/__LINE__ tracker.
       static void LinePush(GDCC::String file, std::size_t line = 0);
 
+      static GDCC::String MakeString(std::size_t i);
+
       // Removes a macro.
       static void Rem(Name name);
 
@@ -87,6 +100,8 @@ namespace C
       static void Reset();
 
       static GDCC::String Stringize(GDCC::String str);
+
+      static void Stringize(std::string &tmp, GDCC::Token const &tok);
    };
 }
 

@@ -120,7 +120,7 @@ namespace GDCC
       const_pointer data() const {return p;}
 
       // empty
-      bool empty() const {return p != e;}
+      bool empty() const {return p == e;}
 
       // end
             iterator end()       {return e;}

@@ -18,6 +18,7 @@
 #include "IStream.hpp"
 #include "IncludeDTBuf.hpp"
 #include "MacroDTBuf.hpp"
+#include "MacroTBuf.hpp"
 #include "Pragma.hpp"
 #include "StringTBuf.hpp"
 
@@ -73,13 +74,15 @@ namespace C
    {
    public:
       TStream(std::streambuf &buf, GDCC::String file) : IncStream{buf, file},
-         wbuf{pbuf}, sbuf{wbuf}, cbuf{sbuf} {tkbuf(&cbuf);}
+         mbuf{pbuf}, wbuf{mbuf}, sbuf{wbuf}, cbuf{sbuf} {tkbuf(&cbuf);}
 
    protected:
+      using MBuf = MacroTBuf;
       using WBuf = GDCC::WSpaceTBuf;
       using SBuf = StringTBuf;
       using CBuf = ConcatTBuf;
 
+      MBuf mbuf;
       WBuf wbuf;
       SBuf sbuf;
       CBuf cbuf;

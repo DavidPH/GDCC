@@ -108,6 +108,8 @@ namespace GDCC
       TOK_Space, // ' '
       TOK_Tabul, // \t
 
+      // Non-tokens
+      TOK_Marker,
       TOK_EOF,
 
       // Alternate spelling aliases.

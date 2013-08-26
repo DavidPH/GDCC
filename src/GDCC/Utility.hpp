@@ -68,11 +68,13 @@ namespace GDCC
       constexpr Range(T first_, T last_) : first{first_}, last{last_} {}
 
       T begin() const {return first;}
+
+      bool empty() const {return first == last;}
+
       T end() const {return last;}
 
       std::size_t size() const {return std::distance(first, last);}
 
-   private:
       T first, last;
    };
 }

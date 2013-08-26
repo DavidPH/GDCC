@@ -18,6 +18,7 @@ add_executable(gdcc-cc
    IncludeDTBuf.cpp
    Macro.cpp
    MacroDTBuf.cpp
+   MacroTBuf.cpp
    Pragma.cpp
 )
 
