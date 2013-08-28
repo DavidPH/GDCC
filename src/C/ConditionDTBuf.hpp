@@ -57,6 +57,40 @@ namespace C
 
       std::vector<CondState> state;
    };
+
+   //
+   // DefinedTBuf
+   //
+   // Handles the defined operator.
+   //
+   class DefinedTBuf : public GDCC::TokenBuf
+   {
+   public:
+      explicit DefinedTBuf(GDCC::TokenBuf &src_) : src{src_} {}
+
+   protected:
+      virtual void underflow();
+
+      GDCC::TokenBuf &src;
+      GDCC::Token buf[1];
+   };
+
+   //
+   // IdentiTBuf
+   //
+   // Converts TOK_Identi tokens into TOK_Number "0" tokens.
+   //
+   class IdentiTBuf : public GDCC::TokenBuf
+   {
+   public:
+      explicit IdentiTBuf(GDCC::TokenBuf &src_) : src{src_} {}
+
+   protected:
+      virtual void underflow();
+
+      GDCC::TokenBuf &src;
+      GDCC::Token buf[1];
+   };
 }
 
 #endif//C__ConditionDTBuf_H__

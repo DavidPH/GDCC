@@ -79,6 +79,22 @@ namespace GDCC
    private:
       Token *tback, *tcurr, *tfrnt;
    };
+
+   //
+   // ArrayTBuf
+   //
+   class ArrayTBuf : public TokenBuf
+   {
+   public:
+      //
+      // constructor
+      //
+      ArrayTBuf(Token const *data_, std::size_t size)
+      {
+         auto data = const_cast<Token *>(data_);
+         sett(data, data, data + size);
+      }
+   };
 }
 
 #endif//GDCC__TokenBuf_H__

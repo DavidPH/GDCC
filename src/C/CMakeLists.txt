@@ -19,6 +19,7 @@ add_executable(gdcc-cc
    Macro.cpp
    MacroDTBuf.cpp
    MacroTBuf.cpp
+   PPTokenTBuf.cpp
    Pragma.cpp
 )
 
