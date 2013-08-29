@@ -69,24 +69,37 @@ namespace C
    };
 
    //
-   // TStream
+   // PPStream
    //
-   class TStream : public IncStream
+   class PPStream : public IncStream
    {
    public:
-      TStream(std::streambuf &buf, GDCC::String file) : IncStream{buf, file},
-         mbuf{pbuf}, sbuf{mbuf}, cbuf{sbuf}, wbuf{cbuf}, ppbf{wbuf} {tkbuf(&ppbf);}
+      PPStream(std::streambuf &buf, GDCC::String file) : IncStream{buf, file},
+         mbuf{pbuf}, sbuf{mbuf}, cbuf{sbuf} {tkbuf(&cbuf);}
 
    protected:
       using MBuf = MacroTBuf;
       using SBuf = StringTBuf;
       using CBuf = ConcatTBuf;
-      using WBuf = GDCC::WSpaceTBuf;
-      using PPBf = PPTokenTBuf;
 
       MBuf mbuf;
       SBuf sbuf;
       CBuf cbuf;
+   };
+
+   //
+   // TStream
+   //
+   class TStream : public PPStream
+   {
+   public:
+      TStream(std::streambuf &buf, GDCC::String file) : PPStream{buf, file},
+         wbuf{cbuf}, ppbf{wbuf} {tkbuf(&ppbf);}
+
+   protected:
+      using WBuf = GDCC::WSpaceTBuf;
+      using PPBf = PPTokenTBuf;
+
       WBuf wbuf;
       PPBf ppbf;
    };

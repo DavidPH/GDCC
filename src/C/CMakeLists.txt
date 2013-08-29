@@ -9,9 +9,7 @@
 ## Targets                                                                    |
 ##
 
-add_executable(gdcc-cc
-   main.cpp
-
+add_library(gdcc-cpp-lib
    ConcatTBuf.cpp
    ConditionDTBuf.cpp
    DirectiveTBuf.cpp
@@ -24,7 +22,19 @@ add_executable(gdcc-cc
    Pragma.cpp
 )
 
-target_link_libraries(gdcc-cc gdcc-ir)
+add_executable(gdcc-cc
+   main_cc.cpp
+)
+
+add_executable(gdcc-cpp
+   main_cpp.cpp
+)
+
+target_link_libraries(gdcc-cpp-lib gdcc-ir)
+
+target_link_libraries(gdcc-cc gdcc-cpp-lib)
+
+target_link_libraries(gdcc-cpp gdcc-cpp-lib)
 
 ## EOF
 

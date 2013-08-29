@@ -15,8 +15,6 @@
 
 #include "GDCC/Option.hpp"
 
-#include "GDCC/IR/OArchive.hpp"
-
 #include <fstream>
 #include <iostream>
 
@@ -25,39 +23,37 @@
 // Static Functions                                                           |
 //
 
-static void ProcessFile(char const *inName);
+static void ProcessFile(std::ostream &out, char const *inName);
 
 //
-// MakeC
+// MakeCPP
 //
-static void MakeC()
+static void MakeCPP()
 {
-   // Process inputs.
-   for(auto arg = *Option::ArgV, end = arg + *Option::ArgC; arg != end; ++arg)
-      ProcessFile(*arg);
-
-   // Write IR data.
+   // Open output file.
    std::fstream out{Option::Output.data, std::ios_base::binary | std::ios_base::out};
 
    if(!out)
    {
-      std::cerr << "couldn't open '" << Option::Output.data << "' for writing";
+      std::cerr << "couldn't open '" << Option::Output.data << "' for writing\n";
       throw EXIT_FAILURE;
    }
 
-   GDCC::IR::OArchive(out).putHeader().putTables();
+   // Process inputs.
+   for(auto arg = *Option::ArgV, end = arg + *Option::ArgC; arg != end; ++arg)
+      ProcessFile(out, *arg);
 }
 
 //
 // ProcessFile
 //
-static void ProcessFile(char const *inName)
+static void ProcessFile(std::ostream &out, char const *inName)
 {
    std::filebuf fbuf;
 
    if(!fbuf.open(inName, std::ios_base::in))
    {
-      std::cerr << "couldn't open '" << Option::Output.data << "' for reading";
+      std::cerr << "couldn't open '" << inName << "' for reading\n";
       throw EXIT_FAILURE;
    }
 
@@ -66,12 +62,27 @@ static void ProcessFile(char const *inName)
    C::Macro::Reset();
    C::Macro::LinePush(C::Macro::Stringize(inStr));
 
-   C::TStream in{fbuf, inStr};
+   C::PPStream in{fbuf, inStr};
 
-   for(GDCC::Token tok; in >> tok;)
-      std::cout << tok.tok << '(' << tok.str << ") ";
+   for(GDCC::Token tok; in >> tok;) switch(tok.tok)
+   {
+   case GDCC::TOK_String:
+      out << '"';
+      for(char c : tok.str) switch(c)
+      {
+      case '\"': out << "\\\""; break;
+      case '\\': out << "\\\\"; break;
+      default:   out << c;      break;
+      }
+      out << '"';
+      break;
 
-   std::cout << std::endl;
+   default:
+      out << tok.str;
+      break;
+   }
+
+   out << std::endl;
 }
 
 
@@ -90,8 +101,8 @@ int main(int argc, char *argv[])
 
    try
    {
-      GDCC::InitOptions(argc, argv, "gdcc-cc");
-      MakeC();
+      GDCC::InitOptions(argc, argv, "gdcc-cpp");
+      MakeCPP();
    }
    catch(int e)
    {
