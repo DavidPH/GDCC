@@ -19,7 +19,7 @@ add_library(gdcc
    String.cpp
 )
 
-target_link_libraries(gdcc gdcc-option)
+target_link_libraries(gdcc gdcc-option gmpxx gmp)
 
 ## EOF
 

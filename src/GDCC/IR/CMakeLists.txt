@@ -44,7 +44,7 @@ add_library(gdcc-ir
    Value/Unary.cpp
 )
 
-target_link_libraries(gdcc-ir gdcc gmpxx gmp)
+target_link_libraries(gdcc-ir gdcc)
 
 ## EOF
 
