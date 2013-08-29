@@ -75,19 +75,19 @@ namespace C
    {
    public:
       TStream(std::streambuf &buf, GDCC::String file) : IncStream{buf, file},
-         mbuf{pbuf}, sbuf{mbuf}, wbuf{sbuf}, cbuf{wbuf}, ppbf{cbuf} {tkbuf(&ppbf);}
+         mbuf{pbuf}, sbuf{mbuf}, cbuf{sbuf}, wbuf{cbuf}, ppbf{wbuf} {tkbuf(&ppbf);}
 
    protected:
       using MBuf = MacroTBuf;
       using SBuf = StringTBuf;
-      using WBuf = GDCC::WSpaceTBuf;
       using CBuf = ConcatTBuf;
+      using WBuf = GDCC::WSpaceTBuf;
       using PPBf = PPTokenTBuf;
 
       MBuf mbuf;
       SBuf sbuf;
-      WBuf wbuf;
       CBuf cbuf;
+      WBuf wbuf;
       PPBf ppbf;
    };
 }

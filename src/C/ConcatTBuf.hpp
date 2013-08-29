@@ -15,6 +15,8 @@
 
 #include "GDCC/TokenBuf.hpp"
 
+#include <vector>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -28,38 +30,13 @@ namespace C
    class ConcatTBuf : public GDCC::TokenBuf
    {
    public:
-      ConcatTBuf(GDCC::TokenBuf &src_) : src{src_} {sett(buf, buf + 1, buf + 1);}
+      ConcatTBuf(GDCC::TokenBuf &src_) : src{src_} {}
 
    protected:
-      //
-      // underflow
-      //
-      virtual void underflow()
-      {
-         if(tptr() != tend()) return;
+      virtual void underflow();
 
-         switch((buf[0] = src.get()).tok)
-         {
-         case GDCC::TOK_String:
-            for(;;) switch(src.peek().tok)
-            {
-            case GDCC::TOK_String:
-               buf[0].str += src.get().str;
-               break;
-
-            default: goto flowed;
-            }
-            break;
-
-         default: break;
-         }
-
-      flowed:
-         sett(buf, buf, buf + 1);
-      }
-
-      GDCC::TokenBuf &src;
-      GDCC::Token     buf[1];
+      GDCC::TokenBuf          &src;
+      std::vector<GDCC::Token> buf;
    };
 }
 

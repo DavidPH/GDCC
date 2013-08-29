@@ -12,6 +12,7 @@
 add_executable(gdcc-cc
    main.cpp
 
+   ConcatTBuf.cpp
    ConditionDTBuf.cpp
    DirectiveTBuf.cpp
    IStream.cpp
