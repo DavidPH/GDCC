@@ -407,8 +407,77 @@ namespace C
 
       switch(static_cast<GDCC::StringIndex>(tok.str))
       {
+      case GDCC::STR_TOK_Add:    tok.tok = GDCC::TOK_Add;    break;
+      case GDCC::STR_TOK_Add2:   tok.tok = GDCC::TOK_Add2;   break;
+      case GDCC::STR_TOK_AddEq:  tok.tok = GDCC::TOK_AddEq;  break;
+      case GDCC::STR_TOK_And:    tok.tok = GDCC::TOK_And;    break;
+      case GDCC::STR_TOK_And2:   tok.tok = GDCC::TOK_And2;   break;
+      case GDCC::STR_TOK_And2Eq: tok.tok = GDCC::TOK_And2Eq; break;
+      case GDCC::STR_TOK_AndEq:  tok.tok = GDCC::TOK_AndEq;  break;
+      case GDCC::STR_TOK_CmpEQ:  tok.tok = GDCC::TOK_CmpEQ;  break;
+      case GDCC::STR_TOK_CmpGE:  tok.tok = GDCC::TOK_CmpGE;  break;
+      case GDCC::STR_TOK_CmpGT:  tok.tok = GDCC::TOK_CmpGT;  break;
+      case GDCC::STR_TOK_CmpLE:  tok.tok = GDCC::TOK_CmpLE;  break;
+      case GDCC::STR_TOK_CmpLT:  tok.tok = GDCC::TOK_CmpLT;  break;
+      case GDCC::STR_TOK_CmpNE:  tok.tok = GDCC::TOK_CmpNE;  break;
+      case GDCC::STR_TOK_Colon:  tok.tok = GDCC::TOK_Colon;  break;
+      case GDCC::STR_TOK_Colon2: tok.tok = GDCC::TOK_Colon2; break;
+      case GDCC::STR_TOK_Comma:  tok.tok = GDCC::TOK_Comma;  break;
+      case GDCC::STR_TOK_Div:    tok.tok = GDCC::TOK_Div;    break;
+      case GDCC::STR_TOK_DivEq:  tok.tok = GDCC::TOK_DivEq;  break;
+      case GDCC::STR_TOK_Dot:    tok.tok = GDCC::TOK_Dot;    break;
+      case GDCC::STR_TOK_Dot2:   tok.tok = GDCC::TOK_Dot2;   break;
+      case GDCC::STR_TOK_Dot3:   tok.tok = GDCC::TOK_Dot3;   break;
+      case GDCC::STR_TOK_DotPtr: tok.tok = GDCC::TOK_DotPtr; break;
+      case GDCC::STR_TOK_Equal:  tok.tok = GDCC::TOK_Equal;  break;
+      case GDCC::STR_TOK_Hash:   tok.tok = GDCC::TOK_Hash;   break;
+      case GDCC::STR_TOK_Hash2:  tok.tok = GDCC::TOK_Hash2;  break;
+      case GDCC::STR_TOK_Inv:    tok.tok = GDCC::TOK_Inv;    break;
+      case GDCC::STR_TOK_Mem:    tok.tok = GDCC::TOK_Mem;    break;
+      case GDCC::STR_TOK_MemPtr: tok.tok = GDCC::TOK_MemPtr; break;
+      case GDCC::STR_TOK_Mod:    tok.tok = GDCC::TOK_Mod;    break;
+      case GDCC::STR_TOK_ModEq:  tok.tok = GDCC::TOK_ModEq;  break;
+      case GDCC::STR_TOK_Mul:    tok.tok = GDCC::TOK_Mul;    break;
+      case GDCC::STR_TOK_MulEq:  tok.tok = GDCC::TOK_MulEq;  break;
+      case GDCC::STR_TOK_Not:    tok.tok = GDCC::TOK_Not;    break;
+      case GDCC::STR_TOK_OrI:    tok.tok = GDCC::TOK_OrI;    break;
+      case GDCC::STR_TOK_OrI2:   tok.tok = GDCC::TOK_OrI2;   break;
+      case GDCC::STR_TOK_OrI2Eq: tok.tok = GDCC::TOK_OrI2Eq; break;
+      case GDCC::STR_TOK_OrIEq:  tok.tok = GDCC::TOK_OrIEq;  break;
+      case GDCC::STR_TOK_OrX:    tok.tok = GDCC::TOK_OrX;    break;
+      case GDCC::STR_TOK_OrX2:   tok.tok = GDCC::TOK_OrX2;   break;
+      case GDCC::STR_TOK_OrX2Eq: tok.tok = GDCC::TOK_OrX2Eq; break;
+      case GDCC::STR_TOK_OrXEq:  tok.tok = GDCC::TOK_OrXEq;  break;
+      case GDCC::STR_TOK_Query:  tok.tok = GDCC::TOK_Query;  break;
+      case GDCC::STR_TOK_Semico: tok.tok = GDCC::TOK_Semico; break;
+      case GDCC::STR_TOK_ShL:    tok.tok = GDCC::TOK_ShL;    break;
+      case GDCC::STR_TOK_ShLEq:  tok.tok = GDCC::TOK_ShLEq;  break;
+      case GDCC::STR_TOK_ShR:    tok.tok = GDCC::TOK_ShR;    break;
+      case GDCC::STR_TOK_ShREq:  tok.tok = GDCC::TOK_ShREq;  break;
+      case GDCC::STR_TOK_Sub:    tok.tok = GDCC::TOK_Sub;    break;
+      case GDCC::STR_TOK_Sub2:   tok.tok = GDCC::TOK_Sub2;   break;
+      case GDCC::STR_TOK_SubEq:  tok.tok = GDCC::TOK_SubEq;  break;
+
+      case GDCC::STR_TOK_BraceO: tok.tok = GDCC::TOK_BraceO; break;
+      case GDCC::STR_TOK_BraceC: tok.tok = GDCC::TOK_BraceC; break;
+      case GDCC::STR_TOK_BrackO: tok.tok = GDCC::TOK_BrackO; break;
+      case GDCC::STR_TOK_BrackC: tok.tok = GDCC::TOK_BrackC; break;
+      case GDCC::STR_TOK_ParenO: tok.tok = GDCC::TOK_ParenO; break;
+      case GDCC::STR_TOK_ParenC: tok.tok = GDCC::TOK_ParenC; break;
+
+      case GDCC::STR_TOK_DG_BraceO: tok.tok = GDCC::TOK_DG_BraceO; break;
+      case GDCC::STR_TOK_DG_BraceC: tok.tok = GDCC::TOK_DG_BraceC; break;
+      case GDCC::STR_TOK_DG_BrackO: tok.tok = GDCC::TOK_DG_BrackO; break;
+      case GDCC::STR_TOK_DG_BrackC: tok.tok = GDCC::TOK_DG_BrackC; break;
+      case GDCC::STR_TOK_DG_Hash:   tok.tok = GDCC::TOK_DG_Hash;   break;
+      case GDCC::STR_TOK_DG_Hash2:  tok.tok = GDCC::TOK_DG_Hash2;  break;
+
       default:
-         tok.tok = l.tok;
+         if((l.tok == GDCC::TOK_Identi || l.tok == GDCC::TOK_Number) &&
+            (r.tok == GDCC::TOK_Identi || r.tok == GDCC::TOK_Number))
+            tok.tok = l.tok;
+         else
+            tok.tok = GDCC::TOK_ChrSeq;
          break;
       }
 

@@ -284,9 +284,12 @@ namespace C
          return in;
       }
 
-      std::cerr << "ERROR: " << out.pos << ": bad token character: '"
-         << static_cast<char>(c) << "'\n";
-      throw EXIT_FAILURE;
+      // Non-token character sequence. Might be meaningful later.
+      char str[1] = {static_cast<char>(c)};
+      std::size_t hash = GDCC::HashString(str, 1);
+      out.str = GDCC::AddString(str, 1, hash);
+      out.tok = GDCC::TOK_ChrSeq;
+      return in;
    }
 }
 

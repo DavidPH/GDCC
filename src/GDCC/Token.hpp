@@ -37,6 +37,7 @@ namespace GDCC
    {
       // String tokens.
       TOK_Charac,
+      TOK_ChrSeq,
       TOK_HdrStr,
       TOK_Header,
       TOK_Identi,
