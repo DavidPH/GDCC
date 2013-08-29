@@ -15,6 +15,9 @@ add_library(gdcc-ir
    Block.cpp
    Code.cpp
    Exp.cpp
+   Exp/Binary.cpp
+   Exp/Branch.cpp
+   Exp/Unary.cpp
    Exp/ValueGlyph.cpp
    Exp/ValueRoot.cpp
    Function.cpp
@@ -27,6 +30,18 @@ add_library(gdcc-ir
    StrEnt.cpp
    Type.cpp
    Value.cpp
+   Value/Add.cpp
+   Value/And.cpp
+   Value/Cmp.cpp
+   Value/Div.cpp
+   Value/Mod.cpp
+   Value/Mul.cpp
+   Value/OrI.cpp
+   Value/OrX.cpp
+   Value/ShL.cpp
+   Value/ShR.cpp
+   Value/Sub.cpp
+   Value/Unary.cpp
 )
 
 target_link_libraries(gdcc-ir gdcc gmpxx gmp)

@@ -37,6 +37,8 @@ namespace GDCC
 
          explicit Value_Empty(IArchive &in);
 
+         explicit operator bool () const {return false;}
+
          Type_Empty vtype;
       };
 
@@ -57,6 +59,8 @@ namespace GDCC
 
          explicit Value_Fixed(IArchive &in);
 
+         explicit operator bool () const {return static_cast<bool>(value);}
+
          Value_Fixed &clamp() {vtype.clamp(value); return *this;}
 
          Type_Fixed vtype;
@@ -71,6 +75,8 @@ namespace GDCC
          Value_Float() = default;
 
          explicit Value_Float(IArchive &in);
+
+         explicit operator bool () const {return static_cast<bool>(value);}
 
          Type_Float vtype;
          Float      value;
@@ -87,6 +93,8 @@ namespace GDCC
             vtype{vtype_}, value{value_} {}
 
          explicit Value_Funct(IArchive &in);
+
+         explicit operator bool () const {return static_cast<bool>(value);}
 
          Type_Funct vtype;
          FastU      value;
@@ -110,6 +118,8 @@ namespace GDCC
 
          explicit Value_Multi(IArchive &in);
 
+         explicit operator bool () const {return !value.empty();}
+
          Type_Multi   vtype;
          Array<Value> value;
       };
@@ -122,6 +132,8 @@ namespace GDCC
          Value_Point() = default;
 
          explicit Value_Point(IArchive &in);
+
+         explicit operator bool () const {return static_cast<bool>(value);}
 
          Type_Point vtype;
          FastU      value;
@@ -140,6 +152,8 @@ namespace GDCC
             vtype{vtype_}, value{value_} {}
 
          explicit Value_StrEn(IArchive &in);
+
+         explicit operator bool () const {return static_cast<bool>(value);}
 
          Type_StrEn vtype;
          FastU      value;
@@ -198,6 +212,21 @@ namespace GDCC
             {
                #define GDCC_IR_TypeList(name) \
                   case ValueBase::name: v##name.~Value_##name(); break;
+               #include "TypeList.hpp"
+            }
+         }
+
+         Value const &operator + () const {return *this;}
+
+         //
+         // operator (bool)
+         //
+         explicit operator bool () const
+         {
+            switch(v)
+            {
+               #define GDCC_IR_TypeList(name) \
+                  case ValueBase::name: return static_cast<bool>(v##name);
                #include "TypeList.hpp"
             }
          }
@@ -271,6 +300,57 @@ namespace GDCC
 {
    namespace IR
    {
+      Value_Fixed   operator - (Value_Fixed const &e);
+      Value_Fixed &&operator - (Value_Fixed      &&e);
+
+      Value_Fixed   operator ~ (Value_Fixed const &e);
+      Value_Fixed &&operator ~ (Value_Fixed      &&e);
+
+      Value_Fixed   operator * (Value_Fixed const &l, Value_Fixed const &r);
+      Value_Fixed &&operator * (Value_Fixed      &&l, Value_Fixed const &r);
+      Value_Fixed   operator / (Value_Fixed const &l, Value_Fixed const &r);
+      Value_Fixed &&operator / (Value_Fixed      &&l, Value_Fixed const &r);
+      Value_Fixed   operator % (Value_Fixed const &l, Value_Fixed const &r);
+      Value_Fixed &&operator % (Value_Fixed      &&l, Value_Fixed const &r);
+
+      Value_Fixed   operator + (Value_Fixed const &l, Value_Fixed const &r);
+      Value_Fixed &&operator + (Value_Fixed      &&l, Value_Fixed const &r);
+      Value_Fixed   operator - (Value_Fixed const &l, Value_Fixed const &r);
+      Value_Fixed &&operator - (Value_Fixed      &&l, Value_Fixed const &r);
+
+      Value_Fixed   operator << (Value_Fixed const &l, Value_Fixed const &r);
+      Value_Fixed &&operator << (Value_Fixed      &&l, Value_Fixed const &r);
+      Value_Fixed   operator >> (Value_Fixed const &l, Value_Fixed const &r);
+      Value_Fixed &&operator >> (Value_Fixed      &&l, Value_Fixed const &r);
+
+      bool operator <  (Value_Fixed const &l, Value_Fixed const &r);
+      bool operator >  (Value_Fixed const &l, Value_Fixed const &r);
+      bool operator <= (Value_Fixed const &l, Value_Fixed const &r);
+      bool operator >= (Value_Fixed const &l, Value_Fixed const &r);
+
+      bool operator == (Value_Fixed const &l, Value_Fixed const &r);
+      bool operator != (Value_Fixed const &l, Value_Fixed const &r);
+
+      Value_Fixed   operator & (Value_Fixed const &l, Value_Fixed const &r);
+      Value_Fixed &&operator & (Value_Fixed      &&l, Value_Fixed const &r);
+
+      Value_Fixed   operator ^ (Value_Fixed const &l, Value_Fixed const &r);
+      Value_Fixed &&operator ^ (Value_Fixed      &&l, Value_Fixed const &r);
+
+      Value_Fixed   operator | (Value_Fixed const &l, Value_Fixed const &r);
+      Value_Fixed &&operator | (Value_Fixed      &&l, Value_Fixed const &r);
+
+      Value_Fixed &operator *=  (Value_Fixed &l, Value_Fixed const &r);
+      Value_Fixed &operator /=  (Value_Fixed &l, Value_Fixed const &r);
+      Value_Fixed &operator %=  (Value_Fixed &l, Value_Fixed const &r);
+      Value_Fixed &operator +=  (Value_Fixed &l, Value_Fixed const &r);
+      Value_Fixed &operator -=  (Value_Fixed &l, Value_Fixed const &r);
+      Value_Fixed &operator <<= (Value_Fixed &l, Value_Fixed const &r);
+      Value_Fixed &operator >>= (Value_Fixed &l, Value_Fixed const &r);
+      Value_Fixed &operator &=  (Value_Fixed &l, Value_Fixed const &r);
+      Value_Fixed &operator ^=  (Value_Fixed &l, Value_Fixed const &r);
+      Value_Fixed &operator |=  (Value_Fixed &l, Value_Fixed const &r);
+
       OArchive &operator << (OArchive &out, ValueBase in);
 
       #define GDCC_IR_TypeList(name) \

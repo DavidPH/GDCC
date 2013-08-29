@@ -44,6 +44,7 @@ namespace GDCC
       class Object;
       class Space;
       class StrEnt;
+      class Type;
       class Value;
       class Value_Multi;
    }
@@ -88,6 +89,8 @@ namespace Asm
    void ParseSpace(IStream &in, GDCC::IR::Space &space);
 
    void ParseStrEnt(IStream &in, GDCC::IR::StrEnt &str);
+
+   GDCC::IR::Type ParseType(IStream &in);
 
    IStream &SkipEqual(IStream &in);
 }

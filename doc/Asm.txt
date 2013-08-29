@@ -424,6 +424,43 @@ Expressions
     identifier
     number
     string
+    ++ expression
+    -- expression
+    ~ expression
+    ! expression
+    <cast> type expression
+    * expression expression
+    / expression expression
+    % expression expression
+    + expression expression
+    - expression expression
+    << expression expression
+    >> expression expression
+    < expression expression
+    > expression expression
+    <= expression expression
+    >= expression expression
+    == expression expression
+    != expression expression
+    & expression expression
+    ^ expression expression
+    | expression expression
+    && expression expression
+    ^^ expression expression
+    || expression expression
+    ? expression expression expression
+
+  type:
+    <Empty> ( )
+    <Fixed> ( expression , expression , expression , expression )
+    <Float> ( expression , expression , expression , expression )
+    <Funct> ( call-type-specifier )
+    <Multi> ( type-list )
+    <Point> ( address-specifier , expression )
+    <StrEn> ( )
+
+  type-list:
+    type-list(opt) type
 
 ===========================================================
 Aggregates
@@ -789,6 +826,43 @@ Grammar
     identifier
     number
     string
+    ++ expression
+    -- expression
+    ~ expression
+    ! expression
+    <cast> type expression
+    * expression expression
+    / expression expression
+    % expression expression
+    + expression expression
+    - expression expression
+    << expression expression
+    >> expression expression
+    < expression expression
+    > expression expression
+    <= expression expression
+    >= expression expression
+    == expression expression
+    != expression expression
+    & expression expression
+    ^ expression expression
+    | expression expression
+    && expression expression
+    ^^ expression expression
+    || expression expression
+    ? expression expression expression
+
+  type:
+    <Empty> ( )
+    <Fixed> ( expression , expression , expression , expression )
+    <Float> ( expression , expression , expression , expression )
+    <Funct> ( call-type-specifier )
+    <Multi> ( type-list(opt) )
+    <Point> ( address-specifier , expression )
+    <StrEn> ( )
+
+  type-list:
+    type-list(opt) type
 
   aggregate:
     [ expression-list ]

@@ -67,14 +67,67 @@ namespace Asm
    //
    GDCC::IR::Exp::Ref ParseExp(IStream &in)
    {
+      #define doE1(name, token) case GDCC::token: \
+         return GDCC::IR::ExpCreate_##name(ParseExp(in), tok.pos)
+
+      #define doE2(name, token) case GDCC::token: \
+         l = ParseExp(in); r = ParseExp(in); \
+         return GDCC::IR::ExpCreate_##name(l, r, tok.pos)
+
+      #define doE3(name, token) case GDCC::token: \
+         c = ParseExp(in); l = ParseExp(in); r = ParseExp(in); \
+         return GDCC::IR::ExpCreate_##name(c, l, r, tok.pos)
+
+      GDCC::IR::Exp::Ptr c, l, r;
+      GDCC::IR::Type t;
+
       GDCC::Token tok;
       switch((in >> tok, tok).tok)
       {
+      case GDCC::TOK_Identi:
+         switch(static_cast<GDCC::StringIndex>(tok.str))
+         {
+         case GDCC::STR_cast:
+            t = ParseType(in);
+            return GDCC::IR::ExpCreate_UnaryCst(t, ParseExp(in), tok.pos);
+
+         default:
+            std::cerr << "ERROR: " << tok.pos << ": expected expression\n";
+            throw EXIT_FAILURE;
+         }
+
       case GDCC::TOK_Number:
          return GDCC::IR::ExpCreate_ValueRoot(ParseNumber(tok), tok.pos);
 
       case GDCC::TOK_String:
          return GDCC::IR::ExpCreate_ValueGlyph(static_cast<GDCC::IR::Glyph>(tok.str), tok.pos);
+
+         doE2(BinaryAdd, TOK_Add);
+         doE2(BinaryAnd, TOK_And);
+         doE2(BinaryDiv, TOK_Div);
+         doE2(BinaryMod, TOK_Mod);
+         doE2(BinaryMul, TOK_Mul);
+         doE2(BinaryOrI, TOK_OrI);
+         doE2(BinaryOrX, TOK_OrX);
+         doE2(BinaryShL, TOK_ShL);
+         doE2(BinaryShR, TOK_ShR);
+         doE2(BinarySub, TOK_Sub);
+
+         doE2(BranchAnd, TOK_And2);
+         doE2(BranchCmpEQ, TOK_CmpEQ);
+         doE2(BranchCmpGE, TOK_CmpGE);
+         doE2(BranchCmpGT, TOK_CmpGT);
+         doE2(BranchCmpLE, TOK_CmpLE);
+         doE2(BranchCmpLT, TOK_CmpLT);
+         doE2(BranchCmpNE, TOK_CmpNE);
+         doE3(BranchCnd, TOK_Query);
+         doE1(BranchNot, TOK_Not);
+         doE2(BranchOrI, TOK_OrI2);
+         doE2(BranchOrX, TOK_OrX2);
+
+         doE1(UnaryAdd, TOK_Add2);
+         doE1(UnaryNot, TOK_Inv);
+         doE1(UnarySub, TOK_Sub2);
 
       case GDCC::TOK_BrackO:
          return GDCC::IR::ExpCreate_ValueRoot(ParseMulti(in), tok.pos);
@@ -83,6 +136,10 @@ namespace Asm
          std::cerr << "ERROR: " << tok.pos << ": expected expression\n";
          throw EXIT_FAILURE;
       }
+
+      #undef doE3
+      #undef doE2
+      #undef doE1
    }
 
    //

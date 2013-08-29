@@ -40,7 +40,9 @@ namespace Asm
       switch(c)
       {
       case ',':  GDCC_Token_SetStrTok(out, Comma);  return in;
-      case '=':  GDCC_Token_SetStrTok(out, Equal);  return in;
+      case '/':  GDCC_Token_SetStrTok(out, Div);    return in;
+      case '%':  GDCC_Token_SetStrTok(out, Mod);    return in;
+      case '?':  GDCC_Token_SetStrTok(out, Query);  return in;
       case '{':  GDCC_Token_SetStrTok(out, BraceO); return in;
       case '}':  GDCC_Token_SetStrTok(out, BraceC); return in;
       case '[':  GDCC_Token_SetStrTok(out, BrackO); return in;
@@ -48,6 +50,53 @@ namespace Asm
       case '(':  GDCC_Token_SetStrTok(out, ParenO); return in;
       case ')':  GDCC_Token_SetStrTok(out, ParenC); return in;
       case '\n': GDCC_Token_SetStrTok(out, LnEnd);  return in;
+
+      case '+':
+         c = in.get();
+         if(c == '+') return GDCC_Token_SetStrTok(out, Add2), in;
+         in.unget();  return GDCC_Token_SetStrTok(out, Add), in;
+
+      case '&':
+         c = in.get();
+         if(c == '&') return GDCC_Token_SetStrTok(out, And2), in;
+         in.unget();  return GDCC_Token_SetStrTok(out, And), in;
+
+      case '>':
+         c = in.get();
+         if(c == '=') return GDCC_Token_SetStrTok(out, CmpGE), in;
+         if(c == '>') return GDCC_Token_SetStrTok(out, ShR), in;
+         in.unget();  return GDCC_Token_SetStrTok(out, CmpGT), in;
+
+      case '<':
+         c = in.get();
+         if(c == '=') return GDCC_Token_SetStrTok(out, CmpLE), in;
+         if(c == '<') return GDCC_Token_SetStrTok(out, ShL), in;
+         in.unget();  return GDCC_Token_SetStrTok(out, CmpLT), in;
+
+      case '=':
+         c = in.get();
+         if(c == '=') return GDCC_Token_SetStrTok(out, CmpEQ), in;
+         in.unget();  return GDCC_Token_SetStrTok(out, Equal), in;
+
+      case '!':
+         c = in.get();
+         if(c == '=') return GDCC_Token_SetStrTok(out, CmpNE), in;
+         in.unget();  return GDCC_Token_SetStrTok(out, Not), in;
+
+      case '|':
+         c = in.get();
+         if(c == '|') return GDCC_Token_SetStrTok(out, OrI2), in;
+         in.unget();  return GDCC_Token_SetStrTok(out, OrI), in;
+
+      case '^':
+         c = in.get();
+         if(c == '^') return GDCC_Token_SetStrTok(out, OrX2), in;
+         in.unget();  return GDCC_Token_SetStrTok(out, OrX), in;
+
+      case '-':
+         c = in.get();
+         if(c == '-') return GDCC_Token_SetStrTok(out, Sub2), in;
+         in.unget();  return GDCC_Token_SetStrTok(out, Sub), in;
       }
 
       // Quoted string/character token.
