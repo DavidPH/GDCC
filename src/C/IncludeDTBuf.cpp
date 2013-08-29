@@ -48,7 +48,7 @@ namespace C
       auto hdr = src.get();
 
       // Process header.
-      if(hdr.tok == GDCC::TOK_String)
+      if(hdr.tok == GDCC::TOK_HdrStr)
       {
          if(tryIncUsr(hdr.str) || tryIncSys(hdr.str))
             return true;

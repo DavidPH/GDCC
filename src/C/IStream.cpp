@@ -69,7 +69,7 @@ namespace C
 
          std::size_t hash = GDCC::HashString(str.data(), str.size());
          out.str = GDCC::AddString(str.data(), str.size(), hash);
-         out.tok = GDCC::TOK_String;
+         out.tok = GDCC::TOK_HdrStr;
 
          return true;
       }
