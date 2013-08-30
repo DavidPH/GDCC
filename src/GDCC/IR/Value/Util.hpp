@@ -64,7 +64,7 @@
 #define GDCC_IR_ValueCmpOpBitsImpl(op) \
    bool operator op (Value_Fixed const &l, Value_Fixed const &r) \
    { \
-      GDCC_IR_ValueCmpOpBitsOp(<); \
+      GDCC_IR_ValueCmpOpBitsOp(op); \
    }
 
 //
