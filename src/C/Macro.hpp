@@ -56,13 +56,6 @@ namespace C
 
       bool operator != (Macro const &other) const {return !(*this == other);}
 
-      // Expands an object-like macro.
-      void expand(std::vector<GDCC::Token> &out, GDCC::Token const &tok) const;
-
-      // Expands a function-like macro.
-      void expand(std::vector<GDCC::Token> &out, GDCC::Token const &tok,
-         GDCC::Range<GDCC::Token const *> argRng) const;
-
       Args args;
       List list;
 

@@ -14,8 +14,10 @@
 #define C__MacroTBuf_H__
 
 #include "GDCC/TokenBuf.hpp"
+#include "GDCC/Utility.hpp"
 
-#include <vector>
+#include <list>
+#include <unordered_set>
 
 
 //----------------------------------------------------------------------------|
@@ -24,21 +26,38 @@
 
 namespace C
 {
+   class Macro;
+
    //
    // MacroTBuf
    //
    class MacroTBuf : public GDCC::TokenBuf
    {
    public:
-      explicit MacroTBuf(GDCC::TokenBuf &src_) : src{src_}
-         {sett(nullptr, nullptr, nullptr);}
+      using Itr = std::list<GDCC::Token>::iterator;
+      using Rng = GDCC::Range<Itr>;
+
+
+
+      explicit MacroTBuf(GDCC::TokenBuf &src_) : src{src_}, ignoreAll{false} {}
 
    protected:
+      void applyMarker(GDCC::String str);
+
+      bool expand(Itr itr);
+      void expand(Itr end, Macro const &macro, Rng const &argRng);
+
+      GDCC::String stringize(Rng const &arg);
+
       virtual void underflow();
 
       GDCC::TokenBuf &src;
 
-      std::vector<GDCC::Token> buf;
+      std::list<GDCC::Token> buf;
+
+      std::unordered_set<GDCC::String> ignore;
+
+      bool ignoreAll : 1;
    };
 }
 
