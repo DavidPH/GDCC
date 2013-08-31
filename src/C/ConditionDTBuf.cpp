@@ -13,6 +13,7 @@
 #include "ConditionDTBuf.hpp"
 
 #include "ConcatTBuf.hpp"
+#include "GetExpIR.hpp"
 #include "Macro.hpp"
 #include "MacroTBuf.hpp"
 #include "PPTokenTBuf.hpp"
@@ -25,75 +26,6 @@
 #include "GDCC/IR/Exp.hpp"
 
 #include <iostream>
-
-
-//----------------------------------------------------------------------------|
-// Static Functions                                                           |
-//
-
-static GDCC::IR::Exp::Ref GetExp(GDCC::TokenStream &in);
-
-//
-// GetExpPrimary_NumInt
-//
-static GDCC::IR::Exp::Ref GetExpPrimary_NumInt(GDCC::Token const &tok)
-{
-   GDCC::IR::Type_Fixed t{63, 0, true, false};
-
-   char const *itr = tok.str.begin();
-   unsigned base;
-   GDCC::Integ val;
-
-   std::tie(itr, base) = GDCC::ParseNumberBaseC(itr);
-   std::tie(itr, val, std::ignore) = GDCC::ParseNumberInteg(itr, base);
-
-   // Detect unsigned.
-   for(auto end = tok.str.end(); itr != end; ++itr)
-      if(*itr == 'U' || *itr == 'u') {t.bitsI = 64; t.bitsS = true; break;}
-
-   return GDCC::IR::ExpCreate_ValueRoot(GDCC::IR::Value_Fixed(val, t), tok.pos);
-}
-
-//
-// GetExpPrimary
-//
-static GDCC::IR::Exp::Ref GetExpPrimary(GDCC::TokenStream &in)
-{
-   auto tok = in.get(); switch(tok.tok)
-   {
-   case GDCC::TOK_NumInt:
-      return GetExpPrimary_NumInt(tok);
-
-   case GDCC::TOK_String:
-      std::cerr << "ERROR: " << tok.pos << ": string-literal in preprocessor expression\n";
-      throw EXIT_FAILURE;
-
-   case GDCC::TOK_ParenO:
-      {
-         auto exp = GetExp(in);
-
-         if((tok = in.get()).tok != GDCC::TOK_ParenC)
-         {
-            std::cerr << "ERROR: " << tok.pos << ": expected )\n";
-            throw EXIT_FAILURE;
-         }
-
-         return exp;
-      }
-
-   default:
-      std::cerr << "ERROR: " << tok.pos << ": expected primary-expression\n";
-      throw EXIT_FAILURE;
-   }
-}
-
-//
-// GetExp
-//
-static GDCC::IR::Exp::Ref GetExp(GDCC::TokenStream &in)
-{
-   return GetExpPrimary(in);
-}
 
 
 //----------------------------------------------------------------------------|
@@ -124,7 +56,7 @@ namespace C
       GDCC::TokenStream in{&pbuf};
 
       // Read expression.
-      GDCC::IR::Exp::Ref exp = GetExp(in);
+      GDCC::IR::Exp::Ref exp = GetExpIR(in);
 
       // Ensure full consumption.
       if(in.peek().tok != GDCC::TOK_EOF)
@@ -134,19 +66,7 @@ namespace C
       }
 
       // Evaluate expression.
-      auto val = exp->getValue();
-      switch(val.v)
-      {
-      case GDCC::IR::ValueBase::Fixed:
-         return !val.vFixed.value;
-
-      case GDCC::IR::ValueBase::Float:
-         return !val.vFloat.value;
-
-      default:
-         std::cerr << "ERROR: " << exp->pos << ": invalid value type\n";
-         throw EXIT_FAILURE;
-      }
+      return !exp->getValue();
    }
 
    //

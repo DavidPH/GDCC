@@ -13,6 +13,7 @@ add_library(gdcc-cpp-lib
    ConcatTBuf.cpp
    ConditionDTBuf.cpp
    DirectiveTBuf.cpp
+   GetExpIR.cpp
    IStream.cpp
    IncludeDTBuf.cpp
    Macro.cpp

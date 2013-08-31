@@ -38,6 +38,21 @@ namespace GDCC
       TokenStream &operator >> (Token &out) {out = get(); return *this;}
 
       //
+      // drop
+      //
+      bool drop(TokenType tt)
+      {
+         auto const &tok = buf->peek();
+         if(tok.tok == TOK_EOF)
+            return eof = true, false;
+
+         if(tok.tok == tt)
+            return buf->get(), true;
+
+         return false;
+      }
+
+      //
       // get
       //
       Token const &get()
