@@ -43,26 +43,75 @@ namespace C
       // Clear directive name.
       src.get();
 
-      // Read header token.
-      IStream::NeedHeader = true;
-      auto hdr = src.get();
+      // Read header token(s).
+      std::vector<GDCC::Token> toks;
+      IStream::NeedHeader = true; // Try to get header token.
+      while(src.peek().tok != GDCC::TOK_LnEnd && src.peek().tok != GDCC::TOK_EOF)
+         toks.emplace_back(src.get());
 
-      // Process header.
-      if(hdr.tok == GDCC::TOK_HdrStr)
+      // Build macro buffer.
+      GDCC::ArrayTBuf abuf{toks.data(), toks.size()};
+      MacroTBuf mbuf{abuf};
+
+      // Skip whitespace that probably shouldn't exist.
+      while(mbuf.peek().tok == GDCC::TOK_WSpace) mbuf.get();
+
+      // User header.
+      if(mbuf.peek().tok == GDCC::TOK_HdrStr)
       {
-         if(tryIncUsr(hdr.str) || tryIncSys(hdr.str))
+         if(tryIncUsr(mbuf.peek().str) || tryIncSys(mbuf.peek().str))
             return true;
+
+         std::cerr << "ERROR: " << tok.pos << ": could not include \""
+            << mbuf.peek().str << "\"\n";
+         throw EXIT_FAILURE;
       }
-      else if(hdr.tok == GDCC::TOK_Header)
+
+      // System header.
+      else if(mbuf.peek().tok == GDCC::TOK_Header)
       {
-         if(tryIncSys(hdr.str))
+         if(tryIncSys(mbuf.peek().str))
             return true;
+
+         std::cerr << "ERROR: " << tok.pos << ": could not include <"
+            << mbuf.peek().str << ">\n";
+         throw EXIT_FAILURE;
       }
 
-      // Try the third syntax.
+      // Expanded user header.
+      else if(mbuf.peek().tok == GDCC::TOK_String)
+      {
+         auto hdr = GDCC::ParseStringC(mbuf.peek().str);
+         if(tryIncUsr(hdr) || tryIncSys(hdr))
+            return true;
 
-      std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-      throw EXIT_FAILURE;
+         std::cerr << "ERROR: " << tok.pos << ": could not include \"" << hdr << "\"\n";
+         throw EXIT_FAILURE;
+      }
+
+      // Expanded system header.
+      else if(mbuf.peek().tok == GDCC::TOK_CmpLT)
+      {
+         std::string tmp;
+
+         for(mbuf.get(); mbuf.peek().tok != GDCC::TOK_CmpGT;)
+            tmp += mbuf.peek().str.getData().str;
+
+         auto hash = GDCC::HashString(tmp.data(), tmp.size());
+         auto hdr = GDCC::AddString(tmp.data(), tmp.size(), hash);
+         if(tryIncSys(hdr))
+            return true;
+
+         std::cerr << "ERROR: " << tok.pos << ": could not include <" << hdr << ">\n";
+         throw EXIT_FAILURE;
+      }
+
+      // Not a valid header token.
+      else
+      {
+         std::cerr << "ERROR: " << tok.pos << ": invalid include syntax\n";
+         throw EXIT_FAILURE;
+      }
    }
 
    //

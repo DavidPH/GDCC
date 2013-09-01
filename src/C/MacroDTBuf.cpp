@@ -13,6 +13,7 @@
 #include "MacroDTBuf.hpp"
 
 #include "Macro.hpp"
+#include "MacroTBuf.hpp"
 
 #include <iostream>
 
@@ -160,60 +161,63 @@ namespace C
       if(tok.tok != GDCC::TOK_Identi || tok.str != GDCC::STR_line)
          return false;
 
+      // Clear directive name.
       src.get();
 
-      if(src.peek().tok == GDCC::TOK_WSpace) src.get();
+      // Read tokens.
+      std::vector<GDCC::Token> toks;
+      while(src.peek().tok != GDCC::TOK_LnEnd && src.peek().tok != GDCC::TOK_EOF)
+         toks.emplace_back(src.get());
 
-      if(src.peek().tok == GDCC::TOK_Number)
+      // Build macro buffer.
+      GDCC::ArrayTBuf abuf{toks.data(), toks.size()};
+      MacroTBuf mbuf{abuf};
+
+      while(mbuf.peek().tok == GDCC::TOK_WSpace) mbuf.get();
+
+      if(mbuf.peek().tok != GDCC::TOK_Number)
       {
-         std::size_t num = 0;
-         auto numTok = src.get();
-
-         for(char c : numTok.str) switch(c)
-         {
-         case '0': num = num * 10 + 0; break;
-         case '1': num = num * 10 + 1; break;
-         case '2': num = num * 10 + 2; break;
-         case '3': num = num * 10 + 3; break;
-         case '4': num = num * 10 + 4; break;
-         case '5': num = num * 10 + 5; break;
-         case '6': num = num * 10 + 6; break;
-         case '7': num = num * 10 + 7; break;
-         case '8': num = num * 10 + 8; break;
-         case '9': num = num * 10 + 9; break;
-
-         default:
-            std::cerr << "ERROR: " << numTok.pos << ": expected digit-sequence\n";
-            throw EXIT_FAILURE;
-         }
-
-         // Shall not.
-         if(num == 0 || num > 2147483647U)
-         {
-            std::cerr << "ERROR: " << numTok.pos << ": line out of range: " << num << '\n';
-            throw EXIT_FAILURE;
-         }
-
-         Macro::LineLine(num - numTok.pos.line);
-
-         if(src.peek().tok == GDCC::TOK_WSpace) src.get();
-
-         if(src.peek().tok == GDCC::TOK_LnEnd || src.peek().tok == GDCC::TOK_EOF)
-            return true;
-
-         if(src.peek().tok != GDCC::TOK_String)
-         {
-            std::cerr << "ERROR: " << numTok.pos << ": expected string\n";
-            throw EXIT_FAILURE;
-         }
-
-         Macro::LineFile(src.get().str);
-
-         return true;
+         std::cerr << "ERROR: " << mbuf.peek().pos << ": expected digit-sequence\n";
+         throw EXIT_FAILURE;
       }
 
-      std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-      throw EXIT_FAILURE;
+      std::size_t num = 0;
+      auto numTok = mbuf.get();
+
+      for(char c : numTok.str) switch(c)
+      {
+      case '0': num = num * 10 + 0; break;
+      case '1': num = num * 10 + 1; break;
+      case '2': num = num * 10 + 2; break;
+      case '3': num = num * 10 + 3; break;
+      case '4': num = num * 10 + 4; break;
+      case '5': num = num * 10 + 5; break;
+      case '6': num = num * 10 + 6; break;
+      case '7': num = num * 10 + 7; break;
+      case '8': num = num * 10 + 8; break;
+      case '9': num = num * 10 + 9; break;
+
+      default:
+         std::cerr << "ERROR: " << numTok.pos << ": expected digit-sequence\n";
+         throw EXIT_FAILURE;
+      }
+
+      Macro::LineLine(num - numTok.pos.line);
+
+      while(mbuf.peek().tok == GDCC::TOK_WSpace) mbuf.get();
+
+      if(mbuf.peek().tok == GDCC::TOK_LnEnd || mbuf.peek().tok == GDCC::TOK_EOF)
+         return true;
+
+      if(mbuf.peek().tok != GDCC::TOK_String)
+      {
+         std::cerr << "ERROR: " << numTok.pos << ": expected string\n";
+         throw EXIT_FAILURE;
+      }
+
+      Macro::LineFile(src.get().str);
+
+      return true;
    }
 
    //
