@@ -24,6 +24,10 @@
 
 namespace Option
 {
+   typedef char const *strp;
+   typedef strp const *strv;
+   typedef std::size_t uint;
+
    enum
    {
       OPTF_FALSE = 0x0001, // The option is negated.
@@ -59,11 +63,6 @@ namespace Option
    class Option
    {
    public:
-      typedef char const *strp;
-      typedef strp const *strv;
-      typedef std::size_t uint;
-
-
       Option(Option const &) = delete;
       Option(Option &&) = delete;
 
@@ -222,9 +221,6 @@ namespace Option
    //
    template<typename T> class OptionData : public OptionDPtr<T>
    {
-   protected:
-      using typename Option::strp;
-
    public:
       OptionData(char nameS_, strp nameL_, strp group_, strp descS_, strp descL_) :
          OptionDPtr<T>{nameS_, nameL_, group_, descS_, descL_, &data}, data{} {}
@@ -281,8 +277,8 @@ namespace Option
 
 namespace Option
 {
-   extern Option::uint const *ArgC;
-   extern Option::strv const *ArgV;
+   extern uint const *ArgC;
+   extern strv const *ArgV;
 
    extern OptionStrV &DefaultArgHandler;
 }

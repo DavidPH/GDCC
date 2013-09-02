@@ -26,7 +26,7 @@ namespace Option
    // -h, --help
    //
    OptionCall Help{'h', "help", nullptr, "Prints usage and exits.", nullptr,
-      [](Option::strp, Option::uint, Option::uint, Option::strv) -> Option::uint
+      [](strp, uint, uint, strv) -> uint
          {Option::PrintHelp(std::cout); std::exit(EXIT_SUCCESS);}};
 
    //
@@ -37,8 +37,8 @@ namespace Option
    //
    // --version
    //
-   OptionCall Version{'\0', "version", nullptr, "Prints version and exits.", nullptr,
-      [](Option::strp, Option::uint, Option::uint, Option::strv) -> Option::uint
+   OptionCall Version{'\0', "version", nullptr, "Prints version and exits.",
+      nullptr, [](strp, uint, uint, strv) -> uint
          {Option::PrintVersion(std::cout); std::exit(EXIT_SUCCESS);}};
 }
 

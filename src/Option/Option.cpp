@@ -42,16 +42,16 @@ namespace Option
 {
    Option *Option::ArgHandler = &OptionStrV::DefaultArgHandler;
 
-   Option::strp Option::Help_Program = nullptr;
-   Option::strp Option::Help_Version = nullptr;
-   Option::strp Option::Help_Usage   = nullptr;
-   Option::strp Option::Help_DescS   = nullptr;
-   Option::strp Option::Help_DescL   = nullptr;
+   strp Option::Help_Program = nullptr;
+   strp Option::Help_Version = nullptr;
+   strp Option::Help_Usage   = nullptr;
+   strp Option::Help_DescS   = nullptr;
+   strp Option::Help_DescL   = nullptr;
 
    OptionStrV OptionStrV::DefaultArgHandler{'\0', nullptr, nullptr, nullptr, nullptr, 0};
 
-   Option::uint const *ArgC = &OptionStrV::DefaultArgHandler.argC;
-   Option::strv const *ArgV = &OptionStrV::DefaultArgHandler.argV;
+   uint const *ArgC = &OptionStrV::DefaultArgHandler.argC;
+   strv const *ArgV = &OptionStrV::DefaultArgHandler.argV;
 
    OptionStrV &DefaultArgHandler = OptionStrV::DefaultArgHandler;
 }
@@ -64,9 +64,9 @@ namespace Option
 //
 // CountArgs
 //
-static Option::Option::uint CountArgs(Option::Option::uint argc, Option::Option::strv argv)
+static Option::uint CountArgs(Option::uint argc, Option::strv argv)
 {
-   for(Option::Option::uint argi = 0; argi != argc; ++argi)
+   for(Option::uint argi = 0; argi != argc; ++argi)
    {
       if(argv[argi][0] == '-' && argv[argi][1] != '\0')
          return argi;
@@ -103,9 +103,9 @@ static std::unique_ptr<char[]> StrDup(char const *s, std::size_t len)
 //
 // WordLength
 //
-static Option::Option::uint WordLength(char const *str)
+static Option::uint WordLength(char const *str)
 {
-   Option::Option::uint len = 0;
+   Option::uint len = 0;
 
    while(*str && !std::isspace(*str++))
       len++;
@@ -116,10 +116,10 @@ static Option::Option::uint WordLength(char const *str)
 //
 // WriteWrapped
 //
-static void WriteWrapped(std::ostream &out, Option::Option::uint width,
-   char const *str, Option::Option::uint baselen, char const *prefix = nullptr)
+static void WriteWrapped(std::ostream &out, Option::uint width,
+   char const *str, Option::uint baselen, char const *prefix = nullptr)
 {
-   Option::Option::uint linelen = baselen;
+   Option::uint linelen = baselen;
 
    if(prefix)
       linelen += std::strlen(prefix) + 1;

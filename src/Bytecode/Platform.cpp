@@ -33,8 +33,7 @@ namespace Option
    // --bc-format
    //
    OptionCall FormatOpt{'\0', "bc-format", "output", "Selects output format.",
-      nullptr, [](Option::strp opt, Option::uint optf, Option::uint argc,
-         Option::strv argv) -> Option::uint
+      nullptr, [](strp opt, uint optf, uint argc, strv argv) -> uint
    {
       if(!argc)
          Exception::Error(opt, optf, "requires argument");
@@ -55,8 +54,7 @@ namespace Option
    // --bc-target
    //
    OptionCall TargetOpt{'\0', "bc-target", "output", "Selects target engine.",
-      nullptr, [](Option::strp opt, Option::uint optf, Option::uint argc,
-         Option::strv argv) -> Option::uint
+      nullptr, [](strp opt, uint optf, uint argc, strv argv) -> uint
    {
       if(!argc)
          Exception::Error(opt, optf, "requires argument");

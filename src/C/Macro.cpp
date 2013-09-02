@@ -12,6 +12,14 @@
 
 #include "Macro.hpp"
 
+#include "IStream.hpp"
+
+#include "GDCC/StreamTBuf.hpp"
+#include "GDCC/StringBuf.hpp"
+#include "GDCC/TokenStream.hpp"
+
+#include "Option/Option.hpp"
+
 #include <climits>
 #include <cstring>
 #include <ctime>
@@ -25,6 +33,8 @@
 // Static Variables                                                           |
 //
 
+static std::vector<std::pair<C::Macro::Name, std::unique_ptr<C::Macro>>> Deltas;
+
 static std::vector<std::pair<GDCC::String, std::size_t>> Lines;
 
 static std::unordered_map<C::Macro::Name, C::Macro> Table;
@@ -33,6 +43,96 @@ static C::Macro Macro_DATE{C::Macro::List(1)};
 static C::Macro Macro_FILE{C::Macro::List(1)};
 static C::Macro Macro_LINE{C::Macro::List(1)};
 static C::Macro Macro_TIME{C::Macro::List(1)};
+
+
+//----------------------------------------------------------------------------|
+// Global Variables                                                           |
+//
+
+namespace Option
+{
+   //
+   // -D --define
+   //
+   OptionCall Define{'D', "define", "preprocessor", "Adds a predefined macro.",
+      nullptr, [](strp opt, uint optf, uint argc, strv argv) -> uint
+   {
+      if(!argc)
+         Exception::Error(opt, optf, "requires argument");
+
+      // Tokenize argument.
+      GDCC::StringBuf sbuf{argv[0], std::strlen(argv[0])};
+      C::IStream istr{sbuf, GDCC::STR_};
+      GDCC::StreamTBuf<C::IStream> tbuf{istr};
+      GDCC::TokenStream in{&tbuf};
+
+      if(in.peek().tok != GDCC::TOK_Identi)
+         Exception::Error(opt, optf, "expected identifier");
+
+      auto           name = in.get().str;
+      C::Macro::Args args;
+      C::Macro::List list;
+      bool           func = in.drop(GDCC::TOK_ParenO);
+
+      // Read args.
+      if(func && !in.drop(GDCC::TOK_ParenC))
+      {
+         std::vector<GDCC::String> argsVec;
+
+         do
+         {
+            if(in.drop(GDCC::TOK_Dot3))
+               {argsVec.emplace_back(GDCC::STRNULL); break;}
+
+            if(in.peek().tok != GDCC::TOK_Identi)
+               Exception::Error(opt, optf, "expected arg name");
+
+            argsVec.emplace_back(in.get().str);
+         }
+         while(in.drop(GDCC::TOK_Comma));
+
+         if(in.peek().tok != GDCC::TOK_ParenC)
+            Exception::Error(opt, optf, "expected )");
+
+         args = C::Macro::Args(GDCC::Move, argsVec.begin(), argsVec.end());
+      }
+
+      // Read list.
+      if(in.drop(GDCC::TOK_Equal))
+      {
+         std::vector<GDCC::Token> listVec;
+
+         while(in.peek().tok != GDCC::TOK_EOF)
+            listVec.emplace_back(in.get());
+
+         list = C::Macro::List(GDCC::Move, listVec.begin(), listVec.end());
+      }
+
+      // Must not be any tokens left.
+      if(in.peek().tok != GDCC::TOK_EOF)
+         Exception::Error(opt, optf, "expected end of define");
+
+      Deltas.emplace_back(name, std::unique_ptr<C::Macro>(func
+         ? new C::Macro(std::move(args), std::move(list))
+         : new C::Macro(std::move(list))));
+
+      return 1;
+   }};
+
+   //
+   // -U, --undef
+   //
+   OptionCall Undef{'U', "undef", "preprocessor", "Removes a predefined macro.",
+      nullptr, [](strp opt, uint optf, uint argc, strv argv) -> uint
+   {
+      if(!argc)
+         Exception::Error(opt, optf, "requires argument");
+
+      Deltas.emplace_back(GDCC::AddString(argv[0]), nullptr);
+
+      return 1;
+   }};
+}
 
 
 //----------------------------------------------------------------------------|
@@ -301,6 +401,15 @@ namespace C
 
       Lines.clear();
       Table.clear();
+
+      // Apply command line defines.
+      for(auto const &delta : Deltas)
+      {
+         if(delta.second)
+            Table.emplace(delta.first, *delta.second);
+         else
+            Table.erase(delta.first);
+      }
    }
 
    //
