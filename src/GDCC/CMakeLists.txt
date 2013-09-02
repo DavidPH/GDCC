@@ -16,6 +16,7 @@ add_library(gdcc
    Origin.cpp
    ParseNumber.cpp
    ParseString.cpp
+   Path.cpp
    String.cpp
 )
 

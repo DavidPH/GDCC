@@ -832,8 +832,11 @@ namespace Option
    //
    // OptionStrV::v_handle
    //
-   auto OptionStrV::v_handle(strp, uint optf, uint argc, strv argv) -> uint
+   auto OptionStrV::v_handle(strp opt, uint optf, uint argc, strv argv) -> uint
    {
+      if(argMax && !argc)
+         Exception::Error(opt, optf, "requires argument");
+
       if(argMax && argc > argMax)
          argc = argMax;
 

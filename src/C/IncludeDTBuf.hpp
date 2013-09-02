@@ -30,7 +30,8 @@ namespace C
    class IncludeDTBuf final : public DirectiveTBuf
    {
    public:
-      explicit IncludeDTBuf(GDCC::TokenBuf &src_) : DirectiveTBuf{src_} {}
+      explicit IncludeDTBuf(GDCC::TokenBuf &src_, GDCC::String dir_) :
+         DirectiveTBuf{src_}, dir{dir_} {}
 
       virtual ~IncludeDTBuf();
 
@@ -44,6 +45,8 @@ namespace C
 
       std::unique_ptr<std::streambuf> str;
       std::unique_ptr<IncStream>      inc;
+
+      GDCC::String dir;
    };
 }
 

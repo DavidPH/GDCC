@@ -254,6 +254,10 @@ namespace Option
       // Passes last arg to opt (if any), then removes the arg from list.
       void argPop(Option *opt = nullptr, strp optn = "", uint optf = 0);
 
+      strv begin() const {return argV;}
+
+      strv end() const {return argV + argC;}
+
       uint  argC; // count
       strp *argV; // vector
 

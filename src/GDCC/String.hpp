@@ -51,9 +51,15 @@ namespace GDCC
       StringData(char const *str, StringIndex num);
       StringData(char const *str, std::size_t len, std::size_t hash, std::size_t num);
 
+      char const &back() const {return str[len - 1];}
+
       char const *begin() const {return str;}
 
+      bool empty() const {return !len;}
+
       char const *end() const {return str + len;}
+
+      char const &front() const {return *str;}
 
       std::size_t size() const {return len;}
 
@@ -87,6 +93,8 @@ namespace GDCC
       String &operator = (StringIndex num_) {num = num_; return *this;}
 
       char const *begin() const {return GetData(num).str;}
+
+      char const *data() const {return GetData(num).str;}
 
       char const *end() const {auto const &d = GetData(num); return d.str + d.len;}
 

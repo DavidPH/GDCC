@@ -14,6 +14,7 @@
 #include "TStream.hpp"
 
 #include "GDCC/Option.hpp"
+#include "GDCC/Path.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -62,7 +63,7 @@ static void ProcessFile(std::ostream &out, char const *inName)
    C::Macro::Reset();
    C::Macro::LinePush(C::Macro::Stringize(inStr));
 
-   C::PPStream in{fbuf, inStr};
+   C::PPStream in{fbuf, inStr, GDCC::PathDirname(inStr)};
 
    for(GDCC::Token tok; in >> tok;) switch(tok.tok)
    {

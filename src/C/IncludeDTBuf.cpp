@@ -15,8 +15,32 @@
 #include "Macro.hpp"
 #include "TStream.hpp"
 
+#include "GDCC/Path.hpp"
+
+#include "Option/Option.hpp"
+
 #include <fstream>
 #include <iostream>
+
+
+//----------------------------------------------------------------------------|
+// Global Variables                                                           |
+//
+
+namespace Option
+{
+   //
+   // -i, --include
+   //
+   OptionStrV IncludeUsr{'i', "include", "preprocessor",
+      "Adds a user include directory.", nullptr, 1};
+
+   //
+   // --sys-include
+   //
+   OptionStrV IncludeSys{'\0', "sys-include", "preprocessor",
+      "Adds a system include directory.", nullptr, 1};
+}
 
 
 //----------------------------------------------------------------------------|
@@ -121,23 +145,57 @@ namespace C
    {
       std::unique_ptr<std::filebuf> fbuf{new std::filebuf()};
 
-      if(!fbuf->open(name.getData().str, std::ios_base::in))
-         return false;
+      // Try specified directories.
+      for(auto sys : Option::IncludeSys)
+      {
+         auto path = GDCC::PathConcat(sys, name);
+         if(fbuf->open(path.data(), std::ios_base::in))
+         {
+            Macro::LinePush(Macro::Stringize(path));
 
-      Macro::LinePush(Macro::Stringize(name));
+            str = std::move(fbuf);
+            inc.reset(new IncStream(*str, path, GDCC::PathDirname(path)));
 
-      str = std::move(fbuf);
-      inc.reset(new IncStream(*str, name));
+            return true;
+         }
+      }
 
-      return true;
+      return false;
    }
 
    //
    // IncludeDTBuf::tryIncUsr
    //
-   bool IncludeDTBuf::tryIncUsr(GDCC::String)
+   bool IncludeDTBuf::tryIncUsr(GDCC::String name)
    {
+      GDCC::String path;
+      std::unique_ptr<std::filebuf> fbuf{new std::filebuf()};
+
+      // Try current directory.
+      if(dir)
+      {
+         path = GDCC::PathConcat(dir, name);
+         if(fbuf->open(path.data(), std::ios_base::in))
+            goto inc;
+      }
+
+      // Try specified directories.
+      for(auto usr : Option::IncludeUsr)
+      {
+         path = GDCC::PathConcat(usr, name);
+         if(fbuf->open(path.getData().str, std::ios_base::in))
+            goto inc;
+      }
+
       return false;
+
+   inc:
+      Macro::LinePush(Macro::Stringize(path));
+
+      str = std::move(fbuf);
+      inc.reset(new IncStream(*str, path, GDCC::PathDirname(path)));
+
+      return true;
    }
 
    //
