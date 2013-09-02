@@ -25,6 +25,7 @@
 //
 
 static void ProcessFile(std::ostream &out, char const *inName);
+static void PutStringEscape(std::ostream &out, GDCC::String str);
 
 //
 // MakeCPP
@@ -67,23 +68,34 @@ static void ProcessFile(std::ostream &out, char const *inName)
 
    for(GDCC::Token tok; in >> tok;) switch(tok.tok)
    {
-   case GDCC::TOK_String:
-      out << '"';
-      for(char c : tok.str) switch(c)
-      {
-      case '\"': out << "\\\""; break;
-      case '\\': out << "\\\\"; break;
-      default:   out << c;      break;
-      }
-      out << '"';
-      break;
-
-   default:
-      out << tok.str;
-      break;
+   case GDCC::TOK_Charac: out << '\''; PutStringEscape(out, tok.str); out << '\''; break;
+   case GDCC::TOK_String: out << '"'; PutStringEscape(out, tok.str); out << '"'; break;
+   default: out << tok.str; break;
    }
 
    out << std::endl;
+}
+
+//
+// PutStringEscape
+//
+static void PutStringEscape(std::ostream &out, GDCC::String str)
+{
+   for(char c : str) switch(c)
+   {
+   case '\a': out << "\\a";  break;
+   case '\b': out << "\\b";  break;
+   case '\f': out << "\\f";  break;
+   case '\n': out << "\\n";  break;
+   case '\r': out << "\\r";  break;
+   case '\t': out << "\\t";  break;
+   case '\v': out << "\\v";  break;
+   case '\'': out << "\\\'"; break;
+   case '\"': out << "\\\""; break;
+   case '\\': out << "\\\\"; break;
+   case '\?': out << "\\\?"; break;
+   default:   out << c;      break;
+   }
 }
 
 

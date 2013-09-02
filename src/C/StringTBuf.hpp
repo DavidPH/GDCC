@@ -41,6 +41,7 @@ namespace C
 
          switch((buf[0] = src.get()).tok)
          {
+         case GDCC::TOK_Charac:
          case GDCC::TOK_String:
             buf[0].str = GDCC::ParseStringC(buf[0].str);
             break;

@@ -441,6 +441,7 @@ namespace C
    {
       switch(tok.tok)
       {
+      case GDCC::TOK_Charac:
       case GDCC::TOK_String:
          tmp.reserve(tmp.size() + tok.str.size());
 
