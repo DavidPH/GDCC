@@ -13,8 +13,6 @@
 #ifndef C__Pragma_H__
 #define C__Pragma_H__
 
-#include "DirectiveTBuf.hpp"
-
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -27,44 +25,19 @@ namespace GDCC
 
 namespace C
 {
-   using PragmaFunc = void(*)(GDCC::Origin, GDCC::TokenStream &);
-
-   void Pragma(GDCC::Origin pos, GDCC::TokenStream &in);
-
-   //
-   // PragmaDTBuf
-   //
-   class PragmaDTBuf final : public DirectiveTBuf
-   {
-   public:
-      explicit PragmaDTBuf(GDCC::TokenBuf &src_, PragmaFunc pfn_= Pragma) :
-         DirectiveTBuf{src_}, pfn{pfn_} {}
-
-   protected:
-      virtual bool directive(GDCC::Token const &tok);
-
-      PragmaFunc pfn;
-   };
-
-   //
-   // PragmaTBuf
-   //
-   class PragmaTBuf final : public GDCC::TokenBuf
-   {
-   public:
-      using PragmaHandler = void(*)(GDCC::Origin, GDCC::TokenStream &);
+   using PragmaFunc = void(*)(GDCC::TokenStream &);
+}
 
 
-      explicit PragmaTBuf(GDCC::TokenBuf &src_, PragmaFunc pfn_ = Pragma) :
-         src{src_}, pfn{pfn_}, buf{GDCC::TokenEOF} {sett(buf, buf + 1, buf + 1);}
+//----------------------------------------------------------------------------|
+// Global Variables                                                           |
+//
 
-   protected:
-      virtual void underflow();
-
-      GDCC::TokenBuf &src;
-      PragmaFunc      pfn;
-      GDCC::Token     buf[1];
-   };
+namespace C
+{
+   extern bool Pragma_STDC_CXLimitedRange;
+   extern bool Pragma_STDC_FEnvAccess;
+   extern bool Pragma_STDC_FPContract;
 }
 
 
@@ -74,7 +47,7 @@ namespace C
 
 namespace C
 {
-   void Pragma(GDCC::Origin pos, GDCC::TokenStream &in);
+   void Pragma(GDCC::TokenStream &in);
 }
 
 #endif//C__Pragma_H__

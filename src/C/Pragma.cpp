@@ -12,16 +12,27 @@
 
 #include "Pragma.hpp"
 
-#include "IStream.hpp"
-
-#include "GDCC/StreamTBuf.hpp"
-#include "GDCC/StringBuf.hpp"
+#include "GDCC/Parse.hpp"
 #include "GDCC/TokenStream.hpp"
+
+#include "GDCC/IR/Import.hpp"
 
 #include <climits>
 #include <csignal>
 #include <ctime>
 #include <iostream>
+
+
+//----------------------------------------------------------------------------|
+// Global Variables                                                           |
+//
+
+namespace C
+{
+   bool Pragma_STDC_CXLimitedRange = true;
+   bool Pragma_STDC_FEnvAccess     = false;
+   bool Pragma_STDC_FPContract     = true;
+}
 
 
 //----------------------------------------------------------------------------|
@@ -66,6 +77,72 @@ static void EffIt()
    std::raise(SIGSEGV);
 }
 
+//
+// PragmaACS
+//
+static void PragmaACS(GDCC::TokenStream &in)
+{
+   in.drop(GDCC::TOK_WSpace);
+
+   switch(static_cast<GDCC::StringIndex>(in.get().str))
+   {
+   case GDCC::STR_library:
+      in.drop(GDCC::TOK_WSpace);
+
+      if(in.peek().tok != GDCC::TOK_String)
+      {
+         std::cerr << "ERROR: " << in.peek().pos << ": expected string-literal\n";
+         throw EXIT_FAILURE;
+      }
+
+      GDCC::IR::Import::Get(GDCC::ParseStringC(in.get().str));
+      break;
+
+   default: break;
+   }
+}
+
+//
+// PragmaOnOff
+//
+static void PragmaOnOff(bool &pragma, bool def, GDCC::TokenStream &in)
+{
+   in.drop(GDCC::TOK_WSpace);
+
+   switch(static_cast<GDCC::StringIndex>(in.get().str))
+   {
+   case GDCC::STR_DEFAULT: pragma = def;   break;
+   case GDCC::STR_OFF:     pragma = false; break;
+   case GDCC::STR_ON:      pragma = true;  break;
+   default: break;
+   }
+}
+
+//
+// PragmaSTDC
+//
+static void PragmaSTDC(GDCC::TokenStream &in)
+{
+   in.drop(GDCC::TOK_WSpace);
+
+   switch(static_cast<GDCC::StringIndex>(in.get().str))
+   {
+   case GDCC::STR_CX_LIMITED_RANGE:
+      PragmaOnOff(C::Pragma_STDC_CXLimitedRange, true, in);
+      break;
+
+   case GDCC::STR_FENV_ACCESS:
+      PragmaOnOff(C::Pragma_STDC_FEnvAccess, false, in);
+      break;
+
+   case GDCC::STR_FP_CONTRACT:
+      PragmaOnOff(C::Pragma_STDC_FPContract, true, in);
+      break;
+
+   default: break;
+   }
+}
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -74,94 +151,28 @@ static void EffIt()
 namespace C
 {
    //
-   // PragmaDTBuf::directive
-   //
-   bool PragmaDTBuf::directive(GDCC::Token const &tok)
-   {
-      if(tok.tok != GDCC::TOK_Identi || tok.str != GDCC::STR_pragma)
-         return false;
-
-      auto pos = src.get().pos;
-      GDCC::TokenStream in{&src};
-
-      pfn(pos, in);
-
-      return true;
-   }
-
-   //
-   // PragmaTBuf::underflow
-   //
-   void PragmaTBuf::underflow()
-   {
-      if(tptr() != tend()) return;
-
-      //
-      // skipWS
-      //
-      auto skipWS = [&]()
-      {
-         while(src.peek().tok == GDCC::TOK_WSpace || src.peek().tok == GDCC::TOK_LnEnd)
-            src.get();
-
-         return src.get();
-      };
-
-      while((buf[0] = src.get()).tok == GDCC::TOK_Identi &&
-         buf[0].str == GDCC::STR__Pragma)
-      {
-         auto pos = buf[0].pos;
-
-         // <_Pragma> ( string-literal )
-         if(skipWS().tok != GDCC::TOK_ParenO ||
-            (buf[0] = skipWS()).tok != GDCC::TOK_String ||
-            skipWS().tok != GDCC::TOK_ParenC)
-         {
-            std::cerr << "ERROR: " << pos << ": bad _Pragma\n";
-            throw EXIT_FAILURE;
-         }
-
-         // Limited string processing.
-         auto const &strData = buf[0].str.getData();
-         std::string str; str.reserve(strData.len);
-         for(auto i = strData.str + 1, e = i + (strData.len - 2); i != e; ++i)
-         {
-            if(*i == '\\')
-            {
-               if(i[1] == '\\') {str += '\\'; ++i; continue;}
-               if(i[1] == '"') {str += '"'; ++i; continue;}
-            }
-
-            str += *i;
-         }
-
-         // Build token stream.
-         GDCC::StringBuf sbuf{str.data(), str.size()};
-         IStream istr{sbuf, pos.file, pos.line};
-         GDCC::StreamTBuf<IStream> tbuf{istr};
-         GDCC::TokenStream in{&tbuf};
-
-         pfn(pos, in);
-      }
-
-      sett(buf, buf, buf + 1);
-   }
-
-   //
    // Pragma
    //
-   void Pragma(GDCC::Origin, GDCC::TokenStream &src)
+   void Pragma(GDCC::TokenStream &in)
    {
-      if(src.peek().tok == GDCC::TOK_WSpace) src.get();
+      if(in.peek().tok == GDCC::TOK_WSpace) in.get();
 
-      if(src.peek().tok != GDCC::TOK_Identi) return;
+      if(in.peek().tok != GDCC::TOK_Identi) return;
 
-      switch(static_cast<GDCC::StringIndex>(src.get().str))
+      switch(static_cast<GDCC::StringIndex>(in.get().str))
       {
+      case GDCC::STR_ACS:
+         PragmaACS(in);
+         break;
+
+      case GDCC::STR_STDC:
+         PragmaSTDC(in);
+         break;
+
       case GDCC::STR_fuck:
          // This test pragma brought to you by drinking. And MageofMystra.
-         if(src.peek().tok == GDCC::TOK_WSpace) src.get();
-         if(src.peek().tok == GDCC::TOK_Identi && src.peek().str == GDCC::STR_it)
+         if(in.peek().tok == GDCC::TOK_WSpace) in.get();
+         if(in.peek().tok == GDCC::TOK_Identi && in.peek().str == GDCC::STR_it)
             EffIt();
 
          break;

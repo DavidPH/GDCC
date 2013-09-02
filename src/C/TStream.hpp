@@ -20,7 +20,7 @@
 #include "MacroDTBuf.hpp"
 #include "MacroTBuf.hpp"
 #include "PPTokenTBuf.hpp"
-#include "Pragma.hpp"
+#include "PragmaDTBuf.hpp"
 #include "StringTBuf.hpp"
 
 #include "GDCC/StreamTBuf.hpp"

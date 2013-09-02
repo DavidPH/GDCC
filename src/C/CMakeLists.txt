@@ -21,6 +21,7 @@ add_library(gdcc-cpp-lib
    MacroTBuf.cpp
    PPTokenTBuf.cpp
    Pragma.cpp
+   PragmaDTBuf.cpp
 )
 
 add_executable(gdcc-cc
