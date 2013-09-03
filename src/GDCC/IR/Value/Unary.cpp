@@ -40,6 +40,24 @@ namespace GDCC
       }
 
       //
+      // operator - Value_Float
+      //
+      Value_Float operator - (Value_Float const &e)
+      {
+         return Value_Float(-e.value, e.vtype).clamp();
+      }
+
+      //
+      // operator - Value_Float
+      //
+      Value_Float &&operator - (Value_Float &&e)
+      {
+         e.value = -e.value;
+
+         return std::move(e.clamp());
+      }
+
+      //
       // operator ~ Value_Fixed
       //
       Value_Fixed operator ~ (Value_Fixed const &e)

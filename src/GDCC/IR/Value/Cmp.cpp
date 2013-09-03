@@ -22,12 +22,18 @@ namespace GDCC
    namespace IR
    {
       GDCC_IR_ValueCmpOpBitsImpl(<)
+      GDCC_IR_ValueCmpOpFltsImpl(<)
       GDCC_IR_ValueCmpOpBitsImpl(>)
+      GDCC_IR_ValueCmpOpFltsImpl(>)
       GDCC_IR_ValueCmpOpBitsImpl(<=)
+      GDCC_IR_ValueCmpOpFltsImpl(<=)
       GDCC_IR_ValueCmpOpBitsImpl(>=)
+      GDCC_IR_ValueCmpOpFltsImpl(>=)
 
       GDCC_IR_ValueCmpOpBitsImpl(==)
+      GDCC_IR_ValueCmpOpFltsImpl(==)
       GDCC_IR_ValueCmpOpBitsImpl(!=)
+      GDCC_IR_ValueCmpOpFltsImpl(!=)
    }
 }
 

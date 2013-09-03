@@ -24,6 +24,8 @@ namespace GDCC
 {
    namespace IR
    {
+      #define GDCC_IR_TypeList(name) struct Value_##name;
+      #include "TypeList.hpp"
       class Value;
 
       typedef TypeBase ValueBase;
@@ -52,6 +54,9 @@ namespace GDCC
          Value_Fixed(Value_Fixed const &value, Type_Fixed const &vtype);
          Value_Fixed(Value_Fixed &&value, Type_Fixed const &vtype);
 
+         Value_Fixed(Value_Float const &value, Type_Fixed const &vtype);
+         Value_Fixed(Value_Float &&value, Type_Fixed const &vtype);
+
          Value_Fixed(Integ const &value_, Type_Fixed const &vtype_) :
             vtype{vtype_}, value{value_} {clamp();}
          Value_Fixed(Integ &&value_, Type_Fixed const &vtype_) :
@@ -73,6 +78,9 @@ namespace GDCC
       struct Value_Float
       {
          Value_Float() = default;
+
+         Value_Float(Value_Fixed const &value, Type_Float const &vtype);
+         Value_Float(Value_Fixed &&value, Type_Float const &vtype);
 
          Value_Float(Value_Float const &value, Type_Float const &vtype);
          Value_Float(Value_Float &&value, Type_Float const &vtype);
@@ -312,21 +320,33 @@ namespace GDCC
    {
       Value_Fixed   operator - (Value_Fixed const &e);
       Value_Fixed &&operator - (Value_Fixed      &&e);
+      Value_Float   operator - (Value_Float const &e);
+      Value_Float &&operator - (Value_Float      &&e);
 
       Value_Fixed   operator ~ (Value_Fixed const &e);
       Value_Fixed &&operator ~ (Value_Fixed      &&e);
 
       Value_Fixed   operator * (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator * (Value_Fixed      &&l, Value_Fixed const &r);
+      Value_Float   operator * (Value_Float const &l, Value_Float const &r);
+      Value_Float &&operator * (Value_Float      &&l, Value_Float const &r);
       Value_Fixed   operator / (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator / (Value_Fixed      &&l, Value_Fixed const &r);
+      Value_Float   operator / (Value_Float const &l, Value_Float const &r);
+      Value_Float &&operator / (Value_Float      &&l, Value_Float const &r);
       Value_Fixed   operator % (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator % (Value_Fixed      &&l, Value_Fixed const &r);
+      Value_Float   operator % (Value_Float const &l, Value_Float const &r);
+      Value_Float &&operator % (Value_Float      &&l, Value_Float const &r);
 
       Value_Fixed   operator + (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator + (Value_Fixed      &&l, Value_Fixed const &r);
+      Value_Float   operator + (Value_Float const &l, Value_Float const &r);
+      Value_Float &&operator + (Value_Float      &&l, Value_Float const &r);
       Value_Fixed   operator - (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator - (Value_Fixed      &&l, Value_Fixed const &r);
+      Value_Float   operator - (Value_Float const &l, Value_Float const &r);
+      Value_Float &&operator - (Value_Float      &&l, Value_Float const &r);
 
       Value_Fixed   operator << (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator << (Value_Fixed      &&l, Value_Fixed const &r);
@@ -334,12 +354,18 @@ namespace GDCC
       Value_Fixed &&operator >> (Value_Fixed      &&l, Value_Fixed const &r);
 
       bool operator <  (Value_Fixed const &l, Value_Fixed const &r);
+      bool operator <  (Value_Float const &l, Value_Float const &r);
       bool operator >  (Value_Fixed const &l, Value_Fixed const &r);
+      bool operator >  (Value_Float const &l, Value_Float const &r);
       bool operator <= (Value_Fixed const &l, Value_Fixed const &r);
+      bool operator <= (Value_Float const &l, Value_Float const &r);
       bool operator >= (Value_Fixed const &l, Value_Fixed const &r);
+      bool operator >= (Value_Float const &l, Value_Float const &r);
 
       bool operator == (Value_Fixed const &l, Value_Fixed const &r);
+      bool operator == (Value_Float const &l, Value_Float const &r);
       bool operator != (Value_Fixed const &l, Value_Fixed const &r);
+      bool operator != (Value_Float const &l, Value_Float const &r);
 
       Value_Fixed   operator & (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator & (Value_Fixed      &&l, Value_Fixed const &r);
@@ -351,10 +377,15 @@ namespace GDCC
       Value_Fixed &&operator | (Value_Fixed      &&l, Value_Fixed const &r);
 
       Value_Fixed &operator *=  (Value_Fixed &l, Value_Fixed const &r);
+      Value_Float &operator *=  (Value_Float &l, Value_Float const &r);
       Value_Fixed &operator /=  (Value_Fixed &l, Value_Fixed const &r);
+      Value_Float &operator /=  (Value_Float &l, Value_Float const &r);
       Value_Fixed &operator %=  (Value_Fixed &l, Value_Fixed const &r);
+      Value_Float &operator %=  (Value_Float &l, Value_Float const &r);
       Value_Fixed &operator +=  (Value_Fixed &l, Value_Fixed const &r);
+      Value_Float &operator +=  (Value_Float &l, Value_Float const &r);
       Value_Fixed &operator -=  (Value_Fixed &l, Value_Fixed const &r);
+      Value_Float &operator -=  (Value_Float &l, Value_Float const &r);
       Value_Fixed &operator <<= (Value_Fixed &l, Value_Fixed const &r);
       Value_Fixed &operator >>= (Value_Fixed &l, Value_Fixed const &r);
       Value_Fixed &operator &=  (Value_Fixed &l, Value_Fixed const &r);

@@ -26,6 +26,13 @@ namespace GDCC
    namespace IR
    {
       //
+      // Value_Empty constructor
+      //
+      Value_Empty::Value_Empty(IArchive &in) : vtype{in}
+      {
+      }
+
+      //
       // Value_Fixed constructor
       //
       Value_Fixed::Value_Fixed(Value_Fixed const &value_, Type_Fixed const &vtype_) :
@@ -54,10 +61,21 @@ namespace GDCC
       }
 
       //
-      // Value_Empty constructor
+      // Value_Fixed constructor
       //
-      Value_Empty::Value_Empty(IArchive &in) : vtype{in}
+      Value_Fixed::Value_Fixed(Value_Float const &value_, Type_Fixed const &vtype_) :
+         vtype{vtype_}, value{value_.value << vtype.bitsF}
       {
+         clamp();
+      }
+
+      //
+      // Value_Fixed constructor
+      //
+      Value_Fixed::Value_Fixed(Value_Float &&value_, Type_Fixed const &vtype_) :
+         vtype{vtype_}, value{std::move(value_.value) << vtype.bitsF}
+      {
+         clamp();
       }
 
       //
@@ -65,6 +83,46 @@ namespace GDCC
       //
       Value_Fixed::Value_Fixed(IArchive &in) : vtype{in}, value{GetIR(in, value)}
       {
+      }
+
+      //
+      // Value_Float constructor
+      //
+      Value_Float::Value_Float(Value_Fixed const &value_, Type_Float const &vtype_) :
+         vtype{vtype_}, value{value_.value}
+      {
+         value >>= value_.vtype.bitsF;
+
+         clamp();
+      }
+
+      //
+      // Value_Float constructor
+      //
+      Value_Float::Value_Float(Value_Fixed &&value_, Type_Float const &vtype_) :
+         vtype{vtype_}, value{std::move(value_.value)}
+      {
+         value >>= value_.vtype.bitsF;
+
+         clamp();
+      }
+
+      //
+      // Value_Float constructor
+      //
+      Value_Float::Value_Float(Value_Float const &value_, Type_Float const &vtype_) :
+         vtype{vtype_}, value{value_.value}
+      {
+         clamp();
+      }
+
+      //
+      // Value_Float constructor
+      //
+      Value_Float::Value_Float(Value_Float &&value_, Type_Float const &vtype_) :
+         vtype{vtype_}, value{std::move(value_.value)}
+      {
+         clamp();
       }
 
       //

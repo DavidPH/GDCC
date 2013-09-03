@@ -61,12 +61,23 @@ public: \
    friend Exp::Ref ExpGetIR_Binary##name(IArchive &in)
 
 //
-// GDCC_IR_Exp_BinaryImplArith
+// GDCC_IR_Exp_BinaryImplArithFixed
 //
-#define GDCC_IR_Exp_BinaryImplArith(op) \
+#define GDCC_IR_Exp_BinaryImplArithFixed(op) \
    if(l.v == r.v) switch(l.v) \
    { \
    case ValueBase::Fixed: return l.vFixed op r.vFixed; \
+   default: return Value_Empty(); \
+   }
+
+//
+// GDCC_IR_Exp_BinaryImplArithFloat
+//
+#define GDCC_IR_Exp_BinaryImplArithFloat(op) \
+   if(l.v == r.v) switch(l.v) \
+   { \
+   case ValueBase::Fixed: return l.vFixed op r.vFixed; \
+   case ValueBase::Float: return l.vFloat op r.vFloat; \
    default: return Value_Empty(); \
    }
 
@@ -86,13 +97,24 @@ public: \
       {return static_cast<Exp::Ref>(new Exp_Binary##name(in));}
 
 //
-// GDCC__IR_Exp_BinaryImplValue
+// GDCC_IR_Exp_BinaryImplValueFixed
 //
-#define GDCC_IR_Exp_BinaryImplValue(name, op) \
+#define GDCC_IR_Exp_BinaryImplValueFixed(name, op) \
    Value Exp_Binary##name::v_getValue() const \
    { \
       auto l = expL->getValue(), r = expR->getValue(); \
-      GDCC_IR_Exp_BinaryImplArith(op); \
+      GDCC_IR_Exp_BinaryImplArithFixed(op); \
+      return Value_Empty(); \
+   }
+
+//
+// GDCC_IR_Exp_BinaryImplValueFloat
+//
+#define GDCC_IR_Exp_BinaryImplValueFloat(name, op) \
+   Value Exp_Binary##name::v_getValue() const \
+   { \
+      auto l = expL->getValue(), r = expR->getValue(); \
+      GDCC_IR_Exp_BinaryImplArithFloat(op); \
       return Value_Empty(); \
    }
 

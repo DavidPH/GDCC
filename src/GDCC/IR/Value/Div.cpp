@@ -22,6 +22,7 @@ namespace GDCC
    namespace IR
    {
       GDCC_IR_ValueBinOpImplEq(/, Fixed);
+      GDCC_IR_ValueBinOpImplEq(/, Float);
 
       //
       // operator Value_Fixed /= Value_Fixed
@@ -36,6 +37,16 @@ namespace GDCC
             l.value /= r.value << (l.vtype.bitsF - r.vtype.bitsF);
          else
             l.value /= r.value;
+
+         return l.clamp();
+      }
+
+      //
+      // operator Value_Float /= Value_Float
+      //
+      Value_Float &operator /= (Value_Float &l, Value_Float const &r)
+      {
+         GDCC_IR_ValueBinOpFltsOp(/);
 
          return l.clamp();
       }

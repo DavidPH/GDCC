@@ -34,16 +34,16 @@ namespace GDCC
       GDCC_IR_Exp_BinaryImplCreate(ShR)
       GDCC_IR_Exp_BinaryImplCreate(Sub)
 
-      GDCC_IR_Exp_BinaryImplValue(Add, +)
-      GDCC_IR_Exp_BinaryImplValue(And, &)
-      GDCC_IR_Exp_BinaryImplValue(Div, /)
-      GDCC_IR_Exp_BinaryImplValue(Mod, %)
-      GDCC_IR_Exp_BinaryImplValue(Mul, *)
-      GDCC_IR_Exp_BinaryImplValue(OrI, |)
-      GDCC_IR_Exp_BinaryImplValue(OrX, ^)
-      GDCC_IR_Exp_BinaryImplValue(ShL, <<)
-      GDCC_IR_Exp_BinaryImplValue(ShR, >>)
-      GDCC_IR_Exp_BinaryImplValue(Sub, -)
+      GDCC_IR_Exp_BinaryImplValueFloat(Add, +)
+      GDCC_IR_Exp_BinaryImplValueFixed(And, &)
+      GDCC_IR_Exp_BinaryImplValueFloat(Div, /)
+      GDCC_IR_Exp_BinaryImplValueFloat(Mod, %)
+      GDCC_IR_Exp_BinaryImplValueFloat(Mul, *)
+      GDCC_IR_Exp_BinaryImplValueFixed(OrI, |)
+      GDCC_IR_Exp_BinaryImplValueFixed(OrX, ^)
+      GDCC_IR_Exp_BinaryImplValueFixed(ShL, <<)
+      GDCC_IR_Exp_BinaryImplValueFixed(ShR, >>)
+      GDCC_IR_Exp_BinaryImplValueFloat(Sub, -)
 
       //
       // Exp_Binary constructor

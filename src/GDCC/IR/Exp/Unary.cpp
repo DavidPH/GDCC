@@ -80,17 +80,26 @@ namespace GDCC
          auto e = exp->getValue();
          auto t = e.getType();
 
-         if(t.t == type.t && t.t == TypeBase::Fixed)
+         switch(t.t)
          {
-            if(t.tFixed.bitsF < type.tFixed.bitsF)
-               e.vFixed.value <<= (type.tFixed.bitsF - t.tFixed.bitsF);
-            else if(t.tFixed.bitsF > type.tFixed.bitsF)
-               e.vFixed.value >>= (t.tFixed.bitsF - type.tFixed.bitsF);
+         case TypeBase::Fixed:
+            switch(type.t)
+            {
+            case TypeBase::Fixed: return Value_Fixed(e.vFixed, type.tFixed);
+            case TypeBase::Float: return Value_Float(e.vFixed, type.tFloat);
+            default: return Value_Empty();
+            }
 
-            return Value_Fixed(e.vFixed.value, type.tFixed).clamp();
+         case TypeBase::Float:
+            switch(type.t)
+            {
+            case TypeBase::Fixed: return Value_Fixed(e.vFloat, type.tFixed);
+            case TypeBase::Float: return Value_Float(e.vFloat, type.tFloat);
+            default: return Value_Empty();
+            }
+
+         default: return Value_Empty();
          }
-
-         return Value_Empty();
       }
 
       //

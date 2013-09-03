@@ -175,6 +175,7 @@ protected: \
    if(l.v == r.v) switch(l.v) \
    { \
    case ValueBase::Fixed: return Value_Fixed(l.vFixed op r.vFixed, BoolRaw); \
+   case ValueBase::Float: return Value_Fixed(l.vFloat op r.vFloat, BoolRaw); \
    default: return Value_Empty(); \
    }
 
