@@ -205,6 +205,58 @@ namespace GDCC
    }
 
    //
+   // ParseNumberRatioC
+   //
+   std::tuple<char const */*end*/, Ratio /*val*/, std::size_t /*len*/>
+   ParseNumberRatioC(char const *in, unsigned base)
+   {
+      char const *first = in;
+
+      // Read integral part.
+      GDCC::Ratio val;
+      std::tie(in, val, std::ignore) = GDCC::ParseNumberInteg(in, base);
+
+      // Read fractional part.
+      if(*in == '.')
+      {
+         GDCC::Ratio valF;
+         std::size_t digF;
+         std::tie(in, valF, digF) = GDCC::ParseNumberInteg(++in, base);
+
+         for(auto i = digF; i--;)
+            valF /= base;
+
+         val += valF;
+      }
+
+      // Read exponent.
+      if(*in == 'E' || *in == 'e' || *in == 'P' || *in == 'p')
+      {
+         GDCC::FastI valE;
+         std::tie(in, valE) = GDCC::ParseNumberExpC(in);
+
+         if(in < 0)
+         {
+            if(base == 10)
+               for(auto i = -valE; i--;)
+                  val /= 10;
+            else
+               val >>= -valE;
+         }
+         else if(in > 0)
+         {
+            if(base == 10)
+               for(auto i = valE; i--;)
+                  val *= 10;
+            else
+               val <<= valE;
+         }
+      }
+
+      return std::make_tuple(in, std::move(val), in - first);
+   }
+
+   //
    // ReadNumberC
    //
    std::string ReadNumberC(std::istream &in)

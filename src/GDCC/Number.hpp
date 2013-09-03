@@ -26,6 +26,7 @@ namespace GDCC
    // Unlimited precision numeric types.
    typedef mpf_class Float;
    typedef mpz_class Integ;
+   typedef mpq_class Ratio;
 
    // Faster, native numeric types.
    // FastU shall be suitable for storing the sizes of the target's objects.

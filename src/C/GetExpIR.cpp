@@ -25,6 +25,30 @@
 //
 
 //
+// TypeFlt
+//
+static GDCC::IR::Type_Float TypeFlt()
+{
+   return GDCC::IR::Type_Float(23, 8, true, false);
+}
+
+//
+// TypeFltL
+//
+static GDCC::IR::Type_Float TypeFltL()
+{
+   return GDCC::IR::Type_Float(52, 11, true, false);
+}
+
+//
+// TypeFltLL
+//
+static GDCC::IR::Type_Float TypeFltLL()
+{
+   return GDCC::IR::Type_Float(52, 11, true, false);
+}
+
+//
 // TypeIntMax
 //
 static GDCC::IR::Type_Fixed TypeIntMax()
@@ -58,8 +82,14 @@ Promote(GDCC::IR::Exp *l_, GDCC::IR::Exp *r_)
       // Fixed <-> Fixed
       if(rt.t == GDCC::IR::TypeBase::Fixed)
       {
+         // Promote to accum/fract from int.
+         if(!lt.tFixed.bitsF && rt.tFixed.bitsF)
+            l = GDCC::IR::ExpCreate_UnaryCst(rt, l);
+         else if(lt.tFixed.bitsF && !rt.tFixed.bitsF)
+            r = GDCC::IR::ExpCreate_UnaryCst(lt, r);
+
          // Promote to the most integral bits.
-         if(lt.tFixed.bitsI < rt.tFixed.bitsI)
+         else if(lt.tFixed.bitsI < rt.tFixed.bitsI)
             l = GDCC::IR::ExpCreate_UnaryCst(rt, l);
          else
             r = GDCC::IR::ExpCreate_UnaryCst(lt, r);
@@ -128,12 +158,89 @@ static GDCC::IR::Exp::Ref GetExpIR_Prim_NumInt(GDCC::Token const &tok)
 namespace C
 {
    //
+   // GetExpIR_Prim_NumFix
+   //
+   GDCC::IR::Exp::Ref GetExpIR_Prim_NumFix(GDCC::Token const &tok)
+   {
+      char const *itr = tok.str.begin();
+      unsigned base;
+      GDCC::Ratio val;
+      GDCC::IR::Type_Fixed t;
+
+      bool u = false, h = false, l = false, k = false, r = false;
+
+      std::tie(itr, base) = GDCC::ParseNumberBaseC(itr);
+      std::tie(itr, val, std::ignore) = GDCC::ParseNumberRatioC(itr, base);
+
+           if(*itr == 'U' || *itr == 'u') u = true, ++itr;
+           if(*itr == 'H' || *itr == 'h') h = true, ++itr;
+      else if(*itr == 'L' || *itr == 'l') l = true, ++itr;
+           if(*itr == 'K' || *itr == 'k') k = true, ++itr;
+      else if(*itr == 'R' || *itr == 'r') r = true, ++itr;
+
+      if(r)
+      {
+         t.bitsI = 0;
+
+              if(h) {t.bitsF = 15 + u;}
+         else if(l) {t.bitsF = 31 + u;}
+         else       {t.bitsF = 15 + u;}
+      }
+      else
+      {
+              if(h) {t.bitsI = 15 + u; t.bitsF = 16;}
+         else if(l) {t.bitsI = 31 + u; t.bitsF = 32;}
+         else       {t.bitsI = 15 + u; t.bitsF = 16;}
+      }
+
+      t.bitsS = !u;
+      t.satur = false;
+
+      val <<= t.bitsF;
+      GDCC::Integ v{std::move(val)};
+      return GDCC::IR::ExpCreate_ValueRoot(
+         GDCC::IR::Value_Fixed(std::move(v), t), tok.pos);
+   }
+
+   //
+   // GetExpIR_Prim_NumFlt
+   //
+   GDCC::IR::Exp::Ref GetExpIR_Prim_NumFlt(GDCC::Token const &tok)
+   {
+      char const *itr = tok.str.begin();
+      unsigned base;
+      GDCC::Ratio val;
+      GDCC::IR::Type_Float t;
+
+      std::tie(itr, base) = GDCC::ParseNumberBaseC(itr);
+      std::tie(itr, val, std::ignore) = GDCC::ParseNumberRatioC(itr, base);
+
+           if(*itr == 'F' || *itr == 'f') t = TypeFlt();
+      else if(*itr == 'L' || *itr == 'l') t = TypeFltLL();
+      else                                t = TypeFltL();
+
+      GDCC::Float v{std::move(val)};
+      return GDCC::IR::ExpCreate_ValueRoot(
+         GDCC::IR::Value_Float(std::move(v), t), tok.pos);
+   }
+
+   //
    // GetExpIR_Prim
    //
    GDCC::IR::Exp::Ref GetExpIR_Prim(GDCC::TokenStream &in)
    {
       auto tok = in.get(); switch(tok.tok)
       {
+      case GDCC::TOK_Charac:
+         return GDCC::IR::ExpCreate_ValueRoot(
+            GDCC::IR::Value_Fixed(*tok.str.begin(), TypeIntMax()), tok.pos);
+
+      case GDCC::TOK_NumFix:
+         return GetExpIR_Prim_NumFix(tok);
+
+      case GDCC::TOK_NumFlt:
+         return GetExpIR_Prim_NumFlt(tok);
+
       case GDCC::TOK_NumInt:
          return GetExpIR_Prim_NumInt(tok);
 

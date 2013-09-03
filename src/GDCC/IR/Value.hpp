@@ -74,9 +74,19 @@ namespace GDCC
       {
          Value_Float() = default;
 
+         Value_Float(Value_Float const &value, Type_Float const &vtype);
+         Value_Float(Value_Float &&value, Type_Float const &vtype);
+
+         Value_Float(Float const &value_, Type_Float const &vtype_) :
+            vtype{vtype_}, value{value_} {clamp();}
+         Value_Float(Float &&value_, Type_Float const &vtype_) :
+            vtype{vtype_}, value{std::move(value_)} {clamp();}
+
          explicit Value_Float(IArchive &in);
 
          explicit operator bool () const {return static_cast<bool>(value);}
+
+         Value_Float &clamp() {return *this;}
 
          Type_Float vtype;
          Float      value;

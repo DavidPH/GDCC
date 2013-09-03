@@ -69,6 +69,9 @@ namespace GDCC
    std::tuple<char const */*end*/, Integ /*val*/, std::size_t /*len*/>
    ParseNumberInteg(char const *in, unsigned base);
 
+   std::tuple<char const */*end*/, Ratio /*val*/, std::size_t /*len*/>
+   ParseNumberRatioC(char const *in, unsigned base);
+
    std::string ParseStringC(std::string const &in);
    String ParseStringC(String in);
 
