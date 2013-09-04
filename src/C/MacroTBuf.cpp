@@ -208,6 +208,7 @@ namespace C
          {
             if(itr == buf.end()) {buf.emplace(itr, src.get()); --itr;}
 
+            if(itr->tok == GDCC::TOK_Marker) {applyMarker(itr->str); buf.erase(itr++); --itr; continue;}
             if(itr->tok == GDCC::TOK_ParenO) ++depth;
             if(itr->tok == GDCC::TOK_ParenC) {if(depth) --depth; else break;}
 
@@ -334,14 +335,9 @@ namespace C
 
                std::vector<GDCC::Token> toks; toks.reserve(arg->size());
 
-               // Add tokens, checking for any controlling markers.
+               // Add tokens.
                for(auto const &argTok : *arg)
-               {
-                  if(argTok.tok == GDCC::TOK_Marker)
-                     applyMarker(argTok.str);
-                  else
-                     toks.emplace_back(e->pos, argTok.str, argTok.tok);
-               }
+                  toks.emplace_back(e->pos, argTok.str, argTok.tok);
 
                // Build token buffer.
                GDCC::ArrayTBuf abuf{toks.data(), toks.size()};
@@ -378,14 +374,9 @@ namespace C
       while(itr != end && (itr->tok == GDCC::TOK_WSpace || itr->tok == GDCC::TOK_LnEnd))
          ++itr;
 
-      // Stringize tokens, applying any markers.
+      // Stringize tokens.
       for(; itr != end; ++itr)
-      {
-         if(itr->tok == GDCC::TOK_Marker)
-            applyMarker(itr->str);
-         else
-            C::Macro::Stringize(tmp, *itr);
-      }
+         C::Macro::Stringize(tmp, *itr);
 
       // Discard trailing whitespace.
       while(std::isspace(tmp.back())) tmp.pop_back();
