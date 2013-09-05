@@ -12,7 +12,7 @@
 
 #include "Parse.hpp"
 
-#include "IStream.hpp"
+#include "GDCC/TokenStream.hpp"
 
 #include "GDCC/IR/Exp.hpp"
 #include "GDCC/IR/Object.hpp"
@@ -29,35 +29,35 @@ namespace Asm
    //
    // ParseSpace
    //
-   void ParseSpace(IStream &in, GDCC::IR::Space &space)
+   void ParseSpace(GDCC::TokenStream &in, GDCC::IR::Space &space)
    {
-      for(GDCC::Token tok; in >> tok;) switch(static_cast<GDCC::StringIndex>(tok.str))
+      while(!in.drop(GDCC::TOK_LnEnd)) switch(static_cast<GDCC::StringIndex>(
+         ExpectToken(in, GDCC::TOK_Identi, "identifier").get().str))
       {
       case GDCC::STR_alloc:
-         space.alloc = ParseFastU(SkipEqual(in));
+         space.alloc = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_defin:
-         space.defin = ParseFastU(SkipEqual(in));
+         space.defin = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_linka:
-         space.linka = ParseLinkage((SkipEqual(in) >> tok, tok));
+         space.linka = ParseLinkage(SkipToken(in, GDCC::TOK_Equal, "=").get());
          break;
 
       case GDCC::STR_value:
-         space.value = ParseFastU(SkipEqual(in));
+         space.value = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_words:
-         space.words = ParseFastU(SkipEqual(in));
+         space.words = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       default:
-         if(tok.tok == GDCC::TOK_LnEnd) return;
-
-         std::cerr << "ERROR: " << tok.pos << ": bad Space argument: '"
-            << tok.str << "'\n";
+         in.unget();
+         std::cerr << "ERROR: " << in.peek().pos << ": bad Space argument: '"
+            << in.peek().str << "'\n";
          throw EXIT_FAILURE;
       }
    }

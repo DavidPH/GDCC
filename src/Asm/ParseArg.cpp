@@ -12,7 +12,7 @@
 
 #include "Parse.hpp"
 
-#include "IStream.hpp"
+#include "GDCC/TokenStream.hpp"
 
 #include "GDCC/IR/Arg.hpp"
 
@@ -23,16 +23,14 @@
 // Static Function                                                            |
 //
 
-static void SkipToken(Asm::IStream &in, GDCC::TokenType tt, char const *s);
-
 //
 // ParseArg0
 //
 template<typename T>
-static T ParseArg0(Asm::IStream &in)
+static T ParseArg0(GDCC::TokenStream &in)
 {
-   SkipToken(in, GDCC::TOK_ParenO, "(");
-   SkipToken(in, GDCC::TOK_ParenC, ")");
+   Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
+   Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return T();
 }
@@ -41,11 +39,11 @@ static T ParseArg0(Asm::IStream &in)
 // ParseArg1
 //
 template<typename T>
-static T ParseArg1(Asm::IStream &in)
+static T ParseArg1(GDCC::TokenStream &in)
 {
-   SkipToken(in, GDCC::TOK_ParenO, "(");
+   Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
    auto exp = Asm::ParseExp(in);
-   SkipToken(in, GDCC::TOK_ParenC, ")");
+   Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return T(std::move(exp));
 }
@@ -54,13 +52,13 @@ static T ParseArg1(Asm::IStream &in)
 // ParseArg2
 //
 template<typename T>
-static T ParseArg2(Asm::IStream &in)
+static T ParseArg2(GDCC::TokenStream &in)
 {
-   SkipToken(in, GDCC::TOK_ParenO, "(");
+   Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
    auto arg = Asm::ParseArg(in);
-   SkipToken(in, GDCC::TOK_Comma, ",");
+   Asm::SkipToken(in, GDCC::TOK_Comma, ",");
    auto exp = Asm::ParseExp(in);
-   SkipToken(in, GDCC::TOK_ParenC, ")");
+   Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return T(std::move(arg), std::move(exp));
 }
@@ -69,30 +67,17 @@ static T ParseArg2(Asm::IStream &in)
 // ParseArg3
 //
 template<typename T>
-static T ParseArg3(Asm::IStream &in)
+static T ParseArg3(GDCC::TokenStream &in)
 {
-   SkipToken(in, GDCC::TOK_ParenO, "(");
+   Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
    auto arg0 = Asm::ParseArg(in);
-   SkipToken(in, GDCC::TOK_Comma, ",");
+   Asm::SkipToken(in, GDCC::TOK_Comma, ",");
    auto arg1 = Asm::ParseArg(in);
-   SkipToken(in, GDCC::TOK_Comma, ",");
+   Asm::SkipToken(in, GDCC::TOK_Comma, ",");
    auto exp = Asm::ParseExp(in);
-   SkipToken(in, GDCC::TOK_ParenC, ")");
+   Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return T(std::move(arg0), std::move(arg1), std::move(exp));
-}
-
-//
-// SkipToken
-//
-static void SkipToken(Asm::IStream &in, GDCC::TokenType tt, char const *s)
-{
-   GDCC::Token tok;
-   if((in >> tok, tok).tok != tt)
-   {
-      std::cerr << "ERROR: " << tok.pos << ": expected " << s << "\n";
-      throw EXIT_FAILURE;
-   }
 }
 
 
@@ -105,10 +90,10 @@ namespace Asm
    //
    // ParseArg
    //
-   GDCC::IR::Arg ParseArg(IStream &in)
+   GDCC::IR::Arg ParseArg(GDCC::TokenStream &in)
    {
-      GDCC::Token tok; in >> tok;
-      switch(static_cast<GDCC::StringIndex>(tok.str))
+      ExpectToken(in, GDCC::TOK_Identi, "identifier");
+      switch(static_cast<GDCC::StringIndex>(in.get().str))
       {
       case GDCC::STR_Gen:    return ParseArg2<GDCC::IR::Arg_Gen   >(in);
 
@@ -136,8 +121,9 @@ namespace Asm
       case GDCC::STR_WldArr: return ParseArg3<GDCC::IR::Arg_WldArr>(in);
 
       default:
-         std::cerr << "ERROR: " << tok.pos << ": bad statement argument: '"
-            << tok.str << "'\n";
+         in.unget();
+         std::cerr << "ERROR: " << in.peek().pos << ": bad statement argument: '"
+            << in.peek().str << "'\n";
          throw EXIT_FAILURE;
       }
    }

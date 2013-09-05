@@ -12,7 +12,7 @@
 
 #include "Parse.hpp"
 
-#include "IStream.hpp"
+#include "GDCC/TokenStream.hpp"
 
 #include "GDCC/IR/Type.hpp"
 
@@ -24,51 +24,12 @@
 //
 
 //
-// SkipComma
-//
-static void SkipComma(Asm::IStream &in)
-{
-   GDCC::Token tok;
-   if((in >> tok, tok).tok != GDCC::TOK_Comma)
-   {
-      std::cerr << "ERROR: " << tok.pos << ": expected ,\n";
-      throw EXIT_FAILURE;
-   }
-}
-
-//
-// SkipParenC
-//
-static void SkipParenC(Asm::IStream &in)
-{
-   GDCC::Token tok;
-   if((in >> tok, tok).tok != GDCC::TOK_ParenC)
-   {
-      std::cerr << "ERROR: " << tok.pos << ": expected )\n";
-      throw EXIT_FAILURE;
-   }
-}
-
-//
-// SkipParenO
-//
-static void SkipParenO(Asm::IStream &in)
-{
-   GDCC::Token tok;
-   if((in >> tok, tok).tok != GDCC::TOK_ParenO)
-   {
-      std::cerr << "ERROR: " << tok.pos << ": expected (\n";
-      throw EXIT_FAILURE;
-   }
-}
-
-//
 // ParseType_Empty
 //
-static GDCC::IR::Type_Empty ParseType_Empty(Asm::IStream &in)
+static GDCC::IR::Type_Empty ParseType_Empty(GDCC::TokenStream &in)
 {
-   SkipParenO(in);
-   SkipParenC(in);
+   Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
+   Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return GDCC::IR::Type_Empty();
 }
@@ -76,14 +37,14 @@ static GDCC::IR::Type_Empty ParseType_Empty(Asm::IStream &in)
 //
 // ParseType_Fixed
 //
-static GDCC::IR::Type_Fixed ParseType_Fixed(Asm::IStream &in)
+static GDCC::IR::Type_Fixed ParseType_Fixed(GDCC::TokenStream &in)
 {
-   SkipParenO(in);
-   auto bitsI = Asm::ParseFastU(in); SkipComma(in);
-   auto bitsF = Asm::ParseFastU(in); SkipComma(in);
-   bool bitsS = Asm::ParseFastU(in); SkipComma(in);
+   Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
+   auto bitsI = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
+   auto bitsF = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
+   bool bitsS = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
    bool satur = Asm::ParseFastU(in);
-   SkipParenC(in);
+   Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return GDCC::IR::Type_Fixed(bitsI, bitsF, bitsS, satur);
 }
@@ -91,14 +52,14 @@ static GDCC::IR::Type_Fixed ParseType_Fixed(Asm::IStream &in)
 //
 // ParseType_Float
 //
-static GDCC::IR::Type_Float ParseType_Float(Asm::IStream &in)
+static GDCC::IR::Type_Float ParseType_Float(GDCC::TokenStream &in)
 {
-   SkipParenO(in);
-   auto bitsI = Asm::ParseFastU(in); SkipComma(in);
-   auto bitsF = Asm::ParseFastU(in); SkipComma(in);
-   bool bitsS = Asm::ParseFastU(in); SkipComma(in);
+   Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
+   auto bitsI = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
+   auto bitsF = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
+   bool bitsS = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
    bool satur = Asm::ParseFastU(in);
-   SkipParenC(in);
+   Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return GDCC::IR::Type_Float(bitsI, bitsF, bitsS, satur);
 }
@@ -106,13 +67,11 @@ static GDCC::IR::Type_Float ParseType_Float(Asm::IStream &in)
 //
 // ParseType_Funct
 //
-static GDCC::IR::Type_Funct ParseType_Funct(Asm::IStream &in)
+static GDCC::IR::Type_Funct ParseType_Funct(GDCC::TokenStream &in)
 {
-   GDCC::Token tok;
-
-   SkipParenO(in);
-   auto callT = Asm::ParseCallType((in >> tok, tok));
-   SkipParenC(in);
+   Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
+   auto callT = Asm::ParseCallType(in.get());
+   Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return GDCC::IR::Type_Funct(callT);
 }
@@ -120,21 +79,17 @@ static GDCC::IR::Type_Funct ParseType_Funct(Asm::IStream &in)
 //
 // ParseType_Multi
 //
-static GDCC::IR::Type_Multi ParseType_Multi(Asm::IStream &in)
+static GDCC::IR::Type_Multi ParseType_Multi(GDCC::TokenStream &in)
 {
    std::vector<GDCC::IR::Type> typev;
-   GDCC::Token tok;
 
-   SkipParenO(in);
+   Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
 
-   do typev.emplace_back(Asm::ParseType(in));
-   while((in >> tok, tok).tok == GDCC::TOK_Comma);
+   if(in.peek().tok != GDCC::TOK_ParenC) do
+      typev.emplace_back(Asm::ParseType(in));
+   while(in.drop(GDCC::TOK_Comma));
 
-   if(tok.tok != GDCC::TOK_ParenC)
-   {
-      std::cerr << "ERROR: " << tok.pos << ": expected )\n";
-      throw EXIT_FAILURE;
-   }
+   Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    GDCC::Array<GDCC::IR::Type> types{GDCC::Move, typev.begin(), typev.end()};
 
@@ -144,15 +99,13 @@ static GDCC::IR::Type_Multi ParseType_Multi(Asm::IStream &in)
 //
 // ParseType_Point
 //
-static GDCC::IR::Type_Point ParseType_Point(Asm::IStream &in)
+static GDCC::IR::Type_Point ParseType_Point(GDCC::TokenStream &in)
 {
-   GDCC::Token tok;
-
-   SkipParenO(in);
-   auto addrB = Asm::ParseAddrBase((in >> tok, tok)); SkipComma(in);
-   auto addrS = Asm::ParseFastU(in); SkipComma(in);
+   Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
+   auto addrB = Asm::ParseAddrBase(in.get()); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
+   auto addrS = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
    auto addrW = Asm::ParseFastU(in);
-   SkipParenC(in);
+   Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return GDCC::IR::Type_Point(addrB, addrS, addrW);
 }
@@ -160,10 +113,10 @@ static GDCC::IR::Type_Point ParseType_Point(Asm::IStream &in)
 //
 // ParseType_StrEn
 //
-static GDCC::IR::Type_StrEn ParseType_StrEn(Asm::IStream &in)
+static GDCC::IR::Type_StrEn ParseType_StrEn(GDCC::TokenStream &in)
 {
-   SkipParenO(in);
-   SkipParenC(in);
+   Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
+   Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return GDCC::IR::Type_StrEn();
 }
@@ -178,17 +131,19 @@ namespace Asm
    //
    // ParseType
    //
-   GDCC::IR::Type ParseType(IStream &in)
+   GDCC::IR::Type ParseType(GDCC::TokenStream &in)
    {
-      GDCC::Token tok;
-      switch(static_cast<GDCC::StringIndex>((in >> tok, tok).str))
+      switch(static_cast<GDCC::StringIndex>(
+         ExpectToken(in, GDCC::TOK_Identi, "identifier").get().str))
       {
          #define GDCC_IR_TypeList(name) \
             case GDCC::STR_##name: return ParseType_##name(in);
          #include "GDCC/IR/TypeList.hpp"
 
       default:
-         std::cerr << "ERROR: " << tok.pos << ": bad type: '" << tok.str << "'\n";
+         in.unget();
+         std::cerr << "ERROR: " << in.peek().pos << ": bad type: '"
+            << in.peek().str << "'\n";
          throw EXIT_FAILURE;
       }
    }

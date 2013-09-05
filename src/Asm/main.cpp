@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IStream.hpp"
 #include "Parse.hpp"
+#include "TStream.hpp"
 
 #include "GDCC/Option.hpp"
 #include "GDCC/Token.hpp"
@@ -56,61 +56,63 @@ static void MakeAsm()
 //
 // ParseTLK
 //
-static bool ParseTLK(Asm::IStream &in)
+static void ParseTLK(GDCC::TokenStream &in)
 {
    GDCC::IR::AddrSpace as;
-   GDCC::Token tok;
-   if(!(in >> tok)) return false;
 
-   if(tok.tok == GDCC::TOK_LnEnd) return true;
+   while(in.peek().tok == GDCC::TOK_LnEnd) in.get();
 
-   switch(static_cast<GDCC::StringIndex>(tok.str))
+   if(in.peek().tok == GDCC::TOK_EOF) return;
+
+   if(in.peek().tok != GDCC::TOK_Identi)
+   {
+      std::cerr << "ERROR: " << in.peek().pos << ": expected identifier\n";
+      throw EXIT_FAILURE;
+   }
+
+   switch(static_cast<GDCC::StringIndex>(in.get().str))
    {
    case GDCC::STR_Function:
-      in >> tok;
-      if(tok.tok != GDCC::TOK_Identi && tok.tok != GDCC::TOK_String)
-      {
-         std::cerr << "ERROR: " << tok.pos << ": expected identifier or string\n";
-         throw EXIT_FAILURE;
-      }
-
-      Asm::ParseFunction(in, GDCC::IR::Function::Get(tok.str));
-      return true;
+      Asm::ExpectToken(in, GDCC::TOK_String, "string");
+      Asm::ParseFunction(in, GDCC::IR::Function::Get(in.get().str));
+      break;
 
    case GDCC::STR_Import:
-      in >> tok;
-      Asm::ParseImport(in, GDCC::IR::Import::Get(tok.str));
-      return true;
+      Asm::ExpectToken(in, GDCC::TOK_String, "string");
+      Asm::ParseImport(in, GDCC::IR::Import::Get(in.get().str));
+      break;
 
    case GDCC::STR_Object:
-      as.base = Asm::ParseAddrBase((in >> tok, tok));
-      as.name = (in >> tok, tok).str;
+      as.base = Asm::ParseAddrBase(in.get());
+      as.name = Asm::ExpectToken(in, GDCC::TOK_String, "string").get().str;
+      Asm::ExpectToken(in, GDCC::TOK_String, "string");
 
       if(auto space = GDCC::IR::Space::Find(as))
-         Asm::ParseObject(in, space->get((in >> tok, tok).str));
+         Asm::ParseObject(in, space->get(in.get().str));
       else
       {
-         std::cerr << "ERROR: " << tok.pos << ": expected address space\n";
+         std::cerr << "ERROR: " << in.peek().pos << ": expected address space\n";
          throw EXIT_FAILURE;
       }
 
-      return true;
+      break;
 
    case GDCC::STR_Space:
-      as.base = Asm::ParseAddrBase((in >> tok, tok));
-      as.name = (in >> tok, tok).str;
+      as.base = Asm::ParseAddrBase(in.get());
+      as.name = Asm::ExpectToken(in, GDCC::TOK_String, "string").get().str;
 
       Asm::ParseSpace(in, GDCC::IR::Space::Get(as));
-      return true;
+      break;
 
    case GDCC::STR_StrEnt:
-      in >> tok;
-      Asm::ParseStrEnt(in, GDCC::IR::StrEnt::Get(tok.str));
-      return true;
+      Asm::ExpectToken(in, GDCC::TOK_String, "string");
+      Asm::ParseStrEnt(in, GDCC::IR::StrEnt::Get(in.get().str));
+      break;
 
    default:
-      std::cerr << "ERROR: " << tok.pos << ": bad top-level keyword: '"
-         << tok.str << "'\n";
+      in.unget();
+      std::cerr << "ERROR: " << in.peek().pos << ": bad top-level keyword: '"
+         << in.peek().str << "'\n";
       throw EXIT_FAILURE;
    }
 }
@@ -128,8 +130,8 @@ static void ProcessFile(char const *inName)
       throw EXIT_FAILURE;
    }
 
-   Asm::IStream in{fbuf, GDCC::AddString(inName)};
-   while(ParseTLK(in)) {}
+   Asm::TStream in{fbuf, GDCC::AddString(inName)};
+   while(in.peek().tok != GDCC::TOK_EOF) ParseTLK(in);
 }
 
 

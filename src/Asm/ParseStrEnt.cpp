@@ -12,7 +12,7 @@
 
 #include "Parse.hpp"
 
-#include "IStream.hpp"
+#include "GDCC/TokenStream.hpp"
 
 #include "GDCC/IR/StrEnt.hpp"
 
@@ -28,35 +28,36 @@ namespace Asm
    //
    // ParseStrEnt
    //
-   void ParseStrEnt(IStream &in, GDCC::IR::StrEnt &str)
+   void ParseStrEnt(GDCC::TokenStream &in, GDCC::IR::StrEnt &str)
    {
-      for(GDCC::Token tok; in >> tok;) switch(static_cast<GDCC::StringIndex>(tok.str))
+      while(!in.drop(GDCC::TOK_LnEnd)) switch(static_cast<GDCC::StringIndex>(
+         ExpectToken(in, GDCC::TOK_Identi, "identifier").get().str))
       {
       case GDCC::STR_alias:
-         str.alias = ParseFastU(SkipEqual(in));
+         str.alias = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_alloc:
-         str.alloc = ParseFastU(SkipEqual(in));
+         str.alloc = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_defin:
-         str.defin = ParseFastU(SkipEqual(in));
+         str.defin = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_valueInt:
-         str.valueInt = ParseFastU(SkipEqual(in));
+         str.valueInt = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_valueStr:
-         str.valueStr = (SkipEqual(in) >> tok, tok).str;
+         SkipToken(in, GDCC::TOK_Equal, "=");
+         str.valueStr = ExpectToken(in, GDCC::TOK_String, "string").get().str;
          break;
 
       default:
-         if(tok.tok == GDCC::TOK_LnEnd) return;
-
-         std::cerr << "ERROR: " << tok.pos << ": bad StrEnt argument: '"
-            << tok.str << "'\n";
+         in.unget();
+         std::cerr << "ERROR: " << in.peek().pos << ": bad StrEnt argument: '"
+            << in.peek().str << "'\n";
          throw EXIT_FAILURE;
       }
    }

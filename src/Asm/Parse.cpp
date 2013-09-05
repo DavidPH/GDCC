@@ -12,7 +12,7 @@
 
 #include "Parse.hpp"
 
-#include "IStream.hpp"
+#include "GDCC/TokenStream.hpp"
 
 #include "GDCC/IR/Addr.hpp"
 #include "GDCC/IR/Function.hpp"
@@ -27,6 +27,20 @@
 
 namespace Asm
 {
+   //
+   // ExpectToken
+   //
+   GDCC::TokenStream &ExpectToken(GDCC::TokenStream &in, GDCC::TokenType tt, char const *str)
+   {
+      if(in.peek().tok != tt)
+      {
+         std::cerr << "ERROR: " << in.peek().pos << ": expected " << str << '\n';
+         throw EXIT_FAILURE;
+      }
+
+      return in;
+   }
+
    //
    // ParseAddrBase
    //
@@ -116,14 +130,13 @@ namespace Asm
    }
 
    //
-   // SkipEqual
+   // SkipToken
    //
-   IStream &SkipEqual(IStream &in)
+   GDCC::TokenStream &SkipToken(GDCC::TokenStream &in, GDCC::TokenType tt, char const *str)
    {
-      GDCC::Token tok;
-      if((in >> tok, tok).tok != GDCC::TOK_Equal)
+      if(!in.drop(tt))
       {
-         std::cerr << "ERROR: " << tok.pos << ": expected =\n";
+         std::cerr << "ERROR: " << in.peek().pos << ": expected " << str << '\n';
          throw EXIT_FAILURE;
       }
 

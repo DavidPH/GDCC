@@ -22,11 +22,6 @@
 // Types                                                                      |
 //
 
-namespace Asm
-{
-   class IStream;
-}
-
 namespace GDCC
 {
    namespace IR
@@ -48,6 +43,8 @@ namespace GDCC
       class Value;
       class Value_Multi;
    }
+
+   class TokenStream;
 }
 
 
@@ -57,42 +54,44 @@ namespace GDCC
 
 namespace Asm
 {
+   GDCC::TokenStream &ExpectToken(GDCC::TokenStream &in, GDCC::TokenType tt, char const *str);
+
    GDCC::IR::AddrBase ParseAddrBase(GDCC::Token const &tok);
 
-   GDCC::IR::Arg ParseArg(IStream &in);
+   GDCC::IR::Arg ParseArg(GDCC::TokenStream &in);
 
-   void ParseBlock(IStream &in, GDCC::IR::Block &block, GDCC::TokenType end);
+   void ParseBlock(GDCC::TokenStream &in, GDCC::IR::Block &block, GDCC::TokenType end);
 
    GDCC::IR::CallType ParseCallType(GDCC::Token const &tok);
 
-   GDCC::CounterRef<GDCC::IR::Exp> ParseExp(IStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp> ParseExp(GDCC::TokenStream &in);
 
-   GDCC::FastI ParseFastI(IStream &in);
-   GDCC::FastU ParseFastU(IStream &in);
+   GDCC::FastI ParseFastI(GDCC::TokenStream &in);
+   GDCC::FastU ParseFastU(GDCC::TokenStream &in);
 
-   void ParseFunction(IStream &in, GDCC::IR::Function &func);
+   void ParseFunction(GDCC::TokenStream &in, GDCC::IR::Function &func);
 
-   void ParseImport(IStream &in, GDCC::IR::Import &imp);
+   void ParseImport(GDCC::TokenStream &in, GDCC::IR::Import &imp);
 
-   GDCC::Integ ParseInteg(IStream &in);
+   GDCC::Integ ParseInteg(GDCC::TokenStream &in);
 
    GDCC::IR::Linkage ParseLinkage(GDCC::Token const &tok);
 
-   void ParseObject(IStream &in, GDCC::IR::Object &obj);
+   void ParseObject(GDCC::TokenStream &in, GDCC::IR::Object &obj);
 
-   GDCC::IR::Value_Multi ParseMulti(IStream &in);
+   GDCC::IR::Value_Multi ParseMulti(GDCC::TokenStream &in);
 
    GDCC::IR::Value ParseNumber(GDCC::Token const &tok);
 
    GDCC::IR::ScriptType ParseScriptType(GDCC::Token const &tok);
 
-   void ParseSpace(IStream &in, GDCC::IR::Space &space);
+   void ParseSpace(GDCC::TokenStream &in, GDCC::IR::Space &space);
 
-   void ParseStrEnt(IStream &in, GDCC::IR::StrEnt &str);
+   void ParseStrEnt(GDCC::TokenStream &in, GDCC::IR::StrEnt &str);
 
-   GDCC::IR::Type ParseType(IStream &in);
+   GDCC::IR::Type ParseType(GDCC::TokenStream &in);
 
-   IStream &SkipEqual(IStream &in);
+   GDCC::TokenStream &SkipToken(GDCC::TokenStream &in, GDCC::TokenType tt, char const *str);
 }
 
 #endif//Asm__Parse_H__

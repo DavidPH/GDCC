@@ -12,7 +12,7 @@
 
 #include "Parse.hpp"
 
-#include "IStream.hpp"
+#include "GDCC/TokenStream.hpp"
 
 #include "GDCC/IR/Import.hpp"
 
@@ -28,15 +28,15 @@ namespace Asm
    //
    // ParseImport
    //
-   void ParseImport(IStream &in, GDCC::IR::Import &)
+   void ParseImport(GDCC::TokenStream &in, GDCC::IR::Import &)
    {
-      for(GDCC::Token tok; in >> tok;) switch(static_cast<GDCC::StringIndex>(tok.str))
+      while(!in.drop(GDCC::TOK_LnEnd)) switch(static_cast<GDCC::StringIndex>(
+         ExpectToken(in, GDCC::TOK_Identi, "identifier").get().str))
       {
       default:
-         if(tok.tok == GDCC::TOK_LnEnd) return;
-
-         std::cerr << "ERROR: " << tok.pos << ": bad Import argument: '"
-            << tok.str << "'\n";
+         in.unget();
+         std::cerr << "ERROR: " << in.peek().pos << ": bad Import argument: '"
+            << in.peek().str << "'\n";
          throw EXIT_FAILURE;
       }
    }

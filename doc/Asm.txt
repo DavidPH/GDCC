@@ -455,19 +455,20 @@ Expressions
     <Fixed> ( expression , expression , expression , expression )
     <Float> ( expression , expression , expression , expression )
     <Funct> ( call-type-specifier )
-    <Multi> ( type-list )
+    <Multi> ( type-list(opt) )
     <Point> ( address-specifier , expression )
     <StrEn> ( )
 
   type-list:
-    type-list(opt) type
+    type
+    type , type-list
 
 ===========================================================
 Aggregates
 ===========================================================
 
   aggregate:
-    [ expression-list ]
+    [ expression-list(opt) ]
 
   expression-list:
     expression
@@ -862,10 +863,11 @@ Grammar
     <StrEn> ( )
 
   type-list:
-    type-list(opt) type
+    type
+    type , type-list
 
   aggregate:
-    [ expression-list ]
+    [ expression-list(opt) ]
 
   expression-list:
     expression

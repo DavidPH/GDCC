@@ -12,9 +12,8 @@
 
 #include "Parse.hpp"
 
-#include "IStream.hpp"
-
 #include "GDCC/Parse.hpp"
+#include "GDCC/TokenStream.hpp"
 
 #include "GDCC/IR/Exp.hpp"
 #include "GDCC/IR/Glyph.hpp"
@@ -65,7 +64,7 @@ namespace Asm
    //
    // ParseExp
    //
-   GDCC::IR::Exp::Ref ParseExp(IStream &in)
+   GDCC::IR::Exp::Ref ParseExp(GDCC::TokenStream &in)
    {
       #define doE1(name, token) case GDCC::token: \
          return GDCC::IR::ExpCreate_##name(ParseExp(in), tok.pos)
@@ -130,6 +129,7 @@ namespace Asm
          doE1(UnarySub, TOK_Sub2);
 
       case GDCC::TOK_BrackO:
+         in.unget();
          return GDCC::IR::ExpCreate_ValueRoot(ParseMulti(in), tok.pos);
 
       default:
@@ -145,7 +145,7 @@ namespace Asm
    //
    // ParseFastI
    //
-   GDCC::FastI ParseFastI(IStream &in)
+   GDCC::FastI ParseFastI(GDCC::TokenStream &in)
    {
       auto i = ParseInteg(in);
 
@@ -155,7 +155,7 @@ namespace Asm
    //
    // ParseFastU
    //
-   GDCC::FastU ParseFastU(IStream &in)
+   GDCC::FastU ParseFastU(GDCC::TokenStream &in)
    {
       auto i = ParseInteg(in);
 
@@ -165,7 +165,7 @@ namespace Asm
    //
    // ParseInteg
    //
-   GDCC::Integ ParseInteg(IStream &in)
+   GDCC::Integ ParseInteg(GDCC::TokenStream &in)
    {
       auto exp = ParseExp(in);
       auto val = exp->getValue();
@@ -184,19 +184,17 @@ namespace Asm
    //
    // ParseMulti
    //
-   GDCC::IR::Value_Multi ParseMulti(IStream &in)
+   GDCC::IR::Value_Multi ParseMulti(GDCC::TokenStream &in)
    {
-      GDCC::Token tok;
       std::vector<GDCC::IR::Value> val;
 
-      do val.emplace_back(ParseExp(in)->getValue());
-      while((in >> tok, tok).tok == GDCC::TOK_Comma);
+      SkipToken(in, GDCC::TOK_BrackO, "[");
 
-      if(tok.tok != GDCC::TOK_BrackC)
-      {
-         std::cerr << "ERROR: " << tok.pos << ": expected ]\n";
-         throw EXIT_FAILURE;
-      }
+      if(in.peek().tok != GDCC::TOK_BrackC) do
+         val.emplace_back(ParseExp(in)->getValue());
+      while(in.drop(GDCC::TOK_Comma));
+
+      SkipToken(in, GDCC::TOK_BrackC, "]");
 
       GDCC::Array<GDCC::IR::Value> vals{GDCC::Move, val.begin(), val.end()};
       GDCC::Array<GDCC::IR::Type> types{vals.size()};

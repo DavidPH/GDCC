@@ -12,7 +12,7 @@
 
 #include "Parse.hpp"
 
-#include "IStream.hpp"
+#include "GDCC/TokenStream.hpp"
 
 #include "GDCC/IR/Function.hpp"
 
@@ -28,81 +28,79 @@ namespace Asm
    //
    // ParseFunction
    //
-   void ParseFunction(IStream &in, GDCC::IR::Function &func)
+   void ParseFunction(GDCC::TokenStream &in, GDCC::IR::Function &func)
    {
-      for(GDCC::Token tok; in >> tok;) switch(static_cast<GDCC::StringIndex>(tok.str))
+      while(!in.drop(GDCC::TOK_LnEnd)) switch(static_cast<GDCC::StringIndex>(
+         ExpectToken(in, GDCC::TOK_Identi, "identifier").get().str))
       {
       case GDCC::STR_alloc:
-         func.alloc = ParseFastU(SkipEqual(in));
+         func.alloc = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_block:
-         while(in >> tok && tok.tok == GDCC::TOK_LnEnd) {}
-         if(tok.tok != GDCC::TOK_BraceO)
-         {
-            std::cerr << "ERROR: " << tok.pos << ": expected {\n";
-            throw EXIT_FAILURE;
-         }
+         while(in.drop(GDCC::TOK_LnEnd)) {}
+         SkipToken(in, GDCC::TOK_BraceO, "{");
          ParseBlock(in, func.block, GDCC::TOK_BraceC);
          break;
 
       case GDCC::STR_ctype:
-         func.ctype = ParseCallType((SkipEqual(in) >> tok, tok));
+         func.ctype = ParseCallType(SkipToken(in, GDCC::TOK_Equal, "=").get());
          break;
 
       case GDCC::STR_defin:
-         func.defin = ParseFastU(SkipEqual(in));
+         func.defin = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_label:
-         func.label = (SkipEqual(in) >> tok, tok).str;
+         SkipToken(in, GDCC::TOK_Equal, "=");
+         func.label = ExpectToken(in, GDCC::TOK_String, "string").get().str;
          break;
 
       case GDCC::STR_linka:
-         func.linka = ParseLinkage((SkipEqual(in) >> tok, tok));
+         func.linka = ParseLinkage(SkipToken(in, GDCC::TOK_Equal, "=").get());
          break;
 
       case GDCC::STR_localArs:
-         func.localArs = ParseFastU(SkipEqual(in));
+         func.localArs = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_localReg:
-         func.localReg = ParseFastU(SkipEqual(in));
+         func.localReg = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_param:
-         func.param = ParseFastU(SkipEqual(in));
+         func.param = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_retrn:
-         func.retrn = ParseFastU(SkipEqual(in));
+         func.retrn = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_sflagClS:
-         func.sflagClS = ParseFastU(SkipEqual(in));
+         func.sflagClS = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_sflagNet:
-         func.sflagNet = ParseFastU(SkipEqual(in));
+         func.sflagNet = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_stype:
-         func.stype = ParseScriptType((SkipEqual(in) >> tok, tok));
+         func.stype = ParseScriptType(SkipToken(in, GDCC::TOK_Equal, "=").get());
          break;
 
       case GDCC::STR_valueInt:
-         func.valueInt = ParseFastI(SkipEqual(in));
+         func.valueInt = ParseFastI(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_valueStr:
-         func.valueStr = (SkipEqual(in) >> tok, tok).str;
+         SkipToken(in, GDCC::TOK_Equal, "=");
+         func.valueStr = ExpectToken(in, GDCC::TOK_String, "string").get().str;
          break;
 
       default:
-         if(tok.tok == GDCC::TOK_LnEnd) return;
-
-         std::cerr << "ERROR: " << tok.pos << ": bad function argument: '"
-            << tok.str << "'\n";
+         in.unget();
+         std::cerr << "ERROR: " << in.peek().pos << ": bad Function argument: '"
+            << in.peek().str << "'\n";
          throw EXIT_FAILURE;
       }
    }

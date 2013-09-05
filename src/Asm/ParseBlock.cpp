@@ -12,7 +12,7 @@
 
 #include "Parse.hpp"
 
-#include "IStream.hpp"
+#include "GDCC/TokenStream.hpp"
 
 #include "GDCC/IR/Block.hpp"
 
@@ -28,43 +28,36 @@ namespace Asm
    //
    // ParseBlock
    //
-   void ParseBlock(IStream &in, GDCC::IR::Block &block, GDCC::TokenType end)
+   void ParseBlock(GDCC::TokenStream &in, GDCC::IR::Block &block, GDCC::TokenType end)
    {
       std::vector<GDCC::IR::Arg> args;
       GDCC::IR::Code code;
 
-      for(GDCC::Token tok; in >> tok;) switch(tok.tok)
+      while(!in.drop(end)) switch(in.peek().tok)
       {
       case GDCC::TOK_String:
-         block.addLabel(tok.str);
+         block.addLabel(in.get().str);
          break;
 
       case GDCC::TOK_Identi:
-         block.setOrigin(tok.pos);
+         block.setOrigin(in.peek().pos);
 
-         switch(static_cast<GDCC::StringIndex>(tok.str))
+         switch(static_cast<GDCC::StringIndex>(in.get().str))
          {
             #define GDCC_IR_CodeList(c) \
                case GDCC::STR_##c: code = GDCC::IR::Code::c; break;
             #include "GDCC/IR/CodeList.hpp"
 
          default:
-            std::cerr << "ERROR:" << tok.pos << ": unknown code: '" << tok.str << "'\n";
+            std::cerr << "ERROR:" << in.peek().pos << ": unknown code: '"
+               << in.peek().str << "'\n";
             throw EXIT_FAILURE;
          }
 
          args.clear();
 
-         while(in >> tok && tok.tok != GDCC::TOK_LnEnd)
-         {
-            if(tok.tok != GDCC::TOK_Comma)
-            {
-               std::cerr << "ERROR: " << tok.pos << ": expected end of line\n";
-               throw EXIT_FAILURE;
-            }
-
-            args.push_back(ParseArg(in));
-         }
+         while(in.peek().tok != GDCC::TOK_LnEnd)
+            args.push_back(ParseArg(SkipToken(in, GDCC::TOK_Comma, "end of line")));
 
          block.setArgs(GDCC::Array<GDCC::IR::Arg>(GDCC::Move, args.begin(), args.end()));
          block.addStatement(code);
@@ -72,12 +65,11 @@ namespace Asm
          break;
 
       case GDCC::TOK_LnEnd:
+         in.get();
          break;
 
       default:
-         if(tok.tok == end) return;
-
-         std::cerr << "ERROR: " << tok.pos << ": expected block terminator\n";
+         std::cerr << "ERROR: " << in.peek().pos << ": expected block terminator\n";
          throw EXIT_FAILURE;
       }
    }

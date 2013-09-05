@@ -12,7 +12,7 @@
 
 #include "Parse.hpp"
 
-#include "IStream.hpp"
+#include "GDCC/TokenStream.hpp"
 
 #include "GDCC/IR/Exp.hpp"
 #include "GDCC/IR/Object.hpp"
@@ -29,43 +29,43 @@ namespace Asm
    //
    // ParseObject
    //
-   void ParseObject(IStream &in, GDCC::IR::Object &obj)
+   void ParseObject(GDCC::TokenStream &in, GDCC::IR::Object &obj)
    {
-      for(GDCC::Token tok; in >> tok;) switch(static_cast<GDCC::StringIndex>(tok.str))
+      while(!in.drop(GDCC::TOK_LnEnd)) switch(static_cast<GDCC::StringIndex>(
+         ExpectToken(in, GDCC::TOK_Identi, "identifier").get().str))
       {
       case GDCC::STR_alias:
-         obj.alias = ParseFastU(SkipEqual(in));
+         obj.alias = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_alloc:
-         obj.alloc = ParseFastU(SkipEqual(in));
+         obj.alloc = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_defin:
-         obj.defin = ParseFastU(SkipEqual(in));
+         obj.defin = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_initi:
-         obj.initi = ParseExp(SkipEqual(in));
+         obj.initi = ParseExp(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_linka:
-         obj.linka = ParseLinkage((SkipEqual(in) >> tok, tok));
+         obj.linka = ParseLinkage(SkipToken(in, GDCC::TOK_Equal, "=").get());
          break;
 
       case GDCC::STR_value:
-         obj.value = ParseFastU(SkipEqual(in));
+         obj.value = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       case GDCC::STR_words:
-         obj.words = ParseFastU(SkipEqual(in));
+         obj.words = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
          break;
 
       default:
-         if(tok.tok == GDCC::TOK_LnEnd) return;
-
-         std::cerr << "ERROR: " << tok.pos << ": bad Object argument: '"
-            << tok.str << "'\n";
+         in.unget();
+         std::cerr << "ERROR: " << in.peek().pos << ": bad Object argument: '"
+            << in.peek().str << "'\n";
          throw EXIT_FAILURE;
       }
    }
