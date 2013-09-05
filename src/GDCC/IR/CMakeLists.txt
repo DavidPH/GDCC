@@ -32,6 +32,7 @@ add_library(gdcc-ir
    Value.cpp
    Value/Add.cpp
    Value/And.cpp
+   Value/Cast.cpp
    Value/Cmp.cpp
    Value/Div.cpp
    Value/Mod.cpp

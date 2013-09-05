@@ -34,6 +34,32 @@ namespace GDCC
       }
 
       //
+      // Exp::getType
+      //
+      Type Exp::getType() const
+      {
+         try {return v_getType();}
+         catch(TypeError const &)
+         {
+            std::cerr << "ERROR: " << pos << ": type mismatch\n";
+            throw EXIT_FAILURE;
+         }
+      }
+
+      //
+      // Exp::getValue
+      //
+      Value Exp::getValue() const
+      {
+         try {return v_getValue();}
+         catch(TypeError const &)
+         {
+            std::cerr << "ERROR: " << pos << ": type mismatch\n";
+            throw EXIT_FAILURE;
+         }
+      }
+
+      //
       // Exp::v_putIR
       //
       OArchive &Exp::v_putIR(OArchive &out) const

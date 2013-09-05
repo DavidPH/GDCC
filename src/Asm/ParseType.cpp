@@ -150,10 +150,11 @@ static GDCC::IR::Type_Point ParseType_Point(Asm::IStream &in)
 
    SkipParenO(in);
    auto addrB = Asm::ParseAddrBase((in >> tok, tok)); SkipComma(in);
-   auto addrO = Asm::ParseFastU(in);
+   auto addrS = Asm::ParseFastU(in); SkipComma(in);
+   auto addrW = Asm::ParseFastU(in);
    SkipParenC(in);
 
-   return GDCC::IR::Type_Point(addrB, addrO);
+   return GDCC::IR::Type_Point(addrB, addrS, addrW);
 }
 
 //

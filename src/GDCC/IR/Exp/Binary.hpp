@@ -21,72 +21,33 @@
 //
 
 //
-// GDCC_IR_Exp_BinaryDeclBase
+// GDCC_IR_Exp_BinaryDecl
 //
-#define GDCC_IR_Exp_BinaryDeclBase(name) \
-public: \
-   virtual String getName() const {return STR_Binary##name;} \
-   \
-protected: \
-   virtual Value v_getValue() const
-
-//
-// GDCC_IR_Exp_BinaryDeclClass
-//
-#define GDCC_IR_Exp_BinaryDeclClass(name) \
+#define GDCC_IR_Exp_BinaryDecl(name) \
    class Exp_Binary##name : public Exp_Binary \
    { \
       GDCC_CounterPreamble(GDCC::IR::Exp_Binary##name, GDCC::IR::Exp_Binary); \
-      GDCC_IR_Exp_BinaryDeclBase(name); \
-      GDCC_IR_Exp_BinaryDeclCon(name); \
-      GDCC_IR_Exp_BinaryDeclCreate(name); \
+      \
+   public: \
+      virtual String getName() const {return STR_Binary##name;} \
+      \
+      friend Exp::Ref ExpCreate_Binary##name(Exp *l, Exp *r); \
+      friend Exp::Ref ExpCreate_Binary##name(Exp *l, Exp *r, Origin pos); \
+      friend Exp::Ref ExpGetIR_Binary##name(IArchive &in); \
+      \
+   protected: \
+      Exp_Binary##name(Exp_Binary##name const &) = default; \
+      Exp_Binary##name(Exp *l, Exp *r, Origin pos_) : Super{l, r, pos_} {} \
+      explicit Exp_Binary##name(IArchive &in) : Super{in} {} \
+      \
+      virtual Type v_getType() const; \
+      virtual Value v_getValue() const; \
    }
 
 //
-// GDCC_IR_Exp_BinaryDeclCon
+// GDCC_IR_Exp_BinaryImpl
 //
-#define GDCC_IR_Exp_BinaryDeclCon(name) \
-protected: \
-   Exp_Binary##name(Exp *l, Exp *r, Origin pos_) : Super{l, r, pos_} {} \
-   explicit Exp_Binary##name(IArchive &in) : Super{in} {} \
-   Exp_Binary##name(Exp_Binary##name const &) = default
-
-//
-// GDCC_IR_Exp_BinaryDeclCreate
-//
-#define GDCC_IR_Exp_BinaryDeclCreate(name) \
-public: \
-   friend Exp::Ref ExpCreate_Binary##name(Exp *l, Exp *r); \
-   friend Exp::Ref ExpCreate_Binary##name(Exp *l, Exp *r, Origin pos); \
-   friend Exp::Ref ExpGetIR_Binary##name(IArchive &in)
-
-//
-// GDCC_IR_Exp_BinaryImplArithFixed
-//
-#define GDCC_IR_Exp_BinaryImplArithFixed(op) \
-   if(l.v == r.v) switch(l.v) \
-   { \
-   case ValueBase::Fixed: return l.vFixed op r.vFixed; \
-   default: return Value_Empty(); \
-   }
-
-//
-// GDCC_IR_Exp_BinaryImplArithFloat
-//
-#define GDCC_IR_Exp_BinaryImplArithFloat(op) \
-   if(l.v == r.v) switch(l.v) \
-   { \
-   case ValueBase::Fixed: return l.vFixed op r.vFixed; \
-   case ValueBase::Float: return l.vFloat op r.vFloat; \
-   default: return Value_Empty(); \
-   }
-
-//
-// GDCC_IR_Exp_BinaryImplCreate
-//
-// Implements normal ExpCreate and ExpGetIR functions for binary expressions.
-//
-#define GDCC_IR_Exp_BinaryImplCreate(name) \
+#define GDCC_IR_Exp_BinaryImpl(name, op) \
    Exp::Ref ExpCreate_Binary##name(Exp *l, Exp *r) \
       {return static_cast<Exp::Ref>(new Exp_Binary##name(l, r, l->pos));} \
    \
@@ -94,29 +55,13 @@ public: \
       {return static_cast<Exp::Ref>(new Exp_Binary##name(l, r, pos));} \
    \
    Exp::Ref ExpGetIR_Binary##name(IArchive &in) \
-      {return static_cast<Exp::Ref>(new Exp_Binary##name(in));}
-
-//
-// GDCC_IR_Exp_BinaryImplValueFixed
-//
-#define GDCC_IR_Exp_BinaryImplValueFixed(name, op) \
+      {return static_cast<Exp::Ref>(new Exp_Binary##name(in));} \
+   \
+   Type Exp_Binary##name::v_getType() const \
+      {return Type::Promote##name(expL->getType(), expR->getType());} \
+   \
    Value Exp_Binary##name::v_getValue() const \
-   { \
-      auto l = expL->getValue(), r = expR->getValue(); \
-      GDCC_IR_Exp_BinaryImplArithFixed(op); \
-      return Value_Empty(); \
-   }
-
-//
-// GDCC_IR_Exp_BinaryImplValueFloat
-//
-#define GDCC_IR_Exp_BinaryImplValueFloat(name, op) \
-   Value Exp_Binary##name::v_getValue() const \
-   { \
-      auto l = expL->getValue(), r = expR->getValue(); \
-      GDCC_IR_Exp_BinaryImplArithFloat(op); \
-      return Value_Empty(); \
-   }
+      {return expL->getValue() op expR->getValue();}
 
 
 //----------------------------------------------------------------------------|
@@ -142,22 +87,19 @@ namespace GDCC
          Exp_Binary(Exp *l, Exp *r, Origin pos_) : Super{pos_}, expL{l}, expR{r} {}
          explicit Exp_Binary(IArchive &in);
 
-         virtual Type v_getType() const;
-         virtual Type v_getTypeInequal(Type const &l, Type const &r) const;
-
          virtual OArchive &v_putIR(OArchive &out) const;
       };
 
-      GDCC_IR_Exp_BinaryDeclClass(Add);
-      GDCC_IR_Exp_BinaryDeclClass(And);
-      GDCC_IR_Exp_BinaryDeclClass(Div);
-      GDCC_IR_Exp_BinaryDeclClass(Mod);
-      GDCC_IR_Exp_BinaryDeclClass(Mul);
-      GDCC_IR_Exp_BinaryDeclClass(OrI);
-      GDCC_IR_Exp_BinaryDeclClass(OrX);
-      GDCC_IR_Exp_BinaryDeclClass(ShL);
-      GDCC_IR_Exp_BinaryDeclClass(ShR);
-      GDCC_IR_Exp_BinaryDeclClass(Sub);
+      GDCC_IR_Exp_BinaryDecl(Add);
+      GDCC_IR_Exp_BinaryDecl(And);
+      GDCC_IR_Exp_BinaryDecl(Div);
+      GDCC_IR_Exp_BinaryDecl(Mod);
+      GDCC_IR_Exp_BinaryDecl(Mul);
+      GDCC_IR_Exp_BinaryDecl(OrI);
+      GDCC_IR_Exp_BinaryDecl(OrX);
+      GDCC_IR_Exp_BinaryDecl(ShL);
+      GDCC_IR_Exp_BinaryDecl(ShR);
+      GDCC_IR_Exp_BinaryDecl(Sub);
    }
 }
 

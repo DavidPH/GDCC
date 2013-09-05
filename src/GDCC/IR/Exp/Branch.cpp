@@ -16,8 +16,6 @@
 
 #include "../IArchive.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Global Variables                                                           |

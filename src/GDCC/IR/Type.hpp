@@ -42,6 +42,15 @@ namespace GDCC
       };
 
       //
+      // TypeError
+      //
+      class TypeError : public std::exception
+      {
+      public:
+         virtual char const *what() const noexcept {return "TypeError";}
+      };
+
+      //
       // Type_Empty
       //
       struct Type_Empty
@@ -71,6 +80,9 @@ namespace GDCC
          FastU bitsF;
          bool  bitsS : 1;
          bool  satur : 1;
+
+
+         static Type_Fixed Promote(Type_Fixed const &l, Type_Fixed const &r);
       };
 
       //
@@ -89,6 +101,9 @@ namespace GDCC
          FastU bitsF;
          bool  bitsS : 1;
          bool  satur : 1;
+
+
+         static Type_Float Promote(Type_Float const &l, Type_Float const &r);
       };
 
       //
@@ -127,11 +142,13 @@ namespace GDCC
       {
          Type_Point() = default;
 
-         Type_Point(AddrBase reprB_, FastU reprO_) : reprB{reprB_}, reprO{reprO_} {}
+         Type_Point(AddrBase reprB_, FastU reprS_, FastU reprW_) :
+            reprB{reprB_}, reprS{reprS_}, reprW{reprW_} {}
          explicit Type_Point(IArchive &in);
 
-         AddrBase reprB;
-         FastU    reprO;
+         AddrBase reprB; // Base
+         FastU    reprS; // Size in Words
+         FastU    reprW; // Size of Word
       };
 
       //
@@ -242,6 +259,18 @@ namespace GDCC
             #define GDCC_IR_TypeList(name) Type_##name t##name;
             #include "TypeList.hpp"
          };
+
+
+         static Type PromoteAdd(Type const &l, Type const &r);
+         static Type PromoteAnd(Type const &l, Type const &r);
+         static Type PromoteDiv(Type const &l, Type const &r);
+         static Type PromoteMod(Type const &l, Type const &r);
+         static Type PromoteMul(Type const &l, Type const &r);
+         static Type PromoteOrI(Type const &l, Type const &r);
+         static Type PromoteOrX(Type const &l, Type const &r);
+         static Type PromoteShL(Type const &l, Type const &r);
+         static Type PromoteShR(Type const &l, Type const &r);
+         static Type PromoteSub(Type const &l, Type const &r);
       };
    }
 }

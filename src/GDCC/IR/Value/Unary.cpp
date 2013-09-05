@@ -22,6 +22,17 @@ namespace GDCC
    namespace IR
    {
       //
+      // operator - Value
+      //
+      Value operator - (Value const &e)
+      {
+         if(e.v == ValueBase::Fixed) return -e.vFixed;
+         if(e.v == ValueBase::Float) return -e.vFloat;
+
+         throw TypeError();
+      }
+
+      //
       // operator - Value_Fixed
       //
       Value_Fixed operator - (Value_Fixed const &e)
@@ -55,6 +66,16 @@ namespace GDCC
          e.value = -e.value;
 
          return std::move(e.clamp());
+      }
+
+      //
+      // operator ~ Value
+      //
+      Value operator ~ (Value const &e)
+      {
+         if(e.v == ValueBase::Fixed) return ~e.vFixed;
+
+         throw TypeError();
       }
 
       //

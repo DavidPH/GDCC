@@ -115,14 +115,7 @@ namespace GDCC
       //
       Value Exp_UnaryNot::v_getValue() const
       {
-         auto e = exp->getValue();
-
-         switch(e.v)
-         {
-         case ValueBase::Fixed: return ~e.vFixed;
-
-         default: return Value_Empty();
-         }
+         return ~exp->getValue();
       }
 
       //
@@ -130,14 +123,7 @@ namespace GDCC
       //
       Value Exp_UnarySub::v_getValue() const
       {
-         auto e = exp->getValue();
-
-         switch(e.v)
-         {
-         case ValueBase::Fixed: return -e.vFixed;
-
-         default: return Value_Empty();
-         }
+         return -exp->getValue();
       }
    }
 }

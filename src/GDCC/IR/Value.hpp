@@ -318,78 +318,115 @@ namespace GDCC
 {
    namespace IR
    {
+      Value         operator - (Value       const &e);
       Value_Fixed   operator - (Value_Fixed const &e);
       Value_Fixed &&operator - (Value_Fixed      &&e);
       Value_Float   operator - (Value_Float const &e);
       Value_Float &&operator - (Value_Float      &&e);
 
+      Value         operator ~ (Value       const &e);
       Value_Fixed   operator ~ (Value_Fixed const &e);
       Value_Fixed &&operator ~ (Value_Fixed      &&e);
 
+      Value         operator * (Value       const &l, Value       const &r);
       Value_Fixed   operator * (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator * (Value_Fixed      &&l, Value_Fixed const &r);
       Value_Float   operator * (Value_Float const &l, Value_Float const &r);
       Value_Float &&operator * (Value_Float      &&l, Value_Float const &r);
+      Value         operator / (Value       const &l, Value       const &r);
       Value_Fixed   operator / (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator / (Value_Fixed      &&l, Value_Fixed const &r);
       Value_Float   operator / (Value_Float const &l, Value_Float const &r);
       Value_Float &&operator / (Value_Float      &&l, Value_Float const &r);
+      Value         operator % (Value       const &l, Value       const &r);
       Value_Fixed   operator % (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator % (Value_Fixed      &&l, Value_Fixed const &r);
       Value_Float   operator % (Value_Float const &l, Value_Float const &r);
       Value_Float &&operator % (Value_Float      &&l, Value_Float const &r);
 
+      Value         operator + (Value       const &l, Value       const &r);
       Value_Fixed   operator + (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator + (Value_Fixed      &&l, Value_Fixed const &r);
+      Value_Point   operator + (Value_Fixed const &l, Value_Point const &r);
+      Value_Point &&operator + (Value_Fixed const &l, Value_Point      &&r);
       Value_Float   operator + (Value_Float const &l, Value_Float const &r);
       Value_Float &&operator + (Value_Float      &&l, Value_Float const &r);
+      Value_Point   operator + (Value_Point const &l, Value_Fixed const &r);
+      Value_Point &&operator + (Value_Point      &&l, Value_Fixed const &r);
+      Value         operator - (Value       const &l, Value       const &r);
       Value_Fixed   operator - (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator - (Value_Fixed      &&l, Value_Fixed const &r);
       Value_Float   operator - (Value_Float const &l, Value_Float const &r);
       Value_Float &&operator - (Value_Float      &&l, Value_Float const &r);
+      Value_Point   operator - (Value_Point const &l, Value_Fixed const &r);
+      Value_Point &&operator - (Value_Point      &&l, Value_Fixed const &r);
+      Value_Fixed   operator - (Value_Point const &l, Value_Point const &r);
 
+      Value         operator << (Value       const &l, Value       const &r);
       Value_Fixed   operator << (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator << (Value_Fixed      &&l, Value_Fixed const &r);
+      Value         operator >> (Value       const &l, Value       const &r);
       Value_Fixed   operator >> (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator >> (Value_Fixed      &&l, Value_Fixed const &r);
 
+      bool operator <  (Value       const &l, Value       const &r);
       bool operator <  (Value_Fixed const &l, Value_Fixed const &r);
       bool operator <  (Value_Float const &l, Value_Float const &r);
+      bool operator >  (Value       const &l, Value       const &r);
       bool operator >  (Value_Fixed const &l, Value_Fixed const &r);
       bool operator >  (Value_Float const &l, Value_Float const &r);
+      bool operator <= (Value       const &l, Value       const &r);
       bool operator <= (Value_Fixed const &l, Value_Fixed const &r);
       bool operator <= (Value_Float const &l, Value_Float const &r);
+      bool operator >= (Value       const &l, Value       const &r);
       bool operator >= (Value_Fixed const &l, Value_Fixed const &r);
       bool operator >= (Value_Float const &l, Value_Float const &r);
 
+      bool operator == (Value       const &l, Value       const &r);
       bool operator == (Value_Fixed const &l, Value_Fixed const &r);
       bool operator == (Value_Float const &l, Value_Float const &r);
+      bool operator != (Value       const &l, Value       const &r);
       bool operator != (Value_Fixed const &l, Value_Fixed const &r);
       bool operator != (Value_Float const &l, Value_Float const &r);
 
+      Value         operator & (Value       const &l, Value       const &r);
       Value_Fixed   operator & (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator & (Value_Fixed      &&l, Value_Fixed const &r);
 
+      Value         operator ^ (Value       const &l, Value       const &r);
       Value_Fixed   operator ^ (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator ^ (Value_Fixed      &&l, Value_Fixed const &r);
 
+      Value         operator | (Value       const &l, Value       const &r);
       Value_Fixed   operator | (Value_Fixed const &l, Value_Fixed const &r);
       Value_Fixed &&operator | (Value_Fixed      &&l, Value_Fixed const &r);
 
+      Value       &operator *=  (Value       &l, Value       const &r);
       Value_Fixed &operator *=  (Value_Fixed &l, Value_Fixed const &r);
       Value_Float &operator *=  (Value_Float &l, Value_Float const &r);
+      Value       &operator /=  (Value       &l, Value       const &r);
       Value_Fixed &operator /=  (Value_Fixed &l, Value_Fixed const &r);
       Value_Float &operator /=  (Value_Float &l, Value_Float const &r);
+      Value       &operator %=  (Value       &l, Value       const &r);
       Value_Fixed &operator %=  (Value_Fixed &l, Value_Fixed const &r);
       Value_Float &operator %=  (Value_Float &l, Value_Float const &r);
+      Value       &operator +=  (Value       &l, Value       const &r);
       Value_Fixed &operator +=  (Value_Fixed &l, Value_Fixed const &r);
       Value_Float &operator +=  (Value_Float &l, Value_Float const &r);
+      Value_Point &operator +=  (Value_Point &l, Value_Fixed const &r);
+      Value       &operator -=  (Value       &l, Value       const &r);
       Value_Fixed &operator -=  (Value_Fixed &l, Value_Fixed const &r);
       Value_Float &operator -=  (Value_Float &l, Value_Float const &r);
+      Value_Point &operator -=  (Value_Point &l, Value_Fixed const &r);
+      Value       &operator <<= (Value       &l, Value       const &r);
       Value_Fixed &operator <<= (Value_Fixed &l, Value_Fixed const &r);
+      Value       &operator >>= (Value       &l, Value       const &r);
       Value_Fixed &operator >>= (Value_Fixed &l, Value_Fixed const &r);
+      Value       &operator &=  (Value       &l, Value       const &r);
       Value_Fixed &operator &=  (Value_Fixed &l, Value_Fixed const &r);
+      Value       &operator ^=  (Value       &l, Value       const &r);
       Value_Fixed &operator ^=  (Value_Fixed &l, Value_Fixed const &r);
+      Value       &operator |=  (Value       &l, Value       const &r);
       Value_Fixed &operator |=  (Value_Fixed &l, Value_Fixed const &r);
 
       OArchive &operator << (OArchive &out, ValueBase in);

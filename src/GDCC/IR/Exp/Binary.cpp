@@ -23,27 +23,16 @@ namespace GDCC
 {
    namespace IR
    {
-      GDCC_IR_Exp_BinaryImplCreate(Add)
-      GDCC_IR_Exp_BinaryImplCreate(And)
-      GDCC_IR_Exp_BinaryImplCreate(Div)
-      GDCC_IR_Exp_BinaryImplCreate(Mod)
-      GDCC_IR_Exp_BinaryImplCreate(Mul)
-      GDCC_IR_Exp_BinaryImplCreate(OrI)
-      GDCC_IR_Exp_BinaryImplCreate(OrX)
-      GDCC_IR_Exp_BinaryImplCreate(ShL)
-      GDCC_IR_Exp_BinaryImplCreate(ShR)
-      GDCC_IR_Exp_BinaryImplCreate(Sub)
-
-      GDCC_IR_Exp_BinaryImplValueFloat(Add, +)
-      GDCC_IR_Exp_BinaryImplValueFixed(And, &)
-      GDCC_IR_Exp_BinaryImplValueFloat(Div, /)
-      GDCC_IR_Exp_BinaryImplValueFloat(Mod, %)
-      GDCC_IR_Exp_BinaryImplValueFloat(Mul, *)
-      GDCC_IR_Exp_BinaryImplValueFixed(OrI, |)
-      GDCC_IR_Exp_BinaryImplValueFixed(OrX, ^)
-      GDCC_IR_Exp_BinaryImplValueFixed(ShL, <<)
-      GDCC_IR_Exp_BinaryImplValueFixed(ShR, >>)
-      GDCC_IR_Exp_BinaryImplValueFloat(Sub, -)
+      GDCC_IR_Exp_BinaryImpl(Add, +)
+      GDCC_IR_Exp_BinaryImpl(And, &)
+      GDCC_IR_Exp_BinaryImpl(Div, /)
+      GDCC_IR_Exp_BinaryImpl(Mod, %)
+      GDCC_IR_Exp_BinaryImpl(Mul, *)
+      GDCC_IR_Exp_BinaryImpl(OrI, |)
+      GDCC_IR_Exp_BinaryImpl(OrX, ^)
+      GDCC_IR_Exp_BinaryImpl(ShL, <<)
+      GDCC_IR_Exp_BinaryImpl(ShR, >>)
+      GDCC_IR_Exp_BinaryImpl(Sub, -)
 
       //
       // Exp_Binary constructor
@@ -51,26 +40,6 @@ namespace GDCC
       Exp_Binary::Exp_Binary(IArchive &in) : Super{in}, expL{GetIR(in, expL)},
          expR{GetIR(in, expR)}
       {
-      }
-
-      //
-      // Exp_Binary::v_getType
-      //
-      Type Exp_Binary::v_getType() const
-      {
-         auto l = expL->getType(), r = expR->getType();
-
-         if(l.t == r.t) return l;
-
-         return v_getTypeInequal(l, r);
-      }
-
-      //
-      // Exp_Binary::v_getTypeInequal
-      //
-      Type Exp_Binary::v_getTypeInequal(Type const &, Type const &) const
-      {
-         return Type_Empty();
       }
 
       //

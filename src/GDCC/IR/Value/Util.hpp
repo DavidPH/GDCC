@@ -66,34 +66,5 @@
    if(l.vtype.bitsF < r.vtype.bitsF) l.vtype.bitsF = r.vtype.bitsF; \
    l.value op##= r.value
 
-//
-// GDCC_IR_ValueCmpOpBitsImpl
-//
-#define GDCC_IR_ValueCmpOpBitsImpl(op) \
-   bool operator op (Value_Fixed const &l, Value_Fixed const &r) \
-   { \
-      GDCC_IR_ValueCmpOpBitsOp(op); \
-   }
-
-//
-// GDCC_IR_ValueCmpOpBitsOp
-//
-#define GDCC_IR_ValueCmpOpBitsOp(op) \
-   if(l.vtype.bitsF < r.vtype.bitsF) \
-      return (l.value << (r.vtype.bitsF - l.vtype.bitsF)) op r.value; \
-   else if(l.vtype.bitsF > r.vtype.bitsF) \
-      return l.value op (r.value << (l.vtype.bitsF - r.vtype.bitsF)); \
-   else \
-      return l.value op r.value
-
-//
-// GDCC_IR_ValueCmpOpFltsImpl
-//
-#define GDCC_IR_ValueCmpOpFltsImpl(op) \
-   bool operator op (Value_Float const &l, Value_Float const &r) \
-   { \
-      return l.value op r.value; \
-   }
-
 #endif//GDCC__IR__Value__Util_H__
 

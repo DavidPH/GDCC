@@ -29,6 +29,21 @@ namespace GDCC
    namespace IR
    {
       //
+      // Type_Empty constructor
+      //
+      Type_Empty::Type_Empty(IArchive &)
+      {
+      }
+
+      //
+      // Type_Fixed constructor
+      //
+      Type_Fixed::Type_Fixed(IArchive &in) : bitsI{GetIR(in, bitsI)},
+         bitsF{GetIR(in, bitsF)}, bitsS{GetIR<bool>(in)}, satur{GetIR<bool>(in)}
+      {
+      }
+
+      //
       // Type_Fixed::clamp
       //
       Integ &Type_Fixed::clamp(Integ &value)
@@ -70,18 +85,12 @@ namespace GDCC
       }
 
       //
-      // Type_Empty constructor
+      // Type_Fixed::Promote
       //
-      Type_Empty::Type_Empty(IArchive &)
+      Type_Fixed Type_Fixed::Promote(Type_Fixed const &l, Type_Fixed const &r)
       {
-      }
-
-      //
-      // Type_Fixed constructor
-      //
-      Type_Fixed::Type_Fixed(IArchive &in) : bitsI{GetIR(in, bitsI)},
-         bitsF{GetIR(in, bitsF)}, bitsS{GetIR<bool>(in)}, satur{GetIR<bool>(in)}
-      {
+         return Type_Fixed(std::max(l.bitsI, r.bitsI),
+            std::max(l.bitsF, r.bitsF), l.bitsS || r.bitsS, l.satur || r.satur);
       }
 
       //
@@ -90,6 +99,15 @@ namespace GDCC
       Type_Float::Type_Float(IArchive &in) : bitsI{GetIR(in, bitsI)},
          bitsF{GetIR(in, bitsF)}, bitsS{GetIR<bool>(in)}, satur{GetIR<bool>(in)}
       {
+      }
+
+      //
+      // Type_Float::Promote
+      //
+      Type_Float Type_Float::Promote(Type_Float const &l, Type_Float const &r)
+      {
+         return Type_Float(std::max(l.bitsI, r.bitsI),
+            std::max(l.bitsF, r.bitsF), l.bitsS || r.bitsS, l.satur || r.satur);
       }
 
       //
@@ -110,7 +128,7 @@ namespace GDCC
       // Type_Point constructor
       //
       Type_Point::Type_Point(IArchive &in) : reprB{GetIR(in, reprB)},
-         reprO{GetIR(in, reprO)}
+         reprS{GetIR(in, reprS)}, reprW{GetIR(in, reprW)}
       {
       }
 
@@ -192,7 +210,7 @@ namespace GDCC
       //
       OArchive &operator << (OArchive &out, Type_Point const &in)
       {
-         return out << in.reprB << in.reprO;
+         return out << in.reprB << in.reprS << in.reprW;
       }
 
       //
@@ -285,7 +303,7 @@ namespace GDCC
       //
       IArchive &operator >> (IArchive &in, Type_Point &out)
       {
-         return in >> out.reprB >> out.reprO;
+         return in >> out.reprB >> out.reprS >> out.reprW;
       }
 
       //

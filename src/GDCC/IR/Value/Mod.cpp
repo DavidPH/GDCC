@@ -25,6 +25,42 @@ namespace GDCC
       GDCC_IR_ValueBinOpImplEq(%, Float);
 
       //
+      // Type::PromoteMod
+      //
+      Type Type::PromoteMod(Type const &l, Type const &r)
+      {
+         if(l.t == TypeBase::Fixed && r.t == TypeBase::Fixed)
+            return Type_Fixed::Promote(l.tFixed, r.tFixed);
+
+         if(l.t == TypeBase::Float && r.t == TypeBase::Float)
+            return Type_Float::Promote(l.tFloat, r.tFloat);
+
+         return Type_Empty();
+      }
+
+      //
+      // operator Value % Value
+      //
+      Value operator % (Value const &l, Value const &r)
+      {
+         if(l.v == ValueBase::Fixed && r.v == ValueBase::Fixed) return l.vFixed % r.vFixed;
+         if(l.v == ValueBase::Float && r.v == ValueBase::Float) return l.vFloat % r.vFloat;
+
+         throw TypeError();
+      }
+
+      //
+      // operator Value %= Value
+      //
+      Value &operator %= (Value &l, Value const &r)
+      {
+         if(l.v == ValueBase::Fixed && r.v == ValueBase::Fixed) return l.vFixed %= r.vFixed, l;
+         if(l.v == ValueBase::Float && r.v == ValueBase::Float) return l.vFloat %= r.vFloat, l;
+
+         throw TypeError();
+      }
+
+      //
       // operator Value_Fixed %= Value_Fixed
       //
       Value_Fixed &operator %= (Value_Fixed &l, Value_Fixed const &r)

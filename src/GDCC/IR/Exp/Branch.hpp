@@ -169,25 +169,12 @@ protected: \
    virtual Value v_getValue() const
 
 //
-// GDCC_IR_Exp_BranchImplCmp
-//
-#define GDCC_IR_Exp_BranchImplCmp(op) \
-   if(l.v == r.v) switch(l.v) \
-   { \
-   case ValueBase::Fixed: return Value_Fixed(l.vFixed op r.vFixed, BoolRaw); \
-   case ValueBase::Float: return Value_Fixed(l.vFloat op r.vFloat, BoolRaw); \
-   default: return Value_Empty(); \
-   }
-
-//
 // GDCC_IR_Exp_BranchImplCmpValue
 //
 #define GDCC_IR_Exp_BranchImplCmpValue(name, op) \
    Value Exp_Branch##name::v_getValue() const \
    { \
-      auto l = expL->getValue(), r = expR->getValue(); \
-      GDCC_IR_Exp_BranchImplCmp(op); \
-      return Value_Empty(); \
+      return Value_Fixed(expL->getValue() op expR->getValue(), BoolRaw); \
    }
 
 

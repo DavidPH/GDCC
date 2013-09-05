@@ -79,9 +79,9 @@ namespace GDCC
       public:
          virtual String getName() const = 0;
 
-         Type getType() const {return v_getType();}
+         Type getType() const;
 
-         Value getValue() const {return v_getValue();}
+         Value getValue() const;
 
          OArchive &putIR(OArchive &out) const;
 
