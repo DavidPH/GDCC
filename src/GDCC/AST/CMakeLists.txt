@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for GDCC library.
+## CMake file for GDCC-IR library.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -9,19 +9,16 @@
 ## Targets                                                                    |
 ##
 
-add_subdirectory(AST)
-add_subdirectory(IR)
-
-add_library(gdcc
-   Option.cpp
-   Origin.cpp
-   ParseNumber.cpp
-   ParseString.cpp
-   Path.cpp
-   String.cpp
+add_library(gdcc-ast
+   Type.cpp
+   Type/Array.cpp
+   Type/Bitfield.cpp
+   Type/Function.cpp
+   Type/Pointer.cpp
+   Type/Wrapper.cpp
 )
 
-target_link_libraries(gdcc gdcc-option gmpxx gmp)
+target_link_libraries(gdcc-ast gdcc-ir)
 
 ## EOF
 

@@ -72,5 +72,52 @@ namespace Option
    }};
 }
 
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+namespace Bytecode
+{
+   //
+   // GetWordAlign
+   //
+   unsigned GetWordAlign()
+   {
+      switch(TargetCur)
+      {
+      case Target::None:      return 1;
+      case Target::ZDoom:     return 1;
+      case Target::MageCraft: return 4;
+      }
+   }
+
+   //
+   // GetWordBytes
+   //
+   unsigned GetWordBytes()
+   {
+      switch(TargetCur)
+      {
+      case Target::None:      return 1;
+      case Target::ZDoom:     return 1;
+      case Target::MageCraft: return 4;
+      }
+   }
+
+   //
+   // GetWordShift
+   //
+   unsigned GetWordShift()
+   {
+      switch(TargetCur)
+      {
+      case Target::None:      return 1;
+      case Target::ZDoom:     return 1;
+      case Target::MageCraft: return 4;
+      }
+   }
+}
+
 // EOF
 

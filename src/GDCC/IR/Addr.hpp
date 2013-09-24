@@ -44,6 +44,11 @@ namespace GDCC
          AddrSpace() = default;
          constexpr AddrSpace(AddrBase base_, String name_) : base{base_}, name{name_} {}
 
+         constexpr bool operator == (AddrSpace const &as) const
+            {return base == as.base && name == as.name;}
+         constexpr bool operator != (AddrSpace const &as) const
+            {return base != as.base || name != as.name;}
+
          AddrBase base;
          String   name;
       };

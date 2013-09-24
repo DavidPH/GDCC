@@ -41,7 +41,8 @@ public: \
 //
 #define GDCC_CounterPreambleCommon(type, base) \
 public: \
-   ::GDCC::CounterPtr<type> clone() const {return cloneRaw();} \
+   ::GDCC::CounterRef<type> clone() const \
+      {return static_cast<::GDCC::CounterRef<type>>(cloneRaw());} \
    virtual char const *getClassName() const {return #type;} \
    GDCC_CounterPreambleCommonTypes(type, base)
 

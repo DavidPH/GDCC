@@ -61,6 +61,9 @@ namespace GDCC
       explicit Array(size_type s) : p{New(s)}, e{p + s} {}
       ~Array() {Del(p, e);}
 
+      template<typename... Args>
+      Array(size_type s, Args const &...args) : p{New(s, args...)}, e{p + s} {}
+
       template<typename Itr>
       Array(Itr first, Itr last) : p{Cpy(first, last)},
          e{p + std::distance(first, last)} {}
@@ -182,12 +185,10 @@ namespace GDCC
       //
       // Del
       //
-      template<typename Itr>
-      static void Del(Itr first, Itr last)
+      static void Del(const_pointer first, const_pointer last)
       {
-         for(Itr itr = first; itr != last;) itr++->~value_type();
-
-         ::operator delete(first);
+         while(last != first) (--last)->~value_type();
+         ::operator delete(const_cast<pointer>(first));
       }
 
       //
@@ -223,6 +224,28 @@ namespace GDCC
          try
          {
             while(s--) new(i++) value_type;
+         }
+         catch(...)
+         {
+            while(i != n) (--i)->~value_type();
+            ::operator delete(n);
+            throw;
+         }
+
+         return n;
+      }
+
+      //
+      // New
+      //
+      template<typename... Args>
+      static pointer New(size_type s, Args const &...args)
+      {
+         pointer n = Raw(s), i = n;
+
+         try
+         {
+            while(s--) new(i++) value_type(args...);
          }
          catch(...)
          {

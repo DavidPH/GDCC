@@ -52,5 +52,17 @@ namespace Bytecode
    extern Target TargetCur;
 }
 
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+namespace Bytecode
+{
+   unsigned GetWordAlign();
+   unsigned GetWordBytes();
+   unsigned GetWordShift();
+}
+
 #endif//Bytecode__Platform_H__
 
