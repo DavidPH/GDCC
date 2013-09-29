@@ -24,8 +24,15 @@
 
 namespace GDCC
 {
+   namespace IR
+   {
+      class Block;
+   }
+
    namespace AST
    {
+      class Arg;
+      class Function;
       class Type;
 
       //
@@ -39,14 +46,22 @@ namespace GDCC
          using TypeCRef = CounterRef<Type const>;
 
       public:
+         void genStmnt(IR::Block &block, Function *fn) const;
+
          TypeCRef getType() const;
+
+         bool isEffect() const {return v_isEffect();}
 
          Origin const pos;
 
       protected:
          explicit Exp(Origin pos_) : pos{pos_} {}
 
+         virtual void v_genStmnt(IR::Block &block, Function *fn, Arg const &dst) const = 0;
+
          virtual TypeCRef v_getType() const = 0;
+
+         virtual bool v_isEffect() const = 0;
       };
    }
 }

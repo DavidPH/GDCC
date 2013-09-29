@@ -10,6 +10,10 @@
 ##
 
 add_library(gdcc-ast
+   Statement.cpp
+   Statement/Empty.cpp
+   Statement/Exp.cpp
+   Statement/Multi.cpp
    Type.cpp
    Type/Array.cpp
    Type/Bitfield.cpp
