@@ -44,7 +44,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::ArgBase::LocReg:
-            CheckArgB(arg, GDCC::IR::ArgBase::Lit, pos);
+            CheckArgB(*arg.aLocReg.idx, GDCC::IR::ArgBase::Lit, pos);
             break;
 
          default:
