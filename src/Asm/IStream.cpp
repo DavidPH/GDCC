@@ -42,6 +42,7 @@ namespace Asm
       case ',':  GDCC_Token_SetStrTok(out, Comma);  return in;
       case '/':  GDCC_Token_SetStrTok(out, Div);    return in;
       case '%':  GDCC_Token_SetStrTok(out, Mod);    return in;
+      case '*':  GDCC_Token_SetStrTok(out, Mul);    return in;
       case '?':  GDCC_Token_SetStrTok(out, Query);  return in;
       case '{':  GDCC_Token_SetStrTok(out, BraceO); return in;
       case '}':  GDCC_Token_SetStrTok(out, BraceC); return in;
