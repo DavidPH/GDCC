@@ -15,6 +15,7 @@
 #include "GDCC/IR/Function.hpp"
 #include "GDCC/IR/Object.hpp"
 
+#include "GDCC/IR/Exp/Binary.hpp"
 #include "GDCC/IR/Exp/ValueGlyph.hpp"
 #include "GDCC/IR/Exp/ValueRoot.hpp"
 
@@ -60,6 +61,36 @@ namespace Bytecode
       {
          switch(auto s = static_cast<GDCC::StringIndex>(exp->getName()))
          {
+         case GDCC::STR_BinaryAdd:
+            *out << '+' << '\0';
+            putExp(static_cast<GDCC::IR::Exp_Binary const *>(exp)->expL);
+            putExp(static_cast<GDCC::IR::Exp_Binary const *>(exp)->expR);
+            break;
+
+         case GDCC::STR_BinaryDiv:
+            *out << '/' << '\0';
+            putExp(static_cast<GDCC::IR::Exp_Binary const *>(exp)->expL);
+            putExp(static_cast<GDCC::IR::Exp_Binary const *>(exp)->expR);
+            break;
+
+         case GDCC::STR_BinaryMod:
+            *out << '%' << '\0';
+            putExp(static_cast<GDCC::IR::Exp_Binary const *>(exp)->expL);
+            putExp(static_cast<GDCC::IR::Exp_Binary const *>(exp)->expR);
+            break;
+
+         case GDCC::STR_BinaryMul:
+            *out << '*' << '\0';
+            putExp(static_cast<GDCC::IR::Exp_Binary const *>(exp)->expL);
+            putExp(static_cast<GDCC::IR::Exp_Binary const *>(exp)->expR);
+            break;
+
+         case GDCC::STR_BinarySub:
+            *out << '-' << '\0';
+            putExp(static_cast<GDCC::IR::Exp_Binary const *>(exp)->expL);
+            putExp(static_cast<GDCC::IR::Exp_Binary const *>(exp)->expR);
+            break;
+
          case GDCC::STR_ValueGlyph:
             putGlyph(static_cast<GDCC::IR::Exp_ValueGlyph const *>(exp)->glyph);
             break;
@@ -69,7 +100,8 @@ namespace Bytecode
             break;
 
          default:
-            std::cerr << "bad Exp\n";
+            std::cerr << "ERROR: " << exp->pos << ": cannot put Exp for MgC: "
+               << static_cast<GDCC::String>(s) << "\n";
             throw EXIT_FAILURE;
          }
       }
