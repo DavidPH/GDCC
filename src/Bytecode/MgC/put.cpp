@@ -255,6 +255,10 @@ namespace Bytecode
             *out << "addu_stk" << '\0' << '(' << '\0' << ')' << '\0';
             break;
 
+         case GDCC::IR::Code::AndU_W:
+            *out << "andu_stk" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
          case GDCC::IR::Code::Call:
             *out << "call_stk" << '\0' << '(' << '\0';
                *out << (stmnt.args.size() - 2) << '\0';
@@ -305,12 +309,20 @@ namespace Bytecode
             putStmnt_Move_W(stmnt);
             break;
 
+         case GDCC::IR::Code::MulU_W:
+            *out << "mulu_stk" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
          case GDCC::IR::Code::NotU_W:
             *out << "notu_stk" << '\0' << '(' << '\0' << ')' << '\0';
             break;
 
          case GDCC::IR::Code::Retn:
             *out << "retn" << '\0' << '(' << '\0' << ')' << '\0';
+            break;
+
+         case GDCC::IR::Code::ShRU_W:
+            *out << "shru_stk" << '\0' << '(' << '\0' << ')' << '\0';
             break;
 
          case GDCC::IR::Code::SubU_W:

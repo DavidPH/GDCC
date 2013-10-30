@@ -14,6 +14,8 @@
 
 #include "../IArchive.hpp"
 
+#include <iostream>
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -39,7 +41,11 @@ namespace GDCC
          if(auto value = glyph.getData().value)
             return value->getValue();
          else
-            return Value();
+         {
+            std::cerr << "ERROR: " << pos << ": undefined glyph: '"
+               << static_cast<String>(glyph) << "'\n";
+            throw EXIT_FAILURE;
+         }
       }
 
       //

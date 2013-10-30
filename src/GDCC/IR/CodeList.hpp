@@ -77,6 +77,7 @@ GDCC_IR_CodeList(Move_W)
 
 // Mul* dst lop rop
 GDCC_IR_CodeList(MulI_W)
+GDCC_IR_CodeList(MulU_W)
 GDCC_IR_CodeList(MulX_W)
 
 // Neg* dst src
@@ -99,6 +100,7 @@ GDCC_IR_CodeList(ShLU_W)
 
 // ShR* dst lop rop
 GDCC_IR_CodeList(ShRI_W)
+GDCC_IR_CodeList(ShRU_W)
 
 // Sub* dst lop rop
 GDCC_IR_CodeList(SubI_W)

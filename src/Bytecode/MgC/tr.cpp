@@ -36,12 +36,15 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::AddU_W:
+         case GDCC::IR::Code::AndU_W:
          case GDCC::IR::Code::CmpU_EQ_W:
          case GDCC::IR::Code::CmpU_GE_W:
          case GDCC::IR::Code::CmpU_GT_W:
          case GDCC::IR::Code::CmpU_LE_W:
          case GDCC::IR::Code::CmpU_LT_W:
          case GDCC::IR::Code::CmpU_NE_W:
+         case GDCC::IR::Code::MulU_W:
+         case GDCC::IR::Code::ShRU_W:
          case GDCC::IR::Code::SubU_W:
             CheckArgC(stmnt, 3);
             CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Stk);
@@ -75,7 +78,6 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Retn:
-            CheckArgC(stmnt, 1);
             for(auto i = stmnt.args.size(); i--;)
                CheckArgB(stmnt, i, GDCC::IR::ArgBase::Stk);
             break;
