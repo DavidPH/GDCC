@@ -138,6 +138,20 @@ namespace GDCC
       {
          static T GetIR_F(IArchive &in) {T out; in >> out; return out;}
       };
+
+      //
+      // GetIRCaller
+      //
+      template<typename T> class GetIRCaller
+      {
+      public:
+         explicit GetIRCaller(IArchive &in_) : in{in_} {}
+
+         explicit operator T () const {return GetIR_T<T>::GetIR_F(in);}
+
+      private:
+         IArchive &in;
+      };
    }
 }
 

@@ -97,6 +97,9 @@ namespace GDCC
          Exp_Unary(Exp *e, Origin pos_) : Super{pos_}, exp{e} {}
          explicit Exp_Unary(IArchive &in);
 
+         virtual bool v_canGetValue() const
+            {return exp->canGetValue();}
+
          virtual Type v_getType() const {return exp->getType();}
 
          virtual OArchive &v_putIR(OArchive &out) const;

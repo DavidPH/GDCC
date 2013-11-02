@@ -109,6 +109,7 @@ namespace GDCC
          case STR_UnaryNot:    return ExpGetIR_UnaryNot   (in);
          case STR_UnarySub:    return ExpGetIR_UnarySub   (in);
          case STR_ValueGlyph:  return ExpGetIR_ValueGlyph (in);
+         case STR_ValueMulti:  return ExpGetIR_ValueMulti (in);
          case STR_ValueRoot:   return ExpGetIR_ValueRoot  (in);
 
          default:

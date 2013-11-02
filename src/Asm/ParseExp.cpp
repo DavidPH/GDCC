@@ -128,6 +128,10 @@ namespace Asm
          doE1(UnaryNot, TOK_Inv);
          doE1(UnarySub, TOK_Sub2);
 
+      case GDCC::TOK_BraceO:
+         in.unget();
+         return ParseExpMulti(in);
+
       case GDCC::TOK_BrackO:
          in.unget();
          return GDCC::IR::ExpCreate_ValueRoot(ParseMulti(in), tok.pos);
@@ -140,6 +144,25 @@ namespace Asm
       #undef doE3
       #undef doE2
       #undef doE1
+   }
+
+   //
+   // ParseExpMulti
+   //
+   GDCC::IR::Exp::Ref ParseExpMulti(GDCC::TokenStream &in)
+   {
+      std::vector<GDCC::IR::Exp::Ref> val;
+      auto pos = in.peek().pos;
+
+      SkipToken(in, GDCC::TOK_BraceO, "{");
+
+      if(in.peek().tok != GDCC::TOK_BrackC) do
+         val.emplace_back(ParseExp(in));
+      while(in.drop(GDCC::TOK_Comma));
+
+      SkipToken(in, GDCC::TOK_BraceC, "}");
+
+      return GDCC::IR::ExpCreate_ValueMulti(val.data(), val.size(), pos);
    }
 
    //

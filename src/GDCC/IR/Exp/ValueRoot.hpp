@@ -51,6 +51,8 @@ namespace GDCC
             type{value_.getType()}, value{std::move(value_)} {}
          explicit Exp_ValueRoot(IArchive &in);
 
+         virtual bool v_canGetValue() const {return true;}
+
          virtual Type v_getType() const {return type;}
 
          virtual Value v_getValue() const {return value;}

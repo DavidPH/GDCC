@@ -19,6 +19,7 @@ add_library(gdcc-ir
    Exp/Branch.cpp
    Exp/Unary.cpp
    Exp/ValueGlyph.cpp
+   Exp/ValueMulti.cpp
    Exp/ValueRoot.cpp
    Function.cpp
    Glyph.cpp

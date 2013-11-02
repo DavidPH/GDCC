@@ -87,6 +87,9 @@ namespace GDCC
          Exp_Binary(Exp *l, Exp *r, Origin pos_) : Super{pos_}, expL{l}, expR{r} {}
          explicit Exp_Binary(IArchive &in);
 
+         virtual bool v_canGetValue() const
+            {return expL->canGetValue() && expR->canGetValue();}
+
          virtual OArchive &v_putIR(OArchive &out) const;
       };
 

@@ -48,6 +48,8 @@ namespace GDCC
          Exp_ValueGlyph(Glyph glyph_, Origin pos_) : Super{pos_}, glyph{glyph_} {}
          explicit Exp_ValueGlyph(IArchive &in);
 
+         virtual bool v_canGetValue() const;
+
          virtual Type v_getType() const {return glyph.getData().type;}
 
          virtual Value v_getValue() const;

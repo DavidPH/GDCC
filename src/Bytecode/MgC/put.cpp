@@ -17,6 +17,7 @@
 
 #include "GDCC/IR/Exp/Binary.hpp"
 #include "GDCC/IR/Exp/ValueGlyph.hpp"
+#include "GDCC/IR/Exp/ValueMulti.hpp"
 #include "GDCC/IR/Exp/ValueRoot.hpp"
 
 #include <iostream>
@@ -95,6 +96,22 @@ namespace Bytecode
             putGlyph(static_cast<GDCC::IR::Exp_ValueGlyph const *>(exp)->glyph);
             break;
 
+         case GDCC::STR_ValueMulti:
+            // This is kind of unfortunate, since it can easily result in
+            // incorrect codegen by adding unexpected commas. However, it is
+            // needed by putObj and is really a higher level problem.
+            // FIXME/TODO: This does need to handle non-words properly, though.
+            {
+               auto multi = static_cast<GDCC::IR::Exp_ValueMulti const *>(exp);
+               auto itr = multi->expv.begin(), end = multi->expv.end();
+               if(itr != end) for(putExp(*itr++); itr != end; ++itr)
+               {
+                  *out << ',' << '\0';
+                  putExp(*itr);
+               }
+            }
+            break;
+
          case GDCC::STR_ValueRoot:
             putValue(static_cast<GDCC::IR::Exp_ValueRoot const *>(exp)->value);
             break;
@@ -152,7 +169,12 @@ namespace Bytecode
          if(obj.initi)
          {
             *out << '(' << '\0';
-            putObjValue(obj.initi->getValue());
+
+            if(obj.initi->canGetValue())
+               putObjValue(obj.initi->getValue());
+            else
+               putExp(obj.initi);
+
             *out << ')' << '\0';
          }
          else

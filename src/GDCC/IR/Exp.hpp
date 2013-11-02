@@ -77,6 +77,8 @@ namespace GDCC
          GDCC_CounterPreambleAbstract(GDCC::IR::Exp, GDCC::Counter);
 
       public:
+         bool canGetValue() const {return v_canGetValue();}
+
          virtual String getName() const = 0;
 
          Type getType() const;
@@ -91,6 +93,8 @@ namespace GDCC
          Exp(Exp const &) = default;
          explicit Exp(Origin pos_) : pos{pos_} {}
          explicit Exp(IArchive &in);
+
+         virtual bool v_canGetValue() const = 0;
 
          virtual Type v_getType() const = 0;
 
@@ -161,10 +165,13 @@ namespace GDCC
 
       Exp::Ref ExpCreate_ValueGlyph(Glyph glyph, Origin pos);
 
+      Exp::Ref ExpCreate_ValueMulti(Exp::Ref const *expv, std::size_t expc, Origin pos);
+
       Exp::Ref ExpCreate_ValueRoot(Value const &value, Origin pos);
       Exp::Ref ExpCreate_ValueRoot(Value &&value, Origin pos);
 
       Exp::Ref ExpGetIR_ValueGlyph(IArchive &in);
+      Exp::Ref ExpGetIR_ValueMulti(IArchive &in);
       Exp::Ref ExpGetIR_ValueRoot (IArchive &in);
    }
 }

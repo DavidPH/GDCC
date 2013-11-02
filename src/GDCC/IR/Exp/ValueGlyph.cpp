@@ -34,6 +34,14 @@ namespace GDCC
       }
 
       //
+      // Exp_ValueGlyph::v_canGetValue
+      //
+      bool Exp_ValueGlyph::v_canGetValue() const
+      {
+         return glyph.getData().value;
+      }
+
+      //
       // Exp_ValueGlyph::v_getValue
       //
       Value Exp_ValueGlyph::v_getValue() const
