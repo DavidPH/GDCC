@@ -27,11 +27,11 @@ namespace GDCC
       //
       // Block::addStatement
       //
-      Block &Block::addStatement(Code code)
+      Block &Block::addStatement(Statement *link, Code code)
       {
          head.labs = Array<String>(Move, labs.begin(), labs.end());
          labs.clear();
-         new Statement(&head, code);
+         new Statement(&head, link, code);
          return *this;
       }
 

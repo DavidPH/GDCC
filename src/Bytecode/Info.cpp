@@ -49,10 +49,24 @@ namespace Bytecode
    //
    // Info::genBlock
    //
-   void Info::genBlock(GDCC::IR::Block &block)
+   void Info::genBlock(GDCC::IR::Block &block_)
    {
-      for(auto &stmnt : block)
-         genStmnt(stmnt);
+      try
+      {
+              block = &block_;
+         auto end   = static_cast<GDCC::IR::Statement *>(block->end());
+              stmnt = static_cast<GDCC::IR::Statement *>(block->begin());
+         for(; stmnt != end; stmnt = stmnt->next)
+            genStmnt();
+         block = nullptr;
+         stmnt = nullptr;
+      }
+      catch(...)
+      {
+         block = nullptr;
+         stmnt = nullptr;
+         throw;
+      }
    }
 
    //
@@ -83,7 +97,7 @@ namespace Bytecode
    //
    // Info::genStmnt
    //
-   void Info::genStmnt(GDCC::IR::Statement &)
+   void Info::genStmnt()
    {
    }
 
@@ -118,10 +132,24 @@ namespace Bytecode
    //
    // Info::trBlock
    //
-   void Info::trBlock(GDCC::IR::Block &block)
+   void Info::trBlock(GDCC::IR::Block &block_)
    {
-      for(auto &stmnt : block)
-         trStmnt(stmnt);
+      try
+      {
+              block = &block_;
+         auto end   = static_cast<GDCC::IR::Statement *>(block->end());
+              stmnt = static_cast<GDCC::IR::Statement *>(block->begin());
+         for(; stmnt != end; stmnt = stmnt->next)
+            trStmnt();
+         block = nullptr;
+         stmnt = nullptr;
+      }
+      catch(...)
+      {
+         block = nullptr;
+         stmnt = nullptr;
+         throw;
+      }
    }
 
    //
@@ -172,11 +200,11 @@ namespace Bytecode
    //
    // Info::CheckArgB
    //
-   void Info::CheckArgB(GDCC::IR::Statement &stmnt, std::size_t a, GDCC::IR::ArgBase b)
+   void Info::CheckArgB(GDCC::IR::Statement *stmnt, std::size_t a, GDCC::IR::ArgBase b)
    {
-      if(stmnt.args[a].a != b)
+      if(stmnt->args[a].a != b)
       {
-         std::cerr << "ERROR: " << stmnt.pos << ": " << stmnt.code
+         std::cerr << "ERROR: " << stmnt->pos << ": " << stmnt->code
             << " must have " << b << " args[" << a << "]\n";
          throw EXIT_FAILURE;
       }
@@ -185,12 +213,12 @@ namespace Bytecode
    //
    // Info::CheckArgC
    //
-   void Info::CheckArgC(GDCC::IR::Statement &stmnt, std::size_t c)
+   void Info::CheckArgC(GDCC::IR::Statement *stmnt, std::size_t c)
    {
-      if(stmnt.args.size() < c)
+      if(stmnt->args.size() < c)
       {
-         std::cerr << "ERROR: " << stmnt.pos << ": bad argc for " << stmnt.code
-            << ": " << stmnt.args.size() << " < " << c << '\n';
+         std::cerr << "ERROR: " << stmnt->pos << ": bad argc for " << stmnt->code
+            << ": " << stmnt->args.size() << " < " << c << '\n';
          throw EXIT_FAILURE;
       }
    }

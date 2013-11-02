@@ -52,14 +52,23 @@ namespace GDCC
 
          Block &addLabel(String lab) {labs.push_back(lab); return *this;}
 
-         Block &addStatement(Code code);
+         // addStatement
+         Block &addStatement(Statement *link, Code code);
+         Block &addStatement(Code code) {return addStatement(&head, code);}
 
+         // addStatementArgs
+         Block &addStatementArgs(Statement *link, Code code)
+            {return setArgs().addStatement(link, code);}
          Block &addStatementArgs(Code code)
-            {return setArgs().addStatement(code);}
+            {return setArgs().addStatement(&head, code);}
 
+         // addStatementArgs
+         template<typename... Args>
+         Block &addStatementArgs(Statement *link, Code code, Args &&...args)
+            {return setArgs(std::forward<Args>(args)...).addStatement(link, code);}
          template<typename... Args>
          Block &addStatementArgs(Code code, Args &&...args)
-            {return setArgs(std::forward<Args>(args)...).addStatement(code);}
+            {return setArgs(std::forward<Args>(args)...).addStatement(&head, code);}
 
                iterator begin()       {return static_cast<      iterator>(head.next);}
          const_iterator begin() const {return static_cast<const_iterator>(head.next);}
@@ -93,10 +102,19 @@ namespace GDCC
          friend IArchive &operator >> (IArchive &in, Block &out);
 
       private:
-         void unpackArgs(Arg *argv, Arg const &arg0) {*argv = arg0;}
-         void unpackArgs(Arg *argv, Arg      &&arg0) {*argv = std::move(arg0);}
+         void unpackArg(Arg *argv, Arg const &arg0) {*argv = arg0;}
+         void unpackArg(Arg *argv, Arg      &&arg0) {*argv = std::move(arg0);}
 
-         void unpackArgs(Arg *argv, Exp *arg0);
+         void unpackArg(Arg *argv, Exp *arg0);
+
+         //
+         // unpackArgs
+         //
+         template<typename Arg0>
+         void unpackArgs(Arg *argv, Arg0 &&arg0)
+         {
+            unpackArg(argv, std::forward<Arg0>(arg0));
+         }
 
          //
          // unpackArgs
@@ -104,7 +122,7 @@ namespace GDCC
          template<typename Arg0, typename... Args>
          void unpackArgs(Arg *argv, Arg0 &&arg0, Args &&...args)
          {
-            unpackArgs(argv, arg0);
+            unpackArg(argv, std::forward<Arg0>(arg0));
             unpackArgs(argv + 1, std::forward<Args>(args)...);
          }
 

@@ -29,9 +29,9 @@ namespace Bytecode
       //
       // Info::putStmnt
       //
-      void Info::putStmnt(GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt()
       {
-         switch(stmnt.code)
+         switch(stmnt->code)
          {
          case GDCC::IR::Code::Nop:
             putWord(0);
@@ -47,11 +47,11 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Call:
-            putStmnt_Call(stmnt);
+            putStmnt_Call();
             break;
 
          case GDCC::IR::Code::Casm:
-            for(auto const &arg : stmnt.args)
+            for(auto const &arg : stmnt->args)
                putExpWord(arg.aLit.value);
             break;
 
@@ -83,12 +83,12 @@ namespace Bytecode
 
          case GDCC::IR::Code::Cnat:
             putWord(351); // callfunc
-            putExpWord(stmnt.args[0].aLit.value);
-            putWord(stmnt.args.size() - 2);
+            putExpWord(stmnt->args[0].aLit.value);
+            putWord(stmnt->args.size() - 2);
             break;
 
          case GDCC::IR::Code::Cspe:
-            putStmnt_Cspe(stmnt);
+            putStmnt_Cspe();
             break;
 
          case GDCC::IR::Code::DivI_W:
@@ -108,7 +108,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Move_W:
-            putStmnt_Move_W(stmnt);
+            putStmnt_Move_W();
             break;
 
          case GDCC::IR::Code::MulI_W:
@@ -136,7 +136,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Retn:
-            putStmnt_Retn(stmnt);
+            putStmnt_Retn();
             break;
 
          case GDCC::IR::Code::ShLU_W:
@@ -157,8 +157,8 @@ namespace Bytecode
             break;
 
          default:
-            std::cerr << "ERROR: " << stmnt.pos << ": cannot put Code for ZDACS: "
-               << stmnt.code << '\n';
+            std::cerr << "ERROR: " << stmnt->pos << ": cannot put Code for ZDACS: "
+               << stmnt->code << '\n';
             throw EXIT_FAILURE;
          }
       }
@@ -166,17 +166,17 @@ namespace Bytecode
       //
       // Info::putStmnt_Call
       //
-      void Info::putStmnt_Call(GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt_Call()
       {
-         auto ret = ResolveValue(stmnt.args[1].aLit.value->getValue());
+         auto ret = ResolveValue(stmnt->args[1].aLit.value->getValue());
 
-         switch(stmnt.args[0].a)
+         switch(stmnt->args[0].a)
          {
          case GDCC::IR::ArgBase::Lit:
             if(ret == 0)
                putWord(204); // calldiscard
 
-            else if(stmnt.args.size() == 1)
+            else if(stmnt->args.size() == 1)
                putWord(203); // call
 
             else
@@ -185,7 +185,7 @@ namespace Bytecode
                throw EXIT_FAILURE;
             }
 
-            putExpWord(stmnt.args[0].aLit.value);
+            putExpWord(stmnt->args[0].aLit.value);
             break;
 
          case GDCC::IR::ArgBase::Stk:
@@ -205,7 +205,7 @@ namespace Bytecode
             break;
 
          default:
-            std::cerr << "ERROR: " << stmnt.pos << ": bad Call\n";
+            std::cerr << "ERROR: " << stmnt->pos << ": bad Call\n";
             throw EXIT_FAILURE;
          }
       }
@@ -213,34 +213,34 @@ namespace Bytecode
       //
       // Info::putStmnt_Cspe
       //
-      void Info::putStmnt_Cspe(GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt_Cspe()
       {
-         auto ret = ResolveValue(stmnt.args[1].aLit.value->getValue());
+         auto ret = ResolveValue(stmnt->args[1].aLit.value->getValue());
 
          GDCC::IR::ArgBase a;
-         if(stmnt.args.size() == 2)
+         if(stmnt->args.size() == 2)
             a = ret ? GDCC::IR::ArgBase::Stk : GDCC::IR::ArgBase::Lit;
          else
-            a = stmnt.args[2].a;
+            a = stmnt->args[2].a;
 
          switch(a)
          {
          case GDCC::IR::ArgBase::Lit:
             if(ret)
             {
-               for(auto const &arg : GDCC::MakeRange(stmnt.args.begin() + 2, stmnt.args.end()))
+               for(auto const &arg : GDCC::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
                {
                   putWord(3); // pushnumber
                   putExpWord(arg.aLit.value);
                }
 
                putWord(263); break; // lspec5result
-               putExpWord(stmnt.args[0].aLit.value);
+               putExpWord(stmnt->args[0].aLit.value);
 
                break;
             }
 
-            switch(stmnt.args.size() - 2)
+            switch(stmnt->args.size() - 2)
             {
             case 0: putWord( 9); break; // lspec1direct
             case 1: putWord( 9); break; // lspec1direct
@@ -250,13 +250,13 @@ namespace Bytecode
             case 5: putWord(13); break; // lspec5direct
             }
 
-            putExpWord(stmnt.args[0].aLit.value);
+            putExpWord(stmnt->args[0].aLit.value);
 
             // Dummy arg.
-            if(stmnt.args.size() == 2)
+            if(stmnt->args.size() == 2)
                putWord(0);
 
-            for(auto const &arg : GDCC::MakeRange(stmnt.args.begin() + 2, stmnt.args.end()))
+            for(auto const &arg : GDCC::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
                putExpWord(arg.aLit.value);
 
             break;
@@ -264,7 +264,7 @@ namespace Bytecode
          case GDCC::IR::ArgBase::Stk:
             if(ret)
             {
-               switch(stmnt.args.size() - 2)
+               switch(stmnt->args.size() - 2)
                {
                case 0: putWord(3); putWord(0); // pushnumber
                case 1: putWord(3); putWord(0); // pushnumber
@@ -276,7 +276,7 @@ namespace Bytecode
             }
             else
             {
-               switch(stmnt.args.size() - 2)
+               switch(stmnt->args.size() - 2)
                {
                case 0: putWord(3); putWord(0); // pushnumber
                case 1: putWord(4); break; // lspec1
@@ -287,12 +287,12 @@ namespace Bytecode
                }
             }
 
-            putExpWord(stmnt.args[0].aLit.value);
+            putExpWord(stmnt->args[0].aLit.value);
 
             break;
 
          default:
-            std::cerr << "ERROR: " << stmnt.pos << ": bad Cspe\n";
+            std::cerr << "ERROR: " << stmnt->pos << ": bad Cspe\n";
             throw EXIT_FAILURE;
          }
       }
@@ -300,45 +300,45 @@ namespace Bytecode
       //
       // Info::putStmnt_Move_W
       //
-      void Info::putStmnt_Move_W(GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt_Move_W()
       {
          // push_?
-         if(stmnt.args[0].a == GDCC::IR::ArgBase::Stk) switch(stmnt.args[1].a)
+         if(stmnt->args[0].a == GDCC::IR::ArgBase::Stk) switch(stmnt->args[1].a)
          {
          case GDCC::IR::ArgBase::GblArr:
-            putStmnt_Move_W__Stk_Arr(stmnt.args[1].aGblArr, 235); // pushglobalarray
+            putStmnt_Move_W__Stk_Arr(stmnt->args[1].aGblArr, 235); // pushglobalarray
             break;
 
          case GDCC::IR::ArgBase::GblReg:
             putWord(182); // pushglobalvar
-            putExpWord(stmnt.args[1].aGblReg.idx->aLit.value);
+            putExpWord(stmnt->args[1].aGblReg.idx->aLit.value);
             break;
 
          case GDCC::IR::ArgBase::Lit:
-            putStmnt_Move_W__Stk_Lit(stmnt.args[1].aLit.value);
+            putStmnt_Move_W__Stk_Lit(stmnt->args[1].aLit.value);
             break;
 
          case GDCC::IR::ArgBase::LocReg:
             putWord(28); // pushscriptvar
-            putExpWord(stmnt.args[1].aLocReg.idx->aLit.value);
+            putExpWord(stmnt->args[1].aLocReg.idx->aLit.value);
             break;
 
          case GDCC::IR::ArgBase::MapArr:
-            putStmnt_Move_W__Stk_Arr(stmnt.args[1].aMapArr, 207); // pushmaparray
+            putStmnt_Move_W__Stk_Arr(stmnt->args[1].aMapArr, 207); // pushmaparray
             break;
 
          case GDCC::IR::ArgBase::MapReg:
             putWord(29); // pushmapvar
-            putExpWord(stmnt.args[1].aMapReg.idx->aLit.value);
+            putExpWord(stmnt->args[1].aMapReg.idx->aLit.value);
             break;
 
          case GDCC::IR::ArgBase::WldArr:
-            putStmnt_Move_W__Stk_Arr(stmnt.args[1].aWldArr, 226); // pushworldarray
+            putStmnt_Move_W__Stk_Arr(stmnt->args[1].aWldArr, 226); // pushworldarray
             break;
 
          case GDCC::IR::ArgBase::WldReg:
             putWord(30); // pushworldvar
-            putExpWord(stmnt.args[1].aWldReg.idx->aLit.value);
+            putExpWord(stmnt->args[1].aWldReg.idx->aLit.value);
             break;
 
          default:
@@ -347,29 +347,29 @@ namespace Bytecode
          }
 
          // drop_?
-         else if(stmnt.args[1].a == GDCC::IR::ArgBase::Stk) switch(stmnt.args[0].a)
+         else if(stmnt->args[1].a == GDCC::IR::ArgBase::Stk) switch(stmnt->args[0].a)
          {
          case GDCC::IR::ArgBase::GblArr:
-            putStmnt_Move_W__Arr_Stk(stmnt.args[1].aGblArr, 236); // assignglobalarray
+            putStmnt_Move_W__Arr_Stk(stmnt->args[1].aGblArr, 236); // assignglobalarray
             break;
 
          case GDCC::IR::ArgBase::GblReg:
             putWord(181); // assignglobalvar
-            putExpWord(stmnt.args[0].aGblReg.idx->aLit.value);
+            putExpWord(stmnt->args[0].aGblReg.idx->aLit.value);
             break;
 
          case GDCC::IR::ArgBase::LocReg:
             putWord(25); // assignscriptvar
-            putExpWord(stmnt.args[0].aLocReg.idx->aLit.value);
+            putExpWord(stmnt->args[0].aLocReg.idx->aLit.value);
             break;
 
          case GDCC::IR::ArgBase::MapArr:
-            putStmnt_Move_W__Arr_Stk(stmnt.args[1].aMapArr, 208); // assignmaparray
+            putStmnt_Move_W__Arr_Stk(stmnt->args[1].aMapArr, 208); // assignmaparray
             break;
 
          case GDCC::IR::ArgBase::MapReg:
             putWord(26); // assignmapvar
-            putExpWord(stmnt.args[0].aMapReg.idx->aLit.value);
+            putExpWord(stmnt->args[0].aMapReg.idx->aLit.value);
             break;
 
          case GDCC::IR::ArgBase::Nul:
@@ -377,12 +377,12 @@ namespace Bytecode
             break;
 
          case GDCC::IR::ArgBase::WldArr:
-            putStmnt_Move_W__Arr_Stk(stmnt.args[1].aWldArr, 227); // assignworldarray
+            putStmnt_Move_W__Arr_Stk(stmnt->args[1].aWldArr, 227); // assignworldarray
             break;
 
          case GDCC::IR::ArgBase::WldReg:
             putWord(27); // assignworldvar
-            putExpWord(stmnt.args[0].aWldReg.idx->aLit.value);
+            putExpWord(stmnt->args[0].aWldReg.idx->aLit.value);
             break;
 
          default:
@@ -461,15 +461,15 @@ namespace Bytecode
       //
       // Info::putStmnt_Retn
       //
-      void Info::putStmnt_Retn(GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt_Retn()
       {
          switch(func->ctype)
          {
          case GDCC::IR::CallType::LangACS:
-            if(stmnt.args.size() == 0)
+            if(stmnt->args.size() == 0)
                putWord(205); // returnvoid
 
-            else if(stmnt.args.size() == 1)
+            else if(stmnt->args.size() == 1)
                putWord(206); // returnval
 
             else
@@ -482,11 +482,11 @@ namespace Bytecode
          case GDCC::IR::CallType::Script:
          case GDCC::IR::CallType::ScriptI:
          case GDCC::IR::CallType::ScriptS:
-            if(stmnt.args.size() == 0)
+            if(stmnt->args.size() == 0)
             {
                putWord(1); // terminate
             }
-            else if(stmnt.args.size() == 1)
+            else if(stmnt->args.size() == 1)
             {
                putWord(257); // setresultvalue
                putWord(  1); // terminate
@@ -499,7 +499,7 @@ namespace Bytecode
             break;
 
          default:
-            std::cerr << "ERROR: " << stmnt.pos << ": bad Code::Retn\n";
+            std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Retn\n";
             throw EXIT_FAILURE;
          }
       }

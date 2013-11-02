@@ -64,6 +64,26 @@ namespace Bytecode
       }
 
       //
+      // Info::putBlock
+      //
+      void Info::putBlock(GDCC::IR::Block &block)
+      {
+         try
+         {
+            auto end   = static_cast<GDCC::IR::Statement *>(block.end());
+                 stmnt = static_cast<GDCC::IR::Statement *>(block.begin());
+            for(; stmnt != end; stmnt = stmnt->next)
+               putStmnt();
+            stmnt = nullptr;
+         }
+         catch(...)
+         {
+            stmnt = nullptr;
+            throw;
+         }
+      }
+
+      //
       // Info::putExpWord
       //
       void Info::putExpWord(GDCC::IR::Exp const *exp)

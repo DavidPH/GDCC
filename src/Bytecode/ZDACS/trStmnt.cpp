@@ -29,15 +29,15 @@ namespace Bytecode
       //
       // Info::trStmnt
       //
-      void Info::trStmnt(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt()
       {
          // Generate label glyphs.
-         if(!stmnt.labs.empty())
+         if(!stmnt->labs.empty())
          {
             auto val = GDCC::IR::ExpCreate_ValueRoot(
-               GDCC::IR::Value_Fixed(CodeBase() + numChunkCODE, TypeWord), stmnt.pos);
+               GDCC::IR::Value_Fixed(CodeBase() + numChunkCODE, TypeWord), stmnt->pos);
 
-            for(auto const &lab : stmnt.labs)
+            for(auto const &lab : stmnt->labs)
             {
                auto &data = GDCC::IR::Glyph::GetData(lab);
 
@@ -46,7 +46,7 @@ namespace Bytecode
             }
          }
 
-         switch(stmnt.code)
+         switch(stmnt->code)
          {
          case GDCC::IR::Code::Nop:
             numChunkCODE += 4;
@@ -74,14 +74,14 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Call:
-            trStmnt_Call(stmnt);
+            trStmnt_Call();
             break;
 
          case GDCC::IR::Code::Casm:
             CheckArgC(stmnt, 1);
-            for(auto n = stmnt.args.size(); --n;)
+            for(auto n = stmnt->args.size(); --n;)
                CheckArgB(stmnt, n, GDCC::IR::ArgBase::Lit);
-            numChunkCODE += stmnt.args.size() * 4;
+            numChunkCODE += stmnt->args.size() * 4;
             break;
 
          case GDCC::IR::Code::CmpI_EQ_W:
@@ -103,13 +103,13 @@ namespace Bytecode
             CheckArgC(stmnt, 2);
             CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Lit);
             CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Lit);
-            for(auto n = stmnt.args.size(); n-- != 2;)
+            for(auto n = stmnt->args.size(); n-- != 2;)
                CheckArgB(stmnt, n, GDCC::IR::ArgBase::Stk);
             numChunkCODE += 12;
             break;
 
          case GDCC::IR::Code::Cspe:
-            trStmnt_Cspe(stmnt);
+            trStmnt_Cspe();
             break;
 
          case GDCC::IR::Code::InvU_W:
@@ -122,11 +122,11 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Move_W:
-            trStmnt_Move_W(stmnt);
+            trStmnt_Move_W();
             break;
 
          case GDCC::IR::Code::Retn:
-            trStmnt_Retn(stmnt);
+            trStmnt_Retn();
             break;
 
          case GDCC::IR::Code::Swap_W:
@@ -137,8 +137,8 @@ namespace Bytecode
             break;
 
          default:
-            std::cerr << "ERROR: " << stmnt.pos << ": cannot translate Code for ZDACS: "
-               << stmnt.code << '\n';
+            std::cerr << "ERROR: " << stmnt->pos << ": cannot translate Code for ZDACS: "
+               << stmnt->code << '\n';
             throw EXIT_FAILURE;
          }
       }
@@ -146,16 +146,16 @@ namespace Bytecode
       //
       // Info::trStmnt_Call
       //
-      void Info::trStmnt_Call(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt_Call()
       {
          CheckArgC(stmnt, 2);
          CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Lit);
-         for(auto n = stmnt.args.size(); --n != 1;)
+         for(auto n = stmnt->args.size(); --n != 1;)
             CheckArgB(stmnt, n, GDCC::IR::ArgBase::Stk);
 
-         auto ret = ResolveValue(stmnt.args[1].aLit.value->getValue());
+         auto ret = ResolveValue(stmnt->args[1].aLit.value->getValue());
 
-         switch(stmnt.args[0].a)
+         switch(stmnt->args[0].a)
          {
          case GDCC::IR::ArgBase::Lit:
             if(ret == 0)
@@ -188,7 +188,7 @@ namespace Bytecode
             break;
 
          default:
-            std::cerr << "ERROR: " << stmnt.pos << ": bad Call\n";
+            std::cerr << "ERROR: " << stmnt->pos << ": bad Call\n";
             throw EXIT_FAILURE;
          }
       }
@@ -196,54 +196,54 @@ namespace Bytecode
       //
       // Info::trStmnt_Cspe
       //
-      void Info::trStmnt_Cspe(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt_Cspe()
       {
          CheckArgC(stmnt, 2);
          CheckArgB(stmnt, 0, GDCC::IR::ArgBase::Lit);
          CheckArgB(stmnt, 1, GDCC::IR::ArgBase::Lit);
 
-         auto ret = ResolveValue(stmnt.args[1].aLit.value->getValue());
+         auto ret = ResolveValue(stmnt->args[1].aLit.value->getValue());
 
          if(ret > 1)
          {
-            std::cerr << "ERROR: " << stmnt.pos << ": bad Cspe ret\n";
+            std::cerr << "ERROR: " << stmnt->pos << ": bad Cspe ret\n";
             throw EXIT_FAILURE;
          }
 
          // Too many call args.
-         if(stmnt.args.size() > 7)
+         if(stmnt->args.size() > 7)
          {
-            std::cerr << "ERROR: " << stmnt.pos << ": bad Cspe arg count\n";
+            std::cerr << "ERROR: " << stmnt->pos << ": bad Cspe arg count\n";
             throw EXIT_FAILURE;
          }
 
          // No call args.
-         if(stmnt.args.size() == 2)
+         if(stmnt->args.size() == 2)
          {
             numChunkCODE += ret ? 48 : 12;
             return;
          }
 
-         switch(stmnt.args[2].a)
+         switch(stmnt->args[2].a)
          {
          case GDCC::IR::ArgBase::Lit:
-            for(auto n = stmnt.args.size(); n-- != 3;)
+            for(auto n = stmnt->args.size(); n-- != 3;)
                CheckArgB(stmnt, n, GDCC::IR::ArgBase::Lit);
-            numChunkCODE += 8 + (stmnt.args.size() - 2) * (ret ? 8 : 4);
+            numChunkCODE += 8 + (stmnt->args.size() - 2) * (ret ? 8 : 4);
             break;
 
          case GDCC::IR::ArgBase::Stk:
-            for(auto n = stmnt.args.size(); n-- != 3;)
+            for(auto n = stmnt->args.size(); n-- != 3;)
                CheckArgB(stmnt, n, GDCC::IR::ArgBase::Stk);
             numChunkCODE += 8;
 
             // Dummy args.
-            if(ret) numChunkCODE += (7 - stmnt.args.size()) * 8;
+            if(ret) numChunkCODE += (7 - stmnt->args.size()) * 8;
 
             break;
 
          default:
-            std::cerr << "ERROR: " << stmnt.pos << ": bad Cspe\n";
+            std::cerr << "ERROR: " << stmnt->pos << ": bad Cspe\n";
             throw EXIT_FAILURE;
          }
       }
@@ -251,19 +251,19 @@ namespace Bytecode
       //
       // Info::trStmnt_Move_W
       //
-      void Info::trStmnt_Move_W(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt_Move_W()
       {
          CheckArgC(stmnt, 2);
-         CheckArg(stmnt.args[0], stmnt.pos);
-         CheckArg(stmnt.args[1], stmnt.pos);
+         CheckArg(stmnt->args[0], stmnt->pos);
+         CheckArg(stmnt->args[1], stmnt->pos);
 
-         switch(stmnt.args[0].a)
+         switch(stmnt->args[0].a)
          {
          case GDCC::IR::ArgBase::GblArr:
-            switch(stmnt.args[1].a)
+            switch(stmnt->args[1].a)
             {
             case GDCC::IR::ArgBase::Stk:
-               trStmnt_Move_W__Arr_Stk(stmnt, stmnt.args[0].aGblArr);
+               trStmnt_Move_W__Arr_Stk(stmnt->args[0].aGblArr);
                break;
 
             default: goto badcase;
@@ -271,7 +271,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::ArgBase::GblReg:
-            switch(stmnt.args[1].a)
+            switch(stmnt->args[1].a)
             {
             case GDCC::IR::ArgBase::Stk: numChunkCODE += 8; break;
             default: goto badcase;
@@ -279,7 +279,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::ArgBase::LocReg:
-            switch(stmnt.args[1].a)
+            switch(stmnt->args[1].a)
             {
             case GDCC::IR::ArgBase::Stk: numChunkCODE += 8; break;
             default: goto badcase;
@@ -287,10 +287,10 @@ namespace Bytecode
             break;
 
          case GDCC::IR::ArgBase::MapArr:
-            switch(stmnt.args[1].a)
+            switch(stmnt->args[1].a)
             {
             case GDCC::IR::ArgBase::Stk:
-               trStmnt_Move_W__Arr_Stk(stmnt, stmnt.args[0].aMapArr);
+               trStmnt_Move_W__Arr_Stk(stmnt->args[0].aMapArr);
                break;
 
             default: goto badcase;
@@ -298,7 +298,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::ArgBase::MapReg:
-            switch(stmnt.args[1].a)
+            switch(stmnt->args[1].a)
             {
             case GDCC::IR::ArgBase::Stk: numChunkCODE += 8; break;
             default: goto badcase;
@@ -306,7 +306,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::ArgBase::Nul:
-            switch(stmnt.args[1].a)
+            switch(stmnt->args[1].a)
             {
             case GDCC::IR::ArgBase::Stk: numChunkCODE += 4; break;
             default: goto badcase;
@@ -314,7 +314,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::ArgBase::Stk:
-            switch(stmnt.args[1].a)
+            switch(stmnt->args[1].a)
             {
             case GDCC::IR::ArgBase::GblReg: numChunkCODE += 8; break;
             case GDCC::IR::ArgBase::LocReg: numChunkCODE += 8; break;
@@ -322,19 +322,19 @@ namespace Bytecode
             case GDCC::IR::ArgBase::WldReg: numChunkCODE += 8; break;
 
             case GDCC::IR::ArgBase::Lit:
-               trStmnt_Move_W__Stk_Lit(stmnt, stmnt.args[1].aLit.value);
+               trStmnt_Move_W__Stk_Lit(stmnt->args[1].aLit.value);
                break;
 
             case GDCC::IR::ArgBase::GblArr:
-               trStmnt_Move_W__Stk_Arr(stmnt, stmnt.args[1].aGblArr);
+               trStmnt_Move_W__Stk_Arr(stmnt->args[1].aGblArr);
                break;
 
             case GDCC::IR::ArgBase::MapArr:
-               trStmnt_Move_W__Stk_Arr(stmnt, stmnt.args[1].aMapArr);
+               trStmnt_Move_W__Stk_Arr(stmnt->args[1].aMapArr);
                break;
 
             case GDCC::IR::ArgBase::WldArr:
-               trStmnt_Move_W__Stk_Arr(stmnt, stmnt.args[1].aWldArr);
+               trStmnt_Move_W__Stk_Arr(stmnt->args[1].aWldArr);
                break;
 
             default: goto badcase;
@@ -342,10 +342,10 @@ namespace Bytecode
             break;
 
          case GDCC::IR::ArgBase::WldArr:
-            switch(stmnt.args[1].a)
+            switch(stmnt->args[1].a)
             {
             case GDCC::IR::ArgBase::Stk:
-               trStmnt_Move_W__Arr_Stk(stmnt, stmnt.args[0].aWldArr);
+               trStmnt_Move_W__Arr_Stk(stmnt->args[0].aWldArr);
                break;
 
             default: goto badcase;
@@ -353,7 +353,7 @@ namespace Bytecode
             break;
 
          case GDCC::IR::ArgBase::WldReg:
-            switch(stmnt.args[1].a)
+            switch(stmnt->args[1].a)
             {
             case GDCC::IR::ArgBase::Stk: numChunkCODE += 8; break;
             default: goto badcase;
@@ -362,8 +362,8 @@ namespace Bytecode
 
          default:
          badcase:
-            std::cerr << "ERROR: " << stmnt.pos << ": bad Code::Move_W("
-               << stmnt.args[0].a << ',' << stmnt.args[1].a << ")\n";
+            std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Move_W("
+               << stmnt->args[0].a << ',' << stmnt->args[1].a << ")\n";
             throw EXIT_FAILURE;
          }
       }
@@ -371,9 +371,9 @@ namespace Bytecode
       //
       // Info::trStmnt_Move_W__Arr_Stk
       //
-      void Info::trStmnt_Move_W__Arr_Stk(GDCC::IR::Statement &stmnt, GDCC::IR::ArgPtr2 const &arr)
+      void Info::trStmnt_Move_W__Arr_Stk(GDCC::IR::ArgPtr2 const &arr)
       {
-         CheckArgB(*arr.idx, GDCC::IR::ArgBase::Stk, stmnt.pos);
+         CheckArgB(*arr.idx, GDCC::IR::ArgBase::Stk, stmnt->pos);
 
          numChunkCODE += IsExp0(arr.off) ? 12 : 24;
       }
@@ -381,9 +381,9 @@ namespace Bytecode
       //
       // Info::trStmnt_Move_W__Stk_Arr
       //
-      void Info::trStmnt_Move_W__Stk_Arr(GDCC::IR::Statement &stmnt, GDCC::IR::ArgPtr2 const &arr)
+      void Info::trStmnt_Move_W__Stk_Arr(GDCC::IR::ArgPtr2 const &arr)
       {
-         CheckArgB(*arr.idx, GDCC::IR::ArgBase::Stk, stmnt.pos);
+         CheckArgB(*arr.idx, GDCC::IR::ArgBase::Stk, stmnt->pos);
 
          numChunkCODE += IsExp0(arr.off) ? 8 : 20;
       }
@@ -391,7 +391,7 @@ namespace Bytecode
       //
       // Info::trStmnt_Move_W__Stk_Lit
       //
-      void Info::trStmnt_Move_W__Stk_Lit(GDCC::IR::Statement &, GDCC::IR::Exp const *exp)
+      void Info::trStmnt_Move_W__Stk_Lit(GDCC::IR::Exp const *exp)
       {
          auto type = exp->getType();
 
@@ -407,17 +407,17 @@ namespace Bytecode
       //
       // Info::trStmnt_Retn
       //
-      void Info::trStmnt_Retn(GDCC::IR::Statement &stmnt)
+      void Info::trStmnt_Retn()
       {
-         for(auto n = stmnt.args.size(); n--;)
+         for(auto n = stmnt->args.size(); n--;)
             CheckArgB(stmnt, n, GDCC::IR::ArgBase::Stk);
 
          switch(func->ctype)
          {
          case GDCC::IR::CallType::LangACS:
-            if(stmnt.args.size() == 0)
+            if(stmnt->args.size() == 0)
                numChunkCODE += 4;
-            else if(stmnt.args.size() == 1)
+            else if(stmnt->args.size() == 1)
                numChunkCODE += 4;
             else
             {
@@ -429,9 +429,9 @@ namespace Bytecode
          case GDCC::IR::CallType::Script:
          case GDCC::IR::CallType::ScriptI:
          case GDCC::IR::CallType::ScriptS:
-            if(stmnt.args.size() == 0)
+            if(stmnt->args.size() == 0)
                numChunkCODE += 4;
-            else if(stmnt.args.size() == 1)
+            else if(stmnt->args.size() == 1)
                numChunkCODE += 8;
             else
             {
@@ -441,7 +441,7 @@ namespace Bytecode
             break;
 
          default:
-            std::cerr << "ERROR: " << stmnt.pos << ": bad Code::Retn\n";
+            std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Retn\n";
             throw EXIT_FAILURE;
          }
       }

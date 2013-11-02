@@ -112,6 +112,8 @@ namespace Bytecode
 
          std::size_t lenString(GDCC::String str);
 
+         void putBlock(GDCC::IR::Block &block);
+
          void putByte(GDCC::FastU i) {out->put(i & 0xFF);}
 
          void putChunk();
@@ -141,14 +143,14 @@ namespace Bytecode
 
          void putHWord(GDCC::FastU i);
 
-         void putStmnt(GDCC::IR::Statement const &stmnt);
-         void putStmnt_Call(GDCC::IR::Statement const &stmnt);
-         void putStmnt_Cspe(GDCC::IR::Statement const &stmnt);
-         void putStmnt_Move_W(GDCC::IR::Statement const &stmnt);
+         void putStmnt();
+         void putStmnt_Call();
+         void putStmnt_Cspe();
+         void putStmnt_Move_W();
          void putStmnt_Move_W__Arr_Stk(GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i);
          void putStmnt_Move_W__Stk_Arr(GDCC::IR::ArgPtr2 const &arr, GDCC::FastU i);
          void putStmnt_Move_W__Stk_Lit(GDCC::IR::Exp const *exp);
-         void putStmnt_Retn(GDCC::IR::Statement const &stmnt);
+         void putStmnt_Retn();
 
          void putString(GDCC::String str);
          void putString(GDCC::String str, GDCC::FastU key);
@@ -161,14 +163,14 @@ namespace Bytecode
          void trSpaceIniti(GDCC::IR::Space &space);
          void trSpaceInitiValue(InitVal *&data, InitVal const *end, GDCC::IR::Value const &val);
 
-         virtual void trStmnt(GDCC::IR::Statement &stmnt);
-         void trStmnt_Call(GDCC::IR::Statement &stmnt);
-         void trStmnt_Cspe(GDCC::IR::Statement &stmnt);
-         void trStmnt_Move_W(GDCC::IR::Statement &stmnt);
-         void trStmnt_Move_W__Arr_Stk(GDCC::IR::Statement &stmnt, GDCC::IR::ArgPtr2 const &arr);
-         void trStmnt_Move_W__Stk_Arr(GDCC::IR::Statement &stmnt, GDCC::IR::ArgPtr2 const &arr);
-         void trStmnt_Move_W__Stk_Lit(GDCC::IR::Statement &stmnt, GDCC::IR::Exp const *exp);
-         void trStmnt_Retn(GDCC::IR::Statement &stmnt);
+         virtual void trStmnt();
+         void trStmnt_Call();
+         void trStmnt_Cspe();
+         void trStmnt_Move_W();
+         void trStmnt_Move_W__Arr_Stk(GDCC::IR::ArgPtr2 const &arr);
+         void trStmnt_Move_W__Stk_Arr(GDCC::IR::ArgPtr2 const &arr);
+         void trStmnt_Move_W__Stk_Lit(GDCC::IR::Exp const *exp);
+         void trStmnt_Retn();
 
          virtual void trStr(GDCC::IR::StrEnt &str);
 

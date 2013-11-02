@@ -72,23 +72,25 @@ namespace Bytecode
       virtual void genBlock(GDCC::IR::Block &block);
       virtual void genFunc(GDCC::IR::Function &func);
       virtual void genSpace(GDCC::IR::Space &space);
-      virtual void genStmnt(GDCC::IR::Statement &stmnt);
+      virtual void genStmnt();
       virtual void genStr(GDCC::IR::StrEnt &str);
 
       virtual void trBlock(GDCC::IR::Block &block);
       virtual void trFunc(GDCC::IR::Function &func);
       virtual void trSpace(GDCC::IR::Space &space);
-      virtual void trStmnt(GDCC::IR::Statement &stmnt) = 0;
+      virtual void trStmnt() = 0;
       virtual void trStr(GDCC::IR::StrEnt &str);
 
-      GDCC::IR::Function *func;
-      std::ostream       *out;
+      GDCC::IR::Block     *block;
+      GDCC::IR::Function  *func;
+      std::ostream        *out;
+      GDCC::IR::Statement *stmnt;
 
 
       static void CheckArgB(GDCC::IR::Arg const &arg, GDCC::IR::AddrBase b, GDCC::Origin pos);
-      static void CheckArgB(GDCC::IR::Statement &stmnt, std::size_t a, GDCC::IR::AddrBase b);
+      static void CheckArgB(GDCC::IR::Statement *stmnt, std::size_t a, GDCC::IR::AddrBase b);
 
-      static void CheckArgC(GDCC::IR::Statement &stmnt, std::size_t c);
+      static void CheckArgC(GDCC::IR::Statement *stmnt, std::size_t c);
 
       static bool IsExp0(GDCC::IR::Exp const *exp);
    };

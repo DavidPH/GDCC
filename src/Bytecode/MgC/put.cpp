@@ -56,6 +56,26 @@ namespace Bytecode
       }
 
       //
+      // Info::putBlock
+      //
+      void Info::putBlock(GDCC::IR::Block &block)
+      {
+         try
+         {
+            auto end   = static_cast<GDCC::IR::Statement *>(block.end());
+                 stmnt = static_cast<GDCC::IR::Statement *>(block.begin());
+            for(; stmnt != end; stmnt = stmnt->next)
+               putStmnt();
+            stmnt = nullptr;
+         }
+         catch(...)
+         {
+            stmnt = nullptr;
+            throw;
+         }
+      }
+
+      //
       // Info::putExp
       //
       void Info::putExp(GDCC::IR::Exp const *exp)
@@ -143,8 +163,7 @@ namespace Bytecode
          *out << "code" << '\0' << func->label << '\0'
             << '{' << '\0';
 
-         for(auto const &stmnt : func->block)
-            putStmnt(stmnt);
+         putBlock(func->block);
 
          *out << '}' << '\0';
 
@@ -260,14 +279,14 @@ namespace Bytecode
       //
       // Info::putStmnt
       //
-      void Info::putStmnt(GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt()
       {
          // Put labels.
-         for(auto lab : stmnt.labs)
+         for(auto lab : stmnt->labs)
             *out << "label" << '\0' << '(' << '\0' << lab << '\0' << ')' << '\0';
 
          // Put code and args.
-         switch(stmnt.code)
+         switch(stmnt->code)
          {
          case GDCC::IR::Code::Nop:
             *out << "nop" << '\0' << '(' << '\0' << ')' << '\0';
@@ -283,19 +302,19 @@ namespace Bytecode
 
          case GDCC::IR::Code::Call:
             *out << "call_stk" << '\0' << '(' << '\0';
-               *out << (stmnt.args.size() - 2) << '\0';
+               *out << (stmnt->args.size() - 2) << '\0';
             *out << ')' << '\0';
             break;
 
          case GDCC::IR::Code::Cjmp_Nil:
             *out << "cjmp_stk_nil" << '\0' << '(' << '\0';
-               putExp(stmnt.args[1].aLit.value);
+               putExp(stmnt->args[1].aLit.value);
             *out << ')' << '\0';
             break;
 
          case GDCC::IR::Code::Cjmp_Tru:
             *out << "cjmp_stk_tru" << '\0' << '(' << '\0';
-               putExp(stmnt.args[1].aLit.value);
+               putExp(stmnt->args[1].aLit.value);
             *out << ')' << '\0';
             break;
 
@@ -324,11 +343,11 @@ namespace Bytecode
             break;
 
          case GDCC::IR::Code::Jump:
-            putStmnt_Jump(stmnt);
+            putStmnt_Jump();
             break;
 
          case GDCC::IR::Code::Move_W:
-            putStmnt_Move_W(stmnt);
+            putStmnt_Move_W();
             break;
 
          case GDCC::IR::Code::MulU_W:
@@ -360,13 +379,13 @@ namespace Bytecode
       //
       // Info::putStmnt_Jump
       //
-      void Info::putStmnt_Jump(GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt_Jump()
       {
-         switch(stmnt.args[0].a)
+         switch(stmnt->args[0].a)
          {
          case GDCC::IR::ArgBase::Lit:
             *out << "jump_imm" << '\0' << '(' << '\0';
-               putExp(stmnt.args[0].aLit.value);
+               putExp(stmnt->args[0].aLit.value);
             *out << ')' << '\0';
             break;
 
@@ -383,31 +402,31 @@ namespace Bytecode
       //
       // Info::putStmnt_Move_W
       //
-      void Info::putStmnt_Move_W(GDCC::IR::Statement const &stmnt)
+      void Info::putStmnt_Move_W()
       {
          // push_?
-         if(stmnt.args[0].a == GDCC::IR::ArgBase::Stk) switch(stmnt.args[1].a)
+         if(stmnt->args[0].a == GDCC::IR::ArgBase::Stk) switch(stmnt->args[1].a)
          {
          case GDCC::IR::ArgBase::Lit:
             *out << "push_imm" << '\0' << '(' << '\0';
-               putExp(stmnt.args[1].aLit.value);
+               putExp(stmnt->args[1].aLit.value);
             *out << ')' << '\0';
             break;
 
          case GDCC::IR::ArgBase::LocArs:
-            switch(stmnt.args[1].aLocArs.idx->a)
+            switch(stmnt->args[1].aLocArs.idx->a)
             {
             case GDCC::IR::ArgBase::Lit:
                *out << "push_dat" << '\0' << '(' << '\0';
                   *out << '+' << '\0';
-                     putExp(stmnt.args[1].aLocArs.off);
-                     putExp(stmnt.args[1].aLocArs.idx->aLit.value);
+                     putExp(stmnt->args[1].aLocArs.off);
+                     putExp(stmnt->args[1].aLocArs.idx->aLit.value);
                *out << ')' << '\0';
                break;
 
             case GDCC::IR::ArgBase::Stk:
                *out << "push_ptr" << '\0' << '(' << '\0';
-                  putExp(stmnt.args[1].aLocArs.off);
+                  putExp(stmnt->args[1].aLocArs.off);
                *out << ')' << '\0';
                break;
 
@@ -419,7 +438,7 @@ namespace Bytecode
 
          case GDCC::IR::ArgBase::LocReg:
             *out << "push_reg" << '\0' << '(' << '\0';
-               putExp(stmnt.args[1].aLocReg.idx->aLit.value);
+               putExp(stmnt->args[1].aLocReg.idx->aLit.value);
             *out << ')' << '\0';
             break;
 
@@ -429,26 +448,26 @@ namespace Bytecode
          }
 
          // drop_?
-         else if(stmnt.args[1].a == GDCC::IR::ArgBase::Stk) switch(stmnt.args[0].a)
+         else if(stmnt->args[1].a == GDCC::IR::ArgBase::Stk) switch(stmnt->args[0].a)
          {
          case GDCC::IR::ArgBase::Nul:
             *out << "drop_nul" << '\0' << '(' << '\0' << ')' << '\0';
             break;
 
          case GDCC::IR::ArgBase::LocArs:
-            switch(stmnt.args[0].aLocArs.idx->a)
+            switch(stmnt->args[0].aLocArs.idx->a)
             {
             case GDCC::IR::ArgBase::Lit:
                *out << "drop_dat" << '\0' << '(' << '\0';
                   *out << '+' << '\0';
-                     putExp(stmnt.args[0].aLocArs.off);
-                     putExp(stmnt.args[0].aLocArs.idx->aLit.value);
+                     putExp(stmnt->args[0].aLocArs.off);
+                     putExp(stmnt->args[0].aLocArs.idx->aLit.value);
                *out << ')' << '\0';
                break;
 
             case GDCC::IR::ArgBase::Stk:
                *out << "drop_ptr" << '\0' << '(' << '\0';
-                  putExp(stmnt.args[0].aLocArs.off);
+                  putExp(stmnt->args[0].aLocArs.off);
                *out << ')' << '\0';
                break;
 
@@ -460,7 +479,7 @@ namespace Bytecode
 
          case GDCC::IR::ArgBase::LocReg:
             *out << "drop_reg" << '\0' << '(' << '\0';
-               putExp(stmnt.args[0].aLocReg.idx->aLit.value);
+               putExp(stmnt->args[0].aLocReg.idx->aLit.value);
             *out << ')' << '\0';
             break;
 

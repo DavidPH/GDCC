@@ -38,8 +38,9 @@ namespace GDCC
          Statement(Statement &&stmnt);
          explicit Statement(Statement *head) : next{head}, prev{head->prev}
             {next->prev = prev->next = this;}
-         Statement(Statement *head, Code code_) : pos{head->pos}, next{head},
-            prev{head->prev}, args{std::move(head->args)}, labs{std::move(head->labs)},
+         Statement(Statement *head, Statement *link, Code code_) :
+            pos{head->pos}, next{link}, prev{link->prev},
+            args{std::move(head->args)}, labs{std::move(head->labs)},
             code{code_} {next->prev = this; prev->next = this;}
          ~Statement() {next->prev = prev; prev->next = next;}
 

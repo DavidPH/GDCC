@@ -219,15 +219,14 @@ namespace Bytecode
       //
       void Info::putChunkCODE()
       {
-         putData("CODE", 4);
+         putData("\0\0\0\0", 4);
          putWord(numChunkCODE);
 
          // Put statements.
          for(auto &itr : GDCC::IR::FunctionRange()) try
          {
             func = &itr.second;
-            for(auto const &stmnt : itr.second.block)
-               putStmnt(stmnt);
+            putBlock(func->block);
             func = nullptr;
          }
          catch(...) {func = nullptr; throw;}

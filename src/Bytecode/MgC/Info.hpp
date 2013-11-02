@@ -33,6 +33,8 @@ namespace Bytecode
          virtual void put(std::ostream &out);
 
       protected:
+         void putBlock(GDCC::IR::Block &block);
+
          void putExp(GDCC::IR::Exp const *exp);
 
          void putGlyph(GDCC::IR::Glyph glyph);
@@ -45,14 +47,15 @@ namespace Bytecode
 
          void putValue(GDCC::IR::Value const &val);
 
-         void putStmnt(GDCC::IR::Statement const &stmnt);
-         void putStmnt_Jump(GDCC::IR::Statement const &stmnt);
-         void putStmnt_Move_W(GDCC::IR::Statement const &stmnt);
+         void putStmnt();
+         void putStmnt_Jump();
+         void putStmnt_Move_W();
 
-         virtual void trStmnt(GDCC::IR::Statement &stmnt);
-         void trStmnt_Call(GDCC::IR::Statement &stmnt);
-         void trStmnt_Jump(GDCC::IR::Statement &stmnt);
-         void trStmnt_Move_W(GDCC::IR::Statement &stmnt);
+         virtual void trStmnt();
+         void trStmntMath();
+         void trStmnt_Call();
+         void trStmnt_Jump();
+         void trStmnt_Move_W();
 
 
          static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin const &pos);
