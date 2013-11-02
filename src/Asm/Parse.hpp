@@ -83,6 +83,8 @@ namespace Asm
 
    GDCC::IR::Value_Multi ParseMulti(GDCC::TokenStream &in);
 
+   GDCC::IR::Value_Multi ParseMultiString(GDCC::TokenStream &in);
+
    GDCC::IR::Value ParseNumber(GDCC::Token const &tok);
 
    GDCC::IR::ScriptType ParseScriptType(GDCC::Token const &tok);

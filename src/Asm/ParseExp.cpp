@@ -90,6 +90,9 @@ namespace Asm
             t = ParseType(in);
             return GDCC::IR::ExpCreate_UnaryCst(t, ParseExp(in), tok.pos);
 
+         case GDCC::STR_string:
+            return GDCC::IR::ExpCreate_ValueRoot(ParseMultiString(in), tok.pos);
+
          default:
             std::cerr << "ERROR: " << tok.pos << ": expected expression\n";
             throw EXIT_FAILURE;
@@ -227,6 +230,49 @@ namespace Asm
 
       return GDCC::IR::Value_Multi(std::move(vals),
          GDCC::IR::Type_Multi(std::move(types)));
+   }
+
+   //
+   // ParseMultiString
+   //
+   GDCC::IR::Value_Multi ParseMultiString(GDCC::TokenStream &in)
+   {
+      std::vector<GDCC::IR::Value_Fixed> val;
+      GDCC::IR::Type_Fixed               type;
+
+      // Optionally take a type for string elements.
+      if(in.peek().tok != GDCC::TOK_String)
+      {
+         auto pos = in.peek().pos;
+         auto t = ParseType(in);
+         if(t.t != GDCC::IR::TypeBase::Fixed)
+         {
+            std::cerr << "ERROR: " << pos << ": expected Type_Fixed\n";
+            throw EXIT_FAILURE;
+         }
+
+         type = t.tFixed;
+      }
+
+      // Otherwise, use a target-dependent default.
+      else
+      {
+         // FIXME/TODO: ACS targets have 32-bit byte!
+         type = GDCC::IR::Type_Fixed(8, 0, false, false);
+      }
+
+      // Read string token.
+      ExpectToken(in, GDCC::TOK_String, "string");
+      auto str = in.get().str;
+
+      // Convert to values.
+      val.reserve(str.size());
+      for(unsigned char c : str)
+         val.emplace_back(c, type);
+
+      return GDCC::IR::Value_Multi(
+         GDCC::Array<GDCC::IR::Value>(GDCC::Move, val.begin(), val.end()),
+         GDCC::IR::Type_Multi(GDCC::Array<GDCC::IR::Type>(val.size(), type)));
    }
 
    //
