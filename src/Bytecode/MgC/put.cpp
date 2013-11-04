@@ -175,7 +175,22 @@ namespace Bytecode
       //
       void Info::putGlyph(GDCC::IR::Glyph glyph)
       {
-         *out << '$' << static_cast<GDCC::String>(glyph) << '\0';
+         auto str = static_cast<GDCC::String>(glyph);
+
+         switch(str.data()[0])
+         {
+         case '@':
+         case '$':
+         case '%':
+         case '&':
+         case '*':
+         case '{':
+         case '"':
+         case '\'':
+            *out        << str << '\0'; break;
+         default:
+            *out << '$' << str << '\0'; break;
+         }
       }
 
       //
