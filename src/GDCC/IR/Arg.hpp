@@ -135,15 +135,19 @@ namespace GDCC
       // Arg_Cpy
       //
       // Not a valid arg type.
+      // Used for argument placeholders in assembler macros.
       //
       struct Arg_Cpy
       {
-         Arg_Cpy() = default;
-         explicit Arg_Cpy(IArchive &) {}
+         Arg_Cpy() : value{0} {}
+         Arg_Cpy(FastU value_) : value{value_} {}
+         explicit Arg_Cpy(IArchive &in);
 
-         IArchive &getIR(IArchive &in) {return in;}
+         IArchive &getIR(IArchive &in);
 
-         OArchive &putIR(OArchive &out) const {return out;}
+         OArchive &putIR(OArchive &out) const;
+
+         FastU value;
       };
 
       //

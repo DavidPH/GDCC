@@ -12,6 +12,8 @@
 
 #include "Parse.hpp"
 
+#include "Macro.hpp"
+
 #include "GDCC/TokenStream.hpp"
 
 #include "GDCC/IR/Block.hpp"
@@ -62,6 +64,29 @@ namespace Asm
          block.setArgs(GDCC::Array<GDCC::IR::Arg>(GDCC::Move, args.begin(), args.end()));
          block.addStatement(code);
 
+         break;
+
+      case GDCC::TOK_Not:
+         in.get();
+         ExpectToken(in, GDCC::TOK_Identi, "identifier");
+         if(auto macro = Macro::Find(in.peek().str))
+         {
+            block.setOrigin(in.get().pos);
+
+            // Read arguments to macro invocation.
+            args.clear();
+
+            while(in.peek().tok != GDCC::TOK_LnEnd)
+               args.push_back(ParseArg(SkipToken(in, GDCC::TOK_Comma, "end of line")));
+
+            // Expand macro.
+            macro->expand(block, args.data(), args.size());
+         }
+         else
+         {
+            std::cerr << "ERROR: " << in.peek().pos << ": expected macro name\n";
+            throw EXIT_FAILURE;
+         }
          break;
 
       case GDCC::TOK_LnEnd:

@@ -46,6 +46,8 @@ namespace GDCC
          using size_type              = std::size_t;
 
 
+         Block() = default;
+         Block(Block &&block) = default;
          ~Block() {while(head.next != &head) delete head.next;}
 
          Block &operator = (Block &&block) = default;
@@ -75,6 +77,8 @@ namespace GDCC
 
                iterator end()       {return static_cast<      iterator>(&head);}
          const_iterator end() const {return static_cast<const_iterator>(&head);}
+
+         Origin getOrigin() const {return head.pos;}
 
          Block &setArgs() {head.args.clear(); return *this;}
 

@@ -13,6 +13,7 @@ add_executable(gdcc-as
    main.cpp
 
    IStream.cpp
+   Macro.cpp
    Parse.cpp
    ParseArg.cpp
    ParseBlock.cpp

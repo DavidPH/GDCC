@@ -17,6 +17,7 @@ Declarations
     new-line
     function-declaration
     import-declaration
+    macro-declaration
     object-declaration
     space-declaration
     strent-declaration
@@ -159,6 +160,20 @@ Imports
     <Import> string new-line
 
 Specifies a library to link with at load-time.
+
+===========================================================
+Macros
+===========================================================
+
+  macro-declaration:
+    <Macro> identifier new-line(opt) { statement-list(opt) }
+
+Defines a macro that can be used to insert a statement list into another
+statement list. Any arguments in the macro of type Cpy are replaced by the
+numbered argument to the macro invocation.
+
+Macros are not part of the Intermediary Representation and exist only during
+assembling. Thus, their names have no linkage.
 
 ===========================================================
 Objects
@@ -333,6 +348,7 @@ Statements
 
   statement:
     statement-label-list(opt) statement-name argument-list(opt) new-line
+    statement-label-list(opt) ! identifier argument-list(opt) new-line
 
   statement-label-list:
     string statement-label-list(opt)
@@ -341,6 +357,8 @@ Statements
     , argument argument-list(opt)
 
 A statement is the IR's instruction.
+
+Statements starting with a ! are a macro invocation.
 
 ===========================================================
 Statement Names
@@ -393,7 +411,7 @@ Arguments
 ===========================================================
 
   argument:
-    <Cpy> ( )
+    <Cpy> ( expression )
     <Far> ( argument , expression )
     <GblArr> ( argument , argument , expression )
     <GblArs> ( argument , expression )
@@ -421,6 +439,7 @@ Expressions
 
   expression:
     aggregate
+    aggregate-string
     identifier
     number
     string
@@ -469,12 +488,27 @@ Aggregates
 
   aggregate:
     [ expression-list(opt) ]
+    { expression-list(opt) }
 
   expression-list:
     expression
     expression , expression-list
 
 Results in a multi-part value. Each sub-expression has its own type.
+
+In the first form, expressions are evaluated immediately and cannot contain
+unbacked glyphs. In the second form, expression evaluation is deferred.
+
+===========================================================
+Aggregate Strings
+===========================================================
+
+  aggregate-string:
+    <String> type(opt) string
+
+Results in a multi-part value comprised of the characters in the string. The
+type of each element is determined by an explicit type or a target-dependent
+default.
 
 ===========================================================
 Identifiers
@@ -677,6 +711,7 @@ Grammar
   declaration:
     function-declaration
     import-declaration
+    macro-declaration
     object-declaration
     space-declaration
     strent-declaration
@@ -706,6 +741,9 @@ Grammar
 
   import-declaration:
     <Import> string new-line
+
+  macro-declaration:
+    <Macro> identifier new-line(opt) { statement-list(opt) }
 
   object-declaration:
     <Object> address-specifier string string object-argument-list(opt) new-line
@@ -752,7 +790,11 @@ Grammar
     statement statement-list(opt)
 
   statement:
-    statement-name argument-list(opt) new-line
+    statement-label-list(opt) statement-name argument-list(opt) new-line
+    statement-label-list(opt) ! identifier argument-list(opt) new-line
+
+  statement-label-list:
+    string statement-label-list(opt)
 
   statement-name:
     <Nop>
@@ -800,7 +842,7 @@ Grammar
     , argument argument-list(opt)
 
   argument:
-    <Cpy> ( )
+    <Cpy> ( expression )
     <Far> ( argument , expression )
     <GblArr> ( argument , argument , expression )
     <GblArs> ( argument , expression )
@@ -824,6 +866,7 @@ Grammar
 
   expression:
     aggregate
+    aggregate-string
     identifier
     number
     string
@@ -868,10 +911,14 @@ Grammar
 
   aggregate:
     [ expression-list(opt) ]
+    { expression-list(opt) }
 
   expression-list:
     expression
     expression , expression-list
+
+  aggregate-string:
+    <String> type(opt) string
 
   identifier:
     non-digit

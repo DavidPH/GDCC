@@ -192,6 +192,29 @@ namespace GDCC
       }
 
       //
+      // Arg_Cpy constructor
+      //
+      Arg_Cpy::Arg_Cpy(IArchive &in) : value{GetIR(in, value)}
+      {
+      }
+
+      //
+      // Arg_Cpy::getIR
+      //
+      IArchive &Arg_Cpy::getIR(IArchive &in)
+      {
+         return in >> value;
+      }
+
+      //
+      // Arg_Cpy::putIR
+      //
+      OArchive &Arg_Cpy::putIR(OArchive &out) const
+      {
+         return out << value;
+      }
+
+      //
       // Arg_Lit constructor
       //
       Arg_Lit::Arg_Lit(IArchive &in) : value{GetIR(in, value)}

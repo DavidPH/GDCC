@@ -36,6 +36,19 @@ static T ParseArg0(GDCC::TokenStream &in)
 }
 
 //
+// ParseArgU
+//
+template<typename T>
+static T ParseArgU(GDCC::TokenStream &in)
+{
+   Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
+   auto exp = Asm::ParseFastU(in);
+   Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
+
+   return T(std::move(exp));
+}
+
+//
 // ParseArg1
 //
 template<typename T>
@@ -97,7 +110,7 @@ namespace Asm
       {
       case GDCC::STR_Gen:    return ParseArg2<GDCC::IR::Arg_Gen   >(in);
 
-      case GDCC::STR_Cpy:    return ParseArg0<GDCC::IR::Arg_Cpy   >(in);
+      case GDCC::STR_Cpy:    return ParseArgU<GDCC::IR::Arg_Cpy   >(in);
       case GDCC::STR_Lit:    return ParseArg1<GDCC::IR::Arg_Lit   >(in);
       case GDCC::STR_Nul:    return ParseArg0<GDCC::IR::Arg_Nul   >(in);
       case GDCC::STR_Stk:    return ParseArg0<GDCC::IR::Arg_Stk   >(in);

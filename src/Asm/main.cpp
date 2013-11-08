@@ -10,6 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
+#include "Macro.hpp"
 #include "Parse.hpp"
 #include "TStream.hpp"
 
@@ -64,12 +65,7 @@ static void ParseTLK(GDCC::TokenStream &in)
 
    if(in.peek().tok == GDCC::TOK_EOF) return;
 
-   if(in.peek().tok != GDCC::TOK_Identi)
-   {
-      std::cerr << "ERROR: " << in.peek().pos << ": expected identifier\n";
-      throw EXIT_FAILURE;
-   }
-
+   Asm::ExpectToken(in, GDCC::TOK_Identi, "identifier");
    switch(static_cast<GDCC::StringIndex>(in.get().str))
    {
    case GDCC::STR_Function:
@@ -80,6 +76,20 @@ static void ParseTLK(GDCC::TokenStream &in)
    case GDCC::STR_Import:
       Asm::ExpectToken(in, GDCC::TOK_String, "string");
       Asm::ParseImport(in, GDCC::IR::Import::Get(in.get().str));
+      break;
+
+   case GDCC::STR_Macro:
+      Asm::ExpectToken(in, GDCC::TOK_Identi, "identifier");
+      {
+         GDCC::String    name = in.get().str;
+         GDCC::IR::Block list;
+
+         while(in.drop(GDCC::TOK_LnEnd)) {}
+         Asm::SkipToken(in, GDCC::TOK_BraceO, "{");
+         Asm::ParseBlock(in, list, GDCC::TOK_BraceC);
+
+         Asm::Macro::Add(name, std::move(list));
+      }
       break;
 
    case GDCC::STR_Object:

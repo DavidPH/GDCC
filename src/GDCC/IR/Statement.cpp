@@ -25,6 +25,29 @@ namespace GDCC
    namespace IR
    {
       //
+      // Statement move constructor
+      //
+      Statement::Statement(Statement &&stmnt) :
+         pos{std::move(stmnt.pos)},
+         next{std::move(stmnt.next)},
+         prev{std::move(stmnt.prev)},
+         args{std::move(stmnt.args)},
+         labs{std::move(stmnt.labs)},
+         code{std::move(stmnt.code)}
+      {
+         // If stmnt is in a list...
+         if(stmnt.next != &stmnt)
+         {
+            // ... Unlink stmnt and relink this.
+            next->prev = prev->next = this;
+            stmnt.next = stmnt.prev = &stmnt;
+         }
+         else
+            // Otherwise, just reset links.
+            next = prev = this;
+      }
+
+      //
       // Statement move assignment
       //
       Statement &Statement::operator = (Statement &&stmnt)
