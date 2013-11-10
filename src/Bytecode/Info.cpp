@@ -20,6 +20,27 @@
 
 
 //----------------------------------------------------------------------------|
+// Macros                                                                     |
+//
+
+//
+// TryPointer
+//
+#define TryPointer(fun, ptr) \
+   try \
+   { \
+      ptr = &ptr##_; \
+      fun(); \
+      ptr = nullptr; \
+   } \
+   catch(...) \
+   { \
+      ptr = nullptr; \
+      throw; \
+   }
+
+
+//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
@@ -49,24 +70,26 @@ namespace Bytecode
    //
    // Info::genBlock
    //
+   void Info::genBlock()
+   {
+      for(auto &stmnt_ : *block)
+         genStmnt(stmnt_);
+   }
+
+   //
+   // Info::genBlock
+   //
    void Info::genBlock(GDCC::IR::Block &block_)
    {
-      try
-      {
-              block = &block_;
-         auto end   = static_cast<GDCC::IR::Statement *>(block->end());
-              stmnt = static_cast<GDCC::IR::Statement *>(block->begin());
-         for(; stmnt != end; stmnt = stmnt->next)
-            genStmnt();
-         block = nullptr;
-         stmnt = nullptr;
-      }
-      catch(...)
-      {
-         block = nullptr;
-         stmnt = nullptr;
-         throw;
-      }
+      TryPointer(genBlock, block);
+   }
+
+   //
+   // Info::genFunc
+   //
+   void Info::genFunc()
+   {
+      genBlock(func->block);
    }
 
    //
@@ -74,38 +97,109 @@ namespace Bytecode
    //
    void Info::genFunc(GDCC::IR::Function &func_)
    {
-      try
-      {
-         func = &func_;
-         genBlock(func->block);
-         func = nullptr;
-      }
-      catch(...)
-      {
-         func = nullptr;
-         throw;
-      }
+      TryPointer(genFunc, func);
    }
 
    //
    // Info::genSpace
    //
-   void Info::genSpace(GDCC::IR::Space &)
+   void Info::genSpace(GDCC::IR::Space &space_)
    {
+      TryPointer(genSpace, space);
    }
 
    //
    // Info::genStmnt
    //
-   void Info::genStmnt()
+   void Info::genStmnt(GDCC::IR::Statement &stmnt_)
    {
+      TryPointer(genStmnt, stmnt);
    }
 
    //
    // Info::genStr
    //
-   void Info::genStr(GDCC::IR::StrEnt &)
+   void Info::genStr(GDCC::IR::StrEnt &str_)
    {
+      TryPointer(genStr, str);
+   }
+
+   //
+   // Info::pre
+   //
+   void Info::pre()
+   {
+      for(auto &itr : GDCC::IR::Space::GblArs) preSpace(itr.second);
+      for(auto &itr : GDCC::IR::Space::MapArs) preSpace(itr.second);
+      for(auto &itr : GDCC::IR::Space::WldArs) preSpace(itr.second);
+
+      preSpace(GDCC::IR::Space::GblReg);
+      preSpace(GDCC::IR::Space::LocArs);
+      preSpace(GDCC::IR::Space::MapReg);
+      preSpace(GDCC::IR::Space::WldReg);
+
+      for(auto &itr : GDCC::IR::FunctionRange())
+         preFunc(itr.second);
+
+      for(auto &itr : GDCC::IR::StrEntRange())
+         preStr(itr.second);
+   }
+
+   //
+   // Info::preBlock
+   //
+   void Info::preBlock()
+   {
+      for(auto &stmnt_ : *block)
+         preStmnt(stmnt_);
+   }
+
+   //
+   // Info::preBlock
+   //
+   void Info::preBlock(GDCC::IR::Block &block_)
+   {
+      TryPointer(preBlock, block);
+   }
+
+   //
+   // Info::preFunc
+   //
+   void Info::preFunc()
+   {
+      preBlock(func->block);
+   }
+
+   //
+   // Info::preFunc
+   //
+   void Info::preFunc(GDCC::IR::Function &func_)
+   {
+      TryPointer(preFunc, func);
+   }
+
+   //
+   // Info::preSpace
+   //
+   void Info::preSpace(GDCC::IR::Space &space_)
+   {
+      TryPointer(preSpace, space);
+   }
+
+   //
+   // Info::preStmnt
+   //
+   void Info::preStmnt(GDCC::IR::Statement &stmnt_)
+   {
+      TryPointer(preStmnt, stmnt);
+   }
+
+   //
+   // Info::preStr
+   //
+   void Info::preStr(GDCC::IR::StrEnt &str_)
+   {
+      TryPointer(preStr, str);
    }
 
    //
@@ -132,24 +226,37 @@ namespace Bytecode
    //
    // Info::trBlock
    //
-   void Info::trBlock(GDCC::IR::Block &block_)
+   void Info::trBlock()
    {
       try
       {
-              block = &block_;
          auto end   = static_cast<GDCC::IR::Statement *>(block->end());
               stmnt = static_cast<GDCC::IR::Statement *>(block->begin());
          for(; stmnt != end; stmnt = stmnt->next)
             trStmnt();
-         block = nullptr;
          stmnt = nullptr;
       }
       catch(...)
       {
-         block = nullptr;
          stmnt = nullptr;
          throw;
       }
+   }
+
+   //
+   // Info::trBlock
+   //
+   void Info::trBlock(GDCC::IR::Block &block_)
+   {
+      TryPointer(trBlock, block);
+   }
+
+   //
+   // Info::trFunc
+   //
+   void Info::trFunc()
+   {
+      trBlock(func->block);
    }
 
    //
@@ -157,31 +264,31 @@ namespace Bytecode
    //
    void Info::trFunc(GDCC::IR::Function &func_)
    {
-      try
-      {
-         func = &func_;
-         trBlock(func->block);
-         func = nullptr;
-      }
-      catch(...)
-      {
-         func = nullptr;
-         throw;
-      }
+      TryPointer(trFunc, func);
    }
 
    //
    // Info::trSpace
    //
-   void Info::trSpace(GDCC::IR::Space &)
+   void Info::trSpace(GDCC::IR::Space &space_)
    {
+      TryPointer(trSpace, space);
+   }
+
+   //
+   // Info::trStmnt
+   //
+   void Info::trStmnt(GDCC::IR::Statement &stmnt_)
+   {
+      TryPointer(trStmnt, stmnt);
    }
 
    //
    // Info::trStr
    //
-   void Info::trStr(GDCC::IR::StrEnt &)
+   void Info::trStr(GDCC::IR::StrEnt &str_)
    {
+      TryPointer(trStr, str);
    }
 
    //

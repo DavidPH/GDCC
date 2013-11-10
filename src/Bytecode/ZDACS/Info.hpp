@@ -38,9 +38,9 @@ namespace Bytecode
       public:
          Info();
 
-         virtual void put(std::ostream &out);
+         virtual void gen();
 
-         virtual void tr();
+         virtual void put(std::ostream &out);
 
 
          static GDCC::IR::Type_Fixed const TypeWord;
@@ -85,9 +85,23 @@ namespace Bytecode
             bool onlyStr : 1;
          };
 
+         virtual void genFunc();
 
-         virtual void genFunc(GDCC::IR::Function &func);
-         virtual void genStr(GDCC::IR::StrEnt &str);
+         virtual void genSpace();
+         void genSpaceIniti();
+         void genSpaceIniti(GDCC::IR::Space &space);
+         void genSpaceInitiValue(InitVal *&data, InitVal const *end, GDCC::IR::Value const &val);
+
+         virtual void genStmnt();
+         void genStmnt_Call();
+         void genStmnt_Cspe();
+         void genStmnt_Move_W();
+         void genStmnt_Move_W__Arr_Stk(GDCC::IR::ArgPtr2 const &arr);
+         void genStmnt_Move_W__Stk_Arr(GDCC::IR::ArgPtr2 const &arr);
+         void genStmnt_Move_W__Stk_Lit(GDCC::IR::Exp const *exp);
+         void genStmnt_Retn();
+
+         virtual void genStr();
 
          GDCC::FastU lenChunk();
          GDCC::FastU lenChunk(char const *name, GDCC::Array<GDCC::String> const &strs, bool junk);
@@ -111,6 +125,9 @@ namespace Bytecode
          GDCC::FastU lenChunkSVCT();
 
          std::size_t lenString(GDCC::String str);
+
+         virtual void preFunc();
+         virtual void preStr();
 
          void putBlock(GDCC::IR::Block &block);
 
@@ -157,11 +174,7 @@ namespace Bytecode
 
          void putWord(GDCC::FastU i);
 
-         virtual void trFunc(GDCC::IR::Function &func);
-
-         virtual void trSpace(GDCC::IR::Space &space);
-         void trSpaceIniti(GDCC::IR::Space &space);
-         void trSpaceInitiValue(InitVal *&data, InitVal const *end, GDCC::IR::Value const &val);
+         virtual void trFunc();
 
          virtual void trStmnt();
          void trStmnt_Call();
@@ -169,10 +182,7 @@ namespace Bytecode
          void trStmnt_Move_W();
          void trStmnt_Move_W__Arr_Stk(GDCC::IR::ArgPtr2 const &arr);
          void trStmnt_Move_W__Stk_Arr(GDCC::IR::ArgPtr2 const &arr);
-         void trStmnt_Move_W__Stk_Lit(GDCC::IR::Exp const *exp);
          void trStmnt_Retn();
-
-         virtual void trStr(GDCC::IR::StrEnt &str);
 
          std::unordered_map<GDCC::IR::Space const *, InitData> init;
 

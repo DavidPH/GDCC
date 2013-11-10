@@ -59,32 +59,66 @@ namespace Bytecode
    class Info
    {
    public:
-      Info() : func{nullptr}, out{nullptr} {}
+      Info() :
+         block{nullptr},
+         func{nullptr},
+         out{nullptr},
+         space{nullptr},
+         stmnt{nullptr},
+         str{nullptr}
+      {
+      }
+
       virtual ~Info() {}
 
       virtual void gen();
+
+      virtual void pre();
 
       virtual void put(std::ostream &out) = 0;
 
       virtual void tr();
 
    protected:
-      virtual void genBlock(GDCC::IR::Block &block);
-      virtual void genFunc(GDCC::IR::Function &func);
-      virtual void genSpace(GDCC::IR::Space &space);
-      virtual void genStmnt();
-      virtual void genStr(GDCC::IR::StrEnt &str);
+      virtual void genBlock();
+              void genBlock(GDCC::IR::Block &block);
+      virtual void genFunc();
+              void genFunc(GDCC::IR::Function &func);
+      virtual void genSpace() {}
+              void genSpace(GDCC::IR::Space &space);
+      virtual void genStmnt() {}
+              void genStmnt(GDCC::IR::Statement &stmnt);
+      virtual void genStr() {}
+              void genStr(GDCC::IR::StrEnt &str);
 
-      virtual void trBlock(GDCC::IR::Block &block);
-      virtual void trFunc(GDCC::IR::Function &func);
-      virtual void trSpace(GDCC::IR::Space &space);
-      virtual void trStmnt() = 0;
-      virtual void trStr(GDCC::IR::StrEnt &str);
+      virtual void preBlock();
+              void preBlock(GDCC::IR::Block &block);
+      virtual void preFunc();
+              void preFunc(GDCC::IR::Function &func);
+      virtual void preSpace() {}
+              void preSpace(GDCC::IR::Space &space);
+      virtual void preStmnt() {}
+              void preStmnt(GDCC::IR::Statement &stmnt);
+      virtual void preStr() {}
+              void preStr(GDCC::IR::StrEnt &str);
+
+      virtual void trBlock();
+              void trBlock(GDCC::IR::Block &block);
+      virtual void trFunc();
+              void trFunc(GDCC::IR::Function &func);
+      virtual void trSpace() {}
+              void trSpace(GDCC::IR::Space &space);
+      virtual void trStmnt() {}
+              void trStmnt(GDCC::IR::Statement &stmnt);
+      virtual void trStr() {}
+              void trStr(GDCC::IR::StrEnt &str);
 
       GDCC::IR::Block     *block;
       GDCC::IR::Function  *func;
       std::ostream        *out;
+      GDCC::IR::Space     *space;
       GDCC::IR::Statement *stmnt;
+      GDCC::IR::StrEnt    *str;
 
 
       static void CheckArgB(GDCC::IR::Arg const &arg, GDCC::IR::AddrBase b, GDCC::Origin pos);

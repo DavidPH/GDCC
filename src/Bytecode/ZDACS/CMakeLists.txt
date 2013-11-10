@@ -12,12 +12,14 @@
 add_library(gdcc-bc-zdacs
    Info.cpp
    gen.cpp
+   genSpace.cpp
+   genStmnt.cpp
    lenChunk.cpp
+   pre.cpp
    put.cpp
    putChunk.cpp
    putStmnt.cpp
    tr.cpp
-   trSpace.cpp
    trStmnt.cpp
 )
 
