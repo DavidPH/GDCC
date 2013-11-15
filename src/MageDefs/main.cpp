@@ -54,7 +54,7 @@ static void MakeDefs()
 
    if(!out)
    {
-      std::cerr << "couldn't open '" << Option::Output.data << "' for writing";
+      std::cerr << "couldn't open '" << Option::Output.data << "' for writing\n";
       throw EXIT_FAILURE;
    }
 
@@ -85,7 +85,7 @@ static void ProcessFile(std::ostream &out, char const *inName)
 
    if(!fbuf.open(inName, std::ios_base::in))
    {
-      std::cerr << "couldn't open '" << Option::Output.data << "' for reading";
+      std::cerr << "couldn't open '" << inName << "' for reading\n";
       throw EXIT_FAILURE;
    }
 
