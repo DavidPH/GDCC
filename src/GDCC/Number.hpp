@@ -33,6 +33,44 @@ namespace GDCC
    typedef long double   FastF;
    typedef   signed long FastI;
    typedef unsigned long FastU;
+
+   //
+   // NumberCastType
+   //
+   // Implements ::number_cast.
+   //
+   template<typename Out, typename In> struct NumberCastType
+   {
+      static Out Cast(In &&i);
+   };
+
+   // NumberCastType<FastI, Integ>
+   template<> struct NumberCastType<FastI, Integ>
+      {static FastI Cast(Integ const &i) {return i.get_si();}};
+
+   // NumberCastType<FastU, Integ>
+   template<> struct NumberCastType<FastU, Integ>
+      {static FastU Cast(Integ const &i) {return i.get_ui();}};
+
+   // NumberCastType<FastI>
+   template<typename In> struct NumberCastType<FastI, In>
+      {static FastI Cast(In &&i) {return static_cast<Integ>(i).get_si();}};
+
+   // NumberCastType<FastU>
+   template<typename In> struct NumberCastType<FastU, In>
+      {static FastU Cast(In &&i) {return static_cast<Integ>(i).get_ui();}};
+
+   // NumberCastType<Float>
+   template<typename In> struct NumberCastType<Float, In>
+      {static Float Cast(In &&i) {return static_cast<Float>(i);}};
+
+   // NumberCastType<Integ>
+   template<typename In> struct NumberCastType<Integ, In>
+      {static Integ Cast(In &&i) {return static_cast<Integ>(i);}};
+
+   // NumberCastType<Ratio>
+   template<typename In> struct NumberCastType<Ratio, In>
+      {static Ratio Cast(In &&i) {return static_cast<Ratio>(i);}};
 }
 
 
@@ -40,13 +78,17 @@ namespace GDCC
 // Global Functions                                                           |
 //
 
-template<typename T>
-T number_cast(GDCC::Integ const &i);
+template<typename Out, typename In> Out number_cast(In &&i);
 
-template<>
-inline GDCC::FastI number_cast<GDCC::FastI>(GDCC::Integ const &i) {return i.get_si();}
-template<>
-inline GDCC::FastU number_cast<GDCC::FastU>(GDCC::Integ const &i) {return i.get_ui();}
+//
+// number_cast
+//
+// Handles conversions involving unlimited precision numeric types.
+//
+template<typename Out, typename In> Out number_cast(In &&i)
+{
+   return GDCC::NumberCastType<Out, In>::Cast(std::forward<In>(i));
+}
 
 #endif//GDCC__Number_H__
 

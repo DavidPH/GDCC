@@ -95,6 +95,8 @@ namespace GDCC
       //
       void unget()
       {
+         if(eof || err) return;
+
          if(!buf->unget())
             err = true;
       }

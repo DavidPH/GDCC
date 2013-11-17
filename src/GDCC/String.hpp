@@ -51,6 +51,8 @@ namespace GDCC
       StringData(char const *str, StringIndex num);
       StringData(char const *str, std::size_t len, std::size_t hash, std::size_t num);
 
+      char const &operator [] (std::size_t i) const {return str[i];}
+
       char const &back() const {return str[len - 1];}
 
       char const *begin() const {return str;}
@@ -84,6 +86,8 @@ namespace GDCC
       explicit constexpr operator std::size_t () const {return num;}
       explicit constexpr operator StringIndex () const
          {return num < STRMAX ? static_cast<StringIndex>(num) : STRNULL;}
+
+      char const &operator [] (std::size_t i) const {return GetData(num).str[i];}
 
       constexpr bool operator == (String const &str) const {return str.num == num;}
       constexpr bool operator == (StringIndex num_) const {return num == num_;}

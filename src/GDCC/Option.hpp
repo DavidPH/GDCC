@@ -34,7 +34,8 @@ namespace Option
 
 namespace GDCC
 {
-   void InitOptions(int argc, char const *const *argv, char const *program);
+   void InitOptions(int argc, char const *const *argv, char const *program,
+      bool needOutput = true);
 }
 
 #endif//GDCC__Option_H__

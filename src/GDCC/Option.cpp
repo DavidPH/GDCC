@@ -52,7 +52,7 @@ namespace GDCC
    //
    // InitOptions
    //
-   void InitOptions(int argc, char const *const *argv, char const *program)
+   void InitOptions(int argc, char const *const *argv, char const *program, bool needOutput)
    {
       if(program) Option::Option::Help_Program = program;
 
@@ -69,7 +69,7 @@ namespace GDCC
          Option::Option::ProcessOptions(argc - 1, argv + 1, Option::OPTF_KEEPA);
 
          // Default output to last loose arg.
-         if(!Option::Output.handled && *Option::ArgC)
+         if(needOutput && !Option::Output.handled && *Option::ArgC)
             Option::DefaultArgHandler.argPop(&Option::Output);
       }
       catch(Option::Exception const &e)
@@ -78,7 +78,7 @@ namespace GDCC
          throw EXIT_FAILURE;
       }
 
-      if(!Option::Output.handled || !Option::Output.data)
+      if(needOutput && (!Option::Output.handled || !Option::Output.data))
       {
          std::cerr << "No output specified. Use -h for usage.\n";
          throw EXIT_FAILURE;
