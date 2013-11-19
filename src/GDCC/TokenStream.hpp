@@ -53,6 +53,21 @@ namespace GDCC
       }
 
       //
+      // drop
+      //
+      bool drop(TokenType tt, String ts)
+      {
+         auto const &tok = buf->peek();
+         if(tok.tok == TOK_EOF)
+            return eof = true, false;
+
+         if(tok.tok == tt && tok.str == ts)
+            return buf->get(), true;
+
+         return false;
+      }
+
+      //
       // get
       //
       Token const &get()

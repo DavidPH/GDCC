@@ -29,13 +29,13 @@ namespace C
    class PragmaDTBuf final : public DirectiveTBuf
    {
    public:
-      explicit PragmaDTBuf(GDCC::TokenBuf &src_, PragmaFunc pfn_= Pragma) :
-         DirectiveTBuf{src_}, pfn{pfn_} {}
+      explicit PragmaDTBuf(GDCC::TokenBuf &src_, Pragma &prag_) :
+         DirectiveTBuf{src_}, prag{prag_} {}
 
    protected:
       virtual bool directive(GDCC::Token const &tok);
 
-      PragmaFunc pfn;
+      Pragma &prag;
    };
 
    //
@@ -44,17 +44,14 @@ namespace C
    class PragmaTBuf final : public GDCC::TokenBuf
    {
    public:
-      using PragmaHandler = void(*)(GDCC::Origin, GDCC::TokenStream &);
-
-
-      explicit PragmaTBuf(GDCC::TokenBuf &src_, PragmaFunc pfn_ = Pragma) :
-         src{src_}, pfn{pfn_}, buf{GDCC::TokenEOF} {sett(buf, buf + 1, buf + 1);}
+      explicit PragmaTBuf(GDCC::TokenBuf &src_, Pragma &prag_) :
+         src{src_}, prag{prag_}, buf{GDCC::TokenEOF} {sett(buf, buf + 1, buf + 1);}
 
    protected:
       virtual void underflow();
 
       GDCC::TokenBuf &src;
-      PragmaFunc      pfn;
+      Pragma         &prag;
       GDCC::Token     buf[1];
    };
 }

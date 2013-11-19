@@ -70,7 +70,9 @@ static void ProcessFile(char const *inName)
    C::Macro::Reset();
    C::Macro::LinePush(C::Macro::Stringize(inStr));
 
-   C::TStream in{fbuf, inStr, GDCC::PathDirname(inStr)};
+   C::PragmaLangC pragma;
+
+   C::TStream in{fbuf, pragma, inStr, GDCC::PathDirname(inStr)};
 
    for(GDCC::Token tok; in >> tok;)
       std::cout << tok.tok << '(' << tok.str << ") ";

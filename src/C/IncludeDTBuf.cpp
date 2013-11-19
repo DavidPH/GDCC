@@ -154,7 +154,7 @@ namespace C
             Macro::LinePush(Macro::Stringize(path));
 
             str = std::move(fbuf);
-            inc.reset(new IncStream(*str, path, GDCC::PathDirname(path)));
+            inc.reset(new IncStream(*str, pragma, path, GDCC::PathDirname(path)));
 
             return true;
          }
@@ -193,7 +193,7 @@ namespace C
       Macro::LinePush(Macro::Stringize(path));
 
       str = std::move(fbuf);
-      inc.reset(new IncStream(*str, path, GDCC::PathDirname(path)));
+      inc.reset(new IncStream(*str, pragma, path, GDCC::PathDirname(path)));
 
       return true;
    }

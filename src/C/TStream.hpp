@@ -40,10 +40,24 @@ namespace C
    class IncStream : public GDCC::TokenStream
    {
    public:
-      IncStream(std::streambuf &buf, GDCC::String file, GDCC::String dir) :
-         GDCC::TokenStream{&pbuf}, istr{buf, file}, tbuf{istr}, cdir{tbuf},
-         ddir{cdir}, edir{ddir}, idir{edir, dir}, ldir{idir}, pdir{ldir},
-         udir{pdir}, pbuf{udir} {}
+      //
+      // constructor
+      //
+      IncStream(std::streambuf &buf, Pragma &pragma, GDCC::String file,
+         GDCC::String dir) :
+         GDCC::TokenStream{&pbuf},
+         istr{buf, file},
+         tbuf{istr},
+         cdir{tbuf},
+         ddir{cdir},
+         edir{ddir},
+         idir{edir, pragma, dir},
+         ldir{idir},
+         pdir{ldir, pragma},
+         udir{pdir},
+         pbuf{udir, pragma}
+      {
+      }
 
    protected:
       using IStr = IStream;
@@ -75,9 +89,18 @@ namespace C
    class PPStream : public IncStream
    {
    public:
-      PPStream(std::streambuf &buf, GDCC::String file, GDCC::String dir) :
-         IncStream{buf, file, dir}, mbuf{pbuf}, sbuf{mbuf}, cbuf{sbuf}
-         {tkbuf(&cbuf);}
+      //
+      // constructor
+      //
+      PPStream(std::streambuf &buf, Pragma &pragma, GDCC::String file,
+         GDCC::String dir) :
+         IncStream{buf, pragma, file, dir},
+         mbuf{pbuf},
+         sbuf{mbuf},
+         cbuf{sbuf}
+      {
+         tkbuf(&cbuf);
+      }
 
    protected:
       using MBuf = MacroTBuf;
@@ -95,8 +118,17 @@ namespace C
    class TStream : public PPStream
    {
    public:
-      TStream(std::streambuf &buf, GDCC::String file, GDCC::String dir) :
-         PPStream{buf, file, dir}, wbuf{cbuf}, ppbf{wbuf} {tkbuf(&ppbf);}
+      //
+      // constructor
+      //
+      TStream(std::streambuf &buf, Pragma &pragma, GDCC::String file,
+         GDCC::String dir) :
+         PPStream{buf, pragma, file, dir},
+         wbuf{cbuf},
+         ppbf{wbuf}
+      {
+         tkbuf(&ppbf);
+      }
 
    protected:
       using WBuf = GDCC::WSpaceTBuf;

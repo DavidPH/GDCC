@@ -24,18 +24,6 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
-//
-
-namespace C
-{
-   bool Pragma_STDC_CXLimitedRange = true;
-   bool Pragma_STDC_FEnvAccess     = false;
-   bool Pragma_STDC_FPContract     = true;
-}
-
-
-//----------------------------------------------------------------------------|
 // Static Functions                                                           |
 //
 
@@ -78,32 +66,6 @@ static void EffIt()
 }
 
 //
-// PragmaACS
-//
-static void PragmaACS(GDCC::TokenStream &in)
-{
-   in.drop(GDCC::TOK_WSpace);
-
-   switch(static_cast<GDCC::StringIndex>(in.get().str))
-   {
-   case GDCC::STR_library:
-      in.drop(GDCC::TOK_WSpace);
-
-      if(in.peek().tok != GDCC::TOK_String)
-      {
-         std::cerr << "ERROR: " << in.peek().pos << ": expected string-literal\n";
-         throw EXIT_FAILURE;
-      }
-
-      // TODO
-
-      break;
-
-   default: break;
-   }
-}
-
-//
 // PragmaOnOff
 //
 static void PragmaOnOff(bool &pragma, bool def, GDCC::TokenStream &in)
@@ -119,31 +81,6 @@ static void PragmaOnOff(bool &pragma, bool def, GDCC::TokenStream &in)
    }
 }
 
-//
-// PragmaSTDC
-//
-static void PragmaSTDC(GDCC::TokenStream &in)
-{
-   in.drop(GDCC::TOK_WSpace);
-
-   switch(static_cast<GDCC::StringIndex>(in.get().str))
-   {
-   case GDCC::STR_CX_LIMITED_RANGE:
-      PragmaOnOff(C::Pragma_STDC_CXLimitedRange, true, in);
-      break;
-
-   case GDCC::STR_FENV_ACCESS:
-      PragmaOnOff(C::Pragma_STDC_FEnvAccess, false, in);
-      break;
-
-   case GDCC::STR_FP_CONTRACT:
-      PragmaOnOff(C::Pragma_STDC_FPContract, true, in);
-      break;
-
-   default: break;
-   }
-}
-
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -152,35 +89,81 @@ static void PragmaSTDC(GDCC::TokenStream &in)
 namespace C
 {
    //
-   // Pragma
+   // PragmaACS::pragma
    //
-   void Pragma(GDCC::TokenStream &in)
+   bool PragmaACS::pragma(GDCC::TokenStream &in)
    {
-      if(in.peek().tok == GDCC::TOK_WSpace) in.get();
+      in.drop(GDCC::TOK_WSpace);
+      if(!in.drop(GDCC::TOK_Identi, GDCC::STR_ACS)) return false;
+      in.drop(GDCC::TOK_WSpace);
 
-      if(in.peek().tok != GDCC::TOK_Identi) return;
+      if(in.peek().tok != GDCC::TOK_Identi) return true;
 
       switch(static_cast<GDCC::StringIndex>(in.get().str))
       {
-      case GDCC::STR_ACS:
-         PragmaACS(in);
-         break;
+      case GDCC::STR_library:
+         in.drop(GDCC::TOK_WSpace);
 
-      case GDCC::STR_STDC:
-         PragmaSTDC(in);
-         break;
+         if(in.peek().tok != GDCC::TOK_String)
+         {
+            std::cerr << "ERROR: " << in.peek().pos << ": expected string-literal\n";
+            throw EXIT_FAILURE;
+         }
 
-      case GDCC::STR_fuck:
-         // This test pragma brought to you by drinking. And MageofMystra.
-         if(in.peek().tok == GDCC::TOK_WSpace) in.get();
-         if(in.peek().tok == GDCC::TOK_Identi && in.peek().str == GDCC::STR_it)
-            EffIt();
+         pragmaACS_library.emplace_back(in.peek().str);
 
          break;
 
-      default:
-         break;
+      default: break;
       }
+
+      return true;
+   }
+
+   //
+   // PragmaSTDC::pragma
+   //
+   bool PragmaSTDC::pragma(GDCC::TokenStream &in)
+   {
+      in.drop(GDCC::TOK_WSpace);
+      if(!in.drop(GDCC::TOK_Identi, GDCC::STR_ACS)) return false;
+      in.drop(GDCC::TOK_WSpace);
+
+      if(in.peek().tok != GDCC::TOK_Identi) return true;
+
+      switch(static_cast<GDCC::StringIndex>(in.get().str))
+      {
+      case GDCC::STR_CX_LIMITED_RANGE:
+         PragmaOnOff(pragmaSTDC_CXLimitedRange, true, in);
+         break;
+
+      case GDCC::STR_FENV_ACCESS:
+         PragmaOnOff(pragmaSTDC_FEnvAccess, false, in);
+         break;
+
+      case GDCC::STR_FP_CONTRACT:
+         PragmaOnOff(pragmaSTDC_FPContract, true, in);
+         break;
+
+      default: break;
+      }
+
+      return true;
+   }
+
+   //
+   // PragmaTest::pragma
+   //
+   bool PragmaTest::pragma(GDCC::TokenStream &in)
+   {
+      // This test pragma brought to you by drinking. And MageofMystra.
+      in.drop(GDCC::TOK_WSpace);
+      if(!in.drop(GDCC::TOK_Identi, GDCC::STR_fuck)) return false;
+      in.drop(GDCC::TOK_WSpace);
+      if(!in.drop(GDCC::TOK_Identi, GDCC::STR_it)) return true;
+      EffIt();
+
+      return true;
    }
 }
 

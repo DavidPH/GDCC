@@ -48,7 +48,7 @@ namespace C
       GDCC::ArrayTBuf abuf{toks.data(), toks.size()};
       GDCC::TokenStream in{&abuf};
 
-      pfn(in);
+      prag.pragma(in);
 
       return true;
    }
@@ -105,7 +105,7 @@ namespace C
          GDCC::StreamTBuf<IStream> tbuf{istr};
          GDCC::TokenStream in{&tbuf};
 
-         pfn(in);
+         prag.pragma(in);
       }
 
       sett(buf, buf, buf + 1);

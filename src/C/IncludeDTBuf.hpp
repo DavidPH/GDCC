@@ -24,14 +24,20 @@
 
 namespace C
 {
+   class Pragma;
+
    //
    // IncludeDTBuf
    //
    class IncludeDTBuf final : public DirectiveTBuf
    {
    public:
-      explicit IncludeDTBuf(GDCC::TokenBuf &src_, GDCC::String dir_) :
-         DirectiveTBuf{src_}, dir{dir_} {}
+      IncludeDTBuf(GDCC::TokenBuf &src_, Pragma &pragma_, GDCC::String dir_) :
+         DirectiveTBuf{src_},
+         pragma{pragma_},
+         dir{dir_}
+      {
+      }
 
       virtual ~IncludeDTBuf();
 
@@ -46,6 +52,7 @@ namespace C
       std::unique_ptr<std::streambuf> str;
       std::unique_ptr<IncStream>      inc;
 
+      Pragma      &pragma;
       GDCC::String dir;
    };
 }
