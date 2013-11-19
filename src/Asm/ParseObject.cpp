@@ -29,25 +29,26 @@ namespace Asm
    //
    // ParseObject
    //
-   void ParseObject(GDCC::TokenStream &in, GDCC::IR::Object &obj)
+   void ParseObject(GDCC::TokenStream &in, GDCC::IR::Program &prog,
+      GDCC::IR::Object &obj)
    {
       while(!in.drop(GDCC::TOK_LnEnd)) switch(static_cast<GDCC::StringIndex>(
          ExpectToken(in, GDCC::TOK_Identi, "identifier").get().str))
       {
       case GDCC::STR_alias:
-         obj.alias = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         obj.alias = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_alloc:
-         obj.alloc = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         obj.alloc = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_defin:
-         obj.defin = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         obj.defin = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_initi:
-         obj.initi = ParseExp(SkipToken(in, GDCC::TOK_Equal, "="));
+         obj.initi = ParseExp(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_linka:
@@ -55,11 +56,11 @@ namespace Asm
          break;
 
       case GDCC::STR_value:
-         obj.value = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         obj.value = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_words:
-         obj.words = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         obj.words = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       default:

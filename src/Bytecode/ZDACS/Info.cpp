@@ -12,8 +12,7 @@
 
 #include "Info.hpp"
 
-#include "GDCC/IR/Arg.hpp"
-#include "GDCC/IR/Glyph.hpp"
+#include "GDCC/IR/Program.hpp"
 
 #include "Option/Option.hpp"
 
@@ -87,6 +86,57 @@ namespace Bytecode
       }
 
       //
+      // Info::backGlyphFunc
+      //
+      void Info::backGlyphFunc(GDCC::String glyph, GDCC::FastU val, GDCC::IR::CallType ctype)
+      {
+         auto &data = prog->getGlyphData(glyph);
+
+         data.type  = GDCC::IR::Type_Funct(ctype);
+         data.value = GDCC::IR::ExpCreate_ValueRoot(
+            GDCC::IR::Value_Funct(val, GDCC::IR::Type_Funct(ctype)),
+            GDCC::Origin(GDCC::STRNULL, 0));
+      }
+
+      //
+      // Info::backGlyphGlyph
+      //
+      void Info::backGlyphGlyph(GDCC::String glyph, GDCC::String val)
+      {
+         auto &data = prog->getGlyphData(glyph);
+
+         data.type  = prog->getGlyphData(val).type;
+         data.value = GDCC::IR::ExpCreate_ValueGlyph(
+            GDCC::IR::Glyph(prog, val),
+            GDCC::Origin(GDCC::STRNULL, 0));
+      }
+
+      //
+      // Info::backGlyphStr
+      //
+      void Info::backGlyphStr(GDCC::String glyph, GDCC::FastU val)
+      {
+         auto &data = prog->getGlyphData(glyph);
+
+         data.type  = GDCC::IR::Type_StrEn();
+         data.value = GDCC::IR::ExpCreate_ValueRoot(
+            GDCC::IR::Value_StrEn(val, GDCC::IR::Type_StrEn()),
+            GDCC::Origin(GDCC::STRNULL, 0));
+      }
+
+      //
+      // Info::backGlyphWord
+      //
+      void Info::backGlyphWord(GDCC::String glyph, GDCC::FastU val)
+      {
+         auto &data = prog->getGlyphData(glyph);
+
+         data.type  = TypeWord;
+         data.value = GDCC::IR::ExpCreate_ValueRoot(
+            GDCC::IR::Value_Fixed(val, TypeWord), GDCC::Origin(GDCC::STRNULL, 0));
+      }
+
+      //
       // Info::lenString
       //
       std::size_t Info::lenString(GDCC::String str)
@@ -116,54 +166,15 @@ namespace Bytecode
       };
 
       //
-      // Info::BackGlyphFunc
+      // Info::resolveGlyph
       //
-      void Info::BackGlyphFunc(GDCC::String glyph, GDCC::FastU val, GDCC::IR::CallType ctype)
+      GDCC::IR::Exp::Ref Info::resolveGlyph(GDCC::String glyph)
       {
-         auto &data = GDCC::IR::Glyph::GetData(glyph);
+         if(auto exp = prog->getGlyphData(glyph).value)
+            return static_cast<GDCC::IR::Exp::Ref>(exp);
 
-         data.type  = GDCC::IR::Type_Funct(ctype);
-         data.value = GDCC::IR::ExpCreate_ValueRoot(
-            GDCC::IR::Value_Funct(val, GDCC::IR::Type_Funct(ctype)),
-            GDCC::Origin(GDCC::STRNULL, 0));
-      }
-
-      //
-      // Info::BackGlyphGlyph
-      //
-      void Info::BackGlyphGlyph(GDCC::String glyph, GDCC::String val)
-      {
-         auto &data = GDCC::IR::Glyph::GetData(glyph);
-
-         data.type  = GDCC::IR::Glyph::GetData(val).type;
-         data.value = GDCC::IR::ExpCreate_ValueGlyph(
-            static_cast<GDCC::IR::Glyph>(val),
-            GDCC::Origin(GDCC::STRNULL, 0));
-      }
-
-      //
-      // Info::BackGlyphStr
-      //
-      void Info::BackGlyphStr(GDCC::String glyph, GDCC::FastU val)
-      {
-         auto &data = GDCC::IR::Glyph::GetData(glyph);
-
-         data.type  = GDCC::IR::Type_StrEn();
-         data.value = GDCC::IR::ExpCreate_ValueRoot(
-            GDCC::IR::Value_StrEn(val, GDCC::IR::Type_StrEn()),
-            GDCC::Origin(GDCC::STRNULL, 0));
-      }
-
-      //
-      // Info::BackGlyphWord
-      //
-      void Info::BackGlyphWord(GDCC::String glyph, GDCC::FastU val)
-      {
-         auto &data = GDCC::IR::Glyph::GetData(glyph);
-
-         data.type  = TypeWord;
-         data.value = GDCC::IR::ExpCreate_ValueRoot(
-            GDCC::IR::Value_Fixed(val, TypeWord), GDCC::Origin(GDCC::STRNULL, 0));
+         std::cerr << "ERROR: unbacked glyph: '" << glyph << "'\n";
+         throw EXIT_FAILURE;
       }
 
       //
@@ -220,18 +231,6 @@ namespace Bytecode
       GDCC::FastU Info::CodeBase()
       {
          return 24;
-      }
-
-      //
-      // Info::ResolveGlyph
-      //
-      GDCC::IR::Exp::Ref Info::ResolveGlyph(GDCC::String glyph)
-      {
-         if(auto exp = GDCC::IR::Glyph::GetData(glyph).value)
-            return static_cast<GDCC::IR::Exp::Ref>(exp);
-
-         std::cerr << "ERROR: unbacked glyph: '" << glyph << "'\n";
-         throw EXIT_FAILURE;
       }
 
       //

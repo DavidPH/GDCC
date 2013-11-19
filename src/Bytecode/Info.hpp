@@ -34,6 +34,7 @@ namespace GDCC
       class Function;
       class Glyph;
       class Object;
+      class Program;
       class Value;
       struct Value_Multi;
       class Space;
@@ -63,6 +64,7 @@ namespace Bytecode
          block{nullptr},
          func{nullptr},
          out{nullptr},
+         prog{nullptr},
          space{nullptr},
          stmnt{nullptr},
          str{nullptr}
@@ -71,15 +73,16 @@ namespace Bytecode
 
       virtual ~Info() {}
 
-      virtual void gen();
+      void gen(GDCC::IR::Program &prog);
 
-      virtual void pre();
+      void pre(GDCC::IR::Program &prog);
 
-      virtual void put(std::ostream &out) = 0;
+      void put(GDCC::IR::Program &prog, std::ostream &out);
 
-      virtual void tr();
+      void tr(GDCC::IR::Program &prog);
 
    protected:
+      virtual void gen();
       virtual void genBlock();
               void genBlock(GDCC::IR::Block &block);
       virtual void genFunc();
@@ -91,6 +94,7 @@ namespace Bytecode
       virtual void genStr() {}
               void genStr(GDCC::IR::StrEnt &str);
 
+      virtual void pre();
       virtual void preBlock();
               void preBlock(GDCC::IR::Block &block);
       virtual void preFunc();
@@ -102,6 +106,9 @@ namespace Bytecode
       virtual void preStr() {}
               void preStr(GDCC::IR::StrEnt &str);
 
+      virtual void put() = 0;
+
+      virtual void tr();
       virtual void trBlock();
               void trBlock(GDCC::IR::Block &block);
       virtual void trFunc();
@@ -116,6 +123,7 @@ namespace Bytecode
       GDCC::IR::Block     *block;
       GDCC::IR::Function  *func;
       std::ostream        *out;
+      GDCC::IR::Program   *prog;
       GDCC::IR::Space     *space;
       GDCC::IR::Statement *stmnt;
       GDCC::IR::StrEnt    *str;

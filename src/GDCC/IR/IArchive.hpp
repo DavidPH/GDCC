@@ -30,6 +30,8 @@ namespace GDCC
 {
    namespace IR
    {
+      class Program;
+
       //
       // IArchive
       //
@@ -94,32 +96,12 @@ namespace GDCC
 
          IArchive &getHeader();
 
-         //
-         // getTables
-         //
-         IArchive &getTables()
-         {
-            getTablesString();
-            getTablesGlyphs();
-            getTablesFuncts();
-            getTablesImport();
-            getTablesSpaces();
-            getTablesObject();
-            getTablesStrEnt();
-
-            return *this;
-         }
+         Program *prog;
 
 
          friend IArchive &::GDCC::operator >> (IArchive &in, String &out);
 
       private:
-         IArchive &getTablesFuncts();
-         IArchive &getTablesGlyphs();
-         IArchive &getTablesImport();
-         IArchive &getTablesObject();
-         IArchive &getTablesSpaces();
-         IArchive &getTablesStrEnt();
          IArchive &getTablesString();
 
          std::vector<char>   data;

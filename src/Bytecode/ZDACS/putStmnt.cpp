@@ -12,6 +12,8 @@
 
 #include "Info.hpp"
 
+#include "GDCC/Utility.hpp"
+
 #include "GDCC/IR/Function.hpp"
 #include "GDCC/IR/Glyph.hpp"
 

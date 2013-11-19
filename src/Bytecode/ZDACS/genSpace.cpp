@@ -13,7 +13,7 @@
 #include "Info.hpp"
 
 #include "GDCC/IR/Exp.hpp"
-#include "GDCC/IR/Object.hpp"
+#include "GDCC/IR/Program.hpp"
 
 #include <iostream>
 
@@ -36,22 +36,20 @@ namespace Bytecode
          //
          // Handles the unusual rules for allocating map registers.
          //
-         auto allocMapReg = [](GDCC::IR::Object *self)
+         auto allocMapReg = [this](GDCC::IR::Object &self)
          {
-            if(!self->space) return;
-
-            for(;; ++self->value)
+            for(;; ++self.value)
             {
-               auto lo = self->value;
-               auto hi = self->words + lo;
+               auto lo = self.value;
+               auto hi = self.words + lo;
 
-               for(auto const &obj : self->space->obset)
+               for(auto const &obj : prog->rangeObject())
                {
-                  if(obj->alloc || obj == self)
+                  if(obj.alloc || &obj == &self || obj.space != self.space)
                      continue;
 
-                  auto objLo = obj->value;
-                  auto objHi = obj->words + objLo;
+                  auto objLo = obj.value;
+                  auto objHi = obj.words + objLo;
 
                   if((objLo <= lo && lo < objHi) || (objLo < hi && hi < objHi))
                      goto nextValue;
@@ -60,9 +58,9 @@ namespace Bytecode
                      goto nextValue;
                }
 
-               for(auto const &itr : GDCC::IR::Space::MapArs)
+               for(auto const &itr : prog->rangeSpaceMapArs())
                {
-                  if(lo <= itr.second.value && itr.second.value < hi)
+                  if(lo <= itr.value && itr.value < hi)
                      goto nextValue;
                }
 
@@ -71,7 +69,7 @@ namespace Bytecode
             nextValue:;
             }
 
-            self->alloc = false;
+            self.alloc = false;
          };
 
          //
@@ -79,17 +77,20 @@ namespace Bytecode
          //
          auto genSpaceAlloc = [this]()
          {
-            for(auto const &obj : space->obset)
+            for(auto &obj : prog->rangeObject())
             {
-               if(obj->alloc)
-                  obj->allocValue();
+               if(obj.space != space->space)
+                  continue;
+
+               if(obj.alloc)
+                  obj.allocValue(*prog);
 
                // Back address glyph.
-               BackGlyphWord(obj->glyph, obj->value);
+               backGlyphWord(obj.glyph, obj.value);
             }
          };
 
-         switch(space->space)
+         switch(space->space.base)
          {
          case GDCC::IR::AddrBase::GblReg:
          case GDCC::IR::AddrBase::LocArs:
@@ -98,22 +99,25 @@ namespace Bytecode
             break;
 
          case GDCC::IR::AddrBase::MapReg:
-            for(auto const &obj : space->obset)
+            for(auto &obj : prog->rangeObject())
             {
-               if(obj->alloc)
+               if(obj.space.base != GDCC::IR::AddrBase::MapReg)
+                  continue;
+
+               if(obj.alloc)
                   allocMapReg(obj);
 
                // Back address glyph.
-               BackGlyphWord(obj->glyph, obj->value);
+               backGlyphWord(obj.glyph, obj.value);
 
-               if(!obj->defin)
+               if(!obj.defin)
                   ++numChunkMIMP;
 
-               if(obj->defin && numChunkMEXP <= obj->value)
-                  numChunkMEXP = obj->value + 1;
+               if(obj.defin && numChunkMEXP <= obj.value)
+                  numChunkMEXP = obj.value + 1;
             }
 
-            space->allocWords();
+            space->allocWords(*prog);
 
             break;
 
@@ -123,9 +127,9 @@ namespace Bytecode
 
             // Even external arrays need an index.
             if(space->alloc)
-               space->allocValue();
+               space->allocValue(*prog);
 
-            space->allocWords();
+            space->allocWords(*prog);
 
             if(space->defin)
             {
@@ -138,7 +142,7 @@ namespace Bytecode
                ++numChunkAIMP;
 
             // Back address glyph.
-            BackGlyphWord(space->glyph, space->value);
+            backGlyphWord(space->glyph, space->value);
 
             break;
 
@@ -149,12 +153,12 @@ namespace Bytecode
 
             // Even external arrays need an index.
             if(space->alloc)
-               space->allocValue();
+               space->allocValue(*prog);
 
-            space->allocWords();
+            space->allocWords(*prog);
 
             // Back address glyph.
-            BackGlyphWord(space->glyph, space->value);
+            backGlyphWord(space->glyph, space->value);
 
             break;
 
@@ -170,9 +174,12 @@ namespace Bytecode
       {
          GDCC::FastU size = 0;
 
-         for(auto const &obj : space->obset) if(obj->defin)
+         for(auto const &obj : prog->rangeObject())
          {
-            auto max = obj->value + obj->words;
+            if(!obj.defin || obj.space != space->space)
+               continue;
+
+            auto max = obj.value + obj.words;
             if(size < max) size = max;
          }
 
@@ -182,19 +189,22 @@ namespace Bytecode
          ini.vals = GDCC::Array<InitVal>(size);
 
          // Generate init data.
-         for(auto const &obj : space->obset) if(obj->defin)
+         for(auto const &obj : prog->rangeObject())
          {
-            auto data = &ini.vals[obj->value];
+            if(!obj.defin || obj.space != space->space)
+               continue;
+
+            auto data = &ini.vals[obj.value];
 
             // If the object has an initializer, use it.
-            if(obj->initi)
-               genSpaceInitiValue(data, ini.vals.end(), obj->initi->getValue());
+            if(obj.initi)
+               genSpaceInitiValue(data, ini.vals.end(), obj.initi->getValue());
             // Otherwise, mark the space as numeric.
             else
-               for(auto i = obj->words; i--;) data++->tag = InitTag::Fixed;
+               for(auto i = obj.words; i--;) data++->tag = InitTag::Fixed;
          }
 
-         if(space->space == GDCC::IR::AddrBase::MapArr)
+         if(space->space.base == GDCC::IR::AddrBase::MapArr)
          {
             ++numChunkAINI;
 
@@ -225,7 +235,7 @@ namespace Bytecode
                   ++numChunkATAG;
             }
          }
-         else if(space->space == GDCC::IR::AddrBase::MapReg)
+         else if(space->space.base == GDCC::IR::AddrBase::MapReg)
          {
             for(auto const i : ini.vals)
             {

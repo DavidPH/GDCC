@@ -6,13 +6,12 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Intermediary Representation object handling.
+// Intermediary Representation address space handling.
 //
 //-----------------------------------------------------------------------------
 
-#include "Object.hpp"
+#include "Space.hpp"
 
-#include "Exp.hpp"
 #include "IArchive.hpp"
 #include "Linkage.hpp"
 #include "OArchive.hpp"
@@ -28,51 +27,45 @@ namespace GDCC
    namespace IR
    {
       //
-      // Object constructor
+      // Space constructor
       //
-      Object::Object(String name) :
-         glyph{name},
-         initi{},
+      Space::Space(AddrSpace as) :
+         glyph{as.name},
          linka{Linkage::None},
-         space{AddrBase::Cpy, STR_},
+         space{as},
          value{0},
          words{0},
 
-         alias{false},
          alloc{false},
          defin{false}
       {
       }
 
       //
-      // Object destructor
+      // Space::allocValue
       //
-      Object::~Object()
+      void Space::allocValue(Program &prog)
       {
-      }
+         Program::TableRange<Space> range;
 
-      //
-      // Object::allocValue
-      //
-      void Object::allocValue(Program &prog)
-      {
+         switch(space.base)
+         {
+         case AddrBase::GblArs:
+         case AddrBase::GblArr: range = prog.rangeSpaceGblArs(); break;
+         case AddrBase::MapArs:
+         case AddrBase::MapArr: range = prog.rangeSpaceMapArs(); break;
+         case AddrBase::WldArs:
+         case AddrBase::WldArr: range = prog.rangeSpaceWldArs(); break;
+
+         default:
+            return;
+         }
+
          for(;; ++value)
          {
-            auto lo = value;
-            auto hi = words + lo;
-
-            for(auto const &obj : prog.rangeObject())
+            for(auto const &itr : range)
             {
-               if(obj.alloc || &obj == this || obj.space != space)
-                  continue;
-
-               auto objLo = obj.value;
-               auto objHi = obj.words + objLo;
-
-               if((objLo <= lo && lo < objHi) || (objLo < hi && hi < objHi))
-                  goto nextValue;
-
-               if((lo <= objLo && objLo < hi) || (lo < objHi && objHi < hi))
+               if(!itr.alloc && &itr != this && itr.value == value)
                   goto nextValue;
             }
 
@@ -85,36 +78,43 @@ namespace GDCC
       }
 
       //
-      // operator OArchive << Object
+      // Space::allocWords
       //
-      OArchive &operator << (OArchive &out, Object const &in)
+      void Space::allocWords(Program &prog)
+      {
+         for(auto const &itr : prog.rangeObject())
+         {
+            if(itr.space != space) continue;
+            auto w = itr.value + itr.words;
+            if(words < w) words = w;
+         }
+      }
+
+      //
+      // operator OArchive << Space
+      //
+      OArchive &operator << (OArchive &out, Space const &in)
       {
          return out
-            << in.initi
             << in.linka
-            << in.space
             << in.value
             << in.words
-            << in.alias
             << in.alloc
             << in.defin
          ;
       }
 
       //
-      // operator IArchive >> Object
+      // operator IArchive >> Space
       //
-      IArchive &operator >> (IArchive &in, Object &out)
+      IArchive &operator >> (IArchive &in, Space &out)
       {
          in
-            >> out.initi
             >> out.linka
-            >> out.space
             >> out.value
             >> out.words
          ;
 
-         out.alias = GetIR<bool>(in);
          out.alloc = GetIR<bool>(in);
          out.defin = GetIR<bool>(in);
 

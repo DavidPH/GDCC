@@ -64,17 +64,17 @@ namespace Asm
    //
    // ParseExp
    //
-   GDCC::IR::Exp::Ref ParseExp(GDCC::TokenStream &in)
+   GDCC::IR::Exp::Ref ParseExp(GDCC::TokenStream &in, GDCC::IR::Program &prog)
    {
       #define doE1(name, token) case GDCC::token: \
-         return GDCC::IR::ExpCreate_##name(ParseExp(in), tok.pos)
+         return GDCC::IR::ExpCreate_##name(ParseExp(in, prog), tok.pos)
 
       #define doE2(name, token) case GDCC::token: \
-         l = ParseExp(in); r = ParseExp(in); \
+         l = ParseExp(in, prog); r = ParseExp(in, prog); \
          return GDCC::IR::ExpCreate_##name(l, r, tok.pos)
 
       #define doE3(name, token) case GDCC::token: \
-         c = ParseExp(in); l = ParseExp(in); r = ParseExp(in); \
+         c = ParseExp(in, prog); l = ParseExp(in, prog); r = ParseExp(in, prog); \
          return GDCC::IR::ExpCreate_##name(c, l, r, tok.pos)
 
       GDCC::IR::Exp::Ptr c, l, r;
@@ -87,11 +87,11 @@ namespace Asm
          switch(static_cast<GDCC::StringIndex>(tok.str))
          {
          case GDCC::STR_cast:
-            t = ParseType(in);
-            return GDCC::IR::ExpCreate_UnaryCst(t, ParseExp(in), tok.pos);
+            t = ParseType(in, prog);
+            return GDCC::IR::ExpCreate_UnaryCst(t, ParseExp(in, prog), tok.pos);
 
          case GDCC::STR_string:
-            return GDCC::IR::ExpCreate_ValueRoot(ParseMultiString(in), tok.pos);
+            return GDCC::IR::ExpCreate_ValueRoot(ParseMultiString(in, prog), tok.pos);
 
          default:
             std::cerr << "ERROR: " << tok.pos << ": expected expression\n";
@@ -102,7 +102,7 @@ namespace Asm
          return GDCC::IR::ExpCreate_ValueRoot(ParseNumber(tok), tok.pos);
 
       case GDCC::TOK_String:
-         return GDCC::IR::ExpCreate_ValueGlyph(static_cast<GDCC::IR::Glyph>(tok.str), tok.pos);
+         return GDCC::IR::ExpCreate_ValueGlyph(GDCC::IR::Glyph(&prog, tok.str), tok.pos);
 
          doE2(BinaryAdd, TOK_Add);
          doE2(BinaryAnd, TOK_And);
@@ -133,11 +133,11 @@ namespace Asm
 
       case GDCC::TOK_BraceO:
          in.unget();
-         return ParseExpMulti(in);
+         return ParseExpMulti(in, prog);
 
       case GDCC::TOK_BrackO:
          in.unget();
-         return GDCC::IR::ExpCreate_ValueRoot(ParseMulti(in), tok.pos);
+         return GDCC::IR::ExpCreate_ValueRoot(ParseMulti(in, prog), tok.pos);
 
       default:
          std::cerr << "ERROR: " << tok.pos << ": expected expression\n";
@@ -152,7 +152,7 @@ namespace Asm
    //
    // ParseExpMulti
    //
-   GDCC::IR::Exp::Ref ParseExpMulti(GDCC::TokenStream &in)
+   GDCC::IR::Exp::Ref ParseExpMulti(GDCC::TokenStream &in, GDCC::IR::Program &prog)
    {
       std::vector<GDCC::IR::Exp::Ref> val;
       auto pos = in.peek().pos;
@@ -160,7 +160,7 @@ namespace Asm
       SkipToken(in, GDCC::TOK_BraceO, "{");
 
       if(in.peek().tok != GDCC::TOK_BrackC) do
-         val.emplace_back(ParseExp(in));
+         val.emplace_back(ParseExp(in, prog));
       while(in.drop(GDCC::TOK_Comma));
 
       SkipToken(in, GDCC::TOK_BraceC, "}");
@@ -171,9 +171,9 @@ namespace Asm
    //
    // ParseFastI
    //
-   GDCC::FastI ParseFastI(GDCC::TokenStream &in)
+   GDCC::FastI ParseFastI(GDCC::TokenStream &in, GDCC::IR::Program &prog)
    {
-      auto i = ParseInteg(in);
+      auto i = ParseInteg(in, prog);
 
       return number_cast<GDCC::FastI>(i);
    }
@@ -181,9 +181,9 @@ namespace Asm
    //
    // ParseFastU
    //
-   GDCC::FastU ParseFastU(GDCC::TokenStream &in)
+   GDCC::FastU ParseFastU(GDCC::TokenStream &in, GDCC::IR::Program &prog)
    {
-      auto i = ParseInteg(in);
+      auto i = ParseInteg(in, prog);
 
       return number_cast<GDCC::FastU>(i);
    }
@@ -191,9 +191,9 @@ namespace Asm
    //
    // ParseInteg
    //
-   GDCC::Integ ParseInteg(GDCC::TokenStream &in)
+   GDCC::Integ ParseInteg(GDCC::TokenStream &in, GDCC::IR::Program &prog)
    {
-      auto exp = ParseExp(in);
+      auto exp = ParseExp(in, prog);
       auto val = exp->getValue();
 
       switch(val.v)
@@ -210,14 +210,14 @@ namespace Asm
    //
    // ParseMulti
    //
-   GDCC::IR::Value_Multi ParseMulti(GDCC::TokenStream &in)
+   GDCC::IR::Value_Multi ParseMulti(GDCC::TokenStream &in, GDCC::IR::Program &prog)
    {
       std::vector<GDCC::IR::Value> val;
 
       SkipToken(in, GDCC::TOK_BrackO, "[");
 
       if(in.peek().tok != GDCC::TOK_BrackC) do
-         val.emplace_back(ParseExp(in)->getValue());
+         val.emplace_back(ParseExp(in, prog)->getValue());
       while(in.drop(GDCC::TOK_Comma));
 
       SkipToken(in, GDCC::TOK_BrackC, "]");
@@ -235,7 +235,8 @@ namespace Asm
    //
    // ParseMultiString
    //
-   GDCC::IR::Value_Multi ParseMultiString(GDCC::TokenStream &in)
+   GDCC::IR::Value_Multi ParseMultiString(GDCC::TokenStream &in,
+      GDCC::IR::Program &prog)
    {
       std::vector<GDCC::IR::Value_Fixed> val;
       GDCC::IR::Type_Fixed               type;
@@ -244,7 +245,7 @@ namespace Asm
       if(in.peek().tok != GDCC::TOK_String)
       {
          auto pos = in.peek().pos;
-         auto t = ParseType(in);
+         auto t = ParseType(in, prog);
          if(t.t != GDCC::IR::TypeBase::Fixed)
          {
             std::cerr << "ERROR: " << pos << ": expected Type_Fixed\n";

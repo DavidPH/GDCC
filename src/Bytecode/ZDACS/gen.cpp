@@ -12,9 +12,7 @@
 
 #include "Info.hpp"
 
-#include "GDCC/IR/Function.hpp"
-#include "GDCC/IR/Object.hpp"
-#include "GDCC/IR/StrEnt.hpp"
+#include "GDCC/IR/Program.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -32,9 +30,9 @@ namespace Bytecode
       {
          InfoBase::gen();
 
-         for(auto &itr : GDCC::IR::Space::MapArs) genSpaceIniti(itr.second);
+         for(auto &itr : prog->rangeSpaceMapArs()) genSpaceIniti(itr);
 
-         genSpaceIniti(GDCC::IR::Space::MapReg);
+         genSpaceIniti(prog->getSpaceMapReg());
       }
 
       //
@@ -48,7 +46,7 @@ namespace Bytecode
          };
 
          // Back label glyph.
-         BackGlyphWord(func->label, CodeBase() + numChunkCODE);
+         backGlyphWord(func->label, CodeBase() + numChunkCODE);
 
          genBlock(func->block);
 
@@ -56,7 +54,7 @@ namespace Bytecode
          {
          case GDCC::IR::CallType::LangACS:
             if(func->alloc)
-               func->allocValue(FuncTypes);
+               func->allocValue(*prog, FuncTypes);
 
             if(numChunkFUNC <= func->valueInt)
                numChunkFUNC = func->valueInt + 1;
@@ -64,26 +62,26 @@ namespace Bytecode
             if(numChunkFNAM <= func->valueInt)
                numChunkFNAM = func->valueInt + 1;
 
-            BackGlyphFunc(func->glyph, func->valueInt, func->ctype);
+            backGlyphFunc(func->glyph, func->valueInt, func->ctype);
 
             break;
 
          case GDCC::IR::CallType::ScriptI:
             if(func->alloc)
-               func->allocValue(GDCC::IR::CallType::ScriptI);
+               func->allocValue(*prog, GDCC::IR::CallType::ScriptI);
 
             ++numChunkSPTR;
 
             if(func->sflagClS || func->sflagNet) ++numChunkSFLG;
             if(func->localReg > 20) ++numChunkSVCT;
 
-            BackGlyphWord(func->glyph, func->valueInt);
+            backGlyphWord(func->glyph, func->valueInt);
 
             break;
 
          case GDCC::IR::CallType::ScriptS:
             if(func->alloc)
-               func->allocValue(GDCC::IR::CallType::ScriptS);
+               func->allocValue(*prog, GDCC::IR::CallType::ScriptS);
 
             ++numChunkSPTR;
 
@@ -93,8 +91,8 @@ namespace Bytecode
             if(numChunkSNAM <= func->valueInt)
                numChunkSNAM = func->valueInt + 1;
 
-            if(auto str = GDCC::IR::StrEnt::FindValue(func->valueStr))
-               BackGlyphGlyph(func->glyph, str->glyph);
+            if(auto str = prog->findStrEntVal(func->valueStr))
+               backGlyphGlyph(func->glyph, str->glyph);
 
             break;
 
@@ -110,10 +108,10 @@ namespace Bytecode
          if(!str->defin) return;
 
          if(str->alloc)
-            str->allocValue();
+            str->allocValue(*prog);
 
          // Back address glyph.
-         BackGlyphStr(str->glyph, str->valueInt);
+         backGlyphStr(str->glyph, str->valueInt);
 
          if(numChunkSTRL <= str->valueInt)
             numChunkSTRL = str->valueInt + 1;

@@ -26,7 +26,8 @@
 //
 // ParseType_Empty
 //
-static GDCC::IR::Type_Empty ParseType_Empty(GDCC::TokenStream &in)
+static GDCC::IR::Type_Empty ParseType_Empty(GDCC::TokenStream &in,
+   GDCC::IR::Program &)
 {
    Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
    Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
@@ -37,13 +38,14 @@ static GDCC::IR::Type_Empty ParseType_Empty(GDCC::TokenStream &in)
 //
 // ParseType_Fixed
 //
-static GDCC::IR::Type_Fixed ParseType_Fixed(GDCC::TokenStream &in)
+static GDCC::IR::Type_Fixed ParseType_Fixed(GDCC::TokenStream &in,
+   GDCC::IR::Program &prog)
 {
    Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
-   auto bitsI = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
-   auto bitsF = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
-   bool bitsS = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
-   bool satur = Asm::ParseFastU(in);
+   auto bitsI = Asm::ParseFastU(in, prog); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
+   auto bitsF = Asm::ParseFastU(in, prog); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
+   bool bitsS = Asm::ParseFastU(in, prog); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
+   bool satur = Asm::ParseFastU(in, prog);
    Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return GDCC::IR::Type_Fixed(bitsI, bitsF, bitsS, satur);
@@ -52,13 +54,14 @@ static GDCC::IR::Type_Fixed ParseType_Fixed(GDCC::TokenStream &in)
 //
 // ParseType_Float
 //
-static GDCC::IR::Type_Float ParseType_Float(GDCC::TokenStream &in)
+static GDCC::IR::Type_Float ParseType_Float(GDCC::TokenStream &in,
+   GDCC::IR::Program &prog)
 {
    Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
-   auto bitsI = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
-   auto bitsF = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
-   bool bitsS = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
-   bool satur = Asm::ParseFastU(in);
+   auto bitsI = Asm::ParseFastU(in, prog); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
+   auto bitsF = Asm::ParseFastU(in, prog); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
+   bool bitsS = Asm::ParseFastU(in, prog); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
+   bool satur = Asm::ParseFastU(in, prog);
    Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return GDCC::IR::Type_Float(bitsI, bitsF, bitsS, satur);
@@ -67,7 +70,8 @@ static GDCC::IR::Type_Float ParseType_Float(GDCC::TokenStream &in)
 //
 // ParseType_Funct
 //
-static GDCC::IR::Type_Funct ParseType_Funct(GDCC::TokenStream &in)
+static GDCC::IR::Type_Funct ParseType_Funct(GDCC::TokenStream &in,
+   GDCC::IR::Program &)
 {
    Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
    auto callT = Asm::ParseCallType(in.get());
@@ -79,14 +83,15 @@ static GDCC::IR::Type_Funct ParseType_Funct(GDCC::TokenStream &in)
 //
 // ParseType_Multi
 //
-static GDCC::IR::Type_Multi ParseType_Multi(GDCC::TokenStream &in)
+static GDCC::IR::Type_Multi ParseType_Multi(GDCC::TokenStream &in,
+   GDCC::IR::Program &prog)
 {
    std::vector<GDCC::IR::Type> typev;
 
    Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
 
    if(in.peek().tok != GDCC::TOK_ParenC) do
-      typev.emplace_back(Asm::ParseType(in));
+      typev.emplace_back(Asm::ParseType(in, prog));
    while(in.drop(GDCC::TOK_Comma));
 
    Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
@@ -99,12 +104,13 @@ static GDCC::IR::Type_Multi ParseType_Multi(GDCC::TokenStream &in)
 //
 // ParseType_Point
 //
-static GDCC::IR::Type_Point ParseType_Point(GDCC::TokenStream &in)
+static GDCC::IR::Type_Point ParseType_Point(GDCC::TokenStream &in,
+   GDCC::IR::Program &prog)
 {
    Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
    auto addrB = Asm::ParseAddrBase(in.get()); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
-   auto addrS = Asm::ParseFastU(in); Asm::SkipToken(in, GDCC::TOK_Comma, ",");
-   auto addrW = Asm::ParseFastU(in);
+   auto addrS = Asm::ParseFastU(in, prog);    Asm::SkipToken(in, GDCC::TOK_Comma, ",");
+   auto addrW = Asm::ParseFastU(in, prog);
    Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
 
    return GDCC::IR::Type_Point(addrB, addrS, addrW);
@@ -113,7 +119,8 @@ static GDCC::IR::Type_Point ParseType_Point(GDCC::TokenStream &in)
 //
 // ParseType_StrEn
 //
-static GDCC::IR::Type_StrEn ParseType_StrEn(GDCC::TokenStream &in)
+static GDCC::IR::Type_StrEn ParseType_StrEn(GDCC::TokenStream &in,
+   GDCC::IR::Program &)
 {
    Asm::SkipToken(in, GDCC::TOK_ParenO, "(");
    Asm::SkipToken(in, GDCC::TOK_ParenC, ")");
@@ -131,13 +138,13 @@ namespace Asm
    //
    // ParseType
    //
-   GDCC::IR::Type ParseType(GDCC::TokenStream &in)
+   GDCC::IR::Type ParseType(GDCC::TokenStream &in, GDCC::IR::Program &prog)
    {
       switch(static_cast<GDCC::StringIndex>(
          ExpectToken(in, GDCC::TOK_Identi, "identifier").get().str))
       {
          #define GDCC_IR_TypeList(name) \
-            case GDCC::STR_##name: return ParseType_##name(in);
+            case GDCC::STR_##name: return ParseType_##name(in, prog);
          #include "GDCC/IR/TypeList.hpp"
 
       default:

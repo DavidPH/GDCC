@@ -12,8 +12,7 @@
 
 #include "Info.hpp"
 
-#include "GDCC/IR/Function.hpp"
-#include "GDCC/IR/Object.hpp"
+#include "GDCC/IR/Program.hpp"
 
 #include "GDCC/IR/Exp/Binary.hpp"
 #include "GDCC/IR/Exp/ValueGlyph.hpp"
@@ -34,25 +33,21 @@ namespace Bytecode
       //
       // Info::put
       //
-      void Info::put(std::ostream &out_)
+      void Info::put()
       {
-         out = &out_;
-
          *out << std::hex << "MgC_NTS" << '\0' << "CODEDEFS" << '\0' << '\0';
 
-         for(auto const &itr : GDCC::IR::Space::LocArs.obset)
+         for(auto const &itr : prog->rangeObject())
          {
-            if(itr->defin)
-               putObj(*itr);
+            if(itr.space.base == GDCC::IR::AddrBase::LocArs && itr.defin)
+               putObj(itr);
          }
 
-         for(auto &itr : GDCC::IR::FunctionRange())
+         for(auto &itr : prog->rangeFunction())
          {
-            if(itr.second.defin)
-               putFunc(itr.second);
+            if(itr.defin)
+               putFunc(itr);
          }
-
-         out = nullptr;
       }
 
       //

@@ -12,10 +12,7 @@
 
 #include "Info.hpp"
 
-#include "GDCC/IR/Function.hpp"
-#include "GDCC/IR/Import.hpp"
-#include "GDCC/IR/Object.hpp"
-#include "GDCC/IR/StrEnt.hpp"
+#include "GDCC/IR/Program.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -111,8 +108,8 @@ namespace Bytecode
          GDCC::Array<GDCC::IR::Space const *> imps{numChunkAIMP};
 
          auto itr = imps.begin();
-         for(auto const &sp : GDCC::IR::Space::MapArs)
-            if(!sp.second.defin) *itr++ = &sp.second;
+         for(auto const &sp : prog->rangeSpaceMapArs())
+            if(!sp.defin) *itr++ = &sp;
 
          GDCC::FastU size = numChunkAIMP * 8;
          for(auto const &imp : imps)
@@ -136,7 +133,8 @@ namespace Bytecode
       {
          if(!numChunkAINI) return;
 
-         for(auto const &itr : init) if(itr.first->space == GDCC::IR::AddrBase::MapArr)
+         for(auto const &itr : init)
+            if(itr.first->space.base == GDCC::IR::AddrBase::MapArr)
          {
             putData("AINI", 4);
             putWord(itr.second.vals.size() * 4 + 4);
@@ -157,14 +155,12 @@ namespace Bytecode
          putData("ARAY", 4);
          putWord(numChunkARAY * 8);
 
-         for(auto const &itr : GDCC::IR::Space::MapArs)
+         for(auto const &itr : prog->rangeSpaceMapArs())
          {
-            auto const &space = itr.second;
+            if(!itr.defin) continue;
 
-            if(!space.defin) continue;
-
-            putWord(space.value);
-            putWord(space.words);
+            putWord(itr.value);
+            putWord(itr.words);
          }
       }
 
@@ -178,7 +174,8 @@ namespace Bytecode
          putData("ASTR", 4);
          putWord(numChunkASTR * 4);
 
-         for(auto const &itr : init) if(itr.first->space == GDCC::IR::AddrBase::MapArr)
+         for(auto const &itr : init)
+            if(itr.first->space.base == GDCC::IR::AddrBase::MapArr)
          {
             if(itr.second.needTag && itr.second.onlyStr)
                putWord(itr.first->value);
@@ -192,7 +189,8 @@ namespace Bytecode
       {
          if(!numChunkATAG) return;
 
-         for(auto const &itr : init) if(itr.first->space == GDCC::IR::AddrBase::MapArr)
+         for(auto const &itr : init)
+            if(itr.first->space.base == GDCC::IR::AddrBase::MapArr)
          {
             auto const &ini = itr.second;
 
@@ -223,9 +221,9 @@ namespace Bytecode
          putWord(numChunkCODE);
 
          // Put statements.
-         for(auto &itr : GDCC::IR::FunctionRange()) try
+         for(auto &itr : prog->rangeFunction()) try
          {
-            func = &itr.second;
+            func = &itr;
             putBlock(func->block);
             func = nullptr;
          }
@@ -243,14 +241,12 @@ namespace Bytecode
 
          for(auto &str : strs) str = GDCC::STR_;
 
-         for(auto const &itr : GDCC::IR::FunctionRange())
+         for(auto const &itr : prog->rangeFunction())
          {
-            auto const &func = itr.second;
-
-            if(func.ctype != GDCC::IR::CallType::LangACS)
+            if(itr.ctype != GDCC::IR::CallType::LangACS)
                continue;
 
-            strs[func.valueInt] = func.glyph;
+            strs[itr.valueInt] = itr.glyph;
          }
 
          putChunk("FNAM", strs, false);
@@ -267,14 +263,12 @@ namespace Bytecode
 
          for(auto &func : funcs) func = nullptr;
 
-         for(auto const &itr : GDCC::IR::FunctionRange())
+         for(auto const &itr : prog->rangeFunction())
          {
-            auto const &func = itr.second;
-
-            if(func.ctype != GDCC::IR::CallType::LangACS)
+            if(itr.ctype != GDCC::IR::CallType::LangACS)
                continue;
 
-            funcs[func.valueInt] = &func;
+            funcs[itr.valueInt] = &itr;
          }
 
          putData("FUNC", 4);
@@ -290,7 +284,7 @@ namespace Bytecode
                putByte(0);
 
                if(func->defin)
-                  putExpWord(ResolveGlyph(func->label));
+                  putExpWord(resolveGlyph(func->label));
                else
                   putWord(0);
             }
@@ -304,20 +298,20 @@ namespace Bytecode
       //
       void Info::putChunkLOAD()
       {
-         numChunkLOAD = GDCC::IR::ImportRange().size();
+         numChunkLOAD = prog->sizeImport();
 
          if(!numChunkLOAD) return;
 
          GDCC::FastU size = 0;
 
-         for(auto const &imp : GDCC::IR::ImportRange())
-            size += lenString(imp.glyph);
+         for(auto const &itr : prog->rangeImport())
+            size += lenString(itr.glyph);
 
          putData("LOAD", 4);
          putWord(size);
 
-         for(auto const &imp : GDCC::IR::ImportRange())
-            putString(imp.glyph);
+         for(auto const &itr : prog->rangeImport())
+            putString(itr.glyph);
       }
 
       //
@@ -330,11 +324,14 @@ namespace Bytecode
          GDCC::Array<GDCC::String> strs{numChunkMEXP};
          for(auto &str : strs) str = GDCC::STR_;
 
-         for(auto const &obj : GDCC::IR::Space::MapReg.obset)
-            if(obj->defin) strs[obj->value] = obj->glyph;
+         for(auto const &itr : prog->rangeObject())
+         {
+            if(!itr.defin && itr.space.base == GDCC::IR::AddrBase::MapReg)
+               strs[itr.value] = itr.glyph;
+         }
 
-         for(auto const &itr : GDCC::IR::Space::MapArs)
-            if(itr.second.defin) strs[itr.second.value] = itr.second.glyph;
+         for(auto const &itr : prog->rangeSpaceMapArs())
+            if(itr.defin) strs[itr.value] = itr.glyph;
 
          putChunk("MEXP", strs, false);
       }
@@ -349,8 +346,11 @@ namespace Bytecode
          GDCC::Array<GDCC::IR::Object const *> imps{numChunkMIMP};
 
          auto itr = imps.begin();
-         for(auto const &obj : GDCC::IR::Space::MapReg.obset)
-            if(!obj->defin) *itr++ = obj;
+         for(auto const &obj : prog->rangeObject())
+         {
+            if(!obj.defin && obj.space.base == GDCC::IR::AddrBase::MapReg)
+               *itr++ = &obj;
+         }
 
          GDCC::FastU size = numChunkMIMP * 4;
          for(auto const &imp : imps)
@@ -373,7 +373,7 @@ namespace Bytecode
       {
          if(!numChunkMINI) return;
 
-         auto const &ini = init[&GDCC::IR::Space::MapReg];
+         auto const &ini = init[&prog->getSpaceMapReg()];
 
          for(std::size_t i = 0, e = ini.vals.size(); i != e; ++i) if(ini.vals[i].val)
          {
@@ -394,7 +394,7 @@ namespace Bytecode
          putData("MSTR", 4);
          putWord(numChunkMSTR * 4);
 
-         auto const &ini = init[&GDCC::IR::Space::MapReg];
+         auto const &ini = init[&prog->getSpaceMapReg()];
 
          for(std::size_t i = 0, e = ini.vals.size(); i != e; ++i)
             if(ini.vals[i].tag == InitTag::StrEn) putWord(i);
@@ -410,25 +410,23 @@ namespace Bytecode
          putData("SFLG", 4);
          putWord(numChunkSFLG * 4);
 
-         for(auto const &itr : GDCC::IR::FunctionRange())
+         for(auto const &itr : prog->rangeFunction())
          {
-            auto const &func = itr.second;
-
-            if(func.ctype != GDCC::IR::CallType::Script  &&
-               func.ctype != GDCC::IR::CallType::ScriptI &&
-               func.ctype != GDCC::IR::CallType::ScriptS)
+            if(itr.ctype != GDCC::IR::CallType::Script  &&
+               itr.ctype != GDCC::IR::CallType::ScriptI &&
+               itr.ctype != GDCC::IR::CallType::ScriptS)
                continue;
 
-            if(!func.defin) continue;
+            if(!itr.defin) continue;
 
             GDCC::FastU flags = 0;
 
-            if(func.sflagClS) flags |= 0x0002;
-            if(func.sflagNet) flags |= 0x0001;
+            if(itr.sflagClS) flags |= 0x0002;
+            if(itr.sflagNet) flags |= 0x0001;
 
             if(!flags) continue;
 
-            putHWord(func.valueInt);
+            putHWord(itr.valueInt);
             putHWord(flags);
          }
       }
@@ -444,14 +442,12 @@ namespace Bytecode
 
          for(auto &str : strs) str = GDCC::STR_;
 
-         for(auto const &itr : GDCC::IR::FunctionRange())
+         for(auto const &itr : prog->rangeFunction())
          {
-            auto const &func = itr.second;
-
-            if(func.ctype != GDCC::IR::CallType::ScriptS)
+            if(itr.ctype != GDCC::IR::CallType::ScriptS)
                continue;
 
-            strs[func.valueInt] = func.valueStr;
+            strs[itr.valueInt] = itr.valueStr;
          }
 
          putChunk("SNAM", strs, false);
@@ -467,21 +463,19 @@ namespace Bytecode
          putData("SPTR", 4);
          putWord(numChunkSPTR * (UseFakeACS0 ? 8 : 12));
 
-         for(auto const &itr : GDCC::IR::FunctionRange())
+         for(auto const &itr : prog->rangeFunction())
          {
-            auto const &func = itr.second;
-
-            if(func.ctype != GDCC::IR::CallType::Script  &&
-               func.ctype != GDCC::IR::CallType::ScriptI &&
-               func.ctype != GDCC::IR::CallType::ScriptS)
+            if(itr.ctype != GDCC::IR::CallType::Script  &&
+               itr.ctype != GDCC::IR::CallType::ScriptI &&
+               itr.ctype != GDCC::IR::CallType::ScriptS)
                continue;
 
-            if(!func.defin) continue;
+            if(!itr.defin) continue;
 
             GDCC::FastU stype, value;
 
             // Convert script type.
-            switch(func.stype)
+            switch(itr.stype)
             {
             case GDCC::IR::ScriptType::None:       stype =  0; break;
             case GDCC::IR::ScriptType::Death:      stype =  3; break;
@@ -495,25 +489,25 @@ namespace Bytecode
             }
 
             // Convert script index.
-            if(func.ctype == GDCC::IR::CallType::ScriptS)
-               value = -static_cast<GDCC::FastI>(func.valueInt) - 1;
+            if(itr.ctype == GDCC::IR::CallType::ScriptS)
+               value = -static_cast<GDCC::FastI>(itr.valueInt) - 1;
             else
-               value = func.valueInt;
+               value = itr.valueInt;
 
             // Write entry.
             if(UseFakeACS0)
             {
                putHWord(value);
                putByte(stype);
-               putByte(func.param);
-               putExpWord(ResolveGlyph(func.label));
+               putByte(itr.param);
+               putExpWord(resolveGlyph(itr.label));
             }
             else
             {
                putHWord(value);
                putHWord(stype);
-               putExpWord(ResolveGlyph(func.label));
-               putWord(func.param);
+               putExpWord(resolveGlyph(itr.label));
+               putWord(itr.param);
             }
          }
       }
@@ -529,8 +523,8 @@ namespace Bytecode
 
          for(auto &str : strs) str = GDCC::STR_;
 
-         for(auto const &itr : GDCC::IR::StrEntRange()) if(itr.second.defin)
-            strs[itr.second.valueInt] = itr.second.valueStr;
+         for(auto const &itr : prog->rangeStrEnt()) if(itr.defin)
+            strs[itr.valueInt] = itr.valueStr;
 
          putChunk(UseChunkSTRE ? "STRE" : "STRL", strs, true);
       }
@@ -545,21 +539,19 @@ namespace Bytecode
          putData("SVCT", 4);
          putWord(numChunkSFLG * 4);
 
-         for(auto const &itr : GDCC::IR::FunctionRange())
+         for(auto const &itr : prog->rangeFunction())
          {
-            auto const &func = itr.second;
-
-            if(func.ctype != GDCC::IR::CallType::Script  &&
-               func.ctype != GDCC::IR::CallType::ScriptI &&
-               func.ctype != GDCC::IR::CallType::ScriptS)
+            if(itr.ctype != GDCC::IR::CallType::Script  &&
+               itr.ctype != GDCC::IR::CallType::ScriptI &&
+               itr.ctype != GDCC::IR::CallType::ScriptS)
                continue;
 
-            if(!func.defin) continue;
+            if(!itr.defin) continue;
 
-            if(func.localReg <= 20) continue;
+            if(itr.localReg <= 20) continue;
 
-            putHWord(func.valueInt);
-            putHWord(func.localReg);
+            putHWord(itr.valueInt);
+            putHWord(itr.localReg);
          }
       }
    }

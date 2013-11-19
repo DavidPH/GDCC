@@ -50,6 +50,7 @@ namespace GDCC
    {
       using Itr::Itr;
 
+      MemItr() = default;
       MemItr(Itr const &i) : Itr{i} {}
       MemItr(Itr &&i) : Itr{std::move(i)} {}
 

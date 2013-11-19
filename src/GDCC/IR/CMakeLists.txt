@@ -27,6 +27,8 @@ add_library(gdcc-ir
    Import.cpp
    Linkage.cpp
    Object.cpp
+   Program.cpp
+   Space.cpp
    Statement.cpp
    StrEnt.cpp
    Type.cpp

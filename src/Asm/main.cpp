@@ -17,11 +17,8 @@
 #include "GDCC/Option.hpp"
 #include "GDCC/Token.hpp"
 
-#include "GDCC/IR/Function.hpp"
-#include "GDCC/IR/Import.hpp"
 #include "GDCC/IR/OArchive.hpp"
-#include "GDCC/IR/Object.hpp"
-#include "GDCC/IR/StrEnt.hpp"
+#include "GDCC/IR/Program.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -31,16 +28,18 @@
 // Static Functions                                                           |
 //
 
-static void ProcessFile(char const *inName);
+static void ProcessFile(char const *inName, GDCC::IR::Program &prog);
 
 //
 // MakeAsm
 //
 static void MakeAsm()
 {
+   GDCC::IR::Program prog;
+
    // Process inputs.
    for(auto arg = *Option::ArgV, end = arg + *Option::ArgC; arg != end; ++arg)
-      ProcessFile(*arg);
+      ProcessFile(*arg, prog);
 
    // Write IR data.
    std::fstream out{Option::Output.data, std::ios_base::binary | std::ios_base::out};
@@ -51,13 +50,13 @@ static void MakeAsm()
       throw EXIT_FAILURE;
    }
 
-   GDCC::IR::OArchive(out).putHeader().putTables();
+   GDCC::IR::OArchive(out).putHeader() << prog;
 }
 
 //
 // ParseTLK
 //
-static void ParseTLK(GDCC::TokenStream &in)
+static void ParseTLK(GDCC::TokenStream &in, GDCC::IR::Program &prog)
 {
    GDCC::IR::AddrSpace as;
 
@@ -70,12 +69,12 @@ static void ParseTLK(GDCC::TokenStream &in)
    {
    case GDCC::STR_Function:
       Asm::ExpectToken(in, GDCC::TOK_String, "string");
-      Asm::ParseFunction(in, GDCC::IR::Function::Get(in.get().str));
+      Asm::ParseFunction(in, prog, prog.getFunction(in.get().str));
       break;
 
    case GDCC::STR_Import:
       Asm::ExpectToken(in, GDCC::TOK_String, "string");
-      Asm::ParseImport(in, GDCC::IR::Import::Get(in.get().str));
+      Asm::ParseImport(in, prog, prog.getImport(in.get().str));
       break;
 
    case GDCC::STR_Macro:
@@ -86,7 +85,7 @@ static void ParseTLK(GDCC::TokenStream &in)
 
          while(in.drop(GDCC::TOK_LnEnd)) {}
          Asm::SkipToken(in, GDCC::TOK_BraceO, "{");
-         Asm::ParseBlock(in, list, GDCC::TOK_BraceC);
+         Asm::ParseBlock(in, prog, list, GDCC::TOK_BraceC);
 
          Asm::Macro::Add(name, std::move(list));
       }
@@ -96,27 +95,24 @@ static void ParseTLK(GDCC::TokenStream &in)
       as.base = Asm::ParseAddrBase(in.get());
       as.name = Asm::ExpectToken(in, GDCC::TOK_String, "string").get().str;
       Asm::ExpectToken(in, GDCC::TOK_String, "string");
-
-      if(auto space = GDCC::IR::Space::Find(as))
-         Asm::ParseObject(in, space->get(in.get().str));
-      else
       {
-         std::cerr << "ERROR: " << in.peek().pos << ": expected address space\n";
-         throw EXIT_FAILURE;
+         // HACK: space needs to be an Object property now.
+         auto &obj = prog.getObject(in.get().str);
+         obj.space = as;
+         Asm::ParseObject(in, prog, obj);
       }
-
       break;
 
    case GDCC::STR_Space:
       as.base = Asm::ParseAddrBase(in.get());
       as.name = Asm::ExpectToken(in, GDCC::TOK_String, "string").get().str;
 
-      Asm::ParseSpace(in, GDCC::IR::Space::Get(as));
+      Asm::ParseSpace(in, prog, prog.getSpace(as));
       break;
 
    case GDCC::STR_StrEnt:
       Asm::ExpectToken(in, GDCC::TOK_String, "string");
-      Asm::ParseStrEnt(in, GDCC::IR::StrEnt::Get(in.get().str));
+      Asm::ParseStrEnt(in, prog, prog.getStrEnt(in.get().str));
       break;
 
    default:
@@ -130,7 +126,7 @@ static void ParseTLK(GDCC::TokenStream &in)
 //
 // ProcessFile
 //
-static void ProcessFile(char const *inName)
+static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 {
    std::filebuf fbuf;
 
@@ -141,7 +137,7 @@ static void ProcessFile(char const *inName)
    }
 
    Asm::TStream in{fbuf, GDCC::AddString(inName)};
-   while(in.peek().tok != GDCC::TOK_EOF) ParseTLK(in);
+   while(in.peek().tok != GDCC::TOK_EOF) ParseTLK(in, prog);
 }
 
 

@@ -12,9 +12,7 @@
 
 #include "Info.hpp"
 
-#include "GDCC/IR/Function.hpp"
-#include "GDCC/IR/Glyph.hpp"
-#include "GDCC/IR/Statement.hpp"
+#include "GDCC/IR/Program.hpp"
 
 #include <iostream>
 
@@ -40,7 +38,7 @@ namespace Bytecode
 
             for(auto const &lab : stmnt->labs)
             {
-               auto &data = GDCC::IR::Glyph::GetData(lab);
+               auto &data = prog->getGlyphData(lab);
 
                data.type  = TypeWord;
                data.value = val;

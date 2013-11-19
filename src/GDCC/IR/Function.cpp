@@ -15,9 +15,9 @@
 #include "Linkage.hpp"
 #include "IArchive.hpp"
 #include "OArchive.hpp"
+#include "Program.hpp"
 
 #include <iostream>
-#include <unordered_map>
 
 
 //----------------------------------------------------------------------------|
@@ -62,13 +62,12 @@ namespace GDCC
       //
       // Function::allocValue
       //
-      void Function::allocValue(CallType const *ctypeVec, std::size_t ctypeLen)
+      void Function::allocValue(Program &prog, CallType const *ctypeVec, std::size_t ctypeLen)
       {
          for(;; ++valueInt)
          {
-            for(auto const &itr : FuncMap)
+            for(auto const &func : prog.rangeFunction())
             {
-               auto const &func = itr.second;
                if(&func != this && !func.alloc && func.valueInt == valueInt)
                {
                   for(auto ctypeItr : MakeRange(ctypeVec, ctypeVec + ctypeLen))
@@ -82,63 +81,6 @@ namespace GDCC
          }
 
          alloc = false;
-      }
-
-      //
-      // Function::Find
-      //
-      Function *Function::Find(String glyph)
-      {
-         auto itr = FuncMap.find(glyph);
-
-         return itr == FuncMap.end() ? nullptr : &itr->second;
-      }
-
-      //
-      // Function::Get
-      //
-      Function &Function::Get(String glyph)
-      {
-         auto itr = FuncMap.find(glyph);
-
-         if(itr != FuncMap.end()) return itr->second;
-
-         itr = FuncMap.emplace(std::piecewise_construct,
-            std::forward_as_tuple(glyph), std::forward_as_tuple(glyph)).first;
-
-         return itr->second;
-      }
-
-      //
-      // IArchive::getTablesFuncts
-      //
-      IArchive &IArchive::getTablesFuncts()
-      {
-         for(auto count = GetIR<std::size_t>(*this); count--;)
-         {
-            String   name;          *this >> name;
-            Function newFunc{name}; *this >> newFunc;
-            auto    &oldFunc = Function::Get(name);
-
-            if(!oldFunc.defin)
-            {
-               oldFunc = std::move(newFunc);
-            }
-         }
-
-         return *this;
-      }
-
-      //
-      // OArchive::putTablesFuncts
-      //
-      OArchive &OArchive::putTablesFuncts()
-      {
-         *this << FuncMap.size();
-         for(auto const &itr : FuncMap)
-            *this << itr.first << itr.second;
-
-         return *this;
       }
 
       //

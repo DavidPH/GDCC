@@ -38,10 +38,6 @@ namespace Bytecode
       public:
          Info();
 
-         virtual void gen();
-
-         virtual void put(std::ostream &out);
-
 
          static GDCC::IR::Type_Fixed const TypeWord;
 
@@ -84,6 +80,14 @@ namespace Bytecode
             bool needTag : 1;
             bool onlyStr : 1;
          };
+
+
+         void backGlyphFunc(GDCC::String glyph, GDCC::FastU val, GDCC::IR::CallType ctype);
+         void backGlyphGlyph(GDCC::String glyph, GDCC::String val);
+         void backGlyphStr(GDCC::String glyph, GDCC::FastU val);
+         void backGlyphWord(GDCC::String glyph, GDCC::FastU val);
+
+         virtual void gen();
 
          virtual void genFunc();
 
@@ -128,6 +132,8 @@ namespace Bytecode
 
          virtual void preFunc();
          virtual void preStr();
+
+         virtual void put();
 
          void putBlock(GDCC::IR::Block &block);
 
@@ -174,6 +180,8 @@ namespace Bytecode
 
          void putWord(GDCC::FastU i);
 
+         GDCC::CounterRef<GDCC::IR::Exp> resolveGlyph(GDCC::String glyph);
+
          virtual void trFunc();
 
          virtual void trStmnt();
@@ -206,16 +214,10 @@ namespace Bytecode
          GDCC::FastU numChunkSVCT;
 
 
-         static void BackGlyphFunc(GDCC::String glyph, GDCC::FastU val, GDCC::IR::CallType ctype);
-         static void BackGlyphGlyph(GDCC::String glyph, GDCC::String val);
-         static void BackGlyphStr(GDCC::String glyph, GDCC::FastU val);
-         static void BackGlyphWord(GDCC::String glyph, GDCC::FastU val);
-
          static void CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin pos);
 
          static GDCC::FastU CodeBase();
 
-         static GDCC::CounterRef<GDCC::IR::Exp> ResolveGlyph(GDCC::String glyph);
          static GDCC::FastU ResolveValue(GDCC::IR::Value const &val);
       };
    }

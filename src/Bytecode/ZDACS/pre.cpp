@@ -12,9 +12,7 @@
 
 #include "Info.hpp"
 
-#include "GDCC/IR/Function.hpp"
-#include "GDCC/IR/Glyph.hpp"
-#include "GDCC/IR/StrEnt.hpp"
+#include "GDCC/IR/Program.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -33,15 +31,15 @@ namespace Bytecode
          if(func->defin) switch(func->ctype)
          {
          case GDCC::IR::CallType::LangACS:
-            GDCC::IR::Glyph::GetData(func->glyph).type = GDCC::IR::Type_Funct(func->ctype);
+            prog->getGlyphData(func->glyph).type = GDCC::IR::Type_Funct(func->ctype);
             break;
 
          case GDCC::IR::CallType::ScriptI:
-            GDCC::IR::Glyph::GetData(func->glyph).type = TypeWord;
+            prog->getGlyphData(func->glyph).type = TypeWord;
             break;
 
          case GDCC::IR::CallType::ScriptS:
-            GDCC::IR::Glyph::GetData(func->glyph).type = GDCC::IR::Type_StrEn();
+            prog->getGlyphData(func->glyph).type = GDCC::IR::Type_StrEn();
             break;
 
          default: break;
@@ -53,7 +51,7 @@ namespace Bytecode
       //
       void Info::preStr()
       {
-         GDCC::IR::Glyph::GetData(str->glyph).type = GDCC::IR::Type_StrEn();
+         prog->getGlyphData(str->glyph).type = GDCC::IR::Type_StrEn();
       }
    }
 }

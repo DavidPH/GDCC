@@ -28,25 +28,26 @@ namespace Asm
    //
    // ParseStrEnt
    //
-   void ParseStrEnt(GDCC::TokenStream &in, GDCC::IR::StrEnt &str)
+   void ParseStrEnt(GDCC::TokenStream &in, GDCC::IR::Program &prog,
+      GDCC::IR::StrEnt &str)
    {
       while(!in.drop(GDCC::TOK_LnEnd)) switch(static_cast<GDCC::StringIndex>(
          ExpectToken(in, GDCC::TOK_Identi, "identifier").get().str))
       {
       case GDCC::STR_alias:
-         str.alias = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         str.alias = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_alloc:
-         str.alloc = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         str.alloc = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_defin:
-         str.defin = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         str.defin = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_valueInt:
-         str.valueInt = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         str.valueInt = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_valueStr:

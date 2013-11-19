@@ -29,10 +29,9 @@ namespace Bytecode
       //
       class Info : public InfoBase
       {
-      public:
-         virtual void put(std::ostream &out);
-
       protected:
+         virtual void put();
+
          void putBlock(GDCC::IR::Block &block);
 
          void putExp(GDCC::IR::Exp const *exp);

@@ -28,19 +28,20 @@ namespace Asm
    //
    // ParseFunction
    //
-   void ParseFunction(GDCC::TokenStream &in, GDCC::IR::Function &func)
+   void ParseFunction(GDCC::TokenStream &in, GDCC::IR::Program &prog,
+      GDCC::IR::Function &func)
    {
       while(!in.drop(GDCC::TOK_LnEnd)) switch(static_cast<GDCC::StringIndex>(
          ExpectToken(in, GDCC::TOK_Identi, "identifier").get().str))
       {
       case GDCC::STR_alloc:
-         func.alloc = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         func.alloc = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_block:
          while(in.drop(GDCC::TOK_LnEnd)) {}
          SkipToken(in, GDCC::TOK_BraceO, "{");
-         ParseBlock(in, func.block, GDCC::TOK_BraceC);
+         ParseBlock(in, prog, func.block, GDCC::TOK_BraceC);
          break;
 
       case GDCC::STR_ctype:
@@ -48,7 +49,7 @@ namespace Asm
          break;
 
       case GDCC::STR_defin:
-         func.defin = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         func.defin = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_label:
@@ -61,27 +62,27 @@ namespace Asm
          break;
 
       case GDCC::STR_localArs:
-         func.localArs = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         func.localArs = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_localReg:
-         func.localReg = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         func.localReg = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_param:
-         func.param = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         func.param = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_retrn:
-         func.retrn = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         func.retrn = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_sflagClS:
-         func.sflagClS = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         func.sflagClS = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_sflagNet:
-         func.sflagNet = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         func.sflagNet = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_stype:
@@ -89,7 +90,7 @@ namespace Asm
          break;
 
       case GDCC::STR_valueInt:
-         func.valueInt = ParseFastI(SkipToken(in, GDCC::TOK_Equal, "="));
+         func.valueInt = ParseFastI(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_valueStr:

@@ -27,38 +27,39 @@ namespace GDCC
       class Glyph;
       class GlyphData;
       class OArchive;
+      class Program;
 
       class Glyph
       {
       public:
          Glyph() = default;
-         explicit constexpr Glyph(String str_) : str{str_} {}
+         Glyph(Program *prog_, String str_) : prog{prog_}, str{str_} {}
 
-         explicit constexpr operator bool () const {return str != STRNULL;}
-         explicit constexpr operator String () const {return str;}
+         explicit operator bool () const {return prog && str;}
+         explicit operator String () const {return str;}
 
-         constexpr bool operator == (Glyph const &glyph) const {return glyph.str == str;}
-         constexpr bool operator != (Glyph const &glyph) const {return glyph.str != str;}
+         bool operator == (Glyph const &glyph) const {return glyph.str == str;}
+         bool operator != (Glyph const &glyph) const {return glyph.str != str;}
 
-         GlyphData *findData() const {return FindData(str);}
+         GlyphData *findData() const;
 
-         GlyphData &getData() const {return GetData(str);}
+         GlyphData &getData() const;
 
 
          friend OArchive &operator << (OArchive &out, Glyph const &in);
          friend IArchive &operator >> (IArchive &in, Glyph &out);
 
-         static GlyphData *FindData(String str);
-
-         static GlyphData &GetData(String str);
-
       private:
-         String str;
+         Program *prog;
+         String   str;
       };
 
       class GlyphData
       {
       public:
+         explicit GlyphData(String glyph_) : glyph{glyph_} {}
+
+         String   glyph;
          Type     type;
          Exp::Ptr value;
       };
@@ -79,28 +80,6 @@ namespace GDCC
 
       IArchive &operator >> (IArchive &in, Glyph &out);
       IArchive &operator >> (IArchive &in, GlyphData &out);
-   }
-}
-
-namespace GDCC
-{
-   namespace IR
-   {
-      //
-      // operator OArchive << Glyph
-      //
-      inline OArchive &operator << (OArchive &out, Glyph const &in)
-      {
-         return out << in.str;
-      }
-
-      //
-      // operator OArchive >> Glyph
-      //
-      inline IArchive &operator >> (IArchive &in, Glyph &out)
-      {
-         return in >> out.str;
-      }
    }
 }
 

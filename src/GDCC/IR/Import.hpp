@@ -14,9 +14,6 @@
 #define GDCC__IR__Import_H__
 
 #include "../String.hpp"
-#include "../Utility.hpp"
-
-#include <unordered_map>
 
 
 //----------------------------------------------------------------------------|
@@ -36,9 +33,6 @@ namespace GDCC
          explicit Import(String glyph);
 
          String glyph;
-
-
-         static Import &Get(String glyph);
       };
    }
 }
@@ -55,8 +49,6 @@ namespace GDCC
       OArchive &operator << (OArchive &out, Import const &in);
 
       IArchive &operator >> (IArchive &in, Import &out);
-
-      Range<MemItr<std::unordered_map<String, Import>::iterator>> ImportRange();
    }
 }
 

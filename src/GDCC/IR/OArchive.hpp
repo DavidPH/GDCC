@@ -16,6 +16,8 @@
 #include "../Number.hpp"
 
 #include <ostream>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 
 
@@ -35,7 +37,7 @@ namespace GDCC
       public:
          explicit OArchive(std::ostream &out_) : out(out_) {}
 
-         OArchive &operator << (bool in) {return putString(in ? "1" : "0");}
+         OArchive &operator << (bool in) {out << (in ? "1" : "0") << '\0'; return *this;}
 
          OArchive &operator << (signed           char in) {return putNumber(in);}
          OArchive &operator << (signed     short int  in) {return putNumber(in);}
@@ -61,7 +63,8 @@ namespace GDCC
          //
          OArchive &putHeader()
          {
-            return putString("MgC_NTS").putString("GDCC::IR").putString("");
+            out << "MgC_NTS" << '\0' << "GDCC::IR" << '\0' << '\0';
+            putTablesString();
             return *this;
          }
 
@@ -75,38 +78,7 @@ namespace GDCC
             return *this;
          }
 
-         //
-         // putString
-         //
-         OArchive &putString(char const *s)
-         {
-            out << s << '\0';
-            return *this;
-         }
-
-         //
-         // putTables
-         //
-         OArchive &putTables()
-         {
-            putTablesString();
-            putTablesGlyphs();
-            putTablesFuncts();
-            putTablesImport();
-            putTablesSpaces();
-            putTablesObject();
-            putTablesStrEnt();
-
-            return *this;
-         }
-
       private:
-         OArchive &putTablesFuncts();
-         OArchive &putTablesGlyphs();
-         OArchive &putTablesImport();
-         OArchive &putTablesObject();
-         OArchive &putTablesSpaces();
-         OArchive &putTablesStrEnt();
          OArchive &putTablesString();
 
          std::ostream &out;
@@ -123,8 +95,15 @@ namespace GDCC
 {
    namespace IR
    {
-      template<typename T>
-      OArchive &operator << (OArchive &out, std::vector<T> const &in);
+      template<typename T1, typename T2>
+      OArchive &operator << (OArchive &out, std::pair<T1, T2> const &in);
+
+      template<typename Key, typename T, typename Hash, typename KeyEqual, typename Allocator>
+      OArchive &operator << (OArchive &out,
+         std::unordered_map<Key, T, Hash, KeyEqual, Allocator> const &in);
+
+      template<typename T, typename Allocator>
+      OArchive &operator << (OArchive &out, std::vector<T, Allocator> const &in);
    }
 }
 
@@ -133,10 +112,32 @@ namespace GDCC
    namespace IR
    {
       //
+      // operator OArchive << std::pair
+      //
+      template<typename T1, typename T2>
+      OArchive &operator << (OArchive &out, std::pair<T1, T2> const &in)
+      {
+         return out << in.first << in.second;
+      }
+
+      //
+      // operator OArchive << std::unordered_map
+      //
+      template<typename Key, typename T, typename Hash, typename KeyEqual, typename Allocator>
+      OArchive &operator << (OArchive &out,
+         std::unordered_map<Key, T, Hash, KeyEqual, Allocator> const &in)
+      {
+         out << in.size();
+         for(auto const &i : in)
+            out << i;
+         return out;
+      }
+
+      //
       // operator OArchive << std::vector
       //
-      template<typename T>
-      OArchive &operator << (OArchive &out, std::vector<T> const &in)
+      template<typename T, typename Allocator>
+      OArchive &operator << (OArchive &out, std::vector<T, Allocator> const &in)
       {
          out << in.size();
          for(auto const &i : in)

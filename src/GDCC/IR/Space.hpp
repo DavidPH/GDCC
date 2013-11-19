@@ -6,15 +6,16 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Intermediary Representation string table entry handling.
+// Intermediary Representation address space handling.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__IR__StrEnt_H__
-#define GDCC__IR__StrEnt_H__
+#ifndef GDCC__IR__Space_H__
+#define GDCC__IR__Space_H__
+
+#include "Addr.hpp"
 
 #include "../Number.hpp"
-#include "../String.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -25,25 +26,28 @@ namespace GDCC
 {
    namespace IR
    {
+      enum class Linkage;
       class Program;
 
       //
-      // StrEnt
+      // Space
       //
-      class StrEnt
+      class Space
       {
       public:
-         explicit StrEnt(String glyph);
+         explicit Space(AddrSpace as);
 
          void allocValue(Program &prog);
+         void allocWords(Program &prog);
 
-         String glyph;
-         FastU  valueInt;
-         String valueStr;
+         String    glyph;
+         Linkage   linka;
+         AddrSpace space;
+         FastU     value;
+         FastU     words;
 
-         bool alias : 1;
-         bool alloc : 1;
-         bool defin : 1;
+         bool      alloc : 1;
+         bool      defin : 1;
       };
    }
 }
@@ -57,11 +61,11 @@ namespace GDCC
 {
    namespace IR
    {
-      OArchive &operator << (OArchive &out, StrEnt const &in);
+      OArchive &operator << (OArchive &out, Space const &in);
 
-      IArchive &operator >> (IArchive &in, StrEnt &out);
+      IArchive &operator >> (IArchive &in, Space &out);
    }
 }
 
-#endif//GDCC__IR__StrEnt_H__
+#endif//GDCC__IR__Space_H__
 

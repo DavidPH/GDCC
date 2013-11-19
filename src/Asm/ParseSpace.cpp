@@ -14,8 +14,7 @@
 
 #include "GDCC/TokenStream.hpp"
 
-#include "GDCC/IR/Exp.hpp"
-#include "GDCC/IR/Object.hpp"
+#include "GDCC/IR/Space.hpp"
 
 #include <iostream>
 
@@ -29,17 +28,18 @@ namespace Asm
    //
    // ParseSpace
    //
-   void ParseSpace(GDCC::TokenStream &in, GDCC::IR::Space &space)
+   void ParseSpace(GDCC::TokenStream &in, GDCC::IR::Program &prog,
+      GDCC::IR::Space &space)
    {
       while(!in.drop(GDCC::TOK_LnEnd)) switch(static_cast<GDCC::StringIndex>(
          ExpectToken(in, GDCC::TOK_Identi, "identifier").get().str))
       {
       case GDCC::STR_alloc:
-         space.alloc = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         space.alloc = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_defin:
-         space.defin = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         space.defin = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_linka:
@@ -47,11 +47,11 @@ namespace Asm
          break;
 
       case GDCC::STR_value:
-         space.value = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         space.value = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       case GDCC::STR_words:
-         space.words = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="));
+         space.words = ParseFastU(SkipToken(in, GDCC::TOK_Equal, "="), prog);
          break;
 
       default:

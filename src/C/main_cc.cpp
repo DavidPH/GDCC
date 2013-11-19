@@ -17,6 +17,7 @@
 #include "GDCC/Path.hpp"
 
 #include "GDCC/IR/OArchive.hpp"
+#include "GDCC/IR/Program.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -33,6 +34,8 @@ static void ProcessFile(char const *inName);
 //
 static void MakeC()
 {
+   GDCC::IR::Program prog;
+
    // Process inputs.
    for(auto arg = *Option::ArgV, end = arg + *Option::ArgC; arg != end; ++arg)
       ProcessFile(*arg);
@@ -46,7 +49,7 @@ static void MakeC()
       throw EXIT_FAILURE;
    }
 
-   GDCC::IR::OArchive(out).putHeader().putTables();
+   GDCC::IR::OArchive(out).putHeader() << prog;
 }
 
 //

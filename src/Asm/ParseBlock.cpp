@@ -30,7 +30,8 @@ namespace Asm
    //
    // ParseBlock
    //
-   void ParseBlock(GDCC::TokenStream &in, GDCC::IR::Block &block, GDCC::TokenType end)
+   void ParseBlock(GDCC::TokenStream &in, GDCC::IR::Program &prog,
+      GDCC::IR::Block &block, GDCC::TokenType end)
    {
       std::vector<GDCC::IR::Arg> args;
       GDCC::IR::Code code;
@@ -59,7 +60,7 @@ namespace Asm
          args.clear();
 
          while(in.peek().tok != GDCC::TOK_LnEnd)
-            args.push_back(ParseArg(SkipToken(in, GDCC::TOK_Comma, "end of line")));
+            args.push_back(ParseArg(SkipToken(in, GDCC::TOK_Comma, "end of line"), prog));
 
          block.setArgs(GDCC::Array<GDCC::IR::Arg>(GDCC::Move, args.begin(), args.end()));
          block.addStatement(code);
@@ -77,7 +78,7 @@ namespace Asm
             args.clear();
 
             while(in.peek().tok != GDCC::TOK_LnEnd)
-               args.push_back(ParseArg(SkipToken(in, GDCC::TOK_Comma, "end of line")));
+               args.push_back(ParseArg(SkipToken(in, GDCC::TOK_Comma, "end of line"), prog));
 
             // Expand macro.
             macro->expand(block, args.data(), args.size());

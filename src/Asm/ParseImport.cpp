@@ -28,7 +28,8 @@ namespace Asm
    //
    // ParseImport
    //
-   void ParseImport(GDCC::TokenStream &in, GDCC::IR::Import &)
+   void ParseImport(GDCC::TokenStream &in, GDCC::IR::Program &,
+      GDCC::IR::Import &)
    {
       while(!in.drop(GDCC::TOK_LnEnd)) switch(static_cast<GDCC::StringIndex>(
          ExpectToken(in, GDCC::TOK_Identi, "identifier").get().str))

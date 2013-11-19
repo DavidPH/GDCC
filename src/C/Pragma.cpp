@@ -95,7 +95,8 @@ static void PragmaACS(GDCC::TokenStream &in)
          throw EXIT_FAILURE;
       }
 
-      GDCC::IR::Import::Get(GDCC::ParseStringC(in.get().str));
+      // TODO
+
       break;
 
    default: break;

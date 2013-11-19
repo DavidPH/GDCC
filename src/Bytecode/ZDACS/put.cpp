@@ -28,10 +28,8 @@ namespace Bytecode
       //
       // Info::put
       //
-      void Info::put(std::ostream &out_)
+      void Info::put()
       {
-         out = &out_;
-
          // Put header.
          if(UseFakeACS0)
          {
@@ -59,8 +57,6 @@ namespace Bytecode
             putWord(0);
             putWord(0);
          }
-
-         out = nullptr;
       }
 
       //

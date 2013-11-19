@@ -54,6 +54,8 @@ namespace GDCC
             throw EXIT_FAILURE;
          }
 
+         getTablesString();
+
          return *this;
       }
    }

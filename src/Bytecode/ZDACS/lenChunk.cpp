@@ -12,10 +12,7 @@
 
 #include "Info.hpp"
 
-#include "GDCC/IR/Function.hpp"
-#include "GDCC/IR/Import.hpp"
-#include "GDCC/IR/Object.hpp"
-#include "GDCC/IR/StrEnt.hpp"
+#include "GDCC/IR/Program.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -83,8 +80,8 @@ namespace Bytecode
 
          GDCC::FastU len = numChunkAIMP * 8 + 8;
 
-         for(auto const &sp : GDCC::IR::Space::MapArs)
-            if(!sp.second.defin) len += lenString(sp.second.glyph);
+         for(auto const &itr : prog->rangeSpaceMapArs())
+            if(!itr.defin) len += lenString(itr.glyph);
 
          return len;
       }
@@ -98,7 +95,7 @@ namespace Bytecode
 
          GDCC::FastU len = 0;
 
-         for(auto const &itr : init) if(itr.first->space == GDCC::IR::AddrBase::MapArr)
+         for(auto const &itr : init) if(itr.first->space.base == GDCC::IR::AddrBase::MapArr)
             len += itr.second.vals.size() * 4 + 12;
 
          return len;
@@ -133,7 +130,7 @@ namespace Bytecode
 
          GDCC::FastU len = 0;
 
-         for(auto const &itr : init) if(itr.first->space == GDCC::IR::AddrBase::MapArr)
+         for(auto const &itr : init) if(itr.first->space.base == GDCC::IR::AddrBase::MapArr)
          {
             if(itr.second.needTag && !itr.second.onlyStr)
                len += itr.second.vals.size() + 13;
@@ -161,14 +158,12 @@ namespace Bytecode
 
          for(auto &str : strs) str = GDCC::STR_;
 
-         for(auto const &itr : GDCC::IR::FunctionRange())
+         for(auto const &itr : prog->rangeFunction())
          {
-            auto const &func = itr.second;
-
-            if(func.ctype != GDCC::IR::CallType::LangACS)
+            if(itr.ctype != GDCC::IR::CallType::LangACS)
                continue;
 
-            strs[func.valueInt] = func.glyph;
+            strs[itr.valueInt] = itr.glyph;
          }
 
          return lenChunk("FNAM", strs, false);
@@ -189,14 +184,14 @@ namespace Bytecode
       //
       GDCC::FastU Info::lenChunkLOAD()
       {
-         numChunkLOAD = GDCC::IR::ImportRange().size();
+         numChunkLOAD = prog->sizeImport();
 
          if(!numChunkLOAD) return 0;
 
          GDCC::FastU len = 8;
 
-         for(auto const &imp : GDCC::IR::ImportRange())
-            len += lenString(imp.glyph);
+         for(auto const &itr : prog->rangeImport())
+            len += lenString(itr.glyph);
 
          return len;
       }
@@ -211,11 +206,14 @@ namespace Bytecode
          GDCC::Array<GDCC::String> strs{numChunkMEXP};
          for(auto &str : strs) str = GDCC::STR_;
 
-         for(auto const &obj : GDCC::IR::Space::MapReg.obset)
-            if(obj->defin) strs[obj->value] = obj->glyph;
+         for(auto const &itr : prog->rangeObject())
+         {
+            if(itr.defin && itr.space.base == GDCC::IR::AddrBase::MapReg)
+               strs[itr.value] = itr.glyph;
+         }
 
-         for(auto const &itr : GDCC::IR::Space::MapArs)
-            if(itr.second.defin) strs[itr.second.value] = itr.second.glyph;
+         for(auto const &itr : prog->rangeSpaceMapArs())
+            if(itr.defin) strs[itr.value] = itr.glyph;
 
          return lenChunk("MEXP", strs, false);
       }
@@ -229,8 +227,11 @@ namespace Bytecode
 
          GDCC::FastU len = numChunkMIMP * 4 + 8;
 
-         for(auto const &obj : GDCC::IR::Space::MapReg.obset)
-            if(!obj->defin) len += lenString(obj->glyph);
+         for(auto const &itr : prog->rangeObject())
+         {
+            if(!itr.defin && itr.space.base == GDCC::IR::AddrBase::MapReg)
+               len += lenString(itr.glyph);
+         }
 
          return len;
       }
@@ -276,14 +277,12 @@ namespace Bytecode
 
          for(auto &str : strs) str = GDCC::STR_;
 
-         for(auto const &itr : GDCC::IR::FunctionRange())
+         for(auto const &itr : prog->rangeFunction())
          {
-            auto const &func = itr.second;
-
-            if(func.ctype != GDCC::IR::CallType::ScriptS)
+            if(itr.ctype != GDCC::IR::CallType::ScriptS)
                continue;
 
-            strs[func.valueInt] = func.valueStr;
+            strs[itr.valueInt] = itr.valueStr;
          }
 
          return lenChunk("SNAM", strs, false);
@@ -310,8 +309,8 @@ namespace Bytecode
 
          for(auto &str : strs) str = GDCC::STR_;
 
-         for(auto const &itr : GDCC::IR::StrEntRange()) if(itr.second.defin)
-            strs[itr.second.valueInt] = itr.second.valueStr;
+         for(auto const &itr : prog->rangeStrEnt()) if(itr.defin)
+            strs[itr.valueInt] = itr.valueStr;
 
          return lenChunk("STRL", strs, true);
       }

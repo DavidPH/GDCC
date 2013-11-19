@@ -12,9 +12,7 @@
 
 #include "Info.hpp"
 
-#include "GDCC/IR/Function.hpp"
-#include "GDCC/IR/Object.hpp"
-#include "GDCC/IR/StrEnt.hpp"
+#include "GDCC/IR/Program.hpp"
 
 #include <iostream>
 
@@ -51,20 +49,28 @@ namespace Bytecode
    //
    void Info::gen()
    {
-      for(auto &itr : GDCC::IR::Space::GblArs) genSpace(itr.second);
-      for(auto &itr : GDCC::IR::Space::MapArs) genSpace(itr.second);
-      for(auto &itr : GDCC::IR::Space::WldArs) genSpace(itr.second);
+      for(auto &itr : prog->rangeSpaceGblArs()) genSpace(itr);
+      for(auto &itr : prog->rangeSpaceMapArs()) genSpace(itr);
+      for(auto &itr : prog->rangeSpaceWldArs()) genSpace(itr);
 
-      genSpace(GDCC::IR::Space::GblReg);
-      genSpace(GDCC::IR::Space::LocArs);
-      genSpace(GDCC::IR::Space::MapReg);
-      genSpace(GDCC::IR::Space::WldReg);
+      genSpace(prog->getSpaceGblReg());
+      genSpace(prog->getSpaceLocArs());
+      genSpace(prog->getSpaceMapReg());
+      genSpace(prog->getSpaceWldReg());
 
-      for(auto &itr : GDCC::IR::FunctionRange())
-         genFunc(itr.second);
+      for(auto &itr : prog->rangeFunction())
+         genFunc(itr);
 
-      for(auto &itr : GDCC::IR::StrEntRange())
-         genStr(itr.second);
+      for(auto &itr : prog->rangeStrEnt())
+         genStr(itr);
+   }
+
+   //
+   // Info::gen
+   //
+   void Info::gen(GDCC::IR::Program &prog_)
+   {
+      TryPointer(gen, prog);
    }
 
    //
@@ -129,20 +135,28 @@ namespace Bytecode
    //
    void Info::pre()
    {
-      for(auto &itr : GDCC::IR::Space::GblArs) preSpace(itr.second);
-      for(auto &itr : GDCC::IR::Space::MapArs) preSpace(itr.second);
-      for(auto &itr : GDCC::IR::Space::WldArs) preSpace(itr.second);
+      for(auto &itr : prog->rangeSpaceGblArs()) preSpace(itr);
+      for(auto &itr : prog->rangeSpaceMapArs()) preSpace(itr);
+      for(auto &itr : prog->rangeSpaceWldArs()) preSpace(itr);
 
-      preSpace(GDCC::IR::Space::GblReg);
-      preSpace(GDCC::IR::Space::LocArs);
-      preSpace(GDCC::IR::Space::MapReg);
-      preSpace(GDCC::IR::Space::WldReg);
+      preSpace(prog->getSpaceGblReg());
+      preSpace(prog->getSpaceLocArs());
+      preSpace(prog->getSpaceMapReg());
+      preSpace(prog->getSpaceWldReg());
 
-      for(auto &itr : GDCC::IR::FunctionRange())
-         preFunc(itr.second);
+      for(auto &itr : prog->rangeFunction())
+         preFunc(itr);
 
-      for(auto &itr : GDCC::IR::StrEntRange())
-         preStr(itr.second);
+      for(auto &itr : prog->rangeStrEnt())
+         preStr(itr);
+   }
+
+   //
+   // Info::pre
+   //
+   void Info::pre(GDCC::IR::Program &prog_)
+   {
+      TryPointer(pre, prog);
    }
 
    //
@@ -203,24 +217,55 @@ namespace Bytecode
    }
 
    //
+   // Info::put
+   //
+   void Info::put(GDCC::IR::Program &prog_, std::ostream &out_)
+   {
+      try
+      {
+         out  = &out_;
+         prog = &prog_;
+
+         put();
+
+         out  = nullptr;
+         prog = nullptr;
+      }
+      catch(...)
+      {
+         out  = nullptr;
+         prog = nullptr;
+         throw;
+      }
+   }
+
+   //
    // Info::tr
    //
    void Info::tr()
    {
-      for(auto &itr : GDCC::IR::Space::GblArs) trSpace(itr.second);
-      for(auto &itr : GDCC::IR::Space::MapArs) trSpace(itr.second);
-      for(auto &itr : GDCC::IR::Space::WldArs) trSpace(itr.second);
+      for(auto &itr : prog->rangeSpaceGblArs()) trSpace(itr);
+      for(auto &itr : prog->rangeSpaceMapArs()) trSpace(itr);
+      for(auto &itr : prog->rangeSpaceWldArs()) trSpace(itr);
 
-      trSpace(GDCC::IR::Space::GblReg);
-      trSpace(GDCC::IR::Space::LocArs);
-      trSpace(GDCC::IR::Space::MapReg);
-      trSpace(GDCC::IR::Space::WldReg);
+      trSpace(prog->getSpaceGblReg());
+      trSpace(prog->getSpaceLocArs());
+      trSpace(prog->getSpaceMapReg());
+      trSpace(prog->getSpaceWldReg());
 
-      for(auto &itr : GDCC::IR::FunctionRange())
-         trFunc(itr.second);
+      for(auto &itr : prog->rangeFunction())
+         trFunc(itr);
 
-      for(auto &itr : GDCC::IR::StrEntRange())
-         trStr(itr.second);
+      for(auto &itr : prog->rangeStrEnt())
+         trStr(itr);
+   }
+
+   //
+   // Info::tr
+   //
+   void Info::tr(GDCC::IR::Program &prog_)
+   {
+      TryPointer(tr, prog);
    }
 
    //

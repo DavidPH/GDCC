@@ -14,15 +14,7 @@
 
 #include "IArchive.hpp"
 #include "OArchive.hpp"
-
-#include <unordered_map>
-
-
-//----------------------------------------------------------------------------|
-// Static Variables                                                           |
-//
-
-static std::unordered_map<GDCC::String, GDCC::IR::GlyphData> GlyphMap;
+#include "Program.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -34,65 +26,26 @@ namespace GDCC
    namespace IR
    {
       //
-      // Glyph::FindData
+      // Glyph::findData
       //
-      GlyphData *Glyph::FindData(String str)
+      GlyphData *Glyph::findData() const
       {
-         auto itr = GlyphMap.find(str);
-
-         return itr == GlyphMap.end() ? nullptr : &itr->second;
+         return prog->findGlyphData(str);
       }
 
       //
-      // Glyph::GetData
+      // Glyph::getData
       //
-      GlyphData &Glyph::GetData(String str)
+      GlyphData &Glyph::getData() const
       {
-         return GlyphMap[str];
+         return prog->getGlyphData(str);
       }
-
       //
-      // IArchive::getTablesGlyphs
+      // operator OArchive << Glyph
       //
-      IArchive &IArchive::getTablesGlyphs()
+      OArchive &operator << (OArchive &out, Glyph const &in)
       {
-         auto count = getNumber<std::size_t>();
-
-         String name;
-         GlyphData newData;
-
-         while(count--)
-         {
-            *this >> name >> newData;
-            auto &oldData = Glyph::GetData(name);
-
-            if(newData.type.t != TypeBase::Empty)
-            {
-               if(oldData.type.t == TypeBase::Empty)
-                  oldData.type = newData.type;
-            }
-
-            if(newData.value)
-            {
-               if(!oldData.value)
-                  oldData.value = newData.value;
-            }
-         }
-
-         return *this;
-      }
-
-      //
-      // OArchive::putTablesGlyphs
-      //
-      OArchive &OArchive::putTablesGlyphs()
-      {
-         *this << GlyphMap.size();
-
-         for(auto const &itr : GlyphMap)
-            *this << itr.first << itr.second;
-
-         return *this;
+         return out << in.str;
       }
 
       //
@@ -101,6 +54,15 @@ namespace GDCC
       OArchive &operator << (OArchive &out, GlyphData const &in)
       {
          return out << in.type << in.value;
+      }
+
+      //
+      // operator IArchive >> Glyph
+      //
+      IArchive &operator >> (IArchive &in, Glyph &out)
+      {
+         out.prog = in.prog;
+         return in >> out.str;
       }
 
       //

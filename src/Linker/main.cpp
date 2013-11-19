@@ -19,6 +19,7 @@
 
 #include "GDCC/IR/IArchive.hpp"
 #include "GDCC/IR/OArchive.hpp"
+#include "GDCC/IR/Program.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -42,16 +43,18 @@ namespace Option
 // Static Functions                                                           |
 //
 
-static void ProcessFile(char const *inName);
+static void ProcessFile(char const *inName, GDCC::IR::Program &prog);
 
 //
 // MakeLinked
 //
 static void MakeLinker()
 {
+   GDCC::IR::Program prog;
+
    // Process inputs.
    for(auto arg = *Option::ArgV, end = arg + *Option::ArgC; arg != end; ++arg)
-      ProcessFile(*arg);
+      ProcessFile(*arg, prog);
 
    // Write IR data.
    if(Option::OutputIR.data)
@@ -64,7 +67,7 @@ static void MakeLinker()
          throw EXIT_FAILURE;
       }
 
-      GDCC::IR::OArchive(out).putHeader().putTables();
+      GDCC::IR::OArchive(out).putHeader() << prog;
 
       return;
    }
@@ -86,9 +89,9 @@ static void MakeLinker()
       break;
    }
 
-   info->pre();
-   info->tr();
-   info->gen();
+   info->pre(prog);
+   info->tr(prog);
+   info->gen(prog);
 
    std::fstream out{Option::Output.data, std::ios_base::binary | std::ios_base::out};
 
@@ -98,13 +101,13 @@ static void MakeLinker()
       throw EXIT_FAILURE;
    }
 
-   info->put(out);
+   info->put(prog, out);
 }
 
 //
 // ProcessFile
 //
-static void ProcessFile(char const *inName)
+static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 {
    std::ifstream in{inName, std::ios_base::binary | std::ios_base::in};
 
@@ -114,7 +117,7 @@ static void ProcessFile(char const *inName)
       throw EXIT_FAILURE;
    }
 
-   GDCC::IR::IArchive(in).getHeader().getTables();
+   GDCC::IR::IArchive(in).getHeader() >> prog;
 }
 
 
