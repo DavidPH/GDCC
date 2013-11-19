@@ -42,7 +42,7 @@ namespace GDCC
       class StrEnt;
       class Type;
       class Value;
-      class Value_Multi;
+      struct Value_Multi;
    }
 
    class TokenStream;

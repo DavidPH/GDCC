@@ -39,11 +39,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang
    TRY_CXX_COMPILER_FLAG(-std=c++11 FLAG_CXX_CXX11)
 endif()
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-   # Specializing std::hash invokes this regardless of tag used.
-   TRY_CXX_COMPILER_FLAG(-Wno-mismatched-tags FLAG_CXX_Wno_mismatched_tags)
-endif()
-
 
 ##----------------------------------------------------------------------------|
 ## Targets                                                                    |
