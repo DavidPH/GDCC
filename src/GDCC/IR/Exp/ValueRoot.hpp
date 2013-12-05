@@ -38,10 +38,10 @@ namespace GDCC
          Value const value;
 
 
-         friend Exp::Ref ExpCreate_ValueRoot(Value const &value, Origin pos);
-         friend Exp::Ref ExpCreate_ValueRoot(Value &&value, Origin pos);
+         friend Exp::CRef ExpCreate_ValueRoot(Value const &value, Origin pos);
+         friend Exp::CRef ExpCreate_ValueRoot(Value &&value, Origin pos);
 
-         friend Exp::Ref ExpGetIR_ValueRoot(IArchive &in);
+         friend Exp::CRef ExpGetIR_ValueRoot(IArchive &in);
 
       protected:
          Exp_ValueRoot(Exp_ValueRoot const &) = default;

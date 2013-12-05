@@ -192,6 +192,7 @@ namespace GDCC
    namespace AST
    {
       Type::CRef const Type::None{GetNone()};
+      Type::CRef const Type::Size{GetSize()};
 
       TypeSet::Ref const TypeSet::Head{new TypeSet(false)};
       TypeSet::Ref const TypeSet::HeadV{new TypeSet(true)};
@@ -270,7 +271,7 @@ namespace GDCC
       //
       // Type::getSizeBytesVM
       //
-      Exp::Ref Type::getSizeBytesVM() const
+      Exp::CRef Type::getSizeBytesVM() const
       {
          return ExpCreate_ValueSize(getSizeBytes());
       }
@@ -278,7 +279,7 @@ namespace GDCC
       //
       // Type::getSizePointVM
       //
-      Exp::Ref Type::getSizePointVM() const
+      Exp::CRef Type::getSizePointVM() const
       {
          return ExpCreate_ValueSize(getSizePoint());
       }
@@ -286,18 +287,9 @@ namespace GDCC
       //
       // Type::getSizeWordsVM
       //
-      Exp::Ref Type::getSizeWordsVM() const
+      Exp::CRef Type::getSizeWordsVM() const
       {
          return ExpCreate_ValueSize(getSizeWords());
-      }
-
-      //
-      // Type::GetNone
-      //
-      Type::CRef Type::GetNone()
-      {
-         static CRef t{new Type_None};
-         return t;
       }
 
       //

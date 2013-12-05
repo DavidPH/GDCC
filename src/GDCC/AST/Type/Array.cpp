@@ -56,7 +56,7 @@ namespace GDCC
       //
       // Type::getTypeArray
       //
-      Type::CRef Type::getTypeArray(Exp *size) const
+      Type::CRef Type::getTypeArray(Exp const *size) const
       {
          if(!size)
          {
@@ -93,7 +93,8 @@ namespace GDCC
       //
       // Type_ArrVM constructor
       //
-      Type_ArrVM::Type_ArrVM(Type const *base_, Exp *size_) : Super{base_}, size{size_}
+      Type_ArrVM::Type_ArrVM(Type const *base_, Exp const *size_) :
+         Super{base_}, size{size_}
       {
          GDCC_AST_Type_Insert(avm);
       }
@@ -109,25 +110,25 @@ namespace GDCC
       //
       // Type_ArrVM::getSizeBytesVM
       //
-      Exp::Ref Type_ArrVM::getSizeBytesVM() const
+      Exp::CRef Type_ArrVM::getSizeBytesVM() const
       {
-         return ExpCreate_BinaryMulSize(base->getSizeBytesVM(), size);
+         return ExpCreate_BinaryMulSize(size, base->getSizeBytesVM());
       }
 
       //
       // Type_ArrVM::getSizePointVM
       //
-      Exp::Ref Type_ArrVM::getSizePointVM() const
+      Exp::CRef Type_ArrVM::getSizePointVM() const
       {
-         return ExpCreate_BinaryMulSize(base->getSizePointVM(), size);
+         return ExpCreate_BinaryMulSize(size, base->getSizePointVM());
       }
 
       //
       // Type_ArrVM::getSizeWordsVM
       //
-      Exp::Ref Type_ArrVM::getSizeWordsVM() const
+      Exp::CRef Type_ArrVM::getSizeWordsVM() const
       {
-         return ExpCreate_BinaryMulSize(base->getSizeWordsVM(), size);
+         return ExpCreate_BinaryMulSize(size, base->getSizeWordsVM());
       }
 
       //
@@ -189,6 +190,14 @@ namespace GDCC
       }
 
       //
+      // Type_Array::getSizeBytesVM
+      //
+      Exp::CRef Type_Array::getSizeBytesVM() const
+      {
+         return ExpCreate_BinaryMulSize(base->getSizeBytesVM(), ExpCreate_ValueSize(size));
+      }
+
+      //
       // Type_Array::getSizePoint
       //
       FastU Type_Array::getSizePoint() const
@@ -197,11 +206,27 @@ namespace GDCC
       }
 
       //
+      // Type_Array::getSizePointVM
+      //
+      Exp::CRef Type_Array::getSizePointVM() const
+      {
+         return ExpCreate_BinaryMulSize(base->getSizePointVM(), ExpCreate_ValueSize(size));
+      }
+
+      //
       // Type_Array::getSizeWords
       //
       FastU Type_Array::getSizeWords() const
       {
          return base->getSizeWords() * size;
+      }
+
+      //
+      // Type_Array::getSizeWordsVM
+      //
+      Exp::CRef Type_Array::getSizeWordsVM() const
+      {
+         return ExpCreate_BinaryMulSize(base->getSizeWordsVM(), ExpCreate_ValueSize(size));
       }
 
       //

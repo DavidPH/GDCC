@@ -67,17 +67,17 @@ namespace GDCC
       //
       // ExpCreate_ValueGlyph
       //
-      Exp::Ref ExpCreate_ValueGlyph(Glyph glyph, Origin pos)
+      Exp::CRef ExpCreate_ValueGlyph(Glyph glyph, Origin pos)
       {
-         return static_cast<Exp::Ref>(new Exp_ValueGlyph(glyph, pos));
+         return static_cast<Exp::CRef>(new Exp_ValueGlyph(glyph, pos));
       }
 
       //
       // ExpGetIR_ValueGlyph
       //
-      Exp::Ref ExpGetIR_ValueGlyph(IArchive &in)
+      Exp::CRef ExpGetIR_ValueGlyph(IArchive &in)
       {
-         return static_cast<Exp::Ref>(new Exp_ValueGlyph(in));
+         return static_cast<Exp::CRef>(new Exp_ValueGlyph(in));
       }
    }
 }

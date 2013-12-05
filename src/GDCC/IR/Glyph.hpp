@@ -59,9 +59,9 @@ namespace GDCC
       public:
          explicit GlyphData(String glyph_) : glyph{glyph_} {}
 
-         String   glyph;
-         Type     type;
-         Exp::Ptr value;
+         String    glyph;
+         Type      type;
+         Exp::CPtr value;
       };
    }
 }

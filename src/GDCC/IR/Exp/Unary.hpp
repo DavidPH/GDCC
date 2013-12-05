@@ -47,7 +47,7 @@ protected: \
 //
 #define GDCC_IR_Exp_UnaryDeclCon(name) \
 protected: \
-   Exp_Unary##name(Exp *e, Origin pos_) : Super{e, pos_} {} \
+   Exp_Unary##name(Exp const *e, Origin pos_) : Super{e, pos_} {} \
    explicit Exp_Unary##name(IArchive &in) : Super{in} {} \
    Exp_Unary##name(Exp_Unary##name const &) = default
 
@@ -56,22 +56,22 @@ protected: \
 //
 #define GDCC_IR_Exp_UnaryDeclCreate(name) \
 public: \
-   friend Exp::Ref ExpCreate_Unary##name(Exp *e); \
-   friend Exp::Ref ExpCreate_Unary##name(Exp *e, Origin pos); \
-   friend Exp::Ref ExpGetIR_Unary##name(IArchive &in)
+   friend Exp::CRef ExpCreate_Unary##name(Exp const *e); \
+   friend Exp::CRef ExpCreate_Unary##name(Exp const *e, Origin pos); \
+   friend Exp::CRef ExpGetIR_Unary##name(IArchive &in)
 
 //
 // GDCC_IR_Exp_UnaryImplCreate
 //
 #define GDCC_IR_Exp_UnaryImplCreate(name) \
-   Exp::Ref ExpCreate_Unary##name(Exp *e) \
-      {return static_cast<Exp::Ref>(new Exp_Unary##name(e, e->pos));} \
+   Exp::CRef ExpCreate_Unary##name(Exp const *e) \
+      {return static_cast<Exp::CRef>(new Exp_Unary##name(e, e->pos));} \
    \
-   Exp::Ref ExpCreate_Unary##name(Exp *e, Origin pos) \
-      {return static_cast<Exp::Ref>(new Exp_Unary##name(e, pos));} \
+   Exp::CRef ExpCreate_Unary##name(Exp const *e, Origin pos) \
+      {return static_cast<Exp::CRef>(new Exp_Unary##name(e, pos));} \
    \
-   Exp::Ref ExpGetIR_Unary##name(IArchive &in) \
-      {return static_cast<Exp::Ref>(new Exp_Unary##name(in));}
+   Exp::CRef ExpGetIR_Unary##name(IArchive &in) \
+      {return static_cast<Exp::CRef>(new Exp_Unary##name(in));}
 
 
 //----------------------------------------------------------------------------|
@@ -90,11 +90,11 @@ namespace GDCC
          GDCC_CounterPreambleAbstract(GDCC::IR::Exp_Unary, GDCC::IR::Exp);
 
       public:
-         Exp::Ref const exp;
+         Exp::CRef const exp;
 
       protected:
          Exp_Unary(Exp_Unary const &) = default;
-         Exp_Unary(Exp *e, Origin pos_) : Super{pos_}, exp{e} {}
+         Exp_Unary(Exp const *e, Origin pos_) : Super{pos_}, exp{e} {}
          explicit Exp_Unary(IArchive &in);
 
          virtual bool v_canGetValue() const
@@ -122,17 +122,19 @@ namespace GDCC
          virtual String getName() const {return STR_UnaryCst;}
 
 
-         friend Exp::Ref ExpCreate_UnaryCst(Type const &t, Exp *e);
-         friend Exp::Ref ExpCreate_UnaryCst(Type const &t, Exp *e, Origin pos);
-         friend Exp::Ref ExpCreate_UnaryCst(Type &&t, Exp *e);
-         friend Exp::Ref ExpCreate_UnaryCst(Type &&t, Exp *e, Origin pos);
+         friend Exp::CRef ExpCreate_UnaryCst(Type const &t, Exp const *e);
+         friend Exp::CRef ExpCreate_UnaryCst(Type const &t, Exp const *e, Origin pos);
+         friend Exp::CRef ExpCreate_UnaryCst(Type &&t, Exp const *e);
+         friend Exp::CRef ExpCreate_UnaryCst(Type &&t, Exp const *e, Origin pos);
 
-         friend Exp::Ref ExpGetIR_UnaryCst(IArchive &in);
+         friend Exp::CRef ExpGetIR_UnaryCst(IArchive &in);
 
       protected:
          Exp_UnaryCst(Exp_UnaryCst const &) = default;
-         Exp_UnaryCst(Type const &t, Exp *e, Origin pos_) : Super{e, pos_} , type{t} {}
-         Exp_UnaryCst(Type &&t, Exp *e, Origin pos_) : Super{e, pos_} , type{std::move(t)} {}
+         Exp_UnaryCst(Type const &t, Exp const *e, Origin pos_) :
+            Super{e, pos_} , type{t} {}
+         Exp_UnaryCst(Type &&t, Exp const *e, Origin pos_) :
+            Super{e, pos_} , type{std::move(t)} {}
          explicit Exp_UnaryCst(IArchive &in);
 
          virtual Type v_getType() const {return type;}

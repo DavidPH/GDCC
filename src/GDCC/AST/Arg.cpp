@@ -6,15 +6,14 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Abstract Syntax Tree expression wrapping type base.
+// Abstract Syntax Tree storage arguments.
 //
 //-----------------------------------------------------------------------------
 
-#include "Wrapper.hpp"
+#include "Arg.hpp"
 
-#include "../Exp.hpp"
-
-#include "../../IR/Type.hpp"
+#include "Exp.hpp"
+#include "Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -26,35 +25,33 @@ namespace GDCC
    namespace AST
    {
       //
-      // Type_Wrapper::getIRType
+      // Arg copy constructor
       //
-      IR::Type Type_Wrapper::getIRType() const
+      Arg::Arg(Arg const &arg) : type{arg.type}, data{arg.data}
       {
-         return base->getIRType();
       }
 
       //
-      // Type_Wrapper::getSizeBytesVM
+      // Arg constructor
       //
-      Exp::CRef Type_Wrapper::getSizeBytesVM() const
+      Arg::Arg(Type const *type_, Exp const *data_) : type{type_}, data{data_}
       {
-         return base->getSizeBytesVM();
       }
 
       //
-      // Type_Wrapper::getSizePointVM
+      // Arg constructor
       //
-      Exp::CRef Type_Wrapper::getSizePointVM() const
+      Arg::Arg(Type const *type_, IR::AddrBase base, Exp const *data_) :
+         type{type_->getTypeQual(TypeQual(IR::AddrSpace(base, STR_)))},
+         data{data_}
       {
-         return base->getSizePointVM();
       }
 
       //
-      // Type_Wrapper::getSizeWordsVM
+      // Arg destructor
       //
-      Exp::CRef Type_Wrapper::getSizeWordsVM() const
+      Arg::~Arg()
       {
-         return base->getSizeWordsVM();
       }
    }
 }

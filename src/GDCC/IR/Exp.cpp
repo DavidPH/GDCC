@@ -76,9 +76,9 @@ namespace GDCC
       }
 
       //
-      // GetIR_T<Exp::Ptr>::GetIR_F
+      // GetIR_T<Exp::CPtr>::GetIR_F
       //
-      Exp::Ptr GetIR_T<Exp::Ptr>::GetIR_F(IArchive &in)
+      Exp::CPtr GetIR_T<Exp::CPtr>::GetIR_F(IArchive &in)
       {
          switch(GetIR<StringIndex>(in))
          {
@@ -119,12 +119,12 @@ namespace GDCC
       }
 
       //
-      // GetIR_T<Exp::Ref>::GetIR_F
+      // GetIR_T<Exp::CRef>::GetIR_F
       //
-      Exp::Ref GetIR_T<Exp::Ref>::GetIR_F(IArchive &in)
+      Exp::CRef GetIR_T<Exp::CRef>::GetIR_F(IArchive &in)
       {
-         if(auto exp = GetIR<Exp::Ptr>(in))
-            return static_cast<Exp::Ref>(exp);
+         if(auto exp = GetIR<Exp::CPtr>(in))
+            return static_cast<Exp::CRef>(exp);
 
          std::cerr << "invalid Exp::Ref\n";
          throw EXIT_FAILURE;

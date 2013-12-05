@@ -64,7 +64,7 @@ namespace Asm
    //
    // ParseExp
    //
-   GDCC::IR::Exp::Ref ParseExp(GDCC::TokenStream &in, GDCC::IR::Program &prog)
+   GDCC::IR::Exp::CRef ParseExp(GDCC::TokenStream &in, GDCC::IR::Program &prog)
    {
       #define doE1(name, token) case GDCC::token: \
          return GDCC::IR::ExpCreate_##name(ParseExp(in, prog), tok.pos)
@@ -77,7 +77,7 @@ namespace Asm
          c = ParseExp(in, prog); l = ParseExp(in, prog); r = ParseExp(in, prog); \
          return GDCC::IR::ExpCreate_##name(c, l, r, tok.pos)
 
-      GDCC::IR::Exp::Ptr c, l, r;
+      GDCC::IR::Exp::CPtr c, l, r;
       GDCC::IR::Type t;
 
       GDCC::Token tok;
@@ -152,9 +152,9 @@ namespace Asm
    //
    // ParseExpMulti
    //
-   GDCC::IR::Exp::Ref ParseExpMulti(GDCC::TokenStream &in, GDCC::IR::Program &prog)
+   GDCC::IR::Exp::CRef ParseExpMulti(GDCC::TokenStream &in, GDCC::IR::Program &prog)
    {
-      std::vector<GDCC::IR::Exp::Ref> val;
+      std::vector<GDCC::IR::Exp::CRef> val;
       auto pos = in.peek().pos;
 
       SkipToken(in, GDCC::TOK_BraceO, "{");

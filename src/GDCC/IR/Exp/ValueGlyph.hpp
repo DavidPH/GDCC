@@ -39,9 +39,9 @@ namespace GDCC
          Glyph const glyph;
 
 
-         friend Exp::Ref ExpCreate_ValueGlyph(Glyph glyph, Origin pos);
+         friend Exp::CRef ExpCreate_ValueGlyph(Glyph glyph, Origin pos);
 
-         friend Exp::Ref ExpGetIR_ValueGlyph(IArchive &in);
+         friend Exp::CRef ExpGetIR_ValueGlyph(IArchive &in);
 
       protected:
          Exp_ValueGlyph(Exp_ValueGlyph const &) = default;

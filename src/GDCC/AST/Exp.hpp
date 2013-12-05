@@ -27,6 +27,7 @@ namespace GDCC
    namespace IR
    {
       class Block;
+      class Exp;
    }
 
    namespace AST
@@ -43,25 +44,55 @@ namespace GDCC
          GDCC_CounterPreambleAbstract(GDCC::AST::Exp, GDCC::Counter);
 
       protected:
-         using TypeCRef = CounterRef<Type const>;
+         using IRExpCPtr = CounterPtr<IR::Exp const>;
+         using IRExpCRef = CounterRef<IR::Exp const>;
+         using TypeCRef  = CounterRef<Type const>;
 
       public:
          void genStmnt(IR::Block &block, Function *fn) const;
 
+         void genStmnt(IR::Block &block, Function *fn, Arg const &dst) const;
+
+         Arg getArg() const;
+         Arg getArgDst() const;
+         Arg getArgSrc() const;
+
+         IRExpCRef getIRExp() const;
+
          TypeCRef getType() const;
 
-         bool isEffect() const {return v_isEffect();}
+         // Does this expression have side effects?
+         bool isEffect() const;
+
+         // Can this expression be made into an IR expression?
+         bool isIRExp() const;
 
          Origin const pos;
 
       protected:
-         explicit Exp(Origin pos_) : pos{pos_} {}
+         explicit Exp(Origin pos);
+         virtual ~Exp();
+
+         void genStmntMove(IR::Block &block, Function *fn, Arg const &dst,
+            Arg const &src) const;
+
+         void genStmntMovePart(IR::Block &block, Function *fn, Arg const &arg,
+            bool get, bool set) const;
 
          virtual void v_genStmnt(IR::Block &block, Function *fn, Arg const &dst) const = 0;
+
+         virtual Arg v_getArg() const;
+
+         virtual IRExpCRef v_getIRExp() const;
 
          virtual TypeCRef v_getType() const = 0;
 
          virtual bool v_isEffect() const = 0;
+
+         virtual bool v_isIRExp() const = 0;
+
+      private:
+         mutable IRExpCPtr cacheIRExp;
       };
    }
 }
@@ -75,9 +106,14 @@ namespace GDCC
 {
    namespace AST
    {
-      Exp::Ref ExpCreate_BinaryMulSize(Exp *l, Exp *r);
+      Exp::CRef ExpCreate_BinaryMulSize(Exp const *l, Exp const *r);
 
-      Exp::Ref ExpCreate_ValueSize(FastU value);
+      Exp::CRef ExpCreate_ValueArg(Arg const &arg, Origin pos);
+
+      Exp::CRef ExpCreate_ValueIRExp(IR::Exp const *exp, Type const *type);
+      Exp::CRef ExpCreate_ValueIRExp(IR::Exp const *exp, Type const *type, Origin pos);
+
+      Exp::CRef ExpCreate_ValueSize(FastU value);
    }
 }
 

@@ -27,20 +27,20 @@ namespace GDCC
       GDCC_IR_Exp_UnaryImplCreate(Not);
       GDCC_IR_Exp_UnaryImplCreate(Sub);
 
-      Exp::Ref ExpCreate_UnaryCst(Type const &t, Exp *e)
-         {return static_cast<Exp::Ref>(new Exp_UnaryCst(t, e, e->pos));}
+      Exp::CRef ExpCreate_UnaryCst(Type const &t, Exp const *e)
+         {return static_cast<Exp::CRef>(new Exp_UnaryCst(t, e, e->pos));}
 
-      Exp::Ref ExpCreate_UnaryCst(Type const &t, Exp *e, Origin pos)
-         {return static_cast<Exp::Ref>(new Exp_UnaryCst(t, e, pos));}
+      Exp::CRef ExpCreate_UnaryCst(Type const &t, Exp const *e, Origin pos)
+         {return static_cast<Exp::CRef>(new Exp_UnaryCst(t, e, pos));}
 
-      Exp::Ref ExpCreate_UnaryCst(Type &&t, Exp *e)
-         {return static_cast<Exp::Ref>(new Exp_UnaryCst(std::move(t), e, e->pos));}
+      Exp::CRef ExpCreate_UnaryCst(Type &&t, Exp const *e)
+         {return static_cast<Exp::CRef>(new Exp_UnaryCst(std::move(t), e, e->pos));}
 
-      Exp::Ref ExpCreate_UnaryCst(Type &&t, Exp *e, Origin pos)
-         {return static_cast<Exp::Ref>(new Exp_UnaryCst(std::move(t), e, pos));}
+      Exp::CRef ExpCreate_UnaryCst(Type &&t, Exp const *e, Origin pos)
+         {return static_cast<Exp::CRef>(new Exp_UnaryCst(std::move(t), e, pos));}
 
-      Exp::Ref ExpGetIR_UnaryCst(IArchive &in)
-         {return static_cast<Exp::Ref>(new Exp_UnaryCst(in));}
+      Exp::CRef ExpGetIR_UnaryCst(IArchive &in)
+         {return static_cast<Exp::CRef>(new Exp_UnaryCst(in));}
 
       //
       // Exp_Unary constructor

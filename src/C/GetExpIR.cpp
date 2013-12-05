@@ -67,10 +67,10 @@ static GDCC::IR::Type_Fixed TypeUIntMax()
 //
 // Promote
 //
-static std::pair<GDCC::IR::Exp::Ref, GDCC::IR::Exp::Ref>
-Promote(GDCC::IR::Exp *l_, GDCC::IR::Exp *r_)
+static std::pair<GDCC::IR::Exp::CRef, GDCC::IR::Exp::CRef>
+Promote(GDCC::IR::Exp const *l_, GDCC::IR::Exp const *r_)
 {
-   GDCC::IR::Exp::Ref l{l_}, r{r_};
+   GDCC::IR::Exp::CRef l{l_}, r{r_};
 
    auto lt = l->getType(), rt = r->getType();
 
@@ -130,7 +130,7 @@ Promote(GDCC::IR::Exp *l_, GDCC::IR::Exp *r_)
 //
 // GetExpIR_Prim_NumInt
 //
-static GDCC::IR::Exp::Ref GetExpIR_Prim_NumInt(GDCC::Token const &tok)
+static GDCC::IR::Exp::CRef GetExpIR_Prim_NumInt(GDCC::Token const &tok)
 {
    char const *itr = tok.str.begin();
    unsigned base;
@@ -160,7 +160,7 @@ namespace C
    //
    // GetExpIR_Prim_NumFix
    //
-   GDCC::IR::Exp::Ref GetExpIR_Prim_NumFix(GDCC::Token const &tok)
+   GDCC::IR::Exp::CRef GetExpIR_Prim_NumFix(GDCC::Token const &tok)
    {
       char const *itr = tok.str.begin();
       unsigned base;
@@ -205,7 +205,7 @@ namespace C
    //
    // GetExpIR_Prim_NumFlt
    //
-   GDCC::IR::Exp::Ref GetExpIR_Prim_NumFlt(GDCC::Token const &tok)
+   GDCC::IR::Exp::CRef GetExpIR_Prim_NumFlt(GDCC::Token const &tok)
    {
       char const *itr = tok.str.begin();
       unsigned base;
@@ -227,7 +227,7 @@ namespace C
    //
    // GetExpIR_Prim
    //
-   GDCC::IR::Exp::Ref GetExpIR_Prim(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_Prim(GDCC::TokenStream &in)
    {
       auto tok = in.get(); switch(tok.tok)
       {
@@ -264,9 +264,9 @@ namespace C
    //
    // GetExpIR_Post
    //
-   GDCC::IR::Exp::Ref GetExpIR_Post(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_Post(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref e = GetExpIR_Prim(in);
+      GDCC::IR::Exp::CRef e = GetExpIR_Prim(in);
 
       for(GDCC::Token tok;;) switch((tok = in.get()).tok)
       {
@@ -301,7 +301,7 @@ namespace C
    //
    // GetExpIR_Unar
    //
-   GDCC::IR::Exp::Ref GetExpIR_Unar(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_Unar(GDCC::TokenStream &in)
    {
       auto tok = in.get(); switch(tok.tok)
       {
@@ -341,9 +341,9 @@ namespace C
    //
    // GetExpIR_Mult
    //
-   GDCC::IR::Exp::Ref GetExpIR_Mult(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_Mult(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref l = GetExpIR_Unar(in); GDCC::IR::Exp::Ptr r;
+      GDCC::IR::Exp::CRef l = GetExpIR_Unar(in); GDCC::IR::Exp::CPtr r;
 
       for(GDCC::Token tok;;) switch((tok = in.get()).tok)
       {
@@ -369,9 +369,9 @@ namespace C
    //
    // GetExpIR_Addi
    //
-   GDCC::IR::Exp::Ref GetExpIR_Addi(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_Addi(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref l = GetExpIR_Mult(in); GDCC::IR::Exp::Ptr r;
+      GDCC::IR::Exp::CRef l = GetExpIR_Mult(in); GDCC::IR::Exp::CPtr r;
 
       for(GDCC::Token tok;;) switch((tok = in.get()).tok)
       {
@@ -392,9 +392,9 @@ namespace C
    //
    // GetExpIR_Shft
    //
-   GDCC::IR::Exp::Ref GetExpIR_Shft(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_Shft(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref l = GetExpIR_Addi(in);
+      GDCC::IR::Exp::CRef l = GetExpIR_Addi(in);
 
       for(GDCC::Token tok;;) switch((tok = in.get()).tok)
       {
@@ -413,9 +413,9 @@ namespace C
    //
    // GetExpIR_Rela
    //
-   GDCC::IR::Exp::Ref GetExpIR_Rela(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_Rela(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref l = GetExpIR_Shft(in); GDCC::IR::Exp::Ptr r;
+      GDCC::IR::Exp::CRef l = GetExpIR_Shft(in); GDCC::IR::Exp::CPtr r;
 
       for(GDCC::Token tok;;) switch((tok = in.get()).tok)
       {
@@ -450,9 +450,9 @@ namespace C
    //
    // GetExpIR_Equa
    //
-   GDCC::IR::Exp::Ref GetExpIR_Equa(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_Equa(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref l = GetExpIR_Rela(in); GDCC::IR::Exp::Ptr r;
+      GDCC::IR::Exp::CRef l = GetExpIR_Rela(in); GDCC::IR::Exp::CPtr r;
 
       for(GDCC::Token tok;;) switch((tok = in.get()).tok)
       {
@@ -475,9 +475,9 @@ namespace C
    //
    // GetExpIR_BAnd
    //
-   GDCC::IR::Exp::Ref GetExpIR_BAnd(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_BAnd(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref l = GetExpIR_Equa(in); GDCC::IR::Exp::Ptr r;
+      GDCC::IR::Exp::CRef l = GetExpIR_Equa(in); GDCC::IR::Exp::CPtr r;
 
       for(GDCC::Token tok;;) switch((tok = in.get()).tok)
       {
@@ -493,9 +493,9 @@ namespace C
    //
    // GetExpIR_BOrX
    //
-   GDCC::IR::Exp::Ref GetExpIR_BOrX(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_BOrX(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref l = GetExpIR_BAnd(in); GDCC::IR::Exp::Ptr r;
+      GDCC::IR::Exp::CRef l = GetExpIR_BAnd(in); GDCC::IR::Exp::CPtr r;
 
       for(GDCC::Token tok;;) switch((tok = in.get()).tok)
       {
@@ -511,9 +511,9 @@ namespace C
    //
    // GetExpIR_BOrI
    //
-   GDCC::IR::Exp::Ref GetExpIR_BOrI(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_BOrI(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref l = GetExpIR_BOrX(in); GDCC::IR::Exp::Ptr r;
+      GDCC::IR::Exp::CRef l = GetExpIR_BOrX(in); GDCC::IR::Exp::CPtr r;
 
       for(GDCC::Token tok;;) switch((tok = in.get()).tok)
       {
@@ -529,9 +529,9 @@ namespace C
    //
    // GetExpIR_LAnd
    //
-   GDCC::IR::Exp::Ref GetExpIR_LAnd(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_LAnd(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref l = GetExpIR_BOrI(in);
+      GDCC::IR::Exp::CRef l = GetExpIR_BOrI(in);
 
       for(GDCC::Token tok;;) switch((tok = in.get()).tok)
       {
@@ -547,9 +547,9 @@ namespace C
    //
    // GetExpIR_LOrI
    //
-   GDCC::IR::Exp::Ref GetExpIR_LOrI(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_LOrI(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref l = GetExpIR_LAnd(in);
+      GDCC::IR::Exp::CRef l = GetExpIR_LAnd(in);
 
       for(GDCC::Token tok;;) switch((tok = in.get()).tok)
       {
@@ -565,9 +565,9 @@ namespace C
    //
    // GetExpIR_Cond
    //
-   GDCC::IR::Exp::Ref GetExpIR_Cond(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_Cond(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref c = GetExpIR_LOrI(in); GDCC::IR::Exp::Ptr l, r;
+      GDCC::IR::Exp::CRef c = GetExpIR_LOrI(in); GDCC::IR::Exp::CPtr l, r;
 
       auto tok = in.get(); switch(tok.tok)
       {
@@ -590,9 +590,9 @@ namespace C
    //
    // GetExpIR_Assi
    //
-   GDCC::IR::Exp::Ref GetExpIR_Assi(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR_Assi(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref l = GetExpIR_Cond(in);
+      GDCC::IR::Exp::CRef l = GetExpIR_Cond(in);
 
       auto tok = in.get(); switch(tok.tok)
       {
@@ -616,9 +616,9 @@ namespace C
    //
    // GetExpIR
    //
-   GDCC::IR::Exp::Ref GetExpIR(GDCC::TokenStream &in)
+   GDCC::IR::Exp::CRef GetExpIR(GDCC::TokenStream &in)
    {
-      GDCC::IR::Exp::Ref e = GetExpIR_Assi(in);
+      GDCC::IR::Exp::CRef e = GetExpIR_Assi(in);
 
       while(in.peek().tok == GDCC::TOK_Comma)
          in.get(), e = GetExpIR_Assi(in);

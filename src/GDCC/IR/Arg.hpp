@@ -84,8 +84,8 @@ namespace GDCC
       {
          ArgPtr1(ArgPtr1 const &arg);
          ArgPtr1(ArgPtr1 &&arg);
-         ArgPtr1(Arg const &idx, Exp *off);
-         ArgPtr1(Arg &&idx, Exp *off);
+         ArgPtr1(Arg const &idx, Exp const *off);
+         ArgPtr1(Arg &&idx, Exp const *off);
          explicit ArgPtr1(IArchive &in);
          ~ArgPtr1();
 
@@ -96,8 +96,8 @@ namespace GDCC
 
          OArchive &putIR(OArchive &out) const;
 
-         Arg     *idx;
-         Exp::Ref off;
+         Arg      *idx;
+         Exp::CRef off;
       };
 
       //
@@ -107,10 +107,10 @@ namespace GDCC
       {
          ArgPtr2(ArgPtr2 const &arg);
          ArgPtr2(ArgPtr2 &&arg);
-         ArgPtr2(Arg const &arr, Arg const &idx, Exp *off);
-         ArgPtr2(Arg const &arr, Arg &&idx, Exp *off);
-         ArgPtr2(Arg &&arr, Arg const &idx, Exp *off);
-         ArgPtr2(Arg &&arr, Arg &&idx, Exp *off);
+         ArgPtr2(Arg const &arr, Arg const &idx, Exp const *off);
+         ArgPtr2(Arg const &arr, Arg &&idx, Exp const *off);
+         ArgPtr2(Arg &&arr, Arg const &idx, Exp const *off);
+         ArgPtr2(Arg &&arr, Arg &&idx, Exp const *off);
          explicit ArgPtr2(IArchive &in);
          ~ArgPtr2();
 
@@ -121,9 +121,9 @@ namespace GDCC
 
          OArchive &putIR(OArchive &out) const;
 
-         Arg     *arr;
-         Arg     *idx;
-         Exp::Ref off;
+         Arg      *arr;
+         Arg      *idx;
+         Exp::CRef off;
       };
 
       //
@@ -157,14 +157,14 @@ namespace GDCC
       //
       struct Arg_Lit
       {
-         explicit Arg_Lit(Exp *value_) : value{value_} {}
+         explicit Arg_Lit(Exp const *value_) : value{value_} {}
          explicit Arg_Lit(IArchive &in);
 
          IArchive &getIR(IArchive &in) {return in >> value;}
 
          OArchive &putIR(OArchive &out) const {return out << value;}
 
-         Exp::Ref value;
+         Exp::CRef value;
       };
 
       //

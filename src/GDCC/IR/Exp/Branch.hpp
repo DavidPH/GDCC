@@ -37,7 +37,7 @@
 //
 #define GDCC_IR_Exp_BraBinDeclCon(name) \
 protected: \
-   Exp_Branch##name(Exp *l, Exp *r, Origin pos_) : Super{l, r, pos_} {} \
+   Exp_Branch##name(Exp const *l, Exp const *r, Origin pos_) : Super{l, r, pos_} {} \
    explicit Exp_Branch##name(IArchive &in) : Super{in} {} \
    Exp_Branch##name(Exp_Branch##name const &) = default
 
@@ -46,9 +46,9 @@ protected: \
 //
 #define GDCC_IR_Exp_BraBinDeclCreate(name) \
 public: \
-   friend Exp::Ref ExpCreate_Branch##name(Exp *l, Exp *r); \
-   friend Exp::Ref ExpCreate_Branch##name(Exp *l, Exp *r, Origin pos); \
-   friend Exp::Ref ExpGetIR_Branch##name(IArchive &in)
+   friend Exp::CRef ExpCreate_Branch##name(Exp const *l, Exp const *r); \
+   friend Exp::CRef ExpCreate_Branch##name(Exp const *l, Exp const *r, Origin pos); \
+   friend Exp::CRef ExpGetIR_Branch##name(IArchive &in)
 
 //
 // GDCC_IR_Exp_BraBinImplCreate
@@ -56,13 +56,13 @@ public: \
 // Implements normal ExpCreate and ExpGetIR functions for binary expressions.
 //
 #define GDCC_IR_Exp_BraBinImplCreate(name) \
-   Exp::Ref ExpCreate_Branch##name(Exp *l, Exp *r) \
+   Exp::CRef ExpCreate_Branch##name(Exp const *l, Exp const *r) \
       {return static_cast<Exp::Ref>(new Exp_Branch##name(l, r, l->pos));} \
    \
-   Exp::Ref ExpCreate_Branch##name(Exp *l, Exp *r, Origin pos) \
+   Exp::CRef ExpCreate_Branch##name(Exp const *l, Exp const *r, Origin pos) \
       {return static_cast<Exp::Ref>(new Exp_Branch##name(l, r, pos));} \
    \
-   Exp::Ref ExpGetIR_Branch##name(IArchive &in) \
+   Exp::CRef ExpGetIR_Branch##name(IArchive &in) \
       {return static_cast<Exp::Ref>(new Exp_Branch##name(in));}
 
 //
@@ -77,7 +77,7 @@ public: \
       GDCC_IR_Exp_BranchDeclBase(name); \
       \
    protected: \
-         virtual Type v_getType() const; \
+      virtual Type v_getType() const; \
    }
 
 //
@@ -85,7 +85,8 @@ public: \
 //
 #define GDCC_IR_Exp_BraTerDeclCon(name) \
 protected: \
-   Exp_Branch##name(Exp *c, Exp *l, Exp *r, Origin pos_) : Super{c, l, r, pos_} {} \
+   Exp_Branch##name(Exp const *c, Exp const *l, Exp const *r, Origin pos_) : \
+      Super{c, l, r, pos_} {} \
    explicit Exp_Branch##name(IArchive &in) : Super{in} {} \
    Exp_Branch##name(Exp_Branch##name const &) = default
 
@@ -94,9 +95,10 @@ protected: \
 //
 #define GDCC_IR_Exp_BraTerDeclCreate(name) \
 public: \
-   friend Exp::Ref ExpCreate_Branch##name(Exp *c, Exp *l, Exp *r); \
-   friend Exp::Ref ExpCreate_Branch##name(Exp *c, Exp *l, Exp *r, Origin pos); \
-   friend Exp::Ref ExpGetIR_Branch##name(IArchive &in)
+   friend Exp::CRef ExpCreate_Branch##name(Exp const *c, Exp const *l, Exp const *r); \
+   friend Exp::CRef ExpCreate_Branch##name(Exp const *c, Exp const *l, \
+      Exp const *r, Origin pos); \
+   friend Exp::CRef ExpGetIR_Branch##name(IArchive &in)
 
 //
 // GDCC_IR_Exp_BraTerImplCreate
@@ -104,14 +106,14 @@ public: \
 // Implements normal ExpCreate and ExpGetIR functions for binary expressions.
 //
 #define GDCC_IR_Exp_BraTerImplCreate(name) \
-   Exp::Ref ExpCreate_Branch##name(Exp *c, Exp *l, Exp *r) \
-      {return static_cast<Exp::Ref>(new Exp_Branch##name(c, l, r, c->pos));} \
+   Exp::CRef ExpCreate_Branch##name(Exp const *c, Exp const *l, Exp const *r) \
+      {return static_cast<Exp::CRef>(new Exp_Branch##name(c, l, r, c->pos));} \
    \
-   Exp::Ref ExpCreate_Branch##name(Exp *c, Exp *l, Exp *r, Origin pos) \
-      {return static_cast<Exp::Ref>(new Exp_Branch##name(c, l, r, pos));} \
+   Exp::CRef ExpCreate_Branch##name(Exp const *c, Exp const *l, Exp const *r, Origin pos) \
+      {return static_cast<Exp::CRef>(new Exp_Branch##name(c, l, r, pos));} \
    \
-   Exp::Ref ExpGetIR_Branch##name(IArchive &in) \
-      {return static_cast<Exp::Ref>(new Exp_Branch##name(in));}
+   Exp::CRef ExpGetIR_Branch##name(IArchive &in) \
+      {return static_cast<Exp::CRef>(new Exp_Branch##name(in));}
 
 //
 // GDCC_IR_Exp_BraUnaDeclClass
@@ -130,7 +132,7 @@ public: \
 //
 #define GDCC_IR_Exp_BraUnaDeclCon(name) \
 protected: \
-   Exp_Branch##name(Exp *e, Origin pos_) : Super{e, pos_} {} \
+   Exp_Branch##name(Exp const *e, Origin pos_) : Super{e, pos_} {} \
    explicit Exp_Branch##name(IArchive &in) : Super{in} {} \
    Exp_Branch##name(Exp_Branch##name const &) = default
 
@@ -139,9 +141,9 @@ protected: \
 //
 #define GDCC_IR_Exp_BraUnaDeclCreate(name) \
 public: \
-   friend Exp::Ref ExpCreate_Branch##name(Exp *e); \
-   friend Exp::Ref ExpCreate_Branch##name(Exp *e, Origin pos); \
-   friend Exp::Ref ExpGetIR_Branch##name(IArchive &in)
+   friend Exp::CRef ExpCreate_Branch##name(Exp const *e); \
+   friend Exp::CRef ExpCreate_Branch##name(Exp const *e, Origin pos); \
+   friend Exp::CRef ExpGetIR_Branch##name(IArchive &in)
 
 //
 // GDCC_IR_Exp_BraUnaImplCreate
@@ -149,14 +151,14 @@ public: \
 // Implements normal ExpCreate and ExpGetIR functions for binary expressions.
 //
 #define GDCC_IR_Exp_BraUnaImplCreate(name) \
-   Exp::Ref ExpCreate_Branch##name(Exp *e) \
-      {return static_cast<Exp::Ref>(new Exp_Branch##name(e, e->pos));} \
+   Exp::CRef ExpCreate_Branch##name(Exp const *e) \
+      {return static_cast<Exp::CRef>(new Exp_Branch##name(e, e->pos));} \
    \
-   Exp::Ref ExpCreate_Branch##name(Exp *e, Origin pos) \
-      {return static_cast<Exp::Ref>(new Exp_Branch##name(e, pos));} \
+   Exp::CRef ExpCreate_Branch##name(Exp const *e, Origin pos) \
+      {return static_cast<Exp::CRef>(new Exp_Branch##name(e, pos));} \
    \
-   Exp::Ref ExpGetIR_Branch##name(IArchive &in) \
-      {return static_cast<Exp::Ref>(new Exp_Branch##name(in));}
+   Exp::CRef ExpGetIR_Branch##name(IArchive &in) \
+      {return static_cast<Exp::CRef>(new Exp_Branch##name(in));}
 
 //
 // GDCC_IR_Exp_BranchDeclBase
@@ -213,11 +215,12 @@ namespace GDCC
          GDCC_CounterPreambleAbstract(GDCC::IR::Exp_BraBin, GDCC::IR::Exp_Branch);
 
       public:
-         Exp::Ref const expL, expR;
+         Exp::CRef const expL, expR;
 
       protected:
          Exp_BraBin(Exp_BraBin const &) = default;
-         Exp_BraBin(Exp *l, Exp *r, Origin pos_) : Super{pos_}, expL{l}, expR{r} {}
+         Exp_BraBin(Exp const *l, Exp const *r, Origin pos_) :
+            Super{pos_}, expL{l}, expR{r} {}
          explicit Exp_BraBin(IArchive &in);
 
          virtual bool v_canGetValue() const
@@ -234,11 +237,12 @@ namespace GDCC
          GDCC_CounterPreambleAbstract(GDCC::IR::Exp_BraTer, GDCC::IR::Exp_BraBin);
 
       public:
-         Exp::Ref const expC;
+         Exp::CRef const expC;
 
       protected:
          Exp_BraTer(Exp_BraTer const &) = default;
-         Exp_BraTer(Exp *c, Exp *l, Exp *r, Origin pos_) : Super{l, r, pos_}, expC{c} {}
+         Exp_BraTer(Exp const *c, Exp const *l, Exp const *r, Origin pos_) :
+            Super{l, r, pos_}, expC{c} {}
          explicit Exp_BraTer(IArchive &in);
 
          virtual bool v_canGetValue() const
@@ -255,11 +259,11 @@ namespace GDCC
          GDCC_CounterPreambleAbstract(GDCC::IR::Exp_BraUna, GDCC::IR::Exp_Branch);
 
       public:
-         Exp::Ref const exp;
+         Exp::CRef const exp;
 
       protected:
          Exp_BraUna(Exp_BraUna const &) = default;
-         Exp_BraUna(Exp *e, Origin pos_) : Super{pos_}, exp{e} {}
+         Exp_BraUna(Exp const *e, Origin pos_) : Super{pos_}, exp{e} {}
          explicit Exp_BraUna(IArchive &in);
 
          virtual bool v_canGetValue() const

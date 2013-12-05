@@ -38,7 +38,7 @@ namespace GDCC
       class Object
       {
       public:
-         using ExpPtr = CounterPtr<Exp>;
+         using ExpCPtr = CounterPtr<Exp const>;
 
 
          explicit Object(String name);
@@ -47,7 +47,7 @@ namespace GDCC
          void allocValue(Program &prog);
 
          String    glyph;
-         ExpPtr    initi;
+         ExpCPtr   initi;
          Linkage   linka;
          AddrSpace space;
          FastU     value;

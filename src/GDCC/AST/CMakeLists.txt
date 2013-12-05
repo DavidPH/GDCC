@@ -10,6 +10,13 @@
 ##
 
 add_library(gdcc-ast
+   Arg.cpp
+   Exp.cpp
+   Exp/Binary.cpp
+   Exp/BinaryMulSize.cpp
+   Exp/ValueArg.cpp
+   Exp/ValueIRExp.cpp
+   Exp/genStmntMove.cpp
    Statement.cpp
    Statement/Empty.cpp
    Statement/Exp.cpp
@@ -19,10 +26,11 @@ add_library(gdcc-ast
    Type/Bitfield.cpp
    Type/Function.cpp
    Type/Pointer.cpp
+   Type/Primary.cpp
    Type/Wrapper.cpp
 )
 
-target_link_libraries(gdcc-ast gdcc-ir)
+target_link_libraries(gdcc-ast gdcc-bc gdcc-ir)
 
 ## EOF
 

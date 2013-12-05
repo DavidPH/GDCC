@@ -58,9 +58,9 @@ namespace GDCC
 
       public:
          // Type information.
-         virtual ExpRef getSizeBytesVM() const;
-         virtual ExpRef getSizePointVM() const;
-         virtual ExpRef getSizeWordsVM() const;
+         virtual ExpCRef getSizeBytesVM() const;
+         virtual ExpCRef getSizePointVM() const;
+         virtual ExpCRef getSizeWordsVM() const;
 
          // Type classification.
          virtual bool isTypeComplete() const {return true;}
@@ -68,14 +68,14 @@ namespace GDCC
          virtual bool isTypeVM()       const {return true;}
 
 
-         friend Type::CRef Type::getTypeArray(Exp *size) const;
+         friend Type::CRef Type::getTypeArray(Exp const *size) const;
 
       protected:
          Type_ArrVM(Type_ArrVM const &type);
-         Type_ArrVM(Type const *base, Exp *size);
+         Type_ArrVM(Type const *base, Exp const *size);
          virtual ~Type_ArrVM();
 
-         ExpRef const size;
+         ExpCRef const size;
 
       private:
          mutable Type_ArrVM const *avmNext, *avmPrev;
@@ -94,7 +94,7 @@ namespace GDCC
          virtual bool isTypeVM()     const {return true;}
 
 
-         friend Type::CRef Type::getTypeArray(Exp *size) const;
+         friend Type::CRef Type::getTypeArray(Exp const *size) const;
 
       protected:
          explicit Type_ArrVM0(Type const *base);
@@ -110,10 +110,13 @@ namespace GDCC
 
       public:
          // Type information.
-         virtual IR::Type getIRType()    const;
-         virtual FastU    getSizeBytes() const;
-         virtual FastU    getSizePoint() const;
-         virtual FastU    getSizeWords() const;
+         virtual IR::Type getIRType()      const;
+         virtual FastU    getSizeBytes()   const;
+         virtual ExpCRef  getSizeBytesVM() const;
+         virtual FastU    getSizePoint()   const;
+         virtual ExpCRef  getSizePointVM() const;
+         virtual FastU    getSizeWords()   const;
+         virtual ExpCRef  getSizeWordsVM() const;
 
          // Type classification.
          virtual bool isTypeComplete() const {return true;}

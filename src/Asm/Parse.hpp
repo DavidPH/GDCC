@@ -67,10 +67,10 @@ namespace Asm
 
    GDCC::IR::CallType ParseCallType(GDCC::Token const &tok);
 
-   GDCC::CounterRef<GDCC::IR::Exp> ParseExp(GDCC::TokenStream &in,
+   GDCC::CounterRef<GDCC::IR::Exp const> ParseExp(GDCC::TokenStream &in,
       GDCC::IR::Program &prog);
 
-   GDCC::CounterRef<GDCC::IR::Exp> ParseExpMulti(GDCC::TokenStream &in,
+   GDCC::CounterRef<GDCC::IR::Exp const> ParseExpMulti(GDCC::TokenStream &in,
       GDCC::IR::Program &prog);
 
    GDCC::FastI ParseFastI(GDCC::TokenStream &in, GDCC::IR::Program &prog);

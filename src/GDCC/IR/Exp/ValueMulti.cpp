@@ -28,7 +28,7 @@ namespace GDCC
       // Exp_ValueMulti constructor
       //
       Exp_ValueMulti::Exp_ValueMulti(IArchive &in) : Super{in},
-         expv{GetIR<Array<Exp::Ref>::size_type>(in), GetIRCaller<Exp::Ref>(in)}
+         expv{GetIR<Array<Exp::CRef>::size_type>(in), GetIRCaller<Exp::CRef>(in)}
       {
       }
 
@@ -85,17 +85,17 @@ namespace GDCC
       //
       // ExpCreate_ValueMulti
       //
-      Exp::Ref ExpCreate_ValueMulti(Exp::Ref const *expv, std::size_t expc, Origin pos)
+      Exp::CRef ExpCreate_ValueMulti(Exp::CRef const *expv, std::size_t expc, Origin pos)
       {
-         return static_cast<Exp::Ref>(new Exp_ValueMulti(expv, expc, pos));
+         return static_cast<Exp::CRef>(new Exp_ValueMulti(expv, expc, pos));
       }
 
       //
       // ExpGetIR_ValueMulti
       //
-      Exp::Ref ExpGetIR_ValueMulti(IArchive &in)
+      Exp::CRef ExpGetIR_ValueMulti(IArchive &in)
       {
-         return static_cast<Exp::Ref>(new Exp_ValueMulti(in));
+         return static_cast<Exp::CRef>(new Exp_ValueMulti(in));
       }
    }
 }

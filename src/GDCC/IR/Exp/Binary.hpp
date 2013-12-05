@@ -31,13 +31,13 @@
    public: \
       virtual String getName() const {return STR_Binary##name;} \
       \
-      friend Exp::Ref ExpCreate_Binary##name(Exp *l, Exp *r); \
-      friend Exp::Ref ExpCreate_Binary##name(Exp *l, Exp *r, Origin pos); \
-      friend Exp::Ref ExpGetIR_Binary##name(IArchive &in); \
+      friend Exp::CRef ExpCreate_Binary##name(Exp const *l, Exp const *r); \
+      friend Exp::CRef ExpCreate_Binary##name(Exp const *l, Exp const *r, Origin pos); \
+      friend Exp::CRef ExpGetIR_Binary##name(IArchive &in); \
       \
    protected: \
       Exp_Binary##name(Exp_Binary##name const &) = default; \
-      Exp_Binary##name(Exp *l, Exp *r, Origin pos_) : Super{l, r, pos_} {} \
+      Exp_Binary##name(Exp const *l, Exp const *r, Origin pos_) : Super{l, r, pos_} {} \
       explicit Exp_Binary##name(IArchive &in) : Super{in} {} \
       \
       virtual Type v_getType() const; \
@@ -48,14 +48,14 @@
 // GDCC_IR_Exp_BinaryImpl
 //
 #define GDCC_IR_Exp_BinaryImpl(name, op) \
-   Exp::Ref ExpCreate_Binary##name(Exp *l, Exp *r) \
-      {return static_cast<Exp::Ref>(new Exp_Binary##name(l, r, l->pos));} \
+   Exp::CRef ExpCreate_Binary##name(Exp const *l, Exp const *r) \
+      {return static_cast<Exp::CRef>(new Exp_Binary##name(l, r, l->pos));} \
    \
-   Exp::Ref ExpCreate_Binary##name(Exp *l, Exp *r, Origin pos) \
-      {return static_cast<Exp::Ref>(new Exp_Binary##name(l, r, pos));} \
+   Exp::CRef ExpCreate_Binary##name(Exp const *l, Exp const *r, Origin pos) \
+      {return static_cast<Exp::CRef>(new Exp_Binary##name(l, r, pos));} \
    \
-   Exp::Ref ExpGetIR_Binary##name(IArchive &in) \
-      {return static_cast<Exp::Ref>(new Exp_Binary##name(in));} \
+   Exp::CRef ExpGetIR_Binary##name(IArchive &in) \
+      {return static_cast<Exp::CRef>(new Exp_Binary##name(in));} \
    \
    Type Exp_Binary##name::v_getType() const \
       {return Type::Promote##name(expL->getType(), expR->getType());} \
@@ -80,11 +80,12 @@ namespace GDCC
          GDCC_CounterPreambleAbstract(GDCC::IR::Exp_Binary, GDCC::IR::Exp);
 
       public:
-         Exp::Ref const expL, expR;
+         Exp::CRef const expL, expR;
 
       protected:
          Exp_Binary(Exp_Binary const &) = default;
-         Exp_Binary(Exp *l, Exp *r, Origin pos_) : Super{pos_}, expL{l}, expR{r} {}
+         Exp_Binary(Exp const *l, Exp const *r, Origin pos_) :
+            Super{pos_}, expL{l}, expR{r} {}
          explicit Exp_Binary(IArchive &in);
 
          virtual bool v_canGetValue() const

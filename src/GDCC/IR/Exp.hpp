@@ -27,35 +27,35 @@
 // GDCC_IR_Exp_DeclCreateE1
 //
 #define GDCC_IR_Exp_DeclCreateE1(name) \
-   Exp::Ref ExpCreate_##name(Exp *e); \
-   Exp::Ref ExpCreate_##name(Exp *e, Origin pos); \
-   Exp::Ref ExpGetIR_##name(IArchive &in)
+   Exp::CRef ExpCreate_##name(Exp const *e); \
+   Exp::CRef ExpCreate_##name(Exp const *e, Origin pos); \
+   Exp::CRef ExpGetIR_##name(IArchive &in)
 
 //
 // GDCC_IR_Exp_DeclCreateE2
 //
 #define GDCC_IR_Exp_DeclCreateE2(name) \
-   Exp::Ref ExpCreate_##name(Exp *l, Exp *r); \
-   Exp::Ref ExpCreate_##name(Exp *l, Exp *r, Origin pos); \
-   Exp::Ref ExpGetIR_##name(IArchive &in)
+   Exp::CRef ExpCreate_##name(Exp const *l, Exp const *r); \
+   Exp::CRef ExpCreate_##name(Exp const *l, Exp const *r, Origin pos); \
+   Exp::CRef ExpGetIR_##name(IArchive &in)
 
 //
 // GDCC_IR_Exp_DeclCreateE3
 //
 #define GDCC_IR_Exp_DeclCreateE3(name) \
-   Exp::Ref ExpCreate_##name(Exp *c, Exp *l, Exp *r); \
-   Exp::Ref ExpCreate_##name(Exp *c, Exp *l, Exp *r, Origin pos); \
-   Exp::Ref ExpGetIR_##name(IArchive &in)
+   Exp::CRef ExpCreate_##name(Exp const *c, Exp const *l, Exp const *r); \
+   Exp::CRef ExpCreate_##name(Exp const *c, Exp const *l, Exp const *r, Origin pos); \
+   Exp::CRef ExpGetIR_##name(IArchive &in)
 
 //
 // GDCC_IR_Exp_DeclCreateTE
 //
 #define GDCC_IR_Exp_DeclCreateTE(name) \
-   Exp::Ref ExpCreate_##name(Type const &t, Exp *e); \
-   Exp::Ref ExpCreate_##name(Type const &t, Exp *e, Origin pos); \
-   Exp::Ref ExpCreate_##name(Type &&t, Exp *e); \
-   Exp::Ref ExpCreate_##name(Type &&t, Exp *e, Origin pos); \
-   Exp::Ref ExpGetIR_##name(IArchive &in)
+   Exp::CRef ExpCreate_##name(Type const &t, Exp const *e); \
+   Exp::CRef ExpCreate_##name(Type const &t, Exp const *e, Origin pos); \
+   Exp::CRef ExpCreate_##name(Type &&t, Exp const *e); \
+   Exp::CRef ExpCreate_##name(Type &&t, Exp const *e, Origin pos); \
+   Exp::CRef ExpGetIR_##name(IArchive &in)
 
 
 //----------------------------------------------------------------------------|
@@ -104,19 +104,19 @@ namespace GDCC
       };
 
       //
-      // GetIR_T<Exp::Ptr>
+      // GetIR_T<Exp::CPtr>
       //
-      template<> struct GetIR_T<Exp::Ptr>
+      template<> struct GetIR_T<Exp::CPtr>
       {
-         static Exp::Ptr GetIR_F(IArchive &in);
+         static Exp::CPtr GetIR_F(IArchive &in);
       };
 
       //
-      // GetIR_T<Exp::Ref>
+      // GetIR_T<Exp::CRef>
       //
-      template<> struct GetIR_T<Exp::Ref>
+      template<> struct GetIR_T<Exp::CRef>
       {
-         static Exp::Ref GetIR_F(IArchive &in);
+         static Exp::CRef GetIR_F(IArchive &in);
       };
    }
 }
@@ -132,8 +132,8 @@ namespace GDCC
    {
       OArchive &operator << (OArchive &out, Exp const *in);
 
-      IArchive &operator >> (IArchive &in, Exp::Ptr &out);
-      IArchive &operator >> (IArchive &in, Exp::Ref &out);
+      IArchive &operator >> (IArchive &in, Exp::CPtr &out);
+      IArchive &operator >> (IArchive &in, Exp::CRef &out);
 
       GDCC_IR_Exp_DeclCreateE2(BinaryAdd);
       GDCC_IR_Exp_DeclCreateE2(BinaryAnd);
@@ -163,16 +163,16 @@ namespace GDCC
       GDCC_IR_Exp_DeclCreateE1(UnaryNot);
       GDCC_IR_Exp_DeclCreateE1(UnarySub);
 
-      Exp::Ref ExpCreate_ValueGlyph(Glyph glyph, Origin pos);
+      Exp::CRef ExpCreate_ValueGlyph(Glyph glyph, Origin pos);
 
-      Exp::Ref ExpCreate_ValueMulti(Exp::Ref const *expv, std::size_t expc, Origin pos);
+      Exp::CRef ExpCreate_ValueMulti(Exp::CRef const *expv, std::size_t expc, Origin pos);
 
-      Exp::Ref ExpCreate_ValueRoot(Value const &value, Origin pos);
-      Exp::Ref ExpCreate_ValueRoot(Value &&value, Origin pos);
+      Exp::CRef ExpCreate_ValueRoot(Value const &value, Origin pos);
+      Exp::CRef ExpCreate_ValueRoot(Value &&value, Origin pos);
 
-      Exp::Ref ExpGetIR_ValueGlyph(IArchive &in);
-      Exp::Ref ExpGetIR_ValueMulti(IArchive &in);
-      Exp::Ref ExpGetIR_ValueRoot (IArchive &in);
+      Exp::CRef ExpGetIR_ValueGlyph(IArchive &in);
+      Exp::CRef ExpGetIR_ValueMulti(IArchive &in);
+      Exp::CRef ExpGetIR_ValueRoot (IArchive &in);
    }
 }
 
@@ -181,20 +181,20 @@ namespace GDCC
    namespace IR
    {
       //
-      // operator IArchive >> Exp::Ptr
+      // operator IArchive >> Exp::CPtr
       //
-      inline IArchive &operator >> (IArchive &in, Exp::Ptr &out)
+      inline IArchive &operator >> (IArchive &in, Exp::CPtr &out)
       {
-         out = GetIR_T<Exp::Ptr>::GetIR_F(in);
+         out = GetIR_T<Exp::CPtr>::GetIR_F(in);
          return in;
       }
 
       //
-      // operator IArchive >> Exp::Ref
+      // operator IArchive >> Exp::CRef
       //
-      inline IArchive &operator >> (IArchive &in, Exp::Ref &out)
+      inline IArchive &operator >> (IArchive &in, Exp::CRef &out)
       {
-         out = GetIR_T<Exp::Ref>::GetIR_F(in);
+         out = GetIR_T<Exp::CRef>::GetIR_F(in);
          return in;
       }
    }

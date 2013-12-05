@@ -168,10 +168,10 @@ namespace Bytecode
       //
       // Info::resolveGlyph
       //
-      GDCC::IR::Exp::Ref Info::resolveGlyph(GDCC::String glyph)
+      GDCC::IR::Exp::CRef Info::resolveGlyph(GDCC::String glyph)
       {
          if(auto exp = prog->getGlyphData(glyph).value)
-            return static_cast<GDCC::IR::Exp::Ref>(exp);
+            return static_cast<GDCC::IR::Exp::CRef>(exp);
 
          std::cerr << "ERROR: unbacked glyph: '" << glyph << "'\n";
          throw EXIT_FAILURE;

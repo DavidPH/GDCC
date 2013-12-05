@@ -34,16 +34,17 @@ namespace GDCC
       public:
          virtual String getName() const {return STR_ValueMulti;}
 
-         GDCC::Array<Exp::Ref> const expv;
+         GDCC::Array<Exp::CRef> const expv;
 
 
-         friend Exp::Ref ExpCreate_ValueMulti(Exp::Ref const *expv, std::size_t expc, Origin pos);
+         friend Exp::CRef ExpCreate_ValueMulti(Exp::CRef const *expv,
+            std::size_t expc, Origin pos);
 
-         friend Exp::Ref ExpGetIR_ValueMulti(IArchive &in);
+         friend Exp::CRef ExpGetIR_ValueMulti(IArchive &in);
 
       protected:
          Exp_ValueMulti(Exp_ValueMulti const &) = default;
-         Exp_ValueMulti(Exp::Ref const *expv_, std::size_t expc, Origin pos_) :
+         Exp_ValueMulti(Exp::CRef const *expv_, std::size_t expc, Origin pos_) :
             Super{pos_}, expv{expv_, expv_ + expc} {}
          explicit Exp_ValueMulti(IArchive &in);
 

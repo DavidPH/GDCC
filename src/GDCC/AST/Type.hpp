@@ -144,14 +144,14 @@ namespace GDCC
          GDCC_CounterPreambleAbstract(GDCC::AST::Type, GDCC::Counter);
 
       protected:
-         using ExpRef      = CounterRef<Exp>;
+         using ExpCRef     = CounterRef<Exp const>;
          using TypeSetCRef = CounterRef<TypeSet const>;
 
       public:
          // Type creation.
          CRef getTypeArray() const;                 // Type/Array.cpp
          CRef getTypeArray(FastU size) const;       // Type/Array.cpp
-         CRef getTypeArray(Exp *size) const;        // Type/Array.cpp
+         CRef getTypeArray(Exp const *size) const;  // Type/Array.cpp
          CRef getTypeBitfield(FastU bitsF,          // Type/Bitfield.cpp
             FastU bitsI, FastU bitsO) const;
          CRef getTypeFunction(TypeSet const *param, // Type/Function.cpp
@@ -181,12 +181,12 @@ namespace GDCC
          virtual FastU         getSizeBitsO()   const {return 0;}
          virtual bool          getSizeBitsS()   const {throw TypeError();}
          virtual FastU         getSizeBytes()   const {throw TypeError();}
-         virtual ExpRef        getSizeBytesVM() const;
+         virtual ExpCRef       getSizeBytesVM() const;
          virtual FastU         getSizePoint()   const {throw TypeError();}
-         virtual ExpRef        getSizePointVM() const;
+         virtual ExpCRef       getSizePointVM() const;
          virtual FastU         getSizeShift()   const {throw TypeError();}
          virtual FastU         getSizeWords()   const {throw TypeError();}
-         virtual ExpRef        getSizeWordsVM() const;
+         virtual ExpCRef       getSizeWordsVM() const;
 
          // Type classification: General classifications.
          virtual bool isTypeArray()    const {return false;}
@@ -256,8 +256,10 @@ namespace GDCC
          friend class Type_RefR;
 
          static CRef GetNone();
+         static CRef GetSize();
 
          static CRef const None;
+         static CRef const Size;
 
       protected:
          Type();
@@ -288,20 +290,6 @@ namespace GDCC
          mutable Type const *lvrType; // lvalue reference
          mutable Type const *ptrType; // pointer
          mutable Type const *rvrType; // rvalue reference
-      };
-
-      //
-      // Type_None
-      //
-      class Type_None final : public Type
-      {
-         GDCC_CounterPreamble(GDCC::AST::Type_None, GDCC::AST::Type);
-
-      public:
-         friend Type::CRef Type::GetNone();
-
-      protected:
-         Type_None() {}
       };
 
       //

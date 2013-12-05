@@ -56,7 +56,7 @@ namespace C
       GDCC::TokenStream in{&pbuf};
 
       // Read expression.
-      GDCC::IR::Exp::Ref exp = GetExpIR(in);
+      auto exp = GetExpIR(in);
 
       // Ensure full consumption.
       if(in.peek().tok != GDCC::TOK_EOF)

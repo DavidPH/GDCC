@@ -36,22 +36,22 @@ namespace GDCC
 
 namespace C
 {
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_Prim(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_Post(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_Unar(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_Mult(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_Addi(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_Shft(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_Rela(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_Equa(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_BAnd(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_BOrX(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_BOrI(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_LAnd(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_LOrI(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_Cond(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR_Assi(GDCC::TokenStream &in);
-   GDCC::CounterRef<GDCC::IR::Exp> GetExpIR(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_Prim(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_Post(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_Unar(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_Mult(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_Addi(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_Shft(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_Rela(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_Equa(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_BAnd(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_BOrX(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_BOrI(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_LAnd(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_LOrI(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_Cond(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR_Assi(GDCC::TokenStream &in);
+   GDCC::CounterRef<GDCC::IR::Exp const> GetExpIR(GDCC::TokenStream &in);
 }
 
 #endif//C__GetExpIR_H__

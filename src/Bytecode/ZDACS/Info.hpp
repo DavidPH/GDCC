@@ -180,7 +180,7 @@ namespace Bytecode
 
          void putWord(GDCC::FastU i);
 
-         GDCC::CounterRef<GDCC::IR::Exp> resolveGlyph(GDCC::String glyph);
+         GDCC::CounterRef<GDCC::IR::Exp const> resolveGlyph(GDCC::String glyph);
 
          virtual void trFunc();
 

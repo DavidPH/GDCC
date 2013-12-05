@@ -43,12 +43,12 @@ namespace GDCC
          virtual FastU        getSizeBitsO()   const {return base->getSizeBitsO();}
          virtual bool         getSizeBitsS()   const {return base->getSizeBitsS();}
          virtual FastU        getSizeBytes()   const {return base->getSizeBytes();}
-         virtual ExpRef       getSizeBytesVM() const;
+         virtual ExpCRef      getSizeBytesVM() const;
          virtual FastU        getSizePoint()   const {return base->getSizePoint();}
-         virtual ExpRef       getSizePointVM() const;
+         virtual ExpCRef      getSizePointVM() const;
          virtual FastU        getSizeShift()   const {return base->getSizeShift();}
          virtual FastU        getSizeWords()   const {return base->getSizeWords();}
-         virtual ExpRef       getSizeWordsVM() const;
+         virtual ExpCRef      getSizeWordsVM() const;
 
          // Type classification: General classifications.
          virtual bool isTypeArray()    const {return base->isTypeArray();}

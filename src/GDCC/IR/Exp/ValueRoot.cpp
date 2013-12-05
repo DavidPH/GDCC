@@ -39,25 +39,25 @@ namespace GDCC
       //
       // ExpCreate_ValueRoot
       //
-      Exp::Ref ExpCreate_ValueRoot(Value const &value, Origin pos)
+      Exp::CRef ExpCreate_ValueRoot(Value const &value, Origin pos)
       {
-         return static_cast<Exp::Ref>(new Exp_ValueRoot(value, pos));
+         return static_cast<Exp::CRef>(new Exp_ValueRoot(value, pos));
       }
 
       //
       // ExpCreate_ValueRoot
       //
-      Exp::Ref ExpCreate_ValueRoot(Value &&value, Origin pos)
+      Exp::CRef ExpCreate_ValueRoot(Value &&value, Origin pos)
       {
-         return static_cast<Exp::Ref>(new Exp_ValueRoot(std::move(value), pos));
+         return static_cast<Exp::CRef>(new Exp_ValueRoot(std::move(value), pos));
       }
 
       //
       // ExpGetIR_ValueRoot
       //
-      Exp::Ref ExpGetIR_ValueRoot(IArchive &in)
+      Exp::CRef ExpGetIR_ValueRoot(IArchive &in)
       {
-         return static_cast<Exp::Ref>(new Exp_ValueRoot(in));
+         return static_cast<Exp::CRef>(new Exp_ValueRoot(in));
       }
    }
 }
