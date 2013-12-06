@@ -1,6 +1,12 @@
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for MageDefs executable.
+## Copyright (C) 2013 David Hill
+##
+## See COPYING for license information.
+##
+##-----------------------------------------------------------------------------
+##
+## CMake file for MageDefs targets.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -10,7 +16,7 @@
 ##
 
 add_executable(gdcc-magedefs
-   main.cpp
+   main_magedefs.cpp
 
    IStream.cpp
 )
