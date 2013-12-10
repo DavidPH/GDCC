@@ -39,7 +39,7 @@ namespace GDCC
       class Arg
       {
       protected:
-         using ExpCPtr  = CounterRef<Exp const>;
+         using ExpCPtr  = CounterPtr<Exp const>;
          using TypeCRef = CounterRef<Type const>;
 
       public:
