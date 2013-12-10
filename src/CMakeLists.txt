@@ -29,6 +29,7 @@ add_subdirectory(GDCC)
 add_subdirectory(Linker)
 add_subdirectory(MageDefs)
 add_subdirectory(Option)
+add_subdirectory(Util)
 
 ## EOF
 

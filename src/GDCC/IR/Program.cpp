@@ -60,6 +60,15 @@ static GDCC::IR::Program::TableRange<T> RangeTable(GDCC::IR::Program::Table<T> &
    return {table.begin(), table.end()};
 }
 
+//
+// RangeTable
+//
+template<typename T>
+static GDCC::IR::Program::TableCRange<T> RangeTable(GDCC::IR::Program::Table<T> const &table)
+{
+   return {table.begin(), table.end()};
+}
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -370,9 +379,25 @@ namespace GDCC
       }
 
       //
+      // Program::rangeFunction
+      //
+      auto Program::rangeFunction() const -> TableCRange<Function>
+      {
+         return RangeTable(tableFunction);
+      }
+
+      //
       // Program::rangeGlyphData
       //
       auto Program::rangeGlyphData() -> TableRange<GlyphData>
+      {
+         return RangeTable(tableGlyphData);
+      }
+
+      //
+      // Program::rangeGlyphData
+      //
+      auto Program::rangeGlyphData() const -> TableCRange<GlyphData>
       {
          return RangeTable(tableGlyphData);
       }
@@ -386,9 +411,25 @@ namespace GDCC
       }
 
       //
+      // Program::rangeImport
+      //
+      auto Program::rangeImport() const -> TableCRange<Import>
+      {
+         return RangeTable(tableImport);
+      }
+
+      //
       // Program::rangeObject
       //
       auto Program::rangeObject() -> TableRange<Object>
+      {
+         return RangeTable(tableObject);
+      }
+
+      //
+      // Program::rangeObject
+      //
+      auto Program::rangeObject() const -> TableCRange<Object>
       {
          return RangeTable(tableObject);
       }
@@ -402,9 +443,25 @@ namespace GDCC
       }
 
       //
+      // Program::rangeSpaceGblArs
+      //
+      auto Program::rangeSpaceGblArs() const -> TableCRange<Space>
+      {
+         return RangeTable(tableSpaceGblArs);
+      }
+
+      //
       // Program::rangeSpaceMapArs
       //
       auto Program::rangeSpaceMapArs() -> TableRange<Space>
+      {
+         return RangeTable(tableSpaceMapArs);
+      }
+
+      //
+      // Program::rangeSpaceMapArs
+      //
+      auto Program::rangeSpaceMapArs() const -> TableCRange<Space>
       {
          return RangeTable(tableSpaceMapArs);
       }
@@ -418,9 +475,25 @@ namespace GDCC
       }
 
       //
+      // Program::rangeSpaceWldArs
+      //
+      auto Program::rangeSpaceWldArs() const -> TableCRange<Space>
+      {
+         return RangeTable(tableSpaceWldArs);
+      }
+
+      //
       // Program::rangeStrEnt
       //
       auto Program::rangeStrEnt() -> TableRange<StrEnt>
+      {
+         return RangeTable(tableStrEnt);
+      }
+
+      //
+      // Program::rangeStrEnt
+      //
+      auto Program::rangeStrEnt() const -> TableCRange<StrEnt>
       {
          return RangeTable(tableStrEnt);
       }

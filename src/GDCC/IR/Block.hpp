@@ -75,6 +75,9 @@ namespace GDCC
                iterator begin()       {return static_cast<      iterator>(head.next);}
          const_iterator begin() const {return static_cast<const_iterator>(head.next);}
 
+         // empty
+         bool empty() const {return head.next == &head;}
+
                iterator end()       {return static_cast<      iterator>(&head);}
          const_iterator end() const {return static_cast<const_iterator>(&head);}
 

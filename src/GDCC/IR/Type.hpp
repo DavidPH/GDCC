@@ -292,6 +292,8 @@ namespace GDCC
 
       OArchive &operator << (OArchive &out, Type const &in);
 
+      std::ostream &operator << (std::ostream &out, TypeBase in);
+
       IArchive &operator >> (IArchive &in, TypeBase &out);
 
       #define GDCC_IR_TypeList(name) \

@@ -46,6 +46,24 @@ namespace GDCC
       }
 
       //
+      // operator std::ostream << Linkage
+      //
+      std::ostream  &operator << (std::ostream &out, Linkage in)
+      {
+         switch(in)
+         {
+         case Linkage::None:   return out << "None";
+         case Linkage::ExtACS: return out << "ExtACS";
+         case Linkage::ExtASM: return out << "ExtASM";
+         case Linkage::ExtC:   return out << "ExtC";
+         case Linkage::ExtCXX: return out << "ExtCXX";
+         case Linkage::ExtDS:  return out << "ExtDS";
+         case Linkage::IntC:   return out << "IntC";
+         case Linkage::IntCXX: return out << "IntCXX";
+         }
+      }
+
+      //
       // operator IArchive >> Linkage
       //
       IArchive &operator >> (IArchive &in, Linkage &out)

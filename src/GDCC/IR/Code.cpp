@@ -49,9 +49,9 @@ namespace GDCC
          switch(in)
          {
             #define GDCC_IR_CodeList(name) \
-               case Code::name: return out << "Code::" #name;
+               case Code::name: return out << #name;
             #include "CodeList.hpp"
-         case Code::None: return out << "Code::None";
+         case Code::None: return out << "None";
          }
       }
 

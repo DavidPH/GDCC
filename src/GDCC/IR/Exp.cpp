@@ -85,6 +85,7 @@ namespace GDCC
          case STR_None: return nullptr;
 
          case STR_BinaryAdd:   return ExpGetIR_BinaryAdd  (in);
+         case STR_BinaryAnd:   return ExpGetIR_BinaryAnd  (in);
          case STR_BinaryDiv:   return ExpGetIR_BinaryDiv  (in);
          case STR_BinaryMod:   return ExpGetIR_BinaryMod  (in);
          case STR_BinaryMul:   return ExpGetIR_BinaryMul  (in);

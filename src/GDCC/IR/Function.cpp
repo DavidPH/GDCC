@@ -138,6 +138,49 @@ namespace GDCC
       }
 
       //
+      // operator std::ostream << CallType
+      //
+      std::ostream &operator << (std::ostream &out, CallType in)
+      {
+         switch(in)
+         {
+         case CallType::None:    return out << "None";
+         case CallType::Action:  return out << "Action";
+         case CallType::AsmFunc: return out << "AsmFunc";
+         case CallType::LangACS: return out << "LangACS";
+         case CallType::LangASM: return out << "LangASM";
+         case CallType::LangAXX: return out << "LangAXX";
+         case CallType::LangC:   return out << "LangC";
+         case CallType::LangCXX: return out << "LangCXX";
+         case CallType::LangDS:  return out << "LangDS";
+         case CallType::Native:  return out << "Native";
+         case CallType::Script:  return out << "Script";
+         case CallType::ScriptI: return out << "ScriptI";
+         case CallType::ScriptS: return out << "ScriptS";
+         case CallType::Special: return out << "Special";
+         }
+      }
+
+      //
+      // operator std::ostream << ScriptType
+      //
+      std::ostream &operator << (std::ostream &out, ScriptType in)
+      {
+         switch(in)
+         {
+         case ScriptType::None:       return out << "None";
+         case ScriptType::Death:      return out << "Death";
+         case ScriptType::Disconnect: return out << "Disconnect";
+         case ScriptType::Enter:      return out << "Enter";
+         case ScriptType::Lightning:  return out << "Lightning";
+         case ScriptType::Open:       return out << "Open";
+         case ScriptType::Respawn:    return out << "Respawn";
+         case ScriptType::Return:     return out << "Return";
+         case ScriptType::Unloading:  return out << "Unloading";
+         }
+      }
+
+      //
       // operator IArchive >> CallType
       //
       IArchive &operator >> (IArchive &in, CallType &out)

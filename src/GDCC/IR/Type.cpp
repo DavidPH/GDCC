@@ -236,6 +236,19 @@ namespace GDCC
       }
 
       //
+      // operator std::ostream << TypeBase
+      //
+      std::ostream &operator << (std::ostream &out, TypeBase in)
+      {
+         switch(in)
+         {
+            #define GDCC_IR_TypeList(name) \
+               case TypeBase::name: return out << #name;
+            #include "TypeList.hpp"
+         }
+      }
+
+      //
       // operator IArchive >> TypeBase
       //
       IArchive &operator >> (IArchive &in, TypeBase &out)

@@ -45,6 +45,9 @@ namespace GDCC
          template<typename T>
          using TableRange = Range<MemItr<typename Table<T>::iterator>>;
 
+         template<typename T>
+         using TableCRange = Range<MemItr<typename Table<T>::const_iterator, T const>>;
+
 
          Program();
          Program(Program const &) = delete;
@@ -83,14 +86,22 @@ namespace GDCC
          void mergeSpace    (Space     &out, Space     &&in);
          void mergeStrEnt   (StrEnt    &out, StrEnt    &&in);
 
-         TableRange<Function>  rangeFunction   ();
-         TableRange<GlyphData> rangeGlyphData  ();
-         TableRange<Import>    rangeImport     ();
-         TableRange<Object>    rangeObject     ();
-         TableRange<Space>     rangeSpaceGblArs();
-         TableRange<Space>     rangeSpaceMapArs();
-         TableRange<Space>     rangeSpaceWldArs();
-         TableRange<StrEnt>    rangeStrEnt     ();
+         TableRange <Function>  rangeFunction   ();
+         TableCRange<Function>  rangeFunction   () const;
+         TableRange <GlyphData> rangeGlyphData  ();
+         TableCRange<GlyphData> rangeGlyphData  () const;
+         TableRange <Import>    rangeImport     ();
+         TableCRange<Import>    rangeImport     () const;
+         TableRange <Object>    rangeObject     ();
+         TableCRange<Object>    rangeObject     () const;
+         TableRange <Space>     rangeSpaceGblArs();
+         TableCRange<Space>     rangeSpaceGblArs() const;
+         TableRange <Space>     rangeSpaceMapArs();
+         TableCRange<Space>     rangeSpaceMapArs() const;
+         TableRange <Space>     rangeSpaceWldArs();
+         TableCRange<Space>     rangeSpaceWldArs() const;
+         TableRange <StrEnt>    rangeStrEnt     ();
+         TableCRange<StrEnt>    rangeStrEnt     () const;
 
          std::size_t sizeFunction()    const;
          std::size_t sizeGlyphData()   const;

@@ -15,6 +15,11 @@ GDCC C Preprocessor (gdcc-cpp)
 Applies C preprocessing to input files.
 
 
+GDCC IR Dump (gdcc-irdump)
+
+IR inspection and disassembler. Primarily intended for debugging compilers.
+
+
 GDCC Linker (gdcc-ld)
 
 Linker program for converting intermediary representation files to bytecode.
