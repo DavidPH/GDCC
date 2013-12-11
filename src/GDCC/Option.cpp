@@ -56,7 +56,7 @@ namespace GDCC
    {
       if(program) Option::Option::Help_Program = program;
 
-      Option::Option::Help_Version = "v0.2.0";
+      Option::Option::Help_Version = "v0.3.0";
 
       if(argc <= 1)
       {
