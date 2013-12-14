@@ -48,7 +48,8 @@ namespace GDCC
       //
       IR::Type Type_Size::getIRType() const
       {
-         return IR::Type_Fixed(getSizeBitsI(), getSizeBitsF(), getSizeBitsS(), isTypeSaturate());
+         return IR::Type_Fixed(getSizeBitsI(), getSizeBitsF(), getSizeBitsS(),
+            isTypeSaturate());
       }
 
       //
@@ -56,7 +57,7 @@ namespace GDCC
       //
       Core::FastU Type_Size::getSizeAlign() const
       {
-         return getSizeBytes();
+         return Bytecode::GetWordAlign();
       }
 
       //
@@ -72,13 +73,7 @@ namespace GDCC
       //
       Core::FastU Type_Size::getSizeBytes() const
       {
-         switch(Bytecode::TargetCur)
-         {
-         case Bytecode::Target::None: throw TypeError();
-
-         case Bytecode::Target::MageCraft: return 4;
-         case Bytecode::Target::ZDoom:     return 1;
-         }
+         return Bytecode::GetWordBytes();
       }
 
       //
@@ -86,7 +81,7 @@ namespace GDCC
       //
       Core::FastU Type_Size::getSizePoint() const
       {
-         return getSizeWords();
+         return 1;
       }
 
       //
@@ -94,7 +89,7 @@ namespace GDCC
       //
       Core::FastU Type_Size::getSizeShift() const
       {
-         return getSizeAlign();
+         return Bytecode::GetWordShift();
       }
 
       //
