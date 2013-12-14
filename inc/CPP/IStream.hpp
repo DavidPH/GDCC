@@ -57,10 +57,10 @@ namespace GDCC
 
          CommentsHold holdComments() {return CommentsHold(*this);}
 
+         bool needHeader : 1;
+
 
          static bool GetHeader(std::istream &in, Core::Token &out);
-
-         static bool NeedHeader;
 
       protected:
          using OBuf = Core::OriginBuf<>;

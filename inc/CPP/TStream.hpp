@@ -53,7 +53,7 @@ namespace GDCC
             cdir{tbuf},
             ddir{cdir},
             edir{ddir},
-            idir{edir, pragma, dir},
+            idir{edir, istr, pragma, dir},
             ldir{idir},
             pdir{ldir, pragma},
             udir{pdir},
