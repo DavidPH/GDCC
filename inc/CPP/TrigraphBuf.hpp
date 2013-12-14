@@ -10,10 +10,10 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__Core__Trigraph_H__
-#define GDCC__Core__Trigraph_H__
+#ifndef GDCC__CPP__Trigraph_H__
+#define GDCC__CPP__Trigraph_H__
 
-#include "WrapperBuf.hpp"
+#include "../Core/WrapperBuf.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -22,16 +22,16 @@
 
 namespace GDCC
 {
-   namespace Core
+   namespace CPP
    {
       //
       // TrigraphBuf
       //
       template<typename Src = std::streambuf>
-      class TrigraphBuf final : public WrapperBuf<Src>
+      class TrigraphBuf final : public Core::WrapperBuf<Src>
       {
       public:
-         using Super = WrapperBuf<Src>;
+         using Super = Core::WrapperBuf<Src>;
 
 
          explicit TrigraphBuf(Src &src_) : Super{src_} {}
@@ -66,5 +66,5 @@ namespace GDCC
    }
 }
 
-#endif//GDCC__Core__Trigraph_H__
+#endif//GDCC__CPP__Trigraph_H__
 

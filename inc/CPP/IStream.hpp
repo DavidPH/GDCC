@@ -10,14 +10,15 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef C__IStream_H__
-#define C__IStream_H__
+#ifndef GDCC__CPP__IStream_H__
+#define GDCC__CPP__IStream_H__
+
+#include "../CPP/TrigraphBuf.hpp"
 
 #include "../Core/CommentBuf.hpp"
 #include "../Core/EscapeBuf.hpp"
 #include "../Core/FeatureHold.hpp"
 #include "../Core/OriginBuf.hpp"
-#include "../Core/TrigraphBuf.hpp"
 
 #include <istream>
 
@@ -63,7 +64,7 @@ namespace GDCC
 
       protected:
          using OBuf = Core::OriginBuf<>;
-         using TBuf = Core::TrigraphBuf<OBuf>;
+         using TBuf = TrigraphBuf<OBuf>;
          using EBuf = Core::EscapeBufStrip<'\n', '\\', TBuf>;
          using CBuf = Core::CommentBufC<EBuf>;
 
@@ -87,5 +88,5 @@ namespace GDCC
    }
 }
 
-#endif//C__IStream_H__
+#endif//GDCC__CPP__IStream_H__
 
