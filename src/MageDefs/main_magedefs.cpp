@@ -10,10 +10,10 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IStream.hpp"
+#include "MageDefs/IStream.hpp"
 
-#include "GDCC/Option.hpp"
-#include "GDCC/Token.hpp"
+#include "Core/Option.hpp"
+#include "Core/Token.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -23,19 +23,22 @@
 // Global Variables                                                           |
 //
 
-namespace Option
+namespace GDCC
 {
-   //
-   // -t, --nts-type
-   //
-   OptionCStr NTSType{'t', "nts-type", "output",
-      "Sets the type field. Default: GAMEDEFS", nullptr, "GAMEDEFS", false};
+   namespace Option
+   {
+      //
+      // -t, --nts-type
+      //
+      OptionCStr NTSType{'t', "nts-type", "output",
+         "Sets the type field. Default: GAMEDEFS", nullptr, "GAMEDEFS", false};
 
-   //
-   // -v, --nts-version
-   //
-   OptionCStr NTSVersion{'v', "nts-version", "output",
-      "Sets the version field. Default: none", nullptr, "", false};
+      //
+      // -v, --nts-version
+      //
+      OptionCStr NTSVersion{'v', "nts-version", "output",
+         "Sets the version field. Default: none", nullptr, "", false};
+   }
 }
 
 
@@ -50,11 +53,11 @@ static void ProcessFile(std::ostream &out, char const *inName);
 //
 static void MakeDefs()
 {
-   std::fstream out{Option::Output.data, std::ios_base::binary | std::ios_base::out};
+   std::fstream out{GDCC::Option::Output.data, std::ios_base::binary | std::ios_base::out};
 
    if(!out)
    {
-      std::cerr << "couldn't open '" << Option::Output.data << "' for writing\n";
+      std::cerr << "couldn't open '" << GDCC::Option::Output.data << "' for writing\n";
       throw EXIT_FAILURE;
    }
 
@@ -62,17 +65,17 @@ static void MakeDefs()
    out << "MgC_NTS" << '\0';
 
    // Write type.
-   if(Option::NTSType.data)
-      out << Option::NTSType.data;
+   if(GDCC::Option::NTSType.data)
+      out << GDCC::Option::NTSType.data;
    out << '\0';
 
    // Write version.
-   if(Option::NTSVersion.data)
-      out << Option::NTSVersion.data;
+   if(GDCC::Option::NTSVersion.data)
+      out << GDCC::Option::NTSVersion.data;
    out << '\0';
 
    // Process inputs.
-   for(auto arg = *Option::ArgV, end = arg + *Option::ArgC; arg != end; ++arg)
+   for(auto arg = *GDCC::Option::ArgV, end = arg + *GDCC::Option::ArgC; arg != end; ++arg)
       ProcessFile(out, *arg);
 }
 
@@ -89,8 +92,8 @@ static void ProcessFile(std::ostream &out, char const *inName)
       throw EXIT_FAILURE;
    }
 
-   MageDefs::IStream in{fbuf, GDCC::AddString(inName)};
-   for(GDCC::Token tok; in >> tok;)
+   GDCC::MageDefs::IStream in{fbuf, GDCC::Core::AddString(inName)};
+   for(GDCC::Core::Token tok; in >> tok;)
       out << tok.str << '\0';
 }
 
@@ -104,14 +107,13 @@ static void ProcessFile(std::ostream &out, char const *inName)
 //
 int main(int argc, char *argv[])
 {
-   Option::Option::Help_Usage = "[option]... [source]...";
+   GDCC::Option::Option::Help_Usage = "[option]... [source]...";
 
-   Option::Option::Help_DescS = "Output defaults to last loose argument.";
+   GDCC::Option::Option::Help_DescS = "Output defaults to last loose argument.";
 
    try
    {
-      GDCC::InitOptions(argc, argv, "gdcc-magedefs");
-
+      GDCC::Core::InitOptions(argc, argv, "gdcc-magedefs");
       MakeDefs();
    }
    catch(int e)

@@ -10,319 +10,325 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "Info.hpp"
+#include "Bytecode/ZDACS/Info.hpp"
 
-#include "GDCC/IR/Program.hpp"
+#include "IR/Program.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
-namespace Bytecode
+namespace GDCC
 {
-   namespace ZDACS
+   namespace Bytecode
    {
-      //
-      // Info::lenChunk
-      //
-      GDCC::FastU Info::lenChunk()
+      namespace ZDACS
       {
-         GDCC::FastU len = 0;
-
-         len += lenChunkCODE();
-
-         len += lenChunkAIMP();
-         len += lenChunkAINI();
-         len += lenChunkARAY();
-         len += lenChunkASTR();
-         len += lenChunkATAG();
-         len += lenChunkFNAM();
-         len += lenChunkFUNC();
-         len += lenChunkLOAD();
-         len += lenChunkMEXP();
-         len += lenChunkMIMP();
-         len += lenChunkMINI();
-         len += lenChunkMSTR();
-         len += lenChunkSFLG();
-         len += lenChunkSNAM();
-         len += lenChunkSPTR();
-         len += lenChunkSTRL();
-         len += lenChunkSVCT();
-
-         return len;
-      }
-
-      //
-      // Info::lenChunk
-      //
-      GDCC::FastU Info::lenChunk(char const *, GDCC::Array<GDCC::String> const &strs, bool junk)
-      {
-         GDCC::FastU len = 8;
-
-         // Table header.
-         len += strs.size() * 4 + 4;
-         if(junk) len += 8;
-
-         // Calculate size of chunk.
-         for(auto const &str : strs)
-            len += lenString(str);
-
-         return len;
-      }
-
-      //
-      // Info::lenChunkAIMP
-      //
-      GDCC::FastU Info::lenChunkAIMP()
-      {
-         if(!numChunkAIMP) return 0;
-
-         GDCC::FastU len = numChunkAIMP * 8 + 8;
-
-         for(auto const &itr : prog->rangeSpaceMapArs())
-            if(!itr.defin) len += lenString(itr.glyph);
-
-         return len;
-      }
-
-      //
-      // Info::lenChunkAINI
-      //
-      GDCC::FastU Info::lenChunkAINI()
-      {
-         if(!numChunkAINI) return 0;
-
-         GDCC::FastU len = 0;
-
-         for(auto const &itr : init) if(itr.first->space.base == GDCC::IR::AddrBase::MapArr)
-            len += itr.second.vals.size() * 4 + 12;
-
-         return len;
-      }
-
-      //
-      // Info::lenChunkARAY
-      //
-      GDCC::FastU Info::lenChunkARAY()
-      {
-         if(!numChunkARAY) return 0;
-
-         return numChunkARAY * 8 + 8;
-      }
-
-      //
-      // Info::lenChunkASTR
-      //
-      GDCC::FastU Info::lenChunkASTR()
-      {
-         if(!numChunkASTR) return 0;
-
-         return numChunkASTR * 4 + 8;
-      }
-
-      //
-      // Info::lenChunkATAG
-      //
-      GDCC::FastU Info::lenChunkATAG()
-      {
-         if(!numChunkATAG) return 0;
-
-         GDCC::FastU len = 0;
-
-         for(auto const &itr : init) if(itr.first->space.base == GDCC::IR::AddrBase::MapArr)
+         //
+         // Info::lenChunk
+         //
+         Core::FastU Info::lenChunk()
          {
-            if(itr.second.needTag && !itr.second.onlyStr)
-               len += itr.second.vals.size() + 13;
+            Core::FastU len = 0;
+
+            len += lenChunkCODE();
+
+            len += lenChunkAIMP();
+            len += lenChunkAINI();
+            len += lenChunkARAY();
+            len += lenChunkASTR();
+            len += lenChunkATAG();
+            len += lenChunkFNAM();
+            len += lenChunkFUNC();
+            len += lenChunkLOAD();
+            len += lenChunkMEXP();
+            len += lenChunkMIMP();
+            len += lenChunkMINI();
+            len += lenChunkMSTR();
+            len += lenChunkSFLG();
+            len += lenChunkSNAM();
+            len += lenChunkSPTR();
+            len += lenChunkSTRL();
+            len += lenChunkSVCT();
+
+            return len;
          }
 
-         return len;
-      }
-
-      //
-      // Info::lenChunkCODE
-      //
-      GDCC::FastU Info::lenChunkCODE()
-      {
-         return numChunkCODE + 8;
-      }
-
-      //
-      // Info::lenChunkFNAM
-      //
-      GDCC::FastU Info::lenChunkFNAM()
-      {
-         if(!numChunkFNAM) return 0;
-
-         GDCC::Array<GDCC::String> strs{numChunkFNAM};
-
-         for(auto &str : strs) str = GDCC::STR_;
-
-         for(auto const &itr : prog->rangeFunction())
+         //
+         // Info::lenChunk
+         //
+         Core::FastU Info::lenChunk(char const *,
+            Core::Array<Core::String> const &strs, bool junk)
          {
-            if(itr.ctype != GDCC::IR::CallType::LangACS)
-               continue;
+            Core::FastU len = 8;
 
-            strs[itr.valueInt] = itr.glyph;
+            // Table header.
+            len += strs.size() * 4 + 4;
+            if(junk) len += 8;
+
+            // Calculate size of chunk.
+            for(auto const &str : strs)
+               len += lenString(str);
+
+            return len;
          }
 
-         return lenChunk("FNAM", strs, false);
-      }
-
-      //
-      // Info::lenChunkFUNC
-      //
-      GDCC::FastU Info::lenChunkFUNC()
-      {
-         if(!numChunkFUNC) return 0;
-
-         return numChunkFUNC * 8 + 8;
-      }
-
-      //
-      // Info::lenChunkLOAD
-      //
-      GDCC::FastU Info::lenChunkLOAD()
-      {
-         numChunkLOAD = prog->sizeImport();
-
-         if(!numChunkLOAD) return 0;
-
-         GDCC::FastU len = 8;
-
-         for(auto const &itr : prog->rangeImport())
-            len += lenString(itr.glyph);
-
-         return len;
-      }
-
-      //
-      // Info::lenChunkMEXP
-      //
-      GDCC::FastU Info::lenChunkMEXP()
-      {
-         if(!numChunkMEXP) return 0;
-
-         GDCC::Array<GDCC::String> strs{numChunkMEXP};
-         for(auto &str : strs) str = GDCC::STR_;
-
-         for(auto const &itr : prog->rangeObject())
+         //
+         // Info::lenChunkAIMP
+         //
+         Core::FastU Info::lenChunkAIMP()
          {
-            if(itr.defin && itr.space.base == GDCC::IR::AddrBase::MapReg)
-               strs[itr.value] = itr.glyph;
+            if(!numChunkAIMP) return 0;
+
+            Core::FastU len = numChunkAIMP * 8 + 8;
+
+            for(auto const &itr : prog->rangeSpaceMapArs())
+               if(!itr.defin) len += lenString(itr.glyph);
+
+            return len;
          }
 
-         for(auto const &itr : prog->rangeSpaceMapArs())
-            if(itr.defin) strs[itr.value] = itr.glyph;
-
-         return lenChunk("MEXP", strs, false);
-      }
-
-      //
-      // Info::lenChunkMIMP
-      //
-      GDCC::FastU Info::lenChunkMIMP()
-      {
-         if(!numChunkMIMP) return 0;
-
-         GDCC::FastU len = numChunkMIMP * 4 + 8;
-
-         for(auto const &itr : prog->rangeObject())
+         //
+         // Info::lenChunkAINI
+         //
+         Core::FastU Info::lenChunkAINI()
          {
-            if(!itr.defin && itr.space.base == GDCC::IR::AddrBase::MapReg)
+            if(!numChunkAINI) return 0;
+
+            Core::FastU len = 0;
+
+            for(auto const &itr : init)
+               if(itr.first->space.base == IR::AddrBase::MapArr)
+                  len += itr.second.vals.size() * 4 + 12;
+
+            return len;
+         }
+
+         //
+         // Info::lenChunkARAY
+         //
+         Core::FastU Info::lenChunkARAY()
+         {
+            if(!numChunkARAY) return 0;
+
+            return numChunkARAY * 8 + 8;
+         }
+
+         //
+         // Info::lenChunkASTR
+         //
+         Core::FastU Info::lenChunkASTR()
+         {
+            if(!numChunkASTR) return 0;
+
+            return numChunkASTR * 4 + 8;
+         }
+
+         //
+         // Info::lenChunkATAG
+         //
+         Core::FastU Info::lenChunkATAG()
+         {
+            if(!numChunkATAG) return 0;
+
+            Core::FastU len = 0;
+
+            for(auto const &itr : init)
+               if(itr.first->space.base == IR::AddrBase::MapArr)
+            {
+               if(itr.second.needTag && !itr.second.onlyStr)
+                  len += itr.second.vals.size() + 13;
+            }
+
+            return len;
+         }
+
+         //
+         // Info::lenChunkCODE
+         //
+         Core::FastU Info::lenChunkCODE()
+         {
+            return numChunkCODE + 8;
+         }
+
+         //
+         // Info::lenChunkFNAM
+         //
+         Core::FastU Info::lenChunkFNAM()
+         {
+            if(!numChunkFNAM) return 0;
+
+            Core::Array<Core::String> strs{numChunkFNAM};
+
+            for(auto &str : strs) str = Core::STR_;
+
+            for(auto const &itr : prog->rangeFunction())
+            {
+               if(itr.ctype != IR::CallType::LangACS)
+                  continue;
+
+               strs[itr.valueInt] = itr.glyph;
+            }
+
+            return lenChunk("FNAM", strs, false);
+         }
+
+         //
+         // Info::lenChunkFUNC
+         //
+         Core::FastU Info::lenChunkFUNC()
+         {
+            if(!numChunkFUNC) return 0;
+
+            return numChunkFUNC * 8 + 8;
+         }
+
+         //
+         // Info::lenChunkLOAD
+         //
+         Core::FastU Info::lenChunkLOAD()
+         {
+            numChunkLOAD = prog->sizeImport();
+
+            if(!numChunkLOAD) return 0;
+
+            Core::FastU len = 8;
+
+            for(auto const &itr : prog->rangeImport())
                len += lenString(itr.glyph);
+
+            return len;
          }
 
-         return len;
-      }
-
-      //
-      // Info::lenChunkMINI
-      //
-      GDCC::FastU Info::lenChunkMINI()
-      {
-         if(!numChunkMINI) return 0;
-
-         return numChunkMINI * 16;
-      }
-
-      //
-      // Info::lenChunkMSTR
-      //
-      GDCC::FastU Info::lenChunkMSTR()
-      {
-         if(!numChunkMSTR) return 0;
-
-         return numChunkMSTR * 4 + 8;
-      }
-
-      //
-      // Info::lenChunkSFLG
-      //
-      GDCC::FastU Info::lenChunkSFLG()
-      {
-         if(!numChunkSFLG) return 0;
-
-         return numChunkSFLG * 4 + 8;
-      }
-
-      //
-      // Info::lenChunkSNAM
-      //
-      GDCC::FastU Info::lenChunkSNAM()
-      {
-         if(!numChunkSNAM) return 0;
-
-         GDCC::Array<GDCC::String> strs{numChunkSNAM};
-
-         for(auto &str : strs) str = GDCC::STR_;
-
-         for(auto const &itr : prog->rangeFunction())
+         //
+         // Info::lenChunkMEXP
+         //
+         Core::FastU Info::lenChunkMEXP()
          {
-            if(itr.ctype != GDCC::IR::CallType::ScriptS)
-               continue;
+            if(!numChunkMEXP) return 0;
 
-            strs[itr.valueInt] = itr.valueStr;
+            Core::Array<Core::String> strs{numChunkMEXP};
+            for(auto &str : strs) str = Core::STR_;
+
+            for(auto const &itr : prog->rangeObject())
+            {
+               if(itr.defin && itr.space.base == IR::AddrBase::MapReg)
+                  strs[itr.value] = itr.glyph;
+            }
+
+            for(auto const &itr : prog->rangeSpaceMapArs())
+               if(itr.defin) strs[itr.value] = itr.glyph;
+
+            return lenChunk("MEXP", strs, false);
          }
 
-         return lenChunk("SNAM", strs, false);
-      }
+         //
+         // Info::lenChunkMIMP
+         //
+         Core::FastU Info::lenChunkMIMP()
+         {
+            if(!numChunkMIMP) return 0;
 
-      //
-      // Info::lenChunkSPTR
-      //
-      GDCC::FastU Info::lenChunkSPTR()
-      {
-         if(!numChunkSPTR) return 0;
+            Core::FastU len = numChunkMIMP * 4 + 8;
 
-         return numChunkSPTR * (UseFakeACS0 ? 8 : 12) + 8;
-      }
+            for(auto const &itr : prog->rangeObject())
+            {
+               if(!itr.defin && itr.space.base == IR::AddrBase::MapReg)
+                  len += lenString(itr.glyph);
+            }
 
-      //
-      // Info::lenChunkSTRL
-      //
-      GDCC::FastU Info::lenChunkSTRL()
-      {
-         if(!numChunkSTRL) return 0;
+            return len;
+         }
 
-         GDCC::Array<GDCC::String> strs{numChunkSTRL};
+         //
+         // Info::lenChunkMINI
+         //
+         Core::FastU Info::lenChunkMINI()
+         {
+            if(!numChunkMINI) return 0;
 
-         for(auto &str : strs) str = GDCC::STR_;
+            return numChunkMINI * 16;
+         }
 
-         for(auto const &itr : prog->rangeStrEnt()) if(itr.defin)
-            strs[itr.valueInt] = itr.valueStr;
+         //
+         // Info::lenChunkMSTR
+         //
+         Core::FastU Info::lenChunkMSTR()
+         {
+            if(!numChunkMSTR) return 0;
 
-         return lenChunk("STRL", strs, true);
-      }
+            return numChunkMSTR * 4 + 8;
+         }
 
-      //
-      // Info::lenChunkSVCT
-      //
-      GDCC::FastU Info::lenChunkSVCT()
-      {
-         if(!numChunkSVCT) return 0;
+         //
+         // Info::lenChunkSFLG
+         //
+         Core::FastU Info::lenChunkSFLG()
+         {
+            if(!numChunkSFLG) return 0;
 
-         return numChunkSFLG * 4 + 8;
+            return numChunkSFLG * 4 + 8;
+         }
+
+         //
+         // Info::lenChunkSNAM
+         //
+         Core::FastU Info::lenChunkSNAM()
+         {
+            if(!numChunkSNAM) return 0;
+
+            Core::Array<Core::String> strs{numChunkSNAM};
+
+            for(auto &str : strs) str = Core::STR_;
+
+            for(auto const &itr : prog->rangeFunction())
+            {
+               if(itr.ctype != IR::CallType::ScriptS)
+                  continue;
+
+               strs[itr.valueInt] = itr.valueStr;
+            }
+
+            return lenChunk("SNAM", strs, false);
+         }
+
+         //
+         // Info::lenChunkSPTR
+         //
+         Core::FastU Info::lenChunkSPTR()
+         {
+            if(!numChunkSPTR) return 0;
+
+            return numChunkSPTR * (UseFakeACS0 ? 8 : 12) + 8;
+         }
+
+         //
+         // Info::lenChunkSTRL
+         //
+         Core::FastU Info::lenChunkSTRL()
+         {
+            if(!numChunkSTRL) return 0;
+
+            Core::Array<Core::String> strs{numChunkSTRL};
+
+            for(auto &str : strs) str = Core::STR_;
+
+            for(auto const &itr : prog->rangeStrEnt()) if(itr.defin)
+               strs[itr.valueInt] = itr.valueStr;
+
+            return lenChunk("STRL", strs, true);
+         }
+
+         //
+         // Info::lenChunkSVCT
+         //
+         Core::FastU Info::lenChunkSVCT()
+         {
+            if(!numChunkSVCT) return 0;
+
+            return numChunkSFLG * 4 + 8;
+         }
       }
    }
 }

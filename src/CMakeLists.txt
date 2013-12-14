@@ -6,30 +6,26 @@
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for all targets.
+## CMake file for gdcc targets.
 ##
 ##-----------------------------------------------------------------------------
-
-
-##----------------------------------------------------------------------------|
-## Environment Configuration                                                  |
-##
-
-include_directories(.)
 
 
 ##----------------------------------------------------------------------------|
 ## Targets                                                                    |
 ##
 
-add_subdirectory(Asm)
+add_subdirectory(AS)
+add_subdirectory(AST)
 add_subdirectory(Bytecode)
-add_subdirectory(C)
-add_subdirectory(GDCC)
-add_subdirectory(Linker)
+add_subdirectory(CC)
+add_subdirectory(CPP)
+add_subdirectory(Core)
+add_subdirectory(IR)
+add_subdirectory(IRDump)
+add_subdirectory(LD)
 add_subdirectory(MageDefs)
 add_subdirectory(Option)
-add_subdirectory(Util)
 
 ## EOF
 

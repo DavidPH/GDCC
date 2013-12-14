@@ -6,7 +6,7 @@
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for MageDefs targets.
+## CMake file for gdcc-magedefs.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -15,13 +15,17 @@
 ## Targets                                                                    |
 ##
 
-add_executable(gdcc-magedefs
-   main_magedefs.cpp
-
+add_library(gdcc-magedefs-lib
    IStream.cpp
 )
 
-target_link_libraries(gdcc-magedefs gdcc)
+add_executable(gdcc-magedefs
+   main_magedefs.cpp
+)
+
+target_link_libraries(gdcc-magedefs-lib gdcc-core-lib)
+
+target_link_libraries(gdcc-magedefs gdcc-magedefs-lib)
 
 ## EOF
 

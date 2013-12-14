@@ -10,12 +10,12 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "Info.hpp"
+#include "Bytecode/MgC/Info.hpp"
 
-#include "GDCC/IR/Function.hpp"
+#include "IR/Function.hpp"
 
-#include "GDCC/IR/Exp/ValueGlyph.hpp"
-#include "GDCC/IR/Exp/ValueRoot.hpp"
+#include "IR/Exp/ValueGlyph.hpp"
+#include "IR/Exp/ValueRoot.hpp"
 
 #include <iostream>
 
@@ -24,32 +24,36 @@
 // Global Functions                                                           |
 //
 
-namespace Bytecode
+namespace GDCC
 {
-   namespace MgC
+   namespace Bytecode
    {
-      //
-      // Info::CheckArg
-      //
-      void Info::CheckArg(GDCC::IR::Arg const &arg, GDCC::Origin const &pos)
+      namespace MgC
       {
-         switch(arg.a)
+         //
+         // Info::CheckArg
+         //
+         void Info::CheckArg(IR::Arg const &arg, Core::Origin const &pos)
          {
-         case GDCC::IR::ArgBase::Lit: break;
-         case GDCC::IR::ArgBase::Nul: break;
-         case GDCC::IR::ArgBase::Stk: break;
+            switch(arg.a)
+            {
+            case IR::ArgBase::Lit: break;
+            case IR::ArgBase::Nul: break;
+            case IR::ArgBase::Stk: break;
 
-         case GDCC::IR::ArgBase::LocArs:
-            CheckArg(*arg.aLocArs.idx, pos);
-            break;
+            case IR::ArgBase::LocArs:
+               CheckArg(*arg.aLocArs.idx, pos);
+               break;
 
-         case GDCC::IR::ArgBase::LocReg:
-            CheckArgB(*arg.aLocReg.idx, GDCC::IR::ArgBase::Lit, pos);
-            break;
+            case IR::ArgBase::LocReg:
+               CheckArgB(*arg.aLocReg.idx, IR::ArgBase::Lit, pos);
+               break;
 
-         default:
-            std::cerr << "ERROR: " << pos << ": MgC cannot use Arg: " << arg.a << '\n';
-            throw EXIT_FAILURE;
+            default:
+               std::cerr << "ERROR: " << pos << ": MgC cannot use Arg: "
+                  << arg.a << '\n';
+               throw EXIT_FAILURE;
+            }
          }
       }
    }
