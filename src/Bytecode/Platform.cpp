@@ -10,9 +10,9 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "Platform.hpp"
+#include "Bytecode/Platform.hpp"
 
-#include "GDCC/String.hpp"
+#include "Core/String.hpp"
 
 #include "Option/Option.hpp"
 
@@ -21,55 +21,58 @@
 // Global Variables                                                           |
 //
 
-namespace Bytecode
+namespace GDCC
 {
-   Format FormatCur = Format::None;
-   Target TargetCur = Target::None;
-}
-
-namespace Option
-{
-   //
-   // --bc-format
-   //
-   OptionCall FormatOpt{'\0', "bc-format", "output", "Selects output format.",
-      nullptr, [](strp opt, uint optf, uint argc, strv argv) -> uint
+   namespace Bytecode
    {
-      if(!argc)
-         Exception::Error(opt, optf, "requires argument");
+      Format FormatCur = Format::None;
+      Target TargetCur = Target::None;
+   }
 
-      switch(static_cast<GDCC::StringIndex>(GDCC::FindString(argv[0])))
-      {
-      case GDCC::STR_ACSE:    Bytecode::FormatCur = Bytecode::Format::ACSE;    break;
-      case GDCC::STR_MgC_NTS: Bytecode::FormatCur = Bytecode::Format::MgC_NTS; break;
-
-      default:
-         Exception::Error(opt, optf, "invalid argument");
-      }
-
-      return 1;
-   }};
-
-   //
-   // --bc-target
-   //
-   OptionCall TargetOpt{'\0', "bc-target", "output", "Selects target engine.",
-      nullptr, [](strp opt, uint optf, uint argc, strv argv) -> uint
+   namespace Option
    {
-      if(!argc)
-         Exception::Error(opt, optf, "requires argument");
-
-      switch(static_cast<GDCC::StringIndex>(GDCC::FindString(argv[0])))
+      //
+      // --bc-format
+      //
+      OptionCall FormatOpt{'\0', "bc-format", "output", "Selects output format.",
+         nullptr, [](strp opt, uint optf, uint argc, strv argv) -> uint
       {
-      case GDCC::STR_MageCraft: Bytecode::TargetCur = Bytecode::Target::MageCraft; break;
-      case GDCC::STR_ZDoom:     Bytecode::TargetCur = Bytecode::Target::ZDoom;     break;
+         if(!argc)
+            Exception::Error(opt, optf, "requires argument");
 
-      default:
-         Exception::Error(opt, optf, "invalid argument");
-      }
+         switch(static_cast<Core::StringIndex>(Core::FindString(argv[0])))
+         {
+         case Core::STR_ACSE:    Bytecode::FormatCur = Bytecode::Format::ACSE;    break;
+         case Core::STR_MgC_NTS: Bytecode::FormatCur = Bytecode::Format::MgC_NTS; break;
 
-      return 1;
-   }};
+         default:
+            Exception::Error(opt, optf, "invalid argument");
+         }
+
+         return 1;
+      }};
+
+      //
+      // --bc-target
+      //
+      OptionCall TargetOpt{'\0', "bc-target", "output", "Selects target engine.",
+         nullptr, [](strp opt, uint optf, uint argc, strv argv) -> uint
+      {
+         if(!argc)
+            Exception::Error(opt, optf, "requires argument");
+
+         switch(static_cast<Core::StringIndex>(Core::FindString(argv[0])))
+         {
+         case Core::STR_MageCraft: Bytecode::TargetCur = Bytecode::Target::MageCraft; break;
+         case Core::STR_ZDoom:     Bytecode::TargetCur = Bytecode::Target::ZDoom;     break;
+
+         default:
+            Exception::Error(opt, optf, "invalid argument");
+         }
+
+         return 1;
+      }};
+   }
 }
 
 
@@ -77,44 +80,47 @@ namespace Option
 // Global Functions                                                           |
 //
 
-namespace Bytecode
+namespace GDCC
 {
-   //
-   // GetWordAlign
-   //
-   unsigned GetWordAlign()
+   namespace Bytecode
    {
-      switch(TargetCur)
+      //
+      // GetWordAlign
+      //
+      unsigned GetWordAlign()
       {
-      case Target::None:      return 1;
-      case Target::ZDoom:     return 1;
-      case Target::MageCraft: return 4;
+         switch(TargetCur)
+         {
+         case Target::None:      return 1;
+         case Target::ZDoom:     return 1;
+         case Target::MageCraft: return 4;
+         }
       }
-   }
 
-   //
-   // GetWordBytes
-   //
-   unsigned GetWordBytes()
-   {
-      switch(TargetCur)
+      //
+      // GetWordBytes
+      //
+      unsigned GetWordBytes()
       {
-      case Target::None:      return 1;
-      case Target::ZDoom:     return 1;
-      case Target::MageCraft: return 4;
+         switch(TargetCur)
+         {
+         case Target::None:      return 1;
+         case Target::ZDoom:     return 1;
+         case Target::MageCraft: return 4;
+         }
       }
-   }
 
-   //
-   // GetWordShift
-   //
-   unsigned GetWordShift()
-   {
-      switch(TargetCur)
+      //
+      // GetWordShift
+      //
+      unsigned GetWordShift()
       {
-      case Target::None:      return 1;
-      case Target::ZDoom:     return 1;
-      case Target::MageCraft: return 4;
+         switch(TargetCur)
+         {
+         case Target::None:      return 1;
+         case Target::ZDoom:     return 1;
+         case Target::MageCraft: return 4;
+         }
       }
    }
 }

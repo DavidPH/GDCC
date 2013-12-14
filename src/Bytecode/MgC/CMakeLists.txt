@@ -6,7 +6,7 @@
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for Bytecode/MgC targets.
+## CMake file for gdcc-bytecode-mgc.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -15,13 +15,13 @@
 ## Targets                                                                    |
 ##
 
-add_library(gdcc-bc-mgc
+add_library(gdcc-bytecode-mgc-lib
    Info.cpp
    put.cpp
    tr.cpp
 )
 
-target_link_libraries(gdcc-bc-mgc gdcc-bc)
+target_link_libraries(gdcc-bytecode-mgc-lib gdcc-bytecode-lib)
 
 ## EOF
 

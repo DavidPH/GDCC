@@ -1,0 +1,69 @@
+//-----------------------------------------------------------------------------
+//
+// Copyright (C) 2013 David Hill
+//
+// See COPYING for license information.
+//
+//-----------------------------------------------------------------------------
+//
+// MageCraft target information and handling class.
+//
+//-----------------------------------------------------------------------------
+
+#ifndef GDCC__Bytecode__MgC__Info_H__
+#define GDCC__Bytecode__MgC__Info_H__
+
+#include "../../Bytecode/Info.hpp"
+
+
+//----------------------------------------------------------------------------|
+// Types                                                                      |
+//
+
+namespace GDCC
+{
+   namespace Bytecode
+   {
+      namespace MgC
+      {
+         //
+         // Info
+         //
+         class Info : public InfoBase
+         {
+         protected:
+            virtual void put();
+
+            void putBlock(IR::Block &block);
+
+            void putExp(IR::Exp const *exp);
+
+            void putGlyph(IR::Glyph glyph);
+
+            void putFunc(IR::Function &func);
+
+            void putObj(IR::Object const &obj);
+            void putObjValue(IR::Value const &val);
+            void putObjValue_Multi(IR::Value_Multi const &val);
+
+            void putValue(IR::Value const &val);
+
+            void putStmnt();
+            void putStmnt_Jump();
+            void putStmnt_Move_W();
+
+            virtual void trStmnt();
+            void trStmntMath();
+            void trStmnt_Call();
+            void trStmnt_Jump();
+            void trStmnt_Move_W();
+
+
+            static void CheckArg(IR::Arg const &arg, Core::Origin const &pos);
+         };
+      }
+   }
+}
+
+#endif//GDCC__Bytecode__MgC__Info_H__
+

@@ -6,7 +6,7 @@
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for Bytecode/ZDACS targets.
+## CMake file for gdcc-bytecode-zdacs.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -15,7 +15,7 @@
 ## Targets                                                                    |
 ##
 
-add_library(gdcc-bc-zdacs
+add_library(gdcc-bytecode-zdacs-lib
    Info.cpp
    gen.cpp
    genSpace.cpp
@@ -29,7 +29,7 @@ add_library(gdcc-bc-zdacs
    trStmnt.cpp
 )
 
-target_link_libraries(gdcc-bc-zdacs gdcc-bc)
+target_link_libraries(gdcc-bytecode-zdacs-lib gdcc-bytecode-lib)
 
 ## EOF
 

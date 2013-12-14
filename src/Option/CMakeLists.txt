@@ -6,7 +6,7 @@
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for Option targets.
+## CMake file for gdcc-option.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -15,7 +15,7 @@
 ## Targets                                                                    |
 ##
 
-add_library(gdcc-option
+add_library(gdcc-option-lib
    Option.cpp
 )
 

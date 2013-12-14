@@ -10,33 +10,36 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "Info.hpp"
+#include "Bytecode/ZDACS/Info.hpp"
 
-#include "GDCC/IR/Function.hpp"
+#include "IR/Function.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
-namespace Bytecode
+namespace GDCC
 {
-   namespace ZDACS
+   namespace Bytecode
    {
-      //
-      // Info::trFunc
-      //
-      void Info::trFunc()
+      namespace ZDACS
       {
-         trBlock(func->block);
-
-         if(func->defin) switch(func->ctype)
+         //
+         // Info::trFunc
+         //
+         void Info::trFunc()
          {
-         case GDCC::IR::CallType::Script:
-            func->ctype = GDCC::IR::CallType::ScriptI;
-            break;
+            trBlock(func->block);
 
-         default: break;
+            if(func->defin) switch(func->ctype)
+            {
+            case IR::CallType::Script:
+               func->ctype = IR::CallType::ScriptI;
+               break;
+
+            default: break;
+            }
          }
       }
    }
