@@ -74,7 +74,7 @@ namespace GDCC
 
          // Read header token(s).
          std::vector<Core::Token> toks;
-         IStream::NeedHeader = true; // Try to get header token.
+         istr.needHeader = true; // Try to get header token.
          while(src.peek().tok != Core::TOK_LnEnd && src.peek().tok != Core::TOK_EOF)
             toks.emplace_back(src.get());
 

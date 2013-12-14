@@ -20,19 +20,6 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
-//
-
-namespace GDCC
-{
-   namespace CPP
-   {
-      bool IStream::NeedHeader = false;
-   }
-}
-
-
-//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
@@ -91,9 +78,9 @@ namespace GDCC
          out.pos = in.getOrigin();
 
          // Possibly check for special header token.
-         if(IStream::NeedHeader)
+         if(in.needHeader)
          {
-            IStream::NeedHeader = false;
+            in.needHeader = false;
             if(IStream::GetHeader(in, out))
                return in;
          }
