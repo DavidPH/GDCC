@@ -33,18 +33,20 @@ namespace GDCC
             GDCC::AST::Statement_Exp, GDCC::AST::Statement);
 
       public:
-         friend Statement::Ref StatementCreate_Exp(
-            Core::Array<Core::String> const &labels, Core::Origin pos, Exp *exp);
-         friend Statement::Ref StatementCreate_Exp(
-            Core::Array<Core::String>      &&labels, Core::Origin pos, Exp *exp);
+         friend Statement::CRef StatementCreate_Exp(
+            Core::Array<Core::String> const &labels, Core::Origin pos,
+            Exp const *exp);
+         friend Statement::CRef StatementCreate_Exp(
+            Core::Array<Core::String> &&labels, Core::Origin pos,
+            Exp const *exp);
 
-         Core::CounterRef<Exp> const exp;
+         Core::CounterRef<Exp const> const exp;
 
       protected:
          Statement_Exp(Core::Array<Core::String> const &labels,
-            Core::Origin pos, Exp *exp);
+            Core::Origin pos, Exp const *exp);
          Statement_Exp(Core::Array<Core::String>      &&labels,
-            Core::Origin pos, Exp *exp);
+            Core::Origin pos, Exp const *exp);
          virtual ~Statement_Exp();
 
          virtual void v_genStmnt(IR::Block &block, Function *fn) const;

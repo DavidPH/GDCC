@@ -33,33 +33,33 @@ namespace GDCC
             GDCC::AST::Statement_Multi, GDCC::AST::Statement);
 
       public:
-         friend Statement::Ref StatementCreate_Multi(
+         friend Statement::CRef StatementCreate_Multi(
             Core::Array<Core::String> const &labels, Core::Origin pos,
-            Core::Array<Statement::Ref> const &stmnts);
-         friend Statement::Ref StatementCreate_Multi(
+            Core::Array<Statement::CRef> const &stmnts);
+         friend Statement::CRef StatementCreate_Multi(
             Core::Array<Core::String> const &labels, Core::Origin pos,
-            Core::Array<Statement::Ref> &&stmnts);
-         friend Statement::Ref StatementCreate_Multi(
+            Core::Array<Statement::CRef> &&stmnts);
+         friend Statement::CRef StatementCreate_Multi(
             Core::Array<Core::String> &&labels, Core::Origin pos,
-            Core::Array<Statement::Ref> const &stmnts);
-         friend Statement::Ref StatementCreate_Multi(
+            Core::Array<Statement::CRef> const &stmnts);
+         friend Statement::CRef StatementCreate_Multi(
             Core::Array<Core::String> &&labels, Core::Origin pos,
-            Core::Array<Statement::Ref> &&stmnts);
+            Core::Array<Statement::CRef> &&stmnts);
 
-         Core::Array<Statement::Ref> const stmnts;
+         Core::Array<Statement::CRef> const stmnts;
 
       protected:
          Statement_Multi(Core::Array<Core::String> const &labels_,
-            Core::Origin pos_, Core::Array<Statement::Ref> const &stmnts_) :
+            Core::Origin pos_, Core::Array<Statement::CRef> const &stmnts_) :
             Super{labels_, pos_}, stmnts{stmnts_} {}
          Statement_Multi(Core::Array<Core::String> const &labels_,
-            Core::Origin pos_, Core::Array<Statement::Ref> &&stmnts_) :
+            Core::Origin pos_, Core::Array<Statement::CRef> &&stmnts_) :
             Super{labels_, pos_}, stmnts{std::move(stmnts_)} {}
          Statement_Multi(Core::Array<Core::String> &&labels_, Core::Origin pos_,
-            Core::Array<Statement::Ref> const &stmnts_) :
+            Core::Array<Statement::CRef> const &stmnts_) :
             Super{std::move(labels_), pos_}, stmnts{stmnts_} {}
          Statement_Multi(Core::Array<Core::String> &&labels_, Core::Origin pos_,
-            Core::Array<Statement::Ref> &&stmnts_) :
+            Core::Array<Statement::CRef> &&stmnts_) :
             Super{std::move(labels_), pos_}, stmnts{std::move(stmnts_)} {}
 
          virtual void v_genLabel(IR::Block &block) const;

@@ -33,9 +33,9 @@ namespace GDCC
             GDCC::AST::Statement_Empty, GDCC::AST::Statement);
 
       public:
-         friend Statement::Ref StatementCreate_Empty(
+         friend Statement::CRef StatementCreate_Empty(
             Core::Array<Core::String> const &labels, Core::Origin pos);
-         friend Statement::Ref StatementCreate_Empty(
+         friend Statement::CRef StatementCreate_Empty(
             Core::Array<Core::String>      &&labels, Core::Origin pos);
 
       protected:

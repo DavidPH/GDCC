@@ -27,7 +27,7 @@ namespace GDCC
       // Statement_Exp constructor
       //
       Statement_Exp::Statement_Exp(Core::Array<Core::String> const &labels_,
-         Core::Origin pos_, Exp *exp_) :
+         Core::Origin pos_, Exp const *exp_) :
          Super{labels_, pos_}, exp{exp_}
       {
       }
@@ -36,7 +36,7 @@ namespace GDCC
       // Statement_Exp constructor
       //
       Statement_Exp::Statement_Exp(Core::Array<Core::String> &&labels_,
-         Core::Origin pos_, Exp *exp_) :
+         Core::Origin pos_, Exp const *exp_) :
          Super{std::move(labels_), pos_}, exp{exp_}
       {
       }
@@ -67,19 +67,21 @@ namespace GDCC
       //
       // StatementCreate_Exp
       //
-      Statement::Ref StatementCreate_Exp(
-         Core::Array<Core::String> const &labels, Core::Origin pos, Exp *exp)
+      Statement::CRef StatementCreate_Exp(
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         Exp const *exp)
       {
-         return static_cast<Statement::Ref>(new Statement_Exp(labels, pos, exp));
+         return static_cast<Statement::CRef>(
+            new Statement_Exp(labels, pos, exp));
       }
 
       //
       // StatementCreate_Exp
       //
-      Statement::Ref StatementCreate_Exp(Core::Array<Core::String> &&labels,
-         Core::Origin pos, Exp *exp)
+      Statement::CRef StatementCreate_Exp(Core::Array<Core::String> &&labels,
+         Core::Origin pos, Exp const *exp)
       {
-         return static_cast<Statement::Ref>(
+         return static_cast<Statement::CRef>(
             new Statement_Exp(std::move(labels), pos, exp));
       }
    }

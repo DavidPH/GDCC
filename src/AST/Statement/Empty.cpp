@@ -31,19 +31,20 @@ namespace GDCC
       //
       // StatementCreate_Empty
       //
-      Statement::Ref StatementCreate_Empty(
+      Statement::CRef StatementCreate_Empty(
          Core::Array<Core::String> const &labels, Core::Origin pos)
       {
-         return static_cast<Statement::Ref>(new Statement_Empty(labels, pos));
+         return static_cast<Statement::CRef>(new Statement_Empty(labels, pos));
       }
 
       //
       // StatementCreate_Empty
       //
-      Statement::Ref StatementCreate_Empty(Core::Array<Core::String> &&labels,
+      Statement::CRef StatementCreate_Empty(Core::Array<Core::String> &&labels,
          Core::Origin pos)
       {
-         return static_cast<Statement::Ref>(new Statement_Empty(std::move(labels), pos));
+         return static_cast<Statement::CRef>(
+            new Statement_Empty(std::move(labels), pos));
       }
    }
 }
