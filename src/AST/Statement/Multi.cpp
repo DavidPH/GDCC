@@ -75,42 +75,42 @@ namespace GDCC
       //
       // StatementCreate_Multi
       //
-      Statement::Ref StatementCreate_Multi(
+      Statement::CRef StatementCreate_Multi(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         Core::Array<Statement::Ref> const &stmnts)
+         Core::Array<Statement::CRef> const &stmnts)
       {
-         return static_cast<Statement::Ref>(
+         return static_cast<Statement::CRef>(
             new Statement_Multi(labels, pos, stmnts));
       }
 
       //
       // StatementCreate_Multi
       //
-      Statement::Ref StatementCreate_Multi(
+      Statement::CRef StatementCreate_Multi(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         Core::Array<Statement::Ref> &&stmnts)
+         Core::Array<Statement::CRef> &&stmnts)
       {
-         return static_cast<Statement::Ref>(
+         return static_cast<Statement::CRef>(
             new Statement_Multi(labels, pos, std::move(stmnts)));
       }
 
       //
       // StatementCreate_Multi
       //
-      Statement::Ref StatementCreate_Multi(Core::Array<Core::String> &&labels,
-         Core::Origin pos, Core::Array<Statement::Ref> const &stmnts)
+      Statement::CRef StatementCreate_Multi(Core::Array<Core::String> &&labels,
+         Core::Origin pos, Core::Array<Statement::CRef> const &stmnts)
       {
-         return static_cast<Statement::Ref>(
+         return static_cast<Statement::CRef>(
             new Statement_Multi(std::move(labels), pos, stmnts));
       }
 
       //
       // StatementCreate_Multi
       //
-      Statement::Ref StatementCreate_Multi(Core::Array<Core::String> &&labels,
-         Core::Origin pos, Core::Array<Statement::Ref> &&stmnts)
+      Statement::CRef StatementCreate_Multi(Core::Array<Core::String> &&labels,
+         Core::Origin pos, Core::Array<Statement::CRef> &&stmnts)
       {
-         return static_cast<Statement::Ref>(
+         return static_cast<Statement::CRef>(
             new Statement_Multi(std::move(labels), pos, std::move(stmnts)));
       }
    }

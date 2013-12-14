@@ -86,24 +86,24 @@ namespace GDCC
 {
    namespace AST
    {
-      Statement::Ref StatementCreate_Empty(
+      Statement::CRef StatementCreate_Empty(
          Core::Array<Core::String> const &labels, Core::Origin pos);
-      Statement::Ref StatementCreate_Empty(
+      Statement::CRef StatementCreate_Empty(
          Core::Array<Core::String>      &&labels, Core::Origin pos);
 
-      Statement::Ref StatementCreate_Exp(
+      Statement::CRef StatementCreate_Exp(
          Core::Array<Core::String> const &labels, Core::Origin pos, Exp *exp);
-      Statement::Ref StatementCreate_Exp(
+      Statement::CRef StatementCreate_Exp(
          Core::Array<Core::String>      &&labels, Core::Origin pos, Exp *exp);
 
-      Statement::Ref StatementCreate_Multi(Core::Array<Core::String> const &labels,
-         Core::Origin pos, Core::Array<Statement::Ref> const &stmnts);
-      Statement::Ref StatementCreate_Multi(Core::Array<Core::String> const &labels,
-         Core::Origin pos, Core::Array<Statement::Ref>      &&stmnts);
-      Statement::Ref StatementCreate_Multi(Core::Array<Core::String>      &&labels,
-         Core::Origin pos, Core::Array<Statement::Ref> const &stmnts);
-      Statement::Ref StatementCreate_Multi(Core::Array<Core::String>      &&labels,
-         Core::Origin pos, Core::Array<Statement::Ref>      &&stmnts);
+      Statement::CRef StatementCreate_Multi(Core::Array<Core::String> const &labels,
+         Core::Origin pos, Core::Array<Statement::CRef> const &stmnts);
+      Statement::CRef StatementCreate_Multi(Core::Array<Core::String> const &labels,
+         Core::Origin pos, Core::Array<Statement::CRef>      &&stmnts);
+      Statement::CRef StatementCreate_Multi(Core::Array<Core::String>      &&labels,
+         Core::Origin pos, Core::Array<Statement::CRef> const &stmnts);
+      Statement::CRef StatementCreate_Multi(Core::Array<Core::String>      &&labels,
+         Core::Origin pos, Core::Array<Statement::CRef>      &&stmnts);
    }
 }
 
