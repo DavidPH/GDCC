@@ -16,6 +16,7 @@
 #include "CPP/MacroTBuf.hpp"
 
 #include <iostream>
+#include <vector>
 
 
 //----------------------------------------------------------------------------|

@@ -15,6 +15,7 @@
 #include "CPP/Macro.hpp"
 
 #include <iostream>
+#include <vector>
 
 
 //----------------------------------------------------------------------------|
