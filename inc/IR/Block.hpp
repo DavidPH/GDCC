@@ -49,10 +49,10 @@ namespace GDCC
 
 
          Block() = default;
-         Block(Block &&block) = default;
+         Block(Block &&) = default;
          ~Block() {while(head.next != &head) delete head.next;}
 
-         Block &operator = (Block &&block) = default;
+         Block &operator = (Block &&) = default;
 
          Block &addLabel(Core::String lab) {labs.push_back(lab); return *this;}
 

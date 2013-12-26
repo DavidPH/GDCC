@@ -124,7 +124,7 @@ namespace GDCC
             }
 
             putByte('\0');
-         };
+         }
 
          //
          // Info::putString
@@ -170,7 +170,7 @@ namespace GDCC
             }
 
             putChar('\0');
-         };
+         }
 
          //
          // Info::putWord

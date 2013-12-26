@@ -169,7 +169,7 @@ namespace GDCC
             }
 
             return len + 1;
-         };
+         }
 
          //
          // Info::resolveGlyph

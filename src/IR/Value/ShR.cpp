@@ -21,7 +21,7 @@ namespace GDCC
 {
    namespace IR
    {
-      GDCC_IR_ValueBinOpImplEq(>>, Fixed);
+      GDCC_IR_ValueBinOpImplEq(>>, Fixed)
 
       //
       // Type::PromoteShR

@@ -21,8 +21,8 @@ namespace GDCC
 {
    namespace IR
    {
-      GDCC_IR_ValueBinOpImplEq(+, Fixed);
-      GDCC_IR_ValueBinOpImplEq(+, Float);
+      GDCC_IR_ValueBinOpImplEq(+, Fixed)
+      GDCC_IR_ValueBinOpImplEq(+, Float)
 
       Value_Point operator + (Value_Fixed const &l, Value_Point const &r)
          {auto rt = r; return rt += l;}
