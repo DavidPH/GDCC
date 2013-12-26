@@ -16,6 +16,7 @@
 ##
 
 add_library(gdcc-cc-lib
+   Scope.cpp
 )
 
 add_executable(gdcc-cc
