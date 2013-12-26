@@ -242,6 +242,63 @@ namespace GDCC
       }
 
       //
+      // Info::putBlock
+      //
+      void Info::putBlock()
+      {
+         for(auto &stmnt_ : *block)
+            putStmnt(stmnt_);
+      }
+
+      //
+      // Info::putBlock
+      //
+      void Info::putBlock(IR::Block &block_)
+      {
+         TryPointer(putBlock, block);
+      }
+
+      //
+      // Info::putFunc
+      //
+      void Info::putFunc()
+      {
+         putBlock(func->block);
+      }
+
+      //
+      // Info::putFunc
+      //
+      void Info::putFunc(IR::Function &func_)
+      {
+         TryPointer(putFunc, func);
+      }
+
+      //
+      // Info::putSpace
+      //
+      void Info::putSpace(IR::Space &space_)
+      {
+         TryPointer(putSpace, space);
+      }
+
+      //
+      // Info::putStmnt
+      //
+      void Info::putStmnt(IR::Statement &stmnt_)
+      {
+         TryPointer(putStmnt, stmnt);
+      }
+
+      //
+      // Info::putStr
+      //
+      void Info::putStr(IR::StrEnt &str_)
+      {
+         TryPointer(putStr, str);
+      }
+
+      //
       // Info::tr
       //
       void Info::tr()

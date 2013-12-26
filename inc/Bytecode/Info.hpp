@@ -109,6 +109,16 @@ namespace GDCC
                  void preStr(IR::StrEnt &str);
 
          virtual void put() = 0;
+         virtual void putBlock();
+                 void putBlock(IR::Block &block);
+         virtual void putFunc();
+                 void putFunc(IR::Function &func);
+         virtual void putSpace() {}
+                 void putSpace(IR::Space &space);
+         virtual void putStmnt() {}
+                 void putStmnt(IR::Statement &stmnt);
+         virtual void putStr() {}
+                 void putStr(IR::StrEnt &str);
 
          virtual void tr();
          virtual void trBlock();

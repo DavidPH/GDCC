@@ -137,8 +137,6 @@ namespace GDCC
 
             virtual void put();
 
-            void putBlock(IR::Block &block);
-
             void putByte(Core::FastU i) {out->put(i & 0xFF);}
 
             void putChunk();
@@ -162,13 +160,13 @@ namespace GDCC
             void putChunkSTRL();
             void putChunkSVCT();
 
-            void putData(char const *str, std::size_t len) {out->write(str, len);}
+            void putData(char const *s, std::size_t len) {out->write(s, len);}
 
             void putExpWord(IR::Exp const *exp);
 
             void putHWord(Core::FastU i);
 
-            void putStmnt();
+            virtual void putStmnt();
             void putStmnt_Call();
             void putStmnt_Cspe();
             void putStmnt_Move_W();

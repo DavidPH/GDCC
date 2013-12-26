@@ -52,26 +52,6 @@ namespace GDCC
          }
 
          //
-         // Info::putBlock
-         //
-         void Info::putBlock(IR::Block &block)
-         {
-            try
-            {
-               auto end   = static_cast<IR::Statement *>(block.end());
-                  stmnt = static_cast<IR::Statement *>(block.begin());
-               for(; stmnt != end; stmnt = stmnt->next)
-                  putStmnt();
-               stmnt = nullptr;
-            }
-            catch(...)
-            {
-               stmnt = nullptr;
-               throw;
-            }
-         }
-
-         //
          // Info::putExp
          //
          void Info::putExp(IR::Exp const *exp)
@@ -142,10 +122,8 @@ namespace GDCC
          //
          // Info::putFunc
          //
-         void Info::putFunc(IR::Function &func_)
+         void Info::putFunc()
          {
-            func = &func_;
-
             // Put the function header.
             *out << "function" << '\0' << func->glyph << '\0'
                << '{' << '\0'
@@ -162,8 +140,6 @@ namespace GDCC
             putBlock(func->block);
 
             *out << '}' << '\0';
-
-            func = nullptr;
          }
 
          //
@@ -171,9 +147,9 @@ namespace GDCC
          //
          void Info::putGlyph(IR::Glyph glyph)
          {
-            auto str = static_cast<Core::String>(glyph);
+            auto s = static_cast<Core::String>(glyph);
 
-            switch(str.data()[0])
+            switch(s.data()[0])
             {
             case '@':
             case '$':
@@ -183,9 +159,9 @@ namespace GDCC
             case '{':
             case '"':
             case '\'':
-               *out        << str << '\0'; break;
+               *out        << s << '\0'; break;
             default:
-               *out << '$' << str << '\0'; break;
+               *out << '$' << s << '\0'; break;
             }
          }
 

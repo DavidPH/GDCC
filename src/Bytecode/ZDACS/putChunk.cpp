@@ -66,8 +66,8 @@ namespace GDCC
 
             // Calculate size of chunk.
             off = base;
-            for(auto const &str : strs)
-               off += lenString(str);
+            for(auto const &s : strs)
+               off += lenString(s);
 
             // Write chunk header.
             putData(name, 4);
@@ -80,24 +80,24 @@ namespace GDCC
 
             // Write string offsets.
             off = base;
-            for(auto const &str : strs)
+            for(auto const &s : strs)
             {
                putWord(off);
-               off += lenString(str);
+               off += lenString(s);
             }
 
             // Write strings.
             if(junk && UseChunkSTRE)
             {
                off = base;
-               for(auto const &str : strs)
+               for(auto const &s : strs)
                {
-                  putString(str, off * 157135);
-                  off += lenString(str);
+                  putString(s, off * 157135);
+                  off += lenString(s);
                }
             }
-            else for(auto const &str : strs)
-               putString(str);
+            else for(auto const &s : strs)
+               putString(s);
          }
 
          //
@@ -223,13 +223,8 @@ namespace GDCC
             putWord(numChunkCODE);
 
             // Put statements.
-            for(auto &itr : prog->rangeFunction()) try
-            {
-               func = &itr;
-               putBlock(func->block);
-               func = nullptr;
-            }
-            catch(...) {func = nullptr; throw;}
+            for(auto &itr : prog->rangeFunction())
+               putFunc(itr);
          }
 
          //
@@ -241,7 +236,7 @@ namespace GDCC
 
             Core::Array<Core::String> strs{numChunkFNAM};
 
-            for(auto &str : strs) str = Core::STR_;
+            for(auto &s : strs) s = Core::STR_;
 
             for(auto const &itr : prog->rangeFunction())
             {
@@ -263,7 +258,7 @@ namespace GDCC
 
             Core::Array<IR::Function const *> funcs{numChunkFUNC};
 
-            for(auto &func : funcs) func = nullptr;
+            for(auto &f : funcs) f = nullptr;
 
             for(auto const &itr : prog->rangeFunction())
             {
@@ -276,17 +271,17 @@ namespace GDCC
             putData("FUNC", 4);
             putWord(numChunkFUNC * 8);
 
-            for(auto func : funcs)
+            for(auto f : funcs)
             {
-               if(func)
+               if(f)
                {
-                  putByte(func->param);
-                  putByte(std::max(func->localReg, func->param));
-                  putByte(!!func->retrn);
+                  putByte(f->param);
+                  putByte(std::max(f->localReg, f->param));
+                  putByte(!!f->retrn);
                   putByte(0);
 
-                  if(func->defin)
-                     putExpWord(resolveGlyph(func->label));
+                  if(f->defin)
+                     putExpWord(resolveGlyph(f->label));
                   else
                      putWord(0);
                }
@@ -324,7 +319,7 @@ namespace GDCC
             if(!numChunkMEXP) return;
 
             Core::Array<Core::String> strs{numChunkMEXP};
-            for(auto &str : strs) str = Core::STR_;
+            for(auto &s : strs) s = Core::STR_;
 
             for(auto const &itr : prog->rangeObject())
             {
@@ -442,7 +437,7 @@ namespace GDCC
 
             Core::Array<Core::String> strs{numChunkSNAM};
 
-            for(auto &str : strs) str = Core::STR_;
+            for(auto &s : strs) s = Core::STR_;
 
             for(auto const &itr : prog->rangeFunction())
             {
@@ -523,7 +518,7 @@ namespace GDCC
 
             Core::Array<Core::String> strs{numChunkSTRL};
 
-            for(auto &str : strs) str = Core::STR_;
+            for(auto &s : strs) s = Core::STR_;
 
             for(auto const &itr : prog->rangeStrEnt()) if(itr.defin)
                strs[itr.valueInt] = itr.valueStr;

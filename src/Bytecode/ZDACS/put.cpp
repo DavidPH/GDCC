@@ -62,26 +62,6 @@ namespace GDCC
          }
 
          //
-         // Info::putBlock
-         //
-         void Info::putBlock(IR::Block &block)
-         {
-            try
-            {
-               auto end   = static_cast<IR::Statement *>(block.end());
-                  stmnt = static_cast<IR::Statement *>(block.begin());
-               for(; stmnt != end; stmnt = stmnt->next)
-                  putStmnt();
-               stmnt = nullptr;
-            }
-            catch(...)
-            {
-               stmnt = nullptr;
-               throw;
-            }
-         }
-
-         //
          // Info::putExpWord
          //
          void Info::putExpWord(IR::Exp const *exp)
@@ -101,9 +81,9 @@ namespace GDCC
          //
          // Info::putString
          //
-         void Info::putString(Core::String str)
+         void Info::putString(Core::String s)
          {
-            auto const &data = str.getData();
+            auto const &data = s.getData();
 
             for(auto i = data.str, e = i + data.len; i != e; ++i) switch(*i)
             {
@@ -131,7 +111,7 @@ namespace GDCC
          //
          // Handles STRE "encrypted" strings.
          //
-         void Info::putString(Core::String str, Core::FastU key)
+         void Info::putString(Core::String s, Core::FastU key)
          {
             std::size_t idx = 0;
 
@@ -143,7 +123,7 @@ namespace GDCC
                putByte(c ^ (idx++ / 2 + key));
             };
 
-            auto const &data = str.getData();
+            auto const &data = s.getData();
 
             for(auto i = data.str, e = i + data.len; i != e; ++i) switch(*i)
             {

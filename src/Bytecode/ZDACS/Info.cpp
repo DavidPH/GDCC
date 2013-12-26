@@ -145,9 +145,9 @@ namespace GDCC
          //
          // Info::lenString
          //
-         std::size_t Info::lenString(Core::String str)
+         std::size_t Info::lenString(Core::String s)
          {
-            auto const &data = str.getData();
+            auto const &data = s.getData();
             std::size_t len = 0;
 
             for(auto i = data.str, e = i + data.len; i != e; ++i) switch(*i)

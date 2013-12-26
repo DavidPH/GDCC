@@ -30,7 +30,7 @@ namespace GDCC
       // Exp_BinaryMulSize constructor
       //
       Exp_BinaryMulSize::Exp_BinaryMulSize(Exp const *l, Exp const *r,
-         Core::Origin pos) : Super{l, r, pos}
+         Core::Origin pos_) : Super{l, r, pos_}
       {
       }
 

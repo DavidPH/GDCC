@@ -33,8 +33,8 @@ namespace GDCC
       class TStream : public Core::TokenStream
       {
       public:
-         TStream(std::streambuf &buf, Core::String file) :
-            Core::TokenStream{&tbuf}, istr{buf, file}, tbuf{istr} {}
+         TStream(std::streambuf &buf_, Core::String file) :
+            Core::TokenStream{&tbuf}, istr{buf_, file}, tbuf{istr} {}
 
       protected:
          using IStr = IStream;
