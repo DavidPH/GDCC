@@ -237,7 +237,7 @@ namespace GDCC
             FastI valE;
             std::tie(in, valE) = ParseNumberExpC(in);
 
-            if(in < 0)
+            if(valE < 0)
             {
                if(base == 10)
                   for(auto i = -valE; i--;)
@@ -245,7 +245,7 @@ namespace GDCC
                else
                   val >>= -valE;
             }
-            else if(in > 0)
+            else if(valE > 0)
             {
                if(base == 10)
                   for(auto i = valE; i--;)
