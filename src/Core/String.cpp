@@ -33,6 +33,7 @@ static std::size_t StringTableHash[StringTableHashC];
 static std::vector<GDCC::Core::StringData> StringTable =
 {
    GDCC::Core::StringData(GDCC::Core::STRNULL),
+   GDCC::Core::StringData("__VA_ARGS__", GDCC::Core::STR___VA_ARGS__),
    #define GDCC_Core_StringList(name, str) \
       GDCC::Core::StringData(str, GDCC::Core::STR_##name),
    #include "Core/StringList.hpp"
