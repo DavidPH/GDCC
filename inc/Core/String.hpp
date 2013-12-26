@@ -38,6 +38,7 @@ namespace GDCC
       enum StringIndex
       {
          STRNULL,
+         STR___VA_ARGS__, // Can't use the macro because __VA_ARGS__ is magic.
          #define GDCC_Core_StringList(name, str) STR_##name,
          #include "StringList.hpp"
          STRMAX
