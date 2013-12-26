@@ -23,8 +23,8 @@ namespace GDCC
 {
    namespace IR
    {
-      GDCC_IR_ValueBinOpImplEq(%, Fixed);
-      GDCC_IR_ValueBinOpImplEq(%, Float);
+      GDCC_IR_ValueBinOpImplEq(%, Fixed)
+      GDCC_IR_ValueBinOpImplEq(%, Float)
 
       //
       // Type::PromoteMod
