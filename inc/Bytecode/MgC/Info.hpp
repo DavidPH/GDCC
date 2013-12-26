@@ -34,13 +34,12 @@ namespace GDCC
          protected:
             virtual void put();
 
-            void putBlock(IR::Block &block);
-
             void putExp(IR::Exp const *exp);
 
             void putGlyph(IR::Glyph glyph);
 
-            void putFunc(IR::Function &func);
+            virtual void putFunc();
+            using InfoBase::putFunc;
 
             void putObj(IR::Object const &obj);
             void putObjValue(IR::Value const &val);
@@ -48,7 +47,7 @@ namespace GDCC
 
             void putValue(IR::Value const &val);
 
-            void putStmnt();
+            virtual void putStmnt();
             void putStmnt_Jump();
             void putStmnt_Move_W();
 

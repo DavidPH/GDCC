@@ -45,10 +45,10 @@ namespace GDCC
          //
          // constructor
          //
-         IncStream(std::streambuf &buf, Pragma &pragma, Core::String file,
+         IncStream(std::streambuf &buf_, Pragma &pragma, Core::String file,
             Core::String dir) :
             Core::TokenStream{&pbuf},
-            istr{buf, file},
+            istr{buf_, file},
             tbuf{istr},
             cdir{tbuf},
             ddir{cdir},
@@ -94,9 +94,9 @@ namespace GDCC
          //
          // constructor
          //
-         PPStream(std::streambuf &buf, Pragma &pragma, Core::String file,
+         PPStream(std::streambuf &buf_, Pragma &pragma, Core::String file,
             Core::String dir) :
-            IncStream{buf, pragma, file, dir},
+            IncStream{buf_, pragma, file, dir},
             mbuf{pbuf},
             sbuf{mbuf},
             cbuf{sbuf}
@@ -123,9 +123,9 @@ namespace GDCC
          //
          // constructor
          //
-         TStream(std::streambuf &buf, Pragma &pragma, Core::String file,
+         TStream(std::streambuf &buf_, Pragma &pragma, Core::String file,
             Core::String dir) :
-            PPStream{buf, pragma, file, dir},
+            PPStream{buf_, pragma, file, dir},
             wbuf{cbuf},
             ppbf{wbuf}
          {

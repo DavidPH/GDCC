@@ -93,8 +93,8 @@ namespace GDCC
                if(numChunkSNAM <= func->valueInt)
                   numChunkSNAM = func->valueInt + 1;
 
-               if(auto str = prog->findStrEntVal(func->valueStr))
-                  backGlyphGlyph(func->glyph, str->glyph);
+               if(auto s = prog->findStrEntVal(func->valueStr))
+                  backGlyphGlyph(func->glyph, s->glyph);
 
                break;
 

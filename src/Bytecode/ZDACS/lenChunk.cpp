@@ -68,8 +68,8 @@ namespace GDCC
             if(junk) len += 8;
 
             // Calculate size of chunk.
-            for(auto const &str : strs)
-               len += lenString(str);
+            for(auto const &s : strs)
+               len += lenString(s);
 
             return len;
          }
@@ -161,7 +161,7 @@ namespace GDCC
 
             Core::Array<Core::String> strs{numChunkFNAM};
 
-            for(auto &str : strs) str = Core::STR_;
+            for(auto &s : strs) s = Core::STR_;
 
             for(auto const &itr : prog->rangeFunction())
             {
@@ -209,7 +209,7 @@ namespace GDCC
             if(!numChunkMEXP) return 0;
 
             Core::Array<Core::String> strs{numChunkMEXP};
-            for(auto &str : strs) str = Core::STR_;
+            for(auto &s : strs) s = Core::STR_;
 
             for(auto const &itr : prog->rangeObject())
             {
@@ -280,7 +280,7 @@ namespace GDCC
 
             Core::Array<Core::String> strs{numChunkSNAM};
 
-            for(auto &str : strs) str = Core::STR_;
+            for(auto &s : strs) s = Core::STR_;
 
             for(auto const &itr : prog->rangeFunction())
             {
@@ -312,7 +312,7 @@ namespace GDCC
 
             Core::Array<Core::String> strs{numChunkSTRL};
 
-            for(auto &str : strs) str = Core::STR_;
+            for(auto &s : strs) s = Core::STR_;
 
             for(auto const &itr : prog->rangeStrEnt()) if(itr.defin)
                strs[itr.valueInt] = itr.valueStr;
