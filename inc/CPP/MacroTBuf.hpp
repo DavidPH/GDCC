@@ -41,7 +41,7 @@ namespace GDCC
 
 
 
-         explicit MacroTBuf(Core::TokenBuf &src_) : src{src_}, ignoreAll{false} {}
+         explicit MacroTBuf(Core::TokenBuf &src_) : src(src_), ignoreAll{false} {}
 
       protected:
          void applyMarker(Core::String str);

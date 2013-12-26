@@ -182,7 +182,7 @@ namespace GDCC
       AST::Function::Ptr Scope::findFunction(Core::String name) const
       {
          auto fn = tableFunc.find(name);
-         return fn == tableFunc.end() ? nullptr : fn->second;
+         return fn == tableFunc.end() ? nullptr : &*fn->second;
       }
 
       //
@@ -191,7 +191,7 @@ namespace GDCC
       AST::Object::Ptr Scope::findObject(Core::String name) const
       {
          auto obj = tableObj.find(name);
-         return obj == tableObj.end() ? nullptr : obj->second;
+         return obj == tableObj.end() ? nullptr : &*obj->second;
       }
 
       //
@@ -200,7 +200,7 @@ namespace GDCC
       AST::Space::Ptr Scope::findSpace(Core::String name) const
       {
          auto space = tableSpace.find(name);
-         return space == tableSpace.end() ? nullptr : space->second;
+         return space == tableSpace.end() ? nullptr : &*space->second;
       }
 
       //
@@ -209,7 +209,7 @@ namespace GDCC
       AST::Type::CPtr Scope::findType(Core::String name) const
       {
          auto type = tableType.find(name);
-         return type == tableType.end() ? nullptr : type->second;
+         return type == tableType.end() ? nullptr : &*type->second;
       }
 
       //

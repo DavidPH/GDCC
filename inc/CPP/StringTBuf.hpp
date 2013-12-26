@@ -31,7 +31,7 @@ namespace GDCC
       class StringTBuf : public Core::TokenBuf
       {
       public:
-         StringTBuf(Core::TokenBuf &src_) : src{src_} {sett(buf, buf + 1, buf + 1);}
+         StringTBuf(Core::TokenBuf &src_) : src(src_) {sett(buf, buf + 1, buf + 1);}
 
       protected:
          //

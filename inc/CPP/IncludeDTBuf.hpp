@@ -38,8 +38,8 @@ namespace GDCC
          IncludeDTBuf(Core::TokenBuf &src_, IStream &istr_, Pragma &pragma_,
             Core::String dir_) :
             DirectiveTBuf{src_},
-            istr{istr_},
-            pragma{pragma_},
+            istr(istr_),
+            pragma(pragma_),
             dir{dir_}
          {
          }

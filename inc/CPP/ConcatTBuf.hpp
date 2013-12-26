@@ -32,7 +32,7 @@ namespace GDCC
       class ConcatTBuf : public Core::TokenBuf
       {
       public:
-         ConcatTBuf(Core::TokenBuf &src_) : src{src_} {}
+         ConcatTBuf(Core::TokenBuf &src_) : src(src_) {}
 
       protected:
          virtual void underflow();
