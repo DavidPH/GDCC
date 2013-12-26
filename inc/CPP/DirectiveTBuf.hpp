@@ -35,7 +35,7 @@ namespace GDCC
       class DirectiveTBuf : public Core::TokenBuf
       {
       public:
-         explicit DirectiveTBuf(Core::TokenBuf &src_) : src{src_},
+         explicit DirectiveTBuf(Core::TokenBuf &src_) : src(src_),
             buf{Core::TokenEOF}, endl{true} {sett(buf, buf + 1, buf + 1);}
 
       protected:

@@ -30,7 +30,7 @@ namespace GDCC
       class PPTokenTBuf : public Core::TokenBuf
       {
       public:
-         PPTokenTBuf(Core::TokenBuf &src_) : src{src_} {}
+         PPTokenTBuf(Core::TokenBuf &src_) : src(src_) {}
 
 
          static bool IsKeyWrd(Core::String str);

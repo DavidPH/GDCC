@@ -32,7 +32,7 @@ namespace GDCC
       {
       public:
          explicit PragmaDTBuf(Core::TokenBuf &src_, Pragma &prag_) :
-            DirectiveTBuf{src_}, prag{prag_} {}
+            DirectiveTBuf{src_}, prag(prag_) {}
 
       protected:
          virtual bool directive(Core::Token const &tok);
@@ -47,7 +47,7 @@ namespace GDCC
       {
       public:
          explicit PragmaTBuf(Core::TokenBuf &src_, Pragma &prag_) :
-            src{src_}, prag{prag_}, buf{Core::TokenEOF} {sett(buf, buf + 1, buf + 1);}
+            src(src_), prag(prag_), buf{Core::TokenEOF} {sett(buf, buf + 1, buf + 1);}
 
       protected:
          virtual void underflow();

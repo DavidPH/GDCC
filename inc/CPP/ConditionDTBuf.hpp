@@ -68,7 +68,7 @@ namespace GDCC
       class DefinedTBuf : public Core::TokenBuf
       {
       public:
-         explicit DefinedTBuf(Core::TokenBuf &src_) : src{src_} {}
+         explicit DefinedTBuf(Core::TokenBuf &src_) : src(src_) {}
 
       protected:
          virtual void underflow();
@@ -85,7 +85,7 @@ namespace GDCC
       class IdentiTBuf : public Core::TokenBuf
       {
       public:
-         explicit IdentiTBuf(Core::TokenBuf &src_) : src{src_} {}
+         explicit IdentiTBuf(Core::TokenBuf &src_) : src(src_) {}
 
       protected:
          virtual void underflow();

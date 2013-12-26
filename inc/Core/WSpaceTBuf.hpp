@@ -30,7 +30,7 @@ namespace GDCC
       class WSpaceTBuf : public TokenBuf
       {
       public:
-         WSpaceTBuf(TokenBuf &src_) : src{src_} {sett(buf, buf + 1, buf + 1);}
+         WSpaceTBuf(TokenBuf &src_) : src(src_) {sett(buf, buf + 1, buf + 1);}
 
       protected:
          //
