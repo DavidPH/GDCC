@@ -17,12 +17,16 @@
 
 add_library(gdcc-ast-lib
    Arg.cpp
+   Attribute.cpp
    Exp.cpp
    Exp/Binary.cpp
    Exp/BinaryMulSize.cpp
    Exp/ValueArg.cpp
    Exp/ValueIRExp.cpp
    Exp/genStmntMove.cpp
+   Function.cpp
+   Object.cpp
+   Space.cpp
    Statement.cpp
    Statement/Empty.cpp
    Statement/Exp.cpp
