@@ -23,9 +23,9 @@ namespace GDCC
 {
    namespace IR
    {
-      GDCC_IR_Exp_UnaryImplCreate(Add);
-      GDCC_IR_Exp_UnaryImplCreate(Not);
-      GDCC_IR_Exp_UnaryImplCreate(Sub);
+      GDCC_IR_Exp_UnaryImplCreate(Add)
+      GDCC_IR_Exp_UnaryImplCreate(Not)
+      GDCC_IR_Exp_UnaryImplCreate(Sub)
 
       Exp::CRef ExpCreate_UnaryCst(Type const &t, Exp const *e)
          {return static_cast<Exp::CRef>(new Exp_UnaryCst(t, e, e->pos));}
