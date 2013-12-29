@@ -6,15 +6,13 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Abstract Syntax Tree generalized attribute handling.
+// Base GDCC exception classes.
 //
 //-----------------------------------------------------------------------------
 
-#include "AST/Attribute.hpp"
+#include "Core/Exception.hpp"
 
-#include "AST/Type.hpp"
-
-#include "IR/Linkage.hpp"
+#include <sstream>
 
 
 //----------------------------------------------------------------------------|
@@ -23,34 +21,28 @@
 
 namespace GDCC
 {
-   namespace AST
+   namespace Core
    {
       //
-      // Attribute constructor
+      // Exception::genMsg
       //
-      Attribute::Attribute() :
-         linka{IR::Linkage::None},
-         name {Core::STRNULL},
-         type {nullptr},
-
-         funcInline  {false},
-         funcNoReturn{false},
-
-         isTypedef{false},
-
-         storeAuto  {false},
-         storeExt   {false},
-         storeInt   {false},
-         storeReg   {false},
-         storeThread{false}
+      void Exception::genMsg() const
       {
+         std::ostringstream oss;
+         oss << "ERROR: " << pos << ": unknown error";
+         auto const &tmp = oss.str();
+         msg = StrDup(tmp.data(), tmp.size());
       }
 
       //
-      // Attribute destructor
+      // ExceptStr::genMsg
       //
-      Attribute::~Attribute()
+      void ExceptStr::genMsg() const
       {
+         std::ostringstream oss;
+         oss << "ERROR: " << pos << ": " << str;
+         auto const &tmp = oss.str();
+         msg = StrDup(tmp.data(), tmp.size());
       }
    }
 }

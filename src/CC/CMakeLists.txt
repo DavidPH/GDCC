@@ -16,6 +16,8 @@
 ##
 
 add_library(gdcc-cc-lib
+   Parse/DeclSpec.cpp
+   Parse/TypeQual.cpp
    Scope.cpp
 )
 

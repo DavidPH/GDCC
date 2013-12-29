@@ -25,6 +25,7 @@ namespace GDCC
 {
    namespace IR
    {
+      enum class AddrBase;
       enum class Linkage;
 
       class Exp;
@@ -47,6 +48,7 @@ namespace GDCC
          Core::String glyph;
          IR::Linkage  linka;
          Core::String name;
+         IR::AddrBase space;
          IRExpCPtr    value;
 
          bool         defin : 1; // Is defined?

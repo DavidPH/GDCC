@@ -44,6 +44,17 @@ namespace GDCC
          IR::Linkage                  linka;
          Core::String                 name;
          Core::CounterPtr<Type const> type;
+
+         bool funcInline   : 1;
+         bool funcNoReturn : 1;
+
+         bool isTypedef : 1;
+
+         bool storeAuto   : 1;
+         bool storeExt    : 1;
+         bool storeInt    : 1;
+         bool storeReg    : 1;
+         bool storeThread : 1;
       };
    }
 }

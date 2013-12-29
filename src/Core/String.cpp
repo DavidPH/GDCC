@@ -314,6 +314,17 @@ namespace GDCC
 
          len_ = len; hash_ = hash;
       }
+
+      //
+      // StrDup
+      //
+      std::unique_ptr<char[]> StrDup(char const *str, std::size_t len)
+      {
+         std::unique_ptr<char[]> ptr{new char[len + 1]};
+         std::memcpy(ptr.get(), str, len);
+         ptr[len] = '\0';
+         return ptr;
+      }
    }
 
    namespace IR
