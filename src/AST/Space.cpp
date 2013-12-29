@@ -12,6 +12,7 @@
 
 #include "AST/Space.hpp"
 
+#include "IR/Addr.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 
@@ -31,6 +32,7 @@ namespace GDCC
          glyph{glyph_},
          linka{IR::Linkage::None},
          name {name_},
+         space{IR::AddrBase::Gen},
          value{nullptr},
 
          defin{false}

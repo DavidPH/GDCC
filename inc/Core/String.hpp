@@ -16,6 +16,7 @@
 #include <cstddef>
 #include <functional>
 #include <ostream>
+#include <memory>
 
 
 //----------------------------------------------------------------------------|
@@ -173,6 +174,8 @@ namespace GDCC
       std::size_t HashString(char const *str, std::size_t len, std::size_t hash = 0);
 
       void LenHashString(char const *str, std::size_t &len, std::size_t &hash);
+
+      std::unique_ptr<char[]> StrDup(char const *str, std::size_t len);
    }
 }
 

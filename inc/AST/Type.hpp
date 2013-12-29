@@ -110,13 +110,27 @@ namespace GDCC
       struct TypeQual
       {
          TypeQual() = default;
-         constexpr explicit TypeQual(IR::AddrSpace space_) : space{space_},
+         constexpr TypeQual(bool a, bool c, bool r, bool v) :
+            space{IR::AddrBase::Gen, Core::STRNULL},
+            aAtom{a}, aCons{c}, aRest{r}, aVola{v} {}
+         constexpr TypeQual(IR::AddrBase space_) : space{space_, Core::STRNULL},
+            aAtom{false}, aCons{false}, aRest{false}, aVola{false} {}
+         constexpr TypeQual(IR::AddrSpace space_) : space{space_},
             aAtom{false}, aCons{false}, aRest{false}, aVola{false} {}
          constexpr TypeQual(IR::AddrSpace as, bool a, bool c, bool r, bool v) :
             space{as}, aAtom{a}, aCons{c}, aRest{r}, aVola{v} {}
 
          constexpr explicit operator bool () const
             {return space.base != IR::AddrBase::Gen || aAtom || aCons || aRest || aVola;}
+
+         //
+         // operator TypeQual | TypeQual
+         //
+         constexpr TypeQual operator | (TypeQual const &q) const
+         {
+            return TypeQual((q.space.base != IR::AddrBase::Gen ? q.space : space),
+               aAtom || q.aAtom, aCons || q.aCons, aRest || q.aRest, aVola || q.aVola);
+         }
 
          //
          // operator TypeQual == TypeQual
@@ -126,6 +140,20 @@ namespace GDCC
             return space == q.space &&
                aAtom == q.aAtom && aCons == q.aCons &&
                aRest == q.aRest && aVola == q.aVola;
+         }
+
+         //
+         // operator TypeQual |= TypeQual
+         //
+         TypeQual &operator |= (TypeQual const &q)
+         {
+            if(q.space.base != IR::AddrBase::Gen)
+               space = q.space;
+            aAtom = aAtom || q.aAtom;
+            aCons = aCons || q.aCons;
+            aRest = aRest || q.aRest;
+            aVola = aVola || q.aVola;
+            return *this;
          }
 
          IR::AddrSpace space;
@@ -332,6 +360,23 @@ namespace GDCC
 
          static Ref const Head, HeadV;
       };
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Global Variables                                                           |
+//
+
+namespace GDCC
+{
+   namespace AST
+   {
+      constexpr TypeQual QualNone{false, false, false, false};
+      constexpr TypeQual QualAtom{true,  false, false, false};
+      constexpr TypeQual QualCons{false, true,  false, false};
+      constexpr TypeQual QualRest{false, false, true,  false};
+      constexpr TypeQual QualVola{false, false, false, true };
    }
 }
 
