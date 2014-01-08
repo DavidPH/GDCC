@@ -85,6 +85,19 @@ namespace GDCC
    namespace Bytecode
    {
       //
+      // GetByteBitsI
+      //
+      unsigned GetByteBitsI()
+      {
+         switch(TargetCur)
+         {
+         case Target::None:      return 8;
+         case Target::ZDoom:     return 32;
+         case Target::MageCraft: return 8;
+         }
+      }
+
+      //
       // GetWordAlign
       //
       unsigned GetWordAlign()
@@ -107,6 +120,19 @@ namespace GDCC
          case Target::None:      return 1;
          case Target::ZDoom:     return 1;
          case Target::MageCraft: return 4;
+         }
+      }
+
+      //
+      // GetWordPoint
+      //
+      unsigned GetWordPoint()
+      {
+         switch(TargetCur)
+         {
+         case Target::None:      return 1;
+         case Target::ZDoom:     return 1;
+         case Target::MageCraft: return 1;
          }
       }
 

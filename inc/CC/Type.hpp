@@ -17,6 +17,28 @@
 
 
 //----------------------------------------------------------------------------|
+// Macros                                                                     |
+//
+
+#define GDCC_CC_Type_ImplGet(type, class, ...) \
+   AST::Type::CRef GetType##type() \
+      {static AST::Type::CRef t{new Type_##class(__VA_ARGS__)}; return t;}
+
+
+//----------------------------------------------------------------------------|
+// Types                                                                      |
+//
+
+namespace GDCC
+{
+   namespace AST
+   {
+      class Type;
+   }
+}
+
+
+//----------------------------------------------------------------------------|
 // Global Variables                                                           |
 //
 
@@ -24,64 +46,64 @@ namespace GDCC
 {
    namespace CC
    {
-      extern Core::CounterRef<AST::Type> TypeBool;
+      extern Core::CounterRef<AST::Type const> TypeBool;
 
-      extern Core::CounterRef<AST::Type> TypeChar;
+      extern Core::CounterRef<AST::Type const> TypeChar;
 
-      extern Core::CounterRef<AST::Type> TypeFixedPrS;
-      extern Core::CounterRef<AST::Type> TypeFixedPrSH;
-      extern Core::CounterRef<AST::Type> TypeFixedPrSL;
-      extern Core::CounterRef<AST::Type> TypeFixedPrU;
-      extern Core::CounterRef<AST::Type> TypeFixedPrUH;
-      extern Core::CounterRef<AST::Type> TypeFixedPrUL;
+      extern Core::CounterRef<AST::Type const> TypeFixedPrS;
+      extern Core::CounterRef<AST::Type const> TypeFixedPrSH;
+      extern Core::CounterRef<AST::Type const> TypeFixedPrSL;
+      extern Core::CounterRef<AST::Type const> TypeFixedPrU;
+      extern Core::CounterRef<AST::Type const> TypeFixedPrUH;
+      extern Core::CounterRef<AST::Type const> TypeFixedPrUL;
 
-      extern Core::CounterRef<AST::Type> TypeFixedSaS;
-      extern Core::CounterRef<AST::Type> TypeFixedSaSH;
-      extern Core::CounterRef<AST::Type> TypeFixedSaSL;
-      extern Core::CounterRef<AST::Type> TypeFixedSaU;
-      extern Core::CounterRef<AST::Type> TypeFixedSaUH;
-      extern Core::CounterRef<AST::Type> TypeFixedSaUL;
+      extern Core::CounterRef<AST::Type const> TypeFixedSaS;
+      extern Core::CounterRef<AST::Type const> TypeFixedSaSH;
+      extern Core::CounterRef<AST::Type const> TypeFixedSaSL;
+      extern Core::CounterRef<AST::Type const> TypeFixedSaU;
+      extern Core::CounterRef<AST::Type const> TypeFixedSaUH;
+      extern Core::CounterRef<AST::Type const> TypeFixedSaUL;
 
-      extern Core::CounterRef<AST::Type> TypeFloatCS;
-      extern Core::CounterRef<AST::Type> TypeFloatCSL;
-      extern Core::CounterRef<AST::Type> TypeFloatCSLL;
+      extern Core::CounterRef<AST::Type const> TypeFloatCS;
+      extern Core::CounterRef<AST::Type const> TypeFloatCSL;
+      extern Core::CounterRef<AST::Type const> TypeFloatCSLL;
 
-      extern Core::CounterRef<AST::Type> TypeFloatIS;
-      extern Core::CounterRef<AST::Type> TypeFloatISL;
-      extern Core::CounterRef<AST::Type> TypeFloatISLL;
+      extern Core::CounterRef<AST::Type const> TypeFloatIS;
+      extern Core::CounterRef<AST::Type const> TypeFloatISL;
+      extern Core::CounterRef<AST::Type const> TypeFloatISLL;
 
-      extern Core::CounterRef<AST::Type> TypeFloatRS;
-      extern Core::CounterRef<AST::Type> TypeFloatRSL;
-      extern Core::CounterRef<AST::Type> TypeFloatRSLL;
+      extern Core::CounterRef<AST::Type const> TypeFloatRS;
+      extern Core::CounterRef<AST::Type const> TypeFloatRSL;
+      extern Core::CounterRef<AST::Type const> TypeFloatRSLL;
 
-      extern Core::CounterRef<AST::Type> TypeFractPrS;
-      extern Core::CounterRef<AST::Type> TypeFractPrSH;
-      extern Core::CounterRef<AST::Type> TypeFractPrSL;
-      extern Core::CounterRef<AST::Type> TypeFractPrU;
-      extern Core::CounterRef<AST::Type> TypeFractPrUH;
-      extern Core::CounterRef<AST::Type> TypeFractPrUL;
+      extern Core::CounterRef<AST::Type const> TypeFractPrS;
+      extern Core::CounterRef<AST::Type const> TypeFractPrSH;
+      extern Core::CounterRef<AST::Type const> TypeFractPrSL;
+      extern Core::CounterRef<AST::Type const> TypeFractPrU;
+      extern Core::CounterRef<AST::Type const> TypeFractPrUH;
+      extern Core::CounterRef<AST::Type const> TypeFractPrUL;
 
-      extern Core::CounterRef<AST::Type> TypeFractSaS;
-      extern Core::CounterRef<AST::Type> TypeFractSaSH;
-      extern Core::CounterRef<AST::Type> TypeFractSaSL;
-      extern Core::CounterRef<AST::Type> TypeFractSaU;
-      extern Core::CounterRef<AST::Type> TypeFractSaUH;
-      extern Core::CounterRef<AST::Type> TypeFractSaUL;
+      extern Core::CounterRef<AST::Type const> TypeFractSaS;
+      extern Core::CounterRef<AST::Type const> TypeFractSaSH;
+      extern Core::CounterRef<AST::Type const> TypeFractSaSL;
+      extern Core::CounterRef<AST::Type const> TypeFractSaU;
+      extern Core::CounterRef<AST::Type const> TypeFractSaUH;
+      extern Core::CounterRef<AST::Type const> TypeFractSaUL;
 
-      extern Core::CounterRef<AST::Type> TypeIntegPrS;
-      extern Core::CounterRef<AST::Type> TypeIntegPrSH;
-      extern Core::CounterRef<AST::Type> TypeIntegPrSHH;
-      extern Core::CounterRef<AST::Type> TypeIntegPrSL;
-      extern Core::CounterRef<AST::Type> TypeIntegPrSLL;
-      extern Core::CounterRef<AST::Type> TypeIntegPrU;
-      extern Core::CounterRef<AST::Type> TypeIntegPrUH;
-      extern Core::CounterRef<AST::Type> TypeIntegPrUHH;
-      extern Core::CounterRef<AST::Type> TypeIntegPrUL;
-      extern Core::CounterRef<AST::Type> TypeIntegPrULL;
+      extern Core::CounterRef<AST::Type const> TypeIntegPrS;
+      extern Core::CounterRef<AST::Type const> TypeIntegPrSH;
+      extern Core::CounterRef<AST::Type const> TypeIntegPrSHH;
+      extern Core::CounterRef<AST::Type const> TypeIntegPrSL;
+      extern Core::CounterRef<AST::Type const> TypeIntegPrSLL;
+      extern Core::CounterRef<AST::Type const> TypeIntegPrU;
+      extern Core::CounterRef<AST::Type const> TypeIntegPrUH;
+      extern Core::CounterRef<AST::Type const> TypeIntegPrUHH;
+      extern Core::CounterRef<AST::Type const> TypeIntegPrUL;
+      extern Core::CounterRef<AST::Type const> TypeIntegPrULL;
 
-      extern Core::CounterRef<AST::Type> TypeStr;
+      extern Core::CounterRef<AST::Type const> TypeStr;
 
-      extern Core::CounterRef<AST::Type> TypeVoid;
+      extern Core::CounterRef<AST::Type const> TypeVoid;
    }
 }
 
@@ -94,64 +116,64 @@ namespace GDCC
 {
    namespace CC
    {
-      Core::CounterRef<AST::Type> GetTypeBool();
+      Core::CounterRef<AST::Type const> GetTypeBool();
 
-      Core::CounterRef<AST::Type> GetTypeChar();
+      Core::CounterRef<AST::Type const> GetTypeChar();
 
-      Core::CounterRef<AST::Type> GetTypeFixedPrS();
-      Core::CounterRef<AST::Type> GetTypeFixedPrSH();
-      Core::CounterRef<AST::Type> GetTypeFixedPrSL();
-      Core::CounterRef<AST::Type> GetTypeFixedPrU();
-      Core::CounterRef<AST::Type> GetTypeFixedPrUH();
-      Core::CounterRef<AST::Type> GetTypeFixedPrUL();
+      Core::CounterRef<AST::Type const> GetTypeFixedPrS();
+      Core::CounterRef<AST::Type const> GetTypeFixedPrSH();
+      Core::CounterRef<AST::Type const> GetTypeFixedPrSL();
+      Core::CounterRef<AST::Type const> GetTypeFixedPrU();
+      Core::CounterRef<AST::Type const> GetTypeFixedPrUH();
+      Core::CounterRef<AST::Type const> GetTypeFixedPrUL();
 
-      Core::CounterRef<AST::Type> GetTypeFixedSaS();
-      Core::CounterRef<AST::Type> GetTypeFixedSaSH();
-      Core::CounterRef<AST::Type> GetTypeFixedSaSL();
-      Core::CounterRef<AST::Type> GetTypeFixedSaU();
-      Core::CounterRef<AST::Type> GetTypeFixedSaUH();
-      Core::CounterRef<AST::Type> GetTypeFixedSaUL();
+      Core::CounterRef<AST::Type const> GetTypeFixedSaS();
+      Core::CounterRef<AST::Type const> GetTypeFixedSaSH();
+      Core::CounterRef<AST::Type const> GetTypeFixedSaSL();
+      Core::CounterRef<AST::Type const> GetTypeFixedSaU();
+      Core::CounterRef<AST::Type const> GetTypeFixedSaUH();
+      Core::CounterRef<AST::Type const> GetTypeFixedSaUL();
 
-      Core::CounterRef<AST::Type> GetTypeFloatCS();
-      Core::CounterRef<AST::Type> GetTypeFloatCSL();
-      Core::CounterRef<AST::Type> GetTypeFloatCSLL();
+      Core::CounterRef<AST::Type const> GetTypeFloatCS();
+      Core::CounterRef<AST::Type const> GetTypeFloatCSL();
+      Core::CounterRef<AST::Type const> GetTypeFloatCSLL();
 
-      Core::CounterRef<AST::Type> GetTypeFloatIS();
-      Core::CounterRef<AST::Type> GetTypeFloatISL();
-      Core::CounterRef<AST::Type> GetTypeFloatISLL();
+      Core::CounterRef<AST::Type const> GetTypeFloatIS();
+      Core::CounterRef<AST::Type const> GetTypeFloatISL();
+      Core::CounterRef<AST::Type const> GetTypeFloatISLL();
 
-      Core::CounterRef<AST::Type> GetTypeFloatRS();
-      Core::CounterRef<AST::Type> GetTypeFloatRSL();
-      Core::CounterRef<AST::Type> GetTypeFloatRSLL();
+      Core::CounterRef<AST::Type const> GetTypeFloatRS();
+      Core::CounterRef<AST::Type const> GetTypeFloatRSL();
+      Core::CounterRef<AST::Type const> GetTypeFloatRSLL();
 
-      Core::CounterRef<AST::Type> GetTypeFractPrS();
-      Core::CounterRef<AST::Type> GetTypeFractPrSH();
-      Core::CounterRef<AST::Type> GetTypeFractPrSL();
-      Core::CounterRef<AST::Type> GetTypeFractPrU();
-      Core::CounterRef<AST::Type> GetTypeFractPrUH();
-      Core::CounterRef<AST::Type> GetTypeFractPrUL();
+      Core::CounterRef<AST::Type const> GetTypeFractPrS();
+      Core::CounterRef<AST::Type const> GetTypeFractPrSH();
+      Core::CounterRef<AST::Type const> GetTypeFractPrSL();
+      Core::CounterRef<AST::Type const> GetTypeFractPrU();
+      Core::CounterRef<AST::Type const> GetTypeFractPrUH();
+      Core::CounterRef<AST::Type const> GetTypeFractPrUL();
 
-      Core::CounterRef<AST::Type> GetTypeFractSaS();
-      Core::CounterRef<AST::Type> GetTypeFractSaSH();
-      Core::CounterRef<AST::Type> GetTypeFractSaSL();
-      Core::CounterRef<AST::Type> GetTypeFractSaU();
-      Core::CounterRef<AST::Type> GetTypeFractSaUH();
-      Core::CounterRef<AST::Type> GetTypeFractSaUL();
+      Core::CounterRef<AST::Type const> GetTypeFractSaS();
+      Core::CounterRef<AST::Type const> GetTypeFractSaSH();
+      Core::CounterRef<AST::Type const> GetTypeFractSaSL();
+      Core::CounterRef<AST::Type const> GetTypeFractSaU();
+      Core::CounterRef<AST::Type const> GetTypeFractSaUH();
+      Core::CounterRef<AST::Type const> GetTypeFractSaUL();
 
-      Core::CounterRef<AST::Type> GetTypeIntegPrS();
-      Core::CounterRef<AST::Type> GetTypeIntegPrSH();
-      Core::CounterRef<AST::Type> GetTypeIntegPrSHH();
-      Core::CounterRef<AST::Type> GetTypeIntegPrSL();
-      Core::CounterRef<AST::Type> GetTypeIntegPrSLL();
-      Core::CounterRef<AST::Type> GetTypeIntegPrU();
-      Core::CounterRef<AST::Type> GetTypeIntegPrUH();
-      Core::CounterRef<AST::Type> GetTypeIntegPrUHH();
-      Core::CounterRef<AST::Type> GetTypeIntegPrUL();
-      Core::CounterRef<AST::Type> GetTypeIntegPrULL();
+      Core::CounterRef<AST::Type const> GetTypeIntegPrS();
+      Core::CounterRef<AST::Type const> GetTypeIntegPrSH();
+      Core::CounterRef<AST::Type const> GetTypeIntegPrSHH();
+      Core::CounterRef<AST::Type const> GetTypeIntegPrSL();
+      Core::CounterRef<AST::Type const> GetTypeIntegPrSLL();
+      Core::CounterRef<AST::Type const> GetTypeIntegPrU();
+      Core::CounterRef<AST::Type const> GetTypeIntegPrUH();
+      Core::CounterRef<AST::Type const> GetTypeIntegPrUHH();
+      Core::CounterRef<AST::Type const> GetTypeIntegPrUL();
+      Core::CounterRef<AST::Type const> GetTypeIntegPrULL();
 
-      Core::CounterRef<AST::Type> GetTypeStr();
+      Core::CounterRef<AST::Type const> GetTypeStr();
 
-      Core::CounterRef<AST::Type> GetTypeVoid();
+      Core::CounterRef<AST::Type const> GetTypeVoid();
    }
 }
 
