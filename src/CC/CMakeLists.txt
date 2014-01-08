@@ -19,6 +19,13 @@ add_library(gdcc-cc-lib
    Parse/DeclSpec.cpp
    Parse/TypeQual.cpp
    Scope.cpp
+   Type.cpp
+   Type/Bool.cpp
+   Type/Char.cpp
+   Type/Fixed.cpp
+   Type/Float.cpp
+   Type/Str.cpp
+   Type/Void.cpp
 )
 
 add_executable(gdcc-cc

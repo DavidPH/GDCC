@@ -67,8 +67,10 @@ namespace GDCC
 {
    namespace Bytecode
    {
+      unsigned GetByteBitsI();
       unsigned GetWordAlign();
       unsigned GetWordBytes();
+      unsigned GetWordPoint();
       unsigned GetWordShift();
    }
 }
