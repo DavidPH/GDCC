@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,9 +12,75 @@
 
 #include "Bytecode/Platform.hpp"
 
+#include "Core/Option.hpp"
 #include "Core/String.hpp"
 
-#include "Option/Option.hpp"
+#include "Option/Exception.hpp"
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+//
+// --bc-format
+//
+static GDCC::Option::Function FormatOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-format")
+      .setGroup("output")
+      .setDescS("Selects output format."),
+
+   [](GDCC::Option::Base *, GDCC::Option::Args const &args) -> std::size_t
+   {
+      if(!args.argC)
+         GDCC::Option::Exception::Error(args, "argument required");
+
+      switch(static_cast<GDCC::Core::StringIndex>(GDCC::Core::FindString(args.argV[0])))
+      {
+      case GDCC::Core::STR_ACSE:
+         GDCC::Bytecode::FormatCur = GDCC::Bytecode::Format::ACSE;    break;
+      case GDCC::Core::STR_MgC_NTS:
+         GDCC::Bytecode::FormatCur = GDCC::Bytecode::Format::MgC_NTS; break;
+
+      default:
+         GDCC::Option::Exception::Error(args, "argument invalid");
+      }
+
+      return 1;
+   }
+};
+
+//
+// --bc-target
+//
+static GDCC::Option::Function TargetOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-target")
+      .setGroup("output")
+      .setDescS("Selects target engine."),
+
+   [](GDCC::Option::Base *, GDCC::Option::Args const &args) -> std::size_t
+   {
+      if(!args.argC)
+         GDCC::Option::Exception::Error(args, "argument required");
+
+      switch(static_cast<GDCC::Core::StringIndex>(GDCC::Core::FindString(args.argV[0])))
+      {
+      case GDCC::Core::STR_MageCraft:
+         GDCC::Bytecode::TargetCur = GDCC::Bytecode::Target::MageCraft; break;
+      case GDCC::Core::STR_ZDoom:
+         GDCC::Bytecode::TargetCur = GDCC::Bytecode::Target::ZDoom;     break;
+
+      default:
+         GDCC::Option::Exception::Error(args, "argument invalid");
+      }
+
+      return 1;
+   }
+};
 
 
 //----------------------------------------------------------------------------|
@@ -27,51 +93,6 @@ namespace GDCC
    {
       Format FormatCur = Format::None;
       Target TargetCur = Target::None;
-   }
-
-   namespace Option
-   {
-      //
-      // --bc-format
-      //
-      OptionCall FormatOpt{'\0', "bc-format", "output", "Selects output format.",
-         nullptr, [](strp opt, uint optf, uint argc, strv argv) -> uint
-      {
-         if(!argc)
-            Exception::Error(opt, optf, "requires argument");
-
-         switch(static_cast<Core::StringIndex>(Core::FindString(argv[0])))
-         {
-         case Core::STR_ACSE:    Bytecode::FormatCur = Bytecode::Format::ACSE;    break;
-         case Core::STR_MgC_NTS: Bytecode::FormatCur = Bytecode::Format::MgC_NTS; break;
-
-         default:
-            Exception::Error(opt, optf, "invalid argument");
-         }
-
-         return 1;
-      }};
-
-      //
-      // --bc-target
-      //
-      OptionCall TargetOpt{'\0', "bc-target", "output", "Selects target engine.",
-         nullptr, [](strp opt, uint optf, uint argc, strv argv) -> uint
-      {
-         if(!argc)
-            Exception::Error(opt, optf, "requires argument");
-
-         switch(static_cast<Core::StringIndex>(Core::FindString(argv[0])))
-         {
-         case Core::STR_MageCraft: Bytecode::TargetCur = Bytecode::Target::MageCraft; break;
-         case Core::STR_ZDoom:     Bytecode::TargetCur = Bytecode::Target::ZDoom;     break;
-
-         default:
-            Exception::Error(opt, optf, "invalid argument");
-         }
-
-         return 1;
-      }};
    }
 }
 
@@ -95,6 +116,8 @@ namespace GDCC
          case Target::ZDoom:     return 32;
          case Target::MageCraft: return 8;
          }
+
+         return 0;
       }
 
       //
@@ -108,6 +131,8 @@ namespace GDCC
          case Target::ZDoom:     return 1;
          case Target::MageCraft: return 4;
          }
+
+         return 0;
       }
 
       //
@@ -121,6 +146,8 @@ namespace GDCC
          case Target::ZDoom:     return 1;
          case Target::MageCraft: return 4;
          }
+
+         return 0;
       }
 
       //
@@ -134,6 +161,8 @@ namespace GDCC
          case Target::ZDoom:     return 1;
          case Target::MageCraft: return 1;
          }
+
+         return 0;
       }
 
       //
@@ -147,6 +176,8 @@ namespace GDCC
          case Target::ZDoom:     return 1;
          case Target::MageCraft: return 4;
          }
+
+         return 0;
       }
    }
 }

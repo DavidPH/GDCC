@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,39 +12,56 @@
 
 #include "IRDump/IRDump.hpp"
 
+#include "Core/Option.hpp"
+
 #include "IR/Function.hpp"
 #include "IR/Linkage.hpp"
 
-#include "Option/Option.hpp"
+#include "Option/Bool.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Options                                                                    |
 //
 
-namespace GDCC
+//
+// --dump-block
+//
+static GDCC::Option::Bool DumpBlock
 {
-   namespace Option
-   {
-      //
-      // --dump-block
-      //
-      OptionDPtr<bool> DumpBlock{'\0', "dump-block", "output",
-         "Dump IR::Block objects.", nullptr, &IRDump::IRDumpOpt_Block};
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("dump-block")
+      .setGroup("output")
+      .setDescS("Dump IR::Block objects."),
 
-      //
-      // --dump-labels
-      //
-      OptionDPtr<bool> DumpLabels{'\0', "dump-labels", "output",
-         "Dump labels of statements.", nullptr, &IRDump::IRDumpOpt_Labels};
+   &GDCC::IRDump::IRDumpOpt_Block
+};
 
-      //
-      // --dump-origin
-      //
-      OptionDPtr<bool> DumpOrigin{'\0', "dump-origin", "output",
-         "Dump origin of statements.", nullptr, &IRDump::IRDumpOpt_Origin};
-   }
-}
+//
+// --dump-labels
+//
+static GDCC::Option::Bool DumpLabels
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("dump-labels")
+      .setGroup("output")
+      .setDescS("Dump labels of statements."),
+
+   &GDCC::IRDump::IRDumpOpt_Labels
+};
+
+//
+// --dump-origin
+//
+static GDCC::Option::Bool DumpOrigin
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("dump-origin")
+      .setGroup("output")
+      .setDescS("Dump origin of statements."),
+
+   &GDCC::IRDump::IRDumpOpt_Origin
+};
 
 
 //----------------------------------------------------------------------------|

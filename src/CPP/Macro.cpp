@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,11 +14,13 @@
 
 #include "CPP/IStream.hpp"
 
+#include "Core/Option.hpp"
 #include "Core/StreamTBuf.hpp"
 #include "Core/StringBuf.hpp"
 #include "Core/TokenStream.hpp"
 
-#include "Option/Option.hpp"
+#include "Option/Exception.hpp"
+#include "Option/Function.hpp"
 
 #include <climits>
 #include <cstring>
@@ -47,96 +49,106 @@ static GDCC::CPP::Macro Macro_TIME{GDCC::CPP::Macro::List(1)};
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Options                                                                    |
 //
 
-namespace GDCC
+//
+// -D --define
+//
+static GDCC::Option::Function Define
 {
-   namespace Option
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("define").setName('D')
+      .setGroup("preprocessor")
+      .setDescS("Adds a predefined macro."),
+
+   [](GDCC::Option::Base *, GDCC::Option::Args const &oargs) -> std::size_t
    {
-      //
-      // -D --define
-      //
-      OptionCall Define{'D', "define", "preprocessor", "Adds a predefined macro.",
-         nullptr, [](strp opt, uint optf, uint argc, strv argv) -> uint
+      using namespace GDCC;
+
+      if(!oargs.argC)
+         Option::Exception::Error(oargs, "argument required");
+
+      // Tokenize argument.
+      Core::StringBuf sbuf{oargs.argV[0], std::strlen(oargs.argV[0])};
+      CPP::IStream istr{sbuf, Core::STR_};
+      Core::StreamTBuf<CPP::IStream> tbuf{istr};
+      Core::TokenStream in{&tbuf};
+
+      if(in.peek().tok != Core::TOK_Identi)
+         Option::Exception::Error(oargs, "expected identifier");
+
+      auto             name = in.get().str;
+      CPP::Macro::Args args;
+      CPP::Macro::List list;
+      bool             func = in.drop(Core::TOK_ParenO);
+
+      // Read args.
+      if(func && !in.drop(Core::TOK_ParenC))
       {
-         if(!argc)
-            Exception::Error(opt, optf, "requires argument");
+         std::vector<Core::String> argsVec;
 
-         // Tokenize argument.
-         Core::StringBuf sbuf{argv[0], std::strlen(argv[0])};
-         CPP::IStream istr{sbuf, Core::STR_};
-         Core::StreamTBuf<CPP::IStream> tbuf{istr};
-         Core::TokenStream in{&tbuf};
-
-         if(in.peek().tok != Core::TOK_Identi)
-            Exception::Error(opt, optf, "expected identifier");
-
-         auto             name = in.get().str;
-         CPP::Macro::Args args;
-         CPP::Macro::List list;
-         bool             func = in.drop(Core::TOK_ParenO);
-
-         // Read args.
-         if(func && !in.drop(Core::TOK_ParenC))
+         do
          {
-            std::vector<Core::String> argsVec;
+            if(in.drop(Core::TOK_Dot3))
+               {argsVec.emplace_back(Core::STRNULL); break;}
 
-            do
-            {
-               if(in.drop(Core::TOK_Dot3))
-                  {argsVec.emplace_back(Core::STRNULL); break;}
+            if(in.peek().tok != Core::TOK_Identi)
+               Option::Exception::Error(oargs, "expected arg name");
 
-               if(in.peek().tok != Core::TOK_Identi)
-                  Exception::Error(opt, optf, "expected arg name");
-
-               argsVec.emplace_back(in.get().str);
-            }
-            while(in.drop(Core::TOK_Comma));
-
-            if(in.peek().tok != Core::TOK_ParenC)
-               Exception::Error(opt, optf, "expected )");
-
-            args = CPP::Macro::Args(Core::Move, argsVec.begin(), argsVec.end());
+            argsVec.emplace_back(in.get().str);
          }
+         while(in.drop(Core::TOK_Comma));
 
-         // Read list.
-         if(in.drop(Core::TOK_Equal))
-         {
-            std::vector<Core::Token> listVec;
+         if(in.peek().tok != Core::TOK_ParenC)
+            Option::Exception::Error(oargs, "expected )");
 
-            while(in.peek().tok != Core::TOK_EOF)
-               listVec.emplace_back(in.get());
+         args = CPP::Macro::Args(Core::Move, argsVec.begin(), argsVec.end());
+      }
 
-            list = CPP::Macro::List(Core::Move, listVec.begin(), listVec.end());
-         }
-
-         // Must not be any tokens left.
-         if(in.peek().tok != Core::TOK_EOF)
-            Exception::Error(opt, optf, "expected end of define");
-
-         Deltas.emplace_back(name, std::unique_ptr<CPP::Macro>(func
-            ? new CPP::Macro(std::move(args), std::move(list))
-            : new CPP::Macro(std::move(list))));
-
-         return 1;
-      }};
-
-      //
-      // -U, --undef
-      //
-      OptionCall Undef{'U', "undef", "preprocessor", "Removes a predefined macro.",
-         nullptr, [](strp opt, uint optf, uint argc, strv argv) -> uint
+      // Read list.
+      if(in.drop(Core::TOK_Equal))
       {
-         if(!argc)
-            Exception::Error(opt, optf, "requires argument");
+         std::vector<Core::Token> listVec;
 
-         Deltas.emplace_back(Core::AddString(argv[0]), nullptr);
+         while(in.peek().tok != Core::TOK_EOF)
+            listVec.emplace_back(in.get());
 
-         return 1;
-      }};
+         list = CPP::Macro::List(Core::Move, listVec.begin(), listVec.end());
+      }
+
+      // Must not be any tokens left.
+      if(in.peek().tok != Core::TOK_EOF)
+         Option::Exception::Error(oargs, "expected end of define");
+
+      Deltas.emplace_back(name, std::unique_ptr<CPP::Macro>(func
+         ? new CPP::Macro(std::move(args), std::move(list))
+         : new CPP::Macro(std::move(list))));
+
+      return 1;
    }
-}
+};
+
+//
+// -U, --undef
+//
+static GDCC::Option::Function Undef
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("undef").setName('U')
+      .setGroup("preprocessor")
+      .setDescS("Removes a predefined macro."),
+
+   [](GDCC::Option::Base *, GDCC::Option::Args const &args) -> std::size_t
+   {
+      if(!args.argC)
+         GDCC::Option::Exception::Error(args, "argument required");
+
+      Deltas.emplace_back(GDCC::Core::AddString(args.argV[0]), nullptr);
+
+      return 1;
+   }
+};
 
 
 //----------------------------------------------------------------------------|

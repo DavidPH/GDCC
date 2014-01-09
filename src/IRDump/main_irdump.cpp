@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -35,16 +35,17 @@ static void MakeIRDump()
    GDCC::IR::Program prog;
 
    // Process inputs.
-   for(auto arg = *GDCC::Option::ArgV, end = arg + *GDCC::Option::ArgC; arg != end; ++arg)
-      ProcessFile(*arg, prog);
+   for(auto const &arg : GDCC::Core::GetOptionArgs())
+      ProcessFile(arg, prog);
 
-   if(GDCC::Option::Output.data)
+   if(GDCC::Core::GetOptionOutput())
    {
-      std::fstream out{GDCC::Option::Output.data};
+      std::fstream out{GDCC::Core::GetOptionOutput()};
 
       if(!out)
       {
-         std::cerr << "couldn't open '" << GDCC::Option::Output.data << "' for writing";
+         std::cerr << "couldn't open '" << GDCC::Core::GetOptionOutput()
+            << "' for writing";
          throw EXIT_FAILURE;
       }
 
@@ -80,9 +81,9 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 //
 int main(int argc, char *argv[])
 {
-   GDCC::Option::Option::Help_Usage = "[option]... [source]...";
+   GDCC::Core::GetOptionList().usage = "[option]... [source]...";
 
-   GDCC::Option::Option::Help_DescS = "Output defaults to stdout.";
+   GDCC::Core::GetOptionList().descS = "Output defaults to stdout.";
 
    try
    {

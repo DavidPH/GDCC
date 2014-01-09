@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,25 +21,35 @@
 #include "IR/OArchive.hpp"
 #include "IR/Program.hpp"
 
+#include "Option/Bool.hpp"
+
 #include <fstream>
 #include <iostream>
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Static Variables                                                           |
 //
 
-namespace GDCC
+static bool OutputIR = false;
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+//
+// -c, --ir-output
+//
+static GDCC::Option::Bool OutputIROpt
 {
-   namespace Option
-   {
-      //
-      // -c, --ir-output
-      //
-      OptionData<bool> OutputIR{'c', "ir-output", "output",
-         "Generate a new IR file instead of bytecode.", nullptr, false};
-   }
-}
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("ir-output").setName('c')
+      .setGroup("output")
+      .setDescS("Generate a new IR file instead of bytecode."),
+
+   &OutputIR
+};
 
 
 //----------------------------------------------------------------------------|
@@ -56,17 +66,19 @@ static void MakeLinker()
    GDCC::IR::Program prog;
 
    // Process inputs.
-   for(auto arg = *GDCC::Option::ArgV, end = arg + *GDCC::Option::ArgC; arg != end; ++arg)
-      ProcessFile(*arg, prog);
+   for(auto const &arg : GDCC::Core::GetOptionArgs())
+      ProcessFile(arg, prog);
 
    // Write IR data.
-   if(GDCC::Option::OutputIR.data)
+   if(OutputIR)
    {
-      std::fstream out{GDCC::Option::Output.data, std::ios_base::binary | std::ios_base::out};
+      std::fstream out{GDCC::Core::GetOptionOutput(),
+         std::ios_base::binary | std::ios_base::out};
 
       if(!out)
       {
-         std::cerr << "couldn't open '" << GDCC::Option::Output.data << "' for writing";
+         std::cerr << "couldn't open '" << GDCC::Core::GetOptionOutput()
+            << "' for writing";
          throw EXIT_FAILURE;
       }
 
@@ -96,11 +108,13 @@ static void MakeLinker()
    info->tr(prog);
    info->gen(prog);
 
-   std::fstream out{GDCC::Option::Output.data, std::ios_base::binary | std::ios_base::out};
+   std::fstream out{GDCC::Core::GetOptionOutput(),
+      std::ios_base::binary | std::ios_base::out};
 
    if(!out)
    {
-      std::cerr << "couldn't open '" << GDCC::Option::Output.data << "' for writing";
+      std::cerr << "couldn't open '" << GDCC::Core::GetOptionOutput()
+         << "' for writing";
       throw EXIT_FAILURE;
    }
 
@@ -133,9 +147,9 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 //
 int main(int argc, char *argv[])
 {
-   GDCC::Option::Option::Help_Usage = "[option]... [source]...";
+   GDCC::Core::GetOptionList().usage = "[option]... [source]...";
 
-   GDCC::Option::Option::Help_DescS = "Output defaults to last loose argument.";
+   GDCC::Core::GetOptionList().descS = "Output defaults to last loose argument.";
 
    try
    {

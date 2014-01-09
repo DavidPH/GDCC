@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,62 +12,107 @@
 
 #include "IRDump/IRDump.hpp"
 
+#include "Core/Option.hpp"
+
 #include "IR/Program.hpp"
 
-#include "Option/Option.hpp"
+#include "Option/Bool.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Options                                                                    |
 //
 
-namespace GDCC
+//
+// --dump-function
+//
+static GDCC::Option::Bool DumpFunction
 {
-   namespace Option
-   {
-      //
-      // --dump-function
-      //
-      OptionDPtr<bool> DumpFunction{'\0', "dump-function", "output",
-      "Dump IR::Function objects.", nullptr, &IRDump::IRDumpOpt_Function};
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("dump-function")
+      .setGroup("output")
+      .setDescS("Dump IR::Function objects."),
 
-      //
-      // --dump-headers
-      //
-      OptionDPtr<bool> DumpHeaders{'\0', "dump-headers", "output",
-         "Include assembly headers in output.", nullptr, &IRDump::IRDumpOpt_Headers};
+   &GDCC::IRDump::IRDumpOpt_Function
+};
 
-      //
-      // --dump-import
-      //
-      OptionDPtr<bool> DumpImport{'\0', "dump-import", "output",
-         "Dump IR::Import objects.", nullptr, &IRDump::IRDumpOpt_Import};
+//
+// --dump-headers
+//
+static GDCC::Option::Bool DumpHeaders
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("dump-headers")
+      .setGroup("output")
+      .setDescS("Include comment headers in output."),
 
-      //
-      // --dump-object
-      //
-      OptionDPtr<bool> DumpObject{'\0', "dump-object", "output",
-         "Dump IR::Object objects.", nullptr, &IRDump::IRDumpOpt_Object};
+   &GDCC::IRDump::IRDumpOpt_Headers
+};
 
-      //
-      // --dump-space
-      //
-      OptionDPtr<bool> DumpSpace{'\0', "dump-space", "output",
-         "Dump IR::Space objects.", nullptr, &IRDump::IRDumpOpt_Space};
+//
+// --dump-import
+//
+static GDCC::Option::Bool DumpImport
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("dump-import")
+      .setGroup("output")
+      .setDescS("Dump IR::Import objects."),
 
-      //
-      // --dump-statistics
-      //
-      OptionDPtr<bool> DumpStatistics{'\0', "dump-statistics", "output",
-         "Dump overall statistics.", nullptr, &IRDump::IRDumpOpt_Statistics};
+   &GDCC::IRDump::IRDumpOpt_Import
+};
 
-      //
-      // --dump-strent
-      //
-      OptionDPtr<bool> DumpStrEnt{'\0', "dump-strent", "output",
-         "Dump IR::StrEnt objects.", nullptr, &IRDump::IRDumpOpt_StrEnt};
-   }
-}
+//
+// --dump-object
+//
+static GDCC::Option::Bool DumpObject
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("dump-object")
+      .setGroup("output")
+      .setDescS("Dump IR::Object objects."),
+
+   &GDCC::IRDump::IRDumpOpt_Object
+};
+
+//
+// --dump-space
+//
+static GDCC::Option::Bool DumpSpace
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("dump-space")
+      .setGroup("output")
+      .setDescS("Dump IR::Space objects."),
+
+   &GDCC::IRDump::IRDumpOpt_Space
+};
+
+//
+// --dump-statistics
+//
+static GDCC::Option::Bool DumpStatistics
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("dump-statistics")
+      .setGroup("output")
+      .setDescS("Dump overall statistics."),
+
+   &GDCC::IRDump::IRDumpOpt_Statistics
+};
+
+//
+// --dump-strent
+//
+static GDCC::Option::Bool DumpStrEnt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("dump-strent")
+      .setGroup("output")
+      .setDescS("Dump IR::StrEnt objects."),
+
+   &GDCC::IRDump::IRDumpOpt_StrEnt
+};
 
 
 //----------------------------------------------------------------------------|
@@ -105,7 +150,7 @@ namespace GDCC
          {
             out << ";;"; for(int i = 77; i--;) out << '-'; out << '\n';
             out << ";;\n";
-            out << ";; IR dump from gdcc-irdump " << Option::Option::Help_Version << '\n';
+            out << ";; IR dump from gdcc-irdump " << Core::GetOptionList().version << '\n';
             out << ";;\n";
             out << ";;"; for(int i = 77; i--;) out << '-'; out << '\n';
          }
