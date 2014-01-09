@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,11 +12,44 @@
 
 #include "Bytecode/ZDACS/Info.hpp"
 
+#include "Core/Option.hpp"
+
 #include "IR/Program.hpp"
 
-#include "Option/Option.hpp"
+#include "Option/Bool.hpp"
 
 #include <iostream>
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+//
+// --bc-zdacs-chunk-STRE
+//
+static GDCC::Option::Bool ChunkSTREOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-zdacs-chunk-STRE")
+      .setGroup("output")
+      .setDescS("Generates an encrypted string table."),
+
+   &GDCC::Bytecode::ZDACS::Info::UseChunkSTRE
+};
+
+//
+// --bc-zdacs-fake-ACS0
+//
+static GDCC::Option::Bool FakeACS0Opt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-zdacs-fake-ACS0")
+      .setGroup("output")
+      .setDescS("Generates a fake ACS0 header."),
+
+   &GDCC::Bytecode::ZDACS::Info::UseFakeACS0
+};
 
 
 //----------------------------------------------------------------------------|
@@ -34,23 +67,6 @@ namespace GDCC
          bool Info::UseChunkSTRE = false;
          bool Info::UseFakeACS0  = false;
       }
-   }
-
-   namespace Option
-   {
-      //
-      // --bc-zdacs-chunk-STRE
-      //
-      OptionDPtr<bool> ChunkSTREOpt{'\0', "bc-zdacs-chunk-STRE", "output",
-         "Generates an encrypted string table.", nullptr,
-         &Bytecode::ZDACS::Info::UseChunkSTRE};
-
-      //
-      // --bc-zdacs-fake-ACS0
-      //
-      OptionDPtr<bool> FakeACS0Opt{'\0', "bc-zdacs-fake-ACS0", "output",
-         "Generates a fake ACS0 header.", nullptr,
-         &Bytecode::ZDACS::Info::UseFakeACS0};
    }
 }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,38 +12,10 @@
 
 #include "Core/Option.hpp"
 
+#include "Option/Exception.hpp"
+
 #include <cstdlib>
 #include <iostream>
-
-
-//----------------------------------------------------------------------------|
-// Global Variables                                                           |
-//
-
-namespace GDCC
-{
-   namespace Option
-   {
-      //
-      // -h, --help
-      //
-      OptionCall Help{'h', "help", nullptr, "Prints usage and exits.", nullptr,
-         [](strp, uint, uint, strv) -> uint
-            {Option::PrintHelp(std::cout); std::exit(EXIT_SUCCESS);}};
-
-      //
-      // -o, --output
-      //
-      OptionCStr Output{'o', "output", "output", "Sets output file or directory.", nullptr};
-
-      //
-      // --version
-      //
-      OptionCall Version{'\0', "version", nullptr, "Prints version and exits.",
-         nullptr, [](strp, uint, uint, strv) -> uint
-            {Option::PrintVersion(std::cout); std::exit(EXIT_SUCCESS);}};
-   }
-}
 
 
 //----------------------------------------------------------------------------|
@@ -55,36 +27,120 @@ namespace GDCC
    namespace Core
    {
       //
+      // OptionList constructor
+      //
+      OptionList::OptionList() :
+         list{},
+
+         args{nullptr, Option::Base::Info(), 0},
+
+         optHelp
+         {
+            &list, Option::Base::Info()
+               .setName("help").setName('h')
+               .setDescS("Prints usage and exits."),
+
+            [](Option::Base *opt, Option::Args const &) -> std::size_t
+               {opt->list->putHelp(std::cout); throw EXIT_SUCCESS;}
+         },
+
+         optHelpLong
+         {
+            &list, Option::Base::Info()
+               .setName("help-long")
+               .setDescS("Prints full usage and exits."),
+
+            [](Option::Base *opt, Option::Args const &) -> std::size_t
+               {opt->list->putHelpLong(std::cout); throw EXIT_SUCCESS;}
+         },
+
+         optOutput
+         {
+            &list, Option::Base::Info()
+               .setName("output").setName('o')
+               .setGroup("output")
+               .setDescS("Sets output file or directory.")
+         },
+
+         optVersion
+         {
+            &list, Option::Base::Info()
+               .setName("version")
+               .setDescS("Prints version and exits."),
+
+            [](Option::Base *opt, Option::Args const &) -> std::size_t
+               {opt->list->putVersion(std::cout); throw EXIT_SUCCESS;}
+         }
+      {
+         list.processLoose = &args;
+      }
+
+      //
+      // GetOptionArgs
+      //
+      Option::CStrV &GetOptionArgs()
+      {
+         return GetOptions().args;
+      }
+
+      //
+      // GetOptionList
+      //
+      Option::Program &GetOptionList()
+      {
+         return GetOptions().list;
+      }
+
+      //
+      // GetOptionOutput
+      //
+      char const *GetOptionOutput()
+      {
+         return GetOptions().optOutput.str;
+      }
+
+      //
+      // GetOptions
+      //
+      OptionList &GetOptions()
+      {
+         static OptionList opts;
+         return opts;
+      }
+
+      //
       // InitOptions
       //
-      void InitOptions(int argc, char const *const *argv, char const *program,
+      void InitOptions(int argc, char const *const *argv, char const *name,
          bool needOutput)
       {
-         if(program) Option::Option::Help_Program = program;
+         auto &opts = GetOptions();
 
-         Option::Option::Help_Version = "v0.3.0";
+         if(name) opts.list.name = name;
+
+         opts.list.version = "v0.3.0";
 
          if(argc <= 1)
          {
-            Option::Option::PrintHelp(std::cout);
+            opts.list.putHelp(std::cout);
             throw EXIT_SUCCESS;
          }
 
          try
          {
-            Option::Option::ProcessOptions(argc - 1, argv + 1, Option::OPTF_KEEPA);
+            opts.list.process(Option::Args().setArgs(argv + 1, argc - 1).setOptKeepA());
 
             // Default output to last loose arg.
-            if(needOutput && !Option::Output.handled && *Option::ArgC)
-               Option::DefaultArgHandler.argPop(&Option::Output);
+            if(needOutput && !opts.optOutput.processed && opts.args.strC)
+               opts.args.pop(&opts.optOutput);
          }
          catch(Option::Exception const &e)
          {
-            Option::Option::PrintHelp(std::cerr << e.what() << "\n\n");
+            opts.list.putHelp(std::cerr << e.what() << "\n\n");
             throw EXIT_FAILURE;
          }
 
-         if(needOutput && (!Option::Output.handled || !Option::Output.data))
+         if(needOutput && (!opts.optOutput.processed || !opts.optOutput.str))
          {
             std::cerr << "No output specified. Use -h for usage.\n";
             throw EXIT_FAILURE;

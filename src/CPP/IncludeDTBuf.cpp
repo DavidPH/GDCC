@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,35 +15,42 @@
 #include "CPP/Macro.hpp"
 #include "CPP/TStream.hpp"
 
+#include "Core/Option.hpp"
 #include "Core/Path.hpp"
-
-#include "Option/Option.hpp"
 
 #include <fstream>
 #include <iostream>
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Options                                                                    |
 //
 
-namespace GDCC
+//
+// -i, --include
+//
+static GDCC::Option::CStrV IncludeUsr
 {
-   namespace Option
-   {
-      //
-      // -i, --include
-      //
-      OptionStrV IncludeUsr{'i', "include", "preprocessor",
-         "Adds a user include directory.", nullptr, 1};
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("include").setName('i')
+      .setGroup("preprocessor")
+      .setDescS("Adds a user include directory."),
 
-      //
-      // --sys-include
-      //
-      OptionStrV IncludeSys{'\0', "sys-include", "preprocessor",
-         "Adds a system include directory.", nullptr, 1};
-   }
-}
+   1
+};
+
+//
+// --sys-include
+//
+static GDCC::Option::CStrV IncludeSys
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("sys-include")
+      .setGroup("preprocessor")
+      .setDescS("Adds a system include directory."),
+
+   1
+};
 
 
 //----------------------------------------------------------------------------|
@@ -153,7 +160,7 @@ namespace GDCC
          std::unique_ptr<std::filebuf> fbuf{new std::filebuf()};
 
          // Try specified directories.
-         for(auto sys : Option::IncludeSys)
+         for(auto sys : IncludeSys)
          {
             auto path = Core::PathConcat(sys, name);
             if(fbuf->open(path.data(), std::ios_base::in))
@@ -187,7 +194,7 @@ namespace GDCC
          }
 
          // Try specified directories.
-         for(auto usr : Option::IncludeUsr)
+         for(auto usr : IncludeUsr)
          {
             path = Core::PathConcat(usr, name);
             if(fbuf->open(path.getData().str, std::ios_base::in))

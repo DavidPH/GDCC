@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,13 +12,45 @@
 
 #include "IRDump/IRDump.hpp"
 
+#include "Core/Option.hpp"
+
 #include "IR/Import.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/Object.hpp"
 #include "IR/Space.hpp"
 #include "IR/StrEnt.hpp"
 
-#include "Option/Option.hpp"
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+//
+// -a, --dump-all
+//
+static GDCC::Option::Function DumpAll
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("dump-all").setName('a')
+      .setGroup("output")
+      .setDescS("Enables all --dump-* options."),
+
+   [](GDCC::Option::Base *, GDCC::Option::Args const &args) -> std::size_t
+   {
+      GDCC::IRDump::IRDumpOpt_Block      = !args.optFalse;
+      GDCC::IRDump::IRDumpOpt_Function   = !args.optFalse;
+      GDCC::IRDump::IRDumpOpt_Headers    = !args.optFalse;
+      GDCC::IRDump::IRDumpOpt_Import     = !args.optFalse;
+      GDCC::IRDump::IRDumpOpt_Labels     = !args.optFalse;
+      GDCC::IRDump::IRDumpOpt_Object     = !args.optFalse;
+      GDCC::IRDump::IRDumpOpt_Origin     = !args.optFalse;
+      GDCC::IRDump::IRDumpOpt_Space      = !args.optFalse;
+      GDCC::IRDump::IRDumpOpt_Statistics = !args.optFalse;
+      GDCC::IRDump::IRDumpOpt_StrEnt     = !args.optFalse;
+
+      return 0;
+   }
+};
 
 
 //----------------------------------------------------------------------------|
@@ -39,30 +71,6 @@ namespace GDCC
       bool IRDumpOpt_Space      = false;
       bool IRDumpOpt_Statistics = false;
       bool IRDumpOpt_StrEnt     = false;
-   }
-
-   namespace Option
-   {
-      //
-      // -a, --dump-all
-      //
-      OptionCall DumpAll{'a', "dump-all", "output",
-         "Enables all --dump-* options.", nullptr,
-         [](strp, uint optf, uint, strv) -> uint
-         {
-            IRDump::IRDumpOpt_Block      = !(optf & OPTF_FALSE);
-            IRDump::IRDumpOpt_Function   = !(optf & OPTF_FALSE);
-            IRDump::IRDumpOpt_Headers    = !(optf & OPTF_FALSE);
-            IRDump::IRDumpOpt_Import     = !(optf & OPTF_FALSE);
-            IRDump::IRDumpOpt_Labels     = !(optf & OPTF_FALSE);
-            IRDump::IRDumpOpt_Object     = !(optf & OPTF_FALSE);
-            IRDump::IRDumpOpt_Origin     = !(optf & OPTF_FALSE);
-            IRDump::IRDumpOpt_Space      = !(optf & OPTF_FALSE);
-            IRDump::IRDumpOpt_Statistics = !(optf & OPTF_FALSE);
-            IRDump::IRDumpOpt_StrEnt     = !(optf & OPTF_FALSE);
-
-            return 0;
-         }};
    }
 }
 
