@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -82,9 +82,13 @@ namespace GDCC
          // Alignment specifier.
          case Core::STR__Alignas: return true;
 
-         // Typedef name or type qualifier.
+         // typedef-name
+         // type-qualifier
+         // attribute-specifier
          default:
-            return ctx->lookup(tok.str).res == Lookup::Type || IsTypeQual(in, ctx);
+            return ctx->lookup(tok.str).res == Lookup::Type ||
+               IsAttrSpec(in, ctx) ||
+               IsTypeQual(in, ctx);
          }
       }
 
@@ -164,6 +168,10 @@ namespace GDCC
          // Read declaration-specifier tokens until there are no more.
          for(;;)
          {
+            // attribute-specifier
+            if(IsAttrSpec(in, ctx))
+               {ParseAttrSpec(in, ctx, attr); continue;}
+
             auto const &tok = in.in.peek();
             if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
                break;
@@ -230,8 +238,8 @@ namespace GDCC
                // Type qualifier.
                if(IsTypeQual(in, ctx))
                {
-                  declQual |= ParseTypeQual(in, ctx);
-                  break;
+                  declQual |= GetTypeQual(in, ctx);
+                  continue;
                }
 
                goto parse_done;

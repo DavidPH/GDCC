@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -88,7 +88,7 @@ namespace GDCC
 
          explicit constexpr operator bool () const {return num != STRNULL;}
          explicit constexpr operator std::size_t () const {return num;}
-         explicit constexpr operator StringIndex () const
+         constexpr operator StringIndex () const
             {return num < STRMAX ? static_cast<StringIndex>(num) : STRNULL;}
 
          char const &operator [] (std::size_t i) const {return GetData(num).str[i];}

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -89,6 +89,18 @@ namespace GDCC
             auto const &tok = buf->peek();
             if(tok.tok == TOK_EOF)
                eof = true;
+
+            return tok;
+         }
+
+         //
+         // reget
+         //
+         Token const &reget()
+         {
+            auto const &tok = buf->reget();
+            if(tok.tok == TOK_EOF)
+               err = true;
 
             return tok;
          }
