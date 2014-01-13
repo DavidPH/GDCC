@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -53,6 +53,17 @@ namespace GDCC
                return TokenEOF;
 
             return *tcurr;
+         }
+
+         //
+         // reget
+         //
+         Token const &reget()
+         {
+            if(tcurr == tback)
+               return TokenEOF;
+
+            return tcurr[-1];
          }
 
          //

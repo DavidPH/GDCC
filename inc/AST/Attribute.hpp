@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,7 @@
 #ifndef GDCC__AST__Attribute_H__
 #define GDCC__AST__Attribute_H__
 
+#include "../Core/Array.hpp"
 #include "../Core/Counter.hpp"
 #include "../Core/String.hpp"
 
@@ -25,6 +26,7 @@ namespace GDCC
 {
    namespace IR
    {
+      enum class CallType;
       enum class Linkage;
    }
 
@@ -41,11 +43,14 @@ namespace GDCC
          Attribute();
          ~Attribute();
 
+         IR::CallType                 callt;
          IR::Linkage                  linka;
          Core::String                 name;
+         Core::Array<Attribute>       param;
          Core::CounterPtr<Type const> type;
 
          bool funcInline   : 1;
+         bool funcNoParam  : 1;
          bool funcNoReturn : 1;
 
          bool isTypedef : 1;

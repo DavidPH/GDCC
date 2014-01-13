@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,7 @@
 
 #include "AST/Type.hpp"
 
+#include "IR/Function.hpp"
 #include "IR/Linkage.hpp"
 
 
@@ -29,11 +30,14 @@ namespace GDCC
       // Attribute constructor
       //
       Attribute::Attribute() :
+         callt{IR::CallType::None},
          linka{IR::Linkage::None},
          name {Core::STRNULL},
+         param{},
          type {nullptr},
 
          funcInline  {false},
+         funcNoParam {false},
          funcNoReturn{false},
 
          isTypedef{false},

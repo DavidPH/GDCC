@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -33,6 +33,7 @@ GDCC_Core_StringList(__STDC_VERSION__, "__STDC_VERSION__")
 GDCC_Core_StringList(__TIME__, "__TIME__")
 GDCC_Core_StringList(__addrof, "__addrof")
 GDCC_Core_StringList(__adr_cpy, "__adr_cpy")
+GDCC_Core_StringList(__call, "__call")
 GDCC_Core_StringList(__far, "__far")
 GDCC_Core_StringList(__fixed, "__fixed")
 GDCC_Core_StringList(__gbl_arr, "__gbl_arr")
@@ -224,6 +225,7 @@ GDCC_Core_StringList(alloc, "alloc")
 GDCC_Core_StringList(auto, "auto")
 GDCC_Core_StringList(block, "block")
 GDCC_Core_StringList(break, "break")
+GDCC_Core_StringList(call, "call")
 GDCC_Core_StringList(case, "case")
 GDCC_Core_StringList(cast, "cast")
 GDCC_Core_StringList(char, "char")

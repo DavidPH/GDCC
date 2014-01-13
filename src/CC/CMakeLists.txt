@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013 David Hill
+## Copyright (C) 2013-2014 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -16,7 +16,9 @@
 ##
 
 add_library(gdcc-cc-lib
+   Parse/AttrSpec.cpp
    Parse/DeclSpec.cpp
+   Parse/Declarator.cpp
    Parse/TypeQual.cpp
    Scope.cpp
    Type.cpp

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -32,47 +32,9 @@ namespace GDCC
    namespace CC
    {
       //
-      // IsTypeQual
+      // GetTypeQual
       //
-      bool IsTypeQual(ParserData &in, Scope *ctx)
-      {
-         auto tok = in.in.peek();
-         if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
-            return false;
-
-         switch(static_cast<Core::StringIndex>(tok.str))
-         {
-         // Standard C qualifiers.
-         case Core::STR__Atomic:  return true;
-         case Core::STR_const:    return true;
-         case Core::STR_restrict: return true;
-         case Core::STR_volatile: return true;
-
-         // Builtin address space names.
-         case Core::STR___adr_cpy: return true;
-         case Core::STR___far:     return true;
-         case Core::STR___gbl_ars: return true;
-         case Core::STR___gbl_reg: return true;
-         case Core::STR___loc:     return true;
-         case Core::STR___loc_ars: return true;
-         case Core::STR___loc_reg: return true;
-         case Core::STR___map_ars: return true;
-         case Core::STR___map_reg: return true;
-         case Core::STR___str_ars: return true;
-         case Core::STR___va_addr: return true;
-         case Core::STR___wld_ars: return true;
-         case Core::STR___wld_reg: return true;
-
-         // Try a scope lookup for a user-defined address space.
-         default:
-            return ctx->lookup(tok.str).res == Lookup::Space;
-         }
-      }
-
-      //
-      // ParseTypeQual
-      //
-      AST::TypeQual ParseTypeQual(ParserData &in, Scope *ctx)
+      AST::TypeQual GetTypeQual(ParserData &in, Scope *ctx)
       {
          auto tok = in.in.get();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
@@ -108,6 +70,44 @@ namespace GDCC
                throw Core::ExceptStr(tok.pos, "expected qualifier");
 
             return IR::AddrSpace(lookup.resSpace->space, lookup.resSpace->glyph);
+         }
+      }
+
+      //
+      // IsTypeQual
+      //
+      bool IsTypeQual(ParserData &in, Scope *ctx)
+      {
+         auto tok = in.in.peek();
+         if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
+            return false;
+
+         switch(static_cast<Core::StringIndex>(tok.str))
+         {
+         // Standard C qualifiers.
+         case Core::STR__Atomic:  return true;
+         case Core::STR_const:    return true;
+         case Core::STR_restrict: return true;
+         case Core::STR_volatile: return true;
+
+         // Builtin address space names.
+         case Core::STR___adr_cpy: return true;
+         case Core::STR___far:     return true;
+         case Core::STR___gbl_ars: return true;
+         case Core::STR___gbl_reg: return true;
+         case Core::STR___loc:     return true;
+         case Core::STR___loc_ars: return true;
+         case Core::STR___loc_reg: return true;
+         case Core::STR___map_ars: return true;
+         case Core::STR___map_reg: return true;
+         case Core::STR___str_ars: return true;
+         case Core::STR___va_addr: return true;
+         case Core::STR___wld_ars: return true;
+         case Core::STR___wld_reg: return true;
+
+         // Try a scope lookup for a user-defined address space.
+         default:
+            return ctx->lookup(tok.str).res == Lookup::Space;
          }
       }
    }
