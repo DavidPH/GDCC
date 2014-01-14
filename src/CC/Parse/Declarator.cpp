@@ -71,7 +71,7 @@ namespace GDCC
                declQual = AST::QualNone;
             }
             else if(IsTypeQual(in, ctx))
-               declQual |= GetTypeQual(in, ctx);
+               ParseTypeQual(in, ctx, declQual);
             else
                break;
          }
@@ -152,7 +152,7 @@ namespace GDCC
             if(IsTypeQual(in, ctx))
             {
                isQual = true;
-               do quals |= GetTypeQual(in, ctx);
+               do ParseTypeQual(in, ctx, quals);
                while(IsTypeQual(in, ctx));
             }
 
@@ -179,7 +179,7 @@ namespace GDCC
                if(!isQual && IsTypeQual(in, ctx))
                {
                   isQual = true;
-                  do quals |= GetTypeQual(in, ctx);
+                  do ParseTypeQual(in, ctx, quals);
                   while(IsTypeQual(in, ctx));
                }
             }

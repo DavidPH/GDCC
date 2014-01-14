@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -42,6 +42,8 @@ namespace GDCC
       {
       public:
          AddrSpace() = default;
+         constexpr AddrSpace(AddrBase base_) :
+            base{base_}, name{Core::STRNULL} {}
          constexpr AddrSpace(AddrBase base_, Core::String name_) :
             base{base_}, name{name_} {}
 
@@ -49,6 +51,9 @@ namespace GDCC
             {return base == as.base && name == as.name;}
          constexpr bool operator != (AddrSpace const &as) const
             {return base != as.base || name != as.name;}
+
+         AddrSpace &operator = (AddrBase base_)
+            {base = base_; name = Core::STRNULL; return *this;}
 
          AddrBase     base;
          Core::String name;

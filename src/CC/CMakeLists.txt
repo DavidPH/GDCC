@@ -19,7 +19,9 @@ add_library(gdcc-cc-lib
    Parse/AttrSpec.cpp
    Parse/DeclSpec.cpp
    Parse/Declarator.cpp
+   Parse/SpecQual.cpp
    Parse/TypeQual.cpp
+   Parse/TypeSpec.cpp
    Scope.cpp
    Type.cpp
    Type/Bool.cpp

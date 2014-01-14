@@ -30,6 +30,7 @@ namespace GDCC
    namespace Core
    {
       template<typename T> class CounterRef;
+      struct Origin;
       class TokenStream;
    }
 
@@ -56,6 +57,48 @@ namespace GDCC
 
          Core::TokenStream &in;
          CPP::Pragma       &prag;
+      };
+
+      //
+      // TypeSpec
+      //
+      struct TypeSpec
+      {
+         //
+         // SpecBase
+         //
+         enum SpecBase
+         {
+            BaseNone,
+            BaseName,
+
+            // C types.
+            BaseBool,
+            BaseChar,
+            BaseDoub,
+            BaseFloa,
+            BaseInte,
+            BaseVoid,
+
+            // Embedded C types.
+            BaseAccu,
+            BaseFrac,
+
+            // ACS types.
+            BaseStri,
+         };
+
+         void finish(AST::Attribute &attr, AST::TypeQual qual,
+            Core::Origin pos) const;
+
+         SpecBase specBase = BaseNone;
+         unsigned specCplx = 0;
+         unsigned specImag = 0;
+         unsigned specLong = 0;
+         unsigned specSatu = 0;
+         unsigned specShrt = 0;
+         unsigned specSign = 0;
+         unsigned specUnsi = 0;
       };
    }
 }
@@ -86,15 +129,17 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> GetExp_Assi(ParserData &in, Scope *ctx);
       Core::CounterRef<AST::Exp const> GetExp(ParserData &in, Scope *ctx);
 
-      AST::TypeQual GetTypeQual(ParserData &in, Scope *ctx);
-
       bool IsAttrSpec(ParserData &in, Scope *ctx);
 
       bool IsDeclSpec(ParserData &in, Scope *ctx);
 
       bool IsDeclarator(ParserData &in, Scope *ctx);
 
+      bool IsSpecQual(ParserData &in, Scope *ctx);
+
       bool IsTypeQual(ParserData &in, Scope *ctx);
+
+      bool IsTypeSpec(ParserData &in, Scope *ctx);
 
       void ParseAttr(ParserData &in, Scope *ctx, AST::Attribute &attr);
       void ParseAttrSpec(ParserData &in, Scope *ctx, AST::Attribute &attr);
@@ -104,6 +149,13 @@ namespace GDCC
       void ParseDeclarator(ParserData &in, Scope *ctx, AST::Attribute &attr);
       void ParseDeclaratorSuffix(ParserData &in, Scope *ctx,
          AST::Attribute &attr);
+
+      void ParseSpecQual(ParserData &in, Scope *ctx, AST::Attribute &attr);
+
+      void ParseTypeQual(ParserData &in, Scope *ctx, AST::TypeQual &qual);
+
+      void ParseTypeSpec(ParserData &in, Scope *ctx, AST::Attribute &attr,
+         TypeSpec &spec);
    }
 }
 
