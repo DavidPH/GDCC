@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,8 +15,10 @@
 #include "AST/Statement.hpp"
 #include "AST/Type.hpp"
 
-#include "IR/Function.hpp"
+#include "IR/CallType.hpp"
+#include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+#include "IR/ScriptType.hpp"
 
 
 //----------------------------------------------------------------------------|

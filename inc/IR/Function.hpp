@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,45 +24,10 @@ namespace GDCC
 {
    namespace IR
    {
+      enum class CallType;
       enum class Linkage;
+      enum class ScriptType;
       class Program;
-
-      //
-      // CallType
-      //
-      enum class CallType
-      {
-         None,
-         Action,  // __action
-         AsmFunc, // __asmfunc
-         LangACS, // extern "ACS"
-         LangASM, // extern "asm"
-         LangAXX, // extern "ACS++"
-         LangC,   // extern "C"
-         LangCXX, // extern "C++"
-         LangDS,  // extern "DS"
-         Native,  // __native
-         Script,  // __script
-         ScriptI, // __scripti
-         ScriptS, // __scripts
-         Special, // __special
-      };
-
-      //
-      // ScriptType
-      //
-      enum class ScriptType
-      {
-         None,
-         Death,
-         Disconnect,
-         Enter,
-         Lightning,
-         Open,
-         Respawn,
-         Return,
-         Unloading,
-      };
 
       //
       // Function
@@ -111,15 +76,9 @@ namespace GDCC
 {
    namespace IR
    {
-      OArchive &operator << (OArchive &out, CallType in);
       OArchive &operator << (OArchive &out, Function const &in);
-      OArchive &operator << (OArchive &out, ScriptType in);
-      std::ostream &operator << (std::ostream &out, CallType in);
-      std::ostream &operator << (std::ostream &out, ScriptType in);
 
-      IArchive &operator >> (IArchive &in, CallType &out);
       IArchive &operator >> (IArchive &in, Function &out);
-      IArchive &operator >> (IArchive &in, ScriptType &out);
    }
 }
 

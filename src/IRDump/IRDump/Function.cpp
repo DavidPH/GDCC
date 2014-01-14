@@ -14,8 +14,10 @@
 
 #include "Core/Option.hpp"
 
+#include "IR/CallType.hpp"
 #include "IR/Function.hpp"
 #include "IR/Linkage.hpp"
+#include "IR/ScriptType.hpp"
 
 #include "Option/Bool.hpp"
 
