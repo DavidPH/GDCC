@@ -14,7 +14,7 @@
 
 #include "AST/Type.hpp"
 
-#include "IR/Function.hpp"
+#include "IR/CallType.hpp"
 #include "IR/Linkage.hpp"
 
 

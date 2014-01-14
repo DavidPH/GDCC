@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,8 +15,9 @@
 #include "Core/TokenStream.hpp"
 
 #include "IR/Addr.hpp"
-#include "IR/Function.hpp"
+#include "IR/CallType.hpp"
 #include "IR/Linkage.hpp"
+#include "IR/ScriptType.hpp"
 
 #include <iostream>
 
@@ -49,7 +50,7 @@ namespace GDCC
       //
       IR::AddrBase ParseAddrBase(Core::Token const &tok)
       {
-         switch(static_cast<Core::StringIndex>(tok.str))
+         switch(tok.str)
          {
             #define GDCC_IR_AddrList(name) \
                case Core::STR_##name: return IR::AddrBase::name;
@@ -66,7 +67,7 @@ namespace GDCC
       //
       IR::CallType ParseCallType(Core::Token const &tok)
       {
-         switch(static_cast<Core::StringIndex>(tok.str))
+         switch(tok.str)
          {
          case Core::STR_Action:  return IR::CallType::Action;
          case Core::STR_AsmFunc: return IR::CallType::AsmFunc;
@@ -93,7 +94,7 @@ namespace GDCC
       //
       IR::Linkage ParseLinkage(Core::Token const &tok)
       {
-         switch(static_cast<Core::StringIndex>(tok.str))
+         switch(tok.str)
          {
          case Core::STR_ExtACS: return IR::Linkage::ExtACS;
          case Core::STR_ExtASM: return IR::Linkage::ExtASM;
@@ -114,7 +115,7 @@ namespace GDCC
       //
       IR::ScriptType ParseScriptType(Core::Token const &tok)
       {
-         switch(static_cast<Core::StringIndex>(tok.str))
+         switch(tok.str)
          {
          case Core::STR_None:       return IR::ScriptType::None;
          case Core::STR_Death:      return IR::ScriptType::Death;

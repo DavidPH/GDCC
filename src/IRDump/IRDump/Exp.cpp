@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,13 +12,14 @@
 
 #include "IRDump/IRDump.hpp"
 
+#include "IR/Addr.hpp"
+#include "IR/CallType.hpp"
 #include "IR/Exp/Binary.hpp"
 #include "IR/Exp/Branch.hpp"
 #include "IR/Exp/Unary.hpp"
 #include "IR/Exp/ValueGlyph.hpp"
 #include "IR/Exp/ValueMulti.hpp"
 #include "IR/Exp/ValueRoot.hpp"
-#include "IR/Function.hpp"
 
 
 //----------------------------------------------------------------------------|

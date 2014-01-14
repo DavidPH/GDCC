@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,7 +12,9 @@
 
 #include "Bytecode/ZDACS/Info.hpp"
 
+#include "IR/CallType.hpp"
 #include "IR/Program.hpp"
+#include "IR/ScriptType.hpp"
 
 
 //----------------------------------------------------------------------------|

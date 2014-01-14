@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013 David Hill
+## Copyright (C) 2013-2014 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -19,6 +19,7 @@ add_library(gdcc-ir-lib
    Addr.cpp
    Arg.cpp
    Block.cpp
+   CallType.cpp
    Code.cpp
    Exp.cpp
    Exp/Binary.cpp
@@ -34,6 +35,7 @@ add_library(gdcc-ir-lib
    Linkage.cpp
    Object.cpp
    Program.cpp
+   ScriptType.cpp
    Space.cpp
    Statement.cpp
    StrEnt.cpp

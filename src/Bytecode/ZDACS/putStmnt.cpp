@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,7 @@
 
 #include "Core/Utility.hpp"
 
+#include "IR/CallType.hpp"
 #include "IR/Function.hpp"
 #include "IR/Glyph.hpp"
 

@@ -42,7 +42,7 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
-#include "IR/Function.hpp"
+#include "IR/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|
