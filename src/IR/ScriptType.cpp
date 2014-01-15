@@ -13,6 +13,7 @@
 #include "IR/ScriptType.hpp"
 
 #include "IR/IArchive.hpp"
+#include "IR/OArchive.hpp"
 
 #include "Core/String.hpp"
 

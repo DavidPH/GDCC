@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -53,10 +53,7 @@ namespace GDCC
 {
    namespace Core
    {
-      IR::OArchive &operator << (IR::OArchive &out, Origin const &in);
       std::ostream &operator << (std::ostream &out, Origin const &in);
-
-      IR::IArchive &operator >> (IR::IArchive &in, Origin &out);
    }
 }
 

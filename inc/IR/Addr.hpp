@@ -24,6 +24,7 @@ namespace GDCC
 {
    namespace IR
    {
+      class IArchive;
       class OArchive;
 
       //

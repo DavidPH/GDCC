@@ -25,12 +25,6 @@
 
 namespace GDCC
 {
-   namespace IR
-   {
-      class IArchive;
-      class OArchive;
-   }
-
    namespace Core
    {
       //
@@ -91,7 +85,7 @@ namespace GDCC
          constexpr operator StringIndex () const
             {return num < STRMAX ? static_cast<StringIndex>(num) : STRNULL;}
 
-         char const &operator [] (std::size_t i) const {return GetData(num).str[i];}
+         char const &operator [] (std::size_t i) const {return DataV[num].str[i];}
 
          constexpr bool operator == (String const &str) const {return str.num == num;}
          constexpr bool operator == (StringIndex num_) const {return num == num_;}
@@ -100,21 +94,22 @@ namespace GDCC
 
          String &operator = (StringIndex num_) {num = num_; return *this;}
 
-         char const *begin() const {return GetData(num).str;}
+         char const *begin() const {return DataV[num].str;}
 
-         char const *data() const {return GetData(num).str;}
+         char const *data() const {return DataV[num].str;}
 
-         char const *end() const {auto const &d = GetData(num); return d.str + d.len;}
+         char const *end() const {return DataV[num].end();}
 
-         StringData const &getData() const {return GetData(num);}
+         StringData const &getData() const {return DataV[num];}
 
-         std::size_t size() const {return GetData(num).len;}
+         std::size_t size() const {return DataV[num].len;}
+
+
+         static std::size_t       DataC;
+         static StringData const *DataV;
 
       private:
          std::size_t num;
-
-
-         static StringData const &GetData(std::size_t num);
       };
    }
 }
@@ -150,12 +145,7 @@ namespace GDCC
 {
    namespace Core
    {
-      IR::OArchive &operator << (IR::OArchive &out, String      in);
-      IR::OArchive &operator << (IR::OArchive &out, StringIndex in);
-      std::ostream &operator << (std::ostream &out, String      in);
-
-      IR::IArchive &operator >> (IR::IArchive &in, String      &out);
-      IR::IArchive &operator >> (IR::IArchive &in, StringIndex &out);
+      std::ostream &operator << (std::ostream &out, String in);
 
       constexpr bool operator == (StringIndex l, String const &r) {return r == l;}
       constexpr bool operator != (StringIndex l, String const &r) {return r != l;}

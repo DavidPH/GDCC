@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,7 @@
 #include "IR/Code.hpp"
 
 #include "IR/IArchive.hpp"
+#include "IR/OArchive.hpp"
 
 #include "Core/String.hpp"
 
