@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -30,6 +30,8 @@ namespace GDCC
    {
       enum class AddrBase;
       enum class CallType;
+      class IArchive;
+      class OArchive;
       class Type;
 
       //

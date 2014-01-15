@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,9 @@
 #ifndef GDCC__IR__OArchive_H__
 #define GDCC__IR__OArchive_H__
 
+#include "../Core/Array.hpp"
 #include "../Core/Number.hpp"
+#include "../Core/String.hpp"
 
 #include <ostream>
 #include <unordered_map>
@@ -27,6 +29,11 @@
 
 namespace GDCC
 {
+   namespace Core
+   {
+      struct Origin;
+   }
+
    namespace IR
    {
       //
@@ -58,15 +65,7 @@ namespace GDCC
          OArchive &operator << (Core::Float const &in) {return putNumber(in);}
          OArchive &operator << (Core::Integ const &in) {return putNumber(in);}
 
-         //
-         // putHeader
-         //
-         OArchive &putHeader()
-         {
-            out << "MgC_NTS" << '\0' << "GDCC::IR" << '\0' << '\0';
-            putTablesString();
-            return *this;
-         }
+         OArchive &putHeader();
 
          //
          // putNumber
@@ -95,6 +94,14 @@ namespace GDCC
 {
    namespace IR
    {
+      template<typename T>
+      OArchive &operator << (OArchive &out, Core::Array<T> const &in);
+
+      OArchive &operator << (OArchive &out, Core::Origin const &in);
+
+      OArchive &operator << (OArchive &out, Core::String      in);
+      OArchive &operator << (OArchive &out, Core::StringIndex in);
+
       template<typename T1, typename T2>
       OArchive &operator << (OArchive &out, std::pair<T1, T2> const &in);
 
@@ -111,6 +118,18 @@ namespace GDCC
 {
    namespace IR
    {
+      //
+      // operator OArchive << Core::Array
+      //
+      template<typename T>
+      OArchive &operator << (OArchive &out, Core::Array<T> const &in)
+      {
+         out << in.size();
+         for(auto const &i : in)
+            out << i;
+         return out;
+      }
+
       //
       // operator OArchive << std::pair
       //

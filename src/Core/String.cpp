@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,9 +11,6 @@
 //-----------------------------------------------------------------------------
 
 #include "Core/String.hpp"
-
-#include "IR/IArchive.hpp"
-#include "IR/OArchive.hpp"
 
 #include <cstring>
 #include <iostream>
@@ -41,43 +38,16 @@ static std::vector<GDCC::Core::StringData> StringTable =
 
 
 //----------------------------------------------------------------------------|
-// Static Functions                                                           |
+// Global Variables                                                           |
 //
 
-//
-// AddStringNTS
-//
-// Adds a string that may contain \xC0\x80 nulls.
-//
-static GDCC::Core::String AddStringNTS(char const *str)
+namespace GDCC
 {
-   GDCC::Core::Array<char> tmp;
-   std::size_t             len    = 0;
-   std::size_t             hash   = 0;
-   bool                    hasNul = false;
-
-   for(auto s = str; *s; ++s, ++len)
+   namespace Core
    {
-      if(s[0] == '\xC0' && s[1] == '\x80')
-         hasNul = true, ++s;
+      std::size_t       String::DataC = StringTable.size();
+      StringData const *String::DataV = StringTable.data();
    }
-
-   if(hasNul)
-   {
-      tmp = GDCC::Core::Array<char>(len);
-      for(auto s = tmp.begin(), e = tmp.end(); s != e; ++s, ++str)
-      {
-         if(str[0] == '\xC0' && str[1] == '\x80')
-            *s = '\0', ++str;
-         else
-            *s = *str;
-      }
-
-      str = tmp.data();
-   }
-
-   hash = GDCC::Core::HashString(str, len, hash);
-   return GDCC::Core::AddString(str, len, hash);
 }
 
 
@@ -89,14 +59,6 @@ namespace GDCC
 {
    namespace Core
    {
-      //
-      // String::GetData
-      //
-      StringData const &String::GetData(std::size_t num)
-      {
-         return StringTable[num];
-      }
-
       //
       // StringData constructor
       //
@@ -132,58 +94,12 @@ namespace GDCC
       }
 
       //
-      // operator IR::OArchive << String
-      //
-      IR::OArchive &operator << (IR::OArchive &out, String in)
-      {
-         return out << static_cast<std::size_t>(in);
-      }
-
-      //
-      // operator IR::OArchive << StringIndex
-      //
-      IR::OArchive &operator << (IR::OArchive &out, StringIndex in)
-      {
-         return out << static_cast<std::size_t>(in);
-      }
-
-      //
       // operator std::ostream << String
       //
       std::ostream &operator << (std::ostream &out, String in)
       {
          auto const &data = in.getData();
          return out.write(data.str, data.len);
-      }
-
-      //
-      // operator IR::IArchive >> String
-      //
-      IR::IArchive &operator >> (IR::IArchive &in, String &out)
-      {
-         auto n = in.getNumber<std::size_t>();
-
-         if(n < STRMAX)
-            out = static_cast<String>(n);
-         else if((n -= STRMAX) < in.stab.size())
-            out = in.stab[n];
-         else
-         {
-            std::cerr << "invalid String: " << std::hex << n + STRMAX << "/("
-               << STRMAX << '+' << in.stab.size() << ")\n";
-            throw EXIT_FAILURE;
-         }
-
-         return in;
-      }
-
-      //
-      // operator IR::IArchive >> StringIndex
-      //
-      IR::IArchive &operator >> (IR::IArchive &in, StringIndex &out)
-      {
-         out = static_cast<StringIndex>(IR::GetIR<String>(in));
-         return in;
       }
 
       //
@@ -220,6 +136,9 @@ namespace GDCC
          StringTableAlloc.emplace_back(newstr);
          StringTable.emplace_back(newstr, len, hash, num);
 
+         String::DataC = StringTable.size();
+         String::DataV = StringTable.data();
+
          return String(num);
       }
 
@@ -249,6 +168,9 @@ namespace GDCC
 
          StringTableAlloc.emplace_back(newstr);
          StringTable.emplace_back(newstr, len, hash, num);
+
+         String::DataC = StringTable.size();
+         String::DataV = StringTable.data();
 
          return String(num);
       }
@@ -324,49 +246,6 @@ namespace GDCC
          std::memcpy(ptr.get(), str, len);
          ptr[len] = '\0';
          return ptr;
-      }
-   }
-
-   namespace IR
-   {
-      //
-      // IArchive::getTablesString
-      //
-      IArchive &IArchive::getTablesString()
-      {
-         auto count = getNumber<std::size_t>();
-
-         for(auto &s : (stab = Core::Array<Core::String>(count)))
-            s = AddStringNTS(get());
-
-         return *this;
-      }
-
-      //
-      // OArchive::putTablesString
-      //
-      OArchive &OArchive::putTablesString()
-      {
-         auto begin = StringTable.begin();
-         auto end   = StringTable.end();
-
-         std::advance(begin, Core::STRMAX);
-         *this << std::distance(begin, end);
-
-         for(auto itr = begin; itr != end; ++itr)
-         {
-            for(auto ci = itr->str, ce = ci + itr->len; ci != ce; ++ci)
-            {
-               if(*ci)
-                  out << *ci;
-               else
-                  out << '\xC0' << '\x80';
-            }
-
-            out << '\0';
-         }
-
-         return *this;
       }
    }
 }

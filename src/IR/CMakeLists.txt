@@ -33,6 +33,7 @@ add_library(gdcc-ir-lib
    IArchive.cpp
    Import.cpp
    Linkage.cpp
+   OArchive.cpp
    Object.cpp
    Program.cpp
    ScriptType.cpp

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -27,12 +27,6 @@
 
 namespace GDCC
 {
-   namespace IR
-   {
-      class IArchive;
-      class OArchive;
-   }
-
    namespace Core
    {
       struct MoveType {};
@@ -359,12 +353,6 @@ namespace GDCC
 {
    namespace Core
    {
-      template<typename T>
-      IR::OArchive &operator << (IR::OArchive &out, Array<T> const &in);
-
-      template<typename T>
-      IR::IArchive &operator >> (IR::IArchive &in, Array<T> &out);
-
       template<typename T> bool operator == (Array<T> const &l, Array<T> const &r);
       template<typename T> bool operator != (Array<T> const &l, Array<T> const &r);
       template<typename T> bool operator <  (Array<T> const &l, Array<T> const &r);
@@ -378,30 +366,6 @@ namespace GDCC
 {
    namespace Core
    {
-      //
-      // operator IR::OArchive << Array
-      //
-      template<typename T>
-      IR::OArchive &operator << (IR::OArchive &out, Array<T> const &in)
-      {
-         out << in.size();
-         for(auto const &i : in)
-            out << i;
-         return out;
-      }
-
-      //
-      // operator IR::IArchive >> Array
-      //
-      template<typename T>
-      IR::IArchive &operator >> (IR::IArchive &in, Array<T> &out)
-      {
-         typename Array<T>::size_type s; in >> s;
-         for(auto &o : (out = Array<T>(s)))
-            in >> o;
-         return in;
-      }
-
       //
       // operator Array == Array
       //

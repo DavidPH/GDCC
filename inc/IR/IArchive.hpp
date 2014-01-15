@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,6 +28,11 @@
 
 namespace GDCC
 {
+   namespace Core
+   {
+      struct Origin;
+   }
+
    namespace IR
    {
       class Program;
@@ -99,7 +104,8 @@ namespace GDCC
          Program *prog;
 
 
-         friend IArchive &::GDCC::Core::operator >> (IArchive &in, Core::String &out);
+         friend IArchive &operator >> (IArchive &in, Core::String      &out);
+         friend IArchive &operator >> (IArchive &in, Core::StringIndex &out);
 
       private:
          IArchive &getTablesString();
@@ -147,6 +153,14 @@ namespace GDCC
    namespace IR
    {
       template<typename T>
+      IArchive &operator >> (IArchive &in, Core::Array<T> &out);
+
+      IArchive &operator >> (IArchive &in, Core::Origin &out);
+
+      IArchive &operator >> (IArchive &in, Core::String      &out);
+      IArchive &operator >> (IArchive &in, Core::StringIndex &out);
+
+      template<typename T>
       IArchive &operator >> (IArchive &in, std::vector<T> &out);
 
       template<typename T>
@@ -161,6 +175,18 @@ namespace GDCC
 {
    namespace IR
    {
+      //
+      // operator IArchive >> Core::Array
+      //
+      template<typename T>
+      IArchive &operator >> (IArchive &in, Core::Array<T> &out)
+      {
+         typename Core::Array<T>::size_type s; in >> s;
+         for(auto &o : (out = Core::Array<T>(s)))
+            in >> o;
+         return in;
+      }
+
       //
       // operator IArchive >> std::vector
       //
