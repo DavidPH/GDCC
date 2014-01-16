@@ -44,6 +44,9 @@ namespace GDCC
          case Linkage::IntC:   return out << Core::STR_IntC;
          case Linkage::IntCXX: return out << Core::STR_IntCXX;
          }
+
+         std::cerr << "invalid enum GDCC::IR::Linkage\n";
+         throw EXIT_FAILURE;
       }
 
       //
@@ -62,6 +65,9 @@ namespace GDCC
          case Linkage::IntC:   return out << "IntC";
          case Linkage::IntCXX: return out << "IntCXX";
          }
+
+         std::cerr << "invalid enum GDCC::IR::Linkage\n";
+         throw EXIT_FAILURE;
       }
 
       //

@@ -40,6 +40,9 @@ namespace GDCC
             #include "IR/CodeList.hpp"
          case Code::None: return out << Core::STR_None;
          }
+
+         std::cerr << "invalid enum GDCC::IR::Code\n";
+         throw EXIT_FAILURE;
       }
 
       //
@@ -54,6 +57,9 @@ namespace GDCC
             #include "IR/CodeList.hpp"
          case Code::None: return out << "None";
          }
+
+         std::cerr << "invalid enum GDCC::IR::Code\n";
+         throw EXIT_FAILURE;
       }
 
       //

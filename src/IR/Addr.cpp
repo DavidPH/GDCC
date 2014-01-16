@@ -37,6 +37,9 @@ namespace GDCC
                case AddrBase::name: return out << Core::STR_##name;
             #include "IR/AddrList.hpp"
          }
+
+         std::cerr << "invalid enum GDCC::IR::AddrBase\n";
+         throw EXIT_FAILURE;
       }
 
       //
@@ -58,6 +61,9 @@ namespace GDCC
                case AddrBase::name: return out << #name;
             #include "IR/AddrList.hpp"
          }
+
+         std::cerr << "invalid enum GDCC::IR::AddrBase\n";
+         throw EXIT_FAILURE;
       }
 
       //
