@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,6 +23,7 @@
 #include "../CPP/PragmaDTBuf.hpp"
 #include "../CPP/StringTBuf.hpp"
 
+#include "../Core/BufferTBuf.hpp"
 #include "../Core/StreamTBuf.hpp"
 #include "../Core/TokenStream.hpp"
 #include "../Core/WSpaceTBuf.hpp"
@@ -127,17 +128,20 @@ namespace GDCC
             Core::String dir) :
             PPStream{buf_, pragma, file, dir},
             wbuf{cbuf},
-            ppbf{wbuf}
+            ppbf{wbuf},
+            bbuf{ppbf}
          {
-            tkbuf(&ppbf);
+            tkbuf(&bbuf);
          }
 
       protected:
          using WBuf = Core::WSpaceTBuf;
          using PPBf = PPTokenTBuf;
+         using BBuf = Core::BufferTBuf<8, 3>;
 
          WBuf wbuf;
          PPBf ppbf;
+         BBuf bbuf;
       };
    }
 }
