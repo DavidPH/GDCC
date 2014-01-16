@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "CPP/GetExpIR.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
 #include "Core/TokenStream.hpp"
 
@@ -174,25 +175,30 @@ namespace GDCC
          std::tie(itr, base) = Core::ParseNumberBaseC(itr);
          std::tie(itr, val, std::ignore) = Core::ParseNumberRatioC(itr, base);
 
-            if(*itr == 'U' || *itr == 'u') u = true, ++itr;
-            if(*itr == 'H' || *itr == 'h') h = true, ++itr;
+              if(*itr == 'U' || *itr == 'u') u = true, ++itr;
+              if(*itr == 'H' || *itr == 'h') h = true, ++itr;
          else if(*itr == 'L' || *itr == 'l') l = true, ++itr;
-            if(*itr == 'K' || *itr == 'k') k = true, ++itr;
+              if(*itr == 'K' || *itr == 'k') k = true, ++itr;
          else if(*itr == 'R' || *itr == 'r') r = true, ++itr;
 
          if(r)
          {
             t.bitsI = 0;
 
-               if(h) {t.bitsF = 15 + u;}
+                 if(h) {t.bitsF = 15 + u;}
             else if(l) {t.bitsF = 31 + u;}
             else       {t.bitsF = 15 + u;}
          }
-         else
+         else if(k)
          {
-               if(h) {t.bitsI = 15 + u; t.bitsF = 16;}
+                 if(h) {t.bitsI = 15 + u; t.bitsF = 16;}
             else if(l) {t.bitsI = 31 + u; t.bitsF = 32;}
             else       {t.bitsI = 15 + u; t.bitsF = 16;}
+         }
+         else
+         {
+            // Shouldn't get here, but just in case.
+            throw Core::ExceptStr(tok.pos, "expected k or r suffix");
          }
 
          t.bitsS = !u;
@@ -217,7 +223,7 @@ namespace GDCC
          std::tie(itr, base) = Core::ParseNumberBaseC(itr);
          std::tie(itr, val, std::ignore) = Core::ParseNumberRatioC(itr, base);
 
-            if(*itr == 'F' || *itr == 'f') t = TypeFlt();
+              if(*itr == 'F' || *itr == 'f') t = TypeFlt();
          else if(*itr == 'L' || *itr == 'l') t = TypeFltLL();
          else                                t = TypeFltL();
 
