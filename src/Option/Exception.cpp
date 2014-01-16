@@ -16,6 +16,7 @@
 #include "Option/Util.hpp"
 
 #include <cstdarg>
+#include <cstdio>
 
 
 //----------------------------------------------------------------------------|
