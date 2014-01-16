@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #include "IR/Arg.hpp"
 
 #include "IR/IArchive.hpp"
+
+#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -252,6 +254,9 @@ namespace GDCC
                case ArgBase::name: return in.a##name.putIR(out);
             #include "IR/AddrList.hpp"
          }
+
+         std::cerr << "invalid enum GDCC::IR::Arg\n";
+         throw EXIT_FAILURE;
       }
 
       //
@@ -265,6 +270,9 @@ namespace GDCC
                case ArgBase::name: out = Arg_##name(in); return in;
             #include "IR/AddrList.hpp"
          }
+
+         std::cerr << "invalid enum GDCC::IR::Arg\n";
+         throw EXIT_FAILURE;
       }
    }
 }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,6 +15,8 @@
 #include "IR/Addr.hpp"
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
+
+#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -156,6 +158,9 @@ namespace GDCC
                case ValueBase::name: return out << in.v##name;
             #include "IR/TypeList.hpp"
          }
+
+         std::cerr << "invalid enum GDCC::IR::Value\n";
+         throw EXIT_FAILURE;
       }
 
       //
@@ -225,6 +230,9 @@ namespace GDCC
                case ValueBase::name: out = Value_##name(in); return in;
             #include "IR/TypeList.hpp"
          }
+
+         std::cerr << "invalid enum GDCC::IR::Value\n";
+         throw EXIT_FAILURE;
       }
    }
 }

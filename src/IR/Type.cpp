@@ -163,6 +163,9 @@ namespace GDCC
                case TypeBase::name: return out << Core::STR_##name;
             #include "IR/TypeList.hpp"
          }
+
+         std::cerr << "invalid enum GDCC::IR::TypeBase\n";
+         throw EXIT_FAILURE;
       }
 
       //
@@ -233,6 +236,9 @@ namespace GDCC
                case TypeBase::name: return out << in.t##name;
             #include "IR/TypeList.hpp"
          }
+
+         std::cerr << "invalid enum GDCC::IR::Type\n";
+         throw EXIT_FAILURE;
       }
 
       //
@@ -246,6 +252,9 @@ namespace GDCC
                case TypeBase::name: return out << #name;
             #include "IR/TypeList.hpp"
          }
+
+         std::cerr << "invalid enum GDCC::IR::TypeBase\n";
+         throw EXIT_FAILURE;
       }
 
       //
@@ -338,6 +347,9 @@ namespace GDCC
                case TypeBase::name: out = Type_##name(in); return in;
             #include "IR/TypeList.hpp"
          }
+
+         std::cerr << "invalid enum GDCC::IR::Type\n";
+         throw EXIT_FAILURE;
       }
    }
 }
