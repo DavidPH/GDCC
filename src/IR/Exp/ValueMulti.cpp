@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,7 +28,7 @@ namespace GDCC
       // Exp_ValueMulti constructor
       //
       Exp_ValueMulti::Exp_ValueMulti(IArchive &in) : Super{in},
-         expv{GetIR<Core::Array<Exp::CRef>::size_type>(in), GetIRCaller<Exp::CRef>(in)}
+         expv{GetIR(in, expv)}
       {
       }
 

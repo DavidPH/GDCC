@@ -182,8 +182,7 @@ namespace GDCC
       IArchive &operator >> (IArchive &in, Core::Array<T> &out)
       {
          typename Core::Array<T>::size_type s; in >> s;
-         for(auto &o : (out = Core::Array<T>(s)))
-            in >> o;
+         out = Core::Array<T>(s, GetIRCaller<T>(in));
          return in;
       }
 
@@ -194,8 +193,9 @@ namespace GDCC
       IArchive &operator >> (IArchive &in, std::vector<T> &out)
       {
          typename std::vector<T>::size_type s; in >> s;
-         for(auto &o : (out = std::vector<T>(s)))
-            in >> o;
+         out.clear(); out.reserve(s);
+         while(s--)
+            out.emplace_back(GetIR_T<T>::GetIR_F(in));
          return in;
       }
    }
