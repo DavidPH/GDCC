@@ -23,6 +23,66 @@
 
 
 //----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+//
+// IsTypeSpec_Atomic
+//
+static bool IsTypeSpec_Atomic(GDCC::CC::ParserData &in, GDCC::CC::Scope *)
+{
+   // If not followed by a parenthesis, it is a type-qualifier.
+   in.in.get();
+   bool res = in.in.peek().tok == GDCC::Core::TOK_ParenO;
+   in.in.unget();
+   return res;
+}
+
+//
+// ParseTypeSpec_Atomic
+//
+// atomic-type-specifier:
+//    <_Atomic> ( type-name )
+//
+static void ParseTypeSpec_Atomic(GDCC::CC::ParserData &in, GDCC::CC::Scope *ctx,
+   GDCC::AST::Attribute &attr, GDCC::CC::TypeSpec &spec)
+{
+   using namespace GDCC;
+
+   if(spec.specBase)
+      throw Core::ExceptStr(in.in.reget().pos, "multiple type-specifier base");
+
+   spec.specBase = CC::TypeSpec::BaseName;
+
+   // (
+   if(!in.in.drop(Core::TOK_ParenO))
+      throw Core::ExceptStr(in.in.peek().pos, "expected '('");
+
+   // type-name
+   auto type = CC::GetType(in, ctx);
+
+   // )
+   if(!in.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(in.in.peek().pos, "expected ')'");
+
+   // Constraints.
+   if(type->isTypeArray())
+      throw Core::ExceptStr(in.in.peek().pos, "atomic array");
+
+   if(type->isCTypeFunction())
+      throw Core::ExceptStr(in.in.peek().pos, "atomic function");
+
+   if(type->getQual())
+      throw Core::ExceptStr(in.in.peek().pos, "atomic qualified");
+
+   // Set attribute type.
+   auto qual = type->getQual();
+   qual.aAtom = true;
+   attr.type = type->getTypeQual(qual);
+}
+
+
+//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
@@ -202,6 +262,17 @@ namespace GDCC
             break;
          }
 
+         // _Atomic constraints.
+         if(qual.aAtom)
+         {
+            if(attr.type->isTypeArray())
+               throw Core::ExceptStr(pos, "atomic array");
+
+            if(attr.type->isCTypeFunction())
+               throw Core::ExceptStr(pos, "atomic function");
+         }
+
+         // Apply qualifiers.
          attr.type = attr.type->getTypeQual(qual);
       }
 
@@ -235,11 +306,14 @@ namespace GDCC
          case Core::STR_unsigned:   return true;
          case Core::STR_void:       return true;
 
-         case Core::STR__Atomic:    return true;
+            // atomic-type-specifier
+         case Core::STR__Atomic: return IsTypeSpec_Atomic(in, ctx);
 
+            // struct-or-union-specifier
          case Core::STR_struct:     return true;
          case Core::STR_union:      return true;
 
+            // enum-specifier
          case Core::STR_enum:       return true;
 
             // typedef-name
@@ -270,7 +344,7 @@ namespace GDCC
 
          switch(tok.str)
          {
-         // type-specifier
+            // type-specifier
          case Core::STR___fixed:    setSpecBase(TypeSpec::BaseAccu); break;
          case Core::STR___str:      setSpecBase(TypeSpec::BaseStri); break;
          case Core::STR__Accum:     setSpecBase(TypeSpec::BaseAccu); break;
@@ -289,11 +363,14 @@ namespace GDCC
          case Core::STR_unsigned:   ++spec.specUnsi;                 break;
          case Core::STR_void:       setSpecBase(TypeSpec::BaseVoid); break;
 
-         case Core::STR__Atomic:    throw Core::ExceptStr(tok.pos, "_Atomic stub");
+            // atomic-type-specifier
+         case Core::STR__Atomic: ParseTypeSpec_Atomic(in, ctx, attr, spec); break;
 
+            // struct-or-union-specifier
          case Core::STR_struct:     throw Core::ExceptStr(tok.pos, "struct stub");
          case Core::STR_union:      throw Core::ExceptStr(tok.pos, "union stub");
 
+            // enum-specifier
          case Core::STR_enum:       throw Core::ExceptStr(tok.pos, "enum stub");
 
          default:
@@ -302,11 +379,8 @@ namespace GDCC
             if(lookup.res != Lookup::Type)
                throw Core::ExceptStr(tok.pos, "expected type-specifier");
 
-            if(spec.specBase)
-               throw Core::ExceptStr(tok.pos, "multiple type specifier base");
-
-            spec.specBase = TypeSpec::BaseName;
-            attr.type     = lookup.resType;
+            setSpecBase(TypeSpec::BaseName);
+            attr.type = lookup.resType;
 
             break;
          }

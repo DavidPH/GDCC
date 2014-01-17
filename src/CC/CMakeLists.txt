@@ -16,6 +16,7 @@
 ##
 
 add_library(gdcc-cc-lib
+   Parse.cpp
    Parse/AttrSpec.cpp
    Parse/DeclSpec.cpp
    Parse/Declarator.cpp

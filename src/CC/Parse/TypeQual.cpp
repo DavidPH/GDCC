@@ -24,6 +24,38 @@
 
 
 //----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+//
+// IsTypeQual_Atomic
+//
+static bool IsTypeQual_Atomic(GDCC::CC::ParserData &in, GDCC::CC::Scope *)
+{
+   // If followed by a parenthesis, it is a type-specifier.
+   in.in.get();
+   bool res = in.in.peek().tok != GDCC::Core::TOK_ParenO;
+   in.in.unget();
+   return res;
+}
+
+//
+// ParseTypeQual_Atomic
+//
+static void ParseTypeQual_Atomic(GDCC::CC::ParserData &in, GDCC::CC::Scope *,
+   GDCC::AST::TypeQual &qual)
+{
+   using namespace GDCC;
+
+   // If followed by a parenthesis, it is a type-specifier.
+   if(in.in.peek().tok == Core::TOK_ParenO)
+      throw Core::ExceptStr(in.in.reget().pos, "expected type-qualifier");
+
+   qual.aAtom = true;
+}
+
+
+//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
@@ -36,19 +68,19 @@ namespace GDCC
       //
       bool IsTypeQual(ParserData &in, Scope *ctx)
       {
-         auto tok = in.in.peek();
+         auto const &tok = in.in.peek();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             return false;
 
-         switch(static_cast<Core::StringIndex>(tok.str))
+         switch(tok.str)
          {
-         // Standard C qualifiers.
-         case Core::STR__Atomic:  return true;
+            // Standard C qualifiers.
+         case Core::STR__Atomic:  return IsTypeQual_Atomic(in, ctx);
          case Core::STR_const:    return true;
          case Core::STR_restrict: return true;
          case Core::STR_volatile: return true;
 
-         // Builtin address space names.
+            // Builtin address space names.
          case Core::STR___adr_cpy: return true;
          case Core::STR___far:     return true;
          case Core::STR___gbl_ars: return true;
@@ -63,7 +95,7 @@ namespace GDCC
          case Core::STR___wld_ars: return true;
          case Core::STR___wld_reg: return true;
 
-         // Try a scope lookup for a user-defined address space.
+            // Try a scope lookup for a user-defined address space.
          default:
             return ctx->lookup(tok.str).res == Lookup::Space;
          }
@@ -78,15 +110,15 @@ namespace GDCC
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             throw Core::ExceptStr(tok.pos, "expected identifier");
 
-         switch(static_cast<Core::StringIndex>(tok.str))
+         switch(tok.str)
          {
-         // Standard C qualifiers.
-         case Core::STR__Atomic:  qual.aAtom = true; break;
+            // Standard C qualifiers.
+         case Core::STR__Atomic:  ParseTypeQual_Atomic(in, ctx, qual); break;
          case Core::STR_const:    qual.aCons = true; break;
          case Core::STR_restrict: qual.aRest = true; break;
          case Core::STR_volatile: qual.aVola = true; break;
 
-         // Builtin address space names.
+            // Builtin address space names.
          case Core::STR___adr_cpy: qual.space = IR::AddrBase::Cpy;    break;
          case Core::STR___far:     qual.space = IR::AddrBase::Far;    break;
          case Core::STR___gbl_ars: qual.space = IR::AddrBase::GblArs; break;
@@ -101,11 +133,11 @@ namespace GDCC
          case Core::STR___wld_ars: qual.space = IR::AddrBase::WldArs; break;
          case Core::STR___wld_reg: qual.space = IR::AddrBase::WldReg; break;
 
-         // Try a scope lookup for a user-defined address space.
+            // Try a scope lookup for a user-defined address space.
          default:
             auto lookup = ctx->lookup(tok.str);
             if(lookup.res != Lookup::Space)
-               throw Core::ExceptStr(tok.pos, "expected qualifier");
+               throw Core::ExceptStr(tok.pos, "expected type-qualifier");
 
             qual.space.base = lookup.resSpace->space;
             qual.space.name = lookup.resSpace->glyph;

@@ -24,6 +24,7 @@ namespace GDCC
    {
       class Attribute;
       class Exp;
+      class Type;
       struct TypeQual;
    }
 
@@ -128,6 +129,8 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> GetExp_Cond(ParserData &in, Scope *ctx);
       Core::CounterRef<AST::Exp const> GetExp_Assi(ParserData &in, Scope *ctx);
       Core::CounterRef<AST::Exp const> GetExp(ParserData &in, Scope *ctx);
+
+      Core::CounterRef<AST::Type const> GetType(ParserData &in, Scope *ctx);
 
       bool IsAttrSpec(ParserData &in, Scope *ctx);
 
