@@ -110,6 +110,17 @@ namespace GDCC
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             throw Core::ExceptStr(tok.pos, "expected identifier");
 
+         //
+         // setSpace
+         //
+         auto setSpace = [&](IR::AddrBase space)
+         {
+            if(qual.space.base != IR::AddrBase::Gen)
+               throw Core::ExceptStr(tok.pos, "multiple address-space-specifier");
+
+            qual.space = space;
+         };
+
          switch(tok.str)
          {
             // Standard C qualifiers.
@@ -119,25 +130,28 @@ namespace GDCC
          case Core::STR_volatile: qual.aVola = true; break;
 
             // Builtin address space names.
-         case Core::STR___adr_cpy: qual.space = IR::AddrBase::Cpy;    break;
-         case Core::STR___far:     qual.space = IR::AddrBase::Far;    break;
-         case Core::STR___gbl_ars: qual.space = IR::AddrBase::GblArs; break;
-         case Core::STR___gbl_reg: qual.space = IR::AddrBase::GblReg; break;
-         case Core::STR___loc:     qual.space = IR::AddrBase::Loc;    break;
-         case Core::STR___loc_ars: qual.space = IR::AddrBase::LocArs; break;
-         case Core::STR___loc_reg: qual.space = IR::AddrBase::LocReg; break;
-         case Core::STR___map_ars: qual.space = IR::AddrBase::MapArs; break;
-         case Core::STR___map_reg: qual.space = IR::AddrBase::MapReg; break;
-         case Core::STR___str_ars: qual.space = IR::AddrBase::StrArs; break;
-         case Core::STR___va_addr: qual.space = IR::AddrBase::Vaa;    break;
-         case Core::STR___wld_ars: qual.space = IR::AddrBase::WldArs; break;
-         case Core::STR___wld_reg: qual.space = IR::AddrBase::WldReg; break;
+         case Core::STR___adr_cpy: setSpace(IR::AddrBase::Cpy);    break;
+         case Core::STR___far:     setSpace(IR::AddrBase::Far);    break;
+         case Core::STR___gbl_ars: setSpace(IR::AddrBase::GblArs); break;
+         case Core::STR___gbl_reg: setSpace(IR::AddrBase::GblReg); break;
+         case Core::STR___loc:     setSpace(IR::AddrBase::Loc);    break;
+         case Core::STR___loc_ars: setSpace(IR::AddrBase::LocArs); break;
+         case Core::STR___loc_reg: setSpace(IR::AddrBase::LocReg); break;
+         case Core::STR___map_ars: setSpace(IR::AddrBase::MapArs); break;
+         case Core::STR___map_reg: setSpace(IR::AddrBase::MapReg); break;
+         case Core::STR___str_ars: setSpace(IR::AddrBase::StrArs); break;
+         case Core::STR___va_addr: setSpace(IR::AddrBase::Vaa);    break;
+         case Core::STR___wld_ars: setSpace(IR::AddrBase::WldArs); break;
+         case Core::STR___wld_reg: setSpace(IR::AddrBase::WldReg); break;
 
             // Try a scope lookup for a user-defined address space.
          default:
             auto lookup = ctx->lookup(tok.str);
             if(lookup.res != Lookup::Space)
                throw Core::ExceptStr(tok.pos, "expected type-qualifier");
+
+            if(qual.space.base != IR::AddrBase::Gen)
+               throw Core::ExceptStr(tok.pos, "multiple address-space-specifier");
 
             qual.space.base = lookup.resSpace->space;
             qual.space.name = lookup.resSpace->glyph;

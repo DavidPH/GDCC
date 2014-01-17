@@ -124,7 +124,22 @@ namespace GDCC
             if(specSign) throw Core::ExceptStr(pos, "signed typedef-name");
             if(specUnsi) throw Core::ExceptStr(pos, "unsigned typedef-name");
 
-            qual = attr.type->getQual() | qual;
+            // Merge qualifiers from typedef.
+            {
+               auto qualTmp = attr.type->getQual();
+
+               qualTmp.aAtom |= qual.aAtom;
+               qualTmp.aCons |= qual.aCons;
+               qualTmp.aRest |= qual.aRest;
+               qualTmp.aVola |= qual.aVola;
+
+               if(qualTmp.space.base == IR::AddrBase::Gen)
+                  qualTmp.space = qual.space;
+               else if(qual.space.base != IR::AddrBase::Gen)
+                  throw Core::ExceptStr(pos, "multiple address-space-specifier");
+
+               qual = qualTmp;
+            }
 
             break;
 

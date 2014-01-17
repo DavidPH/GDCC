@@ -124,15 +124,6 @@ namespace GDCC
             {return space.base != IR::AddrBase::Gen || aAtom || aCons || aRest || aVola;}
 
          //
-         // operator TypeQual | TypeQual
-         //
-         constexpr TypeQual operator | (TypeQual const &q) const
-         {
-            return TypeQual((q.space.base != IR::AddrBase::Gen ? q.space : space),
-               aAtom || q.aAtom, aCons || q.aCons, aRest || q.aRest, aVola || q.aVola);
-         }
-
-         //
          // operator TypeQual == TypeQual
          //
          constexpr bool operator == (TypeQual const &q) const
@@ -140,20 +131,6 @@ namespace GDCC
             return space == q.space &&
                aAtom == q.aAtom && aCons == q.aCons &&
                aRest == q.aRest && aVola == q.aVola;
-         }
-
-         //
-         // operator TypeQual |= TypeQual
-         //
-         TypeQual &operator |= (TypeQual const &q)
-         {
-            if(q.space.base != IR::AddrBase::Gen)
-               space = q.space;
-            aAtom = aAtom || q.aAtom;
-            aCons = aCons || q.aCons;
-            aRest = aRest || q.aRest;
-            aVola = aVola || q.aVola;
-            return *this;
          }
 
          IR::AddrSpace space;
