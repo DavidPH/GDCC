@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,8 +13,8 @@
 #ifndef GDCC__Core__OriginBuf_H__
 #define GDCC__Core__OriginBuf_H__
 
-#include "Origin.hpp"
-#include "WrapperBuf.hpp"
+#include "../Core/BufferBuf.hpp"
+#include "../Core/Origin.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -28,11 +28,20 @@ namespace GDCC
       //
       // OriginBuf
       //
-      template<typename Src = std::streambuf>
-      class OriginBuf final : public WrapperBuf<Src>
+      template<
+         std::size_t BufSize = 1,
+         std::size_t BufBack = 1,
+         std::size_t BufRead = 1,
+         typename    CharT   = char,
+         typename    Traits  = std::char_traits<CharT>>
+      class OriginBuf final :
+         public IBufferBuf<BufSize, BufBack, BufRead, CharT, Traits>
       {
       public:
-         using Super = WrapperBuf<Src>;
+         using Super = IBufferBuf<BufSize, BufBack, BufRead, CharT, Traits>;
+
+         using typename Super::Src;
+         using typename Super::int_type;
 
 
          OriginBuf(Src &src_, String file, std::size_t line = 1) :
@@ -44,9 +53,9 @@ namespace GDCC
          //
          // underflow
          //
-         virtual int underflow()
+         virtual int_type underflow()
          {
-            int c = Super::underflow();
+            auto c = Super::underflow();
             if(c == '\n') ++pos.line;
             return c;
          }

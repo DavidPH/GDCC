@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef GDCC__Core__EscapeBuf_H__
 #define GDCC__Core__EscapeBuf_H__
 
-#include "WrapperBuf.hpp"
+#include "../Core/BufferBuf.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -25,31 +25,49 @@ namespace GDCC
    namespace Core
    {
       //
-      // EscapeBufStrip
+      // StripEscapeBuf
       //
-      template<char Escape = '\n', char Start = '\\', typename Src = std::streambuf>
-      class EscapeBufStrip final : public WrapperBuf<Src>
+      template<
+         std::size_t BufSize,
+         std::size_t BufBack,
+         std::size_t BufRead,
+         typename    CharT,
+         CharT       Escape,
+         CharT       Start  = '\\',
+         typename    Traits = std::char_traits<CharT>>
+      class StripEscapeBuf final :
+         public IBufferBuf<BufSize, BufBack, BufRead, CharT, Traits>
       {
       public:
-         using Super = WrapperBuf<Src>;
+         using Super = IBufferBuf<BufSize, BufBack, BufRead, CharT, Traits>;
+
+         using typename Super::Src;
+         using typename Super::int_type;
 
 
-         explicit EscapeBufStrip(Src &src_) : Super{src_} {}
+         explicit StripEscapeBuf(Src &src_) : Super{src_} {}
 
       protected:
          using Super::src;
 
+         using Super::gbump;
+         using Super::gptr;
+
          //
          // underflow
          //
-         virtual int underflow()
+         virtual int_type underflow()
          {
-            int c = Super::underflow();
+            auto c = Super::underflow();
 
             if(c == Start)
             {
-               if(src.sgetc() == Escape) return this->gbump(1), src.sbumpc(), underflow();
-               if(src.sgetc() == EOF) return *this->gptr() = Escape;
+               if(src.sgetc() == Escape)
+                  return gbump(1), src.sbumpc(), underflow();
+
+               // If EOF is hit, pretend there was an EOL instead.
+               if(src.sgetc() == Traits::eof())
+                  return *gptr() = '\n';
             }
 
             return c;

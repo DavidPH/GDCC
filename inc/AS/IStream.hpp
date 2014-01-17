@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -49,13 +49,15 @@ namespace GDCC
 
          Core::Origin getOrigin() const {return obuf.getOrigin();}
 
-         Core::FeatureHold<IStream, &IStream::disableComments, &IStream::enableComments> holdComments()
-            {return Core::FeatureHold<IStream, &IStream::disableComments, &IStream::enableComments>(*this);}
+         using CommentsHold = Core::FeatureHold<IStream,
+            &IStream::disableComments, &IStream::enableComments>;
+
+         CommentsHold holdComments() {return CommentsHold(*this);}
 
       protected:
-         typedef Core::OriginBuf<>                      OBuf;
-         typedef Core::EscapeBufStrip<'\n', '\\', OBuf> EBuf;
-         typedef Core::CommentBufLine<';', EBuf>        CBuf;
+         using OBuf = Core::OriginBuf<8>;
+         using EBuf = Core::StripEscapeBuf<8, 1, 1, char, '\n'>;
+         using CBuf = Core::LineCommentBuf<8, 1, 1, char, ';'>;
 
          OBuf obuf;
          EBuf ebuf;

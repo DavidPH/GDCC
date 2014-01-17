@@ -63,10 +63,10 @@ namespace GDCC
          static bool GetHeader(std::istream &in, Core::Token &out);
 
       protected:
-         using OBuf = Core::OriginBuf<>;
-         using TBuf = TrigraphBuf<OBuf>;
-         using EBuf = Core::EscapeBufStrip<'\n', '\\', TBuf>;
-         using CBuf = Core::CommentBufC<EBuf>;
+         using OBuf = Core::OriginBuf<8, 2>;
+         using TBuf = TrigraphBuf<8>;
+         using EBuf = Core::StripEscapeBuf<8, 1, 1, char, '\n'>;
+         using CBuf = Core::CCommentBuf<8>;
 
          OBuf obuf;
          TBuf tbuf;

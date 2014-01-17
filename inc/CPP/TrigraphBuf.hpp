@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef GDCC__CPP__Trigraph_H__
 #define GDCC__CPP__Trigraph_H__
 
-#include "../Core/WrapperBuf.hpp"
+#include "../Core/BufferBuf.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -27,40 +27,52 @@ namespace GDCC
       //
       // TrigraphBuf
       //
-      template<typename Src = std::streambuf>
-      class TrigraphBuf final : public Core::WrapperBuf<Src>
+      template<
+         std::size_t BufSize = 1,
+         std::size_t BufBack = 1,
+         std::size_t BufRead = 1,
+         typename    CharT   = char,
+         typename    Traits  = std::char_traits<CharT>>
+      class TrigraphBuf final :
+         public Core::IBufferBuf<BufSize, BufBack, BufRead, CharT, Traits>
       {
       public:
-         using Super = Core::WrapperBuf<Src>;
+         using Super = Core::IBufferBuf<BufSize, BufBack, BufRead, CharT, Traits>;
+
+         using typename Super::Src;
+         using typename Super::int_type;
 
 
          explicit TrigraphBuf(Src &src_) : Super{src_} {}
 
       protected:
+         using Super::gptr;
+         using Super::egptr;
+
          using Super::src;
 
          //
          // underflow
          //
-         virtual int underflow()
+         virtual int_type underflow()
          {
             if(Super::underflow() == '?' && src.sgetc() == '?')
                switch(src.sbumpc(), src.sgetc())
             {
-            case '=':  src.sbumpc(); return *this->gptr() = '#';
-            case '(':  src.sbumpc(); return *this->gptr() = '[';
-            case '/':  src.sbumpc(); return *this->gptr() = '\\';
-            case ')':  src.sbumpc(); return *this->gptr() = ']';
-            case '\'': src.sbumpc(); return *this->gptr() = '^';
-            case '<':  src.sbumpc(); return *this->gptr() = '{';
-            case '!':  src.sbumpc(); return *this->gptr() = '|';
-            case '>':  src.sbumpc(); return *this->gptr() = '}';
-            case '-':  src.sbumpc(); return *this->gptr() = '~';
+            case '=':  src.sbumpc(); return *gptr() = '#';
+            case '(':  src.sbumpc(); return *gptr() = '[';
+            case '/':  src.sbumpc(); return *gptr() = '\\';
+            case ')':  src.sbumpc(); return *gptr() = ']';
+            case '\'': src.sbumpc(); return *gptr() = '^';
+            case '<':  src.sbumpc(); return *gptr() = '{';
+            case '!':  src.sbumpc(); return *gptr() = '|';
+            case '>':  src.sbumpc(); return *gptr() = '}';
+            case '-':  src.sbumpc(); return *gptr() = '~';
 
-            default: src.sungetc(); return *this->gptr();
+            default: src.sungetc(); return *gptr();
             }
 
-            return this->gptr() == this->egptr() ? EOF : *this->gptr();
+            return gptr() == egptr() ? EOF : *gptr();
          }
       };
    }

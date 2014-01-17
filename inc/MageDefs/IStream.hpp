@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -54,8 +54,8 @@ namespace GDCC
          CommentsHold holdComments() {return CommentsHold(*this);}
 
       protected:
-         typedef Core::OriginBuf<>               OBuf;
-         typedef Core::CommentBufLine<'#', OBuf> CBuf;
+         using OBuf = Core::OriginBuf<8>;
+         using CBuf = Core::LineCommentBuf<8, 1, 1, char, '#'>;
 
          OBuf obuf;
          CBuf cbuf;
