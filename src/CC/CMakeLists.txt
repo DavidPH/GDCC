@@ -30,6 +30,7 @@ add_library(gdcc-cc-lib
    Type/Fixed.cpp
    Type/Float.cpp
    Type/Str.cpp
+   Type/Struct.cpp
    Type/Void.cpp
 )
 

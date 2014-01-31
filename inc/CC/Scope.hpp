@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -106,7 +106,9 @@ namespace GDCC
          void add(Core::String name, AST::Space      *space);
          void add(Core::String name, AST::Type const *type);
 
-         // Searches this scope for the identifier;
+         void addTypeTag(Core::String name, AST::Type *type);
+
+         // Searches this scope for the identifier.
          Lookup find(Core::String name) const;
 
          Core::CounterPtr<AST::Function> findFunction(Core::String name) const;
@@ -117,8 +119,14 @@ namespace GDCC
 
          Core::CounterPtr<AST::Type const> findType(Core::String name) const;
 
+         // Searches this scope for a tagged type (struct, union, enum).
+         Core::CounterPtr<AST::Type> findTypeTag(Core::String name) const;
+
          // Performs a recursive lookup.
          Lookup lookup(Core::String name) const;
+
+         // Searches for a tagged type (struct, union, enum).
+         Core::CounterPtr<AST::Type> lookupTypeTag(Core::String name) const;
 
 
          Ptr parent;
@@ -135,6 +143,7 @@ namespace GDCC
          LookupTable<AST::Object>     tableObj;
          LookupTable<AST::Space>      tableSpace;
          LookupTable<AST::Type const> tableType;
+         LookupTable<AST::Type>       tableTypeTag;
       };
 
       //

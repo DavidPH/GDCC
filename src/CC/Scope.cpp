@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -161,6 +161,16 @@ namespace GDCC
       }
 
       //
+      // Scope::addTypeTag
+      //
+      void Scope::addTypeTag(Core::String name, AST::Type *type)
+      {
+         tableTypeTag.emplace(std::piecewise_construct,
+            std::forward_as_tuple(name),
+            std::forward_as_tuple(type));
+      }
+
+      //
       // Scope::find
       //
       Lookup Scope::find(Core::String name) const
@@ -213,6 +223,15 @@ namespace GDCC
       }
 
       //
+      // Scope::findTypeTag
+      //
+      AST::Type::Ptr Scope::findTypeTag(Core::String name) const
+      {
+         auto type = tableTypeTag.find(name);
+         return type == tableTypeTag.end() ? nullptr : &*type->second;
+      }
+
+      //
       // Scope::lookup
       //
       Lookup Scope::lookup(Core::String name) const
@@ -220,6 +239,16 @@ namespace GDCC
          if(auto res = find(name)) return res;
          if(parent) return parent->lookup(name);
          return Lookup();
+      }
+
+      //
+      // Scope::lookupTypeTag
+      //
+      AST::Type::Ptr Scope::lookupTypeTag(Core::String name) const
+      {
+         if(auto res = findTypeTag(name)) return res;
+         if(parent) return parent->lookupTypeTag(name);
+         return nullptr;
       }
 
       //

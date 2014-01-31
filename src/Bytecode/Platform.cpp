@@ -136,6 +136,21 @@ namespace GDCC
       }
 
       //
+      // GetWordBits
+      //
+      unsigned GetWordBits()
+      {
+         switch(TargetCur)
+         {
+         case Target::None:      return 32;
+         case Target::ZDoom:     return 32;
+         case Target::MageCraft: return 32;
+         }
+
+         return 0;
+      }
+
+      //
       // GetWordBytes
       //
       unsigned GetWordBytes()

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -69,6 +69,7 @@ namespace GDCC
    {
       unsigned GetByteBitsI();
       unsigned GetWordAlign();
+      unsigned GetWordBits();
       unsigned GetWordBytes();
       unsigned GetWordPoint();
       unsigned GetWordShift();

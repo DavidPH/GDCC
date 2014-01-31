@@ -140,6 +140,8 @@ namespace GDCC
 
       bool IsSpecQual(ParserData &in, Scope *ctx);
 
+      bool IsStaticAssert(ParserData &in, Scope *ctx);
+
       bool IsTypeQual(ParserData &in, Scope *ctx);
 
       bool IsTypeSpec(ParserData &in, Scope *ctx);
@@ -154,6 +156,8 @@ namespace GDCC
          AST::Attribute &attr);
 
       void ParseSpecQual(ParserData &in, Scope *ctx, AST::Attribute &attr);
+
+      void ParseStaticAssert(ParserData &in, Scope *ctx);
 
       void ParseTypeQual(ParserData &in, Scope *ctx, AST::TypeQual &qual);
 
