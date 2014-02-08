@@ -12,10 +12,14 @@
 
 #include "CC/Scope.hpp"
 
+#include "AST/Attribute.hpp"
 #include "AST/Function.hpp"
 #include "AST/Object.hpp"
 #include "AST/Space.hpp"
+#include "AST/Storage.hpp"
 #include "AST/Type.hpp"
+
+#include "IR/Linkage.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -268,9 +272,31 @@ namespace GDCC
       //
       // GlobalScope::createScope
       //
-      FunctionScope::Ref GlobalScope::createScope(AST::Function *fn)
+      FunctionScope::Ref GlobalScope::createScope(AST::Attribute const &attr,
+         AST::Function *fn)
       {
-         return static_cast<FunctionScope::Ref>(new FunctionScope(this, fn));
+         std::vector<AST::Object::Ref> params;
+         params.reserve(attr.param.size());
+
+         for(auto const &param : attr.param)
+         {
+            auto obj = AST::Object::Create(param.name,
+               genGlyphObj(param.name, IR::Linkage::None));
+
+            obj->store = AST::Storage::Auto;
+            obj->type  = param.type;
+            obj->defin = true;
+
+            if(param.storeAuto) obj->point = true;
+            if(param.storeReg)  obj->noPtr = true;
+
+            params.emplace_back(obj);
+         }
+
+         FunctionScope::Ref fnCtx{new FunctionScope(this, fn,
+            Core::Array<AST::Object::Ref>(params.begin(), params.end()))};
+
+         return fnCtx;
       }
 
       //
@@ -292,9 +318,12 @@ namespace GDCC
       //
       // FunctionScope constructor
       //
-      FunctionScope::FunctionScope(GlobalScope *parent_, AST::Function *fn_) :
-         Super{parent_, parent_}, fn{fn_}
+      FunctionScope::FunctionScope(GlobalScope *parent_, AST::Function *fn_,
+         Core::Array<AST::Object::Ref> &&params_) :
+         Super{parent_, parent_}, params{std::move(params_)}, fn{fn_}
       {
+         for(auto const &param : params)
+            if(param->name) add(param->name, param);
       }
 
       //

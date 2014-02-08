@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -32,6 +32,8 @@ namespace GDCC
 
    namespace AST
    {
+      enum class Storage;
+
       class Exp;
       class Type;
 
@@ -53,11 +55,13 @@ namespace GDCC
          ExpCPtr      init;
          IR::Linkage  linka;
          Core::String name;
+         Storage      store;
          TypeCPtr     type;
          IRExpCPtr    value;
 
          bool         alias : 1; // Can alias?
          bool         defin : 1; // Is defined?
+         bool         noPtr : 1; // Forbids pointer-to?
          bool         point : 1; // Needs pointer-to?
 
 

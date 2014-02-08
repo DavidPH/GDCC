@@ -15,7 +15,7 @@
 
 #include "../Core/Array.hpp"
 #include "../Core/Counter.hpp"
-#include "../Core/String.hpp"
+#include "../Core/Origin.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -46,6 +46,7 @@ namespace GDCC
          IR::CallType                 callt;
          IR::Linkage                  linka;
          Core::String                 name;
+         Core::Origin                 namePos;
          Core::Array<Attribute>       param;
          Core::CounterPtr<Type const> type;
 

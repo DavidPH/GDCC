@@ -24,6 +24,7 @@ namespace GDCC
    {
       class Attribute;
       class Exp;
+      class Statement;
       class Type;
       struct TypeQual;
    }
@@ -42,6 +43,8 @@ namespace GDCC
 
    namespace CC
    {
+      class GlobalScope;
+      class LocalScope;
       class Scope;
 
       //
@@ -113,6 +116,11 @@ namespace GDCC
 {
    namespace CC
    {
+      Core::CounterRef<AST::Statement const> GetDecl(ParserData &in,
+         GlobalScope *ctx);
+      Core::CounterRef<AST::Statement const> GetDecl(ParserData &in,
+         LocalScope *ctx);
+
       Core::CounterRef<AST::Exp const> GetExp_Prim(ParserData &in, Scope *ctx);
       Core::CounterRef<AST::Exp const> GetExp_Post(ParserData &in, Scope *ctx);
       Core::CounterRef<AST::Exp const> GetExp_Unar(ParserData &in, Scope *ctx);
@@ -130,9 +138,14 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> GetExp_Assi(ParserData &in, Scope *ctx);
       Core::CounterRef<AST::Exp const> GetExp(ParserData &in, Scope *ctx);
 
+      Core::CounterRef<AST::Statement const> GetStatement(ParserData &in,
+         LocalScope *ctx);
+
       Core::CounterRef<AST::Type const> GetType(ParserData &in, Scope *ctx);
 
       bool IsAttrSpec(ParserData &in, Scope *ctx);
+
+      bool isDecl(ParserData &in, Scope *ctx);
 
       bool IsDeclSpec(ParserData &in, Scope *ctx);
 

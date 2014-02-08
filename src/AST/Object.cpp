@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,7 @@
 #include "AST/Object.hpp"
 
 #include "AST/Exp.hpp"
+#include "AST/Storage.hpp"
 #include "AST/Type.hpp"
 
 #include "IR/Exp.hpp"
@@ -35,11 +36,13 @@ namespace GDCC
          init {nullptr},
          linka{IR::Linkage::None},
          name {name_},
+         store{Storage::None},
          type {nullptr},
          value{nullptr},
 
          alias{false},
          defin{false},
+         noPtr{false},
          point{false}
       {
       }

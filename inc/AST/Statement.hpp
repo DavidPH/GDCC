@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -66,6 +66,7 @@ namespace GDCC
             labels{labels_}, pos{pos_} {}
          Statement(Core::Array<Core::String> &&labels_, Core::Origin pos_) :
             labels{std::move(labels_)}, pos{pos_} {}
+         explicit Statement(Core::Origin pos_) : labels{}, pos{pos_} {}
 
          virtual void v_genLabel(IR::Block &block) const;
          virtual void v_genStmnt(IR::Block &block, Function *fn) const = 0;
@@ -90,11 +91,13 @@ namespace GDCC
          Core::Array<Core::String> const &labels, Core::Origin pos);
       Statement::CRef StatementCreate_Empty(
          Core::Array<Core::String>      &&labels, Core::Origin pos);
+      Statement::CRef StatementCreate_Empty(Core::Origin pos);
 
       Statement::CRef StatementCreate_Exp(
          Core::Array<Core::String> const &labels, Core::Origin pos, Exp *exp);
       Statement::CRef StatementCreate_Exp(
          Core::Array<Core::String>      &&labels, Core::Origin pos, Exp *exp);
+      Statement::CRef StatementCreate_Exp(Core::Origin pos, Exp *exp);
 
       Statement::CRef StatementCreate_Multi(Core::Array<Core::String> const &labels,
          Core::Origin pos, Core::Array<Statement::CRef> const &stmnts);
@@ -104,6 +107,10 @@ namespace GDCC
          Core::Origin pos, Core::Array<Statement::CRef> const &stmnts);
       Statement::CRef StatementCreate_Multi(Core::Array<Core::String>      &&labels,
          Core::Origin pos, Core::Array<Statement::CRef>      &&stmnts);
+      Statement::CRef StatementCreate_Multi(Core::Origin pos,
+         Core::Array<Statement::CRef> const &stmnts);
+      Statement::CRef StatementCreate_Multi(Core::Origin pos,
+         Core::Array<Statement::CRef>      &&stmnts);
    }
 }
 

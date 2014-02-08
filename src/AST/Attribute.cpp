@@ -30,11 +30,12 @@ namespace GDCC
       // Attribute constructor
       //
       Attribute::Attribute() :
-         callt{IR::CallType::None},
-         linka{IR::Linkage::None},
-         name {Core::STRNULL},
-         param{},
-         type {nullptr},
+         callt  {IR::CallType::None},
+         linka  {IR::Linkage::None},
+         name   {Core::STRNULL},
+         namePos{Core::STRNULL, 0},
+         param  {},
+         type   {nullptr},
 
          funcInline  {false},
          funcNoParam {false},

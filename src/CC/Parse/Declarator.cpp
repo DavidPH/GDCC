@@ -90,6 +90,10 @@ namespace GDCC
          //    direct-declarator ( parameter-type-list )
          //    direct-declarator ( identifier-list(opt) )
 
+         // Take the next token as the name position, in case this is an abstract
+         // declarator.
+         attr.namePos = in.in.peek().pos;
+
          // identifier
          if(in.in.peek().tok == Core::TOK_Identi)
             attr.name = in.in.get().str;

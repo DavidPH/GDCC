@@ -13,6 +13,7 @@
 #ifndef GDCC__CC__Scope_H__
 #define GDCC__CC__Scope_H__
 
+#include "../Core/Array.hpp"
 #include "../Core/Counter.hpp"
 #include "../Core/String.hpp"
 
@@ -32,6 +33,11 @@ namespace GDCC
       class Object;
       class Space;
       class Type;
+   }
+
+   namespace IR
+   {
+      enum class Linkage;
    }
 
    namespace CC
@@ -155,7 +161,10 @@ namespace GDCC
             GDCC::CC::GlobalScope, GDCC::CC::Scope);
 
       public:
-         Core::CounterRef<FunctionScope> createScope(AST::Function *fn);
+         Core::CounterRef<FunctionScope> createScope(
+            AST::Attribute const &attr, AST::Function *fn);
+
+         Core::String genGlyphObj(Core::String name, IR::Linkage linka);
 
          // Finds/creates a function, but does not add to lookup table.
          Core::CounterRef<AST::Function> getFunction(AST::Attribute const &attr);
@@ -187,10 +196,17 @@ namespace GDCC
             GDCC::CC::LocalScope, GDCC::CC::Scope);
 
       public:
+         virtual Core::CounterRef<BlockScope> createScope() = 0;
+
+         Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
+
          GlobalScope::Ref global;
 
       protected:
          LocalScope(Scope *parent, GlobalScope *global);
+         virtual ~LocalScope();
+
+         LookupTable<AST::Object> localObj;
       };
 
       //
@@ -202,15 +218,18 @@ namespace GDCC
             GDCC::CC::FunctionScope, GDCC::CC::LocalScope);
 
       public:
-         Core::CounterRef<BlockScope> createScope();
+         virtual Core::CounterRef<BlockScope> createScope();
 
-         Core::CounterRef<AST::Function> fn;
+         Core::Array<Core::CounterRef<AST::Object>> params;
+         Core::CounterRef<AST::Function>            fn;
 
 
-         friend FunctionScope::Ref GlobalScope::createScope(AST::Function *fn);
+         friend FunctionScope::Ref GlobalScope::createScope(
+            AST::Attribute const &attr, AST::Function *fn);
 
       protected:
-         FunctionScope(GlobalScope *parent, AST::Function *fn);
+         FunctionScope(GlobalScope *parent, AST::Function *fn,
+            Core::Array<Core::CounterRef<AST::Object>> &&params);
          virtual ~FunctionScope();
       };
 
@@ -223,7 +242,7 @@ namespace GDCC
             GDCC::CC::BlockScope, GDCC::CC::LocalScope);
 
       public:
-         BlockScope::Ref createScope();
+         virtual BlockScope::Ref createScope();
 
          FunctionScope::Ref fn;
 
