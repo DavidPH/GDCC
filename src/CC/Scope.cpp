@@ -19,6 +19,9 @@
 #include "AST/Storage.hpp"
 #include "AST/Type.hpp"
 
+#include "Bytecode/Platform.hpp"
+
+#include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 
 
@@ -270,6 +273,15 @@ namespace GDCC
       }
 
       //
+      // GlobalScope::allocAuto
+      //
+      void GlobalScope::allocAuto()
+      {
+         for(auto &ctx : subScopes)
+            ctx->allocAuto();
+      }
+
+      //
       // GlobalScope::createScope
       //
       FunctionScope::Ref GlobalScope::createScope(AST::Attribute const &attr,
@@ -322,6 +334,8 @@ namespace GDCC
          Core::Array<AST::Object::Ref> &&params_) :
          Super{parent_, parent_}, params{std::move(params_)}, fn{fn_}
       {
+         global->subScopes.insert(this);
+
          for(auto const &param : params)
             if(param->name) add(param->name, param);
       }
@@ -331,6 +345,34 @@ namespace GDCC
       //
       FunctionScope::~FunctionScope()
       {
+         global->subScopes.erase(this);
+      }
+
+      //
+      // FunctionScope::allocAuto
+      //
+      void FunctionScope::allocAuto()
+      {
+         IR::Type_Fixed idxType{Bytecode::GetWordBits(), 0, 0, 0};
+
+         // Allocate parameter objects.
+         BlockScope::AllocAutoInfo alloc;
+         for(auto &obj : params)
+         {
+            auto &idx = obj->point ? alloc.localArs : alloc.localReg;
+            obj->value = IR::ExpCreate_ValueRoot(
+               IR::Value_Fixed(idx, idxType), Core::Origin(Core::STRNULL, 0));
+            idx += obj->type->getSizeWords();
+         }
+
+         // Allocate sub-scopes.
+         auto allocSub = alloc;
+         for(auto &ctx : subScopes)
+            allocSub.setMax(ctx->allocAuto(alloc));
+
+         // Set function's local counts.
+         fn->localArs = allocSub.localArs;
+         fn->localReg = allocSub.localReg;
       }
 
       //
@@ -342,11 +384,56 @@ namespace GDCC
       }
 
       //
+      // BlockScope::AllocAutoInfo::setMax
+      //
+      void BlockScope::AllocAutoInfo::setMax(AllocAutoInfo const &alloc)
+      {
+         localArs = std::max(localArs, alloc.localArs);
+         localReg = std::max(localReg, alloc.localReg);
+      }
+
+      //
       // BlockScope constructor
       //
-      BlockScope::BlockScope(Scope *parent_, FunctionScope *fn_) :
+      BlockScope::BlockScope(LocalScope *parent_, FunctionScope *fn_) :
          Super{parent_, fn_->global}, fn{fn_}
       {
+         static_cast<LocalScope *>(&*parent)->subScopes.insert(this);
+      }
+
+      //
+      // BlockScope destructor
+      //
+      BlockScope::~BlockScope()
+      {
+         static_cast<LocalScope *>(&*parent)->subScopes.erase(this);
+      }
+
+      //
+      // BlockScope::allocAuto
+      //
+      BlockScope::AllocAutoInfo BlockScope::allocAuto(AllocAutoInfo const &base)
+      {
+         IR::Type_Fixed idxType{Bytecode::GetWordBits(), 0, 0, 0};
+
+         // Allocate local objects.
+         auto alloc = base;
+         for(auto &itr : localObj)
+         {
+            auto &obj = itr.second;
+
+            auto &idx = obj->point ? alloc.localArs : alloc.localReg;
+            obj->value = IR::ExpCreate_ValueRoot(
+               IR::Value_Fixed(idx, idxType), Core::Origin(Core::STRNULL, 0));
+            idx += obj->type->getSizeWords();
+         }
+
+         // Allocate sub-scopes.
+         auto allocSub = alloc;
+         for(auto &ctx : subScopes)
+            allocSub.setMax(ctx->allocAuto(alloc));
+
+         return allocSub;
       }
 
       //

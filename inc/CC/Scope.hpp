@@ -15,9 +15,11 @@
 
 #include "../Core/Array.hpp"
 #include "../Core/Counter.hpp"
+#include "../Core/Number.hpp"
 #include "../Core/String.hpp"
 
 #include <unordered_map>
+#include <unordered_set>
 
 
 //----------------------------------------------------------------------------|
@@ -161,6 +163,8 @@ namespace GDCC
             GDCC::CC::GlobalScope, GDCC::CC::Scope);
 
       public:
+         void allocAuto();
+
          Core::CounterRef<FunctionScope> createScope(
             AST::Attribute const &attr, AST::Function *fn);
 
@@ -174,6 +178,8 @@ namespace GDCC
          Core::CounterRef<AST::Space> getSpace(AST::Attribute const &attr);
 
 
+         friend class FunctionScope;
+
          static Ref Create();
 
       protected:
@@ -183,6 +189,8 @@ namespace GDCC
          LookupTable<AST::Function> globalFunc;
          LookupTable<AST::Object>   globalObj;
          LookupTable<AST::Space>    globalSpace;
+
+         std::unordered_set<FunctionScope *> subScopes;
       };
 
       //
@@ -202,11 +210,16 @@ namespace GDCC
 
          GlobalScope::Ref global;
 
+
+         friend class BlockScope;
+
       protected:
          LocalScope(Scope *parent, GlobalScope *global);
          virtual ~LocalScope();
 
          LookupTable<AST::Object> localObj;
+
+         std::unordered_set<BlockScope *> subScopes;
       };
 
       //
@@ -218,6 +231,8 @@ namespace GDCC
             GDCC::CC::FunctionScope, GDCC::CC::LocalScope);
 
       public:
+         void allocAuto();
+
          virtual Core::CounterRef<BlockScope> createScope();
 
          Core::Array<Core::CounterRef<AST::Object>> params;
@@ -242,6 +257,19 @@ namespace GDCC
             GDCC::CC::BlockScope, GDCC::CC::LocalScope);
 
       public:
+         //
+         // AllocAutoInfo
+         //
+         struct AllocAutoInfo
+         {
+            void setMax(AllocAutoInfo const &alloc);
+
+            Core::FastU localArs = 0;
+            Core::FastU localReg = 0;
+         };
+
+         AllocAutoInfo allocAuto(AllocAutoInfo const &base);
+
          virtual BlockScope::Ref createScope();
 
          FunctionScope::Ref fn;
@@ -250,7 +278,8 @@ namespace GDCC
          friend BlockScope::Ref FunctionScope::createScope();
 
       protected:
-         BlockScope(Scope *parent, FunctionScope *fn);
+         BlockScope(LocalScope *parent, FunctionScope *fn);
+         virtual ~BlockScope();
       };
    }
 }
