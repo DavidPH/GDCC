@@ -25,6 +25,10 @@ add_library(gdcc-cc-lib
    Parse/TypeQual.cpp
    Parse/TypeSpec.cpp
    Scope.cpp
+   Scope/Block.cpp
+   Scope/Function.cpp
+   Scope/Global.cpp
+   Scope/Local.cpp
    Type.cpp
    Type/Bool.cpp
    Type/Char.cpp

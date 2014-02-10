@@ -12,7 +12,8 @@
 
 #include "CC/Parse.hpp"
 
-#include "CC/Scope.hpp"
+#include "CC/Scope/Function.hpp"
+#include "CC/Scope/Global.hpp"
 #include "CC/Statement.hpp"
 
 #include "AST/Attribute.hpp"

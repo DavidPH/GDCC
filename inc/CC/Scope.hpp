@@ -13,9 +13,7 @@
 #ifndef GDCC__CC__Scope_H__
 #define GDCC__CC__Scope_H__
 
-#include "../Core/Array.hpp"
 #include "../Core/Counter.hpp"
-#include "../Core/Number.hpp"
 #include "../Core/String.hpp"
 
 #include <unordered_map>
@@ -30,23 +28,14 @@ namespace GDCC
 {
    namespace AST
    {
-      class Attribute;
       class Function;
       class Object;
       class Space;
       class Type;
    }
 
-   namespace IR
-   {
-      enum class Linkage;
-   }
-
    namespace CC
    {
-      class BlockScope;
-      class FunctionScope;
-
       //
       // Lookup
       //
@@ -149,105 +138,6 @@ namespace GDCC
          LookupTable<AST::Space>      tableSpace;
          LookupTable<AST::Type const> tableType;
          LookupTable<AST::Type>       tableTypeTag;
-      };
-
-      //
-      // GlobalScope
-      //
-      class GlobalScope : public Scope
-      {
-      public:
-         GlobalScope();
-         virtual ~GlobalScope();
-
-         void allocAuto();
-
-         FunctionScope *createScope(AST::Attribute const &attr, AST::Function *fn);
-
-         Core::String genGlyphObj(Core::String name, IR::Linkage linka);
-
-         // Finds/creates a function, but does not add to lookup table.
-         Core::CounterRef<AST::Function> getFunction(AST::Attribute const &attr);
-
-         Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
-
-         Core::CounterRef<AST::Space> getSpace(AST::Attribute const &attr);
-
-      protected:
-         LookupTable<AST::Function> globalFunc;
-         LookupTable<AST::Object>   globalObj;
-         LookupTable<AST::Space>    globalSpace;
-
-         std::vector<FunctionScope *> subScopes;
-      };
-
-      //
-      // LocalScope
-      //
-      // A non-global scope. In C itself, a function or block scope.
-      //
-      class LocalScope : public Scope
-      {
-      public:
-         LocalScope(Scope *parent, GlobalScope *global);
-         virtual ~LocalScope();
-
-         virtual BlockScope *createScope() = 0;
-
-         Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
-
-         GlobalScope *global;
-
-      protected:
-         LookupTable<AST::Object> localObj;
-
-         std::vector<BlockScope *> subScopes;
-      };
-
-      //
-      // FunctionScope
-      //
-      class FunctionScope : public LocalScope
-      {
-      public:
-         FunctionScope(GlobalScope *parent, AST::Function *fn,
-            Core::Array<Core::CounterRef<AST::Object>> &&params);
-         virtual ~FunctionScope();
-
-         void allocAuto();
-
-         virtual BlockScope *createScope();
-
-         Core::Array<Core::CounterRef<AST::Object>> params;
-         Core::CounterRef<AST::Function>            fn;
-      };
-
-      //
-      // BlockScope
-      //
-      class BlockScope : public LocalScope
-      {
-      public:
-         //
-         // AllocAutoInfo
-         //
-         struct AllocAutoInfo
-         {
-            void setMax(AllocAutoInfo const &alloc);
-
-            Core::FastU localArs = 0;
-            Core::FastU localReg = 0;
-         };
-
-
-         BlockScope(LocalScope *parent, FunctionScope *fn);
-         virtual ~BlockScope();
-
-         AllocAutoInfo allocAuto(AllocAutoInfo const &base);
-
-         virtual BlockScope *createScope();
-
-         FunctionScope *fn;
       };
    }
 }
