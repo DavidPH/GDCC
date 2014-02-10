@@ -19,7 +19,7 @@
 #include "../Core/String.hpp"
 
 #include <unordered_map>
-#include <unordered_set>
+#include <vector>
 
 
 //----------------------------------------------------------------------------|
@@ -103,12 +103,12 @@ namespace GDCC
       // Common base for all scopes, handling the most basic aspects of what a
       // scope contains. (Functions, objects, types, and address spaces.)
       //
-      class Scope : public Core::Counter
+      class Scope
       {
-         GDCC_Core_CounterPreambleNoClone(
-            GDCC::CC::Scope, GDCC::Core::Counter);
-
       public:
+         explicit Scope(Scope *parent);
+         virtual ~Scope();
+
          void add(Core::String name, AST::Function   *fn);
          void add(Core::String name, AST::Object     *obj);
          void add(Core::String name, AST::Space      *space);
@@ -137,15 +137,12 @@ namespace GDCC
          Core::CounterPtr<AST::Type> lookupTypeTag(Core::String name) const;
 
 
-         Ptr parent;
+         Scope *parent;
 
       protected:
          template<typename T>
          using LookupTable = std::unordered_map<Core::String, Core::CounterRef<T>>;
 
-
-         explicit Scope(Scope *parent);
-         virtual ~Scope();
 
          LookupTable<AST::Function>   tableFunc;
          LookupTable<AST::Object>     tableObj;
@@ -159,14 +156,13 @@ namespace GDCC
       //
       class GlobalScope : public Scope
       {
-         GDCC_Core_CounterPreambleNoClone(
-            GDCC::CC::GlobalScope, GDCC::CC::Scope);
-
       public:
+         GlobalScope();
+         virtual ~GlobalScope();
+
          void allocAuto();
 
-         Core::CounterRef<FunctionScope> createScope(
-            AST::Attribute const &attr, AST::Function *fn);
+         FunctionScope *createScope(AST::Attribute const &attr, AST::Function *fn);
 
          Core::String genGlyphObj(Core::String name, IR::Linkage linka);
 
@@ -177,20 +173,12 @@ namespace GDCC
 
          Core::CounterRef<AST::Space> getSpace(AST::Attribute const &attr);
 
-
-         friend class FunctionScope;
-
-         static Ref Create();
-
       protected:
-         GlobalScope();
-         virtual ~GlobalScope();
-
          LookupTable<AST::Function> globalFunc;
          LookupTable<AST::Object>   globalObj;
          LookupTable<AST::Space>    globalSpace;
 
-         std::unordered_set<FunctionScope *> subScopes;
+         std::vector<FunctionScope *> subScopes;
       };
 
       //
@@ -200,26 +188,20 @@ namespace GDCC
       //
       class LocalScope : public Scope
       {
-         GDCC_Core_CounterPreambleNoClone(
-            GDCC::CC::LocalScope, GDCC::CC::Scope);
-
       public:
-         virtual Core::CounterRef<BlockScope> createScope() = 0;
-
-         Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
-
-         GlobalScope::Ref global;
-
-
-         friend class BlockScope;
-
-      protected:
          LocalScope(Scope *parent, GlobalScope *global);
          virtual ~LocalScope();
 
+         virtual BlockScope *createScope() = 0;
+
+         Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
+
+         GlobalScope *global;
+
+      protected:
          LookupTable<AST::Object> localObj;
 
-         std::unordered_set<BlockScope *> subScopes;
+         std::vector<BlockScope *> subScopes;
       };
 
       //
@@ -227,25 +209,17 @@ namespace GDCC
       //
       class FunctionScope : public LocalScope
       {
-         GDCC_Core_CounterPreambleNoClone(
-            GDCC::CC::FunctionScope, GDCC::CC::LocalScope);
-
       public:
-         void allocAuto();
-
-         virtual Core::CounterRef<BlockScope> createScope();
-
-         Core::Array<Core::CounterRef<AST::Object>> params;
-         Core::CounterRef<AST::Function>            fn;
-
-
-         friend FunctionScope::Ref GlobalScope::createScope(
-            AST::Attribute const &attr, AST::Function *fn);
-
-      protected:
          FunctionScope(GlobalScope *parent, AST::Function *fn,
             Core::Array<Core::CounterRef<AST::Object>> &&params);
          virtual ~FunctionScope();
+
+         void allocAuto();
+
+         virtual BlockScope *createScope();
+
+         Core::Array<Core::CounterRef<AST::Object>> params;
+         Core::CounterRef<AST::Function>            fn;
       };
 
       //
@@ -253,9 +227,6 @@ namespace GDCC
       //
       class BlockScope : public LocalScope
       {
-         GDCC_Core_CounterPreambleNoClone(
-            GDCC::CC::BlockScope, GDCC::CC::LocalScope);
-
       public:
          //
          // AllocAutoInfo
@@ -268,18 +239,15 @@ namespace GDCC
             Core::FastU localReg = 0;
          };
 
-         AllocAutoInfo allocAuto(AllocAutoInfo const &base);
 
-         virtual BlockScope::Ref createScope();
-
-         FunctionScope::Ref fn;
-
-
-         friend BlockScope::Ref FunctionScope::createScope();
-
-      protected:
          BlockScope(LocalScope *parent, FunctionScope *fn);
          virtual ~BlockScope();
+
+         AllocAutoInfo allocAuto(AllocAutoInfo const &base);
+
+         virtual BlockScope *createScope();
+
+         FunctionScope *fn;
       };
    }
 }

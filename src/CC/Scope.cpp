@@ -261,7 +261,7 @@ namespace GDCC
       //
       // GlobalScope constructor
       //
-      GlobalScope::GlobalScope() : Super{nullptr}
+      GlobalScope::GlobalScope() : Scope{nullptr}
       {
       }
 
@@ -270,6 +270,8 @@ namespace GDCC
       //
       GlobalScope::~GlobalScope()
       {
+         for(auto &ctx : subScopes)
+            delete ctx;
       }
 
       //
@@ -284,7 +286,7 @@ namespace GDCC
       //
       // GlobalScope::createScope
       //
-      FunctionScope::Ref GlobalScope::createScope(AST::Attribute const &attr,
+      FunctionScope *GlobalScope::createScope(AST::Attribute const &attr,
          AST::Function *fn)
       {
          std::vector<AST::Object::Ref> params;
@@ -305,26 +307,29 @@ namespace GDCC
             params.emplace_back(obj);
          }
 
-         FunctionScope::Ref fnCtx{new FunctionScope(this, fn,
-            Core::Array<AST::Object::Ref>(params.begin(), params.end()))};
+         auto fnCtx = new FunctionScope(this, fn,
+            Core::Array<AST::Object::Ref>(params.begin(), params.end()));
+
+         subScopes.emplace_back(fnCtx);
 
          return fnCtx;
-      }
-
-      //
-      // GlobalScope::Create
-      //
-      GlobalScope::Ref GlobalScope::Create()
-      {
-         return static_cast<Ref>(new GlobalScope);
       }
 
       //
       // LocalScope constructor
       //
       LocalScope::LocalScope(Scope *parent_, GlobalScope *global_) :
-         Super{parent_}, global{global_}
+         Scope{parent_}, global{global_}
       {
+      }
+
+      //
+      // LocalScope destructor
+      //
+      LocalScope::~LocalScope()
+      {
+         for(auto &ctx : subScopes)
+            delete ctx;
       }
 
       //
@@ -332,10 +337,8 @@ namespace GDCC
       //
       FunctionScope::FunctionScope(GlobalScope *parent_, AST::Function *fn_,
          Core::Array<AST::Object::Ref> &&params_) :
-         Super{parent_, parent_}, params{std::move(params_)}, fn{fn_}
+         LocalScope{parent_, parent_}, params{std::move(params_)}, fn{fn_}
       {
-         global->subScopes.insert(this);
-
          for(auto const &param : params)
             if(param->name) add(param->name, param);
       }
@@ -345,7 +348,6 @@ namespace GDCC
       //
       FunctionScope::~FunctionScope()
       {
-         global->subScopes.erase(this);
       }
 
       //
@@ -378,9 +380,11 @@ namespace GDCC
       //
       // FunctionScope::createScope
       //
-      BlockScope::Ref FunctionScope::createScope()
+      BlockScope *FunctionScope::createScope()
       {
-         return static_cast<BlockScope::Ref>(new BlockScope(this, this));
+         auto ctx = new BlockScope(this, this);
+         subScopes.emplace_back(ctx);
+         return ctx;
       }
 
       //
@@ -396,9 +400,8 @@ namespace GDCC
       // BlockScope constructor
       //
       BlockScope::BlockScope(LocalScope *parent_, FunctionScope *fn_) :
-         Super{parent_, fn_->global}, fn{fn_}
+         LocalScope{parent_, fn_->global}, fn{fn_}
       {
-         static_cast<LocalScope *>(&*parent)->subScopes.insert(this);
       }
 
       //
@@ -406,7 +409,6 @@ namespace GDCC
       //
       BlockScope::~BlockScope()
       {
-         static_cast<LocalScope *>(&*parent)->subScopes.erase(this);
       }
 
       //
@@ -439,9 +441,11 @@ namespace GDCC
       //
       // BlockScope::createScope
       //
-      BlockScope::Ref BlockScope::createScope()
+      BlockScope *BlockScope::createScope()
       {
-         return static_cast<Ref>(new BlockScope(this, fn));
+         auto ctx = new BlockScope(this, fn);
+         subScopes.emplace_back(ctx);
+         return ctx;
       }
    }
 }
