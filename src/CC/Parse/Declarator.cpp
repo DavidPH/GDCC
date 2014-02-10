@@ -247,8 +247,14 @@ namespace GDCC
             {
                bool varia = false;
 
+               // Special case for (void).
+               if(in.in.drop(Core::TOK_KeyWrd, Core::STR_void))
+               {
+                  // Just drop the token and move on.
+               }
+
                // parameter-type-list
-               if(IsDeclSpec(in, ctx)) do
+               else if(IsDeclSpec(in, ctx)) do
                {
                   // ... )
                   if(in.in.drop(Core::TOK_Dot3))
@@ -259,6 +265,11 @@ namespace GDCC
 
                   // declaration-specifiers
                   ParseDeclSpec(in, ctx, param);
+
+                  // Disallow extern, static, or typedef.
+                  if(param.isTypedef || param.storeExt || param.storeInt)
+                     throw Core::ExceptStr(in.in.reget().pos,
+                        "bad parameter storage class");
 
                   // declarator
                   // abstract-declarator(opt)
@@ -276,16 +287,6 @@ namespace GDCC
                         ->getTypePointer()
                         ->getTypeQual(param.type->getQual());
                   }
-
-                  // void )
-                  else if(param.type->isTypeVoid())
-                  {
-                     if(params.size() > 1 || param.name)
-                        throw Core::ExceptStr(in.in.reget().pos, "void parameter");
-
-                     params.pop_back();
-                     break;
-                  }
                }
                while(in.in.drop(Core::TOK_Comma));
 
@@ -297,6 +298,7 @@ namespace GDCC
 
                   params.emplace_back();
                   params.back().name = in.in.get().str;
+                  params.back().type = AST::Type::None;
                }
                while(in.in.drop(Core::TOK_Comma));
 
