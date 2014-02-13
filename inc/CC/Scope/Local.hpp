@@ -25,11 +25,13 @@ namespace GDCC
    namespace AST
    {
       class Attribute;
+      class Function;
    }
 
    namespace CC
    {
       class BlockScope;
+      class FunctionScope;
       class GlobalScope;
 
       //
@@ -43,7 +45,13 @@ namespace GDCC
          LocalScope(Scope *parent, GlobalScope *global);
          virtual ~LocalScope();
 
-         virtual BlockScope *createScope() = 0;
+         BlockScope *createScopeBlock();
+         BlockScope *createScopeLoop();
+         BlockScope *createScopeSwitch();
+
+         virtual Core::CounterRef<AST::Function> getFunction() = 0;
+
+         virtual FunctionScope *getScopeFunction() = 0;
 
          Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
 

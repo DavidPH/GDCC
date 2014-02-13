@@ -78,13 +78,19 @@ namespace GDCC
       }
 
       //
-      // FunctionScope::createScope
+      // FunctionScope::getFunction
       //
-      BlockScope *FunctionScope::createScope()
+      AST::Function::Ref FunctionScope::getFunction()
       {
-         auto ctx = new BlockScope(this, this);
-         subScopes.emplace_back(ctx);
-         return ctx;
+         return fn;
+      }
+
+      //
+      // FunctionScope::getScopeFunction
+      //
+      FunctionScope *FunctionScope::getScopeFunction()
+      {
+         return this;
       }
    }
 }

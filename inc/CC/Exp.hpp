@@ -38,6 +38,7 @@ namespace GDCC
    namespace CC
    {
       Core::FastU ExpToFastU(AST::Exp const *exp);
+      Core::Integ ExpToInteg(AST::Exp const *exp);
    }
 }
 

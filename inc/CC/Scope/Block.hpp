@@ -51,7 +51,9 @@ namespace GDCC
 
          AllocAutoInfo allocAuto(AllocAutoInfo const &base);
 
-         virtual BlockScope *createScope();
+         virtual Core::CounterRef<AST::Function> getFunction();
+
+         virtual FunctionScope *getScopeFunction();
 
          FunctionScope *fn;
       };

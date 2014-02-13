@@ -14,6 +14,7 @@
 
 #include "CC/Scope/Function.hpp"
 
+#include "AST/Function.hpp"
 #include "AST/Object.hpp"
 #include "AST/Type.hpp"
 
@@ -82,13 +83,19 @@ namespace GDCC
       }
 
       //
-      // BlockScope::createScope
+      // BlockScope::getFunction
       //
-      BlockScope *BlockScope::createScope()
+      AST::Function::Ref BlockScope::getFunction()
       {
-         auto ctx = new BlockScope(this, fn);
-         subScopes.emplace_back(ctx);
-         return ctx;
+         return fn->fn;
+      }
+
+      //
+      // BlockScope::getScopeFunction
+      //
+      FunctionScope *BlockScope::getScopeFunction()
+      {
+         return fn;
       }
    }
 }

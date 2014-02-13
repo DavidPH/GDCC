@@ -31,6 +31,7 @@ namespace GDCC
    namespace CC
    {
       class FunctionScope;
+      class LocalScope;
       class Scope;
    }
 }
@@ -44,10 +45,63 @@ namespace GDCC
 {
    namespace CC
    {
+      AST::Statement::CRef StatementCreate_Break(
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         LocalScope *ctx);
+      AST::Statement::CRef StatementCreate_Break(
+         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         LocalScope *ctx);
+
+      AST::Statement::CRef StatementCreate_Continue(
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         LocalScope *ctx);
+      AST::Statement::CRef StatementCreate_Continue(
+         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         LocalScope *ctx);
+
       AST::Statement::CRef StatementCreate_Decl(Core::Origin pos, Scope *ctx);
+
+      AST::Statement::CRef StatementCreate_Do(
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         LocalScope *ctx, AST::Statement const *body, AST::Exp const *cond);
+      AST::Statement::CRef StatementCreate_Do(
+         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         LocalScope *ctx, AST::Statement const *body, AST::Exp const *cond);
+
+      AST::Statement::CRef StatementCreate_For(
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         LocalScope *ctx, AST::Statement const *init, AST::Exp const *cond,
+         AST::Statement const *iter, AST::Statement const *body);
+      AST::Statement::CRef StatementCreate_For(
+         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         LocalScope *ctx, AST::Statement const *init, AST::Exp const *cond,
+         AST::Statement const *iter, AST::Statement const *body);
 
       AST::Statement::CRef StatementCreate_FuncPre(Core::Origin pos,
          FunctionScope const *fn);
+
+      AST::Statement::CRef StatementCreate_Goto(
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         LocalScope *ctx, Core::String name);
+      AST::Statement::CRef StatementCreate_Goto(
+         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         LocalScope *ctx, Core::String name);
+
+      AST::Statement::CRef StatementCreate_If(
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         AST::Exp const *cond, AST::Statement const *body);
+      AST::Statement::CRef StatementCreate_If(
+         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         AST::Exp const *cond, AST::Statement const *body);
+
+      AST::Statement::CRef StatementCreate_If(
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         AST::Exp const *cond, AST::Statement const *bodyT,
+         AST::Statement const *bodyF);
+      AST::Statement::CRef StatementCreate_If(
+         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         AST::Exp const *cond, AST::Statement const *bodyT,
+         AST::Statement const *bodyF);
 
       AST::Statement::CRef StatementCreate_Return(
          Core::Array<Core::String> const &labels, Core::Origin pos,
@@ -57,6 +111,20 @@ namespace GDCC
          AST::Function const *fn, AST::Exp const *exp = nullptr);
       AST::Statement::CRef StatementCreate_Return(Core::Origin pos,
          AST::Function const *fn, AST::Exp const *exp = nullptr);
+
+      AST::Statement::CRef StatementCreate_Switch(
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         LocalScope *ctx, AST::Exp const *cond, AST::Statement const *body);
+      AST::Statement::CRef StatementCreate_Switch(
+         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         LocalScope *ctx, AST::Exp const *cond, AST::Statement const *body);
+
+      AST::Statement::CRef StatementCreate_While(
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         LocalScope *ctx, AST::Exp const *cond, AST::Statement const *body);
+      AST::Statement::CRef StatementCreate_While(
+         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         LocalScope *ctx, AST::Exp const *cond, AST::Statement const *body);
    }
 }
 

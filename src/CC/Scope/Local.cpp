@@ -41,6 +41,16 @@ namespace GDCC
          for(auto &ctx : subScopes)
             delete ctx;
       }
+
+      //
+      // LocalScope::createScopeBlock
+      //
+      BlockScope *LocalScope::createScopeBlock()
+      {
+         auto ctx = new BlockScope(this, getScopeFunction());
+         subScopes.emplace_back(ctx);
+         return ctx;
+      }
    }
 }
 

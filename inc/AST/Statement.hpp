@@ -94,19 +94,26 @@ namespace GDCC
       Statement::CRef StatementCreate_Empty(Core::Origin pos);
 
       Statement::CRef StatementCreate_Exp(
-         Core::Array<Core::String> const &labels, Core::Origin pos, Exp *exp);
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         Exp const *exp);
       Statement::CRef StatementCreate_Exp(
-         Core::Array<Core::String>      &&labels, Core::Origin pos, Exp *exp);
-      Statement::CRef StatementCreate_Exp(Core::Origin pos, Exp *exp);
+         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         Exp const *exp);
+      Statement::CRef StatementCreate_Exp(Core::Origin pos, Exp const *exp);
+      Statement::CRef StatementCreate_Exp(Exp const *exp);
 
-      Statement::CRef StatementCreate_Multi(Core::Array<Core::String> const &labels,
-         Core::Origin pos, Core::Array<Statement::CRef> const &stmnts);
-      Statement::CRef StatementCreate_Multi(Core::Array<Core::String> const &labels,
-         Core::Origin pos, Core::Array<Statement::CRef>      &&stmnts);
-      Statement::CRef StatementCreate_Multi(Core::Array<Core::String>      &&labels,
-         Core::Origin pos, Core::Array<Statement::CRef> const &stmnts);
-      Statement::CRef StatementCreate_Multi(Core::Array<Core::String>      &&labels,
-         Core::Origin pos, Core::Array<Statement::CRef>      &&stmnts);
+      Statement::CRef StatementCreate_Multi(
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         Core::Array<Statement::CRef> const &stmnts);
+      Statement::CRef StatementCreate_Multi(
+         Core::Array<Core::String> const &labels, Core::Origin pos,
+         Core::Array<Statement::CRef>      &&stmnts);
+      Statement::CRef StatementCreate_Multi(
+         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         Core::Array<Statement::CRef> const &stmnts);
+      Statement::CRef StatementCreate_Multi(
+         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         Core::Array<Statement::CRef>      &&stmnts);
       Statement::CRef StatementCreate_Multi(Core::Origin pos,
          Core::Array<Statement::CRef> const &stmnts);
       Statement::CRef StatementCreate_Multi(Core::Origin pos,

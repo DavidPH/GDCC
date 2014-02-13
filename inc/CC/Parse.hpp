@@ -145,7 +145,7 @@ namespace GDCC
 
       bool IsAttrSpec(ParserData &in, Scope *ctx);
 
-      bool isDecl(ParserData &in, Scope *ctx);
+      bool IsDecl(ParserData &in, Scope *ctx);
 
       bool IsDeclSpec(ParserData &in, Scope *ctx);
 
