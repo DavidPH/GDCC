@@ -21,6 +21,11 @@ add_library(gdcc-cc-lib
    Parse/DeclSpec.cpp
    Parse/Declaration.cpp
    Parse/Declarator.cpp
+   Parse/Exp.cpp
+   Parse/Exp/Cast.cpp
+   Parse/Exp/Post.cpp
+   Parse/Exp/Prim.cpp
+   Parse/Exp/Unar.cpp
    Parse/SpecQual.cpp
    Parse/Statement.cpp
    Parse/TypeQual.cpp

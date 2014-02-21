@@ -121,9 +121,16 @@ namespace GDCC
       Core::CounterRef<AST::Statement const> GetDecl(ParserData &in,
          LocalScope *ctx);
 
+      Core::CounterRef<AST::Exp const> GetExp_CLit(ParserData &in, Scope *ctx);
+      Core::CounterRef<AST::Exp const> GetExp_CLit(ParserData &in, Scope *ctx,
+         AST::Type const *type);
+
       Core::CounterRef<AST::Exp const> GetExp_Prim(ParserData &in, Scope *ctx);
       Core::CounterRef<AST::Exp const> GetExp_Post(ParserData &in, Scope *ctx);
+      Core::CounterRef<AST::Exp const> GetExp_Post(ParserData &in, Scope *ctx,
+         AST::Exp const *exp);
       Core::CounterRef<AST::Exp const> GetExp_Unar(ParserData &in, Scope *ctx);
+      Core::CounterRef<AST::Exp const> GetExp_Cast(ParserData &in, Scope *ctx);
       Core::CounterRef<AST::Exp const> GetExp_Mult(ParserData &in, Scope *ctx);
       Core::CounterRef<AST::Exp const> GetExp_Addi(ParserData &in, Scope *ctx);
       Core::CounterRef<AST::Exp const> GetExp_Shft(ParserData &in, Scope *ctx);
@@ -151,9 +158,13 @@ namespace GDCC
 
       bool IsDeclarator(ParserData &in, Scope *ctx);
 
+      bool IsExp_Cast(ParserData &in, Scope *ctx);
+
       bool IsSpecQual(ParserData &in, Scope *ctx);
 
       bool IsStaticAssert(ParserData &in, Scope *ctx);
+
+      bool IsType(ParserData &in, Scope *ctx);
 
       bool IsTypeQual(ParserData &in, Scope *ctx);
 
