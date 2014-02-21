@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,6 @@
 #ifndef GDCC__CPP__StringTBuf_H__
 #define GDCC__CPP__StringTBuf_H__
 
-#include "../Core/Parse.hpp"
 #include "../Core/TokenBuf.hpp"
 
 
@@ -31,28 +30,10 @@ namespace GDCC
       class StringTBuf : public Core::TokenBuf
       {
       public:
-         StringTBuf(Core::TokenBuf &src_) : src(src_) {sett(buf, buf + 1, buf + 1);}
+         StringTBuf(Core::TokenBuf &src_) : src(src_) {sett(buf, buf, buf);}
 
       protected:
-         //
-         // underflow
-         //
-         virtual void underflow()
-         {
-            if(tptr() != tend()) return;
-
-            switch((buf[0] = src.get()).tok)
-            {
-            case Core::TOK_Charac:
-            case Core::TOK_String:
-               buf[0].str = Core::ParseStringC(buf[0].str);
-               break;
-
-            default: break;
-            }
-
-            sett(buf, buf, buf + 1);
-         }
+         virtual void underflow();
 
          Core::TokenBuf &src;
          Core::Token     buf[1];

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "CPP/ConcatTBuf.hpp"
+
+#include "Core/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -32,10 +34,25 @@ namespace GDCC
 
          buf.emplace_back(src.get());
 
-         if(buf[0].tok == Core::TOK_String)
+         switch(buf[0].tok)
          {
+         case Core::TOK_StrIdx:
+         case Core::TOK_StrU08:
+         case Core::TOK_StrU16:
+         case Core::TOK_StrU32:
+         case Core::TOK_StrWid:
+         case Core::TOK_String:
             for(;;) switch(src.peek().tok)
             {
+            case Core::TOK_StrIdx:
+            case Core::TOK_StrU08:
+            case Core::TOK_StrU16:
+            case Core::TOK_StrU32:
+            case Core::TOK_StrWid:
+               if(buf[0].tok != Core::TOK_String && buf[0].tok != src.peek().tok)
+                  throw Core::ExceptStr(src.peek().pos, "invalid concatenation");
+
+               buf[0].tok = src.peek().tok;
             case Core::TOK_String:
                buf[0].str += src.get().str;
                break;
@@ -47,6 +64,8 @@ namespace GDCC
 
             default: goto flowed;
             }
+
+         default: break;
          }
 
       flowed:

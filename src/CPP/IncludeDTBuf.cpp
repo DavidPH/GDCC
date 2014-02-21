@@ -16,6 +16,7 @@
 #include "CPP/TStream.hpp"
 
 #include "Core/Option.hpp"
+#include "Core/Parse.hpp"
 #include "Core/Path.hpp"
 
 #include <fstream>

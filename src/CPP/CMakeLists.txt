@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013 David Hill
+## Copyright (C) 2013-2014 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -28,6 +28,7 @@ add_library(gdcc-cpp-lib
    PPTokenTBuf.cpp
    Pragma.cpp
    PragmaDTBuf.cpp
+   StringTBuf.cpp
 )
 
 add_executable(gdcc-cpp

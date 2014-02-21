@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "CPP/IStream.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
 #include "Core/Token.hpp"
 
@@ -101,8 +102,8 @@ namespace GDCC
          case '(':  GDCC_Core_Token_SetStrTok(out, ParenO); return in;
          case ')':  GDCC_Core_Token_SetStrTok(out, ParenC); return in;
          case '\n': GDCC_Core_Token_SetStrTok(out, LnEnd);  return in;
-      //case ' ':  GDCC_Core_Token_SetStrTok(out, Space);  return in;
-      //case '\t': GDCC_Core_Token_SetStrTok(out, Tabul);  return in;
+       //case ' ':  GDCC_Core_Token_SetStrTok(out, Space);  return in;
+       //case '\t': GDCC_Core_Token_SetStrTok(out, Tabul);  return in;
 
          case '+':
             c = in.get();
@@ -260,7 +261,29 @@ namespace GDCC
 
             do str += static_cast<char>(c);
             while((c = in.get()) != EOF && (std::isalnum(c) || c == '_'));
-            if(c != EOF) in.unget();
+
+            // Character/string with encoding prefix.
+            if(c == '"' || c == '\'')
+            {
+               // Parse character/string.
+               auto hold = in.holdComments();
+
+               try
+               {
+                       str += Core::ReadStringC(in, c);
+                  auto hash = Core::HashString(str.data(), str.size());
+                  out.str = Core::AddString(str.data(), str.size(), hash);
+                  out.tok = c == '"' ? Core::TOK_String : Core::TOK_Charac;
+
+                  return in;
+               }
+               catch(Core::ParseError const &e)
+               {
+                  throw Core::ExceptStr(out.pos, e.msg);
+               }
+            }
+            else if(c != EOF)
+               in.unget();
 
             std::size_t hash = Core::HashString(str.data(), str.size());
             out.str = Core::AddString(str.data(), str.size(), hash);

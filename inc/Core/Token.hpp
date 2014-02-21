@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -40,6 +40,9 @@ namespace GDCC
          // String tokens.
          TOK_Charac,
          TOK_ChrSeq,
+         TOK_ChrU16,
+         TOK_ChrU32,
+         TOK_ChrWid,
          TOK_HdrStr,
          TOK_Header,
          TOK_Identi,
@@ -48,6 +51,11 @@ namespace GDCC
          TOK_NumFlt,
          TOK_NumInt,
          TOK_Number,
+         TOK_StrIdx,
+         TOK_StrU08,
+         TOK_StrU16,
+         TOK_StrU32,
+         TOK_StrWid,
          TOK_String,
          TOK_WSpace,
 

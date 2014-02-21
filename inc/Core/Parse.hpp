@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -79,6 +79,7 @@ namespace GDCC
 
       std::string ParseStringC(std::string const &in);
       String ParseStringC(String in);
+      String ParseStringC(String in, std::size_t offset);
 
       void ReadEscapeC(std::istream &in, std::string &out);
 

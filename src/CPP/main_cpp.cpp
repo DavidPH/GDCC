@@ -53,6 +53,8 @@ static void MakeCPP()
 //
 static void ProcessFile(std::ostream &out, char const *inName)
 {
+   using namespace GDCC;
+
    std::filebuf fbuf;
 
    if(!fbuf.open(inName, std::ios_base::in))
@@ -61,19 +63,31 @@ static void ProcessFile(std::ostream &out, char const *inName)
       throw EXIT_FAILURE;
    }
 
-   auto inStr = GDCC::Core::AddString(inName);
+   auto inStr = Core::AddString(inName);
 
-   GDCC::CPP::Macro::Reset();
-   GDCC::CPP::Macro::LinePush(GDCC::CPP::Macro::Stringize(inStr));
+   CPP::Macro::Reset();
+   CPP::Macro::LinePush(CPP::Macro::Stringize(inStr));
 
-   GDCC::CPP::PragmaLangC pragma;
+   CPP::PragmaLangC pragma;
 
-   GDCC::CPP::PPStream in{fbuf, pragma, inStr, GDCC::Core::PathDirname(inStr)};
+   CPP::PPStream in{fbuf, pragma, inStr, Core::PathDirname(inStr)};
 
-   for(GDCC::Core::Token tok; in >> tok;) switch(tok.tok)
+   for(Core::Token tok; in >> tok;) switch(tok.tok)
    {
-   case GDCC::Core::TOK_Charac: out << '\''; PutStringEscape(out, tok.str); out << '\''; break;
-   case GDCC::Core::TOK_String: out << '"'; PutStringEscape(out, tok.str); out << '"'; break;
+   case Core::TOK_ChrU16: out << 'u'; goto case_Charac;
+   case Core::TOK_ChrU32: out << 'U'; goto case_Charac;
+   case Core::TOK_ChrWid: out << 'L'; goto case_Charac;
+   case Core::TOK_Charac: case_Charac:
+      out << '\''; PutStringEscape(out, tok.str); out << '\''; break;
+
+   case Core::TOK_StrIdx: out << 's';  goto case_String;
+   case Core::TOK_StrU08: out << "u8"; goto case_String;
+   case Core::TOK_StrU16: out << 'u';  goto case_String;
+   case Core::TOK_StrU32: out << 'U';  goto case_String;
+   case Core::TOK_StrWid: out << 'L';  goto case_String;
+   case Core::TOK_String: case_String:
+      out << '"'; PutStringEscape(out, tok.str); out << '"'; break;
+
    default: out << tok.str; break;
    }
 
@@ -120,6 +134,10 @@ int main(int argc, char *argv[])
    {
       GDCC::Core::InitOptions(argc, argv, "gdcc-cpp");
       MakeCPP();
+   }
+   catch(std::exception const &e)
+   {
+      std::cerr << e.what() << std::endl;
    }
    catch(int e)
    {

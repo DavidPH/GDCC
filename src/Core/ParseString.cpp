@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -122,9 +122,8 @@ namespace GDCC
       //
       // ParseStringC
       //
-      std::string ParseStringC(std::string const &inBuf)
+      std::string ParseStringC(std::istream &in)
       {
-         std::istringstream in{inBuf};
          std::string buf;
          int term = in.get();
 
@@ -142,21 +141,32 @@ namespace GDCC
       //
       // ParseStringC
       //
+      std::string ParseStringC(std::string const &inBuf)
+      {
+         std::istringstream in{inBuf};
+         return ParseStringC(in);
+      }
+
+      //
+      // ParseStringC
+      //
       String ParseStringC(String inStr)
       {
          StringStream in{inStr};
-         std::string buf;
-         int term = in.get();
+         auto data = ParseStringC(in);
+         auto hash = HashString(data.data(), data.size());
+         return AddString(data.data(), data.size(), hash);
+      }
 
-         for(int c; (c = in.get()) != EOF && c != term;)
-         {
-            if(c == '\\')
-               buf += ParseEscapeC(in);
-            else
-               buf += static_cast<char>(c);
-         }
-
-         return AddString(buf.data(), buf.size(), HashString(buf.data(), buf.size()));
+      //
+      // ParseStringC
+      //
+      String ParseStringC(String inStr, std::size_t offset)
+      {
+         StringStream in{inStr.data() + offset, inStr.size() - offset};
+         auto data = ParseStringC(in);
+         auto hash = HashString(data.data(), data.size());
+         return AddString(data.data(), data.size(), hash);
       }
 
       //

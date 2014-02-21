@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -59,6 +59,8 @@ namespace GDCC
       {
       public:
          explicit StringStream(String src) : std::istream{&buf}, buf{src} {}
+         StringStream(char const *str, std::size_t len) :
+            std::istream{&buf}, buf{str, len} {}
 
       protected:
          StringBuf buf;
