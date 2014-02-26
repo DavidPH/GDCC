@@ -231,7 +231,7 @@ namespace GDCC
 
          switch(in.in.peek().tok)
          {
-         case Core::TOK_Equal: return expCreate(ExpCreate_Equal);
+         case Core::TOK_Equal: return expCreate(ExpCreate_Assign);
          case Core::TOK_MulEq: return expCreate(ExpCreate_MulEq);
          case Core::TOK_DivEq: return expCreate(ExpCreate_DivEq);
          case Core::TOK_ModEq: return expCreate(ExpCreate_ModEq);

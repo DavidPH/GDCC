@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,6 +28,16 @@ namespace GDCC
 {
    namespace AST
    {
+      //
+      // Exp copy constructor
+      //
+      Exp::Exp(Exp const &exp) :
+         pos{exp.pos},
+
+         cacheIRExp{exp.cacheIRExp}
+      {
+      }
+
       //
       // Exp constructor
       //

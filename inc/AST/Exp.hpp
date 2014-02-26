@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -70,6 +70,7 @@ namespace GDCC
          Core::Origin const pos;
 
       protected:
+         Exp(Exp const &exp);
          explicit Exp(Core::Origin pos);
          virtual ~Exp();
 

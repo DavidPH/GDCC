@@ -16,6 +16,9 @@
 ##
 
 add_library(gdcc-cc-lib
+   Exp.cpp
+   Exp/Assign.cpp
+   Exp/Promote.cpp
    Parse.cpp
    Parse/AttrSpec.cpp
    Parse/DeclSpec.cpp

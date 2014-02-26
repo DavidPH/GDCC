@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -96,6 +96,28 @@ namespace GDCC
       class TypeSet;
 
       //
+      // TypeRankC
+      //
+      enum class TypeRankC
+      {
+         None,
+         IntegHH,
+         IntegH,
+         Integ,
+         IntegL,
+         IntegLL,
+         FractH,
+         Fract,
+         FractL,
+         FixedH,
+         Fixed,
+         FixedL,
+         Float,
+         FloatL,
+         FloatLL,
+      };
+
+      //
       // TypeError
       //
       class TypeError : public std::exception
@@ -175,12 +197,16 @@ namespace GDCC
          virtual IR::Type      getIRType()      const;
          virtual Core::String  getName()        const {throw TypeError();}
          virtual TypeSetCRef   getParameters()  const {throw TypeError();}
+         virtual CRef          getPrimType()    const {throw TypeError();}
                  TypeQual      getQual()        const {return quals;}
                  IR::AddrSpace getQualAddr()    const {return quals.space;}
                  bool          getQualAtom()    const {return quals.aAtom;}
                  bool          getQualCons()    const {return quals.aCons;}
                  bool          getQualRest()    const {return quals.aRest;}
                  bool          getQualVola()    const {return quals.aVola;}
+         virtual TypeRankC     getRankC()       const {throw TypeError();}
+         virtual CRef          getSatuType()    const {throw TypeError();}
+         virtual CRef          getSignType()    const {throw TypeError();}
          virtual Core::FastU   getSizeAlign()   const {throw TypeError();}
          virtual Core::FastU   getSizeBitsF()   const {throw TypeError();}
          virtual Core::FastU   getSizeBitsI()   const {throw TypeError();}
@@ -193,6 +219,7 @@ namespace GDCC
          virtual Core::FastU   getSizeShift()   const {throw TypeError();}
          virtual Core::FastU   getSizeWords()   const {throw TypeError();}
          virtual ExpCRef       getSizeWordsVM() const;
+         virtual CRef          getUnsiType()    const {throw TypeError();}
 
          // Type classification: General classifications.
          virtual bool isTypeArray()    const {return false;}

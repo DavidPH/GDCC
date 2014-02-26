@@ -28,6 +28,7 @@ namespace GDCC
       class Exp;
       class Function;
       class Object;
+      class Type;
    }
 
    namespace Core
@@ -61,6 +62,15 @@ namespace GDCC
 {
    namespace CC
    {
+      Core::CounterRef<AST::Exp const> ExpConvert_Arith(AST::Type const *t,
+         AST::Exp const *e, Core::Origin pos);
+
+      Core::CounterRef<AST::Exp const> ExpConvert_Bool(AST::Type const *t,
+         AST::Exp const *e, Core::Origin pos);
+
+      Core::CounterRef<AST::Exp const> ExpConvert_Pointer(AST::Type const *t,
+         AST::Exp const *e, Core::Origin pos);
+
       Core::CounterRef<AST::Exp const> ExpCreate_Add(AST::Exp const *e,
          Core::Origin pos);
 
@@ -71,6 +81,9 @@ namespace GDCC
 
       Core::CounterRef<AST::Exp const> ExpCreate_Array(AST::Exp const *exp,
          AST::Exp const *idx, Core::Origin pos);
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Assign(AST::Exp const *l,
+         AST::Exp const *r, Core::Origin pos);
 
       Core::CounterRef<AST::Exp const> ExpCreate_BitAnd(AST::Exp const *l,
          AST::Exp const *r, Core::Origin pos);
@@ -127,9 +140,6 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpCreate_Div(AST::Exp const *l,
          AST::Exp const *r, Core::Origin pos);
       Core::CounterRef<AST::Exp const> ExpCreate_DivEq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-
-      Core::CounterRef<AST::Exp const> ExpCreate_Equal(AST::Exp const *l,
          AST::Exp const *r, Core::Origin pos);
 
       Core::CounterRef<AST::Exp const> ExpCreate_Func(AST::Function *fn,
@@ -210,8 +220,34 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpCreate_SubEq(AST::Exp const *l,
          AST::Exp const *r, Core::Origin pos);
 
+      // Default argument promotions.
+      Core::CounterRef<AST::Exp const> ExpPromo_Arg(AST::Exp const *e,
+         Core::Origin pos);
+
+      // Usual arithmtic conversions.
+      std::pair<Core::CounterRef<AST::Exp const>, Core::CounterRef<AST::Exp const>>
+      ExpPromo_Arith(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+
+      // Conversion as if by assignment.
+      Core::CounterRef<AST::Exp const> ExpPromo_Assign(AST::Type const *t,
+         AST::Exp const *e, Core::Origin pos);
+
+      // Integer promotion.
+      Core::CounterRef<AST::Exp const> ExpPromo_Int(AST::Exp const *e,
+         Core::Origin pos);
+
+      // Lvalues, arrays, and function designators.
+      Core::CounterRef<AST::Exp const> ExpPromo_LValue(AST::Exp const *e,
+         Core::Origin pos);
+
       Core::FastU ExpToFastU(AST::Exp const *exp);
       Core::Integ ExpToInteg(AST::Exp const *exp);
+
+      // Is exp an lvalue?
+      bool IsLValue(AST::Exp const *exp);
+
+      // Is exp a modifiable lvalue?
+      bool IsModLValue(AST::Exp const *exp);
    }
 }
 
