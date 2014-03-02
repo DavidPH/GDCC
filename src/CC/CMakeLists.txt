@@ -35,6 +35,7 @@ add_library(gdcc-cc-lib
    Parse/Exp/Unar.cpp
    Parse/SpecQual.cpp
    Parse/Statement.cpp
+   Parse/StaticAssert.cpp
    Parse/TypeQual.cpp
    Parse/TypeSpec.cpp
    Scope.cpp

@@ -10,6 +10,11 @@
 //
 //-----------------------------------------------------------------------------
 
+#include "CC/Parse.hpp"
+#include "CC/Scope/Global.hpp"
+
+#include "AST/Statement.hpp"
+
 #include "CPP/Macro.hpp"
 #include "CPP/TStream.hpp"
 
@@ -57,8 +62,10 @@ static void MakeC()
 //
 // ProcessFile
 //
-static void ProcessFile(char const *inName, GDCC::IR::Program &)
+static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 {
+   using namespace GDCC;
+
    std::filebuf fbuf;
 
    if(!fbuf.open(inName, std::ios_base::in))
@@ -67,19 +74,24 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &)
       throw EXIT_FAILURE;
    }
 
-   auto inStr = GDCC::Core::AddString(inName);
+   auto inStr = Core::AddString(inName);
 
-   GDCC::CPP::Macro::Reset();
-   GDCC::CPP::Macro::LinePush(GDCC::CPP::Macro::Stringize(inStr));
+   CPP::Macro::Reset();
+   CPP::Macro::LinePush(CPP::Macro::Stringize(inStr));
 
-   GDCC::CPP::PragmaLangC pragma;
+   CPP::PragmaLangC pragma;
 
-   GDCC::CPP::TStream in{fbuf, pragma, inStr, GDCC::Core::PathDirname(inStr)};
+   CPP::TStream str{fbuf, pragma, inStr, Core::PathDirname(inStr)};
 
-   for(GDCC::Core::Token tok; in >> tok;)
-      std::cout << tok.tok << '(' << tok.str << ") ";
+   CC::GlobalScope ctx;
 
-   std::cout << std::endl;
+   CC::ParserData in{str, pragma, prog};
+
+   // Read declarations.
+   while(in.in.peek().tok != Core::TOK_EOF)
+      CC::GetDecl(in, &ctx);
+
+   // Generate IR data.
 }
 
 
