@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -45,6 +45,14 @@ namespace GDCC
       {
          return static_cast<Statement::CRef>(
             new Statement_Empty(std::move(labels), pos));
+      }
+
+      //
+      // StatementCreate_Empty
+      //
+      Statement::CRef StatementCreate_Empty(Core::Origin pos)
+      {
+         return static_cast<Statement::CRef>(new Statement_Empty(pos));
       }
    }
 }

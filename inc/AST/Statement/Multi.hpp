@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -45,6 +45,10 @@ namespace GDCC
          friend Statement::CRef StatementCreate_Multi(
             Core::Array<Core::String> &&labels, Core::Origin pos,
             Core::Array<Statement::CRef> &&stmnts);
+         friend Statement::CRef StatementCreate_Multi(Core::Origin pos,
+            Core::Array<Statement::CRef> const &stmnts);
+         friend Statement::CRef StatementCreate_Multi(Core::Origin pos,
+            Core::Array<Statement::CRef> &&stmnts);
 
          Core::Array<Statement::CRef> const stmnts;
 
@@ -61,6 +65,12 @@ namespace GDCC
          Statement_Multi(Core::Array<Core::String> &&labels_, Core::Origin pos_,
             Core::Array<Statement::CRef> &&stmnts_) :
             Super{std::move(labels_), pos_}, stmnts{std::move(stmnts_)} {}
+         Statement_Multi(Core::Origin pos_,
+            Core::Array<Statement::CRef> const &stmnts_) :
+            Super{pos_}, stmnts{stmnts_} {}
+         Statement_Multi(Core::Origin pos_,
+            Core::Array<Statement::CRef> &&stmnts_) :
+            Super{pos_}, stmnts{std::move(stmnts_)} {}
 
          virtual void v_genLabel(IR::Block &block) const;
          virtual void v_genStmnt(IR::Block &block, Function *fn) const;

@@ -113,6 +113,25 @@ namespace GDCC
          return static_cast<Statement::CRef>(
             new Statement_Multi(std::move(labels), pos, std::move(stmnts)));
       }
+
+      //
+      // StatementCreate_Multi
+      //
+      Statement::CRef StatementCreate_Multi(Core::Origin pos,
+         Core::Array<Statement::CRef> const &stmnts)
+      {
+         return static_cast<Statement::CRef>(new Statement_Multi(pos, stmnts));
+      }
+
+      //
+      // StatementCreate_Multi
+      //
+      Statement::CRef StatementCreate_Multi(Core::Origin pos,
+         Core::Array<Statement::CRef> &&stmnts)
+      {
+         return static_cast<Statement::CRef>(
+            new Statement_Multi(pos, std::move(stmnts)));
+      }
    }
 }
 

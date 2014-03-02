@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,6 +39,9 @@ namespace GDCC
          friend Statement::CRef StatementCreate_Exp(
             Core::Array<Core::String> &&labels, Core::Origin pos,
             Exp const *exp);
+         friend Statement::CRef StatementCreate_Exp(Core::Origin pos,
+            Exp const *exp);
+         friend Statement::CRef StatementCreate_Exp(Exp const *exp);
 
          Core::CounterRef<Exp const> const exp;
 
@@ -47,6 +50,7 @@ namespace GDCC
             Core::Origin pos, Exp const *exp);
          Statement_Exp(Core::Array<Core::String>      &&labels,
             Core::Origin pos, Exp const *exp);
+         Statement_Exp(Core::Origin pos, Exp const *exp);
          virtual ~Statement_Exp();
 
          virtual void v_genStmnt(IR::Block &block, Function *fn) const;

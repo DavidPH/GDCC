@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -37,12 +37,14 @@ namespace GDCC
             Core::Array<Core::String> const &labels, Core::Origin pos);
          friend Statement::CRef StatementCreate_Empty(
             Core::Array<Core::String>      &&labels, Core::Origin pos);
+         friend Statement::CRef StatementCreate_Empty(Core::Origin pos);
 
       protected:
          Statement_Empty(Core::Array<Core::String> const &labels_, Core::Origin pos_) :
             Super{labels_, pos_} {}
          Statement_Empty(Core::Array<Core::String> &&labels_, Core::Origin pos_) :
             Super{std::move(labels_), pos_} {}
+         Statement_Empty(Core::Origin pos_) : Super{pos_} {}
 
          virtual void v_genStmnt(IR::Block &block, Function *fn) const;
 
