@@ -41,6 +41,11 @@ namespace GDCC
       class Pragma;
    }
 
+   namespace IR
+   {
+      class Program;
+   }
+
    namespace CC
    {
       class GlobalScope;
@@ -53,14 +58,24 @@ namespace GDCC
       class ParserData
       {
       public:
-         ParserData(Core::TokenStream &in_, CPP::Pragma &prag_) :
+         ParserData(Core::TokenStream &in_, CPP::Pragma &prag_,
+            IR::Program &prog_) :
             in(in_),
-            prag(prag_)
+            prag(prag_),
+            prog(prog_)
+         {
+         }
+
+         ParserData(ParserData const &data, Core::TokenStream &in_) :
+            in(in_),
+            prag(data.prag),
+            prog(data.prog)
          {
          }
 
          Core::TokenStream &in;
          CPP::Pragma       &prag;
+         IR::Program       &prog;
       };
 
       //

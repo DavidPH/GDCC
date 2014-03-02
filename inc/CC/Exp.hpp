@@ -38,6 +38,11 @@ namespace GDCC
       class String;
    }
 
+   namespace IR
+   {
+      class Program;
+   }
+
    namespace CC
    {
       //
@@ -142,8 +147,8 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpCreate_DivEq(AST::Exp const *l,
          AST::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Func(AST::Function *fn,
-         Core::Origin pos);
+      Core::CounterRef<AST::Exp const> ExpCreate_Func(IR::Program &prog,
+         AST::Function *fn, Core::Origin pos);
 
       Core::CounterRef<AST::Exp const> ExpCreate_GenSel(AST::Exp const *exp,
          AST::Exp const *def, Core::Array<GenAssoc> const &a, Core::Origin pos);
@@ -188,8 +193,8 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpCreate_Not(AST::Exp const *e,
          Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Obj(AST::Object *obj,
-         Core::Origin pos);
+      Core::CounterRef<AST::Exp const> ExpCreate_Obj(IR::Program &prog,
+         AST::Object *obj, Core::Origin pos);
 
       Core::CounterRef<AST::Exp const> ExpCreate_Refer(AST::Exp const *e,
          Core::Origin pos);

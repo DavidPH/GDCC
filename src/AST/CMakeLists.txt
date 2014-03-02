@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013 David Hill
+## Copyright (C) 2013-2014 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -21,6 +21,7 @@ add_library(gdcc-ast-lib
    Exp.cpp
    Exp/Binary.cpp
    Exp/BinaryMulSize.cpp
+   Exp/Unary.cpp
    Exp/ValueArg.cpp
    Exp/ValueIRExp.cpp
    Exp/genStmntMove.cpp

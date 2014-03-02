@@ -118,6 +118,14 @@ namespace GDCC
       }
 
       //
+      // Exp::setRefer
+      //
+      void Exp::setRefer() const
+      {
+         v_setRefer();
+      }
+
+      //
       // Exp::v_getArg
       //
       Arg Exp::v_getArg() const
@@ -132,6 +140,13 @@ namespace GDCC
       {
          std::cerr << "ERROR: " << pos << ": expected constant\n";
          throw EXIT_FAILURE;
+      }
+
+      //
+      // Exp::v_setRefer
+      //
+      void Exp::v_setRefer() const
+      {
       }
    }
 }

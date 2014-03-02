@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -65,6 +65,7 @@ namespace GDCC
          TypeCPtr       retrn;
          StatementCPtr  stmnt;
          IR::ScriptType stype;
+         TypeCPtr       type;
          IRExpCPtr      valueInt;
          Core::String   valueStr;
 

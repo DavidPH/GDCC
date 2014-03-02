@@ -67,6 +67,9 @@ namespace GDCC
          // Can this expression be made into an IR expression?
          bool isIRExp() const;
 
+         // Marks the expression as needing its address taken.
+         void setRefer() const;
+
          Core::Origin const pos;
 
       protected:
@@ -80,7 +83,8 @@ namespace GDCC
          void genStmntMovePart(IR::Block &block, Function *fn, Arg const &arg,
             bool get, bool set) const;
 
-         virtual void v_genStmnt(IR::Block &block, Function *fn, Arg const &dst) const = 0;
+         virtual void v_genStmnt(IR::Block &block, Function *fn,
+            Arg const &dst) const = 0;
 
          virtual Arg v_getArg() const;
 
@@ -91,6 +95,8 @@ namespace GDCC
          virtual bool v_isEffect() const = 0;
 
          virtual bool v_isIRExp() const = 0;
+
+         virtual void v_setRefer() const;
 
       private:
          mutable IRExpCPtr cacheIRExp;

@@ -131,7 +131,7 @@ namespace GDCC
          {
             Core::ArrayTBuf buf{toks.data(), toks.size()};
             Core::TokenStream str{&buf};
-            ParserData tmp{str, in.prag};
+            ParserData tmp{in, str};
 
             ParseDeclarator(tmp, ctx, attr);
          }

@@ -113,10 +113,10 @@ static GDCC::AST::Exp::CRef GetExp_Prim_Identi(GDCC::CC::ParserData &in,
    if(auto lookup = ctx->lookup(tok.str)) switch(lookup.res)
    {
    case CC::Lookup::Func:
-      return CC::ExpCreate_Func(lookup.resFunc, tok.pos);
+      return CC::ExpCreate_Func(in.prog, lookup.resFunc, tok.pos);
 
    case CC::Lookup::Obj:
-      return CC::ExpCreate_Obj(lookup.resObj, tok.pos);
+      return CC::ExpCreate_Obj(in.prog, lookup.resObj, tok.pos);
 
    default:
       throw Core::ExceptStr(tok.pos, "expected primary-expression");
