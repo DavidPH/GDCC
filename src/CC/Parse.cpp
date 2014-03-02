@@ -40,6 +40,14 @@ namespace GDCC
 
          return static_cast<AST::Type::CRef>(attr.type);
       }
+
+      //
+      // IsType
+      //
+      bool IsType(ParserData &in, Scope *ctx)
+      {
+         return IsSpecQual(in, ctx);
+      }
    }
 }
 

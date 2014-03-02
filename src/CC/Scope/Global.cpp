@@ -23,6 +23,8 @@
 
 #include "Bytecode/Platform.hpp"
 
+#include "Core/Exception.hpp"
+
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 
@@ -90,6 +92,40 @@ namespace GDCC
          subScopes.emplace_back(fnCtx);
 
          return fnCtx;
+      }
+
+      //
+      // GlobalScope::genGlyphObj
+      //
+      Core::String GlobalScope::genGlyphObj(Core::String name, IR::Linkage linka)
+      {
+         switch(linka)
+         {
+         case IR::Linkage::ExtACS:
+         case IR::Linkage::ExtASM:
+            return name;
+
+         case IR::Linkage::ExtC:
+            return Core::STR__ + name;
+         }
+
+         return name;
+      }
+
+      //
+      // GlobalScope::getFunction
+      //
+      AST::Function::Ref GlobalScope::getFunction(AST::Attribute const &attr)
+      {
+         throw Core::ExceptStr(attr.namePos, "getFunction stub");
+      }
+
+      //
+      // GlobalScope::getObject
+      //
+      AST::Object::Ref GlobalScope::getObject(AST::Attribute const &attr)
+      {
+         throw Core::ExceptStr(attr.namePos, "getObject stub");
       }
    }
 }

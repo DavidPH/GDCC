@@ -14,7 +14,10 @@
 
 #include "CC/Scope/Block.hpp"
 
+#include "AST/Attribute.hpp"
 #include "AST/Object.hpp"
+
+#include "Core/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -50,6 +53,36 @@ namespace GDCC
          auto ctx = new BlockScope(this, getScopeFunction());
          subScopes.emplace_back(ctx);
          return ctx;
+      }
+
+      //
+      // LocalScope::createScopeLoop
+      //
+      BlockScope *LocalScope::createScopeLoop()
+      {
+         // FIXME
+         auto ctx = new BlockScope(this, getScopeFunction());
+         subScopes.emplace_back(ctx);
+         return ctx;
+      }
+
+      //
+      // LocalScope::createScopeSwitch
+      //
+      BlockScope *LocalScope::createScopeSwitch()
+      {
+         // FIXME
+         auto ctx = new BlockScope(this, getScopeFunction());
+         subScopes.emplace_back(ctx);
+         return ctx;
+      }
+
+      //
+      // LocalScope::getObject
+      //
+      AST::Object::Ref LocalScope::getObject(AST::Attribute const &attr)
+      {
+         throw Core::ExceptStr(attr.namePos, "getObject stub");
       }
    }
 }

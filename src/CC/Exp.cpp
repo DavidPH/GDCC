@@ -31,6 +31,15 @@ namespace GDCC
    namespace CC
    {
       //
+      // GenAssoc constructor
+      //
+      GenAssoc::GenAssoc(AST::Type const *type_, AST::Exp const *exp_) :
+         type{type_},
+         exp {exp_}
+      {
+      }
+
+      //
       // ExpToFastU
       //
       Core::FastU ExpToFastU(AST::Exp const *exp)
@@ -95,6 +104,209 @@ namespace GDCC
 
          return true;
       }
+
+      // Stubs.
+
+      Core::CounterRef<AST::Exp const> ExpConvert_Arith(AST::Type const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpConvert_Bool(AST::Type const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpConvert_Pointer(AST::Type const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Add(AST::Exp const *,
+         Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Add(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_AddEq(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Array(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Assign(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_BitAnd(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_BitAndEq(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_BitOrI(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_BitOrIEq(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_BitOrX(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_BitOrXEq(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Call(AST::Exp const *,
+         Core::Array<Core::CounterRef<AST::Exp const>> const &,
+         Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_Call(AST::Exp const *,
+         Core::Array<Core::CounterRef<AST::Exp const>>      &&,
+         Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_CmpEQ(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_CmpGE(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_CmpGT(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_CmpLE(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_CmpLT(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_CmpNE(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Cnd(AST::Exp const *,
+         AST::Exp const *, AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Comma(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Cst(AST::Type const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_DecPre(AST::Exp const *,
+         Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_DecSuf(AST::Exp const *,
+         Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Div(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_DivEq(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_GenSel(AST::Exp const *,
+         AST::Exp const *, Core::Array<GenAssoc> const &, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_GenSel(AST::Exp const *,
+         AST::Exp const *, Core::Array<GenAssoc>      &&, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_IncPre(AST::Exp const *,
+         Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_IncSuf(AST::Exp const *,
+         Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Inv(AST::Exp const *,
+         Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_LitInt(AST::Type const *,
+         Core::Integ const &, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_LitInt(AST::Type const *,
+         Core::Integ      &&, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_LogAnd(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_LogOrI(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Mem(AST::Exp const *,
+         Core::String, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_MemPt(AST::Exp const *,
+         Core::String, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Mod(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_ModEq(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Mul(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_MulEq(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Not(AST::Exp const *,
+         Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_ShL(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_ShLEq(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_ShR(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_ShREq(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_SizeAlign(
+         AST::Type const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_SizeBytes(
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_SizeBytes(
+         AST::Type const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Sub(AST::Exp const *,
+         Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+
+      Core::CounterRef<AST::Exp const> ExpCreate_Sub(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
+      Core::CounterRef<AST::Exp const> ExpCreate_SubEq(AST::Exp const *,
+         AST::Exp const *, Core::Origin pos)
+         {throw Core::ExceptStr(pos, "stub");}
    }
 }
 

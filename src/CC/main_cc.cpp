@@ -113,6 +113,10 @@ int main(int argc, char *argv[])
       GDCC::Core::InitOptions(argc, argv, "gdcc-cc");
       MakeC();
    }
+   catch(std::exception const &e)
+   {
+      std::cerr << e.what() << std::endl;
+   }
    catch(int e)
    {
       return e;

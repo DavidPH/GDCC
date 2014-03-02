@@ -43,6 +43,7 @@ add_library(gdcc-cc-lib
    Scope/Function.cpp
    Scope/Global.cpp
    Scope/Local.cpp
+   Statement.cpp
    Type.cpp
    Type/Bool.cpp
    Type/Char.cpp

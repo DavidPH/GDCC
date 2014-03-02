@@ -150,9 +150,12 @@ namespace GDCC
       constexpr bool operator == (StringIndex l, String const &r) {return r == l;}
       constexpr bool operator != (StringIndex l, String const &r) {return r != l;}
 
-      String operator + (String l, String r);
+      String operator + (String      l, String      r);
+      String operator + (String      l, StringIndex r);
+      String operator + (StringIndex l, String      r);
 
-      inline String &operator += (String &l, String r) {return l = l + r;}
+      inline String &operator += (String &l, String      r) {return l = l + r;}
+      inline String &operator += (String &l, StringIndex r) {return l = l + r;}
 
       String AddString(char const *str);
       String AddString(char const *str, std::size_t len, std::size_t hash);
@@ -166,6 +169,9 @@ namespace GDCC
       void LenHashString(char const *str, std::size_t &len, std::size_t &hash);
 
       std::unique_ptr<char[]> StrDup(char const *str, std::size_t len);
+
+      inline String operator + (String l, StringIndex r) {return l + String(r);}
+      inline String operator + (StringIndex l, String r) {return String(l) + r;}
    }
 }
 

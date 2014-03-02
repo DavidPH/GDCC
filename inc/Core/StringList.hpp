@@ -12,6 +12,8 @@
 
 GDCC_Core_StringList(, "")
 
+GDCC_Core_StringList(_, "_")
+GDCC_Core_StringList(__, "__")
 GDCC_Core_StringList(__DATE__, "__DATE__")
 GDCC_Core_StringList(__FILE__, "__FILE__")
 GDCC_Core_StringList(__LINE__, "__LINE__")
