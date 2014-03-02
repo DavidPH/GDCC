@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__IR__Exp__ValueIRExp_H__
-#define GDCC__IR__Exp__ValueIRExp_H__
+#ifndef GDCC__IR__Exp__IRExp_H__
+#define GDCC__IR__Exp__IRExp_H__
 
 #include "../../AST/Exp.hpp"
 
@@ -25,25 +25,24 @@ namespace GDCC
    namespace AST
    {
       //
-      // Exp_ValueIRExp
+      // Exp_IRExp
       //
-      class Exp_ValueIRExp : public Exp
+      class Exp_IRExp : public Exp
       {
-         GDCC_Core_CounterPreamble(GDCC::AST::Exp_ValueIRExp, GDCC::AST::Exp);
+         GDCC_Core_CounterPreamble(GDCC::AST::Exp_IRExp, GDCC::AST::Exp);
 
       public:
          IRExpCRef const exp;
          TypeCRef  const type;
 
 
-         friend Exp::CRef ExpCreate_ValueIRExp(IR::Exp const *exp,
-            Type const *type);
-         friend Exp::CRef ExpCreate_ValueIRExp(IR::Exp const *exp,
-            Type const *type, Core::Origin pos);
+         friend Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type);
+         friend Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type,
+            Core::Origin pos);
 
       protected:
-         Exp_ValueIRExp(IR::Exp const *exp, Type const *type, Core::Origin pos);
-         virtual ~Exp_ValueIRExp();
+         Exp_IRExp(IR::Exp const *exp, Type const *type, Core::Origin pos);
+         virtual ~Exp_IRExp();
 
          virtual void v_genStmnt(IR::Block &block, Function *fn, Arg const &dst) const;
 
@@ -58,5 +57,5 @@ namespace GDCC
    }
 }
 
-#endif//GDCC__IR__Exp__ValueIRExp_H__
+#endif//GDCC__IR__Exp__IRExp_H__
 

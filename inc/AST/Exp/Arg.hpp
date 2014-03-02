@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__AST__Exp__ValueArg_H__
-#define GDCC__AST__Exp__ValueArg_H__
+#ifndef GDCC__AST__Exp__Arg_H__
+#define GDCC__AST__Exp__Arg_H__
 
 #include "../../AST/Exp.hpp"
 
@@ -27,20 +27,20 @@ namespace GDCC
    namespace AST
    {
       //
-      // Exp_ValueArg
+      // Exp_Arg
       //
-      class Exp_ValueArg : public Exp
+      class Exp_Arg : public Exp
       {
-         GDCC_Core_CounterPreamble(GDCC::AST::Exp_ValueArg, GDCC::AST::Exp);
+         GDCC_Core_CounterPreamble(GDCC::AST::Exp_Arg, GDCC::AST::Exp);
 
       public:
          Arg const arg;
 
 
-         friend Exp::CRef ExpCreate_ValueArg(Arg const &arg, Core::Origin pos);
+         friend Exp::CRef ExpCreate_Arg(Arg const &arg, Core::Origin pos);
 
       protected:
-         Exp_ValueArg(Arg const &arg, Core::Origin pos);
+         Exp_Arg(Arg const &arg, Core::Origin pos);
 
          virtual void v_genStmnt(IR::Block &block, Function *fn, Arg const &dst) const;
 
@@ -57,5 +57,5 @@ namespace GDCC
    }
 }
 
-#endif//GDCC__AST__Exp__ValueArg_H__
+#endif//GDCC__AST__Exp__Arg_H__
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "AST/Exp/ValueArg.hpp"
+#include "AST/Exp/Arg.hpp"
 
 #include "AST/Type.hpp"
 
@@ -26,33 +26,33 @@ namespace GDCC
    namespace AST
    {
       //
-      // Exp_ValueArg constructor
+      // Exp_Arg constructor
       //
-      Exp_ValueArg::Exp_ValueArg(Arg const &arg_, Core::Origin pos_) :
+      Exp_Arg::Exp_Arg(Arg const &arg_, Core::Origin pos_) :
          Super{pos_}, arg{arg_}
       {
       }
 
       //
-      // Exp_ValueArg::v_genStmnt
+      // Exp_Arg::v_genStmnt
       //
-      void Exp_ValueArg::v_genStmnt(IR::Block &block, Function *fn, Arg const &dst) const
+      void Exp_Arg::v_genStmnt(IR::Block &block, Function *fn, Arg const &dst) const
       {
          genStmntMove(block, fn, dst, arg);
       }
 
       //
-      // Exp_ValueArg::v_getArg
+      // Exp_Arg::v_getArg
       //
-      Arg Exp_ValueArg::v_getArg() const
+      Arg Exp_Arg::v_getArg() const
       {
          return arg;
       }
 
       //
-      // Exp_ValueArg::v_getIRExp
+      // Exp_Arg::v_getIRExp
       //
-      IR::Exp::CRef Exp_ValueArg::v_getIRExp() const
+      IR::Exp::CRef Exp_Arg::v_getIRExp() const
       {
          if(arg.type->getQualAddr().base == IR::AddrBase::Lit)
             return arg.data->getIRExp();
@@ -61,25 +61,25 @@ namespace GDCC
       }
 
       //
-      // Exp_ValueArg::v_getType
+      // Exp_Arg::v_getType
       //
-      Type::CRef Exp_ValueArg::v_getType() const
+      Type::CRef Exp_Arg::v_getType() const
       {
          return arg.type;
       }
 
       //
-      // Exp_ValueArg::v_isEffect
+      // Exp_Arg::v_isEffect
       //
-      bool Exp_ValueArg::v_isEffect() const
+      bool Exp_Arg::v_isEffect() const
       {
          return arg.data->isEffect();
       }
 
       //
-      // Exp_ValueArg::v_isIRExp
+      // Exp_Arg::v_isIRExp
       //
-      bool Exp_ValueArg::v_isIRExp() const
+      bool Exp_Arg::v_isIRExp() const
       {
          if(arg.type->getQualAddr().base == IR::AddrBase::Lit)
             return arg.data->isIRExp();
@@ -88,11 +88,11 @@ namespace GDCC
       }
 
       //
-      // ExpCreate_ValueArg
+      // ExpCreate_Arg
       //
-      Exp::CRef ExpCreate_ValueArg(Arg const &arg, Core::Origin pos)
+      Exp::CRef ExpCreate_Arg(Arg const &arg, Core::Origin pos)
       {
-         return static_cast<Exp::CRef>(new Exp_ValueArg(arg, pos));
+         return static_cast<Exp::CRef>(new Exp_Arg(arg, pos));
       }
    }
 }

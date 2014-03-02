@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -112,7 +112,7 @@ namespace GDCC
       //
       Exp::CRef Type_ArrVM::getSizeBytesVM() const
       {
-         return ExpCreate_BinaryMulSize(size, base->getSizeBytesVM());
+         return ExpCreate_MulSize(size, base->getSizeBytesVM());
       }
 
       //
@@ -120,7 +120,7 @@ namespace GDCC
       //
       Exp::CRef Type_ArrVM::getSizePointVM() const
       {
-         return ExpCreate_BinaryMulSize(size, base->getSizePointVM());
+         return ExpCreate_MulSize(size, base->getSizePointVM());
       }
 
       //
@@ -128,7 +128,7 @@ namespace GDCC
       //
       Exp::CRef Type_ArrVM::getSizeWordsVM() const
       {
-         return ExpCreate_BinaryMulSize(size, base->getSizeWordsVM());
+         return ExpCreate_MulSize(size, base->getSizeWordsVM());
       }
 
       //
@@ -195,7 +195,7 @@ namespace GDCC
       //
       Exp::CRef Type_Array::getSizeBytesVM() const
       {
-         return ExpCreate_BinaryMulSize(base->getSizeBytesVM(), ExpCreate_ValueSize(size));
+         return ExpCreate_MulSize(base->getSizeBytesVM(), ExpCreate_Size(size));
       }
 
       //
@@ -211,7 +211,7 @@ namespace GDCC
       //
       Exp::CRef Type_Array::getSizePointVM() const
       {
-         return ExpCreate_BinaryMulSize(base->getSizePointVM(), ExpCreate_ValueSize(size));
+         return ExpCreate_MulSize(base->getSizePointVM(), ExpCreate_Size(size));
       }
 
       //
@@ -227,7 +227,7 @@ namespace GDCC
       //
       Exp::CRef Type_Array::getSizeWordsVM() const
       {
-         return ExpCreate_BinaryMulSize(base->getSizeWordsVM(), ExpCreate_ValueSize(size));
+         return ExpCreate_MulSize(base->getSizeWordsVM(), ExpCreate_Size(size));
       }
 
       //

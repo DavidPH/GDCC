@@ -273,7 +273,7 @@ namespace GDCC
       //
       Exp::CRef Type::getSizeBytesVM() const
       {
-         return ExpCreate_ValueSize(getSizeBytes());
+         return ExpCreate_Size(getSizeBytes());
       }
 
       //
@@ -281,7 +281,7 @@ namespace GDCC
       //
       Exp::CRef Type::getSizePointVM() const
       {
-         return ExpCreate_ValueSize(getSizePoint());
+         return ExpCreate_Size(getSizePoint());
       }
 
       //
@@ -289,7 +289,7 @@ namespace GDCC
       //
       Exp::CRef Type::getSizeWordsVM() const
       {
-         return ExpCreate_ValueSize(getSizeWords());
+         return ExpCreate_Size(getSizeWords());
       }
 
       //

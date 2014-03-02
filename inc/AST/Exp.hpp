@@ -113,15 +113,15 @@ namespace GDCC
 {
    namespace AST
    {
-      Exp::CRef ExpCreate_BinaryMulSize(Exp const *l, Exp const *r);
+      Exp::CRef ExpCreate_Arg(Arg const &arg, Core::Origin pos);
 
-      Exp::CRef ExpCreate_ValueArg(Arg const &arg, Core::Origin pos);
-
-      Exp::CRef ExpCreate_ValueIRExp(IR::Exp const *exp, Type const *type);
-      Exp::CRef ExpCreate_ValueIRExp(IR::Exp const *exp, Type const *type,
+      Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type);
+      Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type,
          Core::Origin pos);
 
-      Exp::CRef ExpCreate_ValueSize(Core::FastU value);
+      Exp::CRef ExpCreate_MulSize(Exp const *l, Exp const *r);
+
+      Exp::CRef ExpCreate_Size(Core::FastU value);
    }
 }
 

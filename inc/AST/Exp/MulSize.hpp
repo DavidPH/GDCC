@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__AST__Exp__BinaryMulSize_H__
-#define GDCC__AST__Exp__BinaryMulSize_H__
+#ifndef GDCC__AST__Exp__MulSize_H__
+#define GDCC__AST__Exp__MulSize_H__
 
 #include "../../AST/Exp/Binary.hpp"
 
@@ -25,18 +25,18 @@ namespace GDCC
    namespace AST
    {
       //
-      // Exp_BinaryMulSize
+      // Exp_MulSize
       //
-      class Exp_BinaryMulSize final : public Exp_Binary
+      class Exp_MulSize final : public Exp_Binary
       {
          GDCC_Core_CounterPreamble(
-            GDCC::AST::Exp_BinaryMulSize, GDCC::AST::Exp_Binary);
+            GDCC::AST::Exp_MulSize, GDCC::AST::Exp_Binary);
 
       public:
-         friend Exp::CRef ExpCreate_BinaryMulSize(Exp const *l, Exp const *r);
+         friend Exp::CRef ExpCreate_MulSize(Exp const *l, Exp const *r);
 
       protected:
-         Exp_BinaryMulSize(Exp const *l, Exp const *r, Core::Origin pos);
+         Exp_MulSize(Exp const *l, Exp const *r, Core::Origin pos);
 
          virtual void v_genStmnt(IR::Block &block, Function *fn, Arg const &dst) const;
 
@@ -47,5 +47,5 @@ namespace GDCC
    }
 }
 
-#endif//GDCC__AST__Exp__BinaryMulSize_H__
+#endif//GDCC__AST__Exp__MulSize_H__
 

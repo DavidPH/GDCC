@@ -68,7 +68,7 @@ namespace GDCC
          IR::Glyph glyph{&prog, obj->glyph};
          auto addr = IR::ExpCreate_ValueGlyph(glyph, pos);
          auto expt = type->getTypePointer();
-         auto exp  = AST::ExpCreate_ValueIRExp(addr, expt, pos);
+         auto exp  = AST::ExpCreate_IRExp(addr, expt, pos);
 
          return AST::Arg(type, exp);
       }
