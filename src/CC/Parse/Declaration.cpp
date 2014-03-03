@@ -251,7 +251,7 @@ static void ParseDecl_typedef(GDCC::CC::Scope *ctx, GDCC::AST::Attribute &attr)
 // ParseDeclBase_Function
 //
 template<typename T>
-static void ParseDeclBase_Function(GDCC::CC::ParserData &in, T *ctx,
+static bool ParseDeclBase_Function(GDCC::CC::ParserData &in, T *ctx,
    GDCC::AST::Attribute &attr)
 {
    using namespace GDCC;
@@ -275,7 +275,9 @@ static void ParseDeclBase_Function(GDCC::CC::ParserData &in, T *ctx,
    ctx->add(attr.name, fn);
 
    if(in.in.peek().tok == Core::TOK_BraceO)
-      ParseDecl_Function(in, ctx, attr, fn);
+      return ParseDecl_Function(in, ctx, attr, fn), true;
+
+   return false;
 }
 
 //
@@ -357,7 +359,12 @@ static GDCC::AST::Statement::CRef GetDeclBase(GDCC::CC::ParserData &in, T *ctx)
 
       // Special handling for function types.
       if(attr.type->isCTypeFunction())
-         {ParseDeclBase_Function(in, ctx, attr); continue;}
+      {
+         if(ParseDeclBase_Function(in, ctx, attr))
+            goto decl_end;
+
+         continue;
+      }
 
       // Must otherwise be an object type.
       if(!attr.type->isCTypeObject())
@@ -370,6 +377,7 @@ static GDCC::AST::Statement::CRef GetDeclBase(GDCC::CC::ParserData &in, T *ctx)
    if(!in.in.drop(Core::TOK_Semico))
       throw Core::ExceptStr(in.in.peek().pos, "expected ';'");
 
+   decl_end:
    switch(inits.size())
    {
    case  0: return AST::StatementCreate_Empty(pos);
