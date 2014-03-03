@@ -44,6 +44,8 @@ add_library(gdcc-cc-lib
    Scope/Global.cpp
    Scope/Local.cpp
    Statement.cpp
+   Statement/FuncPre.cpp
+   Statement/Return.cpp
    Type.cpp
    Type/Bool.cpp
    Type/Char.cpp

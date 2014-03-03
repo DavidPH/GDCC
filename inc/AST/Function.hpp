@@ -79,6 +79,12 @@ namespace GDCC
       protected:
          Function(Core::String name, Core::String glyph);
          ~Function();
+
+         std::size_t             labelHash;
+         std::size_t             labelLen;
+         std::size_t             labelNum;
+         std::unique_ptr<char[]> labelStr;
+         char                   *labelSuf;
       };
    }
 }

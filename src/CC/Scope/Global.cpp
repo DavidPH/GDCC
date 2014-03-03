@@ -101,12 +101,25 @@ namespace GDCC
       {
          switch(linka)
          {
+         case IR::Linkage::None:
+            break; // TODO
+
          case IR::Linkage::ExtACS:
          case IR::Linkage::ExtASM:
             return name;
 
          case IR::Linkage::ExtC:
             return Core::STR__ + name;
+
+         case IR::Linkage::ExtCXX:
+         case IR::Linkage::ExtDS:
+            break; // TODO
+
+         case IR::Linkage::IntC:
+            break; // TODO
+
+         case IR::Linkage::IntCXX:
+            break; // TODO
          }
 
          return name;
@@ -117,7 +130,23 @@ namespace GDCC
       //
       AST::Function::Ref GlobalScope::getFunction(AST::Attribute const &attr)
       {
-         throw Core::ExceptStr(attr.namePos, "getFunction stub");
+         auto glyph = genGlyphObj(attr.name, attr.linka);
+
+         auto itr = globalFunc.find(glyph);
+         if(itr == globalFunc.end())
+         {
+            auto fn = AST::Function::Create(attr.name, glyph);
+
+            fn->ctype = attr.callt;
+            fn->label = fn->genLabel();
+            fn->linka = attr.linka;
+            fn->retrn = attr.type->getBaseType();
+            fn->type  = attr.type;
+
+            itr = globalFunc.emplace(glyph, fn).first;
+         }
+
+         return itr->second;
       }
 
       //

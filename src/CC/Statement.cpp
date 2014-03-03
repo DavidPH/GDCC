@@ -66,10 +66,6 @@ namespace GDCC
          AST::Statement const *, AST::Statement const *)
          {throw Core::ExceptStr(pos, "stub");}
 
-      AST::Statement::CRef StatementCreate_FuncPre(Core::Origin pos,
-         FunctionScope const *)
-         {throw Core::ExceptStr(pos, "stub");}
-
       AST::Statement::CRef StatementCreate_Goto(
          Core::Array<Core::String> const &, Core::Origin pos,
          LocalScope *, Core::String)
@@ -97,18 +93,6 @@ namespace GDCC
          Core::Array<Core::String>      &&, Core::Origin pos,
          AST::Exp const *, AST::Statement const *,
          AST::Statement const *)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      AST::Statement::CRef StatementCreate_Return(
-         Core::Array<Core::String> const &, Core::Origin pos,
-         AST::Function const *, AST::Exp const *)
-         {throw Core::ExceptStr(pos, "stub");}
-      AST::Statement::CRef StatementCreate_Return(
-         Core::Array<Core::String>      &&, Core::Origin pos,
-         AST::Function const *, AST::Exp const *)
-         {throw Core::ExceptStr(pos, "stub");}
-      AST::Statement::CRef StatementCreate_Return(Core::Origin pos,
-         AST::Function const *, AST::Exp const *)
          {throw Core::ExceptStr(pos, "stub");}
 
       AST::Statement::CRef StatementCreate_Switch(
