@@ -31,6 +31,8 @@ namespace GDCC
       enum class ScriptType;
 
       class Exp;
+      class Function;
+      class Program;
    }
 
    namespace AST
@@ -53,6 +55,8 @@ namespace GDCC
 
       public:
          virtual Core::String genLabel();
+
+         IR::Function &getIRFunction(IR::Program &prog);
 
          IR::CallType   ctype;
          Core::String   glyph;

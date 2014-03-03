@@ -28,6 +28,8 @@ namespace GDCC
       enum class Linkage;
 
       class Exp;
+      class Object;
+      class Program;
    }
 
    namespace AST
@@ -51,6 +53,8 @@ namespace GDCC
          using TypeCPtr  = Core::CounterPtr<Type    const>;
 
       public:
+         IR::Object &getIRObject(IR::Program &prog);
+
          Core::String glyph;
          ExpCPtr      init;
          IR::Linkage  linka;

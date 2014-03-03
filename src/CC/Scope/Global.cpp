@@ -126,6 +126,18 @@ namespace GDCC
       }
 
       //
+      // GlobalScope::genIR
+      //
+      void GlobalScope::genIR(IR::Program &prog)
+      {
+         for(auto &ctx : subScopes)
+            ctx->genIR(prog);
+
+         for(auto &itr : globalFunc)
+            itr.second->getIRFunction(prog);
+      }
+
+      //
       // GlobalScope::getFunction
       //
       AST::Function::Ref GlobalScope::getFunction(AST::Attribute const &attr)

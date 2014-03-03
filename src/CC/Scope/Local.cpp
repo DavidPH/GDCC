@@ -78,6 +78,18 @@ namespace GDCC
       }
 
       //
+      // LocalScope::genIR
+      //
+      void LocalScope::genIR(IR::Program &prog)
+      {
+         for(auto ctx : subScopes)
+            ctx->genIR(prog);
+
+         for(auto itr : localObj)
+            itr.second->getIRObject(prog);
+      }
+
+      //
       // LocalScope::getObject
       //
       AST::Object::Ref LocalScope::getObject(AST::Attribute const &attr)

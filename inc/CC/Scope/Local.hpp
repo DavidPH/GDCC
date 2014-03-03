@@ -28,6 +28,11 @@ namespace GDCC
       class Function;
    }
 
+   namespace IR
+   {
+      class Program;
+   }
+
    namespace CC
    {
       class BlockScope;
@@ -48,6 +53,8 @@ namespace GDCC
          BlockScope *createScopeBlock();
          BlockScope *createScopeLoop();
          BlockScope *createScopeSwitch();
+
+         void genIR(IR::Program &prog);
 
          virtual Core::CounterRef<AST::Function> getFunction() = 0;
 

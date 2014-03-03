@@ -30,6 +30,8 @@ namespace GDCC
    namespace IR
    {
       enum class Linkage;
+
+      class Program;
    }
 
    namespace CC
@@ -50,6 +52,8 @@ namespace GDCC
          FunctionScope *createScope(AST::Attribute const &attr, AST::Function *fn);
 
          Core::String genGlyphObj(Core::String name, IR::Linkage linka);
+
+         void genIR(IR::Program &prog);
 
          // Finds/creates a function, but does not add to lookup table.
          Core::CounterRef<AST::Function> getFunction(AST::Attribute const &attr);

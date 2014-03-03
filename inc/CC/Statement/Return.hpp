@@ -85,6 +85,7 @@ namespace GDCC
 
          virtual void v_genStmnt(IR::Block &block, AST::Function *fn) const;
 
+         virtual bool v_isBranch() const {return true;}
          virtual bool v_isEffect() const {return false;}
       };
    }

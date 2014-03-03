@@ -80,18 +80,19 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
    CPP::Macro::LinePush(CPP::Macro::Stringize(inStr));
 
    CPP::PragmaLangC pragma;
-
-   CPP::TStream str{fbuf, pragma, inStr, Core::PathDirname(inStr)};
-
-   CC::GlobalScope ctx;
-
-   CC::ParserData in{str, pragma, prog};
+   Core::String     path = Core::PathDirname(inStr);
+   CPP::TStream     str    {fbuf, pragma, inStr, path};
+   CC::ParserData   in     {str, pragma, prog};
+   CC::GlobalScope  ctx;
 
    // Read declarations.
    while(in.in.peek().tok != Core::TOK_EOF)
       CC::GetDecl(in, &ctx);
 
+   ctx.allocAuto();
+
    // Generate IR data.
+   ctx.genIR(prog);
 }
 
 

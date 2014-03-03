@@ -18,6 +18,7 @@
 #include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+#include "IR/Program.hpp"
 #include "IR/ScriptType.hpp"
 
 #include <climits>
@@ -95,6 +96,46 @@ namespace GDCC
          auto hash = Core::HashString(labelSuf, len, labelHash);
 
          return Core::AddString(labelStr.get(), len + labelLen, hash);
+      }
+
+      //
+      // Function::getIRFunction
+      //
+      IR::Function &Function::getIRFunction(IR::Program &prog)
+      {
+         auto &fn = prog.getFunction(glyph);
+
+         fn.ctype    = ctype;
+         fn.label    = label;
+         fn.linka    = linka;
+         fn.localArs = localArs;
+         fn.localReg = localReg;
+         fn.param    = param;
+         fn.retrn    = retrn && !retrn->isTypeVoid() ? retrn->getSizeWords() : 0;
+         fn.stype    = stype;
+
+         fn.alloc    = true;
+         fn.defin    = defin;
+         fn.sflagNet = sflagNet;
+         fn.sflagClS = sflagClS;
+
+         if(stmnt)
+            stmnt->genStmnt(fn.block, this);
+
+         if(valueInt)
+         {
+            auto val = valueInt->getValue();
+            if(val.v == IR::ValueBase::Fixed)
+               fn.valueInt = number_cast<Core::FastU>(val.vFixed.value);
+            else
+               fn.alloc = true;
+         }
+         else if(valueStr)
+            fn.valueStr = valueStr;
+         else
+            fn.alloc = true;
+
+         return fn;
       }
 
       //

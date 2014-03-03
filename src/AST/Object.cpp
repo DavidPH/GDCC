@@ -18,6 +18,7 @@
 
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+#include "IR/Program.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -52,6 +53,34 @@ namespace GDCC
       //
       Object::~Object()
       {
+      }
+
+      //
+      // Object::getIRObject
+      //
+      IR::Object &Object::getIRObject(IR::Program &prog)
+      {
+         auto &obj = prog.getObject(glyph);
+
+         obj.linka = linka;
+         obj.space = type->getQualAddr();
+         obj.words = type ? type->getSizeWords() : 0;
+
+         obj.alias = alias;
+         obj.defin = defin;
+
+         if(value)
+         {
+            auto val = value->getValue();
+            if(val.v == IR::ValueBase::Fixed)
+               obj.value = number_cast<Core::FastU>(val.vFixed.value);
+            else
+               obj.alloc = true;
+         }
+         else
+            obj.alloc = true;
+
+         return obj;
       }
 
       //

@@ -40,12 +40,12 @@ static void MakeIRDump()
 
    if(GDCC::Core::GetOptionOutput())
    {
-      std::fstream out{GDCC::Core::GetOptionOutput()};
+      std::ofstream out{GDCC::Core::GetOptionOutput()};
 
       if(!out)
       {
          std::cerr << "couldn't open '" << GDCC::Core::GetOptionOutput()
-            << "' for writing";
+            << "' for writing\n";
          throw EXIT_FAILURE;
       }
 
@@ -64,7 +64,7 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 
    if(!in)
    {
-      std::cerr << "couldn't open '" << inName << "' for reading";
+      std::cerr << "couldn't open '" << inName << "' for reading\n";
       throw EXIT_FAILURE;
    }
 
