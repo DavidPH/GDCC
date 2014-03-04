@@ -15,9 +15,9 @@
 #include "AST/Arg.hpp"
 #include "AST/Type.hpp"
 
-#include "IR/Exp.hpp"
+#include "Core/Exception.hpp"
 
-#include <iostream>
+#include "IR/Exp.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -83,6 +83,23 @@ namespace GDCC
       }
 
       //
+      // Exp::getArgDst
+      //
+      Arg Exp::getArgDst() const
+      {
+         auto arg = v_getArg();
+         switch(arg.type->getQualAddr().base)
+         {
+         case IR::AddrBase::Cpy:
+         case IR::AddrBase::Lit:
+            throw Core::ExceptStr(pos, "expected destination expression");
+
+         default:
+            return arg;
+         }
+      }
+
+      //
       // Exp::getIRExp
       //
       IR::Exp::CRef Exp::getIRExp() const
@@ -138,8 +155,7 @@ namespace GDCC
       //
       IR::Exp::CRef Exp::v_getIRExp() const
       {
-         std::cerr << "ERROR: " << pos << ": expected constant\n";
-         throw EXIT_FAILURE;
+         throw Core::ExceptStr(pos, "expected constant expression");
       }
 
       //

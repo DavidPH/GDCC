@@ -68,10 +68,24 @@ namespace GDCC
          {
             auto &obj = itr.second;
 
-            auto &idx = obj->point ? alloc.localArs : alloc.localReg;
+            auto qual = obj->type->getQual();
+            Core::FastU *idx;
+            if(obj->point)
+            {
+               idx = &alloc.localArs;
+               if(qual.space.base == IR::AddrBase::Gen)
+                  qual.space = IR::AddrBase::Loc;
+            }
+            else
+            {
+               idx = &alloc.localReg;
+               if(qual.space.base == IR::AddrBase::Gen)
+                  qual.space = IR::AddrBase::LocReg;
+            }
+            obj->type  = obj->type->getTypeQual(qual);
             obj->value = IR::ExpCreate_ValueRoot(
-               IR::Value_Fixed(idx, idxType), Core::Origin(Core::STRNULL, 0));
-            idx += obj->type->getSizeWords();
+               IR::Value_Fixed(*idx, idxType), Core::Origin(Core::STRNULL, 0));
+            *idx += obj->type->getSizeWords();
          }
 
          // Allocate sub-scopes.

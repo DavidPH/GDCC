@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -364,7 +364,7 @@ namespace GDCC
          switch(Bytecode::TargetCur)
          {
          case Bytecode::Target::MageCraft: return size > 3 ? 1 << (size - 3) : 1;
-         default:                          return size > 1 ? 2 : 1;
+         default:                          return size > 2 ? 2 : 1;
          }
       }
    }

@@ -40,6 +40,28 @@ namespace GDCC
       }
 
       //
+      // ExpCreate_LitInt
+      //
+      AST::Exp::CRef ExpCreate_LitInt(AST::Type const *t, Core::Integ const &i,
+         Core::Origin pos)
+      {
+         auto val = IR::Value_Fixed(i, t->getIRType().tFixed);
+         auto exp = IR::ExpCreate_ValueRoot(std::move(val), pos);
+         return AST::ExpCreate_IRExp(exp, t, pos);
+      }
+
+      //
+      // ExpCreate_LitInt
+      //
+      AST::Exp::CRef ExpCreate_LitInt(AST::Type const *t, Core::Integ &&i,
+         Core::Origin pos)
+      {
+         auto val = IR::Value_Fixed(std::move(i), t->getIRType().tFixed);
+         auto exp = IR::ExpCreate_ValueRoot(std::move(val), pos);
+         return AST::ExpCreate_IRExp(exp, t, pos);
+      }
+
+      //
       // ExpToFastU
       //
       Core::FastU ExpToFastU(AST::Exp const *exp)
@@ -107,17 +129,21 @@ namespace GDCC
 
       // Stubs.
 
-      Core::CounterRef<AST::Exp const> ExpConvert_Arith(AST::Type const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
+      AST::Exp::CRef ExpConvert_Arith(AST::Type const *t, AST::Exp const *e,
+         Core::Origin pos)
+      {
+         if(t->getTypeQual() == e->getType()->getTypeQual())
+            return static_cast<AST::Exp::CRef>(e);
+         throw Core::ExceptStr(pos, "convert arith stub");
+      }
 
       Core::CounterRef<AST::Exp const> ExpConvert_Bool(AST::Type const *,
          AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
+         {throw Core::ExceptStr(pos, "convert bool stub");}
 
       Core::CounterRef<AST::Exp const> ExpConvert_Pointer(AST::Type const *,
          AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
+         {throw Core::ExceptStr(pos, "convert pointer stub");}
 
       Core::CounterRef<AST::Exp const> ExpCreate_Add(AST::Exp const *,
          Core::Origin pos)
@@ -131,10 +157,6 @@ namespace GDCC
          {throw Core::ExceptStr(pos, "stub");}
 
       Core::CounterRef<AST::Exp const> ExpCreate_Array(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_Assign(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
@@ -197,7 +219,7 @@ namespace GDCC
 
       Core::CounterRef<AST::Exp const> ExpCreate_Cst(AST::Type const *,
          AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
+         {throw Core::ExceptStr(pos, "cast stub");}
 
       Core::CounterRef<AST::Exp const> ExpCreate_DecPre(AST::Exp const *,
          Core::Origin pos)
@@ -229,13 +251,6 @@ namespace GDCC
 
       Core::CounterRef<AST::Exp const> ExpCreate_Inv(AST::Exp const *,
          Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_LitInt(AST::Type const *,
-         Core::Integ const &, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-      Core::CounterRef<AST::Exp const> ExpCreate_LitInt(AST::Type const *,
-         Core::Integ      &&, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
       Core::CounterRef<AST::Exp const> ExpCreate_LogAnd(AST::Exp const *,

@@ -13,9 +13,12 @@
 #include "CC/Scope/Local.hpp"
 
 #include "CC/Scope/Block.hpp"
+#include "CC/Scope/Global.hpp"
 
 #include "AST/Attribute.hpp"
 #include "AST/Object.hpp"
+#include "AST/Storage.hpp"
+#include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -94,7 +97,25 @@ namespace GDCC
       //
       AST::Object::Ref LocalScope::getObject(AST::Attribute const &attr)
       {
-         throw Core::ExceptStr(attr.namePos, "getObject stub");
+         if(attr.storeExt || attr.storeInt)
+            return global->getObject(attr);
+
+         auto glyph = global->genGlyphObj(attr.name, attr.linka);
+         auto obj   = AST::Object::Create(attr.name, glyph);
+
+         obj->linka = attr.linka;
+         obj->store = AST::Storage::Auto;
+         obj->type  = attr.type;
+
+         // If declaration is explicitly auto, always make it addressable.
+         obj->point = attr.storeAuto;
+
+         // If register is used, do not allow taking address.
+         obj->noPtr = attr.storeReg;
+
+         localObj.emplace(attr.name, obj);
+
+         return obj;
       }
    }
 }

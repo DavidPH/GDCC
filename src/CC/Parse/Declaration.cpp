@@ -156,21 +156,6 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::LocalScope *ctx,
    // Fetch/generate object.
    auto obj = ctx->getObject(attr);
 
-   // With extern or static, static storage duration.
-   if(attr.storeExt || attr.storeInt)
-      obj->store = AST::Storage::Static;
-   // Otherwise, automatic storage duration.
-   else
-      obj->store = AST::Storage::Auto;
-
-   // If declaration is explicitly auto, always make it addressable.
-   if(attr.storeAuto)
-      obj->point = true;
-
-   // If register is used, do not allow taking address.
-   if(attr.storeReg)
-      obj->noPtr = true;
-
    // No-linkage declarations must be definitions.
    if(attr.linka == IR::Linkage::None)
    {

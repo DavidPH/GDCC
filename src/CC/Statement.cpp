@@ -23,6 +23,14 @@ namespace GDCC
 {
    namespace CC
    {
+      //
+      // StatementCreate_Decl
+      //
+      AST::Statement::CRef StatementCreate_Decl(Core::Origin pos, Scope *)
+      {
+         return AST::StatementCreate_Empty(pos);
+      }
+
       // Stubs.
 
       AST::Statement::CRef StatementCreate_Break(
@@ -41,9 +49,6 @@ namespace GDCC
       AST::Statement::CRef StatementCreate_Continue(
          Core::Array<Core::String>      &&, Core::Origin pos,
          LocalScope *)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      AST::Statement::CRef StatementCreate_Decl(Core::Origin pos, Scope *)
          {throw Core::ExceptStr(pos, "stub");}
 
       AST::Statement::CRef StatementCreate_Do(
