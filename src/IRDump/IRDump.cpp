@@ -14,6 +14,7 @@
 
 #include "Core/Option.hpp"
 
+#include "IR/Glyph.hpp"
 #include "IR/Import.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/Object.hpp"
@@ -39,6 +40,7 @@ static GDCC::Option::Function DumpAll
    {
       GDCC::IRDump::IRDumpOpt_Block      = !args.optFalse;
       GDCC::IRDump::IRDumpOpt_Function   = !args.optFalse;
+      GDCC::IRDump::IRDumpOpt_Glyph      = !args.optFalse;
       GDCC::IRDump::IRDumpOpt_Headers    = !args.optFalse;
       GDCC::IRDump::IRDumpOpt_Import     = !args.optFalse;
       GDCC::IRDump::IRDumpOpt_Labels     = !args.optFalse;
@@ -63,6 +65,7 @@ namespace GDCC
    {
       bool IRDumpOpt_Block      = false;
       bool IRDumpOpt_Function   = false;
+      bool IRDumpOpt_Glyph      = false;
       bool IRDumpOpt_Headers    = false;
       bool IRDumpOpt_Import     = false;
       bool IRDumpOpt_Labels     = false;
@@ -89,6 +92,19 @@ namespace GDCC
       void IRDump_AddrSpace(std::ostream &out, IR::AddrSpace const &space)
       {
          out << space.base << ' '; IRDumpString(out, space.name);
+      }
+
+      //
+      // IRDump_GlyphData
+      //
+      void IRDump_GlyphData(std::ostream &out, IR::GlyphData const &data)
+      {
+         out << "\nGlyph "; IRDumpString(out, data.glyph);
+
+         if(data.type) {out << " \\\n   type=";  IRDump_Type(out, data.type );}
+         if(data.value){out << " \\\n   value="; IRDump_Exp (out, data.value);}
+
+         out << '\n';
       }
 
       //

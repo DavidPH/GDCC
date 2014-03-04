@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -33,6 +33,7 @@ namespace GDCC
       class Arg;
       class Exp;
       class Function;
+      class GlyphData;
       class Import;
       class Object;
       class Program;
@@ -60,6 +61,8 @@ namespace GDCC
       void IRDump_Exp(std::ostream &out, IR::Exp const *exp);
 
       void IRDump_Function(std::ostream &out, IR::Function const &fn);
+
+      void IRDump_GlyphData(std::ostream &out, IR::GlyphData const &data);
 
       void IRDump_Import(std::ostream &out, IR::Import const &imp);
 
@@ -90,6 +93,7 @@ namespace GDCC
    {
       extern bool IRDumpOpt_Block;
       extern bool IRDumpOpt_Function;
+      extern bool IRDumpOpt_Glyph;
       extern bool IRDumpOpt_Headers;
       extern bool IRDumpOpt_Import;
       extern bool IRDumpOpt_Labels;

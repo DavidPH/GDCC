@@ -37,6 +37,19 @@ static GDCC::Option::Bool DumpFunction
 };
 
 //
+// --dump-glyph
+//
+static GDCC::Option::Bool DumpGlyph
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("dump-glyph")
+      .setGroup("output")
+      .setDescS("Dump IR::GlyphData objects."),
+
+   &GDCC::IRDump::IRDumpOpt_Glyph
+};
+
+//
 // --dump-headers
 //
 static GDCC::Option::Bool DumpHeaders
@@ -161,6 +174,7 @@ namespace GDCC
             if(IRDumpOpt_Headers) out << ";;\n";
 
             out << ";; Functions: "               << prog.sizeFunction()    << '\n';
+            out << ";; Glyphs: "                  << prog.sizeGlyphData()   << '\n';
             out << ";; Imports: "                 << prog.sizeImport()      << '\n';
             out << ";; Objects: "                 << prog.sizeObject()      << '\n';
             out << ";; Address Spaces (GblArs): " << prog.sizeSpaceGblArs() << '\n';
@@ -180,6 +194,13 @@ namespace GDCC
          {
             if(IRDumpOpt_Headers) IRDumpHeader(out, "Functions");
             for(auto const &fn : prog.rangeFunction()) IRDump_Function(out, fn);
+         }
+
+         // Glyphs
+         if(IRDumpOpt_Glyph)
+         {
+            if(IRDumpOpt_Headers) IRDumpHeader(out, "Glyphs");
+            for(auto const &fn : prog.rangeGlyphData()) IRDump_GlyphData(out, fn);
          }
 
          // Imports

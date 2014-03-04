@@ -220,6 +220,8 @@ namespace GDCC
             }
          }
 
+         explicit operator bool () const {return t != TypeBase::Empty;}
+
          //
          // copy assignment
          //
