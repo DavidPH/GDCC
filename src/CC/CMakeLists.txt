@@ -17,9 +17,14 @@
 
 add_library(gdcc-cc-lib
    Exp.cpp
+   Exp/Add.cpp
+   Exp/Add/Integ.cpp
+   Exp/Add/Point.cpp
    Exp/Assign.cpp
    Exp/Deref.cpp
    Exp/Func.cpp
+   Exp/Mul.cpp
+   Exp/Mul/Integ.cpp
    Exp/Obj.cpp
    Exp/Promote.cpp
    Exp/Refer.cpp

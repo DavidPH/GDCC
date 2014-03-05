@@ -17,6 +17,7 @@
 
 #include "Core/Exception.hpp"
 
+#include "IR/Block.hpp"
 #include "IR/Exp.hpp"
 
 
@@ -71,7 +72,16 @@ namespace GDCC
             return;
          }
 
+         block.setOrigin(pos);
          v_genStmnt(block, fn, dst);
+      }
+
+      //
+      // Exp::genStmntStk
+      //
+      void Exp::genStmntStk(IR::Block &block, Function *fn) const
+      {
+         genStmnt(block, fn, Arg(getType(), IR::AddrBase::Stk));
       }
 
       //

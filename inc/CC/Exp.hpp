@@ -230,7 +230,10 @@ namespace GDCC
          Core::Origin pos);
 
       // Usual arithmtic conversions.
-      std::pair<Core::CounterRef<AST::Exp const>, Core::CounterRef<AST::Exp const>>
+      std::tuple<
+         Core::CounterRef<AST::Type const> /*type*/,
+         Core::CounterRef<AST::Exp  const> /*expL*/,
+         Core::CounterRef<AST::Exp  const> /*expR*/>
       ExpPromo_Arith(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
 
       // Conversion as if by assignment.

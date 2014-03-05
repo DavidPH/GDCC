@@ -53,6 +53,8 @@ namespace GDCC
 
          void genStmnt(IR::Block &block, Function *fn, Arg const &dst) const;
 
+         void genStmntStk(IR::Block &block, Function *fn) const;
+
          Arg getArg() const;
          Arg getArgDst() const;
          Arg getArgSrc() const;

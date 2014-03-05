@@ -128,6 +128,21 @@ namespace GDCC
       }
 
       //
+      // Type_Fixed::getRankC
+      //
+      AST::Type::TypeRankC Type_Fixed::getRankC() const
+      {
+         switch(size)
+         {
+         case 0: return AST::TypeRankC::FixedH;
+         case 1: return AST::TypeRankC::Fixed;
+         case 2: return AST::TypeRankC::FixedL;
+         }
+
+         return AST::TypeRankC::None;
+      }
+
+      //
       // Type_Fixed::getSizeAlign
       //
       Core::FastU Type_Fixed::getSizeAlign() const
@@ -229,6 +244,21 @@ namespace GDCC
       }
 
       //
+      // Type_Fract::getRankC
+      //
+      AST::Type::TypeRankC Type_Fract::getRankC() const
+      {
+         switch(size)
+         {
+         case 0: return AST::TypeRankC::FractH;
+         case 1: return AST::TypeRankC::Fract;
+         case 2: return AST::TypeRankC::FractL;
+         }
+
+         return AST::TypeRankC::None;
+      }
+
+      //
       // Type_Fract::getSizeAlign
       //
       Core::FastU Type_Fract::getSizeAlign() const
@@ -294,6 +324,23 @@ namespace GDCC
       Type_Integ::Type_Integ(unsigned size_, bool prim_, bool sign_) :
          Super{size_, prim_, sign_}
       {
+      }
+
+      //
+      // Type_Integ::getRankC
+      //
+      AST::Type::TypeRankC Type_Integ::getRankC() const
+      {
+         switch(size)
+         {
+         case 0: return AST::TypeRankC::IntegHH;
+         case 1: return AST::TypeRankC::IntegH;
+         case 2: return AST::TypeRankC::Integ;
+         case 3: return AST::TypeRankC::IntegL;
+         case 4: return AST::TypeRankC::IntegLL;
+         }
+
+         return AST::TypeRankC::None;
       }
 
       //

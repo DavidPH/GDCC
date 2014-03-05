@@ -12,6 +12,9 @@
 
 #include "AST/Exp/Binary.hpp"
 
+#include "AST/Arg.hpp"
+#include "AST/Type.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -27,6 +30,23 @@ namespace GDCC
       Exp_Binary::Exp_Binary(Exp const *l, Exp const *r, Core::Origin pos_) :
          Super{pos_}, expL{l}, expR{r}
       {
+      }
+
+      //
+      // Exp_Binary::tryGenStmntNul
+      //
+      bool Exp_Binary::tryGenStmntNul(IR::Block &block, Function *fn,
+         Arg const &dst) const
+      {
+         // If only evaluating for side-effect, just evaluate sub-expressions.
+         if(dst.type->getQualAddr().base == IR::AddrBase::Nul)
+         {
+            expL->genStmnt(block, fn);
+            expR->genStmnt(block, fn);
+            return true;
+         }
+
+         return false;
       }
 
       //

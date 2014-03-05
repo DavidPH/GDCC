@@ -173,6 +173,7 @@ namespace GDCC
 
       protected:
          using ExpCRef     = Core::CounterRef<Exp const>;
+         using TypeRankC   = TypeRankC;
          using TypeSetCRef = Core::CounterRef<TypeSet const>;
 
       public:

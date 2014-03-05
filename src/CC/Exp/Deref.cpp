@@ -89,14 +89,15 @@ namespace GDCC
       //
       AST::Exp::CRef ExpCreate_Deref(AST::Exp const *e, Core::Origin pos)
       {
-         auto type = e->getType();
+         auto exp  = ExpPromo_LValue(e, pos);
+         auto type = exp->getType();
 
          if(!type->isTypePointer())
             throw Core::ExceptStr(pos, "expected pointer");
 
          type = type->getBaseType();
 
-         return static_cast<AST::Exp::CRef>(new Exp_Deref(type, e, pos));
+         return static_cast<AST::Exp::CRef>(new Exp_Deref(type, exp, pos));
       }
    }
 }

@@ -12,7 +12,6 @@
 
 #include "AST/Exp/MulSize.hpp"
 
-#include "AST/Arg.hpp"
 #include "AST/Type.hpp"
 
 #include "IR/Block.hpp"
@@ -40,22 +39,15 @@ namespace GDCC
       void Exp_MulSize::v_genStmnt(IR::Block &block, Function *fn,
          Arg const &dst) const
       {
-         // If only evaluating for side-effect, the multiply itself has none, so
-         // just evaluate sub-expressions.
-         if(dst.type->getQualAddr().base == IR::AddrBase::Nul)
-         {
-            expL->genStmnt(block, fn);
-            expR->genStmnt(block, fn);
-            return;
-         }
+         if(tryGenStmntNul(block, fn, dst)) return;
 
          // Evaluate both sub-expressions to stack.
-         Arg src{Type::Size, IR::AddrBase::Stk};
-         expL->genStmnt(block, fn, src);
-         expR->genStmnt(block, fn, src);
+         expL->genStmntStk(block, fn);
+         expR->genStmntStk(block, fn);
 
          // Multiply on stack.
-         block.addStatementArgs(IR::Code::MulU_W, IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+         block.addStatementArgs(IR::Code::MulU_W,
+            IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.
          genStmntMovePart(block, fn, dst, false, true);

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -37,6 +37,10 @@ namespace GDCC
 
       protected:
          Exp_Binary(Exp const *l, Exp const *r, Core::Origin pos);
+
+         // Returns true if only evaluating for side effects.
+         bool tryGenStmntNul(IR::Block &block, Function *fn,
+            Arg const &dst) const;
 
          virtual bool v_isEffect() const;
 

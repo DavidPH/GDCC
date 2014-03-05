@@ -141,17 +141,14 @@ namespace GDCC
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "convert bool stub");}
 
-      Core::CounterRef<AST::Exp const> ExpConvert_Pointer(AST::Type const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "convert pointer stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_Add(AST::Exp const *,
+      AST::Exp::CRef ExpConvert_Pointer(AST::Type const *t, AST::Exp const *e,
          Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
+      {
+         if(t->getTypeQual() == e->getType()->getTypeQual())
+            return static_cast<AST::Exp::CRef>(e);
+         throw Core::ExceptStr(pos, "convert pointer stub");
+      }
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Add(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_AddEq(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
@@ -276,9 +273,6 @@ namespace GDCC
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Mul(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_MulEq(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
