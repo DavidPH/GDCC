@@ -101,6 +101,21 @@ static GDCC::AST::Exp::CRef GetExp_Prim_generic(GDCC::CC::ParserData &in,
 }
 
 //
+// GetExp_Prim_Charac
+//
+static GDCC::AST::Exp::CRef GetExp_Prim_Charac(GDCC::CC::ParserData &in,
+   GDCC::CC::Scope *)
+{
+   using namespace GDCC;
+
+   auto tok = in.in.get();
+
+   auto type = tok.tok == Core::TOK_Charac ? CC::TypeIntegPrS : CC::TypeIntegPrU;
+
+   return CC::ExpCreate_LitInt(type, tok.str[0], tok.pos);
+}
+
+//
 // GetExp_Prim_Identi
 //
 static GDCC::AST::Exp::CRef GetExp_Prim_Identi(GDCC::CC::ParserData &in,
@@ -283,11 +298,20 @@ namespace GDCC
       {
          switch(in.in.peek().tok)
          {
+         case Core::TOK_Charac: return GetExp_Prim_Charac(in, ctx);
+         case Core::TOK_ChrU16: return GetExp_Prim_Charac(in, ctx);
+         case Core::TOK_ChrU32: return GetExp_Prim_Charac(in, ctx);
+         case Core::TOK_ChrWid: return GetExp_Prim_Charac(in, ctx);
          case Core::TOK_Identi: return GetExp_Prim_Identi(in, ctx);
          case Core::TOK_KeyWrd: return GetExp_Prim_KeyWrd(in, ctx);
          case Core::TOK_NumFix: return GetExp_Prim_NumFix(in, ctx);
          case Core::TOK_NumFlt: return GetExp_Prim_NumFlt(in, ctx);
          case Core::TOK_NumInt: return GetExp_Prim_NumInt(in, ctx);
+         case Core::TOK_StrIdx: return GetExp_Prim_String(in, ctx);
+         case Core::TOK_StrU08: return GetExp_Prim_String(in, ctx);
+         case Core::TOK_StrU16: return GetExp_Prim_String(in, ctx);
+         case Core::TOK_StrU32: return GetExp_Prim_String(in, ctx);
+         case Core::TOK_StrWid: return GetExp_Prim_String(in, ctx);
          case Core::TOK_String: return GetExp_Prim_String(in, ctx);
          case Core::TOK_ParenO: return GetExp_Prim_ParenO(in, ctx);
 
