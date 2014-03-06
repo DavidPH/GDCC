@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -38,7 +38,7 @@ namespace GDCC
             break;
 
          case Core::TOK_Number:
-               if(IsNumInt(buf[0].str)) buf[0].tok = Core::TOK_NumInt;
+                 if(IsNumInt(buf[0].str)) buf[0].tok = Core::TOK_NumInt;
             else if(IsNumFix(buf[0].str)) buf[0].tok = Core::TOK_NumFix;
             else if(IsNumFlt(buf[0].str)) buf[0].tok = Core::TOK_NumFlt;
             else
@@ -127,7 +127,7 @@ namespace GDCC
 
             // hexadecimal-constant
             if(*itr == 'X' || *itr == 'x')
-               itr = SkipHex(itr, end);
+               itr = SkipHex(itr + 1, end);
 
             // octal-constant
             else
@@ -136,7 +136,7 @@ namespace GDCC
 
          // decimal-constant
          else if('1' <= *itr && *itr <= '9')
-            itr = SkipDec(++itr, end);
+            itr = SkipDec(itr + 1, end);
 
          else
             return false;
