@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,8 @@
 
 #include "AST/Arg.hpp"
 #include "AST/Type.hpp"
+
+#include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
 
@@ -53,6 +55,16 @@ namespace GDCC
                IR::Type_Fixed(32, 0, false, false)), pos);
          };
 
+         // Special handling of void arg.
+         if(arg.type->isTypeVoid())
+         {
+            // A void src is an error.
+            if(get) throw Core::ExceptStr(pos, "void src");
+
+            // A void dst is a no-op.
+            if(set) return;
+         }
+
          IR::Exp::CPtr argIRExp;
 
          switch(arg.type->getQualAddr().base)
@@ -61,11 +73,7 @@ namespace GDCC
             // Lit
             //
          case IR::AddrBase::Lit:
-            if(set)
-            {
-               std::cerr << "ERROR: " << pos << ": AddrBase::Lit set\n";
-               throw EXIT_FAILURE;
-            }
+            if(set) throw Core::ExceptStr(pos, "AddrBase::Lit set");
 
             if(get)
             {
@@ -101,11 +109,7 @@ namespace GDCC
                   block.addStatementArgs(IR::Code::Move_W, IR::Arg_Nul(), IR::Arg_Stk());
             }
 
-            if(get)
-            {
-               std::cerr << "ERROR: " << pos << ": AddrBase::Nul get\n";
-               throw EXIT_FAILURE;
-            }
+            if(get) throw Core::ExceptStr(pos, "AddrBase::Nul get");
 
             break;
 

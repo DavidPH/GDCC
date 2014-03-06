@@ -66,13 +66,24 @@ namespace GDCC
       //
       void Exp::genStmnt(IR::Block &block, Function *fn, Arg const &dst) const
       {
-         if(isIRExp() && !isEffect())
+         block.setOrigin(pos);
+
+         // Special checks for expressions without side effects.
+         if(!isEffect())
          {
-            genStmntMove(block, fn, dst, Arg(getType(), IR::AddrBase::Lit, this));
-            return;
+            // If not evaluating for its result, then do not generate anything.
+            if(dst.type->getQualAddr().base == IR::AddrBase::Nul)
+               return;
+
+            // Try to evaluate constant expressions now.
+            if(isIRExp())
+            {
+               genStmntMove(block, fn, dst,
+                  Arg(getType(), IR::AddrBase::Lit, this));
+               return;
+            }
          }
 
-         block.setOrigin(pos);
          v_genStmnt(block, fn, dst);
       }
 

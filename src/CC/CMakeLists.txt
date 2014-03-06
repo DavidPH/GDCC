@@ -21,6 +21,8 @@ add_library(gdcc-cc-lib
    Exp/Add/Integ.cpp
    Exp/Add/Point.cpp
    Exp/Assign.cpp
+   Exp/Call.cpp
+   Exp/Call/Stk.cpp
    Exp/Deref.cpp
    Exp/Func.cpp
    Exp/Mul.cpp
