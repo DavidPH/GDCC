@@ -16,11 +16,14 @@
 #include "CC/Scope/Global.hpp"
 
 #include "AST/Attribute.hpp"
+#include "AST/Function.hpp"
 #include "AST/Object.hpp"
 #include "AST/Storage.hpp"
 #include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
+
+#include "IR/Linkage.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -35,7 +38,10 @@ namespace GDCC
       // LocalScope constructor
       //
       LocalScope::LocalScope(Scope *parent_, GlobalScope *global_) :
-         Scope{parent_}, global{global_}
+         Scope{parent_},
+
+         global{global_},
+         label {Core::STRNULL}
       {
       }
 
@@ -81,6 +87,25 @@ namespace GDCC
       }
 
       //
+      // LocalScope::genGlyphObj
+      //
+      Core::String LocalScope::genGlyphObj(Core::String name, IR::Linkage linka)
+      {
+         // Actual linkages must go through global.
+         if(linka != IR::Linkage::None)
+            return global->genGlyphObj(name, linka);
+
+         auto fn = getFunction();
+
+         // Anonymous objects with no linkage need a fully generated name.
+         if(!name) return getFunction()->genLabel();
+
+         // Otherwise, base it on the scope's prefix (generating if needed).
+         if(!label) label = getFunction()->genLabel();
+         return label + name;
+      }
+
+      //
       // LocalScope::genIR
       //
       void LocalScope::genIR(IR::Program &prog)
@@ -100,7 +125,7 @@ namespace GDCC
          if(attr.storeExt || attr.storeInt)
             return global->getObject(attr);
 
-         auto glyph = global->genGlyphObj(attr.name, attr.linka);
+         auto glyph = genGlyphObj(attr.name, attr.linka);
          auto obj   = AST::Object::Create(attr.name, glyph);
 
          obj->linka = attr.linka;

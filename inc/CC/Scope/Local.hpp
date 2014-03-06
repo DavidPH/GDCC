@@ -30,6 +30,8 @@ namespace GDCC
 
    namespace IR
    {
+      enum class Linkage;
+
       class Program;
    }
 
@@ -54,6 +56,8 @@ namespace GDCC
          BlockScope *createScopeLoop();
          BlockScope *createScopeSwitch();
 
+         Core::String genGlyphObj(Core::String name, IR::Linkage linka);
+
          void genIR(IR::Program &prog);
 
          virtual Core::CounterRef<AST::Function> getFunction() = 0;
@@ -63,6 +67,7 @@ namespace GDCC
          Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
 
          GlobalScope *global;
+         Core::String label;
 
       protected:
          LookupTable<AST::Object> localObj;

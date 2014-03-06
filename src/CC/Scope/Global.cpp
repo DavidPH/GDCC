@@ -68,13 +68,21 @@ namespace GDCC
       FunctionScope *GlobalScope::createScope(AST::Attribute const &attr,
          AST::Function *fn)
       {
+         // Set the function's label.
+         if(!fn->label)
+            fn->label = fn->genLabel();
+
+         // If there are any parameters, generate a label to prefix them with.
+         Core::String ctxLabel =
+            attr.param.empty() ? Core::String(Core::STRNULL) : fn->genLabel();
+
+         // Create an AST::Object for each parameter.
          std::vector<AST::Object::Ref> params;
          params.reserve(attr.param.size());
-
          for(auto const &param : attr.param)
          {
             auto obj = AST::Object::Create(param.name,
-               genGlyphObj(param.name, IR::Linkage::None));
+               param.name ? ctxLabel + param.name : fn->genLabel());
 
             obj->store = AST::Storage::Auto;
             obj->type  = param.type;
@@ -86,8 +94,10 @@ namespace GDCC
             params.emplace_back(obj);
          }
 
+         // Create new scope.
          auto fnCtx = new FunctionScope(this, fn,
             Core::Array<AST::Object::Ref>(params.begin(), params.end()));
+         fnCtx->label = ctxLabel;
 
          subScopes.emplace_back(fnCtx);
 
@@ -150,7 +160,6 @@ namespace GDCC
             auto fn = AST::Function::Create(attr.name, glyph);
 
             fn->ctype = attr.callt;
-            fn->label = fn->genLabel();
             fn->linka = attr.linka;
             fn->retrn = attr.type->getBaseType();
             fn->type  = attr.type;

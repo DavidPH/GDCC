@@ -40,7 +40,10 @@ namespace GDCC
          LocalScope{parent_, parent_}, params{std::move(params_)}, fn{fn_}
       {
          for(auto const &param : params)
+         {
             if(param->name) add(param->name, param);
+            localObj.emplace(param->glyph, param);
+         }
       }
 
       //
