@@ -30,6 +30,9 @@ add_library(gdcc-cc-lib
    Exp/Obj.cpp
    Exp/Promote.cpp
    Exp/Refer.cpp
+   Exp/Sub.cpp
+   Exp/Sub/Integ.cpp
+   Exp/Sub/Point.cpp
    Parse.cpp
    Parse/AttrSpec.cpp
    Parse/DeclSpec.cpp

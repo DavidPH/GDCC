@@ -297,13 +297,6 @@ namespace GDCC
          AST::Type const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Sub(AST::Exp const *,
-         Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_Sub(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_SubEq(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
