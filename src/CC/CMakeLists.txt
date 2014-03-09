@@ -18,20 +18,19 @@
 add_library(gdcc-cc-lib
    Exp.cpp
    Exp/Add.cpp
-   Exp/Add/Integ.cpp
    Exp/Add/Point.cpp
    Exp/Assign.cpp
    Exp/Call.cpp
    Exp/Call/Stk.cpp
    Exp/Deref.cpp
+   Exp/Div.cpp
    Exp/Func.cpp
+   Exp/Mod.cpp
    Exp/Mul.cpp
-   Exp/Mul/Integ.cpp
    Exp/Obj.cpp
    Exp/Promote.cpp
    Exp/Refer.cpp
    Exp/Sub.cpp
-   Exp/Sub/Integ.cpp
    Exp/Sub/Point.cpp
    Parse.cpp
    Parse/AttrSpec.cpp

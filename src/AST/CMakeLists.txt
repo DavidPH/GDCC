@@ -20,6 +20,7 @@ add_library(gdcc-ast-lib
    Attribute.cpp
    Exp.cpp
    Exp/Arg.cpp
+   Exp/Arith.cpp
    Exp/Binary.cpp
    Exp/IRExp.cpp
    Exp/MulSize.cpp

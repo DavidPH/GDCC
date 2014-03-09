@@ -33,7 +33,7 @@ namespace GDCC
       void Exp_AddPoint::v_genStmnt(IR::Block &block, AST::Function *fn,
          AST::Arg const &dst) const
       {
-         if(tryGenStmntNul(block, fn, dst)) return;
+         if(GenStmntNul(this, block, fn, dst)) return;
 
          // Evaluate pointer to stack.
          expL->genStmntStk(block, fn);

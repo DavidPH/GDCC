@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -61,6 +61,7 @@ GDCC_IR_CodeList(Cspe)
 
 // Div* dst lop rop
 GDCC_IR_CodeList(DivI_W)
+GDCC_IR_CodeList(DivU_W)
 GDCC_IR_CodeList(DivX_W)
 
 // Inv* dst src
@@ -71,6 +72,7 @@ GDCC_IR_CodeList(Jump)
 
 // Mod* dst lop rop
 GDCC_IR_CodeList(ModI_W)
+GDCC_IR_CodeList(ModU_W)
 
 // Move dst src
 GDCC_IR_CodeList(Move_W)

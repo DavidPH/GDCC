@@ -12,9 +12,11 @@
 
 #include "AST/Exp/MulSize.hpp"
 
+#include "AST/Exp/Arith.hpp"
 #include "AST/Type.hpp"
 
-#include "IR/Block.hpp"
+#include "IR/Code.hpp"
+#include "IR/Exp.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,7 +31,7 @@ namespace GDCC
       // Exp_MulSize constructor
       //
       Exp_MulSize::Exp_MulSize(Exp const *l, Exp const *r,
-         Core::Origin pos_) : Super{l, r, pos_}
+         Core::Origin pos_) : Super{Type::Size, l, r, pos_}
       {
       }
 
@@ -39,18 +41,7 @@ namespace GDCC
       void Exp_MulSize::v_genStmnt(IR::Block &block, Function *fn,
          Arg const &dst) const
       {
-         if(tryGenStmntNul(block, fn, dst)) return;
-
-         // Evaluate both sub-expressions to stack.
-         expL->genStmntStk(block, fn);
-         expR->genStmntStk(block, fn);
-
-         // Multiply on stack.
-         block.addStatementArgs(IR::Code::MulU_W,
-            IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
-
-         // Move to destination.
-         genStmntMovePart(block, fn, dst, false, true);
+         GenStmnt_Arith(this, IR::Code::MulU_W, block, fn, dst);
       }
 
       //

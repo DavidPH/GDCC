@@ -43,8 +43,6 @@ namespace GDCC
          virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
             AST::Arg const &dst) const;
 
-         virtual TypeCRef v_getType() const;
-
          virtual bool v_isEffect() const;
 
          virtual bool v_isIRExp() const;

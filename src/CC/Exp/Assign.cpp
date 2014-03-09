@@ -31,7 +31,7 @@ namespace GDCC
       //
       Exp_Assign::Exp_Assign(AST::Exp const *l, AST::Exp const *r,
          Core::Origin pos_) :
-         Super{l, r, pos_}
+         Super{l->getType(), l, r, pos_}
       {
       }
 
@@ -49,14 +49,6 @@ namespace GDCC
          {
             throw Core::ExceptStr(pos, "assignment result stub");
          }
-      }
-
-      //
-      // Exp_Assign::v_getType
-      //
-      AST::Type::CRef Exp_Assign::v_getType() const
-      {
-        return expL->getType();
       }
 
       //

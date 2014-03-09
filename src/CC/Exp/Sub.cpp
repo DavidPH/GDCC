@@ -18,6 +18,7 @@
 
 #include "Core/Exception.hpp"
 
+#include "IR/Code.hpp"
 #include "IR/Exp.hpp"
 
 
@@ -29,38 +30,6 @@ namespace GDCC
 {
    namespace CC
    {
-      //
-      // Exp_Sub constructor
-      //
-      Exp_Sub::Exp_Sub(AST::Type const *t, AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos_) :
-         Super{l, r, pos_}, type{t}
-      {
-      }
-
-      //
-      // Exp_Sub destructor
-      //
-      Exp_Sub::~Exp_Sub()
-      {
-      }
-
-      //
-      // Exp_Sub::v_getIRExp
-      //
-      IR::Exp::CRef Exp_Sub::v_getIRExp() const
-      {
-         return IR::ExpCreate_BinarySub(expL->getIRExp(), expR->getIRExp(), pos);
-      }
-
-      //
-      // Exp_Sub::v_getType
-      //
-      AST::Type::CRef Exp_Sub::v_getType() const
-      {
-         return type;
-      }
-
       //
       // ExpCreate_Sub
       //
@@ -144,8 +113,14 @@ namespace GDCC
 
             if(type->isCTypeInteg())
             {
-               return static_cast<AST::Exp::CRef>(
-                  new Exp_SubInteg(type, expL, expR, pos));
+               if(type->getSizeWords() == 1)
+               {
+                  return AST::Exp_Arith<AST::Exp_Sub>::Create(
+                     type->getSizeBitsS() ? IR::Code::SubI_W : IR::Code::SubU_W,
+                     type, expL, expR, pos);
+               }
+
+               throw Core::ExceptStr(pos, "integer - integer stub");
             }
          }
 

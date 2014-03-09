@@ -18,6 +18,7 @@
 
 #include "Core/Exception.hpp"
 
+#include "IR/Code.hpp"
 #include "IR/Exp.hpp"
 
 
@@ -29,38 +30,6 @@ namespace GDCC
 {
    namespace CC
    {
-      //
-      // Exp_Add constructor
-      //
-      Exp_Add::Exp_Add(AST::Type const *t, AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos_) :
-         Super{l, r, pos_}, type{t}
-      {
-      }
-
-      //
-      // Exp_Add destructor
-      //
-      Exp_Add::~Exp_Add()
-      {
-      }
-
-      //
-      // Exp_Add::v_getIRExp
-      //
-      IR::Exp::CRef Exp_Add::v_getIRExp() const
-      {
-         return IR::ExpCreate_BinaryAdd(expL->getIRExp(), expR->getIRExp(), pos);
-      }
-
-      //
-      // Exp_Add::v_getType
-      //
-      AST::Type::CRef Exp_Add::v_getType() const
-      {
-         return type;
-      }
-
       //
       // ExpCreate_Add
       //
@@ -128,8 +97,14 @@ namespace GDCC
 
             if(type->isCTypeInteg())
             {
-               return static_cast<AST::Exp::CRef>(
-                  new Exp_AddInteg(type, expL, expR, pos));
+               if(type->getSizeWords() == 1)
+               {
+                  return AST::Exp_Arith<AST::Exp_Add>::Create(
+                     type->getSizeBitsS() ? IR::Code::AddI_W : IR::Code::AddU_W,
+                     type, expL, expR, pos);
+               }
+
+               throw Core::ExceptStr(pos, "integer + integer stub");
             }
          }
 

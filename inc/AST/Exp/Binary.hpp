@@ -22,6 +22,11 @@
 
 namespace GDCC
 {
+   namespace IR
+   {
+      enum class Code;
+   }
+
    namespace AST
    {
       //
@@ -34,18 +39,34 @@ namespace GDCC
 
       public:
          Exp::CRef const expL, expR;
+         TypeCRef  const type;
 
       protected:
-         Exp_Binary(Exp const *l, Exp const *r, Core::Origin pos);
+         Exp_Binary(Type const *t, Exp const *l, Exp const *r,
+            Core::Origin pos);
+         virtual ~Exp_Binary();
 
-         // Returns true if only evaluating for side effects.
-         bool tryGenStmntNul(IR::Block &block, Function *fn,
-            Arg const &dst) const;
+         virtual TypeCRef v_getType() const;
 
          virtual bool v_isEffect() const;
 
          virtual bool v_isIRExp() const;
       };
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace AST
+   {
+      // Returns true if only evaluating for side effects.
+      bool GenStmntNul(Exp_Binary const *exp, IR::Block &block, Function *fn,
+         Arg const &dst);
    }
 }
 

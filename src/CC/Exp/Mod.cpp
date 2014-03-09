@@ -6,7 +6,7 @@
 //
 //-----------------------------------------------------------------------------
 //
-// C binary "operator *" expressions.
+// C "operator %" expressions.
 //
 //-----------------------------------------------------------------------------
 
@@ -29,9 +29,9 @@ namespace GDCC
    namespace CC
    {
       //
-      // ExpCreate_Mul
+      // ExpCreate_Mod
       //
-      AST::Exp::CRef ExpCreate_Mul(AST::Exp const *l, AST::Exp const *r,
+      AST::Exp::CRef ExpCreate_Mod(AST::Exp const *l, AST::Exp const *r,
          Core::Origin pos)
       {
          auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
@@ -40,7 +40,7 @@ namespace GDCC
          auto typeL = l->getType();
          auto typeR = r->getType();
 
-         // arithmetic * arithmetic
+         // arithmetic % arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
             auto type = AST::Type::None;
@@ -49,25 +49,25 @@ namespace GDCC
             typeR = expR->getType();
 
             if(type->isCTypeFloat())
-               throw Core::ExceptStr(pos, "float * float stub");
+               throw Core::ExceptStr(pos, "float % float stub");
 
             if(type->isCTypeFixed())
-               throw Core::ExceptStr(pos, "fixed * fixed stub");
+               throw Core::ExceptStr(pos, "fixed % fixed stub");
 
             if(type->isCTypeInteg())
             {
                if(type->getSizeWords() == 1)
                {
                   return AST::Exp_Arith<AST::Exp_Mul>::Create(
-                     type->getSizeBitsS() ? IR::Code::MulI_W : IR::Code::MulU_W,
+                     type->getSizeBitsS() ? IR::Code::ModI_W : IR::Code::ModU_W,
                      type, expL, expR, pos);
                }
 
-               throw Core::ExceptStr(pos, "integer * integer stub");
+               throw Core::ExceptStr(pos, "integer % integer stub");
             }
          }
 
-         throw Core::ExceptStr(pos, "invalid operands to 'operator *'");
+         throw Core::ExceptStr(pos, "invalid operands to 'operator %'");
       }
    }
 }

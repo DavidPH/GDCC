@@ -53,6 +53,12 @@ namespace GDCC
 
          void genStmnt(IR::Block &block, Function *fn, Arg const &dst) const;
 
+         void genStmntMove(IR::Block &block, Function *fn, Arg const &dst,
+            Arg const &src) const;
+
+         void genStmntMovePart(IR::Block &block, Function *fn, Arg const &arg,
+            bool get, bool set) const;
+
          void genStmntStk(IR::Block &block, Function *fn) const;
 
          Arg getArg() const;
@@ -78,12 +84,6 @@ namespace GDCC
          Exp(Exp const &exp);
          explicit Exp(Core::Origin pos);
          virtual ~Exp();
-
-         void genStmntMove(IR::Block &block, Function *fn, Arg const &dst,
-            Arg const &src) const;
-
-         void genStmntMovePart(IR::Block &block, Function *fn, Arg const &arg,
-            bool get, bool set) const;
 
          virtual void v_genStmnt(IR::Block &block, Function *fn,
             Arg const &dst) const = 0;

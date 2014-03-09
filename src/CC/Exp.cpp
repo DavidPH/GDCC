@@ -216,9 +216,6 @@ namespace GDCC
          Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Div(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_DivEq(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
@@ -257,9 +254,6 @@ namespace GDCC
          Core::String, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Mod(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_ModEq(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
