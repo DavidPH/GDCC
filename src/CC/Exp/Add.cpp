@@ -12,14 +12,10 @@
 
 #include "CC/Exp/Add.hpp"
 
+#include "CC/Exp/Arith.hpp"
 #include "CC/Type.hpp"
 
-#include "AST/Type.hpp"
-
-#include "Core/Exception.hpp"
-
-#include "IR/Code.hpp"
-#include "IR/Exp.hpp"
+#include "IR/CodeSet/Arith.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -86,26 +82,8 @@ namespace GDCC
          {
             auto type = AST::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
-            typeL = expL->getType();
-            typeR = expR->getType();
 
-            if(type->isCTypeFloat())
-               throw Core::ExceptStr(pos, "float + float stub");
-
-            if(type->isCTypeFixed())
-               throw Core::ExceptStr(pos, "fixed + fixed stub");
-
-            if(type->isCTypeInteg())
-            {
-               if(type->getSizeWords() == 1)
-               {
-                  return AST::Exp_Arith<AST::Exp_Add>::Create(
-                     type->getSizeBitsS() ? IR::Code::AddI_W : IR::Code::AddU_W,
-                     type, expL, expR, pos);
-               }
-
-               throw Core::ExceptStr(pos, "integer + integer stub");
-            }
+            return ExpCreate_Arith<AST::Exp_Add, IR::CodeSet_Add>(type, expL, expR, pos);
          }
 
          throw Core::ExceptStr(pos, "invalid operands to 'operator +'");
