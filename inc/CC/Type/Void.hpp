@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -35,7 +35,8 @@ namespace GDCC
 
       public:
          // Type information.
-         virtual IR::Type getIRType() const;
+         virtual IR::Type    getIRType()    const;
+         virtual Core::FastU getSizeShift() const {return 1;}
 
          // Type classification: General classifications.
          virtual bool isTypeVoid() const {return true;}

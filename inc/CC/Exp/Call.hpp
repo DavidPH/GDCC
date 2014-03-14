@@ -37,16 +37,14 @@ namespace GDCC
             GDCC::CC::Exp_Call, GDCC::AST::Exp_Unary);
 
       public:
-         Core::Array<AST::Exp::CRef>       const args;
-         Core::CounterRef<AST::Type const> const type;
+         Core::Array<AST::Exp::CRef> const args;
+         TypeCRef                    const func;
 
       protected:
          Exp_Call(AST::Exp const *e, Core::Origin pos,
             Core::Array<AST::Exp::CRef> const &args);
          Exp_Call(AST::Exp const *e, Core::Origin pos,
             Core::Array<AST::Exp::CRef> &&args);
-
-         virtual TypeCRef v_getType() const;
 
          virtual bool v_isEffect() const;
 

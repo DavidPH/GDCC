@@ -29,6 +29,14 @@ namespace GDCC
    namespace CC
    {
       //
+      // Exp_Refer constructor
+      //
+      Exp_Refer::Exp_Refer(AST::Exp const *e, Core::Origin pos_) :
+         Super{e->getType()->getTypePointer(), e, pos_}
+      {
+      }
+
+      //
       // Exp_Refer::v_genStmnt
       //
       void Exp_Refer::v_genStmnt(IR::Block &block, AST::Function *fn,
@@ -47,14 +55,6 @@ namespace GDCC
          auto arg = exp->getArg();
          if(!arg.data) throw Core::ExceptStr(pos, "expected arg data");
          return arg.data->getIRExp();
-      }
-
-      //
-      // Exp_Refer::v_getType
-      //
-      AST::Type::CRef Exp_Refer::v_getType() const
-      {
-         return exp->getType()->getTypePointer();
       }
 
       //

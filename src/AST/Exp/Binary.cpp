@@ -15,6 +15,8 @@
 #include "AST/Arg.hpp"
 #include "AST/Type.hpp"
 
+#include "IR/Exp.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -62,6 +64,32 @@ namespace GDCC
       bool Exp_Binary::v_isIRExp() const
       {
          return expL->isIRExp() && expR->isIRExp();
+      }
+
+      //
+      // Exp_Pair constructor
+      //
+      Exp_Pair::Exp_Pair(Exp const *l, Exp const *r, Core::Origin pos_) :
+         Super{r->getType(), l, r, pos_}
+      {
+      }
+
+      //
+      // Exp_Pair::v_genStmnt
+      //
+      void Exp_Pair::v_genStmnt(IR::Block &block, Function *fn,
+         Arg const &dst) const
+      {
+         expL->genStmnt(block, fn);
+         expR->genStmnt(block, fn, dst);
+      }
+
+      //
+      // Exp_Pair::v_getIRExp
+      //
+      IR::Exp::CRef Exp_Pair::v_getIRExp() const
+      {
+         return expR->getIRExp();
       }
 
       //

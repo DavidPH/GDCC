@@ -32,7 +32,7 @@ namespace GDCC
       void Exp_CallStk::v_genStmnt(IR::Block &block, AST::Function *fn,
          AST::Arg const &dst) const
       {
-         auto callType = type->getCallType();
+         auto callType = func->getCallType();
 
          // Evaluate and count arguments.
          Core::FastU callWords = 0;
@@ -52,9 +52,9 @@ namespace GDCC
          // Second IR arg is return words, except for Casm.
          if(callType != IR::CallType::AsmFunc)
          {
-            irArgs[1] = IR::Arg_Lit(type->getBaseType()->isTypeVoid()
+            irArgs[1] = IR::Arg_Lit(func->getBaseType()->isTypeVoid()
                ? AST::ExpCreate_Size(0)->getIRExp()
-               : type->getBaseType()->getSizeWordsVM()->getIRExp());
+               : func->getBaseType()->getSizeWordsVM()->getIRExp());
          }
 
          // Prepare function's address.

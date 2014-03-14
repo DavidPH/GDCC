@@ -18,6 +18,7 @@
 #include "AST/Function.hpp"
 #include "AST/Object.hpp"
 #include "AST/Space.hpp"
+#include "AST/Statement.hpp"
 #include "AST/Storage.hpp"
 #include "AST/Type.hpp"
 
@@ -27,6 +28,7 @@
 
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+#include "IR/Program.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -145,6 +147,16 @@ namespace GDCC
 
          for(auto &itr : globalFunc)
             itr.second->getIRFunction(prog);
+
+         // Generate statements as separate pass.
+         for(auto &ctx : subScopes)
+         {
+            if(auto fn = prog.findFunction(ctx->fn->glyph))
+            {
+               if(ctx->fn->stmnt)
+                  ctx->fn->stmnt->genStmnt(fn->block, ctx->fn);
+            }
+         }
       }
 
       //

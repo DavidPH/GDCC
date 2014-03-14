@@ -15,6 +15,9 @@
 #include "Core/Option.hpp"
 #include "Core/String.hpp"
 
+#include "IR/Addr.hpp"
+#include "IR/CallType.hpp"
+
 #include "Option/Exception.hpp"
 
 
@@ -193,6 +196,52 @@ namespace GDCC
          }
 
          return 0;
+      }
+
+      //
+      // IsZeroNull_Funct
+      //
+      bool IsZeroNull_Funct(IR::CallType call)
+      {
+         switch(call)
+         {
+         case IR::CallType::ScriptS:
+            return IsZeroNull_StrEn();
+
+         default:
+            return true;
+         }
+      }
+
+      //
+      // IsZeroNull_Point
+      //
+      bool IsZeroNull_Point(IR::AddrBase addr)
+      {
+         switch(addr)
+         {
+         case IR::AddrBase::GblArr: return false;
+         case IR::AddrBase::MapArr: return false;
+         case IR::AddrBase::StrArr: return false;
+         case IR::AddrBase::WldArr: return false;
+
+         default: return true;
+         }
+      }
+
+      //
+      // IsZeroNull_StrEn
+      //
+      bool IsZeroNull_StrEn()
+      {
+         switch(TargetCur)
+         {
+         case Target::None:      return true;
+         case Target::ZDoom:     return false;
+         case Target::MageCraft: return true;
+         }
+
+         return true;
       }
    }
 }

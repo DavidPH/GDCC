@@ -13,7 +13,7 @@
 #include "CC/Exp.hpp"
 
 #include "AST/Arg.hpp"
-#include "AST/Exp.hpp"
+#include "AST/Exp/Binary.hpp"
 #include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -40,25 +40,35 @@ namespace GDCC
       }
 
       //
-      // ExpCreate_LitInt
+      // ExpCreate_Comma
       //
-      AST::Exp::CRef ExpCreate_LitInt(AST::Type const *t, Core::Integ const &i,
+      AST::Exp::CRef ExpCreate_Comma(AST::Exp const *l, AST::Exp const *r,
          Core::Origin pos)
       {
-         auto val = IR::Value_Fixed(i, t->getIRType().tFixed);
-         auto exp = IR::ExpCreate_ValueRoot(std::move(val), pos);
-         return AST::ExpCreate_IRExp(exp, t, pos);
+         return AST::Exp_Pair::Create(l, r, pos);
       }
 
       //
-      // ExpCreate_LitInt
+      // ExpCreate_Cst
       //
-      AST::Exp::CRef ExpCreate_LitInt(AST::Type const *t, Core::Integ &&i,
+      AST::Exp::CRef ExpCreate_Cst(AST::Type const *typeL, AST::Exp const *e,
          Core::Origin pos)
       {
-         auto val = IR::Value_Fixed(std::move(i), t->getIRType().tFixed);
-         auto exp = IR::ExpCreate_ValueRoot(std::move(val), pos);
-         return AST::ExpCreate_IRExp(exp, t, pos);
+         auto typeR = e->getType();
+
+         if(typeL->getTypeQual() == typeR->getTypeQual())
+            return static_cast<AST::Exp::CRef>(e);
+
+         if(typeL->isCTypeArith() && typeR->isCTypeArith())
+            return ExpConvert_Arith(typeL, e, pos);
+
+         if(typeL->isTypePointer() && typeR->isCTypeArith())
+            return ExpConvert_PtrArith(typeL, e, pos);
+
+         if(typeL->isTypePointer() && typeR->isTypePointer())
+            return ExpConvert_Pointer(typeL, e, pos);
+
+         throw Core::ExceptStr(pos, "unsupported cast");
       }
 
       //
@@ -141,14 +151,6 @@ namespace GDCC
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "convert bool stub");}
 
-      AST::Exp::CRef ExpConvert_Pointer(AST::Type const *t, AST::Exp const *e,
-         Core::Origin pos)
-      {
-         if(t->getTypeQual() == e->getType()->getTypeQual())
-            return static_cast<AST::Exp::CRef>(e);
-         throw Core::ExceptStr(pos, "convert pointer stub");
-      }
-
       Core::CounterRef<AST::Exp const> ExpCreate_AddEq(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
@@ -200,14 +202,6 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpCreate_Cnd(AST::Exp const *,
          AST::Exp const *, AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_Comma(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_Cst(AST::Type const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "cast stub");}
 
       Core::CounterRef<AST::Exp const> ExpCreate_DecPre(AST::Exp const *,
          Core::Origin pos)

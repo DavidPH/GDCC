@@ -80,6 +80,10 @@ namespace GDCC
          else
             obj.alloc = true;
 
+         // Configure glyph's type, even if the glyph won't be backed.
+         if(type)
+            prog.getGlyphData(glyph).type = type->getTypePointer()->getIRType();
+
          return obj;
       }
 

@@ -6,14 +6,12 @@
 //
 //-----------------------------------------------------------------------------
 //
-// C unary "operator &" expressions.
+// Abstract Syntax Tree conversion expression bases.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__CC__Exp__Refer_H__
-#define GDCC__CC__Exp__Refer_H__
-
-#include "../../CC/Exp.hpp"
+#ifndef GDCC__AST__Exp__Convert_H__
+#define GDCC__AST__Exp__Convert_H__
 
 #include "../../AST/Exp/Unary.hpp"
 
@@ -24,31 +22,24 @@
 
 namespace GDCC
 {
-   namespace CC
+   namespace AST
    {
       //
-      // Exp_Refer
+      // Exp_Convert
       //
-      class Exp_Refer : public AST::Exp_Unary
+      class Exp_Convert : public Exp_Unary
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Refer, GDCC::AST::Exp_Unary);
-
-      public:
-         friend AST::Exp::CRef ExpCreate_Refer(AST::Exp const *e,
-            Core::Origin pos);
+         GDCC_Core_CounterPreambleAbstract(
+            GDCC::AST::Exp_Convert, GDCC::AST::Exp_Unary);
 
       protected:
-         Exp_Refer(AST::Exp const *e, Core::Origin pos);
-
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
-            AST::Arg const &dst) const;
+         Exp_Convert(Type const *t, Exp const *e, Core::Origin pos_) :
+            Super{t, e, pos_} {}
 
          virtual IRExpCRef v_getIRExp() const;
-
-         virtual bool v_isIRExp() const;
       };
    }
 }
 
-#endif//GDCC__CC__Exp__Refer_H__
+#endif//GDCC__AST__Exp__Convert_H__
 

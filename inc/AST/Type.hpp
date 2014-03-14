@@ -188,6 +188,7 @@ namespace GDCC
          CRef getTypePointer() const;               // Type/Pointer.cpp
          CRef getTypeQual() const {return qualNone;}
          CRef getTypeQual(TypeQual quals) const;
+         CRef getTypeQualAddr(IR::AddrSpace addr) const;
          CRef getTypeRefL() const;                  // Type/Pointer.cpp
          CRef getTypeRefR() const;                  // Type/Pointer.cpp
 

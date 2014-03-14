@@ -20,6 +20,12 @@
 
 namespace GDCC
 {
+   namespace IR
+   {
+      enum class AddrBase;
+      enum class CallType;
+   }
+
    namespace Bytecode
    {
       //
@@ -73,6 +79,11 @@ namespace GDCC
       unsigned GetWordBytes();
       unsigned GetWordPoint();
       unsigned GetWordShift();
+
+      // Does null have a zero representation?
+      bool IsZeroNull_Funct(IR::CallType call);
+      bool IsZeroNull_Point(IR::AddrBase addr);
+      bool IsZeroNull_StrEn();
    }
 }
 

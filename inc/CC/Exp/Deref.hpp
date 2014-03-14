@@ -34,22 +34,17 @@ namespace GDCC
          GDCC_Core_CounterPreamble(GDCC::CC::Exp_Deref, GDCC::AST::Exp_Unary);
 
       public:
-         TypeCRef const type;
-
-
          friend AST::Exp::CRef ExpCreate_Deref(AST::Exp const *e,
             Core::Origin pos);
 
       protected:
-         Exp_Deref(AST::Type const *t, AST::Exp const *e, Core::Origin pos);
-         virtual ~Exp_Deref();
+         Exp_Deref(AST::Type const *t, AST::Exp const *e, Core::Origin pos_) :
+            Super{t, e, pos_} {}
 
          virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
             AST::Arg const &dst) const;
 
          virtual AST::Arg v_getArg() const;
-
-         virtual TypeCRef v_getType() const;
 
          virtual bool v_isEffect() const;
 

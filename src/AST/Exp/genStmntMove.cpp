@@ -127,6 +127,34 @@ namespace GDCC
             break;
 
             //
+            // Loc
+            //
+         case IR::AddrBase::Loc:
+            argIRExp = arg.data->getIRExp();
+
+            if(set)
+            {
+               for(Core::FastU n = arg.type->getSizeWords(); n--;)
+               {
+                  block.addStatementArgs(IR::Code::Move_W,
+                     IR::Arg_Loc(IR::Arg_Lit(argIRExp), getOffset(n)),
+                     IR::Arg_Stk());
+               }
+            }
+
+            if(get)
+            {
+               for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
+               {
+                  block.addStatementArgs(IR::Code::Move_W,
+                     IR::Arg_Stk(),
+                     IR::Arg_Loc(IR::Arg_Lit(argIRExp), getOffset(n)));
+               }
+            }
+
+            break;
+
+            //
             // LocReg
             //
          case IR::AddrBase::LocReg:

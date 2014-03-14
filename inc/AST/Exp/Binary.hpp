@@ -52,6 +52,26 @@ namespace GDCC
 
          virtual bool v_isIRExp() const;
       };
+
+      //
+      // Exp_Pair
+      //
+      class Exp_Pair : public Exp_Binary
+      {
+         GDCC_Core_CounterPreamble(GDCC::AST::Exp_Pair, GDCC::AST::Exp_Binary);
+
+      public:
+         static Exp::CRef Create(Exp const *l, Exp const *r, Core::Origin pos)
+            {return static_cast<Exp::CRef>(new Exp_Pair(l, r, pos));}
+
+      protected:
+         Exp_Pair(Exp const *l, Exp const *r, Core::Origin pos);
+
+         virtual void v_genStmnt(IR::Block &block, Function *fn,
+            Arg const &dst) const;
+
+         virtual IRExpCRef v_getIRExp() const;
+      };
    }
 }
 

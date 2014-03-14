@@ -27,23 +27,6 @@ namespace GDCC
    namespace CC
    {
       //
-      // Exp_Deref constructor
-      //
-      Exp_Deref::Exp_Deref(AST::Type const *t, AST::Exp const *e,
-         Core::Origin pos_) :
-         Super{e, pos_},
-         type{t}
-      {
-      }
-
-      //
-      // Exp_Deref destructor
-      //
-      Exp_Deref::~Exp_Deref()
-      {
-      }
-
-      //
       // Exp_Deref::v_genStmnt
       //
       void Exp_Deref::v_genStmnt(IR::Block &block, AST::Function *fn,
@@ -58,14 +41,6 @@ namespace GDCC
       AST::Arg Exp_Deref::v_getArg() const
       {
          return AST::Arg(type, exp);
-      }
-
-      //
-      // Exp_Deref::v_getType
-      //
-      AST::Type::CRef Exp_Deref::v_getType() const
-      {
-         return type;
       }
 
       //

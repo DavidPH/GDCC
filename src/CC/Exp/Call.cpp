@@ -30,9 +30,9 @@ namespace GDCC
       //
       Exp_Call::Exp_Call(AST::Exp const *e, Core::Origin pos_,
          Core::Array<AST::Exp::CRef> const &args_) :
-         Super{e, pos_},
+         Super{e->getType()->getBaseType()->getBaseType(), e, pos_},
          args{args_},
-         type{e->getType()->getBaseType()}
+         func{e->getType()->getBaseType()}
       {
       }
 
@@ -41,18 +41,10 @@ namespace GDCC
       //
       Exp_Call::Exp_Call(AST::Exp const *e, Core::Origin pos_,
          Core::Array<AST::Exp::CRef> &&args_) :
-         Super{e, pos_},
+         Super{e->getType()->getBaseType()->getBaseType(), e, pos_},
          args{std::move(args_)},
-         type{e->getType()->getBaseType()}
+         func{e->getType()->getBaseType()}
       {
-      }
-
-      //
-      // Exp_Call::v_getType
-      //
-      AST::Type::CRef Exp_Call::v_getType() const
-      {
-         return type->getBaseType();
       }
 
       //

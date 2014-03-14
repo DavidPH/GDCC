@@ -76,6 +76,9 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpConvert_Pointer(AST::Type const *t,
          AST::Exp const *e, Core::Origin pos);
 
+      Core::CounterRef<AST::Exp const> ExpConvert_PtrArith(AST::Type const *t,
+         AST::Exp const *e, Core::Origin pos);
+
       Core::CounterRef<AST::Exp const> ExpCreate_Add(AST::Exp const *e,
          Core::Origin pos);
 
@@ -167,6 +170,9 @@ namespace GDCC
          Core::Integ const &lit, Core::Origin pos);
       Core::CounterRef<AST::Exp const> ExpCreate_LitInt(AST::Type const *type,
          Core::Integ      &&lit, Core::Origin pos);
+
+      Core::CounterRef<AST::Exp const> ExpCreate_LitNul(AST::Type const *type,
+         Core::Origin pos);
 
       Core::CounterRef<AST::Exp const> ExpCreate_LogAnd(AST::Exp const *l,
          AST::Exp const *r, Core::Origin pos);

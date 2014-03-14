@@ -60,6 +60,8 @@ namespace GDCC
          Type_Empty() = default;
 
          explicit Type_Empty(IArchive &in);
+
+         bool operator == (Type_Empty const &) const {return true;}
       };
 
       //
@@ -77,6 +79,10 @@ namespace GDCC
          Core::Integ &clamp(Core::Integ &value);
 
          Core::FastU getBits() const {return bitsI + bitsF + bitsS;}
+
+         bool operator == (Type_Fixed const &t) const
+            {return bitsI == t.bitsI && bitsF == t.bitsF &&
+                    bitsS == t.bitsS && satur == t.satur;}
 
          Core::FastU bitsI;
          Core::FastU bitsF;
@@ -99,6 +105,10 @@ namespace GDCC
 
          explicit Type_Float(IArchive &in);
 
+         bool operator == (Type_Float const &t) const
+            {return bitsI == t.bitsI && bitsF == t.bitsF &&
+                    bitsS == t.bitsS && satur == t.satur;}
+
          Core::FastU bitsI;
          Core::FastU bitsF;
          bool        bitsS : 1;
@@ -119,6 +129,8 @@ namespace GDCC
 
          explicit Type_Funct(IArchive &in);
 
+         bool operator == (Type_Funct const &t) const {return callT == t.callT;}
+
          CallType callT;
       };
 
@@ -134,6 +146,8 @@ namespace GDCC
 
          explicit Type_Multi(IArchive &in);
 
+         bool operator == (Type_Multi const &t) const {return types == t.types;}
+
          Core::Array<Type> types;
       };
 
@@ -148,6 +162,9 @@ namespace GDCC
             reprB{reprB_}, reprS{reprS_}, reprW{reprW_} {}
          explicit Type_Point(IArchive &in);
 
+         bool operator == (Type_Point const &t) const
+            {return reprB == t.reprB && reprS == t.reprS && reprW == t.reprW;}
+
          AddrBase    reprB; // Base
          Core::FastU reprS; // Size in Words
          Core::FastU reprW; // Size of Word
@@ -161,6 +178,8 @@ namespace GDCC
          Type_StrEn() = default;
 
          explicit Type_StrEn(IArchive &in);
+
+         bool operator == (Type_StrEn const &) const {return true;}
       };
 
       //
@@ -221,6 +240,24 @@ namespace GDCC
          }
 
          explicit operator bool () const {return t != TypeBase::Empty;}
+
+         //
+         // operator Type == Type
+         //
+         bool operator == (Type const &type) const
+         {
+            if(type.t == t) switch(t)
+            {
+               #define GDCC_IR_TypeList(name) \
+                  case TypeBase::name: return t##name == type.t##name;
+               #include "../IR/TypeList.hpp"
+            }
+
+            return false;
+         }
+
+         // operator Type != Type
+         bool operator != (Type const &type) const {return !(*this == type);}
 
          //
          // copy assignment

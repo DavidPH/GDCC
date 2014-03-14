@@ -191,6 +191,26 @@ ExpPromo_Arith_Integ(GDCC::AST::Exp const *l, GDCC::AST::Exp const *r,
    return std::make_tuple(typeL, expL, expR);
 }
 
+//
+// IsAddrCompat
+//
+static bool IsAddrCompat(GDCC::IR::AddrSpace l, GDCC::IR::AddrSpace r)
+{
+   using namespace GDCC;
+
+   // If they're the same address space, then they are compatible.
+   if(l == r) return true;
+
+   // Special allowances for converting from pointer-to-local.
+   if(r.base == IR::AddrBase::Loc)
+   {
+      if(l.base == IR::AddrBase::Gen || l.base == IR::AddrBase::LocArs)
+         return true;
+   }
+
+   return false;
+}
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -256,6 +276,10 @@ namespace GDCC
          auto exp   = ExpPromo_LValue(e, pos);
          auto typeR = exp->getType();
 
+         // If assigning to same type, no conversion is needed.
+         if(typeL->getTypeQual() == typeR->getTypeQual())
+            return exp;
+
          // bool = pointer
          if(typeL->isTypeBoolean() && typeR->isTypePointer())
          {
@@ -285,7 +309,9 @@ namespace GDCC
          // pointer = pointer
          if(typeL->isTypePointer())
          {
-            // FIXME: Check for exp being a null pointer constant.
+            // Check for exp being a null pointer constant.
+            if(typeR->isCTypeInteg() && exp->isZero())
+               return ExpConvert_PtrArith(typeL, exp, pos);
 
             if(!typeR->isTypePointer())
                throw Core::ExceptStr(pos, "cannot implicitly convert to "
@@ -294,6 +320,7 @@ namespace GDCC
             auto baseL = typeL->getBaseType();
             auto baseR = typeR->getBaseType();
 
+            // Check underlying type compatibility.
             if(!baseL->isTypeVoid() && !baseR->isTypeVoid() &&
                baseL->getTypeQual() != baseR->getTypeQual())
                throw Core::ExceptStr(pos, "cannot implicitly convert to "
@@ -302,11 +329,12 @@ namespace GDCC
             auto qualL = baseL->getQual();
             auto qualR = baseR->getQual();
 
-            // FIXME: Some address space conversions can be implicit.
-            if(qualL.space != qualR.space)
+            // Check address space compatibility.
+            if(!IsAddrCompat(qualL.space, qualR.space))
                throw Core::ExceptStr(pos, "cannot implicitly convert to "
                   "pointer to incompatible address space");
 
+            // Check for discarded qualifiers.
             if((!qualL.aAtom && qualR.aAtom) || (!qualL.aCons && qualR.aCons) ||
                (!qualL.aRest && qualR.aRest) || (!qualL.aVola && qualR.aVola))
                throw Core::ExceptStr(pos, "cannot implicitly discard qualifiers");

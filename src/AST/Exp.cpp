@@ -126,7 +126,15 @@ namespace GDCC
       IR::Exp::CRef Exp::getIRExp() const
       {
          if(!cacheIRExp)
+         {
             cacheIRExp = v_getIRExp();
+
+            IR::Type irTypeO = getType()->getIRType();
+            IR::Type irTypeI = cacheIRExp->getType();
+
+            if(irTypeO != irTypeI)
+               cacheIRExp = IR::ExpCreate_UnaryCst(irTypeO, cacheIRExp, pos);
+         }
 
          return static_cast<IR::Exp::CRef>(cacheIRExp);
       }
@@ -153,6 +161,18 @@ namespace GDCC
       bool Exp::isIRExp() const
       {
          return v_isIRExp();
+      }
+
+      //
+      // Exp::isZero
+      //
+      bool Exp::isZero() const
+      {
+         if(!isIRExp()) return false;
+
+         auto irExp = getIRExp();
+
+         return irExp->canGetValue() && !irExp->getValue();
       }
 
       //

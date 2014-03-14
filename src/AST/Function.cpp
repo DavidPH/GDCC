@@ -114,13 +114,9 @@ namespace GDCC
          fn.retrn    = retrn && !retrn->isTypeVoid() ? retrn->getSizeWords() : 0;
          fn.stype    = stype;
 
-         fn.alloc    = true;
          fn.defin    = defin;
          fn.sflagNet = sflagNet;
          fn.sflagClS = sflagClS;
-
-         if(stmnt)
-            stmnt->genStmnt(fn.block, this);
 
          if(valueInt)
          {
@@ -134,6 +130,9 @@ namespace GDCC
             fn.valueStr = valueStr;
          else
             fn.alloc = true;
+
+         // Configure glyph's type, even if the glyph won't be backed.
+         prog.getGlyphData(glyph).type = IR::Type_Funct(ctype);
 
          return fn;
       }

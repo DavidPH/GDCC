@@ -22,9 +22,11 @@ add_library(gdcc-cc-lib
    Exp/Assign.cpp
    Exp/Call.cpp
    Exp/Call/Stk.cpp
+   Exp/Convert/Pointer.cpp
    Exp/Deref.cpp
    Exp/Div.cpp
    Exp/Func.cpp
+   Exp/Lit.cpp
    Exp/Mod.cpp
    Exp/Mul.cpp
    Exp/Obj.cpp

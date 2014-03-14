@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -258,6 +258,16 @@ namespace GDCC
          auto type = clone();
          type->quals = newQuals;
          return type;
+      }
+
+      //
+      // Type::getTypeQualAddr
+      //
+      Type::CRef Type::getTypeQualAddr(IR::AddrSpace addr) const
+      {
+         auto newQuals = quals;
+         newQuals.space = addr;
+         return Type::getTypeQual(newQuals);
       }
 
       //

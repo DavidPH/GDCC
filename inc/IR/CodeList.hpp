@@ -94,6 +94,9 @@ GDCC_IR_CodeList(OrIU_W)
 // OrX* dst lop rop
 GDCC_IR_CodeList(OrXU_W)
 
+// Pltn dst src (Pointer, Local to Near)
+GDCC_IR_CodeList(Pltn)
+
 // Retn src...
 GDCC_IR_CodeList(Retn)
 

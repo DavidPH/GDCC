@@ -75,6 +75,9 @@ namespace GDCC
          // Can this expression be made into an IR expression?
          bool isIRExp() const;
 
+         // Is this expression known to be zero?
+         bool isZero() const;
+
          // Marks the expression as needing its address taken.
          void setRefer() const;
 
