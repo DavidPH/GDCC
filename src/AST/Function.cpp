@@ -99,9 +99,9 @@ namespace GDCC
       }
 
       //
-      // Function::getIRFunction
+      // Function::genFunction
       //
-      IR::Function &Function::getIRFunction(IR::Program &prog)
+      IR::Function &Function::genFunction(IR::Program &prog)
       {
          auto &fn = prog.getFunction(glyph);
 

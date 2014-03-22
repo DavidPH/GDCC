@@ -56,7 +56,7 @@ namespace GDCC
       public:
          virtual Core::String genLabel();
 
-         IR::Function &getIRFunction(IR::Program &prog);
+         IR::Function &genFunction(IR::Program &prog);
 
          IR::CallType   ctype;
          Core::String   glyph;

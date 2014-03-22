@@ -146,7 +146,7 @@ namespace GDCC
             ctx->genIR(prog);
 
          for(auto &itr : globalFunc)
-            itr.second->getIRFunction(prog);
+            itr.second->genFunction(prog);
 
          // Generate statements as separate pass.
          for(auto &ctx : subScopes)

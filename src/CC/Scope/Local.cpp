@@ -114,7 +114,7 @@ namespace GDCC
             ctx->genIR(prog);
 
          for(auto itr : localObj)
-            itr.second->getIRObject(prog);
+            itr.second->genObject(prog);
       }
 
       //

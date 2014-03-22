@@ -56,9 +56,9 @@ namespace GDCC
       }
 
       //
-      // Object::getIRObject
+      // Object::genObject
       //
-      IR::Object &Object::getIRObject(IR::Program &prog)
+      IR::Object &Object::genObject(IR::Program &prog)
       {
          auto &obj = prog.getObject(glyph);
 
