@@ -40,6 +40,10 @@ namespace GDCC
             GDCC::AST::Statement, GDCC::Core::Counter);
 
       public:
+         using Labels = Core::Array<Core::String>;
+         using Stmnts = Core::Array<CRef>;
+
+
          void genLabel(IR::Block &block) const;
          void genStmnt(GenStmntCtx const &ctx) const;
 
@@ -55,13 +59,13 @@ namespace GDCC
          // Can this statement forego codegen?
          bool isTrivial() const {return !isBranch() && !isEffect();}
 
-         Core::Array<Core::String> const labels;
-         Core::Origin              const pos;
+         Labels       const labels;
+         Core::Origin const pos;
 
       protected:
-         Statement(Core::Array<Core::String> const &labels_, Core::Origin pos_) :
+         Statement(Labels const &labels_, Core::Origin pos_) :
             labels{labels_}, pos{pos_} {}
-         Statement(Core::Array<Core::String> &&labels_, Core::Origin pos_) :
+         Statement(Labels &&labels_, Core::Origin pos_) :
             labels{std::move(labels_)}, pos{pos_} {}
          explicit Statement(Core::Origin pos_) : labels{}, pos{pos_} {}
 
@@ -84,37 +88,31 @@ namespace GDCC
 {
    namespace AST
    {
-      Statement::CRef StatementCreate_Empty(
-         Core::Array<Core::String> const &labels, Core::Origin pos);
-      Statement::CRef StatementCreate_Empty(
-         Core::Array<Core::String>      &&labels, Core::Origin pos);
+      Statement::CRef StatementCreate_Empty(Statement::Labels const &labels,
+         Core::Origin pos);
+      Statement::CRef StatementCreate_Empty(Statement::Labels      &&labels,
+         Core::Origin pos);
       Statement::CRef StatementCreate_Empty(Core::Origin pos);
 
-      Statement::CRef StatementCreate_Exp(
-         Core::Array<Core::String> const &labels, Core::Origin pos,
-         Exp const *exp);
-      Statement::CRef StatementCreate_Exp(
-         Core::Array<Core::String>      &&labels, Core::Origin pos,
-         Exp const *exp);
+      Statement::CRef StatementCreate_Exp(Statement::Labels const &labels,
+         Core::Origin pos, Exp const *exp);
+      Statement::CRef StatementCreate_Exp(Statement::Labels      &&labels,
+         Core::Origin pos, Exp const *exp);
       Statement::CRef StatementCreate_Exp(Core::Origin pos, Exp const *exp);
       Statement::CRef StatementCreate_Exp(Exp const *exp);
 
+      Statement::CRef StatementCreate_Multi(Statement::Labels const &labels,
+         Core::Origin pos, Statement::Stmnts const &stmnts);
+      Statement::CRef StatementCreate_Multi(Statement::Labels const &labels,
+         Core::Origin pos, Statement::Stmnts      &&stmnts);
+      Statement::CRef StatementCreate_Multi(Statement::Labels      &&labels,
+         Core::Origin pos, Statement::Stmnts const &stmnts);
+      Statement::CRef StatementCreate_Multi(Statement::Labels      &&labels,
+         Core::Origin pos, Statement::Stmnts      &&stmnts);
       Statement::CRef StatementCreate_Multi(
-         Core::Array<Core::String> const &labels, Core::Origin pos,
-         Core::Array<Statement::CRef> const &stmnts);
+         Core::Origin pos, Statement::Stmnts const &stmnts);
       Statement::CRef StatementCreate_Multi(
-         Core::Array<Core::String> const &labels, Core::Origin pos,
-         Core::Array<Statement::CRef>      &&stmnts);
-      Statement::CRef StatementCreate_Multi(
-         Core::Array<Core::String>      &&labels, Core::Origin pos,
-         Core::Array<Statement::CRef> const &stmnts);
-      Statement::CRef StatementCreate_Multi(
-         Core::Array<Core::String>      &&labels, Core::Origin pos,
-         Core::Array<Statement::CRef>      &&stmnts);
-      Statement::CRef StatementCreate_Multi(Core::Origin pos,
-         Core::Array<Statement::CRef> const &stmnts);
-      Statement::CRef StatementCreate_Multi(Core::Origin pos,
-         Core::Array<Statement::CRef>      &&stmnts);
+         Core::Origin pos, Statement::Stmnts      &&stmnts);
    }
 }
 

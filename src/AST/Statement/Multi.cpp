@@ -75,62 +75,55 @@ namespace GDCC
       //
       // StatementCreate_Multi
       //
-      Statement::CRef StatementCreate_Multi(
-         Core::Array<Core::String> const &labels, Core::Origin pos,
-         Core::Array<Statement::CRef> const &stmnts)
+      Statement::CRef StatementCreate_Multi(Statement::Labels const &labels,
+         Core::Origin pos, Statement::Stmnts const &stmnts)
       {
-         return static_cast<Statement::CRef>(
-            new Statement_Multi(labels, pos, stmnts));
+         return Statement_Multi::Create(labels, pos, stmnts);
       }
 
       //
       // StatementCreate_Multi
       //
-      Statement::CRef StatementCreate_Multi(
-         Core::Array<Core::String> const &labels, Core::Origin pos,
-         Core::Array<Statement::CRef> &&stmnts)
+      Statement::CRef StatementCreate_Multi(Statement::Labels const &labels,
+         Core::Origin pos, Statement::Stmnts &&stmnts)
       {
-         return static_cast<Statement::CRef>(
-            new Statement_Multi(labels, pos, std::move(stmnts)));
+         return Statement_Multi::Create(labels, pos, std::move(stmnts));
       }
 
       //
       // StatementCreate_Multi
       //
-      Statement::CRef StatementCreate_Multi(Core::Array<Core::String> &&labels,
-         Core::Origin pos, Core::Array<Statement::CRef> const &stmnts)
+      Statement::CRef StatementCreate_Multi(Statement::Labels &&labels,
+         Core::Origin pos, Statement::Stmnts const &stmnts)
       {
-         return static_cast<Statement::CRef>(
-            new Statement_Multi(std::move(labels), pos, stmnts));
+         return Statement_Multi::Create(std::move(labels), pos, stmnts);
       }
 
       //
       // StatementCreate_Multi
       //
-      Statement::CRef StatementCreate_Multi(Core::Array<Core::String> &&labels,
-         Core::Origin pos, Core::Array<Statement::CRef> &&stmnts)
+      Statement::CRef StatementCreate_Multi(Statement::Labels &&labels,
+         Core::Origin pos, Statement::Stmnts &&stmnts)
       {
-         return static_cast<Statement::CRef>(
-            new Statement_Multi(std::move(labels), pos, std::move(stmnts)));
+         return Statement_Multi::Create(std::move(labels), pos, std::move(stmnts));
       }
 
       //
       // StatementCreate_Multi
       //
       Statement::CRef StatementCreate_Multi(Core::Origin pos,
-         Core::Array<Statement::CRef> const &stmnts)
+         Statement::Stmnts const &stmnts)
       {
-         return static_cast<Statement::CRef>(new Statement_Multi(pos, stmnts));
+         return Statement_Multi::Create(pos, stmnts);
       }
 
       //
       // StatementCreate_Multi
       //
       Statement::CRef StatementCreate_Multi(Core::Origin pos,
-         Core::Array<Statement::CRef> &&stmnts)
+         Statement::Stmnts &&stmnts)
       {
-         return static_cast<Statement::CRef>(
-            new Statement_Multi(pos, std::move(stmnts)));
+         return Statement_Multi::Create(pos, std::move(stmnts));
       }
    }
 }
