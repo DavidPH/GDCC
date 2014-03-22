@@ -437,6 +437,9 @@ namespace GDCC
          switch(specBase)
          {
          case BaseNone:
+            if(specLong || specShrt || specSign || specUnsi)
+               goto case_BaseInte;
+
             throw Core::ExceptStr(pos, "missing type specifier");
 
          case BaseName:
@@ -519,6 +522,7 @@ namespace GDCC
 
             break;
 
+         case_BaseInte:
          case BaseInte:
             if(specCplx) throw Core::ExceptStr(pos, "complex int");
             if(specImag) throw Core::ExceptStr(pos, "imaginary int");
