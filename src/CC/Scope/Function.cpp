@@ -64,7 +64,7 @@ namespace GDCC
          BlockScope::AllocAutoInfo alloc;
          for(auto &obj : params)
          {
-            auto &idx = obj->point ? alloc.localArs : alloc.localReg;
+            auto &idx = obj->refer ? alloc.localArs : alloc.localReg;
             obj->value = IR::ExpCreate_ValueRoot(
                IR::Value_Fixed(idx, idxType), Core::Origin(Core::STRNULL, 0));
             idx += obj->type->getSizeWords();

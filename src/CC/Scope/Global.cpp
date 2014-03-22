@@ -90,8 +90,8 @@ namespace GDCC
             obj->type  = param.type;
             obj->defin = true;
 
-            if(param.storeAuto) obj->point = true;
-            if(param.storeReg)  obj->noPtr = true;
+            if(param.storeAuto) obj->refer = true;
+            if(param.storeReg)  obj->noRef = true;
 
             params.emplace_back(obj);
          }

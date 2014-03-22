@@ -133,10 +133,10 @@ namespace GDCC
          obj->type  = attr.type;
 
          // If declaration is explicitly auto, always make it addressable.
-         obj->point = attr.storeAuto;
+         obj->refer = attr.storeAuto;
 
          // If register is used, do not allow taking address.
-         obj->noPtr = attr.storeReg;
+         obj->noRef = attr.storeReg;
 
          localObj.emplace(attr.name, obj);
 

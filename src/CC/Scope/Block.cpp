@@ -70,7 +70,7 @@ namespace GDCC
 
             auto qual = obj->type->getQual();
             Core::FastU *idx;
-            if(obj->point)
+            if(obj->refer)
             {
                idx = &alloc.localArs;
                if(qual.space.base == IR::AddrBase::Gen)

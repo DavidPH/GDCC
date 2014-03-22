@@ -108,7 +108,7 @@ namespace GDCC
       //
       void Exp_Obj::v_setRefer() const
       {
-         obj->point = true;
+         obj->refer = true;
       }
 
       //
@@ -133,7 +133,7 @@ namespace GDCC
             return type;
 
          // Otherwise, select based on needing to be addressable.
-         if(obj->point)
+         if(obj->refer)
             qual.space.base = IR::AddrBase::Loc;
          else
             qual.space.base = IR::AddrBase::LocReg;

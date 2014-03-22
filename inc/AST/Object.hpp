@@ -65,8 +65,8 @@ namespace GDCC
 
          bool         alias : 1; // Can alias?
          bool         defin : 1; // Is defined?
-         bool         noPtr : 1; // Forbids pointer-to?
-         bool         point : 1; // Needs pointer-to?
+         bool         noRef : 1; // Forbids pointer-to?
+         bool         refer : 1; // Needs pointer-to?
 
 
          static Ref Create(Core::String name, Core::String glyph);

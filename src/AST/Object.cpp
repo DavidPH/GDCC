@@ -43,8 +43,8 @@ namespace GDCC
 
          alias{false},
          defin{false},
-         noPtr{false},
-         point{false}
+         noRef{false},
+         refer{false}
       {
       }
 
