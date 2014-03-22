@@ -13,6 +13,8 @@
 #ifndef GDCC__AST__Statement_H__
 #define GDCC__AST__Statement_H__
 
+#include "../AST/GenStmnt.hpp"
+
 #include "../Core/Array.hpp"
 #include "../Core/Counter.hpp"
 #include "../Core/Origin.hpp"
@@ -24,11 +26,6 @@
 
 namespace GDCC
 {
-   namespace IR
-   {
-      class Block;
-   }
-
    namespace AST
    {
       class Exp;
@@ -44,7 +41,7 @@ namespace GDCC
 
       public:
          void genLabel(IR::Block &block) const;
-         void genStmnt(IR::Block &block, Function *fn) const;
+         void genStmnt(GenStmntCtx const &ctx) const;
 
          // Does this statement branch to another statement?
          bool isBranch() const {return v_isBranch();}
@@ -69,7 +66,7 @@ namespace GDCC
          explicit Statement(Core::Origin pos_) : labels{}, pos{pos_} {}
 
          virtual void v_genLabel(IR::Block &block) const;
-         virtual void v_genStmnt(IR::Block &block, Function *fn) const = 0;
+         virtual void v_genStmnt(GenStmntCtx const &ctx) const = 0;
 
          virtual bool v_isBranch() const {return false;}
          virtual bool v_isEffect() const = 0;

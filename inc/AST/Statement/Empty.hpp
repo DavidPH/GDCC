@@ -46,7 +46,7 @@ namespace GDCC
             Super{std::move(labels_), pos_} {}
          Statement_Empty(Core::Origin pos_) : Super{pos_} {}
 
-         virtual void v_genStmnt(IR::Block &block, Function *fn) const;
+         virtual void v_genStmnt(GenStmntCtx const &ctx) const;
 
          virtual bool v_isEffect() const {return false;}
       };

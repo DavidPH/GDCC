@@ -24,7 +24,7 @@ namespace GDCC
       //
       // Statement_Empty::v_genStmnt
       //
-      void Statement_Empty::v_genStmnt(IR::Block &, Function *) const
+      void Statement_Empty::v_genStmnt(GenStmntCtx const &) const
       {
       }
 

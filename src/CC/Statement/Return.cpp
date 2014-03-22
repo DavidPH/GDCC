@@ -90,10 +90,9 @@ namespace GDCC
       //
       // Statement_ReturnExp::v_genStmnt
       //
-      void Statement_ReturnExp::v_genStmnt(IR::Block &block,
-         AST::Function *fn) const
+      void Statement_ReturnExp::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
-         exp->genStmnt(block, fn, AST::Arg(exp->getType(), IR::AddrBase::Stk));
+         exp->genStmnt(ctx, AST::Arg(exp->getType(), IR::AddrBase::Stk));
 
          throw Core::ExceptStr(pos, "return exp stub");
       }
@@ -109,10 +108,9 @@ namespace GDCC
       //
       // Statement_ReturnNul::v_genStmnt
       //
-      void Statement_ReturnNul::v_genStmnt(IR::Block &block,
-         AST::Function *) const
+      void Statement_ReturnNul::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
-         block.addStatementArgs(IR::Code::Retn);
+         ctx.block.addStatementArgs(IR::Code::Retn);
       }
 
       //

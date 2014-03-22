@@ -44,7 +44,7 @@ namespace GDCC
          Exp_IRExp(IR::Exp const *exp, Type const *type, Core::Origin pos);
          virtual ~Exp_IRExp();
 
-         virtual void v_genStmnt(IR::Block &block, Function *fn, Arg const &dst) const;
+         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 
          virtual IRExpCRef v_getIRExp() const;
 

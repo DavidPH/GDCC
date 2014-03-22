@@ -45,7 +45,7 @@ namespace GDCC
          Exp_Obj(IR::Program &prog, AST::Object *obj, Core::Origin pos);
          virtual ~Exp_Obj();
 
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
 
          virtual AST::Arg v_getArg() const;

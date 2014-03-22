@@ -154,7 +154,7 @@ namespace GDCC
             if(auto fn = prog.findFunction(ctx->fn->glyph))
             {
                if(ctx->fn->stmnt)
-                  ctx->fn->stmnt->genStmnt(fn->block, ctx->fn);
+                  ctx->fn->stmnt->genStmnt({fn->block, ctx->fn, prog});
             }
          }
       }

@@ -67,8 +67,7 @@ namespace GDCC
       protected:
          Exp_Pair(Exp const *l, Exp const *r, Core::Origin pos);
 
-         virtual void v_genStmnt(IR::Block &block, Function *fn,
-            Arg const &dst) const;
+         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 
          virtual IRExpCRef v_getIRExp() const;
       };
@@ -85,7 +84,7 @@ namespace GDCC
    namespace AST
    {
       // Returns true if only evaluating for side effects.
-      bool GenStmntNul(Exp_Binary const *exp, IR::Block &block, Function *fn,
+      bool GenStmntNul(Exp_Binary const *exp, GenStmntCtx const &ctx,
          Arg const &dst);
    }
 }

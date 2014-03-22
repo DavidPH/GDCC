@@ -42,7 +42,7 @@ namespace GDCC
       protected:
          Exp_Arg(Arg const &arg, Core::Origin pos);
 
-         virtual void v_genStmnt(IR::Block &block, Function *fn, Arg const &dst) const;
+         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 
          virtual Arg v_getArg() const;
 

@@ -82,7 +82,7 @@ namespace GDCC
    namespace AST
    {
       // Returns true if only evaluating for side effects.
-      bool GenStmntNul(Exp_Unary const *exp, IR::Block &block, Function *fn,
+      bool GenStmntNul(Exp_Unary const *exp, GenStmntCtx const &ctx,
          Arg const &dst);
    }
 }

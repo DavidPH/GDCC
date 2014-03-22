@@ -53,7 +53,7 @@ namespace GDCC
          Statement_Exp(Core::Origin pos, Exp const *exp);
          virtual ~Statement_Exp();
 
-         virtual void v_genStmnt(IR::Block &block, Function *fn) const;
+         virtual void v_genStmnt(GenStmntCtx const &ctx) const;
 
          virtual bool v_isEffect() const;
       };

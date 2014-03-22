@@ -38,7 +38,7 @@ namespace GDCC
       protected:
          Exp_MulSize(Exp const *l, Exp const *r, Core::Origin pos);
 
-         virtual void v_genStmnt(IR::Block &block, Function *fn, Arg const &dst) const;
+         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 
          virtual IRExpCRef v_getIRExp() const;
 

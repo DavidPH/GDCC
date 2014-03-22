@@ -59,9 +59,9 @@ namespace GDCC
       //
       // Statement_Exp::v_genStmnt
       //
-      void Statement_Exp::v_genStmnt(IR::Block &block, Function *fn) const
+      void Statement_Exp::v_genStmnt(GenStmntCtx const &ctx) const
       {
-         exp->genStmnt(block, fn);
+         exp->genStmnt(ctx);
       }
 
       //

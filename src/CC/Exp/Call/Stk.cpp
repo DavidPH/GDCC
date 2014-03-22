@@ -29,7 +29,7 @@ namespace GDCC
       //
       // Exp_CallStk::v_genStmnt
       //
-      void Exp_CallStk::v_genStmnt(IR::Block &block, AST::Function *fn,
+      void Exp_CallStk::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
          auto callType = func->getCallType();
@@ -38,7 +38,7 @@ namespace GDCC
          Core::FastU callWords = 0;
          for(auto const &arg : args)
          {
-            arg->genStmntStk(block, fn);
+            arg->genStmntStk(ctx);
             callWords += arg->getType()->getSizeWords();
          }
 
@@ -60,12 +60,12 @@ namespace GDCC
          // Prepare function's address.
          if(exp->isIRExp())
          {
-            exp->genStmnt(block, fn);
+            exp->genStmnt(ctx);
             irArgs[0] = IR::Arg_Lit(exp->getIRExp());
          }
          else
          {
-            exp->genStmntStk(block, fn);
+            exp->genStmntStk(ctx);
             irArgs[0] = IR::Arg_Stk();
          }
 
@@ -78,10 +78,10 @@ namespace GDCC
          case IR::CallType::Special: code = IR::Code::Cspe; break;
          default:                    code = IR::Code::Call; break;
          }
-         block.addStatementArgs(code, std::move(irArgs));
+         ctx.block.addStatementArgs(code, std::move(irArgs));
 
          // Move to destination.
-         genStmntMovePart(block, fn, dst, false, true);
+         GenStmnt_MovePart(this, ctx, dst, false, true);
       }
    }
 }

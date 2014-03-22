@@ -24,7 +24,7 @@ namespace GDCC
       //
       // Statement_FuncPre::v_genStmnt
       //
-      void Statement_FuncPre::v_genStmnt(IR::Block &, AST::Function *) const
+      void Statement_FuncPre::v_genStmnt(AST::GenStmntCtx const &) const
       {
          // If script, configure environment.
          // TODO

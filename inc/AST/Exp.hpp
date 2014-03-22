@@ -13,6 +13,8 @@
 #ifndef GDCC__AST__Exp_H__
 #define GDCC__AST__Exp_H__
 
+#include "../AST/GenStmnt.hpp"
+
 #include "../Core/Counter.hpp"
 #include "../Core/Number.hpp"
 #include "../Core/Origin.hpp"
@@ -26,7 +28,6 @@ namespace GDCC
 {
    namespace IR
    {
-      class Block;
       class Exp;
    }
 
@@ -49,20 +50,15 @@ namespace GDCC
          using TypeCRef  = Core::CounterRef<Type const>;
 
       public:
-         void genStmnt(IR::Block &block, Function *fn) const;
+         void genStmnt(GenStmntCtx const &ctx) const;
 
-         void genStmnt(IR::Block &block, Function *fn, Arg const &dst) const;
+         void genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 
-         void genStmntMove(IR::Block &block, Function *fn, Arg const &dst,
-            Arg const &src) const;
-
-         void genStmntMovePart(IR::Block &block, Function *fn, Arg const &arg,
-            bool get, bool set) const;
-
-         void genStmntStk(IR::Block &block, Function *fn) const;
+         void genStmntStk(GenStmntCtx const &ctx) const;
 
          Arg getArg() const;
          Arg getArgDst() const;
+         Arg getArgDup() const;
          Arg getArgSrc() const;
 
          IRExpCRef getIRExp() const;
@@ -88,8 +84,7 @@ namespace GDCC
          explicit Exp(Core::Origin pos);
          virtual ~Exp();
 
-         virtual void v_genStmnt(IR::Block &block, Function *fn,
-            Arg const &dst) const = 0;
+         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const = 0;
 
          virtual Arg v_getArg() const;
 
@@ -127,6 +122,18 @@ namespace GDCC
       Exp::CRef ExpCreate_MulSize(Exp const *l, Exp const *r);
 
       Exp::CRef ExpCreate_Size(Core::FastU value);
+
+      // Moves data from one Arg to another.
+      void GenStmnt_Move(Exp const *exp, GenStmntCtx const &ctx,
+         Arg const &dst, Arg const &src);
+
+      // Moves data from Arg to two others. (dst = dup = src)
+      void GenStmnt_Move(Exp const *exp, GenStmntCtx const &ctx,
+         Arg const &dst, Arg const &dup, Arg const &src);
+
+      // Performs one part of an Arg movement.
+      void GenStmnt_MovePart(Exp const *exp, GenStmntCtx const &ctx,
+         Arg const &arg, bool get, bool set);
    }
 }
 

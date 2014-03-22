@@ -50,20 +50,20 @@ namespace GDCC
       // GenStmnt_Arith
       //
       void GenStmnt_Arith(Exp_Binary const *exp, IR::Code code,
-         IR::Block &block, AST::Function *fn, AST::Arg const &dst)
+         GenStmntCtx const &ctx, AST::Arg const &dst)
       {
-         if(GenStmntNul(exp, block, fn, dst)) return;
+         if(GenStmntNul(exp, ctx, dst)) return;
 
          // Evaluate both sub-expressions to stack.
-         exp->expL->genStmntStk(block, fn);
-         exp->expR->genStmntStk(block, fn);
+         exp->expL->genStmntStk(ctx);
+         exp->expR->genStmntStk(ctx);
 
          // Operate on stack.
-         block.addStatementArgs(code,
+         ctx.block.addStatementArgs(code,
             IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.
-         exp->genStmntMovePart(block, fn, dst, false, true);
+         GenStmnt_MovePart(exp, ctx, dst, false, true);
       }
    }
 }

@@ -36,9 +36,9 @@ namespace GDCC
       //
       // Exp_Arg::v_genStmnt
       //
-      void Exp_Arg::v_genStmnt(IR::Block &block, Function *fn, Arg const &dst) const
+      void Exp_Arg::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
       {
-         genStmntMove(block, fn, dst, arg);
+         GenStmnt_Move(this, ctx, dst, arg);
       }
 
       //

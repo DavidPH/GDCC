@@ -42,7 +42,7 @@ namespace GDCC
          Exp_SubPtrInt(AST::Type const *t, AST::Exp const *l,
             AST::Exp const *r, Core::Origin pos_) : Super{t, l, r, pos_} {}
 
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
       };
 
@@ -62,7 +62,7 @@ namespace GDCC
          Exp_SubPtrPtrW(AST::Type const *t, AST::Exp const *l,
             AST::Exp const *r, Core::Origin pos_) : Super{t, l, r, pos_} {}
 
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
       };
    }

@@ -72,7 +72,7 @@ namespace GDCC
          Exp_CallStk(AST::Exp const *e, Core::Origin pos_,
             Core::Array<AST::Exp::CRef> &&a) : Super{e, pos_, std::move(a)} {}
 
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
       };
    }

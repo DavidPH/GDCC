@@ -56,17 +56,17 @@ namespace GDCC
       //
       // Exp::genStmnt
       //
-      void Exp::genStmnt(IR::Block &block, Function *fn) const
+      void Exp::genStmnt(GenStmntCtx const &ctx) const
       {
-         genStmnt(block, fn, Arg(getType(), IR::AddrBase::Nul));
+         genStmnt(ctx, Arg(getType(), IR::AddrBase::Nul));
       }
 
       //
       // Exp::genStmnt
       //
-      void Exp::genStmnt(IR::Block &block, Function *fn, Arg const &dst) const
+      void Exp::genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
       {
-         block.setOrigin(pos);
+         ctx.block.setOrigin(pos);
 
          // Special checks for expressions without side effects.
          if(!isEffect())
@@ -78,21 +78,21 @@ namespace GDCC
             // Try to evaluate constant expressions now.
             if(isIRExp())
             {
-               genStmntMove(block, fn, dst,
+               GenStmnt_Move(this, ctx, dst,
                   Arg(getType(), IR::AddrBase::Lit, this));
                return;
             }
          }
 
-         v_genStmnt(block, fn, dst);
+         v_genStmnt(ctx, dst);
       }
 
       //
       // Exp::genStmntStk
       //
-      void Exp::genStmntStk(IR::Block &block, Function *fn) const
+      void Exp::genStmntStk(GenStmntCtx const &ctx) const
       {
-         genStmnt(block, fn, Arg(getType(), IR::AddrBase::Stk));
+         genStmnt(ctx, Arg(getType(), IR::AddrBase::Stk));
       }
 
       //
@@ -114,6 +114,41 @@ namespace GDCC
          case IR::AddrBase::Cpy:
          case IR::AddrBase::Lit:
             throw Core::ExceptStr(pos, "expected destination expression");
+
+         default:
+            return arg;
+         }
+      }
+
+      //
+      // Exp::getArgDup
+      //
+      Arg Exp::getArgDup() const
+      {
+         auto arg = v_getArg();
+         switch(arg.type->getQualAddr().base)
+         {
+         case IR::AddrBase::Cpy:
+         case IR::AddrBase::Lit:
+         case IR::AddrBase::Nul:
+            throw Core::ExceptStr(pos, "expected duplication expression");
+
+         default:
+            return arg;
+         }
+      }
+
+      //
+      // Exp::getArgSrc
+      //
+      Arg Exp::getArgSrc() const
+      {
+         auto arg = v_getArg();
+         switch(arg.type->getQualAddr().base)
+         {
+         case IR::AddrBase::Cpy:
+         case IR::AddrBase::Nul:
+            throw Core::ExceptStr(pos, "expected source expression");
 
          default:
             return arg;

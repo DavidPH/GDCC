@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -33,10 +33,10 @@ namespace GDCC
       //
       // Statement_Multi::v_genStmnt
       //
-      void Statement_Multi::v_genStmnt(IR::Block &block, Function *fn) const
+      void Statement_Multi::v_genStmnt(GenStmntCtx const &ctx) const
       {
          for(auto const &stmnt : stmnts)
-            stmnt->genStmnt(block, fn);
+            stmnt->genStmnt(ctx);
       }
 
       //

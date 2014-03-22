@@ -40,7 +40,7 @@ namespace GDCC
       protected:
          Exp_Assign(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
 
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
 
          virtual bool v_isEffect() const;

@@ -39,12 +39,12 @@ namespace GDCC
       //
       // Exp_Refer::v_genStmnt
       //
-      void Exp_Refer::v_genStmnt(IR::Block &block, AST::Function *fn,
+      void Exp_Refer::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
          auto arg = exp->getArg();
          if(!arg.data) throw Core::ExceptStr(pos, "expected arg data");
-         arg.data->genStmnt(block, fn, dst);
+         arg.data->genStmnt(ctx, dst);
       }
 
       //

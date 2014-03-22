@@ -38,10 +38,9 @@ namespace GDCC
       //
       // Exp_MulSize::v_genStmnt
       //
-      void Exp_MulSize::v_genStmnt(IR::Block &block, Function *fn,
-         Arg const &dst) const
+      void Exp_MulSize::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
       {
-         GenStmnt_Arith(this, IR::Code::MulU_W, block, fn, dst);
+         GenStmnt_Arith(this, IR::Code::MulU_W, ctx, dst);
       }
 
       //

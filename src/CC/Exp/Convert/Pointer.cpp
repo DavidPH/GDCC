@@ -81,59 +81,60 @@ namespace GDCC
       //
       // Exp_ConvertPtr::v_genStmnt
       //
-      void Exp_ConvertPtr::v_genStmnt(IR::Block &block, AST::Function *fn,
+      void Exp_ConvertPtr::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         return exp->genStmnt(block, fn, dst);
+         return exp->genStmnt(ctx, dst);
       }
 
       //
       // Exp_ConvertPtrInv::v_genStmnt
       //
-      void Exp_ConvertPtrInv::v_genStmnt(IR::Block &block, AST::Function *fn,
+      void Exp_ConvertPtrInv::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         if(GenStmntNul(this, block, fn, dst)) return;
+         if(GenStmntNul(this, ctx, dst)) return;
 
          // Evaluate sub-expression to stack.
-         exp->genStmntStk(block, fn);
+         exp->genStmntStk(ctx);
 
          // Operate on stack.
-         block.addStatementArgs(IR::Code::InvU_W,
+         ctx.block.addStatementArgs(IR::Code::InvU_W,
             IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.
-         exp->genStmntMovePart(block, fn, dst, false, true);
+         GenStmnt_MovePart(exp, ctx, dst, false, true);
       }
 
       //
       // Exp_ConvertPtrLoc::v_genStmnt
       //
-      void Exp_ConvertPtrLoc::v_genStmnt(IR::Block &block, AST::Function *fn,
+      void Exp_ConvertPtrLoc::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         if(GenStmntNul(this, block, fn, dst)) return;
+         if(GenStmntNul(this, ctx, dst)) return;
 
          // Evaluate sub-expression to stack.
-         exp->genStmntStk(block, fn);
+         exp->genStmntStk(ctx);
 
          // Operate on stack.
-         block.addStatementArgs(IR::Code::Pltn, IR::Arg_Stk(), IR::Arg_Stk());
+         ctx.block.addStatementArgs(IR::Code::Pltn,
+            IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.
-         exp->genStmntMovePart(block, fn, dst, false, true);
+         GenStmnt_MovePart(exp, ctx, dst, false, true);
       }
 
       //
       // Exp_ConvertPtrSh::v_genStmnt
       //
-      void Exp_ConvertPtrSh::v_genStmnt(IR::Block &block, AST::Function *fn,
+      void Exp_ConvertPtrSh::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         if(GenStmntNul(this, block, fn, dst)) return;
+         if(GenStmntNul(this, ctx, dst)) return;
 
          // Evaluate sub-expression to stack.
-         exp->genStmntStk(block, fn);
+         exp->genStmntStk(ctx);
 
          // Operate on stack.
          auto shiftL = type->getBaseType()->getSizeShift();
@@ -141,18 +142,18 @@ namespace GDCC
          if(shiftL > shiftR)
          {
             auto lit = AST::ExpCreate_Size(shiftL / shiftR)->getIRExp();
-            block.addStatementArgs(IR::Code::DivU_W,
+            ctx.block.addStatementArgs(IR::Code::DivU_W,
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Lit(lit));
          }
          else
          {
             auto lit = AST::ExpCreate_Size(shiftR / shiftL)->getIRExp();
-            block.addStatementArgs(IR::Code::MulU_W,
+            ctx.block.addStatementArgs(IR::Code::MulU_W,
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Lit(lit));
          }
 
          // Move to destination.
-         exp->genStmntMovePart(block, fn, dst, false, true);
+         GenStmnt_MovePart(exp, ctx, dst, false, true);
       }
 
       //

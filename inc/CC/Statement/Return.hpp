@@ -53,7 +53,7 @@ namespace GDCC
          Statement_ReturnExp(Core::Origin pos, AST::Exp const *exp);
          virtual ~Statement_ReturnExp();
 
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn) const;
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
 
          virtual bool v_isEffect() const;
       };
@@ -83,7 +83,7 @@ namespace GDCC
             Core::Origin pos_) : Super{std::move(labels_), pos_} {}
          explicit Statement_ReturnNul(Core::Origin pos_) : Super{pos_} {}
 
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn) const;
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
 
          virtual bool v_isBranch() const {return true;}
          virtual bool v_isEffect() const {return false;}

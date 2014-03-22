@@ -39,7 +39,7 @@ namespace GDCC
          GDCC_AST_Exp_UnaryCreator(Exp_ConvertPtr);
 
       protected:
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
       };
 
@@ -56,7 +56,7 @@ namespace GDCC
          GDCC_AST_Exp_UnaryCreator(Exp_ConvertPtrInv);
 
       protected:
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
       };
 
@@ -73,7 +73,7 @@ namespace GDCC
          GDCC_AST_Exp_UnaryCreator(Exp_ConvertPtrLoc);
 
       protected:
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
 
          virtual bool v_isIRExp() const {return false;}
@@ -90,7 +90,7 @@ namespace GDCC
          GDCC_AST_Exp_UnaryCreator(Exp_ConvertPtrSh);
 
       protected:
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
 
          virtual bool v_isIRExp() const {return false;}

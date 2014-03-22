@@ -66,13 +66,12 @@ namespace GDCC
       //
       // GenStmntNul
       //
-      bool GenStmntNul(Exp_Unary const *exp, IR::Block &block, Function *fn,
-         Arg const &dst)
+      bool GenStmntNul(Exp_Unary const *exp, GenStmntCtx const &ctx, Arg const &dst)
       {
          // If only evaluating for side-effect, just evaluate sub-expression.
          if(dst.type->getQualAddr().base == IR::AddrBase::Nul)
          {
-            exp->exp->genStmnt(block, fn);
+            exp->exp->genStmnt(ctx);
             return true;
          }
 

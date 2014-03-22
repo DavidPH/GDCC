@@ -77,11 +77,10 @@ namespace GDCC
       //
       // Exp_Pair::v_genStmnt
       //
-      void Exp_Pair::v_genStmnt(IR::Block &block, Function *fn,
-         Arg const &dst) const
+      void Exp_Pair::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
       {
-         expL->genStmnt(block, fn);
-         expR->genStmnt(block, fn, dst);
+         expL->genStmnt(ctx);
+         expR->genStmnt(ctx, dst);
       }
 
       //
@@ -95,14 +94,14 @@ namespace GDCC
       //
       // GenStmntNul
       //
-      bool GenStmntNul(Exp_Binary const *exp, IR::Block &block, Function *fn,
+      bool GenStmntNul(Exp_Binary const *exp, GenStmntCtx const &ctx,
          Arg const &dst)
       {
          // If only evaluating for side-effect, just evaluate sub-expressions.
          if(dst.type->getQualAddr().base == IR::AddrBase::Nul)
          {
-            exp->expL->genStmnt(block, fn);
-            exp->expR->genStmnt(block, fn);
+            exp->expL->genStmnt(ctx);
+            exp->expR->genStmnt(ctx);
             return true;
          }
 

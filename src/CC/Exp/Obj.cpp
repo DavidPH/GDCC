@@ -52,10 +52,10 @@ namespace GDCC
       //
       // Exp_Obj::v_genStmnt
       //
-      void Exp_Obj::v_genStmnt(IR::Block &block, AST::Function *fn,
+      void Exp_Obj::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         genStmntMove(block, fn, dst, getArg());
+         GenStmnt_Move(this, ctx, dst, getArg());
       }
 
       //

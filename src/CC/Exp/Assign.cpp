@@ -38,17 +38,13 @@ namespace GDCC
       //
       // Exp_Assign::v_genStmnt
       //
-      void Exp_Assign::v_genStmnt(IR::Block &block, AST::Function *fn,
+      void Exp_Assign::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
          if(dst.type->getQualAddr().base == IR::AddrBase::Nul)
-         {
-            expR->genStmnt(block, fn, expL->getArgDst());
-         }
+            expR->genStmnt(ctx, expL->getArgDst());
          else
-         {
-            throw Core::ExceptStr(pos, "assignment result stub");
-         }
+            GenStmnt_Move(this, ctx, dst, expL->getArgDup(), expR->getArgSrc());
       }
 
       //

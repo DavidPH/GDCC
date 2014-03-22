@@ -76,10 +76,9 @@ namespace GDCC
          //
          // v_genStmnt
          //
-         virtual void v_genStmnt(IR::Block &block, Function *fn,
-            Arg const &dst) const
+         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
          {
-            GenStmnt_Arith(this, code, block, fn, dst);
+            GenStmnt_Arith(this, code, ctx, dst);
          }
       };
 
@@ -136,7 +135,7 @@ namespace GDCC
    {
       // Does generic codegen centered around a 3-arg arithmetic instruction.
       void GenStmnt_Arith(Exp_Binary const *exp, IR::Code code,
-         IR::Block &block, Function *fn, Arg const &dst);
+         GenStmntCtx const &ctx, Arg const &dst);
    }
 }
 

@@ -51,7 +51,7 @@ namespace GDCC
       //
       // Exp_Func::v_genStmnt
       //
-      void Exp_Func::v_genStmnt(IR::Block &, AST::Function *,
+      void Exp_Func::v_genStmnt(AST::GenStmntCtx const &,
          AST::Arg const &) const
       {
          throw Core::ExceptStr(pos, "genStmnt on function");

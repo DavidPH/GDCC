@@ -41,7 +41,7 @@ namespace GDCC
          Exp_Deref(AST::Type const *t, AST::Exp const *e, Core::Origin pos_) :
             Super{t, e, pos_} {}
 
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
 
          virtual AST::Arg v_getArg() const;

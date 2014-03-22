@@ -43,7 +43,7 @@ namespace GDCC
          Statement_FuncPre(Core::Origin pos_, FunctionScope const *ctx_) :
             Super{pos_}, ctx{ctx_} {}
 
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn) const;
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
 
          virtual bool v_isEffect() const {return true;}
       };

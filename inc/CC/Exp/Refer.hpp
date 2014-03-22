@@ -40,7 +40,7 @@ namespace GDCC
       protected:
          Exp_Refer(AST::Exp const *e, Core::Origin pos);
 
-         virtual void v_genStmnt(IR::Block &block, AST::Function *fn,
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
 
          virtual IRExpCRef v_getIRExp() const;

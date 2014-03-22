@@ -29,10 +29,10 @@ namespace GDCC
       //
       // Exp_Deref::v_genStmnt
       //
-      void Exp_Deref::v_genStmnt(IR::Block &block, AST::Function *fn,
+      void Exp_Deref::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         genStmntMove(block, fn, dst, getArg());
+         GenStmnt_Move(this, ctx, dst, getArg());
       }
 
       //

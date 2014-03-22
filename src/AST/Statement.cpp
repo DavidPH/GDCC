@@ -35,14 +35,14 @@ namespace GDCC
       //
       // Statement::genStmnt
       //
-      void Statement::genStmnt(IR::Block &block, Function *fn) const
+      void Statement::genStmnt(GenStmntCtx const &ctx) const
       {
-         for(auto const &s : labels) block.addLabel(s);
+         for(auto const &s : labels) ctx.block.addLabel(s);
 
          if(isTrivial())
-            v_genLabel(block);
+            v_genLabel(ctx.block);
          else
-            v_genStmnt(block, fn);
+            v_genStmnt(ctx);
       }
 
       //
