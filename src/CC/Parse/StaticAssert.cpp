@@ -63,9 +63,7 @@ namespace GDCC
 
          // string-literal
          auto msg = in.in.get();
-         if(msg.tok != Core::TOK_String && msg.tok != Core::TOK_StrIdx &&
-            msg.tok != Core::TOK_StrU08 && msg.tok != Core::TOK_StrU16 &&
-            msg.tok != Core::TOK_StrU32 && msg.tok != Core::TOK_StrWid)
+         if(!msg.isTokString())
             throw Core::ExceptStr(in.in.peek().pos, "expected string-literal");
 
          // )

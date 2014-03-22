@@ -152,6 +152,17 @@ namespace GDCC
          constexpr bool operator != (Token const &t) const
             {return pos != t.pos || str != t.str || tok != t.tok;}
 
+         //
+         // isTokString
+         //
+         // Returns true if this token represents a string literal.
+         //
+         bool isTokString() const
+         {
+            return tok == TOK_StrIdx || tok == TOK_StrU08 || tok == TOK_StrU16
+                || tok == TOK_StrU32 || tok == TOK_StrWid || tok == TOK_String;
+         }
+
          Token &setStrTok(String str_, TokenType tok_)
             {str = str_; tok = tok_; return *this;}
 
