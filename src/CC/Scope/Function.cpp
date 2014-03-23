@@ -19,10 +19,6 @@
 #include "AST/Object.hpp"
 #include "AST/Type.hpp"
 
-#include "Bytecode/Platform.hpp"
-
-#include "IR/Exp.hpp"
-
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -58,17 +54,10 @@ namespace GDCC
       //
       void Scope_Function::allocAuto()
       {
-         IR::Type_Fixed idxType{Bytecode::GetWordBits(), 0, 0, 0};
-
          // Allocate parameter objects.
-         Scope_Block::AllocAutoInfo alloc;
+         AllocAutoInfo alloc;
          for(auto &obj : params)
-         {
-            auto &idx = obj->refer ? alloc.localArs : alloc.localReg;
-            obj->value = IR::ExpCreate_ValueRoot(
-               IR::Value_Fixed(idx, idxType), Core::Origin(Core::STRNULL, 0));
-            idx += obj->type->getSizeWords();
-         }
+            allocAutoObj(alloc, obj);
 
          // Allocate sub-scopes.
          auto allocSub = alloc;

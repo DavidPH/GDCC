@@ -15,8 +15,6 @@
 
 #include "../../CC/Scope/Local.hpp"
 
-#include "../../Core/Number.hpp"
-
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -34,18 +32,6 @@ namespace GDCC
       class Scope_Block : public Scope_Local
       {
       public:
-         //
-         // AllocAutoInfo
-         //
-         struct AllocAutoInfo
-         {
-            void setMax(AllocAutoInfo const &alloc);
-
-            Core::FastU localArs = 0;
-            Core::FastU localReg = 0;
-         };
-
-
          Scope_Block(Scope_Local *parent, Scope_Function *fn);
          virtual ~Scope_Block();
 

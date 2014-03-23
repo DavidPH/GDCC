@@ -21,8 +21,11 @@
 #include "AST/Storage.hpp"
 #include "AST/Type.hpp"
 
+#include "Bytecode/Platform.hpp"
+
 #include "Core/Exception.hpp"
 
+#include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 
 
@@ -52,6 +55,43 @@ namespace GDCC
       {
          for(auto &ctx : subScopes)
             delete ctx;
+      }
+
+      //
+      // Scope_Local::allocAutoObj
+      //
+      void Scope_Local::allocAutoObj(AllocAutoInfo &alloc, AST::Object *obj)
+      {
+         IR::Type_Fixed idxType{Bytecode::GetWordBits(), 0, 0, 0};
+
+         // If one is not specified, select an address space now.
+         if(obj->type->getQualAddr().base == IR::AddrBase::Gen)
+         {
+            auto qual = obj->type->getQual();
+
+            if(obj->refer)
+               qual.space = IR::AddrBase::Loc;
+            else
+               qual.space = IR::AddrBase::LocReg;
+
+            obj->type = obj->type->getTypeQual(qual);
+         }
+
+         // Select type of local to allocate.
+         Core::FastU *idx;
+         switch(obj->type->getQualAddr().base)
+         {
+         case IR::AddrBase::Loc:    idx = &alloc.localArs; break;
+         case IR::AddrBase::LocReg: idx = &alloc.localReg; break;
+         default: return; // Any other address space is an error.
+         }
+
+         // Set object's value (index/address).
+         obj->value = IR::ExpCreate_ValueRoot(
+            IR::Value_Fixed(*idx, idxType), Core::Origin(Core::STRNULL, 0));
+
+         // Update allocation info.
+         *idx += obj->type->getSizeWords();
       }
 
       //

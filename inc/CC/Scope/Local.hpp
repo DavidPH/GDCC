@@ -15,6 +15,8 @@
 
 #include "../../CC/Scope.hpp"
 
+#include "../../Core/Number.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -49,6 +51,18 @@ namespace GDCC
       class Scope_Local : public Scope
       {
       public:
+         //
+         // AllocAutoInfo
+         //
+         struct AllocAutoInfo
+         {
+            void setMax(AllocAutoInfo const &alloc);
+
+            Core::FastU localArs = 0;
+            Core::FastU localReg = 0;
+         };
+
+
          Scope_Local(Scope *parent, Scope_Global *global);
          virtual ~Scope_Local();
 
@@ -70,6 +84,8 @@ namespace GDCC
          Core::String  label;
 
       protected:
+         void allocAutoObj(AllocAutoInfo &alloc, AST::Object *obj);
+
          LookupTable<AST::Object> localObj;
 
          std::vector<Scope_Block *> subScopes;
