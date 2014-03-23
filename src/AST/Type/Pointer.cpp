@@ -60,6 +60,9 @@ namespace GDCC
          if(base->isTypeFunction())
             return IR::Type_Funct(base->getCallType());
 
+         if(base->isTypeStrEnt())
+            return IR::Type_StrEn();
+
          return IR::Type_Point(base->getQualAddr().base, base->getSizePoint(),
             base->getSizeShift());
       }
@@ -109,6 +112,9 @@ namespace GDCC
          }
 
          if(base->isTypeLabel())
+            return 1;
+
+         if(base->isTypeStrEnt())
             return 1;
 
          if(base->isCTypeObject()) switch(base->getQualAddr().base)

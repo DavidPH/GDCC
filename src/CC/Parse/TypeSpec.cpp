@@ -547,7 +547,7 @@ namespace GDCC
             if(specSign) throw Core::ExceptStr(pos, "signed void");
             if(specUnsi) throw Core::ExceptStr(pos, "unsigned void");
 
-            attr.type = TypeVoid;
+            attr.type = AST::Type::Void;
 
             break;
 
@@ -600,7 +600,7 @@ namespace GDCC
             if(specSign) throw Core::ExceptStr(pos, "signed str");
             if(specUnsi) throw Core::ExceptStr(pos, "unsigned str");
 
-            attr.type = TypeStr;
+            attr.type = AST::Type::StrEnt;
 
             break;
          }

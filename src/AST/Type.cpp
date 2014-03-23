@@ -191,8 +191,11 @@ namespace GDCC
 {
    namespace AST
    {
+      Type::CRef const Type::Label{GetLabel()};
       Type::CRef const Type::None{GetNone()};
       Type::CRef const Type::Size{GetSize()};
+      Type::CRef const Type::StrEnt{GetStrEnt()};
+      Type::CRef const Type::Void{GetVoid()};
 
       TypeSet::Ref const TypeSet::Head{new TypeSet(false)};
       TypeSet::Ref const TypeSet::HeadV{new TypeSet(true)};

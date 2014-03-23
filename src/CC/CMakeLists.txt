@@ -62,9 +62,7 @@ add_library(gdcc-cc-lib
    Type/Char.cpp
    Type/Fixed.cpp
    Type/Float.cpp
-   Type/Str.cpp
    Type/Struct.cpp
-   Type/Void.cpp
 )
 
 add_executable(gdcc-cc

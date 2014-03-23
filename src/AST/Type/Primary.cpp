@@ -25,23 +25,11 @@ namespace GDCC
 {
    namespace AST
    {
-      //
-      // Type::GetNone
-      //
-      Type::CRef Type::GetNone()
-      {
-         static CRef t{new Type_None};
-         return t;
-      }
-
-      //
-      // Type::GetSize
-      //
-      Type::CRef Type::GetSize()
-      {
-         static CRef t{new Type_Size};
-         return t;
-      }
+      Type::CRef Type::GetLabel()  {static CRef t{new Type_Label }; return t;}
+      Type::CRef Type::GetNone()   {static CRef t{new Type_None  }; return t;}
+      Type::CRef Type::GetSize()   {static CRef t{new Type_Size  }; return t;}
+      Type::CRef Type::GetStrEnt() {static CRef t{new Type_StrEnt}; return t;}
+      Type::CRef Type::GetVoid()   {static CRef t{new Type_Void  }; return t;}
 
       //
       // Type_Size::getIRType
@@ -98,6 +86,14 @@ namespace GDCC
       Core::FastU Type_Size::getSizeWords() const
       {
          return 1;
+      }
+
+      //
+      // Type_Void::getIRType
+      //
+      IR::Type Type_Void::getIRType() const
+      {
+         return IR::Type_Empty();
       }
    }
 }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -100,10 +100,6 @@ namespace GDCC
       extern Core::CounterRef<AST::Type const> TypeIntegPrUHH;
       extern Core::CounterRef<AST::Type const> TypeIntegPrUL;
       extern Core::CounterRef<AST::Type const> TypeIntegPrULL;
-
-      extern Core::CounterRef<AST::Type const> TypeStr;
-
-      extern Core::CounterRef<AST::Type const> TypeVoid;
    }
 }
 
@@ -170,10 +166,6 @@ namespace GDCC
       Core::CounterRef<AST::Type const> GetTypeIntegPrUHH();
       Core::CounterRef<AST::Type const> GetTypeIntegPrUL();
       Core::CounterRef<AST::Type const> GetTypeIntegPrULL();
-
-      Core::CounterRef<AST::Type const> GetTypeStr();
-
-      Core::CounterRef<AST::Type const> GetTypeVoid();
    }
 }
 

@@ -77,10 +77,6 @@ namespace GDCC
       AST::Type::CRef TypeIntegPrUHH{GetTypeIntegPrUHH()};
       AST::Type::CRef TypeIntegPrUL {GetTypeIntegPrUL ()};
       AST::Type::CRef TypeIntegPrULL{GetTypeIntegPrULL()};
-
-      AST::Type::CRef TypeStr{GetTypeStr()};
-
-      AST::Type::CRef TypeVoid{GetTypeVoid()};
    }
 }
 

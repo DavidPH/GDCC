@@ -290,11 +290,17 @@ namespace GDCC
          friend class Type_RefL;
          friend class Type_RefR;
 
+         static CRef GetLabel();
          static CRef GetNone();
          static CRef GetSize();
+         static CRef GetStrEnt();
+         static CRef GetVoid();
 
+         static CRef const Label;
          static CRef const None;
          static CRef const Size;
+         static CRef const StrEnt;
+         static CRef const Void;
 
       protected:
          Type();

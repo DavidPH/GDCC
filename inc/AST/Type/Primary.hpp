@@ -25,6 +25,24 @@ namespace GDCC
    namespace AST
    {
       //
+      // Type_Label
+      //
+      class Type_Label final : public AST::Type
+      {
+         GDCC_Core_CounterPreamble(GDCC::AST::Type_Label, GDCC::AST::Type);
+
+      public:
+         // Type classification: General classifications.
+         virtual bool isTypeLabel() const {return true;}
+
+
+         friend Type::CRef Type::GetLabel();
+
+      protected:
+         Type_Label() = default;
+      };
+
+      //
       // Type_None
       //
       class Type_None final : public Type
@@ -74,6 +92,49 @@ namespace GDCC
 
       protected:
          Type_Size() {}
+      };
+
+      //
+      // Type_StrEnt
+      //
+      class Type_StrEnt final : public AST::Type
+      {
+         GDCC_Core_CounterPreamble(GDCC::AST::Type_StrEnt, GDCC::AST::Type);
+
+      public:
+         // Type classification: General classifications.
+         virtual bool isTypeStrEnt() const {return true;}
+
+
+         friend Type::CRef Type::GetStrEnt();
+
+      protected:
+         Type_StrEnt() = default;
+      };
+
+      //
+      // Type_Void
+      //
+      class Type_Void final : public AST::Type
+      {
+         GDCC_Core_CounterPreamble(GDCC::AST::Type_Void, GDCC::AST::Type);
+
+      public:
+         // Type information.
+         virtual IR::Type    getIRType()    const;
+         virtual Core::FastU getSizeShift() const {return 1;}
+
+         // Type classification: General classifications.
+         virtual bool isTypeVoid() const {return true;}
+
+         // Type classification: C/C++ classifications.
+         virtual bool isCTypeObject() const {return true;}
+
+
+         friend Type::CRef Type::GetVoid();
+
+      protected:
+         Type_Void() = default;
       };
    }
 }
