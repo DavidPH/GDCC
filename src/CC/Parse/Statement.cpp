@@ -32,7 +32,7 @@
 // GetStatement_Compound
 //
 static GDCC::AST::Statement::CRef GetStatement_Compound(GDCC::CC::ParserData &in,
-   GDCC::CC::LocalScope *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
+   GDCC::CC::Scope_Local *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
 {
    using namespace GDCC;
 
@@ -73,7 +73,7 @@ static GDCC::AST::Statement::CRef GetStatement_Compound(GDCC::CC::ParserData &in
 // GetStatement_Exp
 //
 static GDCC::AST::Statement::CRef GetStatement_Exp(GDCC::CC::ParserData &in,
-   GDCC::CC::LocalScope *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
+   GDCC::CC::Scope_Local *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
 {
    using namespace GDCC;
 
@@ -100,7 +100,7 @@ static GDCC::AST::Statement::CRef GetStatement_Exp(GDCC::CC::ParserData &in,
 // GetStatement_break
 //
 static GDCC::AST::Statement::CRef GetStatement_break(GDCC::CC::ParserData &in,
-   GDCC::CC::LocalScope *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
+   GDCC::CC::Scope_Local *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
 {
    using namespace GDCC;
 
@@ -120,7 +120,7 @@ static GDCC::AST::Statement::CRef GetStatement_break(GDCC::CC::ParserData &in,
 // GetStatement_continue
 //
 static GDCC::AST::Statement::CRef GetStatement_continue(GDCC::CC::ParserData &in,
-   GDCC::CC::LocalScope *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
+   GDCC::CC::Scope_Local *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
 {
    using namespace GDCC;
 
@@ -140,7 +140,7 @@ static GDCC::AST::Statement::CRef GetStatement_continue(GDCC::CC::ParserData &in
 // GetStatement_do
 //
 static GDCC::AST::Statement::CRef GetStatement_do(GDCC::CC::ParserData &in,
-   GDCC::CC::LocalScope *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
+   GDCC::CC::Scope_Local *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
 {
    using namespace GDCC;
 
@@ -176,7 +176,7 @@ static GDCC::AST::Statement::CRef GetStatement_do(GDCC::CC::ParserData &in,
 // GetStatement_for
 //
 static GDCC::AST::Statement::CRef GetStatement_for(GDCC::CC::ParserData &in,
-   GDCC::CC::LocalScope *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
+   GDCC::CC::Scope_Local *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
 {
    using namespace GDCC;
 
@@ -245,7 +245,7 @@ static GDCC::AST::Statement::CRef GetStatement_for(GDCC::CC::ParserData &in,
 // GetStatement_goto
 //
 static GDCC::AST::Statement::CRef GetStatement_goto(GDCC::CC::ParserData &in,
-   GDCC::CC::LocalScope *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
+   GDCC::CC::Scope_Local *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
 {
    using namespace GDCC;
 
@@ -270,7 +270,7 @@ static GDCC::AST::Statement::CRef GetStatement_goto(GDCC::CC::ParserData &in,
 // GetStatement_if
 //
 static GDCC::AST::Statement::CRef GetStatement_if(GDCC::CC::ParserData &in,
-   GDCC::CC::LocalScope *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
+   GDCC::CC::Scope_Local *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
 {
    using namespace GDCC;
 
@@ -310,7 +310,7 @@ static GDCC::AST::Statement::CRef GetStatement_if(GDCC::CC::ParserData &in,
 // GetStatement_return
 //
 static GDCC::AST::Statement::CRef GetStatement_return(GDCC::CC::ParserData &in,
-   GDCC::CC::LocalScope *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
+   GDCC::CC::Scope_Local *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
 {
    using namespace GDCC;
 
@@ -339,7 +339,7 @@ static GDCC::AST::Statement::CRef GetStatement_return(GDCC::CC::ParserData &in,
 // GetStatement_switch
 //
 static GDCC::AST::Statement::CRef GetStatement_switch(GDCC::CC::ParserData &in,
-   GDCC::CC::LocalScope *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
+   GDCC::CC::Scope_Local *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
 {
    using namespace GDCC;
 
@@ -371,7 +371,7 @@ static GDCC::AST::Statement::CRef GetStatement_switch(GDCC::CC::ParserData &in,
 // GetStatement_while
 //
 static GDCC::AST::Statement::CRef GetStatement_while(GDCC::CC::ParserData &in,
-   GDCC::CC::LocalScope *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
+   GDCC::CC::Scope_Local *ctx, GDCC::Core::Array<GDCC::Core::String> &labels)
 {
    using namespace GDCC;
 
@@ -403,7 +403,7 @@ static GDCC::AST::Statement::CRef GetStatement_while(GDCC::CC::ParserData &in,
 // GetStatementLabel
 //
 static GDCC::Core::Array<GDCC::Core::String> GetStatementLabel(
-   GDCC::CC::ParserData &in, GDCC::CC::LocalScope *ctx)
+   GDCC::CC::ParserData &in, GDCC::CC::Scope_Local *ctx)
 {
    using namespace GDCC;
 
@@ -474,7 +474,7 @@ namespace GDCC
       //
       // GetStatement
       //
-      AST::Statement::CRef GetStatement(ParserData &in, LocalScope *ctx)
+      AST::Statement::CRef GetStatement(ParserData &in, Scope_Local *ctx)
       {
          auto labels = GetStatementLabel(in, ctx);
 

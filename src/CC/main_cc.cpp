@@ -83,7 +83,7 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
    Core::String     path = Core::PathDirname(inStr);
    CPP::TStream     str    {fbuf, pragma, inStr, path};
    CC::ParserData   in     {str, pragma, prog};
-   CC::GlobalScope  ctx;
+   CC::Scope_Global ctx;
 
    // Read declarations.
    while(in.in.peek().tok != Core::TOK_EOF)

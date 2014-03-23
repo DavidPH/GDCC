@@ -33,11 +33,11 @@ namespace GDCC
    namespace CC
    {
       //
-      // FunctionScope constructor
+      // Scope_Function constructor
       //
-      FunctionScope::FunctionScope(GlobalScope *parent_, AST::Function *fn_,
+      Scope_Function::Scope_Function(Scope_Global *parent_, AST::Function *fn_,
          Core::Array<AST::Object::Ref> &&params_) :
-         LocalScope{parent_, parent_}, params{std::move(params_)}, fn{fn_}
+         Scope_Local{parent_, parent_}, params{std::move(params_)}, fn{fn_}
       {
          for(auto const &param : params)
          {
@@ -47,21 +47,21 @@ namespace GDCC
       }
 
       //
-      // FunctionScope destructor
+      // Scope_Function destructor
       //
-      FunctionScope::~FunctionScope()
+      Scope_Function::~Scope_Function()
       {
       }
 
       //
-      // FunctionScope::allocAuto
+      // Scope_Function::allocAuto
       //
-      void FunctionScope::allocAuto()
+      void Scope_Function::allocAuto()
       {
          IR::Type_Fixed idxType{Bytecode::GetWordBits(), 0, 0, 0};
 
          // Allocate parameter objects.
-         BlockScope::AllocAutoInfo alloc;
+         Scope_Block::AllocAutoInfo alloc;
          for(auto &obj : params)
          {
             auto &idx = obj->refer ? alloc.localArs : alloc.localReg;
@@ -81,17 +81,17 @@ namespace GDCC
       }
 
       //
-      // FunctionScope::getFunction
+      // Scope_Function::getFunction
       //
-      AST::Function::Ref FunctionScope::getFunction()
+      AST::Function::Ref Scope_Function::getFunction()
       {
          return fn;
       }
 
       //
-      // FunctionScope::getScopeFunction
+      // Scope_Function::getScopeFunction
       //
-      FunctionScope *FunctionScope::getScopeFunction()
+      Scope_Function *Scope_Function::getScopeFunction()
       {
          return this;
       }

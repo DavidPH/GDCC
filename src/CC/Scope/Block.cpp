@@ -32,33 +32,33 @@ namespace GDCC
    namespace CC
    {
       //
-      // BlockScope::AllocAutoInfo::setMax
+      // Scope_Block::AllocAutoInfo::setMax
       //
-      void BlockScope::AllocAutoInfo::setMax(AllocAutoInfo const &alloc)
+      void Scope_Block::AllocAutoInfo::setMax(AllocAutoInfo const &alloc)
       {
          localArs = std::max(localArs, alloc.localArs);
          localReg = std::max(localReg, alloc.localReg);
       }
 
       //
-      // BlockScope constructor
+      // Scope_Block constructor
       //
-      BlockScope::BlockScope(LocalScope *parent_, FunctionScope *fn_) :
-         LocalScope{parent_, fn_->global}, fn{fn_}
+      Scope_Block::Scope_Block(Scope_Local *parent_, Scope_Function *fn_) :
+         Scope_Local{parent_, fn_->global}, fn{fn_}
       {
       }
 
       //
-      // BlockScope destructor
+      // Scope_Block destructor
       //
-      BlockScope::~BlockScope()
+      Scope_Block::~Scope_Block()
       {
       }
 
       //
-      // BlockScope::allocAuto
+      // Scope_Block::allocAuto
       //
-      BlockScope::AllocAutoInfo BlockScope::allocAuto(AllocAutoInfo const &base)
+      Scope_Block::AllocAutoInfo Scope_Block::allocAuto(AllocAutoInfo const &base)
       {
          IR::Type_Fixed idxType{Bytecode::GetWordBits(), 0, 0, 0};
 
@@ -97,17 +97,17 @@ namespace GDCC
       }
 
       //
-      // BlockScope::getFunction
+      // Scope_Block::getFunction
       //
-      AST::Function::Ref BlockScope::getFunction()
+      AST::Function::Ref Scope_Block::getFunction()
       {
          return fn->fn;
       }
 
       //
-      // BlockScope::getScopeFunction
+      // Scope_Block::getScopeFunction
       //
-      FunctionScope *BlockScope::getScopeFunction()
+      Scope_Function *Scope_Block::getScopeFunction()
       {
          return fn;
       }

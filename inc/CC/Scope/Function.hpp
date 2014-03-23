@@ -27,20 +27,20 @@ namespace GDCC
    namespace CC
    {
       //
-      // FunctionScope
+      // Scope_Function
       //
-      class FunctionScope : public LocalScope
+      class Scope_Function : public Scope_Local
       {
       public:
-         FunctionScope(GlobalScope *parent, AST::Function *fn,
+         Scope_Function(Scope_Global *parent, AST::Function *fn,
             Core::Array<Core::CounterRef<AST::Object>> &&params);
-         virtual ~FunctionScope();
+         virtual ~Scope_Function();
 
          void allocAuto();
 
          virtual Core::CounterRef<AST::Function> getFunction();
 
-         virtual FunctionScope *getScopeFunction();
+         virtual Scope_Function *getScopeFunction();
 
          Core::Array<Core::CounterRef<AST::Object>> params;
          Core::CounterRef<AST::Function>            fn;

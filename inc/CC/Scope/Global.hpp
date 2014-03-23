@@ -36,20 +36,20 @@ namespace GDCC
 
    namespace CC
    {
-      class FunctionScope;
+      class Scope_Function;
 
       //
-      // GlobalScope
+      // Scope_Global
       //
-      class GlobalScope : public Scope
+      class Scope_Global : public Scope
       {
       public:
-         GlobalScope();
-         virtual ~GlobalScope();
+         Scope_Global();
+         virtual ~Scope_Global();
 
          void allocAuto();
 
-         FunctionScope *createScope(AST::Attribute const &attr, AST::Function *fn);
+         Scope_Function *createScope(AST::Attribute const &attr, AST::Function *fn);
 
          Core::String genGlyphObj(Core::String name, IR::Linkage linka);
 
@@ -67,7 +67,7 @@ namespace GDCC
          LookupTable<AST::Object>   globalObj;
          LookupTable<AST::Space>    globalSpace;
 
-         std::vector<FunctionScope *> subScopes;
+         std::vector<Scope_Function *> subScopes;
       };
    }
 }

@@ -33,14 +33,14 @@ namespace GDCC
             GDCC::CC::Statement_FuncPre, GDCC::AST::Statement);
 
       public:
-         FunctionScope const *const ctx;
+         Scope_Function const *const ctx;
 
 
          friend AST::Statement::CRef StatementCreate_FuncPre(Core::Origin pos,
-            FunctionScope const *ctx);
+            Scope_Function const *ctx);
 
       protected:
-         Statement_FuncPre(Core::Origin pos_, FunctionScope const *ctx_) :
+         Statement_FuncPre(Core::Origin pos_, Scope_Function const *ctx_) :
             Super{pos_}, ctx{ctx_} {}
 
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;

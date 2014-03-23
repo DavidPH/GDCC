@@ -37,7 +37,7 @@ namespace GDCC
       // StatementCreate_FuncPre
       //
       AST::Statement::CRef StatementCreate_FuncPre(Core::Origin pos,
-         FunctionScope const *ctx)
+         Scope_Function const *ctx)
       {
          return static_cast<AST::Statement::CRef>(
             new Statement_FuncPre(pos, ctx));

@@ -48,9 +48,9 @@ namespace GDCC
 
    namespace CC
    {
-      class GlobalScope;
-      class LocalScope;
       class Scope;
+      class Scope_Global;
+      class Scope_Local;
 
       //
       // ParserData
@@ -132,9 +132,9 @@ namespace GDCC
    namespace CC
    {
       Core::CounterRef<AST::Statement const> GetDecl(ParserData &in,
-         GlobalScope *ctx);
+         Scope_Global *ctx);
       Core::CounterRef<AST::Statement const> GetDecl(ParserData &in,
-         LocalScope *ctx);
+         Scope_Local *ctx);
 
       Core::CounterRef<AST::Exp const> GetExp_CLit(ParserData &in, Scope *ctx);
       Core::CounterRef<AST::Exp const> GetExp_CLit(ParserData &in, Scope *ctx,
@@ -161,7 +161,7 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> GetExp(ParserData &in, Scope *ctx);
 
       Core::CounterRef<AST::Statement const> GetStatement(ParserData &in,
-         LocalScope *ctx);
+         Scope_Local *ctx);
 
       Core::CounterRef<AST::Type const> GetType(ParserData &in, Scope *ctx);
 

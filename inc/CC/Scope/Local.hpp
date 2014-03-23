@@ -37,24 +37,24 @@ namespace GDCC
 
    namespace CC
    {
-      class BlockScope;
-      class FunctionScope;
-      class GlobalScope;
+      class Scope_Block;
+      class Scope_Function;
+      class Scope_Global;
 
       //
-      // LocalScope
+      // Scope_Local
       //
       // A non-global scope. In C itself, a function or block scope.
       //
-      class LocalScope : public Scope
+      class Scope_Local : public Scope
       {
       public:
-         LocalScope(Scope *parent, GlobalScope *global);
-         virtual ~LocalScope();
+         Scope_Local(Scope *parent, Scope_Global *global);
+         virtual ~Scope_Local();
 
-         BlockScope *createScopeBlock();
-         BlockScope *createScopeLoop();
-         BlockScope *createScopeSwitch();
+         Scope_Block *createScopeBlock();
+         Scope_Block *createScopeLoop();
+         Scope_Block *createScopeSwitch();
 
          Core::String genGlyphObj(Core::String name, IR::Linkage linka);
 
@@ -62,17 +62,17 @@ namespace GDCC
 
          virtual Core::CounterRef<AST::Function> getFunction() = 0;
 
-         virtual FunctionScope *getScopeFunction() = 0;
+         virtual Scope_Function *getScopeFunction() = 0;
 
          Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
 
-         GlobalScope *global;
-         Core::String label;
+         Scope_Global *global;
+         Core::String  label;
 
       protected:
          LookupTable<AST::Object> localObj;
 
-         std::vector<BlockScope *> subScopes;
+         std::vector<Scope_Block *> subScopes;
       };
    }
 }

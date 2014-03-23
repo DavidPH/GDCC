@@ -66,7 +66,7 @@ static GDCC::IR::Linkage GetLinkageInt(GDCC::IR::Linkage base)
 //
 // GetDeclFunc (global)
 //
-static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::GlobalScope *ctx,
+static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::Scope_Global *ctx,
    GDCC::AST::Attribute &attr)
 {
    using namespace GDCC;
@@ -83,7 +83,7 @@ static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::GlobalScope *ctx,
 //
 // GetDeclFunc (local)
 //
-static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::LocalScope *ctx,
+static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::Scope_Local *ctx,
    GDCC::AST::Attribute &attr)
 {
    using namespace GDCC;
@@ -103,7 +103,7 @@ static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::LocalScope *ctx,
 //
 // GetDeclObj (global)
 //
-static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::GlobalScope *ctx,
+static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Global *ctx,
    GDCC::AST::Attribute &attr, bool init)
 {
    using namespace GDCC;
@@ -142,7 +142,7 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::GlobalScope *ctx,
 //
 // GetDeclObj (local)
 //
-static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::LocalScope *ctx,
+static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Local *ctx,
    GDCC::AST::Attribute &attr, bool init)
 {
    using namespace GDCC;
@@ -180,7 +180,7 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::LocalScope *ctx,
 // ParseDecl_Function (global)
 //
 static void ParseDecl_Function(GDCC::CC::ParserData &in,
-   GDCC::CC::GlobalScope *ctx, GDCC::AST::Attribute &attr,
+   GDCC::CC::Scope_Global *ctx, GDCC::AST::Attribute &attr,
    GDCC::AST::Function *fn)
 {
    using namespace GDCC;
@@ -204,7 +204,7 @@ static void ParseDecl_Function(GDCC::CC::ParserData &in,
 //
 // ParseDecl_Function (local)
 //
-static void ParseDecl_Function(GDCC::CC::ParserData &, GDCC::CC::LocalScope *,
+static void ParseDecl_Function(GDCC::CC::ParserData &, GDCC::CC::Scope_Local *,
    GDCC::AST::Attribute &attr, GDCC::AST::Function *)
 {
    throw GDCC::Core::ExceptStr(attr.namePos, "local function definition");
@@ -384,7 +384,7 @@ namespace GDCC
       //
       // GetDecl
       //
-      AST::Statement::CRef GetDecl(ParserData &in, GlobalScope *ctx)
+      AST::Statement::CRef GetDecl(ParserData &in, Scope_Global *ctx)
       {
          return GetDeclBase(in, ctx);
       }
@@ -392,7 +392,7 @@ namespace GDCC
       //
       // GetDecl
       //
-      AST::Statement::CRef GetDecl(ParserData &in, LocalScope *ctx)
+      AST::Statement::CRef GetDecl(ParserData &in, Scope_Local *ctx)
       {
          return GetDeclBase(in, ctx);
       }

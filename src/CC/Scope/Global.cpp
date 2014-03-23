@@ -40,34 +40,34 @@ namespace GDCC
    namespace CC
    {
       //
-      // GlobalScope constructor
+      // Scope_Global constructor
       //
-      GlobalScope::GlobalScope() : Scope{nullptr}
+      Scope_Global::Scope_Global() : Scope{nullptr}
       {
       }
 
       //
-      // GlobalScope destructor
+      // Scope_Global destructor
       //
-      GlobalScope::~GlobalScope()
+      Scope_Global::~Scope_Global()
       {
          for(auto &ctx : subScopes)
             delete ctx;
       }
 
       //
-      // GlobalScope::allocAuto
+      // Scope_Global::allocAuto
       //
-      void GlobalScope::allocAuto()
+      void Scope_Global::allocAuto()
       {
          for(auto &ctx : subScopes)
             ctx->allocAuto();
       }
 
       //
-      // GlobalScope::createScope
+      // Scope_Global::createScope
       //
-      FunctionScope *GlobalScope::createScope(AST::Attribute const &attr,
+      Scope_Function *Scope_Global::createScope(AST::Attribute const &attr,
          AST::Function *fn)
       {
          // Set the function's label.
@@ -97,7 +97,7 @@ namespace GDCC
          }
 
          // Create new scope.
-         auto fnCtx = new FunctionScope(this, fn,
+         auto fnCtx = new Scope_Function(this, fn,
             Core::Array<AST::Object::Ref>(params.begin(), params.end()));
          fnCtx->label = ctxLabel;
 
@@ -107,9 +107,9 @@ namespace GDCC
       }
 
       //
-      // GlobalScope::genGlyphObj
+      // Scope_Global::genGlyphObj
       //
-      Core::String GlobalScope::genGlyphObj(Core::String name, IR::Linkage linka)
+      Core::String Scope_Global::genGlyphObj(Core::String name, IR::Linkage linka)
       {
          switch(linka)
          {
@@ -138,9 +138,9 @@ namespace GDCC
       }
 
       //
-      // GlobalScope::genIR
+      // Scope_Global::genIR
       //
-      void GlobalScope::genIR(IR::Program &prog)
+      void Scope_Global::genIR(IR::Program &prog)
       {
          for(auto &ctx : subScopes)
             ctx->genIR(prog);
@@ -160,9 +160,9 @@ namespace GDCC
       }
 
       //
-      // GlobalScope::getFunction
+      // Scope_Global::getFunction
       //
-      AST::Function::Ref GlobalScope::getFunction(AST::Attribute const &attr)
+      AST::Function::Ref Scope_Global::getFunction(AST::Attribute const &attr)
       {
          auto glyph = genGlyphObj(attr.name, attr.linka);
 
@@ -183,9 +183,9 @@ namespace GDCC
       }
 
       //
-      // GlobalScope::getObject
+      // Scope_Global::getObject
       //
-      AST::Object::Ref GlobalScope::getObject(AST::Attribute const &attr)
+      AST::Object::Ref Scope_Global::getObject(AST::Attribute const &attr)
       {
          throw Core::ExceptStr(attr.namePos, "getObject stub");
       }

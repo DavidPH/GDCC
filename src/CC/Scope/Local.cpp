@@ -35,9 +35,9 @@ namespace GDCC
    namespace CC
    {
       //
-      // LocalScope constructor
+      // Scope_Local constructor
       //
-      LocalScope::LocalScope(Scope *parent_, GlobalScope *global_) :
+      Scope_Local::Scope_Local(Scope *parent_, Scope_Global *global_) :
          Scope{parent_},
 
          global{global_},
@@ -46,50 +46,50 @@ namespace GDCC
       }
 
       //
-      // LocalScope destructor
+      // Scope_Local destructor
       //
-      LocalScope::~LocalScope()
+      Scope_Local::~Scope_Local()
       {
          for(auto &ctx : subScopes)
             delete ctx;
       }
 
       //
-      // LocalScope::createScopeBlock
+      // Scope_Local::createScopeBlock
       //
-      BlockScope *LocalScope::createScopeBlock()
+      Scope_Block *Scope_Local::createScopeBlock()
       {
-         auto ctx = new BlockScope(this, getScopeFunction());
+         auto ctx = new Scope_Block(this, getScopeFunction());
          subScopes.emplace_back(ctx);
          return ctx;
       }
 
       //
-      // LocalScope::createScopeLoop
+      // Scope_Local::createScopeLoop
       //
-      BlockScope *LocalScope::createScopeLoop()
-      {
-         // FIXME
-         auto ctx = new BlockScope(this, getScopeFunction());
-         subScopes.emplace_back(ctx);
-         return ctx;
-      }
-
-      //
-      // LocalScope::createScopeSwitch
-      //
-      BlockScope *LocalScope::createScopeSwitch()
+      Scope_Block *Scope_Local::createScopeLoop()
       {
          // FIXME
-         auto ctx = new BlockScope(this, getScopeFunction());
+         auto ctx = new Scope_Block(this, getScopeFunction());
          subScopes.emplace_back(ctx);
          return ctx;
       }
 
       //
-      // LocalScope::genGlyphObj
+      // Scope_Local::createScopeSwitch
       //
-      Core::String LocalScope::genGlyphObj(Core::String name, IR::Linkage linka)
+      Scope_Block *Scope_Local::createScopeSwitch()
+      {
+         // FIXME
+         auto ctx = new Scope_Block(this, getScopeFunction());
+         subScopes.emplace_back(ctx);
+         return ctx;
+      }
+
+      //
+      // Scope_Local::genGlyphObj
+      //
+      Core::String Scope_Local::genGlyphObj(Core::String name, IR::Linkage linka)
       {
          // Actual linkages must go through global.
          if(linka != IR::Linkage::None)
@@ -106,9 +106,9 @@ namespace GDCC
       }
 
       //
-      // LocalScope::genIR
+      // Scope_Local::genIR
       //
-      void LocalScope::genIR(IR::Program &prog)
+      void Scope_Local::genIR(IR::Program &prog)
       {
          for(auto ctx : subScopes)
             ctx->genIR(prog);
@@ -118,9 +118,9 @@ namespace GDCC
       }
 
       //
-      // LocalScope::getObject
+      // Scope_Local::getObject
       //
-      AST::Object::Ref LocalScope::getObject(AST::Attribute const &attr)
+      AST::Object::Ref Scope_Local::getObject(AST::Attribute const &attr)
       {
          if(attr.storeExt || attr.storeInt)
             return global->getObject(attr);

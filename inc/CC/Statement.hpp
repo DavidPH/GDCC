@@ -30,9 +30,9 @@ namespace GDCC
 
    namespace CC
    {
-      class FunctionScope;
-      class LocalScope;
       class Scope;
+      class Scope_Function;
+      class Scope_Local;
    }
 }
 
@@ -47,45 +47,45 @@ namespace GDCC
    {
       AST::Statement::CRef StatementCreate_Break(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         LocalScope *ctx);
+         Scope_Local *ctx);
       AST::Statement::CRef StatementCreate_Break(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         LocalScope *ctx);
+         Scope_Local *ctx);
 
       AST::Statement::CRef StatementCreate_Continue(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         LocalScope *ctx);
+         Scope_Local *ctx);
       AST::Statement::CRef StatementCreate_Continue(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         LocalScope *ctx);
+         Scope_Local *ctx);
 
       AST::Statement::CRef StatementCreate_Decl(Core::Origin pos, Scope *ctx);
 
       AST::Statement::CRef StatementCreate_Do(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         LocalScope *ctx, AST::Statement const *body, AST::Exp const *cond);
+         Scope_Local *ctx, AST::Statement const *body, AST::Exp const *cond);
       AST::Statement::CRef StatementCreate_Do(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         LocalScope *ctx, AST::Statement const *body, AST::Exp const *cond);
+         Scope_Local *ctx, AST::Statement const *body, AST::Exp const *cond);
 
       AST::Statement::CRef StatementCreate_For(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         LocalScope *ctx, AST::Statement const *init, AST::Exp const *cond,
+         Scope_Local *ctx, AST::Statement const *init, AST::Exp const *cond,
          AST::Statement const *iter, AST::Statement const *body);
       AST::Statement::CRef StatementCreate_For(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         LocalScope *ctx, AST::Statement const *init, AST::Exp const *cond,
+         Scope_Local *ctx, AST::Statement const *init, AST::Exp const *cond,
          AST::Statement const *iter, AST::Statement const *body);
 
       AST::Statement::CRef StatementCreate_FuncPre(Core::Origin pos,
-         FunctionScope const *fn);
+         Scope_Function const *fn);
 
       AST::Statement::CRef StatementCreate_Goto(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         LocalScope *ctx, Core::String name);
+         Scope_Local *ctx, Core::String name);
       AST::Statement::CRef StatementCreate_Goto(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         LocalScope *ctx, Core::String name);
+         Scope_Local *ctx, Core::String name);
 
       AST::Statement::CRef StatementCreate_If(
          Core::Array<Core::String> const &labels, Core::Origin pos,
@@ -114,17 +114,17 @@ namespace GDCC
 
       AST::Statement::CRef StatementCreate_Switch(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         LocalScope *ctx, AST::Exp const *cond, AST::Statement const *body);
+         Scope_Local *ctx, AST::Exp const *cond, AST::Statement const *body);
       AST::Statement::CRef StatementCreate_Switch(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         LocalScope *ctx, AST::Exp const *cond, AST::Statement const *body);
+         Scope_Local *ctx, AST::Exp const *cond, AST::Statement const *body);
 
       AST::Statement::CRef StatementCreate_While(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         LocalScope *ctx, AST::Exp const *cond, AST::Statement const *body);
+         Scope_Local *ctx, AST::Exp const *cond, AST::Statement const *body);
       AST::Statement::CRef StatementCreate_While(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         LocalScope *ctx, AST::Exp const *cond, AST::Statement const *body);
+         Scope_Local *ctx, AST::Exp const *cond, AST::Statement const *body);
    }
 }
 
