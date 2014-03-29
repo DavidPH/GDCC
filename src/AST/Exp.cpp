@@ -33,6 +33,8 @@ namespace GDCC
       // Exp copy constructor
       //
       Exp::Exp(Exp const &exp) :
+         Super{exp},
+
          pos{exp.pos},
 
          cacheIRExp{exp.cacheIRExp}

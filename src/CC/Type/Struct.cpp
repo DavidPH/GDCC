@@ -48,7 +48,7 @@ namespace GDCC
       // Type_Struct constructor
       //
       Type_Struct::Type_Struct(Core::String name, bool isUnion) :
-         data{*new Data(name, isUnion)}
+         data(*new Data(name, isUnion))
       {
       }
 

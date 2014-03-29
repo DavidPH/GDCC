@@ -173,7 +173,7 @@ namespace GDCC
 
       protected:
          using ExpCRef     = Core::CounterRef<Exp const>;
-         using TypeRankC   = TypeRankC;
+         using RankC       = TypeRankC;
          using TypeSetCRef = Core::CounterRef<TypeSet const>;
 
       public:
@@ -206,7 +206,7 @@ namespace GDCC
                  bool          getQualCons()    const {return quals.aCons;}
                  bool          getQualRest()    const {return quals.aRest;}
                  bool          getQualVola()    const {return quals.aVola;}
-         virtual TypeRankC     getRankC()       const {throw TypeError();}
+         virtual RankC         getRankC()       const {throw TypeError();}
          virtual CRef          getSatuType()    const {throw TypeError();}
          virtual CRef          getSignType()    const {throw TypeError();}
          virtual Core::FastU   getSizeAlign()   const {throw TypeError();}

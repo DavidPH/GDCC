@@ -476,6 +476,7 @@ namespace GDCC
                // Convert script type.
                switch(itr.stype)
                {
+               default:
                case IR::ScriptType::None:       stype =  0; break;
                case IR::ScriptType::Death:      stype =  3; break;
                case IR::ScriptType::Disconnect: stype = 14; break;

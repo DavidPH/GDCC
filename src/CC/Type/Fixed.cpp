@@ -130,7 +130,7 @@ namespace GDCC
       //
       // Type_Fixed::getRankC
       //
-      AST::Type::TypeRankC Type_Fixed::getRankC() const
+      AST::TypeRankC Type_Fixed::getRankC() const
       {
          switch(size)
          {
@@ -246,7 +246,7 @@ namespace GDCC
       //
       // Type_Fract::getRankC
       //
-      AST::Type::TypeRankC Type_Fract::getRankC() const
+      AST::TypeRankC Type_Fract::getRankC() const
       {
          switch(size)
          {
@@ -329,7 +329,7 @@ namespace GDCC
       //
       // Type_Integ::getRankC
       //
-      AST::Type::TypeRankC Type_Integ::getRankC() const
+      AST::TypeRankC Type_Integ::getRankC() const
       {
          switch(size)
          {

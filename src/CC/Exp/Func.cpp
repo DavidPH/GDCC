@@ -37,7 +37,7 @@ namespace GDCC
          Core::Origin pos_) :
          Super{pos_},
          fn{fn_},
-         prog{prog_}
+         prog(prog_)
       {
       }
 

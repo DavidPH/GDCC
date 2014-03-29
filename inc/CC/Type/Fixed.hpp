@@ -70,7 +70,7 @@ namespace GDCC
       public:
          // Type information.
          virtual Type::CRef  getBaseType()  const;
-         virtual TypeRankC   getRankC()     const;
+         virtual RankC       getRankC()     const;
          virtual Core::FastU getSizeAlign() const;
          virtual Core::FastU getSizeBitsF() const;
          virtual Core::FastU getSizeBitsI() const;
@@ -121,7 +121,7 @@ namespace GDCC
       public:
          // Type information.
          virtual Type::CRef  getBaseType()  const;
-         virtual TypeRankC   getRankC()     const;
+         virtual RankC       getRankC()     const;
          virtual Core::FastU getSizeAlign() const;
          virtual Core::FastU getSizeBitsF() const;
          virtual Core::FastU getSizeBitsI() const {return 0;}
@@ -171,7 +171,7 @@ namespace GDCC
 
       public:
          // Type information.
-         virtual TypeRankC   getRankC()     const;
+         virtual RankC       getRankC()     const;
          virtual Core::FastU getSizeAlign() const;
          virtual Core::FastU getSizeBitsF() const {return 0;}
          virtual Core::FastU getSizeBitsI() const;
