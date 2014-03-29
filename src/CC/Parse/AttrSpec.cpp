@@ -12,6 +12,7 @@
 //
 // attribute-specifier:
 //    [ [ attribute-list ] ]
+//    <__attribute__> ( ( attribute-list ) )
 //
 // attribute-list:
 //    attribute(opt)
@@ -43,6 +44,7 @@
 #include "Core/TokenStream.hpp"
 
 #include "IR/CallType.hpp"
+#include "IR/Linkage.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -64,11 +66,13 @@ static void ParseAttr_call(GDCC::CC::ParserData &in, GDCC::CC::Scope *,
 {
    using namespace GDCC;
 
+   // (
    if(!in.in.drop(Core::TOK_ParenO))
       throw Core::ExceptStr(in.in.peek().pos, "expected '('");
 
-   if(in.in.peek().tok != Core::TOK_String)
-      throw Core::ExceptStr(in.in.peek().pos, "expected string");
+   // string-literal
+   if(!in.in.peek().isTokString())
+      throw Core::ExceptStr(in.in.peek().pos, "expected string-literal");
 
    switch(in.in.get().str)
    {
@@ -91,6 +95,44 @@ static void ParseAttr_call(GDCC::CC::ParserData &in, GDCC::CC::Scope *,
       throw Core::ExceptStr(in.in.reget().pos, "invalid call");
    }
 
+   // )
+   if(!in.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(in.in.peek().pos, "expected ')'");
+}
+
+//
+// ParseAttr_extern
+//
+// attribute-extern:
+//    <extern> ( string-literal )
+//
+static void ParseAttr_extern(GDCC::CC::ParserData &in, GDCC::CC::Scope *,
+   GDCC::AST::Attribute &attr)
+{
+   using namespace GDCC;
+
+   // (
+   if(!in.in.drop(Core::TOK_ParenO))
+      throw Core::ExceptStr(in.in.peek().pos, "expected '('");
+
+   // string-literal
+   if(!in.in.peek().isTokString())
+      throw Core::ExceptStr(in.in.peek().pos, "expected string-literal");
+
+   switch(in.in.get().str)
+   {
+   case Core::STR_ACS:       attr.linka = IR::Linkage::ExtACS; break;
+   case Core::STR_C:         attr.linka = IR::Linkage::ExtC;   break;
+   case Core::STR_DS:        attr.linka = IR::Linkage::ExtDS;  break;
+   case Core::STR_asm:       attr.linka = IR::Linkage::ExtASM; break;
+   case Core::STR_NAM_ACSXX: attr.linka = IR::Linkage::ExtAXX; break;
+   case Core::STR_NAM_CXX:   attr.linka = IR::Linkage::ExtCXX; break;
+
+   default:
+      throw Core::ExceptStr(in.in.reget().pos, "invalid linkage");
+   }
+
+   // )
    if(!in.in.drop(Core::TOK_ParenC))
       throw Core::ExceptStr(in.in.peek().pos, "expected ')'");
 }
@@ -125,6 +167,20 @@ namespace GDCC
             return res;
          }
 
+         // <__attribute__> ( (
+         if(in.in.drop(Core::TOK_Identi, Core::STR___attribute__))
+         {
+            if(in.in.drop(Core::TOK_ParenO))
+            {
+               bool res = in.in.peek().tok == Core::TOK_ParenO;
+               in.in.unget();
+               in.in.unget();
+               return res;
+            }
+
+            in.in.unget();
+         }
+
          return false;
       }
 
@@ -143,6 +199,9 @@ namespace GDCC
          {
          case Core::STR_call: case Core::STR___call:
             ParseAttr_call(in, ctx, attr); break;
+
+         case Core::STR_extern:
+            ParseAttr_extern(in, ctx, attr); break;
 
          default:
             // Skip unknown attribute.
@@ -163,27 +222,58 @@ namespace GDCC
       }
 
       //
+      // ParseAttrList
+      //
+      void ParseAttrList(ParserData &in, Scope *ctx, AST::Attribute &attr)
+      {
+         // attribute-list:
+         //    attribute(opt)
+         //    attribute-list , attribute(opt)
+         do ParseAttr(in, ctx, attr);
+         while(in.in.drop(Core::TOK_Comma));
+      }
+
+      //
       // ParseAttrSpec
       //
       void ParseAttrSpec(ParserData &in, Scope *ctx, AST::Attribute &attr)
       {
          // attribute-specifier:
          //    [ [ attribute-list ] ]
+         //    <__attribute__> ( ( attribute-list ) )
+
+         // [ [ attribute-list ] ]
          if(in.in.drop(Core::TOK_BrackO))
          {
+            // [ [
             if(!in.in.drop(Core::TOK_BrackO))
                throw Core::ExceptStr(in.in.peek().pos, "expected '['");
 
-            // attribute-list:
-            //    attribute(opt)
-            //    attribute-list , attribute(opt)
-            do ParseAttr(in, ctx, attr);
-            while(in.in.drop(Core::TOK_Comma));
+            // attribute-list
+            ParseAttrList(in, ctx, attr);
 
             // ] ]
             if(!in.in.drop(Core::TOK_BrackC) || !in.in.drop(Core::TOK_BrackC))
                throw Core::ExceptStr(in.in.peek().pos, "expected ']'");
          }
+
+         // <__attribute__> ( ( attribute-list ) )
+         else if(in.in.drop(Core::TOK_Identi, Core::STR___attribute__))
+         {
+            // ( (
+            if(!in.in.drop(Core::TOK_ParenO) || !in.in.drop(Core::TOK_ParenO))
+               throw Core::ExceptStr(in.in.peek().pos, "expected '('");
+
+            // attribute-list
+            ParseAttrList(in, ctx, attr);
+
+            // ) )
+            if(!in.in.drop(Core::TOK_ParenC) || !in.in.drop(Core::TOK_ParenC))
+               throw Core::ExceptStr(in.in.peek().pos, "expected ')'");
+         }
+
+         else
+            throw Core::ExceptStr(in.in.peek().pos, "expected attribute-specifier");
       }
    }
 }

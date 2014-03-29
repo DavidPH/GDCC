@@ -120,6 +120,9 @@ namespace GDCC
          case IR::Linkage::ExtASM:
             return name;
 
+         case IR::Linkage::ExtAXX:
+            break; // TODO
+
          case IR::Linkage::ExtC:
             return Core::STR__ + name;
 

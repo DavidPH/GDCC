@@ -38,6 +38,7 @@ namespace GDCC
          case Linkage::None:   return out << Core::STR_None;
          case Linkage::ExtACS: return out << Core::STR_ExtACS;
          case Linkage::ExtASM: return out << Core::STR_ExtASM;
+         case Linkage::ExtAXX: return out << Core::STR_ExtAXX;
          case Linkage::ExtC:   return out << Core::STR_ExtC;
          case Linkage::ExtCXX: return out << Core::STR_ExtCXX;
          case Linkage::ExtDS:  return out << Core::STR_ExtDS;
@@ -59,6 +60,7 @@ namespace GDCC
          case Linkage::None:   return out << "None";
          case Linkage::ExtACS: return out << "ExtACS";
          case Linkage::ExtASM: return out << "ExtASM";
+         case Linkage::ExtAXX: return out << "ExtAXX";
          case Linkage::ExtC:   return out << "ExtC";
          case Linkage::ExtCXX: return out << "ExtCXX";
          case Linkage::ExtDS:  return out << "ExtDS";
@@ -80,6 +82,7 @@ namespace GDCC
          case Core::STR_None:   out = Linkage::None;   return in;
          case Core::STR_ExtACS: out = Linkage::ExtACS; return in;
          case Core::STR_ExtASM: out = Linkage::ExtASM; return in;
+         case Core::STR_ExtAXX: out = Linkage::ExtAXX; return in;
          case Core::STR_ExtC:   out = Linkage::ExtC;   return in;
          case Core::STR_ExtCXX: out = Linkage::ExtCXX; return in;
          case Core::STR_ExtDS:  out = Linkage::ExtDS;  return in;
