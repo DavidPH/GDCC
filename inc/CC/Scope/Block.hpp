@@ -24,24 +24,15 @@ namespace GDCC
 {
    namespace CC
    {
-      class Scope_Function;
-
       //
       // Scope_Block
       //
       class Scope_Block : public Scope_Local
       {
       public:
-         Scope_Block(Scope_Local *parent, Scope_Function *fn);
-         virtual ~Scope_Block();
+         explicit Scope_Block(Scope_Local *parent);
 
          AllocAutoInfo allocAuto(AllocAutoInfo const &base);
-
-         virtual Core::CounterRef<AST::Function> getFunction();
-
-         virtual Scope_Function *getScopeFunction();
-
-         Scope_Function *fn;
       };
    }
 }

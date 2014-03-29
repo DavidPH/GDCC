@@ -13,6 +13,7 @@
 #include "CC/Scope/Local.hpp"
 
 #include "CC/Scope/Block.hpp"
+#include "CC/Scope/Function.hpp"
 #include "CC/Scope/Global.hpp"
 
 #include "AST/Attribute.hpp"
@@ -38,12 +39,34 @@ namespace GDCC
    namespace CC
    {
       //
+      // Scope_Local::AllocAutoInfo::setMax
+      //
+      void Scope_Local::AllocAutoInfo::setMax(AllocAutoInfo const &alloc)
+      {
+         localArs = std::max(localArs, alloc.localArs);
+         localReg = std::max(localReg, alloc.localReg);
+      }
+
+      //
       // Scope_Local constructor
       //
-      Scope_Local::Scope_Local(Scope *parent_, Scope_Global *global_) :
+      Scope_Local::Scope_Local(Scope_Global *global_, Scope_Function *fn_) :
+         Scope{global_},
+
+         fn    {fn_},
+         global{global_},
+         label {Core::STRNULL}
+      {
+      }
+
+      //
+      // Scope_Local constructor
+      //
+      Scope_Local::Scope_Local(Scope_Local *parent_) :
          Scope{parent_},
 
-         global{global_},
+         fn    {parent_->fn},
+         global{parent_->global},
          label {Core::STRNULL}
       {
       }
@@ -99,7 +122,7 @@ namespace GDCC
       //
       Scope_Block *Scope_Local::createScopeBlock()
       {
-         auto ctx = new Scope_Block(this, getScopeFunction());
+         auto ctx = new Scope_Block(this);
          subScopes.emplace_back(ctx);
          return ctx;
       }
@@ -110,7 +133,7 @@ namespace GDCC
       Scope_Block *Scope_Local::createScopeLoop()
       {
          // FIXME
-         auto ctx = new Scope_Block(this, getScopeFunction());
+         auto ctx = new Scope_Block(this);
          subScopes.emplace_back(ctx);
          return ctx;
       }
@@ -121,7 +144,7 @@ namespace GDCC
       Scope_Block *Scope_Local::createScopeSwitch()
       {
          // FIXME
-         auto ctx = new Scope_Block(this, getScopeFunction());
+         auto ctx = new Scope_Block(this);
          subScopes.emplace_back(ctx);
          return ctx;
       }
@@ -135,13 +158,11 @@ namespace GDCC
          if(linka != IR::Linkage::None)
             return global->genGlyphObj(name, linka);
 
-         auto fn = getFunction();
-
          // Anonymous objects with no linkage need a fully generated name.
-         if(!name) return getFunction()->genLabel();
+         if(!name) return fn->fn->genLabel();
 
          // Otherwise, base it on the scope's prefix (generating if needed).
-         if(!label) label = getFunction()->genLabel();
+         if(!label) label = fn->fn->genLabel();
          return label + name;
       }
 

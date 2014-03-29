@@ -14,6 +14,7 @@
 
 #include "CC/Exp.hpp"
 #include "CC/Scope/Block.hpp"
+#include "CC/Scope/Function.hpp"
 #include "CC/Statement.hpp"
 
 #include "AST/Exp.hpp"
@@ -314,8 +315,6 @@ static GDCC::AST::Statement::CRef GetStatement_return(GDCC::CC::ParserData &in,
 {
    using namespace GDCC;
 
-   auto fn = ctx->getFunction();
-
    // <return> expression(opt) ;
 
    // <return>
@@ -323,7 +322,7 @@ static GDCC::AST::Statement::CRef GetStatement_return(GDCC::CC::ParserData &in,
 
    // ;
    if(in.in.drop(Core::TOK_Semico))
-      return CC::StatementCreate_Return(std::move(labels), pos, fn);
+      return CC::StatementCreate_Return(std::move(labels), pos, ctx->fn->fn);
 
    // expression
    auto exp = CC::GetExp(in, ctx);
@@ -332,7 +331,7 @@ static GDCC::AST::Statement::CRef GetStatement_return(GDCC::CC::ParserData &in,
    if(!in.in.drop(Core::TOK_Semico))
       throw Core::ExceptStr(in.in.peek().pos, "expected ';'");
 
-   return CC::StatementCreate_Return(std::move(labels), pos, fn, exp);
+   return CC::StatementCreate_Return(std::move(labels), pos, ctx->fn->fn, exp);
 }
 
 //

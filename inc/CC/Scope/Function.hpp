@@ -38,10 +38,6 @@ namespace GDCC
 
          void allocAuto();
 
-         virtual Core::CounterRef<AST::Function> getFunction();
-
-         virtual Scope_Function *getScopeFunction();
-
          Core::Array<Core::CounterRef<AST::Object>> params;
          Core::CounterRef<AST::Function>            fn;
       };

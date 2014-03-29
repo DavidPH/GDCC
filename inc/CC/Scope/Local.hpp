@@ -63,9 +63,6 @@ namespace GDCC
          };
 
 
-         Scope_Local(Scope *parent, Scope_Global *global);
-         virtual ~Scope_Local();
-
          Scope_Block *createScopeBlock();
          Scope_Block *createScopeLoop();
          Scope_Block *createScopeSwitch();
@@ -74,16 +71,17 @@ namespace GDCC
 
          void genIR(IR::Program &prog);
 
-         virtual Core::CounterRef<AST::Function> getFunction() = 0;
-
-         virtual Scope_Function *getScopeFunction() = 0;
-
          Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
 
-         Scope_Global *global;
-         Core::String  label;
+         Scope_Function *fn;
+         Scope_Global   *global;
+         Core::String    label;
 
       protected:
+         Scope_Local(Scope_Global *global, Scope_Function *fn);
+         explicit Scope_Local(Scope_Local *parent);
+         virtual ~Scope_Local();
+
          void allocAutoObj(AllocAutoInfo &alloc, AST::Object *obj);
 
          LookupTable<AST::Object> localObj;

@@ -13,11 +13,9 @@
 #include "CC/Scope/Function.hpp"
 
 #include "CC/Scope/Block.hpp"
-#include "CC/Scope/Global.hpp"
 
 #include "AST/Function.hpp"
 #include "AST/Object.hpp"
-#include "AST/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -33,7 +31,7 @@ namespace GDCC
       //
       Scope_Function::Scope_Function(Scope_Global *parent_, AST::Function *fn_,
          Core::Array<AST::Object::Ref> &&params_) :
-         Scope_Local{parent_, parent_}, params{std::move(params_)}, fn{fn_}
+         Scope_Local{parent_, this}, params{std::move(params_)}, fn{fn_}
       {
          for(auto const &param : params)
          {
@@ -67,22 +65,6 @@ namespace GDCC
          // Set function's local counts.
          fn->localArs = allocSub.localArs;
          fn->localReg = allocSub.localReg;
-      }
-
-      //
-      // Scope_Function::getFunction
-      //
-      AST::Function::Ref Scope_Function::getFunction()
-      {
-         return fn;
-      }
-
-      //
-      // Scope_Function::getScopeFunction
-      //
-      Scope_Function *Scope_Function::getScopeFunction()
-      {
-         return this;
       }
    }
 }
