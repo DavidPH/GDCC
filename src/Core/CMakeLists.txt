@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013 David Hill
+## Copyright (C) 2013-2014 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -23,6 +23,7 @@ add_library(gdcc-core-lib
    ParseString.cpp
    Path.cpp
    String.cpp
+   StringGen.cpp
 )
 
 target_link_libraries(gdcc-core-lib gdcc-option-lib gmpxx gmp)

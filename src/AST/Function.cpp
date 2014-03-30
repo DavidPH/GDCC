@@ -55,28 +55,8 @@ namespace GDCC
          sflagNet{false},
          sflagClS{false},
 
-         labelNum{0},
-         labelStr{nullptr},
-         labelSuf{nullptr}
+         labeller{glyph, "$L$"}
       {
-         auto const &dat = glyph.getData();
-
-         // Allocate label buffer.
-         // glyph "$L$" labelNum "\0"
-         labelLen = dat.len + 3;
-         labelStr.reset(new char[labelLen + ((sizeof(labelNum) * CHAR_BIT + 2) / 3) + 1]);
-         std::memcpy(labelStr.get(), dat.str, dat.len);
-
-         // Add mangle suffix.
-         labelSuf = &labelStr[dat.len];
-         labelSuf[0] = '$';
-         labelSuf[1] = 'L';
-         labelSuf[2] = '$';
-
-         // Precompute hash base for label prefix.
-         labelHash = Core::HashString(labelSuf, 3, dat.hash);
-
-         labelSuf += 3;
       }
 
       //
@@ -91,11 +71,7 @@ namespace GDCC
       //
       Core::String Function::genLabel()
       {
-         std::size_t len = std::sprintf(labelSuf, "%zu", ++labelNum);
-
-         auto hash = Core::HashString(labelSuf, len, labelHash);
-
-         return Core::AddString(labelStr.get(), len + labelLen, hash);
+         return labeller();
       }
 
       //
