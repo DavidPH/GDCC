@@ -600,6 +600,32 @@ namespace GDCC
             if(specSign) throw Core::ExceptStr(pos, "signed str");
             if(specUnsi) throw Core::ExceptStr(pos, "unsigned str");
 
+            attr.type = AST::Type::StrEnt->getTypePointer();
+
+            break;
+
+         case BaseLabl:
+            if(specCplx) throw Core::ExceptStr(pos, "complex label");
+            if(specImag) throw Core::ExceptStr(pos, "imaginary label");
+            if(specLong) throw Core::ExceptStr(pos, "long label");
+            if(specSatu) throw Core::ExceptStr(pos, "sat label");
+            if(specShrt) throw Core::ExceptStr(pos, "short label");
+            if(specSign) throw Core::ExceptStr(pos, "signed label");
+            if(specUnsi) throw Core::ExceptStr(pos, "unsigned label");
+
+            attr.type = AST::Type::Label;
+
+            break;
+
+         case BaseStrE:
+            if(specCplx) throw Core::ExceptStr(pos, "complex str_ent");
+            if(specImag) throw Core::ExceptStr(pos, "imaginary str_ent");
+            if(specLong) throw Core::ExceptStr(pos, "long str_ent");
+            if(specSatu) throw Core::ExceptStr(pos, "sat str_ent");
+            if(specShrt) throw Core::ExceptStr(pos, "short str_ent");
+            if(specSign) throw Core::ExceptStr(pos, "signed str_ent");
+            if(specUnsi) throw Core::ExceptStr(pos, "unsigned str_ent");
+
             attr.type = AST::Type::StrEnt;
 
             break;
@@ -632,7 +658,9 @@ namespace GDCC
          {
             // type-specifier
          case Core::STR___fixed:    return true;
+         case Core::STR___label:    return true;
          case Core::STR___str:      return true;
+         case Core::STR___str_ent:  return true;
          case Core::STR__Accum:     return true;
          case Core::STR__Bool:      return true;
          case Core::STR__Complex:   return true;
@@ -689,7 +717,9 @@ namespace GDCC
          {
             // type-specifier
          case Core::STR___fixed:    setSpecBase(TypeSpec::BaseAccu); break;
+         case Core::STR___label:    setSpecBase(TypeSpec::BaseLabl); break;
          case Core::STR___str:      setSpecBase(TypeSpec::BaseStri); break;
+         case Core::STR___str_ent:  setSpecBase(TypeSpec::BaseStrE); break;
          case Core::STR__Accum:     setSpecBase(TypeSpec::BaseAccu); break;
          case Core::STR__Bool:      setSpecBase(TypeSpec::BaseBool); break;
          case Core::STR__Complex:   ++spec.specCplx;                 break;

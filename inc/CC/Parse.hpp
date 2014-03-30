@@ -105,6 +105,10 @@ namespace GDCC
 
             // ACS types.
             BaseStri,
+
+            // GDCC types.
+            BaseLabl,
+            BaseStrE,
          };
 
          void finish(AST::Attribute &attr, AST::TypeQual qual,
