@@ -77,9 +77,9 @@ namespace GDCC
       //
       // Function::genFunction
       //
-      IR::Function &Function::genFunction(IR::Program &prog)
+      void Function::genFunction(IR::Program &prog)
       {
-         auto &fn = prog.getFunction(glyph);
+         IR::Function fn{glyph};
 
          fn.ctype    = ctype;
          fn.label    = label;
@@ -110,7 +110,8 @@ namespace GDCC
          // Configure glyph's type, even if the glyph won't be backed.
          prog.getGlyphData(glyph).type = IR::Type_Funct(ctype);
 
-         return fn;
+         // Merge into existing function (if any).
+         prog.mergeFunction(prog.getFunction(glyph), std::move(fn));
       }
 
       //

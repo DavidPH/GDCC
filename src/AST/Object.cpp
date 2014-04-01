@@ -58,9 +58,9 @@ namespace GDCC
       //
       // Object::genObject
       //
-      IR::Object &Object::genObject(IR::Program &prog)
+      void Object::genObject(IR::Program &prog)
       {
-         auto &obj = prog.getObject(glyph);
+         IR::Object obj{glyph};
 
          obj.linka = linka;
          obj.space = type->getQualAddr();
@@ -84,7 +84,8 @@ namespace GDCC
          if(type)
             prog.getGlyphData(glyph).type = type->getTypePointer()->getIRType();
 
-         return obj;
+         // Merge into existing object (if any).
+         prog.mergeObject(prog.getObject(glyph), std::move(obj));
       }
 
       //

@@ -53,7 +53,7 @@ namespace GDCC
          using TypeCPtr  = Core::CounterPtr<Type    const>;
 
       public:
-         IR::Object &genObject(IR::Program &prog);
+         void genObject(IR::Program &prog);
 
          Core::String glyph;
          ExpCPtr      init;
