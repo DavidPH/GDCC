@@ -42,6 +42,7 @@ namespace GDCC
          TypeCRef  const type;
 
       protected:
+         Exp_Binary(Exp_Binary const &e);
          Exp_Binary(Type const *t, Exp const *l, Exp const *r,
             Core::Origin pos);
          virtual ~Exp_Binary();

@@ -27,6 +27,18 @@ namespace GDCC
    namespace AST
    {
       //
+      // Exp_Binary copy constructor
+      //
+      Exp_Binary::Exp_Binary(Exp_Binary const &e) :
+         Super{e},
+
+         expL{e.expL},
+         expR{e.expR},
+         type{e.type}
+      {
+      }
+
+      //
       // Exp_Binary constructor
       //
       Exp_Binary::Exp_Binary(Type const *t, Exp const *l, Exp const *r,

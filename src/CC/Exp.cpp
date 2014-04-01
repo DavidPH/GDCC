@@ -12,12 +12,15 @@
 
 #include "CC/Exp.hpp"
 
+#include "CC/Exp/Bitwise.hpp"
+
 #include "AST/Arg.hpp"
 #include "AST/Exp/Binary.hpp"
 #include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
 
+#include "IR/CodeSet/Bitwise.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Value.hpp"
 
@@ -37,6 +40,33 @@ namespace GDCC
          type{type_},
          exp {exp_}
       {
+      }
+
+      //
+      // ExpCreate_BitAnd
+      //
+      AST::Exp::CRef ExpCreate_BitAnd(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return ExpCreate_Bitwise<AST::Exp_BitAnd, IR::CodeSet_And>(l, r, pos);
+      }
+
+      //
+      // ExpCreate_BitOrI
+      //
+      AST::Exp::CRef ExpCreate_BitOrI(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return ExpCreate_Bitwise<AST::Exp_BitOrI, IR::CodeSet_OrI>(l, r, pos);
+      }
+
+      //
+      // ExpCreate_BitOrX
+      //
+      AST::Exp::CRef ExpCreate_BitOrX(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return ExpCreate_Bitwise<AST::Exp_BitOrX, IR::CodeSet_OrX>(l, r, pos);
       }
 
       //
@@ -69,6 +99,18 @@ namespace GDCC
             return ExpConvert_Pointer(typeL, e, pos);
 
          throw Core::ExceptStr(pos, "unsupported cast");
+      }
+
+      AST::Exp::CRef ExpCreate_ShL(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return ExpCreate_Shift<AST::Exp_ShL, IR::CodeSet_ShL>(l, r, pos);
+      }
+
+      AST::Exp::CRef ExpCreate_ShR(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return ExpCreate_Shift<AST::Exp_ShR, IR::CodeSet_ShR>(l, r, pos);
       }
 
       //
@@ -159,23 +201,14 @@ namespace GDCC
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_BitAnd(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_BitAndEq(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_BitOrI(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_BitOrIEq(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_BitOrX(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_BitOrXEq(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
@@ -260,16 +293,10 @@ namespace GDCC
          Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_ShL(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_ShLEq(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_ShR(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_ShREq(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}

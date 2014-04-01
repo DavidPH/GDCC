@@ -22,6 +22,7 @@ add_library(gdcc-ast-lib
    Exp/Arg.cpp
    Exp/Arith.cpp
    Exp/Binary.cpp
+   Exp/Bitwise.cpp
    Exp/Convert.cpp
    Exp/IRExp.cpp
    Exp/MulSize.cpp
