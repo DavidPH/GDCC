@@ -8,6 +8,154 @@
 //
 // C types.
 //
+//
+// C/C++ type classification.
+//
+// Where semantic differences between languages exist, the line is marked by
+// that language, indicating that the type has the properties of that
+// relative position in the chart only for that language. For example, enum
+// is an integer type in C, but merely a scalar type in C++.
+//
+// This chart includes extended types, except for alternative spellings like
+// __fixed and __str. (__str is an alternative spelling for __str_ent*.)
+//
+//   function types
+//   +-member function types (C++)
+//   +-static function types
+//   object types
+//   +-accum types
+//   | +-signed accum types
+//   | | +-short _Accum
+//   | | +-_Accum
+//   | | +-long _Accum
+//   | | +-_Sat short _Accum
+//   | | +-_Sat _Accum
+//   | | +-_Sat long _Accum
+//   | +-unsigned accum types
+//   |   +-unsigned short _Accum
+//   |   +-unsigned _Accum
+//   |   +-unsigned long _Accum
+//   |   +-_Sat unsigned short _Accum
+//   |   +-_Sat unsigned _Accum
+//   |   +-_Sat unsigned long _Accum
+//   +-aggregate types
+//   | +-array types
+//   | +-structure types
+//   | +-tuple types
+//   +-character types
+//   | +-char
+//   | +-signed char
+//   | +-unsigned char
+//   +-fract types
+//   | +-signed fract types
+//   | | +-short _Fract
+//   | | +-_Fract
+//   | | +-long _Fract
+//   | | +-_Sat short _Fract
+//   | | +-_Sat _Fract
+//   | | +-_Sat long _Fract
+//   | +-unsigned fract types
+//   |   +-unsigned short _Fract
+//   |   +-unsigned _Fract
+//   |   +-unsigned long _Fract
+//   |   +-_Sat unsigned short _Fract
+//   |   +-_Sat unsigned _Fract
+//   |   +-_Sat unsigned long _Fract
+//   +-real types
+//   | +-fixed-point types
+//   | +-integer types
+//   | +-real floating types
+//   +-scalar types
+//   | +-arithmetic types
+//   | | +-fixed-point types
+//   | | | +-primary fixed-point types
+//   | | | | +-primary signed fixed-point types
+//   | | | | | +-short _Accum
+//   | | | | | +-_Accum
+//   | | | | | +-long _Accum
+//   | | | | | +-short _Fract
+//   | | | | | +-_Fract
+//   | | | | | +-long _Fract
+//   | | | | +-primary unsigned fixed-point types
+//   | | | |   +-unsigned short _Accum
+//   | | | |   +-unsigned _Accum
+//   | | | |   +-unsigned long _Accum
+//   | | | |   +-unsigned short _Fract
+//   | | | |   +-unsigned _Fract
+//   | | | |   +-unsigned long _Fract
+//   | | | +-saturating fixed-point types
+//   | | |   +-saturating signed fixed-point types
+//   | | |   | +-_Sat short _Accum
+//   | | |   | +-_Sat _Accum
+//   | | |   | +-_Sat long _Accum
+//   | | |   | +-_Sat short _Fract
+//   | | |   | +-_Sat _Fract
+//   | | |   | +-_Sat long _Fract
+//   | | |   +-saturating unsigned fixed-point types
+//   | | |     +-_Sat unsigned short _Accum
+//   | | |     +-_Sat unsigned _Accum
+//   | | |     +-_Sat unsigned long _Accum
+//   | | |     +-_Sat unsigned short _Fract
+//   | | |     +-_Sat unsigned _Fract
+//   | | |     +-_Sat unsigned long _Fract
+//   | | +-floating types
+//   | | | +-complex types
+//   | | | | +-float _Complex
+//   | | | | +-double _Complex
+//   | | | | +-long double _Complex
+//   | | | +-imaginary types
+//   | | | | +-float _Imaginary
+//   | | | | +-double _Imaginary
+//   | | | | +-long double _Imaginary
+//   | | | +-real floating types
+//   | | |   +-float
+//   | | |   +-double
+//   | | |   +-long double
+//   | | +-integer types
+//   | |   +-bool (C++)
+//   | |   +-char
+//   | |   +-char16_t (C++)
+//   | |   +-char32_t (C++)
+//   | |   +-enumerated types (C)
+//   | |   +-signed integer types
+//   | |   | +-extended signed integer types
+//   | |   | +-standard signed integer types
+//   | |   |   +-signed char
+//   | |   |   +-short int
+//   | |   |   +-int
+//   | |   |   +-long int
+//   | |   |   +-long long int
+//   | |   +-unsigned integer types
+//   | |   | +-extended unsigned integer types
+//   | |   | +-standard unsigned integer types
+//   | |   |   +-unsigned char
+//   | |   |   +-unsigned short int
+//   | |   |   +-unsigned int
+//   | |   |   +-unsigned long int
+//   | |   |   +-unsigned long long int
+//   | |   |   +-_Bool (C)
+//   | |   +-wchar_t (C++)
+//   | +-enumerated types (C++)
+//   | | +-scoped enumeration types
+//   | | +-unscoped enumeration types
+//   | +-pointer types
+//   | +-pointer to member types (C++)
+//   | +-std::nullptr_t (C++)
+//   | +-__fastbool
+//   +-extended integer types
+//   | +-extended signed integer types
+//   | +-extended unsigned integer types
+//   +-standard integer types
+//   | +-standard signed integer types
+//   | +-standard unsigned integer types
+//   +-union types
+//   +-void
+//   reference types
+//   +-lvalue reference types
+//   +-rvalue reference types
+//   __label
+//   __str_ent
+//
 //-----------------------------------------------------------------------------
 
 #ifndef GDCC__CC__Type_H__
