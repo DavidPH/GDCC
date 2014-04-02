@@ -90,14 +90,10 @@ namespace GDCC
          // If one is not specified, select an address space now.
          if(obj->type->getQualAddr().base == IR::AddrBase::Gen)
          {
-            auto qual = obj->type->getQual();
-
             if(obj->refer)
-               qual.space = IR::AddrBase::Loc;
+               obj->type = obj->type->getTypeArrayQualAddr(IR::AddrBase::Loc);
             else
-               qual.space = IR::AddrBase::LocReg;
-
-            obj->type = obj->type->getTypeQual(qual);
+               obj->type = obj->type->getTypeArrayQualAddr(IR::AddrBase::LocReg);
          }
 
          // Select type of local to allocate.

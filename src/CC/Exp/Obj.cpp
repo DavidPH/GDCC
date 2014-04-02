@@ -126,19 +126,16 @@ namespace GDCC
       AST::Type::CRef Exp_ObjAut::v_getType() const
       {
          auto type = Super::v_getType();
-         auto qual = type->getQual();
 
          // If object has explicit address space, keep it.
-         if(qual.space.base != IR::AddrBase::Gen)
+         if(type->getQualAddr().base != IR::AddrBase::Gen)
             return type;
 
          // Otherwise, select based on needing to be addressable.
          if(obj->refer)
-            qual.space.base = IR::AddrBase::Loc;
+            return type->getTypeArrayQualAddr(IR::AddrBase::Loc);
          else
-            qual.space.base = IR::AddrBase::LocReg;
-
-         return type->getTypeQual(qual);
+            return type->getTypeArrayQualAddr(IR::AddrBase::LocReg);
       }
 
       //

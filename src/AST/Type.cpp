@@ -110,6 +110,14 @@ namespace GDCC
       }
 
       //
+      // Type::getTypeArrayQualAddr
+      //
+      Type::CRef Type::getTypeArrayQualAddr(IR::AddrSpace addr) const
+      {
+         return getTypeQualAddr(addr);
+      }
+
+      //
       // Type::getIRType
       //
       IR::Type Type::getIRType() const

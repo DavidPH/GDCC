@@ -384,8 +384,10 @@ namespace GDCC
          // Array of T -> pointer to T.
          if(type->isTypeArray())
          {
-            type = type->getBaseType()->getTypePointer();
-            return ExpCreate_Cst(type, ExpCreate_Refer(exp, pos), pos);
+            // Mark exp as referred and then reacquire its type.
+            auto ref = ExpCreate_Refer(exp, pos);
+            type = exp->getType()->getBaseType()->getTypePointer();
+            return ExpCreate_Cst(type, ref, pos);
          }
 
          // Function returning T -> pointer to function returning T.

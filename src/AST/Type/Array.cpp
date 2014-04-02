@@ -108,6 +108,15 @@ namespace GDCC
       }
 
       //
+      // Type_ArrVM::getTypeArrayQualAddr
+      //
+      Type::CRef Type_ArrVM::getTypeArrayQualAddr(IR::AddrSpace addr) const
+      {
+         return base->getTypeArrayQualAddr(addr)->getTypeArray(size)
+            ->getTypeQual(quals)->getTypeQualAddr(addr);
+      }
+
+      //
       // Type_ArrVM::getSizeBytesVM
       //
       Exp::CRef Type_ArrVM::getSizeBytesVM() const
@@ -150,6 +159,15 @@ namespace GDCC
       }
 
       //
+      // Type_ArrVM0::getTypeArrayQualAddr
+      //
+      Type::CRef Type_ArrVM0::getTypeArrayQualAddr(IR::AddrSpace addr) const
+      {
+         return base->getTypeArrayQualAddr(addr)->getTypeArray(nullptr)
+            ->getTypeQual(quals)->getTypeQualAddr(addr);
+      }
+
+      //
       // Type_Array copy constructor
       //
       Type_Array::Type_Array(Type_Array const &type) : Super{type},
@@ -172,6 +190,15 @@ namespace GDCC
       Type_Array::~Type_Array()
       {
          GDCC_AST_Type_Unlink(arr);
+      }
+
+      //
+      // Type_Array::getTypeArrayQualAddr
+      //
+      Type::CRef Type_Array::getTypeArrayQualAddr(IR::AddrSpace addr) const
+      {
+         return base->getTypeArrayQualAddr(addr)->getTypeArray(size)
+            ->getTypeQual(quals)->getTypeQualAddr(addr);
       }
 
       //
@@ -262,6 +289,15 @@ namespace GDCC
          // Only nullify base's reference if this is the unqualified pointer.
          if(base->arrType0 == this)
             base->arrType0 = nullptr;
+      }
+
+      //
+      // Type_Array0::getTypeArrayQualAddr
+      //
+      Type::CRef Type_Array0::getTypeArrayQualAddr(IR::AddrSpace addr) const
+      {
+         return base->getTypeArrayQualAddr(addr)->getTypeArray()
+            ->getTypeQual(quals)->getTypeQualAddr(addr);
       }
 
       //

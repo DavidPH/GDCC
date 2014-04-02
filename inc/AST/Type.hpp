@@ -192,6 +192,10 @@ namespace GDCC
          CRef getTypeRefL() const;                  // Type/Pointer.cpp
          CRef getTypeRefR() const;                  // Type/Pointer.cpp
 
+         // Returns a type with the given address space qualifer applied to
+         // itself and (if an array type) its base type, recursively.
+         virtual CRef getTypeArrayQualAddr(IR::AddrSpace addr) const;
+
          // Type information.
          virtual CRef          getBaseType()    const {throw TypeError();}
          virtual IR::CallType  getCallType()    const {throw TypeError();}

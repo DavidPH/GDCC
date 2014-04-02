@@ -148,7 +148,7 @@ namespace GDCC
          // [ type-qualifier-list(opt) * ]
          if(in.in.drop(Core::TOK_BrackO))
          {
-            AST::TypeQual quals  = AST::QualNone;
+            AST::TypeQual quals  = attr.type->getQualAddr();
             bool          isQual = false;
             bool          isStat = false;
 

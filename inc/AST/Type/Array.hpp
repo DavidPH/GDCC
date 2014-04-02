@@ -59,6 +59,9 @@ namespace GDCC
             GDCC::AST::Type_ArrVM, GDCC::AST::Type_ArrBase);
 
       public:
+         // Type creation.
+         virtual Type::CRef getTypeArrayQualAddr(IR::AddrSpace addr) const;
+
          // Type information.
          virtual ExpCRef getSizeBytesVM() const;
          virtual ExpCRef getSizePointVM() const;
@@ -92,6 +95,9 @@ namespace GDCC
             GDCC::AST::Type_ArrVM0, GDCC::AST::Type_ArrBase);
 
       public:
+         // Type creation.
+         virtual Type::CRef getTypeArrayQualAddr(IR::AddrSpace addr) const;
+
          // Type classification.
          virtual bool isTypeSizeVM() const {return true;}
          virtual bool isTypeVM()     const {return true;}
@@ -113,6 +119,9 @@ namespace GDCC
             GDCC::AST::Type_Array, GDCC::AST::Type_ArrBase);
 
       public:
+         // Type creation.
+         virtual Type::CRef getTypeArrayQualAddr(IR::AddrSpace addr) const;
+
          // Type information.
          virtual IR::Type    getIRType()      const;
          virtual Core::FastU getSizeBytes()   const;
@@ -150,6 +159,9 @@ namespace GDCC
             GDCC::AST::Type_Array0, GDCC::AST::Type_ArrBase);
 
       public:
+         // Type creation.
+         virtual Type::CRef getTypeArrayQualAddr(IR::AddrSpace addr) const;
+
          // Type classification.
          virtual bool isTypeSizeVM() const;
          virtual bool isTypeVM()     const;
