@@ -51,8 +51,6 @@ namespace GDCC
       //
       Scope_Global::~Scope_Global()
       {
-         for(auto &ctx : subScopes)
-            delete ctx;
       }
 
       //
@@ -67,7 +65,7 @@ namespace GDCC
       //
       // Scope_Global::createScope
       //
-      Scope_Function *Scope_Global::createScope(AST::Attribute const &attr,
+      Scope_Function &Scope_Global::createScope(AST::Attribute const &attr,
          AST::Function *fn)
       {
          // Set the function's label.
@@ -97,13 +95,13 @@ namespace GDCC
          }
 
          // Create new scope.
-         auto fnCtx = new Scope_Function(this, fn,
+         auto fnCtx = new Scope_Function(*this, fn,
             Core::Array<AST::Object::Ref>(params.begin(), params.end()));
          fnCtx->label = ctxLabel;
 
          subScopes.emplace_back(fnCtx);
 
-         return fnCtx;
+         return *fnCtx;
       }
 
       //

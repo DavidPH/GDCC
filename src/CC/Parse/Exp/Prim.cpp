@@ -32,8 +32,8 @@
 //
 // GetExp_Prim_generic
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_generic(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Prim_generic(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -103,8 +103,8 @@ static GDCC::AST::Exp::CRef GetExp_Prim_generic(GDCC::CC::ParserData &in,
 //
 // GetExp_Prim_Charac
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_Charac(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *)
+static GDCC::AST::Exp::CRef GetExp_Prim_Charac(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &)
 {
    using namespace GDCC;
 
@@ -118,14 +118,14 @@ static GDCC::AST::Exp::CRef GetExp_Prim_Charac(GDCC::CC::ParserData &in,
 //
 // GetExp_Prim_Identi
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_Identi(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Prim_Identi(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
    auto tok = in.in.get();
 
-   if(auto lookup = ctx->lookup(tok.str)) switch(lookup.res)
+   if(auto lookup = ctx.lookup(tok.str)) switch(lookup.res)
    {
    case CC::Lookup::Func:
       return CC::ExpCreate_Func(in.prog, lookup.resFunc, tok.pos);
@@ -146,8 +146,8 @@ static GDCC::AST::Exp::CRef GetExp_Prim_Identi(GDCC::CC::ParserData &in,
 //
 // GetExp_Prim_ParenO
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_ParenO(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Prim_ParenO(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -167,8 +167,8 @@ static GDCC::AST::Exp::CRef GetExp_Prim_ParenO(GDCC::CC::ParserData &in,
 //
 // GetExp_Prim_KeyWrd
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_KeyWrd(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Prim_KeyWrd(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -183,8 +183,8 @@ static GDCC::AST::Exp::CRef GetExp_Prim_KeyWrd(GDCC::CC::ParserData &in,
 //
 // GetExp_Prim_NumFix
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_NumFix(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *)
+static GDCC::AST::Exp::CRef GetExp_Prim_NumFix(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &)
 {
    using namespace GDCC;
 
@@ -196,8 +196,8 @@ static GDCC::AST::Exp::CRef GetExp_Prim_NumFix(GDCC::CC::ParserData &in,
 //
 // GetExp_Prim_NumFlt
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_NumFlt(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *)
+static GDCC::AST::Exp::CRef GetExp_Prim_NumFlt(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &)
 {
    using namespace GDCC;
 
@@ -209,8 +209,8 @@ static GDCC::AST::Exp::CRef GetExp_Prim_NumFlt(GDCC::CC::ParserData &in,
 //
 // GetExp_Prim_NumInt
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_NumInt(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *)
+static GDCC::AST::Exp::CRef GetExp_Prim_NumInt(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &)
 {
    using namespace GDCC;
 
@@ -272,8 +272,8 @@ static GDCC::AST::Exp::CRef GetExp_Prim_NumInt(GDCC::CC::ParserData &in,
 //
 // GetExp_Prim_String
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_String(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *)
+static GDCC::AST::Exp::CRef GetExp_Prim_String(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &)
 {
    using namespace GDCC;
 
@@ -294,7 +294,7 @@ namespace GDCC
       //
       // GetExp_Prim
       //
-      AST::Exp::CRef GetExp_Prim(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_Prim(ParserCtx const &in, Scope &ctx)
       {
          switch(in.in.peek().tok)
          {

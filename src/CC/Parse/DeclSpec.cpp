@@ -33,7 +33,7 @@ namespace GDCC
       //
       // IsDeclSpec
       //
-      bool IsDeclSpec(ParserData &in, Scope *ctx)
+      bool IsDeclSpec(ParserCtx const &in, Scope &ctx)
       {
          // attribute-specifier
          if(IsAttrSpec(in, ctx))
@@ -70,7 +70,7 @@ namespace GDCC
       //
       // ParseDeclSpec
       //
-      void ParseDeclSpec(ParserData &in, Scope *ctx, AST::Attribute &attr)
+      void ParseDeclSpec(ParserCtx const &in, Scope &ctx, AST::Attribute &attr)
       {
          enum DeclStor
          {

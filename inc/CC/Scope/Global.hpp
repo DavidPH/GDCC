@@ -49,7 +49,7 @@ namespace GDCC
 
          void allocAuto();
 
-         Scope_Function *createScope(AST::Attribute const &attr, AST::Function *fn);
+         Scope_Function &createScope(AST::Attribute const &attr, AST::Function *fn);
 
          Core::String genGlyphObj(Core::String name, IR::Linkage linka);
 
@@ -67,7 +67,7 @@ namespace GDCC
          LookupTable<AST::Object>   globalObj;
          LookupTable<AST::Space>    globalSpace;
 
-         std::vector<Scope_Function *> subScopes;
+         std::vector<std::unique_ptr<Scope_Function>> subScopes;
       };
    }
 }

@@ -37,7 +37,7 @@ namespace GDCC
       //
       // IsDeclarator
       //
-      bool IsDeclarator(ParserData &in, Scope *ctx)
+      bool IsDeclarator(ParserCtx const &in, Scope &ctx)
       {
          switch(in.in.peek().tok)
          {
@@ -52,7 +52,7 @@ namespace GDCC
       //
       // ParseDeclarator
       //
-      void ParseDeclarator(ParserData &in, Scope *ctx, AST::Attribute &attr)
+      void ParseDeclarator(ParserCtx const &in, Scope &ctx, AST::Attribute &attr)
       {
          std::vector<Core::Token> toks;
          auto declQual = attr.type->getQual();
@@ -129,18 +129,18 @@ namespace GDCC
          // ( declarator )
          if(!toks.empty())
          {
-            Core::ArrayTBuf buf{toks.data(), toks.size()};
+            Core::ArrayTBuf   buf{toks.data(), toks.size()};
             Core::TokenStream str{&buf};
-            ParserData tmp{in, str};
 
-            ParseDeclarator(tmp, ctx, attr);
+            ParseDeclarator({in, str}, ctx, attr);
          }
       }
 
       //
       // ParseDeclaratorSuffix
       //
-      void ParseDeclaratorSuffix(ParserData &in, Scope *ctx, AST::Attribute &attr)
+      void ParseDeclaratorSuffix(ParserCtx const &in, Scope &ctx,
+         AST::Attribute &attr)
       {
          // [ type-qualifier-list(opt) assignment-expression(opt) ]
          // [ <static> type-qualifier-list(opt) assignment-expression ]

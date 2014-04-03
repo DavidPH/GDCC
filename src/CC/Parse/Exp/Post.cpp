@@ -29,8 +29,8 @@
 //
 // GetExp_Post_Add2
 //
-static GDCC::AST::Exp::CRef GetExp_Post_Add2(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *, GDCC::AST::Exp const *exp)
+static GDCC::AST::Exp::CRef GetExp_Post_Add2(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &, GDCC::AST::Exp const *exp)
 {
    return GDCC::CC::ExpCreate_IncSuf(exp, in.in.get().pos);
 }
@@ -38,8 +38,8 @@ static GDCC::AST::Exp::CRef GetExp_Post_Add2(GDCC::CC::ParserData &in,
 //
 // GetExp_Post_BrackO
 //
-static GDCC::AST::Exp::CRef GetExp_Post_BrackO(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx, GDCC::AST::Exp const *exp)
+static GDCC::AST::Exp::CRef GetExp_Post_BrackO(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx, GDCC::AST::Exp const *exp)
 {
    using namespace GDCC;
 
@@ -56,8 +56,8 @@ static GDCC::AST::Exp::CRef GetExp_Post_BrackO(GDCC::CC::ParserData &in,
 //
 // GetExp_Post_Dot
 //
-static GDCC::AST::Exp::CRef GetExp_Post_Dot(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *, GDCC::AST::Exp const *exp)
+static GDCC::AST::Exp::CRef GetExp_Post_Dot(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &, GDCC::AST::Exp const *exp)
 {
    using namespace GDCC;
 
@@ -72,8 +72,8 @@ static GDCC::AST::Exp::CRef GetExp_Post_Dot(GDCC::CC::ParserData &in,
 //
 // GetExp_Post_Mem
 //
-static GDCC::AST::Exp::CRef GetExp_Post_Mem(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *, GDCC::AST::Exp const *exp)
+static GDCC::AST::Exp::CRef GetExp_Post_Mem(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &, GDCC::AST::Exp const *exp)
 {
    using namespace GDCC;
 
@@ -88,8 +88,8 @@ static GDCC::AST::Exp::CRef GetExp_Post_Mem(GDCC::CC::ParserData &in,
 //
 // GetExp_Post_ParenO
 //
-static GDCC::AST::Exp::CRef GetExp_Post_ParenO(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx, GDCC::AST::Exp const *exp)
+static GDCC::AST::Exp::CRef GetExp_Post_ParenO(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx, GDCC::AST::Exp const *exp)
 {
    using namespace GDCC;
 
@@ -111,8 +111,8 @@ static GDCC::AST::Exp::CRef GetExp_Post_ParenO(GDCC::CC::ParserData &in,
 //
 // GetExp_Post_Sub2
 //
-static GDCC::AST::Exp::CRef GetExp_Post_Sub2(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *, GDCC::AST::Exp const *exp)
+static GDCC::AST::Exp::CRef GetExp_Post_Sub2(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &, GDCC::AST::Exp const *exp)
 {
    return GDCC::CC::ExpCreate_DecSuf(exp, in.in.get().pos);
 }
@@ -129,7 +129,7 @@ namespace GDCC
       //
       // GetExp_Post
       //
-      AST::Exp::CRef GetExp_Post(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_Post(ParserCtx const &in, Scope &ctx)
       {
          if(IsExp_Cast(in, ctx))
             return GetExp_Post(in, ctx, GetExp_CLit(in, ctx));
@@ -140,7 +140,8 @@ namespace GDCC
       //
       // GetExp_Post
       //
-      AST::Exp::CRef GetExp_Post(ParserData &in, Scope *ctx, AST::Exp const *e)
+      AST::Exp::CRef GetExp_Post(ParserCtx const &in, Scope &ctx,
+         AST::Exp const *e)
       {
          AST::Exp::CRef exp{e};
 

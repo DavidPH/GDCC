@@ -32,7 +32,7 @@ namespace GDCC
       class Scope_Function : public Scope_Local
       {
       public:
-         Scope_Function(Scope_Global *parent, AST::Function *fn,
+         Scope_Function(Scope_Global &parent, AST::Function *fn,
             Core::Array<Core::CounterRef<AST::Object>> &&params);
          virtual ~Scope_Function();
 

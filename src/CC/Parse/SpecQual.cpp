@@ -28,7 +28,7 @@ namespace GDCC
       //
       // IsSpecQual
       //
-      bool IsSpecQual(ParserData &in, Scope *ctx)
+      bool IsSpecQual(ParserCtx const &in, Scope &ctx)
       {
          return IsAttrSpec(in, ctx) || IsTypeQual(in, ctx) || IsTypeSpec(in, ctx);
       }
@@ -36,7 +36,7 @@ namespace GDCC
       //
       // ParseSpecQual
       //
-      void ParseSpecQual(ParserData &in, Scope *ctx, AST::Attribute &attr)
+      void ParseSpecQual(ParserCtx const &in, Scope &ctx, AST::Attribute &attr)
       {
          auto pos = in.in.peek().pos;
 

@@ -66,7 +66,7 @@ static GDCC::IR::Linkage GetLinkageInt(GDCC::IR::Linkage base)
 //
 // GetDeclFunc (global)
 //
-static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::Scope_Global *ctx,
+static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::Scope_Global &ctx,
    GDCC::AST::Attribute &attr)
 {
    using namespace GDCC;
@@ -77,13 +77,13 @@ static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::Scope_Global *ctx,
    else
       attr.linka = GetLinkageExt(attr.linka);
 
-   return ctx->getFunction(attr);
+   return ctx.getFunction(attr);
 }
 
 //
 // GetDeclFunc (local)
 //
-static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::Scope_Local *ctx,
+static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::Scope_Local &ctx,
    GDCC::AST::Attribute &attr)
 {
    using namespace GDCC;
@@ -97,13 +97,13 @@ static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::Scope_Local *ctx,
       throw Core::ExceptStr(attr.namePos,
          "local scope function not extern or static");
 
-   return ctx->global->getFunction(attr);
+   return ctx.global.getFunction(attr);
 }
 
 //
 // GetDeclObj (global)
 //
-static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Global *ctx,
+static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Global &ctx,
    GDCC::AST::Attribute &attr, bool init)
 {
    using namespace GDCC;
@@ -121,7 +121,7 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Global *ctx,
       attr.linka = GetLinkageExt(attr.linka);
 
    // Fetch/generate object.
-   auto obj = ctx->getObject(attr);
+   auto obj = ctx.getObject(attr);
 
    // File scope objects are always static storage duration.
    obj->store = AST::Storage::Static;
@@ -142,7 +142,7 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Global *ctx,
 //
 // GetDeclObj (local)
 //
-static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Local *ctx,
+static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Local &ctx,
    GDCC::AST::Attribute &attr, bool init)
 {
    using namespace GDCC;
@@ -154,7 +154,7 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Local *ctx,
       attr.linka = IR::Linkage::None;
 
    // Fetch/generate object.
-   auto obj = ctx->getObject(attr);
+   auto obj = ctx.getObject(attr);
 
    // No-linkage declarations must be definitions.
    if(attr.linka == IR::Linkage::None)
@@ -179,13 +179,13 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Local *ctx,
 //
 // ParseDecl_Function (global)
 //
-static void ParseDecl_Function(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope_Global *ctx, GDCC::AST::Attribute &attr,
+static void ParseDecl_Function(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope_Global &ctx, GDCC::AST::Attribute &attr,
    GDCC::AST::Function *fn)
 {
    using namespace GDCC;
 
-   auto fnCtx = ctx->createScope(attr, fn);
+   auto &fnCtx = ctx.createScope(attr, fn);
 
    // Create statements for the function.
    Core::Array<AST::Statement::CRef> stmnts =
@@ -204,8 +204,8 @@ static void ParseDecl_Function(GDCC::CC::ParserData &in,
 //
 // ParseDecl_Function (local)
 //
-static void ParseDecl_Function(GDCC::CC::ParserData &, GDCC::CC::Scope_Local *,
-   GDCC::AST::Attribute &attr, GDCC::AST::Function *)
+static void ParseDecl_Function(GDCC::CC::ParserCtx const &,
+   GDCC::CC::Scope_Local &, GDCC::AST::Attribute &attr, GDCC::AST::Function *)
 {
    throw GDCC::Core::ExceptStr(attr.namePos, "local function definition");
 }
@@ -213,12 +213,12 @@ static void ParseDecl_Function(GDCC::CC::ParserData &, GDCC::CC::Scope_Local *,
 //
 // ParseDecl_typedef
 //
-static void ParseDecl_typedef(GDCC::CC::Scope *ctx, GDCC::AST::Attribute &attr)
+static void ParseDecl_typedef(GDCC::CC::Scope &ctx, GDCC::AST::Attribute &attr)
 {
    using namespace GDCC;
 
    // Check compatibility with existing symbol, if any.
-   if(auto lookup = ctx->find(attr.name))
+   if(auto lookup = ctx.find(attr.name))
    {
       if(lookup.res != CC::Lookup::Type)
          throw Core::ExceptStr(attr.namePos,
@@ -229,20 +229,20 @@ static void ParseDecl_typedef(GDCC::CC::Scope *ctx, GDCC::AST::Attribute &attr)
             "typedef redefined as different type");
    }
 
-   ctx->add(attr.name, attr.type);
+   ctx.add(attr.name, attr.type);
 }
 
 //
 // ParseDeclBase_Function
 //
 template<typename T>
-static bool ParseDeclBase_Function(GDCC::CC::ParserData &in, T *ctx,
+static bool ParseDeclBase_Function(GDCC::CC::ParserCtx const &in, T &ctx,
    GDCC::AST::Attribute &attr)
 {
    using namespace GDCC;
 
    // Check compatibility with existing symbol, if any.
-   if(auto lookup = ctx->find(attr.name))
+   if(auto lookup = ctx.find(attr.name))
    {
       if(lookup.res != CC::Lookup::Func)
          throw Core::ExceptStr(attr.namePos,
@@ -257,7 +257,7 @@ static bool ParseDeclBase_Function(GDCC::CC::ParserData &in, T *ctx,
 
    auto fn = GetDeclFunc(ctx, attr);
 
-   ctx->add(attr.name, fn);
+   ctx.add(attr.name, fn);
 
    if(in.in.peek().tok == Core::TOK_BraceO)
       return ParseDecl_Function(in, ctx, attr, fn), true;
@@ -269,13 +269,13 @@ static bool ParseDeclBase_Function(GDCC::CC::ParserData &in, T *ctx,
 // ParseDeclBase_Object
 //
 template<typename T>
-static void ParseDeclBase_Object(GDCC::CC::ParserData &in, T *ctx,
+static void ParseDeclBase_Object(GDCC::CC::ParserCtx const &in, T &ctx,
    GDCC::AST::Attribute &attr, std::vector<GDCC::AST::Statement::CRef> &inits)
 {
    using namespace GDCC;
 
    // Check compatibility with existing symbol, if any.
-   if(auto lookup = ctx->find(attr.name))
+   if(auto lookup = ctx.find(attr.name))
    {
       if(lookup.res != CC::Lookup::Obj)
          throw Core::ExceptStr(attr.namePos,
@@ -298,14 +298,15 @@ static void ParseDeclBase_Object(GDCC::CC::ParserData &in, T *ctx,
       throw Core::ExceptStr(in.in.reget().pos, "initializer stub");
    }
    else
-      ctx->add(attr.name, GetDeclObj(ctx, attr, false));
+      ctx.add(attr.name, GetDeclObj(ctx, attr, false));
 }
 
 //
 // GetDeclBase
 //
 template<typename T>
-static GDCC::AST::Statement::CRef GetDeclBase(GDCC::CC::ParserData &in, T *ctx)
+static GDCC::AST::Statement::CRef GetDeclBase(GDCC::CC::ParserCtx const &in,
+   T &ctx)
 {
    using namespace GDCC;
 
@@ -384,7 +385,7 @@ namespace GDCC
       //
       // GetDecl
       //
-      AST::Statement::CRef GetDecl(ParserData &in, Scope_Global *ctx)
+      AST::Statement::CRef GetDecl(ParserCtx const &in, Scope_Global &ctx)
       {
          return GetDeclBase(in, ctx);
       }
@@ -392,7 +393,7 @@ namespace GDCC
       //
       // GetDecl
       //
-      AST::Statement::CRef GetDecl(ParserData &in, Scope_Local *ctx)
+      AST::Statement::CRef GetDecl(ParserCtx const &in, Scope_Local &ctx)
       {
          return GetDeclBase(in, ctx);
       }
@@ -400,7 +401,7 @@ namespace GDCC
       //
       // IsDecl
       //
-      bool IsDecl(ParserData &in, Scope *ctx)
+      bool IsDecl(ParserCtx const &in, Scope &ctx)
       {
          return IsStaticAssert(in, ctx) || IsDeclSpec(in, ctx);
       }

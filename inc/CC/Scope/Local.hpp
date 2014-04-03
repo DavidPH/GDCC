@@ -63,9 +63,9 @@ namespace GDCC
          };
 
 
-         Scope_Block *createScopeBlock();
-         Scope_Block *createScopeLoop();
-         Scope_Block *createScopeSwitch();
+         Scope_Block &createScopeBlock();
+         Scope_Block &createScopeLoop();
+         Scope_Block &createScopeSwitch();
 
          Core::String genGlyphObj(Core::String name, IR::Linkage linka);
 
@@ -73,20 +73,20 @@ namespace GDCC
 
          Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
 
-         Scope_Function *fn;
-         Scope_Global   *global;
+         Scope_Function &fn;
+         Scope_Global   &global;
          Core::String    label;
 
       protected:
-         Scope_Local(Scope_Global *global, Scope_Function *fn);
-         explicit Scope_Local(Scope_Local *parent);
+         Scope_Local(Scope_Global &global, Scope_Function &fn);
+         explicit Scope_Local(Scope_Local &parent);
          virtual ~Scope_Local();
 
          void allocAutoObj(AllocAutoInfo &alloc, AST::Object *obj);
 
          LookupTable<AST::Object> localObj;
 
-         std::vector<Scope_Block *> subScopes;
+         std::vector<std::unique_ptr<Scope_Block>> subScopes;
       };
    }
 }

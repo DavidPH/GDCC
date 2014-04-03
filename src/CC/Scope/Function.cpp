@@ -29,9 +29,9 @@ namespace GDCC
       //
       // Scope_Function constructor
       //
-      Scope_Function::Scope_Function(Scope_Global *parent_, AST::Function *fn_,
+      Scope_Function::Scope_Function(Scope_Global &parent_, AST::Function *fn_,
          Core::Array<AST::Object::Ref> &&params_) :
-         Scope_Local{parent_, this}, params{std::move(params_)}, fn{fn_}
+         Scope_Local{parent_, *this}, params{std::move(params_)}, fn{fn_}
       {
          for(auto const &param : params)
          {

@@ -31,7 +31,7 @@ namespace GDCC
       //
       // IsStaticAssert
       //
-      bool IsStaticAssert(ParserData &in, Scope *)
+      bool IsStaticAssert(ParserCtx const &in, Scope &)
       {
          auto const &tok = in.in.peek();
          return tok.tok == Core::TOK_KeyWrd && tok.str == Core::STR__Static_assert;
@@ -40,7 +40,7 @@ namespace GDCC
       //
       // ParseStaticAssert
       //
-      void ParseStaticAssert(ParserData &in, Scope *ctx)
+      void ParseStaticAssert(ParserCtx const &in, Scope &ctx)
       {
          // static_assert-declaration:
          //    <_Static_assert> ( constant-expression , string-literal )

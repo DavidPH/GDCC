@@ -32,7 +32,7 @@ namespace GDCC
       //
       // GetExp_CLit
       //
-      AST::Exp::CRef GetExp_CLit(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_CLit(ParserCtx const &in, Scope &ctx)
       {
          if(!in.in.drop(Core::TOK_ParenO))
             throw Core::ExceptStr(in.in.peek().pos, "expected '('");
@@ -48,7 +48,7 @@ namespace GDCC
       //
       // GetExp_CLit
       //
-      AST::Exp::CRef GetExp_CLit(ParserData &in, Scope *, AST::Type const *)
+      AST::Exp::CRef GetExp_CLit(ParserCtx const &in, Scope &, AST::Type const *)
       {
          if(in.in.peek().tok != Core::TOK_BraceO)
             throw Core::ExceptStr(in.in.peek().pos, "expected '{'");
@@ -59,7 +59,7 @@ namespace GDCC
       //
       // GetExp_Cast
       //
-      AST::Exp::CRef GetExp_Cast(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_Cast(ParserCtx const &in, Scope &ctx)
       {
          if(IsExp_Cast(in, ctx))
          {
@@ -89,7 +89,7 @@ namespace GDCC
       //
       // IsExp_Cast
       //
-      bool IsExp_Cast(ParserData &in, Scope *ctx)
+      bool IsExp_Cast(ParserCtx const &in, Scope &ctx)
       {
          if(in.in.drop(Core::TOK_ParenO))
          {

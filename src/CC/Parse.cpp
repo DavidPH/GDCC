@@ -30,7 +30,7 @@ namespace GDCC
       // type-name:
       //    specifier-qualifier-list abstract-declarator(opt)
       //
-      AST::Type::CRef GetType(ParserData &in, Scope *ctx)
+      AST::Type::CRef GetType(ParserCtx const &in, Scope &ctx)
       {
          AST::Attribute attr;
 
@@ -44,7 +44,7 @@ namespace GDCC
       //
       // IsType
       //
-      bool IsType(ParserData &in, Scope *ctx)
+      bool IsType(ParserCtx const &in, Scope &ctx)
       {
          return IsSpecQual(in, ctx);
       }

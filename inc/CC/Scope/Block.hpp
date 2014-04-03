@@ -30,7 +30,7 @@ namespace GDCC
       class Scope_Block : public Scope_Local
       {
       public:
-         explicit Scope_Block(Scope_Local *parent);
+         explicit Scope_Block(Scope_Local &parent);
 
          AllocAutoInfo allocAuto(AllocAutoInfo const &base);
       };

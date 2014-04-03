@@ -30,7 +30,7 @@
 //
 // IsTypeQual_Atomic
 //
-static bool IsTypeQual_Atomic(GDCC::CC::ParserData &in, GDCC::CC::Scope *)
+static bool IsTypeQual_Atomic(GDCC::CC::ParserCtx const &in, GDCC::CC::Scope &)
 {
    // If followed by a parenthesis, it is a type-specifier.
    in.in.get();
@@ -42,8 +42,8 @@ static bool IsTypeQual_Atomic(GDCC::CC::ParserData &in, GDCC::CC::Scope *)
 //
 // ParseTypeQual_Atomic
 //
-static void ParseTypeQual_Atomic(GDCC::CC::ParserData &in, GDCC::CC::Scope *,
-   GDCC::AST::TypeQual &qual)
+static void ParseTypeQual_Atomic(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &, GDCC::AST::TypeQual &qual)
 {
    using namespace GDCC;
 
@@ -66,7 +66,7 @@ namespace GDCC
       //
       // IsTypeQual
       //
-      bool IsTypeQual(ParserData &in, Scope *ctx)
+      bool IsTypeQual(ParserCtx const &in, Scope &ctx)
       {
          auto const &tok = in.in.peek();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
@@ -97,14 +97,14 @@ namespace GDCC
 
             // Try a scope lookup for a user-defined address space.
          default:
-            return ctx->lookup(tok.str).res == Lookup::Space;
+            return ctx.lookup(tok.str).res == Lookup::Space;
          }
       }
 
       //
       // ParseTypeQual
       //
-      void ParseTypeQual(ParserData &in, Scope *ctx, AST::TypeQual &qual)
+      void ParseTypeQual(ParserCtx const &in, Scope &ctx, AST::TypeQual &qual)
       {
          auto const &tok = in.in.get();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
@@ -146,7 +146,7 @@ namespace GDCC
 
             // Try a scope lookup for a user-defined address space.
          default:
-            auto lookup = ctx->lookup(tok.str);
+            auto lookup = ctx.lookup(tok.str);
             if(lookup.res != Lookup::Space)
                throw Core::ExceptStr(tok.pos, "expected type-qualifier");
 

@@ -95,6 +95,9 @@ namespace GDCC
       class Scope
       {
       public:
+         Scope() = delete;
+         Scope(Scope const &) = delete;
+         Scope(Scope &&) = delete;
          explicit Scope(Scope *parent);
          virtual ~Scope();
 
@@ -126,7 +129,7 @@ namespace GDCC
          Core::CounterPtr<AST::Type> lookupTypeTag(Core::String name) const;
 
 
-         Scope *parent;
+         Scope *const parent;
 
       protected:
          template<typename T>

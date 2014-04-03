@@ -34,7 +34,7 @@
 //
 // IsTypeSpec_Atomic
 //
-static bool IsTypeSpec_Atomic(GDCC::CC::ParserData &in, GDCC::CC::Scope *)
+static bool IsTypeSpec_Atomic(GDCC::CC::ParserCtx const &in, GDCC::CC::Scope &)
 {
    // If not followed by a parenthesis, it is a type-qualifier.
    in.in.get();
@@ -49,8 +49,8 @@ static bool IsTypeSpec_Atomic(GDCC::CC::ParserData &in, GDCC::CC::Scope *)
 // atomic-type-specifier:
 //    <_Atomic> ( type-name )
 //
-static void ParseTypeSpec_Atomic(GDCC::CC::ParserData &in, GDCC::CC::Scope *ctx,
-   GDCC::AST::Attribute &attr, GDCC::CC::TypeSpec &spec)
+static void ParseTypeSpec_Atomic(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx, GDCC::AST::Attribute &attr, GDCC::CC::TypeSpec &spec)
 {
    using namespace GDCC;
 
@@ -93,8 +93,9 @@ static void ParseTypeSpec_Atomic(GDCC::CC::ParserData &in, GDCC::CC::Scope *ctx,
 //    struct-or-union identifier(opt) { struct-declaration-list }
 //    struct-or-union identifier
 //
-static void ParseTypeSpec_Struct(GDCC::CC::ParserData &in, GDCC::CC::Scope *ctx,
-   GDCC::AST::Attribute &attr, GDCC::CC::TypeSpec &spec, bool isUnion)
+static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx, GDCC::AST::Attribute &attr, GDCC::CC::TypeSpec &spec,
+   bool isUnion)
 {
    using namespace GDCC;
 
@@ -113,11 +114,11 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserData &in, GDCC::CC::Scope *ctx,
 
       // Start with a local lookup. If the full lookup type is incompatible, it
       // is only an error if it is incompatible with a type from this scope.
-      auto lookup = ctx->findTypeTag(name.str);
+      auto lookup = ctx.findTypeTag(name.str);
       bool local  = lookup;
 
       // If definition, only check for existing in current scope.
-      if(!lookup && !defin) lookup = ctx->lookupTypeTag(name.str);
+      if(!lookup && !defin) lookup = ctx.lookupTypeTag(name.str);
 
       // Existing type, check for compatibility.
       if(lookup)
@@ -144,7 +145,7 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserData &in, GDCC::CC::Scope *ctx,
       if(!lookup)
       {
          type = CC::Type_Struct::Create(name.str, isUnion);
-         ctx->addTypeTag(name.str, type);
+         ctx.addTypeTag(name.str, type);
       }
       else
          type = static_cast<CC::Type_Struct *>(&*lookup);
@@ -648,7 +649,7 @@ namespace GDCC
       //
       // IsTypeSpec
       //
-      bool IsTypeSpec(ParserData &in, Scope *ctx)
+      bool IsTypeSpec(ParserCtx const &in, Scope &ctx)
       {
          auto const &tok = in.in.peek();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
@@ -688,14 +689,14 @@ namespace GDCC
          case Core::STR_enum:       return true;
 
             // typedef-name
-         default: return ctx->lookup(tok.str).res == Lookup::Type;
+         default: return ctx.lookup(tok.str).res == Lookup::Type;
          }
       }
 
       //
       // ParseTypeSpec
       //
-      void ParseTypeSpec(ParserData &in, Scope *ctx, AST::Attribute &attr,
+      void ParseTypeSpec(ParserCtx const &in, Scope &ctx, AST::Attribute &attr,
          TypeSpec &spec)
       {
          auto const &tok = in.in.get();
@@ -748,7 +749,7 @@ namespace GDCC
 
          default:
             // typedef-name
-            auto lookup = ctx->lookup(tok.str);
+            auto lookup = ctx.lookup(tok.str);
             if(lookup.res != Lookup::Type)
                throw Core::ExceptStr(tok.pos, "expected type-specifier");
 

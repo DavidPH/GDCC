@@ -28,8 +28,8 @@
 //
 // GetExp_Unar_alignof
 //
-static GDCC::AST::Exp::CRef GetExp_Unar_alignof(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Unar_alignof(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -49,8 +49,8 @@ static GDCC::AST::Exp::CRef GetExp_Unar_alignof(GDCC::CC::ParserData &in,
 //
 // GetExp_Unar_sizeof
 //
-static GDCC::AST::Exp::CRef GetExp_Unar_sizeof(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Unar_sizeof(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -80,8 +80,8 @@ static GDCC::AST::Exp::CRef GetExp_Unar_sizeof(GDCC::CC::ParserData &in,
 //
 // GetExp_Unar_Add
 //
-static GDCC::AST::Exp::CRef GetExp_Unar_Add(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Unar_Add(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -93,8 +93,8 @@ static GDCC::AST::Exp::CRef GetExp_Unar_Add(GDCC::CC::ParserData &in,
 //
 // GetExp_Unar_Add2
 //
-static GDCC::AST::Exp::CRef GetExp_Unar_Add2(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Unar_Add2(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -106,8 +106,8 @@ static GDCC::AST::Exp::CRef GetExp_Unar_Add2(GDCC::CC::ParserData &in,
 //
 // GetExp_Unar_And
 //
-static GDCC::AST::Exp::CRef GetExp_Unar_And(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Unar_And(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -119,8 +119,8 @@ static GDCC::AST::Exp::CRef GetExp_Unar_And(GDCC::CC::ParserData &in,
 //
 // GetExp_Unar_Inv
 //
-static GDCC::AST::Exp::CRef GetExp_Unar_Inv(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Unar_Inv(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -132,8 +132,8 @@ static GDCC::AST::Exp::CRef GetExp_Unar_Inv(GDCC::CC::ParserData &in,
 //
 // GetExp_Unar_KeyWrd
 //
-static GDCC::AST::Exp::CRef GetExp_Unar_KeyWrd(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Unar_KeyWrd(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -150,8 +150,8 @@ static GDCC::AST::Exp::CRef GetExp_Unar_KeyWrd(GDCC::CC::ParserData &in,
 //
 // GetExp_Unar_Mul
 //
-static GDCC::AST::Exp::CRef GetExp_Unar_Mul(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Unar_Mul(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -163,8 +163,8 @@ static GDCC::AST::Exp::CRef GetExp_Unar_Mul(GDCC::CC::ParserData &in,
 //
 // GetExp_Unar_Not
 //
-static GDCC::AST::Exp::CRef GetExp_Unar_Not(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Unar_Not(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -176,8 +176,8 @@ static GDCC::AST::Exp::CRef GetExp_Unar_Not(GDCC::CC::ParserData &in,
 //
 // GetExp_Unar_Sub
 //
-static GDCC::AST::Exp::CRef GetExp_Unar_Sub(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Unar_Sub(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -189,8 +189,8 @@ static GDCC::AST::Exp::CRef GetExp_Unar_Sub(GDCC::CC::ParserData &in,
 //
 // GetExp_Unar_Sub2
 //
-static GDCC::AST::Exp::CRef GetExp_Unar_Sub2(GDCC::CC::ParserData &in,
-   GDCC::CC::Scope *ctx)
+static GDCC::AST::Exp::CRef GetExp_Unar_Sub2(GDCC::CC::ParserCtx const &in,
+   GDCC::CC::Scope &ctx)
 {
    using namespace GDCC;
 
@@ -211,7 +211,7 @@ namespace GDCC
       //
       // GetExp_Unar
       //
-      AST::Exp::CRef GetExp_Unar(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_Unar(ParserCtx const &in, Scope &ctx)
       {
          switch(in.in.peek().tok)
          {

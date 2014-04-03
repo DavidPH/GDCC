@@ -50,11 +50,11 @@ namespace GDCC
       //
       // Scope_Local constructor
       //
-      Scope_Local::Scope_Local(Scope_Global *global_, Scope_Function *fn_) :
-         Scope{global_},
+      Scope_Local::Scope_Local(Scope_Global &global_, Scope_Function &fn_) :
+         Scope{&global_},
 
-         fn    {fn_},
-         global{global_},
+         fn    (fn_),
+         global(global_),
          label {Core::STRNULL}
       {
       }
@@ -62,11 +62,11 @@ namespace GDCC
       //
       // Scope_Local constructor
       //
-      Scope_Local::Scope_Local(Scope_Local *parent_) :
-         Scope{parent_},
+      Scope_Local::Scope_Local(Scope_Local &parent_) :
+         Scope{&parent_},
 
-         fn    {parent_->fn},
-         global{parent_->global},
+         fn    (parent_.fn),
+         global(parent_.global),
          label {Core::STRNULL}
       {
       }
@@ -76,8 +76,6 @@ namespace GDCC
       //
       Scope_Local::~Scope_Local()
       {
-         for(auto &ctx : subScopes)
-            delete ctx;
       }
 
       //
@@ -116,33 +114,33 @@ namespace GDCC
       //
       // Scope_Local::createScopeBlock
       //
-      Scope_Block *Scope_Local::createScopeBlock()
+      Scope_Block &Scope_Local::createScopeBlock()
       {
-         auto ctx = new Scope_Block(this);
+         auto ctx = new Scope_Block(*this);
          subScopes.emplace_back(ctx);
-         return ctx;
+         return *ctx;
       }
 
       //
       // Scope_Local::createScopeLoop
       //
-      Scope_Block *Scope_Local::createScopeLoop()
+      Scope_Block &Scope_Local::createScopeLoop()
       {
          // FIXME
-         auto ctx = new Scope_Block(this);
+         auto ctx = new Scope_Block(*this);
          subScopes.emplace_back(ctx);
-         return ctx;
+         return *ctx;
       }
 
       //
       // Scope_Local::createScopeSwitch
       //
-      Scope_Block *Scope_Local::createScopeSwitch()
+      Scope_Block &Scope_Local::createScopeSwitch()
       {
          // FIXME
-         auto ctx = new Scope_Block(this);
+         auto ctx = new Scope_Block(*this);
          subScopes.emplace_back(ctx);
-         return ctx;
+         return *ctx;
       }
 
       //
@@ -152,13 +150,13 @@ namespace GDCC
       {
          // Actual linkages must go through global.
          if(linka != IR::Linkage::None)
-            return global->genGlyphObj(name, linka);
+            return global.genGlyphObj(name, linka);
 
          // Anonymous objects with no linkage need a fully generated name.
-         if(!name) return fn->fn->genLabel();
+         if(!name) return fn.fn->genLabel();
 
          // Otherwise, base it on the scope's prefix (generating if needed).
-         if(!label) label = fn->fn->genLabel();
+         if(!label) label = fn.fn->genLabel();
          return label + name;
       }
 
@@ -167,7 +165,7 @@ namespace GDCC
       //
       void Scope_Local::genIR(IR::Program &prog)
       {
-         for(auto ctx : subScopes)
+         for(auto &ctx : subScopes)
             ctx->genIR(prog);
 
          for(auto itr : localObj)
@@ -180,7 +178,7 @@ namespace GDCC
       AST::Object::Ref Scope_Local::getObject(AST::Attribute const &attr)
       {
          if(attr.storeExt || attr.storeInt)
-            return global->getObject(attr);
+            return global.getObject(attr);
 
          auto glyph = genGlyphObj(attr.name, attr.linka);
          auto obj   = AST::Object::Create(attr.name, glyph);

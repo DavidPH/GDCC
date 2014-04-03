@@ -46,7 +46,7 @@ namespace GDCC
       //
       // GetExp_Mult
       //
-      AST::Exp::CRef GetExp_Mult(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_Mult(ParserCtx const &in, Scope &ctx)
       {
          DeclExpCreate(GetExp_Cast, GetExp_Cast);
 
@@ -65,7 +65,7 @@ namespace GDCC
       //
       // GetExp_Addi
       //
-      AST::Exp::CRef GetExp_Addi(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_Addi(ParserCtx const &in, Scope &ctx)
       {
          DeclExpCreate(GetExp_Mult, GetExp_Mult);
 
@@ -83,7 +83,7 @@ namespace GDCC
       //
       // GetExp_Shft
       //
-      AST::Exp::CRef GetExp_Shft(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_Shft(ParserCtx const &in, Scope &ctx)
       {
          DeclExpCreate(GetExp_Addi, GetExp_Addi);
 
@@ -101,7 +101,7 @@ namespace GDCC
       //
       // GetExp_Rela
       //
-      AST::Exp::CRef GetExp_Rela(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_Rela(ParserCtx const &in, Scope &ctx)
       {
          DeclExpCreate(GetExp_Shft, GetExp_Shft);
 
@@ -121,7 +121,7 @@ namespace GDCC
       //
       // GetExp_Equa
       //
-      AST::Exp::CRef GetExp_Equa(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_Equa(ParserCtx const &in, Scope &ctx)
       {
          DeclExpCreate(GetExp_Rela, GetExp_Rela);
 
@@ -138,7 +138,7 @@ namespace GDCC
       //
       // GetExp_BAnd
       //
-      AST::Exp::CRef GetExp_BAnd(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_BAnd(ParserCtx const &in, Scope &ctx)
       {
          DeclExpCreate(GetExp_Equa, GetExp_Equa);
 
@@ -151,7 +151,7 @@ namespace GDCC
       //
       // GetExp_BOrX
       //
-      AST::Exp::CRef GetExp_BOrX(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_BOrX(ParserCtx const &in, Scope &ctx)
       {
          DeclExpCreate(GetExp_BAnd, GetExp_BAnd);
 
@@ -164,7 +164,7 @@ namespace GDCC
       //
       // GetExp_BOrI
       //
-      AST::Exp::CRef GetExp_BOrI(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_BOrI(ParserCtx const &in, Scope &ctx)
       {
          DeclExpCreate(GetExp_BOrX, GetExp_BOrX);
 
@@ -177,7 +177,7 @@ namespace GDCC
       //
       // GetExp_LAnd
       //
-      AST::Exp::CRef GetExp_LAnd(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_LAnd(ParserCtx const &in, Scope &ctx)
       {
          DeclExpCreate(GetExp_BOrI, GetExp_BOrI);
 
@@ -190,7 +190,7 @@ namespace GDCC
       //
       // GetExp_LOrI
       //
-      AST::Exp::CRef GetExp_LOrI(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_LOrI(ParserCtx const &in, Scope &ctx)
       {
          DeclExpCreate(GetExp_LAnd, GetExp_LAnd);
 
@@ -203,7 +203,7 @@ namespace GDCC
       //
       // GetExp_Cond
       //
-      AST::Exp::CRef GetExp_Cond(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_Cond(ParserCtx const &in, Scope &ctx)
       {
          auto exp = GetExp_LOrI(in, ctx);
 
@@ -225,7 +225,7 @@ namespace GDCC
       //
       // GetExp_Assi
       //
-      AST::Exp::CRef GetExp_Assi(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp_Assi(ParserCtx const &in, Scope &ctx)
       {
          DeclExpCreate(GetExp_Cond, GetExp_Assi);
 
@@ -251,7 +251,7 @@ namespace GDCC
       //
       // GetExp
       //
-      AST::Exp::CRef GetExp(ParserData &in, Scope *ctx)
+      AST::Exp::CRef GetExp(ParserCtx const &in, Scope &ctx)
       {
          DeclExpCreate(GetExp_Assi, GetExp_Assi);
 

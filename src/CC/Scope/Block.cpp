@@ -24,7 +24,7 @@ namespace GDCC
       //
       // Scope_Block constructor
       //
-      Scope_Block::Scope_Block(Scope_Local *parent_) :
+      Scope_Block::Scope_Block(Scope_Local &parent_) :
          Scope_Local{parent_}
       {
       }

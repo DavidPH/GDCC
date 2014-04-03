@@ -61,7 +61,7 @@
 //    <call>
 //    <__call>
 //
-static void ParseAttr_call(GDCC::CC::ParserData &in, GDCC::CC::Scope *,
+static void ParseAttr_call(GDCC::CC::ParserCtx const &in, GDCC::CC::Scope &,
    GDCC::AST::Attribute &attr)
 {
    using namespace GDCC;
@@ -106,7 +106,7 @@ static void ParseAttr_call(GDCC::CC::ParserData &in, GDCC::CC::Scope *,
 // attribute-extern:
 //    <extern> ( string-literal )
 //
-static void ParseAttr_extern(GDCC::CC::ParserData &in, GDCC::CC::Scope *,
+static void ParseAttr_extern(GDCC::CC::ParserCtx const &in, GDCC::CC::Scope &,
    GDCC::AST::Attribute &attr)
 {
    using namespace GDCC;
@@ -157,7 +157,7 @@ namespace GDCC
       // absolutely must not ever alter the interpretation of strictly
       // conforming programs.
       //
-      bool IsAttrSpec(ParserData &in, Scope *)
+      bool IsAttrSpec(ParserCtx const &in, Scope &)
       {
          // [ [
          if(in.in.drop(Core::TOK_BrackO))
@@ -187,7 +187,7 @@ namespace GDCC
       //
       // ParseAttr
       //
-      void ParseAttr(ParserData &in, Scope *ctx, AST::Attribute &attr)
+      void ParseAttr(ParserCtx const &in, Scope &ctx, AST::Attribute &attr)
       {
          auto name = in.in.peek();
 
@@ -224,7 +224,7 @@ namespace GDCC
       //
       // ParseAttrList
       //
-      void ParseAttrList(ParserData &in, Scope *ctx, AST::Attribute &attr)
+      void ParseAttrList(ParserCtx const &in, Scope &ctx, AST::Attribute &attr)
       {
          // attribute-list:
          //    attribute(opt)
@@ -236,7 +236,7 @@ namespace GDCC
       //
       // ParseAttrSpec
       //
-      void ParseAttrSpec(ParserData &in, Scope *ctx, AST::Attribute &attr)
+      void ParseAttrSpec(ParserCtx const &in, Scope &ctx, AST::Attribute &attr)
       {
          // attribute-specifier:
          //    [ [ attribute-list ] ]

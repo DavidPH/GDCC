@@ -79,15 +79,15 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
    CPP::Macro::Reset();
    CPP::Macro::LinePush(CPP::Macro::Stringize(inStr));
 
-   CPP::PragmaLangC pragma;
-   Core::String     path = Core::PathDirname(inStr);
-   CPP::TStream     str    {fbuf, pragma, inStr, path};
-   CC::ParserData   in     {str, pragma, prog};
-   CC::Scope_Global ctx;
+   CPP::PragmaLangC prag{};
+   Core::String     path{Core::PathDirname(inStr)};
+   CPP::TStream     tstr{fbuf, prag, inStr, path};
+   CC::ParserCtx    in  {tstr, prag, prog};
+   CC::Scope_Global ctx {};
 
    // Read declarations.
    while(in.in.peek().tok != Core::TOK_EOF)
-      CC::GetDecl(in, &ctx);
+      CC::GetDecl(in, ctx);
 
    ctx.allocAuto();
 
