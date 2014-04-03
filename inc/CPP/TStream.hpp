@@ -46,18 +46,18 @@ namespace GDCC
          //
          // constructor
          //
-         IncStream(std::streambuf &buf_, Pragma &pragma, Core::String file,
-            Core::String dir) :
+         IncStream(std::streambuf &buf_, MacroMap &macros, Pragma &pragma,
+            Core::String file, Core::String dir) :
             Core::TokenStream{&pbuf},
             istr{buf_, file},
             tbuf{istr},
-            cdir{tbuf},
-            ddir{cdir},
+            cdir{tbuf, macros},
+            ddir{cdir, macros},
             edir{ddir},
-            idir{edir, istr, pragma, dir},
-            ldir{idir},
+            idir{edir, istr, macros, pragma, dir},
+            ldir{idir, macros},
             pdir{ldir, pragma},
-            udir{pdir},
+            udir{pdir, macros},
             pbuf{udir, pragma}
          {
          }
@@ -95,10 +95,10 @@ namespace GDCC
          //
          // constructor
          //
-         PPStream(std::streambuf &buf_, Pragma &pragma, Core::String file,
-            Core::String dir) :
-            IncStream{buf_, pragma, file, dir},
-            mbuf{pbuf},
+         PPStream(std::streambuf &buf_, MacroMap &macros, Pragma &pragma,
+            Core::String file, Core::String dir) :
+            IncStream{buf_, macros, pragma, file, dir},
+            mbuf{pbuf, macros},
             sbuf{mbuf},
             cbuf{sbuf}
          {
@@ -124,9 +124,9 @@ namespace GDCC
          //
          // constructor
          //
-         TStream(std::streambuf &buf_, Pragma &pragma, Core::String file,
-            Core::String dir) :
-            PPStream{buf_, pragma, file, dir},
+         TStream(std::streambuf &buf_, MacroMap &macros, Pragma &pragma,
+            Core::String file, Core::String dir) :
+            PPStream{buf_, macros, pragma, file, dir},
             wbuf{cbuf},
             ppbf{wbuf},
             bbuf{ppbf}

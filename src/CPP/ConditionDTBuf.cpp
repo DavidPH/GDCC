@@ -48,8 +48,8 @@ namespace GDCC
 
          // Set up token stream.
          Core::ArrayTBuf abuf{toks.data(), toks.size()};
-         DefinedTBuf dbuf{abuf};
-         MacroTBuf mbuf{dbuf};
+         DefinedTBuf dbuf{abuf, macros};
+         MacroTBuf mbuf{dbuf, macros};
          IdentiTBuf ibuf{mbuf};
          StringTBuf sbuf{ibuf};
          Core::WSpaceTBuf wbuf{sbuf};
@@ -164,7 +164,7 @@ namespace GDCC
                throw EXIT_FAILURE;
             }
 
-            state.back().isSkip = !Macro::Get(src.get());
+            state.back().isSkip = !macros.find(src.get());
             state.back().isElif = !state.back().isSkip;
 
             return true;
@@ -182,7 +182,7 @@ namespace GDCC
                throw EXIT_FAILURE;
             }
 
-            state.back().isSkip = Macro::Get(src.get());
+            state.back().isSkip = macros.find(src.get());
             state.back().isElif = !state.back().isSkip;
 
             return true;
@@ -232,7 +232,7 @@ namespace GDCC
             }
 
             buf[0].tok = Core::TOK_Number;
-            buf[0].str = Macro::Get(src.get()) ? Core::STR_1 : Core::STR_0;
+            buf[0].str = macros.find(src.get()) ? Core::STR_1 : Core::STR_0;
 
             if(paren)
             {

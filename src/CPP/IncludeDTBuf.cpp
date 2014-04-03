@@ -88,7 +88,7 @@ namespace GDCC
 
          // Build macro buffer.
          Core::ArrayTBuf abuf{toks.data(), toks.size()};
-         MacroTBuf mbuf{abuf};
+         MacroTBuf mbuf{abuf, macros};
 
          // Skip whitespace that probably shouldn't exist.
          while(mbuf.peek().tok == Core::TOK_WSpace) mbuf.get();
@@ -166,10 +166,11 @@ namespace GDCC
             auto path = Core::PathConcat(sys, name);
             if(fbuf->open(path.data(), std::ios_base::in))
             {
-               Macro::LinePush(Macro::Stringize(path));
+               macros.linePush(Macro::Stringize(path));
 
                str = std::move(fbuf);
-               inc.reset(new IncStream(*str, pragma, path, Core::PathDirname(path)));
+               inc.reset(new IncStream(*str, macros, pragma, path,
+                  Core::PathDirname(path)));
 
                return true;
             }
@@ -205,10 +206,11 @@ namespace GDCC
          return false;
 
       inc:
-         Macro::LinePush(Macro::Stringize(path));
+         macros.linePush(Macro::Stringize(path));
 
          str = std::move(fbuf);
-         inc.reset(new IncStream(*str, pragma, path, Core::PathDirname(path)));
+         inc.reset(new IncStream(*str, macros, pragma, path,
+            Core::PathDirname(path)));
 
          return true;
       }
@@ -225,7 +227,7 @@ namespace GDCC
             if(*inc >> buf[0])
                return sett(buf, buf, buf + 1);
 
-            Macro::LineDrop();
+            macros.lineDrop();
             inc.reset();
             str.reset();
          }

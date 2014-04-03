@@ -29,6 +29,7 @@ namespace GDCC
    namespace CPP
    {
       class Macro;
+      class MacroMap;
 
       //
       // MacroTBuf
@@ -40,8 +41,8 @@ namespace GDCC
          using Rng = Core::Range<Itr>;
 
 
-
-         explicit MacroTBuf(Core::TokenBuf &src_) : src(src_), ignoreAll{false} {}
+         MacroTBuf(Core::TokenBuf &src_, MacroMap &macros_) :
+            src(src_), macros(macros_), ignoreAll{false} {}
 
       protected:
          void applyMarker(Core::String str);
@@ -53,11 +54,12 @@ namespace GDCC
 
          virtual void underflow();
 
-         Core::TokenBuf &src;
-
          std::list<Core::Token> buf;
 
          std::unordered_set<Core::String> ignore;
+
+         Core::TokenBuf &src;
+         MacroMap       &macros;
 
          bool ignoreAll : 1;
       };

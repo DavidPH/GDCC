@@ -80,14 +80,14 @@ namespace GDCC
          newMacro.list = GetList(src);
 
          // Check against existing macro.
-         if(auto oldMacro = Macro::Get(name)) if(*oldMacro != newMacro)
+         if(auto oldMacro = macros.find(name)) if(*oldMacro != newMacro)
          {
             std::cerr << "ERROR: " << name.pos
                << ": incompatible macro redefinition\n";
             throw EXIT_FAILURE;
          }
 
-         Macro::Add(name.str, std::move(newMacro));
+         macros.add(name.str, std::move(newMacro));
 
          return true;
       }
@@ -177,7 +177,7 @@ namespace GDCC
 
          // Build macro buffer.
          Core::ArrayTBuf abuf{toks.data(), toks.size()};
-         MacroTBuf mbuf{abuf};
+         MacroTBuf mbuf{abuf, macros};
 
          while(mbuf.peek().tok == Core::TOK_WSpace) mbuf.get();
 
@@ -210,7 +210,7 @@ namespace GDCC
             throw EXIT_FAILURE;
          }
 
-         Macro::LineLine(num - numTok.pos.line);
+         macros.lineLine(num - numTok.pos.line);
 
          while(mbuf.peek().tok == Core::TOK_WSpace) mbuf.get();
 
@@ -223,7 +223,7 @@ namespace GDCC
             throw EXIT_FAILURE;
          }
 
-         Macro::LineFile(src.get().str);
+         macros.lineFile(src.get().str);
 
          return true;
       }
@@ -247,7 +247,7 @@ namespace GDCC
             throw EXIT_FAILURE;
          }
 
-         Macro::Rem(src.get().str);
+         macros.rem(src.get().str);
 
          if(src.peek().tok == Core::TOK_WSpace) src.get();
 

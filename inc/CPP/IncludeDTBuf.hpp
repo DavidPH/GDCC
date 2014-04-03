@@ -27,6 +27,7 @@ namespace GDCC
    namespace CPP
    {
       class IStream;
+      class MacroMap;
       class Pragma;
 
       //
@@ -35,10 +36,11 @@ namespace GDCC
       class IncludeDTBuf final : public DirectiveTBuf
       {
       public:
-         IncludeDTBuf(Core::TokenBuf &src_, IStream &istr_, Pragma &pragma_,
-            Core::String dir_) :
+         IncludeDTBuf(Core::TokenBuf &src_, IStream &istr_, MacroMap &macros_,
+            Pragma &pragma_, Core::String dir_) :
             DirectiveTBuf{src_},
             istr(istr_),
+            macros(macros_),
             pragma(pragma_),
             dir{dir_}
          {
@@ -58,6 +60,7 @@ namespace GDCC
          std::unique_ptr<IncStream>      inc;
 
          IStream     &istr;
+         MacroMap    &macros;
          Pragma      &pragma;
          Core::String dir;
       };

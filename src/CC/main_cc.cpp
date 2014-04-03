@@ -74,14 +74,11 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
       throw EXIT_FAILURE;
    }
 
-   auto inStr = Core::AddString(inName);
-
-   CPP::Macro::Reset();
-   CPP::Macro::LinePush(CPP::Macro::Stringize(inStr));
-
+   Core::String     file{Core::AddString(inName)};
+   CPP::MacroMap    macr{CPP::Macro::Stringize(file)};
    CPP::PragmaLangC prag{};
-   Core::String     path{Core::PathDirname(inStr)};
-   CPP::TStream     tstr{fbuf, prag, inStr, path};
+   Core::String     path{Core::PathDirname(file)};
+   CPP::TStream     tstr{fbuf, macr, prag, file, path};
    CC::ParserCtx    in  {tstr, prag, prog};
    CC::Scope_Global ctx {};
 

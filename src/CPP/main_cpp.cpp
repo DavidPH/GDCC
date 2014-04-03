@@ -63,14 +63,10 @@ static void ProcessFile(std::ostream &out, char const *inName)
       throw EXIT_FAILURE;
    }
 
-   auto inStr = Core::AddString(inName);
-
-   CPP::Macro::Reset();
-   CPP::Macro::LinePush(CPP::Macro::Stringize(inStr));
-
-   CPP::PragmaLangC pragma;
-
-   CPP::PPStream in{fbuf, pragma, inStr, Core::PathDirname(inStr)};
+   Core::String     file{Core::AddString(inName)};
+   CPP::MacroMap    macr{CPP::Macro::Stringize(file)};
+   CPP::PragmaLangC prag{};
+   CPP::PPStream    in  {fbuf, macr, prag, file, Core::PathDirname(file)};
 
    for(Core::Token tok; in >> tok;) switch(tok.tok)
    {

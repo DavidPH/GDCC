@@ -26,13 +26,16 @@ namespace GDCC
 {
    namespace CPP
    {
+      class MacroMap;
+
       //
       // ConditionDTBuf
       //
       class ConditionDTBuf : public DirectiveTBuf
       {
       public:
-         explicit ConditionDTBuf(Core::TokenBuf &src_) : DirectiveTBuf{src_} {}
+         ConditionDTBuf(Core::TokenBuf &src_, MacroMap &macros_) :
+            DirectiveTBuf{src_}, macros(macros_) {}
 
       protected:
          //
@@ -58,6 +61,7 @@ namespace GDCC
          virtual void underflow();
 
          std::vector<CondState> state;
+         MacroMap              &macros;
       };
 
       //
@@ -68,13 +72,15 @@ namespace GDCC
       class DefinedTBuf : public Core::TokenBuf
       {
       public:
-         explicit DefinedTBuf(Core::TokenBuf &src_) : src(src_) {}
+         DefinedTBuf(Core::TokenBuf &src_, MacroMap &macros_) :
+            macros(macros_), src(src_) {}
 
       protected:
          virtual void underflow();
 
+         Core::Token     buf[1];
+         MacroMap       &macros;
          Core::TokenBuf &src;
-         Core::Token buf[1];
       };
 
       //

@@ -185,7 +185,7 @@ namespace GDCC
          if(ignoreAll || itr->tok != Core::TOK_Identi || ignore.count(itr->str))
             return false;
 
-         auto macro = Macro::Get(*itr);
+         auto macro = macros.find(*itr);
          if(!macro) return false;
 
          // Function-like macro.
@@ -345,7 +345,7 @@ namespace GDCC
 
                   // Build token buffer.
                   Core::ArrayTBuf abuf{toks.data(), toks.size()};
-                  MacroTBuf mbuf{abuf};
+                  MacroTBuf mbuf{abuf, macros};
 
                   // Read from buffer.
                   while(mbuf.peek().tok != Core::TOK_EOF)

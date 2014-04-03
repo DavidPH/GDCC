@@ -26,6 +26,8 @@ namespace GDCC
 {
    namespace CPP
    {
+      class MacroMap;
+
       //
       // DefineDTBuf
       //
@@ -34,7 +36,8 @@ namespace GDCC
       class DefineDTBuf final : public DirectiveTBuf
       {
       public:
-         explicit DefineDTBuf(Core::TokenBuf &src_) : DirectiveTBuf{src_} {}
+         DefineDTBuf(Core::TokenBuf &src_, MacroMap &macros_) :
+            DirectiveTBuf{src_}, macros(macros_) {}
 
 
          static Core::Array<Core::String> GetArgs(Core::TokenBuf &src);
@@ -42,6 +45,8 @@ namespace GDCC
 
       protected:
          virtual bool directive(Core::Token const &tok);
+
+         MacroMap &macros;
       };
 
       //
@@ -52,10 +57,13 @@ namespace GDCC
       class LineDTBuf final : public DirectiveTBuf
       {
       public:
-         explicit LineDTBuf(Core::TokenBuf &src_) : DirectiveTBuf{src_} {}
+         LineDTBuf(Core::TokenBuf &src_, MacroMap &macros_) :
+            DirectiveTBuf{src_}, macros(macros_) {}
 
       protected:
          virtual bool directive(Core::Token const &tok);
+
+         MacroMap &macros;
       };
 
       //
@@ -66,10 +74,13 @@ namespace GDCC
       class UndefDTBuf final : public DirectiveTBuf
       {
       public:
-         explicit UndefDTBuf(Core::TokenBuf &src_) : DirectiveTBuf{src_} {}
+         UndefDTBuf(Core::TokenBuf &src_, MacroMap &macros_) :
+            DirectiveTBuf{src_}, macros(macros_) {}
 
       protected:
          virtual bool directive(Core::Token const &tok);
+
+         MacroMap &macros;
       };
    }
 }
