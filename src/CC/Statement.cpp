@@ -12,6 +12,8 @@
 
 #include "CC/Statement.hpp"
 
+#include "AST/Statement.hpp"
+
 #include "Core/Exception.hpp"
 
 

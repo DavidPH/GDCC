@@ -19,6 +19,7 @@
 #include "AST/Attribute.hpp"
 #include "AST/Function.hpp"
 #include "AST/Object.hpp"
+#include "AST/Statement.hpp"
 #include "AST/Storage.hpp"
 #include "AST/Type.hpp"
 
