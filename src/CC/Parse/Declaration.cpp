@@ -154,6 +154,22 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Local &ctx,
    else
       attr.linka = IR::Linkage::None;
 
+   // Automatic storage objects can only have certain address sapce qualifiers.
+   if(!attr.storeExt && !attr.storeInt)
+   {
+      switch(attr.type->getQualAddr().base)
+      {
+      case IR::AddrBase::Gen:
+      case IR::AddrBase::Loc:
+      case IR::AddrBase::LocReg:
+         break;
+
+      default:
+         throw Core::ExceptStr(attr.namePos,
+            "invalid address space for automatic storage object");
+      }
+   }
+
    // Fetch/generate object.
    auto obj = ctx.getObject(attr);
 
