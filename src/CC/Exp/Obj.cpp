@@ -74,6 +74,14 @@ namespace GDCC
       }
 
       //
+      // Exp_Obj::v_getObject
+      //
+      AST::Object::Ref Exp_Obj::v_getObject() const
+      {
+         return obj;
+      }
+
+      //
       // Exp_Obj::v_getType
       //
       AST::Type::CRef Exp_Obj::v_getType() const
@@ -101,14 +109,6 @@ namespace GDCC
       bool Exp_Obj::v_isIRExp() const
       {
          return false;
-      }
-
-      //
-      // Exp_Obj::v_setRefer
-      //
-      void Exp_Obj::v_setRefer() const
-      {
-         obj->refer = true;
       }
 
       //

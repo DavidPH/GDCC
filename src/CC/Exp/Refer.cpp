@@ -13,6 +13,7 @@
 #include "CC/Exp/Refer.hpp"
 
 #include "AST/Arg.hpp"
+#include "AST/Object.hpp"
 #include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -83,7 +84,9 @@ namespace GDCC
          if(type->isTypeBitfield())
             throw Core::ExceptStr(pos, "cannot get address of bitfield");
 
-         // TODO: Check if e is an object declared as register/noPtr.
+         // Check if e is an object declared as register.
+         if(e->isObject() && e->getObject()->noRef)
+            throw Core::ExceptStr(pos, "cannot get address of register object");
 
          e->setRefer();
 

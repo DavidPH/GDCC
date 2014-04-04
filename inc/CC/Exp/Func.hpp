@@ -34,8 +34,8 @@ namespace GDCC
          GDCC_Core_CounterPreamble(GDCC::CC::Exp_Func, GDCC::AST::Exp);
 
       public:
-         Core::CounterRef<AST::Function> const fn;
-         IR::Program                          &prog;
+         FunctionRef const fn;
+         IR::Program      &prog;
 
 
          friend AST::Exp::CRef ExpCreate_Func(IR::Program &prog,
@@ -50,9 +50,13 @@ namespace GDCC
 
          virtual AST::Arg v_getArg() const;
 
+         virtual FunctionRef v_getFunction() const;
+
          virtual TypeCRef v_getType() const;
 
          virtual bool v_isEffect() const;
+
+         virtual bool v_isFunction() const {return true;}
 
          virtual bool v_isIRExp() const;
       };

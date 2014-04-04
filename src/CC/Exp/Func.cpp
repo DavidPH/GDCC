@@ -74,6 +74,14 @@ namespace GDCC
       }
 
       //
+      // Exp_Func::v_getFunction
+      //
+      AST::Function::Ref Exp_Func::v_getFunction() const
+      {
+         return fn;
+      }
+
+      //
       // Exp_Func::v_getType
       //
       AST::Type::CRef Exp_Func::v_getType() const

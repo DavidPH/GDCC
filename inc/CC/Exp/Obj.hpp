@@ -34,8 +34,8 @@ namespace GDCC
          GDCC_Core_CounterPreamble(GDCC::CC::Exp_Obj, GDCC::AST::Exp);
 
       public:
-         Core::CounterRef<AST::Object> const obj;
-         IR::Program                        &prog;
+         ObjectRef const obj;
+         IR::Program    &prog;
 
 
          friend AST::Exp::CRef ExpCreate_Obj(IR::Program &prog,
@@ -50,13 +50,15 @@ namespace GDCC
 
          virtual AST::Arg v_getArg() const;
 
+         virtual ObjectRef v_getObject() const;
+
          virtual TypeCRef v_getType() const;
 
          virtual bool v_isEffect() const;
 
          virtual bool v_isIRExp() const;
 
-         virtual void v_setRefer() const;
+         virtual bool v_isObject() const {return true;}
       };
 
       //

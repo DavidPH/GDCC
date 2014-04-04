@@ -13,6 +13,8 @@
 #include "AST/Exp.hpp"
 
 #include "AST/Arg.hpp"
+#include "AST/Function.hpp"
+#include "AST/Object.hpp"
 #include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -158,6 +160,14 @@ namespace GDCC
       }
 
       //
+      // Exp::getFunction
+      //
+      Function::Ref Exp::getFunction() const
+      {
+         return v_getFunction();
+      }
+
+      //
       // Exp::getIRExp
       //
       IR::Exp::CRef Exp::getIRExp() const
@@ -177,6 +187,14 @@ namespace GDCC
       }
 
       //
+      // Exp::getObject
+      //
+      Object::Ref Exp::getObject() const
+      {
+         return v_getObject();
+      }
+
+      //
       // Exp::getType
       //
       Type::CRef Exp::getType() const
@@ -193,11 +211,27 @@ namespace GDCC
       }
 
       //
+      // Exp::isFunction
+      //
+      bool Exp::isFunction() const
+      {
+         return v_isFunction();
+      }
+
+      //
       // Exp::isIRExp
       //
       bool Exp::isIRExp() const
       {
          return v_isIRExp();
+      }
+
+      //
+      // Exp::isObject
+      //
+      bool Exp::isObject() const
+      {
+         return v_isObject();
       }
 
       //
@@ -217,7 +251,8 @@ namespace GDCC
       //
       void Exp::setRefer() const
       {
-         v_setRefer();
+         if(v_isObject())
+            v_getObject()->refer = true;
       }
 
       //
@@ -229,6 +264,14 @@ namespace GDCC
       }
 
       //
+      // Exp::v_getFunction
+      //
+      Function::Ref Exp::v_getFunction() const
+      {
+         throw Core::ExceptStr(pos, "expected function designator expression");
+      }
+
+      //
       // Exp::v_getIRExp
       //
       IR::Exp::CRef Exp::v_getIRExp() const
@@ -237,10 +280,27 @@ namespace GDCC
       }
 
       //
-      // Exp::v_setRefer
+      // Exp::v_getObject
       //
-      void Exp::v_setRefer() const
+      Object::Ref Exp::v_getObject() const
       {
+         throw Core::ExceptStr(pos, "expected object designator expression");
+      }
+
+      //
+      // Exp::v_isFunction
+      //
+      bool Exp::v_isFunction() const
+      {
+         return false;
+      }
+
+      //
+      // Exp::v_isObject
+      //
+      bool Exp::v_isObject() const
+      {
+         return false;
       }
    }
 }

@@ -35,6 +35,7 @@ namespace GDCC
    {
       class Arg;
       class Function;
+      class Object;
       class Type;
 
       //
@@ -45,9 +46,11 @@ namespace GDCC
          GDCC_Core_CounterPreambleAbstract(GDCC::AST::Exp, GDCC::Core::Counter);
 
       protected:
-         using IRExpCPtr = Core::CounterPtr<IR::Exp const>;
-         using IRExpCRef = Core::CounterRef<IR::Exp const>;
-         using TypeCRef  = Core::CounterRef<Type const>;
+         using FunctionRef = Core::CounterRef<Function>;
+         using IRExpCPtr   = Core::CounterPtr<IR::Exp const>;
+         using IRExpCRef   = Core::CounterRef<IR::Exp const>;
+         using ObjectRef   = Core::CounterRef<Object>;
+         using TypeCRef    = Core::CounterRef<Type const>;
 
       public:
          void genStmnt(GenStmntCtx const &ctx) const;
@@ -61,15 +64,25 @@ namespace GDCC
          Arg getArgDup() const;
          Arg getArgSrc() const;
 
+         FunctionRef getFunction() const;
+
          IRExpCRef getIRExp() const;
+
+         ObjectRef getObject() const;
 
          TypeCRef getType() const;
 
          // Does this expression have side effects?
          bool isEffect() const;
 
+         // Does this expression designate a function?
+         bool isFunction() const;
+
          // Can this expression be made into an IR expression?
          bool isIRExp() const;
+
+         // Does this expression designate an AST::Object?
+         bool isObject() const;
 
          // Is this expression known to be zero?
          bool isZero() const;
@@ -88,15 +101,21 @@ namespace GDCC
 
          virtual Arg v_getArg() const;
 
+         virtual FunctionRef v_getFunction() const;
+
          virtual IRExpCRef v_getIRExp() const;
+
+         virtual ObjectRef v_getObject() const;
 
          virtual TypeCRef v_getType() const = 0;
 
          virtual bool v_isEffect() const = 0;
 
+         virtual bool v_isFunction() const;
+
          virtual bool v_isIRExp() const = 0;
 
-         virtual void v_setRefer() const;
+         virtual bool v_isObject() const;
 
       private:
          mutable IRExpCPtr cacheIRExp;
