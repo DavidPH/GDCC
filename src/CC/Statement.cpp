@@ -35,24 +35,6 @@ namespace GDCC
 
       // Stubs.
 
-      AST::Statement::CRef StatementCreate_Break(
-         Core::Array<Core::String> const &, Core::Origin pos,
-         Scope_Local &)
-         {throw Core::ExceptStr(pos, "stub");}
-      AST::Statement::CRef StatementCreate_Break(
-         Core::Array<Core::String>      &&, Core::Origin pos,
-         Scope_Local &)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      AST::Statement::CRef StatementCreate_Continue(
-         Core::Array<Core::String> const &, Core::Origin pos,
-         Scope_Local &)
-         {throw Core::ExceptStr(pos, "stub");}
-      AST::Statement::CRef StatementCreate_Continue(
-         Core::Array<Core::String>      &&, Core::Origin pos,
-         Scope_Local &)
-         {throw Core::ExceptStr(pos, "stub");}
-
       AST::Statement::CRef StatementCreate_Do(
          Core::Array<Core::String> const &, Core::Origin pos,
          Scope_Local &, AST::Statement const *, AST::Exp const *)
@@ -71,15 +53,6 @@ namespace GDCC
          Core::Array<Core::String>      &&, Core::Origin pos,
          Scope_Local &, AST::Statement const *, AST::Exp const *,
          AST::Statement const *, AST::Statement const *)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      AST::Statement::CRef StatementCreate_Goto(
-         Core::Array<Core::String> const &, Core::Origin pos,
-         Scope_Local &, Core::String)
-         {throw Core::ExceptStr(pos, "stub");}
-      AST::Statement::CRef StatementCreate_Goto(
-         Core::Array<Core::String>      &&, Core::Origin pos,
-         Scope_Local &, Core::String)
          {throw Core::ExceptStr(pos, "stub");}
 
       AST::Statement::CRef StatementCreate_If(

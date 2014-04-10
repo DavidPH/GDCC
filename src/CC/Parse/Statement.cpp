@@ -352,7 +352,7 @@ static GDCC::AST::Statement::CRef GetStatement_switch(
 {
    using namespace GDCC;
 
-   auto &switchCtx = ctx.createScopeSwitch();
+   auto &switchCtx = ctx.createScopeCase();
 
    // <switch> ( expression ) statement
 
@@ -434,7 +434,12 @@ static GDCC::Core::Array<GDCC::Core::String> GetStatementLabel(
             if(!in.in.drop(Core::TOK_Colon))
                throw Core::ExceptStr(in.in.peek().pos, "expected ':'");
 
-            throw Core::ExceptStr(tok.pos, "case stub");
+            auto label = ctx.getLabelCase(val, true);
+
+            if(!label)
+               throw Core::ExceptStr(tok.pos, "case redefined");
+
+            labels.emplace_back(label);
          }
 
          // <default> :
@@ -443,7 +448,12 @@ static GDCC::Core::Array<GDCC::Core::String> GetStatementLabel(
             if(!in.in.drop(Core::TOK_Colon))
                throw Core::ExceptStr(in.in.peek().pos, "expected ':'");
 
-            throw Core::ExceptStr(tok.pos, "default stub");
+            auto label = ctx.getLabelDefault(true);
+
+            if(!label)
+               throw Core::ExceptStr(tok.pos, "default redefined");
+
+            labels.emplace_back(label);
          }
 
          else
@@ -456,7 +466,12 @@ static GDCC::Core::Array<GDCC::Core::String> GetStatementLabel(
          in.in.get();
          if(in.in.drop(Core::TOK_Colon))
          {
-            throw Core::ExceptStr(tok.pos, "label stub");
+            auto label = ctx.getLabel(tok.str);
+
+            if(!label)
+               throw Core::ExceptStr(tok.pos, "label redefined");
+
+            labels.emplace_back(label);
          }
          else
          {

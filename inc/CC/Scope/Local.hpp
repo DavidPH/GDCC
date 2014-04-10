@@ -65,11 +65,17 @@ namespace GDCC
 
          Scope_Block &createScopeBlock();
          Scope_Block &createScopeLoop();
-         Scope_Block &createScopeSwitch();
+         Scope_Block &createScopeCase();
 
          Core::String genGlyphObj(Core::String name, IR::Linkage linka);
 
          void genIR(IR::Program &prog);
+
+         Core::String getLabel(Core::String name, bool define = false);
+         virtual Core::String getLabelBreak();
+         virtual Core::String getLabelCase(Core::Integ const &n, bool define = false);
+         virtual Core::String getLabelContinue();
+         virtual Core::String getLabelDefault(bool define = false);
 
          Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
 

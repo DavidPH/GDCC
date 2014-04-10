@@ -12,9 +12,10 @@
 
 #include "CC/Scope/Local.hpp"
 
-#include "CC/Scope/Block.hpp"
+#include "CC/Scope/Case.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Scope/Global.hpp"
+#include "CC/Scope/Loop.hpp"
 
 #include "AST/Attribute.hpp"
 #include "AST/Function.hpp"
@@ -126,19 +127,17 @@ namespace GDCC
       //
       Scope_Block &Scope_Local::createScopeLoop()
       {
-         // FIXME
-         auto ctx = new Scope_Block(*this);
+         auto ctx = new Scope_Loop(*this);
          subScopes.emplace_back(ctx);
          return *ctx;
       }
 
       //
-      // Scope_Local::createScopeSwitch
+      // Scope_Local::createScopeCase
       //
-      Scope_Block &Scope_Local::createScopeSwitch()
+      Scope_Block &Scope_Local::createScopeCase()
       {
-         // FIXME
-         auto ctx = new Scope_Block(*this);
+         auto ctx = new Scope_Case(*this);
          subScopes.emplace_back(ctx);
          return *ctx;
       }
@@ -170,6 +169,46 @@ namespace GDCC
 
          for(auto itr : localObj)
             itr.second->genObject(prog);
+      }
+
+      //
+      // Scope_Local::getLabel
+      //
+      Core::String Scope_Local::getLabel(Core::String name, bool define)
+      {
+         return fn.getLabel(name, define);
+      }
+
+      //
+      // Scope_Local::getLabelBreak
+      //
+      Core::String Scope_Local::getLabelBreak()
+      {
+         return static_cast<Scope_Local *>(parent)->getLabelBreak();
+      }
+
+      //
+      // Scope_Local::getLabelCase
+      //
+      Core::String Scope_Local::getLabelCase(Core::Integ const &n, bool define)
+      {
+         return static_cast<Scope_Local *>(parent)->getLabelCase(n, define);
+      }
+
+      //
+      // Scope_Local::getLabelContinue
+      //
+      Core::String Scope_Local::getLabelContinue()
+      {
+         return static_cast<Scope_Local *>(parent)->getLabelContinue();
+      }
+
+      //
+      // Scope_Local::getLabelDefault
+      //
+      Core::String Scope_Local::getLabelDefault(bool define)
+      {
+         return static_cast<Scope_Local *>(parent)->getLabelDefault(define);
       }
 
       //

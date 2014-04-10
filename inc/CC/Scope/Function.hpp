@@ -38,6 +38,12 @@ namespace GDCC
 
          void allocAuto();
 
+         Core::String getLabel(Core::String name, bool define = false);
+         virtual Core::String getLabelBreak();
+         virtual Core::String getLabelCase(Core::Integ const &n, bool define);
+         virtual Core::String getLabelContinue();
+         virtual Core::String getLabelDefault(bool define);
+
          Core::Array<Core::CounterRef<AST::Object>> params;
          Core::CounterRef<AST::Function>            fn;
       };

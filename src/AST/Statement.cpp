@@ -37,6 +37,8 @@ namespace GDCC
       //
       void Statement::genStmnt(GenStmntCtx const &ctx) const
       {
+         ctx.block.setOrigin(pos);
+
          for(auto const &s : labels) ctx.block.addLabel(s);
 
          if(isTrivial())

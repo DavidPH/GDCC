@@ -51,11 +51,15 @@ add_library(gdcc-cc-lib
    Parse/TypeSpec.cpp
    Scope.cpp
    Scope/Block.cpp
+   Scope/Break.cpp
+   Scope/Case.cpp
    Scope/Function.cpp
    Scope/Global.cpp
    Scope/Local.cpp
+   Scope/Loop.cpp
    Statement.cpp
    Statement/FuncPre.cpp
+   Statement/Goto.cpp
    Statement/Return.cpp
    Type.cpp
    Type/Bool.cpp

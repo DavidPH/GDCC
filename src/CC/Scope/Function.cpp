@@ -66,6 +66,47 @@ namespace GDCC
          fn->localArs = allocSub.localArs;
          fn->localReg = allocSub.localReg;
       }
+
+      //
+      // Scope_Function::getLabel
+      //
+      Core::String Scope_Function::getLabel(Core::String name, bool)
+      {
+         // FIXME: TODO: Check for redefinition.
+         return fn->label + name;
+      }
+
+      //
+      // Scope_Function::getLabelBreak
+      //
+      Core::String Scope_Function::getLabelBreak()
+      {
+         return Core::STRNULL;
+      }
+
+      //
+      // Scope_Function::getLabelCase
+      //
+      Core::String Scope_Function::getLabelCase(Core::Integ const &, bool)
+      {
+         return Core::STRNULL;
+      }
+
+      //
+      // Scope_Function::getLabelContinue
+      //
+      Core::String Scope_Function::getLabelContinue()
+      {
+         return Core::STRNULL;
+      }
+
+      //
+      // Scope_Function::getLabelDefault
+      //
+      Core::String Scope_Function::getLabelDefault(bool)
+      {
+         return Core::STRNULL;
+      }
    }
 }
 
