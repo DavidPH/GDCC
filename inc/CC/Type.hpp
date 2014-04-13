@@ -195,6 +195,7 @@ namespace GDCC
    namespace CC
    {
       extern Core::CounterRef<AST::Type const> TypeBool;
+      extern Core::CounterRef<AST::Type const> TypeBoolSoft;
 
       extern Core::CounterRef<AST::Type const> TypeChar;
 
@@ -261,6 +262,7 @@ namespace GDCC
    namespace CC
    {
       Core::CounterRef<AST::Type const> GetTypeBool();
+      Core::CounterRef<AST::Type const> GetTypeBoolSoft();
 
       Core::CounterRef<AST::Type const> GetTypeChar();
 

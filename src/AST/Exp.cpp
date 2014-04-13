@@ -227,6 +227,18 @@ namespace GDCC
       }
 
       //
+      // Exp::isNonzero
+      //
+      bool Exp::isNonzero() const
+      {
+         if(!isIRExp()) return false;
+
+         auto irExp = getIRExp();
+
+         return irExp->canGetValue() && irExp->getValue();
+      }
+
+      //
       // Exp::isObject
       //
       bool Exp::isObject() const

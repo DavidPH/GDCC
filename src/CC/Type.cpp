@@ -23,7 +23,8 @@ namespace GDCC
 {
    namespace CC
    {
-      AST::Type::CRef TypeBool{GetTypeBool()};
+      AST::Type::CRef TypeBool    {GetTypeBool()};
+      AST::Type::CRef TypeBoolSoft{GetTypeBoolSoft()};
 
       AST::Type::CRef TypeChar{GetTypeChar()};
 

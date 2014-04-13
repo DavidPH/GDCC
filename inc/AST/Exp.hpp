@@ -81,6 +81,9 @@ namespace GDCC
          // Can this expression be made into an IR expression?
          bool isIRExp() const;
 
+         // Is this expression known to be nonzero?
+         bool isNonzero() const;
+
          // Does this expression designate an AST::Object?
          bool isObject() const;
 

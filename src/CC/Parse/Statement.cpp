@@ -160,6 +160,10 @@ static GDCC::AST::Statement::CRef GetStatement_do(
    // statement
    auto body = GetStatement(in, loopCtx);
 
+   // <while>
+   if(!in.in.drop(Core::TOK_KeyWrd, Core::STR_while))
+      throw Core::ExceptStr(in.in.peek().pos, "expected '('");
+
    // (
    if(!in.in.drop(Core::TOK_ParenO))
       throw Core::ExceptStr(in.in.peek().pos, "expected '('");

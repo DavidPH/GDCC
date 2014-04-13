@@ -346,6 +346,17 @@ namespace GDCC
       }
 
       //
+      // ExpPromo_Cond
+      //
+      AST::Exp::CRef ExpPromo_Cond(AST::Exp const *exp, Core::Origin pos)
+      {
+         if(!exp->getType()->isCTypeScalar())
+            throw Core::ExceptStr(pos, "expected scalar type");
+
+         return ExpConvert_BoolSoft(exp, pos);
+      }
+
+      //
       // ExpPromo_Int
       //
       AST::Exp::CRef ExpPromo_Int(AST::Exp const *exp, Core::Origin pos)

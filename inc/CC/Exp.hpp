@@ -73,6 +73,11 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpConvert_Bool(AST::Type const *t,
          AST::Exp const *e, Core::Origin pos);
 
+      // Converts the expression to a soft boolean for conditional branching.
+      // Will result in a hard boolean type if doing so is no more difficult.
+      Core::CounterRef<AST::Exp const> ExpConvert_BoolSoft(AST::Exp const *e,
+         Core::Origin pos);
+
       Core::CounterRef<AST::Exp const> ExpConvert_Pointer(AST::Type const *t,
          AST::Exp const *e, Core::Origin pos);
 
@@ -245,6 +250,10 @@ namespace GDCC
       // Conversion as if by assignment.
       Core::CounterRef<AST::Exp const> ExpPromo_Assign(AST::Type const *t,
          AST::Exp const *e, Core::Origin pos);
+
+      // Promotes a branch condition to a soft boolean.
+      Core::CounterRef<AST::Exp const> ExpPromo_Cond(AST::Exp const *e,
+         Core::Origin pos);
 
       // Integer promotion.
       Core::CounterRef<AST::Exp const> ExpPromo_Int(AST::Exp const *e,

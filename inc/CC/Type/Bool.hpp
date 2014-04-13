@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// C _Bool type.
+// C _Bool and __fastbool type.
 //
 //-----------------------------------------------------------------------------
 
@@ -63,6 +63,36 @@ namespace GDCC
 
       protected:
          Type_Bool() = default;
+      };
+
+      //
+      // Type_BoolSoft
+      //
+      class Type_BoolSoft final : public AST::Type
+      {
+         GDCC_Core_CounterPreamble(GDCC::CC::Type_BoolSoft, GDCC::AST::Type);
+
+      public:
+         // Type information.
+         virtual Core::FastU getSizeAlign() const;
+         virtual Core::FastU getSizeBytes() const;
+         virtual Core::FastU getSizePoint() const;
+         virtual Core::FastU getSizeShift() const;
+         virtual Core::FastU getSizeWords() const;
+
+         // Type classification: General classifications.
+         virtual bool isTypeBoolean()  const {return true;}
+         virtual bool isTypeComplete() const {return true;}
+
+         // Type classification: C/C++ classifications.
+         virtual bool isCTypeObject() const {return true;}
+         virtual bool isCTypeScalar() const {return true;}
+
+
+         friend AST::Type::CRef GetTypeBoolSoft();
+
+      protected:
+         Type_BoolSoft() = default;
       };
    }
 }

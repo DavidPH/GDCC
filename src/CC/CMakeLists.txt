@@ -22,6 +22,7 @@ add_library(gdcc-cc-lib
    Exp/Assign.cpp
    Exp/Call.cpp
    Exp/Call/Stk.cpp
+   Exp/Convert/BoolSoft.cpp
    Exp/Convert/Pointer.cpp
    Exp/Deref.cpp
    Exp/Div.cpp
@@ -60,6 +61,8 @@ add_library(gdcc-cc-lib
    Statement.cpp
    Statement/FuncPre.cpp
    Statement/Goto.cpp
+   Statement/If.cpp
+   Statement/Loop.cpp
    Statement/Return.cpp
    Type.cpp
    Type/Bool.cpp

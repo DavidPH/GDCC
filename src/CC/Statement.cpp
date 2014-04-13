@@ -35,60 +35,11 @@ namespace GDCC
 
       // Stubs.
 
-      AST::Statement::CRef StatementCreate_Do(
-         Core::Array<Core::String> const &, Core::Origin pos,
-         Scope_Local &, AST::Statement const *, AST::Exp const *)
-         {throw Core::ExceptStr(pos, "stub");}
-      AST::Statement::CRef StatementCreate_Do(
-         Core::Array<Core::String>      &&, Core::Origin pos,
-         Scope_Local &, AST::Statement const *, AST::Exp const *)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      AST::Statement::CRef StatementCreate_For(
-         Core::Array<Core::String> const &, Core::Origin pos,
-         Scope_Local &, AST::Statement const *, AST::Exp const *,
-         AST::Statement const *, AST::Statement const *)
-         {throw Core::ExceptStr(pos, "stub");}
-      AST::Statement::CRef StatementCreate_For(
-         Core::Array<Core::String>      &&, Core::Origin pos,
-         Scope_Local &, AST::Statement const *, AST::Exp const *,
-         AST::Statement const *, AST::Statement const *)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      AST::Statement::CRef StatementCreate_If(
-         Core::Array<Core::String> const &, Core::Origin pos,
-         AST::Exp const *, AST::Statement const *)
-         {throw Core::ExceptStr(pos, "stub");}
-      AST::Statement::CRef StatementCreate_If(
-         Core::Array<Core::String>      &&, Core::Origin pos,
-         AST::Exp const *, AST::Statement const *)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      AST::Statement::CRef StatementCreate_If(
-         Core::Array<Core::String> const &, Core::Origin pos,
-         AST::Exp const *, AST::Statement const *,
-         AST::Statement const *)
-         {throw Core::ExceptStr(pos, "stub");}
-      AST::Statement::CRef StatementCreate_If(
-         Core::Array<Core::String>      &&, Core::Origin pos,
-         AST::Exp const *, AST::Statement const *,
-         AST::Statement const *)
-         {throw Core::ExceptStr(pos, "stub");}
-
       AST::Statement::CRef StatementCreate_Switch(
          Core::Array<Core::String> const &, Core::Origin pos,
          Scope_Local &, AST::Exp const *, AST::Statement const *)
          {throw Core::ExceptStr(pos, "stub");}
       AST::Statement::CRef StatementCreate_Switch(
-         Core::Array<Core::String>      &&, Core::Origin pos,
-         Scope_Local &, AST::Exp const *, AST::Statement const *)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      AST::Statement::CRef StatementCreate_While(
-         Core::Array<Core::String> const &, Core::Origin pos,
-         Scope_Local &, AST::Exp const *, AST::Statement const *)
-         {throw Core::ExceptStr(pos, "stub");}
-      AST::Statement::CRef StatementCreate_While(
          Core::Array<Core::String>      &&, Core::Origin pos,
          Scope_Local &, AST::Exp const *, AST::Statement const *)
          {throw Core::ExceptStr(pos, "stub");}
