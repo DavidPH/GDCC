@@ -14,6 +14,8 @@
 
 #include "AST/Exp.hpp"
 
+#include "Bytecode/Platform.hpp"
+
 #include "IR/Type.hpp"
 
 
@@ -137,7 +139,12 @@ namespace GDCC
       //
       Exp::CRef Type_ArrVM::getSizeWordsVM() const
       {
-         return ExpCreate_MulSize(size, base->getSizeWordsVM());
+         auto wordBytes = Bytecode::GetWordBytes();
+
+         if(wordBytes == 1)
+            return ExpCreate_MulSize(size, base->getSizeWordsVM());
+
+         throw TypeError();
       }
 
       //
@@ -246,7 +253,12 @@ namespace GDCC
       //
       Core::FastU Type_Array::getSizeWords() const
       {
-         return base->getSizeWords() * size;
+         auto wordBytes = Bytecode::GetWordBytes();
+
+         if(wordBytes == 1)
+            return getSizeBytes();
+
+         return (getSizeBytes() + wordBytes - 1) / wordBytes;
       }
 
       //
@@ -254,7 +266,12 @@ namespace GDCC
       //
       Exp::CRef Type_Array::getSizeWordsVM() const
       {
-         return ExpCreate_MulSize(base->getSizeWordsVM(), ExpCreate_Size(size));
+         auto wordBytes = Bytecode::GetWordBytes();
+
+         if(wordBytes == 1)
+            return ExpCreate_MulSize(base->getSizeWordsVM(), ExpCreate_Size(size));
+
+         throw TypeError();
       }
 
       //
