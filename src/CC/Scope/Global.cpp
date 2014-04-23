@@ -42,7 +42,11 @@ namespace GDCC
       //
       // Scope_Global constructor
       //
-      Scope_Global::Scope_Global() : Scope{nullptr}
+      Scope_Global::Scope_Global(Core::String label_) :
+         Scope{nullptr, *this},
+
+         label    {label_},
+         stringGen{label_, "$L$"}
       {
       }
 
@@ -112,7 +116,8 @@ namespace GDCC
          switch(linka)
          {
          case IR::Linkage::None:
-            break; // TODO
+            if(!name) return stringGen();
+            return label + name;
 
          case IR::Linkage::ExtACS:
          case IR::Linkage::ExtASM:
@@ -129,7 +134,7 @@ namespace GDCC
             break; // TODO
 
          case IR::Linkage::IntC:
-            break; // TODO
+            return label + name;
 
          case IR::Linkage::IntCXX:
             break; // TODO
@@ -148,6 +153,9 @@ namespace GDCC
 
          for(auto &itr : globalFunc)
             itr.second->genFunction(prog);
+
+         for(auto itr : globalObj)
+            itr.second->genObject(prog);
 
          // Generate statements as separate pass.
          for(auto &ctx : subScopes)
@@ -188,7 +196,16 @@ namespace GDCC
       //
       AST::Object::Ref Scope_Global::getObject(AST::Attribute const &attr)
       {
-         throw Core::ExceptStr(attr.namePos, "getObject stub");
+         auto glyph = genGlyphObj(attr.name, attr.linka);
+         auto obj   = AST::Object::Create(attr.name, glyph);
+
+         obj->linka = attr.linka;
+         obj->store = AST::Storage::Static;
+         obj->type  = attr.type;
+
+         globalObj.emplace(glyph, obj);
+
+         return obj;
       }
    }
 }

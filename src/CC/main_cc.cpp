@@ -60,6 +60,24 @@ static void MakeC()
 }
 
 //
+// MakeGlobalLabel
+//
+static GDCC::Core::String MakeGlobalLabel(GDCC::Core::String file)
+{
+   using namespace GDCC;
+
+   char buf[2 + (sizeof(std::size_t) * CHAR_BIT + 3) / 4 + 1];
+
+   buf[0] = '_';
+   buf[1] = '$';
+
+   std::sprintf(buf + 2, "%*zX", static_cast<int>(sizeof(buf) - 3), file.getData().hash);
+
+   auto hash = Core::HashString(buf, sizeof(buf) - 1);
+   return Core::AddString(buf, sizeof(buf) - 1, hash);
+}
+
+//
 // ProcessFile
 //
 static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
@@ -80,7 +98,7 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
    Core::String     path{Core::PathDirname(file)};
    CPP::TStream     tstr{fbuf, macr, prag, file, path};
    CC::ParserCtx    in  {tstr, prag, prog};
-   CC::Scope_Global ctx {};
+   CC::Scope_Global ctx {MakeGlobalLabel(file)};
 
    // Read declarations.
    while(in.in.peek().tok != Core::TOK_EOF)

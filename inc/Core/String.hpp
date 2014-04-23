@@ -62,12 +62,18 @@ namespace GDCC
          char const &front() const {return *str;}
 
          std::size_t size() const {return len;}
+         std::size_t size16() const;
+         std::size_t size32() const;
 
          char const *str;
          std::size_t len;
          std::size_t hash;
          std::size_t num;
          std::size_t next;
+
+      private:
+         mutable std::size_t len16;
+         mutable std::size_t len32;
       };
 
       //
@@ -103,6 +109,8 @@ namespace GDCC
          StringData const &getData() const {return DataV[num];}
 
          std::size_t size() const {return DataV[num].len;}
+         std::size_t size16() const {return DataV[num].size16();}
+         std::size_t size32() const {return DataV[num].size32();}
 
 
          static std::size_t       DataC;
@@ -167,6 +175,8 @@ namespace GDCC
       std::size_t HashString(char const *str, std::size_t len, std::size_t hash = 0);
 
       void LenHashString(char const *str, std::size_t &len, std::size_t &hash);
+
+      std::pair<char32_t, char const *> Str8To32(char const *itr, char const *end);
 
       std::unique_ptr<char[]> StrDup(char const *str, std::size_t len);
 

@@ -69,6 +69,12 @@ namespace GDCC
          obj.alias = alias;
          obj.defin = defin;
 
+         if(init && init->isIRExp())
+         {
+            obj.initi = init->getIRExp();
+            init      = nullptr;
+         }
+
          if(value)
          {
             auto val = value->getValue();

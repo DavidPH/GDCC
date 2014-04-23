@@ -45,6 +45,8 @@ namespace GDCC
 
    namespace CC
    {
+      class Scope;
+
       //
       // GenAssoc
       //
@@ -227,6 +229,17 @@ namespace GDCC
          AST::Exp const *type, Core::Origin pos);
       Core::CounterRef<AST::Exp const> ExpCreate_SizeBytes(
          AST::Type const *type, Core::Origin pos);
+
+      Core::CounterRef<AST::Exp const> ExpCreate_StrIdx(IR::Program &prog,
+         Scope &scope, Core::String lit, Core::Origin pos);
+      Core::CounterRef<AST::Exp const> ExpCreate_StrU08(IR::Program &prog,
+         Scope &scope, Core::String lit, Core::Origin pos);
+      Core::CounterRef<AST::Exp const> ExpCreate_StrU16(IR::Program &prog,
+         Scope &scope, Core::String lit, Core::Origin pos);
+      Core::CounterRef<AST::Exp const> ExpCreate_StrU32(IR::Program &prog,
+         Scope &scope, Core::String lit, Core::Origin pos);
+      Core::CounterRef<AST::Exp const> ExpCreate_String(IR::Program &prog,
+         Scope &scope, Core::String lit, Core::Origin pos);
 
       Core::CounterRef<AST::Exp const> ExpCreate_Sub(AST::Exp const *e,
          Core::Origin pos);

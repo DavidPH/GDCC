@@ -70,8 +70,14 @@ namespace GDCC
       //
       // StringData constructor
       //
-      StringData::StringData(char const *str_, StringIndex num_) : str{str_},
-         len{0}, hash{0}, num{num_}, next{0}
+      StringData::StringData(char const *str_, StringIndex num_) :
+         str  {str_},
+         len  {0},
+         hash {0},
+         num  {num_},
+         next {0},
+         len16{0},
+         len32{0}
       {
          LenHashString(str, len, hash);
 
@@ -84,13 +90,54 @@ namespace GDCC
       //
       // StringData constructor
       //
-      StringData::StringData(char const *str_, std::size_t len_, std::size_t hash_,
-         std::size_t num_) : str{str_}, len{len_}, hash{hash_}, num{num_}, next{0}
+      StringData::StringData(char const *str_, std::size_t len_,
+         std::size_t hash_, std::size_t num_) :
+         str  {str_},
+         len  {len_},
+         hash {hash_},
+         num  {num_},
+         next {0},
+         len16{0},
+         len32{0}
       {
          auto hashMod = hash % StringTableHashC;
 
          next = StringTableHash[hashMod];
          StringTableHash[hashMod] = num;
+      }
+
+      //
+      // StringData::size16
+      //
+      std::size_t StringData::size16() const
+      {
+         // Compute length, if needed.
+         if(!len16 && len)
+         {
+            for(auto itr = str, end = itr + len; itr != end;)
+            {
+               char32_t c;
+               std::tie(c, itr) = Str8To32(itr, end);
+               len16 += c > 0xFFFF ? 2 : 1;
+            }
+         }
+
+         return len16;
+      }
+
+      //
+      // StringData::size32
+      //
+      std::size_t StringData::size32() const
+      {
+         // Compute length, if needed.
+         if(!len32 && len)
+         {
+            for(auto itr = str, end = itr + len; itr != end; ++len32)
+               std::tie(std::ignore, itr) = Str8To32(itr, end);
+         }
+
+         return len32;
       }
 
       //
@@ -235,6 +282,33 @@ namespace GDCC
          for(; *s; ++len) hash = (hash << 3) ^ static_cast<unsigned char>(*s++);
 
          len_ = len; hash_ = hash;
+      }
+
+      //
+      // Str8To32
+      //
+      // This function converts UTF-8 to UTF-32. It does not perform validation
+      // of the input, but should never result in undefined behavior for any
+      // valid combination of pointers.
+      //
+      std::pair<char32_t, char const *> Str8To32(char const *itr, char const *end)
+      {
+         char32_t c;
+
+              if(!(*itr & 0x80)) c = *itr++ & 0x7F;
+         else if(!(*itr & 0x40)) c = *itr++ & 0x3F; // Not valid.
+         else if(!(*itr & 0x20)) c = *itr++ & 0x1F;
+         else if(!(*itr & 0x10)) c = *itr++ & 0x0F;
+         else if(!(*itr & 0x08)) c = *itr++ & 0x07;
+         else if(!(*itr & 0x04)) c = *itr++ & 0x03;
+         else if(!(*itr & 0x02)) c = *itr++ & 0x01;
+         else if(!(*itr & 0x01)) c = *itr++ & 0x00; // Not valid.
+         else                    c = *itr++ & 0x00; // Not valid.
+
+         while(itr != end && (*itr & 0xC0) == 0x80)
+            c = (c << 6) | (*itr++ & 0x3F);
+
+         return {c, itr};
       }
 
       //

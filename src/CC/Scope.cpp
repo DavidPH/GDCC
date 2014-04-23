@@ -109,7 +109,18 @@ namespace GDCC
       //
       // Scope constructor
       //
-      Scope::Scope(Scope *parent_) : parent{parent_}
+      Scope::Scope(Scope *parent_) :
+         parent{parent_},
+         global(parent_->global)
+      {
+      }
+
+      //
+      // Scope constructor
+      //
+      Scope::Scope(Scope *parent_, Scope_Global &global_) :
+         parent{parent_},
+         global(global_)
       {
       }
 

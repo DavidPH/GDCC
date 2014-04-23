@@ -36,6 +36,8 @@ namespace GDCC
 
    namespace CC
    {
+      class Scope_Global;
+
       //
       // Lookup
       //
@@ -98,8 +100,6 @@ namespace GDCC
          Scope() = delete;
          Scope(Scope const &) = delete;
          Scope(Scope &&) = delete;
-         explicit Scope(Scope *parent);
-         virtual ~Scope();
 
          void add(Core::String name, AST::Function   *fn);
          void add(Core::String name, AST::Object     *obj);
@@ -129,12 +129,17 @@ namespace GDCC
          Core::CounterPtr<AST::Type> lookupTypeTag(Core::String name) const;
 
 
-         Scope *const parent;
+         Scope  *const parent;
+         Scope_Global &global;
 
       protected:
          template<typename T>
          using LookupTable = std::unordered_map<Core::String, Core::CounterRef<T>>;
 
+
+         explicit Scope(Scope *parent);
+         Scope(Scope *parent, Scope_Global &global);
+         virtual ~Scope();
 
          LookupTable<AST::Function>   tableFunc;
          LookupTable<AST::Object>     tableObj;

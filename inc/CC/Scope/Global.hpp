@@ -15,6 +15,8 @@
 
 #include "../../CC/Scope.hpp"
 
+#include "../../Core/StringGen.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -44,7 +46,7 @@ namespace GDCC
       class Scope_Global : public Scope
       {
       public:
-         Scope_Global();
+         explicit Scope_Global(Core::String label);
          virtual ~Scope_Global();
 
          void allocAuto();
@@ -62,12 +64,16 @@ namespace GDCC
 
          Core::CounterRef<AST::Space> getSpace(AST::Attribute const &attr);
 
+         Core::String const label;
+
       protected:
          LookupTable<AST::Function> globalFunc;
          LookupTable<AST::Object>   globalObj;
          LookupTable<AST::Space>    globalSpace;
 
          std::vector<std::unique_ptr<Scope_Function>> subScopes;
+
+         Core::StringGen stringGen;
       };
    }
 }

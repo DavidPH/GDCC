@@ -17,6 +17,7 @@
 #include "CC/Type.hpp"
 
 #include "AST/Exp.hpp"
+#include "AST/Object.hpp"
 #include "AST/Type.hpp"
 
 #include "Core/Array.hpp"
@@ -270,16 +271,58 @@ static GDCC::AST::Exp::CRef GetExp_Prim_NumInt(GDCC::CC::ParserCtx const &in,
 }
 
 //
+// GetExp_Prim_StrIdx
+//
+static GDCC::AST::Exp::CRef GetExp_Prim_StrIdx(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope)
+{
+   auto tok = ctx.in.get();
+
+   return GDCC::CC::ExpCreate_StrIdx(ctx.prog, scope, tok.str, tok.pos);
+}
+
+//
+// GetExp_Prim_StrU08
+//
+static GDCC::AST::Exp::CRef GetExp_Prim_StrU08(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope)
+{
+   auto tok = ctx.in.get();
+
+   return GDCC::CC::ExpCreate_StrU08(ctx.prog, scope, tok.str, tok.pos);
+}
+
+//
+// GetExp_Prim_StrU16
+//
+static GDCC::AST::Exp::CRef GetExp_Prim_StrU16(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope)
+{
+   auto tok = ctx.in.get();
+
+   return GDCC::CC::ExpCreate_StrU16(ctx.prog, scope, tok.str, tok.pos);
+}
+
+//
+// GetExp_Prim_StrU32
+//
+static GDCC::AST::Exp::CRef GetExp_Prim_StrU32(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope)
+{
+   auto tok = ctx.in.get();
+
+   return GDCC::CC::ExpCreate_StrU32(ctx.prog, scope, tok.str, tok.pos);
+}
+
+//
 // GetExp_Prim_String
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_String(GDCC::CC::ParserCtx const &in,
-   GDCC::CC::Scope &)
+static GDCC::AST::Exp::CRef GetExp_Prim_String(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope)
 {
-   using namespace GDCC;
+   auto tok = ctx.in.get();
 
-   auto tok = in.in.get();
-
-   throw Core::ExceptStr(tok.pos, "string-literal stub");
+   return GDCC::CC::ExpCreate_String(ctx.prog, scope, tok.str, tok.pos);
 }
 
 
@@ -307,11 +350,11 @@ namespace GDCC
          case Core::TOK_NumFix: return GetExp_Prim_NumFix(in, ctx);
          case Core::TOK_NumFlt: return GetExp_Prim_NumFlt(in, ctx);
          case Core::TOK_NumInt: return GetExp_Prim_NumInt(in, ctx);
-         case Core::TOK_StrIdx: return GetExp_Prim_String(in, ctx);
-         case Core::TOK_StrU08: return GetExp_Prim_String(in, ctx);
-         case Core::TOK_StrU16: return GetExp_Prim_String(in, ctx);
-         case Core::TOK_StrU32: return GetExp_Prim_String(in, ctx);
-         case Core::TOK_StrWid: return GetExp_Prim_String(in, ctx);
+         case Core::TOK_StrIdx: return GetExp_Prim_StrIdx(in, ctx);
+         case Core::TOK_StrU08: return GetExp_Prim_StrU08(in, ctx);
+         case Core::TOK_StrU16: return GetExp_Prim_StrU16(in, ctx);
+         case Core::TOK_StrU32: return GetExp_Prim_StrU32(in, ctx);
+         case Core::TOK_StrWid: return GetExp_Prim_StrU32(in, ctx);
          case Core::TOK_String: return GetExp_Prim_String(in, ctx);
          case Core::TOK_ParenO: return GetExp_Prim_ParenO(in, ctx);
 
