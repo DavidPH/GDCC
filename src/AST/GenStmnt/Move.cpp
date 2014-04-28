@@ -13,6 +13,7 @@
 #include "AST/Exp.hpp"
 
 #include "AST/Arg.hpp"
+#include "AST/Temporary.hpp"
 #include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -131,7 +132,34 @@ static void GenStmnt_MovePartT(GDCC::AST::Exp const *exp,
       return;
    }
 
-   throw Core::ExceptStr(exp->pos, "non-constant address stub");
+   // As a last resort, just evaluate the pointer and store in a temporary.
+   {
+      // Evaluate arg's data.
+      arg.data->genStmntStk(ctx);
+
+      // Move to temporary.
+      AST::Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
+      for(Core::FastU n = tmp.size(); n--;)
+         ctx.block.addStatementArgs(IR::Code::Move_W,
+            tmp.getArg(n), IR::Arg_Stk());
+
+      // Use temporary as index.
+      auto idx = tmp.getArg();
+
+      if(set)
+      {
+         for(Core::FastU n = arg.type->getSizeWords(); n--;)
+            GenStmnt_MoveWordSet<ArgT>(exp, ctx, arg, idx, n);
+      }
+
+      if(get)
+      {
+         for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
+            GenStmnt_MoveWordGet<ArgT>(exp, ctx, arg, idx, n);
+      }
+
+      return;
+   }
 }
 
 //

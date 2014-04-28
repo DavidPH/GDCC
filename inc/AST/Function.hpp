@@ -15,6 +15,7 @@
 
 #include "../Core/Counter.hpp"
 #include "../Core/Number.hpp"
+#include "../Core/NumberAlloc.hpp"
 #include "../Core/StringGen.hpp"
 
 
@@ -54,13 +55,26 @@ namespace GDCC
          using TypeCPtr      = Core::CounterPtr<Type      const>;
 
       public:
+         using LocalTmp = Core::NumberAlloc<Core::FastU>;
+
+
          virtual Core::String genLabel();
 
-         void genFunction(IR::Program &prog);
+         // Generates an IR function with minimal data.
+         void genFunctionDecl(IR::Program &prog);
+
+         // Generates an IR function with all available data.
+         void genFunctionDefn(IR::Program &prog);
+
+         Core::String getLabelTmp();
+
+         // Generally not useful directly. Use AST::Temporary, instead.
+         LocalTmp       localTmp;
 
          IR::CallType   ctype;
          Core::String   glyph;
          Core::String   label;
+         Core::String   labelTmp;
          IR::Linkage    linka;
          Core::FastU    localArs;
          Core::FastU    localReg;

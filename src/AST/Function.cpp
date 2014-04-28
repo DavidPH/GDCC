@@ -40,6 +40,7 @@ namespace GDCC
          ctype   {IR::CallType::None},
          glyph   {glyph_},
          label   {Core::STRNULL},
+         labelTmp{Core::STRNULL},
          linka   {IR::Linkage::None},
          localArs{0},
          localReg{0},
@@ -75,17 +76,43 @@ namespace GDCC
       }
 
       //
-      // Function::genFunction
+      // Function::genFunctionDecl
       //
-      void Function::genFunction(IR::Program &prog)
+      void Function::genFunctionDecl(IR::Program &prog)
       {
+         // Operate on a temporary function to be merged later.
          IR::Function fn{glyph};
+
+         fn.ctype    = ctype;
+         fn.linka    = linka;
+         fn.stype    = stype;
+
+         fn.sflagNet = sflagNet;
+         fn.sflagClS = sflagClS;
+
+         // Configure glyph's type, even if the glyph won't be backed.
+         prog.getGlyphData(glyph).type = IR::Type_Funct(ctype);
+
+         // Merge into existing function (if any).
+         prog.mergeFunction(prog.getFunction(glyph), std::move(fn));
+      }
+
+      //
+      // Function::genFunctionDefn
+      //
+      void Function::genFunctionDefn(IR::Program &prog)
+      {
+         // Operate on a temporary function to be merged later.
+         IR::Function fn{glyph};
+
+         // Generate statements.
+         if(stmnt) stmnt->genStmnt({fn.block, this, prog});
 
          fn.ctype    = ctype;
          fn.label    = label;
          fn.linka    = linka;
          fn.localArs = localArs;
-         fn.localReg = localReg;
+         fn.localReg = localReg + localTmp.max();
          fn.param    = param;
          fn.retrn    = retrn && !retrn->isTypeVoid() ? retrn->getSizeWords() : 0;
          fn.stype    = stype;
@@ -94,6 +121,7 @@ namespace GDCC
          fn.sflagNet = sflagNet;
          fn.sflagClS = sflagClS;
 
+         // Check for explicit allocation.
          if(valueInt)
          {
             auto val = valueInt->getValue();
@@ -107,11 +135,33 @@ namespace GDCC
          else
             fn.alloc = true;
 
+         // If any temporaries generated, back the base glyph.
+         if(labelTmp && localTmp.max())
+         {
+            auto &gdata = prog.getGlyphData(labelTmp);
+
+            gdata.type  = Type::Size->getIRType();
+            gdata.value = IR::ExpCreate_ValueRoot(
+               IR::Value_Fixed(localReg, gdata.type.tFixed),
+               Core::Origin(Core::STRNULL, 0));
+         }
+
          // Configure glyph's type, even if the glyph won't be backed.
          prog.getGlyphData(glyph).type = IR::Type_Funct(ctype);
 
          // Merge into existing function (if any).
          prog.mergeFunction(prog.getFunction(glyph), std::move(fn));
+      }
+
+      //
+      // Function::getLabelTmp
+      //
+      Core::String Function::getLabelTmp()
+      {
+         if(!labelTmp)
+            labelTmp = genLabel();
+
+         return labelTmp;
       }
 
       //

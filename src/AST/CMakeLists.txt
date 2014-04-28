@@ -35,6 +35,7 @@ add_library(gdcc-ast-lib
    Statement/Empty.cpp
    Statement/Exp.cpp
    Statement/Multi.cpp
+   Temporary.cpp
    Type.cpp
    Type/Array.cpp
    Type/Bitfield.cpp

@@ -152,20 +152,13 @@ namespace GDCC
             ctx->genIR(prog);
 
          for(auto &itr : globalFunc)
-            itr.second->genFunction(prog);
+            itr.second->genFunctionDecl(prog);
 
          for(auto itr : globalObj)
             itr.second->genObject(prog);
 
-         // Generate statements as separate pass.
-         for(auto &ctx : subScopes)
-         {
-            if(auto fn = prog.findFunction(ctx->fn->glyph))
-            {
-               if(ctx->fn->stmnt)
-                  ctx->fn->stmnt->genStmnt({fn->block, ctx->fn, prog});
-            }
-         }
+         for(auto &itr : globalFunc)
+            itr.second->genFunctionDefn(prog);
       }
 
       //
