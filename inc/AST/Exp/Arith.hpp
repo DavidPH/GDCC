@@ -65,21 +65,52 @@ namespace GDCC
          static Exp::CRef Create(IR::Code code, Type const *t, Exp const *l,
             Exp const *r, Core::Origin pos)
          {
-            return static_cast<Exp::CRef>(
-               new Exp_Arith<Base>(code, t, l, r, pos));
+            return Exp::CRef(new Exp_Arith<Base>(code, t, l, r, pos));
          }
 
       protected:
          Exp_Arith(IR::Code c, Type const *t, Exp const *l, Exp const *r,
             Core::Origin pos_) : Super{t, l, r, pos_}, code{c} {}
 
-         //
          // v_genStmnt
-         //
          virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
+            {GenStmnt_Arith(this, code, ctx, dst);}
+      };
+
+      //
+      // Exp_ArithEq
+      //
+      // Implements statement generation as a call to GenStmnt_ArithEq. Uses a
+      // template base class to implement other expression properties.
+      //
+      template<typename Base>
+      class Exp_ArithEq : public Base
+      {
+         GDCC_Core_CounterPreamble(GDCC::AST::Exp_ArithEq<Base>, Base);
+
+      public:
+         IR::Code const code;
+
+
+         //
+         // Create
+         //
+         static Exp::CRef Create(IR::Code code, Type const *t, Exp const *l,
+            Exp const *r, Core::Origin pos)
          {
-            GenStmnt_Arith(this, code, ctx, dst);
+            return Exp::CRef(new Exp_ArithEq<Base>(code, t, l, r, pos));
          }
+
+      protected:
+         Exp_ArithEq(IR::Code c, Type const *t, Exp const *l, Exp const *r,
+            Core::Origin pos_) : Super{t, l, r, pos_}, code{c} {}
+
+         // v_genStmnt
+         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
+            {GenStmnt_ArithEq(this, code, ctx, dst);}
+
+         // v_isEffect
+         virtual bool v_isEffect() const {return true;}
       };
 
       //
@@ -135,6 +166,10 @@ namespace GDCC
    {
       // Does generic codegen centered around a 3-arg arithmetic instruction.
       void GenStmnt_Arith(Exp_Binary const *exp, IR::Code code,
+         GenStmntCtx const &ctx, Arg const &dst);
+
+      // As in GenStmnt_Arith, but also assigns the result to the left operand.
+      void GenStmnt_ArithEq(Exp_Binary const *exp, IR::Code code,
          GenStmntCtx const &ctx, Arg const &dst);
    }
 }

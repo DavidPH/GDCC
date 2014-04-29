@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,9 @@
 // sources and sinks.
 //
 //-----------------------------------------------------------------------------
+
+#ifndef GDCC__AST__Arg_H__
+#define GDCC__AST__Arg_H__
 
 #include "../Core/Counter.hpp"
 
@@ -53,5 +56,5 @@ namespace GDCC
    }
 }
 
-// EOF
+#endif//GDCC__AST__Arg_H__
 

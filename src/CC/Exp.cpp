@@ -52,6 +52,15 @@ namespace GDCC
       }
 
       //
+      // ExpCreate_BitAndEq
+      //
+      AST::Exp::CRef ExpCreate_BitAndEq(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return ExpCreate_BitwiseEq<AST::Exp_BitAnd, IR::CodeSet_And>(l, r, pos);
+      }
+
+      //
       // ExpCreate_BitOrI
       //
       AST::Exp::CRef ExpCreate_BitOrI(AST::Exp const *l, AST::Exp const *r,
@@ -61,12 +70,30 @@ namespace GDCC
       }
 
       //
+      // ExpCreate_BitOrIEq
+      //
+      AST::Exp::CRef ExpCreate_BitOrIEq(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return ExpCreate_BitwiseEq<AST::Exp_BitOrI, IR::CodeSet_OrI>(l, r, pos);
+      }
+
+      //
       // ExpCreate_BitOrX
       //
       AST::Exp::CRef ExpCreate_BitOrX(AST::Exp const *l, AST::Exp const *r,
          Core::Origin pos)
       {
          return ExpCreate_Bitwise<AST::Exp_BitOrX, IR::CodeSet_OrX>(l, r, pos);
+      }
+
+      //
+      // ExpCreate_BitOrXEq
+      //
+      AST::Exp::CRef ExpCreate_BitOrXEq(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return ExpCreate_BitwiseEq<AST::Exp_BitOrX, IR::CodeSet_OrX>(l, r, pos);
       }
 
       //
@@ -101,16 +128,40 @@ namespace GDCC
          throw Core::ExceptStr(pos, "unsupported cast");
       }
 
+      //
+      // ExpCreate_ShL
+      //
       AST::Exp::CRef ExpCreate_ShL(AST::Exp const *l, AST::Exp const *r,
          Core::Origin pos)
       {
          return ExpCreate_Shift<AST::Exp_ShL, IR::CodeSet_ShL>(l, r, pos);
       }
 
+      //
+      // ExpCreate_ShLEq
+      //
+      AST::Exp::CRef ExpCreate_ShLEq(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return ExpCreate_ShiftEq<AST::Exp_ShL, IR::CodeSet_ShL>(l, r, pos);
+      }
+
+      //
+      // ExpCreate_ShR
+      //
       AST::Exp::CRef ExpCreate_ShR(AST::Exp const *l, AST::Exp const *r,
          Core::Origin pos)
       {
          return ExpCreate_Shift<AST::Exp_ShR, IR::CodeSet_ShR>(l, r, pos);
+      }
+
+      //
+      // ExpCreate_ShREq
+      //
+      AST::Exp::CRef ExpCreate_ShREq(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return ExpCreate_ShiftEq<AST::Exp_ShR, IR::CodeSet_ShR>(l, r, pos);
       }
 
       //
@@ -193,23 +244,7 @@ namespace GDCC
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "convert bool stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_AddEq(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
       Core::CounterRef<AST::Exp const> ExpCreate_Array(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_BitAndEq(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_BitOrIEq(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_BitOrXEq(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
@@ -241,10 +276,6 @@ namespace GDCC
          {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_DecSuf(AST::Exp const *,
          Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_DivEq(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
       Core::CounterRef<AST::Exp const> ExpCreate_GenSel(AST::Exp const *,
@@ -281,24 +312,8 @@ namespace GDCC
          Core::String, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_ModEq(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_MulEq(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
       Core::CounterRef<AST::Exp const> ExpCreate_Not(AST::Exp const *,
          Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_ShLEq(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_ShREq(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
       Core::CounterRef<AST::Exp const> ExpCreate_SizeAlign(
@@ -310,10 +325,6 @@ namespace GDCC
          {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_SizeBytes(
          AST::Type const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_SubEq(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
    }
 }

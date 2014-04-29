@@ -88,6 +88,50 @@ namespace GDCC
 
          throw Core::ExceptStr(pos, "invalid operands to 'operator +'");
       }
+
+      //
+      // ExpCreate_AddEq
+      //
+      AST::Exp::CRef ExpCreate_AddEq(AST::Exp const *expL, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+
+         auto typeL = expL->getType();
+         auto typeR = expR->getType();
+
+         // pointer += integer
+         if(typeL->isTypePointer())
+         {
+            if(!typeR->isCTypeInteg())
+               throw Core::ExceptStr(pos, "expected integer operand");
+
+            auto baseL = typeL->getBaseType();
+
+            if(!baseL->isTypeComplete() || !baseL->isCTypeObject())
+               throw Core::ExceptStr(pos, "expected pointer to complete object");
+
+            // Convert integer to int rank, retaining sign.
+            if(typeR->getSizeBitsS())
+               expR = ExpConvert_Arith(TypeIntegPrS, expR, pos);
+            else
+               expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
+
+            throw Core::ExceptStr(pos, "pointer += integer stub");
+         }
+
+         // arithmetic += arithmetic
+         if(typeL->isCTypeArith() && typeR->isCTypeArith())
+         {
+            // Promote to type of left operand. This should work in most cases.
+            expR = ExpConvert_Arith(typeL, expR, pos);
+
+            return ExpCreate_ArithEq<AST::Exp_Add, IR::CodeSet_Add>(
+               typeL, expL, expR, pos);
+         }
+
+         throw Core::ExceptStr(pos, "invalid operands to 'operator +='");
+      }
    }
 }
 

@@ -10,39 +10,13 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "AST/Exp.hpp"
+#include "AST/GenStmnt/Move.hpp"
 
-#include "AST/Arg.hpp"
 #include "AST/Temporary.hpp"
-#include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
 
-#include "IR/Block.hpp"
-#include "IR/Glyph.hpp"
-
 #include <iostream>
-
-
-//----------------------------------------------------------------------------|
-// Macros                                                                     |
-//
-
-//
-// GenGenArgPtr2
-//
-// Generates a GenArg specialization for an ArgPtr2-based Arg.
-//
-#define GenGenArgPtr2(ArgT) \
-template<> ArgT GenArg<ArgT>(GDCC::AST::Exp const *exp, \
-   GDCC::AST::GenStmntCtx const &ctx, GDCC::AST::Arg const &arg, \
-   GDCC::IR::Arg &&idx, GDCC::IR::Exp const *off) \
-{ \
-   GDCC::IR::Glyph glyph{&ctx.prog, arg.type->getQualAddr().name}; \
-   auto arr = GDCC::IR::ExpCreate_ValueGlyph(glyph, exp->pos); \
-   \
-   return ArgT(GDCC::IR::Arg_Lit(arr), std::move(idx), off); \
-}
 
 
 //----------------------------------------------------------------------------|
@@ -50,53 +24,26 @@ template<> ArgT GenArg<ArgT>(GDCC::AST::Exp const *exp, \
 //
 
 //
-// GenArg
+// GenStmnt_MovePartIdx
 //
-template<typename ArgT>
-static ArgT GenArg(GDCC::AST::Exp const *, GDCC::AST::GenStmntCtx const &,
-   GDCC::AST::Arg const &, GDCC::IR::Arg &&idx, GDCC::IR::Exp const *off)
-{
-   return ArgT(std::move(idx), off);
-}
-GenGenArgPtr2(GDCC::IR::Arg_GblArr)
-GenGenArgPtr2(GDCC::IR::Arg_MapArr)
-GenGenArgPtr2(GDCC::IR::Arg_StrArr)
-GenGenArgPtr2(GDCC::IR::Arg_WldArr)
-
-//
-// GenStmnt_MoveWordGet
-//
-template<typename ArgT>
-static void GenStmnt_MoveWordGet(GDCC::AST::Exp const *exp,
+template<typename ArgT, typename IdxT>
+static void GenStmnt_MovePartIdx(GDCC::AST::Exp const *exp,
    GDCC::AST::GenStmntCtx const &ctx, GDCC::AST::Arg const &arg,
-   GDCC::IR::Arg &&idx, GDCC::Core::FastU off)
+   IdxT const &idx, bool get, bool set)
 {
    using namespace GDCC;
 
-   // Convert offset to an IR expression.
-   auto offExp = IR::ExpCreate_ValueRoot(IR::Value_Fixed(off,
-      IR::Type_Fixed(32, 0, false, false)), exp->pos);
+   if(set)
+   {
+      for(Core::FastU n = arg.type->getSizeWords(); n--;)
+         AST::GenStmnt_MoveWordSetT<ArgT>(exp, ctx, arg, idx, n);
+   }
 
-   ctx.block.addStatementArgs(IR::Code::Move_W,
-      IR::Arg_Stk(), GenArg<ArgT>(exp, ctx, arg, std::move(idx), offExp));
-}
-
-//
-// GenStmnt_MoveWordSet
-//
-template<typename ArgT>
-static void GenStmnt_MoveWordSet(GDCC::AST::Exp const *exp,
-   GDCC::AST::GenStmntCtx const &ctx, GDCC::AST::Arg const &arg,
-   GDCC::IR::Arg &&idx, GDCC::Core::FastU off)
-{
-   using namespace GDCC;
-
-   // Convert offset to an IR expression.
-   auto offExp = IR::ExpCreate_ValueRoot(IR::Value_Fixed(off,
-      IR::Type_Fixed(32, 0, false, false)), exp->pos);
-
-   ctx.block.addStatementArgs(IR::Code::Move_W,
-      GenArg<ArgT>(exp, ctx, arg, std::move(idx), offExp), IR::Arg_Stk());
+   if(get)
+   {
+      for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
+         AST::GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
+   }
 }
 
 //
@@ -115,19 +62,9 @@ static void GenStmnt_MovePartT(GDCC::AST::Exp const *exp,
       // Evaluate arg's data for side effects.
       arg.data->genStmnt(ctx);
 
-      IR::Arg_Lit idx{arg.data->getIRExp()};
-
-      if(set)
-      {
-         for(Core::FastU n = arg.type->getSizeWords(); n--;)
-            GenStmnt_MoveWordSet<ArgT>(exp, ctx, arg, idx, n);
-      }
-
-      if(get)
-      {
-         for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
-            GenStmnt_MoveWordGet<ArgT>(exp, ctx, arg, idx, n);
-      }
+      // Use literal as index.
+      GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg,
+         IR::Arg_Lit(arg.data->getIRExp()), get, set);
 
       return;
    }
@@ -144,19 +81,7 @@ static void GenStmnt_MovePartT(GDCC::AST::Exp const *exp,
             tmp.getArg(n), IR::Arg_Stk());
 
       // Use temporary as index.
-      auto idx = tmp.getArg();
-
-      if(set)
-      {
-         for(Core::FastU n = arg.type->getSizeWords(); n--;)
-            GenStmnt_MoveWordSet<ArgT>(exp, ctx, arg, idx, n);
-      }
-
-      if(get)
-      {
-         for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
-            GenStmnt_MoveWordGet<ArgT>(exp, ctx, arg, idx, n);
-      }
+      GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg, tmp.getArg(), get, set);
 
       return;
    }

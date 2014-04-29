@@ -48,6 +48,30 @@ namespace GDCC
 
          throw Core::ExceptStr(pos, "invalid operands to 'operator %'");
       }
+
+      //
+      // ExpCreate_ModEq
+      //
+      AST::Exp::CRef ExpCreate_ModEq(AST::Exp const *expL, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+
+         auto typeL = expL->getType();
+         auto typeR = expR->getType();
+
+         // arithmetic %= arithmetic
+         if(typeL->isCTypeArith() && typeR->isCTypeArith())
+         {
+            // Promote to type of left operand. This should work in most cases.
+            expR = ExpConvert_Arith(typeL, expR, pos);
+
+            return ExpCreate_ArithEq<AST::Exp_Mod, IR::CodeSet_Mod>(
+               typeL, expL, expR, pos);
+         }
+
+         throw Core::ExceptStr(pos, "invalid operands to 'operator %='");
+      }
    }
 }
 

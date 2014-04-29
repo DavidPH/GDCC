@@ -28,6 +28,7 @@ add_library(gdcc-ast-lib
    Exp/MulSize.cpp
    Exp/Unary.cpp
    Function.cpp
+   GenStmnt/ArithEq.cpp
    GenStmnt/Move.cpp
    Object.cpp
    Space.cpp
