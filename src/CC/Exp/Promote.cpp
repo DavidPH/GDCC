@@ -346,6 +346,48 @@ namespace GDCC
       }
 
       //
+      // ExpPromo_CmpEqu
+      //
+      std::tuple<AST::Type::CRef, AST::Exp::CRef, AST::Exp::CRef>
+      ExpPromo_CmpEqu(AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+      {
+         AST::Exp::CRef expL{l}, expR{r};
+
+         auto typeL = expL->getType();
+         auto typeR = expR->getType();
+
+         if(typeL->isCTypeArith() && typeR->isCTypeArith())
+            return ExpPromo_Arith(expL, expR, pos);
+
+         if(typeL->isTypePointer() || typeR->isTypePointer())
+            throw Core::ExceptStr(pos, "pointer equality promote stub");
+
+         throw Core::ExceptStr(pos, "invalid equality expression operands");
+      }
+
+      //
+      // ExpPromo_CmpRel
+      //
+      std::tuple<AST::Type::CRef, AST::Exp::CRef, AST::Exp::CRef>
+      ExpPromo_CmpRel(AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+      {
+         AST::Exp::CRef expL{l}, expR{r};
+
+         auto typeL = expL->getType();
+         auto typeR = expR->getType();
+
+         // C requires relational-expression operands to have real types.
+         if(typeL->isCTypeReal() && typeR->isCTypeReal())
+            return ExpPromo_Arith(expL, expR, pos);
+
+         // No handling for null pointer constants.
+         if(typeL->isTypePointer() && typeR->isTypePointer())
+            throw Core::ExceptStr(pos, "pointer relational promote stub");
+
+         throw Core::ExceptStr(pos, "invalid relational expression operands");
+      }
+
+      //
       // ExpPromo_Cond
       //
       AST::Exp::CRef ExpPromo_Cond(AST::Exp const *exp, Core::Origin pos)

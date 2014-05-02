@@ -264,6 +264,20 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpPromo_Assign(AST::Type const *t,
          AST::Exp const *e, Core::Origin pos);
 
+      // Equality expression contraints and promotion.
+      std::tuple<
+         Core::CounterRef<AST::Type const> /*type*/,
+         Core::CounterRef<AST::Exp  const> /*expL*/,
+         Core::CounterRef<AST::Exp  const> /*expR*/>
+      ExpPromo_CmpEqu(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+
+      // Relational expression contraints and promotion.
+      std::tuple<
+         Core::CounterRef<AST::Type const> /*type*/,
+         Core::CounterRef<AST::Exp  const> /*expL*/,
+         Core::CounterRef<AST::Exp  const> /*expR*/>
+      ExpPromo_CmpRel(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+
       // Promotes a branch condition to a soft boolean.
       Core::CounterRef<AST::Exp const> ExpPromo_Cond(AST::Exp const *e,
          Core::Origin pos);

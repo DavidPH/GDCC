@@ -248,25 +248,6 @@ namespace GDCC
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_CmpEQ(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-      Core::CounterRef<AST::Exp const> ExpCreate_CmpGE(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-      Core::CounterRef<AST::Exp const> ExpCreate_CmpGT(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-      Core::CounterRef<AST::Exp const> ExpCreate_CmpLE(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-      Core::CounterRef<AST::Exp const> ExpCreate_CmpLT(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-      Core::CounterRef<AST::Exp const> ExpCreate_CmpNE(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
       Core::CounterRef<AST::Exp const> ExpCreate_Cnd(AST::Exp const *,
          AST::Exp const *, AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
