@@ -31,6 +31,7 @@ add_library(gdcc-cc-lib
    Exp/Lit.cpp
    Exp/Mod.cpp
    Exp/Mul.cpp
+   Exp/Not.cpp
    Exp/Obj.cpp
    Exp/Promote.cpp
    Exp/Refer.cpp

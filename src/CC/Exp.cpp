@@ -293,10 +293,6 @@ namespace GDCC
          Core::String, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Not(AST::Exp const *,
-         Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
       Core::CounterRef<AST::Exp const> ExpCreate_SizeAlign(
          AST::Type const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
