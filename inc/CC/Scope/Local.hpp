@@ -40,6 +40,7 @@ namespace GDCC
    namespace CC
    {
       class Scope_Block;
+      class Scope_Case;
       class Scope_Function;
       class Scope_Global;
 
@@ -65,7 +66,7 @@ namespace GDCC
 
          Scope_Block &createScopeBlock();
          Scope_Block &createScopeLoop();
-         Scope_Block &createScopeCase();
+         Scope_Case  &createScopeCase();
 
          Core::String genGlyphObj(Core::String name, IR::Linkage linka);
 

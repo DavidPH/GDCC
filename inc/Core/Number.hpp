@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// Numeric typedefs.
+// Numeric typedefs and utilities.
 //
 //-----------------------------------------------------------------------------
 
@@ -80,6 +80,17 @@ namespace GDCC
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
+
+namespace std
+{
+   //
+   // hash<mpz_class>
+   //
+   template<> struct hash<mpz_class>
+   {
+      size_t operator () (mpz_class const &i) const;
+   };
+}
 
 template<typename Out, typename In> Out number_cast(In &&i);
 

@@ -30,6 +30,7 @@ namespace GDCC
    namespace CC
    {
       class Scope;
+      class Scope_Case;
       class Scope_Function;
       class Scope_Local;
    }
@@ -123,10 +124,10 @@ namespace GDCC
 
       Core::CounterRef<AST::Statement const> StatementCreate_Switch(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Exp const *cond, AST::Statement const *body);
+         Scope_Case &ctx, AST::Exp const *cond, AST::Statement const *body);
       Core::CounterRef<AST::Statement const> StatementCreate_Switch(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Exp const *cond, AST::Statement const *body);
+         Scope_Case &ctx, AST::Exp const *cond, AST::Statement const *body);
 
       Core::CounterRef<AST::Statement const> StatementCreate_While(
          Core::Array<Core::String> const &labels, Core::Origin pos,

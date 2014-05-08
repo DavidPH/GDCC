@@ -67,6 +67,7 @@ add_library(gdcc-cc-lib
    Statement/If.cpp
    Statement/Loop.cpp
    Statement/Return.cpp
+   Statement/Switch.cpp
    Type.cpp
    Type/Bool.cpp
    Type/Char.cpp

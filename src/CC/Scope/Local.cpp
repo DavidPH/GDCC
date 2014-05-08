@@ -135,7 +135,7 @@ namespace GDCC
       //
       // Scope_Local::createScopeCase
       //
-      Scope_Block &Scope_Local::createScopeCase()
+      Scope_Case &Scope_Local::createScopeCase()
       {
          auto ctx = new Scope_Case(*this);
          subScopes.emplace_back(ctx);

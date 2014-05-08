@@ -17,6 +17,7 @@
 
 add_library(gdcc-core-lib
    Exception.cpp
+   Number.cpp
    Option.cpp
    Origin.cpp
    ParseNumber.cpp

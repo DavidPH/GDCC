@@ -13,7 +13,7 @@
 #include "CC/Parse.hpp"
 
 #include "CC/Exp.hpp"
-#include "CC/Scope/Block.hpp"
+#include "CC/Scope/Case.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Statement.hpp"
 
@@ -433,6 +433,8 @@ static GDCC::Core::Array<GDCC::Core::String> GetStatementLabel(
          // <case> constant-expression :
          if(tok.str == Core::STR_case)
          {
+            in.in.get();
+
             auto val = CC::ExpToInteg(CC::GetExp_Cond(in, ctx));
 
             if(!in.in.drop(Core::TOK_Colon))
@@ -449,6 +451,8 @@ static GDCC::Core::Array<GDCC::Core::String> GetStatementLabel(
          // <default> :
          else if(tok.str == Core::STR_default)
          {
+            in.in.get();
+
             if(!in.in.drop(Core::TOK_Colon))
                throw Core::ExceptStr(in.in.peek().pos, "expected ':'");
 
