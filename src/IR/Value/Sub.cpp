@@ -40,13 +40,12 @@ namespace GDCC
          if(l.t == TypeBase::Fixed && r.t == TypeBase::Fixed)
             return Type_Fixed::Promote(l.tFixed, r.tFixed);
 
-         if(l.t == TypeBase::Fixed && r.t == TypeBase::Point) return r.tPoint;
-            return Type_Fixed(sizeof(Core::FastU) * CHAR_BIT, 0, true, false);
-
          if(l.t == TypeBase::Float && r.t == TypeBase::Float)
             return Type_Float::Promote(l.tFloat, r.tFloat);
 
          if(l.t == TypeBase::Point && r.t == TypeBase::Fixed) return l.tPoint;
+
+         if(l.t == TypeBase::Point && r.t == TypeBase::Point)
             return Type_Fixed(sizeof(Core::FastU) * CHAR_BIT, 0, true, false);
 
          return Type_Empty();
@@ -85,9 +84,9 @@ namespace GDCC
       //
       Value_Fixed operator - (Value_Point const &l, Value_Point const &r)
       {
-         auto value = l.value; value -= r.value; value /= l.vtype.reprS;
+         Core::FastI value = l.value; value -= r.value; value /= l.vtype.reprS;
          Type_Fixed type{sizeof(Core::FastU) * CHAR_BIT, 0, true, false};
-         return Value_Fixed(std::move(value), std::move(type));
+         return Value_Fixed(number_cast<Core::Integ>(value), std::move(type));
       }
 
       //
