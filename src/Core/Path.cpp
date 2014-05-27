@@ -12,6 +12,8 @@
 
 #include "Core/Path.hpp"
 
+#include <cstring>
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
