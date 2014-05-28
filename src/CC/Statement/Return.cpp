@@ -36,10 +36,26 @@ static GDCC::AST::Exp::CPtr CheckConstraint(GDCC::Core::Origin pos,
 {
    using namespace GDCC;
 
+   bool isVoid = fn->retrn->isTypeVoid();
+
+   // Sanity check. This should have been caught by now.
+   if(!isVoid && !fn->retrn->isTypeComplete())
+      throw Core::ExceptStr(pos, "complete type required for return");
+
    if(exp)
+   {
+      if(isVoid)
+         throw Core::ExceptStr(pos, "return expression forbidden");
+
       return CC::ExpPromo_Assign(fn->retrn, exp, pos);
+   }
    else
+   {
+      if(!isVoid)
+         throw Core::ExceptStr(pos, "return expression required");
+
       return nullptr;
+   }
 }
 
 
@@ -54,9 +70,8 @@ namespace GDCC
       //
       // Statement_ReturnExp constructor
       //
-      Statement_ReturnExp::Statement_ReturnExp(
-         Core::Array<Core::String> const &labels_, Core::Origin pos_,
-         AST::Exp const *exp_) :
+      Statement_ReturnExp::Statement_ReturnExp(Labels const &labels_,
+         Core::Origin pos_, AST::Exp const *exp_) :
          Super{labels_, pos_}, exp{exp_}
       {
       }
@@ -64,9 +79,8 @@ namespace GDCC
       //
       // Statement_ReturnExp constructor
       //
-      Statement_ReturnExp::Statement_ReturnExp(
-         Core::Array<Core::String> &&labels_, Core::Origin pos_,
-         AST::Exp const *exp_) :
+      Statement_ReturnExp::Statement_ReturnExp(Labels &&labels_,
+         Core::Origin pos_, AST::Exp const *exp_) :
          Super{std::move(labels_), pos_}, exp{exp_}
       {
       }
@@ -92,9 +106,10 @@ namespace GDCC
       //
       void Statement_ReturnExp::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
-         exp->genStmnt(ctx, AST::Arg(exp->getType(), IR::AddrBase::Stk));
+         exp->genStmntStk(ctx);
 
-         throw Core::ExceptStr(pos, "return exp stub");
+         ctx.block.setArgs({exp->getType()->getSizeWords(), IR::Arg_Stk()});
+         ctx.block.addStatement(IR::Code::Retn);
       }
 
       //
@@ -117,30 +132,26 @@ namespace GDCC
       // StatementCreate_Return
       //
       AST::Statement::CRef StatementCreate_Return(
-         Core::Array<Core::String> const &labels, Core::Origin pos,
+         AST::Statement::Labels const &labels, Core::Origin pos,
          AST::Function const *fn, AST::Exp const *e)
       {
          if(auto exp = CheckConstraint(pos, fn, e))
-            return static_cast<AST::Statement::CRef>(
-               new Statement_ReturnExp(labels, pos, exp));
+            return Statement_ReturnExp::Create(labels, pos, exp);
          else
-            return static_cast<AST::Statement::CRef>(
-               new Statement_ReturnNul(labels, pos));
+            return Statement_ReturnNul::Create(labels, pos);
       }
 
       //
       // StatementCreate_Return
       //
       AST::Statement::CRef StatementCreate_Return(
-         Core::Array<Core::String>      &&labels, Core::Origin pos,
+         AST::Statement::Labels &&labels, Core::Origin pos,
          AST::Function const *fn, AST::Exp const *e)
       {
          if(auto exp = CheckConstraint(pos, fn, e))
-            return static_cast<AST::Statement::CRef>(
-               new Statement_ReturnExp(std::move(labels), pos, exp));
+            return Statement_ReturnExp::Create(std::move(labels), pos, exp);
          else
-            return static_cast<AST::Statement::CRef>(
-               new Statement_ReturnNul(std::move(labels), pos));
+            return Statement_ReturnNul::Create(std::move(labels), pos);
       }
 
       //
@@ -150,11 +161,9 @@ namespace GDCC
          AST::Function const *fn, AST::Exp const *e)
       {
          if(auto exp = CheckConstraint(pos, fn, e))
-            return static_cast<AST::Statement::CRef>(
-               new Statement_ReturnExp(pos, exp));
+            return Statement_ReturnExp::Create(pos, exp);
          else
-            return static_cast<AST::Statement::CRef>(
-               new Statement_ReturnNul(pos));
+            return Statement_ReturnNul::Create(pos);
       }
    }
 }

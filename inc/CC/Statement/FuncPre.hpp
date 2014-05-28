@@ -6,7 +6,7 @@
 //
 //-----------------------------------------------------------------------------
 //
-// C function preamble statements.
+// C function preamble and prologue statements.
 //
 //-----------------------------------------------------------------------------
 
@@ -35,15 +35,41 @@ namespace GDCC
             GDCC::CC::Statement_FuncPre, GDCC::AST::Statement);
 
       public:
-         Scope_Function &ctx;
+         Scope_Function &scope;
 
 
-         friend AST::Statement::CRef StatementCreate_FuncPre(Core::Origin pos,
-            Scope_Function &ctx);
+         // Create
+         static CRef Create(Core::Origin pos, Scope_Function &scope)
+            {return CRef(new This(pos, scope));}
 
       protected:
-         Statement_FuncPre(Core::Origin pos_, Scope_Function &ctx_) :
-            Super{pos_}, ctx(ctx_) {}
+         Statement_FuncPre(Core::Origin pos_, Scope_Function &scope_) :
+            Super{pos_}, scope(scope_) {}
+
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
+
+         virtual bool v_isEffect() const {return true;}
+      };
+
+      //
+      // Statement_FuncPro
+      //
+      class Statement_FuncPro : public AST::Statement
+      {
+         GDCC_Core_CounterPreamble(
+            GDCC::CC::Statement_FuncPro, GDCC::AST::Statement);
+
+      public:
+         Scope_Function &scope;
+
+
+         // Create
+         static CRef Create(Core::Origin pos, Scope_Function &scope)
+            {return CRef(new This(pos, scope));}
+
+      protected:
+         Statement_FuncPro(Core::Origin pos_, Scope_Function &scope_) :
+            Super{pos_}, scope(scope_) {}
 
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
 

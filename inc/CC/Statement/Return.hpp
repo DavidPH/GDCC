@@ -38,25 +38,27 @@ namespace GDCC
          Core::CounterRef<AST::Exp const> const exp;
 
 
-         friend AST::Statement::CRef StatementCreate_Return(
-            Core::Array<Core::String> const &labels, Core::Origin pos,
-            AST::Function const *fn, AST::Exp const *exp);
-         friend AST::Statement::CRef StatementCreate_Return(
-            Core::Array<Core::String>      &&labels, Core::Origin pos,
-            AST::Function const *fn, AST::Exp const *exp);
-         friend AST::Statement::CRef StatementCreate_Return(Core::Origin pos,
-            AST::Function const *fn, AST::Exp const *exp);
+         // Create
+         static CRef Create(Labels const &labels, Core::Origin pos, AST::Exp const *exp)
+            {return CRef(new This(labels, pos, exp));}
+
+         // Create
+         static CRef Create(Labels &&labels, Core::Origin pos, AST::Exp const *exp)
+            {return CRef(new This(std::move(labels), pos, exp));}
+
+         // Create
+         static CRef Create(Core::Origin pos, AST::Exp const *exp)
+            {return CRef(new This(pos, exp));}
 
       protected:
-         Statement_ReturnExp(Core::Array<Core::String> const &labels,
-            Core::Origin pos, AST::Exp const *exp);
-         Statement_ReturnExp(Core::Array<Core::String> &&labels,
-            Core::Origin pos, AST::Exp const *exp);
+         Statement_ReturnExp(Labels const &labels, Core::Origin pos, AST::Exp const *exp);
+         Statement_ReturnExp(Labels &&labels, Core::Origin pos, AST::Exp const *exp);
          Statement_ReturnExp(Core::Origin pos, AST::Exp const *exp);
          virtual ~Statement_ReturnExp();
 
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
 
+         virtual bool v_isBranch() const {return true;}
          virtual bool v_isEffect() const;
       };
 
@@ -69,20 +71,23 @@ namespace GDCC
             GDCC::CC::Statement_ReturnNul, GDCC::AST::Statement);
 
       public:
-         friend AST::Statement::CRef StatementCreate_Return(
-            Core::Array<Core::String> const &labels, Core::Origin pos,
-            AST::Function const *fn, AST::Exp const *exp);
-         friend AST::Statement::CRef StatementCreate_Return(
-            Core::Array<Core::String>      &&labels, Core::Origin pos,
-            AST::Function const *fn, AST::Exp const *exp);
-         friend AST::Statement::CRef StatementCreate_Return(Core::Origin pos,
-            AST::Function const *fn, AST::Exp const *exp);
+         // Create
+         static CRef Create(Labels const &labels, Core::Origin pos)
+            {return CRef(new This(labels, pos));}
+
+         // Create
+         static CRef Create(Labels &&labels, Core::Origin pos)
+            {return CRef(new This(std::move(labels), pos));}
+
+         // Create
+         static CRef Create(Core::Origin pos)
+            {return CRef(new This(pos));}
 
       protected:
-         Statement_ReturnNul(Core::Array<Core::String> const &labels_,
-            Core::Origin pos_) : Super{labels_, pos_} {}
-         Statement_ReturnNul(Core::Array<Core::String> &&labels_,
-            Core::Origin pos_) : Super{std::move(labels_), pos_} {}
+         Statement_ReturnNul(Labels const &labels_, Core::Origin pos_) :
+            Super{labels_, pos_} {}
+         Statement_ReturnNul(Labels &&labels_, Core::Origin pos_) :
+            Super{std::move(labels_), pos_} {}
          explicit Statement_ReturnNul(Core::Origin pos_) : Super{pos_} {}
 
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;

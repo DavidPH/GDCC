@@ -196,22 +196,22 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Local &ctx,
 //
 // ParseDecl_Function (global)
 //
-static void ParseDecl_Function(GDCC::CC::ParserCtx const &in,
-   GDCC::CC::Scope_Global &ctx, GDCC::AST::Attribute &attr,
+static void ParseDecl_Function(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope_Global &scope, GDCC::AST::Attribute &attr,
    GDCC::AST::Function *fn)
 {
    using namespace GDCC;
 
-   auto &fnCtx = ctx.createScope(attr, fn);
+   auto &fnCtx = scope.createScope(attr, fn);
 
    // Create statements for the function.
    Core::Array<AST::Statement::CRef> stmnts =
    {
       Core::Pack,
 
-      CC::StatementCreate_FuncPre(attr.namePos, fnCtx),
-      CC::GetStatement(in, fnCtx),
-      CC::StatementCreate_Return(attr.namePos, fn),
+      CC::StatementCreate_FuncPre(ctx.in.peek().pos, fnCtx),
+      CC::GetStatement(ctx, fnCtx),
+      CC::StatementCreate_FuncPro(ctx.in.reget().pos, fnCtx),
    };
 
    fn->stmnt = AST::StatementCreate_Multi(attr.namePos, std::move(stmnts));

@@ -87,7 +87,10 @@ namespace GDCC
          AST::Statement const *iter, AST::Statement const *body);
 
       Core::CounterRef<AST::Statement const> StatementCreate_FuncPre(
-         Core::Origin pos, Scope_Function &fn);
+         Core::Origin pos, Scope_Function &scope);
+
+      Core::CounterRef<AST::Statement const> StatementCreate_FuncPro(
+         Core::Origin pos, Scope_Function &scope);
 
       Core::CounterRef<AST::Statement const> StatementCreate_Goto(
          Core::Array<Core::String> const &labels, Core::Origin pos,
