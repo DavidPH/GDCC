@@ -38,31 +38,32 @@ namespace GDCC
 
       public:
          //
-         // Member
+         // MemberData
          //
-         struct Member
+         struct MemberData
          {
-            Member(Core::String name_, AST::Type const *type_, Core::FastU addr_) :
-               name{name_}, type{type_}, addr{addr_} {}
+            MemberData(Core::String name_, AST::Type const *type_,
+               Core::FastU addr_, bool anon_) :
+               name{name_}, type{type_}, addr{addr_}, anon{anon_} {}
 
             Core::String    const name;
             AST::Type::CRef const type;
             Core::FastU     const addr;
+            bool            const anon : 1;
          };
-
-         using MemberRange = Core::Array<Member> const &;
 
 
          // Type information.
-         virtual IR::Type      getIRType()    const;
-                 Member const *getMember(Core::String name) const;
-                 MemberRange   getMembers()   const;
-         virtual Core::String  getName()      const;
-         virtual Core::FastU   getSizeAlign() const;
-         virtual Core::FastU   getSizeBytes() const;
-         virtual Core::FastU   getSizePoint() const;
-         virtual Core::FastU   getSizeShift() const;
-         virtual Core::FastU   getSizeWords() const;
+         virtual IR::Type     getIRType()    const;
+         virtual Core::String getName()      const;
+         virtual Core::FastU  getSizeAlign() const;
+         virtual Core::FastU  getSizeBytes() const;
+         virtual Core::FastU  getSizePoint() const;
+         virtual Core::FastU  getSizeShift() const;
+         virtual Core::FastU  getSizeWords() const;
+
+         // Type information: Members.
+         virtual Member getMember(Core::String name) const;
 
          // Type classification: General classifications.
          virtual bool isTypeComplete() const {return data.complete;}
@@ -74,7 +75,7 @@ namespace GDCC
          virtual bool isCTypeUnion()    const {return data.isUnion;}
 
          // Type alteration.
-         void setMembers(Member const *memv, std::size_t memc,
+         void setMembers(MemberData const *memv, std::size_t memc,
             Core::FastU sizeBytes = 0);
 
 
@@ -89,8 +90,8 @@ namespace GDCC
          {
             Data(Core::String name, bool isUnion);
 
-            Core::Array<Member> memb;
-            Core::String  const name;
+            Core::Array<MemberData> memb;
+            Core::String      const name;
 
             Core::FastU sizeAlign;
             Core::FastU sizeBytes;

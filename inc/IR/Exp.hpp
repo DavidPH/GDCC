@@ -137,6 +137,7 @@ namespace GDCC
       IArchive &operator >> (IArchive &in, Exp::CRef &out);
 
       GDCC_IR_Exp_DeclCreateE2(BinaryAdd);
+      GDCC_IR_Exp_DeclCreateE2(BinaryAddPtrRaw);
       GDCC_IR_Exp_DeclCreateE2(BinaryAnd);
       GDCC_IR_Exp_DeclCreateE2(BinaryDiv);
       GDCC_IR_Exp_DeclCreateE2(BinaryMod);

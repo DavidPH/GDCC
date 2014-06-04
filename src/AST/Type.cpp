@@ -150,6 +150,14 @@ namespace GDCC
       }
 
       //
+      // Type::getMember
+      //
+      TypeMember Type::getMember(Core::String) const
+      {
+         throw TypeError();
+      }
+
+      //
       // TypeSet constructor
       //
       TypeSet::TypeSet(bool varia_) : next{this}, prev{this}, tbeg{nullptr},

@@ -43,6 +43,15 @@ namespace GDCC
       }
 
       //
+      // ExpCreate_Array
+      //
+      AST::Exp::CRef ExpCreate_Array(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return ExpCreate_Deref(ExpCreate_Add(l, r, pos), pos);
+      }
+
+      //
       // ExpCreate_BitAnd
       //
       AST::Exp::CRef ExpCreate_BitAnd(AST::Exp const *l, AST::Exp const *r,
@@ -244,10 +253,6 @@ namespace GDCC
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "convert bool stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Array(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
       Core::CounterRef<AST::Exp const> ExpCreate_Cnd(AST::Exp const *,
          AST::Exp const *, AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
@@ -283,14 +288,6 @@ namespace GDCC
 
       Core::CounterRef<AST::Exp const> ExpCreate_LogOrI(AST::Exp const *,
          AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_Mem(AST::Exp const *,
-         Core::String, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_MemPt(AST::Exp const *,
-         Core::String, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
       Core::CounterRef<AST::Exp const> ExpCreate_SizeAlign(

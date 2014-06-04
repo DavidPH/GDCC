@@ -55,6 +55,37 @@ namespace GDCC
          // Move to destination.
          GenStmnt_MovePart(this, ctx, dst, false, true);
       }
+
+      //
+      // Exp_AddPtrRaw::v_genStmnt
+      //
+      void Exp_AddPtrRaw::v_genStmnt(AST::GenStmntCtx const &ctx,
+         AST::Arg const &dst) const
+      {
+         if(GenStmntNul(this, ctx, dst)) return;
+
+         // Evaluate pointer to stack.
+         expL->genStmntStk(ctx);
+
+         // Evaluate offset.
+         expR->genStmntStk(ctx);
+
+         // Add on stack.
+         ctx.block.addStatementArgs(IR::Code::AddU_W,
+            IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+
+         // Move to destination.
+         GenStmnt_MovePart(this, ctx, dst, false, true);
+      }
+
+      //
+      // Exp_AddPtrRaw::v_getIRExp
+      //
+      IR::Exp::CRef Exp_AddPtrRaw::v_getIRExp() const
+      {
+         return IR::ExpCreate_BinaryAddPtrRaw(
+            expL->getIRExp(), expR->getIRExp(), pos);
+      }
    }
 }
 

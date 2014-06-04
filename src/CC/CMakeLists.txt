@@ -29,6 +29,7 @@ add_library(gdcc-cc-lib
    Exp/Div.cpp
    Exp/Func.cpp
    Exp/Lit.cpp
+   Exp/Mem.cpp
    Exp/Mod.cpp
    Exp/Mul.cpp
    Exp/Not.cpp

@@ -94,6 +94,47 @@ namespace GDCC
          }
 
          //
+         // peek
+         //
+         bool peek(TokenType tt)
+         {
+            auto const &tok = buf->peek();
+            if(tok.tok == TOK_EOF)
+               return eof = true, false;
+
+            return tok.tok == tt;
+         }
+
+         //
+         // peek
+         //
+         bool peek(TokenType tt, String ts)
+         {
+            auto const &tok = buf->peek();
+            if(tok.tok == TOK_EOF)
+               return eof = true, false;
+
+            return tok.tok == tt && tok.str == ts;
+         }
+
+         //
+         // peek
+         //
+         // Performs a two-token peek.
+         //
+         bool peek(TokenType tt1, String ts1, TokenType tt2)
+         {
+            if(drop(tt1, ts1))
+            {
+               bool ret = peek(tt2);
+               unget();
+               return ret;
+            }
+            else
+               return false;
+         }
+
+         //
          // reget
          //
          Token const &reget()

@@ -58,17 +58,27 @@ namespace GDCC
          explicit Array(size_type s) : p{New(s)}, e{p + s} {}
          ~Array() {Del(p, e);}
 
+         // Sized constructor.
          template<typename... Args>
          Array(size_type s, Args const &...args) : p{New(s, args...)}, e{p + s} {}
 
+         // Range-copy constructor.
          template<typename Itr>
          Array(Itr first, Itr last) : p{Cpy(first, last)},
             e{p + std::distance(first, last)} {}
 
-         template<typename Itr>
-         Array(MoveType, Itr first, Itr last) : p{Mov(first, last)},
+         // Range-call constructor.
+         template<typename Itr, typename Fn>
+         Array(Itr first, Itr last, Fn const &fn) : p{Cpy(first, last, fn)},
             e{p + std::distance(first, last)} {}
 
+         // Range-move contructor.
+         template<typename Itr>
+         Array(MoveType, Itr first, Itr last) :
+            p{Cpy(first, last, std::move<typename std::iterator_traits<Itr>::reference>)},
+            e{p + std::distance(first, last)} {}
+
+         // Variadic constructor.
          template<typename... Args>
          Array(PackType, Args &&...args) : p{Pak(std::forward<Args>(args)...)},
             e{p + sizeof...(Args)} {}
@@ -199,26 +209,17 @@ namespace GDCC
          }
 
          //
-         // Del
+         // Cpy
          //
-         static void Del(const_pointer first, const_pointer last)
-         {
-            while(last != first) (--last)->~value_type();
-            ::operator delete(const_cast<pointer>(first));
-         }
-
-         //
-         // Mov
-         //
-         template<typename Itr>
-         static pointer Mov(Itr first, Itr last)
+         template<typename Itr, typename Fn>
+         static pointer Cpy(Itr first, Itr last, Fn const &fn)
          {
             size_type s = std::distance(first, last);
             pointer   n = Raw(s), i = n;
 
             try
             {
-               while(s--) new(i++) value_type(std::move(*first++));
+               while(s--) new(i++) value_type(fn(*first++));
             }
             catch(...)
             {
@@ -228,6 +229,15 @@ namespace GDCC
             }
 
             return n;
+         }
+
+         //
+         // Del
+         //
+         static void Del(const_pointer first, const_pointer last)
+         {
+            while(last != first) (--last)->~value_type();
+            ::operator delete(const_cast<pointer>(first));
          }
 
          //

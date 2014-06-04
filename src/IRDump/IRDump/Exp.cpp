@@ -138,6 +138,8 @@ namespace GDCC
 
          switch(static_cast<Core::StringIndex>(exp->getName()))
          {
+            CasePart(BinaryAddPtrRaw, "BinaryAddPtrRaw");
+
             CasePart(BinaryAdd, '+');
             CasePart(BinaryAnd, '&');
             CasePart(BinaryDiv, '/');

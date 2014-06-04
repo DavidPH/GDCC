@@ -47,9 +47,9 @@
    }
 
 //
-// GDCC_IR_Exp_BinaryImpl
+// GDCC_IR_Exp_BinaryImplCreate
 //
-#define GDCC_IR_Exp_BinaryImpl(name, op) \
+#define GDCC_IR_Exp_BinaryImplCreate(name) \
    Exp::CRef ExpCreate_Binary##name(Exp const *l, Exp const *r) \
       {return static_cast<Exp::CRef>(new Exp_Binary##name(l, r, l->pos));} \
    \
@@ -57,7 +57,13 @@
       {return static_cast<Exp::CRef>(new Exp_Binary##name(l, r, pos));} \
    \
    Exp::CRef ExpGetIR_Binary##name(IArchive &in) \
-      {return static_cast<Exp::CRef>(new Exp_Binary##name(in));} \
+      {return static_cast<Exp::CRef>(new Exp_Binary##name(in));}
+
+//
+// GDCC_IR_Exp_BinaryImpl
+//
+#define GDCC_IR_Exp_BinaryImpl(name, op) \
+   GDCC_IR_Exp_BinaryImplCreate(name) \
    \
    Type Exp_Binary##name::v_getType() const \
       {return Type::Promote##name(expL->getType(), expR->getType());} \
@@ -97,6 +103,7 @@ namespace GDCC
       };
 
       GDCC_IR_Exp_BinaryDecl(Add);
+      GDCC_IR_Exp_BinaryDecl(AddPtrRaw);
       GDCC_IR_Exp_BinaryDecl(And);
       GDCC_IR_Exp_BinaryDecl(Div);
       GDCC_IR_Exp_BinaryDecl(Mod);

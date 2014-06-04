@@ -113,6 +113,8 @@ namespace GDCC
          case Core::STR_ValueMulti:  return ExpGetIR_ValueMulti (in);
          case Core::STR_ValueRoot:   return ExpGetIR_ValueRoot  (in);
 
+         case Core::STR_BinaryAddPtrRaw: return ExpGetIR_BinaryAddPtrRaw(in);
+
          default:
             std::cerr << "invalid Exp\n";
             throw EXIT_FAILURE;

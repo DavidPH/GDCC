@@ -168,7 +168,7 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
       return;
 
    // List of members.
-   std::vector<CC::Type_Struct::Member> memv;
+   std::vector<CC::Type_Struct::MemberData> memv;
 
    // Current address in structure. (Remains 0 for unions.)
    Core::FastU addr = 0;
@@ -263,6 +263,11 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
             throw Core::ExceptStr(in.in.peek().pos,
                "member after flexible array");
 
+         // Check for possible anonymous struct/union: struct-or-union {
+         bool maybeAnon =
+            in.in.peek(Core::TOK_KeyWrd, Core::STR_struct, Core::TOK_Semico) ||
+            in.in.peek(Core::TOK_KeyWrd, Core::STR_union,  Core::TOK_Semico);
+
          // specifier-qualifier-list
          AST::Attribute attrBase;
          ParseSpecQual(in, ctx, attrBase);
@@ -275,16 +280,7 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
 
             addrAlign(attrBase.type->getSizeAlign());
 
-            // Anonymous struct/union.
-            if((attrBase.type->isCTypeStruct() || attrBase.type->isCTypeUnion()) &&
-               !attrBase.type->getName())
-            {
-               CC::Type_Struct::CRef attrType{&*attrBase.type};
-               for(auto const &mem : attrType->getMembers())
-                  memv.emplace_back(mem.name, mem.type, mem.addr + addr);
-            }
-            else
-               memv.emplace_back(Core::STRNULL, attrBase.type, addr);
+            memv.emplace_back(Core::STRNULL, attrBase.type, addr, maybeAnon);
 
             addrBytes(attrBase.type->getSizeBytes());
          }
@@ -339,7 +335,7 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
                      ->getTypeQual(bitsType->getQual());
 
                   // Add member.
-                  memv.emplace_back(attrTemp.name, bitsType, addr);
+                  memv.emplace_back(attrTemp.name, bitsType, addr, false);
 
                   // Increase bit address.
                   if(!isUnion) bitsAddr += bits;
@@ -368,7 +364,7 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
                {
                   addrAlign(attrTemp.type->getSizeAlign());
 
-                  memv.emplace_back(attrTemp.name, attrTemp.type, addr);
+                  memv.emplace_back(attrTemp.name, attrTemp.type, addr, false);
 
                   addrBytes(attrTemp.type->getSizeBytes());
                }
@@ -380,7 +376,7 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
 
                   addrAlign(attrTemp.type->getSizeAlign());
 
-                  memv.emplace_back(attrTemp.name, attrTemp.type, addr);
+                  memv.emplace_back(attrTemp.name, attrTemp.type, addr, false);
 
                   // A flexible array member must be the last member. Therefore,
                   // there must be no further declarators.

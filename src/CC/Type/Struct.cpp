@@ -68,30 +68,56 @@ namespace GDCC
       {
          if(!data.complete) throw AST::TypeError();
 
-         // TODO: This conversion is complicated by unions.
-         throw AST::TypeError();
+         if(data.isStruct)
+         {
+            return IR::Type_Multi(
+               Core::Array<IR::Type>(data.memb.begin(), data.memb.end(),
+                  [](MemberData const &m) {return m.type->getIRType();}));
+         }
+         else
+         {
+            // TODO: IR::Type_Union
+            throw AST::TypeError();
+         }
       }
 
       //
       // Type_Struct::getMember
       //
-      Type_Struct::Member const *Type_Struct::getMember(Core::String name) const
+      Type_Struct::Member Type_Struct::getMember(Core::String name) const
       {
          if(!data.complete) throw AST::TypeError();
 
+         // getMemQual
+         auto getMemQual = [&](AST::Type const *t)
+         {
+            auto q = getQual();
+
+            q.aAtom |= t->getQual().aAtom;
+            q.aCons |= t->getQual().aCons;
+            q.aRest |= t->getQual().aRest;
+            q.aVola |= t->getQual().aVola;
+
+            return t->getTypeQual(q);
+         };
+
+         // Linear search for matching member.
+         // This should probably be a hashed lookup at some point.
          for(auto const &mem : data.memb)
-            if(mem.name == name) return &mem;
+         {
+            // Directly contained member?
+            if(mem.name == name) return {mem.addr, getMemQual(mem.type)};
 
-         return nullptr;
-      }
+            // Anonymous struct/union contained member?
+            if(mem.anon) try
+            {
+               auto m = mem.type->getMember(name);
+               return {mem.addr + m.addr, getMemQual(m.type)};
+            }
+            catch(AST::TypeError const &) {}
+         }
 
-      //
-      // Type_Struct::getMembers
-      //
-      Type_Struct::MemberRange Type_Struct::getMembers() const
-      {
-         if(!data.complete) throw AST::TypeError();
-         return data.memb;
+         throw AST::TypeError();
       }
 
       //
@@ -150,12 +176,12 @@ namespace GDCC
       //
       // Type_Struct::setMembers
       //
-      void Type_Struct::setMembers(Member const *memv, std::size_t memc,
+      void Type_Struct::setMembers(MemberData const *memv, std::size_t memc,
          Core::FastU sizeBytes)
       {
          if(data.complete) throw AST::TypeError();
 
-         for(auto const &mem : data.memb = Core::Array<Member>(memv, memv + memc))
+         for(auto const &mem : data.memb = Core::Array<MemberData>(memv, memv + memc))
          {
             if(mem.type->isTypeComplete())
                sizeBytes = std::max(sizeBytes, mem.addr + mem.type->getSizeBytes());
@@ -169,8 +195,10 @@ namespace GDCC
          data.sizeAlign = Bytecode::GetWordAlign();
          data.sizeWords = (sizeBytes + wordBytes - 1) / wordBytes;
          data.sizeBytes = data.sizeWords * wordBytes;
-         data.sizePoint = Bytecode::GetWordPoint();
+         data.sizePoint = Bytecode::GetWordPoint() * data.sizeWords;
          data.sizeShift = Bytecode::GetWordShift();
+
+         data.complete = true;
       }
 
       //

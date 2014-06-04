@@ -44,6 +44,31 @@ namespace GDCC
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
       };
+
+      //
+      // Exp_AddPtrRaw
+      //
+      class Exp_AddPtrRaw : public AST::Exp_Add
+      {
+         GDCC_Core_CounterPreamble(
+            GDCC::CC::Exp_AddPtrRaw, GDCC::AST::Exp_Add);
+
+      public:
+         // Create
+         static CRef Create(AST::Type const *t, AST::Exp const *l,
+            AST::Exp const *r, Core::Origin pos)
+            {return CRef(new This(t, l, r, pos));}
+
+      protected:
+         // constructor
+         Exp_AddPtrRaw(AST::Type const *t, AST::Exp const *l,
+            AST::Exp const *r, Core::Origin pos_) : Super{t, l, r, pos_} {}
+
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
+            AST::Arg const &dst) const;
+
+         virtual IRExpCRef v_getIRExp() const;
+      };
    }
 }
 

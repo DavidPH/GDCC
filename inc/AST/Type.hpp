@@ -93,6 +93,7 @@ namespace GDCC
       class Type_Pointer;
       class Type_RefL;
       class Type_RefR;
+      class TypeMember;
       class TypeSet;
 
       //
@@ -173,6 +174,7 @@ namespace GDCC
 
       protected:
          using ExpCRef     = Core::CounterRef<Exp const>;
+         using Member      = TypeMember;
          using RankC       = TypeRankC;
          using TypeSetCRef = Core::CounterRef<TypeSet const>;
 
@@ -226,6 +228,9 @@ namespace GDCC
          virtual Core::FastU   getSizeWords()   const {throw TypeError();}
          virtual ExpCRef       getSizeWordsVM() const;
          virtual CRef          getUnsiType()    const {throw TypeError();}
+
+         // Type information: Members.
+         virtual Member getMember(Core::String name) const;
 
          // Type classification: General classifications.
          virtual bool isTypeArray()    const {return false;}
@@ -335,6 +340,16 @@ namespace GDCC
          mutable Type const *lvrType; // lvalue reference
          mutable Type const *ptrType; // pointer
          mutable Type const *rvrType; // rvalue reference
+      };
+
+      //
+      // TypeMember
+      //
+      class TypeMember
+      {
+      public:
+         Core::FastU addr;
+         Type::CRef  type;
       };
 
       //
