@@ -71,6 +71,7 @@ namespace GDCC
          // Type information.
          virtual Type::CRef  getBaseType()  const;
          virtual RankC       getRankC()     const;
+         virtual Type::CRef  getSignType()  const;
          virtual Core::FastU getSizeAlign() const;
          virtual Core::FastU getSizeBitsF() const;
          virtual Core::FastU getSizeBitsI() const;
@@ -78,6 +79,7 @@ namespace GDCC
          virtual Core::FastU getSizePoint() const;
          virtual Core::FastU getSizeShift() const;
          virtual Core::FastU getSizeWords() const;
+         virtual Type::CRef  getUnsiType()  const;
 
          // Type classification: C/C++ classifications.
          virtual bool isCTypeAccum()    const {return true;}
@@ -122,6 +124,7 @@ namespace GDCC
          // Type information.
          virtual Type::CRef  getBaseType()  const;
          virtual RankC       getRankC()     const;
+         virtual Type::CRef  getSignType()  const;
          virtual Core::FastU getSizeAlign() const;
          virtual Core::FastU getSizeBitsF() const;
          virtual Core::FastU getSizeBitsI() const {return 0;}
@@ -129,6 +132,7 @@ namespace GDCC
          virtual Core::FastU getSizePoint() const;
          virtual Core::FastU getSizeShift() const;
          virtual Core::FastU getSizeWords() const;
+         virtual Type::CRef  getUnsiType()  const;
 
          // Type classification: C/C++ classifications.
          virtual bool isCTypeFixed()    const {return true;}
@@ -172,6 +176,7 @@ namespace GDCC
       public:
          // Type information.
          virtual RankC       getRankC()     const;
+         virtual Type::CRef  getSignType()  const;
          virtual Core::FastU getSizeAlign() const;
          virtual Core::FastU getSizeBitsF() const {return 0;}
          virtual Core::FastU getSizeBitsI() const;
@@ -179,6 +184,7 @@ namespace GDCC
          virtual Core::FastU getSizePoint() const;
          virtual Core::FastU getSizeShift() const;
          virtual Core::FastU getSizeWords() const;
+         virtual Type::CRef  getUnsiType()  const;
 
          // Type classification: C/C++ classifications.
          virtual bool isCTypeChar()   const {return size == 0;}

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,8 @@
 
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
+
+#include <climits>
 
 
 //----------------------------------------------------------------------------|
@@ -33,6 +35,41 @@ namespace GDCC
          labs.clear();
          new Statement(&head, link, code);
          return *this;
+      }
+
+      //
+      // Block::unpackArg<Exp const *>
+      //
+      void Block::unpackArg(Arg *argv, Exp const *arg0)
+      {
+         *argv = Arg_Lit(arg0);
+      }
+
+      //
+      // Block::unpackArg<Core::FastI>
+      //
+      void Block::unpackArg(Arg *argv, Core::FastI arg0)
+      {
+         Value_Fixed val{arg0, {sizeof(arg0) * CHAR_BIT, 0, true, false}};
+         *argv = Arg_Lit(ExpCreate_ValueRoot(std::move(val), head.pos));
+      }
+
+      //
+      // Block::unpackArg<Core::FastU>
+      //
+      void Block::unpackArg(Arg *argv, Core::FastU arg0)
+      {
+         Value_Fixed val{arg0, {sizeof(arg0) * CHAR_BIT, 0, false, false}};
+         *argv = Arg_Lit(ExpCreate_ValueRoot(std::move(val), head.pos));
+      }
+
+      //
+      // Block::unpackArg<int>
+      //
+      void Block::unpackArg(Arg *argv, int arg0)
+      {
+         Value_Fixed val{arg0, {sizeof(arg0) * CHAR_BIT, 0, true, false}};
+         *argv = Arg_Lit(ExpCreate_ValueRoot(std::move(val), head.pos));
       }
 
       //

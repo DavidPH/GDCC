@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -34,6 +34,7 @@ namespace GDCC
       public:
          Glyph() = default;
          Glyph(Program *prog_, Core::String str_) : prog{prog_}, str{str_} {}
+         Glyph(Program &prog_, Core::String str_) : prog{&prog_}, str{str_} {}
 
          explicit operator bool () const {return prog && str;}
          explicit operator Core::String () const {return str;}
@@ -50,8 +51,8 @@ namespace GDCC
          friend IArchive &operator >> (IArchive &in, Glyph &out);
 
       private:
-         Program *prog;
-         Core::String   str;
+         Program     *prog;
+         Core::String str;
       };
 
       class GlyphData

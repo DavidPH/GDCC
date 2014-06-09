@@ -241,14 +241,6 @@ namespace GDCC
 
       // Stubs.
 
-      AST::Exp::CRef ExpConvert_Arith(AST::Type const *t, AST::Exp const *e,
-         Core::Origin pos)
-      {
-         if(t->getTypeQual() == e->getType()->getTypeQual())
-            return static_cast<AST::Exp::CRef>(e);
-         throw Core::ExceptStr(pos, "convert arith stub");
-      }
-
       Core::CounterRef<AST::Exp const> ExpConvert_Bool(AST::Type const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "convert bool stub");}

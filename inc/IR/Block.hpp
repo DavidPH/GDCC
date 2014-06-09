@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -54,6 +54,7 @@ namespace GDCC
 
          Block &operator = (Block &&) = default;
 
+         // addLabel
          Block &addLabel(Core::String lab) {labs.push_back(lab); return *this;}
 
          // addStatement
@@ -74,18 +75,21 @@ namespace GDCC
          Block &addStatementArgs(Code code, Args &&...args)
             {return setArgs(std::forward<Args>(args)...).addStatement(&head, code);}
 
+         // begin
                iterator begin()       {return static_cast<      iterator>(head.next);}
          const_iterator begin() const {return static_cast<const_iterator>(head.next);}
 
          // empty
          bool empty() const {return head.next == &head;}
 
+         // end
                iterator end()       {return static_cast<      iterator>(&head);}
          const_iterator end() const {return static_cast<const_iterator>(&head);}
 
          // getOrigin
          Core::Origin getOrigin() const {return head.pos;}
 
+         // setArgs
          Block &setArgs() {head.args.clear(); return *this;}
 
          // setArgs
@@ -119,7 +123,13 @@ namespace GDCC
          void unpackArg(Arg *argv, Arg const &arg0) {*argv = arg0;}
          void unpackArg(Arg *argv, Arg      &&arg0) {*argv = std::move(arg0);}
 
-         void unpackArg(Arg *argv, Exp *arg0);
+         // Expression arg, converted to Arg_Lit.
+         void unpackArg(Arg *argv, Exp const *arg0);
+
+         // Numeric arg, converted to Arg_Lit.
+         void unpackArg(Arg *argv, Core::FastI arg0);
+         void unpackArg(Arg *argv, Core::FastU arg0);
+         void unpackArg(Arg *argv, int         arg0);
 
          //
          // unpackArgs

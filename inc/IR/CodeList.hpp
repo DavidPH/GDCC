@@ -56,6 +56,9 @@ GDCC_IR_CodeList(CmpU_NE_W)
 // Cnat src ret arg...
 GDCC_IR_CodeList(Cnat)
 
+// Copy lop rop
+GDCC_IR_CodeList(Copy_W)
+
 // Cspe src ret arg...
 GDCC_IR_CodeList(Cspe)
 

@@ -43,6 +43,21 @@ static GDCC::AST::Type::CRef const FractTable_BaseType[6] =
    GDCC::CC::GetTypeFractPrSL(),
 };
 
+// Table: Type_Integ::getBaseType
+static GDCC::AST::Type::CRef const IntegTable_BaseType[10] =
+{
+   GDCC::CC::GetTypeIntegPrUHH(),
+   GDCC::CC::GetTypeIntegPrSHH(),
+   GDCC::CC::GetTypeIntegPrUH(),
+   GDCC::CC::GetTypeIntegPrSH(),
+   GDCC::CC::GetTypeIntegPrU(),
+   GDCC::CC::GetTypeIntegPrS(),
+   GDCC::CC::GetTypeIntegPrUL(),
+   GDCC::CC::GetTypeIntegPrSL(),
+   GDCC::CC::GetTypeIntegPrULL(),
+   GDCC::CC::GetTypeIntegPrSLL(),
+};
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -143,6 +158,14 @@ namespace GDCC
       }
 
       //
+      // Type_Fixed::getSignType
+      //
+      AST::Type::CRef Type_Fixed::getSignType() const
+      {
+         return FixedTable_BaseType[(size << 1) | 1];
+      }
+
+      //
       // Type_Fixed::getSizeAlign
       //
       Core::FastU Type_Fixed::getSizeAlign() const
@@ -227,6 +250,14 @@ namespace GDCC
       }
 
       //
+      // Type_Fixed::getUnsiType
+      //
+      AST::Type::CRef Type_Fixed::getUnsiType() const
+      {
+         return FixedTable_BaseType[(size << 1) | 0];
+      }
+
+      //
       // Type_Fract constructor
       //
       Type_Fract::Type_Fract(unsigned size_, bool prim_, bool sign_) :
@@ -256,6 +287,14 @@ namespace GDCC
          }
 
          return AST::TypeRankC::None;
+      }
+
+      //
+      // Type_Fract::getSignType
+      //
+      AST::Type::CRef Type_Fract::getSignType() const
+      {
+         return FractTable_BaseType[(size << 1) | 1];
       }
 
       //
@@ -319,6 +358,14 @@ namespace GDCC
       }
 
       //
+      // Type_Fract::getUnsiType
+      //
+      AST::Type::CRef Type_Fract::getUnsiType() const
+      {
+         return FractTable_BaseType[(size << 1) | 0];
+      }
+
+      //
       // Type_Integ constructor
       //
       Type_Integ::Type_Integ(unsigned size_, bool prim_, bool sign_) :
@@ -341,6 +388,14 @@ namespace GDCC
          }
 
          return AST::TypeRankC::None;
+      }
+
+      //
+      // Type_Integ::getSignType
+      //
+      AST::Type::CRef Type_Integ::getSignType() const
+      {
+         return IntegTable_BaseType[(size << 1) | 1];
       }
 
       //
@@ -386,7 +441,7 @@ namespace GDCC
       {
          switch(Bytecode::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return size > 3 ? 1 << (size - 3) : 1;
+         case Bytecode::Target::MageCraft: return size > 2 ? 1 << (size - 2) : 1;
          default:                          return size > 2 ? 2 : 1;
          }
       }
@@ -410,9 +465,17 @@ namespace GDCC
       {
          switch(Bytecode::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return size > 3 ? 1 << (size - 3) : 1;
+         case Bytecode::Target::MageCraft: return size > 2 ? 1 << (size - 2) : 1;
          default:                          return size > 2 ? 2 : 1;
          }
+      }
+
+      //
+      // Type_Integ::getUnsiType
+      //
+      AST::Type::CRef Type_Integ::getUnsiType() const
+      {
+         return IntegTable_BaseType[(size << 1) | 0];
       }
    }
 }
