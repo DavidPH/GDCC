@@ -16,6 +16,8 @@
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
+#include "Bytecode/Platform.hpp"
+
 #include <iostream>
 
 
@@ -56,6 +58,17 @@ namespace GDCC
       }
 
       //
+      // Value_Funct::operator bool
+      //
+      Value_Funct::operator bool () const
+      {
+         if(Bytecode::IsZeroNull_Funct(vtype.callT))
+            return value != 0;
+         else
+            return value != static_cast<Core::FastU>(-1);
+      }
+
+      //
       // Value_Multi constructor
       //
       Value_Multi::Value_Multi(IArchive &in) : vtype{in}, value{GetIR(in, value)}
@@ -71,10 +84,32 @@ namespace GDCC
       }
 
       //
+      // Value_Point::operator bool
+      //
+      Value_Point::operator bool () const
+      {
+         if(Bytecode::IsZeroNull_Point(vtype.reprB))
+            return value != 0;
+         else
+            return value != static_cast<Core::FastU>(-1);
+      }
+
+      //
       // Value_StrEn constructor
       //
       Value_StrEn::Value_StrEn(IArchive &in) : vtype{in}, value{GetIR(in, value)}
       {
+      }
+
+      //
+      // Value_StrEn::operator bool
+      //
+      Value_StrEn::operator bool () const
+      {
+         if(Bytecode::IsZeroNull_StrEn())
+            return value != 0;
+         else
+            return value != static_cast<Core::FastU>(-1);
       }
 
       //

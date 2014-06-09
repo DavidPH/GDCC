@@ -112,7 +112,7 @@ namespace GDCC
 
          explicit Value_Funct(IArchive &in);
 
-         explicit operator bool () const {return static_cast<bool>(value);}
+         explicit operator bool () const;
 
          Type_Funct  vtype;
          Core::FastU value;
@@ -151,7 +151,7 @@ namespace GDCC
 
          explicit Value_Point(IArchive &in);
 
-         explicit operator bool () const {return static_cast<bool>(value);}
+         explicit operator bool () const;
 
          Type_Point   vtype;
          Core::FastU  value;
@@ -171,7 +171,7 @@ namespace GDCC
 
          explicit Value_StrEn(IArchive &in);
 
-         explicit operator bool () const {return static_cast<bool>(value);}
+         explicit operator bool () const;
 
          Type_StrEn  vtype;
          Core::FastU value;

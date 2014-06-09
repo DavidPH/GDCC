@@ -57,7 +57,7 @@ add_library(gdcc-ir-lib
    Value/Unary.cpp
 )
 
-target_link_libraries(gdcc-ir-lib gdcc-core-lib)
+target_link_libraries(gdcc-ir-lib gdcc-core-lib gdcc-bytecode-lib)
 
 ## EOF
 
