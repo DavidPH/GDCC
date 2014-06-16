@@ -38,6 +38,40 @@ namespace GDCC
 
          virtual IRExpCRef v_getIRExp() const;
       };
+
+      //
+      // Exp_ConvertArith
+      //
+      class Exp_ConvertArith : public Exp_Convert
+      {
+         GDCC_Core_CounterPreamble(
+            GDCC::AST::Exp_ConvertArith, GDCC::AST::Exp_Convert);
+
+         GDCC_AST_Exp_UnaryCreator(Exp_ConvertArith);
+
+      protected:
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
+            AST::Arg const &dst) const;
+      };
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Global Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace AST
+   {
+      // Converts an arithmetic value from srcT to dstT on the stack.
+      void GenStmnt_ConvertArith(Exp const *exp, Type const *dstT,
+         Type const *srcT, GenStmntCtx const &ctx);
+
+      // Converts a fixed-point value from srcT to dstT on the stack.
+      void GenStmnt_ConvertFixed(Exp const *exp, Type const *dstT,
+         Type const *srcT, GenStmntCtx const &ctx);
    }
 }
 

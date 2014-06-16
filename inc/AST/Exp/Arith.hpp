@@ -15,6 +15,10 @@
 
 #include "../../AST/Exp/Binary.hpp"
 
+#include "../../AST/Type.hpp"
+
+#include "../../IR/Exp.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -89,28 +93,35 @@ namespace GDCC
          GDCC_Core_CounterPreamble(GDCC::AST::Exp_ArithEq<Base>, Base);
 
       public:
-         IR::Code const code;
+         Type::CRef const evalT;
+         IR::Code   const code;
+         bool       const post : 1;
 
 
-         //
          // Create
-         //
-         static Exp::CRef Create(IR::Code code, Type const *t, Exp const *l,
-            Exp const *r, Core::Origin pos)
-         {
-            return Exp::CRef(new Exp_ArithEq<Base>(code, t, l, r, pos));
-         }
+         static CRef Create(Type const *evalT, IR::Code code, bool post,
+            Type const *t, Exp const *l, Exp const *r, Core::Origin pos)
+            {return CRef(new This(evalT, code, post, t, l, r, pos));}
 
       protected:
-         Exp_ArithEq(IR::Code c, Type const *t, Exp const *l, Exp const *r,
-            Core::Origin pos_) : Super{t, l, r, pos_}, code{c} {}
+         Exp_ArithEq(Type const *evalT_, IR::Code c, bool post_, Type const *t,
+            Exp const *l, Exp const *r, Core::Origin pos_) :
+            Super{t, l, r, pos_}, evalT{evalT_}, code{c}, post{post_} {}
 
          // v_genStmnt
          virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
-            {GenStmnt_ArithEq(this, code, ctx, dst);}
+            {GenStmnt_ArithEq(this, code, ctx, dst, evalT, post);}
+
+         // v_getIRExp
+         virtual IR::Exp::CRef v_getIRExp() const
+            {return post ? Super::expL->getIRExp() : Super::v_getIRExp();}
 
          // v_isEffect
          virtual bool v_isEffect() const {return true;}
+
+         // v_isIRExp
+         virtual bool v_isIRExp() const
+            {return post ? Super::expL->isIRExp() : Super::v_isIRExp();}
       };
 
       //
@@ -170,7 +181,8 @@ namespace GDCC
 
       // As in GenStmnt_Arith, but also assigns the result to the left operand.
       void GenStmnt_ArithEq(Exp_Binary const *exp, IR::Code code,
-         GenStmntCtx const &ctx, Arg const &dst);
+         GenStmntCtx const &ctx, Arg const &dst, Type const *evalT,
+         bool post = false);
    }
 }
 

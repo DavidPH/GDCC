@@ -30,6 +30,7 @@ add_library(gdcc-ast-lib
    Exp/Unary.cpp
    Function.cpp
    GenStmnt/ArithEq.cpp
+   GenStmnt/Convert.cpp
    GenStmnt/Move.cpp
    Object.cpp
    Space.cpp

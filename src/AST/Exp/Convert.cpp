@@ -12,6 +12,8 @@
 
 #include "AST/Exp/Convert.hpp"
 
+#include "AST/Type.hpp"
+
 #include "IR/Exp.hpp"
 
 
@@ -30,6 +32,24 @@ namespace GDCC
       {
          // The conversion logic is handled in Exp::getIRExp.
          return exp->getIRExp();
+      }
+
+      //
+      // Exp_ConvertArith::v_genStmnt
+      //
+      void Exp_ConvertArith::v_genStmnt(GenStmntCtx const &ctx,
+         Arg const &dst) const
+      {
+         if(GenStmntNul(this, ctx, dst)) return;
+
+         // Evaluate expression to stack.
+         exp->genStmntStk(ctx);
+
+         // Convert on stack.
+         GenStmnt_ConvertArith(this, type, exp->getType(), ctx);
+
+         // Move to destination.
+         GenStmnt_MovePart(exp, ctx, dst, false, true);
       }
    }
 }

@@ -16,6 +16,7 @@
 
 #include "AST/Arg.hpp"
 #include "AST/Exp/Binary.hpp"
+#include "AST/Exp/Convert.hpp"
 #include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -40,6 +41,15 @@ namespace GDCC
          type{type_},
          exp {exp_}
       {
+      }
+
+      //
+      // ExpConvert_Arith
+      //
+      AST::Exp::CRef ExpConvert_Arith(AST::Type const *t, AST::Exp const *e,
+         Core::Origin pos)
+      {
+         return AST::Exp_ConvertArith::Create(t, e, pos);
       }
 
       //
@@ -135,6 +145,38 @@ namespace GDCC
             return ExpConvert_Pointer(typeL, e, pos);
 
          throw Core::ExceptStr(pos, "unsupported cast");
+      }
+
+      //
+      // ExpCreate_DecPre
+      //
+      AST::Exp::CRef ExpCreate_DecPre(AST::Exp const *e, Core::Origin pos)
+      {
+         return ExpCreate_SubEq(e, ExpCreate_LitInt(TypeIntegPrS, 1, pos), pos, false);
+      }
+
+      //
+      // ExpCreate_DecPre
+      //
+      AST::Exp::CRef ExpCreate_DecSuf(AST::Exp const *e, Core::Origin pos)
+      {
+         return ExpCreate_SubEq(e, ExpCreate_LitInt(TypeIntegPrS, 1, pos), pos, true);
+      }
+
+      //
+      // ExpCreate_IncPre
+      //
+      AST::Exp::CRef ExpCreate_IncPre(AST::Exp const *e, Core::Origin pos)
+      {
+         return ExpCreate_AddEq(e, ExpCreate_LitInt(TypeIntegPrS, 1, pos), pos, false);
+      }
+
+      //
+      // ExpCreate_IncPre
+      //
+      AST::Exp::CRef ExpCreate_IncSuf(AST::Exp const *e, Core::Origin pos)
+      {
+         return ExpCreate_AddEq(e, ExpCreate_LitInt(TypeIntegPrS, 1, pos), pos, true);
       }
 
       //
@@ -249,25 +291,11 @@ namespace GDCC
          AST::Exp const *, AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_DecPre(AST::Exp const *,
-         Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-      Core::CounterRef<AST::Exp const> ExpCreate_DecSuf(AST::Exp const *,
-         Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
       Core::CounterRef<AST::Exp const> ExpCreate_GenSel(AST::Exp const *,
          AST::Exp const *, Core::Array<GenAssoc> const &, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
       Core::CounterRef<AST::Exp const> ExpCreate_GenSel(AST::Exp const *,
          AST::Exp const *, Core::Array<GenAssoc>      &&, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_IncPre(AST::Exp const *,
-         Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-      Core::CounterRef<AST::Exp const> ExpCreate_IncSuf(AST::Exp const *,
-         Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
       Core::CounterRef<AST::Exp const> ExpCreate_Inv(AST::Exp const *,

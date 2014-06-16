@@ -57,6 +57,9 @@ namespace GDCC
       AST::Exp::CRef ExpCreate_MulEq(AST::Exp const *expL, AST::Exp const *r,
          Core::Origin pos)
       {
+         if(!IsModLValue(expL))
+            throw Core::ExceptStr(pos, "expected modifiable lvalue");
+
          auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
 
          auto typeL = expL->getType();
@@ -65,13 +68,13 @@ namespace GDCC
          // arithmetic *= arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
-            // Promote to type of left operand. This should work in most cases.
-            expR = ExpConvert_Arith(typeL, expR, pos);
+            AST::Type::CPtr evalT;
+            std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
 
             // TODO: fixed *= integer doesn't require conversion.
 
             return ExpCreate_ArithEq<AST::Exp_Mul, IR::CodeSet_Mul>(
-               typeL, expL, expR, pos);
+               evalT, typeL, expL, expR, pos);
          }
 
          throw Core::ExceptStr(pos, "invalid operands to 'operator *='");

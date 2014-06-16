@@ -6,15 +6,13 @@
 //
 //-----------------------------------------------------------------------------
 //
-// C arithmetic conversion expressions.
+// Type-conversion codegen.
 //
 //-----------------------------------------------------------------------------
 
-#include "CC/Exp/Convert/Arith.hpp"
+#include "AST/Exp/Convert.hpp"
 
-#include "CC/Exp/Arith.hpp"
-#include "CC/Type.hpp"
-
+#include "AST/ExpCode.hpp"
 #include "AST/Function.hpp"
 #include "AST/Type.hpp"
 
@@ -74,33 +72,46 @@ static void ExtendSign(GDCC::AST::Exp const *exp,
 
 namespace GDCC
 {
-   namespace CC
+   namespace AST
    {
       //
-      // Exp_ConvertFixed::v_genStmnt
+      // GenStmnt_ConvertArith
       //
-      void Exp_ConvertFixed::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void GenStmnt_ConvertArith(Exp const *exp, Type const *dstT,
+         Type const *srcT, GenStmntCtx const &ctx)
       {
-         if(GenStmntNul(this, ctx, dst)) return;
+         if(dstT == srcT)
+            return;
 
-         auto typeE = exp->getType();
+         // Fixed-point source.
+         if(srcT->isCTypeFixed() || srcT->isCTypeInteg())
+         {
+            // Fixed-point output.
+            if(dstT->isCTypeFixed() || dstT->isCTypeInteg())
+               return GenStmnt_ConvertFixed(exp, dstT, srcT, ctx);
+         }
 
-         auto diffWords = static_cast<Core::FastI>(type ->getSizeWords()) -
-                          static_cast<Core::FastI>(typeE->getSizeWords());
+         throw Core::ExceptStr(exp->pos, "convert arith stub");
+      }
 
-         auto diffBitsF = static_cast<Core::FastI>(type ->getSizeBitsF()) -
-                          static_cast<Core::FastI>(typeE->getSizeBitsF());
+      //
+      // GenStmnt_ConvertFixed
+      //
+      void GenStmnt_ConvertFixed(Exp const *exp, Type const *dstT,
+         Type const *srcT, GenStmntCtx const &ctx)
+      {
+         auto diffWords = static_cast<Core::FastI>(dstT->getSizeWords()) -
+                          static_cast<Core::FastI>(srcT->getSizeWords());
 
-         // Evaluate expression to stack.
-         exp->genStmntStk(ctx);
+         auto diffBitsF = static_cast<Core::FastI>(dstT->getSizeBitsF()) -
+                          static_cast<Core::FastI>(srcT->getSizeBitsF());
 
          // Expand value.
          if(diffWords > 0)
          {
             // Signed source may require sign-extending.
-            if(typeE->getSizeBitsS())
-               ExtendSign(this, ctx, diffWords);
+            if(srcT->getSizeBitsS())
+               ExtendSign(exp, ctx, diffWords);
 
             // Otherwise, expand with zeroes.
             else for(auto i = diffWords; i--;)
@@ -112,16 +123,16 @@ namespace GDCC
          {
             // Determine a shift type that has the larger size, but the
             // signedness of the source.
-            AST::Type::CPtr shiftType;
+            Type::CPtr shiftType;
             if(diffWords > 0)
             {
-               if(typeE->getSizeBitsS())
-                  shiftType = type->getSignType();
+               if(srcT->getSizeBitsS())
+                  shiftType = dstT->getSignType();
                else
-                  shiftType = type->getUnsiType();
+                  shiftType = dstT->getUnsiType();
             }
             else
-               shiftType = typeE;
+               shiftType = srcT;
 
             // Determine shift code and create amount expression.
             IR::Code    shiftCode;
@@ -139,7 +150,7 @@ namespace GDCC
             }
 
             if(shiftCode == IR::Code::None)
-               throw Core::ExceptStr(pos, "no shift code for conversion");
+               throw Core::ExceptStr(exp->pos, "no shift code for conversion");
 
             // Generate shift.
             ctx.block.addStatementArgs(shiftCode,
@@ -153,32 +164,6 @@ namespace GDCC
                ctx.block.addStatementArgs(IR::Code::Move_W,
                   IR::Arg_Nul(), IR::Arg_Stk());
          }
-
-         // Move to destination.
-         GenStmnt_MovePart(exp, ctx, dst, false, true);
-      }
-
-      //
-      // ExpConvert_Arith
-      //
-      AST::Exp::CRef ExpConvert_Arith(AST::Type const *t, AST::Exp const *e,
-         Core::Origin pos)
-      {
-         auto type  = t->getTypeQual();
-         auto typeE = e->getType()->getTypeQual();
-
-         if(type == typeE)
-            return static_cast<AST::Exp::CRef>(e);
-
-         // Fixed-point source.
-         if(typeE->isCTypeFixed() || typeE->isCTypeInteg())
-         {
-            // Fixed-point output.
-            if(type->isCTypeFixed() || type->isCTypeInteg())
-               return Exp_ConvertFixed::Create(type, e, pos);
-         }
-
-         throw Core::ExceptStr(pos, "convert arith stub");
       }
    }
 }

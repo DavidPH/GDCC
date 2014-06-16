@@ -73,10 +73,10 @@ namespace GDCC
          // integer op= integer
          if(typeL->isCTypeInteg() && typeR->isCTypeInteg())
          {
-            // Promote to type of left operand. This should work in most cases.
-            expR = ExpConvert_Arith(typeL, expR, pos);
+            AST::Type::CPtr evalT;
+            std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
 
-            return ExpCreate_ArithEqInteg<Base, Codes>(typeL, expL, expR, pos);
+            return ExpCreate_ArithEqInteg<Base, Codes>(evalT, typeL, expL, expR, pos);
          }
 
          throw Core::ExceptStr(pos, "expected integer type");
@@ -146,11 +146,11 @@ namespace GDCC
 
          // Fixed-point types.
          if(typeL->isCTypeFixed())
-            return ExpCreate_ArithEqFixed<Base, Codes>(typeL, expL, expR, pos);
+            return ExpCreate_ArithEqFixed<Base, Codes>(typeL, typeL, expL, expR, pos);
 
          // Integer types.
          if(typeL->isCTypeInteg())
-            return ExpCreate_ArithEqInteg<Base, Codes>(typeL, expL, expR, pos);
+            return ExpCreate_ArithEqInteg<Base, Codes>(typeL, typeL, expL, expR, pos);
 
          throw Core::ExceptStr(pos, "expected integer or fixed-point type");
       }

@@ -11,6 +11,7 @@
 //-----------------------------------------------------------------------------
 
 #include "AST/Exp/Binary.hpp"
+#include "AST/Exp/Convert.hpp"
 #include "AST/GenStmnt/Move.hpp"
 #include "AST/Temporary.hpp"
 
@@ -29,13 +30,28 @@
 template<typename ArgT, typename IdxT>
 static void GenStmnt_ArithEqIdx(GDCC::AST::Exp_Binary const *exp,
    GDCC::IR::Code code, GDCC::AST::GenStmntCtx const &ctx,
-   GDCC::AST::Arg const &dst, GDCC::AST::Arg const &arg, IdxT const &idx)
+   GDCC::AST::Arg const &dst, GDCC::AST::Type const *evalT, bool post,
+   GDCC::AST::Arg const &arg, IdxT const &idx)
 {
    using namespace GDCC;
+
+   // Duplicate to destination, if necessary.
+   if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
+   {
+      // Push l.
+      for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
+         AST::GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
+
+      // Assign dst.
+      GenStmnt_MovePart(exp, ctx, dst, false, true);
+   }
 
    // Push l.
    for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
       AST::GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
+
+   // Convert to evaluation type.
+   AST::GenStmnt_ConvertArith(exp, evalT, exp->type, ctx);
 
    // Push r.
    exp->expR->genStmntStk(ctx);
@@ -44,12 +60,15 @@ static void GenStmnt_ArithEqIdx(GDCC::AST::Exp_Binary const *exp,
    ctx.block.addStatementArgs(code,
       IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
+   // Convert to result type.
+   AST::GenStmnt_ConvertArith(exp, exp->type, evalT, ctx);
+
    // Assign l.
    for(Core::FastU n = arg.type->getSizeWords(); n--;)
       AST::GenStmnt_MoveWordSetT<ArgT>(exp, ctx, arg, idx, n);
 
    // Duplicate to destination, if necessary.
-   if(dst.type->getQualAddr().base != IR::AddrBase::Nul)
+   if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
    {
       // Push l.
       for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
@@ -66,7 +85,8 @@ static void GenStmnt_ArithEqIdx(GDCC::AST::Exp_Binary const *exp,
 template<typename ArgT>
 static void GenStmnt_ArithEqT(GDCC::AST::Exp_Binary const *exp,
    GDCC::IR::Code code, GDCC::AST::GenStmntCtx const &ctx,
-   GDCC::AST::Arg const &dst, GDCC::AST::Arg const &arg)
+   GDCC::AST::Arg const &dst, GDCC::AST::Type const *evalT, bool post,
+   GDCC::AST::Arg const &arg)
 {
    using namespace GDCC;
 
@@ -77,7 +97,7 @@ static void GenStmnt_ArithEqT(GDCC::AST::Exp_Binary const *exp,
       arg.data->genStmnt(ctx);
 
       // Use literal as index.
-      GenStmnt_ArithEqIdx<ArgT>(exp, code, ctx, dst, arg,
+      GenStmnt_ArithEqIdx<ArgT>(exp, code, ctx, dst, evalT, post, arg,
          IR::Arg_Lit(arg.data->getIRExp()));
 
       return;
@@ -95,7 +115,7 @@ static void GenStmnt_ArithEqT(GDCC::AST::Exp_Binary const *exp,
             tmp.getArg(n), IR::Arg_Stk());
 
       // Use temporary as index.
-      GenStmnt_ArithEqIdx<ArgT>(exp, code, ctx, dst, arg, tmp.getArg());
+      GenStmnt_ArithEqIdx<ArgT>(exp, code, ctx, dst, evalT, post, arg, tmp.getArg());
 
       return;
    }
@@ -107,7 +127,7 @@ static void GenStmnt_ArithEqT(GDCC::AST::Exp_Binary const *exp,
 template<> void GenStmnt_ArithEqT<GDCC::IR::Arg_Cpy>(
    GDCC::AST::Exp_Binary const *exp, GDCC::IR::Code,
    GDCC::AST::GenStmntCtx const &, GDCC::AST::Arg const &,
-   GDCC::AST::Arg const &)
+   GDCC::AST::Type const *, bool, GDCC::AST::Arg const &)
 {
    throw GDCC::Core::ExceptStr(exp->pos, "AddrBase::Cpy op=");
 }
@@ -118,7 +138,7 @@ template<> void GenStmnt_ArithEqT<GDCC::IR::Arg_Cpy>(
 template<> void GenStmnt_ArithEqT<GDCC::IR::Arg_Lit>(
    GDCC::AST::Exp_Binary const *exp, GDCC::IR::Code,
    GDCC::AST::GenStmntCtx const &, GDCC::AST::Arg const &,
-   GDCC::AST::Arg const &)
+   GDCC::AST::Type const *, bool, GDCC::AST::Arg const &)
 {
    throw GDCC::Core::ExceptStr(exp->pos, "AddrBase::Lit op=");
 }
@@ -129,7 +149,7 @@ template<> void GenStmnt_ArithEqT<GDCC::IR::Arg_Lit>(
 template<> void GenStmnt_ArithEqT<GDCC::IR::Arg_Nul>(
    GDCC::AST::Exp_Binary const *exp, GDCC::IR::Code,
    GDCC::AST::GenStmntCtx const &, GDCC::AST::Arg const &,
-   GDCC::AST::Arg const &)
+   GDCC::AST::Type const *, bool, GDCC::AST::Arg const &)
 {
    throw GDCC::Core::ExceptStr(exp->pos, "AddrBase::Nul op=");
 }
@@ -140,7 +160,7 @@ template<> void GenStmnt_ArithEqT<GDCC::IR::Arg_Nul>(
 template<> void GenStmnt_ArithEqT<GDCC::IR::Arg_Stk>(
    GDCC::AST::Exp_Binary const *exp, GDCC::IR::Code,
    GDCC::AST::GenStmntCtx const &, GDCC::AST::Arg const &,
-   GDCC::AST::Arg const &)
+   GDCC::AST::Type const *, bool, GDCC::AST::Arg const &)
 {
    throw GDCC::Core::ExceptStr(exp->pos, "AddrBase::Stk op=");
 }
@@ -158,7 +178,7 @@ namespace GDCC
       // GenStmnt_ArithEq
       //
       void GenStmnt_ArithEq(Exp_Binary const *exp, IR::Code code,
-         GenStmntCtx const &ctx, Arg const &dst)
+         GenStmntCtx const &ctx, Arg const &dst, Type const *evalT, bool post)
       {
          auto arg = exp->expL->getArgDup();
 
@@ -167,7 +187,8 @@ namespace GDCC
          {
             #define GDCC_IR_AddrList(addr) \
             case IR::AddrBase::addr: \
-               GenStmnt_ArithEqT<IR::Arg_##addr>(exp, code, ctx, dst, arg); \
+               GenStmnt_ArithEqT<IR::Arg_##addr>( \
+                  exp, code, ctx, dst, evalT, post, arg); \
                break;
             #include "IR/AddrList.hpp"
          }

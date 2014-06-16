@@ -93,6 +93,8 @@ namespace GDCC
          AST::Exp const *r, Core::Origin pos);
       Core::CounterRef<AST::Exp const> ExpCreate_AddEq(AST::Exp const *l,
          AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<AST::Exp const> ExpCreate_AddEq(AST::Exp const *l,
+         AST::Exp const *r, Core::Origin pos, bool post);
 
       Core::CounterRef<AST::Exp const> ExpCreate_Array(AST::Exp const *exp,
          AST::Exp const *idx, Core::Origin pos);
@@ -248,6 +250,8 @@ namespace GDCC
          AST::Exp const *r, Core::Origin pos);
       Core::CounterRef<AST::Exp const> ExpCreate_SubEq(AST::Exp const *l,
          AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<AST::Exp const> ExpCreate_SubEq(AST::Exp const *l,
+         AST::Exp const *r, Core::Origin pos, bool post);
 
       // Default argument promotions.
       Core::CounterRef<AST::Exp const> ExpPromo_Arg(AST::Exp const *e,

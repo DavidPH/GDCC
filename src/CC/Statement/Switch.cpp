@@ -48,8 +48,8 @@ static CodePair GenCond_Codes(
 
    CodePair codes
    {
-      CC::ExpCode_ArithInteg<IR::CodeSet_CmpLT>(t),
-      CC::ExpCode_ArithInteg<IR::CodeSet_CmpEQ>(t),
+      AST::ExpCode_ArithInteg<IR::CodeSet_CmpLT>(t),
+      AST::ExpCode_ArithInteg<IR::CodeSet_CmpEQ>(t),
    };
 
    if(codes.first == IR::Code::None || codes.second == IR::Code::None)

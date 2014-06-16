@@ -105,12 +105,20 @@ namespace GDCC
          throw Core::ExceptStr(pos, "invalid operands to 'operator -'");
       }
 
+      // ExpCreate_SubEq
+      AST::Exp::CRef ExpCreate_SubEq(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+         {return ExpCreate_SubEq(l, r, pos, false);}
+
       //
       // ExpCreate_SubEq
       //
       AST::Exp::CRef ExpCreate_SubEq(AST::Exp const *expL, AST::Exp const *r,
-         Core::Origin pos)
+         Core::Origin pos, bool post)
       {
+         if(!IsModLValue(expL))
+            throw Core::ExceptStr(pos, "expected modifiable lvalue");
+
          auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
 
          auto typeL = expL->getType();
@@ -139,11 +147,11 @@ namespace GDCC
          // arithmetic -= arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
-            // Promote to type of left operand. This should work in most cases.
-            expR = ExpConvert_Arith(typeL, expR, pos);
+            AST::Type::CPtr evalT;
+            std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
 
             return ExpCreate_ArithEq<AST::Exp_Sub, IR::CodeSet_Sub>(
-               typeL, expL, expR, pos);
+               evalT, typeL, expL, expR, pos, post);
          }
 
          throw Core::ExceptStr(pos, "invalid operands to 'operator -='");

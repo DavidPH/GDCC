@@ -16,6 +16,7 @@
 #include "../../CC/Exp/Arith.hpp"
 
 #include "../../AST/Exp/Cmp.hpp"
+#include "../../AST/ExpCode.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -40,15 +41,15 @@ namespace GDCC
 
          // Floating types.
          if(t->isCTypeFloat())
-            code = ExpCode_ArithFloat<Codes>(t);
+            code = AST::ExpCode_ArithFloat<Codes>(t);
 
          // Fixed-point types.
          else if(t->isCTypeFixed())
-            code = ExpCode_ArithFixed<Codes>(t);
+            code = AST::ExpCode_ArithFixed<Codes>(t);
 
          // Integer types.
          else if(t->isCTypeInteg())
-            code = ExpCode_ArithInteg<Codes>(t);
+            code = AST::ExpCode_ArithInteg<Codes>(t);
 
          // ???
          else
