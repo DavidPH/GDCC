@@ -17,6 +17,7 @@
 #include "AST/Arg.hpp"
 #include "AST/Exp/Binary.hpp"
 #include "AST/Exp/Convert.hpp"
+#include "AST/Exp/Logical.hpp"
 #include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -172,11 +173,31 @@ namespace GDCC
       }
 
       //
-      // ExpCreate_IncPre
+      // ExpCreate_IncSuf
       //
       AST::Exp::CRef ExpCreate_IncSuf(AST::Exp const *e, Core::Origin pos)
       {
          return ExpCreate_AddEq(e, ExpCreate_LitInt(TypeIntegPrS, 1, pos), pos, true);
+      }
+
+      //
+      // ExpCreate_LogAnd
+      //
+      AST::Exp::CRef ExpCreate_LogAnd(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return AST::Exp_LogAnd::Create(TypeIntegPrS,
+            ExpPromo_Cond(l, pos), ExpPromo_Cond(r, pos), pos);
+      }
+
+      //
+      // ExpCreate_LogOrI
+      //
+      AST::Exp::CRef ExpCreate_LogOrI(AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos)
+      {
+         return AST::Exp_LogOrI::Create(TypeIntegPrS,
+            ExpPromo_Cond(l, pos), ExpPromo_Cond(r, pos), pos);
       }
 
       //
@@ -300,14 +321,6 @@ namespace GDCC
 
       Core::CounterRef<AST::Exp const> ExpCreate_Inv(AST::Exp const *,
          Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_LogAnd(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_LogOrI(AST::Exp const *,
-         AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
 
       Core::CounterRef<AST::Exp const> ExpCreate_SizeAlign(

@@ -17,6 +17,31 @@
 
 
 //----------------------------------------------------------------------------|
+// Macros                                                                     |
+//
+
+//
+// GDCC_AST_Exp_BinaryCreator
+//
+// Defines a basic constructor and static Create function for binary expression
+// classes.
+//
+#define GDCC_AST_Exp_BinaryCreator(class) \
+public: \
+   static CRef Create(::GDCC::AST::Type const *t, \
+      ::GDCC::AST::Exp const *l, ::GDCC::AST::Exp const *r, \
+      ::GDCC::Core::Origin pos) \
+   { \
+      return CRef(new This(t, l, r, pos)); \
+   } \
+   \
+protected: \
+   class(::GDCC::AST::Type const *t, ::GDCC::AST::Exp const *l, \
+      ::GDCC::AST::Exp const *r, ::GDCC::Core::Origin pos_) : \
+      Super{t, l, r, pos_} {}
+
+
+//----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 

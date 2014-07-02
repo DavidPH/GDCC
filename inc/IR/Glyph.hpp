@@ -37,7 +37,7 @@ namespace GDCC
          Glyph(Program &prog_, Core::String str_) : prog{&prog_}, str{str_} {}
 
          explicit operator bool () const {return prog && str;}
-         explicit operator Core::String () const {return str;}
+         operator Core::String () const {return str;}
 
          bool operator == (Glyph const &glyph) const {return glyph.str == str;}
          bool operator != (Glyph const &glyph) const {return glyph.str != str;}

@@ -12,6 +12,7 @@
 
 #include "IR/Block.hpp"
 
+#include "IR/Glyph.hpp"
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
@@ -43,6 +44,14 @@ namespace GDCC
       void Block::unpackArg(Arg *argv, Exp const *arg0)
       {
          *argv = Arg_Lit(arg0);
+      }
+
+      //
+      // Block::unpackArg<Glyph>
+      //
+      void Block::unpackArg(Arg *argv, Glyph const &arg0)
+      {
+         *argv = Arg_Lit(ExpCreate_ValueGlyph(arg0, head.pos));
       }
 
       //

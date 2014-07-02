@@ -126,6 +126,9 @@ namespace GDCC
          // Expression arg, converted to Arg_Lit.
          void unpackArg(Arg *argv, Exp const *arg0);
 
+         // Glyph arg, converted to expression, converted to Arg_Lit.
+         void unpackArg(Arg *argv, Glyph const &arg0);
+
          // Numeric arg, converted to Arg_Lit.
          void unpackArg(Arg *argv, Core::FastI arg0);
          void unpackArg(Arg *argv, Core::FastU arg0);
