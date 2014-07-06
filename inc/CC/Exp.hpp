@@ -286,6 +286,22 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpPromo_Cond(AST::Exp const *e,
          Core::Origin pos);
 
+      // Conditional expression contraints and promotion. (Center and right.)
+      std::tuple<
+         Core::CounterRef<AST::Type const> /*type*/,
+         Core::CounterRef<AST::Exp  const> /*expL*/,
+         Core::CounterRef<AST::Exp  const> /*expR*/>
+      ExpPromo_Cond(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+
+      // Conditional expression contraints and promotion.
+      std::tuple<
+         Core::CounterRef<AST::Type const> /*type*/,
+         Core::CounterRef<AST::Exp  const> /*expC*/,
+         Core::CounterRef<AST::Exp  const> /*expL*/,
+         Core::CounterRef<AST::Exp  const> /*expR*/>
+      ExpPromo_Cond(AST::Exp const *c, AST::Exp const *l, AST::Exp const *r,
+         Core::Origin pos);
+
       // Integer promotion.
       Core::CounterRef<AST::Exp const> ExpPromo_Int(AST::Exp const *e,
          Core::Origin pos);
@@ -293,6 +309,20 @@ namespace GDCC
       // Lvalues, arrays, and function designators.
       Core::CounterRef<AST::Exp const> ExpPromo_LValue(AST::Exp const *e,
          Core::Origin pos);
+
+      // Equality expression contraints and promotion for pointers.
+      std::tuple<
+         Core::CounterRef<AST::Type const> /*type*/,
+         Core::CounterRef<AST::Exp  const> /*expL*/,
+         Core::CounterRef<AST::Exp  const> /*expR*/>
+      ExpPromo_PtrEqu(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+
+      // Relational expression contraints and promotion for pointers.
+      std::tuple<
+         Core::CounterRef<AST::Type const> /*type*/,
+         Core::CounterRef<AST::Exp  const> /*expL*/,
+         Core::CounterRef<AST::Exp  const> /*expR*/>
+      ExpPromo_PtrRel(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
 
       Core::FastU ExpToFastU(AST::Exp const *exp);
       Core::Integ ExpToInteg(AST::Exp const *exp);

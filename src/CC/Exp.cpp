@@ -16,6 +16,7 @@
 
 #include "AST/Arg.hpp"
 #include "AST/Exp/Binary.hpp"
+#include "AST/Exp/Cnd.hpp"
 #include "AST/Exp/Convert.hpp"
 #include "AST/Exp/Logical.hpp"
 #include "AST/Type.hpp"
@@ -114,6 +115,19 @@ namespace GDCC
          Core::Origin pos)
       {
          return ExpCreate_BitwiseEq<AST::Exp_BitOrX, IR::CodeSet_OrX>(l, r, pos);
+      }
+
+      //
+      // ExpCreate_Cnd
+      //
+      AST::Exp::CRef ExpCreate_Cnd(AST::Exp const *c, AST::Exp const *l,
+         AST::Exp const *r, Core::Origin pos)
+      {
+         AST::Type::CPtr type;
+         AST::Exp::CRef expC{c}, expL{l}, expR{r};
+
+         std::tie(type, expC, expL, expR) = ExpPromo_Cond(expC, expL, expR, pos);
+         return AST::Exp_Cnd::Create(type, expC, expL, expR, pos);
       }
 
       //
@@ -307,10 +321,6 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpConvert_Bool(AST::Type const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "convert bool stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_Cnd(AST::Exp const *,
-         AST::Exp const *, AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
 
       Core::CounterRef<AST::Exp const> ExpCreate_GenSel(AST::Exp const *,
          AST::Exp const *, Core::Array<GenAssoc> const &, Core::Origin pos)

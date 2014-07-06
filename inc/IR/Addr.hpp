@@ -77,6 +77,10 @@ namespace GDCC
 
       IArchive &operator >> (IArchive &in, AddrBase  &out);
       IArchive &operator >> (IArchive &in, AddrSpace &out);
+
+      AddrSpace GetAddrGen();
+
+      bool IsAddrEnclosed(AddrSpace encloser, AddrSpace enclosee);
    }
 }
 

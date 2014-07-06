@@ -35,6 +35,8 @@ add_library(gdcc-cc-lib
    Exp/Not.cpp
    Exp/Obj.cpp
    Exp/Promote.cpp
+   Exp/Promote/Arith.cpp
+   Exp/Promote/Point.cpp
    Exp/Refer.cpp
    Exp/Str.cpp
    Exp/Sub.cpp
