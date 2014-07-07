@@ -17,6 +17,8 @@
 
 #include "Core/Exception.hpp"
 
+#include "IR/Exp.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -57,14 +59,19 @@ namespace GDCC
       }
 
       //
+      // Exp_Assign:v_getIRExp
+      //
+      IR::Exp::CRef Exp_Assign::v_getIRExp() const
+      {
+         return expR->getIRExp();
+      }
+
+      //
       // Exp_Assign::v_isIRExp
       //
       bool Exp_Assign::v_isIRExp() const
       {
-         // TODO: If the right operand is a constant and the cast can be done at
-         // compile-time, then result of this expression can be known at
-         // compile-time even if it still needs to be evaluated.
-         return false;
+         return expR->isIRExp();
       }
 
       //

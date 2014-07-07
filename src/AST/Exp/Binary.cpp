@@ -104,6 +104,14 @@ namespace GDCC
       }
 
       //
+      // Exp_Pair::v_isIRExp
+      //
+      bool Exp_Pair::v_isIRExp() const
+      {
+         return expR->isIRExp();
+      }
+
+      //
       // GenStmntNul
       //
       bool GenStmntNul(Exp_Binary const *exp, GenStmntCtx const &ctx,
