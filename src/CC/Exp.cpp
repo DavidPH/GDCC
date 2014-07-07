@@ -251,6 +251,39 @@ namespace GDCC
       }
 
       //
+      // ExpCreate_SizeAlign
+      //
+      AST::Exp::CRef ExpCreate_SizeAlign(AST::Type const *t, Core::Origin pos)
+      {
+         if(!t->isCTypeObject() || !t->isTypeComplete())
+            throw Core::ExceptStr(pos, "expected complete object type");
+
+         return ExpCreate_LitInt(TypeIntegPrU, t->getSizeAlign(), pos);
+      }
+
+      //
+      // ExpCreate_SizeBytes
+      //
+      AST::Exp::CRef ExpCreate_SizeBytes(AST::Exp const *e, Core::Origin pos)
+      {
+         return ExpCreate_SizeBytes(e->getType(), pos);
+      }
+
+      //
+      // ExpCreate_SizeBytes
+      //
+      AST::Exp::CRef ExpCreate_SizeBytes(AST::Type const *t, Core::Origin pos)
+      {
+         if(!t->isCTypeObject() || !t->isTypeComplete())
+            throw Core::ExceptStr(pos, "expected complete object type");
+
+         if(t->isTypeBitfield())
+            throw Core::ExceptStr(pos, "cannot sizeof bitfield");
+
+         return ExpCreate_LitInt(TypeIntegPrU, t->getSizeBytes(), pos);
+      }
+
+      //
       // ExpToFastU
       //
       Core::FastU ExpToFastU(AST::Exp const *exp)
@@ -324,17 +357,6 @@ namespace GDCC
 
       Core::CounterRef<AST::Exp const> ExpCreate_Inv(AST::Exp const *,
          Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_SizeAlign(
-         AST::Type const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_SizeBytes(
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-      Core::CounterRef<AST::Exp const> ExpCreate_SizeBytes(
-         AST::Type const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}
    }
 }
