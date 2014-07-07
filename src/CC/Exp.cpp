@@ -322,13 +322,6 @@ namespace GDCC
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "convert bool stub");}
 
-      Core::CounterRef<AST::Exp const> ExpCreate_GenSel(AST::Exp const *,
-         AST::Exp const *, Core::Array<GenAssoc> const &, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-      Core::CounterRef<AST::Exp const> ExpCreate_GenSel(AST::Exp const *,
-         AST::Exp const *, Core::Array<GenAssoc>      &&, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
-
       Core::CounterRef<AST::Exp const> ExpCreate_Inv(AST::Exp const *,
          Core::Origin pos)
          {throw Core::ExceptStr(pos, "stub");}

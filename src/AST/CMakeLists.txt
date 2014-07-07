@@ -26,6 +26,7 @@ add_library(gdcc-ast-lib
    Exp/Cmp.cpp
    Exp/Cnd.cpp
    Exp/Convert.cpp
+   Exp/Defer.cpp
    Exp/IRExp.cpp
    Exp/Logical.cpp
    Exp/MulSize.cpp
