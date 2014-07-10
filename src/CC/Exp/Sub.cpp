@@ -15,7 +15,10 @@
 #include "CC/Exp/Arith.hpp"
 #include "CC/Type.hpp"
 
+#include "AST/Exp/Unary.hpp"
+
 #include "IR/CodeSet/Arith.hpp"
+#include "IR/CodeSet/Unary.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -31,10 +34,18 @@ namespace GDCC
       //
       AST::Exp::CRef ExpCreate_Sub(AST::Exp const *e, Core::Origin pos)
       {
-         if(!e->getType()->isCTypeArith())
+         auto exp  = ExpPromo_Int(ExpPromo_LValue(e, pos), pos);
+         auto type = exp->getType();
+
+         if(!type->isCTypeArith())
             throw Core::ExceptStr(pos, "expected arithmetic operand");
 
-         throw Core::ExceptStr(pos, "unary - stub");
+         auto code = AST::ExpCode_ArithInteg<IR::CodeSet_Neg>(type);
+
+         if(code == IR::Code::None)
+            throw Core::ExceptStr(pos, "unsupported operand size");
+
+         return AST::Exp_UnaryCode<AST::Exp_Neg>::Create(code, type, exp, pos);
       }
 
       //

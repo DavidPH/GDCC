@@ -15,6 +15,9 @@
 #include "AST/Arg.hpp"
 #include "AST/Type.hpp"
 
+#include "IR/Block.hpp"
+#include "IR/Exp.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -64,6 +67,22 @@ namespace GDCC
       }
 
       //
+      // Exp_Inv::v_getIRExp
+      //
+      IR::Exp::CRef Exp_Inv::v_getIRExp() const
+      {
+         return IR::ExpCreate_UnaryNot(exp->getIRExp(), pos);
+      }
+
+      //
+      // Exp_Neg::v_getIRExp
+      //
+      IR::Exp::CRef Exp_Neg::v_getIRExp() const
+      {
+         return IR::ExpCreate_UnarySub(exp->getIRExp(), pos);
+      }
+
+      //
       // GenStmntNul
       //
       bool GenStmntNul(Exp_Unary const *exp, GenStmntCtx const &ctx, Arg const &dst)
@@ -76,6 +95,24 @@ namespace GDCC
          }
 
          return false;
+      }
+
+      //
+      // GenStmnt_UnaryCode
+      //
+      void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::Code code,
+         GenStmntCtx const &ctx, Arg const &dst)
+      {
+         if(GenStmntNul(exp, ctx, dst)) return;
+
+         // Evaluate both sub-expressions to stack.
+         exp->exp->genStmntStk(ctx);
+
+         // Operate on stack.
+         ctx.block.addStatementArgs(code, IR::Arg_Stk(), IR::Arg_Stk());
+
+         // Move to destination.
+         GenStmnt_MovePart(exp, ctx, dst, false, true);
       }
    }
 }

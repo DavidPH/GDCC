@@ -24,6 +24,7 @@
 #include "Core/Exception.hpp"
 
 #include "IR/CodeSet/Bitwise.hpp"
+#include "IR/CodeSet/Unary.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Value.hpp"
 
@@ -195,6 +196,25 @@ namespace GDCC
       }
 
       //
+      // ExpCreate_Inv
+      //
+      AST::Exp::CRef ExpCreate_Inv(AST::Exp const *e, Core::Origin pos)
+      {
+         auto exp  = ExpPromo_Int(ExpPromo_LValue(e, pos), pos);
+         auto type = exp->getType();
+
+         if(!type->isCTypeInteg())
+            throw Core::ExceptStr(pos, "expected integer type");
+
+         auto code = AST::ExpCode_ArithInteg<IR::CodeSet_Inv>(type);
+
+         if(code == IR::Code::None)
+            throw Core::ExceptStr(pos, "unsupported operand size");
+
+         return AST::Exp_UnaryCode<AST::Exp_Inv>::Create(code, type, exp, pos);
+      }
+
+      //
       // ExpCreate_LogAnd
       //
       AST::Exp::CRef ExpCreate_LogAnd(AST::Exp const *l, AST::Exp const *r,
@@ -354,10 +374,6 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpConvert_Bool(AST::Type const *,
          AST::Exp const *, Core::Origin pos)
          {throw Core::ExceptStr(pos, "convert bool stub");}
-
-      Core::CounterRef<AST::Exp const> ExpCreate_Inv(AST::Exp const *,
-         Core::Origin pos)
-         {throw Core::ExceptStr(pos, "stub");}
    }
 }
 

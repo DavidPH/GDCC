@@ -45,6 +45,11 @@ protected: \
 
 namespace GDCC
 {
+   namespace IR
+   {
+      enum class Code;
+   }
+
    namespace AST
    {
       //
@@ -69,6 +74,63 @@ namespace GDCC
 
          virtual bool v_isIRExp() const;
       };
+
+      //
+      // Exp_UnaryCode
+      //
+      template<typename Base>
+      class Exp_UnaryCode : public Base
+      {
+         GDCC_Core_CounterPreamble(GDCC::AST::Exp_UnaryCode<Base>, Base);
+
+      public:
+         IR::Code const code;
+
+
+         // Create
+         static Exp::CRef Create(IR::Code code, Type const *t, Exp const *e,
+            Core::Origin pos)
+            {return Exp::CRef(new This(code, t, e, pos));}
+
+      protected:
+         // constructor
+         Exp_UnaryCode(IR::Code c, Type const *t, Exp const *e, Core::Origin pos_) :
+            Super{t, e, pos_}, code{c} {}
+
+         // v_genStmnt
+         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
+            {GenStmnt_UnaryCode(this, code, ctx, dst);}
+      };
+
+      //
+      // Exp_Inv
+      //
+      class Exp_Inv : public Exp_Unary
+      {
+         GDCC_Core_CounterPreambleAbstract(
+            GDCC::AST::Exp_Inv, GDCC::AST::Exp_Unary);
+
+      protected:
+         Exp_Inv(Type const *t, Exp const *e, Core::Origin pos_) :
+            Super{t, e, pos_} {}
+
+         virtual IRExpCRef v_getIRExp() const;
+      };
+
+      //
+      // Exp_Neg
+      //
+      class Exp_Neg : public Exp_Unary
+      {
+         GDCC_Core_CounterPreambleAbstract(
+            GDCC::AST::Exp_Neg, GDCC::AST::Exp_Unary);
+
+      protected:
+         Exp_Neg(Type const *t, Exp const *e, Core::Origin pos_) :
+            Super{t, e, pos_} {}
+
+         virtual IRExpCRef v_getIRExp() const;
+      };
    }
 }
 
@@ -81,6 +143,10 @@ namespace GDCC
 {
    namespace AST
    {
+      // Does generic codegen centered around a 2-arg unary instruction.
+      void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::Code code,
+         GenStmntCtx const &ctx, Arg const &dst);
+
       // Returns true if only evaluating for side effects.
       bool GenStmntNul(Exp_Unary const *exp, GenStmntCtx const &ctx,
          Arg const &dst);
