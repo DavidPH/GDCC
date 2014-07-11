@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,10 +12,7 @@
 
 #include "Bytecode/MgC/Info.hpp"
 
-#include "IR/Function.hpp"
-
-#include "IR/Exp/ValueGlyph.hpp"
-#include "IR/Exp/ValueRoot.hpp"
+#include "IR/Arg.hpp"
 
 #include <iostream>
 

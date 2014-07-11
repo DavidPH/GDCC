@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__IR__Exp__ValueMulti_H__
-#define GDCC__IR__Exp__ValueMulti_H__
+#ifndef GDCC__IR__Exp__Multi_H__
+#define GDCC__IR__Exp__Multi_H__
 
 #include "../../IR/Exp.hpp"
 
@@ -25,28 +25,28 @@ namespace GDCC
    namespace IR
    {
       //
-      // Exp_ValueMulti
+      // Exp_Multi
       //
-      class Exp_ValueMulti final : public Exp
+      class Exp_Multi final : public Exp
       {
-         GDCC_Core_CounterPreamble(GDCC::IR::Exp_ValueMulti, GDCC::IR::Exp);
+         GDCC_Core_CounterPreamble(GDCC::IR::Exp_Multi, GDCC::IR::Exp);
 
       public:
-         virtual Core::String getName() const {return Core::STR_ValueMulti;}
+         virtual Core::String getName() const {return Core::STR_Multi;}
 
          Core::Array<Exp::CRef> const expv;
 
 
-         friend Exp::CRef ExpCreate_ValueMulti(Exp::CRef const *expv,
+         friend Exp::CRef ExpCreate_Multi(Exp::CRef const *expv,
             std::size_t expc, Core::Origin pos);
 
-         friend Exp::CRef ExpGetIR_ValueMulti(IArchive &in);
+         friend Exp::CRef ExpGetIR_Multi(IArchive &in);
 
       protected:
-         Exp_ValueMulti(Exp_ValueMulti const &) = default;
-         Exp_ValueMulti(Exp::CRef const *expv_, std::size_t expc, Core::Origin pos_) :
+         Exp_Multi(Exp_Multi const &) = default;
+         Exp_Multi(Exp::CRef const *expv_, std::size_t expc, Core::Origin pos_) :
             Super{pos_}, expv{expv_, expv_ + expc} {}
-         explicit Exp_ValueMulti(IArchive &in);
+         explicit Exp_Multi(IArchive &in);
 
          virtual bool v_canGetValue() const;
 

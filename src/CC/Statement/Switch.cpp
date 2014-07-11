@@ -65,7 +65,7 @@ static GDCC::IR::Exp::CRef GenCond_GenValue(
    GDCC::CC::Statement_Switch const *stmnt,
    GDCC::CC::Scope_Case::Case const *caseData)
 {
-   return GDCC::IR::ExpCreate_ValueRoot(
+   return GDCC::IR::ExpCreate_Value(
       GDCC::IR::Value_Fixed(
          caseData->value, stmnt->cond->getType()->getIRType().tFixed),
       stmnt->pos);
@@ -80,11 +80,10 @@ static void GenCond_BranchDefault(
 {
    using namespace GDCC;
 
-   auto defLabel = IR::ExpCreate_ValueGlyph(
-      {&ctx.prog, stmnt->scope.getLabelDefault(false)}, stmnt->pos);
+   IR::Glyph defLabel = {ctx.prog, stmnt->scope.getLabelDefault(false)};
 
    // Unconditional branch.
-   ctx.block.addStatementArgs(IR::Code::Jump, IR::Arg_Lit(defLabel));
+   ctx.block.addStatementArgs(IR::Code::Jump, defLabel);
 }
 
 //
@@ -111,15 +110,12 @@ static void GenCond_SearchPart(
 
    if(count == 1)
    {
-      auto caseLabel = IR::ExpCreate_ValueGlyph(
-         {&ctx.prog, begin[0]->label}, stmnt->pos);
+      IR::Glyph caseLabel = {ctx.prog, begin[0]->label};
 
       // If this case is one more than the previous and one less than the next,
       // then there is no need for further comparisons.
       if(begin[-1] && begin[+1] && begin[-1]->value + 1 == begin[+1]->value - 1)
-      {
-         ctx.block.addStatementArgs(IR::Code::Jump, IR::Arg_Lit(caseLabel));
-      }
+         ctx.block.addStatementArgs(IR::Code::Jump, caseLabel);
 
       // Otherwise, check against value.
       else
@@ -128,11 +124,11 @@ static void GenCond_SearchPart(
 
          // Compare condition to case value for equality.
          ctx.block.addStatementArgs(codes.second,
-            IR::Arg_Stk(), cond.getArg(), IR::Arg_Lit(caseValue));
+            IR::Arg_Stk(), cond.getArg(), caseValue);
 
          // If true, branch to case.
          ctx.block.addStatementArgs(IR::Code::Cjmp_Tru,
-            IR::Arg_Stk(), IR::Arg_Lit(caseLabel));
+            IR::Arg_Stk(), caseLabel);
 
          // Otherwise, branch to default.
          GenCond_BranchDefault(stmnt, ctx);
@@ -143,18 +139,15 @@ static void GenCond_SearchPart(
 
    auto pivot = &begin[count / 2];
 
-   auto pivotLabel = ctx.fn->genLabel();
-   auto pivotLabex = IR::ExpCreate_ValueGlyph(
-      {&ctx.prog, pivotLabel}, stmnt->pos);
-   auto pivotValue = GenCond_GenValue(stmnt, *pivot);
+   IR::Glyph pivotLabel = {ctx.prog, ctx.fn->genLabel()};
+   auto      pivotValue = GenCond_GenValue(stmnt, *pivot);
 
    // Compare condition against pivot.
    ctx.block.addStatementArgs(codes.first,
       IR::Arg_Stk(), cond.getArg(), IR::Arg_Lit(pivotValue));
 
    // Skip if false.
-   ctx.block.addStatementArgs(IR::Code::Cjmp_Nil,
-      IR::Arg_Stk(), IR::Arg_Lit(pivotLabex));
+   ctx.block.addStatementArgs(IR::Code::Cjmp_Nil, IR::Arg_Stk(), pivotLabel);
 
    // Search left half.
    GenCond_SearchPart(stmnt, ctx, codes, cond, begin, pivot);

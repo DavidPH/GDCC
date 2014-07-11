@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__IR__Exp__ValueRoot_H__
-#define GDCC__IR__Exp__ValueRoot_H__
+#ifndef GDCC__IR__Exp__Value_H__
+#define GDCC__IR__Exp__Value_H__
 
 #include "../../IR/Exp.hpp"
 
@@ -25,32 +25,32 @@ namespace GDCC
    namespace IR
    {
       //
-      // Exp_ValueRoot
+      // Exp_Value
       //
-      class Exp_ValueRoot final : public Exp
+      class Exp_Value final : public Exp
       {
-         GDCC_Core_CounterPreamble(GDCC::IR::Exp_ValueRoot, GDCC::IR::Exp);
+         GDCC_Core_CounterPreamble(GDCC::IR::Exp_Value, GDCC::IR::Exp);
 
       public:
-         virtual Core::String getName() const {return Core::STR_ValueRoot;}
+         virtual Core::String getName() const {return Core::STR_Value;}
 
          Type const type;
          Value const value;
 
 
-         friend Exp::CRef ExpCreate_ValueRoot(Value const &value,
+         friend Exp::CRef ExpCreate_Value(Value const &value,
             Core::Origin pos);
-         friend Exp::CRef ExpCreate_ValueRoot(Value &&value, Core::Origin pos);
+         friend Exp::CRef ExpCreate_Value(Value &&value, Core::Origin pos);
 
-         friend Exp::CRef ExpGetIR_ValueRoot(IArchive &in);
+         friend Exp::CRef ExpGetIR_Value(IArchive &in);
 
       protected:
-         Exp_ValueRoot(Exp_ValueRoot const &) = default;
-         Exp_ValueRoot(Value const &value_, Core::Origin pos_) :
+         Exp_Value(Exp_Value const &) = default;
+         Exp_Value(Value const &value_, Core::Origin pos_) :
             Super{pos_}, type{value_.getType()}, value{value_} {}
-         Exp_ValueRoot(Value &&value_, Core::Origin pos_) :
+         Exp_Value(Value &&value_, Core::Origin pos_) :
             Super{pos_}, type{value_.getType()}, value{std::move(value_)} {}
-         explicit Exp_ValueRoot(IArchive &in);
+         explicit Exp_Value(IArchive &in);
 
          virtual bool v_canGetValue() const {return true;}
 
@@ -63,5 +63,5 @@ namespace GDCC
    }
 }
 
-#endif//GDCC__IR__Exp__ValueRoot_H__
+#endif//GDCC__IR__Exp__Value_H__
 

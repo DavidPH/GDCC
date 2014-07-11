@@ -51,7 +51,7 @@ namespace GDCC
       //
       IR::Exp::CRef Exp_Not::v_getIRExp() const
       {
-         return IR::ExpCreate_BranchNot(exp->getIRExp(), pos);
+         return IR::ExpCreate_Not(exp->getIRExp(), pos);
       }
 
       //

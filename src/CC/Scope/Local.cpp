@@ -105,7 +105,7 @@ namespace GDCC
          }
 
          // Set object's value (index/address).
-         obj->value = IR::ExpCreate_ValueRoot(
+         obj->value = IR::ExpCreate_Value(
             IR::Value_Fixed(*idx, idxType), Core::Origin(Core::STRNULL, 0));
 
          // Update allocation info.

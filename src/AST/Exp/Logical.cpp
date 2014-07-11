@@ -88,7 +88,7 @@ namespace GDCC
       //
       IR::Exp::CRef Exp_LogAnd::v_getIRExp() const
       {
-         return IR::ExpCreate_BranchAnd(expL->getIRExp(), expR->getIRExp(), pos);
+         return IR::ExpCreate_LogAnd(expL->getIRExp(), expR->getIRExp(), pos);
       }
 
       //
@@ -104,7 +104,7 @@ namespace GDCC
       //
       IR::Exp::CRef Exp_LogOrI::v_getIRExp() const
       {
-         return IR::ExpCreate_BranchOrI(expL->getIRExp(), expR->getIRExp(), pos);
+         return IR::ExpCreate_LogOrI(expL->getIRExp(), expR->getIRExp(), pos);
       }
    }
 }

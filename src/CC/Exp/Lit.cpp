@@ -38,7 +38,7 @@ namespace GDCC
          Core::Origin pos)
       {
          auto val = IR::Value_Fixed(i, t->getIRType().tFixed);
-         auto exp = IR::ExpCreate_ValueRoot(std::move(val), pos);
+         auto exp = IR::ExpCreate_Value(std::move(val), pos);
          return AST::ExpCreate_IRExp(exp, t, pos);
       }
 
@@ -49,7 +49,7 @@ namespace GDCC
          Core::Origin pos)
       {
          auto val = IR::Value_Fixed(std::move(i), t->getIRType().tFixed);
-         auto exp = IR::ExpCreate_ValueRoot(std::move(val), pos);
+         auto exp = IR::ExpCreate_Value(std::move(val), pos);
          return AST::ExpCreate_IRExp(exp, t, pos);
       }
 
@@ -74,7 +74,7 @@ namespace GDCC
                else
                   val.value = static_cast<Core::FastU>(-1);
 
-               auto exp = IR::ExpCreate_ValueRoot(std::move(val), pos);
+               auto exp = IR::ExpCreate_Value(std::move(val), pos);
                return AST::ExpCreate_IRExp(exp, type, pos);
             }
 
@@ -91,7 +91,7 @@ namespace GDCC
                else
                   val.value = static_cast<Core::FastU>(-1);
 
-               auto exp = IR::ExpCreate_ValueRoot(std::move(val), pos);
+               auto exp = IR::ExpCreate_Value(std::move(val), pos);
                return AST::ExpCreate_IRExp(exp, type, pos);
             }
          }

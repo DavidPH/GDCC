@@ -56,7 +56,7 @@ namespace GDCC
       //
       IR::Exp::CRef Exp_Cnd::v_getIRExp() const
       {
-         return IR::ExpCreate_BranchCnd(expC->getIRExp(), expL->getIRExp(),
+         return IR::ExpCreate_Cnd(expC->getIRExp(), expL->getIRExp(),
             expR->getIRExp(), pos);
       }
 

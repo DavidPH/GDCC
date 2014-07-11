@@ -51,7 +51,7 @@ namespace GDCC
       //
       void Block::unpackArg(Arg *argv, Glyph const &arg0)
       {
-         *argv = Arg_Lit(ExpCreate_ValueGlyph(arg0, head.pos));
+         *argv = Arg_Lit(ExpCreate_Glyph(arg0, head.pos));
       }
 
       //
@@ -60,7 +60,7 @@ namespace GDCC
       void Block::unpackArg(Arg *argv, Core::FastI arg0)
       {
          Value_Fixed val{arg0, {sizeof(arg0) * CHAR_BIT, 0, true, false}};
-         *argv = Arg_Lit(ExpCreate_ValueRoot(std::move(val), head.pos));
+         *argv = Arg_Lit(ExpCreate_Value(std::move(val), head.pos));
       }
 
       //
@@ -69,7 +69,7 @@ namespace GDCC
       void Block::unpackArg(Arg *argv, Core::FastU arg0)
       {
          Value_Fixed val{arg0, {sizeof(arg0) * CHAR_BIT, 0, false, false}};
-         *argv = Arg_Lit(ExpCreate_ValueRoot(std::move(val), head.pos));
+         *argv = Arg_Lit(ExpCreate_Value(std::move(val), head.pos));
       }
 
       //
@@ -78,7 +78,7 @@ namespace GDCC
       void Block::unpackArg(Arg *argv, int arg0)
       {
          Value_Fixed val{arg0, {sizeof(arg0) * CHAR_BIT, 0, true, false}};
-         *argv = Arg_Lit(ExpCreate_ValueRoot(std::move(val), head.pos));
+         *argv = Arg_Lit(ExpCreate_Value(std::move(val), head.pos));
       }
 
       //

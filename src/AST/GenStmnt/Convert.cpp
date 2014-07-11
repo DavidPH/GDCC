@@ -30,13 +30,13 @@
 //
 // ExtendSign
 //
-static void ExtendSign(GDCC::AST::Exp const *exp,
+static void ExtendSign(GDCC::AST::Exp const *,
    GDCC::AST::GenStmntCtx const &ctx, GDCC::Core::FastI diffWords)
 {
    using namespace GDCC;
 
-   auto labelEnd = ctx.fn->genLabel();
-   auto labelPos = ctx.fn->genLabel();
+   IR::Glyph labelEnd = {ctx.prog, ctx.fn->genLabel()};
+   IR::Glyph labelPos = {ctx.prog, ctx.fn->genLabel()};
 
    // Duplicate leading word and check if negative.
    ctx.block.addStatementArgs(IR::Code::Copy_W, IR::Arg_Stk(), IR::Arg_Stk());
@@ -44,15 +44,13 @@ static void ExtendSign(GDCC::AST::Exp const *exp,
    ctx.block.addStatementArgs(IR::Code::CmpI_LT_W,
       IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
-   ctx.block.addStatementArgs(IR::Code::Cjmp_Nil, IR::Arg_Stk(),
-      IR::ExpCreate_ValueGlyph({ctx.prog, labelPos}, exp->pos));
+   ctx.block.addStatementArgs(IR::Code::Cjmp_Nil, IR::Arg_Stk(), labelPos);
 
    // Extend sign.
    for(auto i = diffWords; i--;)
       ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(), -1);
 
-   ctx.block.addStatementArgs(IR::Code::Jump,
-      IR::ExpCreate_ValueGlyph({ctx.prog, labelEnd}, exp->pos));
+   ctx.block.addStatementArgs(IR::Code::Jump, labelEnd);
 
    // Positive?
    ctx.block.addLabel(labelPos);

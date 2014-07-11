@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -25,7 +25,7 @@
 //
 #define GDCC_IR_Exp_UnaryDeclBase(name) \
 public: \
-   virtual Core::String getName() const {return Core::STR_Unary##name;} \
+   virtual Core::String getName() const {return Core::STR_##name;} \
    \
 protected: \
    virtual Value v_getValue() const
@@ -34,10 +34,9 @@ protected: \
 // GDCC_IR_Exp_UnaryDeclClass
 //
 #define GDCC_IR_Exp_UnaryDeclClass(name) \
-   class Exp_Unary##name : public Exp_Unary \
+   class Exp_##name : public Exp_Unary \
    { \
-      GDCC_Core_CounterPreamble( \
-         GDCC::IR::Exp_Unary##name, GDCC::IR::Exp_Unary); \
+      GDCC_Core_CounterPreamble(GDCC::IR::Exp_##name, GDCC::IR::Exp_Unary); \
       GDCC_IR_Exp_UnaryDeclBase(name); \
       GDCC_IR_Exp_UnaryDeclCon(name); \
       GDCC_IR_Exp_UnaryDeclCreate(name); \
@@ -48,31 +47,31 @@ protected: \
 //
 #define GDCC_IR_Exp_UnaryDeclCon(name) \
 protected: \
-   Exp_Unary##name(Exp const *e, Core::Origin pos_) : Super{e, pos_} {} \
-   explicit Exp_Unary##name(IArchive &in) : Super{in} {} \
-   Exp_Unary##name(Exp_Unary##name const &) = default
+   Exp_##name(Exp const *e, Core::Origin pos_) : Super{e, pos_} {} \
+   explicit Exp_##name(IArchive &in) : Super{in} {} \
+   Exp_##name(Exp_##name const &) = default
 
 //
 // GDCC_IR_Exp_UnaryDeclCreate
 //
 #define GDCC_IR_Exp_UnaryDeclCreate(name) \
 public: \
-   friend Exp::CRef ExpCreate_Unary##name(Exp const *e); \
-   friend Exp::CRef ExpCreate_Unary##name(Exp const *e, Core::Origin pos); \
-   friend Exp::CRef ExpGetIR_Unary##name(IArchive &in)
+   friend Exp::CRef ExpCreate_##name(Exp const *e); \
+   friend Exp::CRef ExpCreate_##name(Exp const *e, Core::Origin pos); \
+   friend Exp::CRef ExpGetIR_##name(IArchive &in)
 
 //
 // GDCC_IR_Exp_UnaryImplCreate
 //
 #define GDCC_IR_Exp_UnaryImplCreate(name) \
-   Exp::CRef ExpCreate_Unary##name(Exp const *e) \
-      {return static_cast<Exp::CRef>(new Exp_Unary##name(e, e->pos));} \
+   Exp::CRef ExpCreate_##name(Exp const *e) \
+      {return static_cast<Exp::CRef>(new Exp_##name(e, e->pos));} \
    \
-   Exp::CRef ExpCreate_Unary##name(Exp const *e, Core::Origin pos) \
-      {return static_cast<Exp::CRef>(new Exp_Unary##name(e, pos));} \
+   Exp::CRef ExpCreate_##name(Exp const *e, Core::Origin pos) \
+      {return static_cast<Exp::CRef>(new Exp_##name(e, pos));} \
    \
-   Exp::CRef ExpGetIR_Unary##name(IArchive &in) \
-      {return static_cast<Exp::CRef>(new Exp_Unary##name(in));}
+   Exp::CRef ExpGetIR_##name(IArchive &in) \
+      {return static_cast<Exp::CRef>(new Exp_##name(in));}
 
 
 //----------------------------------------------------------------------------|
@@ -106,39 +105,38 @@ namespace GDCC
          virtual OArchive &v_putIR(OArchive &out) const;
       };
 
-      GDCC_IR_Exp_UnaryDeclClass(Add);
-      GDCC_IR_Exp_UnaryDeclClass(Not);
-      GDCC_IR_Exp_UnaryDeclClass(Sub);
+      GDCC_IR_Exp_UnaryDeclClass(Inv);
+      GDCC_IR_Exp_UnaryDeclClass(Neg);
 
       //
-      // Exp_UnaryCst
+      // Exp_Cst
       //
-      class Exp_UnaryCst : public Exp_Unary
+      class Exp_Cst : public Exp_Unary
       {
-         GDCC_Core_CounterPreamble(GDCC::IR::Exp_UnaryCst, GDCC::IR::Exp_Unary);
+         GDCC_Core_CounterPreamble(GDCC::IR::Exp_Cst, GDCC::IR::Exp_Unary);
 
       public:
          Type const type;
 
-         virtual Core::String getName() const {return Core::STR_UnaryCst;}
+         virtual Core::String getName() const {return Core::STR_Cst;}
 
 
-         friend Exp::CRef ExpCreate_UnaryCst(Type const &t, Exp const *e);
-         friend Exp::CRef ExpCreate_UnaryCst(Type const &t, Exp const *e,
+         friend Exp::CRef ExpCreate_Cst(Type const &t, Exp const *e);
+         friend Exp::CRef ExpCreate_Cst(Type const &t, Exp const *e,
             Core::Origin pos);
-         friend Exp::CRef ExpCreate_UnaryCst(Type &&t, Exp const *e);
-         friend Exp::CRef ExpCreate_UnaryCst(Type &&t, Exp const *e,
+         friend Exp::CRef ExpCreate_Cst(Type &&t, Exp const *e);
+         friend Exp::CRef ExpCreate_Cst(Type &&t, Exp const *e,
             Core::Origin pos);
 
-         friend Exp::CRef ExpGetIR_UnaryCst(IArchive &in);
+         friend Exp::CRef ExpGetIR_Cst(IArchive &in);
 
       protected:
-         Exp_UnaryCst(Exp_UnaryCst const &) = default;
-         Exp_UnaryCst(Type const &t, Exp const *e, Core::Origin pos_) :
+         Exp_Cst(Exp_Cst const &) = default;
+         Exp_Cst(Type const &t, Exp const *e, Core::Origin pos_) :
             Super{e, pos_} , type{t} {}
-         Exp_UnaryCst(Type &&t, Exp const *e, Core::Origin pos_) :
+         Exp_Cst(Type &&t, Exp const *e, Core::Origin pos_) :
             Super{e, pos_} , type{std::move(t)} {}
-         explicit Exp_UnaryCst(IArchive &in);
+         explicit Exp_Cst(IArchive &in);
 
          virtual Type v_getType() const {return type;}
 

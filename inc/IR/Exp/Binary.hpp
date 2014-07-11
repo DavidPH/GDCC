@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,23 +24,23 @@
 // GDCC_IR_Exp_BinaryDecl
 //
 #define GDCC_IR_Exp_BinaryDecl(name) \
-   class Exp_Binary##name : public Exp_Binary \
+   class Exp_##name : public Exp_Binary \
    { \
-      GDCC_Core_CounterPreamble(GDCC::IR::Exp_Binary##name, GDCC::IR::Exp_Binary); \
+      GDCC_Core_CounterPreamble(GDCC::IR::Exp_##name, GDCC::IR::Exp_Binary); \
       \
    public: \
-      virtual Core::String getName() const {return Core::STR_Binary##name;} \
+      virtual Core::String getName() const {return Core::STR_##name;} \
       \
-      friend Exp::CRef ExpCreate_Binary##name(Exp const *l, Exp const *r); \
-      friend Exp::CRef ExpCreate_Binary##name(Exp const *l, Exp const *r, \
+      friend Exp::CRef ExpCreate_##name(Exp const *l, Exp const *r); \
+      friend Exp::CRef ExpCreate_##name(Exp const *l, Exp const *r, \
          Core::Origin pos); \
-      friend Exp::CRef ExpGetIR_Binary##name(IArchive &in); \
+      friend Exp::CRef ExpGetIR_##name(IArchive &in); \
       \
    protected: \
-      Exp_Binary##name(Exp_Binary##name const &) = default; \
-      Exp_Binary##name(Exp const *l, Exp const *r, Core::Origin pos_) : \
+      Exp_##name(Exp_##name const &) = default; \
+      Exp_##name(Exp const *l, Exp const *r, Core::Origin pos_) : \
          Super{l, r, pos_} {} \
-      explicit Exp_Binary##name(IArchive &in) : Super{in} {} \
+      explicit Exp_##name(IArchive &in) : Super{in} {} \
       \
       virtual Type v_getType() const; \
       virtual Value v_getValue() const; \
@@ -50,14 +50,14 @@
 // GDCC_IR_Exp_BinaryImplCreate
 //
 #define GDCC_IR_Exp_BinaryImplCreate(name) \
-   Exp::CRef ExpCreate_Binary##name(Exp const *l, Exp const *r) \
-      {return static_cast<Exp::CRef>(new Exp_Binary##name(l, r, l->pos));} \
+   Exp::CRef ExpCreate_##name(Exp const *l, Exp const *r) \
+      {return static_cast<Exp::CRef>(new Exp_##name(l, r, l->pos));} \
    \
-   Exp::CRef ExpCreate_Binary##name(Exp const *l, Exp const *r, Core::Origin pos) \
-      {return static_cast<Exp::CRef>(new Exp_Binary##name(l, r, pos));} \
+   Exp::CRef ExpCreate_##name(Exp const *l, Exp const *r, Core::Origin pos) \
+      {return static_cast<Exp::CRef>(new Exp_##name(l, r, pos));} \
    \
-   Exp::CRef ExpGetIR_Binary##name(IArchive &in) \
-      {return static_cast<Exp::CRef>(new Exp_Binary##name(in));}
+   Exp::CRef ExpGetIR_##name(IArchive &in) \
+      {return static_cast<Exp::CRef>(new Exp_##name(in));}
 
 //
 // GDCC_IR_Exp_BinaryImpl
@@ -65,10 +65,10 @@
 #define GDCC_IR_Exp_BinaryImpl(name, op) \
    GDCC_IR_Exp_BinaryImplCreate(name) \
    \
-   Type Exp_Binary##name::v_getType() const \
+   Type Exp_##name::v_getType() const \
       {return Type::Promote##name(expL->getType(), expR->getType());} \
    \
-   Value Exp_Binary##name::v_getValue() const \
+   Value Exp_##name::v_getValue() const \
       {return expL->getValue() op expR->getValue();}
 
 
@@ -85,7 +85,8 @@ namespace GDCC
       //
       class Exp_Binary : public Exp
       {
-         GDCC_Core_CounterPreambleAbstract(GDCC::IR::Exp_Binary, GDCC::IR::Exp);
+         GDCC_Core_CounterPreambleAbstract(
+            GDCC::IR::Exp_Binary, GDCC::IR::Exp);
 
       public:
          Exp::CRef const expL, expR;
@@ -104,12 +105,12 @@ namespace GDCC
 
       GDCC_IR_Exp_BinaryDecl(Add);
       GDCC_IR_Exp_BinaryDecl(AddPtrRaw);
-      GDCC_IR_Exp_BinaryDecl(And);
+      GDCC_IR_Exp_BinaryDecl(BitAnd);
+      GDCC_IR_Exp_BinaryDecl(BitOrI);
+      GDCC_IR_Exp_BinaryDecl(BitOrX);
       GDCC_IR_Exp_BinaryDecl(Div);
       GDCC_IR_Exp_BinaryDecl(Mod);
       GDCC_IR_Exp_BinaryDecl(Mul);
-      GDCC_IR_Exp_BinaryDecl(OrI);
-      GDCC_IR_Exp_BinaryDecl(OrX);
       GDCC_IR_Exp_BinaryDecl(ShL);
       GDCC_IR_Exp_BinaryDecl(ShR);
       GDCC_IR_Exp_BinaryDecl(Sub);

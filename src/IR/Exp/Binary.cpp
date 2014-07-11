@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,12 +24,12 @@ namespace GDCC
    namespace IR
    {
       GDCC_IR_Exp_BinaryImpl(Add, +)
-      GDCC_IR_Exp_BinaryImpl(And, &)
+      GDCC_IR_Exp_BinaryImpl(BitAnd, &)
+      GDCC_IR_Exp_BinaryImpl(BitOrI, |)
+      GDCC_IR_Exp_BinaryImpl(BitOrX, ^)
       GDCC_IR_Exp_BinaryImpl(Div, /)
       GDCC_IR_Exp_BinaryImpl(Mod, %)
       GDCC_IR_Exp_BinaryImpl(Mul, *)
-      GDCC_IR_Exp_BinaryImpl(OrI, |)
-      GDCC_IR_Exp_BinaryImpl(OrX, ^)
       GDCC_IR_Exp_BinaryImpl(ShL, <<)
       GDCC_IR_Exp_BinaryImpl(ShR, >>)
       GDCC_IR_Exp_BinaryImpl(Sub, -)
@@ -53,17 +53,17 @@ namespace GDCC
       }
 
       //
-      // Exp_BinaryAddPtrRaw::v_getType
+      // Exp_AddPtrRaw::v_getType
       //
-      Type Exp_BinaryAddPtrRaw::v_getType() const
+      Type Exp_AddPtrRaw::v_getType() const
       {
          return Type::PromoteAdd(expL->getType(), expR->getType());
       }
 
       //
-      // Exp_BinaryAddPtrRaw::v_getValue
+      // Exp_AddPtrRaw::v_getValue
       //
-      Value Exp_BinaryAddPtrRaw::v_getValue() const
+      Value Exp_AddPtrRaw::v_getValue() const
       {
          auto valL = expL->getValue();
          auto valR = expR->getValue();

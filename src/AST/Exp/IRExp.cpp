@@ -89,7 +89,7 @@ namespace GDCC
       Exp::CRef ExpCreate_Size(Core::FastU size)
       {
          return ExpCreate_IRExp(
-            IR::ExpCreate_ValueRoot(
+            IR::ExpCreate_Value(
                IR::Value_Fixed(size, Type::Size->getIRType().tFixed),
                Core::Origin(Core::STR_, 0)),
             Type::Size);

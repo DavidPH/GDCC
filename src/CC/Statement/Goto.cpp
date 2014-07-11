@@ -55,8 +55,7 @@ namespace GDCC
       //
       void Statement_Goto::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
-         ctx.block.addStatementArgs(IR::Code::Jump,
-            IR::Arg_Lit(IR::ExpCreate_ValueGlyph(IR::Glyph(&ctx.prog, label), pos)));
+         ctx.block.addStatementArgs(IR::Code::Jump, IR::Glyph(ctx.prog, label));
       }
 
       //

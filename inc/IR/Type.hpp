@@ -303,12 +303,12 @@ namespace GDCC
 
 
          static Type PromoteAdd(Type const &l, Type const &r);
-         static Type PromoteAnd(Type const &l, Type const &r);
+         static Type PromoteBitAnd(Type const &l, Type const &r);
+         static Type PromoteBitOrI(Type const &l, Type const &r);
+         static Type PromoteBitOrX(Type const &l, Type const &r);
          static Type PromoteDiv(Type const &l, Type const &r);
          static Type PromoteMod(Type const &l, Type const &r);
          static Type PromoteMul(Type const &l, Type const &r);
-         static Type PromoteOrI(Type const &l, Type const &r);
-         static Type PromoteOrX(Type const &l, Type const &r);
          static Type PromoteShL(Type const &l, Type const &r);
          static Type PromoteShR(Type const &l, Type const &r);
          static Type PromoteSub(Type const &l, Type const &r);

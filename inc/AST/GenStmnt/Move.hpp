@@ -35,7 +35,7 @@ template<> inline ArgT GenStmnt_Move_GenArg<ArgT>(Exp const *exp, \
    GenStmntCtx const &ctx, Arg const &arg, IR::Arg &&idx, IR::Exp const *off) \
 { \
    IR::Glyph glyph{&ctx.prog, arg.type->getQualAddr().name}; \
-   auto arr = IR::ExpCreate_ValueGlyph(glyph, exp->pos); \
+   auto arr = IR::ExpCreate_Glyph(glyph, exp->pos); \
    \
    return ArgT(IR::Arg_Lit(arr), std::move(idx), off); \
 }
@@ -71,7 +71,7 @@ namespace GDCC
          Arg const &arg, IR::Arg &&idx, Core::FastU off)
       {
          // Convert offset to an IR expression.
-         auto offExp = IR::ExpCreate_ValueRoot(IR::Value_Fixed(off,
+         auto offExp = IR::ExpCreate_Value(IR::Value_Fixed(off,
             IR::Type_Fixed(32, 0, false, false)), exp->pos);
 
          ctx.block.addStatementArgs(IR::Code::Move_W,
@@ -87,7 +87,7 @@ namespace GDCC
          Arg const &arg, IR::Arg &&idx, Core::FastU off)
       {
          // Convert offset to an IR expression.
-         auto offExp = IR::ExpCreate_ValueRoot(IR::Value_Fixed(off,
+         auto offExp = IR::ExpCreate_Value(IR::Value_Fixed(off,
             IR::Type_Fixed(32, 0, false, false)), exp->pos);
 
          ctx.block.addStatementArgs(IR::Code::Move_W,

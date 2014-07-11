@@ -65,16 +65,10 @@ namespace GDCC
       //
       void Statement_Loop::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
-         // Body label.
-         Core::String labelBody{ctx.fn->genLabel()};
-         IR::Glyph    glyphBody{&ctx.prog, labelBody};
-
-         // Break label.
-         Core::String labelBreak{scope.getLabelBreak()};
-
-         // Continue label.
-         Core::String labelCont{scope.getLabelContinue()};
-         IR::Glyph    glyphCont{&ctx.prog, labelCont};
+         // Labels.
+         IR::Glyph labelBody  = {ctx.prog, ctx.fn->genLabel()};
+         IR::Glyph labelBreak = {ctx.prog, scope.getLabelBreak()};
+         IR::Glyph labelCont  = {ctx.prog, scope.getLabelContinue()};
 
          // Generate initializer.
          if(init) init->genStmnt(ctx);
@@ -83,10 +77,7 @@ namespace GDCC
          // Putting the condition at the end of the loop is more efficient.
          // If condition is known to be true, then do not bother jumping to it.
          if(!post && !(cond->isNonzero() && !cond->isEffect()))
-         {
-            ctx.block.addStatementArgs(IR::Code::Jump,
-               IR::Arg_Lit(IR::ExpCreate_ValueGlyph(glyphCont, pos)));
-         }
+            ctx.block.addStatementArgs(IR::Code::Jump, labelCont);
 
          // Generate body.
          ctx.block.addLabel(labelBody);
@@ -104,14 +95,12 @@ namespace GDCC
          else if(cond->isNonzero())
          {
             cond->genStmnt(ctx);
-            ctx.block.addStatementArgs(IR::Code::Jump,
-               IR::Arg_Lit(IR::ExpCreate_ValueGlyph(glyphBody, pos)));
+            ctx.block.addStatementArgs(IR::Code::Jump, labelBody);
          }
          else
          {
             cond->genStmntStk(ctx);
-            ctx.block.addStatementArgs(IR::Code::Cjmp_Tru, IR::Arg_Stk(),
-               IR::Arg_Lit(IR::ExpCreate_ValueGlyph(glyphBody, pos)));
+            ctx.block.addStatementArgs(IR::Code::Cjmp_Tru, IR::Arg_Stk(), labelBody);
          }
 
          // Generate terminator.

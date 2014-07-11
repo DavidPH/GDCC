@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,7 +39,6 @@ namespace GDCC
 {
    namespace IR
    {
-      GDCC_IR_Exp_BraBinImplCreate(And)
       GDCC_IR_Exp_BraBinImplCreate(CmpEQ)
       GDCC_IR_Exp_BraBinImplCreate(CmpGE)
       GDCC_IR_Exp_BraBinImplCreate(CmpGT)
@@ -47,9 +46,10 @@ namespace GDCC
       GDCC_IR_Exp_BraBinImplCreate(CmpLT)
       GDCC_IR_Exp_BraBinImplCreate(CmpNE)
       GDCC_IR_Exp_BraTerImplCreate(Cnd)
+      GDCC_IR_Exp_BraBinImplCreate(LogAnd)
+      GDCC_IR_Exp_BraBinImplCreate(LogOrI)
+      GDCC_IR_Exp_BraBinImplCreate(LogOrX)
       GDCC_IR_Exp_BraUnaImplCreate(Not)
-      GDCC_IR_Exp_BraBinImplCreate(OrI)
-      GDCC_IR_Exp_BraBinImplCreate(OrX)
 
       GDCC_IR_Exp_BranchImplCmpValue(CmpEQ, ==)
       GDCC_IR_Exp_BranchImplCmpValue(CmpGE, >=)
@@ -107,51 +107,51 @@ namespace GDCC
       }
 
       //
-      // Exp_BranchAnd::v_getValue
+      // Exp_Cnd::v_getType
       //
-      Value Exp_BranchAnd::v_getValue() const
-      {
-         return Value_Fixed(expL->getValue() && expR->getValue(), BoolRaw);
-      }
-
-      //
-      // Exp_BranchCnd::v_getType
-      //
-      Type Exp_BranchCnd::v_getType() const
+      Type Exp_Cnd::v_getType() const
       {
          return expC->getValue() ? expL->getType() : expR->getType();
       }
 
       //
-      // Exp_BranchCnd::v_getValue
+      // Exp_Cnd::v_getValue
       //
-      Value Exp_BranchCnd::v_getValue() const
+      Value Exp_Cnd::v_getValue() const
       {
          return expC->getValue() ? expL->getValue() : expR->getValue();
       }
 
       //
-      // Exp_BranchNot::v_getValue
+      // Exp_LogAnd::v_getValue
       //
-      Value Exp_BranchNot::v_getValue() const
+      Value Exp_LogAnd::v_getValue() const
       {
-         return Value_Fixed(!exp->getValue(), BoolRaw);
+         return Value_Fixed(expL->getValue() && expR->getValue(), BoolRaw);
       }
 
       //
-      // Exp_BranchOrI::v_getValue
+      // Exp_LogOrI::v_getValue
       //
-      Value Exp_BranchOrI::v_getValue() const
+      Value Exp_LogOrI::v_getValue() const
       {
          return Value_Fixed(expL->getValue() || expR->getValue(), BoolRaw);
       }
 
       //
-      // Exp_BranchOrX::v_getValue
+      // Exp_LogOrX::v_getValue
       //
-      Value Exp_BranchOrX::v_getValue() const
+      Value Exp_LogOrX::v_getValue() const
       {
          return Value_Fixed(!expL->getValue() ^ !expR->getValue(), BoolRaw);
+      }
+
+      //
+      // Exp_Not::v_getValue
+      //
+      Value Exp_Not::v_getValue() const
+      {
+         return Value_Fixed(!exp->getValue(), BoolRaw);
       }
    }
 }

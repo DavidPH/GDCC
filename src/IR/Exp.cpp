@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -84,36 +84,34 @@ namespace GDCC
          {
          case Core::STR_None: return nullptr;
 
-         case Core::STR_BinaryAdd:   return ExpGetIR_BinaryAdd  (in);
-         case Core::STR_BinaryAnd:   return ExpGetIR_BinaryAnd  (in);
-         case Core::STR_BinaryDiv:   return ExpGetIR_BinaryDiv  (in);
-         case Core::STR_BinaryMod:   return ExpGetIR_BinaryMod  (in);
-         case Core::STR_BinaryMul:   return ExpGetIR_BinaryMul  (in);
-         case Core::STR_BinaryOrI:   return ExpGetIR_BinaryOrI  (in);
-         case Core::STR_BinaryOrX:   return ExpGetIR_BinaryOrX  (in);
-         case Core::STR_BinaryShL:   return ExpGetIR_BinaryShL  (in);
-         case Core::STR_BinaryShR:   return ExpGetIR_BinaryShR  (in);
-         case Core::STR_BinarySub:   return ExpGetIR_BinarySub  (in);
-         case Core::STR_BranchAnd:   return ExpGetIR_BranchAnd  (in);
-         case Core::STR_BranchCmpEQ: return ExpGetIR_BranchCmpEQ(in);
-         case Core::STR_BranchCmpGE: return ExpGetIR_BranchCmpGE(in);
-         case Core::STR_BranchCmpGT: return ExpGetIR_BranchCmpGT(in);
-         case Core::STR_BranchCmpLE: return ExpGetIR_BranchCmpLE(in);
-         case Core::STR_BranchCmpLT: return ExpGetIR_BranchCmpLT(in);
-         case Core::STR_BranchCmpNE: return ExpGetIR_BranchCmpNE(in);
-         case Core::STR_BranchCnd:   return ExpGetIR_BranchCnd  (in);
-         case Core::STR_BranchNot:   return ExpGetIR_BranchNot  (in);
-         case Core::STR_BranchOrI:   return ExpGetIR_BranchOrI  (in);
-         case Core::STR_BranchOrX:   return ExpGetIR_BranchOrX  (in);
-         case Core::STR_UnaryAdd:    return ExpGetIR_UnaryAdd   (in);
-         case Core::STR_UnaryCst:    return ExpGetIR_UnaryCst   (in);
-         case Core::STR_UnaryNot:    return ExpGetIR_UnaryNot   (in);
-         case Core::STR_UnarySub:    return ExpGetIR_UnarySub   (in);
-         case Core::STR_ValueGlyph:  return ExpGetIR_ValueGlyph (in);
-         case Core::STR_ValueMulti:  return ExpGetIR_ValueMulti (in);
-         case Core::STR_ValueRoot:   return ExpGetIR_ValueRoot  (in);
-
-         case Core::STR_BinaryAddPtrRaw: return ExpGetIR_BinaryAddPtrRaw(in);
+         case Core::STR_Add:       return ExpGetIR_Add      (in);
+         case Core::STR_AddPtrRaw: return ExpGetIR_AddPtrRaw(in);
+         case Core::STR_BitAnd:    return ExpGetIR_BitAnd   (in);
+         case Core::STR_BitOrI:    return ExpGetIR_BitOrI   (in);
+         case Core::STR_BitOrX:    return ExpGetIR_BitOrX   (in);
+         case Core::STR_CmpEQ:     return ExpGetIR_CmpEQ    (in);
+         case Core::STR_CmpGE:     return ExpGetIR_CmpGE    (in);
+         case Core::STR_CmpGT:     return ExpGetIR_CmpGT    (in);
+         case Core::STR_CmpLE:     return ExpGetIR_CmpLE    (in);
+         case Core::STR_CmpLT:     return ExpGetIR_CmpLT    (in);
+         case Core::STR_CmpNE:     return ExpGetIR_CmpNE    (in);
+         case Core::STR_Cnd:       return ExpGetIR_Cnd      (in);
+         case Core::STR_Cst:       return ExpGetIR_Cst      (in);
+         case Core::STR_Div:       return ExpGetIR_Div      (in);
+         case Core::STR_Glyph:     return ExpGetIR_Glyph    (in);
+         case Core::STR_Inv:       return ExpGetIR_Inv      (in);
+         case Core::STR_Mod:       return ExpGetIR_Mod      (in);
+         case Core::STR_Mul:       return ExpGetIR_Mul      (in);
+         case Core::STR_Multi:     return ExpGetIR_Multi    (in);
+         case Core::STR_Neg:       return ExpGetIR_Neg      (in);
+         case Core::STR_Not:       return ExpGetIR_Not      (in);
+         case Core::STR_LogAnd:    return ExpGetIR_LogAnd   (in);
+         case Core::STR_LogOrI:    return ExpGetIR_LogOrI   (in);
+         case Core::STR_LogOrX:    return ExpGetIR_LogOrX   (in);
+         case Core::STR_ShL:       return ExpGetIR_ShL      (in);
+         case Core::STR_ShR:       return ExpGetIR_ShR      (in);
+         case Core::STR_Sub:       return ExpGetIR_Sub      (in);
+         case Core::STR_Value:     return ExpGetIR_Value    (in);
 
          default:
             std::cerr << "invalid Exp\n";

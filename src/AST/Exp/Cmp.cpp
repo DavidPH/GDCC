@@ -38,12 +38,12 @@ namespace GDCC
 {
    namespace AST
    {
-      GDCC_AST_Exp_CmpImpl(Exp_CmpEQ, BranchCmpEQ)
-      GDCC_AST_Exp_CmpImpl(Exp_CmpGE, BranchCmpGE)
-      GDCC_AST_Exp_CmpImpl(Exp_CmpGT, BranchCmpGT)
-      GDCC_AST_Exp_CmpImpl(Exp_CmpLE, BranchCmpLE)
-      GDCC_AST_Exp_CmpImpl(Exp_CmpLT, BranchCmpLT)
-      GDCC_AST_Exp_CmpImpl(Exp_CmpNE, BranchCmpNE)
+      GDCC_AST_Exp_CmpImpl(Exp_CmpEQ, CmpEQ)
+      GDCC_AST_Exp_CmpImpl(Exp_CmpGE, CmpGE)
+      GDCC_AST_Exp_CmpImpl(Exp_CmpGT, CmpGT)
+      GDCC_AST_Exp_CmpImpl(Exp_CmpLE, CmpLE)
+      GDCC_AST_Exp_CmpImpl(Exp_CmpLT, CmpLT)
+      GDCC_AST_Exp_CmpImpl(Exp_CmpNE, CmpNE)
    }
 }
 

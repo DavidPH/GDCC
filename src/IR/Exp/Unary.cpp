@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,24 +23,23 @@ namespace GDCC
 {
    namespace IR
    {
-      GDCC_IR_Exp_UnaryImplCreate(Add)
-      GDCC_IR_Exp_UnaryImplCreate(Not)
-      GDCC_IR_Exp_UnaryImplCreate(Sub)
+      GDCC_IR_Exp_UnaryImplCreate(Inv)
+      GDCC_IR_Exp_UnaryImplCreate(Neg)
 
-      Exp::CRef ExpCreate_UnaryCst(Type const &t, Exp const *e)
-         {return static_cast<Exp::CRef>(new Exp_UnaryCst(t, e, e->pos));}
+      Exp::CRef ExpCreate_Cst(Type const &t, Exp const *e)
+         {return static_cast<Exp::CRef>(new Exp_Cst(t, e, e->pos));}
 
-      Exp::CRef ExpCreate_UnaryCst(Type const &t, Exp const *e, Core::Origin pos)
-         {return static_cast<Exp::CRef>(new Exp_UnaryCst(t, e, pos));}
+      Exp::CRef ExpCreate_Cst(Type const &t, Exp const *e, Core::Origin pos)
+         {return static_cast<Exp::CRef>(new Exp_Cst(t, e, pos));}
 
-      Exp::CRef ExpCreate_UnaryCst(Type &&t, Exp const *e)
-         {return static_cast<Exp::CRef>(new Exp_UnaryCst(std::move(t), e, e->pos));}
+      Exp::CRef ExpCreate_Cst(Type &&t, Exp const *e)
+         {return static_cast<Exp::CRef>(new Exp_Cst(std::move(t), e, e->pos));}
 
-      Exp::CRef ExpCreate_UnaryCst(Type &&t, Exp const *e, Core::Origin pos)
-         {return static_cast<Exp::CRef>(new Exp_UnaryCst(std::move(t), e, pos));}
+      Exp::CRef ExpCreate_Cst(Type &&t, Exp const *e, Core::Origin pos)
+         {return static_cast<Exp::CRef>(new Exp_Cst(std::move(t), e, pos));}
 
-      Exp::CRef ExpGetIR_UnaryCst(IArchive &in)
-         {return static_cast<Exp::CRef>(new Exp_UnaryCst(in));}
+      Exp::CRef ExpGetIR_Cst(IArchive &in)
+         {return static_cast<Exp::CRef>(new Exp_Cst(in));}
 
       //
       // Exp_Unary constructor
@@ -58,24 +57,16 @@ namespace GDCC
       }
 
       //
-      // Exp_UnaryAdd::v_getValue
+      // Exp_Cst constructor
       //
-      Value Exp_UnaryAdd::v_getValue() const
-      {
-         return +exp->getValue();
-      }
-
-      //
-      // Exp_UnaryCst constructor
-      //
-      Exp_UnaryCst::Exp_UnaryCst(IArchive &in) : Super{in}, type{in}
+      Exp_Cst::Exp_Cst(IArchive &in) : Super{in}, type{in}
       {
       }
 
       //
-      // Exp_UnaryCst::v_getValue
+      // Exp_Cst::v_getValue
       //
-      Value Exp_UnaryCst::v_getValue() const
+      Value Exp_Cst::v_getValue() const
       {
          auto e = exp->getValue();
          auto t = e.getType();
@@ -103,25 +94,25 @@ namespace GDCC
       }
 
       //
-      // Exp_UnaryCst::v_putIR
+      // Exp_Cst::v_putIR
       //
-      OArchive &Exp_UnaryCst::v_putIR(OArchive &out) const
+      OArchive &Exp_Cst::v_putIR(OArchive &out) const
       {
          return Super::v_putIR(out) << type;
       }
 
       //
-      // Exp_UnaryNot::v_getValue
+      // Exp_Inv::v_getValue
       //
-      Value Exp_UnaryNot::v_getValue() const
+      Value Exp_Inv::v_getValue() const
       {
          return ~exp->getValue();
       }
 
       //
-      // Exp_UnarySub::v_getValue
+      // Exp_Neg::v_getValue
       //
-      Value Exp_UnarySub::v_getValue() const
+      Value Exp_Neg::v_getValue() const
       {
          return -exp->getValue();
       }

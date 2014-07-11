@@ -141,7 +141,7 @@ namespace GDCC
             auto &gdata = prog.getGlyphData(labelTmp);
 
             gdata.type  = Type::Size->getIRType();
-            gdata.value = IR::ExpCreate_ValueRoot(
+            gdata.value = IR::ExpCreate_Value(
                IR::Value_Fixed(localReg, gdata.type.tFixed),
                Core::Origin(Core::STRNULL, 0));
          }

@@ -16,10 +16,10 @@
 #include "IR/CallType.hpp"
 #include "IR/Exp/Binary.hpp"
 #include "IR/Exp/Branch.hpp"
+#include "IR/Exp/Glyph.hpp"
+#include "IR/Exp/Multi.hpp"
 #include "IR/Exp/Unary.hpp"
-#include "IR/Exp/ValueGlyph.hpp"
-#include "IR/Exp/ValueMulti.hpp"
-#include "IR/Exp/ValueRoot.hpp"
+#include "IR/Exp/Value.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -73,7 +73,7 @@ static void IRDump_ExpPart(std::ostream &out, GDCC::IR::Exp_Unary const *exp)
 //
 // IRDump_ExpPart UnaryCst
 //
-static void IRDump_ExpPart(std::ostream &out, GDCC::IR::Exp_UnaryCst const *exp)
+static void IRDump_ExpPart(std::ostream &out, GDCC::IR::Exp_Cst const *exp)
 {
    GDCC::IRDump::IRDump_Type(out, exp->type);
    GDCC::IRDump::IRDump_Exp(out, exp->exp);
@@ -82,7 +82,7 @@ static void IRDump_ExpPart(std::ostream &out, GDCC::IR::Exp_UnaryCst const *exp)
 //
 // IRDump_ExpPart ValueGlyph
 //
-static void IRDump_ExpPart(std::ostream &out, GDCC::IR::Exp_ValueGlyph const *exp)
+static void IRDump_ExpPart(std::ostream &out, GDCC::IR::Exp_Glyph const *exp)
 {
    GDCC::IRDump::IRDumpString(out, static_cast<GDCC::Core::String>(exp->glyph));
 }
@@ -90,7 +90,7 @@ static void IRDump_ExpPart(std::ostream &out, GDCC::IR::Exp_ValueGlyph const *ex
 //
 // IRDump_ExpPart ValueMulti
 //
-static void IRDump_ExpPart(std::ostream &out, GDCC::IR::Exp_ValueMulti const *exp)
+static void IRDump_ExpPart(std::ostream &out, GDCC::IR::Exp_Multi const *exp)
 {
    out << '{';
 
@@ -111,7 +111,7 @@ static void IRDump_ExpPart(std::ostream &out, GDCC::IR::Exp_ValueMulti const *ex
 //
 // IRDump_ExpPart ValueRoot
 //
-static void IRDump_ExpPart(std::ostream &out, GDCC::IR::Exp_ValueRoot const *exp)
+static void IRDump_ExpPart(std::ostream &out, GDCC::IR::Exp_Value const *exp)
 {
    GDCC::IRDump::IRDump_Value(out, exp->value);
 }
@@ -138,46 +138,43 @@ namespace GDCC
 
          switch(static_cast<Core::StringIndex>(exp->getName()))
          {
-            CasePart(BinaryAddPtrRaw, "BinaryAddPtrRaw");
+            CasePart(AddPtrRaw, "AddPtrRaw");
 
-            CasePart(BinaryAdd, '+');
-            CasePart(BinaryAnd, '&');
-            CasePart(BinaryDiv, '/');
-            CasePart(BinaryMod, '%');
-            CasePart(BinaryMul, '*');
-            CasePart(BinaryOrI, '|');
-            CasePart(BinaryOrX, '^');
-            CasePart(BinaryShL, "<<");
-            CasePart(BinaryShR, ">>");
-            CasePart(BinarySub, '-');
-
-            CasePart(BranchAnd,   "&&");
-            CasePart(BranchCmpEQ, "==");
-            CasePart(BranchCmpGE, ">=");
-            CasePart(BranchCmpGT, '>');
-            CasePart(BranchCmpLE, "<=");
-            CasePart(BranchCmpLT, '<');
-            CasePart(BranchCmpNE, "!=");
-            CasePart(BranchCnd,   '?');
-            CasePart(BranchNot,   '!');
-            CasePart(BranchOrI,   "||");
-            CasePart(BranchOrX,   "^^");
-
-            CasePart(UnaryAdd, "++");
-            CasePart(UnaryCst, "cast");
-            CasePart(UnaryNot, '~');
-            CasePart(UnarySub, "--");
+            CasePart(Add,    '+');
+            CasePart(BitAnd, '&');
+            CasePart(BitOrI, '|');
+            CasePart(BitOrX, '^');
+            CasePart(CmpEQ,  "==");
+            CasePart(CmpGE,  ">=");
+            CasePart(CmpGT,  '>');
+            CasePart(CmpLE,  "<=");
+            CasePart(CmpLT,  '<');
+            CasePart(CmpNE,  "!=");
+            CasePart(Cnd,    '?');
+            CasePart(Cst,    "cast");
+            CasePart(Div,    '/');
+            CasePart(Inv,    '~');
+            CasePart(LogAnd, "&&");
+            CasePart(LogOrI, "||");
+            CasePart(LogOrX, "^^");
+            CasePart(Mod,    '%');
+            CasePart(Mul,    '*');
+            CasePart(Neg,    "--");
+            CasePart(Not,    '!');
+            CasePart(ShL,    "<<");
+            CasePart(ShR,    ">>");
+            CasePart(Sub,    '-');
 
          case Core::STR_ValueGlyph:
-            IRDump_ExpPart(out, static_cast<IR::Exp_ValueGlyph const *>(exp));
+            IRDump_ExpPart(out, static_cast<IR::Exp_Glyph const *>(exp));
             break;
 
          case Core::STR_ValueMulti:
-            IRDump_ExpPart(out, static_cast<IR::Exp_ValueMulti const *>(exp));
+            IRDump_ExpPart(out, static_cast<IR::Exp_Multi const *>(exp));
             break;
 
          case Core::STR_ValueRoot:
-            IRDump_ExpPart(out, static_cast<IR::Exp_ValueRoot const *>(exp));
+            IRDump_ExpPart(out, static_cast<IR::Exp_Value const *>(exp));
             break;
 
          default:

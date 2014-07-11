@@ -85,22 +85,22 @@ Promote(GDCC::IR::Exp const *l_, GDCC::IR::Exp const *r_)
       {
          // Promote to accum/fract from int.
          if(!lt.tFixed.bitsF && rt.tFixed.bitsF)
-            l = GDCC::IR::ExpCreate_UnaryCst(rt, l);
+            l = GDCC::IR::ExpCreate_Cst(rt, l);
          else if(lt.tFixed.bitsF && !rt.tFixed.bitsF)
-            r = GDCC::IR::ExpCreate_UnaryCst(lt, r);
+            r = GDCC::IR::ExpCreate_Cst(lt, r);
 
          // Promote to the most integral bits.
          else if(lt.tFixed.bitsI < rt.tFixed.bitsI)
-            l = GDCC::IR::ExpCreate_UnaryCst(rt, l);
+            l = GDCC::IR::ExpCreate_Cst(rt, l);
          else
-            r = GDCC::IR::ExpCreate_UnaryCst(lt, r);
+            r = GDCC::IR::ExpCreate_Cst(lt, r);
       }
 
       // Fixed <-> Float
       else if(rt.t == GDCC::IR::TypeBase::Float)
       {
          // Fixed always promotes to Float.
-         l = GDCC::IR::ExpCreate_UnaryCst(rt, l);
+         l = GDCC::IR::ExpCreate_Cst(rt, l);
       }
    }
 
@@ -111,7 +111,7 @@ Promote(GDCC::IR::Exp const *l_, GDCC::IR::Exp const *r_)
       if(rt.t == GDCC::IR::TypeBase::Fixed)
       {
          // Fixed always promotes to Float.
-         r = GDCC::IR::ExpCreate_UnaryCst(lt, r);
+         r = GDCC::IR::ExpCreate_Cst(lt, r);
       }
 
       // Float <-> Float
@@ -119,9 +119,9 @@ Promote(GDCC::IR::Exp const *l_, GDCC::IR::Exp const *r_)
       {
          // Promote to the most integral bits.
          if(lt.tFloat.bitsI < rt.tFloat.bitsI)
-            l = GDCC::IR::ExpCreate_UnaryCst(rt, l);
+            l = GDCC::IR::ExpCreate_Cst(rt, l);
          else
-            r = GDCC::IR::ExpCreate_UnaryCst(lt, r);
+            r = GDCC::IR::ExpCreate_Cst(lt, r);
       }
    }
 
@@ -147,7 +147,7 @@ static GDCC::IR::Exp::CRef GetExpIR_Prim_NumInt(GDCC::Core::Token const &tok)
 
    // TODO: Check for oversized hex/octal literal.
 
-   return GDCC::IR::ExpCreate_ValueRoot(
+   return GDCC::IR::ExpCreate_Value(
       GDCC::IR::Value_Fixed(val, u ? TypeUIntMax() : TypeIntMax()), tok.pos);
 }
 
@@ -206,8 +206,7 @@ namespace GDCC
 
          val <<= t.bitsF;
          Core::Integ v{std::move(val)};
-         return IR::ExpCreate_ValueRoot(
-            IR::Value_Fixed(std::move(v), t), tok.pos);
+         return IR::ExpCreate_Value(IR::Value_Fixed(std::move(v), t), tok.pos);
       }
 
       //
@@ -228,8 +227,7 @@ namespace GDCC
          else                                t = TypeFltL();
 
          Core::Float v{std::move(val)};
-         return IR::ExpCreate_ValueRoot(
-            IR::Value_Float(std::move(v), t), tok.pos);
+         return IR::ExpCreate_Value(IR::Value_Float(std::move(v), t), tok.pos);
       }
 
       //
@@ -240,7 +238,7 @@ namespace GDCC
          auto tok = in.get(); switch(tok.tok)
          {
          case Core::TOK_Charac:
-            return IR::ExpCreate_ValueRoot(
+            return IR::ExpCreate_Value(
                IR::Value_Fixed(*tok.str.begin(), TypeIntMax()), tok.pos);
 
          case Core::TOK_NumFix:
@@ -314,7 +312,7 @@ namespace GDCC
          auto tok = in.get(); switch(tok.tok)
          {
          case Core::TOK_Add:
-            return IR::ExpCreate_UnaryAdd(GetExpIR_Unar(in), tok.pos);
+            return GetExpIR_Unar(in);
 
          case Core::TOK_Add2:
             std::cerr << "ERROR: " << tok.pos << ": increment in constant-expression\n";
@@ -325,18 +323,18 @@ namespace GDCC
             throw EXIT_FAILURE;
 
          case Core::TOK_Inv:
-            return IR::ExpCreate_UnaryNot(GetExpIR_Unar(in), tok.pos);
+            return IR::ExpCreate_Inv(GetExpIR_Unar(in), tok.pos);
 
          case Core::TOK_Mul:
             std::cerr << "ERROR: " << tok.pos << ": indirection in constant-expression\n";
             throw EXIT_FAILURE;
 
          case Core::TOK_Not:
-            return IR::ExpCreate_UnaryCst(TypeIntMax(),
-               IR::ExpCreate_BranchNot(GetExpIR_Unar(in), tok.pos));
+            return IR::ExpCreate_Cst(TypeIntMax(),
+               IR::ExpCreate_Not(GetExpIR_Unar(in), tok.pos));
 
          case Core::TOK_Sub:
-            return IR::ExpCreate_UnarySub(GetExpIR_Unar(in), tok.pos);
+            return IR::ExpCreate_Neg(GetExpIR_Unar(in), tok.pos);
 
          case Core::TOK_Sub2:
             std::cerr << "ERROR: " << tok.pos << ": decrement in constant-expression\n";
@@ -357,17 +355,17 @@ namespace GDCC
          {
          case Core::TOK_Div:
             std::tie(l, r) = Promote(l, GetExpIR_Unar(in));
-            l = IR::ExpCreate_BinaryDiv(l, r, tok.pos);
+            l = IR::ExpCreate_Div(l, r, tok.pos);
             break;
 
          case Core::TOK_Mod:
             std::tie(l, r) = Promote(l, GetExpIR_Unar(in));
-            l = IR::ExpCreate_BinaryMod(l, r, tok.pos);
+            l = IR::ExpCreate_Mod(l, r, tok.pos);
             break;
 
          case Core::TOK_Mul:
             std::tie(l, r) = Promote(l, GetExpIR_Unar(in));
-            l = IR::ExpCreate_BinaryMul(l, r, tok.pos);
+            l = IR::ExpCreate_Mul(l, r, tok.pos);
             break;
 
          default: in.unget(); return l;
@@ -385,12 +383,12 @@ namespace GDCC
          {
          case Core::TOK_Add:
             std::tie(l, r) = Promote(l, GetExpIR_Mult(in));
-            l = IR::ExpCreate_BinaryAdd(l, r, tok.pos);
+            l = IR::ExpCreate_Add(l, r, tok.pos);
             break;
 
          case Core::TOK_Sub:
             std::tie(l, r) = Promote(l, GetExpIR_Mult(in));
-            l = IR::ExpCreate_BinarySub(l, r, tok.pos);
+            l = IR::ExpCreate_Sub(l, r, tok.pos);
             break;
 
          default: in.unget(); return l;
@@ -407,11 +405,11 @@ namespace GDCC
          for(Core::Token tok;;) switch((tok = in.get()).tok)
          {
          case Core::TOK_ShL:
-            l = IR::ExpCreate_BinaryShL(l, GetExpIR_Addi(in), tok.pos);
+            l = IR::ExpCreate_ShL(l, GetExpIR_Addi(in), tok.pos);
             break;
 
          case Core::TOK_ShR:
-            l = IR::ExpCreate_BinaryShR(l, GetExpIR_Addi(in), tok.pos);
+            l = IR::ExpCreate_ShR(l, GetExpIR_Addi(in), tok.pos);
             break;
 
          default: in.unget(); return l;
@@ -429,26 +427,26 @@ namespace GDCC
          {
          case Core::TOK_CmpGE:
             std::tie(l, r) = Promote(l, GetExpIR_Shft(in));
-            l = IR::ExpCreate_UnaryCst(TypeIntMax(),
-               IR::ExpCreate_BranchCmpGE(l, r, tok.pos));
+            l = IR::ExpCreate_Cst(TypeIntMax(),
+               IR::ExpCreate_CmpGE(l, r, tok.pos));
             break;
 
          case Core::TOK_CmpGT:
             std::tie(l, r) = Promote(l, GetExpIR_Shft(in));
-            l = IR::ExpCreate_UnaryCst(TypeIntMax(),
-               IR::ExpCreate_BranchCmpGT(l, r, tok.pos));
+            l = IR::ExpCreate_Cst(TypeIntMax(),
+               IR::ExpCreate_CmpGT(l, r, tok.pos));
             break;
 
          case Core::TOK_CmpLE:
             std::tie(l, r) = Promote(l, GetExpIR_Shft(in));
-            l = IR::ExpCreate_UnaryCst(TypeIntMax(),
-               IR::ExpCreate_BranchCmpLE(l, r, tok.pos));
+            l = IR::ExpCreate_Cst(TypeIntMax(),
+               IR::ExpCreate_CmpLE(l, r, tok.pos));
             break;
 
          case Core::TOK_CmpLT:
             std::tie(l, r) = Promote(l, GetExpIR_Shft(in));
-            l = IR::ExpCreate_UnaryCst(TypeIntMax(),
-               IR::ExpCreate_BranchCmpLT(l, r, tok.pos));
+            l = IR::ExpCreate_Cst(TypeIntMax(),
+               IR::ExpCreate_CmpLT(l, r, tok.pos));
             break;
 
          default: in.unget(); return l;
@@ -466,14 +464,14 @@ namespace GDCC
          {
          case Core::TOK_CmpEQ:
             std::tie(l, r) = Promote(l, GetExpIR_Rela(in));
-            l = IR::ExpCreate_UnaryCst(TypeIntMax(),
-               IR::ExpCreate_BranchCmpEQ(l, r, tok.pos));
+            l = IR::ExpCreate_Cst(TypeIntMax(),
+               IR::ExpCreate_CmpEQ(l, r, tok.pos));
             break;
 
          case Core::TOK_CmpNE:
             std::tie(l, r) = Promote(l, GetExpIR_Rela(in));
-            l = IR::ExpCreate_UnaryCst(TypeIntMax(),
-               IR::ExpCreate_BranchCmpNE(l, r, tok.pos));
+            l = IR::ExpCreate_Cst(TypeIntMax(),
+               IR::ExpCreate_CmpNE(l, r, tok.pos));
             break;
 
          default: in.unget(); return l;
@@ -491,7 +489,7 @@ namespace GDCC
          {
          case Core::TOK_And:
             std::tie(l, r) = Promote(l, GetExpIR_Equa(in));
-            l = IR::ExpCreate_BinaryAnd(l, r, tok.pos);
+            l = IR::ExpCreate_BitAnd(l, r, tok.pos);
             break;
 
          default: in.unget(); return l;
@@ -509,7 +507,7 @@ namespace GDCC
          {
          case Core::TOK_OrX:
             std::tie(l, r) = Promote(l, GetExpIR_BAnd(in));
-            l = IR::ExpCreate_BinaryOrX(l, r, tok.pos);
+            l = IR::ExpCreate_BitOrX(l, r, tok.pos);
             break;
 
          default: in.unget(); return l;
@@ -527,7 +525,7 @@ namespace GDCC
          {
          case Core::TOK_OrI:
             std::tie(l, r) = Promote(l, GetExpIR_BOrX(in));
-            l = IR::ExpCreate_BinaryOrI(l, r, tok.pos);
+            l = IR::ExpCreate_BitOrI(l, r, tok.pos);
             break;
 
          default: in.unget(); return l;
@@ -544,8 +542,8 @@ namespace GDCC
          for(Core::Token tok;;) switch((tok = in.get()).tok)
          {
          case Core::TOK_And2:
-            l = IR::ExpCreate_UnaryCst(TypeIntMax(),
-               IR::ExpCreate_BranchAnd(l, GetExpIR_BOrI(in), tok.pos));
+            l = IR::ExpCreate_Cst(TypeIntMax(),
+               IR::ExpCreate_LogAnd(l, GetExpIR_BOrI(in), tok.pos));
             break;
 
          default: in.unget(); return l;
@@ -562,8 +560,8 @@ namespace GDCC
          for(Core::Token tok;;) switch((tok = in.get()).tok)
          {
          case Core::TOK_OrI2:
-            l = IR::ExpCreate_UnaryCst(TypeIntMax(),
-               IR::ExpCreate_BranchOrI(l, GetExpIR_LAnd(in), tok.pos));
+            l = IR::ExpCreate_Cst(TypeIntMax(),
+               IR::ExpCreate_LogOrI(l, GetExpIR_LAnd(in), tok.pos));
             break;
 
          default: in.unget(); return l;
@@ -589,7 +587,7 @@ namespace GDCC
             }
 
             std::tie(l, r) = Promote(l, GetExpIR_Cond(in));
-            return IR::ExpCreate_BranchCnd(c, l, r, tok.pos);
+            return IR::ExpCreate_Cnd(c, l, r, tok.pos);
 
          default: in.unget(); return c;
          }

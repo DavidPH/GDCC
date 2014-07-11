@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IR/Exp/ValueRoot.hpp"
+#include "IR/Exp/Value.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -22,42 +22,42 @@ namespace GDCC
    namespace IR
    {
       //
-      // Exp_ValueRoot constructor
+      // Exp_Value constructor
       //
-      Exp_ValueRoot::Exp_ValueRoot(IArchive &in) : Super{in}, type{in}, value{in}
+      Exp_Value::Exp_Value(IArchive &in) : Super{in}, type{in}, value{in}
       {
       }
 
       //
-      // Exp_ValueRoot::v_putIR
+      // Exp_Value::v_putIR
       //
-      OArchive &Exp_ValueRoot::v_putIR(OArchive &out) const
+      OArchive &Exp_Value::v_putIR(OArchive &out) const
       {
          return Super::v_putIR(out) << type << value;
       }
 
       //
-      // ExpCreate_ValueRoot
+      // ExpCreate_Value
       //
-      Exp::CRef ExpCreate_ValueRoot(Value const &value, Core::Origin pos)
+      Exp::CRef ExpCreate_Value(Value const &value, Core::Origin pos)
       {
-         return static_cast<Exp::CRef>(new Exp_ValueRoot(value, pos));
+         return static_cast<Exp::CRef>(new Exp_Value(value, pos));
       }
 
       //
-      // ExpCreate_ValueRoot
+      // ExpCreate_Value
       //
-      Exp::CRef ExpCreate_ValueRoot(Value &&value, Core::Origin pos)
+      Exp::CRef ExpCreate_Value(Value &&value, Core::Origin pos)
       {
-         return static_cast<Exp::CRef>(new Exp_ValueRoot(std::move(value), pos));
+         return static_cast<Exp::CRef>(new Exp_Value(std::move(value), pos));
       }
 
       //
-      // ExpGetIR_ValueRoot
+      // ExpGetIR_Value
       //
-      Exp::CRef ExpGetIR_ValueRoot(IArchive &in)
+      Exp::CRef ExpGetIR_Value(IArchive &in)
       {
-         return static_cast<Exp::CRef>(new Exp_ValueRoot(in));
+         return static_cast<Exp::CRef>(new Exp_Value(in));
       }
    }
 }

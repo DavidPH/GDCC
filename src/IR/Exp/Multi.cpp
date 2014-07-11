@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IR/Exp/ValueMulti.hpp"
+#include "IR/Exp/Multi.hpp"
 
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
@@ -25,17 +25,17 @@ namespace GDCC
    namespace IR
    {
       //
-      // Exp_ValueMulti constructor
+      // Exp_Multi constructor
       //
-      Exp_ValueMulti::Exp_ValueMulti(IArchive &in) : Super{in},
+      Exp_Multi::Exp_Multi(IArchive &in) : Super{in},
          expv{GetIR(in, expv)}
       {
       }
 
       //
-      // Exp_ValueMulti::v_canGetValue
+      // Exp_Multi::v_canGetValue
       //
-      bool Exp_ValueMulti::v_canGetValue() const
+      bool Exp_Multi::v_canGetValue() const
       {
          for(auto const &exp : expv)
             if(!exp->canGetValue()) return false;
@@ -44,9 +44,9 @@ namespace GDCC
       }
 
       //
-      // Exp_ValueMulti::v_getType
+      // Exp_Multi::v_getType
       //
-      Type Exp_ValueMulti::v_getType() const
+      Type Exp_Multi::v_getType() const
       {
          std::vector<Type> typev; typev.reserve(expv.size());
 
@@ -57,9 +57,9 @@ namespace GDCC
       }
 
       //
-      // Exp_ValueMulti::v_getValue
+      // Exp_Multi::v_getValue
       //
-      Value Exp_ValueMulti::v_getValue() const
+      Value Exp_Multi::v_getValue() const
       {
          std::vector<Type> typev; typev.reserve(expv.size());
          std::vector<Value> valuev; valuev.reserve(expv.size());
@@ -76,28 +76,28 @@ namespace GDCC
       }
 
       //
-      // Exp_ValueMulti::v_putIR
+      // Exp_Multi::v_putIR
       //
-      OArchive &Exp_ValueMulti::v_putIR(OArchive &out) const
+      OArchive &Exp_Multi::v_putIR(OArchive &out) const
       {
          return Super::v_putIR(out) << expv;
       }
 
       //
-      // ExpCreate_ValueMulti
+      // ExpCreate_Multi
       //
-      Exp::CRef ExpCreate_ValueMulti(Exp::CRef const *expv, std::size_t expc,
+      Exp::CRef ExpCreate_Multi(Exp::CRef const *expv, std::size_t expc,
          Core::Origin pos)
       {
-         return static_cast<Exp::CRef>(new Exp_ValueMulti(expv, expc, pos));
+         return static_cast<Exp::CRef>(new Exp_Multi(expv, expc, pos));
       }
 
       //
-      // ExpGetIR_ValueMulti
+      // ExpGetIR_Multi
       //
-      Exp::CRef ExpGetIR_ValueMulti(IArchive &in)
+      Exp::CRef ExpGetIR_Multi(IArchive &in)
       {
-         return static_cast<Exp::CRef>(new Exp_ValueMulti(in));
+         return static_cast<Exp::CRef>(new Exp_Multi(in));
       }
    }
 }

@@ -36,7 +36,7 @@ namespace GDCC
             // Generate label glyphs.
             if(!stmnt->labs.empty())
             {
-               auto val = IR::ExpCreate_ValueRoot(
+               auto val = IR::ExpCreate_Value(
                   IR::Value_Fixed(CodeBase() + numChunkCODE, TypeWord), stmnt->pos);
 
                for(auto const &lab : stmnt->labs)

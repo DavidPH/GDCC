@@ -69,7 +69,7 @@ static GDCC::AST::Exp::CRef CreateStr(GDCC::IR::Program &prog,
       IR::Type_Multi(Core::Array<IR::Type>(val.size(), initType))};
 
    // Set object's initializer.
-   auto initExp = IR::ExpCreate_ValueRoot(std::move(initVal), pos);
+   auto initExp = IR::ExpCreate_Value(std::move(initVal), pos);
    obj->init = AST::ExpCreate_IRExp(initExp, attr.type, pos);
 
    // The expression's result is the newly created object.
@@ -186,7 +186,7 @@ namespace GDCC
 
          // Convert glyph to AST::Exp.
          return AST::ExpCreate_IRExp(
-            IR::ExpCreate_ValueGlyph(IR::Glyph(&prog, glyph), pos),
+            IR::ExpCreate_Glyph(IR::Glyph(&prog, glyph), pos),
             AST::Type::StrEnt->getTypePointer(), pos);
       }
 

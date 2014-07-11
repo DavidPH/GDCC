@@ -24,10 +24,10 @@ add_library(gdcc-ir-lib
    Exp.cpp
    Exp/Binary.cpp
    Exp/Branch.cpp
+   Exp/Glyph.cpp
+   Exp/Multi.cpp
    Exp/Unary.cpp
-   Exp/ValueGlyph.cpp
-   Exp/ValueMulti.cpp
-   Exp/ValueRoot.cpp
+   Exp/Value.cpp
    Function.cpp
    Glyph.cpp
    IArchive.cpp

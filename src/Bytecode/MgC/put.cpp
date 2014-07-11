@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,9 +13,9 @@
 #include "Bytecode/MgC/Info.hpp"
 
 #include "IR/Exp/Binary.hpp"
-#include "IR/Exp/ValueGlyph.hpp"
-#include "IR/Exp/ValueMulti.hpp"
-#include "IR/Exp/ValueRoot.hpp"
+#include "IR/Exp/Glyph.hpp"
+#include "IR/Exp/Multi.hpp"
+#include "IR/Exp/Value.hpp"
 #include "IR/Program.hpp"
 
 #include <iostream>
@@ -58,47 +58,41 @@ namespace GDCC
          {
             switch(auto s = static_cast<Core::StringIndex>(exp->getName()))
             {
-            case Core::STR_BinaryAdd:
+            case Core::STR_Add:
                *out << '+' << '\0';
                putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
                putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
                break;
 
-            case Core::STR_BinaryDiv:
+            case Core::STR_Div:
                *out << '/' << '\0';
                putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
                putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
                break;
 
-            case Core::STR_BinaryMod:
+            case Core::STR_Glyph:
+               putGlyph(static_cast<IR::Exp_Glyph const *>(exp)->glyph);
+               break;
+
+            case Core::STR_Mod:
                *out << '%' << '\0';
                putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
                putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
                break;
 
-            case Core::STR_BinaryMul:
+            case Core::STR_Mul:
                *out << '*' << '\0';
                putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
                putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
                break;
 
-            case Core::STR_BinarySub:
-               *out << '-' << '\0';
-               putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
-               putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
-               break;
-
-            case Core::STR_ValueGlyph:
-               putGlyph(static_cast<IR::Exp_ValueGlyph const *>(exp)->glyph);
-               break;
-
-            case Core::STR_ValueMulti:
+            case Core::STR_Multi:
                // This is kind of unfortunate, since it can easily result in
                // incorrect codegen by adding unexpected commas. However, it is
                // needed by putObj and is really a higher level problem.
                // FIXME/TODO: This does need to handle non-words properly, though.
                {
-                  auto multi = static_cast<IR::Exp_ValueMulti const *>(exp);
+                  auto multi = static_cast<IR::Exp_Multi const *>(exp);
                   auto itr = multi->expv.begin(), end = multi->expv.end();
                   if(itr != end) for(putExp(*itr++); itr != end; ++itr)
                   {
@@ -108,8 +102,14 @@ namespace GDCC
                }
                break;
 
-            case Core::STR_ValueRoot:
-               putValue(static_cast<IR::Exp_ValueRoot const *>(exp)->value);
+            case Core::STR_Sub:
+               *out << '-' << '\0';
+               putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
+               putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
+               break;
+
+            case Core::STR_Value:
+               putValue(static_cast<IR::Exp_Value const *>(exp)->value);
                break;
 
             default:

@@ -76,7 +76,7 @@ namespace GDCC
          }
 
          block = fn->localTmp.alloc(size);
-         expO  = IR::ExpCreate_ValueRoot(
+         expO  = IR::ExpCreate_Value(
             IR::Value_Fixed(block->lo, Type::Size->getIRType().tFixed), pos);
       }
 
@@ -106,7 +106,7 @@ namespace GDCC
       {
          if(!off) return {IR::Arg_Lit(expB), expO};
 
-         return {IR::Arg_Lit(expB), IR::ExpCreate_ValueRoot(
+         return {IR::Arg_Lit(expB), IR::ExpCreate_Value(
             IR::Value_Fixed(block->lo + off, Type::Size->getIRType().tFixed), pos)};
       }
 
@@ -116,7 +116,7 @@ namespace GDCC
       void Temporary::init()
       {
          block = nullptr;
-         expB  = IR::ExpCreate_ValueGlyph({prog, fn->getLabelTmp()}, pos);
+         expB  = IR::ExpCreate_Glyph({prog, fn->getLabelTmp()}, pos);
       }
    }
 }

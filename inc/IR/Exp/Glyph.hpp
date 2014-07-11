@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__IR__Exp__ValueGlyph_H__
-#define GDCC__IR__Exp__ValueGlyph_H__
+#ifndef GDCC__IR__Exp__Glyph_H__
+#define GDCC__IR__Exp__Glyph_H__
 
 #include "../../IR/Exp.hpp"
 
@@ -27,27 +27,27 @@ namespace GDCC
    namespace IR
    {
       //
-      // Exp_ValueGlyph
+      // Exp_Glyph
       //
-      class Exp_ValueGlyph final : public Exp
+      class Exp_Glyph final : public Exp
       {
-         GDCC_Core_CounterPreamble(GDCC::IR::Exp_ValueGlyph, GDCC::IR::Exp);
+         GDCC_Core_CounterPreamble(GDCC::IR::Exp_Glyph, GDCC::IR::Exp);
 
       public:
-         virtual Core::String getName() const {return Core::STR_ValueGlyph;}
+         virtual Core::String getName() const {return Core::STR_Glyph;}
 
          Glyph const glyph;
 
 
-         friend Exp::CRef ExpCreate_ValueGlyph(Glyph glyph, Core::Origin pos);
+         friend Exp::CRef ExpCreate_Glyph(Glyph glyph, Core::Origin pos);
 
-         friend Exp::CRef ExpGetIR_ValueGlyph(IArchive &in);
+         friend Exp::CRef ExpGetIR_Glyph(IArchive &in);
 
       protected:
-         Exp_ValueGlyph(Exp_ValueGlyph const &) = default;
-         Exp_ValueGlyph(Glyph glyph_, Core::Origin pos_) :
+         Exp_Glyph(Exp_Glyph const &) = default;
+         Exp_Glyph(Glyph glyph_, Core::Origin pos_) :
             Super{pos_}, glyph{glyph_} {}
-         explicit Exp_ValueGlyph(IArchive &in);
+         explicit Exp_Glyph(IArchive &in);
 
          virtual bool v_canGetValue() const;
 
@@ -60,5 +60,5 @@ namespace GDCC
    }
 }
 
-#endif//GDCC__IR__Exp__ValueGlyph_H__
+#endif//GDCC__IR__Exp__Glyph_H__
 

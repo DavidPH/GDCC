@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IR/Exp/ValueGlyph.hpp"
+#include "IR/Exp/Glyph.hpp"
 
 #include "IR/IArchive.hpp"
 
@@ -26,25 +26,25 @@ namespace GDCC
    namespace IR
    {
       //
-      // Exp_ValueGlyph constructor
+      // Exp_Glyph constructor
       //
-      Exp_ValueGlyph::Exp_ValueGlyph(IArchive &in) : Super{in},
+      Exp_Glyph::Exp_Glyph(IArchive &in) : Super{in},
          glyph{GetIR(in, glyph)}
       {
       }
 
       //
-      // Exp_ValueGlyph::v_canGetValue
+      // Exp_Glyph::v_canGetValue
       //
-      bool Exp_ValueGlyph::v_canGetValue() const
+      bool Exp_Glyph::v_canGetValue() const
       {
          return glyph.getData().value;
       }
 
       //
-      // Exp_ValueGlyph::v_getValue
+      // Exp_Glyph::v_getValue
       //
-      Value Exp_ValueGlyph::v_getValue() const
+      Value Exp_Glyph::v_getValue() const
       {
          if(auto value = glyph.getData().value)
             return value->getValue();
@@ -57,27 +57,27 @@ namespace GDCC
       }
 
       //
-      // Exp_ValueGlyph::v_putIR
+      // Exp_Glyph::v_putIR
       //
-      OArchive &Exp_ValueGlyph::v_putIR(OArchive &out) const
+      OArchive &Exp_Glyph::v_putIR(OArchive &out) const
       {
          return Super::v_putIR(out) << glyph;
       }
 
       //
-      // ExpCreate_ValueGlyph
+      // ExpCreate_Glyph
       //
-      Exp::CRef ExpCreate_ValueGlyph(Glyph glyph, Core::Origin pos)
+      Exp::CRef ExpCreate_Glyph(Glyph glyph, Core::Origin pos)
       {
-         return static_cast<Exp::CRef>(new Exp_ValueGlyph(glyph, pos));
+         return static_cast<Exp::CRef>(new Exp_Glyph(glyph, pos));
       }
 
       //
-      // ExpGetIR_ValueGlyph
+      // ExpGetIR_Glyph
       //
-      Exp::CRef ExpGetIR_ValueGlyph(IArchive &in)
+      Exp::CRef ExpGetIR_Glyph(IArchive &in)
       {
-         return static_cast<Exp::CRef>(new Exp_ValueGlyph(in));
+         return static_cast<Exp::CRef>(new Exp_Glyph(in));
       }
    }
 }

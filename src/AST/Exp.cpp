@@ -180,7 +180,7 @@ namespace GDCC
             IR::Type irTypeI = cacheIRExp->getType();
 
             if(irTypeO != irTypeI)
-               cacheIRExp = IR::ExpCreate_UnaryCst(irTypeO, cacheIRExp, pos);
+               cacheIRExp = IR::ExpCreate_Cst(irTypeO, cacheIRExp, pos);
          }
 
          return static_cast<IR::Exp::CRef>(cacheIRExp);

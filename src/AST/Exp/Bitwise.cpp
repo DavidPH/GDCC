@@ -38,11 +38,11 @@ namespace GDCC
 {
    namespace AST
    {
-      GDCC_AST_Exp_BitwiseImpl(Exp_BitAnd, BinaryAnd)
-      GDCC_AST_Exp_BitwiseImpl(Exp_BitOrI, BinaryOrI)
-      GDCC_AST_Exp_BitwiseImpl(Exp_BitOrX, BinaryOrX)
-      GDCC_AST_Exp_BitwiseImpl(Exp_ShL,    BinaryShL)
-      GDCC_AST_Exp_BitwiseImpl(Exp_ShR,    BinaryShR)
+      GDCC_AST_Exp_BitwiseImpl(Exp_BitAnd, BitAnd)
+      GDCC_AST_Exp_BitwiseImpl(Exp_BitOrI, BitOrI)
+      GDCC_AST_Exp_BitwiseImpl(Exp_BitOrX, BitOrX)
+      GDCC_AST_Exp_BitwiseImpl(Exp_ShL,    ShL)
+      GDCC_AST_Exp_BitwiseImpl(Exp_ShR,    ShR)
    }
 }
 

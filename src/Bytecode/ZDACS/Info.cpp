@@ -115,7 +115,7 @@ namespace GDCC
             auto &data = prog->getGlyphData(glyph);
 
             data.type  = IR::Type_Funct(ctype);
-            data.value = IR::ExpCreate_ValueRoot(
+            data.value = IR::ExpCreate_Value(
                IR::Value_Funct(val, IR::Type_Funct(ctype)),
                Core::Origin(Core::STRNULL, 0));
          }
@@ -128,7 +128,7 @@ namespace GDCC
             auto &data = prog->getGlyphData(glyph);
 
             data.type  = prog->getGlyphData(val).type;
-            data.value = IR::ExpCreate_ValueGlyph(
+            data.value = IR::ExpCreate_Glyph(
                IR::Glyph(prog, val),
                Core::Origin(Core::STRNULL, 0));
          }
@@ -141,7 +141,7 @@ namespace GDCC
             auto &data = prog->getGlyphData(glyph);
 
             data.type  = IR::Type_StrEn();
-            data.value = IR::ExpCreate_ValueRoot(
+            data.value = IR::ExpCreate_Value(
                IR::Value_StrEn(val, IR::Type_StrEn()),
                Core::Origin(Core::STRNULL, 0));
          }
@@ -154,7 +154,7 @@ namespace GDCC
             auto &data = prog->getGlyphData(glyph);
 
             data.type  = TypeWord;
-            data.value = IR::ExpCreate_ValueRoot(
+            data.value = IR::ExpCreate_Value(
                IR::Value_Fixed(val, TypeWord), Core::Origin(Core::STRNULL, 0));
          }
 

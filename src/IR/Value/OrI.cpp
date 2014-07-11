@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,9 +24,9 @@ namespace GDCC
       GDCC_IR_ValueBinOpImplEq(|, Fixed)
 
       //
-      // Type::PromoteOrI
+      // Type::PromoteBitOrI
       //
-      Type Type::PromoteOrI(Type const &l, Type const &r)
+      Type Type::PromoteBitOrI(Type const &l, Type const &r)
       {
          if(l.t == TypeBase::Fixed && r.t == TypeBase::Fixed)
             return Type_Fixed::Promote(l.tFixed, r.tFixed);

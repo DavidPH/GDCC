@@ -82,10 +82,8 @@ namespace GDCC
          {
             cond->genStmntStk(ctx);
 
-            labelT = ctx.fn->genLabel();
-            IR::Glyph glyphT{&ctx.prog, labelT};
             ctx.block.addStatementArgs(IR::Code::Cjmp_Nil, IR::Arg_Stk(),
-               IR::Arg_Lit(IR::ExpCreate_ValueGlyph(glyphT, pos)));
+               IR::Glyph(ctx.prog, labelT = ctx.fn->genLabel()));
          }
 
          // Generate true body.
@@ -97,10 +95,8 @@ namespace GDCC
             // Only branch if there is anything to branch around.
             if(!bodyF->isTrivial())
             {
-               Core::String labelF{ctx.fn->genLabel()};
-               IR::Glyph    glyphF{&ctx.prog, labelF};
-               ctx.block.addStatementArgs(IR::Code::Jump,
-                  IR::Arg_Lit(IR::ExpCreate_ValueGlyph(glyphF, pos)));
+               IR::Glyph labelF = {&ctx.prog, ctx.fn->genLabel()};
+               ctx.block.addStatementArgs(IR::Code::Jump, labelF);
 
                if(labelT) ctx.block.addLabel(labelT);
                bodyF->genStmnt(ctx);

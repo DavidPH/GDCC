@@ -66,7 +66,7 @@ namespace GDCC
             throw Core::ExceptStr(pos, "function has no type");
 
          IR::Glyph glyph{&prog, fn->glyph};
-         auto addr = IR::ExpCreate_ValueGlyph(glyph, pos);
+         auto addr = IR::ExpCreate_Glyph(glyph, pos);
          auto type = fn->type->getTypePointer();
          auto exp  = AST::ExpCreate_IRExp(addr, type, pos);
 

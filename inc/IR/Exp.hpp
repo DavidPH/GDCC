@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -136,46 +136,43 @@ namespace GDCC
       IArchive &operator >> (IArchive &in, Exp::CPtr &out);
       IArchive &operator >> (IArchive &in, Exp::CRef &out);
 
-      GDCC_IR_Exp_DeclCreateE2(BinaryAdd);
-      GDCC_IR_Exp_DeclCreateE2(BinaryAddPtrRaw);
-      GDCC_IR_Exp_DeclCreateE2(BinaryAnd);
-      GDCC_IR_Exp_DeclCreateE2(BinaryDiv);
-      GDCC_IR_Exp_DeclCreateE2(BinaryMod);
-      GDCC_IR_Exp_DeclCreateE2(BinaryMul);
-      GDCC_IR_Exp_DeclCreateE2(BinaryOrI);
-      GDCC_IR_Exp_DeclCreateE2(BinaryOrX);
-      GDCC_IR_Exp_DeclCreateE2(BinaryShL);
-      GDCC_IR_Exp_DeclCreateE2(BinaryShR);
-      GDCC_IR_Exp_DeclCreateE2(BinarySub);
+      GDCC_IR_Exp_DeclCreateE2(Add);
+      GDCC_IR_Exp_DeclCreateE2(AddPtrRaw);
+      GDCC_IR_Exp_DeclCreateE2(BitAnd);
+      GDCC_IR_Exp_DeclCreateE2(BitOrI);
+      GDCC_IR_Exp_DeclCreateE2(BitOrX);
+      GDCC_IR_Exp_DeclCreateE2(CmpEQ);
+      GDCC_IR_Exp_DeclCreateE2(CmpGE);
+      GDCC_IR_Exp_DeclCreateE2(CmpGT);
+      GDCC_IR_Exp_DeclCreateE2(CmpLE);
+      GDCC_IR_Exp_DeclCreateE2(CmpLT);
+      GDCC_IR_Exp_DeclCreateE2(CmpNE);
+      GDCC_IR_Exp_DeclCreateE3(Cnd);
+      GDCC_IR_Exp_DeclCreateTE(Cst);
+      GDCC_IR_Exp_DeclCreateE2(Div);
+      GDCC_IR_Exp_DeclCreateE1(Inv);
+      GDCC_IR_Exp_DeclCreateE2(LogAnd);
+      GDCC_IR_Exp_DeclCreateE2(LogOrI);
+      GDCC_IR_Exp_DeclCreateE2(LogOrX);
+      GDCC_IR_Exp_DeclCreateE2(Mod);
+      GDCC_IR_Exp_DeclCreateE2(Mul);
+      GDCC_IR_Exp_DeclCreateE1(Neg);
+      GDCC_IR_Exp_DeclCreateE1(Not);
+      GDCC_IR_Exp_DeclCreateE2(ShL);
+      GDCC_IR_Exp_DeclCreateE2(ShR);
+      GDCC_IR_Exp_DeclCreateE2(Sub);
 
-      GDCC_IR_Exp_DeclCreateE2(BranchAnd);
-      GDCC_IR_Exp_DeclCreateE2(BranchCmpEQ);
-      GDCC_IR_Exp_DeclCreateE2(BranchCmpGE);
-      GDCC_IR_Exp_DeclCreateE2(BranchCmpGT);
-      GDCC_IR_Exp_DeclCreateE2(BranchCmpLE);
-      GDCC_IR_Exp_DeclCreateE2(BranchCmpLT);
-      GDCC_IR_Exp_DeclCreateE2(BranchCmpNE);
-      GDCC_IR_Exp_DeclCreateE3(BranchCnd);
-      GDCC_IR_Exp_DeclCreateE1(BranchNot);
-      GDCC_IR_Exp_DeclCreateE2(BranchOrI);
-      GDCC_IR_Exp_DeclCreateE2(BranchOrX);
+      Exp::CRef ExpCreate_Glyph(Glyph glyph, Core::Origin pos);
 
-      GDCC_IR_Exp_DeclCreateE1(UnaryAdd);
-      GDCC_IR_Exp_DeclCreateTE(UnaryCst);
-      GDCC_IR_Exp_DeclCreateE1(UnaryNot);
-      GDCC_IR_Exp_DeclCreateE1(UnarySub);
-
-      Exp::CRef ExpCreate_ValueGlyph(Glyph glyph, Core::Origin pos);
-
-      Exp::CRef ExpCreate_ValueMulti(Exp::CRef const *expv, std::size_t expc,
+      Exp::CRef ExpCreate_Multi(Exp::CRef const *expv, std::size_t expc,
          Core::Origin pos);
 
-      Exp::CRef ExpCreate_ValueRoot(Value const &value, Core::Origin pos);
-      Exp::CRef ExpCreate_ValueRoot(Value &&value, Core::Origin pos);
+      Exp::CRef ExpCreate_Value(Value const &value, Core::Origin pos);
+      Exp::CRef ExpCreate_Value(Value &&value, Core::Origin pos);
 
-      Exp::CRef ExpGetIR_ValueGlyph(IArchive &in);
-      Exp::CRef ExpGetIR_ValueMulti(IArchive &in);
-      Exp::CRef ExpGetIR_ValueRoot (IArchive &in);
+      Exp::CRef ExpGetIR_Glyph(IArchive &in);
+      Exp::CRef ExpGetIR_Multi(IArchive &in);
+      Exp::CRef ExpGetIR_Value(IArchive &in);
    }
 }
 

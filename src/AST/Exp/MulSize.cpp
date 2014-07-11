@@ -48,7 +48,7 @@ namespace GDCC
       //
       IR::Exp::CRef Exp_MulSize::v_getIRExp() const
       {
-         return IR::ExpCreate_BinaryMul(expL->getIRExp(), expR->getIRExp(), pos);
+         return IR::ExpCreate_Mul(expL->getIRExp(), expR->getIRExp(), pos);
       }
 
       //

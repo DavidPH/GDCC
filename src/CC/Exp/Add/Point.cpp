@@ -83,8 +83,7 @@ namespace GDCC
       //
       IR::Exp::CRef Exp_AddPtrRaw::v_getIRExp() const
       {
-         return IR::ExpCreate_BinaryAddPtrRaw(
-            expL->getIRExp(), expR->getIRExp(), pos);
+         return IR::ExpCreate_AddPtrRaw(expL->getIRExp(), expR->getIRExp(), pos);
       }
    }
 }

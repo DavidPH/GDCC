@@ -71,7 +71,7 @@ namespace GDCC
       //
       IR::Exp::CRef Exp_Inv::v_getIRExp() const
       {
-         return IR::ExpCreate_UnaryNot(exp->getIRExp(), pos);
+         return IR::ExpCreate_Inv(exp->getIRExp(), pos);
       }
 
       //
@@ -79,7 +79,7 @@ namespace GDCC
       //
       IR::Exp::CRef Exp_Neg::v_getIRExp() const
       {
-         return IR::ExpCreate_UnarySub(exp->getIRExp(), pos);
+         return IR::ExpCreate_Neg(exp->getIRExp(), pos);
       }
 
       //

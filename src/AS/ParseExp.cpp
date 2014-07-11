@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -91,10 +91,10 @@ namespace GDCC
             {
             case Core::STR_cast:
                t = ParseType(in, prog);
-               return IR::ExpCreate_UnaryCst(t, ParseExp(in, prog), tok.pos);
+               return IR::ExpCreate_Cst(t, ParseExp(in, prog), tok.pos);
 
             case Core::STR_string:
-               return IR::ExpCreate_ValueRoot(ParseMultiString(in, prog), tok.pos);
+               return IR::ExpCreate_Value(ParseMultiString(in, prog), tok.pos);
 
             default:
                std::cerr << "ERROR: " << tok.pos << ": expected expression\n";
@@ -102,37 +102,36 @@ namespace GDCC
             }
 
          case Core::TOK_Number:
-            return IR::ExpCreate_ValueRoot(ParseNumber(tok), tok.pos);
+            return IR::ExpCreate_Value(ParseNumber(tok), tok.pos);
 
          case Core::TOK_String:
-            return IR::ExpCreate_ValueGlyph(IR::Glyph(&prog, tok.str), tok.pos);
+            return IR::ExpCreate_Glyph(IR::Glyph(&prog, tok.str), tok.pos);
 
-            doE2(BinaryAdd, TOK_Add);
-            doE2(BinaryAnd, TOK_And);
-            doE2(BinaryDiv, TOK_Div);
-            doE2(BinaryMod, TOK_Mod);
-            doE2(BinaryMul, TOK_Mul);
-            doE2(BinaryOrI, TOK_OrI);
-            doE2(BinaryOrX, TOK_OrX);
-            doE2(BinaryShL, TOK_ShL);
-            doE2(BinaryShR, TOK_ShR);
-            doE2(BinarySub, TOK_Sub);
+            doE2(Add,    TOK_Add);
+            doE2(BitAnd, TOK_And);
+            doE2(BitOrI, TOK_OrI);
+            doE2(BitOrX, TOK_OrX);
+            doE2(CmpEQ,  TOK_CmpEQ);
+            doE2(CmpGE,  TOK_CmpGE);
+            doE2(CmpGT,  TOK_CmpGT);
+            doE2(CmpLE,  TOK_CmpLE);
+            doE2(CmpLT,  TOK_CmpLT);
+            doE2(CmpNE,  TOK_CmpNE);
+            doE3(Cnd,    TOK_Query);
+            doE2(Div,    TOK_Div);
+            doE1(Inv,    TOK_Inv);
+            doE2(LogAnd, TOK_And2);
+            doE2(LogOrI, TOK_OrI2);
+            doE2(LogOrX, TOK_OrX2);
+            doE2(Mod,    TOK_Mod);
+            doE2(Mul,    TOK_Mul);
+            doE1(Neg,    TOK_Sub2);
+            doE1(Not,    TOK_Not);
+            doE2(ShL,    TOK_ShL);
+            doE2(ShR,    TOK_ShR);
+            doE2(Sub,    TOK_Sub);
 
-            doE2(BranchAnd, TOK_And2);
-            doE2(BranchCmpEQ, TOK_CmpEQ);
-            doE2(BranchCmpGE, TOK_CmpGE);
-            doE2(BranchCmpGT, TOK_CmpGT);
-            doE2(BranchCmpLE, TOK_CmpLE);
-            doE2(BranchCmpLT, TOK_CmpLT);
-            doE2(BranchCmpNE, TOK_CmpNE);
-            doE3(BranchCnd, TOK_Query);
-            doE1(BranchNot, TOK_Not);
-            doE2(BranchOrI, TOK_OrI2);
-            doE2(BranchOrX, TOK_OrX2);
 
-            doE1(UnaryAdd, TOK_Add2);
-            doE1(UnaryNot, TOK_Inv);
-            doE1(UnarySub, TOK_Sub2);
 
          case Core::TOK_BraceO:
             in.unget();
@@ -140,7 +139,7 @@ namespace GDCC
 
          case Core::TOK_BrackO:
             in.unget();
-            return IR::ExpCreate_ValueRoot(ParseMulti(in, prog), tok.pos);
+            return IR::ExpCreate_Value(ParseMulti(in, prog), tok.pos);
 
          default:
             std::cerr << "ERROR: " << tok.pos << ": expected expression\n";
@@ -168,7 +167,7 @@ namespace GDCC
 
          SkipToken(in, Core::TOK_BraceC, "}");
 
-         return IR::ExpCreate_ValueMulti(val.data(), val.size(), pos);
+         return IR::ExpCreate_Multi(val.data(), val.size(), pos);
       }
 
       //

@@ -40,11 +40,11 @@ namespace GDCC
 {
    namespace AST
    {
-      GDCC_AST_Exp_ArithImpl(Exp_Add, BinaryAdd)
-      GDCC_AST_Exp_ArithImpl(Exp_Div, BinaryDiv)
-      GDCC_AST_Exp_ArithImpl(Exp_Mod, BinaryMod)
-      GDCC_AST_Exp_ArithImpl(Exp_Mul, BinaryMul)
-      GDCC_AST_Exp_ArithImpl(Exp_Sub, BinarySub)
+      GDCC_AST_Exp_ArithImpl(Exp_Add, Add)
+      GDCC_AST_Exp_ArithImpl(Exp_Div, Div)
+      GDCC_AST_Exp_ArithImpl(Exp_Mod, Mod)
+      GDCC_AST_Exp_ArithImpl(Exp_Mul, Mul)
+      GDCC_AST_Exp_ArithImpl(Exp_Sub, Sub)
 
       //
       // GenStmnt_Arith
