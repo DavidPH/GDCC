@@ -316,8 +316,8 @@ namespace GDCC
             }
 
             // Check for function attributes.
-            while(IsAttrSpec(ctx, scope))
-               ParseAttrSpec(ctx, scope, attr);
+            if(IsAttrSpec(ctx, scope))
+               ParseAttrSpecList(ctx, scope, attr);
 
             // Parse the next declarator suffix before creating new type.
             // The declarator "f(void)[5]" is a function returning an array.

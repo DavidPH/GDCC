@@ -275,6 +275,15 @@ namespace GDCC
          else
             throw Core::ExceptStr(ctx.in.peek().pos, "expected attribute-specifier");
       }
+
+      //
+      // ParseAttrSpecList
+      //
+      void ParseAttrSpecList(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
+      {
+         do ParseAttrSpec(ctx, scope, attr);
+         while(IsAttrSpec(ctx, scope));
+      }
    }
 }
 

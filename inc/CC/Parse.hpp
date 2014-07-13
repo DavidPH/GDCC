@@ -191,6 +191,7 @@ namespace GDCC
 
       void ParseAttr(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
       void ParseAttrSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
+      void ParseAttrSpecList(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
 
       void ParseDeclSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
 
