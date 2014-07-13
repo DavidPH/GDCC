@@ -72,7 +72,7 @@ namespace GDCC
 
          type = type->getBaseType();
 
-         return static_cast<AST::Exp::CRef>(new Exp_Deref(type, exp, pos));
+         return Exp_Deref::Create(type, exp, pos);
       }
    }
 }

@@ -61,10 +61,15 @@ namespace GDCC
          GDCC_Core_CounterPreamble(GDCC::CC::Exp_CallStk, GDCC::CC::Exp_Call);
 
       public:
-         friend AST::Exp::CRef ExpCreate_Call(AST::Exp const *e,
-            Core::Array<AST::Exp::CRef> const &args, Core::Origin pos);
-         friend AST::Exp::CRef ExpCreate_Call(AST::Exp const *e,
-            Core::Array<AST::Exp::CRef>      &&args, Core::Origin pos);
+         // Create
+         static CRef Create(AST::Exp const *e, Core::Origin pos,
+            Core::Array<AST::Exp::CRef> const &a)
+            {return CRef(new This(e, pos, a));}
+
+         // Create
+         static CRef Create(AST::Exp const *e, Core::Origin pos,
+            Core::Array<AST::Exp::CRef> &&a)
+            {return CRef(new This(e, pos, std::move(a)));}
 
       protected:
          Exp_CallStk(AST::Exp const *e, Core::Origin pos_,

@@ -102,8 +102,7 @@ namespace GDCC
          for(; argsItr != argsEnd; ++argsItr)
             *argsItr = ExpPromo_Arg(*argsItr, pos);
 
-         return static_cast<AST::Exp::CRef>(
-            new Exp_CallStk(exp, pos, std::move(args)));
+         return Exp_CallStk::Create(exp, pos, std::move(args));
       }
    }
 }

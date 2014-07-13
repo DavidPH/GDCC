@@ -73,8 +73,7 @@ namespace GDCC
             // As of the time of this comment, multi-word pointers only need
             // their high word modified to be added to, and therefore do not
             // require a different handling than a single-word pointer.
-            return static_cast<AST::Exp::CRef>(
-               new Exp_AddPoint(typeL, expL, expR, pos));
+            return Exp_AddPoint::Create(typeL, expL, expR, pos);
          }
 
          // arithmetic + arithmetic

@@ -145,9 +145,9 @@ namespace GDCC
          Core::Origin pos)
       {
          if(obj->store == AST::Storage::Auto)
-            return static_cast<AST::Exp::CRef>(new Exp_ObjAut(prog, obj, pos));
+            return Exp_ObjAut::Create(prog, obj, pos);
 
-         return static_cast<AST::Exp::CRef>(new Exp_Obj(prog, obj, pos));
+         return Exp_Obj::Create(prog, obj, pos);
       }
    }
 }

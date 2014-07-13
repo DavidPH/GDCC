@@ -38,8 +38,9 @@ namespace GDCC
          IR::Program      &prog;
 
 
-         friend AST::Exp::CRef ExpCreate_Func(IR::Program &prog,
-            AST::Function *fn, Core::Origin pos);
+         // Create
+         static CRef Create(IR::Program &prog, AST::Function *fn, Core::Origin pos)
+            {return CRef(new This(prog, fn, pos));}
 
       protected:
          Exp_Func(IR::Program &prog, AST::Function *fn, Core::Origin pos);

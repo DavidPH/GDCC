@@ -76,7 +76,7 @@ namespace GDCC
          auto type = e->getType();
 
          if(type->isCTypeFunction())
-            return static_cast<AST::Exp::CRef>(new Exp_Refer(e, pos));
+            return Exp_Refer::Create(e, pos);
 
          if(!IsLValue(e))
             throw Core::ExceptStr(pos, "expected function or lvalue");
@@ -90,7 +90,7 @@ namespace GDCC
 
          e->setRefer();
 
-         return static_cast<AST::Exp::CRef>(new Exp_Refer(e, pos));
+         return Exp_Refer::Create(e, pos);
       }
    }
 }

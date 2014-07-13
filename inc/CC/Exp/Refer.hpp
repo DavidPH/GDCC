@@ -34,8 +34,9 @@ namespace GDCC
          GDCC_Core_CounterPreamble(GDCC::CC::Exp_Refer, GDCC::AST::Exp_Unary);
 
       public:
-         friend AST::Exp::CRef ExpCreate_Refer(AST::Exp const *e,
-            Core::Origin pos);
+         // Create
+         static CRef Create(AST::Exp const *e, Core::Origin pos)
+            {return CRef(new This(e, pos));}
 
       protected:
          Exp_Refer(AST::Exp const *e, Core::Origin pos);

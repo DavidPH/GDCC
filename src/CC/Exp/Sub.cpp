@@ -80,8 +80,7 @@ namespace GDCC
                // As of the time of this comment, multi-word pointers only need
                // their high word modified to be added to, and therefore do not
                // require a different handling than a single-word pointer.
-               return static_cast<AST::Exp::CRef>(
-                  new Exp_SubPtrInt(typeL, expL, expR, pos));
+               return Exp_SubPtrInt::Create(typeL, expL, expR, pos);
             }
 
             // pointer - pointer
@@ -95,8 +94,7 @@ namespace GDCC
                switch(typeL->getSizeWords())
                {
                case 1:
-                  return static_cast<AST::Exp::CRef>(
-                     new Exp_SubPtrPtrW(TypeIntegPrS, expL, expR, pos));
+                  return Exp_SubPtrPtrW::Create(TypeIntegPrS, expL, expR, pos);
 
                default:
                   throw Core::ExceptStr(pos, "unsupported pointer size");

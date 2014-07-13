@@ -33,14 +33,9 @@ namespace GDCC
       {
          GDCC_Core_CounterPreamble(GDCC::CC::Exp_Not, GDCC::AST::Exp_Unary);
 
-      public:
-         static CRef Create(AST::Type const *t, AST::Exp const *e, Core::Origin pos)
-            {return CRef(new This(t, e, pos));}
+         GDCC_AST_Exp_UnaryCreator(Exp_Not);
 
       protected:
-         Exp_Not(AST::Type const *t, AST::Exp const *e, Core::Origin pos_) :
-            Super{t, e, pos_} {}
-
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
 

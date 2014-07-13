@@ -114,7 +114,7 @@ namespace GDCC
       AST::Exp::CRef ExpCreate_Func(IR::Program &prog, AST::Function *fn,
          Core::Origin pos)
       {
-         return static_cast<AST::Exp::CRef>(new Exp_Func(prog, fn, pos));
+         return Exp_Func::Create(prog, fn, pos);
       }
    }
 }

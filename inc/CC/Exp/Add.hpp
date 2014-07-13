@@ -33,14 +33,9 @@ namespace GDCC
       {
          GDCC_Core_CounterPreamble(GDCC::CC::Exp_AddPoint, GDCC::AST::Exp_Add);
 
-      public:
-         friend AST::Exp::CRef ExpCreate_Add(AST::Exp const *l,
-            AST::Exp const *r, Core::Origin pos);
+         GDCC_AST_Exp_BinaryCreator(Exp_AddPoint);
 
       protected:
-         Exp_AddPoint(AST::Type const *t, AST::Exp const *l, AST::Exp const *r,
-            Core::Origin pos_) : Super{t, l, r, pos_} {}
-
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
       };
@@ -53,17 +48,9 @@ namespace GDCC
          GDCC_Core_CounterPreamble(
             GDCC::CC::Exp_AddPtrRaw, GDCC::AST::Exp_Add);
 
-      public:
-         // Create
-         static CRef Create(AST::Type const *t, AST::Exp const *l,
-            AST::Exp const *r, Core::Origin pos)
-            {return CRef(new This(t, l, r, pos));}
+         GDCC_AST_Exp_BinaryCreator(Exp_AddPtrRaw);
 
       protected:
-         // constructor
-         Exp_AddPtrRaw(AST::Type const *t, AST::Exp const *l,
-            AST::Exp const *r, Core::Origin pos_) : Super{t, l, r, pos_} {}
-
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
 

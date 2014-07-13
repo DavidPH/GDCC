@@ -34,14 +34,9 @@ namespace GDCC
          GDCC_Core_CounterPreamble(
             GDCC::CC::Exp_SubPtrInt, GDCC::AST::Exp_Sub);
 
-      public:
-         friend AST::Exp::CRef ExpCreate_Sub(AST::Exp const *l,
-            AST::Exp const *r, Core::Origin pos);
+         GDCC_AST_Exp_BinaryCreator(Exp_SubPtrInt);
 
       protected:
-         Exp_SubPtrInt(AST::Type const *t, AST::Exp const *l,
-            AST::Exp const *r, Core::Origin pos_) : Super{t, l, r, pos_} {}
-
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
       };
@@ -54,14 +49,9 @@ namespace GDCC
          GDCC_Core_CounterPreamble(
             GDCC::CC::Exp_SubPtrPtrW, GDCC::AST::Exp_Sub);
 
-      public:
-         friend AST::Exp::CRef ExpCreate_Sub(AST::Exp const *l,
-            AST::Exp const *r, Core::Origin pos);
+         GDCC_AST_Exp_BinaryCreator(Exp_SubPtrPtrW);
 
       protected:
-         Exp_SubPtrPtrW(AST::Type const *t, AST::Exp const *l,
-            AST::Exp const *r, Core::Origin pos_) : Super{t, l, r, pos_} {}
-
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
       };

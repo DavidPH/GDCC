@@ -38,8 +38,9 @@ namespace GDCC
          IR::Program    &prog;
 
 
-         friend AST::Exp::CRef ExpCreate_Obj(IR::Program &prog,
-            AST::Object *obj, Core::Origin pos);
+         // Create
+         static CRef Create(IR::Program &prog, AST::Object *obj, Core::Origin pos)
+            {return CRef(new This(prog, obj, pos));}
 
       protected:
          Exp_Obj(IR::Program &prog, AST::Object *obj, Core::Origin pos);
@@ -71,8 +72,9 @@ namespace GDCC
          GDCC_Core_CounterPreamble(GDCC::CC::Exp_ObjAut, GDCC::CC::Exp_Obj);
 
       public:
-         friend AST::Exp::CRef ExpCreate_Obj(IR::Program &prog,
-            AST::Object *obj, Core::Origin pos);
+         // Create
+         static CRef Create(IR::Program &prog, AST::Object *obj, Core::Origin pos)
+            {return CRef(new This(prog, obj, pos));}
 
       protected:
          Exp_ObjAut(IR::Program &prog, AST::Object *obj, Core::Origin pos);

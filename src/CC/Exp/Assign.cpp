@@ -85,7 +85,7 @@ namespace GDCC
 
          auto expR = ExpPromo_Assign(l->getType(), r, pos);
 
-         return static_cast<AST::Exp::CRef>(new Exp_Assign(l, expR, pos));
+         return Exp_Assign::Create(l, expR, pos);
       }
    }
 }
