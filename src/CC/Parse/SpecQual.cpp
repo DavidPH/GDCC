@@ -28,17 +28,20 @@ namespace GDCC
       //
       // IsSpecQual
       //
-      bool IsSpecQual(ParserCtx const &in, Scope &ctx)
+      bool IsSpecQual(ParserCtx const &ctx, Scope &scope)
       {
-         return IsAttrSpec(in, ctx) || IsTypeQual(in, ctx) || IsTypeSpec(in, ctx);
+         return
+            IsAttrSpec(ctx, scope) ||
+            IsTypeQual(ctx, scope) ||
+            IsTypeSpec(ctx, scope);
       }
 
       //
       // ParseSpecQual
       //
-      void ParseSpecQual(ParserCtx const &in, Scope &ctx, AST::Attribute &attr)
+      void ParseSpecQual(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
       {
-         auto pos = in.in.peek().pos;
+         auto pos = ctx.in.peek().pos;
 
          AST::TypeQual declQual = AST::QualNone;
          TypeSpec      declSpec;
@@ -47,16 +50,16 @@ namespace GDCC
          for(;;)
          {
             // attribute-specifier
-            if(IsAttrSpec(in, ctx))
-               ParseAttrSpec(in, ctx, attr);
+            if(IsAttrSpec(ctx, scope))
+               ParseAttrSpec(ctx, scope, attr);
 
             // type-specifier
-            else if(IsTypeSpec(in, ctx))
-               ParseTypeSpec(in, ctx, attr, declSpec);
+            else if(IsTypeSpec(ctx, scope))
+               ParseTypeSpec(ctx, scope, attr, declSpec);
 
             // type-qualifier
-            else if(IsTypeQual(in, ctx))
-                ParseTypeQual(in, ctx, declQual);
+            else if(IsTypeQual(ctx, scope))
+                ParseTypeQual(ctx, scope, declQual);
 
             else
                break;

@@ -32,69 +32,69 @@ namespace GDCC
       //
       // GetExp_CLit
       //
-      AST::Exp::CRef GetExp_CLit(ParserCtx const &in, Scope &ctx)
+      AST::Exp::CRef GetExp_CLit(ParserCtx const &ctx, Scope &scope)
       {
-         if(!in.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(in.in.peek().pos, "expected '('");
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
 
-         auto type = GetType(in, ctx);
+         auto type = GetType(ctx, scope);
 
-         if(!in.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(in.in.peek().pos, "expected ')'");
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
 
-         return GetExp_CLit(in, ctx, type);
+         return GetExp_CLit(ctx, scope, type);
       }
 
       //
       // GetExp_CLit
       //
-      AST::Exp::CRef GetExp_CLit(ParserCtx const &in, Scope &, AST::Type const *)
+      AST::Exp::CRef GetExp_CLit(ParserCtx const &ctx, Scope &, AST::Type const *)
       {
-         if(in.in.peek().tok != Core::TOK_BraceO)
-            throw Core::ExceptStr(in.in.peek().pos, "expected '{'");
+         if(ctx.in.peek().tok != Core::TOK_BraceO)
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected '{'");
 
-         throw Core::ExceptStr(in.in.peek().pos, "compound literal stub");
+         throw Core::ExceptStr(ctx.in.peek().pos, "compound literal stub");
       }
 
       //
       // GetExp_Cast
       //
-      AST::Exp::CRef GetExp_Cast(ParserCtx const &in, Scope &ctx)
+      AST::Exp::CRef GetExp_Cast(ParserCtx const &ctx, Scope &scope)
       {
-         if(IsExp_Cast(in, ctx))
+         if(IsExp_Cast(ctx, scope))
          {
             // (
-            auto pos = in.in.get().pos;
+            auto pos = ctx.in.get().pos;
 
             // type-name
-            auto type = GetType(in, ctx);
+            auto type = GetType(ctx, scope);
 
             // )
-            if(!in.in.drop(Core::TOK_ParenC))
-               throw Core::ExceptStr(in.in.peek().pos, "expected ')'");
+            if(!ctx.in.drop(Core::TOK_ParenC))
+               throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
 
             // Compound literal.
-            if(in.in.peek().tok == Core::TOK_BraceO)
+            if(ctx.in.peek().tok == Core::TOK_BraceO)
             {
                // Parse as though this is actually a postfix-expression.
-               return GetExp_Post(in, ctx, GetExp_CLit(in, ctx, type));
+               return GetExp_Post(ctx, scope, GetExp_CLit(ctx, scope, type));
             }
 
-            return ExpCreate_Cst(type, GetExp_Cast(in, ctx), pos);
+            return ExpCreate_Cst(type, GetExp_Cast(ctx, scope), pos);
          }
 
-         return GetExp_Unar(in, ctx);
+         return GetExp_Unar(ctx, scope);
       }
 
       //
       // IsExp_Cast
       //
-      bool IsExp_Cast(ParserCtx const &in, Scope &ctx)
+      bool IsExp_Cast(ParserCtx const &ctx, Scope &scope)
       {
-         if(in.in.drop(Core::TOK_ParenO))
+         if(ctx.in.drop(Core::TOK_ParenO))
          {
-            bool res = IsType(in, ctx);
-            in.in.unget();
+            bool res = IsType(ctx, scope);
+            ctx.in.unget();
             return res;
          }
 

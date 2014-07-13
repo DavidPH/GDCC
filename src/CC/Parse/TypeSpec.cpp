@@ -34,12 +34,12 @@
 //
 // IsTypeSpec_Atomic
 //
-static bool IsTypeSpec_Atomic(GDCC::CC::ParserCtx const &in, GDCC::CC::Scope &)
+static bool IsTypeSpec_Atomic(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &)
 {
    // If not followed by a parenthesis, it is a type-qualifier.
-   in.in.get();
-   bool res = in.in.peek().tok == GDCC::Core::TOK_ParenO;
-   in.in.unget();
+   ctx.in.get();
+   bool res = ctx.in.peek().tok == GDCC::Core::TOK_ParenO;
+   ctx.in.unget();
    return res;
 }
 
@@ -49,36 +49,36 @@ static bool IsTypeSpec_Atomic(GDCC::CC::ParserCtx const &in, GDCC::CC::Scope &)
 // atomic-type-specifier:
 //    <_Atomic> ( type-name )
 //
-static void ParseTypeSpec_Atomic(GDCC::CC::ParserCtx const &in,
-   GDCC::CC::Scope &ctx, GDCC::AST::Attribute &attr, GDCC::CC::TypeSpec &spec)
+static void ParseTypeSpec_Atomic(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope, GDCC::AST::Attribute &attr, GDCC::CC::TypeSpec &spec)
 {
    using namespace GDCC;
 
    if(spec.specBase)
-      throw Core::ExceptStr(in.in.reget().pos, "multiple type-specifier base");
+      throw Core::ExceptStr(ctx.in.reget().pos, "multiple type-specifier base");
 
    spec.specBase = CC::TypeSpec::BaseName;
 
    // (
-   if(!in.in.drop(Core::TOK_ParenO))
-      throw Core::ExceptStr(in.in.peek().pos, "expected '('");
+   if(!ctx.in.drop(Core::TOK_ParenO))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
 
    // type-name
-   auto type = CC::GetType(in, ctx);
+   auto type = CC::GetType(ctx, scope);
 
    // )
-   if(!in.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(in.in.peek().pos, "expected ')'");
+   if(!ctx.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
 
    // Constraints.
    if(type->isTypeArray())
-      throw Core::ExceptStr(in.in.peek().pos, "atomic array");
+      throw Core::ExceptStr(ctx.in.peek().pos, "atomic array");
 
    if(type->isCTypeFunction())
-      throw Core::ExceptStr(in.in.peek().pos, "atomic function");
+      throw Core::ExceptStr(ctx.in.peek().pos, "atomic function");
 
    if(type->getQual())
-      throw Core::ExceptStr(in.in.peek().pos, "atomic qualified");
+      throw Core::ExceptStr(ctx.in.peek().pos, "atomic qualified");
 
    // Set attribute type.
    auto qual = type->getQual();
@@ -93,32 +93,32 @@ static void ParseTypeSpec_Atomic(GDCC::CC::ParserCtx const &in,
 //    struct-or-union identifier(opt) { struct-declaration-list }
 //    struct-or-union identifier
 //
-static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
-   GDCC::CC::Scope &ctx, GDCC::AST::Attribute &attr, GDCC::CC::TypeSpec &spec,
+static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope, GDCC::AST::Attribute &attr, GDCC::CC::TypeSpec &spec,
    bool isUnion)
 {
    using namespace GDCC;
 
    if(spec.specBase)
-      throw Core::ExceptStr(in.in.reget().pos, "multiple type-specifier base");
+      throw Core::ExceptStr(ctx.in.reget().pos, "multiple type-specifier base");
 
    spec.specBase = CC::TypeSpec::BaseName;
 
    CC::Type_Struct::Ptr type;
 
    // Named structure.
-   if(in.in.peek().tok == Core::TOK_Identi)
+   if(ctx.in.peek().tok == Core::TOK_Identi)
    {
-      auto name  = in.in.get();
-      bool defin = in.in.peek().tok == Core::TOK_BraceO;
+      auto name  = ctx.in.get();
+      bool defin = ctx.in.peek().tok == Core::TOK_BraceO;
 
       // Start with a local lookup. If the full lookup type is incompatible, it
       // is only an error if it is incompatible with a type from this scope.
-      auto lookup = ctx.findTypeTag(name.str);
+      auto lookup = scope.findTypeTag(name.str);
       bool local  = lookup;
 
       // If definition, only check for existing in current scope.
-      if(!lookup && !defin) lookup = ctx.lookupTypeTag(name.str);
+      if(!lookup && !defin) lookup = scope.lookupTypeTag(name.str);
 
       // Existing type, check for compatibility.
       if(lookup)
@@ -145,7 +145,7 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
       if(!lookup)
       {
          type = CC::Type_Struct::Create(name.str, isUnion);
-         ctx.addTypeTag(name.str, type);
+         scope.addTypeTag(name.str, type);
       }
       else
          type = static_cast<CC::Type_Struct *>(&*lookup);
@@ -155,8 +155,8 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
    else
    {
       // Must be a definition.
-      if(in.in.peek().tok != Core::TOK_BraceO)
-         throw Core::ExceptStr(in.in.peek().pos, "expected identifier");
+      if(ctx.in.peek().tok != Core::TOK_BraceO)
+         throw Core::ExceptStr(ctx.in.peek().pos, "expected identifier");
 
       type = CC::Type_Struct::Create(Core::STRNULL, isUnion);
    }
@@ -164,7 +164,7 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
    attr.type = type;
 
    // Remainder of this function deals with parsing the definition itself.
-   if(!in.in.drop(Core::TOK_BraceO))
+   if(!ctx.in.drop(Core::TOK_BraceO))
       return;
 
    // List of members.
@@ -250,33 +250,33 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
       //    static_assert-declaration
 
       // static_assert-declaration
-      if(IsStaticAssert(in, ctx))
+      if(IsStaticAssert(ctx, scope))
       {
-         ParseStaticAssert(in, ctx);
+         ParseStaticAssert(ctx, scope);
          continue;
       }
 
       // specifier-qualifier-list struct-declarator-list(opt) ;
-      if(IsSpecQual(in, ctx))
+      if(IsSpecQual(ctx, scope))
       {
          if(hasFAM)
-            throw Core::ExceptStr(in.in.peek().pos,
+            throw Core::ExceptStr(ctx.in.peek().pos,
                "member after flexible array");
 
          // Check for possible anonymous struct/union: struct-or-union {
          bool maybeAnon =
-            in.in.peek(Core::TOK_KeyWrd, Core::STR_struct, Core::TOK_Semico) ||
-            in.in.peek(Core::TOK_KeyWrd, Core::STR_union,  Core::TOK_Semico);
+            ctx.in.peek(Core::TOK_KeyWrd, Core::STR_struct, Core::TOK_Semico) ||
+            ctx.in.peek(Core::TOK_KeyWrd, Core::STR_union,  Core::TOK_Semico);
 
          // specifier-qualifier-list
          AST::Attribute attrBase;
-         ParseSpecQual(in, ctx, attrBase);
+         ParseSpecQual(ctx, scope, attrBase);
 
          // Special handling for non-declarator declaration.
-         if(in.in.peek().tok == Core::TOK_Semico)
+         if(ctx.in.peek().tok == Core::TOK_Semico)
          {
             if(attrBase.type->isTypeComplete())
-               throw Core::ExceptStr(in.in.reget().pos, "incomplete member");
+               throw Core::ExceptStr(ctx.in.reget().pos, "incomplete member");
 
             addrAlign(attrBase.type->getSizeAlign());
 
@@ -296,14 +296,14 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
 
             AST::Attribute attrTemp = attrBase;
 
-            if(IsDeclarator(in, ctx))
-               ParseDeclarator(in, ctx, attrTemp);
+            if(IsDeclarator(ctx, scope))
+               ParseDeclarator(ctx, scope, attrTemp);
 
             // Bitfield member.
-            if(in.in.drop(Core::TOK_Colon))
+            if(ctx.in.drop(Core::TOK_Colon))
             {
-               auto pos  = in.in.reget().pos;
-               auto bits = CC::ExpToFastU(GetExp_Cond(in, ctx));
+               auto pos  = ctx.in.reget().pos;
+               auto bits = CC::ExpToFastU(GetExp_Cond(ctx, scope));
 
                if(bits)
                {
@@ -355,7 +355,7 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
             else
             {
                if(findName(attrTemp.name))
-                  throw Core::ExceptStr(in.in.reget().pos, "name reused");
+                  throw Core::ExceptStr(ctx.in.reget().pos, "name reused");
 
                bitsReset();
 
@@ -372,7 +372,7 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
                {
                   // Unless this is a flexible array member.
                   if(!attrTemp.type->isTypeArray())
-                     throw Core::ExceptStr(in.in.reget().pos, "incomplete member");
+                     throw Core::ExceptStr(ctx.in.reget().pos, "incomplete member");
 
                   addrAlign(attrTemp.type->getSizeAlign());
 
@@ -385,17 +385,17 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &in,
                }
             }
          }
-         while(in.in.drop(Core::TOK_Comma));
+         while(ctx.in.drop(Core::TOK_Comma));
 
          // ;
-         if(!in.in.drop(Core::TOK_Semico))
-            throw Core::ExceptStr(in.in.peek().pos, "expected ';'");
+         if(!ctx.in.drop(Core::TOK_Semico))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
       }
    }
-   while(!in.in.drop(Core::TOK_BraceC));
+   while(!ctx.in.drop(Core::TOK_BraceC));
 
    if(memv.empty())
-      throw Core::ExceptStr(in.in.reget().pos, "empty structure");
+      throw Core::ExceptStr(ctx.in.reget().pos, "empty structure");
 
    bitsReset();
 
@@ -645,9 +645,9 @@ namespace GDCC
       //
       // IsTypeSpec
       //
-      bool IsTypeSpec(ParserCtx const &in, Scope &ctx)
+      bool IsTypeSpec(ParserCtx const &ctx, Scope &scope)
       {
-         auto const &tok = in.in.peek();
+         auto const &tok = ctx.in.peek();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             return false;
 
@@ -675,7 +675,7 @@ namespace GDCC
          case Core::STR_void:       return true;
 
             // atomic-type-specifier
-         case Core::STR__Atomic: return IsTypeSpec_Atomic(in, ctx);
+         case Core::STR__Atomic: return IsTypeSpec_Atomic(ctx, scope);
 
             // struct-or-union-specifier
          case Core::STR_struct:     return true;
@@ -685,17 +685,17 @@ namespace GDCC
          case Core::STR_enum:       return true;
 
             // typedef-name
-         default: return ctx.lookup(tok.str).res == Lookup::Type;
+         default: return scope.lookup(tok.str).res == Lookup::Type;
          }
       }
 
       //
       // ParseTypeSpec
       //
-      void ParseTypeSpec(ParserCtx const &in, Scope &ctx, AST::Attribute &attr,
+      void ParseTypeSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr,
          TypeSpec &spec)
       {
-         auto const &tok = in.in.get();
+         auto const &tok = ctx.in.get();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             throw Core::ExceptStr(tok.pos, "expected type-specifier");
 
@@ -734,18 +734,18 @@ namespace GDCC
          case Core::STR_void:       setSpecBase(TypeSpec::BaseVoid); break;
 
             // atomic-type-specifier
-         case Core::STR__Atomic: ParseTypeSpec_Atomic(in, ctx, attr, spec); break;
+         case Core::STR__Atomic: ParseTypeSpec_Atomic(ctx, scope, attr, spec); break;
 
             // struct-or-union-specifier
-         case Core::STR_struct: ParseTypeSpec_Struct(in, ctx, attr, spec, false); break;
-         case Core::STR_union:  ParseTypeSpec_Struct(in, ctx, attr, spec, true);  break;
+         case Core::STR_struct: ParseTypeSpec_Struct(ctx, scope, attr, spec, false); break;
+         case Core::STR_union:  ParseTypeSpec_Struct(ctx, scope, attr, spec, true);  break;
 
             // enum-specifier
          case Core::STR_enum:       throw Core::ExceptStr(tok.pos, "enum stub");
 
          default:
             // typedef-name
-            auto lookup = ctx.lookup(tok.str);
+            auto lookup = scope.lookup(tok.str);
             if(lookup.res != Lookup::Type)
                throw Core::ExceptStr(tok.pos, "expected type-specifier");
 

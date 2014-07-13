@@ -135,76 +135,76 @@ namespace GDCC
 {
    namespace CC
    {
-      Core::CounterRef<AST::Statement const> GetDecl(ParserCtx const &in,
-         Scope_Global &ctx);
-      Core::CounterRef<AST::Statement const> GetDecl(ParserCtx const &in,
-         Scope_Local &ctx);
+      Core::CounterRef<AST::Statement const> GetDecl(ParserCtx const &ctx,
+         Scope_Global &scope);
+      Core::CounterRef<AST::Statement const> GetDecl(ParserCtx const &ctx,
+         Scope_Local &scope);
 
-      Core::CounterRef<AST::Exp const> GetExp_CLit(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_CLit(ParserCtx const &in, Scope &ctx,
+      Core::CounterRef<AST::Exp const> GetExp_CLit(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_CLit(ParserCtx const &ctx, Scope &scope,
          AST::Type const *type);
 
-      Core::CounterRef<AST::Exp const> GetExp_Prim(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_Post(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_Post(ParserCtx const &in, Scope &ctx,
+      Core::CounterRef<AST::Exp const> GetExp_Prim(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_Post(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_Post(ParserCtx const &ctx, Scope &scope,
          AST::Exp const *exp);
-      Core::CounterRef<AST::Exp const> GetExp_Unar(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_Cast(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_Mult(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_Addi(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_Shft(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_Rela(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_Equa(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_BAnd(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_BOrX(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_BOrI(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_LAnd(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_LOrI(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_Cond(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp_Assi(ParserCtx const &in, Scope &ctx);
-      Core::CounterRef<AST::Exp const> GetExp(ParserCtx const &in, Scope &ctx);
+      Core::CounterRef<AST::Exp const> GetExp_Unar(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_Cast(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_Mult(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_Addi(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_Shft(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_Rela(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_Equa(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_BAnd(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_BOrX(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_BOrI(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_LAnd(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_LOrI(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_Cond(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp_Assi(ParserCtx const &ctx, Scope &scope);
+      Core::CounterRef<AST::Exp const> GetExp(ParserCtx const &ctx, Scope &scope);
 
-      Core::CounterRef<AST::Statement const> GetStatement(ParserCtx const &in,
-         Scope_Local &ctx);
+      Core::CounterRef<AST::Statement const> GetStatement(ParserCtx const &ctx,
+         Scope_Local &scope);
 
-      Core::CounterRef<AST::Type const> GetType(ParserCtx const &in, Scope &ctx);
+      Core::CounterRef<AST::Type const> GetType(ParserCtx const &ctx, Scope &scope);
 
-      bool IsAttrSpec(ParserCtx const &in, Scope &ctx);
+      bool IsAttrSpec(ParserCtx const &ctx, Scope &scope);
 
-      bool IsDecl(ParserCtx const &in, Scope &ctx);
+      bool IsDecl(ParserCtx const &ctx, Scope &scope);
 
-      bool IsDeclSpec(ParserCtx const &in, Scope &ctx);
+      bool IsDeclSpec(ParserCtx const &ctx, Scope &scope);
 
-      bool IsDeclarator(ParserCtx const &in, Scope &ctx);
+      bool IsDeclarator(ParserCtx const &ctx, Scope &scope);
 
-      bool IsExp_Cast(ParserCtx const &in, Scope &ctx);
+      bool IsExp_Cast(ParserCtx const &ctx, Scope &scope);
 
-      bool IsSpecQual(ParserCtx const &in, Scope &ctx);
+      bool IsSpecQual(ParserCtx const &ctx, Scope &scope);
 
-      bool IsStaticAssert(ParserCtx const &in, Scope &ctx);
+      bool IsStaticAssert(ParserCtx const &ctx, Scope &scope);
 
-      bool IsType(ParserCtx const &in, Scope &ctx);
+      bool IsType(ParserCtx const &ctx, Scope &scope);
 
-      bool IsTypeQual(ParserCtx const &in, Scope &ctx);
+      bool IsTypeQual(ParserCtx const &ctx, Scope &scope);
 
-      bool IsTypeSpec(ParserCtx const &in, Scope &ctx);
+      bool IsTypeSpec(ParserCtx const &ctx, Scope &scope);
 
-      void ParseAttr(ParserCtx const &in, Scope &ctx, AST::Attribute &attr);
-      void ParseAttrSpec(ParserCtx const &in, Scope &ctx, AST::Attribute &attr);
+      void ParseAttr(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
+      void ParseAttrSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
 
-      void ParseDeclSpec(ParserCtx const &in, Scope &ctx, AST::Attribute &attr);
+      void ParseDeclSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
 
-      void ParseDeclarator(ParserCtx const &in, Scope &ctx, AST::Attribute &attr);
-      void ParseDeclaratorSuffix(ParserCtx const &in, Scope &ctx,
+      void ParseDeclarator(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
+      void ParseDeclaratorSuffix(ParserCtx const &ctx, Scope &scope,
          AST::Attribute &attr);
 
-      void ParseSpecQual(ParserCtx const &in, Scope &ctx, AST::Attribute &attr);
+      void ParseSpecQual(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
 
-      void ParseStaticAssert(ParserCtx const &in, Scope &ctx);
+      void ParseStaticAssert(ParserCtx const &ctx, Scope &scope);
 
-      void ParseTypeQual(ParserCtx const &in, Scope &ctx, AST::TypeQual &qual);
+      void ParseTypeQual(ParserCtx const &ctx, Scope &scope, AST::TypeQual &qual);
 
-      void ParseTypeSpec(ParserCtx const &in, Scope &ctx, AST::Attribute &attr,
+      void ParseTypeSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr,
          TypeSpec &spec);
    }
 }

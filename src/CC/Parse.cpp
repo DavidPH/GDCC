@@ -30,13 +30,13 @@ namespace GDCC
       // type-name:
       //    specifier-qualifier-list abstract-declarator(opt)
       //
-      AST::Type::CRef GetType(ParserCtx const &in, Scope &ctx)
+      AST::Type::CRef GetType(ParserCtx const &ctx, Scope &scope)
       {
          AST::Attribute attr;
 
-         ParseSpecQual(in, ctx, attr);
-         if(IsDeclarator(in, ctx))
-            ParseDeclarator(in, ctx, attr);
+         ParseSpecQual(ctx, scope, attr);
+         if(IsDeclarator(ctx, scope))
+            ParseDeclarator(ctx, scope, attr);
 
          return static_cast<AST::Type::CRef>(attr.type);
       }
@@ -44,9 +44,9 @@ namespace GDCC
       //
       // IsType
       //
-      bool IsType(ParserCtx const &in, Scope &ctx)
+      bool IsType(ParserCtx const &ctx, Scope &scope)
       {
-         return IsSpecQual(in, ctx);
+         return IsSpecQual(ctx, scope);
       }
    }
 }

@@ -33,13 +33,13 @@ namespace GDCC
       //
       // IsDeclSpec
       //
-      bool IsDeclSpec(ParserCtx const &in, Scope &ctx)
+      bool IsDeclSpec(ParserCtx const &ctx, Scope &scope)
       {
          // attribute-specifier
-         if(IsAttrSpec(in, ctx))
+         if(IsAttrSpec(ctx, scope))
             return true;
 
-         auto tok = in.in.peek();
+         auto tok = ctx.in.peek();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             return false;
 
@@ -63,14 +63,14 @@ namespace GDCC
             // type-qualifier
             // type-specifier
          default:
-            return IsTypeQual(in, ctx) || IsTypeSpec(in, ctx);
+            return IsTypeQual(ctx, scope) || IsTypeSpec(ctx, scope);
          }
       }
 
       //
       // ParseDeclSpec
       //
-      void ParseDeclSpec(ParserCtx const &in, Scope &ctx, AST::Attribute &attr)
+      void ParseDeclSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
       {
          enum DeclStor
          {
@@ -83,7 +83,7 @@ namespace GDCC
             declStorType,
          };
 
-         auto pos = in.in.peek().pos;
+         auto pos = ctx.in.peek().pos;
 
          AST::TypeQual declQual = AST::QualNone;
          TypeSpec      declSpec;
@@ -105,10 +105,10 @@ namespace GDCC
          for(;;)
          {
             // attribute-specifier
-            if(IsAttrSpec(in, ctx))
-               {ParseAttrSpec(in, ctx, attr); continue;}
+            if(IsAttrSpec(ctx, scope))
+               {ParseAttrSpec(ctx, scope, attr); continue;}
 
-            auto const &tok = in.in.peek();
+            auto const &tok = ctx.in.peek();
             if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
                break;
 
@@ -131,17 +131,17 @@ namespace GDCC
 
             default:
                // type-specifier
-               if(IsTypeSpec(in, ctx))
-                  {ParseTypeSpec(in, ctx, attr, declSpec); continue;}
+               if(IsTypeSpec(ctx, scope))
+                  {ParseTypeSpec(ctx, scope, attr, declSpec); continue;}
 
                // type-qualifier
-               if(IsTypeQual(in, ctx))
-                  {ParseTypeQual(in, ctx, declQual); continue;}
+               if(IsTypeQual(ctx, scope))
+                  {ParseTypeQual(ctx, scope, declQual); continue;}
 
                goto parse_done;
             }
 
-            in.in.get();
+            ctx.in.get();
          }
 
          parse_done:;

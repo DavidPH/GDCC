@@ -61,20 +61,20 @@
 //    <call>
 //    <__call>
 //
-static void ParseAttr_call(GDCC::CC::ParserCtx const &in, GDCC::CC::Scope &,
+static void ParseAttr_call(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
    GDCC::AST::Attribute &attr)
 {
    using namespace GDCC;
 
    // (
-   if(!in.in.drop(Core::TOK_ParenO))
-      throw Core::ExceptStr(in.in.peek().pos, "expected '('");
+   if(!ctx.in.drop(Core::TOK_ParenO))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
 
    // string-literal
-   if(!in.in.peek().isTokString())
-      throw Core::ExceptStr(in.in.peek().pos, "expected string-literal");
+   if(!ctx.in.peek().isTokString())
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
 
-   switch(in.in.get().str)
+   switch(ctx.in.get().str)
    {
    case Core::STR_None:    attr.callt = IR::CallType::None;    break;
    case Core::STR_Action:  attr.callt = IR::CallType::Action;  break;
@@ -92,12 +92,12 @@ static void ParseAttr_call(GDCC::CC::ParserCtx const &in, GDCC::CC::Scope &,
    case Core::STR_Special: attr.callt = IR::CallType::Special; break;
 
    default:
-      throw Core::ExceptStr(in.in.reget().pos, "invalid call");
+      throw Core::ExceptStr(ctx.in.reget().pos, "invalid call");
    }
 
    // )
-   if(!in.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(in.in.peek().pos, "expected ')'");
+   if(!ctx.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
 }
 
 //
@@ -106,20 +106,20 @@ static void ParseAttr_call(GDCC::CC::ParserCtx const &in, GDCC::CC::Scope &,
 // attribute-extern:
 //    <extern> ( string-literal )
 //
-static void ParseAttr_extern(GDCC::CC::ParserCtx const &in, GDCC::CC::Scope &,
+static void ParseAttr_extern(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
    GDCC::AST::Attribute &attr)
 {
    using namespace GDCC;
 
    // (
-   if(!in.in.drop(Core::TOK_ParenO))
-      throw Core::ExceptStr(in.in.peek().pos, "expected '('");
+   if(!ctx.in.drop(Core::TOK_ParenO))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
 
    // string-literal
-   if(!in.in.peek().isTokString())
-      throw Core::ExceptStr(in.in.peek().pos, "expected string-literal");
+   if(!ctx.in.peek().isTokString())
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
 
-   switch(in.in.get().str)
+   switch(ctx.in.get().str)
    {
    case Core::STR_ACS:       attr.linka = IR::Linkage::ExtACS; break;
    case Core::STR_C:         attr.linka = IR::Linkage::ExtC;   break;
@@ -129,12 +129,12 @@ static void ParseAttr_extern(GDCC::CC::ParserCtx const &in, GDCC::CC::Scope &,
    case Core::STR_NAM_CXX:   attr.linka = IR::Linkage::ExtCXX; break;
 
    default:
-      throw Core::ExceptStr(in.in.reget().pos, "invalid linkage");
+      throw Core::ExceptStr(ctx.in.reget().pos, "invalid linkage");
    }
 
    // )
-   if(!in.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(in.in.peek().pos, "expected ')'");
+   if(!ctx.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
 }
 
 
@@ -157,28 +157,28 @@ namespace GDCC
       // absolutely must not ever alter the interpretation of strictly
       // conforming programs.
       //
-      bool IsAttrSpec(ParserCtx const &in, Scope &)
+      bool IsAttrSpec(ParserCtx const &ctx, Scope &)
       {
          // [ [
-         if(in.in.drop(Core::TOK_BrackO))
+         if(ctx.in.drop(Core::TOK_BrackO))
          {
-            bool res = in.in.peek().tok == Core::TOK_BrackO;
-            in.in.unget();
+            bool res = ctx.in.peek().tok == Core::TOK_BrackO;
+            ctx.in.unget();
             return res;
          }
 
          // <__attribute__> ( (
-         if(in.in.drop(Core::TOK_Identi, Core::STR___attribute__))
+         if(ctx.in.drop(Core::TOK_Identi, Core::STR___attribute__))
          {
-            if(in.in.drop(Core::TOK_ParenO))
+            if(ctx.in.drop(Core::TOK_ParenO))
             {
-               bool res = in.in.peek().tok == Core::TOK_ParenO;
-               in.in.unget();
-               in.in.unget();
+               bool res = ctx.in.peek().tok == Core::TOK_ParenO;
+               ctx.in.unget();
+               ctx.in.unget();
                return res;
             }
 
-            in.in.unget();
+            ctx.in.unget();
          }
 
          return false;
@@ -187,29 +187,29 @@ namespace GDCC
       //
       // ParseAttr
       //
-      void ParseAttr(ParserCtx const &in, Scope &ctx, AST::Attribute &attr)
+      void ParseAttr(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
       {
-         auto name = in.in.peek();
+         auto name = ctx.in.peek();
 
          if(name.tok != Core::TOK_Identi && name.tok != Core::TOK_KeyWrd)
             return;
 
-         in.in.get();
+         ctx.in.get();
          switch(name.str)
          {
          case Core::STR_call: case Core::STR___call:
-            ParseAttr_call(in, ctx, attr); break;
+            ParseAttr_call(ctx, scope, attr); break;
 
          case Core::STR_extern:
-            ParseAttr_extern(in, ctx, attr); break;
+            ParseAttr_extern(ctx, scope, attr); break;
 
          default:
             // Skip unknown attribute.
-            if(in.in.drop(Core::TOK_ParenO))
+            if(ctx.in.drop(Core::TOK_ParenO))
             {
                for(unsigned depth = 1; depth;)
                {
-                  auto const &tok = in.in.get();
+                  auto const &tok = ctx.in.get();
 
                        if(tok.tok == Core::TOK_ParenO) ++depth;
                   else if(tok.tok == Core::TOK_ParenC) --depth;
@@ -224,56 +224,56 @@ namespace GDCC
       //
       // ParseAttrList
       //
-      void ParseAttrList(ParserCtx const &in, Scope &ctx, AST::Attribute &attr)
+      void ParseAttrList(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
       {
          // attribute-list:
          //    attribute(opt)
          //    attribute-list , attribute(opt)
-         do ParseAttr(in, ctx, attr);
-         while(in.in.drop(Core::TOK_Comma));
+         do ParseAttr(ctx, scope, attr);
+         while(ctx.in.drop(Core::TOK_Comma));
       }
 
       //
       // ParseAttrSpec
       //
-      void ParseAttrSpec(ParserCtx const &in, Scope &ctx, AST::Attribute &attr)
+      void ParseAttrSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
       {
          // attribute-specifier:
          //    [ [ attribute-list ] ]
          //    <__attribute__> ( ( attribute-list ) )
 
          // [ [ attribute-list ] ]
-         if(in.in.drop(Core::TOK_BrackO))
+         if(ctx.in.drop(Core::TOK_BrackO))
          {
             // [ [
-            if(!in.in.drop(Core::TOK_BrackO))
-               throw Core::ExceptStr(in.in.peek().pos, "expected '['");
+            if(!ctx.in.drop(Core::TOK_BrackO))
+               throw Core::ExceptStr(ctx.in.peek().pos, "expected '['");
 
             // attribute-list
-            ParseAttrList(in, ctx, attr);
+            ParseAttrList(ctx, scope, attr);
 
             // ] ]
-            if(!in.in.drop(Core::TOK_BrackC) || !in.in.drop(Core::TOK_BrackC))
-               throw Core::ExceptStr(in.in.peek().pos, "expected ']'");
+            if(!ctx.in.drop(Core::TOK_BrackC) || !ctx.in.drop(Core::TOK_BrackC))
+               throw Core::ExceptStr(ctx.in.peek().pos, "expected ']'");
          }
 
          // <__attribute__> ( ( attribute-list ) )
-         else if(in.in.drop(Core::TOK_Identi, Core::STR___attribute__))
+         else if(ctx.in.drop(Core::TOK_Identi, Core::STR___attribute__))
          {
             // ( (
-            if(!in.in.drop(Core::TOK_ParenO) || !in.in.drop(Core::TOK_ParenO))
-               throw Core::ExceptStr(in.in.peek().pos, "expected '('");
+            if(!ctx.in.drop(Core::TOK_ParenO) || !ctx.in.drop(Core::TOK_ParenO))
+               throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
 
             // attribute-list
-            ParseAttrList(in, ctx, attr);
+            ParseAttrList(ctx, scope, attr);
 
             // ) )
-            if(!in.in.drop(Core::TOK_ParenC) || !in.in.drop(Core::TOK_ParenC))
-               throw Core::ExceptStr(in.in.peek().pos, "expected ')'");
+            if(!ctx.in.drop(Core::TOK_ParenC) || !ctx.in.drop(Core::TOK_ParenC))
+               throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
          }
 
          else
-            throw Core::ExceptStr(in.in.peek().pos, "expected attribute-specifier");
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected attribute-specifier");
       }
    }
 }

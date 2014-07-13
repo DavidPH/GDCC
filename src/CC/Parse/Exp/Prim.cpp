@@ -33,8 +33,8 @@
 //
 // GetExp_Prim_generic
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_generic(GDCC::CC::ParserCtx const &in,
-   GDCC::CC::Scope &ctx)
+static GDCC::AST::Exp::CRef GetExp_Prim_generic(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope)
 {
    using namespace GDCC;
 
@@ -42,60 +42,60 @@ static GDCC::AST::Exp::CRef GetExp_Prim_generic(GDCC::CC::ParserCtx const &in,
    //    <_Generic> ( assignment-expression , generic-assoc-list )
 
    // <_Generic>
-   auto pos = in.in.get().pos;
+   auto pos = ctx.in.get().pos;
 
    // (
-   if(!in.in.drop(Core::TOK_ParenO))
-      throw Core::ExceptStr(in.in.peek().pos, "expected '('");
+   if(!ctx.in.drop(Core::TOK_ParenO))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
 
    // assignment-expression
-   auto exp = CC::GetExp_Assi(in, ctx);
+   auto exp = CC::GetExp_Assi(ctx, scope);
 
    // generic-assoc-list:
    //    generic-association
    //    generic-assoc-list , generic-association
    AST::Exp::CPtr            def;
    std::vector<CC::GenAssoc> vec;
-   while(in.in.drop(Core::TOK_Comma))
+   while(ctx.in.drop(Core::TOK_Comma))
    {
       // generic-association:
       //    type-name : assignment-expression
       //    <default> : assignment-expression
 
       // type-name
-      if(CC::IsType(in, ctx))
+      if(CC::IsType(ctx, scope))
       {
-         auto type = CC::GetType(in, ctx);
+         auto type = CC::GetType(ctx, scope);
 
          // :
-         if(!in.in.drop(Core::TOK_Colon))
-            throw Core::ExceptStr(in.in.peek().pos, "expected ':'");
+         if(!ctx.in.drop(Core::TOK_Colon))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ':'");
 
          // assignment-expression
-         vec.emplace_back(type, CC::GetExp_Assi(in, ctx));
+         vec.emplace_back(type, CC::GetExp_Assi(ctx, scope));
       }
 
       // <default>
-      else if(in.in.drop(Core::TOK_KeyWrd, Core::STR_default))
+      else if(ctx.in.drop(Core::TOK_KeyWrd, Core::STR_default))
       {
          if(def)
-            throw Core::ExceptStr(in.in.peek().pos, "multiple default");
+            throw Core::ExceptStr(ctx.in.peek().pos, "multiple default");
 
          // :
-         if(!in.in.drop(Core::TOK_Colon))
-            throw Core::ExceptStr(in.in.peek().pos, "expected ':'");
+         if(!ctx.in.drop(Core::TOK_Colon))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ':'");
 
          // assignment-expression
-         def = CC::GetExp_Assi(in, ctx);
+         def = CC::GetExp_Assi(ctx, scope);
       }
 
       else
-         throw Core::ExceptStr(in.in.peek().pos, "expected generic-association");
+         throw Core::ExceptStr(ctx.in.peek().pos, "expected generic-association");
    }
 
    // )
-   if(!in.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(in.in.peek().pos, "expected ')'");
+   if(!ctx.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
 
    return CC::ExpCreate_GenSel(exp, def,
       Core::Array<CC::GenAssoc>(Core::Move, vec.begin(), vec.end()), pos);
@@ -104,12 +104,12 @@ static GDCC::AST::Exp::CRef GetExp_Prim_generic(GDCC::CC::ParserCtx const &in,
 //
 // GetExp_Prim_Charac
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_Charac(GDCC::CC::ParserCtx const &in,
+static GDCC::AST::Exp::CRef GetExp_Prim_Charac(GDCC::CC::ParserCtx const &ctx,
    GDCC::CC::Scope &)
 {
    using namespace GDCC;
 
-   auto tok = in.in.get();
+   auto tok = ctx.in.get();
 
    auto type = tok.tok == Core::TOK_Charac ? CC::TypeIntegPrS : CC::TypeIntegPrU;
 
@@ -119,20 +119,20 @@ static GDCC::AST::Exp::CRef GetExp_Prim_Charac(GDCC::CC::ParserCtx const &in,
 //
 // GetExp_Prim_Identi
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_Identi(GDCC::CC::ParserCtx const &in,
-   GDCC::CC::Scope &ctx)
+static GDCC::AST::Exp::CRef GetExp_Prim_Identi(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope)
 {
    using namespace GDCC;
 
-   auto tok = in.in.get();
+   auto tok = ctx.in.get();
 
-   if(auto lookup = ctx.lookup(tok.str)) switch(lookup.res)
+   if(auto lookup = scope.lookup(tok.str)) switch(lookup.res)
    {
    case CC::Lookup::Func:
-      return CC::ExpCreate_Func(in.prog, lookup.resFunc, tok.pos);
+      return CC::ExpCreate_Func(ctx.prog, lookup.resFunc, tok.pos);
 
    case CC::Lookup::Obj:
-      return CC::ExpCreate_Obj(in.prog, lookup.resObj, tok.pos);
+      return CC::ExpCreate_Obj(ctx.prog, lookup.resObj, tok.pos);
 
    default:
       throw Core::ExceptStr(tok.pos, "expected primary-expression");
@@ -147,20 +147,20 @@ static GDCC::AST::Exp::CRef GetExp_Prim_Identi(GDCC::CC::ParserCtx const &in,
 //
 // GetExp_Prim_ParenO
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_ParenO(GDCC::CC::ParserCtx const &in,
-   GDCC::CC::Scope &ctx)
+static GDCC::AST::Exp::CRef GetExp_Prim_ParenO(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope)
 {
    using namespace GDCC;
 
    // (
-   in.in.get();
+   ctx.in.get();
 
    // expression
-   auto exp = CC::GetExp(in, ctx);
+   auto exp = CC::GetExp(ctx, scope);
 
    // )
-   if(!in.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(in.in.peek().pos, "expected ')'");
+   if(!ctx.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
 
    return exp;
 }
@@ -168,28 +168,28 @@ static GDCC::AST::Exp::CRef GetExp_Prim_ParenO(GDCC::CC::ParserCtx const &in,
 //
 // GetExp_Prim_KeyWrd
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_KeyWrd(GDCC::CC::ParserCtx const &in,
-   GDCC::CC::Scope &ctx)
+static GDCC::AST::Exp::CRef GetExp_Prim_KeyWrd(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope)
 {
    using namespace GDCC;
 
-   switch(in.in.peek().str)
+   switch(ctx.in.peek().str)
    {
-   case Core::STR__Generic: return GetExp_Prim_generic(in, ctx);
+   case Core::STR__Generic: return GetExp_Prim_generic(ctx, scope);
    default:
-      throw Core::ExceptStr(in.in.peek().pos, "expected primary-expression");
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected primary-expression");
    }
 }
 
 //
 // GetExp_Prim_NumFix
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_NumFix(GDCC::CC::ParserCtx const &in,
+static GDCC::AST::Exp::CRef GetExp_Prim_NumFix(GDCC::CC::ParserCtx const &ctx,
    GDCC::CC::Scope &)
 {
    using namespace GDCC;
 
-   auto tok = in.in.get();
+   auto tok = ctx.in.get();
 
    throw Core::ExceptStr(tok.pos, "fixed-constant stub");
 }
@@ -197,12 +197,12 @@ static GDCC::AST::Exp::CRef GetExp_Prim_NumFix(GDCC::CC::ParserCtx const &in,
 //
 // GetExp_Prim_NumFlt
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_NumFlt(GDCC::CC::ParserCtx const &in,
+static GDCC::AST::Exp::CRef GetExp_Prim_NumFlt(GDCC::CC::ParserCtx const &ctx,
    GDCC::CC::Scope &)
 {
    using namespace GDCC;
 
-   auto tok = in.in.get();
+   auto tok = ctx.in.get();
 
    throw Core::ExceptStr(tok.pos, "floating-constant stub");
 }
@@ -210,12 +210,12 @@ static GDCC::AST::Exp::CRef GetExp_Prim_NumFlt(GDCC::CC::ParserCtx const &in,
 //
 // GetExp_Prim_NumInt
 //
-static GDCC::AST::Exp::CRef GetExp_Prim_NumInt(GDCC::CC::ParserCtx const &in,
+static GDCC::AST::Exp::CRef GetExp_Prim_NumInt(GDCC::CC::ParserCtx const &ctx,
    GDCC::CC::Scope &)
 {
    using namespace GDCC;
 
-   auto tok = in.in.get();
+   auto tok = ctx.in.get();
 
    auto        itr = tok.str.begin(), end = tok.str.end();
    unsigned    base;
@@ -337,29 +337,29 @@ namespace GDCC
       //
       // GetExp_Prim
       //
-      AST::Exp::CRef GetExp_Prim(ParserCtx const &in, Scope &ctx)
+      AST::Exp::CRef GetExp_Prim(ParserCtx const &ctx, Scope &scope)
       {
-         switch(in.in.peek().tok)
+         switch(ctx.in.peek().tok)
          {
-         case Core::TOK_Charac: return GetExp_Prim_Charac(in, ctx);
-         case Core::TOK_ChrU16: return GetExp_Prim_Charac(in, ctx);
-         case Core::TOK_ChrU32: return GetExp_Prim_Charac(in, ctx);
-         case Core::TOK_ChrWid: return GetExp_Prim_Charac(in, ctx);
-         case Core::TOK_Identi: return GetExp_Prim_Identi(in, ctx);
-         case Core::TOK_KeyWrd: return GetExp_Prim_KeyWrd(in, ctx);
-         case Core::TOK_NumFix: return GetExp_Prim_NumFix(in, ctx);
-         case Core::TOK_NumFlt: return GetExp_Prim_NumFlt(in, ctx);
-         case Core::TOK_NumInt: return GetExp_Prim_NumInt(in, ctx);
-         case Core::TOK_StrIdx: return GetExp_Prim_StrIdx(in, ctx);
-         case Core::TOK_StrU08: return GetExp_Prim_StrU08(in, ctx);
-         case Core::TOK_StrU16: return GetExp_Prim_StrU16(in, ctx);
-         case Core::TOK_StrU32: return GetExp_Prim_StrU32(in, ctx);
-         case Core::TOK_StrWid: return GetExp_Prim_StrU32(in, ctx);
-         case Core::TOK_String: return GetExp_Prim_String(in, ctx);
-         case Core::TOK_ParenO: return GetExp_Prim_ParenO(in, ctx);
+         case Core::TOK_Charac: return GetExp_Prim_Charac(ctx, scope);
+         case Core::TOK_ChrU16: return GetExp_Prim_Charac(ctx, scope);
+         case Core::TOK_ChrU32: return GetExp_Prim_Charac(ctx, scope);
+         case Core::TOK_ChrWid: return GetExp_Prim_Charac(ctx, scope);
+         case Core::TOK_Identi: return GetExp_Prim_Identi(ctx, scope);
+         case Core::TOK_KeyWrd: return GetExp_Prim_KeyWrd(ctx, scope);
+         case Core::TOK_NumFix: return GetExp_Prim_NumFix(ctx, scope);
+         case Core::TOK_NumFlt: return GetExp_Prim_NumFlt(ctx, scope);
+         case Core::TOK_NumInt: return GetExp_Prim_NumInt(ctx, scope);
+         case Core::TOK_StrIdx: return GetExp_Prim_StrIdx(ctx, scope);
+         case Core::TOK_StrU08: return GetExp_Prim_StrU08(ctx, scope);
+         case Core::TOK_StrU16: return GetExp_Prim_StrU16(ctx, scope);
+         case Core::TOK_StrU32: return GetExp_Prim_StrU32(ctx, scope);
+         case Core::TOK_StrWid: return GetExp_Prim_StrU32(ctx, scope);
+         case Core::TOK_String: return GetExp_Prim_String(ctx, scope);
+         case Core::TOK_ParenO: return GetExp_Prim_ParenO(ctx, scope);
 
          default:
-            throw Core::ExceptStr(in.in.peek().pos, "expected primary-expression");
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected primary-expression");
          }
       }
    }
