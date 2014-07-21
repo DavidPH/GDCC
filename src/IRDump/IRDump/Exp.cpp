@@ -165,15 +165,15 @@ namespace GDCC
             CasePart(ShR,    ">>");
             CasePart(Sub,    '-');
 
-         case Core::STR_ValueGlyph:
+         case Core::STR_Glyph:
             IRDump_ExpPart(out, static_cast<IR::Exp_Glyph const *>(exp));
             break;
 
-         case Core::STR_ValueMulti:
+         case Core::STR_Multi:
             IRDump_ExpPart(out, static_cast<IR::Exp_Multi const *>(exp));
             break;
 
-         case Core::STR_ValueRoot:
+         case Core::STR_Value:
             IRDump_ExpPart(out, static_cast<IR::Exp_Value const *>(exp));
             break;
 
