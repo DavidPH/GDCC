@@ -265,8 +265,8 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &ctx,
 
          // Check for possible anonymous struct/union: struct-or-union {
          bool maybeAnon =
-            ctx.in.peek(Core::TOK_KeyWrd, Core::STR_struct, Core::TOK_Semico) ||
-            ctx.in.peek(Core::TOK_KeyWrd, Core::STR_union,  Core::TOK_Semico);
+            ctx.in.peek(Core::TOK_KeyWrd, Core::STR_struct, Core::TOK_BraceO) ||
+            ctx.in.peek(Core::TOK_KeyWrd, Core::STR_union,  Core::TOK_BraceO);
 
          // specifier-qualifier-list
          AST::Attribute attrBase;
@@ -275,7 +275,7 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &ctx,
          // Special handling for non-declarator declaration.
          if(ctx.in.peek().tok == Core::TOK_Semico)
          {
-            if(attrBase.type->isTypeComplete())
+            if(!attrBase.type->isTypeComplete())
                throw Core::ExceptStr(ctx.in.reget().pos, "incomplete member");
 
             addrAlign(attrBase.type->getSizeAlign());

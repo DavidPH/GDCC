@@ -128,6 +128,7 @@ namespace GDCC
          virtual ExpCRef     getSizeBytesVM() const;
          virtual Core::FastU getSizePoint()   const;
          virtual ExpCRef     getSizePointVM() const;
+                 Core::FastU getSizeWidth()   const {return size;}
          virtual Core::FastU getSizeWords()   const;
          virtual ExpCRef     getSizeWordsVM() const;
 

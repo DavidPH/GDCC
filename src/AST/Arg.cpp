@@ -34,6 +34,13 @@ namespace GDCC
       //
       // Arg constructor
       //
+      Arg::Arg(Type const *type_) : type{type_}, data{nullptr}
+      {
+      }
+
+      //
+      // Arg constructor
+      //
       Arg::Arg(Type const *type_, Exp const *data_) : type{type_}, data{data_}
       {
       }

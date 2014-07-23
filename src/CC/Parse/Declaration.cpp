@@ -12,6 +12,9 @@
 
 #include "CC/Parse.hpp"
 
+#include "CC/Exp/Assign.hpp"
+#include "CC/Exp/Init.hpp"
+#include "CC/Init.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Scope/Global.hpp"
 #include "CC/Statement.hpp"
@@ -194,6 +197,42 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Local &scope,
 }
 
 //
+// SetDeclObjInit (global)
+//
+static void SetDeclObjInit(
+   GDCC::CC::ParserCtx const               &,
+   GDCC::CC::Scope_Global                  &,
+   GDCC::AST::Attribute                    &,
+   std::vector<GDCC::AST::Statement::CRef> &,
+   GDCC::AST::Object                       *)
+{
+   // File-scope objects get initialized code generated later.
+}
+
+//
+// SetDeclObjInit (local)
+//
+static void SetDeclObjInit(
+   GDCC::CC::ParserCtx const               &ctx,
+   GDCC::CC::Scope_Local                   &,
+   GDCC::AST::Attribute                    &attr,
+   std::vector<GDCC::AST::Statement::CRef> &inits,
+   GDCC::AST::Object                       *obj)
+{
+   using namespace GDCC;
+
+   // Block-scope statics must have constant initializers, so they can be
+   // handled like file-scope statics.
+   if(obj->store == AST::Storage::Static)
+      return;
+
+   auto initExp = CC::ExpCreate_Obj(ctx.prog, obj, attr.namePos);
+   initExp = CC::Exp_Assign::Create(initExp, obj->init, obj->init->pos);
+
+   inits.emplace_back(AST::StatementCreate_Exp(initExp));
+}
+
+//
 // ParseDecl_Function (global)
 //
 static void ParseDecl_Function(GDCC::CC::ParserCtx const &ctx,
@@ -312,7 +351,20 @@ static void ParseDeclBase_Object(GDCC::CC::ParserCtx const &ctx, T &scope,
    {
       auto obj = GetDeclObj(scope, attr, true);
 
-      throw Core::ExceptStr(ctx.in.reget().pos, "initializer stub");
+      scope.add(attr.name, obj);
+
+      auto init = CC::Init::Get(ctx, scope, obj->type);
+
+      // If object is an array with indeterminate length, set the length.
+      if(obj->type->isTypeArray() && !obj->type->isTypeComplete())
+      {
+         obj->type = obj->type->getBaseType()
+            ->getTypeArray(init->width())
+            ->getTypeQual(obj->type->getQual());
+      }
+
+      obj->init = CC::Exp_Init::Create(std::move(init), false);
+      SetDeclObjInit(ctx, scope, attr, inits, obj);
    }
    else
       scope.add(attr.name, GetDeclObj(scope, attr, false));

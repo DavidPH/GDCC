@@ -6,16 +6,14 @@
 //
 //-----------------------------------------------------------------------------
 //
-// C unary "operator &" expressions.
+// C initializer expression.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__CC__Exp__Refer_H__
-#define GDCC__CC__Exp__Refer_H__
+#ifndef GDCC__CC__Exp__Init_H__
+#define GDCC__CC__Exp__Init_H__
 
-#include "../../CC/Exp.hpp"
-
-#include "../../AST/Exp/Unary.hpp"
+#include "../../AST/Exp.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -26,25 +24,35 @@ namespace GDCC
 {
    namespace CC
    {
+      class Init;
+
       //
-      // Exp_Refer
+      // Exp_Init
       //
-      class Exp_Refer : public AST::Exp_Unary
+      class Exp_Init : public AST::Exp
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Refer, GDCC::AST::Exp_Unary);
+         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Init, GDCC::AST::Exp);
 
       public:
-         // Create
-         static CRef Create(AST::Exp const *e, Core::Origin pos)
-            {return CRef(new This(e, pos));}
+         std::shared_ptr<Init> const init;
+         bool                  const skipZero;
+
+
+         static CRef Create(std::unique_ptr<Init> &&init, bool skipZero);
+
+         static CRef Create(std::unique_ptr<Init> &&init, bool skipZero,
+            Core::Origin pos);
 
       protected:
-         Exp_Refer(AST::Exp const *e, Core::Origin pos);
+         Exp_Init(std::unique_ptr<Init> &&init, bool skipZero, Core::Origin pos);
+         virtual ~Exp_Init();
 
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
 
          virtual IRExpCRef v_getIRExp() const;
+
+         virtual TypeCRef v_getType() const;
 
          virtual bool v_isEffect() const;
 
@@ -53,5 +61,5 @@ namespace GDCC
    }
 }
 
-#endif//GDCC__CC__Exp__Refer_H__
+#endif//GDCC__CC__Exp__Init_H__
 

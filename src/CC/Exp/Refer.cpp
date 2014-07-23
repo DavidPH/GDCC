@@ -59,6 +59,16 @@ namespace GDCC
       }
 
       //
+      // Exp_Refer::v_isEffect
+      //
+      bool Exp_Refer::v_isEffect() const
+      {
+         auto arg = exp->getArg();
+         if(!arg.data) return false;
+         return arg.data->isEffect();
+      }
+
+      //
       // Exp_Refer::v_isIRExp
       //
       bool Exp_Refer::v_isIRExp() const

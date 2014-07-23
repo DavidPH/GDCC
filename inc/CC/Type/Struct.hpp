@@ -52,8 +52,30 @@ namespace GDCC
             bool            const anon : 1;
          };
 
+         //
+         // Data
+         //
+         struct Data
+         {
+            Data(Core::String name, bool isUnion);
+
+            Core::Array<MemberData> memb;
+            Core::String      const name;
+
+            Core::FastU sizeAlign;
+            Core::FastU sizeBytes;
+            Core::FastU sizePoint;
+            Core::FastU sizeShift;
+            Core::FastU sizeWords;
+
+            bool       complete : 1;
+            bool const isStruct : 1;
+            bool const isUnion  : 1;
+         };
+
 
          // Type information.
+                 Data  const &getData()      const {return data;}
          virtual IR::Type     getIRType()    const;
          virtual Core::String getName()      const;
          virtual Core::FastU  getSizeAlign() const;
@@ -83,28 +105,6 @@ namespace GDCC
          static Ref CreateUnion(Core::String name);
 
       protected:
-         //
-         // Data
-         //
-         struct Data
-         {
-            Data(Core::String name, bool isUnion);
-
-            Core::Array<MemberData> memb;
-            Core::String      const name;
-
-            Core::FastU sizeAlign;
-            Core::FastU sizeBytes;
-            Core::FastU sizePoint;
-            Core::FastU sizeShift;
-            Core::FastU sizeWords;
-
-            bool       complete : 1;
-            bool const isStruct : 1;
-            bool const isUnion  : 1;
-         };
-
-
          Type_Struct(Core::String name, bool isUnion);
          virtual ~Type_Struct();
 

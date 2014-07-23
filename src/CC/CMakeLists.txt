@@ -29,6 +29,7 @@ add_library(gdcc-cc-lib
    Exp/Div.cpp
    Exp/Func.cpp
    Exp/GenSel.cpp
+   Exp/Init.cpp
    Exp/Lit.cpp
    Exp/Mem.cpp
    Exp/Mod.cpp
@@ -42,6 +43,7 @@ add_library(gdcc-cc-lib
    Exp/Str.cpp
    Exp/Sub.cpp
    Exp/Sub/Point.cpp
+   Init.cpp
    Parse.cpp
    Parse/AttrSpec.cpp
    Parse/DeclSpec.cpp

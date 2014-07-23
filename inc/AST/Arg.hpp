@@ -46,7 +46,8 @@ namespace GDCC
 
       public:
          Arg(Arg const &arg);
-         explicit Arg(Type const *type, Exp const *data = nullptr);
+         explicit Arg(Type const *type);
+         Arg(Type const *type, Exp const *data);
          Arg(Type const *type, IR::AddrBase base, Exp const *data = nullptr);
          ~Arg();
 

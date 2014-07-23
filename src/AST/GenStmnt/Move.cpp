@@ -113,6 +113,8 @@ template<> void GenStmnt_MovePartT<GDCC::IR::Arg_Lit>(
    {
       if(arg.data->isIRExp())
       {
+         arg.data->genStmnt(ctx);
+
          if(arg.type->getSizeWords() == 1)
          {
             ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(),
