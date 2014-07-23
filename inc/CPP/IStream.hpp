@@ -43,8 +43,8 @@ namespace GDCC
       {
       public:
          IStream(std::streambuf &buf, Core::String file, std::size_t line = 1) :
-            std::istream{&cbuf}, obuf{buf, file, line}, tbuf{obuf}, ebuf{tbuf},
-            cbuf{ebuf} {}
+            std::istream{&cbuf}, needHeader{false}, obuf{buf, file, line},
+            tbuf{obuf}, ebuf{tbuf}, cbuf{ebuf} {}
 
          void disableComments() {rdbuf(&obuf);}
 

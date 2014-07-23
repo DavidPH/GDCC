@@ -50,10 +50,11 @@ namespace GDCC
       //
       // Type constructor
       //
-      Type::Type() : qualNone{this}, qualNext{this}, qualPrev{this},
+      Type::Type() : quals{IR::AddrBase::Gen},
+         qualNone{this}, qualNext{this}, qualPrev{this},
          arrType{nullptr}, arrType0{nullptr}, avmType{nullptr},
-         avmType0{nullptr}, lvrType{nullptr}, ptrType{nullptr},
-         rvrType{nullptr}
+         avmType0{nullptr}, bitType{nullptr}, funType{nullptr},
+         lvrType{nullptr}, ptrType{nullptr}, rvrType{nullptr}
       {
          // We hold a reference to this, and so must not count that reference.
          // During destruction, the reference count will be decremented one last
@@ -65,11 +66,12 @@ namespace GDCC
       //
       // Type copy constructor
       //
-      Type::Type(Type const &type) : Super{type}, qualNone{type.qualNone},
+      Type::Type(Type const &type) : Super{type}, quals{IR::AddrBase::Gen},
+         qualNone{type.qualNone},
          qualNext{type.qualNext}, qualPrev{qualNext->qualPrev},
          arrType{nullptr}, arrType0{nullptr}, avmType{nullptr},
-         avmType0{nullptr}, lvrType{nullptr}, ptrType{nullptr},
-         rvrType{nullptr}
+         avmType0{nullptr}, bitType{nullptr}, funType{nullptr},
+         lvrType{nullptr}, ptrType{nullptr}, rvrType{nullptr}
       {
          qualNext->qualPrev = this;
          qualPrev->qualNext = this;
