@@ -13,8 +13,6 @@
 #include "CC/Parse.hpp"
 
 #include "CC/Exp/Assign.hpp"
-#include "CC/Exp/Init.hpp"
-#include "CC/Init.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Scope/Global.hpp"
 #include "CC/Statement.hpp"
@@ -353,17 +351,9 @@ static void ParseDeclBase_Object(GDCC::CC::ParserCtx const &ctx, T &scope,
 
       scope.add(attr.name, obj);
 
-      auto init = CC::Init::Get(ctx, scope, obj->type);
+      obj->init = GetExp_Init(ctx, scope, obj->type);
+      obj->type = obj->init->getType();
 
-      // If object is an array with indeterminate length, set the length.
-      if(obj->type->isTypeArray() && !obj->type->isTypeComplete())
-      {
-         obj->type = obj->type->getBaseType()
-            ->getTypeArray(init->width())
-            ->getTypeQual(obj->type->getQual());
-      }
-
-      obj->init = CC::Exp_Init::Create(std::move(init), false);
       SetDeclObjInit(ctx, scope, attr, inits, obj);
    }
    else

@@ -35,6 +35,11 @@ namespace GDCC
       struct GenStmntCtx;
    }
 
+   namespace Core
+   {
+      struct Token;
+   }
+
    namespace CC
    {
       class ParserCtx;
@@ -65,10 +70,10 @@ namespace GDCC
 
          virtual Core::FastU width() const;
 
-         Core::Origin          pos;
-         AST::Exp::CPtr        value;
-         AST::Type::CRef const type;
-         Core::FastU     const offset;
+         Core::Origin      pos;
+         AST::Exp::CPtr    value;
+         AST::Type::CRef   type;
+         Core::FastU const offset;
 
 
          // Creates an initializer hierarchy for a given type.
@@ -77,8 +82,7 @@ namespace GDCC
 
          static Ptr Create(AST::Type const *type, Core::FastU offset, Core::Origin pos);
 
-         // Creates and parses an initializer.
-         static Ptr Get(ParserCtx const &ctx, Scope &scope, AST::Type const *type);
+         static bool IsInitString(Core::Token const &tok, AST::Type const *type);
 
       protected:
          Init(AST::Type const *type_, Core::FastU offset_, Core::Origin pos_) :
@@ -95,7 +99,6 @@ namespace GDCC
 
          virtual void v_parseB(ParserCtx const &ctx, Scope &scope) = 0;
          virtual void v_parseO(ParserCtx const &ctx, Scope &scope);
-
       };
 
       //
@@ -131,6 +134,8 @@ namespace GDCC
 
       private:
          std::pair<std::size_t, Init *> getDes(ParserCtx const &ctx, Scope &scope);
+
+         void parseString(ParserCtx const &ctx, Scope &scope);
       };
 
       //

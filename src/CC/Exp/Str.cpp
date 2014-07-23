@@ -12,8 +12,8 @@
 
 #include "CC/Exp.hpp"
 
+#include "CC/Parse.hpp"
 #include "CC/Scope/Global.hpp"
-#include "CC/Scope/Local.hpp"
 #include "CC/Type.hpp"
 
 #include "AST/Attribute.hpp"
@@ -34,20 +34,19 @@
 //
 // CreateStr
 //
-template<typename StrLen, typename StrVal>
-static GDCC::AST::Exp::CRef CreateStr(GDCC::IR::Program &prog,
-   GDCC::CC::Scope &scope, GDCC::Core::String str, GDCC::Core::Origin pos,
-   GDCC::AST::Type const *type, StrLen const &strLen, StrVal const &strVal)
+static GDCC::AST::Exp::CRef CreateStr(
+   GDCC::Core::Array<GDCC::IR::Value> &&val,
+   GDCC::IR::Program                   &prog,
+   GDCC::CC::Scope                     &scope,
+   GDCC::Core::Origin                   pos,
+   GDCC::AST::Type               const *type)
 {
    using namespace GDCC;
-
-   // Calculate string length.
-   auto len = strLen(str);
 
    // Set literal object's attributes.
    AST::Attribute attr;
    attr.namePos = pos;
-   attr.type    = type->getTypeQual(AST::QualCons)->getTypeArray(len);
+   attr.type    = type->getTypeQual(AST::QualCons)->getTypeArray(val.size());
 
    // Create the object to store the string.
    auto obj = scope.global.getObject(attr);
@@ -58,99 +57,17 @@ static GDCC::AST::Exp::CRef CreateStr(GDCC::IR::Program &prog,
    // String literals are definitions.
    obj->defin = true;
 
-   // Convert string to IR value.
+   // Set object's initializer.
    auto initType = type->getIRType().tFixed;
 
-   std::vector<IR::Value_Fixed> val; val.reserve(len);
-   strVal(str, val, initType);
-
-   IR::Value_Multi initVal{
-      Core::Array<IR::Value>(Core::Move, val.begin(), val.end()),
+   IR::Value_Multi initVal{std::move(val),
       IR::Type_Multi(Core::Array<IR::Type>(val.size(), initType))};
 
-   // Set object's initializer.
    auto initExp = IR::ExpCreate_Value(std::move(initVal), pos);
    obj->init = AST::ExpCreate_IRExp(initExp, attr.type, pos);
 
    // The expression's result is the newly created object.
    return CC::ExpCreate_Obj(prog, obj, pos);
-}
-
-//
-// StrLen_ChrU08
-//
-static std::size_t StrLen_ChrU08(GDCC::Core::String str)
-{
-   return str.size() + 1;
-}
-
-//
-// StrLen_ChrU16
-//
-static std::size_t StrLen_ChrU16(GDCC::Core::String str)
-{
-   return str.size16() + 1;
-}
-
-//
-// StrLen_ChrU32
-//
-static std::size_t StrLen_ChrU32(GDCC::Core::String str)
-{
-   return str.size32() + 1;
-}
-
-//
-// StrVal_ChrU08
-//
-static void StrVal_ChrU08(GDCC::Core::String str,
-   std::vector<GDCC::IR::Value_Fixed> &val, GDCC::IR::Type_Fixed const &type)
-{
-   for(unsigned char c : str)
-      val.emplace_back(c, type);
-
-   val.emplace_back(0, type);
-}
-
-//
-// StrVal_ChrU16
-//
-static void StrVal_ChrU16(GDCC::Core::String str,
-   std::vector<GDCC::IR::Value_Fixed> &val, GDCC::IR::Type_Fixed const &type)
-{
-   for(auto itr = str.begin(), end = str.end(); itr != end;)
-   {
-      char32_t c;
-      std::tie(c, itr) = GDCC::Core::Str8To32(itr, end);
-
-      if(c <= 0xFFFF)
-         val.emplace_back(c, type);
-      else
-      {
-         c -= 0x10000;
-         val.emplace_back((c >> 10 & 0x3FF) | 0xD800, type);
-         val.emplace_back((c       & 0x3FF) | 0xDC00, type);
-      }
-   }
-
-   val.emplace_back(0, type);
-}
-
-//
-// StrVal_ChrU32
-//
-static void StrVal_ChrU32(GDCC::Core::String str,
-   std::vector<GDCC::IR::Value_Fixed> &val, GDCC::IR::Type_Fixed const &type)
-{
-   for(auto itr = str.begin(), end = str.end(); itr != end;)
-   {
-      char32_t c;
-      std::tie(c, itr) = GDCC::Core::Str8To32(itr, end);
-
-      val.emplace_back(c, type);
-   }
-
-   val.emplace_back(0, type);
 }
 
 
@@ -196,8 +113,7 @@ namespace GDCC
       AST::Exp::CRef ExpCreate_StrU08(IR::Program &prog, Scope &scope,
          Core::String str, Core::Origin pos)
       {
-         return CreateStr(prog, scope, str, pos,
-            TypeChar, StrLen_ChrU08, StrVal_ChrU08);
+         return CreateStr(GetStrU08(str), prog, scope, pos, TypeChar);
       }
 
       //
@@ -206,8 +122,7 @@ namespace GDCC
       AST::Exp::CRef ExpCreate_StrU16(IR::Program &prog, Scope &scope,
          Core::String str, Core::Origin pos)
       {
-         return CreateStr(prog, scope, str, pos,
-            TypeIntegPrUH, StrLen_ChrU16, StrVal_ChrU16);
+         return CreateStr(GetStrU16(str), prog, scope, pos, TypeIntegPrUH);
       }
 
       //
@@ -216,8 +131,7 @@ namespace GDCC
       AST::Exp::CRef ExpCreate_StrU32(IR::Program &prog, Scope &scope,
          Core::String str, Core::Origin pos)
       {
-         return CreateStr(prog, scope, str, pos,
-            TypeIntegPrU, StrLen_ChrU32, StrVal_ChrU32);
+         return CreateStr(GetStrU32(str), prog, scope, pos, TypeIntegPrU);
       }
 
       //
@@ -226,8 +140,7 @@ namespace GDCC
       AST::Exp::CRef ExpCreate_String(IR::Program &prog, Scope &scope,
          Core::String str, Core::Origin pos)
       {
-         return CreateStr(prog, scope, str, pos,
-            TypeChar, StrLen_ChrU32, StrVal_ChrU32);
+         return CreateStr(GetString(str), prog, scope, pos, TypeChar);
       }
    }
 }

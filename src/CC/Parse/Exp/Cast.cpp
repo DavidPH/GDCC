@@ -35,12 +35,17 @@
 // GetExp_CLit (global)
 //
 static GDCC::AST::Exp::CRef GetExp_CLit(
-   GDCC::CC::ParserCtx const &,
-   GDCC::CC::Scope_Global    &,
+   GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope_Global    &scope,
    GDCC::AST::Attribute      &attr,
-   GDCC::AST::Exp      const *)
+   GDCC::AST::Exp      const *init)
 {
-   throw GDCC::Core::ExceptStr(attr.namePos, "file-scope compound literal stub");
+   auto obj = scope.getObject(attr);
+
+   obj->defin = true;
+   obj->init  = init;
+
+   return GDCC::CC::ExpCreate_Obj(ctx.prog, obj, attr.namePos);
 }
 
 //
@@ -104,25 +109,15 @@ namespace GDCC
          AST::Attribute attr;
 
          attr.namePos = ctx.in.peek().pos;
-         attr.type    = type;
 
-         auto init = Init::Get(ctx, scope, attr.type);
-
-         // Infer array length.
-         if(attr.type->isTypeArray() && !attr.type->isTypeComplete())
-         {
-            attr.type = attr.type->getBaseType()
-               ->getTypeArray(init->width())
-               ->getTypeQual(attr.type->getQual());
-         }
-
-         auto initExp = Exp_Init::Create(std::move(init), false);
+         auto init = GetExp_Init(ctx, scope, type);
+         attr.type = init->getType();
 
          if(auto s = dynamic_cast<Scope_Global *>(&scope))
-            return ::GetExp_CLit(ctx, *s, attr, initExp);
+            return ::GetExp_CLit(ctx, *s, attr, init);
 
          if(auto s = dynamic_cast<Scope_Local *>(&scope))
-            return ::GetExp_CLit(ctx, *s, attr, initExp);
+            return ::GetExp_CLit(ctx, *s, attr, init);
 
          throw Core::ExceptStr(attr.namePos, "invalid scope for compound literal");
       }

@@ -31,8 +31,11 @@ namespace GDCC
 
    namespace Core
    {
+      template<typename T> class Array;
       template<typename T> class CounterRef;
       struct Origin;
+      class String;
+      struct Token;
       class TokenStream;
    }
 
@@ -44,6 +47,7 @@ namespace GDCC
    namespace IR
    {
       class Program;
+      class Value;
    }
 
    namespace CC
@@ -144,6 +148,9 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> GetExp_CLit(ParserCtx const &ctx, Scope &scope,
          AST::Type const *type);
 
+      Core::CounterRef<AST::Exp const> GetExp_Init(ParserCtx const &ctx, Scope &scope,
+         AST::Type const *type);
+
       Core::CounterRef<AST::Exp const> GetExp_Prim(ParserCtx const &ctx, Scope &scope);
       Core::CounterRef<AST::Exp const> GetExp_Post(ParserCtx const &ctx, Scope &scope);
       Core::CounterRef<AST::Exp const> GetExp_Post(ParserCtx const &ctx, Scope &scope,
@@ -166,6 +173,12 @@ namespace GDCC
 
       Core::CounterRef<AST::Statement const> GetStatement(ParserCtx const &ctx,
          Scope_Local &scope);
+
+      Core::Array<IR::Value> GetStrU08(Core::String str);
+      Core::Array<IR::Value> GetStrU16(Core::String str);
+      Core::Array<IR::Value> GetStrU32(Core::String str);
+      Core::Array<IR::Value> GetString(Core::String str);
+      Core::Array<IR::Value> GetString(Core::Token const &tok);
 
       Core::CounterRef<AST::Type const> GetType(ParserCtx const &ctx, Scope &scope);
 

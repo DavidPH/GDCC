@@ -202,6 +202,13 @@ namespace GDCC
 
          if(value)
             value = ExpPromo_Assign(type, value, value->pos);
+
+         // Infer array length.
+         if(dynamic_cast<Init_Array0 *>(this))
+         {
+            type = type->getBaseType()->getTypeArray(width())
+               ->getTypeQual(type->getQual());
+         }
       }
 
       //
@@ -273,13 +280,22 @@ namespace GDCC
       }
 
       //
-      // Init::Get
+      // Init::IsInitString
       //
-      Init::Ptr Init::Get(ParserCtx const &ctx, Scope &scope, AST::Type const *type)
+      bool Init::IsInitString(Core::Token const &tok, AST::Type const *type)
       {
-         auto init = Create(type, ctx.in.peek().pos);
-         init->parse(ctx, scope);
-         return init;
+         if(!type->isTypeArray()) return false;
+
+         auto base = type->getBaseType()->getTypeQual();
+
+         if(tok.tok == Core::TOK_String && base->isCTypeChar()) return true;
+         if(tok.tok == Core::TOK_StrU08 && base->isCTypeChar()) return true;
+
+         if(tok.tok == Core::TOK_StrWid && base == TypeIntegPrU)  return true;
+         if(tok.tok == Core::TOK_StrU16 && base == TypeIntegPrUH) return true;
+         if(tok.tok == Core::TOK_StrU32 && base == TypeIntegPrU)  return true;
+
+         return false;
       }
 
       //
@@ -361,14 +377,35 @@ namespace GDCC
       }
 
       //
+      // Init_Aggregate::parseString
+      //
+      void Init_Aggregate::parseString(ParserCtx const &ctx, Scope &)
+      {
+         auto index = firstSub();
+         for(auto &c : GetString(ctx.in.get()))
+         {
+            if(auto sub = getSub(index))
+            {
+               auto cIR = IR::ExpCreate_Value(std::move(c), pos);
+               sub->value = AST::ExpCreate_IRExp(cIR, sub->type, pos);
+            }
+
+            index = nextSub(index);
+         }
+      }
+
+      //
       // Init_Aggregate::v_parseB
       //
       void Init_Aggregate::v_parseB(ParserCtx const &ctx, Scope &scope)
       {
          // Bracketed aggregate initializer.
 
-         Init       *sub;
-         std::size_t index = firstSub();
+         if(IsInitString(ctx.in.peek(), type))
+            return parseString(ctx, scope);
+
+         Init *sub;
+         auto  index = firstSub();
 
          do
          {
@@ -396,7 +433,10 @@ namespace GDCC
       {
          // Unbracketed aggregate initializer.
 
-         std::size_t index = firstSub();
+         if(IsInitString(ctx.in.peek(), type))
+            return parseString(ctx, scope);
+
+         auto index = firstSub();
 
          if(auto sub = getSub(index)) do
          {

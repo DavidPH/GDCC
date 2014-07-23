@@ -51,12 +51,14 @@ add_library(gdcc-cc-lib
    Parse/Declarator.cpp
    Parse/Exp.cpp
    Parse/Exp/Cast.cpp
+   Parse/Exp/Init.cpp
    Parse/Exp/Post.cpp
    Parse/Exp/Prim.cpp
    Parse/Exp/Unar.cpp
    Parse/SpecQual.cpp
    Parse/Statement.cpp
    Parse/StaticAssert.cpp
+   Parse/String.cpp
    Parse/TypeQual.cpp
    Parse/TypeSpec.cpp
    Scope.cpp
