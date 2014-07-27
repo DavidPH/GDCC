@@ -27,6 +27,7 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
+#include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 
 
@@ -48,7 +49,15 @@ static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::Scope_Global &scope,
    else
       attr.linka = GetLinkageExt(attr.linka);
 
-   return scope.getFunction(attr);
+   auto fn = scope.getFunction(attr);
+
+   // Set address, if one provided.
+   if(attr.addrI)
+      fn->valueInt = attr.addrI;
+   else if(attr.addrS)
+      fn->valueStr = attr.addrS;
+
+   return fn;
 }
 
 //
@@ -68,7 +77,15 @@ static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::Scope_Local &scope,
       throw Core::ExceptStr(attr.namePos,
          "local scope function not extern or static");
 
-   return scope.global.getFunction(attr);
+   auto fn = scope.global.getFunction(attr);
+
+   // Set address, if one provided.
+   if(attr.addrI)
+      fn->valueInt = attr.addrI;
+   else if(attr.addrS)
+      fn->valueStr = attr.addrS;
+
+   return fn;
 }
 
 //
@@ -103,6 +120,10 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Global &scope,
 
       obj->defin = true;
    }
+
+   // Set address, if one provided.
+   if(attr.addrI)
+      obj->value = attr.addrI;
 
    return obj;
 }
@@ -156,6 +177,10 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Local &scope,
    // Local scope objects with linkage must not have an initializer.
    else if(init)
       throw Core::ExceptStr(attr.namePos, "linkage local with initializer");
+
+   // Set address, if one provided.
+   if(attr.addrI)
+      obj->value = attr.addrI;
 
    return obj;
 }

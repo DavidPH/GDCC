@@ -16,8 +16,8 @@
 
 #include "Core/Token.hpp"
 
-#include "IR/Addr.hpp"
 #include "IR/CallType.hpp"
+#include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 
 
@@ -33,12 +33,14 @@ namespace GDCC
       // Attribute constructor
       //
       Attribute::Attribute() :
-         space  {IR::AddrBase::Gen, Core::STRNULL},
+         addrI  {nullptr},
+         addrS  {Core::STRNULL},
          callt  {IR::CallType::None},
          linka  {IR::Linkage::None},
          name   {Core::STRNULL},
          namePos{Core::STRNULL, 0},
          param  {},
+         space  {IR::AddrBase::Gen, Core::STRNULL},
          type   {nullptr},
 
          funcInline  {false},
@@ -54,6 +56,16 @@ namespace GDCC
          storeThread{false}
       {
       }
+
+      //
+      // Attribute copy constructor
+      //
+      Attribute::Attribute(Attribute const &) = default;
+
+      //
+      // Attribute move constructor
+      //
+      Attribute::Attribute(Attribute &&) = default;
 
       //
       // Attribute destructor

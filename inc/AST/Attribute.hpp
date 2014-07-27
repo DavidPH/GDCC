@@ -35,6 +35,8 @@ namespace GDCC
    {
       enum class CallType;
       enum class Linkage;
+
+      class Exp;
    }
 
    namespace AST
@@ -48,17 +50,21 @@ namespace GDCC
       {
       public:
          Attribute();
+         Attribute(Attribute const &attr);
+         Attribute(Attribute &&attr);
          ~Attribute();
 
          void setName(Core::Token const &tok);
 
-         IR::AddrSpace                space;
-         IR::CallType                 callt;
-         IR::Linkage                  linka;
-         Core::String                 name;
-         Core::Origin                 namePos;
-         Core::Array<Attribute>       param;
-         Core::CounterPtr<Type const> type;
+         Core::CounterPtr<IR::Exp const> addrI;
+         Core::String                    addrS;
+         IR::CallType                    callt;
+         IR::Linkage                     linka;
+         Core::String                    name;
+         Core::Origin                    namePos;
+         Core::Array<Attribute>          param;
+         IR::AddrSpace                   space;
+         Core::CounterPtr<Type const>    type;
 
          bool funcInline   : 1;
          bool funcNoParam  : 1;

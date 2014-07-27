@@ -30,6 +30,7 @@
 #include "Core/TokenStream.hpp"
 
 #include "IR/Addr.hpp"
+#include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 
 
@@ -100,6 +101,9 @@ namespace GDCC
 
          if(!attr.storeExt)
             space->defin = true;
+
+         if(attr.addrI)
+            space->value = attr.addrI;
 
          scope.add(attr.name, space);
       }

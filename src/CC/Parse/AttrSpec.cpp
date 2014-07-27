@@ -10,6 +10,9 @@
 //
 // Since C has no attribute syntax, one based on C++11's is used instead.
 //
+// attribute-specifier-list:
+//    attribute-specifier attribute-specifier-list(opt)
+//
 // attribute-specifier:
 //    [ [ attribute-list ] ]
 //    <__attribute__> ( ( attribute-list ) )
@@ -19,7 +22,11 @@
 //    attribute-list , attribute(opt)
 //
 // attribute:
-//    identifier attribute-argument-clause(opt)
+//    attribute-name attribute-argument-clause(opt)
+//
+// attribute-name:
+//    identifier
+//    keyword
 //
 // attribute-argument-clause:
 //    ( balanced-token-seq )
@@ -39,17 +46,52 @@
 #include "CC/Parse.hpp"
 
 #include "AST/Attribute.hpp"
+#include "AST/Exp.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "IR/CallType.hpp"
+#include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
 //
+
+//
+// ParseAttr_address
+//
+// attribute-address:
+//    attribute-address-name ( constant-expression )
+//    attribute-address-name ( string-literal )
+//
+// attribute-address-name:
+//    <address>
+//    <__address>
+//
+static void ParseAttr_address(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope, GDCC::AST::Attribute &attr)
+{
+   using namespace GDCC;
+
+   // (
+   if(!ctx.in.drop(Core::TOK_ParenO))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+   // string-literal
+   if(ctx.in.peek().isTokString())
+      attr.addrS = ctx.in.get().str;
+
+   // constant-expression
+   else
+      attr.addrI = CC::GetExp_Cond(ctx, scope)->getIRExp();
+
+   // )
+   if(!ctx.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+}
 
 //
 // ParseAttr_call
@@ -197,6 +239,9 @@ namespace GDCC
          ctx.in.get();
          switch(name.str)
          {
+         case Core::STR_address: case Core::STR___address:
+            ParseAttr_address(ctx, scope, attr); break;
+
          case Core::STR_call: case Core::STR___call:
             ParseAttr_call(ctx, scope, attr); break;
 
