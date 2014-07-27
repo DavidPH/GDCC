@@ -182,6 +182,8 @@ namespace GDCC
 
       Core::CounterRef<AST::Type const> GetType(ParserCtx const &ctx, Scope &scope);
 
+      bool IsAddrDecl(ParserCtx const &ctx, Scope &scope);
+
       bool IsAttrSpec(ParserCtx const &ctx, Scope &scope);
 
       bool IsDecl(ParserCtx const &ctx, Scope &scope);
@@ -201,6 +203,8 @@ namespace GDCC
       bool IsTypeQual(ParserCtx const &ctx, Scope &scope);
 
       bool IsTypeSpec(ParserCtx const &ctx, Scope &scope);
+
+      void ParseAddrDecl(ParserCtx const &ctx, Scope &scope);
 
       void ParseAttr(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
       void ParseAttrSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);

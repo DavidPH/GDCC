@@ -317,6 +317,7 @@ namespace GDCC
             if(in.defin)
             {
                out.initi = in.initi;
+               out.linka = in.linka;
                out.space = in.space;
                out.value = in.value;
                out.words = in.words;
@@ -330,6 +331,7 @@ namespace GDCC
                if(out.space.base == AddrBase::Cpy) out.space = in.space;
 
                if(!out.initi) out.initi = in.initi;
+               if(!out.linka) out.linka = in.linka;
                if(!out.value) out.value = in.value;
                if(!out.words) out.words = in.words;
 
@@ -348,6 +350,7 @@ namespace GDCC
          {
             if(in.defin)
             {
+               out.linka = in.linka;
                out.value = in.value;
                out.words = in.words;
 
@@ -356,6 +359,7 @@ namespace GDCC
             }
             else
             {
+               if(!out.linka) out.linka = in.linka;
                if(!out.value) out.value = in.value;
                if(!out.words) out.words = in.words;
 

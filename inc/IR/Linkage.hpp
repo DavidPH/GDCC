@@ -58,6 +58,10 @@ namespace GDCC
       std::ostream &operator << (std::ostream &out, Linkage in);
 
       IArchive &operator >> (IArchive &in, Linkage &out);
+
+      Linkage GetLinkageExt(Linkage linka);
+
+      Linkage GetLinkageInt(Linkage linka);
    }
 }
 

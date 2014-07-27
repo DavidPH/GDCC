@@ -35,37 +35,6 @@
 //
 
 //
-// GetLinkageExt
-//
-static GDCC::IR::Linkage GetLinkageExt(GDCC::IR::Linkage base)
-{
-   // If an explicit linkage was specified with attributes, keep it.
-   if(base == GDCC::IR::Linkage::None)
-      return GDCC::IR::Linkage::ExtC;
-
-   return base;
-}
-
-//
-// GetLinkageInt
-//
-static GDCC::IR::Linkage GetLinkageInt(GDCC::IR::Linkage base)
-{
-   // Convert language linkage to internal variant.
-   switch(base)
-   {
-   case GDCC::IR::Linkage::None: return GDCC::IR::Linkage::IntC;
-
-   case GDCC::IR::Linkage::ExtACS: return GDCC::IR::Linkage::IntC;
-   case GDCC::IR::Linkage::ExtC:   return GDCC::IR::Linkage::IntC;
-   case GDCC::IR::Linkage::ExtCXX: return GDCC::IR::Linkage::IntCXX;
-   case GDCC::IR::Linkage::ExtDS:  return GDCC::IR::Linkage::IntCXX;
-
-   default: return base;
-   }
-}
-
-//
 // GetDeclFunc (global)
 //
 static GDCC::AST::Function::Ref GetDeclFunc(GDCC::CC::Scope_Global &scope,
@@ -124,9 +93,6 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Global &scope,
 
    // Fetch/generate object.
    auto obj = scope.getObject(attr);
-
-   // File scope objects are always static storage duration.
-   obj->store = AST::Storage::Static;
 
    // If not marked extern, then this is a definition. (Do not mark if init.)
    if(!attr.storeExt && !init)
@@ -374,6 +340,11 @@ static GDCC::AST::Statement::CRef GetDeclBase(GDCC::CC::ParserCtx const &ctx,
    // declaration:
    //    declaration-specifiers init-declarator-list(opt) ;
    //    static_assert-declaration
+   //    address-space-decalration
+
+   // address-space-declaration
+   if(CC::IsAddrDecl(ctx, scope))
+      return CC::ParseAddrDecl(ctx, scope), AST::StatementCreate_Empty(pos);
 
    // static_assert-declaration
    if(CC::IsStaticAssert(ctx, scope))
@@ -383,6 +354,7 @@ static GDCC::AST::Statement::CRef GetDeclBase(GDCC::CC::ParserCtx const &ctx,
 
    // declaration-specifiers
    AST::Attribute attrBase;
+   attrBase.linka = IR::Linkage::ExtC;
    CC::ParseDeclSpec(ctx, scope, attrBase);
 
    // init-declarator-list:
@@ -462,7 +434,10 @@ namespace GDCC
       //
       bool IsDecl(ParserCtx const &ctx, Scope &scope)
       {
-         return IsStaticAssert(ctx, scope) || IsDeclSpec(ctx, scope);
+         return
+            IsAddrDecl(ctx, scope) ||
+            IsStaticAssert(ctx, scope) ||
+            IsDeclSpec(ctx, scope);
       }
    }
 }

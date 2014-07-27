@@ -94,6 +94,38 @@ namespace GDCC
             throw EXIT_FAILURE;
          }
       }
+
+      //
+      // GetLinkageExt
+      //
+      Linkage GetLinkageExt(Linkage linka)
+      {
+         switch(linka)
+         {
+         case Linkage::IntC:   return Linkage::ExtC;
+         case Linkage::IntCXX: return Linkage::ExtCXX;
+
+         default: return linka;
+         }
+      }
+
+      //
+      // GetLinkageInt
+      //
+      Linkage GetLinkageInt(Linkage linka)
+      {
+         switch(linka)
+         {
+         case Linkage::ExtACS: return Linkage::IntC;
+         case Linkage::ExtASM: return Linkage::IntC;
+         case Linkage::ExtAXX: return Linkage::IntCXX;
+         case Linkage::ExtC:   return Linkage::IntC;
+         case Linkage::ExtCXX: return Linkage::IntCXX;
+         case Linkage::ExtDS:  return Linkage::IntCXX;
+
+         default: return linka;
+         }
+      }
    }
 }
 

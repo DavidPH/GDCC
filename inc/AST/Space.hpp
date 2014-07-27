@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -29,6 +29,7 @@ namespace GDCC
       enum class Linkage;
 
       class Exp;
+      class Program;
    }
 
    namespace AST
@@ -45,6 +46,8 @@ namespace GDCC
          using IRExpCPtr = Core::CounterPtr<IR::Exp const>;
 
       public:
+         void genSpace(IR::Program &prog) const;
+
          Core::String glyph;
          IR::Linkage  linka;
          Core::String name;

@@ -17,6 +17,8 @@
 #include "../Core/Counter.hpp"
 #include "../Core/Origin.hpp"
 
+#include "../IR/Addr.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -24,6 +26,11 @@
 
 namespace GDCC
 {
+   namespace Core
+   {
+      struct Token;
+   }
+
    namespace IR
    {
       enum class CallType;
@@ -43,6 +50,9 @@ namespace GDCC
          Attribute();
          ~Attribute();
 
+         void setName(Core::Token const &tok);
+
+         IR::AddrSpace                space;
          IR::CallType                 callt;
          IR::Linkage                  linka;
          Core::String                 name;

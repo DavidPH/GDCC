@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,6 +15,7 @@
 #include "IR/Addr.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+#include "IR/Program.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -44,6 +45,32 @@ namespace GDCC
       //
       Space::~Space()
       {
+      }
+
+      //
+      // Space::genSpace
+      //
+      void Space::genSpace(IR::Program &prog) const
+      {
+         IR::Space sp{{space, glyph}};
+
+         sp.linka = linka;
+
+         sp.defin = defin;
+
+         if(value)
+         {
+            auto val = value->getValue();
+            if(val.v == IR::ValueBase::Fixed)
+               sp.value = number_cast<Core::FastU>(val.vFixed.value);
+            else
+               sp.alloc = true;
+         }
+         else
+            sp.alloc = true;
+
+         // Merge into existing space (if any).
+         prog.mergeSpace(prog.getSpace({space, glyph}), std::move(sp));
       }
 
       //

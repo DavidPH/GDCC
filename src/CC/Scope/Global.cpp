@@ -159,6 +159,9 @@ namespace GDCC
 
          for(auto &itr : globalFunc)
             itr.second->genFunctionDefn(prog);
+
+         for(auto &itr : globalSpace)
+            itr.second->genSpace(prog);
       }
 
       //
@@ -199,6 +202,27 @@ namespace GDCC
          globalObj.emplace(glyph, obj);
 
          return obj;
+      }
+
+      //
+      // Scope_Globa::getSpace
+      //
+      AST::Space::Ref Scope_Global::getSpace(AST::Attribute const &attr)
+      {
+         auto glyph = genGlyphObj(attr.name, attr.linka);
+
+         auto itr = globalSpace.find(glyph);
+         if(itr == globalSpace.end())
+         {
+            auto space = AST::Space::Create(attr.name, glyph);
+
+            space->linka = attr.linka;
+            space->space = attr.space.base;
+
+            itr = globalSpace.emplace(glyph, space).first;
+         }
+
+         return itr->second;
       }
    }
 }

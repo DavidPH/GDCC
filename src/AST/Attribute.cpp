@@ -14,6 +14,9 @@
 
 #include "AST/Type.hpp"
 
+#include "Core/Token.hpp"
+
+#include "IR/Addr.hpp"
 #include "IR/CallType.hpp"
 #include "IR/Linkage.hpp"
 
@@ -30,6 +33,7 @@ namespace GDCC
       // Attribute constructor
       //
       Attribute::Attribute() :
+         space  {IR::AddrBase::Gen, Core::STRNULL},
          callt  {IR::CallType::None},
          linka  {IR::Linkage::None},
          name   {Core::STRNULL},
@@ -56,6 +60,15 @@ namespace GDCC
       //
       Attribute::~Attribute()
       {
+      }
+
+      //
+      // Attribute::setName
+      //
+      void Attribute::setName(Core::Token const &tok)
+      {
+         name    = tok.str;
+         namePos = tok.pos;
       }
    }
 }

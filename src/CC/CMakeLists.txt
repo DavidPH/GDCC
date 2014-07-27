@@ -45,6 +45,7 @@ add_library(gdcc-cc-lib
    Exp/Sub/Point.cpp
    Init.cpp
    Parse.cpp
+   Parse/AddrDecl.cpp
    Parse/AttrSpec.cpp
    Parse/DeclSpec.cpp
    Parse/Declaration.cpp
