@@ -193,15 +193,20 @@ namespace GDCC
       AST::Object::Ref Scope_Global::getObject(AST::Attribute const &attr)
       {
          auto glyph = genGlyphObj(attr.name, attr.linka);
-         auto obj   = AST::Object::Create(attr.name, glyph);
 
-         obj->linka = attr.linka;
-         obj->store = AST::Storage::Static;
-         obj->type  = attr.type;
+         auto itr = globalObj.find(glyph);
+         if(itr == globalObj.end())
+         {
+            auto obj = AST::Object::Create(attr.name, glyph);
 
-         globalObj.emplace(glyph, obj);
+            obj->linka = attr.linka;
+            obj->store = AST::Storage::Static;
+            obj->type  = attr.type;
 
-         return obj;
+            itr = globalObj.emplace(glyph, obj).first;
+         }
+
+         return itr->second;
       }
 
       //
