@@ -51,6 +51,8 @@ namespace GDCC
 
          virtual AST::Arg v_getArg() const;
 
+         virtual IRExpCRef v_getIRExp() const;
+
          virtual ObjectRef v_getObject() const;
 
          virtual TypeCRef v_getType() const;

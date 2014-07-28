@@ -74,6 +74,20 @@ namespace GDCC
       }
 
       //
+      // Exp_Obj::v_getIRExp
+      //
+      IR::Exp::CRef Exp_Obj::v_getIRExp() const
+      {
+         if(!obj->type)
+            throw Core::ExceptStr(pos, "object has no type");
+
+         if(!obj->type->getQualCons() || !obj->init)
+            return Super::v_getIRExp();
+
+         return obj->init->getIRExp();
+      }
+
+      //
       // Exp_Obj::v_getObject
       //
       AST::Object::Ref Exp_Obj::v_getObject() const
@@ -108,7 +122,10 @@ namespace GDCC
       //
       bool Exp_Obj::v_isIRExp() const
       {
-         return false;
+         if(!obj->type)
+            return false;
+
+         return obj->type->getQualCons() && obj->init && obj->init->isIRExp();
       }
 
       //
