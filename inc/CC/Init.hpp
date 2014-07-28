@@ -17,6 +17,7 @@
 #include "../AST/Type.hpp"
 
 #include "../Core/Array.hpp"
+#include "../Core/Token.hpp"
 
 #include "../IR/Exp.hpp"
 
@@ -47,6 +48,35 @@ namespace GDCC
       class Type_Struct;
 
       //
+      // InitRawDes
+      //
+      class InitRawDes
+      {
+      public:
+         InitRawDes(Core::FastU i) : desigStr{Core::STRNULL}, desigInt{i} {}
+         InitRawDes(Core::String s) : desigStr{s}, desigInt{0} {}
+
+         Core::String desigStr;
+         Core::FastU  desigInt;
+      };
+
+      //
+      // InitRaw
+      //
+      class InitRaw
+      {
+      public:
+         InitRaw(Core::Origin const &pos_) :
+            valueTok{pos_, Core::STRNULL, Core::TOK_EOF} {}
+
+         Core::Array<InitRawDes> desig;
+
+         AST::Exp::CPtr       valueExp;
+         Core::Token          valueTok;
+         Core::Array<InitRaw> valueSub;
+      };
+
+      //
       // Init
       //
       class Init
@@ -66,9 +96,9 @@ namespace GDCC
 
          bool isIRExp() const;
 
-         void parse(ParserCtx const &ctx, Scope &scope);
-
-         virtual Core::FastU width() const;
+         void parse(InitRaw const &raw, ParserCtx const &ctx, Scope &scope);
+         std::size_t parse(InitRaw const &raw, std::size_t rawIdx,
+            ParserCtx const &ctx, Scope &scope);
 
          Core::Origin      pos;
          AST::Exp::CPtr    value;
@@ -77,10 +107,10 @@ namespace GDCC
 
 
          // Creates an initializer hierarchy for a given type.
-         static Ptr Create(AST::Type const *type, Core::Origin pos)
-            {return Create(type, 0, pos);}
-
          static Ptr Create(AST::Type const *type, Core::FastU offset, Core::Origin pos);
+
+         static Ptr Create(InitRaw const &raw, ParserCtx const &ctx,
+            Scope &scope, AST::Type const *type);
 
          static bool IsInitString(Core::Token const &tok, AST::Type const *type);
 
@@ -97,8 +127,16 @@ namespace GDCC
 
          virtual bool v_isIRExp() const;
 
-         virtual void v_parseB(ParserCtx const &ctx, Scope &scope) = 0;
-         virtual void v_parseO(ParserCtx const &ctx, Scope &scope);
+         virtual void v_parseBlock(InitRaw const &raw, ParserCtx const &ctx,
+           Scope &scope) = 0;
+
+         virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
+            ParserCtx const &ctx, Scope &scope) = 0;
+
+         virtual void v_parseSingle(InitRaw const &raw, ParserCtx const &ctx,
+            Scope &scope);
+
+         virtual void v_parseString(Core::Token const &tok);
       };
 
       //
@@ -121,7 +159,7 @@ namespace GDCC
          Init_Aggregate(AST::Type const *type_, Core::FastU offset_,
             Core::Origin pos_) : Init{type_, offset_, pos_} {}
 
-         virtual std::size_t findSub(Core::String name) const;
+         virtual std::size_t findSub(Core::String name);
 
          virtual std::size_t firstSub() const;
 
@@ -129,13 +167,16 @@ namespace GDCC
 
          virtual std::size_t nextSub(std::size_t index) const;
 
-         virtual void v_parseB(ParserCtx const &ctx, Scope &scope);
-         virtual void v_parseO(ParserCtx const &ctx, Scope &scope);
+         virtual void v_parseBlock(InitRaw const &raw, ParserCtx const &ctx, Scope &scope);
+
+         virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
+            ParserCtx const &ctx, Scope &scope);
+
+         virtual void v_parseString(Core::Token const &tok);
 
       private:
-         std::pair<std::size_t, Init *> getDes(ParserCtx const &ctx, Scope &scope);
-
-         void parseString(ParserCtx const &ctx, Scope &scope);
+         std::pair<std::size_t, Init *> getDes(
+           Core::Array<InitRawDes> const &desig, std::size_t desigIdx = 0);
       };
 
       //
@@ -165,8 +206,6 @@ namespace GDCC
          Init_Array0(AST::Type const *type, Core::FastU offset,
             Core::Origin pos);
 
-         virtual Core::FastU width() const;
-
       protected:
          virtual Init *getSub(std::size_t index);
 
@@ -189,7 +228,7 @@ namespace GDCC
             Core::Origin pos);
 
       protected:
-         virtual std::size_t findSub(Core::String name) const;
+         virtual std::size_t findSub(Core::String name);
 
          virtual Init *getSub(std::size_t index);
 
@@ -199,6 +238,7 @@ namespace GDCC
             AST::Arg const &dst, bool skipZero) const;
 
          Core::Array<InitMem> subs;
+         std::size_t          subInit;
       };
 
       //
@@ -213,7 +253,10 @@ namespace GDCC
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst, bool skipZero) const;
 
-         virtual void v_parseB(ParserCtx const &ctx, Scope &scope);
+         virtual void v_parseBlock(InitRaw const &raw, ParserCtx const &ctx, Scope &scope);
+
+         virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
+            ParserCtx const &ctx, Scope &scope);
       };
    }
 }

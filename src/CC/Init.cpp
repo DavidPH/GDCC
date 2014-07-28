@@ -33,22 +33,6 @@ static std::size_t SubCount(GDCC::CC::Type_Struct::MemberData const *itr,
    GDCC::CC::Type_Struct::MemberData const *end);
 
 //
-// SkipInit
-//
-static void SkipInit(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   if(ctx.in.drop(Core::TOK_BraceO))
-   {
-      do SkipInit(ctx, scope);
-      while(ctx.in.drop(Core::TOK_Comma) && !ctx.in.peek(Core::TOK_BraceC));
-   }
-   else
-      CC::GetExp_Assi(ctx, scope);
-}
-
-//
 // SubCount
 //
 static std::size_t SubCount(GDCC::CC::Type_Struct const *type)
@@ -183,32 +167,38 @@ namespace GDCC
       //
       // Init::parse
       //
-      void Init::parse(ParserCtx const &ctx, Scope &scope)
+      void Init::parse(InitRaw const &raw, ParserCtx const &ctx, Scope &scope)
       {
-         pos = ctx.in.peek().pos;
+         pos = raw.valueTok.pos;
 
-         // Bracketed initializer.
-         if(ctx.in.drop(Core::TOK_BraceO))
-         {
-            v_parseB(ctx, scope);
-
-            if(!ctx.in.drop(Core::TOK_BraceC))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected '}'");
-         }
-
-         // Unbracketed initializer.
+         if(raw.valueExp || raw.valueTok.str)
+            v_parseSingle(raw, ctx, scope);
          else
-            v_parseO(ctx, scope);
+            v_parseBlock(raw, ctx, scope);
+
+         if(value)
+            value = ExpPromo_Assign(type, value, value->pos);
+      }
+
+      //
+      // Init::parse
+      //
+      std::size_t Init::parse(InitRaw const &raw, std::size_t rawIdx,
+         ParserCtx const &ctx, Scope &scope)
+      {
+         auto const &rawRef = raw.valueSub[rawIdx];
+
+         pos = rawRef.valueTok.pos;
+
+         if(rawRef.valueExp || rawRef.valueTok.str)
+            rawIdx = v_parseOpen(raw, rawIdx, ctx, scope);
+         else
+            ++rawIdx, v_parseBlock(rawRef, ctx, scope);
 
          if(value)
             value = ExpPromo_Assign(type, value, value->pos);
 
-         // Infer array length.
-         if(dynamic_cast<Init_Array0 *>(this))
-         {
-            type = type->getBaseType()->getTypeArray(width())
-               ->getTypeQual(type->getQual());
-         }
+         return rawIdx;
       }
 
       //
@@ -236,19 +226,36 @@ namespace GDCC
       }
 
       //
-      // Init::v_parseO
+      // Init::v_parseSingle
       //
-      void Init::v_parseO(ParserCtx const &ctx, Scope &scope)
+      void Init::v_parseSingle(InitRaw const &raw, ParserCtx const &ctx, Scope &scope)
       {
-         v_parseB(ctx, scope);
+         if(raw.valueExp)
+         {
+            value = raw.valueExp;
+         }
+         else if(raw.valueTok.str)
+         {
+            // String initializer?
+            if(IsInitString(raw.valueTok, type))
+               return v_parseString(raw.valueTok);
+
+            // If not, reprocess the token as a primary-expression.
+            Core::ArrayTBuf   buf{&raw.valueTok, 1};
+            Core::TokenStream str{&buf};
+
+            value = GetExp_Prim({ctx, str}, scope);
+         }
+         else
+            throw Core::ExceptStr(raw.valueTok.pos, "expected expression");
       }
 
       //
-      // Init::width
+      // Init::v_parseString
       //
-      Core::FastU Init::width() const
+      void Init::v_parseString(Core::Token const &tok)
       {
-         return 1;
+         throw Core::ExceptStr(tok.pos, "Init::v_parseString");
       }
 
       //
@@ -280,6 +287,17 @@ namespace GDCC
       }
 
       //
+      // Init::Create
+      //
+      Init::Ptr Init::Create(InitRaw const &raw, ParserCtx const &ctx,
+         Scope &scope, AST::Type const *type)
+      {
+         auto init = Create(type, 0, raw.valueTok.pos);
+         init->parse(raw, ctx, scope);
+         return init;
+      }
+
+      //
       // Init::IsInitString
       //
       bool Init::IsInitString(Core::Token const &tok, AST::Type const *type)
@@ -301,7 +319,7 @@ namespace GDCC
       //
       // Init_Aggregate::findSub
       //
-      std::size_t Init_Aggregate::findSub(Core::String) const
+      std::size_t Init_Aggregate::findSub(Core::String)
       {
          return -1;
       }
@@ -318,45 +336,35 @@ namespace GDCC
       // Init_Aggregate::getDes
       //
       std::pair<std::size_t, Init *>
-      Init_Aggregate::getDes(ParserCtx const &ctx, Scope &scope)
+      Init_Aggregate::getDes(Core::Array<InitRawDes> const &desig,
+         std::size_t desigIdx)
       {
-         auto        pos = ctx.in.peek().pos;
          std::size_t index;
 
-         // Element designator.
-         if(ctx.in.drop(Core::TOK_BrackO))
-         {
-            if(!type->isTypeArray())
-               throw Core::ExceptStr(pos, "expected array type");
-
-            index = ExpToFastU(GetExp(ctx, scope));
-
-            if(!ctx.in.drop(Core::TOK_BrackC))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected ']'");
-         }
-
          // Member designator.
-         else if(ctx.in.drop(Core::TOK_Dot))
+         if(desig[desigIdx].desigStr)
          {
             if(!type->isCTypeStruct() && !type->isCTypeUnion())
                throw Core::ExceptStr(pos, "expected structure type");
 
-            if(!ctx.in.peek(Core::TOK_Identi))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected identifier");
-
-            index = findSub(ctx.in.get().str);
+            index = findSub(desig[desigIdx].desigStr);
          }
 
-         // Not designator.
+         // Element designator.
          else
-            throw Core::ExceptStr(pos, "expected designator");
+         {
+            if(!type->isTypeArray())
+               throw Core::ExceptStr(pos, "expected array type");
+
+            index = desig[desigIdx].desigInt;
+         }
 
          // Check validity of index.
          auto sub = getSub(index);
          if(!sub) throw Core::ExceptStr(pos, "out of bounds designator");
 
          // Designator list terminated by =.
-         if(ctx.in.drop(Core::TOK_Equal))
+         if(desigIdx + 1 == desig.size())
             return {index, sub};
 
          // Otherwise, expect nested designator.
@@ -365,7 +373,7 @@ namespace GDCC
          if(!subAgg)
             throw Core::ExceptStr(pos, "invalid nested designator");
 
-         return {index, subAgg->getDes(ctx, scope).second};
+         return {index, subAgg->getDes(desig, desigIdx + 1).second};
       }
 
       //
@@ -377,12 +385,101 @@ namespace GDCC
       }
 
       //
-      // Init_Aggregate::parseString
+      // Init_Aggregate::v_parseBlock
       //
-      void Init_Aggregate::parseString(ParserCtx const &ctx, Scope &)
+      void Init_Aggregate::v_parseBlock(InitRaw const &raw, ParserCtx const &ctx, Scope &scope)
+      {
+         // Bracketed aggregate initializer.
+
+         auto rawPtr = raw.valueSub.begin();
+         auto rawItr = rawPtr;
+         auto rawEnd = raw.valueSub.end();
+
+         // Single initializer?
+         if(raw.valueSub.size() == 1)
+         {
+            // String initializer?
+            if(IsInitString(rawItr->valueTok, type))
+               return v_parseString(rawItr->valueTok);
+
+            // Initializing from aggregate?
+            if(rawItr->valueExp &&
+               rawItr->valueExp->getType()->getTypeQual() == type->getTypeQual())
+            {
+               value = rawItr->valueExp;
+               return;
+            }
+         }
+
+         Init *sub;
+         auto  index = firstSub();
+
+         for(; rawItr != rawEnd; index = nextSub(index))
+         {
+            // Designator.
+            if(!rawItr->desig.empty())
+            {
+               std::tie(index, sub) = getDes(rawItr->desig);
+
+               rawItr = rawPtr + sub->parse(raw, rawItr - rawPtr, ctx, scope);
+            }
+            else if((sub = getSub(index)))
+               rawItr = rawPtr + sub->parse(raw, rawItr - rawPtr, ctx, scope);
+            else
+               ++rawItr;
+         }
+      }
+
+      //
+      // Init_Aggregate::v_parseOpen
+      //
+      std::size_t Init_Aggregate::v_parseOpen(InitRaw const &raw,
+         std::size_t rawIdx, ParserCtx const &ctx, Scope &scope)
+      {
+         // Unbracketed aggregate initializer.
+
+         auto rawPtr = raw.valueSub.begin();
+         auto rawItr = rawPtr + rawIdx;
+         auto rawEnd = raw.valueSub.end();
+
+         // String initializer?
+         if(IsInitString(rawItr->valueTok, type))
+            return v_parseString(rawItr->valueTok), rawIdx + 1;
+
+         // Initializing from aggregate?
+         if(rawItr->valueExp &&
+            rawItr->valueExp->getType()->getTypeQual() == type->getTypeQual())
+         {
+            value = rawItr->valueExp;
+            return rawIdx + 1;
+         }
+
+         Init *sub;
+         auto  index = firstSub();
+
+         for(; rawItr != rawEnd; index = nextSub(index))
+         {
+            // Designator.
+            if(!rawItr->desig.empty())
+            {
+               break;
+            }
+            else if((sub = getSub(index)))
+               rawItr = rawPtr + sub->parse(raw, rawItr - rawPtr, ctx, scope);
+            else
+               break;
+         }
+
+         return rawItr - rawPtr;
+      }
+
+      //
+      // Init_Aggregate::v_parseString
+      //
+      void Init_Aggregate::v_parseString(Core::Token const &tok)
       {
          auto index = firstSub();
-         for(auto &c : GetString(ctx.in.get()))
+         for(auto &c : GetString(tok))
          {
             if(auto sub = getSub(index))
             {
@@ -392,59 +489,6 @@ namespace GDCC
 
             index = nextSub(index);
          }
-      }
-
-      //
-      // Init_Aggregate::v_parseB
-      //
-      void Init_Aggregate::v_parseB(ParserCtx const &ctx, Scope &scope)
-      {
-         // Bracketed aggregate initializer.
-
-         if(IsInitString(ctx.in.peek(), type))
-            return parseString(ctx, scope);
-
-         Init *sub;
-         auto  index = firstSub();
-
-         do
-         {
-            // Designator.
-            if(ctx.in.peek(Core::TOK_BrackO) || ctx.in.peek(Core::TOK_Dot))
-            {
-               std::tie(index, sub) = getDes(ctx, scope);
-
-               sub->parse(ctx, scope);
-            }
-            else if((sub = getSub(index)))
-               sub->parse(ctx, scope);
-            else
-               SkipInit(ctx, scope);
-
-            index = nextSub(index);
-         }
-         while(ctx.in.drop(Core::TOK_Comma) && !ctx.in.peek(Core::TOK_BraceC));
-      }
-
-      //
-      // Init_Aggregate::v_parseO
-      //
-      void Init_Aggregate::v_parseO(ParserCtx const &ctx, Scope &scope)
-      {
-         // Unbracketed aggregate initializer.
-
-         if(IsInitString(ctx.in.peek(), type))
-            return parseString(ctx, scope);
-
-         auto index = firstSub();
-
-         if(auto sub = getSub(index)) do
-         {
-            sub->parse(ctx, scope);
-
-            if(!(sub = getSub(index = nextSub(index)))) break;
-         }
-         while(ctx.in.drop(Core::TOK_Comma) && !ctx.in.peek(Core::TOK_BraceC));
       }
 
       //
@@ -496,8 +540,15 @@ namespace GDCC
       //
       Init *Init_Array0::getSub(std::size_t index)
       {
-         while(index >= subs.size())
-            subs.emplace_back(Create(subT, offset + subs.size() * subB, pos));
+         if(index >= subs.size())
+         {
+            do
+               subs.emplace_back(Create(subT, offset + subs.size() * subB, pos));
+            while(index >= subs.size());
+
+            type = type->getBaseType()->getTypeArray(subs.size())
+               ->getTypeQual(type->getQual());
+         }
 
          return subs[index].get();
       }
@@ -512,20 +563,13 @@ namespace GDCC
       }
 
       //
-      // Init_Array0::width
-      //
-      Core::FastU Init_Array0::width() const
-      {
-         return subs.size();
-      }
-
-      //
       // Init_Struct constructor
       //
       Init_Struct::Init_Struct(Type_Struct const *typeS, Core::FastU offset_,
          Core::Origin pos_) :
          Init_Aggregate{typeS, offset_, pos_},
-         subs{SubCount(typeS)}
+         subs   {SubCount(typeS)},
+         subInit{0}
       {
          auto sub = subs.begin();
          SubInit(typeS, sub, offset, pos);
@@ -534,10 +578,10 @@ namespace GDCC
       //
       // Init_Struct::findSub
       //
-      std::size_t Init_Struct::findSub(Core::String name) const
+      std::size_t Init_Struct::findSub(Core::String name)
       {
          for(std::size_t itr = 0, end = subs.size(); itr != end; ++itr)
-            if(subs[itr].name == name) return itr;
+            if(subs[itr].name == name) return subInit = itr;
 
          return -1;
       }
@@ -564,8 +608,15 @@ namespace GDCC
       void Init_Struct::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &arg, bool skipZero) const
       {
-         for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
-            subs[index].init->genStmnt(ctx, arg, skipZero);
+         if(type->isCTypeUnion())
+         {
+            subs[subInit].init->genStmnt(ctx, arg, skipZero);
+         }
+         else
+         {
+            for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
+              subs[index].init->genStmnt(ctx, arg, skipZero);
+         }
       }
 
       //
@@ -579,14 +630,6 @@ namespace GDCC
       }
 
       //
-      // Init_Value::parseB
-      //
-      void Init_Value::v_parseB(ParserCtx const &ctx, Scope &scope)
-      {
-         value = GetExp_Assi(ctx, scope);
-      }
-
-      //
       // Init_Value::v_genStmnt
       //
       void Init_Value::v_genStmnt(AST::GenStmntCtx const &,
@@ -594,6 +637,25 @@ namespace GDCC
       {
          // This shouldn't be called.
          throw Core::ExceptStr(pos, "Init_Value::v_genStmnt");
+      }
+
+      //
+      // Init_Value::v_parseBlock
+      //
+      void Init_Value::v_parseBlock(InitRaw const &raw, ParserCtx const &ctx,
+        Scope &scope)
+      {
+         v_parseSingle(raw.valueSub[0], ctx, scope);
+      }
+
+      //
+      // Init_Value::v_parseOpen
+      //
+      std::size_t Init_Value::v_parseOpen(InitRaw const &raw,
+         std::size_t rawIdx, ParserCtx const &ctx, Scope &scope)
+      {
+         v_parseSingle(raw.valueSub[rawIdx], ctx, scope);
+         return rawIdx + 1;
       }
    }
 }
