@@ -25,6 +25,9 @@
 #include "Core/Parse.hpp"
 #include "Core/TokenStream.hpp"
 
+#include "IR/Exp.hpp"
+#include "IR/Glyph.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
@@ -102,6 +105,51 @@ static GDCC::AST::Exp::CRef GetExp_Prim_generic(GDCC::CC::ParserCtx const &ctx,
 }
 
 //
+// GetExp_Prim_glyph
+//
+static GDCC::AST::Exp::CRef GetExp_Prim_glyph(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope)
+{
+   using namespace GDCC;
+
+   // glyph-expression:
+   //    <__glyph> ( type-name , string-literal )
+
+   // <__glyph>
+   auto pos = ctx.in.get().pos;
+
+   // (
+   if(!ctx.in.drop(Core::TOK_ParenO))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+   // type-name
+   auto type = CC::GetType(ctx, scope);
+
+   if(!type->isCTypeObject() || !type->isTypeComplete())
+      throw Core::ExceptStr(pos, "expected complete object type");
+
+   // ,
+   if(!ctx.in.drop(Core::TOK_Comma))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ','");
+
+   // string-literal
+   if(!ctx.in.peek().isTokString())
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
+
+   IR::Glyph glyph = {ctx.prog, ctx.in.get().str};
+
+   // )
+   if(!ctx.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+
+   // If the glyph has no type yet, set it now.
+   auto &glyphData = glyph.getData();
+   glyphData.type = type->getIRType();
+
+   return AST::ExpCreate_IRExp(IR::ExpCreate_Glyph(glyph, pos), type, pos);
+}
+
+//
 // GetExp_Prim_Charac
 //
 static GDCC::AST::Exp::CRef GetExp_Prim_Charac(GDCC::CC::ParserCtx const &ctx,
@@ -124,6 +172,12 @@ static GDCC::AST::Exp::CRef GetExp_Prim_Identi(GDCC::CC::ParserCtx const &ctx,
 {
    using namespace GDCC;
 
+   switch(ctx.in.peek().str)
+   {
+   case Core::STR___glyph: return GetExp_Prim_glyph(ctx, scope);
+   default: break;
+   }
+
    auto tok = ctx.in.get();
 
    if(auto lookup = scope.lookup(tok.str)) switch(lookup.res)
@@ -142,27 +196,6 @@ static GDCC::AST::Exp::CRef GetExp_Prim_Identi(GDCC::CC::ParserCtx const &ctx,
    // It sucks, but it is traditional and the method will be needed for ACS.
 
    throw Core::ExceptStr(tok.pos, "undeclared identifier");
-}
-
-//
-// GetExp_Prim_ParenO
-//
-static GDCC::AST::Exp::CRef GetExp_Prim_ParenO(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   // (
-   ctx.in.get();
-
-   // expression
-   auto exp = CC::GetExp(ctx, scope);
-
-   // )
-   if(!ctx.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
-
-   return exp;
 }
 
 //
@@ -268,6 +301,27 @@ static GDCC::AST::Exp::CRef GetExp_Prim_NumInt(GDCC::CC::ParserCtx const &ctx,
 
       #undef tryCreate
    }
+}
+
+//
+// GetExp_Prim_ParenO
+//
+static GDCC::AST::Exp::CRef GetExp_Prim_ParenO(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope)
+{
+   using namespace GDCC;
+
+   // (
+   ctx.in.get();
+
+   // expression
+   auto exp = CC::GetExp(ctx, scope);
+
+   // )
+   if(!ctx.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+
+   return exp;
 }
 
 //
