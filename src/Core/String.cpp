@@ -114,10 +114,10 @@ namespace GDCC
          // Compute length, if needed.
          if(!len16 && len)
          {
-            for(auto itr = str, end = itr + len; itr != end;)
+            for(auto itr = str, e = itr + len; itr != e;)
             {
                char32_t c;
-               std::tie(c, itr) = Str8To32(itr, end);
+               std::tie(c, itr) = Str8To32(itr, e);
                len16 += c > 0xFFFF ? 2 : 1;
             }
          }
@@ -133,8 +133,8 @@ namespace GDCC
          // Compute length, if needed.
          if(!len32 && len)
          {
-            for(auto itr = str, end = itr + len; itr != end; ++len32)
-               std::tie(std::ignore, itr) = Str8To32(itr, end);
+            for(auto itr = str, e = itr + len; itr != e; ++len32)
+               std::tie(std::ignore, itr) = Str8To32(itr, e);
          }
 
          return len32;

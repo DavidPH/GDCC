@@ -104,33 +104,30 @@ namespace GDCC
       //
       bool IsAddrEnclosed(AddrSpace encloser, AddrSpace enclosee)
       {
-         #define GDCC_IR_AddrList(name) using AddrBase::name;
-         #include "IR/AddrList.hpp"
-
          // Substitute implementation for generic address space.
-         if(encloser.base == Gen) encloser = GetAddrGen();
-         if(enclosee.base == Gen) enclosee = GetAddrGen();
+         if(encloser.base == AddrBase::Gen) encloser = GetAddrGen();
+         if(enclosee.base == AddrBase::Gen) enclosee = GetAddrGen();
 
          // All address spaces enclose themselves.
          if(encloser == enclosee) return true;
 
          // LocArs always encloses Loc.
-         if(encloser.base == LocArs && enclosee.base == Loc) return true;
+         if(encloser.base == AddrBase::LocArs && enclosee.base == AddrBase::Loc) return true;
 
          // Array spaces.
-         if(encloser.base == GblArs && enclosee.base == GblArr) return true;
-         if(encloser.base == MapArs && enclosee.base == MapArr) return true;
-         if(encloser.base == StrArs && enclosee.base == StrArr) return true;
-         if(encloser.base == WldArs && enclosee.base == WldArr) return true;
+         if(encloser.base == AddrBase::GblArs && enclosee.base == AddrBase::GblArr) return true;
+         if(encloser.base == AddrBase::MapArs && enclosee.base == AddrBase::MapArr) return true;
+         if(encloser.base == AddrBase::StrArs && enclosee.base == AddrBase::StrArr) return true;
+         if(encloser.base == AddrBase::WldArs && enclosee.base == AddrBase::WldArr) return true;
 
          // Far pointer.
-         if(encloser.base == Far) switch(enclosee.base)
+         if(encloser.base == AddrBase::Far) switch(enclosee.base)
          {
-         case GblArr: case GblArs: case GblReg:
-         case Loc:    case LocArs:
-       //case MapArr: case MapArs: case MapReg:
-         case StrArr: case StrArs:
-         case WldArr: case WldArs: case WldReg:
+         case AddrBase::GblArr: case AddrBase::GblArs: case AddrBase::GblReg:
+         case AddrBase::Loc:    case AddrBase::LocArs:
+       //case AddrBase::MapArr: case AddrBase::MapArs: case AddrBase::MapReg:
+         case AddrBase::StrArr: case AddrBase::StrArs:
+         case AddrBase::WldArr: case AddrBase::WldArs: case AddrBase::WldReg:
             return true;
 
          default: break;

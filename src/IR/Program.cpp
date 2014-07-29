@@ -13,6 +13,7 @@
 #include "IR/Program.hpp"
 
 #include "IR/IArchive.hpp"
+#include "IR/Linkage.hpp"
 #include "IR/OArchive.hpp"
 
 #include <iostream>
@@ -331,12 +332,13 @@ namespace GDCC
                if(out.space.base == AddrBase::Cpy) out.space = in.space;
 
                if(!out.initi) out.initi = in.initi;
-               if(!out.linka) out.linka = in.linka;
                if(!out.value) out.value = in.value;
                if(!out.words) out.words = in.words;
 
                if(!out.alias) out.alias = in.alias;
                if(!out.alloc) out.alloc = in.alloc;
+
+               if(out.linka == Linkage::None) out.linka = in.linka;
             }
          }
       }
@@ -359,11 +361,12 @@ namespace GDCC
             }
             else
             {
-               if(!out.linka) out.linka = in.linka;
                if(!out.value) out.value = in.value;
                if(!out.words) out.words = in.words;
 
                if(!out.alloc) out.alloc = in.alloc;
+
+               if(out.linka == Linkage::None) out.linka = in.linka;
             }
          }
       }

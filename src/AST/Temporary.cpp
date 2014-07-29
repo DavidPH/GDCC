@@ -42,13 +42,13 @@ namespace GDCC
       // Temporary constructor
       //
       Temporary::Temporary(GenStmntCtx const &ctx, Core::Origin pos_,
-         Core::FastU size) :
+         Core::FastU allocSize) :
          pos  {pos_},
          fn   {ctx.fn},
          prog {&ctx.prog}
       {
          init();
-         alloc(size);
+         alloc(allocSize);
       }
 
       //
@@ -63,19 +63,19 @@ namespace GDCC
       //
       // Temporary::alloc
       //
-      void Temporary::alloc(Core::FastU size)
+      void Temporary::alloc(Core::FastU allocSize)
       {
          // Check if already allocated.
          if(block)
          {
             // If already allocated at size, just keep that.
-            if(block->size == size) return;
+            if(block->size == allocSize) return;
 
             // Otherwise, free and allocate a new temporary.
             fn->localTmp.free(block);
          }
 
-         block = fn->localTmp.alloc(size);
+         block = fn->localTmp.alloc(allocSize);
          expO  = IR::ExpCreate_Value(
             IR::Value_Fixed(block->lo, Type::Size->getIRType().tFixed), pos);
       }
