@@ -19,15 +19,15 @@ add_library(gdcc-as-lib
    IStream.cpp
    Macro.cpp
    Parse.cpp
-   ParseArg.cpp
-   ParseBlock.cpp
-   ParseExp.cpp
-   ParseFunction.cpp
-   ParseImport.cpp
-   ParseObject.cpp
-   ParseSpace.cpp
-   ParseStrEnt.cpp
-   ParseType.cpp
+   Parse/Arg.cpp
+   Parse/Block.cpp
+   Parse/Exp.cpp
+   Parse/Function.cpp
+   Parse/Import.cpp
+   Parse/Object.cpp
+   Parse/Space.cpp
+   Parse/StrEnt.cpp
+   Parse/Type.cpp
 )
 
 add_executable(gdcc-as
