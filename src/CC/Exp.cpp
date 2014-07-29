@@ -13,6 +13,7 @@
 #include "CC/Exp.hpp"
 
 #include "CC/Exp/Bitwise.hpp"
+#include "CC/Exp/Not.hpp"
 
 #include "AST/Arg.hpp"
 #include "AST/Exp/Binary.hpp"
@@ -53,6 +54,15 @@ namespace GDCC
          Core::Origin pos)
       {
          return AST::Exp_ConvertArith::Create(t, e, pos);
+      }
+
+      //
+      // ExpConvert_Bool
+      //
+      AST::Exp::CRef ExpConvert_Bool(AST::Type const *t, AST::Exp const *e,
+         Core::Origin pos)
+      {
+         return Exp_Not::Create(t, ExpCreate_Not(e, pos), pos);
       }
 
       //
@@ -150,6 +160,9 @@ namespace GDCC
 
          if(typeL->getTypeQual() == typeR->getTypeQual())
             return static_cast<AST::Exp::CRef>(e);
+
+         if(typeL->isTypeBoolean())
+            return ExpConvert_Bool(typeL, e, pos);
 
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
             return ExpConvert_Arith(typeL, e, pos);
@@ -368,12 +381,6 @@ namespace GDCC
 
          return true;
       }
-
-      // Stubs.
-
-      Core::CounterRef<AST::Exp const> ExpConvert_Bool(AST::Type const *,
-         AST::Exp const *, Core::Origin pos)
-         {throw Core::ExceptStr(pos, "convert bool stub");}
    }
 }
 
