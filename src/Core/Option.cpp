@@ -118,7 +118,7 @@ namespace GDCC
 
          if(name) opts.list.name = name;
 
-         opts.list.version = "v0.3.0";
+         opts.list.version = "v0.4.0";
 
          if(argc <= 1)
          {
