@@ -1,0 +1,468 @@
+###############################################################################
+GDCC C Language Extensions
+###############################################################################
+
+===============================================================================
+Attribute Specifiers
+===============================================================================
+
+Syntax:
+  attribute-specifier-list:
+    attribute-specifier attribute-specifier-list(opt)
+
+  attribute-specifier:
+    [ [ attribute-list ] ]
+    <__attribute__> ( ( attribute-list ) )
+
+  attribute-list:
+    attribute(opt)
+    attribute-list , attribute(opt)
+
+  attribute:
+    attribute-name attribute-argument-clause(opt)
+
+  attribute-name:
+    identifier
+    keyword
+
+  attribute-argument-clause:
+    ( balanced-token-seq )
+
+  balanced-token-seq:
+    balanced-token
+    balanced-token-seq balanced-token
+
+  balanced-token:
+    ( balanced-token-seq )
+    [ balanced-token-seq ]
+    { balanced-token-seq }
+    any token other than a parenthesis, a bracket, or a brace
+
+Semantics:
+  Attribute specifiers are used to attach additional information to
+  declarations and declarators.
+
+===========================================================
+Address
+===========================================================
+
+Syntax:
+  attribute-address:
+    attribute-address-name ( constant-expression )
+    attribute-address-name ( string-literal )
+
+  attribute-address-name:
+    <address>
+    <__address>
+
+Constraints:
+  If applied to an object, the object shall have static storage duration.
+
+Semantics:
+  The first form sets the address of the affected object, function, or address
+  space.
+
+  The second form sets the call name of the affected function.
+
+===========================================================
+Call
+===========================================================
+
+Syntax:
+  attribute-call:
+    attribute-call-name ( string-literal )
+
+  attribute-call-name:
+    <call>
+    <__call>
+
+Contraints:
+  Shall only be applied to functions and function types.
+
+Semantics:
+  Sets the affected function's calling convention.
+
+-----------------------------------------------------------
+"AsmFunc"
+-----------------------------------------------------------
+
+Semantics:
+  Calling convention for special function-like instructions. Requires an
+  explicit allocation to be the instruction number.
+
+-----------------------------------------------------------
+"LangACS"
+-----------------------------------------------------------
+
+Semantics:
+  Calling convention for "ACS" linkage functions.
+
+-----------------------------------------------------------
+"LangASM"
+-----------------------------------------------------------
+
+Semantics:
+  Calling convention for "asm" linkage functions.
+
+-----------------------------------------------------------
+"LangC"
+-----------------------------------------------------------
+
+Semantics:
+  Calling convention for "C" linkage functions.
+
+-----------------------------------------------------------
+"Native"
+-----------------------------------------------------------
+
+Semantics:
+  Calling convention for native functions.
+
+  For ZDACS, this uses callfunc indexes and requires an explicit allocation.
+
+-----------------------------------------------------------
+"Script"
+-----------------------------------------------------------
+
+Semantics:
+  Calling convention for ACS scripts. It is a named or numbered script based on
+  options passed to the compiler.
+
+  Functions with this calling convention are executed asynchronously.
+
+-----------------------------------------------------------
+"ScriptI"
+-----------------------------------------------------------
+
+Semantics:
+  Same as "Script", except always a numbered script.
+
+-----------------------------------------------------------
+"ScriptS"
+-----------------------------------------------------------
+
+Semantics:
+  Same as "Script", except always a named script.
+
+-----------------------------------------------------------
+"Special"
+-----------------------------------------------------------
+
+Semantics:
+  Calling convention for line specials. Requires an explicit allocation to be
+  the line special number.
+
+-----------------------------------------------------------
+"SScript"
+-----------------------------------------------------------
+
+Semantics:
+  Alternative ACS script calling convention that is executed synchronously,
+  delaying the caller until the callee returns. It is a named or numbered
+  script based on options passed to the compiler.
+
+-----------------------------------------------------------
+"SScriptI"
+-----------------------------------------------------------
+
+Semantics:
+  Same as "SScript", except always a numbered script.
+
+-----------------------------------------------------------
+"SScriptS"
+-----------------------------------------------------------
+
+Semantics:
+  Same as "SScript", except always a named script.
+
+===========================================================
+Extern
+===========================================================
+
+Syntax:
+  attribute-extern:
+    attribute-extern-name ( string-literal )
+
+  attribute-extern-name:
+    <extern>
+
+Semantics:
+  Sets the affected object or function's language linkage. Supported strings
+  are: "ACS", "asm", "C".
+
+  Setting language linkage in this way does not affect a function's default
+  calling convention or otherwise alter its type.
+
+===============================================================================
+Expressions
+===============================================================================
+
+===========================================================
+Primary Expressions
+===========================================================
+
+Syntax:
+  primary-expression: add
+    glyph-expression
+
+-----------------------------------------------------------
+Glyph Expression
+-----------------------------------------------------------
+
+Syntax:
+  glyph-expression:
+    <__glyph> ( type-name , string-literal )
+
+Constraints:
+  The specified type shall be a complete object type.
+
+Semantics:
+  The result of a glyph expression is an rvalue with the specified type with a
+  value determined by the specified glyph.
+
+  If the glyph's type does not match the specified type, the behavior is
+  undefined.
+
+===============================================================================
+Declarations
+===============================================================================
+
+Syntax:
+  declaration: add
+    address-space-declaration
+
+===========================================================
+Declaration Specifiers
+===========================================================
+
+Syntax:
+  declaration-specifiers: add
+    attribute-specifier declaration-specifiers(opt)
+
+===========================================================
+Type Specifiers
+===========================================================
+
+Syntax:
+  type-specifier: add
+    <__fixed>
+    <__label>
+    <__str>
+    <__str_ent>
+
+-----------------------------------------------------------
+Fixed
+-----------------------------------------------------------
+
+Semantics:
+  __fixed is an alias for _Accum.
+
+-----------------------------------------------------------
+Label
+-----------------------------------------------------------
+
+Semantics:
+  __label is a non-object type used to represent dynamic jump targets.
+
+-----------------------------------------------------------
+Str
+-----------------------------------------------------------
+
+Semantics:
+  __str is an alias for __str_ent*.
+
+-----------------------------------------------------------
+Str Ent
+-----------------------------------------------------------
+
+Semantics:
+  __str_ent is a non-object type used to represent string table entries.
+
+===========================================================
+Type Qualifiers
+===========================================================
+
+Syntax:
+  address-space-name: add
+    <__far>
+    <__gbl_ars>
+    <__gbl_reg>
+    <__loc>
+    <__loc_ars>
+    <__loc_reg>
+    <__map_ars>
+    <__map_reg>
+    <__str_ars>
+    <__wld_ars>
+    <__wld_reg>
+
+===========================================================
+Declarators
+===========================================================
+
+Syntax:
+  declarator: add
+    pointer(opt) direct-declarator attribute-specifier-list
+
+  direct-declarator: add
+    direct-declarator ( parameter-type-list ) attribute-specifier-list
+    direct-declarator ( identifier-list(opt) ) attribute-specifier-list
+
+===========================================================
+Address Space Declarations
+===========================================================
+
+Syntax:
+  address-space-declaration:
+    <__addrdef> storage-class-specifier(opt) address-space-specifier identifier
+      attribute-specifier-list(opt) ;
+
+  address-space-specifier:
+    <__gbl_arr>
+    <__map_arr>
+    <__wld_arr>
+
+Constraints:
+  The storage class specifier, if provided, shall be either extern or static.
+
+  A block scope address space declaration shall not attempt to be a definition.
+
+Semantics:
+  Declares or defines an address space for use as an address space name.
+
+  If the storage class specifier is extern, the declaration is a forward
+  declaration. Otherwise it defines a new address space.
+
+  If the storage class specifier is static, the address space has internal
+  linkage. Otherwise it has external linkage.
+
+  Address spaces have the same linkage as objects. If an address space and an
+  external object have the same name, the behavior is undefined.
+
+===============================================================================
+Statements
+===============================================================================
+
+Syntax:
+  statement: add
+    asm-statement
+
+===========================================================
+Assembly Statement
+===========================================================
+
+Syntax:
+  asm-statement:
+    <__asm> ( string-literal ) ;
+
+Semantics:
+  Passes the contents of the string literal to the IR assembler as a statement
+  list.
+
+===============================================================================
+Grammar
+===============================================================================
+
+  attribute-specifier-list:
+    attribute-specifier attribute-specifier-list(opt)
+
+  attribute-specifier:
+    [ [ attribute-list ] ]
+    <__attribute__> ( ( attribute-list ) )
+
+  attribute-list:
+    attribute(opt)
+    attribute-list , attribute(opt)
+
+  attribute:
+    attribute-name attribute-argument-clause(opt)
+
+  attribute-name:
+    identifier
+    keyword
+
+  attribute-argument-clause:
+    ( balanced-token-seq )
+
+  balanced-token-seq:
+    balanced-token
+    balanced-token-seq balanced-token
+
+  balanced-token:
+    ( balanced-token-seq )
+    [ balanced-token-seq ]
+    { balanced-token-seq }
+    any token other than a parenthesis, a bracket, or a brace
+
+  attribute-address:
+    attribute-address-name ( constant-expression )
+    attribute-address-name ( string-literal )
+
+  attribute-address-name:
+    <address>
+    <__address>
+
+  attribute-call:
+    attribute-call-name ( string-literal )
+
+  attribute-call-name:
+    <call>
+    <__call>
+
+  attribute-extern:
+    attribute-extern-name ( string-literal )
+
+  attribute-extern-name:
+    <extern>
+
+  declaration: add
+    address-space-declaration
+
+  declaration-specifiers: add
+    attribute-specifier declaration-specifiers(opt)
+
+  type-specifier: add
+    <__fixed>
+    <__label>
+    <__str>
+    <__str_ent>
+
+  address-space-name: add
+    <__far>
+    <__gbl_ars>
+    <__gbl_reg>
+    <__loc>
+    <__loc_ars>
+    <__loc_reg>
+    <__map_ars>
+    <__map_reg>
+    <__str_ars>
+    <__wld_ars>
+    <__wld_reg>
+
+  declarator: add
+    pointer(opt) direct-declarator attribute-specifier-list
+
+  direct-declarator: add
+    direct-declarator ( parameter-type-list ) attribute-specifier-list
+    direct-declarator ( identifier-list(opt) ) attribute-specifier-list
+
+  address-space-declaration:
+    <__addrdef> storage-class-specifier(opt) address-space-specifier identifier
+      attribute-specifier-list(opt) ;
+
+  address-space-specifier:
+    <__gbl_arr>
+    <__map_arr>
+    <__wld_arr>
+
+  statement: add
+    asm-statement
+
+  asm-statement:
+    <__asm> ( string-literal ) ;
+
+###############################################################################
+EOF
+###############################################################################
+
