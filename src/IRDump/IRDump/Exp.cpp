@@ -199,7 +199,7 @@ namespace GDCC
                << type.tFixed.bitsI << ", "
                << type.tFixed.bitsF << ", "
                << type.tFixed.bitsS << ", "
-               << type.tFixed.satur << ") ";
+               << type.tFixed.satur << ')';
             break;
 
          case IR::TypeBase::Float:
@@ -207,11 +207,11 @@ namespace GDCC
                << type.tFixed.bitsI << ", "
                << type.tFixed.bitsF << ", "
                << type.tFixed.bitsS << ", "
-               << type.tFixed.satur << ") ";
+               << type.tFixed.satur << ')';
             break;
 
          case IR::TypeBase::Funct:
-            out << "Funct(" << type.tFunct.callT << ") ";
+            out << "Funct(" << type.tFunct.callT << ')';
             break;
 
          case IR::TypeBase::Multi:
@@ -226,14 +226,14 @@ namespace GDCC
                   IRDump_Type(out, *itr++);
                }
             }
-            out << ") ";
+            out << ')';
             break;
 
          case IR::TypeBase::Point:
             out << "Point("
                << type.tPoint.reprB << ", "
                << type.tPoint.reprS << ", "
-               << type.tPoint.reprW << ") ";
+               << type.tPoint.reprW << ')';
             break;
 
          case IR::TypeBase::StrEn:
