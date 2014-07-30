@@ -15,6 +15,9 @@
 ## Targets                                                                    |
 ##
 
+##
+## gdcc-cpp-lib
+##
 add_library(gdcc-cpp-lib
    ConcatTBuf.cpp
    ConditionDTBuf.cpp
@@ -29,8 +32,27 @@ add_library(gdcc-cpp-lib
    Pragma.cpp
    PragmaDTBuf.cpp
    StringTBuf.cpp
+
+   ../../inc/CPP/ConcatTBuf.hpp
+   ../../inc/CPP/ConditionDTBuf.hpp
+   ../../inc/CPP/DirectiveTBuf.hpp
+   ../../inc/CPP/GetExpIR.hpp
+   ../../inc/CPP/IncludeDTBuf.hpp
+   ../../inc/CPP/IStream.hpp
+   ../../inc/CPP/Macro.hpp
+   ../../inc/CPP/MacroDTBuf.hpp
+   ../../inc/CPP/MacroTBuf.hpp
+   ../../inc/CPP/PPTokenTBuf.hpp
+   ../../inc/CPP/Pragma.hpp
+   ../../inc/CPP/PragmaDTBuf.hpp
+   ../../inc/CPP/StringTBuf.hpp
+   ../../inc/CPP/TrigraphBuf.hpp
+   ../../inc/CPP/TStream.hpp
 )
 
+##
+## gdcc-cpp
+##
 add_executable(gdcc-cpp
    main_cpp.cpp
 )

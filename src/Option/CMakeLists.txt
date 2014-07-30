@@ -15,6 +15,9 @@
 ## Targets                                                                    |
 ##
 
+##
+## gdcc-option-lib
+##
 add_library(gdcc-option-lib
    Base.cpp
    CStr.cpp
@@ -24,6 +27,16 @@ add_library(gdcc-option-lib
    Program/Process.cpp
    Program/Put.cpp
    Util.cpp
+
+   ../../inc/Option/Base.hpp
+   ../../inc/Option/Bool.hpp
+   ../../inc/Option/CStr.hpp
+   ../../inc/Option/CStrV.hpp
+   ../../inc/Option/Exception.hpp
+   ../../inc/Option/Function.hpp
+   ../../inc/Option/Int.hpp
+   ../../inc/Option/Program.hpp
+   ../../inc/Option/Util.hpp
 )
 
 ## EOF

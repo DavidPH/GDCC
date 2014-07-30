@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013 David Hill
+## Copyright (C) 2013-2014 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -15,6 +15,9 @@
 ## Targets                                                                    |
 ##
 
+##
+## gdcc-as-lib
+##
 add_library(gdcc-as-lib
    IStream.cpp
    Macro.cpp
@@ -28,8 +31,16 @@ add_library(gdcc-as-lib
    Parse/Space.cpp
    Parse/StrEnt.cpp
    Parse/Type.cpp
+
+   ../../inc/AS/IStream.hpp
+   ../../inc/AS/Macro.hpp
+   ../../inc/AS/Parse.hpp
+   ../../inc/AS/TStream.hpp
 )
 
+##
+## gdcc-as
+##
 add_executable(gdcc-as
    main_as.cpp
 )

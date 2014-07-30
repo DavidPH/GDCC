@@ -15,6 +15,9 @@
 ## Targets                                                                    |
 ##
 
+##
+## gdcc-cc-lib
+##
 add_library(gdcc-cc-lib
    Exp.cpp
    Exp/Add.cpp
@@ -83,8 +86,52 @@ add_library(gdcc-cc-lib
    Type/Fixed.cpp
    Type/Float.cpp
    Type/Struct.cpp
+
+   ../../inc/CC/Exp.hpp
+   ../../inc/CC/Exp/Add.hpp
+   ../../inc/CC/Exp/Arith.hpp
+   ../../inc/CC/Exp/Assign.hpp
+   ../../inc/CC/Exp/Bitwise.hpp
+   ../../inc/CC/Exp/Call.hpp
+   ../../inc/CC/Exp/Cmp.hpp
+   ../../inc/CC/Exp/Convert/BoolSoft.hpp
+   ../../inc/CC/Exp/Convert/Pointer.hpp
+   ../../inc/CC/Exp/Deref.hpp
+   ../../inc/CC/Exp/Func.hpp
+   ../../inc/CC/Exp/GenSel.hpp
+   ../../inc/CC/Exp/Init.hpp
+   ../../inc/CC/Exp/Not.hpp
+   ../../inc/CC/Exp/Obj.hpp
+   ../../inc/CC/Exp/Refer.hpp
+   ../../inc/CC/Exp/Sub.hpp
+   ../../inc/CC/Init.hpp
+   ../../inc/CC/Parse.hpp
+   ../../inc/CC/Scope.hpp
+   ../../inc/CC/Scope/Block.hpp
+   ../../inc/CC/Scope/Break.hpp
+   ../../inc/CC/Scope/Case.hpp
+   ../../inc/CC/Scope/Function.hpp
+   ../../inc/CC/Scope/Global.hpp
+   ../../inc/CC/Scope/Local.hpp
+   ../../inc/CC/Scope/Loop.hpp
+   ../../inc/CC/Statement.hpp
+   ../../inc/CC/Statement/FuncPre.hpp
+   ../../inc/CC/Statement/Goto.hpp
+   ../../inc/CC/Statement/If.hpp
+   ../../inc/CC/Statement/Loop.hpp
+   ../../inc/CC/Statement/Return.hpp
+   ../../inc/CC/Statement/Switch.hpp
+   ../../inc/CC/Type.hpp
+   ../../inc/CC/Type/Bool.hpp
+   ../../inc/CC/Type/Char.hpp
+   ../../inc/CC/Type/Fixed.hpp
+   ../../inc/CC/Type/Float.hpp
+   ../../inc/CC/Type/Struct.hpp
 )
 
+##
+## gdcc-cc
+##
 add_executable(gdcc-cc
    main_cc.cpp
 )

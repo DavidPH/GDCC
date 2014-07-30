@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013 David Hill
+## Copyright (C) 2013-2014 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -15,6 +15,9 @@
 ## Targets                                                                    |
 ##
 
+##
+## gdcc-bytecode-zdacs-lib
+##
 add_library(gdcc-bytecode-zdacs-lib
    Info.cpp
    gen.cpp
@@ -27,6 +30,8 @@ add_library(gdcc-bytecode-zdacs-lib
    putStmnt.cpp
    tr.cpp
    trStmnt.cpp
+
+   ../../../inc/Bytecode/ZDACS/Info.hpp
 )
 
 target_link_libraries(gdcc-bytecode-zdacs-lib gdcc-bytecode-lib)

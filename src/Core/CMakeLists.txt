@@ -15,6 +15,9 @@
 ## Targets                                                                    |
 ##
 
+##
+## gdcc-core-lib
+##
 add_library(gdcc-core-lib
    Exception.cpp
    Number.cpp
@@ -25,6 +28,34 @@ add_library(gdcc-core-lib
    Path.cpp
    String.cpp
    StringGen.cpp
+
+   ../../inc/Core/Array.hpp
+   ../../inc/Core/BufferBuf.hpp
+   ../../inc/Core/BufferTBuf.hpp
+   ../../inc/Core/CommentBuf.hpp
+   ../../inc/Core/Compare.hpp
+   ../../inc/Core/Counter.hpp
+   ../../inc/Core/EscapeBuf.hpp
+   ../../inc/Core/Exception.hpp
+   ../../inc/Core/FeatureHold.hpp
+   ../../inc/Core/List.hpp
+   ../../inc/Core/Number.hpp
+   ../../inc/Core/NumberAlloc.hpp
+   ../../inc/Core/Option.hpp
+   ../../inc/Core/Origin.hpp
+   ../../inc/Core/OriginBuf.hpp
+   ../../inc/Core/Parse.hpp
+   ../../inc/Core/Path.hpp
+   ../../inc/Core/StreamTBuf.hpp
+   ../../inc/Core/String.hpp
+   ../../inc/Core/StringBuf.hpp
+   ../../inc/Core/StringGen.hpp
+   ../../inc/Core/StringList.hpp
+   ../../inc/Core/Token.hpp
+   ../../inc/Core/TokenBuf.hpp
+   ../../inc/Core/TokenStream.hpp
+   ../../inc/Core/Utility.hpp
+   ../../inc/Core/WSpaceTBuf.hpp
 )
 
 target_link_libraries(gdcc-core-lib gdcc-option-lib gmpxx gmp)

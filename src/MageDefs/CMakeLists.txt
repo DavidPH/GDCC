@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013 David Hill
+## Copyright (C) 2013-2014 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -15,10 +15,18 @@
 ## Targets                                                                    |
 ##
 
+##
+## gdcc-magedefs-lib
+##
 add_library(gdcc-magedefs-lib
    IStream.cpp
+
+   ../../inc/MageDefs/IStream.hpp
 )
 
+##
+## gdcc-magedefs
+##
 add_executable(gdcc-magedefs
    main_magedefs.cpp
 )

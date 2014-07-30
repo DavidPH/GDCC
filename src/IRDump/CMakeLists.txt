@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013 David Hill
+## Copyright (C) 2013-2014 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -15,6 +15,9 @@
 ## Targets                                                                    |
 ##
 
+##
+## gdcc-irdump
+##
 add_executable(gdcc-irdump
    main_irdump.cpp
 
@@ -23,6 +26,8 @@ add_executable(gdcc-irdump
    IRDump/Exp.cpp
    IRDump/Function.cpp
    IRDump/Program.cpp
+
+   ../../inc/IRDump/IRDump.hpp
 )
 
 target_link_libraries(gdcc-irdump gdcc-ir-lib)
