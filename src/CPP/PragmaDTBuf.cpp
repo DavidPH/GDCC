@@ -88,9 +88,8 @@ namespace GDCC
             }
 
             // Limited string processing.
-            auto const &strData = buf[0].str.getData();
-            std::string str; str.reserve(strData.len);
-            for(auto i = strData.str + 1, e = i + (strData.len - 2); i != e; ++i)
+            std::string str; str.reserve(buf[0].str.size());
+            for(auto i = buf[0].str.begin() + 1, e = buf[0].str.end() - 1; i != e; ++i)
             {
                if(*i == '\\')
                {

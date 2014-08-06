@@ -6,7 +6,7 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Master strings table.
+// Master strings table and string utilities.
 //
 //-----------------------------------------------------------------------------
 
@@ -14,7 +14,6 @@
 
 #include <cstring>
 #include <iostream>
-#include <memory>
 #include <vector>
 
 
@@ -62,48 +61,29 @@ namespace GDCC
       //
       // StringData constructor
       //
-      StringData::StringData(StringIndex num_) : str{""}, len{0}, hash{0},
-         num{num_}, next{0}
-      {
-      }
-
-      //
-      // StringData constructor
-      //
-      StringData::StringData(char const *str_, StringIndex num_) :
-         str  {str_},
+      StringData::StringData(StringIndex) :
+         str  {""},
          len  {0},
          hash {0},
-         num  {num_},
          next {0},
          len16{0},
          len32{0}
       {
-         LenHashString(str, len, hash);
-
-         auto hashMod = hash % StringTableHashC;
-
-         next = StringTableHash[hashMod];
-         StringTableHash[hashMod] = num;
       }
 
       //
       // StringData constructor
       //
       StringData::StringData(char const *str_, std::size_t len_,
-         std::size_t hash_, std::size_t num_) :
+         std::size_t hash_, std::size_t idx) :
          str  {str_},
          len  {len_},
          hash {hash_},
-         num  {num_},
-         next {0},
+         next {StringTableHash[hash % StringTableHashC]},
          len16{0},
          len32{0}
       {
-         auto hashMod = hash % StringTableHashC;
-
-         next = StringTableHash[hashMod];
-         StringTableHash[hashMod] = num;
+         StringTableHash[hash % StringTableHashC] = idx;
       }
 
       //
@@ -112,7 +92,7 @@ namespace GDCC
       std::size_t StringData::size16() const
       {
          // Compute length, if needed.
-         if(!len16 && len)
+         if(!len16)
          {
             for(auto itr = str, e = itr + len; itr != e;)
             {
@@ -131,7 +111,7 @@ namespace GDCC
       std::size_t StringData::size32() const
       {
          // Compute length, if needed.
-         if(!len32 && len)
+         if(!len32)
          {
             for(auto itr = str, e = itr + len; itr != e; ++len32)
                std::tie(std::ignore, itr) = Str8To32(itr, e);
@@ -141,12 +121,127 @@ namespace GDCC
       }
 
       //
+      // StringData::GetFirst
+      //
+      std::size_t StringData::GetFirst(std::size_t hash)
+      {
+         return StringTableHash[hash % StringTableHashC];
+      }
+
+      //
+      // String::Add
+      //
+      String String::Add(char const *str, std::size_t len, std::size_t hash)
+      {
+         std::size_t idx = StringTable.size();
+
+         StringTable.emplace_back(str, len, hash, idx);
+
+         String::DataC = StringTable.size();
+         String::DataV = StringTable.data();
+
+         return String(idx);
+      }
+
+      //
+      // String::Add
+      //
+      String String::Add(std::unique_ptr<char[]> &&str, std::size_t len,
+         std::size_t hash)
+      {
+         StringTableAlloc.emplace_back(std::move(str));
+         return Add(StringTableAlloc.back().get(), len, hash);
+      }
+
+      //
+      // String::Find
+      //
+      String String::Find(char const *str)
+      {
+         if(!str) return STRNULL;
+
+         auto lh = StrLenHash(str);
+         return Find(str, lh.first, lh.second);
+      }
+
+      //
+      // String::Find
+      //
+      String String::Find(char const *str, std::size_t len)
+      {
+         if(!str) return STRNULL;
+
+         return Find(str, len, StrHash(str, len));
+      }
+
+      //
+      // String::Find
+      //
+      String String::Find(char const *str, std::size_t len, std::size_t hash)
+      {
+         if(!str) return STRNULL;
+
+         for(auto idx = StringTableHash[hash % StringTableHashC]; idx;)
+         {
+            auto const &entry = StringTable[idx];
+
+            if(entry.hash == hash && entry.len == len && !std::memcmp(entry.str, str, len))
+               return String(idx);
+
+            idx = entry.next;
+         }
+
+         return STRNULL;
+      }
+
+      //
+      // String::Get
+      //
+      String String::Get(char const *str)
+      {
+         if(!str) return STRNULL;
+
+         auto lh = StrLenHash(str);
+         return Get(str, lh.first, lh.second);
+      }
+
+      //
+      // String::Get
+      //
+      String String::Get(char const *str, std::size_t len)
+      {
+         if(!str) return STRNULL;
+
+         return Get(str, len, StrHash(str, len));
+      }
+
+      //
+      // String::Get
+      //
+      String String::Get(char const *str, std::size_t len, std::size_t hash)
+      {
+         if(!str) return STRNULL;
+
+         if(auto s = Find(str, len, hash)) return s;
+
+         // Look for compatible substrings.
+         for(auto const &data : StringTable)
+         {
+            if(data.len <= len) continue;
+
+            if(std::memcmp(data.str + (data.len - len), str, len) == 0)
+               return Add(data.str + (data.len - len), len, hash);
+         }
+
+         return Add(StrDup(str, len), len, hash);
+      }
+
+      //
       // operator std::ostream << String
       //
       std::ostream &operator << (std::ostream &out, String in)
       {
-         auto const &data = in.getData();
-         return out.write(data.str, data.len);
+         return out.write(in.data(), in.size());
       }
 
       //
@@ -154,134 +249,40 @@ namespace GDCC
       //
       String operator + (String l, String r)
       {
-         auto const &ld = l.getData();
-         auto const &rd = r.getData();
+         std::size_t len  = l.size() + r.size();
+         std::size_t hash = StrHash(r.data(), r.size(), l.getHash());
 
-         std::size_t len  = ld.len + rd.len;
-         std::size_t hash = HashString(rd.str, rd.len, ld.hash);
-
-         for(auto num = StringTableHash[hash % StringTableHashC]; num;)
+         for(auto idx = StringData::GetFirst(hash); idx;)
          {
-            auto const &entry = StringTable[num];
+            auto const &entry = String::GetDataV()[idx];
 
-            if(entry.hash == hash && entry.len == len &&
-               !std::memcmp(entry.str,          ld.str, ld.len) &&
-               !std::memcmp(entry.str + ld.len, rd.str, rd.len))
-               return String(num);
+            if(entry.getHash() == hash && entry.size() == len &&
+               !std::memcmp(entry.data(),            l.data(), l.size()) &&
+               !std::memcmp(entry.data() + l.size(), r.data(), r.size()))
+               return String(idx);
 
-            num = entry.next;
+            idx = entry.getNext();
          }
 
-         char *newstr;
-         std::size_t num = StringTable.size();
-
-         newstr = new char[len + 1];
-         std::memcpy(newstr,          ld.str, ld.len);
-         std::memcpy(newstr + ld.len, rd.str, rd.len);
+         std::unique_ptr<char[]> newstr{new char[len + 1]};
+         std::memcpy(newstr.get(),            l.data(), l.size());
+         std::memcpy(newstr.get() + l.size(), r.data(), r.size());
          newstr[len] = '\0';
 
-         StringTableAlloc.emplace_back(newstr);
-         StringTable.emplace_back(newstr, len, hash, num);
-
-         String::DataC = StringTable.size();
-         String::DataV = StringTable.data();
-
-         return String(num);
+         return String::Add(std::move(newstr), len, hash);
       }
 
       //
-      // AddString
+      // operator String < String
       //
-      String AddString(char const *str)
+      bool operator < (String l, String r)
       {
-         std::size_t len = 0, hash = 0;
-         LenHashString(str, len, hash);
-         return AddString(str, len, hash);
-      }
+         if(l == r) return false;
 
-      //
-      // AddString
-      //
-      String AddString(char const *str, std::size_t len, std::size_t hash)
-      {
-         if(auto s = FindString(str, len, hash)) return s;
-
-         char *newstr;
-         std::size_t num = StringTable.size();
-
-         newstr = new char[len + 1];
-         std::memcpy(newstr, str, len);
-         newstr[len] = '\0';
-
-         StringTableAlloc.emplace_back(newstr);
-         StringTable.emplace_back(newstr, len, hash, num);
-
-         String::DataC = StringTable.size();
-         String::DataV = StringTable.data();
-
-         return String(num);
-      }
-
-      //
-      // FindString
-      //
-      String FindString(char const *str)
-      {
-         std::size_t len = 0, hash = 0;
-         LenHashString(str, len, hash);
-         return FindString(str, len, hash);
-      }
-
-      //
-      // FindString
-      //
-      String FindString(char const *str, std::size_t len, std::size_t hash)
-      {
-         for(auto num = StringTableHash[hash % StringTableHashC]; num;)
-         {
-            auto const &entry = StringTable[num];
-
-            if(entry.hash == hash && entry.len == len && !std::memcmp(entry.str, str, len))
-               return String(num);
-
-            num = entry.next;
-         }
-
-         return STRNULL;
-      }
-
-      //
-      // HashString
-      //
-      std::size_t HashString(char const *s)
-      {
-         std::size_t hash = 0;
-
-         while(*s) hash = (hash << 3) ^ static_cast<unsigned char>(*s++);
-
-         return hash;
-      }
-
-      //
-      // HashString
-      //
-      std::size_t HashString(char const *s, std::size_t len, std::size_t hash)
-      {
-         while(len--) hash = (hash << 3) ^ static_cast<unsigned char>(*s++);
-
-         return hash;
-      }
-
-      //
-      // LenHashString
-      //
-      void LenHashString(char const *s, std::size_t &len_, std::size_t &hash_)
-      {
-         std::size_t len = len_, hash = hash_;
-
-         for(; *s; ++len) hash = (hash << 3) ^ static_cast<unsigned char>(*s++);
-
-         len_ = len; hash_ = hash;
+         if(l.size() < r.size())
+            return std::memcmp(l.data(), r.data(), l.size()) <= 0;
+         else
+            return std::memcmp(l.data(), r.data(), r.size()) < 0;
       }
 
       //
@@ -309,17 +310,6 @@ namespace GDCC
             c = (c << 6) | (*itr++ & 0x3F);
 
          return {c, itr};
-      }
-
-      //
-      // StrDup
-      //
-      std::unique_ptr<char[]> StrDup(char const *str, std::size_t len)
-      {
-         std::unique_ptr<char[]> ptr{new char[len + 1]};
-         std::memcpy(ptr.get(), str, len);
-         ptr[len] = '\0';
-         return ptr;
       }
    }
 }

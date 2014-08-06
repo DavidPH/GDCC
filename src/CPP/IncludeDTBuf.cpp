@@ -133,10 +133,9 @@ namespace GDCC
             std::string tmp;
 
             for(mbuf.get(); mbuf.peek().tok != Core::TOK_CmpGT;)
-               tmp += mbuf.peek().str.getData().str;
+               tmp += mbuf.peek().str.data();
 
-            auto hash = Core::HashString(tmp.data(), tmp.size());
-            auto hdr = Core::AddString(tmp.data(), tmp.size(), hash);
+            Core::String hdr = {tmp.data(), tmp.size()};
             if(tryIncSys(hdr))
                return true;
 
@@ -199,7 +198,7 @@ namespace GDCC
          for(auto usr : IncludeUsr)
          {
             path = Core::PathConcat(usr, name);
-            if(fbuf->open(path.getData().str, std::ios_base::in))
+            if(fbuf->open(path.data(), std::ios_base::in))
                goto inc;
          }
 

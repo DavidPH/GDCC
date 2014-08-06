@@ -387,8 +387,7 @@ namespace GDCC
 
          tmp += '"';
 
-         auto hash = Core::HashString(tmp.data(), tmp.size());
-         return Core::AddString(tmp.data(), tmp.size(), hash);
+         return {tmp.data(), tmp.size()};
       }
 
       //

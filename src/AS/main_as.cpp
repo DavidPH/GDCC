@@ -138,7 +138,7 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
       throw EXIT_FAILURE;
    }
 
-   GDCC::AS::TStream in{fbuf, GDCC::Core::AddString(inName)};
+   GDCC::AS::TStream in{fbuf, inName};
    while(in.peek().tok != GDCC::Core::TOK_EOF) ParseTLK(in, prog);
 }
 

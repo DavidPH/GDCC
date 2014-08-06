@@ -28,7 +28,6 @@ namespace GDCC
       //
       String PathConcat(char const *l, String r)
       {
-         auto const &rd = r.getData();
          std::string tmp{l};
 
          if(tmp.empty()) return r;
@@ -36,16 +35,15 @@ namespace GDCC
          if(!IsPathSep(tmp.back()))
             tmp += PathSep(l);
 
-         if(!rd.empty())
+         if(!r.empty())
          {
-            if(IsPathSep(rd.front()))
-               tmp.append(rd.str + 1, rd.len - 1);
+            if(IsPathSep(r.front()))
+               tmp.append(r.data() + 1, r.size() - 1);
             else
-               tmp.append(rd.str, rd.len);
+               tmp.append(r.data(), r.size());
          }
 
-         auto hash = HashString(tmp.data(), tmp.size());
-         return AddString(tmp.data(), tmp.size(), hash);
+         return {tmp.data(), tmp.size()};
       }
 
       //
@@ -53,33 +51,29 @@ namespace GDCC
       //
       String PathConcat(String l, String r)
       {
-         auto const &ld = l.getData(), &rd = r.getData();
+         if(l.empty()) return r;
+         if(r.empty()) return l;
 
-         if(ld.empty()) return r;
-         if(rd.empty()) return l;
-
-         if(IsPathSep(ld.back()))
+         if(IsPathSep(l.back()))
          {
-            if(!IsPathSep(rd.front()))
+            if(!IsPathSep(r.front()))
                return l + r;
 
-            std::string tmp{ld.str, ld.len - 1};
-            tmp.append(rd.str, rd.len);
+            std::string tmp{l.data(), l.size() - 1};
+            tmp.append(r.data(), r.size());
 
-            auto hash = HashString(tmp.data(), tmp.size());
-            return AddString(tmp.data(), tmp.size(), hash);
+            return {tmp.data(), tmp.size()};
          }
          else
          {
-            if(IsPathSep(rd.front()))
+            if(IsPathSep(r.front()))
                return l + r;
 
-            std::string tmp{ld.str, ld.len};
-            tmp += PathSep(ld.str);
-            tmp.append(rd.str, rd.len);
+            std::string tmp{l.data(), l.size()};
+            tmp += PathSep(l.data());
+            tmp.append(r.data(), r.size());
 
-            auto hash = HashString(tmp.data(), tmp.size());
-            return AddString(tmp.data(), tmp.size(), hash);
+            return {tmp.data(), tmp.size()};
          }
       }
 
@@ -88,19 +82,16 @@ namespace GDCC
       //
       String PathDirname(String path)
       {
-         auto const &data = path.getData();
-
-         char const *itr = data.end();
+         char const *itr = path.end();
 
          for(;;)
          {
-            if(itr == data.str) return STR_;
+            if(itr == path.data()) return STR_;
             if(IsPathSep(*--itr)) break;
          }
 
-         std::size_t len = itr - data.str;
-         auto hash = HashString(data.str, len);
-         return AddString(data.str, len, hash);
+         std::size_t len = itr - path.data();
+         return {path.data(), len};
       }
 
       //
@@ -126,14 +117,11 @@ namespace GDCC
          char const sep = PathSep(path);
          for(char c : path) if(IsPathSep(c) && c != sep)
          {
-            auto const &pathData = path.getData();
-
-            std::unique_ptr<char[]> tmp{new char[pathData.len + 1]};
-            std::memcpy(tmp.get(), pathData.str, pathData.len + 1);
+            std::unique_ptr<char[]> tmp{new char[path.size() + 1]};
+            std::memcpy(tmp.get(), path.data(), path.size() + 1);
             PathNormalize(tmp.get());
 
-            auto hash = HashString(tmp.get(), pathData.len);
-            return AddString(tmp.get(), pathData.len, hash);
+            return {tmp.get(), path.size()};
          }
          #endif
 

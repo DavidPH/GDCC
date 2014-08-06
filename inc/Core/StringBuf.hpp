@@ -37,9 +37,8 @@ namespace GDCC
          //
          explicit StringBuf(String src)
          {
-            auto const &dat = src.getData();
-            char *str = const_cast<char *>(dat.str);
-            setg(str, str, str + dat.len);
+            char *str = const_cast<char *>(src.data());
+            setg(str, str, str + src.size());
          }
 
          //

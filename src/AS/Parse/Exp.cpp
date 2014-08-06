@@ -285,7 +285,7 @@ namespace GDCC
          // Read prefix.
          char const *s;
          int         base;
-         std::tie(s, base) = Core::ParseNumberBaseC(tok.str.getData().str);
+         std::tie(s, base) = Core::ParseNumberBaseC(tok.str.data());
 
          // Read integral part.
          Core::Integ valI;

@@ -163,10 +163,9 @@ namespace GDCC
          //
          std::size_t Info::lenString(Core::String s)
          {
-            auto const &data = s.getData();
             std::size_t len = 0;
 
-            for(auto i = data.str, e = i + data.len; i != e; ++i) switch(*i)
+            for(auto i = s.begin(), e = s.end(); i != e; ++i) switch(*i)
             {
             case '\0':
                if('0' <= i[1] && i[1] <= '7')

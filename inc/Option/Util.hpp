@@ -29,7 +29,11 @@ namespace GDCC
       std::unique_ptr<char[]> StrDup(char const *s);
       std::unique_ptr<char[]> StrDup(char const *s, std::size_t len);
 
-      std::size_t StrHash(char const *s);
+      std::size_t StrHash(char const *str);
+      std::size_t StrHash(char const *str, std::size_t len);
+      std::size_t StrHash(char const *str, std::size_t len, std::size_t hash);
+
+      std::pair<std::size_t, std::size_t> StrLenHash(char const *str);
    }
 }
 

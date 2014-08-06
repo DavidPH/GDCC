@@ -6,17 +6,17 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Master strings table.
+// Master strings table and string utilities.
 //
 //-----------------------------------------------------------------------------
 
 #ifndef GDCC__Core__String_H__
 #define GDCC__Core__String_H__
 
+#include "../Option/Util.hpp"
+
 #include <cstddef>
-#include <functional>
 #include <ostream>
-#include <memory>
 
 
 //----------------------------------------------------------------------------|
@@ -27,6 +27,8 @@ namespace GDCC
 {
    namespace Core
    {
+      class String;
+
       //
       // StringIndex
       //
@@ -45,9 +47,13 @@ namespace GDCC
       class StringData
       {
       public:
-         explicit StringData(StringIndex num);
-         StringData(char const *str, StringIndex num);
-         StringData(char const *str, std::size_t len, std::size_t hash, std::size_t num);
+         explicit StringData(StringIndex idx);
+
+         template<std::size_t Len>
+         StringData(char const (&str_)[Len], StringIndex idx_) :
+            StringData{str_, Len - 1, Option::StrHash(str_, Len - 1), idx_} {}
+
+         StringData(char const *str, std::size_t len, std::size_t hash, std::size_t idx);
 
          char const &operator [] (std::size_t i) const {return str[i];}
 
@@ -55,23 +61,33 @@ namespace GDCC
 
          char const *begin() const {return str;}
 
+         char const *data() const {return str;}
+
          bool empty() const {return !len;}
 
          char const *end() const {return str + len;}
 
          char const &front() const {return *str;}
 
+         std::size_t getHash() const {return hash;}
+
+         std::size_t getNext() const {return next;}
+
          std::size_t size() const {return len;}
          std::size_t size16() const;
          std::size_t size32() const;
 
-         char const *str;
-         std::size_t len;
-         std::size_t hash;
-         std::size_t num;
-         std::size_t next;
+
+         friend class String;
+
+         static std::size_t GetFirst(std::size_t hash);
 
       private:
+         char const *const str;
+         std::size_t const len;
+         std::size_t const hash;
+         std::size_t const next;
+
          mutable std::size_t len16;
          mutable std::size_t len32;
       };
@@ -83,41 +99,64 @@ namespace GDCC
       {
       public:
          String() = default;
-         explicit String(std::size_t num_) : num{num_} {}
-         constexpr String(StringIndex num_) : num{num_} {}
+         String(char const *str) : idx{Get(str).idx} {}
+         String(char const *str, std::size_t len) : idx{Get(str, len).idx} {}
+         String(char const *str, std::size_t len, std::size_t hash) :
+            idx{Get(str, len, hash).idx} {}
+         String(std::nullptr_t) : idx{STRNULL} {}
+         explicit String(std::size_t idx_) : idx{idx_} {}
+         constexpr String(StringIndex idx_) : idx{idx_} {}
 
-         explicit constexpr operator bool () const {return num != STRNULL;}
-         explicit constexpr operator std::size_t () const {return num;}
+         explicit constexpr operator bool () const {return idx != STRNULL;}
+         explicit constexpr operator std::size_t () const {return idx;}
          constexpr operator StringIndex () const
-            {return num < STRMAX ? static_cast<StringIndex>(num) : STRNULL;}
+            {return idx < STRMAX ? static_cast<StringIndex>(idx) : STRNULL;}
 
-         char const &operator [] (std::size_t i) const {return DataV[num].str[i];}
+         char const &operator [] (std::size_t i) const {return DataV[idx][i];}
 
-         constexpr bool operator == (String const &str) const {return str.num == num;}
-         constexpr bool operator == (StringIndex num_) const {return num == num_;}
-         constexpr bool operator != (String const &str) const {return str.num != num;}
-         constexpr bool operator != (StringIndex num_) const {return num != num_;}
+         String &operator = (StringIndex idx_) {idx = idx_; return *this;}
 
-         String &operator = (StringIndex num_) {num = num_; return *this;}
+         char const &back() const {return DataV[idx].back();}
 
-         char const *begin() const {return DataV[num].str;}
+         char const *begin() const {return DataV[idx].begin();}
 
-         char const *data() const {return DataV[num].str;}
+         char const *data() const {return DataV[idx].data();}
 
-         char const *end() const {return DataV[num].end();}
+         bool empty() const {return DataV[idx].empty();}
 
-         StringData const &getData() const {return DataV[num];}
+         char const *end() const {return DataV[idx].end();}
 
-         std::size_t size() const {return DataV[num].len;}
-         std::size_t size16() const {return DataV[num].size16();}
-         std::size_t size32() const {return DataV[num].size32();}
+         char const &front() const {return DataV[idx].front();}
+
+         std::size_t getHash() const {return DataV[idx].getHash();}
+
+         std::size_t size() const {return DataV[idx].size();}
+         std::size_t size16() const {return DataV[idx].size16();}
+         std::size_t size32() const {return DataV[idx].size32();}
+
+
+         // String must not already exist in table.
+         static String Add(char const *str, std::size_t len, std::size_t hash);
+         static String Add(std::unique_ptr<char[]> &&str, std::size_t len,
+            std::size_t hash);
+
+         static String Find(char const *str);
+         static String Find(char const *str, std::size_t len);
+         static String Find(char const *str, std::size_t len, std::size_t hash);
+
+         static String Get(char const *str);
+         static String Get(char const *str, std::size_t len);
+         static String Get(char const *str, std::size_t len, std::size_t hash);
+
+         static std::size_t       GetDataC() {return DataC;}
+         static StringData const *GetDataV() {return DataV;}
+
+      private:
+         std::size_t idx;
 
 
          static std::size_t       DataC;
          static StringData const *DataV;
-
-      private:
-         std::size_t num;
       };
    }
 }
@@ -129,18 +168,8 @@ namespace std
    //
    template<> struct hash<::GDCC::Core::String>
    {
-      constexpr size_t operator () (::GDCC::Core::String const &str) const
-         {return static_cast<size_t>(str);}
-   };
-
-   //
-   // less<::GDCC::Core::String>
-   //
-   template<> struct less<::GDCC::Core::String>
-   {
-      constexpr size_t operator () (::GDCC::Core::String const &l,
-         ::GDCC::Core::String const &r) const
-         {return static_cast<size_t>(l) < static_cast<size_t>(r);}
+      size_t operator () (::GDCC::Core::String str) const
+         {return str.getHash();}
    };
 }
 
@@ -153,35 +182,80 @@ namespace GDCC
 {
    namespace Core
    {
-      std::ostream &operator << (std::ostream &out, String in);
-
-      constexpr bool operator == (StringIndex l, String const &r) {return r == l;}
-      constexpr bool operator != (StringIndex l, String const &r) {return r != l;}
+      using Option::StrCmp;
+      using Option::StrDup;
+      using Option::StrHash;
+      using Option::StrLenHash;
 
       String operator + (String      l, String      r);
       String operator + (String      l, StringIndex r);
       String operator + (StringIndex l, String      r);
 
-      inline String &operator += (String &l, String      r) {return l = l + r;}
-      inline String &operator += (String &l, StringIndex r) {return l = l + r;}
+      std::ostream &operator << (std::ostream &out, String in);
 
-      String AddString(char const *str);
-      String AddString(char const *str, std::size_t len, std::size_t hash);
+      bool operator < (String      l, String      r);
+      bool operator < (String      l, StringIndex r);
+      bool operator < (StringIndex l, String      r);
 
-      String FindString(char const *str);
-      String FindString(char const *str, std::size_t len, std::size_t hash);
+      bool operator > (String      l, String      r);
+      bool operator > (String      l, StringIndex r);
+      bool operator > (StringIndex l, String      r);
 
-      std::size_t HashString(char const *str);
-      std::size_t HashString(char const *str, std::size_t len, std::size_t hash = 0);
+      bool operator <= (String      l, String      r);
+      bool operator <= (String      l, StringIndex r);
+      bool operator <= (StringIndex l, String      r);
 
-      void LenHashString(char const *str, std::size_t &len, std::size_t &hash);
+      bool operator >= (String      l, String      r);
+      bool operator >= (String      l, StringIndex r);
+      bool operator >= (StringIndex l, String      r);
+
+      constexpr bool operator == (String      l, String      r);
+      constexpr bool operator == (String      l, StringIndex r);
+      constexpr bool operator == (StringIndex l, String      r);
+
+      constexpr bool operator != (String      l, String      r);
+      constexpr bool operator != (String      l, StringIndex r);
+      constexpr bool operator != (StringIndex l, String      r);
+
+      String &operator += (String &l, String      r);
+      String &operator += (String &l, StringIndex r);
 
       std::pair<char32_t, char const *> Str8To32(char const *itr, char const *end);
 
-      std::unique_ptr<char[]> StrDup(char const *str, std::size_t len);
-
       inline String operator + (String l, StringIndex r) {return l + String(r);}
       inline String operator + (StringIndex l, String r) {return String(l) + r;}
+
+      inline bool operator < (String l, StringIndex r) {return l < String(r);}
+      inline bool operator < (StringIndex l, String r) {return String(l) < r;}
+
+      inline bool operator > (String l, String r) {return r < l;}
+      inline bool operator > (String l, StringIndex r) {return l > String(r);}
+      inline bool operator > (StringIndex l, String r) {return String(l) > r;}
+
+      inline bool operator <= (String l, String r) {return l == r || l < r;}
+      inline bool operator <= (String l, StringIndex r) {return l <= String(r);}
+      inline bool operator <= (StringIndex l, String r) {return String(l) <= r;}
+
+      inline bool operator >= (String l, String r) {return l == r || r < l;}
+      inline bool operator >= (String l, StringIndex r) {return l >= String(r);}
+      inline bool operator >= (StringIndex l, String r) {return String(l) >= r;}
+
+      constexpr bool operator == (String l, String r)
+         {return static_cast<std::size_t>(l) == static_cast<std::size_t>(r);}
+      constexpr bool operator == (String l, StringIndex r)
+         {return static_cast<std::size_t>(l) == static_cast<std::size_t>(r);}
+      constexpr bool operator == (StringIndex l, String r)
+         {return static_cast<std::size_t>(l) == static_cast<std::size_t>(r);}
+
+      constexpr bool operator != (String l, String r)
+         {return static_cast<std::size_t>(l) != static_cast<std::size_t>(r);}
+      constexpr bool operator != (String l, StringIndex r)
+         {return static_cast<std::size_t>(l) != static_cast<std::size_t>(r);}
+      constexpr bool operator != (StringIndex l, String r)
+         {return static_cast<std::size_t>(l) != static_cast<std::size_t>(r);}
+
+      inline String &operator += (String &l, String      r) {return l = l + r;}
+      inline String &operator += (String &l, StringIndex r) {return l = l + r;}
    }
 }
 

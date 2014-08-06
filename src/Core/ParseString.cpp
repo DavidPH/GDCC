@@ -115,7 +115,7 @@ namespace GDCC
             char str[] = "unknown escape character: ' '";
             std::size_t len = sizeof(str) - 1;
             str[len - 2] = static_cast<char>(c);
-            throw ParseError(AddString(str, len, HashString(str, len)));
+            throw ParseError({str, len});
          }
       }
 
@@ -154,8 +154,7 @@ namespace GDCC
       {
          StringStream in{inStr};
          auto data = ParseStringC(in);
-         auto hash = HashString(data.data(), data.size());
-         return AddString(data.data(), data.size(), hash);
+         return {data.data(), data.size()};
       }
 
       //
@@ -165,8 +164,7 @@ namespace GDCC
       {
          StringStream in{inStr.data() + offset, inStr.size() - offset};
          auto data = ParseStringC(in);
-         auto hash = HashString(data.data(), data.size());
-         return AddString(data.data(), data.size(), hash);
+         return {data.data(), data.size()};
       }
 
       //
@@ -234,7 +232,7 @@ namespace GDCC
             char str[] = "unknown escape character: ' '";
             std::size_t len = sizeof(str) - 1;
             str[len - 2] = static_cast<char>(c);
-            throw ParseError(AddString(str, len, HashString(str, len)));
+            throw ParseError({str, len});
          }
       }
 

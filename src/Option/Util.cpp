@@ -58,9 +58,48 @@ namespace GDCC
       std::size_t StrHash(char const *s)
       {
          std::size_t hash = 0;
-         if(s) for(; *s; ++s)
-            hash = hash * 5 + *s;
+
+         if(s) while(*s)
+            hash = hash * 5 + static_cast<unsigned char>(*s++);
+
          return hash;
+      }
+
+      //
+      // StrHash
+      //
+      std::size_t StrHash(char const *s, std::size_t len)
+      {
+         std::size_t hash = 0;
+
+         if(s) while(len--)
+            hash = hash * 5 + static_cast<unsigned char>(*s++);
+
+         return hash;
+      }
+
+      //
+      // StrHash
+      //
+      std::size_t StrHash(char const *s, std::size_t len, std::size_t hash)
+      {
+         if(s) while(len--)
+            hash = hash * 5 + static_cast<unsigned char>(*s++);
+
+         return hash;
+      }
+
+      //
+      // StrLenHash
+      //
+      std::pair<std::size_t, std::size_t> StrLenHash(char const *s)
+      {
+         std::size_t len = 0, hash = 0;
+
+         if(s) for(; *s; ++len)
+            hash = hash * 5 + static_cast<unsigned char>(*s++);
+
+         return {len, hash};
       }
    }
 }

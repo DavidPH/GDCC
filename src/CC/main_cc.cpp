@@ -71,10 +71,9 @@ static GDCC::Core::String MakeGlobalLabel(GDCC::Core::String file)
    buf[0] = '_';
    buf[1] = '$';
 
-   std::sprintf(buf + 2, "%*zX", static_cast<int>(sizeof(buf) - 3), file.getData().hash);
+   std::sprintf(buf + 2, "%*zX", static_cast<int>(sizeof(buf) - 3), file.getHash());
 
-   auto hash = Core::HashString(buf, sizeof(buf) - 1);
-   return Core::AddString(buf, sizeof(buf) - 1, hash);
+   return {buf, sizeof(buf) - 1};
 }
 
 //
@@ -92,7 +91,7 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
       throw EXIT_FAILURE;
    }
 
-   Core::String     file{Core::AddString(inName)};
+   Core::String     file{inName};
    CPP::MacroMap    macr{CPP::Macro::Stringize(file)};
    CPP::PragmaLangC prag{};
    Core::String     path{Core::PathDirname(file)};

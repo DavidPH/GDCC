@@ -31,7 +31,6 @@ static GDCC::Core::String AddStringNTS(char const *str)
 {
    GDCC::Core::Array<char> tmp;
    std::size_t             len    = 0;
-   std::size_t             hash   = 0;
    bool                    hasNul = false;
 
    for(auto s = str; *s; ++s, ++len)
@@ -54,8 +53,7 @@ static GDCC::Core::String AddStringNTS(char const *str)
       str = tmp.data();
    }
 
-   hash = GDCC::Core::HashString(str, len, hash);
-   return GDCC::Core::AddString(str, len, hash);
+   return {str, len};
 }
 
 

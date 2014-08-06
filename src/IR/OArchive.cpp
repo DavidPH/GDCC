@@ -38,15 +38,14 @@ namespace GDCC
       //
       OArchive &OArchive::putTablesString()
       {
-         auto begin = Core::String::DataV;
-         auto end   = begin + Core::String::DataC;
+         auto begin = Core::String::GetDataV() + Core::STRMAX;
+         auto end   = Core::String::GetDataV() + Core::String::GetDataC();
 
-         std::advance(begin, Core::STRMAX);
          *this << std::distance(begin, end);
 
          for(auto itr = begin; itr != end; ++itr)
          {
-            for(auto ci = itr->str, ce = ci + itr->len; ci != ce; ++ci)
+            for(auto ci = itr->data(), ce = ci + itr->size(); ci != ce; ++ci)
             {
                if(*ci)
                   out << *ci;

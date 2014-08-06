@@ -130,7 +130,7 @@ static GDCC::Option::Function Undef
       if(!args.argC)
          GDCC::Option::Exception::Error(args, "argument required");
 
-      Deltas.emplace_back(GDCC::Core::AddString(args.argV[0]), nullptr);
+      Deltas.emplace_back(args.argV[0], nullptr);
 
       return 1;
    }
@@ -264,9 +264,9 @@ namespace GDCC
       //
       Core::String Macro::MakeString(std::size_t i)
       {
-         char str[sizeof(i) * CHAR_BIT / 8 + 1];
-         auto len = std::sprintf(str, "%zu", i);
-         return Core::AddString(str, len, Core::HashString(str, len));
+         char str[sizeof(i) * CHAR_BIT / 3 + 1];
+         std::size_t len = std::sprintf(str, "%zu", i);
+         return {str, len, Core::StrHash(str, len)};
       }
 
       //
@@ -287,8 +287,8 @@ namespace GDCC
 
          tmp += '"';
 
-         auto hash = Core::HashString(tmp.data(), tmp.size());
-         return Core::AddString(tmp.data(), tmp.size(), hash);
+         auto hash = Core::StrHash(tmp.data(), tmp.size());
+         return {tmp.data(), tmp.size(), hash};
       }
 
       //
@@ -319,7 +319,7 @@ namespace GDCC
             break;
 
          default:
-            tmp += tok.str.getData().str;
+            tmp += tok.str.data();
             break;
          }
       }
@@ -444,7 +444,6 @@ namespace GDCC
          // Set up __DATE__ and __TIME__.
          {
             std::time_t t = std::time(nullptr);
-            std::size_t hash;
             char str[21];
 
             std::memcpy(str, std::asctime(std::gmtime(&t)) + 3, 21);
@@ -452,9 +451,8 @@ namespace GDCC
             str[ 7] = '"';
             str[16] = '"';
 
-            hash = Core::HashString(str + 7, 10);
             macroTIME.list[0].pos = Core::Origin(Core::STRNULL, 0);
-            macroTIME.list[0].str = Core::AddString(str + 7, 10, hash);
+            macroTIME.list[0].str = {str + 7, 10, Core::StrHash(str + 7, 10)};
             macroTIME.list[0].tok = Core::TOK_String;
 
             str[ 0] = '"';
@@ -465,9 +463,8 @@ namespace GDCC
             str[11] = str[20];
             str[12] = '"';
 
-            hash = Core::HashString(str, 13);
             macroDATE.list[0].pos = Core::Origin(Core::STRNULL, 0);
-            macroDATE.list[0].str = Core::AddString(str, 13, hash);
+            macroDATE.list[0].str = {str, 13, Core::StrHash(str, 13)};
             macroDATE.list[0].tok = Core::TOK_String;
          }
 

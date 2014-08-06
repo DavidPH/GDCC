@@ -63,7 +63,7 @@ static void ProcessFile(std::ostream &out, char const *inName)
       throw EXIT_FAILURE;
    }
 
-   Core::String     file{Core::AddString(inName)};
+   Core::String     file{inName};
    CPP::MacroMap    macr{CPP::Macro::Stringize(file)};
    CPP::PragmaLangC prag{};
    CPP::PPStream    in  {fbuf, macr, prag, file, Core::PathDirname(file)};

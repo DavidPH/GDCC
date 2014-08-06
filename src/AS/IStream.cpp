@@ -110,8 +110,7 @@ namespace GDCC
             try
             {
                std::string str  = Core::ParseStringC(Core::ReadStringC(in, c));
-               std::size_t hash = Core::HashString(str.data(), str.size());
-               out.str = Core::AddString(str.data(), str.size(), hash);
+               out.str = {str.data(), str.size()};
                out.tok = c == '"' ? Core::TOK_String : Core::TOK_Charac;
 
                return in;
@@ -128,9 +127,8 @@ namespace GDCC
          {
             in.putback(c);
 
-            std::string str  = Core::ReadNumberC(in);
-            std::size_t hash = Core::HashString(str.data(), str.size());
-            out.str = Core::AddString(str.data(), str.size(), hash);
+            std::string str = Core::ReadNumberC(in);
+            out.str = {str.data(), str.size()};
             out.tok = Core::TOK_Number;
 
             return in;
@@ -145,8 +143,7 @@ namespace GDCC
             while((c = in.get()) != EOF && (std::isalnum(c) || c == '_'));
             if(c != EOF) in.unget();
 
-            std::size_t hash = Core::HashString(str.data(), str.size());
-            out.str = Core::AddString(str.data(), str.size(), hash);
+            out.str = {str.data(), str.size()};
             out.tok = Core::TOK_Identi;
             return in;
          }

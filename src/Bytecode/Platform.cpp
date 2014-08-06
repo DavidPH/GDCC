@@ -37,18 +37,20 @@ static GDCC::Option::Function FormatOpt
 
    [](GDCC::Option::Base *, GDCC::Option::Args const &args) -> std::size_t
    {
-      if(!args.argC)
-         GDCC::Option::Exception::Error(args, "argument required");
+      using namespace GDCC;
 
-      switch(static_cast<GDCC::Core::StringIndex>(GDCC::Core::FindString(args.argV[0])))
+      if(!args.argC)
+         Option::Exception::Error(args, "argument required");
+
+      switch(Core::String::Find(args.argV[0]))
       {
-      case GDCC::Core::STR_ACSE:
-         GDCC::Bytecode::FormatCur = GDCC::Bytecode::Format::ACSE;    break;
-      case GDCC::Core::STR_MgC_NTS:
-         GDCC::Bytecode::FormatCur = GDCC::Bytecode::Format::MgC_NTS; break;
+      case Core::STR_ACSE:
+         Bytecode::FormatCur = Bytecode::Format::ACSE;    break;
+      case Core::STR_MgC_NTS:
+         Bytecode::FormatCur = Bytecode::Format::MgC_NTS; break;
 
       default:
-         GDCC::Option::Exception::Error(args, "argument invalid");
+         Option::Exception::Error(args, "argument invalid");
       }
 
       return 1;
@@ -67,18 +69,20 @@ static GDCC::Option::Function TargetOpt
 
    [](GDCC::Option::Base *, GDCC::Option::Args const &args) -> std::size_t
    {
-      if(!args.argC)
-         GDCC::Option::Exception::Error(args, "argument required");
+      using namespace GDCC;
 
-      switch(static_cast<GDCC::Core::StringIndex>(GDCC::Core::FindString(args.argV[0])))
+      if(!args.argC)
+         Option::Exception::Error(args, "argument required");
+
+      switch(Core::String::Find(args.argV[0]))
       {
-      case GDCC::Core::STR_MageCraft:
-         GDCC::Bytecode::TargetCur = GDCC::Bytecode::Target::MageCraft; break;
-      case GDCC::Core::STR_ZDoom:
-         GDCC::Bytecode::TargetCur = GDCC::Bytecode::Target::ZDoom;     break;
+      case Core::STR_MageCraft:
+         Bytecode::TargetCur = Bytecode::Target::MageCraft; break;
+      case Core::STR_ZDoom:
+         Bytecode::TargetCur = Bytecode::Target::ZDoom;     break;
 
       default:
-         GDCC::Option::Exception::Error(args, "argument invalid");
+         Option::Exception::Error(args, "argument invalid");
       }
 
       return 1;

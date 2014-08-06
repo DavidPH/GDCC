@@ -45,8 +45,7 @@ namespace GDCC
             while((c = in.get()) != EOF && c != '>')
                str += static_cast<char>(c);
 
-            std::size_t hash = Core::HashString(str.data(), str.size());
-            out.str = Core::AddString(str.data(), str.size(), hash);
+            out.str = {str.data(), str.size()};
             out.tok = Core::TOK_Header;
 
             return true;
@@ -60,8 +59,7 @@ namespace GDCC
             while((c = in.get()) != EOF && c != '"')
                str += static_cast<char>(c);
 
-            std::size_t hash = Core::HashString(str.data(), str.size());
-            out.str = Core::AddString(str.data(), str.size(), hash);
+            out.str = {str.data(), str.size()};
             out.tok = Core::TOK_HdrStr;
 
             return true;
@@ -214,8 +212,7 @@ namespace GDCC
             while((c = in.get()) != EOF && (std::isspace(c) && c != '\n'));
             if(c != EOF) in.unget();
 
-            std::size_t hash = Core::HashString(str.data(), str.size());
-            out.str = Core::AddString(str.data(), str.size(), hash);
+            out.str = {str.data(), str.size()};
             out.tok = Core::TOK_WSpace;
             return in;
          }
@@ -227,9 +224,8 @@ namespace GDCC
 
             try
             {
-               std::string str  = Core::ReadStringC(in, c);
-               std::size_t hash = Core::HashString(str.data(), str.size());
-               out.str = Core::AddString(str.data(), str.size(), hash);
+               std::string str = Core::ReadStringC(in, c);
+               out.str = {str.data(), str.size()};
                out.tok = c == '"' ? Core::TOK_String : Core::TOK_Charac;
 
                return in;
@@ -246,9 +242,8 @@ namespace GDCC
          {
             in.putback(c);
 
-            std::string str  = Core::ReadNumberC(in);
-            std::size_t hash = Core::HashString(str.data(), str.size());
-            out.str = Core::AddString(str.data(), str.size(), hash);
+            std::string str = Core::ReadNumberC(in);
+            out.str = {str.data(), str.size()};
             out.tok = Core::TOK_Number;
 
             return in;
@@ -270,9 +265,8 @@ namespace GDCC
 
                try
                {
-                       str += Core::ReadStringC(in, c);
-                  auto hash = Core::HashString(str.data(), str.size());
-                  out.str = Core::AddString(str.data(), str.size(), hash);
+                  str    += Core::ReadStringC(in, c);
+                  out.str = {str.data(), str.size()};
                   out.tok = c == '"' ? Core::TOK_String : Core::TOK_Charac;
 
                   return in;
@@ -285,8 +279,7 @@ namespace GDCC
             else if(c != EOF)
                in.unget();
 
-            std::size_t hash = Core::HashString(str.data(), str.size());
-            out.str = Core::AddString(str.data(), str.size(), hash);
+            out.str = {str.data(), str.size()};
             out.tok = Core::TOK_Identi;
             return in;
          }
@@ -301,8 +294,7 @@ namespace GDCC
 
          // Non-token character sequence. Might be meaningful later.
          char str[1] = {static_cast<char>(c)};
-         std::size_t hash = Core::HashString(str, 1);
-         out.str = Core::AddString(str, 1, hash);
+         out.str = {str, 1};
          out.tok = Core::TOK_ChrSeq;
          return in;
       }

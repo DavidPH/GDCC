@@ -83,9 +83,7 @@ namespace GDCC
          //
          void Info::putString(Core::String s)
          {
-            auto const &data = s.getData();
-
-            for(auto i = data.str, e = i + data.len; i != e; ++i) switch(*i)
+            for(auto i = s.begin(), e = s.end(); i != e; ++i) switch(*i)
             {
             case '\0':
                if('0' <= i[1] && i[1] <= '7')
@@ -123,9 +121,7 @@ namespace GDCC
                putByte(c ^ (idx++ / 2 + key));
             };
 
-            auto const &data = s.getData();
-
-            for(auto i = data.str, e = i + data.len; i != e; ++i) switch(*i)
+            for(auto i = s.begin(), e = s.end(); i != e; ++i) switch(*i)
             {
             case '\0':
                putChar('\\');

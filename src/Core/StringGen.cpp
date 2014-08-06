@@ -56,9 +56,7 @@ namespace GDCC
       {
          std::size_t len = std::sprintf(suffix, "%zu", i);
 
-         auto hash = HashString(suffix, len, baseHash);
-
-         return AddString(buffer.get(), len + baseLen, hash);
+         return {buffer.get(), len + baseLen, StrHash(suffix, len, baseHash)};
       }
 
       //
@@ -94,18 +92,16 @@ namespace GDCC
       //
       void StringGen::reset(String baseStr)
       {
-         auto const &baseDat = baseStr.getData();
-
          // Allocate string buffer.
          // baseStr number \0
-         baseLen = baseDat.len;
+         baseLen = baseStr.size();
          buffer.reset(new char[baseLen + NumLen + 1]);
 
          // Initialize string buffer base.
-         std::memcpy(buffer.get(), baseDat.str, baseDat.len);
+         std::memcpy(buffer.get(), baseStr.data(), baseStr.size());
 
          // Precompute string buffer base hash.
-         baseHash = baseDat.hash;
+         baseHash = baseStr.getHash();
 
          suffix = &buffer[baseLen];
          number = 0;
@@ -116,20 +112,19 @@ namespace GDCC
       //
       void StringGen::reset(String baseStr, char const *baseSuf)
       {
-         auto const &baseDat = baseStr.getData();
          std::size_t baseSuL = std::strlen(baseSuf);
 
          // Allocate string buffer.
          // baseStr baseSuf number \0
-         baseLen = baseDat.len + baseSuL;
+         baseLen = baseStr.size() + baseSuL;
          buffer.reset(new char[baseLen + NumLen + 1]);
 
          // Initialize string buffer base.
-         std::memcpy(buffer.get(), baseDat.str, baseDat.len);
-         std::memcpy(&buffer[baseDat.len], baseSuf, baseSuL);
+         std::memcpy(buffer.get(), baseStr.data(), baseStr.size());
+         std::memcpy(&buffer[baseStr.size()], baseSuf, baseSuL);
 
          // Precompute string buffer base hash.
-         baseHash = HashString(baseSuf, baseSuL, baseDat.hash);
+         baseHash = StrHash(baseSuf, baseSuL, baseStr.getHash());
 
          suffix = &buffer[baseLen];
          number = 0;

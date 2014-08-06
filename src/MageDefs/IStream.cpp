@@ -61,8 +61,7 @@ namespace GDCC
             while((c = in.get()) != EOF && IsIdentifierC(c));
             if(c != EOF) in.unget();
 
-            std::size_t hash = Core::HashString(str.data(), str.size());
-            out.str = Core::AddString(str.data(), str.size(), hash);
+            out.str = {str.data(), str.size()};
             out.tok = Core::TOK_Identi;
             return in;
          }
@@ -74,9 +73,8 @@ namespace GDCC
 
             try
             {
-               std::string str  = Core::ParseStringC(Core::ReadStringC(in, '"'));
-               std::size_t hash = Core::HashString(str.data(), str.size());
-               out.str = Core::AddString(str.data(), str.size(), hash);
+               std::string str = Core::ParseStringC(Core::ReadStringC(in, '"'));
+               out.str = {str.data(), str.size()};
                out.tok = Core::TOK_String;
 
                return in;
@@ -93,8 +91,7 @@ namespace GDCC
          {
             char str[1] = {static_cast<char>(c)};
 
-            std::size_t hash = Core::HashString(str, 1);
-            out.str = Core::AddString(str, 1, hash);
+            out.str = {str, 1};
             out.tok = Core::TOK_Charac;
             return in;
          }
