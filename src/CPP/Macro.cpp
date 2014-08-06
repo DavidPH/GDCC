@@ -372,19 +372,13 @@ namespace GDCC
          case Core::STR___FILE__:
             if(lines.empty()) return nullptr;
 
-            macroFILE.list[0].pos = tok.pos;
             macroFILE.list[0].str = lines.back().first;
-            macroFILE.list[0].tok = Core::TOK_String;
-
             return &macroFILE;
 
          case Core::STR___LINE__:
             if(lines.empty()) return nullptr;
 
-            macroLINE.list[0].pos = tok.pos;
             macroLINE.list[0].str = Macro::MakeString(tok.pos.line + lines.back().second);
-            macroLINE.list[0].tok = Core::TOK_Number;
-
             return &macroLINE;
 
          default:
@@ -446,15 +440,19 @@ namespace GDCC
             std::time_t t = std::time(nullptr);
             char str[21];
 
+            // asctime:  'Ddd Mmm dd hh:mm:ss yyyy\n\0'
+            // str:         ' Mmm dd hh:mm:ss yyyy'
             std::memcpy(str, std::asctime(std::gmtime(&t)) + 3, 21);
 
+            // str:      ' Mmm dd"hh:mm:ss"yyyy'
+            // __TIME__:        '"hh:mm:ss"'
             str[ 7] = '"';
             str[16] = '"';
 
-            macroTIME.list[0].pos = Core::Origin(Core::STRNULL, 0);
-            macroTIME.list[0].str = {str + 7, 10, Core::StrHash(str + 7, 10)};
-            macroTIME.list[0].tok = Core::TOK_String;
+            macroTIME.list[0] = {{Core::STRNULL, 0}, {str + 7, 10}, Core::TOK_String};
 
+            // str:      '"Mmm dd yyyy":ss"yyyy'
+            // __DATE__: '"Mmm dd yyyy"'
             str[ 0] = '"';
             str[ 7] = ' ';
             str[ 8] = str[17];
@@ -463,10 +461,14 @@ namespace GDCC
             str[11] = str[20];
             str[12] = '"';
 
-            macroDATE.list[0].pos = Core::Origin(Core::STRNULL, 0);
-            macroDATE.list[0].str = {str, 13, Core::StrHash(str, 13)};
-            macroDATE.list[0].tok = Core::TOK_String;
+            macroDATE.list[0] = {{Core::STRNULL, 0}, {str, 13}, Core::TOK_String};
          }
+
+         // Set up __FILE__.
+         macroFILE.list[0] = {{Core::STRNULL, 0}, Core::STRNULL, Core::TOK_String};
+
+         // Set up __LINE__.
+         macroLINE.list[0] = {{Core::STRNULL, 0}, Core::STRNULL, Core::TOK_Number};
 
          lines.clear();
          table.clear();
