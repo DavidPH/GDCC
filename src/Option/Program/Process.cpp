@@ -144,8 +144,8 @@ namespace GDCC
          // Check for attached argument.
          if(auto arg0 = std::strchr(args.nameL, '='))
          {
-            auto nameTemp = StrDup(args.nameL, arg0 - args.nameL);
-            auto opt      = find(args.nameL = nameTemp.get());
+            auto  nameTemp = StrDup(args.nameL, arg0 - args.nameL);
+            auto &opt      = get((args.nameL = nameTemp.get(), args));
 
             // Choose automatic or dynamic allocation for optv.
             char const **optv;
@@ -164,7 +164,7 @@ namespace GDCC
             args.argV = optv;
 
             // Handle the option.
-            used = opt->process(args);
+            used = opt.process(args);
 
             // An argument was explicitly attached to this option. If it went
             // unused, that's an error.
@@ -174,7 +174,7 @@ namespace GDCC
          else
          {
             // Handle the option. +1 for nameL.
-            used = find(args.nameL)->process(args) + 1;
+            used = get(args).process(args) + 1;
          }
 
          return used;
@@ -193,7 +193,7 @@ namespace GDCC
 
          // Optimization for single short option. +1 for opts.
          if(!opts[1])
-            return find(*opts)->process(args.setName(*opts)) + 1;
+            return get((args.nameS = *opts, args)).process(args.setName(*opts)) + 1;
 
          // Choose automatic or dynamic allocation for optv.
          char const **optv;
@@ -213,12 +213,12 @@ namespace GDCC
          // Iterate over short options.
          for(;; ++opts)
          {
-            auto opt = find(args.nameS = *opts);
+            auto &opt = get((args.nameS = *opts, args));
 
             if(opts[1])
             {
                optv[0] = opts + 1;
-               used = opt->process(args);
+               used = opt.process(args);
 
                // used includes opts, so can return as-is.
                if(used)
@@ -227,7 +227,7 @@ namespace GDCC
             else
             {
                // +1 for opts.
-               used = opt->process(args.drop()) + 1;
+               used = opt.process(args.drop()) + 1;
                break;
             }
          }
