@@ -13,7 +13,7 @@
 #include "Option/Exception.hpp"
 
 #include "Option/Base.hpp"
-#include "Option/Util.hpp"
+#include "Option/StrUtil.hpp"
 
 #include <cstdarg>
 #include <cstdio>

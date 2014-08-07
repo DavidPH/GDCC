@@ -14,7 +14,7 @@
 
 #include "Option/Base.hpp"
 #include "Option/Exception.hpp"
-#include "Option/Util.hpp"
+#include "Option/StrUtil.hpp"
 
 #include <cstring>
 

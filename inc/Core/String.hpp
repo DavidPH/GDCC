@@ -13,7 +13,7 @@
 #ifndef GDCC__Core__String_H__
 #define GDCC__Core__String_H__
 
-#include "../Option/Util.hpp"
+#include "../Option/StrUtil.hpp"
 
 #include <cstddef>
 #include <ostream>

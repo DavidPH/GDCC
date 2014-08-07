@@ -13,7 +13,7 @@
 #include "Option/Program.hpp"
 
 #include "Option/Base.hpp"
-#include "Option/Util.hpp"
+#include "Option/StrUtil.hpp"
 
 #include <cstring>
 

@@ -26,7 +26,7 @@ add_library(gdcc-option-lib
    Program.cpp
    Program/Process.cpp
    Program/Put.cpp
-   Util.cpp
+   StrUtil.cpp
 
    ../../inc/Option/Base.hpp
    ../../inc/Option/Bool.hpp
@@ -36,7 +36,7 @@ add_library(gdcc-option-lib
    ../../inc/Option/Function.hpp
    ../../inc/Option/Int.hpp
    ../../inc/Option/Program.hpp
-   ../../inc/Option/Util.hpp
+   ../../inc/Option/StrUtil.hpp
 )
 
 ## EOF

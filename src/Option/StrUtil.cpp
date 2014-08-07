@@ -6,11 +6,11 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Option processing utilities.
+// String utilities.
 //
 //-----------------------------------------------------------------------------
 
-#include "Option/Util.hpp"
+#include "Option/StrUtil.hpp"
 
 #include <cstring>
 
