@@ -16,7 +16,7 @@
 #include "../../CC/Scope/Break.hpp"
 
 #include "../../Core/StringGen.hpp"
-#include "../../Core/Utility.hpp"
+#include "../../Core/MemItr.hpp"
 
 
 //----------------------------------------------------------------------------|

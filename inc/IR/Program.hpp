@@ -20,7 +20,8 @@
 #include "../IR/Space.hpp"
 #include "../IR/StrEnt.hpp"
 
-#include "../Core/Utility.hpp"
+#include "../Core/MemItr.hpp"
+#include "../Core/Range.hpp"
 
 #include <unordered_map>
 

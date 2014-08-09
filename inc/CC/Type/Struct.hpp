@@ -18,7 +18,6 @@
 #include "../../AST/Type.hpp"
 
 #include "../../Core/Array.hpp"
-#include "../../Core/Utility.hpp"
 
 
 //----------------------------------------------------------------------------|

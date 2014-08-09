@@ -14,7 +14,7 @@
 #define GDCC__CPP__MacroTBuf_H__
 
 #include "../Core/TokenBuf.hpp"
-#include "../Core/Utility.hpp"
+#include "../Core/Range.hpp"
 
 #include <list>
 #include <unordered_set>

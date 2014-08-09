@@ -12,7 +12,7 @@
 
 #include "Bytecode/ZDACS/Info.hpp"
 
-#include "Core/Utility.hpp"
+#include "Core/Range.hpp"
 
 #include "IR/CallType.hpp"
 #include "IR/Function.hpp"

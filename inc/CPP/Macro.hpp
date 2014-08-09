@@ -16,7 +16,6 @@
 #include "../Core/Array.hpp"
 #include "../Core/String.hpp"
 #include "../Core/Token.hpp"
-#include "../Core/Utility.hpp"
 
 #include <unordered_map>
 

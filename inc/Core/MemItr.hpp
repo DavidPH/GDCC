@@ -6,14 +6,13 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Miscellaneous utility functions and classes.
+// Member-accessing iterators.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__Core__Utility_H__
-#define GDCC__Core__Utility_H__
+#ifndef GDCC__Core__MemItr_H__
+#define GDCC__Core__MemItr_H__
 
-#include <functional>
 #include <iterator>
 
 
@@ -25,20 +24,6 @@ namespace GDCC
 {
    namespace Core
    {
-      //
-      // LessMem
-      //
-      template<typename T, typename KT, KT T::*P, typename Cmp = std::less<KT>>
-      struct LessMem : private Cmp
-      {
-         using Cmp::Cmp;
-
-         constexpr bool operator () (T const &l, T const &r) const
-            {return Cmp::operator()(l.*P, r.*P);}
-         constexpr bool operator () (T const *l, T const *r) const
-            {return Cmp::operator()(l->*P, r->*P);}
-      };
-
       //
       // MemItr
       //
@@ -60,26 +45,6 @@ namespace GDCC
 
          constexpr MT *operator -> () const {return &Itr::operator->()->*P;}
       };
-
-      //
-      // Range
-      //
-      template<typename T> class Range
-      {
-      public:
-         Range() = default;
-         constexpr Range(T first_, T last_) : first{first_}, last{last_} {}
-
-         T begin() const {return first;}
-
-         bool empty() const {return first == last;}
-
-         T end() const {return last;}
-
-         std::size_t size() const {return std::distance(first, last);}
-
-         T first, last;
-      };
    }
 }
 
@@ -99,19 +64,5 @@ namespace std
    };
 }
 
-
-//----------------------------------------------------------------------------|
-// Global Functions                                                           |
-//
-
-namespace GDCC
-{
-   namespace Core
-   {
-      template<typename T>
-      Range<T> MakeRange(T first, T last) {return Range<T>(first, last);}
-   }
-}
-
-#endif//GDCC__Core__Utility_H__
+#endif//GDCC__Core__MemItr_H__
 

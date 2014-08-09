@@ -39,6 +39,8 @@ add_library(gdcc-core-lib
    ../../inc/Core/Exception.hpp
    ../../inc/Core/FeatureHold.hpp
    ../../inc/Core/List.hpp
+   ../../inc/Core/MemCmp.hpp
+   ../../inc/Core/MemItr.hpp
    ../../inc/Core/Number.hpp
    ../../inc/Core/NumberAlloc.hpp
    ../../inc/Core/Option.hpp
@@ -46,6 +48,7 @@ add_library(gdcc-core-lib
    ../../inc/Core/OriginBuf.hpp
    ../../inc/Core/Parse.hpp
    ../../inc/Core/Path.hpp
+   ../../inc/Core/Range.hpp
    ../../inc/Core/StreamTBuf.hpp
    ../../inc/Core/String.hpp
    ../../inc/Core/StringBuf.hpp
@@ -54,7 +57,6 @@ add_library(gdcc-core-lib
    ../../inc/Core/Token.hpp
    ../../inc/Core/TokenBuf.hpp
    ../../inc/Core/TokenStream.hpp
-   ../../inc/Core/Utility.hpp
    ../../inc/Core/WSpaceTBuf.hpp
 )
 
