@@ -81,14 +81,24 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 //
 int main(int argc, char *argv[])
 {
-   GDCC::Core::GetOptionList().usage = "[option]... [source]...";
+   using namespace GDCC;
 
-   GDCC::Core::GetOptionList().descS = "Output defaults to stdout.";
+   auto &list = Core::GetOptionList();
+
+   list.usage = "[option]... [source]...";
+
+   list.descS =
+      "Dumps information on IR data. Output defaults to stdout.";
 
    try
    {
-      GDCC::Core::InitOptions(argc, argv, "gdcc-irdump", false);
+      Core::InitOptions(argc, argv, "gdcc-irdump", "GDCC IR Dump", false);
       MakeIRDump();
+   }
+   catch(std::exception const &e)
+   {
+      std::cerr << e.what() << std::endl;
+      return EXIT_FAILURE;
    }
    catch(int e)
    {

@@ -16,6 +16,7 @@
 #include "Option/StrUtil.hpp"
 
 #include <cstring>
+#include <ctime>
 
 
 //----------------------------------------------------------------------------|
@@ -60,6 +61,132 @@ namespace GDCC
          if(info.lenL || info.lenS) info.len += 2;
 
          return info;
+      }
+
+      //
+      // Program::putAsciiDoc
+      //
+      void Program::putAsciiDoc(std::ostream &out, std::size_t width)
+      {
+         if(!width) width = GetWidthDefault();
+
+         // Put name and version.
+         if(name)
+         {
+            for(auto s = name; *s; ++s) out.put(std::toupper(*s));
+            out << "(1)\n";
+            for(auto s = name; *s; ++s) out << '=';
+            out << "===\n";
+         }
+         else
+         {
+            out << "PROGRAM(1)\n"
+                   "==========\n";
+         }
+
+         if(version)
+            out << ":revnumber: " << version << '\n';
+
+         // Date of document generation.
+         {
+            char str[11];
+
+            std::time_t t = std::time(nullptr);
+
+            std::strftime(str, 11, "%F", std::gmtime(&t));
+            out << ":revdate: " << str << '\n';
+         }
+
+         out << "\n\n";
+
+         // Put name again.
+         out << "NAME\n"
+                "----\n\n";
+
+         if(name)
+            out << name << " - " << (nameFull ? nameFull : name) << '\n';
+         else
+            out << "program - program\n";
+
+         out << "\n\n";
+
+         // Put usage.
+         out << "SYNOPSIS\n"
+                "--------\n\n";
+
+         if(usage)
+         {
+            if(name) out << name << ' ';
+            PutWrapped(out, width, usage, 7, name);
+            out << "\n\n";
+         }
+
+         // Put description.
+         if(auto desc = descL ? descL : descS)
+         {
+            out << "DESCRIPTION\n"
+                   "-----------\n\n";
+
+            PutWrapped(out, width, desc, 0);
+            out << "\n\n";
+         }
+
+         // Put options.
+         if(!listHead) return;
+
+         out << "OPTIONS\n"
+                "-------\n\n";
+
+         GroupInfo info; info.last = listHead;
+         do
+         {
+            info = getGroupInfo(info.last);
+            Base *opt = info.first;
+
+            // Put group header.
+            if(opt->info.group)
+            {
+               out << opt->info.group << "\n";
+               for(auto s = opt->info.group; *s; ++s)
+                  out << '~';
+               out << '\n';
+            }
+            else
+            {
+               out << "general\n"
+                      "~~~~~~~\n";
+            }
+
+             out << '\n';
+
+            do
+            {
+               auto desc = opt->info.descL ? opt->info.descL : opt->info.descS;
+
+               // Must have a description to put.
+               if(!desc) continue;
+
+               // -o, --option
+               out << '*';
+
+               if(opt->info.nameS)
+                  out << '-' << opt->info.nameS;
+
+               if(opt->info.nameL)
+               {
+                  if(opt->info.nameS) out << ", ";
+                  out << "--" << opt->info.nameL;
+               }
+
+               out << "*::";
+
+               out << "\n    ";
+               PutWrapped(out, width, desc, 4);
+               out << '\n';
+            }
+            while((opt = opt->listNext) != info.last);
+         }
+         while(info.last != listHead);
       }
 
       //
@@ -316,8 +443,11 @@ namespace GDCC
       {
          std::size_t len = 0;
 
+         while(*str && std::isspace(*str++))
+            ++len;
+
          while(*str && !std::isspace(*str++))
-            len++;
+            ++len;
 
          return len ? len : 1;
       }

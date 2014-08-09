@@ -119,13 +119,18 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 //
 int main(int argc, char *argv[])
 {
-   GDCC::Core::GetOptionList().usage = "[option]... [source]...";
+   using namespace GDCC;
 
-   GDCC::Core::GetOptionList().descS = "Output defaults to last loose argument.";
+   auto &list = Core::GetOptionList();
+
+   list.usage = "[option]... [source]...";
+
+   list.descS =
+      "Compiles C source into IR data. Output defaults to last loose argument.";
 
    try
    {
-      GDCC::Core::InitOptions(argc, argv, "gdcc-cc");
+      Core::InitOptions(argc, argv, "gdcc-cc", "GDCC C Compiler");
       MakeC();
    }
    catch(std::exception const &e)

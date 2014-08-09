@@ -44,6 +44,16 @@ namespace GDCC
                {opt->list->putHelp(std::cout); throw EXIT_SUCCESS;}
          },
 
+         optHelpADoc
+         {
+            &list, Option::Base::Info()
+               .setName("help-adoc")
+               .setDescS("Prints AsciiDoc usage and exits."),
+
+            [](Option::Base *opt, Option::Args const &) -> std::size_t
+               {opt->list->putAsciiDoc(std::cout); throw EXIT_SUCCESS;}
+         },
+
          optHelpLong
          {
             &list, Option::Base::Info()
@@ -112,13 +122,15 @@ namespace GDCC
       // InitOptions
       //
       void InitOptions(int argc, char const *const *argv, char const *name,
-         bool needOutput)
+         char const *nameFull, bool needOutput)
       {
          auto &opts = GetOptions();
 
-         if(name) opts.list.name = name;
+         if(name)     opts.list.name     = name;
+         if(nameFull) opts.list.nameFull = nameFull;
 
-         opts.list.version = "v0.4.1";
+         if(!opts.list.version)
+            opts.list.version = "v0.4.1";
 
          if(argc <= 1)
          {

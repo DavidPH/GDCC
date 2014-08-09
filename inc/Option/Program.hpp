@@ -50,17 +50,19 @@ namespace GDCC
          // Processes arguments/options.
          void process(Args const &args);
 
+         void putAsciiDoc(std::ostream &out, std::size_t width = 0);
          void putHelp(std::ostream &out, std::size_t width = 0);
          void putHelpLong(std::ostream &out, std::size_t width = 0);
          void putVersion(std::ostream &out, std::size_t width = 0);
 
          Base *processLoose = nullptr;
 
-         char const *descL   = nullptr;
-         char const *descS   = nullptr;
-         char const *name    = nullptr;
-         char const *usage   = nullptr;
-         char const *version = nullptr;
+         char const *descL    = nullptr;
+         char const *descS    = nullptr;
+         char const *name     = nullptr;
+         char const *nameFull = nullptr;
+         char const *usage    = nullptr;
+         char const *version  = nullptr;
 
 
          friend class Base;

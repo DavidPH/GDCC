@@ -117,14 +117,24 @@ static void ProcessFile(std::ostream &out, char const *inName)
 //
 int main(int argc, char *argv[])
 {
-   GDCC::Core::GetOptionList().usage = "[option]... [source]...";
+   using namespace GDCC;
 
-   GDCC::Core::GetOptionList().descS = "Output defaults to last loose argument.";
+   auto &list = Core::GetOptionList();
+
+   list.usage = "[option]... [source]...";
+
+   list.descS =
+      "Converts text to MageCraft NTS. Output defaults to last loose argument.";
 
    try
    {
-      GDCC::Core::InitOptions(argc, argv, "gdcc-magedefs");
+      Core::InitOptions(argc, argv, "gdcc-magedefs", "GDCC MageDefs");
       MakeDefs();
+   }
+   catch(std::exception const &e)
+   {
+      std::cerr << e.what() << std::endl;
+      return EXIT_FAILURE;
    }
    catch(int e)
    {

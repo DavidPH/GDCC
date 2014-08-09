@@ -33,7 +33,9 @@ static GDCC::Option::Function FormatOpt
    &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
       .setName("bc-format")
       .setGroup("output")
-      .setDescS("Selects output format."),
+      .setDescS("Selects bytecode format.")
+      .setDescL("Selects bytecode format. This option may affect higher level "
+         "codegen and should be set at all stages of compiling."),
 
    [](GDCC::Option::Base *, GDCC::Option::Args const &args) -> std::size_t
    {

@@ -42,6 +42,7 @@ namespace GDCC
          Option::CStrV args;
 
          Option::Function optHelp;
+         Option::Function optHelpADoc;
          Option::Function optHelpLong;
          Option::CStr     optOutput;
          Option::Function optVersion;
@@ -67,7 +68,7 @@ namespace GDCC
       OptionList &GetOptions();
 
       void InitOptions(int argc, char const *const *argv, char const *name,
-         bool needOutput = true);
+         char const *nameFull, bool needOutput = true);
    }
 }
 

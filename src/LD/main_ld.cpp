@@ -147,14 +147,24 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 //
 int main(int argc, char *argv[])
 {
-   GDCC::Core::GetOptionList().usage = "[option]... [source]...";
+   using namespace GDCC;
 
-   GDCC::Core::GetOptionList().descS = "Output defaults to last loose argument.";
+   auto &list = Core::GetOptionList();
+
+   list.usage = "[option]... [source]...";
+
+   list.descS =
+      "Converts IR data into bytecode. Output defaults to last loose argument.";
 
    try
    {
-      GDCC::Core::InitOptions(argc, argv, "gdcc-ld");
+      Core::InitOptions(argc, argv, "gdcc-ld", "GDCC Linker");
       MakeLinker();
+   }
+   catch(std::exception const &e)
+   {
+      std::cerr << e.what() << std::endl;
+      return EXIT_FAILURE;
    }
    catch(int e)
    {

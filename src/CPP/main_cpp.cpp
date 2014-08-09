@@ -122,18 +122,24 @@ static void PutStringEscape(std::ostream &out, GDCC::Core::String str)
 //
 int main(int argc, char *argv[])
 {
-   GDCC::Core::GetOptionList().usage = "[option]... [source]...";
+   using namespace GDCC;
 
-   GDCC::Core::GetOptionList().descS = "Output defaults to last loose argument.";
+   auto &list = Core::GetOptionList();
+
+   list.usage = "[option]... [source]...";
+
+   list.descS =
+      "Performs C preprocessing. Output defaults to last loose argument.";
 
    try
    {
-      GDCC::Core::InitOptions(argc, argv, "gdcc-cpp");
+      Core::InitOptions(argc, argv, "gdcc-cpp", "GDCC C Preprocessor");
       MakeCPP();
    }
    catch(std::exception const &e)
    {
       std::cerr << e.what() << std::endl;
+      return EXIT_FAILURE;
    }
    catch(int e)
    {
