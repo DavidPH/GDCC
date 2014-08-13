@@ -12,6 +12,8 @@
 
 #include "Core/Exception.hpp"
 
+#include "Core/Token.hpp"
+
 #include <sstream>
 
 
@@ -41,6 +43,42 @@ namespace GDCC
       {
          std::ostringstream oss;
          oss << "ERROR: " << pos << ": " << str;
+         auto const &tmp = oss.str();
+         msg = StrDup(tmp.data(), tmp.size());
+      }
+
+      //
+      // ParseExceptExpect constructor
+      //
+      ParseExceptExpect::ParseExceptExpect(Token const &tok, String exp_,
+         bool expQ_, bool gotQ_) noexcept :
+         ParseException{tok.pos},
+         exp {exp_},
+         got {tok.str},
+         expQ{expQ_},
+         gotQ{gotQ_}
+      {
+      }
+
+      //
+      // ParseExceptExpect::genMsg
+      //
+      void ParseExceptExpect::genMsg() const
+      {
+         std::ostringstream oss;
+
+         oss << "ERROR: " << pos << ":";
+
+         oss << " expected ";
+         if(expQ) oss << '\'';
+         oss << exp;
+         if(expQ) oss << '\'';
+
+         oss << " got ";
+         if(gotQ) oss << '\'';
+         oss << got;
+         if(gotQ) oss << '\'';
+
          auto const &tmp = oss.str();
          msg = StrDup(tmp.data(), tmp.size());
       }

@@ -24,13 +24,16 @@ add_library(gdcc-as-lib
    Parse.cpp
    Parse/Arg.cpp
    Parse/Block.cpp
+   Parse/Declaration.cpp
    Parse/Exp.cpp
    Parse/Function.cpp
+   Parse/Glyph.cpp
    Parse/Import.cpp
    Parse/Object.cpp
    Parse/Space.cpp
    Parse/StrEnt.cpp
    Parse/Type.cpp
+   Parse/Value.cpp
 
    ../../inc/AS/IStream.hpp
    ../../inc/AS/Macro.hpp

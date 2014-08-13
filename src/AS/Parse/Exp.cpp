@@ -12,13 +12,13 @@
 
 #include "AS/Parse.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "IR/Exp.hpp"
 #include "IR/Glyph.hpp"
 
-#include <iostream>
 #include <vector>
 
 
@@ -33,23 +33,22 @@ static std::tuple<char const */*end*/, bool /*fixed*/, bool /*bitsS*/,
    GDCC::Core::FastU /*bitsI*/, GDCC::Core::FastU /*bitsF*/, bool /*satur*/>
 ParseSuffix(char const *s, GDCC::Core::Token const &tok)
 {
-   GDCC::Core::FastU bitsF;
-   GDCC::Core::FastU bitsI;
-   bool              bitsS;
-   bool              fixed;
-   bool              satur;
+   using namespace GDCC;
+
+   Core::FastU bitsF;
+   Core::FastU bitsI;
+   bool        bitsS;
+   bool        fixed;
+   bool        satur;
 
    fixed = *s == 'F' || *s == 'f' ? ++s, false : true;
    bitsS = *s == 'S' || *s == 's' ? ++s, true : false;
-   std::tie(s, bitsI, std::ignore) = GDCC::Core::ParseNumberFastU(s, 10);
+   std::tie(s, bitsI, std::ignore) = Core::ParseNumberFastU(s, 10);
 
    if(*s != '.')
-   {
-      std::cerr << "ERROR: " << tok.pos << ": bad number: '" << tok.str << "'\n";
-      throw EXIT_FAILURE;
-   }
+      throw Core::ParseExceptExpect(tok, "number", false);
 
-   std::tie(s, bitsF, std::ignore) = GDCC::Core::ParseNumberFastU(++s, 10);
+   std::tie(s, bitsF, std::ignore) = Core::ParseNumberFastU(++s, 10);
    satur = *s == 'S' || *s == 's' ? ++s, true : false;
 
    return std::make_tuple(s, fixed, bitsS, bitsI, bitsF, satur);
@@ -65,47 +64,88 @@ namespace GDCC
    namespace AS
    {
       //
-      // ParseExp
+      // GetExp
       //
-      IR::Exp::CRef ParseExp(Core::TokenStream &in, IR::Program &prog)
+      IR::Exp::CRef GetExp(ParserCtx const &ctx)
       {
          #define doE1(name, token) case Core::token: \
-            return IR::ExpCreate_##name(ParseExp(in, prog), tok.pos)
+            return IR::ExpCreate_##name(GetExp(ctx), tok.pos)
 
          #define doE2(name, token) case Core::token: \
-            l = ParseExp(in, prog); r = ParseExp(in, prog); \
+            l = GetExp(ctx); r = GetExp(ctx); \
             return IR::ExpCreate_##name(l, r, tok.pos)
 
          #define doE3(name, token) case Core::token: \
-            c = ParseExp(in, prog); l = ParseExp(in, prog); r = ParseExp(in, prog); \
+            c = GetExp(ctx); l = GetExp(ctx); r = GetExp(ctx); \
             return IR::ExpCreate_##name(c, l, r, tok.pos)
+
+         std::vector<IR::Exp::CRef> v;
 
          IR::Exp::CPtr c, l, r;
          IR::Type t;
 
          Core::Token tok;
-         switch((in >> tok, tok).tok)
+         switch((tok = ctx.in.get()).tok)
          {
          case Core::TOK_Identi:
-            switch(static_cast<Core::StringIndex>(tok.str))
+            switch(tok.str)
             {
-            case Core::STR_cast:
-               t = ParseType(in, prog);
-               return IR::ExpCreate_Cst(t, ParseExp(in, prog), tok.pos);
+               doE2(Add,       STR_Add);
+               doE2(AddPtrRaw, STR_AddPtrRaw);
+               doE2(BitAnd,    STR_BitAnd);
+               doE2(BitOrI,    STR_BitOrI);
+               doE2(BitOrX,    STR_BitOrX);
+               doE2(CmpEQ,     STR_CmpEQ);
+               doE2(CmpGE,     STR_CmpGE);
+               doE2(CmpGT,     STR_CmpGT);
+               doE2(CmpLE,     STR_CmpLE);
+               doE2(CmpLT,     STR_CmpLT);
+               doE2(CmpNE,     STR_CmpNE);
+               doE3(Cnd,       STR_Cnd);
+               doE2(Div,       STR_Div);
+               doE1(Inv,       STR_Inv);
+               doE2(LogAnd,    STR_LogAnd);
+               doE2(LogOrI,    STR_LogOrI);
+               doE2(LogOrX,    STR_LogOrX);
+               doE2(Mod,       STR_Mod);
+               doE2(Mul,       STR_Mul);
+               doE1(Neg,       STR_Neg);
+               doE1(Not,       STR_Not);
+               doE2(ShL,       STR_ShL);
+               doE2(ShR,       STR_ShR);
+               doE2(Sub,       STR_Sub);
+
+            case Core::STR_Cst:
+               t = GetType(ctx);
+               return IR::ExpCreate_Cst(std::move(t), GetExp(ctx), tok.pos);
+
+            case Core::STR_Multi:
+               TokenDrop(ctx, Core::TOK_ParenO, "'('");
+
+               if(!ctx.in.peek(Core::TOK_ParenC)) do
+                  v.emplace_back(GetExp(ctx));
+               while(ctx.in.drop(Core::TOK_Comma));
+
+               TokenDrop(ctx, Core::TOK_ParenC, "')'");
+
+               return IR::ExpCreate_Multi({Core::Move, v.begin(), v.end()}, tok.pos);
+
+            case Core::STR_Value:
+               ctx.in.unget();
+               return IR::ExpCreate_Value(GetValue(ctx), tok.pos);
 
             case Core::STR_string:
-               return IR::ExpCreate_Value(ParseMultiString(in, prog), tok.pos);
+               return IR::ExpCreate_Value(GetMultiString(ctx), tok.pos);
 
             default:
-               std::cerr << "ERROR: " << tok.pos << ": expected expression\n";
-               throw EXIT_FAILURE;
+               throw Core::ParseExceptExpect(tok, "expression", false);
             }
 
          case Core::TOK_Number:
-            return IR::ExpCreate_Value(ParseNumber(tok), tok.pos);
+            return IR::ExpCreate_Value(GetNumber(tok), tok.pos);
 
          case Core::TOK_String:
-            return IR::ExpCreate_Glyph(IR::Glyph(&prog, tok.str), tok.pos);
+            return IR::ExpCreate_Glyph(IR::Glyph(ctx.prog, tok.str), tok.pos);
 
             doE2(Add,    TOK_Add);
             doE2(BitAnd, TOK_And);
@@ -131,19 +171,21 @@ namespace GDCC
             doE2(ShR,    TOK_ShR);
             doE2(Sub,    TOK_Sub);
 
-
-
          case Core::TOK_BraceO:
-            in.unget();
-            return ParseExpMulti(in, prog);
+            if(!ctx.in.peek(Core::TOK_BraceC)) do
+               v.emplace_back(GetExp(ctx));
+            while(ctx.in.drop(Core::TOK_Comma));
+
+            TokenDrop(ctx, Core::TOK_BraceC, "'}'");
+
+            return IR::ExpCreate_Multi({Core::Move, v.begin(), v.end()}, tok.pos);
 
          case Core::TOK_BrackO:
-            in.unget();
-            return IR::ExpCreate_Value(ParseMulti(in, prog), tok.pos);
+            ctx.in.unget();
+            return IR::ExpCreate_Value(GetMulti(ctx), tok.pos);
 
          default:
-            std::cerr << "ERROR: " << tok.pos << ": expected expression\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(tok, "expression", false);
          }
 
          #undef doE3
@@ -152,50 +194,31 @@ namespace GDCC
       }
 
       //
-      // ParseExpMulti
+      // GetFastI
       //
-      IR::Exp::CRef ParseExpMulti(Core::TokenStream &in, IR::Program &prog)
+      Core::FastI GetFastI(ParserCtx const &ctx)
       {
-         std::vector<IR::Exp::CRef> val;
-         auto pos = in.peek().pos;
-
-         SkipToken(in, Core::TOK_BraceO, "{");
-
-         if(in.peek().tok != Core::TOK_BrackC) do
-            val.emplace_back(ParseExp(in, prog));
-         while(in.drop(Core::TOK_Comma));
-
-         SkipToken(in, Core::TOK_BraceC, "}");
-
-         return IR::ExpCreate_Multi(val.data(), val.size(), pos);
-      }
-
-      //
-      // ParseFastI
-      //
-      Core::FastI ParseFastI(Core::TokenStream &in, IR::Program &prog)
-      {
-         auto i = ParseInteg(in, prog);
+         auto i = GetInteg(ctx);
 
          return number_cast<Core::FastI>(i);
       }
 
       //
-      // ParseFastU
+      // GetFastU
       //
-      Core::FastU ParseFastU(Core::TokenStream &in, IR::Program &prog)
+      Core::FastU GetFastU(ParserCtx const &ctx)
       {
-         auto i = ParseInteg(in, prog);
+         auto i = GetInteg(ctx);
 
          return number_cast<Core::FastU>(i);
       }
 
       //
-      // ParseInteg
+      // GetInteg
       //
-      Core::Integ ParseInteg(Core::TokenStream &in, IR::Program &prog)
+      Core::Integ GetInteg(ParserCtx const &ctx)
       {
-         auto exp = ParseExp(in, prog);
+         auto exp = GetExp(ctx);
          auto val = exp->getValue();
 
          switch(val.v)
@@ -204,25 +227,25 @@ namespace GDCC
             return val.vFixed.value >> val.vFixed.vtype.bitsF;
 
          default:
-            std::cerr << "stub\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(exp->pos, "integer expression",
+               "non-integer expression", false, false);
          }
       }
 
       //
-      // ParseMulti
+      // GetMulti
       //
-      IR::Value_Multi ParseMulti(Core::TokenStream &in, IR::Program &prog)
+      IR::Value_Multi GetMulti(ParserCtx const &ctx)
       {
          std::vector<IR::Value> val;
 
-         SkipToken(in, Core::TOK_BrackO, "[");
+         TokenDrop(ctx, Core::TOK_BrackO, "'['");
 
-         if(in.peek().tok != Core::TOK_BrackC) do
-            val.emplace_back(ParseExp(in, prog)->getValue());
-         while(in.drop(Core::TOK_Comma));
+         if(!ctx.in.peek(Core::TOK_BrackC)) do
+            val.emplace_back(GetExp(ctx)->getValue());
+         while(ctx.in.drop(Core::TOK_Comma));
 
-         SkipToken(in, Core::TOK_BrackC, "]");
+         TokenDrop(ctx, Core::TOK_BrackC, "']'");
 
          Core::Array<IR::Value> vals{Core::Move, val.begin(), val.end()};
          Core::Array<IR::Type> types{vals.size()};
@@ -230,32 +253,22 @@ namespace GDCC
          for(std::size_t i = 0, e = vals.size(); i != e; ++i)
             types[i] = vals[i].getType();
 
-         return IR::Value_Multi(std::move(vals),
-            IR::Type_Multi(std::move(types)));
+         return {std::move(vals), {std::move(types)}};
       }
 
       //
-      // ParseMultiString
+      // GetMultiString
       //
-      IR::Value_Multi ParseMultiString(Core::TokenStream &in, IR::Program &prog)
+      IR::Value_Multi GetMultiString(ParserCtx const &ctx)
       {
          std::vector<IR::Value_Fixed> val;
          IR::Type_Fixed               type;
 
          // Optionally take a type for string elements.
-         if(in.peek().tok != Core::TOK_String)
+         if(!ctx.in.peek(Core::TOK_String))
          {
-            auto pos = in.peek().pos;
-            auto t = ParseType(in, prog);
-            if(t.t != IR::TypeBase::Fixed)
-            {
-               std::cerr << "ERROR: " << pos << ": expected Type_Fixed\n";
-               throw EXIT_FAILURE;
-            }
-
-            type = t.tFixed;
+            type = GetType_Fixed(ctx);
          }
-
          // Otherwise, use a target-dependent default.
          else
          {
@@ -264,23 +277,20 @@ namespace GDCC
          }
 
          // Read string token.
-         ExpectToken(in, Core::TOK_String, "string");
-         auto str = in.get().str;
+         auto str = TokenPeekString(ctx).in.get().str;
 
          // Convert to values.
          val.reserve(str.size());
          for(unsigned char c : str)
             val.emplace_back(c, type);
 
-         return IR::Value_Multi(
-            Core::Array<IR::Value>(Core::Move, val.begin(), val.end()),
-            IR::Type_Multi(Core::Array<IR::Type>(val.size(), type)));
+         return {{Core::Move, val.begin(), val.end()}, {{val.size(), type}}};
       }
 
       //
-      // ParseNumber
+      // GetNumber
       //
-      IR::Value ParseNumber(Core::Token const &tok)
+      IR::Value GetNumber(Core::Token const &tok)
       {
          // Read prefix.
          char const *s;
@@ -343,22 +353,18 @@ namespace GDCC
 
          // Check that end of string was reached.
          if(*s)
-         {
-            std::cerr << "ERROR: " << tok.pos << ": bad number: '" << tok.str << "'\n";
-            throw EXIT_FAILURE;
-         }
+            throw Core::ParseExceptExpect(tok, "number", false);
 
          if(fixed)
          {
             auto val = Core::MergeNumberFixedC(valI <<= bitsF, valF <<= bitsF,
                valE, digF, base);
 
-            return IR::Value_Fixed(val, IR::Type_Fixed(bitsI, bitsF, bitsS, satur));
+            return IR::Value_Fixed(std::move(val), {bitsI, bitsF, bitsS, satur});
          }
          else
          {
-            std::cerr << "STUB:" __FILE__ << ':' << __LINE__ << '\n';
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(tok, "fixed-point number", false);
          }
       }
    }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,11 +14,10 @@
 
 #include "AS/Macro.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "IR/Block.hpp"
-
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -32,37 +31,27 @@ namespace GDCC
       //
       // ParseBlock
       //
-      void ParseBlock(Core::TokenStream &in, IR::Program &prog,
-         IR::Block &block, Core::TokenType end)
+      void ParseBlock(ParserCtx const &ctx, IR::Block &block, Core::TokenType end)
       {
          std::vector<IR::Arg> args;
          IR::Code code;
 
-         while(!in.drop(end)) switch(in.peek().tok)
+         while(!ctx.in.drop(end)) switch(ctx.in.peek().tok)
          {
          case Core::TOK_String:
-            block.addLabel(in.get().str);
+            block.addLabel(ctx.in.get().str);
             break;
 
          case Core::TOK_Identi:
-            block.setOrigin(in.peek().pos);
+            block.setOrigin(ctx.in.peek().pos);
 
-            switch(static_cast<Core::StringIndex>(in.get().str))
-            {
-               #define GDCC_IR_CodeList(c) \
-                  case Core::STR_##c: code = IR::Code::c; break;
-               #include "IR/CodeList.hpp"
+            code = GetCode(ctx);
 
-            default:
-               std::cerr << "ERROR:" << in.peek().pos << ": unknown code: '"
-                  << in.peek().str << "'\n";
-               throw EXIT_FAILURE;
-            }
-
+            // Read arguments to instruction.
             args.clear();
 
-            while(in.peek().tok != Core::TOK_LnEnd)
-               args.push_back(ParseArg(SkipToken(in, Core::TOK_Comma, "end of line"), prog));
+            while(!ctx.in.peek(Core::TOK_LnEnd))
+               args.push_back(GetArg(TokenDrop(ctx, Core::TOK_Comma, "end of line")));
 
             block.setArgs(Core::Array<IR::Arg>(Core::Move, args.begin(), args.end()));
             block.addStatement(code);
@@ -70,35 +59,31 @@ namespace GDCC
             break;
 
          case Core::TOK_Not:
-            in.get();
-            ExpectToken(in, Core::TOK_Identi, "identifier");
-            if(auto macro = Macro::Find(in.peek().str))
+            ctx.in.get();
+            if(auto macro = ctx.macros.find(TokenPeekIdenti(ctx).in.peek()))
             {
-               block.setOrigin(in.get().pos);
+               block.setOrigin(ctx.in.get().pos);
 
                // Read arguments to macro invocation.
                args.clear();
 
-               while(in.peek().tok != Core::TOK_LnEnd)
-                  args.push_back(ParseArg(SkipToken(in, Core::TOK_Comma, "end of line"), prog));
+               while(!ctx.in.peek(Core::TOK_LnEnd))
+                  args.push_back(GetArg(TokenDrop(ctx, Core::TOK_Comma, "end of line")));
 
                // Expand macro.
                macro->expand(block, args.data(), args.size());
             }
             else
-            {
-               std::cerr << "ERROR: " << in.peek().pos << ": expected macro name\n";
-               throw EXIT_FAILURE;
-            }
+               throw Core::ParseExceptExpect(ctx.in.peek(), "macro name", false);
+
             break;
 
          case Core::TOK_LnEnd:
-            in.get();
+            ctx.in.get();
             break;
 
          default:
-            std::cerr << "ERROR: " << in.peek().pos << ": expected block terminator\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(ctx.in.peek(), "block terminator", false);
          }
       }
    }

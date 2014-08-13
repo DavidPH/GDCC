@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2014 David Hill
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// StrEnt parsing utilities.
+// GlyphData parsing.
 //
 //-----------------------------------------------------------------------------
 
@@ -15,9 +15,7 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
-#include "IR/StrEnt.hpp"
-
-#include <iostream>
+#include "IR/Glyph.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,21 +27,18 @@ namespace GDCC
    namespace AS
    {
       //
-      // ParseStrEnt
+      // ParseGlyph
       //
-      void ParseStrEnt(ParserCtx const &ctx, IR::StrEnt &str)
+      void ParseGlyph(ParserCtx const &ctx, IR::GlyphData &glyph)
       {
          while(!ctx.in.drop(Core::TOK_LnEnd))
             switch(TokenPeekIdenti(ctx).in.get().str)
          {
-         case Core::STR_alias:    str.alias    = GetFastU(TokenDropEq(ctx));  break;
-         case Core::STR_alloc:    str.alloc    = GetFastU(TokenDropEq(ctx));  break;
-         case Core::STR_defin:    str.defin    = GetFastU(TokenDropEq(ctx));  break;
-         case Core::STR_valueInt: str.valueInt = GetFastU(TokenDropEq(ctx));  break;
-         case Core::STR_valueStr: str.valueStr = GetString(TokenDropEq(ctx)); break;
+         case Core::STR_type:  glyph.type  = GetType(TokenDropEq(ctx));  break;
+         case Core::STR_value: glyph.value = GetExp(TokenDropEq(ctx)); break;
 
          default:
-            throw Core::ParseExceptExpect(ctx.in.reget(), "StrEnt argument", false);
+            throw Core::ParseExceptExpect(ctx.in.reget(), "Glyph argument", false);
          }
       }
    }

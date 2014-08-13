@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,15 +12,8 @@
 
 #include "AS/Macro.hpp"
 
-#include <iostream>
-#include <unordered_map>
-
-
-//----------------------------------------------------------------------------|
-// Static Variables                                                           |
-//
-
-static std::unordered_map<GDCC::Core::String, GDCC::AS::Macro> MacroMap;
+#include "Core/Exception.hpp"
+#include "Core/Token.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -43,11 +36,8 @@ namespace GDCC
             for(auto &arg : args) if(arg.a == IR::ArgBase::Cpy)
             {
                if(arg.aCpy.value >= argc)
-               {
-                  std::cerr << "ERROR: " << block.getOrigin()
-                     << ": insufficient macro arguments\n";
-                  throw EXIT_FAILURE;
-               }
+                  throw Core::ExceptStr(block.getOrigin(),
+                     "insufficient macro arguments");
 
                arg = argv[arg.aCpy.value];
             }
@@ -57,22 +47,28 @@ namespace GDCC
       }
 
       //
-      // Macro::Add
+      // MacroMap::add
       //
-      void Macro::Add(Core::String name, IR::Block &&list)
+      void MacroMap::add(Core::String name, Macro &&macro)
       {
-         MacroMap.emplace(std::piecewise_construct,
-            std::forward_as_tuple(name),
-            std::forward_as_tuple(name, std::move(list)));
+         table.emplace(name, std::move(macro));
       }
 
       //
-      // Macro::Find
+      // MacroMap::find
       //
-      Macro const *Macro::Find(Core::String name)
+      Macro const *MacroMap::find(Core::Token const &tok)
       {
-         auto itr = MacroMap.find(name);
-         return itr == MacroMap.end() ? nullptr : &itr->second;
+         auto itr = table.find(tok.str);
+         return itr == table.end() ? nullptr : &itr->second;
+      }
+
+      //
+      // MacroMap::rem
+      //
+      void MacroMap::rem(Core::String name)
+      {
+         table.erase(name);
       }
    }
 }

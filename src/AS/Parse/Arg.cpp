@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,11 +12,10 @@
 
 #include "AS/Parse.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "IR/Arg.hpp"
-
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -24,71 +23,81 @@
 //
 
 //
-// ParseArg0
+// GetArg0
 //
 template<typename T>
-static T ParseArg0(GDCC::Core::TokenStream &in, GDCC::IR::Program &)
+static T GetArg0(GDCC::AS::ParserCtx const &ctx)
 {
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_ParenO, "(");
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_ParenC, ")");
+   using namespace GDCC;
+
+   AS::TokenDrop(ctx, Core::TOK_ParenO, "'('");
+   AS::TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
    return T();
 }
 
 //
-// ParseArgU
+// GetArgU
 //
 template<typename T>
-static T ParseArgU(GDCC::Core::TokenStream &in, GDCC::IR::Program &prog)
+static T GetArgU(GDCC::AS::ParserCtx const &ctx)
 {
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_ParenO, "(");
-   auto exp = GDCC::AS::ParseFastU(in, prog);
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_ParenC, ")");
+   using namespace GDCC;
+
+   AS::TokenDrop(ctx, Core::TOK_ParenO, "'('");
+   auto exp = AS::GetFastU(ctx);
+   AS::TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
    return T(std::move(exp));
 }
 
 //
-// ParseArg1
+// GetArg1
 //
 template<typename T>
-static T ParseArg1(GDCC::Core::TokenStream &in, GDCC::IR::Program &prog)
+static T GetArg1(GDCC::AS::ParserCtx const &ctx)
 {
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_ParenO, "(");
-   auto exp = GDCC::AS::ParseExp(in, prog);
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_ParenC, ")");
+   using namespace GDCC;
+
+   AS::TokenDrop(ctx, Core::TOK_ParenO, "'('");
+   auto exp = AS::GetExp(ctx);
+   AS::TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
    return T(std::move(exp));
 }
 
 //
-// ParseArg2
+// GetArg2
 //
 template<typename T>
-static T ParseArg2(GDCC::Core::TokenStream &in, GDCC::IR::Program &prog)
+static T GetArg2(GDCC::AS::ParserCtx const &ctx)
 {
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_ParenO, "(");
-   auto arg = GDCC::AS::ParseArg(in, prog);
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_Comma, ",");
-   auto exp = GDCC::AS::ParseExp(in, prog);
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_ParenC, ")");
+   using namespace GDCC;
+
+   AS::TokenDrop(ctx, Core::TOK_ParenO, "'('");
+   auto arg = AS::GetArg(ctx);
+   AS::TokenDrop(ctx, Core::TOK_Comma, "','");
+   auto exp = AS::GetExp(ctx);
+   AS::TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
    return T(std::move(arg), std::move(exp));
 }
 
 //
-// ParseArg3
+// GetArg3
 //
 template<typename T>
-static T ParseArg3(GDCC::Core::TokenStream &in, GDCC::IR::Program &prog)
+static T GetArg3(GDCC::AS::ParserCtx const &ctx)
 {
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_ParenO, "(");
-   auto arg0 = GDCC::AS::ParseArg(in, prog);
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_Comma, ",");
-   auto arg1 = GDCC::AS::ParseArg(in, prog);
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_Comma, ",");
-   auto exp  = GDCC::AS::ParseExp(in, prog);
-   GDCC::AS::SkipToken(in, GDCC::Core::TOK_ParenC, ")");
+   using namespace GDCC;
+
+   AS::TokenDrop(ctx, Core::TOK_ParenO, "'('");
+   auto arg0 = AS::GetArg(ctx);
+   AS::TokenDrop(ctx, Core::TOK_Comma, "','");
+   auto arg1 = AS::GetArg(ctx);
+   AS::TokenDrop(ctx, Core::TOK_Comma, "','");
+   auto exp  = AS::GetExp(ctx);
+   AS::TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
    return T(std::move(arg0), std::move(arg1), std::move(exp));
 }
@@ -103,43 +112,40 @@ namespace GDCC
    namespace AS
    {
       //
-      // ParseArg
+      // GetArg
       //
-      IR::Arg ParseArg(Core::TokenStream &in, IR::Program &prog)
+      IR::Arg GetArg(ParserCtx const &ctx)
       {
-         ExpectToken(in, Core::TOK_Identi, "identifier");
-         switch(static_cast<Core::StringIndex>(in.get().str))
+         switch(TokenPeekIdenti(ctx).in.get().str)
          {
-         case Core::STR_Gen:    return ParseArg2<IR::Arg_Gen   >(in, prog);
+         case Core::STR_Gen:    return GetArg2<IR::Arg_Gen   >(ctx);
 
-         case Core::STR_Cpy:    return ParseArgU<IR::Arg_Cpy   >(in, prog);
-         case Core::STR_Lit:    return ParseArg1<IR::Arg_Lit   >(in, prog);
-         case Core::STR_Nul:    return ParseArg0<IR::Arg_Nul   >(in, prog);
-         case Core::STR_Stk:    return ParseArg0<IR::Arg_Stk   >(in, prog);
+         case Core::STR_Cpy:    return GetArgU<IR::Arg_Cpy   >(ctx);
+         case Core::STR_Lit:    return GetArg1<IR::Arg_Lit   >(ctx);
+         case Core::STR_Nul:    return GetArg0<IR::Arg_Nul   >(ctx);
+         case Core::STR_Stk:    return GetArg0<IR::Arg_Stk   >(ctx);
 
-         case Core::STR_Far:    return ParseArg2<IR::Arg_Far   >(in, prog);
-         case Core::STR_GblArs: return ParseArg2<IR::Arg_GblArs>(in, prog);
-         case Core::STR_GblReg: return ParseArg2<IR::Arg_GblReg>(in, prog);
-         case Core::STR_Loc:    return ParseArg2<IR::Arg_Loc   >(in, prog);
-         case Core::STR_LocArs: return ParseArg2<IR::Arg_LocArs>(in, prog);
-         case Core::STR_LocReg: return ParseArg2<IR::Arg_LocReg>(in, prog);
-         case Core::STR_MapArs: return ParseArg2<IR::Arg_MapArs>(in, prog);
-         case Core::STR_MapReg: return ParseArg2<IR::Arg_MapReg>(in, prog);
-         case Core::STR_StrArs: return ParseArg2<IR::Arg_StrArs>(in, prog);
-         case Core::STR_Vaa:    return ParseArg2<IR::Arg_Vaa   >(in, prog);
-         case Core::STR_WldArs: return ParseArg2<IR::Arg_WldArs>(in, prog);
-         case Core::STR_WldReg: return ParseArg2<IR::Arg_WldReg>(in, prog);
+         case Core::STR_Far:    return GetArg2<IR::Arg_Far   >(ctx);
+         case Core::STR_GblArs: return GetArg2<IR::Arg_GblArs>(ctx);
+         case Core::STR_GblReg: return GetArg2<IR::Arg_GblReg>(ctx);
+         case Core::STR_Loc:    return GetArg2<IR::Arg_Loc   >(ctx);
+         case Core::STR_LocArs: return GetArg2<IR::Arg_LocArs>(ctx);
+         case Core::STR_LocReg: return GetArg2<IR::Arg_LocReg>(ctx);
+         case Core::STR_MapArs: return GetArg2<IR::Arg_MapArs>(ctx);
+         case Core::STR_MapReg: return GetArg2<IR::Arg_MapReg>(ctx);
+         case Core::STR_StrArs: return GetArg2<IR::Arg_StrArs>(ctx);
+         case Core::STR_Vaa:    return GetArg2<IR::Arg_Vaa   >(ctx);
+         case Core::STR_WldArs: return GetArg2<IR::Arg_WldArs>(ctx);
+         case Core::STR_WldReg: return GetArg2<IR::Arg_WldReg>(ctx);
 
-         case Core::STR_GblArr: return ParseArg3<IR::Arg_GblArr>(in, prog);
-         case Core::STR_MapArr: return ParseArg3<IR::Arg_MapArr>(in, prog);
-         case Core::STR_StrArr: return ParseArg3<IR::Arg_StrArr>(in, prog);
-         case Core::STR_WldArr: return ParseArg3<IR::Arg_WldArr>(in, prog);
+         case Core::STR_GblArr: return GetArg3<IR::Arg_GblArr>(ctx);
+         case Core::STR_MapArr: return GetArg3<IR::Arg_MapArr>(ctx);
+         case Core::STR_StrArr: return GetArg3<IR::Arg_StrArr>(ctx);
+         case Core::STR_WldArr: return GetArg3<IR::Arg_WldArr>(ctx);
 
          default:
-            in.unget();
-            std::cerr << "ERROR: " << in.peek().pos << ": bad statement argument: '"
-               << in.peek().str << "'\n";
-            throw EXIT_FAILURE;
+            ctx.in.unget();
+            throw Core::ParseExceptExpect(ctx.in.peek(), "Arg", false);
          }
       }
    }

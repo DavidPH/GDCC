@@ -24,6 +24,8 @@ namespace GDCC
 {
    namespace Core
    {
+      struct Token;
+
       //
       // Exception
       //
@@ -62,6 +64,48 @@ namespace GDCC
          virtual void genMsg() const;
 
          char const *str;
+      };
+
+      //
+      // ParseException
+      //
+      // Thrown by Parse and Get functions when encountering invalid input.
+      //
+      class ParseException : public Exception
+      {
+      public:
+         using Exception::Exception;
+      };
+
+      //
+      // ParseExceptExpect
+      //
+      class ParseExceptExpect : public ParseException
+      {
+      public:
+         //
+         // constructor
+         //
+         ParseExceptExpect(Origin pos_, String exp_, String got_, bool expQ_,
+            bool gotQ_ = true) noexcept :
+            ParseException{pos_},
+            exp {exp_},
+            got {got_},
+            expQ{expQ_},
+            gotQ{gotQ_}
+         {
+         }
+
+         ParseExceptExpect(Token const &tok, String exp, bool expQ,
+            bool gotQ = true) noexcept;
+
+      protected:
+         virtual void genMsg() const;
+
+         Core::String const exp;
+         Core::String const got;
+         bool         const expQ : 1;
+         bool         const gotQ : 1;
       };
    }
 }

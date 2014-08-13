@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,12 +12,11 @@
 
 #include "AS/Parse.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "IR/Exp.hpp"
 #include "IR/Object.hpp"
-
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -31,45 +30,22 @@ namespace GDCC
       //
       // ParseObject
       //
-      void ParseObject(Core::TokenStream &in, IR::Program &prog,
-         IR::Object &obj)
+      void ParseObject(ParserCtx const &ctx, IR::Object &obj)
       {
-         while(!in.drop(Core::TOK_LnEnd)) switch(static_cast<Core::StringIndex>(
-            ExpectToken(in, Core::TOK_Identi, "identifier").get().str))
+         while(!ctx.in.drop(Core::TOK_LnEnd))
+            switch(TokenPeekIdenti(ctx).in.get().str)
          {
-         case Core::STR_alias:
-            obj.alias = ParseFastU(SkipToken(in, Core::TOK_Equal, "="), prog);
-            break;
-
-         case Core::STR_alloc:
-            obj.alloc = ParseFastU(SkipToken(in, Core::TOK_Equal, "="), prog);
-            break;
-
-         case Core::STR_defin:
-            obj.defin = ParseFastU(SkipToken(in, Core::TOK_Equal, "="), prog);
-            break;
-
-         case Core::STR_initi:
-            obj.initi = ParseExp(SkipToken(in, Core::TOK_Equal, "="), prog);
-            break;
-
-         case Core::STR_linka:
-            obj.linka = ParseLinkage(SkipToken(in, Core::TOK_Equal, "=").get());
-            break;
-
-         case Core::STR_value:
-            obj.value = ParseFastU(SkipToken(in, Core::TOK_Equal, "="), prog);
-            break;
-
-         case Core::STR_words:
-            obj.words = ParseFastU(SkipToken(in, Core::TOK_Equal, "="), prog);
-            break;
+         case Core::STR_alias: obj.alias = GetFastU(TokenDropEq(ctx));     break;
+         case Core::STR_alloc: obj.alloc = GetFastU(TokenDropEq(ctx));     break;
+         case Core::STR_defin: obj.defin = GetFastU(TokenDropEq(ctx));     break;
+         case Core::STR_initi: obj.initi = GetExp(TokenDropEq(ctx));       break;
+         case Core::STR_linka: obj.linka = GetLinkage(TokenDropEq(ctx));   break;
+         case Core::STR_space: obj.space = GetAddrSpace(TokenDropEq(ctx)); break;
+         case Core::STR_value: obj.value = GetFastU(TokenDropEq(ctx));     break;
+         case Core::STR_words: obj.words = GetFastU(TokenDropEq(ctx));     break;
 
          default:
-            in.unget();
-            std::cerr << "ERROR: " << in.peek().pos << ": bad Object argument: '"
-               << in.peek().str << "'\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(ctx.in.reget(), "Object argument", false);
          }
       }
    }

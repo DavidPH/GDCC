@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,11 +12,10 @@
 
 #include "AS/Parse.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "IR/Import.hpp"
-
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -30,16 +29,13 @@ namespace GDCC
       //
       // ParseImport
       //
-      void ParseImport(Core::TokenStream &in, IR::Program &, IR::Import &)
+      void ParseImport(ParserCtx const &ctx, IR::Import &)
       {
-         while(!in.drop(Core::TOK_LnEnd)) switch(static_cast<Core::StringIndex>(
-            ExpectToken(in, Core::TOK_Identi, "identifier").get().str))
+         while(!ctx.in.drop(Core::TOK_LnEnd))
+            switch(TokenPeekIdenti(ctx).in.get().str)
          {
          default:
-            in.unget();
-            std::cerr << "ERROR: " << in.peek().pos << ": bad Import argument: '"
-               << in.peek().str << "'\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(ctx.in.reget(), "Import argument", false);
          }
       }
    }

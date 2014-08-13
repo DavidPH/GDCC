@@ -141,8 +141,8 @@ namespace GDCC
       {
          Type_Multi() = default;
 
-         explicit Type_Multi(Core::Array<Type> const &types_) : types{types_} {}
-         explicit Type_Multi(Core::Array<Type> &&types_) : types{std::move(types_)} {}
+         Type_Multi(Core::Array<Type> const &types_) : types{types_} {}
+         Type_Multi(Core::Array<Type> &&types_) : types{std::move(types_)} {}
 
          explicit Type_Multi(IArchive &in);
 

@@ -16,6 +16,7 @@ Declarations
   declaration:
     new-line
     function-declaration
+    glyph-declaration
     import-declaration
     macro-declaration
     object-declaration
@@ -153,6 +154,32 @@ valueStr
 Sets the function's string value. Only meaningful for ACS named scripts.
 
 ===========================================================
+Glyphs
+===========================================================
+
+  glyph-declaration:
+    <Glyph> string glyph-argument-list(opt) new-line
+
+  glyph-argument-list:
+    glyph-argument glyph-argument-list(opt)
+
+  glyph-argument:
+    <type> = type
+    <value> = expression
+
+-----------------------------------------------------------
+type
+-----------------------------------------------------------
+
+Sets the glyph's type.
+
+-----------------------------------------------------------
+value
+-----------------------------------------------------------
+
+Sets the glyph's value. The type of the expression must match the glyph's type.
+
+===========================================================
 Imports
 ===========================================================
 
@@ -180,7 +207,7 @@ Objects
 ===========================================================
 
   object-declaration:
-    <Object> address-specifier string string object-argument-list(opt) new-line
+    <Object> string object-argument-list(opt) new-line
 
   object-argument-list:
     object-argument object-argument-list(opt)
@@ -191,6 +218,7 @@ Objects
     <defin> = expression
     <initi> = expression
     <linka> = linkage-specifier
+    <space> = address-specifier string
     <value> = expression
     <words> = expression
 
@@ -443,11 +471,35 @@ Expressions
     identifier
     number
     string
-    ++ expression
+    value
+    <Add> expression expression
+    <AddPtrRaw> expression expression
+    <BitAnd> expression expression
+    <BitOrI> expression expression
+    <BitOrX> expression expression
+    <CmpEQ> expression expression
+    <CmpGE> expression expression
+    <CmpGT> expression expression
+    <CmpLE> expression expression
+    <CmpLT> expression expression
+    <CmpNE> expression expression
+    <Cnd> expression expression expression
+    <Cst> type expression
+    <Div> expression expression
+    <Inv> expression
+    <LogAnd> expression expression
+    <LogOrI> expression expression
+    <LogOrX> expression expression
+    <Mod> expression expression
+    <Mul> expression expression
+    <Neg> expression
+    <Not> expression
+    <ShL> expression expression
+    <ShR> expression expression
+    <Sub> expression expression
     -- expression
     ~ expression
     ! expression
-    <cast> type expression
     * expression expression
     / expression expression
     % expression expression
@@ -470,12 +522,33 @@ Expressions
     ? expression expression expression
 
   type:
+    type-Empty
+    type-Fixed
+    type-Float
+    type-Funct
+    type-Multi
+    type-Point
+    type-StrEn
+
+  type-Empty:
     <Empty> ( )
+
+  type-Fixed:
     <Fixed> ( expression , expression , expression , expression )
+
+  type-Float:
     <Float> ( expression , expression , expression , expression )
+
+  type-Funct:
     <Funct> ( call-type-specifier )
+
+  type-Multi:
     <Multi> ( type-list(opt) )
-    <Point> ( address-specifier , expression )
+
+  type-Point:
+    <Point> ( address-specifier , expression , expression )
+
+  type-StrEn:
     <StrEn> ( )
 
   type-list:
@@ -487,8 +560,9 @@ Aggregates
 ===========================================================
 
   aggregate:
-    [ expression-list(opt) ]
+    <Multi> ( expression-list(opt) )
     { expression-list(opt) }
+    [ expression-list(opt) ]
 
   expression-list:
     expression
@@ -496,15 +570,15 @@ Aggregates
 
 Results in a multi-part value. Each sub-expression has its own type.
 
-In the first form, expressions are evaluated immediately and cannot contain
-unbacked glyphs. In the second form, expression evaluation is deferred.
+In the first and second forms, expression evaluation is deferred. In the third
+form, expressions are evaluated immediately and cannot contain unbacked glyphs.
 
 ===========================================================
 Aggregate Strings
 ===========================================================
 
   aggregate-string:
-    <String> type(opt) string
+    <string> type-Fixed(opt) string
 
 Results in a multi-part value comprised of the characters in the string. The
 type of each element is determined by an explicit type or a target-dependent
@@ -639,6 +713,52 @@ Strings
 
 As an expression, a string indicates a glyph to be resolved.
 
+===========================================================
+Values
+===========================================================
+
+  value:
+    <Value> value-Empty
+    <Value> value-Funct
+    <Value> value-Multi
+    <Value> value-Point
+    <Value> value-StrEn
+
+-----------------------------------------------------------
+Empty
+-----------------------------------------------------------
+
+  value-Empty:
+    type-Empty ( )
+
+-----------------------------------------------------------
+Funct
+-----------------------------------------------------------
+
+  value-Funct:
+    type-Funct ( expression )
+
+-----------------------------------------------------------
+Multi
+-----------------------------------------------------------
+
+  value-Multi:
+    type-Multi ( expression-list(opt) )
+
+-----------------------------------------------------------
+Point
+-----------------------------------------------------------
+
+  value-Point:
+    type-Point ( expression , address-specifier string )
+
+-----------------------------------------------------------
+StrEn
+-----------------------------------------------------------
+
+  value-StrEn:
+    type-StrEn ( expression )
+
 ===============================================================================
 Specifiers
 ===============================================================================
@@ -710,6 +830,7 @@ Grammar
 
   declaration:
     function-declaration
+    glyph-declaration
     import-declaration
     macro-declaration
     object-declaration
@@ -739,6 +860,16 @@ Grammar
     <valueInt> = expression
     <valueStr> = string
 
+  glyph-declaration:
+    <Glyph> string glyph-argument-list(opt) new-line
+
+  glyph-argument-list:
+    glyph-argument glyph-argument-list(opt)
+
+  glyph-argument:
+    <type> = type
+    <value> = expression
+
   import-declaration:
     <Import> string new-line
 
@@ -746,7 +877,7 @@ Grammar
     <Macro> identifier new-line(opt) { statement-list(opt) }
 
   object-declaration:
-    <Object> address-specifier string string object-argument-list(opt) new-line
+    <Object> string object-argument-list(opt) new-line
 
   object-argument-list:
     object-argument object-argument-list(opt)
@@ -757,6 +888,7 @@ Grammar
     <defin> = expression
     <initi> = expression
     <linka> = linkage-specifier
+    <space> = address-specifier string
     <value> = expression
     <words> = expression
 
@@ -870,11 +1002,35 @@ Grammar
     identifier
     number
     string
-    ++ expression
+    value
+    <Add> expression expression
+    <AddPtrRaw> expression expression
+    <BitAnd> expression expression
+    <BitOrI> expression expression
+    <BitOrX> expression expression
+    <CmpEQ> expression expression
+    <CmpGE> expression expression
+    <CmpGT> expression expression
+    <CmpLE> expression expression
+    <CmpLT> expression expression
+    <CmpNE> expression expression
+    <Cnd> expression expression expression
+    <Cst> type expression
+    <Div> expression expression
+    <Inv> expression
+    <LogAnd> expression expression
+    <LogOrI> expression expression
+    <LogOrX> expression expression
+    <Mod> expression expression
+    <Mul> expression expression
+    <Neg> expression
+    <Not> expression
+    <ShL> expression expression
+    <ShR> expression expression
+    <Sub> expression expression
     -- expression
     ~ expression
     ! expression
-    <cast> type expression
     * expression expression
     / expression expression
     % expression expression
@@ -897,12 +1053,33 @@ Grammar
     ? expression expression expression
 
   type:
+    type-Empty
+    type-Fixed
+    type-Float
+    type-Funct
+    type-Multi
+    type-Point
+    type-StrEn
+
+  type-Empty:
     <Empty> ( )
+
+  type-Fixed:
     <Fixed> ( expression , expression , expression , expression )
+
+  type-Float:
     <Float> ( expression , expression , expression , expression )
+
+  type-Funct:
     <Funct> ( call-type-specifier )
+
+  type-Multi:
     <Multi> ( type-list(opt) )
-    <Point> ( address-specifier , expression )
+
+  type-Point:
+    <Point> ( address-specifier , expression , expression )
+
+  type-StrEn:
     <StrEn> ( )
 
   type-list:
@@ -910,15 +1087,16 @@ Grammar
     type , type-list
 
   aggregate:
-    [ expression-list(opt) ]
+    <Multi> ( expression-list(opt) )
     { expression-list(opt) }
+    [ expression-list(opt) ]
 
   expression-list:
     expression
     expression , expression-list
 
   aggregate-string:
-    <String> type(opt) string
+    <string> type-Fixed(opt) string
 
   identifier:
     non-digit
@@ -1032,6 +1210,28 @@ Grammar
 
   simple-escape-sequence: one of
     \' \" \? \\ \a \b \f \n \r \t \v
+
+  value:
+    <Value> value-Empty
+    <Value> value-Funct
+    <Value> value-Multi
+    <Value> value-Point
+    <Value> value-StrEn
+
+  value-Empty:
+    type-Empty ( )
+
+  value-Funct:
+    type-Funct ( expression )
+
+  value-Multi:
+    type-Multi ( expression-list(opt) )
+
+  value-Point:
+    type-Point ( expression , address-specifier string )
+
+  value-StrEn:
+    type-StrEn ( expression )
 
   address-specifier:
     <Cpy>

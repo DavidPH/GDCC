@@ -37,15 +37,20 @@ namespace GDCC
          Core::Array<Exp::CRef> const expv;
 
 
-         friend Exp::CRef ExpCreate_Multi(Exp::CRef const *expv,
-            std::size_t expc, Core::Origin pos);
+
+         friend Exp::CRef ExpCreate_Multi(Core::Array<Exp::CRef> const &expv,
+            Core::Origin pos);
+         friend Exp::CRef ExpCreate_Multi(Core::Array<Exp::CRef> &&expv,
+            Core::Origin pos);
 
          friend Exp::CRef ExpGetIR_Multi(IArchive &in);
 
       protected:
          Exp_Multi(Exp_Multi const &) = default;
-         Exp_Multi(Exp::CRef const *expv_, std::size_t expc, Core::Origin pos_) :
-            Super{pos_}, expv{expv_, expv_ + expc} {}
+         Exp_Multi(Core::Array<Exp::CRef> const &expv_, Core::Origin pos_) :
+            Super{pos_}, expv{expv_} {}
+         Exp_Multi(Core::Array<Exp::CRef> &&expv_, Core::Origin pos_) :
+            Super{pos_}, expv{std::move(expv_)} {}
          explicit Exp_Multi(IArchive &in);
 
          virtual bool v_canGetValue() const;

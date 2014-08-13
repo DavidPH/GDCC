@@ -37,6 +37,8 @@ namespace GDCC
       {
          Value_Empty() = default;
 
+         Value_Empty(Type_Empty vtype_) : vtype{vtype_} {}
+
          explicit Value_Empty(IArchive &in);
 
          explicit operator bool () const {return false;}
@@ -148,6 +150,10 @@ namespace GDCC
       struct Value_Point
       {
          Value_Point() = default;
+
+         Value_Point(Core::FastU value_, AddrBase addrB_, Core::String addrN_,
+            Type_Point const &vtype_) :
+            vtype{vtype_}, value{value_}, addrB{addrB_}, addrN{addrN_} {}
 
          explicit Value_Point(IArchive &in);
 

@@ -86,10 +86,18 @@ namespace GDCC
       //
       // ExpCreate_Multi
       //
-      Exp::CRef ExpCreate_Multi(Exp::CRef const *expv, std::size_t expc,
+      Exp::CRef ExpCreate_Multi(Core::Array<Exp::CRef> const &expv,
          Core::Origin pos)
       {
-         return static_cast<Exp::CRef>(new Exp_Multi(expv, expc, pos));
+         return static_cast<Exp::CRef>(new Exp_Multi(expv, pos));
+      }
+
+      //
+      // ExpCreate_Multi
+      //
+      Exp::CRef ExpCreate_Multi(Core::Array<Exp::CRef> &&expv, Core::Origin pos)
+      {
+         return static_cast<Exp::CRef>(new Exp_Multi(std::move(expv), pos));
       }
 
       //

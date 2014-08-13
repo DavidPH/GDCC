@@ -12,14 +12,14 @@
 
 #include "AS/Parse.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "IR/Addr.hpp"
 #include "IR/CallType.hpp"
+#include "IR/Code.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/ScriptType.hpp"
-
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -31,43 +31,43 @@ namespace GDCC
    namespace AS
    {
       //
-      // ExpectToken
+      // GetAddrBase
       //
-      Core::TokenStream &ExpectToken(Core::TokenStream &in, Core::TokenType tt,
-         char const *str)
+      IR::AddrBase GetAddrBase(ParserCtx const &ctx)
       {
-         if(in.peek().tok != tt)
-         {
-            std::cerr << "ERROR: " << in.peek().pos << ": expected " << str << '\n';
-            throw EXIT_FAILURE;
-         }
-
-         return in;
-      }
-
-      //
-      // ParseAddrBase
-      //
-      IR::AddrBase ParseAddrBase(Core::Token const &tok)
-      {
-         switch(tok.str)
+         switch(TokenPeekIdenti(ctx).in.get().str)
          {
             #define GDCC_IR_AddrList(name) \
                case Core::STR_##name: return IR::AddrBase::name;
             #include "IR/AddrList.hpp"
 
          default:
-            std::cerr << "ERROR: " << tok.pos << ": bad AddrBase: '" << tok.str << "'\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(ctx.in.reget(), "AddrBase", false);
          }
       }
 
       //
-      // ParseCallType
+      // GetAddrSpace
       //
-      IR::CallType ParseCallType(Core::Token const &tok)
+      IR::AddrSpace GetAddrSpace(ParserCtx const &ctx)
       {
-         switch(tok.str)
+         IR::AddrSpace space;
+
+         space.base = GetAddrBase(ctx);
+         space.name = TokenPeekString(ctx).in.get().str;
+
+         if(space.name == Core::STR_)
+            space.name = Core::STRNULL;
+
+         return space;
+      }
+
+      //
+      // GetCallType
+      //
+      IR::CallType GetCallType(ParserCtx const &ctx)
+      {
+         switch(TokenPeekIdenti(ctx).in.get().str)
          {
          case Core::STR_Action:  return IR::CallType::Action;
          case Core::STR_AsmFunc: return IR::CallType::AsmFunc;
@@ -84,17 +84,32 @@ namespace GDCC
          case Core::STR_Special: return IR::CallType::Special;
 
          default:
-            std::cerr << "ERROR: " << tok.pos << ": bad CallType: '" << tok.str << "'\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(ctx.in.reget(), "CallType", false);
          }
       }
 
       //
-      // ParseLinkage
+      // getCode
       //
-      IR::Linkage ParseLinkage(Core::Token const &tok)
+      IR::Code GetCode(ParserCtx const &ctx)
       {
-         switch(tok.str)
+         switch(TokenPeekIdenti(ctx).in.get().str)
+         {
+            #define GDCC_IR_CodeList(c) \
+               case Core::STR_##c: return IR::Code::c; break;
+            #include "IR/CodeList.hpp"
+
+         default:
+            throw Core::ParseExceptExpect(ctx.in.reget(), "Code", false);
+         }
+      }
+
+      //
+      // GetLinkage
+      //
+      IR::Linkage GetLinkage(ParserCtx const &ctx)
+      {
+         switch(TokenPeekIdenti(ctx).in.get().str)
          {
          case Core::STR_ExtACS: return IR::Linkage::ExtACS;
          case Core::STR_ExtASM: return IR::Linkage::ExtASM;
@@ -105,17 +120,16 @@ namespace GDCC
          case Core::STR_IntCXX: return IR::Linkage::IntCXX;
 
          default:
-            std::cerr << "ERROR: " << tok.pos << ": bad Linkage: '" << tok.str << "'\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(ctx.in.reget(), "Linkage", false);
          }
       }
 
       //
-      // ParseScriptType
+      // GetScriptType
       //
-      IR::ScriptType ParseScriptType(Core::Token const &tok)
+      IR::ScriptType GetScriptType(ParserCtx const &ctx)
       {
-         switch(tok.str)
+         switch(TokenPeekIdenti(ctx).in.get().str)
          {
          case Core::STR_None:       return IR::ScriptType::None;
          case Core::STR_Death:      return IR::ScriptType::Death;
@@ -128,24 +142,64 @@ namespace GDCC
          case Core::STR_Unloading:  return IR::ScriptType::Unloading;
 
          default:
-            std::cerr << "ERROR: " << tok.pos << ": bad ScriptType: '" << tok.str << "'\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(ctx.in.reget(), "ScriptType", false);
          }
       }
 
       //
-      // SkipToken
+      // GetString
       //
-      Core::TokenStream &SkipToken(Core::TokenStream &in, Core::TokenType tt,
-         char const *str)
+      Core::String GetString(ParserCtx const &ctx)
       {
-         if(!in.drop(tt))
-         {
-            std::cerr << "ERROR: " << in.peek().pos << ": expected " << str << '\n';
-            throw EXIT_FAILURE;
-         }
+         return TokenPeekString(ctx).in.get().str;
+      }
 
-         return in;
+      //
+      // TokenDrop
+      //
+      ParserCtx const &TokenDrop(ParserCtx const &ctx, Core::TokenType tt,
+         char const *expect)
+      {
+         if(!ctx.in.drop(tt))
+            throw Core::ParseExceptExpect(ctx.in.peek(), expect, false);
+
+         return ctx;
+      }
+
+      //
+      // TokenDropEq
+      //
+      ParserCtx const &TokenDropEq(ParserCtx const &ctx)
+      {
+         return TokenDrop(ctx, Core::TOK_Equal, "'='");
+      }
+
+      //
+      // TokenPeek
+      //
+      ParserCtx const &TokenPeek(ParserCtx const &ctx, Core::TokenType tt,
+         char const *expect)
+      {
+         if(!ctx.in.peek(tt))
+            throw Core::ParseExceptExpect(ctx.in.peek(), expect, false);
+
+         return ctx;
+      }
+
+      //
+      // TokenPeekIdenti
+      //
+      ParserCtx const &TokenPeekIdenti(ParserCtx const &ctx)
+      {
+         return TokenPeek(ctx, Core::TOK_Identi, "identifier");
+      }
+
+      //
+      // TokenPeekString
+      //
+      ParserCtx const &TokenPeekString(ParserCtx const &ctx)
+      {
+         return TokenPeek(ctx, Core::TOK_String, "string");
       }
    }
 }

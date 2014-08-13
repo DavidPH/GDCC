@@ -164,8 +164,8 @@ namespace GDCC
 
       Exp::CRef ExpCreate_Glyph(Glyph glyph, Core::Origin pos);
 
-      Exp::CRef ExpCreate_Multi(Exp::CRef const *expv, std::size_t expc,
-         Core::Origin pos);
+      Exp::CRef ExpCreate_Multi(Core::Array<Exp::CRef> const &expv, Core::Origin pos);
+      Exp::CRef ExpCreate_Multi(Core::Array<Exp::CRef> &&expv, Core::Origin pos);
 
       Exp::CRef ExpCreate_Value(Value const &value, Core::Origin pos);
       Exp::CRef ExpCreate_Value(Value &&value, Core::Origin pos);
