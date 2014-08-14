@@ -42,6 +42,11 @@ namespace GDCC
             ParseFunction(ctx, ctx.prog.getFunction(ctx.in.get().str));
             break;
 
+         case Core::STR_Glyph:
+            TokenPeekString(ctx);
+            ParseGlyph(ctx, ctx.prog.getGlyphData(ctx.in.get().str));
+            break;
+
          case Core::STR_Import:
             TokenPeekString(ctx);
             ParseImport(ctx, ctx.prog.getImport(ctx.in.get().str));
