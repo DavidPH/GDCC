@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IRDump/IRDump.hpp"
+#include "IRDump/Put.hpp"
 
 #include "Core/Option.hpp"
 
@@ -38,17 +38,17 @@ static GDCC::Option::Function DumpAll
 
    [](GDCC::Option::Base *, GDCC::Option::Args const &args) -> std::size_t
    {
-      GDCC::IRDump::IRDumpOpt_Block      = !args.optFalse;
-      GDCC::IRDump::IRDumpOpt_Function   = !args.optFalse;
-      GDCC::IRDump::IRDumpOpt_Glyph      = !args.optFalse;
-      GDCC::IRDump::IRDumpOpt_Headers    = !args.optFalse;
-      GDCC::IRDump::IRDumpOpt_Import     = !args.optFalse;
-      GDCC::IRDump::IRDumpOpt_Labels     = !args.optFalse;
-      GDCC::IRDump::IRDumpOpt_Object     = !args.optFalse;
-      GDCC::IRDump::IRDumpOpt_Origin     = !args.optFalse;
-      GDCC::IRDump::IRDumpOpt_Space      = !args.optFalse;
-      GDCC::IRDump::IRDumpOpt_Statistics = !args.optFalse;
-      GDCC::IRDump::IRDumpOpt_StrEnt     = !args.optFalse;
+      GDCC::IRDump::OptBlock      = !args.optFalse;
+      GDCC::IRDump::OptFunction   = !args.optFalse;
+      GDCC::IRDump::OptGlyph      = !args.optFalse;
+      GDCC::IRDump::OptHeaders    = !args.optFalse;
+      GDCC::IRDump::OptImport     = !args.optFalse;
+      GDCC::IRDump::OptLabels     = !args.optFalse;
+      GDCC::IRDump::OptObject     = !args.optFalse;
+      GDCC::IRDump::OptOrigin     = !args.optFalse;
+      GDCC::IRDump::OptSpace      = !args.optFalse;
+      GDCC::IRDump::OptStatistics = !args.optFalse;
+      GDCC::IRDump::OptStrEnt     = !args.optFalse;
 
       return 0;
    }
@@ -63,17 +63,18 @@ namespace GDCC
 {
    namespace IRDump
    {
-      bool IRDumpOpt_Block      = false;
-      bool IRDumpOpt_Function   = false;
-      bool IRDumpOpt_Glyph      = false;
-      bool IRDumpOpt_Headers    = false;
-      bool IRDumpOpt_Import     = false;
-      bool IRDumpOpt_Labels     = false;
-      bool IRDumpOpt_Object     = false;
-      bool IRDumpOpt_Origin     = false;
-      bool IRDumpOpt_Space      = false;
-      bool IRDumpOpt_Statistics = false;
-      bool IRDumpOpt_StrEnt     = false;
+      bool OptBlock      = false;
+      bool OptExpName    = false;
+      bool OptFunction   = false;
+      bool OptGlyph      = false;
+      bool OptHeaders    = false;
+      bool OptImport     = false;
+      bool OptLabels     = false;
+      bool OptObject     = false;
+      bool OptOrigin     = false;
+      bool OptSpace      = false;
+      bool OptStatistics = false;
+      bool OptStrEnt     = false;
    }
 }
 
@@ -87,49 +88,49 @@ namespace GDCC
    namespace IRDump
    {
       //
-      // IRDump_AddrSpace
+      // PutAddrSpace
       //
-      void IRDump_AddrSpace(std::ostream &out, IR::AddrSpace const &space)
+      void PutAddrSpace(std::ostream &out, IR::AddrSpace const &space)
       {
-         out << space.base << ' '; IRDumpString(out, space.name);
+         out << space.base << ' '; PutString(out, space.name);
       }
 
       //
-      // IRDump_GlyphData
+      // PutGlyphData
       //
-      void IRDump_GlyphData(std::ostream &out, IR::GlyphData const &data)
+      void PutGlyphData(std::ostream &out, IR::GlyphData const &data)
       {
-         out << "\nGlyph "; IRDumpString(out, data.glyph);
+         out << "\nGlyph "; PutString(out, data.glyph);
 
-         if(data.type) {out << " \\\n   type=";  IRDump_Type(out, data.type );}
-         if(data.value){out << " \\\n   value="; IRDump_Exp (out, data.value);}
+         if(data.type) {out << " \\\n   type=";  PutType(out, data.type );}
+         if(data.value){out << " \\\n   value="; PutExp (out, data.value);}
 
          out << '\n';
       }
 
       //
-      // IRDump_Import
+      // PutImport
       //
-      void IRDump_Import(std::ostream &out, IR::Import const &imp)
+      void PutImport(std::ostream &out, IR::Import const &imp)
       {
-         out << "\nImport "; IRDumpString(out, imp.glyph);
+         out << "\nImport "; PutString(out, imp.glyph);
 
          out << '\n';
       }
 
       //
-      // IRDump_Object
+      // PutObject
       //
-      void IRDump_Object(std::ostream &out, IR::Object const &obj)
+      void PutObject(std::ostream &out, IR::Object const &obj)
       {
-         out << "\nObject "; IRDumpString(out, obj.glyph);
+         out << "\nObject "; PutString(out, obj.glyph);
 
          if(obj.alias) out << " \\\n   alias=" << obj.alias;
          if(obj.alloc) out << " \\\n   alloc=" << obj.alloc;
          if(obj.defin) out << " \\\n   defin=" << obj.defin;
-         if(obj.initi){out << " \\\n   initi=";   IRDump_Exp      (out, obj.initi);}
+         if(obj.initi){out << " \\\n   initi=";   PutExp      (out, obj.initi);}
                        out << " \\\n   linka=" << obj.linka;
-                      {out << " \\\n   space=";   IRDump_AddrSpace(out, obj.space);}
+                      {out << " \\\n   space=";   PutAddrSpace(out, obj.space);}
          if(obj.value) out << " \\\n   value=" << obj.value;
          if(obj.words) out << " \\\n   words=" << obj.words;
 
@@ -137,11 +138,11 @@ namespace GDCC
       }
 
       //
-      // IRDump_Space
+      // PutSpace
       //
-      void IRDump_Space(std::ostream &out, IR::Space const &sp)
+      void PutSpace(std::ostream &out, IR::Space const &sp)
       {
-         out << "\nSpace "; IRDump_AddrSpace(out, sp.space);
+         out << "\nSpace "; PutAddrSpace(out, sp.space);
 
          if(sp.alloc) out << " \\\n   alloc=" << sp.alloc;
          if(sp.defin) out << " \\\n   defin=" << sp.defin;
@@ -153,25 +154,25 @@ namespace GDCC
       }
 
       //
-      // IRDump_StrEnt
+      // PutStrEnt
       //
-      void IRDump_StrEnt(std::ostream &out, IR::StrEnt const &str)
+      void PutStrEnt(std::ostream &out, IR::StrEnt const &str)
       {
-         out << "\nStrEnt "; IRDumpString(out, str.glyph);
+         out << "\nStrEnt "; PutString(out, str.glyph);
 
          if(str.alias)    out << " \\\n   alias="    << str.alias;
          if(str.alloc)    out << " \\\n   alloc="    << str.alloc;
          if(str.defin)    out << " \\\n   defin="    << str.defin;
          if(str.valueInt) out << " \\\n   valueInt=" << str.valueInt;
-         if(str.valueStr){out << " \\\n   valueStr=";   IRDumpString(out, str.valueStr);}
+         if(str.valueStr){out << " \\\n   valueStr=";   PutString(out, str.valueStr);}
 
          out << '\n';
       }
 
       //
-      // IRDumpString
+      // PutString
       //
-      void IRDumpString(std::ostream &out, Core::String str)
+      void PutString(std::ostream &out, Core::String str)
       {
          out << '"';
 

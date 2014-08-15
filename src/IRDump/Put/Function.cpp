@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IRDump/IRDump.hpp"
+#include "IRDump/Put.hpp"
 
 #include "Core/Option.hpp"
 
@@ -36,7 +36,7 @@ static GDCC::Option::Bool DumpBlock
       .setGroup("output")
       .setDescS("Dump IR::Block objects."),
 
-   &GDCC::IRDump::IRDumpOpt_Block
+   &GDCC::IRDump::OptBlock
 };
 
 //
@@ -49,7 +49,7 @@ static GDCC::Option::Bool DumpLabels
       .setGroup("output")
       .setDescS("Dump labels of statements."),
 
-   &GDCC::IRDump::IRDumpOpt_Labels
+   &GDCC::IRDump::OptLabels
 };
 
 //
@@ -62,7 +62,7 @@ static GDCC::Option::Bool DumpOrigin
       .setGroup("output")
       .setDescS("Dump origin of statements."),
 
-   &GDCC::IRDump::IRDumpOpt_Origin
+   &GDCC::IRDump::OptOrigin
 };
 
 
@@ -75,16 +75,16 @@ namespace GDCC
    namespace IRDump
    {
       //
-      // IRDump_Function
+      // PutFunction
       //
-      void IRDump_Function(std::ostream &out, IR::Function const &fn)
+      void PutFunction(std::ostream &out, IR::Function const &fn)
       {
-         out << "\nFunction "; IRDumpString(out, fn.glyph);
+         out << "\nFunction "; PutString(out, fn.glyph);
 
          if(fn.alloc)    out << " \\\n   alloc="    << fn.alloc;
                          out << " \\\n   ctype="    << fn.ctype;
          if(fn.defin)    out << " \\\n   defin="    << fn.defin;
-         if(fn.label)   {out << " \\\n   label=";      IRDumpString(out, fn.label);}
+         if(fn.label)   {out << " \\\n   label=";      PutString(out, fn.label);}
                          out << " \\\n   linka="    << fn.linka;
          if(fn.localArs) out << " \\\n   localArs=" << fn.localArs;
          if(fn.localReg) out << " \\\n   localReg=" << fn.localReg;
@@ -94,9 +94,9 @@ namespace GDCC
          if(fn.sflagClS) out << " \\\n   sflagClS=" << fn.sflagClS;
                          out << " \\\n   stype="    << fn.stype;
          if(fn.valueInt) out << " \\\n   valueInt=" << fn.valueInt;
-         if(fn.valueStr){out << " \\\n   valueStr=";   IRDumpString(out, fn.valueStr);}
+         if(fn.valueStr){out << " \\\n   valueStr=";   PutString(out, fn.valueStr);}
 
-         if(IRDumpOpt_Block && !fn.block.empty())
+         if(OptBlock && !fn.block.empty())
          {
             out << " \\\n   block\n{\n";
 
@@ -105,16 +105,16 @@ namespace GDCC
             for(auto const &stmnt : fn.block)
             {
                // Dump origin, if different from previous.
-               if(IRDumpOpt_Origin && stmnt.pos != pos)
+               if(OptOrigin && stmnt.pos != pos)
                {
                   if(pos.file) out << '\n';
                   out << "   ; " << (pos = stmnt.pos) << '\n';
                }
 
                // Dump labels.
-               if(IRDumpOpt_Labels) for(auto const &lab : stmnt.labs)
+               if(OptLabels) for(auto const &lab : stmnt.labs)
                {
-                  IRDumpString(out, lab);
+                  PutString(out, lab);
                   out << '\n';
                }
 
@@ -124,7 +124,7 @@ namespace GDCC
                for(auto const &arg : stmnt.args)
                {
                   out << ", ";
-                  IRDump_Arg(out, arg);
+                  PutArg(out, arg);
                }
 
                out << '\n';

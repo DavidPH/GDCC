@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IRDump/IRDump.hpp"
+#include "IRDump/Put.hpp"
 
 #include "IR/Arg.hpp"
 
@@ -20,54 +20,54 @@
 //
 
 //
-// IRDump_ArgPart ArgPtr1
+// PutArgPart ArgPtr1
 //
-static void IRDump_ArgPart(std::ostream &out, GDCC::IR::ArgPtr1 const &arg)
+static void PutArgPart(std::ostream &out, GDCC::IR::ArgPtr1 const &arg)
 {
-   GDCC::IRDump::IRDump_Arg(out, *arg.idx);
+   GDCC::IRDump::PutArg(out, *arg.idx);
    out << ", ";
-   GDCC::IRDump::IRDump_Exp(out, arg.off);
+   GDCC::IRDump::PutExp(out, arg.off);
 }
 
 //
-// IRDump_ArgPart ArgPtr2
+// PutArgPart ArgPtr2
 //
-static void IRDump_ArgPart(std::ostream &out, GDCC::IR::ArgPtr2 const &arg)
+static void PutArgPart(std::ostream &out, GDCC::IR::ArgPtr2 const &arg)
 {
-   GDCC::IRDump::IRDump_Arg(out, *arg.arr);
+   GDCC::IRDump::PutArg(out, *arg.arr);
    out << ", ";
-   GDCC::IRDump::IRDump_Arg(out, *arg.idx);
+   GDCC::IRDump::PutArg(out, *arg.idx);
    out << ", ";
-   GDCC::IRDump::IRDump_Exp(out, arg.off);
+   GDCC::IRDump::PutExp(out, arg.off);
 }
 
 //
-// IRDump_ArgPart Cpy
+// PutArgPart Cpy
 //
-static void IRDump_ArgPart(std::ostream &out, GDCC::IR::Arg_Cpy const &arg)
+static void PutArgPart(std::ostream &out, GDCC::IR::Arg_Cpy const &arg)
 {
    if(arg.value) out << arg.value;
 }
 
 //
-// IRDump_ArgPart Lit
+// PutArgPart Lit
 //
-static void IRDump_ArgPart(std::ostream &out, GDCC::IR::Arg_Lit const &arg)
+static void PutArgPart(std::ostream &out, GDCC::IR::Arg_Lit const &arg)
 {
-   GDCC::IRDump::IRDump_Exp(out, arg.value);
+   GDCC::IRDump::PutExp(out, arg.value);
 }
 
 //
-// IRDump_ArgPart Nul
+// PutArgPart Nul
 //
-static void IRDump_ArgPart(std::ostream &, GDCC::IR::Arg_Nul const &)
+static void PutArgPart(std::ostream &, GDCC::IR::Arg_Nul const &)
 {
 }
 
 //
-// IRDump_ArgPart Stk
+// PutArgPart Stk
 //
-static void IRDump_ArgPart(std::ostream &, GDCC::IR::Arg_Stk const &)
+static void PutArgPart(std::ostream &, GDCC::IR::Arg_Stk const &)
 {
 }
 
@@ -81,16 +81,16 @@ namespace GDCC
    namespace IRDump
    {
       //
-      // IRDump_Arg
+      // PutArg
       //
-      void IRDump_Arg(std::ostream &out, IR::Arg const &arg)
+      void PutArg(std::ostream &out, IR::Arg const &arg)
       {
          out << arg.a << '(';
 
          switch(arg.a)
          {
             #define GDCC_IR_AddrList(name) case IR::ArgBase::name: \
-               IRDump_ArgPart(out, arg.a##name); break;
+               PutArgPart(out, arg.a##name); break;
             #include "IR/AddrList.hpp"
          }
 

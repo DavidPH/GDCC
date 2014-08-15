@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IRDump/IRDump.hpp"
+#include "IRDump/Put.hpp"
 
 #include "Core/Option.hpp"
 
@@ -49,10 +49,10 @@ static void MakeIRDump()
          throw EXIT_FAILURE;
       }
 
-      GDCC::IRDump::IRDump_Program(out, prog);
+      GDCC::IRDump::PutProgram(out, prog);
    }
    else
-      GDCC::IRDump::IRDump_Program(std::cout, prog);
+      GDCC::IRDump::PutProgram(std::cout, prog);
 }
 
 //

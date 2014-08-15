@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IRDump/IRDump.hpp"
+#include "IRDump/Put.hpp"
 
 #include "Core/Option.hpp"
 
@@ -33,7 +33,7 @@ static GDCC::Option::Bool DumpFunction
       .setGroup("output")
       .setDescS("Dump IR::Function objects."),
 
-   &GDCC::IRDump::IRDumpOpt_Function
+   &GDCC::IRDump::OptFunction
 };
 
 //
@@ -46,7 +46,7 @@ static GDCC::Option::Bool DumpGlyph
       .setGroup("output")
       .setDescS("Dump IR::GlyphData objects."),
 
-   &GDCC::IRDump::IRDumpOpt_Glyph
+   &GDCC::IRDump::OptGlyph
 };
 
 //
@@ -59,7 +59,7 @@ static GDCC::Option::Bool DumpHeaders
       .setGroup("output")
       .setDescS("Include comment headers in output."),
 
-   &GDCC::IRDump::IRDumpOpt_Headers
+   &GDCC::IRDump::OptHeaders
 };
 
 //
@@ -72,7 +72,7 @@ static GDCC::Option::Bool DumpImport
       .setGroup("output")
       .setDescS("Dump IR::Import objects."),
 
-   &GDCC::IRDump::IRDumpOpt_Import
+   &GDCC::IRDump::OptImport
 };
 
 //
@@ -85,7 +85,7 @@ static GDCC::Option::Bool DumpObject
       .setGroup("output")
       .setDescS("Dump IR::Object objects."),
 
-   &GDCC::IRDump::IRDumpOpt_Object
+   &GDCC::IRDump::OptObject
 };
 
 //
@@ -98,7 +98,7 @@ static GDCC::Option::Bool DumpSpace
       .setGroup("output")
       .setDescS("Dump IR::Space objects."),
 
-   &GDCC::IRDump::IRDumpOpt_Space
+   &GDCC::IRDump::OptSpace
 };
 
 //
@@ -111,7 +111,7 @@ static GDCC::Option::Bool DumpStatistics
       .setGroup("output")
       .setDescS("Dump overall statistics."),
 
-   &GDCC::IRDump::IRDumpOpt_Statistics
+   &GDCC::IRDump::OptStatistics
 };
 
 //
@@ -124,7 +124,7 @@ static GDCC::Option::Bool DumpStrEnt
       .setGroup("output")
       .setDescS("Dump IR::StrEnt objects."),
 
-   &GDCC::IRDump::IRDumpOpt_StrEnt
+   &GDCC::IRDump::OptStrEnt
 };
 
 
@@ -133,9 +133,9 @@ static GDCC::Option::Bool DumpStrEnt
 //
 
 //
-// IRDumpHeader
+// PutHeader
 //
-static void IRDumpHeader(std::ostream &out, char const *str)
+static void PutHeader(std::ostream &out, char const *str)
 {
    auto sp = 75 - std::strlen(str);
 
@@ -154,12 +154,12 @@ namespace GDCC
    namespace IRDump
    {
       //
-      // IRDump_Program
+      // PutProgram
       //
-      void IRDump_Program(std::ostream &out, IR::Program const &prog)
+      void PutProgram(std::ostream &out, IR::Program const &prog)
       {
          // File header.
-         if(IRDumpOpt_Headers)
+         if(OptHeaders)
          {
             out << ";;"; for(int i = 77; i--;) out << '-'; out << '\n';
             out << ";;\n";
@@ -169,9 +169,9 @@ namespace GDCC
          }
 
          // Overall statistics.
-         if(IRDumpOpt_Statistics)
+         if(OptStatistics)
          {
-            if(IRDumpOpt_Headers) out << ";;\n";
+            if(OptHeaders) out << ";;\n";
 
             out << ";; Functions: "               << prog.sizeFunction()    << '\n';
             out << ";; Glyphs: "                  << prog.sizeGlyphData()   << '\n';
@@ -182,7 +182,7 @@ namespace GDCC
             out << ";; Address Spaces (WldArs): " << prog.sizeSpaceWldArs() << '\n';
             out << ";; String Table Entries: "    << prog.sizeStrEnt()      << '\n';
 
-            if(IRDumpOpt_Headers)
+            if(OptHeaders)
             {
                out << ";;\n";
                out << ";;"; for(int i = 77; i--;) out << '-'; out << '\n';
@@ -190,51 +190,51 @@ namespace GDCC
          }
 
          // Functions
-         if(IRDumpOpt_Function)
+         if(OptFunction)
          {
-            if(IRDumpOpt_Headers) IRDumpHeader(out, "Functions");
-            for(auto const &fn : prog.rangeFunction()) IRDump_Function(out, fn);
+            if(OptHeaders) PutHeader(out, "Functions");
+            for(auto const &fn : prog.rangeFunction()) PutFunction(out, fn);
          }
 
          // Glyphs
-         if(IRDumpOpt_Glyph)
+         if(OptGlyph)
          {
-            if(IRDumpOpt_Headers) IRDumpHeader(out, "Glyphs");
-            for(auto const &fn : prog.rangeGlyphData()) IRDump_GlyphData(out, fn);
+            if(OptHeaders) PutHeader(out, "Glyphs");
+            for(auto const &fn : prog.rangeGlyphData()) PutGlyphData(out, fn);
          }
 
          // Imports
-         if(IRDumpOpt_Import)
+         if(OptImport)
          {
-            if(IRDumpOpt_Headers) IRDumpHeader(out, "Imports");
-            for(auto const &imp : prog.rangeImport()) IRDump_Import(out, imp);
+            if(OptHeaders) PutHeader(out, "Imports");
+            for(auto const &imp : prog.rangeImport()) PutImport(out, imp);
          }
 
          // Objects
-         if(IRDumpOpt_Object)
+         if(OptObject)
          {
-            if(IRDumpOpt_Headers) IRDumpHeader(out, "Objects");
-            for(auto const &obj : prog.rangeObject()) IRDump_Object(out, obj);
+            if(OptHeaders) PutHeader(out, "Objects");
+            for(auto const &obj : prog.rangeObject()) PutObject(out, obj);
          }
 
          // Spaces
-         if(IRDumpOpt_Space)
+         if(OptSpace)
          {
-            if(IRDumpOpt_Headers) IRDumpHeader(out, "Address Spaces");
-            for(auto const &sp : prog.rangeSpaceGblArs()) IRDump_Space(out, sp);
-            for(auto const &sp : prog.rangeSpaceMapArs()) IRDump_Space(out, sp);
-            for(auto const &sp : prog.rangeSpaceWldArs()) IRDump_Space(out, sp);
+            if(OptHeaders) PutHeader(out, "Address Spaces");
+            for(auto const &sp : prog.rangeSpaceGblArs()) PutSpace(out, sp);
+            for(auto const &sp : prog.rangeSpaceMapArs()) PutSpace(out, sp);
+            for(auto const &sp : prog.rangeSpaceWldArs()) PutSpace(out, sp);
          }
 
          // StrEnts
-         if(IRDumpOpt_StrEnt)
+         if(OptStrEnt)
          {
-            if(IRDumpOpt_Headers) IRDumpHeader(out, "String Table Entries");
-            for(auto const &str : prog.rangeStrEnt()) IRDump_StrEnt(out, str);
+            if(OptHeaders) PutHeader(out, "String Table Entries");
+            for(auto const &str : prog.rangeStrEnt()) PutStrEnt(out, str);
          }
 
          // File footer.
-         if(IRDumpOpt_Headers)
+         if(OptHeaders)
          {
             out << "\n;; EOF\n\n";
          }
