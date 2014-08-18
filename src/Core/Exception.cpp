@@ -82,6 +82,17 @@ namespace GDCC
          auto const &tmp = oss.str();
          msg = StrDup(tmp.data(), tmp.size());
       }
+
+      //
+      // ParseExceptStr::genMsg
+      //
+      void ParseExceptStr::genMsg() const
+      {
+         std::ostringstream oss;
+         oss << "ERROR: " << pos << ": " << str;
+         auto const &tmp = oss.str();
+         msg = StrDup(tmp.data(), tmp.size());
+      }
    }
 }
 

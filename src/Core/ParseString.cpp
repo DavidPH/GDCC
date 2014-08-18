@@ -12,6 +12,7 @@
 
 #include "Core/Parse.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/StringBuf.hpp"
 
 #include <sstream>
@@ -33,7 +34,7 @@ namespace GDCC
          switch(int c = in.get())
          {
          case EOF:
-            throw ParseError(STR_ERR_UntermString);
+            throw ParseExceptStr({}, "unterminated string literal");
 
          case '\'': return '\'';
          case '\"': return '\"';
@@ -52,7 +53,7 @@ namespace GDCC
             for(unsigned int i = 0;;) switch(c = in.get())
             {
             case EOF:
-               throw ParseError(STR_ERR_UntermString);
+               throw ParseExceptStr({}, "unterminated string literal");
 
             case '0': i = i * 16 + 0x0; break;
             case '1': i = i * 16 + 0x1; break;
@@ -89,7 +90,7 @@ namespace GDCC
                switch(c)
                {
                case EOF:
-                  throw ParseError(STR_ERR_UntermString);
+                  throw ParseExceptStr({}, "unterminated string literal");
 
                case '0': i = i * 8 + 00; break;
                case '1': i = i * 8 + 01; break;
@@ -115,7 +116,7 @@ namespace GDCC
             char str[] = "unknown escape character: ' '";
             std::size_t len = sizeof(str) - 1;
             str[len - 2] = static_cast<char>(c);
-            throw ParseError({str, len});
+            throw ParseExceptStr({}, {str, len});
          }
       }
 
@@ -141,10 +142,11 @@ namespace GDCC
       //
       // ParseStringC
       //
-      std::string ParseStringC(std::string const &inBuf)
+      String ParseStringC(std::string const &inBuf)
       {
          std::istringstream in{inBuf};
-         return ParseStringC(in);
+         auto data = ParseStringC(in);
+         return {data.data(), data.size()};
       }
 
       //
@@ -175,7 +177,7 @@ namespace GDCC
          switch(int c = in.get())
          {
          case EOF:
-            throw ParseError(STR_ERR_UntermString);
+            throw ParseExceptStr({}, "unterminated string literal");
 
          case '\'': case '\"': case '\?': case '\\':
 
@@ -189,7 +191,7 @@ namespace GDCC
             for(;;) switch(c = in.get())
             {
             case EOF:
-               throw ParseError(STR_ERR_UntermString);
+               throw ParseExceptStr({}, "unterminated string literal");
 
             case '0': case '1': case '2': case '3': case '4':
             case '5': case '6': case '7': case '8': case '9':
@@ -210,7 +212,7 @@ namespace GDCC
                switch(c)
                {
                case EOF:
-                  throw ParseError(STR_ERR_UntermString);
+                  throw ParseExceptStr({}, "unterminated string literal");
 
                case '0': case '1': case '2': case '3':
                case '4': case '5': case '6': case '7':
@@ -232,7 +234,7 @@ namespace GDCC
             char str[] = "unknown escape character: ' '";
             std::size_t len = sizeof(str) - 1;
             str[len - 2] = static_cast<char>(c);
-            throw ParseError({str, len});
+            throw ParseExceptStr({}, {str, len});
          }
       }
 
@@ -246,7 +248,7 @@ namespace GDCC
          for(int c = in.get();; c = in.get())
          {
             if(c == EOF || c == '\n')
-               throw ParseError(STR_ERR_UntermString);
+               throw ParseExceptStr({}, "unterminated string literal");
 
             buf += static_cast<char>(c);
 

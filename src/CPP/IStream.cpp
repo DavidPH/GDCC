@@ -230,10 +230,10 @@ namespace GDCC
 
                return in;
             }
-            catch(Core::ParseError const &e)
+            catch(Core::ParseException &e)
             {
-               std::cerr << "ERROR: " << out.pos << ": " << e.what() << '\n';
-               throw EXIT_FAILURE;
+               e.setOrigin(out.pos);
+               throw;
             }
          }
 
@@ -271,9 +271,10 @@ namespace GDCC
 
                   return in;
                }
-               catch(Core::ParseError const &e)
+               catch(Core::ParseException &e)
                {
-                  throw Core::ExceptStr(out.pos, e.msg);
+                  e.setOrigin(out.pos);
+                  throw;
                }
             }
             else if(c != EOF)

@@ -39,6 +39,8 @@ namespace GDCC
          virtual char const *what() const noexcept
             {if(!msg) genMsg(); return msg.get();}
 
+         void setOrigin(Origin const &pos_) {pos = pos_;}
+
       protected:
          virtual void genMsg() const;
 
@@ -56,20 +58,18 @@ namespace GDCC
       {
       public:
          ExceptStr(Origin pos_, String str_) noexcept :
-            Exception{pos_}, str{str_.data()} {}
-         ExceptStr(Origin pos_, char const *str_) noexcept :
             Exception{pos_}, str{str_} {}
 
       protected:
          virtual void genMsg() const;
 
-         char const *str;
+         String const str;
       };
 
       //
       // ParseException
       //
-      // Thrown by Parse and Get functions when encountering invalid input.
+      // Thrown by Parse and Get functions when encountering invalid syntax.
       //
       class ParseException : public Exception
       {
@@ -106,6 +106,23 @@ namespace GDCC
          Core::String const got;
          bool         const expQ : 1;
          bool         const gotQ : 1;
+      };
+
+      //
+      // ParseExceptStr
+      //
+      // Carries a simple string message.
+      //
+      class ParseExceptStr : public ParseException
+      {
+      public:
+         ParseExceptStr(Origin pos_, String str_) noexcept :
+            ParseException{pos_}, str{str_} {}
+
+      protected:
+         virtual void genMsg() const;
+
+         String const str;
       };
    }
 }

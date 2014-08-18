@@ -17,34 +17,9 @@
 #include "String.hpp"
 
 #include <istream>
-#include <stdexcept>
 #include <string>
 #include <tuple>
 #include <utility>
-
-
-//----------------------------------------------------------------------------|
-// Types                                                                      |
-//
-
-namespace GDCC
-{
-   namespace Core
-   {
-      //
-      // ParseError
-      //
-      class ParseError : public std::exception
-      {
-      public:
-         explicit ParseError(String msg_) : msg{msg_} {}
-
-         virtual char const *what() const noexcept {return msg.data();}
-
-         String msg;
-      };
-   }
-}
 
 
 //----------------------------------------------------------------------------|
@@ -77,7 +52,7 @@ namespace GDCC
       std::tuple<char const */*end*/, Ratio /*val*/, std::size_t /*len*/>
       ParseNumberRatioC(char const *in, unsigned base);
 
-      std::string ParseStringC(std::string const &in);
+      String ParseStringC(std::string const &in);
       String ParseStringC(String in);
       String ParseStringC(String in, std::size_t offset);
 

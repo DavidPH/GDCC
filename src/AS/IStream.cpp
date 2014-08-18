@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,11 +12,11 @@
 
 #include "AS/IStream.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
 #include "Core/Token.hpp"
 
 #include <cctype>
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -109,16 +109,15 @@ namespace GDCC
 
             try
             {
-               std::string str  = Core::ParseStringC(Core::ReadStringC(in, c));
-               out.str = {str.data(), str.size()};
+               out.str = Core::ParseStringC(Core::ReadStringC(in, c));
                out.tok = c == '"' ? Core::TOK_String : Core::TOK_Charac;
 
                return in;
             }
-            catch(Core::ParseError const &e)
+            catch(Core::ParseException &e)
             {
-               std::cerr << "ERROR: " << out.pos << ": " << e.what() << '\n';
-               throw EXIT_FAILURE;
+               e.setOrigin(out.pos);
+               throw;
             }
          }
 
@@ -156,9 +155,12 @@ namespace GDCC
             return in;
          }
 
-         std::cerr << "ERROR: " << out.pos << ": bad token character: '"
-            << static_cast<char>(c) << "'\n";
-         throw EXIT_FAILURE;
+         // Non-token character sequence. Not used internally, but could be
+         // useful to alternative users.
+         char str[1] = {static_cast<char>(c)};
+         out.str = {str, 1};
+         out.tok = Core::TOK_ChrSeq;
+         return in;
       }
    }
 }

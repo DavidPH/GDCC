@@ -343,8 +343,6 @@ GDCC_Core_StringList(volatile, "volatile")
 GDCC_Core_StringList(while, "while")
 GDCC_Core_StringList(words, "words")
 
-GDCC_Core_StringList(ERR_UntermString, "unterminated string literal")
-
 // Names with non-identifier characters.
 GDCC_Core_StringList(NAM_ACSXX, "ACS++")
 GDCC_Core_StringList(NAM_CXX, "C++")

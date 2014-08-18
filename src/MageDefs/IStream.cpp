@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "MageDefs/IStream.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
 #include "Core/Token.hpp"
 
@@ -73,16 +74,15 @@ namespace GDCC
 
             try
             {
-               std::string str = Core::ParseStringC(Core::ReadStringC(in, '"'));
-               out.str = {str.data(), str.size()};
+               out.str = Core::ParseStringC(Core::ReadStringC(in, '"'));
                out.tok = Core::TOK_String;
 
                return in;
             }
-            catch(Core::ParseError const &e)
+            catch(Core::ParseException &e)
             {
-               std::cerr << "ERROR: " << out.pos << ": " << e.what() << '\n';
-               throw EXIT_FAILURE;
+               e.setOrigin(out.pos);
+               throw;
             }
          }
 
