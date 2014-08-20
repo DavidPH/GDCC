@@ -35,8 +35,9 @@ namespace GDCC
       //
       // Stores the context for IR statement generation.
       //
-      struct GenStmntCtx
+      class GenStmntCtx
       {
+      public:
          IR::Block   &block;
          Function    *fn;
          IR::Program &prog;

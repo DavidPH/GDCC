@@ -29,8 +29,8 @@ namespace GDCC
 {
    namespace Core
    {
-      struct MoveType {};
-      struct PackType {};
+      class MoveType {};
+      class PackType {};
 
       //
       // Array

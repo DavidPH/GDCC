@@ -27,8 +27,9 @@ namespace GDCC
       //
       // Origin
       //
-      struct Origin
+      class Origin
       {
+      public:
          Origin() = default;
          constexpr Origin(String file_, std::size_t line_) : file{file_}, line{line_} {}
 

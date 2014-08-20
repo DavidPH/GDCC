@@ -25,7 +25,7 @@ namespace GDCC
 {
    namespace Option
    {
-      struct Args;
+      class Args;
 
       //
       // Exception

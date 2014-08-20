@@ -24,7 +24,7 @@ namespace GDCC
 {
    namespace Core
    {
-      struct Origin;
+      class Origin;
       class String;
    }
 
@@ -34,7 +34,7 @@ namespace GDCC
       enum class CallType;
 
       class Arg;
-      struct ArgPtr2;
+      class ArgPtr2;
       class Block;
       class Exp;
       class Function;
@@ -42,12 +42,12 @@ namespace GDCC
       class Object;
       class Program;
       class Value;
-      struct Value_Multi;
+      class Value_Multi;
       class Space;
       class Statement;
       class StrEnt;
       class Type;
-      struct Type_Fixed;
+      class Type_Fixed;
    }
 
    namespace Bytecode

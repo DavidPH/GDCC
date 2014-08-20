@@ -31,7 +31,7 @@ namespace GDCC
 {
    namespace Core
    {
-      struct Origin;
+      class Origin;
    }
 
    namespace IR

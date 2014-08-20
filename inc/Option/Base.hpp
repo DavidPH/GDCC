@@ -29,8 +29,9 @@ namespace GDCC
       //
       // Args
       //
-      struct Args
+      class Args
       {
+      public:
          Args() :
             argV{nullptr},
             argC{0},
@@ -77,7 +78,7 @@ namespace GDCC
          //
          // Info
          //
-         struct Info
+         class Info
          {
          public:
             Info &setDescL(char const *descL_) {descL = descL_; return *this;}

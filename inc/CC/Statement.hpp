@@ -39,7 +39,7 @@ namespace GDCC
    {
       template<typename T> class Array;
       template<typename T> class CounterRef;
-      struct Origin;
+      class Origin;
       class String;
    }
 }

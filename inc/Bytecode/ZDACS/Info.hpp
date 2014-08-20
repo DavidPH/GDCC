@@ -61,8 +61,9 @@ namespace GDCC
             //
             // InitVal
             //
-            struct InitVal
+            class InitVal
             {
+            public:
                InitVal() : val{0}, tag{InitTag::Empty} {}
 
                Core::FastU val;

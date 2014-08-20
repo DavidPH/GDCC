@@ -55,8 +55,9 @@ namespace GDCC
          //
          // AllocAutoInfo
          //
-         struct AllocAutoInfo
+         class AllocAutoInfo
          {
+         public:
             void setMax(AllocAutoInfo const &alloc);
 
             Core::FastU localArs = 0;

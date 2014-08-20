@@ -24,7 +24,7 @@ namespace GDCC
 {
    namespace IR
    {
-      #define GDCC_IR_TypeList(name) struct Value_##name;
+      #define GDCC_IR_TypeList(name) class Value_##name;
       #include "../IR/TypeList.hpp"
       class Value;
 
@@ -33,8 +33,9 @@ namespace GDCC
       //
       // Value_Empty
       //
-      struct Value_Empty
+      class Value_Empty
       {
+      public:
          Value_Empty() = default;
 
          Value_Empty(Type_Empty vtype_) : vtype{vtype_} {}
@@ -49,8 +50,9 @@ namespace GDCC
       //
       // Value_Fixed
       //
-      struct Value_Fixed
+      class Value_Fixed
       {
+      public:
          Value_Fixed() = default;
 
          Value_Fixed(Value_Fixed const &value, Type_Fixed const &vtype);
@@ -77,8 +79,9 @@ namespace GDCC
       //
       // Value_Float
       //
-      struct Value_Float
+      class Value_Float
       {
+      public:
          Value_Float() = default;
 
          Value_Float(Value_Fixed const &value, Type_Float const &vtype);
@@ -105,8 +108,9 @@ namespace GDCC
       //
       // Value_Funct
       //
-      struct Value_Funct
+      class Value_Funct
       {
+      public:
          Value_Funct() = default;
 
          Value_Funct(Core::FastU value_, Type_Funct const &vtype_) :
@@ -123,8 +127,9 @@ namespace GDCC
       //
       // Value_Multi
       //
-      struct Value_Multi
+      class Value_Multi
       {
+      public:
          Value_Multi() = default;
 
          Value_Multi(Core::Array<Value> const &value_, Type_Multi const &vtype_) :
@@ -147,8 +152,9 @@ namespace GDCC
       //
       // Value_Point
       //
-      struct Value_Point
+      class Value_Point
       {
+      public:
          Value_Point() = default;
 
          Value_Point(Core::FastU value_, AddrBase addrB_, Core::String addrN_,
@@ -168,8 +174,9 @@ namespace GDCC
       //
       // Value_StrEn
       //
-      struct Value_StrEn
+      class Value_StrEn
       {
+      public:
          Value_StrEn() = default;
 
          Value_StrEn(Core::FastU value_, Type_StrEn vtype_) :

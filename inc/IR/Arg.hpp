@@ -25,8 +25,9 @@
 // GDCC_IR_MakeArgPtr1
 //
 #define GDCC_IR_MakeArgPtr1(name) \
-   struct Arg_##name : ArgPtr1 \
+   class Arg_##name : public ArgPtr1 \
    { \
+   public: \
       using ArgPtr1::ArgPtr1; \
       \
       using ArgPtr1::getIR; \
@@ -46,8 +47,9 @@
 // GDCC_IR_MakeArgPtr2
 //
 #define GDCC_IR_MakeArgPtr2(name) \
-   struct Arg_##name : ArgPtr2 \
+   class Arg_##name : public ArgPtr2 \
    { \
+   public: \
       using ArgPtr2::ArgPtr2; \
       \
       using ArgPtr2::getIR; \
@@ -80,8 +82,9 @@ namespace GDCC
       //
       // ArgPtr1
       //
-      struct ArgPtr1
+      class ArgPtr1
       {
+      public:
          ArgPtr1(ArgPtr1 const &arg);
          ArgPtr1(ArgPtr1 &&arg);
          ArgPtr1(Arg const &idx, Exp const *off);
@@ -103,8 +106,9 @@ namespace GDCC
       //
       // ArgPtr2
       //
-      struct ArgPtr2
+      class ArgPtr2
       {
+      public:
          ArgPtr2(ArgPtr2 const &arg);
          ArgPtr2(ArgPtr2 &&arg);
          ArgPtr2(Arg const &arr, Arg const &idx, Exp const *off);
@@ -137,8 +141,9 @@ namespace GDCC
       // Not a valid arg type.
       // Used for argument placeholders in assembler macros.
       //
-      struct Arg_Cpy
+      class Arg_Cpy
       {
+      public:
          Arg_Cpy() : value{0} {}
          Arg_Cpy(Core::FastU value_) : value{value_} {}
          explicit Arg_Cpy(IArchive &in);
@@ -155,8 +160,9 @@ namespace GDCC
       //
       // Only valid as a source.
       //
-      struct Arg_Lit
+      class Arg_Lit
       {
+      public:
          explicit Arg_Lit(Exp const *value_) : value{value_} {}
          explicit Arg_Lit(IArchive &in);
 
@@ -172,8 +178,9 @@ namespace GDCC
       //
       // Only valid as a destination.
       //
-      struct Arg_Nul
+      class Arg_Nul
       {
+      public:
          Arg_Nul() = default;
          explicit Arg_Nul(IArchive &) {}
 
@@ -185,8 +192,9 @@ namespace GDCC
       //
       // Arg_Stk
       //
-      struct Arg_Stk
+      class Arg_Stk
       {
+      public:
          Arg_Stk() = default;
          explicit Arg_Stk(IArchive &) {}
 

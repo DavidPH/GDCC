@@ -37,41 +37,41 @@ namespace GDCC
       typedef unsigned long FastU;
 
       //
-      // NumberCastType
+      // NumberCast_T
       //
       // Implements ::number_cast.
       //
-      template<typename Out, typename In> struct NumberCastType
+      template<typename Out, typename In> struct NumberCast_T
       {
          static Out Cast(In &&i);
       };
 
-      // NumberCastType<FastI, Integ>
-      template<> struct NumberCastType<FastI, Integ>
+      // NumberCast_T<FastI, Integ>
+      template<> struct NumberCast_T<FastI, Integ>
          {static FastI Cast(Integ const &i) {return i.get_si();}};
 
-      // NumberCastType<FastU, Integ>
-      template<> struct NumberCastType<FastU, Integ>
+      // NumberCast_T<FastU, Integ>
+      template<> struct NumberCast_T<FastU, Integ>
          {static FastU Cast(Integ const &i) {return i.get_ui();}};
 
-      // NumberCastType<FastI>
-      template<typename In> struct NumberCastType<FastI, In>
+      // NumberCast_T<FastI>
+      template<typename In> struct NumberCast_T<FastI, In>
          {static FastI Cast(In &&i) {return static_cast<Integ>(i).get_si();}};
 
-      // NumberCastType<FastU>
-      template<typename In> struct NumberCastType<FastU, In>
+      // NumberCast_T<FastU>
+      template<typename In> struct NumberCast_T<FastU, In>
          {static FastU Cast(In &&i) {return static_cast<Integ>(i).get_ui();}};
 
-      // NumberCastType<Float>
-      template<typename In> struct NumberCastType<Float, In>
+      // NumberCast_T<Float>
+      template<typename In> struct NumberCast_T<Float, In>
          {static Float Cast(In &&i) {return static_cast<Float>(i);}};
 
-      // NumberCastType<Integ>
-      template<typename In> struct NumberCastType<Integ, In>
+      // NumberCast_T<Integ>
+      template<typename In> struct NumberCast_T<Integ, In>
          {static Integ Cast(In &&i) {return static_cast<Integ>(i);}};
 
-      // NumberCastType<Ratio>
-      template<typename In> struct NumberCastType<Ratio, In>
+      // NumberCast_T<Ratio>
+      template<typename In> struct NumberCast_T<Ratio, In>
          {static Ratio Cast(In &&i) {return static_cast<Ratio>(i);}};
    }
 }
@@ -101,7 +101,7 @@ template<typename Out, typename In> Out number_cast(In &&i);
 //
 template<typename Out, typename In> Out number_cast(In &&i)
 {
-   return GDCC::Core::NumberCastType<Out, In>::Cast(std::forward<In>(i));
+   return GDCC::Core::NumberCast_T<Out, In>::Cast(std::forward<In>(i));
 }
 
 #endif//GDCC__Core__Number_H__

@@ -34,7 +34,7 @@ namespace GDCC
    namespace Core
    {
       template<typename T> class Array;
-      struct Origin;
+      class Origin;
       class String;
    }
 
@@ -50,8 +50,9 @@ namespace GDCC
       //
       // GenAssoc
       //
-      struct GenAssoc
+      class GenAssoc
       {
+      public:
          GenAssoc(AST::Type const *type, AST::Exp const *exp);
 
          Core::CounterRef<AST::Type const> type;

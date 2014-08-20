@@ -41,21 +41,12 @@ namespace GDCC
       class Statement;
       class StrEnt;
       class Type;
-      struct Type_Empty;
-      struct Type_Fixed;
-      struct Type_Float;
-      struct Type_Funct;
-      struct Type_Multi;
-      struct Type_Point;
-      struct Type_StrEn;
       class Value;
-      struct Value_Empty;
-      struct Value_Fixed;
-      struct Value_Float;
-      struct Value_Funct;
-      struct Value_Multi;
-      struct Value_Point;
-      struct Value_StrEn;
+
+      #define GDCC_IR_TypeList(t) \
+         class Type_##t; \
+         class Value_##t;
+      #include "../IR/TypeList.hpp"
    }
 }
 
@@ -90,25 +81,14 @@ namespace GDCC
 
       void PutType(std::ostream &out, IR::Type const &type);
 
-      void PutType_Empty(std::ostream &out, IR::Type_Empty const &type);
-      void PutType_Fixed(std::ostream &out, IR::Type_Fixed const &type);
-      void PutType_Float(std::ostream &out, IR::Type_Float const &type);
-      void PutType_Funct(std::ostream &out, IR::Type_Funct const &type);
-      void PutType_Multi(std::ostream &out, IR::Type_Multi const &type);
-      void PutType_Point(std::ostream &out, IR::Type_Point const &type);
-      void PutType_StrEn(std::ostream &out, IR::Type_StrEn const &type);
-
       void PutValue(std::ostream &out, IR::Value const &val);
 
-      void PutValue_Empty(std::ostream &out, IR::Value_Empty const &val);
-      void PutValue_Fixed(std::ostream &out, IR::Value_Fixed const &val);
-      void PutValue_Float(std::ostream &out, IR::Value_Float const &val);
-      void PutValue_Funct(std::ostream &out, IR::Value_Funct const &val);
-      void PutValue_Multi(std::ostream &out, IR::Value_Multi const &val);
-      void PutValue_Point(std::ostream &out, IR::Value_Point const &val);
-      void PutValue_StrEn(std::ostream &out, IR::Value_StrEn const &val);
-
       void PutString(std::ostream &out, Core::String str);
+
+      #define GDCC_IR_TypeList(t) \
+         void PutType_##t(std::ostream &out, IR::Type_##t const &type); \
+         void PutValue_##t(std::ostream &out, IR::Value_##t const &val);
+      #include "../IR/TypeList.hpp"
    }
 }
 

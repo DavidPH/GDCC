@@ -24,7 +24,7 @@ namespace GDCC
 {
    namespace Option
    {
-      struct Args;
+      class Args;
       class Base;
 
       //
@@ -76,8 +76,9 @@ namespace GDCC
          //
          // GroupInfo
          //
-         struct GroupInfo
+         class GroupInfo
          {
+         public:
             Base *first, *last;
             std::size_t len, lenL, lenS;
          };

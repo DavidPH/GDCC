@@ -130,8 +130,9 @@ namespace GDCC
       //
       // TypeQual
       //
-      struct TypeQual
+      class TypeQual
       {
+      public:
          TypeQual() = default;
          constexpr TypeQual(bool a, bool c, bool r, bool v) :
             space{IR::AddrBase::Gen, Core::STRNULL},

@@ -39,8 +39,9 @@ namespace GDCC
          //
          // MemberData
          //
-         struct MemberData
+         class MemberData
          {
+         public:
             MemberData(Core::String name_, AST::Type const *type_,
                Core::FastU addr_, bool anon_) :
                name{name_}, type{type_}, addr{addr_}, anon{anon_} {}
@@ -54,8 +55,9 @@ namespace GDCC
          //
          // Data
          //
-         struct Data
+         class Data
          {
+         public:
             Data(Core::String name, bool isUnion);
 
             Core::Array<MemberData> memb;

@@ -33,8 +33,9 @@ namespace GDCC
          typename MT = typename std::iterator_traits<Itr>::value_type::second_type,
          MT std::iterator_traits<Itr>::value_type::*P =
             &std::iterator_traits<Itr>::value_type::second>
-      struct MemItr : Itr
+      class MemItr : public Itr
       {
+      public:
          using Itr::Itr;
 
          MemItr() = default;

@@ -27,7 +27,7 @@ namespace GDCC
 {
    namespace IR
    {
-      struct Arg_LocReg;
+      class Arg_LocReg;
    }
 
    namespace AST

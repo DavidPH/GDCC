@@ -140,8 +140,9 @@ namespace GDCC
       //
       // Token
       //
-      struct Token
+      class Token
       {
+      public:
          Token() = default;
          constexpr Token(Origin pos_, String str_, TokenType tok_) :
             pos{pos_}, str{str_}, tok{tok_} {}

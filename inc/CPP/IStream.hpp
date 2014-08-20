@@ -31,7 +31,7 @@ namespace GDCC
 {
    namespace Core
    {
-      struct Token;
+      class Token;
    }
 
    namespace CPP

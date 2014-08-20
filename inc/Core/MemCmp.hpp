@@ -28,8 +28,9 @@ namespace GDCC
       // LessMem
       //
       template<typename T, typename KT, KT T::*P, typename Cmp = std::less<KT>>
-      struct LessMem : private Cmp
+      class LessMem : private Cmp
       {
+      public:
          using Cmp::Cmp;
 
          constexpr bool operator () (T const &l, T const &r) const

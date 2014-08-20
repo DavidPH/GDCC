@@ -55,8 +55,9 @@ namespace GDCC
       //
       // Type_Empty
       //
-      struct Type_Empty
+      class Type_Empty
       {
+      public:
          Type_Empty() = default;
 
          explicit Type_Empty(IArchive &in);
@@ -67,8 +68,9 @@ namespace GDCC
       //
       // Type_Fixed
       //
-      struct Type_Fixed
+      class Type_Fixed
       {
+      public:
          Type_Fixed() = default;
 
          Type_Fixed(Core::FastU bitsI_, Core::FastU bitsF_, bool bitsS_, bool satur_) :
@@ -96,8 +98,9 @@ namespace GDCC
       //
       // Type_Float
       //
-      struct Type_Float
+      class Type_Float
       {
+      public:
          Type_Float() = default;
 
          Type_Float(Core::FastU bitsI_, Core::FastU bitsF_, bool bitsS_, bool satur_) :
@@ -121,8 +124,9 @@ namespace GDCC
       //
       // Type_Funct
       //
-      struct Type_Funct
+      class Type_Funct
       {
+      public:
          Type_Funct() = default;
 
          explicit Type_Funct(CallType callT_) : callT{callT_} {}
@@ -137,8 +141,9 @@ namespace GDCC
       //
       // Type_Multi
       //
-      struct Type_Multi
+      class Type_Multi
       {
+      public:
          Type_Multi() = default;
 
          Type_Multi(Core::Array<Type> const &types_) : types{types_} {}
@@ -154,8 +159,9 @@ namespace GDCC
       //
       // Type_Point
       //
-      struct Type_Point
+      class Type_Point
       {
+      public:
          Type_Point() = default;
 
          Type_Point(AddrBase reprB_, Core::FastU reprS_, Core::FastU reprW_) :
@@ -173,8 +179,9 @@ namespace GDCC
       //
       // Type_StrEn
       //
-      struct Type_StrEn
+      class Type_StrEn
       {
+      public:
          Type_StrEn() = default;
 
          explicit Type_StrEn(IArchive &in);

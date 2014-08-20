@@ -33,12 +33,12 @@ namespace GDCC
    namespace AST
    {
       class Arg;
-      struct GenStmntCtx;
+      class GenStmntCtx;
    }
 
    namespace Core
    {
-      struct Token;
+      class Token;
    }
 
    namespace CC

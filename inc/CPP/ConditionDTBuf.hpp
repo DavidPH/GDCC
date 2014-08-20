@@ -41,8 +41,9 @@ namespace GDCC
          //
          // CondState
          //
-         struct CondState
+         class CondState
          {
+         public:
             explicit CondState(bool dead) :
                isDead{dead}, isElif{false}, isElse{false}, isSkip{dead} {}
 

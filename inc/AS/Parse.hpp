@@ -49,21 +49,12 @@ namespace GDCC
       class Space;
       class StrEnt;
       class Type;
-      struct Type_Empty;
-      struct Type_Fixed;
-      struct Type_Float;
-      struct Type_Funct;
-      struct Type_Multi;
-      struct Type_Point;
-      struct Type_StrEn;
       class Value;
-      struct Value_Empty;
-      struct Value_Fixed;
-      struct Value_Float;
-      struct Value_Funct;
-      struct Value_Multi;
-      struct Value_Point;
-      struct Value_StrEn;
+
+      #define GDCC_IR_TypeList(t) \
+         class Type_##t; \
+         class Value_##t;
+      #include "../IR/TypeList.hpp"
    }
 
    namespace AS
@@ -130,23 +121,7 @@ namespace GDCC
 
       IR::Type GetType(ParserCtx const &ctx);
 
-      IR::Type_Empty GetType_Empty(ParserCtx const &ctx);
-      IR::Type_Fixed GetType_Fixed(ParserCtx const &ctx);
-      IR::Type_Float GetType_Float(ParserCtx const &ctx);
-      IR::Type_Funct GetType_Funct(ParserCtx const &ctx);
-      IR::Type_Multi GetType_Multi(ParserCtx const &ctx);
-      IR::Type_Point GetType_Point(ParserCtx const &ctx);
-      IR::Type_StrEn GetType_StrEn(ParserCtx const &ctx);
-
       IR::Value GetValue(ParserCtx const &ctx);
-
-      IR::Value_Empty GetValue_Empty(ParserCtx const &ctx);
-      IR::Value_Fixed GetValue_Fixed(ParserCtx const &ctx);
-      IR::Value_Float GetValue_Float(ParserCtx const &ctx);
-      IR::Value_Funct GetValue_Funct(ParserCtx const &ctx);
-      IR::Value_Multi GetValue_Multi(ParserCtx const &ctx);
-      IR::Value_Point GetValue_Point(ParserCtx const &ctx);
-      IR::Value_StrEn GetValue_StrEn(ParserCtx const &ctx);
 
       void ParseBlock(ParserCtx const &ctx, IR::Block &block, Core::TokenType end);
 
@@ -174,6 +149,11 @@ namespace GDCC
 
       ParserCtx const &TokenPeekIdenti(ParserCtx const &ctx);
       ParserCtx const &TokenPeekString(ParserCtx const &ctx);
+
+      #define GDCC_IR_TypeList(t) \
+         IR::Type_##t GetType_##t(ParserCtx const &ctx); \
+         IR::Value_##t GetValue_##t(ParserCtx const &ctx);
+      #include "../IR/TypeList.hpp"
    }
 }
 

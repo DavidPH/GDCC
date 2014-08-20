@@ -26,16 +26,16 @@ namespace GDCC
       class Exp;
       class Statement;
       class Type;
-      struct TypeQual;
+      class TypeQual;
    }
 
    namespace Core
    {
       template<typename T> class Array;
       template<typename T> class CounterRef;
-      struct Origin;
+      class Origin;
       class String;
-      struct Token;
+      class Token;
       class TokenStream;
    }
 
@@ -85,8 +85,9 @@ namespace GDCC
       //
       // TypeSpec
       //
-      struct TypeSpec
+      class TypeSpec
       {
+      public:
          //
          // SpecBase
          //
