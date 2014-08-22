@@ -12,6 +12,7 @@
 
 #include "MageDefs/IStream.hpp"
 
+#include "Core/File.hpp"
 #include "Core/Option.hpp"
 #include "Core/Token.hpp"
 
@@ -61,15 +62,18 @@ static void ProcessFile(std::ostream &out, char const *inName);
 //
 static void MakeDefs()
 {
-   std::fstream out{GDCC::Core::GetOptionOutput(),
-      std::ios_base::binary | std::ios_base::out};
+   using namespace GDCC;
 
-   if(!out)
+   auto outName = Core::GetOptionOutput();
+
+   auto buf = Core::FileOpenStream(outName, std::ios_base::out | std::ios_base::binary);
+   if(!buf)
    {
-      std::cerr << "couldn't open '" << GDCC::Core::GetOptionOutput()
-         << "' for writing\n";
+      std::cerr << "couldn't open '" << outName << "' for writing\n";
       throw EXIT_FAILURE;
    }
+
+   std::ostream out{buf.get()};
 
    // Write format.
    out << "MgC_NTS" << '\0';
@@ -85,7 +89,7 @@ static void MakeDefs()
    out << '\0';
 
    // Process inputs.
-   for(auto const &arg : GDCC::Core::GetOptionArgs())
+   for(auto const &arg : Core::GetOptionArgs())
       ProcessFile(out, arg);
 }
 
@@ -94,16 +98,17 @@ static void MakeDefs()
 //
 static void ProcessFile(std::ostream &out, char const *inName)
 {
-   std::filebuf fbuf;
+   using namespace GDCC;
 
-   if(!fbuf.open(inName, std::ios_base::in))
+   auto buf = Core::FileOpenStream(inName, std::ios_base::in);
+   if(!buf)
    {
       std::cerr << "couldn't open '" << inName << "' for reading\n";
       throw EXIT_FAILURE;
    }
 
-   GDCC::MageDefs::IStream in{fbuf, inName};
-   for(GDCC::Core::Token tok; in >> tok;)
+   MageDefs::IStream in{*buf, inName};
+   for(Core::Token tok; in >> tok;)
       out << tok.str << '\0';
 }
 

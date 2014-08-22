@@ -14,6 +14,7 @@
 #include "AS/Parse.hpp"
 #include "AS/TStream.hpp"
 
+#include "Core/File.hpp"
 #include "Core/Option.hpp"
 #include "Core/Token.hpp"
 
@@ -35,24 +36,26 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog);
 //
 static void MakeAsm()
 {
-   GDCC::IR::Program prog;
+   using namespace GDCC;
+
+   IR::Program prog;
 
    // Process inputs.
-   for(auto const &arg : GDCC::Core::GetOptionArgs())
+   for(auto const &arg : Core::GetOptionArgs())
       ProcessFile(arg, prog);
 
-   // Write IR data.
-   std::fstream out{GDCC::Core::GetOptionOutput(),
-      std::ios_base::binary | std::ios_base::out};
+   auto outName = Core::GetOptionOutput();
 
-   if(!out)
+   // Write IR data.
+   auto buf = Core::FileOpenStream(outName, std::ios_base::out | std::ios_base::binary);
+   if(!buf)
    {
-      std::cerr << "couldn't open '" << GDCC::Core::GetOptionOutput()
-         << "' for writing\n";
+      std::cerr << "couldn't open '" << outName << "' for writing\n";
       throw EXIT_FAILURE;
    }
 
-   GDCC::IR::OArchive(out).putHeader() << prog;
+   std::ostream out{buf.get()};
+   IR::OArchive(out).putHeader() << prog;
 }
 
 //
@@ -64,13 +67,14 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 
    std::filebuf fbuf;
 
-   if(!fbuf.open(inName, std::ios_base::in))
+   auto buf = Core::FileOpenStream(inName, std::ios_base::in);
+   if(!buf)
    {
       std::cerr << "couldn't open '" << inName << "' for reading\n";
       throw EXIT_FAILURE;
    }
 
-   AS::TStream   in    {fbuf, inName};
+   AS::TStream   in    {*buf, inName};
    AS::MacroMap  macros{};
    AS::ParserCtx ctx   {in, macros, prog};
 

@@ -13,6 +13,7 @@
 #include "CPP/Macro.hpp"
 #include "CPP/TStream.hpp"
 
+#include "Core/File.hpp"
 #include "Core/Option.hpp"
 #include "Core/Path.hpp"
 
@@ -32,11 +33,13 @@ static void PutStringEscape(std::ostream &out, GDCC::Core::String str);
 //
 static void MakeCPP()
 {
-   // Open output file.
-   std::fstream out{GDCC::Core::GetOptionOutput(),
-      std::ios_base::binary | std::ios_base::out};
+   using namespace GDCC;
 
-   if(!out)
+   auto outName = Core::GetOptionOutput();
+
+   // Open output file.
+   auto buf = Core::FileOpenStream(outName, std::ios_base::out);
+   if(!buf)
    {
       std::cerr << "couldn't open '" << GDCC::Core::GetOptionOutput()
          << "' for writing\n";
@@ -44,6 +47,7 @@ static void MakeCPP()
    }
 
    // Process inputs.
+   std::ostream out{buf.get()};
    for(auto const &arg : GDCC::Core::GetOptionArgs())
       ProcessFile(out, arg);
 }
@@ -55,9 +59,8 @@ static void ProcessFile(std::ostream &out, char const *inName)
 {
    using namespace GDCC;
 
-   std::filebuf fbuf;
-
-   if(!fbuf.open(inName, std::ios_base::in))
+   auto buf = Core::FileOpenStream(inName, std::ios_base::in);
+   if(!buf)
    {
       std::cerr << "couldn't open '" << inName << "' for reading\n";
       throw EXIT_FAILURE;
@@ -66,7 +69,7 @@ static void ProcessFile(std::ostream &out, char const *inName)
    Core::String     file{inName};
    CPP::MacroMap    macr{CPP::Macro::Stringize(file)};
    CPP::PragmaLangC prag{};
-   CPP::PPStream    in  {fbuf, macr, prag, file, Core::PathDirname(file)};
+   CPP::PPStream    in  {*buf, macr, prag, file, Core::PathDirname(file)};
 
    for(Core::Token tok; in >> tok;) switch(tok.tok)
    {

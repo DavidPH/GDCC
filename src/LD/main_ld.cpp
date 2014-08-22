@@ -15,6 +15,7 @@
 #include "Bytecode/MgC/Info.hpp"
 #include "Bytecode/ZDACS/Info.hpp"
 
+#include "Core/File.hpp"
 #include "Core/Option.hpp"
 
 #include "IR/IArchive.hpp"
@@ -63,61 +64,64 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog);
 //
 static void MakeLinker()
 {
-   GDCC::IR::Program prog;
+   using namespace GDCC;
+
+   IR::Program prog;
 
    // Process inputs.
-   for(auto const &arg : GDCC::Core::GetOptionArgs())
+   for(auto const &arg : Core::GetOptionArgs())
       ProcessFile(arg, prog);
+
+   auto outName = Core::GetOptionOutput();
 
    // Write IR data.
    if(OutputIR)
    {
-      std::fstream out{GDCC::Core::GetOptionOutput(),
-         std::ios_base::binary | std::ios_base::out};
-
-      if(!out)
+      auto buf = Core::FileOpenStream(outName, std::ios_base::binary | std::ios_base::out);
+      if(!buf)
       {
-         std::cerr << "couldn't open '" << GDCC::Core::GetOptionOutput()
-            << "' for writing";
+         std::cerr << "couldn't open '" << outName << "' for writing\n";
          throw EXIT_FAILURE;
       }
 
-      GDCC::IR::OArchive(out).putHeader() << prog;
+      std::ostream out{buf.get()};
+      IR::OArchive(out).putHeader() << prog;
 
       return;
    }
 
-   std::unique_ptr<GDCC::Bytecode::Info> info;
+   // Select bytecode.
+   std::unique_ptr<Bytecode::Info> info;
 
-   switch(GDCC::Bytecode::TargetCur)
+   switch(Bytecode::TargetCur)
    {
-   case GDCC::Bytecode::Target::None:
+   case Bytecode::Target::None:
       std::cerr << "must specify target\n";
       throw EXIT_FAILURE;
 
-   case GDCC::Bytecode::Target::MageCraft:
-      info.reset(new GDCC::Bytecode::MgC::Info);
+   case Bytecode::Target::MageCraft:
+      info.reset(new Bytecode::MgC::Info);
       break;
 
-   case GDCC::Bytecode::Target::ZDoom:
-      info.reset(new GDCC::Bytecode::ZDACS::Info);
+   case Bytecode::Target::ZDoom:
+      info.reset(new Bytecode::ZDACS::Info);
       break;
    }
 
+   // Process IR data.
    info->pre(prog);
    info->tr(prog);
    info->gen(prog);
 
-   std::fstream out{GDCC::Core::GetOptionOutput(),
-      std::ios_base::binary | std::ios_base::out};
-
-   if(!out)
+   // Output bytecode.
+   auto buf = Core::FileOpenStream(outName, std::ios_base::out | std::ios_base::binary);
+   if(!buf)
    {
-      std::cerr << "couldn't open '" << GDCC::Core::GetOptionOutput()
-         << "' for writing";
+      std::cerr << "couldn't open '" << outName << "' for writing\n";
       throw EXIT_FAILURE;
    }
 
+   std::ostream out{buf.get()};
    info->put(prog, out);
 }
 
@@ -126,14 +130,16 @@ static void MakeLinker()
 //
 static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 {
-   std::ifstream in{inName, std::ios_base::binary | std::ios_base::in};
+   using namespace GDCC;
 
-   if(!in)
+   auto buf = Core::FileOpenStream(inName, std::ios_base::in | std::ios_base::binary);
+   if(!buf)
    {
-      std::cerr << "couldn't open '" << inName << "' for reading";
+      std::cerr << "couldn't open '" << inName << "' for reading\n";
       throw EXIT_FAILURE;
    }
 
+   std::istream in{buf.get()};
    GDCC::IR::IArchive(in).getHeader() >> prog;
 }
 

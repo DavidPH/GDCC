@@ -20,6 +20,7 @@
 ##
 add_library(gdcc-core-lib
    Exception.cpp
+   File.cpp
    Number.cpp
    Option.cpp
    Origin.cpp
@@ -35,9 +36,11 @@ add_library(gdcc-core-lib
    ../../inc/Core/CommentBuf.hpp
    ../../inc/Core/Compare.hpp
    ../../inc/Core/Counter.hpp
+   ../../inc/Core/Deleter.hpp
    ../../inc/Core/EscapeBuf.hpp
    ../../inc/Core/Exception.hpp
    ../../inc/Core/FeatureHold.hpp
+   ../../inc/Core/File.hpp
    ../../inc/Core/List.hpp
    ../../inc/Core/MemCmp.hpp
    ../../inc/Core/MemItr.hpp

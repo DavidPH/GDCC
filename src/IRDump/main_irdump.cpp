@@ -12,6 +12,7 @@
 
 #include "IRDump/Put.hpp"
 
+#include "Core/File.hpp"
 #include "Core/Option.hpp"
 
 #include "IR/IArchive.hpp"
@@ -32,27 +33,26 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog);
 //
 static void MakeIRDump()
 {
-   GDCC::IR::Program prog;
+   using namespace GDCC;
+
+   IR::Program prog;
 
    // Process inputs.
-   for(auto const &arg : GDCC::Core::GetOptionArgs())
+   for(auto const &arg : Core::GetOptionArgs())
       ProcessFile(arg, prog);
 
-   if(GDCC::Core::GetOptionOutput())
+   auto outName = Core::GetOptionOutput();
+   if(!outName) outName = "-";
+
+   auto buf = Core::FileOpenStream(outName, std::ios_base::out);
+   if(!buf)
    {
-      std::ofstream out{GDCC::Core::GetOptionOutput()};
-
-      if(!out)
-      {
-         std::cerr << "couldn't open '" << GDCC::Core::GetOptionOutput()
-            << "' for writing\n";
-         throw EXIT_FAILURE;
-      }
-
-      GDCC::IRDump::PutProgram(out, prog);
+      std::cerr << "couldn't open '" << outName << "' for writing\n";
+      throw EXIT_FAILURE;
    }
-   else
-      GDCC::IRDump::PutProgram(std::cout, prog);
+
+   std::ostream out{buf.get()};
+   IRDump::PutProgram(out, prog);
 }
 
 //
@@ -60,15 +60,17 @@ static void MakeIRDump()
 //
 static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 {
-   std::ifstream in{inName, std::ios_base::binary | std::ios_base::in};
+   using namespace GDCC;
 
-   if(!in)
+   auto buf = Core::FileOpenStream(inName, std::ios_base::in | std::ios_base::binary);
+   if(!buf)
    {
       std::cerr << "couldn't open '" << inName << "' for reading\n";
       throw EXIT_FAILURE;
    }
 
-   GDCC::IR::IArchive(in).getHeader() >> prog;
+   std::istream in{buf.get()};
+   IR::IArchive(in).getHeader() >> prog;
 }
 
 
