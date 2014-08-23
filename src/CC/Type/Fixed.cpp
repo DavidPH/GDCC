@@ -12,9 +12,9 @@
 
 #include "CC/Type/Fixed.hpp"
 
-#include "Bytecode/Platform.hpp"
-
 #include "IR/Type.hpp"
+
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -170,9 +170,9 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizeAlign() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return 4;
+         case Platform::Target::MageCraft: return 4;
          default:                          return 1;
          }
       }
@@ -182,9 +182,9 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizeBitsF() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return (8 << size) - 1;
+         case Platform::Target::MageCraft: return (8 << size) - 1;
          default:                          return size > 1 ? 32 : 16;
          }
       }
@@ -194,9 +194,9 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizeBitsI() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return (24 << size) + unsi;
+         case Platform::Target::MageCraft: return (24 << size) + unsi;
          default:                          return (size > 1 ? 31 : 15) + unsi;
          }
       }
@@ -206,9 +206,9 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizeBytes() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return 4 << size;
+         case Platform::Target::MageCraft: return 4 << size;
          default:                          return size > 1 ? 2 : 1;
          }
       }
@@ -218,9 +218,9 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizePoint() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return 1 << size;
+         case Platform::Target::MageCraft: return 1 << size;
          default:                          return size > 1 ? 2 : 1;
          }
       }
@@ -230,9 +230,9 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizeShift() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return 4;
+         case Platform::Target::MageCraft: return 4;
          default:                          return 1;
          }
       }
@@ -242,9 +242,9 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizeWords() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return 1 << size;
+         case Platform::Target::MageCraft: return 1 << size;
          default:                          return size > 1 ? 2 : 1;
          }
       }
@@ -302,9 +302,9 @@ namespace GDCC
       //
       Core::FastU Type_Fract::getSizeAlign() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return 1 << size;
+         case Platform::Target::MageCraft: return 1 << size;
          default:                          return 1;
          }
       }
@@ -322,9 +322,9 @@ namespace GDCC
       //
       Core::FastU Type_Fract::getSizeBytes() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return 1 << size;
+         case Platform::Target::MageCraft: return 1 << size;
          default:                          return 1;
          }
       }
@@ -342,9 +342,9 @@ namespace GDCC
       //
       Core::FastU Type_Fract::getSizeShift() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return 1 << size;
+         case Platform::Target::MageCraft: return 1 << size;
          default:                          return 1;
          }
       }
@@ -403,9 +403,9 @@ namespace GDCC
       //
       Core::FastU Type_Integ::getSizeAlign() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return size < 2 ? 1 << size : 4;
+         case Platform::Target::MageCraft: return size < 2 ? 1 << size : 4;
          default:                          return 1;
          }
       }
@@ -415,9 +415,9 @@ namespace GDCC
       //
       Core::FastU Type_Integ::getSizeBitsI() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return (8 << size) - sign;
+         case Platform::Target::MageCraft: return (8 << size) - sign;
          default:                          return (size > 2 ? 64 : 32) - sign;
          }
       }
@@ -427,9 +427,9 @@ namespace GDCC
       //
       Core::FastU Type_Integ::getSizeBytes() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return 1 << size;
+         case Platform::Target::MageCraft: return 1 << size;
          default:                          return size > 2 ? 2 : 1;
          }
       }
@@ -439,9 +439,9 @@ namespace GDCC
       //
       Core::FastU Type_Integ::getSizePoint() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return size > 2 ? 1 << (size - 2) : 1;
+         case Platform::Target::MageCraft: return size > 2 ? 1 << (size - 2) : 1;
          default:                          return size > 2 ? 2 : 1;
          }
       }
@@ -451,9 +451,9 @@ namespace GDCC
       //
       Core::FastU Type_Integ::getSizeShift() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return size < 2 ? 1 << size : 4;
+         case Platform::Target::MageCraft: return size < 2 ? 1 << size : 4;
          default:                          return 1;
          }
       }
@@ -463,9 +463,9 @@ namespace GDCC
       //
       Core::FastU Type_Integ::getSizeWords() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return size > 2 ? 1 << (size - 2) : 1;
+         case Platform::Target::MageCraft: return size > 2 ? 1 << (size - 2) : 1;
          default:                          return size > 2 ? 2 : 1;
          }
       }

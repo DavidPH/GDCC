@@ -14,11 +14,11 @@
 
 #include "AST/Type.hpp"
 
-#include "Bytecode/Platform.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
+
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -60,7 +60,7 @@ static GDCC::AST::Exp::CRef ExpConvert_PtrSpace(GDCC::AST::Type const *typeL,
       typeR = baseR->getTypePointer();
 
       // If null representation is different, perform inversion.
-      if(Bytecode::IsZeroNull_Point(addrL.base) != Bytecode::IsZeroNull_Point(addrR.base))
+      if(Platform::IsZeroNull_Point(addrL.base) != Platform::IsZeroNull_Point(addrR.base))
          return CC::Exp_ConvertPtrInv::Create(typeR, exp, pos);
       else
          return CC::Exp_ConvertPtr::Create(typeR, exp, pos);

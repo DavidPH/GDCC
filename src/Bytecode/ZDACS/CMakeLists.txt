@@ -18,7 +18,7 @@
 ##
 ## gdcc-bytecode-zdacs-lib
 ##
-add_library(gdcc-bytecode-zdacs-lib
+add_library(gdcc-bytecode-zdacs-lib ${GDCC_SHARED_DECL}
    Info.cpp
    gen.cpp
    genSpace.cpp

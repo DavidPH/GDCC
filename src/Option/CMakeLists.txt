@@ -18,7 +18,7 @@
 ##
 ## gdcc-option-lib
 ##
-add_library(gdcc-option-lib
+add_library(gdcc-option-lib ${GDCC_SHARED_DECL}
    Base.cpp
    CStr.cpp
    CStrV.cpp

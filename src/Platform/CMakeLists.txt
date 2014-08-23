@@ -1,12 +1,12 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2014 David Hill
+## Copyright (C) 2014 David Hill
 ##
 ## See COPYING for license information.
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for gdcc-magedefs.
+## CMake file for gdcc-platform.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -16,24 +16,15 @@
 ##
 
 ##
-## gdcc-magedefs-lib
+## gdcc-platform-lib
 ##
-add_library(gdcc-magedefs-lib ${GDCC_SHARED_DECL}
-   IStream.cpp
+add_library(gdcc-platform-lib ${GDCC_SHARED_DECL}
+   Platform.cpp
 
-   ../../inc/MageDefs/IStream.hpp
+   ../../inc/Platform/Platform.hpp
 )
 
-##
-## gdcc-magedefs
-##
-add_executable(gdcc-magedefs
-   main_magedefs.cpp
-)
-
-target_link_libraries(gdcc-magedefs-lib gdcc-core-lib)
-
-target_link_libraries(gdcc-magedefs gdcc-magedefs-lib)
+target_link_libraries(gdcc-platform-lib gdcc-core-lib)
 
 ## EOF
 

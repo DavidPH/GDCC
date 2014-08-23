@@ -22,8 +22,6 @@
 #include "AST/Storage.hpp"
 #include "AST/Type.hpp"
 
-#include "Bytecode/Platform.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Exp.hpp"

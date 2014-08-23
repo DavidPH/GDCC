@@ -21,10 +21,10 @@
 #include "AST/Exp.hpp"
 #include "AST/Type.hpp"
 
-#include "Bytecode/Platform.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -181,9 +181,9 @@ static void ParseTypeSpec_Struct(GDCC::CC::ParserCtx const &ctx,
 
    // Bit-field information.
    Core::FastU bitsAddr = 0;
-   Core::FastU bitsAlig = Bytecode::GetWordAlign();
-   Core::FastU bitsSize = Bytecode::GetWordBytes();
-   Core::FastU bitsWord = Bytecode::GetWordBits();
+   Core::FastU bitsAlig = Platform::GetWordAlign();
+   Core::FastU bitsSize = Platform::GetWordBytes();
+   Core::FastU bitsWord = Platform::GetWordBits();
 
    //
    // addrAlign

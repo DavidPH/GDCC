@@ -18,7 +18,7 @@
 ##
 ## gdcc-as-lib
 ##
-add_library(gdcc-as-lib
+add_library(gdcc-as-lib ${GDCC_SHARED_DECL}
    IStream.cpp
    Macro.cpp
    Parse.cpp

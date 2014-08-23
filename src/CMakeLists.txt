@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013 David Hill
+## Copyright (C) 2013-2014 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -26,6 +26,7 @@ add_subdirectory(IRDump)
 add_subdirectory(LD)
 add_subdirectory(MageDefs)
 add_subdirectory(Option)
+add_subdirectory(Platform)
 
 ## EOF
 

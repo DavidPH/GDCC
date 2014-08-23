@@ -18,7 +18,7 @@
 ##
 ## gdcc-core-lib
 ##
-add_library(gdcc-core-lib
+add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    Exception.cpp
    File.cpp
    Number.cpp

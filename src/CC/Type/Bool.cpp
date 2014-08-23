@@ -12,9 +12,9 @@
 
 #include "CC/Type/Bool.hpp"
 
-#include "Bytecode/Platform.hpp"
-
 #include "IR/Type.hpp"
+
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -42,7 +42,7 @@ namespace GDCC
       //
       Core::FastU Type_BoolSoft::getSizeAlign() const
       {
-         return Bytecode::GetWordAlign();
+         return Platform::GetWordAlign();
       }
 
       //
@@ -50,7 +50,7 @@ namespace GDCC
       //
       Core::FastU Type_BoolSoft::getSizeBytes() const
       {
-         return Bytecode::GetWordBytes();
+         return Platform::GetWordBytes();
       }
 
       //
@@ -66,7 +66,7 @@ namespace GDCC
       //
       Core::FastU Type_BoolSoft::getSizeShift() const
       {
-         return Bytecode::GetWordShift();
+         return Platform::GetWordShift();
       }
 
       //

@@ -15,12 +15,12 @@
 #include "AST/Exp.hpp"
 #include "AST/Type.hpp"
 
-#include "Bytecode/Platform.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Exp.hpp"
 #include "IR/Value.hpp"
+
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -69,7 +69,7 @@ namespace GDCC
                IR::Value_Funct val;
                val.vtype.callT = base->getCallType();
 
-               if(Bytecode::IsZeroNull_Funct(val.vtype.callT))
+               if(Platform::IsZeroNull_Funct(val.vtype.callT))
                   val.value = 0;
                else
                   val.value = static_cast<Core::FastU>(-1);
@@ -86,7 +86,7 @@ namespace GDCC
                val.addrB = base->getQualAddr().base;
                val.addrN = base->getQualAddr().name;
 
-               if(Bytecode::IsZeroNull_Point(val.addrB))
+               if(Platform::IsZeroNull_Point(val.addrB))
                   val.value = 0;
                else
                   val.value = static_cast<Core::FastU>(-1);

@@ -21,12 +21,10 @@ add_subdirectory(ZDACS)
 ##
 ## gdcc-bytecode-lib
 ##
-add_library(gdcc-bytecode-lib
+add_library(gdcc-bytecode-lib ${GDCC_SHARED_DECL}
    Info.cpp
-   Platform.cpp
 
    ../../inc/Bytecode/Info.hpp
-   ../../inc/Bytecode/Platform.hpp
 )
 
 target_link_libraries(gdcc-bytecode-lib gdcc-ir-lib)

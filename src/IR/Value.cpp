@@ -16,7 +16,7 @@
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
-#include "Bytecode/Platform.hpp"
+#include "Platform/Platform.hpp"
 
 #include <iostream>
 
@@ -62,7 +62,7 @@ namespace GDCC
       //
       Value_Funct::operator bool () const
       {
-         if(Bytecode::IsZeroNull_Funct(vtype.callT))
+         if(Platform::IsZeroNull_Funct(vtype.callT))
             return value != 0;
          else
             return value != static_cast<Core::FastU>(-1);
@@ -88,7 +88,7 @@ namespace GDCC
       //
       Value_Point::operator bool () const
       {
-         if(Bytecode::IsZeroNull_Point(vtype.reprB))
+         if(Platform::IsZeroNull_Point(vtype.reprB))
             return value != 0;
          else
             return value != static_cast<Core::FastU>(-1);
@@ -106,7 +106,7 @@ namespace GDCC
       //
       Value_StrEn::operator bool () const
       {
-         if(Bytecode::IsZeroNull_StrEn())
+         if(Platform::IsZeroNull_StrEn())
             return value != 0;
          else
             return value != static_cast<Core::FastU>(-1);

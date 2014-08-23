@@ -22,7 +22,7 @@ add_executable(gdcc-ld
    main_ld.cpp
 )
 
-target_link_libraries(gdcc-ld gdcc-ir-lib
+target_link_libraries(gdcc-ld
    gdcc-bytecode-mgc-lib
    gdcc-bytecode-zdacs-lib
 )

@@ -23,12 +23,12 @@
 #include "AST/Storage.hpp"
 #include "AST/Type.hpp"
 
-#include "Bytecode/Platform.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -84,7 +84,7 @@ namespace GDCC
       //
       void Scope_Local::allocAutoObj(AllocAutoInfo &alloc, AST::Object *obj)
       {
-         IR::Type_Fixed idxType{Bytecode::GetWordBits(), 0, 0, 0};
+         IR::Type_Fixed idxType{Platform::GetWordBits(), 0, 0, 0};
 
          // If one is not specified, select an address space now.
          if(obj->type->getQualAddr().base == IR::AddrBase::Gen)

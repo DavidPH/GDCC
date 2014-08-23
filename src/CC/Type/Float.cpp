@@ -12,9 +12,9 @@
 
 #include "CC/Type/Float.hpp"
 
-#include "Bytecode/Platform.hpp"
-
 #include "IR/Type.hpp"
+
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -109,9 +109,9 @@ namespace GDCC
       //
       Core::FastU Type_Float::getSizeAlign() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return !size && !cplx ? 2 : 4;
+         case Platform::Target::MageCraft: return !size && !cplx ? 2 : 4;
          default:                          return 1;
          }
       }
@@ -137,9 +137,9 @@ namespace GDCC
       //
       Core::FastU Type_Float::getSizeBytes() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft:
+         case Platform::Target::MageCraft:
             return FloatTable_SizeBytes_MageCraft[(size << 1) | cplx];
 
          default:
@@ -152,9 +152,9 @@ namespace GDCC
       //
       Core::FastU Type_Float::getSizePoint() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft:
+         case Platform::Target::MageCraft:
             return FloatTable_SizePoint_MageCraft[(size << 1) | cplx];
 
          default:
@@ -167,9 +167,9 @@ namespace GDCC
       //
       Core::FastU Type_Float::getSizeShift() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return !size && !cplx ? 2 : 4;
+         case Platform::Target::MageCraft: return !size && !cplx ? 2 : 4;
          default:                          return 1;
          }
       }
@@ -179,9 +179,9 @@ namespace GDCC
       //
       Core::FastU Type_Float::getSizeWords() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft:
+         case Platform::Target::MageCraft:
             return FloatTable_SizeWords_MageCraft[(size << 1) | cplx];
 
          default:

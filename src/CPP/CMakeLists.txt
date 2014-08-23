@@ -18,7 +18,7 @@
 ##
 ## gdcc-cpp-lib
 ##
-add_library(gdcc-cpp-lib
+add_library(gdcc-cpp-lib ${GDCC_SHARED_DECL}
    ConcatTBuf.cpp
    ConditionDTBuf.cpp
    DirectiveTBuf.cpp

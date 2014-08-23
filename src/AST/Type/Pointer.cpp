@@ -12,9 +12,9 @@
 
 #include "AST/Type/Pointer.hpp"
 
-#include "Bytecode/Platform.hpp"
-
 #include "IR/Type.hpp"
+
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -72,7 +72,7 @@ namespace GDCC
       //
       Core::FastU Type_PtrBase::getSizeAlign() const
       {
-         return Bytecode::GetWordAlign();
+         return Platform::GetWordAlign();
       }
 
       //
@@ -80,7 +80,7 @@ namespace GDCC
       //
       Core::FastU Type_PtrBase::getSizeBytes() const
       {
-         return getSizeWords() * Bytecode::GetWordBytes();
+         return getSizeWords() * Platform::GetWordBytes();
       }
 
       //
@@ -97,7 +97,7 @@ namespace GDCC
       //
       Core::FastU Type_PtrBase::getSizeShift() const
       {
-         return Bytecode::GetWordShift();
+         return Platform::GetWordShift();
       }
 
       //

@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "Bytecode/Platform.hpp"
+#include "Platform/Platform.hpp"
 
 #include "Core/Option.hpp"
 #include "Core/String.hpp"
@@ -47,9 +47,9 @@ static GDCC::Option::Function FormatOpt
       switch(Core::String::Find(args.argV[0]))
       {
       case Core::STR_ACSE:
-         Bytecode::FormatCur = Bytecode::Format::ACSE;    break;
+         Platform::FormatCur = Platform::Format::ACSE;    break;
       case Core::STR_MgC_NTS:
-         Bytecode::FormatCur = Bytecode::Format::MgC_NTS; break;
+         Platform::FormatCur = Platform::Format::MgC_NTS; break;
 
       default:
          Option::Exception::Error(args, "argument invalid");
@@ -79,9 +79,9 @@ static GDCC::Option::Function TargetOpt
       switch(Core::String::Find(args.argV[0]))
       {
       case Core::STR_MageCraft:
-         Bytecode::TargetCur = Bytecode::Target::MageCraft; break;
+         Platform::TargetCur = Platform::Target::MageCraft; break;
       case Core::STR_ZDoom:
-         Bytecode::TargetCur = Bytecode::Target::ZDoom;     break;
+         Platform::TargetCur = Platform::Target::ZDoom;     break;
 
       default:
          Option::Exception::Error(args, "argument invalid");
@@ -98,7 +98,7 @@ static GDCC::Option::Function TargetOpt
 
 namespace GDCC
 {
-   namespace Bytecode
+   namespace Platform
    {
       Format FormatCur = Format::None;
       Target TargetCur = Target::None;
@@ -112,7 +112,7 @@ namespace GDCC
 
 namespace GDCC
 {
-   namespace Bytecode
+   namespace Platform
    {
       //
       // GetByteBitsI

@@ -18,7 +18,7 @@
 ##
 ## gdcc-ir-lib
 ##
-add_library(gdcc-ir-lib
+add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    Addr.cpp
    Arg.cpp
    Block.cpp
@@ -94,7 +94,7 @@ add_library(gdcc-ir-lib
    ../../inc/IR/Value.hpp
 )
 
-target_link_libraries(gdcc-ir-lib gdcc-core-lib gdcc-bytecode-lib)
+target_link_libraries(gdcc-ir-lib gdcc-platform-lib)
 
 ## EOF
 

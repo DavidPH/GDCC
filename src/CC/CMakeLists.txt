@@ -18,7 +18,7 @@
 ##
 ## gdcc-cc-lib
 ##
-add_library(gdcc-cc-lib
+add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    Exp.cpp
    Exp/Add.cpp
    Exp/Add/Point.cpp

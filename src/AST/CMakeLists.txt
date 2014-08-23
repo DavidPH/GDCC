@@ -18,7 +18,7 @@
 ##
 ## gdcc-ast-lib
 ##
-add_library(gdcc-ast-lib
+add_library(gdcc-ast-lib ${GDCC_SHARED_DECL}
    Arg.cpp
    Attribute.cpp
    Exp.cpp
@@ -89,7 +89,7 @@ add_library(gdcc-ast-lib
    ../../inc/AST/Type/Wrapper.hpp
 )
 
-target_link_libraries(gdcc-ast-lib gdcc-bytecode-lib gdcc-ir-lib)
+target_link_libraries(gdcc-ast-lib gdcc-ir-lib)
 
 ## EOF
 

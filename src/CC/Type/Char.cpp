@@ -12,9 +12,9 @@
 
 #include "CC/Type/Char.hpp"
 
-#include "Bytecode/Platform.hpp"
-
 #include "IR/Type.hpp"
+
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -41,7 +41,7 @@ namespace GDCC
       //
       Core::FastU Type_Char::getSizeBitsI() const
       {
-         return Bytecode::GetByteBitsI() - getSizeBitsS();
+         return Platform::GetByteBitsI() - getSizeBitsS();
       }
 
       //
@@ -49,9 +49,9 @@ namespace GDCC
       //
       bool Type_Char::getSizeBitsS() const
       {
-         switch(Bytecode::TargetCur)
+         switch(Platform::TargetCur)
          {
-         case Bytecode::Target::MageCraft: return false;
+         case Platform::Target::MageCraft: return false;
          default:                          return true;
          }
       }

@@ -12,9 +12,9 @@
 
 #include "CC/Type/Struct.hpp"
 
-#include "Bytecode/Platform.hpp"
-
 #include "IR/Type.hpp"
+
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -190,13 +190,13 @@ namespace GDCC
          // TODO: Should be able to generate sub-word structures for targets
          // that do not need special sub-word pointers.
 
-         Core::FastU wordBytes = Bytecode::GetWordBytes();
+         Core::FastU wordBytes = Platform::GetWordBytes();
 
-         data.sizeAlign = Bytecode::GetWordAlign();
+         data.sizeAlign = Platform::GetWordAlign();
          data.sizeWords = (sizeBytes + wordBytes - 1) / wordBytes;
          data.sizeBytes = data.sizeWords * wordBytes;
-         data.sizePoint = Bytecode::GetWordPoint() * data.sizeWords;
-         data.sizeShift = Bytecode::GetWordShift();
+         data.sizePoint = Platform::GetWordPoint() * data.sizeWords;
+         data.sizeShift = Platform::GetWordShift();
 
          data.complete = true;
       }

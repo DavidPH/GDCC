@@ -18,7 +18,7 @@
 ##
 ## gdcc-bytecode-mgc-lib
 ##
-add_library(gdcc-bytecode-mgc-lib
+add_library(gdcc-bytecode-mgc-lib ${GDCC_SHARED_DECL}
    Info.cpp
    put.cpp
    tr.cpp

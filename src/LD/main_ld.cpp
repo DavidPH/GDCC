@@ -10,8 +10,6 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "Bytecode/Platform.hpp"
-
 #include "Bytecode/MgC/Info.hpp"
 #include "Bytecode/ZDACS/Info.hpp"
 
@@ -23,6 +21,8 @@
 #include "IR/Program.hpp"
 
 #include "Option/Bool.hpp"
+
+#include "Platform/Platform.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -93,17 +93,17 @@ static void MakeLinker()
    // Select bytecode.
    std::unique_ptr<Bytecode::Info> info;
 
-   switch(Bytecode::TargetCur)
+   switch(Platform::TargetCur)
    {
-   case Bytecode::Target::None:
+   case Platform::Target::None:
       std::cerr << "must specify target\n";
       throw EXIT_FAILURE;
 
-   case Bytecode::Target::MageCraft:
+   case Platform::Target::MageCraft:
       info.reset(new Bytecode::MgC::Info);
       break;
 
-   case Bytecode::Target::ZDoom:
+   case Platform::Target::ZDoom:
       info.reset(new Bytecode::ZDACS::Info);
       break;
    }

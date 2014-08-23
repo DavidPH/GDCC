@@ -51,6 +51,27 @@ endif()
 ## Environment Configuration                                                  |
 ##
 
+##
+## GDCC_SHARED
+##
+## If true (or equiavalent), libraries will be built as SHARED. Otherwise,
+## they are built as STATIC.
+##
+if(NOT DEFINED GDCC_SHARED)
+   set(GDCC_SHARED TRUE CACHE BOOL "Build libraries as shared objects.")
+endif()
+
+##
+## GDCC_SHARED_DECL
+##
+## Used internally for convenience in add_library commands.
+##
+if(GDCC_SHARED)
+   set(GDCC_SHARED_DECL SHARED)
+else()
+   set(GDCC_SHARED_DECL STATIC)
+endif()
+
 include_directories(inc src)
 
 

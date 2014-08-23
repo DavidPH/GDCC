@@ -12,9 +12,9 @@
 
 #include "AST/Type/Primary.hpp"
 
-#include "Bytecode/Platform.hpp"
-
 #include "IR/Type.hpp"
+
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -45,7 +45,7 @@ namespace GDCC
       //
       Core::FastU Type_Size::getSizeAlign() const
       {
-         return Bytecode::GetWordAlign();
+         return Platform::GetWordAlign();
       }
 
       //
@@ -61,7 +61,7 @@ namespace GDCC
       //
       Core::FastU Type_Size::getSizeBytes() const
       {
-         return Bytecode::GetWordBytes();
+         return Platform::GetWordBytes();
       }
 
       //
@@ -77,7 +77,7 @@ namespace GDCC
       //
       Core::FastU Type_Size::getSizeShift() const
       {
-         return Bytecode::GetWordShift();
+         return Platform::GetWordShift();
       }
 
       //

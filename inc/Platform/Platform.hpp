@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__Bytecode__Platform_H__
-#define GDCC__Bytecode__Platform_H__
+#ifndef GDCC__Platform__Platform_H__
+#define GDCC__Platform__Platform_H__
 
 
 //----------------------------------------------------------------------------|
@@ -26,7 +26,7 @@ namespace GDCC
       enum class CallType;
    }
 
-   namespace Bytecode
+   namespace Platform
    {
       //
       // Format
@@ -57,7 +57,7 @@ namespace GDCC
 
 namespace GDCC
 {
-   namespace Bytecode
+   namespace Platform
    {
       extern Format FormatCur;
       extern Target TargetCur;
@@ -71,7 +71,7 @@ namespace GDCC
 
 namespace GDCC
 {
-   namespace Bytecode
+   namespace Platform
    {
       unsigned GetByteBitsI();
       unsigned GetWordAlign();
@@ -87,5 +87,5 @@ namespace GDCC
    }
 }
 
-#endif//GDCC__Bytecode__Platform_H__
+#endif//GDCC__Platform__Platform_H__
 
