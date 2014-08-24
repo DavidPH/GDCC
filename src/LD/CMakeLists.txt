@@ -27,5 +27,7 @@ target_link_libraries(gdcc-ld
    gdcc-bytecode-zdacs-lib
 )
 
+GDCC_INSTALL_PART(ld TRUE FALSE)
+
 ## EOF
 

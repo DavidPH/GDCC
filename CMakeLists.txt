@@ -22,6 +22,34 @@ include(CheckCXXCompilerFlag)
 ##
 
 ##
+## GDCC_INSTALL_PART
+##
+function(GDCC_INSTALL_PART name wantExe wantLib)
+   if(wantExe AND GDCC_INSTALL_EXE)
+      install(TARGETS gdcc-${name}
+         RUNTIME DESTINATION bin
+         LIBRARY DESTINATION lib
+         ARCHIVE DESTINATION lib
+      )
+   endif()
+
+   if(wantLib AND GDCC_INSTALL_LIB)
+      if(GDCC_INSTALL_API)
+         install(TARGETS gdcc-${name}-lib
+            RUNTIME DESTINATION bin
+            LIBRARY DESTINATION lib
+            ARCHIVE DESTINATION lib
+         )
+      else()
+         install(TARGETS gdcc-${name}-lib
+            RUNTIME DESTINATION bin
+            LIBRARY DESTINATION lib
+         )
+      endif()
+   endif()
+endfunction()
+
+##
 ## TRY_CXX_COMPILER_FLAG
 ##
 function(TRY_CXX_COMPILER_FLAG flag name)
@@ -48,8 +76,29 @@ endif()
 
 
 ##----------------------------------------------------------------------------|
-## Environment Configuration                                                  |
+## Variables                                                                  |
 ##
+
+##
+## GDCC_INSTALL_API
+##
+if(NOT DEFINED GDCC_INSTALL_API)
+   set(GDCC_INSTALL_API OFF CACHE BOOL "Install headers.")
+endif()
+
+##
+## GDCC_INSTALL_EXE
+##
+if(NOT DEFINED GDCC_INSTALL_EXE)
+   set(GDCC_INSTALL_EXE ON CACHE BOOL "Install executables.")
+endif()
+
+##
+## GDCC_INSTALL_LIB
+##
+if(NOT DEFINED GDCC_INSTALL_LIB)
+   set(GDCC_INSTALL_LIB ON CACHE BOOL "Install libraries.")
+endif()
 
 ##
 ## GDCC_SHARED
@@ -58,7 +107,7 @@ endif()
 ## they are built as STATIC.
 ##
 if(NOT DEFINED GDCC_SHARED)
-   set(GDCC_SHARED TRUE CACHE BOOL "Build libraries as shared objects.")
+   set(GDCC_SHARED ON CACHE BOOL "Build libraries as shared objects.")
 endif()
 
 ##
@@ -72,6 +121,11 @@ else()
    set(GDCC_SHARED_DECL STATIC)
 endif()
 
+
+##----------------------------------------------------------------------------|
+## Environment Configuration                                                  |
+##
+
 include_directories(inc src)
 
 
@@ -80,6 +134,10 @@ include_directories(inc src)
 ##
 
 add_subdirectory(src)
+
+if(GDCC_INSTALL_API)
+   install(DIRECTORY inc/ DESTINATION include/GDCC)
+endif()
 
 ## EOF
 

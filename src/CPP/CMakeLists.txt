@@ -61,5 +61,7 @@ target_link_libraries(gdcc-cpp-lib gdcc-ir-lib)
 
 target_link_libraries(gdcc-cpp gdcc-cpp-lib)
 
+GDCC_INSTALL_PART(cpp TRUE TRUE)
+
 ## EOF
 

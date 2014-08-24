@@ -26,5 +26,7 @@ add_library(gdcc-platform-lib ${GDCC_SHARED_DECL}
 
 target_link_libraries(gdcc-platform-lib gdcc-core-lib)
 
+GDCC_INSTALL_PART(platform FALSE TRUE)
+
 ## EOF
 

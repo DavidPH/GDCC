@@ -34,5 +34,7 @@ add_executable(gdcc-irdump
 
 target_link_libraries(gdcc-irdump gdcc-ir-lib)
 
+GDCC_INSTALL_PART(irdump TRUE FALSE)
+
 ## EOF
 

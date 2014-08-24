@@ -39,5 +39,7 @@ add_library(gdcc-option-lib ${GDCC_SHARED_DECL}
    ../../inc/Option/StrUtil.hpp
 )
 
+GDCC_INSTALL_PART(option FALSE TRUE)
+
 ## EOF
 

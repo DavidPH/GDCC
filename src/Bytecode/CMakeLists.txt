@@ -29,5 +29,7 @@ add_library(gdcc-bytecode-lib ${GDCC_SHARED_DECL}
 
 target_link_libraries(gdcc-bytecode-lib gdcc-ir-lib)
 
+GDCC_INSTALL_PART(bytecode FALSE TRUE)
+
 ## EOF
 

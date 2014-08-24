@@ -36,5 +36,7 @@ add_library(gdcc-bytecode-zdacs-lib ${GDCC_SHARED_DECL}
 
 target_link_libraries(gdcc-bytecode-zdacs-lib gdcc-bytecode-lib)
 
+GDCC_INSTALL_PART(bytecode-zdacs FALSE TRUE)
+
 ## EOF
 

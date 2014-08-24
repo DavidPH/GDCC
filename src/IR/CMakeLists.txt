@@ -96,5 +96,7 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
 
 target_link_libraries(gdcc-ir-lib gdcc-platform-lib)
 
+GDCC_INSTALL_PART(ir FALSE TRUE)
+
 ## EOF
 

@@ -140,5 +140,7 @@ target_link_libraries(gdcc-cc-lib gdcc-ast-lib gdcc-cpp-lib)
 
 target_link_libraries(gdcc-cc gdcc-cc-lib)
 
+GDCC_INSTALL_PART(cc TRUE TRUE)
+
 ## EOF
 

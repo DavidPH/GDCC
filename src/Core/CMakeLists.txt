@@ -65,5 +65,7 @@ add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
 
 target_link_libraries(gdcc-core-lib gdcc-option-lib gmpxx gmp)
 
+GDCC_INSTALL_PART(core FALSE TRUE)
+
 ## EOF
 

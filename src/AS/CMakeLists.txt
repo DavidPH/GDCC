@@ -51,5 +51,7 @@ add_executable(gdcc-as
 target_link_libraries(gdcc-as-lib gdcc-ir-lib)
 target_link_libraries(gdcc-as gdcc-as-lib)
 
+GDCC_INSTALL_PART(as TRUE TRUE)
+
 ## EOF
 

@@ -35,5 +35,7 @@ target_link_libraries(gdcc-magedefs-lib gdcc-core-lib)
 
 target_link_libraries(gdcc-magedefs gdcc-magedefs-lib)
 
+GDCC_INSTALL_PART(magedefs TRUE TRUE)
+
 ## EOF
 
