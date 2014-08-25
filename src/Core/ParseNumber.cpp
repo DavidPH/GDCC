@@ -170,7 +170,7 @@ namespace GDCC
 
          std::tie(s, rawE, std::ignore) = ParseNumberInteg(s, 10);
 
-         auto valE = number_cast<FastI>(rawE);
+         auto valE = NumberCast<FastI>(rawE);
          if(signE) valE = -valE;
 
          return {s, valE};
@@ -188,7 +188,7 @@ namespace GDCC
          auto &val = std::get<1>(t);
          auto &len = std::get<2>(t);
 
-         return std::make_tuple(end, number_cast<FastU>(val), len);
+         return std::make_tuple(end, NumberCast<FastU>(val), len);
       }
 
       //

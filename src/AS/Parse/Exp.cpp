@@ -200,7 +200,7 @@ namespace GDCC
       {
          auto i = GetInteg(ctx);
 
-         return number_cast<Core::FastI>(i);
+         return Core::NumberCast<Core::FastI>(i);
       }
 
       //
@@ -210,7 +210,7 @@ namespace GDCC
       {
          auto i = GetInteg(ctx);
 
-         return number_cast<Core::FastU>(i);
+         return Core::NumberCast<Core::FastU>(i);
       }
 
       //

@@ -86,7 +86,7 @@ namespace GDCC
       {
          Core::FastI value = l.value; value -= r.value; value /= l.vtype.reprS;
          Type_Fixed type{sizeof(Core::FastU) * CHAR_BIT, 0, true, false};
-         return Value_Fixed(number_cast<Core::Integ>(value), std::move(type));
+         return Value_Fixed(Core::NumberCast<Core::Integ>(value), std::move(type));
       }
 
       //
@@ -114,7 +114,7 @@ namespace GDCC
       //
       Value_Point &operator -= (Value_Point &l, Value_Fixed const &r)
       {
-         l.value -= number_cast<Core::FastU>(r.value >> r.vtype.bitsF) /
+         l.value -= Core::NumberCast<Core::FastU>(r.value >> r.vtype.bitsF) /
             (l.vtype.reprS * l.vtype.reprW);
 
          return l;

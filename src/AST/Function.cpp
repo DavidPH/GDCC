@@ -126,7 +126,7 @@ namespace GDCC
          {
             auto val = valueInt->getValue();
             if(val.v == IR::ValueBase::Fixed)
-               fn.valueInt = number_cast<Core::FastU>(val.vFixed.value);
+               fn.valueInt = Core::NumberCast<Core::FastU>(val.vFixed.value);
             else
                fn.alloc = true;
          }

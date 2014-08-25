@@ -279,7 +279,7 @@ namespace GDCC
             {
             case IR::ValueBase::Fixed:
                data->tag = InitTag::Fixed;
-               data->val = number_cast<Core::FastU>(val.vFixed.value);
+               data->val = Core::NumberCast<Core::FastU>(val.vFixed.value);
                break;
 
             case IR::ValueBase::Funct:

@@ -70,13 +70,13 @@ namespace GDCC
 
          if(valL.v == ValueBase::Point && valR.v == ValueBase::Fixed)
          {
-            valL.vPoint.value += number_cast<Core::FastU>(valR.vFixed.value);
+            valL.vPoint.value += Core::NumberCast<Core::FastU>(valR.vFixed.value);
             return valL;
          }
 
          if(valL.v == ValueBase::Fixed && valR.v == ValueBase::Point)
          {
-            valR.vPoint.value += number_cast<Core::FastU>(valL.vFixed.value);
+            valR.vPoint.value += Core::NumberCast<Core::FastU>(valL.vFixed.value);
             return valR;
          }
 

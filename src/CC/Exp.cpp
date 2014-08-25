@@ -325,7 +325,7 @@ namespace GDCC
 
          // TODO: Check range?
 
-         return number_cast<Core::FastU>(i);
+         return Core::NumberCast<Core::FastU>(i);
       }
 
       //
@@ -341,7 +341,7 @@ namespace GDCC
             return val.vFixed.value >> val.vFixed.vtype.bitsF;
 
          case IR::ValueBase::Float:
-            return number_cast<Core::Integ>(val.vFloat.value);
+            return Core::NumberCast<Core::Integ>(val.vFloat.value);
 
          default:
             throw Core::ExceptStr(exp->pos, "invalid integer constant");

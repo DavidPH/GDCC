@@ -264,9 +264,9 @@ namespace GDCC
             {
             case IR::ValueBase::Fixed:
                if(val.vFixed.vtype.bitsS)
-                  return number_cast<Core::FastI>(val.vFixed.value);
+                  return Core::NumberCast<Core::FastI>(val.vFixed.value);
                else
-                  return number_cast<Core::FastU>(val.vFixed.value);
+                  return Core::NumberCast<Core::FastU>(val.vFixed.value);
 
             case IR::ValueBase::Funct:
                return val.vFunct.value;

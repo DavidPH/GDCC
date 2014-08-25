@@ -81,6 +81,22 @@ namespace GDCC
 // Global Functions                                                           |
 //
 
+namespace GDCC
+{
+   namespace Core
+   {
+      //
+      // NumberCast
+      //
+      // Handles conversions involving unlimited precision numeric types.
+      //
+      template<typename Out, typename In> Out NumberCast(In &&i)
+      {
+         return NumberCast_T<Out, In>::Cast(std::forward<In>(i));
+      }
+   }
+}
+
 namespace std
 {
    //
@@ -90,18 +106,6 @@ namespace std
    {
       size_t operator () (mpz_class const &i) const;
    };
-}
-
-template<typename Out, typename In> Out number_cast(In &&i);
-
-//
-// number_cast
-//
-// Handles conversions involving unlimited precision numeric types.
-//
-template<typename Out, typename In> Out number_cast(In &&i)
-{
-   return GDCC::Core::NumberCast_T<Out, In>::Cast(std::forward<In>(i));
 }
 
 #endif//GDCC__Core__Number_H__

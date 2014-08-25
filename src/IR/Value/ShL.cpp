@@ -56,7 +56,7 @@ namespace GDCC
       //
       Value_Fixed &operator <<= (Value_Fixed &l, Value_Fixed const &r)
       {
-         l.value <<= number_cast<Core::FastU>(r.value >> r.vtype.bitsF);
+         l.value <<= Core::NumberCast<Core::FastU>(r.value >> r.vtype.bitsF);
 
          return l.clamp();
       }

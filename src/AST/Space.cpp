@@ -62,7 +62,7 @@ namespace GDCC
          {
             auto val = value->getValue();
             if(val.v == IR::ValueBase::Fixed)
-               sp.value = number_cast<Core::FastU>(val.vFixed.value);
+               sp.value = Core::NumberCast<Core::FastU>(val.vFixed.value);
             else
                sp.alloc = true;
          }

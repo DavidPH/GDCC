@@ -106,7 +106,7 @@ namespace GDCC
       //
       Value_Point &operator += (Value_Point &l, Value_Fixed const &r)
       {
-         l.value += number_cast<Core::FastU>(r.value >> r.vtype.bitsF) /
+         l.value += Core::NumberCast<Core::FastU>(r.value >> r.vtype.bitsF) /
             (l.vtype.reprS * l.vtype.reprW);
 
          return l;

@@ -250,7 +250,7 @@ namespace GDCC
             case IR::ValueBase::Fixed:
                bits = val.value[i].vFixed.vtype.getBits();
                if(bits > 32) goto defcase;
-               writeBucket(number_cast<Core::FastU>(val.value[i].vFixed.value));
+               writeBucket(Core::NumberCast<Core::FastU>(val.value[i].vFixed.value));
                break;
 
             default:
