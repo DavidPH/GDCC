@@ -10,6 +10,11 @@ GDCC Assembler (gdcc-as)
 Provides a low level assembly interface to GDCC's intermediary representation.
 
 
+GDCC C Compiler (gdcc-cc)
+
+Compiles C source into IR data.
+
+
 GDCC C Preprocessor (gdcc-cpp)
 
 Applies C preprocessing to input files.
