@@ -10,6 +10,7 @@ direct interface to it.
 Declarations
 ===============================================================================
 
+Syntax:
   assembly-unit:
     declaration(opt) assembly-unit(opt)
 
@@ -23,12 +24,14 @@ Declarations
     space-declaration
     strent-declaration
 
-An assembly file is a series of declarations.
+Semantics:
+  An assembly file is a series of declarations.
 
 ===========================================================
 Functions
 ===========================================================
 
+Syntax:
   function-declaration:
     <Function> string function-argument-list(opt) new-line
 
@@ -55,108 +58,125 @@ Functions
   statement-list:
     statement statement-list(opt)
 
-Defines a function. This includes ACS scripts, which are distinguished by the
-call type.
+Semantics:
+  Defines a function. This includes ACS scripts, which are distinguished by the
+  call type.
 
 -----------------------------------------------------------
 alloc (boolean)
 -----------------------------------------------------------
 
-If 1, then the function will be given a generated valueInt if needed.
+Semantics:
+  If 1, then the function will be given a generated valueInt if needed.
 
 -----------------------------------------------------------
 block
 -----------------------------------------------------------
 
-Sets the block of statements associated with the function.
+Semantics:
+  Sets the block of statements associated with the function.
 
 -----------------------------------------------------------
 ctype
 -----------------------------------------------------------
 
-Sets the function's call type.
+Semantics:
+  Sets the function's call type.
 
 -----------------------------------------------------------
 defin (boolean)
 -----------------------------------------------------------
 
-If 1, then the function is considered defined. Otherwise, it is considered
-external and needing import.
+Semantics:
+  If 1, then the function is considered defined. Otherwise, it is considered
+  external and needing import.
 
 -----------------------------------------------------------
 label
 -----------------------------------------------------------
 
-Sets the label for the function's entry point. The label will be used for the
-function's first statement and must not be explicitly defined.
+Semantics:
+  Sets the label for the function's entry point. The label will be used for the
+  function's first statement and must not be explicitly defined.
 
 -----------------------------------------------------------
 linka
 -----------------------------------------------------------
 
-Sets the function's linkage.
+Semantics:
+  Sets the function's linkage.
 
 -----------------------------------------------------------
 localArs
 -----------------------------------------------------------
 
-Sets the number of words to allocate for addressable locals.
+Semantics:
+  Sets the number of words to allocate for addressable locals.
 
 -----------------------------------------------------------
 localReg
 -----------------------------------------------------------
 
-Sets the number of words to allocate for register locals.
+Semantics:
+  Sets the number of words to allocate for register locals.
 
-This must include register locals that are also function arguments, but does not
-need to include function arguments that are not register locals.
+  This must include register locals that are also function arguments, but does
+  not need to include function arguments that are not register locals.
 
 -----------------------------------------------------------
 param
 -----------------------------------------------------------
 
-Sets the number of parameter words.
+Semantics:
+  Sets the number of parameter words.
 
 -----------------------------------------------------------
 retrn
 -----------------------------------------------------------
 
-Sets the number of return words.
+Semantics:
+  Sets the number of return words.
 
 -----------------------------------------------------------
 sflagClS (boolean)
 -----------------------------------------------------------
 
-Sets the "clientside" script flag.
+Semantics:
+  Sets the "clientside" script flag.
 
 -----------------------------------------------------------
 sflagNet (boolean)
 -----------------------------------------------------------
 
-Sets the "net" script flag.
+Semantics:
+  Sets the "net" script flag.
 
 -----------------------------------------------------------
 stype
 -----------------------------------------------------------
 
-Sets the script type of the function.
+Semantics:
+  Sets the script type of the function.
 
 -----------------------------------------------------------
 valueInt
 -----------------------------------------------------------
 
-Sets the function's integer value. Usually the index or ACS script number.
+Semantics:
+  Sets the function's integer value. Usually the index or ACS script number.
 
 -----------------------------------------------------------
 valueStr
 -----------------------------------------------------------
 
-Sets the function's string value. Only meaningful for ACS named scripts.
+Semantics:
+  Sets the function's string value. Only meaningful for ACS named scripts.
 
 ===========================================================
 Glyphs
 ===========================================================
 
+Syntax:
   glyph-declaration:
     <Glyph> string glyph-argument-list(opt) new-line
 
@@ -171,41 +191,61 @@ Glyphs
 type
 -----------------------------------------------------------
 
-Sets the glyph's type.
+Semantics:
+  Sets the glyph's type.
 
 -----------------------------------------------------------
 value
 -----------------------------------------------------------
 
-Sets the glyph's value. The type of the expression must match the glyph's type.
+Semantics:
+  Sets the glyph's value. The type of the expression must match the glyph's type.
 
 ===========================================================
 Imports
 ===========================================================
 
+Syntax:
   import-declaration:
     <Import> string new-line
 
-Specifies a library to link with at load-time.
+Semantics:
+  Specifies a library to link with at load-time.
 
 ===========================================================
 Macros
 ===========================================================
 
+Syntax:
   macro-declaration:
     <Macro> identifier new-line(opt) { statement-list(opt) }
 
-Defines a macro that can be used to insert a statement list into another
-statement list. Any arguments in the macro of type Cpy are replaced by the
-numbered argument to the macro invocation.
+  identifier:
+    non-digit
+    identifier non-digit
+    identifier digit
 
-Macros are not part of the Intermediary Representation and exist only during
-assembling. Thus, their names have no linkage.
+  non-digit: one of
+    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+    a b c d e f g h i j k l m n o p q r s t u v w x y z
+    _
+
+  digit: one of
+    0 1 2 3 4 5 6 7 8 9
+
+Semantics:
+  Defines a macro that can be used to insert a statement list into another
+  statement list. Any arguments in the macro of type Cpy are replaced by the
+  numbered argument to the macro invocation.
+
+  Macros are not part of the Intermediary Representation and exist only during
+  assembling. Thus, their names have no linkage.
 
 ===========================================================
 Objects
 ===========================================================
 
+Syntax:
   object-declaration:
     <Object> string object-argument-list(opt) new-line
 
@@ -222,57 +262,62 @@ Objects
     <value> = expression
     <words> = expression
 
-Defines an object. The address and first string indicate the space the object is
-in. The containing space must already be defined.
-
 -----------------------------------------------------------
 alias (boolean)
 -----------------------------------------------------------
 
-If 1, then the object may share an address with an object or sub-object with
-equivalent initializer.
+Semantics:
+  If 1, then the object may share an address with an object or sub-object with
+  equivalent initializer.
 
 -----------------------------------------------------------
 alloc
 -----------------------------------------------------------
 
-If 1, then the object will be given a generated value if needed.
+Semantics:
+  If 1, then the object will be given a generated value if needed.
 
 -----------------------------------------------------------
 defin (boolean)
 -----------------------------------------------------------
 
-If 1, then the object is considered defined. Otherwise, it is considered
-external and needing import.
+Semantics:
+  If 1, then the object is considered defined. Otherwise, it is considered
+  external and needing import.
 
 -----------------------------------------------------------
 initi
 -----------------------------------------------------------
 
-Sets the initial state of the object.
+Semantics:
+  Sets the initial state of the object.
 
 -----------------------------------------------------------
 linka
 -----------------------------------------------------------
 
-Sets the object's linkage.
+Semantics:
+  Sets the object's linkage.
 
 -----------------------------------------------------------
 value
 -----------------------------------------------------------
 
-Sets the objects's integer value. Usually the starting memory index.
+Semantics:
+  Sets the objects's integer value. Usually the starting memory index.
 
 -----------------------------------------------------------
 words
 -----------------------------------------------------------
 
-Sets the number of words needed for the object.
+Semantics:
+  Sets the number of words needed for the object.
 
 ===========================================================
 Spaces
 ===========================================================
 
+Syntax:
   space-declaration:
     <Space> address-specifier string space-argument-list(opt) new-line
 
@@ -286,43 +331,50 @@ Spaces
     <value> = expression
     <words> = expression
 
-Defines an address space to contain objects.
+Semantics:
+  Defines an address space to contain objects.
 
 -----------------------------------------------------------
 alloc
 -----------------------------------------------------------
 
-If 1, then the space will be given a generated value if needed.
+Semantics:
+  If 1, then the space will be given a generated value if needed.
 
 -----------------------------------------------------------
 defin
 -----------------------------------------------------------
 
-If 1, then the space is considered defined. Otherwise, it is considered external
-and needing import.
+Semantics:
+  If 1, then the space is considered defined. Otherwise, it is considered
+  external and needing import.
 
 -----------------------------------------------------------
 linka
 -----------------------------------------------------------
 
-Sets the space's linkage.
+Semantics:
+  Sets the space's linkage.
 
 -----------------------------------------------------------
 value
 -----------------------------------------------------------
 
-Sets the space's integer value. Usually the index.
+Semantics:
+  Sets the space's integer value. Usually the index.
 
 -----------------------------------------------------------
 words
 -----------------------------------------------------------
 
-Sets the number of words needed for the space.
+Semantics:
+  Sets the number of words needed for the space.
 
 ===========================================================
 String Entries
 ===========================================================
 
+Syntax:
   strent-declaration:
     <StrEnt> string strent-argument-list(opt) new-line
 
@@ -336,44 +388,51 @@ String Entries
     <valueInt> = expression
     <valueStr> = string
 
-Defines a target string table entry.
+Semantics:
+  Defines a target string table entry.
 
 -----------------------------------------------------------
 alias
 -----------------------------------------------------------
 
-If 1, then the string entry may share an address with an equivalent string
-entry.
+Semantics:
+  If 1, then the string entry may share an address with an equivalent string
+  entry.
 
 -----------------------------------------------------------
 alloc
 -----------------------------------------------------------
 
-If 1, then the string entry will be given a generated value if needed.
+Semantics:
+  If 1, then the string entry will be given a generated value if needed.
 
 -----------------------------------------------------------
 defin
 -----------------------------------------------------------
 
-If 1, then the string entry is considered defined. Otherwise, it is considered
-external and needing import.
+Semantics:
+  If 1, then the string entry is considered defined. Otherwise, it is
+  considered external and needing import.
 
 -----------------------------------------------------------
 valueInt
 -----------------------------------------------------------
 
-Sets the string entry's integer value.
+Semantics:
+  Sets the string entry's integer value.
 
 -----------------------------------------------------------
 valueStr
 -----------------------------------------------------------
 
-Sets the string entry's string value.
+Semantics:
+  Sets the string entry's string value.
 
 ===============================================================================
 Statements
 ===============================================================================
 
+Syntax:
   statement:
     statement-label-list(opt) statement-name argument-list(opt) new-line
     statement-label-list(opt) ! identifier argument-list(opt) new-line
@@ -384,14 +443,16 @@ Statements
   argument-list:
     , argument argument-list(opt)
 
-A statement is the IR's instruction.
+Semantics:
+  A statement is the IR's instruction.
 
-Statements starting with a ! are a macro invocation.
+  Statements starting with a ! are a macro invocation.
 
 ===========================================================
 Statement Names
 ===========================================================
 
+Syntax:
   statement-name:
     <Nop>
     <AddI_W>
@@ -438,6 +499,7 @@ Statement Names
 Arguments
 ===========================================================
 
+Syntax:
   argument:
     <Cpy> ( expression )
     <Far> ( argument , expression )
@@ -465,10 +527,10 @@ Arguments
 Expressions
 ===============================================================================
 
+Syntax:
   expression:
     aggregate
     aggregate-string
-    identifier
     number
     string
     value
@@ -559,6 +621,7 @@ Expressions
 Aggregates
 ===========================================================
 
+Syntax:
   aggregate:
     <Multi> ( expression-list(opt) )
     { expression-list(opt) }
@@ -568,45 +631,31 @@ Aggregates
     expression
     expression , expression-list
 
-Results in a multi-part value. Each sub-expression has its own type.
+Semantics:
+  Results in a multi-part value. Each sub-expression has its own type.
 
-In the first and second forms, expression evaluation is deferred. In the third
-form, expressions are evaluated immediately and cannot contain unbacked glyphs.
+  In the first and second forms, expression evaluation is deferred. In the
+  third form, expressions are evaluated immediately and cannot contain unbacked
+  glyphs.
 
 ===========================================================
 Aggregate Strings
 ===========================================================
 
+Syntax:
   aggregate-string:
     <string> type-Fixed(opt) string
 
-Results in a multi-part value comprised of the characters in the string. The
-type of each element is determined by an explicit type or a target-dependent
-default.
-
-===========================================================
-Identifiers
-===========================================================
-
-  identifier:
-    non-digit
-    identifier non-digit
-    identifier digit
-
-  non-digit: one of
-    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
-    a b c d e f g h i j k l m n o p q r s t u v w x y z
-    _
-
-  digit: one of
-    0 1 2 3 4 5 6 7 8 9
-
-As an expression, an identifier indicates a glyph to be resolved.
+Semantics:
+  Results in a multi-part value comprised of the characters in the string. The
+  type of each element is determined by an explicit type or a target-dependent
+  default.
 
 ===========================================================
 Numbers
 ===========================================================
 
+Syntax:
   number:
     decimal-number number-suffix(opt)
     hexadecimal-number number-suffix(opt)
@@ -684,6 +733,7 @@ Numbers
 Strings
 ===========================================================
 
+Syntax:
   string:
     " char-sequence(opt) "
 
@@ -711,12 +761,14 @@ Strings
   simple-escape-sequence: one of
     \' \" \? \\ \a \b \f \n \r \t \v
 
-As an expression, a string indicates a glyph to be resolved.
+Semantics:
+  As an expression, a string indicates a glyph to be resolved.
 
 ===========================================================
 Values
 ===========================================================
 
+Syntax:
   value:
     <Value> value-Empty
     <Value> value-Funct
@@ -728,6 +780,7 @@ Values
 Empty
 -----------------------------------------------------------
 
+Syntax:
   value-Empty:
     type-Empty ( )
 
@@ -735,6 +788,7 @@ Empty
 Funct
 -----------------------------------------------------------
 
+Syntax:
   value-Funct:
     type-Funct ( expression )
 
@@ -742,6 +796,7 @@ Funct
 Multi
 -----------------------------------------------------------
 
+Syntax:
   value-Multi:
     type-Multi ( expression-list(opt) )
 
@@ -749,6 +804,7 @@ Multi
 Point
 -----------------------------------------------------------
 
+Syntax:
   value-Point:
     type-Point ( expression , address-specifier string )
 
@@ -756,6 +812,7 @@ Point
 StrEn
 -----------------------------------------------------------
 
+Syntax:
   value-StrEn:
     type-StrEn ( expression )
 
@@ -763,6 +820,7 @@ StrEn
 Specifiers
 ===============================================================================
 
+Syntax:
   address-specifier:
     <Cpy>
     <Far>
@@ -876,6 +934,19 @@ Grammar
   macro-declaration:
     <Macro> identifier new-line(opt) { statement-list(opt) }
 
+  identifier:
+    non-digit
+    identifier non-digit
+    identifier digit
+
+  non-digit: one of
+    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+    a b c d e f g h i j k l m n o p q r s t u v w x y z
+    _
+
+  digit: one of
+    0 1 2 3 4 5 6 7 8 9
+
   object-declaration:
     <Object> string object-argument-list(opt) new-line
 
@@ -999,7 +1070,6 @@ Grammar
   expression:
     aggregate
     aggregate-string
-    identifier
     number
     string
     value
@@ -1097,19 +1167,6 @@ Grammar
 
   aggregate-string:
     <string> type-Fixed(opt) string
-
-  identifier:
-    non-digit
-    identifier non-digit
-    identifier digit
-
-  non-digit: one of
-    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
-    a b c d e f g h i j k l m n o p q r s t u v w x y z
-    _
-
-  digit: one of
-    0 1 2 3 4 5 6 7 8 9
 
   number:
     decimal-number number-suffix(opt)
