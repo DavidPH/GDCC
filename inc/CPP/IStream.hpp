@@ -18,6 +18,7 @@
 #include "../Core/CommentBuf.hpp"
 #include "../Core/EscapeBuf.hpp"
 #include "../Core/FeatureHold.hpp"
+#include "../Core/LineTermBuf.hpp"
 #include "../Core/OriginBuf.hpp"
 
 #include <istream>
@@ -43,8 +44,8 @@ namespace GDCC
       {
       public:
          IStream(std::streambuf &buf, Core::String file, std::size_t line = 1) :
-            std::istream{&cbuf}, needHeader{false}, obuf{buf, file, line},
-            tbuf{obuf}, ebuf{tbuf}, cbuf{ebuf} {}
+            std::istream{&cbuf}, needHeader{false}, lbuf{buf},
+            obuf{lbuf, file, line}, tbuf{obuf}, ebuf{tbuf}, cbuf{ebuf} {}
 
          void disableComments() {rdbuf(&obuf);}
 
@@ -63,11 +64,13 @@ namespace GDCC
          static bool GetHeader(std::istream &in, Core::Token &out);
 
       protected:
+         using LBuf = Core::LineTermBuf<8>;
          using OBuf = Core::OriginBuf<8, 2>;
          using TBuf = TrigraphBuf<8>;
          using EBuf = Core::StripEscapeBuf<8, 1, 1, char, '\n'>;
          using CBuf = Core::CCommentBuf<8>;
 
+         LBuf lbuf;
          OBuf obuf;
          TBuf tbuf;
          EBuf ebuf;

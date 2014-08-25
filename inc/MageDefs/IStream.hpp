@@ -15,6 +15,7 @@
 
 #include "../Core/CommentBuf.hpp"
 #include "../Core/FeatureHold.hpp"
+#include "../Core/LineTermBuf.hpp"
 #include "../Core/OriginBuf.hpp"
 
 #include <istream>
@@ -40,7 +41,7 @@ namespace GDCC
       {
       public:
          explicit IStream(std::streambuf &buf, Core::String file) :
-            std::istream{&cbuf}, obuf{buf, file}, cbuf{obuf} {}
+            std::istream{&cbuf}, lbuf{buf}, obuf{lbuf, file}, cbuf{obuf} {}
 
          void disableComments() {rdbuf(&obuf);}
 
@@ -54,9 +55,11 @@ namespace GDCC
          CommentsHold holdComments() {return CommentsHold(*this);}
 
       protected:
+         using LBuf = Core::LineTermBuf<8>;
          using OBuf = Core::OriginBuf<8>;
          using CBuf = Core::LineCommentBuf<8, 1, 1, char, '#'>;
 
+         LBuf lbuf;
          OBuf obuf;
          CBuf cbuf;
       };
