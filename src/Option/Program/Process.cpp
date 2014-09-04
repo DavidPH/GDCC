@@ -50,9 +50,27 @@ namespace GDCC
 {
    namespace Option
    {
-      //
-      // Program::process
-      //
+      ///
+      /// Options are handled in GNU style. Short options start with "-" and
+      /// can be grouped. Long options start with "--". Options can be
+      /// terminated with a "--". An argument can be attached to short options
+      /// by direct appending, or to long options with a "=".
+      ///
+      /// A long option name prefixed with "no-" will drop the prefix for name
+      /// lookup and set optFalse in the associated Args object.
+      ///
+      /// Arguments that are not options or consumed by an option are referred
+      /// to as loose arguments and are handled by the processLoose option. If
+      /// processLoose is null, loose arguments are ignored.
+      ///
+      /// If optFinal is set, it is only passed when all remaining arguments
+      /// are passed. All other flags are passed as-is.
+      ///
+      /// @param args Program arguments.
+      ///
+      /// @exception Option::Exception May be thrown as a result of invalid
+      ///    options.
+      ///
       void Program::process(Args const &args)
       {
          Args argsTemp = args;

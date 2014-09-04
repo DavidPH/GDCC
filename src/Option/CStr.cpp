@@ -26,11 +26,14 @@ namespace GDCC
 {
    namespace Option
    {
-      //
-      // CStr constructor
-      //
-      CStr::CStr(Program *list_, Info const &info_) :
-         Base{list_, info_},
+      ///
+      /// Initializes string to null and invokes Base's insertion constructor.
+      ///
+      /// @param program Program to insert this into.
+      /// @param optInfo Basic option information.
+      ///
+      CStr::CStr(Program *program, Info const &optInfo) :
+         Base{program, optInfo},
 
          str  {nullptr},
          len  {0},
@@ -38,22 +41,28 @@ namespace GDCC
       {
       }
 
-      //
-      // CStr constructor
-      //
-      CStr::CStr(Program *list_, Info const &info_, char const *str_, bool copy) :
-         Base{list_, info_},
+      ///
+      /// Initializes string from s and invokes Base's insertion constructor.
+      /// If copy is true, string is duplicated. Otherwise, it is kept.
+      ///
+      /// @param program Program to insert this into.
+      /// @param optInfo Basic option information.
+      /// @param s Initial string value.
+      /// @param copy Whether s can be kept or must be copied.
+      ///
+      CStr::CStr(Program *program, Info const &optInfo, char const *s, bool copy) :
+         Base{program, optInfo},
 
          str  {nullptr},
          len  {0},
          alloc{false}
       {
-         reset(str_, copy);
+         reset(s, copy);
       }
 
-      //
-      // CStr destructor
-      //
+      ///
+      /// Frees the associated string, if necessary.
+      ///
       CStr::~CStr()
       {
          if(alloc) delete[] str;
@@ -74,21 +83,30 @@ namespace GDCC
       //
       // CStr::reset
       //
-      void CStr::reset(char const *str_, bool copy)
+      void CStr::reset(char const *s, bool copy)
       {
          if(alloc) delete[] str;
 
-         len = std::strlen(str_);
+         len = std::strlen(s);
 
          if((alloc = copy))
-            str = StrDup(str_, len).release();
+            str = StrDup(s, len).release();
          else
-            str = str_;
+            str = s;
       }
 
-      //
-      // CStr::v_process
-      //
+      ///
+      /// If optFalse is set, sets string to null and length to 0 and consumes
+      /// no arguments. Otherwise, consumes one argument to set string and
+      /// length. If optKeepA is set, the argument string is kept instead of
+      /// duplicated.
+      ///
+      /// @param args Program arguments.
+      ///
+      /// @return Number of consumed arguments.
+      ///
+      /// @exception Option::Exception Thrown for lack of argument.
+      ///
       std::size_t CStr::v_process(Args const &args)
       {
          if(args.optFalse) return reset(), 0;

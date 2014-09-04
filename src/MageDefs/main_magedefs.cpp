@@ -79,13 +79,13 @@ static void MakeDefs()
    out << "MgC_NTS" << '\0';
 
    // Write type.
-   if(NTSType.str)
-      out << NTSType.str;
+   if(NTSType.data())
+      out << NTSType.data();
    out << '\0';
 
    // Write version.
-   if(NTSVersion.str)
-      out << NTSVersion.str;
+   if(NTSVersion.data())
+      out << NTSVersion.data();
    out << '\0';
 
    // Process inputs.

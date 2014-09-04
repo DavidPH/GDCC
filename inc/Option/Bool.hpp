@@ -24,20 +24,45 @@ namespace GDCC
 {
    namespace Option
    {
-      //
-      // Bool
-      //
+      /// Basic boolean option handler.
+
+      /// Processes options by setting an associated boolean.
+      ///
       class Bool : public Base
       {
       public:
-         Bool(Program *list_, Info const &info_, bool *data_) :
-            Base{list_, info_}, data{data_} {}
+         /// Insertion and initializer constructor.
 
-         bool *data;
+         /// Initializes the pointer to option state and invokes Base's
+         /// insertion constructor.
+         ///
+         /// @param program Program to insert this into.
+         /// @param optInfo Basic option information.
+         /// @param ptr Pointer to object to store option state in.
+         ///
+         Bool(Program *program, Info const &optInfo, bool *ptr) :
+            Base{program, optInfo}, dptr{ptr}
+         {
+         }
 
       protected:
+         /// Virtual implementation of option processing.
+
+         /// If optFalse is set, sets the associated boolean to false.
+         /// Otherwise, sets it to true. No arguments are consumed.
+         ///
+         /// @param args Program arguments.
+         ///
+         /// @return Number of consumed arguments.
+         ///
          virtual std::size_t v_process(Args const &args)
-            {*data = !args.optFalse; return 0;}
+         {
+            *dptr = !args.optFalse;
+            return 0;
+         }
+
+      private:
+         bool *const dptr;
       };
    }
 }

@@ -26,23 +26,31 @@ namespace GDCC
 {
    namespace Option
    {
-      //
-      // CStrV constructor
-      //
-      CStrV::CStrV(Program *list_, Info const &info_, std::size_t argMax_) :
-         Base{list_, info_},
+      ///
+      /// Initializes array to empty and invokes Base's insertion constructor.
+      /// If argMax is 0, option processing will consume all passed arguments
+      /// and silently do nothing if no arguments passed. Otherwise, it will
+      /// require at least one argument and consume no more than argMax
+      /// arguments.
+      ///
+      /// @param program Program to insert this into.
+      /// @param optInfo Basic option information.
+      /// @param argMax Maximum arguments to consume during processing.
+      ///
+      CStrV::CStrV(Program *program, Info const &optInfo, std::size_t argMax) :
+         Base{program, optInfo},
 
-         strC  {0},
-         strV  {nullptr},
-         strF  {nullptr},
-         strA  {0},
-         argMax{argMax_}
+         strF{nullptr},
+         strV{nullptr},
+         strA{0},
+         strC{0},
+         argM{argMax}
       {
       }
 
-      //
-      // CStrV destructor
-      //
+      ///
+      /// Frees the array and any self-allocated strings.
+      ///
       CStrV::~CStrV()
       {
          while(strC) if(strF[--strC]) delete[] strV[strC];
@@ -51,9 +59,13 @@ namespace GDCC
          delete[] strV;
       }
 
-      //
-      // CStrV::pop
-      //
+      ///
+      /// If opt is not null, its process function is called with the newly
+      /// removed string as a program argument using args as a base.
+      ///
+      /// @param opt Option to handle popped string.
+      /// @param args Base program argument data to pass to opt.
+      ///
       void CStrV::pop(Base *opt, Args args)
       {
          if(!strC) return;
@@ -75,18 +87,26 @@ namespace GDCC
             delete[] strV[strC];
       }
 
-      //
-      // CStrV::v_process
-      //
+      ///
+      /// Consumes a number of arguments as described in the insertion
+      /// constructor. If optKeepA is set, argument strings are kept instead of
+      /// duplicated.
+      ///
+      /// @param args Program arguments.
+      ///
+      /// @return Number of consumed arguments.
+      ///
+      /// @exception Option::Exception Thrown for lack of argument.
+      ///
       std::size_t CStrV::v_process(Args const &args)
       {
-         if(argMax && !args.argC)
+         if(argM && !args.argC)
             Exception::Error(args, "argument required");
 
          // Calculate actual number of argumetns to take.
          std::size_t argC = args.argC;
-         if(argMax && argC > argMax)
-            argC = argMax;
+         if(argM && argC > argM)
+            argC = argM;
 
          std::size_t newC = strC + argC;
 

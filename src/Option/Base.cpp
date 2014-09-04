@@ -26,55 +26,70 @@ namespace GDCC
 {
    namespace Option
    {
-      //
-      // Base constructor
-      //
-      Base::Base(Program *list_, Info const &info_) :
-         info{info_},
+      ///
+      /// Initializes basic information and inserts this into program.
+      ///
+      /// @param program Program to insert this into.
+      /// @param optInfo Basic option information.
+      ///
+      Base::Base(Program *program, Info const &optInfo) :
+         info{optInfo},
 
          processed{false},
 
          hashNext{this}, hashPrev{this},
          shrtNext{this}, shrtPrev{this},
 
-         hash{StrHash(info_.nameL)},
-         lenL{info_.nameL ? std::strlen(info_.nameL) : 0}
+         hash{StrHash(optInfo.nameL)},
+         lenL{optInfo.nameL ? std::strlen(optInfo.nameL) : 0}
       {
-         if(list_) list_->insert(this);
+         if(program) program->insert(this);
       }
 
-      //
-      // Base destructor
-      //
+      ///
+      /// Unlinks from current program, if any.
+      ///
       Base::~Base()
       {
-         if(list) list->remove(this);
+         if(prog) prog->remove(this);
       }
 
-      //
-      // Base::insert
-      //
-      void Base::insert(Program *list_)
+      ///
+      /// Inserts into a program. If this was already in a program, it will be
+      /// removed first.
+      ///
+      /// @param program Program to insert this into.
+      ///
+      void Base::insert(Program *program)
       {
-         if(list ) list ->remove(this);
-         if(list_) list_->insert(this);
+         if(prog   ) prog   ->remove(this);
+         if(program) program->insert(this);
       }
 
-      //
-      // Base::process
-      //
+      ///
+      /// Invokes v_process then sets processed to true. Returns the result of
+      /// v_process unaltered.
+      ///
+      /// @param args Program arguments to be processed.
+      ///
+      /// @return Number of arguments consumed.
+      ///
+      /// @exception Option::Exception May be thrown as a result of invalid
+      ///    arguments.
+      ///
       std::size_t Base::process(Args const &args)
       {
+         auto ret = v_process(args);
          processed = true;
-         return v_process(args);
+         return ret;
       }
 
-      //
-      // Base::remove
-      //
+      ///
+      /// Unlinks from the current program, if any.
+      ///
       void Base::remove()
       {
-         if(list) list->remove(this);
+         if(prog) prog->remove(this);
       }
    }
 }

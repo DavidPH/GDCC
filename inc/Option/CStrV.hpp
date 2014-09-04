@@ -24,32 +24,46 @@ namespace GDCC
 {
    namespace Option
    {
-      //
-      // CStrV
-      //
+      /// C-string vector option handler.
+
+      /// Processes options by taking argument strings as-is and appending them
+      /// to an array.
+      ///
       class CStrV : public Base
       {
       public:
-         CStrV(Program *list, Info const &info, std::size_t argMax);
+         /// Insertion constructor.
+         CStrV(Program *program, Info const &optInfo, std::size_t argMax);
+
+         /// Destructor.
          virtual ~CStrV();
 
+         /// Returns an iterator to the beginning of the array.
          char const *const *begin() const {return strV;}
 
+         /// Returns a pointer to the beginning of the array.
+         char const *const *data() const {return strV;}
+
+         /// Returns an iterator to one past the end of the array.
          char const *const *end() const {return strV + strC;}
 
-         // Passes last arg to opt (if any), then removes the arg from list.
+         /// Removes the last element of the array.
          void pop(Base *opt = nullptr, Args args = Args());
 
-         std::size_t  strC; // count
-         char const **strV; // vector
+         /// Returns the number of contained strings.
+         std::size_t size() const {return strC;}
+
 
       protected:
+         /// Virtual implementation of option processing.
          virtual std::size_t v_process(Args const &args);
 
       private:
-         bool       *strF; // free needed
-         std::size_t strA; // alloc
-         std::size_t argMax;
+         bool        *strF; // free needed
+         char const **strV; // vector
+         std::size_t  strA; // vector size
+         std::size_t  strC; // vector used
+         std::size_t  argM; // max args consumed
       };
    }
 }

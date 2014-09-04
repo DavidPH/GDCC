@@ -41,7 +41,7 @@ namespace GDCC
                .setDescS("Prints usage and exits."),
 
             [](Option::Base *opt, Option::Args const &) -> std::size_t
-               {opt->list->putHelp(std::cout); throw EXIT_SUCCESS;}
+               {opt->getProgram()->putHelp(std::cout); throw EXIT_SUCCESS;}
          },
 
          optHelpADoc
@@ -51,7 +51,7 @@ namespace GDCC
                .setDescS("Prints AsciiDoc usage and exits."),
 
             [](Option::Base *opt, Option::Args const &) -> std::size_t
-               {opt->list->putAsciiDoc(std::cout); throw EXIT_SUCCESS;}
+               {opt->getProgram()->putAsciiDoc(std::cout); throw EXIT_SUCCESS;}
          },
 
          optHelpLong
@@ -61,7 +61,7 @@ namespace GDCC
                .setDescS("Prints full usage and exits."),
 
             [](Option::Base *opt, Option::Args const &) -> std::size_t
-               {opt->list->putHelpLong(std::cout); throw EXIT_SUCCESS;}
+               {opt->getProgram()->putHelpLong(std::cout); throw EXIT_SUCCESS;}
          },
 
          optOutput
@@ -79,7 +79,7 @@ namespace GDCC
                .setDescS("Prints version and exits."),
 
             [](Option::Base *opt, Option::Args const &) -> std::size_t
-               {opt->list->putVersion(std::cout); throw EXIT_SUCCESS;}
+               {opt->getProgram()->putVersion(std::cout); throw EXIT_SUCCESS;}
          }
       {
          list.processLoose = &args;
@@ -106,7 +106,7 @@ namespace GDCC
       //
       char const *GetOptionOutput()
       {
-         return GetOptions().optOutput.str;
+         return GetOptions().optOutput.data();
       }
 
       //
@@ -143,7 +143,7 @@ namespace GDCC
             opts.list.process(Option::Args().setArgs(argv + 1, argc - 1).setOptKeepA());
 
             // Default output to last loose arg.
-            if(needOutput && !opts.optOutput.processed && opts.args.strC)
+            if(needOutput && !opts.optOutput.processed && opts.args.size())
                opts.args.pop(&opts.optOutput);
          }
          catch(Option::Exception const &e)
@@ -152,7 +152,7 @@ namespace GDCC
             throw EXIT_FAILURE;
          }
 
-         if(needOutput && (!opts.optOutput.processed || !opts.optOutput.str))
+         if(needOutput && (!opts.optOutput.processed || !opts.optOutput.data()))
          {
             std::cerr << "No output specified. Use -h for usage.\n";
             throw EXIT_FAILURE;

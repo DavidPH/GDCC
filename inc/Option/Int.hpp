@@ -24,38 +24,61 @@ namespace GDCC
 {
    namespace Option
    {
-      //
-      // Int
-      //
+      /// Basic integer option handler.
+
+      /// Processes options by parsing an integer from an argument.
+      ///
       template<typename T>
       class Int : public Base
       {
       public:
-         Int(Program *list_, Info const &info_, T *data_) :
-            Base{list_, info_}, data{data_} {}
+         /// Insertion and initializer constructor.
 
-         T *data;
+         /// Initializes the pointer to option state and invokes Base's
+         /// insertion constructor.
+         ///
+         /// @param program Program to insert this into.
+         /// @param optInfo Basic option information.
+         /// @param ptr Pointer to object to store option state in.
+         ///
+         Int(Program *program, Info const &optInfo, T *ptr) :
+            Base{program, optInfo}, dptr{ptr}
+         {
+         }
 
       protected:
-         //
-         // v_process
-         //
+         /// Virtual implementation of option processing.
+
+         /// If optFalse is set, sets the associated integer to 0 and consumes
+         /// no arguments. Otherwise, consumes one argument to parse a decimal
+         /// integer from.
+         ///
+         /// @param args Program arguments.
+         ///
+         /// @return Number of consumed arguments.
+         ///
+         /// @exception Option::Exception Thrown for lack of argument or if
+         ///   argument is not a decimal integer.
+         ///
          virtual std::size_t v_process(Args const &args)
          {
-            if(args.optFalse) {*data = 0; return 0;}
+            if(args.optFalse) {*dptr = 0; return 0;}
             if(!args.argC) Exception::Error(args, "argument required");
 
-            *data = 0;
+            *dptr = 0;
             for(auto s = args.argV[0]; *s; ++s)
             {
                if(*s < '0' || *s > '9')
                   Exception::Error(args, "integer required");
 
-               *data = *data * 10 + (*s - '0');
+               *dptr = *dptr * 10 + (*s - '0');
             }
 
             return 1;
          }
+
+      private:
+         T *const dptr;
       };
    }
 }
