@@ -42,10 +42,10 @@ namespace GDCC
       //
       // Object
       //
-      class Object final : public Core::PlainCounter
+      class Object final : public Core::CounterBase
       {
          GDCC_Core_CounterPreambleNoVirtual(
-            GDCC::AST::Object, GDCC::Core::Counter);
+            GDCC::AST::Object, GDCC::Core::CounterBase);
 
       protected:
          using ExpCPtr   = Core::CounterPtr<Exp     const>;

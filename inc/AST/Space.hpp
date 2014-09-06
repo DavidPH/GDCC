@@ -37,10 +37,10 @@ namespace GDCC
       //
       // Space
       //
-      class Space final : public Core::PlainCounter
+      class Space final : public Core::CounterBase
       {
          GDCC_Core_CounterPreambleNoVirtual(
-            GDCC::AST::Space, GDCC::Core::Counter);
+            GDCC::AST::Space, GDCC::Core::CounterBase);
 
       protected:
          using IRExpCPtr = Core::CounterPtr<IR::Exp const>;

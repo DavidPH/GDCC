@@ -356,10 +356,10 @@ namespace GDCC
       //
       // TypeSet
       //
-      class TypeSet final : public Core::PlainCounter
+      class TypeSet final : public Core::CounterBase
       {
          GDCC_Core_CounterPreambleNoVirtual(
-            GDCC::AST::TypeSet, GDCC::Core::PlainCounter);
+            GDCC::AST::TypeSet, GDCC::Core::CounterBase);
 
       public:
          Type::CRef const &operator[] (std::size_t i) const {return tbeg[i];}
