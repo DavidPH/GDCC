@@ -1,0 +1,365 @@
+###############################################################################
+GDCC Core Library Specification
+###############################################################################
+
+===============================================================================
+Reference Counting <GDCC/Core/Counter.hpp>
+===============================================================================
+
+===========================================================
+GDCC::Core::Counter
+===========================================================
+
+Synopsis:
+  #include <GDCC/Core/Counter.hpp>
+  class Counter : public CounterBase
+  {
+    GDCC_Core_CounterPreamble
+
+  protected:
+    virtual ~Counter();
+  };
+
+Description:
+  Works as in CounterBase, but includes a virtual destructor and the functions
+  described in GDCC_Core_CounterPreamble.
+
+-----------------------------------------------------------
+GDCC::Core::Counter::~Counter
+-----------------------------------------------------------
+
+Synopsis:
+  virtual ~Counter();
+
+Description:
+  Does nothing, but forces all derived classes to have virtual destruction.
+
+===========================================================
+GDCC::Core::CounterBase
+===========================================================
+
+Synopsis:
+  #include <GDCC/Core/Counter.hpp>
+  class CounterBase
+  {
+    GDCC_Core_CounterPreambleNoVirtual
+
+  protected:
+    CounterBase();
+    CounterBase(CounterBase const &);
+    CounterBase(CounterBase &&);
+
+    CounterBase &operator = (CounterBase const &);
+    CounterBase &operator = (CounterBase &&);
+
+    mutable unsigned refCount;
+  };
+
+Description:
+  Performs basic reference count management for construction and assignment.
+
+-----------------------------------------------------------
+GDCC::Core::CounterBase::CounterBase
+-----------------------------------------------------------
+
+Synopsis:
+  CounterBase();
+  CounterBase(CounterBase const &);
+  CounterBase(CounterBase &&);
+
+Description:
+  Initializes reference count to 0 in all three forms.
+
+-----------------------------------------------------------
+GDCC::Core::CounterBase::operator =
+-----------------------------------------------------------
+
+Synopsis:
+  CounterBase &operator = (CounterBase const &);
+  CounterBase &operator = (CounterBase &&);
+
+Description:
+  Does nothing and returns *this.
+
+Returns:
+  *this.
+
+-----------------------------------------------------------
+GDCC:Core::CounterBase::refCount
+-----------------------------------------------------------
+
+Synopsis:
+  mutable unsigned refCount;
+
+Description:
+  Stores the reference count of the object. Normally this should be managed by
+  the CounterPtr and CounterRef classes.
+
+===========================================================
+GDCC::Core::CounterPtr
+===========================================================
+
+Synopsis:
+  template<typename T> class CounterPtr
+  {
+  public:
+    CounterPtr(std::nullptr_t p = nullptr);
+
+    CounterPtr(T *p);
+    template<typename T2> CounterPtr(T2 *p);
+
+    CounterPtr(CounterPtr<T> const &p);
+    template<typename T2> CounterPtr(CounterPtr<T2> const &p);
+
+    CounterPtr(CounterRef<T> const &p);
+    template<typename T2> CounterPtr(CounterRef<T2> const &p);
+
+    ~CounterPtr();
+
+    operator T * () const;
+
+    CounterPtr<T> &operator = (std::nullptr_t p);
+
+    CounterPtr<T> &operator = (T *p);
+    template<typename T2> CounterPtr<T> &operator = (T2 *p);
+
+    CounterPtr<T> &operator = (CounterPtr<T> const &p);
+    template<typename T2> CounterPtr<T> &operator = (CounterPtr<T2> const &p);
+
+    CounterPtr<T> &operator = (CounterRef<T> const &p);
+    template<typename T2> CounterPtr<T> &operator = (CounterRef<T2> const &p);
+
+    T *operator -> () const;
+
+    T &operator * () const;
+
+    unsigned refCount() const;
+  };
+
+Description:
+  Reference-counting pointer.
+
+-----------------------------------------------------------
+GDCC::Core::CounterPtr::CounterPtr
+-----------------------------------------------------------
+
+Synopsis:
+  CounterPtr(std::nullptr_t p = nullptr);
+
+  CounterPtr(T *p);
+  template<typename T2> CounterPtr(T2 *p);
+
+  CounterPtr(CounterPtr<T> const &p);
+  template<typename T2> CounterPtr(CounterPtr<T2> const &p);
+
+  CounterPtr(CounterRef<T> const &p);
+  template<typename T2> CounterPtr(CounterRef<T2> const &p);
+
+Description:
+  Initializes to the provided pointer and (if not null) increments reference
+  count.
+
+  Template versions are only valid if conversion by static_cast is valid.
+
+-----------------------------------------------------------
+GDCC::Core::CounterPtr::~CounterPtr
+-----------------------------------------------------------
+
+Synopsis:
+  ~CounterPtr();
+
+Description:
+  If not null, decrements reference count. If reference count reaches zero, the
+  object is deleted.
+
+-----------------------------------------------------------
+GDCC::Core::CounterPtr::operator T *
+-----------------------------------------------------------
+
+Synopsis:
+  operator T * () const;
+
+Description:
+  Returns a pointer to the associated object.
+
+Returns:
+  Pointer to associated object.
+
+-----------------------------------------------------------
+GDCC::Core::CounterPtr::operator =
+-----------------------------------------------------------
+
+Synopsis:
+  CounterPtr<T> &operator = (std::nullptr_t p);
+
+  CounterPtr<T> &operator = (T *p);
+  template<typename T2> CounterPtr<T> &operator = (T2 *p);
+
+  CounterPtr<T> &operator = (CounterPtr<T> const &p);
+  template<typename T2> CounterPtr<T> &operator = (CounterPtr<T2> const &p);
+
+  CounterPtr<T> &operator = (CounterRef<T> const &p);
+  template<typename T2> CounterPtr<T> &operator = (CounterRef<T2> const &p);
+
+Description:
+  Sets to the provided pointer and (if not null) increments reference count.
+
+  If not null, decrements reference count of prior object. If reference count
+  reaches zero, the object is deleted.
+
+  Template versions are only valid if conversion by static_cast is valid.
+
+-----------------------------------------------------------
+GDCC::Core::CounterPtr::operator ->
+-----------------------------------------------------------
+
+Synopsis:
+  T *operator -> () const;
+
+Description:
+  Returns a pointer to the associated object.
+
+Returns:
+  Pointer to associated object.
+
+-----------------------------------------------------------
+GDCC::Core::CounterPtr::operator *
+-----------------------------------------------------------
+
+Synopsis:
+  T &operator * () const;
+
+Description:
+  Returns a reference to the associated object.
+
+Returns:
+  Reference to associated object.
+
+-----------------------------------------------------------
+GDCC::Core::CounterPtr::refCount
+-----------------------------------------------------------
+
+Synopsis:
+  unsigned refCount() const;
+
+Description:
+  If not null, returns the reference count of the associated object.
+  Otherwise, returns 0.
+
+Returns:
+  Reference count.
+
+===========================================================
+GDCC::Core::CounterRef
+===========================================================
+
+Synopsis:
+      template<typename T> class CounterRef
+      {
+      public:
+         CounterRef(std::nullptr_t p = nullptr) = delete;
+
+         explicit CounterRef(T *p);
+         template<typename T2> explicit CounterRef(T2 *p);
+
+         explicit CounterRef(CounterPtr<T> const &p);
+         template<typename T2> explicit CounterRef(CounterPtr<T2> const &p);
+
+         CounterRef(CounterRef<T> const &p);
+         template<typename T2> CounterRef(CounterRef<T2> const &p);
+
+         ~CounterRef();
+
+         operator T * () const;
+
+         CounterRef<T> &operator = (CounterRef<T> const &p);
+         template<typename T2> CounterRef<T> &operator = (CounterRef<T2> const &p);
+
+         T *operator -> () const;
+
+         T &operator * () const;
+
+         unsigned refCount() const;
+      };
+
+Description:
+  Reference-counting pointer that is never null.
+
+  Aside from the additional constraint, this class has the same semantics at
+  CounterPtr. Only functions which differ are noted below.
+
+===========================================================
+Macros
+===========================================================
+
+-----------------------------------------------------------
+GDCC_Core_CounterPreamble
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Counter.hpp>
+  #define GDCC_Core_CounterPreamble(type, base)
+
+Description:
+  For use in defining Counter-derived classes.
+
+  Typedefs:
+    This  = type
+    Super = base
+    Ptr   = CounterPtr<This>;
+    CPtr  = CounterPtr<This const>;
+    Ref   = CounterRef<This>;
+    CRef  = CounterRef<This const>;
+
+  Functions:
+    Ref clone() const
+      Returns a duplicate of the object using a copy construction virtual.
+
+    virtual char const *getClassName() const;
+      Returns the name of the class.
+
+-----------------------------------------------------------
+GDCC_Core_CounterPreambleAbstract
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Counter.hpp>
+  #define GDCC_Core_CounterPreambleAbstract(type, base)
+
+Description:
+  For use in defining Counter-derived abstract classes.
+
+  Works as in GDCC_Core_CounterPreamble, except that the clone virtual is
+  declared as pure.
+
+-----------------------------------------------------------
+GDCC_Core_CounterPreambleNoClone
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Counter.hpp>
+  #define GDCC_Core_CounterPreambleNoClone(type, base)
+
+Description:
+  For use in defining Counter-derived abstract classes.
+
+  Works as in GDCC_Core_CounterPreamble, except that the clone virtual throws
+  an exception derived from std::exception.
+
+-----------------------------------------------------------
+GDCC_Core_CounterPreambleNoVirtual
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Counter.hpp>
+  #define GDCC_Core_CounterPreambleNoVirtual(type, base)
+
+Description:
+  For use in defining CounterBase-derived abstract classes.
+
+  Works as in GDCC_Core_CounterPreamble, except that there is no clone.
+
+###############################################################################
+EOF
+###############################################################################
+
