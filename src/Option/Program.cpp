@@ -49,9 +49,9 @@ namespace GDCC
 {
    namespace Option
    {
-      ///
-      /// Unlinks all contained objects.
-      ///
+      //
+      // Program destructor
+      //
       Program::~Program()
       {
          // If there are any options still in the list, remove them and null
@@ -100,16 +100,9 @@ namespace GDCC
          while((itr = itr->listNext) != listHead);
       }
 
-      ///
-      /// If args has a long name, then an option or null is returned as in a
-      /// call to find(char const *). Otherwise, args shall have a short name
-      /// and the result is as in a call to find(char). args shall not have
-      /// both a long name and a short name.
-      ///
-      /// @param args Program arguments containing option name.
-      ///
-      /// @return Found option or null if none found.
-      ///
+      //
+      // Program::find
+      //
       Base *Program::find(Args const &args)
       {
          if(args.nameL) return find(args.nameL);
@@ -117,15 +110,9 @@ namespace GDCC
          return nullptr;
       }
 
-      ///
-      /// If there is an option with an exact match for nameL, it is returned.
-      /// Otherwise, if there is one and only one option which begins with
-      /// nameL, it is returned. Otherwise, null is returned.
-      ///
-      /// @param nameL Option name.
-      ///
-      /// @return Found option or null if none found.
-      ///
+      //
+      // Program::find
+      //
       Base *Program::find(char const *nameL)
       {
          // Early fail, and allows us to make assumptions later.
@@ -192,11 +179,9 @@ namespace GDCC
          return nullptr;
       }
 
-      ///
-      /// @param nameS Option name.
-      ///
-      /// @return Found option or null if none found.
-      ///
+      //
+      // Program::find
+      //
       Base *Program::find(char nameS)
       {
          // Early fail, and allows us to make assumptions later.
@@ -228,16 +213,9 @@ namespace GDCC
          return nullptr;
       }
 
-      ///
-      /// Searches for an option as in a call to find, but throws an exception
-      /// if the option is not found.
-      ///
-      /// @param args Program arguments containing option name.
-      ///
-      /// @return Found option.
-      ///
-      /// @exception Option::Exception Thrown if no option is found.
-      ///
+      //
+      // Program::get
+      //
       Base &Program::get(Args const &args)
       {
          if(auto opt = find(args)) return *opt;

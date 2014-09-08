@@ -24,42 +24,21 @@ namespace GDCC
 {
    namespace Option
    {
-      /// Basic integer option handler.
-
-      /// Processes options by parsing an integer from an argument.
-      ///
+      //
+      // Int
+      //
       template<typename T>
       class Int : public Base
       {
       public:
-         /// Insertion and initializer constructor.
-
-         /// Initializes the pointer to option state and invokes Base's
-         /// insertion constructor.
-         ///
-         /// @param program Program to insert this into.
-         /// @param optInfo Basic option information.
-         /// @param ptr Pointer to object to store option state in.
-         ///
+         // constructor
          Int(Program *program, Info const &optInfo, T *ptr) :
-            Base{program, optInfo}, dptr{ptr}
-         {
-         }
+            Base{program, optInfo}, dptr{ptr} {}
 
       protected:
-         /// Virtual implementation of option processing.
-
-         /// If optFalse is set, sets the associated integer to 0 and consumes
-         /// no arguments. Otherwise, consumes one argument to parse a decimal
-         /// integer from.
-         ///
-         /// @param args Program arguments.
-         ///
-         /// @return Number of consumed arguments.
-         ///
-         /// @exception Option::Exception Thrown for lack of argument or if
-         ///   argument is not a decimal integer.
-         ///
+         //
+         // v_process
+         //
          virtual std::size_t v_process(Args const &args)
          {
             if(args.optFalse) {*dptr = 0; return 0;}

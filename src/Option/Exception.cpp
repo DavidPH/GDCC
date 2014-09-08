@@ -51,17 +51,9 @@ namespace GDCC
          return msg.get();
       }
 
-      ///
-      /// Formats the message as in std::fprintf, except that the current
-      /// option name is prefixed to the message. If the option has a long
-      /// name, the message is prefixed with "'--%s': ", where "%s" is replaced
-      /// by the option name. Otherwise, the option has a short name which is
-      /// formatted as "'-%c': ", where "%c" is replaced by the option name.
-      ///
-      /// @param args Program arguments.
-      /// @param format Format string, as in std::fprintf.
-      /// @param ... As in std::fprintf.
-      ///
+      //
+      // Exception::Error
+      //
       [[noreturn]]
       void Exception::Error(Args const &args, char const *format, ...)
       {

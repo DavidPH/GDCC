@@ -27,27 +27,18 @@ namespace GDCC
    {
       class Args;
 
-      /// Basic option-related exception class.
-
-      /// Messages are generated using information from an Args object, and are
-      /// meant to be directly presentable to the user.
-      ///
+      //
+      // Exception
+      //
       class Exception : public std::exception
       {
       public:
-         Exception() = delete;
-
-         /// Copy constructor.
          Exception(Exception const &e);
-
-         /// Move constructor.
          Exception(Exception &&e) = default;
 
-         /// Returns the exception message.
          virtual char const *what() const noexcept;
 
 
-         /// Throws an exception with a formatted message.
          [[noreturn]]
          static void Error(Args const &args, char const *format, ...);
 

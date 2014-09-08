@@ -27,64 +27,43 @@ namespace GDCC
       class Args;
       class Base;
 
-      /// List of options for a program.
-
-      ///
-      ///
+      //
+      // Program
+      //
       class Program
       {
       public:
-         /// Default constructor.
-
-         /// Constructs an empty list of options.
-         ///
          Program() = default;
 
          Program(Program const &) = delete;
          Program(Program &&) = delete;
 
-         /// Destructor.
          ~Program();
 
          Program &operator = (Program const &) = delete;
          Program &operator = (Program &&) = delete;
 
-         /// Searches for an option.
          Base *find(Args const &args);
-
-         /// Searches for an option with a long name.
          Base *find(char const *name);
-
-         /// Searches for an option with a short name.
          Base *find(char name);
 
-         /// Gets an option or throws.
          Base &get(Args const &args);
 
-         /// Processes program arguments.
          void process(Args const &args);
 
-         /// Generates AsciiDoc documentation.
          void putAsciiDoc(std::ostream &out, std::size_t width = 0);
-
-         /// Generates basic usage documentation.
          void putHelp(std::ostream &out, std::size_t width = 0);
-
-         /// Generates long usage documentation.
          void putHelpLong(std::ostream &out, std::size_t width = 0);
-
-         /// Generates version documentation.
          void putVersion(std::ostream &out, std::size_t width = 0);
 
-         /// Option invoked to handle loose arguments.
          Base *processLoose = nullptr;
 
-         char const *descL    = nullptr; ///< Program's long description.
-         char const *descS    = nullptr; ///< Program's short description.
-         char const *name     = nullptr; ///< Program's name.
-         char const *nameFull = nullptr; ///< Program's full name.
-         char const *usage    = nullptr; ///< Program's usage overview.
-         char const *version  = nullptr; ///< Program's version string.
+         char const *descL    = nullptr;
+         char const *descS    = nullptr;
+         char const *name     = nullptr;
+         char const *nameFull = nullptr;
+         char const *usage    = nullptr;
+         char const *version  = nullptr;
 
 
          friend class Base;

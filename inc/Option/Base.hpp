@@ -26,17 +26,15 @@ namespace GDCC
    {
       class Program;
 
-      /// Option processing arguments.
-
-      /// Aggregates option arguments and any information about them.
-      ///
+      //
+      // Args
+      //
       class Args
       {
       public:
-         /// Default constructor.
-
-         /// Initializes all members to 0 or null.
-         ///
+         //
+         // default constructor
+         //
          Args() :
             argV{nullptr},
             argC{0},
@@ -50,68 +48,53 @@ namespace GDCC
          {
          }
 
-         /// Removes the first n arguments.
          Args &drop(std::size_t n = 1) {argC -= n; argV += n; return *this;}
 
-         /// Sets the argument count and returns *this.
          Args &setArgC(std::size_t c) {argC = c; return *this;}
 
-         /// Sets the arguments and returns *this.
          Args &setArgs(char const *const *v, std::size_t c)
             {argV = v; argC = c; return *this;}
 
-         /// Sets the long name and returns *this.
          Args &setName (char const *name) {nameL = name; return *this;}
-         /// Sets the short name and returns *this.
          Args &setName (char        name) {nameS = name; return *this;}
 
-         /// Sets the Final flag and returns *this.
          Args &setOptFinal(bool opt = true) {optFinal = opt; return *this;}
-         /// Sets the KeepA flag and returns *this.
          Args &setOptKeepA(bool opt = true) {optFinal = opt; return *this;}
 
-         char const *const *argV; ///< Argument string array.
-         std::size_t        argC; ///< Argument string count.
+         char const *const *argV;
+         std::size_t        argC;
 
-         char const *nameL; ///< Long name (null if none).
-         char        nameS; ///< Short name (0 if none).
+         char const *nameL;
+         char        nameS;
 
-         bool optFalse : 1; ///< The option is negated.
-         bool optFinal : 1; ///< There are no more args. (Hint only.)
-         bool optKeepA : 1; ///< Argument strings may be kept.
+         bool optFalse : 1; // The option is negated.
+         bool optFinal : 1; // There are no more args. (Hint only.)
+         bool optKeepA : 1; // Argument strings may be kept.
       };
 
-      /// Base class for all options.
-
-      /// Stores basic option information and handles Program interaction.
-      ///
+      //
+      // Base
+      //
       class Base
       {
       public:
-         /// Stores core option information.
-
-         /// Aggregates core option information to simplify constructor
-         /// arguments.
-         ///
+         //
+         // Info
+         //
          class Info
          {
          public:
-            /// Sets the long description and returns *this.
             Info &setDescL(char const *desc) {descL = desc; return *this;}
-            /// Sets the short decription and returns *this.
             Info &setDescS(char const *desc) {descS = desc; return *this;}
-            /// Sets the group name and returns *this.
             Info &setGroup(char const *name) {group = name; return *this;}
-            /// Sets the long name and returns *this.
             Info &setName (char const *name) {nameL = name; return *this;}
-            /// Sets the short name and returns *this.
             Info &setName (char        name) {nameS = name; return *this;}
 
-            char const *descL = nullptr; ///< Long description.
-            char const *descS = nullptr; ///< Short description.
-            char const *group = nullptr; ///< Option group name.
-            char const *nameL = nullptr; ///< Long name.
-            char        nameS = '\0';    ///< Short name.
+            char const *descL = nullptr;
+            char const *descS = nullptr;
+            char const *group = nullptr;
+            char const *nameL = nullptr;
+            char        nameS = '\0';
          };
 
 
@@ -121,43 +104,26 @@ namespace GDCC
          Base &operator = (Base const &) = delete;
          Base &operator = (Base &&) = delete;
 
-         /// Returns the current program.
          Program *getProgram() const {return prog;}
 
-         /// Adds this option to a program.
          void insert(Program *program);
 
-         /// Processes program arguments.
          std::size_t process(Args const &args);
 
-         /// Removes this option from its current program.
          void remove();
 
-         Info const info; ///< Core option information.
+         Info const info;
 
-         bool processed : 1; ///< Set to true when process is called.
+         bool processed : 1;
 
 
          friend class Program;
 
       protected:
-         /// Insertion constructor.
          Base(Program *program, Info const &optInfo);
 
-         /// Destructor.
          virtual ~Base();
 
-         /// Virtual implementation of option processing.
-
-         /// Implementations must return the number of arguments consumed.
-         ///
-         /// @param args Program arguments.
-         ///
-         /// @return Number of arguments consumed.
-         ///
-         /// @exception Option::Exception May be thrown as a result of missing
-         ///    or invalid arguments.
-         ///
          virtual std::size_t v_process(Args const &args) = 0;
 
       private:

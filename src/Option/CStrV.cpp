@@ -26,17 +26,9 @@ namespace GDCC
 {
    namespace Option
    {
-      ///
-      /// Initializes array to empty and invokes Base's insertion constructor.
-      /// If argMax is 0, option processing will consume all passed arguments
-      /// and silently do nothing if no arguments passed. Otherwise, it will
-      /// require at least one argument and consume no more than argMax
-      /// arguments.
-      ///
-      /// @param program Program to insert this into.
-      /// @param optInfo Basic option information.
-      /// @param argMax Maximum arguments to consume during processing.
-      ///
+      //
+      // CStrV constructor
+      //
       CStrV::CStrV(Program *program, Info const &optInfo, std::size_t argMax) :
          Base{program, optInfo},
 
@@ -48,9 +40,9 @@ namespace GDCC
       {
       }
 
-      ///
-      /// Frees the array and any self-allocated strings.
-      ///
+      //
+      // CStr destructor
+      //
       CStrV::~CStrV()
       {
          while(strC) if(strF[--strC]) delete[] strV[strC];
@@ -59,13 +51,9 @@ namespace GDCC
          delete[] strV;
       }
 
-      ///
-      /// If opt is not null, its process function is called with the newly
-      /// removed string as a program argument using args as a base.
-      ///
-      /// @param opt Option to handle popped string.
-      /// @param args Base program argument data to pass to opt.
-      ///
+      //
+      // CStrV::pop
+      //
       void CStrV::pop(Base *opt, Args args)
       {
          if(!strC) return;
@@ -87,17 +75,9 @@ namespace GDCC
             delete[] strV[strC];
       }
 
-      ///
-      /// Consumes a number of arguments as described in the insertion
-      /// constructor. If optKeepA is set, argument strings are kept instead of
-      /// duplicated.
-      ///
-      /// @param args Program arguments.
-      ///
-      /// @return Number of consumed arguments.
-      ///
-      /// @exception Option::Exception Thrown for lack of argument.
-      ///
+      //
+      // CStrV::v_process
+      //
       std::size_t CStrV::v_process(Args const &args)
       {
          if(argM && !args.argC)

@@ -24,38 +24,27 @@ namespace GDCC
 {
    namespace Option
    {
-      /// C-string vector option handler.
-
-      /// Processes options by taking argument strings as-is and appending them
-      /// to an array.
-      ///
+      //
+      // CStrV
+      //
       class CStrV : public Base
       {
       public:
-         /// Insertion constructor.
          CStrV(Program *program, Info const &optInfo, std::size_t argMax);
 
-         /// Destructor.
          virtual ~CStrV();
 
-         /// Returns an iterator to the beginning of the array.
          char const *const *begin() const {return strV;}
 
-         /// Returns a pointer to the beginning of the array.
          char const *const *data() const {return strV;}
 
-         /// Returns an iterator to one past the end of the array.
          char const *const *end() const {return strV + strC;}
 
-         /// Removes the last element of the array.
          void pop(Base *opt = nullptr, Args args = Args());
 
-         /// Returns the number of contained strings.
          std::size_t size() const {return strC;}
 
-
       protected:
-         /// Virtual implementation of option processing.
          virtual std::size_t v_process(Args const &args);
 
       private:

@@ -1,0 +1,1242 @@
+###############################################################################
+GDCC Option Library Specification
+###############################################################################
+
+===============================================================================
+Classes
+===============================================================================
+
+===========================================================
+GDCC::Option::Args <GDCC/Option/Base.hpp>
+===========================================================
+
+Synopsis:
+  #include <GDCC/Option/Base.hpp>
+  class Args
+  {
+  public:
+    Args();
+
+    Args &drop(std::size_t n = 1);
+
+    Args &setArgC(std::size_t c);
+
+    Args &setArgs(char const *const *v, std::size_t c);
+
+    Args &setName(char const *name);
+    Args &setName(char name);
+
+    Args &setOptFinal(bool opt = true);
+    Args &setOptKeepA(bool opt = true);
+
+    char const *const *argV;
+    std::size_t argC;
+
+    char const *nameL;
+    char nameS;
+
+    bool optFalse : 1;
+    bool optFinal : 1;
+    bool optKeepA : 1;
+  };
+
+Description:
+  Aggregates program arguments and associated properties. Used for processing
+  options.
+
+  Unless otherwise noted, all functions with a return type of Args& return
+  *this.
+
+-----------------------------------------------------------
+GDCC::Option::Args::Args
+-----------------------------------------------------------
+
+Synopsis:
+  Args();
+
+Description:
+  Initializes all members to 0.
+
+-----------------------------------------------------------
+GDCC::Option::Args::drop
+-----------------------------------------------------------
+
+Synopsis:
+  Args &drop(std::size_t n = 1);
+
+Description:
+  Removes the first n arguments by incrementing argV and decrementing argC.
+
+-----------------------------------------------------------
+GDCC::Option::Args::setArgC
+-----------------------------------------------------------
+
+Synopsis:
+  Args &setArgC(std::size_t c);
+
+Decription:
+  Sets argC to c.
+
+-----------------------------------------------------------
+GDCC::Option::Args::setArgs
+-----------------------------------------------------------
+
+Synopsis:
+  Args &setArgs(char const *const *v, std::size_t c);
+
+Description:
+  Sets argV to v and argC to c.
+
+-----------------------------------------------------------
+GDCC::Option::Args::setName
+-----------------------------------------------------------
+
+Synopsis:
+  Args &setName(char const *name);
+  Args &setName(char name);
+
+Description:
+  The first form sets nameL to name. The second form sets nameS to name.
+
+-----------------------------------------------------------
+GDCC::Option::Args::setOptFinal
+-----------------------------------------------------------
+
+Synopsis:
+  Args &setOptFinal(bool opt = true);
+
+Description:
+  Sets optFinal to opt.
+
+-----------------------------------------------------------
+GDCC::Option::Args::setOptKeepA
+-----------------------------------------------------------
+
+Synopsis:
+  Args &setOptKeepA(bool opt = true);
+
+Description:
+  Sets optKeepA to opt.
+
+-----------------------------------------------------------
+GDCC::Option::Args::argV
+-----------------------------------------------------------
+
+Synopsis:
+  char const *const *argV;
+
+Description:
+  The array of argument strings. The lifetime of the array is not managed by
+  this class.
+
+-----------------------------------------------------------
+GDCC::Option::Args::argC
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t argC;
+
+Description:
+  The number of argument strings.
+
+-----------------------------------------------------------
+GDCC::Option::Args::nameL
+-----------------------------------------------------------
+
+Synopsis:
+  char const *nameL;
+
+Description:
+  The long name of the option currently being processed, if any.
+
+-----------------------------------------------------------
+GDCC::Option::Args::nameS
+-----------------------------------------------------------
+
+Synopsis:
+  char nameS;
+
+Description:
+  The short name of the option currently being processed, if any.
+
+-----------------------------------------------------------
+GDCC::Option::Args::optFalse
+-----------------------------------------------------------
+
+Synopsis:
+  bool optFalse : 1;
+
+Description:
+  The optFalse member is set to indicate the option has been negated, as in
+  --no-flag.
+
+-----------------------------------------------------------
+GDCC::Option::Args::optFinal
+-----------------------------------------------------------
+
+Synopsis:
+  bool optFinal : 1;
+
+Description:
+  The optFinal member is set to indicate that there are no more arguments than
+  those already indicated. Options may take this to mean that an internal array
+  should no longer be overallocated. This flag is only a hint and options must
+  not irreversibly finalize themselves when it is given.
+
+-----------------------------------------------------------
+GDCC::Option::Args::optKeepA
+-----------------------------------------------------------
+
+Synopsis:
+  bool optKeepA : 1;
+
+Description:
+  The optKeepA member is set to indicate that the argument strings shall have a
+  lifetime equal or greater than the option object itself and therefore need
+  not be duplicated to be kept. The most obvious case for this is when passing
+  the arguments of main, which exist for the duration of the program.
+
+===========================================================
+GDCC::Option::Base <GDCC/Option/Base.hpp>
+===========================================================
+
+Synopsis:
+  #include <GDCC/Option/Base.hpp>
+  class Base
+  {
+  public:
+    class Info;
+
+
+    Base(Base const &) = delete;
+    Base(Base &&) = delete;
+
+    Base &operator = (Base const &) = delete;
+    Base &operator = (Base &&) = delete;
+
+    Program *getProgram();
+
+    void insert(Program *program);
+
+    std::size_t process(Args const &args);
+
+    void remove();
+
+    Info const info;
+
+    bool processed : 1;
+
+  protected:
+    Base(Program *program, Info const &optInfo);
+
+    virtual ~Base();
+
+    virtual std::size_t v_process(Args const &args) = 0;
+  };
+
+Description:
+  Stores basic option information and handles interaction with Program.
+
+-----------------------------------------------------------
+GDCC::Option::Base::Base
+-----------------------------------------------------------
+
+Synopsis:
+  Base(Program *program, Info const &optInfo);
+
+Description:
+  Initializes basic information and inserts this into program.
+
+-----------------------------------------------------------
+GDCC::Option::Base::~Base
+-----------------------------------------------------------
+
+Synopsis:
+  virtual ~Base();
+
+Description:
+  Unlinks from current program, if any.
+
+-----------------------------------------------------------
+GDCC::Option::Base::getProgram
+-----------------------------------------------------------
+
+Synopsis:
+  Program *getProgram();
+
+Description:
+  If this option is currently inserted into a Program, a pointer to it is
+  returned. Otherwise, null is returned.
+
+Returns:
+  A pointer to the option's current Program, or null if none.
+
+-----------------------------------------------------------
+GDCC::Option::Base::insert
+-----------------------------------------------------------
+
+Synopsis:
+  void insert(Program *program);
+
+Description:
+  Inserts this option into a Program. If this option is already in a Program,
+  is it first removed.
+
+-----------------------------------------------------------
+GDCC::Option::Base::process
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t process(Args const &args);
+
+Description:
+  Invokes v_process then sets processed to true. Returns the result of
+  v_process unaltered.
+
+Returns:
+  The number of consumed arguments.
+
+-----------------------------------------------------------
+GDCC::Option::Base::remove
+-----------------------------------------------------------
+
+Synopsis:
+  void remove();
+
+Description:
+  Unlinks from the current Program, if any.
+
+-----------------------------------------------------------
+GDCC::Option::Base::v_process
+-----------------------------------------------------------
+
+Synopsis:
+  virtual std::size_t v_process(Args const &args) = 0;
+
+Description:
+  Called by process to implement option processing. Implementations must return
+  the number of arguments consumed.
+
+Returns:
+  The number of consumed arguments.
+
+-----------------------------------------------------------
+GDCC::Option::Base::info
+-----------------------------------------------------------
+
+Synopsis:
+  Info const info;
+
+Description:
+  Contains core option information.
+
+-----------------------------------------------------------
+GDCC::Option::Base::processed
+-----------------------------------------------------------
+
+Synopsis:
+  bool processed : 1;
+
+Description:
+  Set to true when process is called.
+
+===========================================================
+GDCC::Option::Base::Info <GDCC/Option/Base.hpp>
+===========================================================
+
+Synopsis:
+  #include <GDCC/Option/Base.hpp>
+  class Info
+  {
+  public:
+    Info();
+
+    Info &setDescL(char const *desc);
+    Info &setDescS(char const *desc);
+    Info &setGroup(char const *name);
+    Info &setName (char const *name);
+    Info &setName (char name);
+
+    char const *descL;
+    char const *descS;
+    char const *group;
+    char const *nameL;
+    char        nameS;
+  };
+
+Description:
+  Aggregates core option information to simplify constructors.
+
+  Unless otherwise noted, all functions with a return type of Info& return
+  *this.
+
+-----------------------------------------------------------
+GDCC::Option::Base::Info::Info
+-----------------------------------------------------------
+
+Synopsis:
+  Info();
+
+Description:
+  Initializes all members to 0.
+
+-----------------------------------------------------------
+GDCC::Option::Base::Info::setDescL
+-----------------------------------------------------------
+
+Synopsis:
+  Info &setDescL(char const *desc);
+
+Description:
+  Sets descL to desc.
+
+-----------------------------------------------------------
+GDCC::Option::Base::Info::setDescS
+-----------------------------------------------------------
+
+Synopsis:
+  Info &setDescS(char const *desc);
+
+Description:
+  Sets descS to desc.
+
+-----------------------------------------------------------
+GDCC::Option::Base::Info::setGroup
+-----------------------------------------------------------
+
+Synopsis:
+  Info &setGroup(char const *name);
+
+Description:
+  Sets group to name.
+
+-----------------------------------------------------------
+GDCC::Option::Base::Info::setName
+-----------------------------------------------------------
+
+Synopsis:
+  Info &setName(char const *name);
+  Info &setName(char name);
+
+Description:
+  The first form sets nameL to name. The second form sets nameS to name.
+
+-----------------------------------------------------------
+GDCC::Option::Base::Info::descL
+-----------------------------------------------------------
+
+Synopsis:
+  char const *descL;
+
+Description:
+  The long description of the option.
+
+-----------------------------------------------------------
+GDCC::Option::Base::Info::descS
+-----------------------------------------------------------
+
+Synopsis:
+  char const *descS;
+
+Description:
+  The short description of the option.
+
+-----------------------------------------------------------
+GDCC::Option::Base::Info::group
+-----------------------------------------------------------
+
+Synopsis:
+  char const *group;
+
+Description:
+  The group name of the option.
+
+-----------------------------------------------------------
+GDCC::Option::Base::Info::nameL
+-----------------------------------------------------------
+
+Synopsis:
+  char const *nameL;
+
+Description:
+  The long name of the option.
+
+-----------------------------------------------------------
+GDCC::Option::Base::Info::nameS
+-----------------------------------------------------------
+
+Synopsis:
+  char nameS;
+
+Description:
+  The short name of the option.
+
+===========================================================
+GDCC::Option::Bool <GDCC/Option/Bool.hpp>
+===========================================================
+
+Synopsis:
+  #include <GDCC/Optuion/Bool.hpp>
+  class Bool : public Base
+  {
+  public:
+    Bool(Program *program, Info const &optInfo, bool *ptr);
+
+  protected:
+    virtual std::size_t v_process(Args const &args);
+  };
+
+Description:
+  A basic boolean option handler. Uses an external object to store option
+  state.
+
+-----------------------------------------------------------
+GDCC::Option::Bool::Bool
+-----------------------------------------------------------
+
+Synopsis:
+  Bool(Program *program, Info const &optInfo, bool *ptr);
+
+Description:
+  Associates the option with the external state pointed to by ptr. Constructs
+  Base with {program, optInfo}.
+
+-----------------------------------------------------------
+GDCC::Option::Bool::v_process
+-----------------------------------------------------------
+
+Synopsis:
+  virtual std::size_t v_process(Args const &args);
+
+Description:
+  If optFalse is set, the associated state is set to false. Otherwise, it is
+  set to true.
+
+Returns:
+  Always returns 0.
+
+===========================================================
+GDCC::Option::CStr <GDCC/Option/CStr.hpp>
+===========================================================
+
+Synopsis:
+  #include <GDCC/Option/CStr.hpp>
+  class CStr : public Base
+  {
+  public:
+    CStr(Program *program, Info const &optInfo);
+    CStr(Program *program, Info const &optInfo, char const *str, bool copy);
+
+    virtual ~CStr();
+
+    char const *data() const;
+
+    std::size_t size() const;
+
+  protected:
+    virtual std::size_t v_process(Args const &args);
+  };
+
+Description:
+  String option handler. Stores its state as a plain C string and avoids
+  duplicating when possible.
+
+-----------------------------------------------------------
+GDCC::Option::CStr::CStr
+-----------------------------------------------------------
+
+Synopsis:
+  CStr(Program *program, Info const &optInfo);
+  CStr(Program *program, Info const &optInfo, char const *str, bool copy);
+
+Description:
+  The first form initializes to no string.
+
+  The second form initializes the string to str. If copy is true, it will be
+  duplicated. Otherwise the pointer is kept and the string must have a lifetime
+  equal or greater than the option object.
+
+  All versions construct Base with {program, optInfo}.
+
+-----------------------------------------------------------
+GDCC::Option::CStr::~CStr
+-----------------------------------------------------------
+
+Synopsis:
+  virtual ~CStr();
+
+Description:
+  Frees its string, if necessary.
+
+-----------------------------------------------------------
+GDCC::Option::CStr::data
+-----------------------------------------------------------
+
+Synopsis:
+  char const *data() const;
+
+Description:
+  Returns the current string. If there is no current string, null is returned.
+
+Returns:
+  The current string.
+
+-----------------------------------------------------------
+GDCC::Option::CStr::size
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t size() const;
+
+Description:
+  Returns the length of the current string. If there is no current string, 0 is
+  returned.
+
+Returns:
+  The length of the current string.
+
+-----------------------------------------------------------
+GDCC::Option::CStr::v_process
+-----------------------------------------------------------
+
+Synopsis:
+  virtual std::size_t v_process(Args const &args);
+
+Description:
+  If optFalse is set, sets to no string and consumes no arguments.
+
+  Otherwise, consumes one argument to set string. If optKeepA is set, the
+  argument string is kept instead of duplicated.
+
+Returns:
+  0 or 1.
+
+===========================================================
+GDCC::Option::CStrV <GDCC/Option/CStrV.hpp>
+===========================================================
+
+Synopsis:
+  #include <GDCC/Option/CStrV.hpp>
+  class CStrV : public Base
+  {
+  public:
+    CStrV(Program *program, Info const &optInfo, std::size_t argMax);
+
+    virtual ~CStrV();
+
+    char const *const *begin() const;
+
+    char const *const *data() const;
+
+    char const *const *end() const;
+
+    void pop(Base *opt = nullptr, Args args = Args());
+
+    std::size_t size() const;
+
+  protected:
+    virtual std::size_t v_process(Args const &args);
+  };
+
+Description:
+  String vector option handler. Stores its state as plain C strings and avoids
+  duplicating when possible.
+
+-----------------------------------------------------------
+GDCC::Option::CStrV::CStrV
+-----------------------------------------------------------
+
+Synopsis:
+  CStrV(Program *program, Info const &optInfo, std::size_t argMax);
+
+Description:
+  Initializes to an empty array. Constructs Base with {program, optInfo}.
+
+  argMax sets the maximum number of arguments to consume. See v_process.
+
+-----------------------------------------------------------
+GDCC::Option::CStrV::~CStrV
+-----------------------------------------------------------
+
+Synopsis:
+  virtual ~CStrV();
+
+Description:
+  Frees the array and any duplicated strings.
+
+-----------------------------------------------------------
+GDCC::Option::CStrV::begin
+-----------------------------------------------------------
+
+Synopsis:
+  char const *const *begin() const;
+
+Description:
+  Returns an iterator to the beginning of the array.
+
+Returns:
+  Iterator to beginning of array.
+
+-----------------------------------------------------------
+GDCC::Option::CStrV::data
+-----------------------------------------------------------
+
+Synopsis:
+  char const *const *data() const;
+
+Description:
+  Returns a pointer to the beginning of the array. If array is empty, may be
+  null.
+
+Returns:
+  Pointer to beginning of array or null.
+
+-----------------------------------------------------------
+GDCC::Option::CStrV::end
+-----------------------------------------------------------
+
+Synopsis:
+  char const *const *end() const;
+
+Description:
+  Returns an iterator to one past the end of the array.
+
+Returns:
+  Iterator to one past end of array.
+
+-----------------------------------------------------------
+GDCC::Option::CStrV::pop
+-----------------------------------------------------------
+
+Synopsis:
+  void pop(Base *opt = nullptr, Args args = Args());
+
+Description:
+  Removes the last string of the array.
+
+  If opt is not null, its process function is called with the newly removed
+  string as a program argument using args as a base.
+
+-----------------------------------------------------------
+GDCC::Option::CStrV::size
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t size() const;
+
+Description:
+  Returns the number of strings in the array.
+
+Returns:
+  Number of strings in array.
+
+-----------------------------------------------------------
+GDCC::Option::CStrV::v_process
+-----------------------------------------------------------
+
+Synopsis:
+  virtual std::size_t v_process(Args const &args);
+
+Description:
+  If maximum arguments was set 0, consumes all given arguments and adds them to
+  the array.
+
+  Otherwise, requires at least one argument and consumes up to the maximum
+  number of arguments and adds them to the array.
+
+  If optKeepA is set, argument strings are kept instead of duplicated.
+
+Returns:
+  Number of arguments consumed.
+
+===========================================================
+GDCC::Option::Exception <GDCC/Option/Exception.hpp>
+===========================================================
+
+Synopsis:
+  #include <GDCC/Option/Exception.hpp>
+  class Exception : public std::exception
+  {
+  public:
+    Exception(Exception const &e);
+    Exception(Exception &&e);
+
+    virtual char const *what() const noexcept;
+
+
+    [[noreturn]] static void Error(Args const &args, char const *format, ...);
+  };
+
+Description:
+  Type thrown for option-related exceptions.
+
+  Messages are generated using information from an Args object, and are meant
+  to be directly presentable to the user.
+
+-----------------------------------------------------------
+GDCC::Option::Exception::Exception
+-----------------------------------------------------------
+
+Synopsis:
+  Exception(Exception const &e);
+  Exception(Exception &&e);
+
+Description:
+  Copy and move construction. Results in an Exception object with the same
+  message as e.
+
+-----------------------------------------------------------
+GDCC::Option::Exception::what
+-----------------------------------------------------------
+
+Synopsis:
+  virtual char const *what() const noexcept;
+
+Description:
+  Returns the exception's message as described in Error.
+
+Returns:
+  Pointer to message string.
+
+-----------------------------------------------------------
+GDCC::Option::Exception::Error
+-----------------------------------------------------------
+
+Synopsis:
+  [[noreturn]] static void Error(Args const &args, char const *format, ...);
+
+Description:
+  Throws an instance of Exception with a formatted message.
+
+  Formats the message as in std::fprintf, except that the current option name
+  is prefixed to the message. If the option has a long name, the message is
+  prefixed with "'--%s': ", where "%s" is replaced by the option name.
+  Otherwise, the option has a short name which is formatted as "'-%c': ", where
+  "%c" is replaced by the option name.
+
+===========================================================
+GDCC::Option::Function <GDCC/Option/Function.hpp>
+===========================================================
+
+Synopsis:
+  #include <GDCC/Option/Function.hpp>
+  class Function : public Base
+  {
+  public:
+    using Processor = std::size_t(*)(Base *opt, Args const &args);
+
+
+    Function(Program *program, Info const &optInfo, Processor processor);
+
+  protected:
+    virtual std::size_t v_process(Args const &args);
+  };
+
+Description:
+  Function-calling option handler.
+
+-----------------------------------------------------------
+GDCC::Option::Function::Function
+-----------------------------------------------------------
+
+Synopsis:
+  Function(Program *program, Info const &optInfo, Processor processor);
+
+Description:
+  Associates the option with an external function used to process arguments.
+  The function must return the number of arguments consumed.
+
+  Constructs Base with {program, optInfo}.
+
+-----------------------------------------------------------
+GDCC::Option::Function::v_process
+-----------------------------------------------------------
+
+Synopsis:
+  virtual std::size_t v_process(Args const &args);
+
+Description:
+  Calls the associated external function with {this, args} and returns the
+  result.
+
+Returns:
+  Number of arguments consumed.
+
+===========================================================
+GDCC::Option::Int <GDCC/Option/Int.hpp>
+===========================================================
+
+Synopsis:
+  #include <GDCC/Option/Int.hpp>
+  template<typename T>
+  class Int : public Base
+  {
+  public:
+    Int(Program *program, Info const &optInfo, T *ptr);
+
+  protected:
+    virtual std::size_t v_process(Args const &args);
+  };
+
+Description:
+  A basic integer option handler. Uses an external object to store option
+  state.
+
+-----------------------------------------------------------
+GDCC::Option::Int::Int
+-----------------------------------------------------------
+
+Synopsis:
+  Int(Program *program, Info const &optInfo, T *ptr);
+
+Description:
+  Associates the option with the external state pointed to by ptr. Constructs
+  Base with {program, optInfo}.
+
+-----------------------------------------------------------
+GDCC::Option::Int::v_process
+-----------------------------------------------------------
+
+Synopsis:
+  virtual std::size_t v_process(Args const &args);
+
+Description:
+  If optFalse is set, the associated state is set to 0 and no argument is
+  consumed.
+
+  Otherwise, one argument is consumed to parse a decimal integer from. If there
+  is no argument or if the argument is not a decimal integer, an Exception is
+  thrown.
+
+Returns:
+  0 or 1.
+
+===========================================================
+GDCC::Option::Program <GDCC/Option/Program.hpp>
+===========================================================
+
+Synopsis:
+  #include <GDCC/Option/Program.hpp>
+  class Program
+  {
+  public:
+    Program();
+
+    Program(Program const &) = delete;
+    Program(Program &&) = delete;
+
+    ~Program();
+
+    Program &operator = (Program const &) = delete;
+    Program &operator = (Program &&) = delete;
+
+    Base *find(Args const &args);
+    Base *find(char const *name);
+    Base *find(char name);
+
+    Base &get(Args const &args);
+
+    void process(Args const &args);
+
+    void putAsciiDoc(std::ostream &out, std::size_t width = 0);
+
+    void putHelp(std::ostream &out, std::size_t width = 0);
+
+    void putHelpLong(std::ostream &out, std::size_t width = 0);
+
+    void putVersion(std::ostream &out, std::size_t width = 0);
+
+    Base *processLoose;
+
+    char const *descL;
+    char const *descS;
+    char const *name;
+    char const *nameFull;
+    char const *usage;
+    char const *version;
+  };
+
+Description:
+  Stores a list of options for a program.
+
+-----------------------------------------------------------
+GDCC::Option::Program::Program
+-----------------------------------------------------------
+
+Synopsis:
+  Program();
+
+Description:
+  Constructs an empty list of options.
+
+-----------------------------------------------------------
+GDCC::Option::Program::~Program
+-----------------------------------------------------------
+
+Synopsis:
+  ~Program();
+
+Description:
+  Removes all options, but does not otherwise affect them.
+
+-----------------------------------------------------------
+GDCC::Option::Program::find
+-----------------------------------------------------------
+
+Synopsis:
+  Base *find(Args const &args);
+  Base *find(char const *name);
+  Base *find(char name);
+
+Description:
+  The first form is equivalent to the second if nameL is set or the third if
+  nameS is set. If neither is set, null is returned.
+
+  The second form looks for an option with the given long name. If there is an
+  option with an exact match, it is returned. Otherwise, if there is one and
+  only one option which begins with name, it is returned. If there are multiple
+  exact matches, which one is returned is unspecified.
+
+  The third form looks for an option with the given short name.
+
+Returns:
+  The found option, or null if none found.
+
+-----------------------------------------------------------
+GDCC::Option::Program::get
+-----------------------------------------------------------
+
+Synopsis:
+  Base &get(Args const &args);
+
+Description:
+  Works as in find, except that an exception in thrown in no option is found.
+
+Returns:
+  The found option.
+
+-----------------------------------------------------------
+GDCC::Option::Program::process
+-----------------------------------------------------------
+
+Synopsis:
+  void process(Args const &args);
+
+Description:
+  Options are handled in GNU style. Short options start with "-" and can be
+  grouped. Long options start with "--". Options can be terminated with a "--".
+
+  An argument can be attached to short options by direct appending, or to long
+  options with a "=".
+
+  A long option name prefixed with "no-" will drop the prefix for name lookup
+  and set optFalse in the associated Args object.
+
+  Arguments that are not options or consumed by an option are referred to as
+  loose arguments and are handled by the processLoose option. If processLoose
+  is null, loose arguments are ignored.
+
+  If optFinal is set, it is only passed when all remaining arguments are
+  passed. All other flags are passed as-is.
+
+-----------------------------------------------------------
+GDCC::Option::Program::putAsciiDoc
+-----------------------------------------------------------
+
+Synopsis:
+  void putAsciiDoc(std::ostream &out, std::size_t width = 0);
+
+Description:
+  Generates AsciiDoc documentation.
+
+-----------------------------------------------------------
+GDCC::Option::Program::putHelp
+-----------------------------------------------------------
+
+Synopsis:
+  void putAsciiDoc(std::ostream &out, std::size_t width = 0);
+
+Description:
+  Generates basic usage documentation.
+
+-----------------------------------------------------------
+GDCC::Option::Program::putHelpLong
+-----------------------------------------------------------
+
+Synopsis:
+  void putAsciiDoc(std::ostream &out, std::size_t width = 0);
+
+Description:
+  Generates long usage documentation.
+
+-----------------------------------------------------------
+GDCC::Option::Program::putVersion
+-----------------------------------------------------------
+
+Synopsis:
+  void putAsciiDoc(std::ostream &out, std::size_t width = 0);
+
+Description:
+  Generates version documentation.
+
+-----------------------------------------------------------
+GDCC::Option::Program::processLoose
+-----------------------------------------------------------
+
+Synopsis:
+  Base *processLoose;
+
+Description:
+  Used by process for handling non-option arguments.
+
+-----------------------------------------------------------
+GDCC::Option::Program::descL
+-----------------------------------------------------------
+
+Synopsis:
+  char const *descL;
+
+Description:
+  Long description for the program. Used for documentation generation.
+
+-----------------------------------------------------------
+GDCC::Option::Program::descS
+-----------------------------------------------------------
+
+Synopsis:
+  char const *descS;
+
+Description:
+  Short description for the program. Used for documentation generation.
+
+-----------------------------------------------------------
+GDCC::Option::Program::name
+-----------------------------------------------------------
+
+Synopsis:
+  char const *name;
+
+Description:
+  Name of the program. For example, "gdcc-cc". Used for documentation
+  generation.
+
+-----------------------------------------------------------
+GDCC::Option::Program::nameFull
+-----------------------------------------------------------
+
+Synopsis:
+  char const *nameFull;
+
+Description:
+  Full name of the program. For example, "GDCC C Compiler". Used for
+  documentation generation.
+
+-----------------------------------------------------------
+GDCC::Option::Program::usage
+-----------------------------------------------------------
+
+Synopsis:
+  char const *usage;
+
+Description:
+  Usage overview for the program. For example, "[option]... [source]..." Used
+  for documentation generation.
+
+-----------------------------------------------------------
+GDCC::Option::Program::version
+-----------------------------------------------------------
+
+Synopsis:
+  char const *version;
+
+Description:
+  Version of the program. For example, "v1.2.0". Used for documentation
+  generation.
+
+===============================================================================
+Functions
+===============================================================================
+
+===========================================================
+String Utilities <GDCC/Option/StrUtil.hpp>
+===========================================================
+
+-----------------------------------------------------------
+GDCC::Option::StrCmp
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Option/StrUtil.hpp>
+  int StrCmp(char const *l, char const *r);
+
+Description:
+  Compares two strings as in std::strcmp, except that a null pointer is equal
+  to another null pointer and less than any other string.
+
+Returns:
+  An integer as in std::strcmp.
+
+-----------------------------------------------------------
+GDCC::Option::StrDup
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Option/StrUtil.hpp>
+  std::unique_ptr<char[]> StrDup(char const *str);
+  std::unique_ptr<char[]> StrDup(char const *str, std::size_t len);
+
+Description:
+  Duplicates a string.
+
+  In the first form, str must point to a null-terminated string. Otherwise, str
+  points to a string with at least len characters.
+
+Returns:
+  A std::unique_pointer to the newly created string.
+
+-----------------------------------------------------------
+GDCC::Option::StrHash
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Option/StrUtil.hpp>
+  std::size_t StrHash(char const *str);
+  std::size_t StrHash(char const *str, std::size_t len);
+  std::size_t StrHash(char const *str, std::size_t len, std::size_t hash);
+
+Description:
+  Calculates a hash for the given string.
+
+  In the first form, str must be null or point to a null-terminated string.
+  Otherwise, str points to a string with at least len characters or str is null
+  and len is 0.
+
+  The third form is used to calculate the hash for a string in multiple parts
+  by passing the result of the prior call to StrHash as an initial hash value.
+
+  Like std::hash, these functions are for creating hash tables and are
+  unsuitable for cryptographic uses.
+
+Returns:
+  The hash of the string.
+
+-----------------------------------------------------------
+GDCC::Option::StrLenHash
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Option/StrUtil.hpp>
+  std::pair<std::size_t, std::size_t> StrLenHash(char const *str);
+
+Description:
+  Calculates the length and hash of a null-terminated string as in the
+  std::strlen and StrHash functions, except that a null pointer results in a
+  length and hash of 0.
+
+Returns:
+  A std::pair where first is the string length and second is the string hash.
+
+###############################################################################
+EOF
+###############################################################################
+

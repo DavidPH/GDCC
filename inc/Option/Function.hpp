@@ -24,40 +24,23 @@ namespace GDCC
 {
    namespace Option
    {
-      /// Function-calling option handler.
-
-      /// Processes options by deferring to a function.
-      ///
+      //
+      // Function
+      //
       class Function : public Base
       {
       public:
          using Processor = std::size_t(*)(Base *opt, Args const &args);
 
 
-         /// Insertion and initializer constructor.
-
-         /// Associates a function for option handling and invokes Base's
-         /// insertion constructor.
-         ///
-         /// @param program Program to insert this into.
-         /// @param optInfo Basic option information.
-         /// @param processor Function to call for option handling.
-         ///
+         // constructor
          Function(Program *program, Info const &optInfo, Processor processor) :
-            Base{program, optInfo}, fn{processor}
-         {
-         }
+            Base{program, optInfo}, fn{processor} {}
 
       protected:
-         /// Virtual implementation of option processing.
-
-         /// Calls processor, passing this and args, and returns the result
-         /// as-is.
-         ///
-         /// @param args Program arguments.
-         ///
-         /// @return Number of consumed arguments.
-         ///
+         //
+         // v_process
+         //
          virtual std::size_t v_process(Args const &args)
          {
             return fn(this, args);

@@ -26,12 +26,9 @@ namespace GDCC
 {
    namespace Option
    {
-      ///
-      /// Initializes basic information and inserts this into program.
-      ///
-      /// @param program Program to insert this into.
-      /// @param optInfo Basic option information.
-      ///
+      //
+      // Base constructor
+      //
       Base::Base(Program *program, Info const &optInfo) :
          info{optInfo},
 
@@ -46,37 +43,26 @@ namespace GDCC
          if(program) program->insert(this);
       }
 
-      ///
-      /// Unlinks from current program, if any.
-      ///
+      //
+      // Base destructor
+      //
       Base::~Base()
       {
          if(prog) prog->remove(this);
       }
 
-      ///
-      /// Inserts into a program. If this was already in a program, it will be
-      /// removed first.
-      ///
-      /// @param program Program to insert this into.
-      ///
+      //
+      // Base::insert
+      //
       void Base::insert(Program *program)
       {
          if(prog   ) prog   ->remove(this);
          if(program) program->insert(this);
       }
 
-      ///
-      /// Invokes v_process then sets processed to true. Returns the result of
-      /// v_process unaltered.
-      ///
-      /// @param args Program arguments to be processed.
-      ///
-      /// @return Number of arguments consumed.
-      ///
-      /// @exception Option::Exception May be thrown as a result of invalid
-      ///    arguments.
-      ///
+      //
+      // Base::process
+      //
       std::size_t Base::process(Args const &args)
       {
          auto ret = v_process(args);
@@ -84,9 +70,9 @@ namespace GDCC
          return ret;
       }
 
-      ///
-      /// Unlinks from the current program, if any.
-      ///
+      //
+      // Base::remove
+      //
       void Base::remove()
       {
          if(prog) prog->remove(this);
