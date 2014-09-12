@@ -157,6 +157,9 @@ int main(int argc, char *argv[])
 
    auto &list = Core::GetOptionList();
 
+   list.name     = "gdcc-ld";
+   list.nameFull = "GDCC Linker";
+
    list.usage = "[option]... [source]...";
 
    list.descS =
@@ -164,7 +167,7 @@ int main(int argc, char *argv[])
 
    try
    {
-      Core::InitOptions(argc, argv, "gdcc-ld", "GDCC Linker");
+      Core::ProcessOptions(Core::GetOptions(), argc, argv);
       MakeLinker();
    }
    catch(std::exception const &e)

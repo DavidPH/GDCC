@@ -33,7 +33,7 @@ namespace GDCC
          Origin() = default;
          constexpr Origin(String file_, std::size_t line_) : file{file_}, line{line_} {}
 
-         constexpr explicit operator bool () const {return file && line;}
+         constexpr explicit operator bool () const {return file || line;}
 
          constexpr bool operator == (Origin const &pos) const
             {return file == pos.file && line == pos.line;}

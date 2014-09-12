@@ -96,6 +96,9 @@ int main(int argc, char *argv[])
 
    auto &list = Core::GetOptionList();
 
+   list.name     = "gdcc-as";
+   list.nameFull = "GDCC Assembler";
+
    list.usage = "[option]... [source]...";
 
    list.descS =
@@ -103,7 +106,7 @@ int main(int argc, char *argv[])
 
    try
    {
-      Core::InitOptions(argc, argv, "gdcc-as", "GDCC Assembler");
+      Core::ProcessOptions(Core::GetOptions(), argc, argv);
       MakeAsm();
    }
    catch(std::exception const &e)

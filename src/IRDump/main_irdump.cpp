@@ -87,6 +87,9 @@ int main(int argc, char *argv[])
 
    auto &list = Core::GetOptionList();
 
+   list.name     = "gdcc-irdump";
+   list.nameFull = "GDCC IR Dump";
+
    list.usage = "[option]... [source]...";
 
    list.descS =
@@ -94,7 +97,7 @@ int main(int argc, char *argv[])
 
    try
    {
-      Core::InitOptions(argc, argv, "gdcc-irdump", "GDCC IR Dump", false);
+      Core::ProcessOptions(Core::GetOptions(), argc, argv, false);
       MakeIRDump();
    }
    catch(std::exception const &e)

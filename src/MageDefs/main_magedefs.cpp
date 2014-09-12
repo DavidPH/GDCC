@@ -126,6 +126,9 @@ int main(int argc, char *argv[])
 
    auto &list = Core::GetOptionList();
 
+   list.name     = "gdcc-magedefs";
+   list.nameFull = "GDCC MageDefs";
+
    list.usage = "[option]... [source]...";
 
    list.descS =
@@ -133,7 +136,7 @@ int main(int argc, char *argv[])
 
    try
    {
-      Core::InitOptions(argc, argv, "gdcc-magedefs", "GDCC MageDefs");
+      Core::ProcessOptions(Core::GetOptions(), argc, argv);
       MakeDefs();
    }
    catch(std::exception const &e)

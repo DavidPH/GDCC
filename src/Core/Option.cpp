@@ -119,16 +119,11 @@ namespace GDCC
       }
 
       //
-      // InitOptions
+      // ProcessOptions
       //
-      void InitOptions(int argc, char const *const *argv, char const *name,
-         char const *nameFull, bool needOutput)
+      void ProcessOptions(OptionList &opts, int argc, char const *const *argv,
+         bool needOutput)
       {
-         auto &opts = GetOptions();
-
-         if(name)     opts.list.name     = name;
-         if(nameFull) opts.list.nameFull = nameFull;
-
          if(!opts.list.version)
             opts.list.version = "v0.4.1";
 

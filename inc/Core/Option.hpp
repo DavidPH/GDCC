@@ -67,8 +67,8 @@ namespace GDCC
 
       OptionList &GetOptions();
 
-      void InitOptions(int argc, char const *const *argv, char const *name,
-         char const *nameFull, bool needOutput = true);
+      void ProcessOptions(OptionList &opts, int argc, char const *const *argv,
+         bool needOutput = true);
    }
 }
 

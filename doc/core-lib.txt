@@ -3,6 +3,460 @@ GDCC Core Library Specification
 ###############################################################################
 
 ===============================================================================
+Common Option Handling <GDCC/Core/Option.hpp>
+===============================================================================
+
+===========================================================
+GDCC::Core::OptionList
+===========================================================
+
+Synopsis:
+  #include <GDCC/Core/Option.hpp>
+  class OptionList
+  {
+  public:
+    OptionList();
+
+    Option::Program list;
+
+    Option::CStrV args;
+
+    Option::Function optHelp;
+    Option::Function optHelpADoc;
+    Option::Function optHelpLong;
+    Option::CStr     optOutput;
+    Option::Function optVersion;
+  };
+
+Description:
+  Stores an Option::Program and core options.
+
+-----------------------------------------------------------
+GDCC::Core::OptionList::OptionList
+-----------------------------------------------------------
+
+Synopsis:
+  OptionList();
+
+Description:
+  Initializes options as described in their sections below. All contained
+  options are inserted into list.
+
+  This class is most often used as the type for the GetOptions singleton.
+
+-----------------------------------------------------------
+GDCC::Core::OptionList::list
+-----------------------------------------------------------
+
+Synopsis:
+  Option::Program list;
+
+Description:
+
+-----------------------------------------------------------
+GDCC::Core::OptionList::args
+-----------------------------------------------------------
+
+Synopsis:
+  Option::CStrV args;
+
+Description:
+  Used as the default handler for loose arguments.
+
+-----------------------------------------------------------
+GDCC::Core::OptionList::optHelp
+-----------------------------------------------------------
+
+Synopsis:
+  Option::Function optHelp;
+
+Description:
+  -h, --help
+
+  Prints usage with list.putHelp(std::cout) and throws EXIT_SUCCESS.
+
+-----------------------------------------------------------
+GDCC::Core::OptionList::optHelpADoc
+-----------------------------------------------------------
+
+Synopsis:
+  Option::Function optHelpADoc;
+
+Description:
+  --help-adoc
+
+  Prints usage with list.putAsciiDoc(std::cout) and throws EXIT_SUCCESS.
+
+-----------------------------------------------------------
+GDCC::Core::OptionList::optHelpLong
+-----------------------------------------------------------
+
+Synopsis:
+  Option::Function optHelpLong;
+
+Description:
+  --help-long
+
+  Prints usage with list.putHelpLong(std::cout) and throws EXIT_SUCCESS.
+
+-----------------------------------------------------------
+GDCC::Core::OptionList::optOutput
+-----------------------------------------------------------
+
+Synopsis:
+  Option::CStr optOutput;
+
+Description:
+  -o, --output
+
+  A single string option for specifying output file/directory.
+
+-----------------------------------------------------------
+GDCC::Core::OptionList::optVersion
+-----------------------------------------------------------
+
+Synopsis:
+  Option::CStr optVersion;
+
+Description:
+  --version
+
+  Pritns version with list.putVersion(std::cout) and throws EXIT_SUCCESS.
+
+===========================================================
+Functions
+===========================================================
+
+-----------------------------------------------------------
+GDCC::Core::GetOptionArgs
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Option.hpp>
+  Option::CStrV &GetOptionArgs();
+
+Description:
+  Returns GetOptions().args.
+
+Returns:
+  GetOptions().args.
+
+-----------------------------------------------------------
+GDCC::Core::GetOptionList
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Option.hpp>
+  Option::Program &GetOptionList();
+
+Description:
+  Returns GetOptions().list.
+
+Returns:
+  GetOptions().list.
+
+-----------------------------------------------------------
+GDCC::Core::GetOptionOutput
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Option.hpp>
+  char const *GetOptionOutput();
+
+Description:
+  Returns GetOptions().optOutput.data().
+
+Returns:
+  GetOptions().output.data().
+
+-----------------------------------------------------------
+GDCC::Core::GetOptions
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Option.hpp>
+  OptionList &GetOptions();
+
+Description:
+  Returns a reference to an OptionList singleton.
+
+Returns:
+  OptionList singleton.
+
+-----------------------------------------------------------
+GDCC::Core::ProcessOptions
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Option.hpp>
+  void ProcessOptions(OptionList &opts, int argc, char const *const *argv,
+    bool needOutput = true);
+
+Description:
+  Processes options using opts.
+
+  If opts.list.version is null, it is set to a static storage string containing
+  the GDCC version.
+
+  If argc <= 1, usage is printed with opts.list.putHelp(std::cout) and
+  EXIT_SUCCESS is thrown.
+
+  Options are then processed, ignoring the first string in argv (which is
+  assumed to be the program name as passed to main) and with optKeepA set.
+
+  If after processing needOutput is set and opts.optOutput has not been
+  processed and opts.args is not empty, then it is processed with the last
+  element in opts.args.
+
+  If an Option::Exception is thrown during processing, it is caught and its
+  message is written to std::cerr. Then opts.list.putHelp(std::cerr) is called.
+  Then EXIT_FAILURE is thrown.
+
+  If after processing and the above optOutput check needOutput is set and
+  opts.optOutput.data() is null, an error message is written to std::cerr and
+  EXIT_FAILURE is thrown.
+
+===============================================================================
+File Handling <GDCC/Core/File.hpp>
+===============================================================================
+
+===========================================================
+GDCC::Core::FileBlock
+===========================================================
+
+Synopsis:
+  #include <GDCC/Core/File.hpp>
+  class FileBlock
+  {
+  public:
+    virtual ~FileBlock();
+
+    char const *data() const;
+
+    std::size_t getHash() const;
+
+    std::size_t size() const;
+
+  protected:
+    virtual char const *v_data() const = 0;
+
+    virtual std::size_t v_size() const = 0;
+  };
+
+Description:
+  Abstract base class for objects representing a file's data as a single block
+  rather than a stream.
+
+-----------------------------------------------------------
+GDCC::Core::FileBlock::~FileBlock
+-----------------------------------------------------------
+
+Synopsis:
+  ~FileBlock()
+
+Description:
+  Does nothing. Only defined to force virtual destruction.
+
+-----------------------------------------------------------
+GDCC::Core::FileBlock::data
+-----------------------------------------------------------
+
+Synopsis:
+  char const *data() const;
+
+Description:
+  Returns the result of v_data.
+
+Returns:
+  A pointer to the file's data.
+
+-----------------------------------------------------------
+GDCC::Core::FileBlock::getHash
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t getHash() const;
+
+Description:
+  Calculates a hash of the file's content.
+
+Returns:
+  File content hash.
+
+-----------------------------------------------------------
+GDCC::Core::FileBlock::size
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t size() const;
+
+Description:
+  Returns the result of v_size.
+
+Returns:
+  The file's size.
+
+-----------------------------------------------------------
+GDCC::Core::FileBlock::v_data
+-----------------------------------------------------------
+
+Synopsis:
+  virtual char const *v_data() const = 0;
+
+Description:
+  Derived classes must define this to return a pointer to the file's data. The
+  result of this function and the pointed to data itself must not change after
+  the first call.
+
+Returns:
+  A pointer to the file's data.
+
+-----------------------------------------------------------
+GDCC::Core::FileBlock::v_size
+-----------------------------------------------------------
+
+Synopsis:
+  virtual std::size_t v_size() const = 0;
+
+Description:
+  Derived classes must define this to return the size of the file's data. The
+  result of this function must not change after the first call.
+
+Returns:
+  The file's size.
+
+===========================================================
+Functions
+===========================================================
+
+-----------------------------------------------------------
+GDCC::Core::FileOpenBlock
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/File.hpp>
+  std::unique_ptr<FileBlock> FileOpenBlock(char const *filename);
+
+Description:
+  Opens a file or special for reading as a block.
+
+  If filename is "-", then std::cin is read until EOF and that is returned.
+
+  Otherwise, the named file is opened and made into a FileBlock. If successful,
+  that is returned.
+
+  Otherwise, returns null.
+
+Returns:
+  A FileBlock representing the file's data, or null on failure.
+
+-----------------------------------------------------------
+GDCC::Core::FileOpenStream
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/File.hpp>
+  std::unique_ptr<std::streambuf, ConditionalDeleter<std::streambuf>>
+  FileOpenStream(char const *filename, std::ios_base::openmode which);
+
+Description:
+  Opens a file or special for reading and/or writing as a stream.
+
+  If filename is "-", then either std::cin.rdbuf() or std::cout.rdbuf() is
+  returned, depending on whether which contains std::ios_base::in or
+  std::ios_base::out.
+
+  Otherwise, creates a new std::filebuf object and uses it to open the file
+  indicated by {filename, which}. If successful, it is returned.
+
+  Otherwise, null is returned.
+
+Returns:
+  A std::streambuf representing the file's data, or null on failure.
+
+===============================================================================
+Path String Utilities <GDCC/Core/Path.hpp>
+===============================================================================
+
+===========================================================
+Functions
+===========================================================
+
+-----------------------------------------------------------
+GDCC::Core::IsPathSep
+-----------------------------------------------------------
+
+Synopsis:
+  constexpr bool IsPathSep(char c);
+
+Description:
+  Checks if c is a path separator character on the current host platform.
+
+Returns:
+  True if c is a path separator, false otherwise.
+
+-----------------------------------------------------------
+GDCC::Core::PathConcat
+-----------------------------------------------------------
+
+Synopsis:
+  String PathConcat(char const *l, String r);
+  String PathConcat(String l, String r);
+
+Description:
+  Concatenates two path strings. Ensures that there is one (and only one) path
+  separator to join the two strings.
+
+Returns:
+  The concatenated path string.
+
+-----------------------------------------------------------
+GDCC::Core::PathDirname
+-----------------------------------------------------------
+
+Synopsis:
+  String PathDirname(String path);
+
+Description:
+  Determines the directory component of a path string by scanning for the last
+  path separator.
+
+Returns:
+  Directory component of path string.
+
+-----------------------------------------------------------
+GDCC::Core::PathNormalize
+-----------------------------------------------------------
+
+Synopsis:
+  char *PathNormalize(char *path);
+  String PathNormalize(String path);
+
+Description:
+  Normalizes a path string by converting all path separators to the same
+  character. On platforms with only one path separator character, this returns
+  path unaltered.
+
+Returns:
+  The normalized path string.
+
+-----------------------------------------------------------
+GDCC::Core::PathSep
+-----------------------------------------------------------
+
+Synopsis:
+  char PathSep(char const *path);
+  char PathSep(String path);
+
+Description:
+  Determines the path separator in use for path. For platforms with only one
+  path separator character, this just returns that character regardless of
+  input.
+
+Returns:
+  Path separator character for path.
+
+===============================================================================
 Reference Counting <GDCC/Core/Counter.hpp>
 ===============================================================================
 
@@ -254,33 +708,33 @@ GDCC::Core::CounterRef
 ===========================================================
 
 Synopsis:
-      template<typename T> class CounterRef
-      {
-      public:
-         CounterRef(std::nullptr_t p = nullptr) = delete;
+  template<typename T> class CounterRef
+  {
+  public:
+    CounterRef(std::nullptr_t p = nullptr) = delete;
 
-         explicit CounterRef(T *p);
-         template<typename T2> explicit CounterRef(T2 *p);
+    explicit CounterRef(T *p);
+    template<typename T2> explicit CounterRef(T2 *p);
 
-         explicit CounterRef(CounterPtr<T> const &p);
-         template<typename T2> explicit CounterRef(CounterPtr<T2> const &p);
+    explicit CounterRef(CounterPtr<T> const &p);
+    template<typename T2> explicit CounterRef(CounterPtr<T2> const &p);
 
-         CounterRef(CounterRef<T> const &p);
-         template<typename T2> CounterRef(CounterRef<T2> const &p);
+    CounterRef(CounterRef<T> const &p);
+    template<typename T2> CounterRef(CounterRef<T2> const &p);
 
-         ~CounterRef();
+    ~CounterRef();
 
-         operator T * () const;
+    operator T * () const;
 
-         CounterRef<T> &operator = (CounterRef<T> const &p);
-         template<typename T2> CounterRef<T> &operator = (CounterRef<T2> const &p);
+    CounterRef<T> &operator = (CounterRef<T> const &p);
+    template<typename T2> CounterRef<T> &operator = (CounterRef<T2> const &p);
 
-         T *operator -> () const;
+    T *operator -> () const;
 
-         T &operator * () const;
+    T &operator * () const;
 
-         unsigned refCount() const;
-      };
+    unsigned refCount() const;
+  };
 
 Description:
   Reference-counting pointer that is never null.
@@ -358,6 +812,755 @@ Description:
   For use in defining CounterBase-derived abstract classes.
 
   Works as in GDCC_Core_CounterPreamble, except that there is no clone.
+
+===============================================================================
+Source Position Information <GDCC/Core/Origin.hpp>
+===============================================================================
+
+===========================================================
+GDCC::Core::Origin
+===========================================================
+
+Synopsis:
+  #include <GDCC/Core/Origin.hpp>
+  class Origin
+  {
+  public:
+    Origin();
+    constexpr Origin(String file, std::size_t line);
+
+    constexpr explicit operator bool () const;
+
+    constexpr bool operator == (Origin const &pos) const;
+
+    constexpr bool operator != (Origin const &pos) const;
+
+    String      file;
+    std::size_t line;
+  };
+
+Description:
+  Stores file position information for error reporting.
+
+-----------------------------------------------------------
+GDCC::Core::Origin::Origin
+-----------------------------------------------------------
+
+Synopsis:
+  Origin();
+  constexpr Origin(String file, std::size_t line);
+
+Description:
+  The first form performs no initialization.
+
+  The second form initializes file and line from parameters.
+
+-----------------------------------------------------------
+GDCC::Core::Origin::operator bool
+-----------------------------------------------------------
+
+Synopsis:
+  constexpr explicit operator bool () const;
+
+Description:
+  Converts to a boolean. True if file is not null or line is not 0. Otherwise,
+  false.
+
+Returns:
+  The boolean sense of the object.
+
+-----------------------------------------------------------
+GDCC::Core::Origin::operator ==
+-----------------------------------------------------------
+
+Synopsis:
+  constexpr bool operator == (Origin const &pos) const;
+
+Description:
+  Compares two Origin objects. They are equal if both file and line are equal.
+
+Returns:
+  The equality of the two objects.
+
+-----------------------------------------------------------
+GDCC::Core::Origin::operator !=
+-----------------------------------------------------------
+
+Synopsis:
+  constexpr bool operator != (Origin const &pos) const;
+
+Description:
+  Compares two Origin objects. They are inequal if either file or line are
+  inequal.
+
+Returns:
+  The inequality of the two objects.
+
+-----------------------------------------------------------
+GDCC::Core::Origin::file
+-----------------------------------------------------------
+
+Synopsis:
+  String file;
+
+Description:
+  The name of the file for the position.
+
+-----------------------------------------------------------
+GDCC::Core::Origin::line
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t line;
+
+Description:
+  The line of the file for the position.
+
+===============================================================================
+String Table and Utilities <GDCC/Core/String.hpp>
+===============================================================================
+
+===========================================================
+GDCC::Core::String
+===========================================================
+
+Synopsis:
+  #include <GDCC/Core/String.hpp>
+  class String
+  {
+  public:
+    String();
+    String(char const *str);
+    String(char const *str, std::size_t len);
+    String(char const *str, std::size_t len, std::size_t hash);
+    String(std::nullptr_t);
+    explicit String(std::size_t idx);
+    constexpr String(StringIndex idx);
+
+    explicit constexpr operator bool () const;
+    explicit constexpr operator std::size_t () const;
+    constexpr operator StringIndex () const;
+
+    char const &operator [] (std::size_t i) const;
+
+    char const &back() const;
+
+    char const *begin() const;
+
+    char const *data() const;
+
+    bool empty() const;
+
+    char const *end() const;
+
+    char const &front() const;
+
+    std::size_t getHash() const;
+
+    std::size_t size() const;
+    std::size_t size16() const;
+    std::size_t size32() const;
+
+
+    static String Find(char const *str);
+    static String Find(char const *str, std::size_t len);
+    static String Find(char const *str, std::size_t len, std::size_t hash);
+
+    static String Get(char const *str);
+    static String Get(char const *str, std::size_t len);
+    static String Get(char const *str, std::size_t len, std::size_t hash);
+  };
+
+Description:
+  Stores a UTF-8 string as an index to a table. Equivalent strings are
+  guaranteed to have the same index.
+
+-----------------------------------------------------------
+GDCC::Core::String::String
+-----------------------------------------------------------
+
+Synopsis:
+  String();
+  String(char const *str);
+  String(char const *str, std::size_t len);
+  String(char const *str, std::size_t len, std::size_t hash);
+  String(std::nullptr_t);
+  explicit String(std::size_t idx);
+  constexpr String(StringIndex idx);
+
+Description:
+  First form performs no initialization.
+
+  The second, third, and fourth forms initialize as if by a call to Get with
+  the same parameters.
+
+  The fifth form initializes to STRNULL.
+
+  The sixth and seventh form initializes to the given index.
+
+-----------------------------------------------------------
+GDCC::Core::String::operator bool
+-----------------------------------------------------------
+
+Synopsis:
+  explicit constexpr operator bool () const;
+
+Description:
+  Converts the string index to a boolean. If index is STRNULL, the result is
+  false. Otherwise, the result is true.
+
+Returns:
+  The boolean sense of the string index.
+
+-----------------------------------------------------------
+GDCC::Core::String::operator std::size_t
+-----------------------------------------------------------
+
+Synopsis:
+  explicit constexpr operator std::size_t () const;
+
+Description:
+  Returns the string's index, which can be converted back into a String object
+  at some later point.
+
+Returns:
+  The string's index.
+
+-----------------------------------------------------------
+GDCC::Core::String::operator StringIndex
+-----------------------------------------------------------
+
+Synopsis:
+  constexpr operator StringIndex () const;
+
+Description:
+  Converts the string's index to a StringIndex value. If the index is out of
+  range, STRNULL is returned.
+
+Returns:
+  The string string's StringIndex index.
+
+-----------------------------------------------------------
+GDCC::Core::String::operator []
+-----------------------------------------------------------
+
+Synopsis:
+  char const &operator [] (std::size_t i) const;
+
+Description:
+  Accesses the character at the given index.
+
+Returns:
+  Reference to character at index.
+
+-----------------------------------------------------------
+GDCC::Core::String::back
+-----------------------------------------------------------
+
+Synopsis:
+  char const &back() const;
+
+Description:
+  Accesses the last character in the string. If the string is empty, the
+  behavior is undefined.
+
+Returns:
+  Reference to last character.
+
+-----------------------------------------------------------
+GDCC::Core::String::begin
+-----------------------------------------------------------
+
+Synopsis:
+  char const *begin() const;
+
+Description:
+  Returns an iterator to the beginning of the string.
+
+Returns:
+  Iterator to beginning of string.
+
+-----------------------------------------------------------
+GDCC::Core::String::data
+-----------------------------------------------------------
+
+Synopsis:
+  char const *data() const;
+
+Description:
+  Returns a pointer to the underlying string data. String will always be
+  terminated by a null character.
+
+Returns:
+  Pointer to string data.
+
+-----------------------------------------------------------
+GDCC::Core::String::empty
+-----------------------------------------------------------
+
+Synopsis:
+  bool empty() const;
+
+Description:
+  Checks whether the string is empty.
+
+Returns:
+  True if string is empty, false otherwise.
+
+-----------------------------------------------------------
+GDCC::Core::String::end
+-----------------------------------------------------------
+
+Synopsis:
+  char const *end() const;
+
+Description:
+  Returns an iterator to one past the end of the string.
+
+Returns:
+  Iterator to one past end of string.
+
+-----------------------------------------------------------
+GDCC::Core::String::front
+-----------------------------------------------------------
+
+Synopsis:
+  char const &front() const;
+
+Description:
+  Accesses the first character in the string. If the string is empty, the
+  behavior is undefined.
+
+Returns:
+  Reference to first character.
+
+-----------------------------------------------------------
+GDCC::Core::String::getHash
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t getHash() const;
+
+Description:
+  Returns a computed hash for the string, as though by a call to StrHash.
+
+Returns:
+  String's hash.
+
+-----------------------------------------------------------
+GDCC::Core::String::size
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t size() const;
+
+Description:
+  Returns the size of the string in UTF-8 characters (ie, bytes).
+
+Returns:
+  Size of string in UTF-8.
+
+-----------------------------------------------------------
+GDCC::Core::String::size16
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t size16() const;
+
+Description:
+  Computes the size of the string if converted to UTF-16. If the string cannot
+  be represented in UTF-16, the results are unspecified.
+
+Returns:
+  Size of string in UTF-16.
+
+-----------------------------------------------------------
+GDCC::Core::String::size32
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t size32() const;
+
+Description:
+  Computes the size of the string if converted to UTF-32. That is, the number
+  of Unicode characters.
+
+Returns:
+  Size of string in UTF-32.
+
+-----------------------------------------------------------
+GDCC::Core::String::Find
+-----------------------------------------------------------
+
+Synopsis:
+  static String Find(char const *str);
+  static String Find(char const *str, std::size_t len);
+  static String Find(char const *str, std::size_t len, std::size_t hash);
+
+Description:
+  Searches for a string entry with the given value. If hash is provided, it
+  must be the value as generated by an equivalent call to StrHash.
+
+  If no matching entry is found, STRNULL is returned.
+
+Returns:
+  Found string index or STRNULL.
+
+-----------------------------------------------------------
+GDCC::Core::String::Get
+-----------------------------------------------------------
+
+Synopsis:
+  static String Get(char const *str);
+  static String Get(char const *str, std::size_t len);
+  static String Get(char const *str, std::size_t len, std::size_t hash);
+
+Description:
+  Searches for an existing entry as in Find. If that lookup fails, a new string
+  is added to the table and its index returned.
+
+Returns:
+  Found string.
+
+===========================================================
+GDCC::Core::StringIndex
+===========================================================
+
+Synopsis:
+  #include <GDCC/Core/String.hpp>
+  enum StringIndex
+  {
+    STRNULL,
+    /* ... */
+    STRMAX
+  };
+
+Description:
+  Contains a name for every predefined string in the string table. For a full
+  list, refer to <GDCC/Core/StringList.hpp>.
+
+-----------------------------------------------------------
+GDCC::Core::StringIndex::STRNULL
+-----------------------------------------------------------
+
+Description:
+  Used to indicate no string. A String object with this as its index is valid
+  for use as an empty string, but STR_ should be used instead.
+
+-----------------------------------------------------------
+GDCC::Core::StringIndex::STRMAX
+-----------------------------------------------------------
+
+Description:
+  Not a table entry, but instead represents the number of predefined entries in
+  the table.
+
+===========================================================
+std::hash<GDCC::Core::String>
+===========================================================
+
+Synopsis:
+  #include <GDCC/Core/String.hpp>
+  template<> struct hash<GDCC::Core::String>
+  {
+     size_t operator () (GDCC::Core::String str) const;
+  };
+
+Description:
+  A template specialization for hashing String objects by calling getHash.
+
+-----------------------------------------------------------
+std::hash<GDCC::Core::String>::operator ()
+-----------------------------------------------------------
+
+Synopsis:
+   size_t operator () (GDCC::Core::String str) const;
+
+Description:
+  Returns str's hash by calling str.getHash().
+
+Returns:
+  String's hash.
+
+===========================================================
+Functions
+===========================================================
+
+In addition to the below, the StrCmp, StrDup, StrHash, and StrLenHash functions
+from option-lib are made available in the Core namespace in
+<GDCC/Core/String.hpp>.
+
+-----------------------------------------------------------
+GDCC::Core::operator +
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/String.hpp>
+  String operator + (String      l, String      r);
+  String operator + (String      l, StringIndex r);
+  String operator + (StringIndex l, String      r);
+
+Description:
+  Concatenates the two strings as if by calling String::Get with the combined
+  string.
+
+Returns:
+  A string with the data of the two inputs concatenated.
+
+-----------------------------------------------------------
+GDCC::Core::operator <<
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/String.hpp>
+  std::ostream &operator << (std::ostream &out, String in);
+
+Description:
+  Writes the string content of in to out.
+
+Returns:
+  out.
+
+-----------------------------------------------------------
+GDCC::Core::operator <
+GDCC::Core::operator >
+GDCC::Core::operator <=
+GDCC::Core::operator >=
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/String.hpp>
+  bool operator < (String      l, String      r);
+  bool operator < (String      l, StringIndex r);
+  bool operator < (StringIndex l, String      r);
+
+  bool operator > (String      l, String      r);
+  bool operator > (String      l, StringIndex r);
+  bool operator > (StringIndex l, String      r);
+
+  bool operator <= (String      l, String      r);
+  bool operator <= (String      l, StringIndex r);
+  bool operator <= (StringIndex l, String      r);
+
+  bool operator >= (String      l, String      r);
+  bool operator >= (String      l, StringIndex r);
+  bool operator >= (StringIndex l, String      r);
+
+Description:
+  Performs lexicographical comparison.
+
+Returns:
+  The comparison result.
+
+-----------------------------------------------------------
+GDCC::Core::operator ==
+GDCC::Core::operator !=
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/String.hpp>
+  constexpr bool operator == (String      l, String      r);
+  constexpr bool operator == (String      l, StringIndex r);
+  constexpr bool operator == (StringIndex l, String      r);
+
+  constexpr bool operator != (String      l, String      r);
+  constexpr bool operator != (String      l, StringIndex r);
+  constexpr bool operator != (StringIndex l, String      r);
+
+Description:
+  Performs equality comparison. Has O(1) complexity.
+
+Returns:
+  The comparison result.
+
+-----------------------------------------------------------
+GDCC::Core::operator +=
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/String.hpp>
+  String &operator += (String &l, String      r);
+  String &operator += (String &l, StringIndex r);
+
+Description:
+  Equivalent to: l = l + r;
+
+Returns:
+  l.
+
+-----------------------------------------------------------
+GDCC::Core::Str8To32
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/String.hpp>
+  std::pair<char32_t, char const *> Str8To32(char const *itr, char const *end);
+
+Description:
+  Reads a UTF-32 character out of a UTF-8 string. Input validation is not
+  performed, but any valid pair of pointers will not incur undefined behavior.
+  That is, the mapping of invalid UTF-8 to UTF-32 is unspecified.
+
+  One past the last byte used will be returned. And if itr != end, at least one
+  byte will always be read.
+
+Returns:
+  UTF-32 character, one past last byte read.
+
+===============================================================================
+Miscellaneous Utilities
+===============================================================================
+
+===========================================================
+GDCC::Core::ConditionalDeleter
+===========================================================
+
+Synopsis:
+  #include <GDCC/Core/Deleter.hpp>
+  template<typename T>
+  class ConditionalDeleter
+  {
+  public:
+    ConditionalDeleter(bool free);
+
+    void operator () (T *p) const;
+  };
+
+Description:
+  A deleter that only performs deletion if constructed with true.
+
+-----------------------------------------------------------
+GDCC::Core::ConditionalDeleter::ConditionalDeleter
+-----------------------------------------------------------
+
+Synopsis:
+  ConditionalDeleter(bool free);
+
+Description:
+  If free is true, operator () deletes the object pointed to by its
+  parameter. Otherwise, it does nothing.
+
+-----------------------------------------------------------
+GDCC::Core::ConditionalDeleter::operator ()
+-----------------------------------------------------------
+
+Synopsis:
+  void operator () (T *p) const;
+
+Description:
+  If constructed with free == true, deletes the object pointed to by p.
+  Otherwise, does nothing.
+
+===========================================================
+GDCC::Core::Range
+===========================================================
+
+Synopsis:
+  #include <GDCC/Core/Range.hpp>
+  template<typename T> class Range
+  {
+  public:
+    Range();
+    constexpr Range(T first, T last);
+
+    T begin() const;
+
+    bool empty() const;
+
+    T end() const;
+
+    std::size_t size() const;
+
+    T first;
+    T last;
+  };
+
+Description:
+  Stores a pair of iterators for use in range-based for.
+
+-----------------------------------------------------------
+GDCC::Core::Range::Range
+-----------------------------------------------------------
+
+Synopsis:
+  Range();
+  constexpr Range(T first, T last);
+
+Description:
+  First form performs no initialization.
+
+  Second form initializes first and last from parameters.
+
+-----------------------------------------------------------
+GDCC::Core::Range::begin
+-----------------------------------------------------------
+
+Synopsis:
+  T begin() const;
+
+Description:
+  Returns first.
+
+Returns:
+  first.
+
+-----------------------------------------------------------
+GDCC::Core::Range::empty
+-----------------------------------------------------------
+
+Synopsis:
+  bool empty() const;
+
+Description:
+  Checks if the range contained any elements by comparing first and last.
+
+Returns:
+  True if range refers to no object, false otherwise.
+
+-----------------------------------------------------------
+GDCC::Core::Range::end
+-----------------------------------------------------------
+
+Synopsis:
+  T end() const;
+
+Description:
+  Returns last.
+
+Returns:
+  last.
+
+-----------------------------------------------------------
+GDCC::Core::Range::size
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t size() const;
+
+Description:
+  Returns the number of elements in the range by calling
+  std::distance(first, last).
+
+Returns:
+  Number of contained elements.
+
+===========================================================
+Functions
+===========================================================
+
+-----------------------------------------------------------
+GDCC::Core::MakeRange
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Range.hpp>
+  template<typename T> Range<T> MakeRange(T first, T last);
+
+Description:
+  Creates a Range with type deduction.
+
+Returns:
+  Range<T>(first, last).
 
 ###############################################################################
 EOF

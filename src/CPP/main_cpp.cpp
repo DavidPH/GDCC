@@ -129,6 +129,9 @@ int main(int argc, char *argv[])
 
    auto &list = Core::GetOptionList();
 
+   list.name     = "gdcc-cpp";
+   list.nameFull = "GDCC C Preprocessor";
+
    list.usage = "[option]... [source]...";
 
    list.descS =
@@ -136,7 +139,7 @@ int main(int argc, char *argv[])
 
    try
    {
-      Core::InitOptions(argc, argv, "gdcc-cpp", "GDCC C Preprocessor");
+      Core::ProcessOptions(Core::GetOptions(), argc, argv);
       MakeCPP();
    }
    catch(std::exception const &e)
