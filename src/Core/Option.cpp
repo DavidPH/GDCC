@@ -125,7 +125,7 @@ namespace GDCC
          bool needOutput)
       {
          if(!opts.list.version)
-            opts.list.version = "v0.4.1";
+            opts.list.version = "v0.5.0";
 
          if(argc <= 1)
          {
