@@ -42,6 +42,7 @@ namespace GDCC
             nameL{nullptr},
             nameS{'\0'},
 
+            optAffix{false},
             optFalse{false},
             optFinal{false},
             optKeepA{false}
@@ -58,8 +59,10 @@ namespace GDCC
          Args &setName (char const *name) {nameL = name; return *this;}
          Args &setName (char        name) {nameS = name; return *this;}
 
+         Args &setOptAffix(bool opt = true) {optAffix = opt; return *this;}
+         Args &setOptFalse(bool opt = true) {optFalse = opt; return *this;}
          Args &setOptFinal(bool opt = true) {optFinal = opt; return *this;}
-         Args &setOptKeepA(bool opt = true) {optFinal = opt; return *this;}
+         Args &setOptKeepA(bool opt = true) {optKeepA = opt; return *this;}
 
          char const *const *argV;
          std::size_t        argC;
@@ -67,6 +70,7 @@ namespace GDCC
          char const *nameL;
          char        nameS;
 
+         bool optAffix : 1; // The first argument was affixed to option name.
          bool optFalse : 1; // The option is negated.
          bool optFinal : 1; // There are no more args. (Hint only.)
          bool optKeepA : 1; // Argument strings may be kept.

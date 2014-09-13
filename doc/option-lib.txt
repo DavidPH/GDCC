@@ -26,6 +26,8 @@ Synopsis:
     Args &setName(char const *name);
     Args &setName(char name);
 
+    Args &setOptAffix(bool opt = true);
+    Args &setOptFalse(bool opt = true);
     Args &setOptFinal(bool opt = true);
     Args &setOptKeepA(bool opt = true);
 
@@ -35,6 +37,7 @@ Synopsis:
     char const *nameL;
     char nameS;
 
+    bool optAffix : 1;
     bool optFalse : 1;
     bool optFinal : 1;
     bool optKeepA : 1;
@@ -99,6 +102,26 @@ Description:
   The first form sets nameL to name. The second form sets nameS to name.
 
 -----------------------------------------------------------
+GDCC::Option::Args::setOptAffix
+-----------------------------------------------------------
+
+Synopsis:
+  Args &setOptAffix(bool opt = true);
+
+Description:
+  Sets optAffix to opt.
+
+-----------------------------------------------------------
+GDCC::Option::Args::setOptFalse
+-----------------------------------------------------------
+
+Synopsis:
+  Args &setOptFalse(bool opt = true);
+
+Description:
+  Sets optFalse to opt.
+
+-----------------------------------------------------------
 GDCC::Option::Args::setOptFinal
 -----------------------------------------------------------
 
@@ -158,6 +181,20 @@ Synopsis:
 
 Description:
   The short name of the option currently being processed, if any.
+
+-----------------------------------------------------------
+GDCC::Option::Args::optAffix
+-----------------------------------------------------------
+
+Synopsis:
+  bool optAffix : 1;
+
+Description:
+  The optAffix is set to indicate that the first argument was attached to the
+  option name.
+
+  Options may use this, for example, to require that an optional argument be
+  attached.
 
 -----------------------------------------------------------
 GDCC::Option::Args::optFalse
@@ -1026,6 +1063,10 @@ Description:
   Options are handled in GNU style. Short options start with "-" and can be
   grouped. Long options start with "--". Options can be terminated with a "--".
 
+  Arguments starting with '@' are used as a file to read additional options
+  from. If the file cannot be opened for reading, it is instead treated as a
+  loose argument.
+
   An argument can be attached to short options by direct appending, or to long
   options with a "=".
 
@@ -1037,7 +1078,8 @@ Description:
   is null, loose arguments are ignored.
 
   If optFinal is set, it is only passed when all remaining arguments are
-  passed. All other flags are passed as-is.
+  passed. The optAffix and optFalse flags are ignored. All other flags are
+  passed as-is.
 
 -----------------------------------------------------------
 GDCC::Option::Program::putAsciiDoc

@@ -17,6 +17,8 @@
 #include "Option/StrUtil.hpp"
 
 #include <cstring>
+#include <fstream>
+#include <vector>
 
 
 //----------------------------------------------------------------------------|
@@ -30,7 +32,8 @@ static GDCC::Option::Args &LimitArgs(GDCC::Option::Args &args)
 {
    for(std::size_t argi = 0; argi != args.argC; ++argi)
    {
-      if(args.argV[argi][0] == '-' && args.argV[argi][1] != '\0')
+      if((args.argV[argi][0] == '-' && args.argV[argi][1] != '\0') ||
+         (args.argV[argi][0] == '@' && argi))
       {
          args.argC     = argi;
          args.optFinal = false;
@@ -56,6 +59,7 @@ namespace GDCC
       void Program::process(Args const &args)
       {
          Args argsTemp = args;
+         argsTemp.optAffix = false;
          argsTemp.optFalse = false;
 
          while(argsTemp.argC)
@@ -91,6 +95,13 @@ namespace GDCC
                   argsTemp.drop(processShrt(argsTemp));
                }
             }
+            else if(argp[0] == '@')
+            {
+               if(processFile(argp + 1))
+                  argsTemp.drop();
+               else
+                  argsTemp.drop(processArgs(argsTemp));
+            }
             else
             {
                // *
@@ -120,6 +131,82 @@ namespace GDCC
             return processLoose->process(args);
          else
             return args.argC;
+      }
+
+      //
+      // Program::processFile
+      //
+      bool Program::processFile(char const *file)
+      {
+         std::filebuf fbuf;
+
+         // Open the file for reading.
+         if(!fbuf.open(file, std::ios_base::in))
+            return false;
+
+         // Skip any leading whitespace.
+         while(std::isspace(fbuf.sgetc())) fbuf.sbumpc();
+
+         std::vector<char>        buf;
+         std::vector<std::size_t> args{0};
+
+         // Read arguments.
+         while(fbuf.sgetc() != EOF)
+         {
+            // Arguments are whitespace terminated.
+            if(std::isspace(fbuf.sgetc()))
+            {
+               // Skip the entire whitespace sequence.
+               do fbuf.sbumpc(); while(std::isspace(fbuf.sgetc()));
+
+               // If not at end of stream...
+               if(fbuf.sgetc() != EOF)
+               {
+                  // Null terminate last argument.
+                  buf.push_back('\0');
+
+                  // Save index for next argument.
+                  args.emplace_back(buf.size());
+               }
+            }
+
+            // Quoted string.
+            else if(fbuf.sgetc() == '"' || fbuf.sgetc() == '\'')
+            {
+               auto c = fbuf.sbumpc();
+               while(fbuf.sgetc() != c && fbuf.sgetc() != EOF)
+               {
+                  if(fbuf.sgetc() == '\\')
+                     fbuf.sbumpc();
+
+                  buf.push_back(fbuf.sbumpc());
+               }
+
+               fbuf.sbumpc();
+            }
+
+            // Escaped character.
+            else if(fbuf.sgetc() == '\\')
+               buf.push_back((fbuf.sbumpc(), fbuf.sbumpc()));
+
+            // Normal character.
+            else
+               buf.push_back(fbuf.sbumpc());
+         }
+
+         // Null terminate last argument.
+         buf.push_back('\0');
+
+         // Create argv.
+         std::unique_ptr<char const*[]> argv{new char const *[args.size()]};
+         for(std::size_t i = 0, e = args.size(); i != e; ++i)
+            argv[i] = &buf[args[i]];
+
+         // Process arguments.
+         process(Args().setArgs(argv.get(), args.size()));
+
+         // If no exception occurred, then option file was successful!
+         return true;
       }
 
       //
@@ -164,7 +251,7 @@ namespace GDCC
             args.argV = optv;
 
             // Handle the option.
-            used = opt.process(args);
+            used = opt.process(args.setOptAffix());
 
             // An argument was explicitly attached to this option. If it went
             // unused, that's an error.
@@ -218,7 +305,7 @@ namespace GDCC
             if(opts[1])
             {
                optv[0] = opts + 1;
-               used = opt.process(args);
+               used = opt.process(args.setOptAffix());
 
                // used includes opts, so can return as-is.
                if(used)
@@ -227,7 +314,7 @@ namespace GDCC
             else
             {
                // +1 for opts.
-               used = opt.process(args.drop()) + 1;
+               used = opt.process(args.drop().setOptAffix(false)) + 1;
                break;
             }
          }

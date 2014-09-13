@@ -100,6 +100,7 @@ namespace GDCC
          void insertShrt(Base *opt);
 
          std::size_t processArgs(Args args);
+         bool        processFile(char const *file);
          std::size_t processLong(Args args);
          std::size_t processShrt(Args args);
 
