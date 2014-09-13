@@ -87,6 +87,13 @@ if(NOT DEFINED GDCC_INSTALL_API)
 endif()
 
 ##
+## GDCC_INSTALL_DOC
+##
+if(NOT DEFINED GDCC_INSTALL_DOC)
+   set(GDCC_INSTALL_DOC ON CACHE BOOL "Install documentation.")
+endif()
+
+##
 ## GDCC_INSTALL_EXE
 ##
 if(NOT DEFINED GDCC_INSTALL_EXE)
@@ -137,6 +144,10 @@ add_subdirectory(src)
 
 if(GDCC_INSTALL_API)
    install(DIRECTORY inc/ DESTINATION include/GDCC)
+endif()
+
+if(GDCC_INSTALL_DOC)
+   install(DIRECTORY doc/ DESTINATION share/gdcc/doc)
 endif()
 
 ## EOF
