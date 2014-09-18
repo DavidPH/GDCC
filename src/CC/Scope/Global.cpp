@@ -177,7 +177,11 @@ namespace GDCC
             fn->ctype = attr.callt;
             fn->linka = attr.linka;
             fn->retrn = attr.type->getBaseType();
+            fn->stype = attr.stype;
             fn->type  = attr.type;
+
+            fn->sflagClS = attr.sflagClS;
+            fn->sflagNet = attr.sflagNet;
 
             itr = globalFunc.emplace(glyph, fn).first;
          }

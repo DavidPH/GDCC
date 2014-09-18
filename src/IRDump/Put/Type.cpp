@@ -102,7 +102,11 @@ namespace GDCC
       void PutType_Point(std::ostream &out, IR::Type_Point const &type)
       {
          out << "Point("
-            << type.reprB << ", "
+            << type.reprB << ' ';
+
+         PutString(out, type.reprN);
+
+         out << ", "
             << type.reprS << ", "
             << type.reprW << ')';
       }

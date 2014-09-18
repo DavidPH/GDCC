@@ -38,7 +38,7 @@ namespace GDCC
          {
             *out << std::hex << "MgC_NTS" << '\0' << "CODEDEFS" << '\0' << '\0';
 
-            for(auto const &itr : prog->rangeObject())
+            for(auto &itr : prog->rangeObject())
             {
                if(itr.space.base == IR::AddrBase::LocArs && itr.defin)
                   putObj(itr);
@@ -168,18 +168,18 @@ namespace GDCC
          //
          // Info::putObj
          //
-         void Info::putObj(IR::Object const &obj)
+         void Info::putObj()
          {
-            *out << "data" << '\0' << obj.glyph << '\0' << obj.words << '\0';
+            *out << "data" << '\0' << obj->glyph << '\0' << obj->words << '\0';
 
-            if(obj.initi)
+            if(obj->initi)
             {
                *out << '(' << '\0';
 
-               if(obj.initi->canGetValue())
-                  putObjValue(obj.initi->getValue());
+               if(obj->initi->canGetValue())
+                  putObjValue(obj->initi->getValue());
                else
-                  putExp(obj.initi);
+                  putExp(obj->initi);
 
                *out << ')' << '\0';
             }

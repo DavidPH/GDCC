@@ -78,6 +78,7 @@ namespace GDCC
             {
             case TypeBase::Fixed: return Value_Fixed(e.vFixed, type.tFixed);
             case TypeBase::Float: return Value_Float(e.vFixed, type.tFloat);
+            case TypeBase::Point: return Value_Point(e.vFixed, type.tPoint);
             default: return Value_Empty();
             }
 
@@ -86,6 +87,13 @@ namespace GDCC
             {
             case TypeBase::Fixed: return Value_Fixed(e.vFloat, type.tFixed);
             case TypeBase::Float: return Value_Float(e.vFloat, type.tFloat);
+            default: return Value_Empty();
+            }
+
+         case TypeBase::Point:
+            switch(type.t)
+            {
+            case TypeBase::Point: return Value_Point(e.vPoint, type.tPoint);
             default: return Value_Empty();
             }
 

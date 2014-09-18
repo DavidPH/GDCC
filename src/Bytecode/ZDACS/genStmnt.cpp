@@ -224,6 +224,17 @@ namespace GDCC
                }
                break;
 
+            case IR::ArgBase::LocArs:
+               switch(stmnt->args[1].a)
+               {
+               case IR::ArgBase::Stk:
+                  numChunkCODE += IsExp0(stmnt->args[0].aLocArs.off) ? 12 : 24;
+                  break;
+
+               default: goto badcase;
+               }
+               break;
+
             case IR::ArgBase::LocReg:
                switch(stmnt->args[1].a)
                {
@@ -269,6 +280,10 @@ namespace GDCC
 
                case IR::ArgBase::Lit:
                   genStmnt_Move_W__Stk_Lit(stmnt->args[1].aLit.value);
+                  break;
+
+               case IR::ArgBase::LocArs:
+                  numChunkCODE += IsExp0(stmnt->args[0].aLocArs.off) ? 8 : 20;
                   break;
 
                case IR::ArgBase::GblArr:

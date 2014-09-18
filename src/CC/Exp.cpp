@@ -156,22 +156,24 @@ namespace GDCC
       AST::Exp::CRef ExpCreate_Cst(AST::Type const *typeL, AST::Exp const *e,
          Core::Origin pos)
       {
-         auto typeR = e->getType();
+         auto exp = ExpPromo_LValue(e, pos);
+
+         auto typeR = exp->getType();
 
          if(typeL->getTypeQual() == typeR->getTypeQual())
-            return static_cast<AST::Exp::CRef>(e);
+            return static_cast<AST::Exp::CRef>(exp);
 
          if(typeL->isTypeBoolean())
-            return ExpConvert_Bool(typeL, e, pos);
+            return ExpConvert_Bool(typeL, exp, pos);
 
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
-            return ExpConvert_Arith(typeL, e, pos);
+            return ExpConvert_Arith(typeL, exp, pos);
 
          if(typeL->isTypePointer() && typeR->isCTypeArith())
-            return ExpConvert_PtrArith(typeL, e, pos);
+            return ExpConvert_PtrArith(typeL, exp, pos);
 
          if(typeL->isTypePointer() && typeR->isTypePointer())
-            return ExpConvert_Pointer(typeL, e, pos);
+            return ExpConvert_Pointer(typeL, exp, pos);
 
          throw Core::ExceptStr(pos, "unsupported cast");
       }

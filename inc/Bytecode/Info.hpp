@@ -89,6 +89,8 @@ namespace GDCC
                  void genBlock(IR::Block &block);
          virtual void genFunc();
                  void genFunc(IR::Function &func);
+         virtual void genObj() {}
+                 void genObj(IR::Object &obj);
          virtual void genSpace() {}
                  void genSpace(IR::Space &space);
          virtual void genStmnt() {}
@@ -101,6 +103,8 @@ namespace GDCC
                  void preBlock(IR::Block &block);
          virtual void preFunc();
                  void preFunc(IR::Function &func);
+         virtual void preObj() {}
+                 void preObj(IR::Object &obj);
          virtual void preSpace() {}
                  void preSpace(IR::Space &space);
          virtual void preStmnt() {}
@@ -113,6 +117,8 @@ namespace GDCC
                  void putBlock(IR::Block &block);
          virtual void putFunc();
                  void putFunc(IR::Function &func);
+         virtual void putObj() {}
+                 void putObj(IR::Object &obj);
          virtual void putSpace() {}
                  void putSpace(IR::Space &space);
          virtual void putStmnt() {}
@@ -125,6 +131,8 @@ namespace GDCC
                  void trBlock(IR::Block &block);
          virtual void trFunc();
                  void trFunc(IR::Function &func);
+         virtual void trObj() {}
+                 void trObj(IR::Object &obj);
          virtual void trSpace() {}
                  void trSpace(IR::Space &space);
          virtual void trStmnt() {}
@@ -134,6 +142,7 @@ namespace GDCC
 
          IR::Block     *block;
          IR::Function  *func;
+         IR::Object    *obj;
          std::ostream  *out;
          IR::Program   *prog;
          IR::Space     *space;

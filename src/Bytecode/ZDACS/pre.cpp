@@ -34,6 +34,7 @@ namespace GDCC
             if(func->defin) switch(func->ctype)
             {
             case IR::CallType::LangACS:
+            case IR::CallType::LangC:
                prog->getGlyphData(func->glyph).type = IR::Type_Funct(func->ctype);
                break;
 

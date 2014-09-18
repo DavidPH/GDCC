@@ -164,16 +164,18 @@ namespace GDCC
       public:
          Type_Point() = default;
 
-         Type_Point(AddrBase reprB_, Core::FastU reprS_, Core::FastU reprW_) :
-            reprB{reprB_}, reprS{reprS_}, reprW{reprW_} {}
+         Type_Point(AddrBase reprB_, Core::String reprN_, Core::FastU reprS_,
+            Core::FastU reprW_) :
+            reprB{reprB_}, reprN{reprN_}, reprS{reprS_}, reprW{reprW_} {}
          explicit Type_Point(IArchive &in);
 
          bool operator == (Type_Point const &t) const
             {return reprB == t.reprB && reprS == t.reprS && reprW == t.reprW;}
 
-         AddrBase    reprB; // Base
-         Core::FastU reprS; // Size in Words
-         Core::FastU reprW; // Size of Word
+         AddrBase     reprB; // Base
+         Core::String reprN; // Name
+         Core::FastU  reprS; // Size in Words
+         Core::FastU  reprW; // Size of Word
       };
 
       //

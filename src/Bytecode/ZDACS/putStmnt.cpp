@@ -60,6 +60,16 @@ namespace GDCC
                   putExpWord(arg.aLit.value);
                break;
 
+            case IR::Code::Cjmp_Nil:
+               putWord(79); // ifnotgoto
+               putExpWord(stmnt->args[1].aLit.value);
+               break;
+
+            case IR::Code::Cjmp_Tru:
+               putWord(53); // ifgoto
+               putExpWord(stmnt->args[1].aLit.value);
+               break;
+
             case IR::Code::CmpI_EQ_W:
             case IR::Code::CmpU_EQ_W:
                putWord(19); // eq
@@ -323,6 +333,18 @@ namespace GDCC
                putStmnt_Move_W__Stk_Lit(stmnt->args[1].aLit.value);
                break;
 
+            case IR::ArgBase::LocArs:
+               if(!IsExp0(stmnt->args[1].aLocArs.off))
+               {
+                  putWord(3); // pushnumber
+                  putExpWord(stmnt->args[1].aLocArs.off);
+                  putWord(14); // add
+               }
+
+               putWord(235); // pushglobalarray
+               putWord(LocArsArray);
+               break;
+
             case IR::ArgBase::LocReg:
                putWord(28); // pushscriptvar
                putExpWord(stmnt->args[1].aLocReg.idx->aLit.value);
@@ -361,6 +383,19 @@ namespace GDCC
             case IR::ArgBase::GblReg:
                putWord(181); // assignglobalvar
                putExpWord(stmnt->args[0].aGblReg.idx->aLit.value);
+               break;
+
+            case IR::ArgBase::LocArs:
+               if(!IsExp0(stmnt->args[0].aLocArs.off))
+               {
+                  putWord(3); // pushnumber
+                  putExpWord(stmnt->args[0].aLocArs.off);
+                  putWord(14); // add
+               }
+
+               putWord(217); // swap
+               putWord(236); // assignglobalarray
+               putWord(LocArsArray);
                break;
 
             case IR::ArgBase::LocReg:
@@ -471,6 +506,7 @@ namespace GDCC
             switch(func->ctype)
             {
             case IR::CallType::LangACS:
+            case IR::CallType::LangC:
                if(stmnt->args.size() == 0)
                   putWord(205); // returnvoid
 

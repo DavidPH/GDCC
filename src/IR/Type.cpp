@@ -128,7 +128,7 @@ namespace GDCC
       // Type_Point constructor
       //
       Type_Point::Type_Point(IArchive &in) : reprB{GetIR(in, reprB)},
-         reprS{GetIR(in, reprS)}, reprW{GetIR(in, reprW)}
+         reprN{GetIR(in, reprN)}, reprS{GetIR(in, reprS)}, reprW{GetIR(in, reprW)}
       {
       }
 
@@ -213,7 +213,7 @@ namespace GDCC
       //
       OArchive &operator << (OArchive &out, Type_Point const &in)
       {
-         return out << in.reprB << in.reprS << in.reprW;
+         return out << in.reprB << in.reprN << in.reprS << in.reprW;
       }
 
       //

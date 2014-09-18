@@ -17,6 +17,8 @@
 #include "IR/Program.hpp"
 
 #include "Option/Bool.hpp"
+#include "Option/Exception.hpp"
+#include "Option/Int.hpp"
 
 #include <iostream>
 
@@ -24,6 +26,19 @@
 //----------------------------------------------------------------------------|
 // Options                                                                    |
 //
+
+//
+// --bc-zdacs-LocArs-array
+//
+static GDCC::Option::Int<GDCC::Core::FastU> LocArsArrayOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-zdacs-LocArs-array")
+      .setGroup("output")
+      .setDescS("Sets the global array used for LocArs."),
+
+   &GDCC::Bytecode::ZDACS::Info::LocArsArray
+};
 
 //
 // --bc-zdacs-chunk-STRE
@@ -63,6 +78,8 @@ namespace GDCC
       namespace ZDACS
       {
          IR::Type_Fixed const Info::TypeWord{32, 0, false, false};
+
+         Core::FastU Info::LocArsArray = 0;
 
          bool Info::UseChunkSTRE = false;
          bool Info::UseFakeACS0  = false;
@@ -131,6 +148,17 @@ namespace GDCC
             data.value = IR::ExpCreate_Glyph(
                IR::Glyph(prog, val),
                Core::Origin(Core::STRNULL, 0));
+         }
+
+         //
+         // Info::backGlyphObj
+         //
+         void Info::backGlyphObj(Core::String glyph, Core::FastU val)
+         {
+            auto &data = prog->getGlyphData(glyph);
+
+            data.value = IR::ExpCreate_Value(IR::Value_Point(val,
+               data.type.tPoint.reprB, data.type.tPoint.reprN, data.type.tPoint), {nullptr, 0});
          }
 
          //
@@ -218,6 +246,10 @@ namespace GDCC
             case IR::ArgBase::Nul: break;
             case IR::ArgBase::Stk: break;
 
+            case IR::ArgBase::LocArs:
+               CheckArg(*arg.aLocArs.idx, pos);
+               break;
+
             case IR::ArgBase::LocReg:
                CheckArgB(*arg.aLocReg.idx, IR::ArgBase::Lit, pos);
                break;
@@ -270,6 +302,9 @@ namespace GDCC
 
             case IR::ValueBase::Funct:
                return val.vFunct.value;
+
+            case IR::ValueBase::Point:
+               return val.vPoint.value;
 
             case IR::ValueBase::StrEn:
                return val.vFunct.value;

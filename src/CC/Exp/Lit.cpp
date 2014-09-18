@@ -94,6 +94,21 @@ namespace GDCC
                auto exp = IR::ExpCreate_Value(std::move(val), pos);
                return AST::ExpCreate_IRExp(exp, type, pos);
             }
+
+            // Pointer to string entry.
+            if(base->isTypeStrEnt())
+            {
+               IR::Value_StrEn val;
+               val.vtype = {};
+
+               if(Platform::IsZeroNull_StrEn())
+                  val.value = 0;
+               else
+                  val.value = static_cast<Core::FastU>(-1);
+
+               auto exp = IR::ExpCreate_Value(std::move(val), pos);
+               return AST::ExpCreate_IRExp(exp, type, pos);
+            }
          }
 
          throw Core::ExceptStr(pos, "invalid LitNul type");

@@ -161,6 +161,12 @@ namespace GDCC
             Type_Point const &vtype_) :
             vtype{vtype_}, value{value_}, addrB{addrB_}, addrN{addrN_} {}
 
+         // Converts pointer type.
+         Value_Point(Value_Point const &value, Type_Point const &vtype);
+
+         // Converts from fixed-point to pointer.
+         Value_Point(Value_Fixed const &value, Type_Point const &vtype);
+
          explicit Value_Point(IArchive &in);
 
          explicit operator bool () const;

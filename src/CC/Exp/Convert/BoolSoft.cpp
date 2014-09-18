@@ -20,6 +20,8 @@
 
 #include "IR/Block.hpp"
 
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -60,6 +62,21 @@ namespace GDCC
                return static_cast<AST::Exp::CRef>(e);
 
             return Exp_ConvertBoolSoft_Fixed::Create(TypeBoolSoft, e, pos);
+         }
+
+         if(type->isTypePointer())
+         {
+            if(Platform::IsZeroNull_Point(type->getBaseType()->getQualAddr().base))
+            {
+               if(type->getSizeWords() == 1)
+                  return static_cast<AST::Exp::CRef>(e);
+
+               throw Core::ExceptStr(pos, "soft bool multi-word pointer stub");
+            }
+            else
+            {
+               throw Core::ExceptStr(pos, "soft bool nonzero-null pointer stub");
+            }
          }
 
          throw Core::ExceptStr(pos, "soft bool stub");

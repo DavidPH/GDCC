@@ -43,6 +43,8 @@ namespace GDCC
 
             static IR::Type_Fixed const TypeWord;
 
+            static Core::FastU LocArsArray;
+
             static bool UseChunkSTRE;
             static bool UseFakeACS0;
 
@@ -87,12 +89,15 @@ namespace GDCC
 
             void backGlyphFunc(Core::String glyph, Core::FastU val, IR::CallType ctype);
             void backGlyphGlyph(Core::String glyph, Core::String val);
+            void backGlyphObj(Core::String glyph, Core::FastU val);
             void backGlyphStr(Core::String glyph, Core::FastU val);
             void backGlyphWord(Core::String glyph, Core::FastU val);
 
             virtual void gen();
 
             virtual void genFunc();
+
+            virtual void genObj();
 
             virtual void genSpace();
             void genSpaceIniti();

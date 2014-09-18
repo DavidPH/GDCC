@@ -193,6 +193,26 @@ Semantics:
   Setting language linkage in this way does not affect a function's default
   calling convention or otherwise alter its type.
 
+===========================================================
+Script
+===========================================================
+
+Syntax:
+  attribute-script:
+    attribute-script-name ( string-literal )
+
+  attribute-script-name:
+    <script>
+    <__script>
+
+Contraints:
+  Shall only be applied to functions and function types.
+
+Semantics:
+  Sets the affected function's script type or flags. Supported types are:
+  "Death", "Disconnect", "Enter", "Lightning", "Open", "Respawn", "Return",
+  "Unloading". Supported flags are: "Clientside", "Net".
+
 ===============================================================================
 Expressions
 ===============================================================================

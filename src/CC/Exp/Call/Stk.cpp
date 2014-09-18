@@ -42,9 +42,14 @@ namespace GDCC
             callWords += arg->getType()->getSizeWords();
          }
 
-         std::size_t irArgc = callWords + 1;
+         std::size_t irArgc;
          if(callType != IR::CallType::AsmFunc)
-            ++irArgc;
+            irArgc = callWords + 2;
+         else
+         {
+            // TODO: const params
+            irArgc = 1;
+         }
 
          // Prepare IR args, preloaded with Stk for the call args.
          Core::Array<IR::Arg> irArgs{irArgc, IR::Arg_Stk()};

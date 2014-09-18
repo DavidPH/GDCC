@@ -182,7 +182,10 @@ namespace GDCC
       {
          auto arg = exp->expL->getArgDup();
 
-         // As a fallback, just evaluate the pointer and store in a temporary.
+         // Map from generic address space for codegen.
+         if(arg.type->getQualAddr().base == IR::AddrBase::Gen)
+            arg.type = arg.type->getTypeQual(IR::GetAddrGen());
+
          switch(arg.type->getQualAddr().base)
          {
             #define GDCC_IR_AddrList(addr) \

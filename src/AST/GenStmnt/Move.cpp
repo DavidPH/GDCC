@@ -206,8 +206,10 @@ namespace GDCC
       // GenStmnt_MovePart
       //
       void GenStmnt_MovePart(Exp const *exp, GenStmntCtx const &ctx,
-         Arg const &arg, bool get, bool set)
+         Arg const &arg_, bool get, bool set)
       {
+         auto arg = arg_;
+
          // Special handling of void arg.
          if(arg.type->isTypeVoid())
          {
@@ -217,6 +219,10 @@ namespace GDCC
             // A void dst is a no-op.
             if(set) return;
          }
+
+         // Map from generic address space for codegen.
+         if(arg.type->getQualAddr().base == IR::AddrBase::Gen)
+            arg.type = arg.type->getTypeQual(IR::GetAddrGen());
 
          switch(arg.type->getQualAddr().base)
          {

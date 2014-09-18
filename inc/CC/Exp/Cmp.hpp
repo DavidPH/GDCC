@@ -51,6 +51,10 @@ namespace GDCC
          else if(t->isCTypeInteg())
             code = AST::ExpCode_ArithInteg<Codes>(t);
 
+         // Pointer types.
+         else if(t->isTypePointer())
+            code = AST::ExpCode_ArithPoint<Codes>(t);
+
          // ???
          else
             throw Core::ExceptStr(pos, "unsupported arithmetic type");

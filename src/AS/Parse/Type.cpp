@@ -146,13 +146,14 @@ namespace GDCC
 
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
          auto addrB = GetAddrBase(ctx);
+         auto addrN = GetString(ctx);
          TokenDrop(ctx, Core::TOK_Comma, "','");
          auto addrS = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_Comma, "','");
          auto addrW = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-         return IR::Type_Point(addrB, addrS, addrW);
+         return IR::Type_Point(addrB, addrN, addrS, addrW);
       }
 
       //

@@ -41,7 +41,8 @@ namespace GDCC
             virtual void putFunc();
             using InfoBase::putFunc;
 
-            void putObj(IR::Object const &obj);
+            virtual void putObj();
+            using InfoBase::putObj;
             void putObjValue(IR::Value const &val);
             void putObjValue_Multi(IR::Value_Multi const &val);
 

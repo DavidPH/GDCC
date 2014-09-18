@@ -18,6 +18,8 @@
 #include "IR/OArchive.hpp"
 #include "IR/Program.hpp"
 
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -56,6 +58,9 @@ namespace GDCC
       //
       void Object::allocValue(Program &prog)
       {
+         if(!value && Platform::IsZeroNull_Point(space.base))
+            value = 1;
+
          for(;; ++value)
          {
             auto lo = value;

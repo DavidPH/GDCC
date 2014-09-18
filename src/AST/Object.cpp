@@ -69,6 +69,10 @@ namespace GDCC
          obj.alias = alias;
          obj.defin = defin;
 
+         // Map generic address space to implementation.
+         if(obj.space.base == IR::AddrBase::Gen)
+            obj.space = IR::GetAddrGen();
+
          if(init && init->isIRExp())
          {
             obj.initi = init->getIRExp();

@@ -608,7 +608,7 @@ Syntax:
     <Multi> ( type-list(opt) )
 
   type-Point:
-    <Point> ( address-specifier , expression , expression )
+    <Point> ( address-specifier string , expression , expression )
 
   type-StrEn:
     <StrEn> ( )

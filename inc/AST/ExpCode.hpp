@@ -71,6 +71,19 @@ namespace GDCC
          default: return IR::Code::None;
          }
       }
+
+      //
+      // ExpCode_ArithPoint
+      //
+      template<typename Codes>
+      IR::Code ExpCode_ArithPoint(Type const *t)
+      {
+         switch(t->getSizeWords())
+         {
+         case  1: return Codes::CodeU_W;
+         default: return IR::Code::None;
+         }
+      }
    }
 }
 

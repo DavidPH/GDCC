@@ -36,7 +36,7 @@ namespace GDCC
          auto &expL = std::get<1>(promo);
          auto &expR = std::get<2>(promo);
 
-         if(type->isCTypeArith())
+         if(type->isCTypeArith() || type->isTypePointer())
             return ExpCreate_CmpArith<AST::Exp_CmpEQ, IR::CodeSet_CmpEQ>(
                TypeIntegPrS, type, expL, expR, pos);
 
@@ -54,7 +54,7 @@ namespace GDCC
          auto &expL = std::get<1>(promo);
          auto &expR = std::get<2>(promo);
 
-         if(type->isCTypeArith())
+         if(type->isCTypeArith() || type->isTypePointer())
             return ExpCreate_CmpArith<AST::Exp_CmpGE, IR::CodeSet_CmpGE>(
                TypeIntegPrS, type, expL, expR, pos);
 
@@ -72,7 +72,7 @@ namespace GDCC
          auto &expL = std::get<1>(promo);
          auto &expR = std::get<2>(promo);
 
-         if(type->isCTypeArith())
+         if(type->isCTypeArith() || type->isTypePointer())
             return ExpCreate_CmpArith<AST::Exp_CmpGT, IR::CodeSet_CmpGT>(
                TypeIntegPrS, type, expL, expR, pos);
 
@@ -90,7 +90,7 @@ namespace GDCC
          auto &expL = std::get<1>(promo);
          auto &expR = std::get<2>(promo);
 
-         if(type->isCTypeArith())
+         if(type->isCTypeArith() || type->isTypePointer())
             return ExpCreate_CmpArith<AST::Exp_CmpLE, IR::CodeSet_CmpLE>(
                TypeIntegPrS, type, expL, expR, pos);
 
@@ -108,7 +108,7 @@ namespace GDCC
          auto &expL = std::get<1>(promo);
          auto &expR = std::get<2>(promo);
 
-         if(type->isCTypeArith())
+         if(type->isCTypeArith() || type->isTypePointer())
             return ExpCreate_CmpArith<AST::Exp_CmpLT, IR::CodeSet_CmpLT>(
                TypeIntegPrS, type, expL, expR, pos);
 
@@ -126,7 +126,7 @@ namespace GDCC
          auto &expL = std::get<1>(promo);
          auto &expR = std::get<2>(promo);
 
-         if(type->isCTypeArith())
+         if(type->isCTypeArith() || type->isTypePointer())
             return ExpCreate_CmpArith<AST::Exp_CmpNE, IR::CodeSet_CmpNE>(
                TypeIntegPrS, type, expL, expR, pos);
 

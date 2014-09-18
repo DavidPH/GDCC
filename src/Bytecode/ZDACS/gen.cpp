@@ -53,9 +53,10 @@ namespace GDCC
 
             genBlock(func->block);
 
-            if(func->defin) switch(func->ctype)
+            switch(func->ctype)
             {
             case IR::CallType::LangACS:
+            case IR::CallType::LangC:
                if(func->alloc)
                   func->allocValue(*prog, FuncTypes);
 
@@ -70,6 +71,8 @@ namespace GDCC
                break;
 
             case IR::CallType::ScriptI:
+               if(!func->defin) break;
+
                if(func->alloc)
                   func->allocValue(*prog, IR::CallType::ScriptI);
 
@@ -83,6 +86,8 @@ namespace GDCC
                break;
 
             case IR::CallType::ScriptS:
+               if(!func->defin) break;
+
                if(func->alloc)
                   func->allocValue(*prog, IR::CallType::ScriptS);
 
@@ -99,8 +104,35 @@ namespace GDCC
 
                break;
 
-            default: break;
+            default:
+               // Back glyph if already allocated.
+               if(!func->alloc)
+                  backGlyphFunc(func->glyph, func->valueInt, func->ctype);
+
+               break;
             }
+         }
+
+         //
+         // Info::genObj
+         //
+         void Info::genObj()
+         {
+            switch(obj->space.base)
+            {
+            case IR::AddrBase::GblReg:
+            case IR::AddrBase::LocArs:
+            case IR::AddrBase::WldReg:
+               if(obj->alloc)
+                  obj->allocValue(*prog);
+               break;
+
+            default:
+               break;
+            }
+
+            if(!obj->alloc)
+               backGlyphObj(obj->glyph, obj->value);
          }
 
          //

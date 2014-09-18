@@ -63,8 +63,14 @@ namespace GDCC
          if(base->isTypeStrEnt())
             return IR::Type_StrEn();
 
-         return IR::Type_Point(base->getQualAddr().base, base->getSizePoint(),
-            base->getSizeShift());
+         // Special case for pointer to void, which has no SizePoint.
+         // Should this actually be a general try-catch thing?
+         if(base->isTypeVoid())
+            return IR::Type_Point(base->getQualAddr().base,
+               base->getQualAddr().name, 0, base->getSizeShift());
+
+         return IR::Type_Point(base->getQualAddr().base, base->getQualAddr().name,
+            base->getSizePoint(), base->getSizeShift());
       }
 
       //

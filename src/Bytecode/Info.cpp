@@ -60,11 +60,9 @@ namespace GDCC
          genSpace(prog->getSpaceMapReg());
          genSpace(prog->getSpaceWldReg());
 
-         for(auto &itr : prog->rangeFunction())
-            genFunc(itr);
-
-         for(auto &itr : prog->rangeStrEnt())
-            genStr(itr);
+         for(auto &itr : prog->rangeFunction()) genFunc(itr);
+         for(auto &itr : prog->rangeObject())   genObj(itr);
+         for(auto &itr : prog->rangeStrEnt())   genStr(itr);
       }
 
       //
@@ -109,6 +107,14 @@ namespace GDCC
       }
 
       //
+      // Info::genObj
+      //
+      void Info::genObj(IR::Object &obj_)
+      {
+         TryPointer(genObj, obj);
+      }
+
+      //
       // Info::genSpace
       //
       void Info::genSpace(IR::Space &space_)
@@ -146,11 +152,9 @@ namespace GDCC
          preSpace(prog->getSpaceMapReg());
          preSpace(prog->getSpaceWldReg());
 
-         for(auto &itr : prog->rangeFunction())
-            preFunc(itr);
-
-         for(auto &itr : prog->rangeStrEnt())
-            preStr(itr);
+         for(auto &itr : prog->rangeFunction()) preFunc(itr);
+         for(auto &itr : prog->rangeObject())   preObj(itr);
+         for(auto &itr : prog->rangeStrEnt())   preStr(itr);
       }
 
       //
@@ -192,6 +196,14 @@ namespace GDCC
       void Info::preFunc(IR::Function &func_)
       {
          TryPointer(preFunc, func);
+      }
+
+      //
+      // Info::preObj
+      //
+      void Info::preObj(IR::Object &obj_)
+      {
+         TryPointer(preObj, obj);
       }
 
       //
@@ -275,6 +287,14 @@ namespace GDCC
       }
 
       //
+      // Info::putObj
+      //
+      void Info::putObj(IR::Object &obj_)
+      {
+         TryPointer(putObj, obj);
+      }
+
+      //
       // Info::putSpace
       //
       void Info::putSpace(IR::Space &space_)
@@ -312,11 +332,9 @@ namespace GDCC
          trSpace(prog->getSpaceMapReg());
          trSpace(prog->getSpaceWldReg());
 
-         for(auto &itr : prog->rangeFunction())
-            trFunc(itr);
-
-         for(auto &itr : prog->rangeStrEnt())
-            trStr(itr);
+         for(auto &itr : prog->rangeFunction()) trFunc(itr);
+         for(auto &itr : prog->rangeObject())   trObj(itr);
+         for(auto &itr : prog->rangeStrEnt())   trStr(itr);
       }
 
       //
@@ -369,6 +387,14 @@ namespace GDCC
       void Info::trFunc(IR::Function &func_)
       {
          TryPointer(trFunc, func);
+      }
+
+      //
+      // Info::trObj
+      //
+      void Info::trObj(IR::Object &obj_)
+      {
+         TryPointer(trObj, obj);
       }
 
       //

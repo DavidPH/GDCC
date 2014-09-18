@@ -232,7 +232,8 @@ namespace GDCC
             std::vector<AST::Attribute> params;
             AST::TypeSet::CPtr types;
 
-            attr.callt = IR::CallType::LangC;
+            if(attr.callt == IR::CallType::None)
+               attr.callt = IR::CallType::LangC;
 
             // )
             if(ctx.in.drop(Core::TOK_ParenC))
@@ -248,9 +249,10 @@ namespace GDCC
                bool varia = false;
 
                // Special case for (void).
-               if(ctx.in.drop(Core::TOK_KeyWrd, Core::STR_void))
+               if(ctx.in.peek(Core::TOK_KeyWrd, Core::STR_void, Core::TOK_ParenC))
                {
                   // Just drop the token and move on.
+                  ctx.in.get();
                }
 
                // parameter-type-list

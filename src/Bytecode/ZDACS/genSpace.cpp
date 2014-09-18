@@ -88,18 +88,12 @@ namespace GDCC
                      obj.allocValue(*prog);
 
                   // Back address glyph.
-                  backGlyphWord(obj.glyph, obj.value);
+                  backGlyphObj(obj.glyph, obj.value);
                }
             };
 
             switch(space->space.base)
             {
-            case IR::AddrBase::GblReg:
-            case IR::AddrBase::LocArs:
-            case IR::AddrBase::WldReg:
-               genSpaceAlloc();
-               break;
-
             case IR::AddrBase::MapReg:
                for(auto &obj : prog->rangeObject())
                {
@@ -110,7 +104,7 @@ namespace GDCC
                      allocMapReg(obj);
 
                   // Back address glyph.
-                  backGlyphWord(obj.glyph, obj.value);
+                  backGlyphObj(obj.glyph, obj.value);
 
                   if(!obj.defin)
                      ++numChunkMIMP;

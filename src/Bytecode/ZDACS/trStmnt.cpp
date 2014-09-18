@@ -69,6 +69,13 @@ namespace GDCC
                   CheckArgB(stmnt, n, IR::ArgBase::Lit);
                break;
 
+            case IR::Code::Cjmp_Nil:
+            case IR::Code::Cjmp_Tru:
+               CheckArgC(stmnt, 2);
+               CheckArgB(stmnt, 0, IR::ArgBase::Stk);
+               CheckArgB(stmnt, 1, IR::ArgBase::Lit);
+               break;
+
             case IR::Code::CmpI_EQ_W:
             case IR::Code::CmpI_GE_W:
             case IR::Code::CmpI_GT_W:
@@ -238,6 +245,17 @@ namespace GDCC
                }
                break;
 
+            case IR::ArgBase::LocArs:
+               switch(stmnt->args[1].a)
+               {
+               case IR::ArgBase::Stk:
+                  CheckArgB(*stmnt->args[0].aLocArs.idx, IR::ArgBase::Stk, stmnt->pos);
+                  break;
+
+               default: goto badcase;
+               }
+               break;
+
             case IR::ArgBase::LocReg:
                switch(stmnt->args[1].a)
                {
@@ -282,6 +300,10 @@ namespace GDCC
                case IR::ArgBase::WldReg: break;
 
                case IR::ArgBase::Lit:    break;
+
+               case IR::ArgBase::LocArs:
+                  CheckArgB(*stmnt->args[1].aLocArs.idx, IR::ArgBase::Stk, stmnt->pos);
+                  break;
 
                case IR::ArgBase::GblArr:
                   trStmnt_Move_W__Stk_Arr(stmnt->args[1].aGblArr);
@@ -355,6 +377,7 @@ namespace GDCC
             switch(func->ctype)
             {
             case IR::CallType::LangACS:
+            case IR::CallType::LangC:
                if(argc != 0 && argc != 1)
                {
                   std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';

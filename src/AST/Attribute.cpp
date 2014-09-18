@@ -19,6 +19,7 @@
 #include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+#include "IR/ScriptType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -41,6 +42,7 @@ namespace GDCC
          namePos{Core::STRNULL, 0},
          param  {},
          space  {IR::AddrBase::Gen, Core::STRNULL},
+         stype  {IR::ScriptType::None},
          type   {nullptr},
 
          funcInline  {false},
@@ -48,6 +50,9 @@ namespace GDCC
          funcNoReturn{false},
 
          isTypedef{false},
+
+         sflagClS{false},
+         sflagNet{false},
 
          storeAuto  {false},
          storeExt   {false},

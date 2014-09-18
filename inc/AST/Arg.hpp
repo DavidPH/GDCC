@@ -51,8 +51,8 @@ namespace GDCC
          Arg(Type const *type, IR::AddrBase base, Exp const *data = nullptr);
          ~Arg();
 
-         TypeCRef const type;
-         ExpCPtr  const data;
+         TypeCRef type;
+         ExpCPtr  data;
       };
    }
 }

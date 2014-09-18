@@ -54,6 +54,7 @@
 #include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+#include "IR/ScriptType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -179,6 +180,48 @@ static void ParseAttr_extern(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
       throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
 }
 
+//
+// ParserAttr_script
+//
+static void ParseAttr_script(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
+   GDCC::AST::Attribute &attr)
+{
+   using namespace GDCC;
+
+   // (
+   if(!ctx.in.drop(Core::TOK_ParenO))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+   // string-literal
+   if(!ctx.in.peek().isTokString())
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
+
+   switch(ctx.in.get().str)
+   {
+      // Script types.
+   case Core::STR_None:       attr.stype = IR::ScriptType::None;       break;
+   case Core::STR_Death:      attr.stype = IR::ScriptType::Death;      break;
+   case Core::STR_Disconnect: attr.stype = IR::ScriptType::Disconnect; break;
+   case Core::STR_Enter:      attr.stype = IR::ScriptType::Enter;      break;
+   case Core::STR_Lightning:  attr.stype = IR::ScriptType::Lightning;  break;
+   case Core::STR_Open:       attr.stype = IR::ScriptType::Open;       break;
+   case Core::STR_Respawn:    attr.stype = IR::ScriptType::Respawn;    break;
+   case Core::STR_Return:     attr.stype = IR::ScriptType::Return;     break;
+   case Core::STR_Unloading:  attr.stype = IR::ScriptType::Unloading;  break;
+
+      // Script flags.
+   case Core::STR_Clientside: attr.sflagClS = true; break;
+   case Core::STR_Net:        attr.sflagNet = true; break;
+
+   default:
+      throw Core::ExceptStr(ctx.in.reget().pos, "invalid script type/flag");
+   }
+
+   // )
+   if(!ctx.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+}
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -247,6 +290,9 @@ namespace GDCC
 
          case Core::STR_extern:
             ParseAttr_extern(ctx, scope, attr); break;
+
+         case Core::STR_script: case Core::STR___script:
+            ParseAttr_script(ctx, scope, attr); break;
 
          default:
             // Skip unknown attribute.

@@ -35,6 +35,7 @@ namespace GDCC
    {
       enum class CallType;
       enum class Linkage;
+      enum class ScriptType;
 
       class Exp;
    }
@@ -64,6 +65,7 @@ namespace GDCC
          Core::Origin                    namePos;
          Core::Array<Attribute>          param;
          IR::AddrSpace                   space;
+         IR::ScriptType                  stype;
          Core::CounterPtr<Type const>    type;
 
          bool funcInline   : 1;
@@ -71,6 +73,9 @@ namespace GDCC
          bool funcNoReturn : 1;
 
          bool isTypedef : 1;
+
+         bool sflagClS : 1;
+         bool sflagNet : 1;
 
          bool storeAuto   : 1;
          bool storeExt    : 1;
