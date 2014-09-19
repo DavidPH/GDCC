@@ -177,8 +177,10 @@ namespace GDCC
             void putStmnt_Cspe();
             void putStmnt_Move_W();
             void putStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr, Core::FastU i);
+            void putStmnt_Move_W__Reg_Stk(IR::ArgPtr1 const &reg, Core::FastU i);
             void putStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr, Core::FastU i);
             void putStmnt_Move_W__Stk_Lit(IR::Exp const *exp);
+            void putStmnt_Move_W__Stk_Reg(IR::ArgPtr1 const &reg, Core::FastU i);
             void putStmnt_Retn();
 
             void putString(Core::String str);
@@ -194,8 +196,7 @@ namespace GDCC
             void trStmnt_Call();
             void trStmnt_Cspe();
             void trStmnt_Move_W();
-            void trStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr);
-            void trStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr);
+            void trStmnt_Move_W__Stk(IR::Arg &idx);
             void trStmnt_Retn();
 
             std::unordered_map<IR::Space const *, InitData> init;

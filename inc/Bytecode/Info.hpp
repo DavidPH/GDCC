@@ -34,6 +34,7 @@ namespace GDCC
       enum class CallType;
 
       class Arg;
+      class ArgPtr1;
       class ArgPtr2;
       class Block;
       class Exp;

@@ -56,6 +56,7 @@ namespace GDCC
 
          // addLabel
          Block &addLabel(Core::String lab) {labs.push_back(lab); return *this;}
+         Block &addLabel(Core::Array<Core::String> &&labs);
 
          // addStatement
          Block &addStatement(Statement *link, Code code);

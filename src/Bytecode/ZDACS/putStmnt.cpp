@@ -118,6 +118,11 @@ namespace GDCC
                putWord(330); // negatebinary
                break;
 
+            case IR::Code::Jump:
+               putWord(52); // goto
+               putExpWord(stmnt->args[0].aLit.value);
+               break;
+
             case IR::Code::ModI_W:
                putWord(18); // modulus
                break;
@@ -127,6 +132,7 @@ namespace GDCC
                break;
 
             case IR::Code::MulI_W:
+            case IR::Code::MulU_W:
                putWord(16); // multiply
                break;
 
@@ -191,7 +197,7 @@ namespace GDCC
                if(ret == 0)
                   putWord(204); // calldiscard
 
-               else if(stmnt->args.size() == 1)
+               else if(ret == 1)
                   putWord(203); // call
 
                else
@@ -325,8 +331,7 @@ namespace GDCC
                break;
 
             case IR::ArgBase::GblReg:
-               putWord(182); // pushglobalvar
-               putExpWord(stmnt->args[1].aGblReg.idx->aLit.value);
+               putStmnt_Move_W__Stk_Reg(stmnt->args[1].aGblReg, 182); // pushglobalvar
                break;
 
             case IR::ArgBase::Lit:
@@ -346,8 +351,7 @@ namespace GDCC
                break;
 
             case IR::ArgBase::LocReg:
-               putWord(28); // pushscriptvar
-               putExpWord(stmnt->args[1].aLocReg.idx->aLit.value);
+               putStmnt_Move_W__Stk_Reg(stmnt->args[1].aLocReg, 28); // pushscriptvar
                break;
 
             case IR::ArgBase::MapArr:
@@ -355,8 +359,7 @@ namespace GDCC
                break;
 
             case IR::ArgBase::MapReg:
-               putWord(29); // pushmapvar
-               putExpWord(stmnt->args[1].aMapReg.idx->aLit.value);
+               putStmnt_Move_W__Stk_Reg(stmnt->args[1].aMapReg, 29); // pushmapvar
                break;
 
             case IR::ArgBase::WldArr:
@@ -364,8 +367,7 @@ namespace GDCC
                break;
 
             case IR::ArgBase::WldReg:
-               putWord(30); // pushworldvar
-               putExpWord(stmnt->args[1].aWldReg.idx->aLit.value);
+               putStmnt_Move_W__Stk_Reg(stmnt->args[1].aWldReg, 30); // pushworldvar
                break;
 
             default:
@@ -377,12 +379,11 @@ namespace GDCC
             else if(stmnt->args[1].a == IR::ArgBase::Stk) switch(stmnt->args[0].a)
             {
             case IR::ArgBase::GblArr:
-               putStmnt_Move_W__Arr_Stk(stmnt->args[1].aGblArr, 236); // assignglobalarray
+               putStmnt_Move_W__Arr_Stk(stmnt->args[0].aGblArr, 236); // assignglobalarray
                break;
 
             case IR::ArgBase::GblReg:
-               putWord(181); // assignglobalvar
-               putExpWord(stmnt->args[0].aGblReg.idx->aLit.value);
+               putStmnt_Move_W__Reg_Stk(stmnt->args[0].aGblReg, 181); // assignglobalvar
                break;
 
             case IR::ArgBase::LocArs:
@@ -399,17 +400,15 @@ namespace GDCC
                break;
 
             case IR::ArgBase::LocReg:
-               putWord(25); // assignscriptvar
-               putExpWord(stmnt->args[0].aLocReg.idx->aLit.value);
+               putStmnt_Move_W__Reg_Stk(stmnt->args[0].aLocReg, 25); // assignscriptvar
                break;
 
             case IR::ArgBase::MapArr:
-               putStmnt_Move_W__Arr_Stk(stmnt->args[1].aMapArr, 208); // assignmaparray
+               putStmnt_Move_W__Arr_Stk(stmnt->args[0].aMapArr, 208); // assignmaparray
                break;
 
             case IR::ArgBase::MapReg:
-               putWord(26); // assignmapvar
-               putExpWord(stmnt->args[0].aMapReg.idx->aLit.value);
+               putStmnt_Move_W__Reg_Stk(stmnt->args[0].aMapReg, 26); // assignmapvar
                break;
 
             case IR::ArgBase::Nul:
@@ -417,12 +416,11 @@ namespace GDCC
                break;
 
             case IR::ArgBase::WldArr:
-               putStmnt_Move_W__Arr_Stk(stmnt->args[1].aWldArr, 227); // assignworldarray
+               putStmnt_Move_W__Arr_Stk(stmnt->args[0].aWldArr, 227); // assignworldarray
                break;
 
             case IR::ArgBase::WldReg:
-               putWord(27); // assignworldvar
-               putExpWord(stmnt->args[0].aWldReg.idx->aLit.value);
+               putStmnt_Move_W__Reg_Stk(stmnt->args[0].aWldReg, 27); // assignworldvar
                break;
 
             default:
@@ -453,6 +451,19 @@ namespace GDCC
             putWord(217); // swap
             putWord(i);
             putExpWord(arr.arr->aLit.value);
+         }
+
+         //
+         // Info::putStmnt_Move_W__Reg_Stk
+         //
+         void Info::putStmnt_Move_W__Reg_Stk(IR::ArgPtr1 const &reg, Core::FastU i)
+         {
+            putWord(i);
+
+            if(reg.off)
+               putExpWord(IR::ExpCreate_Add(reg.idx->aLit.value, reg.off));
+            else
+               putExpWord(reg.idx->aLit.value);
          }
 
          //
@@ -496,6 +507,19 @@ namespace GDCC
                putWord(ResolveValue(val));
                break;
             }
+         }
+
+         //
+         // Info::putStmnt_Move_W__Stk_Reg
+         //
+         void Info::putStmnt_Move_W__Stk_Reg(IR::ArgPtr1 const &reg, Core::FastU i)
+         {
+            putWord(i);
+
+            if(reg.off)
+               putExpWord(IR::ExpCreate_Add(reg.idx->aLit.value, reg.off));
+            else
+               putExpWord(reg.idx->aLit.value);
          }
 
          //

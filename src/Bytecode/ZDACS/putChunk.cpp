@@ -264,7 +264,8 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(itr.ctype != IR::CallType::LangACS)
+               if(itr.ctype != IR::CallType::LangACS &&
+                  itr.ctype != IR::CallType::LangC)
                   continue;
 
                funcs[itr.valueInt] = &itr;

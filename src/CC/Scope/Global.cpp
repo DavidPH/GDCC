@@ -176,6 +176,7 @@ namespace GDCC
 
             fn->ctype = attr.callt;
             fn->linka = attr.linka;
+            fn->param = attr.type->getCallWords();
             fn->retrn = attr.type->getBaseType();
             fn->stype = attr.stype;
             fn->type  = attr.type;

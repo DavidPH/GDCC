@@ -46,6 +46,7 @@ namespace GDCC
             case IR::Code::DivX_W:
             case IR::Code::ModI_W:
             case IR::Code::MulI_W:
+            case IR::Code::MulU_W:
             case IR::Code::MulX_W:
             case IR::Code::OrIU_W:
             case IR::Code::OrXU_W:
@@ -108,6 +109,11 @@ namespace GDCC
                CheckArgC(stmnt, 2);
                CheckArgB(stmnt, 0, IR::ArgBase::Stk);
                CheckArgB(stmnt, 1, IR::ArgBase::Stk);
+               break;
+
+            case IR::Code::Jump:
+               CheckArgC(stmnt, 1);
+               CheckArgB(stmnt, 0, IR::ArgBase::Lit);
                break;
 
             case IR::Code::Move_W:
@@ -230,7 +236,7 @@ namespace GDCC
                switch(stmnt->args[1].a)
                {
                case IR::ArgBase::Stk:
-                  trStmnt_Move_W__Arr_Stk(stmnt->args[0].aGblArr);
+                  trStmnt_Move_W__Stk(*stmnt->args[0].aGblArr.idx);
                   break;
 
                default: goto badcase;
@@ -249,7 +255,7 @@ namespace GDCC
                switch(stmnt->args[1].a)
                {
                case IR::ArgBase::Stk:
-                  CheckArgB(*stmnt->args[0].aLocArs.idx, IR::ArgBase::Stk, stmnt->pos);
+                  trStmnt_Move_W__Stk(*stmnt->args[0].aLocArs.idx);
                   break;
 
                default: goto badcase;
@@ -268,7 +274,7 @@ namespace GDCC
                switch(stmnt->args[1].a)
                {
                case IR::ArgBase::Stk:
-                  trStmnt_Move_W__Arr_Stk(stmnt->args[0].aMapArr);
+                  trStmnt_Move_W__Stk(*stmnt->args[0].aMapArr.idx);
                   break;
 
                default: goto badcase;
@@ -302,19 +308,19 @@ namespace GDCC
                case IR::ArgBase::Lit:    break;
 
                case IR::ArgBase::LocArs:
-                  CheckArgB(*stmnt->args[1].aLocArs.idx, IR::ArgBase::Stk, stmnt->pos);
+                  trStmnt_Move_W__Stk(*stmnt->args[1].aLocArs.idx);
                   break;
 
                case IR::ArgBase::GblArr:
-                  trStmnt_Move_W__Stk_Arr(stmnt->args[1].aGblArr);
+                  trStmnt_Move_W__Stk(*stmnt->args[1].aGblArr.idx);
                   break;
 
                case IR::ArgBase::MapArr:
-                  trStmnt_Move_W__Stk_Arr(stmnt->args[1].aMapArr);
+                  trStmnt_Move_W__Stk(*stmnt->args[1].aMapArr.idx);
                   break;
 
                case IR::ArgBase::WldArr:
-                  trStmnt_Move_W__Stk_Arr(stmnt->args[1].aWldArr);
+                  trStmnt_Move_W__Stk(*stmnt->args[1].aWldArr.idx);
                   break;
 
                default: goto badcase;
@@ -325,7 +331,7 @@ namespace GDCC
                switch(stmnt->args[1].a)
                {
                case IR::ArgBase::Stk:
-                  trStmnt_Move_W__Arr_Stk(stmnt->args[0].aWldArr);
+                  trStmnt_Move_W__Stk(*stmnt->args[0].aWldArr.idx);
                   break;
 
                default: goto badcase;
@@ -349,19 +355,22 @@ namespace GDCC
          }
 
          //
-         // Info::trStmnt_Move_W__Arr_Stk
+         // Info::trStmnt_Move_W__Stk
          //
-         void Info::trStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr)
+         // If idx is not Stk, makes it one by adding a new Move_W statement.
+         //
+         void Info::trStmnt_Move_W__Stk(IR::Arg &idx)
          {
-            CheckArgB(*arr.idx, IR::ArgBase::Stk, stmnt->pos);
-         }
+            if(idx.a == IR::ArgBase::Stk) return;
 
-         //
-         // Info::trStmnt_Move_W__Stk_Arr
-         //
-         void Info::trStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr)
-         {
-            CheckArgB(*arr.idx, IR::ArgBase::Stk, stmnt->pos);
+            block->addLabel(std::move(stmnt->labs));
+            block->addStatementArgs(stmnt, IR::Code::Move_W,
+               IR::Arg_Stk(), std::move(idx));
+
+            // Reset iterator for further translation.
+            stmnt = stmnt->prev->prev;
+
+            idx = IR::Arg_Stk();
          }
 
          //

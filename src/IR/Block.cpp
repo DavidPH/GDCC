@@ -28,6 +28,16 @@ namespace GDCC
    namespace IR
    {
       //
+      // Block::addLabel
+      //
+      Block &Block::addLabel(Core::Array<Core::String> &&lab)
+      {
+         for(auto l : lab) labs.push_back(l);
+         lab = {}; // Explicitly clear lab.
+         return *this;
+      }
+
+      //
       // Block::addStatement
       //
       Block &Block::addStatement(Statement *link, Code code)

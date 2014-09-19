@@ -61,6 +61,7 @@ namespace GDCC
             case IR::Code::DivX_W:
             case IR::Code::ModI_W:
             case IR::Code::MulI_W:
+            case IR::Code::MulU_W:
             case IR::Code::MulX_W:
             case IR::Code::OrIU_W:
             case IR::Code::OrXU_W:
@@ -77,6 +78,11 @@ namespace GDCC
 
             case IR::Code::Casm:
                numChunkCODE += stmnt->args.size() * 4;
+               break;
+
+            case IR::Code::Cjmp_Nil:
+            case IR::Code::Cjmp_Tru:
+               numChunkCODE += 8;
                break;
 
             case IR::Code::CmpI_EQ_W:
@@ -102,6 +108,10 @@ namespace GDCC
             case IR::Code::NegI_W:
             case IR::Code::NotU_W:
                numChunkCODE += 4;
+               break;
+
+            case IR::Code::Jump:
+               numChunkCODE += 8;
                break;
 
             case IR::Code::Move_W:
@@ -283,7 +293,7 @@ namespace GDCC
                   break;
 
                case IR::ArgBase::LocArs:
-                  numChunkCODE += IsExp0(stmnt->args[0].aLocArs.off) ? 8 : 20;
+                  numChunkCODE += IsExp0(stmnt->args[1].aLocArs.off) ? 8 : 20;
                   break;
 
                case IR::ArgBase::GblArr:
@@ -371,6 +381,7 @@ namespace GDCC
             switch(func->ctype)
             {
             case IR::CallType::LangACS:
+            case IR::CallType::LangC:
                if(argc == 0 || argc == 1)
                   numChunkCODE += 4;
                else

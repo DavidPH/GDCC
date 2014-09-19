@@ -46,6 +46,7 @@ namespace GDCC
             static IR::CallType const FuncTypes[] =
             {
                IR::CallType::LangACS,
+               IR::CallType::LangC,
             };
 
             // Back label glyph.
