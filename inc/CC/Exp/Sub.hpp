@@ -42,6 +42,37 @@ namespace GDCC
       };
 
       //
+      // Exp_SubPtrIntEq
+      //
+      class Exp_SubPtrIntEq : public AST::Exp_Sub
+      {
+         GDCC_Core_CounterPreamble(
+            GDCC::CC::Exp_SubPtrIntEq, GDCC::AST::Exp_Sub);
+
+      public:
+         bool const post : 1;
+
+
+         static CRef Create(bool post, AST::Type const *t,
+            AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+            {return CRef(new This(post, t, l, r, pos));}
+
+      protected:
+         Exp_SubPtrIntEq(bool post_, AST::Type const *t, AST::Exp const *l,
+            AST::Exp const *r, Core::Origin pos_) :
+            Super{t, l, r, pos_}, post{post_} {}
+
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
+            AST::Arg const &dst) const;
+
+         virtual IR::Exp::CRef v_getIRExp() const;
+
+         virtual bool v_isEffect() const {return true;}
+
+         virtual bool v_isIRExp() const;
+      };
+
+      //
       // Exp_SubPtrPtrW
       //
       class Exp_SubPtrPtrW : public AST::Exp_Sub

@@ -38,6 +38,7 @@ add_library(gdcc-ast-lib ${GDCC_SHARED_DECL}
    GenStmnt/ArithEq.cpp
    GenStmnt/Convert.cpp
    GenStmnt/Move.cpp
+   GenStmnt/Point.cpp
    Object.cpp
    Space.cpp
    Statement.cpp

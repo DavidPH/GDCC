@@ -33,27 +33,32 @@ namespace GDCC
       void Exp_AddPoint::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         if(GenStmntNul(this, ctx, dst)) return;
+         AST::GenStmnt_Point(this, IR::Code::AddU_W, ctx, dst);
+      }
 
-         // Evaluate pointer to stack.
-         expL->genStmntStk(ctx);
+      //
+      // Exp_AddPointEq::v_genStmnt
+      //
+      void Exp_AddPointEq::v_genStmnt(AST::GenStmntCtx const &ctx,
+         AST::Arg const &dst) const
+      {
+         AST::GenStmnt_PointEq(this, IR::Code::AddU_W, ctx, dst, post);
+      }
 
-         // Evaluate index, adjusting if necessary.
-         auto point = type->getBaseType()->getSizePoint();
-         if(point > 1)
-         {
-            auto lit = ExpCreate_LitInt(expR->getType(), point, pos);
-            ExpCreate_Mul(expR, lit, pos)->genStmntStk(ctx);
-         }
-         else
-            expR->genStmntStk(ctx);
+      //
+      // Exp_AddPointEq::v_getIRExp
+      //
+      IR::Exp::CRef Exp_AddPointEq::v_getIRExp() const
+      {
+         return post ? expL->getIRExp() : Super::v_getIRExp();
+      }
 
-         // Add on stack.
-         ctx.block.addStatementArgs(IR::Code::AddU_W,
-            IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
-
-         // Move to destination.
-         GenStmnt_MovePart(this, ctx, dst, false, true);
+      //
+      // Exp_AddPointEq::v_isIRExp
+      //
+      bool Exp_AddPointEq::v_isIRExp() const
+      {
+         return post ? expL->isIRExp() : Super::v_isIRExp();
       }
 
       //

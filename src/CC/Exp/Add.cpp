@@ -124,7 +124,7 @@ namespace GDCC
             else
                expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
 
-            throw Core::ExceptStr(pos, "pointer += integer stub");
+            return Exp_AddPointEq::Create(post, typeL, expL, expR, pos);
          }
 
          // arithmetic += arithmetic
