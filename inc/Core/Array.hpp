@@ -16,6 +16,7 @@
 #include "Compare.hpp"
 
 #include <algorithm>
+#include <initializer_list>
 #include <iterator>
 #include <memory>
 #include <stdexcept>
@@ -82,6 +83,10 @@ namespace GDCC
          template<typename... Args>
          Array(PackType, Args &&...args) : p{Pak(std::forward<Args>(args)...)},
             e{p + sizeof...(Args)} {}
+
+         // Initializer list constructor.
+         Array(std::initializer_list<value_type> rng) :
+            p{Cpy(rng.begin(), rng.end())}, e{p + rng.size()} {}
 
          // operator Array[]
                reference operator [] (size_type i)       {return p[i];}

@@ -22,6 +22,8 @@
 #include "Option/Exception.hpp"
 #include "Option/Function.hpp"
 
+#include "Platform/Platform.hpp"
+
 #include <climits>
 #include <cstring>
 #include <ctime>
@@ -435,6 +437,9 @@ namespace GDCC
       //
       void MacroMap::reset()
       {
+         lines.clear();
+         table.clear();
+
          // Set up __DATE__ and __TIME__.
          {
             std::time_t t = std::time(nullptr);
@@ -470,8 +475,28 @@ namespace GDCC
          // Set up __LINE__.
          macroLINE.list[0] = {{Core::STRNULL, 0}, Core::STRNULL, Core::TOK_Number};
 
-         lines.clear();
-         table.clear();
+         #define PlatformCase(e, n) \
+            case Platform::e::n: \
+               table.insert({Core::STR___GDCC_##e##__##n##__, \
+                  {{{{}, Core::STR_1, Core::TOK_Number}}}}); break
+
+         // Set up __GDCC_Format__*__.
+         switch(Platform::FormatCur)
+         {
+            PlatformCase(Format, None);
+            PlatformCase(Format, ACSE);
+            PlatformCase(Format, MgC_NTS);
+         }
+
+         // Set up __GDCC_Target__*__.
+         switch(Platform::TargetCur)
+         {
+            PlatformCase(Target, None);
+            PlatformCase(Target, MageCraft);
+            PlatformCase(Target, ZDoom);
+         }
+
+         #undef PlatformCase
 
          // Apply command line defines.
          for(auto const &delta : Deltas)
