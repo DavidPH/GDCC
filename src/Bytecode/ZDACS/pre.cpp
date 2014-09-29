@@ -13,6 +13,7 @@
 #include "Bytecode/ZDACS/Info.hpp"
 
 #include "IR/CallType.hpp"
+#include "IR/Linkage.hpp"
 #include "IR/Program.hpp"
 
 
@@ -47,6 +48,35 @@ namespace GDCC
                break;
 
             default: break;
+            }
+         }
+
+         //
+         // Info::preStmnt
+         //
+         void Info::preStmnt()
+         {
+            switch(stmnt->code)
+            {
+            case IR::Code::Plsa:
+            case IR::Code::Plsf:
+               if(!prog->findFunction("___GDCC__alloc"))
+               {
+                  auto &newFn = prog->getFunction("___GDCC__alloc");
+
+                  newFn.ctype = IR::CallType::LangC;
+                  newFn.linka = IR::Linkage::ExtC;
+                  newFn.param = 2;
+                  newFn.retrn = 1;
+
+                  newFn.alloc = true;
+
+                  prog->getGlyphData(newFn.glyph).type = IR::Type_Funct(newFn.ctype);
+               }
+               break;
+
+            default:
+               break;
             }
          }
 

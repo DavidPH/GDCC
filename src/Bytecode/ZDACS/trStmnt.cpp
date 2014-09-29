@@ -120,6 +120,32 @@ namespace GDCC
                trStmnt_Move_W();
                break;
 
+            case IR::Code::Plsa:
+               CheckArgC(stmnt, 1);
+               CheckArgB(stmnt, 0, IR::ArgBase::Lit);
+               break;
+
+            case IR::Code::Plsd:
+            case IR::Code::Plsi:
+            case IR::Code::Plsr:
+               CheckArgC(stmnt, 1);
+               trStmnt_Move_W__Stk_src(stmnt->args[0]);
+               break;
+
+            case IR::Code::Plsf:
+               break;
+
+            case IR::Code::Plss:
+               CheckArgC(stmnt, 1);
+               trStmnt_Move_W__Stk_dst(stmnt->args[0]);
+               break;
+
+            case IR::Code::Pltn:
+               CheckArgC(stmnt, 2);
+               trStmnt_Move_W__Stk_dst(stmnt->args[0]);
+               trStmnt_Move_W__Stk_src(stmnt->args[1]);
+               break;
+
             case IR::Code::Retn:
                trStmnt_Retn();
                break;
@@ -236,7 +262,7 @@ namespace GDCC
                switch(stmnt->args[1].a)
                {
                case IR::ArgBase::Stk:
-                  trStmnt_Move_W__Stk(*stmnt->args[0].aGblArr.idx);
+                  trStmnt_Move_W__Stk_src(*stmnt->args[0].aGblArr.idx);
                   break;
 
                default: goto badcase;
@@ -251,11 +277,22 @@ namespace GDCC
                }
                break;
 
+            case IR::ArgBase::Loc:
+               switch(stmnt->args[1].a)
+               {
+               case IR::ArgBase::Stk:
+                  trStmnt_Move_W__Stk_src(*stmnt->args[0].aLoc.idx);
+                  break;
+
+               default: goto badcase;
+               }
+               break;
+
             case IR::ArgBase::LocArs:
                switch(stmnt->args[1].a)
                {
                case IR::ArgBase::Stk:
-                  trStmnt_Move_W__Stk(*stmnt->args[0].aLocArs.idx);
+                  trStmnt_Move_W__Stk_src(*stmnt->args[0].aLocArs.idx);
                   break;
 
                default: goto badcase;
@@ -274,7 +311,7 @@ namespace GDCC
                switch(stmnt->args[1].a)
                {
                case IR::ArgBase::Stk:
-                  trStmnt_Move_W__Stk(*stmnt->args[0].aMapArr.idx);
+                  trStmnt_Move_W__Stk_src(*stmnt->args[0].aMapArr.idx);
                   break;
 
                default: goto badcase;
@@ -307,20 +344,24 @@ namespace GDCC
 
                case IR::ArgBase::Lit:    break;
 
+               case IR::ArgBase::Loc:
+                  trStmnt_Move_W__Stk_src(*stmnt->args[1].aLoc.idx);
+                  break;
+
                case IR::ArgBase::LocArs:
-                  trStmnt_Move_W__Stk(*stmnt->args[1].aLocArs.idx);
+                  trStmnt_Move_W__Stk_src(*stmnt->args[1].aLocArs.idx);
                   break;
 
                case IR::ArgBase::GblArr:
-                  trStmnt_Move_W__Stk(*stmnt->args[1].aGblArr.idx);
+                  trStmnt_Move_W__Stk_src(*stmnt->args[1].aGblArr.idx);
                   break;
 
                case IR::ArgBase::MapArr:
-                  trStmnt_Move_W__Stk(*stmnt->args[1].aMapArr.idx);
+                  trStmnt_Move_W__Stk_src(*stmnt->args[1].aMapArr.idx);
                   break;
 
                case IR::ArgBase::WldArr:
-                  trStmnt_Move_W__Stk(*stmnt->args[1].aWldArr.idx);
+                  trStmnt_Move_W__Stk_src(*stmnt->args[1].aWldArr.idx);
                   break;
 
                default: goto badcase;
@@ -331,7 +372,7 @@ namespace GDCC
                switch(stmnt->args[1].a)
                {
                case IR::ArgBase::Stk:
-                  trStmnt_Move_W__Stk(*stmnt->args[0].aWldArr.idx);
+                  trStmnt_Move_W__Stk_src(*stmnt->args[0].aWldArr.idx);
                   break;
 
                default: goto badcase;
@@ -355,11 +396,26 @@ namespace GDCC
          }
 
          //
-         // Info::trStmnt_Move_W__Stk
+         // Info::trStmnt_Move_W__Stk_dst
          //
          // If idx is not Stk, makes it one by adding a new Move_W statement.
          //
-         void Info::trStmnt_Move_W__Stk(IR::Arg &idx)
+         void Info::trStmnt_Move_W__Stk_dst(IR::Arg &idx)
+         {
+            if(idx.a == IR::ArgBase::Stk) return;
+
+            block->addStatementArgs(stmnt->next, IR::Code::Move_W,
+               IR::Arg_Stk(), std::move(idx));
+
+            idx = IR::Arg_Stk();
+         }
+
+         //
+         // Info::trStmnt_Move_W__Stk_src
+         //
+         // If idx is not Stk, makes it one by adding a new Move_W statement.
+         //
+         void Info::trStmnt_Move_W__Stk_src(IR::Arg &idx)
          {
             if(idx.a == IR::ArgBase::Stk) return;
 

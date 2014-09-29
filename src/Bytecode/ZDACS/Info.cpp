@@ -28,13 +28,26 @@
 //
 
 //
+// --bc-zdacs-auto-stack-register
+//
+static GDCC::Option::Int<GDCC::Core::FastU> AutoStackRegisterOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-zdacs-auto-stack-register")
+      .setGroup("features")
+      .setDescS("Sets the world register used for the auto stack pointer."),
+
+   &GDCC::Bytecode::ZDACS::Info::AutoStackRegister
+};
+
+//
 // --bc-zdacs-LocArs-array
 //
 static GDCC::Option::Int<GDCC::Core::FastU> LocArsArrayOpt
 {
    &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
       .setName("bc-zdacs-LocArs-array")
-      .setGroup("output")
+      .setGroup("features")
       .setDescS("Sets the global array used for LocArs."),
 
    &GDCC::Bytecode::ZDACS::Info::LocArsArray
@@ -78,6 +91,8 @@ namespace GDCC
       namespace ZDACS
       {
          IR::Type_Fixed const Info::TypeWord{32, 0, false, false};
+
+         Core::FastU Info::AutoStackRegister = 0;
 
          Core::FastU Info::LocArsArray = 0;
 
@@ -245,6 +260,10 @@ namespace GDCC
             case IR::ArgBase::Lit: break;
             case IR::ArgBase::Nul: break;
             case IR::ArgBase::Stk: break;
+
+            case IR::ArgBase::Loc:
+               CheckArg(*arg.aLoc.idx, pos);
+               break;
 
             case IR::ArgBase::LocArs:
                CheckArg(*arg.aLocArs.idx, pos);

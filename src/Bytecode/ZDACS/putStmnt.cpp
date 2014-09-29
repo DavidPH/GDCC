@@ -156,6 +156,52 @@ namespace GDCC
                putWord(74); // eorbitwise
                break;
 
+            case IR::Code::Plsa:
+               putWord(3); // pushnumber
+               putWord(0);
+               putWord(3); // pushnumber
+               putExpWord(stmnt->args[0].aLit.value);
+               putWord(203); // call
+               putExpWord(resolveGlyph("___GDCC__alloc"));
+               putWord(27); // assignworldvar
+               putWord(AutoStackRegister);
+               break;
+
+            case IR::Code::Plsd:
+               putWord(36); // subworldvar
+               putWord(AutoStackRegister);
+               break;
+
+            case IR::Code::Plsf:
+               putWord(30); // pushworldvar
+               putWord(AutoStackRegister);
+               putWord(3); // pushnumber
+               putWord(0);
+               putWord(204); // calldiscard
+               putExpWord(resolveGlyph("___GDCC__alloc"));
+               break;
+
+            case IR::Code::Plsi:
+               putWord(33); // addworldvar
+               putWord(AutoStackRegister);
+               break;
+
+            case IR::Code::Plsr:
+               putWord(27); // assignworldvar
+               putWord(AutoStackRegister);
+               break;
+
+            case IR::Code::Plss:
+               putWord(30); // pushworldvar
+               putWord(AutoStackRegister);
+               break;
+
+            case IR::Code::Pltn:
+               putWord(30); // pushworldvar
+               putWord(AutoStackRegister);
+               putWord(14); // add
+               break;
+
             case IR::Code::Retn:
                putStmnt_Retn();
                break;
@@ -338,6 +384,11 @@ namespace GDCC
                putStmnt_Move_W__Stk_Lit(stmnt->args[1].aLit.value);
                break;
 
+            case IR::ArgBase::Loc:
+               putWord(30); // pushworldvar
+               putWord(AutoStackRegister);
+               putWord(14); // add
+
             case IR::ArgBase::LocArs:
                if(!IsExp0(stmnt->args[1].aLocArs.off))
                {
@@ -385,6 +436,11 @@ namespace GDCC
             case IR::ArgBase::GblReg:
                putStmnt_Move_W__Reg_Stk(stmnt->args[0].aGblReg, 181); // assignglobalvar
                break;
+
+            case IR::ArgBase::Loc:
+               putWord(30); // pushworldvar
+               putWord(AutoStackRegister);
+               putWord(14); // add
 
             case IR::ArgBase::LocArs:
                if(!IsExp0(stmnt->args[0].aLocArs.off))

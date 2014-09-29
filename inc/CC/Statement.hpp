@@ -117,12 +117,12 @@ namespace GDCC
 
       Core::CounterRef<AST::Statement const> StatementCreate_Return(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         AST::Function const *fn, AST::Exp const *exp = nullptr);
+         Scope_Function &scope, AST::Exp const *exp = nullptr);
       Core::CounterRef<AST::Statement const> StatementCreate_Return(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         AST::Function const *fn, AST::Exp const *exp = nullptr);
+         Scope_Function &scope, AST::Exp const *exp = nullptr);
       Core::CounterRef<AST::Statement const> StatementCreate_Return(
-         Core::Origin pos, AST::Function const *fn,
+         Core::Origin pos, Scope_Function &scope,
          AST::Exp const *exp = nullptr);
 
       Core::CounterRef<AST::Statement const> StatementCreate_Switch(

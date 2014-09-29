@@ -13,6 +13,7 @@
 #include "CC/Statement/Return.hpp"
 
 #include "CC/Exp.hpp"
+#include "CC/Scope/Function.hpp"
 
 #include "AST/Arg.hpp"
 #include "AST/Exp.hpp"
@@ -22,6 +23,8 @@
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
+#include "IR/CallType.hpp"
+#include "IR/Glyph.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -32,14 +35,14 @@
 // CheckConstraint
 //
 static GDCC::AST::Exp::CPtr CheckConstraint(GDCC::Core::Origin pos,
-   GDCC::AST::Function const *fn, GDCC::AST::Exp const *exp)
+   GDCC::CC::Scope_Function &scope, GDCC::AST::Exp const *exp)
 {
    using namespace GDCC;
 
-   bool isVoid = fn->retrn->isTypeVoid();
+   bool isVoid = scope.fn->retrn->isTypeVoid();
 
    // Sanity check. This should have been caught by now.
-   if(!isVoid && !fn->retrn->isTypeComplete())
+   if(!isVoid && !scope.fn->retrn->isTypeComplete())
       throw Core::ExceptStr(pos, "complete type required for return");
 
    if(exp)
@@ -47,7 +50,7 @@ static GDCC::AST::Exp::CPtr CheckConstraint(GDCC::Core::Origin pos,
       if(isVoid)
          throw Core::ExceptStr(pos, "return expression forbidden");
 
-      return CC::ExpPromo_Assign(fn->retrn, exp, pos);
+      return CC::ExpPromo_Assign(scope.fn->retrn, exp, pos);
    }
    else
    {
@@ -71,8 +74,8 @@ namespace GDCC
       // Statement_ReturnExp constructor
       //
       Statement_ReturnExp::Statement_ReturnExp(Labels const &labels_,
-         Core::Origin pos_, AST::Exp const *exp_) :
-         Super{labels_, pos_}, exp{exp_}
+         Core::Origin pos_, AST::Exp const *exp_, Scope_Function &scope_) :
+         Super{labels_, pos_}, exp{exp_}, scope(scope_)
       {
       }
 
@@ -80,8 +83,8 @@ namespace GDCC
       // Statement_ReturnExp constructor
       //
       Statement_ReturnExp::Statement_ReturnExp(Labels &&labels_,
-         Core::Origin pos_, AST::Exp const *exp_) :
-         Super{std::move(labels_), pos_}, exp{exp_}
+         Core::Origin pos_, AST::Exp const *exp_, Scope_Function &scope_) :
+         Super{std::move(labels_), pos_}, exp{exp_}, scope(scope_)
       {
       }
 
@@ -89,8 +92,8 @@ namespace GDCC
       // Statement_ReturnExp constructor
       //
       Statement_ReturnExp::Statement_ReturnExp(Core::Origin pos_,
-         AST::Exp const *exp_) :
-         Super{pos_}, exp{exp_}
+         AST::Exp const *exp_, Scope_Function &scope_) :
+         Super{pos_}, exp{exp_}, scope(scope_)
       {
       }
 
@@ -108,8 +111,16 @@ namespace GDCC
       {
          exp->genStmntStk(ctx);
 
-         ctx.block.setArgs({exp->getType()->getSizeWords(), IR::Arg_Stk()});
-         ctx.block.addStatement(IR::Code::Retn);
+         if(IR::IsCallTypeScript(scope.fn->ctype))
+         {
+            ctx.block.addStatementArgs(IR::Code::Jump,
+               IR::Glyph(ctx.prog, scope.fn->getLabelEnd()));
+         }
+         else
+         {
+            ctx.block.setArgs({exp->getType()->getSizeWords(), IR::Arg_Stk()});
+            ctx.block.addStatement(IR::Code::Retn);
+         }
       }
 
       //
@@ -125,7 +136,15 @@ namespace GDCC
       //
       void Statement_ReturnNul::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
-         ctx.block.addStatementArgs(IR::Code::Retn);
+         if(IR::IsCallTypeScript(scope.fn->ctype))
+         {
+            ctx.block.addStatementArgs(IR::Code::Jump,
+               IR::Glyph(ctx.prog, scope.fn->getLabelEnd()));
+         }
+         else
+         {
+            ctx.block.addStatementArgs(IR::Code::Retn);
+         }
       }
 
       //
@@ -133,12 +152,12 @@ namespace GDCC
       //
       AST::Statement::CRef StatementCreate_Return(
          AST::Statement::Labels const &labels, Core::Origin pos,
-         AST::Function const *fn, AST::Exp const *e)
+         Scope_Function &scope, AST::Exp const *e)
       {
-         if(auto exp = CheckConstraint(pos, fn, e))
-            return Statement_ReturnExp::Create(labels, pos, exp);
+         if(auto exp = CheckConstraint(pos, scope, e))
+            return Statement_ReturnExp::Create(labels, pos, exp, scope);
          else
-            return Statement_ReturnNul::Create(labels, pos);
+            return Statement_ReturnNul::Create(labels, pos, scope);
       }
 
       //
@@ -146,24 +165,24 @@ namespace GDCC
       //
       AST::Statement::CRef StatementCreate_Return(
          AST::Statement::Labels &&labels, Core::Origin pos,
-         AST::Function const *fn, AST::Exp const *e)
+         Scope_Function &scope, AST::Exp const *e)
       {
-         if(auto exp = CheckConstraint(pos, fn, e))
-            return Statement_ReturnExp::Create(std::move(labels), pos, exp);
+         if(auto exp = CheckConstraint(pos, scope, e))
+            return Statement_ReturnExp::Create(std::move(labels), pos, exp, scope);
          else
-            return Statement_ReturnNul::Create(std::move(labels), pos);
+            return Statement_ReturnNul::Create(std::move(labels), pos, scope);
       }
 
       //
       // StatementCreate_Return
       //
       AST::Statement::CRef StatementCreate_Return(Core::Origin pos,
-         AST::Function const *fn, AST::Exp const *e)
+         Scope_Function &scope, AST::Exp const *e)
       {
-         if(auto exp = CheckConstraint(pos, fn, e))
-            return Statement_ReturnExp::Create(pos, exp);
+         if(auto exp = CheckConstraint(pos, scope, e))
+            return Statement_ReturnExp::Create(pos, exp, scope);
          else
-            return Statement_ReturnNul::Create(pos);
+            return Statement_ReturnNul::Create(pos, scope);
       }
    }
 }

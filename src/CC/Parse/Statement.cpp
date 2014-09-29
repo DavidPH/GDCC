@@ -335,7 +335,7 @@ static GDCC::AST::Statement::CRef GetStatement_return(
 
    // ;
    if(ctx.in.drop(Core::TOK_Semico))
-      return CC::StatementCreate_Return(std::move(labels), pos, scope.fn.fn);
+      return CC::StatementCreate_Return(std::move(labels), pos, scope.fn);
 
    // expression
    auto exp = CC::GetExp(ctx, scope);
@@ -344,7 +344,7 @@ static GDCC::AST::Statement::CRef GetStatement_return(
    if(!ctx.in.drop(Core::TOK_Semico))
       throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
 
-   return CC::StatementCreate_Return(std::move(labels), pos, scope.fn.fn, exp);
+   return CC::StatementCreate_Return(std::move(labels), pos, scope.fn, exp);
 }
 
 //

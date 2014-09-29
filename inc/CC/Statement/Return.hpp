@@ -36,24 +36,30 @@ namespace GDCC
 
       public:
          Core::CounterRef<AST::Exp const> const exp;
+         Scope_Function                        &scope;
 
 
          // Create
-         static CRef Create(Labels const &labels, Core::Origin pos, AST::Exp const *exp)
-            {return CRef(new This(labels, pos, exp));}
+         static CRef Create(Labels const &labels, Core::Origin pos,
+            AST::Exp const *exp, Scope_Function &scope)
+            {return CRef(new This(labels, pos, exp, scope));}
 
          // Create
-         static CRef Create(Labels &&labels, Core::Origin pos, AST::Exp const *exp)
-            {return CRef(new This(std::move(labels), pos, exp));}
+         static CRef Create(Labels &&labels, Core::Origin pos,
+            AST::Exp const *exp, Scope_Function &scope)
+            {return CRef(new This(std::move(labels), pos, exp, scope));}
 
          // Create
-         static CRef Create(Core::Origin pos, AST::Exp const *exp)
-            {return CRef(new This(pos, exp));}
+         static CRef Create(Core::Origin pos, AST::Exp const *exp, Scope_Function &scope)
+            {return CRef(new This(pos, exp, scope));}
 
       protected:
-         Statement_ReturnExp(Labels const &labels, Core::Origin pos, AST::Exp const *exp);
-         Statement_ReturnExp(Labels &&labels, Core::Origin pos, AST::Exp const *exp);
-         Statement_ReturnExp(Core::Origin pos, AST::Exp const *exp);
+         Statement_ReturnExp(Labels const &labels, Core::Origin pos,
+            AST::Exp const *exp, Scope_Function &scope);
+         Statement_ReturnExp(Labels &&labels, Core::Origin pos,
+            AST::Exp const *exp, Scope_Function &scope);
+         Statement_ReturnExp(Core::Origin pos, AST::Exp const *exp,
+            Scope_Function &scope);
          virtual ~Statement_ReturnExp();
 
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
@@ -71,24 +77,29 @@ namespace GDCC
             GDCC::CC::Statement_ReturnNul, GDCC::AST::Statement);
 
       public:
-         // Create
-         static CRef Create(Labels const &labels, Core::Origin pos)
-            {return CRef(new This(labels, pos));}
+         Scope_Function &scope;
+
 
          // Create
-         static CRef Create(Labels &&labels, Core::Origin pos)
-            {return CRef(new This(std::move(labels), pos));}
+         static CRef Create(Labels const &labels, Core::Origin pos, Scope_Function &scope)
+            {return CRef(new This(labels, pos, scope));}
 
          // Create
-         static CRef Create(Core::Origin pos)
-            {return CRef(new This(pos));}
+         static CRef Create(Labels &&labels, Core::Origin pos, Scope_Function &scope)
+            {return CRef(new This(std::move(labels), pos, scope));}
+
+         // Create
+         static CRef Create(Core::Origin pos, Scope_Function &scope)
+            {return CRef(new This(pos, scope));}
 
       protected:
-         Statement_ReturnNul(Labels const &labels_, Core::Origin pos_) :
-            Super{labels_, pos_} {}
-         Statement_ReturnNul(Labels &&labels_, Core::Origin pos_) :
-            Super{std::move(labels_), pos_} {}
-         explicit Statement_ReturnNul(Core::Origin pos_) : Super{pos_} {}
+         Statement_ReturnNul(Labels const &labels_, Core::Origin pos_,
+            Scope_Function &scope_) : Super{labels_, pos_}, scope(scope_) {}
+         Statement_ReturnNul(Labels &&labels_, Core::Origin pos_,
+            Scope_Function &scope_) :
+            Super{std::move(labels_), pos_}, scope(scope_) {}
+         Statement_ReturnNul(Core::Origin pos_, Scope_Function &scope_) :
+            Super{pos_}, scope(scope_) {}
 
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
 

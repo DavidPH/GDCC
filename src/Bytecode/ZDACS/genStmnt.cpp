@@ -118,6 +118,25 @@ namespace GDCC
                genStmnt_Move_W();
                break;
 
+            case IR::Code::Plsa:
+               numChunkCODE += 32;
+               break;
+
+            case IR::Code::Plsd:
+            case IR::Code::Plsi:
+            case IR::Code::Plsr:
+            case IR::Code::Plss:
+               numChunkCODE += 8;
+               break;
+
+            case IR::Code::Plsf:
+               numChunkCODE += 24;
+               break;
+
+            case IR::Code::Pltn:
+               numChunkCODE += 12;
+               break;
+
             case IR::Code::Retn:
                genStmnt_Retn();
                break;
@@ -234,6 +253,17 @@ namespace GDCC
                }
                break;
 
+            case IR::ArgBase::Loc:
+               switch(stmnt->args[1].a)
+               {
+               case IR::ArgBase::Stk:
+                  numChunkCODE += IsExp0(stmnt->args[0].aLoc.off) ? 24 : 36;
+                  break;
+
+               default: goto badcase;
+               }
+               break;
+
             case IR::ArgBase::LocArs:
                switch(stmnt->args[1].a)
                {
@@ -290,6 +320,10 @@ namespace GDCC
 
                case IR::ArgBase::Lit:
                   genStmnt_Move_W__Stk_Lit(stmnt->args[1].aLit.value);
+                  break;
+
+               case IR::ArgBase::Loc:
+                  numChunkCODE += IsExp0(stmnt->args[1].aLoc.off) ? 20 : 32;
                   break;
 
                case IR::ArgBase::LocArs:

@@ -66,6 +66,7 @@ namespace GDCC
          // Generates an IR function with all available data.
          void genFunctionDefn(IR::Program &prog);
 
+         Core::String getLabelEnd();
          Core::String getLabelTmp();
 
          // Generally not useful directly. Use AST::Temporary, instead.
@@ -74,6 +75,7 @@ namespace GDCC
          IR::CallType   ctype;
          Core::String   glyph;
          Core::String   label;
+         Core::String   labelEnd;
          Core::String   labelTmp;
          IR::Linkage    linka;
          Core::FastU    localArs;

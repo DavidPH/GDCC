@@ -97,6 +97,24 @@ GDCC_IR_CodeList(OrIU_W)
 // OrX* dst lop rop
 GDCC_IR_CodeList(OrXU_W)
 
+// Plsa size (Pointer, Local Stack Allocate)
+GDCC_IR_CodeList(Plsa)
+
+// Plsd src (Pointer, Local Stack Decrement)
+GDCC_IR_CodeList(Plsd)
+
+// Plsf (Pointer, Local Stack Free)
+GDCC_IR_CodeList(Plsf)
+
+// Plsi src (Pointer, Local Stack Increment)
+GDCC_IR_CodeList(Plsi)
+
+// Plsr src (Pointer, Local Stack Restore)
+GDCC_IR_CodeList(Plsr)
+
+// Plss dst (Pointer, Local Stack Save)
+GDCC_IR_CodeList(Plss)
+
 // Pltn dst src (Pointer, Local to Near)
 GDCC_IR_CodeList(Pltn)
 

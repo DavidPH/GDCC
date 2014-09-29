@@ -18,6 +18,7 @@
 #include "AST/Type.hpp"
 
 #include "IR/Block.hpp"
+#include "IR/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -31,10 +32,11 @@ namespace GDCC
       //
       // Statement_FuncPre::v_genStmnt
       //
-      void Statement_FuncPre::v_genStmnt(AST::GenStmntCtx const &) const
+      void Statement_FuncPre::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
-         // If script, configure environment.
-         // TODO
+         // If script, allocate automatic storage area.
+         if(IR::IsCallTypeScript(scope.fn->ctype))
+            ctx.block.addStatementArgs(IR::Code::Plsa, 8192);
 
          // Move parameter data to actual storage location.
          // TODO
@@ -45,8 +47,25 @@ namespace GDCC
       //
       void Statement_FuncPro::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
+         // Add label for exit point. Unless it was never generated and is
+         // therefore unused.
+         if(scope.fn->labelEnd)
+            ctx.block.addLabel(scope.fn->labelEnd);
+
+         // If script, free automatic storage area.
+         if(IR::IsCallTypeScript(scope.fn->ctype))
+            ctx.block.addStatementArgs(IR::Code::Plsf);
+
+         // Perform return.
          if(scope.fn->retrn->isTypeVoid())
+         {
             ctx.block.addStatementArgs(IR::Code::Retn);
+         }
+         else if(IR::IsCallTypeScript(scope.fn->ctype))
+         {
+            ctx.block.setArgs({scope.fn->retrn->getSizeWords(), IR::Arg_Stk()});
+            ctx.block.addStatement(IR::Code::Retn);
+         }
       }
 
       //

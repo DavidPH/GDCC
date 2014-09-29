@@ -40,6 +40,7 @@ namespace GDCC
          ctype   {IR::CallType::None},
          glyph   {glyph_},
          label   {Core::STRNULL},
+         labelEnd{nullptr},
          labelTmp{Core::STRNULL},
          linka   {IR::Linkage::None},
          localArs{0},
@@ -151,6 +152,17 @@ namespace GDCC
 
          // Merge into existing function (if any).
          prog.mergeFunction(prog.getFunction(glyph), std::move(fn));
+      }
+
+      //
+      // Function::getLabelEnd
+      //
+      Core::String Function::getLabelEnd()
+      {
+         if(!labelEnd)
+            labelEnd = genLabel();
+
+         return labelEnd;
       }
 
       //

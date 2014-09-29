@@ -109,6 +109,23 @@ namespace GDCC
             throw EXIT_FAILURE;
          }
       }
+
+      //
+      // IsCallTypeScript
+      //
+      bool IsCallTypeScript(CallType ctype)
+      {
+         switch(ctype)
+         {
+         case CallType::Script:
+         case CallType::ScriptI:
+         case CallType::ScriptS:
+            return true;
+
+         default:
+            return false;
+         }
+      }
    }
 }
 

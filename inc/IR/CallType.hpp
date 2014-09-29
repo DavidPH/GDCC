@@ -63,6 +63,8 @@ namespace GDCC
       std::ostream &operator << (std::ostream &out, CallType in);
 
       IArchive &operator >> (IArchive &in, CallType &out);
+
+      bool IsCallTypeScript(CallType ctype);
    }
 }
 
