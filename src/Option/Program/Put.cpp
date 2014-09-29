@@ -443,8 +443,8 @@ namespace GDCC
       {
          std::size_t len = 0;
 
-         while(*str && std::isspace(*str++))
-            ++len;
+         while(*str && std::isspace(*str))
+            ++len, ++str;
 
          while(*str && !std::isspace(*str++))
             ++len;
