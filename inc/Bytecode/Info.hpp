@@ -66,6 +66,7 @@ namespace GDCC
          Info() :
             block{nullptr},
             func{nullptr},
+            obj{nullptr},
             out{nullptr},
             prog{nullptr},
             space{nullptr},
@@ -140,6 +141,9 @@ namespace GDCC
                  void trStmnt(IR::Statement &stmnt);
          virtual void trStr() {}
                  void trStr(IR::StrEnt &str);
+
+         bool moveArgStk_W_dst(IR::Arg &idx);
+         bool moveArgStk_W_src(IR::Arg &idx);
 
          IR::Block     *block;
          IR::Function  *func;

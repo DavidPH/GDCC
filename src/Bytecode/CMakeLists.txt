@@ -23,6 +23,7 @@ add_subdirectory(ZDACS)
 ##
 add_library(gdcc-bytecode-lib ${GDCC_SHARED_DECL}
    Info.cpp
+   Info/moveArg.cpp
 
    ../../inc/Bytecode/Info.hpp
 )

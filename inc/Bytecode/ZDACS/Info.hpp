@@ -199,8 +199,6 @@ namespace GDCC
             void trStmnt_Call();
             void trStmnt_Cspe();
             void trStmnt_Move_W();
-            void trStmnt_Move_W__Stk_dst(IR::Arg &idx);
-            void trStmnt_Move_W__Stk_src(IR::Arg &idx);
             void trStmnt_Retn();
 
             std::unordered_map<IR::Space const *, InitData> init;
