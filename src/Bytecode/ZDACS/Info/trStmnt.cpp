@@ -256,143 +256,51 @@ namespace GDCC
             CheckArg(stmnt->args[0], stmnt->pos);
             CheckArg(stmnt->args[1], stmnt->pos);
 
-            switch(stmnt->args[0].a)
+            // Push to stack?
+            if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
             {
-            case IR::ArgBase::GblArr:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk:
-                  moveArgStk_W_src(*stmnt->args[0].aGblArr.idx);
-                  break;
+            case IR::ArgBase::GblReg: break;
+            case IR::ArgBase::Lit:    break;
+            case IR::ArgBase::LocReg: break;
+            case IR::ArgBase::MapReg: break;
+            case IR::ArgBase::WldReg: break;
 
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::GblReg:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk: break;
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::Loc:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk:
-                  moveArgStk_W_src(*stmnt->args[0].aLoc.idx);
-                  break;
-
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::LocArs:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk:
-                  moveArgStk_W_src(*stmnt->args[0].aLocArs.idx);
-                  break;
-
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::LocReg:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk: break;
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::MapArr:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk:
-                  moveArgStk_W_src(*stmnt->args[0].aMapArr.idx);
-                  break;
-
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::MapReg:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk: break;
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::Nul:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk: break;
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::Stk:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::GblReg: break;
-               case IR::ArgBase::LocReg: break;
-               case IR::ArgBase::MapReg: break;
-               case IR::ArgBase::WldReg: break;
-
-               case IR::ArgBase::Lit:    break;
-
-               case IR::ArgBase::Loc:
-                  moveArgStk_W_src(*stmnt->args[1].aLoc.idx);
-                  break;
-
-               case IR::ArgBase::LocArs:
-                  moveArgStk_W_src(*stmnt->args[1].aLocArs.idx);
-                  break;
-
-               case IR::ArgBase::GblArr:
-                  moveArgStk_W_src(*stmnt->args[1].aGblArr.idx);
-                  break;
-
-               case IR::ArgBase::MapArr:
-                  moveArgStk_W_src(*stmnt->args[1].aMapArr.idx);
-                  break;
-
-               case IR::ArgBase::WldArr:
-                  moveArgStk_W_src(*stmnt->args[1].aWldArr.idx);
-                  break;
-
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::WldArr:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk:
-                  moveArgStk_W_src(*stmnt->args[0].aWldArr.idx);
-                  break;
-
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::WldReg:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk: break;
-               default: goto badcase;
-               }
-               break;
+            case IR::ArgBase::GblArr: moveArgStk_W_src(*stmnt->args[1].aGblArr.idx); break;
+            case IR::ArgBase::Loc:    moveArgStk_W_src(*stmnt->args[1].aLoc   .idx); break;
+            case IR::ArgBase::LocArs: moveArgStk_W_src(*stmnt->args[1].aLocArs.idx); break;
+            case IR::ArgBase::MapArr: moveArgStk_W_src(*stmnt->args[1].aMapArr.idx); break;
+            case IR::ArgBase::WldArr: moveArgStk_W_src(*stmnt->args[1].aWldArr.idx); break;
 
             default:
-            badcase:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Move_W("
-                  << stmnt->args[0].a << ',' << stmnt->args[1].a << ")\n";
+               std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Move_W(Stk, "
+                  << stmnt->args[1].a << ")\n";
                throw EXIT_FAILURE;
             }
+
+            // Drop from stack?
+            else if(stmnt->args[1].a == IR::ArgBase::Stk) switch(stmnt->args[0].a)
+            {
+            case IR::ArgBase::GblReg: break;
+            case IR::ArgBase::LocReg: break;
+            case IR::ArgBase::MapReg: break;
+            case IR::ArgBase::Nul:    break;
+            case IR::ArgBase::WldReg: break;
+
+            case IR::ArgBase::GblArr: moveArgStk_W_src(*stmnt->args[0].aGblArr.idx); break;
+            case IR::ArgBase::Loc:    moveArgStk_W_src(*stmnt->args[0].aLoc   .idx); break;
+            case IR::ArgBase::LocArs: moveArgStk_W_src(*stmnt->args[0].aLocArs.idx); break;
+            case IR::ArgBase::MapArr: moveArgStk_W_src(*stmnt->args[0].aMapArr.idx); break;
+            case IR::ArgBase::WldArr: moveArgStk_W_src(*stmnt->args[0].aWldArr.idx); break;
+
+            default:
+               std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Move_W("
+                  << stmnt->args[0].a << ", Stk)\n";
+               throw EXIT_FAILURE;
+            }
+
+            // Neither stack, split move and rescan.
+            else
+               moveArgStk_W_src(stmnt->args[1]);
          }
 
          //
