@@ -20,16 +20,16 @@
 ##
 add_library(gdcc-bytecode-zdacs-lib ${GDCC_SHARED_DECL}
    Info.cpp
-   gen.cpp
-   genSpace.cpp
-   genStmnt.cpp
-   lenChunk.cpp
-   pre.cpp
-   put.cpp
-   putChunk.cpp
-   putStmnt.cpp
-   tr.cpp
-   trStmnt.cpp
+   Info/gen.cpp
+   Info/genSpace.cpp
+   Info/genStmnt.cpp
+   Info/lenChunk.cpp
+   Info/pre.cpp
+   Info/put.cpp
+   Info/putChunk.cpp
+   Info/putStmnt.cpp
+   Info/tr.cpp
+   Info/trStmnt.cpp
 
    ../../../inc/Bytecode/ZDACS/Info.hpp
 )

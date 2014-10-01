@@ -20,8 +20,8 @@
 ##
 add_library(gdcc-bytecode-mgc-lib ${GDCC_SHARED_DECL}
    Info.cpp
-   put.cpp
-   tr.cpp
+   Info/put.cpp
+   Info/tr.cpp
 
    ../../../inc/Bytecode/MgC/Info.hpp
 )
