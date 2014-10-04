@@ -101,7 +101,7 @@ namespace GDCC
 
             for(auto const &itr : init)
                if(itr.first->space.base == IR::AddrBase::MapArr)
-                  len += itr.second.vals.size() * 4 + 12;
+                  len += itr.second.max * 4 + 12;
 
             return len;
          }
@@ -139,7 +139,7 @@ namespace GDCC
                if(itr.first->space.base == IR::AddrBase::MapArr)
             {
                if(itr.second.needTag && !itr.second.onlyStr)
-                  len += itr.second.vals.size() + 13;
+                  len += itr.second.max + 13;
             }
 
             return len;

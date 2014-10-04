@@ -33,9 +33,14 @@ namespace GDCC
          {
             InfoBase::gen();
 
+            for(auto &itr : prog->rangeSpaceGblArs()) genSpaceIniti(itr);
             for(auto &itr : prog->rangeSpaceMapArs()) genSpaceIniti(itr);
+            for(auto &itr : prog->rangeSpaceWldArs()) genSpaceIniti(itr);
 
+            genSpaceIniti(prog->getSpaceLocArs());
             genSpaceIniti(prog->getSpaceMapReg());
+
+            genIniti();
          }
 
          //
@@ -119,6 +124,11 @@ namespace GDCC
          //
          void Info::genObj()
          {
+            // HUGE HACK: Set null address space name to empty string.
+            // A proper fix will be to normalize usage at higher levels.
+            if(!obj->space.name)
+               obj->space.name = Core::STR_;
+
             switch(obj->space.base)
             {
             case IR::AddrBase::GblReg:

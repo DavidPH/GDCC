@@ -193,8 +193,10 @@ static void SetDeclObjInit(
    GDCC::CC::Scope_Global                  &,
    GDCC::AST::Attribute                    &,
    std::vector<GDCC::AST::Statement::CRef> &,
-   GDCC::AST::Object                       *)
+   GDCC::AST::Object                       *obj)
 {
+   obj->defin = true;
+
    // File-scope objects get initialized code generated later.
 }
 
@@ -209,6 +211,8 @@ static void SetDeclObjInit(
    GDCC::AST::Object                       *obj)
 {
    using namespace GDCC;
+
+   obj->defin = true;
 
    // Block-scope statics must have constant initializers, so they can be
    // handled like file-scope statics.

@@ -28,29 +28,29 @@
 //
 
 //
-// --bc-zdacs-auto-stack-register
-//
-static GDCC::Option::Int<GDCC::Core::FastU> AutoStackRegisterOpt
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-auto-stack-register")
-      .setGroup("features")
-      .setDescS("Sets the world register used for the auto stack pointer."),
-
-   &GDCC::Bytecode::ZDACS::Info::AutoStackRegister
-};
-
-//
 // --bc-zdacs-LocArs-array
 //
 static GDCC::Option::Int<GDCC::Core::FastU> LocArsArrayOpt
 {
    &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
       .setName("bc-zdacs-LocArs-array")
-      .setGroup("features")
+      .setGroup("codegen")
       .setDescS("Sets the global array used for LocArs."),
 
    &GDCC::Bytecode::ZDACS::Info::LocArsArray
+};
+
+//
+// --bc-zdacs-auto-stack-register
+//
+static GDCC::Option::Int<GDCC::Core::FastU> AutoStackRegisterOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-zdacs-auto-stack-register")
+      .setGroup("codegen")
+      .setDescS("Sets the world register used for the auto stack pointer."),
+
+   &GDCC::Bytecode::ZDACS::Info::AutoStackRegister
 };
 
 //
@@ -79,6 +79,90 @@ static GDCC::Option::Bool FakeACS0Opt
    &GDCC::Bytecode::ZDACS::Info::UseFakeACS0
 };
 
+//
+// --bc-zdacs-init-gbl-array
+//
+static GDCC::Core::FastU InitGblArray = 0;
+static GDCC::Option::Int<GDCC::Core::FastU> InitGblArrayOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-zdacs-init-gbl-array")
+      .setGroup("codegen")
+      .setDescS("Sets the global array used to store init status.")
+      .setDescL(
+         "Sets the global array used to store initialization status. "
+         "Default is to use the LocArs array."),
+
+   &InitGblArray
+};
+
+//
+// --bc-zdacs-init-gbl-index
+//
+static GDCC::Core::FastU InitGblIndex = 0;
+static GDCC::Option::Int<GDCC::Core::FastU> InitGblIndexOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-zdacs-init-gbl-index")
+      .setGroup("codegen")
+      .setDescS("Sets the global array index used to store init status.")
+      .setDescL(
+         "Sets the global array index used to store initialization status. "
+         "Default is 0 if using the LocArs array, -1 otherwise."),
+
+   &InitGblIndex
+};
+
+//
+// --bc-zdacs-init-script-number
+//
+static GDCC::Option::Int<GDCC::Core::FastU> InitScriptNumberOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-zdacs-init-script-number")
+      .setGroup("codegen")
+      .setDescS("Sets the number for the init script.")
+      .setDescL(
+         "Sets the script number for the initialization script. "
+         "Default is 999."),
+
+   &GDCC::Bytecode::ZDACS::Info::InitScriptNumber
+};
+
+//
+// --bc-zdacs-init-wld-array
+//
+static GDCC::Core::FastU InitWldArray = 0;
+static GDCC::Option::Int<GDCC::Core::FastU> InitWldArrayOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-zdacs-init-wld-array")
+      .setGroup("codegen")
+      .setDescS("Sets the world array used to store init status.")
+      .setDescL(
+         "Sets the world array used to store initialization status. "
+         "Default is to use any world array with an initializer."),
+
+   &InitWldArray
+};
+
+//
+// --bc-zdacs-init-wld-index
+//
+static GDCC::Core::FastU InitWldIndex = 0xFFFFFFFF;
+static GDCC::Option::Int<GDCC::Core::FastU> InitWldIndexOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-zdacs-init-wld-index")
+      .setGroup("codegen")
+      .setDescS("Sets the world array index used to store init status.")
+      .setDescL(
+         "Sets the world array index used to store initialization status. "
+         "Default is -1."),
+
+   &InitWldIndex
+};
+
 
 //----------------------------------------------------------------------------|
 // Global Variables                                                           |
@@ -93,6 +177,8 @@ namespace GDCC
          IR::Type_Fixed const Info::TypeWord{32, 0, false, false};
 
          Core::FastU Info::AutoStackRegister = 0;
+
+         Core::FastU Info::InitScriptNumber = 999;
 
          Core::FastU Info::LocArsArray = 0;
 
@@ -117,6 +203,9 @@ namespace GDCC
          // Info default constructor
          //
          Info::Info() :
+            codeInit   {0},
+            codeInitEnd{0},
+
             numChunkAIMP{0},
             numChunkAINI{0},
             numChunkARAY{0},
@@ -199,6 +288,78 @@ namespace GDCC
             data.type  = TypeWord;
             data.value = IR::ExpCreate_Value(
                IR::Value_Fixed(val, TypeWord), Core::Origin(Core::STRNULL, 0));
+         }
+
+         //
+         // Info::getInitGblArray
+         //
+         Core::FastU Info::getInitGblArray()
+         {
+            if(InitGblArrayOpt.processed)
+               return InitGblArray;
+
+            return LocArsArray;
+         }
+
+         //
+         // Info::getInitGblIndex
+         //
+         Core::FastU Info::getInitGblIndex()
+         {
+            if(InitGblIndexOpt.processed)
+               return InitGblIndex;
+
+            if(!InitGblArrayOpt.processed || InitGblArray == LocArsArray)
+               return 0;
+
+            return -1;
+         }
+
+         //
+         // Info::getInitWldArray
+         //
+         Core::FastU Info::getInitWldArray()
+         {
+            if(InitWldArrayOpt.processed)
+               return InitWldArray;
+
+            for(auto const &itr : prog->rangeSpaceWldArs())
+            {
+               if(!init[&itr].vals.empty())
+                  return itr.value;
+            }
+
+            return 0;
+         }
+
+         //
+         // Info::getInitWldIndex
+         //
+         Core::FastU Info::getInitWldIndex()
+         {
+            return InitWldIndex;
+         }
+
+         //
+         // Info::isInitiGblArr
+         //
+         bool Info::isInitiGblArr()
+         {
+            for(auto const &itr : prog->rangeSpaceGblArs())
+               if(!init[&itr].vals.empty()) return true;
+
+            return !init[&prog->getSpaceLocArs()].vals.empty();
+         }
+
+         //
+         // Info::isInitiWldArr
+         //
+         bool Info::isInitiWldArr()
+         {
+            for(auto const &itr : prog->rangeSpaceWldArs())
+               if(!init[&itr].vals.empty()) return true;
+
+            return false;
          }
 
          //

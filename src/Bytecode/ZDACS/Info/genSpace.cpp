@@ -94,6 +94,12 @@ namespace GDCC
 
             switch(space->space.base)
             {
+            case IR::AddrBase::LocArs:
+               space->value = LocArsArray;
+
+               space->allocWords(*prog);
+               break;
+
             case IR::AddrBase::MapReg:
                for(auto &obj : prog->rangeObject())
                {
@@ -168,43 +174,30 @@ namespace GDCC
          //
          void Info::genSpaceIniti()
          {
-            Core::FastU size = 0;
-
-            for(auto const &obj : prog->rangeObject())
-            {
-               if(!obj.defin || obj.space != space->space)
-                  continue;
-
-               auto max = obj.value + obj.words;
-               if(size < max) size = max;
-            }
-
-            if(!size) return;
-
             auto &ini = init[space];
-            ini.vals = Core::Array<InitVal>(size);
 
             // Generate init data.
             for(auto const &obj : prog->rangeObject())
             {
-               if(!obj.defin || obj.space != space->space)
+               if(!obj.defin || obj.space != space->space || !obj.initi)
                   continue;
 
-               auto data = &ini.vals[obj.value];
+               auto itr = obj.value;
 
-               // If the object has an initializer, use it.
-               if(obj.initi)
-                  genSpaceInitiValue(data, ini.vals.end(), obj.initi->getValue());
-               // Otherwise, mark the space as numeric.
-               else
-                  for(auto i = obj.words; i--;) data++->tag = InitTag::Fixed;
+               genSpaceInitiValue(ini, itr, obj.initi->getValue());
+
+               if(ini.max < itr)
+                  ini.max = itr;
             }
+
+            // If no initializers needed, skip remaining parts.
+            if(ini.vals.empty()) return;
 
             if(space->space.base == IR::AddrBase::MapArr)
             {
                ++numChunkAINI;
 
-               for(auto const i : ini.vals) switch(i.tag)
+               for(auto const &i : ini.vals) switch(i.second.tag)
                {
                case InitTag::Empty:
                   break;
@@ -233,11 +226,11 @@ namespace GDCC
             }
             else if(space->space.base == IR::AddrBase::MapReg)
             {
-               for(auto const i : ini.vals)
+               for(auto const &i : ini.vals)
                {
-                  if(i.val) ++numChunkMINI;
+                  if(i.second.val) ++numChunkMINI;
 
-                  if(i.tag == InitTag::StrEn)
+                  if(i.second.tag == InitTag::StrEn)
                      ++numChunkMSTR;
                }
             }
@@ -264,31 +257,33 @@ namespace GDCC
          //
          // Info::genSpaceInitiValue
          //
-         void Info::genSpaceInitiValue(InitVal *&data, InitVal const *end,
-            IR::Value const &val)
+         void Info::genSpaceInitiValue(InitData &ini, Core::FastU &itr, IR::Value const &val)
          {
-            if(data == end) return;
+            InitVal *iv;
 
             switch(val.v)
             {
             case IR::ValueBase::Fixed:
-               data->tag = InitTag::Fixed;
-               data->val = Core::NumberCast<Core::FastU>(val.vFixed.value);
+               iv = &ini.vals[itr++];
+               iv->tag = InitTag::Fixed;
+               iv->val = Core::NumberCast<Core::FastU>(val.vFixed.value);
                break;
 
             case IR::ValueBase::Funct:
-               data->tag = InitTag::Funct;
-               data->val = val.vStrEn.value;
+               iv = &ini.vals[itr++];
+               iv->tag = InitTag::Funct;
+               iv->val = val.vStrEn.value;
                break;
 
             case IR::ValueBase::Multi:
                for(auto const &v : val.vMulti.value)
-                  genSpaceInitiValue(data, end, v);
+                  genSpaceInitiValue(ini, itr, v);
                break;
 
             case IR::ValueBase::StrEn:
-               data->tag = InitTag::StrEn;
-               data->val = val.vStrEn.value;
+               iv = &ini.vals[itr++];
+               iv->tag = InitTag::StrEn;
+               iv->val = val.vStrEn.value;
                break;
 
             default:

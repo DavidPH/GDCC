@@ -45,6 +45,8 @@ namespace GDCC
 
             static Core::FastU AutoStackRegister;
 
+            static Core::FastU InitScriptNumber;
+
             static Core::FastU LocArsArray;
 
             static bool UseChunkSTRE;
@@ -80,9 +82,11 @@ namespace GDCC
             class InitData
             {
             public:
-               InitData() : needTag{false}, onlyStr{true} {}
+               InitData() : max{0}, needTag{false}, onlyStr{true} {}
 
-               Core::Array<InitVal> vals;
+               std::unordered_map<Core::FastU, InitVal> vals;
+
+               Core::FastU max;
 
                bool needTag : 1;
                bool onlyStr : 1;
@@ -99,12 +103,15 @@ namespace GDCC
 
             virtual void genFunc();
 
+            void genIniti();
+            void genInitiSpace(IR::Space &space);
+
             virtual void genObj();
 
             virtual void genSpace();
             void genSpaceIniti();
             void genSpaceIniti(IR::Space &space);
-            void genSpaceInitiValue(InitVal *&data, InitVal const *end, IR::Value const &val);
+            void genSpaceInitiValue(InitData &ini, Core::FastU &itr, IR::Value const &val);
 
             virtual void genStmnt();
             void genStmnt_Call();
@@ -116,6 +123,14 @@ namespace GDCC
             void genStmnt_Retn();
 
             virtual void genStr();
+
+            Core::FastU getInitGblArray();
+            Core::FastU getInitGblIndex();
+            Core::FastU getInitWldArray();
+            Core::FastU getInitWldIndex();
+
+            bool isInitiGblArr();
+            bool isInitiWldArr();
 
             Core::FastU lenChunk();
             Core::FastU lenChunk(char const *name, Core::Array<Core::String> const &strs, bool junk);
@@ -175,6 +190,9 @@ namespace GDCC
 
             void putHWord(Core::FastU i);
 
+            void putIniti();
+            void putInitiSpace(IR::Space &space, Core::FastU code);
+
             virtual void putStmnt();
             void putStmnt_Call();
             void putStmnt_Cspe();
@@ -202,6 +220,9 @@ namespace GDCC
             void trStmnt_Retn();
 
             std::unordered_map<IR::Space const *, InitData> init;
+
+            Core::FastU codeInit;
+            Core::FastU codeInitEnd;
 
             Core::FastU numChunkAIMP;
             Core::FastU numChunkAINI;

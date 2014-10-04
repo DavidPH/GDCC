@@ -141,11 +141,17 @@ namespace GDCC
                if(itr.first->space.base == IR::AddrBase::MapArr)
             {
                putData("AINI", 4);
-               putWord(itr.second.vals.size() * 4 + 4);
+               putWord(itr.second.max * 4 + 4);
                putWord(itr.first->value);
 
-               for(auto const &i : itr.second.vals)
-                  putWord(i.val);
+               for(Core::FastU i = 0, e = itr.second.max; i != e; ++i)
+               {
+                  auto val = itr.second.vals.find(i);
+                  if(val != itr.second.vals.end())
+                     putWord(val->second.val);
+                  else
+                     putWord(0);
+               }
             }
          }
 
@@ -206,12 +212,18 @@ namespace GDCC
                putByte(0); // version
                putWord(itr.first->value);
 
-               for(auto const &i : itr.second.vals) switch(i.tag)
+               for(Core::FastU i = 0, e = itr.second.max; i != e; ++i)
                {
-               case InitTag::Empty: putByte(0); break;
-               case InitTag::Fixed: putByte(0); break;
-               case InitTag::Funct: putByte(2); break;
-               case InitTag::StrEn: putByte(1); break;
+                  auto val = itr.second.vals.find(i);
+                  if(val != itr.second.vals.end()) switch(val->second.tag)
+                  {
+                  case InitTag::Empty: putByte(0); break;
+                  case InitTag::Fixed: putByte(0); break;
+                  case InitTag::Funct: putByte(2); break;
+                  case InitTag::StrEn: putByte(1); break;
+                  }
+                  else
+                     putByte(0);
                }
             }
          }
@@ -227,6 +239,9 @@ namespace GDCC
             // Put statements.
             for(auto &itr : prog->rangeFunction())
                putFunc(itr);
+
+            // Put initializers.
+            putIniti();
          }
 
          //
@@ -373,14 +388,12 @@ namespace GDCC
          {
             if(!numChunkMINI) return;
 
-            auto const &ini = init[&prog->getSpaceMapReg()];
-
-            for(std::size_t i = 0, e = ini.vals.size(); i != e; ++i) if(ini.vals[i].val)
+            for(auto const &itr : init[&prog->getSpaceMapReg()].vals) if(itr.second.val)
             {
                putData("MINI", 4);
                putWord(8);
-               putWord(i);
-               putWord(ini.vals[i].val);
+               putWord(itr.first);
+               putWord(itr.second.val);
             }
          }
 
@@ -394,10 +407,8 @@ namespace GDCC
             putData("MSTR", 4);
             putWord(numChunkMSTR * 4);
 
-            auto const &ini = init[&prog->getSpaceMapReg()];
-
-            for(std::size_t i = 0, e = ini.vals.size(); i != e; ++i)
-               if(ini.vals[i].tag == InitTag::StrEn) putWord(i);
+            for(auto const &itr : init[&prog->getSpaceMapReg()].vals)
+               if(itr.second.tag == InitTag::StrEn) putWord(itr.first);
          }
 
          //
@@ -509,6 +520,25 @@ namespace GDCC
                   putHWord(stype);
                   putExpWord(resolveGlyph(itr.label));
                   putWord(itr.param);
+               }
+            }
+
+            // Initializer script.
+            if(codeInit)
+            {
+               if(UseFakeACS0)
+               {
+                  putHWord(InitScriptNumber);
+                  putByte(1);
+                  putByte(0);
+                  putWord(codeInit);
+               }
+               else
+               {
+                  putHWord(InitScriptNumber);
+                  putHWord(1);
+                  putWord(codeInit);
+                  putWord(0);
                }
             }
          }
