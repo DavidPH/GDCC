@@ -204,6 +204,10 @@ namespace GDCC
             void putStmnt_Move_W__Stk_Reg(IR::ArgPtr1 const &reg, Core::FastU i);
             void putStmnt_Retn();
 
+            void putStmntDropRetn(Core::FastU ret);
+
+            void putStmntPushRetn(Core::FastU ret);
+
             void putString(Core::String str);
             void putString(Core::String str, Core::FastU key);
 

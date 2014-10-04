@@ -242,17 +242,14 @@ namespace GDCC
             case IR::ArgBase::Lit:
                if(ret == 0)
                   putWord(204); // calldiscard
-
-               else if(ret == 1)
+               else
                   putWord(203); // call
 
-               else
-               {
-                  std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-                  throw EXIT_FAILURE;
-               }
-
                putExpWord(stmnt->args[0].aLit.value);
+
+               if(ret)
+                  putStmntPushRetn(ret);
+
                break;
 
             case IR::ArgBase::Stk:
@@ -260,14 +257,8 @@ namespace GDCC
 
                if(ret == 0)
                   putWord(54); // drop
-
-               else if(ret == 1) {}
-
                else
-               {
-                  std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-                  throw EXIT_FAILURE;
-               }
+                  putStmntPushRetn(ret);
 
                break;
 
@@ -517,7 +508,7 @@ namespace GDCC
             putWord(i);
 
             if(reg.off)
-               putExpWord(IR::ExpCreate_Add(reg.idx->aLit.value, reg.off));
+               putExpWord(IR::ExpCreate_AddPtrRaw(reg.idx->aLit.value, reg.off));
             else
                putExpWord(reg.idx->aLit.value);
          }
@@ -573,7 +564,7 @@ namespace GDCC
             putWord(i);
 
             if(reg.off)
-               putExpWord(IR::ExpCreate_Add(reg.idx->aLit.value, reg.off));
+               putExpWord(IR::ExpCreate_AddPtrRaw(reg.idx->aLit.value, reg.off));
             else
                putExpWord(reg.idx->aLit.value);
          }
@@ -589,14 +580,11 @@ namespace GDCC
             case IR::CallType::LangC:
                if(stmnt->args.size() == 0)
                   putWord(205); // returnvoid
-
-               else if(stmnt->args.size() == 1)
-                  putWord(206); // returnval
-
                else
                {
-                  std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-                  throw EXIT_FAILURE;
+                  putStmntDropRetn(stmnt->args.size());
+
+                  putWord(206); // returnval
                }
                break;
 
@@ -622,6 +610,35 @@ namespace GDCC
             default:
                std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Retn\n";
                throw EXIT_FAILURE;
+            }
+         }
+
+         //
+         // Info::putStmntDropRetn
+         //
+         void Info::putStmntDropRetn(Core::FastU ret)
+         {
+            if(ret) for(Core::FastU i = 0; ++i != ret;)
+            {
+               putWord(3); // pushnumber
+               putWord(-i);
+               putWord(217); // swap
+               putWord(236); // assignglobalarray
+               putWord(LocArsArray);
+            }
+         }
+
+         //
+         // Info::putStmntPushRetn
+         //
+         void Info::putStmntPushRetn(Core::FastU ret)
+         {
+            if(ret) while(ret-- != 1)
+            {
+               putWord(3); // pushnumber
+               putWord(-ret);
+               putWord(235); // pushglobalarray
+               putWord(LocArsArray);
             }
          }
       }

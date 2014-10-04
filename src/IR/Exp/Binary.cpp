@@ -80,6 +80,12 @@ namespace GDCC
             return valR;
          }
 
+         if(valL.v == ValueBase::Fixed && valR.v == ValueBase::Fixed)
+         {
+            valL.vFixed.value += valR.vFixed.value;
+            return valL;
+         }
+
          throw TypeError();
       }
    }

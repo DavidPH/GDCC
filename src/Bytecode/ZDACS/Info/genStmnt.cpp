@@ -162,28 +162,18 @@ namespace GDCC
             switch(stmnt->args[0].a)
             {
             case IR::ArgBase::Lit:
-               if(ret == 0 || ret == 1)
+               if(ret == 0)
                   numChunkCODE += 8;
                else
-               {
-                  std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-                  throw EXIT_FAILURE;
-               }
+                  numChunkCODE += 8 + (ret - 1) * 16;
 
                break;
 
             case IR::ArgBase::Stk:
                if(ret == 0)
                   numChunkCODE += 8;
-
-               else if(ret == 1)
-                  numChunkCODE += 4;
-
                else
-               {
-                  std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-                  throw EXIT_FAILURE;
-               }
+                  numChunkCODE += 4 + (ret - 1) * 16;
 
                break;
 
@@ -416,13 +406,10 @@ namespace GDCC
             {
             case IR::CallType::LangACS:
             case IR::CallType::LangC:
-               if(argc == 0 || argc == 1)
+               if(argc == 0)
                   numChunkCODE += 4;
                else
-               {
-                  std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-                  throw EXIT_FAILURE;
-               }
+                  numChunkCODE += 4 + (argc - 1) * 20;
                break;
 
             case IR::CallType::Script:

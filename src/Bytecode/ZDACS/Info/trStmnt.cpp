@@ -173,26 +173,10 @@ namespace GDCC
             for(auto n = stmnt->args.size(); --n != 1;)
                CheckArgB(stmnt, n, IR::ArgBase::Stk);
 
-            auto ret = ResolveValue(stmnt->args[1].aLit.value->getValue());
-
             switch(stmnt->args[0].a)
             {
             case IR::ArgBase::Lit:
-               if(ret != 0 && ret != 1)
-               {
-                  std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-                  throw EXIT_FAILURE;
-               }
-
-               break;
-
             case IR::ArgBase::Stk:
-               if(ret != 0 && ret != 1)
-               {
-                  std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-                  throw EXIT_FAILURE;
-               }
-
                break;
 
             default:
@@ -317,11 +301,6 @@ namespace GDCC
             {
             case IR::CallType::LangACS:
             case IR::CallType::LangC:
-               if(argc != 0 && argc != 1)
-               {
-                  std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-                  throw EXIT_FAILURE;
-               }
                break;
 
             case IR::CallType::Script:
