@@ -15,6 +15,8 @@
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
+#include "Core/Exception.hpp"
+
 #include <iostream>
 
 
@@ -41,8 +43,7 @@ namespace GDCC
          try {return v_getType();}
          catch(TypeError const &)
          {
-            std::cerr << "ERROR: " << pos << ": type mismatch\n";
-            throw EXIT_FAILURE;
+            throw Core::ExceptStr(pos, "type mismatch");
          }
       }
 
@@ -54,8 +55,23 @@ namespace GDCC
          try {return v_getValue();}
          catch(TypeError const &)
          {
-            std::cerr << "ERROR: " << pos << ": type mismatch\n";
-            throw EXIT_FAILURE;
+            throw Core::ExceptStr(pos, "type mismatch");
+         }
+      }
+
+      //
+      // Exp::getValueFastU
+      //
+      Core::FastU Exp::getValueFastU() const
+      {
+         auto v = getValue();
+         switch(v.v)
+         {
+         case ValueBase::Fixed:
+            return Core::NumberCast<Core::FastU>(v.vFixed.value);
+
+         default:
+            throw Core::ExceptStr(pos, "invalid getValueFastU");
          }
       }
 

@@ -14,11 +14,44 @@
 
 #include "CC/Scope/Function.hpp"
 
+#include "Core/Exception.hpp"
+
+#include "AST/Exp.hpp"
 #include "AST/Function.hpp"
+#include "AST/Object.hpp"
 #include "AST/Type.hpp"
 
 #include "IR/Block.hpp"
 #include "IR/CallType.hpp"
+
+
+//----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace CC
+   {
+      //
+      // MoveParam
+      //
+      template<typename ArgT>
+      static void MoveParam(AST::GenStmntCtx const &ctx, Core::FastU paramIdx,
+         Core::FastU objValue, Core::FastU objWords)
+      {
+         auto nulIdx = AST::ExpCreate_Size(0)->getIRExp();
+         for(Core::FastU i = 0; i != objWords; ++i)
+         {
+            IR::Arg_Lit dstIdx{AST::ExpCreate_Size(objValue + i)->getIRExp()};
+            IR::Arg_Lit srcIdx{AST::ExpCreate_Size(paramIdx + i)->getIRExp()};
+
+            ctx.block.addStatementArgs(IR::Code::Move_W,
+               ArgT(dstIdx, nulIdx), IR::Arg_LocReg(srcIdx, nulIdx));
+         }
+      }
+   }
+}
 
 
 //----------------------------------------------------------------------------|
@@ -41,7 +74,35 @@ namespace GDCC
             ctx.block.addStatementArgs(IR::Code::Plsa, 8192);
 
          // Move parameter data to actual storage location.
-         // TODO
+         Core::FastU paramIdx = 0;
+
+         if(ctype == IR::CallType::StdCall)
+            ++paramIdx;
+
+         for(auto const &obj : scope.params)
+         {
+            if(!obj->value) continue;
+
+            Core::FastU objValue = obj->value->getValueFastU();
+            Core::FastU objWords = obj->type->getSizeWords();
+
+            switch(obj->type->getQualAddr().base)
+            {
+            case IR::AddrBase::Loc:
+               MoveParam<IR::Arg_Loc>(ctx, paramIdx, objValue, objWords);
+               break;
+
+            case IR::AddrBase::LocReg:
+               if(objValue != paramIdx)
+                  MoveParam<IR::Arg_LocReg>(ctx, paramIdx, objValue, objWords);
+               break;
+
+            default:
+               break;
+            }
+
+            paramIdx += objWords;
+         }
       }
 
       //
