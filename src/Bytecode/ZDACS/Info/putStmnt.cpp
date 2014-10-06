@@ -163,42 +163,22 @@ namespace GDCC
                putExpWord(stmnt->args[0].aLit.value);
                putWord(203); // call
                putExpWord(resolveGlyph("___GDCC__alloc"));
-               putWord(27); // assignworldvar
-               putWord(AutoStackRegister);
-               break;
-
-            case IR::Code::Plsd:
-               putWord(36); // subworldvar
-               putWord(AutoStackRegister);
+               putWord(25); // assignscriptvar
+               putWord(getStkPtrIdx());
                break;
 
             case IR::Code::Plsf:
-               putWord(30); // pushworldvar
-               putWord(AutoStackRegister);
+               putWord(28); // pushscriptvar
+               putWord(getStkPtrIdx());
                putWord(3); // pushnumber
                putWord(0);
                putWord(204); // calldiscard
                putExpWord(resolveGlyph("___GDCC__alloc"));
                break;
 
-            case IR::Code::Plsi:
-               putWord(33); // addworldvar
-               putWord(AutoStackRegister);
-               break;
-
-            case IR::Code::Plsr:
-               putWord(27); // assignworldvar
-               putWord(AutoStackRegister);
-               break;
-
-            case IR::Code::Plss:
-               putWord(30); // pushworldvar
-               putWord(AutoStackRegister);
-               break;
-
             case IR::Code::Pltn:
-               putWord(30); // pushworldvar
-               putWord(AutoStackRegister);
+               putWord(28); // pushscriptvar
+               putWord(getStkPtrIdx());
                putWord(14); // add
                break;
 
@@ -376,8 +356,8 @@ namespace GDCC
                break;
 
             case IR::ArgBase::Loc:
-               putWord(30); // pushworldvar
-               putWord(AutoStackRegister);
+               putWord(28); // pushscriptvar
+               putWord(getStkPtrIdx());
                putWord(14); // add
 
             case IR::ArgBase::LocArs:
@@ -429,8 +409,8 @@ namespace GDCC
                break;
 
             case IR::ArgBase::Loc:
-               putWord(30); // pushworldvar
-               putWord(AutoStackRegister);
+               putWord(28); // pushscriptvar
+               putWord(getStkPtrIdx());
                putWord(14); // add
 
             case IR::ArgBase::LocArs:
@@ -576,8 +556,8 @@ namespace GDCC
          {
             switch(func->ctype)
             {
-            case IR::CallType::LangACS:
-            case IR::CallType::LangC:
+            case IR::CallType::StdCall:
+            case IR::CallType::StkCall:
                if(stmnt->args.size() == 0)
                   putWord(205); // returnvoid
                else
@@ -588,7 +568,6 @@ namespace GDCC
                }
                break;
 
-            case IR::CallType::Script:
             case IR::CallType::ScriptI:
             case IR::CallType::ScriptS:
                if(stmnt->args.size() == 0)

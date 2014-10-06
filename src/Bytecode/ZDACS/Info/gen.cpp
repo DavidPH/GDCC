@@ -50,8 +50,8 @@ namespace GDCC
          {
             static IR::CallType const FuncTypes[] =
             {
-               IR::CallType::LangACS,
-               IR::CallType::LangC,
+               IR::CallType::StdCall,
+               IR::CallType::StkCall,
             };
 
             // Back label glyph.
@@ -61,8 +61,8 @@ namespace GDCC
 
             switch(func->ctype)
             {
-            case IR::CallType::LangACS:
-            case IR::CallType::LangC:
+            case IR::CallType::StdCall:
+            case IR::CallType::StkCall:
                if(func->alloc)
                   func->allocValue(*prog, FuncTypes);
 

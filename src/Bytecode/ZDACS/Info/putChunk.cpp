@@ -257,7 +257,8 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(itr.ctype != IR::CallType::LangACS)
+               if(itr.ctype != IR::CallType::StdCall &&
+                  itr.ctype != IR::CallType::StkCall)
                   continue;
 
                strs[itr.valueInt] = itr.glyph;
@@ -279,8 +280,8 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(itr.ctype != IR::CallType::LangACS &&
-                  itr.ctype != IR::CallType::LangC)
+               if(itr.ctype != IR::CallType::StdCall &&
+                  itr.ctype != IR::CallType::StkCall)
                   continue;
 
                funcs[itr.valueInt] = &itr;
@@ -423,8 +424,7 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(itr.ctype != IR::CallType::Script  &&
-                  itr.ctype != IR::CallType::ScriptI &&
+               if(itr.ctype != IR::CallType::ScriptI &&
                   itr.ctype != IR::CallType::ScriptS)
                   continue;
 
@@ -476,8 +476,7 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(itr.ctype != IR::CallType::Script  &&
-                  itr.ctype != IR::CallType::ScriptI &&
+               if(itr.ctype != IR::CallType::ScriptI &&
                   itr.ctype != IR::CallType::ScriptS)
                   continue;
 

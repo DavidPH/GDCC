@@ -404,15 +404,14 @@ namespace GDCC
 
             switch(func->ctype)
             {
-            case IR::CallType::LangACS:
-            case IR::CallType::LangC:
+            case IR::CallType::StdCall:
+            case IR::CallType::StkCall:
                if(argc == 0)
                   numChunkCODE += 4;
                else
                   numChunkCODE += 4 + (argc - 1) * 20;
                break;
 
-            case IR::CallType::Script:
             case IR::CallType::ScriptI:
             case IR::CallType::ScriptS:
                if(argc == 0)

@@ -14,6 +14,7 @@
 
 #include "Core/Option.hpp"
 
+#include "IR/CallType.hpp"
 #include "IR/Program.hpp"
 
 #include "Option/Bool.hpp"
@@ -38,19 +39,6 @@ static GDCC::Option::Int<GDCC::Core::FastU> LocArsArrayOpt
       .setDescS("Sets the global array used for LocArs."),
 
    &GDCC::Bytecode::ZDACS::Info::LocArsArray
-};
-
-//
-// --bc-zdacs-auto-stack-register
-//
-static GDCC::Option::Int<GDCC::Core::FastU> AutoStackRegisterOpt
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-auto-stack-register")
-      .setGroup("codegen")
-      .setDescS("Sets the world register used for the auto stack pointer."),
-
-   &GDCC::Bytecode::ZDACS::Info::AutoStackRegister
 };
 
 //
@@ -175,8 +163,6 @@ namespace GDCC
       namespace ZDACS
       {
          IR::Type_Fixed const Info::TypeWord{32, 0, false, false};
-
-         Core::FastU Info::AutoStackRegister = 0;
 
          Core::FastU Info::InitScriptNumber = 999;
 
@@ -338,6 +324,26 @@ namespace GDCC
          Core::FastU Info::getInitWldIndex()
          {
             return InitWldIndex;
+         }
+
+         //
+         // Info::getStkPtrIdx
+         //
+         Core::FastU Info::getStkPtrIdx()
+         {
+            switch(func->ctype)
+            {
+            case IR::CallType::StdCall:
+               return 0;
+
+            case IR::CallType::ScriptI:
+            case IR::CallType::ScriptS:
+               return func->localReg - 1;
+
+            default:
+               std::cerr << "ERROR: " << stmnt->pos << ": bad getStkPtrIdx\n";
+               throw EXIT_FAILURE;
+            }
          }
 
          //

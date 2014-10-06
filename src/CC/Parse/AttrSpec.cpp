@@ -119,20 +119,9 @@ static void ParseAttr_call(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
 
    switch(ctx.in.get().str)
    {
-   case Core::STR_None:    attr.callt = IR::CallType::None;    break;
-   case Core::STR_Action:  attr.callt = IR::CallType::Action;  break;
-   case Core::STR_AsmFunc: attr.callt = IR::CallType::AsmFunc; break;
-   case Core::STR_LangACS: attr.callt = IR::CallType::LangACS; break;
-   case Core::STR_LangASM: attr.callt = IR::CallType::LangASM; break;
-   case Core::STR_LangAXX: attr.callt = IR::CallType::LangAXX; break;
-   case Core::STR_LangC:   attr.callt = IR::CallType::LangC;   break;
-   case Core::STR_LangCXX: attr.callt = IR::CallType::LangCXX; break;
-   case Core::STR_LangDS:  attr.callt = IR::CallType::LangDS;  break;
-   case Core::STR_Native:  attr.callt = IR::CallType::Native;  break;
-   case Core::STR_Script:  attr.callt = IR::CallType::Script;  break;
-   case Core::STR_ScriptI: attr.callt = IR::CallType::ScriptI; break;
-   case Core::STR_ScriptS: attr.callt = IR::CallType::ScriptS; break;
-   case Core::STR_Special: attr.callt = IR::CallType::Special; break;
+      #define GDCC_IR_CallTypeList(name) \
+         case Core::STR_##name: attr.callt = IR::CallType::name; break;
+      #include "IR/CallTypeList.hpp"
 
    default:
       throw Core::ExceptStr(ctx.in.reget().pos, "invalid call");

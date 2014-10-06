@@ -99,6 +99,7 @@ static MemBlockPtr AllocBase, AllocIter;
 //
 // AllocDel
 //
+[[call("StkCall")]]
 static void AllocDel(register MemBlockPtr block)
 {
    register MemBlockPtr next = block->next;
@@ -159,6 +160,7 @@ static void AllocDel(register MemBlockPtr block)
 //
 // AllocInit
 //
+[[call("StkCall")]]
 static void AllocInit(void)
 {
    AllocBase = AllocIter = (MemBlockPtr)AllocHeapRaw;
@@ -171,6 +173,7 @@ static void AllocInit(void)
 //
 // AllocMerge
 //
+[[call("StkCall")]]
 static _Bool AllocMerge(register MemBlockPtr block, register size_t size)
 {
    // Check if next block is free and contains enough space.
@@ -221,6 +224,7 @@ static _Bool AllocMerge(register MemBlockPtr block, register size_t size)
 //
 // AllocNew
 //
+[[call("StkCall")]]
 static VoidPtr AllocNew(register size_t size)
 {
    // TODO: Round size up to alignment of MemBlock.
@@ -294,6 +298,7 @@ static VoidPtr AllocNew(register size_t size)
 //
 // __GDCC__alloc
 //
+[[call("StkCall")]]
 VoidPtr __GDCC__alloc(register VoidPtr ptrOld, register size_t size)
 {
    if(!AllocIter) AllocInit();
@@ -332,6 +337,7 @@ VoidPtr __GDCC__alloc(register VoidPtr ptrOld, register size_t size)
 //
 // __GDCC__alloc_dump
 //
+[[call("StkCall")]]
 void __GDCC__alloc_dump(void)
 {
    if(!AllocIter) AllocInit();

@@ -32,20 +32,8 @@ namespace GDCC
       //
       enum class CallType
       {
-         None,
-         Action,  // __action
-         AsmFunc, // __asmfunc
-         LangACS, // extern "ACS"
-         LangASM, // extern "asm"
-         LangAXX, // extern "ACS++"
-         LangC,   // extern "C"
-         LangCXX, // extern "C++"
-         LangDS,  // extern "DS"
-         Native,  // __native
-         Script,  // __script
-         ScriptI, // __scripti
-         ScriptS, // __scripts
-         Special, // __special
+         #define GDCC_IR_CallTypeList(name) name,
+         #include "../IR/CallTypeList.hpp"
       };
    }
 }
@@ -63,6 +51,9 @@ namespace GDCC
       std::ostream &operator << (std::ostream &out, CallType in);
 
       IArchive &operator >> (IArchive &in, CallType &out);
+
+      // Maps a CallType to its IR implementation.
+      CallType GetCallTypeIR(CallType ctype);
 
       bool IsCallTypeScript(CallType ctype);
    }

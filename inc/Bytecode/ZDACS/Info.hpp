@@ -43,8 +43,6 @@ namespace GDCC
 
             static IR::Type_Fixed const TypeWord;
 
-            static Core::FastU AutoStackRegister;
-
             static Core::FastU InitScriptNumber;
 
             static Core::FastU LocArsArray;
@@ -128,6 +126,8 @@ namespace GDCC
             Core::FastU getInitGblIndex();
             Core::FastU getInitWldArray();
             Core::FastU getInitWldIndex();
+
+            Core::FastU getStkPtrIdx();
 
             bool isInitiGblArr();
             bool isInitiWldArr();

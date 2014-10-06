@@ -69,19 +69,9 @@ namespace GDCC
       {
          switch(TokenPeekIdenti(ctx).in.get().str)
          {
-         case Core::STR_Action:  return IR::CallType::Action;
-         case Core::STR_AsmFunc: return IR::CallType::AsmFunc;
-         case Core::STR_LangACS: return IR::CallType::LangACS;
-         case Core::STR_LangASM: return IR::CallType::LangASM;
-         case Core::STR_LangAXX: return IR::CallType::LangAXX;
-         case Core::STR_LangC:   return IR::CallType::LangC;
-         case Core::STR_LangCXX: return IR::CallType::LangCXX;
-         case Core::STR_LangDS:  return IR::CallType::LangDS;
-         case Core::STR_Native:  return IR::CallType::Native;
-         case Core::STR_Script:  return IR::CallType::Script;
-         case Core::STR_ScriptI: return IR::CallType::ScriptI;
-         case Core::STR_ScriptS: return IR::CallType::ScriptS;
-         case Core::STR_Special: return IR::CallType::Special;
+            #define GDCC_IR_CallTypeList(name) \
+               case Core::STR_##name: return IR::CallType::name;
+            #include "IR/CallTypeList.hpp"
 
          default:
             throw Core::ParseExceptExpect(ctx.in.reget(), "CallType", false);

@@ -12,10 +12,13 @@
 
 #include "CC/Exp/Call.hpp"
 
+#include "AST/Function.hpp"
 #include "AST/Type.hpp"
 
 #include "IR/Block.hpp"
 #include "IR/CallType.hpp"
+
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -32,23 +35,32 @@ namespace GDCC
       void Exp_CallStk::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         auto callType = func->getCallType();
+         IR::CallType callType  = IR::GetCallTypeIR(func->getCallType());
+         std::size_t  irArgc    = 0;
+         Core::FastU  callWords = 0;
+
+         // Propagate stack pointer.
+         if(callType == IR::CallType::StdCall &&
+            Platform::TargetCur == Platform::Target::ZDoom)
+         {
+            ctx.block.addStatementArgs(IR::Code::Pltn,
+               IR::Arg_Stk(), ctx.fn->localArs);
+            ++callWords;
+         }
 
          // Evaluate and count arguments.
-         Core::FastU callWords = 0;
          for(auto const &arg : args)
          {
             arg->genStmntStk(ctx);
             callWords += arg->getType()->getSizeWords();
          }
 
-         std::size_t irArgc;
          if(callType != IR::CallType::AsmFunc)
-            irArgc = callWords + 2;
+            irArgc += callWords + 2;
          else
          {
             // TODO: const params
-            irArgc = 1;
+            irArgc += 1;
          }
 
          // Prepare IR args, preloaded with Stk for the call args.

@@ -17,6 +17,10 @@
 #include "AST/Function.hpp"
 #include "AST/Object.hpp"
 
+#include "IR/CallType.hpp"
+
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -52,8 +56,19 @@ namespace GDCC
       //
       void Scope_Function::allocAuto()
       {
-         // Allocate parameter objects.
          AllocAutoInfo alloc;
+         switch(IR::GetCallTypeIR(fn->ctype))
+         {
+         case IR::CallType::StdCall:
+            if(Platform::TargetCur == Platform::Target::ZDoom)
+               ++alloc.localReg;
+            break;
+
+         default:
+            break;
+         }
+
+         // Allocate parameter objects.
          for(auto &obj : params)
             allocAutoObj(alloc, obj);
 

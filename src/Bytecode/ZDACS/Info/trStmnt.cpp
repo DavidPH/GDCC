@@ -299,11 +299,10 @@ namespace GDCC
 
             switch(func->ctype)
             {
-            case IR::CallType::LangACS:
-            case IR::CallType::LangC:
+            case IR::CallType::StdCall:
+            case IR::CallType::StkCall:
                break;
 
-            case IR::CallType::Script:
             case IR::CallType::ScriptI:
             case IR::CallType::ScriptS:
                if(argc != 0 && argc != 1)

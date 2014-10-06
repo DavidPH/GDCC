@@ -37,8 +37,10 @@ typedef int ssize_t;
 // Global Functions                                                           |
 //
 
+[[call("StkCall")]]
 extern void __loc_ars *__GDCC__alloc(void __loc_ars *ptr, size_t size);
 
+[[call("StkCall")]]
 extern void __GDCC__alloc_dump(void);
 
 #endif//__GDCC_Header__C_GDCC_h__
