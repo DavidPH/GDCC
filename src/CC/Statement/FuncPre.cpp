@@ -34,8 +34,10 @@ namespace GDCC
       //
       void Statement_FuncPre::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
+         auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
+
          // If script, allocate automatic storage area.
-         if(IR::IsCallTypeScript(scope.fn->ctype))
+         if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
             ctx.block.addStatementArgs(IR::Code::Plsa, 8192);
 
          // Move parameter data to actual storage location.
@@ -47,13 +49,15 @@ namespace GDCC
       //
       void Statement_FuncPro::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
+         auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
+
          // Add label for exit point. Unless it was never generated and is
          // therefore unused.
          if(scope.fn->labelEnd)
             ctx.block.addLabel(scope.fn->labelEnd);
 
          // If script, free automatic storage area.
-         if(IR::IsCallTypeScript(scope.fn->ctype))
+         if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
             ctx.block.addStatementArgs(IR::Code::Plsf);
 
          // Perform return.
@@ -61,7 +65,7 @@ namespace GDCC
          {
             ctx.block.addStatementArgs(IR::Code::Retn);
          }
-         else if(IR::IsCallTypeScript(scope.fn->ctype))
+         else if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
          {
             ctx.block.setArgs({scope.fn->retrn->getSizeWords(), IR::Arg_Stk()});
             ctx.block.addStatement(IR::Code::Retn);

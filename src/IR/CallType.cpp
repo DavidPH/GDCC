@@ -101,23 +101,6 @@ namespace GDCC
             return ctype;
          }
       }
-
-      //
-      // IsCallTypeScript
-      //
-      bool IsCallTypeScript(CallType ctype)
-      {
-         switch(ctype)
-         {
-         case CallType::Script:
-         case CallType::ScriptI:
-         case CallType::ScriptS:
-            return true;
-
-         default:
-            return false;
-         }
-      }
    }
 }
 

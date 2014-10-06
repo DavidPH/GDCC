@@ -109,9 +109,11 @@ namespace GDCC
       //
       void Statement_ReturnExp::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
+         auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
+
          exp->genStmntStk(ctx);
 
-         if(IR::IsCallTypeScript(scope.fn->ctype))
+         if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
          {
             ctx.block.addStatementArgs(IR::Code::Jump,
                IR::Glyph(ctx.prog, scope.fn->getLabelEnd()));
@@ -136,7 +138,9 @@ namespace GDCC
       //
       void Statement_ReturnNul::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
-         if(IR::IsCallTypeScript(scope.fn->ctype))
+         auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
+
+         if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
          {
             ctx.block.addStatementArgs(IR::Code::Jump,
                IR::Glyph(ctx.prog, scope.fn->getLabelEnd()));

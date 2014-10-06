@@ -54,8 +54,6 @@ namespace GDCC
 
       // Maps a CallType to its IR implementation.
       CallType GetCallTypeIR(CallType ctype);
-
-      bool IsCallTypeScript(CallType ctype);
    }
 }
 
