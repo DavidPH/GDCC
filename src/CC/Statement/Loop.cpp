@@ -68,6 +68,7 @@ namespace GDCC
          // Labels.
          IR::Glyph labelBody  = {ctx.prog, ctx.fn->genLabel()};
          IR::Glyph labelBreak = {ctx.prog, scope.getLabelBreak()};
+         IR::Glyph labelCond  = {ctx.prog, ctx.fn->genLabel()};
          IR::Glyph labelCont  = {ctx.prog, scope.getLabelContinue()};
 
          // Generate initializer.
@@ -77,7 +78,7 @@ namespace GDCC
          // Putting the condition at the end of the loop is more efficient.
          // If condition is known to be true, then do not bother jumping to it.
          if(!post && !(cond->isNonzero() && !cond->isEffect()))
-            ctx.block.addStatementArgs(IR::Code::Jump, labelCont);
+            ctx.block.addStatementArgs(IR::Code::Jump, labelCond);
 
          // Generate body.
          ctx.block.addLabel(labelBody);
@@ -88,6 +89,7 @@ namespace GDCC
          if(iter) iter->genStmnt(ctx);
 
          // Generate condition.
+         ctx.block.addLabel(labelCond);
          if(cond->isZero())
          {
             cond->genStmnt(ctx);
