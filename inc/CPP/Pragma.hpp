@@ -46,7 +46,7 @@ namespace GDCC
       // PragmaVA
       //
       template<typename... Pragmas>
-      class PragmaVA final : public Pragma, Pragmas...
+      class PragmaVA final : public Pragma, public Pragmas...
       {
       public:
          //
