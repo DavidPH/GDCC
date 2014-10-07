@@ -858,6 +858,8 @@ Syntax:
     <ScriptI>
     <ScriptS>
     <Special>
+    <StdCall>
+    <StkCall>
 
   linkage-specifier:
     <ExtACS>
@@ -1327,6 +1329,8 @@ Grammar
     <ScriptI>
     <ScriptS>
     <Special>
+    <StdCall>
+    <StkCall>
 
   linkage-specifier:
     <ExtACS>

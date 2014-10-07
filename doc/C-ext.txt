@@ -175,6 +175,21 @@ Semantics:
 Semantics:
   Same as "SScript", except always a named script.
 
+-----------------------------------------------------------
+"StdCall"
+-----------------------------------------------------------
+
+Semantics:
+  The normal function calling convention.
+
+-----------------------------------------------------------
+"StkCall"
+-----------------------------------------------------------
+
+Semantics:
+  Minimalist function calling convention that does not pass the stack pointer.
+  LangACS functions map to this.
+
 ===========================================================
 Extern
 ===========================================================
@@ -192,6 +207,26 @@ Semantics:
 
   Setting language linkage in this way does not affect a function's default
   calling convention or otherwise alter its type.
+
+===========================================================
+No Init
+===========================================================
+
+Syntax:
+  attribute-no_init:
+    attribute-no_init-name
+
+  attribute-no_init-name:
+    <no_init>
+    <__no_init>
+
+Semantics:
+  Suppresses the normal static-storage initialization rules for the affected
+  objects, instead leaving them with indeterminate values at startup.
+
+  If an object affected by this attribute has an initializer, then only the
+  explicit parts of the initializer take effect. That is, partial aggregate
+  initializers leave all other members indeterminate.
 
 ===========================================================
 Script
