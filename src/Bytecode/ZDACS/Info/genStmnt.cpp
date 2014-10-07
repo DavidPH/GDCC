@@ -388,7 +388,13 @@ namespace GDCC
 
             switch(type.t)
             {
-            case IR::TypeBase::Funct: numChunkCODE +=  8; break;
+            case IR::TypeBase::Funct:
+               if(type.tFunct.callT == IR::CallType::ScriptS)
+                  numChunkCODE += 12;
+               else
+                  numChunkCODE +=  8;
+               break;
+
             case IR::TypeBase::StrEn: numChunkCODE += 12; break;
 
             default: numChunkCODE += 8; break;

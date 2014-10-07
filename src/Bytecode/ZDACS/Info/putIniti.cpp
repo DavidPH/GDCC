@@ -103,6 +103,9 @@ namespace GDCC
             case InitTag::Empty: break;
 
             case InitTag::Fixed:
+               // Skip zeroes.
+               if(!val.second.val) break;
+
                putWord(3); // pushnumber
                putWord(val.first);
                putWord(3); // pushnumber
@@ -114,8 +117,7 @@ namespace GDCC
             case InitTag::Funct:
                putWord(3); // pushnumber
                putWord(val.first);
-               putWord(359); // pushfunction
-               putWord(val.second.val);
+               putStmntPushFunct(val.second.val);
                putWord(code);
                putWord(space_.value);
                break;
@@ -123,9 +125,7 @@ namespace GDCC
             case InitTag::StrEn:
                putWord(3); // pushnumber
                putWord(val.first);
-               putWord(3); // pushnumber
-               putWord(val.second.val);
-               putWord(225); //tagstring
+               putStmntPushStrEn(val.second.val);
                putWord(code);
                putWord(space_.value);
                break;

@@ -519,14 +519,14 @@ namespace GDCC
             switch(val.v)
             {
             case IR::ValueBase::Funct:
-               putWord(359); // pushfunction
-               putWord(ResolveValue(val));
+               if(val.vFunct.vtype.callT == IR::CallType::ScriptS)
+                  putStmntPushStrEn(val.vFunct.value);
+               else
+                  putStmntPushFunct(val.vFunct.value);
                break;
 
             case IR::ValueBase::StrEn:
-               putWord(3); // pushnumber
-               putWord(ResolveValue(val));
-               putWord(225); // tagstring
+               putStmntPushStrEn(val.vStrEn.value);
                break;
 
             default:
@@ -608,6 +608,19 @@ namespace GDCC
          }
 
          //
+         // Info::putStmntPushFunct
+         //
+         void Info::putStmntPushFunct(Core::FastU value)
+         {
+            if((value & 0xFFFFFFFF) == 0)
+               putWord(3); // pushnumber
+            else
+               putWord(359); // pushfunction
+
+            putWord(value);
+         }
+
+         //
          // Info::putStmntPushRetn
          //
          void Info::putStmntPushRetn(Core::FastU ret)
@@ -619,6 +632,20 @@ namespace GDCC
                putWord(235); // pushglobalarray
                putWord(LocArsArray);
             }
+         }
+
+         //
+         // Info::putStmntPushStrEn
+         //
+         void Info::putStmntPushStrEn(Core::FastU value)
+         {
+            putWord(3); // pushnumber
+            putWord(value);
+
+            if((value & 0xFFFFFFFF) == 0xFFFFFFFF)
+               putWord(0); // nop
+            else
+               putWord(225); // tagstring
          }
       }
    }

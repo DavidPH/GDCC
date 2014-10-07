@@ -12,6 +12,7 @@
 
 #include "Bytecode/ZDACS/Info.hpp"
 
+#include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Program.hpp"
 
@@ -271,8 +272,21 @@ namespace GDCC
 
             case IR::ValueBase::Funct:
                iv = &ini.vals[itr++];
-               iv->tag = InitTag::Funct;
-               iv->val = val.vStrEn.value;
+               if(val.vFunct.vtype.callT == IR::CallType::ScriptS)
+               {
+                  if((val.vFunct.value & 0xFFFFFFFF) == 0xFFFFFFFF)
+                     iv->tag = InitTag::Fixed;
+                  else
+                     iv->tag = InitTag::StrEn;
+               }
+               else
+               {
+                  if((val.vFunct.value & 0xFFFFFFFF) == 0)
+                     iv->tag = InitTag::Fixed;
+                  else
+                     iv->tag = InitTag::Funct;
+               }
+               iv->val = val.vFunct.value;
                break;
 
             case IR::ValueBase::Multi:
@@ -282,7 +296,10 @@ namespace GDCC
 
             case IR::ValueBase::StrEn:
                iv = &ini.vals[itr++];
-               iv->tag = InitTag::StrEn;
+               if((val.vFunct.value & 0xFFFFFFFF) == 0xFFFFFFFF)
+                  iv->tag = InitTag::Fixed;
+               else
+                  iv->tag = InitTag::StrEn;
                iv->val = val.vStrEn.value;
                break;
 

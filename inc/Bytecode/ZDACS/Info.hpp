@@ -206,7 +206,11 @@ namespace GDCC
 
             void putStmntDropRetn(Core::FastU ret);
 
+            void putStmntPushFunct(Core::FastU value);
+
             void putStmntPushRetn(Core::FastU ret);
+
+            void putStmntPushStrEn(Core::FastU value);
 
             void putString(Core::String str);
             void putString(Core::String str, Core::FastU key);

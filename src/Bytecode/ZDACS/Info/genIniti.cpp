@@ -91,7 +91,12 @@ namespace GDCC
             for(auto const &val : ini.vals) switch(val.second.tag)
             {
             case InitTag::Empty: break;
-            case InitTag::Fixed: numChunkCODE += 24; break;
+
+            case InitTag::Fixed:
+               if(val.second.val)
+                  numChunkCODE += 24;
+               break;
+
             case InitTag::Funct: numChunkCODE += 24; break;
             case InitTag::StrEn: numChunkCODE += 28; break;
             }
