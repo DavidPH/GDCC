@@ -136,7 +136,10 @@ static void ParseAttr_call(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
 // ParseAttr_extern
 //
 // attribute-extern:
-//    <extern> ( string-literal )
+//    attribute-extern-name ( string-literal )
+//
+// attribute-extern-name:
+//    <extern>
 //
 static void ParseAttr_extern(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
    GDCC::AST::Attribute &attr)
@@ -170,7 +173,30 @@ static void ParseAttr_extern(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
 }
 
 //
+// ParseAttr_no_init
+//
+// attribute-no_init:
+//    attribute-no_init-name
+//
+// attribute-no_init-name:
+//    <no_init>
+//    <__no_init>
+//
+static void ParseAttr_no_init(GDCC::CC::ParserCtx const &, GDCC::CC::Scope &,
+   GDCC::AST::Attribute &attr)
+{
+   attr.objNoInit = true;
+}
+
+//
 // ParserAttr_script
+//
+// attribute-script:
+//    attribute-script-name ( string-literal )
+//
+// attribute-script-name:
+//    <script>
+//    <__script>
 //
 static void ParseAttr_script(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
    GDCC::AST::Attribute &attr)
@@ -279,6 +305,9 @@ namespace GDCC
 
          case Core::STR_extern:
             ParseAttr_extern(ctx, scope, attr); break;
+
+         case Core::STR_no_init: case Core::STR___no_init:
+            ParseAttr_no_init(ctx, scope, attr); break;
 
          case Core::STR_script: case Core::STR___script:
             ParseAttr_script(ctx, scope, attr); break;

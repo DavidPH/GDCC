@@ -13,6 +13,8 @@
 #include "CC/Parse.hpp"
 
 #include "CC/Exp/Assign.hpp"
+#include "CC/Exp/Init.hpp"
+#include "CC/Init.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Scope/Global.hpp"
 #include "CC/Statement.hpp"
@@ -119,6 +121,13 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Global &scope,
          throw Core::ExceptStr(attr.namePos, "object with incomplete type");
 
       obj->defin = true;
+
+      // Give default initializer.
+      if(!attr.objNoInit)
+      {
+         obj->init = CC::Exp_Init::Create(
+            CC::Init::Create(obj->type, 0, attr.namePos), true);
+      }
    }
 
    // Set address, if one provided.
@@ -172,6 +181,13 @@ static GDCC::AST::Object::Ref GetDeclObj(GDCC::CC::Scope_Local &scope,
             throw Core::ExceptStr(attr.namePos, "object with incomplete type");
 
          obj->defin = true;
+
+         // Give default initializer, if a static storage object.
+         if(obj->store == AST::Storage::Static && !attr.objNoInit)
+         {
+            obj->init = CC::Exp_Init::Create(
+               CC::Init::Create(obj->type, 0, attr.namePos), true);
+         }
       }
    }
    // Local scope objects with linkage must not have an initializer.

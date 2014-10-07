@@ -87,8 +87,10 @@ struct MemBlock
 //
 
 //_Alignas(MemBlock)
+[[no_init]]
 static char AllocHeapRaw[__GDCC__AllocSize];
 
+[[no_init]]
 static MemBlockPtr AllocBase, AllocIter;
 
 
