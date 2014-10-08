@@ -44,7 +44,7 @@ namespace GDCC
          explicit Object(Core::String name);
          ~Object();
 
-         void allocValue(Program &prog);
+         void allocValue(Program &prog, bool (*test)(Program &, Object &) = nullptr);
 
          Core::String glyph;
          ExpCPtr      initi;

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -56,7 +56,7 @@ namespace GDCC
       //
       // Object::allocValue
       //
-      void Object::allocValue(Program &prog)
+      void Object::allocValue(Program &prog, bool (*test)(Program &, Object &))
       {
          if(!value && Platform::IsZeroNull_Point(space.base))
             value = 1;
@@ -80,6 +80,9 @@ namespace GDCC
                if((lo <= objLo && objLo < hi) || (lo < objHi && objHi < hi))
                   goto nextValue;
             }
+
+            if(test && test(prog, *this))
+               goto nextValue;
 
             break;
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -37,7 +37,7 @@ namespace GDCC
       public:
          explicit Space(AddrSpace as);
 
-         void allocValue(Program &prog);
+         void allocValue(Program &prog, bool (*test)(Program &, Space &) = nullptr);
          void allocWords(Program &prog);
 
          Core::String glyph;

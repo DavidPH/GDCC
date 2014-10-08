@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,40 +39,18 @@ namespace GDCC
             //
             // Handles the unusual rules for allocating map registers.
             //
-            auto allocMapReg = [this](IR::Object &self)
+            auto allocMapReg = [](IR::Program &prog, IR::Object &obj)
             {
-               for(;; ++self.value)
+               auto lo = obj.value;
+               auto hi = obj.words + lo;
+
+               for(auto const &itr : prog.rangeSpaceMapArs())
                {
-                  auto lo = self.value;
-                  auto hi = self.words + lo;
-
-                  for(auto const &obj : prog->rangeObject())
-                  {
-                     if(obj.alloc || &obj == &self || obj.space != self.space)
-                        continue;
-
-                     auto objLo = obj.value;
-                     auto objHi = obj.words + objLo;
-
-                     if((objLo <= lo && lo < objHi) || (objLo < hi && hi < objHi))
-                        goto nextValue;
-
-                     if((lo <= objLo && objLo < hi) || (lo < objHi && objHi < hi))
-                        goto nextValue;
-                  }
-
-                  for(auto const &itr : prog->rangeSpaceMapArs())
-                  {
-                     if(lo <= itr.value && itr.value < hi)
-                        goto nextValue;
-                  }
-
-                  break;
-
-               nextValue:;
+                  if(lo <= itr.value && itr.value < hi)
+                     return true;
                }
 
-               self.alloc = false;
+               return false;
             };
 
             //
@@ -108,7 +86,7 @@ namespace GDCC
                      continue;
 
                   if(obj.alloc)
-                     allocMapReg(obj);
+                     obj.allocValue(*prog, allocMapReg);
 
                   // Back address glyph.
                   backGlyphObj(obj.glyph, obj.value);
@@ -150,6 +128,21 @@ namespace GDCC
                break;
 
             case IR::AddrBase::GblArr:
+               // Allocate addresses for any sub-objects.
+               genSpaceAlloc();
+
+               // Even external arrays need an index.
+               if(space->alloc)
+                  space->allocValue(*prog, [](IR::Program &, IR::Space &space)
+                     {return space.value == LocArsArray;});
+
+               space->allocWords(*prog);
+
+               // Back address glyph.
+               backGlyphWord(space->glyph, space->value);
+
+               break;
+
             case IR::AddrBase::WldArr:
                // Allocate addresses for any sub-objects.
                genSpaceAlloc();

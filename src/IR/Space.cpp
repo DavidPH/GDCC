@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -44,7 +44,7 @@ namespace GDCC
       //
       // Space::allocValue
       //
-      void Space::allocValue(Program &prog)
+      void Space::allocValue(Program &prog, bool (*test)(Program &, Space &))
       {
          Program::TableRange<Space> range;
 
@@ -68,6 +68,9 @@ namespace GDCC
                if(!itr.alloc && &itr != this && itr.value == value)
                   goto nextValue;
             }
+
+            if(test && test(prog, *this))
+               goto nextValue;
 
             break;
 
