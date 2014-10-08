@@ -81,19 +81,6 @@ namespace GDCC
       }
 
       //
-      // Space::allocWords
-      //
-      void Space::allocWords(Program &prog)
-      {
-         for(auto const &itr : prog.rangeObject())
-         {
-            if(itr.space != space) continue;
-            auto w = itr.value + itr.words;
-            if(words < w) words = w;
-         }
-      }
-
-      //
       // operator OArchive << Space
       //
       OArchive &operator << (OArchive &out, Space const &in)

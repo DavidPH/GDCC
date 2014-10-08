@@ -361,11 +361,13 @@ namespace GDCC
 
             Core::Array<IR::Object const *> imps{numChunkMIMP};
 
-            auto itr = imps.begin();
-            for(auto const &obj : prog->rangeObject())
             {
-               if(!obj.defin && obj.space.base == IR::AddrBase::MapReg)
-                  *itr++ = &obj;
+               auto imp = imps.begin();
+               for(auto const &itr : prog->rangeObject())
+               {
+                  if(!itr.defin && itr.space.base == IR::AddrBase::MapReg)
+                     *imp++ = &itr;
+               }
             }
 
             Core::FastU size = numChunkMIMP * 4;

@@ -34,83 +34,33 @@ namespace GDCC
          //
          void Info::genSpace()
          {
-            //
-            // allocMapReg
-            //
-            // Handles the unusual rules for allocating map registers.
-            //
-            auto allocMapReg = [](IR::Program &prog, IR::Object &obj)
-            {
-               auto lo = obj.value;
-               auto hi = obj.words + lo;
-
-               for(auto const &itr : prog.rangeSpaceMapArs())
-               {
-                  if(lo <= itr.value && itr.value < hi)
-                     return true;
-               }
-
-               return false;
-            };
-
-            //
-            // genSpaceAlloc
-            //
-            auto genSpaceAlloc = [this]()
-            {
-               for(auto &obj : prog->rangeObject())
-               {
-                  if(obj.space != space->space)
-                     continue;
-
-                  if(obj.alloc)
-                     obj.allocValue(*prog);
-
-                  // Back address glyph.
-                  backGlyphObj(obj.glyph, obj.value);
-               }
-            };
-
             switch(space->space.base)
             {
             case IR::AddrBase::LocArs:
                space->value = LocArsArray;
-
-               space->allocWords(*prog);
-               break;
-
-            case IR::AddrBase::MapReg:
-               for(auto &obj : prog->rangeObject())
-               {
-                  if(obj.space.base != IR::AddrBase::MapReg)
-                     continue;
-
-                  if(obj.alloc)
-                     obj.allocValue(*prog, allocMapReg);
-
-                  // Back address glyph.
-                  backGlyphObj(obj.glyph, obj.value);
-
-                  if(!obj.defin)
-                     ++numChunkMIMP;
-
-                  if(obj.defin && numChunkMEXP <= obj.value)
-                     numChunkMEXP = obj.value + 1;
-               }
-
-               space->allocWords(*prog);
-
                break;
 
             case IR::AddrBase::MapArr:
-               // Allocate addresses for any sub-objects.
-               genSpaceAlloc();
-
                // Even external arrays need an index.
                if(space->alloc)
-                  space->allocValue(*prog);
+               {
+                  space->allocValue(*prog, [](IR::Program &prog, IR::Space &space)
+                  {
+                     for(auto const &itr : prog.rangeObject())
+                     {
+                        if(itr.space.base != IR::AddrBase::MapReg) continue;
+                        if(itr.alloc) continue;
 
-               space->allocWords(*prog);
+                        auto lo = itr.value;
+                        auto hi = itr.words + lo;
+
+                        if(lo <= space.value && space.value < hi)
+                           return true;
+                     }
+
+                     return false;
+                  });
+               }
 
                if(space->defin)
                {
@@ -128,15 +78,10 @@ namespace GDCC
                break;
 
             case IR::AddrBase::GblArr:
-               // Allocate addresses for any sub-objects.
-               genSpaceAlloc();
-
                // Even external arrays need an index.
                if(space->alloc)
                   space->allocValue(*prog, [](IR::Program &, IR::Space &space)
                      {return space.value == LocArsArray;});
-
-               space->allocWords(*prog);
 
                // Back address glyph.
                backGlyphWord(space->glyph, space->value);
@@ -144,14 +89,9 @@ namespace GDCC
                break;
 
             case IR::AddrBase::WldArr:
-               // Allocate addresses for any sub-objects.
-               genSpaceAlloc();
-
                // Even external arrays need an index.
                if(space->alloc)
                   space->allocValue(*prog);
-
-               space->allocWords(*prog);
 
                // Back address glyph.
                backGlyphWord(space->glyph, space->value);
@@ -171,17 +111,17 @@ namespace GDCC
             auto &ini = init[space];
 
             // Generate init data.
-            for(auto const &obj : prog->rangeObject())
+            for(auto const &itr : prog->rangeObject())
             {
-               if(!obj.defin || obj.space != space->space || !obj.initi)
+               if(!itr.defin || itr.space != space->space || !itr.initi)
                   continue;
 
-               auto itr = obj.value;
+               auto idx = itr.value;
 
-               genSpaceInitiValue(ini, itr, obj.initi->getValue());
+               genSpaceInitiValue(ini, idx, itr.initi->getValue());
 
-               if(ini.max < itr)
-                  ini.max = itr;
+               if(ini.max < idx)
+                  ini.max = idx;
             }
 
             // If no initializers needed, skip remaining parts.

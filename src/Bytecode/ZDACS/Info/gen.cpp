@@ -131,19 +131,57 @@ namespace GDCC
 
             switch(obj->space.base)
             {
+            case IR::AddrBase::GblArr:
             case IR::AddrBase::GblReg:
             case IR::AddrBase::LocArs:
+            case IR::AddrBase::MapArr:
+            case IR::AddrBase::WldArr:
             case IR::AddrBase::WldReg:
                if(obj->alloc)
                   obj->allocValue(*prog);
+               break;
+
+            case IR::AddrBase::MapReg:
+               if(obj->alloc)
+               {
+                  obj->allocValue(*prog, [](IR::Program &prog, IR::Object &obj)
+                  {
+                     auto lo = obj.value;
+                     auto hi = obj.words + lo;
+
+                     for(auto const &itr : prog.rangeSpaceMapArs())
+                     {
+                        if(lo <= itr.value && itr.value < hi)
+                           return true;
+                     }
+
+                     return false;
+                  });
+               }
+
+               if(!obj->defin)
+                  ++numChunkMIMP;
+
+               if(obj->defin && numChunkMEXP <= obj->value)
+                  numChunkMEXP = obj->value + 1;
+
                break;
 
             default:
                break;
             }
 
+            // Generic actions to take for allocated objects.
             if(!obj->alloc)
+            {
+               // Back address glyph.
                backGlyphObj(obj->glyph, obj->value);
+
+               // Recheck space size.
+               auto words = obj->value + obj->words;
+               if(auto sp = prog->findSpace(obj->space))
+                  if(sp->words < words) sp->words = words;
+            }
          }
 
          //

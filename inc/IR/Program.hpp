@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -59,13 +59,16 @@ namespace GDCC
          Program &operator = (Program const &) = delete;
          Program &operator = (Program &&) = delete;
 
-         Function  *findFunction (Core::String glyph);
-         GlyphData *findGlyphData(Core::String glyph);
-         Import    *findImport   (Core::String glyph);
-         Object    *findObject   (Core::String glyph);
-         Space     *findSpace    (AddrSpace    as);
-         StrEnt    *findStrEnt   (Core::String glyph);
-         StrEnt    *findStrEntVal(Core::String value);
+         Function  *findFunction   (Core::String glyph);
+         GlyphData *findGlyphData  (Core::String glyph);
+         Import    *findImport     (Core::String glyph);
+         Object    *findObject     (Core::String glyph);
+         Space     *findSpace      (AddrSpace    as);
+         Space     *findSpaceGblArr(Core::String glyph);
+         Space     *findSpaceMapArr(Core::String glyph);
+         Space     *findSpaceWldArr(Core::String glyph);
+         StrEnt    *findStrEnt     (Core::String glyph);
+         StrEnt    *findStrEntVal  (Core::String value);
 
          Function  &getFunction   (Core::String glyph);
          GlyphData &getGlyphData  (Core::String glyph);

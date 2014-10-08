@@ -38,7 +38,6 @@ namespace GDCC
          explicit Space(AddrSpace as);
 
          void allocValue(Program &prog, bool (*test)(Program &, Space &) = nullptr);
-         void allocWords(Program &prog);
 
          Core::String glyph;
          Linkage      linka;

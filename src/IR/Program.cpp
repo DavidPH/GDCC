@@ -133,6 +133,53 @@ namespace GDCC
       }
 
       //
+      // Program::findSpace
+      //
+      Space *Program::findSpace(AddrSpace as)
+      {
+         switch(as.base)
+         {
+         case AddrBase::GblArr:
+         case AddrBase::GblArs: return findSpaceGblArr(as.name);
+         case AddrBase::GblReg: return &getSpaceGblReg();
+         case AddrBase::LocArs: return &getSpaceLocArs();
+         case AddrBase::MapArr:
+         case AddrBase::MapArs: return findSpaceMapArr(as.name);
+         case AddrBase::MapReg: return &getSpaceMapReg();
+         case AddrBase::WldArr:
+         case AddrBase::WldArs: return findSpaceWldArr(as.name);
+         case AddrBase::WldReg: return &getSpaceWldReg();
+
+         default:
+            return nullptr;
+         }
+      }
+
+      //
+      // Program::findSpaceGblArr
+      //
+      Space *Program::findSpaceGblArr(Core::String glyph)
+      {
+         return FindTable(tableSpaceGblArs, glyph);
+      }
+
+      //
+      // Program::findSpaceMapArr
+      //
+      Space *Program::findSpaceMapArr(Core::String glyph)
+      {
+         return FindTable(tableSpaceMapArs, glyph);
+      }
+
+      //
+      // Program::findSpaceWldArr
+      //
+      Space *Program::findSpaceWldArr(Core::String glyph)
+      {
+         return FindTable(tableSpaceWldArs, glyph);
+      }
+
+      //
       // Program::findStrEnt
       //
       StrEnt *Program::findStrEnt(Core::String glyph)
