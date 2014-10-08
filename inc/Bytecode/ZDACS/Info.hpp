@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -32,6 +32,8 @@ namespace GDCC
    {
       namespace ZDACS
       {
+         enum class Code;
+
          //
          // Info
          //
@@ -184,6 +186,8 @@ namespace GDCC
             void putChunkSTRL();
             void putChunkSVCT();
 
+            void putCode(Code code);
+
             void putData(char const *s, std::size_t len) {out->write(s, len);}
 
             void putExpWord(IR::Exp const *exp);
@@ -191,17 +195,17 @@ namespace GDCC
             void putHWord(Core::FastU i);
 
             void putIniti();
-            void putInitiSpace(IR::Space &space, Core::FastU code);
+            void putInitiSpace(IR::Space &space, Code code);
 
             virtual void putStmnt();
             void putStmnt_Call();
             void putStmnt_Cspe();
             void putStmnt_Move_W();
-            void putStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr, Core::FastU i);
-            void putStmnt_Move_W__Reg_Stk(IR::ArgPtr1 const &reg, Core::FastU i);
-            void putStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr, Core::FastU i);
+            void putStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr, Code code);
+            void putStmnt_Move_W__Reg_Stk(IR::ArgPtr1 const &reg, Code code);
+            void putStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr, Code code);
             void putStmnt_Move_W__Stk_Lit(IR::Exp const *exp);
-            void putStmnt_Move_W__Stk_Reg(IR::ArgPtr1 const &reg, Core::FastU i);
+            void putStmnt_Move_W__Stk_Reg(IR::ArgPtr1 const &reg, Code code);
             void putStmnt_Retn();
 
             void putStmntDropRetn(Core::FastU ret);

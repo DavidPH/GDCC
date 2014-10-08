@@ -12,6 +12,8 @@
 
 #include "Bytecode/ZDACS/Info.hpp"
 
+#include "Bytecode/ZDACS/Code.hpp"
+
 #include "IR/Program.hpp"
 
 
@@ -42,23 +44,24 @@ namespace GDCC
                Core::FastU idx = getInitWldIndex();
 
                // Check if already initialized.
-               putWord(3); // pushnumber
+               putCode(Code::Push_Lit);
                putWord(idx);
-               putWord(226); // pushworldarray
+               putCode(Code::Push_WldArr);
                putWord(arr);
-               putWord(53); // ifgoto
+               putCode(Code::Cjmp_Tru);
                putWord(codeInitEnd);
 
                // Set initialized flag.
-               putWord(3); // pushnumber
+               putCode(Code::Push_Lit);
                putWord(idx);
-               putWord(3); // pushnumber
+               putCode(Code::Push_Lit);
                putWord(1);
-               putWord(227); // assignworldarray
+               putCode(Code::Drop_WldArr);
                putWord(arr);
 
                // Write instructions needed for initializers.
-               for(auto &itr : prog->rangeSpaceWldArs()) putInitiSpace(itr, 227); // assignworldarray
+               for(auto &itr : prog->rangeSpaceWldArs())
+                  putInitiSpace(itr, Code::Drop_WldArr);
             }
 
             if(isGblArr)
@@ -67,33 +70,34 @@ namespace GDCC
                Core::FastU idx = getInitGblIndex();
 
                // Check if already initialized.
-               putWord(3); // pushnumber
+               putCode(Code::Push_Lit);
                putWord(idx);
-               putWord(235); // pushglobalarray
+               putCode(Code::Push_GblArr);
                putWord(arr);
-               putWord(53); // ifgoto
+               putCode(Code::Cjmp_Tru);
                putWord(codeInitEnd);
 
                // Set initialized flag.
-               putWord(3); // pushnumber
+               putCode(Code::Push_Lit);
                putWord(idx);
-               putWord(3); // pushnumber
+               putCode(Code::Push_Lit);
                putWord(1);
-               putWord(236); // assignglobalarray
+               putCode(Code::Drop_GblArr);
                putWord(arr);
 
                // Write instructions needed for initializers.
-               for(auto &itr : prog->rangeSpaceGblArs()) putInitiSpace(itr, 236); // assignglobalarray
-               putInitiSpace(prog->getSpaceLocArs(), 236); // assignglobalarray
+               for(auto &itr : prog->rangeSpaceGblArs())
+                  putInitiSpace(itr, Code::Drop_GblArr);
+               putInitiSpace(prog->getSpaceLocArs(), Code::Drop_GblArr);
             }
 
-            putWord(1); // terminate
+            putCode(Code::Rscr);
          }
 
          //
          // Info::putInitiSpace
          //
-         void Info::putInitiSpace(IR::Space &space_, Core::FastU code)
+         void Info::putInitiSpace(IR::Space &space_, Code code)
          {
             auto const &ini = init[&space_];
 
@@ -106,27 +110,27 @@ namespace GDCC
                // Skip zeroes.
                if(!val.second.val) break;
 
-               putWord(3); // pushnumber
+               putCode(Code::Push_Lit);
                putWord(val.first);
-               putWord(3); // pushnumber
+               putCode(Code::Push_Lit);
                putWord(val.second.val);
-               putWord(code);
+               putCode(code);
                putWord(space_.value);
                break;
 
             case InitTag::Funct:
-               putWord(3); // pushnumber
+               putCode(Code::Push_Lit);
                putWord(val.first);
                putStmntPushFunct(val.second.val);
-               putWord(code);
+               putCode(code);
                putWord(space_.value);
                break;
 
             case InitTag::StrEn:
-               putWord(3); // pushnumber
+               putCode(Code::Push_Lit);
                putWord(val.first);
                putStmntPushStrEn(val.second.val);
-               putWord(code);
+               putCode(code);
                putWord(space_.value);
                break;
             }
