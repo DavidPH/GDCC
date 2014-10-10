@@ -300,7 +300,7 @@ namespace GDCC
                   putByte(0);
 
                   if(f->defin)
-                     putExpWord(resolveGlyph(f->label));
+                     putWord(GetWord(resolveGlyph(f->label)));
                   else
                      putWord(0);
                }
@@ -507,13 +507,13 @@ namespace GDCC
                   putHWord(GetScriptValue(itr));
                   putByte(stype);
                   putByte(itr.param);
-                  putExpWord(resolveGlyph(itr.label));
+                  putWord(GetWord(resolveGlyph(itr.label)));
                }
                else
                {
                   putHWord(GetScriptValue(itr));
                   putHWord(stype);
-                  putExpWord(resolveGlyph(itr.label));
+                  putWord(GetWord(resolveGlyph(itr.label)));
                   putWord(itr.param);
                }
             }

@@ -163,7 +163,7 @@ namespace GDCC
          //
          void Info::genStmnt_Call()
          {
-            auto ret = ResolveValue(stmnt->args[1].aLit.value->getValue());
+            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
 
             switch(stmnt->args[0].a)
             {
@@ -194,7 +194,7 @@ namespace GDCC
          //
          void Info::genStmnt_Cspe()
          {
-            auto ret = ResolveValue(stmnt->args[1].aLit.value->getValue());
+            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
 
             // No call args.
             if(stmnt->args.size() == 2)

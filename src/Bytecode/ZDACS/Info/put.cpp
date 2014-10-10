@@ -90,14 +90,6 @@ namespace GDCC
          }
 
          //
-         // Info::putExpWord
-         //
-         void Info::putExpWord(IR::Exp const *exp)
-         {
-            putWord(ResolveValue(exp->getValue()));
-         }
-
-         //
          // Info::putHWord
          //
          void Info::putHWord(Core::FastU i)

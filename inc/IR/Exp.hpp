@@ -86,8 +86,6 @@ namespace GDCC
 
          Value getValue() const;
 
-         Core::FastU getValueFastU() const;
-
          OArchive &putIR(OArchive &out) const;
 
          Core::Origin const pos;

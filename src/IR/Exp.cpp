@@ -60,22 +60,6 @@ namespace GDCC
       }
 
       //
-      // Exp::getValueFastU
-      //
-      Core::FastU Exp::getValueFastU() const
-      {
-         auto v = getValue();
-         switch(v.v)
-         {
-         case ValueBase::Fixed:
-            return Core::NumberCast<Core::FastU>(v.vFixed.value);
-
-         default:
-            throw Core::ExceptStr(pos, "invalid getValueFastU");
-         }
-      }
-
-      //
       // Exp::v_putIR
       //
       OArchive &Exp::v_putIR(OArchive &out) const

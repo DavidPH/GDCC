@@ -44,6 +44,27 @@ namespace GDCC
       }
 
       //
+      // Value_Fixed::getFastU
+      //
+      Core::FastU Value_Fixed::getFastU() const
+      {
+         if(vtype.bitsF)
+         {
+            if(vtype.bitsS)
+               return Core::NumberCast<Core::FastI>(value >> vtype.bitsF);
+            else
+               return Core::NumberCast<Core::FastU>(value >> vtype.bitsF);
+         }
+         else
+         {
+            if(vtype.bitsS)
+               return Core::NumberCast<Core::FastI>(value);
+            else
+               return Core::NumberCast<Core::FastU>(value);
+         }
+      }
+
+      //
       // Value_Float constructor
       //
       Value_Float::Value_Float(IArchive &in) : vtype{in}, value{GetIR(in, value)}
@@ -122,6 +143,31 @@ namespace GDCC
             #define GDCC_IR_TypeList(name) \
                case ValueBase::name: new(&v##name) Value_##name(in); return;
             #include "IR/TypeList.hpp"
+         }
+      }
+
+      //
+      // Value::getFastU
+      //
+      Core::FastU Value::getFastU() const
+      {
+         switch(v)
+         {
+         case ValueBase::Fixed:
+            return vFixed.getFastU();
+
+         case ValueBase::Funct:
+            return vFunct.value;
+
+         case ValueBase::Point:
+            return vPoint.value;
+
+         case ValueBase::StrEn:
+            return vStrEn.value;
+
+         default:
+            std::cerr << "ERROR: Bad Value::getFastU: " << v << '\n';
+            throw EXIT_FAILURE;
          }
       }
 

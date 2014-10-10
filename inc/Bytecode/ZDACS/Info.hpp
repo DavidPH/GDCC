@@ -191,8 +191,6 @@ namespace GDCC
 
             void putData(char const *s, std::size_t len);
 
-            void putExpWord(IR::Exp const *exp);
-
             void putHWord(Core::FastU i);
 
             void putIniti();
@@ -263,9 +261,9 @@ namespace GDCC
 
             static Core::FastU CodeBase();
 
-            static Core::FastU GetScriptValue(IR::Function const &script);
+            static Core::FastU GetWord(IR::Exp const *exp);
 
-            static Core::FastU ResolveValue(IR::Value const &val);
+            static Core::FastU GetScriptValue(IR::Function const &script);
          };
       }
    }

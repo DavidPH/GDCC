@@ -198,7 +198,7 @@ namespace GDCC
             CheckArgB(stmnt, 0, IR::ArgBase::Lit);
             CheckArgB(stmnt, 1, IR::ArgBase::Lit);
 
-            auto ret = ResolveValue(stmnt->args[1].aLit.value->getValue());
+            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
 
             if(ret > 1)
             {

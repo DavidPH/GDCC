@@ -12,6 +12,7 @@
 
 #include "Bytecode/ZDACS/Info.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/Option.hpp"
 
 #include "IR/CallType.hpp"
@@ -474,21 +475,12 @@ namespace GDCC
          }
 
          //
-         // Info::GetScriptValue
+         // Info::GetWord
          //
-         Core::FastU Info::GetScriptValue(IR::Function const &script)
+         Core::FastU Info::GetWord(IR::Exp const *exp)
          {
-            if(script.ctype == IR::CallType::ScriptS)
-               return -static_cast<Core::FastI>(script.valueInt) - 1;
-            else
-               return script.valueInt;
-         }
+            auto val = exp->getValue();
 
-         //
-         // Info::ResolveValue
-         //
-         Core::FastU Info::ResolveValue(IR::Value const &val)
-         {
             switch(val.v)
             {
             case IR::ValueBase::Fixed:
@@ -507,9 +499,19 @@ namespace GDCC
                return val.vFunct.value;
 
             default:
-               std::cerr << "ERROR: bad Value\n";
-               throw EXIT_FAILURE;
+               throw Core::ExceptStr(exp->pos, "bad GetWord Value");
             }
+         }
+
+         //
+         // Info::GetScriptValue
+         //
+         Core::FastU Info::GetScriptValue(IR::Function const &script)
+         {
+            if(script.ctype == IR::CallType::ScriptS)
+               return -static_cast<Core::FastI>(script.valueInt) - 1;
+            else
+               return script.valueInt;
          }
       }
    }

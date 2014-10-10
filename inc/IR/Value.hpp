@@ -72,6 +72,8 @@ namespace GDCC
 
          Value_Fixed &clamp() {vtype.clamp(value); return *this;}
 
+         Core::FastU getFastU() const;
+
          Type_Fixed  vtype;
          Core::Integ value;
       };
@@ -100,6 +102,8 @@ namespace GDCC
          explicit operator bool () const {return static_cast<bool>(value);}
 
          Value_Float &clamp() {return *this;}
+
+         Core::FastU getFastU() const;
 
          Type_Float  vtype;
          Core::Float value;
@@ -303,6 +307,8 @@ namespace GDCC
 
             return *this;
          }
+
+         Core::FastU getFastU() const;
 
          //
          // getType
