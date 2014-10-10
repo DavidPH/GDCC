@@ -474,6 +474,17 @@ namespace GDCC
          }
 
          //
+         // Info::GetScriptValue
+         //
+         Core::FastU Info::GetScriptValue(IR::Function const &script)
+         {
+            if(script.ctype == IR::CallType::ScriptS)
+               return -static_cast<Core::FastI>(script.valueInt) - 1;
+            else
+               return script.valueInt;
+         }
+
+         //
          // Info::ResolveValue
          //
          Core::FastU Info::ResolveValue(IR::Value const &val)

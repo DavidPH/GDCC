@@ -12,6 +12,8 @@
 
 #include "Bytecode/ZDACS/Info.hpp"
 
+#include "Core/Exception.hpp"
+
 #include "IR/CallType.hpp"
 #include "IR/Program.hpp"
 
@@ -139,6 +141,10 @@ namespace GDCC
 
             case IR::Code::Retn:
                genStmnt_Retn();
+               break;
+
+            case IR::Code::ShRU_W:
+               genStmnt_ShRU_W();
                break;
 
             case IR::Code::Swap_W:
@@ -434,6 +440,33 @@ namespace GDCC
             default:
                std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Retn\n";
                throw EXIT_FAILURE;
+            }
+         }
+
+         //
+         // Info::genStmnt_ShRU_W
+         //
+         void Info::genStmnt_ShRU_W()
+         {
+            switch(stmnt->args[2].a)
+            {
+            case IR::ArgBase::GblReg:
+            case IR::ArgBase::LocReg:
+            case IR::ArgBase::MapReg:
+            case IR::ArgBase::WldReg:
+               numChunkCODE += 64;
+               break;
+
+            case IR::ArgBase::Lit:
+               numChunkCODE += 24;
+               break;
+
+            case IR::ArgBase::Stk:
+               numChunkCODE += 68;
+               break;
+
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad gen Code::ShRU_W");
             }
          }
       }

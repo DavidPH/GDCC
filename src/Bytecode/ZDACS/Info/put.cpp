@@ -62,11 +62,31 @@ namespace GDCC
          }
 
          //
+         // Info::putByte
+         //
+         void Info::putByte(Core::FastU i)
+         {
+            out->put(i & 0xFF);
+
+            putPos += 1;
+         }
+
+         //
          // Info::putCode
          //
          void Info::putCode(Code code)
          {
             putWord(static_cast<Core::FastU>(code));
+         }
+
+         //
+         // Info::putData
+         //
+         void Info::putData(char const *s, std::size_t len)
+         {
+            out->write(s, len);
+
+            putPos += len;
          }
 
          //
@@ -84,6 +104,8 @@ namespace GDCC
          {
             out->put((i >> 0) & 0xFF);
             out->put((i >> 8) & 0xFF);
+
+            putPos += 2;
          }
 
          //
@@ -165,6 +187,8 @@ namespace GDCC
             out->put((i >>  8) & 0xFF);
             out->put((i >> 16) & 0xFF);
             out->put((i >> 24) & 0xFF);
+
+            putPos += 4;
          }
       }
    }

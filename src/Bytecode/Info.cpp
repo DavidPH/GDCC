@@ -240,6 +240,7 @@ namespace GDCC
             out  = &out_;
             prog = &prog_;
 
+            putPos = 0;
             put();
 
             out  = nullptr;

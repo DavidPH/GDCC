@@ -295,7 +295,7 @@ namespace GDCC
                if(f)
                {
                   putByte(f->param);
-                  putByte(std::max(f->localReg, f->param));
+                  putByte(std::max(f->getLocalReg(), f->param));
                   putByte(!!f->retrn);
                   putByte(0);
 
@@ -439,7 +439,7 @@ namespace GDCC
 
                if(!flags) continue;
 
-               putHWord(itr.valueInt);
+               putHWord(GetScriptValue(itr));
                putHWord(flags);
             }
          }
@@ -484,7 +484,7 @@ namespace GDCC
 
                if(!itr.defin) continue;
 
-               Core::FastU stype, value;
+               Core::FastU stype;
 
                // Convert script type.
                switch(itr.stype)
@@ -501,23 +501,17 @@ namespace GDCC
                case IR::ScriptType::Unloading:  stype = 13; break;
                }
 
-               // Convert script index.
-               if(itr.ctype == IR::CallType::ScriptS)
-                  value = -static_cast<Core::FastI>(itr.valueInt) - 1;
-               else
-                  value = itr.valueInt;
-
                // Write entry.
                if(UseFakeACS0)
                {
-                  putHWord(value);
+                  putHWord(GetScriptValue(itr));
                   putByte(stype);
                   putByte(itr.param);
                   putExpWord(resolveGlyph(itr.label));
                }
                else
                {
-                  putHWord(value);
+                  putHWord(GetScriptValue(itr));
                   putHWord(stype);
                   putExpWord(resolveGlyph(itr.label));
                   putWord(itr.param);
@@ -569,21 +563,20 @@ namespace GDCC
             if(!numChunkSVCT) return;
 
             putData("SVCT", 4);
-            putWord(numChunkSFLG * 4);
+            putWord(numChunkSVCT * 4);
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(itr.ctype != IR::CallType::Script  &&
-                  itr.ctype != IR::CallType::ScriptI &&
+               if(itr.ctype != IR::CallType::ScriptI &&
                   itr.ctype != IR::CallType::ScriptS)
                   continue;
 
                if(!itr.defin) continue;
 
-               if(itr.localReg <= 20) continue;
+               if(itr.getLocalReg() <= 20) continue;
 
-               putHWord(itr.valueInt);
-               putHWord(itr.localReg);
+               putHWord(GetScriptValue(itr));
+               putHWord(itr.getLocalReg());
             }
          }
       }

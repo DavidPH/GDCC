@@ -46,6 +46,11 @@ namespace GDCC
 
          void allocValue(Program &prog, CallType const *ctypeVec, std::size_t ctypeLen);
 
+         Core::FastU getLocalReg() const {return localReg + localTmp;}
+
+         void setLocalTmp(Core::FastU words)
+            {if(localTmp < words) localTmp = words;}
+
          Block        block;
          CallType     ctype;
          Core::String glyph;
@@ -53,6 +58,7 @@ namespace GDCC
          Linkage      linka;
          Core::FastU  localArs;
          Core::FastU  localReg;
+         Core::FastU  localTmp;
          Core::FastU  param;
          Core::FastU  retrn;
          ScriptType   stype;

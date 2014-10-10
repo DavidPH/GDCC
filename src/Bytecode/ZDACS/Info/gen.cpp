@@ -85,7 +85,7 @@ namespace GDCC
                ++numChunkSPTR;
 
                if(func->sflagClS || func->sflagNet) ++numChunkSFLG;
-               if(func->localReg > 20) ++numChunkSVCT;
+               if(func->getLocalReg() > 20) ++numChunkSVCT;
 
                backGlyphWord(func->glyph, func->valueInt);
 
@@ -100,7 +100,7 @@ namespace GDCC
                ++numChunkSPTR;
 
                if(func->sflagClS || func->sflagNet) ++numChunkSFLG;
-               if(func->localReg > 20) ++numChunkSVCT;
+               if(func->getLocalReg() > 20) ++numChunkSVCT;
 
                if(numChunkSNAM <= func->valueInt)
                   numChunkSNAM = func->valueInt + 1;

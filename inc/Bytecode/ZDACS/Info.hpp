@@ -121,6 +121,7 @@ namespace GDCC
             void genStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr);
             void genStmnt_Move_W__Stk_Lit(IR::Exp const *exp);
             void genStmnt_Retn();
+            void genStmnt_ShRU_W();
 
             virtual void genStr();
 
@@ -163,7 +164,7 @@ namespace GDCC
 
             virtual void put();
 
-            void putByte(Core::FastU i) {out->put(i & 0xFF);}
+            void putByte(Core::FastU i);
 
             void putChunk();
             void putChunk(char const *name, Core::Array<Core::String> const &strs, bool junk);
@@ -188,7 +189,7 @@ namespace GDCC
 
             void putCode(Code code);
 
-            void putData(char const *s, std::size_t len) {out->write(s, len);}
+            void putData(char const *s, std::size_t len);
 
             void putExpWord(IR::Exp const *exp);
 
@@ -207,6 +208,7 @@ namespace GDCC
             void putStmnt_Move_W__Stk_Lit(IR::Exp const *exp);
             void putStmnt_Move_W__Stk_Reg(IR::ArgPtr1 const &reg, Code code);
             void putStmnt_Retn();
+            void putStmnt_ShRU_W();
 
             void putStmntDropRetn(Core::FastU ret);
 
@@ -230,6 +232,7 @@ namespace GDCC
             void trStmnt_Cspe();
             void trStmnt_Move_W();
             void trStmnt_Retn();
+            void trStmnt_ShRU_W();
 
             std::unordered_map<IR::Space const *, InitData> init;
 
@@ -259,6 +262,8 @@ namespace GDCC
             static void CheckArg(IR::Arg const &arg, Core::Origin pos);
 
             static Core::FastU CodeBase();
+
+            static Core::FastU GetScriptValue(IR::Function const &script);
 
             static Core::FastU ResolveValue(IR::Value const &val);
          };

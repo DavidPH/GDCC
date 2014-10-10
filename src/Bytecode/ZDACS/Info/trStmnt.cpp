@@ -150,6 +150,10 @@ namespace GDCC
                trStmnt_Retn();
                break;
 
+            case IR::Code::ShRU_W:
+               trStmnt_ShRU_W();
+               break;
+
             case IR::Code::Swap_W:
                CheckArgC(stmnt, 2);
                CheckArgB(stmnt, 0, IR::ArgBase::Stk);
@@ -315,6 +319,31 @@ namespace GDCC
             default:
                std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Retn\n";
                throw EXIT_FAILURE;
+            }
+         }
+
+         //
+         // Info::trStmnt_ShRU_W
+         //
+         void Info::trStmnt_ShRU_W()
+         {
+            CheckArgC(stmnt, 3);
+            CheckArgB(stmnt, 0, IR::ArgBase::Stk);
+            CheckArgB(stmnt, 1, IR::ArgBase::Stk);
+
+            switch(stmnt->args[2].a)
+            {
+            case IR::ArgBase::GblReg:
+            case IR::ArgBase::Lit:
+            case IR::ArgBase::LocReg:
+            case IR::ArgBase::MapReg:
+            case IR::ArgBase::WldReg:
+               break;
+
+            default:
+               func->setLocalTmp(1);
+               CheckArgB(stmnt, 2, IR::ArgBase::Stk);
+               break;
             }
          }
       }

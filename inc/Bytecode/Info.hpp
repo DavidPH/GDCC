@@ -71,7 +71,8 @@ namespace GDCC
             prog{nullptr},
             space{nullptr},
             stmnt{nullptr},
-            str{nullptr}
+            str{nullptr},
+            putPos{0}
          {
          }
 
@@ -153,6 +154,7 @@ namespace GDCC
          IR::Space     *space;
          IR::Statement *stmnt;
          IR::StrEnt    *str;
+         std::size_t   putPos;
 
 
          static void CheckArgB(IR::Arg const &arg, IR::AddrBase b, Core::Origin pos);

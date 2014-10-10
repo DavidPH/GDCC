@@ -14,6 +14,7 @@
 
 #include "Bytecode/ZDACS/Code.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/Range.hpp"
 
 #include "IR/CallType.hpp"
@@ -194,6 +195,10 @@ namespace GDCC
 
             case IR::Code::ShRI_W:
                putCode(Code::ShRI);
+               break;
+
+            case IR::Code::ShRU_W:
+               putStmnt_ShRU_W();
                break;
 
             case IR::Code::SubI_W:
@@ -590,6 +595,96 @@ namespace GDCC
             default:
                std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Retn\n";
                throw EXIT_FAILURE;
+            }
+         }
+
+         //
+         // Info::putStmnt_ShRU_W
+         //
+         void Info::putStmnt_ShRU_W()
+         {
+            auto CaseXReg = [this](Code code)
+            {
+               auto idx = IR::ExpCreate_AddPtrRaw(
+                  stmnt->args[2].aLocReg.idx->aLit.value,
+                  stmnt->args[2].aLocReg.off);
+
+               putCode(code);
+               putExpWord(idx);
+
+               // If shift is 0, jump to end.
+               putCode(Code::Cjmp_Lit);
+               putWord(0);
+               putWord(putPos + 48);
+
+               putCode(Code::ShRI);
+               putCode(Code::Push_Lit);
+               putWord(0x80000000);
+               putCode(code);
+               putExpWord(idx);
+               putCode(Code::Push_Lit);
+               putWord(1);
+               putCode(Code::SubU);
+               putCode(Code::ShRI);
+               putCode(Code::InvU);
+               putCode(Code::AndU);
+            };
+
+            Core::FastU val;
+
+            switch(stmnt->args[2].a)
+            {
+            case IR::ArgBase::GblReg:
+               CaseXReg(Code::Push_GblReg);
+               break;
+
+            case IR::ArgBase::Lit:
+               val = stmnt->args[2].aLit.value->getValueFastU();
+
+               putCode(Code::Push_Lit);
+               putWord(val);
+               putCode(Code::ShRI);
+               putCode(Code::Push_Lit);
+               putWord(val < 32 ? 0xFFFFFFFFU >> val : 0xFFFFFFFF);
+               putCode(Code::AndU);
+               break;
+
+            case IR::ArgBase::LocReg:
+               CaseXReg(Code::Push_LocReg);
+               break;
+
+            case IR::ArgBase::MapReg:
+               CaseXReg(Code::Push_MapReg);
+               break;
+
+            case IR::ArgBase::Stk:
+               // If shift is 0, jump to end.
+               putCode(Code::Cjmp_Lit);
+               putWord(0);
+               putWord(putPos + 60);
+
+               putCode(Code::Drop_LocReg);
+               putWord(func->localReg + 0);
+               putCode(Code::Push_LocReg);
+               putWord(func->localReg + 0);
+               putCode(Code::ShRI);
+               putCode(Code::Push_Lit);
+               putWord(0x80000000);
+               putCode(Code::DecU_LocReg);
+               putWord(func->localReg + 0);
+               putCode(Code::Push_LocReg);
+               putWord(func->localReg + 0);
+               putCode(Code::ShRI);
+               putCode(Code::InvU);
+               putCode(Code::AndU);
+               break;
+
+            case IR::ArgBase::WldReg:
+               CaseXReg(Code::Push_WldReg);
+               break;
+
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad put Code::ShRU_W");
             }
          }
 

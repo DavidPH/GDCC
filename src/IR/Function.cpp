@@ -41,6 +41,7 @@ namespace GDCC
          linka   {Linkage::None},
          localArs{0},
          localReg{0},
+         localTmp{0},
          param   {0},
          retrn   {0},
          stype   {ScriptType::None},
