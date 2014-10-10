@@ -12,6 +12,8 @@
 
 #include "Bytecode/ZDACS/Info.hpp"
 
+#include "Core/Exception.hpp"
+
 #include "IR/CallType.hpp"
 #include "IR/Function.hpp"
 #include "IR/Glyph.hpp"
@@ -42,22 +44,12 @@ namespace GDCC
             case IR::Code::AddI_W:
             case IR::Code::AddU_W:
             case IR::Code::AndU_W:
-            case IR::Code::DivI_W:
-            case IR::Code::DivX_W:
-            case IR::Code::ModI_W:
             case IR::Code::MulI_W:
             case IR::Code::MulU_W:
             case IR::Code::MulX_W:
             case IR::Code::OrIU_W:
             case IR::Code::OrXU_W:
-            case IR::Code::ShLU_W:
-            case IR::Code::ShRI_W:
-            case IR::Code::SubI_W:
-            case IR::Code::SubU_W:
-               CheckArgC(stmnt, 3);
-               CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-               CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-               CheckArgB(stmnt, 2, IR::ArgBase::Stk);
+               trStmntStk3(false);
                break;
 
             case IR::Code::Call:
@@ -85,10 +77,7 @@ namespace GDCC
             case IR::Code::CmpI_NE_W:
             case IR::Code::CmpU_EQ_W:
             case IR::Code::CmpU_NE_W:
-               CheckArgC(stmnt, 3);
-               CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-               CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-               CheckArgB(stmnt, 2, IR::ArgBase::Stk);
+               trStmntStk3(true);
                break;
 
             case IR::Code::Cnat:
@@ -103,12 +92,22 @@ namespace GDCC
                trStmnt_Cspe();
                break;
 
+            case IR::Code::DivI_W:
+            case IR::Code::DivX_W:
+            case IR::Code::ModI_W:
+            case IR::Code::ShLU_W:
+            case IR::Code::ShRI_W:
+            case IR::Code::SubI_W:
+            case IR::Code::SubU_W:
+               trStmntStk3(true);
+               break;
+
             case IR::Code::InvU_W:
             case IR::Code::NegI_W:
             case IR::Code::NotU_W:
                CheckArgC(stmnt, 2);
-               CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-               CheckArgB(stmnt, 1, IR::ArgBase::Stk);
+               moveArgStk_W_dst(stmnt->args[0]);
+               moveArgStk_W_src(stmnt->args[1]);
                break;
 
             case IR::Code::Jump:
@@ -345,6 +344,22 @@ namespace GDCC
                CheckArgB(stmnt, 2, IR::ArgBase::Stk);
                break;
             }
+         }
+
+         //
+         // Info::trStmntStk3
+         //
+         void Info::trStmntStk3(bool ordered)
+         {
+            CheckArgC(stmnt, 3);
+
+            if(ordered && stmnt->args[1].a != IR::ArgBase::Stk &&
+               stmnt->args[2].a == IR::ArgBase::Stk)
+               throw Core::ExceptStr(stmnt->pos, "trStmntStk3 disorder");
+
+            moveArgStk_W_dst(stmnt->args[0]);
+            if(moveArgStk_W_src(stmnt->args[1])) return;
+            moveArgStk_W_src(stmnt->args[2]);
          }
       }
    }

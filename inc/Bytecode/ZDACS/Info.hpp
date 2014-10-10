@@ -232,6 +232,8 @@ namespace GDCC
             void trStmnt_Retn();
             void trStmnt_ShRU_W();
 
+            void trStmntStk3(bool ordered);
+
             std::unordered_map<IR::Space const *, InitData> init;
 
             Core::FastU codeInit;
