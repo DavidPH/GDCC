@@ -76,6 +76,10 @@ namespace GDCC
             case IR::Code::CmpI_LT_W:
             case IR::Code::CmpI_NE_W:
             case IR::Code::CmpU_EQ_W:
+            case IR::Code::CmpU_GE_W:
+            case IR::Code::CmpU_GT_W:
+            case IR::Code::CmpU_LE_W:
+            case IR::Code::CmpU_LT_W:
             case IR::Code::CmpU_NE_W:
                trStmntStk3(true);
                break;

@@ -98,6 +98,13 @@ namespace GDCC
                numChunkCODE += 4;
                break;
 
+            case IR::Code::CmpU_GE_W:
+            case IR::Code::CmpU_GT_W:
+            case IR::Code::CmpU_LE_W:
+            case IR::Code::CmpU_LT_W:
+               numChunkCODE += 8;
+               break;
+
             case IR::Code::Cnat:
                numChunkCODE += 12;
                break;

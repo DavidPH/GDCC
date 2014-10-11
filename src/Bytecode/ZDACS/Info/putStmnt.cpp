@@ -99,6 +99,26 @@ namespace GDCC
                putCode(Code::CmpU_NE);
                break;
 
+            case IR::Code::CmpU_GE_W:
+               putCode(Code::Call_Lit);
+               putWord(GetWord(resolveGlyph("___GDCC__CmpU_GE_W")));
+               break;
+
+            case IR::Code::CmpU_GT_W:
+               putCode(Code::Call_Lit);
+               putWord(GetWord(resolveGlyph("___GDCC__CmpU_GT_W")));
+               break;
+
+            case IR::Code::CmpU_LE_W:
+               putCode(Code::Call_Lit);
+               putWord(GetWord(resolveGlyph("___GDCC__CmpU_LE_W")));
+               break;
+
+            case IR::Code::CmpU_LT_W:
+               putCode(Code::Call_Lit);
+               putWord(GetWord(resolveGlyph("___GDCC__CmpU_LT_W")));
+               break;
+
             case IR::Code::Cnat:
                putCode(Code::Cnat);
                putWord(GetWord(stmnt->args[0].aLit.value));
