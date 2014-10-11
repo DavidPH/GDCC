@@ -97,8 +97,10 @@ namespace GDCC
                break;
 
             case IR::Code::DivI_W:
+            case IR::Code::DivU_W:
             case IR::Code::DivX_W:
             case IR::Code::ModI_W:
+            case IR::Code::ModU_W:
             case IR::Code::ShLU_W:
             case IR::Code::ShRI_W:
             case IR::Code::SubI_W:
@@ -331,8 +333,13 @@ namespace GDCC
          void Info::trStmnt_ShRU_W()
          {
             CheckArgC(stmnt, 3);
-            CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-            CheckArgB(stmnt, 1, IR::ArgBase::Stk);
+
+            if(stmnt->args[1].a != IR::ArgBase::Stk &&
+               stmnt->args[2].a == IR::ArgBase::Stk)
+               throw Core::ExceptStr(stmnt->pos, "trStmnt_ShRU_W disorder");
+
+            moveArgStk_W_dst(stmnt->args[0]);
+            if(moveArgStk_W_src(stmnt->args[1])) return;
 
             switch(stmnt->args[2].a)
             {
@@ -345,7 +352,7 @@ namespace GDCC
 
             default:
                func->setLocalTmp(1);
-               CheckArgB(stmnt, 2, IR::ArgBase::Stk);
+               moveArgStk_W_src(stmnt->args[2]);
                break;
             }
          }

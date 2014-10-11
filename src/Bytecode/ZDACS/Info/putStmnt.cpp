@@ -133,6 +133,11 @@ namespace GDCC
                putCode(Code::DivI);
                break;
 
+            case IR::Code::DivU_W:
+               putCode(Code::Call_Lit);
+               putWord(GetWord(resolveGlyph("___GDCC__DivU_W")));
+               break;
+
             case IR::Code::DivX_W:
                putCode(Code::DivX);
                break;
@@ -148,6 +153,11 @@ namespace GDCC
 
             case IR::Code::ModI_W:
                putCode(Code::ModI);
+               break;
+
+            case IR::Code::ModU_W:
+               putCode(Code::Call_Lit);
+               putWord(GetWord(resolveGlyph("___GDCC__ModU_W")));
                break;
 
             case IR::Code::Move_W:

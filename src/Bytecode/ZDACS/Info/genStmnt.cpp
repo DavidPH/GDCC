@@ -113,6 +113,11 @@ namespace GDCC
                genStmnt_Cspe();
                break;
 
+            case IR::Code::DivU_W:
+            case IR::Code::ModU_W:
+               numChunkCODE += 8;
+               break;
+
             case IR::Code::InvU_W:
             case IR::Code::NegI_W:
             case IR::Code::NotU_W:
