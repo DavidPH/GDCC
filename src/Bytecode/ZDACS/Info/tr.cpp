@@ -35,8 +35,9 @@ namespace GDCC
 
             if(func->defin) switch(func->ctype)
             {
-            case IR::CallType::Script:
-               func->ctype = IR::CallType::ScriptI;
+            case IR::CallType::ScriptS:
+               if(!func->valueStr)
+                  func->valueStr = func->glyph;
                break;
 
             default: break;
