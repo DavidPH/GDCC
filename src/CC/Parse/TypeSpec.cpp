@@ -626,6 +626,21 @@ namespace GDCC
             attr.type = AST::Type::StrEnt;
 
             break;
+
+         case BaseVaLi:
+            if(specCplx) throw Core::ExceptStr(pos, "complex va_list");
+            if(specImag) throw Core::ExceptStr(pos, "imaginary va_list");
+            if(specLong) throw Core::ExceptStr(pos, "long va_list");
+            if(specSatu) throw Core::ExceptStr(pos, "sat va_list");
+            if(specShrt) throw Core::ExceptStr(pos, "short va_list");
+            if(specSign) throw Core::ExceptStr(pos, "signed va_list");
+            if(specUnsi) throw Core::ExceptStr(pos, "unsigned va_list");
+
+            attr.type = AST::Type::Void
+               ->getTypeQual({{IR::AddrBase::LocArs, Core::STR_}})
+               ->getTypePointer();
+
+            break;
          }
 
          // _Atomic constraints.
@@ -658,6 +673,7 @@ namespace GDCC
          case Core::STR___label:    return true;
          case Core::STR___str:      return true;
          case Core::STR___str_ent:  return true;
+         case Core::STR___va_list:  return true;
          case Core::STR__Accum:     return true;
          case Core::STR__Bool:      return true;
          case Core::STR__Complex:   return true;
@@ -717,6 +733,7 @@ namespace GDCC
          case Core::STR___label:    setSpecBase(TypeSpec::BaseLabl); break;
          case Core::STR___str:      setSpecBase(TypeSpec::BaseStri); break;
          case Core::STR___str_ent:  setSpecBase(TypeSpec::BaseStrE); break;
+         case Core::STR___va_list:  setSpecBase(TypeSpec::BaseVaLi); break;
          case Core::STR__Accum:     setSpecBase(TypeSpec::BaseAccu); break;
          case Core::STR__Bool:      setSpecBase(TypeSpec::BaseBool); break;
          case Core::STR__Complex:   ++spec.specCplx;                 break;

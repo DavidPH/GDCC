@@ -46,6 +46,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    Exp/Str.cpp
    Exp/Sub.cpp
    Exp/Sub/Point.cpp
+   Exp/VaArg.cpp
    Init.cpp
    Parse.cpp
    Parse/AddrDecl.cpp
@@ -104,6 +105,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    ../../inc/CC/Exp/Obj.hpp
    ../../inc/CC/Exp/Refer.hpp
    ../../inc/CC/Exp/Sub.hpp
+   ../../inc/CC/Exp/VaArg.hpp
    ../../inc/CC/Init.hpp
    ../../inc/CC/Parse.hpp
    ../../inc/CC/Scope.hpp

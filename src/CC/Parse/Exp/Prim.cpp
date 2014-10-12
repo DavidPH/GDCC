@@ -150,6 +150,62 @@ static GDCC::AST::Exp::CRef GetExp_Prim_glyph(GDCC::CC::ParserCtx const &ctx,
 }
 
 //
+// GetExp_Prim_va_arg
+//
+static GDCC::AST::Exp::CRef GetExp_Prim_va_arg(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope)
+{
+   using namespace GDCC;
+
+   // va_arg-expression:
+   //    <__va_arg> ( assignment-expression , type-name )
+
+   // <__va_arg>
+   auto pos = ctx.in.get().pos;
+
+   // (
+   if(!ctx.in.drop(Core::TOK_ParenO))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+   // assignment-expression
+   auto exp = CC::GetExp_Assi(ctx, scope);
+
+   // ,
+   if(!ctx.in.drop(Core::TOK_Comma))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ','");
+
+   // type-name
+   auto type = CC::GetType(ctx, scope);
+
+   // )
+   if(!ctx.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+
+   return CC::ExpCreate_VaArg(type, exp, pos);
+}
+
+//
+// GetExp_Prim_va_start
+//
+static GDCC::AST::Exp::CRef GetExp_Prim_va_start(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &)
+{
+   using namespace GDCC;
+
+   // va_start-expression:
+   //    <__va_start>
+
+   // <__va_start>
+   auto pos = ctx.in.get().pos;
+
+   auto type = AST::Type::Void
+      ->getTypeQual({{IR::AddrBase::Loc, Core::STR_}})
+      ->getTypePointer();
+
+   return CC::ExpCreate_LitNul(type, pos);
+}
+
+//
 // GetExp_Prim_Charac
 //
 static GDCC::AST::Exp::CRef GetExp_Prim_Charac(GDCC::CC::ParserCtx const &ctx,
@@ -174,7 +230,9 @@ static GDCC::AST::Exp::CRef GetExp_Prim_Identi(GDCC::CC::ParserCtx const &ctx,
 
    switch(ctx.in.peek().str)
    {
-   case Core::STR___glyph: return GetExp_Prim_glyph(ctx, scope);
+   case Core::STR___glyph:    return GetExp_Prim_glyph(ctx, scope);
+   case Core::STR___va_arg:   return GetExp_Prim_va_arg(ctx, scope);
+   case Core::STR___va_start: return GetExp_Prim_va_start(ctx, scope);
    default: break;
    }
 

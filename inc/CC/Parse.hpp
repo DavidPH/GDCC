@@ -114,6 +114,7 @@ namespace GDCC
             // GDCC types.
             BaseLabl,
             BaseStrE,
+            BaseVaLi,
          };
 
          void finish(AST::Attribute &attr, AST::TypeQual qual,

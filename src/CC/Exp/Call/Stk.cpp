@@ -12,6 +12,7 @@
 
 #include "CC/Exp/Call.hpp"
 
+#include "AST/Arg.hpp"
 #include "AST/Function.hpp"
 #include "AST/Type.hpp"
 
@@ -36,35 +37,75 @@ namespace GDCC
          AST::Arg const &dst) const
       {
          IR::CallType callType  = IR::GetCallTypeIR(func->getCallType());
-         std::size_t  irArgc    = 0;
-         Core::FastU  callWords = 0;
+         Core::FastU  callWords = func->getCallWords();
+         std::size_t  irWords   = 0;
+         Core::FastU  stkWords  = 0;
+         Core::FastU  vaWords   = 0;
+
+         // Count arguments.
+         for(auto const &arg : args)
+            stkWords += arg->getType()->getSizeWords();
+
+         // Is this a ZDACS variadic call?
+         if(stkWords > func->getCallWords() &&
+            callType == IR::CallType::StdCall &&
+            Platform::TargetCur == Platform::Target::ZDoom)
+         {
+            vaWords  = stkWords - callWords;
+            stkWords = callWords;
+         }
 
          // Propagate stack pointer.
          if(callType == IR::CallType::StdCall &&
             Platform::TargetCur == Platform::Target::ZDoom)
          {
             ctx.block.addStatementArgs(IR::Code::Pltn,
-               IR::Arg_Stk(), ctx.fn->localArs);
-            ++callWords;
+               IR::Arg_Stk(), ctx.fn->localArs + vaWords);
+
+            ++stkWords;
          }
 
-         // Evaluate and count arguments.
-         for(auto const &arg : args)
+         // Evaluate arguments.
+         if(vaWords)
          {
-            arg->genStmntStk(ctx);
-            callWords += arg->getType()->getSizeWords();
+            auto argItr    = args.begin();
+            auto argEnd    = args.end();
+            auto argEndStk = argItr + func->getParameters()->size();
+
+            // Pass-by-Stk arguments.
+            for(; argItr != argEndStk; ++argItr)
+               (*argItr)->genStmntStk(ctx);
+
+            // Pass-by-Loc arguments.
+            Core::FastU locItr = ctx.fn->localArs + vaWords;
+            for(; argItr != argEnd; ++argItr)
+            {
+               locItr -= (*argItr)->getType()->getSizeWords();
+
+               auto locType = (*argItr)->getType()
+                  ->getTypeQual({{IR::AddrBase::Loc, Core::STR_}})
+                  ->getTypePointer();
+
+               auto locExp = AST::ExpCreate_IRExp(IR::ExpCreate_Value(
+                  IR::Value_Point(locItr, IR::ArgBase::Loc, Core::STR_,
+                     locType->getIRType().tPoint), pos), locType, pos);
+
+               (*argItr)->genStmnt(ctx, {locType->getBaseType(), locExp});
+            }
          }
+         else for(auto const &arg : args)
+            arg->genStmntStk(ctx);
 
          if(callType != IR::CallType::AsmFunc)
-            irArgc += callWords + 2;
+            irWords += stkWords + 2;
          else
          {
             // TODO: const params
-            irArgc += 1;
+            irWords += 1;
          }
 
          // Prepare IR args, preloaded with Stk for the call args.
-         Core::Array<IR::Arg> irArgs{irArgc, IR::Arg_Stk()};
+         Core::Array<IR::Arg> irArgs{irWords, IR::Arg_Stk()};
 
          // Second IR arg is return words, except for Casm.
          if(callType != IR::CallType::AsmFunc)

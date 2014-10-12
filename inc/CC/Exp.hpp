@@ -254,6 +254,9 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpCreate_SubEq(AST::Exp const *l,
          AST::Exp const *r, Core::Origin pos, bool post);
 
+      Core::CounterRef<AST::Exp const> ExpCreate_VaArg(AST::Type const *type,
+         AST::Exp const *exp, Core::Origin pos);
+
       // Default argument promotions.
       Core::CounterRef<AST::Exp const> ExpPromo_Arg(AST::Exp const *e,
          Core::Origin pos);
