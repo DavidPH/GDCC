@@ -135,6 +135,9 @@ GDCC_IR_CodeList(SubU_W)
 // Swap lop rop
 GDCC_IR_CodeList(Swap_W)
 
+// Xcod_SID (Static Initialization Delay)
+GDCC_IR_CodeList(Xcod_SID)
+
 #undef GDCC_IR_CodeList
 
 // EOF

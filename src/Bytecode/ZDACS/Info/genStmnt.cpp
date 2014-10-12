@@ -163,6 +163,10 @@ namespace GDCC
                numChunkCODE += 4;
                break;
 
+            case IR::Code::Xcod_SID:
+               numChunkCODE += 32;
+               break;
+
             default:
                std::cerr << "ERROR: " << stmnt->pos
                   << ": cannot gen Code for ZDACS: " << stmnt->code << '\n';

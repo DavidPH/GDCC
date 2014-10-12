@@ -165,6 +165,9 @@ namespace GDCC
                CheckArgB(stmnt, 1, IR::ArgBase::Stk);
                break;
 
+            case IR::Code::Xcod_SID:
+               break;
+
             default:
                std::cerr << "ERROR: " << stmnt->pos << ": cannot translate Code for ZDACS: "
                   << stmnt->code << '\n';

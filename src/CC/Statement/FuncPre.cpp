@@ -23,6 +23,7 @@
 
 #include "IR/Block.hpp"
 #include "IR/CallType.hpp"
+#include "IR/ScriptType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -68,6 +69,7 @@ namespace GDCC
       void Statement_FuncPre::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
          auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
+         auto stype = scope.fn->stype;
 
          // If script, allocate automatic storage area.
          if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
@@ -103,6 +105,10 @@ namespace GDCC
 
             paramIdx += objWords;
          }
+
+         if((ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS) &&
+            (stype == IR::ScriptType::Open || stype == IR::ScriptType::Enter))
+            ctx.block.addStatementArgs(IR::Code::Xcod_SID);
       }
 
       //

@@ -63,6 +63,7 @@ namespace GDCC
             Jump_Lit    =  52,
             Cjmp_Tru    =  53,
             Drop_Nul    =  54,
+            Wait_Lit    =  56,
             AndU        =  72,
             OrIU        =  73,
             OrXU        =  74,

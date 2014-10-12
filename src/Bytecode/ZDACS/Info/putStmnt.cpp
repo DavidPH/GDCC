@@ -240,6 +240,10 @@ namespace GDCC
                putCode(Code::Swap);
                break;
 
+            case IR::Code::Xcod_SID:
+               putStmnt_Xcod_SID();
+               break;
+
             default:
                std::cerr << "ERROR: " << stmnt->pos
                   << ": cannot put Code for ZDACS: " << stmnt->code << '\n';
@@ -708,6 +712,44 @@ namespace GDCC
             default:
                throw Core::ExceptStr(stmnt->pos, "bad put Code::ShRU_W");
             }
+         }
+
+         //
+         // Info::putStmnt_Xcod_SID
+         //
+         void Info::putStmnt_Xcod_SID()
+         {
+            Core::FastU arr, idx;
+            Code        code;
+
+            if(isInitiWldArr())
+            {
+               arr  = getInitWldArray();
+               idx  = getInitWldIndex();
+               code = Code::Push_WldArr;
+            }
+            else if(isInitiGblArr())
+            {
+               arr  = getInitGblArray();
+               idx  = getInitGblIndex();
+               code = Code::Push_GblArr;
+            }
+            else
+            {
+               putCode(Code::Jump_Lit);
+               putWord(putPos + 28);
+               for(int i = 6; i--;) putCode(Code::Nop);
+               return;
+            }
+
+            putCode(Code::Push_Lit);
+            putWord(idx);
+            putCode(code);
+            putWord(arr);
+            putCode(Code::Cjmp_Tru);
+            putWord(putPos + 12);
+            putCode(Code::Wait_Lit);
+            putWord(1);
          }
 
          //

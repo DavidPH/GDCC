@@ -207,6 +207,7 @@ namespace GDCC
             void putStmnt_Move_W__Stk_Reg(IR::ArgPtr1 const &reg, Code code);
             void putStmnt_Retn();
             void putStmnt_ShRU_W();
+            void putStmnt_Xcod_SID();
 
             void putStmntDropRetn(Core::FastU ret);
 
