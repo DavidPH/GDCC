@@ -96,6 +96,7 @@ namespace GDCC
          // Configure StrEnt.
          strent.valueStr = str;
          strent.alias    = true;
+         strent.alloc    = true;
          strent.defin    = true;
 
          // Prepare associated glyph.
