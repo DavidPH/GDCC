@@ -34,16 +34,17 @@ namespace GDCC
       // Attribute constructor
       //
       Attribute::Attribute() :
-         addrI  {nullptr},
-         addrS  {Core::STRNULL},
-         callt  {IR::CallType::None},
-         linka  {IR::Linkage::None},
-         name   {Core::STRNULL},
-         namePos{Core::STRNULL, 0},
-         param  {},
-         space  {IR::AddrBase::Gen, Core::STRNULL},
-         stype  {IR::ScriptType::None},
-         type   {nullptr},
+         addrI   {nullptr},
+         addrS   {Core::STRNULL},
+         allocLoc{nullptr},
+         callt   {IR::CallType::None},
+         linka   {IR::Linkage::None},
+         name    {Core::STRNULL},
+         namePos {Core::STRNULL, 0},
+         param   {},
+         space   {IR::AddrBase::Gen, Core::STRNULL},
+         stype   {IR::ScriptType::None},
+         type    {nullptr},
 
          funcInline  {false},
          funcNoParam {false},

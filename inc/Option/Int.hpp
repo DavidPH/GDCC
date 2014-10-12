@@ -15,6 +15,8 @@
 
 #include "../Option/Base.hpp"
 
+#include "../Option/Exception.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |

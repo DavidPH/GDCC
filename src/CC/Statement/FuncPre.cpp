@@ -72,8 +72,8 @@ namespace GDCC
          auto stype = scope.fn->stype;
 
          // If script, allocate automatic storage area.
-         if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
-            ctx.block.addStatementArgs(IR::Code::Plsa, 8192);
+         if(scope.fn->allocLoc)
+            ctx.block.addStatementArgs(IR::Code::Plsa, scope.fn->allocLoc);
 
          // Move parameter data to actual storage location.
          Core::FastU paramIdx = 0;
@@ -124,7 +124,7 @@ namespace GDCC
             ctx.block.addLabel(scope.fn->labelEnd);
 
          // If script, free automatic storage area.
-         if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
+         if(scope.fn->allocLoc)
             ctx.block.addStatementArgs(IR::Code::Plsf);
 
          // Perform return.

@@ -29,6 +29,7 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
+#include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 
@@ -264,6 +265,8 @@ static void ParseDecl_Function(GDCC::CC::ParserCtx const &ctx,
 
    fn->stmnt = AST::StatementCreate_Multi(attr.namePos, std::move(stmnts));
    fn->defin = true;
+
+   fn->setAllocLoc(attr.allocLoc);
 }
 
 //

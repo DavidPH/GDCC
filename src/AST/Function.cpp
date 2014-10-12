@@ -15,16 +15,40 @@
 #include "AST/Statement.hpp"
 #include "AST/Type.hpp"
 
+#include "Core/Option.hpp"
+
 #include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/Program.hpp"
 #include "IR/ScriptType.hpp"
 
+#include "Option/Int.hpp"
+
 #include "Platform/Platform.hpp"
 
 #include <climits>
 #include <cstdio>
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+//
+// --alloc-Loc
+//
+static GDCC::Core::FastU AllocLoc = 4096;
+static GDCC::Option::Int<GDCC::Core::FastU> AllocLocOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("alloc-Loc")
+      .setGroup("codegen")
+      .setDescS("Sets the default Loc stack size.")
+      .setDescL("Sets the default Loc stack size. Default is 4096."),
+
+   &AllocLoc
+};
 
 
 //----------------------------------------------------------------------------|
@@ -39,6 +63,7 @@ namespace GDCC
       // Function constructor
       //
       Function::Function(Core::String name_, Core::String glyph_) :
+         allocLoc{0},
          ctype   {IR::CallType::None},
          glyph   {glyph_},
          label   {Core::STRNULL},
@@ -196,6 +221,26 @@ namespace GDCC
             labelTmp = genLabel();
 
          return labelTmp;
+      }
+
+      //
+      // Function::setAllocLoc
+      //
+      void Function::setAllocLoc(IR::Exp const *exp)
+      {
+         if(exp)
+            allocLoc = exp->getValue().getFastU();
+
+         else switch(IR::GetCallTypeIR(ctype))
+         {
+         case IR::CallType::ScriptI:
+         case IR::CallType::ScriptS:
+            allocLoc = AllocLoc;
+            break;
+
+         default:
+            break;
+         }
       }
 
       //

@@ -95,6 +95,33 @@ static void ParseAttr_address(GDCC::CC::ParserCtx const &ctx,
 }
 
 //
+// ParseAttr_alloc_Loc
+//
+// attribute-alloc_Loc:
+//    attribute-alloc_Loc-name ( constant-expression )
+//
+// attribute-alloc_Loc-name:
+//    <alloc_Loc>
+//    <__alloc_Loc>
+//
+static void ParseAttr_alloc_Loc(GDCC::CC::ParserCtx const &ctx,
+   GDCC::CC::Scope &scope, GDCC::AST::Attribute &attr)
+{
+   using namespace GDCC;
+
+   // (
+   if(!ctx.in.drop(Core::TOK_ParenO))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+   // constant-expression
+   attr.allocLoc = CC::GetExp_Cond(ctx, scope)->getIRExp();
+
+   // )
+   if(!ctx.in.drop(Core::TOK_ParenC))
+      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+}
+
+//
 // ParseAttr_call
 //
 // attribute-call:
@@ -299,6 +326,9 @@ namespace GDCC
          {
          case Core::STR_address: case Core::STR___address:
             ParseAttr_address(ctx, scope, attr); break;
+
+         case Core::STR_alloc_Loc: case Core::STR___alloc_Loc:
+            ParseAttr_alloc_Loc(ctx, scope, attr); break;
 
          case Core::STR_call: case Core::STR___call:
             ParseAttr_call(ctx, scope, attr); break;

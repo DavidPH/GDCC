@@ -65,6 +65,21 @@ Semantics:
   The second form sets the call name of the affected function.
 
 ===========================================================
+Alloc Loc
+===========================================================
+
+Syntax:
+  attribute-alloc_Loc:
+    attribute-alloc_Loc-name ( constant-expression )
+
+  attribute-alloc_Loc-name:
+    <alloc_Loc>
+    <__alloc_Loc>
+
+Semantics:
+  Sets the Loc stack size for a function. Currently only applies to scripts.
+
+===========================================================
 Call
 ===========================================================
 
@@ -457,6 +472,13 @@ Grammar
     <address>
     <__address>
 
+  attribute-alloc_Loc:
+    attribute-alloc_Loc-name ( constant-expression )
+
+  attribute-alloc_Loc-name:
+    <alloc_Loc>
+    <__alloc_Loc>
+
   attribute-call:
     attribute-call-name ( string-literal )
 
@@ -469,6 +491,20 @@ Grammar
 
   attribute-extern-name:
     <extern>
+
+  attribute-no_init:
+    attribute-no_init-name
+
+  attribute-no_init-name:
+    <no_init>
+    <__no_init>
+
+  attribute-script:
+    attribute-script-name ( string-literal )
+
+  attribute-script-name:
+    <script>
+    <__script>
 
   declaration: add
     address-space-declaration

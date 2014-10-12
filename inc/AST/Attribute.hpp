@@ -59,6 +59,7 @@ namespace GDCC
 
          Core::CounterPtr<IR::Exp const> addrI;
          Core::String                    addrS;
+         Core::CounterPtr<IR::Exp const> allocLoc;
          IR::CallType                    callt;
          IR::Linkage                     linka;
          Core::String                    name;
