@@ -35,12 +35,14 @@ namespace GDCC
          auto sign = t->getSizeBitsS();
          if(t->isCTypeAccum()) switch(t->getSizeWords())
          {
-         case  1: return sign ? Codes::CodeX_W : Codes::CodeK_W;
+         case  1: return sign ? Codes::CodeX_W  : Codes::CodeK_W;
+         case  2: return sign ? Codes::CodeX_W2 : Codes::CodeK_W2;
          default: return IR::Code::None;
          }
          else switch(t->getSizeWords())
          {
-         case  1: return sign ? Codes::CodeR_W : Codes::CodeA_W;
+         case  1: return sign ? Codes::CodeR_W  : Codes::CodeA_W;
+         case  2: return sign ? Codes::CodeR_W2 : Codes::CodeA_W2;
          default: return IR::Code::None;
          }
       }
@@ -54,6 +56,7 @@ namespace GDCC
          switch(t->getSizeWords())
          {
          case  1: return Codes::CodeF_W;
+         case  2: return Codes::CodeF_W2;
          default: return IR::Code::None;
          }
       }
@@ -67,7 +70,9 @@ namespace GDCC
          auto sign = t->getSizeBitsS();
          switch(t->getSizeWords())
          {
-         case  1: return sign ? Codes::CodeI_W : Codes::CodeU_W;
+         case  1: return sign ? Codes::CodeI_W  : Codes::CodeU_W;
+         case  2: return sign ? Codes::CodeI_W2 : Codes::CodeU_W2;
+         case  3: return sign ? Codes::CodeI_W3 : Codes::CodeU_W3;
          default: return IR::Code::None;
          }
       }
@@ -81,6 +86,8 @@ namespace GDCC
          switch(t->getSizeWords())
          {
          case  1: return Codes::CodeU_W;
+         case  2: return Codes::CodeU_W2;
+         case  3: return Codes::CodeU_W3;
          default: return IR::Code::None;
          }
       }
