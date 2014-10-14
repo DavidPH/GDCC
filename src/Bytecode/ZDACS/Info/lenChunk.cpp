@@ -328,7 +328,7 @@ namespace GDCC
          {
             if(!numChunkSVCT) return 0;
 
-            return numChunkSFLG * 4 + 8;
+            return numChunkSVCT * 4 + 8;
          }
       }
    }
