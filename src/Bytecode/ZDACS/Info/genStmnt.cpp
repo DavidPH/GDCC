@@ -74,6 +74,18 @@ namespace GDCC
                numChunkCODE += 4;
                break;
 
+            case IR::Code::AndU_W2:
+            case IR::Code::OrIU_W2:
+            case IR::Code::OrXU_W2:
+               genStmntBitwise2();
+               break;
+
+            case IR::Code::AndU_W3:
+            case IR::Code::OrIU_W3:
+            case IR::Code::OrXU_W3:
+               genStmntBitwise3();
+               break;
+
             case IR::Code::Call:
                genStmnt_Call();
                break;
@@ -484,6 +496,71 @@ namespace GDCC
             default:
                throw Core::ExceptStr(stmnt->pos, "bad gen Code::ShRU_W");
             }
+         }
+
+         //
+         // Info::genStmntBitwise2
+         //
+         void Info::genStmntBitwise2()
+         {
+            if(stmnt->args[1].a == IR::ArgBase::Stk &&
+               stmnt->args[2].a == IR::ArgBase::Stk)
+            {
+               numChunkCODE += 56;
+            }
+            else
+            {
+               genStmntPushArg(stmnt->args[1], 0, 2);
+               genStmntPushArg(stmnt->args[2], 0, 2);
+               numChunkCODE += 8;
+            }
+         }
+
+         //
+         // Info::genStmntBitwise3
+         //
+         void Info::genStmntBitwise3()
+         {
+            if(stmnt->args[1].a == IR::ArgBase::Stk &&
+               stmnt->args[2].a == IR::ArgBase::Stk)
+            {
+               numChunkCODE += 92;
+            }
+            else
+            {
+               genStmntPushArg(stmnt->args[1], 0, 3);
+               genStmntPushArg(stmnt->args[2], 0, 3);
+               numChunkCODE += 12;
+            }
+         }
+
+         //
+         // Info::genStmntPushArg
+         //
+         void Info::genStmntPushArg(IR::Arg const &arg, Core::FastU)
+         {
+            switch(arg.a)
+            {
+            case IR::ArgBase::GblReg:
+            case IR::ArgBase::Lit:
+            case IR::ArgBase::LocReg:
+            case IR::ArgBase::MapReg:
+            case IR::ArgBase::WldReg:
+               numChunkCODE += 8;
+               break;
+
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad genStmntPushArg");
+            }
+         }
+
+         //
+         // Info::genStmntPushArg
+         //
+         void Info::genStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
+         {
+            for(; lo != hi; ++lo)
+               genStmntPushArg(arg, lo);
          }
       }
    }

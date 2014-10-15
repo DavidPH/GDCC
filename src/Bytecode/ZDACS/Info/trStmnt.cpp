@@ -49,7 +49,19 @@ namespace GDCC
             case IR::Code::MulX_W:
             case IR::Code::OrIU_W:
             case IR::Code::OrXU_W:
-               trStmntStk3(false);
+               trStmntStk3(IR::Code::Move_W, false);
+               break;
+
+            case IR::Code::AndU_W2:
+            case IR::Code::OrIU_W2:
+            case IR::Code::OrXU_W2:
+               trStmntBitwise2();
+               break;
+
+            case IR::Code::AndU_W3:
+            case IR::Code::OrIU_W3:
+            case IR::Code::OrXU_W3:
+               trStmntBitwise3();
                break;
 
             case IR::Code::Call:
@@ -81,7 +93,7 @@ namespace GDCC
             case IR::Code::CmpU_LE_W:
             case IR::Code::CmpU_LT_W:
             case IR::Code::CmpU_NE_W:
-               trStmntStk3(true);
+               trStmntStk3(IR::Code::Move_W, true);
                break;
 
             case IR::Code::Cnat:
@@ -105,15 +117,15 @@ namespace GDCC
             case IR::Code::ShRI_W:
             case IR::Code::SubI_W:
             case IR::Code::SubU_W:
-               trStmntStk3(true);
+               trStmntStk3(IR::Code::Move_W, true);
                break;
 
             case IR::Code::InvU_W:
             case IR::Code::NegI_W:
             case IR::Code::NotU_W:
                CheckArgC(stmnt, 2);
-               moveArgStk_W_dst(stmnt->args[0]);
-               moveArgStk_W_src(stmnt->args[1]);
+               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W);
                break;
 
             case IR::Code::Jump:
@@ -134,7 +146,7 @@ namespace GDCC
             case IR::Code::Plsi:
             case IR::Code::Plsr:
                CheckArgC(stmnt, 1);
-               moveArgStk_W_src(stmnt->args[0]);
+               moveArgStk_W_src(stmnt->args[0], IR::Code::Move_W);
                break;
 
             case IR::Code::Plsf:
@@ -142,13 +154,13 @@ namespace GDCC
 
             case IR::Code::Plss:
                CheckArgC(stmnt, 1);
-               moveArgStk_W_dst(stmnt->args[0]);
+               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
                break;
 
             case IR::Code::Pltn:
                CheckArgC(stmnt, 2);
-               moveArgStk_W_dst(stmnt->args[0]);
-               moveArgStk_W_src(stmnt->args[1]);
+               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W);
                break;
 
             case IR::Code::Retn:
@@ -252,6 +264,9 @@ namespace GDCC
             CheckArg(stmnt->args[0], stmnt->pos);
             CheckArg(stmnt->args[1], stmnt->pos);
 
+            #define moveIdx(name, n) \
+               moveArgStk_W_src(*stmnt->args[n].a##name.idx, IR::Code::Move_W)
+
             // Push to stack?
             if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
             {
@@ -261,11 +276,11 @@ namespace GDCC
             case IR::ArgBase::MapReg: break;
             case IR::ArgBase::WldReg: break;
 
-            case IR::ArgBase::GblArr: moveArgStk_W_src(*stmnt->args[1].aGblArr.idx); break;
-            case IR::ArgBase::Loc:    moveArgStk_W_src(*stmnt->args[1].aLoc   .idx); break;
-            case IR::ArgBase::LocArs: moveArgStk_W_src(*stmnt->args[1].aLocArs.idx); break;
-            case IR::ArgBase::MapArr: moveArgStk_W_src(*stmnt->args[1].aMapArr.idx); break;
-            case IR::ArgBase::WldArr: moveArgStk_W_src(*stmnt->args[1].aWldArr.idx); break;
+            case IR::ArgBase::GblArr: moveIdx(GblArr, 1); break;
+            case IR::ArgBase::Loc:    moveIdx(Loc,    1); break;
+            case IR::ArgBase::LocArs: moveIdx(LocArs, 1); break;
+            case IR::ArgBase::MapArr: moveIdx(MapArr, 1); break;
+            case IR::ArgBase::WldArr: moveIdx(WldArr, 1); break;
 
             default:
                std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Move_W(Stk, "
@@ -282,11 +297,11 @@ namespace GDCC
             case IR::ArgBase::Nul:    break;
             case IR::ArgBase::WldReg: break;
 
-            case IR::ArgBase::GblArr: moveArgStk_W_src(*stmnt->args[0].aGblArr.idx); break;
-            case IR::ArgBase::Loc:    moveArgStk_W_src(*stmnt->args[0].aLoc   .idx); break;
-            case IR::ArgBase::LocArs: moveArgStk_W_src(*stmnt->args[0].aLocArs.idx); break;
-            case IR::ArgBase::MapArr: moveArgStk_W_src(*stmnt->args[0].aMapArr.idx); break;
-            case IR::ArgBase::WldArr: moveArgStk_W_src(*stmnt->args[0].aWldArr.idx); break;
+            case IR::ArgBase::GblArr: moveIdx(GblArr, 0); break;
+            case IR::ArgBase::Loc:    moveIdx(Loc,    0); break;
+            case IR::ArgBase::LocArs: moveIdx(LocArs, 0); break;
+            case IR::ArgBase::MapArr: moveIdx(MapArr, 0); break;
+            case IR::ArgBase::WldArr: moveIdx(WldArr, 0); break;
 
             default:
                std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Move_W("
@@ -296,7 +311,9 @@ namespace GDCC
 
             // Neither stack, split move and rescan.
             else
-               moveArgStk_W_src(stmnt->args[1]);
+               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W);
+
+            #undef moveIdx
          }
 
          //
@@ -341,8 +358,8 @@ namespace GDCC
                stmnt->args[2].a == IR::ArgBase::Stk)
                throw Core::ExceptStr(stmnt->pos, "trStmnt_ShRU_W disorder");
 
-            moveArgStk_W_dst(stmnt->args[0]);
-            if(moveArgStk_W_src(stmnt->args[1])) return;
+            moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
+            if(moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W)) return;
 
             switch(stmnt->args[2].a)
             {
@@ -355,15 +372,51 @@ namespace GDCC
 
             default:
                func->setLocalTmp(1);
-               moveArgStk_W_src(stmnt->args[2]);
+               moveArgStk_W_src(stmnt->args[2], IR::Code::Move_W);
                break;
+            }
+         }
+
+         //
+         // Info::trStmntBitwise2
+         //
+         void Info::trStmntBitwise2()
+         {
+            CheckArgC(stmnt, 3);
+
+            if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
+            {
+               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W2);
+            }
+            else
+            {
+               trStmntStk3(IR::Code::Move_W2, false);
+               func->setLocalTmp(3);
+            }
+         }
+
+         //
+         // Info::trStmntBitwise3
+         //
+         void Info::trStmntBitwise3()
+         {
+            CheckArgC(stmnt, 3);
+
+            if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
+            {
+               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W3);
+            }
+            else
+            {
+               trStmntStk3(IR::Code::Move_W3, false);
+               func->setLocalTmp(5);
             }
          }
 
          //
          // Info::trStmntStk3
          //
-         void Info::trStmntStk3(bool ordered)
+         void Info::trStmntStk3(IR::Code codeMove, bool ordered)
          {
             CheckArgC(stmnt, 3);
 
@@ -371,9 +424,9 @@ namespace GDCC
                stmnt->args[2].a == IR::ArgBase::Stk)
                throw Core::ExceptStr(stmnt->pos, "trStmntStk3 disorder");
 
-            moveArgStk_W_dst(stmnt->args[0]);
-            if(moveArgStk_W_src(stmnt->args[1])) return;
-            moveArgStk_W_src(stmnt->args[2]);
+            moveArgStk_W_dst(stmnt->args[0], codeMove);
+            if(moveArgStk_W_src(stmnt->args[1], codeMove)) return;
+            moveArgStk_W_src(stmnt->args[2], codeMove);
          }
       }
    }

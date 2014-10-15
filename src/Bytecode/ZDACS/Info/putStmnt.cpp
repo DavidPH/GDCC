@@ -50,9 +50,9 @@ namespace GDCC
                putCode(Code::AddU);
                break;
 
-            case IR::Code::AndU_W:
-               putCode(Code::AndU);
-               break;
+            case IR::Code::AndU_W:  putCode(Code::AndU); break;
+            case IR::Code::AndU_W2: putStmntBitwise2(Code::AndU); break;
+            case IR::Code::AndU_W3: putStmntBitwise3(Code::AndU); break;
 
             case IR::Code::Call:
                putStmnt_Call();
@@ -181,13 +181,13 @@ namespace GDCC
                putCode(Code::NotU);
                break;
 
-            case IR::Code::OrIU_W:
-               putCode(Code::OrIU);
-               break;
+            case IR::Code::OrIU_W:  putCode(Code::OrIU); break;
+            case IR::Code::OrIU_W2: putStmntBitwise2(Code::OrIU); break;
+            case IR::Code::OrIU_W3: putStmntBitwise3(Code::OrIU); break;
 
-            case IR::Code::OrXU_W:
-               putCode(Code::OrXU);
-               break;
+            case IR::Code::OrXU_W:  putCode(Code::OrXU); break;
+            case IR::Code::OrXU_W2: putStmntBitwise2(Code::OrXU); break;
+            case IR::Code::OrXU_W3: putStmntBitwise3(Code::OrXU); break;
 
             case IR::Code::Plsa:
                putCode(Code::Push_Lit);
@@ -753,6 +753,91 @@ namespace GDCC
          }
 
          //
+         // Info::putStmntBitwise2
+         //
+         void Info::putStmntBitwise2(Code code)
+         {
+            if(stmnt->args[1].a == IR::ArgBase::Stk &&
+               stmnt->args[2].a == IR::ArgBase::Stk)
+            {
+               putCode(Code::Drop_LocReg);
+               putWord(func->localReg + 0);
+               putCode(Code::Drop_LocReg);
+               putWord(func->localReg + 1);
+               putCode(Code::Drop_LocReg);
+               putWord(func->localReg + 2);
+
+               putCode(Code::Push_LocReg);
+               putWord(func->localReg + 1);
+               putCode(code);
+
+               putCode(Code::Push_LocReg);
+               putWord(func->localReg + 2);
+               putCode(Code::Push_LocReg);
+               putWord(func->localReg + 0);
+               putCode(code);
+            }
+            else
+            {
+               putStmntPushArg(stmnt->args[1], 0);
+               putStmntPushArg(stmnt->args[2], 0);
+               putCode(code);
+               putStmntPushArg(stmnt->args[1], 1);
+               putStmntPushArg(stmnt->args[2], 1);
+               putCode(code);
+            }
+         }
+
+         //
+         // Info::putStmntBitwise3
+         //
+         void Info::putStmntBitwise3(Code code)
+         {
+            if(stmnt->args[1].a == IR::ArgBase::Stk &&
+               stmnt->args[2].a == IR::ArgBase::Stk)
+            {
+               putCode(Code::Drop_LocReg);
+               putWord(func->localReg + 0);
+               putCode(Code::Drop_LocReg);
+               putWord(func->localReg + 1);
+               putCode(Code::Drop_LocReg);
+               putWord(func->localReg + 2);
+               putCode(Code::Drop_LocReg);
+               putWord(func->localReg + 3);
+               putCode(Code::Drop_LocReg);
+               putWord(func->localReg + 4);
+
+               putCode(Code::Push_LocReg);
+               putWord(func->localReg + 2);
+               putCode(code);
+
+               putCode(Code::Push_LocReg);
+               putWord(func->localReg + 4);
+               putCode(Code::Push_LocReg);
+               putWord(func->localReg + 1);
+               putCode(code);
+
+               putCode(Code::Push_LocReg);
+               putWord(func->localReg + 3);
+               putCode(Code::Push_LocReg);
+               putWord(func->localReg + 0);
+               putCode(code);
+            }
+            else
+            {
+               putStmntPushArg(stmnt->args[1], 0);
+               putStmntPushArg(stmnt->args[2], 0);
+               putCode(code);
+               putStmntPushArg(stmnt->args[1], 1);
+               putStmntPushArg(stmnt->args[2], 1);
+               putCode(code);
+               putStmntPushArg(stmnt->args[1], 2);
+               putStmntPushArg(stmnt->args[2], 2);
+               putCode(code);
+            }
+         }
+
+         //
          // Info::putStmntDropRetn
          //
          void Info::putStmntDropRetn(Core::FastU ret)
@@ -764,6 +849,48 @@ namespace GDCC
                putCode(Code::Swap);
                putCode(Code::Drop_GblArr);
                putWord(LocArsArray);
+            }
+         }
+
+         //
+         // Info::putStmntPushArg
+         //
+         void Info::putStmntPushArg(IR::Arg const &arg, Core::FastU w)
+         {
+            //
+            // pushReg
+            //
+            auto pushReg = [&](IR::ArgPtr1 const &a, Code code)
+            {
+               putCode(code);
+               putWord(GetWord(a.idx->aLit.value) + GetWord(a.off) + w);
+            };
+
+            switch(arg.a)
+            {
+            case IR::ArgBase::GblReg:
+               pushReg(arg.aGblReg, Code::Push_GblReg);
+               break;
+
+            case IR::ArgBase::Lit:
+               putCode(Code::Push_Lit);
+               putWord(GetWord(arg.aLit.value, w));
+               break;
+
+            case IR::ArgBase::LocReg:
+               pushReg(arg.aLocReg, Code::Push_LocReg);
+               break;
+
+            case IR::ArgBase::MapReg:
+               pushReg(arg.aMapReg, Code::Push_MapReg);
+               break;
+
+            case IR::ArgBase::WldReg:
+               pushReg(arg.aWldReg, Code::Push_WldReg);
+               break;
+
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad putStmntPushArg");
             }
          }
 

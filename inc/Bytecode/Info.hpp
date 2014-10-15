@@ -32,6 +32,7 @@ namespace GDCC
    {
       enum class AddrBase;
       enum class CallType;
+      enum class Code;
 
       class Arg;
       class ArgPtr1;
@@ -143,8 +144,8 @@ namespace GDCC
          virtual void trStr() {}
                  void trStr(IR::StrEnt &str);
 
-         bool moveArgStk_W_dst(IR::Arg &idx);
-         bool moveArgStk_W_src(IR::Arg &idx);
+         bool moveArgStk_W_dst(IR::Arg &idx, IR::Code codeMove);
+         bool moveArgStk_W_src(IR::Arg &idx, IR::Code codeMove);
 
          IR::Block     *block;
          IR::Function  *func;

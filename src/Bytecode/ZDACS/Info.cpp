@@ -370,6 +370,25 @@ namespace GDCC
          }
 
          //
+         // Info::isPushArg
+         //
+         bool Info::isPushArg(IR::Arg const &arg)
+         {
+            switch(arg.a)
+            {
+            case IR::ArgBase::GblReg:
+            case IR::ArgBase::Lit:
+            case IR::ArgBase::LocReg:
+            case IR::ArgBase::MapReg:
+            case IR::ArgBase::WldReg:
+               return true;
+
+            default:
+               return false;
+            }
+         }
+
+         //
          // Info::lenString
          //
          std::size_t Info::lenString(Core::String s)
@@ -477,7 +496,7 @@ namespace GDCC
          //
          // Info::GetWord
          //
-         Core::FastU Info::GetWord(IR::Exp const *exp)
+         Core::FastU Info::GetWord(IR::Exp const *exp, Core::FastU w)
          {
             auto val = exp->getValue();
 
@@ -485,18 +504,18 @@ namespace GDCC
             {
             case IR::ValueBase::Fixed:
                if(val.vFixed.vtype.bitsS)
-                  return Core::NumberCast<Core::FastI>(val.vFixed.value);
+                  return Core::NumberCast<Core::FastI>(val.vFixed.value >> (w * 32));
                else
-                  return Core::NumberCast<Core::FastU>(val.vFixed.value);
+                  return Core::NumberCast<Core::FastU>(val.vFixed.value >> (w * 32));
 
             case IR::ValueBase::Funct:
-               return val.vFunct.value;
+               return w ? 0 : val.vFunct.value;
 
             case IR::ValueBase::Point:
-               return val.vPoint.value;
+               return w ? 0 : val.vPoint.value;
 
             case IR::ValueBase::StrEn:
-               return val.vFunct.value;
+               return w ? 0 : val.vFunct.value;
 
             default:
                throw Core::ExceptStr(exp->pos, "bad GetWord Value");

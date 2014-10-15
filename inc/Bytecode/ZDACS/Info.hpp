@@ -123,6 +123,12 @@ namespace GDCC
             void genStmnt_Retn();
             void genStmnt_ShRU_W();
 
+            void genStmntBitwise2();
+            void genStmntBitwise3();
+
+            void genStmntPushArg(IR::Arg const &arg, Core::FastU w);
+            void genStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
+
             virtual void genStr();
 
             Core::FastU getInitGblArray();
@@ -134,6 +140,8 @@ namespace GDCC
 
             bool isInitiGblArr();
             bool isInitiWldArr();
+
+            bool isPushArg(IR::Arg const &arg);
 
             Core::FastU lenChunk();
             Core::FastU lenChunk(char const *name, Core::Array<Core::String> const &strs, bool junk);
@@ -209,7 +217,12 @@ namespace GDCC
             void putStmnt_ShRU_W();
             void putStmnt_Xcod_SID();
 
+            void putStmntBitwise2(Code code);
+            void putStmntBitwise3(Code code);
+
             void putStmntDropRetn(Core::FastU ret);
+
+            void putStmntPushArg(IR::Arg const &arg, Core::FastU w);
 
             void putStmntPushFunct(Core::FastU value);
 
@@ -233,7 +246,9 @@ namespace GDCC
             void trStmnt_Retn();
             void trStmnt_ShRU_W();
 
-            void trStmntStk3(bool ordered);
+            void trStmntBitwise2();
+            void trStmntBitwise3();
+            void trStmntStk3(IR::Code codeMove, bool ordered);
 
             std::unordered_map<IR::Space const *, InitData> init;
 
@@ -264,7 +279,7 @@ namespace GDCC
 
             static Core::FastU CodeBase();
 
-            static Core::FastU GetWord(IR::Exp const *exp);
+            static Core::FastU GetWord(IR::Exp const *exp, Core::FastU w = 0);
 
             static Core::FastU GetScriptValue(IR::Function const &script);
          };
