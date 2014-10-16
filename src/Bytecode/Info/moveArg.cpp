@@ -35,7 +35,7 @@ namespace GDCC
 
          block->setOrigin(stmnt->pos);
          block->addStatementArgs(stmnt->next, codeMove,
-            IR::Arg_Stk(), std::move(idx));
+            std::move(idx), IR::Arg_Stk());
 
          idx = IR::Arg_Stk();
 

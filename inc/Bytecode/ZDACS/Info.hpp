@@ -122,9 +122,17 @@ namespace GDCC
             void genStmnt_Move_W__Stk_Lit(IR::Exp const *exp);
             void genStmnt_Retn();
             void genStmnt_ShRU_W();
+            void genStmnt_ShLU_W2();
+            void genStmnt_ShRI_W2();
+            void genStmnt_ShRU_W2();
+            void genStmnt_ShLU_W3();
+            void genStmnt_ShRI_W3();
+            void genStmnt_ShRU_W3();
 
             void genStmntBitwise2();
             void genStmntBitwise3();
+
+            void genStmntCall(Core::FastU ret);
 
             void genStmntPushArg(IR::Arg const &arg, Core::FastU w);
             void genStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
@@ -196,6 +204,7 @@ namespace GDCC
             void putChunkSVCT();
 
             void putCode(Code code);
+            void putCode(Code code, Core::FastU arg0);
 
             void putData(char const *s, std::size_t len);
 
@@ -215,10 +224,18 @@ namespace GDCC
             void putStmnt_Move_W__Stk_Reg(IR::ArgPtr1 const &reg, Code code);
             void putStmnt_Retn();
             void putStmnt_ShRU_W();
+            void putStmnt_ShLU_W2();
+            void putStmnt_ShRI_W2();
+            void putStmnt_ShRU_W2();
+            void putStmnt_ShLU_W3();
+            void putStmnt_ShRI_W3();
+            void putStmnt_ShRU_W3();
             void putStmnt_Xcod_SID();
 
             void putStmntBitwise2(Code code);
             void putStmntBitwise3(Code code);
+
+            void putStmntCall(Core::String name, Core::FastU ret);
 
             void putStmntDropRetn(Core::FastU ret);
 
@@ -229,6 +246,8 @@ namespace GDCC
             void putStmntPushRetn(Core::FastU ret);
 
             void putStmntPushStrEn(Core::FastU value);
+
+            void putStmntShiftRU(Core::FastU shift);
 
             void putString(Core::String str);
             void putString(Core::String str, Core::FastU key);
@@ -244,10 +263,17 @@ namespace GDCC
             void trStmnt_Cspe();
             void trStmnt_Move_W();
             void trStmnt_Retn();
+            void trStmnt_ShLU_W2();
+            void trStmnt_ShLU_W3();
+            void trStmnt_ShRI_W2();
+            void trStmnt_ShRI_W3();
             void trStmnt_ShRU_W();
+            void trStmnt_ShRU_W2();
+            void trStmnt_ShRU_W3();
 
             void trStmntBitwise2();
             void trStmntBitwise3();
+            bool trStmntShift(IR::Code codeMove);
             void trStmntStk3(IR::Code codeMove, bool ordered);
 
             std::unordered_map<IR::Space const *, InitData> init;

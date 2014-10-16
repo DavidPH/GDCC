@@ -167,9 +167,15 @@ namespace GDCC
                trStmnt_Retn();
                break;
 
-            case IR::Code::ShRU_W:
-               trStmnt_ShRU_W();
-               break;
+            case IR::Code::ShLU_W2: trStmnt_ShLU_W2(); break;
+            case IR::Code::ShLU_W3: trStmnt_ShLU_W3(); break;
+
+            case IR::Code::ShRI_W3: trStmnt_ShRI_W3(); break;
+            case IR::Code::ShRI_W2: trStmnt_ShRI_W2(); break;
+
+            case IR::Code::ShRU_W:  trStmnt_ShRU_W(); break;
+            case IR::Code::ShRU_W2: trStmnt_ShRU_W2(); break;
+            case IR::Code::ShRU_W3: trStmnt_ShRU_W3(); break;
 
             case IR::Code::Swap_W:
                CheckArgC(stmnt, 2);
@@ -344,36 +350,6 @@ namespace GDCC
             default:
                std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Retn\n";
                throw EXIT_FAILURE;
-            }
-         }
-
-         //
-         // Info::trStmnt_ShRU_W
-         //
-         void Info::trStmnt_ShRU_W()
-         {
-            CheckArgC(stmnt, 3);
-
-            if(stmnt->args[1].a != IR::ArgBase::Stk &&
-               stmnt->args[2].a == IR::ArgBase::Stk)
-               throw Core::ExceptStr(stmnt->pos, "trStmnt_ShRU_W disorder");
-
-            moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
-            if(moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W)) return;
-
-            switch(stmnt->args[2].a)
-            {
-            case IR::ArgBase::GblReg:
-            case IR::ArgBase::Lit:
-            case IR::ArgBase::LocReg:
-            case IR::ArgBase::MapReg:
-            case IR::ArgBase::WldReg:
-               break;
-
-            default:
-               func->setLocalTmp(1);
-               moveArgStk_W_src(stmnt->args[2], IR::Code::Move_W);
-               break;
             }
          }
 

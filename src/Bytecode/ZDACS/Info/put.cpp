@@ -80,6 +80,15 @@ namespace GDCC
          }
 
          //
+         // Info::putCode
+         //
+         void Info::putCode(Code code, Core::FastU arg0)
+         {
+            putCode(code);
+            putWord(arg0);
+         }
+
+         //
          // Info::putData
          //
          void Info::putData(char const *s, std::size_t len)

@@ -83,6 +83,7 @@ namespace GDCC
             Retn_Stk    = 206,
             Push_MapArr = 207,
             Drop_MapArr = 208,
+            Copy        = 216,
             Swap        = 217,
             Pstr_Stk    = 225,
             Push_WldArr = 226,

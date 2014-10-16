@@ -167,9 +167,15 @@ namespace GDCC
                genStmnt_Retn();
                break;
 
-            case IR::Code::ShRU_W:
-               genStmnt_ShRU_W();
-               break;
+            case IR::Code::ShLU_W2: genStmnt_ShLU_W2(); break;
+            case IR::Code::ShLU_W3: genStmnt_ShLU_W3(); break;
+
+            case IR::Code::ShRI_W2: genStmnt_ShRI_W2(); break;
+            case IR::Code::ShRI_W3: genStmnt_ShRI_W3(); break;
+
+            case IR::Code::ShRU_W:  genStmnt_ShRU_W(); break;
+            case IR::Code::ShRU_W2: genStmnt_ShRU_W2(); break;
+            case IR::Code::ShRU_W3: genStmnt_ShRU_W3(); break;
 
             case IR::Code::Swap_W:
                numChunkCODE += 4;
@@ -472,33 +478,6 @@ namespace GDCC
          }
 
          //
-         // Info::genStmnt_ShRU_W
-         //
-         void Info::genStmnt_ShRU_W()
-         {
-            switch(stmnt->args[2].a)
-            {
-            case IR::ArgBase::GblReg:
-            case IR::ArgBase::LocReg:
-            case IR::ArgBase::MapReg:
-            case IR::ArgBase::WldReg:
-               numChunkCODE += 64;
-               break;
-
-            case IR::ArgBase::Lit:
-               numChunkCODE += 24;
-               break;
-
-            case IR::ArgBase::Stk:
-               numChunkCODE += 68;
-               break;
-
-            default:
-               throw Core::ExceptStr(stmnt->pos, "bad gen Code::ShRU_W");
-            }
-         }
-
-         //
          // Info::genStmntBitwise2
          //
          void Info::genStmntBitwise2()
@@ -532,6 +511,14 @@ namespace GDCC
                genStmntPushArg(stmnt->args[2], 0, 3);
                numChunkCODE += 12;
             }
+         }
+
+         //
+         // Info::genStmntCall
+         //
+         void Info::genStmntCall(Core::FastU ret)
+         {
+            numChunkCODE += (ret ? (ret - 1) * 16 : 0) + 8;
          }
 
          //

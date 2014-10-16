@@ -219,17 +219,17 @@ namespace GDCC
                putStmnt_Retn();
                break;
 
-            case IR::Code::ShLU_W:
-               putCode(Code::ShLU);
-               break;
+            case IR::Code::ShLU_W:  putCode(Code::ShLU); break;
+            case IR::Code::ShLU_W2: putStmnt_ShLU_W2(); break;
+            case IR::Code::ShLU_W3: putStmnt_ShLU_W3(); break;
 
-            case IR::Code::ShRI_W:
-               putCode(Code::ShRI);
-               break;
+            case IR::Code::ShRI_W:  putCode(Code::ShRI); break;
+            case IR::Code::ShRI_W2: putStmnt_ShRI_W2(); break;
+            case IR::Code::ShRI_W3: putStmnt_ShRI_W3(); break;
 
-            case IR::Code::ShRU_W:
-               putStmnt_ShRU_W();
-               break;
+            case IR::Code::ShRU_W:  putStmnt_ShRU_W(); break;
+            case IR::Code::ShRU_W2: putStmnt_ShRU_W2(); break;
+            case IR::Code::ShRU_W3: putStmnt_ShRU_W3(); break;
 
             case IR::Code::SubI_W:
             case IR::Code::SubU_W:
@@ -625,96 +625,6 @@ namespace GDCC
          }
 
          //
-         // Info::putStmnt_ShRU_W
-         //
-         void Info::putStmnt_ShRU_W()
-         {
-            auto CaseXReg = [this](Code code)
-            {
-               auto idx = IR::ExpCreate_AddPtrRaw(
-                  stmnt->args[2].aLocReg.idx->aLit.value,
-                  stmnt->args[2].aLocReg.off);
-
-               putCode(code);
-               putWord(GetWord(idx));
-
-               // If shift is 0, jump to end.
-               putCode(Code::Cjmp_Lit);
-               putWord(0);
-               putWord(putPos + 48);
-
-               putCode(Code::ShRI);
-               putCode(Code::Push_Lit);
-               putWord(0x80000000);
-               putCode(code);
-               putWord(GetWord(idx));
-               putCode(Code::Push_Lit);
-               putWord(1);
-               putCode(Code::SubU);
-               putCode(Code::ShRI);
-               putCode(Code::InvU);
-               putCode(Code::AndU);
-            };
-
-            Core::FastU val;
-
-            switch(stmnt->args[2].a)
-            {
-            case IR::ArgBase::GblReg:
-               CaseXReg(Code::Push_GblReg);
-               break;
-
-            case IR::ArgBase::Lit:
-               val = stmnt->args[2].aLit.value->getValue().getFastU();
-
-               putCode(Code::Push_Lit);
-               putWord(val);
-               putCode(Code::ShRI);
-               putCode(Code::Push_Lit);
-               putWord(val < 32 ? 0xFFFFFFFFU >> val : 0xFFFFFFFF);
-               putCode(Code::AndU);
-               break;
-
-            case IR::ArgBase::LocReg:
-               CaseXReg(Code::Push_LocReg);
-               break;
-
-            case IR::ArgBase::MapReg:
-               CaseXReg(Code::Push_MapReg);
-               break;
-
-            case IR::ArgBase::Stk:
-               // If shift is 0, jump to end.
-               putCode(Code::Cjmp_Lit);
-               putWord(0);
-               putWord(putPos + 60);
-
-               putCode(Code::Drop_LocReg);
-               putWord(func->localReg + 0);
-               putCode(Code::Push_LocReg);
-               putWord(func->localReg + 0);
-               putCode(Code::ShRI);
-               putCode(Code::Push_Lit);
-               putWord(0x80000000);
-               putCode(Code::DecU_LocReg);
-               putWord(func->localReg + 0);
-               putCode(Code::Push_LocReg);
-               putWord(func->localReg + 0);
-               putCode(Code::ShRI);
-               putCode(Code::InvU);
-               putCode(Code::AndU);
-               break;
-
-            case IR::ArgBase::WldReg:
-               CaseXReg(Code::Push_WldReg);
-               break;
-
-            default:
-               throw Core::ExceptStr(stmnt->pos, "bad put Code::ShRU_W");
-            }
-         }
-
-         //
          // Info::putStmnt_Xcod_SID
          //
          void Info::putStmnt_Xcod_SID()
@@ -835,6 +745,17 @@ namespace GDCC
                putStmntPushArg(stmnt->args[2], 2);
                putCode(code);
             }
+         }
+
+         //
+         // Info::putStmntCall
+         //
+         void Info::putStmntCall(Core::String name, Core::FastU ret)
+         {
+            putCode(Code::Call_Lit);
+            putWord(GetWord(resolveGlyph(name)));
+
+            putStmntPushRetn(ret);
          }
 
          //
