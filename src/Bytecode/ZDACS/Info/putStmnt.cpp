@@ -73,51 +73,53 @@ namespace GDCC
                putWord(GetWord(stmnt->args[1].aLit.value));
                break;
 
-            case IR::Code::CmpI_EQ_W:
-            case IR::Code::CmpU_EQ_W:
-               putCode(Code::CmpU_EQ);
-               break;
+            case IR::Code::CmpI_EQ_W:  putCode(Code::CmpU_EQ); break;
+            case IR::Code::CmpI_EQ_W2: putStmnt_CmpU_EQ_W2(); break;
+            case IR::Code::CmpI_EQ_W3: putStmnt_CmpU_EQ_W3(); break;
 
-            case IR::Code::CmpI_GE_W:
-               putCode(Code::CmpI_GE);
-               break;
+            case IR::Code::CmpI_GE_W: putCode(Code::CmpI_GE); break;
+            case IR::Code::CmpI_GE_W2: putStmntCall("___GDCC__CmpI_GE_W2", 1); break;
+            case IR::Code::CmpI_GE_W3: putStmntCall("___GDCC__CmpI_GE_W3", 1); break;
 
-            case IR::Code::CmpI_GT_W:
-               putCode(Code::CmpI_GT);
-               break;
+            case IR::Code::CmpI_GT_W: putCode(Code::CmpI_GT); break;
+            case IR::Code::CmpI_GT_W2: putStmntCall("___GDCC__CmpI_GT_W2", 1); break;
+            case IR::Code::CmpI_GT_W3: putStmntCall("___GDCC__CmpI_GT_W3", 1); break;
 
-            case IR::Code::CmpI_LE_W:
-               putCode(Code::CmpI_LE);
-               break;
+            case IR::Code::CmpI_LE_W: putCode(Code::CmpI_LE); break;
+            case IR::Code::CmpI_LE_W2: putStmntCall("___GDCC__CmpI_LE_W2", 1); break;
+            case IR::Code::CmpI_LE_W3: putStmntCall("___GDCC__CmpI_LE_W3", 1); break;
 
-            case IR::Code::CmpI_LT_W:
-               putCode(Code::CmpI_LT);
-               break;
+            case IR::Code::CmpI_LT_W: putCode(Code::CmpI_LT); break;
+            case IR::Code::CmpI_LT_W2: putStmntCall("___GDCC__CmpI_LT_W2", 1); break;
+            case IR::Code::CmpI_LT_W3: putStmntCall("___GDCC__CmpI_LT_W3", 1); break;
 
-            case IR::Code::CmpI_NE_W:
-            case IR::Code::CmpU_NE_W:
-               putCode(Code::CmpU_NE);
-               break;
+            case IR::Code::CmpI_NE_W:  putCode(Code::CmpU_NE); break;
+            case IR::Code::CmpI_NE_W2: putStmnt_CmpU_NE_W2(); break;
+            case IR::Code::CmpI_NE_W3: putStmnt_CmpU_NE_W3(); break;
 
-            case IR::Code::CmpU_GE_W:
-               putCode(Code::Call_Lit);
-               putWord(GetWord(resolveGlyph("___GDCC__CmpU_GE_W")));
-               break;
+            case IR::Code::CmpU_EQ_W: putCode(Code::CmpU_EQ); break;
+            case IR::Code::CmpU_EQ_W2: putStmnt_CmpU_EQ_W2(); break;
+            case IR::Code::CmpU_EQ_W3: putStmnt_CmpU_EQ_W3(); break;
 
-            case IR::Code::CmpU_GT_W:
-               putCode(Code::Call_Lit);
-               putWord(GetWord(resolveGlyph("___GDCC__CmpU_GT_W")));
-               break;
+            case IR::Code::CmpU_GE_W:  putStmntCall("___GDCC__CmpU_GE_W",  1); break;
+            case IR::Code::CmpU_GE_W2: putStmntCall("___GDCC__CmpU_GE_W2", 1); break;
+            case IR::Code::CmpU_GE_W3: putStmntCall("___GDCC__CmpU_GE_W3", 1); break;
 
-            case IR::Code::CmpU_LE_W:
-               putCode(Code::Call_Lit);
-               putWord(GetWord(resolveGlyph("___GDCC__CmpU_LE_W")));
-               break;
+            case IR::Code::CmpU_GT_W:  putStmntCall("___GDCC__CmpU_GT_W",  1); break;
+            case IR::Code::CmpU_GT_W2: putStmntCall("___GDCC__CmpU_GT_W2", 1); break;
+            case IR::Code::CmpU_GT_W3: putStmntCall("___GDCC__CmpU_GT_W3", 1); break;
 
-            case IR::Code::CmpU_LT_W:
-               putCode(Code::Call_Lit);
-               putWord(GetWord(resolveGlyph("___GDCC__CmpU_LT_W")));
-               break;
+            case IR::Code::CmpU_LE_W:  putStmntCall("___GDCC__CmpU_LE_W",  1); break;
+            case IR::Code::CmpU_LE_W2: putStmntCall("___GDCC__CmpU_LE_W2", 1); break;
+            case IR::Code::CmpU_LE_W3: putStmntCall("___GDCC__CmpU_LE_W3", 1); break;
+
+            case IR::Code::CmpU_LT_W:  putStmntCall("___GDCC__CmpU_LT_W",  1); break;
+            case IR::Code::CmpU_LT_W2: putStmntCall("___GDCC__CmpU_LT_W2", 1); break;
+            case IR::Code::CmpU_LT_W3: putStmntCall("___GDCC__CmpU_LT_W3", 1); break;
+
+            case IR::Code::CmpU_NE_W:  putCode(Code::CmpU_NE); break;
+            case IR::Code::CmpU_NE_W2: putStmnt_CmpU_NE_W2(); break;
+            case IR::Code::CmpU_NE_W3: putStmnt_CmpU_NE_W3(); break;
 
             case IR::Code::Cnat:
                putCode(Code::Cnat);

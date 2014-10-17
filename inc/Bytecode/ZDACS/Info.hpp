@@ -115,6 +115,8 @@ namespace GDCC
 
             virtual void genStmnt();
             void genStmnt_Call();
+            void genStmnt_CmpU_EQ_W2();
+            void genStmnt_CmpU_EQ_W3();
             void genStmnt_Cspe();
             void genStmnt_Move_W();
             void genStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr);
@@ -215,6 +217,10 @@ namespace GDCC
 
             virtual void putStmnt();
             void putStmnt_Call();
+            void putStmnt_CmpU_EQ_W2();
+            void putStmnt_CmpU_EQ_W3();
+            void putStmnt_CmpU_NE_W2();
+            void putStmnt_CmpU_NE_W3();
             void putStmnt_Cspe();
             void putStmnt_Move_W();
             void putStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr, Code code);
@@ -260,6 +266,7 @@ namespace GDCC
 
             virtual void trStmnt();
             void trStmnt_Call();
+            void trStmnt_CmpU_EQ(IR::Code codeMove);
             void trStmnt_Cspe();
             void trStmnt_Move_W();
             void trStmnt_Retn();
@@ -273,6 +280,7 @@ namespace GDCC
 
             void trStmntBitwise2();
             void trStmntBitwise3();
+            void trStmntCmp(IR::Code codeMove, bool ordered);
             bool trStmntShift(IR::Code codeMove);
             void trStmntStk3(IR::Code codeMove, bool ordered);
 

@@ -110,11 +110,41 @@ namespace GDCC
                numChunkCODE += 4;
                break;
 
+            case IR::Code::CmpI_EQ_W2:
+            case IR::Code::CmpI_NE_W2:
+            case IR::Code::CmpU_EQ_W2:
+            case IR::Code::CmpU_NE_W2:
+               genStmnt_CmpU_EQ_W2();
+               break;
+
+            case IR::Code::CmpI_EQ_W3:
+            case IR::Code::CmpI_NE_W3:
+            case IR::Code::CmpU_EQ_W3:
+            case IR::Code::CmpU_NE_W3:
+               genStmnt_CmpU_EQ_W3();
+               break;
+
+            case IR::Code::CmpI_GE_W2:
+            case IR::Code::CmpI_GE_W3:
+            case IR::Code::CmpI_GT_W2:
+            case IR::Code::CmpI_GT_W3:
+            case IR::Code::CmpI_LE_W2:
+            case IR::Code::CmpI_LE_W3:
+            case IR::Code::CmpI_LT_W2:
+            case IR::Code::CmpI_LT_W3:
             case IR::Code::CmpU_GE_W:
+            case IR::Code::CmpU_GE_W2:
+            case IR::Code::CmpU_GE_W3:
             case IR::Code::CmpU_GT_W:
+            case IR::Code::CmpU_GT_W2:
+            case IR::Code::CmpU_GT_W3:
             case IR::Code::CmpU_LE_W:
+            case IR::Code::CmpU_LE_W2:
+            case IR::Code::CmpU_LE_W3:
             case IR::Code::CmpU_LT_W:
-               numChunkCODE += 8;
+            case IR::Code::CmpU_LT_W2:
+            case IR::Code::CmpU_LT_W3:
+               genStmntCall(1);
                break;
 
             case IR::Code::Cnat:
