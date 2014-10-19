@@ -348,6 +348,24 @@ namespace GDCC
          }
 
          //
+         // Info::isDropArg
+         //
+         bool Info::isDropArg(IR::Arg const &arg)
+         {
+            switch(arg.a)
+            {
+            case IR::ArgBase::GblReg:
+            case IR::ArgBase::LocReg:
+            case IR::ArgBase::MapReg:
+            case IR::ArgBase::WldReg:
+               return true;
+
+            default:
+               return false;
+            }
+         }
+
+         //
          // Info::isInitiGblArr
          //
          bool Info::isInitiGblArr()

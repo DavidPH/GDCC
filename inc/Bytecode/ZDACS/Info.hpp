@@ -121,7 +121,7 @@ namespace GDCC
             void genStmnt_Move_W();
             void genStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr);
             void genStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr);
-            void genStmnt_Move_W__Stk_Lit(IR::Exp const *exp);
+            void genStmnt_Move_Wx(Core::FastU x);
             void genStmnt_Retn();
             void genStmnt_ShRU_W();
             void genStmnt_ShLU_W2();
@@ -136,6 +136,9 @@ namespace GDCC
 
             void genStmntCall(Core::FastU ret);
 
+            void genStmntDropArg(IR::Arg const &arg, Core::FastU w);
+            void genStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
+
             void genStmntPushArg(IR::Arg const &arg, Core::FastU w);
             void genStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
@@ -147,6 +150,8 @@ namespace GDCC
             Core::FastU getInitWldIndex();
 
             Core::FastU getStkPtrIdx();
+
+            bool isDropArg(IR::Arg const &arg);
 
             bool isInitiGblArr();
             bool isInitiWldArr();
@@ -224,10 +229,9 @@ namespace GDCC
             void putStmnt_Cspe();
             void putStmnt_Move_W();
             void putStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr, Code code);
-            void putStmnt_Move_W__Reg_Stk(IR::ArgPtr1 const &reg, Code code);
             void putStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr, Code code);
             void putStmnt_Move_W__Stk_Lit(IR::Exp const *exp);
-            void putStmnt_Move_W__Stk_Reg(IR::ArgPtr1 const &reg, Code code);
+            void putStmnt_Move_Wx(Core::FastU x);
             void putStmnt_Retn();
             void putStmnt_ShRU_W();
             void putStmnt_ShLU_W2();
@@ -243,9 +247,13 @@ namespace GDCC
 
             void putStmntCall(Core::String name, Core::FastU ret);
 
+            void putStmntDropArg(IR::Arg const &arg, Core::FastU w);
+            void putStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
+
             void putStmntDropRetn(Core::FastU ret);
 
             void putStmntPushArg(IR::Arg const &arg, Core::FastU w);
+            void putStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
             void putStmntPushFunct(Core::FastU value);
 
@@ -269,6 +277,7 @@ namespace GDCC
             void trStmnt_CmpU_EQ(IR::Code codeMove);
             void trStmnt_Cspe();
             void trStmnt_Move_W();
+            void trStmnt_Move_Wx();
             void trStmnt_Retn();
             void trStmnt_ShLU_W2();
             void trStmnt_ShLU_W3();

@@ -77,19 +77,19 @@ namespace GDCC
             case IR::Code::CmpI_EQ_W2: putStmnt_CmpU_EQ_W2(); break;
             case IR::Code::CmpI_EQ_W3: putStmnt_CmpU_EQ_W3(); break;
 
-            case IR::Code::CmpI_GE_W: putCode(Code::CmpI_GE); break;
+            case IR::Code::CmpI_GE_W:  putCode(Code::CmpI_GE); break;
             case IR::Code::CmpI_GE_W2: putStmntCall("___GDCC__CmpI_GE_W2", 1); break;
             case IR::Code::CmpI_GE_W3: putStmntCall("___GDCC__CmpI_GE_W3", 1); break;
 
-            case IR::Code::CmpI_GT_W: putCode(Code::CmpI_GT); break;
+            case IR::Code::CmpI_GT_W:  putCode(Code::CmpI_GT); break;
             case IR::Code::CmpI_GT_W2: putStmntCall("___GDCC__CmpI_GT_W2", 1); break;
             case IR::Code::CmpI_GT_W3: putStmntCall("___GDCC__CmpI_GT_W3", 1); break;
 
-            case IR::Code::CmpI_LE_W: putCode(Code::CmpI_LE); break;
+            case IR::Code::CmpI_LE_W:  putCode(Code::CmpI_LE); break;
             case IR::Code::CmpI_LE_W2: putStmntCall("___GDCC__CmpI_LE_W2", 1); break;
             case IR::Code::CmpI_LE_W3: putStmntCall("___GDCC__CmpI_LE_W3", 1); break;
 
-            case IR::Code::CmpI_LT_W: putCode(Code::CmpI_LT); break;
+            case IR::Code::CmpI_LT_W:  putCode(Code::CmpI_LT); break;
             case IR::Code::CmpI_LT_W2: putStmntCall("___GDCC__CmpI_LT_W2", 1); break;
             case IR::Code::CmpI_LT_W3: putStmntCall("___GDCC__CmpI_LT_W3", 1); break;
 
@@ -97,7 +97,7 @@ namespace GDCC
             case IR::Code::CmpI_NE_W2: putStmnt_CmpU_NE_W2(); break;
             case IR::Code::CmpI_NE_W3: putStmnt_CmpU_NE_W3(); break;
 
-            case IR::Code::CmpU_EQ_W: putCode(Code::CmpU_EQ); break;
+            case IR::Code::CmpU_EQ_W:  putCode(Code::CmpU_EQ); break;
             case IR::Code::CmpU_EQ_W2: putStmnt_CmpU_EQ_W2(); break;
             case IR::Code::CmpU_EQ_W3: putStmnt_CmpU_EQ_W3(); break;
 
@@ -162,9 +162,9 @@ namespace GDCC
                putWord(GetWord(resolveGlyph("___GDCC__ModU_W")));
                break;
 
-            case IR::Code::Move_W:
-               putStmnt_Move_W();
-               break;
+            case IR::Code::Move_W:  putStmnt_Move_W(); break;
+            case IR::Code::Move_W2: putStmnt_Move_Wx(2); break;
+            case IR::Code::Move_W3: putStmnt_Move_Wx(3); break;
 
             case IR::Code::MulI_W:
             case IR::Code::MulU_W:
@@ -379,212 +379,6 @@ namespace GDCC
          }
 
          //
-         // Info::putStmnt_Move_W
-         //
-         void Info::putStmnt_Move_W()
-         {
-            // push_?
-            if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
-            {
-            case IR::ArgBase::GblArr:
-               putStmnt_Move_W__Stk_Arr(stmnt->args[1].aGblArr, Code::Push_GblArr);
-               break;
-
-            case IR::ArgBase::GblReg:
-               putStmnt_Move_W__Stk_Reg(stmnt->args[1].aGblReg, Code::Push_GblReg);
-               break;
-
-            case IR::ArgBase::Lit:
-               putStmnt_Move_W__Stk_Lit(stmnt->args[1].aLit.value);
-               break;
-
-            case IR::ArgBase::Loc:
-               putCode(Code::Push_LocReg);
-               putWord(getStkPtrIdx());
-               putCode(Code::AddU);
-
-            case IR::ArgBase::LocArs:
-               if(!IsExp0(stmnt->args[1].aLocArs.off))
-               {
-                  putCode(Code::Push_Lit);
-                  putWord(GetWord(stmnt->args[1].aLocArs.off));
-                  putCode(Code::AddU);
-               }
-
-               putCode(Code::Push_GblArr);
-               putWord(LocArsArray);
-               break;
-
-            case IR::ArgBase::LocReg:
-               putStmnt_Move_W__Stk_Reg(stmnt->args[1].aLocReg, Code::Push_LocReg);
-               break;
-
-            case IR::ArgBase::MapArr:
-               putStmnt_Move_W__Stk_Arr(stmnt->args[1].aMapArr, Code::Push_MapArr);
-               break;
-
-            case IR::ArgBase::MapReg:
-               putStmnt_Move_W__Stk_Reg(stmnt->args[1].aMapReg, Code::Push_MapReg);
-               break;
-
-            case IR::ArgBase::WldArr:
-               putStmnt_Move_W__Stk_Arr(stmnt->args[1].aWldArr, Code::Push_WldArr);
-               break;
-
-            case IR::ArgBase::WldReg:
-               putStmnt_Move_W__Stk_Reg(stmnt->args[1].aWldReg, Code::Push_WldReg);
-               break;
-
-            default:
-               std::cerr << "bad Code::Move_W(Stk, ?)\n";
-               throw EXIT_FAILURE;
-            }
-
-            // drop_?
-            else if(stmnt->args[1].a == IR::ArgBase::Stk) switch(stmnt->args[0].a)
-            {
-            case IR::ArgBase::GblArr:
-               putStmnt_Move_W__Arr_Stk(stmnt->args[0].aGblArr, Code::Drop_GblArr);
-               break;
-
-            case IR::ArgBase::GblReg:
-               putStmnt_Move_W__Reg_Stk(stmnt->args[0].aGblReg, Code::Drop_GblReg);
-               break;
-
-            case IR::ArgBase::Loc:
-               putCode(Code::Push_LocReg);
-               putWord(getStkPtrIdx());
-               putCode(Code::AddU);
-
-            case IR::ArgBase::LocArs:
-               if(!IsExp0(stmnt->args[0].aLocArs.off))
-               {
-                  putCode(Code::Push_Lit);
-                  putWord(GetWord(stmnt->args[0].aLocArs.off));
-                  putCode(Code::AddU);
-               }
-
-               putCode(Code::Swap);
-               putCode(Code::Drop_GblArr);
-               putWord(LocArsArray);
-               break;
-
-            case IR::ArgBase::LocReg:
-               putStmnt_Move_W__Reg_Stk(stmnt->args[0].aLocReg, Code::Drop_LocReg);
-               break;
-
-            case IR::ArgBase::MapArr:
-               putStmnt_Move_W__Arr_Stk(stmnt->args[0].aMapArr, Code::Drop_MapArr);
-               break;
-
-            case IR::ArgBase::MapReg:
-               putStmnt_Move_W__Reg_Stk(stmnt->args[0].aMapReg, Code::Drop_MapReg);
-               break;
-
-            case IR::ArgBase::Nul:
-               putCode(Code::Drop_Nul);
-               break;
-
-            case IR::ArgBase::WldArr:
-               putStmnt_Move_W__Arr_Stk(stmnt->args[0].aWldArr, Code::Drop_WldArr);
-               break;
-
-            case IR::ArgBase::WldReg:
-               putStmnt_Move_W__Reg_Stk(stmnt->args[0].aWldReg, Code::Drop_WldReg);
-               break;
-
-            default:
-               std::cerr << "bad Code::Move_W(?, Stk)\n";
-               throw EXIT_FAILURE;
-            }
-
-            // ???
-            else
-            {
-               std::cerr << "bad Code::Move_W\n";
-               throw EXIT_FAILURE;
-            }
-         }
-
-         //
-         // Info::putStmnt_Move_W__Arr_Stk
-         //
-         void Info::putStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr, Code code)
-         {
-            if(!IsExp0(arr.off))
-            {
-               putCode(Code::Push_Lit);
-               putWord(GetWord(arr.off));
-               putCode(Code::AddU);
-            }
-
-            putCode(Code::Swap);
-            putCode(code);
-            putWord(GetWord(arr.arr->aLit.value));
-         }
-
-         //
-         // Info::putStmnt_Move_W__Reg_Stk
-         //
-         void Info::putStmnt_Move_W__Reg_Stk(IR::ArgPtr1 const &reg, Code code)
-         {
-            putCode(code);
-            putWord(GetWord(IR::ExpCreate_AddPtrRaw(reg.idx->aLit.value, reg.off)));
-         }
-
-         //
-         // Info::putStmnt_Move_W__Stk_Arr
-         //
-         void Info::putStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr, Code code)
-         {
-            if(!IsExp0(arr.off))
-            {
-               putCode(Code::Push_Lit);
-               putWord(GetWord(arr.off));
-               putCode(Code::AddU);
-            }
-
-            putCode(code);
-            putWord(GetWord(arr.arr->aLit.value));
-         }
-
-         //
-         // Info::putStmnt_Move_W__Stk_Lit
-         //
-         void Info::putStmnt_Move_W__Stk_Lit(IR::Exp const *exp)
-         {
-            auto val = exp->getValue();
-
-            switch(val.v)
-            {
-            case IR::ValueBase::Funct:
-               if(val.vFunct.vtype.callT == IR::CallType::ScriptS)
-                  putStmntPushStrEn(val.vFunct.value);
-               else
-                  putStmntPushFunct(val.vFunct.value);
-               break;
-
-            case IR::ValueBase::StrEn:
-               putStmntPushStrEn(val.vStrEn.value);
-               break;
-
-            default:
-               putCode(Code::Push_Lit);
-               putWord(GetWord(exp));
-               break;
-            }
-         }
-
-         //
-         // Info::putStmnt_Move_W__Stk_Reg
-         //
-         void Info::putStmnt_Move_W__Stk_Reg(IR::ArgPtr1 const &reg, Code code)
-         {
-            putCode(code);
-            putWord(GetWord(IR::ExpCreate_AddPtrRaw(reg.idx->aLit.value, reg.off)));
-         }
-
-         //
          // Info::putStmnt_Retn
          //
          void Info::putStmnt_Retn()
@@ -761,6 +555,42 @@ namespace GDCC
          }
 
          //
+         // Info::putStmntDropArg
+         //
+         void Info::putStmntDropArg(IR::Arg const &arg, Core::FastU w)
+         {
+            //
+            // putReg
+            //
+            auto putReg = [&](IR::ArgPtr1 const &a, Code code)
+            {
+               putCode(code);
+               putWord(GetWord(a.idx->aLit.value) + GetWord(a.off) + w);
+            };
+
+            switch(arg.a)
+            {
+            case IR::ArgBase::GblReg: putReg(arg.aGblReg, Code::Drop_GblReg); break;
+            case IR::ArgBase::LocReg: putReg(arg.aLocReg, Code::Drop_LocReg); break;
+            case IR::ArgBase::MapReg: putReg(arg.aMapReg, Code::Drop_MapReg); break;
+            case IR::ArgBase::Nul:    putCode(Code::Drop_Nul); break;
+            case IR::ArgBase::WldReg: putReg(arg.aWldReg, Code::Drop_WldReg); break;
+
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad putStmntDropArg");
+            }
+         }
+
+         //
+         // Info::putStmntDropArg
+         //
+         void Info::putStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
+         {
+            while(hi-- != lo)
+               putStmntDropArg(arg, hi);
+         }
+
+         //
          // Info::putStmntDropRetn
          //
          void Info::putStmntDropRetn(Core::FastU ret)
@@ -781,9 +611,43 @@ namespace GDCC
          void Info::putStmntPushArg(IR::Arg const &arg, Core::FastU w)
          {
             //
-            // pushReg
+            // putLit
             //
-            auto pushReg = [&](IR::ArgPtr1 const &a, Code code)
+            auto putLit = [&](IR::Arg_Lit const &a)
+            {
+               auto val = a.value->getValue();
+
+               switch(val.v)
+               {
+               case IR::ValueBase::Funct:
+                  if(w == 0)
+                  {
+                     if(val.vFunct.vtype.callT == IR::CallType::ScriptS)
+                        putStmntPushStrEn(val.vFunct.value);
+                     else
+                        putStmntPushFunct(val.vFunct.value);
+                  }
+                  else
+                     putCode(Code::Push_Lit, 0);
+                  break;
+
+               case IR::ValueBase::StrEn:
+                  if(w == 0)
+                     putStmntPushStrEn(val.vStrEn.value);
+                  else
+                     putCode(Code::Push_Lit, 0);
+                  break;
+
+               default:
+                  putCode(Code::Push_Lit, GetWord(a.value, w));
+                  break;
+               }
+            };
+
+            //
+            // putReg
+            //
+            auto putReg = [&](IR::ArgPtr1 const &a, Code code)
             {
                putCode(code);
                putWord(GetWord(a.idx->aLit.value) + GetWord(a.off) + w);
@@ -791,30 +655,24 @@ namespace GDCC
 
             switch(arg.a)
             {
-            case IR::ArgBase::GblReg:
-               pushReg(arg.aGblReg, Code::Push_GblReg);
-               break;
-
-            case IR::ArgBase::Lit:
-               putCode(Code::Push_Lit);
-               putWord(GetWord(arg.aLit.value, w));
-               break;
-
-            case IR::ArgBase::LocReg:
-               pushReg(arg.aLocReg, Code::Push_LocReg);
-               break;
-
-            case IR::ArgBase::MapReg:
-               pushReg(arg.aMapReg, Code::Push_MapReg);
-               break;
-
-            case IR::ArgBase::WldReg:
-               pushReg(arg.aWldReg, Code::Push_WldReg);
-               break;
+            case IR::ArgBase::GblReg: putReg(arg.aGblReg, Code::Push_GblReg); break;
+            case IR::ArgBase::Lit:    putLit(arg.aLit); break;
+            case IR::ArgBase::LocReg: putReg(arg.aLocReg, Code::Push_LocReg); break;
+            case IR::ArgBase::MapReg: putReg(arg.aMapReg, Code::Push_MapReg); break;
+            case IR::ArgBase::WldReg: putReg(arg.aWldReg, Code::Push_WldReg); break;
 
             default:
                throw Core::ExceptStr(stmnt->pos, "bad putStmntPushArg");
             }
+         }
+
+         //
+         // Info::putStmntPushArg
+         //
+         void Info::putStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
+         {
+            for(; lo != hi; ++lo)
+               putStmntPushArg(arg, lo);
          }
 
          //

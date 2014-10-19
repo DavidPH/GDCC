@@ -170,9 +170,9 @@ namespace GDCC
                numChunkCODE += 8;
                break;
 
-            case IR::Code::Move_W:
-               genStmnt_Move_W();
-               break;
+            case IR::Code::Move_W:  genStmnt_Move_W(); break;
+            case IR::Code::Move_W2: genStmnt_Move_Wx(2); break;
+            case IR::Code::Move_W3: genStmnt_Move_Wx(3); break;
 
             case IR::Code::Plsa:
                numChunkCODE += 32;
@@ -288,190 +288,6 @@ namespace GDCC
          }
 
          //
-         // Info::genStmnt_Move_W
-         //
-         void Info::genStmnt_Move_W()
-         {
-            switch(stmnt->args[0].a)
-            {
-            case IR::ArgBase::GblArr:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk:
-                  genStmnt_Move_W__Arr_Stk(stmnt->args[0].aGblArr);
-                  break;
-
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::GblReg:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk: numChunkCODE += 8; break;
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::Loc:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk:
-                  numChunkCODE += IsExp0(stmnt->args[0].aLoc.off) ? 24 : 36;
-                  break;
-
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::LocArs:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk:
-                  numChunkCODE += IsExp0(stmnt->args[0].aLocArs.off) ? 12 : 24;
-                  break;
-
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::LocReg:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk: numChunkCODE += 8; break;
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::MapArr:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk:
-                  genStmnt_Move_W__Arr_Stk(stmnt->args[0].aMapArr);
-                  break;
-
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::MapReg:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk: numChunkCODE += 8; break;
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::Nul:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk: numChunkCODE += 4; break;
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::Stk:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::GblReg: numChunkCODE += 8; break;
-               case IR::ArgBase::LocReg: numChunkCODE += 8; break;
-               case IR::ArgBase::MapReg: numChunkCODE += 8; break;
-               case IR::ArgBase::WldReg: numChunkCODE += 8; break;
-
-               case IR::ArgBase::Lit:
-                  genStmnt_Move_W__Stk_Lit(stmnt->args[1].aLit.value);
-                  break;
-
-               case IR::ArgBase::Loc:
-                  numChunkCODE += IsExp0(stmnt->args[1].aLoc.off) ? 20 : 32;
-                  break;
-
-               case IR::ArgBase::LocArs:
-                  numChunkCODE += IsExp0(stmnt->args[1].aLocArs.off) ? 8 : 20;
-                  break;
-
-               case IR::ArgBase::GblArr:
-                  genStmnt_Move_W__Stk_Arr(stmnt->args[1].aGblArr);
-                  break;
-
-               case IR::ArgBase::MapArr:
-                  genStmnt_Move_W__Stk_Arr(stmnt->args[1].aMapArr);
-                  break;
-
-               case IR::ArgBase::WldArr:
-                  genStmnt_Move_W__Stk_Arr(stmnt->args[1].aWldArr);
-                  break;
-
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::WldArr:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk:
-                  genStmnt_Move_W__Arr_Stk(stmnt->args[0].aWldArr);
-                  break;
-
-               default: goto badcase;
-               }
-               break;
-
-            case IR::ArgBase::WldReg:
-               switch(stmnt->args[1].a)
-               {
-               case IR::ArgBase::Stk: numChunkCODE += 8; break;
-               default: goto badcase;
-               }
-               break;
-
-            default:
-            badcase:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Move_W("
-                  << stmnt->args[0].a << ',' << stmnt->args[1].a << ")\n";
-               throw EXIT_FAILURE;
-            }
-         }
-
-         //
-         // Info::genStmnt_Move_W__Arr_Stk
-         //
-         void Info::genStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr)
-         {
-            numChunkCODE += IsExp0(arr.off) ? 12 : 24;
-         }
-
-         //
-         // Info::genStmnt_Move_W__Stk_Arr
-         //
-         void Info::genStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr)
-         {
-            numChunkCODE += IsExp0(arr.off) ? 8 : 20;
-         }
-
-         //
-         // Info::genStmnt_Move_W__Stk_Lit
-         //
-         void Info::genStmnt_Move_W__Stk_Lit(IR::Exp const *exp)
-         {
-            auto type = exp->getType();
-
-            switch(type.t)
-            {
-            case IR::TypeBase::Funct:
-               if(type.tFunct.callT == IR::CallType::ScriptS)
-                  numChunkCODE += 12;
-               else
-                  numChunkCODE +=  8;
-               break;
-
-            case IR::TypeBase::StrEn: numChunkCODE += 12; break;
-
-            default: numChunkCODE += 8; break;
-            }
-         }
-
-         //
          // Info::genStmnt_Retn
          //
          void Info::genStmnt_Retn()
@@ -552,18 +368,87 @@ namespace GDCC
          }
 
          //
-         // Info::genStmntPushArg
+         // Info::genStmntDropArg
          //
-         void Info::genStmntPushArg(IR::Arg const &arg, Core::FastU)
+         void Info::genStmntDropArg(IR::Arg const &arg, Core::FastU)
          {
             switch(arg.a)
             {
             case IR::ArgBase::GblReg:
-            case IR::ArgBase::Lit:
             case IR::ArgBase::LocReg:
             case IR::ArgBase::MapReg:
             case IR::ArgBase::WldReg:
                numChunkCODE += 8;
+               break;
+
+            case IR::ArgBase::Nul:
+               numChunkCODE += 4;
+               break;
+
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad genStmntDropArg");
+            }
+         }
+
+         //
+         // Info::genStmntDropArg
+         //
+         void Info::genStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
+         {
+            while(hi-- != lo)
+               genStmntDropArg(arg, hi);
+         }
+
+         //
+         // Info::genStmntPushArg
+         //
+         void Info::genStmntPushArg(IR::Arg const &arg, Core::FastU w)
+         {
+            //
+            // genLit
+            //
+            auto genLit = [&]()
+            {
+               auto type = arg.aLit.value->getType();
+
+               switch(type.t)
+               {
+               case IR::TypeBase::Funct:
+                  if(w == 0)
+                  {
+                     if(type.tFunct.callT == IR::CallType::ScriptS)
+                        numChunkCODE += 12;
+                     else
+                        numChunkCODE += 8;
+                  }
+                  else
+                     numChunkCODE += 8;
+                  break;
+
+               case IR::TypeBase::StrEn:
+                  if(w == 0)
+                     numChunkCODE += 12;
+                  else
+                     numChunkCODE += 8;
+                  break;
+
+               default:
+                  numChunkCODE += 8;
+                  break;
+               }
+            };
+
+            switch(arg.a)
+            {
+            case IR::ArgBase::GblReg:
+            case IR::ArgBase::LocReg:
+            case IR::ArgBase::MapReg:
+            case IR::ArgBase::WldReg:
+               numChunkCODE += 8;
+               break;
+
+            case IR::ArgBase::Lit:
+               genLit();
                break;
 
             default:

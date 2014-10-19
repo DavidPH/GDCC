@@ -172,9 +172,9 @@ namespace GDCC
                CheckArgB(stmnt, 0, IR::ArgBase::Lit);
                break;
 
-            case IR::Code::Move_W:
-               trStmnt_Move_W();
-               break;
+            case IR::Code::Move_W:  trStmnt_Move_W(); break;
+            case IR::Code::Move_W2: trStmnt_Move_Wx(); break;
+            case IR::Code::Move_W3: trStmnt_Move_Wx(); break;
 
             case IR::Code::Plsa:
                CheckArgC(stmnt, 1);
@@ -298,67 +298,6 @@ namespace GDCC
                std::cerr << "ERROR: " << stmnt->pos << ": bad Cspe\n";
                throw EXIT_FAILURE;
             }
-         }
-
-         //
-         // Info::trStmnt_Move_W
-         //
-         void Info::trStmnt_Move_W()
-         {
-            CheckArgC(stmnt, 2);
-            CheckArg(stmnt->args[0], stmnt->pos);
-            CheckArg(stmnt->args[1], stmnt->pos);
-
-            #define moveIdx(name, n) \
-               moveArgStk_W_src(*stmnt->args[n].a##name.idx, IR::Code::Move_W)
-
-            // Push to stack?
-            if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
-            {
-            case IR::ArgBase::GblReg: break;
-            case IR::ArgBase::Lit:    break;
-            case IR::ArgBase::LocReg: break;
-            case IR::ArgBase::MapReg: break;
-            case IR::ArgBase::WldReg: break;
-
-            case IR::ArgBase::GblArr: moveIdx(GblArr, 1); break;
-            case IR::ArgBase::Loc:    moveIdx(Loc,    1); break;
-            case IR::ArgBase::LocArs: moveIdx(LocArs, 1); break;
-            case IR::ArgBase::MapArr: moveIdx(MapArr, 1); break;
-            case IR::ArgBase::WldArr: moveIdx(WldArr, 1); break;
-
-            default:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Move_W(Stk, "
-                  << stmnt->args[1].a << ")\n";
-               throw EXIT_FAILURE;
-            }
-
-            // Drop from stack?
-            else if(stmnt->args[1].a == IR::ArgBase::Stk) switch(stmnt->args[0].a)
-            {
-            case IR::ArgBase::GblReg: break;
-            case IR::ArgBase::LocReg: break;
-            case IR::ArgBase::MapReg: break;
-            case IR::ArgBase::Nul:    break;
-            case IR::ArgBase::WldReg: break;
-
-            case IR::ArgBase::GblArr: moveIdx(GblArr, 0); break;
-            case IR::ArgBase::Loc:    moveIdx(Loc,    0); break;
-            case IR::ArgBase::LocArs: moveIdx(LocArs, 0); break;
-            case IR::ArgBase::MapArr: moveIdx(MapArr, 0); break;
-            case IR::ArgBase::WldArr: moveIdx(WldArr, 0); break;
-
-            default:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Move_W("
-                  << stmnt->args[0].a << ", Stk)\n";
-               throw EXIT_FAILURE;
-            }
-
-            // Neither stack, split move and rescan.
-            else
-               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W);
-
-            #undef moveIdx
          }
 
          //
