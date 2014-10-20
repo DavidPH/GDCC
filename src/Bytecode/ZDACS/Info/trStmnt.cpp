@@ -177,6 +177,9 @@ namespace GDCC
                moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W);
                break;
 
+            case IR::Code::InvU_W2: trStmnt_InvU_W2(); break;
+            case IR::Code::InvU_W3: trStmnt_InvU_W3(); break;
+
             case IR::Code::Jump:
                CheckArgC(stmnt, 1);
                CheckArgB(stmnt, 0, IR::ArgBase::Lit);

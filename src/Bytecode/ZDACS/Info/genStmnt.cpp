@@ -180,6 +180,9 @@ namespace GDCC
                numChunkCODE += 4;
                break;
 
+            case IR::Code::InvU_W2: genStmnt_InvU_W2(); break;
+            case IR::Code::InvU_W3: genStmnt_InvU_W3(); break;
+
             case IR::Code::Jump:
                numChunkCODE += 8;
                break;

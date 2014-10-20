@@ -146,9 +146,9 @@ namespace GDCC
                putCode(Code::DivX);
                break;
 
-            case IR::Code::InvU_W:
-               putCode(Code::InvU);
-               break;
+            case IR::Code::InvU_W:  putCode(Code::InvU); break;
+            case IR::Code::InvU_W2: putStmnt_InvU_W2(); break;
+            case IR::Code::InvU_W3: putStmnt_InvU_W3(); break;
 
             case IR::Code::Jump:
                putCode(Code::Jump_Lit);
