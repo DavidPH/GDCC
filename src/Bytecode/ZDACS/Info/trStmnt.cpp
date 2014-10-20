@@ -52,6 +52,16 @@ namespace GDCC
                trStmntStk3(IR::Code::Move_W, false);
                break;
 
+            case IR::Code::AddI_W2:
+            case IR::Code::AddU_W2:
+               trStmntStk3(IR::Code::Move_W2, false);
+               break;
+
+            case IR::Code::AddI_W3:
+            case IR::Code::AddU_W3:
+               trStmntStk3(IR::Code::Move_W3, false);
+               break;
+
             case IR::Code::AndU_W2:
             case IR::Code::OrIU_W2:
             case IR::Code::OrXU_W2:
@@ -215,6 +225,16 @@ namespace GDCC
             case IR::Code::ShRU_W:  trStmnt_ShRU_W(); break;
             case IR::Code::ShRU_W2: trStmnt_ShRU_W2(); break;
             case IR::Code::ShRU_W3: trStmnt_ShRU_W3(); break;
+
+            case IR::Code::SubI_W2:
+            case IR::Code::SubU_W2:
+               trStmntStk3(IR::Code::Move_W2, true);
+               break;
+
+            case IR::Code::SubI_W3:
+            case IR::Code::SubU_W3:
+               trStmntStk3(IR::Code::Move_W3, true);
+               break;
 
             case IR::Code::Swap_W:
                CheckArgC(stmnt, 2);

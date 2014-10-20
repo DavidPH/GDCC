@@ -74,6 +74,20 @@ namespace GDCC
                numChunkCODE += 4;
                break;
 
+            case IR::Code::AddI_W2:
+            case IR::Code::AddU_W2:
+            case IR::Code::SubI_W2:
+            case IR::Code::SubU_W2:
+               genStmntCall(2);
+               break;
+
+            case IR::Code::AddI_W3:
+            case IR::Code::AddU_W3:
+            case IR::Code::SubI_W3:
+            case IR::Code::SubU_W3:
+               genStmntCall(3);
+               break;
+
             case IR::Code::AndU_W2:
             case IR::Code::OrIU_W2:
             case IR::Code::OrXU_W2:
