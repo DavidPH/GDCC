@@ -189,6 +189,9 @@ namespace GDCC
             case IR::Code::Move_W2: trStmnt_Move_Wx(); break;
             case IR::Code::Move_W3: trStmnt_Move_Wx(); break;
 
+            case IR::Code::NegI_W2: trStmnt_NegI_W2(); break;
+            case IR::Code::NegI_W3: trStmnt_NegI_W3(); break;
+
             case IR::Code::Plsa:
                CheckArgC(stmnt, 1);
                CheckArgB(stmnt, 0, IR::ArgBase::Lit);

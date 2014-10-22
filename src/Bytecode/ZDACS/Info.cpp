@@ -357,6 +357,44 @@ namespace GDCC
             case IR::ArgBase::GblReg:
             case IR::ArgBase::LocReg:
             case IR::ArgBase::MapReg:
+            case IR::ArgBase::Nul:
+            case IR::ArgBase::WldReg:
+               return true;
+
+            default:
+               return false;
+            }
+         }
+
+         //
+         // Info::isCopyArg
+         //
+         bool Info::isCopyArg(IR::Arg const &arg)
+         {
+            switch(arg.a)
+            {
+            case IR::ArgBase::GblReg:
+            case IR::ArgBase::LocReg:
+            case IR::ArgBase::MapReg:
+            case IR::ArgBase::WldReg:
+               return true;
+
+            default:
+               return false;
+            }
+         }
+
+         //
+         // Info::isFastArg
+         //
+         bool Info::isFastArg(IR::Arg const &arg)
+         {
+            switch(arg.a)
+            {
+            case IR::ArgBase::GblReg:
+            case IR::ArgBase::Lit:
+            case IR::ArgBase::LocReg:
+            case IR::ArgBase::MapReg:
             case IR::ArgBase::WldReg:
                return true;
 
@@ -404,6 +442,113 @@ namespace GDCC
             default:
                return false;
             }
+         }
+
+         //
+         // Info::lenDropArg
+         //
+         Core::FastU Info::lenDropArg(IR::Arg const &arg, Core::FastU)
+         {
+            switch(arg.a)
+            {
+            case IR::ArgBase::GblReg: return 8;
+            case IR::ArgBase::LocReg: return 8;
+            case IR::ArgBase::MapReg: return 8;
+            case IR::ArgBase::Nul:    return 4;
+            case IR::ArgBase::WldReg: return 8;
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad lenDropArg");
+            }
+         }
+
+         //
+         // Info::lenDropArg
+         //
+         Core::FastU Info::lenDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
+         {
+            Core::FastU len = 0;
+
+            for(; lo != hi; ++lo)
+               len += lenDropArg(arg, lo);
+
+            return len;
+         }
+
+         //
+         // Info::lenIncUArg
+         //
+         Core::FastU Info::lenIncUArg(IR::Arg const &arg, Core::FastU)
+         {
+            switch(arg.a)
+            {
+            case IR::ArgBase::GblReg: return 8;
+            case IR::ArgBase::LocReg: return 8;
+            case IR::ArgBase::MapReg: return 8;
+            case IR::ArgBase::WldReg: return 8;
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad lenIncUArg");
+            }
+         }
+
+         //
+         // Info::lenIncUArg
+         //
+         Core::FastU Info::lenIncUArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
+         {
+            Core::FastU len = 0;
+
+            for(; lo != hi; ++lo)
+               len += lenIncUArg(arg, lo);
+
+            return len;
+         }
+
+         //
+         // Info::lenPushArg
+         //
+         Core::FastU Info::lenPushArg(IR::Arg const &arg, Core::FastU w)
+         {
+            //
+            // lenLit
+            //
+            auto lenLit = [&]() -> Core::FastU
+            {
+               auto type = arg.aLit.value->getType();
+
+               switch(type.t)
+               {
+               case IR::TypeBase::Funct:
+                  return w == 0 && type.tFunct.callT == IR::CallType::ScriptS ? 12 : 8;
+
+               case IR::TypeBase::StrEn: return w == 0 ? 12 : 8;
+               default:                  return 8;
+               }
+            };
+
+            switch(arg.a)
+            {
+            case IR::ArgBase::GblReg: return 8;
+            case IR::ArgBase::Lit:    return lenLit();
+            case IR::ArgBase::LocReg: return 8;
+            case IR::ArgBase::MapReg: return 8;
+            case IR::ArgBase::WldReg: return 8;
+
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad lenPushArg");
+            }
+         }
+
+         //
+         // Info::lenPushArg
+         //
+         Core::FastU Info::lenPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
+         {
+            Core::FastU len = 0;
+
+            for(; lo != hi; ++lo)
+               len += lenPushArg(arg, lo);
+
+            return len;
          }
 
          //

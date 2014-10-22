@@ -177,9 +177,9 @@ namespace GDCC
                putCode(Code::MulX);
                break;
 
-            case IR::Code::NegI_W:
-               putCode(Code::NegI);
-               break;
+            case IR::Code::NegI_W:  putCode(Code::NegI); break;
+            case IR::Code::NegI_W2: putStmnt_NegI_W2(); break;
+            case IR::Code::NegI_W3: putStmnt_NegI_W3(); break;
 
             case IR::Code::NotU_W:
                putCode(Code::NotU);
@@ -607,6 +607,41 @@ namespace GDCC
                putCode(Code::Drop_GblArr);
                putWord(LocArsArray);
             }
+         }
+
+         //
+         // Info::putStmntIncUArg
+         //
+         void Info::putStmntIncUArg(IR::Arg const &arg, Core::FastU w)
+         {
+            //
+            // putReg
+            //
+            auto putReg = [&](IR::ArgPtr1 const &a, Code code)
+            {
+               putCode(code);
+               putWord(GetWord(a.idx->aLit.value) + GetWord(a.off) + w);
+            };
+
+            switch(arg.a)
+            {
+            case IR::ArgBase::GblReg: putReg(arg.aGblReg, Code::IncU_GblReg); break;
+            case IR::ArgBase::LocReg: putReg(arg.aLocReg, Code::IncU_LocReg); break;
+            case IR::ArgBase::MapReg: putReg(arg.aMapReg, Code::IncU_MapReg); break;
+            case IR::ArgBase::WldReg: putReg(arg.aWldReg, Code::IncU_WldReg); break;
+
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad putStmntIncUArg");
+            }
+         }
+
+         //
+         // Info::putStmntIncUArg
+         //
+         void Info::putStmntIncUArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
+         {
+            for(; lo != hi; ++lo)
+               putStmntIncUArg(arg, lo);
          }
 
          //

@@ -191,6 +191,9 @@ namespace GDCC
             case IR::Code::Move_W2: genStmnt_Move_Wx(2); break;
             case IR::Code::Move_W3: genStmnt_Move_Wx(3); break;
 
+            case IR::Code::NegI_W2: genStmnt_NegI_W2(); break;
+            case IR::Code::NegI_W3: genStmnt_NegI_W3(); break;
+
             case IR::Code::Plsa:
                numChunkCODE += 32;
                break;
@@ -387,24 +390,9 @@ namespace GDCC
          //
          // Info::genStmntDropArg
          //
-         void Info::genStmntDropArg(IR::Arg const &arg, Core::FastU)
+         void Info::genStmntDropArg(IR::Arg const &arg, Core::FastU w)
          {
-            switch(arg.a)
-            {
-            case IR::ArgBase::GblReg:
-            case IR::ArgBase::LocReg:
-            case IR::ArgBase::MapReg:
-            case IR::ArgBase::WldReg:
-               numChunkCODE += 8;
-               break;
-
-            case IR::ArgBase::Nul:
-               numChunkCODE += 4;
-               break;
-
-            default:
-               throw Core::ExceptStr(stmnt->pos, "bad genStmntDropArg");
-            }
+            numChunkCODE += lenDropArg(arg, w);
          }
 
          //
@@ -412,8 +400,7 @@ namespace GDCC
          //
          void Info::genStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
          {
-            while(hi-- != lo)
-               genStmntDropArg(arg, hi);
+            numChunkCODE += lenDropArg(arg, lo, hi);
          }
 
          //
@@ -421,56 +408,7 @@ namespace GDCC
          //
          void Info::genStmntPushArg(IR::Arg const &arg, Core::FastU w)
          {
-            //
-            // genLit
-            //
-            auto genLit = [&]()
-            {
-               auto type = arg.aLit.value->getType();
-
-               switch(type.t)
-               {
-               case IR::TypeBase::Funct:
-                  if(w == 0)
-                  {
-                     if(type.tFunct.callT == IR::CallType::ScriptS)
-                        numChunkCODE += 12;
-                     else
-                        numChunkCODE += 8;
-                  }
-                  else
-                     numChunkCODE += 8;
-                  break;
-
-               case IR::TypeBase::StrEn:
-                  if(w == 0)
-                     numChunkCODE += 12;
-                  else
-                     numChunkCODE += 8;
-                  break;
-
-               default:
-                  numChunkCODE += 8;
-                  break;
-               }
-            };
-
-            switch(arg.a)
-            {
-            case IR::ArgBase::GblReg:
-            case IR::ArgBase::LocReg:
-            case IR::ArgBase::MapReg:
-            case IR::ArgBase::WldReg:
-               numChunkCODE += 8;
-               break;
-
-            case IR::ArgBase::Lit:
-               genLit();
-               break;
-
-            default:
-               throw Core::ExceptStr(stmnt->pos, "bad genStmntPushArg");
-            }
+            numChunkCODE += lenPushArg(arg, w);
          }
 
          //
@@ -478,8 +416,7 @@ namespace GDCC
          //
          void Info::genStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
          {
-            for(; lo != hi; ++lo)
-               genStmntPushArg(arg, lo);
+            numChunkCODE += lenPushArg(arg, lo, hi);
          }
       }
    }
