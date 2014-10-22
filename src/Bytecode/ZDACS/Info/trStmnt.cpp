@@ -254,11 +254,9 @@ namespace GDCC
                trStmntStk3(IR::Code::Move_W3, true);
                break;
 
-            case IR::Code::Swap_W:
-               CheckArgC(stmnt, 2);
-               CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-               CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-               break;
+            case IR::Code::Swap_W:  trStmnt_Swap_Wx(1); break;
+            case IR::Code::Swap_W2: trStmnt_Swap_Wx(2); break;
+            case IR::Code::Swap_W3: trStmnt_Swap_Wx(3); break;
 
             case IR::Code::Xcod_SID:
                break;

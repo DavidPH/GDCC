@@ -227,9 +227,9 @@ namespace GDCC
             case IR::Code::ShRU_W2: genStmnt_ShRU_W2(); break;
             case IR::Code::ShRU_W3: genStmnt_ShRU_W3(); break;
 
-            case IR::Code::Swap_W:
-               numChunkCODE += 4;
-               break;
+            case IR::Code::Swap_W:  numChunkCODE += 4; break;
+            case IR::Code::Swap_W2: numChunkCODE += 64; break;
+            case IR::Code::Swap_W3: numChunkCODE += 96; break;
 
             case IR::Code::Xcod_SID:
                numChunkCODE += 32;

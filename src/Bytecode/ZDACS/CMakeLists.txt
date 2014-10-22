@@ -25,6 +25,7 @@ add_library(gdcc-bytecode-zdacs-lib ${GDCC_SHARED_DECL}
    Info/Stmnt/Move.cpp
    Info/Stmnt/NegI.cpp
    Info/Stmnt/Shift.cpp
+   Info/Stmnt/Swap.cpp
    Info/gen.cpp
    Info/genIniti.cpp
    Info/genSpace.cpp

@@ -200,6 +200,8 @@ GDCC_IR_CodeList(SubU_W3)
 
 // Swap lop rop
 GDCC_IR_CodeList(Swap_W)
+GDCC_IR_CodeList(Swap_W2)
+GDCC_IR_CodeList(Swap_W3)
 
 // Xcod_SID (Static Initialization Delay)
 GDCC_IR_CodeList(Xcod_SID)

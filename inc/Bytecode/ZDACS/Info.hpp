@@ -261,6 +261,7 @@ namespace GDCC
             void putStmnt_ShLU_W3();
             void putStmnt_ShRI_W3();
             void putStmnt_ShRU_W3();
+            void putStmnt_Swap_Wx(Core::FastU x);
             void putStmnt_Xcod_SID();
 
             void putStmntBitwise2(Code code);
@@ -314,6 +315,7 @@ namespace GDCC
             void trStmnt_ShRU_W();
             void trStmnt_ShRU_W2();
             void trStmnt_ShRU_W3();
+            void trStmnt_Swap_Wx(Core::FastU x);
 
             void trStmntBitwise2();
             void trStmntBitwise3();

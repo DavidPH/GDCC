@@ -242,9 +242,9 @@ namespace GDCC
             case IR::Code::SubI_W3:
             case IR::Code::SubU_W3: putStmntCall("___GDCC__SubU_W3", 3); break;
 
-            case IR::Code::Swap_W:
-               putCode(Code::Swap);
-               break;
+            case IR::Code::Swap_W:  putCode(Code::Swap); break;
+            case IR::Code::Swap_W2: putStmnt_Swap_Wx(2); break;
+            case IR::Code::Swap_W3: putStmnt_Swap_Wx(3); break;
 
             case IR::Code::Xcod_SID:
                putStmnt_Xcod_SID();
