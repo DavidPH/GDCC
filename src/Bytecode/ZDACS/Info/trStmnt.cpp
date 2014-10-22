@@ -192,6 +192,18 @@ namespace GDCC
             case IR::Code::NegI_W2: trStmnt_NegI_W2(); break;
             case IR::Code::NegI_W3: trStmnt_NegI_W3(); break;
 
+            case IR::Code::NotU_W2:
+               CheckArgC(stmnt, 2);
+               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W2);
+               break;
+
+            case IR::Code::NotU_W3:
+               CheckArgC(stmnt, 2);
+               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W3);
+               break;
+
             case IR::Code::Plsa:
                CheckArgC(stmnt, 1);
                CheckArgB(stmnt, 0, IR::ArgBase::Lit);

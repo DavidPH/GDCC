@@ -181,9 +181,9 @@ namespace GDCC
             case IR::Code::NegI_W2: putStmnt_NegI_W2(); break;
             case IR::Code::NegI_W3: putStmnt_NegI_W3(); break;
 
-            case IR::Code::NotU_W:
-               putCode(Code::NotU);
-               break;
+            case IR::Code::NotU_W3: putCode(Code::OrIU);
+            case IR::Code::NotU_W2: putCode(Code::OrIU);
+            case IR::Code::NotU_W:  putCode(Code::NotU); break;
 
             case IR::Code::OrIU_W:  putCode(Code::OrIU); break;
             case IR::Code::OrIU_W2: putStmntBitwise2(Code::OrIU); break;

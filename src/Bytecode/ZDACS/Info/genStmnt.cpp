@@ -174,12 +174,7 @@ namespace GDCC
                numChunkCODE += 8;
                break;
 
-            case IR::Code::InvU_W:
-            case IR::Code::NegI_W:
-            case IR::Code::NotU_W:
-               numChunkCODE += 4;
-               break;
-
+            case IR::Code::InvU_W:  numChunkCODE += 4; break;
             case IR::Code::InvU_W2: genStmnt_InvU_W2(); break;
             case IR::Code::InvU_W3: genStmnt_InvU_W3(); break;
 
@@ -191,8 +186,13 @@ namespace GDCC
             case IR::Code::Move_W2: genStmnt_Move_Wx(2); break;
             case IR::Code::Move_W3: genStmnt_Move_Wx(3); break;
 
+            case IR::Code::NegI_W:  numChunkCODE += 4; break;
             case IR::Code::NegI_W2: genStmnt_NegI_W2(); break;
             case IR::Code::NegI_W3: genStmnt_NegI_W3(); break;
+
+            case IR::Code::NotU_W:  numChunkCODE += 4; break;
+            case IR::Code::NotU_W2: numChunkCODE += 8; break;
+            case IR::Code::NotU_W3: numChunkCODE += 12; break;
 
             case IR::Code::Plsa:
                numChunkCODE += 32;

@@ -140,6 +140,8 @@ GDCC_IR_CodeList(NegI_W3)
 
 // Not* dst src
 GDCC_IR_CodeList(NotU_W)
+GDCC_IR_CodeList(NotU_W2)
+GDCC_IR_CodeList(NotU_W3)
 
 // OrI* dst lop rop
 GDCC_IR_CodeList(OrIU_W)
