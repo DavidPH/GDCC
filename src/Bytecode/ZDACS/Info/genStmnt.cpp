@@ -344,42 +344,6 @@ namespace GDCC
          }
 
          //
-         // Info::genStmntBitwise2
-         //
-         void Info::genStmntBitwise2()
-         {
-            if(stmnt->args[1].a == IR::ArgBase::Stk &&
-               stmnt->args[2].a == IR::ArgBase::Stk)
-            {
-               numChunkCODE += 56;
-            }
-            else
-            {
-               genStmntPushArg(stmnt->args[1], 0, 2);
-               genStmntPushArg(stmnt->args[2], 0, 2);
-               numChunkCODE += 8;
-            }
-         }
-
-         //
-         // Info::genStmntBitwise3
-         //
-         void Info::genStmntBitwise3()
-         {
-            if(stmnt->args[1].a == IR::ArgBase::Stk &&
-               stmnt->args[2].a == IR::ArgBase::Stk)
-            {
-               numChunkCODE += 92;
-            }
-            else
-            {
-               genStmntPushArg(stmnt->args[1], 0, 3);
-               genStmntPushArg(stmnt->args[2], 0, 3);
-               numChunkCODE += 12;
-            }
-         }
-
-         //
          // Info::genStmntCall
          //
          void Info::genStmntCall(Core::FastU ret)

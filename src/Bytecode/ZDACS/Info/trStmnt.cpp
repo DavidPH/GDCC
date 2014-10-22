@@ -368,42 +368,6 @@ namespace GDCC
          }
 
          //
-         // Info::trStmntBitwise2
-         //
-         void Info::trStmntBitwise2()
-         {
-            CheckArgC(stmnt, 3);
-
-            if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
-            {
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W2);
-            }
-            else
-            {
-               trStmntStk3(IR::Code::Move_W2, false);
-               func->setLocalTmp(3);
-            }
-         }
-
-         //
-         // Info::trStmntBitwise3
-         //
-         void Info::trStmntBitwise3()
-         {
-            CheckArgC(stmnt, 3);
-
-            if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
-            {
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W3);
-            }
-            else
-            {
-               trStmntStk3(IR::Code::Move_W3, false);
-               func->setLocalTmp(5);
-            }
-         }
-
-         //
          // Info::trStmntStk3
          //
          void Info::trStmntStk3(IR::Code codeMove, bool ordered)
