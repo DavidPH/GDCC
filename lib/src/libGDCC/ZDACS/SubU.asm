@@ -63,18 +63,51 @@ Function "___GDCC__SubU_W3" \
    SubU_W, LocReg(Lit(7), 0), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
    SubU_W, LocReg(Lit(8), 0), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
 
-   CmpU_GT_W, Stk(), LocReg(Lit(7), 0), LocReg(Lit(1), 0)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder1")
-
-   SubU_W, LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
-
-"___GDCC__SubU_W3$notunder1"
    CmpU_GT_W, Stk(), LocReg(Lit(6), 0), LocReg(Lit(0), 0)
    Cjmp_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder0")
 
-   SubU_W, LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
+   CmpU_GT_W, Stk(), LocReg(Lit(7), 0), LocReg(Lit(1), 0)
+   Cjmp_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder1")
+
+   ; Both underflowed.
+;  SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
+;  SubU_W,  LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
+   Casm,    Lit(49), Lit(7) ; DecU_LocReg
+   Casm,    Lit(49), Lit(8) ; DecU_LocReg
+
+   Move_W3, Stk(), LocReg(Lit(6), 0)
+   Retn,    Stk(), Stk(), Stk()
+
+"___GDCC__SubU_W3$notunder1"
+   ; Only 0 underflowed, but check 1 if it is about to underflow.
+   Move_W,   Stk(), LocReg(Lit(7), 0)
+   Cjmp_Tru, Stk(), Lit("___GDCC__SubU_W3$notunder1+")
+
+   ; Both underflowed, actually.
+;  SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
+;  SubU_W,  LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
+   Casm,    Lit(49), Lit(7) ; DecU_LocReg
+   Casm,    Lit(49), Lit(8) ; DecU_LocReg
+   Move_W3, Stk(), LocReg(Lit(6), 0)
+   Retn,    Stk(), Stk(), Stk()
+
+"___GDCC__SubU_W3$notunder1+"
+   ; Only 0 underflowed, actually.
+;  SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
+   Casm,    Lit(49), Lit(7) ; DecU_LocReg
+   Move_W3, Stk(), LocReg(Lit(6), 0)
+   Retn,    Stk(), Stk(), Stk()
 
 "___GDCC__SubU_W3$notunder0"
+   CmpU_GT_W, Stk(), LocReg(Lit(7), 0), LocReg(Lit(1), 0)
+   Cjmp_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder01")
+
+   ; Only 1 underflowed.
+;  SubU_W, LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
+   Casm,   Lit(49), Lit(8) ; DecU_LocReg
+
+"___GDCC__SubU_W3$notunder01"
+   ; Neither underflowed.
    Move_W3, Stk(), LocReg(Lit(6), 0)
    Retn,    Stk(), Stk(), Stk()
 }
