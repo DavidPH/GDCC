@@ -54,11 +54,16 @@ namespace GDCC
 
             case IR::Code::AddI_W2:
             case IR::Code::AddU_W2:
+            case IR::Code::MulI_W2:
+            case IR::Code::MulU_W2:
+            case IR::Code::MulX_W2:
                trStmntStk3(IR::Code::Move_W2, false);
                break;
 
             case IR::Code::AddI_W3:
             case IR::Code::AddU_W3:
+            case IR::Code::MulI_W3:
+            case IR::Code::MulU_W3:
                trStmntStk3(IR::Code::Move_W3, false);
                break;
 

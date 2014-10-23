@@ -76,6 +76,9 @@ namespace GDCC
 
             case IR::Code::AddI_W2:
             case IR::Code::AddU_W2:
+            case IR::Code::MulI_W2:
+            case IR::Code::MulU_W2:
+            case IR::Code::MulX_W2:
             case IR::Code::SubI_W2:
             case IR::Code::SubU_W2:
                genStmntCall(2);
@@ -83,6 +86,8 @@ namespace GDCC
 
             case IR::Code::AddI_W3:
             case IR::Code::AddU_W3:
+            case IR::Code::MulI_W3:
+            case IR::Code::MulU_W3:
             case IR::Code::SubI_W3:
             case IR::Code::SubU_W3:
                genStmntCall(3);
