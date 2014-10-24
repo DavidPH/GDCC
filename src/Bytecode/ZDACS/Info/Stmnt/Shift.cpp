@@ -34,26 +34,12 @@ namespace GDCC
          //
          void Info::genStmnt_ShRU_W()
          {
-            switch(stmnt->args[2].a)
-            {
-            case IR::ArgBase::GblReg:
-            case IR::ArgBase::LocReg:
-            case IR::ArgBase::MapReg:
-            case IR::ArgBase::WldReg:
-               numChunkCODE += 64;
-               break;
-
-            case IR::ArgBase::Lit:
+            if(stmnt->args[2].a == IR::ArgBase::Lit)
                numChunkCODE += 24;
-               break;
-
-            case IR::ArgBase::Stk:
+            else if(stmnt->args[2].a == IR::ArgBase::Stk)
                numChunkCODE += 68;
-               break;
-
-            default:
-               throw Core::ExceptStr(stmnt->pos, "bad gen Code::ShRU_W");
-            }
+            else
+               numChunkCODE += 48 + lenPushArg(stmnt->args[2], 0) * 2;
          }
 
          //
@@ -175,50 +161,12 @@ namespace GDCC
          //
          void Info::putStmnt_ShRU_W()
          {
-            auto caseXReg = [this](IR::ArgPtr1 const &reg, Code code)
+            if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto idx = IR::ExpCreate_AddPtrRaw(reg.idx->aLit.value, reg.off);
-
-               putCode(code);
-               putWord(GetWord(idx));
-
-               // If shift is 0, jump to end.
-               putCode(Code::Cjmp_Lit);
-               putWord(0);
-               putWord(putPos + 48);
-
-               putCode(Code::ShRI);
-               putCode(Code::Push_Lit);
-               putWord(0x80000000);
-               putCode(code);
-               putWord(GetWord(idx));
-               putCode(Code::Push_Lit);
-               putWord(1);
-               putCode(Code::SubU);
-               putCode(Code::ShRI);
-               putCode(Code::InvU);
-               putCode(Code::AndU);
-            };
-
-            switch(stmnt->args[2].a)
-            {
-            case IR::ArgBase::GblReg:
-               caseXReg(stmnt->args[2].aGblReg, Code::Push_GblReg);
-               break;
-
-            case IR::ArgBase::Lit:
                putStmntShiftRU(GetWord(stmnt->args[2].aLit.value));
-               break;
-
-            case IR::ArgBase::LocReg:
-               caseXReg(stmnt->args[2].aLocReg, Code::Push_LocReg);
-               break;
-
-            case IR::ArgBase::MapReg:
-               caseXReg(stmnt->args[2].aMapReg, Code::Push_MapReg);
-               break;
-
-            case IR::ArgBase::Stk:
+            }
+            else if(stmnt->args[2].a == IR::ArgBase::Stk)
+            {
                // If shift is 0, jump to end.
                putCode(Code::Cjmp_Lit);
                putWord(0);
@@ -238,14 +186,24 @@ namespace GDCC
                putCode(Code::ShRI);
                putCode(Code::InvU);
                putCode(Code::AndU);
-               break;
+            }
+            else
+            {
+               putStmntPushArg(stmnt->args[2], 0);
 
-            case IR::ArgBase::WldReg:
-               caseXReg(stmnt->args[2].aWldReg, Code::Push_WldReg);
-               break;
+               // If shift is 0, jump to end.
+               putCode(Code::Cjmp_Lit);
+               putWord(0);
+               putWord(putPos + 40 + lenPushArg(stmnt->args[2], 0));
 
-            default:
-               throw Core::ExceptStr(stmnt->pos, "bad put Code::ShRU_W");
+               putCode(Code::ShRI);
+               putCode(Code::Push_Lit, 0x80000000);
+               putStmntPushArg(stmnt->args[2], 0);
+               putCode(Code::Push_Lit, 1);
+               putCode(Code::SubU);
+               putCode(Code::ShRI);
+               putCode(Code::InvU);
+               putCode(Code::AndU);
             }
          }
 
@@ -728,19 +686,10 @@ namespace GDCC
             moveArgStk_dst(stmnt->args[0], IR::Code::Move_W);
             if(moveArgStk_src(stmnt->args[1], IR::Code::Move_W)) return;
 
-            switch(stmnt->args[2].a)
+            if(!isPushArg(stmnt->args[2]) || !isFastArg(stmnt->args[2]))
             {
-            case IR::ArgBase::GblReg:
-            case IR::ArgBase::Lit:
-            case IR::ArgBase::LocReg:
-            case IR::ArgBase::MapReg:
-            case IR::ArgBase::WldReg:
-               break;
-
-            default:
                func->setLocalTmp(1);
                moveArgStk_src(stmnt->args[2], IR::Code::Move_W);
-               break;
             }
          }
 
