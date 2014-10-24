@@ -199,7 +199,10 @@ namespace GDCC
             std::size_t lenString(Core::String str);
 
             virtual void preFunc();
+
             virtual void preStmnt();
+            void preStmntCall(Core::String name, Core::FastU retrn, Core::FastU param);
+
             virtual void preStr();
 
             virtual void put();
