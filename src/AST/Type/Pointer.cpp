@@ -12,6 +12,7 @@
 
 #include "AST/Type/Pointer.hpp"
 
+#include "IR/CallType.hpp"
 #include "IR/Type.hpp"
 
 #include "Platform/Platform.hpp"
@@ -58,7 +59,7 @@ namespace GDCC
       IR::Type Type_PtrBase::getIRType() const
       {
          if(base->isTypeFunction())
-            return IR::Type_Funct(base->getCallType());
+            return IR::Type_Funct(IR::GetCallTypeIR(base->getCallType()));
 
          if(base->isTypeStrEnt())
             return IR::Type_StrEn();

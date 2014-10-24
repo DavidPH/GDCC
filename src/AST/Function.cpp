@@ -111,7 +111,7 @@ namespace GDCC
          // Operate on a temporary function to be merged later.
          IR::Function fn{glyph};
 
-         fn.ctype    = ctype;
+         fn.ctype    = IR::GetCallTypeIR(ctype);
          fn.linka    = linka;
          fn.stype    = stype;
 
@@ -119,7 +119,7 @@ namespace GDCC
          fn.sflagClS = sflagClS;
 
          // Configure glyph's type, even if the glyph won't be backed.
-         prog.getGlyphData(glyph).type = IR::Type_Funct(ctype);
+         prog.getGlyphData(glyph).type = IR::Type_Funct(fn.ctype);
 
          // Merge into existing function (if any).
          prog.mergeFunction(prog.getFunction(glyph), std::move(fn));
