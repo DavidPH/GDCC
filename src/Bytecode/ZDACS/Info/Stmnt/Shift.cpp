@@ -725,8 +725,8 @@ namespace GDCC
                stmnt->args[2].a == IR::ArgBase::Stk)
                throw Core::ExceptStr(stmnt->pos, "trStmnt_ShRU_W disorder");
 
-            moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
-            if(moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W)) return;
+            moveArgStk_dst(stmnt->args[0], IR::Code::Move_W);
+            if(moveArgStk_src(stmnt->args[1], IR::Code::Move_W)) return;
 
             switch(stmnt->args[2].a)
             {
@@ -739,7 +739,7 @@ namespace GDCC
 
             default:
                func->setLocalTmp(1);
-               moveArgStk_W_src(stmnt->args[2], IR::Code::Move_W);
+               moveArgStk_src(stmnt->args[2], IR::Code::Move_W);
                break;
             }
          }
@@ -857,13 +857,13 @@ namespace GDCC
                stmnt->args[2].a == IR::ArgBase::Stk)
                throw Core::ExceptStr(stmnt->pos, "trStmntShift disorder");
 
-            moveArgStk_W_dst(stmnt->args[0], codeMove);
-            if(moveArgStk_W_src(stmnt->args[1], codeMove)) return false;
+            moveArgStk_dst(stmnt->args[0], codeMove);
+            if(moveArgStk_src(stmnt->args[1], codeMove)) return false;
 
             if(stmnt->args[2].a == IR::ArgBase::Lit)
                return true;
 
-            moveArgStk_W_src(stmnt->args[2], IR::Code::Move_W);
+            moveArgStk_src(stmnt->args[2], IR::Code::Move_W);
             return false;
          }
       }

@@ -25,11 +25,11 @@ namespace GDCC
    namespace Bytecode
    {
       //
-      // Info::moveArgStk_W_dst
+      // Info::moveArgStk_dst
       //
       // If idx is not Stk, makes it one by adding a new Move_W statement.
       //
-      bool Info::moveArgStk_W_dst(IR::Arg &idx, IR::Code codeMove)
+      bool Info::moveArgStk_dst(IR::Arg &idx, IR::Code codeMove)
       {
          if(idx.a == IR::ArgBase::Stk) return false;
 
@@ -43,11 +43,11 @@ namespace GDCC
       }
 
       //
-      // Info::moveArgStk_W_src
+      // Info::moveArgStk_src
       //
       // If idx is not Stk, makes it one by adding a new Move_W statement.
       //
-      bool Info::moveArgStk_W_src(IR::Arg &idx, IR::Code codeMove)
+      bool Info::moveArgStk_src(IR::Arg &idx, IR::Code codeMove)
       {
          if(idx.a == IR::ArgBase::Stk) return false;
 

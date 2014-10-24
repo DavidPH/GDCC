@@ -197,8 +197,8 @@ namespace GDCC
             case IR::Code::NegI_W:
             case IR::Code::NotU_W:
                CheckArgC(stmnt, 2);
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
-               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W);
+               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_src(stmnt->args[1], IR::Code::Move_W);
                break;
 
             case IR::Code::InvU_W2: trStmnt_InvU_W2(); break;
@@ -218,14 +218,14 @@ namespace GDCC
 
             case IR::Code::NotU_W2:
                CheckArgC(stmnt, 2);
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
-               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W2);
+               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_src(stmnt->args[1], IR::Code::Move_W2);
                break;
 
             case IR::Code::NotU_W3:
                CheckArgC(stmnt, 2);
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
-               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W3);
+               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_src(stmnt->args[1], IR::Code::Move_W3);
                break;
 
             case IR::Code::Plsa:
@@ -237,7 +237,7 @@ namespace GDCC
             case IR::Code::Plsi:
             case IR::Code::Plsr:
                CheckArgC(stmnt, 1);
-               moveArgStk_W_src(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_src(stmnt->args[0], IR::Code::Move_W);
                break;
 
             case IR::Code::Plsf:
@@ -245,13 +245,13 @@ namespace GDCC
 
             case IR::Code::Plss:
                CheckArgC(stmnt, 1);
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W);
                break;
 
             case IR::Code::Pltn:
                CheckArgC(stmnt, 2);
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
-               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W);
+               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_src(stmnt->args[1], IR::Code::Move_W);
                break;
 
             case IR::Code::Retn:
@@ -392,9 +392,9 @@ namespace GDCC
                stmnt->args[2].a == IR::ArgBase::Stk)
                throw Core::ExceptStr(stmnt->pos, "trStmntStk3 disorder");
 
-            moveArgStk_W_dst(stmnt->args[0], codeMove);
-            if(moveArgStk_W_src(stmnt->args[1], codeMove)) return;
-            moveArgStk_W_src(stmnt->args[2], codeMove);
+            moveArgStk_dst(stmnt->args[0], codeMove);
+            if(moveArgStk_src(stmnt->args[1], codeMove)) return;
+            moveArgStk_src(stmnt->args[2], codeMove);
          }
       }
    }

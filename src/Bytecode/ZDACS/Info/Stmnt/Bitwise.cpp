@@ -157,7 +157,7 @@ namespace GDCC
 
             if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
             {
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W2);
+               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W2);
             }
             else
             {
@@ -175,7 +175,7 @@ namespace GDCC
 
             if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
             {
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W3);
+               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W3);
             }
             else
             {

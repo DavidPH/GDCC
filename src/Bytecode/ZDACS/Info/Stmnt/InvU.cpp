@@ -138,13 +138,13 @@ namespace GDCC
             CheckArgC(stmnt, 2);
 
             if(isPushArg(stmnt->args[1]))
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W2);
+               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W2);
             else if(isDropArg(stmnt->args[0]))
-               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W2);
+               moveArgStk_src(stmnt->args[1], IR::Code::Move_W2);
             else
             {
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W2);
-               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W2);
+               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W2);
+               moveArgStk_src(stmnt->args[1], IR::Code::Move_W2);
             }
          }
 
@@ -156,14 +156,14 @@ namespace GDCC
             CheckArgC(stmnt, 2);
 
             if(isPushArg(stmnt->args[1]))
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W3);
+               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W3);
             else if(isDropArg(stmnt->args[0]))
-               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W3);
+               moveArgStk_src(stmnt->args[1], IR::Code::Move_W3);
             else
             {
                func->setLocalTmp(1);
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W3);
-               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W3);
+               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W3);
+               moveArgStk_src(stmnt->args[1], IR::Code::Move_W3);
             }
          }
       }

@@ -144,8 +144,8 @@ namespace GDCC
          virtual void trStr() {}
                  void trStr(IR::StrEnt &str);
 
-         bool moveArgStk_W_dst(IR::Arg &idx, IR::Code codeMove);
-         bool moveArgStk_W_src(IR::Arg &idx, IR::Code codeMove);
+         bool moveArgStk_dst(IR::Arg &idx, IR::Code codeMove);
+         bool moveArgStk_src(IR::Arg &idx, IR::Code codeMove);
 
          IR::Block     *block;
          IR::Function  *func;

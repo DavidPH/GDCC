@@ -302,7 +302,7 @@ namespace GDCC
             CheckArg(stmnt->args[1], stmnt->pos);
 
             #define moveIdx(name, n) \
-               moveArgStk_W_src(*stmnt->args[n].a##name.idx, IR::Code::Move_W)
+               moveArgStk_src(*stmnt->args[n].a##name.idx, IR::Code::Move_W)
 
             // Push to stack?
             if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
@@ -344,7 +344,7 @@ namespace GDCC
 
             // Neither stack, split move and rescan.
             else
-               moveArgStk_W_src(stmnt->args[1], IR::Code::Move_W);
+               moveArgStk_src(stmnt->args[1], IR::Code::Move_W);
 
             #undef moveIdx
          }

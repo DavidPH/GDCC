@@ -151,7 +151,7 @@ namespace GDCC
             CheckArgC(stmnt, 3);
 
             if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
-               moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W);
             else
                trStmntCmp(codeMove, false);
          }
@@ -167,9 +167,9 @@ namespace GDCC
                stmnt->args[2].a == IR::ArgBase::Stk)
                throw Core::ExceptStr(stmnt->pos, "trStmntCmp disorder");
 
-            moveArgStk_W_dst(stmnt->args[0], IR::Code::Move_W);
-            if(moveArgStk_W_src(stmnt->args[1], codeMove)) return;
-            moveArgStk_W_src(stmnt->args[2], codeMove);
+            moveArgStk_dst(stmnt->args[0], IR::Code::Move_W);
+            if(moveArgStk_src(stmnt->args[1], codeMove)) return;
+            moveArgStk_src(stmnt->args[2], codeMove);
          }
       }
    }
