@@ -508,10 +508,10 @@ namespace GDCC
          //
          void Info::putStmntDropRetn(Core::FastU ret)
          {
-            if(ret) for(Core::FastU i = 0; ++i != ret;)
+            if(ret) for(Core::FastU i = ret; --i;)
             {
                putCode(Code::Push_Lit);
-               putWord(-i);
+               putWord(~i + 1);
                putCode(Code::Swap);
                putCode(Code::Drop_GblArr);
                putWord(LocArsArray);
@@ -641,10 +641,10 @@ namespace GDCC
          //
          void Info::putStmntPushRetn(Core::FastU ret)
          {
-            if(ret) while(ret-- != 1)
+            if(ret) for(Core::FastU i = 0; ++i != ret;)
             {
                putCode(Code::Push_Lit);
-               putWord(-ret);
+               putWord(~i + 1);
                putCode(Code::Push_GblArr);
                putWord(LocArsArray);
             }
