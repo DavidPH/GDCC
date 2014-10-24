@@ -58,6 +58,14 @@ static GDCC::AST::Type::CRef const IntegTable_BaseType[10] =
    GDCC::CC::GetTypeIntegPrSLL(),
 };
 
+// Table: Type_Integ::getSizeBitsI ZDACS
+static constexpr GDCC::Core::FastU IntegTable_SizeBitsI_ZDACS[5] =
+   {32, 32, 32, 64, 96};
+
+// Table: Type_Integ::getSizeBytes ZDACS
+static constexpr GDCC::Core::FastU IntegTable_SizeBytes_ZDACS[5] =
+   {1, 1, 1, 2, 3};
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -418,7 +426,7 @@ namespace GDCC
          switch(Platform::TargetCur)
          {
          case Platform::Target::MageCraft: return (8 << size) - sign;
-         default:                          return (size > 2 ? 64 : 32) - sign;
+         default:                          return IntegTable_SizeBitsI_ZDACS[size] - sign;
          }
       }
 
@@ -430,7 +438,7 @@ namespace GDCC
          switch(Platform::TargetCur)
          {
          case Platform::Target::MageCraft: return 1 << size;
-         default:                          return size > 2 ? 2 : 1;
+         default:                          return IntegTable_SizeBytes_ZDACS[size];
          }
       }
 
@@ -442,7 +450,7 @@ namespace GDCC
          switch(Platform::TargetCur)
          {
          case Platform::Target::MageCraft: return size > 2 ? 1 << (size - 2) : 1;
-         default:                          return size > 2 ? 2 : 1;
+         default:                          return IntegTable_SizeBytes_ZDACS[size];
          }
       }
 
@@ -466,7 +474,7 @@ namespace GDCC
          switch(Platform::TargetCur)
          {
          case Platform::Target::MageCraft: return size > 2 ? 1 << (size - 2) : 1;
-         default:                          return size > 2 ? 2 : 1;
+         default:                          return IntegTable_SizeBytes_ZDACS[size];
          }
       }
 
