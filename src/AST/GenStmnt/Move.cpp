@@ -115,22 +115,22 @@ template<> void GenStmnt_MovePartT<GDCC::IR::Arg_Lit>(
       {
          arg.data->genStmnt(ctx);
 
-         if(arg.type->getSizeWords() == 1)
+         IR::Code code;
+         switch(arg.type->getSizeWords())
          {
-            ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(),
-               IR::Arg_Lit(arg.data->getIRExp()));
-         }
-         else
-         {
+         case  1: code = IR::Code::Move_W;  break;
+         case  2: code = IR::Code::Move_W2; break;
+         case  3: code = IR::Code::Move_W3; break;
+         default:
             std::cerr << "STUB: " << exp->pos << ": " << __FILE__ << ':'
-               << __LINE__ << ": AddrBase::Lit get multi-word\n";
+               << __LINE__ << ": AddrBase::Lit get multi-word > 3\n";
             throw EXIT_FAILURE;
          }
+
+         ctx.block.addStatementArgs(code, IR::Arg_Stk(), arg.data->getIRExp());
       }
       else
-      {
          arg.data->genStmnt(ctx, AST::Arg(arg.type, IR::AddrBase::Stk));
-      }
    }
 }
 
