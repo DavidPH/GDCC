@@ -133,18 +133,14 @@ namespace GDCC
                putStmnt_Cspe();
                break;
 
-            case IR::Code::DivI_W:
-               putCode(Code::DivI);
-               break;
-
-            case IR::Code::DivU_W:
-               putCode(Code::Call_Lit);
-               putWord(GetWord(resolveGlyph("___GDCC__DivU_W")));
-               break;
-
-            case IR::Code::DivX_W:
-               putCode(Code::DivX);
-               break;
+            case IR::Code::DivI_W:  putCode(Code::DivI); break;
+            case IR::Code::DivI_W2: putStmntCall("___GDCC__DivI_W2", 2); break;
+            case IR::Code::DivI_W3: putStmntCall("___GDCC__DivI_W3", 3); break;
+            case IR::Code::DivU_W:  putStmntCall("___GDCC__DivU_W",  1); break;
+            case IR::Code::DivU_W2: putStmntCall("___GDCC__DivU_W2", 2); break;
+            case IR::Code::DivU_W3: putStmntCall("___GDCC__DivU_W3", 3); break;
+            case IR::Code::DivX_W:  putCode(Code::DivX); break;
+            case IR::Code::DivX_W2: putStmntCall("___GDCC__DivX_W2", 2); break;
 
             case IR::Code::InvU_W:  putCode(Code::InvU); break;
             case IR::Code::InvU_W2: putStmnt_InvU_W2(); break;
@@ -155,14 +151,12 @@ namespace GDCC
                putWord(GetWord(stmnt->args[0].aLit.value));
                break;
 
-            case IR::Code::ModI_W:
-               putCode(Code::ModI);
-               break;
-
-            case IR::Code::ModU_W:
-               putCode(Code::Call_Lit);
-               putWord(GetWord(resolveGlyph("___GDCC__ModU_W")));
-               break;
+            case IR::Code::ModI_W:  putCode(Code::ModI); break;
+            case IR::Code::ModI_W2: putStmntCall("___GDCC__ModI_W2", 2); break;
+            case IR::Code::ModI_W3: putStmntCall("___GDCC__ModI_W3", 3); break;
+            case IR::Code::ModU_W:  putStmntCall("___GDCC__ModU_W",  1); break;
+            case IR::Code::ModU_W2: putStmntCall("___GDCC__ModU_W2", 2); break;
+            case IR::Code::ModU_W3: putStmntCall("___GDCC__ModU_W3", 3); break;
 
             case IR::Code::Move_W:  putStmnt_Move_W(); break;
             case IR::Code::Move_W2: putStmnt_Move_Wx(2); break;

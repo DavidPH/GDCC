@@ -76,6 +76,11 @@ namespace GDCC
 
             case IR::Code::AddI_W2:
             case IR::Code::AddU_W2:
+            case IR::Code::DivI_W2:
+            case IR::Code::DivU_W2:
+            case IR::Code::DivX_W2:
+            case IR::Code::ModI_W2:
+            case IR::Code::ModU_W2:
             case IR::Code::MulI_W2:
             case IR::Code::MulU_W2:
             case IR::Code::MulX_W2:
@@ -86,6 +91,10 @@ namespace GDCC
 
             case IR::Code::AddI_W3:
             case IR::Code::AddU_W3:
+            case IR::Code::DivI_W3:
+            case IR::Code::DivU_W3:
+            case IR::Code::ModI_W3:
+            case IR::Code::ModU_W3:
             case IR::Code::MulI_W3:
             case IR::Code::MulU_W3:
             case IR::Code::SubI_W3:
