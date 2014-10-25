@@ -158,6 +158,12 @@ namespace GDCC
                   CheckArgB(stmnt, n, IR::ArgBase::Stk);
                break;
 
+            case IR::Code::Copy_W:
+               CheckArgC(stmnt, 2);
+               CheckArgB(stmnt, 0, IR::ArgBase::Stk);
+               CheckArgB(stmnt, 1, IR::ArgBase::Stk);
+               break;
+
             case IR::Code::Cspe:
                trStmnt_Cspe();
                break;

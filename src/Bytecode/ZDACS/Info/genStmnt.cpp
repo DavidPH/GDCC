@@ -175,6 +175,8 @@ namespace GDCC
                genStmntCall(1);
                break;
 
+            case IR::Code::Copy_W: numChunkCODE += 4; break;
+
             case IR::Code::Cnat:
                numChunkCODE += 12;
                break;

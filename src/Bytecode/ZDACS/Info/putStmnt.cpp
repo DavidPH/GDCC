@@ -129,6 +129,8 @@ namespace GDCC
                putWord(stmnt->args.size() - 2);
                break;
 
+            case IR::Code::Copy_W: putCode(Code::Copy); break;
+
             case IR::Code::Cspe:
                putStmnt_Cspe();
                break;
