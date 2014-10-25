@@ -138,12 +138,12 @@ namespace GDCC
 
             if(diffBitsF > 0)
             {
-               shiftCode = ExpCode_ArithFixed<IR::CodeSet_ShL>(shiftType);
+               shiftCode = ExpCode_ArithInteg<IR::CodeSet_ShL>(shiftType);
                shiftVal  = +diffBitsF;
             }
             else
             {
-               shiftCode = ExpCode_ArithFixed<IR::CodeSet_ShR>(shiftType);
+               shiftCode = ExpCode_ArithInteg<IR::CodeSet_ShR>(shiftType);
                shiftVal  = -diffBitsF;
             }
 
