@@ -33,17 +33,6 @@ namespace GDCC
       }
 
       //
-      // Exp_Multi::v_canGetValue
-      //
-      bool Exp_Multi::v_canGetValue() const
-      {
-         for(auto const &exp : expv)
-            if(!exp->canGetValue()) return false;
-
-         return true;
-      }
-
-      //
       // Exp_Multi::v_getType
       //
       Type Exp_Multi::v_getType() const
@@ -73,6 +62,17 @@ namespace GDCC
          return Value_Multi(
             Core::Array<Value>(Core::Move, valuev.begin(), valuev.end()),
             Type_Multi(Core::Array<Type>(Core::Move, typev.begin(), typev.end())));
+      }
+
+      //
+      // Exp_Multi::v_isValue
+      //
+      bool Exp_Multi::v_isValue() const
+      {
+         for(auto const &exp : expv)
+            if(!exp->isValue()) return false;
+
+         return true;
       }
 
       //

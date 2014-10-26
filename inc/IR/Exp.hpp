@@ -78,13 +78,13 @@ namespace GDCC
          GDCC_Core_CounterPreambleAbstract(GDCC::IR::Exp, GDCC::Core::Counter);
 
       public:
-         bool canGetValue() const {return v_canGetValue();}
-
          virtual Core::String getName() const = 0;
 
          Type getType() const;
 
          Value getValue() const;
+
+         bool isValue() const {return v_isValue();}
 
          OArchive &putIR(OArchive &out) const;
 
@@ -95,11 +95,11 @@ namespace GDCC
          explicit Exp(Core::Origin pos_) : pos{pos_} {}
          explicit Exp(IArchive &in);
 
-         virtual bool v_canGetValue() const = 0;
-
          virtual Type v_getType() const = 0;
 
          virtual Value v_getValue() const = 0;
+
+         virtual bool v_isValue() const = 0;
 
          virtual OArchive &v_putIR(OArchive &out) const;
       };

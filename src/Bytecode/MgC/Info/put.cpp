@@ -176,7 +176,7 @@ namespace GDCC
             {
                *out << '(' << '\0';
 
-               if(obj->initi->canGetValue())
+               if(obj->initi->isValue())
                   putObjValue(obj->initi->getValue());
                else
                   putExp(obj->initi);

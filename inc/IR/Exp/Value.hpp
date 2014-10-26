@@ -52,11 +52,11 @@ namespace GDCC
             Super{pos_}, type{value_.getType()}, value{std::move(value_)} {}
          explicit Exp_Value(IArchive &in);
 
-         virtual bool v_canGetValue() const {return true;}
-
          virtual Type v_getType() const {return type;}
 
          virtual Value v_getValue() const {return value;}
+
+         virtual bool v_isValue() const {return true;}
 
          virtual OArchive &v_putIR(OArchive &out) const;
       };

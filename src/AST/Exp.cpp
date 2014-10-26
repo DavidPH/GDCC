@@ -235,7 +235,7 @@ namespace GDCC
 
          auto irExp = getIRExp();
 
-         return irExp->canGetValue() && irExp->getValue();
+         return irExp->isValue() && irExp->getValue();
       }
 
       //
@@ -255,7 +255,7 @@ namespace GDCC
 
          auto irExp = getIRExp();
 
-         return irExp->canGetValue() && !irExp->getValue();
+         return irExp->isValue() && !irExp->getValue();
       }
 
       //

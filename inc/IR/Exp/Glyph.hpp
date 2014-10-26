@@ -49,11 +49,11 @@ namespace GDCC
             Super{pos_}, glyph{glyph_} {}
          explicit Exp_Glyph(IArchive &in);
 
-         virtual bool v_canGetValue() const;
-
          virtual Type v_getType() const {return glyph.getData().type;}
 
          virtual Value v_getValue() const;
+
+         virtual bool v_isValue() const;
 
          virtual OArchive &v_putIR(OArchive &out) const;
       };

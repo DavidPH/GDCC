@@ -34,14 +34,6 @@ namespace GDCC
       }
 
       //
-      // Exp_Glyph::v_canGetValue
-      //
-      bool Exp_Glyph::v_canGetValue() const
-      {
-         return glyph.getData().value;
-      }
-
-      //
       // Exp_Glyph::v_getValue
       //
       Value Exp_Glyph::v_getValue() const
@@ -54,6 +46,14 @@ namespace GDCC
                << static_cast<Core::String>(glyph) << "'\n";
             throw EXIT_FAILURE;
          }
+      }
+
+      //
+      // Exp_Glyph::v_isValue
+      //
+      bool Exp_Glyph::v_isValue() const
+      {
+         return glyph.getData().value;
       }
 
       //

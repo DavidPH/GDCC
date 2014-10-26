@@ -228,8 +228,8 @@ namespace GDCC
             Super{pos_}, expL{l}, expR{r} {}
          explicit Exp_BraBin(IArchive &in);
 
-         virtual bool v_canGetValue() const
-            {return expL->canGetValue() && expR->canGetValue();}
+         virtual bool v_isValue() const
+            {return expL->isValue() && expR->isValue();}
 
          virtual OArchive &v_putIR(OArchive &out) const;
       };
@@ -251,8 +251,8 @@ namespace GDCC
             Super{l, r, pos_}, expC{c} {}
          explicit Exp_BraTer(IArchive &in);
 
-         virtual bool v_canGetValue() const
-            {return Super::v_canGetValue() && expC->canGetValue();}
+         virtual bool v_isValue() const
+            {return Super::v_isValue() && expC->isValue();}
 
          virtual OArchive &v_putIR(OArchive &out) const;
       };
@@ -273,8 +273,8 @@ namespace GDCC
          Exp_BraUna(Exp const *e, Core::Origin pos_) : Super{pos_}, exp{e} {}
          explicit Exp_BraUna(IArchive &in);
 
-         virtual bool v_canGetValue() const
-            {return exp->canGetValue();}
+         virtual bool v_isValue() const
+            {return exp->isValue();}
 
          virtual OArchive &v_putIR(OArchive &out) const;
       };

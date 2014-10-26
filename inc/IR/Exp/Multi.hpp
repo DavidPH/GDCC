@@ -53,11 +53,11 @@ namespace GDCC
             Super{pos_}, expv{std::move(expv_)} {}
          explicit Exp_Multi(IArchive &in);
 
-         virtual bool v_canGetValue() const;
-
          virtual Type v_getType() const;
 
          virtual Value v_getValue() const;
+
+         virtual bool v_isValue() const;
 
          virtual OArchive &v_putIR(OArchive &out) const;
       };
