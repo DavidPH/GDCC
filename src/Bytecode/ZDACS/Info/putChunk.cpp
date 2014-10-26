@@ -202,12 +202,10 @@ namespace GDCC
             for(auto const &itr : init)
                if(itr.first->space.base == IR::AddrBase::MapArr)
             {
-               auto const &ini = itr.second;
-
-               if(!ini.needTag || ini.onlyStr) continue;
+               if(!itr.second.needTag || itr.second.onlyStr) continue;
 
                putData("ATAG", 4);
-               putWord(ini.vals.size() + 5);
+               putWord(itr.second.max + 5);
 
                putByte(0); // version
                putWord(itr.first->value);

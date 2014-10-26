@@ -166,7 +166,8 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(itr.ctype != IR::CallType::LangACS)
+               if(itr.ctype != IR::CallType::StdCall &&
+                  itr.ctype != IR::CallType::StkCall)
                   continue;
 
                strs[itr.valueInt] = itr.glyph;
