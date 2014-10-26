@@ -460,25 +460,6 @@ namespace GDCC
             throw EXIT_FAILURE;
          }
       }
-
-      //
-      // Info::IsExp0
-      //
-      bool Info::IsExp0(IR::Exp const *exp)
-      {
-         if(!exp) return true;
-
-         auto val = exp->getValue();
-
-         switch(val.v)
-         {
-         case IR::ValueBase::Fixed:
-            return !val.vFixed.value;
-
-         default:
-            return false;
-         }
-      }
    }
 }
 

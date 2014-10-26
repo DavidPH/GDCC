@@ -162,8 +162,6 @@ namespace GDCC
          static void CheckArgB(IR::Statement *stmnt, std::size_t a, IR::AddrBase b);
 
          static void CheckArgC(IR::Statement *stmnt, std::size_t c);
-
-         static bool IsExp0(IR::Exp const *exp);
       };
    }
 }

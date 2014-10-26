@@ -60,6 +60,22 @@ namespace GDCC
       }
 
       //
+      // Exp::isNonzero
+      //
+      bool Exp::isNonzero() const
+      {
+         return isValue() && getValue();
+      }
+
+      //
+      // Exp::isZero
+      //
+      bool Exp::isZero() const
+      {
+         return isValue() && !getValue();
+      }
+
+      //
       // Exp::v_putIR
       //
       OArchive &Exp::v_putIR(OArchive &out) const

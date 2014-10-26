@@ -231,11 +231,7 @@ namespace GDCC
       //
       bool Exp::isNonzero() const
       {
-         if(!isIRExp()) return false;
-
-         auto irExp = getIRExp();
-
-         return irExp->isValue() && irExp->getValue();
+         return isIRExp() ? getIRExp()->isNonzero() : false;
       }
 
       //
@@ -251,11 +247,7 @@ namespace GDCC
       //
       bool Exp::isZero() const
       {
-         if(!isIRExp()) return false;
-
-         auto irExp = getIRExp();
-
-         return irExp->isValue() && !irExp->getValue();
+         return isIRExp() ? getIRExp()->isZero() : false;
       }
 
       //

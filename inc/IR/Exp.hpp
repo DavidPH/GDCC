@@ -84,7 +84,11 @@ namespace GDCC
 
          Value getValue() const;
 
+         bool isNonzero() const;
+
          bool isValue() const {return v_isValue();}
+
+         bool isZero() const;
 
          OArchive &putIR(OArchive &out) const;
 
