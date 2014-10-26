@@ -35,18 +35,12 @@ namespace GDCC
       {
          switch(in)
          {
-         case ScriptType::None:       return out << Core::STR_None;
-         case ScriptType::Death:      return out << Core::STR_Death;
-         case ScriptType::Disconnect: return out << Core::STR_Disconnect;
-         case ScriptType::Enter:      return out << Core::STR_Enter;
-         case ScriptType::Lightning:  return out << Core::STR_Lightning;
-         case ScriptType::Open:       return out << Core::STR_Open;
-         case ScriptType::Respawn:    return out << Core::STR_Respawn;
-         case ScriptType::Return:     return out << Core::STR_Return;
-         case ScriptType::Unloading:  return out << Core::STR_Unloading;
+         #define GDCC_IR_ScriptTypeList(name) \
+            case ScriptType::name: return out << Core::STR_##name;
+         #include "IR/ScriptTypeList.hpp"
          }
 
-         std::cerr << "invalid enum ScriptType\n";
+         std::cerr << "invalid enum GDCC::IR::ScriptType\n";
          throw EXIT_FAILURE;
       }
 
@@ -57,18 +51,12 @@ namespace GDCC
       {
          switch(in)
          {
-         case ScriptType::None:       return out << "None";
-         case ScriptType::Death:      return out << "Death";
-         case ScriptType::Disconnect: return out << "Disconnect";
-         case ScriptType::Enter:      return out << "Enter";
-         case ScriptType::Lightning:  return out << "Lightning";
-         case ScriptType::Open:       return out << "Open";
-         case ScriptType::Respawn:    return out << "Respawn";
-         case ScriptType::Return:     return out << "Return";
-         case ScriptType::Unloading:  return out << "Unloading";
+         #define GDCC_IR_ScriptTypeList(name) \
+            case ScriptType::name: return out << #name;
+         #include "IR/ScriptTypeList.hpp"
          }
 
-         std::cerr << "invalid enum ScriptType\n";
+         std::cerr << "invalid enum GDCC::IR::ScriptType\n";
          throw EXIT_FAILURE;
       }
 
@@ -79,18 +67,12 @@ namespace GDCC
       {
          switch(GetIR<Core::String>(in))
          {
-         case Core::STR_None:       out = ScriptType::None;       return in;
-         case Core::STR_Death:      out = ScriptType::Death;      return in;
-         case Core::STR_Disconnect: out = ScriptType::Disconnect; return in;
-         case Core::STR_Enter:      out = ScriptType::Enter;      return in;
-         case Core::STR_Lightning:  out = ScriptType::Lightning;  return in;
-         case Core::STR_Open:       out = ScriptType::Open;       return in;
-         case Core::STR_Respawn:    out = ScriptType::Respawn;    return in;
-         case Core::STR_Return:     out = ScriptType::Return;     return in;
-         case Core::STR_Unloading:  out = ScriptType::Unloading;  return in;
+         #define GDCC_IR_ScriptTypeList(name) \
+            case Core::STR_##name: out = ScriptType::name; return in;
+         #include "IR/ScriptTypeList.hpp"
 
          default:
-            std::cerr << "invalid ScriptType\n";
+            std::cerr << "invalid GDCC::IR::ScriptType\n";
             throw EXIT_FAILURE;
          }
       }

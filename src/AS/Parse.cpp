@@ -101,13 +101,9 @@ namespace GDCC
       {
          switch(TokenPeekIdenti(ctx).in.get().str)
          {
-         case Core::STR_ExtACS: return IR::Linkage::ExtACS;
-         case Core::STR_ExtASM: return IR::Linkage::ExtASM;
-         case Core::STR_ExtC:   return IR::Linkage::ExtC;
-         case Core::STR_ExtCXX: return IR::Linkage::ExtCXX;
-         case Core::STR_ExtDS:  return IR::Linkage::ExtDS;
-         case Core::STR_IntC:   return IR::Linkage::IntC;
-         case Core::STR_IntCXX: return IR::Linkage::IntCXX;
+            #define GDCC_IR_LinkageList(name) \
+               case Core::STR_##name: return IR::Linkage::name;
+            #include "IR/LinkageList.hpp"
 
          default:
             throw Core::ParseExceptExpect(ctx.in.reget(), "Linkage", false);
@@ -121,15 +117,9 @@ namespace GDCC
       {
          switch(TokenPeekIdenti(ctx).in.get().str)
          {
-         case Core::STR_None:       return IR::ScriptType::None;
-         case Core::STR_Death:      return IR::ScriptType::Death;
-         case Core::STR_Disconnect: return IR::ScriptType::Disconnect;
-         case Core::STR_Enter:      return IR::ScriptType::Enter;
-         case Core::STR_Lightning:  return IR::ScriptType::Lightning;
-         case Core::STR_Open:       return IR::ScriptType::Open;
-         case Core::STR_Respawn:    return IR::ScriptType::Respawn;
-         case Core::STR_Return:     return IR::ScriptType::Return;
-         case Core::STR_Unloading:  return IR::ScriptType::Unloading;
+            #define GDCC_IR_ScriptTypeList(name) \
+               case Core::STR_##name: return IR::ScriptType::name;
+            #include "IR/ScriptTypeList.hpp"
 
          default:
             throw Core::ParseExceptExpect(ctx.in.reget(), "ScriptType", false);

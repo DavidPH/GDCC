@@ -32,15 +32,8 @@ namespace GDCC
       //
       enum class Linkage
       {
-         None,
-         ExtACS,
-         ExtASM,
-         ExtAXX,
-         ExtC,
-         ExtCXX,
-         ExtDS,
-         IntC,
-         IntCXX,
+         #define GDCC_IR_LinkageList(name) name,
+         #include "../IR/LinkageList.hpp"
       };
    }
 }

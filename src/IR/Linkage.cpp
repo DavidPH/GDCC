@@ -35,15 +35,9 @@ namespace GDCC
       {
          switch(in)
          {
-         case Linkage::None:   return out << Core::STR_None;
-         case Linkage::ExtACS: return out << Core::STR_ExtACS;
-         case Linkage::ExtASM: return out << Core::STR_ExtASM;
-         case Linkage::ExtAXX: return out << Core::STR_ExtAXX;
-         case Linkage::ExtC:   return out << Core::STR_ExtC;
-         case Linkage::ExtCXX: return out << Core::STR_ExtCXX;
-         case Linkage::ExtDS:  return out << Core::STR_ExtDS;
-         case Linkage::IntC:   return out << Core::STR_IntC;
-         case Linkage::IntCXX: return out << Core::STR_IntCXX;
+         #define GDCC_IR_LinkageList(name) \
+            case Linkage::name: return out << Core::STR_##name;
+         #include "IR/LinkageList.hpp"
          }
 
          std::cerr << "invalid enum GDCC::IR::Linkage\n";
@@ -57,15 +51,9 @@ namespace GDCC
       {
          switch(in)
          {
-         case Linkage::None:   return out << "None";
-         case Linkage::ExtACS: return out << "ExtACS";
-         case Linkage::ExtASM: return out << "ExtASM";
-         case Linkage::ExtAXX: return out << "ExtAXX";
-         case Linkage::ExtC:   return out << "ExtC";
-         case Linkage::ExtCXX: return out << "ExtCXX";
-         case Linkage::ExtDS:  return out << "ExtDS";
-         case Linkage::IntC:   return out << "IntC";
-         case Linkage::IntCXX: return out << "IntCXX";
+         #define GDCC_IR_LinkageList(name) \
+            case Linkage::name: return out << #name;
+         #include "IR/LinkageList.hpp"
          }
 
          std::cerr << "invalid enum GDCC::IR::Linkage\n";
@@ -79,18 +67,12 @@ namespace GDCC
       {
          switch(GetIR<Core::StringIndex>(in))
          {
-         case Core::STR_None:   out = Linkage::None;   return in;
-         case Core::STR_ExtACS: out = Linkage::ExtACS; return in;
-         case Core::STR_ExtASM: out = Linkage::ExtASM; return in;
-         case Core::STR_ExtAXX: out = Linkage::ExtAXX; return in;
-         case Core::STR_ExtC:   out = Linkage::ExtC;   return in;
-         case Core::STR_ExtCXX: out = Linkage::ExtCXX; return in;
-         case Core::STR_ExtDS:  out = Linkage::ExtDS;  return in;
-         case Core::STR_IntC:   out = Linkage::IntC;   return in;
-         case Core::STR_IntCXX: out = Linkage::IntCXX; return in;
+         #define GDCC_IR_LinkageList(name) \
+            case Core::STR_##name: out = Linkage::name; return in;
+         #include "IR/LinkageList.hpp"
 
          default:
-            std::cerr << "invalid Linkage\n";
+            std::cerr << "invalid GDCC::IR::Linkage\n";
             throw EXIT_FAILURE;
          }
       }

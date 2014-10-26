@@ -241,15 +241,9 @@ static void ParseAttr_script(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
    switch(ctx.in.get().str)
    {
       // Script types.
-   case Core::STR_None:       attr.stype = IR::ScriptType::None;       break;
-   case Core::STR_Death:      attr.stype = IR::ScriptType::Death;      break;
-   case Core::STR_Disconnect: attr.stype = IR::ScriptType::Disconnect; break;
-   case Core::STR_Enter:      attr.stype = IR::ScriptType::Enter;      break;
-   case Core::STR_Lightning:  attr.stype = IR::ScriptType::Lightning;  break;
-   case Core::STR_Open:       attr.stype = IR::ScriptType::Open;       break;
-   case Core::STR_Respawn:    attr.stype = IR::ScriptType::Respawn;    break;
-   case Core::STR_Return:     attr.stype = IR::ScriptType::Return;     break;
-   case Core::STR_Unloading:  attr.stype = IR::ScriptType::Unloading;  break;
+      #define GDCC_IR_ScriptTypeList(name) \
+         case Core::STR_##name: attr.stype = IR::ScriptType::name; break;
+      #include "IR/ScriptTypeList.hpp"
 
       // Script flags.
    case Core::STR_Clientside: attr.sflagClS = true; break;

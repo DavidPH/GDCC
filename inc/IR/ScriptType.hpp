@@ -32,15 +32,8 @@ namespace GDCC
       //
       enum class ScriptType
       {
-         None,
-         Death,
-         Disconnect,
-         Enter,
-         Lightning,
-         Open,
-         Respawn,
-         Return,
-         Unloading,
+         #define GDCC_IR_ScriptTypeList(name) name,
+         #include "../IR/ScriptTypeList.hpp"
       };
    }
 }
