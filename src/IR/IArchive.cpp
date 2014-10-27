@@ -83,6 +83,32 @@ namespace GDCC
       }
 
       //
+      // IArchive::operator >> Core::Float
+      //
+      IArchive &IArchive::operator >> (Core::Float &out)
+      {
+         if(auto s = get())
+            out = Core::Float(s, mpf_get_default_prec(), 16);
+         else
+            out = 0;
+
+         return *this;
+      }
+
+      //
+      // IArchive::operator >> Core::Integ
+      //
+      IArchive &IArchive::operator >> (Core::Integ &out)
+      {
+         if(auto s = get())
+            out = Core::Integ(s, 16);
+         else
+            out = 0;
+
+         return *this;
+      }
+
+      //
       // IArchive::getHeader
       //
       IArchive &IArchive::getHeader()

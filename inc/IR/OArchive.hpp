@@ -73,6 +73,7 @@ namespace GDCC
          template<typename T>
          OArchive &putNumber(T const &n)
          {
+            out.precision(256);
             out << std::hex << n << '\0';
             return *this;
          }

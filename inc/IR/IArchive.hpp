@@ -15,7 +15,7 @@
 
 #include "../Core/Array.hpp"
 #include "../Core/Number.hpp"
-#include "../Core/String.hpp"
+#include "../Core/StringBuf.hpp"
 
 #include <istream>
 #include <sstream>
@@ -65,8 +65,8 @@ namespace GDCC
          IArchive &operator >> (     double &out) {return getNumber(out);}
          IArchive &operator >> (long double &out) {return getNumber(out);}
 
-         IArchive &operator >> (Core::Float &out) {return getNumber(out);}
-         IArchive &operator >> (Core::Integ &out) {return getNumber(out);}
+         IArchive &operator >> (Core::Float &out);
+         IArchive &operator >> (Core::Integ &out);
 
          char const *get() {return itr != str.end() ? *itr++ : "";}
 
@@ -90,7 +90,7 @@ namespace GDCC
 
             if(*s)
             {
-               std::istringstream in{s};
+               Core::StringStream in{s, std::strlen(s)};
                in >> std::hex >> out;
             }
             else
