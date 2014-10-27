@@ -364,7 +364,12 @@ namespace GDCC
          }
          else
          {
-            throw Core::ParseExceptExpect(tok, "fixed-point number", false);
+            Core::Ratio val = valF;
+            for(auto i = digF; i--;)
+               val /= base;
+            val += valI;
+
+            return IR::Value_Float(std::move(val), {bitsI, bitsF, bitsS, satur});
          }
       }
    }
