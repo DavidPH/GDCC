@@ -46,8 +46,8 @@ namespace GDCC
          static constexpr Code
             CodeA_W  = Code::NegI_W,
             CodeA_W2 = Code::NegI_W2,
-            CodeF_W  = Code::None,
-            CodeF_W2 = Code::None,
+            CodeF_W  = Code::NegF_W,
+            CodeF_W2 = Code::NegF_W2,
             CodeI_W  = Code::NegI_W,
             CodeI_W2 = Code::NegI_W2,
             CodeI_W3 = Code::NegI_W3,

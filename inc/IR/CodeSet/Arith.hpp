@@ -32,8 +32,8 @@ namespace GDCC
          static constexpr Code
             CodeA_W  = Code::AddU_W,
             CodeA_W2 = Code::AddU_W2,
-            CodeF_W  = Code::None,
-            CodeF_W2 = Code::None,
+            CodeF_W  = Code::AddF_W,
+            CodeF_W2 = Code::AddF_W2,
             CodeI_W  = Code::AddI_W,
             CodeI_W2 = Code::AddI_W2,
             CodeI_W3 = Code::AddI_W3,
@@ -56,8 +56,8 @@ namespace GDCC
          static constexpr Code
             CodeA_W  = Code::None,
             CodeA_W2 = Code::None,
-            CodeF_W  = Code::None,
-            CodeF_W2 = Code::None,
+            CodeF_W  = Code::DivF_W,
+            CodeF_W2 = Code::DivF_W2,
             CodeI_W  = Code::DivI_W,
             CodeI_W2 = Code::DivI_W2,
             CodeI_W3 = Code::DivI_W3,
@@ -104,8 +104,8 @@ namespace GDCC
          static constexpr Code
             CodeA_W  = Code::None,
             CodeA_W2 = Code::None,
-            CodeF_W  = Code::None,
-            CodeF_W2 = Code::None,
+            CodeF_W  = Code::MulF_W,
+            CodeF_W2 = Code::MulF_W2,
             CodeI_W  = Code::MulI_W,
             CodeI_W2 = Code::MulI_W2,
             CodeI_W3 = Code::MulI_W3,
@@ -128,8 +128,8 @@ namespace GDCC
          static constexpr Code
             CodeA_W  = Code::SubU_W,
             CodeA_W2 = Code::SubU_W2,
-            CodeF_W  = Code::None,
-            CodeF_W2 = Code::None,
+            CodeF_W  = Code::SubF_W,
+            CodeF_W2 = Code::SubF_W2,
             CodeI_W  = Code::SubI_W,
             CodeI_W2 = Code::SubI_W2,
             CodeI_W3 = Code::SubI_W3,
