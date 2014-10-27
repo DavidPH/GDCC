@@ -14,6 +14,14 @@
 
 
 //----------------------------------------------------------------------------|
+// Static Variables                                                           |
+//
+
+// Slightly unfortunate hack to set default precision.
+auto static PrecInit = [](){mpf_set_default_prec(256); return 0;}();
+
+
+//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
