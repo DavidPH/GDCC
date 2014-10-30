@@ -45,6 +45,8 @@ namespace GDCC
                putCode(Code::Nop);
                break;
 
+            case IR::Code::AddF_W:  putStmntCall("___GDCC__AddF_W",  1); break;
+            case IR::Code::AddF_W2: putStmntCall("___GDCC__AddF_W2", 2); break;
             case IR::Code::AddI_W:
             case IR::Code::AddU_W:  putCode(Code::AddU); break;
             case IR::Code::AddI_W2:
@@ -74,6 +76,24 @@ namespace GDCC
                putCode(Code::Cjmp_Tru);
                putWord(GetWord(stmnt->args[1].aLit.value));
                break;
+
+            case IR::Code::CmpF_EQ_W:  putStmntCall("___GDCC__CmpF_EQ_W",  1); break;
+            case IR::Code::CmpF_EQ_W2: putStmntCall("___GDCC__CmpF_EQ_W2", 1); break;
+
+            case IR::Code::CmpF_GE_W:  putStmntCall("___GDCC__CmpF_GE_W",  1); break;
+            case IR::Code::CmpF_GE_W2: putStmntCall("___GDCC__CmpF_GE_W2", 1); break;
+
+            case IR::Code::CmpF_GT_W:  putStmntCall("___GDCC__CmpF_GT_W",  1); break;
+            case IR::Code::CmpF_GT_W2: putStmntCall("___GDCC__CmpF_GT_W2", 1); break;
+
+            case IR::Code::CmpF_LE_W:  putStmntCall("___GDCC__CmpF_LE_W",  1); break;
+            case IR::Code::CmpF_LE_W2: putStmntCall("___GDCC__CmpF_LE_W2", 1); break;
+
+            case IR::Code::CmpF_LT_W:  putStmntCall("___GDCC__CmpF_LT_W",  1); break;
+            case IR::Code::CmpF_LT_W2: putStmntCall("___GDCC__CmpF_LT_W2", 1); break;
+
+            case IR::Code::CmpF_NE_W:  putStmntCall("___GDCC__CmpF_NE_W",  1); break;
+            case IR::Code::CmpF_NE_W2: putStmntCall("___GDCC__CmpF_NE_W2", 1); break;
 
             case IR::Code::CmpI_EQ_W:  putCode(Code::CmpU_EQ); break;
             case IR::Code::CmpI_EQ_W2: putStmnt_CmpU_EQ_W2(); break;
@@ -135,6 +155,8 @@ namespace GDCC
                putStmnt_Cspe();
                break;
 
+            case IR::Code::DivF_W:  putStmntCall("___GDCC__DivF_W",  1); break;
+            case IR::Code::DivF_W2: putStmntCall("___GDCC__DivF_W2", 2); break;
             case IR::Code::DivI_W:  putCode(Code::DivI); break;
             case IR::Code::DivI_W2: putStmntCall("___GDCC__DivI_W2", 2); break;
             case IR::Code::DivI_W3: putStmntCall("___GDCC__DivI_W3", 3); break;
@@ -164,6 +186,8 @@ namespace GDCC
             case IR::Code::Move_W2: putStmnt_Move_Wx(2); break;
             case IR::Code::Move_W3: putStmnt_Move_Wx(3); break;
 
+            case IR::Code::MulF_W:  putStmntCall("___GDCC__MulF_W",  1); break;
+            case IR::Code::MulF_W2: putStmntCall("___GDCC__MulF_W2", 2); break;
             case IR::Code::MulI_W:
             case IR::Code::MulU_W:  putCode(Code::MulU); break;
             case IR::Code::MulI_W2:
@@ -173,6 +197,8 @@ namespace GDCC
             case IR::Code::MulX_W:  putCode(Code::MulX); break;
             case IR::Code::MulX_W2: putStmntCall("___GDCC__MulX_W2", 2); break;
 
+            case IR::Code::NegF_W:
+            case IR::Code::NegF_W2: putStmnt_NegF_Wx(); break;
             case IR::Code::NegI_W:  putCode(Code::NegI); break;
             case IR::Code::NegI_W2: putStmnt_NegI_W2(); break;
             case IR::Code::NegI_W3: putStmnt_NegI_W3(); break;
@@ -231,6 +257,8 @@ namespace GDCC
             case IR::Code::ShRU_W2: putStmnt_ShRU_W2(); break;
             case IR::Code::ShRU_W3: putStmnt_ShRU_W3(); break;
 
+            case IR::Code::SubF_W:  putStmntCall("___GDCC__SubF_W",  1); break;
+            case IR::Code::SubF_W2: putStmntCall("___GDCC__SubF_W2", 2); break;
             case IR::Code::SubI_W:
             case IR::Code::SubU_W:  putCode(Code::SubU); break;
             case IR::Code::SubI_W2:

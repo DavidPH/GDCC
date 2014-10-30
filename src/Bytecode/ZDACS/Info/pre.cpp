@@ -49,6 +49,8 @@ namespace GDCC
 
             default: break;
             }
+
+            InfoBase::preFunc();
          }
 
          //
@@ -58,10 +60,30 @@ namespace GDCC
          {
             switch(stmnt->code)
             {
+            case IR::Code::AddF_W:  preStmntCall("___GDCC__AddF_W",  1, 2); break;
+            case IR::Code::AddF_W2: preStmntCall("___GDCC__AddF_W2", 2, 4); break;
             case IR::Code::AddI_W2:
             case IR::Code::AddU_W2: preStmntCall("___GDCC__AddU_W2", 2, 4); break;
             case IR::Code::AddI_W3:
             case IR::Code::AddU_W3: preStmntCall("___GDCC__AddU_W3", 3, 6); break;
+
+            case IR::Code::CmpF_EQ_W:  preStmntCall("___GDCC__CmpF_EQ_W",  1, 2); break;
+            case IR::Code::CmpF_EQ_W2: preStmntCall("___GDCC__CmpF_EQ_W2", 1, 4); break;
+
+            case IR::Code::CmpF_GE_W:  preStmntCall("___GDCC__CmpF_GE_W",  1, 2); break;
+            case IR::Code::CmpF_GE_W2: preStmntCall("___GDCC__CmpF_GE_W2", 1, 4); break;
+
+            case IR::Code::CmpF_GT_W:  preStmntCall("___GDCC__CmpF_GT_W",  1, 2); break;
+            case IR::Code::CmpF_GT_W2: preStmntCall("___GDCC__CmpF_GT_W2", 1, 4); break;
+
+            case IR::Code::CmpF_LE_W:  preStmntCall("___GDCC__CmpF_LE_W",  1, 2); break;
+            case IR::Code::CmpF_LE_W2: preStmntCall("___GDCC__CmpF_LE_W2", 1, 4); break;
+
+            case IR::Code::CmpF_LT_W:  preStmntCall("___GDCC__CmpF_LT_W",  1, 2); break;
+            case IR::Code::CmpF_LT_W2: preStmntCall("___GDCC__CmpF_LT_W2", 1, 4); break;
+
+            case IR::Code::CmpF_NE_W:  preStmntCall("___GDCC__CmpF_NE_W",  1, 2); break;
+            case IR::Code::CmpF_NE_W2: preStmntCall("___GDCC__CmpF_NE_W2", 1, 4); break;
 
             case IR::Code::CmpI_EQ_W2: preStmntCall("___GDCC__CmpU_EQ_W2", 1, 4); break;
             case IR::Code::CmpI_EQ_W3: preStmntCall("___GDCC__CmpU_EQ_W2", 1, 6); break;
@@ -103,6 +125,8 @@ namespace GDCC
             case IR::Code::CmpU_NE_W2: preStmntCall("___GDCC__CmpU_NE_W2", 1, 4); break;
             case IR::Code::CmpU_NE_W3: preStmntCall("___GDCC__CmpU_NE_W3", 1, 6); break;
 
+            case IR::Code::DivF_W:  preStmntCall("___GDCC__DivF_W",  1, 2); break;
+            case IR::Code::DivF_W2: preStmntCall("___GDCC__DivF_W2", 2, 4); break;
             case IR::Code::DivI_W2: preStmntCall("___GDCC__DivI_W2", 2, 4); break;
             case IR::Code::DivI_W3: preStmntCall("___GDCC__DivI_W3", 3, 6); break;
             case IR::Code::DivU_W:  preStmntCall("___GDCC__DivU_W",  1, 2); break;
@@ -116,6 +140,8 @@ namespace GDCC
             case IR::Code::ModU_W2: preStmntCall("___GDCC__ModU_W2", 2, 4); break;
             case IR::Code::ModU_W3: preStmntCall("___GDCC__ModU_W3", 3, 6); break;
 
+            case IR::Code::MulF_W:  preStmntCall("___GDCC__MulF_W",  1, 2); break;
+            case IR::Code::MulF_W2: preStmntCall("___GDCC__MulF_W2", 2, 4); break;
             case IR::Code::MulI_W2:
             case IR::Code::MulU_W2: preStmntCall("___GDCC__MulU_W2", 2, 4); break;
             case IR::Code::MulI_W3:
@@ -125,15 +151,17 @@ namespace GDCC
             case IR::Code::Plsa:
             case IR::Code::Plsf: preStmntCall("___GDCC__alloc", 1, 2); break;
 
-            case IR::Code::ShLU_W2: preStmntCall("___GDCC__ShLU_W2", 2, 4); break;
-            case IR::Code::ShLU_W3: preStmntCall("___GDCC__ShLU_W2", 3, 6); break;
+            case IR::Code::ShLU_W2: preStmntCall("___GDCC__ShLU_W2", 2, 3); break;
+            case IR::Code::ShLU_W3: preStmntCall("___GDCC__ShLU_W2", 3, 4); break;
 
-            case IR::Code::ShRI_W2: preStmntCall("___GDCC__ShRI_W2", 2, 4); break;
-            case IR::Code::ShRI_W3: preStmntCall("___GDCC__ShRI_W2", 3, 6); break;
+            case IR::Code::ShRI_W2: preStmntCall("___GDCC__ShRI_W2", 2, 3); break;
+            case IR::Code::ShRI_W3: preStmntCall("___GDCC__ShRI_W2", 3, 4); break;
 
-            case IR::Code::ShRU_W2: preStmntCall("___GDCC__ShRU_W2", 2, 4); break;
-            case IR::Code::ShRU_W3: preStmntCall("___GDCC__ShRU_W2", 3, 6); break;
+            case IR::Code::ShRU_W2: preStmntCall("___GDCC__ShRU_W2", 2, 3); break;
+            case IR::Code::ShRU_W3: preStmntCall("___GDCC__ShRU_W2", 3, 4); break;
 
+            case IR::Code::SubF_W:  preStmntCall("___GDCC__SubF_W",  1, 2); break;
+            case IR::Code::SubF_W2: preStmntCall("___GDCC__SubF_W2", 2, 4); break;
             case IR::Code::SubI_W2:
             case IR::Code::SubU_W2: preStmntCall("___GDCC__SubU_W2", 2, 4); break;
             case IR::Code::SubI_W3:
@@ -161,6 +189,9 @@ namespace GDCC
                newFn.alloc = true;
 
                prog->getGlyphData(name).type = IR::Type_Funct(newFn.ctype);
+
+               // Signal iterator to start over.
+               throw ResetFunc();
             }
          }
 

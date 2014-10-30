@@ -152,9 +152,15 @@ namespace GDCC
          preSpace(prog->getSpaceMapReg());
          preSpace(prog->getSpaceWldReg());
 
-         for(auto &itr : prog->rangeFunction()) preFunc(itr);
-         for(auto &itr : prog->rangeObject())   preObj(itr);
-         for(auto &itr : prog->rangeStrEnt())   preStr(itr);
+         for(;;) try
+         {
+            for(auto &itr : prog->rangeFunction()) preFunc(itr);
+            break;
+         }
+         catch(ResetFunc const &) {}
+
+         for(auto &itr : prog->rangeObject()) preObj(itr);
+         for(auto &itr : prog->rangeStrEnt()) preStr(itr);
       }
 
       //

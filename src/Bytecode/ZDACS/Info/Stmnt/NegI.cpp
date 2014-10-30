@@ -30,6 +30,14 @@ namespace GDCC
       namespace ZDACS
       {
          //
+         // Info::genStmnt_NegF_Wx
+         //
+         void Info::genStmnt_NegF_Wx()
+         {
+            numChunkCODE += 12;
+         }
+
+         //
          // Info::genStmnt_NegI_W2
          //
          void Info::genStmnt_NegI_W2()
@@ -59,6 +67,15 @@ namespace GDCC
             }
             else
                numChunkCODE += 116;
+         }
+
+         //
+         // Info::putStmnt_NegF_Wx
+         //
+         void Info::putStmnt_NegF_Wx()
+         {
+            putCode(Code::Push_Lit, 0x80000000);
+            putCode(Code::OrXU);
          }
 
          //

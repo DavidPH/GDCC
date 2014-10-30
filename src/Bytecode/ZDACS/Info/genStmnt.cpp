@@ -56,6 +56,13 @@ namespace GDCC
                numChunkCODE += 4;
                break;
 
+            case IR::Code::AddF_W:
+            case IR::Code::DivF_W:
+            case IR::Code::MulF_W:
+            case IR::Code::SubF_W:
+               genStmntCall(1);
+               break;
+
             case IR::Code::AddI_W:
             case IR::Code::AddU_W:
             case IR::Code::AndU_W:
@@ -74,16 +81,20 @@ namespace GDCC
                numChunkCODE += 4;
                break;
 
+            case IR::Code::AddF_W2:
             case IR::Code::AddI_W2:
             case IR::Code::AddU_W2:
+            case IR::Code::DivF_W2:
             case IR::Code::DivI_W2:
             case IR::Code::DivU_W2:
             case IR::Code::DivX_W2:
             case IR::Code::ModI_W2:
             case IR::Code::ModU_W2:
+            case IR::Code::MulF_W2:
             case IR::Code::MulI_W2:
             case IR::Code::MulU_W2:
             case IR::Code::MulX_W2:
+            case IR::Code::SubF_W2:
             case IR::Code::SubI_W2:
             case IR::Code::SubU_W2:
                genStmntCall(2);
@@ -152,6 +163,18 @@ namespace GDCC
                genStmnt_CmpU_EQ_W3();
                break;
 
+            case IR::Code::CmpF_EQ_W:
+            case IR::Code::CmpF_EQ_W2:
+            case IR::Code::CmpF_GE_W:
+            case IR::Code::CmpF_GE_W2:
+            case IR::Code::CmpF_GT_W:
+            case IR::Code::CmpF_GT_W2:
+            case IR::Code::CmpF_LE_W:
+            case IR::Code::CmpF_LE_W2:
+            case IR::Code::CmpF_LT_W:
+            case IR::Code::CmpF_LT_W2:
+            case IR::Code::CmpF_NE_W:
+            case IR::Code::CmpF_NE_W2:
             case IR::Code::CmpI_GE_W2:
             case IR::Code::CmpI_GE_W3:
             case IR::Code::CmpI_GT_W2:
@@ -202,6 +225,8 @@ namespace GDCC
             case IR::Code::Move_W2: genStmnt_Move_Wx(2); break;
             case IR::Code::Move_W3: genStmnt_Move_Wx(3); break;
 
+            case IR::Code::NegF_W:
+            case IR::Code::NegF_W2: genStmnt_NegF_Wx(); break;
             case IR::Code::NegI_W:  numChunkCODE += 4; break;
             case IR::Code::NegI_W2: genStmnt_NegI_W2(); break;
             case IR::Code::NegI_W3: genStmnt_NegI_W3(); break;

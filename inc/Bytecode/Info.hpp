@@ -88,6 +88,9 @@ namespace GDCC
          void tr(IR::Program &prog);
 
       protected:
+         class ResetFunc {};
+
+
          virtual void gen();
          virtual void genBlock();
                  void genBlock(IR::Block &block);
