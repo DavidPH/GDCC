@@ -161,7 +161,7 @@ namespace GDCC
             }
             else
             {
-               trStmntStk3(IR::Code::Move_W2, false);
+               trStmntStk3(IR::Code::Move_W2, IR::Code::Move_W2, false);
                func->setLocalTmp(3);
             }
          }
@@ -179,7 +179,7 @@ namespace GDCC
             }
             else
             {
-               trStmntStk3(IR::Code::Move_W3, false);
+               trStmntStk3(IR::Code::Move_W3, IR::Code::Move_W3, false);
                func->setLocalTmp(5);
             }
          }

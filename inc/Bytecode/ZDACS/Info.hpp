@@ -324,9 +324,9 @@ namespace GDCC
 
             void trStmntBitwise2();
             void trStmntBitwise3();
-            void trStmntCmp(IR::Code codeMove, bool ordered);
             bool trStmntShift(IR::Code codeMove);
-            void trStmntStk3(IR::Code codeMove, bool ordered);
+            void trStmntStk2(IR::Code moveDst, IR::Code moveSrc);
+            void trStmntStk3(IR::Code moveDst, IR::Code moveSrc, bool ordered);
 
             std::unordered_map<IR::Space const *, InitData> init;
 

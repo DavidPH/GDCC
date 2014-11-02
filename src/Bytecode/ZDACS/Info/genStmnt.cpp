@@ -208,6 +208,13 @@ namespace GDCC
                genStmnt_Cspe();
                break;
 
+            case IR::Code::DiXI_W:  genStmntCall(2); break;
+            case IR::Code::DiXI_W2: genStmntCall(4); break;
+            case IR::Code::DiXI_W3: genStmntCall(6); break;
+            case IR::Code::DiXU_W:  genStmntCall(2); break;
+            case IR::Code::DiXU_W2: genStmntCall(4); break;
+            case IR::Code::DiXU_W3: genStmntCall(6); break;
+
             case IR::Code::DivU_W:
             case IR::Code::ModU_W:
                numChunkCODE += 8;
@@ -224,6 +231,12 @@ namespace GDCC
             case IR::Code::Move_W:  genStmnt_Move_W(); break;
             case IR::Code::Move_W2: genStmnt_Move_Wx(2); break;
             case IR::Code::Move_W3: genStmnt_Move_Wx(3); break;
+            case IR::Code::Move_W4: genStmnt_Move_Wx(4); break;
+            case IR::Code::Move_W5: genStmnt_Move_Wx(5); break;
+            case IR::Code::Move_W6: genStmnt_Move_Wx(6); break;
+
+            case IR::Code::MuXU_W:  genStmntCall(2); break;
+            case IR::Code::MuXU_W2: genStmntCall(4); break;
 
             case IR::Code::NegF_W:
             case IR::Code::NegF_W2: genStmnt_NegF_Wx(); break;

@@ -106,6 +106,14 @@ GDCC_IR_CodeList(Copy_W)
 // Cspe src ret arg...
 GDCC_IR_CodeList(Cspe)
 
+// DiX* dst lop rop
+GDCC_IR_CodeList(DiXI_W)
+GDCC_IR_CodeList(DiXI_W2)
+GDCC_IR_CodeList(DiXI_W3)
+GDCC_IR_CodeList(DiXU_W)
+GDCC_IR_CodeList(DiXU_W2)
+GDCC_IR_CodeList(DiXU_W3)
+
 // Div* dst lop rop
 GDCC_IR_CodeList(DivF_W)
 GDCC_IR_CodeList(DivF_W2)
@@ -138,6 +146,13 @@ GDCC_IR_CodeList(ModU_W3)
 GDCC_IR_CodeList(Move_W)
 GDCC_IR_CodeList(Move_W2)
 GDCC_IR_CodeList(Move_W3)
+GDCC_IR_CodeList(Move_W4)
+GDCC_IR_CodeList(Move_W5)
+GDCC_IR_CodeList(Move_W6)
+
+// MuX* dst lop rop
+GDCC_IR_CodeList(MuXU_W)
+GDCC_IR_CodeList(MuXU_W2)
 
 // Mul* dst lop rop
 GDCC_IR_CodeList(MulF_W)
