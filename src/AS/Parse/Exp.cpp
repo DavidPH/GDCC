@@ -369,6 +369,24 @@ namespace GDCC
                val /= base;
             val += valI;
 
+            // Adjust by exponent.
+            if(valE < 0)
+            {
+               if(base == 10)
+                  for(auto i = -valE; i--;)
+                     val /= 10;
+               else
+                  val >>= -valE;
+            }
+            else if(valE > 0)
+            {
+               if(base == 10)
+                  for(auto i = valE; i--;)
+                     val *= 10;
+               else
+                  val <<= valE;
+            }
+
             return IR::Value_Float(std::move(val), {bitsI, bitsF, bitsS, satur});
          }
       }
