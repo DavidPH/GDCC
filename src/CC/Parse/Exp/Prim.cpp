@@ -261,7 +261,60 @@ namespace GDCC
       {
          auto tok = ctx.in.get();
 
-         throw Core::ExceptStr(tok.pos, "fixed-constant stub");
+         // Get prefix.
+         auto     itr = tok.str.begin(), end = tok.str.end();
+         unsigned base;
+         std::tie(itr, base) = Core::ParseNumberBaseC(itr);
+
+         // Get numeric component.
+         Core::Ratio val;
+         std::tie(itr, val, std::ignore) = Core::ParseNumberRatioC(itr, base);
+
+         // Get suffix.
+         bool k;
+         int  l;
+         bool u;
+
+              if(*itr == 'U' || *itr == 'u') u = true, ++itr;
+         else                                u = false;
+
+              if(*itr == 'H' || *itr == 'h') l = -1, ++itr;
+         else if(*itr == 'L' || *itr == 'l') l = +1, ++itr;
+         else                                l =  0;
+
+              if(*itr == 'K' || *itr == 'k') k = true,  ++itr;
+         else if(*itr == 'R' || *itr == 'r') k = false, ++itr;
+         else                                k = true;
+
+         // Must be end of string.
+         if(itr != end)
+            throw Core::ExceptStr(tok.pos, "malformed fixed-constant");
+
+         // Dtermine type.
+         AST::Type::CPtr type;
+
+         if(k) switch(l)
+         {
+         case -1: type = u ? TypeFixedPrUH : TypeFixedPrSH;
+         case  0: type = u ? TypeFixedPrU  : TypeFixedPrS;
+         case +1: type = u ? TypeFixedPrUL : TypeFixedPrSL;
+         }
+         else switch(l)
+         {
+         case -1: type = u ? TypeFractPrUH : TypeFractPrSH;
+         case  0: type = u ? TypeFractPrU  : TypeFractPrS;
+         case +1: type = u ? TypeFractPrUL : TypeFractPrSL;
+         }
+
+         // Adjust value for fractional bits.
+         // Special case where 1.0r translates to the maximum value.
+         if(!k && val == 1)
+            --(val <<= type->getSizeBitsF());
+         else
+            val <<= type->getSizeBitsF();
+
+         // Create expression.
+         return ExpCreate_LitInt(type, Core::NumberCast<Core::Integ>(val), tok.pos);
       }
 
       //
@@ -271,7 +324,40 @@ namespace GDCC
       {
          auto tok = ctx.in.get();
 
-         throw Core::ExceptStr(tok.pos, "floating-constant stub");
+         // Get prefix.
+         auto     itr = tok.str.begin(), end = tok.str.end();
+         unsigned base;
+         std::tie(itr, base) = Core::ParseNumberBaseC(itr);
+
+         // Get numeric component.
+         Core::Ratio val;
+         std::tie(itr, val, std::ignore) = Core::ParseNumberRatioC(itr, base);
+
+         // Get suffix.
+         int l;
+
+              if(*itr == 'F' || *itr == 'f') l =  0, ++itr;
+         else if(*itr == 'L' || *itr == 'l') l = +2, ++itr;
+         else                                l = +1;
+
+         // Must be end of string.
+         if(itr != end)
+            throw Core::ExceptStr(tok.pos, "malformed floating-constant");
+
+         // Dtermine type.
+         AST::Type::CPtr type;
+
+         switch(l)
+         {
+         case  0: type = TypeFloatRS;
+         case +1: type = TypeFloatRSL;
+         case +2: type = TypeFloatRSLL;
+         }
+
+         // Create expression.
+         auto valIR = IR::Value_Float(std::move(val), type->getIRType().tFloat);
+         auto expIR = IR::ExpCreate_Value(std::move(valIR), tok.pos);
+         return AST::ExpCreate_IRExp(expIR, type, tok.pos);
       }
 
       //
