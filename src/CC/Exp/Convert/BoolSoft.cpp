@@ -32,7 +32,7 @@ namespace GDCC
    namespace CC
    {
       //
-      // Exp_ConverBoolSoft_Fixed::v_genStmnt
+      // Exp_ConvertBoolSoft_Fixed::v_genStmnt
       //
       void Exp_ConvertBoolSoft_Fixed::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
@@ -44,6 +44,52 @@ namespace GDCC
          for(auto n = exp->getType()->getSizeWords(); --n;)
             ctx.block.addStatementArgs(IR::Code::OrIU_W,
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+
+         // Move to destination.
+         GenStmnt_MovePart(this, ctx, dst, false, true);
+      }
+
+      //
+      // Exp_ConvertBoolSoft_Float::v_genStmnt
+      //
+      void Exp_ConvertBoolSoft_Float::v_genStmnt(AST::GenStmntCtx const &ctx,
+         AST::Arg const &dst) const
+      {
+         if(GenStmntNul(this, ctx, dst)) return;
+
+         exp->genStmntStk(ctx);
+
+         auto expType = exp->getType();
+         auto bitsIF = expType->getSizeBitsI() + expType->getSizeBitsF();
+
+         ctx.block.addStatementArgs(IR::Code::AndU_W,
+            IR::Arg_Stk(), IR::Arg_Stk(),
+            (Core::FastU(1) << (bitsIF % Platform::GetWordBits())) - 1);
+
+         for(auto n = exp->getType()->getSizeWords(); --n;)
+            ctx.block.addStatementArgs(IR::Code::OrIU_W,
+               IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+
+         // Move to destination.
+         GenStmnt_MovePart(this, ctx, dst, false, true);
+      }
+
+      //
+      // Exp_ConvertBoolSoft_PtrInv::v_genStmnt
+      //
+      void Exp_ConvertBoolSoft_PtrInv::v_genStmnt(AST::GenStmntCtx const &ctx,
+         AST::Arg const &dst) const
+      {
+         if(GenStmntNul(this, ctx, dst)) return;
+
+         exp->genStmntStk(ctx);
+
+         for(auto n = exp->getType()->getSizeWords(); --n;)
+            ctx.block.addStatementArgs(IR::Code::AndU_W,
+               IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+
+         ctx.block.addStatementArgs(IR::Code::InvU_W,
+            IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.
          GenStmnt_MovePart(this, ctx, dst, false, true);
@@ -64,6 +110,9 @@ namespace GDCC
             return Exp_ConvertBoolSoft_Fixed::Create(TypeBoolSoft, e, pos);
          }
 
+         if(type->isCTypeRealFlt())
+            return Exp_ConvertBoolSoft_Float::Create(TypeBoolSoft, e, pos);
+
          if(type->isTypePointer())
          {
             if(Platform::IsZeroNull_Point(type->getBaseType()->getQualAddr().base))
@@ -71,12 +120,10 @@ namespace GDCC
                if(type->getSizeWords() == 1)
                   return static_cast<AST::Exp::CRef>(e);
 
-               throw Core::ExceptStr(pos, "soft bool multi-word pointer stub");
+               return Exp_ConvertBoolSoft_Fixed::Create(TypeBoolSoft, e, pos);
             }
             else
-            {
-               throw Core::ExceptStr(pos, "soft bool nonzero-null pointer stub");
-            }
+               return Exp_ConvertBoolSoft_PtrInv::Create(TypeBoolSoft, e, pos);
          }
 
          throw Core::ExceptStr(pos, "soft bool stub");
