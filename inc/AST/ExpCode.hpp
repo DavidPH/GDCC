@@ -6,7 +6,7 @@
 //
 //-----------------------------------------------------------------------------
 //
-// C arithmetic expressions.
+// Expression code functions.
 //
 //-----------------------------------------------------------------------------
 
@@ -15,7 +15,7 @@
 
 #include "../AST/Type.hpp"
 
-#include "../IR/Code.hpp"
+#include "../IR/ExpCode.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -32,18 +32,19 @@ namespace GDCC
       template<typename Codes>
       IR::Code ExpCode_ArithFixed(Type const *t)
       {
-         auto sign = t->getSizeBitsS();
-         if(t->isCTypeAccum()) switch(t->getSizeWords())
+         if(t->isCTypeAccum())
          {
-         case  1: return sign ? Codes::CodeX_W  : Codes::CodeK_W;
-         case  2: return sign ? Codes::CodeX_W2 : Codes::CodeK_W2;
-         default: return IR::Code::None;
+            if(t->getSizeBitsS())
+               return IR::ExpCode_X_W<Codes>(t->getSizeWords());
+            else
+               return IR::ExpCode_K_W<Codes>(t->getSizeWords());
          }
-         else switch(t->getSizeWords())
+         else
          {
-         case  1: return sign ? Codes::CodeR_W  : Codes::CodeA_W;
-         case  2: return sign ? Codes::CodeR_W2 : Codes::CodeA_W2;
-         default: return IR::Code::None;
+            if(t->getSizeBitsS())
+               return IR::ExpCode_R_W<Codes>(t->getSizeWords());
+            else
+               return IR::ExpCode_A_W<Codes>(t->getSizeWords());
          }
       }
 
@@ -53,12 +54,7 @@ namespace GDCC
       template<typename Codes>
       IR::Code ExpCode_ArithFloat(Type const *t)
       {
-         switch(t->getSizeWords())
-         {
-         case  1: return Codes::CodeF_W;
-         case  2: return Codes::CodeF_W2;
-         default: return IR::Code::None;
-         }
+         return IR::ExpCode_F_W<Codes>(t->getSizeWords());
       }
 
       //
@@ -67,14 +63,10 @@ namespace GDCC
       template<typename Codes>
       IR::Code ExpCode_ArithInteg(Type const *t)
       {
-         auto sign = t->getSizeBitsS();
-         switch(t->getSizeWords())
-         {
-         case  1: return sign ? Codes::CodeI_W  : Codes::CodeU_W;
-         case  2: return sign ? Codes::CodeI_W2 : Codes::CodeU_W2;
-         case  3: return sign ? Codes::CodeI_W3 : Codes::CodeU_W3;
-         default: return IR::Code::None;
-         }
+         if(t->getSizeBitsS())
+            return IR::ExpCode_I_W<Codes>(t->getSizeWords());
+         else
+            return IR::ExpCode_U_W<Codes>(t->getSizeWords());
       }
 
       //
@@ -83,13 +75,7 @@ namespace GDCC
       template<typename Codes>
       IR::Code ExpCode_ArithPoint(Type const *t)
       {
-         switch(t->getSizeWords())
-         {
-         case  1: return Codes::CodeU_W;
-         case  2: return Codes::CodeU_W2;
-         case  3: return Codes::CodeU_W3;
-         default: return IR::Code::None;
-         }
+         return IR::ExpCode_U_W<Codes>(t->getSizeWords());
       }
    }
 }

@@ -21,36 +21,46 @@
 // Static Variables                                                           |
 //
 
-// Table: Type_Float::getBaseType
-static GDCC::AST::Type::CRef const FloatTable_BaseType[4] =
+namespace GDCC
 {
-   GDCC::CC::GetTypeFloatRS(), // FIXME
-   GDCC::CC::GetTypeFloatRS(),
-   GDCC::CC::GetTypeFloatRSL(),
-   GDCC::CC::GetTypeFloatRSLL(),
-};
+   namespace CC
+   {
+      // Table: Type_Float::getBaseType
+      static AST::Type::CRef const FloatTable_BaseType[4] =
+      {
+         GetTypeFloatRS(), // FIXME
+         GetTypeFloatRS(),
+         GetTypeFloatRSL(),
+         GetTypeFloatRSLL(),
+      };
 
-// Table: Type_Float::getSizeBitsF
-static constexpr GDCC::Core::FastU FloatTable_SizeBitsF[4] = {5, 8, 11, 11};
+      // Table: Type_Float::getBias
+      static constexpr Core::FastU FloatTable_Bias[4] =
+         {0xF, 0x7F, 0x3FF, 0x3FF};
 
-// Table: Type_Float::getSizeBitsI
-static constexpr GDCC::Core::FastU FloatTable_SizeBitsI[4] = {10, 23, 52, 52};
+      // Table: Type_Float::getSizeBitsF
+      static constexpr Core::FastU FloatTable_SizeBitsF[4] = {5, 8, 11, 11};
 
-// Table: Type_Float::getSizeBytes MageCraft
-static constexpr GDCC::Core::FastU FloatTable_SizeBytes_MageCraft[8] =
-   {2, 4, 4, 8, 8, 16, 8, 16};
+      // Table: Type_Float::getSizeBitsI
+      static constexpr Core::FastU FloatTable_SizeBitsI[4] = {10, 23, 52, 52};
 
-// Table: Type_Float::getSizeBytes ZDoom
-static constexpr GDCC::Core::FastU FloatTable_SizeBytes_ZDoom[8] =
-   {1, 1, 1, 2, 2, 4, 2, 4};
+      // Table: Type_Float::getSizeBytes MageCraft
+      static constexpr Core::FastU FloatTable_SizeBytes_MageCraft[8] =
+         {2, 4, 4, 8, 8, 16, 8, 16};
 
-// Table: Type_Float::getSizePoint MageCraft
-static constexpr GDCC::Core::FastU FloatTable_SizePoint_MageCraft[8] =
-   {1, 1, 1, 2, 2, 4, 2, 4};
+      // Table: Type_Float::getSizeBytes ZDoom
+      static constexpr Core::FastU FloatTable_SizeBytes_ZDoom[8] =
+         {1, 1, 1, 2, 2, 4, 2, 4};
 
-// Table: Type_Float::getSizeWords MageCraft
-static constexpr GDCC::Core::FastU FloatTable_SizeWords_MageCraft[8] =
-   {1, 1, 1, 2, 2, 4, 2, 4};
+      // Table: Type_Float::getSizePoint MageCraft
+      static constexpr Core::FastU FloatTable_SizePoint_MageCraft[8] =
+         {1, 1, 1, 2, 2, 4, 2, 4};
+
+      // Table: Type_Float::getSizeWords MageCraft
+      static constexpr Core::FastU FloatTable_SizeWords_MageCraft[8] =
+         {1, 1, 1, 2, 2, 4, 2, 4};
+   }
+}
 
 
 //----------------------------------------------------------------------------|
@@ -93,6 +103,14 @@ namespace GDCC
       {
          if(real) throw AST::TypeError();
          return FloatTable_BaseType[size];
+      }
+
+      //
+      // Type_Float::getBias
+      //
+      Core::FastU Type_Float::getBias() const
+      {
+         return FloatTable_Bias[size];
       }
 
       //

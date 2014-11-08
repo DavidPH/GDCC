@@ -52,12 +52,46 @@ namespace GDCC
       }
 
       //
+      // Temporary move constructor
+      //
+      Temporary::Temporary(Temporary &&tmp) :
+         pos  {tmp.pos},
+         block{tmp.block},
+         expB {tmp.expB},
+         expO {tmp.expO},
+         fn   {tmp.fn},
+         prog {tmp.prog}
+      {
+         tmp.block = nullptr;
+      }
+
+      //
       // Temporary destructor
       //
       Temporary::~Temporary()
       {
          if(block)
             fn->localTmp.free(block);
+      }
+
+      //
+      // Temporary::operator = Temporary
+      //
+      Temporary &Temporary::operator = (Temporary &&tmp)
+      {
+         if(block)
+            fn->localTmp.free(block);
+
+         pos   = tmp.pos;
+         block = tmp.block;
+         expB  = tmp.expB;
+         expO  = tmp.expO;
+         fn    = tmp.fn;
+         prog  = tmp.prog;
+
+         tmp.block = nullptr;
+
+         return *this;
       }
 
       //

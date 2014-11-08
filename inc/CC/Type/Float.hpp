@@ -35,6 +35,7 @@ namespace GDCC
 
       public:
          // Type information.
+         virtual Core::FastU getBias()      const;
          virtual Type::CRef  getBaseType()  const;
          virtual IR::Type    getIRType()    const;
          virtual Core::FastU getSizeAlign() const;

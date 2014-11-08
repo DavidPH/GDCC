@@ -201,6 +201,7 @@ namespace GDCC
 
          // Type information.
          virtual CRef          getBaseType()    const {throw TypeError();}
+         virtual Core::FastU   getBias()        const {throw TypeError();}
          virtual IR::CallType  getCallType()    const {throw TypeError();}
          virtual Core::FastU   getCallWords()   const {throw TypeError();}
          virtual IR::Type      getIRType()      const;

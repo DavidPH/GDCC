@@ -41,11 +41,11 @@ namespace GDCC
          Temporary(GenStmntCtx const &ctx, Core::Origin pos);
          Temporary(GenStmntCtx const &ctx, Core::Origin pos, Core::FastU size);
          Temporary(Temporary const &) = delete;
-         Temporary(Temporary &&) = delete;
+         Temporary(Temporary &&tmp);
          ~Temporary();
 
          Temporary &operator = (Temporary const &) = delete;
-         Temporary &operator = (Temporary &&) = delete;
+         Temporary &operator = (Temporary &&tmp);
 
          void alloc(Core::FastU size);
 
