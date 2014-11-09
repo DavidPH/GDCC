@@ -1,0 +1,31 @@
+###############################################################################
+Software Floating Point Implementation Notes
+###############################################################################
+
+Big thanks to MageofMystra for providing a C implementation from which to base.
+And for his ongoing assistance with mathematics questions.
+
+For targets that do not have native support for floating-point operations, GDCC
+will emulate them. Where possible and reasonably efficient, the implementation
+follows the IEEE-754 standard.
+
+===============================================================================
+ZDoom ACS
+===============================================================================
+
+Supports both single and double precision formats.
+
+Subnormal numbers are not supported and are never generated. Other special
+exponent values (infinity, signed zero, NaN) are supported.
+
+NaNs are supported, but may not be detected unless at least one mantissa bit in
+the highest word is set. Generated NaNs always meet this requirement.
+
+Rounding mode is always truncation.
+
+Exceptions are not recorded and all NaNs are quiet.
+
+###############################################################################
+EOF
+###############################################################################
+
