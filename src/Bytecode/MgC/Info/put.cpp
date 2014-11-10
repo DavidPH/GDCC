@@ -64,6 +64,19 @@ namespace GDCC
                putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
                break;
 
+            case Core::STR_Array:
+               // Has problems. See Tuple below.
+               {
+                  auto multi = static_cast<IR::Exp_Array const *>(exp);
+                  auto itr = multi->elemV.begin(), end = multi->elemV.end();
+                  if(itr != end) for(putExp(*itr++); itr != end; ++itr)
+                  {
+                     *out << ',' << '\0';
+                     putExp(*itr);
+                  }
+               }
+               break;
+
             case Core::STR_Div:
                *out << '/' << '\0';
                putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
@@ -86,26 +99,26 @@ namespace GDCC
                putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
                break;
 
-            case Core::STR_Multi:
+            case Core::STR_Sub:
+               *out << '-' << '\0';
+               putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
+               putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
+               break;
+
+            case Core::STR_Tuple:
                // This is kind of unfortunate, since it can easily result in
                // incorrect codegen by adding unexpected commas. However, it is
                // needed by putObj and is really a higher level problem.
                // FIXME/TODO: This does need to handle non-words properly, though.
                {
-                  auto multi = static_cast<IR::Exp_Multi const *>(exp);
-                  auto itr = multi->expv.begin(), end = multi->expv.end();
+                  auto multi = static_cast<IR::Exp_Tuple const *>(exp);
+                  auto itr = multi->elemV.begin(), end = multi->elemV.end();
                   if(itr != end) for(putExp(*itr++); itr != end; ++itr)
                   {
                      *out << ',' << '\0';
                      putExp(*itr);
                   }
                }
-               break;
-
-            case Core::STR_Sub:
-               *out << '-' << '\0';
-               putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
-               putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
                break;
 
             case Core::STR_Value:
@@ -194,12 +207,16 @@ namespace GDCC
          {
             switch(val.v)
             {
+            case IR::ValueBase::Array:
+               putObjValue_Multi(val.vArray.value);
+               break;
+
             case IR::ValueBase::Fixed:
                *out << val.vFixed.value << '\0';
                break;
 
-            case IR::ValueBase::Multi:
-               putObjValue_Multi(val.vMulti);
+            case IR::ValueBase::Tuple:
+               putObjValue_Multi(val.vTuple.value);
                break;
 
             default:
@@ -211,9 +228,9 @@ namespace GDCC
          //
          // Info::putObjValue_Multi
          //
-         void Info::putObjValue_Multi(IR::Value_Multi const &val)
+         void Info::putObjValue_Multi(Core::Array<IR::Value> const &val)
          {
-            std::size_t i = 0, e = val.value.size();
+            std::size_t i = 0, e = val.size();
             Core::FastU bucket = 0, bucketBits = 0;
             Core::FastU bits;
 
@@ -245,18 +262,18 @@ namespace GDCC
                bucketBits += bits;
             };
 
-            for(; i != e; ++i) switch(val.value[i].v)
+            for(; i != e; ++i) switch(val[i].v)
             {
             case IR::ValueBase::Fixed:
-               bits = val.value[i].vFixed.vtype.getBits();
+               bits = val[i].vFixed.vtype.getBits();
                if(bits > 32) goto defcase;
-               writeBucket(Core::NumberCast<Core::FastU>(val.value[i].vFixed.value));
+               writeBucket(Core::NumberCast<Core::FastU>(val[i].vFixed.value));
                break;
 
             default:
             defcase:
                flushBucket();
-               putObjValue(val.value[i]);
+               putObjValue(val[i]);
                break;
             }
 

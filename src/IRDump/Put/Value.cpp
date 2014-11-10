@@ -37,11 +37,53 @@ namespace GDCC
       }
 
       //
+      // PutValue_Array
+      //
+      void PutValue_Array(std::ostream &out, IR::Value_Array const &val)
+      {
+         PutType_Array(out << "Value ", val.vtype);
+
+         out << " (";
+         if(!val.value.empty())
+         {
+            auto itr = val.value.begin(), end = val.value.end();
+            PutValue(out, *itr++);
+            while(itr != end)
+            {
+               out << ", ";
+               PutValue(out, *itr++);
+            }
+         }
+         out << ')';
+      }
+
+      //
+      // PutValue_Assoc
+      //
+      void PutValue_Assoc(std::ostream &out, IR::Value_Assoc const &val)
+      {
+         PutType_Assoc(out << "Value ", val.vtype);
+
+         out << " (";
+         if(!val.value.empty())
+         {
+            auto itr = val.value.begin(), end = val.value.end();
+            PutValue(out, *itr++);
+            while(itr != end)
+            {
+               out << ", ";
+               PutValue(out, *itr++);
+            }
+         }
+         out << ')';
+      }
+
+      //
       // PutValue_Empty
       //
       void PutValue_Empty(std::ostream &out, IR::Value_Empty const &val)
       {
-         PutType(out << "Value ", val.vtype);
+         PutType_Empty(out << "Value ", val.vtype);
          out << " ()";
       }
 
@@ -70,6 +112,7 @@ namespace GDCC
          out << val.value;
 
          out << '_';
+         out << 'f';
          if(val.vtype.bitsS) out << 's';
          out << val.vtype.bitsI << '.' << val.vtype.bitsF;
          if(val.vtype.satur) out << 's';
@@ -81,14 +124,38 @@ namespace GDCC
       //
       void PutValue_Funct(std::ostream &out, IR::Value_Funct const &val)
       {
-         PutType(out << "Value ", val.vtype);
+         PutType_Funct(out << "Value ", val.vtype);
          out << " (" << val.value << ')';
       }
 
       //
-      // PutValue_Multi
+      // PutValue_Point
       //
-      void PutValue_Multi(std::ostream &out, IR::Value_Multi const &val)
+      void PutValue_Point(std::ostream &out, IR::Value_Point const &val)
+      {
+         PutType_Point(out << "Value ", val.vtype);
+
+         out << " (";
+         out << val.value;
+         out << ", ";
+         out << val.addrB;
+         PutString(out, val.addrN);
+         out << ')';
+      }
+
+      //
+      // PutValue_StrEn
+      //
+      void PutValue_StrEn(std::ostream &out, IR::Value_StrEn const &val)
+      {
+         PutType_StrEn(out << "Value ", val.vtype);
+         out << " (" << val.value << ')';
+      }
+
+      //
+      // PutValue_Tuple
+      //
+      void PutValue_Tuple(std::ostream &out, IR::Value_Tuple const &val)
       {
          out << '[';
          if(!val.value.empty())
@@ -105,27 +172,15 @@ namespace GDCC
       }
 
       //
-      // PutValue_Point
+      // PutValue_Union
       //
-      void PutValue_Point(std::ostream &out, IR::Value_Point const &val)
+      void PutValue_Union(std::ostream &out, IR::Value_Union const &val)
       {
-         PutType(out << "Value ", val.vtype);
+         PutType_Union(out << "Value ", val.vtype);
 
          out << " (";
-         out << val.value;
-         out << ", ";
-         out << val.addrB;
-         PutString(out, val.addrN);
+         PutValue(out, *val.value);
          out << ')';
-      }
-
-      //
-      // PutValue_StrEn
-      //
-      void PutValue_StrEn(std::ostream &out, IR::Value_StrEn const &val)
-      {
-         PutType(out << "Value ", val.vtype);
-         out << " (" << val.value << ')';
       }
    }
 }

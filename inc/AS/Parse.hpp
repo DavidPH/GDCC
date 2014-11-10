@@ -96,6 +96,8 @@ namespace GDCC
 
       IR::Arg GetArg(ParserCtx const &ctx);
 
+      IR::Value_Array GetArrayString(ParserCtx const &ctx);
+
       IR::CallType GetCallType(ParserCtx const &ctx);
 
       IR::Code GetCode(ParserCtx const &ctx);
@@ -109,15 +111,13 @@ namespace GDCC
 
       IR::Linkage GetLinkage(ParserCtx const &ctx);
 
-      IR::Value_Multi GetMulti(ParserCtx const &ctx);
-
-      IR::Value_Multi GetMultiString(ParserCtx const &ctx);
-
       IR::Value GetNumber(Core::Token const &tok);
 
       IR::ScriptType GetScriptType(ParserCtx const &ctx);
 
       Core::String GetString(ParserCtx const &ctx);
+
+      IR::Value_Tuple GetTuple(ParserCtx const &ctx);
 
       IR::Type GetType(ParserCtx const &ctx);
 

@@ -102,6 +102,8 @@ namespace GDCC
 
          case Core::STR_Add:       return ExpGetIR_Add      (in);
          case Core::STR_AddPtrRaw: return ExpGetIR_AddPtrRaw(in);
+         case Core::STR_Array:     return ExpGetIR_Array    (in);
+         case Core::STR_Assoc:     return ExpGetIR_Assoc    (in);
          case Core::STR_BitAnd:    return ExpGetIR_BitAnd   (in);
          case Core::STR_BitOrI:    return ExpGetIR_BitOrI   (in);
          case Core::STR_BitOrX:    return ExpGetIR_BitOrX   (in);
@@ -118,7 +120,6 @@ namespace GDCC
          case Core::STR_Inv:       return ExpGetIR_Inv      (in);
          case Core::STR_Mod:       return ExpGetIR_Mod      (in);
          case Core::STR_Mul:       return ExpGetIR_Mul      (in);
-         case Core::STR_Multi:     return ExpGetIR_Multi    (in);
          case Core::STR_Neg:       return ExpGetIR_Neg      (in);
          case Core::STR_Not:       return ExpGetIR_Not      (in);
          case Core::STR_LogAnd:    return ExpGetIR_LogAnd   (in);
@@ -127,6 +128,8 @@ namespace GDCC
          case Core::STR_ShL:       return ExpGetIR_ShL      (in);
          case Core::STR_ShR:       return ExpGetIR_ShR      (in);
          case Core::STR_Sub:       return ExpGetIR_Sub      (in);
+         case Core::STR_Tuple:     return ExpGetIR_Tuple    (in);
+         case Core::STR_Union:     return ExpGetIR_Union    (in);
          case Core::STR_Value:     return ExpGetIR_Value    (in);
 
          default:

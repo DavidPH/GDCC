@@ -31,6 +31,56 @@ namespace GDCC
       typedef TypeBase ValueBase;
 
       //
+      // Value_Array
+      //
+      class Value_Array
+      {
+      public:
+         Value_Array() = default;
+
+         Value_Array(Core::Array<Value> const &value_, Type_Array const &vtype_) :
+            vtype{vtype_}, value{value_} {}
+         Value_Array(Core::Array<Value> const &value_, Type_Array &&vtype_) :
+            vtype{std::move(vtype_)}, value{value_} {}
+         Value_Array(Core::Array<Value> &&value_, Type_Array const &vtype_) :
+            vtype{vtype_}, value{std::move(value_)} {}
+         Value_Array(Core::Array<Value> &&value_, Type_Array &&vtype_) :
+            vtype{std::move(vtype_)}, value{std::move(value_)} {}
+
+         explicit Value_Array(IArchive &in);
+
+         explicit operator bool () const {return !value.empty();}
+
+         Type_Array         vtype;
+         Core::Array<Value> value;
+      };
+
+      //
+      // Value_Assoc
+      //
+      class Value_Assoc
+      {
+      public:
+         Value_Assoc() = default;
+
+         Value_Assoc(Core::Array<Value> const &value_, Type_Assoc const &vtype_) :
+            vtype{vtype_}, value{value_} {}
+         Value_Assoc(Core::Array<Value> const &value_, Type_Assoc &&vtype_) :
+            vtype{std::move(vtype_)}, value{value_} {}
+         Value_Assoc(Core::Array<Value> &&value_, Type_Assoc const &vtype_) :
+            vtype{vtype_}, value{std::move(value_)} {}
+         Value_Assoc(Core::Array<Value> &&value_, Type_Assoc &&vtype_) :
+            vtype{std::move(vtype_)}, value{std::move(value_)} {}
+
+         explicit Value_Assoc(IArchive &in);
+
+         explicit operator bool () const {return !value.empty();}
+
+         Type_Assoc         vtype;
+         Core::Array<Value> value;
+      };
+
+      //
       // Value_Empty
       //
       class Value_Empty
@@ -129,31 +179,6 @@ namespace GDCC
       };
 
       //
-      // Value_Multi
-      //
-      class Value_Multi
-      {
-      public:
-         Value_Multi() = default;
-
-         Value_Multi(Core::Array<Value> const &value_, Type_Multi const &vtype_) :
-            vtype{vtype_}, value{value_} {}
-         Value_Multi(Core::Array<Value> const &value_, Type_Multi &&vtype_) :
-            vtype{std::move(vtype_)}, value{value_} {}
-         Value_Multi(Core::Array<Value> &&value_, Type_Multi const &vtype_) :
-            vtype{vtype_}, value{std::move(value_)} {}
-         Value_Multi(Core::Array<Value> &&value_, Type_Multi &&vtype_) :
-            vtype{std::move(vtype_)}, value{std::move(value_)} {}
-
-         explicit Value_Multi(IArchive &in);
-
-         explicit operator bool () const {return !value.empty();}
-
-         Type_Multi         vtype;
-         Core::Array<Value> value;
-      };
-
-      //
       // Value_Point
       //
       class Value_Point
@@ -198,6 +223,58 @@ namespace GDCC
 
          Type_StrEn  vtype;
          Core::FastU value;
+      };
+
+      //
+      // Value_Tuple
+      //
+      class Value_Tuple
+      {
+      public:
+         Value_Tuple() = default;
+
+         Value_Tuple(Core::Array<Value> const &value_, Type_Tuple const &vtype_) :
+            vtype{vtype_}, value{value_} {}
+         Value_Tuple(Core::Array<Value> const &value_, Type_Tuple &&vtype_) :
+            vtype{std::move(vtype_)}, value{value_} {}
+         Value_Tuple(Core::Array<Value> &&value_, Type_Tuple const &vtype_) :
+            vtype{vtype_}, value{std::move(value_)} {}
+         Value_Tuple(Core::Array<Value> &&value_, Type_Tuple &&vtype_) :
+            vtype{std::move(vtype_)}, value{std::move(value_)} {}
+
+         explicit Value_Tuple(IArchive &in);
+
+         explicit operator bool () const {return !value.empty();}
+
+         Type_Tuple         vtype;
+         Core::Array<Value> value;
+      };
+
+      //
+      // Value_Union
+      //
+      class Value_Union
+      {
+      public:
+         Value_Union() = default;
+
+         Value_Union(Value_Union const &v);
+         Value_Union(Value_Union &&v) = default;
+
+         Value_Union(Value const &value, Type_Union const &vtype);
+         Value_Union(Value const &value, Type_Union &&vtype);
+         Value_Union(Value &&value, Type_Union const &vtype);
+         Value_Union(Value &&value, Type_Union &&vtype);
+
+         explicit Value_Union(IArchive &in);
+
+         explicit operator bool () const;
+
+         Value_Union &operator = (Value_Union const &v);
+         Value_Union &operator = (Value_Union &&v) = default;
+
+         Type_Union             vtype;
+         std::unique_ptr<Value> value;
       };
 
       //
@@ -456,13 +533,19 @@ namespace GDCC
       Value       &operator |=  (Value       &l, Value       const &r);
       Value_Fixed &operator |=  (Value_Fixed &l, Value_Fixed const &r);
 
-      OArchive &operator << (OArchive &out, ValueBase in);
-
       #define GDCC_IR_TypeList(name) \
          OArchive &operator << (OArchive &out, Value_##name const &in);
       #include "TypeList.hpp"
 
       OArchive &operator << (OArchive &out, Value const &in);
+      OArchive &operator << (OArchive &out, ValueBase    in);
+
+      #define GDCC_IR_TypeList(name) \
+         IArchive &operator >> (IArchive &in, Value_##name &out);
+      #include "TypeList.hpp"
+
+      IArchive &operator >> (IArchive &in, Value     &out);
+      IArchive &operator >> (IArchive &in, ValueBase &out);
    }
 }
 

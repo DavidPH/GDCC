@@ -10,13 +10,16 @@
 //
 //-----------------------------------------------------------------------------
 
+GDCC_IR_TypeList(Array)
+GDCC_IR_TypeList(Assoc)
 GDCC_IR_TypeList(Empty)
 GDCC_IR_TypeList(Fixed)
 GDCC_IR_TypeList(Float)
 GDCC_IR_TypeList(Funct)
-GDCC_IR_TypeList(Multi)
 GDCC_IR_TypeList(Point)
 GDCC_IR_TypeList(StrEn)
+GDCC_IR_TypeList(Tuple)
+GDCC_IR_TypeList(Union)
 
 #undef GDCC_IR_TypeList
 

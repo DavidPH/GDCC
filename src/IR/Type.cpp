@@ -29,6 +29,68 @@ namespace GDCC
    namespace IR
    {
       //
+      // Type_Array copy constructor
+      //
+      Type_Array::Type_Array(Type_Array const &t) :
+         elemT{new Type(*t.elemT)}, elemC{t.elemC}
+      {
+      }
+
+      //
+      // Type_Array constructor
+      //
+      Type_Array::Type_Array(Type const &t, Core::FastU c) :
+         elemT{new Type(t)}, elemC{c}
+      {
+      }
+
+      //
+      // Type_Array constructor
+      //
+      Type_Array::Type_Array(Type &&t, Core::FastU c) :
+         elemT{new Type(std::move(t))}, elemC{c}
+      {
+      }
+
+      //
+      // Type_Array constructor
+      //
+      Type_Array::Type_Array(IArchive &in) :
+         elemT{new Type(in)}, elemC{GetIR(in, elemC)}
+      {
+      }
+
+      //
+      // Type_Array::operator = Type_Array
+      //
+      Type_Array &Type_Array::operator = (Type_Array const &t)
+      {
+         if(elemT)
+            *elemT = *t.elemT;
+         else
+            elemT.reset(new Type(*t.elemT));
+
+         elemC = t.elemC;
+
+         return *this;
+      }
+
+      //
+      // Type_Array::operator == Type_Array
+      //
+      bool Type_Array::operator == (Type_Array const &t) const
+      {
+         return elemC == t.elemC && *elemT == *t.elemT;
+      }
+
+      //
+      // Type_Assoc constructor
+      //
+      Type_Assoc::Type_Assoc(IArchive &in) : assoc{GetIR(in, assoc)}
+      {
+      }
+
+      //
       // Type_Empty constructor
       //
       Type_Empty::Type_Empty(IArchive &)
@@ -118,13 +180,6 @@ namespace GDCC
       }
 
       //
-      // Type_Multi constructor
-      //
-      Type_Multi::Type_Multi(IArchive &in) : types{GetIR(in, types)}
-      {
-      }
-
-      //
       // Type_Point constructor
       //
       Type_Point::Type_Point(IArchive &in) : reprB{GetIR(in, reprB)},
@@ -136,6 +191,20 @@ namespace GDCC
       // Type_StrEn constructor
       //
       Type_StrEn::Type_StrEn(IArchive &)
+      {
+      }
+
+      //
+      // Type_Tuple constructor
+      //
+      Type_Tuple::Type_Tuple(IArchive &in) : types{GetIR(in, types)}
+      {
+      }
+
+      //
+      // Type_Union constructor
+      //
+      Type_Union::Type_Union(IArchive &in) : types{GetIR(in, types)}
       {
       }
 
@@ -153,19 +222,19 @@ namespace GDCC
       }
 
       //
-      // operator OArchive << TypeBase
+      // operator OArchive << Type_Array
       //
-      OArchive &operator << (OArchive &out, TypeBase in)
+      OArchive &operator << (OArchive &out, Type_Array const &in)
       {
-         switch(in)
-         {
-            #define GDCC_IR_TypeList(name) \
-               case TypeBase::name: return out << Core::STR_##name;
-            #include "IR/TypeList.hpp"
-         }
+         return out << *in.elemT << in.elemC;
+      }
 
-         std::cerr << "invalid enum GDCC::IR::TypeBase\n";
-         throw EXIT_FAILURE;
+      //
+      // operator OArchive << Type_Assoc
+      //
+      OArchive &operator << (OArchive &out, Type_Assoc const &in)
+      {
+         return out << in.assoc;
       }
 
       //
@@ -201,14 +270,6 @@ namespace GDCC
       }
 
       //
-      // operator OArchive << Type_Multi
-      //
-      OArchive &operator << (OArchive &out, Type_Multi const &in)
-      {
-         return out << in.types;
-      }
-
-      //
       // operator OArchive << Type_Point
       //
       OArchive &operator << (OArchive &out, Type_Point const &in)
@@ -225,6 +286,22 @@ namespace GDCC
       }
 
       //
+      // operator OArchive << Type_Tuple
+      //
+      OArchive &operator << (OArchive &out, Type_Tuple const &in)
+      {
+         return out << in.types;
+      }
+
+      //
+      // operator OArchive << Type_Union
+      //
+      OArchive &operator << (OArchive &out, Type_Union const &in)
+      {
+         return out << in.types;
+      }
+
+      //
       // operator OArchive << Type
       //
       OArchive &operator << (OArchive &out, Type const &in)
@@ -237,8 +314,32 @@ namespace GDCC
             #include "IR/TypeList.hpp"
          }
 
-         std::cerr << "invalid enum GDCC::IR::Type\n";
+         std::cerr << "invalid GDCC::IR::Type\n";
          throw EXIT_FAILURE;
+      }
+
+      //
+      // operator OArchive << TypeBase
+      //
+      OArchive &operator << (OArchive &out, TypeBase in)
+      {
+         switch(in)
+         {
+            #define GDCC_IR_TypeList(name) \
+               case TypeBase::name: return out << Core::STR_##name;
+            #include "IR/TypeList.hpp"
+         }
+
+         std::cerr << "invalid enum GDCC::IR::TypeBase\n";
+         throw EXIT_FAILURE;
+      }
+
+      //
+      // operator OArchive << TypeAssoc
+      //
+      OArchive &operator << (OArchive &out, TypeAssoc const &in)
+      {
+         return out << in.type << in.name << in.addr;
       }
 
       //
@@ -258,20 +359,23 @@ namespace GDCC
       }
 
       //
-      // operator IArchive >> TypeBase
+      // operator IArchive >> Type_Array
       //
-      IArchive &operator >> (IArchive &in, TypeBase &out)
+      IArchive &operator >> (IArchive &in, Type_Array &out)
       {
-         switch(GetIR<Core::StringIndex>(in))
-         {
-            #define GDCC_IR_TypeList(name) \
-               case Core::STR_##name: out = TypeBase::name; return in;
-            #include "IR/TypeList.hpp"
+         if(out.elemT)
+            return in >> *out.elemT >> out.elemC;
 
-         default:
-            std::cerr << "invalid TypeBase\n";
-            throw EXIT_FAILURE;
-         }
+         out.elemT.reset(new Type(in));
+         return in >> out.elemC;
+      }
+
+      //
+      // operator IArchive >> Type_Assoc
+      //
+      IArchive &operator >> (IArchive &in, Type_Assoc &out)
+      {
+         return in >> out.assoc;
       }
 
       //
@@ -313,14 +417,6 @@ namespace GDCC
       }
 
       //
-      // operator IArchive >> Type_Multi
-      //
-      IArchive &operator >> (IArchive &in, Type_Multi &out)
-      {
-         return in >> out.types;
-      }
-
-      //
       // operator IArchive >> Type_Point
       //
       IArchive &operator >> (IArchive &in, Type_Point &out)
@@ -337,6 +433,22 @@ namespace GDCC
       }
 
       //
+      // operator IArchive >> Type_Tuple
+      //
+      IArchive &operator >> (IArchive &in, Type_Tuple &out)
+      {
+         return in >> out.types;
+      }
+
+      //
+      // operator IArchive >> Type_Union
+      //
+      IArchive &operator >> (IArchive &in, Type_Union &out)
+      {
+         return in >> out.types;
+      }
+
+      //
       // operator IArchive >> Type
       //
       IArchive &operator >> (IArchive &in, Type &out)
@@ -348,8 +460,33 @@ namespace GDCC
             #include "IR/TypeList.hpp"
          }
 
-         std::cerr << "invalid enum GDCC::IR::Type\n";
+         std::cerr << "invalid GDCC::IR::Type\n";
          throw EXIT_FAILURE;
+      }
+
+      //
+      // operator IArchive >> TypeBase
+      //
+      IArchive &operator >> (IArchive &in, TypeBase &out)
+      {
+         switch(GetIR<Core::StringIndex>(in))
+         {
+            #define GDCC_IR_TypeList(name) \
+               case Core::STR_##name: out = TypeBase::name; return in;
+            #include "IR/TypeList.hpp"
+
+         default:
+            std::cerr << "invalid enum GDCC::IR::TypeBase\n";
+            throw EXIT_FAILURE;
+         }
+      }
+
+      //
+      // operator IArchive >> TypeAssoc
+      //
+      IArchive &operator >> (IArchive &in, TypeAssoc &out)
+      {
+         return in >> out.type >> out.name >> out.addr;
       }
    }
 }

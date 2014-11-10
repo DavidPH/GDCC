@@ -24,6 +24,7 @@ namespace GDCC
 {
    namespace Core
    {
+      template<typename T> class Array;
       class Origin;
       class String;
    }
@@ -44,7 +45,8 @@ namespace GDCC
       class Object;
       class Program;
       class Value;
-      class Value_Multi;
+      class Value_Array;
+      class Value_Tuple;
       class Space;
       class Statement;
       class StrEnt;

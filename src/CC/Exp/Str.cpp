@@ -60,9 +60,7 @@ static GDCC::AST::Exp::CRef CreateStr(
    // Set object's initializer.
    auto initType = type->getIRType().tFixed;
 
-   IR::Value_Multi initVal{std::move(val),
-      IR::Type_Multi(Core::Array<IR::Type>(val.size(), initType))};
-
+   IR::Value_Array initVal{std::move(val), {initType, val.size()}};
    auto initExp = IR::ExpCreate_Value(std::move(initVal), pos);
    obj->init = AST::ExpCreate_IRExp(initExp, attr.type, pos);
 

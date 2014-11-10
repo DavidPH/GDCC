@@ -48,94 +48,100 @@ static GDCC::Option::Bool NamedExpressions
 // Static Functions                                                           |
 //
 
-//
-// PutExpPart Binary
-//
-static void PutExpPart(std::ostream &out, GDCC::IR::Exp_Binary const *exp)
+namespace GDCC
 {
-   GDCC::IRDump::PutExp(out, exp->expL); out << ' ';
-   GDCC::IRDump::PutExp(out, exp->expR);
-}
-
-//
-// PutExpPart BraUna
-//
-static void PutExpPart(std::ostream &out, GDCC::IR::Exp_BraUna const *exp)
-{
-   GDCC::IRDump::PutExp(out, exp->exp);
-}
-
-//
-// PutExpPart BraBin
-//
-static void PutExpPart(std::ostream &out, GDCC::IR::Exp_BraBin const *exp)
-{
-   GDCC::IRDump::PutExp(out, exp->expL); out << ' ';
-   GDCC::IRDump::PutExp(out, exp->expR);
-}
-
-//
-// PutExpPart BraTer
-//
-static void PutExpPart(std::ostream &out, GDCC::IR::Exp_BraTer const *exp)
-{
-   GDCC::IRDump::PutExp(out, exp->expC); out << ' ';
-   GDCC::IRDump::PutExp(out, exp->expL); out << ' ';
-   GDCC::IRDump::PutExp(out, exp->expR);
-}
-
-//
-// PutExpPart Unary
-//
-static void PutExpPart(std::ostream &out, GDCC::IR::Exp_Unary const *exp)
-{
-   GDCC::IRDump::PutExp(out, exp->exp);
-}
-
-//
-// PutExpPart Cst
-//
-static void PutExpPart(std::ostream &out, GDCC::IR::Exp_Cst const *exp)
-{
-   GDCC::IRDump::PutType(out, exp->type); out << ' ';
-   GDCC::IRDump::PutExp(out, exp->exp);
-}
-
-//
-// PutExpPart Glyph
-//
-static void PutExpPart(std::ostream &out, GDCC::IR::Exp_Glyph const *exp)
-{
-   GDCC::IRDump::PutString(out, static_cast<GDCC::Core::String>(exp->glyph));
-}
-
-//
-// PutExpPart Multi
-//
-static void PutExpPart(std::ostream &out, GDCC::IR::Exp_Multi const *exp)
-{
-   out << '{';
-
-   if(!exp->expv.empty())
+   namespace IRDump
    {
-      auto itr = exp->expv.begin(), end = exp->expv.end();
-      GDCC::IRDump::PutExp(out, *itr++);
-      while(itr != end)
+      //
+      // PutExpPart Binary
+      //
+      static void PutExpPart(std::ostream &out, IR::Exp_Binary const *exp)
       {
-         out << ", ";
-         GDCC::IRDump::PutExp(out, *itr++);
+         PutExp(out, exp->expL); out << ' ';
+         PutExp(out, exp->expR);
+      }
+
+      //
+      // PutExpPart BraUna
+      //
+      static void PutExpPart(std::ostream &out, IR::Exp_BraUna const *exp)
+      {
+         PutExp(out, exp->exp);
+      }
+
+      //
+      // PutExpPart BraBin
+      //
+      static void PutExpPart(std::ostream &out, IR::Exp_BraBin const *exp)
+      {
+         PutExp(out, exp->expL); out << ' ';
+         PutExp(out, exp->expR);
+      }
+
+      //
+      // PutExpPart BraTer
+      //
+      static void PutExpPart(std::ostream &out, IR::Exp_BraTer const *exp)
+      {
+         PutExp(out, exp->expC); out << ' ';
+         PutExp(out, exp->expL); out << ' ';
+         PutExp(out, exp->expR);
+      }
+
+      //
+      // PutExpPart Unary
+      //
+      static void PutExpPart(std::ostream &out, IR::Exp_Unary const *exp)
+      {
+         PutExp(out, exp->exp);
+      }
+
+      //
+      // PutExpPart Cst
+      //
+      static void PutExpPart(std::ostream &out, IR::Exp_Cst const *exp)
+      {
+         PutType(out, exp->type); out << ' ';
+         PutExp(out, exp->exp);
+      }
+
+      //
+      // PutExpPart Glyph
+      //
+      static void PutExpPart(std::ostream &out, IR::Exp_Glyph const *exp)
+      {
+         PutString(out, static_cast<Core::String>(exp->glyph));
+      }
+
+      //
+      // PutExpPart Tuple
+      //
+      static void PutExpPart(std::ostream &out, IR::Exp_Tuple const *exp)
+      {
+         out << '{';
+
+         if(!exp->elemV.empty())
+         {
+            auto itr = exp->elemV.begin(), end = exp->elemV.end();
+            PutExp(out, *itr++);
+            while(itr != end)
+            {
+               out << ", ";
+               PutExp(out, *itr++);
+            }
+         }
+
+         out << '}';
+      }
+
+      //
+      // PutExpPart Value
+      //
+      static void PutExpPart(std::ostream &out, IR::Exp_Value const *exp)
+      {
+         PutValue(out, exp->value);
       }
    }
-
-   out << '}';
-}
-
-//
-// PutExpPart Value
-//
-static void PutExpPart(std::ostream &out, GDCC::IR::Exp_Value const *exp)
-{
-   GDCC::IRDump::PutValue(out, exp->value);
 }
 
 
@@ -189,8 +195,8 @@ namespace GDCC
             PutExpPart(out, static_cast<IR::Exp_Glyph const *>(exp));
             break;
 
-         case Core::STR_Multi:
-            PutExpPart(out, static_cast<IR::Exp_Multi const *>(exp));
+         case Core::STR_Tuple:
+            PutExpPart(out, static_cast<IR::Exp_Tuple const *>(exp));
             break;
 
          case Core::STR_Value:

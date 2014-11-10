@@ -37,17 +37,55 @@ namespace GDCC
 
          switch(TokenPeekIdenti(ctx).in.peek().str)
          {
-         case Core::STR_Empty: return GetValue_Empty(ctx);
-       //case Core::STR_Fixed: return GetValue_Fixed(ctx);
-       //case Core::STR_Float: return GetValue_Float(ctx);
-         case Core::STR_Funct: return GetValue_Funct(ctx);
-         case Core::STR_Multi: return GetValue_Multi(ctx);
-         case Core::STR_Point: return GetValue_Point(ctx);
-         case Core::STR_StrEn: return GetValue_StrEn(ctx);
+            #define GDCC_IR_TypeList(name) \
+               case Core::STR_##name: return GetValue_##name(ctx);
+            #include "IR/TypeList.hpp"
 
          default:
             throw Core::ParseExceptExpect(ctx.in.peek(), "Value", false);
          }
+      }
+
+      //
+      // GetValue_Array
+      //
+      IR::Value_Array GetValue_Array(ParserCtx const &ctx)
+      {
+         auto vtype = GetType_Array(ctx);
+
+         std::vector<IR::Value> value;
+         value.reserve(vtype.elemC);
+
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+
+         if(!ctx.in.peek(Core::TOK_ParenC)) do
+            value.emplace_back(GetExp(ctx)->getValue());
+         while(ctx.in.drop(Core::TOK_Comma));
+
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+
+         return {{Core::Move, value.begin(), value.end()}, std::move(vtype)};
+      }
+
+      //
+      // GetValue_Assoc
+      //
+      IR::Value_Assoc GetValue_Assoc(ParserCtx const &ctx)
+      {
+         auto vtype = GetType_Assoc(ctx);
+
+         std::vector<IR::Value> value;
+         value.reserve(vtype.assoc.size());
+
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+
+         if(!ctx.in.peek(Core::TOK_ParenC)) do
+            value.emplace_back(GetExp(ctx)->getValue());
+         while(ctx.in.drop(Core::TOK_Comma));
+
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+
+         return {{Core::Move, value.begin(), value.end()}, std::move(vtype)};
       }
 
       //
@@ -64,6 +102,22 @@ namespace GDCC
       }
 
       //
+      // GetValue_Fixed
+      //
+      IR::Value_Fixed GetValue_Fixed(ParserCtx const &ctx)
+      {
+         throw Core::ExceptStr(ctx.in.reget().pos, "Value_Fixed stub");
+      }
+
+      //
+      // GetValue_Float
+      //
+      IR::Value_Float GetValue_Float(ParserCtx const &ctx)
+      {
+         throw Core::ExceptStr(ctx.in.reget().pos, "Value_Float stub");
+      }
+
+      //
       // GetValue_Funct
       //
       IR::Value_Funct GetValue_Funct(ParserCtx const &ctx)
@@ -75,27 +129,6 @@ namespace GDCC
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
          return {value, std::move(vtype)};
-      }
-
-      //
-      // GetValue_Multi
-      //
-      IR::Value_Multi GetValue_Multi(ParserCtx const &ctx)
-      {
-         auto vtype = GetType_Multi(ctx);
-
-         std::vector<IR::Value> value;
-         value.reserve(vtype.types.size());
-
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
-
-         if(!ctx.in.peek(Core::TOK_ParenC)) do
-            value.emplace_back(GetExp(ctx)->getValue());
-         while(ctx.in.drop(Core::TOK_Comma));
-
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
-
-         return {{Core::Move, value.begin(), value.end()}, std::move(vtype)};
       }
 
       //
@@ -127,6 +160,41 @@ namespace GDCC
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
          return {value, std::move(vtype)};
+      }
+
+      //
+      // GetValue_Tuple
+      //
+      IR::Value_Tuple GetValue_Tuple(ParserCtx const &ctx)
+      {
+         auto vtype = GetType_Tuple(ctx);
+
+         std::vector<IR::Value> value;
+         value.reserve(vtype.types.size());
+
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+
+         if(!ctx.in.peek(Core::TOK_ParenC)) do
+            value.emplace_back(GetExp(ctx)->getValue());
+         while(ctx.in.drop(Core::TOK_Comma));
+
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+
+         return {{Core::Move, value.begin(), value.end()}, std::move(vtype)};
+      }
+
+      //
+      // GetValue_Union
+      //
+      IR::Value_Union GetValue_Union(ParserCtx const &ctx)
+      {
+         auto vtype = GetType_Union(ctx);
+
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+         auto value = GetExp(ctx)->getValue();
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+
+         return {std::move(value), std::move(vtype)};
       }
    }
 }

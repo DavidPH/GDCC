@@ -79,7 +79,7 @@ namespace GDCC
       }
 
       //
-      // getCode
+      // GetCode
       //
       IR::Code GetCode(ParserCtx const &ctx)
       {

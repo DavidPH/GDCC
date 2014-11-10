@@ -33,6 +33,7 @@ namespace GDCC
       class IArchive;
       class OArchive;
       class Type;
+      class TypeAssoc;
 
       //
       // TypeBase
@@ -50,6 +51,48 @@ namespace GDCC
       {
       public:
          virtual char const *what() const noexcept {return "TypeError";}
+      };
+
+      //
+      // Type_Array
+      //
+      class Type_Array
+      {
+      public:
+         Type_Array() = default;
+         Type_Array(Type_Array const &t);
+         Type_Array(Type_Array &&t) = default;
+
+         Type_Array(Type const &t, Core::FastU c);
+         Type_Array(Type &&t, Core::FastU c);
+
+         explicit Type_Array(IArchive &in);
+
+         Type_Array &operator = (Type_Array const &t);
+         Type_Array &operator = (Type_Array &&t) = default;
+
+         bool operator == (Type_Array const &t) const;
+
+         std::unique_ptr<Type> elemT;
+         Core::FastU           elemC;
+      };
+
+      //
+      // Type_Assoc
+      //
+      class Type_Assoc
+      {
+      public:
+         Type_Assoc() = default;
+
+         Type_Assoc(Core::Array<TypeAssoc> const &assoc_) : assoc{assoc_} {}
+         Type_Assoc(Core::Array<TypeAssoc> &&assoc_) : assoc{std::move(assoc_)} {}
+
+         explicit Type_Assoc(IArchive &in);
+
+         bool operator == (Type_Assoc const &t) const {return assoc == t.assoc;}
+
+         Core::Array<TypeAssoc> assoc;
       };
 
       //
@@ -129,31 +172,13 @@ namespace GDCC
       public:
          Type_Funct() = default;
 
-         explicit Type_Funct(CallType callT_) : callT{callT_} {}
+         Type_Funct(CallType callT_) : callT{callT_} {}
 
          explicit Type_Funct(IArchive &in);
 
          bool operator == (Type_Funct const &t) const {return callT == t.callT;}
 
          CallType callT;
-      };
-
-      //
-      // Type_Multi
-      //
-      class Type_Multi
-      {
-      public:
-         Type_Multi() = default;
-
-         Type_Multi(Core::Array<Type> const &types_) : types{types_} {}
-         Type_Multi(Core::Array<Type> &&types_) : types{std::move(types_)} {}
-
-         explicit Type_Multi(IArchive &in);
-
-         bool operator == (Type_Multi const &t) const {return types == t.types;}
-
-         Core::Array<Type> types;
       };
 
       //
@@ -189,6 +214,42 @@ namespace GDCC
          explicit Type_StrEn(IArchive &in);
 
          bool operator == (Type_StrEn const &) const {return true;}
+      };
+
+      //
+      // Type_Tuple
+      //
+      class Type_Tuple
+      {
+      public:
+         Type_Tuple() = default;
+
+         Type_Tuple(Core::Array<Type> const &types_) : types{types_} {}
+         Type_Tuple(Core::Array<Type> &&types_) : types{std::move(types_)} {}
+
+         explicit Type_Tuple(IArchive &in);
+
+         bool operator == (Type_Tuple const &t) const {return types == t.types;}
+
+         Core::Array<Type> types;
+      };
+
+      //
+      // Type_Union
+      //
+      class Type_Union
+      {
+      public:
+         Type_Union() = default;
+
+         Type_Union(Core::Array<Type> const &types_) : types{types_} {}
+         Type_Union(Core::Array<Type> &&types_) : types{std::move(types_)} {}
+
+         explicit Type_Union(IArchive &in);
+
+         bool operator == (Type_Union const &t) const {return types == t.types;}
+
+         Core::Array<Type> types;
       };
 
       //
@@ -322,6 +383,26 @@ namespace GDCC
          static Type PromoteShR(Type const &l, Type const &r);
          static Type PromoteSub(Type const &l, Type const &r);
       };
+
+      //
+      // TypeAssoc
+      //
+      class TypeAssoc
+      {
+      public:
+         TypeAssoc() = default;
+         TypeAssoc(Type const &type_, Core::String name_, Core::FastU addr_) :
+            type{type_}, name{name_}, addr{addr_} {}
+         TypeAssoc(Type &&type_, Core::String name_, Core::FastU addr_) :
+            type{std::move(type_)}, name{name_}, addr{addr_} {}
+
+         bool operator == (TypeAssoc const &a) const
+            {return type == a.type && name == a.name && addr == a.addr;}
+
+         Type         type;
+         Core::String name;
+         Core::FastU  addr;
+      };
    }
 }
 
@@ -334,23 +415,24 @@ namespace GDCC
 {
    namespace IR
    {
-      OArchive &operator << (OArchive &out, TypeBase in);
 
       #define GDCC_IR_TypeList(name) \
          OArchive &operator << (OArchive &out, Type_##name const &in);
       #include "../IR/TypeList.hpp"
 
-      OArchive &operator << (OArchive &out, Type const &in);
+      OArchive &operator << (OArchive &out, Type      const &in);
+      OArchive &operator << (OArchive &out, TypeAssoc const &in);
+      OArchive &operator << (OArchive &out, TypeBase         in);
 
       std::ostream &operator << (std::ostream &out, TypeBase in);
-
-      IArchive &operator >> (IArchive &in, TypeBase &out);
 
       #define GDCC_IR_TypeList(name) \
          IArchive &operator >> (IArchive &in, Type_##name &out);
       #include "../IR/TypeList.hpp"
 
-      IArchive &operator >> (IArchive &in, Type &out);
+      IArchive &operator >> (IArchive &in, Type      &out);
+      IArchive &operator >> (IArchive &in, TypeAssoc &out);
+      IArchive &operator >> (IArchive &in, TypeBase  &out);
    }
 }
 

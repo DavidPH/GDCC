@@ -45,6 +45,50 @@ namespace GDCC
       }
 
       //
+      // GetType_Array
+      //
+      IR::Type_Array GetType_Array(ParserCtx const &ctx)
+      {
+         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Array))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Array", false);
+
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+         auto elemT = GetType(ctx);
+         TokenDrop(ctx, Core::TOK_Comma, "','");
+         auto elemC = GetFastU(ctx);
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+
+         return {std::move(elemT), elemC};
+      }
+
+      //
+      // GetType_Assoc
+      //
+      IR::Type_Assoc GetType_Assoc(ParserCtx const &ctx)
+      {
+         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Assoc))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Assoc", false);
+
+         std::vector<IR::TypeAssoc> assoc;
+
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+
+         if(!ctx.in.peek(Core::TOK_ParenC)) do
+         {
+            auto type = GetType(ctx);
+            auto name = GetString(ctx);
+            auto addr = GetFastU(ctx);
+
+            assoc.emplace_back(std::move(type), name, addr);
+         }
+         while(ctx.in.drop(Core::TOK_Comma));
+
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+
+         return {{Core::Move, assoc.begin(), assoc.end()}};
+      }
+
+      //
       // GetType_Empty
       //
       IR::Type_Empty GetType_Empty(ParserCtx const &ctx)
@@ -55,7 +99,7 @@ namespace GDCC
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-         return IR::Type_Empty();
+         return {};
       }
 
       //
@@ -76,7 +120,7 @@ namespace GDCC
          bool satur = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-         return IR::Type_Fixed(bitsI, bitsF, bitsS, satur);
+         return {bitsI, bitsF, bitsS, satur};
       }
 
       //
@@ -97,7 +141,7 @@ namespace GDCC
          bool satur = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-         return IR::Type_Float(bitsI, bitsF, bitsS, satur);
+         return {bitsI, bitsF, bitsS, satur};
       }
 
       //
@@ -112,28 +156,7 @@ namespace GDCC
          auto callT = GetCallType(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-         return IR::Type_Funct(callT);
-      }
-
-      //
-      // GetType_Multi
-      //
-      IR::Type_Multi GetType_Multi(ParserCtx const &ctx)
-      {
-         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Multi))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Multi", false);
-
-         std::vector<IR::Type> typev;
-
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
-
-         if(!ctx.in.peek(Core::TOK_ParenC)) do
-            typev.emplace_back(GetType(ctx));
-         while(ctx.in.drop(Core::TOK_Comma));
-
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
-
-         return IR::Type_Multi({Core::Move, typev.begin(), typev.end()});
+         return {callT};
       }
 
       //
@@ -153,7 +176,7 @@ namespace GDCC
          auto addrW = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-         return IR::Type_Point(addrB, addrN, addrS, addrW);
+         return {addrB, addrN, addrS, addrW};
       }
 
       //
@@ -167,7 +190,49 @@ namespace GDCC
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-         return IR::Type_StrEn();
+         return {};
+      }
+
+      //
+      // GetType_Tuple
+      //
+      IR::Type_Tuple GetType_Tuple(ParserCtx const &ctx)
+      {
+         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Tuple))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Tuple", false);
+
+         std::vector<IR::Type> typev;
+
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+
+         if(!ctx.in.peek(Core::TOK_ParenC)) do
+            typev.emplace_back(GetType(ctx));
+         while(ctx.in.drop(Core::TOK_Comma));
+
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+
+         return {{Core::Move, typev.begin(), typev.end()}};
+      }
+
+      //
+      // GetType_Union
+      //
+      IR::Type_Union GetType_Union(ParserCtx const &ctx)
+      {
+         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Union))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Union", false);
+
+         std::vector<IR::Type> typev;
+
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+
+         if(!ctx.in.peek(Core::TOK_ParenC)) do
+            typev.emplace_back(GetType(ctx));
+         while(ctx.in.drop(Core::TOK_Comma));
+
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+
+         return {{Core::Move, typev.begin(), typev.end()}};
       }
    }
 }

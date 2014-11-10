@@ -70,14 +70,16 @@ namespace GDCC
 
          if(data.isStruct)
          {
-            return IR::Type_Multi(
-               Core::Array<IR::Type>(data.memb.begin(), data.memb.end(),
-                  [](MemberData const &m) {return m.type->getIRType();}));
+            return IR::Type_Assoc(
+               {data.memb.begin(), data.memb.end(),
+                  [](MemberData const &m) -> IR::TypeAssoc
+                     {return {m.type->getIRType(), m.name, m.addr};}});
          }
          else
          {
-            // TODO: IR::Type_Union
-            throw AST::TypeError();
+            return IR::Type_Union(
+               {data.memb.begin(), data.memb.end(),
+                  [](MemberData const &m) {return m.type->getIRType();}});
          }
       }
 

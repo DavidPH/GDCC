@@ -30,6 +30,20 @@ namespace GDCC
    namespace IR
    {
       //
+      // Value_Array constructor
+      //
+      Value_Array::Value_Array(IArchive &in) : vtype{in}, value{GetIR(in, value)}
+      {
+      }
+
+      //
+      // Value_Assoc constructor
+      //
+      Value_Assoc::Value_Assoc(IArchive &in) : vtype{in}, value{GetIR(in, value)}
+      {
+      }
+
+      //
       // Value_Empty constructor
       //
       Value_Empty::Value_Empty(IArchive &in) : vtype{in}
@@ -90,13 +104,6 @@ namespace GDCC
       }
 
       //
-      // Value_Multi constructor
-      //
-      Value_Multi::Value_Multi(IArchive &in) : vtype{in}, value{GetIR(in, value)}
-      {
-      }
-
-      //
       // Value_Point constructor
       //
       Value_Point::Value_Point(IArchive &in) : vtype{in}, value{GetIR(in, value)},
@@ -131,6 +138,83 @@ namespace GDCC
             return value != 0;
          else
             return value != static_cast<Core::FastU>(-1);
+      }
+
+      //
+      // Value_Tuple constructor
+      //
+      Value_Tuple::Value_Tuple(IArchive &in) : vtype{in}, value{GetIR(in, value)}
+      {
+      }
+
+      //
+      // Value_Union copy constructor
+      //
+      Value_Union::Value_Union(Value_Union const &v) :
+         vtype{v.vtype}, value{new Value(*v.value)}
+      {
+      }
+
+      //
+      // Value_Union constructor
+      //
+      Value_Union::Value_Union(Value const &v, Type_Union const &t) :
+         vtype{t}, value{new Value(v)}
+      {
+      }
+
+      //
+      // Value_Union constructor
+      //
+      Value_Union::Value_Union(Value const &v, Type_Union &&t) :
+         vtype{std::move(t)}, value{new Value(v)}
+      {
+      }
+
+      //
+      // Value_Union constructor
+      //
+      Value_Union::Value_Union(Value &&v, Type_Union const &t) :
+         vtype{t}, value{new Value(std::move(v))}
+      {
+      }
+
+      //
+      // Value_Union constructor
+      //
+      Value_Union::Value_Union(Value &&v, Type_Union &&t) :
+         vtype{std::move(t)}, value{new Value(std::move(v))}
+      {
+      }
+
+      //
+      // Value_Union constructor
+      //
+      Value_Union::Value_Union(IArchive &in) : vtype{in}, value{new Value(in)}
+      {
+      }
+
+      //
+      // Value_Union::operator bool
+      //
+      Value_Union::operator bool () const
+      {
+         return static_cast<bool>(*value);
+      }
+
+      //
+      // Value_Union::operator = Value_Union
+      //
+      Value_Union &Value_Union::operator = (Value_Union const &v)
+      {
+         vtype = v.vtype;
+
+         if(value)
+            *value = *v.value;
+         else
+            value.reset(new Value(*v.value));
+
+         return *this;
       }
 
       //
@@ -172,6 +256,22 @@ namespace GDCC
       }
 
       //
+      // operator OArchive << Value_Array
+      //
+      OArchive &operator << (OArchive &out, Value_Array const &in)
+      {
+         return out << in.vtype << in.value;
+      }
+
+      //
+      // operator OArchive << Value_Assoc
+      //
+      OArchive &operator << (OArchive &out, Value_Assoc const &in)
+      {
+         return out << in.vtype << in.value;
+      }
+
+      //
       // operator OArchive << Value_Empty
       //
       OArchive &operator << (OArchive &out, Value_Empty const &in)
@@ -204,14 +304,6 @@ namespace GDCC
       }
 
       //
-      // operator OArchive << Value_Multi
-      //
-      OArchive &operator << (OArchive &out, Value_Multi const &in)
-      {
-         return out << in.vtype << in.value;
-      }
-
-      //
       // operator OArchive << Value_Point
       //
       OArchive &operator << (OArchive &out, Value_Point const &in)
@@ -225,6 +317,22 @@ namespace GDCC
       OArchive &operator << (OArchive &out, Value_StrEn const &in)
       {
          return out << in.vtype << in.value;
+      }
+
+      //
+      // operator OArchive << Value_Tuple
+      //
+      OArchive &operator << (OArchive &out, Value_Tuple const &in)
+      {
+         return out << in.vtype << in.value;
+      }
+
+      //
+      // operator OArchive << Value_Union
+      //
+      OArchive &operator << (OArchive &out, Value_Union const &in)
+      {
+         return out << in.vtype << *in.value;
       }
 
       //
@@ -242,6 +350,22 @@ namespace GDCC
 
          std::cerr << "invalid enum GDCC::IR::Value\n";
          throw EXIT_FAILURE;
+      }
+
+      //
+      // operator IArchive >> Value_Array
+      //
+      IArchive &operator >> (IArchive &in, Value_Array &out)
+      {
+         return in >> out.vtype >> out.value;
+      }
+
+      //
+      // operator IArchive >> Value_Assoc
+      //
+      IArchive &operator >> (IArchive &in, Value_Assoc &out)
+      {
+         return in >> out.vtype >> out.value;
       }
 
       //
@@ -277,14 +401,6 @@ namespace GDCC
       }
 
       //
-      // operator IArchive >> Value_Multi
-      //
-      IArchive &operator >> (IArchive &in, Value_Multi &out)
-      {
-         return in >> out.vtype >> out.value;
-      }
-
-      //
       // operator IArchive >> Value_Point
       //
       IArchive &operator >> (IArchive &in, Value_Point &out)
@@ -298,6 +414,29 @@ namespace GDCC
       IArchive &operator >> (IArchive &in, Value_StrEn &out)
       {
          return in >> out.vtype >> out.value;
+      }
+
+      //
+      // operator IArchive >> Value_Tuple
+      //
+      IArchive &operator >> (IArchive &in, Value_Tuple &out)
+      {
+         return in >> out.vtype >> out.value;
+      }
+
+      //
+      // operator IArchive >> Value_Union
+      //
+      IArchive &operator >> (IArchive &in, Value_Union &out)
+      {
+         in >> out.vtype;
+
+         if(out.value)
+            return in >> *out.value;
+
+         out.value.reset(new Value(in));
+
+         return in;
       }
 
       //

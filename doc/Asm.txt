@@ -584,13 +584,22 @@ Syntax:
     ? expression expression expression
 
   type:
+    type-Array
+    type-Assoc
     type-Empty
     type-Fixed
     type-Float
     type-Funct
-    type-Multi
     type-Point
     type-StrEn
+    type-Tuple
+    type-Union
+
+  type-Array:
+    <Array> ( type , expression )
+
+  type-Assoc:
+    <Assoc> ( type-assoc-list(opt) )
 
   type-Empty:
     <Empty> ( )
@@ -604,14 +613,24 @@ Syntax:
   type-Funct:
     <Funct> ( call-type-specifier )
 
-  type-Multi:
-    <Multi> ( type-list(opt) )
-
   type-Point:
     <Point> ( address-specifier string , expression , expression )
 
   type-StrEn:
     <StrEn> ( )
+
+  type-Tuple:
+    <Tuple> ( type-list(opt) )
+
+  type-Union:
+    <Union> ( type-list(opt) )
+
+  type-assoc-list:
+    type-assoc
+    type-assoc , type-assoc-list
+
+  type-assoc:
+    type string expression
 
   type-list:
     type
@@ -623,7 +642,7 @@ Aggregates
 
 Syntax:
   aggregate:
-    <Multi> ( expression-list(opt) )
+    <Tuple> ( expression-list(opt) )
     { expression-list(opt) }
     [ expression-list(opt) ]
 
@@ -770,11 +789,30 @@ Values
 
 Syntax:
   value:
+    <Value> value-Array
+    <Value> value-Assoc
     <Value> value-Empty
     <Value> value-Funct
-    <Value> value-Multi
     <Value> value-Point
     <Value> value-StrEn
+    <Value> value-Tuple
+    <Value> value-Union
+
+-----------------------------------------------------------
+Array
+-----------------------------------------------------------
+
+Syntax:
+  value-Array:
+    type-Array ( expression-list(opt) )
+
+-----------------------------------------------------------
+Assoc
+-----------------------------------------------------------
+
+Syntax:
+  value-Assoc:
+    type-Assoc ( expression-list(opt) )
 
 -----------------------------------------------------------
 Empty
@@ -793,14 +831,6 @@ Syntax:
     type-Funct ( expression )
 
 -----------------------------------------------------------
-Multi
------------------------------------------------------------
-
-Syntax:
-  value-Multi:
-    type-Multi ( expression-list(opt) )
-
------------------------------------------------------------
 Point
 -----------------------------------------------------------
 
@@ -815,6 +845,22 @@ StrEn
 Syntax:
   value-StrEn:
     type-StrEn ( expression )
+
+-----------------------------------------------------------
+Tuple
+-----------------------------------------------------------
+
+Syntax:
+  value-Tuple:
+    type-Tuple ( expression-list(opt) )
+
+-----------------------------------------------------------
+Union
+-----------------------------------------------------------
+
+Syntax:
+  value-Union:
+    type-Union ( expression )
 
 ===============================================================================
 Specifiers
@@ -1125,13 +1171,22 @@ Grammar
     ? expression expression expression
 
   type:
+    type-Array
+    type-Assoc
     type-Empty
     type-Fixed
     type-Float
     type-Funct
-    type-Multi
     type-Point
     type-StrEn
+    type-Tuple
+    type-Union
+
+  type-Array:
+    <Array> ( type , expression )
+
+  type-Assoc:
+    <Assoc> ( type-assoc-list(opt) )
 
   type-Empty:
     <Empty> ( )
@@ -1145,21 +1200,31 @@ Grammar
   type-Funct:
     <Funct> ( call-type-specifier )
 
-  type-Multi:
-    <Multi> ( type-list(opt) )
-
   type-Point:
-    <Point> ( address-specifier , expression , expression )
+    <Point> ( address-specifier string , expression , expression )
 
   type-StrEn:
     <StrEn> ( )
+
+  type-Tuple:
+    <Tuple> ( type-list(opt) )
+
+  type-Union:
+    <Union> ( type-list(opt) )
+
+  type-assoc-list:
+    type-assoc
+    type-assoc , type-assoc-list
+
+  type-assoc:
+    type string expression
 
   type-list:
     type
     type , type-list
 
   aggregate:
-    <Multi> ( expression-list(opt) )
+    <Tuple> ( expression-list(opt) )
     { expression-list(opt) }
     [ expression-list(opt) ]
 
@@ -1271,11 +1336,20 @@ Grammar
     \' \" \? \\ \a \b \f \n \r \t \v
 
   value:
+    <Value> value-Array
+    <Value> value-Assoc
     <Value> value-Empty
     <Value> value-Funct
-    <Value> value-Multi
     <Value> value-Point
     <Value> value-StrEn
+    <Value> value-Tuple
+    <Value> value-Union
+
+  value-Array:
+    type-Array ( expression-list(opt) )
+
+  value-Assoc:
+    type-Assoc ( expression-list(opt) )
 
   value-Empty:
     type-Empty ( )
@@ -1283,14 +1357,17 @@ Grammar
   value-Funct:
     type-Funct ( expression )
 
-  value-Multi:
-    type-Multi ( expression-list(opt) )
-
   value-Point:
     type-Point ( expression , address-specifier string )
 
   value-StrEn:
     type-StrEn ( expression )
+
+  value-Tuple:
+    type-Tuple ( expression-list(opt) )
+
+  value-Union:
+    type-Union ( expression )
 
   address-specifier:
     <Cpy>

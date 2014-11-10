@@ -213,7 +213,7 @@ namespace GDCC
       //
       IR::Type Type_Array::getIRType() const
       {
-         return IR::Type_Multi(Core::Array<IR::Type>(size, base->getIRType()));
+         return IR::Type_Array(base->getIRType(), size);
       }
 
       //

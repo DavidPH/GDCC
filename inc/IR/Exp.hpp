@@ -166,17 +166,45 @@ namespace GDCC
       GDCC_IR_Exp_DeclCreateE2(ShR);
       GDCC_IR_Exp_DeclCreateE2(Sub);
 
+      Exp::CRef ExpCreate_Array(Type const &elemT,
+         Core::Array<Exp::CRef> const &elemV, Core::Origin pos);
+      Exp::CRef ExpCreate_Array(Type const &elemT,
+         Core::Array<Exp::CRef>      &&elemV, Core::Origin pos);
+      Exp::CRef ExpCreate_Array(Type      &&elemT,
+         Core::Array<Exp::CRef> const &elemV, Core::Origin pos);
+      Exp::CRef ExpCreate_Array(Type      &&elemT,
+         Core::Array<Exp::CRef>      &&elemV, Core::Origin pos);
+
+      Exp::CRef ExpCreate_Assoc(Type_Assoc const &elemT,
+         Core::Array<Exp::CRef> const &elemV, Core::Origin pos);
+      Exp::CRef ExpCreate_Assoc(Type_Assoc const &elemT,
+         Core::Array<Exp::CRef>      &&elemV, Core::Origin pos);
+      Exp::CRef ExpCreate_Assoc(Type_Assoc      &&elemT,
+         Core::Array<Exp::CRef> const &elemV, Core::Origin pos);
+      Exp::CRef ExpCreate_Assoc(Type_Assoc      &&elemT,
+         Core::Array<Exp::CRef>      &&elemV, Core::Origin pos);
+
       Exp::CRef ExpCreate_Glyph(Glyph glyph, Core::Origin pos);
 
-      Exp::CRef ExpCreate_Multi(Core::Array<Exp::CRef> const &expv, Core::Origin pos);
-      Exp::CRef ExpCreate_Multi(Core::Array<Exp::CRef> &&expv, Core::Origin pos);
+      Exp::CRef ExpCreate_Tuple(
+         Core::Array<Exp::CRef> const &elemV, Core::Origin pos);
+      Exp::CRef ExpCreate_Tuple(
+         Core::Array<Exp::CRef>      &&elemV, Core::Origin pos);
+
+      Exp::CRef ExpCreate_Union(Type_Union const &elemT, Exp const *elemV,
+         Core::Origin pos);
+      Exp::CRef ExpCreate_Union(Type_Union &&elemT, Exp const *elemV,
+         Core::Origin pos);
 
       Exp::CRef ExpCreate_Value(Value const &value, Core::Origin pos);
       Exp::CRef ExpCreate_Value(Value &&value, Core::Origin pos);
 
+      Exp::CRef ExpGetIR_Array(IArchive &in);
+      Exp::CRef ExpGetIR_Assoc(IArchive &in);
       Exp::CRef ExpGetIR_Glyph(IArchive &in);
-      Exp::CRef ExpGetIR_Multi(IArchive &in);
       Exp::CRef ExpGetIR_Value(IArchive &in);
+      Exp::CRef ExpGetIR_Tuple(IArchive &in);
+      Exp::CRef ExpGetIR_Union(IArchive &in);
    }
 }
 

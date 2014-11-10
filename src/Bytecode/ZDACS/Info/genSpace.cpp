@@ -197,6 +197,11 @@ namespace GDCC
 
             switch(val.v)
             {
+            case IR::ValueBase::Array:
+               for(auto const &v : val.vArray.value)
+                  genSpaceInitiValue(ini, itr, v);
+               break;
+
             case IR::ValueBase::Fixed:
                iv = &ini.vals[itr++];
                iv->tag = InitTag::Fixed;
@@ -222,11 +227,6 @@ namespace GDCC
                iv->val = val.vFunct.value;
                break;
 
-            case IR::ValueBase::Multi:
-               for(auto const &v : val.vMulti.value)
-                  genSpaceInitiValue(ini, itr, v);
-               break;
-
             case IR::ValueBase::StrEn:
                iv = &ini.vals[itr++];
                if((val.vFunct.value & 0xFFFFFFFF) == 0xFFFFFFFF)
@@ -234,6 +234,11 @@ namespace GDCC
                else
                   iv->tag = InitTag::StrEn;
                iv->val = val.vStrEn.value;
+               break;
+
+            case IR::ValueBase::Tuple:
+               for(auto const &v : val.vTuple.value)
+                  genSpaceInitiValue(ini, itr, v);
                break;
 
             default:

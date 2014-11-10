@@ -64,6 +64,37 @@ namespace GDCC
    namespace AS
    {
       //
+      // GetArrayString
+      //
+      IR::Value_Array GetArrayString(ParserCtx const &ctx)
+      {
+         std::vector<IR::Value_Fixed> val;
+         IR::Type_Fixed               type;
+
+         // Optionally take a type for string elements.
+         if(!ctx.in.peek(Core::TOK_String))
+         {
+            type = GetType_Fixed(ctx);
+         }
+         // Otherwise, use a target-dependent default.
+         else
+         {
+            // FIXME/TODO: ACS targets have 32-bit byte!
+            type = IR::Type_Fixed(8, 0, false, false);
+         }
+
+         // Read string token.
+         auto str = TokenPeekString(ctx).in.get().str;
+
+         // Convert to values.
+         val.reserve(str.size());
+         for(unsigned char c : str)
+            val.emplace_back(c, type);
+
+         return {{Core::Move, val.begin(), val.end()}, {type, val.size()}};
+      }
+
+      //
       // GetExp
       //
       IR::Exp::CRef GetExp(ParserCtx const &ctx)
@@ -119,7 +150,7 @@ namespace GDCC
                t = GetType(ctx);
                return IR::ExpCreate_Cst(std::move(t), GetExp(ctx), tok.pos);
 
-            case Core::STR_Multi:
+            case Core::STR_Tuple:
                TokenDrop(ctx, Core::TOK_ParenO, "'('");
 
                if(!ctx.in.peek(Core::TOK_ParenC)) do
@@ -128,14 +159,14 @@ namespace GDCC
 
                TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-               return IR::ExpCreate_Multi({Core::Move, v.begin(), v.end()}, tok.pos);
+               return IR::ExpCreate_Tuple({Core::Move, v.begin(), v.end()}, tok.pos);
 
             case Core::STR_Value:
                ctx.in.unget();
                return IR::ExpCreate_Value(GetValue(ctx), tok.pos);
 
             case Core::STR_string:
-               return IR::ExpCreate_Value(GetMultiString(ctx), tok.pos);
+               return IR::ExpCreate_Value(GetArrayString(ctx), tok.pos);
 
             default:
                throw Core::ParseExceptExpect(tok, "expression", false);
@@ -178,11 +209,11 @@ namespace GDCC
 
             TokenDrop(ctx, Core::TOK_BraceC, "'}'");
 
-            return IR::ExpCreate_Multi({Core::Move, v.begin(), v.end()}, tok.pos);
+            return IR::ExpCreate_Tuple({Core::Move, v.begin(), v.end()}, tok.pos);
 
          case Core::TOK_BrackO:
             ctx.in.unget();
-            return IR::ExpCreate_Value(GetMulti(ctx), tok.pos);
+            return IR::ExpCreate_Value(GetTuple(ctx), tok.pos);
 
          default:
             throw Core::ParseExceptExpect(tok, "expression", false);
@@ -230,61 +261,6 @@ namespace GDCC
             throw Core::ParseExceptExpect(exp->pos, "integer expression",
                "non-integer expression", false, false);
          }
-      }
-
-      //
-      // GetMulti
-      //
-      IR::Value_Multi GetMulti(ParserCtx const &ctx)
-      {
-         std::vector<IR::Value> val;
-
-         TokenDrop(ctx, Core::TOK_BrackO, "'['");
-
-         if(!ctx.in.peek(Core::TOK_BrackC)) do
-            val.emplace_back(GetExp(ctx)->getValue());
-         while(ctx.in.drop(Core::TOK_Comma));
-
-         TokenDrop(ctx, Core::TOK_BrackC, "']'");
-
-         Core::Array<IR::Value> vals{Core::Move, val.begin(), val.end()};
-         Core::Array<IR::Type> types{vals.size()};
-
-         for(std::size_t i = 0, e = vals.size(); i != e; ++i)
-            types[i] = vals[i].getType();
-
-         return {std::move(vals), {std::move(types)}};
-      }
-
-      //
-      // GetMultiString
-      //
-      IR::Value_Multi GetMultiString(ParserCtx const &ctx)
-      {
-         std::vector<IR::Value_Fixed> val;
-         IR::Type_Fixed               type;
-
-         // Optionally take a type for string elements.
-         if(!ctx.in.peek(Core::TOK_String))
-         {
-            type = GetType_Fixed(ctx);
-         }
-         // Otherwise, use a target-dependent default.
-         else
-         {
-            // FIXME/TODO: ACS targets have 32-bit byte!
-            type = IR::Type_Fixed(8, 0, false, false);
-         }
-
-         // Read string token.
-         auto str = TokenPeekString(ctx).in.get().str;
-
-         // Convert to values.
-         val.reserve(str.size());
-         for(unsigned char c : str)
-            val.emplace_back(c, type);
-
-         return {{Core::Move, val.begin(), val.end()}, {{val.size(), type}}};
       }
 
       //
@@ -389,6 +365,30 @@ namespace GDCC
 
             return IR::Value_Float(std::move(val), {bitsI, bitsF, bitsS, satur});
          }
+      }
+
+      //
+      // GetTuple
+      //
+      IR::Value_Tuple GetTuple(ParserCtx const &ctx)
+      {
+         std::vector<IR::Value> val;
+
+         TokenDrop(ctx, Core::TOK_BrackO, "'['");
+
+         if(!ctx.in.peek(Core::TOK_BrackC)) do
+            val.emplace_back(GetExp(ctx)->getValue());
+         while(ctx.in.drop(Core::TOK_Comma));
+
+         TokenDrop(ctx, Core::TOK_BrackC, "']'");
+
+         Core::Array<IR::Value> vals{Core::Move, val.begin(), val.end()};
+         Core::Array<IR::Type> types{vals.size()};
+
+         for(std::size_t i = 0, e = vals.size(); i != e; ++i)
+            types[i] = vals[i].getType();
+
+         return {std::move(vals), {std::move(types)}};
       }
    }
 }
