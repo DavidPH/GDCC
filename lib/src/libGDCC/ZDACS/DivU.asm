@@ -116,7 +116,7 @@ Function "___GDCC__DiXU_W2" \
 
 "___GDCC__DiXU_W2$loop2body"
    ; Check for division at current bit.
-   CmpU_GT_W2, Stk(), LocReg(Lit(6), 0), LocReg(Lit(2), 0)
+   CmpU_GE_W2, Stk(), LocReg(Lit(6), 0), LocReg(Lit(2), 0)
    Cjmp_Nil,   Stk(), Lit("___GDCC__DiXU_W2$loop2divchk")
 
    ; quotient |= mask; remainder -= divisor;
@@ -145,7 +145,7 @@ Function "___GDCC__DiXU_W2" \
 
 "___GDCC__DiXU_W2$loop1body"
    ; Check for division at current bit.
-   CmpU_GT_W2, Stk(), LocReg(Lit(6), 0), LocReg(Lit(2), 0)
+   CmpU_GE_W2, Stk(), LocReg(Lit(6), 0), LocReg(Lit(2), 0)
    Cjmp_Nil,   Stk(), Lit("___GDCC__DiXU_W2$loop1divchk")
 
    ; quotient |= mask; remainder -= divisor;
@@ -289,7 +289,7 @@ Function "___GDCC__DiXU_W3" \
 
 "___GDCC__DiXU_W3$loop3body"
    ; Check for division at current bit.
-   CmpU_GT_W3, Stk(), LocReg(Lit(9), 0), LocReg(Lit(3), 0)
+   CmpU_GE_W3, Stk(), LocReg(Lit(9), 0), LocReg(Lit(3), 0)
    Cjmp_Nil,   Stk(), Lit("___GDCC__DiXU_W3$loop3divchk")
 
    ; quotient |= mask; remainder -= divisor;
@@ -326,7 +326,7 @@ Function "___GDCC__DiXU_W3" \
 
 "___GDCC__DiXU_W3$loop2body"
    ; Check for division at current bit.
-   CmpU_GT_W3, Stk(), LocReg(Lit(9), 0), LocReg(Lit(3), 0)
+   CmpU_GE_W3, Stk(), LocReg(Lit(9), 0), LocReg(Lit(3), 0)
    Cjmp_Nil,   Stk(), Lit("___GDCC__DiXU_W3$loop2divchk")
 
    ; quotient |= mask; remainder -= divisor;
@@ -356,7 +356,7 @@ Function "___GDCC__DiXU_W3" \
 
 "___GDCC__DiXU_W3$loop1body"
    ; Check for division at current bit.
-   CmpU_GT_W3, Stk(), LocReg(Lit(9), 0), LocReg(Lit(3), 0)
+   CmpU_GE_W3, Stk(), LocReg(Lit(9), 0), LocReg(Lit(3), 0)
    Cjmp_Nil,   Stk(), Lit("___GDCC__DiXU_W3$loop1divchk")
 
    ; quotient |= mask; remainder -= divisor;
