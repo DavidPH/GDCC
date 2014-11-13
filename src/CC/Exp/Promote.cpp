@@ -240,11 +240,16 @@ namespace GDCC
          if(!type->isCTypeInteg())
             return static_cast<AST::Exp::CRef>(exp);
 
-         auto rank = type->getRankC();
-
          // Types with a rank higher than int are unaffected.
-         if(rank > AST::TypeRankC::Integ)
-            return static_cast<AST::Exp::CRef>(exp);
+         try
+         {
+            if(type->getRankC() > AST::TypeRankC::Integ)
+               return static_cast<AST::Exp::CRef>(exp);
+         }
+         catch(AST::TypeError const &)
+         {
+            throw Core::ExceptStr(pos, "unranked integer type");
+         }
 
          // Int and unsigned int are unaffected.
          if(type == TypeIntegPrS || type == TypeIntegPrU)

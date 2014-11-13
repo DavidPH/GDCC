@@ -172,8 +172,17 @@ ExpPromo_Arith_Integ(GDCC::AST::Exp const *l, GDCC::AST::Exp const *r,
 
    if(typeL == typeR) return std::make_tuple(typeL, expL, expR);
 
-   auto rankL = typeL->getRankC();
-   auto rankR = typeR->getRankC();
+   AST::TypeRankC rankL, rankR;
+
+   try
+   {
+      rankL = typeL->getRankC();
+      rankR = typeR->getRankC();
+   }
+   catch(AST::TypeError const &)
+   {
+      throw Core::ExceptStr(pos, "expected ranked types");
+   }
 
    // If one has a higher rank, convert to that.
    if(rankL < rankR)

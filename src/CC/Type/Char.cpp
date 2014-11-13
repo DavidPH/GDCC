@@ -37,6 +37,14 @@ namespace GDCC
       }
 
       //
+      // Type_Char::getRankC
+      //
+      AST::TypeRankC Type_Char::getRankC() const
+      {
+         return AST::TypeRankC::IntegHH;
+      }
+
+      //
       // Type_Char::getSizeBitsI
       //
       Core::FastU Type_Char::getSizeBitsI() const

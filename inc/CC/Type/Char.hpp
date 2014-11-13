@@ -36,6 +36,7 @@ namespace GDCC
       public:
          // Type information.
          virtual IR::Type      getIRType()      const;
+         virtual RankC         getRankC()       const;
          virtual Core::FastU   getSizeAlign()   const {return 1;}
          virtual Core::FastU   getSizeBitsF()   const {return 0;}
          virtual Core::FastU   getSizeBitsI()   const;
