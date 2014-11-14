@@ -17,6 +17,8 @@
 
 #include "Core/Exception.hpp"
 
+#include "IR/ExpCode.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
@@ -53,12 +55,23 @@ static void GenStmnt_ArithEqIdx(GDCC::AST::Exp_Binary const *exp,
    // Convert to evaluation type.
    AST::GenStmnt_ConvertArith(exp, evalT, exp->type, ctx);
 
-   // Push r.
-   exp->expR->genStmntStk(ctx);
+   // Attempt to turn r into an IR Arg.
+   if(exp->expR->getArg().isIRArg())
+   {
+      ctx.block.addStatementArgs(code,
+         IR::Arg_Stk(), IR::Arg_Stk(), exp->expR->getArg().getIRArg());
+   }
 
-   // Operate on stack.
-   ctx.block.addStatementArgs(code,
-      IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+   // Otherwise, just operate on stack.
+   else
+   {
+      // Push r.
+      exp->expR->genStmntStk(ctx);
+
+      // Operate on stack.
+      ctx.block.addStatementArgs(code,
+         IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+   }
 
    // Convert to result type.
    AST::GenStmnt_ConvertArith(exp, exp->type, evalT, ctx);
@@ -185,6 +198,35 @@ namespace GDCC
          // Map from generic address space for codegen.
          if(arg.type->getQualAddr().base == IR::AddrBase::Gen)
             arg.type = arg.type->getTypeQual(IR::GetAddrGen());
+
+         // If possible, operate with IR args.
+         auto argL = exp->expL->getArg();
+         auto argR = exp->expR->getArg();
+         if(exp->type->getTypeQual() == evalT->getTypeQual() &&
+            argL.isIRArg() && argR.isIRArg())
+         {
+            auto irArgL = argL.getIRArg();
+
+            auto codeMove = IR::ExpCode_Move(argL.type->getSizeWords());
+
+            // Duplicate to destination, if necessary.
+            if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
+            {
+               ctx.block.addStatementArgs(codeMove, IR::Arg_Stk(), irArgL);
+               GenStmnt_MovePart(exp, ctx, dst, false, true);
+            }
+
+            ctx.block.addStatementArgs(code, irArgL, irArgL, argR.getIRArg());
+
+            // Duplicate to destination, if necessary.
+            if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
+            {
+               ctx.block.addStatementArgs(codeMove, IR::Arg_Stk(), irArgL);
+               GenStmnt_MovePart(exp, ctx, dst, false, true);
+            }
+
+            return;
+         }
 
          switch(arg.type->getQualAddr().base)
          {

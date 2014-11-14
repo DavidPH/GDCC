@@ -87,6 +87,8 @@ namespace GDCC
       public:
          ArgPtr1(ArgPtr1 const &arg);
          ArgPtr1(ArgPtr1 &&arg);
+         ArgPtr1(Arg const &idx);
+         ArgPtr1(Arg &&idx);
          ArgPtr1(Arg const &idx, Exp const *off);
          ArgPtr1(Arg &&idx, Exp const *off);
          explicit ArgPtr1(IArchive &in);
@@ -111,6 +113,10 @@ namespace GDCC
       public:
          ArgPtr2(ArgPtr2 const &arg);
          ArgPtr2(ArgPtr2 &&arg);
+         ArgPtr2(Arg const &arr, Arg const &idx);
+         ArgPtr2(Arg const &arr, Arg &&idx);
+         ArgPtr2(Arg &&arr, Arg const &idx);
+         ArgPtr2(Arg &&arr, Arg &&idx);
          ArgPtr2(Arg const &arr, Arg const &idx, Exp const *off);
          ArgPtr2(Arg const &arr, Arg &&idx, Exp const *off);
          ArgPtr2(Arg &&arr, Arg const &idx, Exp const *off);

@@ -12,6 +12,7 @@
 
 #include "AST/Exp/Arith.hpp"
 
+#include "AST/Arg.hpp"
 #include "AST/Type.hpp"
 
 #include "IR/Block.hpp"
@@ -54,16 +55,50 @@ namespace GDCC
       {
          if(GenStmntNul(exp, ctx, dst)) return;
 
-         // Evaluate both sub-expressions to stack.
-         exp->expL->genStmntStk(ctx);
-         exp->expR->genStmntStk(ctx);
+         auto argL = exp->expL->getArg();
+         auto argR = exp->expR->getArg();
 
-         // Operate on stack.
-         ctx.block.addStatementArgs(code,
-            IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+         IR::Arg irArgL, irArgR;
 
-         // Move to destination.
-         GenStmnt_MovePart(exp, ctx, dst, false, true);
+         // Try to use IR args instead of stack args.
+         // However, avoid a stack arg only on the left for asymmetric ops.
+         if(argR.isIRArg())
+         {
+            if(argL.isIRArg())
+            {
+               irArgL = argL.getIRArg();
+               irArgR = argR.getIRArg();
+            }
+            else
+            {
+               // Evaluate left expression to stack.
+               exp->expL->genStmntStk(ctx);
+
+               irArgL = IR::Arg_Stk();
+               irArgR = argR.getIRArg();
+            }
+         }
+         else
+         {
+            // Evaluate both sub-expressions to stack.
+            exp->expL->genStmntStk(ctx);
+            exp->expR->genStmntStk(ctx);
+
+            irArgL = IR::Arg_Stk();
+            irArgR = IR::Arg_Stk();
+         }
+
+         if(dst.isIRArg())
+         {
+            ctx.block.addStatementArgs(code, dst.getIRArg(), irArgL, irArgR);
+         }
+         else
+         {
+            ctx.block.addStatementArgs(code, IR::Arg_Stk(), irArgL, irArgR);
+
+            // Move to destination.
+            GenStmnt_MovePart(exp, ctx, dst, false, true);
+         }
       }
    }
 }

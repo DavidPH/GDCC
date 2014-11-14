@@ -82,6 +82,23 @@ namespace GDCC
       }
 
       //
+      // ExpCode_Move
+      //
+      inline Code ExpCode_Move(Core::FastU words)
+      {
+         switch(words)
+         {
+         case  1: return Code::Move_W;
+         case  2: return Code::Move_W2;
+         case  3: return Code::Move_W3;
+         case  4: return Code::Move_W4;
+         case  5: return Code::Move_W5;
+         case  6: return Code::Move_W6;
+         default: return Code::None;
+         }
+      }
+
+      //
       // ExpCode_U_W
       //
       template<typename Codes>

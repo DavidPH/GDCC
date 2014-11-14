@@ -160,6 +160,17 @@ namespace GDCC
          else
             return out << Core::STR_None;
       }
+
+      //
+      // ExpCreate_Zero
+      //
+      Exp::CRef ExpCreate_Zero()
+      {
+         static Exp::CRef const exp =
+            ExpCreate_Value(Value_Fixed(0, {1, 0, false, false}), {nullptr, 0});
+
+         return exp;
+      }
    }
 }
 

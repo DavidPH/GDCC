@@ -16,6 +16,8 @@
 
 #include "Core/Exception.hpp"
 
+#include "IR/ExpCode.hpp"
+
 #include <iostream>
 
 
@@ -115,13 +117,10 @@ template<> void GenStmnt_MovePartT<GDCC::IR::Arg_Lit>(
       {
          arg.data->genStmnt(ctx);
 
-         IR::Code code;
-         switch(arg.type->getSizeWords())
+         auto code = IR::ExpCode_Move(arg.type->getSizeWords());
+
+         if(code == IR::Code::None)
          {
-         case  1: code = IR::Code::Move_W;  break;
-         case  2: code = IR::Code::Move_W2; break;
-         case  3: code = IR::Code::Move_W3; break;
-         default:
             std::cerr << "STUB: " << exp->pos << ": " << __FILE__ << ':'
                << __LINE__ << ": AddrBase::Lit get multi-word > 3\n";
             throw EXIT_FAILURE;

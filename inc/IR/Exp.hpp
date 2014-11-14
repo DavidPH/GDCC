@@ -199,6 +199,8 @@ namespace GDCC
       Exp::CRef ExpCreate_Value(Value const &value, Core::Origin pos);
       Exp::CRef ExpCreate_Value(Value &&value, Core::Origin pos);
 
+      Exp::CRef ExpCreate_Zero();
+
       Exp::CRef ExpGetIR_Array(IArchive &in);
       Exp::CRef ExpGetIR_Assoc(IArchive &in);
       Exp::CRef ExpGetIR_Glyph(IArchive &in);

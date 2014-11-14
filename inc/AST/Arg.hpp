@@ -28,6 +28,8 @@ namespace GDCC
    namespace IR
    {
       enum class AddrBase;
+
+      class Arg;
    }
 
    namespace AST
@@ -50,6 +52,10 @@ namespace GDCC
          Arg(Type const *type, Exp const *data);
          Arg(Type const *type, IR::AddrBase base, Exp const *data = nullptr);
          ~Arg();
+
+         IR::Arg getIRArg() const;
+
+         bool isIRArg() const;
 
          TypeCRef type;
          ExpCPtr  data;

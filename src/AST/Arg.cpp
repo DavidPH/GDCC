@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,10 @@
 
 #include "AST/Exp.hpp"
 #include "AST/Type.hpp"
+
+#include "Core/Exception.hpp"
+
+#include "IR/Arg.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -49,7 +53,7 @@ namespace GDCC
       // Arg constructor
       //
       Arg::Arg(Type const *type_, IR::AddrBase base, Exp const *data_) :
-         type{type_->getTypeQual(TypeQual(IR::AddrSpace(base, Core::STR_)))},
+         type{type_->getTypeQual({{base, Core::STR_}})},
          data{data_}
       {
       }
@@ -59,6 +63,57 @@ namespace GDCC
       //
       Arg::~Arg()
       {
+      }
+
+      //
+      // Arg::getIRArg
+      //
+      IR::Arg Arg::getIRArg() const
+      {
+         switch(type->getQualAddr().base)
+         {
+         case IR::AddrBase::Lit:
+            return IR::Arg_Lit(data->getIRExp());
+
+         case IR::AddrBase::LocReg:
+            return IR::Arg_LocReg(IR::Arg_Lit(data->getIRExp()));
+
+         case IR::AddrBase::Stk:
+            return IR::Arg_Stk();
+
+         default:
+            break;
+         }
+
+         // Callers should always check isIRArg, so this should never get
+         // invoked. But if it does, any possible source position could help.
+         if(data)
+            throw Core::ExceptStr(data->pos, "bad Arg::getIRArg");
+         else
+            throw Core::ExceptStr({nullptr, 0}, "bad Arg::getIRArg");
+      }
+
+      //
+      // Arg::isIRArg
+      //
+      bool Arg::isIRArg() const
+      {
+         // Using an IR Arg may bypass strict interpretation.
+         if(type->getQualVola())
+            return false;
+
+         switch(type->getQualAddr().base)
+         {
+         case IR::AddrBase::Lit:
+         case IR::AddrBase::LocReg:
+            return data->isIRExp();
+
+         case IR::AddrBase::Stk:
+            return true;
+
+         default:
+            return false;
+         }
       }
    }
 }
