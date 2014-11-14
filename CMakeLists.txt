@@ -40,7 +40,7 @@ function(GDCC_INSTALL_PART name wantExe wantLib)
             LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib
          )
-      else()
+      elseif(GDCC_SHARED)
          install(TARGETS gdcc-${name}-lib
             RUNTIME DESTINATION bin
             LIBRARY DESTINATION lib
