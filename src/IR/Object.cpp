@@ -61,12 +61,14 @@ namespace GDCC
          if(!value && Platform::IsZeroNull_Point(space.base))
             value = 1;
 
-         for(;; ++value)
+         auto objRange = prog.rangeObject();
+
+         for(;;)
          {
             auto lo = value;
             auto hi = words + lo;
 
-            for(auto const &obj : prog.rangeObject())
+            for(auto const &obj : objRange)
             {
                if(obj.alloc || &obj == this || obj.space != space)
                   continue;
@@ -74,15 +76,19 @@ namespace GDCC
                auto objLo = obj.value;
                auto objHi = obj.words + objLo;
 
-               if((objLo <= lo && lo < objHi) || (objLo < hi && hi < objHi))
+               if((objLo <= lo && lo < objHi) || (objLo < hi && hi < objHi) ||
+                  (lo <= objLo && objLo < hi) || (lo < objHi && objHi < hi))
+               {
+                  value = objHi;
                   goto nextValue;
-
-               if((lo <= objLo && objLo < hi) || (lo < objHi && objHi < hi))
-                  goto nextValue;
+               }
             }
 
             if(test && test(prog, *this))
+            {
+               ++value;
                goto nextValue;
+            }
 
             break;
 
