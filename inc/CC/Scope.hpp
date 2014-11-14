@@ -14,6 +14,7 @@
 #define GDCC__CC__Scope_H__
 
 #include "../Core/Counter.hpp"
+#include "../Core/Number.hpp"
 #include "../Core/String.hpp"
 
 #include <unordered_map>
@@ -46,6 +47,7 @@ namespace GDCC
       class Lookup
       {
       public:
+         using ResultEnum  = Core::Integ const *;
          using ResultFunc  = Core::CounterRef<AST::Function>;
          using ResultObj   = Core::CounterRef<AST::Object>;
          using ResultSpace = Core::CounterRef<AST::Space>;
@@ -57,6 +59,7 @@ namespace GDCC
          enum Result
          {
             None,
+            Enum,
             Func,
             Obj,
             Space,
@@ -64,12 +67,13 @@ namespace GDCC
          };
 
 
-         Lookup() : res{None} {}
+         Lookup(std::nullptr_t = nullptr) : res{None} {}
          Lookup(Lookup const &lookup);
-         explicit Lookup(AST::Function   *func);
-         explicit Lookup(AST::Object     *obj);
-         explicit Lookup(AST::Space      *space);
-         explicit Lookup(AST::Type const *type);
+         explicit Lookup(Core::Integ const *e);
+         explicit Lookup(AST::Function     *func);
+         explicit Lookup(AST::Object       *obj);
+         explicit Lookup(AST::Space        *space);
+         explicit Lookup(AST::Type   const *type);
          ~Lookup();
 
          explicit operator bool () const {return res != None;}
@@ -81,6 +85,7 @@ namespace GDCC
 
          union
          {
+            ResultEnum  resEnum;
             ResultFunc  resFunc;
             ResultObj   resObj;
             ResultSpace resSpace;
@@ -106,10 +111,14 @@ namespace GDCC
          void add(Core::String name, AST::Space      *space);
          void add(Core::String name, AST::Type const *type);
 
+         void addEnum(Core::String name, Core::Integ const &e);
+
          void addTypeTag(Core::String name, AST::Type *type);
 
          // Searches this scope for the identifier.
          Lookup find(Core::String name) const;
+
+         Core::Integ const *findEnum(Core::String name) const;
 
          Core::CounterPtr<AST::Function> findFunction(Core::String name) const;
 
@@ -140,6 +149,8 @@ namespace GDCC
          explicit Scope(Scope *parent);
          Scope(Scope *parent, Scope_Global &global);
          virtual ~Scope();
+
+         std::unordered_map<Core::String, Core::Integ> tableEnum;
 
          LookupTable<AST::Function>   tableFunc;
          LookupTable<AST::Object>     tableObj;

@@ -84,6 +84,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    Type.cpp
    Type/Bool.cpp
    Type/Char.cpp
+   Type/Enum.cpp
    Type/Fixed.cpp
    Type/Float.cpp
    Type/Struct.cpp
@@ -126,6 +127,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    ../../inc/CC/Type.hpp
    ../../inc/CC/Type/Bool.hpp
    ../../inc/CC/Type/Char.hpp
+   ../../inc/CC/Type/Enum.hpp
    ../../inc/CC/Type/Fixed.hpp
    ../../inc/CC/Type/Float.hpp
    ../../inc/CC/Type/Struct.hpp

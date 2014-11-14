@@ -225,6 +225,9 @@ namespace GDCC
 
          if(auto lookup = scope.lookup(tok.str)) switch(lookup.res)
          {
+         case Lookup::Enum:
+            return ExpCreate_LitInt(TypeIntegPrS, *lookup.resEnum, tok.pos);
+
          case Lookup::Func:
             return ExpCreate_Func(ctx.prog, lookup.resFunc, tok.pos);
 

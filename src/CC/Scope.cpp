@@ -34,11 +34,19 @@ namespace GDCC
          switch(res)
          {
          case None:                                               break;
+         case Enum:  new(&resEnum)  ResultEnum (lookup.resEnum);  break;
          case Func:  new(&resFunc)  ResultFunc (lookup.resFunc);  break;
          case Obj:   new(&resObj)   ResultObj  (lookup.resObj);   break;
          case Space: new(&resSpace) ResultSpace(lookup.resSpace); break;
          case Type:  new(&resType)  ResultType (lookup.resType);  break;
          }
+      }
+
+      //
+      // Lookup constructor
+      //
+      Lookup::Lookup(Core::Integ const *e) : res{Enum}, resEnum{e}
+      {
       }
 
       //
@@ -77,6 +85,7 @@ namespace GDCC
          switch(res)
          {
          case None:                           break;
+         case Enum:  resEnum .~ResultEnum (); break;
          case Func:  resFunc .~ResultFunc (); break;
          case Obj:   resObj  .~ResultObj  (); break;
          case Space: resSpace.~ResultSpace(); break;
@@ -92,6 +101,7 @@ namespace GDCC
          if(res == lookup.res) switch(res)
          {
          case None:                              break;
+         case Enum:  resEnum  = lookup.resEnum;  break;
          case Func:  resFunc  = lookup.resFunc;  break;
          case Obj:   resObj   = lookup.resObj;   break;
          case Space: resSpace = lookup.resSpace; break;
@@ -172,6 +182,16 @@ namespace GDCC
       }
 
       //
+      // Scope::addEnum
+      //
+      void Scope::addEnum(Core::String name, Core::Integ const &e)
+      {
+         tableEnum.emplace(std::piecewise_construct,
+            std::forward_as_tuple(name),
+            std::forward_as_tuple(e));
+      }
+
+      //
       // Scope::addTypeTag
       //
       void Scope::addTypeTag(Core::String name, AST::Type *type)
@@ -189,12 +209,22 @@ namespace GDCC
          // The order of lookup here is unimportant, duplicate names produce
          // behavior beyond the specification of C.
 
+         if(auto e     = findEnum(name))     return Lookup(e);
          if(auto fn    = findFunction(name)) return Lookup(fn);
          if(auto obj   = findObject(name))   return Lookup(obj);
          if(auto space = findSpace(name))    return Lookup(space);
          if(auto type  = findType(name))     return Lookup(type);
 
          return Lookup();
+      }
+
+      //
+      // Scope::findEnum
+      //
+      Core::Integ const *Scope::findEnum(Core::String name) const
+      {
+         auto e = tableEnum.find(name);
+         return e == tableEnum.end() ? nullptr : &e->second;
       }
 
       //
