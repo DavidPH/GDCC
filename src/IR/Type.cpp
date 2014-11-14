@@ -110,36 +110,36 @@ namespace GDCC
       //
       Core::Integ &Type_Fixed::clamp(Core::Integ &value)
       {
-         Core::Integ max = 1; max <<= bitsF + bitsI; --max;
+         Core::Integ max = 1; max <<= bitsF + bitsI;
 
          if(bitsS)
          {
-            Core::Integ min = -max - 1;
+            Core::Integ min = -max;
 
             if(satur)
             {
-               if(value > max) value = max;
-               if(value < min) value = min;
+               if(value >= max) value = max, --value;
+               if(value <  min) value = min;
             }
             else
             {
                Core::Integ rng = max - min;
 
-               while(value > max) value -= rng;
-               while(value < min) value += rng;
+               while(value >= max) value -= rng;
+               while(value <  min) value += rng;
             }
          }
          else
          {
             if(satur)
             {
-               if(value > max) value = max;
-               if(value < 0)   value = 0;
+               if(value >= max) value = max, --value;
+               if(value <  0)   value = 0;
             }
             else
             {
-               while(value > max) value -= max;
-               while(value < 0)   value += max;
+               while(value >= max) value -= max;
+               while(value <  0)   value += max;
             }
          }
 
