@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,7 +39,14 @@ namespace GDCC
       class Pragma
       {
       public:
+         // Processes a pragma directive.
          virtual bool pragma(Core::TokenStream &in) = 0;
+
+         // Drops a scope layer.
+         virtual void pragmaDrop() = 0;
+
+         // Adds a scope layer.
+         virtual void pragmaPush() = 0;
       };
 
       //
@@ -49,25 +56,42 @@ namespace GDCC
       class PragmaVA final : public Pragma, public Pragmas...
       {
       public:
-         //
          // pragma
-         //
          virtual bool pragma(Core::TokenStream &in)
-         {
-            return pragmaVA<Pragmas...>::Pragma(this, in);
-         }
+            {return PI<Pragmas...>::Pragma(this, in);}
+
+         // pragmaDrop
+         virtual void pragmaDrop()
+            {PI<Pragmas...>::PragmaDrop(this);}
+
+         // pragmaPush
+         virtual void pragmaPush()
+            {PI<Pragmas...>::PragmaPush(this);}
 
       private:
-         // Variadic template "iteration" to implement pragma function.
-         template<typename Pragma0, typename... PragmaV> struct pragmaVA
+         // Variadic template "iteration" to implement pragma functions.
+         template<typename P0, typename... PV> struct PI
          {
-            static bool Pragma(PragmaVA<Pragmas...> *prag, Core::TokenStream &in)
-               {return prag->Pragma0::pragma(in) || pragmaVA<PragmaV...>::Pragma(prag, in);}
+            static bool Pragma(PragmaVA<Pragmas...> *p, Core::TokenStream &in)
+               {return p->P0::pragma(in) || PI<PV...>::Pragma(p, in);}
+
+            static void PragmaDrop(PragmaVA<Pragmas...> *p)
+               {p->P0::pragmaDrop(); PI<PV...>::PragmaDrop(p);}
+
+            static void PragmaPush(PragmaVA<Pragmas...> *p)
+               {p->P0::pragmaPush(); PI<PV...>::PragmaPush(p);}
          };
-         template<typename Pragma0> struct pragmaVA<Pragma0>
+
+         template<typename P0> struct PI<P0>
          {
-            static bool Pragma(PragmaVA<Pragmas...> *prag, Core::TokenStream &in)
-               {return prag->Pragma0::pragma(in);}
+            static bool Pragma(PragmaVA<Pragmas...> *p, Core::TokenStream &in)
+               {return p->P0::pragma(in);}
+
+            static void PragmaDrop(PragmaVA<Pragmas...> *p)
+               {p->P0::pragmaDrop();}
+
+            static void PragmaPush(PragmaVA<Pragmas...> *p)
+               {p->P0::pragmaPush();}
          };
       };
 
@@ -80,6 +104,9 @@ namespace GDCC
       {
       public:
          bool pragma(Core::TokenStream &in);
+
+         void pragmaDrop() {}
+         void pragmaPush() {}
 
          std::vector<Core::String> pragmaACS_library;
       };
@@ -100,9 +127,17 @@ namespace GDCC
 
          bool pragma(Core::TokenStream &in);
 
+         void pragmaDrop();
+         void pragmaPush();
+
          bool pragmaSTDC_CXLimitedRange;
          bool pragmaSTDC_FEnvAccess;
          bool pragmaSTDC_FPContract;
+
+      private:
+         std::vector<bool> pragmaSTDC_CXLimitedRange_Stack;
+         std::vector<bool> pragmaSTDC_FEnvAccess_Stack;
+         std::vector<bool> pragmaSTDC_FPContract_Stack;
       };
 
       //
@@ -114,6 +149,9 @@ namespace GDCC
       {
       public:
          bool pragma(Core::TokenStream &in);
+
+         void pragmaDrop() {}
+         void pragmaPush() {}
       };
 
       using PragmaLangC = PragmaVA<PragmaACS, PragmaSTDC, PragmaTest>;

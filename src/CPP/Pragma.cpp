@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -25,57 +25,25 @@
 // Static Functions                                                           |
 //
 
-//
-// EffIt
-//
-// Sometimes, one just cannot be arsed to figure out how to write some code.
-//
-static void EffIt()
+namespace GDCC
 {
-   // Seed RNG.
+   namespace CPP
    {
-      unsigned int seed = 0;
+      //
+      // PragmaOnOff
+      //
+      static void PragmaOnOff(bool &pragma, bool def, Core::TokenStream &in)
+      {
+         in.drop(Core::TOK_WSpace);
 
-      union {std::time_t time; unsigned char data[sizeof(time)];};
-
-      std::time(&time);
-
-      for(unsigned char c : data) if(c)
-         seed = (seed << (sizeof(seed) * CHAR_BIT / sizeof(time))) + c;
-
-      std::srand(seed);
-   }
-
-   // Print warning.
-   static char const *const msg[] =
-   {
-      "Program will now crash.",
-      "This is all your fault!",
-      "I trusted you!",
-      "Instead of ignoring your pragma, I'ma segfault.",
-      "I'm afraid I can't let you do that.",
-   };
-
-   std::cerr << "Warning: Unknown pragma. "
-      << msg[std::rand() % (sizeof(msg) / sizeof(*msg))] << std::endl;
-
-   // Fuck it.
-   std::raise(SIGSEGV);
-}
-
-//
-// PragmaOnOff
-//
-static void PragmaOnOff(bool &pragma, bool def, GDCC::Core::TokenStream &in)
-{
-   in.drop(GDCC::Core::TOK_WSpace);
-
-   switch(static_cast<GDCC::Core::StringIndex>(in.get().str))
-   {
-   case GDCC::Core::STR_DEFAULT: pragma = def;   break;
-   case GDCC::Core::STR_OFF:     pragma = false; break;
-   case GDCC::Core::STR_ON:      pragma = true;  break;
-   default: break;
+         switch(in.get().str)
+         {
+         case Core::STR_DEFAULT: pragma = def;   break;
+         case Core::STR_OFF:     pragma = false; break;
+         case Core::STR_ON:      pragma = true;  break;
+         default: break;
+         }
+      }
    }
 }
 
@@ -99,7 +67,7 @@ namespace GDCC
 
          if(in.peek().tok != Core::TOK_Identi) return true;
 
-         switch(static_cast<Core::StringIndex>(in.get().str))
+         switch(in.get().str)
          {
          case Core::STR_library:
             in.drop(Core::TOK_WSpace);
@@ -126,12 +94,12 @@ namespace GDCC
       bool PragmaSTDC::pragma(Core::TokenStream &in)
       {
          in.drop(Core::TOK_WSpace);
-         if(!in.drop(Core::TOK_Identi, Core::STR_ACS)) return false;
+         if(!in.drop(Core::TOK_Identi, Core::STR_STDC)) return false;
          in.drop(Core::TOK_WSpace);
 
          if(in.peek().tok != Core::TOK_Identi) return true;
 
-         switch(static_cast<Core::StringIndex>(in.get().str))
+         switch(in.get().str)
          {
          case Core::STR_CX_LIMITED_RANGE:
             PragmaOnOff(pragmaSTDC_CXLimitedRange, true, in);
@@ -152,16 +120,42 @@ namespace GDCC
       }
 
       //
+      // PragmaSTDC::pragmaDrop
+      //
+      void PragmaSTDC::pragmaDrop()
+      {
+         if(pragmaSTDC_CXLimitedRange_Stack.empty()) return;
+
+         pragmaSTDC_CXLimitedRange_Stack.pop_back();
+         pragmaSTDC_FEnvAccess_Stack.pop_back();
+         pragmaSTDC_FPContract_Stack.pop_back();
+      }
+
+      //
+      // PragmaSTDC::pragmaPush
+      //
+      void PragmaSTDC::pragmaPush()
+      {
+         pragmaSTDC_CXLimitedRange_Stack.emplace_back(pragmaSTDC_CXLimitedRange);
+         pragmaSTDC_FEnvAccess_Stack.emplace_back(pragmaSTDC_FEnvAccess);
+         pragmaSTDC_FPContract_Stack.emplace_back(pragmaSTDC_FPContract);
+      }
+
+      //
       // PragmaTest::pragma
       //
       bool PragmaTest::pragma(Core::TokenStream &in)
       {
          // This test pragma brought to you by drinking. And MageofMystra.
+         // Please do not drink and MageofMystra.
          in.drop(Core::TOK_WSpace);
          if(!in.drop(Core::TOK_Identi, Core::STR_fuck)) return false;
          in.drop(Core::TOK_WSpace);
          if(!in.drop(Core::TOK_Identi, Core::STR_it)) return true;
-         EffIt();
+
+         std::cerr << "Warning: Unknown pragma." << std::endl;
+         // Fuck it.
+         std::raise(SIGSEGV);
 
          return true;
       }

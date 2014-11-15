@@ -99,7 +99,8 @@ namespace GDCC
             Core::String file, Core::String dir) :
             IncStream{buf_, macros, pragma, file, dir},
             mbuf{pbuf, macros},
-            sbuf{mbuf},
+            pubf{mbuf, pragma},
+            sbuf{pubf},
             cbuf{sbuf}
          {
             tkbuf(&cbuf);
@@ -107,10 +108,12 @@ namespace GDCC
 
       protected:
          using MBuf = MacroTBuf;
+         using PuBf = PragmaPushTBuf;
          using SBuf = StringTBuf;
          using CBuf = ConcatTBuf;
 
          MBuf mbuf;
+         PuBf pubf;
          SBuf sbuf;
          CBuf cbuf;
       };

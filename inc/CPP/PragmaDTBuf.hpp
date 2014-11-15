@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -41,13 +41,30 @@ namespace GDCC
       };
 
       //
+      // PragmaPushTBuf
+      //
+      class PragmaPushTBuf final : public Core::TokenBuf
+      {
+      public:
+         explicit PragmaPushTBuf(Core::TokenBuf &src_, Pragma &prag_) :
+            src(src_), prag(prag_) {sett(buf, buf, buf);}
+
+      protected:
+         virtual void underflow();
+
+         Core::TokenBuf &src;
+         Pragma         &prag;
+         Core::Token     buf[1];
+      };
+
+      //
       // PragmaTBuf
       //
       class PragmaTBuf final : public Core::TokenBuf
       {
       public:
          explicit PragmaTBuf(Core::TokenBuf &src_, Pragma &prag_) :
-            src(src_), prag(prag_), buf{Core::TokenEOF} {sett(buf, buf + 1, buf + 1);}
+            src(src_), prag(prag_) {sett(buf, buf, buf);}
 
       protected:
          virtual void underflow();

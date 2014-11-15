@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -53,6 +53,22 @@ namespace GDCC
          prag.pragma(in);
 
          return true;
+      }
+
+      //
+      // PragmaPushTBuf::underflow
+      //
+      void PragmaPushTBuf::underflow()
+      {
+         if(tptr() != tend()) return;
+
+         if((buf[0] = src.get()).tok == Core::TOK_BraceO)
+            prag.pragmaPush();
+
+         else if(buf[0].tok == Core::TOK_BraceC)
+            prag.pragmaDrop();
+
+         sett(buf, buf, buf + 1);
       }
 
       //
