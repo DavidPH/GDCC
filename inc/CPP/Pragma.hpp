@@ -112,6 +112,31 @@ namespace GDCC
       };
 
       //
+      // PragmaGDCC
+      //
+      class PragmaGDCC
+      {
+      public:
+         PragmaGDCC() :
+            pragmaGDCC_FixedLiteral{false},
+            pragmaGDCC_StrEntLiteral{false}
+         {
+         }
+
+         bool pragma(Core::TokenStream &in);
+
+         void pragmaDrop();
+         void pragmaPush();
+
+         bool pragmaGDCC_FixedLiteral;
+         bool pragmaGDCC_StrEntLiteral;
+
+      private:
+         std::vector<bool> pragmaGDCC_FixedLiteral_Stack;
+         std::vector<bool> pragmaGDCC_StrEntLiteral_Stack;
+      };
+
+      //
       // PragmaSTDC
       //
       // Handles #pragma STDC ...
@@ -154,7 +179,11 @@ namespace GDCC
          void pragmaPush() {}
       };
 
-      using PragmaLangC = PragmaVA<PragmaACS, PragmaSTDC, PragmaTest>;
+      using PragmaLangC = PragmaVA<
+         PragmaACS,
+         PragmaGDCC,
+         PragmaSTDC,
+         PragmaTest>;
    }
 }
 

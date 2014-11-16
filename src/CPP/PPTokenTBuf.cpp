@@ -195,6 +195,12 @@ namespace GDCC
 
          itr = SkipFlt(itr, end);
 
+         // Alternative suffix syntax for FIXED_LITERAL pragma.
+         auto upr = [&itr](std::size_t i) {return std::toupper(itr[i]);};
+
+         if(end - itr == 2 && upr(0) == 'L' && upr(1) == 'F') return true;
+         if(end - itr == 3 && upr(0) == 'L' && itr[1] == itr[0] && upr(2) == 'F') return true;
+
          // floating-suffix(opt)
          if(itr == end) return true;
          return (*itr == 'F' || *itr == 'f' || *itr == 'L' || *itr == 'l') && ++itr == end;

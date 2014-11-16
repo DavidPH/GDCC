@@ -430,6 +430,50 @@ Semantics:
   list.
 
 ===============================================================================
+Pragma Directives
+===============================================================================
+
+===========================================================
+ACS library
+===========================================================
+
+Syntax:
+  # <pragma> <ACS> <library> string-literal
+
+Semantics:
+  Specifies a library to link with at load-time.
+
+===========================================================
+GDCC FIXED_LITERAL
+===========================================================
+
+Syntax:
+  # <pragma> <GDCC> <FIXED_LITERAL> on-off-switch
+
+Semantics:
+  When in effect, floating constants that do not end with F or f are treated as
+  having _Accum type. Additionally, the suffix of floating constants may
+  include L, l, LL, or ll to have double or long double type.
+
+  When not in effect, floating constants are handled normally.
+
+  Follows the same scoping rules as STDC pragmas. The default state is OFF.
+
+===========================================================
+GDCC STRENT_LITERAL
+===========================================================
+
+Syntax:
+  # <pragma> <GDCC> <STRENT_LITERAL> on-off-switch
+
+Semantics:
+  When in effect, unprefixed string literals have type __str_ent*.
+
+  When not in effect, string literals are handled normally.
+
+  Follows the same scoping rules as STDC pragmas. The default state is OFF.
+
+===============================================================================
 Grammar
 ===============================================================================
 
@@ -552,6 +596,12 @@ Grammar
 
   asm-statement:
     <__asm> ( string-literal ) ;
+
+  # <pragma> <ACS> <library> string-literal
+
+  # <pragma> <GDCC> <FIXED_LITERAL> on-off-switch
+
+  # <pragma> <GDCC> <STRENT_LITERAL> on-off-switch
 
 ###############################################################################
 EOF

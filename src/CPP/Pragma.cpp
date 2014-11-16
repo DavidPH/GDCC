@@ -89,6 +89,56 @@ namespace GDCC
       }
 
       //
+      // PragmaGDCC::pragma
+      //
+      bool PragmaGDCC::pragma(Core::TokenStream &in)
+      {
+         in.drop(Core::TOK_WSpace);
+         if(!in.drop(Core::TOK_Identi, Core::STR_GDCC)) return false;
+         in.drop(Core::TOK_WSpace);
+
+         if(in.peek().tok != Core::TOK_Identi) return true;
+
+         switch(in.get().str)
+         {
+         case Core::STR_FIXED_LITERAL:
+            PragmaOnOff(pragmaGDCC_FixedLiteral, false, in);
+            break;
+
+         case Core::STR_STRENT_LITERAL:
+            PragmaOnOff(pragmaGDCC_StrEntLiteral, false, in);
+            break;
+
+         default: break;
+         }
+
+         return true;
+      }
+
+      //
+      // PragmaGDCC::pragmaDrop
+      //
+      void PragmaGDCC::pragmaDrop()
+      {
+         if(pragmaGDCC_FixedLiteral_Stack.empty()) return;
+
+         pragmaGDCC_FixedLiteral  = pragmaGDCC_FixedLiteral_Stack.back();
+         pragmaGDCC_StrEntLiteral = pragmaGDCC_StrEntLiteral_Stack.back();
+
+         pragmaGDCC_FixedLiteral_Stack.pop_back();
+         pragmaGDCC_StrEntLiteral_Stack.pop_back();
+      }
+
+      //
+      // PragmaGDCC::pragmaPush
+      //
+      void PragmaGDCC::pragmaPush()
+      {
+         pragmaGDCC_FixedLiteral_Stack.emplace_back(pragmaGDCC_FixedLiteral);
+         pragmaGDCC_StrEntLiteral_Stack.emplace_back(pragmaGDCC_StrEntLiteral);
+      }
+
+      //
       // PragmaSTDC::pragma
       //
       bool PragmaSTDC::pragma(Core::TokenStream &in)
@@ -125,6 +175,10 @@ namespace GDCC
       void PragmaSTDC::pragmaDrop()
       {
          if(pragmaSTDC_CXLimitedRange_Stack.empty()) return;
+
+         pragmaSTDC_CXLimitedRange = pragmaSTDC_CXLimitedRange_Stack.back();
+         pragmaSTDC_FEnvAccess     = pragmaSTDC_FEnvAccess_Stack.back();
+         pragmaSTDC_FPContract     = pragmaSTDC_FPContract_Stack.back();
 
          pragmaSTDC_CXLimitedRange_Stack.pop_back();
          pragmaSTDC_FEnvAccess_Stack.pop_back();

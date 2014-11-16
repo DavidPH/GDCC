@@ -42,6 +42,7 @@ namespace GDCC
    namespace CPP
    {
       class Pragma;
+      class PragmaGDCC;
    }
 
    namespace IR
@@ -62,23 +63,26 @@ namespace GDCC
       class ParserCtx
       {
       public:
-         ParserCtx(Core::TokenStream &in_, CPP::Pragma &prag_,
-            IR::Program &prog_) :
-            in(in_),
-            prag(prag_),
-            prog(prog_)
+         template<typename Prag>
+         ParserCtx(Core::TokenStream &in_, Prag &prag_, IR::Program &prog_) :
+            in      (in_),
+            prag    (prag_),
+            pragGDCC(prag_),
+            prog    (prog_)
          {
          }
 
          ParserCtx(ParserCtx const &data, Core::TokenStream &in_) :
-            in(in_),
-            prag(data.prag),
-            prog(data.prog)
+            in      (in_),
+            prag    (data.prag),
+            pragGDCC(data.pragGDCC),
+            prog    (data.prog)
          {
          }
 
          Core::TokenStream &in;
          CPP::Pragma       &prag;
+         CPP::PragmaGDCC   &pragGDCC;
          IR::Program       &prog;
       };
 

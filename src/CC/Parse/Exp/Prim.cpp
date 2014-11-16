@@ -20,6 +20,8 @@
 #include "AST/Object.hpp"
 #include "AST/Type.hpp"
 
+#include "CPP/Pragma.hpp"
+
 #include "Core/Array.hpp"
 #include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
@@ -323,8 +325,15 @@ namespace GDCC
       //
       // GetExp_Prim_NumFlt
       //
-      static AST::Exp::CRef GetExp_Prim_NumFlt(ParserCtx const &ctx, Scope &)
+      static AST::Exp::CRef GetExp_Prim_NumFlt(ParserCtx const &ctx, Scope &scope)
       {
+         // Check if this should be treated as a fixed-point literal.
+         if(ctx.pragGDCC.pragmaGDCC_FixedLiteral) switch(ctx.in.peek().str.back())
+         {
+         case 'F': case 'f': break;
+         default: return GetExp_Prim_NumFix(ctx, scope);
+         }
+
          auto tok = ctx.in.get();
 
          // Get prefix.
@@ -339,9 +348,22 @@ namespace GDCC
          // Get suffix.
          int l;
 
-              if(*itr == 'F' || *itr == 'f') l =  0, ++itr;
-         else if(*itr == 'L' || *itr == 'l') l = +2, ++itr;
-         else                                l = +1;
+         // If FIXED_LITERAL is in effect, allow alternative suffix syntax.
+         if(ctx.pragGDCC.pragmaGDCC_FixedLiteral)
+         {
+            if(*itr == 'L' || *itr == 'l')
+               l = itr[1] == itr[0] ? ++itr, 2 : 1, ++itr;
+            else
+               l = 0;
+
+            if(*itr == 'F' || *itr == 'f') ++itr;
+         }
+         else
+         {
+                 if(*itr == 'F' || *itr == 'f') l =  0, ++itr;
+            else if(*itr == 'L' || *itr == 'l') l = +2, ++itr;
+            else                                l = +1;
+         }
 
          // Must be end of string.
          if(itr != end)
@@ -352,9 +374,9 @@ namespace GDCC
 
          switch(l)
          {
-         case  0: type = TypeFloatRS;
-         case +1: type = TypeFloatRSL;
-         case +2: type = TypeFloatRSLL;
+         case  0: type = TypeFloatRS;   break;
+         case +1: type = TypeFloatRSL;  break;
+         case +2: type = TypeFloatRSLL; break;
          }
 
          // Create expression.
@@ -488,7 +510,10 @@ namespace GDCC
       {
          auto tok = ctx.in.get();
 
-         return ExpCreate_String(ctx.prog, scope, tok.str, tok.pos);
+         if(ctx.pragGDCC.pragmaGDCC_StrEntLiteral)
+            return ExpCreate_StrIdx(ctx.prog, scope, tok.str, tok.pos);
+         else
+            return ExpCreate_String(ctx.prog, scope, tok.str, tok.pos);
       }
    }
 }
