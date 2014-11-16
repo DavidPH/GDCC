@@ -68,6 +68,15 @@ namespace GDCC
       }
 
       //
+      // Type_Enum::getRankC
+      //
+      AST::TypeRankC Type_Enum::getRankC() const
+      {
+         if(!data.complete) throw AST::TypeError();
+         return data.type->getRankC();
+      }
+
+      //
       // Type_Enum::getIRType
       //
       IR::Type Type_Enum::getIRType() const

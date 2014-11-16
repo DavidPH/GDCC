@@ -54,6 +54,7 @@ namespace GDCC
                  Data  const &getData()      const {return data;}
          virtual IR::Type     getIRType()    const;
          virtual Core::String getName()      const;
+         virtual RankC        getRankC()     const;
          virtual Core::FastU  getSizeAlign() const;
          virtual Core::FastU  getSizeBitsF() const;
          virtual Core::FastU  getSizeBitsI() const;
