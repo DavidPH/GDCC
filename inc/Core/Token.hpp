@@ -51,6 +51,7 @@ namespace GDCC
          TOK_NumFlt,
          TOK_NumInt,
          TOK_Number,
+         TOK_StrChr,
          TOK_StrIdx,
          TOK_StrU08,
          TOK_StrU16,

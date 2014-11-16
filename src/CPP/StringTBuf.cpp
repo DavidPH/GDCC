@@ -70,6 +70,8 @@ namespace GDCC
                   buf[0].tok = Core::TOK_StrU16, o = 1;
                else if(s[0] == 'u' && s[1] == '8' && s[2] == '"')
                   buf[0].tok = Core::TOK_StrU08, o = 2;
+               else if(s[0] == 'c' && s[1] == '"')
+                  buf[0].tok = Core::TOK_StrChr, o = 1;
                else if(s[0] == 's' && s[1] == '"')
                   buf[0].tok = Core::TOK_StrIdx, o = 1;
                else

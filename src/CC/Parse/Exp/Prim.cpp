@@ -464,6 +464,16 @@ namespace GDCC
       }
 
       //
+      // GetExp_Prim_StrChr
+      //
+      static AST::Exp::CRef GetExp_Prim_StrChr(ParserCtx const &ctx, Scope &scope)
+      {
+         auto tok = ctx.in.get();
+
+         return ExpCreate_String(ctx.prog, scope, tok.str, tok.pos);
+      }
+
+      //
       // GetExp_Prim_StrIdx
       //
       static AST::Exp::CRef GetExp_Prim_StrIdx(ParserCtx const &ctx, Scope &scope)
@@ -543,6 +553,7 @@ namespace GDCC
          case Core::TOK_NumFix: return GetExp_Prim_NumFix(ctx, scope);
          case Core::TOK_NumFlt: return GetExp_Prim_NumFlt(ctx, scope);
          case Core::TOK_NumInt: return GetExp_Prim_NumInt(ctx, scope);
+         case Core::TOK_StrChr: return GetExp_Prim_StrChr(ctx, scope);
          case Core::TOK_StrIdx: return GetExp_Prim_StrIdx(ctx, scope);
          case Core::TOK_StrU08: return GetExp_Prim_StrU08(ctx, scope);
          case Core::TOK_StrU16: return GetExp_Prim_StrU16(ctx, scope);
