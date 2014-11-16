@@ -28,6 +28,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    Exp/Cmp.cpp
    Exp/Convert/BoolSoft.cpp
    Exp/Convert/Pointer.cpp
+   Exp/Convert/Void.cpp
    Exp/Deref.cpp
    Exp/Div.cpp
    Exp/Func.cpp
@@ -98,6 +99,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    ../../inc/CC/Exp/Cmp.hpp
    ../../inc/CC/Exp/Convert/BoolSoft.hpp
    ../../inc/CC/Exp/Convert/Pointer.hpp
+   ../../inc/CC/Exp/Convert/Void.hpp
    ../../inc/CC/Exp/Deref.hpp
    ../../inc/CC/Exp/Func.hpp
    ../../inc/CC/Exp/GenSel.hpp

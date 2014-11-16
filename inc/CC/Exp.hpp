@@ -87,6 +87,9 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpConvert_PtrArith(AST::Type const *t,
          AST::Exp const *e, Core::Origin pos);
 
+      Core::CounterRef<AST::Exp const> ExpConvert_Void(AST::Type const *t,
+         AST::Exp const *e, Core::Origin pos);
+
       Core::CounterRef<AST::Exp const> ExpCreate_Add(AST::Exp const *e,
          Core::Origin pos);
 

@@ -163,6 +163,9 @@ namespace GDCC
          if(typeL->getTypeQual() == typeR->getTypeQual())
             return static_cast<AST::Exp::CRef>(exp);
 
+         if(typeL->isTypeVoid())
+            return ExpConvert_Void(typeL, exp, pos);
+
          if(typeL->isTypeBoolean())
             return ExpConvert_Bool(typeL, exp, pos);
 
