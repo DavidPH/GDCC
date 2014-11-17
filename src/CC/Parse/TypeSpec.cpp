@@ -717,6 +717,23 @@ namespace GDCC
 
             break;
 
+         case BaseDivT:
+            if(specCplx) throw Core::ExceptStr(pos, "complex div_t");
+            if(specImag) throw Core::ExceptStr(pos, "imaginary div_t");
+            if(specSatu) throw Core::ExceptStr(pos, "sat div_t");
+            if(specShrt) throw Core::ExceptStr(pos, "short div_t");
+
+            switch(specLong)
+            {
+            case 0: attr.type = specUnsi ? TypeIntegPrU   : TypeIntegPrS;   break;
+            case 1: attr.type = specUnsi ? TypeIntegPrUL  : TypeIntegPrSL;  break;
+            case 2: attr.type = specUnsi ? TypeIntegPrULL : TypeIntegPrSLL; break;
+            }
+
+            attr.type = Type_Div::Get(attr.type);
+
+            break;
+
          case BaseLabl:
             if(specCplx) throw Core::ExceptStr(pos, "complex label");
             if(specImag) throw Core::ExceptStr(pos, "imaginary label");
@@ -785,6 +802,7 @@ namespace GDCC
          switch(tok.str)
          {
             // type-specifier
+         case Core::STR___div_t:    return true;
          case Core::STR___fixed:    return true;
          case Core::STR___label:    return true;
          case Core::STR___str:      return true;
@@ -845,6 +863,7 @@ namespace GDCC
          switch(tok.str)
          {
             // type-specifier
+         case Core::STR___div_t:    setSpecBase(TypeSpec::BaseDivT); break;
          case Core::STR___fixed:    setSpecBase(TypeSpec::BaseAccu); break;
          case Core::STR___label:    setSpecBase(TypeSpec::BaseLabl); break;
          case Core::STR___str:      setSpecBase(TypeSpec::BaseStri); break;

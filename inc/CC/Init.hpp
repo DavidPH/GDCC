@@ -45,6 +45,7 @@ namespace GDCC
    {
       class ParserCtx;
       class Scope;
+      class Type_Div;
       class Type_Struct;
 
       //
@@ -216,6 +217,27 @@ namespace GDCC
 
          AST::Type::CRef const subT;
          Core::FastU     const subB;
+      };
+
+      //
+      // Init_Div
+      //
+      class Init_Div : public Init_Aggregate
+      {
+      public:
+         Init_Div(Type_Div const *type, Core::FastU offset, Core::Origin pos);
+
+      protected:
+         virtual std::size_t findSub(Core::String name);
+
+         virtual Init *getSub(std::size_t index);
+
+         virtual std::size_t nextSub(std::size_t index) const;
+
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
+            AST::Arg const &dst, bool skipZero) const;
+
+         std::unique_ptr<Init> subs[2];
       };
 
       //

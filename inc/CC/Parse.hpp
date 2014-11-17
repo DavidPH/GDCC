@@ -116,6 +116,7 @@ namespace GDCC
             BaseStri,
 
             // GDCC types.
+            BaseDivT,
             BaseLabl,
             BaseStrE,
             BaseVaLi,

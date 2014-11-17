@@ -141,6 +141,21 @@ namespace GDCC
       };
 
       //
+      // Exp_DivEx
+      //
+      class Exp_DivEx : public Exp_Binary
+      {
+         GDCC_Core_CounterPreambleAbstract(
+            GDCC::AST::Exp_DivEx, GDCC::AST::Exp_Binary);
+
+      protected:
+         Exp_DivEx(Type const *t, Exp const *l, Exp const *r,
+            Core::Origin pos_) : Super{t, l, r, pos_} {}
+
+         virtual bool v_isIRExp() const {return false;}
+      };
+
+      //
       // Exp_Mod
       //
       class Exp_Mod : public Exp_Binary

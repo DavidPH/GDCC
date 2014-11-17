@@ -29,6 +29,45 @@ namespace GDCC
    namespace CC
    {
       //
+      // Type_Div
+      //
+      // A special structure-like type for storing the result of __div.
+      //
+      class Type_Div final : public AST::Type
+      {
+         GDCC_Core_CounterPreamble(GDCC::CC::Type_Div, GDCC::AST::Type);
+
+      public:
+         // Type information.
+         virtual IR::Type     getIRType()    const;
+         virtual Core::String getName()      const;
+         virtual Core::FastU  getSizeAlign() const;
+         virtual Core::FastU  getSizeBytes() const;
+         virtual Core::FastU  getSizePoint() const;
+         virtual Core::FastU  getSizeShift() const;
+         virtual Core::FastU  getSizeWords() const;
+
+         // Type information: Members.
+         virtual Member getMember(Core::String name) const;
+
+         // Type classification: General classifications.
+         virtual bool isTypeComplete() const {return true;}
+
+         // Type classification: C/C++ classifications.
+         virtual bool isCTypeAggregat() const {return true;}
+         virtual bool isCTypeObject()   const {return true;}
+         virtual bool isCTypeStruct()   const {return true;}
+
+
+         static CRef Get(AST::Type const *type);
+
+      protected:
+         Type_Div(AST::Type const *t) : type{t} {}
+
+         AST::Type::CRef const type;
+      };
+
+      //
       // Type_Struct
       //
       class Type_Struct final : public AST::Type

@@ -38,10 +38,14 @@
 //
 // FormatIntCoreD
 //
-#define FormatIntCoreD() \
+#define FormatIntCoreD(T) \
    /* Perform core conversion. */ \
-   for(; data; data /= 10) \
-      *--ret.begin = (int)(data % 10) + '0'; \
+   while(data) \
+   { \
+      T __div_t d = __div(data, 10); \
+      *--ret.begin = (int)d.rem + '0'; \
+      data = d.quot; \
+   } \
    \
    ret.len = ret.end - ret.begin;
 
@@ -174,7 +178,7 @@ static BufferChar Buffer[BufferLen];
 __GDCC__FormatDecl(I, d, int)
 {
    FormatIntPreS();
-   FormatIntCoreD();
+   FormatIntCoreD(signed);
    FormatIntPrec();
    FormatIntSign();
    FormatIntWidth();
@@ -188,7 +192,7 @@ __GDCC__FormatDecl(I, d, int)
 __GDCC__FormatDecl(I, dl, long int)
 {
    FormatIntPreS();
-   FormatIntCoreD();
+   FormatIntCoreD(long signed);
    FormatIntPrec();
    FormatIntSign();
    FormatIntWidth();
@@ -202,7 +206,7 @@ __GDCC__FormatDecl(I, dl, long int)
 __GDCC__FormatDecl(I, dll, long long int)
 {
    FormatIntPreS();
-   FormatIntCoreD();
+   FormatIntCoreD(long long signed);
    FormatIntPrec();
    FormatIntSign();
    FormatIntWidth();
@@ -216,7 +220,7 @@ __GDCC__FormatDecl(I, dll, long long int)
 __GDCC__FormatDecl(U, d, unsigned)
 {
    FormatIntPreU();
-   FormatIntCoreD();
+   FormatIntCoreD(unsigned);
    FormatIntPrec();
    FormatIntWidth();
 
@@ -229,7 +233,7 @@ __GDCC__FormatDecl(U, d, unsigned)
 __GDCC__FormatDecl(U, dl, long unsigned)
 {
    FormatIntPreU();
-   FormatIntCoreD();
+   FormatIntCoreD(long unsigned);
    FormatIntPrec();
    FormatIntWidth();
 
@@ -242,7 +246,7 @@ __GDCC__FormatDecl(U, dl, long unsigned)
 __GDCC__FormatDecl(U, dll, long long unsigned)
 {
    FormatIntPreU();
-   FormatIntCoreD();
+   FormatIntCoreD(long long unsigned);
    FormatIntPrec();
    FormatIntWidth();
 

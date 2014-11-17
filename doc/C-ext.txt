@@ -273,7 +273,27 @@ Primary Expressions
 
 Syntax:
   primary-expression: add
+    div-expression
     glyph-expression
+
+-----------------------------------------------------------
+Div Expression
+-----------------------------------------------------------
+
+Syntax:
+  div-expression:
+    <__div> ( assignment-expression , assignment-expression )
+
+Constraints:
+  Both expressions shall have integer type.
+
+Semantics:
+  The usual arithmetic conversions are performed on the two expressions.
+
+  The result is a __div object containing the quotient and remainder of the
+  division of the first expression by the second. If the second expression is
+  0, or either part of the result cannot be represented the behavior is
+  undefined.
 
 -----------------------------------------------------------
 Glyph Expression
@@ -315,10 +335,28 @@ Type Specifiers
 
 Syntax:
   type-specifier: add
+    <__div_t>
     <__fixed>
     <__label>
     <__str>
     <__str_ent>
+
+-----------------------------------------------------------
+Div T
+-----------------------------------------------------------
+
+Semantics:
+  __div_t is the return type of the __div expression. It is a structure type
+  with two members as per the div_t type. It may be combined with long, signed,
+  and unsigned as in int to alter the members' type.
+
+  The full type specifier shall be one of the following (in any order):
+    <__div_t>, or <signed> <__div_t>
+    <unsigned> <__div_t>
+    <long> <__div_t>, or <signed> <long> <__div_t>
+    <unsigned> <long> <__div_t>
+    <long> <long> <__div_t>, or <signed> <long> <long> <__div_t>
+    <unsigned> <long> <long> <__div_t>
 
 -----------------------------------------------------------
 Fixed
@@ -550,6 +588,16 @@ Grammar
     <script>
     <__script>
 
+  primary-expression: add
+    div-expression
+    glyph-expression
+
+  div-expression:
+    <__div> ( assignment-expression , assignment-expression )
+
+  glyph-expression:
+    <__glyph> ( type-name , string-literal )
+
   declaration: add
     address-space-declaration
 
@@ -557,6 +605,7 @@ Grammar
     attribute-specifier declaration-specifiers(opt)
 
   type-specifier: add
+    <__div_t>
     <__fixed>
     <__label>
     <__str>

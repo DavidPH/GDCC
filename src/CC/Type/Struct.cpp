@@ -16,6 +16,8 @@
 
 #include "Platform/Platform.hpp"
 
+#include <map>
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -25,6 +27,103 @@ namespace GDCC
 {
    namespace CC
    {
+      //
+      // Type_Div::getIRType
+      //
+      IR::Type Type_Div::getIRType() const
+      {
+         auto typeIR = type->getIRType();
+         return IR::Type_Assoc({
+            {typeIR, Core::STR_quot, 0},
+            {typeIR, Core::STR_rem, type->getSizeBytes()}});
+      }
+
+      //
+      // Type_Div::getName
+      //
+      Core::String Type_Div::getName() const
+      {
+         return nullptr;
+      }
+
+      //
+      // Type_Div::getSizeAlign
+      //
+      Core::FastU Type_Div::getSizeAlign() const
+      {
+         return type->getSizeAlign();
+      }
+
+      //
+      // Type_Div::getSizeBytes
+      //
+      Core::FastU Type_Div::getSizeBytes() const
+      {
+         return type->getSizeBytes() * 2;
+      }
+
+      //
+      // Type_Div::getSizePoint
+      //
+      Core::FastU Type_Div::getSizePoint() const
+      {
+         return type->getSizePoint() * 2;
+      }
+
+      //
+      // Type_Div::getSizeShift
+      //
+      Core::FastU Type_Div::getSizeShift() const
+      {
+         return type->getSizeShift();
+      }
+
+      //
+      // Type_Div::getSizeWords
+      //
+      Core::FastU Type_Div::getSizeWords() const
+      {
+         return type->getSizeWords() * 2;
+      }
+
+      //
+      // Type_Div::getMember
+      //
+      AST::Type::Member Type_Div::getMember(Core::String name) const
+      {
+         switch(name)
+         {
+         case Core::STR_quot:
+            return {0, type->getTypeQual(getQual())};
+
+         case Core::STR_rem:
+            return {type->getSizeBytes(), type->getTypeQual(getQual())};
+
+         default:
+            throw AST::TypeError();
+         }
+      }
+
+      //
+      // Type_Div::Get
+      //
+      Type_Div::CRef Type_Div::Get(AST::Type const *type)
+      {
+         static std::map<AST::Type::CRef, Type_Div::CRef> divs;
+
+         auto itr = divs.find(type->getTypeQual());
+
+         if(itr == divs.end())
+         {
+            itr = divs.emplace(std::piecewise_construct,
+               std::forward_as_tuple(type),
+               std::forward_as_tuple(new Type_Div(type))
+               ).first;
+         }
+
+         return itr->second;
+      }
+
       //
       // Type_Struct::Data constructor
       //
@@ -86,7 +185,7 @@ namespace GDCC
       //
       // Type_Struct::getMember
       //
-      Type_Struct::Member Type_Struct::getMember(Core::String name) const
+      AST::Type::Member Type_Struct::getMember(Core::String name) const
       {
          if(!data.complete) throw AST::TypeError();
 

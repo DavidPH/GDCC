@@ -162,6 +162,8 @@ namespace GDCC
          AST::Exp const *r, Core::Origin pos);
       Core::CounterRef<AST::Exp const> ExpCreate_DivEq(AST::Exp const *l,
          AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<AST::Exp const> ExpCreate_DivEx(AST::Exp const *l,
+         AST::Exp const *r, Core::Origin pos);
 
       Core::CounterRef<AST::Exp const> ExpCreate_Func(IR::Program &prog,
          AST::Function *fn, Core::Origin pos);

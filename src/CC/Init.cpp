@@ -280,6 +280,9 @@ namespace GDCC
             if(auto t = dynamic_cast<Type_Struct const *>(type))
                return Ptr(new Init_Struct(t, offset, pos));
 
+            if(auto t = dynamic_cast<Type_Div const *>(type))
+               return Ptr(new Init_Div(t, offset, pos));
+
             throw Core::ExceptStr(pos, "invalid structure type for initializer");
          }
 
@@ -560,6 +563,57 @@ namespace GDCC
          AST::Arg const &arg, bool skipZero) const
       {
          for(auto const &sub : subs) sub->genStmnt(ctx, arg, skipZero);
+      }
+
+      //
+      // Init_Div constructor
+      //
+      Init_Div::Init_Div(Type_Div const *typeD, Core::FastU offset_,
+         Core::Origin pos_) :
+         Init_Aggregate{typeD, offset_, pos_},
+         subs   {}
+      {
+         auto mem = typeD->getMember(Core::STR_quot);
+         subs[0] = Create(mem.type, mem.addr, pos);
+         mem = typeD->getMember(Core::STR_rem);
+         subs[1] = Create(mem.type, mem.addr, pos);
+      }
+
+      //
+      // Init_Div::findSub
+      //
+      std::size_t Init_Div::findSub(Core::String name)
+      {
+         if(name == Core::STR_quot) return 0;
+         if(name == Core::STR_rem)  return 1;
+
+         return -1;
+      }
+
+      //
+      // Init_Div::getSub
+      //
+      Init *Init_Div::getSub(std::size_t index)
+      {
+         return index < 2 ? subs[index].get() : nullptr;
+      }
+
+      //
+      // Init_Div::nextSub
+      //
+      std::size_t Init_Div::nextSub(std::size_t index) const
+      {
+         return index + 1;
+      }
+
+      //
+      // Init_Div::v_genStmnt
+      //
+      void Init_Div::v_genStmnt(AST::GenStmntCtx const &ctx,
+         AST::Arg const &arg, bool skipZero) const
+      {
+         subs[0]->genStmnt(ctx, arg, skipZero);
+         subs[1]->genStmnt(ctx, arg, skipZero);
       }
 
       //

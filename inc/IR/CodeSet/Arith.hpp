@@ -49,6 +49,30 @@ namespace GDCC
       };
 
       //
+      // CodeSet_DiX
+      //
+      struct CodeSet_DiX
+      {
+         static constexpr Code
+            CodeA_W  = Code::None,
+            CodeA_W2 = Code::None,
+            CodeF_W  = Code::None,
+            CodeF_W2 = Code::None,
+            CodeI_W  = Code::DiXI_W,
+            CodeI_W2 = Code::DiXI_W2,
+            CodeI_W3 = Code::DiXI_W3,
+            CodeK_W  = Code::None,
+            CodeK_W2 = Code::None,
+            CodeR_W  = Code::None,
+            CodeR_W2 = Code::None,
+            CodeU_W  = Code::DiXU_W,
+            CodeU_W2 = Code::DiXU_W2,
+            CodeU_W3 = Code::DiXU_W3,
+            CodeX_W  = Code::None,
+            CodeX_W2 = Code::None;
+      };
+
+      //
       // CodeSet_Div
       //
       struct CodeSet_Div

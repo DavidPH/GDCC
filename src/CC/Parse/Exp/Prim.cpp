@@ -40,6 +40,38 @@ namespace GDCC
    namespace CC
    {
       //
+      // GetExp_Prim_div
+      //
+      static AST::Exp::CRef GetExp_Prim_div(ParserCtx const &ctx, Scope &scope)
+      {
+         // div-expression:
+         //    <__div> ( assignment-expression , assignment-expression )
+
+         // <__div>
+         auto pos = ctx.in.get().pos;
+
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+         // assignment-expression
+         auto l = GetExp_Assi(ctx, scope);
+
+         // ,
+         if(!ctx.in.drop(Core::TOK_Comma))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ','");
+
+         // assignment-expression
+         auto r = GetExp_Assi(ctx, scope);
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+
+         return ExpCreate_DivEx(l, r, pos);
+      }
+
+      //
       // GetExp_Prim_generic
       //
       static AST::Exp::CRef GetExp_Prim_generic(ParserCtx const &ctx, Scope &scope)
@@ -217,6 +249,7 @@ namespace GDCC
       {
          switch(ctx.in.peek().str)
          {
+         case Core::STR___div:      return GetExp_Prim_div(ctx, scope);
          case Core::STR___glyph:    return GetExp_Prim_glyph(ctx, scope);
          case Core::STR___va_arg:   return GetExp_Prim_va_arg(ctx, scope);
          case Core::STR___va_start: return GetExp_Prim_va_start(ctx, scope);
