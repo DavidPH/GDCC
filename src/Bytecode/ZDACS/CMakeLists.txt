@@ -22,6 +22,7 @@ add_library(gdcc-bytecode-zdacs-lib ${GDCC_SHARED_DECL}
    Info.cpp
    Info/Stmnt/Bitwise.cpp
    Info/Stmnt/Cmp.cpp
+   Info/Stmnt/Div.cpp
    Info/Stmnt/InvU.cpp
    Info/Stmnt/Move.cpp
    Info/Stmnt/NegI.cpp
@@ -41,6 +42,7 @@ add_library(gdcc-bytecode-zdacs-lib ${GDCC_SHARED_DECL}
    Info/trStmnt.cpp
 
    ../../../inc/Bytecode/ZDACS/Info.hpp
+   ../../../inc/Bytecode/ZDACS/Code.hpp
 )
 
 target_link_libraries(gdcc-bytecode-zdacs-lib gdcc-bytecode-lib)

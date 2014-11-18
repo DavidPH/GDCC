@@ -125,7 +125,6 @@ namespace GDCC
             case IR::Code::CmpU_NE_W2: preStmntCall("___GDCC__CmpU_NE_W2", 1, 4); break;
             case IR::Code::CmpU_NE_W3: preStmntCall("___GDCC__CmpU_NE_W3", 1, 6); break;
 
-            case IR::Code::DiXI_W:  preStmntCall("___GDCC__DiXI_W",  2, 2); break;
             case IR::Code::DiXI_W2: preStmntCall("___GDCC__DiXI_W2", 4, 4); break;
             case IR::Code::DiXI_W3: preStmntCall("___GDCC__DiXI_W3", 6, 6); break;
             case IR::Code::DiXU_W:  preStmntCall("___GDCC__DiXU_W",  2, 2); break;

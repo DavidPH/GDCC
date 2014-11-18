@@ -208,7 +208,7 @@ namespace GDCC
                genStmnt_Cspe();
                break;
 
-            case IR::Code::DiXI_W:  genStmntCall(2); break;
+            case IR::Code::DiXI_W:  genStmnt_DiXI_W(); break;
             case IR::Code::DiXI_W2: genStmntCall(4); break;
             case IR::Code::DiXI_W3: genStmntCall(6); break;
             case IR::Code::DiXU_W:  genStmntCall(2); break;

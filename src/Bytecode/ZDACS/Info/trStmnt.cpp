@@ -184,10 +184,7 @@ namespace GDCC
                trStmnt_Cspe();
                break;
 
-            case IR::Code::DiXI_W:
-            case IR::Code::DiXU_W:
-               trStmntStk3(IR::Code::Move_W2, IR::Code::Move_W, false);
-               break;
+            case IR::Code::DiXI_W: trStmnt_DiXI_W(); break;
 
             case IR::Code::DiXI_W2:
             case IR::Code::DiXU_W2:
@@ -197,6 +194,10 @@ namespace GDCC
             case IR::Code::DiXI_W3:
             case IR::Code::DiXU_W3:
                trStmntStk3(IR::Code::Move_W6, IR::Code::Move_W3, false);
+               break;
+
+            case IR::Code::DiXU_W:
+               trStmntStk3(IR::Code::Move_W2, IR::Code::Move_W, false);
                break;
 
             case IR::Code::DivF_W:

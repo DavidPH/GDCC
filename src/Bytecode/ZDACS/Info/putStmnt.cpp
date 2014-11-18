@@ -155,7 +155,7 @@ namespace GDCC
                putStmnt_Cspe();
                break;
 
-            case IR::Code::DiXI_W:  putStmntCall("___GDCC__DiXI_W",  2); break;
+            case IR::Code::DiXI_W:  putStmnt_DiXI_W(); break;
             case IR::Code::DiXI_W2: putStmntCall("___GDCC__DiXI_W2", 4); break;
             case IR::Code::DiXI_W3: putStmntCall("___GDCC__DiXI_W3", 6); break;
             case IR::Code::DiXU_W:  putStmntCall("___GDCC__DiXU_W",  2); break;

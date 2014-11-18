@@ -118,6 +118,7 @@ namespace GDCC
             void genStmnt_CmpU_EQ_W2();
             void genStmnt_CmpU_EQ_W3();
             void genStmnt_Cspe();
+            void genStmnt_DiXI_W();
             void genStmnt_InvU_W2();
             void genStmnt_InvU_W3();
             void genStmnt_Move_W();
@@ -248,6 +249,7 @@ namespace GDCC
             void putStmnt_CmpU_NE_W2();
             void putStmnt_CmpU_NE_W3();
             void putStmnt_Cspe();
+            void putStmnt_DiXI_W();
             void putStmnt_InvU_W2();
             void putStmnt_InvU_W3();
             void putStmnt_Move_W();
@@ -306,6 +308,7 @@ namespace GDCC
             void trStmnt_Call();
             void trStmnt_CmpU_EQ(IR::Code codeMove);
             void trStmnt_Cspe();
+            void trStmnt_DiXI_W();
             void trStmnt_InvU_W2();
             void trStmnt_InvU_W3();
             void trStmnt_Move_W();
