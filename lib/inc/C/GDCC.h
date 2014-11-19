@@ -40,6 +40,19 @@
 #define __GDCC__FormatFlag_Pad0 0x0010
 
 //
+// __GDCC__FormatGenAccum
+//
+#define __GDCC__FormatGenAccum(data, format, group, fmt) \
+   (_Generic(data, \
+      _Accum:                __GDCC__Format##group##_##fmt, \
+      unsigned _Accum:       __GDCC__Format##group##_##fmt, \
+      short _Accum:          __GDCC__Format##group##_##fmt##h, \
+      short unsigned _Accum: __GDCC__Format##group##_##fmt##h, \
+      long _Accum:           __GDCC__Format##group##_##fmt##l, \
+      long unsigned _Accum:  __GDCC__Format##group##_##fmt##l) \
+   ((data), (format)))
+
+//
 // __GDCC__FormatGenInteg
 //
 #define __GDCC__FormatGenInteg(data, format, group, fmt) \
@@ -59,6 +72,12 @@
    __GDCC__FormatGenInteg((data), (format), I, d)
 
 //
+// __GDCC__FormatK_*_g
+//
+#define __GDCC__FormatK_d_g(data, format) \
+   __GDCC__FormatGenAccum((data), (format), K, d)
+
+//
 // __GDCC__FormatU_*_g
 //
 #define __GDCC__FormatU_d_g(data, format) \
@@ -69,6 +88,12 @@
    __GDCC__FormatGenInteg((data), (format), U, X)
 #define __GDCC__FormatU_x_g(data, format) \
    __GDCC__FormatGenInteg((data), (format), U, x)
+
+//
+// __GDCC__FormatX_*_g
+//
+#define __GDCC__FormatX_d_g(data, format) \
+   __GDCC__FormatGenAccum((data), (format), X, d)
 
 
 //----------------------------------------------------------------------------|
@@ -110,6 +135,10 @@ typedef struct __GDCC__FormatRet
 // Global Functions                                                           |
 //
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 [[call("StkCall")]]
 extern void __loc_ars *__GDCC__alloc(void __loc_ars *ptr, size_t size);
 
@@ -119,6 +148,10 @@ extern void __GDCC__alloc_dump(void);
 __GDCC__FormatDecl(I, d, int);
 __GDCC__FormatDecl(I, dl, long int);
 __GDCC__FormatDecl(I, dll, long long int);
+
+__GDCC__FormatDecl(K, d, unsigned _Accum);
+__GDCC__FormatDecl(K, dh, short unsigned _Accum);
+__GDCC__FormatDecl(K, dl, long unsigned _Accum);
 
 __GDCC__FormatDecl(U, d, unsigned);
 __GDCC__FormatDecl(U, dl, long unsigned);
@@ -134,6 +167,14 @@ __GDCC__FormatDecl(U, Xll, long long unsigned);
 __GDCC__FormatDecl(U, x, unsigned);
 __GDCC__FormatDecl(U, xl, long unsigned);
 __GDCC__FormatDecl(U, xll, long long unsigned);
+
+__GDCC__FormatDecl(X, d, _Accum);
+__GDCC__FormatDecl(X, dh, short _Accum);
+__GDCC__FormatDecl(X, dl, long _Accum);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif//__GDCC_Header__C_GDCC_h__
 
