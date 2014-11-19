@@ -167,6 +167,8 @@ namespace GDCC
             case IR::Code::DivI_W:  putCode(Code::DivI); break;
             case IR::Code::DivI_W2: putStmntCall("___GDCC__DivI_W2", 2); break;
             case IR::Code::DivI_W3: putStmntCall("___GDCC__DivI_W3", 3); break;
+            case IR::Code::DivK_W:  putStmntCall("___GDCC__DivK_W",  1); break;
+            case IR::Code::DivK_W2: putStmntCall("___GDCC__DivK_W2", 2); break;
             case IR::Code::DivU_W:  putStmntCall("___GDCC__DivU_W",  1); break;
             case IR::Code::DivU_W2: putStmntCall("___GDCC__DivU_W2", 2); break;
             case IR::Code::DivU_W3: putStmntCall("___GDCC__DivU_W3", 3); break;
@@ -201,6 +203,8 @@ namespace GDCC
 
             case IR::Code::MulF_W:  putStmntCall("___GDCC__MulF_W",  1); break;
             case IR::Code::MulF_W2: putStmntCall("___GDCC__MulF_W2", 2); break;
+            case IR::Code::MulK_W:  putStmntCall("___GDCC__MulK_W",  1); break;
+            case IR::Code::MulK_W2: putStmntCall("___GDCC__MulK_W2", 2); break;
             case IR::Code::MulI_W:
             case IR::Code::MulU_W:  putCode(Code::MulU); break;
             case IR::Code::MulI_W2:

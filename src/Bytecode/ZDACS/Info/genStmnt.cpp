@@ -58,7 +58,9 @@ namespace GDCC
 
             case IR::Code::AddF_W:
             case IR::Code::DivF_W:
+            case IR::Code::DivK_W:
             case IR::Code::MulF_W:
+            case IR::Code::MulK_W:
             case IR::Code::SubF_W:
                genStmntCall(1);
                break;
@@ -86,12 +88,14 @@ namespace GDCC
             case IR::Code::AddU_W2:
             case IR::Code::DivF_W2:
             case IR::Code::DivI_W2:
+            case IR::Code::DivK_W2:
             case IR::Code::DivU_W2:
             case IR::Code::DivX_W2:
             case IR::Code::ModI_W2:
             case IR::Code::ModU_W2:
             case IR::Code::MulF_W2:
             case IR::Code::MulI_W2:
+            case IR::Code::MulK_W2:
             case IR::Code::MulU_W2:
             case IR::Code::MulX_W2:
             case IR::Code::SubF_W2:

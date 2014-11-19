@@ -135,6 +135,8 @@ namespace GDCC
             case IR::Code::DivF_W2: preStmntCall("___GDCC__DivF_W2", 2, 4); break;
             case IR::Code::DivI_W2: preStmntCall("___GDCC__DivI_W2", 2, 4); break;
             case IR::Code::DivI_W3: preStmntCall("___GDCC__DivI_W3", 3, 6); break;
+            case IR::Code::DivK_W:  preStmntCall("___GDCC__DivK_W",  1, 2); break;
+            case IR::Code::DivK_W2: preStmntCall("___GDCC__DivK_W2", 2, 4); break;
             case IR::Code::DivU_W:  preStmntCall("___GDCC__DivU_W",  1, 2); break;
             case IR::Code::DivU_W2: preStmntCall("___GDCC__DivU_W2", 2, 4); break;
             case IR::Code::DivU_W3: preStmntCall("___GDCC__DivU_W3", 3, 6); break;
@@ -151,6 +153,8 @@ namespace GDCC
 
             case IR::Code::MulF_W:  preStmntCall("___GDCC__MulF_W",  1, 2); break;
             case IR::Code::MulF_W2: preStmntCall("___GDCC__MulF_W2", 2, 4); break;
+            case IR::Code::MulK_W:  preStmntCall("___GDCC__MulK_W",  1, 2); break;
+            case IR::Code::MulK_W2: preStmntCall("___GDCC__MulK_W2", 2, 4); break;
             case IR::Code::MulI_W2:
             case IR::Code::MulU_W2: preStmntCall("___GDCC__MulU_W2", 2, 4); break;
             case IR::Code::MulI_W3:

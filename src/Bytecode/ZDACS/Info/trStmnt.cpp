@@ -47,6 +47,7 @@ namespace GDCC
             case IR::Code::AndU_W:
             case IR::Code::MulF_W:
             case IR::Code::MulI_W:
+            case IR::Code::MulK_W:
             case IR::Code::MulU_W:
             case IR::Code::MulX_W:
             case IR::Code::OrIU_W:
@@ -59,6 +60,7 @@ namespace GDCC
             case IR::Code::AddU_W2:
             case IR::Code::MulF_W2:
             case IR::Code::MulI_W2:
+            case IR::Code::MulK_W2:
             case IR::Code::MulU_W2:
             case IR::Code::MulX_W2:
                trStmntStk3(IR::Code::Move_W2, IR::Code::Move_W2, false);
@@ -202,6 +204,7 @@ namespace GDCC
 
             case IR::Code::DivF_W:
             case IR::Code::DivI_W:
+            case IR::Code::DivK_W:
             case IR::Code::DivU_W:
             case IR::Code::DivX_W:
             case IR::Code::ModI_W:
@@ -216,6 +219,7 @@ namespace GDCC
 
             case IR::Code::DivF_W2:
             case IR::Code::DivI_W2:
+            case IR::Code::DivK_W2:
             case IR::Code::DivU_W2:
             case IR::Code::DivX_W2:
             case IR::Code::ModI_W2:
