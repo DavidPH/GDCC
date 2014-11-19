@@ -135,22 +135,6 @@
    else if(format.flags & __GDCC__FormatFlag_PadS) \
       *--ret.begin = ' ', ++ret.len;
 
-//
-// FormatIntWidth
-//
-#define FormatIntWidth() \
-   /* Pad to width. */ \
-   if(format.flags & __GDCC__FormatFlag_Left) \
-   { \
-      while(ret.len < format.width) \
-         *ret.end++ = ' ', ++ret.len; \
-   } \
-   else \
-   { \
-      while(ret.len < format.width) \
-         *--ret.begin = ' ', ++ret.len; \
-   }
-
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -181,7 +165,6 @@ __GDCC__FormatDecl(I, d, int)
    FormatIntCoreD(signed);
    FormatIntPrec();
    FormatIntSign();
-   FormatIntWidth();
 
    return ret;
 }
@@ -195,7 +178,6 @@ __GDCC__FormatDecl(I, dl, long int)
    FormatIntCoreD(long signed);
    FormatIntPrec();
    FormatIntSign();
-   FormatIntWidth();
 
    return ret;
 }
@@ -209,7 +191,6 @@ __GDCC__FormatDecl(I, dll, long long int)
    FormatIntCoreD(long long signed);
    FormatIntPrec();
    FormatIntSign();
-   FormatIntWidth();
 
    return ret;
 }
@@ -222,7 +203,6 @@ __GDCC__FormatDecl(U, d, unsigned)
    FormatIntPreU();
    FormatIntCoreD(unsigned);
    FormatIntPrec();
-   FormatIntWidth();
 
    return ret;
 }
@@ -235,7 +215,6 @@ __GDCC__FormatDecl(U, dl, long unsigned)
    FormatIntPreU();
    FormatIntCoreD(long unsigned);
    FormatIntPrec();
-   FormatIntWidth();
 
    return ret;
 }
@@ -248,7 +227,6 @@ __GDCC__FormatDecl(U, dll, long long unsigned)
    FormatIntPreU();
    FormatIntCoreD(long long unsigned);
    FormatIntPrec();
-   FormatIntWidth();
 
    return ret;
 }
@@ -261,7 +239,6 @@ __GDCC__FormatDecl(U, o, unsigned)
    FormatIntPreU();
    FormatIntCoreO();
    FormatIntPrec();
-   FormatIntWidth();
 
    return ret;
 }
@@ -274,7 +251,6 @@ __GDCC__FormatDecl(U, ol, long unsigned)
    FormatIntPreU();
    FormatIntCoreO();
    FormatIntPrec();
-   FormatIntWidth();
 
    return ret;
 }
@@ -287,7 +263,6 @@ __GDCC__FormatDecl(U, oll, long long unsigned)
    FormatIntPreU();
    FormatIntCoreO();
    FormatIntPrec();
-   FormatIntWidth();
 
    return ret;
 }
@@ -301,7 +276,6 @@ __GDCC__FormatDecl(U, X, unsigned)
    FormatIntCoreX("0123456789ABCDEF");
    FormatIntPrec();
    FormatIntAltX('X');
-   FormatIntWidth();
 
    return ret;
 }
@@ -315,7 +289,6 @@ __GDCC__FormatDecl(U, Xl, long unsigned)
    FormatIntCoreX("0123456789ABCDEF");
    FormatIntPrec();
    FormatIntAltX('X');
-   FormatIntWidth();
 
    return ret;
 }
@@ -329,7 +302,6 @@ __GDCC__FormatDecl(U, Xll, long long unsigned)
    FormatIntCoreX("0123456789ABCDEF");
    FormatIntPrec();
    FormatIntAltX('X');
-   FormatIntWidth();
 
    return ret;
 }
@@ -343,7 +315,6 @@ __GDCC__FormatDecl(U, x, unsigned)
    FormatIntCoreX("0123456789abcdef");
    FormatIntPrec();
    FormatIntAltX('x');
-   FormatIntWidth();
 
    return ret;
 }
@@ -357,7 +328,6 @@ __GDCC__FormatDecl(U, xl, long unsigned)
    FormatIntCoreX("0123456789abcdef");
    FormatIntPrec();
    FormatIntAltX('x');
-   FormatIntWidth();
 
    return ret;
 }
@@ -371,7 +341,6 @@ __GDCC__FormatDecl(U, xll, long long unsigned)
    FormatIntCoreX("0123456789abcdef");
    FormatIntPrec();
    FormatIntAltX('x');
-   FormatIntWidth();
 
    return ret;
 }
