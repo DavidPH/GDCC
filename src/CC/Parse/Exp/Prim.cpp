@@ -333,15 +333,15 @@ namespace GDCC
 
          if(k) switch(l)
          {
-         case -1: type = u ? TypeFixedPrUH : TypeFixedPrSH;
-         case  0: type = u ? TypeFixedPrU  : TypeFixedPrS;
-         case +1: type = u ? TypeFixedPrUL : TypeFixedPrSL;
+         case -1: type = u ? TypeFixedPrUH : TypeFixedPrSH; break;
+         case  0: type = u ? TypeFixedPrU  : TypeFixedPrS;  break;
+         case +1: type = u ? TypeFixedPrUL : TypeFixedPrSL; break;
          }
          else switch(l)
          {
-         case -1: type = u ? TypeFractPrUH : TypeFractPrSH;
-         case  0: type = u ? TypeFractPrU  : TypeFractPrS;
-         case +1: type = u ? TypeFractPrUL : TypeFractPrSL;
+         case -1: type = u ? TypeFractPrUH : TypeFractPrSH; break;
+         case  0: type = u ? TypeFractPrU  : TypeFractPrS;  break;
+         case +1: type = u ? TypeFractPrUL : TypeFractPrSL; break;
          }
 
          // Adjust value for fractional bits.
