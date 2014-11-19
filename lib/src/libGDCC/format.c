@@ -89,16 +89,27 @@
    __GDCC__FormatRet ret; \
    ret.begin = ret.end = Buffer + BufferLen / 2; \
    \
-   int sign; \
-   if((sign = data < 0)) \
-      data = -data;
+   char sign; \
+   if(data < 0) \
+   { \
+      sign = '-'; \
+      data = -data; \
+   } \
+   else if(format.flags & __GDCC__FormatFlag_Sign) \
+      sign = '+'; \
+   else if(format.flags & __GDCC__FormatFlag_PadS) \
+      sign = ' '; \
+   else \
+      sign = '\0';
 
 //
 // FormatIntPreU
 //
 #define FormatIntPreU() \
    __GDCC__FormatRet ret; \
-   ret.begin = ret.end = Buffer + BufferLen / 2;
+   ret.begin = ret.end = Buffer + BufferLen / 2; \
+   \
+   char const sign = '\0';
 
 //
 // FormatIntPrec
@@ -114,6 +125,8 @@
       if(format.flags & __GDCC__FormatFlag_Pad0 && \
          !(format.flags & __GDCC__FormatFlag_Left)) \
       { \
+         if(sign && format.width) --format.width; \
+         \
          while(ret.len < format.width) \
             *--ret.begin = '0', ++ret.len; \
       } \
@@ -128,12 +141,7 @@
 // FormatIntSign
 //
 #define FormatIntSign() \
-   if(sign) \
-      *--ret.begin = '-', ++ret.len; \
-   else if(format.flags & __GDCC__FormatFlag_Sign) \
-      *--ret.begin = '+', ++ret.len; \
-   else if(format.flags & __GDCC__FormatFlag_PadS) \
-      *--ret.begin = ' ', ++ret.len;
+   if(sign) *--ret.begin = sign, ++ret.len;
 
 
 //----------------------------------------------------------------------------|
