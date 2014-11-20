@@ -18,6 +18,7 @@
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
+#include "IR/ExpCode.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -222,6 +223,46 @@ namespace GDCC
          // Map from generic address space for codegen.
          if(arg.type->getQualAddr().base == IR::AddrBase::Gen)
             arg.type = arg.type->getTypeQual(IR::GetAddrGen());
+
+         // If possible, operate with IR args.
+         auto point = exp->type->getBaseType()->getSizePoint();
+         auto argL = exp->expL->getArg();
+         auto argR = exp->expR->getArg();
+         if(exp->type->getSizeWords() == 1 && argL.isIRArg() &&
+            (exp->expL->isIRExp() || (argL.isIRArg() && point == 1)))
+         {
+            auto irArgL = argL.getIRArg();
+
+            auto codeMove = IR::ExpCode_Move(argL.type->getSizeWords());
+
+            // Duplicate to destination, if necessary.
+            if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
+            {
+               ctx.block.addStatementArgs(codeMove, IR::Arg_Stk(), irArgL);
+               GenStmnt_MovePart(exp, ctx, dst, false, true);
+            }
+
+            if(point == 1)
+               ctx.block.addStatementArgs(code, irArgL, irArgL, argR.getIRArg());
+            else
+            {
+               auto pointV = IR::Value_Fixed(point,
+                  exp->expR->getType()->getIRType().tFixed);
+               auto pointE = IR::ExpCreate_Value(std::move(pointV), exp->pos);
+
+               ctx.block.addStatementArgs(code, irArgL, irArgL,
+                  IR::ExpCreate_Mul(exp->getIRExp(), pointE, exp->pos));
+            }
+
+            // Duplicate to destination, if necessary.
+            if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
+            {
+               ctx.block.addStatementArgs(codeMove, IR::Arg_Stk(), irArgL);
+               GenStmnt_MovePart(exp, ctx, dst, false, true);
+            }
+
+            return;
+         }
 
          switch(arg.type->getQualAddr().base)
          {
