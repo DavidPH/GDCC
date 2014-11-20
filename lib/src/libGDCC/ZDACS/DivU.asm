@@ -143,8 +143,19 @@ Function "___GDCC__DiXU_W2" \
    block
 {
    ; If high word unset for both operands, use 1-word division.
-   ; TODO
+   OrIU_W,   Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
+   Cjmp_Tru, Stk(), Lit("___GDCC__DiXU_W2$full")
 
+   DiXU_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
+   Move_W, LocReg(Lit(2), 0), Stk()
+   Move_W, LocReg(Lit(0), 0), Stk()
+
+   Move_W2, Stk(), LocReg(Lit(0), 0)
+   Move_W2, Stk(), LocReg(Lit(2), 0)
+
+   Retn, Stk(), Stk(), Stk(), Stk()
+
+"___GDCC__DiXU_W2$full"
    Move_W2, LocReg(Lit(4), 0), Lit(0_64.0)
    Move_W2, LocReg(Lit(6), 0), LocReg(Lit(0), 0)
 
@@ -303,8 +314,33 @@ Function "___GDCC__DiXU_W3" \
    block
 {
    ; If high word unset for both operands, use 2-word division.
-   ; TODO
+   OrIU_W,   Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
+   Cjmp_Tru, Stk(), Lit("___GDCC__DiXU_W3$full")
 
+   ; If mid word unset for both operands, use 1-word division.
+   OrIU_W,   Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
+   Cjmp_Tru, Stk(), Lit("___GDCC__DiXU_W3$part")
+
+   DiXU_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(3), 0)
+   Move_W, LocReg(Lit(3), 0), Stk()
+   Move_W, LocReg(Lit(0), 0), Stk()
+
+   Move_W3, Stk(), LocReg(Lit(0), 0)
+   Move_W3, Stk(), LocReg(Lit(3), 0)
+
+   Retn, Stk(), Stk(), Stk(), Stk(), Stk(), Stk()
+
+"___GDCC__DiXU_W3$part"
+   DiXU_W2, Stk(), LocReg(Lit(0), 0), LocReg(Lit(3), 0)
+   Move_W2, LocReg(Lit(3), 0), Stk()
+   Move_W2, LocReg(Lit(0), 0), Stk()
+
+   Move_W3, Stk(), LocReg(Lit(0), 0)
+   Move_W3, Stk(), LocReg(Lit(3), 0)
+
+   Retn, Stk(), Stk(), Stk(), Stk(), Stk(), Stk()
+
+"___GDCC__DiXU_W3$full"
    Move_W3, LocReg(Lit(6), 0), Lit(0_96.0)
    Move_W3, LocReg(Lit(9), 0), LocReg(Lit(0), 0)
 
