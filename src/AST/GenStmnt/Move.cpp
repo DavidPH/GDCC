@@ -71,6 +71,18 @@ static void GenStmnt_MovePartT(GDCC::AST::Exp const *exp,
       return;
    }
 
+   // If fetching or setting a single word, and not both, use address on stack.
+   if(arg.type->getSizeWords() == 1 && get ^ set)
+   {
+      // Evaluate arg's data.
+      arg.data->genStmntStk(ctx);
+
+      // Use Stk as index.
+      GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg, IR::Arg_Stk(), get, set);
+
+      return;
+   }
+
    // As a last resort, just evaluate the pointer and store in a temporary.
    {
       // Evaluate arg's data.
