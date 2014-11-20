@@ -24,170 +24,160 @@
 // Static Functions                                                           |
 //
 
-//
-// GenStmnt_PointIdx
-//
-static void GenStmnt_PointIdx(GDCC::AST::Exp const *idx,
-   GDCC::Core::FastU point, GDCC::AST::GenStmntCtx const &ctx)
+namespace GDCC
 {
-   using namespace GDCC;
-
-   if(point > 1)
+   namespace AST
    {
-      if(idx->isIRExp())
+      //
+      // GenStmnt_PointIdx
+      //
+      static void GenStmnt_PointIdx(Exp const *idx, Core::FastU point,
+         GenStmntCtx const &ctx)
       {
-         auto pointV = IR::Value_Fixed(point, idx->getType()->getIRType().tFixed);
-         auto pointE = IR::ExpCreate_Value(std::move(pointV), idx->pos);
+         if(point > 1)
+         {
+            if(idx->isIRExp())
+            {
+               auto pointV = IR::Value_Fixed(point, idx->getType()->getIRType().tFixed);
+               auto pointE = IR::ExpCreate_Value(std::move(pointV), idx->pos);
 
-         ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(),
-            IR::ExpCreate_Mul(idx->getIRExp(), pointE, idx->pos));
+               ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(),
+                  IR::ExpCreate_Mul(idx->getIRExp(), pointE, idx->pos));
+            }
+            else
+            {
+               idx->genStmntStk(ctx);
+               ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(), point);
+               ctx.block.addStatementArgs(IR::Code::MulU_W,
+                  IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+            }
+         }
+         else
+            idx->genStmntStk(ctx);
       }
-      else
+
+      //
+      // GenStmnt_PointEqIdx
+      //
+      // Does general statemenet generation with an IR arg for l.
+      //
+      template<typename ArgT, typename IdxT>
+      static void GenStmnt_PointEqIdx(Exp_Binary const *exp, IR::Code code,
+         GenStmntCtx const &ctx, Arg const &dst, bool post, Arg const &arg,
+         IdxT const &idx)
       {
-         idx->genStmntStk(ctx);
-         ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(), point);
-         ctx.block.addStatementArgs(IR::Code::MulU_W,
+         // Duplicate to destination, if necessary.
+         if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
+         {
+            // Push l.
+            for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
+               GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
+
+            // Assign dst.
+            GenStmnt_MovePart(exp, ctx, dst, false, true);
+         }
+
+         // Push l.
+         for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
+            GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
+
+         // Push r.
+         GenStmnt_PointIdx(exp->expR, exp->type->getBaseType()->getSizePoint(), ctx);
+
+         // Operate on stack.
+         ctx.block.addStatementArgs(code,
             IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+
+         // Assign l.
+         for(Core::FastU n = arg.type->getSizeWords(); n--;)
+            GenStmnt_MoveWordSetT<ArgT>(exp, ctx, arg, idx, n);
+
+         // Duplicate to destination, if necessary.
+         if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
+         {
+            // Push l.
+            for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
+               GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
+
+            // Assign dst.
+            GenStmnt_MovePart(exp, ctx, dst, false, true);
+         }
+      }
+
+      //
+      // GenStmnt_PointEqT
+      //
+      template<typename ArgT>
+      static void GenStmnt_PointEqT(Exp_Binary const *exp, IR::Code code,
+         GenStmntCtx const &ctx, Arg const &dst, bool post, Arg const &arg)
+      {
+         // If arg address is a constant, then use Arg_Lit address.
+         if(arg.data->isIRExp())
+         {
+            // Evaluate arg's data for side effects.
+            arg.data->genStmnt(ctx);
+
+            // Use literal as index.
+            GenStmnt_PointEqIdx<ArgT>(exp, code, ctx, dst, post, arg,
+               IR::Arg_Lit(arg.data->getIRExp()));
+
+            return;
+         }
+
+         // As a fallback, just evaluate the pointer and store in a temporary.
+         {
+            // Evaluate arg's data.
+            arg.data->genStmntStk(ctx);
+
+            // Move to temporary.
+            Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
+            for(Core::FastU n = tmp.size(); n--;)
+               ctx.block.addStatementArgs(IR::Code::Move_W,
+                  tmp.getArg(n), IR::Arg_Stk());
+
+            // Use temporary as index.
+            GenStmnt_PointEqIdx<ArgT>(exp, code, ctx, dst, post, arg, tmp.getArg());
+
+            return;
+         }
+      }
+
+      //
+      // GenStmnt_PointEqT<IR::Arg_Cpy>
+      //
+      template<> void GenStmnt_PointEqT<IR::Arg_Cpy>(Exp_Binary const *exp,
+         IR::Code, GenStmntCtx const &, Arg const &, bool, Arg const &)
+      {
+         throw Core::ExceptStr(exp->pos, "AddrBase::Cpy op=");
+      }
+
+      //
+      // GenStmnt_PointEqT<IR::Arg_Lit>
+      //
+      template<> void GenStmnt_PointEqT<IR::Arg_Lit>(Exp_Binary const *exp,
+         IR::Code, GenStmntCtx const &, Arg const &, bool, Arg const &)
+      {
+         throw Core::ExceptStr(exp->pos, "AddrBase::Lit op=");
+      }
+
+      //
+      // GenStmnt_PointEqT<IR::Arg_Nul>
+      //
+      template<> void GenStmnt_PointEqT<IR::Arg_Nul>(Exp_Binary const *exp,
+         IR::Code, GenStmntCtx const &, Arg const &, bool, Arg const &)
+      {
+         throw Core::ExceptStr(exp->pos, "AddrBase::Nul op=");
+      }
+
+      //
+      // GenStmnt_PointEqT<IR::Arg_Stk>
+      //
+      template<> void GenStmnt_PointEqT<IR::Arg_Stk>(Exp_Binary const *exp,
+         IR::Code, GenStmntCtx const &, Arg const &, bool, Arg const &)
+      {
+         throw Core::ExceptStr(exp->pos, "AddrBase::Stk op=");
       }
    }
-   else
-      idx->genStmntStk(ctx);
-}
-
-//
-// GenStmnt_PointEqIdx
-//
-// Does general statemenet generation with an IR arg for l.
-//
-template<typename ArgT, typename IdxT>
-static void GenStmnt_PointEqIdx(GDCC::AST::Exp_Binary const *exp,
-   GDCC::IR::Code code, GDCC::AST::GenStmntCtx const &ctx,
-   GDCC::AST::Arg const &dst, bool post, GDCC::AST::Arg const &arg,
-   IdxT const &idx)
-{
-   using namespace GDCC;
-
-   // Duplicate to destination, if necessary.
-   if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
-   {
-      // Push l.
-      for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
-         AST::GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
-
-      // Assign dst.
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
-   }
-
-   // Push l.
-   for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
-      AST::GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
-
-   // Push r.
-   GenStmnt_PointIdx(exp->expR, exp->type->getBaseType()->getSizePoint(), ctx);
-
-   // Operate on stack.
-   ctx.block.addStatementArgs(code,
-      IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
-
-   // Assign l.
-   for(Core::FastU n = arg.type->getSizeWords(); n--;)
-      AST::GenStmnt_MoveWordSetT<ArgT>(exp, ctx, arg, idx, n);
-
-   // Duplicate to destination, if necessary.
-   if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
-   {
-      // Push l.
-      for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
-         AST::GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
-
-      // Assign dst.
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
-   }
-}
-
-//
-// GenStmnt_PointEqT
-//
-template<typename ArgT>
-static void GenStmnt_PointEqT(GDCC::AST::Exp_Binary const *exp,
-   GDCC::IR::Code code, GDCC::AST::GenStmntCtx const &ctx,
-   GDCC::AST::Arg const &dst, bool post, GDCC::AST::Arg const &arg)
-{
-   using namespace GDCC;
-
-   // If arg address is a constant, then use Arg_Lit address.
-   if(arg.data->isIRExp())
-   {
-      // Evaluate arg's data for side effects.
-      arg.data->genStmnt(ctx);
-
-      // Use literal as index.
-      GenStmnt_PointEqIdx<ArgT>(exp, code, ctx, dst, post, arg,
-         IR::Arg_Lit(arg.data->getIRExp()));
-
-      return;
-   }
-
-   // As a fallback, just evaluate the pointer and store in a temporary.
-   {
-      // Evaluate arg's data.
-      arg.data->genStmntStk(ctx);
-
-      // Move to temporary.
-      AST::Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
-      for(Core::FastU n = tmp.size(); n--;)
-         ctx.block.addStatementArgs(IR::Code::Move_W,
-            tmp.getArg(n), IR::Arg_Stk());
-
-      // Use temporary as index.
-      GenStmnt_PointEqIdx<ArgT>(exp, code, ctx, dst, post, arg, tmp.getArg());
-
-      return;
-   }
-}
-
-//
-// GenStmnt_PointEqT<IR::Arg_Cpy>
-//
-template<> void GenStmnt_PointEqT<GDCC::IR::Arg_Cpy>(
-   GDCC::AST::Exp_Binary const *exp, GDCC::IR::Code,
-   GDCC::AST::GenStmntCtx const &, GDCC::AST::Arg const &, bool,
-   GDCC::AST::Arg const &)
-{
-   throw GDCC::Core::ExceptStr(exp->pos, "AddrBase::Cpy op=");
-}
-
-//
-// GenStmnt_PointEqT<IR::Arg_Lit>
-//
-template<> void GenStmnt_PointEqT<GDCC::IR::Arg_Lit>(
-   GDCC::AST::Exp_Binary const *exp, GDCC::IR::Code,
-   GDCC::AST::GenStmntCtx const &, GDCC::AST::Arg const &, bool,
-   GDCC::AST::Arg const &)
-{
-   throw GDCC::Core::ExceptStr(exp->pos, "AddrBase::Lit op=");
-}
-
-//
-// GenStmnt_PointEqT<IR::Arg_Nul>
-//
-template<> void GenStmnt_PointEqT<GDCC::IR::Arg_Nul>(
-   GDCC::AST::Exp_Binary const *exp, GDCC::IR::Code,
-   GDCC::AST::GenStmntCtx const &, GDCC::AST::Arg const &, bool,
-   GDCC::AST::Arg const &)
-{
-   throw GDCC::Core::ExceptStr(exp->pos, "AddrBase::Nul op=");
-}
-
-//
-// GenStmnt_PointEqT<IR::Arg_Stk>
-//
-template<> void GenStmnt_PointEqT<GDCC::IR::Arg_Stk>(
-   GDCC::AST::Exp_Binary const *exp, GDCC::IR::Code,
-   GDCC::AST::GenStmntCtx const &, GDCC::AST::Arg const &, bool,
-   GDCC::AST::Arg const &)
-{
-   throw GDCC::Core::ExceptStr(exp->pos, "AddrBase::Stk op=");
 }
 
 
