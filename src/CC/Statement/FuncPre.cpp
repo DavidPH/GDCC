@@ -25,6 +25,8 @@
 #include "IR/CallType.hpp"
 #include "IR/ScriptType.hpp"
 
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
@@ -78,7 +80,8 @@ namespace GDCC
          // Move parameter data to actual storage location.
          Core::FastU paramIdx = 0;
 
-         if(ctype == IR::CallType::StdCall)
+         if(ctype == IR::CallType::StdCall &&
+            Platform::TargetCur == Platform::Target::ZDoom)
             ++paramIdx;
 
          for(auto const &obj : scope.params)
