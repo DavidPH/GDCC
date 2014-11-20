@@ -494,6 +494,52 @@ Function "___GDCC__DiXU_W3" \
 }
 
 ;;
+;; ___GDCC__DivK_W
+;;
+Function "___GDCC__DivK_W" \
+   alloc    = 1 \
+   ctype    = StkCall \
+   defin    = 1 \
+   label    = "___GDCC__DivK_W$label" \
+   linka    = ExtC \
+   localReg = 2 \
+   param    = 2 \
+   retrn    = 1 \
+   block
+{
+   Move_W,  Stk(), Lit(0)
+   Move_W,  Stk(), LocReg(Lit(0), 0)
+   Move_W,  Stk(), LocReg(Lit(1), 0)
+   Move_W,  Stk(), Lit(0)
+   DiXU_W2, Stk(), Stk(), Stk()
+   Move_W3, Nul(), Stk()
+   Retn,    Stk()
+}
+
+;;
+;; ___GDCC__DivK_W2
+;;
+Function "___GDCC__DivK_W2" \
+   alloc    = 1 \
+   ctype    = StkCall \
+   defin    = 1 \
+   label    = "___GDCC__DivK_W2$label" \
+   linka    = ExtC \
+   localReg = 4 \
+   param    = 4 \
+   retrn    = 2 \
+   block
+{
+   Move_W,  Stk(), Lit(0)
+   Move_W2, Stk(), LocReg(Lit(0), 0)
+   Move_W2, Stk(), LocReg(Lit(2), 0)
+   Move_W,  Stk(), Lit(0)
+   DiXU_W3, Stk(), Stk(), Stk()
+   Move_W4, Nul(), Stk()
+   Retn,    Stk(), Stk()
+}
+
+;;
 ;; ___GDCC__DivU_W
 ;;
 Function "___GDCC__DivU_W" \
