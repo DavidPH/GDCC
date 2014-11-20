@@ -33,10 +33,22 @@ namespace GDCC
       //
       AST::Exp::CRef ExpPromo_Arg(AST::Exp const *e, Core::Origin pos)
       {
-         auto exp = ExpPromo_Int(e, pos);
+         auto exp = ExpPromo_Int(ExpPromo_LValue(e, pos), pos);
 
-         if(exp->getType()->getTypeQual() == TypeFloatRS)
+         auto type = exp->getType();
+
+         // Promote float to double.
+         if(type->getTypeQual() == TypeFloatRS)
             return ExpConvert_Arith(TypeFloatRSL, exp, pos);
+
+         // Promote Loc* to LocArs*.
+         if(type->isTypePointer() &&
+            type->getBaseType()->getQualAddr().base == IR::AddrBase::Loc)
+         {
+            return ExpConvert_Pointer(type->getBaseType()
+               ->getTypeQualAddr({IR::AddrBase::LocArs, Core::STR_})
+               ->getTypePointer(), exp, pos);
+         }
 
          return exp;
       }
