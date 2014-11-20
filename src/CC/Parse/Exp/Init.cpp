@@ -24,99 +24,100 @@
 // Static Functions                                                           |
 //
 
-static GDCC::CC::InitRawDes GetInitRawDes(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope);
-
-//
-// GetInitRaw
-//
-static GDCC::CC::InitRaw GetInitRaw(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
+namespace GDCC
 {
-   using namespace GDCC;
-
-   CC::InitRaw init{ctx.in.peek().pos};
-
-   // Bracketed initializer.
-   if(ctx.in.drop(Core::TOK_BraceO))
+   namespace CC
    {
-      std::vector<CC::InitRaw> sub;
+      static InitRawDes GetInitRawDes(ParserCtx const &ctx, Scope &scope);
 
-      do
+      //
+      // GetInitRaw
+      //
+      static InitRaw GetInitRaw(ParserCtx const &ctx, Scope &scope)
       {
-         // Designators.
-         if(ctx.in.peek(Core::TOK_Dot) || ctx.in.peek(Core::TOK_BrackO))
+         InitRaw init{ctx.in.peek().pos};
+
+         // Bracketed initializer.
+         if(ctx.in.drop(Core::TOK_BraceO))
          {
-            std::vector<CC::InitRawDes> desig;
+            std::vector<InitRaw> sub;
 
             do
-               desig.emplace_back(GetInitRawDes(ctx, scope));
-            while(!ctx.in.drop(Core::TOK_Equal));
+            {
+               // Designators.
+               if(ctx.in.peek(Core::TOK_Dot) || ctx.in.peek(Core::TOK_BrackO))
+               {
+                  std::vector<InitRawDes> desig;
 
-            sub.emplace_back(GetInitRaw(ctx, scope));
+                  do
+                     desig.emplace_back(GetInitRawDes(ctx, scope));
+                  while(!ctx.in.drop(Core::TOK_Equal));
 
-            sub.back().desig = {Core::Move, desig.begin(), desig.end()};
+                  sub.emplace_back(GetInitRaw(ctx, scope));
+
+                  sub.back().desig = {Core::Move, desig.begin(), desig.end()};
+               }
+               else
+                  sub.emplace_back(GetInitRaw(ctx, scope));
+            }
+            while(ctx.in.drop(Core::TOK_Comma) && !ctx.in.peek(Core::TOK_BraceC));
+
+            if(!ctx.in.drop(Core::TOK_BraceC))
+               throw Core::ExceptStr(ctx.in.peek().pos, "expected '}'");
+
+            init.valueSub = {Core::Move, sub.begin(), sub.end()};
          }
+
+         // Unbracketed initializer.
          else
-            sub.emplace_back(GetInitRaw(ctx, scope));
-      }
-      while(ctx.in.drop(Core::TOK_Comma) && !ctx.in.peek(Core::TOK_BraceC));
-
-      if(!ctx.in.drop(Core::TOK_BraceC))
-         throw Core::ExceptStr(ctx.in.peek().pos, "expected '}'");
-
-      init.valueSub = {Core::Move, sub.begin(), sub.end()};
-   }
-
-   // Unbracketed initializer.
-   else
-   {
-      // Possible string-initializer.
-      if(ctx.in.peek().isTokString())
-      {
-         auto tok = ctx.in.get();
-
-         if(ctx.in.peek(Core::TOK_Comma) || ctx.in.peek(Core::TOK_BraceC))
          {
-            init.valueTok = tok;
-            return init;
+            // Possible string-initializer.
+            if(ctx.in.peek().isTokString())
+            {
+               auto tok = ctx.in.get();
+
+               if(ctx.in.peek(Core::TOK_Comma) ||
+                  ctx.in.peek(Core::TOK_Semico) ||
+                  ctx.in.peek(Core::TOK_BraceC))
+               {
+                  init.valueTok = tok;
+                  return init;
+               }
+               else
+                  ctx.in.unget();
+            }
+
+            init.valueExp = GetExp_Assi(ctx, scope);
          }
-         else
-            ctx.in.unget();
+
+         return init;
       }
 
-      init.valueExp = CC::GetExp_Assi(ctx, scope);
+      //
+      // GetInitRawDes
+      //
+      static InitRawDes GetInitRawDes(ParserCtx const &ctx, Scope &scope)
+      {
+         if(ctx.in.drop(Core::TOK_Dot))
+         {
+            if(!ctx.in.peek(Core::TOK_Identi))
+               throw Core::ExceptStr(ctx.in.peek().pos, "expected identifier");
+
+            return ctx.in.get().str;
+         }
+         else if(ctx.in.drop(Core::TOK_BrackO))
+         {
+            InitRawDes desig = ExpToFastU(GetExp_Cond(ctx, scope));
+
+            if(!ctx.in.drop(Core::TOK_BrackC))
+               throw Core::ExceptStr(ctx.in.peek().pos, "expected ']'");
+
+            return desig;
+         }
+         else
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected designator");
+      }
    }
-
-   return init;
-}
-
-//
-// GetInitRawDes
-//
-static GDCC::CC::InitRawDes GetInitRawDes(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   if(ctx.in.drop(Core::TOK_Dot))
-   {
-      if(!ctx.in.peek(Core::TOK_Identi))
-         throw Core::ExceptStr(ctx.in.peek().pos, "expected identifier");
-
-      return ctx.in.get().str;
-   }
-   else if(ctx.in.drop(Core::TOK_BrackO))
-   {
-      CC::InitRawDes desig = CC::ExpToFastU(CC::GetExp_Cond(ctx, scope));
-
-      if(!ctx.in.drop(Core::TOK_BrackC))
-         throw Core::ExceptStr(ctx.in.peek().pos, "expected ']'");
-
-      return desig;
-   }
-   else
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected designator");
 }
 
 
