@@ -199,7 +199,7 @@ namespace GDCC
             q.aRest |= t->getQual().aRest;
             q.aVola |= t->getQual().aVola;
 
-            return t->getTypeQual(q);
+            return t->getTypeQual(q)->getTypeArrayQualAddr(q.space);
          };
 
          // Linear search for matching member.

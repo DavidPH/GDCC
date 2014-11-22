@@ -120,6 +120,8 @@ namespace GDCC
 
          virtual bool v_isObject() const;
 
+         virtual void v_setRefer() const;
+
       private:
          mutable IRExpCPtr cacheIRExp;
       };

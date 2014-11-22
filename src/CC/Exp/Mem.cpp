@@ -10,6 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
+#include "CC/Exp/Mem.hpp"
+
 #include "CC/Exp/Add.hpp"
 
 #include "AST/Arg.hpp"
@@ -27,32 +29,35 @@ namespace GDCC
    namespace CC
    {
       //
-      // ExpCreate_Mem
+      // Exp_Mem::v_genStmnt
       //
-      AST::Exp::CRef ExpCreate_Mem(AST::Exp const *l,
-         Core::String r, Core::Origin pos)
+      void Exp_Mem::v_genStmnt(AST::GenStmntCtx const &ctx,
+         AST::Arg const &dst) const
       {
-         AST::Exp::CRef expL{l};
+         AST::GenStmnt_Move(this, ctx, dst, getArg());
+      }
 
-         auto argL  = expL->getArg();
-         auto typeL = expL->getType();
-
+      //
+      // Exp_Mem::v_getArg
+      //
+      AST::Arg Exp_Mem::v_getArg() const
+      {
          try
          {
             // Lookup member.
-            auto mem = typeL->getMember(r);
+            auto mem = expL->getType()->getMember(expR);
 
             // Calculate pointer offset.
             auto off  = mem.addr / mem.type->getSizeShift();
-            auto expR = ExpCreate_LitInt(AST::Type::Size, off, pos);
+            auto expO = ExpCreate_LitInt(AST::Type::Size, off, pos);
 
             // Create pointer expression.
-            typeL = mem.type->getTypePointer();
-            expL  = ExpConvert_Pointer(typeL, argL.data, pos);
-            expL  = Exp_AddPtrRaw::Create(typeL, expL, expR, pos);
+            auto type = mem.type->getTypePointer();
+            auto addr = ExpConvert_Pointer(type, expL->getArg().data, pos);
+                 addr = Exp_AddPtrRaw::Create(type, addr, expO, pos);
 
             // Convert pointer into an arg.
-            return AST::ExpCreate_Arg(AST::Arg(mem.type, expL), pos);
+            return {mem.type, addr};
          }
          catch(AST::TypeError const &)
          {
@@ -61,12 +66,52 @@ namespace GDCC
       }
 
       //
+      // Exp_Mem::v_getType
+      //
+      AST::Type::CRef Exp_Mem::v_getType() const
+      {
+         try
+         {
+            return expL->getType()->getMember(expR).type;
+         }
+         catch(AST::TypeError const &)
+         {
+            throw Core::ExceptStr(pos, "invalid member");
+         }
+      }
+
+      //
+      // Exp_Mem::v_isEffect
+      //
+      bool Exp_Mem::v_isEffect() const
+      {
+         return expL->isEffect();
+      }
+
+      //
+      // Exp_Mem::v_setRefer
+      //
+      void Exp_Mem::v_setRefer() const
+      {
+         expL->setRefer();
+      }
+
+      //
+      // ExpCreate_Mem
+      //
+      AST::Exp::CRef ExpCreate_Mem(AST::Exp const *l, Core::String r,
+         Core::Origin pos)
+      {
+         return Exp_Mem::Create(l, r, pos);
+      }
+
+      //
       // ExpCreate_MemPt
       //
-      AST::Exp::CRef ExpCreate_MemPt(AST::Exp const *l,
-         Core::String r, Core::Origin pos)
+      AST::Exp::CRef ExpCreate_MemPt(AST::Exp const *l, Core::String r,
+         Core::Origin pos)
       {
-         return ExpCreate_Mem(ExpCreate_Deref(l, pos), r, pos);
+         return Exp_Mem::Create(ExpCreate_Deref(l, pos), r, pos);
       }
    }
 }

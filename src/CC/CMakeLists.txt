@@ -104,6 +104,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    ../../inc/CC/Exp/Func.hpp
    ../../inc/CC/Exp/GenSel.hpp
    ../../inc/CC/Exp/Init.hpp
+   ../../inc/CC/Exp/Mem.hpp
    ../../inc/CC/Exp/Not.hpp
    ../../inc/CC/Exp/Obj.hpp
    ../../inc/CC/Exp/Refer.hpp

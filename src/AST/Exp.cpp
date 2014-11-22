@@ -255,8 +255,7 @@ namespace GDCC
       //
       void Exp::setRefer() const
       {
-         if(v_isObject())
-            v_getObject()->refer = true;
+         v_setRefer();
       }
 
       //
@@ -305,6 +304,15 @@ namespace GDCC
       bool Exp::v_isObject() const
       {
          return false;
+      }
+
+      //
+      // Exp::v_setRefer
+      //
+      void Exp::v_setRefer() const
+      {
+         if(v_isObject())
+            v_getObject()->refer = true;
       }
    }
 }
