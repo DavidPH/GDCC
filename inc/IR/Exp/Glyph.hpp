@@ -53,6 +53,8 @@ namespace GDCC
 
          virtual Value v_getValue() const;
 
+         virtual bool v_isEqual(Exp const *e) const;
+
          virtual bool v_isValue() const;
 
          virtual OArchive &v_putIR(OArchive &out) const;

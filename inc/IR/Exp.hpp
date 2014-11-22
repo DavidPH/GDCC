@@ -78,6 +78,8 @@ namespace GDCC
          GDCC_Core_CounterPreambleAbstract(GDCC::IR::Exp, GDCC::Core::Counter);
 
       public:
+         bool operator == (Exp const &e) const;
+
          virtual Core::String getName() const = 0;
 
          Type getType() const;
@@ -102,6 +104,8 @@ namespace GDCC
          virtual Type v_getType() const = 0;
 
          virtual Value v_getValue() const = 0;
+
+         virtual bool v_isEqual(Exp const *e) const;
 
          virtual bool v_isValue() const = 0;
 

@@ -36,6 +36,15 @@ namespace GDCC
       }
 
       //
+      // Exp::operator == Exp
+      //
+      bool Exp::operator == (Exp const &e) const
+      {
+         return this == &e || v_isEqual(&e) || e.v_isEqual(this) ||
+            (isValue() && e.isValue() && getValue() == e.getValue());
+      }
+
+      //
       // Exp::getType
       //
       Type Exp::getType() const
@@ -76,6 +85,14 @@ namespace GDCC
       }
 
       //
+      // Exp::putIR
+      //
+      OArchive &Exp::putIR(OArchive &out) const
+      {
+         return v_putIR(out << getName());
+      }
+
+      //
       // Exp::v_putIR
       //
       OArchive &Exp::v_putIR(OArchive &out) const
@@ -84,11 +101,11 @@ namespace GDCC
       }
 
       //
-      // Exp::putIR
+      // Exp::v_isEqual
       //
-      OArchive &Exp::putIR(OArchive &out) const
+      bool Exp::v_isEqual(Exp const *) const
       {
-         return v_putIR(out << getName());
+         return false;
       }
 
       //

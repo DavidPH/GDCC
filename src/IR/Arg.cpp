@@ -295,6 +295,29 @@ namespace GDCC
       }
 
       //
+      // operator Arg == Arg
+      //
+      bool operator == (Arg const &l, Arg const &r)
+      {
+         if(l.a == r.a) switch(l.a)
+         {
+            #define GDCC_IR_AddrList(name) \
+               case ArgBase::name: return l.a##name == r.a##name;
+            #include "IR/AddrList.hpp"
+         }
+
+         return false;
+      }
+
+      //
+      // operator Arg != Arg
+      //
+      bool operator != (Arg const &l, Arg const &r)
+      {
+         return !(l == r);
+      }
+
+      //
       // operator OArchive << Arg
       //
       OArchive &operator << (OArchive &out, Arg const &in)

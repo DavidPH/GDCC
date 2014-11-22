@@ -65,6 +65,20 @@ namespace GDCC
       }
 
       //
+      // Exp_Glyph::v_isEqual
+      //
+      bool Exp_Glyph::v_isEqual(Exp const *e) const
+      {
+         switch(e->getName())
+         {
+         case Core::STR_Glyph:
+            return glyph == static_cast<Exp_Glyph const *>(e)->glyph;
+
+         default: return false;
+         }
+      }
+
+      //
       // ExpCreate_Glyph
       //
       Exp::CRef ExpCreate_Glyph(Glyph glyph, Core::Origin pos)

@@ -39,6 +39,9 @@
       Arg_##name(Arg_##name const &) = default; \
       Arg_##name(Arg_##name &&) = default; \
       \
+      bool operator == (Arg_##name const &arg) const \
+         {return *idx == *arg.idx && *off == *arg.off;} \
+      \
       Arg_##name &operator = (Arg_##name const &) = default; \
       Arg_##name &operator = (Arg_##name &&) = default; \
    }
@@ -62,6 +65,9 @@
       Arg_##name(Arg_##name const &) = default; \
       Arg_##name(Arg_##name &&) = default; \
       \
+      bool operator == (Arg_##name const &arg) const \
+         {return *arr == *arg.arr && *idx == *arg.idx && *off == *arg.off;} \
+      \
       Arg_##name &operator = (Arg_##name const &) = default; \
       Arg_##name &operator = (Arg_##name &&) = default; \
    }
@@ -78,6 +84,8 @@ namespace GDCC
       class Arg;
 
       typedef AddrBase ArgBase;
+
+      bool operator == (Arg const &l, Arg const &r);
 
       //
       // ArgPtr1
@@ -154,6 +162,9 @@ namespace GDCC
          Arg_Cpy(Core::FastU value_) : value{value_} {}
          explicit Arg_Cpy(IArchive &in);
 
+         bool operator == (Arg_Cpy const &arg) const
+            {return value == arg.value;}
+
          IArchive &getIR(IArchive &in);
 
          OArchive &putIR(OArchive &out) const;
@@ -171,6 +182,9 @@ namespace GDCC
       public:
          explicit Arg_Lit(Exp const *value_) : value{value_} {}
          explicit Arg_Lit(IArchive &in);
+
+         bool operator == (Arg_Lit const &arg) const
+            {return *value == *arg.value;}
 
          IArchive &getIR(IArchive &in) {return in >> value;}
 
@@ -190,6 +204,8 @@ namespace GDCC
          Arg_Nul() = default;
          explicit Arg_Nul(IArchive &) {}
 
+         bool operator == (Arg_Nul const &) const {return true;}
+
          IArchive &getIR(IArchive &in) {return in;}
 
          OArchive &putIR(OArchive &out) const {return out;}
@@ -203,6 +219,8 @@ namespace GDCC
       public:
          Arg_Stk() = default;
          explicit Arg_Stk(IArchive &) {}
+
+         bool operator == (Arg_Stk const &) const {return true;}
 
          IArchive &getIR(IArchive &in) {return in;}
 
@@ -418,6 +436,9 @@ namespace GDCC
 {
    namespace IR
    {
+      bool operator == (Arg const &l, Arg const &r);
+      bool operator != (Arg const &l, Arg const &r);
+
       #define GDCC_IR_AddrList(name) \
          inline OArchive &operator << (OArchive &out, Arg_##name const &in) \
             {return in.putIR(out);}
