@@ -38,6 +38,7 @@ namespace GDCC
             {
             case IR::AddrBase::LocArs:
                space->value = LocArsArray;
+               backGlyphWord("___GDCC__LocArs", space->value);
                break;
 
             case IR::AddrBase::MapArr:
