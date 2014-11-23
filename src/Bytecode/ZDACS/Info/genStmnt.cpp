@@ -67,6 +67,11 @@ namespace GDCC
 
             case IR::Code::AddI_W:
             case IR::Code::AddU_W:
+            case IR::Code::SubI_W:
+            case IR::Code::SubU_W:
+               genStmnt_AddU_W();
+               break;
+
             case IR::Code::AndU_W:
             case IR::Code::DivI_W:
             case IR::Code::DivX_W:
@@ -78,8 +83,6 @@ namespace GDCC
             case IR::Code::OrXU_W:
             case IR::Code::ShLU_W:
             case IR::Code::ShRI_W:
-            case IR::Code::SubI_W:
-            case IR::Code::SubU_W:
                numChunkCODE += 4;
                break;
 

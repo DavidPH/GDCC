@@ -114,6 +114,7 @@ namespace GDCC
             void genSpaceInitiValue(InitData &ini, Core::FastU &itr, IR::Value const &val);
 
             virtual void genStmnt();
+            void genStmnt_AddU_W();
             void genStmnt_Call();
             void genStmnt_CmpU_EQ_W2();
             void genStmnt_CmpU_EQ_W3();
@@ -243,6 +244,7 @@ namespace GDCC
             void putInitiSpace(IR::Space &space, Code code);
 
             virtual void putStmnt();
+            void putStmnt_AddU_W();
             void putStmnt_Call();
             void putStmnt_CmpU_EQ_W2();
             void putStmnt_CmpU_EQ_W3();
@@ -268,6 +270,7 @@ namespace GDCC
             void putStmnt_ShLU_W3();
             void putStmnt_ShRI_W3();
             void putStmnt_ShRU_W3();
+            void putStmnt_SubU_W();
             void putStmnt_Swap_Wx(Core::FastU x);
             void putStmnt_Xcod_SID();
 
@@ -305,6 +308,7 @@ namespace GDCC
             virtual void trFunc();
 
             virtual void trStmnt();
+            void trStmnt_AddU_W();
             void trStmnt_Call();
             void trStmnt_CmpU_EQ(IR::Code codeMove);
             void trStmnt_Cspe();
@@ -323,6 +327,7 @@ namespace GDCC
             void trStmnt_ShRU_W();
             void trStmnt_ShRU_W2();
             void trStmnt_ShRU_W3();
+            void trStmnt_SubU_W();
             void trStmnt_Swap_Wx(Core::FastU x);
 
             void trStmntBitwise2();
