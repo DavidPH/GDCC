@@ -59,16 +59,25 @@ namespace GDCC
             if(!typeR->isCTypeInteg())
                throw Core::ExceptStr(pos, "expected integer operand");
 
-            auto baseL = typeL->getBaseType();
-
-            if(!baseL->isTypeComplete() || !baseL->isCTypeObject())
-               throw Core::ExceptStr(pos, "expected pointer to complete object");
-
             // Convert integer to int rank, retaining sign.
             if(typeR->getSizeBitsS())
                expR = ExpConvert_Arith(TypeIntegPrS, expR, pos);
             else
                expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
+
+            auto baseL = typeL->getBaseType();
+
+            // __str_ent* + int = char const __str_ars*
+            if(baseL->isTypeStrEnt())
+            {
+               AST::TypeQual qual = {{IR::AddrBase::StrArs, Core::STR_}};
+               qual.aCons = true;
+               auto type = TypeChar->getTypeQual(qual)->getTypePointer();
+               return Exp_AddStrEntInt::Create(type, expL, expR, pos);
+            }
+
+            if(!baseL->isTypeComplete() || !baseL->isCTypeObject())
+               throw Core::ExceptStr(pos, "expected pointer to complete object");
 
             // As of the time of this comment, multi-word pointers only need
             // their high word modified to be added to, and therefore do not

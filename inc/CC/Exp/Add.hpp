@@ -87,6 +87,23 @@ namespace GDCC
 
          virtual IRExpCRef v_getIRExp() const;
       };
+
+      //
+      // Exp_AddStrEntInt
+      //
+      class Exp_AddStrEntInt : public AST::Exp_Binary
+      {
+         GDCC_Core_CounterPreamble(
+            GDCC::CC::Exp_AddStrEntInt, GDCC::AST::Exp_Binary);
+
+         GDCC_AST_Exp_BinaryCreator(Exp_AddStrEntInt);
+
+      protected:
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
+            AST::Arg const &dst) const;
+
+         virtual bool v_isIRExp() const {return false;}
+      };
    }
 }
 

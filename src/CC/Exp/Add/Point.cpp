@@ -90,6 +90,22 @@ namespace GDCC
       {
          return IR::ExpCreate_AddPtrRaw(expL->getIRExp(), expR->getIRExp(), pos);
       }
+
+      //
+      // Exp_AddStrEntInt::v_genStmnt
+      //
+      void Exp_AddStrEntInt::v_genStmnt(AST::GenStmntCtx const &ctx,
+         AST::Arg const &dst) const
+      {
+         if(GenStmntNul(this, ctx, dst)) return;
+
+         // Evaluate operands.
+         expL->genStmntStk(ctx);
+         expR->genStmntStk(ctx);
+
+         // Move to destination.
+         GenStmnt_MovePart(this, ctx, dst, false, true);
+      }
    }
 }
 
