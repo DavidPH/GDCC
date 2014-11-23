@@ -97,19 +97,62 @@
 #define __GDCC__FormatX_d_g(data, format) \
    __GDCC__FormatGenAccum((data), (format), X, d)
 
+//
+// __GDCC__LocArs
+//
+#define __GDCC__LocArs __glyph(int, "___GDCC__LocArs")
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
+//
+// intmax_t
+//
+#ifndef __GDCC_Have__intmax_t__
+#define __GDCC_Have__intmax_t__
+typedef long long intmax_t;
+#endif
+
+//
+// ptrdiff_t
+//
+#ifndef __GDCC_Have__ptrdiff_t__
+#define __GDCC_Have__ptrdiff_t__
+typedef int ptrdiff_t;
+#endif
+
+//
+// size_t
+//
 #ifndef __GDCC_Have__size_t__
 #define __GDCC_Have__size_t__
 typedef unsigned size_t;
 #endif
 
+//
+// ssize_t
+//
 #ifndef __GDCC_Have__ssize_t__
 #define __GDCC_Have__ssize_t__
 typedef int ssize_t;
+#endif
+
+//
+// uintmax_t
+//
+#ifndef __GDCC_Have__uintmax_t__
+#define __GDCC_Have__uintmax_t__
+typedef unsigned long long uintmax_t;
+#endif
+
+//
+// uptrdiff_t
+//
+#ifndef __GDCC_Have__uptrdiff_t__
+#define __GDCC_Have__uptrdiff_t__
+typedef unsigned uptrdiff_t;
 #endif
 
 //
