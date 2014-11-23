@@ -80,12 +80,14 @@
 //
 // __GDCC__FormatU_*_g
 //
+#define __GDCC__FormatU_X_g(data, format) \
+   __GDCC__FormatGenInteg((data), (format), U, X)
+#define __GDCC__FormatU_b_g(data, format) \
+   __GDCC__FormatGenInteg((data), (format), U, b)
 #define __GDCC__FormatU_d_g(data, format) \
    __GDCC__FormatGenInteg((data), (format), U, d)
 #define __GDCC__FormatU_o_g(data, format) \
    __GDCC__FormatGenInteg((data), (format), U, o)
-#define __GDCC__FormatU_X_g(data, format) \
-   __GDCC__FormatGenInteg((data), (format), U, X)
 #define __GDCC__FormatU_x_g(data, format) \
    __GDCC__FormatGenInteg((data), (format), U, x)
 
@@ -153,6 +155,14 @@ __GDCC__FormatDecl(K, d, unsigned _Accum);
 __GDCC__FormatDecl(K, dh, short unsigned _Accum);
 __GDCC__FormatDecl(K, dl, long unsigned _Accum);
 
+__GDCC__FormatDecl(U, X, unsigned);
+__GDCC__FormatDecl(U, Xl, long unsigned);
+__GDCC__FormatDecl(U, Xll, long long unsigned);
+
+__GDCC__FormatDecl(U, b, unsigned);
+__GDCC__FormatDecl(U, bl, long unsigned);
+__GDCC__FormatDecl(U, bll, long long unsigned);
+
 __GDCC__FormatDecl(U, d, unsigned);
 __GDCC__FormatDecl(U, dl, long unsigned);
 __GDCC__FormatDecl(U, dll, long long unsigned);
@@ -161,9 +171,6 @@ __GDCC__FormatDecl(U, o, unsigned);
 __GDCC__FormatDecl(U, ol, long unsigned);
 __GDCC__FormatDecl(U, oll, long long unsigned);
 
-__GDCC__FormatDecl(U, X, unsigned);
-__GDCC__FormatDecl(U, Xl, long unsigned);
-__GDCC__FormatDecl(U, Xll, long long unsigned);
 __GDCC__FormatDecl(U, x, unsigned);
 __GDCC__FormatDecl(U, xl, long unsigned);
 __GDCC__FormatDecl(U, xll, long long unsigned);

@@ -153,6 +153,22 @@
    }
 
 //
+// FormatIntAltB
+//
+#define FormatIntAltB(c) \
+   if(format.flags & __GDCC__FormatFlag_AltF) \
+   { \
+      *--ret.begin = (c); \
+      *--ret.begin = '0'; \
+      \
+      if(!(format.flags & __GDCC__FormatFlag_Pad0) || \
+         format.flags & __GDCC__FormatFlag_Left) \
+      { \
+         ret.len += 2; \
+      } \
+   }
+
+//
 // FormatIntAltX
 //
 #define FormatIntAltX(c) \
@@ -166,6 +182,23 @@
       { \
          ret.len += 2; \
       } \
+   }
+
+//
+// FormatIntCoreB
+//
+#define FormatIntCoreB() \
+   /* Perform core conversion. */ \
+   for(; data; data >>= 1) \
+      *--ret.begin = ((int)data & 1) + '0'; \
+   \
+   ret.len = ret.end - ret.begin; \
+   \
+   if(format.flags & __GDCC__FormatFlag_AltF && \
+      format.flags & __GDCC__FormatFlag_Pad0 && \
+      !(format.flags & __GDCC__FormatFlag_Left)) \
+   { \
+      ret.len += 2; \
    }
 
 //
@@ -373,6 +406,84 @@ __GDCC__FormatDecl(K, dl, long _Accum)
 }
 
 //
+// __GDCC__FormatU_X
+//
+__GDCC__FormatDecl(U, X, unsigned)
+{
+   FormatIntPreU();
+   FormatIntCoreX("0123456789ABCDEF");
+   FormatIntPrec();
+   FormatIntAltX('X');
+
+   return ret;
+}
+
+//
+// __GDCC__FormatU_Xl
+//
+__GDCC__FormatDecl(U, Xl, long unsigned)
+{
+   FormatIntPreU();
+   FormatIntCoreX("0123456789ABCDEF");
+   FormatIntPrec();
+   FormatIntAltX('X');
+
+   return ret;
+}
+
+//
+// __GDCC__FormatU_Xll
+//
+__GDCC__FormatDecl(U, Xll, long long unsigned)
+{
+   FormatIntPreU();
+   FormatIntCoreX("0123456789ABCDEF");
+   FormatIntPrec();
+   FormatIntAltX('X');
+
+   return ret;
+}
+
+//
+// __GDCC__FormatU_b
+//
+__GDCC__FormatDecl(U, b, unsigned)
+{
+   FormatIntPreU();
+   FormatIntCoreB();
+   FormatIntPrec();
+   FormatIntAltB('b');
+
+   return ret;
+}
+
+//
+// __GDCC__FormatU_bl
+//
+__GDCC__FormatDecl(U, bl, long unsigned)
+{
+   FormatIntPreU();
+   FormatIntCoreB();
+   FormatIntPrec();
+   FormatIntAltB('b');
+
+   return ret;
+}
+
+//
+// __GDCC__FormatU_bll
+//
+__GDCC__FormatDecl(U, bll, long long unsigned)
+{
+   FormatIntPreU();
+   FormatIntCoreB();
+   FormatIntPrec();
+   FormatIntAltB('b');
+
+   return ret;
+}
+
+//
 // __GDCC__FormatU_d
 //
 __GDCC__FormatDecl(U, d, unsigned)
@@ -440,45 +551,6 @@ __GDCC__FormatDecl(U, oll, long long unsigned)
    FormatIntPreU();
    FormatIntCoreO();
    FormatIntPrec();
-
-   return ret;
-}
-
-//
-// __GDCC__FormatU_X
-//
-__GDCC__FormatDecl(U, X, unsigned)
-{
-   FormatIntPreU();
-   FormatIntCoreX("0123456789ABCDEF");
-   FormatIntPrec();
-   FormatIntAltX('X');
-
-   return ret;
-}
-
-//
-// __GDCC__FormatU_Xl
-//
-__GDCC__FormatDecl(U, Xl, long unsigned)
-{
-   FormatIntPreU();
-   FormatIntCoreX("0123456789ABCDEF");
-   FormatIntPrec();
-   FormatIntAltX('X');
-
-   return ret;
-}
-
-//
-// __GDCC__FormatU_Xll
-//
-__GDCC__FormatDecl(U, Xll, long long unsigned)
-{
-   FormatIntPreU();
-   FormatIntCoreX("0123456789ABCDEF");
-   FormatIntPrec();
-   FormatIntAltX('X');
 
    return ret;
 }
