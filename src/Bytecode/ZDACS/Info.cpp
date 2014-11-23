@@ -711,6 +711,10 @@ namespace GDCC
                CheckArgB(*arg.aMapReg.idx, IR::ArgBase::Lit, pos);
                break;
 
+            case IR::ArgBase::StrArs:
+               CheckArg(*arg.aStrArs.idx, pos);
+               break;
+
             case IR::ArgBase::WldArr:
                CheckArgB(*arg.aWldArr.arr, IR::ArgBase::Lit, pos);
                CheckArg (*arg.aWldArr.idx, pos);
