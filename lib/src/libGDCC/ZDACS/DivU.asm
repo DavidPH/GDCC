@@ -71,7 +71,7 @@ Function "___GDCC__DiXU_W" \
    SubU_W,    Stk(), Stk(), Stk()
    CmpI_GE_W, Stk(), Stk(), LocReg(Lit(1), 0)
    Cjmp_Nil,  Stk(), Lit("___GDCC__DiXU_W$l1r01_r")
-   Casm,      Lit(46), Lit(2) ; IncU
+   AddU_W,    LocReg(Lit(2), 0), LocReg(Lit(2), 0), Lit(1)
 
 "___GDCC__DiXU_W$l1r01_r"
    Move_W, Stk(), LocReg(Lit(2), 0)
@@ -623,7 +623,7 @@ Function "___GDCC__DivU_W" \
    SubU_W,    Stk(), Stk(), Stk()
    CmpI_GE_W, Stk(), Stk(), LocReg(Lit(1), 0)
    Cjmp_Nil,  Stk(), Lit("___GDCC__DivU_W$l1r01_r")
-   Casm,      Lit(46), Lit(2) ; IncU
+   AddU_W,    LocReg(Lit(2), 0), LocReg(Lit(2), 0), Lit(1)
 
 "___GDCC__DivU_W$l1r01_r"
    Move_W, Stk(), LocReg(Lit(2), 0)
@@ -753,7 +753,7 @@ Function "___GDCC__ModU_W" \
    SubU_W,    Stk(), Stk(), Stk()
    CmpI_GE_W, Stk(), Stk(), LocReg(Lit(1), 0)
    Cjmp_Nil,  Stk(), Lit("___GDCC__ModU_W$l1r01_r")
-   Casm,      Lit(46), Lit(2) ; IncU
+   AddU_W,    LocReg(Lit(2), 0), LocReg(Lit(2), 0), Lit(1)
 
 "___GDCC__ModU_W$l1r01_r"
    Move_W, Stk(), LocReg(Lit(0), 0)

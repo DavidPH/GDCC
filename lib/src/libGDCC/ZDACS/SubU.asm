@@ -70,10 +70,8 @@ Function "___GDCC__SubU_W3" \
    Cjmp_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder1")
 
    ; Both underflowed.
-;  SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
-;  SubU_W,  LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
-   Casm,    Lit(49), Lit(7) ; DecU_LocReg
-   Casm,    Lit(49), Lit(8) ; DecU_LocReg
+   SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
+   SubU_W,  LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
 
    Move_W3, Stk(), LocReg(Lit(6), 0)
    Retn,    Stk(), Stk(), Stk()
@@ -84,17 +82,14 @@ Function "___GDCC__SubU_W3" \
    Cjmp_Tru, Stk(), Lit("___GDCC__SubU_W3$notunder1+")
 
    ; Both underflowed, actually.
-;  SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
-;  SubU_W,  LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
-   Casm,    Lit(49), Lit(7) ; DecU_LocReg
-   Casm,    Lit(49), Lit(8) ; DecU_LocReg
+   SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
+   SubU_W,  LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
    Move_W3, Stk(), LocReg(Lit(6), 0)
    Retn,    Stk(), Stk(), Stk()
 
 "___GDCC__SubU_W3$notunder1+"
    ; Only 0 underflowed, actually.
-;  SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
-   Casm,    Lit(49), Lit(7) ; DecU_LocReg
+   SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
    Move_W3, Stk(), LocReg(Lit(6), 0)
    Retn,    Stk(), Stk(), Stk()
 
@@ -103,8 +98,7 @@ Function "___GDCC__SubU_W3" \
    Cjmp_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder01")
 
    ; Only 1 underflowed.
-;  SubU_W, LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
-   Casm,   Lit(49), Lit(8) ; DecU_LocReg
+   SubU_W, LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
 
 "___GDCC__SubU_W3$notunder01"
    ; Neither underflowed.
