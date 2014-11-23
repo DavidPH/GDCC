@@ -129,6 +129,10 @@ namespace GDCC
             if(*itr == 'X' || *itr == 'x')
                itr = SkipHex(itr + 1, end);
 
+            // binary-constant
+            if(*itr == 'B' || *itr == 'b')
+               itr = SkipBin(itr + 1, end);
+
             // octal-constant
             else
                itr = SkipOct(itr, end);
@@ -204,6 +208,17 @@ namespace GDCC
          // floating-suffix(opt)
          if(itr == end) return true;
          return (*itr == 'F' || *itr == 'f' || *itr == 'L' || *itr == 'l') && ++itr == end;
+      }
+
+      //
+      // PPTokenTBuf::SkipBin
+      //
+      char const *PPTokenTBuf::SkipBin(char const *itr, char const *end)
+      {
+         for(; itr != end; ++itr)
+            if('0' > *itr || *itr > '1') break;
+
+         return itr;
       }
 
       //

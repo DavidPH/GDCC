@@ -45,6 +45,7 @@ namespace GDCC
          Core::Token     buf[1];
 
 
+         static char const *SkipBin(char const *itr, char const *end);
          static char const *SkipDec(char const *itr, char const *end);
          static char const *SkipFlt(char const *itr, char const *end);
          static char const *SkipHex(char const *itr, char const *end);
