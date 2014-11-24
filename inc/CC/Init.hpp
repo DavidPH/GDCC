@@ -195,6 +195,10 @@ namespace GDCC
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst, bool skipZero) const;
 
+         virtual IR::Exp::CRef v_getIRExp() const;
+
+         virtual bool v_isIRExp() const;
+
          Core::Array<std::unique_ptr<Init>> subs;
       };
 
@@ -212,6 +216,10 @@ namespace GDCC
 
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst, bool skipZero) const;
+
+         virtual IR::Exp::CRef v_getIRExp() const;
+
+         virtual bool v_isIRExp() const;
 
          std::vector<std::unique_ptr<Init>> subs;
 

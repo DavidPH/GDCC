@@ -80,7 +80,8 @@ namespace GDCC
                return;
 
             // Try to evaluate constant expressions now.
-            if(isIRExp())
+            // TODO: Add large literal handling to GenStmnt_Move.
+            if(getType()->getSizeWords() <= 6 && isIRExp())
             {
                GenStmnt_Move(this, ctx, dst,
                   Arg(getType(), IR::AddrBase::Lit, this));

@@ -528,6 +528,25 @@ namespace GDCC
       }
 
       //
+      // Init_Array::v_getIRExp
+      //
+      IR::Exp::CRef Init_Array::v_getIRExp() const
+      {
+         return IR::ExpCreate_Array(type->getBaseType()->getIRType(),
+            {subs.begin(), subs.end(), [](std::unique_ptr<Init> const &ini)
+               {return ini->getIRExp();}}, pos);
+      }
+
+      //
+      // Init_Array::v_isIRExp
+      //
+      bool Init_Array::v_isIRExp() const
+      {
+         for(auto const &sub : subs) if(!sub->isIRExp()) return false;
+         return true;
+      }
+
+      //
       // Init_Array0 constructor
       //
       Init_Array0::Init_Array0(AST::Type const *type_, Core::FastU offset_,
@@ -563,6 +582,25 @@ namespace GDCC
          AST::Arg const &arg, bool skipZero) const
       {
          for(auto const &sub : subs) sub->genStmnt(ctx, arg, skipZero);
+      }
+
+      //
+      // Init_Array0::v_getIRExp
+      //
+      IR::Exp::CRef Init_Array0::v_getIRExp() const
+      {
+         return IR::ExpCreate_Array(subT->getIRType(),
+            {subs.begin(), subs.end(), [](std::unique_ptr<Init> const &ini)
+               {return ini->getIRExp();}}, pos);
+      }
+
+      //
+      // Init_Array0::v_isIRExp
+      //
+      bool Init_Array0::v_isIRExp() const
+      {
+         for(auto const &sub : subs) if(!sub->isIRExp()) return false;
+         return true;
       }
 
       //
