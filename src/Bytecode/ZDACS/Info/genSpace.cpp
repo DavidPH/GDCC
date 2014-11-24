@@ -228,6 +228,12 @@ namespace GDCC
                iv->val = val.vFunct.value;
                break;
 
+            case IR::ValueBase::Point:
+               iv = &ini.vals[itr++];
+               iv->tag = InitTag::Fixed;
+               iv->val = val.vPoint.value;
+               break;
+
             case IR::ValueBase::StrEn:
                iv = &ini.vals[itr++];
                if((val.vFunct.value & 0xFFFFFFFF) == 0xFFFFFFFF)
