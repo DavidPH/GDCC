@@ -58,7 +58,6 @@ namespace GDCC
          pos  {tmp.pos},
          block{tmp.block},
          expB {tmp.expB},
-         expO {tmp.expO},
          fn   {tmp.fn},
          prog {tmp.prog}
       {
@@ -85,7 +84,6 @@ namespace GDCC
          pos   = tmp.pos;
          block = tmp.block;
          expB  = tmp.expB;
-         expO  = tmp.expO;
          fn    = tmp.fn;
          prog  = tmp.prog;
 
@@ -110,8 +108,6 @@ namespace GDCC
          }
 
          block = fn->localTmp.alloc(allocSize);
-         expO  = IR::ExpCreate_Value(
-            IR::Value_Fixed(block->lo, Type::Size->getIRType().tFixed), pos);
       }
 
       //
@@ -130,7 +126,7 @@ namespace GDCC
       //
       IR::Arg_LocReg Temporary::getArg() const
       {
-         return {IR::Arg_Lit(expB), expO};
+         return {IR::Arg_Lit(expB), block->lo};
       }
 
       //
@@ -138,10 +134,7 @@ namespace GDCC
       //
       IR::Arg_LocReg Temporary::getArg(Core::FastU off) const
       {
-         if(!off) return {IR::Arg_Lit(expB), expO};
-
-         return {IR::Arg_Lit(expB), IR::ExpCreate_Value(
-            IR::Value_Fixed(block->lo + off, Type::Size->getIRType().tFixed), pos)};
+         return {IR::Arg_Lit(expB), block->lo + off};
       }
 
       //

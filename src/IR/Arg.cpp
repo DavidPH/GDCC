@@ -45,7 +45,7 @@ namespace GDCC
       // ArgPtr1 constructor
       //
       ArgPtr1::ArgPtr1(Arg const &idx_) :
-         idx{new Arg(idx_)}, off{ExpCreate_Zero()}
+         idx{new Arg(idx_)}, off{0}
       {
       }
 
@@ -53,14 +53,14 @@ namespace GDCC
       // ArgPtr1 constructor
       //
       ArgPtr1::ArgPtr1(Arg &&idx_) :
-         idx{new Arg(std::move(idx_))}, off{ExpCreate_Zero()}
+         idx{new Arg(std::move(idx_))}, off{0}
       {
       }
 
       //
       // ArgPtr1 constructor
       //
-      ArgPtr1::ArgPtr1(Arg const &idx_, Exp const *off_) :
+      ArgPtr1::ArgPtr1(Arg const &idx_, Core::FastU off_) :
          idx{new Arg(idx_)}, off{off_}
       {
       }
@@ -68,7 +68,7 @@ namespace GDCC
       //
       // ArgPtr1 constructor
       //
-      ArgPtr1::ArgPtr1(Arg &&idx_, Exp const *off_) :
+      ArgPtr1::ArgPtr1(Arg &&idx_, Core::FastU off_) :
          idx{new Arg(std::move(idx_))}, off{off_}
       {
       }
@@ -139,8 +139,7 @@ namespace GDCC
       // ArgPtr2 constructor
       //
       ArgPtr2::ArgPtr2(Arg const &arr_, Arg const &idx_) :
-         arr{Core::Array<Arg>::Pak(arr_, idx_)}, idx{arr + 1},
-         off{ExpCreate_Zero()}
+         arr{Core::Array<Arg>::Pak(arr_, idx_)}, idx{arr + 1}, off{0}
       {
       }
 
@@ -148,8 +147,7 @@ namespace GDCC
       // ArgPtr2 constructor
       //
       ArgPtr2::ArgPtr2(Arg const &arr_, Arg &&idx_) :
-         arr{Core::Array<Arg>::Pak(arr_, std::move(idx_))}, idx{arr + 1},
-         off{ExpCreate_Zero()}
+         arr{Core::Array<Arg>::Pak(arr_, std::move(idx_))}, idx{arr + 1}, off{0}
       {
       }
 
@@ -157,8 +155,7 @@ namespace GDCC
       // ArgPtr2 constructor
       //
       ArgPtr2::ArgPtr2(Arg &&arr_, Arg const &idx_) :
-         arr{Core::Array<Arg>::Pak(std::move(arr_), idx_)}, idx{arr + 1},
-         off{ExpCreate_Zero()}
+         arr{Core::Array<Arg>::Pak(std::move(arr_), idx_)}, idx{arr + 1}, off{0}
       {
       }
 
@@ -167,14 +164,14 @@ namespace GDCC
       //
       ArgPtr2::ArgPtr2(Arg &&arr_, Arg &&idx_) :
          arr{Core::Array<Arg>::Pak(std::move(arr_), std::move(idx_))},
-         idx{arr + 1}, off{ExpCreate_Zero()}
+         idx{arr + 1}, off{0}
       {
       }
 
       //
       // ArgPtr2 constructor
       //
-      ArgPtr2::ArgPtr2(Arg const &arr_, Arg const &idx_, Exp const *off_) :
+      ArgPtr2::ArgPtr2(Arg const &arr_, Arg const &idx_, Core::FastU off_) :
          arr{Core::Array<Arg>::Pak(arr_, idx_)}, idx{arr + 1}, off{off_}
       {
       }
@@ -182,7 +179,7 @@ namespace GDCC
       //
       // ArgPtr2 constructor
       //
-      ArgPtr2::ArgPtr2(Arg const &arr_, Arg &&idx_, Exp const *off_) :
+      ArgPtr2::ArgPtr2(Arg const &arr_, Arg &&idx_, Core::FastU off_) :
          arr{Core::Array<Arg>::Pak(arr_, std::move(idx_))}, idx{arr + 1},
          off{off_}
       {
@@ -191,7 +188,7 @@ namespace GDCC
       //
       // ArgPtr2 constructor
       //
-      ArgPtr2::ArgPtr2(Arg &&arr_, Arg const &idx_, Exp const *off_) :
+      ArgPtr2::ArgPtr2(Arg &&arr_, Arg const &idx_, Core::FastU off_) :
          arr{Core::Array<Arg>::Pak(std::move(arr_), idx_)}, idx{arr + 1},
          off{off_}
       {
@@ -200,7 +197,7 @@ namespace GDCC
       //
       // ArgPtr2 constructor
       //
-      ArgPtr2::ArgPtr2(Arg &&arr_, Arg &&idx_, Exp const *off_) :
+      ArgPtr2::ArgPtr2(Arg &&arr_, Arg &&idx_, Core::FastU off_) :
          arr{Core::Array<Arg>::Pak(std::move(arr_), std::move(idx_))},
          idx{arr + 1}, off{off_}
       {

@@ -525,7 +525,7 @@ namespace GDCC
             auto putReg = [&](IR::ArgPtr1 const &a, Code code)
             {
                putCode(code);
-               putWord(GetWord(a.idx->aLit) + GetWord(a.off) + w);
+               putWord(GetWord(a.idx->aLit) + a.off + w);
             };
 
             switch(arg.a)
@@ -576,7 +576,7 @@ namespace GDCC
             auto putReg = [&](IR::ArgPtr1 const &a, Code code)
             {
                putCode(code);
-               putWord(GetWord(a.idx->aLit) + GetWord(a.off) + w);
+               putWord(GetWord(a.idx->aLit) + a.off + w);
             };
 
             switch(arg.a)
@@ -646,7 +646,7 @@ namespace GDCC
             auto putReg = [&](IR::ArgPtr1 const &a, Code code)
             {
                putCode(code);
-               putWord(GetWord(a.idx->aLit) + GetWord(a.off) + w);
+               putWord(GetWord(a.idx->aLit) + a.off + w);
             };
 
             switch(arg.a)

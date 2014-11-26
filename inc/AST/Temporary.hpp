@@ -62,7 +62,6 @@ namespace GDCC
          Core::Origin                     pos;
          Function::LocalTmp::Block const *block;
          Core::CounterPtr<IR::Exp const>  expB;
-         Core::CounterPtr<IR::Exp const>  expO;
          Function::Ref                    fn;
          IR::Program                     *prog;
       };

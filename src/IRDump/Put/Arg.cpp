@@ -29,8 +29,8 @@ namespace GDCC
       static void PutArgPart(std::ostream &out, IR::ArgPtr1 const &arg)
       {
          PutArg(out, *arg.idx);
-         out << ", ";
-         PutExp(out, arg.off);
+         if(arg.off)
+            out << ", " << arg.off;
       }
 
       //
@@ -41,8 +41,8 @@ namespace GDCC
          PutArg(out, *arg.arr);
          out << ", ";
          PutArg(out, *arg.idx);
-         out << ", ";
-         PutExp(out, arg.off);
+         if(arg.off)
+            out << ", " << arg.off;
       }
 
       //

@@ -22,84 +22,80 @@
 // Static Function                                                            |
 //
 
-//
-// GetArg0
-//
-template<typename T>
-static T GetArg0(GDCC::AS::ParserCtx const &ctx)
+namespace GDCC
 {
-   using namespace GDCC;
+   namespace AS
+   {
+      //
+      // GetArg0
+      //
+      template<typename T>
+      static T GetArg0(ParserCtx const &ctx)
+      {
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-   AS::TokenDrop(ctx, Core::TOK_ParenO, "'('");
-   AS::TokenDrop(ctx, Core::TOK_ParenC, "')'");
+         return T();
+      }
 
-   return T();
-}
+      //
+      // GetArgU
+      //
+      template<typename T>
+      static T GetArgU(ParserCtx const &ctx)
+      {
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+         auto exp = GetFastU(ctx);
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-//
-// GetArgU
-//
-template<typename T>
-static T GetArgU(GDCC::AS::ParserCtx const &ctx)
-{
-   using namespace GDCC;
+         return T(std::move(exp));
+      }
 
-   AS::TokenDrop(ctx, Core::TOK_ParenO, "'('");
-   auto exp = AS::GetFastU(ctx);
-   AS::TokenDrop(ctx, Core::TOK_ParenC, "')'");
+      //
+      // GetArg1
+      //
+      template<typename T>
+      static T GetArg1(ParserCtx const &ctx)
+      {
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+         auto exp = GetExp(ctx);
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-   return T(std::move(exp));
-}
+         return T(std::move(exp));
+      }
 
-//
-// GetArg1
-//
-template<typename T>
-static T GetArg1(GDCC::AS::ParserCtx const &ctx)
-{
-   using namespace GDCC;
+      //
+      // GetArg2
+      //
+      template<typename T>
+      static T GetArg2(ParserCtx const &ctx)
+      {
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+         auto arg = GetArg(ctx);
+         TokenDrop(ctx, Core::TOK_Comma, "','");
+         auto exp = GetFastU(ctx);
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-   AS::TokenDrop(ctx, Core::TOK_ParenO, "'('");
-   auto exp = AS::GetExp(ctx);
-   AS::TokenDrop(ctx, Core::TOK_ParenC, "')'");
+         return T(std::move(arg), std::move(exp));
+      }
 
-   return T(std::move(exp));
-}
+      //
+      // GetArg3
+      //
+      template<typename T>
+      static T GetArg3(ParserCtx const &ctx)
+      {
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+         auto arg0 = GetArg(ctx);
+         TokenDrop(ctx, Core::TOK_Comma, "','");
+         auto arg1 = GetArg(ctx);
+         TokenDrop(ctx, Core::TOK_Comma, "','");
+         auto exp  = GetFastU(ctx);
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-//
-// GetArg2
-//
-template<typename T>
-static T GetArg2(GDCC::AS::ParserCtx const &ctx)
-{
-   using namespace GDCC;
-
-   AS::TokenDrop(ctx, Core::TOK_ParenO, "'('");
-   auto arg = AS::GetArg(ctx);
-   AS::TokenDrop(ctx, Core::TOK_Comma, "','");
-   auto exp = AS::GetExp(ctx);
-   AS::TokenDrop(ctx, Core::TOK_ParenC, "')'");
-
-   return T(std::move(arg), std::move(exp));
-}
-
-//
-// GetArg3
-//
-template<typename T>
-static T GetArg3(GDCC::AS::ParserCtx const &ctx)
-{
-   using namespace GDCC;
-
-   AS::TokenDrop(ctx, Core::TOK_ParenO, "'('");
-   auto arg0 = AS::GetArg(ctx);
-   AS::TokenDrop(ctx, Core::TOK_Comma, "','");
-   auto arg1 = AS::GetArg(ctx);
-   AS::TokenDrop(ctx, Core::TOK_Comma, "','");
-   auto exp  = AS::GetExp(ctx);
-   AS::TokenDrop(ctx, Core::TOK_ParenC, "')'");
-
-   return T(std::move(arg0), std::move(arg1), std::move(exp));
+         return T(std::move(arg0), std::move(arg1), std::move(exp));
+      }
+   }
 }
 
 

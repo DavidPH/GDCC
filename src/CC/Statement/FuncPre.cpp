@@ -43,14 +43,13 @@ namespace GDCC
       static void MoveParam(AST::GenStmntCtx const &ctx, Core::FastU paramIdx,
          Core::FastU objValue, Core::FastU objWords)
       {
-         auto nulIdx = AST::ExpCreate_Size(0)->getIRExp();
          for(Core::FastU i = 0; i != objWords; ++i)
          {
             IR::Arg_Lit dstIdx{AST::ExpCreate_Size(objValue + i)->getIRExp()};
             IR::Arg_Lit srcIdx{AST::ExpCreate_Size(paramIdx + i)->getIRExp()};
 
             ctx.block.addStatementArgs(IR::Code::Move_W,
-               ArgT(dstIdx, nulIdx), IR::Arg_LocReg(srcIdx, nulIdx));
+               ArgT(dstIdx, 0), IR::Arg_LocReg(srcIdx, 0));
          }
       }
    }

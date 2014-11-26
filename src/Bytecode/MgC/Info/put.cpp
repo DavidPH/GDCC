@@ -423,14 +423,14 @@ namespace GDCC
                case IR::ArgBase::Lit:
                   *out << "push_dat" << '\0' << '(' << '\0';
                      *out << '+' << '\0';
-                        putExp(stmnt->args[1].aLocArs.off);
+                        *out << stmnt->args[1].aLocArs.off;
                         putExp(stmnt->args[1].aLocArs.idx->aLit.value);
                   *out << ')' << '\0';
                   break;
 
                case IR::ArgBase::Stk:
                   *out << "push_ptr" << '\0' << '(' << '\0';
-                     putExp(stmnt->args[1].aLocArs.off);
+                     *out << stmnt->args[1].aLocArs.off;
                   *out << ')' << '\0';
                   break;
 
@@ -464,14 +464,14 @@ namespace GDCC
                case IR::ArgBase::Lit:
                   *out << "drop_dat" << '\0' << '(' << '\0';
                      *out << '+' << '\0';
-                        putExp(stmnt->args[0].aLocArs.off);
+                        *out << stmnt->args[0].aLocArs.off;
                         putExp(stmnt->args[0].aLocArs.idx->aLit.value);
                   *out << ')' << '\0';
                   break;
 
                case IR::ArgBase::Stk:
                   *out << "drop_ptr" << '\0' << '(' << '\0';
-                     putExp(stmnt->args[0].aLocArs.off);
+                     *out << stmnt->args[0].aLocArs.off;
                   *out << ')' << '\0';
                   break;
 

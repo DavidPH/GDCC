@@ -40,7 +40,7 @@
       Arg_##name(Arg_##name &&) = default; \
       \
       bool operator == (Arg_##name const &arg) const \
-         {return *idx == *arg.idx && *off == *arg.off;} \
+         {return *idx == *arg.idx && off == arg.off;} \
       \
       Arg_##name &operator = (Arg_##name const &) = default; \
       Arg_##name &operator = (Arg_##name &&) = default; \
@@ -66,7 +66,7 @@
       Arg_##name(Arg_##name &&) = default; \
       \
       bool operator == (Arg_##name const &arg) const \
-         {return *arr == *arg.arr && *idx == *arg.idx && *off == *arg.off;} \
+         {return *arr == *arg.arr && *idx == *arg.idx && off == arg.off;} \
       \
       Arg_##name &operator = (Arg_##name const &) = default; \
       Arg_##name &operator = (Arg_##name &&) = default; \
@@ -97,8 +97,8 @@ namespace GDCC
          ArgPtr1(ArgPtr1 &&arg);
          ArgPtr1(Arg const &idx);
          ArgPtr1(Arg &&idx);
-         ArgPtr1(Arg const &idx, Exp const *off);
-         ArgPtr1(Arg &&idx, Exp const *off);
+         ArgPtr1(Arg const &idx, Core::FastU off);
+         ArgPtr1(Arg &&idx, Core::FastU off);
          explicit ArgPtr1(IArchive &in);
          ~ArgPtr1();
 
@@ -109,8 +109,8 @@ namespace GDCC
 
          OArchive &putIR(OArchive &out) const;
 
-         Arg      *idx;
-         Exp::CRef off;
+         Arg        *idx;
+         Core::FastU off;
       };
 
       //
@@ -125,10 +125,10 @@ namespace GDCC
          ArgPtr2(Arg const &arr, Arg &&idx);
          ArgPtr2(Arg &&arr, Arg const &idx);
          ArgPtr2(Arg &&arr, Arg &&idx);
-         ArgPtr2(Arg const &arr, Arg const &idx, Exp const *off);
-         ArgPtr2(Arg const &arr, Arg &&idx, Exp const *off);
-         ArgPtr2(Arg &&arr, Arg const &idx, Exp const *off);
-         ArgPtr2(Arg &&arr, Arg &&idx, Exp const *off);
+         ArgPtr2(Arg const &arr, Arg const &idx, Core::FastU off);
+         ArgPtr2(Arg const &arr, Arg &&idx, Core::FastU off);
+         ArgPtr2(Arg &&arr, Arg const &idx, Core::FastU off);
+         ArgPtr2(Arg &&arr, Arg &&idx, Core::FastU off);
          explicit ArgPtr2(IArchive &in);
          ~ArgPtr2();
 
@@ -139,9 +139,9 @@ namespace GDCC
 
          OArchive &putIR(OArchive &out) const;
 
-         Arg      *arr;
-         Arg      *idx;
-         Exp::CRef off;
+         Arg        *arr;
+         Arg        *idx;
+         Core::FastU off;
       };
 
       //

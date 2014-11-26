@@ -32,7 +32,7 @@
 //
 #define GDCC_AST_GenGenStmnt_Move_GenArgPtr2(ArgT) \
 template<> inline ArgT GenStmnt_Move_GenArg<ArgT>(Exp const *exp, \
-   GenStmntCtx const &ctx, Arg const &arg, IR::Arg &&idx, IR::Exp const *off) \
+   GenStmntCtx const &ctx, Arg const &arg, IR::Arg &&idx, Core::FastU off) \
 { \
    IR::Glyph glyph{&ctx.prog, arg.type->getQualAddr().name}; \
    auto arr = IR::ExpCreate_Glyph(glyph, exp->pos); \
@@ -54,7 +54,7 @@ namespace GDCC
       //
       template<typename ArgT>
       ArgT GenStmnt_Move_GenArg(Exp const *, GenStmntCtx const &, Arg const &,
-         IR::Arg &&idx, IR::Exp const *off)
+         IR::Arg &&idx, Core::FastU off)
       {
          return ArgT(std::move(idx), off);
       }
@@ -70,13 +70,9 @@ namespace GDCC
       void GenStmnt_MoveWordGetT(Exp const *exp, GenStmntCtx const &ctx,
          Arg const &arg, IR::Arg &&idx, Core::FastU off)
       {
-         // Convert offset to an IR expression.
-         auto offExp = IR::ExpCreate_Value(IR::Value_Fixed(off,
-            IR::Type_Fixed(32, 0, false, false)), exp->pos);
-
          ctx.block.addStatementArgs(IR::Code::Move_W,
             IR::Arg_Stk(),
-            GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, std::move(idx), offExp));
+            GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, std::move(idx), off));
       }
 
       //
@@ -86,12 +82,8 @@ namespace GDCC
       void GenStmnt_MoveWordSetT(Exp const *exp, GenStmntCtx const &ctx,
          Arg const &arg, IR::Arg &&idx, Core::FastU off)
       {
-         // Convert offset to an IR expression.
-         auto offExp = IR::ExpCreate_Value(IR::Value_Fixed(off,
-            IR::Type_Fixed(32, 0, false, false)), exp->pos);
-
          ctx.block.addStatementArgs(IR::Code::Move_W,
-            GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, std::move(idx), offExp),
+            GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, std::move(idx), off),
             IR::Arg_Stk());
       }
    }

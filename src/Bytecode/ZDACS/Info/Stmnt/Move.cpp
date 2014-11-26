@@ -42,11 +42,11 @@ namespace GDCC
                break;
 
             case IR::ArgBase::Loc:
-               numChunkCODE += stmnt->args[1].aLoc.off->isZero() ? 20 : 32;
+               numChunkCODE += stmnt->args[1].aLoc.off ? 32 : 20;
                break;
 
             case IR::ArgBase::LocArs:
-               numChunkCODE += stmnt->args[1].aLocArs.off->isZero() ? 8 : 20;
+               numChunkCODE += stmnt->args[1].aLocArs.off ? 20 : 8;
                break;
 
             case IR::ArgBase::MapArr:
@@ -54,7 +54,7 @@ namespace GDCC
                break;
 
             case IR::ArgBase::StrArs:
-               numChunkCODE += stmnt->args[1].aStrArs.off->isZero() ? 12 : 24;
+               numChunkCODE += stmnt->args[1].aStrArs.off ? 24 : 12;
                break;
 
             case IR::ArgBase::WldArr:
@@ -76,11 +76,11 @@ namespace GDCC
                break;
 
             case IR::ArgBase::Loc:
-               numChunkCODE += stmnt->args[0].aLoc.off->isZero() ? 24 : 36;
+               numChunkCODE += stmnt->args[0].aLoc.off ? 36 : 24;
                break;
 
             case IR::ArgBase::LocArs:
-               numChunkCODE += stmnt->args[0].aLocArs.off->isZero() ? 12 : 24;
+               numChunkCODE += stmnt->args[0].aLocArs.off ? 24 : 12;
                break;
 
             case IR::ArgBase::MapArr:
@@ -106,7 +106,7 @@ namespace GDCC
          //
          void Info::genStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr)
          {
-            numChunkCODE += arr.off->isZero() ? 12 : 24;
+            numChunkCODE += arr.off ? 24 : 12;
          }
 
          //
@@ -114,7 +114,7 @@ namespace GDCC
          //
          void Info::genStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr)
          {
-            numChunkCODE += arr.off->isZero() ? 8 : 20;
+            numChunkCODE += arr.off ? 20 : 8;
          }
 
          //
@@ -146,10 +146,10 @@ namespace GDCC
                putWord(getStkPtrIdx());
                putCode(Code::AddU);
 
-               if(!stmnt->args[1].aLoc.off->isZero())
+               if(stmnt->args[1].aLoc.off)
                {
                   putCode(Code::Push_Lit);
-                  putWord(GetWord(stmnt->args[1].aLoc.off));
+                  putWord(stmnt->args[1].aLoc.off);
                   putCode(Code::AddU);
                }
 
@@ -158,10 +158,10 @@ namespace GDCC
                break;
 
             case IR::ArgBase::LocArs:
-               if(!stmnt->args[1].aLocArs.off->isZero())
+               if(stmnt->args[1].aLocArs.off)
                {
                   putCode(Code::Push_Lit);
-                  putWord(GetWord(stmnt->args[1].aLocArs.off));
+                  putWord(stmnt->args[1].aLocArs.off);
                   putCode(Code::AddU);
                }
 
@@ -174,10 +174,10 @@ namespace GDCC
                break;
 
             case IR::ArgBase::StrArs:
-               if(!stmnt->args[1].aLocArs.off->isZero())
+               if(stmnt->args[1].aLocArs.off)
                {
                   putCode(Code::Push_Lit);
-                  putWord(GetWord(stmnt->args[1].aLocArs.off));
+                  putWord(stmnt->args[1].aLocArs.off);
                   putCode(Code::AddU);
                }
 
@@ -207,10 +207,10 @@ namespace GDCC
                putWord(getStkPtrIdx());
                putCode(Code::AddU);
 
-               if(!stmnt->args[0].aLoc.off->isZero())
+               if(stmnt->args[0].aLoc.off)
                {
                   putCode(Code::Push_Lit);
-                  putWord(GetWord(stmnt->args[0].aLoc.off));
+                  putWord(stmnt->args[0].aLoc.off);
                   putCode(Code::AddU);
                }
 
@@ -220,10 +220,10 @@ namespace GDCC
                break;
 
             case IR::ArgBase::LocArs:
-               if(!stmnt->args[0].aLocArs.off->isZero())
+               if(stmnt->args[0].aLocArs.off)
                {
                   putCode(Code::Push_Lit);
-                  putWord(GetWord(stmnt->args[0].aLocArs.off));
+                  putWord(stmnt->args[0].aLocArs.off);
                   putCode(Code::AddU);
                }
 
@@ -259,10 +259,10 @@ namespace GDCC
          //
          void Info::putStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr, Code code)
          {
-            if(!arr.off->isZero())
+            if(arr.off)
             {
                putCode(Code::Push_Lit);
-               putWord(GetWord(arr.off));
+               putWord(arr.off);
                putCode(Code::AddU);
             }
 
@@ -276,10 +276,10 @@ namespace GDCC
          //
          void Info::putStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr, Code code)
          {
-            if(!arr.off->isZero())
+            if(arr.off)
             {
                putCode(Code::Push_Lit);
-               putWord(GetWord(arr.off));
+               putWord(arr.off);
                putCode(Code::AddU);
             }
 

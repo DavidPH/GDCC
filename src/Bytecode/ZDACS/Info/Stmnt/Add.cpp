@@ -49,7 +49,7 @@ namespace GDCC
             auto putReg = [this](IR::ArgPtr1 const &a, Code add, Code inc)
             {
                putCode(stmnt->args[2].a == IR::ArgBase::Lit ? inc : add);
-               putWord(GetWord(a.idx->aLit) + GetWord(a.off));
+               putWord(GetWord(a.idx->aLit) + a.off);
             };
 
             switch(stmnt->args[0].a)
@@ -87,7 +87,7 @@ namespace GDCC
             auto putReg = [this](IR::ArgPtr1 const &a, Code sub, Code dec)
             {
                putCode(stmnt->args[2].a == IR::ArgBase::Lit ? dec : sub);
-               putWord(GetWord(a.idx->aLit) + GetWord(a.off));
+               putWord(GetWord(a.idx->aLit) + a.off);
             };
 
             switch(stmnt->args[0].a)
