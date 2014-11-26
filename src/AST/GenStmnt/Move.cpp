@@ -67,6 +67,16 @@ namespace GDCC
             return;
          }
 
+         // If arg address is an IR arg, use it.
+         // Note that isIRArg implies a lack of side effects.
+         if(arg.data->getArgSrc().isIRArg())
+         {
+            GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg,
+               arg.data->getArgSrc().getIRArg(), get, set);
+
+            return;
+         }
+
          // If fetching or setting a single word, use address on stack.
          if(arg.type->getSizeWords() == 1 && get ^ set)
          {
@@ -121,13 +131,19 @@ namespace GDCC
             {
                arg.data->genStmnt(ctx);
 
-               auto code = IR::ExpCode_Move(arg.type->getSizeWords());
+               auto size = arg.type->getSizeWords();
+               auto code = IR::ExpCode_Move(size);
 
                if(code == IR::Code::None)
-                  throw Core::ExceptStr(exp->pos, "unsupported literal size");
-
-               ctx.block.addStatementArgs(code,
-                  IR::Arg_Stk(), arg.data->getIRExp());
+               {
+                  auto argExp = arg.data->getIRExp();
+                  for(Core::FastU w = 0; w != size; ++w)
+                     ctx.block.addStatementArgs(IR::Code::Move_W,
+                        IR::Arg_Stk(), IR::Arg_Lit(argExp, w));
+               }
+               else
+                  ctx.block.addStatementArgs(code,
+                     IR::Arg_Stk(), arg.data->getIRExp());
             }
             else
                arg.data->genStmnt(ctx, Arg(arg.type, IR::AddrBase::Stk));
@@ -178,6 +194,19 @@ namespace GDCC
       void GenStmnt_Move(Exp const *exp, GenStmntCtx const &ctx,
          Arg const &dst, Arg const &src)
       {
+         // Try to use IR args.
+         if(dst.isIRArg() && src.isIRArg())
+         {
+            auto dstIR = dst.getIRArg();
+            auto srcIR = src.getIRArg();
+
+            for(Core::FastU w = 0, e = src.type->getSizeWords(); w != e; ++w)
+               ctx.block.addStatementArgs(IR::Code::Move_W,
+                  dstIR.getOffset(w), srcIR.getOffset(w));
+
+            return;
+         }
+
          // Fall back to dumping full objects to stack.
          GenStmnt_MovePart(exp, ctx, src, true, false);
          GenStmnt_MovePart(exp, ctx, dst, false, true);
@@ -189,6 +218,24 @@ namespace GDCC
       void GenStmnt_Move(Exp const *exp, GenStmntCtx const &ctx,
          Arg const &dst, Arg const &dup, Arg const &src)
       {
+         // Try to use IR args.
+         if(dst.isIRArg() && dup.isIRArg() && src.isIRArg())
+         {
+            auto dstIR = dst.getIRArg();
+            auto dupIR = dup.getIRArg();
+            auto srcIR = src.getIRArg();
+
+            for(Core::FastU w = 0, e = src.type->getSizeWords(); w != e; ++w)
+            {
+               ctx.block.addStatementArgs(IR::Code::Move_W,
+                  dupIR.getOffset(w), srcIR.getOffset(w));
+               ctx.block.addStatementArgs(IR::Code::Move_W,
+                  dstIR.getOffset(w), dupIR.getOffset(w));
+            }
+
+            return;
+         }
+
          // Fall back to dumping full objects to stack.
          GenStmnt_MovePart(exp, ctx, src, true, false);
          GenStmnt_MovePart(exp, ctx, dup, true, true);
