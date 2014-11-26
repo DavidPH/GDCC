@@ -44,6 +44,8 @@
       \
       Arg_##name &operator = (Arg_##name const &) = default; \
       Arg_##name &operator = (Arg_##name &&) = default; \
+      \
+      Arg_##name getOffset(Core::FastU w) const {return {*idx, off + w};} \
    }
 
 //
@@ -70,6 +72,8 @@
       \
       Arg_##name &operator = (Arg_##name const &) = default; \
       Arg_##name &operator = (Arg_##name &&) = default; \
+      \
+      Arg_##name getOffset(Core::FastU w) const {return {*arr, *idx, off + w};} \
    }
 
 
@@ -167,6 +171,8 @@ namespace GDCC
 
          IArchive &getIR(IArchive &in);
 
+         Arg_Cpy getOffset(Core::FastU) const {return Arg_Cpy(value);}
+
          OArchive &putIR(OArchive &out) const;
 
          Core::FastU value;
@@ -189,6 +195,8 @@ namespace GDCC
 
          IArchive &getIR(IArchive &in);
 
+         Arg_Lit getOffset(Core::FastU w) const {return {value, off + w};}
+
          OArchive &putIR(OArchive &out) const;
 
          Exp::CRef   value;
@@ -210,6 +218,8 @@ namespace GDCC
 
          IArchive &getIR(IArchive &in) {return in;}
 
+         Arg_Nul getOffset(Core::FastU) const {return {};}
+
          OArchive &putIR(OArchive &out) const {return out;}
       };
 
@@ -225,6 +235,8 @@ namespace GDCC
          bool operator == (Arg_Stk const &) const {return true;}
 
          IArchive &getIR(IArchive &in) {return in;}
+
+         Arg_Stk getOffset(Core::FastU) const {return {};}
 
          OArchive &putIR(OArchive &out) const {return out;}
       };
@@ -417,6 +429,21 @@ namespace GDCC
                return *this; \
             }
          #include "../IR/AddrList.hpp"
+
+         //
+         // getOffset
+         //
+         Arg getOffset(Core::FastU w) const
+         {
+            switch(a)
+            {
+               #define GDCC_IR_AddrList(name) \
+                  case ArgBase::name: return a##name.getOffset(w);
+               #include "../IR/AddrList.hpp"
+            }
+
+            return *this;
+         }
 
          ArgBase a;
 
