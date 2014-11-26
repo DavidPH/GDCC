@@ -73,15 +73,14 @@ namespace GDCC
          ctx.block.setOrigin(pos);
 
          // Special checks for expressions without side effects.
-         if(!isEffect())
+         if(!v_isGenStmnt() && !isEffect())
          {
             // If not evaluating for its result, then do not generate anything.
             if(dst.type->getQualAddr().base == IR::AddrBase::Nul)
                return;
 
             // Try to evaluate constant expressions now.
-            // TODO: Add large literal handling to GenStmnt_Move.
-            if(getType()->getSizeWords() <= 6 && isIRExp())
+            if(isIRExp())
             {
                GenStmnt_Move(this, ctx, dst,
                   Arg(getType(), IR::AddrBase::Lit, this));
@@ -295,6 +294,14 @@ namespace GDCC
       // Exp::v_isFunction
       //
       bool Exp::v_isFunction() const
+      {
+         return false;
+      }
+
+      //
+      // Exp::v_isGenStmnt
+      //
+      bool Exp::v_isGenStmnt() const
       {
          return false;
       }

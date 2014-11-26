@@ -56,6 +56,8 @@ namespace GDCC
 
          virtual bool v_isEffect() const;
 
+         virtual bool v_isGenStmnt() const {return true;}
+
          virtual bool v_isIRExp() const;
       };
    }

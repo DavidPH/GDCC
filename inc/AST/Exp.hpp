@@ -116,6 +116,10 @@ namespace GDCC
 
          virtual bool v_isFunction() const;
 
+         // If this returns false, genStmnt will try to avoid calling
+         // v_genStmnt if there are no side effects.
+         virtual bool v_isGenStmnt() const;
+
          virtual bool v_isIRExp() const = 0;
 
          virtual bool v_isObject() const;
