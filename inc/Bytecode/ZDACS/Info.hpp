@@ -365,6 +365,7 @@ namespace GDCC
 
             static Core::FastU CodeBase();
 
+            static Core::FastU GetWord(IR::Arg_Lit const &arg, Core::FastU w = 0);
             static Core::FastU GetWord(IR::Exp const *exp, Core::FastU w = 0);
 
             static Core::FastU GetScriptValue(IR::Function const &script);

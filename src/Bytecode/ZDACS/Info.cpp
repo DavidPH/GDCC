@@ -593,13 +593,14 @@ namespace GDCC
             auto lenLit = [&]() -> Core::FastU
             {
                auto type = arg.aLit.value->getType();
+               auto wLit = arg.aLit.off + w;
 
                switch(type.t)
                {
                case IR::TypeBase::Funct:
-                  return w == 0 && type.tFunct.callT == IR::CallType::ScriptS ? 12 : 8;
+                  return wLit == 0 && type.tFunct.callT == IR::CallType::ScriptS ? 12 : 8;
 
-               case IR::TypeBase::StrEn: return w == 0 ? 12 : 8;
+               case IR::TypeBase::StrEn: return wLit == 0 ? 12 : 8;
                default:                  return 8;
                }
             };
@@ -737,6 +738,14 @@ namespace GDCC
          Core::FastU Info::CodeBase()
          {
             return 24;
+         }
+
+         //
+         // Info::GetWord
+         //
+         Core::FastU Info::GetWord(IR::Arg_Lit const &arg, Core::FastU w)
+         {
+            return GetWord(arg.value, arg.off + w);
          }
 
          //

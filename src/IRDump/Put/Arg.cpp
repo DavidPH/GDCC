@@ -19,56 +19,64 @@
 // Static Functions                                                           |
 //
 
-//
-// PutArgPart ArgPtr1
-//
-static void PutArgPart(std::ostream &out, GDCC::IR::ArgPtr1 const &arg)
+namespace GDCC
 {
-   GDCC::IRDump::PutArg(out, *arg.idx);
-   out << ", ";
-   GDCC::IRDump::PutExp(out, arg.off);
-}
+   namespace IRDump
+   {
+      //
+      // PutArgPart ArgPtr1
+      //
+      static void PutArgPart(std::ostream &out, IR::ArgPtr1 const &arg)
+      {
+         PutArg(out, *arg.idx);
+         out << ", ";
+         PutExp(out, arg.off);
+      }
 
-//
-// PutArgPart ArgPtr2
-//
-static void PutArgPart(std::ostream &out, GDCC::IR::ArgPtr2 const &arg)
-{
-   GDCC::IRDump::PutArg(out, *arg.arr);
-   out << ", ";
-   GDCC::IRDump::PutArg(out, *arg.idx);
-   out << ", ";
-   GDCC::IRDump::PutExp(out, arg.off);
-}
+      //
+      // PutArgPart ArgPtr2
+      //
+      static void PutArgPart(std::ostream &out, IR::ArgPtr2 const &arg)
+      {
+         PutArg(out, *arg.arr);
+         out << ", ";
+         PutArg(out, *arg.idx);
+         out << ", ";
+         PutExp(out, arg.off);
+      }
 
-//
-// PutArgPart Cpy
-//
-static void PutArgPart(std::ostream &out, GDCC::IR::Arg_Cpy const &arg)
-{
-   if(arg.value) out << arg.value;
-}
+      //
+      // PutArgPart Cpy
+      //
+      static void PutArgPart(std::ostream &out, IR::Arg_Cpy const &arg)
+      {
+         if(arg.value) out << arg.value;
+      }
 
-//
-// PutArgPart Lit
-//
-static void PutArgPart(std::ostream &out, GDCC::IR::Arg_Lit const &arg)
-{
-   GDCC::IRDump::PutExp(out, arg.value);
-}
+      //
+      // PutArgPart Lit
+      //
+      static void PutArgPart(std::ostream &out, IR::Arg_Lit const &arg)
+      {
+         PutExp(out, arg.value);
+         if(arg.off)
+            out << ", " << arg.off;
+      }
 
-//
-// PutArgPart Nul
-//
-static void PutArgPart(std::ostream &, GDCC::IR::Arg_Nul const &)
-{
-}
+      //
+      // PutArgPart Nul
+      //
+      static void PutArgPart(std::ostream &, IR::Arg_Nul const &)
+      {
+      }
 
-//
-// PutArgPart Stk
-//
-static void PutArgPart(std::ostream &, GDCC::IR::Arg_Stk const &)
-{
+      //
+      // PutArgPart Stk
+      //
+      static void PutArgPart(std::ostream &, IR::Arg_Stk const &)
+      {
+      }
+   }
 }
 
 

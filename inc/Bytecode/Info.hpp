@@ -36,6 +36,7 @@ namespace GDCC
       enum class Code;
 
       class Arg;
+      class Arg_Lit;
       class ArgPtr1;
       class ArgPtr2;
       class Block;

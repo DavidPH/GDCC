@@ -13,6 +13,7 @@
 #include "IR/Arg.hpp"
 
 #include "IR/IArchive.hpp"
+#include "IR/OArchive.hpp"
 
 #include <iostream>
 
@@ -277,8 +278,25 @@ namespace GDCC
       //
       // Arg_Lit constructor
       //
-      Arg_Lit::Arg_Lit(IArchive &in) : value{GetIR(in, value)}
+      Arg_Lit::Arg_Lit(IArchive &in) :
+         value{GetIR(in, value)}, off{GetIR(in, off)}
       {
+      }
+
+      //
+      // Arg_Lit::getIR
+      //
+      IArchive &Arg_Lit::getIR(IArchive &in)
+      {
+         return in >> value >> off;
+      }
+
+      //
+      // Arg_Lit::putIR
+      //
+      OArchive &Arg_Lit::putIR(OArchive &out) const
+      {
+         return out << value << off;
       }
 
       //

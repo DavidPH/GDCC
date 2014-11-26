@@ -268,7 +268,7 @@ namespace GDCC
 
             putCode(Code::Swap);
             putCode(code);
-            putWord(GetWord(arr.arr->aLit.value));
+            putWord(GetWord(arr.arr->aLit));
          }
 
          //
@@ -284,7 +284,7 @@ namespace GDCC
             }
 
             putCode(code);
-            putWord(GetWord(arr.arr->aLit.value));
+            putWord(GetWord(arr.arr->aLit));
          }
 
          //

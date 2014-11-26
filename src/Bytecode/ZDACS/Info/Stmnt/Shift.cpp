@@ -49,7 +49,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 64;
+               auto shift = GetWord(stmnt->args[2].aLit) % 64;
 
                     if(shift ==  0) numChunkCODE +=  0;
                else if(shift <  32) numChunkCODE += 92;
@@ -67,7 +67,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 64;
+               auto shift = GetWord(stmnt->args[2].aLit) % 64;
 
                     if(shift ==  0) numChunkCODE +=  0;
                else if(shift <  32) numChunkCODE += 76;
@@ -85,7 +85,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 64;
+               auto shift = GetWord(stmnt->args[2].aLit) % 64;
 
                     if(shift ==  0) numChunkCODE +=  0;
                else if(shift <  32) numChunkCODE += 88;
@@ -103,7 +103,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 96;
+               auto shift = GetWord(stmnt->args[2].aLit) % 96;
 
                     if(shift ==  0) numChunkCODE +=   0;
                else if(shift <  32) numChunkCODE += 156;
@@ -123,7 +123,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 96;
+               auto shift = GetWord(stmnt->args[2].aLit) % 96;
 
                     if(shift ==  0) numChunkCODE +=   0;
                else if(shift <  32) numChunkCODE += 140;
@@ -143,7 +143,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 96;
+               auto shift = GetWord(stmnt->args[2].aLit) % 96;
 
                     if(shift ==  0) numChunkCODE +=   0;
                else if(shift <  32) numChunkCODE += 152;
@@ -163,7 +163,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               putStmntShiftRU(GetWord(stmnt->args[2].aLit.value));
+               putStmntShiftRU(GetWord(stmnt->args[2].aLit));
             }
             else if(stmnt->args[2].a == IR::ArgBase::Stk)
             {
@@ -214,7 +214,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) & 63;
+               auto shift = GetWord(stmnt->args[2].aLit) % 64;
 
                if(shift == 0)
                {
@@ -265,7 +265,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 64;
+               auto shift = GetWord(stmnt->args[2].aLit) % 64;
 
                if(shift == 0)
                {
@@ -320,7 +320,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 64;
+               auto shift = GetWord(stmnt->args[2].aLit) % 64;
 
                if(shift == 0)
                {
@@ -369,7 +369,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 96;
+               auto shift = GetWord(stmnt->args[2].aLit) % 96;
 
                if(shift == 0)
                {
@@ -469,7 +469,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 96;
+               auto shift = GetWord(stmnt->args[2].aLit) % 96;
 
                if(shift == 0)
                {
@@ -574,7 +574,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 96;
+               auto shift = GetWord(stmnt->args[2].aLit) % 96;
 
                if(shift == 0)
                {
@@ -700,7 +700,7 @@ namespace GDCC
          {
             if(trStmntShift(IR::Code::Move_W2))
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 64;
+               auto shift = GetWord(stmnt->args[2].aLit) % 64;
 
                     if(shift ==  0) func->setLocalTmp(0);
                else if(shift <  32) func->setLocalTmp(2);
@@ -716,7 +716,7 @@ namespace GDCC
          {
             if(trStmntShift(IR::Code::Move_W2))
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 64;
+               auto shift = GetWord(stmnt->args[2].aLit) % 64;
 
                     if(shift ==  0) func->setLocalTmp(0);
                else if(shift <  32) func->setLocalTmp(1);
@@ -732,7 +732,7 @@ namespace GDCC
          {
             if(trStmntShift(IR::Code::Move_W2))
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 64;
+               auto shift = GetWord(stmnt->args[2].aLit) % 64;
 
                     if(shift ==  0) func->setLocalTmp(0);
                else if(shift <  32) func->setLocalTmp(1);
@@ -748,7 +748,7 @@ namespace GDCC
          {
             if(trStmntShift(IR::Code::Move_W3))
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 96;
+               auto shift = GetWord(stmnt->args[2].aLit) % 96;
 
                     if(shift ==  0) func->setLocalTmp(0);
                else if(shift <  32) func->setLocalTmp(3);
@@ -766,7 +766,7 @@ namespace GDCC
          {
             if(trStmntShift(IR::Code::Move_W3))
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 96;
+               auto shift = GetWord(stmnt->args[2].aLit) % 96;
 
                     if(shift ==  0) func->setLocalTmp(0);
                else if(shift <  32) func->setLocalTmp(2);
@@ -784,7 +784,7 @@ namespace GDCC
          {
             if(trStmntShift(IR::Code::Move_W3))
             {
-               auto shift = GetWord(stmnt->args[2].aLit.value) % 96;
+               auto shift = GetWord(stmnt->args[2].aLit) % 96;
 
                     if(shift ==  0) func->setLocalTmp(0);
                else if(shift <  32) func->setLocalTmp(2);

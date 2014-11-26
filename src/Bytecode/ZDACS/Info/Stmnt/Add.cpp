@@ -49,7 +49,7 @@ namespace GDCC
             auto putReg = [this](IR::ArgPtr1 const &a, Code add, Code inc)
             {
                putCode(stmnt->args[2].a == IR::ArgBase::Lit ? inc : add);
-               putWord(GetWord(a.idx->aLit.value) + GetWord(a.off));
+               putWord(GetWord(a.idx->aLit) + GetWord(a.off));
             };
 
             switch(stmnt->args[0].a)
@@ -87,7 +87,7 @@ namespace GDCC
             auto putReg = [this](IR::ArgPtr1 const &a, Code sub, Code dec)
             {
                putCode(stmnt->args[2].a == IR::ArgBase::Lit ? dec : sub);
-               putWord(GetWord(a.idx->aLit.value) + GetWord(a.off));
+               putWord(GetWord(a.idx->aLit) + GetWord(a.off));
             };
 
             switch(stmnt->args[0].a)
@@ -127,7 +127,7 @@ namespace GDCC
             case IR::ArgBase::WldReg:
                if(stmnt->args[2].a != IR::ArgBase::Lit ||
                   !stmnt->args[2].aLit.value->isValue() ||
-                  GetWord(stmnt->args[2].aLit.value) != 1)
+                  GetWord(stmnt->args[2].aLit) != 1)
                {
                   moveArgStk_src(stmnt->args[2], IR::Code::Move_W);
                }
@@ -147,7 +147,7 @@ namespace GDCC
 
                if(stmnt->args[2].a != IR::ArgBase::Lit ||
                   !stmnt->args[2].aLit.value->isValue() ||
-                  GetWord(stmnt->args[2].aLit.value) != 1)
+                  GetWord(stmnt->args[2].aLit) != 1)
                {
                   moveArgStk_src(stmnt->args[2], IR::Code::Move_W);
                }
@@ -174,7 +174,7 @@ namespace GDCC
             case IR::ArgBase::WldReg:
                if(stmnt->args[2].a != IR::ArgBase::Lit ||
                   !stmnt->args[2].aLit.value->isValue() ||
-                  GetWord(stmnt->args[2].aLit.value) != 1)
+                  GetWord(stmnt->args[2].aLit) != 1)
                {
                   moveArgStk_src(stmnt->args[2], IR::Code::Move_W);
                }

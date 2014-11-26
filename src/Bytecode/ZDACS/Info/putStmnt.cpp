@@ -64,17 +64,17 @@ namespace GDCC
 
             case IR::Code::Casm:
                for(auto const &arg : stmnt->args)
-                  putWord(GetWord(arg.aLit.value));
+                  putWord(GetWord(arg.aLit));
                break;
 
             case IR::Code::Cjmp_Nil:
                putCode(Code::Cjmp_Nil);
-               putWord(GetWord(stmnt->args[1].aLit.value));
+               putWord(GetWord(stmnt->args[1].aLit));
                break;
 
             case IR::Code::Cjmp_Tru:
                putCode(Code::Cjmp_Tru);
-               putWord(GetWord(stmnt->args[1].aLit.value));
+               putWord(GetWord(stmnt->args[1].aLit));
                break;
 
             case IR::Code::CmpF_EQ_W:  putStmntCall("___GDCC__CmpF_EQ_W",  1); break;
@@ -146,7 +146,7 @@ namespace GDCC
             case IR::Code::Cnat:
                putCode(Code::Cnat);
                putWord(stmnt->args.size() - 2);
-               putWord(GetWord(stmnt->args[0].aLit.value));
+               putWord(GetWord(stmnt->args[0].aLit));
                break;
 
             case IR::Code::Copy_W: putCode(Code::Copy); break;
@@ -181,7 +181,7 @@ namespace GDCC
 
             case IR::Code::Jump:
                putCode(Code::Jump_Lit);
-               putWord(GetWord(stmnt->args[0].aLit.value));
+               putWord(GetWord(stmnt->args[0].aLit));
                break;
 
             case IR::Code::ModI_W:  putCode(Code::ModI); break;
@@ -236,7 +236,7 @@ namespace GDCC
                putCode(Code::Push_Lit);
                putWord(0);
                putCode(Code::Push_Lit);
-               putWord(GetWord(stmnt->args[0].aLit.value));
+               putWord(GetWord(stmnt->args[0].aLit));
                putCode(Code::Call_Lit);
                putWord(GetWord(resolveGlyph("___GDCC__alloc")));
                putCode(Code::Drop_LocReg);
@@ -313,7 +313,7 @@ namespace GDCC
                else
                   putCode(Code::Call_Lit);
 
-               putWord(GetWord(stmnt->args[0].aLit.value));
+               putWord(GetWord(stmnt->args[0].aLit));
 
                if(ret)
                   putStmntPushRetn(ret);
@@ -357,11 +357,11 @@ namespace GDCC
                   for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
                   {
                      putCode(Code::Push_Lit);
-                     putWord(GetWord(arg.aLit.value));
+                     putWord(GetWord(arg.aLit));
                   }
 
                   putCode(Code::Cspe_5R1); break;
-                  putWord(GetWord(stmnt->args[0].aLit.value));
+                  putWord(GetWord(stmnt->args[0].aLit));
 
                   break;
                }
@@ -376,14 +376,14 @@ namespace GDCC
                case 5: putCode(Code::Cspe_5L); break;
                }
 
-               putWord(GetWord(stmnt->args[0].aLit.value));
+               putWord(GetWord(stmnt->args[0].aLit));
 
                // Dummy arg.
                if(stmnt->args.size() == 2)
                   putWord(0);
 
                for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
-                  putWord(GetWord(arg.aLit.value));
+                  putWord(GetWord(arg.aLit));
 
                break;
 
@@ -413,7 +413,7 @@ namespace GDCC
                   }
                }
 
-               putWord(GetWord(stmnt->args[0].aLit.value));
+               putWord(GetWord(stmnt->args[0].aLit));
 
                break;
 
@@ -525,7 +525,7 @@ namespace GDCC
             auto putReg = [&](IR::ArgPtr1 const &a, Code code)
             {
                putCode(code);
-               putWord(GetWord(a.idx->aLit.value) + GetWord(a.off) + w);
+               putWord(GetWord(a.idx->aLit) + GetWord(a.off) + w);
             };
 
             switch(arg.a)
@@ -576,7 +576,7 @@ namespace GDCC
             auto putReg = [&](IR::ArgPtr1 const &a, Code code)
             {
                putCode(code);
-               putWord(GetWord(a.idx->aLit.value) + GetWord(a.off) + w);
+               putWord(GetWord(a.idx->aLit) + GetWord(a.off) + w);
             };
 
             switch(arg.a)
@@ -610,12 +610,13 @@ namespace GDCC
             //
             auto putLit = [&](IR::Arg_Lit const &a)
             {
-               auto val = a.value->getValue();
+               auto val  = a.value->getValue();
+               auto wLit = a.off + w;
 
                switch(val.v)
                {
                case IR::ValueBase::Funct:
-                  if(w == 0)
+                  if(wLit == 0)
                   {
                      if(val.vFunct.vtype.callT == IR::CallType::ScriptS)
                         putStmntPushStrEn(val.vFunct.value);
@@ -627,14 +628,14 @@ namespace GDCC
                   break;
 
                case IR::ValueBase::StrEn:
-                  if(w == 0)
+                  if(wLit == 0)
                      putStmntPushStrEn(val.vStrEn.value);
                   else
                      putCode(Code::Push_Lit, 0);
                   break;
 
                default:
-                  putCode(Code::Push_Lit, GetWord(a.value, w));
+                  putCode(Code::Push_Lit, GetWord(a, w));
                   break;
                }
             };
@@ -645,7 +646,7 @@ namespace GDCC
             auto putReg = [&](IR::ArgPtr1 const &a, Code code)
             {
                putCode(code);
-               putWord(GetWord(a.idx->aLit.value) + GetWord(a.off) + w);
+               putWord(GetWord(a.idx->aLit) + GetWord(a.off) + w);
             };
 
             switch(arg.a)

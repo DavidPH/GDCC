@@ -159,7 +159,7 @@ namespace GDCC
       {
       public:
          Arg_Cpy() : value{0} {}
-         Arg_Cpy(Core::FastU value_) : value{value_} {}
+         explicit Arg_Cpy(Core::FastU value_) : value{value_} {}
          explicit Arg_Cpy(IArchive &in);
 
          bool operator == (Arg_Cpy const &arg) const
@@ -180,17 +180,19 @@ namespace GDCC
       class Arg_Lit
       {
       public:
-         explicit Arg_Lit(Exp const *value_) : value{value_} {}
+         explicit Arg_Lit(Exp const *value_) : value{value_}, off{0} {}
+         Arg_Lit(Exp const *value_, Core::FastU off_) : value{value_}, off{off_} {}
          explicit Arg_Lit(IArchive &in);
 
          bool operator == (Arg_Lit const &arg) const
-            {return *value == *arg.value;}
+            {return off == arg.off && *value == *arg.value;}
 
-         IArchive &getIR(IArchive &in) {return in >> value;}
+         IArchive &getIR(IArchive &in);
 
-         OArchive &putIR(OArchive &out) const {return out << value;}
+         OArchive &putIR(OArchive &out) const;
 
-         Exp::CRef value;
+         Exp::CRef   value;
+         Core::FastU off;
       };
 
       //
