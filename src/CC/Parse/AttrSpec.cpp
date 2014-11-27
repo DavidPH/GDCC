@@ -61,201 +61,197 @@
 // Static Functions                                                           |
 //
 
-//
-// ParseAttr_address
-//
-// attribute-address:
-//    attribute-address-name ( constant-expression )
-//    attribute-address-name ( string-literal )
-//
-// attribute-address-name:
-//    <address>
-//    <__address>
-//
-static void ParseAttr_address(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope, GDCC::AST::Attribute &attr)
+namespace GDCC
 {
-   using namespace GDCC;
-
-   // (
-   if(!ctx.in.drop(Core::TOK_ParenO))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
-
-   // string-literal
-   if(ctx.in.peek().isTokString())
-      attr.addrS = ctx.in.get().str;
-
-   // constant-expression
-   else
-      attr.addrI = CC::GetExp_Cond(ctx, scope)->getIRExp();
-
-   // )
-   if(!ctx.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
-}
-
-//
-// ParseAttr_alloc_Loc
-//
-// attribute-alloc_Loc:
-//    attribute-alloc_Loc-name ( constant-expression )
-//
-// attribute-alloc_Loc-name:
-//    <alloc_Loc>
-//    <__alloc_Loc>
-//
-static void ParseAttr_alloc_Loc(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope, GDCC::AST::Attribute &attr)
-{
-   using namespace GDCC;
-
-   // (
-   if(!ctx.in.drop(Core::TOK_ParenO))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
-
-   // constant-expression
-   attr.allocLoc = CC::GetExp_Cond(ctx, scope)->getIRExp();
-
-   // )
-   if(!ctx.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
-}
-
-//
-// ParseAttr_call
-//
-// attribute-call:
-//    attribute-call-name ( string-literal )
-//
-// attribute-call-name:
-//    <call>
-//    <__call>
-//
-static void ParseAttr_call(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
-   GDCC::AST::Attribute &attr)
-{
-   using namespace GDCC;
-
-   // (
-   if(!ctx.in.drop(Core::TOK_ParenO))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
-
-   // string-literal
-   if(!ctx.in.peek().isTokString())
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
-
-   switch(ctx.in.get().str)
+   namespace CC
    {
-      #define GDCC_IR_CallTypeList(name) \
-         case Core::STR_##name: attr.callt = IR::CallType::name; break;
-      #include "IR/CallTypeList.hpp"
+      //
+      // ParseAttr_address
+      //
+      // attribute-address:
+      //    attribute-address-name ( constant-expression )
+      //    attribute-address-name ( string-literal )
+      //
+      // attribute-address-name:
+      //    <address>
+      //    <__address>
+      //
+      static void ParseAttr_address(ParserCtx const &ctx, Scope &scope,
+         AST::Attribute &attr)
+      {
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
 
-   default:
-      throw Core::ExceptStr(ctx.in.reget().pos, "invalid call");
+         // string-literal
+         if(ctx.in.peek().isTokString())
+            attr.addrS = ctx.in.get().str;
+
+         // constant-expression
+         else
+            attr.addrI = GetExp_Cond(ctx, scope)->getIRExp();
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+      }
+
+      //
+      // ParseAttr_alloc_Loc
+      //
+      // attribute-alloc_Loc:
+      //    attribute-alloc_Loc-name ( constant-expression )
+      //
+      // attribute-alloc_Loc-name:
+      //    <alloc_Loc>
+      //    <__alloc_Loc>
+      //
+      static void ParseAttr_alloc_Loc(ParserCtx const &ctx, Scope &scope,
+         AST::Attribute &attr)
+      {
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+         // constant-expression
+         attr.allocLoc = GetExp_Cond(ctx, scope)->getIRExp();
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+      }
+
+      //
+      // ParseAttr_call
+      //
+      // attribute-call:
+      //    attribute-call-name ( string-literal )
+      //
+      // attribute-call-name:
+      //    <call>
+      //    <__call>
+      //
+      static void ParseAttr_call(ParserCtx const &ctx, Scope &,
+         AST::Attribute &attr)
+      {
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+         // string-literal
+         if(!ctx.in.peek().isTokString())
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
+
+         switch(ctx.in.get().str)
+         {
+            #define GDCC_IR_CallTypeList(name) \
+               case Core::STR_##name: attr.callt = IR::CallType::name; break;
+            #include "IR/CallTypeList.hpp"
+
+         default:
+            throw Core::ExceptStr(ctx.in.reget().pos, "invalid call");
+         }
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+      }
+
+      //
+      // ParseAttr_extern
+      //
+      // attribute-extern:
+      //    attribute-extern-name ( string-literal )
+      //
+      // attribute-extern-name:
+      //    <extern>
+      //
+      static void ParseAttr_extern(ParserCtx const &ctx, Scope &,
+         AST::Attribute &attr)
+      {
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+         // string-literal
+         if(!ctx.in.peek().isTokString())
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
+
+         switch(ctx.in.get().str)
+         {
+         case Core::STR_ACS:       attr.linka = IR::Linkage::ExtACS; break;
+         case Core::STR_C:         attr.linka = IR::Linkage::ExtC;   break;
+         case Core::STR_DS:        attr.linka = IR::Linkage::ExtDS;  break;
+         case Core::STR_asm:       attr.linka = IR::Linkage::ExtASM; break;
+         case Core::STR_NAM_ACSXX: attr.linka = IR::Linkage::ExtAXX; break;
+         case Core::STR_NAM_CXX:   attr.linka = IR::Linkage::ExtCXX; break;
+
+         default:
+            throw Core::ExceptStr(ctx.in.reget().pos, "invalid linkage");
+         }
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+      }
+
+      //
+      // ParseAttr_no_init
+      //
+      // attribute-no_init:
+      //    attribute-no_init-name
+      //
+      // attribute-no_init-name:
+      //    <no_init>
+      //    <__no_init>
+      //
+      static void ParseAttr_no_init(ParserCtx const &, Scope &,
+         AST::Attribute &attr)
+      {
+         attr.objNoInit = true;
+      }
+
+      //
+      // ParserAttr_script
+      //
+      // attribute-script:
+      //    attribute-script-name ( string-literal )
+      //
+      // attribute-script-name:
+      //    <script>
+      //    <__script>
+      //
+      static void ParseAttr_script(ParserCtx const &ctx, Scope &,
+         AST::Attribute &attr)
+      {
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+         // string-literal
+         if(!ctx.in.peek().isTokString())
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
+
+         switch(ctx.in.get().str)
+         {
+            // Script types.
+            #define GDCC_IR_ScriptTypeList(name) \
+               case Core::STR_##name: attr.stype = IR::ScriptType::name; break;
+            #include "IR/ScriptTypeList.hpp"
+
+            // Script flags.
+         case Core::STR_Clientside: attr.sflagClS = true; break;
+         case Core::STR_Net:        attr.sflagNet = true; break;
+
+         default:
+            throw Core::ExceptStr(ctx.in.reget().pos, "invalid script type/flag");
+         }
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+      }
    }
-
-   // )
-   if(!ctx.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
-}
-
-//
-// ParseAttr_extern
-//
-// attribute-extern:
-//    attribute-extern-name ( string-literal )
-//
-// attribute-extern-name:
-//    <extern>
-//
-static void ParseAttr_extern(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
-   GDCC::AST::Attribute &attr)
-{
-   using namespace GDCC;
-
-   // (
-   if(!ctx.in.drop(Core::TOK_ParenO))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
-
-   // string-literal
-   if(!ctx.in.peek().isTokString())
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
-
-   switch(ctx.in.get().str)
-   {
-   case Core::STR_ACS:       attr.linka = IR::Linkage::ExtACS; break;
-   case Core::STR_C:         attr.linka = IR::Linkage::ExtC;   break;
-   case Core::STR_DS:        attr.linka = IR::Linkage::ExtDS;  break;
-   case Core::STR_asm:       attr.linka = IR::Linkage::ExtASM; break;
-   case Core::STR_NAM_ACSXX: attr.linka = IR::Linkage::ExtAXX; break;
-   case Core::STR_NAM_CXX:   attr.linka = IR::Linkage::ExtCXX; break;
-
-   default:
-      throw Core::ExceptStr(ctx.in.reget().pos, "invalid linkage");
-   }
-
-   // )
-   if(!ctx.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
-}
-
-//
-// ParseAttr_no_init
-//
-// attribute-no_init:
-//    attribute-no_init-name
-//
-// attribute-no_init-name:
-//    <no_init>
-//    <__no_init>
-//
-static void ParseAttr_no_init(GDCC::CC::ParserCtx const &, GDCC::CC::Scope &,
-   GDCC::AST::Attribute &attr)
-{
-   attr.objNoInit = true;
-}
-
-//
-// ParserAttr_script
-//
-// attribute-script:
-//    attribute-script-name ( string-literal )
-//
-// attribute-script-name:
-//    <script>
-//    <__script>
-//
-static void ParseAttr_script(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &,
-   GDCC::AST::Attribute &attr)
-{
-   using namespace GDCC;
-
-   // (
-   if(!ctx.in.drop(Core::TOK_ParenO))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
-
-   // string-literal
-   if(!ctx.in.peek().isTokString())
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
-
-   switch(ctx.in.get().str)
-   {
-      // Script types.
-      #define GDCC_IR_ScriptTypeList(name) \
-         case Core::STR_##name: attr.stype = IR::ScriptType::name; break;
-      #include "IR/ScriptTypeList.hpp"
-
-      // Script flags.
-   case Core::STR_Clientside: attr.sflagClS = true; break;
-   case Core::STR_Net:        attr.sflagNet = true; break;
-
-   default:
-      throw Core::ExceptStr(ctx.in.reget().pos, "invalid script type/flag");
-   }
-
-   // )
-   if(!ctx.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
 }
 
 
