@@ -66,8 +66,8 @@ namespace GDCC
          {
             if(argL.isIRArg())
             {
-               irArgL = argL.getIRArg();
-               irArgR = argR.getIRArg();
+               irArgL = argL.getIRArg(ctx.prog);
+               irArgR = argR.getIRArg(ctx.prog);
             }
             else
             {
@@ -75,7 +75,7 @@ namespace GDCC
                exp->expL->genStmntStk(ctx);
 
                irArgL = IR::Arg_Stk();
-               irArgR = argR.getIRArg();
+               irArgR = argR.getIRArg(ctx.prog);
             }
          }
          else
@@ -90,7 +90,8 @@ namespace GDCC
 
          if(dst.isIRArg())
          {
-            ctx.block.addStatementArgs(code, dst.getIRArg(), irArgL, irArgR);
+            auto irDst = dst.getIRArg(ctx.prog);
+            ctx.block.addStatementArgs(code, irDst, irArgL, irArgR);
          }
          else
          {

@@ -72,7 +72,7 @@ namespace GDCC
          if(arg.data->getArgSrc().isIRArg())
          {
             GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg,
-               arg.data->getArgSrc().getIRArg(), get, set);
+               arg.data->getArgSrc().getIRArg(ctx.prog), get, set);
 
             return;
          }
@@ -197,8 +197,8 @@ namespace GDCC
          // Try to use IR args.
          if(dst.isIRArg() && src.isIRArg())
          {
-            auto dstIR = dst.getIRArg();
-            auto srcIR = src.getIRArg();
+            auto dstIR = dst.getIRArg(ctx.prog);
+            auto srcIR = src.getIRArg(ctx.prog);
 
             for(Core::FastU w = 0, e = src.type->getSizeWords(); w != e; ++w)
                ctx.block.addStatementArgs(IR::Code::Move_W,
@@ -221,9 +221,9 @@ namespace GDCC
          // Try to use IR args.
          if(dst.isIRArg() && dup.isIRArg() && src.isIRArg())
          {
-            auto dstIR = dst.getIRArg();
-            auto dupIR = dup.getIRArg();
-            auto srcIR = src.getIRArg();
+            auto dstIR = dst.getIRArg(ctx.prog);
+            auto dupIR = dup.getIRArg(ctx.prog);
+            auto srcIR = src.getIRArg(ctx.prog);
 
             for(Core::FastU w = 0, e = src.type->getSizeWords(); w != e; ++w)
             {

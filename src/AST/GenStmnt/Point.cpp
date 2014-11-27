@@ -231,7 +231,8 @@ namespace GDCC
          if(exp->type->getSizeWords() == 1 && argL.isIRArg() &&
             (exp->expL->isIRExp() || (argL.isIRArg() && point == 1)))
          {
-            auto irArgL = argL.getIRArg();
+            auto irArgL = argL.getIRArg(ctx.prog);
+            auto irArgR = argR.getIRArg(ctx.prog);
 
             auto codeMove = IR::ExpCode_Move(argL.type->getSizeWords());
 
@@ -243,7 +244,7 @@ namespace GDCC
             }
 
             if(point == 1)
-               ctx.block.addStatementArgs(code, irArgL, irArgL, argR.getIRArg());
+               ctx.block.addStatementArgs(code, irArgL, irArgL, irArgR);
             else
             {
                auto pointV = IR::Value_Fixed(point,

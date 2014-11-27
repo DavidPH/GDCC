@@ -59,7 +59,7 @@ static void GenStmnt_ArithEqIdx(GDCC::AST::Exp_Binary const *exp,
    if(exp->expR->getArg().isIRArg())
    {
       ctx.block.addStatementArgs(code,
-         IR::Arg_Stk(), IR::Arg_Stk(), exp->expR->getArg().getIRArg());
+         IR::Arg_Stk(), IR::Arg_Stk(), exp->expR->getArg().getIRArg(ctx.prog));
    }
 
    // Otherwise, just operate on stack.
@@ -205,7 +205,8 @@ namespace GDCC
          if(exp->type->getTypeQual() == evalT->getTypeQual() &&
             argL.isIRArg() && argR.isIRArg())
          {
-            auto irArgL = argL.getIRArg();
+            auto irArgL = argL.getIRArg(ctx.prog);
+            auto irArgR = argR.getIRArg(ctx.prog);
 
             auto codeMove = IR::ExpCode_Move(argL.type->getSizeWords());
 
@@ -216,7 +217,7 @@ namespace GDCC
                GenStmnt_MovePart(exp, ctx, dst, false, true);
             }
 
-            ctx.block.addStatementArgs(code, irArgL, irArgL, argR.getIRArg());
+            ctx.block.addStatementArgs(code, irArgL, irArgL, irArgR);
 
             // Duplicate to destination, if necessary.
             if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
