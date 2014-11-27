@@ -74,6 +74,7 @@ namespace GDCC
          localReg{0},
          name    {name_},
          param   {0},
+         paramOpt{0},
          retrn   {nullptr},
          stmnt   {nullptr},
          stype   {IR::ScriptType::None},

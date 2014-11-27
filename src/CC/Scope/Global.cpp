@@ -174,12 +174,13 @@ namespace GDCC
          {
             auto fn = AST::Function::Create(attr.name, glyph);
 
-            fn->ctype = attr.callt;
-            fn->linka = attr.linka;
-            fn->param = attr.type->getCallWords();
-            fn->retrn = attr.type->getBaseType();
-            fn->stype = attr.stype;
-            fn->type  = attr.type;
+            fn->ctype    = attr.callt;
+            fn->linka    = attr.linka;
+            fn->param    = attr.type->getCallWords();
+            fn->paramOpt = attr.paramOpt;
+            fn->retrn    = attr.type->getBaseType();
+            fn->stype    = attr.stype;
+            fn->type     = attr.type;
 
             fn->sflagClS = attr.sflagClS;
             fn->sflagNet = attr.sflagNet;

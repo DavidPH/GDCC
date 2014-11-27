@@ -85,6 +85,7 @@ namespace GDCC
          Core::FastU    localReg;
          Core::String   name;
          Core::FastU    param;
+         Core::FastU    paramOpt;
          TypeCPtr       retrn;
          StatementCPtr  stmnt;
          IR::ScriptType stype;

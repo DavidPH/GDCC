@@ -12,9 +12,15 @@
 
 #include "CC/Exp/Call.hpp"
 
+#include "CC/Exp/Init.hpp"
+#include "CC/Init.hpp"
+
+#include "AST/Function.hpp"
 #include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
+
+#include "IR/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -88,7 +94,39 @@ namespace GDCC
          // Check argument count.
          auto param = type->getParameters();
          if(args.size() < param->size())
-            throw Core::ExceptStr(pos, "insufficient arguments");
+         {
+            AST::Function::Ptr fn;
+            if(exp->isFunction())
+               fn = exp->getFunction();
+
+            // Possible optional args?
+            if(!fn || param->size() - args.size() > fn->paramOpt)
+               throw Core::ExceptStr(pos, "insufficient arguments");
+
+            switch(IR::GetCallTypeIR(type->getCallType()))
+            {
+            case IR::CallType::Native:
+            case IR::CallType::Special:
+               // Natives and specials can simply have fewer arguments.
+               break;
+
+            default:
+               std::vector<AST::Exp::CRef> argsNew;
+               argsNew.reserve(param->size());
+               auto paramItr = param->begin(), paramEnd = param->end();
+               auto argsItr  = args.begin(),   argsEnd  = args.end();
+
+               for(; argsItr != argsEnd; ++argsItr, ++paramItr)
+                  argsNew.emplace_back(*argsItr);
+               for(; paramItr != paramEnd; ++paramItr)
+                  argsNew.emplace_back(Exp_Init::Create(
+                     Init::Create(*paramItr, 0, pos), false, pos));
+
+               args = {Core::Move, argsNew.begin(), argsNew.end()};
+
+               break;
+            }
+         }
 
          if(args.size() > param->size() && !param->variadic())
             throw Core::ExceptStr(pos, "too many arguments");
@@ -97,7 +135,7 @@ namespace GDCC
          auto paramItr = param->begin(), paramEnd = param->end();
          auto argsItr  = args.begin(),   argsEnd  = args.end();
 
-         for(; paramItr != paramEnd; ++paramItr, ++argsItr)
+         for(; paramItr != paramEnd && argsItr != argsEnd; ++paramItr, ++argsItr)
             *argsItr = ExpPromo_Assign(*paramItr, *argsItr, pos);
          for(; argsItr != argsEnd; ++argsItr)
             *argsItr = ExpPromo_Arg(*argsItr, pos);

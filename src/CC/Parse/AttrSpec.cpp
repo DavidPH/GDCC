@@ -45,6 +45,8 @@
 
 #include "CC/Parse.hpp"
 
+#include "CC/Exp.hpp"
+
 #include "AST/Attribute.hpp"
 #include "AST/Exp.hpp"
 
@@ -212,6 +214,31 @@ namespace GDCC
       }
 
       //
+      // ParseAttr_optional_args
+      //
+      // attribute-optional_args:
+      //    attribute-optional_args-name ( constant-expression )
+      //
+      // attribute-optional_args-name:
+      //    <optional_args>
+      //    <__optional_args>
+      //
+      static void ParseAttr_optional_args(ParserCtx const &ctx, Scope &scope,
+         AST::Attribute &attr)
+      {
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+         // constant-expression
+         attr.paramOpt = ExpToFastU(GetExp_Cond(ctx, scope));
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+      }
+
+      //
       // ParserAttr_script
       //
       // attribute-script:
@@ -328,6 +355,9 @@ namespace GDCC
 
          case Core::STR_no_init: case Core::STR___no_init:
             ParseAttr_no_init(ctx, scope, attr); break;
+
+         case Core::STR_optional_args: case Core::STR___optional_args:
+            ParseAttr_optional_args(ctx, scope, attr); break;
 
          case Core::STR_script: case Core::STR___script:
             ParseAttr_script(ctx, scope, attr); break;

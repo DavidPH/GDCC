@@ -35,14 +35,15 @@ namespace GDCC
       //
       Attribute::Attribute() :
          addrI   {nullptr},
-         addrS   {Core::STRNULL},
+         addrS   {nullptr},
          allocLoc{nullptr},
          callt   {IR::CallType::None},
          linka   {IR::Linkage::None},
-         name    {Core::STRNULL},
-         namePos {Core::STRNULL, 0},
+         name    {nullptr},
+         namePos {nullptr, 0},
          param   {},
-         space   {IR::AddrBase::Gen, Core::STRNULL},
+         paramOpt{0},
+         space   {IR::AddrBase::Gen, Core::STR_},
          stype   {IR::ScriptType::None},
          type    {nullptr},
 

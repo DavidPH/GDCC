@@ -244,6 +244,26 @@ Semantics:
   initializers leave all other members indeterminate.
 
 ===========================================================
+Optional Args
+===========================================================
+
+Syntax:
+  attribute-optional_args:
+    attribute-optional_args-name ( constant-expression )
+
+  attribute-optional_args-name:
+    <optional_args>
+    <__optional_args>
+
+Contraints:
+  Shall only be applied to functions.
+
+Semantics:
+  Indicates that some or all of the arguments may be omitted when calling the
+  affected function. For calling conventions that do not support optional
+  arguments, omitted arguments are replaced as if by static initialization.
+
+===========================================================
 Script
 ===========================================================
 
@@ -580,6 +600,13 @@ Grammar
   attribute-no_init-name:
     <no_init>
     <__no_init>
+
+  attribute-optional_args:
+    attribute-optional_args-name ( constant-expression )
+
+  attribute-optional_args-name:
+    <optional_args>
+    <__optional_args>
 
   attribute-script:
     attribute-script-name ( string-literal )

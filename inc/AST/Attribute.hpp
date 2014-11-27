@@ -15,6 +15,7 @@
 
 #include "../Core/Array.hpp"
 #include "../Core/Counter.hpp"
+#include "../Core/Number.hpp"
 #include "../Core/Origin.hpp"
 
 #include "../IR/Addr.hpp"
@@ -65,6 +66,7 @@ namespace GDCC
          Core::String                    name;
          Core::Origin                    namePos;
          Core::Array<Attribute>          param;
+         Core::FastU                     paramOpt;
          IR::AddrSpace                   space;
          IR::ScriptType                  stype;
          Core::CounterPtr<Type const>    type;
