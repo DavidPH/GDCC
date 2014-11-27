@@ -13,6 +13,7 @@
 #include "CC/Exp/Refer.hpp"
 
 #include "AST/Arg.hpp"
+#include "AST/Function.hpp"
 #include "AST/Object.hpp"
 #include "AST/Type.hpp"
 
@@ -49,6 +50,14 @@ namespace GDCC
       }
 
       //
+      // Exp_Refer::v_getFunction
+      //
+      AST::Function::Ref Exp_Refer::v_getFunction() const
+      {
+         return exp->getFunction();
+      }
+
+      //
       // Exp_Refer::v_getIRExp
       //
       IR::Exp::CRef Exp_Refer::v_getIRExp() const
@@ -66,6 +75,14 @@ namespace GDCC
          auto arg = exp->getArg();
          if(!arg.data) return false;
          return arg.data->isEffect();
+      }
+
+      //
+      // Exp_Refer::v_isFunction
+      //
+      bool Exp_Refer::v_isFunction() const
+      {
+         return exp->isFunction();
       }
 
       //
