@@ -30,10 +30,10 @@ Function "___GDCC__ShLU_W2" \
    block
 {
    Move_W,    Stk(), LocReg(Lit(2), 0)
-   Casm,      Lit(84), Lit(0),  Lit("___GDCC__ShLU_W2$0")  ; Cjmp_Lit
-   Casm,      Lit(84), Lit(32), Lit("___GDCC__ShLU_W2$32") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0),  Lit("___GDCC__ShLU_W2$0")  ; Jcnd_Lit
+   Casm,      Lit(84), Lit(32), Lit("___GDCC__ShLU_W2$32") ; Jcnd_Lit
    CmpI_LT_W, Stk(), Stk(), Lit(32)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__ShLU_W2$gt32")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__ShLU_W2$gt32")
 
    ; ret0 = l0 << r
    ShLU_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
@@ -84,11 +84,11 @@ Function "___GDCC__ShLU_W3" \
    block
 {
    Move_W,    Stk(), LocReg(Lit(3), 0)
-   Casm,      Lit(84), Lit(0),  Lit("___GDCC__ShLU_W3$0")  ; Cjmp_Lit
-   Casm,      Lit(84), Lit(32), Lit("___GDCC__ShLU_W3$32") ; Cjmp_Lit
-   Casm,      Lit(84), Lit(64), Lit("___GDCC__ShLU_W3$64") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0),  Lit("___GDCC__ShLU_W3$0")  ; Jcnd_Lit
+   Casm,      Lit(84), Lit(32), Lit("___GDCC__ShLU_W3$32") ; Jcnd_Lit
+   Casm,      Lit(84), Lit(64), Lit("___GDCC__ShLU_W3$64") ; Jcnd_Lit
    CmpI_LT_W, Stk(), Stk(), Lit(32)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__ShLU_W3$gt32")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__ShLU_W3$gt32")
 
    ; ret0 = l0 << r
    ShLU_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(3), 0)
@@ -111,7 +111,7 @@ Function "___GDCC__ShLU_W3" \
 
 "___GDCC__ShLU_W3$gt32"
    CmpI_LT_W, Stk(), LocReg(Lit(3), 0), Lit(64)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__ShLU_W3$gt64")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__ShLU_W3$gt64")
 
    ; r -= 32
    SubU_W, LocReg(Lit(3), 0), LocReg(Lit(3), 0), Lit(32)
@@ -179,10 +179,10 @@ Function "___GDCC__ShRI_W2" \
    block
 {
    Move_W,    Stk(), LocReg(Lit(2), 0)
-   Casm,      Lit(84), Lit(0),  Lit("___GDCC__ShRI_W2$0")  ; Cjmp_Lit
-   Casm,      Lit(84), Lit(32), Lit("___GDCC__ShRI_W2$32") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0),  Lit("___GDCC__ShRI_W2$0")  ; Jcnd_Lit
+   Casm,      Lit(84), Lit(32), Lit("___GDCC__ShRI_W2$32") ; Jcnd_Lit
    CmpI_LT_W, Stk(), Stk(), Lit(32)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__ShRI_W2$gt32")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__ShRI_W2$gt32")
 
    ; ret0 = (l0 >> r) | (l1 << (32 - r))
    ShRU_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
@@ -233,11 +233,11 @@ Function "___GDCC__ShRI_W3" \
    block
 {
    Move_W,    Stk(), LocReg(Lit(3), 0)
-   Casm,      Lit(84), Lit(0),  Lit("___GDCC__ShRI_W3$0")  ; Cjmp_Lit
-   Casm,      Lit(84), Lit(32), Lit("___GDCC__ShRI_W3$32") ; Cjmp_Lit
-   Casm,      Lit(84), Lit(64), Lit("___GDCC__ShRI_W3$64") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0),  Lit("___GDCC__ShRI_W3$0")  ; Jcnd_Lit
+   Casm,      Lit(84), Lit(32), Lit("___GDCC__ShRI_W3$32") ; Jcnd_Lit
+   Casm,      Lit(84), Lit(64), Lit("___GDCC__ShRI_W3$64") ; Jcnd_Lit
    CmpI_LT_W, Stk(), Stk(), Lit(32)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__ShRI_W3$gt32")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__ShRI_W3$gt32")
 
    ; ret0 = (l0 >> r) | (l1 << (32 - r))
    ShRU_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(3), 0)
@@ -260,7 +260,7 @@ Function "___GDCC__ShRI_W3" \
 
 "___GDCC__ShRI_W3$gt32"
    CmpI_LT_W, Stk(), LocReg(Lit(3), 0), Lit(64)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__ShRI_W3$gt64")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__ShRI_W3$gt64")
 
    ; r -= 32
    SubU_W, LocReg(Lit(3), 0), LocReg(Lit(3), 0), Lit(32)
@@ -328,10 +328,10 @@ Function "___GDCC__ShRU_W2" \
    block
 {
    Move_W,    Stk(), LocReg(Lit(2), 0)
-   Casm,      Lit(84), Lit(0),  Lit("___GDCC__ShRU_W2$0")  ; Cjmp_Lit
-   Casm,      Lit(84), Lit(32), Lit("___GDCC__ShRU_W2$32") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0),  Lit("___GDCC__ShRU_W2$0")  ; Jcnd_Lit
+   Casm,      Lit(84), Lit(32), Lit("___GDCC__ShRU_W2$32") ; Jcnd_Lit
    CmpI_LT_W, Stk(), Stk(), Lit(32)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__ShRU_W2$gt32")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__ShRU_W2$gt32")
 
    ; ret0 = (l0 >> r) | (l1 << (32 - r))
    ShRU_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
@@ -382,11 +382,11 @@ Function "___GDCC__ShRU_W3" \
    block
 {
    Move_W,    Stk(), LocReg(Lit(3), 0)
-   Casm,      Lit(84), Lit(0),  Lit("___GDCC__ShRU_W3$0")  ; Cjmp_Lit
-   Casm,      Lit(84), Lit(32), Lit("___GDCC__ShRU_W3$32") ; Cjmp_Lit
-   Casm,      Lit(84), Lit(64), Lit("___GDCC__ShRU_W3$64") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0),  Lit("___GDCC__ShRU_W3$0")  ; Jcnd_Lit
+   Casm,      Lit(84), Lit(32), Lit("___GDCC__ShRU_W3$32") ; Jcnd_Lit
+   Casm,      Lit(84), Lit(64), Lit("___GDCC__ShRU_W3$64") ; Jcnd_Lit
    CmpI_LT_W, Stk(), Stk(), Lit(32)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__ShRU_W3$gt32")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__ShRU_W3$gt32")
 
    ; ret0 = (l0 >> r) | (l1 << (32 - r))
    ShRU_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(3), 0)
@@ -409,7 +409,7 @@ Function "___GDCC__ShRU_W3" \
 
 "___GDCC__ShRU_W3$gt32"
    CmpI_LT_W, Stk(), LocReg(Lit(3), 0), Lit(64)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__ShRU_W3$gt64")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__ShRU_W3$gt64")
 
    ; r -= 32
    SubU_W, LocReg(Lit(3), 0), LocReg(Lit(3), 0), Lit(32)

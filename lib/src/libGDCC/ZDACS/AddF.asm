@@ -31,7 +31,7 @@ Function "___GDCC__AddF_W" \
 {
    ; Is l negative? l + r = r + l = r - -l
    AndU_W,   Stk(), LocReg(Lit(0), 0), Lit(0x80000000)
-   Cjmp_Nil, Stk(), Lit("___GDCC__AddF_W$lpos")
+   Jcnd_Nil, Stk(), Lit("___GDCC__AddF_W$lpos")
    Move_W,   Stk(), LocReg(Lit(1), 0)
    NegF_W,   Stk(), LocReg(Lit(0), 0)
    SubF_W,   Stk(), Stk(), Stk()
@@ -40,7 +40,7 @@ Function "___GDCC__AddF_W" \
 
    ; Is r negative? l + r = l - -r
    AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Cjmp_Nil, Stk(), Lit("___GDCC__AddF_W$rpos")
+   Jcnd_Nil, Stk(), Lit("___GDCC__AddF_W$rpos")
    Move_W,   Stk(), LocReg(Lit(0), 0)
    NegF_W,   Stk(), LocReg(Lit(1), 0)
    SubF_W,   Stk(), Stk(), Stk()
@@ -49,14 +49,14 @@ Function "___GDCC__AddF_W" \
 
    ; Does l have special exponent?
    AndU_W, Stk(), LocReg(Lit(0), 0), Lit(0x7F800000)
-   Casm,   Lit(84), Lit(0x7F800000), Lit("___GDCC__AddF_W$lemax") ; Cjmp_Lit
-   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__AddF_W$lemin") ; Cjmp_Lit
+   Casm,   Lit(84), Lit(0x7F800000), Lit("___GDCC__AddF_W$lemax") ; Jcnd_Lit
+   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__AddF_W$lemin") ; Jcnd_Lit
    ShRI_W, LocReg(Lit(2), 0), Stk(), Lit(23)
 
    ; Does r have special exponent?
    AndU_W, Stk(), LocReg(Lit(1), 0), Lit(0x7F800000)
-   Casm,   Lit(84), Lit(0x7F800000), Lit("___GDCC__AddF_W$remax") ; Cjmp_Lit
-   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__AddF_W$remin") ; Cjmp_Lit
+   Casm,   Lit(84), Lit(0x7F800000), Lit("___GDCC__AddF_W$remax") ; Jcnd_Lit
+   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__AddF_W$remin") ; Jcnd_Lit
    ShRI_W, LocReg(Lit(3), 0), Stk(), Lit(23)
 
 
@@ -64,11 +64,11 @@ Function "___GDCC__AddF_W" \
 
    ; Is l.exp > r.exp?
    CmpI_GT_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(3), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W$lgtr")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W$lgtr")
 
    ; Is l.exp < r.exp?
    CmpI_LT_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(3), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W$lltr")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W$lltr")
 
 
    ; l.exp == r.exp
@@ -81,14 +81,14 @@ Function "___GDCC__AddF_W" \
    AddU_W, LocReg(Lit(4), 0), Stk(), Stk()
 
    CmpI_LE_W, Stk(), LocReg(Lit(4), 0), Lit(0x00FFFFFF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W$leqr_ret")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W$leqr_ret")
 
    ShRI_W, LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
    AddI_W, LocReg(Lit(2), 0), LocReg(Lit(2), 0), Lit(1)
 
    ; If exponent increased to 0xFF, return infinity.
    CmpI_EQ_W, Stk(), LocReg(Lit(2), 0), Lit(0xFF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W$infinity")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W$infinity")
 
 "___GDCC__AddF_W$leqr_ret"
    ShLU_W, Stk(), LocReg(Lit(2), 0), Lit(23)
@@ -104,7 +104,7 @@ Function "___GDCC__AddF_W" \
 
    ; If difference is >=24, r is too small to affect l.
    CmpI_GE_W, Stk(), LocReg(Lit(4), 0), Lit(24)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W$remin")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W$remin")
 
    ; l.manfull + (r.manfull >> difference)
    AndU_W, Stk(), LocReg(Lit(0), 0), Lit(0x007FFFFF)
@@ -115,14 +115,14 @@ Function "___GDCC__AddF_W" \
    AddU_W, LocReg(Lit(4), 0), Stk(), Stk()
 
    CmpI_LE_W, Stk(), LocReg(Lit(4), 0), Lit(0x00FFFFFF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W$lgtr_ret")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W$lgtr_ret")
 
    ShRI_W, LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
    AddI_W, LocReg(Lit(2), 0), LocReg(Lit(2), 0), Lit(1)
 
    ; If exponent increased to 0xFF, return infinity.
    CmpI_EQ_W, Stk(), LocReg(Lit(2), 0), Lit(0xFF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W$infinity")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W$infinity")
 
 "___GDCC__AddF_W$lgtr_ret"
    ShLU_W, Stk(), LocReg(Lit(2), 0), Lit(23)
@@ -138,7 +138,7 @@ Function "___GDCC__AddF_W" \
 
    ; If difference is >=24, l is too small to affect r.
    CmpI_GE_W, Stk(), LocReg(Lit(4), 0), Lit(24)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W$lemin")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W$lemin")
 
    ; (l.manfull >> difference) + r.manfull
    AndU_W, Stk(), LocReg(Lit(0), 0), Lit(0x007FFFFF)
@@ -149,14 +149,14 @@ Function "___GDCC__AddF_W" \
    AddU_W, LocReg(Lit(4), 0), Stk(), Stk()
 
    CmpI_LE_W, Stk(), LocReg(Lit(4), 0), Lit(0x00FFFFFF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W$lltr_ret")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W$lltr_ret")
 
    ShRI_W, LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
    AddI_W, LocReg(Lit(3), 0), LocReg(Lit(3), 0), Lit(1)
 
    ; If exponent increased to 0xFF, return infinity.
    CmpI_EQ_W, Stk(), LocReg(Lit(3), 0), Lit(0xFF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W$infinity")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W$infinity")
 
 "___GDCC__AddF_W$lltr_ret"
    ShLU_W, Stk(), LocReg(Lit(3), 0), Lit(23)
@@ -172,7 +172,7 @@ Function "___GDCC__AddF_W" \
    CmpU_EQ_W, Stk(), Stk(),             Lit(0x7F800000)
    AndU_W,    Stk(), LocReg(Lit(1), 0), Lit(0x007FFFFF)
    Casm,      Lit(70) ; LogAnd
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W$lemin")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W$lemin")
 
    ; r has min exponent. Therefore, r == 0 and the result is l.
 "___GDCC__AddF_W$remin"
@@ -208,7 +208,7 @@ Function "___GDCC__AddF_W2" \
 {
    ; Is l negative? l + r = r + l = r - -l
    AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Cjmp_Nil, Stk(), Lit("___GDCC__AddF_W2$lpos")
+   Jcnd_Nil, Stk(), Lit("___GDCC__AddF_W2$lpos")
    Move_W2,  Stk(), LocReg(Lit(2), 0)
    NegF_W2,  Stk(), LocReg(Lit(0), 0)
    SubF_W2,  Stk(), Stk(), Stk()
@@ -217,7 +217,7 @@ Function "___GDCC__AddF_W2" \
 
    ; Is r negative? l + r = l - -r
    AndU_W,   Stk(), LocReg(Lit(3), 0), Lit(0x80000000)
-   Cjmp_Nil, Stk(), Lit("___GDCC__AddF_W2$rpos")
+   Jcnd_Nil, Stk(), Lit("___GDCC__AddF_W2$rpos")
    Move_W2,  Stk(), LocReg(Lit(0), 0)
    NegF_W2,  Stk(), LocReg(Lit(2), 0)
    SubF_W2,  Stk(), Stk(), Stk()
@@ -226,14 +226,14 @@ Function "___GDCC__AddF_W2" \
 
    ; Does l have special exponent?
    AndU_W, Stk(), LocReg(Lit(1), 0), Lit(0x7FF00000)
-   Casm,   Lit(84), Lit(0x7FF00000), Lit("___GDCC__AddF_W2$lemax") ; Cjmp_Lit
-   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__AddF_W2$lemin") ; Cjmp_Lit
+   Casm,   Lit(84), Lit(0x7FF00000), Lit("___GDCC__AddF_W2$lemax") ; Jcnd_Lit
+   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__AddF_W2$lemin") ; Jcnd_Lit
    ShRI_W, LocReg(Lit(4), 0), Stk(), Lit(20)
 
    ; Does r have special exponent?
    AndU_W, Stk(), LocReg(Lit(3), 0), Lit(0x7FF00000)
-   Casm,   Lit(84), Lit(0x7FF00000), Lit("___GDCC__AddF_W2$remax") ; Cjmp_Lit
-   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__AddF_W2$remin") ; Cjmp_Lit
+   Casm,   Lit(84), Lit(0x7FF00000), Lit("___GDCC__AddF_W2$remax") ; Jcnd_Lit
+   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__AddF_W2$remin") ; Jcnd_Lit
    ShRI_W, LocReg(Lit(5), 0), Stk(), Lit(20)
 
 
@@ -241,11 +241,11 @@ Function "___GDCC__AddF_W2" \
 
    ; Is l.exp > r.exp?
    CmpI_GT_W, Stk(), LocReg(Lit(4), 0), LocReg(Lit(5), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W2$lgtr")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$lgtr")
 
    ; Is l.exp < r.exp?
    CmpI_LT_W, Stk(), LocReg(Lit(4), 0), LocReg(Lit(5), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W2$lltr")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$lltr")
 
 
    ; l.exp == r.exp
@@ -260,14 +260,14 @@ Function "___GDCC__AddF_W2" \
    AddU_W2, LocReg(Lit(6), 0), Stk(), Stk()
 
    CmpI_LE_W, Stk(), LocReg(Lit(7), 0), Lit(0x001FFFFF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W2$leqr_ret")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$leqr_ret")
 
    ShRI_W2, LocReg(Lit(6), 0), LocReg(Lit(6), 0), Lit(1)
    AddI_W,  LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
 
    ; If exponent increased to 0x7FF, return infinity.
    CmpI_EQ_W, Stk(), LocReg(Lit(4), 0), Lit(0x7FF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W2$infinity")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$infinity")
 
 "___GDCC__AddF_W2$leqr_ret"
    Move_W, Stk(), LocReg(Lit(6), 0)
@@ -284,7 +284,7 @@ Function "___GDCC__AddF_W2" \
 
    ; If difference is >=53, r is too small to affect l.
    CmpI_GE_W, Stk(), LocReg(Lit(6), 0), Lit(53)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W2$remin")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$remin")
 
    ; l.manfull + (r.manfull >> difference)
    Move_W,  Stk(), LocReg(Lit(0), 0)
@@ -297,14 +297,14 @@ Function "___GDCC__AddF_W2" \
    AddU_W2, LocReg(Lit(6), 0), Stk(), Stk()
 
    CmpI_LE_W, Stk(), LocReg(Lit(4), 0), Lit(0x001FFFFF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W2$lgtr_ret")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$lgtr_ret")
 
    ShRI_W, LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
    AddI_W, LocReg(Lit(2), 0), LocReg(Lit(2), 0), Lit(1)
 
    ; If exponent increased to 0x7FF, return infinity.
    CmpI_EQ_W, Stk(), LocReg(Lit(4), 0), Lit(0x7FF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W2$infinity")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$infinity")
 
 "___GDCC__AddF_W2$lgtr_ret"
    Move_W, Stk(), LocReg(Lit(6), 0)
@@ -321,7 +321,7 @@ Function "___GDCC__AddF_W2" \
 
    ; If difference is >=24, l is too small to affect r.
    CmpI_GE_W, Stk(), LocReg(Lit(6), 0), Lit(24)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W2$lemin")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$lemin")
 
    ; (l.manfull >> difference) + r.manfull
    Move_W,  Stk(), LocReg(Lit(0), 0)
@@ -334,14 +334,14 @@ Function "___GDCC__AddF_W2" \
    AddU_W2, LocReg(Lit(6), 0), Stk(), Stk()
 
    CmpI_LE_W, Stk(), LocReg(Lit(4), 0), Lit(0x001FFFFF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W2$lltr_ret")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$lltr_ret")
 
    ShRI_W, LocReg(Lit(6), 0), LocReg(Lit(6), 0), Lit(1)
    AddI_W, LocReg(Lit(5), 0), LocReg(Lit(5), 0), Lit(1)
 
    ; If exponent increased to 0x7FF, return infinity.
    CmpI_EQ_W, Stk(), LocReg(Lit(5), 0), Lit(0x7FF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W2$infinity")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$infinity")
 
 "___GDCC__AddF_W2$lltr_ret"
    Move_W, Stk(), LocReg(Lit(6), 0)
@@ -359,7 +359,7 @@ Function "___GDCC__AddF_W2" \
    AndU_W,    Stk(), LocReg(Lit(3), 0), Lit(0x000FFFFF)
    OrIU_W,    Stk(), Stk(), LocReg(Lit(2), 0)
    Casm,      Lit(70) ; LogAnd
-   Cjmp_Tru,  Stk(), Lit("___GDCC__AddF_W2$lemin")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$lemin")
 
    ; r has min exponent. Therefore, r == 0 and the result is l.
 "___GDCC__AddF_W2$remin"

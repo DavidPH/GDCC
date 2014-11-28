@@ -102,7 +102,7 @@ namespace GDCC
          else
          {
             cond->genStmntStk(ctx);
-            ctx.block.addStatementArgs(IR::Code::Cjmp_Tru, IR::Arg_Stk(), labelBody);
+            ctx.block.addStatementArgs(IR::Code::Jcnd_Tru, IR::Arg_Stk(), labelBody);
          }
 
          // Generate terminator.

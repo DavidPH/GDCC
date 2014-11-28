@@ -310,18 +310,6 @@ namespace GDCC
                *out << ')' << '\0';
                break;
 
-            case IR::Code::Cjmp_Nil:
-               *out << "cjmp_stk_nil" << '\0' << '(' << '\0';
-                  putExp(stmnt->args[1].aLit.value);
-               *out << ')' << '\0';
-               break;
-
-            case IR::Code::Cjmp_Tru:
-               *out << "cjmp_stk_tru" << '\0' << '(' << '\0';
-                  putExp(stmnt->args[1].aLit.value);
-               *out << ')' << '\0';
-               break;
-
             case IR::Code::CmpU_EQ_W:
                *out << "cmpu_stk_eq" << '\0' << '(' << '\0' << ')' << '\0';
                break;
@@ -344,6 +332,18 @@ namespace GDCC
 
             case IR::Code::CmpU_NE_W:
                *out << "cmpu_stk_ne" << '\0' << '(' << '\0' << ')' << '\0';
+               break;
+
+            case IR::Code::Jcnd_Nil:
+               *out << "cjmp_stk_nil" << '\0' << '(' << '\0';
+                  putExp(stmnt->args[1].aLit.value);
+               *out << ')' << '\0';
+               break;
+
+            case IR::Code::Jcnd_Tru:
+               *out << "cjmp_stk_tru" << '\0' << '(' << '\0';
+                  putExp(stmnt->args[1].aLit.value);
+               *out << ')' << '\0';
                break;
 
             case IR::Code::Jump:

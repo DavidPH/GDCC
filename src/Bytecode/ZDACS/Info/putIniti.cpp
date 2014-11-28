@@ -48,7 +48,7 @@ namespace GDCC
                putWord(idx);
                putCode(Code::Push_WldArr);
                putWord(arr);
-               putCode(Code::Cjmp_Tru);
+               putCode(Code::Jcnd_Tru);
                putWord(codeInitEnd);
 
                // Set initialized flag.
@@ -74,7 +74,7 @@ namespace GDCC
                putWord(idx);
                putCode(Code::Push_GblArr);
                putWord(arr);
-               putCode(Code::Cjmp_Tru);
+               putCode(Code::Jcnd_Tru);
                putWord(codeInitEnd);
 
                // Set initialized flag.

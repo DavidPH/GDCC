@@ -55,8 +55,8 @@ namespace GDCC
                trStmnt_Call();
                break;
 
-            case IR::Code::Cjmp_Nil:
-            case IR::Code::Cjmp_Tru:
+            case IR::Code::Jcnd_Nil:
+            case IR::Code::Jcnd_Tru:
                CheckArgC(stmnt, 2);
                CheckArgB(stmnt, 0, IR::ArgBase::Stk);
                CheckArgB(stmnt, 1, IR::ArgBase::Lit);

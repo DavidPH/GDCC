@@ -96,13 +96,6 @@ namespace GDCC
                   CheckArgB(stmnt, n, IR::ArgBase::Lit);
                break;
 
-            case IR::Code::Cjmp_Nil:
-            case IR::Code::Cjmp_Tru:
-               CheckArgC(stmnt, 2);
-               CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-               CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-               break;
-
             case IR::Code::CmpF_EQ_W:
             case IR::Code::CmpF_NE_W:
             case IR::Code::CmpI_EQ_W:
@@ -247,6 +240,13 @@ namespace GDCC
 
             case IR::Code::InvU_W2: trStmnt_InvU_W2(); break;
             case IR::Code::InvU_W3: trStmnt_InvU_W3(); break;
+
+            case IR::Code::Jcnd_Nil:
+            case IR::Code::Jcnd_Tru:
+               CheckArgC(stmnt, 2);
+               CheckArgB(stmnt, 1, IR::ArgBase::Lit);
+               moveArgStk_src(stmnt->args[0], IR::Code::Move_W);
+               break;
 
             case IR::Code::Jump:
                CheckArgC(stmnt, 1);

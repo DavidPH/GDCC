@@ -32,7 +32,7 @@ Function "___GDCC__AddU_W2" \
    AddU_W, LocReg(Lit(4), 0), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
 
    CmpU_LT_W, Stk(), LocReg(Lit(4), 0), LocReg(Lit(0), 0)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__AddU_W2$notover0")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__AddU_W2$notover0")
 
    Move_W, Stk(), LocReg(Lit(4), 0)
    AddU_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
@@ -64,10 +64,10 @@ Function "___GDCC__AddU_W3" \
    AddU_W, LocReg(Lit(8), 0), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
 
    CmpU_LT_W, Stk(), LocReg(Lit(6), 0), LocReg(Lit(0), 0)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__AddU_W3$notover0")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__AddU_W3$notover0")
 
    CmpU_LT_W, Stk(), LocReg(Lit(7), 0), LocReg(Lit(1), 0)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__AddU_W3$notover1")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__AddU_W3$notover1")
 
    ; Both overflowed.
    AddU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
@@ -82,7 +82,7 @@ Function "___GDCC__AddU_W3" \
 
    ; Recheck 1 for overflow.
    Move_W,   Stk(), LocReg(Lit(7), 0)
-   Cjmp_Tru, Stk(), Lit("___GDCC__AddU_W3$notover1retn")
+   Jcnd_Tru, Stk(), Lit("___GDCC__AddU_W3$notover1retn")
 
    AddU_W,   LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
 
@@ -92,7 +92,7 @@ Function "___GDCC__AddU_W3" \
 
 "___GDCC__AddU_W3$notover0"
    CmpU_LT_W, Stk(), LocReg(Lit(7), 0), LocReg(Lit(1), 0)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__AddU_W3$notover01")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__AddU_W3$notover01")
 
    ; Only 1 overflowed.
    AddU_W, LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)

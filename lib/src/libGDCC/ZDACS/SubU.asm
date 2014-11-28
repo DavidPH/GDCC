@@ -32,7 +32,7 @@ Function "___GDCC__SubU_W2" \
    SubU_W, LocReg(Lit(4), 0), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
 
    CmpU_GT_W, Stk(), LocReg(Lit(4), 0), LocReg(Lit(0), 0)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__SubU_W2$notunder0")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__SubU_W2$notunder0")
 
    Move_W, Stk(), LocReg(Lit(4), 0)
    SubU_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
@@ -64,10 +64,10 @@ Function "___GDCC__SubU_W3" \
    SubU_W, LocReg(Lit(8), 0), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
 
    CmpU_GT_W, Stk(), LocReg(Lit(6), 0), LocReg(Lit(0), 0)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder0")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder0")
 
    CmpU_GT_W, Stk(), LocReg(Lit(7), 0), LocReg(Lit(1), 0)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder1")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder1")
 
    ; Both underflowed.
    SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
@@ -79,7 +79,7 @@ Function "___GDCC__SubU_W3" \
 "___GDCC__SubU_W3$notunder1"
    ; Only 0 underflowed, but check 1 if it is about to underflow.
    Move_W,   Stk(), LocReg(Lit(7), 0)
-   Cjmp_Tru, Stk(), Lit("___GDCC__SubU_W3$notunder1+")
+   Jcnd_Tru, Stk(), Lit("___GDCC__SubU_W3$notunder1+")
 
    ; Both underflowed, actually.
    SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
@@ -95,7 +95,7 @@ Function "___GDCC__SubU_W3" \
 
 "___GDCC__SubU_W3$notunder0"
    CmpU_GT_W, Stk(), LocReg(Lit(7), 0), LocReg(Lit(1), 0)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder01")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder01")
 
    ; Only 1 underflowed.
    SubU_W, LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)

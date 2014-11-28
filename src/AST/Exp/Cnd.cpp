@@ -38,7 +38,7 @@ namespace GDCC
 
          // Evaluate condition.
          expC->genStmntStk(ctx);
-         ctx.block.addStatementArgs(IR::Code::Cjmp_Nil, IR::Arg_Stk(), labelNil);
+         ctx.block.addStatementArgs(IR::Code::Jcnd_Nil, IR::Arg_Stk(), labelNil);
 
          // Left (true) expression.
          expL->genStmnt(ctx, dst);

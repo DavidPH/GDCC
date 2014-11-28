@@ -39,15 +39,15 @@ Function "___GDCC__MulF_W" \
 
    ; Check for special operands.
    CmpI_GT_W, Stk(), LocReg(Lit(0), 0), Lit(0x7F800000)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__MulF_W$retl")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__MulF_W$retl")
    Move_W,    Stk(), LocReg(Lit(1), 0)
-   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__MulF_W$retr") ; Cjmp_Lit
-   Casm,      Lit(84), Lit(0x7F800000), Lit("___GDCC__MulF_W$retr") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__MulF_W$retr") ; Jcnd_Lit
+   Casm,      Lit(84), Lit(0x7F800000), Lit("___GDCC__MulF_W$retr") ; Jcnd_Lit
    CmpI_GT_W, Stk(), Stk(), Lit(0x7F800000)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__MulF_W$retr")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__MulF_W$retr")
    Move_W,    Stk(), LocReg(Lit(0), 0)
-   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__MulF_W$retl") ; Cjmp_Lit
-   Casm,      Lit(84), Lit(0x7F800000), Lit("___GDCC__MulF_W$retl") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__MulF_W$retl") ; Jcnd_Lit
+   Casm,      Lit(84), Lit(0x7F800000), Lit("___GDCC__MulF_W$retl") ; Jcnd_Lit
    Move_W,    Nul(), Stk()
 
    ; Determine result exponent. May be adjusted later, so no range check, yet.
@@ -72,7 +72,7 @@ Function "___GDCC__MulF_W" \
 
    ; Check high bit for extra shift.
    AndU_W,   Stk(), LocReg(Lit(4), 0), Lit(0x01000000)
-   Cjmp_Nil, Stk(), Lit("___GDCC__MulF_W$capman")
+   Jcnd_Nil, Stk(), Lit("___GDCC__MulF_W$capman")
 
    ShRI_W, LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
    AddU_W, LocReg(Lit(3), 0), LocReg(Lit(3), 0), Lit(1)
@@ -82,9 +82,9 @@ Function "___GDCC__MulF_W" \
 
    ; Check for exponent overflow/underflow.
    CmpI_GE_W, Stk(), LocReg(Lit(3), 0), Lit(0xFF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__MulF_W$retinf")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__MulF_W$retinf")
    CmpI_LE_W, Stk(), LocReg(Lit(3), 0), Lit(0x00)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__MulF_W$ret0")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__MulF_W$ret0")
 
    ; Return result.
    ShLU_W, Stk(), LocReg(Lit(3), 0), Lit(23)
@@ -133,15 +133,15 @@ Function "___GDCC__MulF_W2" \
 
    ; Check for special operands.
    CmpI_GT_W, Stk(), LocReg(Lit(1), 0), Lit(0x7FF00000)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__MulF_W2$retl")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__MulF_W2$retl")
    Move_W,    Stk(), LocReg(Lit(3), 0)
-   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__MulF_W2$retr") ; Cjmp_Lit
-   Casm,      Lit(84), Lit(0x7FF00000), Lit("___GDCC__MulF_W2$retr") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__MulF_W2$retr") ; Jcnd_Lit
+   Casm,      Lit(84), Lit(0x7FF00000), Lit("___GDCC__MulF_W2$retr") ; Jcnd_Lit
    CmpI_GT_W, Stk(), Stk(), Lit(0x7FF00000)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__MulF_W2$retr")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__MulF_W2$retr")
    Move_W,    Stk(), LocReg(Lit(1), 0)
-   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__MulF_W2$retl") ; Cjmp_Lit
-   Casm,      Lit(84), Lit(0x7FF00000), Lit("___GDCC__MulF_W2$retl") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__MulF_W2$retl") ; Jcnd_Lit
+   Casm,      Lit(84), Lit(0x7FF00000), Lit("___GDCC__MulF_W2$retl") ; Jcnd_Lit
    Move_W,    Nul(), Stk()
 
    ; Determine result exponent. May be adjusted later, so no range check, yet.
@@ -167,7 +167,7 @@ Function "___GDCC__MulF_W2" \
 
    ; Check high bit for extra shift.
    AndU_W,   Stk(), LocReg(Lit(7), 0), Lit(0x00200000)
-   Cjmp_Nil, Stk(), Lit("___GDCC__MulF_W2$capman")
+   Jcnd_Nil, Stk(), Lit("___GDCC__MulF_W2$capman")
 
    ShRI_W2, LocReg(Lit(6), 0), LocReg(Lit(6), 0), Lit(1)
    AddU_W,  LocReg(Lit(5), 0), LocReg(Lit(5), 0), Lit(1)
@@ -177,9 +177,9 @@ Function "___GDCC__MulF_W2" \
 
    ; Check for exponent overflow/underflow.
    CmpI_GE_W, Stk(), LocReg(Lit(5), 0), Lit(0x7FF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__MulF_W2$retinf")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__MulF_W2$retinf")
    CmpI_LE_W, Stk(), LocReg(Lit(5), 0), Lit(0x000)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__MulF_W2$ret0")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__MulF_W2$ret0")
 
    ; Return result.
    Move_W, Stk(), LocReg(Lit(6), 0)

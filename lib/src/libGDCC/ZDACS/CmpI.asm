@@ -30,7 +30,7 @@ Function "___GDCC__CmpI_GE_W2" \
    block
 {
    CmpI_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__CmpI_GE_W2$eq1")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpI_GE_W2$eq1")
 
    CmpI_GT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
    Retn,      Stk()
@@ -55,14 +55,14 @@ Function "___GDCC__CmpI_GE_W3" \
    block
 {
    CmpI_EQ_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__CmpI_GE_W3$eq2")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpI_GE_W3$eq2")
 
    CmpI_GT_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
    Retn,      Stk()
 
 "___GDCC__CmpI_GE_W3$eq2"
    CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__CmpI_GE_W3$eq1")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpI_GE_W3$eq1")
 
    CmpU_GT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
    Retn,      Stk()
@@ -87,7 +87,7 @@ Function "___GDCC__CmpI_GT_W2" \
    block
 {
    CmpI_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__CmpI_GT_W2$eq1")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpI_GT_W2$eq1")
 
    CmpI_GT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
    Retn,      Stk()
@@ -112,14 +112,14 @@ Function "___GDCC__CmpI_GT_W3" \
    block
 {
    CmpI_EQ_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__CmpI_GT_W3$eq2")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpI_GT_W3$eq2")
 
    CmpI_GT_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
    Retn,      Stk()
 
 "___GDCC__CmpI_GT_W3$eq2"
    CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__CmpI_GT_W3$eq1")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpI_GT_W3$eq1")
 
    CmpU_GT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
    Retn,      Stk()
@@ -144,7 +144,7 @@ Function "___GDCC__CmpI_LE_W2" \
    block
 {
    CmpI_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__CmpI_LE_W2$eq1")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpI_LE_W2$eq1")
 
    CmpI_LT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
    Retn,      Stk()
@@ -169,14 +169,14 @@ Function "___GDCC__CmpI_LE_W3" \
    block
 {
    CmpI_EQ_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__CmpI_LE_W3$eq2")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpI_LE_W3$eq2")
 
    CmpI_LT_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
    Retn,      Stk()
 
 "___GDCC__CmpI_LE_W3$eq2"
    CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__CmpI_LE_W3$eq1")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpI_LE_W3$eq1")
 
    CmpU_LT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
    Retn,      Stk()
@@ -201,7 +201,7 @@ Function "___GDCC__CmpI_LT_W2" \
    block
 {
    CmpI_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__CmpI_LT_W2$eq1")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpI_LT_W2$eq1")
 
    CmpI_LT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
    Retn,      Stk()
@@ -226,14 +226,14 @@ Function "___GDCC__CmpI_LT_W3" \
    block
 {
    CmpI_EQ_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__CmpI_LT_W3$eq2")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpI_LT_W3$eq2")
 
    CmpI_LT_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
    Retn,      Stk()
 
 "___GDCC__CmpI_LT_W3$eq2"
    CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__CmpI_LT_W3$eq1")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpI_LT_W3$eq1")
 
    CmpU_LT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
    Retn,      Stk()

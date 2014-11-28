@@ -67,16 +67,6 @@ namespace GDCC
                   putWord(GetWord(arg.aLit));
                break;
 
-            case IR::Code::Cjmp_Nil:
-               putCode(Code::Cjmp_Nil);
-               putWord(GetWord(stmnt->args[1].aLit));
-               break;
-
-            case IR::Code::Cjmp_Tru:
-               putCode(Code::Cjmp_Tru);
-               putWord(GetWord(stmnt->args[1].aLit));
-               break;
-
             case IR::Code::CmpF_EQ_W:  putStmntCall("___GDCC__CmpF_EQ_W",  1); break;
             case IR::Code::CmpF_EQ_W2: putStmntCall("___GDCC__CmpF_EQ_W2", 1); break;
 
@@ -178,6 +168,16 @@ namespace GDCC
             case IR::Code::InvU_W:  putCode(Code::InvU); break;
             case IR::Code::InvU_W2: putStmnt_InvU_W2(); break;
             case IR::Code::InvU_W3: putStmnt_InvU_W3(); break;
+
+            case IR::Code::Jcnd_Nil:
+               putCode(Code::Jcnd_Nil);
+               putWord(GetWord(stmnt->args[1].aLit));
+               break;
+
+            case IR::Code::Jcnd_Tru:
+               putCode(Code::Jcnd_Tru);
+               putWord(GetWord(stmnt->args[1].aLit));
+               break;
 
             case IR::Code::Jump:
                putCode(Code::Jump_Lit);
@@ -497,7 +497,7 @@ namespace GDCC
             putWord(idx);
             putCode(code);
             putWord(arr);
-            putCode(Code::Cjmp_Tru);
+            putCode(Code::Jcnd_Tru);
             putWord(putPos + 12);
             putCode(Code::Wait_Lit);
             putWord(1);

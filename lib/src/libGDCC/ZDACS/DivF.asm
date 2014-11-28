@@ -39,15 +39,15 @@ Function "___GDCC__DivF_W" \
 
    ; Check for special operands.
    CmpI_GT_W, Stk(), LocReg(Lit(0), 0), Lit(0x7F800000)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__DivF_W$lnan")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__DivF_W$lnan")
    Move_W,    Stk(), LocReg(Lit(1), 0)
-   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__DivF_W$r0") ; Cjmp_Lit
-   Casm,      Lit(84), Lit(0x7F800000), Lit("___GDCC__DivF_W$rinf") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__DivF_W$r0") ; Jcnd_Lit
+   Casm,      Lit(84), Lit(0x7F800000), Lit("___GDCC__DivF_W$rinf") ; Jcnd_Lit
    CmpI_GT_W, Stk(), Stk(), Lit(0x7F800000)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__DivF_W$rnan")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__DivF_W$rnan")
    Move_W,    Stk(), LocReg(Lit(0), 0)
-   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__DivF_W$l0") ; Cjmp_Lit
-   Casm,      Lit(84), Lit(0x7F800000), Lit("___GDCC__DivF_W$linf") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__DivF_W$l0") ; Jcnd_Lit
+   Casm,      Lit(84), Lit(0x7F800000), Lit("___GDCC__DivF_W$linf") ; Jcnd_Lit
    Move_W,    Nul(), Stk()
 
    ; Determine result exponent. Will be adjusted later, so no range check, yet.
@@ -71,7 +71,7 @@ Function "___GDCC__DivF_W" \
 "___GDCC__DivF_W$loop"
    ; Division check.
    CmpI_GE_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__DivF_W$loopnil")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__DivF_W$loopnil")
    SubU_W,    LocReg(Lit(0), 0), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
    AddU_W,    LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
 
@@ -81,7 +81,7 @@ Function "___GDCC__DivF_W" \
 
    SubU_W, LocReg(Lit(5), 0), LocReg(Lit(5), 0), Lit(1)
    Move_W, Stk(), LocReg(Lit(5), 0)
-   Cjmp_Tru, Stk(), Lit("___GDCC__DivF_W$loop")
+   Jcnd_Tru, Stk(), Lit("___GDCC__DivF_W$loop")
 
    ; Final division check.
    CmpI_GE_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
@@ -96,16 +96,16 @@ Function "___GDCC__DivF_W" \
 
 "___GDCC__DivF_W$fixmancond"
    AndU_W,   Stk(), LocReg(Lit(4), 0), Lit(0x00800000)
-   Cjmp_Nil, Stk(), Lit("___GDCC__DivF_W$fixmanbody")
+   Jcnd_Nil, Stk(), Lit("___GDCC__DivF_W$fixmanbody")
 
 "___GDCC__DivF_W$capman"
    AndU_W, LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(0x007FFFFF)
 
    ; Check for out of range exponent.
    CmpI_GE_W, Stk(), LocReg(Lit(3), 0), Lit(0xFF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__DivF_W$inf")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__DivF_W$inf")
    CmpI_LE_W, Stk(), LocReg(Lit(3), 0), Lit(0x00)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__DivF_W$0")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__DivF_W$0")
 
    ; Return result.
    ShLU_W, Stk(), LocReg(Lit(3), 0), Lit(23)
@@ -137,7 +137,7 @@ Function "___GDCC__DivF_W" \
 
    ; 0 / 0 = NaN
    Move_W,   Stk(), LocReg(Lit(0), 0)
-   Cjmp_Nil, Stk(), Lit("___GDCC__DivF_W$nan")
+   Jcnd_Nil, Stk(), Lit("___GDCC__DivF_W$nan")
 
    ; Otherwise, result is INF.
 "___GDCC__DivF_W$inf"
@@ -149,7 +149,7 @@ Function "___GDCC__DivF_W" \
 
    ; INF / INF = NaN
    CmpU_EQ_W, Stk(), LocReg(Lit(0), 0), Lit(0x7F800000)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__DivF_W$nan")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__DivF_W$nan")
 
    ; Otherwise, result is 0.
 "___GDCC__DivF_W$0"
@@ -181,15 +181,15 @@ Function "___GDCC__DivF_W2" \
 
    ; Check for special operands.
    CmpI_GT_W, Stk(), LocReg(Lit(1), 0), Lit(0x7FF00000)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__DivF_W2$lnan")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__DivF_W2$lnan")
    Move_W,    Stk(), LocReg(Lit(3), 0)
-   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__DivF_W2$r0") ; Cjmp_Lit
-   Casm,      Lit(84), Lit(0x7FF00000), Lit("___GDCC__DivF_W2$rinf") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__DivF_W2$r0") ; Jcnd_Lit
+   Casm,      Lit(84), Lit(0x7FF00000), Lit("___GDCC__DivF_W2$rinf") ; Jcnd_Lit
    CmpI_GT_W, Stk(), Stk(), Lit(0x7F800000)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__DivF_W2$rnan")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__DivF_W2$rnan")
    Move_W,    Stk(), LocReg(Lit(1), 0)
-   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__DivF_W2$l0") ; Cjmp_Lit
-   Casm,      Lit(84), Lit(0x7FF00000), Lit("___GDCC__DivF_W2$linf") ; Cjmp_Lit
+   Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__DivF_W2$l0") ; Jcnd_Lit
+   Casm,      Lit(84), Lit(0x7FF00000), Lit("___GDCC__DivF_W2$linf") ; Jcnd_Lit
    Move_W,    Nul(), Stk()
 
    ; Determine result exponent. Will be adjusted later, so no range check, yet.
@@ -213,7 +213,7 @@ Function "___GDCC__DivF_W2" \
 "___GDCC__DivF_W2$loop"
    ; Division check.
    CmpI_GE_W2, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
-   Cjmp_Nil,   Stk(), Lit("___GDCC__DivF_W2$loopnil")
+   Jcnd_Nil,   Stk(), Lit("___GDCC__DivF_W2$loopnil")
    SubU_W2,    LocReg(Lit(0), 0), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
    AddU_W,     LocReg(Lit(6), 0), LocReg(Lit(6), 0), Lit(1)
 
@@ -223,7 +223,7 @@ Function "___GDCC__DivF_W2" \
 
    SubU_W, LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
    Move_W, Stk(), LocReg(Lit(8), 0)
-   Cjmp_Tru, Stk(), Lit("___GDCC__DivF_W2$loop")
+   Jcnd_Tru, Stk(), Lit("___GDCC__DivF_W2$loop")
 
    ; Final division check.
    CmpI_GE_W2, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
@@ -238,16 +238,16 @@ Function "___GDCC__DivF_W2" \
 
 "___GDCC__DivF_W2$fixmancond"
    AndU_W,   Stk(), LocReg(Lit(7), 0), Lit(0x00100000)
-   Cjmp_Nil, Stk(), Lit("___GDCC__DivF_W2$fixmanbody")
+   Jcnd_Nil, Stk(), Lit("___GDCC__DivF_W2$fixmanbody")
 
 "___GDCC__DivF_W2$capman"
    AndU_W, LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(0x000FFFFF)
 
    ; Check for out of range exponent.
    CmpI_GE_W, Stk(), LocReg(Lit(5), 0), Lit(0x7FF)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__DivF_W2$inf")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__DivF_W2$inf")
    CmpI_LE_W, Stk(), LocReg(Lit(5), 0), Lit(0x000)
-   Cjmp_Tru,  Stk(), Lit("___GDCC__DivF_W2$0")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__DivF_W2$0")
 
    ; Return result.
    Move_W, Stk(), LocReg(Lit(6), 0)
@@ -283,7 +283,7 @@ Function "___GDCC__DivF_W2" \
 
    ; 0 / 0 = NaN
    Move_W,   Stk(), LocReg(Lit(1), 0)
-   Cjmp_Nil, Stk(), Lit("___GDCC__DivF_W2$nan")
+   Jcnd_Nil, Stk(), Lit("___GDCC__DivF_W2$nan")
 
    ; Otherwise, result is INF.
 "___GDCC__DivF_W2$inf"
@@ -296,7 +296,7 @@ Function "___GDCC__DivF_W2" \
 
    ; INF / INF = NaN
    CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), Lit(0x7F800000)
-   Cjmp_Nil,  Stk(), Lit("___GDCC__DivF_W2$nan")
+   Jcnd_Nil,  Stk(), Lit("___GDCC__DivF_W2$nan")
 
    ; Otherwise, result is 0.
 "___GDCC__DivF_W2$0"

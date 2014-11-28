@@ -43,7 +43,7 @@ namespace GDCC
       //
       static void CheckExp(Exp const *, GenStmntCtx const &ctx,
          Type const *srcT, Temporary &src, IR::Code codeCmp,
-         Core::FastU exp, IR::Code codeCjmp, IR::Glyph label)
+         Core::FastU exp, IR::Code codeJcnd, IR::Glyph label)
       {
          ctx.block.addStatementArgs(IR::Code::AndU_W,
             IR::Arg_Stk(), src.getArg(src.size() - 1), GetMaskExp(srcT));
@@ -51,7 +51,7 @@ namespace GDCC
          ctx.block.addStatementArgs(codeCmp, IR::Arg_Stk(), IR::Arg_Stk(),
             exp << (srcT->getSizeBitsI() % Platform::GetWordBits()));
 
-         ctx.block.addStatementArgs(codeCjmp, IR::Arg_Stk(), label);
+         ctx.block.addStatementArgs(codeJcnd, IR::Arg_Stk(), label);
       }
 
       //
@@ -91,7 +91,7 @@ namespace GDCC
          ctx.block.addStatementArgs(IR::Code::CmpI_LT_W,
             IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
-         ctx.block.addStatementArgs(IR::Code::Cjmp_Nil, IR::Arg_Stk(), labelPos);
+         ctx.block.addStatementArgs(IR::Code::Jcnd_Nil, IR::Arg_Stk(), labelPos);
 
          // Extend sign.
          for(auto i = diffWords; i--;)
@@ -285,15 +285,15 @@ namespace GDCC
 
          // Check if result is INF.
          CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_GE_W, expMax,
-            IR::Code::Cjmp_Tru, labelINF);
+            IR::Code::Jcnd_Tru, labelINF);
 
          // Check if exponent more than mid.
          CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_GT_W, expMid,
-            IR::Code::Cjmp_Tru, labelGT);
+            IR::Code::Jcnd_Tru, labelGT);
 
          // Check if exponent less than mid.
          CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_LT_W, expMid,
-            IR::Code::Cjmp_Tru, labelLT);
+            IR::Code::Jcnd_Tru, labelLT);
 
          // Exponent is equal to mid.
          GetMan(exp, ctx, srcT, src, true);
@@ -305,7 +305,7 @@ namespace GDCC
          {
             ctx.block.addStatementArgs(IR::Code::AndU_W,
                IR::Arg_Stk(), src.getArg(src.size() - 1), GetMaskSig(srcT));
-            ctx.block.addStatementArgs(IR::Code::Cjmp_Tru,
+            ctx.block.addStatementArgs(IR::Code::Jcnd_Tru,
                IR::Arg_Stk(), labelNI);
 
             // Positive infinity.
@@ -376,7 +376,7 @@ namespace GDCC
 
          // Check if result is 0.
          CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_LE_W, expMin,
-            IR::Code::Cjmp_Tru, label0);
+            IR::Code::Jcnd_Tru, label0);
 
          // Shift mantissa right.
          GetMan(exp, ctx, srcT, src, true);
@@ -410,7 +410,7 @@ namespace GDCC
 
          ctx.block.addStatementArgs(IR::Code::AndU_W,
             IR::Arg_Stk(), src.getArg(src.size() - 1), GetMaskSig(srcT));
-         ctx.block.addStatementArgs(IR::Code::Cjmp_Nil,
+         ctx.block.addStatementArgs(IR::Code::Jcnd_Nil,
             IR::Arg_Stk(), labelPos);
 
          ctx.block.addStatementArgs(
@@ -547,7 +547,7 @@ namespace GDCC
             GetMaskMan(srcT) | GetMaskExp(srcT));
          ctx.block.addStatementArgs(IR::Code::CmpI_GT_W,
             IR::Arg_Stk(), IR::Arg_Stk(), GetMaskExp(srcT));
-         ctx.block.addStatementArgs(IR::Code::Cjmp_Nil,
+         ctx.block.addStatementArgs(IR::Code::Jcnd_Nil,
             IR::Arg_Stk(), labelChkINF);
 
          // Generate NaN.
@@ -561,7 +561,7 @@ namespace GDCC
          // Check if result is INF.
          ctx.block.addLabel(labelChkINF);
          CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_GE_W, expMax,
-            IR::Code::Cjmp_Nil, labelChk0);
+            IR::Code::Jcnd_Nil, labelChk0);
 
          // Generate INF.
          for(auto i = dstT->getSizeWords(); --i;)
@@ -573,7 +573,7 @@ namespace GDCC
          // Check if result is 0.
          ctx.block.addLabel(labelChk0);
          CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_LE_W, expMin,
-            IR::Code::Cjmp_Nil, labelMan);
+            IR::Code::Jcnd_Nil, labelMan);
 
          // Generate 0.
          for(auto i = dstT->getSizeWords(); i--;)
@@ -701,7 +701,7 @@ namespace GDCC
                ctx.block.addStatementArgs(IR::Code::OrIU_W,
                   IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
-            ctx.block.addStatementArgs(IR::Code::Cjmp_Tru,
+            ctx.block.addStatementArgs(IR::Code::Jcnd_Tru,
                IR::Arg_Stk(), labelTru);
 
             // Push 0 and end.
@@ -733,7 +733,7 @@ namespace GDCC
                IR::Arg_Stk(), IR::Arg_Stk());
             ctx.block.addStatementArgs(IR::Code::AndU_W,
                IR::Arg_Stk(), IR::Arg_Stk(), GetMaskSig(srcT));
-            ctx.block.addStatementArgs(IR::Code::Cjmp_Nil,
+            ctx.block.addStatementArgs(IR::Code::Jcnd_Nil,
                IR::Arg_Stk(), labelPos);
 
             // Set sign bit and negate source.
@@ -768,7 +768,7 @@ namespace GDCC
          ctx.block.addStatementArgs(IR::Code::AndU_W,
             IR::Arg_Stk(), IR::Arg_Stk(),
             (GetMaskSig(dstT) | GetMaskExp(dstT)) << 1);
-         ctx.block.addStatementArgs(IR::Code::Cjmp_Tru,
+         ctx.block.addStatementArgs(IR::Code::Jcnd_Tru,
             IR::Arg_Stk(), labelShRB);
 
          // Shift left until implicit bit is set.
@@ -787,7 +787,7 @@ namespace GDCC
             IR::Arg_Stk(), IR::Arg_Stk());
          ctx.block.addStatementArgs(IR::Code::AndU_W,
             IR::Arg_Stk(), IR::Arg_Stk(), GetMaskMan(dstT) + 1);
-         ctx.block.addStatementArgs(IR::Code::Cjmp_Nil,
+         ctx.block.addStatementArgs(IR::Code::Jcnd_Nil,
             IR::Arg_Stk(), labelShLB);
 
          // Shrink word count.

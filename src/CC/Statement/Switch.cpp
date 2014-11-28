@@ -127,7 +127,7 @@ static void GenCond_SearchPart(
             IR::Arg_Stk(), cond.getArg(), caseValue);
 
          // If true, branch to case.
-         ctx.block.addStatementArgs(IR::Code::Cjmp_Tru,
+         ctx.block.addStatementArgs(IR::Code::Jcnd_Tru,
             IR::Arg_Stk(), caseLabel);
 
          // Otherwise, branch to default.
@@ -147,7 +147,7 @@ static void GenCond_SearchPart(
       IR::Arg_Stk(), cond.getArg(), IR::Arg_Lit(pivotValue));
 
    // Skip if false.
-   ctx.block.addStatementArgs(IR::Code::Cjmp_Nil, IR::Arg_Stk(), pivotLabel);
+   ctx.block.addStatementArgs(IR::Code::Jcnd_Nil, IR::Arg_Stk(), pivotLabel);
 
    // Search left half.
    GenCond_SearchPart(stmnt, ctx, codes, cond, begin, pivot);

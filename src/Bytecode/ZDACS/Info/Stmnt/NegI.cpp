@@ -94,7 +94,7 @@ namespace GDCC
 
                putStmntIncUArg(stmnt->args[0], 0);
                putStmntPushArg(stmnt->args[0], 0);
-               putCode(Code::Cjmp_Tru, putPos + jump0);
+               putCode(Code::Jcnd_Tru, putPos + jump0);
                putStmntIncUArg(stmnt->args[0], 1);
             }
             else
@@ -106,7 +106,7 @@ namespace GDCC
 
                putCode(Code::IncU_LocReg, func->localReg + 0);
                putCode(Code::Push_LocReg, func->localReg + 0);
-               putCode(Code::Cjmp_Tru,    putPos + 16);
+               putCode(Code::Jcnd_Tru,    putPos + 16);
                putCode(Code::IncU_LocReg, func->localReg + 1);
 
                putCode(Code::Push_LocReg, func->localReg + 0);
@@ -135,10 +135,10 @@ namespace GDCC
 
                putStmntIncUArg(stmnt->args[0], 0);
                putStmntPushArg(stmnt->args[0], 0);
-               putCode(Code::Cjmp_Tru, putPos + jump0);
+               putCode(Code::Jcnd_Tru, putPos + jump0);
                putStmntIncUArg(stmnt->args[0], 1);
                putStmntPushArg(stmnt->args[0], 1);
-               putCode(Code::Cjmp_Tru, putPos + jump1);
+               putCode(Code::Jcnd_Tru, putPos + jump1);
                putStmntIncUArg(stmnt->args[0], 2);
             }
             else
@@ -152,10 +152,10 @@ namespace GDCC
 
                putCode(Code::IncU_LocReg, func->localReg + 0);
                putCode(Code::Push_LocReg, func->localReg + 0);
-               putCode(Code::Cjmp_Tru,    putPos + 40);
+               putCode(Code::Jcnd_Tru,    putPos + 40);
                putCode(Code::IncU_LocReg, func->localReg + 1);
                putCode(Code::Push_LocReg, func->localReg + 1);
-               putCode(Code::Cjmp_Tru,    putPos + 16);
+               putCode(Code::Jcnd_Tru,    putPos + 16);
                putCode(Code::IncU_LocReg, func->localReg + 2);
 
                putCode(Code::Push_LocReg, func->localReg + 0);

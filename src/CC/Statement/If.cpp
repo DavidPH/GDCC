@@ -82,7 +82,7 @@ namespace GDCC
          {
             cond->genStmntStk(ctx);
 
-            ctx.block.addStatementArgs(IR::Code::Cjmp_Nil, IR::Arg_Stk(),
+            ctx.block.addStatementArgs(IR::Code::Jcnd_Nil, IR::Arg_Stk(),
                IR::Glyph(ctx.prog, labelT = ctx.fn->genLabel()));
          }
 

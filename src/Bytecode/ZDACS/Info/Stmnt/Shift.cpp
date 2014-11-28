@@ -168,7 +168,7 @@ namespace GDCC
             else if(stmnt->args[2].a == IR::ArgBase::Stk)
             {
                // If shift is 0, jump to end.
-               putCode(Code::Cjmp_Lit);
+               putCode(Code::Jcnd_Lit);
                putWord(0);
                putWord(putPos + 60);
 
@@ -192,7 +192,7 @@ namespace GDCC
                putStmntPushArg(stmnt->args[2], 0);
 
                // If shift is 0, jump to end.
-               putCode(Code::Cjmp_Lit);
+               putCode(Code::Jcnd_Lit);
                putWord(0);
                putWord(putPos + 40 + lenPushArg(stmnt->args[2], 0));
 

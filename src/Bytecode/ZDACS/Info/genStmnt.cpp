@@ -140,11 +140,6 @@ namespace GDCC
                numChunkCODE += stmnt->args.size() * 4;
                break;
 
-            case IR::Code::Cjmp_Nil:
-            case IR::Code::Cjmp_Tru:
-               numChunkCODE += 8;
-               break;
-
             case IR::Code::CmpI_EQ_W:
             case IR::Code::CmpI_GE_W:
             case IR::Code::CmpI_GT_W:
@@ -230,6 +225,11 @@ namespace GDCC
             case IR::Code::InvU_W:  numChunkCODE += 4; break;
             case IR::Code::InvU_W2: genStmnt_InvU_W2(); break;
             case IR::Code::InvU_W3: genStmnt_InvU_W3(); break;
+
+            case IR::Code::Jcnd_Nil:
+            case IR::Code::Jcnd_Tru:
+               numChunkCODE += 8;
+               break;
 
             case IR::Code::Jump:
                numChunkCODE += 8;

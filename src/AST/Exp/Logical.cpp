@@ -80,7 +80,7 @@ namespace GDCC
       //
       void Exp_LogAnd::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
       {
-         GenStmnt_Logical(this, ctx, dst, IR::Code::Cjmp_Nil, 0, 1);
+         GenStmnt_Logical(this, ctx, dst, IR::Code::Jcnd_Nil, 0, 1);
       }
 
       //
@@ -96,7 +96,7 @@ namespace GDCC
       //
       void Exp_LogOrI::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
       {
-         GenStmnt_Logical(this, ctx, dst, IR::Code::Cjmp_Tru, 1, 0);
+         GenStmnt_Logical(this, ctx, dst, IR::Code::Jcnd_Tru, 1, 0);
       }
 
       //

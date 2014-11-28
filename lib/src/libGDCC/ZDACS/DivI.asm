@@ -30,10 +30,10 @@ Function "___GDCC__DiXI_W2" \
    block
 {
    AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Cjmp_Tru, Stk(), Lit("___GDCC__DiXI_W2$l1")
+   Jcnd_Tru, Stk(), Lit("___GDCC__DiXI_W2$l1")
 
    AndU_W,   Stk(), LocReg(Lit(3), 0), Lit(0x80000000)
-   Cjmp_Tru, Stk(), Lit("___GDCC__DiXI_W2$l0r1")
+   Jcnd_Tru, Stk(), Lit("___GDCC__DiXI_W2$l0r1")
 
    ; +dividend, +divisor -> +quotient, +remainder
    Move_W2,  Stk(), LocReg(Lit(0), 0)
@@ -57,7 +57,7 @@ Function "___GDCC__DiXI_W2" \
    NegI_W2,  LocReg(Lit(0), 0), LocReg(Lit(0), 0)
 
    AndU_W,   Stk(), LocReg(Lit(3), 0), Lit(0x80000000)
-   Cjmp_Tru, Stk(), Lit("___GDCC__DiXI_W2$l1r1")
+   Jcnd_Tru, Stk(), Lit("___GDCC__DiXI_W2$l1r1")
 
    ; -dividend, +divisor -> -quotient, +remainder
    Move_W2,  Stk(), LocReg(Lit(0), 0)
@@ -94,10 +94,10 @@ Function "___GDCC__DiXI_W3" \
    block
 {
    AndU_W,   Stk(), LocReg(Lit(2), 0), Lit(0x80000000)
-   Cjmp_Tru, Stk(), Lit("___GDCC__DiXI_W3$l1")
+   Jcnd_Tru, Stk(), Lit("___GDCC__DiXI_W3$l1")
 
    AndU_W,   Stk(), LocReg(Lit(5), 0), Lit(0x80000000)
-   Cjmp_Tru, Stk(), Lit("___GDCC__DiXI_W3$l0r1")
+   Jcnd_Tru, Stk(), Lit("___GDCC__DiXI_W3$l0r1")
 
    ; +dividend, +divisor -> +quotient, +remainder
    Move_W3,  Stk(), LocReg(Lit(0), 0)
@@ -121,7 +121,7 @@ Function "___GDCC__DiXI_W3" \
    NegI_W3,  LocReg(Lit(0), 0), LocReg(Lit(0), 0)
 
    AndU_W,   Stk(), LocReg(Lit(5), 0), Lit(0x80000000)
-   Cjmp_Tru, Stk(), Lit("___GDCC__DiXI_W3$l1r1")
+   Jcnd_Tru, Stk(), Lit("___GDCC__DiXI_W3$l1r1")
 
    ; -dividend, +divisor -> -quotient, +remainder
    Move_W3,  Stk(), LocReg(Lit(0), 0)

@@ -43,10 +43,6 @@ GDCC_IR_CodeList(Call)
 // Casm src arg...
 GDCC_IR_CodeList(Casm)
 
-// Cjmp src lab
-GDCC_IR_CodeList(Cjmp_Nil)
-GDCC_IR_CodeList(Cjmp_Tru)
-
 // Cmp* dst lop rop
 GDCC_IR_CodeList(CmpF_EQ_W)
 GDCC_IR_CodeList(CmpF_EQ_W2)
@@ -132,6 +128,10 @@ GDCC_IR_CodeList(DivX_W2)
 GDCC_IR_CodeList(InvU_W)
 GDCC_IR_CodeList(InvU_W2)
 GDCC_IR_CodeList(InvU_W3)
+
+// Jcnd src lab
+GDCC_IR_CodeList(Jcnd_Nil)
+GDCC_IR_CodeList(Jcnd_Tru)
 
 // Jump src
 GDCC_IR_CodeList(Jump)
