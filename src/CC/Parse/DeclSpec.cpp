@@ -35,10 +35,6 @@ namespace GDCC
       //
       bool IsDeclSpec(ParserCtx const &ctx, Scope &scope)
       {
-         // attribute-specifier
-         if(IsAttrSpec(ctx, scope))
-            return true;
-
          auto tok = ctx.in.peek();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             return false;
@@ -104,10 +100,6 @@ namespace GDCC
          // Read declaration-specifier tokens until there are no more.
          for(;;)
          {
-            // attribute-specifier
-            if(IsAttrSpec(ctx, scope))
-               {ParseAttrSpec(ctx, scope, attr); continue;}
-
             auto const &tok = ctx.in.peek();
             if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
                break;
@@ -146,13 +138,19 @@ namespace GDCC
 
          parse_done:;
 
+         // Check for attributes.
+         auto attrType = attr;
+         if(IsAttrSpec(ctx, scope))
+            ParseAttrSpecList(ctx, scope, attrType);
+
          // Validate the storage class.
          if(declThrd > 1 || (declThrd && declStor != declStorNone &&
             declStor != declStorExte && declStor != declStorStat))
             throw Core::ExceptStr(pos, "invalid thread_local");
 
          // Finalize the type specifiers.
-         declSpec.finish(attr, declQual, pos);
+         declSpec.finish(attrType, declQual, pos);
+         attr.type = attrType.type;
 
          // Set attribute storage class.
          if(declThrd) attr.storeThread = true;

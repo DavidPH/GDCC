@@ -68,7 +68,12 @@ namespace GDCC
             if(ctx.in.drop(Core::TOK_Mul))
             {
                attr.type = attr.type->getTypeQual(declQual)->getTypePointer();
-               declQual = AST::QualNone;
+               declQual  = AST::QualNone;
+
+               // Check for attributes.
+               auto attrType = attr;
+               if(IsAttrSpec(ctx, scope))
+                  ParseAttrSpecList(ctx, scope, attrType);
             }
             else if(IsTypeQual(ctx, scope))
                ParseTypeQual(ctx, scope, declQual);
@@ -96,7 +101,12 @@ namespace GDCC
 
          // identifier
          if(ctx.in.peek().tok == Core::TOK_Identi)
+         {
             attr.name = ctx.in.get().str;
+
+            if(IsAttrSpec(ctx, scope))
+               ParseAttrSpecList(ctx, scope, attr);
+         }
 
          // ( declarator )
          else if(ctx.in.peek().tok == Core::TOK_ParenO)
@@ -167,9 +177,15 @@ namespace GDCC
                if(!ctx.in.drop(Core::TOK_BrackC))
                   throw Core::ExceptStr(ctx.in.peek().pos, "expected ']'");
 
+               // Check for array attributes.
+               auto attrArray = attr;
+               if(IsAttrSpec(ctx, scope))
+                  ParseAttrSpecList(ctx, scope, attrArray);
+
                // Parse the next declarator suffix before creating new type.
                ParseDeclaratorSuffix(ctx, scope, attr);
 
+               // Create type.
                attr.type = attr.type->getTypeArray(nullptr)->getTypeQual(quals);
                return;
             }
@@ -197,9 +213,15 @@ namespace GDCC
                      "expected assignment-expression");
                }
 
+               // Check for array attributes.
+               auto attrArray = attr;
+               if(IsAttrSpec(ctx, scope))
+                  ParseAttrSpecList(ctx, scope, attrArray);
+
                // Parse the next declarator suffix before creating new type.
                ParseDeclaratorSuffix(ctx, scope, attr);
 
+               // Create type.
                attr.type = attr.type->getTypeArray();
             }
 
@@ -213,15 +235,22 @@ namespace GDCC
                if(!ctx.in.drop(Core::TOK_BrackC))
                   throw Core::ExceptStr(ctx.in.peek().pos, "expected ']'");
 
+               // Check for array attributes.
+               auto attrArray = attr;
+               if(IsAttrSpec(ctx, scope))
+                  ParseAttrSpecList(ctx, scope, attrArray);
+
                // Parse the next declarator suffix before creating new type.
                ParseDeclaratorSuffix(ctx, scope, attr);
 
+               // Create type.
                if(exp->isIRExp())
                   attr.type = attr.type->getTypeArray(ExpToFastU(exp));
                else
                   attr.type = attr.type->getTypeArray(exp);
             }
 
+            // Set qualifiers.
             attr.type = attr.type->getTypeQual(quals);
          }
 
@@ -318,18 +347,18 @@ namespace GDCC
             }
 
             // Check for function attributes.
+            auto attrFunc = attr;
             if(IsAttrSpec(ctx, scope))
-               ParseAttrSpecList(ctx, scope, attr);
+               ParseAttrSpecList(ctx, scope, attrFunc);
 
             // Parse the next declarator suffix before creating new type.
             // The declarator "f(void)[5]" is a function returning an array.
             // TODO: Come up with an example of a function declarator suffix
             // followed by another declarator suffix that is legal in C.
-            auto attrTmp = attr;
-            ParseDeclaratorSuffix(ctx, scope, attrTmp);
+            ParseDeclaratorSuffix(ctx, scope, attr);
 
             // Create type.
-            attr.type = attrTmp.type->getTypeFunction(types, attr.callt);
+            attr.type = attr.type->getTypeFunction(types, attrFunc.callt);
             attr.param = Core::Array<AST::Attribute>(
                Core::Move, params.begin(), params.end());
          }

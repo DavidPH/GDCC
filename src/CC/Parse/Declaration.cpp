@@ -386,9 +386,16 @@ static GDCC::AST::Statement::CRef GetDeclBase(GDCC::CC::ParserCtx const &ctx,
    auto pos = ctx.in.peek().pos;
 
    // declaration:
-   //    declaration-specifiers init-declarator-list(opt) ;
+   //    attribute-specifier-list(opt) declaration-specifiers
+   //       init-declarator-list(opt) ;
    //    static_assert-declaration
-   //    address-space-decalration
+   //    address-space-declaration
+
+   // attribute-specifier-list
+   AST::Attribute attrBase;
+   attrBase.linka = IR::Linkage::ExtC;
+   if(IsAttrSpec(ctx, scope))
+      ParseAttrSpecList(ctx, scope, attrBase);
 
    // address-space-declaration
    if(CC::IsAddrDecl(ctx, scope))
@@ -401,8 +408,6 @@ static GDCC::AST::Statement::CRef GetDeclBase(GDCC::CC::ParserCtx const &ctx,
    std::vector<AST::Statement::CRef> inits;
 
    // declaration-specifiers
-   AST::Attribute attrBase;
-   attrBase.linka = IR::Linkage::ExtC;
    CC::ParseDeclSpec(ctx, scope, attrBase);
 
    // init-declarator-list:
@@ -484,6 +489,7 @@ namespace GDCC
       {
          return
             IsAddrDecl(ctx, scope) ||
+            IsAttrSpec(ctx, scope) ||
             IsStaticAssert(ctx, scope) ||
             IsDeclSpec(ctx, scope);
       }

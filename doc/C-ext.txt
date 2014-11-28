@@ -339,6 +339,7 @@ Declarations
 
 Syntax:
   declaration: add
+    attribute-specifier-list declaration-specifiers init-declarator-list(opt) ;
     address-space-declaration
 
 ===========================================================
@@ -347,7 +348,7 @@ Declaration Specifiers
 
 Syntax:
   declaration-specifiers: add
-    attribute-specifier declaration-specifiers(opt)
+    declaration-specifiers attribute-specifier-list
 
 ===========================================================
 Type Specifiers
@@ -429,12 +430,21 @@ Declarators
 ===========================================================
 
 Syntax:
-  declarator: add
-    pointer(opt) direct-declarator attribute-specifier-list
-
   direct-declarator: add
+    identifier attribute-specifier-list
+    direct-declarator [ type-qualifier-list(opt) assignment-expression(opt) ]
+      attribute-specifier-list
+    direct-declarator [ static type-qualifier-list(opt) assignment-expression ]
+      attribute-specifier-list
+    direct-declarator [ type-qualifier-list static assignment-expression ]
+      attribute-specifier-list
+    direct-declarator [ type-qualifier-list(opt) * ] attribute-specifier-list
     direct-declarator ( parameter-type-list ) attribute-specifier-list
     direct-declarator ( identifier-list(opt) ) attribute-specifier-list
+
+  pointer:
+    * attribute-specifier-list type-qualifier-list(opt)
+    * attribute-specifier-list type-qualifier-list(opt) pointer
 
 ===========================================================
 Address Space Declarations
@@ -626,10 +636,11 @@ Grammar
     <__glyph> ( type-name , string-literal )
 
   declaration: add
+    attribute-specifier-list declaration-specifiers init-declarator-list(opt) ;
     address-space-declaration
 
   declaration-specifiers: add
-    attribute-specifier declaration-specifiers(opt)
+    declaration-specifiers attribute-specifier
 
   type-specifier: add
     <__div_t>
@@ -651,12 +662,21 @@ Grammar
     <__wld_ars>
     <__wld_reg>
 
-  declarator: add
-    pointer(opt) direct-declarator attribute-specifier-list
-
   direct-declarator: add
+    identifier attribute-specifier-list
+    direct-declarator [ type-qualifier-list(opt) assignment-expression(opt) ]
+      attribute-specifier-list
+    direct-declarator [ static type-qualifier-list(opt) assignment-expression ]
+      attribute-specifier-list
+    direct-declarator [ type-qualifier-list static assignment-expression ]
+      attribute-specifier-list
+    direct-declarator [ type-qualifier-list(opt) * ] attribute-specifier-list
     direct-declarator ( parameter-type-list ) attribute-specifier-list
     direct-declarator ( identifier-list(opt) ) attribute-specifier-list
+
+  pointer:
+    * attribute-specifier-list type-qualifier-list(opt)
+    * attribute-specifier-list type-qualifier-list(opt) pointer
 
   address-space-declaration:
     <__addrdef> storage-class-specifier(opt) address-space-specifier identifier
