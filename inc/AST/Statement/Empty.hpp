@@ -49,6 +49,7 @@ namespace GDCC
          virtual void v_genStmnt(GenStmntCtx const &ctx) const;
 
          virtual bool v_isEffect() const {return false;}
+         virtual bool v_isNoAuto() const {return true;}
       };
    }
 }

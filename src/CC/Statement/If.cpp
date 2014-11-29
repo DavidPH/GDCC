@@ -137,6 +137,14 @@ namespace GDCC
       }
 
       //
+      // Statement_If::v_isNoAuto
+      //
+      bool Statement_If::v_isNoAuto() const
+      {
+         return cond->isNoAuto() && bodyT->isNoAuto() && (!bodyF || bodyF->isNoAuto());
+      }
+
+      //
       // StatementCreate_If
       //
       AST::Statement::CRef StatementCreate_If(

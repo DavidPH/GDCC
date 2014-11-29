@@ -236,7 +236,8 @@ namespace GDCC
          {
          case IR::CallType::ScriptI:
          case IR::CallType::ScriptS:
-            allocLoc = AllocLoc;
+            if(!stmnt || !stmnt->isNoAuto())
+               allocLoc = AllocLoc;
             break;
 
          default:

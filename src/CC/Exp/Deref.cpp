@@ -17,6 +17,8 @@
 
 #include "Core/Exception.hpp"
 
+#include "IR/Addr.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -57,6 +59,14 @@ namespace GDCC
       bool Exp_Deref::v_isIRExp() const
       {
          return false;
+      }
+
+      //
+      // Exp_Deref::v_isNoAuto
+      //
+      bool Exp_Deref::v_isNoAuto() const
+      {
+         return type->getQualAddr().base != IR::AddrBase::Loc;
       }
 
       //

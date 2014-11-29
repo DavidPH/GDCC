@@ -165,6 +165,14 @@ namespace GDCC
       }
 
       //
+      // Init::isNoAuto
+      //
+      bool Init::isNoAuto() const
+      {
+         return value ? value->isNoAuto() : v_isNoAuto();
+      }
+
+      //
       // Init::parse
       //
       void Init::parse(InitRaw const &raw, ParserCtx const &ctx, Scope &scope)
@@ -547,6 +555,15 @@ namespace GDCC
       }
 
       //
+      // Init_Array::v_isNoAuto
+      //
+      bool Init_Array::v_isNoAuto() const
+      {
+         for(auto const &sub : subs) if(!sub->isNoAuto()) return false;
+         return true;
+      }
+
+      //
       // Init_Array0 constructor
       //
       Init_Array0::Init_Array0(AST::Type const *type_, Core::FastU offset_,
@@ -604,6 +621,15 @@ namespace GDCC
       }
 
       //
+      // Init_Array0::v_isNoAuto
+      //
+      bool Init_Array0::v_isNoAuto() const
+      {
+         for(auto const &sub : subs) if(!sub->isNoAuto()) return false;
+         return true;
+      }
+
+      //
       // Init_Div constructor
       //
       Init_Div::Init_Div(Type_Div const *typeD, Core::FastU offset_,
@@ -652,6 +678,14 @@ namespace GDCC
       {
          subs[0]->genStmnt(ctx, arg, skipZero);
          subs[1]->genStmnt(ctx, arg, skipZero);
+      }
+
+      //
+      // Init_Div::v_isNoAuto
+      //
+      bool Init_Div::v_isNoAuto() const
+      {
+         return subs[0]->isNoAuto() && subs[1]->isNoAuto();
       }
 
       //
@@ -707,7 +741,24 @@ namespace GDCC
          else
          {
             for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
-              subs[index].init->genStmnt(ctx, arg, skipZero);
+               subs[index].init->genStmnt(ctx, arg, skipZero);
+         }
+      }
+
+      //
+      // Init_Struct::v_isNoAuto
+      //
+      bool Init_Struct::v_isNoAuto() const
+      {
+         if(type->isCTypeUnion())
+         {
+            return subs[subInit].init->isNoAuto();
+         }
+         else
+         {
+            for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
+               if(!subs[index].init->isNoAuto()) return false;
+            return true;
          }
       }
 
@@ -729,6 +780,14 @@ namespace GDCC
       {
          // This shouldn't be called.
          throw Core::ExceptStr(pos, "Init_Value::v_genStmnt");
+      }
+
+      //
+      // Init_Value::v_isNoAuto
+      //
+      bool Init_Value::v_isNoAuto() const
+      {
+         return true;
       }
 
       //

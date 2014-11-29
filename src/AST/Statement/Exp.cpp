@@ -73,6 +73,14 @@ namespace GDCC
       }
 
       //
+      // Statement_Exp::v_isNoAuto
+      //
+      bool Statement_Exp::v_isNoAuto() const
+      {
+         return exp->isNoAuto();
+      }
+
+      //
       // StatementCreate_Exp
       //
       Statement::CRef StatementCreate_Exp(

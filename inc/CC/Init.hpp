@@ -97,6 +97,8 @@ namespace GDCC
 
          bool isIRExp() const;
 
+         bool isNoAuto() const;
+
          void parse(InitRaw const &raw, ParserCtx const &ctx, Scope &scope);
          std::size_t parse(InitRaw const &raw, std::size_t rawIdx,
             ParserCtx const &ctx, Scope &scope);
@@ -127,6 +129,8 @@ namespace GDCC
          virtual bool v_isEffect() const;
 
          virtual bool v_isIRExp() const;
+
+         virtual bool v_isNoAuto() const = 0;
 
          virtual void v_parseBlock(InitRaw const &raw, ParserCtx const &ctx,
            Scope &scope) = 0;
@@ -199,6 +203,8 @@ namespace GDCC
 
          virtual bool v_isIRExp() const;
 
+         virtual bool v_isNoAuto() const;
+
          Core::Array<std::unique_ptr<Init>> subs;
       };
 
@@ -220,6 +226,8 @@ namespace GDCC
          virtual IR::Exp::CRef v_getIRExp() const;
 
          virtual bool v_isIRExp() const;
+
+         virtual bool v_isNoAuto() const;
 
          std::vector<std::unique_ptr<Init>> subs;
 
@@ -245,6 +253,8 @@ namespace GDCC
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst, bool skipZero) const;
 
+         virtual bool v_isNoAuto() const;
+
          std::unique_ptr<Init> subs[2];
       };
 
@@ -267,6 +277,8 @@ namespace GDCC
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst, bool skipZero) const;
 
+         virtual bool v_isNoAuto() const;
+
          Core::Array<InitMem> subs;
          std::size_t          subInit;
       };
@@ -287,6 +299,8 @@ namespace GDCC
 
          virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
             ParserCtx const &ctx, Scope &scope);
+
+         virtual bool v_isNoAuto() const;
       };
    }
 }

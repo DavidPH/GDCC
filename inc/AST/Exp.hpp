@@ -81,6 +81,9 @@ namespace GDCC
          // Can this expression be made into an IR expression?
          bool isIRExp() const;
 
+         // Is this expression known to not use automatic storage?
+         bool isNoAuto() const;
+
          // Is this expression known to be nonzero?
          bool isNonzero() const;
 
@@ -121,6 +124,8 @@ namespace GDCC
          virtual bool v_isGenStmnt() const;
 
          virtual bool v_isIRExp() const = 0;
+
+         virtual bool v_isNoAuto() const = 0;
 
          virtual bool v_isObject() const;
 

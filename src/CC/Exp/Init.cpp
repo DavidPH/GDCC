@@ -88,6 +88,14 @@ namespace GDCC
       }
 
       //
+      // Exp_Init::v_isNoAuto
+      //
+      bool Exp_Init::v_isNoAuto() const
+      {
+         return init->isNoAuto();
+      }
+
+      //
       // Exp_Init::Create
       //
       Exp_Init::CRef Exp_Init::Create(Init::Ptr &&init, bool skipZero)

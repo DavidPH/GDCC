@@ -129,6 +129,17 @@ namespace GDCC
       }
 
       //
+      // Exp_Obj::v_isNoAuto
+      //
+      bool Exp_Obj::v_isNoAuto() const
+      {
+         if(!obj->type)
+            return false;
+
+         return getType()->getQualAddr().base != IR::AddrBase::Loc;
+      }
+
+      //
       // Exp_ObjAut constructor
       //
       Exp_ObjAut::Exp_ObjAut(IR::Program &prog_, AST::Object *obj_,

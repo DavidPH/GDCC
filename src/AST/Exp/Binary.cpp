@@ -79,6 +79,14 @@ namespace GDCC
       }
 
       //
+      // Exp_Binary::v_isNoAuto
+      //
+      bool Exp_Binary::v_isNoAuto() const
+      {
+         return expL->isNoAuto() && expR->isNoAuto();
+      }
+
+      //
       // Exp_Pair constructor
       //
       Exp_Pair::Exp_Pair(Exp const *l, Exp const *r, Core::Origin pos_) :

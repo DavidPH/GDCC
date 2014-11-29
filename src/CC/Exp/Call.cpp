@@ -70,6 +70,20 @@ namespace GDCC
       }
 
       //
+      // Exp_Call::v_isNoAuto
+      //
+      bool Exp_Call::v_isNoAuto() const
+      {
+         if(func->getCallType() == IR::CallType::StdCall)
+            return false;
+
+         for(auto const &arg : args)
+            if(!arg->isNoAuto()) return false;
+
+         return true;
+      }
+
+      //
       // ExpCreate_Call
       //
       AST::Exp::CRef ExpCreate_Call(AST::Exp const *e,

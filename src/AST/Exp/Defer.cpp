@@ -68,6 +68,9 @@ namespace GDCC
       bool Exp_Defer::v_isIRExp() const
          {return getDefer()->isIRExp();}
 
+      bool Exp_Defer::v_isNoAuto() const
+         {return getDefer()->isNoAuto();}
+
       bool Exp_Defer::v_isObject() const
          {return getDefer()->isObject();}
    }

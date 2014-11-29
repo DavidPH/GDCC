@@ -77,6 +77,14 @@ namespace GDCC
       {
          return expC->isIRExp() && expL->isIRExp() && expR->isIRExp();
       }
+
+      //
+      // Exp_Cnd::v_isNoAuto
+      //
+      bool Exp_Cnd::v_isNoAuto() const
+      {
+         return expC->isNoAuto() && expL->isNoAuto() && expR->isNoAuto();
+      }
    }
 }
 

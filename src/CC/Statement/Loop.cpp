@@ -135,6 +135,15 @@ namespace GDCC
       }
 
       //
+      // Statement_Loop::v_isNoAuto
+      //
+      bool Statement_Loop::v_isNoAuto() const
+      {
+         return (!init || init->isNoAuto()) && (!cond || cond->isNoAuto()) &&
+                (!iter || iter->isNoAuto()) && body->isNoAuto();
+      }
+
+      //
       // StatementCreate_Do
       //
       AST::Statement::CRef StatementCreate_Do(

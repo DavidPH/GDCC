@@ -235,6 +235,14 @@ namespace GDCC
       }
 
       //
+      // Exp::isNoAuto
+      //
+      bool Exp::isNoAuto() const
+      {
+         return v_isNoAuto();
+      }
+
+      //
       // Exp::isObject
       //
       bool Exp::isObject() const

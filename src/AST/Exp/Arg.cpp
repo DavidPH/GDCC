@@ -88,6 +88,14 @@ namespace GDCC
       }
 
       //
+      // Exp_Arg::v_isNoAuto
+      //
+      bool Exp_Arg::v_isNoAuto() const
+      {
+         return arg.type->getQualAddr().base != IR::AddrBase::Loc;
+      }
+
+      //
       // ExpCreate_Arg
       //
       Exp::CRef ExpCreate_Arg(Arg const &arg, Core::Origin pos)

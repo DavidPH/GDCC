@@ -272,6 +272,14 @@ namespace GDCC
       }
 
       //
+      // Statement_Switch::v_isNoAuto
+      //
+      bool Statement_Switch::v_isNoAuto() const
+      {
+         return cond->isNoAuto() && body->isNoAuto();
+      }
+
+      //
       // StatementCreate_Switch
       //
       AST::Statement::CRef StatementCreate_Switch(

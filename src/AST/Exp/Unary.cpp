@@ -67,6 +67,14 @@ namespace GDCC
       }
 
       //
+      // Exp_Unary::v_isNoAuto
+      //
+      bool Exp_Unary::v_isNoAuto() const
+      {
+         return exp->isNoAuto();
+      }
+
+      //
       // Exp_Inv::v_getIRExp
       //
       IR::Exp::CRef Exp_Inv::v_getIRExp() const

@@ -134,6 +134,14 @@ namespace GDCC
       }
 
       //
+      // Statement_ReturnExp::v_isNoAuto
+      //
+      bool Statement_ReturnExp::v_isNoAuto() const
+      {
+         return exp->isNoAuto();
+      }
+
+      //
       // Statement_ReturnNul::v_genStmnt
       //
       void Statement_ReturnNul::v_genStmnt(AST::GenStmntCtx const &ctx) const

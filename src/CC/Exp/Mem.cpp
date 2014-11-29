@@ -89,6 +89,14 @@ namespace GDCC
       }
 
       //
+      // Exp_Mem::v_isNoAuto
+      //
+      bool Exp_Mem::v_isNoAuto() const
+      {
+         return expL->isNoAuto();
+      }
+
+      //
       // Exp_Mem::v_setRefer
       //
       void Exp_Mem::v_setRefer() const

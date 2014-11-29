@@ -53,6 +53,8 @@ namespace GDCC
          virtual bool v_isEffect() const {return false;}
 
          virtual bool v_isIRExp() const {return true;}
+
+         virtual bool v_isNoAuto() const {return true;}
       };
    }
 }

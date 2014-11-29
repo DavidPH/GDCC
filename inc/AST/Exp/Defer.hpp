@@ -58,6 +58,8 @@ namespace GDCC
 
          virtual bool v_isIRExp() const;
 
+         virtual bool v_isNoAuto() const;
+
          virtual bool v_isObject() const;
 
       private:

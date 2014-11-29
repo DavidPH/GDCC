@@ -49,6 +49,7 @@ namespace GDCC
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
 
          virtual bool v_isEffect() const {return true;}
+         virtual bool v_isNoAuto() const {return true;}
       };
 
       //
@@ -74,6 +75,7 @@ namespace GDCC
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
 
          virtual bool v_isEffect() const {return true;}
+         virtual bool v_isNoAuto() const {return true;}
       };
    }
 }
