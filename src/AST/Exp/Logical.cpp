@@ -23,47 +23,51 @@
 // Static Functions                                                           |
 //
 
-//
-// GenStmnt_Logical
-//
-static void GenStmnt_Logical(GDCC::AST::Exp_Binary const *exp,
-   GDCC::AST::GenStmntCtx const &ctx, GDCC::AST::Arg const &dst,
-   GDCC::IR::Code codeShort, int valueShort, int valueLong)
+namespace GDCC
 {
-   using namespace GDCC;
+   namespace AST
+   {
+      //
+      // GenStmnt_Logical
+      //
+      static void GenStmnt_Logical(Exp_Binary const *exp,
+         GenStmntCtx const &ctx, Arg const &dst, IR::Code codeShort,
+         int valueShort, int valueLong)
+      {
+         // TODO: If expR is trivial, possibly forego short-circuiting.
 
-   // TODO: If expR is trivial, possibly forego short-circuiting.
+         IR::Glyph labelEnd   = {ctx.prog, ctx.fn->genLabel()};
+         IR::Glyph labelShort = {ctx.prog, ctx.fn->genLabel()};
 
-   IR::Glyph labelEnd   = {ctx.prog, ctx.fn->genLabel()};
-   IR::Glyph labelShort = {ctx.prog, ctx.fn->genLabel()};
+         // Evaluate left operand to stack.
+         exp->expL->genStmntStk(ctx);
 
-   // Evaluate left operand to stack.
-   exp->expL->genStmntStk(ctx);
+         // Possibly jump to short result.
+         ctx.block.addStatementArgs(codeShort, IR::Arg_Stk(), labelShort);
 
-   // Possibly jump to short result.
-   ctx.block.addStatementArgs(codeShort, IR::Arg_Stk(), labelShort);
+         // Evaluate right operand to stack.
+         exp->expR->genStmntStk(ctx);
 
-   // Evaluate right operand to stack.
-   exp->expR->genStmntStk(ctx);
+         // TODO: If expR is already boolean, use its result directly.
 
-   // TODO: If expR is already boolean, use its result directly.
+         // Possibly jump to short result.
+         ctx.block.addStatementArgs(codeShort, IR::Arg_Stk(), labelShort);
 
-   // Possibly jump to short result.
-   ctx.block.addStatementArgs(codeShort, IR::Arg_Stk(), labelShort);
+         // Long result.
+         ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(), valueLong);
+         ctx.block.addStatementArgs(IR::Code::Jump, labelEnd);
 
-   // Long result.
-   ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(), valueLong);
-   ctx.block.addStatementArgs(IR::Code::Jump, labelEnd);
+         // Short result.
+         ctx.block.addLabel(labelShort);
+         ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(), valueShort);
 
-   // Short result.
-   ctx.block.addLabel(labelShort);
-   ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(), valueShort);
+         // End.
+         ctx.block.addLabel(labelEnd);
 
-   // End.
-   ctx.block.addLabel(labelEnd);
-
-   // Move to destination.
-   GenStmnt_MovePart(exp, ctx, dst, false, true);
+         // Move to destination.
+         GenStmnt_MovePart(exp, ctx, dst, false, true);
+      }
+   }
 }
 
 
