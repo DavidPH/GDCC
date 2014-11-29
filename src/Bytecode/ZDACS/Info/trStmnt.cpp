@@ -285,22 +285,10 @@ namespace GDCC
 
             case IR::Code::Plsa:
                CheckArgC(stmnt, 1);
-               CheckArgB(stmnt, 0, IR::ArgBase::Lit);
-               break;
-
-            case IR::Code::Plsd:
-            case IR::Code::Plsi:
-            case IR::Code::Plsr:
-               CheckArgC(stmnt, 1);
                moveArgStk_src(stmnt->args[0], IR::Code::Move_W);
                break;
 
             case IR::Code::Plsf:
-               break;
-
-            case IR::Code::Plss:
-               CheckArgC(stmnt, 1);
-               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W);
                break;
 
             case IR::Code::Pltn:

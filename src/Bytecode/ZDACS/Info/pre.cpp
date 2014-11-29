@@ -161,8 +161,8 @@ namespace GDCC
             case IR::Code::MulU_W3: preStmntCall("___GDCC__MulU_W3", 3, 6); break;
             case IR::Code::MulX_W2: preStmntCall("___GDCC__MulX_W2", 2, 4); break;
 
-            case IR::Code::Plsa:
-            case IR::Code::Plsf: preStmntCall("___GDCC__alloc", 1, 2); break;
+            case IR::Code::Plsa: preStmntCall("___GDCC__Plsa", 1, 1); break;
+            case IR::Code::Plsf: preStmntCall("___GDCC__Plsf", 0, 1); break;
 
             case IR::Code::ShLU_W2: preStmntCall("___GDCC__ShLU_W2", 2, 3); break;
             case IR::Code::ShLU_W3: preStmntCall("___GDCC__ShLU_W2", 3, 4); break;

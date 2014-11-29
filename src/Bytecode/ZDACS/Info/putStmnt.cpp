@@ -233,23 +233,13 @@ namespace GDCC
             case IR::Code::OrXU_W3: putStmntBitwise3(Code::OrXU); break;
 
             case IR::Code::Plsa:
-               putCode(Code::Push_Lit);
-               putWord(0);
-               putCode(Code::Push_Lit);
-               putWord(GetWord(stmnt->args[0].aLit));
-               putCode(Code::Call_Lit);
-               putWord(GetWord(resolveGlyph("___GDCC__alloc")));
-               putCode(Code::Drop_LocReg);
-               putWord(getStkPtrIdx());
+               putCode(Code::Call_Lit,    GetWord(resolveGlyph("___GDCC__Plsa")));
+               putCode(Code::Drop_LocReg, getStkPtrIdx());
                break;
 
             case IR::Code::Plsf:
-               putCode(Code::Push_LocReg);
-               putWord(getStkPtrIdx());
-               putCode(Code::Push_Lit);
-               putWord(0);
-               putCode(Code::Call_Nul);
-               putWord(GetWord(resolveGlyph("___GDCC__alloc")));
+               putCode(Code::Push_LocReg, getStkPtrIdx());
+               putCode(Code::Call_Nul,    GetWord(resolveGlyph("___GDCC__Plsf")));
                break;
 
             case IR::Code::Pltn:

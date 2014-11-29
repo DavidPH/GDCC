@@ -36,19 +36,15 @@
 #endif
 
 //
-// MemBlock_ClrUsed
+// MemBlockFlag_*
 //
-#define MemBlock_ClrUsed(block) ((block)->flag = 0)
+#define MemBlockFlag_Auto 0x00000001
+#define MemBlockFlag_Used 0x00000002
 
 //
 // MemBlock_IsUsed
 //
-#define MemBlock_IsUsed(block) ((block)->flag)
-
-//
-// MemBlock_SetUsed
-//
-#define MemBlock_SetUsed(block) ((block)->flag = 1)
+#define MemBlock_IsUsed(block) ((block)->flag & MemBlockFlag_Used)
 
 //
 // PtrToBlock
@@ -92,6 +88,10 @@ static char AllocHeapRaw[__GDCC__AllocSize];
 
 [[no_init]]
 static MemBlockPtr AllocBase, AllocIter;
+
+#if __GDCC_Target__ZDoom__
+static int AllocTime;
+#endif
 
 
 //----------------------------------------------------------------------------|
@@ -148,15 +148,33 @@ static void AllocDel(register MemBlockPtr block)
 
          block->size += next->size + sizeof(MemBlock);
 
-         MemBlock_ClrUsed(block);
+         block->flag = 0;
       }
 
       // No neighbor free.
       else
       {
-         MemBlock_ClrUsed(block);
+         block->flag = 0;
       }
    }
+}
+
+//
+// AllocDelAuto
+//
+[[call("StkCall")]]
+static void AllocDelAuto(void)
+{
+   MemBlockPtr iter = AllocBase, next;
+
+   do
+   {
+      next = iter->next;
+
+      if(iter->flag & MemBlockFlag_Auto)
+         AllocDel(iter);
+   }
+   while((iter = next) != AllocBase);
 }
 
 //
@@ -241,7 +259,7 @@ static VoidPtr AllocNew(register size_t size)
       // Exact size match!
       if(iter->size == size)
       {
-         MemBlock_SetUsed(iter);
+         iter->flag = MemBlockFlag_Used;
 
          AllocIter = iter->next;
          return iter->data;
@@ -262,7 +280,7 @@ static VoidPtr AllocNew(register size_t size)
             newBlock->prev = iter;
             newBlock->next = iter->next;
             newBlock->size = size;
-            newBlock->flag = 1;
+            newBlock->flag = MemBlockFlag_Used;
 
             // Update neighboring blocks.
             iter->size       = sizeDiff - sizeof(MemBlock);
@@ -277,7 +295,7 @@ static VoidPtr AllocNew(register size_t size)
          // No, just use it as-is.
          else
          {
-            MemBlock_SetUsed(iter);
+            iter->flag = MemBlockFlag_Used;
 
             AllocIter = iter->next;
             return iter->data;
@@ -291,6 +309,24 @@ static VoidPtr AllocNew(register size_t size)
    // No space found, give up.
    return 0;
 }
+
+//
+// AllocTimeSet
+//
+#if __GDCC_Target__ZDoom__
+[[call("ScriptS"), script("Open")]]
+static void AllocTimeSet(void)
+{
+   [[address(55), call("AsmFunc")]] extern void ACS_Delay(int);
+   [[address(93), call("AsmFunc")]] extern int ACS_Timer(void);
+
+   if(!ACS_Timer())
+      ACS_Delay(1);
+
+   if(ACS_Timer() == 1)
+      AllocTime = 1;
+}
+#endif
 
 
 //----------------------------------------------------------------------------|
@@ -380,6 +416,41 @@ void __GDCC__alloc_dump(void)
    while((iter = iter->next) != AllocBase);
    #endif
 }
+
+//
+// __GDCC__Plsa
+//
+#if __GDCC_Target__ZDoom__
+[[call("StkCall")]]
+VoidPtr __GDCC__Plsa(unsigned int size)
+{
+   // Check if a new hub was entered. If so, free automatic storage.
+   {
+      [[address(93), call("AsmFunc")]] extern int ACS_Timer(void);
+
+      if(AllocTime > ACS_Timer())
+         AllocDelAuto();
+      AllocTime = ACS_Timer();
+   }
+
+   MemBlockPtr block = PtrToBlock(__GDCC__alloc(0, size));
+
+   block->flag |= MemBlockFlag_Auto;
+
+   return block->data;
+}
+#endif
+
+//
+// __GDCC__Plsf
+//
+#if __GDCC_Target__ZDoom__
+[[call("StkCall")]]
+void __GDCC__Plsf(VoidPtr ptr)
+{
+   AllocDel(PtrToBlock(ptr));
+}
+#endif
 
 // EOF
 

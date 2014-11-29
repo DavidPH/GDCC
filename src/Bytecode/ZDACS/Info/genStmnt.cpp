@@ -255,24 +255,9 @@ namespace GDCC
             case IR::Code::NotU_W2: numChunkCODE += 8; break;
             case IR::Code::NotU_W3: numChunkCODE += 12; break;
 
-            case IR::Code::Plsa:
-               numChunkCODE += 32;
-               break;
-
-            case IR::Code::Plsd:
-            case IR::Code::Plsi:
-            case IR::Code::Plsr:
-            case IR::Code::Plss:
-               numChunkCODE += 8;
-               break;
-
-            case IR::Code::Plsf:
-               numChunkCODE += 24;
-               break;
-
-            case IR::Code::Pltn:
-               numChunkCODE += 12;
-               break;
+            case IR::Code::Plsa: numChunkCODE += 16; break;
+            case IR::Code::Plsf: numChunkCODE += 16; break;
+            case IR::Code::Pltn: numChunkCODE += 12; break;
 
             case IR::Code::Retn:
                genStmnt_Retn();
