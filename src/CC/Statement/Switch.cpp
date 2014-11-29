@@ -31,166 +31,165 @@
 // Types                                                                      |
 //
 
-using CodePair = std::pair<GDCC::IR::Code, GDCC::IR::Code>;
+namespace GDCC
+{
+   namespace CC
+   {
+      using CodePair = std::pair<IR::Code, IR::Code>;
+   }
+}
 
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
 //
 
-//
-// GenCond_Codes
-//
-static CodePair GenCond_Codes(
-   GDCC::AST::Statement const *stmnt, GDCC::AST::Type const *t)
+namespace GDCC
 {
-   using namespace GDCC;
-
-   CodePair codes
+   namespace CC
    {
-      AST::ExpCode_ArithInteg<IR::CodeSet_CmpLT>(t),
-      AST::ExpCode_ArithInteg<IR::CodeSet_CmpEQ>(t),
-   };
-
-   if(codes.first == IR::Code::None || codes.second == IR::Code::None)
-      throw Core::ExceptStr(stmnt->pos, "unsupported integer size");
-
-   return codes;
-}
-
-//
-// GenCond_GenValue
-//
-static GDCC::IR::Exp::CRef GenCond_GenValue(
-   GDCC::CC::Statement_Switch const *stmnt,
-   GDCC::CC::Scope_Case::Case const *caseData)
-{
-   return GDCC::IR::ExpCreate_Value(
-      GDCC::IR::Value_Fixed(
-         caseData->value, stmnt->cond->getType()->getIRType().tFixed),
-      stmnt->pos);
-}
-
-//
-// GenCond_BranchDefault
-//
-static void GenCond_BranchDefault(
-   GDCC::CC::Statement_Switch const *stmnt,
-   GDCC::AST::GenStmntCtx     const &ctx)
-{
-   using namespace GDCC;
-
-   IR::Glyph defLabel = {ctx.prog, stmnt->scope.getLabelDefault(false)};
-
-   // Unconditional branch.
-   ctx.block.addStatementArgs(IR::Code::Jump, defLabel);
-}
-
-//
-// GenCond_SearchPart
-//
-static void GenCond_SearchPart(
-   GDCC::CC::Statement_Switch        const *stmnt,
-   GDCC::AST::GenStmntCtx            const &ctx,
-   CodePair                          const &codes,
-   GDCC::AST::Temporary              const &cond,
-   GDCC::CC::Scope_Case::Case const *const *begin,
-   GDCC::CC::Scope_Case::Case const *const *end)
-{
-   using namespace GDCC;
-
-   auto count = end - begin;
-
-   if(count == 0)
-   {
-      GenCond_BranchDefault(stmnt, ctx);
-
-      return;
-   }
-
-   if(count == 1)
-   {
-      IR::Glyph caseLabel = {ctx.prog, begin[0]->label};
-
-      // If this case is one more than the previous and one less than the next,
-      // then there is no need for further comparisons.
-      if(begin[-1] && begin[+1] && begin[-1]->value + 1 == begin[+1]->value - 1)
-         ctx.block.addStatementArgs(IR::Code::Jump, caseLabel);
-
-      // Otherwise, check against value.
-      else
+      //
+      // GenCond_Codes
+      //
+      static CodePair GenCond_Codes(AST::Statement const *stmnt, AST::Type const *t)
       {
-         auto caseValue = GenCond_GenValue(stmnt, begin[0]);
+         CodePair codes
+         {
+            AST::ExpCode_ArithInteg<IR::CodeSet_CmpLT>(t),
+            AST::ExpCode_ArithInteg<IR::CodeSet_CmpEQ>(t),
+         };
 
-         // Compare condition to case value for equality.
-         ctx.block.addStatementArgs(codes.second,
-            IR::Arg_Stk(), cond.getArg(), caseValue);
+         if(codes.first == IR::Code::None || codes.second == IR::Code::None)
+            throw Core::ExceptStr(stmnt->pos, "unsupported integer size");
 
-         // If true, branch to case.
-         ctx.block.addStatementArgs(IR::Code::Jcnd_Tru,
-            IR::Arg_Stk(), caseLabel);
-
-         // Otherwise, branch to default.
-         GenCond_BranchDefault(stmnt, ctx);
+         return codes;
       }
 
-      return;
+      //
+      // GenCond_GenValue
+      //
+      static IR::Exp::CRef GenCond_GenValue(Statement_Switch const *stmnt,
+         Scope_Case::Case const *caseData)
+      {
+         return IR::ExpCreate_Value(
+            IR::Value_Fixed(
+               caseData->value, stmnt->cond->getType()->getIRType().tFixed),
+            stmnt->pos);
+      }
+
+      //
+      // GenCond_BranchDefault
+      //
+      static void GenCond_BranchDefault(Statement_Switch const *stmnt,
+         AST::GenStmntCtx const &ctx)
+      {
+         IR::Glyph defLabel = {ctx.prog, stmnt->scope.getLabelDefault(false)};
+
+         // Unconditional branch.
+         ctx.block.addStatementArgs(IR::Code::Jump, defLabel);
+      }
+
+      //
+      // GenCond_SearchPart
+      //
+      static void GenCond_SearchPart(
+         Statement_Switch        const *stmnt,
+         AST::GenStmntCtx        const &ctx,
+         CodePair                const &codes,
+         AST::Temporary          const &cond,
+         Scope_Case::Case const *const *begin,
+         Scope_Case::Case const *const *end)
+      {
+         auto count = end - begin;
+
+         if(count == 0)
+         {
+            GenCond_BranchDefault(stmnt, ctx);
+
+            return;
+         }
+
+         if(count == 1)
+         {
+            IR::Glyph caseLabel = {ctx.prog, begin[0]->label};
+
+            // If this case is one more than the previous and one less than the
+            // next, then there is no need for further comparisons.
+            if(begin[-1] && begin[+1] && begin[-1]->value + 1 == begin[+1]->value - 1)
+               ctx.block.addStatementArgs(IR::Code::Jump, caseLabel);
+
+            // Otherwise, check against value.
+            else
+            {
+               auto caseValue = GenCond_GenValue(stmnt, begin[0]);
+
+               // Compare condition to case value for equality.
+               ctx.block.addStatementArgs(codes.second,
+                  IR::Arg_Stk(), cond.getArg(), caseValue);
+
+               // If true, branch to case.
+               ctx.block.addStatementArgs(IR::Code::Jcnd_Tru,
+                  IR::Arg_Stk(), caseLabel);
+
+               // Otherwise, branch to default.
+               GenCond_BranchDefault(stmnt, ctx);
+            }
+
+            return;
+         }
+
+         auto pivot = &begin[count / 2];
+
+         IR::Glyph pivotLabel = {ctx.prog, ctx.fn->genLabel()};
+         auto      pivotValue = GenCond_GenValue(stmnt, *pivot);
+
+         // Compare condition against pivot.
+         ctx.block.addStatementArgs(codes.first,
+            IR::Arg_Stk(), cond.getArg(), IR::Arg_Lit(pivotValue));
+
+         // Skip if false.
+         ctx.block.addStatementArgs(IR::Code::Jcnd_Nil, IR::Arg_Stk(), pivotLabel);
+
+         // Search left half.
+         GenCond_SearchPart(stmnt, ctx, codes, cond, begin, pivot);
+
+         // Search right half.
+         ctx.block.addLabel(pivotLabel);
+         GenCond_SearchPart(stmnt, ctx, codes, cond, pivot, end);
+      }
+
+      //
+      // GenCond_Search
+      //
+      static void GenCond_Search(Statement_Switch const *stmnt,
+         AST::GenStmntCtx const &ctx, CodePair const &codes)
+      {
+         // Collect and sort cases.
+         std::vector<Scope_Case::Case const *> cases;
+         cases.reserve(stmnt->scope.size() + 2);
+
+         cases.emplace_back(nullptr);
+         for(auto const &c : stmnt->scope)
+            cases.emplace_back(&c);
+         cases.emplace_back(nullptr);
+
+         std::sort(cases.begin() + 1, cases.end() - 1,
+            [](Scope_Case::Case const *l, Scope_Case::Case const *r)
+               {return l->value < r->value;});
+
+         // Evaluate condition and store in temporary.
+         stmnt->cond->genStmntStk(ctx);
+
+         AST::Temporary tmp{ctx, stmnt->pos, stmnt->cond->getType()->getSizeWords()};
+         for(Core::FastU n = tmp.size(); n--;)
+            ctx.block.addStatementArgs(IR::Code::Move_W,
+               tmp.getArg(n), IR::Arg_Stk());
+
+         // Begin binary search.
+         GenCond_SearchPart(stmnt, ctx, codes, tmp, cases.data() + 1,
+            cases.data() + cases.size() - 1);
+      }
    }
-
-   auto pivot = &begin[count / 2];
-
-   IR::Glyph pivotLabel = {ctx.prog, ctx.fn->genLabel()};
-   auto      pivotValue = GenCond_GenValue(stmnt, *pivot);
-
-   // Compare condition against pivot.
-   ctx.block.addStatementArgs(codes.first,
-      IR::Arg_Stk(), cond.getArg(), IR::Arg_Lit(pivotValue));
-
-   // Skip if false.
-   ctx.block.addStatementArgs(IR::Code::Jcnd_Nil, IR::Arg_Stk(), pivotLabel);
-
-   // Search left half.
-   GenCond_SearchPart(stmnt, ctx, codes, cond, begin, pivot);
-
-   // Search right half.
-   ctx.block.addLabel(pivotLabel);
-   GenCond_SearchPart(stmnt, ctx, codes, cond, pivot, end);
-}
-
-//
-// GenCond_Search
-//
-static void GenCond_Search(
-   GDCC::CC::Statement_Switch const *stmnt,
-   GDCC::AST::GenStmntCtx     const &ctx,
-   CodePair                   const &codes)
-{
-   using namespace GDCC;
-
-   // Collect and sort cases.
-   std::vector<CC::Scope_Case::Case const *> cases;
-   cases.reserve(stmnt->scope.size() + 2);
-
-   cases.emplace_back(nullptr);
-   for(auto const &c : stmnt->scope)
-      cases.emplace_back(&c);
-   cases.emplace_back(nullptr);
-
-   std::sort(cases.begin() + 1, cases.end() - 1,
-      [](CC::Scope_Case::Case const *l, CC::Scope_Case::Case const *r)
-         {return l->value < r->value;});
-
-   // Evaluate condition and store in temporary.
-   stmnt->cond->genStmntStk(ctx);
-
-   AST::Temporary tmp{ctx, stmnt->pos, stmnt->cond->getType()->getSizeWords()};
-   for(Core::FastU n = tmp.size(); n--;)
-      ctx.block.addStatementArgs(IR::Code::Move_W,
-         tmp.getArg(n), IR::Arg_Stk());
-
-   // Begin binary search.
-   GenCond_SearchPart(stmnt, ctx, codes, tmp, cases.data() + 1,
-      cases.data() + cases.size() - 1);
 }
 
 
