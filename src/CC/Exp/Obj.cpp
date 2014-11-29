@@ -40,6 +40,7 @@ namespace GDCC
          obj{obj_},
          prog(prog_)
       {
+         obj->used = true;
       }
 
       //

@@ -67,6 +67,7 @@ namespace GDCC
          bool         defin : 1; // Is defined?
          bool         noRef : 1; // Forbids pointer-to?
          bool         refer : 1; // Needs pointer-to?
+         bool         used  : 1; // Is used?
 
 
          static Ref Create(Core::String name, Core::String glyph);

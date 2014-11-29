@@ -44,7 +44,8 @@ namespace GDCC
          alias{false},
          defin{false},
          noRef{false},
-         refer{false}
+         refer{false},
+         used {false}
       {
       }
 
@@ -60,6 +61,8 @@ namespace GDCC
       //
       void Object::genObject(IR::Program &prog)
       {
+         if(!defin && !used) return;
+
          IR::Object obj{glyph};
 
          obj.linka = linka;

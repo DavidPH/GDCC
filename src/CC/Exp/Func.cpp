@@ -39,6 +39,7 @@ namespace GDCC
          fn{fn_},
          prog(prog_)
       {
+         fn->used = true;
       }
 
       //

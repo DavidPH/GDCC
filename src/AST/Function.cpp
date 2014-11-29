@@ -27,9 +27,6 @@
 
 #include "Platform/Platform.hpp"
 
-#include <climits>
-#include <cstdio>
-
 
 //----------------------------------------------------------------------------|
 // Options                                                                    |
@@ -84,6 +81,7 @@ namespace GDCC
          defin   {false},
          sflagNet{false},
          sflagClS{false},
+         used    {false},
 
          labeller{glyph, "$L$"}
       {
@@ -109,6 +107,8 @@ namespace GDCC
       //
       void Function::genFunctionDecl(IR::Program &prog)
       {
+         if(!defin && !used) return;
+
          // Operate on a temporary function to be merged later.
          IR::Function fn{glyph};
 
@@ -131,6 +131,8 @@ namespace GDCC
       //
       void Function::genFunctionDefn(IR::Program &prog)
       {
+         if(!defin && !used) return;
+
          // Operate on a temporary function to be merged later.
          IR::Function fn{glyph};
 
