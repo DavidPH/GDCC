@@ -25,6 +25,35 @@
 
 
 //----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace CC
+   {
+      //
+      // IsAddrPre
+      //
+      static bool IsAddrPre(IR::CallType callType)
+      {
+         switch(callType)
+         {
+         case IR::CallType::SScriptI:
+         case IR::CallType::SScriptS:
+         case IR::CallType::ScriptI:
+         case IR::CallType::ScriptS:
+            return true;
+
+         default:
+            return false;
+         }
+      }
+   }
+}
+
+
+//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
@@ -43,6 +72,12 @@ namespace GDCC
          std::size_t  irWords   = 0;
          Core::FastU  stkWords  = 0;
          Core::FastU  vaWords   = 0;
+
+         bool addrPre = IsAddrPre(callType);
+
+         // Evaluate address before arguments?
+         if(addrPre)
+            exp->genStmntStk(ctx);
 
          // Count arguments.
          for(auto const &arg : args)
@@ -118,7 +153,9 @@ namespace GDCC
          }
 
          // Prepare function's address.
-         if(exp->isIRExp())
+         if(addrPre)
+            irArgs[0] = IR::Arg_Stk();
+         else if(exp->isIRExp())
          {
             exp->genStmnt(ctx);
             irArgs[0] = IR::Arg_Lit(exp->getIRExp());
