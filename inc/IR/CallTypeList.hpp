@@ -32,6 +32,15 @@ GDCC_IR_CallTypeList(LangDS)  // extern "DS"
 // "Native Function". Used for targets with special native function calls.
 GDCC_IR_CallTypeList(Native)
 
+// "Synchronous Script". Used for ACS. Must be mapped for IR.
+GDCC_IR_CallTypeList(SScript)
+
+// "Numbered Synchronous Script". Used for ACS.
+GDCC_IR_CallTypeList(SScriptI)
+
+// "Named Synchronous Script". Used for ACS.
+GDCC_IR_CallTypeList(SScriptS)
+
 // "Script". Used for ACS. Must be mapped to another call type for IR.
 GDCC_IR_CallTypeList(Script)
 

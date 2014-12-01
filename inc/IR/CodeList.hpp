@@ -99,6 +99,13 @@ GDCC_IR_CodeList(Cnat)
 // Copy lop rop
 GDCC_IR_CodeList(Copy_W)
 
+// Cscr_* src ret arg...
+// Integer/String Asynchronous/Synchronous
+GDCC_IR_CodeList(Cscr_IA)
+GDCC_IR_CodeList(Cscr_IS)
+GDCC_IR_CodeList(Cscr_SA)
+GDCC_IR_CodeList(Cscr_SS)
+
 // Cspe src ret arg...
 GDCC_IR_CodeList(Cspe)
 

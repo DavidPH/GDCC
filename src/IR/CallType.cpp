@@ -94,6 +94,9 @@ namespace GDCC
          case IR::CallType::LangDS:
             return IR::CallType::StdCall;
 
+         case IR::CallType::SScript:
+            return IR::CallType::SScriptI;
+
          case IR::CallType::Script:
             return IR::CallType::ScriptI;
 
