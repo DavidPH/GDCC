@@ -174,9 +174,10 @@ namespace GDCC
                CheckArgB(stmnt, 1, IR::ArgBase::Stk);
                break;
 
-            case IR::Code::Cspe:
-               trStmnt_Cspe();
-               break;
+            case IR::Code::Cscr_IA: trStmnt_Cscr_IA(); break;
+            case IR::Code::Cscr_SA: trStmnt_Cscr_SA(); break;
+
+            case IR::Code::Cspe: trStmnt_Cspe(); break;
 
             case IR::Code::DiXI_W: trStmnt_DiXI_W(); break;
 

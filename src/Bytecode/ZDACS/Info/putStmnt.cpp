@@ -140,9 +140,10 @@ namespace GDCC
 
             case IR::Code::Copy_W: putCode(Code::Copy); break;
 
-            case IR::Code::Cspe:
-               putStmnt_Cspe();
-               break;
+            case IR::Code::Cscr_IA: putStmnt_Cscr_IA(); break;
+            case IR::Code::Cscr_SA: putStmnt_Cscr_SA(); break;
+
+            case IR::Code::Cspe: putStmnt_Cspe(); break;
 
             case IR::Code::DiXI_W:  putStmnt_DiXI_W(); break;
             case IR::Code::DiXI_W2: putStmntCall("___GDCC__DiXI_W2", 4); break;

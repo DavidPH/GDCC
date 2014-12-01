@@ -57,6 +57,21 @@ namespace GDCC
             // Back label glyph.
             backGlyphWord(func->label, CodeBase() + numChunkCODE);
 
+            // Gen function preamble.
+            switch(func->ctype)
+            {
+            case IR::CallType::ScriptI:
+            case IR::CallType::ScriptS:
+               if(!func->defin) break;
+               if(func->param <= 4) break;
+
+               numChunkCODE += (func->param - 4) * 24;
+               break;
+
+            default:
+               break;
+            }
+
             genBlock(func->block);
 
             switch(func->ctype)

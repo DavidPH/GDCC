@@ -12,6 +12,9 @@
 
 #include "Bytecode/ZDACS/Info.hpp"
 
+#include "Bytecode/ZDACS/Code.hpp"
+
+#include "IR/CallType.hpp"
 #include "IR/Function.hpp"
 
 #include <iostream>
@@ -96,6 +99,34 @@ namespace GDCC
             out->write(s, len);
 
             putPos += len;
+         }
+
+         //
+         // Info::putFunc
+         //
+         void Info::putFunc()
+         {
+            // Put function preamble.
+            switch(func->ctype)
+            {
+            case IR::CallType::ScriptI:
+            case IR::CallType::ScriptS:
+               if(!func->defin) break;
+               if(func->param <= 4) break;
+
+               for(Core::FastU i = 4; i != func->param; ++i)
+               {
+                  putCode(Code::Push_Lit,    ~(i - 4));
+                  putCode(Code::Push_GblArr, LocArsArray);
+                  putCode(Code::Drop_LocReg, i);
+               }
+               break;
+
+            default:
+               break;
+            }
+
+            InfoBase::putFunc();
          }
 
          //

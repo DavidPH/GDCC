@@ -39,14 +39,6 @@ namespace GDCC
                prog->getGlyphData(func->glyph).type = IR::Type_Funct(func->ctype);
                break;
 
-            case IR::CallType::ScriptI:
-               prog->getGlyphData(func->glyph).type = TypeWord;
-               break;
-
-            case IR::CallType::ScriptS:
-               prog->getGlyphData(func->glyph).type = IR::Type_StrEn();
-               break;
-
             default: break;
             }
 

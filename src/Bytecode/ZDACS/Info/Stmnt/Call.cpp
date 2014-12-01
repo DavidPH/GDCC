@@ -62,6 +62,42 @@ namespace GDCC
          }
 
          //
+         // Info::genStmnt_Cscr_IA
+         //
+         void Info::genStmnt_Cscr_IA()
+         {
+            auto ret  = stmnt->args[1].aLit.value->getValue().getFastU();
+            auto argc = stmnt->args.size() - 2;
+
+            if(argc > 4)
+               numChunkCODE += 8 + (argc - 4) * 20;
+            else if(ret)
+               numChunkCODE += 8 + (4 - argc) * 8;
+            else
+               numChunkCODE += 8;
+
+            if(ret)
+               numChunkCODE += (ret - 1) * 16;
+         }
+
+         //
+         // Info::genStmnt_Cscr_SA
+         //
+         void Info::genStmnt_Cscr_SA()
+         {
+            auto ret  = stmnt->args[1].aLit.value->getValue().getFastU();
+            auto argc = stmnt->args.size() - 2;
+
+            if(argc > 4)
+               numChunkCODE += (argc - 4) * 20;
+
+            numChunkCODE += 12;
+
+            if(ret)
+               numChunkCODE += (ret - 1) * 16;
+         }
+
+         //
          // Info::genStmnt_Cspe
          //
          void Info::genStmnt_Cspe()
@@ -159,6 +195,59 @@ namespace GDCC
             default:
                throw Core::ExceptStr(stmnt->pos, "bad put Call");
             }
+         }
+
+         //
+         // Info::putStmnt_Cscr_IA
+         //
+         void Info::putStmnt_Cscr_IA()
+         {
+            auto ret  = stmnt->args[1].aLit.value->getValue().getFastU();
+            auto argc = stmnt->args.size() - 2;
+
+            if(argc > 4)
+               putStmntDropRetn(argc - 4);
+
+            if(ret) switch(argc)
+            {
+            case  0: putCode(Code::Push_Lit, 0);
+            case  1: putCode(Code::Push_Lit, 0);
+            case  2: putCode(Code::Push_Lit, 0);
+            case  3: putCode(Code::Push_Lit, 0);
+            default: putCode(Code::Cspe_5R1); break;
+            }
+            else switch(argc)
+            {
+            case  0: putCode(Code::Cspe_1); break;
+            case  1: putCode(Code::Cspe_2); break;
+            case  2: putCode(Code::Cspe_3); break;
+            case  3: putCode(Code::Cspe_4); break;
+            default: putCode(Code::Cspe_5); break;
+            }
+
+            putWord(84); // ACS_ExecuteWithResult
+
+            if(ret)
+               putStmntPushRetn(ret - 1);
+         }
+
+         //
+         // Info::putStmnt_Cscr_SA
+         //
+         void Info::putStmnt_Cscr_SA()
+         {
+            auto ret  = stmnt->args[1].aLit.value->getValue().getFastU();
+            auto argc = stmnt->args.size() - 2;
+
+            if(argc > 4)
+               putStmntDropRetn(argc - 4);
+
+            putCode(Code::Cnat);
+            putWord(argc < 4 ? argc + 1 : 5);
+            putWord(44); // ACS_NamedExecuteWithResult
+
+            if(ret)
+               putStmntPushRetn(ret - 1);
          }
 
          //
@@ -302,6 +391,30 @@ namespace GDCC
             default:
                throw Core::ExceptStr(stmnt->pos, "bad tr Call");
             }
+         }
+
+         //
+         // Info::trStmnt_Cscr_IA
+         //
+         void Info::trStmnt_Cscr_IA()
+         {
+            CheckArgC(stmnt, 2);
+            CheckArgB(stmnt, 0, IR::ArgBase::Stk);
+            CheckArgB(stmnt, 1, IR::ArgBase::Lit);
+            for(auto n = stmnt->args.size(); --n != 1;)
+               CheckArgB(stmnt, n, IR::ArgBase::Stk);
+         }
+
+         //
+         // Info::trStmnt_Cscr_SA
+         //
+         void Info::trStmnt_Cscr_SA()
+         {
+            CheckArgC(stmnt, 2);
+            CheckArgB(stmnt, 0, IR::ArgBase::Stk);
+            CheckArgB(stmnt, 1, IR::ArgBase::Lit);
+            for(auto n = stmnt->args.size(); --n != 1;)
+               CheckArgB(stmnt, n, IR::ArgBase::Stk);
          }
 
          //

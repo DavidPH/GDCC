@@ -118,6 +118,8 @@ namespace GDCC
             void genStmnt_Call();
             void genStmnt_CmpU_EQ_W2();
             void genStmnt_CmpU_EQ_W3();
+            void genStmnt_Cscr_IA();
+            void genStmnt_Cscr_SA();
             void genStmnt_Cspe();
             void genStmnt_DiXI_W();
             void genStmnt_InvU_W2();
@@ -238,6 +240,9 @@ namespace GDCC
 
             void putData(char const *s, std::size_t len);
 
+            using InfoBase::putFunc;
+            virtual void putFunc();
+
             void putHWord(Core::FastU i);
 
             void putIniti();
@@ -250,6 +255,8 @@ namespace GDCC
             void putStmnt_CmpU_EQ_W3();
             void putStmnt_CmpU_NE_W2();
             void putStmnt_CmpU_NE_W3();
+            void putStmnt_Cscr_IA();
+            void putStmnt_Cscr_SA();
             void putStmnt_Cspe();
             void putStmnt_DiXI_W();
             void putStmnt_InvU_W2();
@@ -311,6 +318,8 @@ namespace GDCC
             void trStmnt_AddU_W();
             void trStmnt_Call();
             void trStmnt_CmpU_EQ(IR::Code codeMove);
+            void trStmnt_Cscr_IA();
+            void trStmnt_Cscr_SA();
             void trStmnt_Cspe();
             void trStmnt_DiXI_W();
             void trStmnt_InvU_W2();

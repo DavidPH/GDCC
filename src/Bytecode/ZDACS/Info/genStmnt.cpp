@@ -201,13 +201,12 @@ namespace GDCC
 
             case IR::Code::Copy_W: numChunkCODE += 4; break;
 
-            case IR::Code::Cnat:
-               numChunkCODE += 12;
-               break;
+            case IR::Code::Cnat: numChunkCODE += 12; break;
 
-            case IR::Code::Cspe:
-               genStmnt_Cspe();
-               break;
+            case IR::Code::Cscr_IA: genStmnt_Cscr_IA(); break;
+            case IR::Code::Cscr_SA: genStmnt_Cscr_SA(); break;
+
+            case IR::Code::Cspe: genStmnt_Cspe(); break;
 
             case IR::Code::DiXI_W:  genStmnt_DiXI_W(); break;
             case IR::Code::DiXI_W2: genStmntCall(4); break;
