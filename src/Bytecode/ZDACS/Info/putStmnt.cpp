@@ -15,7 +15,6 @@
 #include "Bytecode/ZDACS/Code.hpp"
 
 #include "Core/Exception.hpp"
-#include "Core/Range.hpp"
 
 #include "IR/CallType.hpp"
 #include "IR/Function.hpp"
@@ -289,173 +288,6 @@ namespace GDCC
          }
 
          //
-         // Info::putStmnt_Call
-         //
-         void Info::putStmnt_Call()
-         {
-            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
-
-            switch(stmnt->args[0].a)
-            {
-            case IR::ArgBase::Lit:
-               if(ret == 0)
-                  putCode(Code::Call_Nul);
-               else
-                  putCode(Code::Call_Lit);
-
-               putWord(GetWord(stmnt->args[0].aLit));
-
-               if(ret)
-                  putStmntPushRetn(ret);
-
-               break;
-
-            case IR::ArgBase::Stk:
-               putCode(Code::Call_Stk);
-
-               if(ret == 0)
-                  putCode(Code::Drop_Nul);
-               else
-                  putStmntPushRetn(ret);
-
-               break;
-
-            default:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Call\n";
-               throw EXIT_FAILURE;
-            }
-         }
-
-         //
-         // Info::putStmnt_Cspe
-         //
-         void Info::putStmnt_Cspe()
-         {
-            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
-
-            IR::ArgBase a;
-            if(stmnt->args.size() == 2)
-               a = ret ? IR::ArgBase::Stk : IR::ArgBase::Lit;
-            else
-               a = stmnt->args[2].a;
-
-            switch(a)
-            {
-            case IR::ArgBase::Lit:
-               if(ret)
-               {
-                  for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
-                  {
-                     putCode(Code::Push_Lit);
-                     putWord(GetWord(arg.aLit));
-                  }
-
-                  putCode(Code::Cspe_5R1); break;
-                  putWord(GetWord(stmnt->args[0].aLit));
-
-                  break;
-               }
-
-               switch(stmnt->args.size() - 2)
-               {
-               case 0: putCode(Code::Cspe_1L); break;
-               case 1: putCode(Code::Cspe_1L); break;
-               case 2: putCode(Code::Cspe_2L); break;
-               case 3: putCode(Code::Cspe_3L); break;
-               case 4: putCode(Code::Cspe_4L); break;
-               case 5: putCode(Code::Cspe_5L); break;
-               }
-
-               putWord(GetWord(stmnt->args[0].aLit));
-
-               // Dummy arg.
-               if(stmnt->args.size() == 2)
-                  putWord(0);
-
-               for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
-                  putWord(GetWord(arg.aLit));
-
-               break;
-
-            case IR::ArgBase::Stk:
-               if(ret)
-               {
-                  switch(stmnt->args.size() - 2)
-                  {
-                  case 0: putCode(Code::Push_Lit); putWord(0);
-                  case 1: putCode(Code::Push_Lit); putWord(0);
-                  case 2: putCode(Code::Push_Lit); putWord(0);
-                  case 3: putCode(Code::Push_Lit); putWord(0);
-                  case 4: putCode(Code::Push_Lit); putWord(0);
-                  case 5: putCode(Code::Cspe_5R1); break;
-                  }
-               }
-               else
-               {
-                  switch(stmnt->args.size() - 2)
-                  {
-                  case 0: putCode(Code::Push_Lit); putWord(0);
-                  case 1: putCode(Code::Cspe_1); break;
-                  case 2: putCode(Code::Cspe_2); break;
-                  case 3: putCode(Code::Cspe_3); break;
-                  case 4: putCode(Code::Cspe_4); break;
-                  case 5: putCode(Code::Cspe_5); break;
-                  }
-               }
-
-               putWord(GetWord(stmnt->args[0].aLit));
-
-               break;
-
-            default:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Cspe\n";
-               throw EXIT_FAILURE;
-            }
-         }
-
-         //
-         // Info::putStmnt_Retn
-         //
-         void Info::putStmnt_Retn()
-         {
-            switch(func->ctype)
-            {
-            case IR::CallType::StdCall:
-            case IR::CallType::StkCall:
-               if(stmnt->args.size() == 0)
-                  putCode(Code::Retn_Nul);
-               else
-               {
-                  putStmntDropRetn(stmnt->args.size());
-                  putCode(Code::Retn_Stk);
-               }
-               break;
-
-            case IR::CallType::ScriptI:
-            case IR::CallType::ScriptS:
-               if(stmnt->args.size() == 0)
-               {
-                  putCode(Code::Rscr);
-               }
-               else if(stmnt->args.size() == 1)
-               {
-                  putCode(Code::Drop_ScrRet);
-                  putCode(Code::Rscr);
-               }
-               else
-               {
-                  std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-                  throw EXIT_FAILURE;
-               }
-               break;
-
-            default:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Retn\n";
-               throw EXIT_FAILURE;
-            }
-         }
-
-         //
          // Info::putStmnt_Xcod_SID
          //
          void Info::putStmnt_Xcod_SID()
@@ -501,7 +333,7 @@ namespace GDCC
             putCode(Code::Call_Lit);
             putWord(GetWord(resolveGlyph(name)));
 
-            putStmntPushRetn(ret);
+            if(ret) putStmntPushRetn(ret - 1);
          }
 
          //
@@ -545,10 +377,10 @@ namespace GDCC
          //
          void Info::putStmntDropRetn(Core::FastU ret)
          {
-            if(ret) for(Core::FastU i = ret; --i;)
+            for(Core::FastU i = ret; i--;)
             {
                putCode(Code::Push_Lit);
-               putWord(~i + 1);
+               putWord(~i);
                putCode(Code::Swap);
                putCode(Code::Drop_GblArr);
                putWord(LocArsArray);
@@ -679,10 +511,10 @@ namespace GDCC
          //
          void Info::putStmntPushRetn(Core::FastU ret)
          {
-            if(ret) for(Core::FastU i = 0; ++i != ret;)
+            for(Core::FastU i = 0; i != ret; ++i)
             {
                putCode(Code::Push_Lit);
-               putWord(~i + 1);
+               putWord(~i);
                putCode(Code::Push_GblArr);
                putWord(LocArsArray);
             }

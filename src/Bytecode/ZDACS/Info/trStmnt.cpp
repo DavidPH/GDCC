@@ -14,9 +14,7 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/CallType.hpp"
-#include "IR/Function.hpp"
-#include "IR/Glyph.hpp"
+#include "IR/Statement.hpp"
 
 #include <iostream>
 
@@ -322,105 +320,6 @@ namespace GDCC
             default:
                std::cerr << "ERROR: " << stmnt->pos << ": cannot translate Code for ZDACS: "
                   << stmnt->code << '\n';
-               throw EXIT_FAILURE;
-            }
-         }
-
-         //
-         // Info::trStmnt_Call
-         //
-         void Info::trStmnt_Call()
-         {
-            CheckArgC(stmnt, 2);
-            CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-            for(auto n = stmnt->args.size(); --n != 1;)
-               CheckArgB(stmnt, n, IR::ArgBase::Stk);
-
-            switch(stmnt->args[0].a)
-            {
-            case IR::ArgBase::Lit:
-            case IR::ArgBase::Stk:
-               break;
-
-            default:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Call\n";
-               throw EXIT_FAILURE;
-            }
-         }
-
-         //
-         // Info::trStmnt_Cspe
-         //
-         void Info::trStmnt_Cspe()
-         {
-            CheckArgC(stmnt, 2);
-            CheckArgB(stmnt, 0, IR::ArgBase::Lit);
-            CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-
-            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
-
-            if(ret > 1)
-            {
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Cspe ret\n";
-               throw EXIT_FAILURE;
-            }
-
-            // Too many call args.
-            if(stmnt->args.size() > 7)
-            {
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Cspe arg count\n";
-               throw EXIT_FAILURE;
-            }
-
-            // No call args.
-            if(stmnt->args.size() == 2)
-               return;
-
-            switch(stmnt->args[2].a)
-            {
-            case IR::ArgBase::Lit:
-               for(auto n = stmnt->args.size(); n-- != 3;)
-                  CheckArgB(stmnt, n, IR::ArgBase::Lit);
-               break;
-
-            case IR::ArgBase::Stk:
-               for(auto n = stmnt->args.size(); n-- != 3;)
-                  CheckArgB(stmnt, n, IR::ArgBase::Stk);
-               break;
-
-            default:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Cspe\n";
-               throw EXIT_FAILURE;
-            }
-         }
-
-         //
-         // Info::trStmnt_Retn
-         //
-         void Info::trStmnt_Retn()
-         {
-            auto argc = stmnt->args.size();
-
-            for(auto n = argc; n--;)
-               CheckArgB(stmnt, n, IR::ArgBase::Stk);
-
-            switch(func->ctype)
-            {
-            case IR::CallType::StdCall:
-            case IR::CallType::StkCall:
-               break;
-
-            case IR::CallType::ScriptI:
-            case IR::CallType::ScriptS:
-               if(argc != 0 && argc != 1)
-               {
-                  std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-                  throw EXIT_FAILURE;
-               }
-               break;
-
-            default:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Retn\n";
                throw EXIT_FAILURE;
             }
          }

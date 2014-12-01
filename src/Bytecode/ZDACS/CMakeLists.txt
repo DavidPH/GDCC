@@ -22,6 +22,7 @@ add_library(gdcc-bytecode-zdacs-lib ${GDCC_SHARED_DECL}
    Info.cpp
    Info/Stmnt/Add.cpp
    Info/Stmnt/Bitwise.cpp
+   Info/Stmnt/Call.cpp
    Info/Stmnt/Cmp.cpp
    Info/Stmnt/Div.cpp
    Info/Stmnt/InvU.cpp

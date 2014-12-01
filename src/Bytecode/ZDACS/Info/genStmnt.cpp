@@ -14,7 +14,6 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/CallType.hpp"
 #include "IR/Program.hpp"
 
 #include <iostream>
@@ -284,107 +283,6 @@ namespace GDCC
             default:
                std::cerr << "ERROR: " << stmnt->pos
                   << ": cannot gen Code for ZDACS: " << stmnt->code << '\n';
-               throw EXIT_FAILURE;
-            }
-         }
-
-         //
-         // Info::genStmnt_Call
-         //
-         void Info::genStmnt_Call()
-         {
-            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
-
-            switch(stmnt->args[0].a)
-            {
-            case IR::ArgBase::Lit:
-               if(ret == 0)
-                  numChunkCODE += 8;
-               else
-                  numChunkCODE += 8 + (ret - 1) * 16;
-
-               break;
-
-            case IR::ArgBase::Stk:
-               if(ret == 0)
-                  numChunkCODE += 8;
-               else
-                  numChunkCODE += 4 + (ret - 1) * 16;
-
-               break;
-
-            default:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Call\n";
-               throw EXIT_FAILURE;
-            }
-         }
-
-         //
-         // Info::genStmnt_Cspe
-         //
-         void Info::genStmnt_Cspe()
-         {
-            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
-
-            // No call args.
-            if(stmnt->args.size() == 2)
-            {
-               numChunkCODE += ret ? 48 : 12;
-               return;
-            }
-
-            switch(stmnt->args[2].a)
-            {
-            case IR::ArgBase::Lit:
-               numChunkCODE += 8 + (stmnt->args.size() - 2) * (ret ? 8 : 4);
-               break;
-
-            case IR::ArgBase::Stk:
-               numChunkCODE += 8;
-
-               // Dummy args.
-               if(ret) numChunkCODE += (7 - stmnt->args.size()) * 8;
-
-               break;
-
-            default:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Cspe\n";
-               throw EXIT_FAILURE;
-            }
-         }
-
-         //
-         // Info::genStmnt_Retn
-         //
-         void Info::genStmnt_Retn()
-         {
-            auto argc = stmnt->args.size();
-
-            switch(func->ctype)
-            {
-            case IR::CallType::StdCall:
-            case IR::CallType::StkCall:
-               if(argc == 0)
-                  numChunkCODE += 4;
-               else
-                  numChunkCODE += 4 + (argc - 1) * 20;
-               break;
-
-            case IR::CallType::ScriptI:
-            case IR::CallType::ScriptS:
-               if(argc == 0)
-                  numChunkCODE += 4;
-               else if(argc == 1)
-                  numChunkCODE += 8;
-               else
-               {
-                  std::cerr << "STUB: " __FILE__ << ':' << __LINE__ << '\n';
-                  throw EXIT_FAILURE;
-               }
-               break;
-
-            default:
-               std::cerr << "ERROR: " << stmnt->pos << ": bad Code::Retn\n";
                throw EXIT_FAILURE;
             }
          }
