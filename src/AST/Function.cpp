@@ -197,6 +197,23 @@ namespace GDCC
                Core::Origin(Core::STRNULL, 0));
          }
 
+         // If this is a named script, generate a StrEnt, too.
+         if(fn.ctype == IR::CallType::SScriptS ||
+            fn.ctype == IR::CallType::ScriptS)
+         {
+            // Create StrEnt.
+            auto &strent = prog.getStrEnt(genLabel());
+
+            // Configure StrEnt.
+            strent.valueStr = fn.valueStr ? fn.valueStr : fn.glyph;
+            strent.alias    = true;
+            strent.alloc    = true;
+            strent.defin    = true;
+
+            // Prepare associated glyph.
+            prog.getGlyphData(strent.glyph).type = IR::Type_StrEn();
+         }
+
          // Configure glyph's type, even if the glyph won't be backed.
          prog.getGlyphData(glyph).type = IR::Type_Funct(fn.ctype);
 
