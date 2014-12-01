@@ -16,6 +16,8 @@
 #include "AST/Function.hpp"
 #include "AST/Type.hpp"
 
+#include "Core/Exception.hpp"
+
 #include "IR/Block.hpp"
 #include "IR/CallType.hpp"
 
@@ -131,10 +133,17 @@ namespace GDCC
          IR::Code code;
          switch(callType)
          {
-         case IR::CallType::AsmFunc: code = IR::Code::Casm; break;
-         case IR::CallType::Native:  code = IR::Code::Cnat; break;
-         case IR::CallType::Special: code = IR::Code::Cspe; break;
-         default:                    code = IR::Code::Call; break;
+         case IR::CallType::AsmFunc:  code = IR::Code::Casm;    break;
+         case IR::CallType::Native:   code = IR::Code::Cnat;    break;
+         case IR::CallType::SScriptI: code = IR::Code::Cscr_IS; break;
+         case IR::CallType::SScriptS: code = IR::Code::Cscr_SS; break;
+         case IR::CallType::ScriptI:  code = IR::Code::Cscr_IA; break;
+         case IR::CallType::ScriptS:  code = IR::Code::Cscr_SA; break;
+         case IR::CallType::Special:  code = IR::Code::Cspe;    break;
+         case IR::CallType::StdCall:  code = IR::Code::Call;    break;
+         case IR::CallType::StkCall:  code = IR::Code::Call;    break;
+         default:
+            throw Core::ExceptStr(pos, "unsupported call type");
          }
          ctx.block.addStatementArgs(code, std::move(irArgs));
 
