@@ -155,6 +155,8 @@ namespace GDCC
          // Special rules for certain calling conventions.
          switch(fn.ctype)
          {
+         case IR::CallType::SScriptI:
+         case IR::CallType::SScriptS:
          case IR::CallType::StdCall:
             // Extra parameter for stack pointer. Extra register is handled
             // during local allocations.

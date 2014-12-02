@@ -79,7 +79,9 @@ namespace GDCC
          // Move parameter data to actual storage location.
          Core::FastU paramIdx = 0;
 
-         if(ctype == IR::CallType::StdCall &&
+         if((ctype == IR::CallType::SScriptI ||
+             ctype == IR::CallType::SScriptS ||
+             ctype == IR::CallType::StdCall) &&
             Platform::TargetCur == Platform::Target::ZDoom)
             ++paramIdx;
 

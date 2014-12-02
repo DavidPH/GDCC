@@ -74,8 +74,16 @@ namespace GDCC
       //
       bool Exp_Call::v_isNoAuto() const
       {
-         if(func->getCallType() == IR::CallType::StdCall)
+         switch(func->getCallType())
+         {
+         case IR::CallType::SScriptI:
+         case IR::CallType::SScriptS:
+         case IR::CallType::StdCall:
             return false;
+
+         default:
+            break;
+         }
 
          for(auto const &arg : args)
             if(!arg->isNoAuto()) return false;

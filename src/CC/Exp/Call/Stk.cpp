@@ -101,6 +101,15 @@ namespace GDCC
 
             ++stkWords;
          }
+         else if(callType == IR::CallType::SScriptI ||
+            callType == IR::CallType::SScriptS)
+         {
+            ctx.block.addStatementArgs(IR::Code::Pltn,
+               IR::Arg_Stk(), ctx.fn->localArs + vaWords + 1);
+
+            ++stkWords;
+            ++irWords;
+         }
 
          // Evaluate arguments.
          if(vaWords)
@@ -150,6 +159,14 @@ namespace GDCC
             irArgs[1] = IR::Arg_Lit(func->getBaseType()->isTypeVoid()
                ? AST::ExpCreate_Size(0)->getIRExp()
                : func->getBaseType()->getSizeWordsVM()->getIRExp());
+         }
+
+         // For synchronous script calls, third IR arg is return flag.
+         if(callType == IR::CallType::SScriptI ||
+            callType == IR::CallType::SScriptS)
+         {
+            irArgs[2] = IR::Arg_Loc(IR::Arg_Lit(
+               AST::ExpCreate_Size(ctx.fn->localArs + vaWords)->getIRExp()));
          }
 
          // Prepare function's address.

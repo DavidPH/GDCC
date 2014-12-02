@@ -59,6 +59,8 @@ namespace GDCC
          AllocAutoInfo alloc;
          switch(IR::GetCallTypeIR(fn->ctype))
          {
+         case IR::CallType::SScriptI:
+         case IR::CallType::SScriptS:
          case IR::CallType::StdCall:
             if(Platform::TargetCur == Platform::Target::ZDoom)
                ++alloc.localReg;
