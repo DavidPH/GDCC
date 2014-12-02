@@ -21,6 +21,25 @@
 
 
 //----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace CPP
+   {
+      //
+      // IsIdentiChar
+      //
+      static bool IsIdentiChar(int c)
+      {
+         return std::isalnum(c) || c == '_' || c > 0x80;
+      }
+   }
+}
+
+
+//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
@@ -250,12 +269,12 @@ namespace GDCC
          }
 
          // Identifier token.
-         if(std::isalpha(c) || c == '_')
+         if(IsIdentiChar(c))
          {
             std::string str;
 
             do str += static_cast<char>(c);
-            while((c = in.get()) != EOF && (std::isalnum(c) || c == '_'));
+            while((c = in.get()) != EOF && IsIdentiChar(c));
 
             // Character/string with encoding prefix.
             if(c == '"' || c == '\'')
