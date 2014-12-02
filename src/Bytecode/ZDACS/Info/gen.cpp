@@ -54,12 +54,32 @@ namespace GDCC
                IR::CallType::StkCall,
             };
 
+            static IR::CallType const ScriptTypesI[] =
+            {
+               IR::CallType::SScriptI,
+               IR::CallType::ScriptI,
+            };
+
+            static IR::CallType const ScriptTypesS[] =
+            {
+               IR::CallType::SScriptS,
+               IR::CallType::ScriptS,
+            };
+
             // Back label glyph.
             backGlyphWord(func->label, CodeBase() + numChunkCODE);
 
             // Gen function preamble.
             switch(func->ctype)
             {
+            case IR::CallType::SScriptI:
+            case IR::CallType::SScriptS:
+               if(!func->defin) break;
+               if(func->param <= 3) break;
+
+               numChunkCODE += (func->param - 3) * 24;
+               break;
+
             case IR::CallType::ScriptI:
             case IR::CallType::ScriptS:
                if(!func->defin) break;
@@ -91,11 +111,12 @@ namespace GDCC
 
                break;
 
+            case IR::CallType::SScriptI:
             case IR::CallType::ScriptI:
                if(!func->defin) break;
 
                if(func->alloc)
-                  func->allocValue(*prog, IR::CallType::ScriptI);
+                  func->allocValue(*prog, ScriptTypesI);
 
                ++numChunkSPTR;
 
@@ -106,11 +127,12 @@ namespace GDCC
 
                break;
 
+            case IR::CallType::SScriptS:
             case IR::CallType::ScriptS:
                if(!func->defin) break;
 
                if(func->alloc)
-                  func->allocValue(*prog, IR::CallType::ScriptS);
+                  func->allocValue(*prog, ScriptTypesS);
 
                ++numChunkSPTR;
 

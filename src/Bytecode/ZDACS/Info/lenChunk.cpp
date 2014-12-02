@@ -286,7 +286,7 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(itr.ctype != IR::CallType::ScriptS)
+               if(!IsScriptS(itr.ctype))
                   continue;
 
                strs[itr.valueInt] = itr.valueStr;

@@ -413,6 +413,8 @@ namespace GDCC
          {
             switch(func->ctype)
             {
+            case IR::CallType::SScriptI:
+            case IR::CallType::SScriptS:
             case IR::CallType::StdCall:
                return 0;
 
@@ -440,6 +442,9 @@ namespace GDCC
             case IR::ArgBase::WldReg:
                return true;
 
+            case IR::ArgBase::Loc:
+               return isPushArg(*arg.aLoc.idx);
+
             default:
                return false;
             }
@@ -457,6 +462,9 @@ namespace GDCC
             case IR::ArgBase::MapReg:
             case IR::ArgBase::WldReg:
                return true;
+
+            case IR::ArgBase::Loc:
+               return isPushArg(*arg.aLoc.idx);
 
             default:
                return false;
@@ -518,6 +526,9 @@ namespace GDCC
             case IR::ArgBase::WldReg:
                return true;
 
+            case IR::ArgBase::Loc:
+               return isPushArg(*arg.aLoc.idx);
+
             default:
                return false;
             }
@@ -526,11 +537,30 @@ namespace GDCC
          //
          // Info::lenDropArg
          //
-         Core::FastU Info::lenDropArg(IR::Arg const &arg, Core::FastU)
+         Core::FastU Info::lenDropArg(IR::Arg const &arg, Core::FastU w)
          {
+            //
+            // lenLoc
+            //
+            auto lenLoc = [&](IR::Arg_Loc const &a) -> Core::FastU
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+                  return 32;
+               else
+               {
+                  Core::FastU len = lenPushArg(*a.idx, 0) + 24;
+
+                  if(a.off + w)
+                     len += 12;
+
+                  return len;
+               }
+            };
+
             switch(arg.a)
             {
             case IR::ArgBase::GblReg: return 8;
+            case IR::ArgBase::Loc:    return lenLoc(arg.aLoc);
             case IR::ArgBase::LocReg: return 8;
             case IR::ArgBase::MapReg: return 8;
             case IR::ArgBase::Nul:    return 4;
@@ -598,10 +628,28 @@ namespace GDCC
                switch(type.t)
                {
                case IR::TypeBase::Funct:
-                  return wLit == 0 && type.tFunct.callT == IR::CallType::ScriptS ? 12 : 8;
+                  return wLit == 0 && IsScriptS(type.tFunct.callT) ? 12 : 8;
 
                case IR::TypeBase::StrEn: return wLit == 0 ? 12 : 8;
                default:                  return 8;
+               }
+            };
+
+            //
+            // lenLoc
+            //
+            auto lenLoc = [&](IR::Arg_Loc const &a) -> Core::FastU
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+                  return 28;
+               else
+               {
+                  Core::FastU len = lenPushArg(*a.idx, 0) + 20;
+
+                  if(a.off + w)
+                     len += 12;
+
+                  return len;
                }
             };
 
@@ -609,6 +657,7 @@ namespace GDCC
             {
             case IR::ArgBase::GblReg: return 8;
             case IR::ArgBase::Lit:    return lenLit();
+            case IR::ArgBase::Loc:    return lenLoc(arg.aLoc);
             case IR::ArgBase::LocReg: return 8;
             case IR::ArgBase::MapReg: return 8;
             case IR::ArgBase::WldReg: return 8;
@@ -773,10 +822,32 @@ namespace GDCC
          //
          Core::FastU Info::GetScriptValue(IR::Function const &script)
          {
-            if(script.ctype == IR::CallType::ScriptS)
+            if(IsScriptS(script.ctype))
                return -static_cast<Core::FastI>(script.valueInt) - 1;
             else
                return script.valueInt;
+         }
+
+         //
+         // Info::IsScript
+         //
+         bool Info::IsScript(IR::CallType ctype)
+         {
+            return
+               ctype == IR::CallType::SScriptI ||
+               ctype == IR::CallType::SScriptS ||
+               ctype == IR::CallType::ScriptI ||
+               ctype == IR::CallType::ScriptS;
+         }
+
+         //
+         // Info::IsScriptS
+         //
+         bool Info::IsScriptS(IR::CallType ctype)
+         {
+            return
+               ctype == IR::CallType::SScriptS ||
+               ctype == IR::CallType::ScriptS;
          }
       }
    }

@@ -211,7 +211,7 @@ namespace GDCC
 
             case IR::ValueBase::Funct:
                iv = &ini.vals[itr++];
-               if(val.vFunct.vtype.callT == IR::CallType::ScriptS)
+               if(IsScriptS(val.vFunct.vtype.callT))
                {
                   if((val.vFunct.value & 0xFFFFFFFF) == 0xFFFFFFFF)
                      iv->tag = InitTag::Fixed;

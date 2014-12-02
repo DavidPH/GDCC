@@ -204,7 +204,9 @@ namespace GDCC
             case IR::Code::Cnat: numChunkCODE += 12; break;
 
             case IR::Code::Cscr_IA: genStmnt_Cscr_IA(); break;
+            case IR::Code::Cscr_IS: genStmnt_Cscr_IS(); break;
             case IR::Code::Cscr_SA: genStmnt_Cscr_SA(); break;
+            case IR::Code::Cscr_SS: genStmnt_Cscr_SS(); break;
 
             case IR::Code::Cspe: genStmnt_Cspe(); break;
 

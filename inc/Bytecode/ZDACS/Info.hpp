@@ -119,7 +119,9 @@ namespace GDCC
             void genStmnt_CmpU_EQ_W2();
             void genStmnt_CmpU_EQ_W3();
             void genStmnt_Cscr_IA();
+            void genStmnt_Cscr_IS();
             void genStmnt_Cscr_SA();
+            void genStmnt_Cscr_SS();
             void genStmnt_Cspe();
             void genStmnt_DiXI_W();
             void genStmnt_InvU_W2();
@@ -256,7 +258,9 @@ namespace GDCC
             void putStmnt_CmpU_NE_W2();
             void putStmnt_CmpU_NE_W3();
             void putStmnt_Cscr_IA();
+            void putStmnt_Cscr_IS();
             void putStmnt_Cscr_SA();
+            void putStmnt_Cscr_SS();
             void putStmnt_Cspe();
             void putStmnt_DiXI_W();
             void putStmnt_InvU_W2();
@@ -319,7 +323,9 @@ namespace GDCC
             void trStmnt_Call();
             void trStmnt_CmpU_EQ(IR::Code codeMove);
             void trStmnt_Cscr_IA();
+            void trStmnt_Cscr_IS();
             void trStmnt_Cscr_SA();
+            void trStmnt_Cscr_SS();
             void trStmnt_Cspe();
             void trStmnt_DiXI_W();
             void trStmnt_InvU_W2();
@@ -378,6 +384,9 @@ namespace GDCC
             static Core::FastU GetWord(IR::Exp const *exp, Core::FastU w = 0);
 
             static Core::FastU GetScriptValue(IR::Function const &script);
+
+            static bool IsScript(IR::CallType ctype);
+            static bool IsScriptS(IR::CallType ctype);
          };
       }
    }

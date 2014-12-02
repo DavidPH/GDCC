@@ -424,8 +424,7 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(itr.ctype != IR::CallType::ScriptI &&
-                  itr.ctype != IR::CallType::ScriptS)
+               if(!IsScript(itr.ctype))
                   continue;
 
                if(!itr.defin) continue;
@@ -455,7 +454,7 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(itr.ctype != IR::CallType::ScriptS)
+               if(!IsScriptS(itr.ctype))
                   continue;
 
                strs[itr.valueInt] = itr.valueStr;
@@ -476,8 +475,7 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(itr.ctype != IR::CallType::ScriptI &&
-                  itr.ctype != IR::CallType::ScriptS)
+               if(!IsScript(itr.ctype))
                   continue;
 
                if(!itr.defin) continue;
@@ -504,7 +502,7 @@ namespace GDCC
                {
                   putHWord(GetScriptValue(itr));
                   putByte(stype);
-                  putByte(itr.param);
+                  putByte(itr.param < 4 ? itr.param : 4);
                   putWord(GetWord(resolveGlyph(itr.label)));
                }
                else
@@ -512,7 +510,7 @@ namespace GDCC
                   putHWord(GetScriptValue(itr));
                   putHWord(stype);
                   putWord(GetWord(resolveGlyph(itr.label)));
-                  putWord(itr.param);
+                  putWord(itr.param < 4 ? itr.param : 4);
                }
             }
 
@@ -565,8 +563,7 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(itr.ctype != IR::CallType::ScriptI &&
-                  itr.ctype != IR::CallType::ScriptS)
+               if(!IsScript(itr.ctype))
                   continue;
 
                if(!itr.defin) continue;

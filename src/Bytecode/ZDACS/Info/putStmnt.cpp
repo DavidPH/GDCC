@@ -141,7 +141,9 @@ namespace GDCC
             case IR::Code::Copy_W: putCode(Code::Copy); break;
 
             case IR::Code::Cscr_IA: putStmnt_Cscr_IA(); break;
+            case IR::Code::Cscr_IS: putStmnt_Cscr_IS(); break;
             case IR::Code::Cscr_SA: putStmnt_Cscr_SA(); break;
+            case IR::Code::Cscr_SS: putStmnt_Cscr_SS(); break;
 
             case IR::Code::Cspe: putStmnt_Cspe(); break;
 
@@ -343,6 +345,37 @@ namespace GDCC
          void Info::putStmntDropArg(IR::Arg const &arg, Core::FastU w)
          {
             //
+            // putLoc
+            //
+            auto putLoc = [&](IR::Arg_Loc const &a)
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+               {
+                  putCode(Code::Push_Lit,    GetWord(a.idx->aLit.value) + a.off + w);
+                  putCode(Code::Push_LocReg, getStkPtrIdx());
+                  putCode(Code::AddU);
+                  putCode(Code::Swap);
+                  putCode(Code::Drop_GblArr, LocArsArray);
+               }
+               else
+               {
+                  putStmntPushArg(*a.idx, 0);
+
+                  putCode(Code::Push_LocReg, getStkPtrIdx());
+                  putCode(Code::AddU);
+
+                  if(a.off + w)
+                  {
+                     putCode(Code::Push_Lit, a.off + w);
+                     putCode(Code::AddU);
+                  }
+
+                  putCode(Code::Swap);
+                  putCode(Code::Drop_GblArr, LocArsArray);
+               }
+            };
+
+            //
             // putReg
             //
             auto putReg = [&](IR::ArgPtr1 const &a, Code code)
@@ -354,6 +387,7 @@ namespace GDCC
             switch(arg.a)
             {
             case IR::ArgBase::GblReg: putReg(arg.aGblReg, Code::Drop_GblReg); break;
+            case IR::ArgBase::Loc:    putLoc(arg.aLoc); break;
             case IR::ArgBase::LocReg: putReg(arg.aLocReg, Code::Drop_LocReg); break;
             case IR::ArgBase::MapReg: putReg(arg.aMapReg, Code::Drop_MapReg); break;
             case IR::ArgBase::Nul:    putCode(Code::Drop_Nul); break;
@@ -441,7 +475,7 @@ namespace GDCC
                case IR::ValueBase::Funct:
                   if(wLit == 0)
                   {
-                     if(val.vFunct.vtype.callT == IR::CallType::ScriptS)
+                     if(IsScriptS(val.vFunct.vtype.callT))
                         putStmntPushStrEn(val.vFunct.value);
                      else
                         putStmntPushFunct(val.vFunct.value);
@@ -464,6 +498,35 @@ namespace GDCC
             };
 
             //
+            // putLoc
+            //
+            auto putLoc = [&](IR::Arg_Loc const &a)
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+               {
+                  putCode(Code::Push_Lit,    GetWord(a.idx->aLit.value) + a.off + w);
+                  putCode(Code::Push_LocReg, getStkPtrIdx());
+                  putCode(Code::AddU);
+                  putCode(Code::Push_GblArr, LocArsArray);
+               }
+               else
+               {
+                  putStmntPushArg(*a.idx, 0);
+
+                  putCode(Code::Push_LocReg, getStkPtrIdx());
+                  putCode(Code::AddU);
+
+                  if(a.off + w)
+                  {
+                     putCode(Code::Push_Lit, a.off + w);
+                     putCode(Code::AddU);
+                  }
+
+                  putCode(Code::Push_GblArr, LocArsArray);
+               }
+            };
+
+            //
             // putReg
             //
             auto putReg = [&](IR::ArgPtr1 const &a, Code code)
@@ -476,6 +539,7 @@ namespace GDCC
             {
             case IR::ArgBase::GblReg: putReg(arg.aGblReg, Code::Push_GblReg); break;
             case IR::ArgBase::Lit:    putLit(arg.aLit); break;
+            case IR::ArgBase::Loc:    putLoc(arg.aLoc); break;
             case IR::ArgBase::LocReg: putReg(arg.aLocReg, Code::Push_LocReg); break;
             case IR::ArgBase::MapReg: putReg(arg.aMapReg, Code::Push_MapReg); break;
             case IR::ArgBase::WldReg: putReg(arg.aWldReg, Code::Push_WldReg); break;

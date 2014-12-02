@@ -175,7 +175,9 @@ namespace GDCC
                break;
 
             case IR::Code::Cscr_IA: trStmnt_Cscr_IA(); break;
+            case IR::Code::Cscr_IS: trStmnt_Cscr_IS(); break;
             case IR::Code::Cscr_SA: trStmnt_Cscr_SA(); break;
+            case IR::Code::Cscr_SS: trStmnt_Cscr_SS(); break;
 
             case IR::Code::Cspe: trStmnt_Cspe(); break;
 

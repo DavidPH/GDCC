@@ -109,6 +109,19 @@ namespace GDCC
             // Put function preamble.
             switch(func->ctype)
             {
+            case IR::CallType::SScriptI:
+            case IR::CallType::SScriptS:
+               if(!func->defin) break;
+               if(func->param <= 3) break;
+
+               for(Core::FastU i = 3; i != func->param; ++i)
+               {
+                  putCode(Code::Push_Lit,    ~(i - 3));
+                  putCode(Code::Push_GblArr, LocArsArray);
+                  putCode(Code::Drop_LocReg, i + 1);
+               }
+               break;
+
             case IR::CallType::ScriptI:
             case IR::CallType::ScriptS:
                if(!func->defin) break;
