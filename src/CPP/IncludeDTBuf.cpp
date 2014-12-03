@@ -15,6 +15,7 @@
 #include "CPP/Macro.hpp"
 #include "CPP/TStream.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/Option.hpp"
 #include "Core/Parse.hpp"
 #include "Core/Path.hpp"
@@ -27,31 +28,37 @@
 // Options                                                                    |
 //
 
-//
-// -i, --include
-//
-static GDCC::Option::CStrV IncludeUsr
+namespace GDCC
 {
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("include").setName('i')
-      .setGroup("preprocessor")
-      .setDescS("Adds a user include directory."),
+   namespace CPP
+   {
+      //
+      // -i, --include
+      //
+      static Option::CStrV IncludeUsr
+      {
+         &Core::GetOptionList(), Option::Base::Info()
+            .setName("include").setName('i')
+            .setGroup("preprocessor")
+            .setDescS("Adds a user include directory."),
 
-   1
-};
+         1
+      };
 
-//
-// --sys-include
-//
-static GDCC::Option::CStrV IncludeSys
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("sys-include")
-      .setGroup("preprocessor")
-      .setDescS("Adds a system include directory."),
+      //
+      // --sys-include
+      //
+      static Option::CStrV IncludeSys
+      {
+         &Core::GetOptionList(), Option::Base::Info()
+            .setName("sys-include")
+            .setGroup("preprocessor")
+            .setDescS("Adds a system include directory."),
 
-   1
-};
+         1
+      };
+   }
+}
 
 
 //----------------------------------------------------------------------------|
@@ -67,6 +74,43 @@ namespace GDCC
       //
       IncludeDTBuf::~IncludeDTBuf()
       {
+      }
+
+      //
+      // IncludeDTBuf::doInc
+      //
+      void IncludeDTBuf::doInc(Core::String name,
+         std::unique_ptr<std::streambuf> &&buf)
+      {
+         macros.linePush(Macro::Stringize(name));
+
+         str = std::move(buf);
+         inc.reset(new IncStream(*str, macros, pragma, name,
+            Core::PathDirname(name)));
+      }
+
+      //
+      // IncludeDTBuf::doIncHdr
+      //
+      bool IncludeDTBuf::doIncHdr(Core::String name, Core::Origin pos)
+      {
+         if(tryIncSys(name))
+            return true;
+
+         std::cerr << "ERROR: " << pos << ": could not include <" << name << ">\n";
+         throw EXIT_FAILURE;
+      }
+
+      //
+      // IncludeDTBuf::doIncStr
+      //
+      bool IncludeDTBuf::doIncStr(Core::String name, Core::Origin pos)
+      {
+         if(tryIncUsr(name) || tryIncSys(name))
+            return true;
+
+         std::cerr << "ERROR: " << pos << ": could not include \"" << name << "\"\n";
+         throw EXIT_FAILURE;
       }
 
       //
@@ -90,42 +134,20 @@ namespace GDCC
          Core::ArrayTBuf abuf{toks.data(), toks.size()};
          MacroTBuf mbuf{abuf, macros};
 
-         // Skip whitespace that probably shouldn't exist.
+         // Skip whitespace.
          while(mbuf.peek().tok == Core::TOK_WSpace) mbuf.get();
 
          // User header.
          if(mbuf.peek().tok == Core::TOK_HdrStr)
-         {
-            if(tryIncUsr(mbuf.peek().str) || tryIncSys(mbuf.peek().str))
-               return true;
-
-            std::cerr << "ERROR: " << tok.pos << ": could not include \""
-               << mbuf.peek().str << "\"\n";
-            throw EXIT_FAILURE;
-         }
+            doIncStr(mbuf.get().str, tok.pos);
 
          // System header.
          else if(mbuf.peek().tok == Core::TOK_Header)
-         {
-            if(tryIncSys(mbuf.peek().str))
-               return true;
-
-            std::cerr << "ERROR: " << tok.pos << ": could not include <"
-               << mbuf.peek().str << ">\n";
-            throw EXIT_FAILURE;
-         }
+            doIncHdr(mbuf.get().str, tok.pos);
 
          // Expanded user header.
          else if(mbuf.peek().tok == Core::TOK_String)
-         {
-            auto hdr = Core::ParseStringC(mbuf.peek().str);
-            if(tryIncUsr(hdr) || tryIncSys(hdr))
-               return true;
-
-            std::cerr << "ERROR: " << tok.pos << ": could not include \"" << hdr
-               << "\"\n";
-            throw EXIT_FAILURE;
-         }
+            doIncStr(Core::ParseStringC(mbuf.get().str), tok.pos);
 
          // Expanded system header.
          else if(mbuf.peek().tok == Core::TOK_CmpLT)
@@ -133,23 +155,26 @@ namespace GDCC
             std::string tmp;
 
             for(mbuf.get(); mbuf.peek().tok != Core::TOK_CmpGT;)
-               tmp += mbuf.peek().str.data();
+            {
+               auto s = mbuf.get().str;
+               tmp.append(s.data(), s.size());
+            }
 
-            Core::String hdr = {tmp.data(), tmp.size()};
-            if(tryIncSys(hdr))
-               return true;
-
-            std::cerr << "ERROR: " << tok.pos << ": could not include <" << hdr
-               << ">\n";
-            throw EXIT_FAILURE;
+            doIncStr({tmp.data(), tmp.size()}, tok.pos);
          }
 
          // Not a valid header token.
          else
-         {
-            std::cerr << "ERROR: " << tok.pos << ": invalid include syntax\n";
-            throw EXIT_FAILURE;
-         }
+            throw Core::ExceptStr(tok.pos, "invalid include syntax");
+
+         // Skip whitespace.
+         while(mbuf.peek().tok == Core::TOK_WSpace) mbuf.get();
+
+         // Must be at end of line.
+         if(mbuf.peek().tok != Core::TOK_EOF)
+            throw Core::ExceptStr(tok.pos, "invalid include syntax");
+
+         return true;
       }
 
       //
@@ -162,17 +187,10 @@ namespace GDCC
          // Try specified directories.
          for(auto sys : IncludeSys)
          {
-            auto path = Core::PathConcat(sys, name);
-            if(fbuf->open(path.data(), std::ios_base::in))
-            {
-               macros.linePush(Macro::Stringize(path));
-
-               str = std::move(fbuf);
-               inc.reset(new IncStream(*str, macros, pragma, path,
-                  Core::PathDirname(path)));
-
-               return true;
-            }
+            std::string tmp{sys};
+            Core::PathAppend(tmp, name);
+            if(fbuf->open(tmp.data(), std::ios_base::in))
+               return doInc({tmp.data(), tmp.size()}, std::move(fbuf)), true;
          }
 
          return false;
@@ -183,35 +201,27 @@ namespace GDCC
       //
       bool IncludeDTBuf::tryIncUsr(Core::String name)
       {
-         Core::String path;
          std::unique_ptr<std::filebuf> fbuf{new std::filebuf()};
 
          // Try current directory.
          if(dir)
          {
-            path = Core::PathConcat(dir, name);
-            if(fbuf->open(path.data(), std::ios_base::in))
-               goto inc;
+            std::string tmp{dir.data(), dir.size()};
+            Core::PathAppend(tmp, name);
+            if(fbuf->open(tmp.data(), std::ios_base::in))
+               return doInc({tmp.data(), tmp.size()}, std::move(fbuf)), true;
          }
 
          // Try specified directories.
          for(auto usr : IncludeUsr)
          {
-            path = Core::PathConcat(usr, name);
-            if(fbuf->open(path.data(), std::ios_base::in))
-               goto inc;
+            std::string tmp{usr};
+            Core::PathAppend(tmp, name);
+            if(fbuf->open(tmp.data(), std::ios_base::in))
+               return doInc({tmp.data(), tmp.size()}, std::move(fbuf)), true;
          }
 
          return false;
-
-      inc:
-         macros.linePush(Macro::Stringize(path));
-
-         str = std::move(fbuf);
-         inc.reset(new IncStream(*str, macros, pragma, path,
-            Core::PathDirname(path)));
-
-         return true;
       }
 
       //

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -49,12 +49,17 @@ namespace GDCC
          virtual ~IncludeDTBuf();
 
       protected:
+         void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
+
+         bool doIncHdr(Core::String name, Core::Origin pos);
+         bool doIncStr(Core::String name, Core::Origin pos);
+
          virtual bool directive(Core::Token const &tok);
 
-         virtual void underflow();
+         bool tryIncSys(Core::String name);
+         bool tryIncUsr(Core::String name);
 
-         bool tryIncSys(Core::String str);
-         bool tryIncUsr(Core::String str);
+         virtual void underflow();
 
          std::unique_ptr<std::streambuf> str;
          std::unique_ptr<IncStream>      inc;

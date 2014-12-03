@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,25 +24,33 @@ namespace GDCC
    namespace Core
    {
       //
+      // PathAppend
+      //
+      std::string &PathAppend(std::string &l, String r)
+      {
+         if(l.empty()) return l = {r.data(), r.size()};
+
+         if(!IsPathSep(l.back()))
+            l += PathSep(l.data());
+
+         if(!r.empty())
+         {
+            if(IsPathSep(r.front()))
+               l.append(r.data() + 1, r.size() - 1);
+            else
+               l.append(r.data(), r.size());
+         }
+
+         return l;
+      }
+
+      //
       // PathConcat
       //
       String PathConcat(char const *l, String r)
       {
          std::string tmp{l};
-
-         if(tmp.empty()) return r;
-
-         if(!IsPathSep(tmp.back()))
-            tmp += PathSep(l);
-
-         if(!r.empty())
-         {
-            if(IsPathSep(r.front()))
-               tmp.append(r.data() + 1, r.size() - 1);
-            else
-               tmp.append(r.data(), r.size());
-         }
-
+         PathAppend(tmp, r);
          return {tmp.data(), tmp.size()};
       }
 

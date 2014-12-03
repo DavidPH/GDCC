@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -25,6 +25,8 @@ namespace GDCC
    namespace Core
    {
       constexpr bool IsPathSep(char c);
+
+      std::string &PathAppend(std::string &l, String r);
 
       String PathConcat(char const *l, String r);
       String PathConcat(String      l, String r);
