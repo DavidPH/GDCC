@@ -14,8 +14,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef __GDCC_Header__C_GDCC_h__
-#define __GDCC_Header__C_GDCC_h__
+#ifndef __GDCC_Header__C__GDCC_h__
+#define __GDCC_Header__C__GDCC_h__
 
 
 //----------------------------------------------------------------------------|
@@ -288,5 +288,5 @@ __GDCC__FormatDecl(X, dl, long _Accum);
 }
 #endif
 
-#endif//__GDCC_Header__C_GDCC_h__
+#endif//__GDCC_Header__C__GDCC_h__
 
