@@ -33,8 +33,12 @@ namespace GDCC
 
       String PathDirname(String path);
 
-      char  *PathNormalize(char  *path);
+      std::string &PathDirnameEq(std::string &path);
+
       String PathNormalize(String path);
+
+      char        *PathNormalizeEq(char        *path);
+      std::string &PathNormalizeEq(std::string &path);
 
       char PathSep(char const *path);
       char PathSep(String      path);

@@ -43,6 +43,8 @@ static void MakeC()
 {
    using namespace GDCC;
 
+   CPP::IncludeDTBuf::AddIncludeLang("C");
+
    IR::Program prog;
 
    // Process inputs.

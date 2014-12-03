@@ -48,6 +48,9 @@ namespace GDCC
 
          virtual ~IncludeDTBuf();
 
+
+         static void AddIncludeLang(char const *lang);
+
       protected:
          void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
 

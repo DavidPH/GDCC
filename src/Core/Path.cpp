@@ -103,16 +103,19 @@ namespace GDCC
       }
 
       //
-      // PathNormalize
+      // PathDirnameEq
       //
-      char *PathNormalize(char *path)
+      std::string &PathDirnameEq(std::string &path)
       {
-         #ifdef _WIN32
-         char const sep = PathSep(path);
-         for(auto itr = path; *itr; ++itr)
-            if(IsPathSep(*itr)) *itr = sep;
-         #endif
+         auto itr = path.end();
 
+         for(;;)
+         {
+            if(itr == path.begin()) return path.clear(), path;
+            if(IsPathSep(*--itr)) break;
+         }
+
+         path.erase(itr, path.end());
          return path;
       }
 
@@ -131,6 +134,34 @@ namespace GDCC
 
             return {tmp.get(), path.size()};
          }
+         #endif
+
+         return path;
+      }
+
+      //
+      // PathNormalizeEq
+      //
+      char *PathNormalizeEq(char *path)
+      {
+         #ifdef _WIN32
+         char const sep = PathSep(path);
+         for(auto itr = path; *itr; ++itr)
+            if(IsPathSep(*itr)) *itr = sep;
+         #endif
+
+         return path;
+      }
+
+      //
+      // PathNormalizeEq
+      //
+      std::string &PathNormalizeEq(std::string &path)
+      {
+         #ifdef _WIN32
+         char const sep = PathSep(path.data());
+         for(auto &c : path)
+            if(IsPathSep(c)) c = sep;
          #endif
 
          return path;

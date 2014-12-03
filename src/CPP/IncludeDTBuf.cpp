@@ -20,8 +20,14 @@
 #include "Core/Parse.hpp"
 #include "Core/Path.hpp"
 
+#include "Option/Bool.hpp"
+
 #include <fstream>
 #include <iostream>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 
 //----------------------------------------------------------------------------|
@@ -57,6 +63,35 @@ namespace GDCC
 
          1
       };
+
+      //
+      // --lang-include
+      //
+      static bool IncludeLangEnable = true;
+      static Option::Bool IncludeLangEnableOpt
+      {
+         &Core::GetOptionList(), Option::Base::Info()
+            .setName("lang-include")
+            .setGroup("preprocessor")
+            .setDescS("Enables automatic detection of system include "
+               "directories by language. On by default."),
+
+         &IncludeLangEnable
+      };
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Static Variables                                                           |
+//
+
+namespace GDCC
+{
+   namespace CPP
+   {
+      static std::vector<std::string> IncludeLang;
+      static std::string              IncludeLangBase;
    }
 }
 
@@ -80,11 +115,11 @@ namespace GDCC
       // IncludeDTBuf::doInc
       //
       void IncludeDTBuf::doInc(Core::String name,
-         std::unique_ptr<std::streambuf> &&buf)
+         std::unique_ptr<std::streambuf> &&newStr)
       {
          macros.linePush(Macro::Stringize(name));
 
-         str = std::move(buf);
+         str = std::move(newStr);
          inc.reset(new IncStream(*str, macros, pragma, name,
             Core::PathDirname(name)));
       }
@@ -193,6 +228,14 @@ namespace GDCC
                return doInc({tmp.data(), tmp.size()}, std::move(fbuf)), true;
          }
 
+         // Try language directories.
+         if(IncludeLangEnable) for(auto lang : IncludeLang)
+         {
+            Core::PathAppend(lang, name);
+            if(fbuf->open(lang.data(), std::ios_base::in))
+               return doInc({lang.data(), lang.size()}, std::move(fbuf)), true;
+         }
+
          return false;
       }
 
@@ -242,6 +285,36 @@ namespace GDCC
          }
 
          DirectiveTBuf::underflow();
+      }
+
+      //
+      // IncludeDTBuf::AddIncludeLang
+      //
+      void IncludeDTBuf::AddIncludeLang(char const *lang)
+      {
+         if(IncludeLangBase.empty())
+         {
+            #ifdef _WIN32
+            TCHAR buffer[MAX_PATH+1];
+            DWORD size = MAX_PATH+1;
+            DWORD len  = GetModuleFileName(NULL, buffer, size);
+
+            // 0 means failure, size means buffer too small.
+            if(len == 0 || len == size)
+               return;
+
+            IncludeLangBase = {buffer, len};
+            Core::PathDirnameEq(IncludeLangBase);
+            Core::PathNormalizeEq(IncludeLangBase);
+            Core::PathAppend(IncludeLangBase, "lib");
+            Core::PathAppend(IncludeLangBase, "inc");
+            #else
+            IncludeLangBase = "/usr/share/gdcc/lib/inc";
+            #endif
+         }
+
+         IncludeLang.emplace_back(IncludeLangBase);
+         Core::PathAppend(IncludeLang.back(), lang);
       }
    }
 }

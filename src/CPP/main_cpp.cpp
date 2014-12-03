@@ -35,6 +35,8 @@ static void MakeCPP()
 {
    using namespace GDCC;
 
+   CPP::IncludeDTBuf::AddIncludeLang("C");
+
    auto outName = Core::GetOptionOutput();
 
    // Open output file.
