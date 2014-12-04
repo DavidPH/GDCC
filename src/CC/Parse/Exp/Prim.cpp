@@ -181,6 +181,51 @@ namespace GDCC
       }
 
       //
+      // GetExp_Prim_offsetof
+      //
+      static AST::Exp::CRef GetExp_Prim_offsetof(ParserCtx const &ctx, Scope &scope)
+      {
+         // offsetof-expression:
+         //    <__offsetof> ( type-name , identifier )
+
+         // <__offsetof>
+         auto pos = ctx.in.get().pos;
+
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+         // type-name
+         auto type = GetType(ctx, scope);
+
+         if(!type->isCTypeObject() || !type->isTypeComplete())
+            throw Core::ExceptStr(pos, "expected complete object type");
+
+         // ,
+         if(!ctx.in.drop(Core::TOK_Comma))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ','");
+
+         // identifier
+         if(!ctx.in.peek(Core::TOK_Identi))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected identifier");
+
+         Core::String name = ctx.in.get().str;
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+
+         try
+         {
+            return ExpCreate_LitInt(AST::Type::Size, type->getMember(name).addr, pos);
+         }
+         catch(AST::TypeError const &)
+         {
+            throw Core::ExceptStr(pos, "invalid member");
+         }
+      }
+
+      //
       // GetExp_Prim_va_arg
       //
       static AST::Exp::CRef GetExp_Prim_va_arg(ParserCtx const &ctx, Scope &scope)
@@ -251,6 +296,7 @@ namespace GDCC
          {
          case Core::STR___div:      return GetExp_Prim_div(ctx, scope);
          case Core::STR___glyph:    return GetExp_Prim_glyph(ctx, scope);
+         case Core::STR___offsetof: return GetExp_Prim_offsetof(ctx, scope);
          case Core::STR___va_arg:   return GetExp_Prim_va_arg(ctx, scope);
          case Core::STR___va_start: return GetExp_Prim_va_start(ctx, scope);
          default: break;
