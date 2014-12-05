@@ -44,6 +44,23 @@ namespace GDCC
       };
 
       //
+      // Exp_ConvertPtrInt
+      //
+      // Converts between integer and pointer.
+      //
+      class Exp_ConvertPtrInt : public AST::Exp_Convert
+      {
+         GDCC_Core_CounterPreamble(
+            GDCC::CC::Exp_ConvertPtrInt, GDCC::AST::Exp_Convert);
+
+         GDCC_AST_Exp_UnaryCreator(Exp_ConvertPtrInt);
+
+      protected:
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
+            AST::Arg const &dst) const;
+      };
+
+      //
       // Exp_ConvertPtrInv
       //
       // Converts between address spaces with inverted nulls.

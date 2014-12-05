@@ -88,6 +88,35 @@ namespace GDCC
       }
 
       //
+      // Exp_ConvertPtrInt::v_genStmnt
+      //
+      void Exp_ConvertPtrInt::v_genStmnt(AST::GenStmntCtx const &ctx,
+         AST::Arg const &dst) const
+      {
+         auto dstW = type->getSizeWords();
+         auto srcW = exp->getType()->getSizeWords();
+
+         // Evaluate sub-expression to stack.
+         exp->genStmntStk(ctx);
+
+         // Expand/contract on stack.
+         if(srcW < dstW)
+         {
+            for(auto i = srcW - dstW; i--;)
+               ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(), 0);
+         }
+         else if(srcW > dstW)
+         {
+            for(auto i = srcW - dstW; i--;)
+               ctx.block.addStatementArgs(IR::Code::Move_W,
+                  IR::Arg_Nul(), IR::Arg_Stk());
+         }
+
+         // Move to destination.
+         GenStmnt_MovePart(exp, ctx, dst, false, true);
+      }
+
+      //
       // Exp_ConvertPtrInv::v_genStmnt
       //
       void Exp_ConvertPtrInv::v_genStmnt(AST::GenStmntCtx const &ctx,
@@ -154,6 +183,28 @@ namespace GDCC
 
          // Move to destination.
          GenStmnt_MovePart(exp, ctx, dst, false, true);
+      }
+
+      //
+      // ExpConvert_ArithPtr
+      //
+      AST::Exp::CRef ExpConvert_ArithPtr(AST::Type const *typeL,
+         AST::Exp const *e, Core::Origin pos)
+      {
+         AST::Exp::CRef exp{e};
+
+         auto typeR = exp->getType();
+
+         if(typeL->isCTypeFloat())
+            throw Core::ExceptStr(pos, "pointer to float stub");
+
+         if(typeL->isCTypeFixed())
+            throw Core::ExceptStr(pos, "pointer to fixed stub");
+
+         if(typeL->isCTypeInteg())
+            return Exp_ConvertPtrInt::Create(typeL, exp, pos);
+
+         throw Core::ExceptStr(pos, "unsupported pointer to arithmetic");
       }
 
       //
@@ -224,21 +275,17 @@ namespace GDCC
          auto typeR = exp->getType();
 
          if(typeR->isCTypeFloat())
-         {
             throw Core::ExceptStr(pos, "float to pointer stub");
-         }
 
          if(typeR->isCTypeFixed())
-         {
             throw Core::ExceptStr(pos, "fixed to pointer stub");
-         }
 
          if(typeR->isCTypeInteg())
          {
             if(exp->isZero())
                return ExpCreate_Comma(exp, ExpCreate_LitNul(typeL, pos), pos);
 
-            throw Core::ExceptStr(pos, "integ to pointer stub");
+            return Exp_ConvertPtrInt::Create(typeL, exp, pos);
          }
 
          throw Core::ExceptStr(pos, "unsupported arithmetic to pointer");

@@ -172,6 +172,9 @@ namespace GDCC
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
             return ExpConvert_Arith(typeL, exp, pos);
 
+         if(typeL->isCTypeArith() && typeR->isTypePointer())
+            return ExpConvert_ArithPtr(typeL, exp, pos);
+
          if(typeL->isTypePointer() && typeR->isCTypeArith())
             return ExpConvert_PtrArith(typeL, exp, pos);
 
