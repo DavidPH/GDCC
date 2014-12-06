@@ -153,6 +153,7 @@ namespace GDCC
          Init::Ptr    init;
          Core::String name;
          std::size_t  step;
+         bool         anon : 1;
       };
 
       //
@@ -274,6 +275,8 @@ namespace GDCC
       protected:
          virtual std::size_t findSub(Core::String name);
 
+         InitMem const *getMem(std::size_t index) const;
+
          virtual Init *getSub(std::size_t index);
 
          virtual std::size_t nextSub(std::size_t index) const;
@@ -289,6 +292,27 @@ namespace GDCC
 
          Core::Array<InitMem> subs;
          std::size_t          subInit;
+         std::size_t          subTotal;
+      };
+
+      //
+      // Init_Union
+      //
+      class Init_Union : public Init_Struct
+      {
+      public:
+         Init_Union(Type_Struct const *type, Core::FastU offset,
+            Core::Origin pos);
+
+      protected:
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
+            AST::Arg const &dst, bool skipZero) const;
+
+         virtual IR::Exp::CRef v_getIRExp() const;
+
+         virtual bool v_isIRExp() const;
+
+         virtual bool v_isNoAuto() const;
       };
 
       //

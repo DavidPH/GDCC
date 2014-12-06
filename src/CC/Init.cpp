@@ -29,74 +29,56 @@
 // Static Functions                                                           |
 //
 
-static std::size_t SubCount(GDCC::CC::Type_Struct::MemberData const *itr,
-   GDCC::CC::Type_Struct::MemberData const *end);
-
-//
-// SubCount
-//
-static std::size_t SubCount(GDCC::CC::Type_Struct const *type)
+namespace GDCC
 {
-   return SubCount(type->getData().memb.begin(), type->getData().memb.end());
-}
-
-//
-// SubCount
-//
-static std::size_t SubCount(GDCC::CC::Type_Struct::MemberData const *itr,
-   GDCC::CC::Type_Struct::MemberData const *end)
-{
-   using namespace GDCC;
-
-   std::size_t n = 0;
-
-   for(; itr != end; ++itr)
+   namespace CC
    {
-      if(itr->name)
+      static std::size_t SubCount(Type_Struct::MemberData const *itr,
+         Type_Struct::MemberData const *end);
+
+      //
+      // SubCount
+      //
+      static std::size_t SubCount(Type_Struct const *type)
       {
-         ++n;
+         return SubCount(type->getData().memb.begin(), type->getData().memb.end());
       }
-      else if(itr->anon)
+
+      //
+      // SubCount
+      //
+      static std::size_t SubCount(Type_Struct::MemberData const *itr,
+         Type_Struct::MemberData const *end)
       {
-         if(auto memT = dynamic_cast<CC::Type_Struct const *>(&*itr->type))
-            n += SubCount(memT);
-      }
-   }
+         std::size_t n = 0;
 
-   return n;
-}
-
-//
-// SubInit
-//
-static void SubInit(GDCC::CC::Type_Struct const *type, GDCC::CC::InitMem *&sub,
-   GDCC::Core::FastU offset, GDCC::Core::Origin pos)
-{
-   using namespace GDCC;
-
-   auto const &data = type->getData();
-
-   for(auto itr = data.memb.begin(), end = data.memb.end(); itr != end; ++itr)
-   {
-      if(itr->name)
-      {
-         sub->name = itr->name;
-         sub->init = CC::Init::Create(itr->type, offset + itr->addr, pos);
-         sub->step = data.isUnion ? SubCount(itr, end) : 1;
-         ++sub;
-      }
-      else if(itr->anon)
-      {
-         if(auto memT = dynamic_cast<CC::Type_Struct const *>(&*itr->type))
+         for(; itr != end; ++itr)
          {
-            auto subOld = sub;
+            if(itr->name || itr->anon)
+               ++n;
+         }
 
-            SubInit(memT, sub, offset + itr->addr, pos);
+         return n;
+      }
 
-            // If this is a union, the last member added must point to the end
-            // of this union. (If any members were added.)
-            if(data.isUnion && sub != subOld)
-               sub[-1].step = SubCount(itr + 1, end) + 1;
+      //
+      // SubInit
+      //
+      static void SubInit(Type_Struct const *type, InitMem *&sub,
+         Core::FastU offset, Core::Origin pos)
+      {
+         auto const &data = type->getData();
+
+         for(auto itr = data.memb.begin(), end = data.memb.end(); itr != end; ++itr)
+         {
+            if(itr->name || itr->anon)
+            {
+               sub->name = itr->name;
+               sub->init = Init::Create(itr->type, offset + itr->addr, pos);
+               sub->step = data.isUnion ? SubCount(itr, end) : 1;
+               sub->anon = itr->anon;
+               ++sub;
+            }
          }
       }
    }
@@ -283,7 +265,7 @@ namespace GDCC
             throw Core::ExceptStr(pos, "invalid array type for initializer");
          }
 
-         if(type->isCTypeStruct() || type->isCTypeUnion())
+         if(type->isCTypeStruct())
          {
             if(auto t = dynamic_cast<Type_Struct const *>(type))
                return Ptr(new Init_Struct(t, offset, pos));
@@ -292,6 +274,14 @@ namespace GDCC
                return Ptr(new Init_Div(t, offset, pos));
 
             throw Core::ExceptStr(pos, "invalid structure type for initializer");
+         }
+
+         if(type->isCTypeUnion())
+         {
+            if(auto t = dynamic_cast<Type_Struct const *>(type))
+               return Ptr(new Init_Union(t, offset, pos));
+
+            throw Core::ExceptStr(pos, "invalid union type for initializer");
          }
 
          return Ptr(new Init_Value(type, offset, pos));
@@ -711,11 +701,23 @@ namespace GDCC
       Init_Struct::Init_Struct(Type_Struct const *typeS, Core::FastU offset_,
          Core::Origin pos_) :
          Init_Aggregate{typeS, offset_, pos_},
-         subs   {SubCount(typeS)},
-         subInit{0}
+         subs    {SubCount(typeS)},
+         subInit {0},
+         subTotal{0}
       {
-         auto sub = subs.begin();
-         SubInit(typeS, sub, offset, pos);
+         auto subItr = subs.begin();
+         SubInit(typeS, subItr, offset, pos);
+
+         for(auto const &sub : subs)
+         {
+            if(sub.anon)
+            {
+               if(auto init = dynamic_cast<Init_Struct *>(&*sub.init))
+                  subTotal += init->subTotal;
+            }
+            else
+               ++subTotal;
+         }
       }
 
       //
@@ -723,10 +725,53 @@ namespace GDCC
       //
       std::size_t Init_Struct::findSub(Core::String name)
       {
-         for(std::size_t itr = 0, end = subs.size(); itr != end; ++itr)
-            if(subs[itr].name == name) return subInit = itr;
+         std::size_t index = 0;
+
+         for(auto const &sub : subs)
+         {
+            if(sub.name == name)
+               return subInit = index;
+
+            if(sub.anon)
+            {
+               if(auto init = dynamic_cast<Init_Struct *>(&*sub.init))
+               {
+                  auto subIdx = init->findSub(name);
+                  if(subIdx == static_cast<std::size_t>(-1))
+                     index += init->subTotal;
+                  else
+                     return index + subIdx;
+               }
+            }
+            else
+               ++index;
+         }
 
          return -1;
+      }
+
+      //
+      // Init_Struct::getMem
+      //
+      InitMem const *Init_Struct::getMem(std::size_t index) const
+      {
+         for(auto &sub : subs)
+         {
+            if(sub.anon)
+            {
+               if(auto init = dynamic_cast<Init_Struct *>(&*sub.init))
+               {
+                  if(index < init->subTotal)
+                     return init->getMem(index);
+                  else
+                     index -= init->subTotal;
+               }
+            }
+            else if(!index--)
+               return &sub;
+         }
+
+         return nullptr;
       }
 
       //
@@ -734,7 +779,8 @@ namespace GDCC
       //
       Init *Init_Struct::getSub(std::size_t index)
       {
-         return index < subs.size() ? subs[index].init.get() : nullptr;
+         auto mem = getMem(index);
+         return mem ? mem->init.get() : nullptr;
       }
 
       //
@@ -742,7 +788,8 @@ namespace GDCC
       //
       std::size_t Init_Struct::nextSub(std::size_t index) const
       {
-         return index + (index < subs.size() ? subs[index].step : 1);
+         auto mem = getMem(index);
+         return index + (mem ? mem->step : 1);
       }
 
       //
@@ -751,15 +798,7 @@ namespace GDCC
       void Init_Struct::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &arg, bool skipZero) const
       {
-         if(type->isCTypeUnion())
-         {
-            subs[subInit].init->genStmnt(ctx, arg, skipZero);
-         }
-         else
-         {
-            for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
-               subs[index].init->genStmnt(ctx, arg, skipZero);
-         }
+         for(auto const &sub : subs) sub.init->genStmnt(ctx, arg, skipZero);
       }
 
       //
@@ -767,20 +806,9 @@ namespace GDCC
       //
       IR::Exp::CRef Init_Struct::v_getIRExp() const
       {
-         if(type->isCTypeUnion())
-         {
-            return IR::ExpCreate_Union(type->getIRType().tUnion,
-               subs[subInit].init->getIRExp(), pos);
-         }
-         else
-         {
-            std::vector<IR::Exp::CRef> expv;
-            for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
-               expv.emplace_back(subs[index].init->getIRExp());
-
-            return IR::ExpCreate_Assoc(type->getIRType().tAssoc,
-               {expv.begin(), expv.end()}, pos);
-         }
+         return IR::ExpCreate_Assoc(type->getIRType().tAssoc,
+            {subs.begin(), subs.end(), [](InitMem const &ini)
+               {return ini.init->getIRExp();}}, pos);
       }
 
       //
@@ -788,21 +816,8 @@ namespace GDCC
       //
       bool Init_Struct::v_isIRExp() const
       {
-         if(type->isCTypeUnion())
-         {
-            return subs[subInit].init->isIRExp();
-         }
-         else
-         {
-            // FIXME: v_getIRExp does not properly handle anonymous structures
-            // and unions.
-            for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
-               if(subs[index].step != 1) return false;
-
-            for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
-               if(!subs[index].init->isIRExp()) return false;
-            return true;
-         }
+         for(auto const &sub : subs) if(!sub.init->isIRExp()) return false;
+         return true;
       }
 
       //
@@ -810,16 +825,50 @@ namespace GDCC
       //
       bool Init_Struct::v_isNoAuto() const
       {
-         if(type->isCTypeUnion())
-         {
-            return subs[subInit].init->isNoAuto();
-         }
-         else
-         {
-            for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
-               if(!subs[index].init->isNoAuto()) return false;
-            return true;
-         }
+         for(auto const &sub : subs) if(!sub.init->isNoAuto()) return false;
+         return true;
+      }
+
+      //
+      // Init_Union constructor
+      //
+      Init_Union::Init_Union(Type_Struct const *typeS, Core::FastU offset_,
+         Core::Origin pos_) : Init_Struct{typeS, offset_, pos_}
+      {
+      }
+
+      //
+      // Init_Union::v_genStmnt
+      //
+      void Init_Union::v_genStmnt(AST::GenStmntCtx const &ctx,
+         AST::Arg const &arg, bool skipZero) const
+      {
+         subs[subInit].init->genStmnt(ctx, arg, skipZero);
+      }
+
+      //
+      // Init_Union::v_getIRExp
+      //
+      IR::Exp::CRef Init_Union::v_getIRExp() const
+      {
+         return IR::ExpCreate_Union(type->getIRType().tUnion,
+            subs[subInit].init->getIRExp(), pos);
+      }
+
+      //
+      // Init_Union::v_isIRExp
+      //
+      bool Init_Union::v_isIRExp() const
+      {
+         return subs[subInit].init->isIRExp();
+      }
+
+      //
+      // Init_Union::v_isNoAuto
+      //
+      bool Init_Union::v_isNoAuto() const
+      {
+         return subs[subInit].init->isNoAuto();
       }
 
       //
