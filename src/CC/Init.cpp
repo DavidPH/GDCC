@@ -681,6 +681,23 @@ namespace GDCC
       }
 
       //
+      // Init_Div::v_getIRExp
+      //
+      IR::Exp::CRef Init_Div::v_getIRExp() const
+      {
+         return IR::ExpCreate_Assoc(type->getIRType().tAssoc,
+            {Core::Pack, subs[0]->getIRExp(), subs[1]->getIRExp()}, pos);
+      }
+
+      //
+      // Init_Div::v_isIRExp
+      //
+      bool Init_Div::v_isIRExp() const
+      {
+         return subs[0]->isIRExp() && subs[1]->isIRExp();
+      }
+
+      //
       // Init_Div::v_isNoAuto
       //
       bool Init_Div::v_isNoAuto() const
@@ -742,6 +759,49 @@ namespace GDCC
          {
             for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
                subs[index].init->genStmnt(ctx, arg, skipZero);
+         }
+      }
+
+      //
+      // Init_Struct::v_getIRExp
+      //
+      IR::Exp::CRef Init_Struct::v_getIRExp() const
+      {
+         if(type->isCTypeUnion())
+         {
+            return IR::ExpCreate_Union(type->getIRType().tUnion,
+               subs[subInit].init->getIRExp(), pos);
+         }
+         else
+         {
+            std::vector<IR::Exp::CRef> expv;
+            for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
+               expv.emplace_back(subs[index].init->getIRExp());
+
+            return IR::ExpCreate_Assoc(type->getIRType().tAssoc,
+               {expv.begin(), expv.end()}, pos);
+         }
+      }
+
+      //
+      // Init_Struct::v_isIRExp
+      //
+      bool Init_Struct::v_isIRExp() const
+      {
+         if(type->isCTypeUnion())
+         {
+            return subs[subInit].init->isIRExp();
+         }
+         else
+         {
+            // FIXME: v_getIRExp does not properly handle anonymous structures
+            // and unions.
+            for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
+               if(subs[index].step != 1) return false;
+
+            for(auto index = firstSub(); index < subs.size(); index = nextSub(index))
+               if(!subs[index].init->isIRExp()) return false;
+            return true;
          }
       }
 
