@@ -12,6 +12,10 @@
 
 #include <GDCC.h>
 
+#if __GDCC_Target__ZDoom__
+#include <ACS_ZDoom.h>
+#endif
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -317,9 +321,6 @@ static VoidPtr AllocNew(register size_t size)
 [[call("ScriptS"), script("Open")]]
 static void AllocTimeSet(void)
 {
-   [[address(55), call("AsmFunc")]] extern void ACS_Delay(int);
-   [[address(93), call("AsmFunc")]] extern int ACS_Timer(void);
-
    if(!ACS_Timer())
       ACS_Delay(1);
 
@@ -381,34 +382,19 @@ void __GDCC__alloc_dump(void)
    if(!AllocIter) AllocInit();
 
    #if __GDCC_Target__ZDoom__
-   [[address(85), call("AsmFunc")]]
-   extern void ACS_BeginPrint(void);
-
-   [[address(89), call("AsmFunc")]]
-   extern void ACS_PrintChr(char);
-
-   [[address(270), call("AsmFunc")]]
-   extern void ACS_EndLog(void);
-
-   [[address(350), call("AsmFunc")]]
-   extern void ACS_PrintHex(unsigned);
-   [[address(350), call("AsmFunc")]]
-   extern void ACS_PrintPtr(VoidPtr);
-
    MemBlockPtr iter = AllocBase;
-
    do
    {
       ACS_BeginPrint();
 
-      ACS_PrintPtr(iter);
-      ACS_PrintChr(' ');
-      ACS_PrintPtr(iter->next);
-      ACS_PrintChr(' ');
-      ACS_PrintPtr(iter->prev);
-      ACS_PrintChr(' ');
+      ACS_PrintHex((unsigned)iter);
+      ACS_PrintChar(' ');
+      ACS_PrintHex((unsigned)iter->next);
+      ACS_PrintChar(' ');
+      ACS_PrintHex((unsigned)iter->prev);
+      ACS_PrintChar(' ');
       ACS_PrintHex(iter->size);
-      ACS_PrintChr(' ');
+      ACS_PrintChar(' ');
       ACS_PrintHex(iter->flag);
 
       ACS_EndLog();
@@ -425,13 +411,9 @@ void __GDCC__alloc_dump(void)
 VoidPtr __GDCC__Plsa(unsigned int size)
 {
    // Check if a new hub was entered. If so, free automatic storage.
-   {
-      [[address(93), call("AsmFunc")]] extern int ACS_Timer(void);
-
-      if(AllocTime > ACS_Timer())
-         AllocDelAuto();
-      AllocTime = ACS_Timer();
-   }
+   if(AllocTime > ACS_Timer())
+      AllocDelAuto();
+   AllocTime = ACS_Timer();
 
    MemBlockPtr block = PtrToBlock(__GDCC__alloc(0, size));
 
