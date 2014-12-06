@@ -203,6 +203,11 @@ namespace GDCC
                   genSpaceInitiValue(ini, itr, v);
                break;
 
+            case IR::ValueBase::Assoc:
+               for(auto const &v : val.vAssoc.value)
+                  genSpaceInitiValue(ini, itr, v);
+               break;
+
             case IR::ValueBase::Fixed:
                iv = &ini.vals[itr++];
                iv->tag = InitTag::Fixed;
