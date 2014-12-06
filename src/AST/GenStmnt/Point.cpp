@@ -229,7 +229,7 @@ namespace GDCC
          auto argL = exp->expL->getArg();
          auto argR = exp->expR->getArg();
          if(exp->type->getSizeWords() == 1 && argL.isIRArg() &&
-            (exp->expL->isIRExp() || (argL.isIRArg() && point == 1)))
+            (exp->expR->isIRExp() || (argR.isIRArg() && point == 1)))
          {
             auto irArgL = argL.getIRArg(ctx.prog);
             auto irArgR = argR.getIRArg(ctx.prog);
@@ -252,7 +252,7 @@ namespace GDCC
                auto pointE = IR::ExpCreate_Value(std::move(pointV), exp->pos);
 
                ctx.block.addStatementArgs(code, irArgL, irArgL,
-                  IR::ExpCreate_Mul(exp->getIRExp(), pointE, exp->pos));
+                  IR::ExpCreate_Mul(exp->expR->getIRExp(), pointE, exp->pos));
             }
 
             // Duplicate to destination, if necessary.
