@@ -146,6 +146,14 @@ typedef long long intmax_t;
 #endif
 
 //
+// intptr_t
+//
+#ifndef __GDCC_Have__intptr_t__
+#define __GDCC_Have__intptr_t__
+typedef signed int intptr_t;
+#endif
+
+//
 // ptrdiff_t
 //
 #ifndef __GDCC_Have__ptrdiff_t__
@@ -175,6 +183,14 @@ typedef int ssize_t;
 #ifndef __GDCC_Have__uintmax_t__
 #define __GDCC_Have__uintmax_t__
 typedef unsigned long long uintmax_t;
+#endif
+
+//
+// uintptr_t
+//
+#ifndef __GDCC_Have__uintptr_t__
+#define __GDCC_Have__uintptr_t__
+typedef unsigned int uintptr_t;
 #endif
 
 //

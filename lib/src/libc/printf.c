@@ -65,6 +65,7 @@
    case 'k': FormatX(__GDCC__FormatX_d_g); break; \
    case 'n': FormatN();                    break; \
    case 'o': FormatU(__GDCC__FormatU_o_g); break; \
+   case 'p': FormatP();                    break; \
    case 'r': return ~ret; /* TODO */ \
    case 's': FormatS();                    break; \
    case 'u': FormatU(__GDCC__FormatU_d_g); break; \
@@ -139,6 +140,20 @@
    case FL_ll: *va_arg(arg, long long int *) = ret; continue; \
    case FL_t:  *va_arg(arg, ptrdiff_t *)     = ret; continue; \
    case FL_z:  *va_arg(arg, ssize_t *)       = ret; continue; \
+   default: return ~ret; \
+   }
+
+//
+// FormatP
+//
+#define FormatP() \
+   switch(fmtLen) \
+   { \
+   case FL_: \
+      if(fmtArg.prec == -1) fmtArg.prec = 8; \
+      fmtRet = __GDCC__FormatU_X_g((uintptr_t)va_arg(arg, void *), fmtArg); \
+      break; \
+      \
    default: return ~ret; \
    }
 
