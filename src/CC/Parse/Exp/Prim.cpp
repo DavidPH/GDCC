@@ -13,10 +13,11 @@
 #include "CC/Parse.hpp"
 
 #include "CC/Exp.hpp"
-#include "CC/Scope.hpp"
+#include "CC/Scope/Function.hpp"
 #include "CC/Type.hpp"
 
 #include "AST/Exp.hpp"
+#include "AST/Function.hpp"
 #include "AST/Object.hpp"
 #include "AST/Type.hpp"
 
@@ -69,6 +70,22 @@ namespace GDCC
             throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
 
          return ExpCreate_DivEx(l, r, pos);
+      }
+
+      //
+      // GetExp_Prim_func
+      //
+      static AST::Exp::CRef GetExp_Prim_func(ParserCtx const &ctx, Scope &scope)
+      {
+         auto &scopeFn = static_cast<Scope_Local &>(scope).fn;
+
+         // <__func__>
+         auto tok = ctx.in.get();
+
+         if(!scopeFn.nameObj)
+            scopeFn.nameObj = ExpCreate_String(ctx.prog, scope, scopeFn.fn->name, tok.pos);
+
+         return static_cast<AST::Exp::CRef>(scopeFn.nameObj);
       }
 
       //
@@ -299,6 +316,12 @@ namespace GDCC
          case Core::STR___offsetof: return GetExp_Prim_offsetof(ctx, scope);
          case Core::STR___va_arg:   return GetExp_Prim_va_arg(ctx, scope);
          case Core::STR___va_start: return GetExp_Prim_va_start(ctx, scope);
+
+         case Core::STR___func__:
+            if(dynamic_cast<Scope_Local *>(&scope))
+               return GetExp_Prim_func(ctx, scope);
+            break;
+
          default: break;
          }
 

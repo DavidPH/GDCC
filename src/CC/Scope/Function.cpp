@@ -14,6 +14,7 @@
 
 #include "CC/Scope/Block.hpp"
 
+#include "AST/Exp.hpp"
 #include "AST/Function.hpp"
 #include "AST/Object.hpp"
 

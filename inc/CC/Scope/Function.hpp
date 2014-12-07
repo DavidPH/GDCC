@@ -24,6 +24,11 @@
 
 namespace GDCC
 {
+   namespace AST
+   {
+      class Exp;
+   }
+
    namespace CC
    {
       //
@@ -46,6 +51,7 @@ namespace GDCC
 
          Core::Array<Core::CounterRef<AST::Object>> params;
          Core::CounterRef<AST::Function>            fn;
+         Core::CounterPtr<AST::Exp const>           nameObj;
       };
    }
 }
