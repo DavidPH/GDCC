@@ -345,6 +345,32 @@ namespace GDCC
          void Info::putStmntDropArg(IR::Arg const &arg, Core::FastU w)
          {
             //
+            // putArr
+            //
+            auto putArr = [&](IR::ArgPtr2 const &a, Code code)
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+               {
+                  putCode(Code::Push_Lit, GetWord(a.idx->aLit.value) + a.off + w);
+                  putCode(Code::Swap);
+                  putCode(code,           GetWord(a.arr->aLit.value));
+               }
+               else
+               {
+                  putStmntPushArg(*a.idx, 0);
+
+                  if(a.off + w)
+                  {
+                     putCode(Code::Push_Lit, a.off + w);
+                     putCode(Code::AddU);
+                  }
+
+                  putCode(Code::Swap);
+                  putCode(code, GetWord(a.arr->aLit.value));
+               }
+            };
+
+            //
             // putLoc
             //
             auto putLoc = [&](IR::Arg_Loc const &a)
@@ -376,6 +402,32 @@ namespace GDCC
             };
 
             //
+            // putLocArs
+            //
+            auto putLocArs = [&](IR::Arg_LocArs const &a)
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+               {
+                  putCode(Code::Push_Lit,    GetWord(a.idx->aLit.value) + a.off + w);
+                  putCode(Code::Swap);
+                  putCode(Code::Drop_GblArr, LocArsArray);
+               }
+               else
+               {
+                  putStmntPushArg(*a.idx, 0);
+
+                  if(a.off + w)
+                  {
+                     putCode(Code::Push_Lit, a.off + w);
+                     putCode(Code::AddU);
+                  }
+
+                  putCode(Code::Swap);
+                  putCode(Code::Drop_GblArr, LocArsArray);
+               }
+            };
+
+            //
             // putReg
             //
             auto putReg = [&](IR::ArgPtr1 const &a, Code code)
@@ -386,11 +438,15 @@ namespace GDCC
 
             switch(arg.a)
             {
+            case IR::ArgBase::GblArr: putArr(arg.aGblArr, Code::Drop_GblArr); break;
             case IR::ArgBase::GblReg: putReg(arg.aGblReg, Code::Drop_GblReg); break;
             case IR::ArgBase::Loc:    putLoc(arg.aLoc); break;
+            case IR::ArgBase::LocArs: putLocArs(arg.aLocArs); break;
             case IR::ArgBase::LocReg: putReg(arg.aLocReg, Code::Drop_LocReg); break;
+            case IR::ArgBase::MapArr: putArr(arg.aMapArr, Code::Drop_MapArr); break;
             case IR::ArgBase::MapReg: putReg(arg.aMapReg, Code::Drop_MapReg); break;
             case IR::ArgBase::Nul:    putCode(Code::Drop_Nul); break;
+            case IR::ArgBase::WldArr: putArr(arg.aWldArr, Code::Drop_WldArr); break;
             case IR::ArgBase::WldReg: putReg(arg.aWldReg, Code::Drop_WldReg); break;
 
             default:
@@ -463,6 +519,30 @@ namespace GDCC
          void Info::putStmntPushArg(IR::Arg const &arg, Core::FastU w)
          {
             //
+            // putArr
+            //
+            auto putArr = [&](IR::ArgPtr2 const &a, Code code)
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+               {
+                  putCode(Code::Push_Lit, GetWord(a.idx->aLit.value) + a.off + w);
+                  putCode(code,           GetWord(a.arr->aLit.value));
+               }
+               else
+               {
+                  putStmntPushArg(*a.idx, 0);
+
+                  if(a.off + w)
+                  {
+                     putCode(Code::Push_Lit, a.off + w);
+                     putCode(Code::AddU);
+                  }
+
+                  putCode(code, GetWord(a.arr->aLit.value));
+               }
+            };
+
+            //
             // putLit
             //
             auto putLit = [&](IR::Arg_Lit const &a)
@@ -527,6 +607,30 @@ namespace GDCC
             };
 
             //
+            // putLocArs
+            //
+            auto putLocArs = [&](IR::Arg_LocArs const &a)
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+               {
+                  putCode(Code::Push_Lit,    GetWord(a.idx->aLit.value) + a.off + w);
+                  putCode(Code::Push_GblArr, LocArsArray);
+               }
+               else
+               {
+                  putStmntPushArg(*a.idx, 0);
+
+                  if(a.off + w)
+                  {
+                     putCode(Code::Push_Lit, a.off + w);
+                     putCode(Code::AddU);
+                  }
+
+                  putCode(Code::Push_GblArr, LocArsArray);
+               }
+            };
+
+            //
             // putReg
             //
             auto putReg = [&](IR::ArgPtr1 const &a, Code code)
@@ -537,11 +641,15 @@ namespace GDCC
 
             switch(arg.a)
             {
+            case IR::ArgBase::GblArr: putArr(arg.aGblArr, Code::Push_GblArr); break;
             case IR::ArgBase::GblReg: putReg(arg.aGblReg, Code::Push_GblReg); break;
             case IR::ArgBase::Lit:    putLit(arg.aLit); break;
             case IR::ArgBase::Loc:    putLoc(arg.aLoc); break;
+            case IR::ArgBase::LocArs: putLocArs(arg.aLocArs); break;
             case IR::ArgBase::LocReg: putReg(arg.aLocReg, Code::Push_LocReg); break;
+            case IR::ArgBase::MapArr: putArr(arg.aMapArr, Code::Push_MapArr); break;
             case IR::ArgBase::MapReg: putReg(arg.aMapReg, Code::Push_MapReg); break;
+            case IR::ArgBase::WldArr: putArr(arg.aWldArr, Code::Push_WldArr); break;
             case IR::ArgBase::WldReg: putReg(arg.aWldReg, Code::Push_WldReg); break;
 
             default:
