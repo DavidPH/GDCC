@@ -35,7 +35,8 @@ static GDCC::Option::Function FormatOpt
       .setGroup("output")
       .setDescS("Selects bytecode format.")
       .setDescL("Selects bytecode format. This option may affect higher level "
-         "codegen and should be set at all stages of compiling."),
+         "codegen and should be set at all stages of compiling. Valid "
+         "arguments are: ACSE, MgC_NTS."),
 
    [](GDCC::Option::Base *, GDCC::Option::Args const &args) -> std::size_t
    {
@@ -67,7 +68,10 @@ static GDCC::Option::Function TargetOpt
    &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
       .setName("bc-target")
       .setGroup("output")
-      .setDescS("Selects target engine."),
+      .setDescS("Selects target engine.")
+      .setDescL("Selects target engine. This option may affect higher level "
+         "codegen and should be set at all stages of compiling. Valid "
+         "arguments are: MageCraft, ZDoom."),
 
    [](GDCC::Option::Base *, GDCC::Option::Args const &args) -> std::size_t
    {
