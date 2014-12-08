@@ -17,6 +17,7 @@
 
 #include "Core/Exception.hpp"
 
+#include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Value.hpp"
 
@@ -67,7 +68,7 @@ namespace GDCC
             if(base->isCTypeFunction())
             {
                IR::Value_Funct val;
-               val.vtype.callT = base->getCallType();
+               val.vtype.callT = IR::GetCallTypeIR(base->getCallType());
 
                if(Platform::IsZeroNull_Funct(val.vtype.callT))
                   val.value = 0;
