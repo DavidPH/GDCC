@@ -68,7 +68,7 @@ typedef int max_align_t;
 //
 #ifndef __GDCC_Have__wchar_t__
 #define __GDCC_Have__wchar_t__
-typedef char wchar_t;
+typedef unsigned wchar_t;
 #endif
 
 
