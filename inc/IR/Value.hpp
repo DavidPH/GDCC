@@ -111,6 +111,9 @@ namespace GDCC
          Value_Fixed(Value_Float const &value, Type_Fixed const &vtype);
          Value_Fixed(Value_Float &&value, Type_Fixed const &vtype);
 
+         Value_Fixed(Value_Point const &value, Type_Fixed const &vtype);
+         Value_Fixed(Value_Point &&value, Type_Fixed const &vtype);
+
          Value_Fixed(Core::Integ const &value_, Type_Fixed const &vtype_) :
             vtype{vtype_}, value{value_} {clamp();}
          Value_Fixed(Core::Integ &&value_, Type_Fixed const &vtype_) :

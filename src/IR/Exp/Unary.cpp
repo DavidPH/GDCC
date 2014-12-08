@@ -93,6 +93,7 @@ namespace GDCC
          case TypeBase::Point:
             switch(type.t)
             {
+            case TypeBase::Fixed: return Value_Fixed(e.vPoint, type.tFixed);
             case TypeBase::Point: return Value_Point(e.vPoint, type.tPoint);
             default: return Value_Empty();
             }

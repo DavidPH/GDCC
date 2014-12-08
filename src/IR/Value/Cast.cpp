@@ -68,6 +68,26 @@ namespace GDCC
       }
 
       //
+      // Value_Fixed constructor
+      //
+      Value_Fixed::Value_Fixed(Value_Point const &value_, Type_Fixed const &vtype_) :
+         vtype{vtype_}, value{value_.value}
+      {
+         value <<= vtype.bitsF;
+         clamp();
+      }
+
+      //
+      // Value_Fixed constructor
+      //
+      Value_Fixed::Value_Fixed(Value_Point &&value_, Type_Fixed const &vtype_) :
+         vtype{vtype_}, value{std::move(value_.value)}
+      {
+         value <<= vtype.bitsF;
+         clamp();
+      }
+
+      //
       // Value_Float constructor
       //
       Value_Float::Value_Float(Value_Fixed const &value_, Type_Float const &vtype_) :
