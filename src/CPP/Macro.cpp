@@ -454,7 +454,7 @@ namespace GDCC
             str[ 7] = '"';
             str[16] = '"';
 
-            macroTIME.list[0] = {{Core::STRNULL, 0}, {str + 7, 10}, Core::TOK_String};
+            macroTIME.list[0] = {{nullptr, 0}, {str + 7, 10}, Core::TOK_String};
 
             // str:      '"Mmm dd yyyy":ss"yyyy'
             // __DATE__: '"Mmm dd yyyy"'
@@ -466,19 +466,20 @@ namespace GDCC
             str[11] = str[20];
             str[12] = '"';
 
-            macroDATE.list[0] = {{Core::STRNULL, 0}, {str, 13}, Core::TOK_String};
+            macroDATE.list[0] = {{nullptr, 0}, {str, 13}, Core::TOK_String};
          }
 
          // Set up __FILE__.
-         macroFILE.list[0] = {{Core::STRNULL, 0}, Core::STRNULL, Core::TOK_String};
+         macroFILE.list[0] = {{nullptr, 0}, nullptr, Core::TOK_String};
 
          // Set up __LINE__.
-         macroLINE.list[0] = {{Core::STRNULL, 0}, Core::STRNULL, Core::TOK_Number};
+         macroLINE.list[0] = {{nullptr, 0}, nullptr, Core::TOK_Number};
+
+         #define Insert1(name) \
+            table.insert({name, {{{{}, Core::STR_1, Core::TOK_Number}}}})
 
          #define PlatformCase(e, n) \
-            case Platform::e::n: \
-               table.insert({Core::STR___GDCC_##e##__##n##__, \
-                  {{{{}, Core::STR_1, Core::TOK_Number}}}}); break
+            case Platform::e::n: Insert1("__GDCC_" #e "__" #n "__"); break
 
          // Set up __GDCC_Format__*__.
          switch(Platform::FormatCur)
@@ -497,6 +498,14 @@ namespace GDCC
          }
 
          #undef PlatformCase
+
+         // Conditional feature macros.
+         Insert1("__STDC_NO_ATOMICS__");
+         Insert1("__STDC_NO_COMPLEX__");
+         Insert1("__STDC_NO_THREADS__");
+         Insert1("__STDC_NO_VLA__");
+
+         #undef Insert1
 
          // Apply command line defines.
          for(auto const &delta : Deltas)
