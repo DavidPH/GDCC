@@ -53,6 +53,28 @@ namespace GDCC
    namespace IRDump
    {
       //
+      // PutExpPart Array
+      //
+      static void PutExpPart(std::ostream &out, IR::Exp_Array const *exp)
+      {
+         out << "Array ";
+
+         PutType(out, exp->elemT);
+
+         out << " (";
+
+         if(!exp->elemV.empty())
+         {
+            auto itr = exp->elemV.begin(), end = exp->elemV.end();
+            PutExp(out, *itr++);
+            while(itr != end)
+               PutExp(out << ", ", *itr++);
+         }
+
+         out << ')';
+      }
+
+      //
       // PutExpPart Binary
       //
       static void PutExpPart(std::ostream &out, IR::Exp_Binary const *exp)
@@ -190,6 +212,10 @@ namespace GDCC
             CasePart(ShL,       "<<");
             CasePart(ShR,       ">>");
             CasePart(Sub,       "-");
+
+         case Core::STR_Array:
+            PutExpPart(out, static_cast<IR::Exp_Array const *>(exp));
+            break;
 
          case Core::STR_Glyph:
             PutExpPart(out, static_cast<IR::Exp_Glyph const *>(exp));
