@@ -95,8 +95,8 @@
 #endif
 
 #ifndef WCHAR_MIN
-#define WCHAR_MIN (-0x7FFFFFFF-1)
-#define WCHAR_MAX ( 0x7FFFFFFF  )
+#define WCHAR_MIN 0
+#define WCHAR_MAX 0xFFFFFFFF
 #endif
 
 #ifndef WINT_MIN
