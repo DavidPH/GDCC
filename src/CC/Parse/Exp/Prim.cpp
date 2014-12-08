@@ -345,7 +345,7 @@ namespace GDCC
          // TODO: implicit function declaration
          // It sucks, but it is traditional and the method will be needed for ACS.
 
-         throw Core::ExceptStr(tok.pos, "undeclared identifier");
+         throw Core::ParseExceptExpect(tok.pos, "declared identifier", tok.str, false);
       }
 
       //
