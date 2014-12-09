@@ -74,7 +74,7 @@ namespace GDCC
       //
       bool Exp_Call::v_isNoAuto() const
       {
-         switch(func->getCallType())
+         switch(IR::GetCallTypeIR(func->getCallType()))
          {
          case IR::CallType::SScriptI:
          case IR::CallType::SScriptS:
