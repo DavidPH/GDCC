@@ -41,6 +41,8 @@ namespace GDCC
          case '\?': return '\?';
          case '\\': return '\\';
 
+         case 'C': return '\x1C';
+
          case 'a': return '\a';
          case 'b': return '\b';
          case 'f': return '\f';
@@ -180,6 +182,8 @@ namespace GDCC
             throw ParseExceptStr({}, "unterminated string literal");
 
          case '\'': case '\"': case '\?': case '\\':
+
+         case 'C':
 
          case 'a': case 'b': case 'f': case 'n':
          case 'r': case 't': case 'v':
