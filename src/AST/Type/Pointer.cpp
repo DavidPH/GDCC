@@ -70,8 +70,12 @@ namespace GDCC
             return IR::Type_Point(base->getQualAddr().base,
                base->getQualAddr().name, 0, base->getSizeShift());
 
-         return IR::Type_Point(base->getQualAddr().base, base->getQualAddr().name,
-            base->getSizePoint(), base->getSizeShift());
+         // Map Gen for IR.
+         auto addr = base->getQualAddr();
+         if(addr.base == IR::AddrBase::Gen)
+            addr = IR::GetAddrGen();
+
+         return IR::Type_Point(addr.base, addr.name, base->getSizePoint(), base->getSizeShift());
       }
 
       //
