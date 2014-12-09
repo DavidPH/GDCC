@@ -66,7 +66,7 @@ namespace GDCC
                {
                   for(src.sbumpc(); !(src.sbumpc() == '*' && src.sbumpc() == '/');)
                      if(src.sgetc() == Traits::eof()) return gbump(1), Traits::eof();
-                  return src.sbumpc(), *gptr() = ' ';
+                  return *gptr() = ' ';
                }
 
                // C++-style // comment.
