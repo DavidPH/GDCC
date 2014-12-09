@@ -92,11 +92,13 @@ namespace GDCC
          TypeCPtr       type;
          IRExpCPtr      valueInt;
          Core::String   valueStr;
+         Core::String   warnUse;
 
          bool           defin    : 1;
          bool           sflagNet : 1;
          bool           sflagClS : 1;
          bool           used     : 1;
+         bool           warnDone : 1;
 
 
          static Ref Create(Core::String name, Core::String glyph);

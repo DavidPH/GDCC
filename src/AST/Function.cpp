@@ -63,9 +63,9 @@ namespace GDCC
          allocLoc{0},
          ctype   {IR::CallType::None},
          glyph   {glyph_},
-         label   {Core::STRNULL},
+         label   {nullptr},
          labelEnd{nullptr},
-         labelTmp{Core::STRNULL},
+         labelTmp{nullptr},
          linka   {IR::Linkage::None},
          localArs{0},
          localReg{0},
@@ -76,12 +76,14 @@ namespace GDCC
          stmnt   {nullptr},
          stype   {IR::ScriptType::None},
          valueInt{nullptr},
-         valueStr{Core::STRNULL},
+         valueStr{nullptr},
+         warnUse {nullptr},
 
          defin   {false},
          sflagNet{false},
          sflagClS{false},
          used    {false},
+         warnDone{false},
 
          labeller{glyph, "$L$"}
       {

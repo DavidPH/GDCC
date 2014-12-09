@@ -16,6 +16,7 @@
 #include "CC/Scope/Function.hpp"
 #include "CC/Type.hpp"
 
+#include "AST/Attribute.hpp"
 #include "AST/Exp.hpp"
 #include "AST/Function.hpp"
 #include "AST/Object.hpp"
@@ -27,6 +28,7 @@
 #include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
 #include "Core/TokenStream.hpp"
+#include "Core/Warning.hpp"
 
 #include "IR/Exp.hpp"
 #include "IR/Glyph.hpp"
@@ -40,6 +42,22 @@ namespace GDCC
 {
    namespace CC
    {
+      //
+      // CheckDeprecated
+      //
+      template<typename T>
+      static void CheckDeprecated(Core::Token const &tok, T const &entity)
+      {
+         if(!entity->warnUse || entity->warnDone) return;
+
+         if(entity->warnUse != Core::STR_)
+            AST::WarnDeprecated(tok.pos, tok.str, " is deprecated: ", entity->warnUse);
+         else
+            AST::WarnDeprecated(tok.pos, tok.str, " is deprecated");
+
+         entity->warnDone = true;
+      }
+
       //
       // GetExp_Prim_div
       //
@@ -333,9 +351,11 @@ namespace GDCC
             return ExpCreate_LitInt(TypeIntegPrS, *lookup.resEnum, tok.pos);
 
          case Lookup::Func:
+            CheckDeprecated(tok, lookup.resFunc);
             return ExpCreate_Func(ctx.prog, lookup.resFunc, tok.pos);
 
          case Lookup::Obj:
+            CheckDeprecated(tok, lookup.resObj);
             return ExpCreate_Obj(ctx.prog, lookup.resObj, tok.pos);
 
          default:

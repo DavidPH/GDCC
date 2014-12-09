@@ -222,9 +222,10 @@ namespace GDCC
          auto glyph = genGlyphObj(attr.name, attr.linka);
          auto obj   = AST::Object::Create(attr.name, glyph);
 
-         obj->linka = attr.linka;
-         obj->store = AST::Storage::Auto;
-         obj->type  = attr.type;
+         obj->linka    = attr.linka;
+         obj->store    = AST::Storage::Auto;
+         obj->type     = attr.type;
+         obj->warnUse  = attr.warnUse;
 
          // If declaration is explicitly auto, always make it addressable.
          obj->refer = attr.storeAuto;

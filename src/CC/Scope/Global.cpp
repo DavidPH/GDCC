@@ -181,6 +181,7 @@ namespace GDCC
             fn->retrn    = attr.type->getBaseType();
             fn->stype    = attr.stype;
             fn->type     = attr.type;
+            fn->warnUse  = attr.warnUse;
 
             fn->sflagClS = attr.sflagClS;
             fn->sflagNet = attr.sflagNet;
@@ -203,9 +204,10 @@ namespace GDCC
          {
             auto obj = AST::Object::Create(attr.name, glyph);
 
-            obj->linka = attr.linka;
-            obj->store = AST::Storage::Static;
-            obj->type  = attr.type;
+            obj->linka    = attr.linka;
+            obj->store    = AST::Storage::Static;
+            obj->type     = attr.type;
+            obj->warnUse  = attr.warnUse;
 
             itr = globalObj.emplace(glyph, obj).first;
          }

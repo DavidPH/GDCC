@@ -62,12 +62,14 @@ namespace GDCC
          Storage      store;
          TypeCPtr     type;
          IRExpCPtr    value;
+         Core::String warnUse;
 
-         bool         alias : 1; // Can alias?
-         bool         defin : 1; // Is defined?
-         bool         noRef : 1; // Forbids pointer-to?
-         bool         refer : 1; // Needs pointer-to?
-         bool         used  : 1; // Is used?
+         bool         alias    : 1; // Can alias?
+         bool         defin    : 1; // Is defined?
+         bool         noRef    : 1; // Forbids pointer-to?
+         bool         refer    : 1; // Needs pointer-to?
+         bool         used     : 1; // Is used?
+         bool         warnDone : 1;
 
 
          static Ref Create(Core::String name, Core::String glyph);

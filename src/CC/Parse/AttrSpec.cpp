@@ -160,6 +160,37 @@ namespace GDCC
       }
 
       //
+      // ParseAttr_deprecated
+      //
+      // attribute-deprecated:
+      //    attribute-deprecated-name
+      //    attribute-deprecated-name ( string-literal )
+      //
+      // attribute-deprecated-name:
+      //    <deprecated>
+      //    <__deprecated>
+      //
+      static void ParseAttr_deprecated(ParserCtx const &ctx, Scope &,
+         AST::Attribute &attr)
+      {
+         // ( string-literal )
+         if(ctx.in.drop(Core::TOK_ParenO))
+         {
+            // string-literal
+            if(!ctx.in.peek().isTokString())
+               throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
+
+            attr.warnUse = ctx.in.get().str;
+
+            // )
+            if(!ctx.in.drop(Core::TOK_ParenC))
+               throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+         }
+         else
+            attr.warnUse = Core::STR_;
+      }
+
+      //
       // ParseAttr_extern
       //
       // attribute-extern:
@@ -349,6 +380,9 @@ namespace GDCC
 
          case Core::STR_call: case Core::STR___call:
             ParseAttr_call(ctx, scope, attr); break;
+
+         case Core::STR_deprecated: case Core::STR___deprecated:
+            ParseAttr_deprecated(ctx, scope, attr); break;
 
          case Core::STR_extern:
             ParseAttr_extern(ctx, scope, attr); break;

@@ -33,19 +33,21 @@ namespace GDCC
       // Object constructor
       //
       Object::Object(Core::String name_, Core::String glyph_) :
-         glyph{glyph_},
-         init {nullptr},
-         linka{IR::Linkage::None},
-         name {name_},
-         store{Storage::None},
-         type {nullptr},
-         value{nullptr},
+         glyph   {glyph_},
+         init    {nullptr},
+         linka   {IR::Linkage::None},
+         name    {name_},
+         store   {Storage::None},
+         type    {nullptr},
+         value   {nullptr},
+         warnUse {nullptr},
 
-         alias{false},
-         defin{false},
-         noRef{false},
-         refer{false},
-         used {false}
+         alias   {false},
+         defin   {false},
+         noRef   {false},
+         refer   {false},
+         used    {false},
+         warnDone{false}
       {
       }
 
