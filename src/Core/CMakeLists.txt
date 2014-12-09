@@ -30,6 +30,7 @@ add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    Path.cpp
    String.cpp
    StringGen.cpp
+   Warning.cpp
 
    ../../inc/Core/Array.hpp
    ../../inc/Core/BufferBuf.hpp
@@ -62,6 +63,7 @@ add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    ../../inc/Core/TokenBuf.hpp
    ../../inc/Core/TokenStream.hpp
    ../../inc/Core/WSpaceTBuf.hpp
+   ../../inc/Core/Warning.hpp
 )
 
 target_link_libraries(gdcc-core-lib gdcc-option-lib gmpxx gmp)
