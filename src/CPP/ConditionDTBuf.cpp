@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,13 +19,12 @@
 #include "CPP/PPTokenTBuf.hpp"
 #include "CPP/StringTBuf.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/Number.hpp"
 #include "Core/TokenStream.hpp"
 #include "Core/WSpaceTBuf.hpp"
 
 #include "IR/Exp.hpp"
-
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -62,10 +61,7 @@ namespace GDCC
 
          // Ensure full consumption.
          if(in.peek().tok != Core::TOK_EOF)
-         {
-            std::cerr << "ERROR: " << exp->pos << ": unused tokens\n";
-            throw EXIT_FAILURE;
-         }
+            throw Core::ExceptStr(in.peek().pos, "unused tokens");
 
          // Evaluate expression.
          return !exp->getValue();
@@ -79,16 +75,13 @@ namespace GDCC
          if(tok.tok != Core::TOK_Identi)
             return isSkip();
 
-         switch(static_cast<Core::StringIndex>(tok.str))
+         switch(tok.str)
          {
          case Core::STR_endif:
             src.get();
 
             if(state.empty())
-            {
-               std::cerr << "ERROR: " << tok.pos << ": unmatched #endif\n";
-               throw EXIT_FAILURE;
-            }
+               throw Core::ExceptStr(tok.pos, "unmatched #endif");
 
             state.pop_back();
 
@@ -98,22 +91,17 @@ namespace GDCC
             src.get();
 
             if(state.empty())
-            {
-               std::cerr << "ERROR: " << tok.pos << ": unmatched #elif\n";
-               throw EXIT_FAILURE;
-            }
+               throw Core::ExceptStr(tok.pos, "unmatched #elif");
 
             if(state.back().isElse)
-            {
-               std::cerr << "ERROR: " << tok.pos << ": #elif after #else\n";
-               throw EXIT_FAILURE;
-            }
+               throw Core::ExceptStr(tok.pos, "#elif after #else");
 
             // If not possible to not skip, don't try to process expression.
-            if(state.back().isDead || state.back().isElif) return true;
+            if(state.back().isDead || state.back().isElif)
+               return state.back().isSkip = true;
 
-            state.back().isSkip = getSkip() && !state.back().isElif && !state.back().isDead;
-            state.back().isElif = state.back().isElif || !state.back().isSkip;
+            state.back().isSkip = getSkip();
+            state.back().isElif = !state.back().isSkip;
 
             return true;
 
@@ -121,16 +109,10 @@ namespace GDCC
             src.get();
 
             if(state.empty())
-            {
-               std::cerr << "ERROR: " << tok.pos << ": unmatched #else\n";
-               throw EXIT_FAILURE;
-            }
+               throw Core::ExceptStr(tok.pos, "unmatched #else");
 
             if(state.back().isElse)
-            {
-               std::cerr << "ERROR: " << tok.pos << ": duplicate #else\n";
-               throw EXIT_FAILURE;
-            }
+               throw Core::ExceptStr(tok.pos, "duplicate #else");
 
             state.back().isElse = true;
             state.back().isSkip = state.back().isElif || state.back().isDead;
@@ -144,10 +126,10 @@ namespace GDCC
             state.emplace_back(isSkip());
 
             // If not possible to not skip, don't try to process expression.
-            if(state.back().isDead || state.back().isElif) return true;
+            if(state.back().isDead) return true;
 
-            state.back().isSkip = getSkip() && !state.back().isElif && !state.back().isDead;
-            state.back().isElif = state.back().isElif || !state.back().isSkip;
+            state.back().isSkip = getSkip();
+            state.back().isElif = !state.back().isSkip;
 
             return true;
 
@@ -159,12 +141,9 @@ namespace GDCC
             if(src.peek().tok == Core::TOK_WSpace) src.get();
 
             if(src.peek().tok != Core::TOK_Identi)
-            {
-               std::cerr << "ERROR: " << tok.pos << ": expected identifier\n";
-               throw EXIT_FAILURE;
-            }
+               throw Core::ExceptStr(tok.pos, "expected identifier");
 
-            state.back().isSkip = !macros.find(src.get());
+            state.back().isSkip = state.back().isDead || !macros.find(src.get());
             state.back().isElif = !state.back().isSkip;
 
             return true;
@@ -177,12 +156,9 @@ namespace GDCC
             if(src.peek().tok == Core::TOK_WSpace) src.get();
 
             if(src.peek().tok != Core::TOK_Identi)
-            {
-               std::cerr << "ERROR: " << tok.pos << ": expected identifier\n";
-               throw EXIT_FAILURE;
-            }
+               throw Core::ExceptStr(tok.pos, "expected identifier");
 
-            state.back().isSkip = macros.find(src.get());
+            state.back().isSkip = state.back().isDead || macros.find(src.get());
             state.back().isElif = !state.back().isSkip;
 
             return true;
@@ -226,10 +202,7 @@ namespace GDCC
             }
 
             if(src.peek().tok != Core::TOK_Identi)
-            {
-               std::cerr << "ERROR: " << src.peek().pos << ": expected identifier\n";
-               throw EXIT_FAILURE;
-            }
+               throw Core::ExceptStr(src.peek().pos, "expected identifier");
 
             buf[0].tok = Core::TOK_Number;
             buf[0].str = macros.find(src.get()) ? Core::STR_1 : Core::STR_0;
@@ -239,10 +212,7 @@ namespace GDCC
                if(src.peek().tok == Core::TOK_WSpace) src.get();
 
                if(src.peek().tok != Core::TOK_ParenC)
-               {
-                  std::cerr << "ERROR: " << (src.unget(), src.peek().pos) << ": expected )\n";
-                  throw EXIT_FAILURE;
-               }
+                  throw Core::ExceptStr(src.peek().pos, "expected ')'");
 
                src.get();
             }
