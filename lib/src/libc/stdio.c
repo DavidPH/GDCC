@@ -13,6 +13,7 @@
 #include <stdio.h>
 
 #include <errno.h>
+#include <stdarg.h>
 #include <string.h>
 
 #include <GDCC.h>
@@ -175,6 +176,79 @@ buf_good:
 
    stream->buf    = buf;
    stream->bufLen = size;
+}
+
+//=========================================================
+// Formatted input/output functions.
+//
+
+//
+// fscanf
+//
+int fscanf(FILE *restrict stream, char const *restrict format, ...)
+{
+   va_list arg;
+   int     ret;
+
+   va_start(arg, format);
+   ret = vfscanf(stream, format, arg);
+   va_end(arg);
+
+   return ret;
+}
+
+//
+// scanf
+//
+int scanf(char const *restrict format, ...)
+{
+   va_list arg;
+   int     ret;
+
+   va_start(arg, format);
+   ret = vfscanf(stdin, format, arg);
+   va_end(arg);
+
+   return ret;
+}
+
+//
+// sscanf
+//
+int sscanf(char const *restrict s, char const *restrict format, ...)
+{
+   va_list arg;
+   int     ret;
+
+   va_start(arg, format);
+   ret = vsscanf(s, format, arg);
+   va_end(arg);
+
+   return ret;
+}
+
+//
+// vfscanf
+//
+int vfscanf(FILE *restrict stream, char const *restrict format, __va_list arg)
+{
+   return EOF;
+}
+
+//
+// vscanf
+//
+int vscanf(char const *restrict format, __va_list arg)
+{
+   return vfscanf(stdin, format, arg);
+}
+
+//
+// vsscanf
+//
+int vsscanf(char const *restrict s, char const *restrict format, __va_list arg)
+{
+   return EOF;
 }
 
 //=========================================================
