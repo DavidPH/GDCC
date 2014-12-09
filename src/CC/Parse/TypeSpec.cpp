@@ -505,6 +505,9 @@ namespace GDCC
                if(!ctx.in.drop(Core::TOK_Semico))
                   throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
             }
+
+            else
+               throw Core::ExceptStr(ctx.in.peek().pos, "expected struct-declaration");
          }
          while(!ctx.in.drop(Core::TOK_BraceC));
 
