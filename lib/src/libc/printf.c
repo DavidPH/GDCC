@@ -451,6 +451,35 @@ int vfprintf(FILE *restrict stream, char const *restrict format, __va_list arg)
          continue;
 
       fmt_str:
+         fmtRet.len = ACS_StrLen(fmtStr);
+
+         if(fmtRet.len > fmtArg.prec)
+            fmtRet.len = fmtArg.prec;
+
+         // Write result.
+         if(fmtRet.len < fmtArg.width)
+         {
+            ret += fmtArg.width;
+            fmtArg.width -= fmtRet.len;
+
+            if(!(fmtArg.flags & __GDCC__FormatFlag_Left))
+               do if(fputc(' ', stream) == EOF) return ~ret; while(--fmtArg.width);
+
+            for(unsigned i = 0; i != fmtRet.len; ++i)
+               if(fputc(fmtStr[i], stream) == EOF) return ~ret;
+
+            if(fmtArg.flags & __GDCC__FormatFlag_Left)
+               do if(fputc(' ', stream) == EOF) return ~ret; while(--fmtArg.width);
+         }
+         else
+         {
+            ret += fmtRet.len;
+            for(unsigned i = 0; i != fmtRet.len; ++i)
+               if(fputc(fmtStr[i], stream) == EOF) return ~ret;
+         }
+
+         continue;
+
       default: return ~ret;
       }
 
