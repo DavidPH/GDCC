@@ -350,6 +350,10 @@ namespace GDCC
             obj->init = GetExp_Init(ctx, scope, obj->type);
             obj->type = obj->init->getType();
 
+            if(obj->store == AST::Storage::Static && !obj->init->isIRExp())
+               throw Core::ExceptStr(obj->init->pos,
+                  "non-constant initializer for static storage object");
+
             SetDeclObjInit(ctx, scope, attr, inits, obj);
          }
          else
