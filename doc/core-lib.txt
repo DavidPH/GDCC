@@ -387,6 +387,7 @@ GDCC::Core::IsPathSep
 -----------------------------------------------------------
 
 Synopsis:
+  #include <GDCC/Core/Path.hpp>
   constexpr bool IsPathSep(char c);
 
 Description:
@@ -396,10 +397,25 @@ Returns:
   True if c is a path separator, false otherwise.
 
 -----------------------------------------------------------
+GDCC::Core::PathAppend
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Path.hpp>
+  std::string &PathAppend(std::string &l, String r);
+
+Description:
+  Works as PathConcat, but alters the left string in place.
+
+Returns:
+  The concatenated path string.
+
+-----------------------------------------------------------
 GDCC::Core::PathConcat
 -----------------------------------------------------------
 
 Synopsis:
+  #include <GDCC/Core/Path.hpp>
   String PathConcat(char const *l, String r);
   String PathConcat(String l, String r);
 
@@ -415,6 +431,7 @@ GDCC::Core::PathDirname
 -----------------------------------------------------------
 
 Synopsis:
+  #include <GDCC/Core/Path.hpp>
   String PathDirname(String path);
 
 Description:
@@ -425,11 +442,25 @@ Returns:
   Directory component of path string.
 
 -----------------------------------------------------------
+GDCC::Core::PathDirnameEq
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Path.hpp>
+  std::string &PathDirnameEq(std::string &path);
+
+Description:
+  Works as PathDirname, but alters the string in place.
+
+Returns:
+  Directory component of path string.
+
+-----------------------------------------------------------
 GDCC::Core::PathNormalize
 -----------------------------------------------------------
 
 Synopsis:
-  char *PathNormalize(char *path);
+  #include <GDCC/Core/Path.hpp>
   String PathNormalize(String path);
 
 Description:
@@ -441,10 +472,26 @@ Returns:
   The normalized path string.
 
 -----------------------------------------------------------
+GDCC::Core::PathNormalizeEq
+-----------------------------------------------------------
+
+Synopsis:
+  #include <GDCC/Core/Path.hpp>
+  char *PathNormalizeEq(char *path);
+  std::string &PathNormalizeEq(std::string &path);
+
+Description:
+  Works as PathNormalize, but alters the string in place.
+
+Returns:
+  The normalized path string.
+
+-----------------------------------------------------------
 GDCC::Core::PathSep
 -----------------------------------------------------------
 
 Synopsis:
+  #include <GDCC/Core/Path.hpp>
   char PathSep(char const *path);
   char PathSep(String path);
 
