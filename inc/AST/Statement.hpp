@@ -59,6 +59,9 @@ namespace GDCC
          // Does this statement not use automatic storage?
          bool isNoAuto() const {return v_isNoAuto();}
 
+         // Does this statement return?
+         bool isReturn() const {return v_isReturn();}
+
          // Can this statement forego codegen?
          bool isTrivial() const {return !isBranch() && !isEffect();}
 
@@ -79,6 +82,7 @@ namespace GDCC
          virtual bool v_isEffect() const = 0;
          virtual bool v_isLabel()  const {return false;}
          virtual bool v_isNoAuto() const = 0;
+         virtual bool v_isReturn() const {return false;}
       };
    }
 }

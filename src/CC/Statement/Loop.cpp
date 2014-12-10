@@ -144,6 +144,14 @@ namespace GDCC
       }
 
       //
+      // Statement_Loop::v_isReturn
+      //
+      bool Statement_Loop::v_isReturn() const
+      {
+         return body->isReturn();
+      }
+
+      //
       // StatementCreate_Do
       //
       AST::Statement::CRef StatementCreate_Do(

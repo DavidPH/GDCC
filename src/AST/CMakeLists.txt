@@ -53,6 +53,7 @@ add_library(gdcc-ast-lib ${GDCC_SHARED_DECL}
    Type/Pointer.cpp
    Type/Primary.cpp
    Type/Wrapper.cpp
+   Warning.cpp
 
    ../../inc/AST/Arg.hpp
    ../../inc/AST/Attribute.hpp
@@ -88,6 +89,7 @@ add_library(gdcc-ast-lib ${GDCC_SHARED_DECL}
    ../../inc/AST/Type/Pointer.hpp
    ../../inc/AST/Type/Primary.hpp
    ../../inc/AST/Type/Wrapper.hpp
+   ../../inc/AST/Warning.hpp
 )
 
 target_link_libraries(gdcc-ast-lib gdcc-ir-lib)

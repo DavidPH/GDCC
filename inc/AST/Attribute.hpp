@@ -30,7 +30,6 @@ namespace GDCC
    namespace Core
    {
       class Token;
-      class Warning;
    }
 
    namespace IR
@@ -90,19 +89,6 @@ namespace GDCC
          bool storeReg    : 1;
          bool storeThread : 1;
       };
-   }
-}
-
-
-//----------------------------------------------------------------------------|
-// Global Variables                                                           |
-//
-
-namespace GDCC
-{
-   namespace AST
-   {
-      extern Core::Warning WarnDeprecated;
    }
 }
 

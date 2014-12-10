@@ -25,6 +25,7 @@
 #include "AST/Statement.hpp"
 #include "AST/Storage.hpp"
 #include "AST/Type.hpp"
+#include "AST/Warning.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
@@ -241,20 +242,21 @@ namespace GDCC
       {
          auto &fnScope = scope.createScope(attr, fn);
 
+         auto stmntPre  = StatementCreate_FuncPre(ctx.in.peek().pos, fnScope);
+         auto stmntBody = GetStatement(ctx, fnScope);
+         auto stmntPro  = StatementCreate_FuncPro(ctx.in.reget().pos, fnScope);
+
          // Create statements for the function.
          Core::Array<AST::Statement::CRef> stmnts =
-         {
-            Core::Pack,
-
-            StatementCreate_FuncPre(ctx.in.peek().pos, fnScope),
-            GetStatement(ctx, fnScope),
-            StatementCreate_FuncPro(ctx.in.reget().pos, fnScope),
-         };
+            {Core::Pack, stmntPre, stmntBody, stmntPro};
 
          fn->stmnt = AST::StatementCreate_Multi(attr.namePos, std::move(stmnts));
          fn->defin = true;
 
          fn->setAllocLoc(attr.allocLoc);
+
+         if(!fn->retrn->isTypeVoid() && !fn->stmnt->isReturn())
+            AST::WarnReturnType(attr.namePos, "no return in non-void function");
       }
 
       //

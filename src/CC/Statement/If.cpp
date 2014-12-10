@@ -145,6 +145,14 @@ namespace GDCC
       }
 
       //
+      // Statement_If::v_isReturn
+      //
+      bool Statement_If::v_isReturn() const
+      {
+         return bodyT->isReturn() || (bodyF && bodyF->isReturn());
+      }
+
+      //
       // StatementCreate_If
       //
       AST::Statement::CRef StatementCreate_If(

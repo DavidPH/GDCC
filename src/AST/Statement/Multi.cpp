@@ -84,6 +84,17 @@ namespace GDCC
       }
 
       //
+      // Statement_Multi::v_isReturn
+      //
+      bool Statement_Multi::v_isReturn() const
+      {
+         for(auto const &stmnt : stmnts)
+            if(stmnt->isReturn()) return true;
+
+         return false;
+      }
+
+      //
       // StatementCreate_Multi
       //
       Statement::CRef StatementCreate_Multi(Statement::Labels const &labels,

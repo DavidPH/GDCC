@@ -21,6 +21,7 @@
 #include "AST/Function.hpp"
 #include "AST/Object.hpp"
 #include "AST/Type.hpp"
+#include "AST/Warning.hpp"
 
 #include "CPP/Pragma.hpp"
 
@@ -28,7 +29,6 @@
 #include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
 #include "Core/TokenStream.hpp"
-#include "Core/Warning.hpp"
 
 #include "IR/Exp.hpp"
 #include "IR/Glyph.hpp"

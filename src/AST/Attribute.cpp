@@ -15,36 +15,11 @@
 #include "AST/Type.hpp"
 
 #include "Core/Token.hpp"
-#include "Core/Warning.hpp"
 
 #include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/ScriptType.hpp"
-
-
-//----------------------------------------------------------------------------|
-// Options                                                                    |
-//
-
-namespace GDCC
-{
-   namespace AST
-   {
-      //
-      // --warn-deprecated
-      //
-      static Core::WarnOpt WarnDeprecatedOpt
-      {
-         &Core::GetWarnOptList(), Option::Base::Info()
-            .setName("warn-deprecated")
-            .setGroup("warnings")
-            .setDescS("Warns on use of deprecated entities."),
-
-         &WarnDeprecated
-      };
-   }
-}
 
 
 //----------------------------------------------------------------------------|
@@ -117,19 +92,6 @@ namespace GDCC
          name    = tok.str;
          namePos = tok.pos;
       }
-   }
-}
-
-
-//----------------------------------------------------------------------------|
-// Global Variables                                                           |
-//
-
-namespace GDCC
-{
-   namespace AST
-   {
-      Core::Warning WarnDeprecated{&Core::WarnCommon, "--warn-deprecated"};
    }
 }
 

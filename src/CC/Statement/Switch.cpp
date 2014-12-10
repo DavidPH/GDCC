@@ -280,6 +280,14 @@ namespace GDCC
       }
 
       //
+      // Statement_Switch::v_isReturn
+      //
+      bool Statement_Switch::v_isReturn() const
+      {
+         return body->isReturn();
+      }
+
+      //
       // StatementCreate_Switch
       //
       AST::Statement::CRef StatementCreate_Switch(
