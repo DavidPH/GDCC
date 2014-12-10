@@ -101,13 +101,18 @@ typedef unsigned size_t;
 //
 // FILE
 //
-typedef struct FILE
+struct FILE
 {
    char    *buf;
    size_t   bufLen;
    size_t   bufPos;
    unsigned flags;
-} FILE;
+};
+
+#ifndef __GDCC_Have__FILE__
+#define __GDCC_Have__FILE__
+typedef struct FILE FILE;
+#endif
 
 //
 // fpos_t
