@@ -128,6 +128,7 @@ ACS_AsmFuncDeclFull(288,    , 0, int,    ThingCountName, __str, int);
 ACS_AsmFuncDeclFull(289,    , 1, int,    SpawnSpotFacing, __str, int, int);
 ACS_AsmFuncDeclFull(290,    , 0, int,    PlayerClass, int);
 
+ACS_AsmFuncDeclFull(326,    , 0, int,    GetPlayerInfo, int, int);
 ACS_AsmFuncDeclFull(327,    , 0, void,   ChangeLevel, __str, int, int, int);
 ACS_AsmFuncDeclFull(328,    , 0, void,   SectorDamage, int, int, __str, __str, int);
 ACS_AsmFuncDeclFull(329,    , 1, void,   ReplaceTextures, __str, __str, int);
