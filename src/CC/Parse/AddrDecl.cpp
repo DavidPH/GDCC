@@ -53,9 +53,8 @@ namespace GDCC
       //
       // ParseAddrDecl
       //
-      void ParseAddrDecl(ParserCtx const &ctx, Scope &scope)
+      void ParseAddrDecl(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
       {
-         AST::Attribute attr;
          attr.linka = IR::Linkage::ExtC;
 
          // <__addrdef>

@@ -452,8 +452,8 @@ Address Space Declarations
 
 Syntax:
   address-space-declaration:
-    <__addrdef> storage-class-specifier(opt) address-space-specifier identifier
-      attribute-specifier-list(opt) ;
+    attribute-specifier-list(opt) <__addrdef> storage-class-specifier(opt)
+      address-space-specifier identifier attribute-specifier-list(opt) ;
 
   address-space-specifier:
     <__gbl_arr>

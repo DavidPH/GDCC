@@ -384,7 +384,7 @@ namespace GDCC
 
          // address-space-declaration
          if(IsAddrDecl(ctx, scope))
-            return ParseAddrDecl(ctx, scope), AST::StatementCreate_Empty(pos);
+            return ParseAddrDecl(ctx, scope, attrBase), AST::StatementCreate_Empty(pos);
 
          // static_assert-declaration
          if(IsStaticAssert(ctx, scope))
