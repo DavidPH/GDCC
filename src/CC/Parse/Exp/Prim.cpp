@@ -30,6 +30,7 @@
 #include "Core/Parse.hpp"
 #include "Core/TokenStream.hpp"
 
+#include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Glyph.hpp"
 
@@ -295,7 +296,7 @@ namespace GDCC
       //
       // GetExp_Prim_va_start
       //
-      static AST::Exp::CRef GetExp_Prim_va_start(ParserCtx const &ctx, Scope &)
+      static AST::Exp::CRef GetExp_Prim_va_start(ParserCtx const &ctx, Scope &scope)
       {
          // va_start-expression:
          //    <__va_start>
@@ -303,11 +304,35 @@ namespace GDCC
          // <__va_start>
          auto pos = ctx.in.get().pos;
 
-         auto type = AST::Type::Void
-            ->getTypeQual({{IR::AddrBase::Loc, Core::STR_}})
-            ->getTypePointer();
+         Scope_Local *scopeLocal;
+         if(!(scopeLocal = dynamic_cast<Scope_Local *>(&scope)))
+            throw Core::ExceptStr(pos, "invalid scope for va_start");
 
-         return ExpCreate_LitNul(type, pos);
+         auto base = AST::Type::Void->getTypeQual({{IR::AddrBase::Loc, Core::STR_}});
+         auto type = base->getTypePointer();
+
+         IR::Value_Point val;
+         val.vtype = type->getIRType().tPoint;
+         val.addrB = base->getQualAddr().base;
+         val.addrN = base->getQualAddr().name;
+
+         switch(IR::GetCallTypeIR(scopeLocal->fn.fn->ctype))
+         {
+         case IR::CallType::SScriptI:
+         case IR::CallType::SScriptS:
+            val.value = static_cast<Core::FastU>(-1);
+            break;
+
+         case IR::CallType::StdCall:
+            val.value = 0;
+            break;
+
+         default:
+            throw Core::ExceptStr(pos, "invalid call type for va_start");
+         }
+
+         auto exp = IR::ExpCreate_Value(std::move(val), pos);
+         return AST::ExpCreate_IRExp(exp, type, pos);
       }
 
       //
