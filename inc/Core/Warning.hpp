@@ -70,7 +70,10 @@ namespace GDCC
       class Warning
       {
       public:
-         Warning(Warning const *base, char const *opt);
+         enum class State {Off, On, Def};
+
+
+         Warning(Warning const *base, char const *opt, State state = State::Def);
 
          explicit operator bool () const;
 
@@ -91,7 +94,6 @@ namespace GDCC
          friend class WarnOpt;
 
       private:
-         enum class State {Off, On, Def};
 
          void warnArg() const {}
 

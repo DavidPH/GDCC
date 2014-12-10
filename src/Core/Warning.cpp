@@ -25,7 +25,7 @@ namespace GDCC
    {
       Warning WarnAll   {nullptr,    "--warn-all"};
       Warning WarnExtra {&WarnAll,   "--warn-extra"};
-      Warning WarnCommon{&WarnExtra, "--warn-common"};
+      Warning WarnCommon{&WarnExtra, "--warn-common", Warning::State::On};
       Warning WarnStrict{&WarnAll,   "--warn-strict"};
    }
 }
@@ -99,8 +99,8 @@ namespace GDCC
       //
       // Warning constructor
       //
-      Warning::Warning(Warning const *base_, char const *opt_) :
-         base{base_}, opt{opt_}, state{State::Def}
+      Warning::Warning(Warning const *base_, char const *opt_, State state_) :
+         base{base_}, opt{opt_}, state{state_}
       {
       }
 
