@@ -59,7 +59,7 @@ namespace GDCC
             //    statement
 
             // declaration
-            if(IsDecl(ctx, scope))
+            if(IsDecl(ctx, blockScope))
                stmnts.emplace_back(GetDecl(ctx, blockScope));
 
             // statement
