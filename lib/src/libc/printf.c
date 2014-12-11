@@ -185,24 +185,28 @@
    { \
    case FL_: \
       fmtStr = va_arg(arg, __str); \
+      fmtRet.len = ACS_StrLen(fmtStr); \
       goto fmt_str; \
    \
    case FL_L: \
       ACS_BeginPrint(); \
       ACS_PrintLocalized(va_arg(arg, __str)); \
       fmtStr = ACS_EndString(); \
+      fmtRet.len = ACS_StrLen(fmtStr); \
       goto fmt_str; \
    \
    case FL_j: \
       ACS_BeginPrint(); \
       ACS_PrintBind(va_arg(arg, __str)); \
       fmtStr = ACS_EndString(); \
+      fmtRet.len = ACS_StrLen(fmtStr); \
       goto fmt_str; \
    \
    case FL_t: \
       ACS_BeginPrint(); \
       ACS_PrintName(va_arg(arg, int)); \
       fmtStr = ACS_EndString(); \
+      fmtRet.len = ACS_StrLen(fmtStr); \
       goto fmt_str; \
    \
    default: return ~ret; \
@@ -329,6 +333,60 @@
    else for(fmtArg.width = 0; '0' <= (fmtChr = *format) && fmtChr <= '9'; ++format) \
       fmtArg.width = (fmtArg.width * 10) + (fmtChr - '0');
 
+//
+// WriteStrEnt_s
+//
+#if __GDCC_Target__ZDoom__
+#define WriteStrEnt_s(len) \
+   do \
+   { \
+      ACS_StrCpyToGlobalCharRange((int)s, __GDCC__LocArs, 0, (len), \
+         fmtStr, (len)); \
+      (s) += len; \
+   } \
+   while(0)
+#else
+#define WriteStrEnt_s(len) \
+   do \
+   { \
+      for(unsigned i = 0, n = (len); n--;) \
+         *s++ = fmtStr[i]; \
+   } \
+   while(0)
+#endif
+
+//
+// WriteWidth_f
+//
+#define WriteWidth_f(len) \
+   do if(fputc(' ', stream) == EOF) return ~ret; while(--len)
+
+//
+// WriteWidth_n
+//
+#define WriteWidth_n(len) \
+   do ACS_PrintChar(' '); while(--len)
+
+//
+// WriteWidth_s
+//
+#define WriteWidth_s(len) \
+   do *s++ = ' '; while(--len)
+
+//
+// WriteWidthPre
+//
+#define WriteWidthPre(group, len) \
+   if(!(fmtArg.flags & __GDCC__FormatFlag_Left)) \
+      {WriteWidth_##group(len);}
+
+//
+// WriteWidthPro
+//
+#define WriteWidthPro(group, len) \
+   if(fmtArg.flags & __GDCC__FormatFlag_Left) \
+      {WriteWidth_##group(len);}
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -451,8 +509,6 @@ int vfprintf(FILE *restrict stream, char const *restrict format, __va_list arg)
          continue;
 
       fmt_str:
-         fmtRet.len = ACS_StrLen(fmtStr);
-
          if(fmtRet.len > fmtArg.prec)
             fmtRet.len = fmtArg.prec;
 
@@ -462,14 +518,10 @@ int vfprintf(FILE *restrict stream, char const *restrict format, __va_list arg)
             ret += fmtArg.width;
             fmtArg.width -= fmtRet.len;
 
-            if(!(fmtArg.flags & __GDCC__FormatFlag_Left))
-               do if(fputc(' ', stream) == EOF) return ~ret; while(--fmtArg.width);
-
+            WriteWidthPre(f, fmtArg.width);
             for(unsigned i = 0; i != fmtRet.len; ++i)
                if(fputc(fmtStr[i], stream) == EOF) return ~ret;
-
-            if(fmtArg.flags & __GDCC__FormatFlag_Left)
-               do if(fputc(' ', stream) == EOF) return ~ret; while(--fmtArg.width);
+            WriteWidthPro(f, fmtArg.width);
          }
          else
          {
@@ -489,14 +541,10 @@ int vfprintf(FILE *restrict stream, char const *restrict format, __va_list arg)
          ret += fmtArg.width;
          fmtArg.width -= fmtRet.len;
 
-         if(!(fmtArg.flags & __GDCC__FormatFlag_Left))
-            do if(fputc(' ', stream) == EOF) return ~ret; while(--fmtArg.width);
-
+         WriteWidthPre(f, fmtArg.width);
          if(!fwrite(fmtRet.begin, fmtRet.len, 1, stream))
             return ~ret;
-
-         if(fmtArg.flags & __GDCC__FormatFlag_Left)
-            do if(fputc(' ', stream) == EOF) return ~ret; while(--fmtArg.width);
+         WriteWidthPro(f, fmtArg.width);
       }
       else
       {
@@ -539,6 +587,79 @@ int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list
       case '%': if(ret < (int)n) *s++ = '%'; ++ret; continue;
 
       fmt_str:
+         if(fmtRet.len > fmtArg.prec)
+            fmtRet.len = fmtArg.prec;
+
+         // Write result.
+         if(fmtRet.len < fmtArg.width)
+         {
+            // Full format will fit.
+            if(ret + (int)fmtRet.len < (int)n)
+            {
+               ret += fmtArg.width;
+               fmtArg.width -= fmtRet.len;
+
+               WriteWidthPre(s, fmtArg.width);
+               WriteStrEnt_s(fmtRet.len);
+               WriteWidthPro(s, fmtArg.width);
+            }
+
+            // Partial format will fit.
+            else if(ret < (int)n)
+            {
+               int max = n - ret;
+
+               ret += fmtArg.width;
+               fmtArg.width -= fmtRet.len;
+
+               if(!(fmtArg.flags & __GDCC__FormatFlag_Left))
+               {
+                  if(max >= (int)fmtArg.width)
+                  {
+                     max -= fmtArg.width;
+                     WriteWidth_s(fmtArg.width);
+                  }
+                  else
+                     WriteWidth_s(max);
+               }
+
+               if(max >= (int)fmtRet.len)
+               {
+                  max -= fmtRet.len;
+                  WriteStrEnt_s(fmtRet.len);
+               }
+               else if(max)
+               {
+                  WriteStrEnt_s(max);
+                  max = 0;
+               }
+
+               if(fmtArg.flags & __GDCC__FormatFlag_Left)
+               {
+                  if(max)
+                     WriteWidth_s(max);
+               }
+            }
+
+         }
+         else
+         {
+            // Full format will fit.
+            if(ret + (int)fmtRet.len < (int)n)
+               WriteStrEnt_s(fmtRet.len);
+
+            // Partial format will fit.
+            else if(ret < (int)n)
+            {
+               int max = n - ret;
+               WriteStrEnt_s(max);
+            }
+
+            ret += fmtRet.len;
+         }
+
+         continue;
+
       default: return ~ret;
       }
 
@@ -548,15 +669,12 @@ int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list
          // Full format will fit.
          if(ret + (int)fmtRet.len < (int)n)
          {
+            ret += fmtArg.width;
             fmtArg.width -= fmtRet.len;
 
-            if(!(fmtArg.flags & __GDCC__FormatFlag_Left))
-               do *s++ = ' '; while(--fmtArg.width);
-
+            WriteWidthPre(s, fmtArg.width);
             while(fmtRet.len--) *s++ = *fmtRet.begin++;
-
-            if(fmtArg.flags & __GDCC__FormatFlag_Left)
-               do *s++ = ' '; while(--fmtArg.width);
+            WriteWidthPro(s, fmtArg.width);
          }
 
          // Partial format will fit.
@@ -564,6 +682,7 @@ int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list
          {
             int max = n - ret;
 
+            ret += fmtArg.width;
             fmtArg.width -= fmtRet.len;
 
             if(!(fmtArg.flags & __GDCC__FormatFlag_Left))
@@ -571,10 +690,10 @@ int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list
                if(max >= (int)fmtArg.width)
                {
                   max -= fmtArg.width;
-                  do *s++ = ' '; while(--fmtArg.width);
+                  WriteWidth_s(fmtArg.width);
                }
                else
-                  do *s++ = ' '; while(--max);
+                  WriteWidth_s(max);
             }
 
             if(max >= (int)fmtRet.len)
@@ -588,17 +707,15 @@ int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list
             if(fmtArg.flags & __GDCC__FormatFlag_Left)
             {
                if(max)
-                  do *s++ = ' '; while(--max);
+                  WriteWidth_s(max);
             }
          }
-
-         ret += fmtArg.width;
       }
       else
       {
          // Full format will fit.
          if(ret + (int)fmtRet.len < (int)n)
-            while(fmtRet.len--) *s++ = *fmtRet.begin++;
+            for(int max = fmtRet.len; max--;) *s++ = *fmtRet.begin++;
 
          // Partial format will fit.
          else if(ret < (int)n)
@@ -639,6 +756,27 @@ int vsprintf(char *restrict s, char const *restrict format, va_list arg)
       case '%': *s++ = '%'; ++ret; continue;
 
       fmt_str:
+         if(fmtRet.len > fmtArg.prec)
+            fmtRet.len = fmtArg.prec;
+
+         // Write result.
+         if(fmtRet.len < fmtArg.width)
+         {
+            ret += fmtArg.width;
+            fmtArg.width -= fmtRet.len;
+
+            WriteWidthPre(s, fmtArg.width);
+            WriteStrEnt_s(fmtRet.len);
+            WriteWidthPro(s, fmtArg.width);
+         }
+         else
+         {
+            ret += fmtRet.len;
+            WriteStrEnt_s(fmtRet.len);
+         }
+
+         continue;
+
       default: return ~ret;
       }
 
@@ -648,13 +786,9 @@ int vsprintf(char *restrict s, char const *restrict format, va_list arg)
          ret += fmtArg.width;
          fmtArg.width -= fmtRet.len;
 
-         if(!(fmtArg.flags & __GDCC__FormatFlag_Left))
-            do *s++ = ' '; while(--fmtArg.width);
-
+         WriteWidthPre(s, fmtArg.width);
          while(fmtRet.len--) *s++ = *fmtRet.begin++;
-
-         if(fmtArg.flags & __GDCC__FormatFlag_Left)
-            do *s++ = ' '; while(--fmtArg.width);
+         WriteWidthPro(s, fmtArg.width);
       }
       else
       {
@@ -713,8 +847,6 @@ int __vnprintf(char const *format, va_list arg)
       default: return ~ret;
 
       fmt_str:
-         fmtRet.len = ACS_StrLen(fmtStr);
-
          // Write result.
          if(fmtRet.len > fmtArg.prec)
          {
@@ -725,14 +857,10 @@ int __vnprintf(char const *format, va_list arg)
                ret += fmtArg.width;
                fmtArg.width -= fmtRet.len;
 
-               if(!(fmtArg.flags & __GDCC__FormatFlag_Left))
-                  do ACS_PrintChar(' '); while(--fmtArg.width);
-
+               WriteWidthPre(n, fmtArg.width);
                for(unsigned i = 0; i != fmtRet.len; ++i)
                   ACS_PrintChar(fmtStr[i]);
-
-               if(fmtArg.flags & __GDCC__FormatFlag_Left)
-                  do ACS_PrintChar(' '); while(--fmtArg.width);
+               WriteWidthPro(n, fmtArg.width);
             }
             else
             {
@@ -748,13 +876,9 @@ int __vnprintf(char const *format, va_list arg)
                ret += fmtArg.width;
                fmtArg.width -= fmtRet.len;
 
-               if(!(fmtArg.flags & __GDCC__FormatFlag_Left))
-                  do ACS_PrintChar(' '); while(--fmtArg.width);
-
+               WriteWidthPre(n, fmtArg.width);
                ACS_PrintString(fmtStr);
-
-               if(fmtArg.flags & __GDCC__FormatFlag_Left)
-                  do ACS_PrintChar(' '); while(--fmtArg.width);
+               WriteWidthPro(n, fmtArg.width);
             }
             else
             {
@@ -772,13 +896,9 @@ int __vnprintf(char const *format, va_list arg)
          ret += fmtArg.width;
          fmtArg.width -= fmtRet.len;
 
-         if(!(fmtArg.flags & __GDCC__FormatFlag_Left))
-            do ACS_PrintChar(' '); while(--fmtArg.width);
-
+         WriteWidthPre(n, fmtArg.width);
          ACS_PrintGlobalCharRange((int)fmtRet.begin, __GDCC__LocArs, 0, fmtRet.len);
-
-         if(fmtArg.flags & __GDCC__FormatFlag_Left)
-            do ACS_PrintChar(' '); while(--fmtArg.width);
+         WriteWidthPro(n, fmtArg.width);
       }
       else
       {
