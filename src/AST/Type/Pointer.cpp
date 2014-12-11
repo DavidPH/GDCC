@@ -64,18 +64,23 @@ namespace GDCC
          if(base->isTypeStrEnt())
             return IR::Type_StrEn();
 
-         // Special case for pointer to void, which has no SizePoint.
-         // Should this actually be a general try-catch thing?
-         if(base->isTypeVoid())
-            return IR::Type_Point(base->getQualAddr().base,
-               base->getQualAddr().name, 0, base->getSizeShift());
-
          // Map Gen for IR.
          auto addr = base->getQualAddr();
          if(addr.base == IR::AddrBase::Gen)
             addr = IR::GetAddrGen();
 
-         return IR::Type_Point(addr.base, addr.name, base->getSizePoint(), base->getSizeShift());
+         // If underlying type is incomplete, don't fail to generate IR type.
+         Core::FastU sizePoint = 0;
+         Core::FastU sizeShift = 0;
+         try
+         {
+            // Check sizeShift first, because it affects representation.
+            sizeShift = base->getSizeShift();
+            sizePoint = base->getSizePoint();
+         }
+         catch(AST::TypeError const &) {}
+
+         return IR::Type_Point(addr.base, addr.name, sizePoint, sizeShift);
       }
 
       //
