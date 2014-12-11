@@ -700,6 +700,110 @@ Grammar
   # <pragma> <GDCC> <STRENT_LITERAL> on-off-switch
 
 ###############################################################################
+GDCC C Library Extensions
+###############################################################################
+
+===============================================================================
+Input/output <stdio.h>
+===============================================================================
+
+===========================================================
+Functions
+===========================================================
+
+-----------------------------------------------------------
+fprintf
+-----------------------------------------------------------
+
+Description:
+  Add a new conversion specifier:
+
+    S
+      If an L length modifier is present, the argument shall be a pointer to
+      __str_ent. The argument is used as the name of a localized string to
+      print.
+
+      Otheriwse, if a j length modifier is present, the argument shall be a
+      pointer to __str_ent. The argument is used as the name of a keybind to
+      print.
+
+      Otherwise, if a t length modifier is present, the argument shall be an
+      int. The argument is used as an index for a name to print.
+
+      Otherwise, there shall be no length modifier and the argument shall be a
+      pointer to __str_ent. The argument is used as the string to print.
+
+      In any of the above, the format precision is used as in s conversions.
+
+-----------------------------------------------------------
+__nprintf
+-----------------------------------------------------------
+
+Synopsis:
+  #include <stdio.h>
+  int __nprintf(char const *restrict format, ...);
+
+Description:
+  The __nprintf function is equivalent to fprintf, except that the output is
+  written to a native print buffer rather than to a stream.
+
+  If the current target lacks any special native print buffer, output is
+  written to stdout.
+
+Returns:
+  The __nprintf function returns the number of characters written, or a
+  negative value if an encoding error occurred.
+
+-----------------------------------------------------------
+__vnprintf
+-----------------------------------------------------------
+
+Synopsis:
+  #include <stdarg.h>
+  #include <stdio.h>
+  int __vnprintf(char const *restrict format, va_list arg);
+
+Description:
+  The __vnprintf function is equivalent to __nprintf, with the variable
+  argument list replaced by arg, which shall have been initialized by the
+  va_start macro (and possibly subsequent va_arg calls). The __vnprintf
+  function does not invoke the va_end macro.
+
+Returns:
+  The __vnprintf function returns the number of characters written, or a
+  negative value if an encoding error occurred.
+
+===============================================================================
+General utilities <stdlib.h>
+===============================================================================
+
+===========================================================
+Functions
+===========================================================
+
+-----------------------------------------------------------
+strtoi and strtoui
+-----------------------------------------------------------
+
+Synopsis:
+  #include <stdlib.h>
+  int strtoi(char const *restrict nptr, char **restrict endptr, int base);
+  unsigned int strtoui(char const *restrict nptr, char **restrict endptr,
+    int base);
+
+Description:
+  The strtoi and strtoui functions are equivalent to the strtol and strtoul
+  functions, except that the initial portion of the string is converted to int
+  and unsigned int representation, respectively.
+
+Returns:
+  The strtoi and strtoui functions return the converted value, if any. If no
+  conversion could be performed, zero is returned. If the correct value is
+  outside the range of representable values, INT_MAX, INT_MIN, or UINT_MAX is
+  returned (according to the return type and sign of the value, if any), and
+  the value of the macro ERANGE is stored in errno.
+
+###############################################################################
 EOF
 ###############################################################################
 
