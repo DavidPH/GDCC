@@ -46,10 +46,10 @@ ACS_AsmFuncDeclFull(157,    , 0, void,   PrintFixed, _Accum);
 ACS_AsmFuncDeclFull(158,    , 0, void,   PrintLocalized, __str);
 ACS_AsmFuncDeclFull(159,    , 0, void,   MoreHudMessage, void);
 ACS_AsmFuncDeclFull(160,    , 0, void,   OptHudMessage, int, int, int, _Accum, _Accum, _Accum);
-ACS_AsmFuncDeclFull(160,    , 0, void,   OptHudMessageX, int, int, int, _Accum, _Accum, _Accum, _Accum);
-ACS_AsmFuncDeclFull(160,    , 0, void,   OptHudMessageXX, int, int, int, _Accum, _Accum, _Accum, _Accum, _Accum);
-ACS_AsmFuncDeclFull(160,    , 0, void,   OptHudMessageXXX, int, int, int, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum);
 ACS_AsmFuncDeclFull(161,    , 0, void,   EndHudMessage, void);
+ACS_AsmFuncDeclFull(161,    , 0, void,   EndHudMessageX, _Accum);
+ACS_AsmFuncDeclFull(161,    , 0, void,   EndHudMessageXX, _Accum, _Accum);
+ACS_AsmFuncDeclFull(161,    , 0, void,   EndHudMessageXXX, _Accum, _Accum, _Accum);
 ACS_AsmFuncDeclFull(162,    , 0, void,   EndHudMessageBold, void);
 
 ACS_AsmFuncDeclFull(165, 166, 0, void,   SetFont, __str);
