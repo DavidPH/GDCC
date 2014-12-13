@@ -77,6 +77,24 @@ namespace GDCC
       {
          return IR::ExpCode_U_W<Codes>(t->getSizeWords());
       }
+
+      //
+      // ExpCode_Arith
+      //
+      template<typename Codes>
+      IR::Code ExpCode_Arith(Type const *t)
+      {
+         if(t->isCTypeInteg())
+            return ExpCode_ArithInteg<Codes>(t);
+
+         if(t->isCTypeFixed())
+            return ExpCode_ArithFixed<Codes>(t);
+
+         if(t->isCTypeRealFlt())
+            return ExpCode_ArithFloat<Codes>(t);
+
+         return IR::Code::None;
+      }
    }
 }
 
