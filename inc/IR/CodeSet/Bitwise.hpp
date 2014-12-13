@@ -74,6 +74,8 @@ namespace GDCC
          static constexpr Code
             CodeA_W  = Code::ShLU_W,
             CodeA_W2 = Code::ShLU_W2,
+            CodeF_W  = Code::ShLF_W,
+            CodeF_W2 = Code::ShLF_W2,
             CodeI_W  = Code::ShLU_W,
             CodeI_W2 = Code::ShLU_W2,
             CodeI_W3 = Code::ShLU_W3,
@@ -96,6 +98,8 @@ namespace GDCC
          static constexpr Code
             CodeA_W  = Code::ShRU_W,
             CodeA_W2 = Code::ShRU_W2,
+            CodeF_W  = Code::ShRF_W,
+            CodeF_W2 = Code::ShRF_W2,
             CodeI_W  = Code::ShRI_W,
             CodeI_W2 = Code::ShRI_W2,
             CodeI_W3 = Code::ShRI_W3,

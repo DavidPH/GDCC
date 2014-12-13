@@ -224,11 +224,15 @@ GDCC_IR_CodeList(Pltn)
 GDCC_IR_CodeList(Retn)
 
 // ShL* dst lop rop
+GDCC_IR_CodeList(ShLF_W)
+GDCC_IR_CodeList(ShLF_W2)
 GDCC_IR_CodeList(ShLU_W)
 GDCC_IR_CodeList(ShLU_W2)
 GDCC_IR_CodeList(ShLU_W3)
 
 // ShR* dst lop rop
+GDCC_IR_CodeList(ShRF_W)
+GDCC_IR_CodeList(ShRF_W2)
 GDCC_IR_CodeList(ShRI_W)
 GDCC_IR_CodeList(ShRI_W2)
 GDCC_IR_CodeList(ShRI_W3)
