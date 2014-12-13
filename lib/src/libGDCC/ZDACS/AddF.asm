@@ -296,11 +296,11 @@ Function "___GDCC__AddF_W2" \
    ShRI_W2, Stk(), Stk(),             LocReg(Lit(6), 0)
    AddU_W2, LocReg(Lit(6), 0), Stk(), Stk()
 
-   CmpI_LE_W, Stk(), LocReg(Lit(4), 0), Lit(0x001FFFFF)
+   CmpI_LE_W, Stk(), LocReg(Lit(7), 0), Lit(0x001FFFFF)
    Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$lgtr_ret")
 
-   ShRI_W, LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
-   AddI_W, LocReg(Lit(2), 0), LocReg(Lit(2), 0), Lit(1)
+   ShRI_W2, LocReg(Lit(6), 0), LocReg(Lit(6), 0), Lit(1)
+   AddI_W,  LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
 
    ; If exponent increased to 0x7FF, return infinity.
    CmpI_EQ_W, Stk(), LocReg(Lit(4), 0), Lit(0x7FF)
@@ -333,11 +333,11 @@ Function "___GDCC__AddF_W2" \
    OrIU_W,  Stk(), Stk(),             Lit(0x00100000)
    AddU_W2, LocReg(Lit(6), 0), Stk(), Stk()
 
-   CmpI_LE_W, Stk(), LocReg(Lit(4), 0), Lit(0x001FFFFF)
+   CmpI_LE_W, Stk(), LocReg(Lit(7), 0), Lit(0x001FFFFF)
    Jcnd_Tru,  Stk(), Lit("___GDCC__AddF_W2$lltr_ret")
 
-   ShRI_W, LocReg(Lit(6), 0), LocReg(Lit(6), 0), Lit(1)
-   AddI_W, LocReg(Lit(5), 0), LocReg(Lit(5), 0), Lit(1)
+   ShRI_W2, LocReg(Lit(6), 0), LocReg(Lit(6), 0), Lit(1)
+   AddI_W,  LocReg(Lit(5), 0), LocReg(Lit(5), 0), Lit(1)
 
    ; If exponent increased to 0x7FF, return infinity.
    CmpI_EQ_W, Stk(), LocReg(Lit(5), 0), Lit(0x7FF)
