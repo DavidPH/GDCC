@@ -108,15 +108,7 @@ namespace GDCC
          else
             expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
 
-         // Fixed-point types.
-         if(typeL->isCTypeFixed())
-            return ExpCreate_ArithFixed<Base, Codes>(typeL, expL, expR, pos);
-
-         // Integer types.
-         if(typeL->isCTypeInteg())
-            return ExpCreate_ArithInteg<Base, Codes>(typeL, expL, expR, pos);
-
-         throw Core::ExceptStr(pos, "expected integer or fixed-point type");
+         return ExpCreate_Arith<Base, Codes>(typeL, expL, expR, pos);
       }
 
       //
@@ -144,15 +136,7 @@ namespace GDCC
          else
             expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
 
-         // Fixed-point types.
-         if(typeL->isCTypeFixed())
-            return ExpCreate_ArithEqFixed<Base, Codes>(typeL, typeL, expL, expR, pos);
-
-         // Integer types.
-         if(typeL->isCTypeInteg())
-            return ExpCreate_ArithEqInteg<Base, Codes>(typeL, typeL, expL, expR, pos);
-
-         throw Core::ExceptStr(pos, "expected integer or fixed-point type");
+         return ExpCreate_ArithEq<Base, Codes>(typeL, typeL, expL, expR, pos);
       }
    }
 }
