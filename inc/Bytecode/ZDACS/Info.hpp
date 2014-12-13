@@ -347,7 +347,7 @@ namespace GDCC
 
             void trStmntBitwise2();
             void trStmntBitwise3();
-            bool trStmntShift(IR::Code codeMove);
+            bool trStmntShift(IR::Code codeMove, bool moveLit = false);
             void trStmntStk2(IR::Code moveDst, IR::Code moveSrc);
             void trStmntStk3(IR::Code moveDst, IR::Code moveSrc, bool ordered);
 

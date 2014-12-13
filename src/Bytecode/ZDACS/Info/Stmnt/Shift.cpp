@@ -798,7 +798,7 @@ namespace GDCC
          //
          // Info::trStmntShift
          //
-         bool Info::trStmntShift(IR::Code codeMove)
+         bool Info::trStmntShift(IR::Code codeMove, bool moveLit)
          {
             CheckArgC(stmnt, 3);
 
@@ -809,7 +809,7 @@ namespace GDCC
             moveArgStk_dst(stmnt->args[0], codeMove);
             if(moveArgStk_src(stmnt->args[1], codeMove)) return false;
 
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
+            if(!moveLit && stmnt->args[2].a == IR::ArgBase::Lit)
                return true;
 
             moveArgStk_src(stmnt->args[2], IR::Code::Move_W);
