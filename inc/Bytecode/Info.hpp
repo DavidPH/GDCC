@@ -47,6 +47,8 @@ namespace GDCC
       class Program;
       class Value;
       class Value_Array;
+      class Value_Fixed;
+      class Value_Float;
       class Value_Tuple;
       class Space;
       class Statement;

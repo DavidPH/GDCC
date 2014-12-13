@@ -195,6 +195,7 @@ namespace GDCC
          void Info::genSpaceInitiValue(InitData &ini, Core::FastU &itr, IR::Value const &val)
          {
             InitVal *iv;
+            Core::FastU bits;
 
             switch(val.v)
             {
@@ -212,6 +213,16 @@ namespace GDCC
                iv = &ini.vals[itr++];
                iv->tag = InitTag::Fixed;
                iv->val = Core::NumberCast<Core::FastU>(val.vFixed.value);
+               break;
+
+            case IR::ValueBase::Float:
+               bits = val.vFloat.vtype.bitsI + val.vFloat.vtype.bitsF + val.vFloat.vtype.bitsS;
+               for(Core::FastU w = 0; bits; bits -= 32, ++w)
+               {
+                  iv = &ini.vals[itr++];
+                  iv->tag = InitTag::Fixed;
+                  iv->val = GetWord_Float(val.vFloat, w);
+               }
                break;
 
             case IR::ValueBase::Funct:

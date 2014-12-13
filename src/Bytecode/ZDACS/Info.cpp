@@ -177,85 +177,6 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Static Functions                                                           |
-//
-
-namespace GDCC
-{
-   namespace Bytecode
-   {
-      namespace ZDACS
-      {
-         //
-         // GetWord_Fixed
-         //
-         static Core::FastU GetWord_Fixed(IR::Value_Fixed const &val, Core::FastU w)
-         {
-            Core::FastU valI;
-
-            if(w)
-            {
-               if(val.vtype.bitsS)
-                  valI = Core::NumberCast<Core::FastI>(val.value >> (w * 32));
-               else
-                  valI = Core::NumberCast<Core::FastU>(val.value >> (w * 32));
-            }
-            else
-            {
-               if(val.vtype.bitsS)
-                  valI = Core::NumberCast<Core::FastI>(val.value);
-               else
-                  valI = Core::NumberCast<Core::FastU>(val.value);
-            }
-
-            return valI & 0xFFFFFFFF;
-         }
-
-         //
-         // GetWord_Float
-         //
-         static Core::FastU GetWord_Float(IR::Value_Float const &val, Core::FastU w)
-         {
-            // Special handling for 0.
-            // TODO: Negative zero. May require replacing mpf_class.
-            if(!val.value) return 0;
-
-            // Convert float to binary string.
-            // The sign and mantissa bits are stored in the string, while the
-            // exponent is stored in exp. The string includes the implicit
-            // leading 1 which will be skipped.
-            std::unique_ptr<char[]> str{new char[val.vtype.bitsI + 3]};
-            mp_exp_t                exp;
-            mpf_get_str(str.get(), &exp, 2, val.vtype.bitsI + 1, val.value.get_mpf_t());
-
-            Core::Integ valI = 0;
-
-            // Sign bit.
-            auto start = str.get();
-            if(*start == '-') valI |= 1, ++start;
-
-            // Exponent bits.
-            exp += (1 << (val.vtype.bitsF - 1)) - 2;
-            exp &= (1 << (val.vtype.bitsF    )) - 1;
-
-            valI <<= val.vtype.bitsF;
-            valI |= exp;
-
-            // Mantissa bits. Skip first bit because it is an implicit 1.
-            auto itr = ++start;
-            for(; *itr; ++itr) {valI <<= 1; if(*itr == '1') ++valI;}
-            valI <<= val.vtype.bitsI - (itr - start);
-
-            // Return requested word.
-            if(w) valI >>= w * 32;
-            return Core::NumberCast<Core::FastU>(valI) & 0xFFFFFFFF;
-         }
-      }
-   }
-}
-
-
-//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
@@ -889,6 +810,71 @@ namespace GDCC
             default:
                throw Core::ExceptStr(exp->pos, "bad GetWord Value");
             }
+         }
+
+         //
+         // GetWord_Fixed
+         //
+         Core::FastU Info::GetWord_Fixed(IR::Value_Fixed const &val, Core::FastU w)
+         {
+            Core::FastU valI;
+
+            if(w)
+            {
+               if(val.vtype.bitsS)
+                  valI = Core::NumberCast<Core::FastI>(val.value >> (w * 32));
+               else
+                  valI = Core::NumberCast<Core::FastU>(val.value >> (w * 32));
+            }
+            else
+            {
+               if(val.vtype.bitsS)
+                  valI = Core::NumberCast<Core::FastI>(val.value);
+               else
+                  valI = Core::NumberCast<Core::FastU>(val.value);
+            }
+
+            return valI & 0xFFFFFFFF;
+         }
+
+         //
+         // GetWord_Float
+         //
+         Core::FastU Info::GetWord_Float(IR::Value_Float const &val, Core::FastU w)
+         {
+            // Special handling for 0.
+            // TODO: Negative zero. May require replacing mpf_class.
+            if(!val.value) return 0;
+
+            // Convert float to binary string.
+            // The sign and mantissa bits are stored in the string, while the
+            // exponent is stored in exp. The string includes the implicit
+            // leading 1 which will be skipped.
+            std::unique_ptr<char[]> str{new char[val.vtype.bitsI + 3]};
+            mp_exp_t                exp;
+            mpf_get_str(str.get(), &exp, 2, val.vtype.bitsI + 1, val.value.get_mpf_t());
+
+            Core::Integ valI = 0;
+
+            // Sign bit.
+            auto start = str.get();
+            if(*start == '-') valI |= 1, ++start;
+
+            // Exponent bits.
+            exp += (1 << (val.vtype.bitsF - 1)) - 2;
+            exp &= (1 << (val.vtype.bitsF    )) - 1;
+
+            valI <<= val.vtype.bitsF;
+            valI |= exp;
+
+            // Mantissa bits. Skip first bit because it is an implicit 1.
+            auto itr = ++start;
+            for(; *itr; ++itr) {valI <<= 1; if(*itr == '1') ++valI;}
+            valI <<= val.vtype.bitsI - (itr - start);
+
+            // Return requested word.
+            if(w) valI >>= w * 32;
+            return Core::NumberCast<Core::FastU>(valI) & 0xFFFFFFFF;
          }
 
          //
