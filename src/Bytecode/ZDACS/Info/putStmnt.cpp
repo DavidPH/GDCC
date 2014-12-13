@@ -258,6 +258,9 @@ namespace GDCC
             case IR::Code::ShLU_W2: putStmnt_ShLU_W2(); break;
             case IR::Code::ShLU_W3: putStmnt_ShLU_W3(); break;
 
+            case IR::Code::ShRF_W:  putStmntCall("___GDCC__ShRF_W",  1); break;
+            case IR::Code::ShRF_W2: putStmntCall("___GDCC__ShRF_W2", 2); break;
+
             case IR::Code::ShRI_W:  putCode(Code::ShRI); break;
             case IR::Code::ShRI_W2: putStmnt_ShRI_W2(); break;
             case IR::Code::ShRI_W3: putStmnt_ShRI_W3(); break;

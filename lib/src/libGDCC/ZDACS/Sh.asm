@@ -165,6 +165,65 @@ Function "___GDCC__ShLU_W3" \
 }
 
 ;;
+;; ___GDCC__ShRF_W
+;;
+Function "___GDCC__ShRF_W" \
+   alloc    = 1 \
+   ctype    = StkCall \
+   defin    = 1 \
+   label    = "___GDCC__ShRF_W$label" \
+   linka    = ExtC \
+   localReg = 2 \
+   param    = 2 \
+   retrn    = 1 \
+   block
+{
+   ShLU_W, LocReg(Lit(1), 0), LocReg(Lit(1), 0), Lit(23)
+
+   AndU_W,    Stk(), LocReg(Lit(0), 0), Lit(0x7F800000)
+   CmpI_LE_W, Stk(), Stk(), LocReg(Lit(1), 0)
+   Jcnd_Tru,  Stk(), Lit("___GDCC__ShRF_W2$zero")
+
+   SubU_W, LocReg(Lit(0), 0), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
+   Move_W, Stk(), LocReg(Lit(0), 0)
+   Retn,   Stk()
+
+"___GDCC__ShRF_W2$zero"
+   AndU_W, Stk(), LocReg(Lit(0), 0), Lit(0x80000000)
+   Retn,   Stk()
+}
+
+;;
+;; ___GDCC__ShRF_W2
+;;
+Function "___GDCC__ShRF_W2" \
+   alloc    = 1 \
+   ctype    = StkCall \
+   defin    = 1 \
+   label    = "___GDCC__ShRF_W2$label" \
+   linka    = ExtC \
+   localReg = 3 \
+   param    = 3 \
+   retrn    = 2 \
+   block
+{
+   ShLU_W, LocReg(Lit(2), 0), LocReg(Lit(2), 0), Lit(20)
+
+   AndU_W,    Stk(), LocReg(Lit(1), 0), Lit(0x7FF00000)
+   CmpI_LE_W, Stk(), Stk(), LocReg(Lit(2), 0)
+   Jcnd_Tru,  Stk(), Lit("___GDCC__ShRF_W2$zero")
+
+   SubU_W,  LocReg(Lit(1), 0), LocReg(Lit(1), 0), LocReg(Lit(2), 0)
+   Move_W2, Stk(), LocReg(Lit(0), 0)
+   Retn,    Stk(), Stk()
+
+"___GDCC__ShRF_W2$zero"
+   Move_W, Stk(), Lit(0)
+   AndU_W, Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
+   Retn,   Stk(), Stk()
+}
+
+;;
 ;; ___GDCC__ShRI_W2
 ;;
 Function "___GDCC__ShRI_W2" \
