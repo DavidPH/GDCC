@@ -206,7 +206,7 @@ namespace GDCC
             fn.ctype == IR::CallType::ScriptS)
          {
             // Create StrEnt.
-            auto &strent = prog.getStrEnt(genLabel());
+            auto &strent = prog.getStrEnt(glyph + Core::String("$StrEnt"));
 
             // Configure StrEnt.
             strent.valueStr = fn.valueStr ? fn.valueStr : fn.glyph;
