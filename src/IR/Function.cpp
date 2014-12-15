@@ -85,7 +85,7 @@ namespace GDCC
       //
       OArchive &operator << (OArchive &out, Function const &in)
       {
-         return out << in.block << in.ctype << in.label << in.linka << in.linka
+         return out << in.block << in.ctype << in.label << in.linka
             << in.localArs << in.localReg << in.param << in.retrn << in.stype
             << in.valueInt << in.valueStr << in.alloc << in.defin << in.sflagNet
             << in.sflagClS;
@@ -96,8 +96,8 @@ namespace GDCC
       //
       IArchive &operator >> (IArchive &in, Function &out)
       {
-         in >> out.block >> out.ctype >> out.label >> out.linka >> out.linka
-            >> out.localArs >> out.localReg >> out.param >> out.retrn >> out.stype
+         in >> out.block >> out.ctype >> out.label >> out.linka >> out.localArs
+            >> out.localReg >> out.param >> out.retrn >> out.stype
             >> out.valueInt >> out.valueStr;
 
          out.alloc    = GetIR<bool>(in);
