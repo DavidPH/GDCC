@@ -375,7 +375,7 @@ namespace GDCC
          ctx.block.addLabel(labelLT);
 
          // Check if result is 0.
-         CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_LE_W, expMin,
+         CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_LT_W, expMin,
             IR::Code::Jcnd_Tru, label0);
 
          // Shift mantissa right.
