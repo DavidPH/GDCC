@@ -114,6 +114,8 @@ namespace GDCC
 
             if(ret)
                numChunkCODE += (ret - 1) * 16;
+            else
+               numChunkCODE += 4;
          }
 
          //
@@ -328,6 +330,8 @@ namespace GDCC
 
             if(ret)
                putStmntPushRetn(ret - 1);
+            else
+               putCode(Code::Drop_Nul);
          }
 
          //
