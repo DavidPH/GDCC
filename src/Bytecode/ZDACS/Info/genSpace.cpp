@@ -210,9 +210,13 @@ namespace GDCC
                break;
 
             case IR::ValueBase::Fixed:
-               iv = &ini.vals[itr++];
-               iv->tag = InitTag::Fixed;
-               iv->val = Core::NumberCast<Core::FastU>(val.vFixed.value);
+               bits = val.vFloat.vtype.bitsI + val.vFloat.vtype.bitsF + val.vFloat.vtype.bitsS;
+               for(Core::FastU w = 0; bits; bits -= 32, ++w)
+               {
+                  iv = &ini.vals[itr++];
+                  iv->tag = InitTag::Fixed;
+                  iv->val = Core::NumberCast<Core::FastU>(val.vFixed.value >> (w * 32));
+               }
                break;
 
             case IR::ValueBase::Float:
