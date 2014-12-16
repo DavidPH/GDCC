@@ -263,6 +263,9 @@ namespace GDCC
                genStmnt_Retn();
                break;
 
+            case IR::Code::ShLF_W:  genStmntCall(1); break;
+            case IR::Code::ShLF_W2: genStmntCall(2); break;
+
             case IR::Code::ShLU_W2: genStmnt_ShLU_W2(); break;
             case IR::Code::ShLU_W3: genStmnt_ShLU_W3(); break;
 

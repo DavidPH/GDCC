@@ -156,6 +156,9 @@ namespace GDCC
             case IR::Code::Plsa: preStmntCall("___GDCC__Plsa", 1, 1); break;
             case IR::Code::Plsf: preStmntCall("___GDCC__Plsf", 0, 1); break;
 
+            case IR::Code::ShLF_W:  preStmntCall("___GDCC__ShLF_W",  1, 2); break;
+            case IR::Code::ShLF_W2: preStmntCall("___GDCC__ShLF_W2", 2, 3); break;
+
             case IR::Code::ShLU_W2: preStmntCall("___GDCC__ShLU_W2", 2, 3); break;
             case IR::Code::ShLU_W3: preStmntCall("___GDCC__ShLU_W3", 3, 4); break;
 

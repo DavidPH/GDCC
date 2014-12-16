@@ -16,6 +16,86 @@
 ;;
 
 ;;
+;; ___GDCC__ShLF_W
+;;
+Function "___GDCC__ShLF_W" \
+   alloc    = 1 \
+   ctype    = StkCall \
+   defin    = 1 \
+   label    = "___GDCC__ShLF_W$label" \
+   linka    = ExtC \
+   localReg = 2 \
+   param    = 2 \
+   retrn    = 1 \
+   block
+{
+   AndU_W, Stk(), LocReg(Lit(0), 0), Lit(0x7F800000)
+   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__ShLF_W$emax") ; Jcnd_Lit
+   Casm,   Lit(84), Lit(0x7F800000), Lit("___GDCC__ShLF_W$emax") ; Jcnd_Lit
+   ShRI_W, Stk(), Stk(), Lit(23)
+   AddU_W, LocReg(Lit(1), 0), LocReg(Lit(1), 0), Stk()
+
+   CmpI_GE_W, Stk(), LocReg(Lit(1), 0), Lit(0xFF)
+   Jcnd_Tru,  Stk(), Lit("___GDCC__ShLF_W$inf")
+
+   AndU_W, Stk(), LocReg(Lit(0), 0), Lit(0x807FFFFF)
+   ShLU_W, Stk(), LocReg(Lit(1), 0), Lit(23)
+   OrIU_W, Stk(), Stk(), Stk()
+   Retn,   Stk()
+
+"___GDCC__ShLF_W$inf"
+   AndU_W, Stk(), LocReg(Lit(0), 0), Lit(0x80000000)
+   OrIU_W, Stk(), Stk(),             Lit(0x7F800000)
+   Retn,   Stk()
+
+   ; If l is inf, nan, or zero, just return it.
+"___GDCC__ShLF_W$emax"
+   Move_W, Stk(), LocReg(Lit(0), 0)
+   Retn,   Stk()
+}
+
+;;
+;; ___GDCC__ShLF_W2
+;;
+Function "___GDCC__ShLF_W2" \
+   alloc    = 1 \
+   ctype    = StkCall \
+   defin    = 1 \
+   label    = "___GDCC__ShLF_W2$label" \
+   linka    = ExtC \
+   localReg = 3 \
+   param    = 3 \
+   retrn    = 2 \
+   block
+{
+   AndU_W, Stk(), LocReg(Lit(1), 0), Lit(0x7FF00000)
+   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__ShLF_W2$emax") ; Jcnd_Lit
+   Casm,   Lit(84), Lit(0x7FF00000), Lit("___GDCC__ShLF_W2$emax") ; Jcnd_Lit
+   ShRI_W, Stk(), Stk(), Lit(20)
+   AddU_W, LocReg(Lit(2), 0), LocReg(Lit(2), 0), Stk()
+
+   CmpI_GE_W, Stk(), LocReg(Lit(2), 0), Lit(0x7FF)
+   Jcnd_Tru,  Stk(), Lit("___GDCC__ShLF_W2$inf")
+
+   Move_W, Stk(), LocReg(Lit(0), 0)
+   AndU_W, Stk(), LocReg(Lit(1), 0), Lit(0x800FFFFF)
+   ShLU_W, Stk(), LocReg(Lit(2), 0), Lit(20)
+   OrIU_W, Stk(), Stk(), Stk()
+   Retn,   Stk(), Stk()
+
+"___GDCC__ShLF_W2$inf"
+   Move_W, Stk(), Lit(0)
+   AndU_W, Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
+   OrIU_W, Stk(), Stk(),             Lit(0x7FF00000)
+   Retn,   Stk(), Stk()
+
+   ; If l is inf, nan, or zero, just return it.
+"___GDCC__ShLF_W2$emax"
+   Move_W2, Stk(), LocReg(Lit(0), 0)
+   Retn,    Stk(), Stk()
+}
+
+;;
 ;; ___GDCC__ShLU_W2
 ;;
 Function "___GDCC__ShLU_W2" \
@@ -181,15 +261,20 @@ Function "___GDCC__ShRF_W" \
    ShLU_W, LocReg(Lit(1), 0), LocReg(Lit(1), 0), Lit(23)
 
    AndU_W,    Stk(), LocReg(Lit(0), 0), Lit(0x7F800000)
+   Casm,      Lit(84), Lit(0x7F800000), Lit("___GDCC__ShRF_W$emax") ; Jcnd_Lit
    CmpI_LE_W, Stk(), Stk(), LocReg(Lit(1), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__ShRF_W2$zero")
+   Jcnd_Tru,  Stk(), Lit("___GDCC__ShRF_W$zero")
 
-   SubU_W, LocReg(Lit(0), 0), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
-   Move_W, Stk(), LocReg(Lit(0), 0)
+   SubU_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
    Retn,   Stk()
 
-"___GDCC__ShRF_W2$zero"
+"___GDCC__ShRF_W$zero"
    AndU_W, Stk(), LocReg(Lit(0), 0), Lit(0x80000000)
+   Retn,   Stk()
+
+   ; If l is inf or nan, just return it.
+"___GDCC__ShRF_W$emax"
+   Move_W, Stk(), LocReg(Lit(0), 0)
    Retn,   Stk()
 }
 
@@ -210,17 +295,23 @@ Function "___GDCC__ShRF_W2" \
    ShLU_W, LocReg(Lit(2), 0), LocReg(Lit(2), 0), Lit(20)
 
    AndU_W,    Stk(), LocReg(Lit(1), 0), Lit(0x7FF00000)
+   Casm,      Lit(84), Lit(0x7FF00000), Lit("___GDCC__ShRF_W2$emax") ; Jcnd_Lit
    CmpI_LE_W, Stk(), Stk(), LocReg(Lit(2), 0)
    Jcnd_Tru,  Stk(), Lit("___GDCC__ShRF_W2$zero")
 
-   SubU_W,  LocReg(Lit(1), 0), LocReg(Lit(1), 0), LocReg(Lit(2), 0)
-   Move_W2, Stk(), LocReg(Lit(0), 0)
-   Retn,    Stk(), Stk()
+   Move_W, Stk(), LocReg(Lit(0), 0)
+   SubU_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(2), 0)
+   Retn,   Stk(), Stk()
 
 "___GDCC__ShRF_W2$zero"
    Move_W, Stk(), Lit(0)
    AndU_W, Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
    Retn,   Stk(), Stk()
+
+   ; If l is inf or nan, just return it.
+"___GDCC__ShRF_W2$emax"
+   Move_W2, Stk(), LocReg(Lit(0), 0)
+   Retn,    Stk(), Stk()
 }
 
 ;;

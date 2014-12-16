@@ -300,6 +300,9 @@ namespace GDCC
                trStmnt_Retn();
                break;
 
+            case IR::Code::ShLF_W:  trStmntShift(IR::Code::Move_W, true); break;
+            case IR::Code::ShLF_W2: trStmntShift(IR::Code::Move_W2, true); break;
+
             case IR::Code::ShLU_W2: trStmnt_ShLU_W2(); break;
             case IR::Code::ShLU_W3: trStmnt_ShLU_W3(); break;
 
