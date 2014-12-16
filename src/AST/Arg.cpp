@@ -204,6 +204,10 @@ namespace GDCC
          if(type->getQualVola())
             return false;
 
+         // Using an IR Arg needs to imply a lack of side-effects.
+         if(data && data->isEffect())
+            return false;
+
          auto addr = type->getQualAddr();
          if(addr.base == IR::AddrBase::Gen)
             addr = IR::GetAddrGen();
