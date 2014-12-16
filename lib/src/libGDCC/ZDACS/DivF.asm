@@ -185,7 +185,7 @@ Function "___GDCC__DivF_W2" \
    Move_W,    Stk(), LocReg(Lit(3), 0)
    Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__DivF_W2$r0") ; Jcnd_Lit
    Casm,      Lit(84), Lit(0x7FF00000), Lit("___GDCC__DivF_W2$rinf") ; Jcnd_Lit
-   CmpI_GT_W, Stk(), Stk(), Lit(0x7F800000)
+   CmpI_GT_W, Stk(), Stk(), Lit(0x7FF00000)
    Jcnd_Tru,  Stk(), Lit("___GDCC__DivF_W2$rnan")
    Move_W,    Stk(), LocReg(Lit(1), 0)
    Casm,      Lit(84), Lit(0x00000000), Lit("___GDCC__DivF_W2$l0") ; Jcnd_Lit
