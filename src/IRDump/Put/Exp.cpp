@@ -77,16 +77,18 @@ namespace GDCC
       //
       // PutExpPart Binary
       //
-      static void PutExpPart(std::ostream &out, IR::Exp_Binary const *exp)
+      static void PutExpPart(std::ostream &out, IR::Exp_Binary const *exp,
+         bool named = false)
       {
-         PutExp(out, exp->expL); out << ' ';
+         PutExp(out, exp->expL); out << (named ? ", " : " ");
          PutExp(out, exp->expR);
       }
 
       //
       // PutExpPart BraUna
       //
-      static void PutExpPart(std::ostream &out, IR::Exp_BraUna const *exp)
+      static void PutExpPart(std::ostream &out, IR::Exp_BraUna const *exp,
+         bool = false)
       {
          PutExp(out, exp->exp);
       }
@@ -94,26 +96,29 @@ namespace GDCC
       //
       // PutExpPart BraBin
       //
-      static void PutExpPart(std::ostream &out, IR::Exp_BraBin const *exp)
+      static void PutExpPart(std::ostream &out, IR::Exp_BraBin const *exp,
+         bool named = false)
       {
-         PutExp(out, exp->expL); out << ' ';
+         PutExp(out, exp->expL); out << (named ? ", " : " ");
          PutExp(out, exp->expR);
       }
 
       //
       // PutExpPart BraTer
       //
-      static void PutExpPart(std::ostream &out, IR::Exp_BraTer const *exp)
+      static void PutExpPart(std::ostream &out, IR::Exp_BraTer const *exp,
+         bool named = false)
       {
-         PutExp(out, exp->expC); out << ' ';
-         PutExp(out, exp->expL); out << ' ';
+         PutExp(out, exp->expC); out << (named ? ", " : " ");
+         PutExp(out, exp->expL); out << (named ? ", " : " ");
          PutExp(out, exp->expR);
       }
 
       //
       // PutExpPart Unary
       //
-      static void PutExpPart(std::ostream &out, IR::Exp_Unary const *exp)
+      static void PutExpPart(std::ostream &out, IR::Exp_Unary const *exp,
+         bool = false)
       {
          PutExp(out, exp->exp);
       }
@@ -121,9 +126,10 @@ namespace GDCC
       //
       // PutExpPart Cst
       //
-      static void PutExpPart(std::ostream &out, IR::Exp_Cst const *exp)
+      static void PutExpPart(std::ostream &out, IR::Exp_Cst const *exp,
+         bool named = false)
       {
-         PutType(out, exp->type); out << ' ';
+         PutType(out, exp->type); out << (named ? ", " : " ");
          PutExp(out, exp->exp);
       }
 
@@ -140,8 +146,6 @@ namespace GDCC
       //
       static void PutExpPart(std::ostream &out, IR::Exp_Tuple const *exp)
       {
-         out << '{';
-
          if(!exp->elemV.empty())
          {
             auto itr = exp->elemV.begin(), end = exp->elemV.end();
@@ -152,8 +156,6 @@ namespace GDCC
                PutExp(out, *itr++);
             }
          }
-
-         out << '}';
       }
 
       //
@@ -181,14 +183,25 @@ namespace GDCC
       void PutExp(std::ostream &out, IR::Exp const *exp)
       {
          #define CasePart(name, sym) case Core::STR_##name: \
-            out << (OptExpName ? #name : (sym)) << ' '; \
-            PutExpPart(out, static_cast<IR::Exp_##name const *>(exp)); \
+            if(OptExpName) \
+               out << #name << '('; \
+            else \
+               out << (sym) << ' '; \
+            PutExpPart(out, static_cast<IR::Exp_##name const *>(exp), OptExpName); \
+            if(OptExpName) \
+               out << ')'; \
             break
 
-         switch(static_cast<Core::StringIndex>(exp->getName()))
+         #define CaseParN(name, sym) case Core::STR_##name: \
+            out << #name "("; \
+            PutExpPart(out, static_cast<IR::Exp_##name const *>(exp), true); \
+            out << ')'; \
+            break
+
+         switch(exp->getName())
          {
             CasePart(Add,       "+");
-            CasePart(AddPtrRaw, "AddPtrRaw");
+            CaseParN(AddPtrRaw, "AddPtrRaw");
             CasePart(BitAnd,    "&");
             CasePart(BitOrI,    "|");
             CasePart(BitOrX,    "^");
@@ -199,7 +212,7 @@ namespace GDCC
             CasePart(CmpLT,     "<");
             CasePart(CmpNE,     "!=");
             CasePart(Cnd,       "?");
-            CasePart(Cst,       "Cst");
+            CaseParN(Cst,       "Cst");
             CasePart(Div,       "/");
             CasePart(Inv,       "~");
             CasePart(LogAnd,    "&&");
@@ -222,7 +235,9 @@ namespace GDCC
             break;
 
          case Core::STR_Tuple:
+            out << (OptExpName ? "Tuple(" : "{");
             PutExpPart(out, static_cast<IR::Exp_Tuple const *>(exp));
+            out << (OptExpName ? ')' : '}');
             break;
 
          case Core::STR_Value:
@@ -233,6 +248,9 @@ namespace GDCC
             out << "\"UNKNOWN IR::Exp: " << exp->getName() << '"';
             break;
          }
+
+         #undef CaseParN
+         #undef CasePart
       }
    }
 }

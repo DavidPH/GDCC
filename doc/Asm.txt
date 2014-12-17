@@ -534,31 +534,31 @@ Syntax:
     number
     string
     value
-    <Add> expression expression
-    <AddPtrRaw> expression expression
-    <BitAnd> expression expression
-    <BitOrI> expression expression
-    <BitOrX> expression expression
-    <CmpEQ> expression expression
-    <CmpGE> expression expression
-    <CmpGT> expression expression
-    <CmpLE> expression expression
-    <CmpLT> expression expression
-    <CmpNE> expression expression
-    <Cnd> expression expression expression
-    <Cst> type expression
-    <Div> expression expression
-    <Inv> expression
-    <LogAnd> expression expression
-    <LogOrI> expression expression
-    <LogOrX> expression expression
-    <Mod> expression expression
-    <Mul> expression expression
-    <Neg> expression
-    <Not> expression
-    <ShL> expression expression
-    <ShR> expression expression
-    <Sub> expression expression
+    <Add> ( expression , expression )
+    <AddPtrRaw> ( expression , expression )
+    <BitAnd> ( expression , expression )
+    <BitOrI> ( expression , expression )
+    <BitOrX> ( expression , expression )
+    <CmpEQ> ( expression , expression )
+    <CmpGE> ( expression , expression )
+    <CmpGT> ( expression , expression )
+    <CmpLE> ( expression , expression )
+    <CmpLT> ( expression , expression )
+    <CmpNE> ( expression , expression )
+    <Cnd> ( expression , expression , expression )
+    <Cst> ( type , expression )
+    <Div> ( expression , expression )
+    <Inv> ( expression )
+    <LogAnd> ( expression , expression )
+    <LogOrI> ( expression , expression )
+    <LogOrX> ( expression , expression )
+    <Mod> ( expression , expression )
+    <Mul> ( expression , expression )
+    <Neg> ( expression )
+    <Not> ( expression )
+    <ShL> ( expression , expression )
+    <ShR> ( expression , expression )
+    <Sub> ( expression , expression )
     -- expression
     ~ expression
     ! expression
@@ -1121,31 +1121,31 @@ Grammar
     number
     string
     value
-    <Add> expression expression
-    <AddPtrRaw> expression expression
-    <BitAnd> expression expression
-    <BitOrI> expression expression
-    <BitOrX> expression expression
-    <CmpEQ> expression expression
-    <CmpGE> expression expression
-    <CmpGT> expression expression
-    <CmpLE> expression expression
-    <CmpLT> expression expression
-    <CmpNE> expression expression
-    <Cnd> expression expression expression
-    <Cst> type expression
-    <Div> expression expression
-    <Inv> expression
-    <LogAnd> expression expression
-    <LogOrI> expression expression
-    <LogOrX> expression expression
-    <Mod> expression expression
-    <Mul> expression expression
-    <Neg> expression
-    <Not> expression
-    <ShL> expression expression
-    <ShR> expression expression
-    <Sub> expression expression
+    <Add> ( expression , expression )
+    <AddPtrRaw> ( expression , expression )
+    <BitAnd> ( expression , expression )
+    <BitOrI> ( expression , expression )
+    <BitOrX> ( expression , expression )
+    <CmpEQ> ( expression , expression )
+    <CmpGE> ( expression , expression )
+    <CmpGT> ( expression , expression )
+    <CmpLE> ( expression , expression )
+    <CmpLT> ( expression , expression )
+    <CmpNE> ( expression , expression )
+    <Cnd> ( expression , expression , expression )
+    <Cst> ( type , expression )
+    <Div> ( expression , expression )
+    <Inv> ( expression )
+    <LogAnd> ( expression , expression )
+    <LogOrI> ( expression , expression )
+    <LogOrX> ( expression , expression )
+    <Mod> ( expression , expression )
+    <Mul> ( expression , expression )
+    <Neg> ( expression )
+    <Not> ( expression )
+    <ShL> ( expression , expression )
+    <ShR> ( expression , expression )
+    <Sub> ( expression , expression )
     -- expression
     ~ expression
     ! expression

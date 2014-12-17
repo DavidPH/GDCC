@@ -99,17 +99,6 @@ namespace GDCC
       //
       IR::Exp::CRef GetExp(ParserCtx const &ctx)
       {
-         #define doE1(name, token) case Core::token: \
-            return IR::ExpCreate_##name(GetExp(ctx), tok.pos)
-
-         #define doE2(name, token) case Core::token: \
-            l = GetExp(ctx); r = GetExp(ctx); \
-            return IR::ExpCreate_##name(l, r, tok.pos)
-
-         #define doE3(name, token) case Core::token: \
-            c = GetExp(ctx); l = GetExp(ctx); r = GetExp(ctx); \
-            return IR::ExpCreate_##name(c, l, r, tok.pos)
-
          std::vector<IR::Exp::CRef> v;
 
          IR::Exp::CPtr c, l, r;
@@ -121,6 +110,30 @@ namespace GDCC
          case Core::TOK_Identi:
             switch(tok.str)
             {
+               #define doE1(name, token) case Core::token: \
+                  TokenDrop(ctx, Core::TOK_ParenO, "'('"); \
+                  l = GetExp(ctx); \
+                  TokenDrop(ctx, Core::TOK_ParenC, "')'"); \
+                  return IR::ExpCreate_##name(l, tok.pos)
+
+               #define doE2(name, token) case Core::token: \
+                  TokenDrop(ctx, Core::TOK_ParenO, "'('"); \
+                  l = GetExp(ctx); \
+                  TokenDrop(ctx, Core::TOK_Comma, "','"); \
+                  r = GetExp(ctx); \
+                  TokenDrop(ctx, Core::TOK_ParenC, "')'"); \
+                  return IR::ExpCreate_##name(l, r, tok.pos)
+
+               #define doE3(name, token) case Core::token: \
+                  TokenDrop(ctx, Core::TOK_ParenO, "'('"); \
+                  c = GetExp(ctx); \
+                  TokenDrop(ctx, Core::TOK_Comma, "','"); \
+                  l = GetExp(ctx); \
+                  TokenDrop(ctx, Core::TOK_Comma, "','"); \
+                  r = GetExp(ctx); \
+                  TokenDrop(ctx, Core::TOK_ParenC, "')'"); \
+                  return IR::ExpCreate_##name(c, l, r, tok.pos)
+
                doE2(Add,       STR_Add);
                doE2(AddPtrRaw, STR_AddPtrRaw);
                doE2(BitAnd,    STR_BitAnd);
@@ -146,9 +159,17 @@ namespace GDCC
                doE2(ShR,       STR_ShR);
                doE2(Sub,       STR_Sub);
 
+               #undef doE3
+               #undef doE2
+               #undef doE1
+
             case Core::STR_Cst:
+               TokenDrop(ctx, Core::TOK_ParenO, "'('");
                t = GetType(ctx);
-               return IR::ExpCreate_Cst(std::move(t), GetExp(ctx), tok.pos);
+               TokenDrop(ctx, Core::TOK_Comma, "','");
+               l = GetExp(ctx);
+               TokenDrop(ctx, Core::TOK_ParenC, "')'");
+               return IR::ExpCreate_Cst(std::move(t), l, tok.pos);
 
             case Core::STR_Tuple:
                TokenDrop(ctx, Core::TOK_ParenO, "'('");
@@ -178,6 +199,17 @@ namespace GDCC
          case Core::TOK_String:
             return IR::ExpCreate_Glyph(IR::Glyph(ctx.prog, tok.str), tok.pos);
 
+            #define doE1(name, token) case Core::token: \
+               return IR::ExpCreate_##name(GetExp(ctx), tok.pos)
+
+            #define doE2(name, token) case Core::token: \
+               l = GetExp(ctx); r = GetExp(ctx); \
+               return IR::ExpCreate_##name(l, r, tok.pos)
+
+            #define doE3(name, token) case Core::token: \
+               c = GetExp(ctx); l = GetExp(ctx); r = GetExp(ctx); \
+               return IR::ExpCreate_##name(c, l, r, tok.pos)
+
             doE2(Add,    TOK_Add);
             doE2(BitAnd, TOK_And);
             doE2(BitOrI, TOK_OrI);
@@ -202,6 +234,10 @@ namespace GDCC
             doE2(ShR,    TOK_ShR);
             doE2(Sub,    TOK_Sub);
 
+            #undef doE3
+            #undef doE2
+            #undef doE1
+
          case Core::TOK_BraceO:
             if(!ctx.in.peek(Core::TOK_BraceC)) do
                v.emplace_back(GetExp(ctx));
@@ -218,10 +254,6 @@ namespace GDCC
          default:
             throw Core::ParseExceptExpect(tok, "expression", false);
          }
-
-         #undef doE3
-         #undef doE2
-         #undef doE1
       }
 
       //
