@@ -44,11 +44,14 @@ namespace GDCC
       template<typename T>
       static T GetArgU(ParserCtx const &ctx)
       {
+         Core::FastU off = 0;
+
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
-         auto exp = GetFastU(ctx);
+         if(!ctx.in.peek(Core::TOK_ParenC))
+            off = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-         return T(std::move(exp));
+         return T(std::move(off));
       }
 
       //
@@ -57,11 +60,15 @@ namespace GDCC
       template<typename T>
       static T GetArg1(ParserCtx const &ctx)
       {
+         Core::FastU off = 0;
+
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
          auto exp = GetExp(ctx);
+         if(ctx.in.drop(Core::TOK_Comma))
+            off = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-         return T(std::move(exp));
+         return T(std::move(exp), std::move(off));
       }
 
       //
@@ -70,13 +77,15 @@ namespace GDCC
       template<typename T>
       static T GetArg2(ParserCtx const &ctx)
       {
+         Core::FastU off = 0;
+
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
          auto arg = GetArg(ctx);
-         TokenDrop(ctx, Core::TOK_Comma, "','");
-         auto exp = GetFastU(ctx);
+         if(ctx.in.drop(Core::TOK_Comma))
+            off = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-         return T(std::move(arg), std::move(exp));
+         return T(std::move(arg), std::move(off));
       }
 
       //
@@ -85,15 +94,17 @@ namespace GDCC
       template<typename T>
       static T GetArg3(ParserCtx const &ctx)
       {
+         Core::FastU off = 0;
+
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
          auto arg0 = GetArg(ctx);
          TokenDrop(ctx, Core::TOK_Comma, "','");
          auto arg1 = GetArg(ctx);
-         TokenDrop(ctx, Core::TOK_Comma, "','");
-         auto exp  = GetFastU(ctx);
+         if(ctx.in.drop(Core::TOK_Comma))
+            off = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-         return T(std::move(arg0), std::move(arg1), std::move(exp));
+         return T(std::move(arg0), std::move(arg1), std::move(off));
       }
    }
 }
