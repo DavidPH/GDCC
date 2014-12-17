@@ -138,7 +138,7 @@ namespace GDCC
          out << " (";
          out << val.value;
          out << ", ";
-         out << val.addrB;
+         out << val.addrB << ' ';
          PutString(out, val.addrN);
          out << ')';
       }
