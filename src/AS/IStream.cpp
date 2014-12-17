@@ -41,6 +41,7 @@ namespace GDCC
          // Basic tokens.
          switch(c)
          {
+         case ':':  GDCC_Core_Token_SetStrTok(out, Colon);  return in;
          case ',':  GDCC_Core_Token_SetStrTok(out, Comma);  return in;
          case '/':  GDCC_Core_Token_SetStrTok(out, Div);    return in;
          case '%':  GDCC_Core_Token_SetStrTok(out, Mod);    return in;

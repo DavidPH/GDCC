@@ -74,6 +74,13 @@ namespace GDCC
          {
          }
 
+         ParserCtx(ParserCtx const &ctx, Core::TokenStream &in_) :
+            in    (in_),
+            macros(ctx.macros),
+            prog  (ctx.prog)
+         {
+         }
+
          Core::TokenStream &in;
          MacroMap          &macros;
          IR::Program       &prog;

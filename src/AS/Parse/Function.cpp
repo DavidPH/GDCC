@@ -12,6 +12,8 @@
 
 #include "AS/Parse.hpp"
 
+#include "AS/LabelTBuf.hpp"
+
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
@@ -29,8 +31,13 @@ namespace GDCC
       //
       // ParseFunction
       //
-      void ParseFunction(ParserCtx const &ctx, IR::Function &func)
+      void ParseFunction(ParserCtx const &ctx_, IR::Function &func)
       {
+         // Insert label mangling TokenBuf into parser.
+         LabelTBuf         ltb{*ctx_.in.tkbuf(), func.glyph};
+         Core::TokenStream ts {&ltb};
+         ParserCtx         ctx{ctx_, ts};
+
          while(!ctx.in.drop(Core::TOK_LnEnd))
             switch(TokenPeekIdenti(ctx).in.get().str)
          {

@@ -20,6 +20,7 @@
 ##
 add_library(gdcc-as-lib ${GDCC_SHARED_DECL}
    IStream.cpp
+   LabelTBuf.cpp
    Macro.cpp
    Parse.cpp
    Parse/Arg.cpp
@@ -36,6 +37,7 @@ add_library(gdcc-as-lib ${GDCC_SHARED_DECL}
    Parse/Value.cpp
 
    ../../inc/AS/IStream.hpp
+   ../../inc/AS/LabelTBuf.hpp
    ../../inc/AS/Macro.hpp
    ../../inc/AS/Parse.hpp
    ../../inc/AS/TStream.hpp
