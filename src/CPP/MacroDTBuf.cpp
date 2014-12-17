@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,8 @@
 #include "CPP/Macro.hpp"
 #include "CPP/MacroTBuf.hpp"
 
-#include <iostream>
+#include "Core/Exception.hpp"
+
 #include <vector>
 
 
@@ -40,10 +41,8 @@ namespace GDCC
          if(src.peek().tok == Core::TOK_WSpace) src.get();
 
          if(src.peek().tok != Core::TOK_Identi)
-         {
-            std::cerr << "ERROR: " << src.peek().pos << ": expected identifier\n";
-            throw EXIT_FAILURE;
-         }
+            throw Core::ParseExceptExpect(src.peek().pos, "identifier",
+               src.peek().str, false);
 
          Core::Token name = src.get();
 
@@ -71,9 +70,8 @@ namespace GDCC
          // Invalid macro.
          else
          {
-            std::cerr << "ERROR: " << src.peek().pos
-               << ": expected lparen or whitespace\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(src.peek().pos,
+               "lparen or whitespace", src.peek().str, false);
          }
 
          // Read replacement list.
@@ -82,9 +80,8 @@ namespace GDCC
          // Check against existing macro.
          if(auto oldMacro = macros.find(name)) if(*oldMacro != newMacro)
          {
-            std::cerr << "ERROR: " << name.pos
-               << ": incompatible macro redefinition\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptStr(name.pos,
+               "incompatible macro redefinition");
          }
 
          macros.add(name.str, std::move(newMacro));
@@ -112,30 +109,29 @@ namespace GDCC
                if(src.peek().tok == Core::TOK_Comma) {src.get(); continue;}
                if(src.peek().tok == Core::TOK_ParenC) {src.get(); break;}
 
-               std::cerr << "ERROR: " << src.peek().pos << ": expected , or )\n";
-               throw EXIT_FAILURE;
+               throw Core::ParseExceptExpect(src.peek().pos, "',' or ')'",
+                  src.peek().str, false);
             }
 
             if(src.peek().tok == Core::TOK_Dot3)
             {
-               args.emplace_back((src.get(), Core::STRNULL));
+               args.emplace_back((src.get(), nullptr));
 
                if(src.peek().tok == Core::TOK_WSpace) src.get();
 
                if(src.peek().tok == Core::TOK_ParenC) {src.get(); break;}
 
-               std::cerr << "ERROR: " << src.peek().pos << ": expected )\n";
-               throw EXIT_FAILURE;
+               throw Core::ParseExceptExpect(src.peek().pos, "')'",
+                  src.peek().str, false);
             }
 
-            std::cerr << "ERROR: " << src.peek().pos
-               << ": expected identifier or ...\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(src.peek().pos,
+              "identifier or '...'", src.peek().str, false);
          }
          else
             src.get();
 
-         return Macro::Args(Core::Move, args.begin(), args.end());
+         return {Core::Move, args.begin(), args.end()};
       }
 
       //
@@ -156,7 +152,7 @@ namespace GDCC
          if(!list.empty() && list.back().tok == Core::TOK_WSpace)
             list.pop_back();
 
-         return Macro::List(Core::Move, list.begin(), list.end());
+         return {Core::Move, list.begin(), list.end()};
       }
 
       //
@@ -177,16 +173,13 @@ namespace GDCC
 
          // Build macro buffer.
          Core::ArrayTBuf abuf{toks.data(), toks.size()};
-         MacroTBuf mbuf{abuf, macros};
+         MacroTBuf       mbuf{abuf, macros};
 
          while(mbuf.peek().tok == Core::TOK_WSpace) mbuf.get();
 
          if(mbuf.peek().tok != Core::TOK_Number)
-         {
-            std::cerr << "ERROR: " << mbuf.peek().pos
-               << ": expected digit-sequence\n";
-            throw EXIT_FAILURE;
-         }
+            throw Core::ParseExceptExpect(mbuf.peek().pos, "digit-sequence",
+               mbuf.peek().str, false);
 
          std::size_t num = 0;
          auto numTok = mbuf.get();
@@ -205,9 +198,8 @@ namespace GDCC
          case '9': num = num * 10 + 9; break;
 
          default:
-            std::cerr << "ERROR: " << numTok.pos
-               << ": expected digit-sequence\n";
-            throw EXIT_FAILURE;
+            throw Core::ParseExceptExpect(mbuf.peek().pos, "digit-sequence",
+               mbuf.peek().str, false);
          }
 
          macros.lineLine(num - numTok.pos.line);
@@ -218,10 +210,8 @@ namespace GDCC
             return true;
 
          if(mbuf.peek().tok != Core::TOK_String)
-         {
-            std::cerr << "ERROR: " << numTok.pos << ": expected string\n";
-            throw EXIT_FAILURE;
-         }
+            throw Core::ParseExceptExpect(mbuf.peek().pos, "string",
+               mbuf.peek().str, false);
 
          macros.lineFile(src.get().str);
 
@@ -241,21 +231,16 @@ namespace GDCC
          if(src.peek().tok == Core::TOK_WSpace) src.get();
 
          if(src.peek().tok != Core::TOK_Identi)
-         {
-            std::cerr << "ERROR: " << src.peek().pos
-               << ": expected identifier\n";
-            throw EXIT_FAILURE;
-         }
+            throw Core::ParseExceptExpect(src.peek().pos, "identifier",
+               src.peek().str, false);
 
          macros.rem(src.get().str);
 
          if(src.peek().tok == Core::TOK_WSpace) src.get();
 
-         if(src.peek().tok != Core::TOK_LnEnd)
-         {
-            std::cerr << "ERROR: " << src.peek().pos << ": expected end-line\n";
-            throw EXIT_FAILURE;
-         }
+         if(src.peek().tok != Core::TOK_LnEnd && src.peek().tok != Core::TOK_EOF)
+            throw Core::ParseExceptExpect(src.peek().pos, "end-line",
+               src.peek().str, false);
 
          return true;
       }
