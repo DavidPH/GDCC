@@ -460,8 +460,6 @@ Syntax:
     <AndU_W>
     <Call>
     <Casm>
-    <Cjmp_Nil>
-    <Cjmp_Tru>
     <CmpI_EQ_W>
     <CmpI_GE_W>
     <CmpI_GT_W>
@@ -475,10 +473,16 @@ Syntax:
     <CmpU_LT_W>
     <CmpU_NE_W>
     <Cnat>
+    <Cscr_IA>
+    <Cscr_IS>
+    <Cscr_SA>
+    <Cscr_SS>
     <Cspe>
     <DivI_W>
     <DivX_W>
     <InvU_W>
+    <Jcnd_Nil>
+    <Jcnd_Tru>
     <Jump>
     <ModI_W>
     <Move_W>
@@ -501,27 +505,30 @@ Arguments
 
 Syntax:
   argument:
-    <Cpy> ( expression )
-    <Far> ( argument , expression )
-    <GblArr> ( argument , argument , expression )
-    <GblArs> ( argument , expression )
-    <GblReg> ( argument , expression )
-    <Gen> ( argument , expression )
-    <Lit> ( expression )
-    <Loc> ( argument , expression )
-    <LocArs> ( argument , expression )
-    <LocReg> ( argument , expression )
-    <MapArr> ( argument , argument , expression )
-    <MapArs> ( argument , expression )
-    <MapReg> ( argument , expression )
+    <Cpy> ( expression(opt) )
+    <Far> ( argument argument-offset(opt) )
+    <GblArr> ( argument , argument argument-offset(opt) )
+    <GblArs> ( argument argument-offset(opt) )
+    <GblReg> ( argument argument-offset(opt) )
+    <Gen> ( argument argument-offset(opt) )
+    <Lit> ( expression argument-offset(opt) )
+    <Loc> ( argument argument-offset(opt) )
+    <LocArs> ( argument argument-offset(opt) )
+    <LocReg> ( argument argument-offset(opt) )
+    <MapArr> ( argument , argument argument-offset(opt) )
+    <MapArs> ( argument argument-offset(opt) )
+    <MapReg> ( argument argument-offset(opt) )
     <Nul> ( )
     <Stk> ( )
-    <StrArr> ( argument , argument , expression )
-    <StrArs> ( argument , expression )
-    <Vaa> ( argument , expression )
-    <WldArr> ( argument , argument , expression )
-    <WldArs> ( argument , expression )
-    <WldReg> ( argument , expression )
+    <StrArr> ( argument , argument argument-offset(opt) )
+    <StrArs> ( argument argument-offset(opt) )
+    <Vaa> ( argument argument-offset(opt) )
+    <WldArr> ( argument , argument argument-offset(opt) )
+    <WldArs> ( argument argument-offset(opt) )
+    <WldReg> ( argument argument-offset(opt) )
+
+  argument-offset:
+    , expression
 
 ===============================================================================
 Expressions
@@ -1054,8 +1061,6 @@ Grammar
     <AndU_W>
     <Call>
     <Casm>
-    <Cjmp_Nil>
-    <Cjmp_Tru>
     <CmpI_EQ_W>
     <CmpI_GE_W>
     <CmpI_GT_W>
@@ -1069,10 +1074,16 @@ Grammar
     <CmpU_LT_W>
     <CmpU_NE_W>
     <Cnat>
+    <Cscr_IA>
+    <Cscr_IS>
+    <Cscr_SA>
+    <Cscr_SS>
     <Cspe>
     <DivI_W>
     <DivX_W>
     <InvU_W>
+    <Jcnd_Nil>
+    <Jcnd_Tru>
     <Jump>
     <ModI_W>
     <Move_W>
@@ -1093,27 +1104,30 @@ Grammar
     , argument argument-list(opt)
 
   argument:
-    <Cpy> ( expression )
-    <Far> ( argument , expression )
-    <GblArr> ( argument , argument , expression )
-    <GblArs> ( argument , expression )
-    <GblReg> ( argument , expression )
-    <Gen> ( argument , expression )
-    <Lit> ( expression )
-    <Loc> ( argument , expression )
-    <LocArs> ( argument , expression )
-    <LocReg> ( argument , expression )
-    <MapArr> ( argument , argument , expression )
-    <MapArs> ( argument , expression )
-    <MapReg> ( argument , expression )
+    <Cpy> ( expression(opt) )
+    <Far> ( argument argument-offset(opt) )
+    <GblArr> ( argument , argument argument-offset(opt) )
+    <GblArs> ( argument argument-offset(opt) )
+    <GblReg> ( argument argument-offset(opt) )
+    <Gen> ( argument argument-offset(opt) )
+    <Lit> ( expression argument-offset(opt) )
+    <Loc> ( argument argument-offset(opt) )
+    <LocArs> ( argument argument-offset(opt) )
+    <LocReg> ( argument argument-offset(opt) )
+    <MapArr> ( argument , argument argument-offset(opt) )
+    <MapArs> ( argument argument-offset(opt) )
+    <MapReg> ( argument argument-offset(opt) )
     <Nul> ( )
     <Stk> ( )
-    <StrArr> ( argument , argument , expression )
-    <StrArs> ( argument , expression )
-    <Vaa> ( argument , expression )
-    <WldArr> ( argument , argument , expression )
-    <WldArs> ( argument , expression )
-    <WldReg> ( argument , expression )
+    <StrArr> ( argument , argument argument-offset(opt) )
+    <StrArs> ( argument argument-offset(opt) )
+    <Vaa> ( argument argument-offset(opt) )
+    <WldArr> ( argument , argument argument-offset(opt) )
+    <WldArs> ( argument argument-offset(opt) )
+    <WldReg> ( argument argument-offset(opt) )
+
+  argument-offset:
+    , expression
 
   expression:
     aggregate
