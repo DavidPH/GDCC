@@ -41,6 +41,7 @@ namespace GDCC
       template<typename T> class CounterRef;
       class Origin;
       class String;
+      class Token;
    }
 }
 
@@ -53,6 +54,10 @@ namespace GDCC
 {
    namespace CC
    {
+      Core::CounterRef<AST::Statement const> StatementCreate_Asm(
+         Core::Array<Core::String> &&labels, Core::Origin pos,
+         Core::Array<Core::Token> &&tokens);
+
       Core::CounterRef<AST::Statement const> StatementCreate_Break(
          Core::Array<Core::String> const &labels, Core::Origin pos,
          Scope_Local &ctx);

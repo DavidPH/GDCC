@@ -19,6 +19,7 @@
 ## gdcc-cc-lib
 ##
 add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
+   AsmGlyphTBuf.cpp
    Exp.cpp
    Exp/Add.cpp
    Exp/Add/Point.cpp
@@ -76,6 +77,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    Scope/Local.cpp
    Scope/Loop.cpp
    Statement.cpp
+   Statement/Asm.cpp
    Statement/FuncPre.cpp
    Statement/Goto.cpp
    Statement/If.cpp
@@ -90,6 +92,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    Type/Float.cpp
    Type/Struct.cpp
 
+   ../../inc/CC/AsmGlyphTBuf.hpp
    ../../inc/CC/Exp.hpp
    ../../inc/CC/Exp/Add.hpp
    ../../inc/CC/Exp/Arith.hpp
@@ -121,6 +124,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    ../../inc/CC/Scope/Local.hpp
    ../../inc/CC/Scope/Loop.hpp
    ../../inc/CC/Statement.hpp
+   ../../inc/CC/Statement/Asm.hpp
    ../../inc/CC/Statement/FuncPre.hpp
    ../../inc/CC/Statement/Goto.hpp
    ../../inc/CC/Statement/If.hpp
@@ -143,7 +147,7 @@ add_executable(gdcc-cc
    main_cc.cpp
 )
 
-target_link_libraries(gdcc-cc-lib gdcc-ast-lib gdcc-cpp-lib)
+target_link_libraries(gdcc-cc-lib gdcc-as-lib gdcc-ast-lib gdcc-cpp-lib)
 
 target_link_libraries(gdcc-cc gdcc-cc-lib)
 

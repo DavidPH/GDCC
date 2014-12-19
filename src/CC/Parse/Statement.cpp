@@ -12,17 +12,22 @@
 
 #include "CC/Parse.hpp"
 
+#include "CC/AsmGlyphTBuf.hpp"
 #include "CC/Exp.hpp"
 #include "CC/Scope/Case.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Statement.hpp"
 #include "CC/Type.hpp"
 
+#include "AS/LabelTBuf.hpp"
+#include "AS/TStream.hpp"
+
 #include "AST/Exp.hpp"
 #include "AST/Function.hpp"
 #include "AST/Statement.hpp"
 
 #include "Core/Exception.hpp"
+#include "Core/StringBuf.hpp"
 #include "Core/TokenStream.hpp"
 
 
@@ -96,6 +101,50 @@ namespace GDCC
             throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
 
          return AST::StatementCreate_Exp(std::move(labels), pos, exp);
+      }
+
+      //
+      // GetStatement_asm
+      //
+      static AST::Statement::CRef GetStatement_asm(ParserCtx const &ctx,
+         Scope_Local &scope, Core::Array<Core::String> &labels)
+      {
+         // <__asm> ( string-literal ) ;
+
+         // <__asm>
+         auto pos = ctx.in.get().pos;
+
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+
+         // string-literal
+         if(!ctx.in.peek().isTokString())
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
+
+         auto tok = ctx.in.get();
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+
+         // ;
+         if(!ctx.in.drop(Core::TOK_Semico))
+            throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+
+         // Convert string to a series of assembly tokens.
+         Core::StringBuf sbuf{tok.str.data(), tok.str.size()};
+         AS::TStream     in  {sbuf, tok.pos.file, tok.pos.line};
+         AS::LabelTBuf   ltb {*in.tkbuf(), scope.fn.fn->glyph};
+         AsmGlyphTBuf    gtb {ltb, scope};
+         in.tkbuf(&gtb);
+
+         std::vector<Core::Token> tokens;
+         while(in >> tok) tokens.push_back(tok);
+         tokens.emplace_back(tok.pos, nullptr, Core::TOK_EOF);
+
+         return StatementCreate_Asm(std::move(labels), pos,
+            {Core::Move, tokens.begin(), tokens.end()});
       }
 
       //
@@ -488,7 +537,8 @@ namespace GDCC
          if(ctx.in.peek().tok == Core::TOK_BraceO)
             return GetStatement_Compound(ctx, scope, labels);
 
-         if(ctx.in.peek().tok == Core::TOK_KeyWrd) switch(ctx.in.peek().str)
+         if(ctx.in.peek(Core::TOK_KeyWrd) || ctx.in.peek(Core::TOK_Identi))
+            switch(ctx.in.peek().str)
          {
             // selection-statement
          case Core::STR_if:     return GetStatement_if    (ctx, scope, labels);
@@ -504,6 +554,9 @@ namespace GDCC
          case Core::STR_continue: return GetStatement_continue(ctx, scope, labels);
          case Core::STR_break:    return GetStatement_break   (ctx, scope, labels);
          case Core::STR_return:   return GetStatement_return  (ctx, scope, labels);
+
+            // asm-statement:
+         case Core::STR___asm: return GetStatement_asm(ctx, scope, labels);
 
          default: break;
          }

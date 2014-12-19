@@ -46,7 +46,7 @@ namespace GDCC
          {
             auto const &tok = buf->peek();
             if(tok.tok == TOK_EOF)
-               return eof = true, false;
+               return eof = true, tt == TOK_EOF;
 
             if(tok.tok == tt)
                return buf->get(), true;

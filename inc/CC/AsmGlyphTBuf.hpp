@@ -6,12 +6,12 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Function label mangling token buffer.
+// C scoped glyph token buffer.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__AS__LabelTBuf_H__
-#define GDCC__AS__LabelTBuf_H__
+#ifndef GDCC__CC__LabelTBuf_H__
+#define GDCC__CC__LabelTBuf_H__
 
 #include "../Core/TokenBuf.hpp"
 
@@ -22,26 +22,28 @@
 
 namespace GDCC
 {
-   namespace AS
+   namespace CC
    {
+      class Scope;
+
       //
-      // LabelTBuf
+      // AsmGlyphTBuf
       //
-      class LabelTBuf : public Core::TokenBuf
+      class AsmGlyphTBuf : public Core::TokenBuf
       {
       public:
-         LabelTBuf(Core::TokenBuf &src_, Core::String prefix_) :
-            src(src_), prefix{prefix_} {sett(buf, buf, buf);}
+         AsmGlyphTBuf(Core::TokenBuf &src_, Scope &scope_) :
+            src(src_), scope(scope_) {sett(buf, buf, buf);}
 
       protected:
          virtual void underflow();
 
          Core::TokenBuf &src;
          Core::Token     buf[1];
-         Core::String    prefix;
+         Scope          &scope;
       };
    }
 }
 
-#endif//GDCC__AS__LabelTBuf_H__
+#endif//GDCC__CC__LabelTBuf_H__
 
