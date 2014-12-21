@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -47,7 +47,7 @@ namespace GDCC
             std::istream{&cbuf}, needHeader{false}, lbuf{buf},
             obuf{lbuf, file, line}, tbuf{obuf}, ebuf{tbuf}, cbuf{ebuf} {}
 
-         void disableComments() {rdbuf(&obuf);}
+         void disableComments() {rdbuf(&ebuf);}
 
          void enableComments() {rdbuf(&cbuf);}
 
