@@ -72,6 +72,7 @@ namespace GDCC
          virtual bool isCTypeEnum()   const {return true;}
          virtual bool isCTypeInteg()  const {return true;}
          virtual bool isCTypeObject() const {return true;}
+         virtual bool isCTypeReal()   const {return true;}
          virtual bool isCTypeScalar() const {return true;}
 
          // Type alteration.
