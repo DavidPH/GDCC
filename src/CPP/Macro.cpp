@@ -481,6 +481,9 @@ namespace GDCC
          #define PlatformCase(e, n) \
             case Platform::e::n: Insert1("__GDCC_" #e "__" #n "__"); break
 
+         // __GDCC__
+         Insert1("__GDCC__");
+
          // Set up __GDCC_Format__*__.
          switch(Platform::FormatCur)
          {
