@@ -174,9 +174,17 @@ namespace GDCC
          {
             auto fn = AST::Function::Create(attr.name, glyph);
 
+            try
+            {
+               fn->param = attr.type->getCallWords();
+            }
+            catch(AST::TypeError const &)
+            {
+                throw Core::ExceptStr(attr.namePos, "incomplete parameter");
+            }
+
             fn->ctype    = attr.callt;
             fn->linka    = attr.linka;
-            fn->param    = attr.type->getCallWords();
             fn->paramOpt = attr.paramOpt;
             fn->retrn    = attr.type->getBaseType();
             fn->stype    = attr.stype;

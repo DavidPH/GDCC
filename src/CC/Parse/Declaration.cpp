@@ -240,6 +240,9 @@ namespace GDCC
       static void ParseDecl_Function(ParserCtx const &ctx, Scope_Global &scope,
          AST::Attribute &attr, AST::Function *fn)
       {
+         if(!fn->retrn->isTypeComplete() && !fn->retrn->isTypeVoid())
+            throw Core::ExceptStr(attr.namePos, "incomplete return");
+
          auto &fnScope = scope.createScope(attr, fn);
 
          auto stmntPre  = StatementCreate_FuncPre(ctx.in.peek().pos, fnScope);
