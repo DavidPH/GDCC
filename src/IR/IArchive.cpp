@@ -74,6 +74,8 @@ namespace GDCC
          for(int c; (c = in.get()), in; data.push_back(static_cast<char>(c)))
             if(!c) ++count;
 
+         if(!count) return;
+
          str = Core::Array<char const *>(count);
          auto si = itr = str.begin();
 
