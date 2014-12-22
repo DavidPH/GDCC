@@ -455,11 +455,18 @@ Statement Names
 Syntax:
   statement-name:
     <Nop>
+    <AddF_W>
     <AddI_W>
     <AddU_W>
     <AndU_W>
     <Call>
     <Casm>
+    <CmpF_EQ_W>
+    <CmpF_GE_W>
+    <CmpF_GT_W>
+    <CmpF_LE_W>
+    <CmpF_LT_W>
+    <CmpF_NE_W>
     <CmpI_EQ_W>
     <CmpI_GE_W>
     <CmpI_GT_W>
@@ -473,11 +480,15 @@ Syntax:
     <CmpU_LT_W>
     <CmpU_NE_W>
     <Cnat>
+    <Copy_W>
     <Cscr_IA>
     <Cscr_IS>
     <Cscr_SA>
     <Cscr_SS>
     <Cspe>
+    <DiXI_W>
+    <DiXU_W>
+    <DivF_W>
     <DivI_W>
     <DivX_W>
     <InvU_W>
@@ -486,18 +497,412 @@ Syntax:
     <Jump>
     <ModI_W>
     <Move_W>
+    <MuXU_W>
+    <MulF_W>
     <MulI_W>
     <MulX_W>
+    <NegF_W>
     <NegI_W>
     <NotU_W>
     <OrIU_W>
     <OrXU_W>
+    <Plsa>
+    <Plsf>
+    <Pltn>
     <Retn>
+    <ShLF_W>
     <ShLU_W>
+    <ShRF_W>
     <ShRI_W>
+    <ShRU_W>
+    <SubF_W>
     <SubI_W>
     <SubU_W>
     <Swap_W>
+
+-----------------------------------------------------------
+Nop
+-----------------------------------------------------------
+
+Arguments:
+  Nop
+
+Semantics:
+  Does nothing.
+
+-----------------------------------------------------------
+AddF_W (Add Signed Float Word)
+AddI_W (Add Signed Integer Word)
+AddU_W (Add Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  AddF_W, desintation[1] dst, source[1] lop, source[1] rop
+  AddI_W, desintation[1] dst, source[1] lop, source[1] rop
+  AddU_W, desintation[1] dst, source[1] lop, source[1] rop
+
+Semantics:
+  Adds rop to lop and stores the result in dst.
+
+-----------------------------------------------------------
+AndU_W (Bitwise And Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  AndU_W, desination[1] dst, source[1] lop, source[1] rop
+
+Semantics:
+  Bitwise ands lop with rop and stores the result in dst.
+
+-----------------------------------------------------------
+Call
+-----------------------------------------------------------
+
+Arguments:
+  Call, source[1] addr, literal ret, ...
+
+Semantics:
+  Calls a function at addr which returns ret words. Each additional argument is
+  a word to pass to the called function.
+
+  This instruction is meant to map to the typical function dispatch method for
+  the target.
+
+-----------------------------------------------------------
+Casm (Call Assembly)
+-----------------------------------------------------------
+
+Arguments:
+  Casm, source[1] addr, ...
+
+Semantics:
+  Calls a function at addr. Each additional argument is a word to pass to the
+  called function.
+
+  This instruction is meant to map to functions implemented as an instruction.
+
+  For ZDACS targets, all arguments must have Lit type. The addr is used as an
+  instruction number and the other arguments are immediate operands.
+
+-----------------------------------------------------------
+CmpF_*_W (Compare Signed Float Word)
+CmpI_*_W (Compare Signed Integer Word)
+CmpU_*_W (Compare Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  CmpF_*_W, destination[1] dst, source[1] lop, source[1] rop
+  CmpI_*_W, destination[1] dst, source[1] lop, source[1] rop
+  CmpU_*_W, destination[1] dst, source[1] lop, source[1] rop
+
+Semantics:
+  EQ, GE, GT, LE, LT, NE variants compare if lop is equal, greater or equal,
+  greater, less or equal, less, or unequal to rop, respectively. If the
+  comparison is true, 1 is stored in dst. Otherwise, 0 is stored.
+
+-----------------------------------------------------------
+Cnat (Call Native)
+-----------------------------------------------------------
+
+Arguments:
+  Cnat, source[1] addr, literal ret, ...
+
+Semantics:
+  Calls a function at addr which returns ret words. Each additional argument is
+  a word to pass to the called function.
+
+  This instruction is meant to map to the native/builtin function dispatch
+  method for the target.
+
+-----------------------------------------------------------
+Copy_W (Copy Word)
+-----------------------------------------------------------
+
+Arguments:
+  Copy_W, destination[1] dst, source[1] src
+
+Semantics:
+  Copies a word from src to dst.
+
+-----------------------------------------------------------
+Cscr_IA (Call Script, Integer Asynchronous)
+Cscr_IS (Call Script, Integer Synchronous)
+Cscr_SA (Call Script, String Asynchronous)
+Cscr_SS (Call Script, String Synchronous)
+-----------------------------------------------------------
+
+Arguments:
+  Cscr_IA, source[1] addr, literal ret, ...
+  Cscr_IS, source[1] addr, literal ret, ...
+  Cscr_SA, source[1] addr, literal ret, ...
+  Cscr_SS, source[1] addr, literal ret, ...
+
+Semantics:
+  Calls a function at addr which returns ret words. Each additional argument is
+  a word to pass to the called function.
+
+  This instruction is meant to map to the ZDACS script dispatch method and may
+  not be meaningful for other targets.
+
+-----------------------------------------------------------
+Cspe (Call Special)
+-----------------------------------------------------------
+
+Arguments:
+  Cspe, source[1] addr, literal ret, ...
+
+Semantics:
+  Calls a function at addr which returns ret words. Each additional argument is
+  a word to pass to the called function.
+
+  This instruction is meant to map to the ZDACS line special dispatch method
+  and may not be meaningful for other targets.
+
+-----------------------------------------------------------
+DiXI_W (Expanding Divide Signed Integer Word)
+DiXU_W (Expanding Divide Unsigned Integer Word)
+-----------------------------------------------------------
+
+Argument:
+  DiXI_W, destination[2] dst, source[1] lop, source[1] rop
+  DiXU_W, destination[2] dst, source[1] lop, source[1] rop
+
+Semantics:
+  Divides lop by rop and stores the quotient and remainder in dst.
+
+-----------------------------------------------------------
+DivF_W (Divide Signed Integer Word)
+DivI_W (Divide Signed Integer Word)
+DivU_W (Divide Unsigned Integer Word)
+-----------------------------------------------------------
+
+Argument:
+  DivF_W, destination[1] dst, source[1] lop, source[1] rop
+  DivI_W, destination[1] dst, source[1] lop, source[1] rop
+  DivU_W, destination[1] dst, source[1] lop, source[1] rop
+
+Semantics:
+  Divides lop by rop and stores the quotient in dst.
+
+-----------------------------------------------------------
+InvU_W (Bitwise Invert Unsigned Integer Word
+-----------------------------------------------------------
+
+Argument:
+  InvU_W, destination[1] dst, source[1] src
+
+Semantics:
+  Bitwise inverts src and stores the result in dst.
+
+-----------------------------------------------------------
+Jcnd_Nil (Conditional Jump, Nil)
+Jcnd_Tru (Conditional Jump, True)
+-----------------------------------------------------------
+
+Arguments:
+  Jcnd_Nil, source[1] cnd, source[1] addr
+  Jcnd_Tru, source[1] cnd, source[1] addr
+
+Semantics:
+  Jcnd_Nil checks if cnd is zero.
+
+  Jcnd_Tru checks if cnd is nonzero.
+
+  If condition passes, branches execution to addr.
+
+-----------------------------------------------------------
+Jump
+-----------------------------------------------------------
+
+Arguments:
+  Jump, source[1] addr
+
+Semantics:
+  Branches execution to addr.
+
+-----------------------------------------------------------
+ModI_W (Modulus Signed Integer Word)
+ModU_W (Modulus Unsigned Integer Word)
+-----------------------------------------------------------
+
+Argument:
+  ModI_W, destination[1] dst, source[1] lop, source[1] rop
+  ModU_W, destination[1] dst, source[1] lop, source[1] rop
+
+Semantics:
+  Divides lop by rop and stores the remainder in dst.
+
+-----------------------------------------------------------
+Move_W (Move Word)
+-----------------------------------------------------------
+
+Arguments:
+  Move_W, destination[1] dst, source[1] src
+
+Semantics:
+  Moves a word from src to dst.
+
+-----------------------------------------------------------
+MuXU_W (Expanding Multiply Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  MuXU_W, destination[2] dst, source[1] lop, source[1] rop
+
+Semantics:
+  Multiplies lop by rop and stores the full result in dst.
+
+-----------------------------------------------------------
+MulF_W (Multiply Signed Float Word)
+MulI_W (Multiply Signed Integer Word)
+MulU_W (Multiply Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  MulF_W, destination[1] dst, source[1] lop, source[1] rop
+  MulI_W, destination[1] dst, source[1] lop, source[1] rop
+  MulU_W, destination[1] dst, source[1] lop, source[1] rop
+
+Semantics:
+  Multiplies lop by rop and stores the truncated result in dst.
+
+-----------------------------------------------------------
+NegF_W (Negate Signed Float Word)
+NegI_W (Negate Signed Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  NegF_W, destination[1] dst, source[1] src
+  NegI_W, destination[1] dst, source[1] src
+
+Semantics:
+  Negates src and stores the result in dst.
+
+-----------------------------------------------------------
+NotU_W (Logical Invert Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  NotU_W, destination[1] dst, source[1] src
+
+Semantics:
+  Logically inverts src and stores the result in dst.
+
+-----------------------------------------------------------
+OrIU_W (Bitwise Inclusive Or Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  OrIU_W, destination[1] dst, source[1] lop, source[1] rop
+
+Semantics:
+  Bitwise inclusive ors lop with rop and stores the result in dst.
+
+-----------------------------------------------------------
+OrXU_W (Bitwise Exclusive Or Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  OrXU_W, destination[1] dst, source[1] lop, source[1] rop
+
+Semantics:
+  Bitwise exclusive ors lop with rop and stores the result in dst.
+
+-----------------------------------------------------------
+Plsa (Pointer, Local Stack Allocate)
+-----------------------------------------------------------
+
+Arguments:
+  Plsa, source[1] size
+
+Semantics:
+  Allocates the local stack.
+
+-----------------------------------------------------------
+Plsf (Pointer, Local Stack Free)
+-----------------------------------------------------------
+
+Arguments:
+  Plsf
+
+Semantics:
+  Frees the local stack.
+
+-----------------------------------------------------------
+Pltn (Pointer, Local To Near)
+-----------------------------------------------------------
+
+Arguments:
+  Pltn, destination[1] dst, source[1] src
+
+Semantics:
+  Converts from a Loc pointer in src to a LocArs pointer in dst.
+
+-----------------------------------------------------------
+Retn (Return)
+-----------------------------------------------------------
+
+Arguments:
+  Retn, ...
+
+Semantics:
+  Returns control to the caller. Arguments are words to return to the caller.
+
+-----------------------------------------------------------
+ShLF_W (Shift Left Signed Float Word)
+ShLU_W (Shift Left Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  ShLF_W, destination[1] dst, source[1] lop, source[1] rop
+  ShLU_W, destination[1] dst, source[1] lop, source[1] rop
+
+Semantics:
+  Left-shifts lop by rop and stores the result in dst.
+
+  For float ops, this adds to the exponent.
+
+-----------------------------------------------------------
+ShRF_W (Shift Right Signed Float Word)
+ShRI_W (Shift Right Signed Integer Word)
+ShRU_W (Shift Right Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  ShRF_W, destination[1] dst, source[1] lop, source[1] rop
+  ShRI_W, destination[1] dst, source[1] lop, source[1] rop
+  ShRU_W, destination[1] dst, source[1] lop, source[1] rop
+
+Semantics:
+  Right-shifts lop by rop and stores the result in dst.
+
+  For float ops, this subtracts from the exponent.
+
+  For signed fixed-point ops, this may sign-extend.
+
+-----------------------------------------------------------
+SubF_W (Subtract Signed Float Word)
+SubI_W (Subtract Signed Integer Word)
+SubU_W (Subtract Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  SubF_W, desintation[1] dst, source[1] lop, source[1] rop
+  SubI_W, desintation[1] dst, source[1] lop, source[1] rop
+  SubU_W, desintation[1] dst, source[1] lop, source[1] rop
+
+Semantics:
+  Subtracts rop from lop and stores the result in dst.
+
+-----------------------------------------------------------
+Swap_W (Swap Word)
+-----------------------------------------------------------
+
+Arguments:
+  Swap_W, duplicate[1] lop, duplicate[1] rop
+
+Semantics:
+  Swaps lop with rop.
 
 ===========================================================
 Arguments
@@ -1056,11 +1461,18 @@ Grammar
 
   statement-name:
     <Nop>
+    <AddF_W>
     <AddI_W>
     <AddU_W>
     <AndU_W>
     <Call>
     <Casm>
+    <CmpF_EQ_W>
+    <CmpF_GE_W>
+    <CmpF_GT_W>
+    <CmpF_LE_W>
+    <CmpF_LT_W>
+    <CmpF_NE_W>
     <CmpI_EQ_W>
     <CmpI_GE_W>
     <CmpI_GT_W>
@@ -1074,11 +1486,13 @@ Grammar
     <CmpU_LT_W>
     <CmpU_NE_W>
     <Cnat>
+    <Copy_W>
     <Cscr_IA>
     <Cscr_IS>
     <Cscr_SA>
     <Cscr_SS>
     <Cspe>
+    <DivF_W>
     <DivI_W>
     <DivX_W>
     <InvU_W>
@@ -1087,15 +1501,24 @@ Grammar
     <Jump>
     <ModI_W>
     <Move_W>
+    <MulF_W>
     <MulI_W>
     <MulX_W>
+    <NegF_W>
     <NegI_W>
     <NotU_W>
     <OrIU_W>
     <OrXU_W>
+    <Plsa>
+    <Plsf>
+    <Pltn>
     <Retn>
+    <ShLF_W>
     <ShLU_W>
+    <ShRF_W>
     <ShRI_W>
+    <ShRU_W>
+    <SubF_W>
     <SubI_W>
     <SubU_W>
     <Swap_W>
