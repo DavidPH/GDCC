@@ -136,10 +136,9 @@ namespace GDCC
          //
          void Info::trStmnt_Call()
          {
-            CheckArgC(stmnt, 2);
-            CheckArgB(stmnt, 1, IR::ArgBase::Lit);
+            CheckArgC(stmnt, 1);
 
-            for(auto i = stmnt->args.size(); i-- != 2;)
+            for(auto i = stmnt->args.size(); i-- != 1;)
                CheckArgB(stmnt, i, IR::ArgBase::Stk);
 
             switch(stmnt->args[0].a)
