@@ -96,9 +96,8 @@ namespace GDCC
 
             // Move to temporary.
             Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
-            for(Core::FastU n = tmp.size(); n--;)
-               ctx.block.addStatementArgs(IR::Code::Move_W,
-                  tmp.getArg(n), IR::Arg_Stk());
+            ctx.block.addStatementArgs({IR::Code::Move_W, tmp.size()},
+               tmp.getArg(), IR::Arg_Stk());
 
             // Use temporary as index.
             GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg, tmp.getArg(), get, set);
@@ -131,19 +130,9 @@ namespace GDCC
             {
                arg.data->genStmnt(ctx);
 
-               auto size = arg.type->getSizeWords();
-               auto code = IR::ExpCode_Move(size);
-
-               if(code == IR::Code::None)
-               {
-                  auto argExp = arg.data->getIRExp();
-                  for(Core::FastU w = 0; w != size; ++w)
-                     ctx.block.addStatementArgs(IR::Code::Move_W,
-                        IR::Arg_Stk(), IR::Arg_Lit(argExp, w));
-               }
-               else
-                  ctx.block.addStatementArgs(code,
-                     IR::Arg_Stk(), arg.data->getIRExp());
+               ctx.block.addStatementArgs(
+                  {IR::Code::Move_W, arg.type->getSizeWords()},
+                  IR::Arg_Stk(), arg.data->getIRExp());
             }
             else
                arg.data->genStmnt(ctx, Arg(arg.type, IR::AddrBase::Stk));
@@ -158,9 +147,9 @@ namespace GDCC
       {
          if(set)
          {
-            for(Core::FastU n = arg.type->getSizeWords(); n--;)
-               ctx.block.addStatementArgs(IR::Code::Move_W,
-                  IR::Arg_Nul(), IR::Arg_Stk());
+            ctx.block.addStatementArgs(
+               {IR::Code::Move_W, arg.type->getSizeWords()},
+               IR::Arg_Nul(), IR::Arg_Stk());
          }
 
          if(get) throw Core::ExceptStr(exp->pos, "AddrBase::Nul get");
@@ -197,12 +186,9 @@ namespace GDCC
          // Try to use IR args.
          if(dst.isIRArg() && src.isIRArg())
          {
-            auto dstIR = dst.getIRArg(ctx.prog);
-            auto srcIR = src.getIRArg(ctx.prog);
-
-            for(Core::FastU w = 0, e = src.type->getSizeWords(); w != e; ++w)
-               ctx.block.addStatementArgs(IR::Code::Move_W,
-                  dstIR.getOffset(w), srcIR.getOffset(w));
+            ctx.block.addStatementArgs(
+               {IR::Code::Move_W, src.type->getSizeWords()},
+               dst.getIRArg(ctx.prog), src.getIRArg(ctx.prog));
 
             return;
          }
@@ -221,17 +207,15 @@ namespace GDCC
          // Try to use IR args.
          if(dst.isIRArg() && dup.isIRArg() && src.isIRArg())
          {
-            auto dstIR = dst.getIRArg(ctx.prog);
             auto dupIR = dup.getIRArg(ctx.prog);
-            auto srcIR = src.getIRArg(ctx.prog);
 
-            for(Core::FastU w = 0, e = src.type->getSizeWords(); w != e; ++w)
-            {
-               ctx.block.addStatementArgs(IR::Code::Move_W,
-                  dupIR.getOffset(w), srcIR.getOffset(w));
-               ctx.block.addStatementArgs(IR::Code::Move_W,
-                  dstIR.getOffset(w), dupIR.getOffset(w));
-            }
+            ctx.block.addStatementArgs(
+               {IR::Code::Move_W, src.type->getSizeWords()},
+               dupIR, src.getIRArg(ctx.prog));
+
+            ctx.block.addStatementArgs(
+               {IR::Code::Move_W, src.type->getSizeWords()},
+               dst.getIRArg(ctx.prog), dupIR);
 
             return;
          }

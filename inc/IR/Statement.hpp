@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2014 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,7 +14,7 @@
 #define GDCC__IR__Statement_H__
 
 #include "../IR/Arg.hpp"
-#include "../IR/Code.hpp"
+#include "../IR/OpCode.hpp"
 
 #include "../Core/Array.hpp"
 
@@ -33,16 +33,12 @@ namespace GDCC
       class Statement
       {
       public:
-         Statement() : next{this}, prev{this} {}
+         Statement();
          Statement(Statement const &) = delete;
          Statement(Statement &&stmnt);
-         explicit Statement(Statement *head) : next{head}, prev{head->prev}
-            {next->prev = prev->next = this;}
-         Statement(Statement *head, Statement *link, Code code_) :
-            pos{head->pos}, next{link}, prev{link->prev},
-            args{std::move(head->args)}, labs{std::move(head->labs)},
-            code{code_} {next->prev = this; prev->next = this;}
-         ~Statement() {next->prev = prev; prev->next = next;}
+         explicit Statement(Statement *head);
+         Statement(Statement *head, Statement *link, OpCode op);
+         ~Statement();
 
          Statement &operator = (Statement &&stmnt);
 
@@ -52,7 +48,7 @@ namespace GDCC
 
          Core::Array<Arg>          args;
          Core::Array<Core::String> labs;
-         Code                      code;
+         OpCode                    op;
       };
    }
 }

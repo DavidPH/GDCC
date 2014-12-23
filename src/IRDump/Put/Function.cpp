@@ -119,7 +119,7 @@ namespace GDCC
                }
 
                // Dump instruction and arguments.
-               out << "   " << stmnt.code;
+               out << "   " << stmnt.op;
 
                for(auto const &arg : stmnt.args)
                {

@@ -40,12 +40,9 @@ namespace GDCC
          if(!type->isCTypeArith())
             throw Core::ExceptStr(pos, "expected arithmetic operand");
 
-         auto code = AST::ExpCode_Arith<IR::CodeSet_Neg>(type);
+         auto op = AST::ExpCode_Arith<IR::CodeSet_Neg>(type);
 
-         if(code == IR::Code::None)
-            throw Core::ExceptStr(pos, "unsupported operand size");
-
-         return AST::Exp_UnaryCode<AST::Exp_Neg>::Create(code, type, exp, pos);
+         return AST::Exp_UnaryCode<AST::Exp_Neg>::Create(op, type, exp, pos);
       }
 
       //

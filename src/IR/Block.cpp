@@ -30,6 +30,15 @@ namespace GDCC
       //
       // Block::addLabel
       //
+      Block &Block::addLabel(Core::String lab)
+      {
+         labs.push_back(lab);
+         return *this;
+      }
+
+      //
+      // Block::addLabel
+      //
       Block &Block::addLabel(Core::Array<Core::String> &&lab)
       {
          for(auto l : lab) labs.push_back(l);
@@ -40,11 +49,11 @@ namespace GDCC
       //
       // Block::addStatement
       //
-      Block &Block::addStatement(Statement *link, Code code)
+      Block &Block::addStatement(Statement *link, OpCode op)
       {
          head.labs = Core::Array<Core::String>(Core::Move, labs.begin(), labs.end());
          labs.clear();
-         new Statement(&head, link, code);
+         new Statement(&head, link, op);
          return *this;
       }
 

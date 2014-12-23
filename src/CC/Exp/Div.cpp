@@ -99,13 +99,10 @@ namespace GDCC
             auto type = AST::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
-            auto code = AST::ExpCode_ArithInteg<IR::CodeSet_DiX>(type);
-
-            if(code == IR::Code::None)
-               throw Core::ExceptStr(pos, "unsupported integer operand size");
+            auto op = AST::ExpCode_ArithInteg<IR::CodeSet_DiX>(type);
 
             return AST::Exp_Arith<AST::Exp_DivEx>::Create(
-               code, Type_Div::Get(type), expL, expR, pos);
+               op, Type_Div::Get(type), expL, expR, pos);
          }
 
          throw Core::ExceptStr(pos, "invalid operands to __div");

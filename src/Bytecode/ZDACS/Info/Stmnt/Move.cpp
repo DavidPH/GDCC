@@ -319,7 +319,7 @@ namespace GDCC
             CheckArg(stmnt->args[1], stmnt->pos);
 
             #define moveIdx(name, n, w) \
-               moveArgStk_src(*stmnt->args[n].a##name.idx, IR::Code::Move_W##w)
+               moveArgStk_src(*stmnt->args[n].a##name.idx, w)
 
             // Push to stack?
             if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
@@ -330,12 +330,12 @@ namespace GDCC
             case IR::ArgBase::MapReg: break;
             case IR::ArgBase::WldReg: break;
 
-            case IR::ArgBase::GblArr: moveIdx(GblArr, 1,  ); break;
-            case IR::ArgBase::Loc:    moveIdx(Loc,    1,  ); break;
-            case IR::ArgBase::LocArs: moveIdx(LocArs, 1,  ); break;
-            case IR::ArgBase::MapArr: moveIdx(MapArr, 1,  ); break;
+            case IR::ArgBase::GblArr: moveIdx(GblArr, 1, 1); break;
+            case IR::ArgBase::Loc:    moveIdx(Loc,    1, 1); break;
+            case IR::ArgBase::LocArs: moveIdx(LocArs, 1, 1); break;
+            case IR::ArgBase::MapArr: moveIdx(MapArr, 1, 1); break;
             case IR::ArgBase::StrArs: moveIdx(StrArs, 1, 2); break;
-            case IR::ArgBase::WldArr: moveIdx(WldArr, 1,  ); break;
+            case IR::ArgBase::WldArr: moveIdx(WldArr, 1, 1); break;
 
             default:
                throw Core::ExceptStr(stmnt->pos, "bad tr Move_W push");
@@ -350,12 +350,12 @@ namespace GDCC
             case IR::ArgBase::Nul:    break;
             case IR::ArgBase::WldReg: break;
 
-            case IR::ArgBase::GblArr: moveIdx(GblArr, 0,  ); break;
-            case IR::ArgBase::Loc:    moveIdx(Loc,    0,  ); break;
-            case IR::ArgBase::LocArs: moveIdx(LocArs, 0,  ); break;
-            case IR::ArgBase::MapArr: moveIdx(MapArr, 0,  ); break;
+            case IR::ArgBase::GblArr: moveIdx(GblArr, 0, 1); break;
+            case IR::ArgBase::Loc:    moveIdx(Loc,    0, 1); break;
+            case IR::ArgBase::LocArs: moveIdx(LocArs, 0, 1); break;
+            case IR::ArgBase::MapArr: moveIdx(MapArr, 0, 1); break;
             case IR::ArgBase::StrArs: moveIdx(StrArs, 0, 2); break;
-            case IR::ArgBase::WldArr: moveIdx(WldArr, 0,  ); break;
+            case IR::ArgBase::WldArr: moveIdx(WldArr, 0, 1); break;
 
             default:
                throw Core::ExceptStr(stmnt->pos, "bad tr Move_W drop");
@@ -363,7 +363,7 @@ namespace GDCC
 
             // Neither stack, split move and rescan.
             else
-               moveArgStk_src(stmnt->args[1], IR::Code::Move_W);
+               moveArgStk_src(stmnt->args[1], stmnt->op.size);
 
             #undef moveIdx
          }

@@ -43,14 +43,11 @@ namespace GDCC
       static void MoveParam(AST::GenStmntCtx const &ctx, Core::FastU paramIdx,
          Core::FastU objValue, Core::FastU objWords)
       {
-         for(Core::FastU i = 0; i != objWords; ++i)
-         {
-            IR::Arg_Lit dstIdx{AST::ExpCreate_Size(objValue + i)->getIRExp()};
-            IR::Arg_Lit srcIdx{AST::ExpCreate_Size(paramIdx + i)->getIRExp()};
+         IR::Arg_Lit dstIdx{AST::ExpCreate_Size(objValue)->getIRExp()};
+         IR::Arg_Lit srcIdx{AST::ExpCreate_Size(paramIdx)->getIRExp()};
 
-            ctx.block.addStatementArgs(IR::Code::Move_W,
-               ArgT(dstIdx, 0), IR::Arg_LocReg(srcIdx, 0));
-         }
+         ctx.block.addStatementArgs({IR::Code::Move_W, objWords},
+            ArgT(dstIdx), IR::Arg_LocReg(srcIdx));
       }
    }
 }
@@ -74,7 +71,7 @@ namespace GDCC
 
          // If script, allocate automatic storage area.
          if(scope.fn->allocLoc)
-            ctx.block.addStatementArgs(IR::Code::Plsa, scope.fn->allocLoc);
+            ctx.block.addStatementArgs({IR::Code::Plsa, 0}, scope.fn->allocLoc);
 
          // Move parameter data to actual storage location.
          Core::FastU paramIdx = 0;
@@ -112,7 +109,7 @@ namespace GDCC
 
          if((ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS) &&
             (stype == IR::ScriptType::Open || stype == IR::ScriptType::Enter))
-            ctx.block.addStatementArgs(IR::Code::Xcod_SID);
+            ctx.block.addStatementArgs({IR::Code::Xcod_SID, 0});
       }
 
       //
@@ -129,17 +126,17 @@ namespace GDCC
 
          // If script, free automatic storage area.
          if(scope.fn->allocLoc)
-            ctx.block.addStatementArgs(IR::Code::Plsf);
+            ctx.block.addStatementArgs({IR::Code::Plsf, 0});
 
          // Perform return.
          if(scope.fn->retrn->isTypeVoid())
          {
-            ctx.block.addStatementArgs(IR::Code::Retn);
+            ctx.block.addStatementArgs({IR::Code::Retn, 0});
          }
          else if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
          {
             ctx.block.setArgs({scope.fn->retrn->getSizeWords(), IR::Arg_Stk()});
-            ctx.block.addStatement(IR::Code::Retn);
+            ctx.block.addStatement({IR::Code::Retn, 0});
          }
       }
 

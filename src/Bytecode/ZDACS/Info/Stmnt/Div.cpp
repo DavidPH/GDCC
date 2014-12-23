@@ -83,12 +83,12 @@ namespace GDCC
          {
             if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
             {
-               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W2);
+               moveArgStk_dst(stmnt->args[0], stmnt->op.size * 2);
             }
             else
             {
-               trStmntStk3(IR::Code::Move_W2, IR::Code::Move_W, true);
-               func->setLocalTmp(2);
+               trStmntStk3(stmnt->op.size * 2, stmnt->op.size, true);
+               func->setLocalTmp(stmnt->op.size * 2);
             }
          }
       }

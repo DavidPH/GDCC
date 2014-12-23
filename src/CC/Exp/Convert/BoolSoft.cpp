@@ -42,7 +42,7 @@ namespace GDCC
          exp->genStmntStk(ctx);
 
          for(auto n = exp->getType()->getSizeWords(); --n;)
-            ctx.block.addStatementArgs(IR::Code::OrIU_W,
+            ctx.block.addStatementArgs({IR::Code::OrIU_W, 1},
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.
@@ -62,12 +62,12 @@ namespace GDCC
          auto expType = exp->getType();
          auto bitsIF = expType->getSizeBitsI() + expType->getSizeBitsF();
 
-         ctx.block.addStatementArgs(IR::Code::AndU_W,
+         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk(),
             (Core::FastU(1) << (bitsIF % Platform::GetWordBits())) - 1);
 
          for(auto n = exp->getType()->getSizeWords(); --n;)
-            ctx.block.addStatementArgs(IR::Code::OrIU_W,
+            ctx.block.addStatementArgs({IR::Code::OrIU_W, 1},
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.
@@ -85,10 +85,10 @@ namespace GDCC
          exp->genStmntStk(ctx);
 
          for(auto n = exp->getType()->getSizeWords(); --n;)
-            ctx.block.addStatementArgs(IR::Code::AndU_W,
+            ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
-         ctx.block.addStatementArgs(IR::Code::InvU_W,
+         ctx.block.addStatementArgs({IR::Code::InvU_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.

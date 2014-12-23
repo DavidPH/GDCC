@@ -227,12 +227,12 @@ namespace GDCC
          if(!type->isCTypeInteg())
             throw Core::ExceptStr(pos, "expected integer type");
 
-         auto code = AST::ExpCode_ArithInteg<IR::CodeSet_Inv>(type);
+         auto op = AST::ExpCode_ArithInteg<IR::CodeSet_Inv>(type);
 
-         if(code == IR::Code::None)
+         if(op.code == IR::Code::None)
             throw Core::ExceptStr(pos, "unsupported operand size");
 
-         return AST::Exp_UnaryCode<AST::Exp_Inv>::Create(code, type, exp, pos);
+         return AST::Exp_UnaryCode<AST::Exp_Inv>::Create(op, type, exp, pos);
       }
 
       //

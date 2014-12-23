@@ -115,13 +115,13 @@ namespace GDCC
 
          if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
          {
-            ctx.block.addStatementArgs(IR::Code::Jump,
+            ctx.block.addStatementArgs({IR::Code::Jump, 0},
                IR::Glyph(ctx.prog, scope.fn->getLabelEnd()));
          }
          else
          {
             ctx.block.setArgs({exp->getType()->getSizeWords(), IR::Arg_Stk()});
-            ctx.block.addStatement(IR::Code::Retn);
+            ctx.block.addStatement({IR::Code::Retn, 0});
          }
       }
 
@@ -150,12 +150,12 @@ namespace GDCC
 
          if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
          {
-            ctx.block.addStatementArgs(IR::Code::Jump,
+            ctx.block.addStatementArgs({IR::Code::Jump, 0},
                IR::Glyph(ctx.prog, scope.fn->getLabelEnd()));
          }
          else
          {
-            ctx.block.addStatementArgs(IR::Code::Retn);
+            ctx.block.addStatementArgs({IR::Code::Retn, 0});
          }
       }
 

@@ -13,6 +13,8 @@
 #ifndef GDCC__Bytecode__Info_H__
 #define GDCC__Bytecode__Info_H__
 
+#include "../Core/Number.hpp"
+
 #include <ostream>
 
 
@@ -44,6 +46,7 @@ namespace GDCC
       class Function;
       class Glyph;
       class Object;
+      class OpCode;
       class Program;
       class Value;
       class Value_Array;
@@ -152,8 +155,8 @@ namespace GDCC
          virtual void trStr() {}
                  void trStr(IR::StrEnt &str);
 
-         bool moveArgStk_dst(IR::Arg &idx, IR::Code codeMove);
-         bool moveArgStk_src(IR::Arg &idx, IR::Code codeMove);
+         bool moveArgStk_dst(IR::Arg &idx, Core::FastU sizeMove);
+         bool moveArgStk_src(IR::Arg &idx, Core::FastU sizeMove);
 
          IR::Block     *block;
          IR::Function  *func;

@@ -70,10 +70,15 @@ namespace GDCC
          IR::CallType callType  = IR::GetCallTypeIR(func->getCallType());
          Core::FastU  callWords = func->getCallWords();
          std::size_t  irWords   = 0;
+         Core::FastU  retWords;
          Core::FastU  stkWords  = 0;
          Core::FastU  vaWords   = 0;
 
          bool addrPre = IsAddrPre(callType);
+
+         // Determine return word count.
+         retWords = func->getBaseType()->isTypeVoid()
+            ? 0 : func->getBaseType()->getSizeWords();
 
          // Evaluate address before arguments?
          if(addrPre)
@@ -96,7 +101,7 @@ namespace GDCC
          if(callType == IR::CallType::StdCall &&
             Platform::TargetCur == Platform::Target::ZDoom)
          {
-            ctx.block.addStatementArgs(IR::Code::Pltn,
+            ctx.block.addStatementArgs({IR::Code::Pltn, 0},
                IR::Arg_Stk(), ctx.fn->localArs + vaWords);
 
             ++stkWords;
@@ -104,7 +109,7 @@ namespace GDCC
          else if(callType == IR::CallType::SScriptI ||
             callType == IR::CallType::SScriptS)
          {
-            ctx.block.addStatementArgs(IR::Code::Pltn,
+            ctx.block.addStatementArgs({IR::Code::Pltn, 0},
                IR::Arg_Stk(), ctx.fn->localArs + vaWords + 1);
 
             ++stkWords;
@@ -143,7 +148,7 @@ namespace GDCC
             arg->genStmntStk(ctx);
 
          if(callType != IR::CallType::AsmFunc)
-            irWords += stkWords + 2;
+            irWords += stkWords + 1;
          else
          {
             // TODO: const params
@@ -153,19 +158,11 @@ namespace GDCC
          // Prepare IR args, preloaded with Stk for the call args.
          Core::Array<IR::Arg> irArgs{irWords, IR::Arg_Stk()};
 
-         // Second IR arg is return words, except for Casm.
-         if(callType != IR::CallType::AsmFunc)
-         {
-            irArgs[1] = IR::Arg_Lit(func->getBaseType()->isTypeVoid()
-               ? AST::ExpCreate_Size(0)->getIRExp()
-               : func->getBaseType()->getSizeWordsVM()->getIRExp());
-         }
-
-         // For synchronous script calls, third IR arg is return flag.
+         // For synchronous script calls, second IR arg is return flag.
          if(callType == IR::CallType::SScriptI ||
             callType == IR::CallType::SScriptS)
          {
-            irArgs[2] = IR::Arg_Loc(IR::Arg_Lit(
+            irArgs[1] = IR::Arg_Loc(IR::Arg_Lit(
                AST::ExpCreate_Size(ctx.fn->localArs + vaWords)->getIRExp()));
          }
 
@@ -199,7 +196,7 @@ namespace GDCC
          default:
             throw Core::ExceptStr(pos, "unsupported call type");
          }
-         ctx.block.addStatementArgs(code, std::move(irArgs));
+         ctx.block.addStatementArgs({code, retWords}, std::move(irArgs));
 
          // Move to destination.
          GenStmnt_MovePart(this, ctx, dst, false, true);

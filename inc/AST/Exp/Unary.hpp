@@ -15,6 +15,8 @@
 
 #include "../../AST/Exp.hpp"
 
+#include "../../IR/OpCode.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -45,11 +47,6 @@ protected: \
 
 namespace GDCC
 {
-   namespace IR
-   {
-      enum class Code;
-   }
-
    namespace AST
    {
       //
@@ -86,22 +83,22 @@ namespace GDCC
          GDCC_Core_CounterPreamble(GDCC::AST::Exp_UnaryCode<Base>, Base);
 
       public:
-         IR::Code const code;
+         IR::OpCode const op;
 
 
          // Create
-         static Exp::CRef Create(IR::Code code, Type const *t, Exp const *e,
+         static Exp::CRef Create(IR::OpCode op, Type const *t, Exp const *e,
             Core::Origin pos)
-            {return Exp::CRef(new This(code, t, e, pos));}
+            {return Exp::CRef(new This(op, t, e, pos));}
 
       protected:
          // constructor
-         Exp_UnaryCode(IR::Code c, Type const *t, Exp const *e, Core::Origin pos_) :
-            Super{t, e, pos_}, code{c} {}
+         Exp_UnaryCode(IR::OpCode c, Type const *t, Exp const *e, Core::Origin pos_) :
+            Super{t, e, pos_}, op{c} {}
 
          // v_genStmnt
          virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
-            {GenStmnt_UnaryCode(this, code, ctx, dst);}
+            {GenStmnt_UnaryCode(this, op, ctx, dst);}
       };
 
       //
@@ -146,7 +143,7 @@ namespace GDCC
    namespace AST
    {
       // Does generic codegen centered around a 2-arg unary instruction.
-      void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::Code code,
+      void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst);
 
       // Returns true if only evaluating for side effects.

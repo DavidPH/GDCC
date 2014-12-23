@@ -55,26 +55,26 @@ namespace GDCC
          Block &operator = (Block &&) = default;
 
          // addLabel
-         Block &addLabel(Core::String lab) {labs.push_back(lab); return *this;}
+         Block &addLabel(Core::String lab);
          Block &addLabel(Core::Array<Core::String> &&labs);
 
          // addStatement
-         Block &addStatement(Statement *link, Code code);
-         Block &addStatement(Code code) {return addStatement(&head, code);}
+         Block &addStatement(Statement *link, OpCode op);
+         Block &addStatement(OpCode op) {return addStatement(&head, op);}
 
          // addStatementArgs
-         Block &addStatementArgs(Statement *link, Code code)
-            {return setArgs().addStatement(link, code);}
-         Block &addStatementArgs(Code code)
-            {return setArgs().addStatement(&head, code);}
+         Block &addStatementArgs(Statement *link, OpCode op)
+            {return setArgs().addStatement(link, op);}
+         Block &addStatementArgs(OpCode op)
+            {return setArgs().addStatement(&head, op);}
 
          // addStatementArgs
          template<typename... Args>
-         Block &addStatementArgs(Statement *link, Code code, Args &&...args)
-            {return setArgs(std::forward<Args>(args)...).addStatement(link, code);}
+         Block &addStatementArgs(Statement *link, OpCode op, Args &&...args)
+            {return setArgs(std::forward<Args>(args)...).addStatement(link, op);}
          template<typename... Args>
-         Block &addStatementArgs(Code code, Args &&...args)
-            {return setArgs(std::forward<Args>(args)...).addStatement(&head, code);}
+         Block &addStatementArgs(OpCode op, Args &&...args)
+            {return setArgs(std::forward<Args>(args)...).addStatement(&head, op);}
 
          // begin
                iterator begin()       {return static_cast<      iterator>(head.next);}

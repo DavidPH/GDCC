@@ -45,6 +45,7 @@ namespace GDCC
       class GlyphData;
       class Import;
       class Object;
+      class OpCode;
       class Program;
       class Space;
       class StrEnt;
@@ -119,6 +120,8 @@ namespace GDCC
       IR::Linkage GetLinkage(ParserCtx const &ctx);
 
       IR::Value GetNumber(Core::Token const &tok);
+
+      IR::OpCode GetOpCode(ParserCtx const &ctx);
 
       IR::ScriptType GetScriptType(ParserCtx const &ctx);
 

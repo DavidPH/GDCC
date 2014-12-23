@@ -50,7 +50,7 @@ namespace GDCC
          //
          void Info::preStmnt()
          {
-            switch(stmnt->code)
+            switch(stmnt->op.code)
             {
             case IR::Code::AddF_W:  preStmntCall("___GDCC__AddF_W",  1, 2); break;
             case IR::Code::AddF_W2: preStmntCall("___GDCC__AddF_W2", 2, 4); break;

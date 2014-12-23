@@ -42,14 +42,15 @@ namespace GDCC
                auto pointV = IR::Value_Fixed(point, idx->getType()->getIRType().tFixed);
                auto pointE = IR::ExpCreate_Value(std::move(pointV), idx->pos);
 
-               ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(),
+               ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(),
                   IR::ExpCreate_Mul(idx->getIRExp(), pointE, idx->pos));
             }
             else
             {
                idx->genStmntStk(ctx);
-               ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(), point);
-               ctx.block.addStatementArgs(IR::Code::MulU_W,
+               ctx.block.addStatementArgs({IR::Code::Move_W, 1},
+                  IR::Arg_Stk(), point);
+               ctx.block.addStatementArgs({IR::Code::MulU_W, 1},
                   IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
             }
          }
@@ -63,7 +64,7 @@ namespace GDCC
       // Does general statemenet generation with an IR arg for l.
       //
       template<typename ArgT, typename IdxT>
-      static void GenStmnt_PointEqIdx(Exp_Binary const *exp, IR::Code code,
+      static void GenStmnt_PointEqIdx(Exp_Binary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst, bool post, Arg const &arg,
          IdxT const &idx)
       {
@@ -86,7 +87,7 @@ namespace GDCC
          GenStmnt_PointIdx(exp->expR, exp->type->getBaseType()->getSizePoint(), ctx);
 
          // Operate on stack.
-         ctx.block.addStatementArgs(code,
+         ctx.block.addStatementArgs(op,
             IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
          // Assign l.
@@ -109,7 +110,7 @@ namespace GDCC
       // GenStmnt_PointEqT
       //
       template<typename ArgT>
-      static void GenStmnt_PointEqT(Exp_Binary const *exp, IR::Code code,
+      static void GenStmnt_PointEqT(Exp_Binary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst, bool post, Arg const &arg)
       {
          // If arg address is a constant, then use Arg_Lit address.
@@ -119,7 +120,7 @@ namespace GDCC
             arg.data->genStmnt(ctx);
 
             // Use literal as index.
-            GenStmnt_PointEqIdx<ArgT>(exp, code, ctx, dst, post, arg,
+            GenStmnt_PointEqIdx<ArgT>(exp, op, ctx, dst, post, arg,
                IR::Arg_Lit(arg.data->getIRExp()));
 
             return;
@@ -132,12 +133,11 @@ namespace GDCC
 
             // Move to temporary.
             Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
-            for(Core::FastU n = tmp.size(); n--;)
-               ctx.block.addStatementArgs(IR::Code::Move_W,
-                  tmp.getArg(n), IR::Arg_Stk());
+            ctx.block.addStatementArgs({IR::Code::Move_W, tmp.size()},
+               tmp.getArg(), IR::Arg_Stk());
 
             // Use temporary as index.
-            GenStmnt_PointEqIdx<ArgT>(exp, code, ctx, dst, post, arg, tmp.getArg());
+            GenStmnt_PointEqIdx<ArgT>(exp, op, ctx, dst, post, arg, tmp.getArg());
 
             return;
          }
@@ -147,7 +147,7 @@ namespace GDCC
       // GenStmnt_PointEqT<IR::Arg_Cpy>
       //
       template<> void GenStmnt_PointEqT<IR::Arg_Cpy>(Exp_Binary const *exp,
-         IR::Code, GenStmntCtx const &, Arg const &, bool, Arg const &)
+         IR::OpCode, GenStmntCtx const &, Arg const &, bool, Arg const &)
       {
          throw Core::ExceptStr(exp->pos, "AddrBase::Cpy op=");
       }
@@ -156,7 +156,7 @@ namespace GDCC
       // GenStmnt_PointEqT<IR::Arg_Lit>
       //
       template<> void GenStmnt_PointEqT<IR::Arg_Lit>(Exp_Binary const *exp,
-         IR::Code, GenStmntCtx const &, Arg const &, bool, Arg const &)
+         IR::OpCode, GenStmntCtx const &, Arg const &, bool, Arg const &)
       {
          throw Core::ExceptStr(exp->pos, "AddrBase::Lit op=");
       }
@@ -165,7 +165,7 @@ namespace GDCC
       // GenStmnt_PointEqT<IR::Arg_Nul>
       //
       template<> void GenStmnt_PointEqT<IR::Arg_Nul>(Exp_Binary const *exp,
-         IR::Code, GenStmntCtx const &, Arg const &, bool, Arg const &)
+         IR::OpCode, GenStmntCtx const &, Arg const &, bool, Arg const &)
       {
          throw Core::ExceptStr(exp->pos, "AddrBase::Nul op=");
       }
@@ -174,7 +174,7 @@ namespace GDCC
       // GenStmnt_PointEqT<IR::Arg_Stk>
       //
       template<> void GenStmnt_PointEqT<IR::Arg_Stk>(Exp_Binary const *exp,
-         IR::Code, GenStmntCtx const &, Arg const &, bool, Arg const &)
+         IR::OpCode, GenStmntCtx const &, Arg const &, bool, Arg const &)
       {
          throw Core::ExceptStr(exp->pos, "AddrBase::Stk op=");
       }
@@ -193,7 +193,7 @@ namespace GDCC
       //
       // GenStmnt_Point
       //
-      void GenStmnt_Point(Exp_Binary const *exp, IR::Code code,
+      void GenStmnt_Point(Exp_Binary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst)
       {
          if(GenStmntNul(exp, ctx, dst)) return;
@@ -205,7 +205,7 @@ namespace GDCC
          GenStmnt_PointIdx(exp->expR, exp->type->getBaseType()->getSizePoint(), ctx);
 
          // Add on stack.
-         ctx.block.addStatementArgs(code,
+         ctx.block.addStatementArgs(op,
             IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.
@@ -215,7 +215,7 @@ namespace GDCC
       //
       // GenStmnt_PointEq
       //
-      void GenStmnt_PointEq(Exp_Binary const *exp, IR::Code code,
+      void GenStmnt_PointEq(Exp_Binary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst, bool post)
       {
          auto arg = exp->expL->getArgDup();
@@ -234,31 +234,31 @@ namespace GDCC
             auto irArgL = argL.getIRArg(ctx.prog);
             auto irArgR = argR.getIRArg(ctx.prog);
 
-            auto codeMove = IR::ExpCode_Move(argL.type->getSizeWords());
+            IR::OpCode opMove = {IR::Code::Move_W, argL.type->getSizeWords()};
 
             // Duplicate to destination, if necessary.
             if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
             {
-               ctx.block.addStatementArgs(codeMove, IR::Arg_Stk(), irArgL);
+               ctx.block.addStatementArgs(opMove, IR::Arg_Stk(), irArgL);
                GenStmnt_MovePart(exp, ctx, dst, false, true);
             }
 
             if(point == 1)
-               ctx.block.addStatementArgs(code, irArgL, irArgL, irArgR);
+               ctx.block.addStatementArgs(op, irArgL, irArgL, irArgR);
             else
             {
                auto pointV = IR::Value_Fixed(point,
                   exp->expR->getType()->getIRType().tFixed);
                auto pointE = IR::ExpCreate_Value(std::move(pointV), exp->pos);
 
-               ctx.block.addStatementArgs(code, irArgL, irArgL,
+               ctx.block.addStatementArgs(op, irArgL, irArgL,
                   IR::ExpCreate_Mul(exp->expR->getIRExp(), pointE, exp->pos));
             }
 
             // Duplicate to destination, if necessary.
             if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
             {
-               ctx.block.addStatementArgs(codeMove, IR::Arg_Stk(), irArgL);
+               ctx.block.addStatementArgs(opMove, IR::Arg_Stk(), irArgL);
                GenStmnt_MovePart(exp, ctx, dst, false, true);
             }
 
@@ -270,7 +270,7 @@ namespace GDCC
             #define GDCC_IR_AddrList(addr) \
             case IR::AddrBase::addr: \
                GenStmnt_PointEqT<IR::Arg_##addr>( \
-                  exp, code, ctx, dst, post, arg); \
+                  exp, op, ctx, dst, post, arg); \
                break;
             #include "IR/AddrList.hpp"
          }

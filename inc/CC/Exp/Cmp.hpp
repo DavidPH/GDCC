@@ -37,32 +37,29 @@ namespace GDCC
       AST::Exp::CRef ExpCreate_CmpArith(AST::Type const *bt, AST::Type const *t,
          AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
       {
-         IR::Code code;
+         IR::OpCode op;
 
          // Floating types.
          if(t->isCTypeFloat())
-            code = AST::ExpCode_ArithFloat<Codes>(t);
+            op = AST::ExpCode_ArithFloat<Codes>(t);
 
          // Fixed-point types.
          else if(t->isCTypeFixed())
-            code = AST::ExpCode_ArithFixed<Codes>(t);
+            op = AST::ExpCode_ArithFixed<Codes>(t);
 
          // Integer types.
          else if(t->isCTypeInteg())
-            code = AST::ExpCode_ArithInteg<Codes>(t);
+            op = AST::ExpCode_ArithInteg<Codes>(t);
 
          // Pointer types.
          else if(t->isTypePointer())
-            code = AST::ExpCode_ArithPoint<Codes>(t);
+            op = AST::ExpCode_ArithPoint<Codes>(t);
 
          // ???
          else
             throw Core::ExceptStr(pos, "unsupported arithmetic type");
 
-         if(code == IR::Code::None)
-            throw Core::ExceptStr(pos, "unsupported arithmetic operand size");
-
-         return AST::Exp_Arith<Base>::Create(code, bt, l, r, pos);
+         return AST::Exp_Arith<Base>::Create(op, bt, l, r, pos);
       }
    }
 }

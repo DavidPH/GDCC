@@ -78,7 +78,7 @@ namespace GDCC
          // Putting the condition at the end of the loop is more efficient.
          // If condition is known to be true, then do not bother jumping to it.
          if(!post && !(cond->isNonzero() && !cond->isEffect()))
-            ctx.block.addStatementArgs(IR::Code::Jump, labelCond);
+            ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelCond);
 
          // Generate body.
          ctx.block.addLabel(labelBody);
@@ -97,12 +97,13 @@ namespace GDCC
          else if(cond->isNonzero())
          {
             cond->genStmnt(ctx);
-            ctx.block.addStatementArgs(IR::Code::Jump, labelBody);
+            ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelBody);
          }
          else
          {
             cond->genStmntStk(ctx);
-            ctx.block.addStatementArgs(IR::Code::Jcnd_Tru, IR::Arg_Stk(), labelBody);
+            ctx.block.addStatementArgs({IR::Code::Jcnd_Tru, 1},
+               IR::Arg_Stk(), labelBody);
          }
 
          // Generate terminator.

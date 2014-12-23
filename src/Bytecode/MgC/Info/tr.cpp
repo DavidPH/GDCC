@@ -32,7 +32,7 @@ namespace GDCC
          //
          void Info::trStmnt()
          {
-            switch(stmnt->code)
+            switch(stmnt->op.code)
             {
             case IR::Code::Nop:
                break;
@@ -83,7 +83,7 @@ namespace GDCC
 
             default:
                std::cerr << "ERROR: " << stmnt->pos << ": cannot translate Code for MgC: "
-                  << stmnt->code << '\n';
+                  << stmnt->op << '\n';
                throw EXIT_FAILURE;
             }
          }
@@ -101,7 +101,7 @@ namespace GDCC
 
             if(stmnt->args[0].a != IR::ArgBase::Stk)
             {
-               block->addStatementArgs(stmnt->next, IR::Code::Move_W,
+               block->addStatementArgs(stmnt->next, {IR::Code::Move_W, 1},
                   std::move(stmnt->args[0]), IR::Arg_Stk());
                stmnt->args[0] = IR::Arg_Stk();
             }
@@ -114,7 +114,7 @@ namespace GDCC
             for(unsigned i = 3; --i != 0;)
                if(stmnt->args[i].a != IR::ArgBase::Stk)
             {
-               block->addStatementArgs(newStmnt, IR::Code::Move_W,
+               block->addStatementArgs(newStmnt, {IR::Code::Move_W, 1},
                   IR::Arg_Stk(), std::move(stmnt->args[i]));
                stmnt->args[i] = IR::Arg_Stk();
                newStmnt = newStmnt->prev;
@@ -191,7 +191,7 @@ namespace GDCC
             if(stmnt->args[0].a != IR::ArgBase::Stk &&
                stmnt->args[1].a != IR::ArgBase::Stk)
             {
-               block->addStatementArgs(stmnt->next, IR::Code::Move_W,
+               block->addStatementArgs(stmnt->next, {IR::Code::Move_W, 1},
                   std::move(stmnt->args[0]), IR::Arg_Stk());
                stmnt->args[0] = IR::Arg_Stk();
             }

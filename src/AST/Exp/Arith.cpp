@@ -50,7 +50,7 @@ namespace GDCC
       //
       // GenStmnt_Arith
       //
-      void GenStmnt_Arith(Exp_Binary const *exp, IR::Code code,
+      void GenStmnt_Arith(Exp_Binary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, AST::Arg const &dst)
       {
          if(GenStmntNul(exp, ctx, dst)) return;
@@ -91,11 +91,11 @@ namespace GDCC
          if(dst.isIRArg())
          {
             auto irDst = dst.getIRArg(ctx.prog);
-            ctx.block.addStatementArgs(code, irDst, irArgL, irArgR);
+            ctx.block.addStatementArgs(op, irDst, irArgL, irArgR);
          }
          else
          {
-            ctx.block.addStatementArgs(code, IR::Arg_Stk(), irArgL, irArgR);
+            ctx.block.addStatementArgs(op, IR::Arg_Stk(), irArgL, irArgR);
 
             // Move to destination.
             GenStmnt_MovePart(exp, ctx, dst, false, true);

@@ -129,7 +129,7 @@ namespace GDCC
                   !stmnt->args[2].aLit.value->isValue() ||
                   GetWord(stmnt->args[2].aLit) != 1)
                {
-                  moveArgStk_src(stmnt->args[2], IR::Code::Move_W);
+                  moveArgStk_src(stmnt->args[2], stmnt->op.size);
                }
 
                return;
@@ -149,7 +149,7 @@ namespace GDCC
                   !stmnt->args[2].aLit.value->isValue() ||
                   GetWord(stmnt->args[2].aLit) != 1)
                {
-                  moveArgStk_src(stmnt->args[2], IR::Code::Move_W);
+                  moveArgStk_src(stmnt->args[2], stmnt->op.size);
                }
 
                return;
@@ -158,7 +158,7 @@ namespace GDCC
                break;
             }
 
-            trStmntStk3(IR::Code::Move_W, IR::Code::Move_W, false);
+            trStmntStk3(stmnt->op.size, stmnt->op.size, false);
          }
 
          //
@@ -176,7 +176,7 @@ namespace GDCC
                   !stmnt->args[2].aLit.value->isValue() ||
                   GetWord(stmnt->args[2].aLit) != 1)
                {
-                  moveArgStk_src(stmnt->args[2], IR::Code::Move_W);
+                  moveArgStk_src(stmnt->args[2], stmnt->op.size);
                }
 
                return;
@@ -185,7 +185,7 @@ namespace GDCC
                break;
             }
 
-            trStmntStk3(IR::Code::Move_W, IR::Code::Move_W, true);
+            trStmntStk3(stmnt->op.size, stmnt->op.size, true);
          }
       }
    }

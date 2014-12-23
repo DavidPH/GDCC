@@ -34,7 +34,7 @@ namespace GDCC
          //
          void Info::trStmnt()
          {
-            switch(stmnt->code)
+            switch(stmnt->op.code)
             {
             case IR::Code::Nop:
                break;
@@ -48,7 +48,7 @@ namespace GDCC
             case IR::Code::MulX_W:
             case IR::Code::OrIU_W:
             case IR::Code::OrXU_W:
-               trStmntStk3(IR::Code::Move_W, IR::Code::Move_W, false);
+               trStmntStk3(stmnt->op.size, stmnt->op.size, false);
                break;
 
             case IR::Code::AddI_W:
@@ -62,14 +62,14 @@ namespace GDCC
             case IR::Code::MulK_W2:
             case IR::Code::MulU_W2:
             case IR::Code::MulX_W2:
-               trStmntStk3(IR::Code::Move_W2, IR::Code::Move_W2, false);
+               trStmntStk3(stmnt->op.size, stmnt->op.size, false);
                break;
 
             case IR::Code::AddI_W3:
             case IR::Code::AddU_W3:
             case IR::Code::MulI_W3:
             case IR::Code::MulU_W3:
-               trStmntStk3(IR::Code::Move_W3, IR::Code::Move_W3, false);
+               trStmntStk3(stmnt->op.size, stmnt->op.size, false);
                break;
 
             case IR::Code::AndU_W2:
@@ -100,7 +100,7 @@ namespace GDCC
             case IR::Code::CmpI_NE_W:
             case IR::Code::CmpU_EQ_W:
             case IR::Code::CmpU_NE_W:
-               trStmntStk3(IR::Code::Move_W, IR::Code::Move_W, false);
+               trStmntStk3(1, stmnt->op.size, false);
                break;
 
             case IR::Code::CmpF_EQ_W2:
@@ -109,14 +109,14 @@ namespace GDCC
             case IR::Code::CmpI_NE_W2:
             case IR::Code::CmpU_EQ_W2:
             case IR::Code::CmpU_NE_W2:
-               trStmnt_CmpU_EQ(IR::Code::Move_W2);
+               trStmnt_CmpU_EQ();
                break;
 
             case IR::Code::CmpI_EQ_W3:
             case IR::Code::CmpI_NE_W3:
             case IR::Code::CmpU_EQ_W3:
             case IR::Code::CmpU_NE_W3:
-               trStmnt_CmpU_EQ(IR::Code::Move_W3);
+               trStmnt_CmpU_EQ();
                break;
 
             case IR::Code::CmpF_GE_W:
@@ -131,7 +131,7 @@ namespace GDCC
             case IR::Code::CmpU_GT_W:
             case IR::Code::CmpU_LE_W:
             case IR::Code::CmpU_LT_W:
-               trStmntStk3(IR::Code::Move_W, IR::Code::Move_W, true);
+               trStmntStk3(1, stmnt->op.size, true);
                break;
 
             case IR::Code::CmpF_GE_W2:
@@ -146,7 +146,7 @@ namespace GDCC
             case IR::Code::CmpU_GT_W2:
             case IR::Code::CmpU_LE_W2:
             case IR::Code::CmpU_LT_W2:
-               trStmntStk3(IR::Code::Move_W, IR::Code::Move_W2, true);
+               trStmntStk3(1, stmnt->op.size, true);
                break;
 
             case IR::Code::CmpI_GE_W3:
@@ -157,7 +157,7 @@ namespace GDCC
             case IR::Code::CmpU_GT_W3:
             case IR::Code::CmpU_LE_W3:
             case IR::Code::CmpU_LT_W3:
-               trStmntStk3(IR::Code::Move_W, IR::Code::Move_W3, true);
+               trStmntStk3(1, stmnt->op.size, true);
                break;
 
             case IR::Code::Cnat:
@@ -185,16 +185,16 @@ namespace GDCC
 
             case IR::Code::DiXI_W2:
             case IR::Code::DiXU_W2:
-               trStmntStk3(IR::Code::Move_W4, IR::Code::Move_W2, false);
+               trStmntStk3(stmnt->op.size * 2, stmnt->op.size, false);
                break;
 
             case IR::Code::DiXI_W3:
             case IR::Code::DiXU_W3:
-               trStmntStk3(IR::Code::Move_W6, IR::Code::Move_W3, false);
+               trStmntStk3(stmnt->op.size * 3, stmnt->op.size, false);
                break;
 
             case IR::Code::DiXU_W:
-               trStmntStk3(IR::Code::Move_W2, IR::Code::Move_W, false);
+               trStmntStk3(stmnt->op.size * 2, stmnt->op.size, false);
                break;
 
             case IR::Code::DivF_W:
@@ -207,7 +207,7 @@ namespace GDCC
             case IR::Code::ShLU_W:
             case IR::Code::ShRI_W:
             case IR::Code::SubF_W:
-               trStmntStk3(IR::Code::Move_W, IR::Code::Move_W, true);
+               trStmntStk3(stmnt->op.size, stmnt->op.size, true);
                break;
 
             case IR::Code::DivF_W2:
@@ -220,7 +220,7 @@ namespace GDCC
             case IR::Code::SubF_W2:
             case IR::Code::SubI_W2:
             case IR::Code::SubU_W2:
-               trStmntStk3(IR::Code::Move_W2, IR::Code::Move_W2, true);
+               trStmntStk3(stmnt->op.size, stmnt->op.size, true);
                break;
 
             case IR::Code::DivI_W3:
@@ -229,14 +229,13 @@ namespace GDCC
             case IR::Code::ModU_W3:
             case IR::Code::SubI_W3:
             case IR::Code::SubU_W3:
-               trStmntStk3(IR::Code::Move_W3, IR::Code::Move_W3, true);
+               trStmntStk3(stmnt->op.size, stmnt->op.size, true);
                break;
 
             case IR::Code::InvU_W:
             case IR::Code::NegF_W:
             case IR::Code::NegI_W:
-            case IR::Code::NotU_W:
-               trStmntStk2(IR::Code::Move_W, IR::Code::Move_W);
+               trStmntStk2(stmnt->op.size, stmnt->op.size);
                break;
 
             case IR::Code::InvU_W2: trStmnt_InvU_W2(); break;
@@ -246,7 +245,7 @@ namespace GDCC
             case IR::Code::Jcnd_Tru:
                CheckArgC(stmnt, 2);
                CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-               moveArgStk_src(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_src(stmnt->args[0], stmnt->op.size);
                break;
 
             case IR::Code::Jump:
@@ -262,52 +261,56 @@ namespace GDCC
             case IR::Code::Move_W6: trStmnt_Move_Wx(); break;
 
             case IR::Code::MuXU_W:
-               trStmntStk3(IR::Code::Move_W2, IR::Code::Move_W, false);
+               trStmntStk3(stmnt->op.size * 2, stmnt->op.size, false);
                break;
 
             case IR::Code::MuXU_W2:
-               trStmntStk3(IR::Code::Move_W4, IR::Code::Move_W2, false);
+               trStmntStk3(stmnt->op.size * 2, stmnt->op.size, false);
                break;
 
             case IR::Code::NegF_W2:
-               trStmntStk2(IR::Code::Move_W2, IR::Code::Move_W2);
+               trStmntStk2(stmnt->op.size, stmnt->op.size);
                break;
 
             case IR::Code::NegI_W2: trStmnt_NegI_W2(); break;
             case IR::Code::NegI_W3: trStmnt_NegI_W3(); break;
 
+            case IR::Code::NotU_W:
+               trStmntStk2(1, stmnt->op.size);
+               break;
+
             case IR::Code::NotU_W2:
-               trStmntStk2(IR::Code::Move_W, IR::Code::Move_W2);
+               trStmntStk2(1, stmnt->op.size);
                break;
 
             case IR::Code::NotU_W3:
-               trStmntStk2(IR::Code::Move_W, IR::Code::Move_W3);
+               trStmntStk2(1, stmnt->op.size);
                break;
 
             case IR::Code::Plsa:
                CheckArgC(stmnt, 1);
-               moveArgStk_src(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_src(stmnt->args[0], 1);
                break;
 
             case IR::Code::Plsf:
                break;
 
             case IR::Code::Pltn:
-               trStmntStk2(IR::Code::Move_W, IR::Code::Move_W);
+               trStmntStk2(1, 1);
                break;
 
             case IR::Code::Retn:
                trStmnt_Retn();
                break;
 
-            case IR::Code::ShLF_W:  trStmntShift(IR::Code::Move_W, true); break;
-            case IR::Code::ShLF_W2: trStmntShift(IR::Code::Move_W2, true); break;
+            case IR::Code::ShLF_W:  trStmntShift(true); break;
+            case IR::Code::ShLF_W2: trStmntShift(true); break;
 
             case IR::Code::ShLU_W2: trStmnt_ShLU_W2(); break;
             case IR::Code::ShLU_W3: trStmnt_ShLU_W3(); break;
 
-            case IR::Code::ShRF_W:  trStmntShift(IR::Code::Move_W, true); break;
-            case IR::Code::ShRF_W2: trStmntShift(IR::Code::Move_W2, true); break;
+            case IR::Code::ShRF_W:  trStmntShift(true); break;
+            case IR::Code::ShRF_W2: trStmntShift(true); break;
 
             case IR::Code::ShRI_W3: trStmnt_ShRI_W3(); break;
             case IR::Code::ShRI_W2: trStmnt_ShRI_W2(); break;
@@ -319,16 +322,16 @@ namespace GDCC
             case IR::Code::SubI_W:
             case IR::Code::SubU_W: trStmnt_SubU_W(); break;
 
-            case IR::Code::Swap_W:  trStmnt_Swap_Wx(1); break;
-            case IR::Code::Swap_W2: trStmnt_Swap_Wx(2); break;
-            case IR::Code::Swap_W3: trStmnt_Swap_Wx(3); break;
+            case IR::Code::Swap_W:  trStmnt_Swap_Wx(stmnt->op.size); break;
+            case IR::Code::Swap_W2: trStmnt_Swap_Wx(stmnt->op.size); break;
+            case IR::Code::Swap_W3: trStmnt_Swap_Wx(stmnt->op.size); break;
 
             case IR::Code::Xcod_SID:
                break;
 
             default:
-               std::cerr << "ERROR: " << stmnt->pos << ": cannot translate Code for ZDACS: "
-                  << stmnt->code << '\n';
+               std::cerr << "ERROR: " << stmnt->pos
+                  << ": cannot translate Code for ZDACS: " << stmnt->op << '\n';
                throw EXIT_FAILURE;
             }
          }
@@ -336,18 +339,18 @@ namespace GDCC
          //
          // Info::trStmntStk2
          //
-         void Info::trStmntStk2(IR::Code moveDst, IR::Code moveSrc)
+         void Info::trStmntStk2(Core::FastU sizeDst, Core::FastU sizeSrc)
          {
             CheckArgC(stmnt, 2);
 
-            moveArgStk_dst(stmnt->args[0], moveDst);
-            moveArgStk_src(stmnt->args[1], moveSrc);
+            moveArgStk_dst(stmnt->args[0], sizeDst);
+            moveArgStk_src(stmnt->args[1], sizeSrc);
          }
 
          //
          // Info::trStmntStk3
          //
-         void Info::trStmntStk3(IR::Code moveDst, IR::Code moveSrc, bool ordered)
+         void Info::trStmntStk3(Core::FastU sizeDst, Core::FastU sizeSrc, bool ordered)
          {
             CheckArgC(stmnt, 3);
 
@@ -355,9 +358,9 @@ namespace GDCC
                stmnt->args[2].a == IR::ArgBase::Stk)
                throw Core::ExceptStr(stmnt->pos, "trStmntStk3 disorder");
 
-            moveArgStk_dst(stmnt->args[0], moveDst);
-            if(moveArgStk_src(stmnt->args[1], moveSrc)) return;
-            moveArgStk_src(stmnt->args[2], moveSrc);
+            moveArgStk_dst(stmnt->args[0], sizeDst);
+            if(moveArgStk_src(stmnt->args[1], sizeSrc)) return;
+            moveArgStk_src(stmnt->args[2], sizeSrc);
          }
       }
    }

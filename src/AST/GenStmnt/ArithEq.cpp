@@ -34,7 +34,7 @@ namespace GDCC
       // Does general statemenet generation with an IR arg for l.
       //
       template<typename ArgT, typename IdxT>
-      static void GenStmnt_ArithEqIdx(Exp_Binary const *exp, IR::Code code,
+      static void GenStmnt_ArithEqIdx(Exp_Binary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst, Type const *evalT, bool post,
          Arg const &arg, IdxT const &idx)
       {
@@ -59,7 +59,7 @@ namespace GDCC
          // Attempt to turn r into an IR Arg.
          if(exp->expR->getArg().isIRArg())
          {
-            ctx.block.addStatementArgs(code,
+            ctx.block.addStatementArgs(op,
                IR::Arg_Stk(), IR::Arg_Stk(),
                exp->expR->getArg().getIRArg(ctx.prog));
          }
@@ -71,7 +71,7 @@ namespace GDCC
             exp->expR->genStmntStk(ctx);
 
             // Operate on stack.
-            ctx.block.addStatementArgs(code,
+            ctx.block.addStatementArgs(op,
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
          }
 
@@ -98,7 +98,7 @@ namespace GDCC
       // GenStmnt_ArithEqT
       //
       template<typename ArgT>
-      static void GenStmnt_ArithEqT(Exp_Binary const *exp, IR::Code code,
+      static void GenStmnt_ArithEqT(Exp_Binary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst, Type const *evalT, bool post,
          Arg const &arg)
       {
@@ -111,7 +111,7 @@ namespace GDCC
             arg.data->genStmnt(ctx);
 
             // Use literal as index.
-            GenStmnt_ArithEqIdx<ArgT>(exp, code, ctx, dst, evalT, post, arg,
+            GenStmnt_ArithEqIdx<ArgT>(exp, op, ctx, dst, evalT, post, arg,
                IR::Arg_Lit(arg.data->getIRExp()));
 
             return;
@@ -124,12 +124,11 @@ namespace GDCC
 
             // Move to temporary.
             Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
-            for(Core::FastU n = tmp.size(); n--;)
-               ctx.block.addStatementArgs(IR::Code::Move_W,
-                  tmp.getArg(n), IR::Arg_Stk());
+            ctx.block.addStatementArgs({IR::Code::Move_W, tmp.size()},
+               tmp.getArg(), IR::Arg_Stk());
 
             // Use temporary as index.
-            GenStmnt_ArithEqIdx<ArgT>(exp, code, ctx, dst, evalT, post, arg,
+            GenStmnt_ArithEqIdx<ArgT>(exp, op, ctx, dst, evalT, post, arg,
                tmp.getArg());
 
             return;
@@ -140,7 +139,7 @@ namespace GDCC
       // GenStmnt_ArithEqT<IR::Arg_Cpy>
       //
       template<>
-      void GenStmnt_ArithEqT<IR::Arg_Cpy>(Exp_Binary const *exp, IR::Code,
+      void GenStmnt_ArithEqT<IR::Arg_Cpy>(Exp_Binary const *exp, IR::OpCode,
          GenStmntCtx const &, Arg const &, Type const *, bool, Arg const &)
       {
          throw Core::ExceptStr(exp->pos, "AddrBase::Cpy op=");
@@ -150,7 +149,7 @@ namespace GDCC
       // GenStmnt_ArithEqT<IR::Arg_Lit>
       //
       template<>
-      void GenStmnt_ArithEqT<IR::Arg_Lit>(Exp_Binary const *exp, IR::Code,
+      void GenStmnt_ArithEqT<IR::Arg_Lit>(Exp_Binary const *exp, IR::OpCode,
          GenStmntCtx const &, Arg const &, Type const *, bool, Arg const &)
       {
          throw Core::ExceptStr(exp->pos, "AddrBase::Lit op=");
@@ -160,7 +159,7 @@ namespace GDCC
       // GenStmnt_ArithEqT<IR::Arg_Nul>
       //
       template<>
-      void GenStmnt_ArithEqT<IR::Arg_Nul>(Exp_Binary const *exp, IR::Code,
+      void GenStmnt_ArithEqT<IR::Arg_Nul>(Exp_Binary const *exp, IR::OpCode,
          GenStmntCtx const &, Arg const &, Type const *, bool, Arg const &)
       {
          throw Core::ExceptStr(exp->pos, "AddrBase::Nul op=");
@@ -170,7 +169,7 @@ namespace GDCC
       // GenStmnt_ArithEqT<IR::Arg_Stk>
       //
       template<>
-      void GenStmnt_ArithEqT<IR::Arg_Stk>(Exp_Binary const *exp, IR::Code,
+      void GenStmnt_ArithEqT<IR::Arg_Stk>(Exp_Binary const *exp, IR::OpCode,
          GenStmntCtx const &, Arg const &, Type const *, bool, Arg const &)
       {
          throw Core::ExceptStr(exp->pos, "AddrBase::Stk op=");
@@ -190,7 +189,7 @@ namespace GDCC
       //
       // GenStmnt_ArithEq
       //
-      void GenStmnt_ArithEq(Exp_Binary const *exp, IR::Code code,
+      void GenStmnt_ArithEq(Exp_Binary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst, Type const *evalT, bool post)
       {
          auto arg = exp->expL->getArgDup();
@@ -208,21 +207,21 @@ namespace GDCC
             auto irArgL = argL.getIRArg(ctx.prog);
             auto irArgR = argR.getIRArg(ctx.prog);
 
-            auto codeMove = IR::ExpCode_Move(argL.type->getSizeWords());
+            IR::OpCode opMove = {IR::Code::Move_W, argL.type->getSizeWords()};
 
             // Duplicate to destination, if necessary.
             if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
             {
-               ctx.block.addStatementArgs(codeMove, IR::Arg_Stk(), irArgL);
+               ctx.block.addStatementArgs(opMove, IR::Arg_Stk(), irArgL);
                GenStmnt_MovePart(exp, ctx, dst, false, true);
             }
 
-            ctx.block.addStatementArgs(code, irArgL, irArgL, irArgR);
+            ctx.block.addStatementArgs(op, irArgL, irArgL, irArgR);
 
             // Duplicate to destination, if necessary.
             if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
             {
-               ctx.block.addStatementArgs(codeMove, IR::Arg_Stk(), irArgL);
+               ctx.block.addStatementArgs(opMove, IR::Arg_Stk(), irArgL);
                GenStmnt_MovePart(exp, ctx, dst, false, true);
             }
 
@@ -234,7 +233,7 @@ namespace GDCC
             #define GDCC_IR_AddrList(addr) \
             case IR::AddrBase::addr: \
                GenStmnt_ArithEqT<IR::Arg_##addr>( \
-                  exp, code, ctx, dst, evalT, post, arg); \
+                  exp, op, ctx, dst, evalT, post, arg); \
                break;
             #include "IR/AddrList.hpp"
          }

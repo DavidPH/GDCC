@@ -321,7 +321,7 @@ namespace GDCC
             virtual void trStmnt();
             void trStmnt_AddU_W();
             void trStmnt_Call();
-            void trStmnt_CmpU_EQ(IR::Code codeMove);
+            void trStmnt_CmpU_EQ();
             void trStmnt_Cscr_IA();
             void trStmnt_Cscr_IS();
             void trStmnt_Cscr_SA();
@@ -347,9 +347,9 @@ namespace GDCC
 
             void trStmntBitwise2();
             void trStmntBitwise3();
-            bool trStmntShift(IR::Code codeMove, bool moveLit = false);
-            void trStmntStk2(IR::Code moveDst, IR::Code moveSrc);
-            void trStmntStk3(IR::Code moveDst, IR::Code moveSrc, bool ordered);
+            bool trStmntShift(bool moveLit = false);
+            void trStmntStk2(Core::FastU sizeDst, Core::FastU sizeSrc);
+            void trStmntStk3(Core::FastU sizeDst, Core::FastU sizeSrc, bool ordered);
 
             std::unordered_map<IR::Space const *, InitData> init;
 

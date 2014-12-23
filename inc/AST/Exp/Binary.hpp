@@ -49,7 +49,7 @@ namespace GDCC
 {
    namespace IR
    {
-      enum class Code;
+      class OpCode;
    }
 
    namespace AST
@@ -114,11 +114,11 @@ namespace GDCC
    namespace AST
    {
       // Does pointer-integer codegen using a 3-arg arithmetic instruction.
-      void GenStmnt_Point(Exp_Binary const *exp, IR::Code code,
+      void GenStmnt_Point(Exp_Binary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst);
 
       // As in GenStmnt_Point, but also assigns the result to the left operand.
-      void GenStmnt_PointEq(Exp_Binary const *exp, IR::Code code,
+      void GenStmnt_PointEq(Exp_Binary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst, bool post = false);
 
       // Returns true if only evaluating for side effects.

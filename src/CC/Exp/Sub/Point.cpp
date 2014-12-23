@@ -33,7 +33,7 @@ namespace GDCC
       void Exp_SubPtrInt::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         AST::GenStmnt_Point(this, IR::Code::SubU_W, ctx, dst);
+         AST::GenStmnt_Point(this, {IR::Code::SubU_W, 1}, ctx, dst);
       }
 
       //
@@ -42,7 +42,7 @@ namespace GDCC
       void Exp_SubPtrIntEq::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         AST::GenStmnt_PointEq(this, IR::Code::SubU_W, ctx, dst, post);
+         AST::GenStmnt_PointEq(this, {IR::Code::SubU_W, 1}, ctx, dst, post);
       }
 
       //
@@ -74,7 +74,7 @@ namespace GDCC
          expR->genStmntStk(ctx);
 
          // Subtract on stack.
-         ctx.block.addStatementArgs(IR::Code::SubI_W,
+         ctx.block.addStatementArgs({IR::Code::SubI_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
          // Adjust result, if needed.
@@ -88,7 +88,7 @@ namespace GDCC
             // if the pointers are already not properly aligned.)
 
             auto lit = ExpCreate_LitInt(type, point, pos)->getIRExp();
-            ctx.block.addStatementArgs(IR::Code::DivI_W,
+            ctx.block.addStatementArgs({IR::Code::DivI_W, 1},
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Lit(lit));
          }
 

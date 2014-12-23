@@ -38,7 +38,7 @@ namespace GDCC
          //
          void Info::putStmnt()
          {
-            switch(stmnt->code)
+            switch(stmnt->op.code)
             {
             case IR::Code::Nop:
                putCode(Code::Nop);
@@ -291,7 +291,7 @@ namespace GDCC
 
             default:
                std::cerr << "ERROR: " << stmnt->pos
-                  << ": cannot put Code for ZDACS: " << stmnt->code << '\n';
+                  << ": cannot put Code for ZDACS: " << stmnt->op << '\n';
                throw EXIT_FAILURE;
             }
          }

@@ -49,7 +49,7 @@ namespace GDCC
                }
             }
 
-            switch(stmnt->code)
+            switch(stmnt->op.code)
             {
             case IR::Code::Nop:
                numChunkCODE += 4;
@@ -289,7 +289,7 @@ namespace GDCC
 
             default:
                std::cerr << "ERROR: " << stmnt->pos
-                  << ": cannot gen Code for ZDACS: " << stmnt->code << '\n';
+                  << ": cannot gen Code for ZDACS: " << stmnt->op << '\n';
                throw EXIT_FAILURE;
             }
          }

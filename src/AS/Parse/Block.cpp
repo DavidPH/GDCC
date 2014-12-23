@@ -34,7 +34,7 @@ namespace GDCC
       void ParseBlock(ParserCtx const &ctx, IR::Block &block, Core::TokenType end)
       {
          std::vector<IR::Arg> args;
-         IR::Code code;
+         IR::OpCode op;
 
          while(!ctx.in.drop(end)) switch(ctx.in.peek().tok)
          {
@@ -45,7 +45,7 @@ namespace GDCC
          case Core::TOK_Identi:
             block.setOrigin(ctx.in.peek().pos);
 
-            code = GetCode(ctx);
+            op = GetOpCode(ctx);
 
             // Read arguments to instruction.
             args.clear();
@@ -54,7 +54,7 @@ namespace GDCC
                args.push_back(GetArg(TokenDrop(ctx, Core::TOK_Comma, "end of line")));
 
             block.setArgs(Core::Array<IR::Arg>(Core::Move, args.begin(), args.end()));
-            block.addStatement(code);
+            block.addStatement(op);
 
             break;
 

@@ -29,12 +29,12 @@ namespace GDCC
       //
       // If idx is not Stk, makes it one by adding a new Move_W statement.
       //
-      bool Info::moveArgStk_dst(IR::Arg &idx, IR::Code codeMove)
+      bool Info::moveArgStk_dst(IR::Arg &idx, Core::FastU sizeMove)
       {
          if(idx.a == IR::ArgBase::Stk) return false;
 
          block->setOrigin(stmnt->pos);
-         block->addStatementArgs(stmnt->next, codeMove,
+         block->addStatementArgs(stmnt->next, {IR::Code::Move_W, sizeMove},
             std::move(idx), IR::Arg_Stk());
 
          idx = IR::Arg_Stk();
@@ -47,13 +47,13 @@ namespace GDCC
       //
       // If idx is not Stk, makes it one by adding a new Move_W statement.
       //
-      bool Info::moveArgStk_src(IR::Arg &idx, IR::Code codeMove)
+      bool Info::moveArgStk_src(IR::Arg &idx, Core::FastU sizeMove)
       {
          if(idx.a == IR::ArgBase::Stk) return false;
 
          block->setOrigin(stmnt->pos);
          block->addLabel(std::move(stmnt->labs));
-         block->addStatementArgs(stmnt, codeMove,
+         block->addStatementArgs(stmnt, {IR::Code::Move_W, sizeMove},
             IR::Arg_Stk(), std::move(idx));
 
          // Reset iterator for further translation.

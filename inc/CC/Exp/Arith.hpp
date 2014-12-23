@@ -44,12 +44,9 @@ namespace GDCC
          auto expL = ExpConvert_Arith(t, l, pos);
          auto expR = ExpConvert_Arith(t, r, pos);
 
-         IR::Code code = AST::ExpCode_ArithFixed<Codes>(t);
+         auto op = AST::ExpCode_ArithFixed<Codes>(t);
 
-         if(code == IR::Code::None)
-            throw Core::ExceptStr(pos, "unsupported fixed-point operand size");
-
-         return AST::Exp_Arith<Base>::Create(code, t, expL, expR, pos);
+         return AST::Exp_Arith<Base>::Create(op, t, expL, expR, pos);
       }
 
       //
@@ -62,12 +59,9 @@ namespace GDCC
       AST::Exp::CRef ExpCreate_ArithFloat(AST::Type const *t,
          AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
       {
-         IR::Code code = AST::ExpCode_ArithFloat<Codes>(t);
+         auto op = AST::ExpCode_ArithFloat<Codes>(t);
 
-         if(code == IR::Code::None)
-            throw Core::ExceptStr(pos, "unsupported floating operand size");
-
-         return AST::Exp_Arith<Base>::Create(code, t, l, r, pos);
+         return AST::Exp_Arith<Base>::Create(op, t, l, r, pos);
       }
 
       //
@@ -80,12 +74,9 @@ namespace GDCC
       AST::Exp::CRef ExpCreate_ArithInteg(AST::Type const *t,
          AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
       {
-         IR::Code code = AST::ExpCode_ArithInteg<Codes>(t);
+         auto op = AST::ExpCode_ArithInteg<Codes>(t);
 
-         if(code == IR::Code::None)
-            throw Core::ExceptStr(pos, "unsupported integer operand size");
-
-         return AST::Exp_Arith<Base>::Create(code, t, l, r, pos);
+         return AST::Exp_Arith<Base>::Create(op, t, l, r, pos);
       }
 
       //
@@ -129,12 +120,9 @@ namespace GDCC
          // result type. For generic handling, do so.
          auto expR = ExpConvert_Arith(evalT, r, pos);
 
-         IR::Code code = AST::ExpCode_ArithFixed<Codes>(evalT);
+         auto op = AST::ExpCode_ArithFixed<Codes>(evalT);
 
-         if(code == IR::Code::None)
-            throw Core::ExceptStr(pos, "unsupported fixed-point operand size");
-
-         return AST::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, expR, pos);
+         return AST::Exp_ArithEq<Base>::Create(evalT, op, post, t, l, expR, pos);
       }
 
       //
@@ -148,12 +136,9 @@ namespace GDCC
          AST::Type const *t, AST::Exp const *l, AST::Exp const *r,
          Core::Origin pos, bool post = false)
       {
-         IR::Code code = AST::ExpCode_ArithFloat<Codes>(evalT);
+         auto op = AST::ExpCode_ArithFloat<Codes>(evalT);
 
-         if(code == IR::Code::None)
-            throw Core::ExceptStr(pos, "unsupported floating operand size");
-
-         return AST::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, r, pos);
+         return AST::Exp_ArithEq<Base>::Create(evalT, op, post, t, l, r, pos);
       }
 
       //
@@ -167,12 +152,9 @@ namespace GDCC
          AST::Type const *t, AST::Exp const *l, AST::Exp const *r,
          Core::Origin pos, bool post = false)
       {
-         IR::Code code = AST::ExpCode_ArithInteg<Codes>(evalT);
+         auto op = AST::ExpCode_ArithInteg<Codes>(evalT);
 
-         if(code == IR::Code::None)
-            throw Core::ExceptStr(pos, "unsupported integer operand size");
-
-         return AST::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, r, pos);
+         return AST::Exp_ArithEq<Base>::Create(evalT, op, post, t, l, r, pos);
       }
 
       //

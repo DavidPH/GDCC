@@ -103,12 +103,12 @@ namespace GDCC
          if(srcW < dstW)
          {
             for(auto i = srcW - dstW; i--;)
-               ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(), 0);
+               ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), 0);
          }
          else if(srcW > dstW)
          {
             for(auto i = srcW - dstW; i--;)
-               ctx.block.addStatementArgs(IR::Code::Move_W,
+               ctx.block.addStatementArgs({IR::Code::Move_W, 1},
                   IR::Arg_Nul(), IR::Arg_Stk());
          }
 
@@ -128,7 +128,7 @@ namespace GDCC
          exp->genStmntStk(ctx);
 
          // Operate on stack.
-         ctx.block.addStatementArgs(IR::Code::InvU_W,
+         ctx.block.addStatementArgs({IR::Code::InvU_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.
@@ -147,7 +147,7 @@ namespace GDCC
          exp->genStmntStk(ctx);
 
          // Operate on stack.
-         ctx.block.addStatementArgs(IR::Code::Pltn,
+         ctx.block.addStatementArgs({IR::Code::Pltn, 0},
             IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.
@@ -171,13 +171,13 @@ namespace GDCC
          if(shiftL > shiftR)
          {
             auto lit = AST::ExpCreate_Size(shiftL / shiftR)->getIRExp();
-            ctx.block.addStatementArgs(IR::Code::DivU_W,
+            ctx.block.addStatementArgs({IR::Code::DivU_W, 1},
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Lit(lit));
          }
          else
          {
             auto lit = AST::ExpCreate_Size(shiftR / shiftL)->getIRExp();
-            ctx.block.addStatementArgs(IR::Code::MulU_W,
+            ctx.block.addStatementArgs({IR::Code::MulU_W, 1},
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Lit(lit));
          }
 

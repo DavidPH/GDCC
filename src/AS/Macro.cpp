@@ -42,7 +42,7 @@ namespace GDCC
                arg = argv[arg.aCpy.value];
             }
 
-            block.addStatementArgs(stmnt.code, std::move(args));
+            block.addStatementArgs(stmnt.op, std::move(args));
          }
       }
 

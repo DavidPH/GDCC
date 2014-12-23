@@ -33,7 +33,7 @@ namespace GDCC
       void Exp_AddPoint::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         AST::GenStmnt_Point(this, IR::Code::AddU_W, ctx, dst);
+         AST::GenStmnt_Point(this, {IR::Code::AddU_W, 1}, ctx, dst);
       }
 
       //
@@ -42,7 +42,7 @@ namespace GDCC
       void Exp_AddPointEq::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         AST::GenStmnt_PointEq(this, IR::Code::AddU_W, ctx, dst, post);
+         AST::GenStmnt_PointEq(this, {IR::Code::AddU_W, 1}, ctx, dst, post);
       }
 
       //
@@ -76,7 +76,7 @@ namespace GDCC
          expR->genStmntStk(ctx);
 
          // Add on stack.
-         ctx.block.addStatementArgs(IR::Code::AddU_W,
+         ctx.block.addStatementArgs({IR::Code::AddU_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.

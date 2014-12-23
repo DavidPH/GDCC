@@ -108,7 +108,7 @@ namespace GDCC
       //
       // GenStmnt_UnaryCode
       //
-      void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::Code code,
+      void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst)
       {
          if(GenStmntNul(exp, ctx, dst)) return;
@@ -117,7 +117,7 @@ namespace GDCC
          exp->exp->genStmntStk(ctx);
 
          // Operate on stack.
-         ctx.block.addStatementArgs(code, IR::Arg_Stk(), IR::Arg_Stk());
+         ctx.block.addStatementArgs(op, IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.
          GenStmnt_MovePart(exp, ctx, dst, false, true);

@@ -85,7 +85,7 @@ namespace GDCC
       void GenStmnt_MoveWordGetT(Exp const *exp, GenStmntCtx const &ctx,
          Arg const &arg, IdxT &&idx, Core::FastU off)
       {
-         ctx.block.addStatementArgs(IR::Code::Move_W,
+         ctx.block.addStatementArgs({IR::Code::Move_W, 1},
             IR::Arg_Stk(),
             GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, std::forward<IdxT>(idx), off));
       }
@@ -97,7 +97,7 @@ namespace GDCC
       void GenStmnt_MoveWordSetT(Exp const *exp, GenStmntCtx const &ctx,
          Arg const &arg, IdxT &&idx, Core::FastU off)
       {
-         ctx.block.addStatementArgs(IR::Code::Move_W,
+         ctx.block.addStatementArgs({IR::Code::Move_W, 1},
             GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, std::forward<IdxT>(idx), off),
             IR::Arg_Stk());
       }

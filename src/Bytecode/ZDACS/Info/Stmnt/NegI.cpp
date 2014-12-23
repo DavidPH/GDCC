@@ -173,11 +173,11 @@ namespace GDCC
 
             if(!isCopyArg(stmnt->args[0]) || !isFastArg(stmnt->args[0]))
             {
-               func->setLocalTmp(2);
-               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W2);
+               func->setLocalTmp(stmnt->op.size);
+               moveArgStk_dst(stmnt->args[0], stmnt->op.size);
             }
 
-            moveArgStk_src(stmnt->args[1], IR::Code::Move_W2);
+            moveArgStk_src(stmnt->args[1], stmnt->op.size);
          }
 
          //
@@ -189,11 +189,11 @@ namespace GDCC
 
             if(!isCopyArg(stmnt->args[0]) || !isFastArg(stmnt->args[0]))
             {
-               func->setLocalTmp(3);
-               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W3);
+               func->setLocalTmp(stmnt->op.size);
+               moveArgStk_dst(stmnt->args[0], stmnt->op.size);
             }
 
-            moveArgStk_src(stmnt->args[1], IR::Code::Move_W3);
+            moveArgStk_src(stmnt->args[1], stmnt->op.size);
          }
       }
    }

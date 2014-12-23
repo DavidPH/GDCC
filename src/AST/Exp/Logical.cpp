@@ -31,7 +31,7 @@ namespace GDCC
       // GenStmnt_Logical
       //
       static void GenStmnt_Logical(Exp_Binary const *exp,
-         GenStmntCtx const &ctx, Arg const &dst, IR::Code codeShort,
+         GenStmntCtx const &ctx, Arg const &dst, IR::OpCode opShort,
          int valueShort, int valueLong)
       {
          // TODO: If expR is trivial, possibly forego short-circuiting.
@@ -43,7 +43,7 @@ namespace GDCC
          exp->expL->genStmntStk(ctx);
 
          // Possibly jump to short result.
-         ctx.block.addStatementArgs(codeShort, IR::Arg_Stk(), labelShort);
+         ctx.block.addStatementArgs(opShort, IR::Arg_Stk(), labelShort);
 
          // Evaluate right operand to stack.
          exp->expR->genStmntStk(ctx);
@@ -51,15 +51,15 @@ namespace GDCC
          // TODO: If expR is already boolean, use its result directly.
 
          // Possibly jump to short result.
-         ctx.block.addStatementArgs(codeShort, IR::Arg_Stk(), labelShort);
+         ctx.block.addStatementArgs(opShort, IR::Arg_Stk(), labelShort);
 
          // Long result.
-         ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(), valueLong);
-         ctx.block.addStatementArgs(IR::Code::Jump, labelEnd);
+         ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), valueLong);
+         ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelEnd);
 
          // Short result.
          ctx.block.addLabel(labelShort);
-         ctx.block.addStatementArgs(IR::Code::Move_W, IR::Arg_Stk(), valueShort);
+         ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), valueShort);
 
          // End.
          ctx.block.addLabel(labelEnd);
@@ -84,7 +84,7 @@ namespace GDCC
       //
       void Exp_LogAnd::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
       {
-         GenStmnt_Logical(this, ctx, dst, IR::Code::Jcnd_Nil, 0, 1);
+         GenStmnt_Logical(this, ctx, dst, {IR::Code::Jcnd_Nil, 1}, 0, 1);
       }
 
       //
@@ -100,7 +100,7 @@ namespace GDCC
       //
       void Exp_LogOrI::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
       {
-         GenStmnt_Logical(this, ctx, dst, IR::Code::Jcnd_Tru, 1, 0);
+         GenStmnt_Logical(this, ctx, dst, {IR::Code::Jcnd_Tru, 1}, 1, 0);
       }
 
       //

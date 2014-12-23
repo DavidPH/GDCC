@@ -290,7 +290,7 @@ namespace GDCC
                *out << "label" << '\0' << '(' << '\0' << lab << '\0' << ')' << '\0';
 
             // Put code and args.
-            switch(stmnt->code)
+            switch(stmnt->op.code)
             {
             case IR::Code::Nop:
                *out << "nop" << '\0' << '(' << '\0' << ')' << '\0';

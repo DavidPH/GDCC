@@ -18,6 +18,7 @@
 #include "../../AST/Type.hpp"
 
 #include "../../IR/Exp.hpp"
+#include "../../IR/OpCode.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -60,25 +61,25 @@ namespace GDCC
          GDCC_Core_CounterPreamble(GDCC::AST::Exp_Arith<Base>, Base);
 
       public:
-         IR::Code const code;
+         IR::OpCode const op;
 
 
          //
          // Create
          //
-         static Exp::CRef Create(IR::Code code, Type const *t, Exp const *l,
+         static Exp::CRef Create(IR::OpCode op, Type const *t, Exp const *l,
             Exp const *r, Core::Origin pos)
          {
-            return Exp::CRef(new Exp_Arith<Base>(code, t, l, r, pos));
+            return Exp::CRef(new Exp_Arith<Base>(op, t, l, r, pos));
          }
 
       protected:
-         Exp_Arith(IR::Code c, Type const *t, Exp const *l, Exp const *r,
-            Core::Origin pos_) : Super{t, l, r, pos_}, code{c} {}
+         Exp_Arith(IR::OpCode c, Type const *t, Exp const *l, Exp const *r,
+            Core::Origin pos_) : Super{t, l, r, pos_}, op{c} {}
 
          // v_genStmnt
          virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
-            {GenStmnt_Arith(this, code, ctx, dst);}
+            {GenStmnt_Arith(this, op, ctx, dst);}
       };
 
       //
@@ -94,23 +95,23 @@ namespace GDCC
 
       public:
          Type::CRef const evalT;
-         IR::Code   const code;
+         IR::OpCode const op;
          bool       const post : 1;
 
 
          // Create
-         static CRef Create(Type const *evalT, IR::Code code, bool post,
+         static CRef Create(Type const *evalT, IR::OpCode op, bool post,
             Type const *t, Exp const *l, Exp const *r, Core::Origin pos)
-            {return CRef(new This(evalT, code, post, t, l, r, pos));}
+            {return CRef(new This(evalT, op, post, t, l, r, pos));}
 
       protected:
-         Exp_ArithEq(Type const *evalT_, IR::Code c, bool post_, Type const *t,
+         Exp_ArithEq(Type const *evalT_, IR::OpCode c, bool post_, Type const *t,
             Exp const *l, Exp const *r, Core::Origin pos_) :
-            Super{t, l, r, pos_}, evalT{evalT_}, code{c}, post{post_} {}
+            Super{t, l, r, pos_}, evalT{evalT_}, op{c}, post{post_} {}
 
          // v_genStmnt
          virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
-            {GenStmnt_ArithEq(this, code, ctx, dst, evalT, post);}
+            {GenStmnt_ArithEq(this, op, ctx, dst, evalT, post);}
 
          // v_getIRExp
          virtual IR::Exp::CRef v_getIRExp() const
@@ -191,11 +192,11 @@ namespace GDCC
    namespace AST
    {
       // Does generic codegen centered around a 3-arg arithmetic instruction.
-      void GenStmnt_Arith(Exp_Binary const *exp, IR::Code code,
+      void GenStmnt_Arith(Exp_Binary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst);
 
       // As in GenStmnt_Arith, but also assigns the result to the left operand.
-      void GenStmnt_ArithEq(Exp_Binary const *exp, IR::Code code,
+      void GenStmnt_ArithEq(Exp_Binary const *exp, IR::OpCode op,
          GenStmntCtx const &ctx, Arg const &dst, Type const *evalT,
          bool post = false);
    }

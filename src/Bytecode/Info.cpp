@@ -448,7 +448,7 @@ namespace GDCC
       {
          if(stmnt->args[a].a != b)
          {
-            std::cerr << "ERROR: " << stmnt->pos << ": " << stmnt->code
+            std::cerr << "ERROR: " << stmnt->pos << ": " << stmnt->op
                << " must have " << b << " args[" << a << "]\n";
             throw EXIT_FAILURE;
          }
@@ -461,7 +461,7 @@ namespace GDCC
       {
          if(stmnt->args.size() < c)
          {
-            std::cerr << "ERROR: " << stmnt->pos << ": bad argc for " << stmnt->code
+            std::cerr << "ERROR: " << stmnt->pos << ": bad argc for " << stmnt->op
                << ": " << stmnt->args.size() << " < " << c << '\n';
             throw EXIT_FAILURE;
          }

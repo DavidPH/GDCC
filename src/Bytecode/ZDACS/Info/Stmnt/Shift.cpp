@@ -683,13 +683,13 @@ namespace GDCC
                stmnt->args[2].a == IR::ArgBase::Stk)
                throw Core::ExceptStr(stmnt->pos, "trStmnt_ShRU_W disorder");
 
-            moveArgStk_dst(stmnt->args[0], IR::Code::Move_W);
-            if(moveArgStk_src(stmnt->args[1], IR::Code::Move_W)) return;
+            moveArgStk_dst(stmnt->args[0], stmnt->op.size);
+            if(moveArgStk_src(stmnt->args[1], stmnt->op.size)) return;
 
             if(!isPushArg(stmnt->args[2]) || !isFastArg(stmnt->args[2]))
             {
                func->setLocalTmp(1);
-               moveArgStk_src(stmnt->args[2], IR::Code::Move_W);
+               moveArgStk_src(stmnt->args[2], 1);
             }
          }
 
@@ -698,7 +698,7 @@ namespace GDCC
          //
          void Info::trStmnt_ShLU_W2()
          {
-            if(trStmntShift(IR::Code::Move_W2))
+            if(trStmntShift())
             {
                auto shift = GetWord(stmnt->args[2].aLit) % 64;
 
@@ -714,7 +714,7 @@ namespace GDCC
          //
          void Info::trStmnt_ShRI_W2()
          {
-            if(trStmntShift(IR::Code::Move_W2))
+            if(trStmntShift())
             {
                auto shift = GetWord(stmnt->args[2].aLit) % 64;
 
@@ -730,7 +730,7 @@ namespace GDCC
          //
          void Info::trStmnt_ShRU_W2()
          {
-            if(trStmntShift(IR::Code::Move_W2))
+            if(trStmntShift())
             {
                auto shift = GetWord(stmnt->args[2].aLit) % 64;
 
@@ -746,7 +746,7 @@ namespace GDCC
          //
          void Info::trStmnt_ShLU_W3()
          {
-            if(trStmntShift(IR::Code::Move_W3))
+            if(trStmntShift())
             {
                auto shift = GetWord(stmnt->args[2].aLit) % 96;
 
@@ -764,7 +764,7 @@ namespace GDCC
          //
          void Info::trStmnt_ShRI_W3()
          {
-            if(trStmntShift(IR::Code::Move_W3))
+            if(trStmntShift())
             {
                auto shift = GetWord(stmnt->args[2].aLit) % 96;
 
@@ -782,7 +782,7 @@ namespace GDCC
          //
          void Info::trStmnt_ShRU_W3()
          {
-            if(trStmntShift(IR::Code::Move_W3))
+            if(trStmntShift())
             {
                auto shift = GetWord(stmnt->args[2].aLit) % 96;
 
@@ -798,7 +798,7 @@ namespace GDCC
          //
          // Info::trStmntShift
          //
-         bool Info::trStmntShift(IR::Code codeMove, bool moveLit)
+         bool Info::trStmntShift(bool moveLit)
          {
             CheckArgC(stmnt, 3);
 
@@ -806,13 +806,13 @@ namespace GDCC
                stmnt->args[2].a == IR::ArgBase::Stk)
                throw Core::ExceptStr(stmnt->pos, "trStmntShift disorder");
 
-            moveArgStk_dst(stmnt->args[0], codeMove);
-            if(moveArgStk_src(stmnt->args[1], codeMove)) return false;
+            moveArgStk_dst(stmnt->args[0], stmnt->op.size);
+            if(moveArgStk_src(stmnt->args[1], stmnt->op.size)) return false;
 
             if(!moveLit && stmnt->args[2].a == IR::ArgBase::Lit)
                return true;
 
-            moveArgStk_src(stmnt->args[2], IR::Code::Move_W);
+            moveArgStk_src(stmnt->args[2], 1);
             return false;
          }
       }

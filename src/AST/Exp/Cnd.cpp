@@ -38,11 +38,11 @@ namespace GDCC
 
          // Evaluate condition.
          expC->genStmntStk(ctx);
-         ctx.block.addStatementArgs(IR::Code::Jcnd_Nil, IR::Arg_Stk(), labelNil);
+         ctx.block.addStatementArgs({IR::Code::Jcnd_Nil, 1}, IR::Arg_Stk(), labelNil);
 
          // Left (true) expression.
          expL->genStmnt(ctx, dst);
-         ctx.block.addStatementArgs(IR::Code::Jump, labelEnd);
+         ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelEnd);
 
          // Right (false) expression.
          ctx.block.addLabel(labelNil);

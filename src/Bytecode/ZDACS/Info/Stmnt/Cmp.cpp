@@ -146,14 +146,14 @@ namespace GDCC
          //
          // Info::trStmnt_CmpU_EQ
          //
-         void Info::trStmnt_CmpU_EQ(IR::Code codeMove)
+         void Info::trStmnt_CmpU_EQ()
          {
             CheckArgC(stmnt, 3);
 
             if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
-               moveArgStk_dst(stmnt->args[0], IR::Code::Move_W);
+               moveArgStk_dst(stmnt->args[0], 1);
             else
-               trStmntStk3(IR::Code::Move_W, codeMove, false);
+               trStmntStk3(1, stmnt->op.size, false);
          }
       }
    }
