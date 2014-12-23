@@ -22,27 +22,27 @@ Function "___GDCC__SubU_W2" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__SubU_W2$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 5 \
    param    = 4 \
    retrn    = 2 \
    block
 {
-   SubU_W, LocReg(Lit(4), 0), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
+   SubU_W 1, LocReg(Lit(4)), LocReg(Lit(0)), LocReg(Lit(2))
 
-   CmpU_GT_W, Stk(), LocReg(Lit(4), 0), LocReg(Lit(0), 0)
-   Jcnd_Nil,  Stk(), Lit("___GDCC__SubU_W2$notunder0")
+   CmpU_GT_W 1, Stk(), LocReg(Lit(4)), LocReg(Lit(0))
+   Jcnd_Nil  1, Stk(), Lit(:"$notunder0")
 
-   Move_W, Stk(), LocReg(Lit(4), 0)
-   SubU_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   SubU_W, Stk(), Stk(), Lit(1)
-   Retn,   Stk(), Stk()
+   Move_W 1, Stk(), LocReg(Lit(4))
+   SubU_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   SubU_W 1, Stk(), Stk(), Lit(1)
+   Retn   2, Stk()
 
-"___GDCC__SubU_W2$notunder0"
-   Move_W, Stk(), LocReg(Lit(4), 0)
-   SubU_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Retn,   Stk(), Stk()
+:"$notunder0"
+   Move_W 1, Stk(), LocReg(Lit(4))
+   SubU_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   Retn   2, Stk()
 }
 
 ;;
@@ -52,58 +52,58 @@ Function "___GDCC__SubU_W3" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__SubU_W3$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 9 \
    param    = 6 \
    retrn    = 3 \
    block
 {
-   SubU_W, LocReg(Lit(6), 0), LocReg(Lit(0), 0), LocReg(Lit(3), 0)
-   SubU_W, LocReg(Lit(7), 0), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   SubU_W, LocReg(Lit(8), 0), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
+   SubU_W 1, LocReg(Lit(6)), LocReg(Lit(0)), LocReg(Lit(3))
+   SubU_W 1, LocReg(Lit(7)), LocReg(Lit(1)), LocReg(Lit(4))
+   SubU_W 1, LocReg(Lit(8)), LocReg(Lit(2)), LocReg(Lit(5))
 
-   CmpU_GT_W, Stk(), LocReg(Lit(6), 0), LocReg(Lit(0), 0)
-   Jcnd_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder0")
+   CmpU_GT_W 1, Stk(), LocReg(Lit(6)), LocReg(Lit(0))
+   Jcnd_Nil  1, Stk(), Lit(:"$notunder0")
 
-   CmpU_GT_W, Stk(), LocReg(Lit(7), 0), LocReg(Lit(1), 0)
-   Jcnd_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder1")
+   CmpU_GT_W 1, Stk(), LocReg(Lit(7)), LocReg(Lit(1))
+   Jcnd_Nil  1, Stk(), Lit(:"$notunder1")
 
    ; Both underflowed.
-   SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
-   SubU_W,  LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
+   SubU_W 1, LocReg(Lit(7)), LocReg(Lit(7)), Lit(1)
+   SubU_W 1, LocReg(Lit(8)), LocReg(Lit(8)), Lit(1)
 
-   Move_W3, Stk(), LocReg(Lit(6), 0)
-   Retn,    Stk(), Stk(), Stk()
+   Move_W 3, Stk(), LocReg(Lit(6))
+   Retn   3, Stk()
 
-"___GDCC__SubU_W3$notunder1"
+:"$notunder1"
    ; Only 0 underflowed, but check 1 if it is about to underflow.
-   Move_W,   Stk(), LocReg(Lit(7), 0)
-   Jcnd_Tru, Stk(), Lit("___GDCC__SubU_W3$notunder1+")
+   Move_W   1, Stk(), LocReg(Lit(7))
+   Jcnd_Tru 1, Stk(), Lit(:"$notunder1+")
 
    ; Both underflowed, actually.
-   SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
-   SubU_W,  LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
-   Move_W3, Stk(), LocReg(Lit(6), 0)
-   Retn,    Stk(), Stk(), Stk()
+   SubU_W 1, LocReg(Lit(7)), LocReg(Lit(7)), Lit(1)
+   SubU_W 1, LocReg(Lit(8)), LocReg(Lit(8)), Lit(1)
+   Move_W 3, Stk(), LocReg(Lit(6))
+   Retn   3, Stk()
 
-"___GDCC__SubU_W3$notunder1+"
+:"$notunder1+"
    ; Only 0 underflowed, actually.
-   SubU_W,  LocReg(Lit(7), 0), LocReg(Lit(7), 0), Lit(1)
-   Move_W3, Stk(), LocReg(Lit(6), 0)
-   Retn,    Stk(), Stk(), Stk()
+   SubU_W 1, LocReg(Lit(7)), LocReg(Lit(7)), Lit(1)
+   Move_W 3, Stk(), LocReg(Lit(6))
+   Retn   3, Stk()
 
-"___GDCC__SubU_W3$notunder0"
-   CmpU_GT_W, Stk(), LocReg(Lit(7), 0), LocReg(Lit(1), 0)
-   Jcnd_Nil,  Stk(), Lit("___GDCC__SubU_W3$notunder01")
+:"$notunder0"
+   CmpU_GT_W 1, Stk(), LocReg(Lit(7)), LocReg(Lit(1))
+   Jcnd_Nil  1, Stk(), Lit(:"$notunder01")
 
    ; Only 1 underflowed.
-   SubU_W, LocReg(Lit(8), 0), LocReg(Lit(8), 0), Lit(1)
+   SubU_W 1, LocReg(Lit(8)), LocReg(Lit(8)), Lit(1)
 
-"___GDCC__SubU_W3$notunder01"
+:"$notunder01"
    ; Neither underflowed.
-   Move_W3, Stk(), LocReg(Lit(6), 0)
-   Retn,    Stk(), Stk(), Stk()
+   Move_W 3, Stk(), LocReg(Lit(6))
+   Retn   3, Stk()
 }
 
 ;; EOF

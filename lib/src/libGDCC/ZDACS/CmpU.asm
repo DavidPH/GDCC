@@ -22,17 +22,17 @@ Function "___GDCC__CmpU_EQ_W2" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_EQ_W2$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 4 \
    param    = 4 \
    retrn    = 1 \
    block
 {
-   CmpU_EQ_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
-   CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   AndU_W,    Stk(), Stk(), Stk()
-   Retn,      Stk()
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(2))
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   AndU_W    1, Stk(), Stk(), Stk()
+   Retn      1, Stk()
 }
 
 ;;
@@ -42,19 +42,19 @@ Function "___GDCC__CmpU_EQ_W3" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_EQ_W3$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 6 \
    param    = 6 \
    retrn    = 1 \
    block
 {
-   CmpU_EQ_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(3), 0)
-   CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   AndU_W,    Stk(), Stk(), Stk()
-   CmpU_EQ_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   AndU_W,    Stk(), Stk(), Stk()
-   Retn,      Stk()
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(3))
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(4))
+   AndU_W    1, Stk(), Stk(), Stk()
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(2)), LocReg(Lit(5))
+   AndU_W    1, Stk(), Stk(), Stk()
+   Retn      1, Stk()
 }
 
 ;; Unsigned word compare logic:
@@ -77,30 +77,30 @@ Function "___GDCC__CmpU_GE_W" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_GE_W$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 2 \
    param    = 2 \
    retrn    = 1 \
    block
 {
-   AndU_W,   Stk(), LocReg(Lit(0), 0), Lit(0x80000000)
-   Jcnd_Nil, Stk(), Lit("___GDCC__CmpU_GE_W$pos")
+   AndU_W   1, Stk(), LocReg(Lit(0)), Lit(0x80000000)
+   Jcnd_Nil 1, Stk(), Lit(:"$pos")
 
-   AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Jcnd_Tru, Stk(), Lit("___GDCC__CmpU_GE_W$cmp")
-   Move_W,   Stk(), Lit(1)
-   Retn,     Stk()
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   Jcnd_Tru 1, Stk(), Lit(:"$cmp")
+   Move_W   1, Stk(), Lit(1)
+   Retn     1, Stk()
 
-"___GDCC__CmpU_GE_W$pos"
-   AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Jcnd_Nil, Stk(), Lit("___GDCC__CmpU_GE_W$cmp")
-   Move_W,   Stk(), Lit(0)
-   Retn,     Stk()
+:"$pos"
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   Jcnd_Nil 1, Stk(), Lit(:"$cmp")
+   Move_W   1, Stk(), Lit(0)
+   Retn     1, Stk()
 
-"___GDCC__CmpU_GE_W$cmp"
-   CmpI_GE_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
-   Retn,      Stk()
+:"$cmp"
+   CmpI_GE_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(1))
+   Retn      1, Stk()
 }
 
 ;;
@@ -110,22 +110,22 @@ Function "___GDCC__CmpU_GE_W2" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_GE_W2$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 4 \
    param    = 4 \
    retrn    = 1 \
    block
 {
-   CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpU_GE_W2$eq1")
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   Jcnd_Tru  1, Stk(), Lit(:"$eq1")
 
-   CmpU_GT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Retn,      Stk()
+   CmpU_GT_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   Retn      1, Stk()
 
-"___GDCC__CmpU_GE_W2$eq1"
-   CmpU_GE_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
-   Retn,      Stk()
+:"$eq1"
+   CmpU_GE_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(2))
+   Retn      1, Stk()
 }
 
 ;;
@@ -135,29 +135,29 @@ Function "___GDCC__CmpU_GE_W3" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_GE_W3$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 6 \
    param    = 6 \
    retrn    = 1 \
    block
 {
-   CmpU_EQ_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpU_GE_W3$eq2")
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(2)), LocReg(Lit(5))
+   Jcnd_Tru  1, Stk(), Lit(:"$eq2")
 
-   CmpU_GT_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   Retn,      Stk()
+   CmpU_GT_W 1, Stk(), LocReg(Lit(2)), LocReg(Lit(5))
+   Retn      1, Stk()
 
-"___GDCC__CmpU_GE_W3$eq2"
-   CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpU_GE_W3$eq1")
+:"$eq2"
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(4))
+   Jcnd_Tru  1, Stk(), Lit(:"$eq1")
 
-   CmpU_GT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   Retn,      Stk()
+   CmpU_GT_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(4))
+   Retn      1, Stk()
 
-"___GDCC__CmpU_GE_W3$eq1"
-   CmpU_GE_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(3), 0)
-   Retn,      Stk()
+:"$eq1"
+   CmpU_GE_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(3))
+   Retn      1, Stk()
 }
 
 ;;
@@ -167,30 +167,30 @@ Function "___GDCC__CmpU_GT_W" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_GT_W$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 2 \
    param    = 2 \
    retrn    = 1 \
    block
 {
-   AndU_W,   Stk(), LocReg(Lit(0), 0), Lit(0x80000000)
-   Jcnd_Nil, Stk(), Lit("___GDCC__CmpU_GT_W$pos")
+   AndU_W   1, Stk(), LocReg(Lit(0)), Lit(0x80000000)
+   Jcnd_Nil 1, Stk(), Lit(:"$pos")
 
-   AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Jcnd_Tru, Stk(), Lit("___GDCC__CmpU_GT_W$cmp")
-   Move_W,   Stk(), Lit(1)
-   Retn,     Stk()
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   Jcnd_Tru 1, Stk(), Lit(:"$cmp")
+   Move_W   1, Stk(), Lit(1)
+   Retn     1, Stk()
 
-"___GDCC__CmpU_GT_W$pos"
-   AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Jcnd_Nil, Stk(), Lit("___GDCC__CmpU_GT_W$cmp")
-   Move_W,   Stk(), Lit(0)
-   Retn,     Stk()
+:"$pos"
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   Jcnd_Nil 1, Stk(), Lit(:"$cmp")
+   Move_W   1, Stk(), Lit(0)
+   Retn     1, Stk()
 
-"___GDCC__CmpU_GT_W$cmp"
-   CmpI_GT_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
-   Retn,      Stk()
+:"$cmp"
+   CmpI_GT_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(1))
+   Retn      1, Stk()
 }
 
 ;;
@@ -200,22 +200,22 @@ Function "___GDCC__CmpU_GT_W2" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_GT_W2$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 4 \
    param    = 4 \
    retrn    = 1 \
    block
 {
-   CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpU_GT_W2$eq1")
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   Jcnd_Tru  1, Stk(), Lit(:"$eq1")
 
-   CmpU_GT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Retn,      Stk()
+   CmpU_GT_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   Retn      1, Stk()
 
-"___GDCC__CmpU_GT_W2$eq1"
-   CmpU_GT_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
-   Retn,      Stk()
+:"$eq1"
+   CmpU_GT_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(2))
+   Retn      1, Stk()
 }
 
 ;;
@@ -225,29 +225,29 @@ Function "___GDCC__CmpU_GT_W3" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_GT_W3$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 6 \
    param    = 6 \
    retrn    = 1 \
    block
 {
-   CmpU_EQ_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpU_GT_W3$eq2")
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(2)), LocReg(Lit(5))
+   Jcnd_Tru  1, Stk(), Lit(:"$eq2")
 
-   CmpU_GT_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   Retn,      Stk()
+   CmpU_GT_W 1, Stk(), LocReg(Lit(2)), LocReg(Lit(5))
+   Retn      1, Stk()
 
-"___GDCC__CmpU_GT_W3$eq2"
-   CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpU_GT_W3$eq1")
+:"$eq2"
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(4))
+   Jcnd_Tru  1, Stk(), Lit(:"$eq1")
 
-   CmpU_GT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   Retn,      Stk()
+   CmpU_GT_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(4))
+   Retn      1, Stk()
 
-"___GDCC__CmpU_GT_W3$eq1"
-   CmpU_GT_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(3), 0)
-   Retn,      Stk()
+:"$eq1"
+   CmpU_GT_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(3))
+   Retn      1, Stk()
 }
 
 ;;
@@ -257,30 +257,30 @@ Function "___GDCC__CmpU_LE_W" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_LE_W$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 2 \
    param    = 2 \
    retrn    = 1 \
    block
 {
-   AndU_W,   Stk(), LocReg(Lit(0), 0), Lit(0x80000000)
-   Jcnd_Nil, Stk(), Lit("___GDCC__CmpU_LE_W$pos")
+   AndU_W   1, Stk(), LocReg(Lit(0)), Lit(0x80000000)
+   Jcnd_Nil 1, Stk(), Lit(:"$pos")
 
-   AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Jcnd_Tru, Stk(), Lit("___GDCC__CmpU_LE_W$cmp")
-   Move_W,   Stk(), Lit(0)
-   Retn,     Stk()
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   Jcnd_Tru 1, Stk(), Lit(:"$cmp")
+   Move_W   1, Stk(), Lit(0)
+   Retn     1, Stk()
 
-"___GDCC__CmpU_LE_W$pos"
-   AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Jcnd_Nil, Stk(), Lit("___GDCC__CmpU_LE_W$cmp")
-   Move_W,   Stk(), Lit(1)
-   Retn,     Stk()
+:"$pos"
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   Jcnd_Nil 1, Stk(), Lit(:"$cmp")
+   Move_W   1, Stk(), Lit(1)
+   Retn     1, Stk()
 
-"___GDCC__CmpU_LE_W$cmp"
-   CmpI_LE_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
-   Retn,      Stk()
+:"$cmp"
+   CmpI_LE_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(1))
+   Retn      1, Stk()
 }
 
 ;;
@@ -290,22 +290,22 @@ Function "___GDCC__CmpU_LE_W2" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_LE_W2$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 4 \
    param    = 4 \
    retrn    = 1 \
    block
 {
-   CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpU_LE_W2$eq1")
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   Jcnd_Tru  1, Stk(), Lit(:"$eq1")
 
-   CmpU_LT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Retn,      Stk()
+   CmpU_LT_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   Retn      1, Stk()
 
-"___GDCC__CmpU_LE_W2$eq1"
-   CmpU_LE_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
-   Retn,      Stk()
+:"$eq1"
+   CmpU_LE_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(2))
+   Retn      1, Stk()
 }
 
 ;;
@@ -315,29 +315,29 @@ Function "___GDCC__CmpU_LE_W3" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_LE_W3$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 6 \
    param    = 6 \
    retrn    = 1 \
    block
 {
-   CmpU_EQ_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpU_LE_W3$eq2")
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(2)), LocReg(Lit(5))
+   Jcnd_Tru  1, Stk(), Lit(:"$eq2")
 
-   CmpU_LT_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   Retn,      Stk()
+   CmpU_LT_W 1, Stk(), LocReg(Lit(2)), LocReg(Lit(5))
+   Retn      1, Stk()
 
-"___GDCC__CmpU_LE_W3$eq2"
-   CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpU_LE_W3$eq1")
+:"$eq2"
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(4))
+   Jcnd_Tru  1, Stk(), Lit(:"$eq1")
 
-   CmpU_LT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   Retn,      Stk()
+   CmpU_LT_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(4))
+   Retn      1, Stk()
 
-"___GDCC__CmpU_LE_W3$eq1"
-   CmpU_LE_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(3), 0)
-   Retn,      Stk()
+:"$eq1"
+   CmpU_LE_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(3))
+   Retn      1, Stk()
 }
 
 ;;
@@ -347,30 +347,30 @@ Function "___GDCC__CmpU_LT_W" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_LT_W$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 2 \
    param    = 2 \
    retrn    = 1 \
    block
 {
-   AndU_W,   Stk(), LocReg(Lit(0), 0), Lit(0x80000000)
-   Jcnd_Nil, Stk(), Lit("___GDCC__CmpU_LT_W$pos")
+   AndU_W   1, Stk(), LocReg(Lit(0)), Lit(0x80000000)
+   Jcnd_Nil 1, Stk(), Lit(:"$pos")
 
-   AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Jcnd_Tru, Stk(), Lit("___GDCC__CmpU_LT_W$cmp")
-   Move_W,   Stk(), Lit(0)
-   Retn,     Stk()
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   Jcnd_Tru 1, Stk(), Lit(:"$cmp")
+   Move_W   1, Stk(), Lit(0)
+   Retn     1, Stk()
 
-"___GDCC__CmpU_LT_W$pos"
-   AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Jcnd_Nil, Stk(), Lit("___GDCC__CmpU_LT_W$cmp")
-   Move_W,   Stk(), Lit(1)
-   Retn,     Stk()
+:"$pos"
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   Jcnd_Nil 1, Stk(), Lit(:"$cmp")
+   Move_W   1, Stk(), Lit(1)
+   Retn     1, Stk()
 
-"___GDCC__CmpU_LT_W$cmp"
-   CmpI_LT_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
-   Retn,      Stk()
+:"$cmp"
+   CmpI_LT_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(1))
+   Retn      1, Stk()
 }
 
 ;;
@@ -380,22 +380,22 @@ Function "___GDCC__CmpU_LT_W2" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_LT_W2$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 4 \
    param    = 4 \
    retrn    = 1 \
    block
 {
-   CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpU_LT_W2$eq1")
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   Jcnd_Tru  1, Stk(), Lit(:"$eq1")
 
-   CmpU_LT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Retn,      Stk()
+   CmpU_LT_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   Retn      1, Stk()
 
-"___GDCC__CmpU_LT_W2$eq1"
-   CmpU_LT_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
-   Retn,      Stk()
+:"$eq1"
+   CmpU_LT_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(2))
+   Retn      1, Stk()
 }
 
 ;;
@@ -405,29 +405,29 @@ Function "___GDCC__CmpU_LT_W3" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_LT_W3$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 6 \
    param    = 6 \
    retrn    = 1 \
    block
 {
-   CmpU_EQ_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpU_LT_W3$eq2")
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(2)), LocReg(Lit(5))
+   Jcnd_Tru  1, Stk(), Lit(:"$eq2")
 
-   CmpU_LT_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   Retn,      Stk()
+   CmpU_LT_W 1, Stk(), LocReg(Lit(2)), LocReg(Lit(5))
+   Retn      1, Stk()
 
-"___GDCC__CmpU_LT_W3$eq2"
-   CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__CmpU_LT_W3$eq1")
+:"$eq2"
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(4))
+   Jcnd_Tru  1, Stk(), Lit(:"$eq1")
 
-   CmpU_LT_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   Retn,      Stk()
+   CmpU_LT_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(4))
+   Retn      1, Stk()
 
-"___GDCC__CmpU_LT_W3$eq1"
-   CmpU_LT_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(3), 0)
-   Retn,      Stk()
+:"$eq1"
+   CmpU_LT_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(3))
+   Retn      1, Stk()
 }
 
 ;;
@@ -437,17 +437,17 @@ Function "___GDCC__CmpU_NE_W2" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_NE_W2$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 4 \
    param    = 4 \
    retrn    = 1 \
    block
 {
-   CmpU_NE_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
-   CmpU_NE_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   OrIU_W,    Stk(), Stk(), Stk()
-   Retn,      Stk()
+   CmpU_NE_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(2))
+   CmpU_NE_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   OrIU_W    1, Stk(), Stk(), Stk()
+   Retn      1, Stk()
 }
 
 ;;
@@ -457,19 +457,19 @@ Function "___GDCC__CmpU_NE_W3" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__CmpU_NE_W3$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 6 \
    param    = 6 \
    retrn    = 1 \
    block
 {
-   CmpU_NE_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(3), 0)
-   CmpU_NE_W, Stk(), LocReg(Lit(1), 0), LocReg(Lit(4), 0)
-   OrIU_W,    Stk(), Stk(), Stk()
-   CmpU_NE_W, Stk(), LocReg(Lit(2), 0), LocReg(Lit(5), 0)
-   OrIU_W,    Stk(), Stk(), Stk()
-   Retn,      Stk()
+   CmpU_NE_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(3))
+   CmpU_NE_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(4))
+   OrIU_W    1, Stk(), Stk(), Stk()
+   CmpU_NE_W 1, Stk(), LocReg(Lit(2)), LocReg(Lit(5))
+   OrIU_W    1, Stk(), Stk(), Stk()
+   Retn      1, Stk()
 }
 
 ;; EOF

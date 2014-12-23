@@ -22,7 +22,7 @@ Function "___GDCC__SubF_W" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__SubF_W$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 5 \
    param    = 2 \
@@ -30,190 +30,190 @@ Function "___GDCC__SubF_W" \
    block
 {
    ; +0 - +0 = +0
-   OrIU_W,   Stk(), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
-   Jcnd_Nil, Stk(), Lit("___GDCC__SubF_W$remin")
+   OrIU_W   1, Stk(), LocReg(Lit(0)), LocReg(Lit(1))
+   Jcnd_Nil 1, Stk(), Lit(:"$remin")
 
    ; -0 - -0 = +0
-   CmpU_EQ_W, Stk(), LocReg(Lit(0), 0), Lit(0x80000000)
-   CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   AndU_W,    Stk(), Stk(), Stk()
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W$lemin")
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(0)), Lit(0x80000000)
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   AndU_W    1, Stk(), Stk(), Stk()
+   Jcnd_Tru  1, Stk(), Lit(:"$lemin")
 
    ; Is l negative? l - r = -(-l + r)
-   AndU_W,   Stk(), LocReg(Lit(0), 0), Lit(0x80000000)
-   Jcnd_Nil, Stk(), Lit("___GDCC__SubF_W$lpos")
-   NegF_W,   Stk(), LocReg(Lit(0), 0)
-   Move_W,   Stk(), LocReg(Lit(1), 0)
-   AddF_W,   Stk(), Stk(), Stk()
-   NegF_W,   Stk(), Stk()
-   Retn,     Stk()
-"___GDCC__SubF_W$lpos"
+   AndU_W   1, Stk(), LocReg(Lit(0)), Lit(0x80000000)
+   Jcnd_Nil 1, Stk(), Lit(:"$lpos")
+   NegF_W   1, Stk(), LocReg(Lit(0))
+   Move_W   1, Stk(), LocReg(Lit(1))
+   AddF_W   1, Stk(), Stk(), Stk()
+   NegF_W   1, Stk(), Stk()
+   Retn     1, Stk()
+:"$lpos"
 
    ; Is r negative? l - r = l + -r
-   AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Jcnd_Nil, Stk(), Lit("___GDCC__SubF_W$rpos")
-   Move_W,   Stk(), LocReg(Lit(0), 0)
-   NegF_W,   Stk(), LocReg(Lit(1), 0)
-   AddF_W,   Stk(), Stk(), Stk()
-   Retn,     Stk()
-"___GDCC__SubF_W$rpos"
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   Jcnd_Nil 1, Stk(), Lit(:"$rpos")
+   Move_W   1, Stk(), LocReg(Lit(0))
+   NegF_W   1, Stk(), LocReg(Lit(1))
+   AddF_W   1, Stk(), Stk(), Stk()
+   Retn     1, Stk()
+:"$rpos"
 
    ; Does l have special exponent?
-   AndU_W, Stk(), LocReg(Lit(0), 0), Lit(0x7F800000)
-   Casm,   Lit(84), Lit(0x7F800000), Lit("___GDCC__SubF_W$lemax") ; Jcnd_Lit
-   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__SubF_W$lemin") ; Jcnd_Lit
-   ShRI_W, LocReg(Lit(2), 0), Stk(), Lit(23)
+   AndU_W 1, Stk(), LocReg(Lit(0)), Lit(0x7F800000)
+   Casm   0, Lit(84), Lit(0x7F800000), Lit(:"$lemax") ; Jcnd_Lit
+   Casm   0, Lit(84), Lit(0x00000000), Lit(:"$lemin") ; Jcnd_Lit
+   ShRI_W 1, LocReg(Lit(2)), Stk(), Lit(23)
 
    ; Does r have special exponent?
-   AndU_W, Stk(), LocReg(Lit(1), 0), Lit(0x7F800000)
-   Casm,   Lit(84), Lit(0x7F800000), Lit("___GDCC__SubF_W$remax") ; Jcnd_Lit
-   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__SubF_W$remin") ; Jcnd_Lit
-   ShRI_W, LocReg(Lit(3), 0), Stk(), Lit(23)
+   AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x7F800000)
+   Casm   0, Lit(84), Lit(0x7F800000), Lit(:"$remax") ; Jcnd_Lit
+   Casm   0, Lit(84), Lit(0x00000000), Lit(:"$remin") ; Jcnd_Lit
+   ShRI_W 1, LocReg(Lit(3)), Stk(), Lit(23)
 
 
    ; Both are normalized.
 
    ; Is l > r?
-   CmpI_GT_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W$lgtr")
+   CmpI_GT_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(1))
+   Jcnd_Tru  1, Stk(), Lit(:"$lgtr")
 
    ; Is l < r?
-   CmpI_LT_W, Stk(), LocReg(Lit(0), 0), LocReg(Lit(1), 0)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W$lltr")
+   CmpI_LT_W 1, Stk(), LocReg(Lit(0)), LocReg(Lit(1))
+   Jcnd_Tru  1, Stk(), Lit(:"$lltr")
 
 
    ; l == r
 
    ; Return 0.
-   Move_W, Stk(), Lit(0x00000000)
-   Retn,   Stk()
+   Move_W 1, Stk(), Lit(0x00000000)
+   Retn   1, Stk()
 
 
    ; l > r
-"___GDCC__SubF_W$lgtr"
+:"$lgtr"
    ; Calculate exponent difference.
-   SubU_W, LocReg(Lit(4), 0), LocReg(Lit(2), 0), LocReg(Lit(3), 0)
+   SubU_W 1, LocReg(Lit(4)), LocReg(Lit(2)), LocReg(Lit(3))
 
    ; If difference is >=24, r is too small to affect l.
-   CmpI_GE_W, Stk(), LocReg(Lit(4), 0), Lit(24)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W$remin")
+   CmpI_GE_W 1, Stk(), LocReg(Lit(4)), Lit(24)
+   Jcnd_Tru  1, Stk(), Lit(:"$remin")
 
    ; l.manfull - (r.manfull >> difference)
-   AndU_W, Stk(), LocReg(Lit(0), 0), Lit(0x007FFFFF)
-   OrIU_W, Stk(), Stk(),             Lit(0x00800000)
-   AndU_W, Stk(), LocReg(Lit(1), 0), Lit(0x007FFFFF)
-   OrIU_W, Stk(), Stk(),             Lit(0x00800000)
-   ShRI_W, Stk(), Stk(),             LocReg(Lit(4), 0)
-   SubU_W, LocReg(Lit(4), 0), Stk(), Stk()
+   AndU_W 1, Stk(), LocReg(Lit(0)), Lit(0x007FFFFF)
+   OrIU_W 1, Stk(), Stk(),          Lit(0x00800000)
+   AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x007FFFFF)
+   OrIU_W 1, Stk(), Stk(),          Lit(0x00800000)
+   ShRI_W 1, Stk(), Stk(),          LocReg(Lit(4))
+   SubU_W 1, LocReg(Lit(4)), Stk(), Stk()
 
-   CmpI_LE_W, Stk(), LocReg(Lit(4), 0), Lit(0x00FFFFFF)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W$lgtr_shlc")
+   CmpI_LE_W 1, Stk(), LocReg(Lit(4)), Lit(0x00FFFFFF)
+   Jcnd_Tru  1, Stk(), Lit(:"$lgtr_shlc")
 
-   ShRI_W, LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
-   AddI_W, LocReg(Lit(2), 0), LocReg(Lit(2), 0), Lit(1)
-   Jump,   Lit("___GDCC__SubF_W$lgtr_ret")
+   ShRI_W 1, LocReg(Lit(4)), LocReg(Lit(4)), Lit(1)
+   AddI_W 1, LocReg(Lit(2)), LocReg(Lit(2)), Lit(1)
+   Jump   0, Lit(:"$lgtr_ret")
 
-"___GDCC__SubF_W$lgtr_shl"
-   ShLU_W, LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
-   SubI_W, LocReg(Lit(2), 0), LocReg(Lit(2), 0), Lit(1)
+:"$lgtr_shl"
+   ShLU_W 1, LocReg(Lit(4)), LocReg(Lit(4)), Lit(1)
+   SubI_W 1, LocReg(Lit(2)), LocReg(Lit(2)), Lit(1)
 
-   Move_W,   Stk(), LocReg(Lit(2), 0)
-   Jcnd_Nil, Stk(), Lit("___GDCC__SubF_W$poszero")
+   Move_W   1, Stk(), LocReg(Lit(2))
+   Jcnd_Nil 1, Stk(), Lit(:"$poszero")
 
-"___GDCC__SubF_W$lgtr_shlc"
-   CmpI_LE_W, Stk(), LocReg(Lit(4), 0), Lit(0x007FFFFF)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W$lgtr_shl")
+:"$lgtr_shlc"
+   CmpI_LE_W 1, Stk(), LocReg(Lit(4)), Lit(0x007FFFFF)
+   Jcnd_Tru  1, Stk(), Lit(:"$lgtr_shl")
 
-"___GDCC__SubF_W$lgtr_ret"
-   ShLU_W, Stk(), LocReg(Lit(2), 0), Lit(23)
-   AndU_W, Stk(), LocReg(Lit(4), 0), Lit(0x007FFFFF)
-   OrIU_W, Stk(), Stk(), Stk()
-   Retn,   Stk()
+:"$lgtr_ret"
+   ShLU_W 1, Stk(), LocReg(Lit(2)), Lit(23)
+   AndU_W 1, Stk(), LocReg(Lit(4)), Lit(0x007FFFFF)
+   OrIU_W 1, Stk(), Stk(), Stk()
+   Retn   1, Stk()
 
 
    ; l < r
-"___GDCC__SubF_W$lltr"
+:"$lltr"
    ; Calculate exponent difference.
-   SubU_W, LocReg(Lit(4), 0), LocReg(Lit(3), 0), LocReg(Lit(2), 0)
+   SubU_W 1, LocReg(Lit(4)), LocReg(Lit(3)), LocReg(Lit(2))
 
    ; If difference is >=24, l is too small to affect r.
-   CmpI_GE_W, Stk(), LocReg(Lit(4), 0), Lit(24)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W$lemin")
+   CmpI_GE_W 1, Stk(), LocReg(Lit(4)), Lit(24)
+   Jcnd_Tru  1, Stk(), Lit(:"$lemin")
 
    ; -(r.manfull - (l.manfull >> difference))
-   AndU_W, Stk(), LocReg(Lit(1), 0), Lit(0x007FFFFF)
-   OrIU_W, Stk(), Stk(),             Lit(0x00800000)
-   AndU_W, Stk(), LocReg(Lit(0), 0), Lit(0x007FFFFF)
-   OrIU_W, Stk(), Stk(),             Lit(0x00800000)
-   ShRI_W, Stk(), Stk(),             LocReg(Lit(4), 0)
-   SubU_W, LocReg(Lit(4), 0), Stk(), Stk()
+   AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x007FFFFF)
+   OrIU_W 1, Stk(), Stk(),          Lit(0x00800000)
+   AndU_W 1, Stk(), LocReg(Lit(0)), Lit(0x007FFFFF)
+   OrIU_W 1, Stk(), Stk(),          Lit(0x00800000)
+   ShRI_W 1, Stk(), Stk(),          LocReg(Lit(4))
+   SubU_W 1, LocReg(Lit(4)), Stk(), Stk()
 
-   CmpI_LE_W, Stk(), LocReg(Lit(4), 0), Lit(0x00FFFFFF)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W$lltr_shlc")
+   CmpI_LE_W 1, Stk(), LocReg(Lit(4)), Lit(0x00FFFFFF)
+   Jcnd_Tru  1, Stk(), Lit(:"$lltr_shlc")
 
-   ShRI_W, LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
-   AddI_W, LocReg(Lit(3), 0), LocReg(Lit(3), 0), Lit(1)
-   Jump,   Lit("___GDCC__SubF_W$lltr_ret")
+   ShRI_W 1, LocReg(Lit(4)), LocReg(Lit(4)), Lit(1)
+   AddI_W 1, LocReg(Lit(3)), LocReg(Lit(3)), Lit(1)
+   Jump   0, Lit(:"$lltr_ret")
 
-"___GDCC__SubF_W$lltr_shl"
-   ShLU_W, LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
-   SubI_W, LocReg(Lit(3), 0), LocReg(Lit(3), 0), Lit(1)
+:"$lltr_shl"
+   ShLU_W 1, LocReg(Lit(4)), LocReg(Lit(4)), Lit(1)
+   SubI_W 1, LocReg(Lit(3)), LocReg(Lit(3)), Lit(1)
 
-   Move_W,   Stk(), LocReg(Lit(3), 0)
-   Jcnd_Nil, Stk(), Lit("___GDCC__SubF_W$negzero")
+   Move_W   1, Stk(), LocReg(Lit(3))
+   Jcnd_Nil 1, Stk(), Lit(:"$negzero")
 
-"___GDCC__SubF_W$lltr_shlc"
-   CmpI_LE_W, Stk(), LocReg(Lit(4), 0), Lit(0x007FFFFF)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W$lltr_shl")
+:"$lltr_shlc"
+   CmpI_LE_W 1, Stk(), LocReg(Lit(4)), Lit(0x007FFFFF)
+   Jcnd_Tru  1, Stk(), Lit(:"$lltr_shl")
 
-"___GDCC__SubF_W$lltr_ret"
-   ShLU_W, Stk(), LocReg(Lit(3), 0), Lit(23)
-   AndU_W, Stk(), LocReg(Lit(4), 0), Lit(0x007FFFFF)
-   OrIU_W, Stk(), Stk(), Stk()
-   NegF_W, Stk(), Stk()
-   Retn,   Stk()
+:"$lltr_ret"
+   ShLU_W 1, Stk(), LocReg(Lit(3)), Lit(23)
+   AndU_W 1, Stk(), LocReg(Lit(4)), Lit(0x007FFFFF)
+   OrIU_W 1, Stk(), Stk(), Stk()
+   NegF_W 1, Stk(), Stk()
+   Retn   1, Stk()
 
 
    ; l has max exponent. It is either INF or NaN.
-"___GDCC__SubF_W$lemax"
+:"$lemax"
    ; Is r also max exponent?
-   AndU_W,    Stk(), LocReg(Lit(1), 0), Lit(0x7F800000)
-   CmpU_EQ_W, Stk(), Stk(),             Lit(0x7F800000)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W$lremax")
+   AndU_W    1, Stk(), LocReg(Lit(1)), Lit(0x7F800000)
+   CmpU_EQ_W 1, Stk(), Stk(),          Lit(0x7F800000)
+   Jcnd_Tru  1, Stk(), Lit(:"$lremax")
 
    ; r has min exponent. Therefore, r == 0 and the result is l.
-"___GDCC__SubF_W$remin"
-   Move_W, Stk(), LocReg(Lit(0), 0)
-   Retn,   Stk()
+:"$remin"
+   Move_W 1, Stk(), LocReg(Lit(0))
+   Retn   1, Stk()
 
    ; r has max exponent. It is either INF or NaN. Either way, return it.
-"___GDCC__SubF_W$remax"
+:"$remax"
    ; l has min exponent. Therefore, l == 0 and the result is -r.
-"___GDCC__SubF_W$lemin"
-   NegF_W, Stk(), LocReg(Lit(1), 0)
-   Retn,   Stk()
+:"$lemin"
+   NegF_W 1, Stk(), LocReg(Lit(1))
+   Retn   1, Stk()
 
    ; l and r have max exponent.
-"___GDCC__SubF_W$lremax"
+:"$lremax"
    ; Is l NaN? If so, return l.
-   AndU_W,   Stk(), LocReg(Lit(0), 0), Lit(0x007FFFFF)
-   Jcnd_Tru, Stk(), Lit("___GDCC__SubF_W$remin")
+   AndU_W   1, Stk(), LocReg(Lit(0)), Lit(0x007FFFFF)
+   Jcnd_Tru 1, Stk(), Lit(:"$remin")
 
    ; Is r NaN? If so, return r. (Sign inversion is fine.)
-   AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x007FFFFF)
-   Jcnd_Tru, Stk(), Lit("___GDCC__SubF_W$lemin")
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x007FFFFF)
+   Jcnd_Tru 1, Stk(), Lit(:"$lemin")
 
    ; +INF - +INF = NaN
-   Move_W, Stk(), Lit(0x7FFFFFFF)
-   Retn,   Stk()
+   Move_W 1, Stk(), Lit(0x7FFFFFFF)
+   Retn   1, Stk()
 
-"___GDCC__SubF_W$poszero"
-   Move_W, Stk(), Lit(0x00000000)
-   Retn,   Stk()
+:"$poszero"
+   Move_W 1, Stk(), Lit(0x00000000)
+   Retn   1, Stk()
 
-"___GDCC__SubF_W$negzero"
-   Move_W, Stk(), Lit(0x80000000)
-   Retn,   Stk()
+:"$negzero"
+   Move_W 1, Stk(), Lit(0x80000000)
+   Retn   1, Stk()
 }
 
 ;;
@@ -223,7 +223,7 @@ Function "___GDCC__SubF_W2" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
-   label    = "___GDCC__SubF_W2$label" \
+   label    = :"$label" \
    linka    = ExtC \
    localReg = 8 \
    param    = 4 \
@@ -231,200 +231,200 @@ Function "___GDCC__SubF_W2" \
    block
 {
    ; +0 - +0 = +0
-   OrIU_W,   Stk(), LocReg(Lit(1), 0), LocReg(Lit(3), 0)
-   Jcnd_Nil, Stk(), Lit("___GDCC__SubF_W2$remin")
+   OrIU_W   1, Stk(), LocReg(Lit(1)), LocReg(Lit(3))
+   Jcnd_Nil 1, Stk(), Lit(:"$remin")
 
    ; -0 - -0 = +0
-   CmpU_EQ_W, Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   CmpU_EQ_W, Stk(), LocReg(Lit(3), 0), Lit(0x80000000)
-   AndU_W,    Stk(), Stk(), Stk()
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W2$lemin")
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   CmpU_EQ_W 1, Stk(), LocReg(Lit(3)), Lit(0x80000000)
+   AndU_W    1, Stk(), Stk(), Stk()
+   Jcnd_Tru  1, Stk(), Lit(:"$lemin")
 
    ; Is l negative? l - r = -(-l + r)
-   AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x80000000)
-   Jcnd_Nil, Stk(), Lit("___GDCC__SubF_W2$lpos")
-   NegF_W2,  Stk(), LocReg(Lit(0), 0)
-   Move_W2,  Stk(), LocReg(Lit(2), 0)
-   AddF_W2,  Stk(), Stk(), Stk()
-   NegF_W2,  Stk(), Stk()
-   Retn,     Stk(), Stk()
-"___GDCC__SubF_W2$lpos"
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   Jcnd_Nil 1, Stk(), Lit(:"$lpos")
+   NegF_W   2, Stk(), LocReg(Lit(0))
+   Move_W   2, Stk(), LocReg(Lit(2))
+   AddF_W   2, Stk(), Stk(), Stk()
+   NegF_W   2, Stk(), Stk()
+   Retn     2, Stk()
+:"$lpos"
 
    ; Is r negative? l - r = l + -r
-   AndU_W,   Stk(), LocReg(Lit(3), 0), Lit(0x80000000)
-   Jcnd_Nil, Stk(), Lit("___GDCC__SubF_W2$rpos")
-   Move_W2,  Stk(), LocReg(Lit(0), 0)
-   NegF_W2,  Stk(), LocReg(Lit(2), 0)
-   AddF_W2,  Stk(), Stk(), Stk()
-   Retn,     Stk(), Stk()
-"___GDCC__SubF_W2$rpos"
+   AndU_W   1, Stk(), LocReg(Lit(3)), Lit(0x80000000)
+   Jcnd_Nil 1, Stk(), Lit(:"$rpos")
+   Move_W   2, Stk(), LocReg(Lit(0))
+   NegF_W   2, Stk(), LocReg(Lit(2))
+   AddF_W   2, Stk(), Stk(), Stk()
+   Retn     2, Stk()
+:"$rpos"
 
    ; Does l have special exponent?
-   AndU_W, Stk(), LocReg(Lit(1), 0), Lit(0x7FF00000)
-   Casm,   Lit(84), Lit(0x7FF00000), Lit("___GDCC__SubF_W2$lemax") ; Jcnd_Lit
-   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__SubF_W2$lemin") ; Jcnd_Lit
-   ShRI_W, LocReg(Lit(4), 0), Stk(), Lit(20)
+   AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   Casm   0, Lit(84), Lit(0x7FF00000), Lit(:"$lemax") ; Jcnd_Lit
+   Casm   0, Lit(84), Lit(0x00000000), Lit(:"$lemin") ; Jcnd_Lit
+   ShRI_W 1, LocReg(Lit(4)), Stk(), Lit(20)
 
    ; Does r have special exponent?
-   AndU_W, Stk(), LocReg(Lit(3), 0), Lit(0x7FF00000)
-   Casm,   Lit(84), Lit(0x7FF00000), Lit("___GDCC__SubF_W2$remax") ; Jcnd_Lit
-   Casm,   Lit(84), Lit(0x00000000), Lit("___GDCC__SubF_W2$remin") ; Jcnd_Lit
-   ShRI_W, LocReg(Lit(5), 0), Stk(), Lit(20)
+   AndU_W 1, Stk(), LocReg(Lit(3)), Lit(0x7FF00000)
+   Casm   0, Lit(84), Lit(0x7FF00000), Lit(:"$remax") ; Jcnd_Lit
+   Casm   0, Lit(84), Lit(0x00000000), Lit(:"$remin") ; Jcnd_Lit
+   ShRI_W 1, LocReg(Lit(5)), Stk(), Lit(20)
 
 
    ; Both are normalized.
 
    ; Is l > r?
-   CmpI_GT_W2, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
-   Jcnd_Tru,   Stk(), Lit("___GDCC__SubF_W2$lgtr")
+   CmpI_GT_W 2, Stk(), LocReg(Lit(0)), LocReg(Lit(2))
+   Jcnd_Tru  1, Stk(), Lit(:"$lgtr")
 
    ; Is l < r?
-   CmpI_LT_W2, Stk(), LocReg(Lit(0), 0), LocReg(Lit(2), 0)
-   Jcnd_Tru,   Stk(), Lit("___GDCC__SubF_W2$lltr")
+   CmpI_LT_W 2, Stk(), LocReg(Lit(0)), LocReg(Lit(2))
+   Jcnd_Tru  1, Stk(), Lit(:"$lltr")
 
 
    ; l == r
 
    ; Return 0.
-   Move_W2, Stk(), Lit(0x0000000000000000_64.0)
-   Retn,    Stk(), Stk()
+   Move_W 2, Stk(), Lit(0x0000000000000000_64.0)
+   Retn   2, Stk()
 
 
    ; l > r
-"___GDCC__SubF_W2$lgtr"
+:"$lgtr"
    ; Calculate exponent difference.
-   SubU_W, LocReg(Lit(6), 0), LocReg(Lit(4), 0), LocReg(Lit(5), 0)
+   SubU_W 1, LocReg(Lit(6)), LocReg(Lit(4)), LocReg(Lit(5))
 
    ; If difference is >=53, r is too small to affect l.
-   CmpI_GE_W, Stk(), LocReg(Lit(6), 0), Lit(53)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W2$remin")
+   CmpI_GE_W 1, Stk(), LocReg(Lit(6)), Lit(53)
+   Jcnd_Tru  1, Stk(), Lit(:"$remin")
 
    ; l.manfull - (r.manfull >> difference)
-   Move_W,  Stk(), LocReg(Lit(0), 0)
-   AndU_W,  Stk(), LocReg(Lit(1), 0), Lit(0x000FFFFF)
-   OrIU_W,  Stk(), Stk(),             Lit(0x00100000)
-   Move_W,  Stk(), LocReg(Lit(2), 0)
-   AndU_W,  Stk(), LocReg(Lit(3), 0), Lit(0x000FFFFF)
-   OrIU_W,  Stk(), Stk(),             Lit(0x00100000)
-   ShRI_W2, Stk(), Stk(),             LocReg(Lit(6), 0)
-   SubU_W2, LocReg(Lit(6), 0), Stk(), Stk()
+   Move_W 1, Stk(), LocReg(Lit(0))
+   AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
+   OrIU_W 1, Stk(), Stk(),          Lit(0x00100000)
+   Move_W 1, Stk(), LocReg(Lit(2))
+   AndU_W 1, Stk(), LocReg(Lit(3)), Lit(0x000FFFFF)
+   OrIU_W 1, Stk(), Stk(),          Lit(0x00100000)
+   ShRI_W 2, Stk(), Stk(),          LocReg(Lit(6))
+   SubU_W 2, LocReg(Lit(6)), Stk(), Stk()
 
-   CmpI_LE_W, Stk(), LocReg(Lit(7), 0), Lit(0x001FFFFF)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W2$lgtr_shlc")
+   CmpI_LE_W 1, Stk(), LocReg(Lit(7)), Lit(0x001FFFFF)
+   Jcnd_Tru  1, Stk(), Lit(:"$lgtr_shlc")
 
-   ShRI_W2, LocReg(Lit(6), 0), LocReg(Lit(6), 0), Lit(1)
-   AddI_W,  LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
-   Jump,    Lit("___GDCC__SubF_W2$lgtr_ret")
+   ShRI_W 2, LocReg(Lit(6)), LocReg(Lit(6)), Lit(1)
+   AddI_W 1, LocReg(Lit(4)), LocReg(Lit(4)), Lit(1)
+   Jump   0, Lit(:"$lgtr_ret")
 
-"___GDCC__SubF_W2$lgtr_shl"
-   ShLU_W2, LocReg(Lit(6), 0), LocReg(Lit(6), 0), Lit(1)
-   SubI_W,  LocReg(Lit(4), 0), LocReg(Lit(4), 0), Lit(1)
+:"$lgtr_shl"
+   ShLU_W 2, LocReg(Lit(6)), LocReg(Lit(6)), Lit(1)
+   SubI_W 1, LocReg(Lit(4)), LocReg(Lit(4)), Lit(1)
 
-   Move_W,   Stk(), LocReg(Lit(4), 0)
-   Jcnd_Nil, Stk(), Lit("___GDCC__SubF_W2$poszero")
+   Move_W   1, Stk(), LocReg(Lit(4))
+   Jcnd_Nil 1, Stk(), Lit(:"$poszero")
 
-"___GDCC__SubF_W2$lgtr_shlc"
-   CmpI_LE_W, Stk(), LocReg(Lit(7), 0), Lit(0x000FFFFF)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W2$lgtr_shl")
+:"$lgtr_shlc"
+   CmpI_LE_W 1, Stk(), LocReg(Lit(7)), Lit(0x000FFFFF)
+   Jcnd_Tru  1, Stk(), Lit(:"$lgtr_shl")
 
-"___GDCC__SubF_W2$lgtr_ret"
-   Move_W, Stk(), LocReg(Lit(6), 0)
-   ShLU_W, Stk(), LocReg(Lit(4), 0), Lit(20)
-   AndU_W, Stk(), LocReg(Lit(7), 0), Lit(0x000FFFFF)
-   OrIU_W, Stk(), Stk(), Stk()
-   Retn,   Stk(), Stk()
+:"$lgtr_ret"
+   Move_W 1, Stk(), LocReg(Lit(6))
+   ShLU_W 1, Stk(), LocReg(Lit(4)), Lit(20)
+   AndU_W 1, Stk(), LocReg(Lit(7)), Lit(0x000FFFFF)
+   OrIU_W 1, Stk(), Stk(), Stk()
+   Retn   2, Stk()
 
 
    ; l < r
-"___GDCC__SubF_W2$lltr"
+:"$lltr"
    ; Calculate exponent difference.
-   SubU_W, LocReg(Lit(6), 0), LocReg(Lit(5), 0), LocReg(Lit(4), 0)
+   SubU_W 1, LocReg(Lit(6)), LocReg(Lit(5)), LocReg(Lit(4))
 
    ; If difference is >=53, l is too small to affect r.
-   CmpI_GE_W, Stk(), LocReg(Lit(6), 0), Lit(53)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W2$lemin")
+   CmpI_GE_W 1, Stk(), LocReg(Lit(6)), Lit(53)
+   Jcnd_Tru  1, Stk(), Lit(:"$lemin")
 
    ; -(r.manfull - (l.manfull >> difference))
-   Move_W,  Stk(), LocReg(Lit(2), 0)
-   AndU_W,  Stk(), LocReg(Lit(3), 0), Lit(0x000FFFFF)
-   OrIU_W,  Stk(), Stk(),             Lit(0x00100000)
-   Move_W,  Stk(), LocReg(Lit(0), 0)
-   AndU_W,  Stk(), LocReg(Lit(1), 0), Lit(0x000FFFFF)
-   OrIU_W,  Stk(), Stk(),             Lit(0x00100000)
-   ShRI_W2, Stk(), Stk(),             LocReg(Lit(6), 0)
-   SubU_W2, LocReg(Lit(6), 0), Stk(), Stk()
+   Move_W 1, Stk(), LocReg(Lit(2))
+   AndU_W 1, Stk(), LocReg(Lit(3)), Lit(0x000FFFFF)
+   OrIU_W 1, Stk(), Stk(),          Lit(0x00100000)
+   Move_W 1, Stk(), LocReg(Lit(0))
+   AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
+   OrIU_W 1, Stk(), Stk(),          Lit(0x00100000)
+   ShRI_W 2, Stk(), Stk(),          LocReg(Lit(6))
+   SubU_W 2, LocReg(Lit(6)), Stk(), Stk()
 
-   CmpI_LE_W, Stk(), LocReg(Lit(7), 0), Lit(0x001FFFFF)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W2$lltr_shlc")
+   CmpI_LE_W 1, Stk(), LocReg(Lit(7)), Lit(0x001FFFFF)
+   Jcnd_Tru  1, Stk(), Lit(:"$lltr_shlc")
 
-   ShRI_W2, LocReg(Lit(6), 0), LocReg(Lit(6), 0), Lit(1)
-   AddI_W,  LocReg(Lit(5), 0), LocReg(Lit(5), 0), Lit(1)
-   Jump,    Lit("___GDCC__SubF_W2$lltr_ret")
+   ShRI_W 2, LocReg(Lit(6)), LocReg(Lit(6)), Lit(1)
+   AddI_W 1, LocReg(Lit(5)), LocReg(Lit(5)), Lit(1)
+   Jump   0, Lit(:"$lltr_ret")
 
-"___GDCC__SubF_W2$lltr_shl"
-   ShLU_W2, LocReg(Lit(6), 0), LocReg(Lit(6), 0), Lit(1)
-   SubI_W,  LocReg(Lit(5), 0), LocReg(Lit(5), 0), Lit(1)
+:"$lltr_shl"
+   ShLU_W 2, LocReg(Lit(6)), LocReg(Lit(6)), Lit(1)
+   SubI_W 1, LocReg(Lit(5)), LocReg(Lit(5)), Lit(1)
 
-   Move_W,   Stk(), LocReg(Lit(5), 0)
-   Jcnd_Nil, Stk(), Lit("___GDCC__SubF_W2$negzero")
+   Move_W   1, Stk(), LocReg(Lit(5))
+   Jcnd_Nil 1, Stk(), Lit(:"$negzero")
 
-"___GDCC__SubF_W2$lltr_shlc"
-   CmpI_LE_W, Stk(), LocReg(Lit(7), 0), Lit(0x000FFFFF)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W2$lltr_shl")
+:"$lltr_shlc"
+   CmpI_LE_W 1, Stk(), LocReg(Lit(7)), Lit(0x000FFFFF)
+   Jcnd_Tru  1, Stk(), Lit(:"$lltr_shl")
 
-"___GDCC__SubF_W2$lltr_ret"
-   Move_W, Stk(), LocReg(Lit(6), 0)
-   ShLU_W, Stk(), LocReg(Lit(5), 0), Lit(20)
-   AndU_W, Stk(), LocReg(Lit(7), 0), Lit(0x000FFFFF)
-   OrIU_W, Stk(), Stk(), Stk()
-   NegF_W, Stk(), Stk()
-   Retn,   Stk(), Stk()
+:"$lltr_ret"
+   Move_W 1, Stk(), LocReg(Lit(6))
+   ShLU_W 1, Stk(), LocReg(Lit(5)), Lit(20)
+   AndU_W 1, Stk(), LocReg(Lit(7)), Lit(0x000FFFFF)
+   OrIU_W 1, Stk(), Stk(), Stk()
+   NegF_W 1, Stk(), Stk()
+   Retn   2, Stk()
 
 
    ; l has max exponent. It is either INF or NaN.
-"___GDCC__SubF_W2$lemax"
+:"$lemax"
    ; Is r also max exponent?
-   AndU_W,    Stk(), LocReg(Lit(3), 0), Lit(0x7FF00000)
-   CmpU_EQ_W, Stk(), Stk(),             Lit(0x7FF00000)
-   Jcnd_Tru,  Stk(), Lit("___GDCC__SubF_W2$lremax")
+   AndU_W    1, Stk(), LocReg(Lit(3)), Lit(0x7FF00000)
+   CmpU_EQ_W 1, Stk(), Stk(),          Lit(0x7FF00000)
+   Jcnd_Tru  1, Stk(), Lit(:"$lremax")
 
    ; r has min exponent. Therefore, r == 0 and the result is l.
-"___GDCC__SubF_W2$remin"
-   Move_W2, Stk(), LocReg(Lit(0), 0)
-   Retn,    Stk(), Stk()
+:"$remin"
+   Move_W 2, Stk(), LocReg(Lit(0))
+   Retn   2, Stk()
 
    ; r has max exponent. It is either INF or NaN. Either way, return it.
-"___GDCC__SubF_W2$remax"
+:"$remax"
    ; l has min exponent. Therefore, l == 0 and the result is -r.
-"___GDCC__SubF_W2$lemin"
-   NegF_W2, Stk(), LocReg(Lit(2), 0)
-   Retn,    Stk(), Stk()
+:"$lemin"
+   NegF_W 2, Stk(), LocReg(Lit(2))
+   Retn   2, Stk()
 
    ; l and r have max exponent.
-"___GDCC__SubF_W2$lremax"
+:"$lremax"
    ; Is l NaN? If so, return l.
-   AndU_W,   Stk(), LocReg(Lit(1), 0), Lit(0x000FFFFF)
-   OrIU_W,   Stk(), Stk(), LocReg(Lit(0), 0)
-   Jcnd_Tru, Stk(), Lit("___GDCC__SubF_W2$remin")
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
+   OrIU_W   1, Stk(), Stk(), LocReg(Lit(0))
+   Jcnd_Tru 1, Stk(), Lit(:"$remin")
 
    ; Is r NaN? If so, return r. (Sign inversion is fine.)
-   AndU_W,   Stk(), LocReg(Lit(3), 0), Lit(0x000FFFFF)
-   OrIU_W,   Stk(), Stk(), LocReg(Lit(2), 0)
-   Jcnd_Tru, Stk(), Lit("___GDCC__SubF_W2$lemin")
+   AndU_W   1, Stk(), LocReg(Lit(3)), Lit(0x000FFFFF)
+   OrIU_W   1, Stk(), Stk(), LocReg(Lit(2))
+   Jcnd_Tru 1, Stk(), Lit(:"$lemin")
 
    ; +INF - +INF = NaN
-   Move_W2, Stk(), Lit(0x7FFFFFFFFFFFFFFF_64.0)
-   Retn,    Stk(), Stk()
+   Move_W 2, Stk(), Lit(0x7FFFFFFFFFFFFFFF_64.0)
+   Retn   2, Stk()
 
-"___GDCC__SubF_W2$poszero"
+:"$poszero"
    ; Return +0.
-   Move_W2, Stk(), Lit(0x0000000000000000_64.0)
-   Retn,    Stk(), Stk()
+   Move_W 2, Stk(), Lit(0x0000000000000000_64.0)
+   Retn   2, Stk()
 
-"___GDCC__SubF_W2$negzero"
+:"$negzero"
    ; Return -0.
-   Move_W2, Stk(), Lit(0x8000000000000000_64.0)
-   Retn,    Stk(), Stk()
+   Move_W 2, Stk(), Lit(0x8000000000000000_64.0)
+   Retn   2, Stk()
 }
 
 ;; EOF
