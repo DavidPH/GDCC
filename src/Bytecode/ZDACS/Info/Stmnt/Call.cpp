@@ -36,7 +36,7 @@ namespace GDCC
          //
          void Info::genStmnt_Call()
          {
-            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
+            auto ret = stmnt->op.size;
 
             switch(stmnt->args[0].a)
             {
@@ -66,8 +66,8 @@ namespace GDCC
          //
          void Info::genStmnt_Cscr_IA()
          {
-            auto ret  = stmnt->args[1].aLit.value->getValue().getFastU();
-            auto argc = stmnt->args.size() - 2;
+            auto argc = stmnt->args.size() - 1;
+            auto ret  = stmnt->op.size;
 
             if(argc > 4)
                numChunkCODE += 8 + (argc - 4) * 20;
@@ -85,18 +85,18 @@ namespace GDCC
          //
          void Info::genStmnt_Cscr_IS()
          {
-            auto ret  = stmnt->args[1].aLit.value->getValue().getFastU();
-            auto argc = stmnt->args.size() - 3;
+            auto argc = stmnt->args.size() - 2;
+            auto ret  = stmnt->op.size;
 
             if(argc > 4)
                numChunkCODE += (argc - 4) * 20;
 
             numChunkCODE += 40
-               + lenDropArg(stmnt->args[2], 0)
-               + lenPushArg(stmnt->args[2], 0);
+               + lenDropArg(stmnt->args[1], 0)
+               + lenPushArg(stmnt->args[1], 0);
 
             if(ret)
-               numChunkCODE += lenPushArg(stmnt->args[2], 1, 1 + ret);
+               numChunkCODE += lenPushArg(stmnt->args[1], 1, 1 + ret);
          }
 
          //
@@ -104,8 +104,8 @@ namespace GDCC
          //
          void Info::genStmnt_Cscr_SA()
          {
-            auto ret  = stmnt->args[1].aLit.value->getValue().getFastU();
-            auto argc = stmnt->args.size() - 2;
+            auto argc = stmnt->args.size() - 1;
+            auto ret  = stmnt->op.size;
 
             if(argc > 4)
                numChunkCODE += (argc - 4) * 20;
@@ -123,18 +123,18 @@ namespace GDCC
          //
          void Info::genStmnt_Cscr_SS()
          {
-            auto ret  = stmnt->args[1].aLit.value->getValue().getFastU();
-            auto argc = stmnt->args.size() - 3;
+            auto argc = stmnt->args.size() - 2;
+            auto ret  = stmnt->op.size;
 
             if(argc > 4)
                numChunkCODE += (argc - 4) * 20;
 
             numChunkCODE += 48
-               + lenDropArg(stmnt->args[2], 0)
-               + lenPushArg(stmnt->args[2], 0);
+               + lenDropArg(stmnt->args[1], 0)
+               + lenPushArg(stmnt->args[1], 0);
 
             if(ret)
-               numChunkCODE += lenPushArg(stmnt->args[2], 1, 1 + ret);
+               numChunkCODE += lenPushArg(stmnt->args[1], 1, 1 + ret);
          }
 
          //
@@ -142,26 +142,27 @@ namespace GDCC
          //
          void Info::genStmnt_Cspe()
          {
-            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
+            auto argc = stmnt->args.size() - 1;
+            auto ret  = stmnt->op.size;
 
             // No call args.
-            if(stmnt->args.size() == 2)
+            if(argc == 0)
             {
                numChunkCODE += ret ? 48 : 12;
                return;
             }
 
-            switch(stmnt->args[2].a)
+            switch(stmnt->args[1].a)
             {
             case IR::ArgBase::Lit:
-               numChunkCODE += 8 + (stmnt->args.size() - 2) * (ret ? 8 : 4);
+               numChunkCODE += 8 + argc * (ret ? 8 : 4);
                break;
 
             case IR::ArgBase::Stk:
                numChunkCODE += 8;
 
                // Dummy args.
-               if(ret) numChunkCODE += (7 - stmnt->args.size()) * 8;
+               if(ret) numChunkCODE += (5 - argc) * 8;
 
                break;
 
@@ -175,29 +176,29 @@ namespace GDCC
          //
          void Info::genStmnt_Retn()
          {
-            auto argc = stmnt->args.size();
+            auto ret = stmnt->op.size;
 
             switch(func->ctype)
             {
             case IR::CallType::SScriptI:
             case IR::CallType::SScriptS:
-               numChunkCODE += 40 + argc * 32;
+               numChunkCODE += 40 + ret * 32;
                break;
 
             case IR::CallType::StdCall:
             case IR::CallType::StkCall:
-               if(argc == 0)
+               if(ret == 0)
                   numChunkCODE += 4;
                else
-                  numChunkCODE += 4 + (argc - 1) * 20;
+                  numChunkCODE += 4 + (ret - 1) * 20;
                break;
 
             case IR::CallType::ScriptI:
             case IR::CallType::ScriptS:
-               if(argc == 0)
+               if(ret == 0)
                   numChunkCODE += 4;
                else
-                  numChunkCODE += 8 + (argc - 1) * 20;
+                  numChunkCODE += 8 + (ret - 1) * 20;
                break;
 
             default:
@@ -210,7 +211,7 @@ namespace GDCC
          //
          void Info::putStmnt_Call()
          {
-            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
+            auto ret = stmnt->op.size;
 
             switch(stmnt->args[0].a)
             {
@@ -247,8 +248,8 @@ namespace GDCC
          //
          void Info::putStmnt_Cscr_IA()
          {
-            auto ret  = stmnt->args[1].aLit.value->getValue().getFastU();
             auto argc = stmnt->args.size() - 2;
+            auto ret  = stmnt->op.size;
 
             if(argc > 4)
                putStmntDropRetn(argc - 4);
@@ -281,15 +282,15 @@ namespace GDCC
          //
          void Info::putStmnt_Cscr_IS()
          {
-            auto ret  = stmnt->args[1].aLit.value->getValue().getFastU();
-            auto argc = stmnt->args.size() - 3;
+            auto argc = stmnt->args.size() - 2;
+            auto ret  = stmnt->op.size;
 
             if(argc > 4)
                putStmntDropRetn(argc - 4);
 
             // Clear returned flag.
             putCode(Code::Push_Lit, 0);
-            putStmntDropArg(stmnt->args[2], 0);
+            putStmntDropArg(stmnt->args[1], 0);
 
             switch(argc)
             {
@@ -305,12 +306,12 @@ namespace GDCC
             // Check returned flag.
             putCode(Code::Jump_Lit, putPos + 16);
             putCode(Code::Wait_Lit, 1);
-            putStmntPushArg(stmnt->args[2], 0);
-            putCode(Code::Jcnd_Nil, putPos - 8 - lenPushArg(stmnt->args[2], 0));
+            putStmntPushArg(stmnt->args[1], 0);
+            putCode(Code::Jcnd_Nil, putPos - 8 - lenPushArg(stmnt->args[1], 0));
 
             // Push any return words.
             if(ret)
-               putStmntPushArg(stmnt->args[2], 1, 1 + ret);
+               putStmntPushArg(stmnt->args[1], 1, 1 + ret);
          }
 
          //
@@ -318,8 +319,8 @@ namespace GDCC
          //
          void Info::putStmnt_Cscr_SA()
          {
-            auto ret  = stmnt->args[1].aLit.value->getValue().getFastU();
-            auto argc = stmnt->args.size() - 2;
+            auto argc = stmnt->args.size() - 1;
+            auto ret  = stmnt->op.size;
 
             if(argc > 4)
                putStmntDropRetn(argc - 4);
@@ -339,15 +340,15 @@ namespace GDCC
          //
          void Info::putStmnt_Cscr_SS()
          {
-            auto ret  = stmnt->args[1].aLit.value->getValue().getFastU();
-            auto argc = stmnt->args.size() - 3;
+            auto argc = stmnt->args.size() - 2;
+            auto ret  = stmnt->op.size;
 
             if(argc > 4)
                putStmntDropRetn(argc - 4);
 
             // Clear returned flag.
             putCode(Code::Push_Lit, 0);
-            putStmntDropArg(stmnt->args[2], 0);
+            putStmntDropArg(stmnt->args[1], 0);
 
             putCode(Code::Cnat);
             putWord(argc < 4 ? argc + 1 : 5);
@@ -357,12 +358,12 @@ namespace GDCC
             // Check returned flag.
             putCode(Code::Jump_Lit, putPos + 16);
             putCode(Code::Wait_Lit, 1);
-            putStmntPushArg(stmnt->args[2], 0);
-            putCode(Code::Jcnd_Nil, putPos - 8 - lenPushArg(stmnt->args[2], 0));
+            putStmntPushArg(stmnt->args[1], 0);
+            putCode(Code::Jcnd_Nil, putPos - 8 - lenPushArg(stmnt->args[1], 0));
 
             // Push any return words.
             if(ret)
-               putStmntPushArg(stmnt->args[2], 1, 1 + ret);
+               putStmntPushArg(stmnt->args[1], 1, 1 + ret);
          }
 
          //
@@ -370,20 +371,21 @@ namespace GDCC
          //
          void Info::putStmnt_Cspe()
          {
-            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
+            auto argc = stmnt->args.size() - 1;
+            auto ret  = stmnt->op.size;
 
             IR::ArgBase a;
-            if(stmnt->args.size() == 2)
+            if(argc == 0)
                a = ret ? IR::ArgBase::Stk : IR::ArgBase::Lit;
             else
-               a = stmnt->args[2].a;
+               a = stmnt->args[1].a;
 
             switch(a)
             {
             case IR::ArgBase::Lit:
                if(ret)
                {
-                  for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
+                  for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 1, stmnt->args.end()))
                   {
                      putCode(Code::Push_Lit);
                      putWord(GetWord(arg.aLit));
@@ -394,7 +396,7 @@ namespace GDCC
                   break;
                }
 
-               switch(stmnt->args.size() - 2)
+               switch(argc)
                {
                case 0: putCode(Code::Cspe_1L); break;
                case 1: putCode(Code::Cspe_1L); break;
@@ -407,10 +409,10 @@ namespace GDCC
                putWord(GetWord(stmnt->args[0].aLit));
 
                // Dummy arg.
-               if(stmnt->args.size() == 2)
+               if(argc == 0)
                   putWord(0);
 
-               for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
+               for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 1, stmnt->args.end()))
                   putWord(GetWord(arg.aLit));
 
                break;
@@ -418,7 +420,7 @@ namespace GDCC
             case IR::ArgBase::Stk:
                if(ret)
                {
-                  switch(stmnt->args.size() - 2)
+                  switch(argc)
                   {
                   case 0: putCode(Code::Push_Lit, 0);
                   case 1: putCode(Code::Push_Lit, 0);
@@ -430,7 +432,7 @@ namespace GDCC
                }
                else
                {
-                  switch(stmnt->args.size() - 2)
+                  switch(argc)
                   {
                   case 0: putCode(Code::Push_Lit, 0);
                   case 1: putCode(Code::Cspe_1); break;
@@ -455,6 +457,8 @@ namespace GDCC
          //
          void Info::putStmnt_Retn()
          {
+            auto ret = stmnt->op.size;
+
             switch(func->ctype)
             {
             case IR::CallType::SScriptI:
@@ -467,7 +471,7 @@ namespace GDCC
                putCode(Code::Drop_GblArr, LocArsArray);
 
                // Set return data.
-               for(Core::FastU i = stmnt->args.size(); i--;)
+               for(Core::FastU i = ret; i--;)
                {
                   putCode(Code::Push_LocReg, getStkPtrIdx());
                   putCode(Code::Push_Lit,    i);
@@ -482,24 +486,24 @@ namespace GDCC
 
             case IR::CallType::StdCall:
             case IR::CallType::StkCall:
-               if(stmnt->args.size() == 0)
+               if(ret == 0)
                   putCode(Code::Retn_Nul);
                else
                {
-                  putStmntDropRetn(stmnt->args.size() - 1);
+                  putStmntDropRetn(ret - 1);
                   putCode(Code::Retn_Stk);
                }
                break;
 
             case IR::CallType::ScriptI:
             case IR::CallType::ScriptS:
-               if(stmnt->args.size() == 0)
+               if(ret == 0)
                {
                   putCode(Code::Rscr);
                }
                else
                {
-                  putStmntDropRetn(stmnt->args.size() - 1);
+                  putStmntDropRetn(ret - 1);
                   putCode(Code::Drop_ScrRet);
                   putCode(Code::Rscr);
                }
@@ -515,9 +519,8 @@ namespace GDCC
          //
          void Info::trStmnt_Call()
          {
-            CheckArgC(stmnt, 2);
-            CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-            for(auto n = stmnt->args.size(); --n != 1;)
+            CheckArgC(stmnt, 1);
+            for(auto n = stmnt->args.size(); --n != 0;)
                CheckArgB(stmnt, n, IR::ArgBase::Stk);
 
             switch(stmnt->args[0].a)
@@ -536,10 +539,9 @@ namespace GDCC
          //
          void Info::trStmnt_Cscr_IA()
          {
-            CheckArgC(stmnt, 2);
+            CheckArgC(stmnt, 1);
             CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-            CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-            for(auto n = stmnt->args.size(); --n != 1;)
+            for(auto n = stmnt->args.size(); --n != 0;)
                CheckArgB(stmnt, n, IR::ArgBase::Stk);
          }
 
@@ -550,8 +552,7 @@ namespace GDCC
          {
             CheckArgC(stmnt, 2);
             CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-            CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-            for(auto n = stmnt->args.size(); --n != 2;)
+            for(auto n = stmnt->args.size(); --n != 1;)
                CheckArgB(stmnt, n, IR::ArgBase::Stk);
          }
 
@@ -560,10 +561,9 @@ namespace GDCC
          //
          void Info::trStmnt_Cscr_SA()
          {
-            CheckArgC(stmnt, 2);
+            CheckArgC(stmnt, 1);
             CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-            CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-            for(auto n = stmnt->args.size(); --n != 1;)
+            for(auto n = stmnt->args.size(); --n != 0;)
                CheckArgB(stmnt, n, IR::ArgBase::Stk);
          }
 
@@ -574,8 +574,7 @@ namespace GDCC
          {
             CheckArgC(stmnt, 2);
             CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-            CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-            for(auto n = stmnt->args.size(); --n != 2;)
+            for(auto n = stmnt->args.size(); --n != 1;)
                CheckArgB(stmnt, n, IR::ArgBase::Stk);
          }
 
@@ -584,32 +583,31 @@ namespace GDCC
          //
          void Info::trStmnt_Cspe()
          {
-            CheckArgC(stmnt, 2);
+            CheckArgC(stmnt, 1);
             CheckArgB(stmnt, 0, IR::ArgBase::Lit);
-            CheckArgB(stmnt, 1, IR::ArgBase::Lit);
 
-            auto ret = stmnt->args[1].aLit.value->getValue().getFastU();
+            auto ret = stmnt->op.size;
 
             if(ret > 1)
                throw Core::ExceptStr(stmnt->pos, "bad tr Cspe ret");
 
             // Too many call args.
-            if(stmnt->args.size() > 7)
+            if(stmnt->args.size() > 6)
                throw Core::ExceptStr(stmnt->pos, "bad tr Cspe argc");
 
             // No call args.
-            if(stmnt->args.size() == 2)
+            if(stmnt->args.size() == 1)
                return;
 
-            switch(stmnt->args[2].a)
+            switch(stmnt->args[1].a)
             {
             case IR::ArgBase::Lit:
-               for(auto n = stmnt->args.size(); n-- != 3;)
+               for(auto n = stmnt->args.size(); --n != 1;)
                   CheckArgB(stmnt, n, IR::ArgBase::Lit);
                break;
 
             case IR::ArgBase::Stk:
-               for(auto n = stmnt->args.size(); n-- != 3;)
+               for(auto n = stmnt->args.size(); --n != 1;)
                   CheckArgB(stmnt, n, IR::ArgBase::Stk);
                break;
 
@@ -623,10 +621,11 @@ namespace GDCC
          //
          void Info::trStmnt_Retn()
          {
-            auto argc = stmnt->args.size();
-
-            for(auto n = argc; n--;)
-               CheckArgB(stmnt, n, IR::ArgBase::Stk);
+            if(stmnt->op.size)
+            {
+               CheckArgC(stmnt, 1);
+               moveArgStk_src(stmnt->args[0], stmnt->op.size);
+            }
          }
       }
    }

@@ -134,7 +134,7 @@ namespace GDCC
 
             case IR::Code::Cnat:
                putCode(Code::Cnat);
-               putWord(stmnt->args.size() - 2);
+               putWord(stmnt->args.size() - 1);
                putWord(GetWord(stmnt->args[0].aLit));
                break;
 

@@ -161,10 +161,9 @@ namespace GDCC
                break;
 
             case IR::Code::Cnat:
-               CheckArgC(stmnt, 2);
+               CheckArgC(stmnt, 1);
                CheckArgB(stmnt, 0, IR::ArgBase::Lit);
-               CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-               for(auto n = stmnt->args.size(); n-- != 2;)
+               for(auto n = stmnt->args.size(); --n != 0;)
                   CheckArgB(stmnt, n, IR::ArgBase::Stk);
                break;
 
