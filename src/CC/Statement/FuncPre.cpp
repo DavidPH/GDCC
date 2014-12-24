@@ -135,8 +135,8 @@ namespace GDCC
          }
          else if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
          {
-            ctx.block.setArgs({scope.fn->retrn->getSizeWords(), IR::Arg_Stk()});
-            ctx.block.addStatement({IR::Code::Retn, 0});
+            ctx.block.addStatementArgs(
+               {IR::Code::Retn, scope.fn->retrn->getSizeWords()}, IR::Arg_Stk());
          }
       }
 

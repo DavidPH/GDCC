@@ -120,8 +120,8 @@ namespace GDCC
          }
          else
          {
-            ctx.block.setArgs({exp->getType()->getSizeWords(), IR::Arg_Stk()});
-            ctx.block.addStatement({IR::Code::Retn, 0});
+            ctx.block.addStatementArgs(
+               {IR::Code::Retn, exp->getType()->getSizeWords()}, IR::Arg_Stk());
          }
       }
 
