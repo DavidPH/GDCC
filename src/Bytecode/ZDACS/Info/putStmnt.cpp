@@ -53,9 +53,7 @@ namespace GDCC
             case IR::Code::AddI_W3:
             case IR::Code::AddU_W3: putStmntCall("___GDCC__AddU_W3", 3); break;
 
-            case IR::Code::AndU_W:  putCode(Code::AndU); break;
-            case IR::Code::AndU_W2: putStmntBitwise2(Code::AndU); break;
-            case IR::Code::AndU_W3: putStmntBitwise3(Code::AndU); break;
+            case IR::Code::AndU_W: putStmntBitwise(Code::AndU); break;
 
             case IR::Code::Call:
                putStmnt_Call();
@@ -226,13 +224,9 @@ namespace GDCC
             case IR::Code::NotU_W2: putCode(Code::OrIU);
             case IR::Code::NotU_W:  putCode(Code::NotU); break;
 
-            case IR::Code::OrIU_W:  putCode(Code::OrIU); break;
-            case IR::Code::OrIU_W2: putStmntBitwise2(Code::OrIU); break;
-            case IR::Code::OrIU_W3: putStmntBitwise3(Code::OrIU); break;
+            case IR::Code::OrIU_W: putStmntBitwise(Code::OrIU); break;
 
-            case IR::Code::OrXU_W:  putCode(Code::OrXU); break;
-            case IR::Code::OrXU_W2: putStmntBitwise2(Code::OrXU); break;
-            case IR::Code::OrXU_W3: putStmntBitwise3(Code::OrXU); break;
+            case IR::Code::OrXU_W: putStmntBitwise(Code::OrXU); break;
 
             case IR::Code::Plsa:
                putCode(Code::Call_Lit,    GetWord(resolveGlyph("___GDCC__Plsa")));

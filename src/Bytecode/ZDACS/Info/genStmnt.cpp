@@ -71,15 +71,12 @@ namespace GDCC
                genStmnt_AddU_W();
                break;
 
-            case IR::Code::AndU_W:
             case IR::Code::DivI_W:
             case IR::Code::DivX_W:
             case IR::Code::ModI_W:
             case IR::Code::MulI_W:
             case IR::Code::MulU_W:
             case IR::Code::MulX_W:
-            case IR::Code::OrIU_W:
-            case IR::Code::OrXU_W:
             case IR::Code::ShLU_W:
             case IR::Code::ShRI_W:
                numChunkCODE += 4;
@@ -119,16 +116,10 @@ namespace GDCC
                genStmntCall(3);
                break;
 
-            case IR::Code::AndU_W2:
-            case IR::Code::OrIU_W2:
-            case IR::Code::OrXU_W2:
-               genStmntBitwise2();
-               break;
-
-            case IR::Code::AndU_W3:
-            case IR::Code::OrIU_W3:
-            case IR::Code::OrXU_W3:
-               genStmntBitwise3();
+            case IR::Code::AndU_W:
+            case IR::Code::OrIU_W:
+            case IR::Code::OrXU_W:
+               genStmntBitwise();
                break;
 
             case IR::Code::Call:

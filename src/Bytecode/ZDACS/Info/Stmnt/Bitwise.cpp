@@ -28,130 +28,65 @@ namespace GDCC
       namespace ZDACS
       {
          //
-         // Info::genStmntBitwise2
+         // Info::genStmntBitwise
          //
-         void Info::genStmntBitwise2()
+         void Info::genStmntBitwise()
          {
             if(stmnt->args[1].a == IR::ArgBase::Stk &&
                stmnt->args[2].a == IR::ArgBase::Stk)
             {
-               numChunkCODE += 56;
+               if(stmnt->op.size > 1)
+                  numChunkCODE += (stmnt->op.size * 4 - 2) * 8;
+               numChunkCODE += stmnt->op.size * 4;
             }
             else
             {
-               genStmntPushArg(stmnt->args[1], 0, 2);
-               genStmntPushArg(stmnt->args[2], 0, 2);
-               numChunkCODE += 8;
+               numChunkCODE += lenPushArg(stmnt->args[1], 0, stmnt->op.size);
+               numChunkCODE += lenPushArg(stmnt->args[2], 0, stmnt->op.size);
+               numChunkCODE += stmnt->op.size * 4;
             }
          }
 
          //
-         // Info::genStmntBitwise3
+         // Info::putStmntBitwise
          //
-         void Info::genStmntBitwise3()
+         void Info::putStmntBitwise(Code code)
          {
             if(stmnt->args[1].a == IR::ArgBase::Stk &&
                stmnt->args[2].a == IR::ArgBase::Stk)
             {
-               numChunkCODE += 92;
+               if(stmnt->op.size > 1)
+               {
+                  for(Core::FastU i = 0, e = stmnt->op.size * 2 - 1; i != e; ++i)
+                     putCode(Code::Drop_LocReg, func->localReg + i);
+
+                  putCode(Code::Push_LocReg, func->localReg + stmnt->op.size - 1);
+               }
+
+               putCode(code);
+
+               if(stmnt->op.size > 1) for(Core::FastU i = stmnt->op.size - 1; i--;)
+               {
+                  putCode(Code::Push_LocReg, func->localReg + stmnt->op.size + i);
+                  putCode(Code::Push_LocReg, func->localReg + i);
+                  putCode(code);
+               }
             }
             else
             {
-               genStmntPushArg(stmnt->args[1], 0, 3);
-               genStmntPushArg(stmnt->args[2], 0, 3);
-               numChunkCODE += 12;
+               for(Core::FastU i = 0; i != stmnt->op.size; ++i)
+               {
+                  putStmntPushArg(stmnt->args[1], i);
+                  putStmntPushArg(stmnt->args[2], i);
+                  putCode(code);
+               }
             }
          }
 
          //
-         // Info::putStmntBitwise2
+         // Info::trStmntBitwise
          //
-         void Info::putStmntBitwise2(Code code)
-         {
-            if(stmnt->args[1].a == IR::ArgBase::Stk &&
-               stmnt->args[2].a == IR::ArgBase::Stk)
-            {
-               putCode(Code::Drop_LocReg);
-               putWord(func->localReg + 0);
-               putCode(Code::Drop_LocReg);
-               putWord(func->localReg + 1);
-               putCode(Code::Drop_LocReg);
-               putWord(func->localReg + 2);
-
-               putCode(Code::Push_LocReg);
-               putWord(func->localReg + 1);
-               putCode(code);
-
-               putCode(Code::Push_LocReg);
-               putWord(func->localReg + 2);
-               putCode(Code::Push_LocReg);
-               putWord(func->localReg + 0);
-               putCode(code);
-            }
-            else
-            {
-               putStmntPushArg(stmnt->args[1], 0);
-               putStmntPushArg(stmnt->args[2], 0);
-               putCode(code);
-               putStmntPushArg(stmnt->args[1], 1);
-               putStmntPushArg(stmnt->args[2], 1);
-               putCode(code);
-            }
-         }
-
-         //
-         // Info::putStmntBitwise3
-         //
-         void Info::putStmntBitwise3(Code code)
-         {
-            if(stmnt->args[1].a == IR::ArgBase::Stk &&
-               stmnt->args[2].a == IR::ArgBase::Stk)
-            {
-               putCode(Code::Drop_LocReg);
-               putWord(func->localReg + 0);
-               putCode(Code::Drop_LocReg);
-               putWord(func->localReg + 1);
-               putCode(Code::Drop_LocReg);
-               putWord(func->localReg + 2);
-               putCode(Code::Drop_LocReg);
-               putWord(func->localReg + 3);
-               putCode(Code::Drop_LocReg);
-               putWord(func->localReg + 4);
-
-               putCode(Code::Push_LocReg);
-               putWord(func->localReg + 2);
-               putCode(code);
-
-               putCode(Code::Push_LocReg);
-               putWord(func->localReg + 4);
-               putCode(Code::Push_LocReg);
-               putWord(func->localReg + 1);
-               putCode(code);
-
-               putCode(Code::Push_LocReg);
-               putWord(func->localReg + 3);
-               putCode(Code::Push_LocReg);
-               putWord(func->localReg + 0);
-               putCode(code);
-            }
-            else
-            {
-               putStmntPushArg(stmnt->args[1], 0);
-               putStmntPushArg(stmnt->args[2], 0);
-               putCode(code);
-               putStmntPushArg(stmnt->args[1], 1);
-               putStmntPushArg(stmnt->args[2], 1);
-               putCode(code);
-               putStmntPushArg(stmnt->args[1], 2);
-               putStmntPushArg(stmnt->args[2], 2);
-               putCode(code);
-            }
-         }
-
-         //
-         // Info::trStmntBitwise2
-         //
-         void Info::trStmntBitwise2()
+         void Info::trStmntBitwise()
          {
             CheckArgC(stmnt, 3);
 
@@ -162,25 +97,9 @@ namespace GDCC
             else
             {
                trStmntStk3(stmnt->op.size, stmnt->op.size, false);
-               func->setLocalTmp(stmnt->op.size * 2 - 1);
-            }
-         }
 
-         //
-         // Info::trStmntBitwise3
-         //
-         void Info::trStmntBitwise3()
-         {
-            CheckArgC(stmnt, 3);
-
-            if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
-            {
-               moveArgStk_dst(stmnt->args[0], stmnt->op.size);
-            }
-            else
-            {
-               trStmntStk3(stmnt->op.size, stmnt->op.size, false);
-               func->setLocalTmp(stmnt->op.size * 2 - 1);
+               if(stmnt->op.size > 1)
+                  func->setLocalTmp(stmnt->op.size * 2 - 1);
             }
          }
       }

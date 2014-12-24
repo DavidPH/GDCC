@@ -142,8 +142,7 @@ namespace GDCC
             void genStmnt_ShRI_W3();
             void genStmnt_ShRU_W3();
 
-            void genStmntBitwise2();
-            void genStmntBitwise3();
+            void genStmntBitwise();
 
             void genStmntCall(Core::FastU ret);
 
@@ -285,8 +284,7 @@ namespace GDCC
             void putStmnt_Swap_Wx(Core::FastU x);
             void putStmnt_Xcod_SID();
 
-            void putStmntBitwise2(Code code);
-            void putStmntBitwise3(Code code);
+            void putStmntBitwise(Code code);
 
             void putStmntCall(Core::String name, Core::FastU ret);
 
@@ -345,8 +343,7 @@ namespace GDCC
             void trStmnt_SubU_W();
             void trStmnt_Swap_Wx(Core::FastU x);
 
-            void trStmntBitwise2();
-            void trStmntBitwise3();
+            void trStmntBitwise();
             bool trStmntShift(bool moveLit = false);
             void trStmntStk2(Core::FastU sizeDst, Core::FastU sizeSrc);
             void trStmntStk3(Core::FastU sizeDst, Core::FastU sizeSrc, bool ordered);

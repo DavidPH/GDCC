@@ -40,14 +40,11 @@ namespace GDCC
                break;
 
             case IR::Code::AddF_W:
-            case IR::Code::AndU_W:
             case IR::Code::MulF_W:
             case IR::Code::MulI_W:
             case IR::Code::MulK_W:
             case IR::Code::MulU_W:
             case IR::Code::MulX_W:
-            case IR::Code::OrIU_W:
-            case IR::Code::OrXU_W:
                trStmntStk3(stmnt->op.size, stmnt->op.size, false);
                break;
 
@@ -72,16 +69,10 @@ namespace GDCC
                trStmntStk3(stmnt->op.size, stmnt->op.size, false);
                break;
 
-            case IR::Code::AndU_W2:
-            case IR::Code::OrIU_W2:
-            case IR::Code::OrXU_W2:
-               trStmntBitwise2();
-               break;
-
-            case IR::Code::AndU_W3:
-            case IR::Code::OrIU_W3:
-            case IR::Code::OrXU_W3:
-               trStmntBitwise3();
+            case IR::Code::AndU_W:
+            case IR::Code::OrIU_W:
+            case IR::Code::OrXU_W:
+               trStmntBitwise();
                break;
 
             case IR::Code::Call:
