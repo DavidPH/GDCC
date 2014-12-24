@@ -129,7 +129,6 @@ namespace GDCC
             void genStmnt_Move_W();
             void genStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr);
             void genStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr);
-            void genStmnt_Move_Wx(Core::FastU x);
             void genStmnt_NegF_Wx();
             void genStmnt_NegI_W2();
             void genStmnt_NegI_W3();
@@ -267,8 +266,6 @@ namespace GDCC
             void putStmnt_Move_W();
             void putStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr, Code code);
             void putStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr, Code code);
-            void putStmnt_Move_W__Stk_Lit(IR::Exp const *exp);
-            void putStmnt_Move_Wx(Core::FastU x);
             void putStmnt_NegF_Wx();
             void putStmnt_NegI_W2();
             void putStmnt_NegI_W3();
@@ -329,7 +326,6 @@ namespace GDCC
             void trStmnt_InvU_W2();
             void trStmnt_InvU_W3();
             void trStmnt_Move_W();
-            void trStmnt_Move_Wx();
             void trStmnt_NegI_W2();
             void trStmnt_NegI_W3();
             void trStmnt_Retn();

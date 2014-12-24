@@ -34,6 +34,18 @@ namespace GDCC
          //
          void Info::genStmnt_Move_W()
          {
+            // Multi-word?
+            if(stmnt->op.size != 1)
+            {
+               if(stmnt->args[0].a != IR::ArgBase::Stk)
+                  numChunkCODE += lenDropArg(stmnt->args[0], 0, stmnt->op.size);
+
+               if(stmnt->args[1].a != IR::ArgBase::Stk)
+                  numChunkCODE += lenPushArg(stmnt->args[1], 0, stmnt->op.size);
+
+               return;
+            }
+
             // push_?
             if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
             {
@@ -118,22 +130,32 @@ namespace GDCC
          }
 
          //
-         // Info::genStmnt_Move_Wx
-         //
-         void Info::genStmnt_Move_Wx(Core::FastU x)
-         {
-            if(stmnt->args[0].a != IR::ArgBase::Stk)
-               genStmntDropArg(stmnt->args[0], 0, x);
-
-            if(stmnt->args[1].a != IR::ArgBase::Stk)
-               genStmntPushArg(stmnt->args[1], 0, x);
-         }
-
-         //
          // Info::putStmnt_Move_W
          //
          void Info::putStmnt_Move_W()
          {
+            // Multi-word?
+            if(stmnt->op.size != 1)
+            {
+               if(stmnt->args[0].a != IR::ArgBase::Stk)
+               {
+                  if(stmnt->args[1].a != IR::ArgBase::Stk)
+                  {
+                     for(Core::FastU w = 0; w != stmnt->op.size; ++w)
+                     {
+                        putStmntPushArg(stmnt->args[1], w);
+                        putStmntDropArg(stmnt->args[0], w);
+                     }
+                  }
+                  else
+                     putStmntDropArg(stmnt->args[0], 0, stmnt->op.size);
+               }
+               else if(stmnt->args[1].a != IR::ArgBase::Stk)
+                  putStmntPushArg(stmnt->args[1], 0, stmnt->op.size);
+
+               return;
+            }
+
             // push_?
             if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
             {
@@ -288,28 +310,6 @@ namespace GDCC
          }
 
          //
-         // putStmnt_Move_Wx
-         //
-         void Info::putStmnt_Move_Wx(Core::FastU x)
-         {
-            if(stmnt->args[0].a != IR::ArgBase::Stk)
-            {
-               if(stmnt->args[1].a != IR::ArgBase::Stk)
-               {
-                  for(Core::FastU w = 0; w != x; ++w)
-                  {
-                     putStmntPushArg(stmnt->args[1], w);
-                     putStmntDropArg(stmnt->args[0], w);
-                  }
-               }
-               else
-                  putStmntDropArg(stmnt->args[0], 0, x);
-            }
-            else if(stmnt->args[1].a != IR::ArgBase::Stk)
-               putStmntPushArg(stmnt->args[1], 0, x);
-         }
-
-         //
          // Info::trStmnt_Move_W
          //
          void Info::trStmnt_Move_W()
@@ -317,6 +317,10 @@ namespace GDCC
             CheckArgC(stmnt, 2);
             CheckArg(stmnt->args[0], stmnt->pos);
             CheckArg(stmnt->args[1], stmnt->pos);
+
+            // Multi-word?
+            if(stmnt->op.size != 1)
+               return;
 
             #define moveIdx(name, n, w) \
                moveArgStk_src(*stmnt->args[n].a##name.idx, w)
@@ -366,16 +370,6 @@ namespace GDCC
                moveArgStk_src(stmnt->args[1], stmnt->op.size);
 
             #undef moveIdx
-         }
-
-         //
-         // trStmnt_Move_Wx
-         //
-         void Info::trStmnt_Move_Wx()
-         {
-            CheckArgC(stmnt, 2);
-            CheckArg(stmnt->args[0], stmnt->pos);
-            CheckArg(stmnt->args[1], stmnt->pos);
          }
       }
    }

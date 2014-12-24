@@ -191,12 +191,7 @@ namespace GDCC
             case IR::Code::ModU_W2: putStmntCall("___GDCC__ModU_W2", 2); break;
             case IR::Code::ModU_W3: putStmntCall("___GDCC__ModU_W3", 3); break;
 
-            case IR::Code::Move_W:  putStmnt_Move_W(); break;
-            case IR::Code::Move_W2: putStmnt_Move_Wx(2); break;
-            case IR::Code::Move_W3: putStmnt_Move_Wx(3); break;
-            case IR::Code::Move_W4: putStmnt_Move_Wx(4); break;
-            case IR::Code::Move_W5: putStmnt_Move_Wx(5); break;
-            case IR::Code::Move_W6: putStmnt_Move_Wx(6); break;
+            case IR::Code::Move_W: putStmnt_Move_W(); break;
 
             case IR::Code::MuXU_W:  putStmntCall("___GDCC__MuXU_W",  2); break;
             case IR::Code::MuXU_W2: putStmntCall("___GDCC__MuXU_W2", 4); break;

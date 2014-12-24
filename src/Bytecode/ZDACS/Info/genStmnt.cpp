@@ -226,12 +226,7 @@ namespace GDCC
                numChunkCODE += 8;
                break;
 
-            case IR::Code::Move_W:  genStmnt_Move_W(); break;
-            case IR::Code::Move_W2: genStmnt_Move_Wx(2); break;
-            case IR::Code::Move_W3: genStmnt_Move_Wx(3); break;
-            case IR::Code::Move_W4: genStmnt_Move_Wx(4); break;
-            case IR::Code::Move_W5: genStmnt_Move_Wx(5); break;
-            case IR::Code::Move_W6: genStmnt_Move_Wx(6); break;
+            case IR::Code::Move_W: genStmnt_Move_W(); break;
 
             case IR::Code::MuXU_W:  genStmntCall(2); break;
             case IR::Code::MuXU_W2: genStmntCall(4); break;

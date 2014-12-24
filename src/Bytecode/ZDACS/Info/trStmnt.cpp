@@ -243,12 +243,7 @@ namespace GDCC
                CheckArgB(stmnt, 0, IR::ArgBase::Lit);
                break;
 
-            case IR::Code::Move_W:  trStmnt_Move_W(); break;
-            case IR::Code::Move_W2: trStmnt_Move_Wx(); break;
-            case IR::Code::Move_W3: trStmnt_Move_Wx(); break;
-            case IR::Code::Move_W4: trStmnt_Move_Wx(); break;
-            case IR::Code::Move_W5: trStmnt_Move_Wx(); break;
-            case IR::Code::Move_W6: trStmnt_Move_Wx(); break;
+            case IR::Code::Move_W: trStmnt_Move_W(); break;
 
             case IR::Code::MuXU_W:
                trStmntStk3(stmnt->op.size * 2, stmnt->op.size, false);
