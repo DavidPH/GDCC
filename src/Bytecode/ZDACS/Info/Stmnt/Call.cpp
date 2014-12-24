@@ -244,6 +244,25 @@ namespace GDCC
          }
 
          //
+         // Info::putStmnt_Casm
+         //
+         void Info::putStmnt_Casm()
+         {
+            for(auto const &arg : stmnt->args)
+               putWord(GetWord(arg.aLit));
+         }
+
+         //
+         // Info::putStmnt_Cnat
+         //
+         void Info::putStmnt_Cnat()
+         {
+            putCode(Code::Cnat);
+            putWord(stmnt->args.size() - 1);
+            putWord(GetWord(stmnt->args[0].aLit));
+         }
+
+         //
          // Info::putStmnt_Cscr_IA
          //
          void Info::putStmnt_Cscr_IA()
@@ -532,6 +551,30 @@ namespace GDCC
             default:
                throw Core::ExceptStr(stmnt->pos, "bad tr Call");
             }
+         }
+
+         //
+         // Info::trStmnt_Casm
+         //
+         void Info::trStmnt_Casm()
+         {
+            CheckArgC(stmnt, 1);
+            CheckArgB(stmnt, 0, IR::ArgBase::Lit);
+
+            for(auto n = stmnt->args.size(); --n != 0;)
+               CheckArgB(stmnt, n, IR::ArgBase::Lit);
+         }
+
+         //
+         // Info::trStmnt_Cnat
+         //
+         void Info::trStmnt_Cnat()
+         {
+            CheckArgC(stmnt, 1);
+            CheckArgB(stmnt, 0, IR::ArgBase::Lit);
+
+            for(auto n = stmnt->args.size(); --n != 0;)
+               CheckArgB(stmnt, n, IR::ArgBase::Stk);
          }
 
          //

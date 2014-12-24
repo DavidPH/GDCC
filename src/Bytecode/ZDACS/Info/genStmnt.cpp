@@ -51,9 +51,7 @@ namespace GDCC
 
             switch(stmnt->op.code)
             {
-            case IR::Code::Nop:
-               numChunkCODE += 4;
-               break;
+            case IR::Code::Nop: numChunkCODE += 4; break;
 
             case IR::Code::AddF_W:
             case IR::Code::DivF_W:
@@ -116,19 +114,11 @@ namespace GDCC
                genStmntCall(3);
                break;
 
-            case IR::Code::AndU_W:
-            case IR::Code::OrIU_W:
-            case IR::Code::OrXU_W:
-               genStmntBitwise();
-               break;
+            case IR::Code::AndU_W: genStmntBitwise(); break;
 
-            case IR::Code::Call:
-               genStmnt_Call();
-               break;
+            case IR::Code::Call: genStmnt_Call(); break;
 
-            case IR::Code::Casm:
-               numChunkCODE += stmnt->args.size() * 4;
-               break;
+            case IR::Code::Casm: numChunkCODE += stmnt->args.size() * 4; break;
 
             case IR::Code::CmpI_EQ_W:
             case IR::Code::CmpI_GE_W:
@@ -213,41 +203,31 @@ namespace GDCC
                numChunkCODE += 8;
                break;
 
-            case IR::Code::InvU_W:  numChunkCODE += 4; break;
-            case IR::Code::InvU_W2: genStmnt_InvU_W2(); break;
-            case IR::Code::InvU_W3: genStmnt_InvU_W3(); break;
+            case IR::Code::InvU_W: genStmnt_InvU_W(); break;
 
-            case IR::Code::Jcnd_Nil:
-            case IR::Code::Jcnd_Tru:
-               numChunkCODE += 8;
-               break;
+            case IR::Code::Jcnd_Nil: genStmnt_Jcnd_Nil(); break;
+            case IR::Code::Jcnd_Tru: genStmnt_Jcnd_Tru(); break;
 
-            case IR::Code::Jump:
-               numChunkCODE += 8;
-               break;
+            case IR::Code::Jump: genStmnt_Jump(); break;
 
             case IR::Code::Move_W: genStmnt_Move_W(); break;
 
             case IR::Code::MuXU_W:  genStmntCall(2); break;
             case IR::Code::MuXU_W2: genStmntCall(4); break;
 
-            case IR::Code::NegF_W:
-            case IR::Code::NegF_W2: genStmnt_NegF_Wx(); break;
-            case IR::Code::NegI_W:  numChunkCODE += 4; break;
-            case IR::Code::NegI_W2: genStmnt_NegI_W2(); break;
-            case IR::Code::NegI_W3: genStmnt_NegI_W3(); break;
+            case IR::Code::NegF_W: genStmnt_NegF_W(); break;
+            case IR::Code::NegI_W: genStmnt_NegI_W(); break;
 
-            case IR::Code::NotU_W:  numChunkCODE += 4; break;
-            case IR::Code::NotU_W2: numChunkCODE += 8; break;
-            case IR::Code::NotU_W3: numChunkCODE += 12; break;
+            case IR::Code::NotU_W: numChunkCODE += stmnt->op.size * 4; break;
+
+            case IR::Code::OrIU_W: genStmntBitwise(); break;
+            case IR::Code::OrXU_W: genStmntBitwise(); break;
 
             case IR::Code::Plsa: numChunkCODE += 16; break;
             case IR::Code::Plsf: numChunkCODE += 16; break;
             case IR::Code::Pltn: numChunkCODE += 12; break;
 
-            case IR::Code::Retn:
-               genStmnt_Retn();
-               break;
+            case IR::Code::Retn: genStmnt_Retn(); break;
 
             case IR::Code::ShLF_W:  genStmntCall(1); break;
             case IR::Code::ShLF_W2: genStmntCall(2); break;
@@ -265,13 +245,9 @@ namespace GDCC
             case IR::Code::ShRU_W2: genStmnt_ShRU_W2(); break;
             case IR::Code::ShRU_W3: genStmnt_ShRU_W3(); break;
 
-            case IR::Code::Swap_W:  numChunkCODE += 4; break;
-            case IR::Code::Swap_W2: numChunkCODE += 64; break;
-            case IR::Code::Swap_W3: numChunkCODE += 96; break;
+            case IR::Code::Swap_W: genStmnt_Swap_W(); break;
 
-            case IR::Code::Xcod_SID:
-               numChunkCODE += 32;
-               break;
+            case IR::Code::Xcod_SID: numChunkCODE += 32; break;
 
             default:
                std::cerr << "ERROR: " << stmnt->pos

@@ -26,6 +26,7 @@ add_library(gdcc-bytecode-zdacs-lib ${GDCC_SHARED_DECL}
    Info/Stmnt/Cmp.cpp
    Info/Stmnt/Div.cpp
    Info/Stmnt/InvU.cpp
+   Info/Stmnt/Jump.cpp
    Info/Stmnt/Move.cpp
    Info/Stmnt/NegI.cpp
    Info/Stmnt/Shift.cpp

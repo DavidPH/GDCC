@@ -40,9 +40,7 @@ namespace GDCC
          {
             switch(stmnt->op.code)
             {
-            case IR::Code::Nop:
-               putCode(Code::Nop);
-               break;
+            case IR::Code::Nop: putCode(Code::Nop); break;
 
             case IR::Code::AddF_W:  putStmntCall("___GDCC__AddF_W",  1); break;
             case IR::Code::AddF_W2: putStmntCall("___GDCC__AddF_W2", 2); break;
@@ -55,14 +53,9 @@ namespace GDCC
 
             case IR::Code::AndU_W: putStmntBitwise(Code::AndU); break;
 
-            case IR::Code::Call:
-               putStmnt_Call();
-               break;
+            case IR::Code::Call: putStmnt_Call(); break;
 
-            case IR::Code::Casm:
-               for(auto const &arg : stmnt->args)
-                  putWord(GetWord(arg.aLit));
-               break;
+            case IR::Code::Casm: putStmnt_Casm(); break;
 
             case IR::Code::CmpF_EQ_W:  putStmntCall("___GDCC__CmpF_EQ_W",  1); break;
             case IR::Code::CmpF_EQ_W2: putStmntCall("___GDCC__CmpF_EQ_W2", 1); break;
@@ -130,11 +123,7 @@ namespace GDCC
             case IR::Code::CmpU_NE_W2: putStmnt_CmpU_NE_W2(); break;
             case IR::Code::CmpU_NE_W3: putStmnt_CmpU_NE_W3(); break;
 
-            case IR::Code::Cnat:
-               putCode(Code::Cnat);
-               putWord(stmnt->args.size() - 1);
-               putWord(GetWord(stmnt->args[0].aLit));
-               break;
+            case IR::Code::Cnat: putStmnt_Cnat(); break;
 
             case IR::Code::Copy_W: putCode(Code::Copy); break;
 
@@ -165,24 +154,12 @@ namespace GDCC
             case IR::Code::DivX_W:  putCode(Code::DivX); break;
             case IR::Code::DivX_W2: putStmntCall("___GDCC__DivX_W2", 2); break;
 
-            case IR::Code::InvU_W:  putCode(Code::InvU); break;
-            case IR::Code::InvU_W2: putStmnt_InvU_W2(); break;
-            case IR::Code::InvU_W3: putStmnt_InvU_W3(); break;
+            case IR::Code::InvU_W: putStmnt_InvU_W(); break;
 
-            case IR::Code::Jcnd_Nil:
-               putCode(Code::Jcnd_Nil);
-               putWord(GetWord(stmnt->args[1].aLit));
-               break;
+            case IR::Code::Jcnd_Nil: putStmnt_Jcnd_Nil(); break;
+            case IR::Code::Jcnd_Tru: putStmnt_Jcnd_Tru(); break;
 
-            case IR::Code::Jcnd_Tru:
-               putCode(Code::Jcnd_Tru);
-               putWord(GetWord(stmnt->args[1].aLit));
-               break;
-
-            case IR::Code::Jump:
-               putCode(Code::Jump_Lit);
-               putWord(GetWord(stmnt->args[0].aLit));
-               break;
+            case IR::Code::Jump: putStmnt_Jump(); break;
 
             case IR::Code::ModI_W:  putCode(Code::ModI); break;
             case IR::Code::ModI_W2: putStmntCall("___GDCC__ModI_W2", 2); break;
@@ -209,39 +186,19 @@ namespace GDCC
             case IR::Code::MulX_W:  putCode(Code::MulX); break;
             case IR::Code::MulX_W2: putStmntCall("___GDCC__MulX_W2", 2); break;
 
-            case IR::Code::NegF_W:
-            case IR::Code::NegF_W2: putStmnt_NegF_Wx(); break;
-            case IR::Code::NegI_W:  putCode(Code::NegI); break;
-            case IR::Code::NegI_W2: putStmnt_NegI_W2(); break;
-            case IR::Code::NegI_W3: putStmnt_NegI_W3(); break;
+            case IR::Code::NegF_W: putStmnt_NegF_W(); break;
+            case IR::Code::NegI_W: putStmnt_NegI_W(); break;
 
-            case IR::Code::NotU_W3: putCode(Code::OrIU);
-            case IR::Code::NotU_W2: putCode(Code::OrIU);
-            case IR::Code::NotU_W:  putCode(Code::NotU); break;
+            case IR::Code::NotU_W: putStmnt_NotU_W(); break;
 
             case IR::Code::OrIU_W: putStmntBitwise(Code::OrIU); break;
-
             case IR::Code::OrXU_W: putStmntBitwise(Code::OrXU); break;
 
-            case IR::Code::Plsa:
-               putCode(Code::Call_Lit,    GetWord(resolveGlyph("___GDCC__Plsa")));
-               putCode(Code::Drop_LocReg, getStkPtrIdx());
-               break;
+            case IR::Code::Plsa: putStmnt_Plsa(); break;
+            case IR::Code::Plsf: putStmnt_Plsf(); break;
+            case IR::Code::Pltn: putStmnt_Pltn(); break;
 
-            case IR::Code::Plsf:
-               putCode(Code::Push_LocReg, getStkPtrIdx());
-               putCode(Code::Call_Nul,    GetWord(resolveGlyph("___GDCC__Plsf")));
-               break;
-
-            case IR::Code::Pltn:
-               putCode(Code::Push_LocReg);
-               putWord(getStkPtrIdx());
-               putCode(Code::AddU);
-               break;
-
-            case IR::Code::Retn:
-               putStmnt_Retn();
-               break;
+            case IR::Code::Retn: putStmnt_Retn(); break;
 
             case IR::Code::ShLF_W:  putStmntCall("___GDCC__ShLF_W",  1); break;
             case IR::Code::ShLF_W2: putStmntCall("___GDCC__ShLF_W2", 2); break;
@@ -270,19 +227,51 @@ namespace GDCC
             case IR::Code::SubI_W3:
             case IR::Code::SubU_W3: putStmntCall("___GDCC__SubU_W3", 3); break;
 
-            case IR::Code::Swap_W:  putCode(Code::Swap); break;
-            case IR::Code::Swap_W2: putStmnt_Swap_Wx(2); break;
-            case IR::Code::Swap_W3: putStmnt_Swap_Wx(3); break;
+            case IR::Code::Swap_W: putStmnt_Swap_W(); break;
 
-            case IR::Code::Xcod_SID:
-               putStmnt_Xcod_SID();
-               break;
+            case IR::Code::Xcod_SID: putStmnt_Xcod_SID(); break;
 
             default:
                std::cerr << "ERROR: " << stmnt->pos
                   << ": cannot put Code for ZDACS: " << stmnt->op << '\n';
                throw EXIT_FAILURE;
             }
+         }
+
+         //
+         // Info::putStmnt_NotU_W
+         //
+         void Info::putStmnt_NotU_W()
+         {
+            if(auto i = stmnt->op.size) while(--i) putCode(Code::OrIU);
+            putCode(Code::NotU);
+         }
+
+         //
+         // Info::putStmnt_Plsa
+         //
+         void Info::putStmnt_Plsa()
+         {
+            putCode(Code::Call_Lit,    GetWord(resolveGlyph("___GDCC__Plsa")));
+            putCode(Code::Drop_LocReg, getStkPtrIdx());
+         }
+
+         //
+         // Info::putStmnt_Plsf
+         //
+         void Info::putStmnt_Plsf()
+         {
+            putCode(Code::Push_LocReg, getStkPtrIdx());
+            putCode(Code::Call_Nul,    GetWord(resolveGlyph("___GDCC__Plsf")));
+         }
+
+         //
+         // Info::putStmnt_Pltn
+         //
+         void Info::putStmnt_Pltn()
+         {
+            putCode(Code::Push_LocReg, getStkPtrIdx());
+            putCode(Code::AddU);
          }
 
          //

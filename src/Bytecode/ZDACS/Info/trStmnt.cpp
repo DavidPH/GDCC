@@ -36,8 +36,7 @@ namespace GDCC
          {
             switch(stmnt->op.code)
             {
-            case IR::Code::Nop:
-               break;
+            case IR::Code::Nop: break;
 
             case IR::Code::AddF_W:
             case IR::Code::MulF_W:
@@ -69,21 +68,11 @@ namespace GDCC
                trStmntStk3(stmnt->op.size, stmnt->op.size, false);
                break;
 
-            case IR::Code::AndU_W:
-            case IR::Code::OrIU_W:
-            case IR::Code::OrXU_W:
-               trStmntBitwise();
-               break;
+            case IR::Code::AndU_W: trStmntBitwise(); break;
 
-            case IR::Code::Call:
-               trStmnt_Call();
-               break;
+            case IR::Code::Call: trStmnt_Call(); break;
 
-            case IR::Code::Casm:
-               CheckArgC(stmnt, 1);
-               for(auto n = stmnt->args.size(); --n;)
-                  CheckArgB(stmnt, n, IR::ArgBase::Lit);
-               break;
+            case IR::Code::Casm: trStmnt_Casm(); break;
 
             case IR::Code::CmpF_EQ_W:
             case IR::Code::CmpF_NE_W:
@@ -151,12 +140,7 @@ namespace GDCC
                trStmntStk3(1, stmnt->op.size, true);
                break;
 
-            case IR::Code::Cnat:
-               CheckArgC(stmnt, 1);
-               CheckArgB(stmnt, 0, IR::ArgBase::Lit);
-               for(auto n = stmnt->args.size(); --n != 0;)
-                  CheckArgB(stmnt, n, IR::ArgBase::Stk);
-               break;
+            case IR::Code::Cnat: trStmnt_Cnat(); break;
 
             case IR::Code::Copy_W:
                CheckArgC(stmnt, 2);
@@ -222,26 +206,12 @@ namespace GDCC
                trStmntStk3(stmnt->op.size, stmnt->op.size, true);
                break;
 
-            case IR::Code::InvU_W:
-            case IR::Code::NegF_W:
-            case IR::Code::NegI_W:
-               trStmntStk2(stmnt->op.size, stmnt->op.size);
-               break;
+            case IR::Code::InvU_W: trStmnt_InvU_W(); break;
 
-            case IR::Code::InvU_W2: trStmnt_InvU_W2(); break;
-            case IR::Code::InvU_W3: trStmnt_InvU_W3(); break;
+            case IR::Code::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
+            case IR::Code::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
 
-            case IR::Code::Jcnd_Nil:
-            case IR::Code::Jcnd_Tru:
-               CheckArgC(stmnt, 2);
-               CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-               moveArgStk_src(stmnt->args[0], stmnt->op.size);
-               break;
-
-            case IR::Code::Jump:
-               CheckArgC(stmnt, 1);
-               CheckArgB(stmnt, 0, IR::ArgBase::Lit);
-               break;
+            case IR::Code::Jump: trStmnt_Jump(); break;
 
             case IR::Code::Move_W: trStmnt_Move_W(); break;
 
@@ -249,44 +219,19 @@ namespace GDCC
                trStmntStk3(stmnt->op.size * 2, stmnt->op.size, false);
                break;
 
-            case IR::Code::MuXU_W2:
-               trStmntStk3(stmnt->op.size * 2, stmnt->op.size, false);
-               break;
+            case IR::Code::NegF_W: trStmntStk2(stmnt->op.size, stmnt->op.size); break;
+            case IR::Code::NegI_W: trStmnt_NegI_W(); break;
 
-            case IR::Code::NegF_W2:
-               trStmntStk2(stmnt->op.size, stmnt->op.size);
-               break;
+            case IR::Code::NotU_W: trStmntStk2(1, stmnt->op.size); break;
 
-            case IR::Code::NegI_W2: trStmnt_NegI_W2(); break;
-            case IR::Code::NegI_W3: trStmnt_NegI_W3(); break;
+            case IR::Code::OrIU_W: trStmntBitwise(); break;
+            case IR::Code::OrXU_W: trStmntBitwise(); break;
 
-            case IR::Code::NotU_W:
-               trStmntStk2(1, stmnt->op.size);
-               break;
+            case IR::Code::Plsa: trStmnt_Plsa(); break;
+            case IR::Code::Plsf: break;
+            case IR::Code::Pltn: trStmntStk2(1, 1); break;
 
-            case IR::Code::NotU_W2:
-               trStmntStk2(1, stmnt->op.size);
-               break;
-
-            case IR::Code::NotU_W3:
-               trStmntStk2(1, stmnt->op.size);
-               break;
-
-            case IR::Code::Plsa:
-               CheckArgC(stmnt, 1);
-               moveArgStk_src(stmnt->args[0], 1);
-               break;
-
-            case IR::Code::Plsf:
-               break;
-
-            case IR::Code::Pltn:
-               trStmntStk2(1, 1);
-               break;
-
-            case IR::Code::Retn:
-               trStmnt_Retn();
-               break;
+            case IR::Code::Retn: trStmnt_Retn(); break;
 
             case IR::Code::ShLF_W:  trStmntShift(true); break;
             case IR::Code::ShLF_W2: trStmntShift(true); break;
@@ -307,18 +252,24 @@ namespace GDCC
             case IR::Code::SubI_W:
             case IR::Code::SubU_W: trStmnt_SubU_W(); break;
 
-            case IR::Code::Swap_W:  trStmnt_Swap_Wx(stmnt->op.size); break;
-            case IR::Code::Swap_W2: trStmnt_Swap_Wx(stmnt->op.size); break;
-            case IR::Code::Swap_W3: trStmnt_Swap_Wx(stmnt->op.size); break;
+            case IR::Code::Swap_W: trStmnt_Swap_W(); break;
 
-            case IR::Code::Xcod_SID:
-               break;
+            case IR::Code::Xcod_SID: break;
 
             default:
                std::cerr << "ERROR: " << stmnt->pos
                   << ": cannot translate Code for ZDACS: " << stmnt->op << '\n';
                throw EXIT_FAILURE;
             }
+         }
+
+         //
+         // Info::trStmnt_Plsa
+         //
+         void Info::trStmnt_Plsa()
+         {
+            CheckArgC(stmnt, 1);
+            moveArgStk_src(stmnt->args[0], 1);
          }
 
          //
