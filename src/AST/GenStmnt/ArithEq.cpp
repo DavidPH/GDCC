@@ -17,8 +17,6 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/ExpCode.hpp"
-
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |

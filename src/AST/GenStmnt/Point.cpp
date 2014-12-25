@@ -18,7 +18,6 @@
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
-#include "IR/ExpCode.hpp"
 
 
 //----------------------------------------------------------------------------|

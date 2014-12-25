@@ -30,12 +30,8 @@ namespace GDCC
       struct CodeSet_Inv
       {
          static constexpr Code
-            CodeI_W  = Code::InvU_W,
-            CodeI_W2 = Code::InvU_W2,
-            CodeI_W3 = Code::InvU_W3,
-            CodeU_W  = Code::InvU_W,
-            CodeU_W2 = Code::InvU_W2,
-            CodeU_W3 = Code::InvU_W3;
+            CodeI_W = Code::InvU_W,
+            CodeU_W = Code::InvU_W;
       };
 
       //
@@ -44,22 +40,13 @@ namespace GDCC
       struct CodeSet_Neg
       {
          static constexpr Code
-            CodeA_W  = Code::NegI_W,
-            CodeA_W2 = Code::NegI_W2,
-            CodeF_W  = Code::NegF_W,
-            CodeF_W2 = Code::NegF_W2,
-            CodeI_W  = Code::NegI_W,
-            CodeI_W2 = Code::NegI_W2,
-            CodeI_W3 = Code::NegI_W3,
-            CodeK_W  = Code::NegI_W,
-            CodeK_W2 = Code::NegI_W2,
-            CodeR_W  = Code::NegI_W,
-            CodeR_W2 = Code::NegI_W2,
-            CodeU_W  = Code::NegI_W,
-            CodeU_W2 = Code::NegI_W2,
-            CodeU_W3 = Code::NegI_W3,
-            CodeX_W  = Code::NegI_W,
-            CodeX_W2 = Code::NegI_W2;
+            CodeA_W = Code::NegI_W,
+            CodeF_W = Code::NegF_W,
+            CodeI_W = Code::NegI_W,
+            CodeK_W = Code::NegI_W,
+            CodeR_W = Code::NegI_W,
+            CodeU_W = Code::NegI_W,
+            CodeX_W = Code::NegI_W;
       };
    }
 }
