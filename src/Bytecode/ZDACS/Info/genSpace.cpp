@@ -210,8 +210,8 @@ namespace GDCC
                break;
 
             case IR::ValueBase::Fixed:
-               bits = val.vFloat.vtype.bitsI + val.vFloat.vtype.bitsF + val.vFloat.vtype.bitsS;
-               for(Core::FastU w = 0; bits; bits -= 32, ++w)
+               bits = val.vFixed.vtype.bitsI + val.vFixed.vtype.bitsF + val.vFixed.vtype.bitsS;
+               for(Core::FastU w = 0, e = (bits + 31) / 32; w != e; ++w)
                {
                   iv = &ini.vals[itr++];
                   iv->tag = InitTag::Fixed;
@@ -221,7 +221,7 @@ namespace GDCC
 
             case IR::ValueBase::Float:
                bits = val.vFloat.vtype.bitsI + val.vFloat.vtype.bitsF + val.vFloat.vtype.bitsS;
-               for(Core::FastU w = 0; bits; bits -= 32, ++w)
+               for(Core::FastU w = 0, e = (bits + 31) / 32; w != e; ++w)
                {
                   iv = &ini.vals[itr++];
                   iv->tag = InitTag::Fixed;
