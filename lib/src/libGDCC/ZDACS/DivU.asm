@@ -16,9 +16,9 @@
 ;;
 
 ;;
-;; ___GDCC__DiXU_W
+;; ___GDCC__DiXU_W1
 ;;
-Function "___GDCC__DiXU_W" \
+Function "___GDCC__DiXU_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
@@ -576,9 +576,9 @@ Function "___GDCC__DivK_W2" \
 }
 
 ;;
-;; ___GDCC__DivU_W
+;; ___GDCC__DivU_W1
 ;;
-Function "___GDCC__DivU_W" \
+Function "___GDCC__DivU_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
@@ -697,9 +697,9 @@ Function "___GDCC__DivU_W3" \
 }
 
 ;;
-;; ___GDCC__ModU_W
+;; ___GDCC__ModU_W1
 ;;
-Function "___GDCC__ModU_W" \
+Function "___GDCC__ModU_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \

@@ -116,14 +116,15 @@ namespace GDCC
             virtual void genStmnt();
             void genStmnt_AddU_W();
             void genStmnt_Call();
-            void genStmnt_CmpU_EQ_W2();
-            void genStmnt_CmpU_EQ_W3();
+            void genStmnt_CmpI_W();
+            void genStmnt_CmpU_EQ_W();
             void genStmnt_Cscr_IA();
             void genStmnt_Cscr_IS();
             void genStmnt_Cscr_SA();
             void genStmnt_Cscr_SS();
             void genStmnt_Cspe();
             void genStmnt_DiXI_W();
+            void genStmnt_DivI_W();
             void genStmnt_InvU_W();
             void genStmnt_Jcnd_Nil();
             void genStmnt_Jcnd_Tru();
@@ -134,12 +135,15 @@ namespace GDCC
             void genStmnt_NegF_W();
             void genStmnt_NegI_W();
             void genStmnt_Retn();
-            void genStmnt_ShRU_W();
+            void genStmnt_ShLU_W();
             void genStmnt_ShLU_W2();
-            void genStmnt_ShRI_W2();
-            void genStmnt_ShRU_W2();
             void genStmnt_ShLU_W3();
+            void genStmnt_ShRI_W();
+            void genStmnt_ShRI_W2();
             void genStmnt_ShRI_W3();
+            void genStmnt_ShRU_W();
+            void genStmnt_ShRU_W1();
+            void genStmnt_ShRU_W2();
             void genStmnt_ShRU_W3();
             void genStmnt_Swap_W();
 
@@ -154,6 +158,8 @@ namespace GDCC
             void genStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
             virtual void genStr();
+
+            Core::String getCallName();
 
             Core::FastU getInitGblArray();
             Core::FastU getInitGblIndex();
@@ -208,6 +214,7 @@ namespace GDCC
             virtual void preFunc();
 
             virtual void preStmnt();
+            void preStmntCall(Core::FastU retrn, Core::FastU param);
             void preStmntCall(Core::String name, Core::FastU retrn, Core::FastU param);
 
             virtual void preStr();
@@ -254,10 +261,9 @@ namespace GDCC
             void putStmnt_AddU_W();
             void putStmnt_Call();
             void putStmnt_Casm();
-            void putStmnt_CmpU_EQ_W2();
-            void putStmnt_CmpU_EQ_W3();
-            void putStmnt_CmpU_NE_W2();
-            void putStmnt_CmpU_NE_W3();
+            void putStmnt_CmpI_W(Code code);
+            void putStmnt_CmpU_EQ_W();
+            void putStmnt_CmpU_NE_W();
             void putStmnt_Cnat();
             void putStmnt_Cscr_IA();
             void putStmnt_Cscr_IS();
@@ -265,10 +271,13 @@ namespace GDCC
             void putStmnt_Cscr_SS();
             void putStmnt_Cspe();
             void putStmnt_DiXI_W();
+            void putStmnt_DivI_W();
+            void putStmnt_DivX_W();
             void putStmnt_InvU_W();
             void putStmnt_Jcnd_Nil();
             void putStmnt_Jcnd_Tru();
             void putStmnt_Jump();
+            void putStmnt_ModI_W();
             void putStmnt_Move_W();
             void putStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr, Code code);
             void putStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr, Code code);
@@ -279,12 +288,15 @@ namespace GDCC
             void putStmnt_Plsf();
             void putStmnt_Pltn();
             void putStmnt_Retn();
-            void putStmnt_ShRU_W();
+            void putStmnt_ShLU_W();
             void putStmnt_ShLU_W2();
-            void putStmnt_ShRI_W2();
-            void putStmnt_ShRU_W2();
             void putStmnt_ShLU_W3();
+            void putStmnt_ShRI_W();
+            void putStmnt_ShRI_W2();
             void putStmnt_ShRI_W3();
+            void putStmnt_ShRU_W();
+            void putStmnt_ShRU_W1();
+            void putStmnt_ShRU_W2();
             void putStmnt_ShRU_W3();
             void putStmnt_SubU_W();
             void putStmnt_Swap_W();
@@ -292,6 +304,7 @@ namespace GDCC
 
             void putStmntBitwise(Code code);
 
+            void putStmntCall(Core::FastU ret);
             void putStmntCall(Core::String name, Core::FastU ret);
 
             void putStmntDropArg(IR::Arg const &arg, Core::FastU w);
@@ -326,7 +339,7 @@ namespace GDCC
             void trStmnt_AddU_W();
             void trStmnt_Call();
             void trStmnt_Casm();
-            void trStmnt_CmpU_EQ();
+            void trStmnt_CmpU_EQ_W();
             void trStmnt_Cnat();
             void trStmnt_Cscr_IA();
             void trStmnt_Cscr_IS();
@@ -334,6 +347,7 @@ namespace GDCC
             void trStmnt_Cscr_SS();
             void trStmnt_Cspe();
             void trStmnt_DiXI_W();
+            void trStmnt_DiXU_W();
             void trStmnt_InvU_W();
             void trStmnt_Jcnd_Nil();
             void trStmnt_Jcnd_Tru();
@@ -342,11 +356,14 @@ namespace GDCC
             void trStmnt_NegI_W();
             void trStmnt_Plsa();
             void trStmnt_Retn();
+            void trStmnt_ShLU_W();
             void trStmnt_ShLU_W2();
             void trStmnt_ShLU_W3();
+            void trStmnt_ShRI_W();
             void trStmnt_ShRI_W2();
             void trStmnt_ShRI_W3();
             void trStmnt_ShRU_W();
+            void trStmnt_ShRU_W1();
             void trStmnt_ShRU_W2();
             void trStmnt_ShRU_W3();
             void trStmnt_SubU_W();

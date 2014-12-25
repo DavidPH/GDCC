@@ -57,8 +57,6 @@ namespace GDCC
 
             if(stmnt->args[0].a == IR::ArgBase::Stk)
             {
-               numChunkCODE += 116;
-
                numChunkCODE += (stmnt->op.size - 1) * 24 + 8 +
                   stmnt->op.size * 20;
             }

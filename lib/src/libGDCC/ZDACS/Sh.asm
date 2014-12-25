@@ -16,9 +16,9 @@
 ;;
 
 ;;
-;; ___GDCC__ShLF_W
+;; ___GDCC__ShLF_W1
 ;;
-Function "___GDCC__ShLF_W" \
+Function "___GDCC__ShLF_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
@@ -245,9 +245,9 @@ Function "___GDCC__ShLU_W3" \
 }
 
 ;;
-;; ___GDCC__ShRF_W
+;; ___GDCC__ShRF_W1
 ;;
-Function "___GDCC__ShRF_W" \
+Function "___GDCC__ShRF_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \

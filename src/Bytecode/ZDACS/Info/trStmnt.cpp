@@ -50,24 +50,6 @@ namespace GDCC
             case IR::Code::AddI_W:
             case IR::Code::AddU_W: trStmnt_AddU_W(); break;
 
-            case IR::Code::AddF_W2:
-            case IR::Code::AddI_W2:
-            case IR::Code::AddU_W2:
-            case IR::Code::MulF_W2:
-            case IR::Code::MulI_W2:
-            case IR::Code::MulK_W2:
-            case IR::Code::MulU_W2:
-            case IR::Code::MulX_W2:
-               trStmntStk3(stmnt->op.size, stmnt->op.size, false);
-               break;
-
-            case IR::Code::AddI_W3:
-            case IR::Code::AddU_W3:
-            case IR::Code::MulI_W3:
-            case IR::Code::MulU_W3:
-               trStmntStk3(stmnt->op.size, stmnt->op.size, false);
-               break;
-
             case IR::Code::AndU_W: trStmntBitwise(); break;
 
             case IR::Code::Call: trStmnt_Call(); break;
@@ -76,33 +58,23 @@ namespace GDCC
 
             case IR::Code::CmpF_EQ_W:
             case IR::Code::CmpF_NE_W:
-            case IR::Code::CmpI_EQ_W:
-            case IR::Code::CmpI_NE_W:
-            case IR::Code::CmpU_EQ_W:
-            case IR::Code::CmpU_NE_W:
                trStmntStk3(1, stmnt->op.size, false);
-               break;
-
-            case IR::Code::CmpF_EQ_W2:
-            case IR::Code::CmpF_NE_W2:
-            case IR::Code::CmpI_EQ_W2:
-            case IR::Code::CmpI_NE_W2:
-            case IR::Code::CmpU_EQ_W2:
-            case IR::Code::CmpU_NE_W2:
-               trStmnt_CmpU_EQ();
-               break;
-
-            case IR::Code::CmpI_EQ_W3:
-            case IR::Code::CmpI_NE_W3:
-            case IR::Code::CmpU_EQ_W3:
-            case IR::Code::CmpU_NE_W3:
-               trStmnt_CmpU_EQ();
                break;
 
             case IR::Code::CmpF_GE_W:
             case IR::Code::CmpF_GT_W:
             case IR::Code::CmpF_LE_W:
             case IR::Code::CmpF_LT_W:
+               trStmntStk3(1, stmnt->op.size, true);
+               break;
+
+            case IR::Code::CmpI_EQ_W:
+            case IR::Code::CmpI_NE_W:
+            case IR::Code::CmpU_EQ_W:
+            case IR::Code::CmpU_NE_W:
+               trStmnt_CmpU_EQ_W();
+               break;
+
             case IR::Code::CmpI_GE_W:
             case IR::Code::CmpI_GT_W:
             case IR::Code::CmpI_LE_W:
@@ -111,32 +83,6 @@ namespace GDCC
             case IR::Code::CmpU_GT_W:
             case IR::Code::CmpU_LE_W:
             case IR::Code::CmpU_LT_W:
-               trStmntStk3(1, stmnt->op.size, true);
-               break;
-
-            case IR::Code::CmpF_GE_W2:
-            case IR::Code::CmpF_GT_W2:
-            case IR::Code::CmpF_LE_W2:
-            case IR::Code::CmpF_LT_W2:
-            case IR::Code::CmpI_GE_W2:
-            case IR::Code::CmpI_GT_W2:
-            case IR::Code::CmpI_LE_W2:
-            case IR::Code::CmpI_LT_W2:
-            case IR::Code::CmpU_GE_W2:
-            case IR::Code::CmpU_GT_W2:
-            case IR::Code::CmpU_LE_W2:
-            case IR::Code::CmpU_LT_W2:
-               trStmntStk3(1, stmnt->op.size, true);
-               break;
-
-            case IR::Code::CmpI_GE_W3:
-            case IR::Code::CmpI_GT_W3:
-            case IR::Code::CmpI_LE_W3:
-            case IR::Code::CmpI_LT_W3:
-            case IR::Code::CmpU_GE_W3:
-            case IR::Code::CmpU_GT_W3:
-            case IR::Code::CmpU_LE_W3:
-            case IR::Code::CmpU_LT_W3:
                trStmntStk3(1, stmnt->op.size, true);
                break;
 
@@ -156,20 +102,7 @@ namespace GDCC
             case IR::Code::Cspe: trStmnt_Cspe(); break;
 
             case IR::Code::DiXI_W: trStmnt_DiXI_W(); break;
-
-            case IR::Code::DiXI_W2:
-            case IR::Code::DiXU_W2:
-               trStmntStk3(stmnt->op.size * 2, stmnt->op.size, false);
-               break;
-
-            case IR::Code::DiXI_W3:
-            case IR::Code::DiXU_W3:
-               trStmntStk3(stmnt->op.size * 3, stmnt->op.size, false);
-               break;
-
-            case IR::Code::DiXU_W:
-               trStmntStk3(stmnt->op.size * 2, stmnt->op.size, false);
-               break;
+            case IR::Code::DiXU_W: trStmnt_DiXU_W(); break;
 
             case IR::Code::DivF_W:
             case IR::Code::DivI_W:
@@ -178,31 +111,7 @@ namespace GDCC
             case IR::Code::DivX_W:
             case IR::Code::ModI_W:
             case IR::Code::ModU_W:
-            case IR::Code::ShLU_W:
-            case IR::Code::ShRI_W:
             case IR::Code::SubF_W:
-               trStmntStk3(stmnt->op.size, stmnt->op.size, true);
-               break;
-
-            case IR::Code::DivF_W2:
-            case IR::Code::DivI_W2:
-            case IR::Code::DivK_W2:
-            case IR::Code::DivU_W2:
-            case IR::Code::DivX_W2:
-            case IR::Code::ModI_W2:
-            case IR::Code::ModU_W2:
-            case IR::Code::SubF_W2:
-            case IR::Code::SubI_W2:
-            case IR::Code::SubU_W2:
-               trStmntStk3(stmnt->op.size, stmnt->op.size, true);
-               break;
-
-            case IR::Code::DivI_W3:
-            case IR::Code::DivU_W3:
-            case IR::Code::ModI_W3:
-            case IR::Code::ModU_W3:
-            case IR::Code::SubI_W3:
-            case IR::Code::SubU_W3:
                trStmntStk3(stmnt->op.size, stmnt->op.size, true);
                break;
 
@@ -233,21 +142,11 @@ namespace GDCC
 
             case IR::Code::Retn: trStmnt_Retn(); break;
 
-            case IR::Code::ShLF_W:  trStmntShift(true); break;
-            case IR::Code::ShLF_W2: trStmntShift(true); break;
-
-            case IR::Code::ShLU_W2: trStmnt_ShLU_W2(); break;
-            case IR::Code::ShLU_W3: trStmnt_ShLU_W3(); break;
-
-            case IR::Code::ShRF_W:  trStmntShift(true); break;
-            case IR::Code::ShRF_W2: trStmntShift(true); break;
-
-            case IR::Code::ShRI_W3: trStmnt_ShRI_W3(); break;
-            case IR::Code::ShRI_W2: trStmnt_ShRI_W2(); break;
-
-            case IR::Code::ShRU_W:  trStmnt_ShRU_W(); break;
-            case IR::Code::ShRU_W2: trStmnt_ShRU_W2(); break;
-            case IR::Code::ShRU_W3: trStmnt_ShRU_W3(); break;
+            case IR::Code::ShLF_W: trStmntShift(true); break;
+            case IR::Code::ShLU_W: trStmnt_ShLU_W(); break;
+            case IR::Code::ShRF_W: trStmntShift(true); break;
+            case IR::Code::ShRI_W: trStmnt_ShRI_W(); break;
+            case IR::Code::ShRU_W: trStmnt_ShRU_W(); break;
 
             case IR::Code::SubI_W:
             case IR::Code::SubU_W: trStmnt_SubU_W(); break;

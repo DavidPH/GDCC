@@ -16,9 +16,9 @@
 ;;
 
 ;;
-;; ___GDCC__MuXU_W
+;; ___GDCC__MuXU_W1
 ;;
-Function "___GDCC__MuXU_W" \
+Function "___GDCC__MuXU_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
@@ -86,9 +86,9 @@ Function "___GDCC__MuXU_W2" \
 }
 
 ;;
-;; ___GDCC__MulK_W
+;; ___GDCC__MulK_W1
 ;;
-Function "___GDCC__MulK_W" \
+Function "___GDCC__MulK_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \

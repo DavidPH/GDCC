@@ -38,7 +38,7 @@ namespace GDCC
                return;
             }
 
-            numChunkCODE += stmnt->op.size * 8 + 4;
+            numChunkCODE += stmnt->op.size * 4 + 4;
          }
 
          //
@@ -48,7 +48,7 @@ namespace GDCC
          {
             if(stmnt->op.size == 0) return;
 
-            numChunkCODE += stmnt->op.size * 8 + 4;
+            numChunkCODE += stmnt->op.size * 4 + 4;
          }
 
          //

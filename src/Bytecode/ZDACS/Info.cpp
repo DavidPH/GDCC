@@ -22,6 +22,7 @@
 #include "Option/Exception.hpp"
 #include "Option/Int.hpp"
 
+#include <climits>
 #include <iostream>
 
 
@@ -275,6 +276,54 @@ namespace GDCC
             data.type  = TypeWord;
             data.value = IR::ExpCreate_Value(
                IR::Value_Fixed(val, TypeWord), Core::Origin(Core::STRNULL, 0));
+         }
+
+         //
+         // Info::getCallName
+         //
+         Core::String Info::getCallName()
+         {
+            char        buf[sizeof("___GDCC__Code_XX_Wx")];
+            std::size_t len;
+
+            char const *code;
+            int         size;
+
+            // Some codes get mapped to other function names.
+            IR::Code opCode = stmnt->op.code;
+            switch(opCode)
+            {
+            case IR::Code::AddI_W:    opCode = IR::Code::AddU_W;    break;
+            case IR::Code::CmpI_EQ_W: opCode = IR::Code::CmpU_EQ_W; break;
+            case IR::Code::CmpI_NE_W: opCode = IR::Code::CmpU_NE_W; break;
+            case IR::Code::MulI_W:    opCode = IR::Code::MulU_W;    break;
+            case IR::Code::SubI_W:    opCode = IR::Code::SubU_W;    break;
+            default: break;
+            }
+
+            // Convert code to string.
+            switch(opCode)
+            {
+               #define GDCC_IR_CodeList(c) case IR::Code::c: code = #c; break;
+               #include "IR/CodeList.hpp"
+
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad getCallName code");
+            }
+
+            // Convert size to int.
+            if(stmnt->op.size > INT_MAX)
+               throw Core::ExceptStr(stmnt->pos, "bad getCallName size");
+
+            size = static_cast<int>(stmnt->op.size);
+
+            // Format function name.
+            len = std::snprintf(buf, sizeof(buf), "___GDCC__%s%i", code, size);
+
+            if(len >= sizeof(buf))
+               throw Core::ExceptStr(stmnt->pos, "bad getCallName");
+
+            return {buf, len};
          }
 
          //

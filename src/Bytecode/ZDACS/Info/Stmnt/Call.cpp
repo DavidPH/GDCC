@@ -267,7 +267,7 @@ namespace GDCC
          //
          void Info::putStmnt_Cscr_IA()
          {
-            auto argc = stmnt->args.size() - 2;
+            auto argc = stmnt->args.size() - 1;
             auto ret  = stmnt->op.size;
 
             if(argc > 4)

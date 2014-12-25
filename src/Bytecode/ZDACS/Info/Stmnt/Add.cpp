@@ -32,6 +32,12 @@ namespace GDCC
          //
          void Info::genStmnt_AddU_W()
          {
+            if(stmnt->op.size != 1)
+            {
+               genStmntCall(stmnt->op.size);
+               return;
+            }
+
             if(stmnt->args[0].a == IR::ArgBase::Stk)
                numChunkCODE += 4;
             else
@@ -43,6 +49,12 @@ namespace GDCC
          //
          void Info::putStmnt_AddU_W()
          {
+            if(stmnt->op.size != 1)
+            {
+               putStmntCall(stmnt->op.size);
+               return;
+            }
+
             //
             // putReg
             //
@@ -81,6 +93,12 @@ namespace GDCC
          //
          void Info::putStmnt_SubU_W()
          {
+            if(stmnt->op.size != 1)
+            {
+               putStmntCall(stmnt->op.size);
+               return;
+            }
+
             //
             // putReg
             //
@@ -119,6 +137,12 @@ namespace GDCC
          //
          void Info::trStmnt_AddU_W()
          {
+            if(stmnt->op.size != 1)
+            {
+               trStmntStk3(stmnt->op.size, stmnt->op.size, false);
+               return;
+            }
+
             if(stmnt->args[0] == stmnt->args[1]) switch(stmnt->args[0].a)
             {
             case IR::ArgBase::GblReg:
@@ -166,6 +190,12 @@ namespace GDCC
          //
          void Info::trStmnt_SubU_W()
          {
+            if(stmnt->op.size != 1)
+            {
+               trStmntStk3(stmnt->op.size, stmnt->op.size, true);
+               return;
+            }
+
             if(stmnt->args[0] == stmnt->args[1]) switch(stmnt->args[0].a)
             {
             case IR::ArgBase::GblReg:

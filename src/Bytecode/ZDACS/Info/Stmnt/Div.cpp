@@ -32,6 +32,12 @@ namespace GDCC
          //
          void Info::genStmnt_DiXI_W()
          {
+            if(stmnt->op.size != 1)
+            {
+               genStmntCall(stmnt->op.size * 2);
+               return;
+            }
+
             if(stmnt->args[1].a == IR::ArgBase::Stk &&
                stmnt->args[2].a == IR::ArgBase::Stk)
             {
@@ -46,10 +52,27 @@ namespace GDCC
          }
 
          //
+         // Info::genStmnt_DivI_W
+         //
+         void Info::genStmnt_DivI_W()
+         {
+            if(stmnt->op.size == 1)
+               numChunkCODE += 4;
+            else
+               genStmntCall(stmnt->op.size);
+         }
+
+         //
          // Info::putStmnt_DiXI_W
          //
          void Info::putStmnt_DiXI_W()
          {
+            if(stmnt->op.size != 1)
+            {
+               putStmntCall(stmnt->op.size * 2);
+               return;
+            }
+
             if(stmnt->args[1].a == IR::ArgBase::Stk &&
                stmnt->args[2].a == IR::ArgBase::Stk)
             {
@@ -77,10 +100,49 @@ namespace GDCC
          }
 
          //
+         // Info::putStmnt_DivI_W
+         //
+         void Info::putStmnt_DivI_W()
+         {
+            if(stmnt->op.size == 1)
+               putCode(Code::DivI);
+            else
+               putStmntCall(stmnt->op.size);
+         }
+
+         //
+         // Info::putStmnt_DivX_W
+         //
+         void Info::putStmnt_DivX_W()
+         {
+            if(stmnt->op.size == 1)
+               putCode(Code::DivX);
+            else
+               putStmntCall(stmnt->op.size);
+         }
+
+         //
+         // Info::putStmnt_ModI_W
+         //
+         void Info::putStmnt_ModI_W()
+         {
+            if(stmnt->op.size == 1)
+               putCode(Code::ModI);
+            else
+               putStmntCall(stmnt->op.size);
+         }
+
+         //
          // Info::trStmnt_DiXI_W
          //
          void Info::trStmnt_DiXI_W()
          {
+            if(stmnt->op.size != 1)
+            {
+               trStmntStk3(stmnt->op.size * 2, stmnt->op.size, true);
+               return;
+            }
+
             if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
             {
                moveArgStk_dst(stmnt->args[0], stmnt->op.size * 2);
@@ -90,6 +152,14 @@ namespace GDCC
                trStmntStk3(stmnt->op.size * 2, stmnt->op.size, true);
                func->setLocalTmp(stmnt->op.size * 2);
             }
+         }
+
+         //
+         // Info::trStmnt_DiXU_W
+         //
+         void Info::trStmnt_DiXU_W()
+         {
+            trStmntStk3(stmnt->op.size * 2, stmnt->op.size, true);
          }
       }
    }

@@ -16,9 +16,9 @@
 ;;
 
 ;;
-;; ___GDCC__AddF_W
+;; ___GDCC__AddF_W1
 ;;
-Function "___GDCC__AddF_W" \
+Function "___GDCC__AddF_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
@@ -228,7 +228,7 @@ Function "___GDCC__AddF_W2" \
    AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
    Casm   0, Lit(84), Lit(0x7FF00000), Lit(:"$lemax") ; Jcnd_Lit
    Casm   0, Lit(84), Lit(0x00000000), Lit(:"$lemin") ; Jcnd_Lit
-   ShRI_W 0, LocReg(Lit(4)), Stk(), Lit(20)
+   ShRI_W 1, LocReg(Lit(4)), Stk(), Lit(20)
 
    ; Does r have special exponent?
    AndU_W 1, Stk(), LocReg(Lit(3)), Lit(0x7FF00000)

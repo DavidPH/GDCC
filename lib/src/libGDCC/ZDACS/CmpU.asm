@@ -71,9 +71,9 @@ Function "___GDCC__CmpU_EQ_W3" \
 ;; return cmp((int)l, (int)r)
 
 ;;
-;; ___GDCC__CmpU_GE_W
+;; ___GDCC__CmpU_GE_W1
 ;;
-Function "___GDCC__CmpU_GE_W" \
+Function "___GDCC__CmpU_GE_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
@@ -161,9 +161,9 @@ Function "___GDCC__CmpU_GE_W3" \
 }
 
 ;;
-;; ___GDCC__CmpU_GT_W
+;; ___GDCC__CmpU_GT_W1
 ;;
-Function "___GDCC__CmpU_GT_W" \
+Function "___GDCC__CmpU_GT_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
@@ -251,9 +251,9 @@ Function "___GDCC__CmpU_GT_W3" \
 }
 
 ;;
-;; ___GDCC__CmpU_LE_W
+;; ___GDCC__CmpU_LE_W1
 ;;
-Function "___GDCC__CmpU_LE_W" \
+Function "___GDCC__CmpU_LE_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
@@ -341,9 +341,9 @@ Function "___GDCC__CmpU_LE_W3" \
 }
 
 ;;
-;; ___GDCC__CmpU_LT_W
+;; ___GDCC__CmpU_LT_W1
 ;;
-Function "___GDCC__CmpU_LT_W" \
+Function "___GDCC__CmpU_LT_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \

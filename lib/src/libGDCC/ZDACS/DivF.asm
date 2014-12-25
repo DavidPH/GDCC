@@ -16,9 +16,9 @@
 ;;
 
 ;;
-;; ___GDCC__DivF_W
+;; ___GDCC__DivF_W1
 ;;
-Function "___GDCC__DivF_W" \
+Function "___GDCC__DivF_W1" \
    alloc    = 1 \
    ctype    = StkCall \
    defin    = 1 \
