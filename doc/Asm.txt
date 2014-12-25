@@ -434,7 +434,8 @@ Statements
 
 Syntax:
   statement:
-    statement-label-list(opt) statement-name argument-list(opt) new-line
+    statement-label-list(opt) statement-name expression argument-list(opt)
+      new-line
     statement-label-list(opt) ! identifier argument-list(opt) new-line
 
   statement-label-list:
@@ -444,7 +445,9 @@ Syntax:
     , argument argument-list(opt)
 
 Semantics:
-  A statement is the IR's instruction.
+  A statement is the IR's instruction. The expression immediately following the
+  statement name is an integer representing the operation size. How each
+  instruction uses the operation size is documented below.
 
   Statements starting with a ! are a macro invocation.
 
@@ -525,7 +528,7 @@ Nop
 -----------------------------------------------------------
 
 Arguments:
-  Nop
+  Nop 0
 
 Semantics:
   Does nothing.
@@ -537,9 +540,9 @@ AddU_W (Add Unsigned Integer Word)
 -----------------------------------------------------------
 
 Arguments:
-  AddF_W, desintation[1] dst, source[1] lop, source[1] rop
-  AddI_W, desintation[1] dst, source[1] lop, source[1] rop
-  AddU_W, desintation[1] dst, source[1] lop, source[1] rop
+  AddF_W N, desintation[N] dst, source[N] lop, source[N] rop
+  AddI_W N, desintation[N] dst, source[N] lop, source[N] rop
+  AddU_W N, desintation[N] dst, source[N] lop, source[N] rop
 
 Semantics:
   Adds rop to lop and stores the result in dst.
@@ -549,7 +552,7 @@ AndU_W (Bitwise And Unsigned Integer Word)
 -----------------------------------------------------------
 
 Arguments:
-  AndU_W, desination[1] dst, source[1] lop, source[1] rop
+  AndU_W N, desination[N] dst, source[N] lop, source[N] rop
 
 Semantics:
   Bitwise ands lop with rop and stores the result in dst.
@@ -559,7 +562,7 @@ Call
 -----------------------------------------------------------
 
 Arguments:
-  Call, source[1] addr, literal ret, ...
+  Call ret, source[1] addr, ...
 
 Semantics:
   Calls a function at addr which returns ret words. Each additional argument is
@@ -573,11 +576,11 @@ Casm (Call Assembly)
 -----------------------------------------------------------
 
 Arguments:
-  Casm, source[1] addr, ...
+  Casm ret, source[1] addr, ...
 
 Semantics:
-  Calls a function at addr. Each additional argument is a word to pass to the
-  called function.
+  Calls a function at addr which returns ret words. Each additional argument is
+  a word to pass to the called function.
 
   This instruction is meant to map to functions implemented as an instruction.
 
@@ -591,9 +594,9 @@ CmpU_*_W (Compare Unsigned Integer Word)
 -----------------------------------------------------------
 
 Arguments:
-  CmpF_*_W, destination[1] dst, source[1] lop, source[1] rop
-  CmpI_*_W, destination[1] dst, source[1] lop, source[1] rop
-  CmpU_*_W, destination[1] dst, source[1] lop, source[1] rop
+  CmpF_*_W N, destination[1] dst, source[N] lop, source[N] rop
+  CmpI_*_W N, destination[1] dst, source[N] lop, source[N] rop
+  CmpU_*_W N, destination[1] dst, source[N] lop, source[N] rop
 
 Semantics:
   EQ, GE, GT, LE, LT, NE variants compare if lop is equal, greater or equal,
@@ -605,7 +608,7 @@ Cnat (Call Native)
 -----------------------------------------------------------
 
 Arguments:
-  Cnat, source[1] addr, literal ret, ...
+  Cnat ret, source[1] addr, ...
 
 Semantics:
   Calls a function at addr which returns ret words. Each additional argument is
@@ -619,7 +622,7 @@ Copy_W (Copy Word)
 -----------------------------------------------------------
 
 Arguments:
-  Copy_W, destination[1] dst, source[1] src
+  Copy_W N, destination[N] dst, source[N] src
 
 Semantics:
   Copies a word from src to dst.
@@ -632,10 +635,10 @@ Cscr_SS (Call Script, String Synchronous)
 -----------------------------------------------------------
 
 Arguments:
-  Cscr_IA, source[1] addr, literal ret, ...
-  Cscr_IS, source[1] addr, literal ret, ...
-  Cscr_SA, source[1] addr, literal ret, ...
-  Cscr_SS, source[1] addr, literal ret, ...
+  Cscr_IA ret, source[1] addr, ...
+  Cscr_IS ret, source[1] addr, duplicate[ret+1] data, ...
+  Cscr_SA ret, source[1] addr, ...
+  Cscr_SS ret, source[1] addr, duplicate[ret+1] data, ...
 
 Semantics:
   Calls a function at addr which returns ret words. Each additional argument is
@@ -644,12 +647,14 @@ Semantics:
   This instruction is meant to map to the ZDACS script dispatch method and may
   not be meaningful for other targets.
 
+  The data argument is used for return data and should have type Loc.
+
 -----------------------------------------------------------
 Cspe (Call Special)
 -----------------------------------------------------------
 
 Arguments:
-  Cspe, source[1] addr, literal ret, ...
+  Cspe ret, source[1] addr, ...
 
 Semantics:
   Calls a function at addr which returns ret words. Each additional argument is
@@ -664,8 +669,8 @@ DiXU_W (Expanding Divide Unsigned Integer Word)
 -----------------------------------------------------------
 
 Argument:
-  DiXI_W, destination[2] dst, source[1] lop, source[1] rop
-  DiXU_W, destination[2] dst, source[1] lop, source[1] rop
+  DiXI_W N, destination[N*2] dst, source[N] lop, source[N] rop
+  DiXU_W N, destination[N*2] dst, source[N] lop, source[N] rop
 
 Semantics:
   Divides lop by rop and stores the quotient and remainder in dst.
@@ -677,9 +682,9 @@ DivU_W (Divide Unsigned Integer Word)
 -----------------------------------------------------------
 
 Argument:
-  DivF_W, destination[1] dst, source[1] lop, source[1] rop
-  DivI_W, destination[1] dst, source[1] lop, source[1] rop
-  DivU_W, destination[1] dst, source[1] lop, source[1] rop
+  DivF_W N, destination[N] dst, source[N] lop, source[N] rop
+  DivI_W N, destination[N] dst, source[N] lop, source[N] rop
+  DivU_W N, destination[N] dst, source[N] lop, source[N] rop
 
 Semantics:
   Divides lop by rop and stores the quotient in dst.
@@ -689,7 +694,7 @@ InvU_W (Bitwise Invert Unsigned Integer Word
 -----------------------------------------------------------
 
 Argument:
-  InvU_W, destination[1] dst, source[1] src
+  InvU_W N, destination[N] dst, source[N] src
 
 Semantics:
   Bitwise inverts src and stores the result in dst.
@@ -700,8 +705,8 @@ Jcnd_Tru (Conditional Jump, True)
 -----------------------------------------------------------
 
 Arguments:
-  Jcnd_Nil, source[1] cnd, source[1] addr
-  Jcnd_Tru, source[1] cnd, source[1] addr
+  Jcnd_Nil N, source[N] cnd, source[1] addr
+  Jcnd_Tru N, source[N] cnd, source[1] addr
 
 Semantics:
   Jcnd_Nil checks if cnd is zero.
@@ -715,7 +720,7 @@ Jump
 -----------------------------------------------------------
 
 Arguments:
-  Jump, source[1] addr
+  Jump 0, source[1] addr
 
 Semantics:
   Branches execution to addr.
@@ -726,8 +731,8 @@ ModU_W (Modulus Unsigned Integer Word)
 -----------------------------------------------------------
 
 Argument:
-  ModI_W, destination[1] dst, source[1] lop, source[1] rop
-  ModU_W, destination[1] dst, source[1] lop, source[1] rop
+  ModI_W N, destination[N] dst, source[N] lop, source[N] rop
+  ModU_W N, destination[N] dst, source[N] lop, source[N] rop
 
 Semantics:
   Divides lop by rop and stores the remainder in dst.
@@ -737,7 +742,7 @@ Move_W (Move Word)
 -----------------------------------------------------------
 
 Arguments:
-  Move_W, destination[1] dst, source[1] src
+  Move_W N, destination[N] dst, source[N] src
 
 Semantics:
   Moves a word from src to dst.
@@ -747,7 +752,7 @@ MuXU_W (Expanding Multiply Unsigned Integer Word)
 -----------------------------------------------------------
 
 Arguments:
-  MuXU_W, destination[2] dst, source[1] lop, source[1] rop
+  MuXU_W N, destination[N*2] dst, source[N] lop, source[N] rop
 
 Semantics:
   Multiplies lop by rop and stores the full result in dst.
@@ -759,9 +764,9 @@ MulU_W (Multiply Unsigned Integer Word)
 -----------------------------------------------------------
 
 Arguments:
-  MulF_W, destination[1] dst, source[1] lop, source[1] rop
-  MulI_W, destination[1] dst, source[1] lop, source[1] rop
-  MulU_W, destination[1] dst, source[1] lop, source[1] rop
+  MulF_W N, destination[N] dst, source[N] lop, source[N] rop
+  MulI_W N, destination[N] dst, source[N] lop, source[N] rop
+  MulU_W N, destination[N] dst, source[N] lop, source[N] rop
 
 Semantics:
   Multiplies lop by rop and stores the truncated result in dst.
@@ -772,8 +777,8 @@ NegI_W (Negate Signed Integer Word)
 -----------------------------------------------------------
 
 Arguments:
-  NegF_W, destination[1] dst, source[1] src
-  NegI_W, destination[1] dst, source[1] src
+  NegF_W N, destination[N] dst, source[N] src
+  NegI_W N, destination[N] dst, source[N] src
 
 Semantics:
   Negates src and stores the result in dst.
@@ -783,7 +788,7 @@ NotU_W (Logical Invert Unsigned Integer Word)
 -----------------------------------------------------------
 
 Arguments:
-  NotU_W, destination[1] dst, source[1] src
+  NotU_W N, destination[1] dst, source[N] src
 
 Semantics:
   Logically inverts src and stores the result in dst.
@@ -793,7 +798,7 @@ OrIU_W (Bitwise Inclusive Or Unsigned Integer Word)
 -----------------------------------------------------------
 
 Arguments:
-  OrIU_W, destination[1] dst, source[1] lop, source[1] rop
+  OrIU_W N, destination[N] dst, source[N] lop, source[N] rop
 
 Semantics:
   Bitwise inclusive ors lop with rop and stores the result in dst.
@@ -803,7 +808,7 @@ OrXU_W (Bitwise Exclusive Or Unsigned Integer Word)
 -----------------------------------------------------------
 
 Arguments:
-  OrXU_W, destination[1] dst, source[1] lop, source[1] rop
+  OrXU_W N, destination[N] dst, source[N] lop, source[N] rop
 
 Semantics:
   Bitwise exclusive ors lop with rop and stores the result in dst.
@@ -813,7 +818,7 @@ Plsa (Pointer, Local Stack Allocate)
 -----------------------------------------------------------
 
 Arguments:
-  Plsa, source[1] size
+  Plsa 0, source[1] size
 
 Semantics:
   Allocates the local stack.
@@ -823,7 +828,7 @@ Plsf (Pointer, Local Stack Free)
 -----------------------------------------------------------
 
 Arguments:
-  Plsf
+  Plsf 0
 
 Semantics:
   Frees the local stack.
@@ -833,7 +838,7 @@ Pltn (Pointer, Local To Near)
 -----------------------------------------------------------
 
 Arguments:
-  Pltn, destination[1] dst, source[1] src
+  Pltn 0, destination[1] dst, source[1] src
 
 Semantics:
   Converts from a Loc pointer in src to a LocArs pointer in dst.
@@ -843,10 +848,12 @@ Retn (Return)
 -----------------------------------------------------------
 
 Arguments:
-  Retn, ...
+  Retn 0
+  Retn N, source[N] src
 
 Semantics:
-  Returns control to the caller. Arguments are words to return to the caller.
+  Returns control to the caller with the data in src. If N is zero, no data is
+  returned and src may be omitted.
 
 -----------------------------------------------------------
 ShLF_W (Shift Left Signed Float Word)
@@ -854,8 +861,8 @@ ShLU_W (Shift Left Unsigned Integer Word)
 -----------------------------------------------------------
 
 Arguments:
-  ShLF_W, destination[1] dst, source[1] lop, source[1] rop
-  ShLU_W, destination[1] dst, source[1] lop, source[1] rop
+  ShLF_W N, destination[N] dst, source[N] lop, source[1] rop
+  ShLU_W N, destination[N] dst, source[N] lop, source[1] rop
 
 Semantics:
   Left-shifts lop by rop and stores the result in dst.
@@ -869,9 +876,9 @@ ShRU_W (Shift Right Unsigned Integer Word)
 -----------------------------------------------------------
 
 Arguments:
-  ShRF_W, destination[1] dst, source[1] lop, source[1] rop
-  ShRI_W, destination[1] dst, source[1] lop, source[1] rop
-  ShRU_W, destination[1] dst, source[1] lop, source[1] rop
+  ShRF_W N, destination[N] dst, source[N] lop, source[1] rop
+  ShRI_W N, destination[N] dst, source[N] lop, source[1] rop
+  ShRU_W N, destination[N] dst, source[N] lop, source[1] rop
 
 Semantics:
   Right-shifts lop by rop and stores the result in dst.
@@ -887,9 +894,9 @@ SubU_W (Subtract Unsigned Integer Word)
 -----------------------------------------------------------
 
 Arguments:
-  SubF_W, desintation[1] dst, source[1] lop, source[1] rop
-  SubI_W, desintation[1] dst, source[1] lop, source[1] rop
-  SubU_W, desintation[1] dst, source[1] lop, source[1] rop
+  SubF_W N, desintation[N] dst, source[N] lop, source[N] rop
+  SubI_W N, desintation[N] dst, source[N] lop, source[N] rop
+  SubU_W N, desintation[N] dst, source[N] lop, source[N] rop
 
 Semantics:
   Subtracts rop from lop and stores the result in dst.
@@ -899,7 +906,7 @@ Swap_W (Swap Word)
 -----------------------------------------------------------
 
 Arguments:
-  Swap_W, duplicate[1] lop, duplicate[1] rop
+  Swap_W N, duplicate[N] lop, duplicate[N] rop
 
 Semantics:
   Swaps lop with rop.
@@ -1453,7 +1460,8 @@ Grammar
     statement statement-list(opt)
 
   statement:
-    statement-label-list(opt) statement-name argument-list(opt) new-line
+    statement-label-list(opt) statement-name expression argument-list(opt)
+      new-line
     statement-label-list(opt) ! identifier argument-list(opt) new-line
 
   statement-label-list:
