@@ -254,13 +254,13 @@ Function "___GDCC__DivF_W2" \
    ShLU_W 1, Stk(), LocReg(Lit(5)), Lit(20)
    OrIU_W 1, Stk(), Stk(), LocReg(Lit(4))
    OrIU_W 1, Stk(), Stk(), LocReg(Lit(7))
-   Retn   1, Stk(), Stk()
+   Retn   2, Stk()
 
 :"$nan"
    ; Return NaN.
    Move_W 1, Stk(), Lit(0xFFFFFFFF)
    OrIU_W 1, Stk(), Lit(0x7FFFFFFF), LocReg(Lit(4))
-   Retn   1, Stk(), Stk()
+   Retn   2, Stk()
 
 :"$lnan"
    ; l is NaN. Therefore, result is l.
@@ -270,13 +270,13 @@ Function "___GDCC__DivF_W2" \
    ; l is INF, r is normal. Therefore, result is l.
    Move_W 1, Stk(), LocReg(Lit(0))
    OrIU_W 1, Stk(), LocReg(Lit(1)), LocReg(Lit(4))
-   Retn   1, Stk(), Stk()
+   Retn   2, Stk()
 
 :"$rnan"
    ; r is NaN. Therefore, result is r.
    Move_W 1, Stk(), LocReg(Lit(2))
    OrIU_W 1, Stk(), LocReg(Lit(3)), LocReg(Lit(4))
-   Retn   1, Stk(), Stk()
+   Retn   2, Stk()
 
 :"$r0"
    ; r is 0.
@@ -289,7 +289,7 @@ Function "___GDCC__DivF_W2" \
 :"$inf"
    Move_W 1, Stk(), Lit(0x00000000)
    OrIU_W 1, Stk(), Lit(0x7FF00000), LocReg(Lit(4))
-   Retn   1, Stk(), Stk()
+   Retn   2, Stk()
 
 :"$rinf"
    ; r is INF.
@@ -302,7 +302,7 @@ Function "___GDCC__DivF_W2" \
 :"$0"
    Move_W 1, Stk(), Lit(0x00000000)
    Move_W 1, Stk(), LocReg(Lit(4))
-   Retn   1, Stk(), Stk()
+   Retn   2, Stk()
 }
 
 ;; EOF

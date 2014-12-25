@@ -355,7 +355,7 @@ Function "___GDCC__ShRI_W2" \
    ; ret1 = l1 < 0 ? -1 : 0
    ShRI_W 1, Stk(), LocReg(Lit(1)), Lit(31)
 
-   Retn   2, Stk(), Stk()
+   Retn   2, Stk()
 
 :"$0"
    Move_W 1, Stk(), LocReg(Lit(0))

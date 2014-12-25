@@ -364,19 +364,19 @@ Function "___GDCC__AddF_W2" \
    ; r has min exponent. Therefore, r == 0 and the result is l.
 :"$remin"
    Move_W 2, Stk(), LocReg(Lit(0))
-   Retn   1, Stk(), Stk()
+   Retn   2, Stk()
 
    ; r has max exponent. It is either INF or NaN. Either way, return it.
 :"$remax"
    ; l has min exponent. Therefore, l == 0 and the result is r.
 :"$lemin"
    Move_W 2, Stk(), LocReg(Lit(2))
-   Retn   1, Stk(), Stk()
+   Retn   2, Stk()
 
 :"$infinity"
    ; Return infinity.
    Move_W 2, Stk(), Lit(0x7FF0000000000000_64.0)
-   Retn   1, Stk(), Stk()
+   Retn   2, Stk()
 }
 
 ;; EOF
