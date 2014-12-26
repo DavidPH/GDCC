@@ -84,14 +84,14 @@ namespace GDCC
       }
 
       //
-      // Statement_Multi::v_isReturn
+      // Statement_Multi::v_isNoReturn
       //
-      bool Statement_Multi::v_isReturn() const
+      bool Statement_Multi::v_isNoReturn() const
       {
          for(auto const &stmnt : stmnts)
-            if(stmnt->isReturn()) return true;
+            if(!stmnt->isNoReturn()) return false;
 
-         return false;
+         return true;
       }
 
       //

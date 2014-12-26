@@ -67,7 +67,7 @@ namespace GDCC
          virtual bool v_isBranch() const {return true;}
          virtual bool v_isEffect() const;
          virtual bool v_isNoAuto() const;
-         virtual bool v_isReturn() const {return true;}
+         virtual bool v_isNoReturn() const {return false;}
       };
 
       //
@@ -108,7 +108,7 @@ namespace GDCC
          virtual bool v_isBranch() const {return true;}
          virtual bool v_isEffect() const {return false;}
          virtual bool v_isNoAuto() const {return true;}
-         virtual bool v_isReturn() const {return true;}
+         virtual bool v_isNoReturn() const {return false;}
       };
    }
 }

@@ -145,11 +145,11 @@ namespace GDCC
       }
 
       //
-      // Statement_Loop::v_isReturn
+      // Statement_Loop::v_isNoReturn
       //
-      bool Statement_Loop::v_isReturn() const
+      bool Statement_Loop::v_isNoReturn() const
       {
-         return body->isReturn();
+         return body->isNoReturn();
       }
 
       //

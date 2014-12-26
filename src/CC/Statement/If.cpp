@@ -145,11 +145,11 @@ namespace GDCC
       }
 
       //
-      // Statement_If::v_isReturn
+      // Statement_If::v_isNoReturn
       //
-      bool Statement_If::v_isReturn() const
+      bool Statement_If::v_isNoReturn() const
       {
-         return bodyT->isReturn() || (bodyF && bodyF->isReturn());
+         return bodyT->isNoReturn() && (!bodyF || bodyF->isNoReturn());
       }
 
       //

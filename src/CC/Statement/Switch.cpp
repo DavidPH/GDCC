@@ -272,11 +272,11 @@ namespace GDCC
       }
 
       //
-      // Statement_Switch::v_isReturn
+      // Statement_Switch::v_isNoReturn
       //
-      bool Statement_Switch::v_isReturn() const
+      bool Statement_Switch::v_isNoReturn() const
       {
-         return body->isReturn();
+         return body->isNoReturn();
       }
 
       //

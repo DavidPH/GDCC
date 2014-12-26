@@ -72,9 +72,9 @@ namespace GDCC
 
          virtual bool v_isBranch() const;
          virtual bool v_isEffect() const;
-         virtual bool v_isLabel()  const;
+         virtual bool v_isLabel() const;
          virtual bool v_isNoAuto() const;
-         virtual bool v_isReturn() const;
+         virtual bool v_isNoReturn() const;
       };
    }
 }
