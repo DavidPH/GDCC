@@ -38,6 +38,14 @@ namespace GDCC
       }
 
       //
+      // Type_Bool::getRankC
+      //
+      AST::TypeRankC Type_Bool::getRankC() const
+      {
+         return AST::TypeRankC::Bool;
+      }
+
+      //
       // Type_BoolSoft::getSizeAlign
       //
       Core::FastU Type_BoolSoft::getSizeAlign() const

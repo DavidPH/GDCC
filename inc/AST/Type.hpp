@@ -102,6 +102,7 @@ namespace GDCC
       enum class TypeRankC
       {
          None,
+         Bool,
          IntegHH,
          IntegH,
          Integ,
