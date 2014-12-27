@@ -39,6 +39,7 @@ namespace GDCC
    {
       extern Core::Warning WarnDeprecated;
       extern Core::Warning WarnReturnType;
+      extern Core::Warning WarnUnusedInit;
    }
 }
 

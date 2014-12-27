@@ -119,7 +119,7 @@ namespace GDCC
 
       protected:
          Init(AST::Type const *type_, Core::FastU offset_, Core::Origin pos_) :
-            pos{pos_}, type{type_}, offset{offset_} {}
+            pos{pos_}, type{type_}, offset{offset_}, parsed{false} {}
 
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst, bool skipZero) const = 0;
@@ -142,6 +142,8 @@ namespace GDCC
             Scope &scope);
 
          virtual void v_parseString(Core::Token const &tok);
+
+         bool parsed : 1;
       };
 
       //

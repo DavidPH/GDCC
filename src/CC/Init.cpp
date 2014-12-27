@@ -20,6 +20,7 @@
 
 #include "AST/Arg.hpp"
 #include "AST/Type/Array.hpp"
+#include "AST/Warning.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
@@ -159,6 +160,11 @@ namespace GDCC
       //
       void Init::parse(InitRaw const &raw, ParserCtx const &ctx, Scope &scope)
       {
+         // If already parsed, warn about overriding initializer.
+         if(parsed)
+            AST::WarnUnusedInit(raw.valueTok.pos,
+               "overriding initializer from ", pos);
+
          pos = raw.valueTok.pos;
 
          if(raw.valueExp || raw.valueTok.str)
@@ -168,6 +174,8 @@ namespace GDCC
 
          if(value)
             value = ExpPromo_Assign(type, value, value->pos);
+
+         parsed = true;
       }
 
       //
@@ -178,6 +186,11 @@ namespace GDCC
       {
          auto const &rawRef = raw.valueSub[rawIdx];
 
+         // If already parsed, warn about overriding initializer.
+         if(parsed)
+            AST::WarnUnusedInit(rawRef.valueTok.pos,
+               "overriding initializer from ", pos);
+
          pos = rawRef.valueTok.pos;
 
          if(rawRef.valueExp || rawRef.valueTok.str)
@@ -187,6 +200,8 @@ namespace GDCC
 
          if(value)
             value = ExpPromo_Assign(type, value, value->pos);
+
+         parsed = true;
 
          return rawIdx;
       }
@@ -427,7 +442,10 @@ namespace GDCC
             else if((sub = getSub(index)))
                rawItr = rawPtr + sub->parse(raw, rawItr - rawPtr, ctx, scope);
             else
+            {
+               AST::WarnUnusedInit(rawItr->valueTok.pos, "excess initializer");
                ++rawItr;
+            }
          }
       }
 
