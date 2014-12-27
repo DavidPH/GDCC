@@ -22,6 +22,20 @@
 
 
 //----------------------------------------------------------------------------|
+// Global Variables                                                           |
+//
+
+namespace GDCC
+{
+   namespace IR
+   {
+      Value_Fixed const Value_Fixed::Bool0{0, {1, 0, 0, 0}};
+      Value_Fixed const Value_Fixed::Bool1{1, {1, 0, 0, 0}};
+   }
+}
+
+
+//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 

@@ -38,6 +38,8 @@ namespace GDCC
          virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 
          virtual IRExpCRef v_getIRExp() const;
+
+         virtual bool v_isIRExp() const;
       };
 
       //
@@ -54,6 +56,8 @@ namespace GDCC
          virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 
          virtual IRExpCRef v_getIRExp() const;
+
+         virtual bool v_isIRExp() const;
       };
    }
 }

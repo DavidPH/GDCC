@@ -129,6 +129,10 @@ namespace GDCC
 
          Type_Fixed  vtype;
          Core::Integ value;
+
+
+         static Value_Fixed const Bool0;
+         static Value_Fixed const Bool1;
       };
 
       //
