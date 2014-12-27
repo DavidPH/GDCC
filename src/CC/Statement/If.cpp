@@ -71,31 +71,49 @@ namespace GDCC
       //
       void Statement_If::v_genStmnt(AST::GenStmntCtx const &ctx) const
       {
-         Core::String labelT{Core::STRNULL};
+         bool needT = !cond->isZero() || bodyT->isLabel();
+         bool needF = bodyF && (!cond->isNonzero() || bodyF->isLabel());
+
+         if(!needT && !needF)
+         {
+            cond->genStmnt(ctx);
+            return;
+         }
+
+         IR::Glyph labelT{ctx.prog, nullptr};
 
          // Generate condition.
          if(cond->isNonzero())
          {
             cond->genStmnt(ctx);
          }
+         else if(cond->isZero())
+         {
+            cond->genStmnt(ctx);
+
+            if(needT)
+               ctx.block.addStatementArgs({IR::Code::Jump, 0},
+                  labelT = {ctx.prog, ctx.fn->genLabel()});
+         }
          else
          {
             cond->genStmntStk(ctx);
 
             ctx.block.addStatementArgs({IR::Code::Jcnd_Nil, 1}, IR::Arg_Stk(),
-               IR::Glyph(ctx.prog, labelT = ctx.fn->genLabel()));
+               labelT = {ctx.prog, ctx.fn->genLabel()});
          }
 
          // Generate true body.
-         bodyT->genStmnt(ctx);
+         if(needT)
+            bodyT->genStmnt(ctx);
 
          // Generate false body.
-         if(bodyF)
+         if(needF)
          {
             // Only branch if there is anything to branch around.
             if(!bodyF->isTrivial())
             {
-               IR::Glyph labelF = {&ctx.prog, ctx.fn->genLabel()};
+               IR::Glyph labelF = {ctx.prog, ctx.fn->genLabel()};
                ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelF);
 
                if(labelT) ctx.block.addLabel(labelT);
