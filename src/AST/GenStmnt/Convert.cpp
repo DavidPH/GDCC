@@ -205,6 +205,11 @@ namespace GDCC
 {
    namespace AST
    {
+      void GenStmnt_ConvertBoolFix(Exp const *exp, Type const *dstT,
+         Type const *srcT, GenStmntCtx const &ctx);
+      void GenStmnt_ConvertBoolFlt(Exp const *exp, Type const *dstT,
+         Type const *srcT, GenStmntCtx const &ctx);
+
       //
       // GenStmnt_ConvertArith
       //
@@ -217,6 +222,10 @@ namespace GDCC
          // Fixed-point source.
          if(srcT->isCTypeFixed() || srcT->isCTypeInteg())
          {
+            // Boolean output.
+            if(dstT->isTypeBoolean())
+               return GenStmnt_ConvertBoolFix(exp, dstT, srcT, ctx);
+
             // Fixed-point output.
             if(dstT->isCTypeFixed() || dstT->isCTypeInteg())
                return GenStmnt_ConvertFixed(exp, dstT, srcT, ctx);
@@ -229,6 +238,10 @@ namespace GDCC
          // Floating-point source
          if(srcT->isCTypeRealFlt())
          {
+            // Boolean output.
+            if(dstT->isTypeBoolean())
+               return GenStmnt_ConvertBoolFlt(exp, dstT, srcT, ctx);
+
             // Fixed-point output.
             if(dstT->isCTypeFixed() || dstT->isCTypeInteg())
                return GenStmnt_ConvertFixFlt(exp, dstT, srcT, ctx);
@@ -239,6 +252,32 @@ namespace GDCC
          }
 
          throw Core::ExceptStr(exp->pos, "convert arith stub");
+      }
+
+      //
+      // GenStmnt_ConvertBoolFix
+      //
+      void GenStmnt_ConvertBoolFix(Exp const *, Type const *,
+         Type const *srcT, GenStmntCtx const &ctx)
+      {
+         ctx.block.addStatementArgs({IR::Code::NotU_W, srcT->getSizeWords()},
+            IR::Arg_Stk(), IR::Arg_Stk());
+         ctx.block.addStatementArgs({IR::Code::NotU_W, 1},
+            IR::Arg_Stk(), IR::Arg_Stk());
+      }
+
+      //
+      // GenStmnt_ConvertBoolFlt
+      //
+      void GenStmnt_ConvertBoolFlt(Exp const *, Type const *,
+         Type const *srcT, GenStmntCtx const &ctx)
+      {
+         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
+            IR::Arg_Stk(), IR::Arg_Stk(), ~GetMaskSig(srcT));
+         ctx.block.addStatementArgs({IR::Code::NotU_W, srcT->getSizeWords()},
+            IR::Arg_Stk(), IR::Arg_Stk());
+         ctx.block.addStatementArgs({IR::Code::NotU_W, 1},
+            IR::Arg_Stk(), IR::Arg_Stk());
       }
 
       //
