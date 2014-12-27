@@ -69,7 +69,7 @@ namespace GDCC
 
                // Count instructions needed for initializers.
                for(auto &itr : prog->rangeSpaceGblArs()) genInitiSpace(itr);
-               genInitiSpace(prog->getSpaceLocArs());
+               genInitiSpace(prog->getSpaceSta());
             }
 
             // Save index for initializer end.

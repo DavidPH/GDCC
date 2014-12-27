@@ -64,9 +64,9 @@ struct MemBlock;
 
 typedef struct MemBlock MemBlock;
 
-typedef MemBlock __loc_ars *MemBlockPtr;
-typedef char     __loc_ars *CharPtr;
-typedef void     __loc_ars *VoidPtr;
+typedef MemBlock __sta *MemBlockPtr;
+typedef char     __sta *CharPtr;
+typedef void     __sta *VoidPtr;
 
 //
 // MemBlock

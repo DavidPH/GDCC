@@ -91,8 +91,8 @@ namespace GDCC
 
             switch(obj->type->getQualAddr().base)
             {
-            case IR::AddrBase::Loc:
-               MoveParam<IR::Arg_Loc>(ctx, paramIdx, objValue, objWords);
+            case IR::AddrBase::Aut:
+               MoveParam<IR::Arg_Aut>(ctx, paramIdx, objValue, objWords);
                break;
 
             case IR::AddrBase::LocReg:

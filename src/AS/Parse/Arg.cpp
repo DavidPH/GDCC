@@ -132,14 +132,14 @@ namespace GDCC
          case Core::STR_Nul:    return GetArg0<IR::Arg_Nul   >(ctx);
          case Core::STR_Stk:    return GetArg0<IR::Arg_Stk   >(ctx);
 
+         case Core::STR_Aut:    return GetArg2<IR::Arg_Aut   >(ctx);
          case Core::STR_Far:    return GetArg2<IR::Arg_Far   >(ctx);
          case Core::STR_GblArs: return GetArg2<IR::Arg_GblArs>(ctx);
          case Core::STR_GblReg: return GetArg2<IR::Arg_GblReg>(ctx);
-         case Core::STR_Loc:    return GetArg2<IR::Arg_Loc   >(ctx);
-         case Core::STR_LocArs: return GetArg2<IR::Arg_LocArs>(ctx);
          case Core::STR_LocReg: return GetArg2<IR::Arg_LocReg>(ctx);
          case Core::STR_MapArs: return GetArg2<IR::Arg_MapArs>(ctx);
          case Core::STR_MapReg: return GetArg2<IR::Arg_MapReg>(ctx);
+         case Core::STR_Sta:    return GetArg2<IR::Arg_Sta   >(ctx);
          case Core::STR_StrArs: return GetArg2<IR::Arg_StrArs>(ctx);
          case Core::STR_Vaa:    return GetArg2<IR::Arg_Vaa   >(ctx);
          case Core::STR_WldArs: return GetArg2<IR::Arg_WldArs>(ctx);

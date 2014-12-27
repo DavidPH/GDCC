@@ -308,7 +308,7 @@ namespace GDCC
          if(!(scopeLocal = dynamic_cast<Scope_Local *>(&scope)))
             throw Core::ExceptStr(pos, "invalid scope for va_start");
 
-         auto base = AST::Type::Void->getTypeQual({{IR::AddrBase::Loc, Core::STR_}});
+         auto base = AST::Type::Void->getTypeQual({{IR::AddrBase::Aut, Core::STR_}});
          auto type = base->getTypePointer();
 
          IR::Value_Point val;

@@ -38,12 +38,12 @@ namespace GDCC
             case IR::ArgBase::Nul: break;
             case IR::ArgBase::Stk: break;
 
-            case IR::ArgBase::LocArs:
-               CheckArg(*arg.aLocArs.idx, pos);
-               break;
-
             case IR::ArgBase::LocReg:
                CheckArgB(*arg.aLocReg.idx, IR::ArgBase::Lit, pos);
+               break;
+
+            case IR::ArgBase::Sta:
+               CheckArg(*arg.aSta.idx, pos);
                break;
 
             default:

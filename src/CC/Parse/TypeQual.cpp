@@ -82,14 +82,14 @@ namespace GDCC
 
             // Builtin address space names.
          case Core::STR___adr_cpy: return true;
+         case Core::STR___aut:     return true;
          case Core::STR___far:     return true;
          case Core::STR___gbl_ars: return true;
          case Core::STR___gbl_reg: return true;
-         case Core::STR___loc:     return true;
-         case Core::STR___loc_ars: return true;
          case Core::STR___loc_reg: return true;
          case Core::STR___map_ars: return true;
          case Core::STR___map_reg: return true;
+         case Core::STR___sta:     return true;
          case Core::STR___str_ars: return true;
          case Core::STR___va_addr: return true;
          case Core::STR___wld_ars: return true;
@@ -131,14 +131,14 @@ namespace GDCC
 
             // Builtin address space names.
          case Core::STR___adr_cpy: setSpace(IR::AddrBase::Cpy);    break;
+         case Core::STR___aut:     setSpace(IR::AddrBase::Aut);    break;
          case Core::STR___far:     setSpace(IR::AddrBase::Far);    break;
          case Core::STR___gbl_ars: setSpace(IR::AddrBase::GblArs); break;
          case Core::STR___gbl_reg: setSpace(IR::AddrBase::GblReg); break;
-         case Core::STR___loc:     setSpace(IR::AddrBase::Loc);    break;
-         case Core::STR___loc_ars: setSpace(IR::AddrBase::LocArs); break;
          case Core::STR___loc_reg: setSpace(IR::AddrBase::LocReg); break;
          case Core::STR___map_ars: setSpace(IR::AddrBase::MapArs); break;
          case Core::STR___map_reg: setSpace(IR::AddrBase::MapReg); break;
+         case Core::STR___sta:     setSpace(IR::AddrBase::Sta);    break;
          case Core::STR___str_ars: setSpace(IR::AddrBase::StrArs); break;
          case Core::STR___va_addr: setSpace(IR::AddrBase::Vaa);    break;
          case Core::STR___wld_ars: setSpace(IR::AddrBase::WldArs); break;

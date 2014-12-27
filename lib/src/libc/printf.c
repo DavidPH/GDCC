@@ -340,7 +340,7 @@
 #define WriteStrEnt_s(len) \
    do \
    { \
-      ACS_StrCpyToGlobalCharRange((int)s, __GDCC__LocArs, 0, (len), \
+      ACS_StrCpyToGlobalCharRange((int)s, __GDCC__Sta, 0, (len), \
          fmtStr, (len)); \
       (s) += len; \
    } \
@@ -897,13 +897,13 @@ int __vnprintf(char const *format, va_list arg)
          fmtArg.width -= fmtRet.len;
 
          WriteWidthPre(n, fmtArg.width);
-         ACS_PrintGlobalCharRange((int)fmtRet.begin, __GDCC__LocArs, 0, fmtRet.len);
+         ACS_PrintGlobalCharRange((int)fmtRet.begin, __GDCC__Sta, 0, fmtRet.len);
          WriteWidthPro(n, fmtArg.width);
       }
       else
       {
          ret += fmtRet.len;
-         ACS_PrintGlobalCharRange((int)fmtRet.begin, __GDCC__LocArs, 0, fmtRet.len);
+         ACS_PrintGlobalCharRange((int)fmtRet.begin, __GDCC__Sta, 0, fmtRet.len);
       }
    }
 

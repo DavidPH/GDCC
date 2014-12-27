@@ -44,7 +44,7 @@ namespace GDCC
       public:
          AddrSpace() = default;
          constexpr AddrSpace(AddrBase base_) :
-            base{base_}, name{Core::STRNULL} {}
+            base{base_}, name{Core::STR_} {}
          constexpr AddrSpace(AddrBase base_, Core::String name_) :
             base{base_}, name{name_} {}
 
@@ -54,7 +54,7 @@ namespace GDCC
             {return base != as.base || name != as.name;}
 
          AddrSpace &operator = (AddrBase base_)
-            {base = base_; name = Core::STRNULL; return *this;}
+            {base = base_; name = Core::STR_; return *this;}
 
          AddrBase     base;
          Core::String name;

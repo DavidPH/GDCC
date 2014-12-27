@@ -209,13 +209,13 @@ namespace GDCC
                switch(stmnt->args[1].a)
                {
                case IR::ArgBase::Lit:    break;
-               case IR::ArgBase::LocArs: break;
                case IR::ArgBase::LocReg: break;
+               case IR::ArgBase::Sta:    break;
                default: goto badcase;
                }
                break;
 
-            case IR::ArgBase::LocArs:
+            case IR::ArgBase::LocReg:
                switch(stmnt->args[1].a)
                {
                case IR::ArgBase::Stk: break;
@@ -223,7 +223,7 @@ namespace GDCC
                }
                break;
 
-            case IR::ArgBase::LocReg:
+            case IR::ArgBase::Sta:
                switch(stmnt->args[1].a)
                {
                case IR::ArgBase::Stk: break;

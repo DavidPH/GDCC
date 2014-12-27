@@ -81,7 +81,7 @@ namespace GDCC
          Core::String   labelEnd;
          Core::String   labelTmp;
          IR::Linkage    linka;
-         Core::FastU    localArs;
+         Core::FastU    localAut;
          Core::FastU    localReg;
          Core::String   name;
          Core::FastU    param;

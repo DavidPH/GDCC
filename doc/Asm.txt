@@ -917,6 +917,7 @@ Arguments
 
 Syntax:
   argument:
+    <Aut> ( argument argument-offset(opt) )
     <Cpy> ( expression(opt) )
     <Far> ( argument argument-offset(opt) )
     <GblArr> ( argument , argument argument-offset(opt) )
@@ -924,13 +925,12 @@ Syntax:
     <GblReg> ( argument argument-offset(opt) )
     <Gen> ( argument argument-offset(opt) )
     <Lit> ( expression argument-offset(opt) )
-    <Loc> ( argument argument-offset(opt) )
-    <LocArs> ( argument argument-offset(opt) )
     <LocReg> ( argument argument-offset(opt) )
     <MapArr> ( argument , argument argument-offset(opt) )
     <MapArs> ( argument argument-offset(opt) )
     <MapReg> ( argument argument-offset(opt) )
     <Nul> ( )
+    <Sta> ( argument argument-offset(opt) )
     <Stk> ( )
     <StrArr> ( argument , argument argument-offset(opt) )
     <StrArs> ( argument argument-offset(opt) )
@@ -1535,6 +1535,7 @@ Grammar
     , argument argument-list(opt)
 
   argument:
+    <Aut> ( argument argument-offset(opt) )
     <Cpy> ( expression(opt) )
     <Far> ( argument argument-offset(opt) )
     <GblArr> ( argument , argument argument-offset(opt) )
@@ -1542,13 +1543,12 @@ Grammar
     <GblReg> ( argument argument-offset(opt) )
     <Gen> ( argument argument-offset(opt) )
     <Lit> ( expression argument-offset(opt) )
-    <Loc> ( argument argument-offset(opt) )
-    <LocArs> ( argument argument-offset(opt) )
     <LocReg> ( argument argument-offset(opt) )
     <MapArr> ( argument , argument argument-offset(opt) )
     <MapArs> ( argument argument-offset(opt) )
     <MapReg> ( argument argument-offset(opt) )
     <Nul> ( )
+    <Sta> ( argument argument-offset(opt) )
     <Stk> ( )
     <StrArr> ( argument , argument argument-offset(opt) )
     <StrArs> ( argument argument-offset(opt) )

@@ -88,7 +88,7 @@ namespace GDCC
                // Write instructions needed for initializers.
                for(auto &itr : prog->rangeSpaceGblArs())
                   putInitiSpace(itr, Code::Drop_GblArr);
-               putInitiSpace(prog->getSpaceLocArs(), Code::Drop_GblArr);
+               putInitiSpace(prog->getSpaceSta(), Code::Drop_GblArr);
             }
 
             putCode(Code::Rscr);

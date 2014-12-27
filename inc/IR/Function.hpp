@@ -56,7 +56,7 @@ namespace GDCC
          Core::String glyph;
          Core::String label;
          Linkage      linka;
-         Core::FastU  localArs;
+         Core::FastU  localAut;
          Core::FastU  localReg;
          Core::FastU  localTmp;
          Core::FastU  param;

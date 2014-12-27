@@ -47,7 +47,7 @@ namespace GDCC
 
             static Core::FastU InitScriptNumber;
 
-            static Core::FastU LocArsArray;
+            static Core::FastU StaArray;
 
             static bool UseChunkSTRE;
             static bool UseFakeACS0;

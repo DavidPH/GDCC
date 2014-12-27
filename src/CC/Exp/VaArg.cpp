@@ -38,9 +38,9 @@ namespace GDCC
       //
       AST::Arg Exp_VaArg::v_getArg() const
       {
-         // *--*(type __loc_ars *__adr_cpy *)&exp
+         // *--*(type __sta *__adr_cpy *)&exp
 
-         auto typeArg = type->getTypeQual({{IR::AddrBase::LocArs, Core::STR_}});
+         auto typeArg = type->getTypeQual({{IR::AddrBase::Sta, Core::STR_}});
          auto typeCst = typeArg->getTypePointer()
             ->getTypeQual({exp->getType()->getQualAddr()})->getTypePointer();
 

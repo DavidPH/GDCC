@@ -81,7 +81,7 @@ namespace GDCC
             allocSub.setMax(ctx->allocAuto(alloc));
 
          // Set function's local counts.
-         fn->localArs = allocSub.localArs;
+         fn->localAut = allocSub.localAut;
          fn->localReg = allocSub.localReg;
       }
 

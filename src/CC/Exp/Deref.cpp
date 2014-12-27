@@ -66,7 +66,7 @@ namespace GDCC
       //
       bool Exp_Deref::v_isNoAuto() const
       {
-         return type->getQualAddr().base != IR::AddrBase::Loc;
+         return type->getQualAddr().base != IR::AddrBase::Aut;
       }
 
       //

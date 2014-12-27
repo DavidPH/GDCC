@@ -509,7 +509,7 @@ int __fendl(FILE *stream)
 {
    #if __GDCC_Target__ZDoom__
    ACS_BeginPrint();
-   ACS_PrintGlobalCharRange((int)stream->buf, __GDCC__LocArs, 0, stream->bufPos);
+   ACS_PrintGlobalCharRange((int)stream->buf, __GDCC__Sta, 0, stream->bufPos);
    ACS_EndLog();
 
    stream->bufPos = 0;

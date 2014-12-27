@@ -487,7 +487,7 @@ namespace GDCC
                putCode(Code::Push_Lit,    1);
                putCode(Code::SubU);
                putCode(Code::Push_Lit,    1);
-               putCode(Code::Drop_GblArr, LocArsArray);
+               putCode(Code::Drop_GblArr, StaArray);
 
                // Set return data.
                for(Core::FastU i = ret; i--;)
@@ -496,7 +496,7 @@ namespace GDCC
                   putCode(Code::Push_Lit,    i);
                   putCode(Code::AddU);
                   putCode(Code::Swap);
-                  putCode(Code::Drop_GblArr, LocArsArray);
+                  putCode(Code::Drop_GblArr, StaArray);
                }
 
                putCode(Code::Rscr);

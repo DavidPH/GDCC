@@ -96,7 +96,7 @@ namespace GDCC
       //
       AddrSpace GetAddrGen()
       {
-         return AddrBase::LocArs;
+         return AddrBase::Sta;
       }
 
       //
@@ -111,8 +111,8 @@ namespace GDCC
          // All address spaces enclose themselves.
          if(encloser == enclosee) return true;
 
-         // LocArs always encloses Loc.
-         if(encloser.base == AddrBase::LocArs && enclosee.base == AddrBase::Loc) return true;
+         // Sta always encloses Aut.
+         if(encloser.base == AddrBase::Sta && enclosee.base == AddrBase::Aut) return true;
 
          // Array spaces.
          if(encloser.base == AddrBase::GblArs && enclosee.base == AddrBase::GblArr) return true;
@@ -123,8 +123,8 @@ namespace GDCC
          // Far pointer.
          if(encloser.base == AddrBase::Far) switch(enclosee.base)
          {
+         case AddrBase::Aut:    case AddrBase::Sta:
          case AddrBase::GblArr: case AddrBase::GblArs: case AddrBase::GblReg:
-         case AddrBase::Loc:    case AddrBase::LocArs:
        //case AddrBase::MapArr: case AddrBase::MapArs: case AddrBase::MapReg:
          case AddrBase::StrArr: case AddrBase::StrArs:
          case AddrBase::WldArr: case AddrBase::WldArs: case AddrBase::WldReg:

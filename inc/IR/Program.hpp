@@ -77,9 +77,9 @@ namespace GDCC
          Space     &getSpace      (AddrSpace    as);
          Space     &getSpaceGblArr(Core::String glyph);
          Space     &getSpaceGblReg();
-         Space     &getSpaceLocArs();
          Space     &getSpaceMapArr(Core::String glyph);
          Space     &getSpaceMapReg();
+         Space     &getSpaceSta();
          Space     &getSpaceWldArr(Core::String glyph);
          Space     &getSpaceWldReg();
          StrEnt    &getStrEnt     (Core::String glyph);
@@ -133,8 +133,8 @@ namespace GDCC
          Table<StrEnt>    tableStrEnt;
 
          Space spaceGblReg;
-         Space spaceLocArs;
          Space spaceMapReg;
+         Space spaceSta;
          Space spaceWldReg;
       };
    }

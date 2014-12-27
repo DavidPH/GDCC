@@ -242,6 +242,11 @@ namespace GDCC
       };
 
       //
+      // Arg_Aut
+      //
+      GDCC_IR_MakeArgPtr1(Aut);
+
+      //
       // Arg_Far
       //
       GDCC_IR_MakeArgPtr1(Far);
@@ -257,16 +262,6 @@ namespace GDCC
       GDCC_IR_MakeArgPtr1(GblReg);
 
       //
-      // Arg_Loc
-      //
-      GDCC_IR_MakeArgPtr1(Loc);
-
-      //
-      // Arg_LocArs
-      //
-      GDCC_IR_MakeArgPtr1(LocArs);
-
-      //
       // Arg_LocReg
       //
       GDCC_IR_MakeArgPtr1(LocReg);
@@ -280,6 +275,11 @@ namespace GDCC
       // Arg_MapReg
       //
       GDCC_IR_MakeArgPtr1(MapReg);
+
+      //
+      // Arg_Sta
+      //
+      GDCC_IR_MakeArgPtr1(Sta);
 
       //
       // Arg_StrArs

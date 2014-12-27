@@ -102,7 +102,7 @@ namespace GDCC
             Platform::TargetCur == Platform::Target::ZDoom)
          {
             ctx.block.addStatementArgs({IR::Code::Pltn, 0},
-               IR::Arg_Stk(), ctx.fn->localArs + vaWords);
+               IR::Arg_Stk(), ctx.fn->localAut + vaWords);
 
             ++stkWords;
          }
@@ -110,7 +110,7 @@ namespace GDCC
             callType == IR::CallType::SScriptS)
          {
             ctx.block.addStatementArgs({IR::Code::Pltn, 0},
-               IR::Arg_Stk(), ctx.fn->localArs + vaWords + 1);
+               IR::Arg_Stk(), ctx.fn->localAut + vaWords + 1);
 
             ++stkWords;
             ++irWords;
@@ -127,18 +127,18 @@ namespace GDCC
             for(; argItr != argEndStk; ++argItr)
                (*argItr)->genStmntStk(ctx);
 
-            // Pass-by-Loc arguments.
-            Core::FastU locItr = ctx.fn->localArs + vaWords;
+            // Pass-by-Aut arguments.
+            Core::FastU locItr = ctx.fn->localAut + vaWords;
             for(; argItr != argEnd; ++argItr)
             {
                locItr -= (*argItr)->getType()->getSizeWords();
 
                auto locType = (*argItr)->getType()
-                  ->getTypeQual({{IR::AddrBase::Loc, Core::STR_}})
+                  ->getTypeQual({{IR::AddrBase::Aut, Core::STR_}})
                   ->getTypePointer();
 
                auto locExp = AST::ExpCreate_IRExp(IR::ExpCreate_Value(
-                  IR::Value_Point(locItr, IR::ArgBase::Loc, Core::STR_,
+                  IR::Value_Point(locItr, IR::ArgBase::Aut, Core::STR_,
                      locType->getIRType().tPoint), pos), locType, pos);
 
                (*argItr)->genStmnt(ctx, {locType->getBaseType(), locExp});
@@ -162,8 +162,8 @@ namespace GDCC
          if(callType == IR::CallType::SScriptI ||
             callType == IR::CallType::SScriptS)
          {
-            irArgs[1] = IR::Arg_Loc(IR::Arg_Lit(
-               AST::ExpCreate_Size(ctx.fn->localArs + vaWords)->getIRExp()));
+            irArgs[1] = IR::Arg_Aut(IR::Arg_Lit(
+               AST::ExpCreate_Size(ctx.fn->localAut + vaWords)->getIRExp()));
          }
 
          // Prepare function's address.

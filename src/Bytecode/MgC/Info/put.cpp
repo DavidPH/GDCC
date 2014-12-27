@@ -40,7 +40,7 @@ namespace GDCC
 
             for(auto &itr : prog->rangeObject())
             {
-               if(itr.space.base == IR::AddrBase::LocArs && itr.defin)
+               if(itr.space.base == IR::AddrBase::Sta && itr.defin)
                   putObj(itr);
             }
 
@@ -417,33 +417,33 @@ namespace GDCC
                *out << ')' << '\0';
                break;
 
-            case IR::ArgBase::LocArs:
-               switch(stmnt->args[1].aLocArs.idx->a)
+            case IR::ArgBase::LocReg:
+               *out << "push_reg" << '\0' << '(' << '\0';
+                  putExp(stmnt->args[1].aLocReg.idx->aLit.value);
+               *out << ')' << '\0';
+               break;
+
+            case IR::ArgBase::Sta:
+               switch(stmnt->args[1].aSta.idx->a)
                {
                case IR::ArgBase::Lit:
                   *out << "push_dat" << '\0' << '(' << '\0';
                      *out << '+' << '\0';
-                        *out << stmnt->args[1].aLocArs.off;
-                        putExp(stmnt->args[1].aLocArs.idx->aLit.value);
+                        *out << stmnt->args[1].aSta.off;
+                        putExp(stmnt->args[1].aSta.idx->aLit.value);
                   *out << ')' << '\0';
                   break;
 
                case IR::ArgBase::Stk:
                   *out << "push_ptr" << '\0' << '(' << '\0';
-                     *out << stmnt->args[1].aLocArs.off;
+                     *out << stmnt->args[1].aSta.off;
                   *out << ')' << '\0';
                   break;
 
                default:
-                  std::cerr << "bad Code::Move_W(Stk, LocArs(?))\n";
+                  std::cerr << "bad Code::Move_W(Stk, Sta(?))\n";
                   throw EXIT_FAILURE;
                }
-               break;
-
-            case IR::ArgBase::LocReg:
-               *out << "push_reg" << '\0' << '(' << '\0';
-                  putExp(stmnt->args[1].aLocReg.idx->aLit.value);
-               *out << ')' << '\0';
                break;
 
             default:
@@ -458,33 +458,33 @@ namespace GDCC
                *out << "drop_nul" << '\0' << '(' << '\0' << ')' << '\0';
                break;
 
-            case IR::ArgBase::LocArs:
-               switch(stmnt->args[0].aLocArs.idx->a)
+            case IR::ArgBase::LocReg:
+               *out << "drop_reg" << '\0' << '(' << '\0';
+                  putExp(stmnt->args[0].aLocReg.idx->aLit.value);
+               *out << ')' << '\0';
+               break;
+
+            case IR::ArgBase::Sta:
+               switch(stmnt->args[0].aSta.idx->a)
                {
                case IR::ArgBase::Lit:
                   *out << "drop_dat" << '\0' << '(' << '\0';
                      *out << '+' << '\0';
-                        *out << stmnt->args[0].aLocArs.off;
-                        putExp(stmnt->args[0].aLocArs.idx->aLit.value);
+                        *out << stmnt->args[0].aSta.off;
+                        putExp(stmnt->args[0].aSta.idx->aLit.value);
                   *out << ')' << '\0';
                   break;
 
                case IR::ArgBase::Stk:
                   *out << "drop_ptr" << '\0' << '(' << '\0';
-                     *out << stmnt->args[0].aLocArs.off;
+                     *out << stmnt->args[0].aSta.off;
                   *out << ')' << '\0';
                   break;
 
                default:
-                  std::cerr << "bad Code::Move_W(LocArs(?), Stk)\n";
+                  std::cerr << "bad Code::Move_W(Sta(?), Stk)\n";
                   throw EXIT_FAILURE;
                }
-               break;
-
-            case IR::ArgBase::LocReg:
-               *out << "drop_reg" << '\0' << '(' << '\0';
-                  putExp(stmnt->args[0].aLocReg.idx->aLit.value);
-               *out << ')' << '\0';
                break;
 
             default:

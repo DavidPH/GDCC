@@ -87,8 +87,8 @@ namespace GDCC
       //
       Program::Program() :
          spaceGblReg{AddrSpace(AddrBase::GblReg, Core::STR_)},
-         spaceLocArs{AddrSpace(AddrBase::LocArs, Core::STR_)},
          spaceMapReg{AddrSpace(AddrBase::MapReg, Core::STR_)},
+         spaceSta   {AddrSpace(AddrBase::Sta,    Core::STR_)},
          spaceWldReg{AddrSpace(AddrBase::WldReg, Core::STR_)}
       {
       }
@@ -142,10 +142,10 @@ namespace GDCC
          case AddrBase::GblArr:
          case AddrBase::GblArs: return findSpaceGblArr(as.name);
          case AddrBase::GblReg: return &getSpaceGblReg();
-         case AddrBase::LocArs: return &getSpaceLocArs();
          case AddrBase::MapArr:
          case AddrBase::MapArs: return findSpaceMapArr(as.name);
          case AddrBase::MapReg: return &getSpaceMapReg();
+         case AddrBase::Sta:    return &getSpaceSta();
          case AddrBase::WldArr:
          case AddrBase::WldArs: return findSpaceWldArr(as.name);
          case AddrBase::WldReg: return &getSpaceWldReg();
@@ -243,10 +243,10 @@ namespace GDCC
          case AddrBase::GblArr:
          case AddrBase::GblArs: return getSpaceGblArr(as.name);
          case AddrBase::GblReg: return getSpaceGblReg();
-         case AddrBase::LocArs: return getSpaceLocArs();
          case AddrBase::MapArr:
          case AddrBase::MapArs: return getSpaceMapArr(as.name);
          case AddrBase::MapReg: return getSpaceMapReg();
+         case AddrBase::Sta:    return getSpaceSta();
          case AddrBase::WldArr:
          case AddrBase::WldArs: return getSpaceWldArr(as.name);
          case AddrBase::WldReg: return getSpaceWldReg();
@@ -274,14 +274,6 @@ namespace GDCC
       }
 
       //
-      // Program::getSpaceLocArs
-      //
-      Space &Program::getSpaceLocArs()
-      {
-         return spaceLocArs;
-      }
-
-      //
       // Program::getSpaceMapArr
       //
       Space &Program::getSpaceMapArr(Core::String glyph)
@@ -295,6 +287,14 @@ namespace GDCC
       Space &Program::getSpaceMapReg()
       {
          return spaceMapReg;
+      }
+
+      //
+      // Program::getSpaceSta
+      //
+      Space &Program::getSpaceSta()
+      {
+         return spaceSta;
       }
 
       //

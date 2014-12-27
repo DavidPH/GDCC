@@ -41,12 +41,12 @@ namespace GDCC
          if(type->getTypeQual() == TypeFloatRS)
             return ExpConvert_Arith(TypeFloatRSL, exp, pos);
 
-         // Promote Loc* to LocArs*.
+         // Promote Aut* to Sta*.
          if(type->isTypePointer() &&
-            type->getBaseType()->getQualAddr().base == IR::AddrBase::Loc)
+            type->getBaseType()->getQualAddr().base == IR::AddrBase::Aut)
          {
             return ExpConvert_Pointer(type->getBaseType()
-               ->getTypeQualAddr({IR::AddrBase::LocArs, Core::STR_})
+               ->getTypeQualAddr({IR::AddrBase::Sta, Core::STR_})
                ->getTypePointer(), exp, pos);
          }
 

@@ -773,7 +773,7 @@ namespace GDCC
             if(specUnsi) throw Core::ExceptStr(pos, "unsigned va_list");
 
             attr.type = AST::Type::Void
-               ->getTypeQual({{IR::AddrBase::LocArs, Core::STR_}})
+               ->getTypeQual({{IR::AddrBase::Sta, Core::STR_}})
                ->getTypePointer();
 
             break;

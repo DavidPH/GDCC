@@ -36,9 +36,9 @@ namespace GDCC
          {
             switch(space->space.base)
             {
-            case IR::AddrBase::LocArs:
-               space->value = LocArsArray;
-               backGlyphWord("___GDCC__LocArs", space->value);
+            case IR::AddrBase::Sta:
+               space->value = StaArray;
+               backGlyphWord("___GDCC__Sta", space->value);
                break;
 
             case IR::AddrBase::MapArr:
@@ -82,7 +82,7 @@ namespace GDCC
                // Even external arrays need an index.
                if(space->alloc)
                   space->allocValue(*prog, [](IR::Program &, IR::Space &space)
-                     {return space.value == LocArsArray;});
+                     {return space.value == StaArray;});
 
                // Back address glyph.
                backGlyphWord(space->glyph, space->value);

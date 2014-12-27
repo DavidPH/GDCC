@@ -20,14 +20,14 @@ GDCC_IR_AddrList(Nul)    //             Void
 GDCC_IR_AddrList(Stk)    //             Stack
 
 // Intrinsic address spaces.
+GDCC_IR_AddrList(Aut)    // __aut     - Automatic
 GDCC_IR_AddrList(Far)    // __far     - Far
 GDCC_IR_AddrList(GblArs) // __gbl_ars - Global Arrays
 GDCC_IR_AddrList(GblReg) // __gbl_reg - Global Register
-GDCC_IR_AddrList(Loc)    // __loc     - Local
-GDCC_IR_AddrList(LocArs) // __loc_ars - Local Arrays
 GDCC_IR_AddrList(LocReg) // __loc_reg - Local Register
 GDCC_IR_AddrList(MapArs) // __map_ars - Map Arrays
 GDCC_IR_AddrList(MapReg) // __map_reg - Map Register
+GDCC_IR_AddrList(Sta)    // __sta     - Static
 GDCC_IR_AddrList(StrArs) // __str_ars - String-table Arrays
 GDCC_IR_AddrList(Vaa)    // __va_addr - Variadic Argument
 GDCC_IR_AddrList(WldArs) // __wld_ars - World Arrays

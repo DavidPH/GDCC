@@ -228,11 +228,11 @@ namespace GDCC
          if(baseL->isCTypeFunction() && baseR->isCTypeFunction())
             return Exp_ConvertPtr::Create(typeL, exp, pos);
 
-         // Special step for conversion from pointer-to-loc.
-         if(baseR->getQualAddr().base == IR::AddrBase::Loc &&
-            baseL->getQualAddr().base != IR::AddrBase::Loc)
+         // Special step for conversion from pointer-to-Aut.
+         if(baseR->getQualAddr().base == IR::AddrBase::Aut &&
+            baseL->getQualAddr().base != IR::AddrBase::Aut)
          {
-            baseR = baseR->getTypeQualAddr(IR::AddrBase::LocArs);
+            baseR = baseR->getTypeQualAddr(IR::AddrBase::Sta);
             typeR = baseR->getTypePointer();
             exp   = Exp_ConvertPtrLoc::Create(typeR, exp, pos);
          }

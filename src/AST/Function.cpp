@@ -67,7 +67,7 @@ namespace GDCC
          labelEnd{nullptr},
          labelTmp{nullptr},
          linka   {IR::Linkage::None},
-         localArs{0},
+         localAut{0},
          localReg{0},
          name    {name_},
          param   {0},
@@ -144,7 +144,7 @@ namespace GDCC
          fn.ctype    = IR::GetCallTypeIR(ctype);
          fn.label    = label;
          fn.linka    = linka;
-         fn.localArs = localArs;
+         fn.localAut = localAut;
          fn.localReg = localReg + localTmp.max();
          fn.param    = param;
          fn.retrn    = retrn && !retrn->isTypeVoid() ? retrn->getSizeWords() : 0;

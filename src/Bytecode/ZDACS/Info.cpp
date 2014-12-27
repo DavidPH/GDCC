@@ -31,16 +31,16 @@
 //
 
 //
-// --bc-zdacs-LocArs-array
+// --bc-zdacs-Sta-array
 //
 static GDCC::Option::Int<GDCC::Core::FastU> LocArsArrayOpt
 {
    &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-LocArs-array")
+      .setName("bc-zdacs-Sta-array")
       .setGroup("codegen")
-      .setDescS("Sets the global array used for LocArs."),
+      .setDescS("Sets the global array used for Sta."),
 
-   &GDCC::Bytecode::ZDACS::Info::LocArsArray
+   &GDCC::Bytecode::ZDACS::Info::StaArray
 };
 
 //
@@ -168,7 +168,7 @@ namespace GDCC
 
          Core::FastU Info::InitScriptNumber = 999;
 
-         Core::FastU Info::LocArsArray = 0;
+         Core::FastU Info::StaArray = 0;
 
          bool Info::UseChunkSTRE = false;
          bool Info::UseFakeACS0  = false;
@@ -334,7 +334,7 @@ namespace GDCC
             if(InitGblArrayOpt.processed)
                return InitGblArray;
 
-            return LocArsArray;
+            return StaArray;
          }
 
          //
@@ -345,7 +345,7 @@ namespace GDCC
             if(InitGblIndexOpt.processed)
                return InitGblIndex;
 
-            if(!InitGblArrayOpt.processed || InitGblArray == LocArsArray)
+            if(!InitGblArrayOpt.processed || InitGblArray == StaArray)
                return 0;
 
             return -1;
@@ -405,14 +405,14 @@ namespace GDCC
          {
             switch(arg.a)
             {
+            case IR::ArgBase::Aut:    return isPushArg(*arg.aAut.idx);
             case IR::ArgBase::GblArr: return isPushArg(*arg.aGblArr.idx);
             case IR::ArgBase::GblReg: return true;
-            case IR::ArgBase::Loc:    return isPushArg(*arg.aLoc.idx);
-            case IR::ArgBase::LocArs: return isPushArg(*arg.aLocArs.idx);
             case IR::ArgBase::LocReg: return true;
             case IR::ArgBase::MapArr: return isPushArg(*arg.aMapArr.idx);
             case IR::ArgBase::MapReg: return true;
             case IR::ArgBase::Nul:    return true;
+            case IR::ArgBase::Sta:    return isPushArg(*arg.aSta.idx);
             case IR::ArgBase::WldArr: return isPushArg(*arg.aWldArr.idx);
             case IR::ArgBase::WldReg: return true;
             default:                  return false;
@@ -426,13 +426,13 @@ namespace GDCC
          {
             switch(arg.a)
             {
+            case IR::ArgBase::Aut:    return isPushArg(*arg.aAut.idx);
             case IR::ArgBase::GblArr: return isPushArg(*arg.aGblArr.idx);
             case IR::ArgBase::GblReg: return true;
-            case IR::ArgBase::Loc:    return isPushArg(*arg.aLoc.idx);
-            case IR::ArgBase::LocArs: return isPushArg(*arg.aLocArs.idx);
             case IR::ArgBase::LocReg: return true;
             case IR::ArgBase::MapArr: return isPushArg(*arg.aMapArr.idx);
             case IR::ArgBase::MapReg: return true;
+            case IR::ArgBase::Sta:    return isPushArg(*arg.aSta.idx);
             case IR::ArgBase::WldArr: return isPushArg(*arg.aWldArr.idx);
             case IR::ArgBase::WldReg: return true;
             default:                  return false;
@@ -463,7 +463,7 @@ namespace GDCC
             for(auto const &itr : prog->rangeSpaceGblArs())
                if(!init[&itr].vals.empty()) return true;
 
-            return !init[&prog->getSpaceLocArs()].vals.empty();
+            return !init[&prog->getSpaceSta()].vals.empty();
          }
 
          //
@@ -484,14 +484,14 @@ namespace GDCC
          {
             switch(arg.a)
             {
+            case IR::ArgBase::Aut:    return isPushArg(*arg.aAut.idx);
             case IR::ArgBase::GblArr: return isPushArg(*arg.aGblArr.idx);
             case IR::ArgBase::GblReg: return true;
             case IR::ArgBase::Lit:    return true;
-            case IR::ArgBase::Loc:    return isPushArg(*arg.aLoc.idx);
-            case IR::ArgBase::LocArs: return isPushArg(*arg.aLocArs.idx);
             case IR::ArgBase::LocReg: return true;
             case IR::ArgBase::MapArr: return isPushArg(*arg.aMapArr.idx);
             case IR::ArgBase::MapReg: return true;
+            case IR::ArgBase::Sta:    return isPushArg(*arg.aSta.idx);
             case IR::ArgBase::WldArr: return isPushArg(*arg.aWldArr.idx);
             case IR::ArgBase::WldReg: return true;
             default:                  return false;
@@ -522,9 +522,9 @@ namespace GDCC
             };
 
             //
-            // lenLoc
+            // lenAut
             //
-            auto lenLoc = [&](IR::Arg_Loc const &a) -> Core::FastU
+            auto lenAut = [&](IR::Arg_Aut const &a) -> Core::FastU
             {
                if(a.idx->a == IR::ArgBase::Lit)
                   return 32;
@@ -540,9 +540,9 @@ namespace GDCC
             };
 
             //
-            // lenLocArs
+            // lenSta
             //
-            auto lenLocArs = [&](IR::Arg_LocArs const &a) -> Core::FastU
+            auto lenSta = [&](IR::Arg_Sta const &a) -> Core::FastU
             {
                if(a.idx->a == IR::ArgBase::Lit)
                   return 20;
@@ -559,14 +559,14 @@ namespace GDCC
 
             switch(arg.a)
             {
+            case IR::ArgBase::Aut:    return lenAut(arg.aAut);
             case IR::ArgBase::GblArr: return lenArr(arg.aGblArr);
             case IR::ArgBase::GblReg: return 8;
-            case IR::ArgBase::Loc:    return lenLoc(arg.aLoc);
-            case IR::ArgBase::LocArs: return lenLocArs(arg.aLocArs);
             case IR::ArgBase::LocReg: return 8;
             case IR::ArgBase::MapArr: return lenArr(arg.aMapArr);
             case IR::ArgBase::MapReg: return 8;
             case IR::ArgBase::Nul:    return 4;
+            case IR::ArgBase::Sta:    return lenSta(arg.aSta);
             case IR::ArgBase::WldArr: return lenArr(arg.aWldArr);
             case IR::ArgBase::WldReg: return 8;
             default:
@@ -640,6 +640,24 @@ namespace GDCC
             };
 
             //
+            // lenAut
+            //
+            auto lenAut = [&](IR::Arg_Aut const &a) -> Core::FastU
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+                  return 28;
+               else
+               {
+                  Core::FastU len = lenPushArg(*a.idx, 0) + 20;
+
+                  if(a.off + w)
+                     len += 12;
+
+                  return len;
+               }
+            };
+
+            //
             // lenLit
             //
             auto lenLit = [&]() -> Core::FastU
@@ -658,27 +676,9 @@ namespace GDCC
             };
 
             //
-            // lenLoc
+            // lenSta
             //
-            auto lenLoc = [&](IR::Arg_Loc const &a) -> Core::FastU
-            {
-               if(a.idx->a == IR::ArgBase::Lit)
-                  return 28;
-               else
-               {
-                  Core::FastU len = lenPushArg(*a.idx, 0) + 20;
-
-                  if(a.off + w)
-                     len += 12;
-
-                  return len;
-               }
-            };
-
-            //
-            // lenLocArs
-            //
-            auto lenLocArs = [&](IR::Arg_LocArs const &a) -> Core::FastU
+            auto lenSta = [&](IR::Arg_Sta const &a) -> Core::FastU
             {
                if(a.idx->a == IR::ArgBase::Lit)
                   return 16;
@@ -695,14 +695,14 @@ namespace GDCC
 
             switch(arg.a)
             {
+            case IR::ArgBase::Aut:    return lenAut(arg.aAut);
             case IR::ArgBase::GblArr: return lenArr(arg.aGblArr);
             case IR::ArgBase::GblReg: return 8;
             case IR::ArgBase::Lit:    return lenLit();
-            case IR::ArgBase::Loc:    return lenLoc(arg.aLoc);
-            case IR::ArgBase::LocArs: return lenLocArs(arg.aLocArs);
             case IR::ArgBase::LocReg: return 8;
             case IR::ArgBase::MapArr: return lenArr(arg.aMapArr);
             case IR::ArgBase::MapReg: return 8;
+            case IR::ArgBase::Sta:    return lenSta(arg.aSta);
             case IR::ArgBase::WldArr: return lenArr(arg.aWldArr);
             case IR::ArgBase::WldReg: return 8;
 
@@ -771,6 +771,10 @@ namespace GDCC
          {
             switch(arg.a)
             {
+            case IR::ArgBase::Aut:
+               CheckArg(*arg.aAut.idx, pos);
+               break;
+
             case IR::ArgBase::GblArr:
                CheckArgB(*arg.aGblArr.arr, IR::ArgBase::Lit, pos);
                CheckArg (*arg.aGblArr.idx, pos);
@@ -784,14 +788,6 @@ namespace GDCC
             case IR::ArgBase::Nul: break;
             case IR::ArgBase::Stk: break;
 
-            case IR::ArgBase::Loc:
-               CheckArg(*arg.aLoc.idx, pos);
-               break;
-
-            case IR::ArgBase::LocArs:
-               CheckArg(*arg.aLocArs.idx, pos);
-               break;
-
             case IR::ArgBase::LocReg:
                CheckArgB(*arg.aLocReg.idx, IR::ArgBase::Lit, pos);
                break;
@@ -803,6 +799,10 @@ namespace GDCC
 
             case IR::ArgBase::MapReg:
                CheckArgB(*arg.aMapReg.idx, IR::ArgBase::Lit, pos);
+               break;
+
+            case IR::ArgBase::Sta:
+               CheckArg(*arg.aSta.idx, pos);
                break;
 
             case IR::ArgBase::StrArs:

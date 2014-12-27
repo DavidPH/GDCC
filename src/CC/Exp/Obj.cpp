@@ -137,7 +137,7 @@ namespace GDCC
          if(!obj->type)
             return false;
 
-         return getType()->getQualAddr().base != IR::AddrBase::Loc;
+         return getType()->getQualAddr().base != IR::AddrBase::Aut;
       }
 
       //
@@ -162,7 +162,7 @@ namespace GDCC
 
          // Otherwise, select based on needing to be addressable.
          if(obj->refer)
-            return type->getTypeArrayQualAddr(IR::AddrBase::Loc);
+            return type->getTypeArrayQualAddr(IR::AddrBase::Aut);
          else
             return type->getTypeArrayQualAddr(IR::AddrBase::LocReg);
       }

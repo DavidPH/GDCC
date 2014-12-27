@@ -128,9 +128,9 @@
    __GDCC__FormatGenAccum((data), (format), X, d)
 
 //
-// __GDCC__LocArs
+// __GDCC__Sta
 //
-#define __GDCC__LocArs __glyph(int, "___GDCC__LocArs")
+#define __GDCC__Sta __glyph(int, "___GDCC__Sta")
 
 
 //----------------------------------------------------------------------------|
@@ -216,8 +216,8 @@ typedef struct __GDCC__FormatArg
 //
 typedef struct __GDCC__FormatRet
 {
-   char __loc_ars *begin;
-   char __loc_ars *end;
+   char __sta *begin;
+   char __sta *end;
    unsigned int    len;
 } __GDCC__FormatRet;
 
@@ -231,7 +231,7 @@ extern "C" {
 #endif
 
 [[call("StkCall")]]
-extern void __loc_ars *__GDCC__alloc(void __loc_ars *ptr, size_t size);
+extern void __sta *__GDCC__alloc(void __sta *ptr, size_t size);
 
 [[call("StkCall")]]
 extern void __GDCC__alloc_dump(void);

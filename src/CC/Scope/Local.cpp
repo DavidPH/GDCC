@@ -44,7 +44,7 @@ namespace GDCC
       //
       void Scope_Local::AllocAutoInfo::setMax(AllocAutoInfo const &alloc)
       {
-         localArs = std::max(localArs, alloc.localArs);
+         localAut = std::max(localAut, alloc.localAut);
          localReg = std::max(localReg, alloc.localReg);
       }
 
@@ -90,7 +90,7 @@ namespace GDCC
          if(obj->type->getQualAddr().base == IR::AddrBase::Gen)
          {
             if(obj->refer)
-               obj->type = obj->type->getTypeArrayQualAddr(IR::AddrBase::Loc);
+               obj->type = obj->type->getTypeArrayQualAddr(IR::AddrBase::Aut);
             else
                obj->type = obj->type->getTypeArrayQualAddr(IR::AddrBase::LocReg);
          }
@@ -99,14 +99,13 @@ namespace GDCC
          Core::FastU *idx;
          switch(obj->type->getQualAddr().base)
          {
-         case IR::AddrBase::Loc:    idx = &alloc.localArs; break;
+         case IR::AddrBase::Aut:    idx = &alloc.localAut; break;
          case IR::AddrBase::LocReg: idx = &alloc.localReg; break;
          default: return; // Any other address space is an error.
          }
 
          // Set object's value (index/address).
-         obj->value = IR::ExpCreate_Value(
-            IR::Value_Fixed(*idx, idxType), Core::Origin(Core::STRNULL, 0));
+         obj->value = IR::ExpCreate_Value(IR::Value_Fixed(*idx, idxType), {nullptr, 0});
 
          // Update allocation info.
          *idx += obj->type->getSizeWords();

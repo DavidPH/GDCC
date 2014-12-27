@@ -60,7 +60,7 @@ namespace GDCC
          public:
             void setMax(AllocAutoInfo const &alloc);
 
-            Core::FastU localArs = 0;
+            Core::FastU localAut = 0;
             Core::FastU localReg = 0;
          };
 

@@ -92,7 +92,7 @@ namespace GDCC
       //
       bool Exp_Arg::v_isNoAuto() const
       {
-         return arg.type->getQualAddr().base != IR::AddrBase::Loc;
+         return arg.type->getQualAddr().base != IR::AddrBase::Aut;
       }
 
       //

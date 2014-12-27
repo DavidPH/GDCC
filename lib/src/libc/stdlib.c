@@ -342,11 +342,11 @@ void srand(unsigned int seed)
 //
 void *calloc(size_t nmemb, size_t size)
 {
-   char __loc_ars *ptr = __GDCC__alloc(0, size *= nmemb);
+   char __sta *ptr = __GDCC__alloc(0, size *= nmemb);
 
    if(!ptr) return 0;
 
-   for(char __loc_ars *itr = ptr; size--;)
+   for(char __sta *itr = ptr; size--;)
       *itr++ = 0;
 
    return ptr;
@@ -357,7 +357,7 @@ void *calloc(size_t nmemb, size_t size)
 //
 void free(void *ptr)
 {
-   __GDCC__alloc((void __loc_ars *)ptr, 0);
+   __GDCC__alloc((void __sta *)ptr, 0);
 }
 
 //
@@ -373,7 +373,7 @@ void *malloc(size_t size)
 //
 void *realloc(void *ptr, size_t size)
 {
-   return __GDCC__alloc((void __loc_ars *)ptr, size);
+   return __GDCC__alloc((void __sta *)ptr, size);
 }
 
 //=========================================================
@@ -445,12 +445,12 @@ char *getenv(char const *name)
    union {__str s; int i;} s;
 
    ACS_BeginPrint();
-   ACS_PrintGlobalCharArray((int)name, __GDCC__LocArs);
+   ACS_PrintGlobalCharArray((int)name, __GDCC__Sta);
    s.s = ACS_GetCVarString(ACS_EndString());
 
    if(!s.i) return NULL;
 
-   if(!ACS_StrCpyToGlobalCharRange((int)buf, __GDCC__LocArs, 0, 1023, s.s, 0))
+   if(!ACS_StrCpyToGlobalCharRange((int)buf, __GDCC__Sta, 0, 1023, s.s, 0))
       buf[1023] = '\0';
 
    return buf;

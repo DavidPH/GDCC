@@ -117,7 +117,7 @@ namespace GDCC
                for(Core::FastU i = 3; i != func->param; ++i)
                {
                   putCode(Code::Push_Lit,    ~(i - 3));
-                  putCode(Code::Push_GblArr, LocArsArray);
+                  putCode(Code::Push_GblArr, StaArray);
                   putCode(Code::Drop_LocReg, i + 1);
                }
                break;
@@ -130,7 +130,7 @@ namespace GDCC
                for(Core::FastU i = 4; i != func->param; ++i)
                {
                   putCode(Code::Push_Lit,    ~(i - 4));
-                  putCode(Code::Push_GblArr, LocArsArray);
+                  putCode(Code::Push_GblArr, StaArray);
                   putCode(Code::Drop_LocReg, i);
                }
                break;

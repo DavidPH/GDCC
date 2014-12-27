@@ -56,8 +56,8 @@ namespace GDCC
          for(auto &itr : prog->rangeSpaceWldArs()) genSpace(itr);
 
          genSpace(prog->getSpaceGblReg());
-         genSpace(prog->getSpaceLocArs());
          genSpace(prog->getSpaceMapReg());
+         genSpace(prog->getSpaceSta());
          genSpace(prog->getSpaceWldReg());
 
          for(auto &itr : prog->rangeFunction()) genFunc(itr);
@@ -148,8 +148,8 @@ namespace GDCC
          for(auto &itr : prog->rangeSpaceWldArs()) preSpace(itr);
 
          preSpace(prog->getSpaceGblReg());
-         preSpace(prog->getSpaceLocArs());
          preSpace(prog->getSpaceMapReg());
+         preSpace(prog->getSpaceSta());
          preSpace(prog->getSpaceWldReg());
 
          for(;;) try
@@ -335,8 +335,8 @@ namespace GDCC
          for(auto &itr : prog->rangeSpaceWldArs()) trSpace(itr);
 
          trSpace(prog->getSpaceGblReg());
-         trSpace(prog->getSpaceLocArs());
          trSpace(prog->getSpaceMapReg());
+         trSpace(prog->getSpaceSta());
          trSpace(prog->getSpaceWldReg());
 
          for(auto &itr : prog->rangeFunction()) trFunc(itr);
@@ -360,7 +360,7 @@ namespace GDCC
          try
          {
             auto end   = static_cast<IR::Statement *>(block->end());
-               stmnt = static_cast<IR::Statement *>(block->begin());
+                 stmnt = static_cast<IR::Statement *>(block->begin());
             for(; stmnt != end; stmnt = stmnt->next)
                trStmnt();
             stmnt = nullptr;

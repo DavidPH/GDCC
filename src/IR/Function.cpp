@@ -39,7 +39,7 @@ namespace GDCC
          glyph   {glyph_},
          label   {Core::STRNULL},
          linka   {Linkage::None},
-         localArs{0},
+         localAut{0},
          localReg{0},
          localTmp{0},
          param   {0},
@@ -86,7 +86,7 @@ namespace GDCC
       OArchive &operator << (OArchive &out, Function const &in)
       {
          return out << in.block << in.ctype << in.label << in.linka
-            << in.localArs << in.localReg << in.param << in.retrn << in.stype
+            << in.localAut << in.localReg << in.param << in.retrn << in.stype
             << in.valueInt << in.valueStr << in.alloc << in.defin << in.sflagNet
             << in.sflagClS;
       }
@@ -96,7 +96,7 @@ namespace GDCC
       //
       IArchive &operator >> (IArchive &in, Function &out)
       {
-         in >> out.block >> out.ctype >> out.label >> out.linka >> out.localArs
+         in >> out.block >> out.ctype >> out.label >> out.linka >> out.localAut
             >> out.localReg >> out.param >> out.retrn >> out.stype
             >> out.valueInt >> out.valueStr;
 

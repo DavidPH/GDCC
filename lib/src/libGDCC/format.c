@@ -518,7 +518,7 @@
 // Types                                                                      |
 //
 
-typedef char __loc_ars BufferChar;
+typedef char __sta BufferChar;
 typedef BufferChar *BufferPtr;
 
 

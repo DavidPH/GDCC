@@ -46,7 +46,7 @@ namespace GDCC
          case Core::STR_defin:    func.defin    = GetFastU(TokenDropEq(ctx));      break;
          case Core::STR_label:    func.label    = GetString(TokenDropEq(ctx));     break;
          case Core::STR_linka:    func.linka    = GetLinkage(TokenDropEq(ctx));    break;
-         case Core::STR_localArs: func.localArs = GetFastU(TokenDropEq(ctx));      break;
+         case Core::STR_localAut: func.localAut = GetFastU(TokenDropEq(ctx));      break;
          case Core::STR_localReg: func.localReg = GetFastU(TokenDropEq(ctx));      break;
          case Core::STR_param:    func.param    = GetFastU(TokenDropEq(ctx));      break;
          case Core::STR_retrn:    func.retrn    = GetFastU(TokenDropEq(ctx));      break;

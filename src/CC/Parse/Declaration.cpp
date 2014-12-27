@@ -155,8 +155,8 @@ namespace GDCC
          {
             switch(attr.type->getQualAddr().base)
             {
+            case IR::AddrBase::Aut:
             case IR::AddrBase::Gen:
-            case IR::AddrBase::Loc:
             case IR::AddrBase::LocReg:
                break;
 
