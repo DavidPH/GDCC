@@ -79,10 +79,7 @@ namespace GDCC
             obj.space = IR::GetAddrGen();
 
          if(init && init->isIRExp())
-         {
             obj.initi = init->getIRExp();
-            init      = nullptr;
-         }
 
          if(value)
          {
