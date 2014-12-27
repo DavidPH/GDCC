@@ -82,6 +82,24 @@ namespace GDCC
       //
       static void ExtendSign(Exp const *, GenStmntCtx const &ctx, Core::FastI diffWords)
       {
+         // ZDACS has a sign-extending right shift, so use that.
+         // TODO: Platform::SignedShRI?
+         if(Platform::TargetCur == Platform::Target::ZDoom)
+         {
+            // Duplicate leading word and signed shift.
+            ctx.block.addStatementArgs({IR::Code::Copy_W, 1},
+               IR::Arg_Stk(), IR::Arg_Stk());
+            ctx.block.addStatementArgs({IR::Code::ShRI_W, 1},
+               IR::Arg_Stk(), IR::Arg_Stk(), 31);
+
+            // Duplicate that result for any additional words.
+            for(auto i = diffWords; --i;)
+               ctx.block.addStatementArgs({IR::Code::Copy_W, 1},
+                  IR::Arg_Stk(), IR::Arg_Stk());
+
+            return;
+         }
+
          IR::Glyph labelEnd = {ctx.prog, ctx.fn->genLabel()};
          IR::Glyph labelPos = {ctx.prog, ctx.fn->genLabel()};
 
