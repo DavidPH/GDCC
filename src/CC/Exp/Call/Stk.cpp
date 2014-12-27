@@ -128,20 +128,26 @@ namespace GDCC
                (*argItr)->genStmntStk(ctx);
 
             // Pass-by-Aut arguments.
-            Core::FastU locItr = ctx.fn->localAut + vaWords;
             for(; argItr != argEnd; ++argItr)
+               (*argItr)->genStmntStk(ctx);
+            Core::FastU autItr = ctx.fn->localAut;
+            for(; argItr-- != argEndStk;)
             {
-               locItr -= (*argItr)->getType()->getSizeWords();
+               auto w = (*argItr)->getType()->getSizeWords();
 
-               auto locType = (*argItr)->getType()
-                  ->getTypeQual({{IR::AddrBase::Aut, Core::STR_}})
-                  ->getTypePointer();
+               auto autType = (*argItr)->getType()
+                  ->getTypeQual({{IR::AddrBase::Aut}})
+                  ->getTypePointer()->getIRType().tPoint;
 
-               auto locExp = AST::ExpCreate_IRExp(IR::ExpCreate_Value(
-                  IR::Value_Point(locItr, IR::ArgBase::Aut, Core::STR_,
-                     locType->getIRType().tPoint), pos), locType, pos);
+               IR::Value_Point autVal =
+                  {autItr, IR::ArgBase::Aut, Core::STR_, std::move(autType)};
 
-               (*argItr)->genStmnt(ctx, {locType->getBaseType(), locExp});
+               auto autExp = IR::ExpCreate_Value(std::move(autVal), pos);
+
+               ctx.block.addStatementArgs({IR::Code::Move_W, w},
+                  IR::Arg_Aut(IR::Arg_Lit(autExp)), IR::Arg_Stk());
+
+               autItr += w;
             }
          }
          else for(auto const &arg : args)
