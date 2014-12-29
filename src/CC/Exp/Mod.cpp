@@ -43,6 +43,9 @@ namespace GDCC
             auto type = AST::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
+            if(!type->isCTypeInteg() && !type->isCTypeFixed())
+               throw Core::ExceptStr(pos, "expected integer or fixed-point");
+
             return ExpCreate_Arith<AST::Exp_Mod, IR::CodeSet_Mod>(type, expL, expR, pos);
          }
 
@@ -68,6 +71,9 @@ namespace GDCC
          {
             AST::Type::CPtr evalT;
             std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
+
+            if(!evalT->isCTypeInteg() && !evalT->isCTypeFixed())
+               throw Core::ExceptStr(pos, "expected integer or fixed-point");
 
             return ExpCreate_ArithEq<AST::Exp_Mod, IR::CodeSet_Mod>(
                evalT, typeL, expL, expR, pos);
