@@ -52,6 +52,9 @@ ACS_AsmFuncDeclFull(161,    , 0, void,   EndHudMessageX, _Accum);
 ACS_AsmFuncDeclFull(161,    , 0, void,   EndHudMessageXX, _Accum, _Accum);
 ACS_AsmFuncDeclFull(161,    , 0, void,   EndHudMessageXXX, _Accum, _Accum, _Accum);
 ACS_AsmFuncDeclFull(162,    , 0, void,   EndHudMessageBold, void);
+ACS_AsmFuncDeclFull(162,    , 0, void,   EndHudMessageBoldX, _Accum);
+ACS_AsmFuncDeclFull(162,    , 0, void,   EndHudMessageBoldXX, _Accum, _Accum);
+ACS_AsmFuncDeclFull(162,    , 0, void,   EndHudMessageBoldXXX, _Accum, _Accum, _Accum);
 
 ACS_AsmFuncDeclFull(165, 166, 0, void,   SetFont, __str);
 
