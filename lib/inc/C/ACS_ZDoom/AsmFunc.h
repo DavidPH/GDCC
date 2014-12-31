@@ -163,7 +163,7 @@ ACS_AsmFuncDeclFull(356,    , 0, int,    StrCpyToMapCharRange, int, int, int, in
 ACS_AsmFuncDeclFull(357,    , 0, int,    StrCpyToWorldCharRange, int, int, int, int, __str, int);
 ACS_AsmFuncDeclFull(358,    , 0, int,    StrCpyToGlobalCharRange, int, int, int, int, __str, int);
 
-ACS_AsmFuncDeclFull(361,    , 0, void,   ScriptWaitNamed, __str);
+ACS_AsmFuncDeclFull(361,    , 0, void,   NamedScriptWait, __str);
 ACS_AsmFuncDeclFull(362,    , 0, void,   CreateTranslationDesat, int, int, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum);
 
 #endif//__GDCC_Header__C__ACS_ZDoom__AsmFunc_h__
