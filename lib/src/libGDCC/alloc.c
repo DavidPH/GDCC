@@ -318,7 +318,7 @@ static VoidPtr AllocNew(register size_t size)
 // AllocTimeSet
 //
 #if __GDCC_Target__ZDoom__
-[[call("ScriptS"), script("Open")]]
+[[addres(999), call("ScriptI"), script("Open")]]
 static void AllocTimeSet(void)
 {
    if(!ACS_Timer())
