@@ -107,36 +107,15 @@ namespace GDCC
          void Info::putFunc()
          {
             // Put function preamble.
-            switch(func->ctype)
+            Core::FastU paramMax = GetParamMax(func->ctype);
+            if(func->defin && func->param > paramMax)
             {
-            case IR::CallType::SScriptI:
-            case IR::CallType::SScriptS:
-               if(!func->defin) break;
-               if(func->param <= 3) break;
-
-               for(Core::FastU i = 3; i != func->param; ++i)
+               for(Core::FastU i = paramMax; i != func->param; ++i)
                {
-                  putCode(Code::Push_Lit,    ~(i - 3));
-                  putCode(Code::Push_GblArr, StaArray);
-                  putCode(Code::Drop_LocReg, i + 1);
-               }
-               break;
-
-            case IR::CallType::ScriptI:
-            case IR::CallType::ScriptS:
-               if(!func->defin) break;
-               if(func->param <= 4) break;
-
-               for(Core::FastU i = 4; i != func->param; ++i)
-               {
-                  putCode(Code::Push_Lit,    ~(i - 4));
+                  putCode(Code::Push_Lit,    ~(i - paramMax));
                   putCode(Code::Push_GblArr, StaArray);
                   putCode(Code::Drop_LocReg, i);
                }
-               break;
-
-            default:
-               break;
             }
 
             InfoBase::putFunc();

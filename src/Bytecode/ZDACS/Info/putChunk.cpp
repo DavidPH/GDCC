@@ -292,8 +292,13 @@ namespace GDCC
             {
                if(f)
                {
-                  putByte(f->param);
-                  putByte(std::max(f->getLocalReg(), f->param));
+                  auto paramMax = GetParamMax(f->ctype);
+                  auto param    = f->param < paramMax ? f->param : paramMax;
+
+                  auto localReg = std::max(f->getLocalReg(), param);
+
+                  putByte(param);
+                  putByte(localReg);
                   putByte(!!f->retrn);
                   putByte(0);
 
@@ -497,12 +502,15 @@ namespace GDCC
                case IR::ScriptType::Unloading:  stype = 13; break;
                }
 
+               auto paramMax = GetParamMax(itr.ctype);
+               auto param    = itr.param < paramMax ? itr.param : paramMax;
+
                // Write entry.
                if(UseFakeACS0)
                {
                   putHWord(GetScriptValue(itr));
                   putByte(stype);
-                  putByte(itr.param < 4 ? itr.param : 4);
+                  putByte(param);
                   putWord(GetWord(resolveGlyph(itr.label)));
                }
                else
@@ -510,7 +518,7 @@ namespace GDCC
                   putHWord(GetScriptValue(itr));
                   putHWord(stype);
                   putWord(GetWord(resolveGlyph(itr.label)));
-                  putWord(itr.param < 4 ? itr.param : 4);
+                  putWord(param);
                }
             }
 

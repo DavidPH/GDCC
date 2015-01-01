@@ -153,6 +153,38 @@ static GDCC::Option::Int<GDCC::Core::FastU> InitWldIndexOpt
    &InitWldIndex
 };
 
+//
+// --bc-zdacs-scripti-param
+//
+static GDCC::Core::FastU ScriptIParam = 4;
+static GDCC::Option::Int<GDCC::Core::FastU> ScriptIParamOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-zdacs-scripti-param")
+      .setGroup("codegen")
+      .setDescS("Sets the number of native parameters for numbered scripts.")
+      .setDescL("Sets the number of native parameters for numbered scripts. "
+         "Default is 4."),
+
+   &ScriptIParam
+};
+
+//
+// --bc-zdacs-scripts-param
+//
+static GDCC::Core::FastU ScriptSParam = 4;
+static GDCC::Option::Int<GDCC::Core::FastU> ScriptSParamOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("bc-zdacs-scripts-param")
+      .setGroup("codegen")
+      .setDescS("Sets the number of native parameters for named scripts.")
+      .setDescL("Sets the number of native parameters for named scripts. "
+         "Default is 4."),
+
+   &ScriptSParam
+};
+
 
 //----------------------------------------------------------------------------|
 // Global Variables                                                           |
@@ -834,6 +866,44 @@ namespace GDCC
          }
 
          //
+         // Info:GetParamMax
+         //
+         Core::FastU Info::GetParamMax(IR::CallType call)
+         {
+            switch(call)
+            {
+               // Numbered Scripts.
+            case IR::CallType::SScriptI:
+            case IR::CallType::ScriptI:
+               return ScriptIParam;
+
+               // Named scripts.
+            case IR::CallType::SScriptS:
+            case IR::CallType::ScriptS:
+               return ScriptSParam;
+
+               // Normal functions.
+            case IR::CallType::StdCall:
+            case IR::CallType::StkCall:
+               return 255;
+
+            default:
+               return -1;
+            }
+         }
+
+         //
+         // Info::GetScriptValue
+         //
+         Core::FastU Info::GetScriptValue(IR::Function const &script)
+         {
+            if(IsScriptS(script.ctype))
+               return -static_cast<Core::FastI>(script.valueInt) - 1;
+            else
+               return script.valueInt;
+         }
+
+         //
          // Info::GetWord
          //
          Core::FastU Info::GetWord(IR::Arg_Lit const &arg, Core::FastU w)
@@ -924,17 +994,6 @@ namespace GDCC
             // Return requested word.
             if(w) valI >>= w * 32;
             return Core::NumberCast<Core::FastU>(valI) & 0xFFFFFFFF;
-         }
-
-         //
-         // Info::GetScriptValue
-         //
-         Core::FastU Info::GetScriptValue(IR::Function const &script)
-         {
-            if(IsScriptS(script.ctype))
-               return -static_cast<Core::FastI>(script.valueInt) - 1;
-            else
-               return script.valueInt;
          }
 
          //

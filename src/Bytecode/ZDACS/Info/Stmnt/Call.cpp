@@ -36,7 +36,12 @@ namespace GDCC
          //
          void Info::genStmnt_Call()
          {
-            auto ret = stmnt->op.size;
+            auto argc = stmnt->args.size() - 1;
+            auto argm = GetParamMax(IR::CallType::StdCall);
+            auto ret  = stmnt->op.size;
+
+            if(argc > argm)
+               numChunkCODE += (argc - argm) * 20;
 
             switch(stmnt->args[0].a)
             {
@@ -67,12 +72,13 @@ namespace GDCC
          void Info::genStmnt_Cscr_IA()
          {
             auto argc = stmnt->args.size() - 1;
+            auto argm = GetParamMax(IR::CallType::ScriptI);
             auto ret  = stmnt->op.size;
 
-            if(argc > 4)
-               numChunkCODE += 8 + (argc - 4) * 20;
+            if(argc > argm)
+               numChunkCODE += 8 + (argc - argm) * 20;
             else if(ret)
-               numChunkCODE += 8 + (4 - argc) * 8;
+               numChunkCODE += 8 + (argm - argc) * 8;
             else
                numChunkCODE += 8;
 
@@ -86,10 +92,11 @@ namespace GDCC
          void Info::genStmnt_Cscr_IS()
          {
             auto argc = stmnt->args.size() - 2;
+            auto argm = GetParamMax(IR::CallType::SScriptI);
             auto ret  = stmnt->op.size;
 
-            if(argc > 4)
-               numChunkCODE += (argc - 4) * 20;
+            if(argc > argm)
+               numChunkCODE += (argc - argm) * 20;
 
             numChunkCODE += 40
                + lenDropArg(stmnt->args[1], 0)
@@ -105,10 +112,11 @@ namespace GDCC
          void Info::genStmnt_Cscr_SA()
          {
             auto argc = stmnt->args.size() - 1;
+            auto argm = GetParamMax(IR::CallType::ScriptS);
             auto ret  = stmnt->op.size;
 
-            if(argc > 4)
-               numChunkCODE += (argc - 4) * 20;
+            if(argc > argm)
+               numChunkCODE += (argc - argm) * 20;
 
             numChunkCODE += 12;
 
@@ -124,10 +132,11 @@ namespace GDCC
          void Info::genStmnt_Cscr_SS()
          {
             auto argc = stmnt->args.size() - 2;
+            auto argm = GetParamMax(IR::CallType::SScriptS);
             auto ret  = stmnt->op.size;
 
-            if(argc > 4)
-               numChunkCODE += (argc - 4) * 20;
+            if(argc > argm)
+               numChunkCODE += (argc - argm) * 20;
 
             numChunkCODE += 48
                + lenDropArg(stmnt->args[1], 0)
@@ -211,7 +220,12 @@ namespace GDCC
          //
          void Info::putStmnt_Call()
          {
-            auto ret = stmnt->op.size;
+            auto argc = stmnt->args.size() - 1;
+            auto argm = GetParamMax(IR::CallType::StdCall);
+            auto ret  = stmnt->op.size;
+
+            if(argc > argm)
+               putStmntDropRetn(argc - argm);
 
             switch(stmnt->args[0].a)
             {
@@ -268,10 +282,11 @@ namespace GDCC
          void Info::putStmnt_Cscr_IA()
          {
             auto argc = stmnt->args.size() - 1;
+            auto argm = GetParamMax(IR::CallType::ScriptI);
             auto ret  = stmnt->op.size;
 
-            if(argc > 4)
-               putStmntDropRetn(argc - 4);
+            if(argc > argm)
+               putStmntDropRetn(argc - argm);
 
             if(ret) switch(argc)
             {
@@ -302,10 +317,11 @@ namespace GDCC
          void Info::putStmnt_Cscr_IS()
          {
             auto argc = stmnt->args.size() - 2;
+            auto argm = GetParamMax(IR::CallType::SScriptI);
             auto ret  = stmnt->op.size;
 
-            if(argc > 4)
-               putStmntDropRetn(argc - 4);
+            if(argc > argm)
+               putStmntDropRetn(argc - argm);
 
             // Clear returned flag.
             putCode(Code::Push_Lit, 0);
@@ -339,13 +355,14 @@ namespace GDCC
          void Info::putStmnt_Cscr_SA()
          {
             auto argc = stmnt->args.size() - 1;
+            auto argm = GetParamMax(IR::CallType::ScriptS);
             auto ret  = stmnt->op.size;
 
-            if(argc > 4)
-               putStmntDropRetn(argc - 4);
+            if(argc > argm)
+               putStmntDropRetn(argc - argm);
 
             putCode(Code::Cnat);
-            putWord(argc < 4 ? argc + 1 : 5);
+            putWord(argc < argm ? argc + 1 : argm + 1);
             putWord(44); // ACS_NamedExecuteWithResult
 
             if(ret)
@@ -360,17 +377,18 @@ namespace GDCC
          void Info::putStmnt_Cscr_SS()
          {
             auto argc = stmnt->args.size() - 2;
+            auto argm = GetParamMax(IR::CallType::SScriptS);
             auto ret  = stmnt->op.size;
 
-            if(argc > 4)
-               putStmntDropRetn(argc - 4);
+            if(argc > argm)
+               putStmntDropRetn(argc - argm);
 
             // Clear returned flag.
             putCode(Code::Push_Lit, 0);
             putStmntDropArg(stmnt->args[1], 0);
 
             putCode(Code::Cnat);
-            putWord(argc < 4 ? argc + 1 : 5);
+            putWord(argc < argm ? argc + 1 : argm + 1);
             putWord(44); // ACS_NamedExecuteWithResult
             putCode(Code::Drop_Nul);
 

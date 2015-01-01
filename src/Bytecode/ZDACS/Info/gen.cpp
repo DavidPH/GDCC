@@ -70,27 +70,9 @@ namespace GDCC
             backGlyphWord(func->label, CodeBase() + numChunkCODE);
 
             // Gen function preamble.
-            switch(func->ctype)
-            {
-            case IR::CallType::SScriptI:
-            case IR::CallType::SScriptS:
-               if(!func->defin) break;
-               if(func->param <= 3) break;
-
-               numChunkCODE += (func->param - 3) * 24;
-               break;
-
-            case IR::CallType::ScriptI:
-            case IR::CallType::ScriptS:
-               if(!func->defin) break;
-               if(func->param <= 4) break;
-
-               numChunkCODE += (func->param - 4) * 24;
-               break;
-
-            default:
-               break;
-            }
+            Core::FastU paramMax = GetParamMax(func->ctype);
+            if(func->defin && func->param > paramMax)
+               numChunkCODE += (func->param - paramMax) * 24;
 
             genBlock(func->block);
 
