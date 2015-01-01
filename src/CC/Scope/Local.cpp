@@ -232,7 +232,7 @@ namespace GDCC
          // If register is used, do not allow taking address.
          obj->noRef = attr.storeReg;
 
-         localObj.emplace(attr.name, obj);
+         localObj.emplace(attr.name ? attr.name : glyph, obj);
 
          return obj;
       }

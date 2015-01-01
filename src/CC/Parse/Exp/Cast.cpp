@@ -31,45 +31,49 @@
 // Static Functions                                                           |
 //
 
-//
-// GetExp_CLit (global)
-//
-static GDCC::AST::Exp::CRef GetExp_CLit(
-   GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope_Global    &scope,
-   GDCC::AST::Attribute      &attr,
-   GDCC::AST::Exp      const *init)
+namespace GDCC
 {
-   auto obj = scope.getObject(attr);
+   namespace CC
+   {
+      //
+      // GetExp_CLit (global)
+      //
+      static AST::Exp::CRef GetExp_CLit(
+         ParserCtx const &ctx,
+         Scope_Global    &scope,
+         AST::Attribute  &attr,
+         AST::Exp  const *init)
+      {
+         auto obj = scope.getObject(attr);
 
-   obj->defin = true;
-   obj->init  = init;
+         obj->defin = true;
+         obj->init  = init;
 
-   return GDCC::CC::ExpCreate_Obj(ctx.prog, obj, attr.namePos);
-}
+         return ExpCreate_Obj(ctx.prog, obj, attr.namePos);
+      }
 
-//
-// GetExp_CLit (local)
-//
-static GDCC::AST::Exp::CRef GetExp_CLit(
-   GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope_Local     &scope,
-   GDCC::AST::Attribute      &attr,
-   GDCC::AST::Exp      const *init)
-{
-   using namespace GDCC;
+      //
+      // GetExp_CLit (local)
+      //
+      static AST::Exp::CRef GetExp_CLit(
+         ParserCtx const &ctx,
+         Scope_Local     &scope,
+         AST::Attribute  &attr,
+         AST::Exp  const *init)
+      {
+         auto pos = attr.namePos;
+         auto obj = scope.getObject(attr);
 
-   auto pos = attr.namePos;
-   auto obj = scope.getObject(attr);
+         obj->defin = true;
+         obj->init  = init;
 
-   obj->defin = true;
-   obj->init  = init;
+         auto objExp = ExpCreate_Obj(ctx.prog, obj, pos);
+         auto objSet = Exp_Assign::Create(objExp, init, pos);
+         auto objRef = ExpCreate_Refer(objExp, pos);
 
-   auto objExp = CC::ExpCreate_Obj(ctx.prog, obj, pos);
-   auto objSet = CC::Exp_Assign::Create(objExp, init, pos);
-   auto objRef = CC::ExpCreate_Refer(objExp, pos);
-
-   return CC::ExpCreate_Deref(CC::ExpCreate_Comma(objSet, objRef, pos), pos);
+         return ExpCreate_Deref(ExpCreate_Comma(objSet, objRef, pos), pos);
+      }
+   }
 }
 
 
@@ -114,10 +118,10 @@ namespace GDCC
          attr.type = init->getType();
 
          if(auto s = dynamic_cast<Scope_Global *>(&scope))
-            return ::GetExp_CLit(ctx, *s, attr, init);
+            return GetExp_CLit(ctx, *s, attr, init);
 
          if(auto s = dynamic_cast<Scope_Local *>(&scope))
-            return ::GetExp_CLit(ctx, *s, attr, init);
+            return GetExp_CLit(ctx, *s, attr, init);
 
          throw Core::ExceptStr(attr.namePos, "invalid scope for compound literal");
       }
