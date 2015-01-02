@@ -73,13 +73,14 @@ namespace GDCC
          {
             auto argc = stmnt->args.size() - 1;
             auto argm = GetParamMax(IR::CallType::ScriptI);
+            auto argn = argc < argm ? argc : argm;
             auto ret  = stmnt->op.size;
 
             if(argc > argm)
                numChunkCODE += (argc - argm) * 20;
 
-            if(ret && std::min(argc, argm) < 4)
-               numChunkCODE += (4 - std::min(argc, argm)) * 8;
+            if(ret && argn < 4)
+               numChunkCODE += (4 - argn) * 8;
 
             numChunkCODE += 8;
 
@@ -284,12 +285,13 @@ namespace GDCC
          {
             auto argc = stmnt->args.size() - 1;
             auto argm = GetParamMax(IR::CallType::ScriptI);
+            auto argn = argc < argm ? argc : argm;
             auto ret  = stmnt->op.size;
 
             if(argc > argm)
                putStmntDropRetn(argc - argm);
 
-            if(ret) switch(std::min(argc, argm))
+            if(ret) switch(argn)
             {
             case  0: putCode(Code::Push_Lit, 0);
             case  1: putCode(Code::Push_Lit, 0);
@@ -297,7 +299,7 @@ namespace GDCC
             case  3: putCode(Code::Push_Lit, 0);
             default: putCode(Code::Cspe_5R1); break;
             }
-            else switch(std::min(argc, argm))
+            else switch(argn)
             {
             case  0: putCode(Code::Cspe_1); break;
             case  1: putCode(Code::Cspe_2); break;
@@ -319,6 +321,7 @@ namespace GDCC
          {
             auto argc = stmnt->args.size() - 2;
             auto argm = GetParamMax(IR::CallType::SScriptI);
+            auto argn = argc < argm ? argc : argm;
             auto ret  = stmnt->op.size;
 
             if(argc > argm)
@@ -328,7 +331,7 @@ namespace GDCC
             putCode(Code::Push_Lit, 0);
             putStmntDropArg(stmnt->args[1], 0);
 
-            switch(std::min(argc, argm))
+            switch(argn)
             {
             case  0: putCode(Code::Cspe_1); break;
             case  1: putCode(Code::Cspe_2); break;
