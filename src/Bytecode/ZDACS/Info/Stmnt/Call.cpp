@@ -76,11 +76,12 @@ namespace GDCC
             auto ret  = stmnt->op.size;
 
             if(argc > argm)
-               numChunkCODE += 8 + (argc - argm) * 20;
-            else if(ret)
-               numChunkCODE += 8 + (argm - argc) * 8;
-            else
-               numChunkCODE += 8;
+               numChunkCODE += (argc - argm) * 20;
+
+            if(ret && std::min(argc, argm) < 4)
+               numChunkCODE += (4 - std::min(argc, argm)) * 8;
+
+            numChunkCODE += 8;
 
             if(ret)
                numChunkCODE += (ret - 1) * 16;
@@ -98,7 +99,7 @@ namespace GDCC
             if(argc > argm)
                numChunkCODE += (argc - argm) * 20;
 
-            numChunkCODE += 40
+            numChunkCODE += 8 + 8 + 24
                + lenDropArg(stmnt->args[1], 0)
                + lenPushArg(stmnt->args[1], 0);
 
@@ -288,7 +289,7 @@ namespace GDCC
             if(argc > argm)
                putStmntDropRetn(argc - argm);
 
-            if(ret) switch(argc)
+            if(ret) switch(std::min(argc, argm))
             {
             case  0: putCode(Code::Push_Lit, 0);
             case  1: putCode(Code::Push_Lit, 0);
@@ -296,7 +297,7 @@ namespace GDCC
             case  3: putCode(Code::Push_Lit, 0);
             default: putCode(Code::Cspe_5R1); break;
             }
-            else switch(argc)
+            else switch(std::min(argc, argm))
             {
             case  0: putCode(Code::Cspe_1); break;
             case  1: putCode(Code::Cspe_2); break;
@@ -327,7 +328,7 @@ namespace GDCC
             putCode(Code::Push_Lit, 0);
             putStmntDropArg(stmnt->args[1], 0);
 
-            switch(argc)
+            switch(std::min(argc, argm))
             {
             case  0: putCode(Code::Cspe_1); break;
             case  1: putCode(Code::Cspe_2); break;
