@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -91,6 +91,8 @@ GDCC_Core_StringList(Array, "Array")
 GDCC_Core_StringList(AsmFunc, "AsmFunc")
 GDCC_Core_StringList(Assoc, "Assoc")
 GDCC_Core_StringList(Aut, "Aut")
+GDCC_Core_StringList(Bclo_W, "Bclo_W")
+GDCC_Core_StringList(Bclz_W, "Bclz_W")
 GDCC_Core_StringList(BinaryAdd, "BinaryAdd")
 GDCC_Core_StringList(BinaryAddPtrRaw, "BinaryAddPtrRaw")
 GDCC_Core_StringList(BinaryAnd, "BinaryAnd")

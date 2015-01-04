@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -29,6 +29,12 @@ GDCC_IR_CodeList(AddU_W)
 
 // And* dst lop rop
 GDCC_IR_CodeList(AndU_W)
+
+// Bclo dst src (Bit, Count Leading Ones)
+GDCC_IR_CodeList(Bclo_W)
+
+// Bclz dst src (Bit, Count Leading Zeros)
+GDCC_IR_CodeList(Bclz_W)
 
 // Call src ret arg...
 GDCC_IR_CodeList(Call)
