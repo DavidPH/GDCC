@@ -468,67 +468,6 @@ int system(char const *string)
 }
 
 //=========================================================
-// Searching and sorting utilities.
-//
-
-//
-// bsearch
-//
-void *bsearch(void const *key, void const *base, size_t nmemb, size_t size,
-   int (*compar)(void const *, void const *))
-{
-   int cmp;
-   char const *begin = base, *end = begin + nmemb*size, *itr;
-
-   while(begin != end)
-   {
-      // itr = begin + (end - begin) / 2
-      itr = begin + ((((end - begin) / size) / 2) * size);
-
-      if(!(cmp = compar(key, itr))) return (void *)itr;
-
-      if(cmp < 0) end = itr; else begin = itr;
-   }
-
-   return NULL;
-}
-
-//
-// qsort
-//
-void qsort(void *base, size_t nmemb, size_t size,
-   int (*compar)(void const *, void const *))
-{
-   // Array must have at least one member to sort.
-   if(!nmemb) return;
-
-   char *itr = base, *end = itr + (nmemb - 1) * size;
-
-   // Gnome sort!
-   // It's not as fast as quicksort, but ZDACS has a limited call depth.
-   while(itr != end)
-   {
-      // If itr > itr+1...
-      if(compar(itr, itr + size) > 0)
-      {
-         // Swap the two elements.
-         char *swpL = itr, *swpR = itr + size;
-         for(size_t n = size; n--; ++swpL, ++swpR)
-         {
-            char swpT = *swpL;
-            *swpL = *swpR;
-            *swpR =  swpT;
-         }
-
-         // Reset the iterator.
-         if(itr != base) itr -= size;
-      }
-      else
-         itr += size;
-   }
-}
-
-//=========================================================
 // Integer arithmetic functions.
 //
 
