@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -72,6 +72,9 @@ namespace GDCC
             case IR::Code::SubU_W:
                genStmnt_AddU_W();
                break;
+
+            case IR::Code::Bclo_W: genStmnt_Bclz_W(); break;
+            case IR::Code::Bclz_W: genStmnt_Bclz_W(); break;
 
             case IR::Code::DivI_W:
             case IR::Code::DivX_W:

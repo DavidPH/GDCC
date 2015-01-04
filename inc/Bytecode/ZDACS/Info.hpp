@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -115,6 +115,7 @@ namespace GDCC
 
             virtual void genStmnt();
             void genStmnt_AddU_W();
+            void genStmnt_Bclz_W();
             void genStmnt_Call();
             void genStmnt_CmpI_W();
             void genStmnt_CmpU_EQ_W();
@@ -213,6 +214,8 @@ namespace GDCC
 
             virtual void preFunc();
 
+            virtual void preObj();
+
             virtual void preStmnt();
             void preStmntCall(Core::FastU retrn, Core::FastU param);
             void preStmntCall(Core::String name, Core::FastU retrn, Core::FastU param);
@@ -246,6 +249,7 @@ namespace GDCC
 
             void putCode(Code code);
             void putCode(Code code, Core::FastU arg0);
+            void putCode(Code code, Core::FastU arg0, Core::FastU);
 
             void putData(char const *s, std::size_t len);
 
@@ -259,6 +263,7 @@ namespace GDCC
 
             virtual void putStmnt();
             void putStmnt_AddU_W();
+            void putStmnt_Bclz_W(bool ones = false);
             void putStmnt_Call();
             void putStmnt_Casm();
             void putStmnt_CmpI_W(Code code);
@@ -337,6 +342,7 @@ namespace GDCC
 
             virtual void trStmnt();
             void trStmnt_AddU_W();
+            void trStmnt_Bclz_W();
             void trStmnt_Call();
             void trStmnt_Casm();
             void trStmnt_CmpU_EQ_W();

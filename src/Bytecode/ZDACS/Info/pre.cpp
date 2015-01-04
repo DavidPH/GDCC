@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -46,6 +46,16 @@ namespace GDCC
          }
 
          //
+         // Info::preObj
+         //
+         void Info::preObj()
+         {
+            // TODO: Normalize usage of unused space name to be "", not null.
+            if(!obj->space.name)
+               obj->space.name = Core::STR_;
+         }
+
+         //
          // Info::preStmnt
          //
          void Info::preStmnt()
@@ -75,6 +85,11 @@ namespace GDCC
             case IR::Code::SubU_W:
                if(stmnt->op.size != 1)
                   preStmntCall(stmnt->op.size, stmnt->op.size * 2);
+               break;
+
+            case IR::Code::Bclz_W:
+               if(stmnt->op.size)
+                  preStmntCall(1, stmnt->op.size);
                break;
 
             case IR::Code::CmpF_EQ_W:

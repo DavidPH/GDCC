@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -59,6 +59,9 @@ namespace GDCC
             case IR::Code::AddU_W: putStmnt_AddU_W(); break;
 
             case IR::Code::AndU_W: putStmntBitwise(Code::AndU); break;
+
+            case IR::Code::Bclo_W: putStmnt_Bclz_W(true); break;
+            case IR::Code::Bclz_W: putStmnt_Bclz_W(false); break;
 
             case IR::Code::Call: putStmnt_Call(); break;
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -89,6 +89,16 @@ namespace GDCC
          {
             putCode(code);
             putWord(arg0);
+         }
+
+         //
+         // Info::putCode
+         //
+         void Info::putCode(Code code, Core::FastU arg0, Core::FastU arg1)
+         {
+            putCode(code);
+            putWord(arg0);
+            putWord(arg1);
          }
 
          //
