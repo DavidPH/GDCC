@@ -154,6 +154,7 @@ ACS_AsmFuncDeclFull(344,    , 0, int,    CheckPlayerCamera, int);
 ACS_AsmFuncDeclFull(345,    , 0, int,    MorphActor, int, __str, __str, int, int, __str, __str);
 ACS_AsmFuncDeclFull(346,    , 1, int,    UnMorphActor, int, int);
 ACS_AsmFuncDeclFull(347,    , 0, int,    GetPlayerInput, int, int);
+ACS_AsmFuncDeclFull(347,    , 0, _Accum, GetPlayerInputFixed, int, int);
 ACS_AsmFuncDeclFull(348,    , 0, int,    ClassifyActor, int);
 ACS_AsmFuncDeclFull(349,    , 0, void,   PrintBinary, int);
 ACS_AsmFuncDeclFull(350,    , 0, void,   PrintHex, int);
