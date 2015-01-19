@@ -145,12 +145,21 @@
 //
 // roundfx
 //
-#define roundfx(f) (__GDCC__TGMathFX((f), round, u)((f), (n)))
+#define roundfx(f, n) (__GDCC__TGMathFX((f), round, u)((f), (n)))
 
 //
 // countlsfx
 //
 #define countlsfx(f) (__GDCC__TGMathFX((f), countls, u)((f)))
+
+//
+// fixed
+//
+// Not standard, but there is sufficient community momentum to justify it.
+//
+#ifndef fixed
+#define fixed __fixed
+#endif
 
 //
 // __GDCC__TGMathFX
