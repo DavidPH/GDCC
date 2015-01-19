@@ -152,6 +152,11 @@ ACS_NativeDeclFull( 82, 0, int,    DropInventory, int, __str);
 ACS_NativeDeclFull( 83, 3, int,    PickActor, int, _Accum, _Accum, _Accum, int, int, int, int);
 ACS_NativeDeclFull( 84, 2, int,    IsPointerEqual, int, int, int, int);
 ACS_NativeDeclFull( 85, 0, int,    CanRaiseActor, int);
+ACS_NativeDeclFull( 86, 0, int,    SetActorTeleFog, int, __str, __str);
+ACS_NativeDeclFull( 87, 0, int,    SwapActorTeleFog, int);
+ACS_NativeDeclFull( 88, 0, int,    SetActorRoll, int, _Accum);
+ACS_NativeDeclFull( 89, 0, int,    ChangeActorRoll, int, _Accum, int);
+ACS_NativeDeclFull( 90, 0, _Accum, GetActorRoll, int);
 
 #endif//__GDCC_Header__C__ACS_ZDoom__Native_h__
 
