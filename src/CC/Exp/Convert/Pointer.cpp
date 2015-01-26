@@ -228,6 +228,10 @@ namespace GDCC
          if(baseL->isCTypeFunction() && baseR->isCTypeFunction())
             return Exp_ConvertPtr::Create(typeL, exp, pos);
 
+         // Remainder of function concerns pointer-to-object.
+         if(!baseL->isCTypeObject() || !baseR->isCTypeObject())
+            throw Core::ExceptStr(e->pos, "expected pointer to object");
+
          // Special step for conversion from pointer-to-Aut.
          if(baseR->getQualAddr().base == IR::AddrBase::Aut &&
             baseL->getQualAddr().base != IR::AddrBase::Aut)
