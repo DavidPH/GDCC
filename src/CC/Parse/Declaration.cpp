@@ -336,9 +336,15 @@ namespace GDCC
                throw Core::ExceptStr(attr.namePos,
                   "name redefined as different kind of symbol");
 
-            if(lookup.resObj->type != attr.type)
+            auto lookupType = lookup.resObj->type;
+
+            if(lookupType != attr.type &&
+               (!lookupType->isTypeArray() || !attr.type->isTypeArray() ||
+                lookupType->getBaseType() != attr.type->getBaseType()))
+            {
                throw Core::ExceptStr(attr.namePos,
                   "object redeclared with different type");
+            }
          }
 
          // Insert special declaration statement.

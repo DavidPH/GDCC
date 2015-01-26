@@ -220,6 +220,11 @@ namespace GDCC
             itr = globalObj.emplace(glyph, obj).first;
          }
 
+         // If not yet defined, use newer type. This allows declaring with
+         // incomplete array type and then later defining it.
+         if(!itr->second->defin)
+            itr->second->type = attr.type;
+
          return itr->second;
       }
 
