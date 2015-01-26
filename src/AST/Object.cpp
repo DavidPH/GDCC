@@ -69,7 +69,7 @@ namespace GDCC
 
          obj.linka = linka;
          obj.space = type->getQualAddr();
-         obj.words = type ? type->getSizeWords() : 0;
+         obj.words = type && type->isTypeComplete() ? type->getSizeWords() : 0;
 
          obj.alias = alias;
          obj.defin = defin;
