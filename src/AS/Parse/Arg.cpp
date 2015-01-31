@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -146,6 +146,7 @@ namespace GDCC
          case Core::STR_WldReg: return GetArg2<IR::Arg_WldReg>(ctx);
 
          case Core::STR_GblArr: return GetArg3<IR::Arg_GblArr>(ctx);
+         case Core::STR_LocArr: return GetArg3<IR::Arg_MapArr>(ctx);
          case Core::STR_MapArr: return GetArg3<IR::Arg_MapArr>(ctx);
          case Core::STR_StrArr: return GetArg3<IR::Arg_StrArr>(ctx);
          case Core::STR_WldArr: return GetArg3<IR::Arg_WldArr>(ctx);

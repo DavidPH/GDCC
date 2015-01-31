@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -35,6 +35,7 @@ GDCC_IR_AddrList(WldReg) // __wld_reg - World Register
 
 // Declarable address spaces.
 GDCC_IR_AddrList(GblArr) // __gbl_arr - Global Array
+GDCC_IR_AddrList(LocArr) // __loc_arr - Local Array
 GDCC_IR_AddrList(MapArr) // __map_arr - Map Array
 GDCC_IR_AddrList(StrArr) // __str_arr - String-table Array
 GDCC_IR_AddrList(WldArr) // __wld_arr - World Array

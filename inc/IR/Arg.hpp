@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -305,6 +305,11 @@ namespace GDCC
       // Arg_GblArr
       //
       GDCC_IR_MakeArgPtr2(GblArr);
+
+      //
+      // Arg_LocArr
+      //
+      GDCC_IR_MakeArgPtr2(LocArr);
 
       //
       // Arg_MapArr

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -74,6 +74,7 @@ namespace GDCC
          return ArgT(std::move(idx), off);
       }
       GDCC_AST_GenGenStmnt_Move_GenArgPtr2(IR::Arg_GblArr)
+      GDCC_AST_GenGenStmnt_Move_GenArgPtr2(IR::Arg_LocArr)
       GDCC_AST_GenGenStmnt_Move_GenArgPtr2(IR::Arg_MapArr)
       GDCC_AST_GenGenStmnt_Move_GenArgPtr2(IR::Arg_StrArr)
       GDCC_AST_GenGenStmnt_Move_GenArgPtr2(IR::Arg_WldArr)
