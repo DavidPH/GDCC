@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -819,6 +819,11 @@ namespace GDCC
             case IR::ArgBase::Lit: break;
             case IR::ArgBase::Nul: break;
             case IR::ArgBase::Stk: break;
+
+            case IR::ArgBase::LocArr:
+               CheckArgB(*arg.aLocArr.arr, IR::ArgBase::Lit, pos);
+               CheckArg (*arg.aLocArr.idx, pos);
+               break;
 
             case IR::ArgBase::LocReg:
                CheckArgB(*arg.aLocReg.idx, IR::ArgBase::Lit, pos);

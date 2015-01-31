@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -57,6 +57,10 @@ namespace GDCC
                genStmnt_Move_W__Stk_Arr(stmnt->args[1].aGblArr);
                break;
 
+            case IR::ArgBase::LocArr:
+               genStmnt_Move_W__Stk_Arr(stmnt->args[1].aLocArr);
+               break;
+
             case IR::ArgBase::MapArr:
                genStmnt_Move_W__Stk_Arr(stmnt->args[1].aMapArr);
                break;
@@ -89,6 +93,10 @@ namespace GDCC
 
             case IR::ArgBase::GblArr:
                genStmnt_Move_W__Arr_Stk(stmnt->args[0].aGblArr);
+               break;
+
+            case IR::ArgBase::LocArr:
+               genStmnt_Move_W__Arr_Stk(stmnt->args[0].aLocArr);
                break;
 
             case IR::ArgBase::MapArr:
@@ -179,6 +187,10 @@ namespace GDCC
                putStmnt_Move_W__Stk_Arr(stmnt->args[1].aGblArr, Code::Push_GblArr);
                break;
 
+            case IR::ArgBase::LocArr:
+               putStmnt_Move_W__Stk_Arr(stmnt->args[1].aLocArr, Code::Push_LocArr);
+               break;
+
             case IR::ArgBase::MapArr:
                putStmnt_Move_W__Stk_Arr(stmnt->args[1].aMapArr, Code::Push_MapArr);
                break;
@@ -239,6 +251,10 @@ namespace GDCC
 
             case IR::ArgBase::GblArr:
                putStmnt_Move_W__Arr_Stk(stmnt->args[0].aGblArr, Code::Drop_GblArr);
+               break;
+
+            case IR::ArgBase::LocArr:
+               putStmnt_Move_W__Arr_Stk(stmnt->args[0].aMapArr, Code::Drop_LocArr);
                break;
 
             case IR::ArgBase::MapArr:
@@ -336,6 +352,7 @@ namespace GDCC
 
             case IR::ArgBase::Aut:    moveIdx(Aut,    1, 1); break;
             case IR::ArgBase::GblArr: moveIdx(GblArr, 1, 1); break;
+            case IR::ArgBase::LocArr: moveIdx(LocArr, 1, 1); break;
             case IR::ArgBase::MapArr: moveIdx(MapArr, 1, 1); break;
             case IR::ArgBase::Sta:    moveIdx(Sta,    1, 1); break;
             case IR::ArgBase::StrArs: moveIdx(StrArs, 1, 2); break;
@@ -356,6 +373,7 @@ namespace GDCC
 
             case IR::ArgBase::Aut:    moveIdx(Aut,    0, 1); break;
             case IR::ArgBase::GblArr: moveIdx(GblArr, 0, 1); break;
+            case IR::ArgBase::LocArr: moveIdx(LocArr, 0, 1); break;
             case IR::ArgBase::MapArr: moveIdx(MapArr, 0, 1); break;
             case IR::ArgBase::Sta:    moveIdx(Sta,    0, 1); break;
             case IR::ArgBase::StrArs: moveIdx(StrArs, 0, 2); break;

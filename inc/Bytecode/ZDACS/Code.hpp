@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -111,6 +111,8 @@ namespace GDCC
             Cnat        = 351,
             Pfun_Lit    = 359,
             Call_Stk    = 360,
+            Drop_LocArr = 364,
+            Push_LocArr = 365,
          };
       }
    }

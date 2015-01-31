@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,6 +39,12 @@ namespace GDCC
             case IR::AddrBase::Sta:
                space->value = StaArray;
                backGlyphWord("___GDCC__Sta", space->value);
+               break;
+
+            case IR::AddrBase::LocArr:
+               // Back address glyph.
+               if(!space->alloc)
+                  backGlyphWord(space->glyph, space->value);
                break;
 
             case IR::AddrBase::MapArr:
