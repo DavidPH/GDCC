@@ -188,6 +188,7 @@ namespace GDCC
             Core::FastU lenChunkASTR();
             Core::FastU lenChunkATAG();
             Core::FastU lenChunkCODE();
+            Core::FastU lenChunkFARY();
             Core::FastU lenChunkFNAM();
             Core::FastU lenChunkFUNC();
             Core::FastU lenChunkLOAD();
@@ -195,6 +196,7 @@ namespace GDCC
             Core::FastU lenChunkMIMP();
             Core::FastU lenChunkMINI();
             Core::FastU lenChunkMSTR();
+            Core::FastU lenChunkSARY();
             Core::FastU lenChunkSFLG();
             Core::FastU lenChunkSNAM();
             Core::FastU lenChunkSPTR();
@@ -234,6 +236,7 @@ namespace GDCC
             void putChunkASTR();
             void putChunkATAG();
             void putChunkCODE();
+            void putChunkFARY();
             void putChunkFNAM();
             void putChunkFUNC();
             void putChunkLOAD();
@@ -241,6 +244,7 @@ namespace GDCC
             void putChunkMIMP();
             void putChunkMINI();
             void putChunkMSTR();
+            void putChunkSARY();
             void putChunkSFLG();
             void putChunkSNAM();
             void putChunkSPTR();

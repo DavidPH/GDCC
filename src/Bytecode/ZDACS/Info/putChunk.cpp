@@ -40,6 +40,7 @@ namespace GDCC
             putChunkARAY();
             putChunkASTR();
             putChunkATAG();
+            putChunkFARY();
             putChunkFNAM();
             putChunkFUNC();
             putChunkLOAD();
@@ -47,6 +48,7 @@ namespace GDCC
             putChunkMIMP();
             putChunkMINI();
             putChunkMSTR();
+            putChunkSARY();
             putChunkSFLG();
             putChunkSNAM();
             putChunkSPTR();
@@ -243,6 +245,29 @@ namespace GDCC
          }
 
          //
+         // Info::putChunkFARY
+         //
+         void Info::putChunkFARY()
+         {
+            for(auto &itr : prog->rangeFunction())
+            {
+               if(itr.ctype != IR::CallType::StdCall &&
+                  itr.ctype != IR::CallType::StkCall)
+                  continue;
+
+               if(itr.localArr.empty()) continue;
+
+               putData("FARY", 4);
+               putWord(itr.localArr.size() * 4 + 2);
+
+               putHWord(itr.valueInt);
+
+               for(Core::FastU arr = 0; arr != itr.localArr.size(); ++arr)
+                   putWord(itr.localArr[arr]);
+            }
+         }
+
+         //
          // Info::putChunkFNAM
          //
          void Info::putChunkFNAM()
@@ -415,6 +440,28 @@ namespace GDCC
 
             for(auto const &itr : init[&prog->getSpaceMapReg()].vals)
                if(itr.second.tag == InitTag::StrEn) putWord(itr.first);
+         }
+
+         //
+         // Info::putChunkSARY
+         //
+         void Info::putChunkSARY()
+         {
+            for(auto &itr : prog->rangeFunction())
+            {
+               if(!IsScript(itr.ctype))
+                  continue;
+
+               if(itr.localArr.empty()) continue;
+
+               putData("SARY", 4);
+               putWord(itr.localArr.size() * 4 + 2);
+
+               putHWord(GetScriptValue(itr));
+
+               for(Core::FastU arr = 0; arr != itr.localArr.size(); ++arr)
+                   putWord(itr.localArr[arr]);
+            }
          }
 
          //

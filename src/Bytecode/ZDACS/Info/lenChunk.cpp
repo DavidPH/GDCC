@@ -40,6 +40,7 @@ namespace GDCC
             len += lenChunkARAY();
             len += lenChunkASTR();
             len += lenChunkATAG();
+            len += lenChunkFARY();
             len += lenChunkFNAM();
             len += lenChunkFUNC();
             len += lenChunkLOAD();
@@ -47,6 +48,7 @@ namespace GDCC
             len += lenChunkMIMP();
             len += lenChunkMINI();
             len += lenChunkMSTR();
+            len += lenChunkSARY();
             len += lenChunkSFLG();
             len += lenChunkSNAM();
             len += lenChunkSPTR();
@@ -151,6 +153,29 @@ namespace GDCC
          Core::FastU Info::lenChunkCODE()
          {
             return numChunkCODE + 8;
+         }
+
+         //
+         // Info::lenChunkFARY
+         //
+         Core::FastU Info::lenChunkFARY()
+         {
+            Core::FastU numChunk = 0;
+            Core::FastU numArray = 0;
+
+            for(auto const &itr : prog->rangeFunction())
+            {
+               if(itr.ctype != IR::CallType::StdCall &&
+                  itr.ctype != IR::CallType::StkCall)
+                  continue;
+
+               if(itr.localArr.empty()) continue;
+
+               ++numChunk;
+               numArray += itr.localArr.size();
+            }
+
+            return numChunk * 10 + numArray * 4;
          }
 
          //
@@ -261,6 +286,28 @@ namespace GDCC
             if(!numChunkMSTR) return 0;
 
             return numChunkMSTR * 4 + 8;
+         }
+
+         //
+         // Info::lenChunkSARY
+         //
+         Core::FastU Info::lenChunkSARY()
+         {
+            Core::FastU numChunk = 0;
+            Core::FastU numArray = 0;
+
+            for(auto const &itr : prog->rangeFunction())
+            {
+               if(!IsScriptS(itr.ctype))
+                  continue;
+
+               if(itr.localArr.empty()) continue;
+
+               ++numChunk;
+               numArray += itr.localArr.size();
+            }
+
+            return numChunk * 10 + numArray * 4;
          }
 
          //
