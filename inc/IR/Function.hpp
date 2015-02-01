@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,8 @@
 #define GDCC__IR__Function_H__
 
 #include "../IR/Block.hpp"
+
+#include <unordered_map>
 
 
 //----------------------------------------------------------------------------|
@@ -34,6 +36,9 @@ namespace GDCC
       //
       class Function
       {
+      protected:
+         using LocalArr = std::unordered_map<Core::FastU, Core::FastU>;
+
       public:
          explicit Function(Core::String glyph);
 
@@ -56,6 +61,7 @@ namespace GDCC
          Core::String glyph;
          Core::String label;
          Linkage      linka;
+         LocalArr     localArr;
          Core::FastU  localAut;
          Core::FastU  localReg;
          Core::FastU  localTmp;

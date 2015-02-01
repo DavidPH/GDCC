@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -65,6 +65,7 @@ namespace GDCC
          Object    *findObject     (Core::String glyph);
          Space     *findSpace      (AddrSpace    as);
          Space     *findSpaceGblArr(Core::String glyph);
+         Space     *findSpaceLocArr(Core::String glyph);
          Space     *findSpaceMapArr(Core::String glyph);
          Space     *findSpaceWldArr(Core::String glyph);
          StrEnt    *findStrEnt     (Core::String glyph);
@@ -77,6 +78,7 @@ namespace GDCC
          Space     &getSpace      (AddrSpace    as);
          Space     &getSpaceGblArr(Core::String glyph);
          Space     &getSpaceGblReg();
+         Space     &getSpaceLocArr(Core::String glyph);
          Space     &getSpaceMapArr(Core::String glyph);
          Space     &getSpaceMapReg();
          Space     &getSpaceSta();
@@ -101,6 +103,8 @@ namespace GDCC
          TableCRange<Object>    rangeObject     () const;
          TableRange <Space>     rangeSpaceGblArs();
          TableCRange<Space>     rangeSpaceGblArs() const;
+         TableRange <Space>     rangeSpaceLocArs();
+         TableCRange<Space>     rangeSpaceLocArs() const;
          TableRange <Space>     rangeSpaceMapArs();
          TableCRange<Space>     rangeSpaceMapArs() const;
          TableRange <Space>     rangeSpaceWldArs();
@@ -113,6 +117,7 @@ namespace GDCC
          std::size_t sizeImport()      const;
          std::size_t sizeObject()      const;
          std::size_t sizeSpaceGblArs() const;
+         std::size_t sizeSpaceLocArs() const;
          std::size_t sizeSpaceMapArs() const;
          std::size_t sizeSpaceWldArs() const;
          std::size_t sizeStrEnt()      const;
@@ -128,6 +133,7 @@ namespace GDCC
          Table<Import>    tableImport;
          Table<Object>    tableObject;
          Table<Space>     tableSpaceGblArs;
+         Table<Space>     tableSpaceLocArs;
          Table<Space>     tableSpaceMapArs;
          Table<Space>     tableSpaceWldArs;
          Table<StrEnt>    tableStrEnt;

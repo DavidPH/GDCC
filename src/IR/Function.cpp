@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,8 +18,6 @@
 #include "IR/OArchive.hpp"
 #include "IR/Program.hpp"
 #include "IR/ScriptType.hpp"
-
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -85,9 +83,22 @@ namespace GDCC
       //
       OArchive &operator << (OArchive &out, Function const &in)
       {
-         return out << in.block << in.ctype << in.label << in.linka
-            << in.localAut << in.localReg << in.param << in.retrn << in.stype
-            << in.valueInt << in.valueStr << in.alloc << in.defin << in.sflagNet
+         return out
+            << in.block
+            << in.ctype
+            << in.label
+            << in.linka
+            << in.localArr
+            << in.localAut
+            << in.localReg
+            << in.param
+            << in.retrn
+            << in.stype
+            << in.valueInt
+            << in.valueStr
+            << in.alloc
+            << in.defin
+            << in.sflagNet
             << in.sflagClS;
       }
 
@@ -96,9 +107,18 @@ namespace GDCC
       //
       IArchive &operator >> (IArchive &in, Function &out)
       {
-         in >> out.block >> out.ctype >> out.label >> out.linka >> out.localAut
-            >> out.localReg >> out.param >> out.retrn >> out.stype
-            >> out.valueInt >> out.valueStr;
+         in >> out.block
+            >> out.ctype
+            >> out.label
+            >> out.linka
+            >> out.localArr
+            >> out.localAut
+            >> out.localReg
+            >> out.param
+            >> out.retrn
+            >> out.stype
+            >> out.valueInt
+            >> out.valueStr;
 
          out.alloc    = GetIR<bool>(in);
          out.defin    = GetIR<bool>(in);

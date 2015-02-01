@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -142,6 +142,7 @@ namespace GDCC
          case AddrBase::GblArr:
          case AddrBase::GblArs: return findSpaceGblArr(as.name);
          case AddrBase::GblReg: return &getSpaceGblReg();
+         case AddrBase::LocArr: return findSpaceLocArr(as.name);
          case AddrBase::MapArr:
          case AddrBase::MapArs: return findSpaceMapArr(as.name);
          case AddrBase::MapReg: return &getSpaceMapReg();
@@ -161,6 +162,14 @@ namespace GDCC
       Space *Program::findSpaceGblArr(Core::String glyph)
       {
          return FindTable(tableSpaceGblArs, glyph);
+      }
+
+      //
+      // Program::findSpaceLocArr
+      //
+      Space *Program::findSpaceLocArr(Core::String glyph)
+      {
+         return FindTable(tableSpaceLocArs, glyph);
       }
 
       //
@@ -243,6 +252,7 @@ namespace GDCC
          case AddrBase::GblArr:
          case AddrBase::GblArs: return getSpaceGblArr(as.name);
          case AddrBase::GblReg: return getSpaceGblReg();
+         case AddrBase::LocArr: return getSpaceLocArr(as.name);
          case AddrBase::MapArr:
          case AddrBase::MapArs: return getSpaceMapArr(as.name);
          case AddrBase::MapReg: return getSpaceMapReg();
@@ -271,6 +281,14 @@ namespace GDCC
       Space &Program::getSpaceGblReg()
       {
          return spaceGblReg;
+      }
+
+      //
+      // Program::getSpaceLocArr
+      //
+      Space &Program::getSpaceLocArr(Core::String glyph)
+      {
+         return GetTable(tableSpaceLocArs, glyph, AddrSpace(AddrBase::LocArr, glyph));
       }
 
       //
@@ -508,6 +526,22 @@ namespace GDCC
       }
 
       //
+      // Program::rangeSpaceLocArs
+      //
+      auto Program::rangeSpaceLocArs() -> TableRange<Space>
+      {
+         return RangeTable(tableSpaceLocArs);
+      }
+
+      //
+      // Program::rangeSpaceLocArs
+      //
+      auto Program::rangeSpaceLocArs() const -> TableCRange<Space>
+      {
+         return RangeTable(tableSpaceLocArs);
+      }
+
+      //
       // Program::rangeSpaceMapArs
       //
       auto Program::rangeSpaceMapArs() -> TableRange<Space>
@@ -593,6 +627,14 @@ namespace GDCC
       std::size_t Program::sizeSpaceGblArs() const
       {
          return tableSpaceGblArs.size();
+      }
+
+      //
+      // Program::sizeSpaceLocArs
+      //
+      std::size_t Program::sizeSpaceLocArs() const
+      {
+         return tableSpaceLocArs.size();
       }
 
       //

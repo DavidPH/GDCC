@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -144,6 +144,7 @@ namespace GDCC
          fn.ctype    = IR::GetCallTypeIR(ctype);
          fn.label    = label;
          fn.linka    = linka;
+         fn.localArr = localArr;
          fn.localAut = localAut;
          fn.localReg = localReg + localTmp.max();
          fn.param    = param;

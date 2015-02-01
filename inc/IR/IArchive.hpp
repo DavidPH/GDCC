@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,6 +19,7 @@
 
 #include <istream>
 #include <sstream>
+#include <unordered_map>
 #include <vector>
 
 
@@ -183,6 +184,30 @@ namespace GDCC
       {
          typename Core::Array<T>::size_type s; in >> s;
          out = Core::Array<T>(s, GetIRCaller<T>(in));
+         return in;
+      }
+
+      //
+      // operator IArchive >> std::pair
+      //
+      template<typename T1, typename T2>
+      IArchive &operator >> (IArchive &in, std::pair<T1, T2> &out)
+      {
+         return in >> out.first >> out.second;
+      }
+
+      //
+      // operator IArchive >> std::unordered_map
+      //
+      template<typename Key, typename T, typename Hash, typename KeyEqual, typename Allocator>
+      IArchive &operator >> (IArchive &in,
+         std::unordered_map<Key, T, Hash, KeyEqual, Allocator> &out)
+      {
+         typename std::unordered_map<Key, T, Hash, KeyEqual, Allocator>::size_type s;
+         in >> s;
+         out.clear(); out.reserve(s);
+         while(s--)
+            out.emplace(GetIR_T<std::pair<Key, T>>::GetIR_F(in));
          return in;
       }
 
