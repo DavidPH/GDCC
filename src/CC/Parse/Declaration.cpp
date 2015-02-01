@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -157,6 +157,7 @@ namespace GDCC
             {
             case IR::AddrBase::Aut:
             case IR::AddrBase::Gen:
+            case IR::AddrBase::LocArr:
             case IR::AddrBase::LocReg:
                break;
 
