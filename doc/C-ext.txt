@@ -457,6 +457,7 @@ Syntax:
 
   address-space-specifier:
     <__gbl_arr>
+    <__loc_arr>
     <__map_arr>
     <__wld_arr>
 
@@ -467,6 +468,10 @@ Constraints:
 
 Semantics:
   Declares or defines an address space for use as an address space name.
+
+  If the address space specifier is __loc_arr, the decalration shall be at
+  block scope and have no storage class specifier. The resulting address space
+  has no linkage.
 
   If the storage class specifier is extern, the declaration is a forward
   declaration. Otherwise it defines a new address space.
@@ -684,6 +689,7 @@ Grammar
 
   address-space-specifier:
     <__gbl_arr>
+    <__loc_arr>
     <__map_arr>
     <__wld_arr>
 

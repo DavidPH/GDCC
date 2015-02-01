@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,6 +17,8 @@
 #include "../Core/Number.hpp"
 #include "../Core/NumberAlloc.hpp"
 #include "../Core/StringGen.hpp"
+
+#include <unordered_map>
 
 
 //----------------------------------------------------------------------------|
@@ -51,6 +53,7 @@ namespace GDCC
 
       protected:
          using IRExpCPtr     = Core::CounterPtr<IR::Exp   const>;
+         using LocalArr      = std::unordered_map<Core::FastU, Core::FastU>;
          using StatementCPtr = Core::CounterPtr<Statement const>;
          using TypeCPtr      = Core::CounterPtr<Type      const>;
 
@@ -81,6 +84,7 @@ namespace GDCC
          Core::String   labelEnd;
          Core::String   labelTmp;
          IR::Linkage    linka;
+         LocalArr       localArr;
          Core::FastU    localAut;
          Core::FastU    localReg;
          Core::String   name;

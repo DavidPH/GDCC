@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,6 +20,7 @@
 #include "AST/Attribute.hpp"
 #include "AST/Function.hpp"
 #include "AST/Object.hpp"
+#include "AST/Space.hpp"
 #include "AST/Storage.hpp"
 #include "AST/Type.hpp"
 
@@ -86,21 +87,30 @@ namespace GDCC
       {
          IR::Type_Fixed idxType{Platform::GetWordBits(), 0, 0, 0};
 
+         auto objSpace = obj->type->getQualAddr();
+
          // If one is not specified, select an address space now.
-         if(obj->type->getQualAddr().base == IR::AddrBase::Gen)
+         if(objSpace.base == IR::AddrBase::Gen)
          {
             if(obj->refer)
-               obj->type = obj->type->getTypeArrayQualAddr(IR::AddrBase::Aut);
+               objSpace.base = IR::AddrBase::Aut;
             else
-               obj->type = obj->type->getTypeArrayQualAddr(IR::AddrBase::LocReg);
+               objSpace.base = IR::AddrBase::LocReg;
+
+            obj->type = obj->type->getTypeArrayQualAddr(objSpace);
          }
 
          // Select type of local to allocate.
          Core::FastU *idx;
-         switch(obj->type->getQualAddr().base)
+         switch(objSpace.base)
          {
          case IR::AddrBase::Aut:    idx = &alloc.localAut; break;
          case IR::AddrBase::LocReg: idx = &alloc.localReg; break;
+
+         case IR::AddrBase::LocArr:
+            idx = &alloc.spaceMap[getSpaceValue(objSpace.name)];
+            break;
+
          default: return; // Any other address space is an error.
          }
 
@@ -109,6 +119,21 @@ namespace GDCC
 
          // Update allocation info.
          *idx += obj->type->getSizeWords();
+      }
+
+      //
+      // Scope_Local::allocAutoSpace
+      //
+      void Scope_Local::allocAutoSpace(AllocAutoInfo &alloc, AST::Space *space)
+      {
+         IR::Type_Fixed idxType{Platform::GetWordBits(), 0, 0, 0};
+
+         // Set space's value (index/address).
+         space->value = IR::ExpCreate_Value(
+            IR::Value_Fixed(alloc.localArr, idxType), {nullptr, 0});
+
+         // Update allocation info.
+         alloc.localArr += 1;
       }
 
       //
@@ -168,6 +193,9 @@ namespace GDCC
 
          for(auto itr : localObj)
             itr.second->genObject(prog);
+
+         for(auto itr : localSpace)
+            itr.second->genSpace(prog);
       }
 
       //
@@ -236,8 +264,49 @@ namespace GDCC
 
          return obj;
       }
+
+      //
+      // Scope_Local::getSpace
+      //
+      AST::Space::Ref Scope_Local::getSpace(AST::Attribute const &attr)
+      {
+         if(attr.storeExt || attr.storeInt)
+            return global.getSpace(attr);
+
+         auto glyph = genGlyphObj(attr.name, attr.linka);
+         auto space = AST::Space::Create(attr.name, glyph);
+
+         space->linka = attr.linka;
+         space->space = attr.space.base;
+
+         localSpace.emplace(attr.name ? attr.name : glyph, space);
+
+         return space;
+      }
+
+      //
+      // Scope_Local::getSpaceValue
+      //
+      Core::FastU Scope_Local::getSpaceValue(Core::String glyph) const
+      {
+         for(auto const &itr : localSpace)
+         {
+            if(itr.second->glyph == glyph)
+            {
+               if(itr.second->value)
+                  return itr.second->value->getValue().getFastU();
+
+               return 0;
+            }
+         }
+
+         if(auto *scope = dynamic_cast<Scope_Local *>(parent))
+            return scope->getSpaceValue(glyph);
+
+         return 0;
+      }
    }
 }
 
-//EOF
+// EOF
 

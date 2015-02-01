@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -36,6 +36,8 @@ namespace GDCC
       {
          // Allocate local objects.
          auto alloc = base;
+         for(auto &itr : localSpace)
+            allocAutoSpace(alloc, itr.second);
          for(auto &itr : localObj)
             allocAutoObj(alloc, itr.second);
 
@@ -49,5 +51,5 @@ namespace GDCC
    }
 }
 
-//EOF
+// EOF
 

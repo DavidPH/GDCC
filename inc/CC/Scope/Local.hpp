@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -60,6 +60,9 @@ namespace GDCC
          public:
             void setMax(AllocAutoInfo const &alloc);
 
+            std::unordered_map<Core::FastU, Core::FastU> spaceMap;
+
+            Core::FastU localArr = 0;
             Core::FastU localAut = 0;
             Core::FastU localReg = 0;
          };
@@ -81,6 +84,8 @@ namespace GDCC
 
          Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
 
+         Core::CounterRef<AST::Space> getSpace(AST::Attribute const &attr);
+
          Scope_Function &fn;
          Scope_Global   &global;
          Core::String    label;
@@ -92,7 +97,12 @@ namespace GDCC
 
          void allocAutoObj(AllocAutoInfo &alloc, AST::Object *obj);
 
+         void allocAutoSpace(AllocAutoInfo &alloc, AST::Space *space);
+
+         Core::FastU getSpaceValue(Core::String name) const;
+
          LookupTable<AST::Object> localObj;
+         LookupTable<AST::Space>  localSpace;
 
          std::vector<std::unique_ptr<Scope_Block>> subScopes;
       };

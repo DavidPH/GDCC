@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -81,6 +81,7 @@ namespace GDCC
             allocSub.setMax(ctx->allocAuto(alloc));
 
          // Set function's local counts.
+         fn->localArr = allocSub.spaceMap;
          fn->localAut = allocSub.localAut;
          fn->localReg = allocSub.localReg;
       }
@@ -128,5 +129,5 @@ namespace GDCC
    }
 }
 
-//EOF
+// EOF
 

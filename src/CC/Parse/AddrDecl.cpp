@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,7 @@
 //
 // address-space-specifier:
 //    <__gbl_arr>
+//    <__loc_arr>
 //    <__map_arr>
 //    <__wld_arr>
 //
@@ -22,6 +23,7 @@
 #include "CC/Parse.hpp"
 
 #include "CC/Scope/Global.hpp"
+#include "CC/Scope/Local.hpp"
 
 #include "AST/Attribute.hpp"
 #include "AST/Space.hpp"
@@ -32,6 +34,28 @@
 #include "IR/Addr.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+
+
+//----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace CC
+   {
+      //
+      // GetSpace
+      //
+      AST::Space::Ref GetSpace(Scope &scope, AST::Attribute &attr)
+      {
+         if(auto p = dynamic_cast<Scope_Local *>(&scope))
+            return p->getSpace(attr);
+
+         return scope.global.getSpace(attr);
+      }
+   }
+}
 
 
 //----------------------------------------------------------------------------|
@@ -72,6 +96,7 @@ namespace GDCC
          switch(ctx.in.get().str)
          {
          case Core::STR___gbl_arr: attr.space.base = IR::AddrBase::GblArr; break;
+         case Core::STR___loc_arr: attr.space.base = IR::AddrBase::LocArr; break;
          case Core::STR___map_arr: attr.space.base = IR::AddrBase::MapArr; break;
          case Core::STR___wld_arr: attr.space.base = IR::AddrBase::WldArr; break;
          default: throw Core::ExceptStr(ctx.in.reget().pos,
@@ -93,10 +118,13 @@ namespace GDCC
             throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
 
          // Determine linkage.
-         if(attr.storeInt)
+         if(attr.space.base == IR::AddrBase::LocArr)
+            attr.linka = IR::Linkage::None;
+
+         else if(attr.storeInt)
             attr.linka = IR::GetLinkageInt(attr.linka);
 
-         auto space = scope.global.getSpace(attr);
+         auto space = GetSpace(scope, attr);
 
          if(!attr.storeExt)
             space->defin = true;
