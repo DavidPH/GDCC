@@ -52,6 +52,7 @@ namespace GDCC
       void Info::gen()
       {
          for(auto &itr : prog->rangeSpaceGblArs()) genSpace(itr);
+         for(auto &itr : prog->rangeSpaceLocArs()) genSpace(itr);
          for(auto &itr : prog->rangeSpaceMapArs()) genSpace(itr);
          for(auto &itr : prog->rangeSpaceWldArs()) genSpace(itr);
 
@@ -144,6 +145,7 @@ namespace GDCC
       void Info::pre()
       {
          for(auto &itr : prog->rangeSpaceGblArs()) preSpace(itr);
+         for(auto &itr : prog->rangeSpaceLocArs()) preSpace(itr);
          for(auto &itr : prog->rangeSpaceMapArs()) preSpace(itr);
          for(auto &itr : prog->rangeSpaceWldArs()) preSpace(itr);
 
@@ -331,6 +333,7 @@ namespace GDCC
       void Info::tr()
       {
          for(auto &itr : prog->rangeSpaceGblArs()) trSpace(itr);
+         for(auto &itr : prog->rangeSpaceLocArs()) trSpace(itr);
          for(auto &itr : prog->rangeSpaceMapArs()) trSpace(itr);
          for(auto &itr : prog->rangeSpaceWldArs()) trSpace(itr);
 
