@@ -671,6 +671,7 @@ namespace GDCC
             << in.tableGlyphData
             << in.tableImport
             << in.tableSpaceGblArs
+            << in.tableSpaceLocArs
             << in.tableSpaceMapArs
             << in.tableSpaceWldArs
             << in.tableStrEnt
@@ -727,6 +728,7 @@ namespace GDCC
          };
 
          getSpace(AddrBase::GblArr, &Program::getSpaceGblArr);
+         getSpace(AddrBase::LocArr, &Program::getSpaceLocArr);
          getSpace(AddrBase::MapArr, &Program::getSpaceMapArr);
          getSpace(AddrBase::WldArr, &Program::getSpaceWldArr);
 
