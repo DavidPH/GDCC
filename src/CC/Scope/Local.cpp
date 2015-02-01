@@ -45,6 +45,10 @@ namespace GDCC
       //
       void Scope_Local::AllocAutoInfo::setMax(AllocAutoInfo const &alloc)
       {
+         for(auto const &itr : alloc.spaceMap)
+            spaceMap[itr.first] = std::max(spaceMap[itr.first], itr.second);
+
+         localArr = std::max(localArr, alloc.localArr);
          localAut = std::max(localAut, alloc.localAut);
          localReg = std::max(localReg, alloc.localReg);
       }
