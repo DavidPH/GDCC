@@ -62,6 +62,15 @@ namespace GDCC
             ParseBlock(ctx, func.block, Core::TOK_BraceC);
             break;
 
+         case Core::STR_localArr:
+            {
+               TokenDrop(ctx, Core::TOK_BrackO, "'['");
+               auto arr = GetFastU(ctx);
+               TokenDrop(ctx, Core::TOK_BrackC, "']'");
+               func.localArr[arr] = GetFastU(TokenDropEq(ctx));
+            }
+            break;
+
          default:
             throw Core::ParseExceptExpect(ctx.in.reget(), "Function argument", false);
          }

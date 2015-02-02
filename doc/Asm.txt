@@ -45,6 +45,7 @@ Syntax:
     <defin> = expression
     <label> = string
     <linka> = linkage-specifier
+    <localArr> [ expression ] = expression
     <localArs> = expression
     <localReg> = expression
     <param> = expression
@@ -105,6 +106,13 @@ linka
 
 Semantics:
   Sets the function's linkage.
+
+-----------------------------------------------------------
+localArr
+-----------------------------------------------------------
+
+Semantics:
+  Sets the number of words to allocate for a specified local array.
 
 -----------------------------------------------------------
 localArs
@@ -1375,6 +1383,7 @@ Grammar
     <defin> = expression
     <label> = string
     <linka> = linkage-specifier
+    <localArr> [ expression ] = expression
     <localArs> = expression
     <localReg> = expression
     <param> = expression

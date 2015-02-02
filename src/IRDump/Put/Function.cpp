@@ -86,6 +86,8 @@ namespace GDCC
          if(fn.defin)    out << " \\\n   defin="    << fn.defin;
          if(fn.label)   {out << " \\\n   label=";      PutString(out, fn.label);}
                          out << " \\\n   linka="    << fn.linka;
+         for(auto const &itr : fn.localArr)
+            out << " \\\n   localArr[" << itr.first << "]=" << itr.second;
          if(fn.localAut) out << " \\\n   localAut=" << fn.localAut;
          if(fn.localReg) out << " \\\n   localReg=" << fn.localReg;
          if(fn.param)    out << " \\\n   param="    << fn.param;
