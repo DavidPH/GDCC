@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -125,6 +125,23 @@ namespace GDCC
          bool peek(TokenType tt1, String ts1, TokenType tt2)
          {
             if(drop(tt1, ts1))
+            {
+               bool ret = peek(tt2);
+               unget();
+               return ret;
+            }
+            else
+               return false;
+         }
+
+         //
+         // peek
+         //
+         // Performs a two-token peek.
+         //
+         bool peek(TokenType tt1, TokenType tt2)
+         {
+            if(drop(tt1))
             {
                bool ret = peek(tt2);
                unget();

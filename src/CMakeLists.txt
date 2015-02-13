@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2014 David Hill
+## Copyright (C) 2013-2015 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -15,6 +15,7 @@
 ## Targets                                                                    |
 ##
 
+add_subdirectory(ACC)
 add_subdirectory(AS)
 add_subdirectory(AST)
 add_subdirectory(Bytecode)

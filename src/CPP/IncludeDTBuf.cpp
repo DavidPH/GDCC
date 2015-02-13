@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -105,6 +105,19 @@ namespace GDCC
    namespace CPP
    {
       //
+      // IncludeDTBuf constructor
+      //
+      IncludeDTBuf::IncludeDTBuf(Core::TokenBuf &src_, IStreamHeader &istr_,
+         MacroMap &macros_, Pragma &pragma_, Core::String dir_) :
+         DirectiveTBuf{src_},
+         istr(istr_),
+         macros(macros_),
+         pragma(pragma_),
+         dir{dir_}
+      {
+      }
+
+      //
       // IncludeDTBuf destructor
       //
       IncludeDTBuf::~IncludeDTBuf()
@@ -161,7 +174,7 @@ namespace GDCC
 
          // Read header token(s).
          std::vector<Core::Token> toks;
-         istr.needHeader = true; // Try to get header token.
+         istr.setNeedHeader(); // Try to get header token.
          while(src.peek().tok != Core::TOK_LnEnd && src.peek().tok != Core::TOK_EOF)
             toks.emplace_back(src.get());
 

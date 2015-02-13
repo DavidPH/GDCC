@@ -1,19 +1,19 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2015 David Hill
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// C input stream.
+// ACS input stream.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__CPP__IStream_H__
-#define GDCC__CPP__IStream_H__
+#ifndef GDCC__ACC__IStream_H__
+#define GDCC__ACC__IStream_H__
 
-#include "../CPP/TrigraphBuf.hpp"
+#include "../CPP/IStream.hpp"
 
 #include "../Core/CommentBuf.hpp"
 #include "../Core/EscapeBuf.hpp"
@@ -35,31 +35,17 @@ namespace GDCC
       class Token;
    }
 
-   namespace CPP
+   namespace ACC
    {
-      //
-      // IStreamHeader
-      //
-      class IStreamHeader : public std::istream
-      {
-      public:
-         IStreamHeader(std::streambuf *buf) : std::istream{buf} {}
-
-         virtual void setNeedHeader() = 0;
-
-
-         static bool GetHeader(std::istream &in, Core::Token &out);
-      };
-
       //
       // IStream
       //
-      class IStream : public IStreamHeader
+      class IStream : public CPP::IStreamHeader
       {
       public:
          IStream(std::streambuf &buf, Core::String file, std::size_t line = 1) :
-            IStreamHeader{&cbuf}, needHeader{false}, lbuf{buf},
-            obuf{lbuf, file, line}, tbuf{obuf}, ebuf{tbuf}, cbuf{ebuf} {}
+            CPP::IStreamHeader{&cbuf}, needHeader{false}, lbuf{buf},
+            obuf{lbuf, file, line}, ebuf{obuf}, cbuf{ebuf} {}
 
          void disableComments() {rdbuf(&ebuf);}
 
@@ -79,13 +65,11 @@ namespace GDCC
       protected:
          using LBuf = Core::LineTermBuf<8>;
          using OBuf = Core::OriginBuf<8, 2>;
-         using TBuf = TrigraphBuf<8>;
          using EBuf = Core::StripEscapeBuf<8, 1, 1, char, '\n'>;
          using CBuf = Core::CCommentBuf<8>;
 
          LBuf lbuf;
          OBuf obuf;
-         TBuf tbuf;
          EBuf ebuf;
          CBuf cbuf;
       };
@@ -98,11 +82,11 @@ namespace GDCC
 
 namespace GDCC
 {
-   namespace CPP
+   namespace ACC
    {
       IStream &operator >> (IStream &in, Core::Token &out);
    }
 }
 
-#endif//GDCC__CPP__IStream_H__
+#endif//GDCC__ACC__IStream_H__
 

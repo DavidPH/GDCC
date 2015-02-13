@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__CPP__PPTokenTBuf_H__
-#define GDCC__CPP__PPTokenTBuf_H__
+#ifndef GDCC__ACC__PPTokenTBuf_H__
+#define GDCC__ACC__PPTokenTBuf_H__
 
 #include "../Core/TokenBuf.hpp"
 
@@ -22,7 +22,7 @@
 
 namespace GDCC
 {
-   namespace CPP
+   namespace ACC
    {
       //
       // PPTokenTBuf
@@ -38,12 +38,6 @@ namespace GDCC
          static bool IsNumFix(Core::String str);
          static bool IsNumFlt(Core::String str);
 
-         static char const *SkipBin(char const *itr, char const *end);
-         static char const *SkipDec(char const *itr, char const *end);
-         static char const *SkipFlt(char const *itr, char const *end);
-         static char const *SkipHex(char const *itr, char const *end);
-         static char const *SkipOct(char const *itr, char const *end);
-
       protected:
          virtual void underflow();
 
@@ -53,5 +47,5 @@ namespace GDCC
    }
 }
 
-#endif//GDCC__CPP__PPTokenTBuf_H__
+#endif//GDCC__ACC__PPTokenTBuf_H__
 

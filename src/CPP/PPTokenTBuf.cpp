@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -61,7 +61,7 @@ namespace GDCC
       //
       bool PPTokenTBuf::IsKeyWrd(Core::String str)
       {
-         switch(static_cast<Core::StringIndex>(str))
+         switch(str)
          {
          case Core::STR__Alignas:
          case Core::STR__Alignof:
@@ -130,7 +130,7 @@ namespace GDCC
                itr = SkipHex(itr + 1, end);
 
             // binary-constant
-            if(*itr == 'B' || *itr == 'b')
+            else if(*itr == 'B' || *itr == 'b')
                itr = SkipBin(itr + 1, end);
 
             // octal-constant

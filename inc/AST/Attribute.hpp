@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -85,9 +85,11 @@ namespace GDCC
 
          bool storeAuto   : 1;
          bool storeExt    : 1;
+         bool storeGbl    : 1;
          bool storeInt    : 1;
          bool storeReg    : 1;
          bool storeThread : 1;
+         bool storeWld    : 1;
       };
    }
 }

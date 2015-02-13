@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,27 +24,25 @@
 
 namespace GDCC
 {
+   namespace Core
+   {
+      class TokenStream;
+   }
+
    namespace CPP
    {
-      class IStream;
+      class IStreamHeader;
       class MacroMap;
       class Pragma;
 
       //
       // IncludeDTBuf
       //
-      class IncludeDTBuf final : public DirectiveTBuf
+      class IncludeDTBuf : public DirectiveTBuf
       {
       public:
-         IncludeDTBuf(Core::TokenBuf &src_, IStream &istr_, MacroMap &macros_,
-            Pragma &pragma_, Core::String dir_) :
-            DirectiveTBuf{src_},
-            istr(istr_),
-            macros(macros_),
-            pragma(pragma_),
-            dir{dir_}
-         {
-         }
+         IncludeDTBuf(Core::TokenBuf &src, IStreamHeader &istr,
+            MacroMap &macros, Pragma &pragma, Core::String dir);
 
          virtual ~IncludeDTBuf();
 
@@ -52,7 +50,7 @@ namespace GDCC
          static void AddIncludeLang(char const *lang);
 
       protected:
-         void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
+         virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
 
          bool doIncHdr(Core::String name, Core::Origin pos);
          bool doIncStr(Core::String name, Core::Origin pos);
@@ -64,13 +62,13 @@ namespace GDCC
 
          virtual void underflow();
 
-         std::unique_ptr<std::streambuf> str;
-         std::unique_ptr<IncStream>      inc;
+         std::unique_ptr<std::streambuf>    str;
+         std::unique_ptr<Core::TokenStream> inc;
 
-         IStream     &istr;
-         MacroMap    &macros;
-         Pragma      &pragma;
-         Core::String dir;
+         IStreamHeader &istr;
+         MacroMap      &macros;
+         Pragma        &pragma;
+         Core::String   dir;
       };
    }
 }

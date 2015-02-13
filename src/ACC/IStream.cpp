@@ -1,23 +1,22 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2015 David Hill
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// C input stream.
+// ACS input stream.
 //
 //-----------------------------------------------------------------------------
 
-#include "CPP/IStream.hpp"
+#include "ACC/IStream.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
 #include "Core/Token.hpp"
 
 #include <cctype>
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -26,7 +25,7 @@
 
 namespace GDCC
 {
-   namespace CPP
+   namespace ACC
    {
       //
       // IsIdentiChar
@@ -45,49 +44,8 @@ namespace GDCC
 
 namespace GDCC
 {
-   namespace CPP
+   namespace ACC
    {
-      //
-      // IStreamHeader::GetHeader
-      //
-      bool IStreamHeader::GetHeader(std::istream &in, Core::Token &out)
-      {
-         while(std::isspace(in.peek())) in.get();
-
-         int c = in.get();
-
-         // System header.
-         if(c == '<')
-         {
-            std::string str;
-
-            while((c = in.get()) != EOF && c != '>')
-               str += static_cast<char>(c);
-
-            out.str = {str.data(), str.size()};
-            out.tok = Core::TOK_Header;
-
-            return true;
-         }
-
-         // String header.
-         if(c == '"')
-         {
-            std::string str;
-
-            while((c = in.get()) != EOF && c != '"')
-               str += static_cast<char>(c);
-
-            out.str = {str.data(), str.size()};
-            out.tok = Core::TOK_HdrStr;
-
-            return true;
-         }
-
-         in.unget();
-         return false;
-      }
-
       //
       // operator IStream >> Core::Token
       //
@@ -108,6 +66,7 @@ namespace GDCC
          // Basic tokens.
          switch(c)
          {
+         case ':':  GDCC_Core_Token_SetStrTok(out, Colon);  return in;
          case ',':  GDCC_Core_Token_SetStrTok(out, Comma);  return in;
          case '~':  GDCC_Core_Token_SetStrTok(out, Inv);    return in;
          case '?':  GDCC_Core_Token_SetStrTok(out, Query);  return in;
@@ -119,8 +78,6 @@ namespace GDCC
          case '(':  GDCC_Core_Token_SetStrTok(out, ParenO); return in;
          case ')':  GDCC_Core_Token_SetStrTok(out, ParenC); return in;
          case '\n': GDCC_Core_Token_SetStrTok(out, LnEnd);  return in;
-       //case ' ':  GDCC_Core_Token_SetStrTok(out, Space);  return in;
-       //case '\t': GDCC_Core_Token_SetStrTok(out, Tabul);  return in;
 
          case '+':
             c = in.get();
@@ -144,18 +101,11 @@ namespace GDCC
 
          case '<':
             c = in.get();
-            if(c == '%')    return GDCC_Core_Token_SetStrTok(out, DG_BraceO), in;
-            if(c == ':')    return GDCC_Core_Token_SetStrTok(out, DG_BrackO), in;
             if(c == '=')    return GDCC_Core_Token_SetStrTok(out, CmpLE), in;
             if(c == '<') {c = in.get();
                if(c == '=') return GDCC_Core_Token_SetStrTok(out, ShLEq), in;
                in.unget();  return GDCC_Core_Token_SetStrTok(out, ShL), in;}
             in.unget();     return GDCC_Core_Token_SetStrTok(out, CmpLT), in;
-
-         case ':':
-            c = in.get();
-            if(c == '>') return GDCC_Core_Token_SetStrTok(out, DG_BrackC), in;
-            in.unget();  return GDCC_Core_Token_SetStrTok(out, Colon), in;
 
          case '.':
             // Is this actually a number?
@@ -185,14 +135,8 @@ namespace GDCC
 
          case '%':
             c = in.get();
-            if(c == '>')       return GDCC_Core_Token_SetStrTok(out, DG_BraceC), in;
-            if(c == '=')       return GDCC_Core_Token_SetStrTok(out, ModEq), in;
-            if(c == ':') {c = in.get();
-               if(c == '%') {c = in.get();
-                  if(c == ':') return GDCC_Core_Token_SetStrTok(out, DG_Hash2), in;
-                  in.unget();}
-               in.unget();     return GDCC_Core_Token_SetStrTok(out, DG_Hash), in;}
-            in.unget();        return GDCC_Core_Token_SetStrTok(out, Mod), in;
+            if(c == '=') return GDCC_Core_Token_SetStrTok(out, ModEq), in;
+            in.unget();  return GDCC_Core_Token_SetStrTok(out, Mod), in;
 
          case '*':
             c = in.get();
@@ -273,31 +217,9 @@ namespace GDCC
          {
             std::string str;
 
-            do str += static_cast<char>(c);
+            do str += static_cast<char>(std::tolower(c));
             while((c = in.get()) != EOF && IsIdentiChar(c));
-
-            // Character/string with encoding prefix.
-            if(c == '"' || c == '\'')
-            {
-               // Parse character/string.
-               auto hold = in.holdComments();
-
-               try
-               {
-                  str    += Core::ReadStringC(in, c);
-                  out.str = {str.data(), str.size()};
-                  out.tok = c == '"' ? Core::TOK_String : Core::TOK_Charac;
-
-                  return in;
-               }
-               catch(Core::ParseException &e)
-               {
-                  e.setOrigin(out.pos);
-                  throw;
-               }
-            }
-            else if(c != EOF)
-               in.unget();
+            if(c != EOF) in.unget();
 
             out.str = {str.data(), str.size()};
             out.tok = Core::TOK_Identi;
