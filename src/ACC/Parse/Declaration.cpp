@@ -245,8 +245,8 @@ namespace GDCC
             // special-address:
             //    integer-constant :
             //    - integer-constant :
-            //    ( integer-constant ) :
-            //    ( integer-constant , integer-constant ) :
+            //    { integer-constant } :
+            //    { integer-constant , integer-constant } :
             if(ctx.in.peek(Core::TOK_NumInt))
             {
                attr.callt = IR::CallType::Special;
@@ -257,7 +257,7 @@ namespace GDCC
                attr.callt = IR::CallType::Native;
                attr.addrI = GetExp_Prim(ctx, scope)->getIRExp();
             }
-            else if(ctx.in.drop(Core::TOK_ParenO))
+            else if(ctx.in.drop(Core::TOK_BraceO))
             {
                attr.callt = IR::CallType::AsmFunc;
 
@@ -275,8 +275,8 @@ namespace GDCC
                   GetExp_Prim(ctx, scope)->getIRExp();
                }
 
-               if(!ctx.in.peek(Core::TOK_ParenC))
-                  throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+               if(!ctx.in.drop(Core::TOK_BraceC))
+                  throw Core::ParseExceptExpect(ctx.in.peek(), "}", true);
             }
             else
                throw Core::ParseExceptExpect(ctx.in.peek(), "special-address", false);
@@ -301,8 +301,6 @@ namespace GDCC
             //    parameter-type-list
             if(ctx.in.peek(Core::TOK_NumInt))
             {
-               ctx.in.get();
-
                auto argMin = CC::ExpToFastU(GetExp_Prim(ctx, scope));
 
                AST::TypeSet::CPtr types;
