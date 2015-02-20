@@ -1,0 +1,22 @@
+//-----------------------------------------------------------------------------
+//
+// Copyright(C) 2015 David Hill
+//
+// See COPYLIB for license information.
+//
+//-----------------------------------------------------------------------------
+//
+// Header for target library libacs.
+//
+// Declarations and definitions from Hexen's ACS.
+//
+//-----------------------------------------------------------------------------
+
+#ifndef __GDCC_Header__ACS__common_acs__
+#define __GDCC_Header__ACS__common_acs__
+
+#include "specials.acs"
+#include "defs.acs"
+
+#endif//__GDCC_Header__ACS__common_acs__
+

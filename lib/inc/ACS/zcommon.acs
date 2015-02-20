@@ -1,0 +1,22 @@
+//-----------------------------------------------------------------------------
+//
+// Copyright(C) 2015 David Hill
+//
+// See COPYLIB for license information.
+//
+//-----------------------------------------------------------------------------
+//
+// Header for target library libacs.
+//
+// Declarations and definitions from ZDoom's ACS.
+//
+//-----------------------------------------------------------------------------
+
+#ifndef __GDCC_Header__ACS__zcommon_acs__
+#define __GDCC_Header__ACS__zcommon_acs__
+
+#include "zspecial.acs"
+#include "zdefs.acs"
+
+#endif//__GDCC_Header__ACS__zcommon_acs__
+

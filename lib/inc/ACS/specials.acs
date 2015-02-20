@@ -1,0 +1,153 @@
+//-----------------------------------------------------------------------------
+//
+// Copyright(C) 2015 David Hill
+//
+// See COPYLIB for license information.
+//
+//-----------------------------------------------------------------------------
+//
+// Header for target library libacs.
+//
+// Special functions from Hexen's ACS.
+//
+//-----------------------------------------------------------------------------
+
+#ifndef __GDCC_Header__ACS__specials_acs__
+#define __GDCC_Header__ACS__specials_acs__
+
+
+//----------------------------------------------------------------------------|
+// Functions                                                                  |
+//
+
+special
+// void   1:Polyobj_StartLine,
+   void   2:Polyobj_RotateLeft(3),
+   void   3:Polyobj_RotateRight(3),
+   void   4:Polyobj_Move(4),
+// void   5:Polyobj_ExplicitLine,
+   void   6:Polyobj_MoveTimes8(4),
+   void   7:Polyobj_DoorSwing(4),
+   void   8:Polyobj_DoorSlide(5),
+
+   void  10:Door_Close(2),
+   void  11:Door_Open(2),
+   void  12:Door_Raise(3),
+   void  13:Door_LockedRaise(4),
+
+   void  20:Floor_LowerByValue(3),
+   void  21:Floor_LowerToLowest(2),
+   void  22:Floor_LowerToNearest(2),
+   void  23:Floor_RaiseByValue(3),
+   void  24:Floor_RaiseToHighest(2),
+   void  25:Floor_RaiseToNearest(2),
+   void  26:Stairs_BuildDown(5),
+   void  27:Stairs_BuildUp(5),
+   void  28:Floor_RaiseAndCrush(3),
+   void  29:Pillar_Build(3),
+   void  30:Pillar_Open(4),
+   void  31:Stairs_BuildDownSync(4),
+   void  32:Stairs_BuildUpSync(4),
+
+   void  35:Floor_RaiseByValueTimes8(3),
+   void  36:Floor_LowerByValueTimes8(3),
+
+   void  40:Ceiling_LowerByValue(3),
+   void  41:Ceiling_RaiseByValue(3),
+   void  42:Ceiling_CrushAndRaise(3),
+   void  43:Ceiling_LowerAndCrush(3),
+   void  44:Ceiling_CrushStop(1),
+   void  45:Ceiling_CrushRaiseAndStay(3),
+   void  46:Floor_CrushStop(1),
+
+   void  60:Plat_PerpetualRaise(3),
+   void  61:Plat_Stop(1),
+   void  62:Plat_DownWaitUpStay(3),
+   void  63:Plat_DownByValue(4),
+   void  64:Plat_UpWaitDownStay(3),
+   void  65:Plat_UpByValue(4),
+   void  66:Floor_LowerInstant(3),
+   void  67:Floor_RaiseInstant(3),
+   void  68:Floor_MoveToValueTimes8(4),
+   void  69:Ceiling_MoveToValueTimes8(4),
+   void  70:Teleport(1),
+   void  71:Teleport_NoFog(1),
+   void  74:Teleport_NewMap(2),
+   void  72:ThrustThing(2),
+   void  73:DamageThing(1),
+
+   void  80:ACS_Execute(5),
+   void  81:ACS_Suspend(2),
+   void  82:ACS_Terminate(2),
+   void  83:ACS_LockedExecute(5),
+
+   void  90:Polyobj_OR_RotateLeft(3),
+   void  91:Polyobj_OR_RotateRight(3),
+   void  92:Polyobj_OR_Move(4),
+   void  93:Polyobj_OR_MoveTimes8(4),
+   void  94:Pillar_BuildAndCrush(4),
+   void  95:FloorAndCeiling_LowerByValue(3),
+   void  96:FloorAndCeiling_RaiseByValue(3),
+
+// void 100:Scroll_Texture_Left,
+// void 101:Scroll_Texture_Right,
+// void 102:Scroll_Texture_Up,
+// void 103:Scroll_Texture_Down,
+
+   void 109:Light_ForceLightning(1),
+   void 110:Light_RaiseByValue(2),
+   void 111:Light_LowerByValue(2),
+   void 112:Light_ChangeToValue(2),
+   void 113:Light_Fade(3),
+   void 114:Light_Glow(4),
+   void 115:Light_Flicker(3),
+   void 116:Light_Strobe(5),
+
+   void 120:Radius_Quake(5),
+// void 121:Line_SetIdentification,
+
+// void 129:UsePuzzleItem,
+   void 130:Thing_Activate(1),
+   void 131:Thing_Deactivate(1),
+   void 133:Thing_Destroy(1),
+   void 134:Thing_Projectile(5),
+   void 136:Thing_ProjectileGravity(5),
+   void 132:Thing_Remove(1),
+   void 135:Thing_Spawn(3),
+   void 137:Thing_SpawnNoFog(3),
+   void 138:Floor_Waggle(5),
+   void 140:Sector_ChangeSound(2),
+
+   void  { 55,  56}:Delay(int),
+   int   { 57,  58}:Random(int, int),
+   int   { 59,  60}:ThingCount(int, int),
+   void  { 61,  62}:TagWait(int),
+   void  { 63,  64}:PolyWait(int),
+   void  { 65,  66}:ChangeFloor(int, str),
+   void  { 67,  68}:ChangeCeiling(int, str),
+
+   int   { 80     }:LineSide(void),
+   void  { 81,  82}:ScriptWait(int),
+   void  { 83     }:ClearLineSpecial(void),
+
+   void  { 85     }:BeginPrint(void),
+   void  { 86     }:EndPrint(void),
+   void  { 87     }:PrintString(str),
+   void  { 88     }:PrintInt(int),
+   void  { 88     }:PrintNumber(int),
+   void  { 89     }:PrintChar(char),
+   int   { 90     }:PlayerCount(void),
+   int   { 91     }:GameType(void),
+   int   { 92     }:GameSkill(void),
+   int   { 93     }:Timer(void),
+   void  { 94     }:SectorSound(str, int),
+   void  { 95     }:AmbientSound(str, int),
+   void  { 96     }:SoundSequence(str),
+   void  { 97     }:SetLineTexture(int, int, int, str),
+   void  { 98     }:SetLineBlocking(int, int),
+   void  { 99     }:SetLineSpecial(int, int, int, int, int, int, int),
+   void  {100     }:ThingSound(int, str, int),
+   void  {101     }:EndPrintBold(void);
+
+#endif//__GDCC_Header__ACS__specials_acs__
+
