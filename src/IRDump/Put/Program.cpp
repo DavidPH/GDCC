@@ -178,6 +178,7 @@ namespace GDCC
             out << ";; Imports: "                 << prog.sizeImport()      << '\n';
             out << ";; Objects: "                 << prog.sizeObject()      << '\n';
             out << ";; Address Spaces (GblArs): " << prog.sizeSpaceGblArs() << '\n';
+            out << ";; Address Spaces (LocArs): " << prog.sizeSpaceLocArs() << '\n';
             out << ";; Address Spaces (MapArs): " << prog.sizeSpaceMapArs() << '\n';
             out << ";; Address Spaces (WldArs): " << prog.sizeSpaceWldArs() << '\n';
             out << ";; String Table Entries: "    << prog.sizeStrEnt()      << '\n';
@@ -222,6 +223,7 @@ namespace GDCC
          {
             if(OptHeaders) PutHeader(out, "Address Spaces");
             for(auto const &sp : prog.rangeSpaceGblArs()) PutSpace(out, sp);
+            for(auto const &sp : prog.rangeSpaceLocArs()) PutSpace(out, sp);
             for(auto const &sp : prog.rangeSpaceMapArs()) PutSpace(out, sp);
             for(auto const &sp : prog.rangeSpaceWldArs()) PutSpace(out, sp);
          }
