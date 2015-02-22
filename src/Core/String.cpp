@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -242,6 +242,37 @@ namespace GDCC
       std::ostream &operator << (std::ostream &out, String in)
       {
          return out.write(in.data(), in.size());
+      }
+
+      //
+      // operator String + char const *
+      //
+      String operator + (String l, char const *r)
+      {
+         std::size_t rl, rh;
+         std::tie(rl, rh) = StrLenHash(r);
+
+         std::size_t len  = l.size() + rl;
+         std::size_t hash = StrHash(r, rl, l.getHash());
+
+         for(auto idx = StringData::GetFirst(hash); idx;)
+         {
+            auto const &entry = String::GetDataV()[idx];
+
+            if(entry.getHash() == hash && entry.size() == len &&
+               !std::memcmp(entry.data(),            l.data(), l.size()) &&
+               !std::memcmp(entry.data() + l.size(), r,        rl))
+               return String(idx);
+
+            idx = entry.getNext();
+         }
+
+         std::unique_ptr<char[]> newstr{new char[len + 1]};
+         std::memcpy(newstr.get(),            l.data(), l.size());
+         std::memcpy(newstr.get() + l.size(), r,        rl);
+         newstr[len] = '\0';
+
+         return String::Add(std::move(newstr), len, hash);
       }
 
       //

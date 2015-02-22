@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -187,6 +187,7 @@ namespace GDCC
       using Option::StrHash;
       using Option::StrLenHash;
 
+      String operator + (String      l, char const *r);
       String operator + (String      l, String      r);
       String operator + (String      l, StringIndex r);
       String operator + (StringIndex l, String      r);
@@ -217,6 +218,7 @@ namespace GDCC
       constexpr bool operator != (String      l, StringIndex r);
       constexpr bool operator != (StringIndex l, String      r);
 
+      String &operator += (String &l, char const *r);
       String &operator += (String &l, String      r);
       String &operator += (String &l, StringIndex r);
 
@@ -254,6 +256,7 @@ namespace GDCC
       constexpr bool operator != (StringIndex l, String r)
          {return static_cast<std::size_t>(l) != static_cast<std::size_t>(r);}
 
+      inline String &operator += (String &l, char const *r) {return l = l + r;}
       inline String &operator += (String &l, String      r) {return l = l + r;}
       inline String &operator += (String &l, StringIndex r) {return l = l + r;}
    }

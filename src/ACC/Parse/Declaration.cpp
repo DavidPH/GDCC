@@ -15,6 +15,7 @@
 #include "AST/Attribute.hpp"
 #include "AST/Function.hpp"
 #include "AST/Object.hpp"
+#include "AST/Space.hpp"
 #include "AST/Statement.hpp"
 #include "AST/Storage.hpp"
 #include "AST/Type.hpp"
@@ -377,6 +378,29 @@ namespace GDCC
       }
 
       //
+      // GetDeclObjectSpace
+      //
+      template<typename T>
+      static void GetDeclObjectSpace(T &scope, AST::Attribute &attr,
+         IR::AddrBase base)
+      {
+         auto spaceAttr = attr;
+
+         spaceAttr.name      += "$arr";
+         spaceAttr.space.base = base;
+
+         auto space = scope.getSpace(spaceAttr);
+
+         space->defin = true;
+         space->value = spaceAttr.addrI;
+
+         // Don't use the supplied address for the contained object.
+         attr.addrI = nullptr;
+
+         attr.type = attr.type->getTypeArrayQualAddr({base, space->glyph});
+      }
+
+      //
       // GetDeclObject (global)
       //
       static AST::Object::Ref GetDeclObject(CC::Scope_Global &scope,
@@ -388,27 +412,21 @@ namespace GDCC
          if(attr.storeGbl)
          {
             if(attr.type->isTypeArray())
-            {
-               throw Core::ExceptStr(attr.namePos, "global array stub");
-            }
+               GetDeclObjectSpace(scope, attr, IR::AddrBase::GblArr);
             else
                attr.type = attr.type->getTypeQualAddr(IR::AddrBase::GblReg);
          }
          else if(attr.storeWld)
          {
             if(attr.type->isTypeArray())
-            {
-               throw Core::ExceptStr(attr.namePos, "world array stub");
-            }
+               GetDeclObjectSpace(scope, attr, IR::AddrBase::WldArr);
             else
                attr.type = attr.type->getTypeQualAddr(IR::AddrBase::WldReg);
          }
          else
          {
             if(attr.type->isTypeArray())
-            {
-               throw Core::ExceptStr(attr.namePos, "map array stub");
-            }
+               GetDeclObjectSpace(scope, attr, IR::AddrBase::MapArr);
             else
                attr.type = attr.type->getTypeQualAddr(IR::AddrBase::MapReg);
          }
@@ -422,8 +440,14 @@ namespace GDCC
          {
             // First, make sure it has a complete type.
             if(!obj->type->isTypeComplete())
-               throw Core::ExceptStr(attr.namePos,
-                  "object with incomplete type");
+            {
+               // Allow global/world arrays to be incomplete for compatibility.
+               if(obj->type->isTypeArray() && (attr.storeGbl || attr.storeWld))
+                  obj->type = obj->type->getBaseType()->getTypeArray(1);
+               else
+                  throw Core::ExceptStr(attr.namePos,
+                     "object with incomplete type");
+            }
 
             obj->defin = true;
 
@@ -445,6 +469,10 @@ namespace GDCC
       static AST::Object::Ref GetDeclObject(CC::Scope_Local &scope,
          AST::Attribute &attr, bool init)
       {
+         // All block-scope declarations are definitions and all block-scope
+         // definitions must have no linkage.
+         attr.linka = IR::Linkage::None;
+
          if(attr.storeGbl)
             throw Core::ExceptStr(attr.namePos, "block scope global");
 
@@ -454,24 +482,17 @@ namespace GDCC
          if(attr.storeInt)
          {
             if(attr.type->isTypeArray())
-            {
-               throw Core::ExceptStr(attr.namePos, "static array stub");
-            }
+               GetDeclObjectSpace(scope, attr, IR::AddrBase::MapArr);
             else
                attr.type = attr.type->getTypeQualAddr(IR::AddrBase::MapReg);
          }
          else
          {
             if(attr.type->isTypeArray())
-            {
-               throw Core::ExceptStr(attr.namePos, "local array stub");
-            }
+               GetDeclObjectSpace(scope, attr, IR::AddrBase::LocArr);
             else
                attr.type = attr.type->getTypeQualAddr(IR::AddrBase::LocReg);
          }
-
-         // Determine linkage.
-         attr.linka = IR::Linkage::None;
 
          // Fetch/generate object.
          auto obj = scope.getObject(attr);
