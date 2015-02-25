@@ -31,6 +31,9 @@ namespace GDCC
 
    namespace ACC
    {
+      class PrintDecl;
+      class Scope_Global;
+
       //
       // ParserCtx
       //
@@ -65,12 +68,18 @@ namespace GDCC
    namespace ACC
    {
       Core::CounterRef<AST::Statement const> GetDecl(ParserCtx const &ctx,
-         CC::Scope_Global &scope);
+         Scope_Global &scope);
       Core::CounterRef<AST::Statement const> GetDecl(ParserCtx const &ctx,
          CC::Scope_Local &scope);
 
+      Core::CounterRef<AST::Statement const> GetDecl_Print(ParserCtx const &ctx,
+         Scope_Global &scope);
+
       Core::CounterRef<AST::Exp const> GetExp_Init(ParserCtx const &ctx, CC::Scope &scope,
          AST::Type const *type);
+
+      Core::CounterRef<AST::Exp const> GetExp_Unar_print(ParserCtx const &ctx,
+         CC::Scope &scope, PrintDecl const *print);
 
       Core::CounterRef<AST::Exp const> GetExp_Prim(ParserCtx const &ctx, CC::Scope &scope);
       Core::CounterRef<AST::Exp const> GetExp_Post(ParserCtx const &ctx, CC::Scope &scope);
@@ -91,6 +100,9 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> GetExp_Cond(ParserCtx const &ctx, CC::Scope &scope);
       Core::CounterRef<AST::Exp const> GetExp_Assi(ParserCtx const &ctx, CC::Scope &scope);
       Core::CounterRef<AST::Exp const> GetExp(ParserCtx const &ctx, CC::Scope &scope);
+
+      Core::Array<Core::CounterRef<AST::Exp const>> GetExpList(
+         ParserCtx const &ctx, CC::Scope &scope);
 
       Core::CounterRef<AST::Statement const> GetStatement(ParserCtx const &ctx,
          CC::Scope_Local &scope);

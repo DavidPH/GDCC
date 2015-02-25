@@ -59,6 +59,8 @@ namespace GDCC
       //
       bool PPTokenTBuf::IsKeyWrd(Core::String str)
       {
+         // Some identifiers which are keywords in acc need to be identifiers
+         // in gdcc-acc, due to differences in header implementation.
          switch(str)
          {
          case Core::STR_acs_executewait:
@@ -80,17 +82,17 @@ namespace GDCC
          case Core::STR_event:
          case Core::STR_for:
          case Core::STR_function:
-         case Core::STR_global:
+       //case Core::STR_global:
          case Core::STR_goto:
-         case Core::STR_hudmessage:
-         case Core::STR_hudmessagebold:
+       //case Core::STR_hudmessage:
+       //case Core::STR_hudmessagebold:
          case Core::STR_if:
          case Core::STR_int:
          case Core::STR_open:
-         case Core::STR_print:
-         case Core::STR_printbold:
+       //case Core::STR_print:
+       //case Core::STR_printbold:
          case Core::STR_lightning:
-         case Core::STR_log:
+       //case Core::STR_log:
          case Core::STR_net:
          case Core::STR_redreturn:
          case Core::STR_respawn:
@@ -101,7 +103,7 @@ namespace GDCC
          case Core::STR_static:
          case Core::STR_str:
          case Core::STR_strcpy:
-         case Core::STR_strparam:
+       //case Core::STR_strparam:
          case Core::STR_suspend:
          case Core::STR_switch:
          case Core::STR_terminate:
@@ -110,7 +112,7 @@ namespace GDCC
          case Core::STR_void:
          case Core::STR_while:
          case Core::STR_whitereturn:
-         case Core::STR_world:
+       //case Core::STR_world:
             return true;
 
          default:

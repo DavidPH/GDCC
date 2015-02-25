@@ -11,11 +11,10 @@
 //-----------------------------------------------------------------------------
 
 #include "ACC/Parse.hpp"
+#include "ACC/Scope.hpp"
 #include "ACC/TStream.hpp"
 
 #include "AST/Statement.hpp"
-
-#include "CC/Scope/Global.hpp"
 
 #include "CPP/Macro.hpp"
 
@@ -92,14 +91,14 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
       throw EXIT_FAILURE;
    }
 
-   GDCC::Core::String     file {inName};
-   GDCC::CPP::MacroMap    macr {GDCC::CPP::Macro::Stringize(file)};
-   GDCC::CPP::PragmaLangC prag {};
-   GDCC::Core::String     path {GDCC::Core::PathDirname(file)};
-   GDCC::Core::StringBuf  sbuf {buf->data(), buf->size()};
-   GDCC::ACC::TStream     tstr {sbuf, macr, prag, file, path};
-   GDCC::ACC::ParserCtx   ctx  {tstr, prag, prog};
-   GDCC::CC::Scope_Global scope{MakeGlobalLabel(buf->getHash())};
+   GDCC::Core::String      file {inName};
+   GDCC::CPP::MacroMap     macr {GDCC::CPP::Macro::Stringize(file)};
+   GDCC::CPP::PragmaLangC  prag {};
+   GDCC::Core::String      path {GDCC::Core::PathDirname(file)};
+   GDCC::Core::StringBuf   sbuf {buf->data(), buf->size()};
+   GDCC::ACC::TStream      tstr {sbuf, macr, prag, file, path};
+   GDCC::ACC::ParserCtx    ctx  {tstr, prag, prog};
+   GDCC::ACC::Scope_Global scope{MakeGlobalLabel(buf->getHash())};
 
    // Read declarations.
    while(ctx.in.peek().tok != GDCC::Core::TOK_EOF)

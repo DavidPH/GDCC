@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -273,6 +273,14 @@ namespace GDCC
          // Otherwise, unsigned int.
          else
             return ExpConvert_Arith(TypeIntegPrU, exp, pos);
+      }
+
+      //
+      // ExpPromo_LValue
+      //
+      AST::Exp::CRef ExpPromo_LValue(AST::Exp const *exp)
+      {
+         return ExpPromo_LValue(exp, exp->pos);
       }
 
       //

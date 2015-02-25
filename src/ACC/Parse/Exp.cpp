@@ -16,6 +16,7 @@
 
 #include "CC/Exp.hpp"
 
+#include "Core/Array.hpp"
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
@@ -259,6 +260,20 @@ namespace GDCC
             exp = expCreate(CC::ExpCreate_Comma);
 
          return exp;
+      }
+
+      //
+      // GetExpList
+      //
+      Core::Array<AST::Exp::CRef> GetExpList(ParserCtx const &ctx, CC::Scope &scope)
+      {
+         std::vector<AST::Exp::CRef> args;
+
+         do
+            args.emplace_back(GetExp_Assi(ctx, scope));
+         while(ctx.in.drop(Core::TOK_Comma));
+
+         return {Core::Move, args.begin(), args.end()};
       }
    }
 }

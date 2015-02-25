@@ -12,6 +12,8 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Scope.hpp"
+
 #include "AST/Exp.hpp"
 #include "AST/Type.hpp"
 
@@ -111,6 +113,21 @@ namespace GDCC
       }
 
       //
+      // GetExp_Unar_Identi
+      //
+      static AST::Exp::CRef GetExp_Unar_Identi(ParserCtx const &ctx,
+         CC::Scope &scope)
+      {
+         if(auto global = dynamic_cast<Scope_Global *>(&scope.global))
+         {
+            if(auto print = global->findPrint(ctx.in.peek().str))
+               return GetExp_Unar_print(ctx, scope, print);
+         }
+
+         return GetExp_Post(ctx, scope);
+      }
+
+      //
       // GetExp_Unar_Inv
       //
       static AST::Exp::CRef GetExp_Unar_Inv(ParserCtx const &ctx,
@@ -199,6 +216,7 @@ namespace GDCC
       {
          switch(ctx.in.peek().tok)
          {
+         case Core::TOK_Identi: return GetExp_Unar_Identi(ctx, scope);
          case Core::TOK_KeyWrd: return GetExp_Unar_KeyWrd(ctx, scope);
          case Core::TOK_Add:    return GetExp_Unar_Add   (ctx, scope);
          case Core::TOK_Add2:   return GetExp_Unar_Add2  (ctx, scope);

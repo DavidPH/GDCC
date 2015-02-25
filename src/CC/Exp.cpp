@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -148,6 +148,14 @@ namespace GDCC
          Core::Origin pos)
       {
          return AST::Exp_Pair::Create(l, r, pos);
+      }
+
+      //
+      // ExpCreate_Cst
+      //
+      AST::Exp::CRef ExpCreate_Cst(AST::Type const *typeL, AST::Exp const *e)
+      {
+         return ExpCreate_Cst(typeL, e, e->pos);
       }
 
       //

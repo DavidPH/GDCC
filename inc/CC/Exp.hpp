@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -150,6 +150,8 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpCreate_Comma(AST::Exp const *l,
          AST::Exp const *r, Core::Origin pos);
 
+      Core::CounterRef<AST::Exp const> ExpCreate_Cst(AST::Type const *t,
+         AST::Exp const *e);
       Core::CounterRef<AST::Exp const> ExpCreate_Cst(AST::Type const *t,
          AST::Exp const *e, Core::Origin pos);
 
@@ -319,6 +321,7 @@ namespace GDCC
          Core::Origin pos);
 
       // Lvalues, arrays, and function designators.
+      Core::CounterRef<AST::Exp const> ExpPromo_LValue(AST::Exp const *e);
       Core::CounterRef<AST::Exp const> ExpPromo_LValue(AST::Exp const *e,
          Core::Origin pos);
 

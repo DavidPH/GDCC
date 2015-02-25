@@ -12,6 +12,8 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Scope.hpp"
+
 #include "AST/Attribute.hpp"
 #include "AST/Function.hpp"
 #include "AST/Object.hpp"
@@ -666,10 +668,13 @@ namespace GDCC
       //
       // GetDecl
       //
-      AST::Statement::CRef GetDecl(ParserCtx const &ctx, CC::Scope_Global &scope)
+      AST::Statement::CRef GetDecl(ParserCtx const &ctx, Scope_Global &scope)
       {
          if(ctx.in.peek(Core::TOK_KeyWrd, Core::STR_function))
             return GetDecl_Function(ctx, scope);
+
+         if(ctx.in.peek(Core::TOK_Identi, Core::STR_print))
+            return GetDecl_Print(ctx, scope);
 
          if(ctx.in.peek(Core::TOK_KeyWrd, Core::STR_script))
             return GetDecl_Script(ctx, scope);
@@ -693,11 +698,7 @@ namespace GDCC
       //
       bool IsDecl(ParserCtx const &ctx, CC::Scope &scope)
       {
-         return
-            ctx.in.peek(Core::TOK_KeyWrd, Core::STR_function) ||
-            ctx.in.peek(Core::TOK_KeyWrd, Core::STR_script) ||
-            ctx.in.peek(Core::TOK_KeyWrd, Core::STR_special) ||
-            IsDeclSpec(ctx, scope);
+         return IsDeclSpec(ctx, scope);
       }
    }
 }

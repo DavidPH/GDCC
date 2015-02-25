@@ -23,6 +23,7 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    IStream.cpp
    Parse.cpp
    Parse/Declaration.cpp
+   Parse/Declaration/Print.cpp
    Parse/Declarator.cpp
    Parse/DeclSpec.cpp
    Parse/Exp.cpp
@@ -31,11 +32,13 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    Parse/Exp/Post.cpp
    Parse/Exp/Prim.cpp
    Parse/Exp/Unar.cpp
+   Parse/Exp/Unar/print.cpp
    Parse/SpecQual.cpp
    Parse/Statement.cpp
    Parse/TypeQual.cpp
    Parse/TypeSpec.cpp
    PPTokenTBuf.cpp
+   Scope.cpp
 
    ../../inc/ACC/IStream.hpp
    ../../inc/ACC/Parse.hpp

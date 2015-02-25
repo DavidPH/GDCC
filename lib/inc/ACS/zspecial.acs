@@ -24,6 +24,25 @@
 #define fixed int
 #endif
 
+#define ACS_PrintPropertyBase() \
+   a(global): PrintGlobalCharArray, \
+   a(global): PrintGlobalCharRange, \
+   a(map):    PrintMapCharArray, \
+   a(map):    PrintMapCharRange, \
+   a(world):  PrintWorldCharArray, \
+   a(world):  PrintWorldCharRange, \
+   \
+   b: PrintBinary, \
+   c: PrintChar, \
+   d: PrintInt, \
+   f: PrintFixed, \
+   i: PrintInt, \
+   k: PrintBind, \
+   l: PrintLocalized, \
+   n: PrintName, \
+   s: PrintString, \
+   x: PrintHex
+
 
 //----------------------------------------------------------------------------|
 // Functions                                                                  |
@@ -479,11 +498,11 @@ special
    void  {159     }:MoreHudMessage(void),
    void  {160     }:OptHudMessage(int, int, int, fixed, fixed, fixed),
    void  {160     }:OptHudMessageS(int, int, str, fixed, fixed, fixed),
-   void  {161     }:EndHudMessage(void),
+   void  {161     }:EndHudMessage(...),
    void  {161     }:EndHudMessageX(fixed),
    void  {161     }:EndHudMessageXX(fixed, fixed),
    void  {161     }:EndHudMessageXXX(fixed, fixed, fixed),
-   void  {162     }:EndHudMessageBold(void),
+   void  {162     }:EndHudMessageBold(...),
    void  {162     }:EndHudMessageBoldX(fixed),
    void  {162     }:EndHudMessageBoldXX(fixed, fixed),
    void  {162     }:EndHudMessageBoldXXX(fixed, fixed, fixed),
@@ -601,6 +620,58 @@ special
 
    void  {361     }:NamedScriptWait(str),
    void  {362     }:CreateTranslationDesat(int, int, fixed, fixed, fixed, fixed, fixed, fixed);
+
+print HudMessage
+(
+   (begin): BeginPrint,
+   (end):   EndHudMessage,
+   (more):  MoreHudMessage,
+   (opt):   OptHudMessage,
+
+   ACS_PrintPropertyBase()
+);
+
+print HudMessageBold
+(
+   (begin): BeginPrint,
+   (end):   EndHudMessageBold,
+   (more):  MoreHudMessage,
+   (opt):   OptHudMessage,
+
+   ACS_PrintPropertyBase()
+);
+
+print Log
+(
+   (begin): BeginPrint,
+   (end):   EndLog,
+
+   ACS_PrintPropertyBase()
+);
+
+print Print
+(
+   (begin): BeginPrint,
+   (end):   EndPrint,
+
+   ACS_PrintPropertyBase()
+);
+
+print PrintBold
+(
+   (begin): BeginPrint,
+   (end):   EndPrintBold,
+
+   ACS_PrintPropertyBase()
+);
+
+print StrParam
+(
+   (begin): BeginPrint,
+   (end):   EndString,
+
+   ACS_PrintPropertyBase()
+);
 
 
 //----------------------------------------------------------------------------|
