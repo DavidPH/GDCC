@@ -23,6 +23,7 @@
 #include "../CPP/MacroDTBuf.hpp"
 #include "../CPP/MacroTBuf.hpp"
 #include "../CPP/PragmaDTBuf.hpp"
+#include "../CPP/StringTBuf.hpp"
 
 #include "../Core/BufferTBuf.hpp"
 #include "../Core/StreamTBuf.hpp"
@@ -92,7 +93,8 @@ namespace GDCC
             IncStream{buf_, macros, pragma, file, dir},
             mbuf{udir, macros},
             pubf{mbuf, pragma},
-            cbuf{pubf}
+            sbuf{pubf},
+            cbuf{sbuf}
          {
             tkbuf(&cbuf);
          }
@@ -100,10 +102,12 @@ namespace GDCC
       protected:
          using MBuf = CPP::MacroTBuf;
          using PuBf = CPP::PragmaPushTBuf;
+         using SBuf = CPP::StringTBuf;
          using CBuf = CPP::ConcatTBuf;
 
          MBuf mbuf;
          PuBf pubf;
+         SBuf sbuf;
          CBuf cbuf;
       };
 
