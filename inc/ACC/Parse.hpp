@@ -31,6 +31,7 @@ namespace GDCC
 
    namespace ACC
    {
+      class PragmaData;
       class PrintDecl;
       class Scope_Global;
 
@@ -43,15 +44,19 @@ namespace GDCC
          template<typename Prag>
          ParserCtx(Core::TokenStream &in_, Prag &prag_, IR::Program &prog_) :
             CC::ParserCtx{in_, prag_, prog_},
+            prag(prag_),
             importing{false}
          {
          }
 
-         ParserCtx(ParserCtx const &data, Core::TokenStream &in_) :
-            CC::ParserCtx{data, in_},
-            importing{data.importing}
+         ParserCtx(ParserCtx const &ctx, Core::TokenStream &in_) :
+            CC::ParserCtx{ctx, in_},
+            prag(ctx.prag),
+            importing{ctx.importing}
          {
          }
+
+         PragmaData &prag;
 
          bool importing;
       };

@@ -12,6 +12,8 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Pragma.hpp"
+
 #include "AST/Attribute.hpp"
 #include "AST/Exp.hpp"
 #include "AST/Function.hpp"
@@ -22,8 +24,6 @@
 #include "CC/Exp.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Type.hpp"
-
-#include "CPP/Pragma.hpp"
 
 #include "Core/Array.hpp"
 #include "Core/Exception.hpp"
@@ -242,7 +242,7 @@ namespace GDCC
 
          val <<= type->getSizeBitsF();
 
-         if(!k)
+         if(!k && !ctx.prag.stateFixedLiteral)
             type = u ? CC::TypeIntegPrU : CC::TypeIntegPrS;
 
          // Create expression.

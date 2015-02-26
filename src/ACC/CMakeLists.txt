@@ -21,6 +21,7 @@
 add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    IncludeDTBuf.cpp
    IStream.cpp
+   PPTokenTBuf.cpp
    Parse.cpp
    Parse/Declaration.cpp
    Parse/Declaration/Print.cpp
@@ -37,11 +38,16 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    Parse/Statement.cpp
    Parse/TypeQual.cpp
    Parse/TypeSpec.cpp
-   PPTokenTBuf.cpp
+   Pragma.cpp
    Scope.cpp
 
+   ../../inc/ACC/IncludeDTBuf.hpp
    ../../inc/ACC/IStream.hpp
+   ../../inc/ACC/PPTokenTBuf
    ../../inc/ACC/Parse.hpp
+   ../../inc/ACC/Pragma.hpp
+   ../../inc/ACC/Print.hpp
+   ../../inc/ACC/Scope.hpp
    ../../inc/ACC/TStream.hpp
 )
 

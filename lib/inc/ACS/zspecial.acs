@@ -20,10 +20,6 @@
 // Macros                                                                     |
 //
 
-#ifndef ACS_TYPED_SPECIALS
-#define fixed int
-#endif
-
 #define ACS_PrintPropertyBase() \
    a(global): PrintGlobalCharArray, \
    a(global): PrintGlobalCharRange, \
@@ -672,15 +668,6 @@ print StrParam
 
    ACS_PrintPropertyBase()
 );
-
-
-//----------------------------------------------------------------------------|
-// Cleanup                                                                    |
-//
-
-#ifndef ACS_TYPED_SPECIALS
-#undef fixed
-#endif
 
 #endif//__GDCC_Header__ACS__zspecial_acs__
 

@@ -12,6 +12,8 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Pragma.hpp"
+
 #include "AST/Attribute.hpp"
 #include "AST/Exp.hpp"
 #include "AST/Type.hpp"
@@ -94,13 +96,19 @@ namespace GDCC
          case Core::STR_char:     setSpecBase(CC::TypeSpec::BaseChar); break;
          case Core::STR_double:   setSpecBase(CC::TypeSpec::BaseDoub); break;
          case Core::STR_float:    setSpecBase(CC::TypeSpec::BaseFloa); break;
-         case Core::STR_fixed:    setSpecBase(CC::TypeSpec::BaseAccu); break;
          case Core::STR_int:      setSpecBase(CC::TypeSpec::BaseInte); break;
          case Core::STR_long:     ++spec.specLong;                     break;
          case Core::STR_short:    ++spec.specShrt;                     break;
          case Core::STR_unsigned: ++spec.specUnsi;                     break;
          case Core::STR_str:      setSpecBase(CC::TypeSpec::BaseStri); break;
          case Core::STR_void:     setSpecBase(CC::TypeSpec::BaseVoid); break;
+
+         case Core::STR_fixed:
+            if(ctx.prag.stateFixedType)
+               setSpecBase(CC::TypeSpec::BaseAccu);
+            else
+               setSpecBase(CC::TypeSpec::BaseInte);
+            break;
 
          default:
             // typedef-name

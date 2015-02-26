@@ -11,6 +11,7 @@
 //-----------------------------------------------------------------------------
 
 #include "ACC/Parse.hpp"
+#include "ACC/Pragma.hpp"
 #include "ACC/Scope.hpp"
 #include "ACC/TStream.hpp"
 
@@ -94,8 +95,8 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
    GDCC::Core::String      file {inName};
    GDCC::CPP::MacroMap     macr {GDCC::CPP::Macro::Stringize(file)};
    GDCC::Core::String      path {GDCC::Core::PathDirname(file)};
-   GDCC::CPP::PragmaData   pragd{};
-   GDCC::CPP::PragmaParser pragp{pragd};
+   GDCC::ACC::PragmaData   pragd{};
+   GDCC::ACC::PragmaParser pragp{pragd};
    GDCC::Core::StringBuf   sbuf {buf->data(), buf->size()};
    GDCC::ACC::TStream      tstr {sbuf, macr, pragd, pragp, file, path};
    GDCC::ACC::ParserCtx    ctx  {tstr, pragd, prog};
