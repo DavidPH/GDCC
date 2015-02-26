@@ -15,6 +15,8 @@
 
 #include "../CPP/IncludeDTBuf.hpp"
 
+#include "../ACC/Pragma.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -31,12 +33,17 @@ namespace GDCC
       {
       public:
          IncludeDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
-            CPP::MacroMap &macros, CPP::PragmaDataBase &pragd,
+            CPP::MacroMap &macros, PragmaData &pragd_,
             CPP::PragmaParserBase &pragp, Core::String dir) :
-            CPP::IncludeDTBuf{src, istr, macros, pragd, pragp, dir} {}
+            CPP::IncludeDTBuf{src, istr, macros, pragd_, pragp, dir},
+            pragd(pragd_)
+         {
+         }
 
       protected:
          virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
+
+         PragmaData &pragd;
       };
    }
 }
