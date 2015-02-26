@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -46,11 +46,8 @@ namespace GDCC
          while(src.peek().tok != Core::TOK_LnEnd && src.peek().tok != Core::TOK_EOF)
             toks.emplace_back(src.get());
 
-         // Build macro buffer.
-         Core::ArrayTBuf abuf{toks.data(), toks.size()};
-         Core::TokenStream in{&abuf};
-
-         prag.pragma(in);
+         // Process tokens.
+         prag.parse(toks.data(), toks.size());
 
          return true;
       }
@@ -63,10 +60,10 @@ namespace GDCC
          if(tptr() != tend()) return;
 
          if((buf[0] = src.get()).tok == Core::TOK_BraceO)
-            prag.pragmaPush();
+            prag.push();
 
          else if(buf[0].tok == Core::TOK_BraceC)
-            prag.pragmaDrop();
+            prag.drop();
 
          sett(buf, buf, buf + 1);
       }
@@ -120,9 +117,14 @@ namespace GDCC
             Core::StringBuf sbuf{str.data(), str.size()};
             IStream istr{sbuf, pos.file, pos.line};
             Core::StreamTBuf<IStream> tbuf{istr};
-            Core::TokenStream in{&tbuf};
 
-            prag.pragma(in);
+            // Read tokens.
+            std::vector<Core::Token> toks;
+            while(tbuf.peek().tok != Core::TOK_EOF)
+               toks.emplace_back(tbuf.get());
+
+            // Process tokens.
+            prag.parse(toks.data(), toks.size());
          }
 
          sett(buf, buf, buf + 1);

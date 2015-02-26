@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -120,7 +120,7 @@ namespace GDCC
          macros.linePush(Macro::Stringize(name));
 
          str = std::move(newStr);
-         inc.reset(new IncStream(*str, macros, pragma, name,
+         inc.reset(new IncStream(*str, macros, pragd, pragp, name,
             Core::PathDirname(name)));
       }
 

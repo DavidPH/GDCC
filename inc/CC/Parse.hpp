@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -41,8 +41,7 @@ namespace GDCC
 
    namespace CPP
    {
-      class Pragma;
-      class PragmaGDCC;
+      class PragmaData;
    }
 
    namespace IR
@@ -63,26 +62,23 @@ namespace GDCC
       class ParserCtx
       {
       public:
-         template<typename Prag>
-         ParserCtx(Core::TokenStream &in_, Prag &prag_, IR::Program &prog_) :
-            in      (in_),
-            prag    (prag_),
-            pragGDCC(prag_),
-            prog    (prog_)
+         ParserCtx(Core::TokenStream &in_, CPP::PragmaData &prag_,
+            IR::Program &prog_) :
+            in  (in_),
+            prag(prag_),
+            prog(prog_)
          {
          }
 
          ParserCtx(ParserCtx const &data, Core::TokenStream &in_) :
-            in      (in_),
-            prag    (data.prag),
-            pragGDCC(data.pragGDCC),
-            prog    (data.prog)
+            in  (in_),
+            prag(data.prag),
+            prog(data.prog)
          {
          }
 
          Core::TokenStream &in;
-         CPP::Pragma       &prag;
-         CPP::PragmaGDCC   &pragGDCC;
+         CPP::PragmaData   &prag;
          IR::Program       &prog;
       };
 

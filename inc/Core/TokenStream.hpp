@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -176,6 +176,24 @@ namespace GDCC
 
          bool eof : 1;
          bool err : 1;
+      };
+
+      //
+      // ArrayTStream
+      //
+      class ArrayTStream : public TokenStream
+      {
+      public:
+         //
+         // constructor
+         //
+         ArrayTStream(Token const *data, std::size_t size) :
+            TokenStream{&buf}, buf{data, size}
+         {
+         }
+
+      private:
+         ArrayTBuf buf;
       };
    }
 }

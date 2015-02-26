@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -68,10 +68,12 @@ static void ProcessFile(std::ostream &out, char const *inName)
       throw EXIT_FAILURE;
    }
 
-   Core::String     file{inName};
-   CPP::MacroMap    macr{CPP::Macro::Stringize(file)};
-   CPP::PragmaLangC prag{};
-   CPP::PPStream    in  {*buf, macr, prag, file, Core::PathDirname(file)};
+   Core::String      file {inName};
+   CPP::MacroMap     macr {CPP::Macro::Stringize(file)};
+   Core::String      path {Core::PathDirname(file)};
+   CPP::PragmaData   pragd{};
+   CPP::PragmaParser pragp{pragd};
+   CPP::PPStream     in   {*buf, macr, pragd, pragp, file, path};
 
    for(Core::Token tok; in >> tok;) switch(tok.tok)
    {

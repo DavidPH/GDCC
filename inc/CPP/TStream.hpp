@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -46,19 +46,19 @@ namespace GDCC
          //
          // constructor
          //
-         IncStream(std::streambuf &buf_, MacroMap &macros, Pragma &pragma,
-            Core::String file, Core::String dir) :
+         IncStream(std::streambuf &buf_, MacroMap &macros, PragmaDataBase &pragd,
+            PragmaParserBase &pragp, Core::String file, Core::String dir) :
             Core::TokenStream{&pbuf},
             istr{buf_, file},
             tbuf{istr},
             cdir{tbuf, macros},
             ddir{cdir, macros},
             edir{ddir},
-            idir{edir, istr, macros, pragma, dir},
+            idir{edir, istr, macros, pragd, pragp, dir},
             ldir{idir, macros},
-            pdir{ldir, pragma},
+            pdir{ldir, pragp},
             udir{pdir, macros},
-            pbuf{udir, pragma}
+            pbuf{udir, pragp}
          {
          }
 
@@ -95,11 +95,11 @@ namespace GDCC
          //
          // constructor
          //
-         PPStream(std::streambuf &buf_, MacroMap &macros, Pragma &pragma,
-            Core::String file, Core::String dir) :
-            IncStream{buf_, macros, pragma, file, dir},
+         PPStream(std::streambuf &buf_, MacroMap &macros, PragmaDataBase &pragd,
+            PragmaParserBase &pragp, Core::String file, Core::String dir) :
+            IncStream{buf_, macros, pragd, pragp, file, dir},
             mbuf{pbuf, macros},
-            pubf{mbuf, pragma},
+            pubf{mbuf, pragd},
             sbuf{pubf},
             cbuf{sbuf}
          {
@@ -127,9 +127,9 @@ namespace GDCC
          //
          // constructor
          //
-         TStream(std::streambuf &buf_, MacroMap &macros, Pragma &pragma,
-            Core::String file, Core::String dir) :
-            PPStream{buf_, macros, pragma, file, dir},
+         TStream(std::streambuf &buf_, MacroMap &macros, PragmaDataBase &pragd,
+            PragmaParserBase &pragp, Core::String file, Core::String dir) :
+            PPStream{buf_, macros, pragd, pragp, file, dir},
             wbuf{cbuf},
             ppbf{wbuf},
             bbuf{ppbf}

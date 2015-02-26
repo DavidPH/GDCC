@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,7 +28,8 @@ namespace GDCC
    {
       class IStream;
       class MacroMap;
-      class Pragma;
+      class PragmaDataBase;
+      class PragmaParserBase;
 
       //
       // IncludeDTBuf
@@ -37,11 +38,12 @@ namespace GDCC
       {
       public:
          IncludeDTBuf(Core::TokenBuf &src_, IStream &istr_, MacroMap &macros_,
-            Pragma &pragma_, Core::String dir_) :
+            PragmaDataBase &pragd_, PragmaParserBase &pragp_, Core::String dir_) :
             DirectiveTBuf{src_},
             istr(istr_),
             macros(macros_),
-            pragma(pragma_),
+            pragd(pragd_),
+            pragp(pragp_),
             dir{dir_}
          {
          }
@@ -67,10 +69,11 @@ namespace GDCC
          std::unique_ptr<std::streambuf> str;
          std::unique_ptr<IncStream>      inc;
 
-         IStream     &istr;
-         MacroMap    &macros;
-         Pragma      &pragma;
-         Core::String dir;
+         IStream          &istr;
+         MacroMap         &macros;
+         PragmaDataBase   &pragd;
+         PragmaParserBase &pragp;
+         Core::String      dir;
       };
    }
 }
