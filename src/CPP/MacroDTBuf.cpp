@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -41,41 +41,11 @@ namespace GDCC
          if(src.peek().tok == Core::TOK_WSpace) src.get();
 
          if(src.peek().tok != Core::TOK_Identi)
-            throw Core::ParseExceptExpect(src.peek().pos, "identifier",
-               src.peek().str, false);
+            throw Core::ParseExceptExpect(src.peek(), "identifier", false);
 
          Core::Token name = src.get();
 
-         Macro newMacro;
-
-         // Function-like macro.
-         if(src.peek().tok == Core::TOK_ParenO)
-         {
-            src.get();
-            newMacro.func = true;
-            newMacro.args = GetArgs(src);
-         }
-
-         // Object-like macro.
-         else if(src.peek().tok == Core::TOK_WSpace)
-         {
-            src.get();
-            newMacro.func = false;
-         }
-         else if(src.peek().tok == Core::TOK_LnEnd || src.peek().tok == Core::TOK_EOF)
-         {
-            newMacro.func = false;
-         }
-
-         // Invalid macro.
-         else
-         {
-            throw Core::ParseExceptExpect(src.peek().pos,
-               "lparen or whitespace", src.peek().str, false);
-         }
-
-         // Read replacement list.
-         newMacro.list = GetList(src);
+         Macro newMacro = GetMacro(src);
 
          // Check against existing macro.
          if(auto oldMacro = macros.find(name)) if(*oldMacro != newMacro)
@@ -132,6 +102,45 @@ namespace GDCC
             src.get();
 
          return {Core::Move, args.begin(), args.end()};
+      }
+
+      //
+      // DefineDTBuf::GetMacro
+      //
+      Macro DefineDTBuf::GetMacro(Core::TokenBuf &src)
+      {
+         Macro newMacro;
+
+         // Function-like macro.
+         if(src.peek().tok == Core::TOK_ParenO)
+         {
+            src.get();
+            newMacro.func = true;
+            newMacro.args = GetArgs(src);
+         }
+
+         // Object-like macro.
+         else if(src.peek().tok == Core::TOK_WSpace)
+         {
+            src.get();
+            newMacro.func = false;
+         }
+         else if(src.peek().tok == Core::TOK_LnEnd || src.peek().tok == Core::TOK_EOF)
+         {
+            newMacro.func = false;
+         }
+
+         // Invalid macro.
+         else
+         {
+            throw Core::ParseExceptExpect(src.peek(),
+               "lparen or whitespace", false);
+         }
+
+         // Read replacement list.
+         newMacro.list = GetList(src);
+
+         return newMacro;
       }
 
       //

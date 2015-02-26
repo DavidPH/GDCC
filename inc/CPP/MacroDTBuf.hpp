@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -26,6 +26,7 @@ namespace GDCC
 {
    namespace CPP
    {
+      class Macro;
       class MacroMap;
 
       //
@@ -41,6 +42,9 @@ namespace GDCC
 
 
          static Core::Array<Core::String> GetArgs(Core::TokenBuf &src);
+
+         static Macro GetMacro(Core::TokenBuf &src);
+
          static Core::Array<Core::Token> GetList(Core::TokenBuf &src);
 
       protected:

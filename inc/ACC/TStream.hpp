@@ -17,6 +17,7 @@
 
 #include "../ACC/DirectiveTBuf.hpp"
 #include "../ACC/IncludeDTBuf.hpp"
+#include "../ACC/MacroDTBuf.hpp"
 #include "../ACC/PPTokenTBuf.hpp"
 #include "../ACC/Pragma.hpp"
 
@@ -70,7 +71,7 @@ namespace GDCC
          using IStr = IStream;
          using TBuf = Core::StreamTBuf<IStream>;
          using CDir = CPP::ConditionDTBuf;
-         using DDir = CPP::DefineDTBuf;
+         using DDir = DefineDTBuf;
          using IDir = IncludeDTBuf;
          using LDir = LibraryDTBuf;
          using PDir = CPP::PragmaDTBuf;
