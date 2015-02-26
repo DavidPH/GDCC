@@ -93,11 +93,12 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 
    GDCC::Core::String      file {inName};
    GDCC::CPP::MacroMap     macr {GDCC::CPP::Macro::Stringize(file)};
-   GDCC::CPP::PragmaLangC  prag {};
    GDCC::Core::String      path {GDCC::Core::PathDirname(file)};
+   GDCC::CPP::PragmaData   pragd{};
+   GDCC::CPP::PragmaParser pragp{pragd};
    GDCC::Core::StringBuf   sbuf {buf->data(), buf->size()};
-   GDCC::ACC::TStream      tstr {sbuf, macr, prag, file, path};
-   GDCC::ACC::ParserCtx    ctx  {tstr, prag, prog};
+   GDCC::ACC::TStream      tstr {sbuf, macr, pragd, pragp, file, path};
+   GDCC::ACC::ParserCtx    ctx  {tstr, pragd, prog};
    GDCC::ACC::Scope_Global scope{MakeGlobalLabel(buf->getHash())};
 
    // Read declarations.
@@ -105,7 +106,7 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
       GDCC::ACC::GetDecl(ctx, scope);
 
    // Add ACS libraries.
-   for(auto const &lib : prag.pragmaACS_library)
+   for(auto const &lib : pragd.stateLibrary)
       prog.getImport(lib);
 
    scope.allocAuto();

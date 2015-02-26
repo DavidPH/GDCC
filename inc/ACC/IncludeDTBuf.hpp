@@ -31,8 +31,9 @@ namespace GDCC
       {
       public:
          IncludeDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
-            CPP::MacroMap &macros, CPP::Pragma &pragma, Core::String dir) :
-            CPP::IncludeDTBuf{src, istr, macros, pragma, dir} {}
+            CPP::MacroMap &macros, CPP::PragmaDataBase &pragd,
+            CPP::PragmaParserBase &pragp, Core::String dir) :
+            CPP::IncludeDTBuf{src, istr, macros, pragd, pragp, dir} {}
 
       protected:
          virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
