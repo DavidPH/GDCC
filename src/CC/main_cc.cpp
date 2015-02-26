@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -94,21 +94,22 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
       throw EXIT_FAILURE;
    }
 
-   Core::String     file {inName};
-   CPP::MacroMap    macr {CPP::Macro::Stringize(file)};
-   CPP::PragmaLangC prag {};
-   Core::String     path {Core::PathDirname(file)};
-   Core::StringBuf  sbuf {buf->data(), buf->size()};
-   CPP::TStream     tstr {sbuf, macr, prag, file, path};
-   CC::ParserCtx    ctx  {tstr, prag, prog};
-   CC::Scope_Global scope{MakeGlobalLabel(buf->getHash())};
+   Core::String      file {inName};
+   CPP::MacroMap     macr {CPP::Macro::Stringize(file)};
+   Core::String      path {Core::PathDirname(file)};
+   CPP::PragmaData   pragd{};
+   CPP::PragmaParser pragp{pragd};
+   Core::StringBuf   sbuf {buf->data(), buf->size()};
+   CPP::TStream      tstr {sbuf, macr, pragd, pragp, file, path};
+   CC::ParserCtx     ctx  {tstr, pragd, prog};
+   CC::Scope_Global  scope{MakeGlobalLabel(buf->getHash())};
 
    // Read declarations.
    while(ctx.in.peek().tok != Core::TOK_EOF)
       CC::GetDecl(ctx, scope);
 
    // Add ACS libraries.
-   for(auto const &lib : prag.pragmaACS_library)
+   for(auto const &lib : pragd.stateLibrary)
       prog.getImport(lib);
 
    scope.allocAuto();

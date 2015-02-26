@@ -194,6 +194,24 @@ namespace GDCC
          bool eof : 1;
          bool err : 1;
       };
+
+      //
+      // ArrayTStream
+      //
+      class ArrayTStream : public TokenStream
+      {
+      public:
+         //
+         // constructor
+         //
+         ArrayTStream(Token const *data, std::size_t size) :
+            TokenStream{&buf}, buf{data, size}
+         {
+         }
+
+      private:
+         ArrayTBuf buf;
+      };
    }
 }
 

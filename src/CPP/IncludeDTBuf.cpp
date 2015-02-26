@@ -108,11 +108,13 @@ namespace GDCC
       // IncludeDTBuf constructor
       //
       IncludeDTBuf::IncludeDTBuf(Core::TokenBuf &src_, IStreamHeader &istr_,
-         MacroMap &macros_, Pragma &pragma_, Core::String dir_) :
+         MacroMap &macros_, PragmaDataBase &pragd_, PragmaParserBase &pragp_,
+         Core::String dir_) :
          DirectiveTBuf{src_},
          istr(istr_),
          macros(macros_),
-         pragma(pragma_),
+         pragd(pragd_),
+         pragp(pragp_),
          dir{dir_}
       {
       }
@@ -133,7 +135,7 @@ namespace GDCC
          macros.linePush(Macro::Stringize(name));
 
          str = std::move(newStr);
-         inc.reset(new IncStream(*str, macros, pragma, name,
+         inc.reset(new IncStream(*str, macros, pragd, pragp, name,
             Core::PathDirname(name)));
       }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -26,164 +26,138 @@ namespace GDCC
 {
    namespace Core
    {
+      class Token;
       class TokenStream;
    }
 
    namespace CPP
    {
       //
-      // Pragma
+      // PragmaDataBase
       //
-      // Allows classes to accept a PragmaVA without being a template.
-      //
-      class Pragma
+      class PragmaDataBase
       {
       public:
-         // Processes a pragma directive.
-         virtual bool pragma(Core::TokenStream &in) = 0;
-
-         // Drops a scope layer.
-         virtual void pragmaDrop() = 0;
-
-         // Adds a scope layer.
-         virtual void pragmaPush() = 0;
+         virtual void drop();
+         virtual void push();
       };
 
       //
-      // PragmaVA
+      // PragmaData
       //
-      template<typename... Pragmas>
-      class PragmaVA final : public Pragma, public Pragmas...
+      class PragmaData : public PragmaDataBase
       {
       public:
-         // pragma
-         virtual bool pragma(Core::TokenStream &in)
-            {return PI<Pragmas...>::Pragma(this, in);}
+         virtual void drop();
+         virtual void push();
 
-         // pragmaDrop
-         virtual void pragmaDrop()
-            {PI<Pragmas...>::PragmaDrop(this);}
+         std::vector<Core::String> stateLibrary;
 
-         // pragmaPush
-         virtual void pragmaPush()
-            {PI<Pragmas...>::PragmaPush(this);}
+         bool stateCXLimitedRange;
+         bool stateFEnvAccess;
+         bool stateFPContract;
+         bool stateFixedLiteral;
+         bool stateStrEntLiteral;
+
+      protected:
+         std::vector<bool> stackCXLimitedRange;
+         std::vector<bool> stackFEnvAccess;
+         std::vector<bool> stackFPContract;
+         std::vector<bool> stackFixedLiteral;
+         std::vector<bool> stackStrEntLiteral;
+      };
+
+      //
+      // PragmaParserBase
+      //
+      class PragmaParserBase
+      {
+      public:
+         virtual bool parse(Core::Token const *toks, std::size_t n) = 0;
+      };
+
+      //
+      // PragmaParserVA
+      //
+      template<typename... Parsers>
+      class PragmaParserVA final : public PragmaParserBase, public Parsers...
+      {
+      public:
+         template<typename Data>
+         explicit PragmaParserVA(Data &data) : Parsers{data}... {}
+
+         virtual bool parse(Core::Token const *toks, std::size_t n)
+            {return PI<Parsers...>::Pragma(this, toks, n);}
 
       private:
-         // Variadic template "iteration" to implement pragma functions.
+         // Variadic template "iteration" to implement parse function.
          template<typename P0, typename... PV> struct PI
          {
-            static bool Pragma(PragmaVA<Pragmas...> *p, Core::TokenStream &in)
-               {return p->P0::pragma(in) || PI<PV...>::Pragma(p, in);}
-
-            static void PragmaDrop(PragmaVA<Pragmas...> *p)
-               {p->P0::pragmaDrop(); PI<PV...>::PragmaDrop(p);}
-
-            static void PragmaPush(PragmaVA<Pragmas...> *p)
-               {p->P0::pragmaPush(); PI<PV...>::PragmaPush(p);}
+            static bool Pragma(PragmaParserVA<Parsers...> *p,
+               Core::Token const *toks, std::size_t n)
+               {return p->P0::parse(toks, n) || PI<PV...>::Pragma(p, toks, n);}
          };
 
          template<typename P0> struct PI<P0>
          {
-            static bool Pragma(PragmaVA<Pragmas...> *p, Core::TokenStream &in)
-               {return p->P0::pragma(in);}
-
-            static void PragmaDrop(PragmaVA<Pragmas...> *p)
-               {p->P0::pragmaDrop();}
-
-            static void PragmaPush(PragmaVA<Pragmas...> *p)
-               {p->P0::pragmaPush();}
+            static bool Pragma(PragmaParserVA<Parsers...> *p,
+               Core::Token const *toks, std::size_t n)
+               {return p->P0::parse(toks, n);}
          };
       };
 
       //
-      // PragmaACS
+      // PragmaParserACS
       //
       // Handles #pragma ACS ...
       //
-      class PragmaACS
+      class PragmaParserACS
       {
       public:
-         bool pragma(Core::TokenStream &in);
+         PragmaParserACS(PragmaData &data_) : data{data_} {}
 
-         void pragmaDrop() {}
-         void pragmaPush() {}
+         virtual bool parse(Core::Token const *toks, std::size_t n);
 
-         std::vector<Core::String> pragmaACS_library;
+      protected:
+         PragmaData &data;
       };
 
       //
-      // PragmaGDCC
+      // PragmaParserGDCC
       //
-      class PragmaGDCC
+      // Handles #pragma GDCC ...
+      //
+      class PragmaParserGDCC
       {
       public:
-         PragmaGDCC() :
-            pragmaGDCC_FixedLiteral{false},
-            pragmaGDCC_StrEntLiteral{false}
-         {
-         }
+         PragmaParserGDCC(PragmaData &data_) : data{data_} {}
 
-         bool pragma(Core::TokenStream &in);
+         virtual bool parse(Core::Token const *toks, std::size_t n);
 
-         void pragmaDrop();
-         void pragmaPush();
-
-         bool pragmaGDCC_FixedLiteral;
-         bool pragmaGDCC_StrEntLiteral;
-
-      private:
-         std::vector<bool> pragmaGDCC_FixedLiteral_Stack;
-         std::vector<bool> pragmaGDCC_StrEntLiteral_Stack;
+      protected:
+         PragmaData &data;
       };
 
       //
-      // PragmaSTDC
+      // PragmaParserSTDC
       //
       // Handles #pragma STDC ...
       //
-      class PragmaSTDC
+      class PragmaParserSTDC
       {
       public:
-         PragmaSTDC() :
-            pragmaSTDC_CXLimitedRange{false},
-            pragmaSTDC_FEnvAccess{false},
-            pragmaSTDC_FPContract{false}
-            {}
+         PragmaParserSTDC(PragmaData &data_) : data{data_} {}
 
-         bool pragma(Core::TokenStream &in);
+         virtual bool parse(Core::Token const *toks, std::size_t n);
 
-         void pragmaDrop();
-         void pragmaPush();
-
-         bool pragmaSTDC_CXLimitedRange;
-         bool pragmaSTDC_FEnvAccess;
-         bool pragmaSTDC_FPContract;
-
-      private:
-         std::vector<bool> pragmaSTDC_CXLimitedRange_Stack;
-         std::vector<bool> pragmaSTDC_FEnvAccess_Stack;
-         std::vector<bool> pragmaSTDC_FPContract_Stack;
+      protected:
+         PragmaData &data;
       };
 
-      //
-      // PragmaTest
-      //
-      // Handles pragmas used for testing the compiler.
-      //
-      class PragmaTest
-      {
-      public:
-         bool pragma(Core::TokenStream &in);
-
-         void pragmaDrop() {}
-         void pragmaPush() {}
-      };
-
-      using PragmaLangC = PragmaVA<
-         PragmaACS,
-         PragmaGDCC,
-         PragmaSTDC,
-         PragmaTest>;
+      using PragmaParser = PragmaParserVA<
+         PragmaParserACS,
+         PragmaParserGDCC,
+         PragmaParserSTDC>;
    }
 }
 

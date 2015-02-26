@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -475,7 +475,7 @@ namespace GDCC
       static AST::Exp::CRef GetExp_Prim_NumFlt(ParserCtx const &ctx, Scope &scope)
       {
          // Check if this should be treated as a fixed-point literal.
-         if(ctx.pragGDCC.pragmaGDCC_FixedLiteral) switch(ctx.in.peek().str.back())
+         if(ctx.prag.stateFixedLiteral) switch(ctx.in.peek().str.back())
          {
          case 'F': case 'f': break;
          default: return GetExp_Prim_NumFix(ctx, scope);
@@ -496,7 +496,7 @@ namespace GDCC
          int l;
 
          // If FIXED_LITERAL is in effect, allow alternative suffix syntax.
-         if(ctx.pragGDCC.pragmaGDCC_FixedLiteral)
+         if(ctx.prag.stateFixedLiteral)
          {
             if(*itr == 'L' || *itr == 'l')
                l = itr[1] == itr[0] ? ++itr, 2 : 1, ++itr;
@@ -667,7 +667,7 @@ namespace GDCC
       {
          auto tok = ctx.in.get();
 
-         if(ctx.pragGDCC.pragmaGDCC_StrEntLiteral)
+         if(ctx.prag.stateStrEntLiteral)
             return ExpCreate_StrIdx(ctx.prog, scope, tok.str, tok.pos);
          else
             return ExpCreate_String(ctx.prog, scope, tok.str, tok.pos);

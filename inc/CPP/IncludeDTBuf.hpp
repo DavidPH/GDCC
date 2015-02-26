@@ -33,7 +33,8 @@ namespace GDCC
    {
       class IStreamHeader;
       class MacroMap;
-      class Pragma;
+      class PragmaDataBase;
+      class PragmaParserBase;
 
       //
       // IncludeDTBuf
@@ -41,8 +42,8 @@ namespace GDCC
       class IncludeDTBuf : public DirectiveTBuf
       {
       public:
-         IncludeDTBuf(Core::TokenBuf &src, IStreamHeader &istr,
-            MacroMap &macros, Pragma &pragma, Core::String dir);
+         IncludeDTBuf(Core::TokenBuf &src, IStreamHeader &istr, MacroMap &macros,
+            PragmaDataBase &pragd, PragmaParserBase &pragp, Core::String dir);
 
          virtual ~IncludeDTBuf();
 
@@ -65,10 +66,11 @@ namespace GDCC
          std::unique_ptr<std::streambuf>    str;
          std::unique_ptr<Core::TokenStream> inc;
 
-         IStreamHeader &istr;
-         MacroMap      &macros;
-         Pragma        &pragma;
-         Core::String   dir;
+         IStreamHeader    &istr;
+         MacroMap         &macros;
+         PragmaDataBase   &pragd;
+         PragmaParserBase &pragp;
+         Core::String      dir;
       };
    }
 }

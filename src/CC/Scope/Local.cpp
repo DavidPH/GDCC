@@ -247,16 +247,20 @@ namespace GDCC
       //
       AST::Object::Ref Scope_Local::getObject(AST::Attribute const &attr)
       {
-         if(attr.storeExt || attr.storeInt)
+         if(attr.storeExt)
             return global.getObject(attr);
 
          auto glyph = genGlyphObj(attr.name, attr.linka);
          auto obj   = AST::Object::Create(attr.name, glyph);
 
          obj->linka    = attr.linka;
-         obj->store    = AST::Storage::Auto;
          obj->type     = attr.type;
          obj->warnUse  = attr.warnUse;
+
+         if(attr.storeInt)
+            obj->store = AST::Storage::Static;
+         else
+            obj->store = AST::Storage::Auto;
 
          // If declaration is explicitly auto, always make it addressable.
          obj->refer = attr.storeAuto;
@@ -274,7 +278,7 @@ namespace GDCC
       //
       AST::Space::Ref Scope_Local::getSpace(AST::Attribute const &attr)
       {
-         if(attr.storeExt || attr.storeInt)
+         if(attr.storeExt)
             return global.getSpace(attr);
 
          auto glyph = genGlyphObj(attr.name, attr.linka);
