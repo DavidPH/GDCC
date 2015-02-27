@@ -65,6 +65,7 @@ namespace GDCC
          glyph   {glyph_},
          label   {nullptr},
          labelEnd{nullptr},
+         labelRes{nullptr},
          labelTmp{nullptr},
          linka   {IR::Linkage::None},
          localAut{0},
@@ -235,6 +236,17 @@ namespace GDCC
             labelEnd = genLabel();
 
          return labelEnd;
+      }
+
+      //
+      // Function::getLabelRes
+      //
+      Core::String Function::getLabelRes()
+      {
+         if(!labelRes)
+            labelRes = genLabel();
+
+         return labelRes;
       }
 
       //

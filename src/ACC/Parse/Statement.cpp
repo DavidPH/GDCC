@@ -23,7 +23,7 @@
 #include "CC/Exp.hpp"
 #include "CC/Scope/Case.hpp"
 #include "CC/Scope/Function.hpp"
-#include "CC/Statement.hpp"
+#include "CC/Statement/Goto.hpp"
 #include "CC/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -289,6 +289,24 @@ namespace GDCC
       }
 
       //
+      // GetStatement_restart
+      //
+      static AST::Statement::CRef GetStatement_restart(ParserCtx const &ctx,
+         CC::Scope_Local &scope, Core::Array<Core::String> &labels)
+      {
+         // <restart> ;
+
+         // <restart>
+         auto pos = ctx.in.get().pos;
+
+         // ;
+         if(!ctx.in.drop(Core::TOK_Semico))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
+
+         return CC::Statement_Goto::Create(std::move(labels), pos, scope.fn.fn->getLabelRes());
+      }
+
+      //
       // GetStatement_return
       //
       static AST::Statement::CRef GetStatement_return(ParserCtx const &ctx,
@@ -498,7 +516,7 @@ namespace GDCC
          case Core::STR_continue:  return GetStatement_continue (ctx, scope, labels);
          case Core::STR_break:     return GetStatement_break    (ctx, scope, labels);
          case Core::STR_return:    return GetStatement_return   (ctx, scope, labels);
-       //case Core::STR_restart:   return GetStatement_restart  (ctx, scope, labels);
+         case Core::STR_restart:   return GetStatement_restart  (ctx, scope, labels);
          case Core::STR_terminate: return GetStatement_terminate(ctx, scope, labels);
 
          default: break;

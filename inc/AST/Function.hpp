@@ -70,6 +70,7 @@ namespace GDCC
          void genFunctionDefn(IR::Program &prog);
 
          Core::String getLabelEnd();
+         Core::String getLabelRes();
          Core::String getLabelTmp();
 
          void setAllocLoc(IR::Exp const *exp);
@@ -82,6 +83,7 @@ namespace GDCC
          Core::String   glyph;
          Core::String   label;
          Core::String   labelEnd;
+         Core::String   labelRes;
          Core::String   labelTmp;
          IR::Linkage    linka;
          LocalArr       localArr;

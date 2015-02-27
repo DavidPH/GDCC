@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -110,6 +110,9 @@ namespace GDCC
          if((ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS) &&
             (stype == IR::ScriptType::Open || stype == IR::ScriptType::Enter))
             ctx.block.addStatementArgs({IR::Code::Xcod_SID, 0});
+
+         if(scope.fn->labelRes)
+            ctx.block.addLabel(scope.fn->labelRes);
       }
 
       //
