@@ -53,7 +53,7 @@
    { \
       str __execute_wait_name = (name); \
       ACS_Execute(__execute_wait_name, __VA_ARGS__); \
-      ScriptWait(__execute_wait_name); \
+      NamedScriptWait(__execute_wait_name); \
    } \
    while(0)
 
