@@ -5,9 +5,14 @@ games. This includes compiling to bytecode as well as preprocessing definition
 data. The programs are meant to be suitable for use in automated build systems.
 
 
+GDCC ACS Compiler (gdcc-acc)
+
+Compiles Hexen ACS source into IR data.
+
+
 GDCC Assembler (gdcc-as)
 
-Provides a low level assembly interface to GDCC's intermediary representation.
+Compiles GDCC assembly into IR data for a low-level interface to the IR.
 
 
 GDCC C Compiler (gdcc-cc)
