@@ -70,6 +70,23 @@ namespace GDCC
          }
 
          //
+         // drop
+         //
+         bool drop(TokenType tt1, String ts1, TokenType tt2)
+         {
+            if(drop(tt1, ts1))
+            {
+               if(drop(tt2))
+                  return true;
+
+               unget();
+               return false;
+            }
+            else
+               return false;
+         }
+
+         //
          // get
          //
          Token const &get()

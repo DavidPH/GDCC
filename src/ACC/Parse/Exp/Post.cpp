@@ -91,17 +91,19 @@ namespace GDCC
       {
          auto pos = ctx.in.get().pos;
 
-         std::vector<AST::Exp::CRef> args;
+         // const-call-specifier:
+         //    <const> :
+         ctx.in.drop(Core::TOK_KeyWrd, Core::STR_const, Core::TOK_Colon);
 
-         if(ctx.in.peek().tok != Core::TOK_ParenC) do
-            args.emplace_back(GetExp_Assi(ctx, scope));
-         while(ctx.in.drop(Core::TOK_Comma));
+         Core::Array<AST::Exp::CRef> args;
+
+         if(!ctx.in.peek(Core::TOK_ParenC))
+            args = GetExpList(ctx, scope);
 
          if(!ctx.in.drop(Core::TOK_ParenC))
             throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
-         return CC::ExpCreate_Call(exp,
-            Core::Array<AST::Exp::CRef>(args.begin(), args.end()), pos);
+         return CC::ExpCreate_Call(exp, std::move(args), pos);
       }
 
       //
