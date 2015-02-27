@@ -20,6 +20,24 @@
 // Macros                                                                     |
 //
 
+#define ACS_ExecuteWait(num, ...) \
+   do \
+   { \
+      int __execute_wait_num = (num); \
+      ACS_Execute(__execute_wait_num, __VA_ARGS__); \
+      ScriptWait(__execute_wait_num); \
+   } \
+   while(0)
+
+#define ACS_NamedExecuteWait(name, ...) \
+   do \
+   { \
+      str __execute_wait_name = (name); \
+      ACS_Execute(__execute_wait_name, __VA_ARGS__); \
+      NamedScriptWait(__execute_wait_name); \
+   } \
+   while(0)
+
 #define ACS_PrintPropertyBase() \
    a(global): PrintGlobalCharArray, \
    a(global): PrintGlobalCharRange, \
@@ -39,23 +57,7 @@
    s: PrintString, \
    x: PrintHex
 
-#define ACS_ExecuteWait(num, ...) \
-   do \
-   { \
-      int __execute_wait_num = (num); \
-      ACS_Execute(__execute_wait_num, __VA_ARGS__); \
-      ScriptWait(__execute_wait_num); \
-   } \
-   while(0)
-
-#define ACS_NamedExecuteWait(name, ...) \
-   do \
-   { \
-      str __execute_wait_name = (name); \
-      ACS_Execute(__execute_wait_name, __VA_ARGS__); \
-      NamedScriptWait(__execute_wait_name); \
-   } \
-   while(0)
+#define suspend do (__suspend()); while(0)
 
 
 //----------------------------------------------------------------------------|
@@ -443,6 +445,7 @@ special
    int -19260:GetTeamScore(1),
    int -19261:SetTeamScore(2),
 
+   void  {  2     }:__suspend(void),
 
    void  { 55,  56}:Delay(int),
    int   { 57,  58}:Random(int, int),

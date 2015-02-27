@@ -17,6 +17,13 @@
 
 
 //----------------------------------------------------------------------------|
+// Macros                                                                     |
+//
+
+#define suspend do (__suspend()); while(0)
+
+
+//----------------------------------------------------------------------------|
 // Functions                                                                  |
 //
 
@@ -117,6 +124,8 @@ special
    void 137:Thing_SpawnNoFog(3),
    void 138:Floor_Waggle(5),
    void 140:Sector_ChangeSound(2),
+
+   void  {  2     }:__suspend(void),
 
    void  { 55,  56}:Delay(int),
    int   { 57,  58}:Random(int, int),
