@@ -37,13 +37,18 @@ namespace GDCC
       class DefineDTBuf : public CPP::DirectiveTBuf
       {
       public:
-         DefineDTBuf(Core::TokenBuf &src_, CPP::MacroMap &macros_) :
-            CPP::DirectiveTBuf{src_}, macros(macros_) {}
+         DefineDTBuf(Core::TokenBuf &src_, CPP::MacroMap &macros_,
+            bool importing_) :
+            CPP::DirectiveTBuf{src_},
+            macros(macros_),
+            importing{importing_} {}
 
       protected:
          virtual bool directive(Core::Token const &tok);
 
          CPP::MacroMap &macros;
+
+         bool importing;
       };
    }
 }

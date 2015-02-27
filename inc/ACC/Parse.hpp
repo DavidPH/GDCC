@@ -42,10 +42,11 @@ namespace GDCC
       {
       public:
          template<typename Prag>
-         ParserCtx(Core::TokenStream &in_, Prag &prag_, IR::Program &prog_) :
+         ParserCtx(Core::TokenStream &in_, Prag &prag_, IR::Program &prog_,
+            bool importing_ = false) :
             CC::ParserCtx{in_, prag_, prog_},
             prag(prag_),
-            importing{false}
+            importing{importing_}
          {
          }
 
@@ -58,7 +59,7 @@ namespace GDCC
 
          PragmaData &prag;
 
-         bool importing;
+         bool const importing;
       };
    }
 }
@@ -149,6 +150,8 @@ namespace GDCC
 
       void ParseTypeSpec(ParserCtx const &ctx, CC::Scope &scope,
          AST::Attribute &attr, CC::TypeSpec &spec);
+
+      void SkipBalancedToken(ParserCtx const &ctx);
    }
 }
 

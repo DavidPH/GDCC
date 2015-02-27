@@ -15,6 +15,8 @@
 #include "AST/Attribute.hpp"
 #include "AST/Type.hpp"
 
+#include "Core/TokenStream.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -47,6 +49,24 @@ namespace GDCC
       bool IsType(ParserCtx const &ctx, CC::Scope &scope)
       {
          return IsSpecQual(ctx, scope);
+      }
+
+      //
+      // SkipBalancedToken
+      //
+      void SkipBalancedToken(ParserCtx const &ctx)
+      {
+         Core::TokenType tt;
+         switch(ctx.in.get().tok)
+         {
+         case Core::TOK_BraceO: tt = Core::TOK_BraceC; break;
+         case Core::TOK_BrackO: tt = Core::TOK_BrackC; break;
+         case Core::TOK_ParenO: tt = Core::TOK_ParenC; break;
+         default: return;
+         }
+
+         while(!ctx.in.drop(tt) && !ctx.in.drop(Core::TOK_EOF))
+            SkipBalancedToken(ctx);
       }
    }
 }

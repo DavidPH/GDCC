@@ -405,8 +405,8 @@ namespace GDCC
       //
       // GetDeclObject (global)
       //
-      static AST::Object::Ref GetDeclObject(CC::Scope_Global &scope,
-         AST::Attribute &attr, bool init)
+      static AST::Object::Ref GetDeclObject(ParserCtx const &ctx,
+         CC::Scope_Global &scope, AST::Attribute &attr, bool init)
       {
          if(attr.storeInt)
             throw Core::ExceptStr(attr.namePos, "file scope static");
@@ -438,7 +438,7 @@ namespace GDCC
 
          // If init, wait until later to mark as definition because the type
          // might need to be completed by the initializer.
-         if(!init)
+         if(!init || ctx.importing)
          {
             // First, make sure it has a complete type.
             if(!obj->type->isTypeComplete())
@@ -468,8 +468,8 @@ namespace GDCC
       //
       // GetDeclObject (local)
       //
-      static AST::Object::Ref GetDeclObject(CC::Scope_Local &scope,
-         AST::Attribute &attr, bool init)
+      static AST::Object::Ref GetDeclObject(ParserCtx const &,
+         CC::Scope_Local &scope, AST::Attribute &attr, bool init)
       {
          // All block-scope declarations are definitions and all block-scope
          // definitions must have no linkage.
@@ -544,6 +544,15 @@ namespace GDCC
                   "function redeclared with different return type");
          }
 
+         if(ctx.importing)
+         {
+            if(attr.linka != IR::Linkage::None)
+               scope.add(attr.name, GetDeclFunction(scope, attr));
+
+            SkipBalancedToken(ctx);
+            return;
+         }
+
          auto fn = GetDeclFunction(scope, attr);
 
          scope.add(attr.name, fn);
@@ -580,6 +589,8 @@ namespace GDCC
       static void ParseDeclObject(ParserCtx const &ctx, T &scope,
          AST::Attribute &attr, std::vector<AST::Statement::CRef> &inits)
       {
+         AST::Type::CPtr lookupType;
+
          // Check compatibility with existing symbol, if any.
          if(auto lookup = scope.find(attr.name))
          {
@@ -587,15 +598,8 @@ namespace GDCC
                throw Core::ExceptStr(attr.namePos,
                   "name redefined as different kind of symbol");
 
-            auto lookupType = lookup.resObj->type;
-
-            if(lookupType != attr.type &&
-               (!lookupType->isTypeArray() || !attr.type->isTypeArray() ||
-                lookupType->getBaseType() != attr.type->getBaseType()))
-            {
-               throw Core::ExceptStr(attr.namePos,
-                  "object redeclared with different type");
-            }
+            // Defer type compatibility check for later.
+            lookupType = lookup.resObj->type;
          }
 
          // Insert special declaration statement.
@@ -605,7 +609,7 @@ namespace GDCC
          // = initializer
          if(ctx.in.drop(Core::TOK_Equal))
          {
-            auto obj = GetDeclObject(scope, attr, true);
+            auto obj = GetDeclObject(ctx, scope, attr, true);
 
             scope.add(attr.name, obj);
 
@@ -619,16 +623,28 @@ namespace GDCC
             SetDeclObjectInit(ctx, scope, attr, inits, obj);
          }
          else
-            scope.add(attr.name, GetDeclObject(scope, attr, false));
+            scope.add(attr.name, GetDeclObject(ctx, scope, attr, false));
+
+         // Do type compatibility test here because type may have been altered.
+         if(lookupType && lookupType != attr.type &&
+            (!lookupType->isTypeArray() || !attr.type->isTypeArray() ||
+             lookupType->getBaseType() != attr.type->getBaseType()))
+         {
+            throw Core::ExceptStr(attr.namePos,
+               "object redeclared with different type");
+         }
       }
 
       //
       // SetDeclObjectInit (global)
       //
-      static void SetDeclObjectInit(ParserCtx const &, CC::Scope_Global &,
+      static void SetDeclObjectInit(ParserCtx const &ctx, CC::Scope_Global &,
          AST::Attribute &, std::vector<AST::Statement::CRef> &,
          AST::Object *obj)
       {
+         if(ctx.importing)
+            return;
+
          obj->defin = true;
 
          // File-scope objects get initialization code generated later.

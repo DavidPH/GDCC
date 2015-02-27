@@ -31,8 +31,15 @@ namespace GDCC
       //
       bool DefineDTBuf::directive(Core::Token const &tok)
       {
-         if(tok.tok != Core::TOK_Identi ||
-            (tok.str != Core::STR_define && tok.str != Core::STR_libdefine))
+         if(tok.tok != Core::TOK_Identi)
+            return false;
+
+         if(tok.str == Core::STR_define)
+         {
+            if(importing)
+               return true;
+         }
+         else if(tok.str != Core::STR_libdefine)
             return false;
 
          src.get();

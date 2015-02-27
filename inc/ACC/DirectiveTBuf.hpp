@@ -32,11 +32,13 @@ namespace GDCC
       class IgnoreDTBuf : public CPP::DirectiveTBuf
       {
       public:
-         explicit IgnoreDTBuf(Core::TokenBuf &src_) :
-            CPP::DirectiveTBuf{src_} {}
+         IgnoreDTBuf(Core::TokenBuf &src_, bool importing_) :
+            CPP::DirectiveTBuf{src_}, importing{importing_} {}
 
       protected:
          virtual bool directive(Core::Token const &tok);
+
+         bool importing;
       };
 
       //

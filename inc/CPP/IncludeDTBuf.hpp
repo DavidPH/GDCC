@@ -51,12 +51,14 @@ namespace GDCC
          static void AddIncludeLang(char const *lang);
 
       protected:
+         virtual bool directive(Core::Token const &tok);
+
          virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
 
          bool doIncHdr(Core::String name, Core::Origin pos);
          bool doIncStr(Core::String name, Core::Origin pos);
 
-         virtual bool directive(Core::Token const &tok);
+         void readInc(Core::Token const &tok);
 
          bool tryIncSys(Core::String name);
          bool tryIncUsr(Core::String name);

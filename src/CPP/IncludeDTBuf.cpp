@@ -127,6 +127,22 @@ namespace GDCC
       }
 
       //
+      // IncludeDTBuf::directive
+      //
+      bool IncludeDTBuf::directive(Core::Token const &tok)
+      {
+         if(tok.tok != Core::TOK_Identi || tok.str != Core::STR_include)
+            return false;
+
+         // Clear directive name.
+         src.get();
+
+         readInc(tok);
+
+         return true;
+      }
+
+      //
       // IncludeDTBuf::doInc
       //
       void IncludeDTBuf::doInc(Core::String name,
@@ -164,16 +180,10 @@ namespace GDCC
       }
 
       //
-      // IncludeDTBuf::directive
+      // IncludeDTBuf::readInc
       //
-      bool IncludeDTBuf::directive(Core::Token const &tok)
+      void IncludeDTBuf::readInc(Core::Token const &tok)
       {
-         if(tok.tok != Core::TOK_Identi || tok.str != Core::STR_include)
-            return false;
-
-         // Clear directive name.
-         src.get();
-
          // Read header token(s).
          std::vector<Core::Token> toks;
          istr.setNeedHeader(); // Try to get header token.
@@ -223,8 +233,6 @@ namespace GDCC
          // Must be at end of line.
          if(mbuf.peek().tok != Core::TOK_EOF)
             throw Core::ExceptStr(tok.pos, "invalid include syntax");
-
-         return true;
       }
 
       //

@@ -12,7 +12,10 @@
 
 #include "ACC/IncludeDTBuf.hpp"
 
+#include "ACC/Parse.hpp"
 #include "ACC/TStream.hpp"
+
+#include "AST/Statement.hpp"
 
 #include "CPP/Macro.hpp"
 
@@ -37,7 +40,41 @@ namespace GDCC
 
          str = std::move(newStr);
          inc.reset(new IncStream(*str, macros, pragd, pragp, name,
-            Core::PathDirname(name)));
+            Core::PathDirname(name), scope, prog));
+      }
+
+      //
+      // ImportDTBuf::directive
+      //
+      bool ImportDTBuf::directive(Core::Token const &tok)
+      {
+         if(tok.tok != Core::TOK_Identi || tok.str != Core::STR_import)
+            return false;
+
+         // Clear directive name.
+         src.get();
+
+         readInc(tok);
+
+         return true;
+      }
+
+      //
+      // ImportDTBuf::doInc
+      //
+      void ImportDTBuf::doInc(Core::String name,
+         std::unique_ptr<std::streambuf> &&newStr)
+      {
+         ImportStream tstr{*newStr, macros, pragd, pragp, name};
+         ParserCtx    ctx {tstr, pragd, prog, true};
+
+         pragd.push();
+
+         // Read declarations.
+         while(ctx.in.peek().tok != Core::TOK_EOF)
+            GetDecl(ctx, scope);
+
+         pragd.drop();
       }
    }
 }

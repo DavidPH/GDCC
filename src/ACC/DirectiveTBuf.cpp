@@ -40,6 +40,11 @@ namespace GDCC
          case Core::STR_wadauthor:
             return true;
 
+         case Core::STR_define:
+         case Core::STR_import:
+         case Core::STR_include:
+            return importing;
+
          default:
             return false;
          }

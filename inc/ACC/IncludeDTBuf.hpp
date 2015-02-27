@@ -24,26 +24,58 @@
 
 namespace GDCC
 {
+   namespace IR
+   {
+      class Program;
+   }
+
    namespace ACC
    {
+      class Scope_Global;
+
       //
       // IncludeDTBuf
       //
       class IncludeDTBuf : public CPP::IncludeDTBuf
       {
       public:
-         IncludeDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
-            CPP::MacroMap &macros, PragmaData &pragd_,
-            CPP::PragmaParserBase &pragp, Core::String dir) :
-            CPP::IncludeDTBuf{src, istr, macros, pragd_, pragp, dir},
-            pragd(pragd_)
+         IncludeDTBuf(Core::TokenBuf &src_, CPP::IStreamHeader &istr_,
+            CPP::MacroMap &macros_, PragmaData &pragd_,
+            CPP::PragmaParserBase &pragp_, Core::String dir_,
+            Scope_Global &scope_, IR::Program &prog_) :
+            CPP::IncludeDTBuf{src_, istr_, macros_, pragd_, pragp_, dir_},
+            pragd(pragd_),
+            prog (prog_),
+            scope(scope_)
          {
          }
 
       protected:
          virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
 
-         PragmaData &pragd;
+         PragmaData   &pragd;
+         IR::Program  &prog;
+         Scope_Global &scope;
+      };
+
+      //
+      // ImportDTBuf
+      //
+      class ImportDTBuf : public IncludeDTBuf
+      {
+      public:
+         ImportDTBuf(Core::TokenBuf &src_, CPP::IStreamHeader &istr_,
+            CPP::MacroMap &macros_, PragmaData &pragd_,
+            CPP::PragmaParserBase &pragp_, Core::String dir_,
+            Scope_Global &scope_, IR::Program &prog_) :
+            IncludeDTBuf{src_, istr_, macros_, pragd_, pragp_, dir_, scope_, prog_}
+         {
+         }
+
+      protected:
+         virtual bool directive(Core::Token const &tok);
+
+         virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
       };
    }
 }
