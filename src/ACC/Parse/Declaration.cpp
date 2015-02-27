@@ -175,7 +175,7 @@ namespace GDCC
             std::tie(types, attr.param) = GetTypeList(ctx, scope);
             attr.type = attr.type->getTypeFunction(types, attr.callt);
 
-            if(!ctx.in.peek(Core::TOK_ParenC))
+            if(!ctx.in.drop(Core::TOK_ParenC))
                throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
          }
          else
