@@ -112,6 +112,9 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
          GDCC::ACC::GetDecl(ctx, scope);
 
       pragd.drop();
+
+      // Ignore any library pragmas from this pass.
+      pragd.stateLibrary.clear();
    }
 
    GDCC::Core::StringBuf   sbuf {buf->data(), buf->size()};

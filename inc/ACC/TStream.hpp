@@ -130,8 +130,7 @@ namespace GDCC
             ddir{cdir, macros, false},
             impd{ddir, istr, macros, pragd, pragp, dir, scope, prog},
             idir{impd, istr, macros, pragd, pragp, dir, scope, prog},
-            ldir{idir, pragd},
-            pdir{ldir, pragp},
+            pdir{idir, pragp},
             ignd{pdir, false},
             udir{ignd, macros}
          {
@@ -144,7 +143,6 @@ namespace GDCC
          using DDir = DefineDTBuf;
          using ImpD = ImportDTBuf;
          using IDir = IncludeDTBuf;
-         using LDir = LibraryDTBuf;
          using PDir = CPP::PragmaDTBuf;
          using IgnD = IgnoreDTBuf;
          using UDir = CPP::UndefDTBuf;
@@ -155,7 +153,6 @@ namespace GDCC
          DDir ddir;
          ImpD impd;
          IDir idir;
-         LDir ldir;
          PDir pdir;
          IgnD ignd;
          UDir udir;

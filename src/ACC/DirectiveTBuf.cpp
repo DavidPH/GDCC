@@ -45,6 +45,9 @@ namespace GDCC
          case Core::STR_include:
             return importing;
 
+         case Core::STR_library:
+            return !importing;
+
          default:
             return false;
          }
