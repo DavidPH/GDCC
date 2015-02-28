@@ -12,6 +12,8 @@
 
 #include "Core/Option.hpp"
 
+#include "Core/Path.hpp"
+
 #include "Option/Exception.hpp"
 
 #include <cstdlib>
@@ -80,9 +82,45 @@ namespace GDCC
 
             [](Option::Base *opt, Option::Args const &) -> std::size_t
                {opt->getProgram()->putVersion(std::cout); throw EXIT_SUCCESS;}
+         },
+
+         optSysSource
+         {
+            nullptr, Option::Base::Info()
+               .setName("sys-source")
+               .setDescS("Adds source file from system directory."),
          }
       {
          list.processLoose = &args;
+      }
+
+      //
+      // SystemSourceOption constructor
+      //
+      SystemSourceOption::SystemSourceOption(Option::Program *program,
+         Info const &optInfo) :
+         Option::CStrV{program, optInfo, 1}
+      {
+      }
+
+      //
+      // SystemSourceOption::v_process
+      //
+      std::size_t SystemSourceOption::v_process(Option::Args const &args)
+      {
+         if(!args.argC)
+            Option::Exception::Error(args, "argument required");
+
+         std::string name = GetSystemPath();
+
+         Core::PathAppend(name, "lib");
+         Core::PathAppend(name, "src");
+         Core::PathAppend(name, args.argV[0]);
+
+         char const *argV[1] = {name.data()};
+         push(argV, 1, false, args.optFinal);
+
+         return 1;
       }
 
       //

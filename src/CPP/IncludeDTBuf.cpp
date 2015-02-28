@@ -25,10 +25,6 @@
 #include <fstream>
 #include <iostream>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 
 //----------------------------------------------------------------------------|
 // Options                                                                    |
@@ -91,7 +87,6 @@ namespace GDCC
    namespace CPP
    {
       static std::vector<std::string> IncludeLang;
-      static std::string              IncludeLangBase;
    }
 }
 
@@ -315,29 +310,11 @@ namespace GDCC
       //
       void IncludeDTBuf::AddIncludeLang(char const *lang)
       {
-         if(IncludeLangBase.empty())
-         {
-            #ifdef _WIN32
-            TCHAR buffer[MAX_PATH+1];
-            DWORD size = MAX_PATH+1;
-            DWORD len  = GetModuleFileName(NULL, buffer, size);
-
-            // 0 means failure, size means buffer too small.
-            if(len == 0 || len == size)
-               return;
-
-            IncludeLangBase = {buffer, len};
-            Core::PathDirnameEq(IncludeLangBase);
-            Core::PathNormalizeEq(IncludeLangBase);
-            Core::PathAppend(IncludeLangBase, "lib");
-            Core::PathAppend(IncludeLangBase, "inc");
-            #else
-            IncludeLangBase = "/usr/share/gdcc/lib/inc";
-            #endif
-         }
-
-         IncludeLang.emplace_back(IncludeLangBase);
-         Core::PathAppend(IncludeLang.back(), lang);
+         auto path = Core::GetSystemPath();
+         Core::PathAppend(path, "lib");
+         Core::PathAppend(path, "inc");
+         Core::PathAppend(path, lang);
+         IncludeLang.emplace_back(std::move(path));
       }
    }
 }

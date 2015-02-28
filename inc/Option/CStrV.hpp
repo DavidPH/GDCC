@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -45,6 +45,9 @@ namespace GDCC
          std::size_t size() const {return strC;}
 
       protected:
+         void push(char const *const *argV, std::size_t argC,
+            bool optKeepA, bool optFinal);
+
          virtual std::size_t v_process(Args const &args);
 
       private:

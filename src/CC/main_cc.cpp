@@ -41,20 +41,22 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog);
 //
 static void MakeC()
 {
-   using namespace GDCC;
+   GDCC::CPP::IncludeDTBuf::AddIncludeLang("C");
 
-   CPP::IncludeDTBuf::AddIncludeLang("C");
-
-   IR::Program prog;
+   GDCC::IR::Program prog;
 
    // Process inputs.
-   for(auto const &arg : Core::GetOptionArgs())
+   for(auto const &arg : GDCC::Core::GetOptionArgs())
       ProcessFile(arg, prog);
 
-   auto outName = Core::GetOptionOutput();
+   for(auto const &arg : GDCC::Core::GetOptions().optSysSource)
+      ProcessFile(arg, prog);
+
+   auto outName = GDCC::Core::GetOptionOutput();
 
    // Write IR data.
-   auto buf = Core::FileOpenStream(outName, std::ios_base::out | std::ios_base::binary);
+   auto buf = GDCC::Core::FileOpenStream(outName,
+      std::ios_base::out | std::ios_base::binary);
    if(!buf)
    {
       std::cerr << "couldn't open '" << outName << "' for writing\n";
@@ -62,7 +64,7 @@ static void MakeC()
    }
 
    std::ostream out{buf.get()};
-   IR::OArchive(out).putHeader() << prog;
+   GDCC::IR::OArchive(out).putHeader() << prog;
 }
 
 //
@@ -85,28 +87,26 @@ static GDCC::Core::String MakeGlobalLabel(std::size_t hash)
 //
 static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 {
-   using namespace GDCC;
-
-   auto buf = Core::FileOpenBlock(inName);
+   auto buf = GDCC::Core::FileOpenBlock(inName);
    if(!buf)
    {
       std::cerr << "couldn't open '" << inName << "' for reading\n";
       throw EXIT_FAILURE;
    }
 
-   Core::String      file {inName};
-   CPP::MacroMap     macr {CPP::Macro::Stringize(file)};
-   Core::String      path {Core::PathDirname(file)};
-   CPP::PragmaData   pragd{};
-   CPP::PragmaParser pragp{pragd};
-   Core::StringBuf   sbuf {buf->data(), buf->size()};
-   CPP::TStream      tstr {sbuf, macr, pragd, pragp, file, path};
-   CC::ParserCtx     ctx  {tstr, pragd, prog};
-   CC::Scope_Global  scope{MakeGlobalLabel(buf->getHash())};
+   GDCC::Core::String      file {inName};
+   GDCC::CPP::MacroMap     macr {GDCC::CPP::Macro::Stringize(file)};
+   GDCC::Core::String      path {GDCC::Core::PathDirname(file)};
+   GDCC::CPP::PragmaData   pragd{};
+   GDCC::CPP::PragmaParser pragp{pragd};
+   GDCC::Core::StringBuf   sbuf {buf->data(), buf->size()};
+   GDCC::CPP::TStream      tstr {sbuf, macr, pragd, pragp, file, path};
+   GDCC::CC::ParserCtx     ctx  {tstr, pragd, prog};
+   GDCC::CC::Scope_Global  scope{MakeGlobalLabel(buf->getHash())};
 
    // Read declarations.
-   while(ctx.in.peek().tok != Core::TOK_EOF)
-      CC::GetDecl(ctx, scope);
+   while(ctx.in.peek().tok != GDCC::Core::TOK_EOF)
+      GDCC::CC::GetDecl(ctx, scope);
 
    // Add ACS libraries.
    for(auto const &lib : pragd.stateLibrary)
@@ -128,21 +128,22 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 //
 int main(int argc, char *argv[])
 {
-   using namespace GDCC;
+   auto &opts = GDCC::Core::GetOptions();
 
-   auto &list = Core::GetOptionList();
+   opts.list.name     = "gdcc-cc";
+   opts.list.nameFull = "GDCC C Compiler";
 
-   list.name     = "gdcc-cc";
-   list.nameFull = "GDCC C Compiler";
+   opts.list.usage = "[option]... [source]...";
 
-   list.usage = "[option]... [source]...";
+   opts.list.descS =
+      "Compiles C source into IR data. Output defaults to last loose "
+      "argument.";
 
-   list.descS =
-      "Compiles C source into IR data. Output defaults to last loose argument.";
+   opts.optSysSource.insert(&opts.list);
 
    try
    {
-      Core::ProcessOptions(Core::GetOptions(), argc, argv);
+      GDCC::Core::ProcessOptions(opts, argc, argv);
       MakeC();
    }
    catch(std::exception const &e)

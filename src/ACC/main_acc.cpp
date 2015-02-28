@@ -50,6 +50,9 @@ static void MakeACS()
    for(auto const &arg : GDCC::Core::GetOptionArgs())
       ProcessFile(arg, prog);
 
+   for(auto const &arg : GDCC::Core::GetOptions().optSysSource)
+      ProcessFile(arg, prog);
+
    auto outName = GDCC::Core::GetOptionOutput();
 
    // Write IR data.
@@ -117,9 +120,9 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
       pragd.stateLibrary.clear();
    }
 
-   GDCC::Core::StringBuf   sbuf {buf->data(), buf->size()};
-   GDCC::ACC::TStream      tstr {sbuf, macr, pragd, pragp, file, path, scope, prog};
-   GDCC::ACC::ParserCtx    ctx  {tstr, pragd, prog};
+   GDCC::Core::StringBuf sbuf{buf->data(), buf->size()};
+   GDCC::ACC::TStream    tstr{sbuf, macr, pragd, pragp, file, path, scope, prog};
+   GDCC::ACC::ParserCtx  ctx {tstr, pragd, prog};
 
    // Read declarations.
    while(ctx.in.peek().tok != GDCC::Core::TOK_EOF)
@@ -145,20 +148,22 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 //
 int main(int argc, char *argv[])
 {
-   auto &list = GDCC::Core::GetOptionList();
+   auto &opts = GDCC::Core::GetOptions();
 
-   list.name     = "gdcc-acc";
-   list.nameFull = "GDCC ACS Compiler";
+   opts.list.name     = "gdcc-acc";
+   opts.list.nameFull = "GDCC ACS Compiler";
 
-   list.usage = "[option]... [source]...";
+   opts.list.usage = "[option]... [source]...";
 
-   list.descS =
+   opts.list.descS =
       "Compiles ACS source into IR data. Output defaults to last loose "
       "argument.";
 
+   opts.optSysSource.insert(&opts.list);
+
    try
    {
-      GDCC::Core::ProcessOptions(GDCC::Core::GetOptions(), argc, argv);
+      GDCC::Core::ProcessOptions(opts, argc, argv);
       MakeACS();
    }
    catch(std::exception const &e)

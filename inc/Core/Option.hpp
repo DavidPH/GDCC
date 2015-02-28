@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,6 +28,18 @@ namespace GDCC
    namespace Core
    {
       //
+      // SystemSourceOption
+      //
+      class SystemSourceOption : public Option::CStrV
+      {
+      public:
+         SystemSourceOption(Option::Program *program, Info const &optInfo);
+
+      protected:
+         virtual std::size_t v_process(Option::Args const &args);
+      };
+
+      //
       // OptionList
       //
       // Stores an option list and basic options.
@@ -46,6 +58,8 @@ namespace GDCC
          Option::Function optHelpLong;
          Option::CStr     optOutput;
          Option::Function optVersion;
+
+         SystemSourceOption optSysSource;
       };
    }
 }

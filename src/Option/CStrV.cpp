@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -76,25 +76,18 @@ namespace GDCC
       }
 
       //
-      // CStrV::v_process
+      // CStrV::push
       //
-      std::size_t CStrV::v_process(Args const &args)
+      void CStrV::push(char const *const *argV, std::size_t argC,
+         bool optKeepA, bool optFinal)
       {
-         if(argM && !args.argC)
-            Exception::Error(args, "argument required");
-
-         // Calculate actual number of argumetns to take.
-         std::size_t argC = args.argC;
-         if(argM && argC > argM)
-            argC = argM;
-
          std::size_t newC = strC + argC;
 
          // Possibly allocate more storage.
          if(newC > strA)
          {
             // If these arguments are final, don't overallocate.
-            std::size_t newA = args.optFinal ? newC : strA * 2 + argC;
+            std::size_t newA = optFinal ? newC : strA * 2 + argC;
 
             auto newF = new bool        [newA];
             auto newV = new char const *[newA];
@@ -111,16 +104,32 @@ namespace GDCC
          }
 
          // Take args.
-         if(args.optKeepA) for(std::size_t i = 0; i != argC; ++i, ++strC)
+         if(optKeepA) for(std::size_t i = 0; i != argC; ++i, ++strC)
          {
-            strV[strC] = args.argV[i];
+            strV[strC] = argV[i];
             strF[strC] = false;
          }
          else for(std::size_t i = 0; i != argC; ++i, ++strC)
          {
-            strV[strC] = StrDup(args.argV[i]).release();
+            strV[strC] = StrDup(argV[i]).release();
             strF[strC] = true;
          }
+      }
+
+      //
+      // CStrV::v_process
+      //
+      std::size_t CStrV::v_process(Args const &args)
+      {
+         if(argM && !args.argC)
+            Exception::Error(args, "argument required");
+
+         // Calculate actual number of arguments to take.
+         std::size_t argC = args.argC;
+         if(argM && argC > argM)
+            argC = argM;
+
+         push(args.argV, argC, args.optKeepA, args.optFinal);
 
          return argC;
       }

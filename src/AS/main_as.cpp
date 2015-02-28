@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -36,18 +36,20 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog);
 //
 static void MakeAsm()
 {
-   using namespace GDCC;
-
-   IR::Program prog;
+   GDCC::IR::Program prog;
 
    // Process inputs.
-   for(auto const &arg : Core::GetOptionArgs())
+   for(auto const &arg : GDCC::Core::GetOptionArgs())
       ProcessFile(arg, prog);
 
-   auto outName = Core::GetOptionOutput();
+   for(auto const &arg : GDCC::Core::GetOptions().optSysSource)
+      ProcessFile(arg, prog);
+
+   auto outName = GDCC::Core::GetOptionOutput();
 
    // Write IR data.
-   auto buf = Core::FileOpenStream(outName, std::ios_base::out | std::ios_base::binary);
+   auto buf = GDCC::Core::FileOpenStream(outName,
+      std::ios_base::out | std::ios_base::binary);
    if(!buf)
    {
       std::cerr << "couldn't open '" << outName << "' for writing\n";
@@ -55,7 +57,7 @@ static void MakeAsm()
    }
 
    std::ostream out{buf.get()};
-   IR::OArchive(out).putHeader() << prog;
+   GDCC::IR::OArchive(out).putHeader() << prog;
 }
 
 //
@@ -63,23 +65,21 @@ static void MakeAsm()
 //
 static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 {
-   using namespace GDCC;
-
    std::filebuf fbuf;
 
-   auto buf = Core::FileOpenStream(inName, std::ios_base::in);
+   auto buf = GDCC::Core::FileOpenStream(inName, std::ios_base::in);
    if(!buf)
    {
       std::cerr << "couldn't open '" << inName << "' for reading\n";
       throw EXIT_FAILURE;
    }
 
-   AS::TStream   in    {*buf, inName};
-   AS::MacroMap  macros{};
-   AS::ParserCtx ctx   {in, macros, prog};
+   GDCC::AS::TStream   in    {*buf, inName};
+   GDCC::AS::MacroMap  macros{};
+   GDCC::AS::ParserCtx ctx   {in, macros, prog};
 
-   while(!ctx.in.peek(Core::TOK_EOF))
-      AS::ParseDeclaration(ctx);
+   while(!ctx.in.peek(GDCC::Core::TOK_EOF))
+      GDCC::AS::ParseDeclaration(ctx);
 }
 
 
@@ -92,21 +92,22 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 //
 int main(int argc, char *argv[])
 {
-   using namespace GDCC;
+   auto &opts = GDCC::Core::GetOptions();
 
-   auto &list = Core::GetOptionList();
+   opts.list.name     = "gdcc-as";
+   opts.list.nameFull = "GDCC Assembler";
 
-   list.name     = "gdcc-as";
-   list.nameFull = "GDCC Assembler";
+   opts.list.usage = "[option]... [source]...";
 
-   list.usage = "[option]... [source]...";
+   opts.list.descS =
+      "Compiles assembly into IR data. Output defaults to last loose "
+      "argument.";
 
-   list.descS =
-      "Compiles assembly into IR data. Output defaults to last loose argument.";
+   opts.optSysSource.insert(&opts.list);
 
    try
    {
-      Core::ProcessOptions(Core::GetOptions(), argc, argv);
+      GDCC::Core::ProcessOptions(opts, argc, argv);
       MakeAsm();
    }
    catch(std::exception const &e)

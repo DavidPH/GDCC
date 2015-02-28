@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,10 @@
 
 #include <cstring>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -23,6 +27,35 @@ namespace GDCC
 {
    namespace Core
    {
+      //
+      // GetSystemPath
+      //
+      std::string const &GetSystemPath()
+      {
+         static std::string path;
+
+         if(path.empty())
+         {
+            #ifdef _WIN32
+            TCHAR buffer[MAX_PATH+1];
+            DWORD size = MAX_PATH+1;
+            DWORD len  = GetModuleFileName(NULL, buffer, size);
+
+            // 0 means failure, size means buffer too small.
+            if(len == 0 || len == size)
+               return path;
+
+            path = {buffer, len};
+            Core::PathDirnameEq(path);
+            Core::PathNormalizeEq(path);
+            #else
+            path = "/usr/share/gdcc";
+            #endif
+         }
+
+         return path;
+      }
+
       //
       // PathAppend
       //
