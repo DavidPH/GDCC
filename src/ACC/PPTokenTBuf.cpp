@@ -63,8 +63,8 @@ namespace GDCC
          // in gdcc-acc, due to differences in header implementation.
          switch(str)
          {
-         case Core::STR_acs_executewait:
-         case Core::STR_acs_namedexecutewait:
+       //case Core::STR_acs_executewait:
+       //case Core::STR_acs_namedexecutewait:
          case Core::STR_bluereturn:
          case Core::STR_bool:
          case Core::STR_break:
@@ -72,7 +72,7 @@ namespace GDCC
          case Core::STR_clientside:
          case Core::STR_const:
          case Core::STR_continue:
-         case Core::STR_createtranslation:
+       //case Core::STR_createtranslation:
          case Core::STR_death:
          case Core::STR_default:
          case Core::STR_disconnect:
@@ -102,7 +102,7 @@ namespace GDCC
          case Core::STR_special:
          case Core::STR_static:
          case Core::STR_str:
-         case Core::STR_strcpy:
+       //case Core::STR_strcpy:
        //case Core::STR_strparam:
          case Core::STR_suspend:
          case Core::STR_switch:
