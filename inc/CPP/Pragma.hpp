@@ -48,6 +48,8 @@ namespace GDCC
       class PragmaData : public PragmaDataBase
       {
       public:
+         PragmaData();
+
          virtual void drop();
          virtual void push();
 
@@ -116,7 +118,7 @@ namespace GDCC
       public:
          PragmaParserACS(PragmaData &data_) : data{data_} {}
 
-         virtual bool parse(Core::Token const *toks, std::size_t n);
+         bool parse(Core::Token const *toks, std::size_t n);
 
       protected:
          PragmaData &data;
@@ -132,7 +134,7 @@ namespace GDCC
       public:
          PragmaParserGDCC(PragmaData &data_) : data{data_} {}
 
-         virtual bool parse(Core::Token const *toks, std::size_t n);
+         bool parse(Core::Token const *toks, std::size_t n);
 
       protected:
          PragmaData &data;
@@ -148,7 +150,7 @@ namespace GDCC
       public:
          PragmaParserSTDC(PragmaData &data_) : data{data_} {}
 
-         virtual bool parse(Core::Token const *toks, std::size_t n);
+         bool parse(Core::Token const *toks, std::size_t n);
 
       protected:
          PragmaData &data;

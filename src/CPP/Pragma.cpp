@@ -13,13 +13,7 @@
 #include "CPP/Pragma.hpp"
 
 #include "Core/Exception.hpp"
-#include "Core/Parse.hpp"
 #include "Core/TokenStream.hpp"
-
-#include <climits>
-#include <csignal>
-#include <ctime>
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -72,10 +66,24 @@ namespace GDCC
       }
 
       //
+      // PragmaData default constructor
+      //
+      PragmaData::PragmaData() :
+         stateCXLimitedRange{false},
+         stateFEnvAccess    {false},
+         stateFPContract    {false},
+         stateFixedLiteral  {false},
+         stateStrEntLiteral {false}
+      {
+      }
+
+      //
       // PragmaData::drop
       //
       void PragmaData::drop()
       {
+         PragmaDataBase::drop();
+
          if(stackFixedLiteral.empty()) return;
 
          stateCXLimitedRange = stackCXLimitedRange.back();
@@ -96,6 +104,8 @@ namespace GDCC
       //
       void PragmaData::push()
       {
+         PragmaDataBase::push();
+
          stackCXLimitedRange.emplace_back(stateCXLimitedRange);
          stackFEnvAccess    .emplace_back(stateFEnvAccess);
          stackFPContract    .emplace_back(stateFPContract);
