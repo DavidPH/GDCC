@@ -207,7 +207,10 @@ namespace GDCC
 
       bool IsTypeSpec(ParserCtx const &ctx, Scope &scope);
 
-      void ParseAddrDecl(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
+      void ParseAddrDecl(ParserCtx const &ctx, Scope_Global &scope,
+         AST::Attribute &attr);
+      void ParseAddrDecl(ParserCtx const &ctx, Scope_Local &scope,
+         AST::Attribute &attr);
 
       void ParseAttr(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
       void ParseAttrSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
