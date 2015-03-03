@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -96,6 +96,34 @@ namespace GDCC
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
             throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+      }
+
+      //
+      // ParseAttr_address_Lit
+      //
+      // attribute-address_Lit:
+      //    attribute-address_lit-name ( constant-expression )
+      //
+      // attribute-address_Lit-name:
+      //    <address_Lit>
+      //    <__address_Lit>
+      //
+      static void ParseAttr_address_Lit(ParserCtx const &ctx, Scope &scope,
+         AST::Attribute &attr)
+      {
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "'", true);
+
+         // constant-expression
+         if(ctx.in.peek(Core::TOK_ParenC))
+            attr.addrL = nullptr;
+         else
+            attr.addrL = GetExp_Cond(ctx, scope)->getIRExp();
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "'", true);
       }
 
       //
@@ -374,6 +402,9 @@ namespace GDCC
          {
          case Core::STR_address: case Core::STR___address:
             ParseAttr_address(ctx, scope, attr); break;
+
+         case Core::STR_address_Lit: case Core::STR___address_Lit:
+            ParseAttr_address_Lit(ctx, scope, attr); break;
 
          case Core::STR_alloc_Loc: case Core::STR___alloc_Loc:
             ParseAttr_alloc_Loc(ctx, scope, attr); break;

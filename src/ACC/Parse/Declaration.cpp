@@ -274,8 +274,7 @@ namespace GDCC
                   if(!ctx.in.peek(Core::TOK_NumInt))
                      throw Core::ParseExceptExpect(ctx.in.peek(), "integer-constant", false);
 
-                  // TODO: Alternate immediate mode address.
-                  GetExp_Prim(ctx, scope)->getIRExp();
+                  attr.addrL = GetExp_Prim(ctx, scope)->getIRExp();
                }
 
                if(!ctx.in.drop(Core::TOK_BraceC))
@@ -375,6 +374,9 @@ namespace GDCC
             fn->valueInt = attr.addrI;
          else if(attr.addrS)
             fn->valueStr = attr.addrS;
+
+         if(attr.addrL)
+            fn->valueLit = attr.addrL;
 
          return fn;
       }

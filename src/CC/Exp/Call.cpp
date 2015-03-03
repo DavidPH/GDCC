@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,6 +21,50 @@
 #include "Core/Exception.hpp"
 
 #include "IR/CallType.hpp"
+
+
+//----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace CC
+   {
+      //
+      // IsCallLit
+      //
+      static bool IsCallLit(AST::Exp const *exp,
+         Core::Array<AST::Exp::CRef> const &args)
+      {
+         auto type = exp->getType()->getBaseType();
+
+         switch(IR::GetCallTypeIR(type->getCallType()))
+         {
+         case IR::CallType::AsmFunc:
+            if(!exp->isIRExp() || !exp->isFunction() || !exp->getFunction()->valueLit)
+               return false;
+            break;
+
+         case IR::CallType::Special:
+            if(!exp->isIRExp())
+               return false;
+            break;
+
+         default:
+            return false;
+         }
+
+         for(auto const &arg : args)
+         {
+            if(!arg->isIRExp()) return false;
+            if(arg->getType()->getSizeWords() != 1) return false;
+         }
+
+         return true;
+      }
+   }
+}
 
 
 //----------------------------------------------------------------------------|
@@ -161,6 +205,10 @@ namespace GDCC
             *argsItr = ExpPromo_Assign(*paramItr, *argsItr, pos);
          for(; argsItr != argsEnd; ++argsItr)
             *argsItr = ExpPromo_Arg(*argsItr, pos);
+
+         // Check for constant parameters.
+         if(IsCallLit(exp, args))
+            return Exp_CallLit::Create(exp, pos, std::move(args));
 
          return Exp_CallStk::Create(exp, pos, std::move(args));
       }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -51,6 +51,36 @@ namespace GDCC
          virtual bool v_isIRExp() const;
 
          virtual bool v_isNoAuto() const;
+      };
+
+      //
+      // Exp_CallLit
+      //
+      // Handles calling conventions that use all Lit arguments.
+      //
+      class Exp_CallLit : public Exp_Call
+      {
+         GDCC_Core_CounterPreamble(GDCC::CC::Exp_CallLit, GDCC::CC::Exp_Call);
+
+      public:
+         // Create
+         static CRef Create(AST::Exp const *e, Core::Origin pos,
+            Core::Array<AST::Exp::CRef> const &a)
+            {return CRef(new This(e, pos, a));}
+
+         // Create
+         static CRef Create(AST::Exp const *e, Core::Origin pos,
+            Core::Array<AST::Exp::CRef> &&a)
+            {return CRef(new This(e, pos, std::move(a)));}
+
+      protected:
+         Exp_CallLit(AST::Exp const *e, Core::Origin pos_,
+            Core::Array<AST::Exp::CRef> const &a) : Super{e, pos_, a} {}
+         Exp_CallLit(AST::Exp const *e, Core::Origin pos_,
+            Core::Array<AST::Exp::CRef> &&a) : Super{e, pos_, std::move(a)} {}
+
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
+            AST::Arg const &dst) const;
       };
 
       //

@@ -97,6 +97,7 @@ namespace GDCC
          IR::ScriptType stype;
          TypeCPtr       type;
          IRExpCPtr      valueInt;
+         IRExpCPtr      valueLit;
          Core::String   valueStr;
          Core::String   warnUse;
 

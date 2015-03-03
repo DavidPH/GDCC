@@ -59,6 +59,7 @@ namespace GDCC
          void setName(Core::Token const &tok);
 
          Core::CounterPtr<IR::Exp const> addrI;
+         Core::CounterPtr<IR::Exp const> addrL;
          Core::String                    addrS;
          Core::CounterPtr<IR::Exp const> allocLoc;
          IR::CallType                    callt;

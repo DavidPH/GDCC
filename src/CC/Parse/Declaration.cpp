@@ -62,6 +62,9 @@ namespace GDCC
          else if(attr.addrS)
             fn->valueStr = attr.addrS;
 
+         if(attr.addrL)
+            fn->valueLit = attr.addrL;
+
          return fn;
       }
 

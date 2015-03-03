@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2015 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -24,7 +24,8 @@
 // ACS_AsmFuncDecl
 //
 #define ACS_AsmFuncDecl(addr, addrLit, optArgs) \
-   [[__address(addr), __call("AsmFunc"), __optional_args(optArgs)]]
+   [[__address(addr), __address_Lit(addrLit), __call("AsmFunc"), \
+      __optional_args(optArgs)]]
 
 //
 // ACS_AsmFuncDeclFull

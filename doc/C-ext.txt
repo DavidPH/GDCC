@@ -65,6 +65,25 @@ Semantics:
   The second form sets the call name of the affected function.
 
 ===========================================================
+Address Lit
+===========================================================
+
+Syntax:
+  attribute-address_Lit:
+    attribute-address_Lit-name ( constant-expression )
+
+  attribute-address-name:
+    <address_Lit>
+    <__address_Lit>
+
+Constraints:
+  Shall only be applied to functions.
+
+Semantics:
+  For "AsmFunc" call functions, sets an alternative address to use when all
+  arguments are constants.
+
+===========================================================
 Alloc Loc
 ===========================================================
 

@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2014 David Hill
+## Copyright (C) 2013-2015 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -25,6 +25,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    Exp/Add/Point.cpp
    Exp/Assign.cpp
    Exp/Call.cpp
+   Exp/Call/Lit.cpp
    Exp/Call/Stk.cpp
    Exp/Cmp.cpp
    Exp/Convert/BoolSoft.cpp
