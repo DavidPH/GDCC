@@ -432,14 +432,14 @@ Type Qualifiers
 
 Syntax:
   address-space-name: add
+    <__aut>
     <__far>
     <__gbl_ars>
     <__gbl_reg>
-    <__loc>
-    <__loc_ars>
     <__loc_reg>
     <__map_ars>
     <__map_reg>
+    <__sta>
     <__str_ars>
     <__wld_ars>
     <__wld_reg>
@@ -565,9 +565,9 @@ Semantics:
 
   Follows the same scoping rules as STDC pragmas. The default state is OFF.
 
-===============================================================================
+###############################################################################
 Grammar
-===============================================================================
+###############################################################################
 
   attribute-specifier-list:
     attribute-specifier attribute-specifier-list(opt)
@@ -674,14 +674,14 @@ Grammar
     <__str_ent>
 
   address-space-name: add
+    <__aut>
     <__far>
     <__gbl_ars>
     <__gbl_reg>
-    <__loc>
-    <__loc_ars>
     <__loc_reg>
     <__map_ars>
     <__map_reg>
+    <__sta>
     <__str_ars>
     <__wld_ars>
     <__wld_reg>
