@@ -285,7 +285,7 @@ namespace GDCC
                }
 
                // parameter-type-list
-               else if(IsDeclSpec(ctx, scope)) do
+               else if(IsDeclSpec(ctx, scope) || ctx.in.peek(Core::TOK_Dot3)) do
                {
                   // ... )
                   if(ctx.in.drop(Core::TOK_Dot3))
