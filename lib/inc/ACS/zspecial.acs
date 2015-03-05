@@ -41,6 +41,8 @@
 #define ACS_PrintPropertyBase() \
    a(global): PrintGlobalCharArray, \
    a(global): PrintGlobalCharRange, \
+   a(local):  PrintLocalCharArray, \
+   a(local):  PrintLocalCharRange, \
    a(map):    PrintMapCharArray, \
    a(map):    PrintMapCharRange, \
    a(world):  PrintWorldCharArray, \
@@ -461,6 +463,11 @@ special
    void  { 83     }:ClearLineSpecial(void),
 
    void  { 85     }:BeginPrint(void),
+   void  { 85     }:BeginPrintBold(void),
+   void  { 85     }:BeginHudMessage(void),
+   void  { 85     }:BeginHudMessageBold(void),
+   void  { 85     }:BeginLog(void),
+   void  { 85     }:BeginStrParam(void),
    void  { 86     }:EndPrint(void),
    void  { 87     }:PrintString(str),
    void  { 88     }:PrintInt(int),
@@ -627,7 +634,7 @@ special
    void  {349     }:PrintBinary(int),
    void  {350     }:PrintHex(int),
 
-   str   {352     }:EndString(void),
+   str   {352     }:EndStrParam(void),
    void  {353     }:PrintMapCharRange(int, int, int, int),
    void  {354     }:PrintWorldCharRange(int, int, int, int),
    void  {355     }:PrintGlobalCharRange(int, int, int, int),
@@ -636,11 +643,15 @@ special
    int   {358     }:StrCpyToGlobalCharRange(int, int, int, int, str, int),
 
    void  {361     }:NamedScriptWait(str),
-   void  {362     }:CreateTranslationDesat(int, int, fixed, fixed, fixed, fixed, fixed, fixed);
+   void  {362     }:CreateTranslationDesat(int, int, fixed, fixed, fixed, fixed, fixed, fixed),
+
+   void  {378     }:PrintLocalCharArray(int, int),
+   void  {379     }:PrintLocalCharRange(int, int, int, int),
+   int   {380     }:StrCpyToLocalCharRange(int, int, int, int, str, int);
 
 print HudMessage
 (
-   (begin): BeginPrint,
+   (begin): BeginHudMessage,
    (end):   EndHudMessage,
    (more):  MoreHudMessage,
    (opt):   OptHudMessage,
@@ -650,7 +661,7 @@ print HudMessage
 
 print HudMessageBold
 (
-   (begin): BeginPrint,
+   (begin): BeginHudMessageBold,
    (end):   EndHudMessageBold,
    (more):  MoreHudMessage,
    (opt):   OptHudMessage,
@@ -660,7 +671,7 @@ print HudMessageBold
 
 print Log
 (
-   (begin): BeginPrint,
+   (begin): BeginLog,
    (end):   EndLog,
 
    ACS_PrintPropertyBase()
@@ -676,7 +687,7 @@ print Print
 
 print PrintBold
 (
-   (begin): BeginPrint,
+   (begin): BeginPrintBold,
    (end):   EndPrintBold,
 
    ACS_PrintPropertyBase()
@@ -684,8 +695,8 @@ print PrintBold
 
 print StrParam
 (
-   (begin): BeginPrint,
-   (end):   EndString,
+   (begin): BeginStrParam,
+   (end):   EndStrParam,
 
    ACS_PrintPropertyBase()
 );

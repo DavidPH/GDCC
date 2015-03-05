@@ -70,6 +70,7 @@ ACS_AsmFuncDeclFull( 81, 82, 0, void,   ScriptWait, int);
 ACS_AsmFuncDeclFull( 83,   , 0, void,   ClearLineSpecial, void);
 
 ACS_AsmFuncDeclFull( 85,   , 0, void,   BeginPrint, void);
+ACS_AsmFuncDeclFull( 85,   , 0, void,   BeginPrintBold, void);
 ACS_AsmFuncDeclFull( 86,   , 0, void,   EndPrint, void);
 ACS_AsmFuncDeclFull( 87,   , 0, void,   PrintString, __str);
 ACS_AsmFuncDeclFull( 88,   , 0, void,   PrintInt, int);

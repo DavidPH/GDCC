@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2015 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -446,7 +446,7 @@ char *getenv(char const *name)
 
    ACS_BeginPrint();
    ACS_PrintGlobalCharArray((int)name, __GDCC__Sta);
-   s.s = ACS_GetCVarString(ACS_EndString());
+   s.s = ACS_GetCVarString(ACS_EndStrParam());
 
    if(!s.i) return NULL;
 

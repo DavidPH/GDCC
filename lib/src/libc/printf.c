@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2015 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -191,21 +191,21 @@
    case FL_L: \
       ACS_BeginPrint(); \
       ACS_PrintLocalized(va_arg(arg, __str)); \
-      fmtStr = ACS_EndString(); \
+      fmtStr = ACS_EndStrParam(); \
       fmtRet.len = ACS_StrLen(fmtStr); \
       goto fmt_str; \
    \
    case FL_j: \
       ACS_BeginPrint(); \
       ACS_PrintBind(va_arg(arg, __str)); \
-      fmtStr = ACS_EndString(); \
+      fmtStr = ACS_EndStrParam(); \
       fmtRet.len = ACS_StrLen(fmtStr); \
       goto fmt_str; \
    \
    case FL_t: \
       ACS_BeginPrint(); \
       ACS_PrintName(va_arg(arg, int)); \
-      fmtStr = ACS_EndString(); \
+      fmtStr = ACS_EndStrParam(); \
       fmtRet.len = ACS_StrLen(fmtStr); \
       goto fmt_str; \
    \

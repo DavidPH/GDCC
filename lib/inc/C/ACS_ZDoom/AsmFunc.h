@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2015 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -21,6 +21,11 @@
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
+
+ACS_AsmFuncDeclFull( 85,    , 0, void,   BeginHudMessage, void);
+ACS_AsmFuncDeclFull( 85,    , 0, void,   BeginHudMessageBold, void);
+ACS_AsmFuncDeclFull( 85,    , 0, void,   BeginLog, void);
+ACS_AsmFuncDeclFull( 85,    , 0, void,   BeginStrParam, void);
 
 ACS_AsmFuncDeclFull(102,    , 0, void,   ActivatorSound, __str, int);
 ACS_AsmFuncDeclFull(103,    , 0, void,   LocalAmbientSound, __str, int);
@@ -47,11 +52,11 @@ ACS_AsmFuncDeclFull(158,    , 0, void,   PrintLocalized, __str);
 ACS_AsmFuncDeclFull(159,    , 0, void,   MoreHudMessage, void);
 ACS_AsmFuncDeclFull(160,    , 0, void,   OptHudMessage, int, int, int, _Accum, _Accum, _Accum);
 ACS_AsmFuncDeclFull(160,    , 0, void,   OptHudMessageS, int, int, __str, _Accum, _Accum, _Accum);
-ACS_AsmFuncDeclFull(161,    , 0, void,   EndHudMessage, void);
+ACS_AsmFuncDeclFull(161,    , 0, void,   EndHudMessage, ...);
 ACS_AsmFuncDeclFull(161,    , 0, void,   EndHudMessageX, _Accum);
 ACS_AsmFuncDeclFull(161,    , 0, void,   EndHudMessageXX, _Accum, _Accum);
 ACS_AsmFuncDeclFull(161,    , 0, void,   EndHudMessageXXX, _Accum, _Accum, _Accum);
-ACS_AsmFuncDeclFull(162,    , 0, void,   EndHudMessageBold, void);
+ACS_AsmFuncDeclFull(162,    , 0, void,   EndHudMessageBold, ...);
 ACS_AsmFuncDeclFull(162,    , 0, void,   EndHudMessageBoldX, _Accum);
 ACS_AsmFuncDeclFull(162,    , 0, void,   EndHudMessageBoldXX, _Accum, _Accum);
 ACS_AsmFuncDeclFull(162,    , 0, void,   EndHudMessageBoldXXX, _Accum, _Accum, _Accum);
@@ -159,7 +164,7 @@ ACS_AsmFuncDeclFull(348,    , 0, int,    ClassifyActor, int);
 ACS_AsmFuncDeclFull(349,    , 0, void,   PrintBinary, int);
 ACS_AsmFuncDeclFull(350,    , 0, void,   PrintHex, int);
 
-ACS_AsmFuncDeclFull(352,    , 0, __str,  EndString, void);
+ACS_AsmFuncDeclFull(352,    , 0, __str,  EndStrParam, void);
 ACS_AsmFuncDeclFull(353,    , 0, void,   PrintMapCharRange, int, int, int, int);
 ACS_AsmFuncDeclFull(354,    , 0, void,   PrintWorldCharRange, int, int, int, int);
 ACS_AsmFuncDeclFull(355,    , 0, void,   PrintGlobalCharRange, int, int, int, int);
@@ -169,6 +174,10 @@ ACS_AsmFuncDeclFull(358,    , 0, int,    StrCpyToGlobalCharRange, int, int, int,
 
 ACS_AsmFuncDeclFull(361,    , 0, void,   NamedScriptWait, __str);
 ACS_AsmFuncDeclFull(362,    , 0, void,   CreateTranslationDesat, int, int, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum);
+
+ACS_AsmFuncDeclFull(378,    , 0, void,   PrintLocalCharArray, int, int);
+ACS_AsmFuncDeclFull(379,    , 0, void,   PrintLocalCharRange, int, int, int, int);
+ACS_AsmFuncDeclFull(380,    , 0, int,    StrCpyToLocalCharRange, int, int, int, int, __str, int);
 
 #endif//__GDCC_Header__C__ACS_ZDoom__AsmFunc_h__
 

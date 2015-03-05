@@ -140,6 +140,7 @@ special
    void  { 83     }:ClearLineSpecial(void),
 
    void  { 85     }:BeginPrint(void),
+   void  { 85     }:BeginPrintBold(void),
    void  { 86     }:EndPrint(void),
    void  { 87     }:PrintString(str),
    void  { 88     }:PrintInt(int),
