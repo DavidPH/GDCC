@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -275,7 +275,7 @@ namespace GDCC
             if(opt->info.group)
                out << opt->info.group << ":\n";
 
-            do
+            for(;;)
             {
                auto desc = opt->info.descL ? opt->info.descL : opt->info.descS;
 
@@ -290,8 +290,12 @@ namespace GDCC
                   PutWrapped(out << "\n        ", width, desc, 8);
                else
                   PutWrapped(out, width, desc, info.len);
+
+               if((opt = opt->listNext) == info.last)
+                  break;
+
+               out << '\n';
             }
-            while((opt = opt->listNext) != info.last);
          }
          while(info.last != listHead);
       }
