@@ -181,7 +181,7 @@ double round(double x)
 
    if(exp >= 53) return x;
    if(exp <  -1) return u.i &= 0x8000000000000000, u.f;
-   if(exp == -1) return u.i1 & 0x80000000 ? -1 : 1;
+   if(exp == -1) return u.i1 & 0x80000000 ? -1.0 : 1.0;
 
    if(u.i & (0x0008000000000000 >> exp))
       u.i += 0x0010000000000000 >> exp;
@@ -200,7 +200,7 @@ float roundf(float x)
 
    if(exp >= 24) return x;
    if(exp <  -1) return u.i &= 0x80000000, u.f;
-   if(exp == -1) return u.i1 & 0x80000000 ? -1 : 1;
+   if(exp == -1) return u.i1 & 0x80000000 ? -1.0f : 1.0f;
 
    if(u.i & (0x00400000 >> exp))
       u.i += 0x00800000 >> exp;
@@ -219,7 +219,7 @@ long double roundl(long double x)
 
    if(exp >= 53) return x;
    if(exp <  -1) return u.i &= 0x8000000000000000, u.f;
-   if(exp == -1) return u.i1 & 0x80000000 ? -1 : 1;
+   if(exp == -1) return u.i1 & 0x80000000 ? -1.0l : 1.0l;
 
    if(u.i & (0x0008000000000000 >> exp))
       u.i += 0x0010000000000000 >> exp;
@@ -444,7 +444,7 @@ double __rinf(double x)
    int exp = ((u.i1 >> 20) & 0x7FF) - 1023;
 
    if(exp >= 53 || exp == -1023) return x;
-   if(exp < 0) return u.i1 & 0x80000000 ? -1 : 1;
+   if(exp < 0) return u.i1 & 0x80000000 ? -1.0 : 1.0;
 
    long mask = 0x000FFFFFFFFFFFFF >> exp;
 
@@ -467,7 +467,7 @@ float __rinff(float x)
    int exp = ((u.i1 >> 23) & 0xFF) - 127;
 
    if(exp >= 24 || exp == -127) return x;
-   if(exp < 0) return u.i1 & 0x80000000 ? -1 : 1;
+   if(exp < 0) return u.i1 & 0x80000000 ? -1.0f : 1.0f;
 
    int mask = 0x007FFFFF >> exp;
 
@@ -490,7 +490,7 @@ long double __rinfl(long double x)
    int exp = ((u.i1 >> 20) & 0x7FF) - 1023;
 
    if(exp >= 53 || exp == -1023) return x;
-   if(exp < 0) return u.i1 & 0x80000000 ? -1 : 1;
+   if(exp < 0) return u.i1 & 0x80000000 ? -1.0l : 1.0l;
 
    long mask = 0x000FFFFFFFFFFFFF >> exp;
 
@@ -516,7 +516,7 @@ int __irmod(double x)
    int exp = ((u.i1 >> 20) & 0x7FF) - 1023;
    int res;
 
-   if(exp >= 84 || exp < 0) return 0;
+   if(exp >= 83 || exp < 0) return 0;
 
    if(exp >= 52)
       res = (u.i0 << (exp - 52)) & INT_MAX;
@@ -544,7 +544,7 @@ int __irmodf(float x)
    if(exp >= 54 || exp < 0) return 0;
 
    if(exp >= 23)
-      res = (u.i0 << exp) & INT_MAX;
+      res = (u.i0 << (exp - 23)) & INT_MAX;
    else
    {
       u.i1 &= 0x007FFFFF;
@@ -566,10 +566,10 @@ int __irmodl(long double x)
    int exp = ((u.i1 >> 20) & 0x7FF) - 1023;
    int res;
 
-   if(exp >= 84 || exp < 0) return 0;
+   if(exp >= 83 || exp < 0) return 0;
 
    if(exp >= 52)
-      res = (u.i0 << exp) & INT_MAX;
+      res = (u.i0 << (exp - 52)) & INT_MAX;
    else
    {
       u.i1 &= 0x000FFFFF;
