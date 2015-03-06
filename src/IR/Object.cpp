@@ -18,6 +18,7 @@
 #include "IR/OArchive.hpp"
 #include "IR/Program.hpp"
 
+#include "Platform/Alloc.hpp"
 #include "Platform/Platform.hpp"
 
 
@@ -58,8 +59,10 @@ namespace GDCC
       //
       void Object::allocValue(Program &prog, bool (*test)(Program &, Object &))
       {
-         if(!value && Platform::IsZeroNull_Point(space.base))
-            value = 1;
+         auto valueMin = Platform::GetAllocMin(space);
+
+         if(value < valueMin)
+            value = valueMin;
 
          auto objRange = prog.rangeObject();
 

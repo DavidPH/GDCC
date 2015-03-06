@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2014 David Hill
+## Copyright (C) 2014-2015 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -19,8 +19,10 @@
 ## gdcc-platform-lib
 ##
 add_library(gdcc-platform-lib ${GDCC_SHARED_DECL}
+   Alloc.cpp
    Platform.cpp
 
+   ../../inc/Platform/Alloc.hpp
    ../../inc/Platform/Platform.hpp
 )
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -60,6 +60,18 @@ namespace GDCC
          Core::String name;
       };
    }
+}
+
+namespace std
+{
+   //
+   // hash<::GDCC::IR::AddrSpace>
+   //
+   template<> struct hash<::GDCC::IR::AddrSpace>
+   {
+      size_t operator () (::GDCC::IR::AddrSpace space) const
+         {return space.name.getHash() ^ static_cast<size_t>(space.base);}
+   };
 }
 
 
