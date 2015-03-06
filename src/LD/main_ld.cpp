@@ -21,6 +21,7 @@
 #include "IR/Program.hpp"
 
 #include "Option/Bool.hpp"
+#include "Option/CStrV.hpp"
 
 #include "Platform/Platform.hpp"
 
@@ -52,6 +53,19 @@ static GDCC::Option::Bool OutputIROpt
    &OutputIR
 };
 
+//
+// -l, --library
+//
+static GDCC::Option::CStrV Libraries
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("library").setName('l')
+      .setGroup("output")
+      .setDescS("Adds a library name to import at runtime."),
+
+   1
+};
+
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
@@ -71,6 +85,10 @@ static void MakeLinker()
    // Process inputs.
    for(auto const &arg : Core::GetOptionArgs())
       ProcessFile(arg, prog);
+
+   // Add libraries.
+   for(auto const &lib : Libraries)
+      prog.getImport(lib);
 
    auto outName = Core::GetOptionOutput();
 
