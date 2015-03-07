@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "CC/Exp/Convert/Pointer.hpp"
+
+#include "CC/Type.hpp"
 
 #include "AST/Type.hpp"
 
@@ -227,6 +229,15 @@ namespace GDCC
          // Special handling for pointer-to-function.
          if(baseL->isCTypeFunction() && baseR->isCTypeFunction())
             return Exp_ConvertPtr::Create(typeL, exp, pos);
+
+         // If converting from __str_ent* to T __str_ars*, convert to char
+         // const __str_ars* first.
+         if(baseR->isTypeStrEnt() && baseL->getQualAddr().base == IR::AddrBase::StrArs)
+         {
+            exp   = ExpCreate_Add(e, ExpCreate_LitInt(TypeIntegPrS, 0, pos), pos);
+            typeR = exp->getType();
+            baseR = typeR->getBaseType();
+         }
 
          // Remainder of function concerns pointer-to-object.
          if(!baseL->isCTypeObject() || !baseR->isCTypeObject())

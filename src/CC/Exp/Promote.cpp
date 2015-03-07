@@ -106,6 +106,14 @@ namespace GDCC
             auto baseL = typeL->getBaseType();
             auto baseR = typeR->getBaseType();
 
+            // Treat __str_ent* as char const __str_ars* for these checks.
+            if(baseR->isTypeStrEnt())
+            {
+               AST::TypeQual qual = {{IR::AddrBase::StrArs, Core::STR_}};
+               qual.aCons = true;
+               baseR = TypeChar->getTypeQual(qual);
+            }
+
             // Check underlying type compatibility.
             if(!baseL->isTypeVoid() && !baseR->isTypeVoid() &&
                baseL->getTypeQual() != baseR->getTypeQual())
