@@ -224,7 +224,7 @@ static _Bool AllocMerge(register MemBlockPtr block, register size_t size)
 
       // Initialize new block.
       blockNext->prev = block;
-      blockNext->next = block->next;
+      blockNext->next = blockNextNext;
       blockNext->size = sizeDiff - sizeof(MemBlock);
       blockNext->flag = 0;
 
