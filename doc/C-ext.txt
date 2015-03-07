@@ -299,8 +299,9 @@ Contraints:
 
 Semantics:
   Sets the affected function's script type or flags. Supported types are:
-  "Death", "Disconnect", "Enter", "Lightning", "Open", "Respawn", "Return",
-  "Unloading". Supported flags are: "Clientside", "Net".
+  "BlueReturn", "Death", "Disconnect", "Enter", "Event", "Lightning", "Open",
+  "Pickup", "RedReturn", "Respawn", "Return", "Unloading", "WhiteReturn".
+  Supported flags are: "Clientside", "Net".
 
 ===============================================================================
 Expressions

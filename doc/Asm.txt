@@ -1345,14 +1345,19 @@ Syntax:
 
   script-type-specifier:
     <None>
+    <BlueReturn>
     <Death>
     <Disconnect>
     <Enter>
+    <Event>
     <Lightning>
     <Open>
+    <Pickup>
+    <RedReturn>
     <Respawn>
     <Return>
     <Unloading>
+    <WhiteReturn>
 
 ===============================================================================
 Grammar
@@ -1874,14 +1879,19 @@ Grammar
 
   script-type-specifier:
     <None>
+    <BlueReturn>
     <Death>
     <Disconnect>
     <Enter>
+    <Event>
     <Lightning>
     <Open>
+    <Pickup>
+    <RedReturn>
     <Respawn>
     <Return>
     <Unloading>
+    <WhiteReturn>
 
 ###############################################################################
 EOF

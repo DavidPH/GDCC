@@ -538,15 +538,20 @@ namespace GDCC
                switch(itr.stype)
                {
                default:
-               case IR::ScriptType::None:       stype =  0; break;
-               case IR::ScriptType::Death:      stype =  3; break;
-               case IR::ScriptType::Disconnect: stype = 14; break;
-               case IR::ScriptType::Enter:      stype =  4; break;
-               case IR::ScriptType::Lightning:  stype = 12; break;
-               case IR::ScriptType::Open:       stype =  1; break;
-               case IR::ScriptType::Respawn:    stype =  2; break;
-               case IR::ScriptType::Return:     stype = 15; break;
-               case IR::ScriptType::Unloading:  stype = 13; break;
+               case IR::ScriptType::None:        stype =  0; break;
+               case IR::ScriptType::BlueReturn:  stype =  6; break;
+               case IR::ScriptType::Death:       stype =  3; break;
+               case IR::ScriptType::Disconnect:  stype = 14; break;
+               case IR::ScriptType::Enter:       stype =  4; break;
+               case IR::ScriptType::Event:       stype = 16; break;
+               case IR::ScriptType::Lightning:   stype = 12; break;
+               case IR::ScriptType::Open:        stype =  1; break;
+               case IR::ScriptType::Pickup:      stype =  5; break;
+               case IR::ScriptType::RedReturn:   stype =  7; break;
+               case IR::ScriptType::Respawn:     stype =  2; break;
+               case IR::ScriptType::Return:      stype = 15; break;
+               case IR::ScriptType::Unloading:   stype = 13; break;
+               case IR::ScriptType::WhiteReturn: stype =  8; break;
                }
 
                auto paramMax = GetParamMax(itr.ctype);
