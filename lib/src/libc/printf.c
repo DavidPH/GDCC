@@ -216,6 +216,57 @@
 #endif
 
 //
+// FormatSwitch_f
+//
+#define FormatSwitch_f() \
+   switch(fmtChr) \
+   { \
+      FormatCases(); \
+      \
+   case '%': \
+      if(fputc(fmtChr, stream) == EOF) \
+         return ~ret; \
+      ++ret; \
+      continue; \
+      \
+   fmt_str: \
+      if(fmtRet.len > fmtArg.prec) \
+         fmtRet.len = fmtArg.prec; \
+      \
+      /* Write result. */ \
+      WriteResult_f(fmtStr, __fwrite_str); \
+      \
+      continue; \
+      \
+   default: return ~ret; \
+   } \
+   \
+   /* Write result. */ \
+   WriteResult_f(fmtRet.begin, fwrite);
+
+//
+// FormatSwitch_n
+//
+#define FormatSwitch_n() \
+   switch(fmtChr) \
+   { \
+      FormatCases(); \
+      \
+   case '%': ACS_PrintChar('%'); ++ret; continue; \
+      \
+   default: return ~ret; \
+      \
+   fmt_str: \
+      /* Write result. */ \
+      WriteResult_n_str(); \
+      \
+      continue; \
+   } \
+   \
+   /* Write result. */ \
+   WriteResult_n()
+
+//
 // FormatX
 //
 #define FormatX(fmt) \
@@ -334,6 +385,89 @@
       fmtArg.width = (fmtArg.width * 10) + (fmtChr - '0');
 
 //
+// WriteResult_f
+//
+#define WriteResult_f(res, write) \
+   if(fmtRet.len < fmtArg.width) \
+   { \
+      ret += fmtArg.width; \
+      fmtArg.width -= fmtRet.len; \
+      \
+      WriteWidthPre(f, fmtArg.width); \
+      if(!write(res, fmtRet.len, 1, stream)) \
+         return ~ret; \
+      WriteWidthPro(f, fmtArg.width); \
+   } \
+   else \
+   { \
+      ret += fmtRet.len; \
+      if(!write(res, fmtRet.len, 1, stream)) \
+         return ~ret; \
+   }
+
+//
+// WriteResult_n
+//
+#define WriteResult_n() \
+   if(fmtRet.len < fmtArg.width) \
+   { \
+      ret += fmtArg.width; \
+      fmtArg.width -= fmtRet.len; \
+      \
+      WriteWidthPre(n, fmtArg.width); \
+      ACS_PrintGlobalCharRange((int)fmtRet.begin, __GDCC__Sta, 0, fmtRet.len); \
+      WriteWidthPro(n, fmtArg.width); \
+   } \
+   else \
+   { \
+      ret += fmtRet.len; \
+      ACS_PrintGlobalCharRange((int)fmtRet.begin, __GDCC__Sta, 0, fmtRet.len); \
+   }
+
+//
+// WriteResult_n_str
+//
+#define WriteResult_n_str() \
+   if(fmtRet.len > fmtArg.prec) \
+   { \
+      fmtRet.len = fmtArg.prec; \
+      \
+      if(fmtRet.len < fmtArg.width) \
+      { \
+         ret += fmtArg.width; \
+         fmtArg.width -= fmtRet.len; \
+         \
+         WriteWidthPre(n, fmtArg.width); \
+         for(unsigned i = 0; i != fmtRet.len; ++i) \
+            ACS_PrintChar(fmtStr[i]); \
+         WriteWidthPro(n, fmtArg.width); \
+      } \
+      else \
+      { \
+         ret += fmtRet.len; \
+         for(unsigned i = 0; i != fmtRet.len; ++i) \
+            ACS_PrintChar(fmtStr[i]); \
+      } \
+   } \
+   else \
+   { \
+      if(fmtRet.len < fmtArg.width) \
+      { \
+         ret += fmtArg.width; \
+         fmtArg.width -= fmtRet.len; \
+         \
+         WriteWidthPre(n, fmtArg.width); \
+         ACS_PrintString(fmtStr); \
+         WriteWidthPro(n, fmtArg.width); \
+      } \
+      else \
+      { \
+         ret += fmtRet.len; \
+         ACS_PrintString(fmtStr); \
+      } \
+   }
+
+//
 // WriteStrEnt_s
 //
 #if __GDCC_Target__ZDoom__
@@ -349,7 +483,7 @@
 #define WriteStrEnt_s(len) \
    do \
    { \
-      for(unsigned i = 0, n = (len); n--;) \
+      for(unsigned i = 0; i != (len); ++i) \
          *s++ = fmtStr[i]; \
    } \
    while(0)
@@ -498,60 +632,7 @@ int vfprintf(FILE *restrict stream, char const *restrict format, __va_list arg)
       ParseFormat();
 
       // Perform format.
-      switch(fmtChr)
-      {
-         FormatCases();
-
-      case '%':
-         if(fputc(fmtChr, stream) == EOF)
-            return ~ret;
-         ++ret;
-         continue;
-
-      fmt_str:
-         if(fmtRet.len > fmtArg.prec)
-            fmtRet.len = fmtArg.prec;
-
-         // Write result.
-         if(fmtRet.len < fmtArg.width)
-         {
-            ret += fmtArg.width;
-            fmtArg.width -= fmtRet.len;
-
-            WriteWidthPre(f, fmtArg.width);
-            for(unsigned i = 0; i != fmtRet.len; ++i)
-               if(fputc(fmtStr[i], stream) == EOF) return ~ret;
-            WriteWidthPro(f, fmtArg.width);
-         }
-         else
-         {
-            ret += fmtRet.len;
-            for(unsigned i = 0; i != fmtRet.len; ++i)
-               if(fputc(fmtStr[i], stream) == EOF) return ~ret;
-         }
-
-         continue;
-
-      default: return ~ret;
-      }
-
-      // Write result.
-      if(fmtRet.len < fmtArg.width)
-      {
-         ret += fmtArg.width;
-         fmtArg.width -= fmtRet.len;
-
-         WriteWidthPre(f, fmtArg.width);
-         if(!fwrite(fmtRet.begin, fmtRet.len, 1, stream))
-            return ~ret;
-         WriteWidthPro(f, fmtArg.width);
-      }
-      else
-      {
-         ret += fmtRet.len;
-         if(!fwrite(fmtRet.begin, fmtRet.len, 1, stream))
-            return ~ret;
-      }
+      FormatSwitch_f();
    }
 
    return ret;
@@ -808,9 +889,25 @@ int vsprintf(char *restrict s, char const *restrict format, va_list arg)
 //
 
 //
+// __fprintf_str
+//
+int __fprintf_str(FILE *restrict stream,
+   char const __str_ars *restrict format, ...)
+{
+   va_list arg;
+   int     ret;
+
+   va_start(arg, format);
+   ret = __vfprintf_str(stream, format, arg);
+   va_end(arg);
+
+   return ret;
+}
+
+//
 // __nprintf
 //
-int __nprintf(char const *format, ...)
+int __nprintf(char const *restrict format, ...)
 {
    va_list arg;
    int     ret;
@@ -823,9 +920,67 @@ int __nprintf(char const *format, ...)
 }
 
 //
+// __nprintf_str
+//
+int __nprintf_str(char const __str_ars *restrict format, ...)
+{
+   va_list arg;
+   int     ret;
+
+   va_start(arg, format);
+   ret = __vnprintf_str(format, arg);
+   va_end(arg);
+
+   return ret;
+}
+
+//
+// __printf_str
+//
+int __printf_str(char const __str_ars *restrict format, ...)
+{
+   va_list arg;
+   int     ret;
+
+   va_start(arg, format);
+   ret = __vfprintf_str(stdout, format, arg);
+   va_end(arg);
+
+   return ret;
+}
+
+//
+// __vfprintf_str
+//
+int __vfprintf_str(FILE *restrict stream,
+   char const __str_ars *restrict format, __va_list arg)
+{
+   FormatDecl();
+
+   while((fmtChr = *format++))
+   {
+      if(fmtChr != '%')
+      {
+         if(fputc(fmtChr, stream) == EOF)
+            return ~ret;
+         ++ret;
+         continue;
+      }
+
+      // Read format args.
+      ParseFormat();
+
+      // Perform format.
+      FormatSwitch_f();
+   }
+
+   return ret;
+}
+
+//
 // __vnprintf
 //
-int __vnprintf(char const *format, va_list arg)
+int __vnprintf(char const *restrict format, va_list arg)
 {
    #if __GDCC_Target__ZDoom__
    FormatDecl();
@@ -838,79 +993,46 @@ int __vnprintf(char const *format, va_list arg)
       ParseFormat();
 
       // Perform format.
-      switch(fmtChr)
-      {
-         FormatCases();
-
-      case '%': ACS_PrintChar('%'); ++ret; continue;
-
-      default: return ~ret;
-
-      fmt_str:
-         // Write result.
-         if(fmtRet.len > fmtArg.prec)
-         {
-            fmtRet.len = fmtArg.prec;
-
-            if(fmtRet.len < fmtArg.width)
-            {
-               ret += fmtArg.width;
-               fmtArg.width -= fmtRet.len;
-
-               WriteWidthPre(n, fmtArg.width);
-               for(unsigned i = 0; i != fmtRet.len; ++i)
-                  ACS_PrintChar(fmtStr[i]);
-               WriteWidthPro(n, fmtArg.width);
-            }
-            else
-            {
-               ret += fmtRet.len;
-               for(unsigned i = 0; i != fmtRet.len; ++i)
-                  ACS_PrintChar(fmtStr[i]);
-            }
-         }
-         else
-         {
-            if(fmtRet.len < fmtArg.width)
-            {
-               ret += fmtArg.width;
-               fmtArg.width -= fmtRet.len;
-
-               WriteWidthPre(n, fmtArg.width);
-               ACS_PrintString(fmtStr);
-               WriteWidthPro(n, fmtArg.width);
-            }
-            else
-            {
-               ret += fmtRet.len;
-               ACS_PrintString(fmtStr);
-            }
-         }
-
-         continue;
-      }
-
-      // Write result.
-      if(fmtRet.len < fmtArg.width)
-      {
-         ret += fmtArg.width;
-         fmtArg.width -= fmtRet.len;
-
-         WriteWidthPre(n, fmtArg.width);
-         ACS_PrintGlobalCharRange((int)fmtRet.begin, __GDCC__Sta, 0, fmtRet.len);
-         WriteWidthPro(n, fmtArg.width);
-      }
-      else
-      {
-         ret += fmtRet.len;
-         ACS_PrintGlobalCharRange((int)fmtRet.begin, __GDCC__Sta, 0, fmtRet.len);
-      }
+      FormatSwitch_n();
    }
 
    return ret;
    #else
    return vfprintf(stdout, format, arg);
    #endif
+}
+
+//
+// __vnprintf_str
+//
+int __vnprintf_str(char const __str_ars *restrict format, va_list arg)
+{
+   #if __GDCC_Target__ZDoom__
+   FormatDecl();
+
+   while((fmtChr = *format++))
+   {
+      if(fmtChr != '%') {ACS_PrintChar(fmtChr); ++ret; continue;}
+
+      // Read format args.
+      ParseFormat();
+
+      // Perform format.
+      FormatSwitch_n();
+   }
+
+   return ret;
+   #else
+   return vfprintf(stdout, format, arg);
+   #endif
+}
+
+//
+// __vprintf_str
+//
+int __vprintf_str(char const __str_ars *restrict format, __va_list arg)
+{
+   return __vfprintf_str(stdout, format, arg);
 }
 
 // EOF

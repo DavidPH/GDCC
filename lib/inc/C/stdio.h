@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2015 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -230,8 +230,18 @@ void perror(char const *s);
 //
 
 int __fendl(FILE *stream);
-int __nprintf(char const *format, ...);
-int __vnprintf(char const *format, __va_list arg);
+int __fprintf_str(FILE *restrict stream,
+   char const __str_ars *restrict format, ...);
+size_t __fwrite_str(void const __str_ars *restrict ptr, size_t size,
+   size_t nmemb, FILE *restrict stream);
+int __nprintf(char const *restrict format, ...);
+int __nprintf_str(char const __str_ars *restrict format, ...);
+int __printf_str(char const __str_ars *restrict format, ...);
+int __vfprintf_str(FILE *restrict stream,
+   char const __str_ars *restrict format, __va_list arg);
+int __vnprintf(char const *restrict format, __va_list arg);
+int __vnprintf_str(char const __str_ars *restrict format, __va_list arg);
+int __vprintf_str(char const __str_ars *restrict format, __va_list arg);
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2015 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -518,6 +518,45 @@ int __fendl(FILE *stream)
    #else
    return EOF;
    #endif
+}
+
+//
+// __fwrite_str
+//
+size_t __fwrite_str(void const __str_ars *restrict ptr, size_t size,
+   size_t nmemb, FILE *stream)
+{
+   size_t res    = 0;
+   size_t bufLen = stream->bufLen;
+   size_t bufPos = stream->bufPos;
+   char  *buf    = stream->buf;
+   char   c;
+
+   for(char const __str_ars *itr = ptr, *end = itr + size * nmemb; itr != end;)
+   {
+      if(bufPos + size > bufLen)
+         return stream->flags |= _FILEFLAG_OVR, res;
+
+      for(size_t i = size; i--;)
+      {
+         if((c = *itr++) == '\n')
+         {
+            stream->bufPos = bufPos;
+
+            if(__fendl(stream) == EOF)
+               return res;
+
+            bufPos = stream->bufPos;
+         }
+         else
+            buf[bufPos++] = c;
+      }
+
+      ++res;
+   }
+
+   stream->bufPos = bufPos;
+   return res;
 }
 
 // EOF
