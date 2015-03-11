@@ -186,14 +186,19 @@ namespace GDCC
          // script-type(opt)
          if(ctx.in.peek(Core::TOK_KeyWrd)) switch(ctx.in.get().str)
          {
-         case Core::STR_death:      attr.stype = IR::ScriptType::Death;      break;
-         case Core::STR_disconnect: attr.stype = IR::ScriptType::Disconnect; break;
-         case Core::STR_enter:      attr.stype = IR::ScriptType::Enter;      break;
-         case Core::STR_lightning:  attr.stype = IR::ScriptType::Lightning;  break;
-         case Core::STR_open:       attr.stype = IR::ScriptType::Open;       break;
-         case Core::STR_respawn:    attr.stype = IR::ScriptType::Respawn;    break;
-         case Core::STR_return:     attr.stype = IR::ScriptType::Return;     break;
-         case Core::STR_unloading:  attr.stype = IR::ScriptType::Unloading;  break;
+         case Core::STR_bluereturn:  attr.stype = IR::ScriptType::BlueReturn;  break;
+         case Core::STR_death:       attr.stype = IR::ScriptType::Death;       break;
+         case Core::STR_disconnect:  attr.stype = IR::ScriptType::Disconnect;  break;
+         case Core::STR_enter:       attr.stype = IR::ScriptType::Enter;       break;
+         case Core::STR_event:       attr.stype = IR::ScriptType::Event;       break;
+         case Core::STR_lightning:   attr.stype = IR::ScriptType::Lightning;   break;
+         case Core::STR_open:        attr.stype = IR::ScriptType::Open;        break;
+         case Core::STR_pickup:      attr.stype = IR::ScriptType::Pickup;      break;
+         case Core::STR_redreturn:   attr.stype = IR::ScriptType::RedReturn;   break;
+         case Core::STR_respawn:     attr.stype = IR::ScriptType::Respawn;     break;
+         case Core::STR_return:      attr.stype = IR::ScriptType::Return;      break;
+         case Core::STR_unloading:   attr.stype = IR::ScriptType::Unloading;   break;
+         case Core::STR_whitereturn: attr.stype = IR::ScriptType::WhiteReturn; break;
 
          default: ctx.in.unget(); break;
          }

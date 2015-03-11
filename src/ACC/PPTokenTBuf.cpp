@@ -88,12 +88,13 @@ namespace GDCC
        //case Core::STR_hudmessagebold:
          case Core::STR_if:
          case Core::STR_int:
-         case Core::STR_open:
-       //case Core::STR_print:
-       //case Core::STR_printbold:
          case Core::STR_lightning:
        //case Core::STR_log:
          case Core::STR_net:
+         case Core::STR_open:
+         case Core::STR_pickup:
+       //case Core::STR_print:
+       //case Core::STR_printbold:
          case Core::STR_redreturn:
          case Core::STR_respawn:
          case Core::STR_restart:
