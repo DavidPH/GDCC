@@ -65,7 +65,7 @@ namespace GDCC
 
             mbuf{ignd, macros},
             pubf{mbuf, pragd},
-            sbuf{pubf},
+            sbuf{pubf, ParseEscape},
             cbuf{sbuf},
 
             wbuf{cbuf},
@@ -174,7 +174,7 @@ namespace GDCC
             IncStream{buf_, macros, pragd, pragp, file, dir, scope, prog},
             mbuf{udir, macros},
             pubf{mbuf, pragd},
-            sbuf{pubf},
+            sbuf{pubf, ParseEscape},
             cbuf{sbuf}
          {
             tkbuf(&cbuf);

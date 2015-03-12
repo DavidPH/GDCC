@@ -85,6 +85,8 @@ namespace GDCC
    namespace ACC
    {
       IStream &operator >> (IStream &in, Core::Token &out);
+
+      bool ParseEscape(std::ostream &out, std::istream &in, char escape);
    }
 }
 
