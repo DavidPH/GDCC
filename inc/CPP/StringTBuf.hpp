@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,8 @@
 #define GDCC__CPP__StringTBuf_H__
 
 #include "../Core/TokenBuf.hpp"
+
+#include "../Core/Parse.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -30,13 +32,17 @@ namespace GDCC
       class StringTBuf : public Core::TokenBuf
       {
       public:
-         StringTBuf(Core::TokenBuf &src_) : src(src_) {sett(buf, buf, buf);}
+         StringTBuf(Core::TokenBuf &src_,
+            bool (*escaper_)(std::ostream &, std::istream &, char) = Core::ParseEscapeC) :
+            src(src_), escaper{escaper_} {sett(buf, buf, buf);}
 
       protected:
          virtual void underflow();
 
          Core::TokenBuf &src;
          Core::Token     buf[1];
+
+         bool (*escaper)(std::ostream &, std::istream &, char);
       };
    }
 }

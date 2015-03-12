@@ -48,10 +48,10 @@ namespace GDCC
                else
                   throw Core::ParseExceptExpect(buf[0], "character-literal", false, false);
 
-               buf[0].str = Core::ParseStringC(buf[0].str, 1, '\'');
+               buf[0].str = Core::ParseStringC(buf[0].str, 1, '\'', escaper);
             }
             else
-               buf[0].str = Core::ParseStringC(buf[0].str, '\'');
+               buf[0].str = Core::ParseStringC(buf[0].str, '\'', escaper);
 
             break;
 
@@ -77,10 +77,10 @@ namespace GDCC
                else
                   throw Core::ParseExceptExpect(buf[0], "string-literal", false, false);
 
-               buf[0].str = Core::ParseStringC(buf[0].str, o, '"');
+               buf[0].str = Core::ParseStringC(buf[0].str, o, '"', escaper);
             }
             else
-               buf[0].str = Core::ParseStringC(buf[0].str, '"');
+               buf[0].str = Core::ParseStringC(buf[0].str, '"', escaper);
 
             break;
 
