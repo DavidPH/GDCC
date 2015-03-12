@@ -241,6 +241,8 @@ namespace GDCC
          {
             auto hold = in.holdComments();
 
+            in.unget();
+
             try
             {
                std::string str = Core::ReadStringC(in, c);
@@ -281,6 +283,8 @@ namespace GDCC
             {
                // Parse character/string.
                auto hold = in.holdComments();
+
+               in.unget();
 
                try
                {

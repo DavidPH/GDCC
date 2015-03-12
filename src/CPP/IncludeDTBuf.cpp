@@ -202,7 +202,7 @@ namespace GDCC
 
          // Expanded user header.
          else if(mbuf.peek().tok == Core::TOK_String)
-            doIncStr(Core::ParseStringC(mbuf.get().str), tok.pos);
+            doIncStr(Core::ParseStringC(mbuf.get().str, '"'), tok.pos);
 
          // Expanded system header.
          else if(mbuf.peek().tok == Core::TOK_CmpLT)

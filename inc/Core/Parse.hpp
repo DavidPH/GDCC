@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -35,7 +35,7 @@ namespace GDCC
       Integ MergeNumberFixedC(Integ valI, Integ valF, FastI valE,
          std::size_t digF, unsigned base);
 
-      char ParseEscapeC(std::istream &in);
+      bool ParseEscapeC(std::ostream &out, std::istream &in, char escape);
 
       std::pair<char const */*end*/, unsigned /*base*/>
       ParseNumberBaseC(char const *in);
@@ -52,11 +52,14 @@ namespace GDCC
       std::tuple<char const */*end*/, Ratio /*val*/, std::size_t /*len*/>
       ParseNumberRatioC(char const *in, unsigned base);
 
-      String ParseStringC(std::string const &in);
-      String ParseStringC(String in);
-      String ParseStringC(String in, std::size_t offset);
-
-      void ReadEscapeC(std::istream &in, std::string &out);
+      String ParseStringC(std::istream &in, char term,
+         bool (*escaper)(std::ostream &, std::istream &, char));
+      String ParseStringC(std::string const &in, char term,
+         bool (*escaper)(std::ostream &, std::istream &, char) = ParseEscapeC);
+      String ParseStringC(String in, char term,
+         bool (*escaper)(std::ostream &, std::istream &, char) = ParseEscapeC);
+      String ParseStringC(String in, std::size_t offset, char term,
+         bool (*escaper)(std::ostream &, std::istream &, char) = ParseEscapeC);
 
       std::string ReadNumberC(std::istream &in);
 

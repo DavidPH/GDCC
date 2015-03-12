@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -46,12 +46,12 @@ namespace GDCC
                else if(s[0] == 'u' && s[1] == '\'')
                   buf[0].tok = Core::TOK_ChrU16;
                else
-                  throw Core::ExceptStr(buf[0].pos, "invalid character prefix");
+                  throw Core::ParseExceptExpect(buf[0], "character-literal", false, false);
 
-               buf[0].str = Core::ParseStringC(buf[0].str, 1);
+               buf[0].str = Core::ParseStringC(buf[0].str, 1, '\'');
             }
             else
-               buf[0].str = Core::ParseStringC(buf[0].str);
+               buf[0].str = Core::ParseStringC(buf[0].str, '\'');
 
             break;
 
@@ -75,12 +75,12 @@ namespace GDCC
                else if(s[0] == 's' && s[1] == '"')
                   buf[0].tok = Core::TOK_StrIdx, o = 1;
                else
-                  throw Core::ExceptStr(buf[0].pos, "invalid string prefix");
+                  throw Core::ParseExceptExpect(buf[0], "string-literal", false, false);
 
-               buf[0].str = Core::ParseStringC(buf[0].str, o);
+               buf[0].str = Core::ParseStringC(buf[0].str, o, '"');
             }
             else
-               buf[0].str = Core::ParseStringC(buf[0].str);
+               buf[0].str = Core::ParseStringC(buf[0].str, '"');
 
             break;
 

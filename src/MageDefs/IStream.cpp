@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -72,9 +72,11 @@ namespace GDCC
          {
             auto hold = in.holdComments();
 
+            in.unget();
+
             try
             {
-               out.str = Core::ParseStringC(Core::ReadStringC(in, '"'));
+               out.str = Core::ParseStringC(Core::ReadStringC(in, '"'), '"');
                out.tok = Core::TOK_String;
 
                return in;
