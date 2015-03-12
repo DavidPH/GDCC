@@ -472,7 +472,7 @@ special
    void  { 87     }:PrintString(str),
    void  { 88     }:PrintInt(int),
    void  { 88     }:PrintNumber(int),
-   void  { 89     }:PrintChar(char),
+   void  { 89     }:PrintChar(int),
    int   { 90     }:PlayerCount(void),
    int   { 91     }:GameType(void),
    int   { 92     }:GameSkill(void),

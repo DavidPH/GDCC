@@ -49,18 +49,12 @@ namespace GDCC
          switch(tok.str)
          {
             // type-specifier
-         case Core::STR___div_t:  return true;
-         case Core::STR_bool:     return true;
-         case Core::STR_char:     return true;
-         case Core::STR_double:   return true;
-         case Core::STR_float:    return true;
-         case Core::STR_fixed:    return true;
-         case Core::STR_int:      return true;
-         case Core::STR_long:     return true;
-         case Core::STR_short:    return true;
-         case Core::STR_unsigned: return true;
-         case Core::STR_str:      return true;
-         case Core::STR_void:     return true;
+         case Core::STR_bool:  return true;
+         case Core::STR_float: return true;
+         case Core::STR_fixed: return true;
+         case Core::STR_int:   return true;
+         case Core::STR_str:   return true;
+         case Core::STR_void:  return true;
 
             // typedef-name
          default: return scope.lookup(tok.str).res == CC::Lookup::Type;
@@ -91,17 +85,11 @@ namespace GDCC
          switch(tok.str)
          {
             // type-specifier
-         case Core::STR___div_t:  setSpecBase(CC::TypeSpec::BaseDivT); break;
-         case Core::STR_bool:     setSpecBase(CC::TypeSpec::BaseBool); break;
-         case Core::STR_char:     setSpecBase(CC::TypeSpec::BaseChar); break;
-         case Core::STR_double:   setSpecBase(CC::TypeSpec::BaseDoub); break;
-         case Core::STR_float:    setSpecBase(CC::TypeSpec::BaseFloa); break;
-         case Core::STR_int:      setSpecBase(CC::TypeSpec::BaseInte); break;
-         case Core::STR_long:     ++spec.specLong;                     break;
-         case Core::STR_short:    ++spec.specShrt;                     break;
-         case Core::STR_unsigned: ++spec.specUnsi;                     break;
-         case Core::STR_str:      setSpecBase(CC::TypeSpec::BaseStri); break;
-         case Core::STR_void:     setSpecBase(CC::TypeSpec::BaseVoid); break;
+         case Core::STR_bool:  setSpecBase(CC::TypeSpec::BaseBool); break;
+         case Core::STR_float: setSpecBase(CC::TypeSpec::BaseFloa); break;
+         case Core::STR_int:   setSpecBase(CC::TypeSpec::BaseInte); break;
+         case Core::STR_str:   setSpecBase(CC::TypeSpec::BaseStri); break;
+         case Core::STR_void:  setSpecBase(CC::TypeSpec::BaseVoid); break;
 
          case Core::STR_fixed:
             if(ctx.prag.stateFixedType)
