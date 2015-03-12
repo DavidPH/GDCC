@@ -53,14 +53,6 @@ namespace GDCC
       {
          out.pos = in.getOrigin();
 
-         // Possibly check for special header token.
-         if(in.needHeader)
-         {
-            in.needHeader = false;
-            if(IStream::GetHeader(in, out))
-               return in;
-         }
-
          int c = in.get();
 
          // Basic tokens.

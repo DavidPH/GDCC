@@ -44,8 +44,8 @@ namespace GDCC
       {
       public:
          IStream(std::streambuf &buf, Core::String file, std::size_t line = 1) :
-            CPP::IStreamHeader{&cbuf}, needHeader{false}, lbuf{buf},
-            obuf{lbuf, file, line}, ebuf{obuf}, cbuf{ebuf} {}
+            CPP::IStreamHeader{&cbuf},lbuf{buf}, obuf{lbuf, file, line},
+            ebuf{obuf}, cbuf{ebuf} {}
 
          void disableComments() {rdbuf(&ebuf);}
 
@@ -58,9 +58,7 @@ namespace GDCC
 
          CommentsHold holdComments() {return CommentsHold(*this);}
 
-         virtual void setNeedHeader() {needHeader = true;}
-
-         bool needHeader : 1;
+         virtual void setNeedHeader() {}
 
       protected:
          using LBuf = Core::LineTermBuf<8>;
