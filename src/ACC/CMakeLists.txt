@@ -27,6 +27,7 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    Parse.cpp
    Parse/Declaration.cpp
    Parse/Declaration/Print.cpp
+   Parse/Declaration/Special.cpp
    Parse/Declarator.cpp
    Parse/DeclSpec.cpp
    Parse/Exp.cpp
