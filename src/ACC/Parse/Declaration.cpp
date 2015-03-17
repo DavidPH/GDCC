@@ -42,6 +42,9 @@ namespace GDCC
          if(ctx.in.peek(Core::TOK_KeyWrd, Core::STR_special))
             return GetDecl_Special(ctx, scope);
 
+         if(ctx.in.peek(Core::TOK_KeyWrd, Core::STR_struct))
+            return GetDecl_Struct(ctx, scope);
+
          return GetDecl_Object(ctx, scope);
       }
 

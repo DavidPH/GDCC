@@ -95,6 +95,9 @@ namespace GDCC
       Core::CounterRef<AST::Statement const> GetDecl_Special(
          ParserCtx const &ctx, Scope_Global &scope);
 
+      Core::CounterRef<AST::Statement const> GetDecl_Struct(
+         ParserCtx const &ctx, Scope_Global &scope);
+
       Core::CounterRef<AST::Exp const> GetExp_Init(ParserCtx const &ctx, CC::Scope &scope,
          AST::Type const *type);
 

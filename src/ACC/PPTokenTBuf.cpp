@@ -18,7 +18,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -114,6 +114,13 @@ namespace GDCC
          case Core::STR_while:
          case Core::STR_whitereturn:
        //case Core::STR_world:
+            return true;
+
+         case Core::STR_enum:
+         case Core::STR_fixed:
+         case Core::STR_float:
+         case Core::STR_sizeof:
+         case Core::STR_struct:
             return true;
 
          default:
