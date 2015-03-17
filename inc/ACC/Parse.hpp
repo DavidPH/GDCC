@@ -66,7 +66,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -78,8 +78,19 @@ namespace GDCC
       Core::CounterRef<AST::Statement const> GetDecl(ParserCtx const &ctx,
          CC::Scope_Local &scope);
 
-      Core::CounterRef<AST::Statement const> GetDecl_Print(ParserCtx const &ctx,
-         Scope_Global &scope);
+      Core::CounterRef<AST::Statement const> GetDecl_Function(
+         ParserCtx const &ctx, Scope_Global &scope);
+
+      Core::CounterRef<AST::Statement const> GetDecl_Object(
+         ParserCtx const &ctx, Scope_Global &scope);
+      Core::CounterRef<AST::Statement const> GetDecl_Object(
+         ParserCtx const &ctx, CC::Scope_Local &scope);
+
+      Core::CounterRef<AST::Statement const> GetDecl_Print(
+         ParserCtx const &ctx, Scope_Global &scope);
+
+      Core::CounterRef<AST::Statement const> GetDecl_Script(
+         ParserCtx const &ctx, Scope_Global &scope);
 
       Core::CounterRef<AST::Statement const> GetDecl_Special(
          ParserCtx const &ctx, Scope_Global &scope);
