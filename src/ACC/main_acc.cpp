@@ -102,24 +102,6 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
    GDCC::ACC::PragmaParser pragp{pragd};
    GDCC::ACC::Scope_Global scope{MakeGlobalLabel(buf->getHash())};
 
-   // Do an import pass to pick up any function declarations.
-   {
-      GDCC::Core::StringBuf   sbuf{buf->data(), buf->size()};
-      GDCC::ACC::ImportStream tstr{sbuf, macr, pragd, pragp, file};
-      GDCC::ACC::ParserCtx    ctx {tstr, pragd, prog, true};
-
-      pragd.push();
-
-      // Read declarations.
-      while(ctx.in.peek().tok != GDCC::Core::TOK_EOF)
-         GDCC::ACC::GetDecl(ctx, scope);
-
-      pragd.drop();
-
-      // Ignore any library pragmas from this pass.
-      pragd.stateLibrary.clear();
-   }
-
    GDCC::Core::StringBuf sbuf{buf->data(), buf->size()};
    GDCC::ACC::TStream    tstr{sbuf, macr, pragd, pragp, file, path, scope, prog};
    GDCC::ACC::ParserCtx  ctx {tstr, pragd, prog};
