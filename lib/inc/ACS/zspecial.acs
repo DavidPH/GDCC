@@ -553,7 +553,7 @@ special
    fixed {221     }:Cos(fixed),
    fixed {222     }:VectorAngle(fixed, fixed),
    int   {223     }:CheckWeapon(str),
-   void  {224     }:SetWeapon(str),
+   int   {224     }:SetWeapon(str),
 
    void  {244     }:SetMarineWeapon(int, int),
    void  {245     }:SetActorProperty(int, int, int),

@@ -83,7 +83,7 @@ ACS_AsmFuncDeclFull(220,    , 0, _Accum, Sin, _Accum);
 ACS_AsmFuncDeclFull(221,    , 0, _Accum, Cos, _Accum);
 ACS_AsmFuncDeclFull(222,    , 0, _Accum, VectorAngle, _Accum, _Accum);
 ACS_AsmFuncDeclFull(223,    , 0, int,    CheckWeapon, __str);
-ACS_AsmFuncDeclFull(224,    , 0, void,   SetWeapon, __str);
+ACS_AsmFuncDeclFull(224,    , 0, int,    SetWeapon, __str);
 
 ACS_AsmFuncDeclFull(244,    , 0, void,   SetMarineWeapon, int, int);
 ACS_AsmFuncDeclFull(245,    , 0, void,   SetActorProperty, int, int, int);
