@@ -89,6 +89,10 @@ namespace GDCC
       //
       void Scope_Local::allocAutoObj(AllocAutoInfo &alloc, AST::Object *obj)
       {
+         // This function only applies to automatic storage objects.
+         if(obj->store != AST::Storage::Auto)
+            return;
+
          IR::Type_Fixed idxType{Platform::GetWordBits(), 0, 0, 0};
 
          auto objSpace = obj->type->getQualAddr();
