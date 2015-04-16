@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #include "Bytecode/ZDACS/Info.hpp"
 
 #include "Bytecode/ZDACS/Code.hpp"
+
+#include "Core/Exception.hpp"
 
 #include "IR/Function.hpp"
 
@@ -28,6 +30,24 @@ namespace GDCC
       namespace ZDACS
       {
          //
+         // Info::genStmnt_AdXU_W
+         //
+         void Info::genStmnt_AdXU_W()
+         {
+            Core::FastU lenAdXU_W1 =
+               lenPushArg(stmnt->args[1], 0) * 2 +
+               lenPushArg(stmnt->args[2], 0) + 16;
+
+            // No carry.
+            if(stmnt->args.size() == 3)
+               numChunkCODE += lenAdXU_W1;
+
+            // With carry.
+            else
+               numChunkCODE += lenAdXU_W1 * 2 + 56;
+         }
+
+         //
          // Info::genStmnt_AddU_W
          //
          void Info::genStmnt_AddU_W()
@@ -42,6 +62,74 @@ namespace GDCC
                numChunkCODE += 4;
             else
                numChunkCODE += 8;
+         }
+
+         //
+         // Info::genStmnt_SuXU_W
+         //
+         void Info::genStmnt_SuXU_W()
+         {
+            Core::FastU lenSuXU_W1 =
+               lenPushArg(stmnt->args[1], 0) * 2 +
+               lenPushArg(stmnt->args[2], 0) + 20;
+
+            // No carry.
+            if(stmnt->args.size() == 3)
+               numChunkCODE += lenSuXU_W1;
+
+            // With carry.
+            else
+               numChunkCODE += lenSuXU_W1 * 2 + 64;
+         }
+
+         //
+         // Info::putStmnt_AdXU_W
+         //
+         void Info::putStmnt_AdXU_W()
+         {
+            //
+            // putAdXU_W1
+            //
+            auto putAdXU_W1 = [&]()
+            {
+               putStmntPushArg(stmnt->args[1], 0);
+               putStmntPushArg(stmnt->args[2], 0);
+               putCode(Code::AddU);
+               putCode(Code::Copy);
+               putStmntPushArg(stmnt->args[1], 0);
+               putStmntCall("___GDCC__CmpU_LT_W1", 1);
+            };
+
+            // No carry.
+            if(stmnt->args.size() == 3)
+            {
+               putAdXU_W1();
+            }
+
+            // With carry.
+            else
+            {
+               Core::FastU lenAdXU_W1 =
+                  lenPushArg(stmnt->args[1], 0) * 2 +
+                  lenPushArg(stmnt->args[2], 0) + 16;
+
+               Core::FastU lenCarry0 = lenAdXU_W1 +  8;
+               Core::FastU lenCarry1 = lenAdXU_W1 + 40;
+
+               putCode(Code::Jcnd_Tru, putPos + lenCarry0 + 8);
+
+               putAdXU_W1();
+               putCode(Code::Jump_Lit, putPos + lenCarry1 + 8);
+
+               putAdXU_W1();
+               putCode(Code::Drop_LocReg, func->localReg + 0);
+               putCode(Code::Push_Lit,    1);
+               putCode(Code::AddU);
+               putCode(Code::Copy);
+               putCode(Code::NotU);
+               putCode(Code::Push_LocReg, func->localReg + 0);
+               putCode(Code::OrIU);
+            }
          }
 
          //
@@ -89,6 +177,59 @@ namespace GDCC
          }
 
          //
+         // Info::putStmnt_SuXU_W
+         //
+         void Info::putStmnt_SuXU_W()
+         {
+            //
+            // putSuXU_W1
+            //
+            auto putSuXU_W1 = [&]()
+            {
+               putStmntPushArg(stmnt->args[1], 0);
+               putStmntPushArg(stmnt->args[2], 0);
+               putCode(Code::SubU);
+               putCode(Code::Copy);
+               putStmntPushArg(stmnt->args[1], 0);
+               putStmntCall("___GDCC__CmpU_GT_W1", 1);
+               putCode(Code::NegI);
+            };
+
+            // No carry.
+            if(stmnt->args.size() == 3)
+            {
+               putSuXU_W1();
+            }
+
+            // With carry.
+            else
+            {
+               Core::FastU lenSuXU_W1 =
+                  lenPushArg(stmnt->args[1], 0) * 2 +
+                  lenPushArg(stmnt->args[2], 0) + 20;
+
+               Core::FastU lenCarry0 = lenSuXU_W1 +  8;
+               Core::FastU lenCarry1 = lenSuXU_W1 + 48;
+
+               putCode(Code::Jcnd_Tru, putPos + lenCarry0 + 8);
+
+               putSuXU_W1();
+               putCode(Code::Jump_Lit, putPos + lenCarry1 + 8);
+
+               putSuXU_W1();
+               putCode(Code::Drop_LocReg, func->localReg + 0);
+               putCode(Code::Push_Lit,    1);
+               putCode(Code::SubU);
+               putCode(Code::Copy);
+               putCode(Code::InvU);
+               putCode(Code::NotU);
+               putCode(Code::NegI);
+               putCode(Code::Push_LocReg, func->localReg + 0);
+               putCode(Code::OrIU);
+            }
+         }
+
+         //
          // Info::putStmnt_SubU_W
          //
          void Info::putStmnt_SubU_W()
@@ -129,6 +270,25 @@ namespace GDCC
             default:
                putCode(Code::SubU);
                break;
+            }
+         }
+
+         //
+         // Info::trStmnt_AdXU_W
+         //
+         void Info::trStmnt_AdXU_W()
+         {
+            CheckArgC(stmnt, 3);
+
+            if(stmnt->op.size != 1)
+               throw Core::ExceptStr(stmnt->pos, "unsupported AdXU_W size");
+
+            moveArgStk_dst(stmnt->args[0], 2);
+
+            if(stmnt->args.size() > 3)
+            {
+               func->setLocalTmp(1);
+               moveArgStk_src(stmnt->args[3], 1);
             }
          }
 
@@ -183,6 +343,25 @@ namespace GDCC
             }
 
             trStmntStk3(stmnt->op.size, stmnt->op.size, false);
+         }
+
+         //
+         // Info::trStmnt_SuXU_W
+         //
+         void Info::trStmnt_SuXU_W()
+         {
+            CheckArgC(stmnt, 3);
+
+            if(stmnt->op.size != 1)
+               throw Core::ExceptStr(stmnt->pos, "unsupported SuXU_W size");
+
+            moveArgStk_dst(stmnt->args[0], 2);
+
+            if(stmnt->args.size() > 3)
+            {
+               func->setLocalTmp(1);
+               moveArgStk_src(stmnt->args[3], 1);
+            }
          }
 
          //

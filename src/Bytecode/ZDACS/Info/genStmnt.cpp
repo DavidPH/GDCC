@@ -53,6 +53,8 @@ namespace GDCC
             {
             case IR::Code::Nop: numChunkCODE += 4; break;
 
+            case IR::Code::AdXU_W: genStmnt_AdXU_W(); break;
+
             case IR::Code::AddF_W:
             case IR::Code::DivF_W:
             case IR::Code::DivK_W:
@@ -166,6 +168,8 @@ namespace GDCC
             case IR::Code::ShLU_W: genStmnt_ShLU_W(); break;
             case IR::Code::ShRI_W: genStmnt_ShRI_W(); break;
             case IR::Code::ShRU_W: genStmnt_ShRU_W(); break;
+
+            case IR::Code::SuXU_W: genStmnt_SuXU_W(); break;
 
             case IR::Code::Swap_W: genStmnt_Swap_W(); break;
 

@@ -542,6 +542,19 @@ Semantics:
   Does nothing.
 
 -----------------------------------------------------------
+AdXU_W (Expanding Add Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  AdXU_W N, destination[N+1] dst, source[N] lop, source[N] rop
+  AdXU_W N, destination[N+1] dst, source[N] lop, source[N] rop, source[1] carry
+
+Semantics:
+  Adds rop to lop and stores the result with carry in dst.
+
+  If carry provided, it is also added to lop.
+
+-----------------------------------------------------------
 AddF_W (Add Signed Float Word)
 AddI_W (Add Signed Integer Word)
 AddU_W (Add Unsigned Integer Word)
@@ -894,6 +907,19 @@ Semantics:
   For float ops, this subtracts from the exponent.
 
   For signed fixed-point ops, this may sign-extend.
+
+-----------------------------------------------------------
+SuXU_W (Expanding Subtract Unsigned Integer Word)
+-----------------------------------------------------------
+
+Arguments:
+  SuXU_W N, destination[N+1] dst, source[N] lop, source[N] rop
+  SuXU_W N, destination[N+1] dst, source[N] lop, source[N] rop, source[1] carry
+
+Semantics:
+  Subtracts rop from lop and stores the result with carry in dst.
+
+  If carry provided, it is also added to lop.
 
 -----------------------------------------------------------
 SubF_W (Subtract Signed Float Word)

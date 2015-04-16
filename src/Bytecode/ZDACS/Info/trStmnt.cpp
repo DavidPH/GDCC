@@ -38,6 +38,8 @@ namespace GDCC
             {
             case IR::Code::Nop: break;
 
+            case IR::Code::AdXU_W: trStmnt_AdXU_W(); break;
+
             case IR::Code::AddF_W:
             case IR::Code::MulF_W:
             case IR::Code::MulI_W:
@@ -150,6 +152,8 @@ namespace GDCC
             case IR::Code::ShRF_W: trStmntShift(true); break;
             case IR::Code::ShRI_W: trStmnt_ShRI_W(); break;
             case IR::Code::ShRU_W: trStmnt_ShRU_W(); break;
+
+            case IR::Code::SuXU_W: trStmnt_SuXU_W(); break;
 
             case IR::Code::SubI_W:
             case IR::Code::SubU_W: trStmnt_SubU_W(); break;

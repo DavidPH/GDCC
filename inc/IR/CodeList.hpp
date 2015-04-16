@@ -22,6 +22,10 @@
 // Nop
 GDCC_IR_CodeList(Nop)
 
+// AdX* dst lop rop
+// AdX* dst lop rop carry
+GDCC_IR_CodeList(AdXU_W)
+
 // Add* dst lop rop
 GDCC_IR_CodeList(AddF_W)
 GDCC_IR_CodeList(AddI_W)
@@ -161,6 +165,10 @@ GDCC_IR_CodeList(ShLU_W)
 GDCC_IR_CodeList(ShRF_W)
 GDCC_IR_CodeList(ShRI_W)
 GDCC_IR_CodeList(ShRU_W)
+
+// SuX* dst lop rop
+// SuX* dst lop rop carry
+GDCC_IR_CodeList(SuXU_W)
 
 // Sub* dst lop rop
 GDCC_IR_CodeList(SubF_W)

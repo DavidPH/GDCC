@@ -114,6 +114,7 @@ namespace GDCC
             void genSpaceInitiValue(InitData &ini, Core::FastU &itr, IR::Value const &val);
 
             virtual void genStmnt();
+            void genStmnt_AdXU_W();
             void genStmnt_AddU_W();
             void genStmnt_Bclz_W();
             void genStmnt_Call();
@@ -146,6 +147,7 @@ namespace GDCC
             void genStmnt_ShRU_W1();
             void genStmnt_ShRU_W2();
             void genStmnt_ShRU_W3();
+            void genStmnt_SuXU_W();
             void genStmnt_Swap_W();
 
             void genStmntBitwise();
@@ -266,6 +268,7 @@ namespace GDCC
             void putInitiSpace(IR::Space &space, Code code);
 
             virtual void putStmnt();
+            void putStmnt_AdXU_W();
             void putStmnt_AddU_W();
             void putStmnt_Bclz_W(bool ones = false);
             void putStmnt_Call();
@@ -307,6 +310,7 @@ namespace GDCC
             void putStmnt_ShRU_W1();
             void putStmnt_ShRU_W2();
             void putStmnt_ShRU_W3();
+            void putStmnt_SuXU_W();
             void putStmnt_SubU_W();
             void putStmnt_Swap_W();
             void putStmnt_Xcod_SID();
@@ -345,6 +349,7 @@ namespace GDCC
             virtual void trFunc();
 
             virtual void trStmnt();
+            void trStmnt_AdXU_W();
             void trStmnt_AddU_W();
             void trStmnt_Bclz_W();
             void trStmnt_Call();
@@ -376,6 +381,7 @@ namespace GDCC
             void trStmnt_ShRU_W1();
             void trStmnt_ShRU_W2();
             void trStmnt_ShRU_W3();
+            void trStmnt_SuXU_W();
             void trStmnt_SubU_W();
             void trStmnt_Swap_W();
 

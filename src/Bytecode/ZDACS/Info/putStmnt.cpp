@@ -42,6 +42,8 @@ namespace GDCC
             {
             case IR::Code::Nop: putCode(Code::Nop); break;
 
+            case IR::Code::AdXU_W: putStmnt_AdXU_W(); break;
+
             case IR::Code::AddF_W:
             case IR::Code::DivF_W:
             case IR::Code::DivK_W:
@@ -152,6 +154,8 @@ namespace GDCC
             case IR::Code::ShLU_W: putStmnt_ShLU_W(); break;
             case IR::Code::ShRI_W: putStmnt_ShRI_W(); break;
             case IR::Code::ShRU_W: putStmnt_ShRU_W(); break;
+
+            case IR::Code::SuXU_W: putStmnt_SuXU_W(); break;
 
             case IR::Code::SubI_W:
             case IR::Code::SubU_W: putStmnt_SubU_W(); break;
