@@ -63,7 +63,7 @@ ACS_SpecialDeclFull(  6, 0, void, Polyobj_MoveTimes8, int, int, int, int);
 ACS_SpecialDeclFull(  7, 0, void, Polyobj_DoorSwing, int, int, int, int);
 ACS_SpecialDeclFull(  8, 0, void, Polyobj_DoorSlide, int, int, int, int, int);
 
-ACS_SpecialDeclFull( 10, 0, void, Door_Close, int, int);
+ACS_SpecialDeclFull( 10, 1, void, Door_Close, int, int, int);
 ACS_SpecialDeclFull( 11, 1, void, Door_Open, int, int, int);
 ACS_SpecialDeclFull( 12, 1, void, Door_Raise, int, int, int, int);
 ACS_SpecialDeclFull( 13, 1, void, Door_LockedRaise, int, int, int, int, int);
