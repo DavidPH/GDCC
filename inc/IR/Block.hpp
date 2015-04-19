@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -86,6 +86,11 @@ namespace GDCC
          // end
                iterator end()       {return static_cast<      iterator>(&head);}
          const_iterator end() const {return static_cast<const_iterator>(&head);}
+
+         // getExp
+         Exp::CRef getExp(Core::FastI value);
+         Exp::CRef getExp(Core::FastU value);
+         Exp::CRef getExp(int         value);
 
          // getOrigin
          Core::Origin getOrigin() const {return head.pos;}

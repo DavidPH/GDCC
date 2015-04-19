@@ -16,7 +16,7 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/Function.hpp"
+#include "IR/Program.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -80,6 +80,56 @@ namespace GDCC
             // With carry.
             else
                numChunkCODE += lenSuXU_W1 * 2 + 64;
+         }
+
+         //
+         // Info::preStmnt_AddU_W
+         //
+         void Info::preStmnt_AddU_W(IR::Code code)
+         {
+            if(stmnt->op.size < 2)
+               return;
+
+            Core::String name = getCallName();
+
+            preStmntCall(name, stmnt->op.size, stmnt->op.size * 2);
+
+            IR::Function &newFunc = prog->getFunction(name);
+
+            if(newFunc.defin)
+               return;
+
+            newFunc.defin    = true;
+            newFunc.label    = name + "$label";
+            newFunc.localReg = stmnt->op.size * 2;
+
+            newFunc.block.setOrigin({__FILE__, __LINE__});
+
+            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc.block.getExp(0))};
+            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc.block.getExp(stmnt->op.size))};
+
+            // First words.
+            newFunc.block.addStatementArgs({code, 1},
+               IR::Arg_Stk(), lop, rop);
+
+            // Mid words.
+            for(Core::FastU i = stmnt->op.size - 2; i--;)
+            {
+               newFunc.block.addStatementArgs({code, 1},
+                  IR::Arg_Stk(), ++lop, ++rop, IR::Arg_Stk());
+            }
+
+            // Last words.
+            newFunc.block.addStatementArgs({stmnt->op.code, 1},
+               IR::Arg_Stk(), ++lop, ++rop);
+            newFunc.block.addStatementArgs({IR::Code::AddU_W, 1},
+               IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+
+            // Return.
+            newFunc.block.addStatementArgs({IR::Code::Retn, stmnt->op.size},
+               IR::Arg_Stk());
+
+            throw ResetFunc();
          }
 
          //

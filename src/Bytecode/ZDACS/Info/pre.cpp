@@ -75,16 +75,7 @@ namespace GDCC
 
             case IR::Code::AddI_W:
             case IR::Code::AddU_W:
-            case IR::Code::DivI_W:
-            case IR::Code::DivX_W:
-            case IR::Code::ModI_W:
-            case IR::Code::MulI_W:
-            case IR::Code::MulU_W:
-            case IR::Code::MulX_W:
-            case IR::Code::SubI_W:
-            case IR::Code::SubU_W:
-               if(stmnt->op.size != 1)
-                  preStmntCall(stmnt->op.size, stmnt->op.size * 2);
+               preStmnt_AddU_W(IR::Code::AdXU_W);
                break;
 
             case IR::Code::Bclz_W:
@@ -127,6 +118,16 @@ namespace GDCC
                preStmntCall(stmnt->op.size * 2, stmnt->op.size * 2);
                break;
 
+            case IR::Code::DivI_W:
+            case IR::Code::DivX_W:
+            case IR::Code::ModI_W:
+            case IR::Code::MulI_W:
+            case IR::Code::MulU_W:
+            case IR::Code::MulX_W:
+               if(stmnt->op.size != 1)
+                  preStmntCall(stmnt->op.size, stmnt->op.size * 2);
+               break;
+
             case IR::Code::Plsa: preStmntCall("___GDCC__Plsa", 1, 1); break;
             case IR::Code::Plsf: preStmntCall("___GDCC__Plsf", 0, 1); break;
 
@@ -140,6 +141,11 @@ namespace GDCC
             case IR::Code::ShRU_W:
                if(stmnt->op.size != 1)
                   preStmntCall(stmnt->op.size, stmnt->op.size + 1);
+               break;
+
+            case IR::Code::SubI_W:
+            case IR::Code::SubU_W:
+               preStmnt_AddU_W(IR::Code::SuXU_W);
                break;
 
             default:

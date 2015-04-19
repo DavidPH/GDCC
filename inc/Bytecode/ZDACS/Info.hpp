@@ -221,6 +221,7 @@ namespace GDCC
             virtual void preObj();
 
             virtual void preStmnt();
+            void preStmnt_AddU_W(IR::Code code);
             void preStmntCall(Core::FastU retrn, Core::FastU param);
             void preStmntCall(Core::String name, Core::FastU retrn, Core::FastU param);
 

@@ -39,6 +39,8 @@
       Arg_##name(Arg_##name const &) = default; \
       Arg_##name(Arg_##name &&) = default; \
       \
+      Arg_##name &operator ++ () {++off; return *this;} \
+      \
       bool operator == (Arg_##name const &arg) const \
          {return *idx == *arg.idx && off == arg.off;} \
       \
@@ -66,6 +68,8 @@
       \
       Arg_##name(Arg_##name const &) = default; \
       Arg_##name(Arg_##name &&) = default; \
+      \
+      Arg_##name &operator ++ () {++off; return *this;} \
       \
       bool operator == (Arg_##name const &arg) const \
          {return *arr == *arg.arr && *idx == *arg.idx && off == arg.off;} \

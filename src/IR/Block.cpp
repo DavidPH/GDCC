@@ -58,6 +58,33 @@ namespace GDCC
       }
 
       //
+      // Block::getExp
+      //
+      Exp::CRef Block::getExp(Core::FastI value)
+      {
+         Value_Fixed val{value, {sizeof(value) * CHAR_BIT, 0, true, false}};
+         return ExpCreate_Value(std::move(val), head.pos);
+      }
+
+      //
+      // Block::getExp
+      //
+      Exp::CRef Block::getExp(Core::FastU value)
+      {
+         Value_Fixed val{value, {sizeof(value) * CHAR_BIT, 0, false, false}};
+         return ExpCreate_Value(std::move(val), head.pos);
+      }
+
+      //
+      // Block::getExp
+      //
+      Exp::CRef Block::getExp(int value)
+      {
+         Value_Fixed val{value, {sizeof(value) * CHAR_BIT, 0, true, false}};
+         return ExpCreate_Value(std::move(val), head.pos);
+      }
+
+      //
       // Block::unpackArg<Exp const *>
       //
       void Block::unpackArg(Arg *argv, Exp const *arg0)
@@ -78,8 +105,7 @@ namespace GDCC
       //
       void Block::unpackArg(Arg *argv, Core::FastI arg0)
       {
-         Value_Fixed val{arg0, {sizeof(arg0) * CHAR_BIT, 0, true, false}};
-         *argv = Arg_Lit(ExpCreate_Value(std::move(val), head.pos));
+         *argv = Arg_Lit(getExp(arg0));
       }
 
       //
@@ -87,8 +113,7 @@ namespace GDCC
       //
       void Block::unpackArg(Arg *argv, Core::FastU arg0)
       {
-         Value_Fixed val{arg0, {sizeof(arg0) * CHAR_BIT, 0, false, false}};
-         *argv = Arg_Lit(ExpCreate_Value(std::move(val), head.pos));
+         *argv = Arg_Lit(getExp(arg0));
       }
 
       //
@@ -96,8 +121,7 @@ namespace GDCC
       //
       void Block::unpackArg(Arg *argv, int arg0)
       {
-         Value_Fixed val{arg0, {sizeof(arg0) * CHAR_BIT, 0, true, false}};
-         *argv = Arg_Lit(ExpCreate_Value(std::move(val), head.pos));
+         *argv = Arg_Lit(getExp(arg0));
       }
 
       //
