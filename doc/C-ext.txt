@@ -8,15 +8,16 @@ Attribute Specifiers
 
 Syntax:
   attribute-specifier-list:
-    attribute-specifier attribute-specifier-list(opt)
+    attribute-specifier
+    attribute-specifier-list attribute-specifier
 
   attribute-specifier:
     [ [ attribute-list ] ]
     <__attribute__> ( ( attribute-list ) )
 
   attribute-list:
-    attribute(opt)
-    attribute-list , attribute(opt)
+    attribute
+    attribute-list , attribute
 
   attribute:
     attribute-name attribute-argument-clause(opt)
@@ -110,7 +111,7 @@ Syntax:
     <call>
     <__call>
 
-Contraints:
+Constraints:
   Shall only be applied to functions and function types.
 
 Semantics:
@@ -274,7 +275,7 @@ Syntax:
     <optional_args>
     <__optional_args>
 
-Contraints:
+Constraints:
   Shall only be applied to functions.
 
 Semantics:
@@ -294,7 +295,7 @@ Syntax:
     <script>
     <__script>
 
-Contraints:
+Constraints:
   Shall only be applied to functions and function types.
 
 Semantics:
@@ -484,12 +485,10 @@ Syntax:
 Constraints:
   The storage class specifier, if provided, shall be either extern or static.
 
-  A block scope address space declaration shall not attempt to be a definition.
-
 Semantics:
   Declares or defines an address space for use as an address space name.
 
-  If the address space specifier is __loc_arr, the decalration shall be at
+  If the address space specifier is __loc_arr, the declaration shall be at
   block scope and have no storage class specifier. The resulting address space
   has no linkage.
 
@@ -571,15 +570,16 @@ Grammar
 ###############################################################################
 
   attribute-specifier-list:
-    attribute-specifier attribute-specifier-list(opt)
+    attribute-specifier
+    attribute-specifier-list attribute-specifier
 
   attribute-specifier:
     [ [ attribute-list ] ]
     <__attribute__> ( ( attribute-list ) )
 
   attribute-list:
-    attribute(opt)
-    attribute-list , attribute(opt)
+    attribute
+    attribute-list , attribute
 
   attribute:
     attribute-name attribute-argument-clause(opt)
@@ -749,7 +749,7 @@ Description:
       __str_ent. The argument is used as the name of a localized string to
       print.
 
-      Otheriwse, if a j length modifier is present, the argument shall be a
+      Otherwise, if a j length modifier is present, the argument shall be a
       pointer to __str_ent. The argument is used as the name of a keybind to
       print.
 

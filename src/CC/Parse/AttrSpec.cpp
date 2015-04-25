@@ -11,15 +11,16 @@
 // Since C has no attribute syntax, one based on C++11's is used instead.
 //
 // attribute-specifier-list:
-//    attribute-specifier attribute-specifier-list(opt)
+//    attribute-specifier
+//    attribute-specifier-list attribute-specifier
 //
 // attribute-specifier:
 //    [ [ attribute-list ] ]
 //    <__attribute__> ( ( attribute-list ) )
 //
 // attribute-list:
-//    attribute(opt)
-//    attribute-list , attribute(opt)
+//    attribute
+//    attribute-list , attribute
 //
 // attribute:
 //    attribute-name attribute-argument-clause(opt)
@@ -83,7 +84,7 @@ namespace GDCC
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // string-literal
          if(ctx.in.peek().isTokString())
@@ -95,7 +96,7 @@ namespace GDCC
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
       }
 
       //
@@ -141,14 +142,14 @@ namespace GDCC
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // constant-expression
          attr.allocLoc = GetExp_Cond(ctx, scope)->getIRExp();
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
       }
 
       //
@@ -166,11 +167,11 @@ namespace GDCC
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // string-literal
          if(!ctx.in.peek().isTokString())
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "string-literal", false);
 
          switch(ctx.in.get().str)
          {
@@ -184,7 +185,7 @@ namespace GDCC
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
       }
 
       //
@@ -206,13 +207,13 @@ namespace GDCC
          {
             // string-literal
             if(!ctx.in.peek().isTokString())
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
+               throw Core::ParseExceptExpect(ctx.in.peek(), "string-literal", false);
 
             attr.warnUse = ctx.in.get().str;
 
             // )
             if(!ctx.in.drop(Core::TOK_ParenC))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+               throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
          }
          else
             attr.warnUse = Core::STR_;
@@ -232,11 +233,11 @@ namespace GDCC
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // string-literal
          if(!ctx.in.peek().isTokString())
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "string-literal", false);
 
          switch(ctx.in.get().str)
          {
@@ -253,7 +254,7 @@ namespace GDCC
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
       }
 
       //
@@ -287,14 +288,14 @@ namespace GDCC
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // constant-expression
          attr.paramOpt = ExpToFastU(GetExp_Cond(ctx, scope));
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
       }
 
       //
@@ -312,11 +313,11 @@ namespace GDCC
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // string-literal
          if(!ctx.in.peek().isTokString())
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "string-literal", false);
 
          switch(ctx.in.get().str)
          {
@@ -335,7 +336,7 @@ namespace GDCC
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
       }
    }
 }
@@ -451,8 +452,8 @@ namespace GDCC
       void ParseAttrList(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
       {
          // attribute-list:
-         //    attribute(opt)
-         //    attribute-list , attribute(opt)
+         //    attribute
+         //    attribute-list , attribute
          do ParseAttr(ctx, scope, attr);
          while(ctx.in.drop(Core::TOK_Comma));
       }
@@ -471,14 +472,14 @@ namespace GDCC
          {
             // [ [
             if(!ctx.in.drop(Core::TOK_BrackO))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected '['");
+               throw Core::ParseExceptExpect(ctx.in.peek(), "[", true);
 
             // attribute-list
             ParseAttrList(ctx, scope, attr);
 
             // ] ]
             if(!ctx.in.drop(Core::TOK_BrackC) || !ctx.in.drop(Core::TOK_BrackC))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected ']'");
+               throw Core::ParseExceptExpect(ctx.in.peek(), "]", true);
          }
 
          // <__attribute__> ( ( attribute-list ) )
@@ -486,18 +487,18 @@ namespace GDCC
          {
             // ( (
             if(!ctx.in.drop(Core::TOK_ParenO) || !ctx.in.drop(Core::TOK_ParenO))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+               throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
             // attribute-list
             ParseAttrList(ctx, scope, attr);
 
             // ) )
             if(!ctx.in.drop(Core::TOK_ParenC) || !ctx.in.drop(Core::TOK_ParenC))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+               throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
          }
 
          else
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected attribute-specifier");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "attribute-specifier", false);
       }
 
       //
