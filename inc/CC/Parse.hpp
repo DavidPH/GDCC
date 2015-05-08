@@ -143,6 +143,7 @@ namespace GDCC
          virtual bool isTypeQual(Scope &scope);
 
          virtual bool isTypeSpec(Scope &scope);
+         virtual bool isTypeSpec_atomic(Scope &scope);
 
          virtual void parseAddrDecl(Scope_Global &scope, AST::Attribute &attr);
          virtual void parseAddrDecl(Scope_Local &scope, AST::Attribute &attr);
@@ -164,6 +165,10 @@ namespace GDCC
          virtual void parseTypeQual(Scope &scope, AST::TypeQual &qual);
 
          virtual void parseTypeSpec(Scope &scope, AST::Attribute &attr, TypeSpec &spec);
+         virtual void parseTypeSpec_atomic(Scope &scope, AST::Attribute &attr, TypeSpec &spec);
+         virtual void parseTypeSpec_enum(Scope &scope, AST::Attribute &attr, TypeSpec &spec);
+         virtual void parseTypeSpec_struct(Scope &scope, AST::Attribute &attr, TypeSpec &spec);
+         virtual void parseTypeSpec_union(Scope &scope, AST::Attribute &attr, TypeSpec &spec);
 
          virtual void skipBalancedToken();
 

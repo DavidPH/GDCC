@@ -69,6 +69,9 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    Parse/String.cpp
    Parse/TypeQual.cpp
    Parse/TypeSpec.cpp
+   Parse/TypeSpec/Atomic.cpp
+   Parse/TypeSpec/Enum.cpp
+   Parse/TypeSpec/Struct.cpp
    Scope.cpp
    Scope/Block.cpp
    Scope/Break.cpp
