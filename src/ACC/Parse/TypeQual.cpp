@@ -27,11 +27,11 @@ namespace GDCC
    namespace ACC
    {
       //
-      // IsTypeQual
+      // Parser::isTypeQual
       //
-      bool IsTypeQual(ParserCtx const &ctx, CC::Scope &)
+      bool Parser::isTypeQual(CC::Scope &)
       {
-         auto const &tok = ctx.in.peek();
+         auto const &tok = in.peek();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             return false;
 
@@ -46,11 +46,11 @@ namespace GDCC
       }
 
       //
-      // ParseTypeQual
+      // Parser::parseTypeQual
       //
-      void ParseTypeQual(ParserCtx const &ctx, CC::Scope &, AST::TypeQual &qual)
+      void Parser::parseTypeQual(CC::Scope &, AST::TypeQual &qual)
       {
-         auto const &tok = ctx.in.get();
+         auto const &tok = in.get();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             throw Core::ParseExceptExpect(tok, "identifier", false);
 

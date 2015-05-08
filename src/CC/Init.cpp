@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -158,7 +158,7 @@ namespace GDCC
       //
       // Init::parse
       //
-      void Init::parse(InitRaw const &raw, ParserCtx const &ctx, Scope &scope)
+      void Init::parse(InitRaw const &raw, Parser &ctx, Scope &scope)
       {
          // If already parsed, warn about overriding initializer.
          if(parsed)
@@ -182,7 +182,7 @@ namespace GDCC
       // Init::parse
       //
       std::size_t Init::parse(InitRaw const &raw, std::size_t rawIdx,
-         ParserCtx const &ctx, Scope &scope)
+         Parser &ctx, Scope &scope)
       {
          auto const &rawRef = raw.valueSub[rawIdx];
 
@@ -233,7 +233,7 @@ namespace GDCC
       //
       // Init::v_parseSingle
       //
-      void Init::v_parseSingle(InitRaw const &raw, ParserCtx const &ctx, Scope &scope)
+      void Init::v_parseSingle(InitRaw const &raw, Parser &ctx, Scope &scope)
       {
          if(raw.valueExp)
          {
@@ -249,7 +249,7 @@ namespace GDCC
             Core::ArrayTBuf   buf{&raw.valueTok, 1};
             Core::TokenStream str{&buf};
 
-            value = GetExp_Prim({ctx, str}, scope);
+            value = ctx.clone(str)->getExp_Prim(scope);
          }
          else
             throw Core::ExceptStr(raw.valueTok.pos, "expected expression");
@@ -305,8 +305,8 @@ namespace GDCC
       //
       // Init::Create
       //
-      Init::Ptr Init::Create(InitRaw const &raw, ParserCtx const &ctx,
-         Scope &scope, AST::Type const *type)
+      Init::Ptr Init::Create(InitRaw const &raw, Parser &ctx, Scope &scope,
+         AST::Type const *type)
       {
          auto init = Create(type, 0, raw.valueTok.pos);
          init->parse(raw, ctx, scope);
@@ -403,7 +403,7 @@ namespace GDCC
       //
       // Init_Aggregate::v_parseBlock
       //
-      void Init_Aggregate::v_parseBlock(InitRaw const &raw, ParserCtx const &ctx, Scope &scope)
+      void Init_Aggregate::v_parseBlock(InitRaw const &raw, Parser &ctx, Scope &scope)
       {
          // Bracketed aggregate initializer.
 
@@ -453,7 +453,7 @@ namespace GDCC
       // Init_Aggregate::v_parseOpen
       //
       std::size_t Init_Aggregate::v_parseOpen(InitRaw const &raw,
-         std::size_t rawIdx, ParserCtx const &ctx, Scope &scope)
+         std::size_t rawIdx, Parser &ctx, Scope &scope)
       {
          // Unbracketed aggregate initializer.
 
@@ -920,8 +920,7 @@ namespace GDCC
       //
       // Init_Value::v_parseBlock
       //
-      void Init_Value::v_parseBlock(InitRaw const &raw, ParserCtx const &ctx,
-        Scope &scope)
+      void Init_Value::v_parseBlock(InitRaw const &raw, Parser &ctx, Scope &scope)
       {
          v_parseSingle(raw.valueSub[0], ctx, scope);
       }
@@ -930,7 +929,7 @@ namespace GDCC
       // Init_Value::v_parseOpen
       //
       std::size_t Init_Value::v_parseOpen(InitRaw const &raw,
-         std::size_t rawIdx, ParserCtx const &ctx, Scope &scope)
+         std::size_t rawIdx, Parser &ctx, Scope &scope)
       {
          v_parseSingle(raw.valueSub[rawIdx], ctx, scope);
          return rawIdx + 1;

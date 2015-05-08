@@ -39,7 +39,7 @@ namespace GDCC
       //
       // GetPrintSpec_Array
       //
-      static AST::Exp::CPtr GetPrintSpec_Array(ParserCtx const &ctx,
+      static AST::Exp::CPtr GetPrintSpec_Array(Parser &ctx,
          AST::Exp const *propArray, AST::Exp const *propRange,
          Core::Array<AST::Exp::CRef> &&args, Core::Origin pos)
       {
@@ -68,7 +68,7 @@ namespace GDCC
       //
       // GetPrintSpec
       //
-      static AST::Exp::CRef GetPrintSpec(ParserCtx const &ctx, CC::Scope &scope,
+      static AST::Exp::CRef GetPrintSpec(Parser &ctx, CC::Scope &scope,
          PrintDecl const *print)
       {
          // print-specifier:
@@ -96,14 +96,14 @@ namespace GDCC
          // ( expression-list )
          if(ctx.in.drop(Core::TOK_ParenO))
          {
-            args = GetExpList(ctx, scope);
+            args = ctx.getExpList(scope);
 
             if(!ctx.in.drop(Core::TOK_ParenC))
                throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
          }
          // assignment-expression
          else
-            args = {Core::Pack, GetExp_Assi(ctx, scope)};
+            args = {Core::Pack, ctx.getExp_Assi(scope)};
 
          for(auto &arg : args)
             arg = CC::ExpPromo_LValue(arg);
@@ -164,16 +164,15 @@ namespace GDCC
    namespace ACC
    {
       //
-      // GetExp_Unar_print
+      // Parser::getExp_Unar_print
       //
-      AST::Exp::CRef GetExp_Unar_print(ParserCtx const &ctx, CC::Scope &scope,
-         PrintDecl const *print)
+      AST::Exp::CRef Parser::getExp_Unar_print(CC::Scope &scope, PrintDecl const *print)
       {
          // print-identifier ( print-specifier-list(opt)
          //    print-argument-list(opt) )
 
          // print-identifier
-         auto pos = ctx.in.get().pos;
+         auto pos = in.get().pos;
 
          // Start with a no-op expression.
          auto exp = AST::ExpCreate_Size(0);
@@ -183,21 +182,21 @@ namespace GDCC
                CC::ExpCreate_Call(print->propBegin, {}, pos), pos);
 
          // (
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+         if(!in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(in.peek(), "(", true);
 
          // print-specifier-list:
          //    print-specifier
          //    print-specifier-list , print-specifier
-         if(ctx.in.peek(Core::TOK_Identi)) do
-            exp = CC::ExpCreate_Comma(exp, GetPrintSpec(ctx, scope, print), pos);
-         while(ctx.in.drop(Core::TOK_Comma));
+         if(in.peek(Core::TOK_Identi)) do
+            exp = CC::ExpCreate_Comma(exp, GetPrintSpec(*this, scope, print), pos);
+         while(in.drop(Core::TOK_Comma));
 
          // print-argument-list:
          //    ; expression-list
-         if(ctx.in.drop(Core::TOK_Semico))
+         if(in.drop(Core::TOK_Semico))
          {
-            auto args = GetExpList(ctx, scope);
+            auto args = getExpList(scope);
 
             AST::Exp::CRef *argp = args.data();
             std::size_t     argc = args.size();
@@ -246,8 +245,8 @@ namespace GDCC
          }
 
          // )
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+         if(!in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(in.peek(), ")", true);
 
          return exp;
       }

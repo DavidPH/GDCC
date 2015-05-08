@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -42,7 +42,7 @@ namespace GDCC
       //
       // GetStatement_Compound
       //
-      static AST::Statement::CRef GetStatement_Compound(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_Compound(Parser &ctx,
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // compound-statement:
@@ -64,12 +64,12 @@ namespace GDCC
             //    statement
 
             // declaration
-            if(IsDecl(ctx, blockScope))
-               stmnts.emplace_back(GetDecl(ctx, blockScope));
+            if(ctx.isDecl(blockScope))
+               stmnts.emplace_back(ctx.getDecl(blockScope));
 
             // statement
             else
-               stmnts.emplace_back(GetStatement(ctx, blockScope));
+               stmnts.emplace_back(ctx.getStatement(blockScope));
          }
 
          // }
@@ -81,7 +81,7 @@ namespace GDCC
       //
       // GetStatement_Exp
       //
-      static AST::Statement::CRef GetStatement_Exp(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_Exp(Parser &ctx,
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // expression-statement:
@@ -94,11 +94,11 @@ namespace GDCC
             return AST::StatementCreate_Empty(std::move(labels), pos);
 
          // expression
-         auto exp = GetExp(ctx, scope);
+         auto exp = ctx.getExp(scope);
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
 
          return AST::StatementCreate_Exp(std::move(labels), pos, exp);
       }
@@ -106,7 +106,7 @@ namespace GDCC
       //
       // GetStatement_asm
       //
-      static AST::Statement::CRef GetStatement_asm(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_asm(Parser &ctx,
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <__asm> ( string-literal ) ;
@@ -116,7 +116,7 @@ namespace GDCC
 
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // string-literal
          if(!ctx.in.peek().isTokString())
@@ -126,11 +126,11 @@ namespace GDCC
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
 
          // Convert string to a series of assembly tokens.
          Core::StringBuf sbuf{tok.str.data(), tok.str.size()};
@@ -150,7 +150,7 @@ namespace GDCC
       //
       // GetStatement_break
       //
-      static AST::Statement::CRef GetStatement_break(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_break(Parser &ctx,
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <break> ;
@@ -160,7 +160,7 @@ namespace GDCC
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
 
          return StatementCreate_Break(std::move(labels), pos, scope);
       }
@@ -168,7 +168,7 @@ namespace GDCC
       //
       // GetStatement_continue
       //
-      static AST::Statement::CRef GetStatement_continue(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_continue(Parser &ctx,
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <continue> ;
@@ -178,7 +178,7 @@ namespace GDCC
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
 
          return StatementCreate_Continue(std::move(labels), pos, scope);
       }
@@ -186,7 +186,7 @@ namespace GDCC
       //
       // GetStatement_do
       //
-      static AST::Statement::CRef GetStatement_do(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_do(Parser &ctx,
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          auto &loopScope = scope.createScopeLoop();
@@ -197,26 +197,26 @@ namespace GDCC
          auto pos = ctx.in.get().pos;
 
          // statement
-         auto body = GetStatement(ctx, loopScope);
+         auto body = ctx.getStatement(loopScope);
 
          // <while>
          if(!ctx.in.drop(Core::TOK_KeyWrd, Core::STR_while))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected 'while'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "while", true);
 
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // expression
-         auto cond = GetExp(ctx, loopScope);
+         auto cond = ctx.getExp(loopScope);
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
 
          return StatementCreate_Do(std::move(labels), pos, loopScope, body, cond);
       }
@@ -224,7 +224,7 @@ namespace GDCC
       //
       // GetStatement_for
       //
-      static AST::Statement::CRef GetStatement_for(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_for(Parser &ctx,
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          auto &loopScope = scope.createScopeLoop();
@@ -237,52 +237,52 @@ namespace GDCC
 
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          AST::Statement::CPtr init;
          // declaration
-         if(IsDecl(ctx, loopScope))
+         if(ctx.isDecl(loopScope))
          {
-            init = GetDecl(ctx, loopScope);
+            init = ctx.getDecl(loopScope);
          }
          // expression(opt) ;
          else
          {
             // expression(opt)
             if(ctx.in.peek().tok != Core::TOK_Semico)
-               init = AST::StatementCreate_Exp(GetExp(ctx, loopScope));
+               init = AST::StatementCreate_Exp(ctx.getExp(loopScope));
             else
                init = AST::StatementCreate_Empty(pos);
 
             // ;
             if(!ctx.in.drop(Core::TOK_Semico))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+               throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
          }
 
          // expression(opt)
          AST::Exp::CPtr cond;
          if(ctx.in.peek().tok != Core::TOK_Semico)
-            cond = GetExp(ctx, loopScope);
+            cond = ctx.getExp(loopScope);
          else
             cond = ExpCreate_LitInt(TypeIntegPrS, 1, pos);
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
 
          // expression(opt)
          AST::Statement::CPtr iter;
          if(ctx.in.peek().tok != Core::TOK_ParenC)
-            iter = AST::StatementCreate_Exp(GetExp(ctx, loopScope));
+            iter = AST::StatementCreate_Exp(ctx.getExp(loopScope));
          else
             iter = AST::StatementCreate_Empty(pos);
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // statement
-         auto body = GetStatement(ctx, loopScope);
+         auto body = ctx.getStatement(loopScope);
 
          return StatementCreate_For(std::move(labels), pos, loopScope, init,
             cond, iter, body);
@@ -291,7 +291,7 @@ namespace GDCC
       //
       // GetStatement_goto
       //
-      static AST::Statement::CRef GetStatement_goto(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_goto(Parser &ctx,
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <goto> identifier ;
@@ -301,12 +301,12 @@ namespace GDCC
 
          // identifier
          if(ctx.in.peek().tok != Core::TOK_Identi)
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected identifier");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
          auto name = ctx.in.get().str;
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
 
          return StatementCreate_Goto(std::move(labels), pos, scope, name);
       }
@@ -314,7 +314,7 @@ namespace GDCC
       //
       // GetStatement_if
       //
-      static AST::Statement::CRef GetStatement_if(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_if(Parser &ctx,
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <if> ( expression ) statement
@@ -325,23 +325,23 @@ namespace GDCC
 
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // expression
-         auto cond = GetExp(ctx, scope);
+         auto cond = ctx.getExp(scope);
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // statement
-         auto bodyT = GetStatement(ctx, scope);
+         auto bodyT = ctx.getStatement(scope);
 
          // <else> statement
          if(ctx.in.drop(Core::TOK_KeyWrd, Core::STR_else))
          {
             // statement
-            auto bodyF = GetStatement(ctx, scope);
+            auto bodyF = ctx.getStatement(scope);
 
             return StatementCreate_If(std::move(labels), pos, cond, bodyT, bodyF);
          }
@@ -352,7 +352,7 @@ namespace GDCC
       //
       // GetStatement_return
       //
-      static AST::Statement::CRef GetStatement_return(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_return(Parser &ctx,
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <return> expression(opt) ;
@@ -365,11 +365,11 @@ namespace GDCC
             return StatementCreate_Return(std::move(labels), pos, scope.fn);
 
          // expression
-         auto exp = GetExp(ctx, scope);
+         auto exp = ctx.getExp(scope);
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
 
          return StatementCreate_Return(std::move(labels), pos, scope.fn, exp);
       }
@@ -377,7 +377,7 @@ namespace GDCC
       //
       // GetStatement_switch
       //
-      static AST::Statement::CRef GetStatement_switch(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_switch(Parser &ctx,
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          auto &switchScope = scope.createScopeCase();
@@ -389,17 +389,17 @@ namespace GDCC
 
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // expression
-         auto cond = GetExp(ctx, switchScope);
+         auto cond = ctx.getExp(switchScope);
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // statement
-         auto body = GetStatement(ctx, switchScope);
+         auto body = ctx.getStatement(switchScope);
 
          return StatementCreate_Switch(std::move(labels), pos, switchScope,
             cond, body);
@@ -408,7 +408,7 @@ namespace GDCC
       //
       // GetStatement_while
       //
-      static AST::Statement::CRef GetStatement_while(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_while(Parser &ctx,
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          auto &loopScope = scope.createScopeLoop();
@@ -420,17 +420,17 @@ namespace GDCC
 
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // expression
-         auto cond = GetExp(ctx, loopScope);
+         auto cond = ctx.getExp(loopScope);
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // statement
-         auto body = GetStatement(ctx, loopScope);
+         auto body = ctx.getStatement(loopScope);
 
          return StatementCreate_While(std::move(labels), pos, loopScope, cond, body);
       }
@@ -438,7 +438,7 @@ namespace GDCC
       //
       // GetStatementLabel
       //
-      static Core::Array<Core::String> GetStatementLabel(ParserCtx const &ctx,
+      static Core::Array<Core::String> GetStatementLabel(Parser &ctx,
          Scope_Local &scope)
       {
          std::vector<Core::String> labels;
@@ -455,10 +455,10 @@ namespace GDCC
                {
                   ctx.in.get();
 
-                  auto val = ExpToInteg(GetExp_Cond(ctx, scope));
+                  auto val = ExpToInteg(ctx.getExp_Cond(scope));
 
                   if(!ctx.in.drop(Core::TOK_Colon))
-                     throw Core::ExceptStr(ctx.in.peek().pos, "expected ':'");
+                     throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
 
                   auto label = scope.getLabelCase(val, true);
 
@@ -474,7 +474,7 @@ namespace GDCC
                   ctx.in.get();
 
                   if(!ctx.in.drop(Core::TOK_Colon))
-                     throw Core::ExceptStr(ctx.in.peek().pos, "expected ':'");
+                     throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
 
                   auto label = scope.getLabelDefault(true);
 
@@ -527,42 +527,42 @@ namespace GDCC
    namespace CC
    {
       //
-      // GetStatement
+      // Parser::getStatement
       //
-      AST::Statement::CRef GetStatement(ParserCtx const &ctx, Scope_Local &scope)
+      AST::Statement::CRef Parser::getStatement(Scope_Local &scope)
       {
-         auto labels = GetStatementLabel(ctx, scope);
+         auto labels = GetStatementLabel(*this, scope);
 
          // compound-statement
-         if(ctx.in.peek().tok == Core::TOK_BraceO)
-            return GetStatement_Compound(ctx, scope, labels);
+         if(in.peek().tok == Core::TOK_BraceO)
+            return GetStatement_Compound(*this, scope, labels);
 
-         if(ctx.in.peek(Core::TOK_KeyWrd) || ctx.in.peek(Core::TOK_Identi))
-            switch(ctx.in.peek().str)
+         if(in.peek(Core::TOK_KeyWrd) || in.peek(Core::TOK_Identi))
+            switch(in.peek().str)
          {
             // selection-statement
-         case Core::STR_if:     return GetStatement_if    (ctx, scope, labels);
-         case Core::STR_switch: return GetStatement_switch(ctx, scope, labels);
+         case Core::STR_if:     return GetStatement_if    (*this, scope, labels);
+         case Core::STR_switch: return GetStatement_switch(*this, scope, labels);
 
             // iteration-statement
-         case Core::STR_while: return GetStatement_while(ctx, scope, labels);
-         case Core::STR_do:    return GetStatement_do   (ctx, scope, labels);
-         case Core::STR_for:   return GetStatement_for  (ctx, scope, labels);
+         case Core::STR_while: return GetStatement_while(*this, scope, labels);
+         case Core::STR_do:    return GetStatement_do   (*this, scope, labels);
+         case Core::STR_for:   return GetStatement_for  (*this, scope, labels);
 
             // jump-statement:
-         case Core::STR_goto:     return GetStatement_goto    (ctx, scope, labels);
-         case Core::STR_continue: return GetStatement_continue(ctx, scope, labels);
-         case Core::STR_break:    return GetStatement_break   (ctx, scope, labels);
-         case Core::STR_return:   return GetStatement_return  (ctx, scope, labels);
+         case Core::STR_goto:     return GetStatement_goto    (*this, scope, labels);
+         case Core::STR_continue: return GetStatement_continue(*this, scope, labels);
+         case Core::STR_break:    return GetStatement_break   (*this, scope, labels);
+         case Core::STR_return:   return GetStatement_return  (*this, scope, labels);
 
             // asm-statement:
-         case Core::STR___asm: return GetStatement_asm(ctx, scope, labels);
+         case Core::STR___asm: return GetStatement_asm(*this, scope, labels);
 
          default: break;
          }
 
          // expression-statement
-         return GetStatement_Exp(ctx, scope, labels);
+         return GetStatement_Exp(*this, scope, labels);
       }
    }
 }

@@ -47,7 +47,7 @@ namespace GDCC
       // GetDeclBase_Object
       //
       template<typename T>
-      static AST::Statement::CRef GetDeclBase_Object(ParserCtx const &ctx, T &scope)
+      static AST::Statement::CRef GetDeclBase_Object(Parser &ctx, T &scope)
       {
          // object-declaration:
          //    declaration-specifiers init-declarator-list ;
@@ -56,12 +56,12 @@ namespace GDCC
          attrBase.linka = IR::Linkage::ExtACS;
 
          // declaration-specifiers
-         if(!IsDeclSpec(ctx, scope))
+         if(!ctx.isDeclSpec(scope))
             throw Core::ParseExceptExpect(ctx.in.peek(), "object-declaration", false);
 
          auto pos = ctx.in.peek().pos;
 
-         ParseDeclSpec(ctx, scope, attrBase);
+         ctx.parseDeclSpec(scope, attrBase);
 
          std::vector<AST::Statement::CRef> inits;
 
@@ -76,7 +76,7 @@ namespace GDCC
 
             // declarator
             auto attr = attrBase;
-            ParseDeclarator(ctx, scope, attr);
+            ctx.parseDeclarator(scope, attr);
 
             // Objects must have object type.
             if(!attr.type->isCTypeObject())
@@ -124,7 +124,7 @@ namespace GDCC
       //
       // GetDeclObject (global)
       //
-      static AST::Object::Ref GetDeclObject(ParserCtx const &ctx,
+      static AST::Object::Ref GetDeclObject(Parser &ctx,
          CC::Scope_Global &scope, AST::Attribute &attr, bool init)
       {
          if(attr.storeInt)
@@ -187,7 +187,7 @@ namespace GDCC
       //
       // GetDeclObject (local)
       //
-      static AST::Object::Ref GetDeclObject(ParserCtx const &,
+      static AST::Object::Ref GetDeclObject(Parser &,
          CC::Scope_Local &scope, AST::Attribute &attr, bool init)
       {
          // All block-scope declarations are definitions and all block-scope
@@ -248,7 +248,7 @@ namespace GDCC
       // ParseDeclObject
       //
       template<typename T>
-      static void ParseDeclObject(ParserCtx const &ctx, T &scope,
+      static void ParseDeclObject(Parser &ctx, T &scope,
          AST::Attribute &attr, std::vector<AST::Statement::CRef> &inits)
       {
          AST::Type::CPtr lookupType;
@@ -275,7 +275,7 @@ namespace GDCC
 
             scope.add(attr.name, obj);
 
-            obj->init = GetExp_Init(ctx, scope, obj->type);
+            obj->init = ctx.getExp_Init(scope, obj->type);
             obj->type = obj->init->getType();
 
             if(obj->store == AST::Storage::Static && !obj->init->isIRExp())
@@ -300,7 +300,7 @@ namespace GDCC
       //
       // SetDeclObjectInit (global)
       //
-      static void SetDeclObjectInit(ParserCtx const &ctx, CC::Scope_Global &,
+      static void SetDeclObjectInit(Parser &ctx, CC::Scope_Global &,
          AST::Attribute &, std::vector<AST::Statement::CRef> &,
          AST::Object *obj)
       {
@@ -315,7 +315,7 @@ namespace GDCC
       //
       // SetDeclObjectInit (local)
       //
-      static void SetDeclObjectInit(ParserCtx const &ctx, CC::Scope_Local &,
+      static void SetDeclObjectInit(Parser &ctx, CC::Scope_Local &,
          AST::Attribute &attr, std::vector<AST::Statement::CRef> &inits,
          AST::Object *obj)
       {
@@ -344,21 +344,19 @@ namespace GDCC
    namespace ACC
    {
       //
-      // GetDecl_Object
+      // Parser::getDecl_Object
       //
-      AST::Statement::CRef GetDecl_Object(ParserCtx const &ctx,
-         Scope_Global &scope)
+      AST::Statement::CRef Parser::getDecl_Object(Scope_Global &scope)
       {
-         return GetDeclBase_Object(ctx, scope);
+         return GetDeclBase_Object(*this, scope);
       }
 
       //
-      // GetDecl_Object
+      // Parser::getDecl_Object
       //
-      AST::Statement::CRef GetDecl_Object(ParserCtx const &ctx,
-         CC::Scope_Local &scope)
+      AST::Statement::CRef Parser::getDecl_Object(CC::Scope_Local &scope)
       {
-         return GetDeclBase_Object(ctx, scope);
+         return GetDeclBase_Object(*this, scope);
       }
    }
 }

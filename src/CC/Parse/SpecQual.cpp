@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -26,22 +26,22 @@ namespace GDCC
    namespace CC
    {
       //
-      // IsSpecQual
+      // Parser::isSpecQual
       //
-      bool IsSpecQual(ParserCtx const &ctx, Scope &scope)
+      bool Parser::isSpecQual(Scope &scope)
       {
          return
-            IsAttrSpec(ctx, scope) ||
-            IsTypeQual(ctx, scope) ||
-            IsTypeSpec(ctx, scope);
+            isAttrSpec(scope) ||
+            isTypeQual(scope) ||
+            isTypeSpec(scope);
       }
 
       //
-      // ParseSpecQual
+      // Parser::parseSpecQual
       //
-      void ParseSpecQual(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
+      void Parser::parseSpecQual(Scope &scope, AST::Attribute &attr)
       {
-         auto pos = ctx.in.peek().pos;
+         auto pos = in.peek().pos;
 
          AST::TypeQual declQual = AST::QualNone;
          TypeSpec      declSpec;
@@ -50,16 +50,16 @@ namespace GDCC
          for(;;)
          {
             // attribute-specifier
-            if(IsAttrSpec(ctx, scope))
-               ParseAttrSpec(ctx, scope, attr);
+            if(isAttrSpec(scope))
+               parseAttrSpec(scope, attr);
 
             // type-specifier
-            else if(IsTypeSpec(ctx, scope))
-               ParseTypeSpec(ctx, scope, attr, declSpec);
+            else if(isTypeSpec(scope))
+               parseTypeSpec(scope, attr, declSpec);
 
             // type-qualifier
-            else if(IsTypeQual(ctx, scope))
-                ParseTypeQual(ctx, scope, declQual);
+            else if(isTypeQual(scope))
+                parseTypeQual(scope, declQual);
 
             else
                break;

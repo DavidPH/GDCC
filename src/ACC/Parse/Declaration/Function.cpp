@@ -68,8 +68,7 @@ namespace GDCC
       //
       // ParseDeclFunction
       //
-      static void ParseDeclFunction(ParserCtx const &ctx, Scope_Global &scope,
-         AST::Attribute &attr)
+      static void ParseDeclFunction(Parser &ctx, Scope_Global &scope, AST::Attribute &attr)
       {
          // Check compatibility with existing symbol, if any.
          if(auto lookup = scope.find(attr.name))
@@ -88,7 +87,7 @@ namespace GDCC
             if(attr.linka != IR::Linkage::None)
                scope.add(attr.name, GetDeclFunction(scope, attr));
 
-            SkipBalancedToken(ctx);
+            ctx.skipBalancedToken();
             return;
          }
 
@@ -105,7 +104,7 @@ namespace GDCC
          auto &fnScope = scope.createScope(attr, fn);
 
          auto stmntPre  = CC::StatementCreate_FuncPre(ctx.in.peek().pos, fnScope);
-         auto stmntBody = GetStatement(ctx, fnScope);
+         auto stmntBody = ctx.getStatement(fnScope);
          auto stmntPro  = CC::StatementCreate_FuncPro(ctx.in.reget().pos, fnScope);
 
          // Create statements for the function.
@@ -124,7 +123,7 @@ namespace GDCC
       //
       // ParseScriptAddr
       //
-      static void ParseScriptAddr(ParserCtx const &ctx, Scope_Global &scope,
+      static void ParseScriptAddr(Parser &ctx, Scope_Global &scope,
          AST::Attribute &attr)
       {
          // script-address:
@@ -138,7 +137,7 @@ namespace GDCC
          }
          else if(ctx.in.peek(Core::TOK_NumInt))
          {
-            attr.addrI = GetExp_Prim(ctx, scope)->getIRExp();
+            attr.addrI = ctx.getExp_Prim(scope)->getIRExp();
             attr.callt = IR::CallType::ScriptI;
          }
          else
@@ -150,7 +149,7 @@ namespace GDCC
       //
       // ParseScriptFlagList
       //
-      static void ParseScriptFlagList(ParserCtx const &ctx, AST::Attribute &attr)
+      static void ParseScriptFlagList(Parser &ctx, AST::Attribute &attr)
       {
          while(ctx.in.peek(Core::TOK_KeyWrd)) switch(ctx.in.get().str)
          {
@@ -163,7 +162,7 @@ namespace GDCC
       //
       // ParseScriptParameters
       //
-      static void ParseScriptParameters(ParserCtx const &ctx, Scope_Global &scope,
+      static void ParseScriptParameters(Parser &ctx, Scope_Global &scope,
          AST::Attribute &attr)
       {
          // script-parameters:
@@ -175,7 +174,7 @@ namespace GDCC
 
          // parameter-type-list
          AST::TypeSet::CPtr types;
-         std::tie(types, attr.param) = GetTypeList(ctx, scope);
+         std::tie(types, attr.param) = ctx.getTypeList(scope);
          attr.type = attr.type->getTypeFunction(types, attr.callt);
 
          // )
@@ -186,7 +185,7 @@ namespace GDCC
       //
       // ParseScriptType
       //
-      static void ParseScriptType(ParserCtx const &ctx, AST::Attribute &attr)
+      static void ParseScriptType(Parser &ctx, AST::Attribute &attr)
       {
          if(ctx.in.peek(Core::TOK_KeyWrd)) switch(ctx.in.get().str)
          {
@@ -220,10 +219,9 @@ namespace GDCC
    namespace ACC
    {
       //
-      // GetDecl_Function
+      // Parser::getDecl_Function
       //
-      AST::Statement::CRef GetDecl_Function(ParserCtx const &ctx,
-         Scope_Global &scope)
+      AST::Statement::CRef Parser::getDecl_Function(Scope_Global &scope)
       {
          // function-declaration:
          //    <function> declaration-specifiers identifier (
@@ -236,33 +234,32 @@ namespace GDCC
          attr.linka = IR::Linkage::ExtACS;
 
          // <function>
-         if(!ctx.in.peek(Core::TOK_KeyWrd, Core::STR_function))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "function-declaration", false);
+         if(!in.peek(Core::TOK_KeyWrd, Core::STR_function))
+            throw Core::ParseExceptExpect(in.peek(), "function-declaration", false);
 
-         auto pos = ctx.in.get().pos;
+         auto pos = in.get().pos;
 
          // declaration-specifiers
-         ParseDeclSpec(ctx, scope, attr);
+         parseDeclSpec(scope, attr);
 
          // identifier
-         if(!ctx.in.peek(Core::TOK_Identi))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
+         if(!in.peek(Core::TOK_Identi))
+            throw Core::ParseExceptExpect(in.peek(), "identifier", false);
 
-         attr.setName(ctx.in.get());
+         attr.setName(in.get());
 
          // ( parameter-type-list )
-         ParseScriptParameters(ctx, scope, attr);
+         ParseScriptParameters(*this, scope, attr);
 
-         ParseDeclFunction(ctx, scope, attr);
+         ParseDeclFunction(*this, scope, attr);
 
          return AST::StatementCreate_Empty(pos);
       }
 
       //
-      // GetDecl_Script
+      // Parser::getDecl_Script
       //
-      AST::Statement::CRef GetDecl_Script(ParserCtx const &ctx,
-         Scope_Global &scope)
+      AST::Statement::CRef Parser::getDecl_Script(Scope_Global &scope)
       {
          // script-declaration:
          //    <script> script-address script-parameters(opt) script-type
@@ -274,30 +271,30 @@ namespace GDCC
          attr.type = AST::Type::Void;
 
          // <script>
-         if(!ctx.in.peek(Core::TOK_KeyWrd, Core::STR_script))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "script-declaration", false);
+         if(!in.peek(Core::TOK_KeyWrd, Core::STR_script))
+            throw Core::ParseExceptExpect(in.peek(), "script-declaration", false);
 
-         auto pos = ctx.in.get().pos;
+         auto pos = in.get().pos;
 
          // script-address
-         ParseScriptAddr(ctx, scope, attr);
+         ParseScriptAddr(*this, scope, attr);
 
          // script-parameters(opt)
-         if(ctx.in.peek(Core::TOK_ParenO))
-            ParseScriptParameters(ctx, scope, attr);
+         if(in.peek(Core::TOK_ParenO))
+            ParseScriptParameters(*this, scope, attr);
          else
             attr.type = attr.type->getTypeFunction(AST::TypeSet::Get(false), attr.callt);
 
          // script-type(opt)
-         ParseScriptType(ctx, attr);
+         ParseScriptType(*this, attr);
 
          // script-flag-list(opt)
-         ParseScriptFlagList(ctx, attr);
+         ParseScriptFlagList(*this, attr);
 
-         if(!ctx.in.peek(Core::TOK_BraceO))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "{", true);
+         if(!in.peek(Core::TOK_BraceO))
+            throw Core::ParseExceptExpect(in.peek(), "{", true);
 
-         ParseDeclFunction(ctx, scope, attr);
+         ParseDeclFunction(*this, scope, attr);
 
          return AST::StatementCreate_Empty(pos);
       }

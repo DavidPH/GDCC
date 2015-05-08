@@ -66,13 +66,13 @@ namespace GDCC
          std::unique_ptr<std::streambuf> &&newStr)
       {
          ImportStream tstr{*newStr, macros, pragd, pragp, name};
-         ParserCtx    ctx {tstr, pragd, prog, true};
+         Parser       ctx {tstr, pragd, prog, true};
 
          pragd.push();
 
          // Read declarations.
          while(ctx.in.peek().tok != Core::TOK_EOF)
-            GetDecl(ctx, scope);
+            ctx.getDecl(scope);
 
          pragd.drop();
       }

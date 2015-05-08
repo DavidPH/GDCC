@@ -34,8 +34,7 @@ namespace GDCC
       //
       // GetDeclStruct
       //
-      static CC::Type_Struct::Ref GetDeclStruct(Core::Token name,
-         Scope_Global &scope)
+      static CC::Type_Struct::Ref GetDeclStruct(Core::Token name, Scope_Global &scope)
       {
          auto lookup = scope.lookupTypeTag(name.str);
 
@@ -64,38 +63,37 @@ namespace GDCC
    namespace ACC
    {
       //
-      // GetDecl_Struct
+      // Parser::getDecl_Struct
       //
-      AST::Statement::CRef GetDecl_Struct(ParserCtx const &ctx,
-         Scope_Global &scope)
+      AST::Statement::CRef Parser::getDecl_Struct(Scope_Global &scope)
       {
          // structure-declaration:
          //    <struct> identifier { structure-member-declaration-sequence }
          //    <struct> identifier ;
 
          // <struct>
-         if(!ctx.in.peek(Core::TOK_KeyWrd, Core::STR_struct))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "structure-declaration", false);
+         if(!in.peek(Core::TOK_KeyWrd, Core::STR_struct))
+            throw Core::ParseExceptExpect(in.peek(), "structure-declaration", false);
 
-         auto pos = ctx.in.get().pos;
+         auto pos = in.get().pos;
 
          // identifier
-         if(!ctx.in.peek(Core::TOK_Identi))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
+         if(!in.peek(Core::TOK_Identi))
+            throw Core::ParseExceptExpect(in.peek(), "identifier", false);
 
-         auto name = ctx.in.get();
+         auto name = in.get();
 
          auto type = GetDeclStruct(name, scope);
 
          scope.add(name.str, type);
 
          // ;
-         if(ctx.in.drop(Core::TOK_Semico))
+         if(in.drop(Core::TOK_Semico))
             return AST::StatementCreate_Empty(pos);
 
          // {
-         if(!ctx.in.drop(Core::TOK_BraceO))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "{", true);
+         if(!in.drop(Core::TOK_BraceO))
+            throw Core::ParseExceptExpect(in.peek(), "{", true);
 
          // List of members.
          std::vector<CC::Type_Struct::MemberData> memv;
@@ -143,13 +141,13 @@ namespace GDCC
             // struct-member-declaration:
             //    specifier-qualifier-sequence structure-member-declarator-list ;
 
-            if(!IsSpecQual(ctx, scope))
-               throw Core::ExceptStr(ctx.in.peek().pos,
-                  "expected structure-member-declaration");
+            if(!isSpecQual(scope))
+               throw Core::ParseExceptExpect(in.peek(),
+                  "structure-member-declaration", false);
 
             // specifier-qualifier-list
             AST::Attribute attrBase;
-            ParseSpecQual(ctx, scope, attrBase);
+            parseSpecQual(scope, attrBase);
 
             // structure-member-declarator-list:
             //    structure-member-declarator
@@ -161,7 +159,7 @@ namespace GDCC
 
                AST::Attribute attr = attrBase;
 
-               ParseDeclarator(ctx, scope, attr);
+               parseDeclarator(scope, attr);
 
                if(findName(attr.name))
                   throw Core::ExceptStr(attr.namePos, "name reused");
@@ -173,13 +171,13 @@ namespace GDCC
                memv.emplace_back(attr.name, attr.type, addr, false);
                addrBytes(attr.type->getSizeBytes());
             }
-            while(ctx.in.drop(Core::TOK_Comma));
+            while(in.drop(Core::TOK_Comma));
 
             // ;
-            if(!ctx.in.drop(Core::TOK_Semico))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+            if(!in.drop(Core::TOK_Semico))
+               throw Core::ParseExceptExpect(in.peek(), ";", true);
          }
-         while(!ctx.in.drop(Core::TOK_BraceC));
+         while(!in.drop(Core::TOK_BraceC));
 
          if(memv.empty())
             throw Core::ExceptStr(pos, "empty structure");

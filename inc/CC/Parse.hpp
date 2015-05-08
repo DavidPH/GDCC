@@ -13,6 +13,8 @@
 #ifndef GDCC__CC__Parse_H__
 #define GDCC__CC__Parse_H__
 
+#include <memory>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -27,6 +29,7 @@ namespace GDCC
       class Statement;
       class Type;
       class TypeQual;
+      class TypeSet;
    }
 
    namespace Core
@@ -52,34 +55,127 @@ namespace GDCC
 
    namespace CC
    {
+      class InitRaw;
       class Scope;
       class Scope_Global;
       class Scope_Local;
+      class TypeSpec;
 
       //
-      // ParserCtx
+      // Parser
       //
-      class ParserCtx
+      class Parser
       {
-      public:
-         ParserCtx(Core::TokenStream &in_, CPP::PragmaData &prag_,
-            IR::Program &prog_) :
-            in  (in_),
-            prag(prag_),
-            prog(prog_)
-         {
-         }
+      protected:
+         using ExpCRef       = Core::CounterRef<AST::Exp       const>;
+         using StatementCRef = Core::CounterRef<AST::Statement const>;
+         using TypeCRef      = Core::CounterRef<AST::Type      const>;
+         using TypeSetCRef   = Core::CounterRef<AST::TypeSet   const>;
 
-         ParserCtx(ParserCtx const &data, Core::TokenStream &in_) :
-            in  (in_),
-            prag(data.prag),
-            prog(data.prog)
-         {
-         }
+      public:
+         Parser(Core::TokenStream &in, CPP::PragmaData &prag, IR::Program &prog);
+
+         virtual ~Parser() {}
+
+         std::unique_ptr<Parser> clone(Core::TokenStream &in_) const
+            {return static_cast<std::unique_ptr<Parser>>(cloneRaw(in_));}
+
+         virtual StatementCRef getDecl(Scope_Global &scope);
+         virtual StatementCRef getDecl(Scope_Local &scope);
+
+         virtual ExpCRef getExp_CLit(Scope &scope);
+         virtual ExpCRef getExp_CLit(Scope &scope, AST::Type const *type);
+
+         virtual ExpCRef getExp_Post_ParenO(Scope &scope, AST::Exp const *exp);
+
+         virtual ExpCRef getExp_Init(Scope &scope, AST::Type const *type);
+
+         virtual ExpCRef getExp_Unar_Identi(Scope &scope);
+
+         virtual ExpCRef getExp_Prim(Scope &scope);
+         virtual ExpCRef getExp_Post(Scope &scope);
+         virtual ExpCRef getExp_Post(Scope &scope, AST::Exp const *exp);
+         virtual ExpCRef getExp_Unar(Scope &scope);
+         virtual ExpCRef getExp_Cast(Scope &scope);
+         virtual ExpCRef getExp_Mult(Scope &scope);
+         virtual ExpCRef getExp_Addi(Scope &scope);
+         virtual ExpCRef getExp_Shft(Scope &scope);
+         virtual ExpCRef getExp_Rela(Scope &scope);
+         virtual ExpCRef getExp_Equa(Scope &scope);
+         virtual ExpCRef getExp_BAnd(Scope &scope);
+         virtual ExpCRef getExp_BOrX(Scope &scope);
+         virtual ExpCRef getExp_BOrI(Scope &scope);
+         virtual ExpCRef getExp_LAnd(Scope &scope);
+         virtual ExpCRef getExp_LOrI(Scope &scope);
+         virtual ExpCRef getExp_Cond(Scope &scope);
+         virtual ExpCRef getExp_Assi(Scope &scope);
+         virtual ExpCRef getExp(Scope &scope);
+
+         virtual Core::Array<ExpCRef> getExpList(Scope &scope);
+
+         virtual InitRaw getInitRaw(Scope &scope);
+
+         virtual StatementCRef getStatement(Scope_Local &scope);
+
+         virtual TypeCRef getType(Scope &scope);
+
+         virtual std::pair<TypeSetCRef, Core::Array<AST::Attribute>>
+         getTypeList(CC::Scope &scope);
+
+         virtual bool isAddrDecl(Scope &scope);
+
+         virtual bool isAttrSpec(Scope &scope);
+
+         virtual bool isDecl(Scope &scope);
+
+         virtual bool isDeclSpec(Scope &scope);
+
+         virtual bool isDeclarator(Scope &scope);
+
+         virtual bool isExp_Cast(Scope &scope);
+
+         virtual bool isSpecQual(Scope &scope);
+
+         virtual bool isStaticAssert(Scope &scope);
+
+         virtual bool isType(Scope &scope);
+
+         virtual bool isTypeQual(Scope &scope);
+
+         virtual bool isTypeSpec(Scope &scope);
+
+         virtual void parseAddrDecl(Scope_Global &scope, AST::Attribute &attr);
+         virtual void parseAddrDecl(Scope_Local &scope, AST::Attribute &attr);
+
+         virtual void parseAttr(Scope &scope, AST::Attribute &attr);
+         virtual void parseAttrList(Scope &scope, AST::Attribute &attr);
+         virtual void parseAttrSpec(Scope &scope, AST::Attribute &attr);
+         virtual void parseAttrSpecList(Scope &scope, AST::Attribute &attr);
+
+         virtual void parseDeclSpec(Scope &scope, AST::Attribute &attr);
+
+         virtual void parseDeclarator(Scope &scope, AST::Attribute &attr);
+         virtual void parseDeclaratorSuffix(Scope &scope, AST::Attribute &attr);
+
+         virtual void parseSpecQual(Scope &scope, AST::Attribute &attr);
+
+         virtual void parseStaticAssert(Scope &scope);
+
+         virtual void parseTypeQual(Scope &scope, AST::TypeQual &qual);
+
+         virtual void parseTypeSpec(Scope &scope, AST::Attribute &attr, TypeSpec &spec);
+
+         virtual void skipBalancedToken();
 
          Core::TokenStream &in;
          CPP::PragmaData   &prag;
          IR::Program       &prog;
+
+      protected:
+         Parser(Parser const &ctx, Core::TokenStream &in);
+
+         virtual Parser *cloneRaw(Core::TokenStream &in_) const
+            {return new Parser(*this, in_);}
       };
 
       //
@@ -142,94 +238,11 @@ namespace GDCC
 {
    namespace CC
    {
-      Core::CounterRef<AST::Statement const> GetDecl(ParserCtx const &ctx,
-         Scope_Global &scope);
-      Core::CounterRef<AST::Statement const> GetDecl(ParserCtx const &ctx,
-         Scope_Local &scope);
-
-      Core::CounterRef<AST::Exp const> GetExp_CLit(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_CLit(ParserCtx const &ctx, Scope &scope,
-         AST::Type const *type);
-
-      Core::CounterRef<AST::Exp const> GetExp_Init(ParserCtx const &ctx, Scope &scope,
-         AST::Type const *type);
-
-      Core::CounterRef<AST::Exp const> GetExp_Prim(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_Post(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_Post(ParserCtx const &ctx, Scope &scope,
-         AST::Exp const *exp);
-      Core::CounterRef<AST::Exp const> GetExp_Unar(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_Cast(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_Mult(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_Addi(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_Shft(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_Rela(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_Equa(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_BAnd(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_BOrX(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_BOrI(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_LAnd(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_LOrI(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_Cond(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp_Assi(ParserCtx const &ctx, Scope &scope);
-      Core::CounterRef<AST::Exp const> GetExp(ParserCtx const &ctx, Scope &scope);
-
-      Core::CounterRef<AST::Statement const> GetStatement(ParserCtx const &ctx,
-         Scope_Local &scope);
-
       Core::Array<IR::Value> GetStrU08(Core::String str);
       Core::Array<IR::Value> GetStrU16(Core::String str);
       Core::Array<IR::Value> GetStrU32(Core::String str);
       Core::Array<IR::Value> GetString(Core::String str);
       Core::Array<IR::Value> GetString(Core::Token const &tok);
-
-      Core::CounterRef<AST::Type const> GetType(ParserCtx const &ctx, Scope &scope);
-
-      bool IsAddrDecl(ParserCtx const &ctx, Scope &scope);
-
-      bool IsAttrSpec(ParserCtx const &ctx, Scope &scope);
-
-      bool IsDecl(ParserCtx const &ctx, Scope &scope);
-
-      bool IsDeclSpec(ParserCtx const &ctx, Scope &scope);
-
-      bool IsDeclarator(ParserCtx const &ctx, Scope &scope);
-
-      bool IsExp_Cast(ParserCtx const &ctx, Scope &scope);
-
-      bool IsSpecQual(ParserCtx const &ctx, Scope &scope);
-
-      bool IsStaticAssert(ParserCtx const &ctx, Scope &scope);
-
-      bool IsType(ParserCtx const &ctx, Scope &scope);
-
-      bool IsTypeQual(ParserCtx const &ctx, Scope &scope);
-
-      bool IsTypeSpec(ParserCtx const &ctx, Scope &scope);
-
-      void ParseAddrDecl(ParserCtx const &ctx, Scope_Global &scope,
-         AST::Attribute &attr);
-      void ParseAddrDecl(ParserCtx const &ctx, Scope_Local &scope,
-         AST::Attribute &attr);
-
-      void ParseAttr(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
-      void ParseAttrSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
-      void ParseAttrSpecList(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
-
-      void ParseDeclSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
-
-      void ParseDeclarator(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
-      void ParseDeclaratorSuffix(ParserCtx const &ctx, Scope &scope,
-         AST::Attribute &attr);
-
-      void ParseSpecQual(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr);
-
-      void ParseStaticAssert(ParserCtx const &ctx, Scope &scope);
-
-      void ParseTypeQual(ParserCtx const &ctx, Scope &scope, AST::TypeQual &qual);
-
-      void ParseTypeSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr,
-         TypeSpec &spec);
    }
 }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,6 +15,9 @@
 #include "AST/Attribute.hpp"
 #include "AST/Type.hpp"
 
+#include "Core/Exception.hpp"
+#include "Core/TokenStream.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -25,28 +28,130 @@ namespace GDCC
    namespace CC
    {
       //
-      // GetType
+      // Parser constructor
+      //
+      Parser::Parser(Core::TokenStream &in_, CPP::PragmaData &prag_,
+         IR::Program &prog_) :
+         in  (in_),
+         prag(prag_),
+         prog(prog_)
+      {
+      }
+
+      Parser::Parser(Parser const &ctx, Core::TokenStream &in_) :
+         in  (in_),
+         prag(ctx.prag),
+         prog(ctx.prog)
+      {
+      }
+
+      //
+      // Parser::getType
       //
       // type-name:
       //    specifier-qualifier-list abstract-declarator(opt)
       //
-      AST::Type::CRef GetType(ParserCtx const &ctx, Scope &scope)
+      AST::Type::CRef Parser::getType(Scope &scope)
       {
          AST::Attribute attr;
 
-         ParseSpecQual(ctx, scope, attr);
-         if(IsDeclarator(ctx, scope))
-            ParseDeclarator(ctx, scope, attr);
+         parseSpecQual(scope, attr);
+         if(isDeclarator(scope))
+            parseDeclarator(scope, attr);
 
          return static_cast<AST::Type::CRef>(attr.type);
       }
 
       //
-      // IsType
+      // Parser::isType
       //
-      bool IsType(ParserCtx const &ctx, Scope &scope)
+      bool Parser::isType(Scope &scope)
       {
-         return IsSpecQual(ctx, scope);
+         return isSpecQual(scope);
+      }
+
+      //
+      // Parser::skipBalancedToken
+      //
+      void Parser::skipBalancedToken()
+      {
+         Core::TokenType tt;
+         switch(in.get().tok)
+         {
+         case Core::TOK_BraceO: tt = Core::TOK_BraceC; break;
+         case Core::TOK_BrackO: tt = Core::TOK_BrackC; break;
+         case Core::TOK_ParenO: tt = Core::TOK_ParenC; break;
+         default: return;
+         }
+
+         while(!in.drop(tt) && !in.drop(Core::TOK_EOF))
+            skipBalancedToken();
+      }
+
+      //
+      // Parser::getTypeList
+      //
+      std::pair<AST::TypeSet::CRef, Core::Array<AST::Attribute>>
+      Parser::getTypeList(Scope &scope)
+      {
+         std::vector<AST::Attribute> params;
+
+         bool varia = false;
+
+         // Special case for (void).
+         if(in.peek(Core::TOK_KeyWrd, Core::STR_void, Core::TOK_ParenC))
+         {
+            // Just drop the token and move on.
+            in.get();
+         }
+
+         // parameter-type-list
+         else do
+         {
+            // ... )
+            if(in.drop(Core::TOK_Dot3))
+               {varia = true; break;}
+
+            params.emplace_back();
+            auto &param = params.back();
+
+            // declaration-specifiers
+            parseDeclSpec(scope, param);
+
+            // Disallow extern, static, or typedef. Also ACS global or world.
+            if(param.isTypedef || param.storeExt || param.storeInt ||
+               param.storeGbl || param.storeWld)
+               throw Core::ExceptStr(in.reget().pos,
+                  "bad parameter storage class");
+
+            // declarator
+            // abstract-declarator(opt)
+            if(isDeclarator(scope))
+               parseDeclarator(scope, param);
+
+            // Change function to pointer-to-function.
+            if(param.type->isCTypeFunction())
+               param.type = param.type->getTypePointer();
+
+            // Change array-of-T to pointer-to-T.
+            else if(param.type->isTypeArray())
+            {
+               param.type = param.type->getBaseType()
+                  ->getTypePointer()
+                  ->getTypeQual(param.type->getQual());
+            }
+         }
+         while(in.drop(Core::TOK_Comma));
+
+         // Generate TypeSet.
+         std::vector<AST::Type::CRef> typev;
+         typev.reserve(params.size());
+         for(auto &param : params)
+            typev.emplace_back(param.type);
+
+         auto types = AST::TypeSet::Get(typev.data(), typev.size(), varia);
+
+         return {types, {Core::Move, params.begin(), params.end()}};
       }
    }
 }

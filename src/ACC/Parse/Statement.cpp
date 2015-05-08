@@ -42,7 +42,7 @@ namespace GDCC
       //
       // GetStatement_Compound
       //
-      static AST::Statement::CRef GetStatement_Compound(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_Compound(Parser &ctx,
          CC::Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // compound-statement:
@@ -64,12 +64,12 @@ namespace GDCC
             //    statement
 
             // declaration
-            if(IsDecl(ctx, blockScope))
-               stmnts.emplace_back(GetDecl(ctx, blockScope));
+            if(ctx.isDecl(blockScope))
+               stmnts.emplace_back(ctx.getDecl(blockScope));
 
             // statement
             else
-               stmnts.emplace_back(GetStatement(ctx, blockScope));
+               stmnts.emplace_back(ctx.getStatement(blockScope));
          }
 
          // }
@@ -81,7 +81,7 @@ namespace GDCC
       //
       // GetStatement_Exp
       //
-      static AST::Statement::CRef GetStatement_Exp(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_Exp(Parser &ctx,
          CC::Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // expression-statement:
@@ -94,7 +94,7 @@ namespace GDCC
             return AST::StatementCreate_Empty(std::move(labels), pos);
 
          // expression
-         auto exp = GetExp(ctx, scope);
+         auto exp = ctx.getExp(scope);
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
@@ -106,7 +106,7 @@ namespace GDCC
       //
       // GetStatement_break
       //
-      static AST::Statement::CRef GetStatement_break(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_break(Parser &ctx,
          CC::Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <break> ;
@@ -124,7 +124,7 @@ namespace GDCC
       //
       // GetStatement_continue
       //
-      static AST::Statement::CRef GetStatement_continue(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_continue(Parser &ctx,
          CC::Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <continue> ;
@@ -142,7 +142,7 @@ namespace GDCC
       //
       // GetStatement_do
       //
-      static AST::Statement::CRef GetStatement_do(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_do(Parser &ctx,
          CC::Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          auto &loopScope = scope.createScopeLoop();
@@ -154,7 +154,7 @@ namespace GDCC
          auto pos = ctx.in.get().pos;
 
          // statement
-         auto body = GetStatement(ctx, loopScope);
+         auto body = ctx.getStatement(loopScope);
 
          // <while>
          // <until>
@@ -168,7 +168,7 @@ namespace GDCC
             throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // expression
-         auto cond = GetExp(ctx, loopScope);
+         auto cond = ctx.getExp(loopScope);
          if(invert)
             cond = CC::ExpCreate_Not(cond, cond->pos);
 
@@ -186,7 +186,7 @@ namespace GDCC
       //
       // GetStatement_for
       //
-      static AST::Statement::CRef GetStatement_for(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_for(Parser &ctx,
          CC::Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          auto &loopScope = scope.createScopeLoop();
@@ -203,28 +203,28 @@ namespace GDCC
 
          AST::Statement::CPtr init;
          // declaration
-         if(IsDecl(ctx, loopScope))
+         if(ctx.isDecl(loopScope))
          {
-            init = GetDecl(ctx, loopScope);
+            init = ctx.getDecl(loopScope);
          }
          // expression(opt) ;
          else
          {
             // expression(opt)
             if(ctx.in.peek().tok != Core::TOK_Semico)
-               init = AST::StatementCreate_Exp(GetExp(ctx, loopScope));
+               init = AST::StatementCreate_Exp(ctx.getExp(loopScope));
             else
                init = AST::StatementCreate_Empty(pos);
 
             // ;
             if(!ctx.in.drop(Core::TOK_Semico))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
+               throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
          }
 
          // expression(opt)
          AST::Exp::CPtr cond;
          if(ctx.in.peek().tok != Core::TOK_Semico)
-            cond = GetExp(ctx, loopScope);
+            cond = ctx.getExp(loopScope);
          else
             cond = CC::ExpCreate_LitInt(CC::TypeIntegPrS, 1, pos);
 
@@ -235,7 +235,7 @@ namespace GDCC
          // expression(opt)
          AST::Statement::CPtr iter;
          if(ctx.in.peek().tok != Core::TOK_ParenC)
-            iter = AST::StatementCreate_Exp(GetExp(ctx, loopScope));
+            iter = AST::StatementCreate_Exp(ctx.getExp(loopScope));
          else
             iter = AST::StatementCreate_Empty(pos);
 
@@ -244,7 +244,7 @@ namespace GDCC
             throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // statement
-         auto body = GetStatement(ctx, loopScope);
+         auto body = ctx.getStatement(loopScope);
 
          return CC::StatementCreate_For(std::move(labels), pos, loopScope,
             init, cond, iter, body);
@@ -253,7 +253,7 @@ namespace GDCC
       //
       // GetStatement_if
       //
-      static AST::Statement::CRef GetStatement_if(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_if(Parser &ctx,
          CC::Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <if> ( expression ) statement
@@ -267,20 +267,20 @@ namespace GDCC
             throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // expression
-         auto cond = GetExp(ctx, scope);
+         auto cond = ctx.getExp(scope);
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
             throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // statement
-         auto bodyT = GetStatement(ctx, scope);
+         auto bodyT = ctx.getStatement(scope);
 
          // <else> statement
          if(ctx.in.drop(Core::TOK_KeyWrd, Core::STR_else))
          {
             // statement
-            auto bodyF = GetStatement(ctx, scope);
+            auto bodyF = ctx.getStatement(scope);
 
             return CC::StatementCreate_If(std::move(labels), pos, cond, bodyT, bodyF);
          }
@@ -291,7 +291,7 @@ namespace GDCC
       //
       // GetStatement_restart
       //
-      static AST::Statement::CRef GetStatement_restart(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_restart(Parser &ctx,
          CC::Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <restart> ;
@@ -309,7 +309,7 @@ namespace GDCC
       //
       // GetStatement_return
       //
-      static AST::Statement::CRef GetStatement_return(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_return(Parser &ctx,
          CC::Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <return> expression(opt) ;
@@ -322,7 +322,7 @@ namespace GDCC
             return CC::StatementCreate_Return(std::move(labels), pos, scope.fn);
 
          // expression
-         auto exp = GetExp(ctx, scope);
+         auto exp = ctx.getExp(scope);
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
@@ -334,7 +334,7 @@ namespace GDCC
       //
       // GetStatement_switch
       //
-      static AST::Statement::CRef GetStatement_switch(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_switch(Parser &ctx,
          CC::Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          auto &switchScope = scope.createScopeCase();
@@ -349,14 +349,14 @@ namespace GDCC
             throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // expression
-         auto cond = GetExp(ctx, switchScope);
+         auto cond = ctx.getExp(switchScope);
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
             throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // statement
-         auto body = GetStatement(ctx, switchScope);
+         auto body = ctx.getStatement(switchScope);
 
          return CC::StatementCreate_Switch(std::move(labels), pos, switchScope,
             cond, body);
@@ -365,7 +365,7 @@ namespace GDCC
       //
       // GetStatement_while
       //
-      static AST::Statement::CRef GetStatement_while(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_while(Parser &ctx,
          CC::Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          auto &loopScope = scope.createScopeLoop();
@@ -383,7 +383,7 @@ namespace GDCC
             throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // expression
-         auto cond = GetExp(ctx, loopScope);
+         auto cond = ctx.getExp(loopScope);
          if(invert)
             cond = CC::ExpCreate_Not(cond, cond->pos);
 
@@ -392,7 +392,7 @@ namespace GDCC
             throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // statement
-         auto body = GetStatement(ctx, loopScope);
+         auto body = ctx.getStatement(loopScope);
 
          return CC::StatementCreate_While(std::move(labels), pos, loopScope,
             cond, body);
@@ -401,7 +401,7 @@ namespace GDCC
       //
       // GetStatement_terminate
       //
-      static AST::Statement::CRef GetStatement_terminate(ParserCtx const &ctx,
+      static AST::Statement::CRef GetStatement_terminate(Parser &ctx,
          CC::Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <terminate> ;
@@ -411,7 +411,7 @@ namespace GDCC
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
-               throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
+            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
 
          return CC::StatementCreate_Return(std::move(labels), pos, scope.fn);
       }
@@ -419,7 +419,7 @@ namespace GDCC
       //
       // GetStatementLabel
       //
-      static Core::Array<Core::String> GetStatementLabel(ParserCtx const &ctx,
+      static Core::Array<Core::String> GetStatementLabel(Parser &ctx,
          CC::Scope_Local &scope)
       {
          std::vector<Core::String> labels;
@@ -436,7 +436,7 @@ namespace GDCC
                {
                   ctx.in.get();
 
-                  auto val = CC::ExpToInteg(GetExp_Cond(ctx, scope));
+                  auto val = CC::ExpToInteg(ctx.getExp_Cond(scope));
 
                   if(!ctx.in.drop(Core::TOK_Colon))
                      throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
@@ -488,42 +488,41 @@ namespace GDCC
    namespace ACC
    {
       //
-      // GetStatement
+      // Parser::getStatement
       //
-      AST::Statement::CRef GetStatement(ParserCtx const &ctx,
-         CC::Scope_Local &scope)
+      AST::Statement::CRef Parser::getStatement(CC::Scope_Local &scope)
       {
-         auto labels = GetStatementLabel(ctx, scope);
+         auto labels = GetStatementLabel(*this, scope);
 
          // compound-statement
-         if(ctx.in.peek().tok == Core::TOK_BraceO)
-            return GetStatement_Compound(ctx, scope, labels);
+         if(in.peek().tok == Core::TOK_BraceO)
+            return GetStatement_Compound(*this, scope, labels);
 
-         if(ctx.in.peek(Core::TOK_KeyWrd))
-            switch(ctx.in.peek().str)
+         if(in.peek(Core::TOK_KeyWrd))
+            switch(in.peek().str)
          {
             // selection-statement
-         case Core::STR_if:     return GetStatement_if    (ctx, scope, labels);
-         case Core::STR_switch: return GetStatement_switch(ctx, scope, labels);
+         case Core::STR_if:     return GetStatement_if    (*this, scope, labels);
+         case Core::STR_switch: return GetStatement_switch(*this, scope, labels);
 
             // iteration-statement
-         case Core::STR_while: return GetStatement_while(ctx, scope, labels);
-         case Core::STR_until: return GetStatement_while(ctx, scope, labels);
-         case Core::STR_do:    return GetStatement_do   (ctx, scope, labels);
-         case Core::STR_for:   return GetStatement_for  (ctx, scope, labels);
+         case Core::STR_while: return GetStatement_while(*this, scope, labels);
+         case Core::STR_until: return GetStatement_while(*this, scope, labels);
+         case Core::STR_do:    return GetStatement_do   (*this, scope, labels);
+         case Core::STR_for:   return GetStatement_for  (*this, scope, labels);
 
             // jump-statement:
-         case Core::STR_continue:  return GetStatement_continue (ctx, scope, labels);
-         case Core::STR_break:     return GetStatement_break    (ctx, scope, labels);
-         case Core::STR_return:    return GetStatement_return   (ctx, scope, labels);
-         case Core::STR_restart:   return GetStatement_restart  (ctx, scope, labels);
-         case Core::STR_terminate: return GetStatement_terminate(ctx, scope, labels);
+         case Core::STR_continue:  return GetStatement_continue (*this, scope, labels);
+         case Core::STR_break:     return GetStatement_break    (*this, scope, labels);
+         case Core::STR_return:    return GetStatement_return   (*this, scope, labels);
+         case Core::STR_restart:   return GetStatement_restart  (*this, scope, labels);
+         case Core::STR_terminate: return GetStatement_terminate(*this, scope, labels);
 
          default: break;
          }
 
          // expression-statement
-         return GetStatement_Exp(ctx, scope, labels);
+         return GetStatement_Exp(*this, scope, labels);
       }
    }
 }

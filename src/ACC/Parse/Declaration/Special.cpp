@@ -42,8 +42,7 @@ namespace GDCC
       //
       // ParseAddress
       //
-      static void ParseAddress(ParserCtx const &ctx, CC::Scope &scope,
-         AST::Attribute &attr)
+      static void ParseAddress(Parser &ctx, CC::Scope &scope, AST::Attribute &attr)
       {
          // special-address:
          //    integer-constant :
@@ -53,12 +52,12 @@ namespace GDCC
          if(ctx.in.peek(Core::TOK_NumInt))
          {
             attr.callt = IR::CallType::Special;
-            attr.addrI = GetExp_Prim(ctx, scope)->getIRExp();
+            attr.addrI = ctx.getExp_Prim(scope)->getIRExp();
          }
          else if(ctx.in.drop(Core::TOK_Sub))
          {
             attr.callt = IR::CallType::Native;
-            attr.addrI = GetExp_Prim(ctx, scope)->getIRExp();
+            attr.addrI = ctx.getExp_Prim(scope)->getIRExp();
          }
          else if(ctx.in.drop(Core::TOK_BraceO))
          {
@@ -67,14 +66,14 @@ namespace GDCC
             if(!ctx.in.peek(Core::TOK_NumInt))
                throw Core::ParseExceptExpect(ctx.in.peek(), "integer-constant", false);
 
-            attr.addrI = GetExp_Prim(ctx, scope)->getIRExp();
+            attr.addrI = ctx.getExp_Prim(scope)->getIRExp();
 
             if(ctx.in.drop(Core::TOK_Comma))
             {
                if(!ctx.in.peek(Core::TOK_NumInt))
                   throw Core::ParseExceptExpect(ctx.in.peek(), "integer-constant", false);
 
-               attr.addrL = GetExp_Prim(ctx, scope)->getIRExp();
+               attr.addrL = ctx.getExp_Prim(scope)->getIRExp();
             }
 
             if(!ctx.in.drop(Core::TOK_BraceC))
@@ -90,8 +89,7 @@ namespace GDCC
       //
       // ParseParameters
       //
-      static void ParseParameters(ParserCtx const &ctx, CC::Scope &scope,
-         AST::Attribute &attr)
+      static void ParseParameters(Parser &ctx, CC::Scope &scope, AST::Attribute &attr)
       {
          // special-parameters:
          //    integer-constant
@@ -100,21 +98,21 @@ namespace GDCC
          //    parameter-type-list
          if(ctx.in.peek(Core::TOK_NumInt))
          {
-            auto argMin = CC::ExpToFastU(GetExp_Prim(ctx, scope));
+            auto argMin = CC::ExpToFastU(ctx.getExp_Prim(scope));
 
             AST::TypeSet::CPtr types;
             if(ctx.in.drop(Core::TOK_Comma))
             {
                if(ctx.in.peek(Core::TOK_NumInt))
                {
-                  auto argMax = CC::ExpToFastU(GetExp_Prim(ctx, scope));
+                  auto argMax = CC::ExpToFastU(ctx.getExp_Prim(scope));
 
                   Core::Array<AST::Type::CRef> param{argMax, CC::TypeIntegPrS};
 
                   types = AST::TypeSet::Get(param.data(), param.size(), false);
                }
                else
-                  types = std::get<0>(GetTypeList(ctx, scope));
+                  types = std::get<0>(ctx.getTypeList(scope));
             }
             else
             {
@@ -128,7 +126,7 @@ namespace GDCC
          }
          else
          {
-            auto types = std::get<0>(GetTypeList(ctx, scope));
+            auto types = std::get<0>(ctx.getTypeList(scope));
             attr.type = attr.type->getTypeFunction(types, attr.callt);
          }
       }
@@ -145,15 +143,14 @@ namespace GDCC
    namespace ACC
    {
       //
-      // GetDecl_Special
+      // Parser::getDecl_Special
       //
-      AST::Statement::CRef GetDecl_Special(ParserCtx const &ctx,
-         Scope_Global &scope)
+      AST::Statement::CRef Parser::getDecl_Special(Scope_Global &scope)
       {
-         if(!ctx.in.peek(Core::TOK_KeyWrd, Core::STR_special))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "special-declaration", false);
+         if(!in.peek(Core::TOK_KeyWrd, Core::STR_special))
+            throw Core::ParseExceptExpect(in.peek(), "special-declaration", false);
 
-         auto pos = ctx.in.get().pos;
+         auto pos = in.get().pos;
 
          // special-list:
          //    special-item
@@ -168,9 +165,9 @@ namespace GDCC
             //       ( special-parameters )
 
             // type-name(opt)
-            if(IsType(ctx, scope))
+            if(isType(scope))
             {
-               attr.type = GetType(ctx, scope);
+               attr.type = getType(scope);
             }
             else
             {
@@ -178,23 +175,23 @@ namespace GDCC
             }
 
             // special-address
-            ParseAddress(ctx, scope, attr);
+            ParseAddress(*this, scope, attr);
 
             // identifier
-            if(!ctx.in.peek(Core::TOK_Identi))
-               throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
+            if(!in.peek(Core::TOK_Identi))
+               throw Core::ParseExceptExpect(in.peek(), "identifier", false);
 
-            attr.setName(ctx.in.get());
+            attr.setName(in.get());
 
             // (
-            if(!ctx.in.drop(Core::TOK_ParenO))
-               throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+            if(!in.drop(Core::TOK_ParenO))
+               throw Core::ParseExceptExpect(in.peek(), "(", true);
 
-            ParseParameters(ctx, scope, attr);
+            ParseParameters(*this, scope, attr);
 
             // )
-            if(!ctx.in.drop(Core::TOK_ParenC))
-               throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+            if(!in.drop(Core::TOK_ParenC))
+               throw Core::ParseExceptExpect(in.peek(), ")", true);
 
             // Check compatibility with existing symbol, if any.
             if(auto lookup = scope.find(attr.name))
@@ -218,10 +215,10 @@ namespace GDCC
 
             scope.add(attr.name, fn);
          }
-         while(ctx.in.drop(Core::TOK_Comma));
+         while(in.drop(Core::TOK_Comma));
 
-         if(!ctx.in.drop(Core::TOK_Semico))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
+         if(!in.drop(Core::TOK_Semico))
+            throw Core::ParseExceptExpect(in.peek(), ";", true);
 
          return AST::StatementCreate_Empty(pos);
       }

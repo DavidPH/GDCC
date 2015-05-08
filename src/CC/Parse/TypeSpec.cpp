@@ -38,7 +38,7 @@ namespace GDCC
       //
       // IsTypeSpec_Atomic
       //
-      static bool IsTypeSpec_Atomic(ParserCtx const &ctx, Scope &)
+      static bool IsTypeSpec_Atomic(Parser &ctx, Scope &)
       {
          // If not followed by a parenthesis, it is a type-qualifier.
          ctx.in.get();
@@ -53,7 +53,7 @@ namespace GDCC
       // atomic-type-specifier:
       //    <_Atomic> ( type-name )
       //
-      static void ParseTypeSpec_Atomic(ParserCtx const &ctx, Scope &scope,
+      static void ParseTypeSpec_Atomic(Parser &ctx, Scope &scope,
          AST::Attribute &attr, TypeSpec &spec)
       {
          if(spec.specBase)
@@ -63,14 +63,14 @@ namespace GDCC
 
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // type-name
-         auto type = GetType(ctx, scope);
+         auto type = ctx.getType(scope);
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // Constraints.
          if(type->isTypeArray())
@@ -96,7 +96,7 @@ namespace GDCC
       //    <enum> identifier(opt) { enumerator-list , }
       //    <enum> identifier
       //
-      static void ParseTypeSpec_Enum(ParserCtx const &ctx, Scope &scope,
+      static void ParseTypeSpec_Enum(Parser &ctx, Scope &scope,
          AST::Attribute &attr, TypeSpec &spec)
       {
          if(spec.specBase)
@@ -187,7 +187,7 @@ namespace GDCC
 
             // = constant-expression
             if(ctx.in.drop(Core::TOK_Equal))
-               value = ExpToInteg(GetExp_Cond(ctx, scope));
+               value = ExpToInteg(ctx.getExp_Cond(scope));
 
             // Add constant to scope.
             scope.addEnum(name, value);
@@ -209,7 +209,7 @@ namespace GDCC
       //    struct-or-union identifier(opt) { struct-declaration-list }
       //    struct-or-union identifier
       //
-      static void ParseTypeSpec_Struct(ParserCtx const &ctx, Scope &scope,
+      static void ParseTypeSpec_Struct(Parser &ctx, Scope &scope,
          AST::Attribute &attr, TypeSpec &spec, bool isUnion)
       {
          if(spec.specBase)
@@ -364,14 +364,14 @@ namespace GDCC
             //    static_assert-declaration
 
             // static_assert-declaration
-            if(IsStaticAssert(ctx, scope))
+            if(ctx.isStaticAssert(scope))
             {
-               ParseStaticAssert(ctx, scope);
+               ctx.parseStaticAssert(scope);
                continue;
             }
 
             // specifier-qualifier-list struct-declarator-list(opt) ;
-            if(IsSpecQual(ctx, scope))
+            if(ctx.isSpecQual(scope))
             {
                if(hasFAM)
                   throw Core::ExceptStr(ctx.in.peek().pos,
@@ -384,7 +384,7 @@ namespace GDCC
 
                // specifier-qualifier-list
                AST::Attribute attrBase;
-               ParseSpecQual(ctx, scope, attrBase);
+               ctx.parseSpecQual(scope, attrBase);
 
                // Special handling for non-declarator declaration.
                if(ctx.in.peek().tok == Core::TOK_Semico)
@@ -410,14 +410,14 @@ namespace GDCC
 
                   AST::Attribute attrTemp = attrBase;
 
-                  if(IsDeclarator(ctx, scope))
-                     ParseDeclarator(ctx, scope, attrTemp);
+                  if(ctx.isDeclarator(scope))
+                     ctx.parseDeclarator(scope, attrTemp);
 
                   // Bitfield member.
                   if(ctx.in.drop(Core::TOK_Colon))
                   {
                      auto pos  = ctx.in.reget().pos;
-                     auto bits = ExpToFastU(GetExp_Cond(ctx, scope));
+                     auto bits = ExpToFastU(ctx.getExp_Cond(scope));
 
                      if(bits)
                      {
@@ -794,11 +794,11 @@ namespace GDCC
       }
 
       //
-      // IsTypeSpec
+      // Parser::isTypeSpec
       //
-      bool IsTypeSpec(ParserCtx const &ctx, Scope &scope)
+      bool Parser::isTypeSpec(Scope &scope)
       {
-         auto const &tok = ctx.in.peek();
+         auto const &tok = in.peek();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             return false;
 
@@ -828,7 +828,7 @@ namespace GDCC
          case Core::STR_void:       return true;
 
             // atomic-type-specifier
-         case Core::STR__Atomic: return IsTypeSpec_Atomic(ctx, scope);
+         case Core::STR__Atomic: return IsTypeSpec_Atomic(*this, scope);
 
             // struct-or-union-specifier
          case Core::STR_struct:     return true;
@@ -843,12 +843,11 @@ namespace GDCC
       }
 
       //
-      // ParseTypeSpec
+      // Parser::parseTypeSpec
       //
-      void ParseTypeSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr,
-         TypeSpec &spec)
+      void Parser::parseTypeSpec(Scope &scope, AST::Attribute &attr, TypeSpec &spec)
       {
-         auto const &tok = ctx.in.get();
+         auto const &tok = in.get();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             throw Core::ExceptStr(tok.pos, "expected type-specifier");
 
@@ -889,14 +888,14 @@ namespace GDCC
          case Core::STR_void:       setSpecBase(TypeSpec::BaseVoid); break;
 
             // atomic-type-specifier
-         case Core::STR__Atomic: ParseTypeSpec_Atomic(ctx, scope, attr, spec); break;
+         case Core::STR__Atomic: ParseTypeSpec_Atomic(*this, scope, attr, spec); break;
 
             // struct-or-union-specifier
-         case Core::STR_struct: ParseTypeSpec_Struct(ctx, scope, attr, spec, false); break;
-         case Core::STR_union:  ParseTypeSpec_Struct(ctx, scope, attr, spec, true);  break;
+         case Core::STR_struct: ParseTypeSpec_Struct(*this, scope, attr, spec, false); break;
+         case Core::STR_union:  ParseTypeSpec_Struct(*this, scope, attr, spec, true);  break;
 
             // enum-specifier
-         case Core::STR_enum: ParseTypeSpec_Enum(ctx, scope, attr, spec); break;
+         case Core::STR_enum: ParseTypeSpec_Enum(*this, scope, attr, spec); break;
 
          default:
             // typedef-name

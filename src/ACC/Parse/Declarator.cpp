@@ -36,13 +36,13 @@ namespace GDCC
    namespace ACC
    {
       //
-      // IsDeclarator
+      // Parser::isDeclarator
       //
-      bool IsDeclarator(ParserCtx const &ctx, CC::Scope &scope)
+      bool Parser::isDeclarator(CC::Scope &scope)
       {
-         switch(ctx.in.peek().tok)
+         switch(in.peek().tok)
          {
-         case Core::TOK_Identi: return !IsDeclSpec(ctx, scope);
+         case Core::TOK_Identi: return !isDeclSpec(scope);
          case Core::TOK_Mul:    return true;
          case Core::TOK_BrackO: return true;
          case Core::TOK_ParenO: return true;
@@ -51,10 +51,9 @@ namespace GDCC
       }
 
       //
-      // ParseDeclarator
+      // Parser::parseDeclarator
       //
-      void ParseDeclarator(ParserCtx const &ctx, CC::Scope &scope,
-         AST::Attribute &attr)
+      void Parser::parseDeclarator(CC::Scope &scope, AST::Attribute &attr)
       {
          std::vector<Core::Token> toks;
          auto declQual = attr.type->getQual();
@@ -67,13 +66,13 @@ namespace GDCC
          //    * type-qualifier-list(opt) pointer
          for(;;)
          {
-            if(ctx.in.drop(Core::TOK_Mul))
+            if(in.drop(Core::TOK_Mul))
             {
                attr.type = attr.type->getTypeQual(declQual)->getTypePointer();
                declQual  = AST::QualNone;
             }
-            else if(IsTypeQual(ctx, scope))
-               ParseTypeQual(ctx, scope, declQual);
+            else if(isTypeQual(scope))
+               parseTypeQual(scope, declQual);
             else
                break;
          }
@@ -87,38 +86,38 @@ namespace GDCC
 
          // Take the next token as the name position, in case this is an
          // abstract declarator.
-         attr.namePos = ctx.in.peek().pos;
+         attr.namePos = in.peek().pos;
 
          // object-address identifier
-         if(ctx.in.peek(Core::TOK_NumInt))
+         if(in.peek(Core::TOK_NumInt))
          {
-            attr.addrI = GetExp_Prim(ctx, scope)->getIRExp();
+            attr.addrI = getExp_Prim(scope)->getIRExp();
 
-            if(!ctx.in.drop(Core::TOK_Colon))
-               throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
+            if(!in.drop(Core::TOK_Colon))
+               throw Core::ParseExceptExpect(in.peek(), ":", true);
 
-            if(!ctx.in.peek(Core::TOK_Identi))
-               throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
+            if(!in.peek(Core::TOK_Identi))
+               throw Core::ParseExceptExpect(in.peek(), "identifier", false);
 
-            attr.setName(ctx.in.get());
+            attr.setName(in.get());
          }
 
          // identifier
-         else if(ctx.in.peek().tok == Core::TOK_Identi)
+         else if(in.peek().tok == Core::TOK_Identi)
          {
-            attr.setName(ctx.in.get());
+            attr.setName(in.get());
          }
 
          // ( declarator )
-         else if(ctx.in.peek().tok == Core::TOK_ParenO)
+         else if(in.peek().tok == Core::TOK_ParenO)
          {
-            ctx.in.get();
-            if(IsDeclarator(ctx, scope))
+            in.get();
+            if(isDeclarator(scope))
             {
                // Store the tokens for processing later.
                for(unsigned depth = 1; depth;)
                {
-                  auto const &tok = ctx.in.get();
+                  auto const &tok = in.get();
                   toks.push_back(tok);
 
                        if(tok.tok == Core::TOK_ParenO) ++depth;
@@ -130,12 +129,12 @@ namespace GDCC
             else
             {
                // Just kidding, this is actually a function abstract-declarator.
-               ctx.in.unget();
+               in.unget();
             }
          }
 
          // Parse the remaining direct-declarator syntax.
-         ParseDeclaratorSuffix(ctx, scope, attr);
+         parseDeclaratorSuffix(scope, attr);
 
          // ( declarator )
          if(!toks.empty())
@@ -143,26 +142,25 @@ namespace GDCC
             Core::ArrayTBuf   buf{toks.data(), toks.size()};
             Core::TokenStream str{&buf};
 
-            ParseDeclarator(ParserCtx(ctx, str), scope, attr);
+            clone(str)->parseDeclarator(scope, attr);
          }
       }
 
       //
-      // ParseDeclaratorSuffix
+      // Parser::parseDeclaratorSuffix
       //
-      void ParseDeclaratorSuffix(ParserCtx const &ctx, CC::Scope &scope,
-         AST::Attribute &attr)
+      void Parser::parseDeclaratorSuffix(CC::Scope &scope, AST::Attribute &attr)
       {
          // [ expression(opt) ]
-         if(ctx.in.drop(Core::TOK_BrackO))
+         if(in.drop(Core::TOK_BrackO))
          {
             AST::TypeQual quals  = attr.type->getQualAddr();
 
             // ]
-            if(ctx.in.drop(Core::TOK_BrackC))
+            if(in.drop(Core::TOK_BrackC))
             {
                // Parse the next declarator suffix before creating new type.
-               ParseDeclaratorSuffix(ctx, scope, attr);
+               parseDeclaratorSuffix(scope, attr);
 
                // Create type.
                attr.type = attr.type->getTypeArray();
@@ -172,14 +170,14 @@ namespace GDCC
             else
             {
                // expression
-               auto exp = GetExp(ctx, scope);
+               auto exp = getExp(scope);
 
                // ]
-               if(!ctx.in.drop(Core::TOK_BrackC))
-                  throw Core::ParseExceptExpect(ctx.in.peek(), "]", true);
+               if(!in.drop(Core::TOK_BrackC))
+                  throw Core::ParseExceptExpect(in.peek(), "]", true);
 
                // Parse the next declarator suffix before creating new type.
-               ParseDeclaratorSuffix(ctx, scope, attr);
+               parseDeclaratorSuffix(scope, attr);
 
                // Create type.
                attr.type = attr.type->getTypeArray(CC::ExpToFastU(exp));
@@ -190,16 +188,16 @@ namespace GDCC
          }
 
          // ( parameter-type-list )
-         else if(ctx.in.drop(Core::TOK_ParenO))
+         else if(in.drop(Core::TOK_ParenO))
          {
             Core::Array<AST::Attribute> params;
-            AST::TypeSet::CPtr types;
+            AST::TypeSet::CPtr          types;
 
             if(attr.callt == IR::CallType::None)
                attr.callt = IR::CallType::LangACS;
 
             // )
-            if(ctx.in.drop(Core::TOK_ParenC))
+            if(in.drop(Core::TOK_ParenC))
             {
                attr.funcNoParam = true;
                types = AST::TypeSet::Get(false);
@@ -209,11 +207,11 @@ namespace GDCC
             else
             {
                // paramter-type-list
-               std::tie(types, params) = GetTypeList(ctx, scope);
+               std::tie(types, params) = getTypeList(scope);
 
                // )
-               if(!ctx.in.drop(Core::TOK_ParenC))
-                  throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+               if(!in.drop(Core::TOK_ParenC))
+                  throw Core::ParseExceptExpect(in.peek(), ")", true);
             }
 
             auto attrFunc = attr;
@@ -222,74 +220,12 @@ namespace GDCC
             // The declarator "f(void)[5]" is a function returning an array.
             // TODO: Come up with an example of a function declarator suffix
             // followed by another declarator suffix that is legal in C.
-            ParseDeclaratorSuffix(ctx, scope, attr);
+            parseDeclaratorSuffix(scope, attr);
 
             // Create type.
             attr.type = attr.type->getTypeFunction(types, attrFunc.callt);
             attr.param = std::move(params);
          }
-      }
-
-      std::pair<AST::TypeSet::CRef, Core::Array<AST::Attribute>>
-      GetTypeList(ParserCtx const &ctx, CC::Scope &scope)
-      {
-         std::vector<AST::Attribute> params;
-
-         bool varia = false;
-
-         // Special case for (void).
-         if(ctx.in.peek(Core::TOK_KeyWrd, Core::STR_void, Core::TOK_ParenC))
-         {
-            // Just drop the token and move on.
-            ctx.in.get();
-         }
-
-         // parameter-type-list
-         else do
-         {
-            // ... )
-            if(ctx.in.drop(Core::TOK_Dot3))
-               {varia = true; break;}
-
-            params.emplace_back();
-            auto &param = params.back();
-
-            // declaration-specifiers
-            ParseDeclSpec(ctx, scope, param);
-
-            // Disallow extern, static, or typedef.
-            if(param.storeGbl || param.storeWld || param.storeInt)
-               throw Core::ExceptStr(ctx.in.reget().pos,
-                  "bad parameter storage class");
-
-            // declarator
-            // abstract-declarator(opt)
-            if(IsDeclarator(ctx, scope))
-               ParseDeclarator(ctx, scope, param);
-
-            // Change function to pointer-to-function.
-            if(param.type->isCTypeFunction())
-               param.type = param.type->getTypePointer();
-
-            // Change array-of-T to pointer-to-T.
-            else if(param.type->isTypeArray())
-            {
-               param.type = param.type->getBaseType()
-                  ->getTypePointer()
-                  ->getTypeQual(param.type->getQual());
-            }
-         }
-         while(ctx.in.drop(Core::TOK_Comma));
-
-         // Generate TypeSet.
-         std::vector<AST::Type::CRef> typev;
-         typev.reserve(params.size());
-         for(auto &param : params)
-            typev.emplace_back(param.type);
-
-         auto types = AST::TypeSet::Get(typev.data(), typev.size(), varia);
-
-         return {types, {Core::Move, params.begin(), params.end()}};
       }
    }
 }

@@ -12,10 +12,7 @@
 
 #include "ACC/Parse.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Type.hpp"
-
-#include "Core/TokenStream.hpp"
+#include "ACC/Pragma.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -27,46 +24,39 @@ namespace GDCC
    namespace ACC
    {
       //
-      // GetType
+      // Parser constructor
       //
-      // type-name:
-      //    specifier-qualifier-list abstract-declarator(opt)
-      //
-      AST::Type::CRef GetType(ParserCtx const &ctx, CC::Scope &scope)
+      Parser::Parser(Core::TokenStream &in_, PragmaData &prag_,
+         IR::Program &prog_, bool importing_) :
+         CC::Parser{in_, prag_, prog_},
+         prag     (prag_),
+         importing{importing_}
       {
-         AST::Attribute attr;
-
-         ParseSpecQual(ctx, scope, attr);
-         if(IsDeclarator(ctx, scope))
-            ParseDeclarator(ctx, scope, attr);
-
-         return static_cast<AST::Type::CRef>(attr.type);
       }
 
       //
-      // IsType
+      // Parser constructor
       //
-      bool IsType(ParserCtx const &ctx, CC::Scope &scope)
+      Parser::Parser(Parser const &ctx, Core::TokenStream &in_) :
+         CC::Parser{ctx, in_},
+         prag     (ctx.prag),
+         importing{ctx.importing}
       {
-         return IsSpecQual(ctx, scope);
       }
 
       //
-      // SkipBalancedToken
+      // Parser::isAttrSpec
       //
-      void SkipBalancedToken(ParserCtx const &ctx)
+      bool Parser::isAttrSpec(CC::Scope &)
       {
-         Core::TokenType tt;
-         switch(ctx.in.get().tok)
-         {
-         case Core::TOK_BraceO: tt = Core::TOK_BraceC; break;
-         case Core::TOK_BrackO: tt = Core::TOK_BrackC; break;
-         case Core::TOK_ParenO: tt = Core::TOK_ParenC; break;
-         default: return;
-         }
+         return false;
+      }
 
-         while(!ctx.in.drop(tt) && !ctx.in.drop(Core::TOK_EOF))
-            SkipBalancedToken(ctx);
+      //
+      // Parser::parseAttrSpec
+      //
+      void Parser::parseAttrSpec(CC::Scope &, AST::Attribute &)
+      {
       }
    }
 }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -31,11 +31,11 @@ namespace GDCC
    namespace CC
    {
       //
-      // IsDeclSpec
+      // Parser::isDeclSpec
       //
-      bool IsDeclSpec(ParserCtx const &ctx, Scope &scope)
+      bool Parser::isDeclSpec(Scope &scope)
       {
-         auto tok = ctx.in.peek();
+         auto tok = in.peek();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             return false;
 
@@ -59,14 +59,14 @@ namespace GDCC
             // type-qualifier
             // type-specifier
          default:
-            return IsTypeQual(ctx, scope) || IsTypeSpec(ctx, scope);
+            return isTypeQual(scope) || isTypeSpec(scope);
          }
       }
 
       //
-      // ParseDeclSpec
+      // Parser::parseDeclSpec
       //
-      void ParseDeclSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
+      void Parser::parseDeclSpec(Scope &scope, AST::Attribute &attr)
       {
          enum DeclStor
          {
@@ -79,7 +79,7 @@ namespace GDCC
             declStorType,
          };
 
-         auto pos = ctx.in.peek().pos;
+         auto pos = in.peek().pos;
 
          AST::TypeQual declQual = AST::QualNone;
          TypeSpec      declSpec;
@@ -100,7 +100,7 @@ namespace GDCC
          // Read declaration-specifier tokens until there are no more.
          for(;;)
          {
-            auto const &tok = ctx.in.peek();
+            auto const &tok = in.peek();
             if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
                break;
 
@@ -123,25 +123,25 @@ namespace GDCC
 
             default:
                // type-specifier
-               if(IsTypeSpec(ctx, scope))
-                  {ParseTypeSpec(ctx, scope, attr, declSpec); continue;}
+               if(isTypeSpec(scope))
+                  {parseTypeSpec(scope, attr, declSpec); continue;}
 
                // type-qualifier
-               if(IsTypeQual(ctx, scope))
-                  {ParseTypeQual(ctx, scope, declQual); continue;}
+               if(isTypeQual(scope))
+                  {parseTypeQual(scope, declQual); continue;}
 
                goto parse_done;
             }
 
-            ctx.in.get();
+            in.get();
          }
 
          parse_done:;
 
          // Check for attributes.
          auto attrType = attr;
-         if(IsAttrSpec(ctx, scope))
-            ParseAttrSpecList(ctx, scope, attrType);
+         if(isAttrSpec(scope))
+            parseAttrSpecList(scope, attrType);
 
          // Validate the storage class.
          if(declThrd > 1 || (declThrd && declStor != declStorNone &&

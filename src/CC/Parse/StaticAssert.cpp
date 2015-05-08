@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -29,46 +29,46 @@ namespace GDCC
    namespace CC
    {
       //
-      // IsStaticAssert
+      // Parser::isStaticAssert
       //
-      bool IsStaticAssert(ParserCtx const &ctx, Scope &)
+      bool Parser::isStaticAssert(Scope &)
       {
-         auto const &tok = ctx.in.peek();
+         auto const &tok = in.peek();
          return tok.tok == Core::TOK_KeyWrd && tok.str == Core::STR__Static_assert;
       }
 
       //
-      // ParseStaticAssert
+      // Parser::parseStaticAssert
       //
-      void ParseStaticAssert(ParserCtx const &ctx, Scope &scope)
+      void Parser::parseStaticAssert(Scope &scope)
       {
          // static_assert-declaration:
          //    <_Static_assert> ( constant-expression , string-literal )
 
          // <_Static_assert>
-         if(!ctx.in.drop(Core::TOK_KeyWrd, Core::STR__Static_assert))
-            throw Core::ExceptStr(ctx.in.peek().pos,
+         if(!in.drop(Core::TOK_KeyWrd, Core::STR__Static_assert))
+            throw Core::ExceptStr(in.peek().pos,
                "expected static_assert-declaration");
 
          // (
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+         if(!in.drop(Core::TOK_ParenO))
+            throw Core::ExceptStr(in.peek().pos, "expected '('");
 
          // constant-expression
-         auto exp = GetExp_Cond(ctx, scope);
+         auto exp = getExp_Cond(scope);
 
          // ,
-         if(!ctx.in.drop(Core::TOK_Comma))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ','");
+         if(!in.drop(Core::TOK_Comma))
+            throw Core::ExceptStr(in.peek().pos, "expected ','");
 
          // string-literal
-         auto msg = ctx.in.get();
+         auto msg = in.get();
          if(!msg.isTokString())
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected string-literal");
+            throw Core::ExceptStr(in.peek().pos, "expected string-literal");
 
          // )
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+         if(!in.drop(Core::TOK_ParenC))
+            throw Core::ExceptStr(in.peek().pos, "expected ')'");
 
          if(!ExpToInteg(exp))
             throw Core::ExceptStr(msg.pos, msg.str);

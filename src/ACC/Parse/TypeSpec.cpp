@@ -38,11 +38,11 @@ namespace GDCC
    namespace ACC
    {
       //
-      // IsTypeSpec
+      // Parser::isTypeSpec
       //
-      bool IsTypeSpec(ParserCtx const &ctx, CC::Scope &scope)
+      bool Parser::isTypeSpec(CC::Scope &scope)
       {
-         auto const &tok = ctx.in.peek();
+         auto const &tok = in.peek();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             return false;
 
@@ -62,12 +62,11 @@ namespace GDCC
       }
 
       //
-      // ParseTypeSpec
+      // Parser::parseTypeSpec
       //
-      void ParseTypeSpec(ParserCtx const &ctx, CC::Scope &scope,
-         AST::Attribute &attr, CC::TypeSpec &spec)
+      void Parser::parseTypeSpec(CC::Scope &scope, AST::Attribute &attr, CC::TypeSpec &spec)
       {
-         auto const &tok = ctx.in.get();
+         auto const &tok = in.get();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             throw Core::ParseExceptExpect(tok, "type-specifier", false);
 
@@ -92,7 +91,7 @@ namespace GDCC
          case Core::STR_void:  setSpecBase(CC::TypeSpec::BaseVoid); break;
 
          case Core::STR_fixed:
-            if(ctx.prag.stateFixedType)
+            if(prag.stateFixedType)
                setSpecBase(CC::TypeSpec::BaseAccu);
             else
                setSpecBase(CC::TypeSpec::BaseInte);

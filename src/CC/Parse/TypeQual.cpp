@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -27,31 +27,34 @@
 // Static Functions                                                           |
 //
 
-//
-// IsTypeQual_Atomic
-//
-static bool IsTypeQual_Atomic(GDCC::CC::ParserCtx const &ctx, GDCC::CC::Scope &)
+namespace GDCC
 {
-   // If followed by a parenthesis, it is a type-specifier.
-   ctx.in.get();
-   bool res = ctx.in.peek().tok != GDCC::Core::TOK_ParenO;
-   ctx.in.unget();
-   return res;
-}
+   namespace CC
+   {
+      //
+      // IsTypeQual_Atomic
+      //
+      static bool IsTypeQual_Atomic(Parser &ctx, Scope &)
+      {
+         // If followed by a parenthesis, it is a type-specifier.
+         ctx.in.get();
+         bool res = ctx.in.peek().tok != Core::TOK_ParenO;
+         ctx.in.unget();
+         return res;
+      }
 
-//
-// ParseTypeQual_Atomic
-//
-static void ParseTypeQual_Atomic(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &, GDCC::AST::TypeQual &qual)
-{
-   using namespace GDCC;
+      //
+      // ParseTypeQual_Atomic
+      //
+      static void ParseTypeQual_Atomic(Parser &ctx, Scope &, AST::TypeQual &qual)
+      {
+         // If followed by a parenthesis, it is a type-specifier.
+         if(ctx.in.peek().tok == Core::TOK_ParenO)
+            throw Core::ParseExceptExpect(ctx.in.reget(), "type-qualifier", false);
 
-   // If followed by a parenthesis, it is a type-specifier.
-   if(ctx.in.peek().tok == Core::TOK_ParenO)
-      throw Core::ExceptStr(ctx.in.reget().pos, "expected type-qualifier");
-
-   qual.aAtom = true;
+         qual.aAtom = true;
+      }
+   }
 }
 
 
@@ -64,18 +67,18 @@ namespace GDCC
    namespace CC
    {
       //
-      // IsTypeQual
+      // Parser::isTypeQual
       //
-      bool IsTypeQual(ParserCtx const &ctx, Scope &scope)
+      bool Parser::isTypeQual(Scope &scope)
       {
-         auto const &tok = ctx.in.peek();
+         auto const &tok = in.peek();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
             return false;
 
          switch(tok.str)
          {
             // Standard C qualifiers.
-         case Core::STR__Atomic:  return IsTypeQual_Atomic(ctx, scope);
+         case Core::STR__Atomic:  return IsTypeQual_Atomic(*this, scope);
          case Core::STR_const:    return true;
          case Core::STR_restrict: return true;
          case Core::STR_volatile: return true;
@@ -102,13 +105,13 @@ namespace GDCC
       }
 
       //
-      // ParseTypeQual
+      // Parser::parseTypeQual
       //
-      void ParseTypeQual(ParserCtx const &ctx, Scope &scope, AST::TypeQual &qual)
+      void Parser::parseTypeQual(Scope &scope, AST::TypeQual &qual)
       {
-         auto const &tok = ctx.in.get();
+         auto const &tok = in.get();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
-            throw Core::ExceptStr(tok.pos, "expected identifier");
+            throw Core::ParseExceptExpect(tok, "identifier", false);
 
          //
          // setSpace
@@ -124,7 +127,7 @@ namespace GDCC
          switch(tok.str)
          {
             // Standard C qualifiers.
-         case Core::STR__Atomic:  ParseTypeQual_Atomic(ctx, scope, qual); break;
+         case Core::STR__Atomic:  ParseTypeQual_Atomic(*this, scope, qual); break;
          case Core::STR_const:    qual.aCons = true; break;
          case Core::STR_restrict: qual.aRest = true; break;
          case Core::STR_volatile: qual.aVola = true; break;
@@ -148,7 +151,7 @@ namespace GDCC
          default:
             auto lookup = scope.lookup(tok.str);
             if(lookup.res != Lookup::Space)
-               throw Core::ExceptStr(tok.pos, "expected type-qualifier");
+               throw Core::ParseExceptExpect(tok, "type-qualifier", false);
 
             if(qual.space.base != IR::AddrBase::Gen)
                throw Core::ExceptStr(tok.pos, "multiple address-space-specifier");

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,183 +20,309 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
+#include "IR/Glyph.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
 //
 
-//
-// GetExp_Unar_alignof
-//
-static GDCC::AST::Exp::CRef GetExp_Unar_alignof(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
+namespace GDCC
 {
-   using namespace GDCC;
-
-   auto pos = ctx.in.get().pos;
-
-   if(!ctx.in.drop(Core::TOK_ParenO))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
-
-   auto type = CC::GetType(ctx, scope);
-
-   if(!ctx.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
-
-   return CC::ExpCreate_SizeAlign(type, pos);
-}
-
-//
-// GetExp_Unar_sizeof
-//
-static GDCC::AST::Exp::CRef GetExp_Unar_sizeof(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   auto pos = ctx.in.get().pos;
-
-   // (
-   if(ctx.in.drop(Core::TOK_ParenO))
+   namespace CC
    {
-      // type-name
-      if(IsType(ctx, scope))
+      //
+      // GetExp_Unar_alignof
+      //
+      static AST::Exp::CRef GetExp_Unar_alignof(Parser &ctx, Scope &scope)
       {
-         auto type = GetType(ctx, scope);
+         auto pos = ctx.in.get().pos;
+
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+
+         auto type = ctx.getType(scope);
+
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+
+         return ExpCreate_SizeAlign(type, pos);
+      }
+
+      //
+      // GetExp_Unar_div
+      //
+      static AST::Exp::CRef GetExp_Unar_div(Parser &ctx, Scope &scope)
+      {
+         // div-expression:
+         //    <__div> ( assignment-expression , assignment-expression )
+
+         // <__div>
+         auto pos = ctx.in.get().pos;
+
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+
+         // assignment-expression
+         auto l = ctx.getExp_Assi(scope);
+
+         // ,
+         if(!ctx.in.drop(Core::TOK_Comma))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
+
+         // assignment-expression
+         auto r = ctx.getExp_Assi(scope);
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
-         return CC::ExpCreate_SizeBytes(type, pos);
+         return ExpCreate_DivEx(l, r, pos);
       }
 
-      ctx.in.unget();
+      //
+      // GetExp_Unar_glyph
+      //
+      static AST::Exp::CRef GetExp_Unar_glyph(Parser &ctx, Scope &scope)
+      {
+         // glyph-expression:
+         //    <__glyph> ( type-name , string-literal )
+
+         // <__glyph>
+         auto pos = ctx.in.get().pos;
+
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+
+         // type-name
+         auto type = ctx.getType(scope);
+
+         if(!type->isCTypeObject() || !type->isTypeComplete())
+            throw Core::ExceptStr(pos, "expected complete object type");
+
+         // ,
+         if(!ctx.in.drop(Core::TOK_Comma))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
+
+         // string-literal
+         if(!ctx.in.peek().isTokString())
+            throw Core::ParseExceptExpect(ctx.in.peek(), "string-literal", false);
+
+         IR::Glyph glyph = {ctx.prog, ctx.in.get().str};
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+
+         // If the glyph has no type yet, set it now.
+         auto &glyphData = glyph.getData();
+         glyphData.type = type->getIRType();
+
+         return AST::ExpCreate_IRExp(IR::ExpCreate_Glyph(glyph, pos), type, pos);
+      }
+
+      //
+      // GetExp_Unar_offsetof
+      //
+      static AST::Exp::CRef GetExp_Unar_offsetof(Parser &ctx, Scope &scope)
+      {
+         // offsetof-expression:
+         //    <__offsetof> ( type-name , identifier )
+
+         // <__offsetof>
+         auto pos = ctx.in.get().pos;
+
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+
+         // type-name
+         auto type = ctx.getType(scope);
+
+         if(!type->isCTypeObject() || !type->isTypeComplete())
+            throw Core::ExceptStr(pos, "expected complete object type");
+
+         // ,
+         if(!ctx.in.drop(Core::TOK_Comma))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
+
+         // identifier
+         if(!ctx.in.peek(Core::TOK_Identi))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
+
+         Core::String name = ctx.in.get().str;
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+
+         try
+         {
+            return ExpCreate_LitInt(AST::Type::Size, type->getMember(name).addr, pos);
+         }
+         catch(AST::TypeError const &)
+         {
+            throw Core::ExceptStr(pos, "invalid member");
+         }
+      }
+
+      //
+      // GetExp_Unar_sizeof
+      //
+      static AST::Exp::CRef GetExp_Unar_sizeof(Parser &ctx, Scope &scope)
+      {
+         auto pos = ctx.in.get().pos;
+
+         // (
+         if(ctx.in.drop(Core::TOK_ParenO))
+         {
+            // type-name
+            if(ctx.isType(scope))
+            {
+               auto type = ctx.getType(scope);
+
+               // )
+               if(!ctx.in.drop(Core::TOK_ParenC))
+                  throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+
+               return ExpCreate_SizeBytes(type, pos);
+            }
+
+            ctx.in.unget();
+         }
+
+         return ExpCreate_SizeBytes(ctx.getExp_Unar(scope), pos);
+      }
+
+      //
+      // GetExp_Unar_va_arg
+      //
+      static AST::Exp::CRef GetExp_Unar_va_arg(Parser &ctx, Scope &scope)
+      {
+         // va_arg-expression:
+         //    <__va_arg> ( assignment-expression , type-name )
+
+         // <__va_arg>
+         auto pos = ctx.in.get().pos;
+
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+
+         // assignment-expression
+         auto exp = ctx.getExp_Assi(scope);
+
+         // ,
+         if(!ctx.in.drop(Core::TOK_Comma))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
+
+         // type-name
+         auto type = ctx.getType(scope);
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+
+         return ExpCreate_VaArg(type, exp, pos);
+      }
+
+      //
+      // GetExp_Unar_Add
+      //
+      static AST::Exp::CRef GetExp_Unar_Add(Parser &ctx, Scope &scope)
+      {
+         auto pos = ctx.in.get().pos;
+
+         return ExpCreate_Add(ctx.getExp_Cast(scope), pos);
+      }
+
+      //
+      // GetExp_Unar_Add2
+      //
+      static AST::Exp::CRef GetExp_Unar_Add2(Parser &ctx, Scope &scope)
+      {
+         auto pos = ctx.in.get().pos;
+
+         return ExpCreate_IncPre(ctx.getExp_Unar(scope), pos);
+      }
+
+      //
+      // GetExp_Unar_And
+      //
+      static AST::Exp::CRef GetExp_Unar_And(Parser &ctx, Scope &scope)
+      {
+         auto pos = ctx.in.get().pos;
+
+         return ExpCreate_Refer(ctx.getExp_Cast(scope), pos);
+      }
+
+      //
+      // GetExp_Unar_Inv
+      //
+      static AST::Exp::CRef GetExp_Unar_Inv(Parser &ctx, Scope &scope)
+      {
+         auto pos = ctx.in.get().pos;
+
+         return ExpCreate_Inv(ctx.getExp_Cast(scope), pos);
+      }
+
+      //
+      // GetExp_Unar_KeyWrd
+      //
+      static AST::Exp::CRef GetExp_Unar_KeyWrd(Parser &ctx, Scope &scope)
+      {
+         switch(ctx.in.peek().str)
+         {
+         case Core::STR_sizeof:   return GetExp_Unar_sizeof(ctx, scope);
+         case Core::STR__Alignof: return GetExp_Unar_alignof(ctx, scope);
+
+         default:
+            return ctx.getExp_Post(scope);
+         }
+      }
+
+      //
+      // GetExp_Unar_Mul
+      //
+      static AST::Exp::CRef GetExp_Unar_Mul(Parser &ctx, Scope &scope)
+      {
+         auto pos = ctx.in.get().pos;
+
+         return ExpCreate_Deref(ctx.getExp_Cast(scope), pos);
+      }
+
+      //
+      // GetExp_Unar_Not
+      //
+      static AST::Exp::CRef GetExp_Unar_Not(Parser &ctx, Scope &scope)
+      {
+         auto pos = ctx.in.get().pos;
+
+         return ExpCreate_Not(ctx.getExp_Cast(scope), pos);
+      }
+
+      //
+      // GetExp_Unar_Sub
+      //
+      static AST::Exp::CRef GetExp_Unar_Sub(Parser &ctx, Scope &scope)
+      {
+         auto pos = ctx.in.get().pos;
+
+         return ExpCreate_Sub(ctx.getExp_Cast(scope), pos);
+      }
+
+      //
+      // GetExp_Unar_Sub2
+      //
+      static AST::Exp::CRef GetExp_Unar_Sub2(Parser &ctx, Scope &scope)
+      {
+         auto pos = ctx.in.get().pos;
+
+         return ExpCreate_DecPre(ctx.getExp_Unar(scope), pos);
+      }
    }
-
-   return CC::ExpCreate_SizeBytes(CC::GetExp_Unar(ctx, scope), pos);
-}
-
-//
-// GetExp_Unar_Add
-//
-static GDCC::AST::Exp::CRef GetExp_Unar_Add(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   auto pos = ctx.in.get().pos;
-
-   return CC::ExpCreate_Add(CC::GetExp_Cast(ctx, scope), pos);
-}
-
-//
-// GetExp_Unar_Add2
-//
-static GDCC::AST::Exp::CRef GetExp_Unar_Add2(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   auto pos = ctx.in.get().pos;
-
-   return CC::ExpCreate_IncPre(CC::GetExp_Unar(ctx, scope), pos);
-}
-
-//
-// GetExp_Unar_And
-//
-static GDCC::AST::Exp::CRef GetExp_Unar_And(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   auto pos = ctx.in.get().pos;
-
-   return CC::ExpCreate_Refer(CC::GetExp_Cast(ctx, scope), pos);
-}
-
-//
-// GetExp_Unar_Inv
-//
-static GDCC::AST::Exp::CRef GetExp_Unar_Inv(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   auto pos = ctx.in.get().pos;
-
-   return CC::ExpCreate_Inv(CC::GetExp_Cast(ctx, scope), pos);
-}
-
-//
-// GetExp_Unar_KeyWrd
-//
-static GDCC::AST::Exp::CRef GetExp_Unar_KeyWrd(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   switch(ctx.in.peek().str)
-   {
-   case Core::STR_sizeof:   return GetExp_Unar_sizeof(ctx, scope);
-   case Core::STR__Alignof: return GetExp_Unar_alignof(ctx, scope);
-
-   default:
-      return CC::GetExp_Post(ctx, scope);
-   }
-}
-
-//
-// GetExp_Unar_Mul
-//
-static GDCC::AST::Exp::CRef GetExp_Unar_Mul(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   auto pos = ctx.in.get().pos;
-
-   return CC::ExpCreate_Deref(CC::GetExp_Cast(ctx, scope), pos);
-}
-
-//
-// GetExp_Unar_Not
-//
-static GDCC::AST::Exp::CRef GetExp_Unar_Not(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   auto pos = ctx.in.get().pos;
-
-   return CC::ExpCreate_Not(CC::GetExp_Cast(ctx, scope), pos);
-}
-
-//
-// GetExp_Unar_Sub
-//
-static GDCC::AST::Exp::CRef GetExp_Unar_Sub(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   auto pos = ctx.in.get().pos;
-
-   return CC::ExpCreate_Sub(CC::GetExp_Cast(ctx, scope), pos);
-}
-
-//
-// GetExp_Unar_Sub2
-//
-static GDCC::AST::Exp::CRef GetExp_Unar_Sub2(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope)
-{
-   using namespace GDCC;
-
-   auto pos = ctx.in.get().pos;
-
-   return CC::ExpCreate_DecPre(CC::GetExp_Unar(ctx, scope), pos);
 }
 
 
@@ -209,24 +335,43 @@ namespace GDCC
    namespace CC
    {
       //
-      // GetExp_Unar
+      // Parser::getExp_Unar_Identi
       //
-      AST::Exp::CRef GetExp_Unar(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_Unar_Identi(Scope &scope)
       {
-         switch(ctx.in.peek().tok)
+         switch(in.peek().str)
          {
-         case Core::TOK_KeyWrd: return GetExp_Unar_KeyWrd(ctx, scope);
-         case Core::TOK_Add:    return GetExp_Unar_Add   (ctx, scope);
-         case Core::TOK_Add2:   return GetExp_Unar_Add2  (ctx, scope);
-         case Core::TOK_And:    return GetExp_Unar_And   (ctx, scope);
-         case Core::TOK_Inv:    return GetExp_Unar_Inv   (ctx, scope);
-         case Core::TOK_Mul:    return GetExp_Unar_Mul   (ctx, scope);
-         case Core::TOK_Not:    return GetExp_Unar_Not   (ctx, scope);
-         case Core::TOK_Sub:    return GetExp_Unar_Sub   (ctx, scope);
-         case Core::TOK_Sub2:   return GetExp_Unar_Sub2  (ctx, scope);
+         case Core::STR___div:      return GetExp_Unar_div(*this, scope);
+         case Core::STR___glyph:    return GetExp_Unar_glyph(*this, scope);
+         case Core::STR___offsetof: return GetExp_Unar_offsetof(*this, scope);
+         case Core::STR___va_arg:   return GetExp_Unar_va_arg(*this, scope);
+
+         default: break;
+         }
+
+         return getExp_Post(scope);
+      }
+
+      //
+      // Parser::getExp_Unar
+      //
+      AST::Exp::CRef Parser::getExp_Unar(Scope &scope)
+      {
+         switch(in.peek().tok)
+         {
+         case Core::TOK_Identi: return getExp_Unar_Identi(       scope);
+         case Core::TOK_KeyWrd: return GetExp_Unar_KeyWrd(*this, scope);
+         case Core::TOK_Add:    return GetExp_Unar_Add   (*this, scope);
+         case Core::TOK_Add2:   return GetExp_Unar_Add2  (*this, scope);
+         case Core::TOK_And:    return GetExp_Unar_And   (*this, scope);
+         case Core::TOK_Inv:    return GetExp_Unar_Inv   (*this, scope);
+         case Core::TOK_Mul:    return GetExp_Unar_Mul   (*this, scope);
+         case Core::TOK_Not:    return GetExp_Unar_Not   (*this, scope);
+         case Core::TOK_Sub:    return GetExp_Unar_Sub   (*this, scope);
+         case Core::TOK_Sub2:   return GetExp_Unar_Sub2  (*this, scope);
 
          default:
-            return GetExp_Post(ctx, scope);
+            return getExp_Post(scope);
          }
       }
    }

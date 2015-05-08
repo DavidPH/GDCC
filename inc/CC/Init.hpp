@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -43,6 +43,7 @@ namespace GDCC
 
    namespace CC
    {
+      class Parser;
       class ParserCtx;
       class Scope;
       class Type_Div;
@@ -99,9 +100,9 @@ namespace GDCC
 
          bool isNoAuto() const;
 
-         void parse(InitRaw const &raw, ParserCtx const &ctx, Scope &scope);
+         void parse(InitRaw const &raw, Parser &ctx, Scope &scope);
          std::size_t parse(InitRaw const &raw, std::size_t rawIdx,
-            ParserCtx const &ctx, Scope &scope);
+            Parser &ctx, Scope &scope);
 
          Core::Origin      pos;
          AST::Exp::CPtr    value;
@@ -112,8 +113,8 @@ namespace GDCC
          // Creates an initializer hierarchy for a given type.
          static Ptr Create(AST::Type const *type, Core::FastU offset, Core::Origin pos);
 
-         static Ptr Create(InitRaw const &raw, ParserCtx const &ctx,
-            Scope &scope, AST::Type const *type);
+         static Ptr Create(InitRaw const &raw, Parser &ctx, Scope &scope,
+            AST::Type const *type);
 
          static bool IsInitString(Core::Token const &tok, AST::Type const *type);
 
@@ -132,14 +133,12 @@ namespace GDCC
 
          virtual bool v_isNoAuto() const = 0;
 
-         virtual void v_parseBlock(InitRaw const &raw, ParserCtx const &ctx,
-           Scope &scope) = 0;
+         virtual void v_parseBlock(InitRaw const &raw, Parser &ctx, Scope &scope) = 0;
 
          virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
-            ParserCtx const &ctx, Scope &scope) = 0;
+            Parser &ctx, Scope &scope) = 0;
 
-         virtual void v_parseSingle(InitRaw const &raw, ParserCtx const &ctx,
-            Scope &scope);
+         virtual void v_parseSingle(InitRaw const &raw, Parser &ctx, Scope &scope);
 
          virtual void v_parseString(Core::Token const &tok);
 
@@ -175,10 +174,10 @@ namespace GDCC
 
          virtual std::size_t nextSub(std::size_t index) const;
 
-         virtual void v_parseBlock(InitRaw const &raw, ParserCtx const &ctx, Scope &scope);
+         virtual void v_parseBlock(InitRaw const &raw, Parser &ctx, Scope &scope);
 
          virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
-            ParserCtx const &ctx, Scope &scope);
+            Parser &ctx, Scope &scope);
 
          virtual void v_parseString(Core::Token const &tok);
 
@@ -329,10 +328,10 @@ namespace GDCC
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst, bool skipZero) const;
 
-         virtual void v_parseBlock(InitRaw const &raw, ParserCtx const &ctx, Scope &scope);
+         virtual void v_parseBlock(InitRaw const &raw, Parser &ctx, Scope &scope);
 
          virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
-            ParserCtx const &ctx, Scope &scope);
+            Parser &ctx, Scope &scope);
 
          virtual bool v_isNoAuto() const;
       };

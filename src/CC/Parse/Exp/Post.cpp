@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -26,95 +26,67 @@
 // Static Functions                                                           |
 //
 
-//
-// GetExp_Post_Add2
-//
-static GDCC::AST::Exp::CRef GetExp_Post_Add2(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &, GDCC::AST::Exp const *exp)
+namespace GDCC
 {
-   return GDCC::CC::ExpCreate_IncSuf(exp, ctx.in.get().pos);
-}
+   namespace CC
+   {
+      //
+      // GetExp_Post_Add2
+      //
+      static AST::Exp::CRef GetExp_Post_Add2(Parser &ctx, Scope &, AST::Exp const *exp)
+      {
+         return ExpCreate_IncSuf(exp, ctx.in.get().pos);
+      }
 
-//
-// GetExp_Post_BrackO
-//
-static GDCC::AST::Exp::CRef GetExp_Post_BrackO(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope, GDCC::AST::Exp const *exp)
-{
-   using namespace GDCC;
+      //
+      // GetExp_Post_BrackO
+      //
+      static AST::Exp::CRef GetExp_Post_BrackO(Parser &ctx, Scope &scope, AST::Exp const *exp)
+      {
+         auto pos = ctx.in.get().pos;
 
-   auto pos = ctx.in.get().pos;
+         auto idx = ctx.getExp(scope);
 
-   auto idx = CC::GetExp(ctx, scope);
+         if(!ctx.in.drop(Core::TOK_BrackC))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "]", true);
 
-   if(!ctx.in.drop(Core::TOK_BrackC))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected ']'");
+         return ExpCreate_Array(exp, idx, pos);
+      }
 
-   return CC::ExpCreate_Array(exp, idx, pos);
-}
+      //
+      // GetExp_Post_Dot
+      //
+      static AST::Exp::CRef GetExp_Post_Dot(Parser &ctx, Scope &, AST::Exp const *exp)
+      {
+         auto pos = ctx.in.get().pos;
 
-//
-// GetExp_Post_Dot
-//
-static GDCC::AST::Exp::CRef GetExp_Post_Dot(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &, GDCC::AST::Exp const *exp)
-{
-   using namespace GDCC;
+         if(ctx.in.peek().tok != Core::TOK_Identi)
+            throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
 
-   auto pos = ctx.in.get().pos;
+         return ExpCreate_Mem(exp, ctx.in.get().str, pos);
+      }
 
-   if(ctx.in.peek().tok != Core::TOK_Identi)
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected identifier");
+      //
+      // GetExp_Post_Mem
+      //
+      static AST::Exp::CRef GetExp_Post_Mem(Parser &ctx, Scope &, AST::Exp const *exp)
+      {
+         auto pos = ctx.in.get().pos;
 
-   return CC::ExpCreate_Mem(exp, ctx.in.get().str, pos);
-}
+         if(ctx.in.peek().tok != Core::TOK_Identi)
+            throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
 
-//
-// GetExp_Post_Mem
-//
-static GDCC::AST::Exp::CRef GetExp_Post_Mem(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &, GDCC::AST::Exp const *exp)
-{
-   using namespace GDCC;
+         return ExpCreate_MemPt(exp, ctx.in.get().str, pos);
+      }
 
-   auto pos = ctx.in.get().pos;
-
-   if(ctx.in.peek().tok != Core::TOK_Identi)
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected identifier");
-
-   return CC::ExpCreate_MemPt(exp, ctx.in.get().str, pos);
-}
-
-//
-// GetExp_Post_ParenO
-//
-static GDCC::AST::Exp::CRef GetExp_Post_ParenO(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &scope, GDCC::AST::Exp const *exp)
-{
-   using namespace GDCC;
-
-   auto pos = ctx.in.get().pos;
-
-   std::vector<AST::Exp::CRef> args;
-
-   if(ctx.in.peek().tok != Core::TOK_ParenC) do
-      args.emplace_back(CC::GetExp_Assi(ctx, scope));
-   while(ctx.in.drop(Core::TOK_Comma));
-
-   if(!ctx.in.drop(Core::TOK_ParenC))
-      throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
-
-   return CC::ExpCreate_Call(exp,
-      Core::Array<AST::Exp::CRef>(args.begin(), args.end()), pos);
-}
-
-//
-// GetExp_Post_Sub2
-//
-static GDCC::AST::Exp::CRef GetExp_Post_Sub2(GDCC::CC::ParserCtx const &ctx,
-   GDCC::CC::Scope &, GDCC::AST::Exp const *exp)
-{
-   return GDCC::CC::ExpCreate_DecSuf(exp, ctx.in.get().pos);
+      //
+      // GetExp_Post_Sub2
+      //
+      static AST::Exp::CRef GetExp_Post_Sub2(Parser &ctx, Scope &, AST::Exp const *exp)
+      {
+         return ExpCreate_DecSuf(exp, ctx.in.get().pos);
+      }
+   }
 }
 
 
@@ -127,32 +99,49 @@ namespace GDCC
    namespace CC
    {
       //
-      // GetExp_Post
+      // Parser::getExp_Post_ParenO
       //
-      AST::Exp::CRef GetExp_Post(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_Post_ParenO(Scope &scope, AST::Exp const *exp)
       {
-         if(IsExp_Cast(ctx, scope))
-            return GetExp_Post(ctx, scope, GetExp_CLit(ctx, scope));
+         auto pos = in.get().pos;
 
-         return GetExp_Post(ctx, scope, GetExp_Prim(ctx, scope));
+         Core::Array<AST::Exp::CRef> args;
+
+         if(!in.peek(Core::TOK_ParenC))
+            args = getExpList(scope);
+
+         if(!in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(in.peek(), ")", true);
+
+         return ExpCreate_Call(exp, args, pos);
       }
 
       //
-      // GetExp_Post
+      // Parser::getExp_Post
       //
-      AST::Exp::CRef GetExp_Post(ParserCtx const &ctx, Scope &scope,
-         AST::Exp const *e)
+      AST::Exp::CRef Parser::getExp_Post(Scope &scope)
+      {
+         if(isExp_Cast(scope))
+            return getExp_Post(scope, getExp_CLit(scope));
+
+         return getExp_Post(scope, getExp_Prim(scope));
+      }
+
+      //
+      // Parser::getExp_Post
+      //
+      AST::Exp::CRef Parser::getExp_Post(Scope &scope, AST::Exp const *e)
       {
          AST::Exp::CRef exp{e};
 
-         for(;;) switch(ctx.in.peek().tok)
+         for(;;) switch(in.peek().tok)
          {
-         case Core::TOK_Add2:   exp = GetExp_Post_Add2  (ctx, scope, exp); break;
-         case Core::TOK_Dot:    exp = GetExp_Post_Dot   (ctx, scope, exp); break;
-         case Core::TOK_Mem:    exp = GetExp_Post_Mem   (ctx, scope, exp); break;
-         case Core::TOK_Sub2:   exp = GetExp_Post_Sub2  (ctx, scope, exp); break;
-         case Core::TOK_BrackO: exp = GetExp_Post_BrackO(ctx, scope, exp); break;
-         case Core::TOK_ParenO: exp = GetExp_Post_ParenO(ctx, scope, exp); break;
+         case Core::TOK_Add2:   exp = GetExp_Post_Add2  (*this, scope, exp); break;
+         case Core::TOK_Dot:    exp = GetExp_Post_Dot   (*this, scope, exp); break;
+         case Core::TOK_Mem:    exp = GetExp_Post_Mem   (*this, scope, exp); break;
+         case Core::TOK_Sub2:   exp = GetExp_Post_Sub2  (*this, scope, exp); break;
+         case Core::TOK_BrackO: exp = GetExp_Post_BrackO(*this, scope, exp); break;
+         case Core::TOK_ParenO: exp = getExp_Post_ParenO(       scope, exp); break;
 
          default:
             return exp;

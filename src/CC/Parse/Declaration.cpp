@@ -209,7 +209,7 @@ namespace GDCC
       //
       // SetDeclObjInit (global)
       //
-      static void SetDeclObjInit(ParserCtx const &, Scope_Global &,
+      static void SetDeclObjInit(Parser &, Scope_Global &,
          AST::Attribute &, std::vector<AST::Statement::CRef> &,
          AST::Object *obj)
       {
@@ -221,7 +221,7 @@ namespace GDCC
       //
       // SetDeclObjInit (local)
       //
-      static void SetDeclObjInit(ParserCtx const &ctx, Scope_Local &,
+      static void SetDeclObjInit(Parser &ctx, Scope_Local &,
          AST::Attribute &attr, std::vector<AST::Statement::CRef> &inits,
          AST::Object *obj)
       {
@@ -241,7 +241,7 @@ namespace GDCC
       //
       // ParseDecl_Function (global)
       //
-      static void ParseDecl_Function(ParserCtx const &ctx, Scope_Global &scope,
+      static void ParseDecl_Function(Parser &ctx, Scope_Global &scope,
          AST::Attribute &attr, AST::Function *fn)
       {
          if(!fn->retrn->isTypeComplete() && !fn->retrn->isTypeVoid())
@@ -250,7 +250,7 @@ namespace GDCC
          auto &fnScope = scope.createScope(attr, fn);
 
          auto stmntPre  = StatementCreate_FuncPre(ctx.in.peek().pos, fnScope);
-         auto stmntBody = GetStatement(ctx, fnScope);
+         auto stmntBody = ctx.getStatement(fnScope);
          auto stmntPro  = StatementCreate_FuncPro(ctx.in.reget().pos, fnScope);
 
          // Create statements for the function.
@@ -269,7 +269,7 @@ namespace GDCC
       //
       // ParseDecl_Function (local)
       //
-      static void ParseDecl_Function(ParserCtx const &, Scope_Local &,
+      static void ParseDecl_Function(Parser &, Scope_Local &,
          AST::Attribute &attr, AST::Function *)
       {
          throw Core::ExceptStr(attr.namePos, "local function definition");
@@ -299,8 +299,7 @@ namespace GDCC
       // ParseDeclBase_Function
       //
       template<typename T>
-      static bool ParseDeclBase_Function(ParserCtx const &ctx, T &scope,
-         AST::Attribute &attr)
+      static bool ParseDeclBase_Function(Parser &ctx, T &scope, AST::Attribute &attr)
       {
          // Check compatibility with existing symbol, if any.
          if(auto lookup = scope.find(attr.name))
@@ -330,7 +329,7 @@ namespace GDCC
       // ParseDeclBase_Object
       //
       template<typename T>
-      static void ParseDeclBase_Object(ParserCtx const &ctx, T &scope,
+      static void ParseDeclBase_Object(Parser &ctx, T &scope,
          AST::Attribute &attr, std::vector<AST::Statement::CRef> &inits)
       {
          // Check compatibility with existing symbol, if any.
@@ -362,7 +361,7 @@ namespace GDCC
 
             scope.add(attr.name, obj);
 
-            obj->init = GetExp_Init(ctx, scope, obj->type);
+            obj->init = ctx.getExp_Init(scope, obj->type);
             obj->type = obj->init->getType();
 
             if(obj->store == AST::Storage::Static && !obj->init->isIRExp())
@@ -379,7 +378,7 @@ namespace GDCC
       // GetDeclBase
       //
       template<typename T>
-      static AST::Statement::CRef GetDeclBase(ParserCtx const &ctx, T &scope)
+      static AST::Statement::CRef GetDeclBase(Parser &ctx, T &scope)
       {
          auto pos = ctx.in.peek().pos;
 
@@ -392,21 +391,21 @@ namespace GDCC
          // attribute-specifier-list
          AST::Attribute attrBase;
          attrBase.linka = IR::Linkage::ExtC;
-         if(IsAttrSpec(ctx, scope))
-            ParseAttrSpecList(ctx, scope, attrBase);
+         if(ctx.isAttrSpec(scope))
+            ctx.parseAttrSpecList(scope, attrBase);
 
          // address-space-declaration
-         if(IsAddrDecl(ctx, scope))
-            return ParseAddrDecl(ctx, scope, attrBase), AST::StatementCreate_Empty(pos);
+         if(ctx.isAddrDecl(scope))
+            return ctx.parseAddrDecl(scope, attrBase), AST::StatementCreate_Empty(pos);
 
          // static_assert-declaration
-         if(IsStaticAssert(ctx, scope))
-            return ParseStaticAssert(ctx, scope), AST::StatementCreate_Empty(pos);
+         if(ctx.isStaticAssert(scope))
+            return ctx.parseStaticAssert(scope), AST::StatementCreate_Empty(pos);
 
          std::vector<AST::Statement::CRef> inits;
 
          // declaration-specifiers
-         ParseDeclSpec(ctx, scope, attrBase);
+         ctx.parseDeclSpec(scope, attrBase);
 
          // init-declarator-list:
          //    init-declarator
@@ -419,7 +418,7 @@ namespace GDCC
 
             // declarator
             auto attr = attrBase;
-            ParseDeclarator(ctx, scope, attr);
+            ctx.parseDeclarator(scope, attr);
 
             // Special handling for typedef.
             if(attr.isTypedef)
@@ -467,31 +466,31 @@ namespace GDCC
    namespace CC
    {
       //
-      // GetDecl
+      // Parser::getDecl
       //
-      AST::Statement::CRef GetDecl(ParserCtx const &ctx, Scope_Global &scope)
+      AST::Statement::CRef Parser::getDecl(Scope_Global &scope)
       {
-         return GetDeclBase(ctx, scope);
+         return GetDeclBase(*this, scope);
       }
 
       //
-      // GetDecl
+      // Parser::getDecl
       //
-      AST::Statement::CRef GetDecl(ParserCtx const &ctx, Scope_Local &scope)
+      AST::Statement::CRef Parser::getDecl(Scope_Local &scope)
       {
-         return GetDeclBase(ctx, scope);
+         return GetDeclBase(*this, scope);
       }
 
       //
-      // IsDecl
+      // Parser::isDecl
       //
-      bool IsDecl(ParserCtx const &ctx, Scope &scope)
+      bool Parser::isDecl(Scope &scope)
       {
          return
-            IsAddrDecl(ctx, scope) ||
-            IsAttrSpec(ctx, scope) ||
-            IsStaticAssert(ctx, scope) ||
-            IsDeclSpec(ctx, scope);
+            isAddrDecl(scope) ||
+            isAttrSpec(scope) ||
+            isStaticAssert(scope) ||
+            isDeclSpec(scope);
       }
    }
 }

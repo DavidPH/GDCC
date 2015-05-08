@@ -101,12 +101,12 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
    GDCC::CPP::PragmaParser pragp{pragd};
    GDCC::Core::StringBuf   sbuf {buf->data(), buf->size()};
    GDCC::CPP::TStream      tstr {sbuf, macr, pragd, pragp, file, path};
-   GDCC::CC::ParserCtx     ctx  {tstr, pragd, prog};
+   GDCC::CC::Parser        ctx  {tstr, pragd, prog};
    GDCC::CC::Scope_Global  scope{MakeGlobalLabel(buf->getHash())};
 
    // Read declarations.
    while(ctx.in.peek().tok != GDCC::Core::TOK_EOF)
-      GDCC::CC::GetDecl(ctx, scope);
+      ctx.getDecl(scope);
 
    // Add ACS libraries.
    for(auto const &lib : pragd.stateLibrary)

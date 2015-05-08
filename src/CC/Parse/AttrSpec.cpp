@@ -79,8 +79,7 @@ namespace GDCC
       //    <address>
       //    <__address>
       //
-      static void ParseAttr_address(ParserCtx const &ctx, Scope &scope,
-         AST::Attribute &attr)
+      static void ParseAttr_address(Parser &ctx, Scope &scope, AST::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
@@ -92,7 +91,7 @@ namespace GDCC
 
          // constant-expression
          else
-            attr.addrI = GetExp_Cond(ctx, scope)->getIRExp();
+            attr.addrI = ctx.getExp_Cond(scope)->getIRExp();
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
@@ -109,8 +108,7 @@ namespace GDCC
       //    <address_Lit>
       //    <__address_Lit>
       //
-      static void ParseAttr_address_Lit(ParserCtx const &ctx, Scope &scope,
-         AST::Attribute &attr)
+      static void ParseAttr_address_Lit(Parser &ctx, Scope &scope, AST::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
@@ -120,7 +118,7 @@ namespace GDCC
          if(ctx.in.peek(Core::TOK_ParenC))
             attr.addrL = nullptr;
          else
-            attr.addrL = GetExp_Cond(ctx, scope)->getIRExp();
+            attr.addrL = ctx.getExp_Cond(scope)->getIRExp();
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
@@ -137,15 +135,14 @@ namespace GDCC
       //    <alloc_Loc>
       //    <__alloc_Loc>
       //
-      static void ParseAttr_alloc_Loc(ParserCtx const &ctx, Scope &scope,
-         AST::Attribute &attr)
+      static void ParseAttr_alloc_Loc(Parser &ctx, Scope &scope, AST::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
             throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // constant-expression
-         attr.allocLoc = GetExp_Cond(ctx, scope)->getIRExp();
+         attr.allocLoc = ctx.getExp_Cond(scope)->getIRExp();
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
@@ -162,8 +159,7 @@ namespace GDCC
       //    <call>
       //    <__call>
       //
-      static void ParseAttr_call(ParserCtx const &ctx, Scope &,
-         AST::Attribute &attr)
+      static void ParseAttr_call(Parser &ctx, Scope &, AST::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
@@ -199,8 +195,7 @@ namespace GDCC
       //    <deprecated>
       //    <__deprecated>
       //
-      static void ParseAttr_deprecated(ParserCtx const &ctx, Scope &,
-         AST::Attribute &attr)
+      static void ParseAttr_deprecated(Parser &ctx, Scope &, AST::Attribute &attr)
       {
          // ( string-literal )
          if(ctx.in.drop(Core::TOK_ParenO))
@@ -228,8 +223,7 @@ namespace GDCC
       // attribute-extern-name:
       //    <extern>
       //
-      static void ParseAttr_extern(ParserCtx const &ctx, Scope &,
-         AST::Attribute &attr)
+      static void ParseAttr_extern(Parser &ctx, Scope &, AST::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
@@ -267,8 +261,7 @@ namespace GDCC
       //    <no_init>
       //    <__no_init>
       //
-      static void ParseAttr_no_init(ParserCtx const &, Scope &,
-         AST::Attribute &attr)
+      static void ParseAttr_no_init(Parser &, Scope &, AST::Attribute &attr)
       {
          attr.objNoInit = true;
       }
@@ -283,15 +276,14 @@ namespace GDCC
       //    <optional_args>
       //    <__optional_args>
       //
-      static void ParseAttr_optional_args(ParserCtx const &ctx, Scope &scope,
-         AST::Attribute &attr)
+      static void ParseAttr_optional_args(Parser &ctx, Scope &scope, AST::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
             throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // constant-expression
-         attr.paramOpt = ExpToFastU(GetExp_Cond(ctx, scope));
+         attr.paramOpt = ExpToFastU(ctx.getExp_Cond(scope));
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
@@ -308,8 +300,7 @@ namespace GDCC
       //    <script>
       //    <__script>
       //
-      static void ParseAttr_script(ParserCtx const &ctx, Scope &,
-         AST::Attribute &attr)
+      static void ParseAttr_script(Parser &ctx, Scope &, AST::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
@@ -361,153 +352,143 @@ namespace GDCC
       // absolutely must not ever alter the interpretation of strictly
       // conforming programs.
       //
-      bool IsAttrSpec(ParserCtx const &ctx, Scope &)
+      bool Parser::isAttrSpec(Scope &)
       {
          // [ [
-         if(ctx.in.drop(Core::TOK_BrackO))
+         if(in.drop(Core::TOK_BrackO))
          {
-            bool res = ctx.in.peek().tok == Core::TOK_BrackO;
-            ctx.in.unget();
+            bool res = in.peek().tok == Core::TOK_BrackO;
+            in.unget();
             return res;
          }
 
          // <__attribute__> ( (
-         if(ctx.in.drop(Core::TOK_Identi, Core::STR___attribute__))
+         if(in.drop(Core::TOK_Identi, Core::STR___attribute__))
          {
-            if(ctx.in.drop(Core::TOK_ParenO))
+            if(in.drop(Core::TOK_ParenO))
             {
-               bool res = ctx.in.peek().tok == Core::TOK_ParenO;
-               ctx.in.unget();
-               ctx.in.unget();
+               bool res = in.peek().tok == Core::TOK_ParenO;
+               in.unget();
+               in.unget();
                return res;
             }
 
-            ctx.in.unget();
+            in.unget();
          }
 
          return false;
       }
 
       //
-      // ParseAttr
+      // Parser::parseAttr
       //
-      void ParseAttr(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
+      void Parser::parseAttr(Scope &scope, AST::Attribute &attr)
       {
-         auto name = ctx.in.peek();
+         auto name = in.peek();
 
          if(name.tok != Core::TOK_Identi && name.tok != Core::TOK_KeyWrd)
             return;
 
-         ctx.in.get();
+         in.get();
          switch(name.str)
          {
          case Core::STR_address: case Core::STR___address:
-            ParseAttr_address(ctx, scope, attr); break;
+            ParseAttr_address(*this, scope, attr); break;
 
          case Core::STR_address_Lit: case Core::STR___address_Lit:
-            ParseAttr_address_Lit(ctx, scope, attr); break;
+            ParseAttr_address_Lit(*this, scope, attr); break;
 
          case Core::STR_alloc_Loc: case Core::STR___alloc_Loc:
-            ParseAttr_alloc_Loc(ctx, scope, attr); break;
+            ParseAttr_alloc_Loc(*this, scope, attr); break;
 
          case Core::STR_call: case Core::STR___call:
-            ParseAttr_call(ctx, scope, attr); break;
+            ParseAttr_call(*this, scope, attr); break;
 
          case Core::STR_deprecated: case Core::STR___deprecated:
-            ParseAttr_deprecated(ctx, scope, attr); break;
+            ParseAttr_deprecated(*this, scope, attr); break;
 
          case Core::STR_extern:
-            ParseAttr_extern(ctx, scope, attr); break;
+            ParseAttr_extern(*this, scope, attr); break;
 
          case Core::STR_no_init: case Core::STR___no_init:
-            ParseAttr_no_init(ctx, scope, attr); break;
+            ParseAttr_no_init(*this, scope, attr); break;
 
          case Core::STR_optional_args: case Core::STR___optional_args:
-            ParseAttr_optional_args(ctx, scope, attr); break;
+            ParseAttr_optional_args(*this, scope, attr); break;
 
          case Core::STR_script: case Core::STR___script:
-            ParseAttr_script(ctx, scope, attr); break;
+            ParseAttr_script(*this, scope, attr); break;
 
          default:
-            // Skip unknown attribute.
-            if(ctx.in.drop(Core::TOK_ParenO))
-            {
-               for(unsigned depth = 1; depth;)
-               {
-                  auto const &tok = ctx.in.get();
-
-                       if(tok.tok == Core::TOK_ParenO) ++depth;
-                  else if(tok.tok == Core::TOK_ParenC) --depth;
-                  else if(tok.tok == Core::TOK_EOF)
-                     throw Core::ExceptStr(tok.pos, "unexpected end of file");
-               }
-            }
+            // Skip unknown attribute's arguments, if any.
+            if(in.peek(Core::TOK_ParenO))
+               skipBalancedToken();
             break;
          }
       }
 
       //
-      // ParseAttrList
+      // Parser::parseAttrList
       //
-      void ParseAttrList(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
+      void Parser::parseAttrList(Scope &scope, AST::Attribute &attr)
       {
          // attribute-list:
          //    attribute
          //    attribute-list , attribute
-         do ParseAttr(ctx, scope, attr);
-         while(ctx.in.drop(Core::TOK_Comma));
+         do parseAttr(scope, attr);
+         while(in.drop(Core::TOK_Comma));
       }
 
       //
-      // ParseAttrSpec
+      // Parser::parseAttrSpec
       //
-      void ParseAttrSpec(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
+      void Parser::parseAttrSpec(Scope &scope, AST::Attribute &attr)
       {
          // attribute-specifier:
          //    [ [ attribute-list ] ]
          //    <__attribute__> ( ( attribute-list ) )
 
          // [ [ attribute-list ] ]
-         if(ctx.in.drop(Core::TOK_BrackO))
+         if(in.drop(Core::TOK_BrackO))
          {
             // [ [
-            if(!ctx.in.drop(Core::TOK_BrackO))
-               throw Core::ParseExceptExpect(ctx.in.peek(), "[", true);
+            if(!in.drop(Core::TOK_BrackO))
+               throw Core::ParseExceptExpect(in.peek(), "[", true);
 
             // attribute-list
-            ParseAttrList(ctx, scope, attr);
+            parseAttrList(scope, attr);
 
             // ] ]
-            if(!ctx.in.drop(Core::TOK_BrackC) || !ctx.in.drop(Core::TOK_BrackC))
-               throw Core::ParseExceptExpect(ctx.in.peek(), "]", true);
+            if(!in.drop(Core::TOK_BrackC) || !in.drop(Core::TOK_BrackC))
+               throw Core::ParseExceptExpect(in.peek(), "]", true);
          }
 
          // <__attribute__> ( ( attribute-list ) )
-         else if(ctx.in.drop(Core::TOK_Identi, Core::STR___attribute__))
+         else if(in.drop(Core::TOK_Identi, Core::STR___attribute__))
          {
             // ( (
-            if(!ctx.in.drop(Core::TOK_ParenO) || !ctx.in.drop(Core::TOK_ParenO))
-               throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+            if(!in.drop(Core::TOK_ParenO) || !in.drop(Core::TOK_ParenO))
+               throw Core::ParseExceptExpect(in.peek(), "(", true);
 
             // attribute-list
-            ParseAttrList(ctx, scope, attr);
+            parseAttrList(scope, attr);
 
             // ) )
-            if(!ctx.in.drop(Core::TOK_ParenC) || !ctx.in.drop(Core::TOK_ParenC))
-               throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+            if(!in.drop(Core::TOK_ParenC) || !in.drop(Core::TOK_ParenC))
+               throw Core::ParseExceptExpect(in.peek(), ")", true);
          }
 
          else
-            throw Core::ParseExceptExpect(ctx.in.peek(), "attribute-specifier", false);
+            throw Core::ParseExceptExpect(in.peek(), "attribute-specifier", false);
       }
 
       //
-      // ParseAttrSpecList
+      // Parser::parseAttrSpecList
       //
-      void ParseAttrSpecList(ParserCtx const &ctx, Scope &scope, AST::Attribute &attr)
+      void Parser::parseAttrSpecList(Scope &scope, AST::Attribute &attr)
       {
-         do ParseAttrSpec(ctx, scope, attr);
-         while(IsAttrSpec(ctx, scope));
+         do parseAttrSpec(scope, attr);
+         while(isAttrSpec(scope));
       }
    }
 }

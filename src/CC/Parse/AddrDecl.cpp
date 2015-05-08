@@ -48,7 +48,7 @@ namespace GDCC
       // ParseAddrDeclBase
       //
       template<typename ScopeT>
-      static void ParseAddrDeclBase(ParserCtx const &ctx, ScopeT &scope,
+      static void ParseAddrDeclBase(Parser &ctx, ScopeT &scope,
          AST::Attribute &attr)
       {
          attr.linka = IR::Linkage::ExtC;
@@ -85,8 +85,8 @@ namespace GDCC
          attr.setName(ctx.in.get());
 
          // attribute-specifier-list(opt)
-         if(IsAttrSpec(ctx, scope))
-            ParseAttrSpecList(ctx, scope, attr);
+         if(ctx.isAttrSpec(scope))
+            ctx.parseAttrSpecList(scope, attr);
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
@@ -122,29 +122,27 @@ namespace GDCC
    namespace CC
    {
       //
-      // IsAddrDecl
+      // Parser::isAddrDecl
       //
-      bool IsAddrDecl(ParserCtx const &ctx, Scope &)
+      bool Parser::isAddrDecl(Scope &)
       {
-         return ctx.in.peek(Core::TOK_Identi, Core::STR___addrdef);
+         return in.peek(Core::TOK_Identi, Core::STR___addrdef);
       }
 
       //
-      // ParseAddrDecl
+      // Parser::parseAddrDecl
       //
-      void ParseAddrDecl(ParserCtx const &ctx, Scope_Global &scope,
-         AST::Attribute &attr)
+      void Parser::parseAddrDecl(Scope_Global &scope, AST::Attribute &attr)
       {
-         ParseAddrDeclBase(ctx, scope, attr);
+         ParseAddrDeclBase(*this, scope, attr);
       }
 
       //
-      // ParseAddrDecl
+      // Parser::parseAddrDecl
       //
-      void ParseAddrDecl(ParserCtx const &ctx, Scope_Local &scope,
-         AST::Attribute &attr)
+      void Parser::parseAddrDecl(Scope_Local &scope, AST::Attribute &attr)
       {
-         ParseAddrDeclBase(ctx, scope, attr);
+         ParseAddrDeclBase(*this, scope, attr);
       }
    }
 }

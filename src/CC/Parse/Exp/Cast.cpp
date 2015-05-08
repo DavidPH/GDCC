@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,10 +39,10 @@ namespace GDCC
       // GetExp_CLit (global)
       //
       static AST::Exp::CRef GetExp_CLit(
-         ParserCtx const &ctx,
-         Scope_Global    &scope,
-         AST::Attribute  &attr,
-         AST::Exp  const *init)
+         Parser         &ctx,
+         Scope_Global   &scope,
+         AST::Attribute &attr,
+         AST::Exp const *init)
       {
          auto obj = scope.getObject(attr);
 
@@ -56,10 +56,10 @@ namespace GDCC
       // GetExp_CLit (local)
       //
       static AST::Exp::CRef GetExp_CLit(
-         ParserCtx const &ctx,
-         Scope_Local     &scope,
-         AST::Attribute  &attr,
-         AST::Exp  const *init)
+         Parser         &ctx,
+         Scope_Local    &scope,
+         AST::Attribute &attr,
+         AST::Exp const *init)
       {
          auto pos = attr.namePos;
          auto obj = scope.getObject(attr);
@@ -86,85 +86,84 @@ namespace GDCC
    namespace CC
    {
       //
-      // GetExp_CLit
+      // Parser::getExp_CLit
       //
-      AST::Exp::CRef GetExp_CLit(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_CLit(Scope &scope)
       {
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '('");
+         if(!in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(in.peek(), "(", true);
 
-         auto type = GetType(ctx, scope);
+         auto type = getType(scope);
 
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+         if(!in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(in.peek(), ")", true);
 
-         return GetExp_CLit(ctx, scope, type);
+         return getExp_CLit(scope, type);
       }
 
       //
-      // GetExp_CLit
+      // Parser::getExp_CLit
       //
-      AST::Exp::CRef GetExp_CLit(ParserCtx const &ctx, Scope &scope,
-         AST::Type const *type)
+      AST::Exp::CRef Parser::getExp_CLit(Scope &scope, AST::Type const *type)
       {
-         if(ctx.in.peek().tok != Core::TOK_BraceO)
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected '{'");
+         if(in.peek().tok != Core::TOK_BraceO)
+            throw Core::ParseExceptExpect(in.peek(), "{", true);
 
          AST::Attribute attr;
 
-         attr.namePos = ctx.in.peek().pos;
+         attr.namePos = in.peek().pos;
 
-         auto init = GetExp_Init(ctx, scope, type);
+         auto init = getExp_Init(scope, type);
          attr.type = init->getType();
 
          if(auto s = dynamic_cast<Scope_Global *>(&scope))
-            return GetExp_CLit(ctx, *s, attr, init);
+            return GetExp_CLit(*this, *s, attr, init);
 
          if(auto s = dynamic_cast<Scope_Local *>(&scope))
-            return GetExp_CLit(ctx, *s, attr, init);
+            return GetExp_CLit(*this, *s, attr, init);
 
          throw Core::ExceptStr(attr.namePos, "invalid scope for compound literal");
       }
 
       //
-      // GetExp_Cast
+      // Parser::getExp_Cast
       //
-      AST::Exp::CRef GetExp_Cast(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_Cast(Scope &scope)
       {
-         if(IsExp_Cast(ctx, scope))
+         if(isExp_Cast(scope))
          {
             // (
-            auto pos = ctx.in.get().pos;
+            auto pos = in.get().pos;
 
             // type-name
-            auto type = GetType(ctx, scope);
+            auto type = getType(scope);
 
             // )
-            if(!ctx.in.drop(Core::TOK_ParenC))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected ')'");
+            if(!in.drop(Core::TOK_ParenC))
+               throw Core::ParseExceptExpect(in.peek(), ")", true);
 
             // Compound literal.
-            if(ctx.in.peek().tok == Core::TOK_BraceO)
+            if(in.peek(Core::TOK_BraceO))
             {
                // Parse as though this is actually a postfix-expression.
-               return GetExp_Post(ctx, scope, GetExp_CLit(ctx, scope, type));
+               return getExp_Post(scope, getExp_CLit(scope, type));
             }
 
-            return ExpCreate_Cst(type, GetExp_Cast(ctx, scope), pos);
+            return ExpCreate_Cst(type, getExp_Cast(scope), pos);
          }
 
-         return GetExp_Unar(ctx, scope);
+         return getExp_Unar(scope);
       }
 
       //
-      // IsExp_Cast
+      // Parser::isExp_Cast
       //
-      bool IsExp_Cast(ParserCtx const &ctx, Scope &scope)
+      bool Parser::isExp_Cast(Scope &scope)
       {
-         if(ctx.in.drop(Core::TOK_ParenO))
+         if(in.drop(Core::TOK_ParenO))
          {
-            bool res = IsType(ctx, scope);
-            ctx.in.unget();
+            bool res = isType(scope);
+            in.unget();
             return res;
          }
 

@@ -26,42 +26,42 @@ namespace GDCC
    namespace ACC
    {
       //
-      // GetDecl
+      // Parser::getDecl
       //
-      AST::Statement::CRef GetDecl(ParserCtx const &ctx, Scope_Global &scope)
+      AST::Statement::CRef Parser::getDecl(Scope_Global &scope)
       {
-         if(ctx.in.peek(Core::TOK_KeyWrd, Core::STR_function))
-            return GetDecl_Function(ctx, scope);
+         if(in.peek(Core::TOK_KeyWrd, Core::STR_function))
+            return getDecl_Function(scope);
 
-         if(ctx.in.peek(Core::TOK_Identi, Core::STR_print))
-            return GetDecl_Print(ctx, scope);
+         if(in.peek(Core::TOK_Identi, Core::STR_print))
+            return getDecl_Print(scope);
 
-         if(ctx.in.peek(Core::TOK_KeyWrd, Core::STR_script))
-            return GetDecl_Script(ctx, scope);
+         if(in.peek(Core::TOK_KeyWrd, Core::STR_script))
+            return getDecl_Script(scope);
 
-         if(ctx.in.peek(Core::TOK_KeyWrd, Core::STR_special))
-            return GetDecl_Special(ctx, scope);
+         if(in.peek(Core::TOK_KeyWrd, Core::STR_special))
+            return getDecl_Special(scope);
 
-         if(ctx.in.peek(Core::TOK_KeyWrd, Core::STR_struct))
-            return GetDecl_Struct(ctx, scope);
+         if(in.peek(Core::TOK_KeyWrd, Core::STR_struct))
+            return getDecl_Struct(scope);
 
-         return GetDecl_Object(ctx, scope);
+         return getDecl_Object(scope);
       }
 
       //
-      // GetDecl
+      // Parser::getDecl
       //
-      AST::Statement::CRef GetDecl(ParserCtx const &ctx, CC::Scope_Local &scope)
+      AST::Statement::CRef Parser::getDecl(CC::Scope_Local &scope)
       {
-         return GetDecl_Object(ctx, scope);
+         return getDecl_Object(scope);
       }
 
       //
-      // IsDecl
+      // Parser::isDecl
       //
-      bool IsDecl(ParserCtx const &ctx, CC::Scope &scope)
+      bool Parser::isDecl(CC::Scope &scope)
       {
-         return IsDeclSpec(ctx, scope);
+         return isDeclSpec(scope);
       }
    }
 }

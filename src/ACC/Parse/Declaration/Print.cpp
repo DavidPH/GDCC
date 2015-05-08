@@ -36,8 +36,7 @@ namespace GDCC
       //
       // ParseDecl_PrintProp
       //
-      static void ParseDecl_PrintProp(ParserCtx const &ctx, CC::Scope &scope,
-         PrintDecl &decl)
+      static void ParseDecl_PrintProp(Parser &ctx, CC::Scope &scope, PrintDecl &decl)
       {
          Core::String nameProp, nameSub;
 
@@ -65,7 +64,7 @@ namespace GDCC
          if(!ctx.in.drop(Core::TOK_Colon))
             throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
 
-         auto exp = CC::ExpPromo_LValue(GetExp_Assi(ctx, scope));
+         auto exp = CC::ExpPromo_LValue(ctx.getExp_Assi(scope));
 
          auto type = exp->getType();
 
@@ -142,35 +141,34 @@ namespace GDCC
    namespace ACC
    {
       //
-      // GetDecl_Print
+      // Parser::getDecl_Print
       //
-      AST::Statement::CRef GetDecl_Print(ParserCtx const &ctx,
-         Scope_Global &scope)
+      AST::Statement::CRef Parser::getDecl_Print(Scope_Global &scope)
       {
-         if(!ctx.in.peek(Core::TOK_Identi, Core::STR_print))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "print-declaration", false);
+         if(!in.peek(Core::TOK_Identi, Core::STR_print))
+            throw Core::ParseExceptExpect(in.peek(), "print-declaration", false);
 
-         auto pos = ctx.in.get().pos;
+         auto pos = in.get().pos;
 
-         if(!ctx.in.peek(Core::TOK_Identi))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
+         if(!in.peek(Core::TOK_Identi))
+            throw Core::ParseExceptExpect(in.peek(), "identifier", false);
 
-         auto name = ctx.in.get().str;
+         auto name = in.get().str;
 
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+         if(!in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(in.peek(), "(", true);
 
          PrintDecl decl;
 
          do
-            ParseDecl_PrintProp(ctx, scope, decl);
-         while(ctx.in.drop(Core::TOK_Comma));
+            ParseDecl_PrintProp(*this, scope, decl);
+         while(in.drop(Core::TOK_Comma));
 
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+         if(!in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(in.peek(), ")", true);
 
-         if(!ctx.in.drop(Core::TOK_Semico))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
+         if(!in.drop(Core::TOK_Semico))
+            throw Core::ParseExceptExpect(in.peek(), ";", true);
 
          scope.addPrint(name, std::move(decl));
 

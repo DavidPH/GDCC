@@ -34,13 +34,8 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    Parse/Declarator.cpp
    Parse/DeclSpec.cpp
    Parse/Exp.cpp
-   Parse/Exp/Cast.cpp
-   Parse/Exp/Init.cpp
-   Parse/Exp/Post.cpp
    Parse/Exp/Prim.cpp
-   Parse/Exp/Unar.cpp
    Parse/Exp/Unar/print.cpp
-   Parse/SpecQual.cpp
    Parse/Statement.cpp
    Parse/TypeQual.cpp
    Parse/TypeSpec.cpp

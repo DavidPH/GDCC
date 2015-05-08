@@ -16,6 +16,7 @@
 
 #include "AST/Exp.hpp"
 
+#include "Core/Array.hpp"
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
@@ -25,13 +26,13 @@
 //
 
 #define DeclExpCreate(getter1, getter2) \
-   auto exp = getter1(ctx, scope); \
+   auto exp = getter1(scope); \
    \
    auto expCreate = [&](AST::Exp::CRef (*creator)(AST::Exp const *, \
       AST::Exp const *, Core::Origin)) \
    { \
-      auto pos = ctx.in.get().pos; \
-      return creator(exp, getter2(ctx, scope), pos); \
+      auto pos = in.get().pos; \
+      return creator(exp, getter2(scope), pos); \
    }
 
 
@@ -44,13 +45,13 @@ namespace GDCC
    namespace CC
    {
       //
-      // GetExp_Mult
+      // Parser::getExp_Mult
       //
-      AST::Exp::CRef GetExp_Mult(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_Mult(Scope &scope)
       {
-         DeclExpCreate(GetExp_Cast, GetExp_Cast);
+         DeclExpCreate(getExp_Cast, getExp_Cast);
 
-         for(;;) switch(ctx.in.peek().tok)
+         for(;;) switch(in.peek().tok)
          {
          case Core::TOK_Mul: exp = expCreate(ExpCreate_Mul); break;
          case Core::TOK_Div: exp = expCreate(ExpCreate_Div); break;
@@ -63,13 +64,13 @@ namespace GDCC
       }
 
       //
-      // GetExp_Addi
+      // Parser::getExp_Addi
       //
-      AST::Exp::CRef GetExp_Addi(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_Addi(Scope &scope)
       {
-         DeclExpCreate(GetExp_Mult, GetExp_Mult);
+         DeclExpCreate(getExp_Mult, getExp_Mult);
 
-         for(;;) switch(ctx.in.peek().tok)
+         for(;;) switch(in.peek().tok)
          {
          case Core::TOK_Add: exp = expCreate(ExpCreate_Add); break;
          case Core::TOK_Sub: exp = expCreate(ExpCreate_Sub); break;
@@ -77,17 +78,16 @@ namespace GDCC
          default:
             return exp;
          }
-
       }
 
       //
-      // GetExp_Shft
+      // Parser::getExp_Shft
       //
-      AST::Exp::CRef GetExp_Shft(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_Shft(Scope &scope)
       {
-         DeclExpCreate(GetExp_Addi, GetExp_Addi);
+         DeclExpCreate(getExp_Addi, getExp_Addi);
 
-         for(;;) switch(ctx.in.peek().tok)
+         for(;;) switch(in.peek().tok)
          {
          case Core::TOK_ShL: exp = expCreate(ExpCreate_ShL); break;
          case Core::TOK_ShR: exp = expCreate(ExpCreate_ShR); break;
@@ -95,17 +95,16 @@ namespace GDCC
          default:
             return exp;
          }
-
       }
 
       //
-      // GetExp_Rela
+      // Parser::getExp_Rela
       //
-      AST::Exp::CRef GetExp_Rela(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_Rela(Scope &scope)
       {
-         DeclExpCreate(GetExp_Shft, GetExp_Shft);
+         DeclExpCreate(getExp_Shft, getExp_Shft);
 
-         for(;;) switch(ctx.in.peek().tok)
+         for(;;) switch(in.peek().tok)
          {
          case Core::TOK_CmpLT: exp = expCreate(ExpCreate_CmpLT); break;
          case Core::TOK_CmpGT: exp = expCreate(ExpCreate_CmpGT); break;
@@ -115,17 +114,16 @@ namespace GDCC
          default:
             return exp;
          }
-
       }
 
       //
-      // GetExp_Equa
+      // Parser::getExp_Equa
       //
-      AST::Exp::CRef GetExp_Equa(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_Equa(Scope &scope)
       {
-         DeclExpCreate(GetExp_Rela, GetExp_Rela);
+         DeclExpCreate(getExp_Rela, getExp_Rela);
 
-         for(;;) switch(ctx.in.peek().tok)
+         for(;;) switch(in.peek().tok)
          {
          case Core::TOK_CmpEQ: exp = expCreate(ExpCreate_CmpEQ); break;
          case Core::TOK_CmpNE: exp = expCreate(ExpCreate_CmpNE); break;
@@ -136,100 +134,100 @@ namespace GDCC
       }
 
       //
-      // GetExp_BAnd
+      // Parser::getExp_BAnd
       //
-      AST::Exp::CRef GetExp_BAnd(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_BAnd(Scope &scope)
       {
-         DeclExpCreate(GetExp_Equa, GetExp_Equa);
+         DeclExpCreate(getExp_Equa, getExp_Equa);
 
-         while(ctx.in.peek().tok == Core::TOK_And)
+         while(in.peek().tok == Core::TOK_And)
             exp = expCreate(ExpCreate_BitAnd);
 
          return exp;
       }
 
       //
-      // GetExp_BOrX
+      // Parser::getExp_BOrX
       //
-      AST::Exp::CRef GetExp_BOrX(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_BOrX(Scope &scope)
       {
-         DeclExpCreate(GetExp_BAnd, GetExp_BAnd);
+         DeclExpCreate(getExp_BAnd, getExp_BAnd);
 
-         while(ctx.in.peek().tok == Core::TOK_OrX)
+         while(in.peek().tok == Core::TOK_OrX)
             exp = expCreate(ExpCreate_BitOrX);
 
          return exp;
       }
 
       //
-      // GetExp_BOrI
+      // Parser::getExp_BOrI
       //
-      AST::Exp::CRef GetExp_BOrI(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_BOrI(Scope &scope)
       {
-         DeclExpCreate(GetExp_BOrX, GetExp_BOrX);
+         DeclExpCreate(getExp_BOrX, getExp_BOrX);
 
-         while(ctx.in.peek().tok == Core::TOK_OrI)
+         while(in.peek().tok == Core::TOK_OrI)
             exp = expCreate(ExpCreate_BitOrI);
 
          return exp;
       }
 
       //
-      // GetExp_LAnd
+      // Parser::getExp_LAnd
       //
-      AST::Exp::CRef GetExp_LAnd(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_LAnd(Scope &scope)
       {
-         DeclExpCreate(GetExp_BOrI, GetExp_BOrI);
+         DeclExpCreate(getExp_BOrI, getExp_BOrI);
 
-         while(ctx.in.peek().tok == Core::TOK_And2)
+         while(in.peek().tok == Core::TOK_And2)
             exp = expCreate(ExpCreate_LogAnd);
 
          return exp;
       }
 
       //
-      // GetExp_LOrI
+      // Parser::getExp_LOrI
       //
-      AST::Exp::CRef GetExp_LOrI(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_LOrI(Scope &scope)
       {
-         DeclExpCreate(GetExp_LAnd, GetExp_LAnd);
+         DeclExpCreate(getExp_LAnd, getExp_LAnd);
 
-         while(ctx.in.peek().tok == Core::TOK_OrI2)
+         while(in.peek().tok == Core::TOK_OrI2)
             exp = expCreate(ExpCreate_LogOrI);
 
          return exp;
       }
 
       //
-      // GetExp_Cond
+      // Parser::getExp_Cond
       //
-      AST::Exp::CRef GetExp_Cond(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_Cond(Scope &scope)
       {
-         auto exp = GetExp_LOrI(ctx, scope);
+         auto exp = getExp_LOrI(scope);
 
-         if(ctx.in.peek().tok == Core::TOK_Query)
+         if(in.peek().tok == Core::TOK_Query)
          {
-            auto pos = ctx.in.get().pos;
+            auto pos = in.get().pos;
 
-            auto expT = GetExp(ctx, scope);
+            auto expT = getExp(scope);
 
-            if(!ctx.in.drop(Core::TOK_Colon))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected ':'");
+            if(!in.drop(Core::TOK_Colon))
+               throw Core::ExceptStr(in.peek().pos, "expected ':'");
 
-            return ExpCreate_Cnd(exp, expT, GetExp_Cond(ctx, scope), pos);
+            return ExpCreate_Cnd(exp, expT, getExp_Cond(scope), pos);
          }
 
          return exp;
       }
 
       //
-      // GetExp_Assi
+      // Parser::getExp_Assi
       //
-      AST::Exp::CRef GetExp_Assi(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp_Assi(Scope &scope)
       {
-         DeclExpCreate(GetExp_Cond, GetExp_Assi);
+         DeclExpCreate(getExp_Cond, getExp_Assi);
 
-         switch(ctx.in.peek().tok)
+         switch(in.peek().tok)
          {
          case Core::TOK_Equal: return expCreate(ExpCreate_Assign);
          case Core::TOK_MulEq: return expCreate(ExpCreate_MulEq);
@@ -249,16 +247,30 @@ namespace GDCC
       }
 
       //
-      // GetExp
+      // Parser::getExp
       //
-      AST::Exp::CRef GetExp(ParserCtx const &ctx, Scope &scope)
+      AST::Exp::CRef Parser::getExp(Scope &scope)
       {
-         DeclExpCreate(GetExp_Assi, GetExp_Assi);
+         DeclExpCreate(getExp_Assi, getExp_Assi);
 
-         while(ctx.in.peek().tok == Core::TOK_Comma)
+         while(in.peek().tok == Core::TOK_Comma)
             exp = expCreate(ExpCreate_Comma);
 
          return exp;
+      }
+
+      //
+      // Parser::getExpList
+      //
+      Core::Array<AST::Exp::CRef> Parser::getExpList(CC::Scope &scope)
+      {
+         std::vector<AST::Exp::CRef> args;
+
+         do
+            args.emplace_back(getExp_Assi(scope));
+         while(in.drop(Core::TOK_Comma));
+
+         return {Core::Move, args.begin(), args.end()};
       }
    }
 }
