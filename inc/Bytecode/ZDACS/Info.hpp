@@ -163,6 +163,7 @@ namespace GDCC
             virtual void genStr();
 
             Core::String getCallName();
+            Core::String getCallName(IR::OpCode op);
 
             Core::FastU getInitGblArray();
             Core::FastU getInitGblIndex();
@@ -222,6 +223,7 @@ namespace GDCC
 
             virtual void preStmnt();
             void preStmnt_AddU_W(IR::Code code);
+            void preStmnt_Bclz_W(bool ones);
             void preStmntCall(Core::FastU retrn, Core::FastU param);
             void preStmntCall(Core::String name, Core::FastU retrn, Core::FastU param);
 

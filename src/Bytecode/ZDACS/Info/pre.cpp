@@ -78,10 +78,8 @@ namespace GDCC
                preStmnt_AddU_W(IR::Code::AdXU_W);
                break;
 
-            case IR::Code::Bclz_W:
-               if(stmnt->op.size)
-                  preStmntCall(1, stmnt->op.size);
-               break;
+            case IR::Code::Bclo_W: preStmnt_Bclz_W(true);  break;
+            case IR::Code::Bclz_W: preStmnt_Bclz_W(false); break;
 
             case IR::Code::CmpF_EQ_W:
             case IR::Code::CmpF_GE_W:
