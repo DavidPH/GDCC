@@ -171,7 +171,7 @@ Function "___GDCC__AddF_W1" \
    AndU_W    1, Stk(), LocReg(Lit(1)), Lit(0x7F800000)
    CmpU_EQ_W 1, Stk(), Stk(),          Lit(0x7F800000)
    AndU_W    1, Stk(), LocReg(Lit(1)), Lit(0x007FFFFF)
-   Casm      1, Lit(70) ; LogAnd
+   LAnd      1, Stk(), Stk(), Stk()
    Jcnd_Tru  1, Stk(), Lit(:"$lemin")
 
    ; r has min exponent. Therefore, r == 0 and the result is l.
@@ -358,7 +358,7 @@ Function "___GDCC__AddF_W2" \
    CmpU_EQ_W 1, Stk(), Stk(),          Lit(0x7FF00000)
    AndU_W    1, Stk(), LocReg(Lit(3)), Lit(0x000FFFFF)
    OrIU_W    1, Stk(), Stk(), LocReg(Lit(2))
-   Casm      1, Lit(70) ; LogAnd
+   LAnd      1, Stk(), Stk(), Stk()
    Jcnd_Tru  1, Stk(), Lit(:"$lemin")
 
    ; r has min exponent. Therefore, r == 0 and the result is l.

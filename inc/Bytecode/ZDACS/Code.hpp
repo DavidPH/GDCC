@@ -75,6 +75,8 @@ namespace GDCC
             Jcnd_Tru    =  53,
             Drop_Nul    =  54,
             Wait_Lit    =  56,
+            LAnd        =  70,
+            LOrI        =  71,
             AndU        =  72,
             OrIU        =  73,
             OrXU        =  74,

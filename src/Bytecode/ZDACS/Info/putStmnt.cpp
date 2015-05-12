@@ -116,6 +116,20 @@ namespace GDCC
 
             case IR::Code::Jump: putStmnt_Jump(); break;
 
+            case IR::Code::LAnd:
+               if(stmnt->op.size == 1)
+                  putCode(Code::LAnd);
+               else
+                  putStmntCall(stmnt->op.size);
+               break;
+
+            case IR::Code::LOrI:
+               if(stmnt->op.size == 1)
+                  putCode(Code::LOrI);
+               else
+                  putStmntCall(stmnt->op.size);
+               break;
+
             case IR::Code::ModI_W: putStmnt_ModI_W(); break;
 
             case IR::Code::Move_W: putStmnt_Move_W(); break;

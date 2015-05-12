@@ -128,6 +128,12 @@ namespace GDCC
                   preStmntCall(stmnt->op.size, stmnt->op.size * 2);
                break;
 
+            case IR::Code::LAnd:
+            case IR::Code::LOrI:
+               if(stmnt->op.size > 1)
+                  preStmntCall(1, stmnt->op.size * 2);
+               break;
+
             case IR::Code::Plsa: preStmntCall("___GDCC__Plsa", 1, 1); break;
             case IR::Code::Plsf: preStmntCall("___GDCC__Plsf", 0, 1); break;
 

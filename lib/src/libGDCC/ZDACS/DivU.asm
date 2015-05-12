@@ -249,7 +249,7 @@ Function "___GDCC__DiXU_W2" \
 :"$loop2cond"
    Move_W    1, Stk(), LocReg(Lit(9))
    OrIU_W    1, Stk(), LocReg(Lit(6)), LocReg(Lit(7))
-   Casm      1, Lit(70) ; LAnd
+   LAnd      1, Stk(), Stk(), Stk()
    Jcnd_Tru  1, Stk(), Lit(:"$loop2body")
 
    Move_W    1, LocReg(Lit(8)), Lit(0x80000000)
@@ -278,7 +278,7 @@ Function "___GDCC__DiXU_W2" \
 :"$loop1cond"
    Move_W    1, Stk(), LocReg(Lit(8))
    OrIU_W    1, Stk(), LocReg(Lit(6)), LocReg(Lit(7))
-   Casm      1, Lit(70) ; LAnd
+   LAnd      1, Stk(), Stk(), Stk()
    Jcnd_Tru  1, Stk(), Lit(:"$loop1body")
 
 
@@ -448,7 +448,7 @@ Function "___GDCC__DiXU_W3" \
    Move_W    1, Stk(), LocReg(Lit(14))
    OrIU_W    1, Stk(), LocReg(Lit(9)), LocReg(Lit(10))
    OrIU_W    1, Stk(), Stk(), LocReg(Lit(11))
-   Casm      1, Lit(70) ; LAnd
+   LAnd      1, Stk(), Stk(), Stk()
    Jcnd_Tru  1, Stk(), Lit(:"$loop3body")
 
    Move_W    1, LocReg(Lit(13)), Lit(0x80000000)
@@ -485,7 +485,7 @@ Function "___GDCC__DiXU_W3" \
    Move_W    1, Stk(), LocReg(Lit(13))
    OrIU_W    1, Stk(), LocReg(Lit(9)), LocReg(Lit(10))
    OrIU_W    1, Stk(), Stk(), LocReg(Lit(11))
-   Casm      1, Lit(70) ; LAnd
+   LAnd      1, Stk(), Stk(), Stk()
    Jcnd_Tru  1, Stk(), Lit(:"$loop2body")
 
    Move_W    1, LocReg(Lit(12)), Lit(0x80000000)
@@ -515,7 +515,7 @@ Function "___GDCC__DiXU_W3" \
    Move_W    1, Stk(), LocReg(Lit(12))
    OrIU_W    1, Stk(), LocReg(Lit(9)), LocReg(Lit(10))
    OrIU_W    1, Stk(), Stk(), LocReg(Lit(11))
-   Casm      1, Lit(70) ; LAnd
+   LAnd      1, Stk(), Stk(), Stk()
    Jcnd_Tru  1, Stk(), Lit(:"$loop1body")
 
 

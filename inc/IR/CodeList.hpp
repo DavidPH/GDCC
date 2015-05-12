@@ -103,6 +103,12 @@ GDCC_IR_CodeList(Jcnd_Tru)
 // Jump src
 GDCC_IR_CodeList(Jump)
 
+// LAnd dst lop rop
+GDCC_IR_CodeList(LAnd)
+
+// LOrI dst lop rop
+GDCC_IR_CodeList(LOrI)
+
 // Mod* dst lop rop
 GDCC_IR_CodeList(ModI_W)
 GDCC_IR_CodeList(ModU_W)

@@ -127,6 +127,11 @@ namespace GDCC
 
             case IR::Code::Jump: trStmnt_Jump(); break;
 
+            case IR::Code::LAnd:
+            case IR::Code::LOrI:
+               trStmntStk3(1, stmnt->op.size, false);
+               break;
+
             case IR::Code::Move_W: trStmnt_Move_W(); break;
 
             case IR::Code::MuXU_W:

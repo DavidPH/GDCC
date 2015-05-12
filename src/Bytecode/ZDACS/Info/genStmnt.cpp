@@ -138,6 +138,14 @@ namespace GDCC
 
             case IR::Code::Jump: genStmnt_Jump(); break;
 
+            case IR::Code::LAnd:
+            case IR::Code::LOrI:
+               if(stmnt->op.size == 1)
+                  numChunkCODE += 4;
+               else
+                  genStmntCall(stmnt->op.size);
+               break;
+
             case IR::Code::Move_W: genStmnt_Move_W(); break;
 
             case IR::Code::MuXU_W: genStmntCall(stmnt->op.size * 2); break;
