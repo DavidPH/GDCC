@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -216,7 +216,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -722,43 +722,14 @@ namespace GDCC
 
          auto codeWords = std::max(dstT->getSizeWords(), srcT->getSizeWords());
 
-         auto expMid = dstT->getBias() - 1 - dstT->getSizeBitsF()
+         auto expMid = dstT->getBias() - dstT->getSizeBitsS() - dstT->getSizeBitsF()
             + srcT->getSizeBitsI() + srcT->getSizeBitsS() - srcT->getSizeBitsF();
+
+         auto headBits = dstT->getSizeBitsS() + dstT->getSizeBitsF();
 
          IR::Glyph labelEnd  = {ctx.prog, ctx.fn->genLabel()};
          IR::Glyph labelShL  = {ctx.prog, ctx.fn->genLabel()};
          IR::Glyph labelShLB = {ctx.prog, ctx.fn->genLabel()};
-         IR::Glyph labelShR  = {ctx.prog, ctx.fn->genLabel()};
-         IR::Glyph labelShRB = {ctx.prog, ctx.fn->genLabel()};
-
-         // First thing, check if source is 0.
-         {
-            IR::Glyph labelTru = {ctx.prog, ctx.fn->genLabel()};
-
-            Temporary tmp{ctx, exp->pos, srcT->getSizeWords()};
-            ctx.block.addStatementArgs({IR::Code::Move_W, tmp.size()},
-               tmp.getArg(), IR::Arg_Stk());
-
-            // Test for 0.
-            ctx.block.addStatementArgs({IR::Code::Move_W, tmp.size()},
-               IR::Arg_Stk(), tmp.getArg());
-
-            for(auto i = tmp.size(); --i;)
-               ctx.block.addStatementArgs({IR::Code::OrIU_W, 1},
-                  IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
-
-            ctx.block.addStatementArgs({IR::Code::Jcnd_Tru, 1},
-               IR::Arg_Stk(), labelTru);
-
-            // Push 0 and end.
-            for(auto i = dstT->getSizeWords(); i--;)
-               ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), 0);
-            ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelEnd);
-
-            ctx.block.addLabel(labelTru);
-            ctx.block.addStatementArgs({IR::Code::Move_W, tmp.size()},
-               IR::Arg_Stk(), tmp.getArg());
-         }
 
          // Temporary to store the sign and exponent of the result. The
          // mantissa will remain on the stack throughout.
@@ -769,6 +740,7 @@ namespace GDCC
             expMid << (dstT->getSizeBitsI() % Platform::GetWordBits()));
 
          // Sign handling, if source type is signed.
+         // Must do this before counting leading zeros.
          if(srcT->getSizeBitsS())
          {
             IR::Glyph labelPos = {ctx.prog, ctx.fn->genLabel()};
@@ -791,46 +763,80 @@ namespace GDCC
             ctx.block.addLabel(labelPos);
          }
 
+         // Leading zero count of the input.
+         Temporary clz = {ctx, exp->pos, 1};
+
+         // Check if source is 0.
+         {
+            IR::Glyph labelTru = {ctx.prog, ctx.fn->genLabel()};
+
+            Temporary tmp{ctx, exp->pos, srcT->getSizeWords()};
+            ctx.block.addStatementArgs({IR::Code::Move_W, tmp.size()},
+               tmp.getArg(), IR::Arg_Stk());
+
+            // Test for 0.
+            ctx.block.addStatementArgs({IR::Code::Jcnd_Tru, tmp.size()},
+               tmp.getArg(), labelTru);
+
+            // Push 0 and end.
+            ctx.block.addStatementArgs({IR::Code::Move_W, dstT->getSizeWords()},
+               IR::Arg_Stk(), 0);
+            ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelEnd);
+
+            // Otherwise, put source back on stack and continue conversion.
+            // Also use the opportunity to count leading zeros.
+            ctx.block.addLabel(labelTru);
+            ctx.block.addStatementArgs({IR::Code::Bclz_W, tmp.size()},
+               clz.getArg(), tmp.getArg());
+            ctx.block.addStatementArgs({IR::Code::Move_W, tmp.size()},
+               IR::Arg_Stk(), tmp.getArg());
+         }
+
          // Expand word count.
          if(diffWords > 0)
             FillLow(exp, ctx, srcT, diffWords);
 
-         // Shift right until high bits empty.
+         // If too few leading zeroes, shift right and increase exponent.
 
-         ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelShR);
+         ctx.block.addStatementArgs({IR::Code::CmpI_LT_W, 1},
+            IR::Arg_Stk(), clz.getArg(), headBits - 1);
+         ctx.block.addStatementArgs({IR::Code::Jcnd_Nil, 1},
+            IR::Arg_Stk(), labelShL);
 
-         ctx.block.addLabel(labelShRB);
-         ctx.block.addStatementArgs({IR::Code::ShRU_W, codeWords},
-            IR::Arg_Stk(), IR::Arg_Stk(), 1);
-         ctx.block.addStatementArgs({IR::Code::AddU_W, 1},
-            dst.getArg(), dst.getArg(), GetMaskMan(dstT) + 1);
-
-         ctx.block.addLabel(labelShR);
-         ctx.block.addStatementArgs({IR::Code::Copy_W, 1},
-            IR::Arg_Stk(), IR::Arg_Stk());
-         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
-            IR::Arg_Stk(), IR::Arg_Stk(),
-            (GetMaskSig(dstT) | GetMaskExp(dstT)) << 1);
-         ctx.block.addStatementArgs({IR::Code::Jcnd_Tru, 1},
-            IR::Arg_Stk(), labelShRB);
-
-         // Shift left until implicit bit is set.
-
-         ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelShL);
-
-         ctx.block.addLabel(labelShLB);
-         ctx.block.addStatementArgs({IR::Code::ShLU_W, codeWords},
-            IR::Arg_Stk(), IR::Arg_Stk(), 1);
          ctx.block.addStatementArgs({IR::Code::SubU_W, 1},
-            dst.getArg(), dst.getArg(), GetMaskMan(dstT) + 1);
+            clz.getArg(), headBits - 1, clz.getArg());
+
+         ctx.block.addStatementArgs({IR::Code::ShRU_W, codeWords},
+            IR::Arg_Stk(), IR::Arg_Stk(), clz.getArg());
+
+         ctx.block.addStatementArgs({IR::Code::ShLU_W, 1},
+            IR::Arg_Stk(), clz.getArg(), Platform::GetWordBits() - headBits);
+         ctx.block.addStatementArgs({IR::Code::AddU_W, 1},
+            dst.getArg(), dst.getArg(), IR::Arg_Stk());
+
+         ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelShLB);
+
+         // If too many leading zeroes, shift left and decrease exponent.
 
          ctx.block.addLabel(labelShL);
-         ctx.block.addStatementArgs({IR::Code::Copy_W, 1},
-            IR::Arg_Stk(), IR::Arg_Stk());
-         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
-            IR::Arg_Stk(), IR::Arg_Stk(), GetMaskMan(dstT) + 1);
+
+         ctx.block.addStatementArgs({IR::Code::CmpI_GT_W, 1},
+            IR::Arg_Stk(), clz.getArg(), headBits - 1);
          ctx.block.addStatementArgs({IR::Code::Jcnd_Nil, 1},
             IR::Arg_Stk(), labelShLB);
+
+         ctx.block.addStatementArgs({IR::Code::SubU_W, 1},
+            clz.getArg(), clz.getArg(), headBits - 1);
+
+         ctx.block.addStatementArgs({IR::Code::ShLU_W, codeWords},
+            IR::Arg_Stk(), IR::Arg_Stk(), clz.getArg());
+
+         ctx.block.addStatementArgs({IR::Code::ShLU_W, 1},
+            IR::Arg_Stk(), clz.getArg(), Platform::GetWordBits() - headBits);
+         ctx.block.addStatementArgs({IR::Code::SubU_W, 1},
+            dst.getArg(), dst.getArg(), IR::Arg_Stk());
+
+         ctx.block.addLabel(labelShLB);
 
          // Shrink word count.
          if(diffWords < 0)
