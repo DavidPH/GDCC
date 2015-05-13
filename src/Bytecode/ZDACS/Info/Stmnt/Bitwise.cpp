@@ -18,7 +18,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -238,7 +238,7 @@ namespace GDCC
                   putStmntPushArg(stmnt->args[1], i);
                   putCode(Code::Jcnd_Lit, skip, putPos + 40);
                   putCode(Code::Call_Lit, fIdx);
-                  putCode(Code::Push_Lit, stmnt->op.size - 1 - i);
+                  putCode(Code::Push_Lit, (stmnt->op.size - 1 - i) * 32);
                   putCode(Code::AddU);
                   putCode(Code::Jump_Lit, putPos + 8 + i * 40 + 8
                      + lenPushArg(stmnt->args[1], 0, i));
@@ -268,7 +268,7 @@ namespace GDCC
                   putCode(Code::Jcnd_Lit, skip, putPos + 40 + i * 4
                      + lenDropArg(stmnt->args[1], 0));
                   putCode(Code::Call_Lit, fIdx);
-                  putCode(Code::Push_Lit, stmnt->op.size - 1 - i);
+                  putCode(Code::Push_Lit, (stmnt->op.size - 1 - i) * 32);
                   putCode(Code::AddU);
                   putStmntDropArg(stmnt->args[1], 0);
                   for(auto j = i; j--;) putCode(Code::Drop_Nul);
@@ -299,7 +299,7 @@ namespace GDCC
 
                   putCode(Code::Jcnd_Lit, skip, putPos + 40 + i * 4 + 8);
                   putCode(Code::Call_Lit, fIdx);
-                  putCode(Code::Push_Lit, stmnt->op.size - 1 - i);
+                  putCode(Code::Push_Lit, (stmnt->op.size - 1 - i) * 32);
                   putCode(Code::AddU);
                   putCode(Code::Drop_LocReg, func->localReg + 0);
                   for(auto j = i; j--;) putCode(Code::Drop_Nul);
