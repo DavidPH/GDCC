@@ -49,7 +49,7 @@ static GDCC::Option::Int<GDCC::Core::FastU> AllocLocOpt
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -184,13 +184,13 @@ namespace GDCC
             auto val = valueInt->getValue();
             if(val.v == IR::ValueBase::Fixed)
                fn.valueInt = Core::NumberCast<Core::FastU>(val.vFixed.value);
-            else
-               fn.alloc = true;
          }
-         else if(valueStr)
-            fn.valueStr = valueStr;
          else
             fn.alloc = true;
+
+         // Having a valueStr must not prevent automatic valueInt allocation.
+         if(valueStr)
+            fn.valueStr = valueStr;
 
          // If any temporaries generated, back the base glyph.
          if(labelTmp && localTmp.max())
