@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,6 +17,20 @@
 
 
 //----------------------------------------------------------------------------|
+// Macros                                                                     |
+//
+
+//
+// GDCC_AST_Exp_CmpPreamble
+//
+#define GDCC_AST_Exp_CmpPreamble(class) \
+   GDCC_AST_Exp_ArithPreamble(class); \
+   \
+protected: \
+   virtual bool v_isBoolean() const
+
+
+//----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
@@ -29,7 +43,7 @@ namespace GDCC
       //
       class Exp_CmpEQ : public Exp_Binary
       {
-         GDCC_AST_Exp_ArithPreamble(Exp_CmpEQ);
+         GDCC_AST_Exp_CmpPreamble(Exp_CmpEQ);
       };
 
       //
@@ -37,7 +51,7 @@ namespace GDCC
       //
       class Exp_CmpGE : public Exp_Binary
       {
-         GDCC_AST_Exp_ArithPreamble(Exp_CmpGE);
+         GDCC_AST_Exp_CmpPreamble(Exp_CmpGE);
       };
 
       //
@@ -45,7 +59,7 @@ namespace GDCC
       //
       class Exp_CmpGT : public Exp_Binary
       {
-         GDCC_AST_Exp_ArithPreamble(Exp_CmpGT);
+         GDCC_AST_Exp_CmpPreamble(Exp_CmpGT);
       };
 
       //
@@ -53,7 +67,7 @@ namespace GDCC
       //
       class Exp_CmpLE : public Exp_Binary
       {
-         GDCC_AST_Exp_ArithPreamble(Exp_CmpLE);
+         GDCC_AST_Exp_CmpPreamble(Exp_CmpLE);
       };
 
       //
@@ -61,7 +75,7 @@ namespace GDCC
       //
       class Exp_CmpLT : public Exp_Binary
       {
-         GDCC_AST_Exp_ArithPreamble(Exp_CmpLT);
+         GDCC_AST_Exp_CmpPreamble(Exp_CmpLT);
       };
 
       //
@@ -69,7 +83,7 @@ namespace GDCC
       //
       class Exp_CmpNE : public Exp_Binary
       {
-         GDCC_AST_Exp_ArithPreamble(Exp_CmpNE);
+         GDCC_AST_Exp_CmpPreamble(Exp_CmpNE);
       };
    }
 }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -27,11 +27,16 @@
    { \
       return IR::ExpCreate_##ir( \
          expL->getIRExp(), expR->getIRExp(), pos); \
+   } \
+   \
+   bool class::v_isBoolean() const \
+   { \
+      return true; \
    }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

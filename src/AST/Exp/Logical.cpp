@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -76,16 +76,24 @@ namespace GDCC
             (!valShrt && exp->expL->isNonzero()))
          {
             exp->expL->genStmnt(ctx);
-            exp->expR->genStmntStk(ctx);
 
-            // TODO: If expR is already boolean, use its result directly.
-            ctx.block.addStatementArgs({IR::Code::NotU_W, 1},
-               IR::Arg_Stk(), IR::Arg_Stk());
-            ctx.block.addStatementArgs({IR::Code::NotU_W, 1},
-               IR::Arg_Stk(), IR::Arg_Stk());
+            // If expR is already boolean, use its result directly.
+            if(exp->expR->isBoolean())
+            {
+               exp->expR->genStmnt(ctx, dst);
+            }
+            else
+            {
+               exp->expR->genStmntStk(ctx);
 
-            // Move to destination.
-            GenStmnt_MovePart(exp, ctx, dst, false, true);
+               ctx.block.addStatementArgs({IR::Code::NotU_W, 1},
+                  IR::Arg_Stk(), IR::Arg_Stk());
+               ctx.block.addStatementArgs({IR::Code::NotU_W, 1},
+                  IR::Arg_Stk(), IR::Arg_Stk());
+
+               // Move to destination.
+               GenStmnt_MovePart(exp, ctx, dst, false, true);
+            }
 
             return;
          }
@@ -107,14 +115,20 @@ namespace GDCC
          // Evaluate right operand to stack.
          exp->expR->genStmntStk(ctx);
 
-         // TODO: If expR is already boolean, use its result directly.
+         // If expR is already boolean, use its result directly.
+         if(exp->expR->isBoolean())
+         {
+            ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelEnd);
+         }
+         else
+         {
+            // Possibly jump to short result.
+            ctx.block.addStatementArgs(opShrt, IR::Arg_Stk(), labelShort);
 
-         // Possibly jump to short result.
-         ctx.block.addStatementArgs(opShrt, IR::Arg_Stk(), labelShort);
-
-         // Long result.
-         ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), valLong);
-         ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelEnd);
+            // Long result.
+            ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), valLong);
+            ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelEnd);
+         }
 
          // Short result.
          ctx.block.addLabel(labelShort);
@@ -131,7 +145,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -158,6 +172,14 @@ namespace GDCC
             return IR::ExpCreate_Value(IR::Value_Fixed::Bool1, pos);
 
          return IR::ExpCreate_LogAnd(expL->getIRExp(), expR->getIRExp(), pos);
+      }
+
+      //
+      // Exp_LogAnd::v_isBoolean
+      //
+      bool Exp_LogAnd::v_isBoolean() const
+      {
+         return true;
       }
 
       //
@@ -191,6 +213,14 @@ namespace GDCC
             return IR::ExpCreate_Value(IR::Value_Fixed::Bool1, pos);
 
          return IR::ExpCreate_LogOrI(expL->getIRExp(), expR->getIRExp(), pos);
+      }
+
+      //
+      // Exp_LogOrI::v_isBoolean
+      //
+      bool Exp_LogOrI::v_isBoolean() const
+      {
+         return true;
       }
 
       //

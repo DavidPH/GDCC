@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,7 +24,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -203,6 +203,14 @@ namespace GDCC
       }
 
       //
+      // Exp::isBoolean
+      //
+      bool Exp::isBoolean() const
+      {
+         return v_isBoolean() || isZero();
+      }
+
+      //
       // Exp::isEffect
       //
       bool Exp::isEffect() const
@@ -296,6 +304,14 @@ namespace GDCC
       Object::Ref Exp::v_getObject() const
       {
          throw Core::ExceptStr(pos, "expected object designator expression");
+      }
+
+      //
+      // Exp::v_isBoolean
+      //
+      bool Exp::v_isBoolean() const
+      {
+         return false;
       }
 
       //

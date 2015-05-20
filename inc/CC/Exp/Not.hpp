@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -40,6 +40,8 @@ namespace GDCC
             AST::Arg const &dst) const;
 
          virtual IRExpCRef v_getIRExp() const;
+
+         virtual bool v_isBoolean() const;
       };
    }
 }

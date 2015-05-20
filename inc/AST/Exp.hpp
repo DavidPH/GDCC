@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -72,6 +72,9 @@ namespace GDCC
 
          TypeCRef getType() const;
 
+         // Does the result of this excpression have boolean representation?
+         bool isBoolean() const;
+
          // Does this expression have side effects?
          bool isEffect() const;
 
@@ -114,6 +117,8 @@ namespace GDCC
          virtual ObjectRef v_getObject() const;
 
          virtual TypeCRef v_getType() const = 0;
+
+         virtual bool v_isBoolean() const;
 
          virtual bool v_isEffect() const = 0;
 
