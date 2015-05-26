@@ -187,6 +187,11 @@ Semantics:
   Calling convention for line specials. Requires an explicit allocation to be
   the line special number.
 
+  A pointer to a function with this calling convention may be converted to an
+  integer type in assignment, the result is the explicitly allocated line
+  special number. If there is no explicit allocation or if the allocated number
+  cannot be represented by the result type, the behavior is undefined.
+
 -----------------------------------------------------------
 "SScript"
 -----------------------------------------------------------

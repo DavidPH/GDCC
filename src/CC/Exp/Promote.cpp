@@ -19,9 +19,11 @@
 
 #include "Core/Exception.hpp"
 
+#include "IR/CallType.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -70,6 +72,14 @@ namespace GDCC
          if(typeL->isTypeBoolean() && typeR->isTypePointer())
          {
             return ExpConvert_Bool(typeL, exp, pos);
+         }
+
+         // integer = line-special
+         if(typeL->isCTypeInteg() && typeR->isTypePointer() &&
+            typeR->getBaseType()->isTypeFunction() &&
+            typeR->getBaseType()->getCallType() == IR::CallType::Special)
+         {
+            return ExpConvert_ArithPtr(typeL, exp, pos);
          }
 
          // arithmetic = arithmetic
