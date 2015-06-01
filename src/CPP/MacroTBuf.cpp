@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,7 +14,8 @@
 
 #include "CPP/Macro.hpp"
 
-#include <iostream>
+#include "Core/Exception.hpp"
+
 #include <vector>
 
 
@@ -22,132 +23,136 @@
 // Static Functions                                                           |
 //
 
-//
-// FindArg
-//
-static GDCC::CPP::MacroTBuf::Rng const *FindArg(GDCC::Core::Token const &tok,
-   GDCC::CPP::Macro const &macro,
-   GDCC::Core::Array<GDCC::CPP::MacroTBuf::Rng> const &argv)
+namespace GDCC
 {
-   if(tok.tok != GDCC::Core::TOK_Identi) return nullptr;
-
-   if(tok.str == GDCC::Core::STR___VA_ARGS__ && !macro.args.empty() && !macro.args.back())
-      return &argv.back();
-
-   for(auto itr = macro.args.begin(), end = macro.args.end(); itr != end; ++itr)
+   namespace CPP
    {
-      if(tok.str == *itr)
-         return &argv[itr - macro.args.begin()];
-   }
-
-   return nullptr;
-}
-
-//
-// IsConcat
-//
-static bool IsConcat(GDCC::Core::Token const *itr, GDCC::CPP::Macro const &macro)
-{
-   auto end = macro.list.end();
-
-   if(itr + 1 != end)
-   {
-      if(itr[1].tok == GDCC::Core::TOK_Hash2) return true;
-
-      if(itr[1].tok == GDCC::Core::TOK_WSpace && itr + 2 != end)
+      //
+      // FindArg
+      //
+      static MacroTBuf::Rng const *FindArg(Core::Token const &tok,
+         Macro const &macro, Core::Array<MacroTBuf::Rng> const &argv,
+         Core::String vaArgStr)
       {
-         if(itr[2].tok == GDCC::Core::TOK_Hash2) return true;
-      }
-   }
+         if(tok.tok != Core::TOK_Identi) return nullptr;
 
-   return false;
-}
+         if(tok.str == vaArgStr && !macro.args.empty() && !macro.args.back())
+            return &argv.back();
 
-//
-// IsEmpty
-//
-static bool IsEmpty(GDCC::CPP::MacroTBuf::Rng const &arg)
-{
-   for(auto const &argi : arg)
-      if(argi.tok != GDCC::Core::TOK_WSpace && argi.tok != GDCC::Core::TOK_LnEnd)
-         return false;
-
-   return true;
-}
-
-//
-// MakeArgs
-//
-static GDCC::Core::Array<GDCC::CPP::MacroTBuf::Rng>
-MakeArgs(GDCC::CPP::Macro const &macro, GDCC::CPP::MacroTBuf::Rng const &argRng)
-{
-   // Build argument token ranges, if any.
-
-   if(macro.args.empty() && !argRng.empty())
-   {
-      std::cerr << "ERROR: " << argRng.begin()->pos << ": args to no-arg macro\n";
-      throw EXIT_FAILURE;
-   }
-
-   if(!macro.args.empty())
-   {
-      GDCC::Core::Array<GDCC::CPP::MacroTBuf::Rng> argv{macro.args.size()};
-      auto argi = argv.begin();
-
-      argi->first = argRng.first;
-
-      std::size_t depth = 0;
-      for(auto itr = argRng.begin(), end = argRng.end(); itr != end;)
-      {
-              if(itr->tok == GDCC::Core::TOK_ParenO) ++depth;
-         else if(itr->tok == GDCC::Core::TOK_ParenC) --depth;
-         else if(itr->tok == GDCC::Core::TOK_Comma && !depth)
+         for(auto itr = macro.args.begin(), end = macro.args.end(); itr != end; ++itr)
          {
-            if(argi + 1 == argv.end())
-            {
-               if(macro.args.back())
-               {
-                  std::cerr << "ERROR: " << itr->pos << ": too many macro args\n";
-                  throw EXIT_FAILURE;
-               }
-               else
-                  break;
-            }
-
-            argi++->last = itr++;
-            argi->first = itr;
-
-            continue;
+            if(tok.str == *itr)
+               return &argv[itr - macro.args.begin()];
          }
 
-         ++itr;
+         return nullptr;
       }
 
-      argi->last = argRng.last;
-
-      if(argi + 1 != argv.end())
+      //
+      // IsConcat
+      //
+      static bool IsConcat(Core::Token const *itr, Macro const &macro)
       {
-         std::cerr << "ERROR: " << argRng.begin()->pos
-            << ": not enough macro args: expected " << macro.args.size()
-            << " got " << (argi - argv.begin() + 1) << '\n';
-         throw EXIT_FAILURE;
+         auto end = macro.list.end();
+
+         if(itr + 1 != end)
+         {
+            if(itr[1].tok == Core::TOK_Hash2) return true;
+
+            if(itr[1].tok == Core::TOK_WSpace && itr + 2 != end)
+            {
+               if(itr[2].tok == Core::TOK_Hash2) return true;
+            }
+         }
+
+         return false;
       }
 
-      return argv;
-   }
+      //
+      // IsEmpty
+      //
+      static bool IsEmpty(MacroTBuf::Rng const &arg)
+      {
+         for(auto const &argi : arg)
+            if(argi.tok != Core::TOK_WSpace && argi.tok != Core::TOK_LnEnd)
+               return false;
 
-   return GDCC::Core::Array<GDCC::CPP::MacroTBuf::Rng>();
+         return true;
+      }
+
+      //
+      // MakeArgs
+      //
+      static Core::Array<MacroTBuf::Rng>
+      MakeArgs(Macro const &macro, MacroTBuf::Rng const &argRng)
+      {
+         // Build argument token ranges, if any.
+
+         if(macro.args.empty() && !argRng.empty())
+            throw Core::ExceptStr(argRng.begin()->pos, "args to no-arg macro");
+
+         if(!macro.args.empty())
+         {
+            Core::Array<MacroTBuf::Rng> argv{macro.args.size()};
+            auto argi = argv.begin();
+
+            argi->first = argRng.first;
+
+            std::size_t depth = 0;
+            for(auto itr = argRng.begin(), end = argRng.end(); itr != end;)
+            {
+                  if(itr->tok == Core::TOK_ParenO) ++depth;
+               else if(itr->tok == Core::TOK_ParenC) --depth;
+               else if(itr->tok == Core::TOK_Comma && !depth)
+               {
+                  if(argi + 1 == argv.end())
+                  {
+                     if(macro.args.back())
+                        throw Core::ExceptStr(itr->pos, "too many macro args");
+                     else
+                        break;
+                  }
+
+                  argi++->last = itr++;
+                  argi->first = itr;
+
+                  continue;
+               }
+
+               ++itr;
+            }
+
+            argi->last = argRng.last;
+
+            if(argi + 1 != argv.end())
+               throw Core::ExceptStr(argRng.begin()->pos, "not enough macro args");
+
+            return argv;
+         }
+
+         return {};
+      }
+   }
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
 {
    namespace CPP
    {
+      //
+      // MacroTBuf constructor
+      //
+      MacroTBuf::MacroTBuf(Core::TokenBuf &src_, MacroMap &macros_,
+         Core::String vaArgStr_) :
+         macros(macros_), src(src_), vaArgStr{vaArgStr_}, ignoreAll{false}
+      {
+      }
+
       //
       // MacroTBuf::applyMarker
       //
@@ -217,10 +222,7 @@ namespace GDCC
                if(itr->tok == Core::TOK_ParenC) {if(depth) --depth; else break;}
 
                if(itr->tok == Core::TOK_EOF)
-               {
-                  std::cerr << "ERROR: " << first->pos << ": unterminated macro call\n";
-                  throw EXIT_FAILURE;
-               }
+                  throw Core::ExceptStr(first->pos, "unterminated macro call");
             }
 
             auto argLast = itr++; ++argFirst;
@@ -267,11 +269,8 @@ namespace GDCC
                   (itr[1].tok == Core::TOK_WSpace || itr[1].tok == Core::TOK_LnEnd))
                   ++itr;
 
-               if(itr + 1 == end || !(arg = FindArg(itr[1], macro, argv)))
-               {
-                  std::cerr << "ERROR: " << e->pos << ": # not followed by arg\n";
-                  throw EXIT_FAILURE;
-               }
+               if(itr + 1 == end || !(arg = FindArg(itr[1], macro, argv, vaArgStr)))
+                  throw Core::ExceptStr(e->pos, "# not followed by arg");
 
                buf.emplace(e, e->pos, stringize(*arg), Core::TOK_String);
                ++itr;
@@ -292,7 +291,7 @@ namespace GDCC
                   break;
                }
 
-               if(auto arg = FindArg(*itr, macro, argv))
+               if(auto arg = FindArg(*itr, macro, argv, vaArgStr))
                {
                   auto argItr = arg->begin(), argEnd = arg->end();
 
@@ -320,7 +319,7 @@ namespace GDCC
             }
 
             // Argument substitution.
-            else if(auto arg = FindArg(*itr, macro, argv))
+            else if(auto arg = FindArg(*itr, macro, argv, vaArgStr))
             {
                if(IsConcat(itr, macro))
                {

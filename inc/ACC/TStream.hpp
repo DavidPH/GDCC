@@ -63,7 +63,7 @@ namespace GDCC
             pdir{ldir, pragp},
             ignd{pdir, true},
 
-            mbuf{ignd, macros},
+            mbuf{ignd, macros, Core::STR___va_args__},
             pubf{mbuf, pragd},
             sbuf{pubf, ParseEscape},
             cbuf{sbuf},
@@ -172,7 +172,7 @@ namespace GDCC
             Core::String file, Core::String dir, Scope_Global &scope,
             IR::Program &prog) :
             IncStream{buf_, macros, pragd, pragp, file, dir, scope, prog},
-            mbuf{udir, macros},
+            mbuf{udir, macros, Core::STR___va_args__},
             pubf{mbuf, pragd},
             sbuf{pubf, ParseEscape},
             cbuf{sbuf}

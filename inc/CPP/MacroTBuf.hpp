@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -41,8 +41,8 @@ namespace GDCC
          using Rng = Core::Range<Itr>;
 
 
-         MacroTBuf(Core::TokenBuf &src_, MacroMap &macros_) :
-            src(src_), macros(macros_), ignoreAll{false} {}
+         MacroTBuf(Core::TokenBuf &src, MacroMap &macros,
+            Core::String vaArgStr = Core::STR___VA_ARGS__);
 
       protected:
          void applyMarker(Core::String str);
@@ -58,8 +58,9 @@ namespace GDCC
 
          std::unordered_set<Core::String> ignore;
 
-         Core::TokenBuf &src;
          MacroMap       &macros;
+         Core::TokenBuf &src;
+         Core::String    vaArgStr;
 
          bool ignoreAll : 1;
       };
