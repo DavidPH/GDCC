@@ -26,6 +26,7 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    PPTokenTBuf.cpp
    Parse.cpp
    Parse/Declaration.cpp
+   Parse/Declaration/Enum.cpp
    Parse/Declaration/Function.cpp
    Parse/Declaration/Object.cpp
    Parse/Declaration/Print.cpp

@@ -48,6 +48,8 @@ namespace GDCC
          virtual StatementCRef getDecl(Scope_Global &scope);
          virtual StatementCRef getDecl(CC::Scope_Local &scope);
 
+         virtual StatementCRef getDecl_Enum(Scope_Global &scope);
+
          virtual StatementCRef getDecl_Function(Scope_Global &scope);
 
          virtual StatementCRef getDecl_Object(Scope_Global &scope);
