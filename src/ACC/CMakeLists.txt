@@ -22,6 +22,7 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    DirectiveTBuf.cpp
    IncludeDTBuf.cpp
    IStream.cpp
+   Macro.cpp
    MacroDTBuf.cpp
    PPTokenTBuf.cpp
    Parse.cpp
@@ -46,6 +47,7 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    ../../inc/ACC/DirectiveTBuf.hpp
    ../../inc/ACC/IncludeDTBuf.hpp
    ../../inc/ACC/IStream.hpp
+   ../../inc/ACC/Macro.hpp
    ../../inc/ACC/MacroDTBuf.hpp
    ../../inc/ACC/PPTokenTBuf
    ../../inc/ACC/Parse.hpp

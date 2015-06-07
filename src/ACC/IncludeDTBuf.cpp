@@ -23,13 +23,37 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
 {
    namespace ACC
    {
+      //
+      // IncludeDTBuf constructor
+      //
+      IncludeDTBuf::IncludeDTBuf(Core::TokenBuf &src_, CPP::IStreamHeader &istr_,
+         MacroMap &macros_, PragmaData &pragd_, CPP::PragmaParserBase &pragp_,
+         Core::String dir_, Scope_Global &scope_, IR::Program &prog_) :
+         CPP::IncludeDTBuf{src_, istr_, macros_, pragd_, pragp_, dir_},
+         macros(macros_),
+         pragd(pragd_),
+         prog (prog_),
+         scope(scope_)
+      {
+      }
+
+      //
+      // ImportDTBuf constructor
+      //
+      ImportDTBuf::ImportDTBuf(Core::TokenBuf &src_, CPP::IStreamHeader &istr_,
+         MacroMap &macros_, PragmaData &pragd_, CPP::PragmaParserBase &pragp_,
+         Core::String dir_, Scope_Global &scope_, IR::Program &prog_) :
+         IncludeDTBuf{src_, istr_, macros_, pragd_, pragp_, dir_, scope_, prog_}
+      {
+      }
+
       //
       // IncludeDTBuf::doInc
       //
@@ -69,11 +93,13 @@ namespace GDCC
          Parser       ctx {tstr, pragd, prog, true};
 
          pragd.push();
+         macros.tempPush();
 
          // Read declarations.
          while(ctx.in.peek().tok != Core::TOK_EOF)
             ctx.getDecl(scope);
 
+         macros.tempDrop();
          pragd.drop();
       }
    }

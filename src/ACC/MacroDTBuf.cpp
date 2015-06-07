@@ -12,6 +12,8 @@
 
 #include "ACC/MacroDTBuf.hpp"
 
+#include "ACC/Macro.hpp"
+
 #include "CPP/Macro.hpp"
 #include "CPP/MacroDTBuf.hpp"
 
@@ -19,13 +21,24 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
 {
    namespace ACC
    {
+      //
+      // DefineDTBuf constructor
+      //
+      DefineDTBuf::DefineDTBuf(Core::TokenBuf &src_, MacroMap &macros_,
+         bool importing_) :
+         CPP::DirectiveTBuf{src_},
+         macros(macros_),
+         importing{importing_}
+      {
+      }
+
       //
       // DefineDTBuf::directive
       //
@@ -34,12 +47,15 @@ namespace GDCC
          if(tok.tok != Core::TOK_Identi)
             return false;
 
+         bool isTemp;
+
          if(tok.str == Core::STR_define)
-         {
-            if(importing)
-               return true;
-         }
-         else if(tok.str != Core::STR_libdefine)
+            isTemp = importing;
+
+         else if(tok.str == Core::STR_libdefine)
+            isTemp = false;
+
+         else
             return false;
 
          src.get();
@@ -61,6 +77,7 @@ namespace GDCC
          }
 
          macros.add(name.str, std::move(newMacro));
+         if(isTemp) macros.tempAdd(name.str);
 
          return true;
       }

@@ -17,6 +17,7 @@
 
 #include "../ACC/DirectiveTBuf.hpp"
 #include "../ACC/IncludeDTBuf.hpp"
+#include "../ACC/Macro.hpp"
 #include "../ACC/MacroDTBuf.hpp"
 #include "../ACC/PPTokenTBuf.hpp"
 #include "../ACC/Pragma.hpp"
@@ -51,9 +52,8 @@ namespace GDCC
          //
          // constructor
          //
-         ImportStream(std::streambuf &buf_, CPP::MacroMap &macros,
-            PragmaData &pragd, CPP::PragmaParserBase &pragp,
-            Core::String file) :
+         ImportStream(std::streambuf &buf_, MacroMap &macros, PragmaData &pragd,
+            CPP::PragmaParserBase &pragp, Core::String file) :
             Core::TokenStream{&bbuf},
             istr{buf_, file},
             tbuf{istr},
@@ -119,10 +119,9 @@ namespace GDCC
          //
          // constructor
          //
-         IncStream(std::streambuf &buf_, CPP::MacroMap &macros,
-            PragmaData &pragd, CPP::PragmaParserBase &pragp,
-            Core::String file, Core::String dir, Scope_Global &scope,
-            IR::Program &prog) :
+         IncStream(std::streambuf &buf_, MacroMap &macros, PragmaData &pragd,
+            CPP::PragmaParserBase &pragp, Core::String file, Core::String dir,
+            Scope_Global &scope, IR::Program &prog) :
             Core::TokenStream{&udir},
             istr{buf_, file},
             tbuf{istr},
@@ -167,10 +166,9 @@ namespace GDCC
          //
          // constructor
          //
-         PPStream(std::streambuf &buf_, CPP::MacroMap &macros,
-            PragmaData &pragd, CPP::PragmaParserBase &pragp,
-            Core::String file, Core::String dir, Scope_Global &scope,
-            IR::Program &prog) :
+         PPStream(std::streambuf &buf_, MacroMap &macros, PragmaData &pragd,
+            CPP::PragmaParserBase &pragp, Core::String file, Core::String dir,
+            Scope_Global &scope, IR::Program &prog) :
             IncStream{buf_, macros, pragd, pragp, file, dir, scope, prog},
             mbuf{udir, macros, Core::STR___va_args__},
             pubf{mbuf, pragd},
@@ -201,10 +199,9 @@ namespace GDCC
          //
          // constructor
          //
-         TStream(std::streambuf &buf_, CPP::MacroMap &macros,
-            PragmaData &pragd, CPP::PragmaParserBase &pragp,
-            Core::String file, Core::String dir, Scope_Global &scope,
-            IR::Program &prog) :
+         TStream(std::streambuf &buf_, MacroMap &macros, PragmaData &pragd,
+            CPP::PragmaParserBase &pragp, Core::String file, Core::String dir,
+            Scope_Global &scope, IR::Program &prog) :
             PPStream{buf_, macros, pragd, pragp, file, dir, scope, prog},
             wbuf{cbuf},
             ppbf{wbuf},

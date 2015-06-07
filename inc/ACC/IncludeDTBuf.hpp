@@ -31,6 +31,7 @@ namespace GDCC
 
    namespace ACC
    {
+      class MacroMap;
       class Scope_Global;
 
       //
@@ -39,20 +40,14 @@ namespace GDCC
       class IncludeDTBuf : public CPP::IncludeDTBuf
       {
       public:
-         IncludeDTBuf(Core::TokenBuf &src_, CPP::IStreamHeader &istr_,
-            CPP::MacroMap &macros_, PragmaData &pragd_,
-            CPP::PragmaParserBase &pragp_, Core::String dir_,
-            Scope_Global &scope_, IR::Program &prog_) :
-            CPP::IncludeDTBuf{src_, istr_, macros_, pragd_, pragp_, dir_},
-            pragd(pragd_),
-            prog (prog_),
-            scope(scope_)
-         {
-         }
+         IncludeDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
+            MacroMap &macros, PragmaData &pragd, CPP::PragmaParserBase &pragp,
+            Core::String dir, Scope_Global &scope, IR::Program &prog);
 
       protected:
          virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
 
+         MacroMap     &macros;
          PragmaData   &pragd;
          IR::Program  &prog;
          Scope_Global &scope;
@@ -64,13 +59,9 @@ namespace GDCC
       class ImportDTBuf : public IncludeDTBuf
       {
       public:
-         ImportDTBuf(Core::TokenBuf &src_, CPP::IStreamHeader &istr_,
-            CPP::MacroMap &macros_, PragmaData &pragd_,
-            CPP::PragmaParserBase &pragp_, Core::String dir_,
-            Scope_Global &scope_, IR::Program &prog_) :
-            IncludeDTBuf{src_, istr_, macros_, pragd_, pragp_, dir_, scope_, prog_}
-         {
-         }
+         ImportDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
+            MacroMap &macros, PragmaData &pragd, CPP::PragmaParserBase &pragp,
+            Core::String dir, Scope_Global &scope, IR::Program &prog);
 
       protected:
          virtual bool directive(Core::Token const &tok);

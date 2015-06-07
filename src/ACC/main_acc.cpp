@@ -10,14 +10,13 @@
 //
 //-----------------------------------------------------------------------------
 
+#include "ACC/Macro.hpp"
 #include "ACC/Parse.hpp"
 #include "ACC/Pragma.hpp"
 #include "ACC/Scope.hpp"
 #include "ACC/TStream.hpp"
 
 #include "AST/Statement.hpp"
-
-#include "CPP/Macro.hpp"
 
 #include "Core/File.hpp"
 #include "Core/Option.hpp"
@@ -96,7 +95,7 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
    }
 
    GDCC::Core::String      file {inName};
-   GDCC::CPP::MacroMap     macr {GDCC::CPP::Macro::Stringize(file)};
+   GDCC::ACC::MacroMap     macr {GDCC::CPP::Macro::Stringize(file)};
    GDCC::Core::String      path {GDCC::Core::PathDirname(file)};
    GDCC::ACC::PragmaData   pragd{};
    GDCC::ACC::PragmaParser pragp{pragd};
@@ -122,7 +121,7 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 //

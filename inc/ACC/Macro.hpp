@@ -6,14 +6,16 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Macro preprocessor directive token buffer.
+// Extra macro handling for ACS.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__ACC__MacroDTBuf_H__
-#define GDCC__ACC__MacroDTBuf_H__
+#ifndef GDCC__ACC__Macro_H__
+#define GDCC__ACC__Macro_H__
 
-#include "../CPP/DirectiveTBuf.hpp"
+#include "../CPP/Macro.hpp"
+
+#include <unordered_set>
 
 
 //----------------------------------------------------------------------------|
@@ -24,27 +26,27 @@ namespace GDCC
 {
    namespace ACC
    {
-      class MacroMap;
-
       //
-      // DefineDTBuf
+      // MacroMap
       //
-      // Handles #define and #libdefine directives.
-      //
-      class DefineDTBuf : public CPP::DirectiveTBuf
+      class MacroMap : public CPP::MacroMap
       {
       public:
-         DefineDTBuf(Core::TokenBuf &src, MacroMap &macros, bool importing);
+         using CPP::MacroMap::MacroMap;
+
+         void tempAdd(Core::String name);
+
+         void tempDrop();
+
+         void tempPush();
+
+         void tempRem(Core::String name);
 
       protected:
-         virtual bool directive(Core::Token const &tok);
-
-         MacroMap &macros;
-
-         bool importing;
+         std::vector<std::unordered_set<Core::String>> tempSets;
       };
    }
 }
 
-#endif//GDCC__ACC__MacroDTBuf_H__
+#endif//GDCC__ACC__Macro_H__
 
