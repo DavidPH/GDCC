@@ -44,7 +44,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -123,8 +123,7 @@ namespace GDCC
          in.drop(Core::TOK_WSpace);
          if(!in.drop(Core::TOK_Identi, Core::STR_ACS)) return false;
          in.drop(Core::TOK_WSpace);
-
-         if(in.peek().tok != Core::TOK_Identi) return true;
+         if(!in.peek(Core::TOK_Identi)) return false;
 
          switch(in.get().str)
          {
@@ -136,12 +135,11 @@ namespace GDCC
 
             data.stateLibrary.emplace_back(in.peek().str);
 
-            break;
+            return true;
 
-         default: break;
+         default:
+            return false;
          }
-
-         return true;
       }
 
       //
@@ -154,23 +152,31 @@ namespace GDCC
          in.drop(Core::TOK_WSpace);
          if(!in.drop(Core::TOK_Identi, Core::STR_GDCC)) return false;
          in.drop(Core::TOK_WSpace);
-
-         if(in.peek().tok != Core::TOK_Identi) return true;
+         if(!in.peek(Core::TOK_Identi)) return false;
 
          switch(in.get().str)
          {
          case Core::STR_FIXED_LITERAL:
             PragmaOnOff(data.stateFixedLiteral, false, in);
-            break;
+            return true;
 
          case Core::STR_STRENT_LITERAL:
             PragmaOnOff(data.stateStrEntLiteral, false, in);
-            break;
+            return true;
 
-         default: break;
+         case Core::STR_state:
+            in.drop(Core::TOK_WSpace);
+            if(!in.peek(Core::TOK_Identi)) return false;
+            switch(in.get().str)
+            {
+            case Core::STR_restore: data.drop(); return true;
+            case Core::STR_save:    data.push(); return true;
+            default:                             return false;
+            }
+
+         default:
+            return false;
          }
-
-         return true;
       }
 
       //
@@ -183,27 +189,25 @@ namespace GDCC
          in.drop(Core::TOK_WSpace);
          if(!in.drop(Core::TOK_Identi, Core::STR_STDC)) return false;
          in.drop(Core::TOK_WSpace);
-
-         if(in.peek().tok != Core::TOK_Identi) return true;
+         if(!in.peek(Core::TOK_Identi)) return false;
 
          switch(in.get().str)
          {
          case Core::STR_CX_LIMITED_RANGE:
             PragmaOnOff(data.stateCXLimitedRange, true, in);
-            break;
+            return true;
 
          case Core::STR_FENV_ACCESS:
             PragmaOnOff(data.stateFEnvAccess, false, in);
-            break;
+            return true;
 
          case Core::STR_FP_CONTRACT:
             PragmaOnOff(data.stateFPContract, true, in);
-            break;
+            return true;
 
-         default: break;
+         default:
+            return false;
          }
-
-         return true;
       }
    }
 }

@@ -570,6 +570,18 @@ Semantics:
 
   Follows the same scoping rules as STDC pragmas. The default state is OFF.
 
+===========================================================
+GDCC state
+===========================================================
+
+Syntax:
+  # <pragma> <GDCC> <state> <save>
+  # <pragma> <GDCC> <state> <restore>
+
+Semantics:
+  Saves or restores the pragma state, as though entering or leaving a compound
+  statement, respectively.
+
 ###############################################################################
 Grammar
 ###############################################################################
@@ -729,6 +741,9 @@ Grammar
   # <pragma> <GDCC> <FIXED_LITERAL> on-off-switch
 
   # <pragma> <GDCC> <STRENT_LITERAL> on-off-switch
+
+  # <pragma> <GDCC> <state> <save>
+  # <pragma> <GDCC> <state> <restore>
 
 ###############################################################################
 GDCC C Library Extensions

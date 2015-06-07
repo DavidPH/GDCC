@@ -46,7 +46,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -94,25 +94,35 @@ namespace GDCC
          Core::ArrayTStream in{toks, n};
 
          in.drop(Core::TOK_WSpace);
-         if(in.peek().tok != Core::TOK_Identi) return true;
+         if(!in.peek(Core::TOK_Identi)) return false;
+
          switch(in.get().str)
          {
          case Core::STR_fixed:
             data.stateFixedLiteral = data.stateFixedType = PragmaOnOff(in, false);
-            break;
+            return true;
 
          case Core::STR_fixed_literal:
             data.stateFixedLiteral = PragmaOnOff(in, false);
-            break;
+            return true;
 
          case Core::STR_fixed_type:
             data.stateFixedType = PragmaOnOff(in, false);
-            break;
+            return true;
 
-         default: break;
+         case Core::STR_state:
+            in.drop(Core::TOK_WSpace);
+            if(!in.peek(Core::TOK_Identi)) return false;
+            switch(in.get().str)
+            {
+            case Core::STR_restore: data.drop(); return true;
+            case Core::STR_save:    data.push(); return true;
+            default:                             return false;
+            }
+
+         default:
+            return false;
          }
-
-         return true;
       }
    }
 }
