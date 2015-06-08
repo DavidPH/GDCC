@@ -25,6 +25,7 @@ namespace GDCC
    namespace ACC
    {
       class MacroMap;
+      class PragmaData;
 
       //
       // DefineDTBuf
@@ -34,12 +35,14 @@ namespace GDCC
       class DefineDTBuf : public CPP::DirectiveTBuf
       {
       public:
-         DefineDTBuf(Core::TokenBuf &src, MacroMap &macros, bool importing);
+         DefineDTBuf(Core::TokenBuf &src, MacroMap &macros, PragmaData &pragd,
+            bool importing);
 
       protected:
          virtual bool directive(Core::Token const &tok);
 
-         MacroMap &macros;
+         MacroMap   &macros;
+         PragmaData &pragd;
 
          bool importing;
       };

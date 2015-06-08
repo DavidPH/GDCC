@@ -35,9 +35,11 @@ namespace GDCC
          virtual void drop();
          virtual void push();
 
+         bool stateDefineRaw;
          bool stateFixedType;
 
       protected:
+         std::vector<bool> stackDefineRaw;
          std::vector<bool> stackFixedType;
       };
 

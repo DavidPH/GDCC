@@ -20,7 +20,10 @@
 // Macros                                                                     |
 //
 
+#pragma state save
+#pragma define raw ON
 #define suspend do (__suspend()); while(0)
+#pragma state restore
 
 
 //----------------------------------------------------------------------------|

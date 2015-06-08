@@ -58,7 +58,8 @@ namespace GDCC
       //
       PragmaData::PragmaData() :
          CPP::PragmaData{},
-         stateFixedType{}
+         stateDefineRaw{false},
+         stateFixedType{false}
       {
       }
 
@@ -71,8 +72,10 @@ namespace GDCC
 
          if(stackFixedType.empty()) return;
 
+         stateDefineRaw = stackDefineRaw.back();
          stateFixedType = stackFixedType.back();
 
+         stackDefineRaw.pop_back();
          stackFixedType.pop_back();
       }
 
@@ -83,6 +86,7 @@ namespace GDCC
       {
          CPP::PragmaData::push();
 
+         stackDefineRaw.emplace_back(stateDefineRaw);
          stackFixedType.emplace_back(stateFixedType);
       }
 
@@ -109,6 +113,19 @@ namespace GDCC
          case Core::STR_fixed_type:
             data.stateFixedType = PragmaOnOff(in, false);
             return true;
+
+         case Core::STR_define:
+            in.drop(Core::TOK_WSpace);
+            if(!in.peek(Core::TOK_Identi)) return false;
+            switch(in.get().str)
+            {
+            case Core::STR_raw:
+              data.stateDefineRaw = PragmaOnOff(in, false);
+              return true;
+
+            default:
+               return false;
+            }
 
          case Core::STR_state:
             in.drop(Core::TOK_WSpace);

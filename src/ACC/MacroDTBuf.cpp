@@ -13,9 +13,10 @@
 #include "ACC/MacroDTBuf.hpp"
 
 #include "ACC/Macro.hpp"
+#include "ACC/Pragma.hpp"
 
-#include "CPP/Macro.hpp"
 #include "CPP/MacroDTBuf.hpp"
+#include "CPP/MacroTBuf.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -32,9 +33,10 @@ namespace GDCC
       // DefineDTBuf constructor
       //
       DefineDTBuf::DefineDTBuf(Core::TokenBuf &src_, MacroMap &macros_,
-         bool importing_) :
+         PragmaData &pragd_, bool importing_) :
          CPP::DirectiveTBuf{src_},
          macros(macros_),
+         pragd(pragd_),
          importing{importing_}
       {
       }
@@ -68,6 +70,29 @@ namespace GDCC
          Core::Token name = src.get();
 
          CPP::Macro newMacro = CPP::DefineDTBuf::GetMacro(src);
+
+         // If not a function-like macro, then pre-expand and add parentheses.
+         if(!newMacro.func && !pragd.stateDefineRaw)
+         {
+            std::vector<Core::Token> list;
+            list.reserve(newMacro.list.size() + 2);
+
+            list.emplace_back(name.pos, Core::STR_TOK_ParenO, Core::TOK_ParenO);
+
+            Core::ArrayTBuf abuf{newMacro.list.data(), newMacro.list.size()};
+            CPP::MacroTBuf  mbuf{abuf, macros, Core::STR___va_args__};
+
+            while(mbuf.peek().tok != Core::TOK_EOF)
+               list.emplace_back(mbuf.get());
+
+            list.emplace_back(name.pos, Core::STR_TOK_ParenC, Core::TOK_ParenC);
+
+            // If expanded to a single token, do not include parentheses.
+            if(list.size() == 3)
+               newMacro.list = {&list[1], &list[2]};
+            else
+               newMacro.list = {list.begin(), list.end()};
+         }
 
          // Check against existing macro.
          if(auto oldMacro = macros.find(name)) if(*oldMacro != newMacro)
