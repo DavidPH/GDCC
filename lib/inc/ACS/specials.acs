@@ -20,6 +20,12 @@
 // Macros                                                                     |
 //
 
+#define ACS_PrintPropertyBase() \
+   c: PrintChar, \
+   d: PrintInt, \
+   i: PrintInt, \
+   s: PrintString
+
 #pragma state save
 #pragma define raw ON
 #define suspend do (__suspend()); while(0)
@@ -161,6 +167,22 @@ special
    void  { 99     }:SetLineSpecial(int, int, int, int, int, int, int),
    void  {100     }:ThingSound(int, str, int),
    void  {101     }:EndPrintBold(void);
+
+print Print
+(
+   (begin): BeginPrint,
+   (end):   EndPrint,
+
+   ACS_PrintPropertyBase()
+);
+
+print PrintBold
+(
+   (begin): BeginPrintBold,
+   (end):   EndPrintBold,
+
+   ACS_PrintPropertyBase()
+);
 
 #endif//__GDCC_Header__ACS__specials_acs__
 
