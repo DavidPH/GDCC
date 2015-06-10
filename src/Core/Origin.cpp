@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,7 +14,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -26,7 +26,15 @@ namespace GDCC
       //
       std::ostream &operator << (std::ostream &out, Origin const &in)
       {
-         return out << in.file << ':' << in.line;
+         if(in.file)
+            out << in.file;
+         else
+            out << "(no file)";
+
+         if(in.line) out << ':' << in.line;
+         if(in.col)  out << ':' << in.col;
+
+         return out;
       }
    }
 }

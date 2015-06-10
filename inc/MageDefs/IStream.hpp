@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -41,7 +41,8 @@ namespace GDCC
       {
       public:
          explicit IStream(std::streambuf &buf, Core::String file) :
-            std::istream{&cbuf}, lbuf{buf}, obuf{lbuf, file}, cbuf{obuf} {}
+            std::istream{&cbuf}, lbuf{buf}, obuf{lbuf, {file, 1, 1}},
+            cbuf{obuf} {}
 
          void disableComments() {rdbuf(&obuf);}
 

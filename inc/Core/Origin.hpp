@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -31,18 +31,20 @@ namespace GDCC
       {
       public:
          Origin() = default;
-         constexpr Origin(String file_, std::size_t line_) : file{file_}, line{line_} {}
+         constexpr Origin(String file_, std::size_t line_ = 0, std::size_t col_ = 0) :
+            file{file_}, line{line_}, col{col_} {}
 
-         constexpr explicit operator bool () const {return file || line;}
+         constexpr explicit operator bool () const {return file || line || col;}
 
          constexpr bool operator == (Origin const &pos) const
-            {return file == pos.file && line == pos.line;}
+            {return file == pos.file && line == pos.line && col == pos.col;}
 
          constexpr bool operator != (Origin const &pos) const
-            {return file != pos.file || line != pos.line;}
+            {return file != pos.file || line != pos.line || col != pos.col;}
 
          String      file;
          std::size_t line;
+         std::size_t col;
       };
    }
 }

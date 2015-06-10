@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -44,8 +44,7 @@ namespace GDCC
          using typename Super::int_type;
 
 
-         OriginBuf(Src &src_, String file, std::size_t line = 1) :
-            Super{src_}, pos{file, line} {}
+         OriginBuf(Src &src_, Origin pos_) : Super{src_}, pos{pos_} {}
 
          Origin getOrigin() const {return pos;}
 
@@ -56,7 +55,15 @@ namespace GDCC
          virtual int_type underflow()
          {
             auto c = Super::underflow();
-            if(c == '\n') ++pos.line;
+
+            if(c == '\n' && pos.line)
+            {
+               ++pos.line;
+               if(pos.col) pos.col = 1;
+            }
+            else if(pos.col)
+               ++pos.col;
+
             return c;
          }
 
