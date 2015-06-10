@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2015 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -17,6 +17,9 @@
 
 #include <ACS_ZDoom.h>
 
+#include <ACS_Zandronum/AsmFunc.h>
+#include <ACS_Zandronum/Native.h>
+#include <ACS_Zandronum/Special.h>
 #include <ACS_Zandronum/defs.h>
 
 #endif//__GDCC_Header__C__ACS_Zandronum_h__
