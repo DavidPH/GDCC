@@ -12,8 +12,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef __GDCC_Header__C__ACS_ZDoom__AsmFunc_h__
-#define __GDCC_Header__C__ACS_ZDoom__AsmFunc_h__
+#ifndef __GDCC_Header__C__ACS_Zandronum__AsmFunc_h__
+#define __GDCC_Header__C__ACS_Zandronum__AsmFunc_h__
 
 #include <ACS_ZDoom/AsmFunc.h>
 
@@ -38,5 +38,5 @@ ACS_AsmFuncDeclFull(132,    , 0, void, Music_Change, __str, int);
 ACS_AsmFuncDeclFull(133, 134, 2, void, ConsoleCommand, __str, int, int);
 ACS_AsmFuncDeclFull(135,    , 0, int,  SinglePlayer, void);
 
-#endif//__GDCC_Header__C__ACS_ZDoom__AsmFunc_h__
+#endif//__GDCC_Header__C__ACS_Zandronum__AsmFunc_h__
 
