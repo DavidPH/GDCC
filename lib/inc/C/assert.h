@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2015 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -30,9 +30,9 @@
 # define assert(expression) \
    if(!(expression)) \
    { \
-      extern struct FILE __stderr; \
+      extern struct __FILE __stderr; \
       extern void abort(void); \
-      extern int fprintf(struct FILE *restrict stream, \
+      extern int fprintf(struct __FILE *restrict stream, \
          char const *restrict format, ...); \
       \
       fprintf(&__stderr, \
@@ -55,7 +55,7 @@
 // Types                                                                      |
 //
 
-struct FILE;
+struct __FILE;
 
 // EOF
 

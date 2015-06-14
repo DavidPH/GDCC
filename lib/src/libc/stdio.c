@@ -14,6 +14,7 @@
 
 #include <errno.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <GDCC.h>
@@ -21,6 +22,27 @@
 #if __GDCC_Target__ZDoom__
 #include <ACS_ZDoom.h>
 #endif
+
+
+//----------------------------------------------------------------------------|
+// Static Prototypes                                                          |
+//
+
+static int FILE_fn_fail_close(FILE *stream);
+static int FILE_fn_fail_fetch(FILE *stream);
+static int FILE_fn_fail_flush(FILE *stream, int c);
+static int FILE_fn_fail_getpos(FILE *stream, fpos_t *pos);
+static int FILE_fn_fail_open(FILE *stream, char const *filename, char const *mode);
+static int FILE_fn_fail_reopen(FILE *stream, char const *filename, char const *mode);
+static int FILE_fn_fail_setbuf(FILE *stream, char *buf, size_t size, int mode);
+static int FILE_fn_fail_setpos(FILE *stream, fpos_t const *pos);
+static int FILE_fn_fail_unget(FILE *stream, int c);
+
+static int FILE_fn_pass_close(FILE *stream);
+static int FILE_fn_pass_open(FILE *stream, char const *filename, char const *mode);
+
+static int FILE_fn_stdout_flush(FILE *stream, int c);
+static int FILE_fn_stdout_setbuf(FILE *stream, char *buf, size_t size, int mode);
 
 
 //----------------------------------------------------------------------------|
@@ -35,16 +57,253 @@ static char Buffer_stdout[BUFSIZ];
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Variables                                                           |
 //
 
-FILE __stderr = {Buffer_stderr, sizeof(Buffer_stderr), 0, 0};
-FILE __stdin  = {0, 0, 0, 0};
-FILE __stdout = {Buffer_stdout, sizeof(Buffer_stdout), 0, 0};
+//
+// __stderr
+//
+FILE __stderr =
+{
+   {
+      .fn_close  = FILE_fn_fail_close,
+      .fn_fetch  = FILE_fn_fail_fetch,
+      .fn_flush  = FILE_fn_stdout_flush,
+      .fn_getpos = FILE_fn_fail_getpos,
+      .fn_open   = FILE_fn_fail_open,
+      .fn_reopen = FILE_fn_fail_reopen,
+      .fn_setbuf = FILE_fn_stdout_setbuf,
+      .fn_setpos = FILE_fn_fail_setpos,
+      .fn_unget  = FILE_fn_fail_unget,
+   },
+
+   {NULL, NULL, NULL, 0},
+   {Buffer_stderr, Buffer_stderr, Buffer_stderr + sizeof(Buffer_stderr), _IOLBF},
+
+   NULL, 0
+};
+
+//
+// __stdin
+//
+FILE __stdin =
+{
+   {
+      .fn_close  = FILE_fn_fail_close,
+      .fn_fetch  = FILE_fn_fail_fetch,
+      .fn_flush  = FILE_fn_fail_flush,
+      .fn_getpos = FILE_fn_fail_getpos,
+      .fn_open   = FILE_fn_fail_open,
+      .fn_reopen = FILE_fn_fail_reopen,
+      .fn_setbuf = FILE_fn_fail_setbuf,
+      .fn_setpos = FILE_fn_fail_setpos,
+      .fn_unget  = FILE_fn_fail_unget,
+   },
+
+   {NULL, NULL, NULL, 0},
+   {NULL, NULL, NULL, 0},
+
+   NULL, 0
+};
+
+//
+// __stdout
+//
+FILE __stdout =
+{
+   {
+      .fn_close  = FILE_fn_fail_close,
+      .fn_fetch  = FILE_fn_fail_fetch,
+      .fn_flush  = FILE_fn_stdout_flush,
+      .fn_getpos = FILE_fn_fail_getpos,
+      .fn_open   = FILE_fn_fail_open,
+      .fn_reopen = FILE_fn_fail_reopen,
+      .fn_setbuf = FILE_fn_stdout_setbuf,
+      .fn_setpos = FILE_fn_fail_setpos,
+      .fn_unget  = FILE_fn_fail_unget,
+   },
+
+   {NULL, NULL, NULL, 0},
+   {Buffer_stdout, Buffer_stdout, Buffer_stdout + sizeof(Buffer_stdout), _IOLBF},
+
+   NULL, 0
+};
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Static Functions                                                           |
+//
+
+//
+// FILE_fn_fail_close
+//
+static int FILE_fn_fail_close(FILE *stream)
+{
+   return EOF;
+}
+
+//
+// FILE_fn_fail_fetch
+//
+static int FILE_fn_fail_fetch(FILE *stream)
+{
+   stream->flags |= _FILEFLAG_EOF;
+   return EOF;
+}
+
+//
+// FILE_fn_fail_flush
+//
+static int FILE_fn_fail_flush(FILE *stream, int c)
+{
+   return EOF;
+}
+
+//
+// FILE_fn_fail_getpos
+//
+static int FILE_fn_fail_getpos(FILE *stream, fpos_t *pos)
+{
+   errno = EBADF;
+   return EOF;
+}
+
+//
+// FILE_fn_fail_open
+//
+static int FILE_fn_fail_open(FILE *stream, char const *filename, char const *mode)
+{
+   return EOF;
+}
+
+//
+// FILE_fn_fail_reopen
+//
+static int FILE_fn_fail_reopen(FILE *stream, char const *filename, char const *mode)
+{
+   return EOF;
+}
+
+//
+// FILE_fn_fail_setbuf
+//
+static int FILE_fn_fail_setbuf(FILE *stream, char *buf, size_t size, int mode)
+{
+   return EOF;
+}
+
+//
+// FILE_fn_fail_setpos
+//
+static int FILE_fn_fail_setpos(FILE *stream, fpos_t const *pos)
+{
+   errno = EBADF;
+   return EOF;
+}
+
+//
+// FILE_fn_fail_unget
+//
+static int FILE_fn_fail_unget(FILE *stream, int c)
+{
+   return EOF;
+}
+
+//
+// FILE_fn_pass_close
+//
+static int FILE_fn_pass_close(FILE *stream)
+{
+   return 0;
+}
+
+//
+// FILE_fn_pass_open
+//
+static int FILE_fn_pass_open(FILE *stream)
+{
+   return 0;
+}
+
+//
+// FILE_fn_stdout_flush
+//
+static int FILE_fn_stdout_flush(FILE *stream, int c)
+{
+   #if __GDCC_Target__ZDoom__
+   // Because flushing in this way generates a spurious linefeed, do not honor
+   // generic flush requests.
+   if(c == EOF)
+      return 0;
+
+   ACS_BeginPrint();
+   ACS_PrintGlobalCharRange((int)stream->buf_put.buf_beg, __GDCC__Sta, 0,
+      stream->buf_put.buf_ptr - stream->buf_put.buf_beg);
+   if(c != '\n')
+      ACS_PrintChar(c);
+   ACS_EndLog();
+
+   stream->buf_put.buf_ptr = stream->buf_put.buf_beg;
+
+   return c != EOF ? c : 0;
+   #else
+   return EOF;
+   #endif
+}
+
+//
+// FILE_fn_stdout_setbuf
+//
+static int FILE_fn_stdout_setbuf(FILE *stream, char *buf, size_t size, int mode)
+{
+   // Only buffered I/O is possible currently.
+   if(mode == _IONBF)
+      return EOF;
+
+   size_t used = stream->buf_put.buf_ptr - stream->buf_put.buf_beg;
+
+   // Buffer must be large enough for current buffer contents.
+   if(size < used)
+      return EOF;
+
+   if(!buf)
+   {
+      // If possible, reuse the associated static buffer.
+      if(stream == stderr)
+      {
+         if(size <= sizeof(Buffer_stderr))
+         {
+            buf  = Buffer_stderr;
+            size = sizeof(Buffer_stderr);
+            goto buf_good;
+         }
+      }
+      else
+      {
+         if(size <= sizeof(Buffer_stdout))
+         {
+            buf  = Buffer_stdout;
+            size = sizeof(Buffer_stdout);
+            goto buf_good;
+         }
+      }
+
+      return EOF;
+   }
+
+buf_good:
+   if(stream->buf_put.buf_ptr != stream->buf_put.buf_beg)
+      memcpy(buf, stream->buf_put.buf_beg, used);
+
+   stream->buf_put.buf_beg  = buf;
+   stream->buf_put.buf_ptr  = buf + used;
+   stream->buf_put.buf_end  = buf + size;
+ //stream->buf_put.buf_mode = _IOLBF;
+}
+
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
 //
 
 //=========================================================
@@ -92,7 +351,17 @@ char *tmpnam(char *s)
 //
 int fclose(FILE *stream)
 {
-   return EOF;
+   int res = 0;
+
+   if(stream->fn.fn_flush(stream, EOF) == EOF)
+      res = EOF;
+
+   if(stream->fn.fn_close(stream) == EOF)
+      res = EOF;
+
+   free(stream);
+
+   return res;
 }
 
 //
@@ -100,7 +369,7 @@ int fclose(FILE *stream)
 //
 int fflush(FILE *stream)
 {
-   return 0;
+   return stream->fn.fn_flush(stream, EOF);
 }
 
 //
@@ -126,9 +395,9 @@ FILE *freopen(char const *restrict filename, char const *restrict mode,
 void setbuf(FILE *restrict stream, char *restrict buf)
 {
    if(buf)
-      setvbuf(stream, buf, _IOFBF, BUFSIZ);
+      stream->fn.fn_setbuf(stream, buf, BUFSIZ, _IOFBF);
    else
-      setvbuf(stream, buf, _IONBF, 0);
+      stream->fn.fn_setbuf(stream, buf, 0, _IONBF);
 }
 
 //
@@ -136,46 +405,7 @@ void setbuf(FILE *restrict stream, char *restrict buf)
 //
 int setvbuf(FILE *restrict stream, char *restrict buf, int mode, size_t size)
 {
-   // Only buffered I/O is possible currently.
-   if(mode == _IONBF)
-      return EOF;
-
-   // Buffer must be large enough for current buffer contents.
-   if(size < stream->bufPos)
-      return EOF;
-
-   if(!buf)
-   {
-      // If possible, reuse the associated static buffer.
-      if(stream == stderr)
-      {
-         if(size <= sizeof(Buffer_stderr))
-         {
-            buf  = Buffer_stderr;
-            size = sizeof(Buffer_stderr);
-            goto buf_good;
-         }
-      }
-      else if(stream == stdout)
-      {
-         if(size <= sizeof(Buffer_stdout))
-         {
-            buf  = Buffer_stdout;
-            size = sizeof(Buffer_stdout);
-            goto buf_good;
-         }
-      }
-
-      // TODO: Allocate buffer.
-      return EOF;
-   }
-
-buf_good:
-   if(stream->bufPos)
-      memcpy(buf, stream->buf, stream->bufPos);
-
-   stream->buf    = buf;
-   stream->bufLen = size;
+   return stream->fn.fn_setbuf(stream, buf, size, mode);
 }
 
 //=========================================================
@@ -260,7 +490,13 @@ int vsscanf(char const *restrict s, char const *restrict format, __va_list arg)
 //
 int fgetc(FILE *stream)
 {
-   return EOF;
+   if(stream->flags & _FILEFLAG_EOF)
+      return EOF;
+
+   if(stream->buf_get.buf_ptr == stream->buf_get.buf_end)
+      return stream->fn.fn_fetch(stream);
+
+   return *stream->buf_get.buf_ptr++;
 }
 
 //
@@ -268,7 +504,28 @@ int fgetc(FILE *stream)
 //
 char *fgets(char *restrict s, int n, FILE *restrict stream)
 {
-   return NULL;
+   if(stream->flags & _FILEFLAG_EOF)
+      return NULL;
+
+   char *itr = s;
+   if(n) while(--n)
+   {
+      int c = fgetc(stream);
+
+      if(c == EOF)
+      {
+         if(itr == s || (stream->flags & _FILEFLAG_ERR))
+           return NULL;
+
+         break;
+      }
+
+      *itr++ = c;
+      if(c == '\n') break;
+   }
+
+   *itr = '\0';
+   return s;
 }
 
 //
@@ -276,12 +533,12 @@ char *fgets(char *restrict s, int n, FILE *restrict stream)
 //
 int fputc(int c, FILE *stream)
 {
-   if(c == '\n') return __fendl(stream) == EOF ? EOF : c;
+   if(stream->buf_put.buf_ptr == stream->buf_put.buf_end ||
+      (stream->buf_put.buf_mode == _IOLBF && c == '\n'))
+      return stream->fn.fn_flush(stream, c);
 
-   if(stream->bufPos == stream->bufLen)
-      return stream->flags |= _FILEFLAG_OVR, EOF;
+   *stream->buf_put.buf_ptr++ = c;
 
-   stream->buf[stream->bufPos++] = c;
    return c;
 }
 
@@ -290,7 +547,12 @@ int fputc(int c, FILE *stream)
 //
 int fputs(char const *restrict s, FILE *restrict stream)
 {
-   while(*s) if(fputc(*s, stream) == EOF) return EOF;
+   while(*s)
+   {
+      if(fputc(*s++, stream) == EOF)
+         return EOF;
+   }
+
    return 1;
 }
 
@@ -299,7 +561,13 @@ int fputs(char const *restrict s, FILE *restrict stream)
 //
 int getc(FILE *stream)
 {
-   return EOF;
+   if(stream->flags & _FILEFLAG_EOF)
+      return EOF;
+
+   if(stream->buf_get.buf_ptr == stream->buf_get.buf_end)
+      return stream->fn.fn_fetch(stream);
+
+   return *stream->buf_get.buf_ptr++;
 }
 
 //
@@ -307,7 +575,13 @@ int getc(FILE *stream)
 //
 int getchar(void)
 {
-   return EOF;
+   if(stdin->flags & _FILEFLAG_EOF)
+      return EOF;
+
+   if(stdin->buf_get.buf_ptr == stdin->buf_get.buf_end)
+      return stdin->fn.fn_fetch(stdin);
+
+   return *stdin->buf_get.buf_ptr++;
 }
 
 //
@@ -315,12 +589,12 @@ int getchar(void)
 //
 int putc(int c, FILE *stream)
 {
-   if(c == '\n') return __fendl(stream) == EOF ? EOF : c;
+   if(stream->buf_put.buf_ptr == stream->buf_put.buf_end ||
+      (stream->buf_put.buf_mode == _IOLBF && c == '\n'))
+      return stream->fn.fn_flush(stream, c);
 
-   if(stream->bufPos == stream->bufLen)
-      return stream->flags |= _FILEFLAG_OVR, EOF;
+   *stream->buf_put.buf_ptr++ = c;
 
-   stream->buf[stream->bufPos++] = c;
    return c;
 }
 
@@ -329,12 +603,12 @@ int putc(int c, FILE *stream)
 //
 int putchar(int c)
 {
-   if(c == '\n') return __fendl(stdout) == EOF ? EOF : c;
+   if(stdout->buf_put.buf_ptr == stdout->buf_put.buf_end ||
+      (stdout->buf_put.buf_mode == _IOLBF && c == '\n'))
+      return stdout->fn.fn_flush(stdout, c);
 
-   if(stdout->bufPos == stdout->bufLen)
-      return stdout->flags |= _FILEFLAG_OVR, EOF;
+   *stdout->buf_put.buf_ptr++ = c;
 
-   stdout->buf[stdout->bufPos++] = c;
    return c;
 }
 
@@ -343,8 +617,15 @@ int putchar(int c)
 //
 int puts(char const *s)
 {
-   while(*s) if(putchar(*s) == EOF) return EOF;
-   if(__fendl(stdout) == EOF) return EOF;
+   while(*s)
+   {
+      if(putchar(*s++) == EOF)
+         return EOF;
+   }
+
+   if(putchar('\n') == EOF)
+      return EOF;
+
    return 1;
 }
 
@@ -353,7 +634,18 @@ int puts(char const *s)
 //
 int ungetc(int c, FILE *stream)
 {
-   return EOF;
+   if(c == EOF)
+      return EOF;
+
+   if(stream->buf_get.buf_ptr == stream->buf_get.buf_beg ||
+      *(stream->buf_get.buf_ptr - 1) != c)
+      return stream->fn.fn_unget(stream, c);
+
+   --stream->buf_get.buf_ptr;
+
+   stream->flags &= ~_FILEFLAG_EOF;
+
+   return c;
 }
 
 //=========================================================
@@ -366,7 +658,21 @@ int ungetc(int c, FILE *stream)
 size_t fread(void *restrict ptr, size_t size, size_t nmemb,
    FILE *restrict stream)
 {
-   return 0;
+   size_t res;
+   int c;
+
+   for(char *itr = ptr; nmemb--; itr += size, ++res)
+   {
+      for(size_t i = size; i--;)
+      {
+         if((c = fgetc(stream)) == EOF)
+            return res;
+
+         *itr++ = c;
+      }
+   }
+
+   return res;
 }
 
 //
@@ -375,36 +681,17 @@ size_t fread(void *restrict ptr, size_t size, size_t nmemb,
 size_t fwrite(void const *restrict ptr, size_t size, size_t nmemb,
    FILE *restrict stream)
 {
-   size_t res    = 0;
-   size_t bufLen = stream->bufLen;
-   size_t bufPos = stream->bufPos;
-   char  *buf    = stream->buf;
-   char   c;
+   size_t res;
 
-   for(char const *itr = ptr, *end = itr + size * nmemb; itr != end;)
+   for(char const *itr = ptr; nmemb--; ++res)
    {
-      if(bufPos + size > bufLen)
-         return stream->flags |= _FILEFLAG_OVR, res;
-
       for(size_t i = size; i--;)
       {
-         if((c = *itr++) == '\n')
-         {
-            stream->bufPos = bufPos;
-
-            if(__fendl(stream) == EOF)
-               return res;
-
-            bufPos = stream->bufPos;
-         }
-         else
-            buf[bufPos++] = c;
+         if(fputc(*itr++, stream) == EOF)
+            return res;
       }
-
-      ++res;
    }
 
-   stream->bufPos = bufPos;
    return res;
 }
 
@@ -417,8 +704,10 @@ size_t fwrite(void const *restrict ptr, size_t size, size_t nmemb,
 //
 int fgetpos(FILE *restrict stream, fpos_t *restrict pos)
 {
-   errno = EBADF;
-   return EOF;
+   if(stream->fn.fn_getpos(stream, pos) == EOF)
+      return EOF;
+
+   return 0;
 }
 
 //
@@ -426,7 +715,31 @@ int fgetpos(FILE *restrict stream, fpos_t *restrict pos)
 //
 int fseek(FILE *stream, long int offset, int whence)
 {
-   errno = EBADF;
+   fpos_t pos;
+
+   if(whence == SEEK_SET)
+   {
+      __ltofpos(&pos, offset);
+      if(stream->fn.fn_setpos(stream, &pos) == EOF)
+         return EOF;
+
+      return 0;
+   }
+
+   if(whence == SEEK_CUR)
+   {
+      if(stream->fn.fn_getpos(stream, &pos) == EOF)
+         return EOF;
+
+      __ltofpos(&pos, offset + __fpostol(&pos));
+      if(stream->fn.fn_setpos(stream, &pos) == EOF)
+         return EOF;
+
+      return 0;
+   }
+
+   // SEEK_END is not supported.
+
    return EOF;
 }
 
@@ -435,8 +748,10 @@ int fseek(FILE *stream, long int offset, int whence)
 //
 int fsetpos(FILE *stream, fpos_t const *pos)
 {
-   errno = EBADF;
-   return EOF;
+   if(stream->fn.fn_setpos(stream, pos) == EOF)
+      return EOF;
+
+   return 0;
 }
 
 //
@@ -444,8 +759,11 @@ int fsetpos(FILE *stream, fpos_t const *pos)
 //
 long int ftell(FILE *stream)
 {
-   errno = EBADF;
-   return -1L;
+   fpos_t pos;
+   if(stream->fn.fn_getpos(stream, &pos) == EOF)
+      return -1L;
+
+   return __fpostol(&pos);
 }
 
 //
@@ -466,7 +784,7 @@ void rewind(FILE *stream)
 //
 void clearerr(FILE *stream)
 {
-   stream->flags = 0;
+   stream->flags &= ~(_FILEFLAG_EOF | _FILEFLAG_ERR);
 }
 
 //
@@ -482,7 +800,7 @@ int feof(FILE *stream)
 //
 int ferror(FILE *stream)
 {
-   return stream->flags & (_FILEFLAG_ERR | _FILEFLAG_OVR);
+   return stream->flags & _FILEFLAG_ERR;
 }
 
 //
@@ -503,21 +821,39 @@ void perror(char const *s)
 //
 
 //
-// __fendl
+// __fopen_fn
 //
-int __fendl(FILE *stream)
+FILE *__fopen_fn(__FILE_fn const *fn, size_t size, void *data,
+   char const *filename, char const *mode)
 {
-   #if __GDCC_Target__ZDoom__
-   ACS_BeginPrint();
-   ACS_PrintGlobalCharRange((int)stream->buf, __GDCC__Sta, 0, stream->bufPos);
-   ACS_EndLog();
+   FILE *f;
 
-   stream->bufPos = 0;
+   if(!(f = malloc(sizeof(FILE) + size)))
+      return NULL;
 
-   return '\n';
-   #else
-   return EOF;
-   #endif
+   f->fn      = *fn;
+   f->buf_get = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
+   f->buf_put = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
+   f->data    = data;
+   f->flags   = 0;
+
+   if(f->fn.fn_open && f->fn.fn_open(f, filename, mode) == EOF)
+   {
+      free(f);
+      return NULL;
+   }
+
+   if(!f->fn.fn_close)  f->fn.fn_close  = FILE_fn_pass_close;
+   if(!f->fn.fn_fetch)  f->fn.fn_fetch  = FILE_fn_fail_fetch;
+   if(!f->fn.fn_flush)  f->fn.fn_flush  = FILE_fn_fail_flush;
+   if(!f->fn.fn_getpos) f->fn.fn_getpos = FILE_fn_fail_getpos;
+   if(!f->fn.fn_open)   f->fn.fn_open   = FILE_fn_pass_open;
+   if(!f->fn.fn_reopen) f->fn.fn_reopen = FILE_fn_fail_reopen;
+   if(!f->fn.fn_setbuf) f->fn.fn_setbuf = FILE_fn_fail_setbuf;
+   if(!f->fn.fn_setpos) f->fn.fn_setpos = FILE_fn_fail_setpos;
+   if(!f->fn.fn_unget)  f->fn.fn_unget  = FILE_fn_fail_unget;
+
+   return f;
 }
 
 //
@@ -526,36 +862,17 @@ int __fendl(FILE *stream)
 size_t __fwrite_str(void const __str_ars *restrict ptr, size_t size,
    size_t nmemb, FILE *stream)
 {
-   size_t res    = 0;
-   size_t bufLen = stream->bufLen;
-   size_t bufPos = stream->bufPos;
-   char  *buf    = stream->buf;
-   char   c;
+   size_t res = 0;
 
-   for(char const __str_ars *itr = ptr, *end = itr + size * nmemb; itr != end;)
+   for(char const __str_ars *itr = ptr; nmemb--; ++res)
    {
-      if(bufPos + size > bufLen)
-         return stream->flags |= _FILEFLAG_OVR, res;
-
       for(size_t i = size; i--;)
       {
-         if((c = *itr++) == '\n')
-         {
-            stream->bufPos = bufPos;
-
-            if(__fendl(stream) == EOF)
-               return res;
-
-            bufPos = stream->bufPos;
-         }
-         else
-            buf[bufPos++] = c;
+         if(fputc(*itr++, stream) == EOF)
+            return res;
       }
-
-      ++res;
    }
 
-   stream->bufPos = bufPos;
    return res;
 }
 

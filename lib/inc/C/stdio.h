@@ -83,12 +83,23 @@
 //
 #define _FILEFLAG_EOF 0x00000001
 #define _FILEFLAG_ERR 0x00000002
-#define _FILEFLAG_OVR 0x00000004
+
+//
+// __fpostol
+//
+#define __fpostol(pos) ((long int)*(pos))
+
+//
+// __ltofpos
+//
+#define __ltofpos(pos, l) ((void)(*(pos) = (fpos_t)(long int)(l)))
 
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
+
+struct __FILE;
 
 //
 // size_t
@@ -101,27 +112,60 @@ typedef unsigned size_t;
 //
 // FILE
 //
-struct FILE
-{
-   char    *buf;
-   size_t   bufLen;
-   size_t   bufPos;
-   unsigned flags;
-};
-
 #ifndef __GDCC_Have__FILE__
 #define __GDCC_Have__FILE__
-typedef struct FILE FILE;
+typedef struct __FILE FILE;
 #endif
 
 //
 // fpos_t
 //
-typedef unsigned fpos_t;
+typedef unsigned long int fpos_t;
+
+//
+// __FILE_buf
+//
+typedef struct __FILE_buf
+{
+   char *buf_beg;
+   char *buf_ptr;
+   char *buf_end;
+   int   buf_mode;
+} __FILE_buf;
+
+//
+// __FILE_fn
+//
+typedef struct __FILE_fn
+{
+   int (*fn_close)(FILE *stream);
+   int (*fn_fetch)(FILE *stream);
+   int (*fn_flush)(FILE *stream, int c);
+   int (*fn_getpos)(FILE *stream, fpos_t *pos);
+   int (*fn_open)(FILE *stream, char const *filename, char const *mode);
+   int (*fn_reopen)(FILE *stream, char const *filename, char const *mode);
+   int (*fn_setbuf)(FILE *stream, char *buf, size_t size, int mode);
+   int (*fn_setpos)(FILE *stream, fpos_t const *pos);
+   int (*fn_unget)(FILE *stream, int c);
+} __FILE_fn;
+
+//
+// __FILE
+//
+typedef struct __FILE
+{
+   __FILE_fn fn;
+
+   __FILE_buf buf_get;
+   __FILE_buf buf_put;
+
+   void    *data;
+   unsigned flags;
+} __FILE;
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Variables                                                           |
 //
 
 //
@@ -135,7 +179,7 @@ extern FILE __stderr, __stdin, __stdout;
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 #ifdef __cplusplus
@@ -229,7 +273,8 @@ void perror(char const *s);
 // Implementation extensions.
 //
 
-int __fendl(FILE *stream);
+FILE *__fopen_fn(__FILE_fn const *fn, size_t size, void *data,
+   char const *filename, char const *mode);
 int __fprintf_str(FILE *restrict stream,
    char const __str_ars *restrict format, ...);
 size_t __fwrite_str(void const __str_ars *restrict ptr, size_t size,
