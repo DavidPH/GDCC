@@ -65,6 +65,9 @@ static char Buffer_stdout[BUFSIZ];
 //
 FILE __stderr =
 {
+   #if __GDCC__NoFuncPtr
+   {NULL},
+   #else
    {
       .fn_close  = FILE_fn_fail_close,
       .fn_fetch  = FILE_fn_fail_fetch,
@@ -76,6 +79,7 @@ FILE __stderr =
       .fn_setpos = FILE_fn_fail_setpos,
       .fn_unget  = FILE_fn_fail_unget,
    },
+   #endif
 
    {NULL, NULL, NULL, 0},
    {Buffer_stderr, Buffer_stderr, Buffer_stderr + sizeof(Buffer_stderr), _IOLBF},
@@ -88,6 +92,9 @@ FILE __stderr =
 //
 FILE __stdin =
 {
+   #if __GDCC__NoFuncPtr
+   {NULL},
+   #else
    {
       .fn_close  = FILE_fn_fail_close,
       .fn_fetch  = FILE_fn_fail_fetch,
@@ -99,6 +106,7 @@ FILE __stdin =
       .fn_setpos = FILE_fn_fail_setpos,
       .fn_unget  = FILE_fn_fail_unget,
    },
+   #endif
 
    {NULL, NULL, NULL, 0},
    {NULL, NULL, NULL, 0},
@@ -111,6 +119,9 @@ FILE __stdin =
 //
 FILE __stdout =
 {
+   #if __GDCC__NoFuncPtr
+   {NULL},
+   #else
    {
       .fn_close  = FILE_fn_fail_close,
       .fn_fetch  = FILE_fn_fail_fetch,
@@ -122,6 +133,7 @@ FILE __stdout =
       .fn_setpos = FILE_fn_fail_setpos,
       .fn_unget  = FILE_fn_fail_unget,
    },
+   #endif
 
    {NULL, NULL, NULL, 0},
    {Buffer_stdout, Buffer_stdout, Buffer_stdout + sizeof(Buffer_stdout), _IOLBF},
@@ -351,6 +363,9 @@ char *tmpnam(char *s)
 //
 int fclose(FILE *stream)
 {
+   #if __GDCC__NoFuncPtr
+   return EOF;
+   #else
    int res = 0;
 
    if(stream->fn.fn_flush(stream, EOF) == EOF)
@@ -362,6 +377,7 @@ int fclose(FILE *stream)
    free(stream);
 
    return res;
+   #endif
 }
 
 //
@@ -369,7 +385,14 @@ int fclose(FILE *stream)
 //
 int fflush(FILE *stream)
 {
+   #if __GDCC__NoFuncPtr
+   if(stream == stdout || stream == stderr)
+      return FILE_fn_stdout_flush(stream, EOF);
+   else
+      return EOF;
+   #else
    return stream->fn.fn_flush(stream, EOF);
+   #endif
 }
 
 //
@@ -395,9 +418,9 @@ FILE *freopen(char const *restrict filename, char const *restrict mode,
 void setbuf(FILE *restrict stream, char *restrict buf)
 {
    if(buf)
-      stream->fn.fn_setbuf(stream, buf, BUFSIZ, _IOFBF);
+      setvbuf(stream, buf, _IOFBF, BUFSIZ);
    else
-      stream->fn.fn_setbuf(stream, buf, 0, _IONBF);
+      setvbuf(stream, buf, _IONBF, 0);
 }
 
 //
@@ -405,7 +428,14 @@ void setbuf(FILE *restrict stream, char *restrict buf)
 //
 int setvbuf(FILE *restrict stream, char *restrict buf, int mode, size_t size)
 {
+   #if __GDCC__NoFuncPtr
+   if(stream == stdout || stream == stderr)
+      return FILE_fn_stdout_setbuf(stream, buf, size, mode);
+   else
+      return EOF;
+   #else
    return stream->fn.fn_setbuf(stream, buf, size, mode);
+   #endif
 }
 
 //=========================================================
@@ -490,6 +520,9 @@ int vsscanf(char const *restrict s, char const *restrict format, __va_list arg)
 //
 int fgetc(FILE *stream)
 {
+   #if __GDCC__NoFuncPtr
+   return EOF;
+   #else
    if(stream->flags & _FILEFLAG_EOF)
       return EOF;
 
@@ -497,6 +530,7 @@ int fgetc(FILE *stream)
       return stream->fn.fn_fetch(stream);
 
    return *stream->buf_get.buf_ptr++;
+   #endif
 }
 
 //
@@ -533,6 +567,19 @@ char *fgets(char *restrict s, int n, FILE *restrict stream)
 //
 int fputc(int c, FILE *stream)
 {
+   #if __GDCC__NoFuncPtr
+   if(stream == stdout || stream == stderr)
+   {
+      if(stream->buf_put.buf_ptr == stream->buf_put.buf_end || c == '\n')
+         return FILE_fn_stdout_flush(stream, c);
+
+      *stream->buf_put.buf_ptr++ = c;
+
+      return c;
+   }
+   else
+      return EOF;
+   #else
    if(stream->buf_put.buf_ptr == stream->buf_put.buf_end ||
       (stream->buf_put.buf_mode == _IOLBF && c == '\n'))
       return stream->fn.fn_flush(stream, c);
@@ -540,6 +587,7 @@ int fputc(int c, FILE *stream)
    *stream->buf_put.buf_ptr++ = c;
 
    return c;
+   #endif
 }
 
 //
@@ -561,6 +609,9 @@ int fputs(char const *restrict s, FILE *restrict stream)
 //
 int getc(FILE *stream)
 {
+   #if __GDCC__NoFuncPtr
+   return EOF;
+   #else
    if(stream->flags & _FILEFLAG_EOF)
       return EOF;
 
@@ -568,6 +619,7 @@ int getc(FILE *stream)
       return stream->fn.fn_fetch(stream);
 
    return *stream->buf_get.buf_ptr++;
+   #endif
 }
 
 //
@@ -575,6 +627,9 @@ int getc(FILE *stream)
 //
 int getchar(void)
 {
+   #if __GDCC__NoFuncPtr
+   return EOF;
+   #else
    if(stdin->flags & _FILEFLAG_EOF)
       return EOF;
 
@@ -582,6 +637,7 @@ int getchar(void)
       return stdin->fn.fn_fetch(stdin);
 
    return *stdin->buf_get.buf_ptr++;
+   #endif
 }
 
 //
@@ -589,6 +645,9 @@ int getchar(void)
 //
 int putc(int c, FILE *stream)
 {
+   #if __GDCC__NoFuncPtr
+   return fputc(c, stream);
+   #else
    if(stream->buf_put.buf_ptr == stream->buf_put.buf_end ||
       (stream->buf_put.buf_mode == _IOLBF && c == '\n'))
       return stream->fn.fn_flush(stream, c);
@@ -596,6 +655,7 @@ int putc(int c, FILE *stream)
    *stream->buf_put.buf_ptr++ = c;
 
    return c;
+   #endif
 }
 
 //
@@ -603,6 +663,14 @@ int putc(int c, FILE *stream)
 //
 int putchar(int c)
 {
+   #if __GDCC__NoFuncPtr
+   if(stdout->buf_put.buf_ptr == stdout->buf_put.buf_end || c == '\n')
+      return FILE_fn_stdout_flush(stdout, c);
+
+   *stdout->buf_put.buf_ptr++ = c;
+
+   return c;
+   #else
    if(stdout->buf_put.buf_ptr == stdout->buf_put.buf_end ||
       (stdout->buf_put.buf_mode == _IOLBF && c == '\n'))
       return stdout->fn.fn_flush(stdout, c);
@@ -610,6 +678,7 @@ int putchar(int c)
    *stdout->buf_put.buf_ptr++ = c;
 
    return c;
+   #endif
 }
 
 //
@@ -634,6 +703,9 @@ int puts(char const *s)
 //
 int ungetc(int c, FILE *stream)
 {
+   #if __GDCC__NoFuncPtr
+   return EOF;
+   #else
    if(c == EOF)
       return EOF;
 
@@ -646,6 +718,7 @@ int ungetc(int c, FILE *stream)
    stream->flags &= ~_FILEFLAG_EOF;
 
    return c;
+   #endif
 }
 
 //=========================================================
@@ -704,10 +777,14 @@ size_t fwrite(void const *restrict ptr, size_t size, size_t nmemb,
 //
 int fgetpos(FILE *restrict stream, fpos_t *restrict pos)
 {
+   #if __GDCC__NoFuncPtr
+   return EOF;
+   #else
    if(stream->fn.fn_getpos(stream, pos) == EOF)
       return EOF;
 
    return 0;
+   #endif
 }
 
 //
@@ -715,6 +792,9 @@ int fgetpos(FILE *restrict stream, fpos_t *restrict pos)
 //
 int fseek(FILE *stream, long int offset, int whence)
 {
+   #if __GDCC__NoFuncPtr
+   return EOF;
+   #else
    fpos_t pos;
 
    if(whence == SEEK_SET)
@@ -741,6 +821,7 @@ int fseek(FILE *stream, long int offset, int whence)
    // SEEK_END is not supported.
 
    return EOF;
+   #endif
 }
 
 //
@@ -748,10 +829,14 @@ int fseek(FILE *stream, long int offset, int whence)
 //
 int fsetpos(FILE *stream, fpos_t const *pos)
 {
+   #if __GDCC__NoFuncPtr
+   return EOF;
+   #else
    if(stream->fn.fn_setpos(stream, pos) == EOF)
       return EOF;
 
    return 0;
+   #endif
 }
 
 //
@@ -759,11 +844,15 @@ int fsetpos(FILE *stream, fpos_t const *pos)
 //
 long int ftell(FILE *stream)
 {
+   #if __GDCC__NoFuncPtr
+   return EOF;
+   #else
    fpos_t pos;
    if(stream->fn.fn_getpos(stream, &pos) == EOF)
       return -1L;
 
    return __fpostol(&pos);
+   #endif
 }
 
 //
@@ -826,6 +915,9 @@ void perror(char const *s)
 FILE *__fopen_fn(__FILE_fn const *fn, size_t size, void *data,
    char const *filename, char const *mode)
 {
+   #if __GDCC__NoFuncPtr
+   return NULL;
+   #else
    FILE *f;
 
    if(!(f = malloc(sizeof(FILE) + size)))
@@ -854,6 +946,7 @@ FILE *__fopen_fn(__FILE_fn const *fn, size_t size, void *data,
    if(!f->fn.fn_unget)  f->fn.fn_unget  = FILE_fn_fail_unget;
 
    return f;
+   #endif
 }
 
 //
