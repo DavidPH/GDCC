@@ -202,7 +202,7 @@
 #define APROP_Dropped          18
 #define APROP_Notarget         19
 #define APROP_Species          20
-#define APROP_Nametag          21
+#define APROP_NameTag          21
 #define APROP_Score            22
 #define APROP_Notrigger        23
 #define APROP_DamageFactor     24
