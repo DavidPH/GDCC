@@ -1,0 +1,779 @@
+###############################################################################
+ACS Language Specification
+###############################################################################
+
+===============================================================================
+Lexical Elements
+===============================================================================
+
+Syntax:
+  preprocessing-token:
+    identifier
+    pp-number
+    character-literal
+    string-literal
+    punctuator
+
+  token:
+    identifier
+    keyword
+    literal
+    punctuator
+
+===========================================================
+Identifiers
+===========================================================
+
+Syntax:
+  identifier:
+    nondigit
+    identifier nondigit
+    identifier digit
+
+  nondigit: one of
+    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+    a b c d e f g h i j k l m n o p q r s t u v w x y z
+    _
+
+  digit: one of
+    0 1 2 3 4 5 6 7 8 9
+
+Semantics:
+  Lowercase and uppercase letters are equivalent in identifiers and keywords.
+
+===========================================================
+Preprocessing Numbers
+===========================================================
+
+Syntax:
+  pp-number:
+    digit
+    . digit
+    pp-number digit
+    pp-number nondigit
+    pp-number .
+
+===========================================================
+Punctuators
+===========================================================
+
+Syntax:
+  punctuator: one of
+    [ ] ( ) { } ++ -- & * - ~ ! / % << >> < > <= >= == != ^ | && || ? : ; = *=
+    /= %= += -= >>= <<= &= ^= |= , #
+
+===========================================================
+Keywords
+===========================================================
+
+Syntax:
+  keyword:
+    <acs_executewait>
+    <acs_namedexecutewait>
+    <bluereturn>
+    <bool>
+    <break>
+    <case>
+    <clientside>
+    <const>
+    <continue>
+    <createtranslation>
+    <death>
+    <default>
+    <disconnect>
+    <do>
+    <else>
+    <enter>
+    <event>
+    <for>
+    <function>
+    <global>
+    <goto>
+    <hudmessage>
+    <hudmessagebold>
+    <if>
+    <int>
+    <lightning>
+    <log>
+    <net>
+    <open>
+    <pickup>
+    <print>
+    <printbold>
+    <redreturn>
+    <respawn>
+    <restart>
+    <return>
+    <script>
+    <special>
+    <static>
+    <str>
+    <strcpy>
+    <strparam>
+    <suspend>
+    <switch>
+    <terminate>
+    <unloading>
+    <until>
+    <void>
+    <while>
+    <whitereturn>
+    <world>
+
+Semantics:
+  Keywords are identifiers with special meaning and/or usage. They shall not be
+  used except as described in this document.
+
+===========================================================
+Literals
+===========================================================
+
+Syntax:
+  literal:
+    character-literal
+    floating-literal
+    integer-literal
+    string-literal
+
+-----------------------------------------------------------
+Character Literals
+-----------------------------------------------------------
+
+Syntax:
+  character-literal:
+    ' c-char-sequence '
+
+  c-char-sequence:
+    c-char
+    c-char-sequence c-char
+
+  c-char:
+    any member of the source character set except the single-quote, backslash,
+      or new-line character.
+    escape-sequence
+
+  escape-sequence:
+    simple-escape-sequence
+    octal-escape-sequence
+    hexadecimal-escape-sequence
+
+  simple-escape-sqeuence: one of
+    \' \" \\ \a \b \c \f \n \r \t \v
+
+  octal-escape-sequence:
+    \ octal-digit
+    \ octal-digit octal-digit
+    \ octal-digit octal-digit octal-digit
+
+  octal-digit: one of
+    0 1 2 3 4 5 6 7
+
+  hexadecimal-escape-sequence:
+    \x hexadecimal-digit
+    hexadecimal-escape-sequence hexadecimal-digit
+
+  hexadecimal-digit: one of
+    0 1 2 3 4 5 6 7 8 9 A B C D E F a b c d e f
+
+-----------------------------------------------------------
+Floating Literals
+-----------------------------------------------------------
+
+Syntax:
+  floating-literal:
+    decimal-floating-literal
+
+  decimal-floating-literal:
+    decimal-fractional-literal
+
+  decimal-fractional-literal:
+    digit-sequence(opt) . digit-sequence
+    digit-sequence .
+
+  digit-sequence:
+    digit
+    digit-sequence digit
+
+-----------------------------------------------------------
+Integer Literals
+-----------------------------------------------------------
+
+Syntax:
+  integer-literal:
+    decimal-integer-literal
+    hexadecimal-integer-literal
+
+  decimal-integer-literal:
+    digit
+    decimal-integer-literal digit
+
+  hexadecimal-integer-literal:
+    hexadecimal-prefix hexadecimal-digit
+    hexadecimal-integer-literal hexadecimal-digit
+
+  hexadecimal-prefix:
+    0X
+    0x
+
+-----------------------------------------------------------
+String Literals
+-----------------------------------------------------------
+
+Syntax:
+  string-literal:
+    " s-char-sequence(opt) "
+
+  s-char-sequence:
+    s-char
+    s-char-sequence s-char
+
+  s-char:
+    any member of the source character set except the double-quote, backslash,
+      or new-line character
+    escape-sequence
+
+===============================================================================
+Expressions
+===============================================================================
+
+===========================================================
+Primary Expressions
+===========================================================
+
+Syntax:
+  primary-expression:
+    identifier
+    literal
+    ( expression )
+
+===========================================================
+Suffix Expressions
+===========================================================
+
+Syntax:
+  suffix-expression:
+    primary-expression
+    suffix-expression [ expression ]
+    suffix-expression ( const-call-specifier(opt) expression-list(opt) )
+    suffix-expression ++
+    suffix-expression --
+
+  const-call-specifier:
+    <const> :
+
+  expression-list:
+    assignment-expression
+    expression-list , assignment-expression
+
+===========================================================
+Prefix Expressions
+===========================================================
+
+Syntax:
+  prefix-expression:
+    suffix-expression
+    create-translation-expression
+    print-expression
+    strcpy-expression
+    ++ prefix-expression
+    -- prefix-expression
+    + cast-expression
+    - cast-expression
+    ~ cast-expression
+    ! cast-expression
+
+  create-translation-expression:
+    <createtranslation> ( assignment-expression )
+    <createtranslation> ( assignment-expression , translation-list )
+
+  translation-list:
+    translation
+    translation-list , translation
+
+  translation:
+    assignment-expression : conditional-expression = translation-part
+
+  translation-part:
+    translation-palette
+    translation-rgb
+    translation-saturated
+
+  translation-palette:
+    assignment-expression : assignment-expression
+
+  translation-rgb:
+    translation-triple : translation-triple
+
+  translation-saturated:
+    % translation-triple : translation-triple
+
+  translation-triple:
+    [ assignment-expression , assignment-expression , assignment-expression ]
+
+  print-expression:
+    print-identifier ( print-specifier-list(opt) print-argument-list(opt) )
+
+  print-specifier-list:
+    print-specifier
+    print-specifier-list , print-specifier
+
+  print-specifier:
+    identifier : ( expression-list )
+    identifier : assignment-expression
+
+  print-argument-list:
+    ; expression-list
+
+  strcpy-expression:
+    <strcpy> ( <a> : assignment-expression , assignment-expression )
+    <strcpy> ( <a> : assignment-expression , assignment-expression ,
+      assignment-expression )
+
+===========================================================
+Cast Expressions
+===========================================================
+
+Syntax:
+  cast-expression:
+    prefix-expression
+
+===========================================================
+Multiplicative Expressions
+===========================================================
+
+Syntax:
+  multiplicative-expression:
+    cast-expression
+    multiplicative-expression * cast-expression
+    multiplicative-expression / cast-expression
+    multiplicative-expression % cast-expression
+
+===========================================================
+Additive Expressions
+===========================================================
+
+Syntax:
+  additive-expression:
+    multiplicative-expression
+    additive-expression + multiplicative-expression
+    additive-expression - multiplicative-expression
+
+===========================================================
+Shift Expressions
+===========================================================
+
+Syntax:
+  shift-expression:
+    additive-expression
+    shift-expression << additive-expression
+    shift-expression >> additive-expression
+
+===========================================================
+Relational Expressions
+===========================================================
+
+Syntax:
+  relational-expression:
+    shift-expression
+    relational-expression < shift-expression
+    relational-expression > shift-expression
+    relational-expression <= shift-expression
+    relational-expression >= shift-expression
+
+===========================================================
+Equality Expressions
+===========================================================
+
+Syntax:
+  equality-expression:
+    relational-expression
+    equality-expression == relational-expression
+    equality-expression != relational-expression
+
+===========================================================
+Bitwise AND Expressions
+===========================================================
+
+Syntax:
+  bitwise-and-expression:
+    equality-expression
+    bitwise-and-expression & equality-expression
+
+===========================================================
+Bitwise Exclusive OR Expressions
+===========================================================
+
+Syntax:
+  bitwise-xor-expression:
+    bitwise-and-expression
+    bitwise-xor-expression ^ bitwise-and-expression
+
+===========================================================
+Bitwise Inclusive OR Expressions
+===========================================================
+
+Syntax:
+  bitwise-ior-expression:
+    bitwise-xor-expression
+    bitwise-ior-expression | bitwise-xor-expression
+
+===========================================================
+Logical AND Expressions
+===========================================================
+
+Syntax:
+  logical-and-expression:
+    bitwise-ior-expression
+    logical-and-expression && bitwise-ior-expression
+
+===========================================================
+Logical Inclusive OR Expressions
+===========================================================
+
+Syntax:
+  logical-ior-expression:
+    logical-and-expression
+    logical-ior-expression || logical-and-expression
+
+===========================================================
+Conditional Expressions
+===========================================================
+
+Syntax:
+  conditional-expression:
+    logical-ior-expression
+    logical-ior-expression ? expression : conditional-expression
+
+===========================================================
+Assignment Expressions
+===========================================================
+
+Syntax:
+  assignment-expression:
+    conditional-expression
+    conditional-expression assignment-operator assignment-expression
+
+  assignment-operator: one of
+    = *= /= %= += -= <<= >>= &= ^= |=
+
+===========================================================
+Comma Expressions
+===========================================================
+
+Syntax:
+  expression:
+    assignment-expression
+    expression , assignment-expression
+
+===========================================================
+Constant Expressions
+===========================================================
+
+Syntax:
+  constant-expression:
+    conditional-expression
+
+===============================================================================
+Declarations
+===============================================================================
+
+Syntax:
+  external-declaration:
+    function-declaration
+    script-declaration
+    special-declaration
+    declaration
+
+  declaration:
+    object-declaration
+
+===========================================================
+Function Declarations
+===========================================================
+
+Syntax:
+  function-declaration:
+    <function> declaration-specifiers identifier ( parameter-type-list )
+      compound-statement
+
+  parameter-type-list:
+    parameter-list
+
+  parameter-list:
+    parameter-declaration
+    parameter-list , parameter-declaration
+
+  parameter-declaration:
+    declaration-specifiers declarator
+
+===========================================================
+Script Declarations
+===========================================================
+
+Syntax:
+  script-declaration:
+    <script> script-address script-parameters(opt) script-type
+      script-flag-sequence(opt) compound-statement
+    <script> script-address script-parameters script-flag-sequence(opt)
+      compound-statement
+
+  script-address:
+    integer-literal
+    string-literal
+
+  script-parameters:
+    ( parameter-type-list )
+
+  script-type:
+    <bluereturn>
+    <death>
+    <disconnect>
+    <enter>
+    <event>
+    <lightning>
+    <open>
+    <pickup>
+    <redreturn>
+    <respawn>
+    <return>
+    <unloading>
+    <whitereturn>
+
+  script-flag-sequence:
+    script-flag script-flag-sequence(opt)
+
+  script-flag:
+    <clientside>
+    <net>
+
+===========================================================
+Special Declarations
+===========================================================
+
+Syntax:
+  special-declaration:
+    <special> special-list ;
+
+  special-list:
+    special-item
+    special-list , special-item
+
+  special-item:
+    special-address identifier ( special-parameters )
+
+  special-address:
+    integer-literal :
+    - integer-literal :
+
+  special-parameters:
+    integer-literal
+    integer-literal , integer-literal
+
+===========================================================
+Object Declarations
+===========================================================
+
+Syntax:
+  object-declaration:
+    declaration-specifiers init-declarator-list ;
+
+  declaration-specifiers:
+    storage-class-specifier declaration-specifiers(opt)
+    type-specifier declaration-specifiers(opt)
+
+  storage-class-specifier:
+    <global>
+    <static>
+    <world>
+
+  type-specifier:
+    <bool>
+    <int>
+    <str>
+    <void>
+
+  init-declarator-list:
+    init-declarator
+    init-declarator-list , init-declarator
+
+  init-declarator:
+    declarator
+    declarator = initializer
+
+  declarator:
+    direct-declarator
+
+  direct-declarator:
+    object-address(opt) identifier
+    ( declarator )
+    direct-declarator [ expression(opt) ]
+
+  object-address:
+    integer-literal :
+
+===============================================================================
+Statements
+===============================================================================
+
+Syntax:
+  statement:
+    labeled-statement
+    compound-statement
+    expression-statement
+    selection-statement
+    iteration-statement
+    jump-statement
+
+===========================================================
+Labeled Statements
+===========================================================
+
+Syntax:
+  labeled-statement:
+    <case> expression : statement
+    <default> : statement
+
+===========================================================
+Compound Statements
+===========================================================
+
+Syntax:
+  compound-statement:
+    { block-item-list(opt) }
+
+  block-item-list:
+    block-item
+    block-item-list block-item
+
+  block-item:
+    declaration
+    statement
+
+===========================================================
+Expression Statements
+===========================================================
+
+Syntax:
+  expression-statement:
+    expression(opt) ;
+
+===========================================================
+Selection Statements
+===========================================================
+
+Syntax:
+  selection-statement:
+    <if> ( expression ) statement
+    <if> ( expression ) statement <else> statement
+    <switch> ( expression ) statement
+
+===========================================================
+Iteration Statements
+===========================================================
+
+Syntax:
+  iteration-statement:
+    <while> ( expression ) statement
+    <until> ( expression ) statement
+    <do> statement <while> ( expression ) ;
+    <do> statement <until> ( expression ) ;
+    <for> ( expression(opt) ; expression(opt) ; expression(opt) ) statement
+    <for> ( block-declaration expression(opt) ; expression(opt) ) statement
+
+===========================================================
+Jump Statements
+===========================================================
+
+Syntax:
+  jump-statement:
+    <continue> ;
+    <break> ;
+    <return> expression(opt) ;
+    <restart> ;
+    <terminate> ;
+
+===============================================================================
+Preprocessing Directives
+===============================================================================
+
+Syntax:
+  preprocessing-file:
+    preprocessing-line-sequence(opt)
+
+  preprocessing-line-sequence:
+    preprocessing-line
+    preprocessing-line-sequence preprocessing-line
+
+  preprocessing-line:
+    control-line
+    text-line
+
+  control-line:
+    # define-name identifier preprocessing-token-sequence(opt) new-line
+    # <import> string-literal new-line
+    # <include> string-literal new-line
+    # <library> string-literal new-line
+
+  define-name:
+    <define>
+    <libdefine>
+
+  text-line:
+    preprocessing-token-sequence(opt) new-line
+
+  preprocessing-token-sequence
+    preprocessing-token
+    preprocessing-token-sequence preprocessing-token
+
+===========================================================
+Source File Inclusion
+===========================================================
+
+Semantics:
+  Except when importing, a preprocessing directive of the form
+    # <include> string-literal new-line
+  causes the replacement of that directive by the entire contents of the source
+  file identified by the string literal.
+
+  Except when importing, a preprocessing directive of the form
+    # <import> string-literal new-line
+  causes the identified file to be processed for declarations.
+
+  Both forms have no effect while importing.
+
+===========================================================
+Macro Replacement
+===========================================================
+
+Semantics:
+  A preprocessing directive of the form
+    # define-name identifier preprocessing-token-sequence new-line
+  defines a macro as in C, except that an implementation may require the
+  preprocessing token sequence to be in the form of a constant expression to be
+  evaluated immediately.
+
+  When the define name is define and used when importing, the macro is removed
+  at the end of the file.
+
+  If a macro is defined with one define name and then later redefined using a
+  different define name the behavior is undefined.
+
+===========================================================
+Library Directive
+===========================================================
+
+Semantics:
+  When importing, a directive of the form
+    # <library> string-literal new-line
+  inditifies a library to link with at runtime.
+
+  The directive has no effect when not importing.
+
+###############################################################################
+Grammar
+###############################################################################
+
+###############################################################################
+EOF
+###############################################################################
+
