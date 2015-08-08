@@ -652,7 +652,7 @@ special
    void  {379     }:PrintLocalCharRange(int, int, int, int),
    int   {380     }:StrCpyToLocalCharRange(int, int, int, int, str, int);
 
-print HudMessage
+print __HudMessage
 (
    (begin): BeginHudMessage,
    (end):   EndHudMessage,
@@ -662,7 +662,7 @@ print HudMessage
    ACS_PrintPropertyBase()
 );
 
-print HudMessageBold
+print __HudMessageBold
 (
    (begin): BeginHudMessageBold,
    (end):   EndHudMessageBold,
@@ -672,7 +672,7 @@ print HudMessageBold
    ACS_PrintPropertyBase()
 );
 
-print Log
+print __Log
 (
    (begin): BeginLog,
    (end):   EndLog,
@@ -680,7 +680,7 @@ print Log
    ACS_PrintPropertyBase()
 );
 
-print Print
+print __Print
 (
    (begin): BeginPrint,
    (end):   EndPrint,
@@ -688,7 +688,7 @@ print Print
    ACS_PrintPropertyBase()
 );
 
-print PrintBold
+print __PrintBold
 (
    (begin): BeginPrintBold,
    (end):   EndPrintBold,
@@ -696,7 +696,7 @@ print PrintBold
    ACS_PrintPropertyBase()
 );
 
-print StrParam
+print __StrParam
 (
    (begin): BeginStrParam,
    (end):   EndStrParam,

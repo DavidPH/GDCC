@@ -59,12 +59,10 @@ namespace GDCC
       //
       bool PPTokenTBuf::IsKeyWrd(Core::String str)
       {
-         // Some identifiers which are keywords in acc need to be identifiers
-         // in gdcc-acc, due to differences in header implementation.
          switch(str)
          {
-       //case Core::STR_acs_executewait:
-       //case Core::STR_acs_namedexecutewait:
+         case Core::STR_acs_executewait:
+         case Core::STR_acs_namedexecutewait:
          case Core::STR_bluereturn:
          case Core::STR_bool:
          case Core::STR_break:
@@ -72,7 +70,7 @@ namespace GDCC
          case Core::STR_clientside:
          case Core::STR_const:
          case Core::STR_continue:
-       //case Core::STR_createtranslation:
+         case Core::STR_createtranslation:
          case Core::STR_death:
          case Core::STR_default:
          case Core::STR_disconnect:
@@ -82,19 +80,19 @@ namespace GDCC
          case Core::STR_event:
          case Core::STR_for:
          case Core::STR_function:
-       //case Core::STR_global:
+         case Core::STR_global:
          case Core::STR_goto:
-       //case Core::STR_hudmessage:
-       //case Core::STR_hudmessagebold:
+         case Core::STR_hudmessage:
+         case Core::STR_hudmessagebold:
          case Core::STR_if:
          case Core::STR_int:
          case Core::STR_lightning:
-       //case Core::STR_log:
+         case Core::STR_log:
          case Core::STR_net:
          case Core::STR_open:
          case Core::STR_pickup:
-       //case Core::STR_print:
-       //case Core::STR_printbold:
+         case Core::STR_print:
+         case Core::STR_printbold:
          case Core::STR_redreturn:
          case Core::STR_respawn:
          case Core::STR_restart:
@@ -103,8 +101,8 @@ namespace GDCC
          case Core::STR_special:
          case Core::STR_static:
          case Core::STR_str:
-       //case Core::STR_strcpy:
-       //case Core::STR_strparam:
+         case Core::STR_strcpy:
+         case Core::STR_strparam:
          case Core::STR_suspend:
          case Core::STR_switch:
          case Core::STR_terminate:
@@ -113,9 +111,10 @@ namespace GDCC
          case Core::STR_void:
          case Core::STR_while:
          case Core::STR_whitereturn:
-       //case Core::STR_world:
+         case Core::STR_world:
             return true;
 
+            // Extension keywords.
          case Core::STR_enum:
          case Core::STR_fixed:
          case Core::STR_float:

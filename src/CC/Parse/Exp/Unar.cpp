@@ -269,21 +269,6 @@ namespace GDCC
       }
 
       //
-      // GetExp_Unar_KeyWrd
-      //
-      static AST::Exp::CRef GetExp_Unar_KeyWrd(Parser &ctx, Scope &scope)
-      {
-         switch(ctx.in.peek().str)
-         {
-         case Core::STR_sizeof:   return GetExp_Unar_sizeof(ctx, scope);
-         case Core::STR__Alignof: return GetExp_Unar_alignof(ctx, scope);
-
-         default:
-            return ctx.getExp_Post(scope);
-         }
-      }
-
-      //
       // GetExp_Unar_Mul
       //
       static AST::Exp::CRef GetExp_Unar_Mul(Parser &ctx, Scope &scope)
@@ -327,7 +312,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -353,6 +338,21 @@ namespace GDCC
       }
 
       //
+      // Parser::getExp_Unar_KeyWrd
+      //
+      AST::Exp::CRef Parser::getExp_Unar_KeyWrd(Scope &scope)
+      {
+         switch(in.peek().str)
+         {
+         case Core::STR_sizeof:   return GetExp_Unar_sizeof(*this, scope);
+         case Core::STR__Alignof: return GetExp_Unar_alignof(*this, scope);
+
+         default:
+            return getExp_Post(scope);
+         }
+      }
+
+      //
       // Parser::getExp_Unar
       //
       AST::Exp::CRef Parser::getExp_Unar(Scope &scope)
@@ -360,7 +360,7 @@ namespace GDCC
          switch(in.peek().tok)
          {
          case Core::TOK_Identi: return getExp_Unar_Identi(       scope);
-         case Core::TOK_KeyWrd: return GetExp_Unar_KeyWrd(*this, scope);
+         case Core::TOK_KeyWrd: return getExp_Unar_KeyWrd(       scope);
          case Core::TOK_Add:    return GetExp_Unar_Add   (*this, scope);
          case Core::TOK_Add2:   return GetExp_Unar_Add2  (*this, scope);
          case Core::TOK_And:    return GetExp_Unar_And   (*this, scope);

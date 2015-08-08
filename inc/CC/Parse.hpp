@@ -91,6 +91,7 @@ namespace GDCC
          virtual ExpCRef getExp_Init(Scope &scope, AST::Type const *type);
 
          virtual ExpCRef getExp_Unar_Identi(Scope &scope);
+         virtual ExpCRef getExp_Unar_KeyWrd(Scope &scope);
 
          virtual ExpCRef getExp_Prim(Scope &scope);
          virtual ExpCRef getExp_Post(Scope &scope);
@@ -236,7 +237,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

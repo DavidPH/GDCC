@@ -168,7 +168,7 @@ special
    void  {100     }:ThingSound(int, str, int),
    void  {101     }:EndPrintBold(void);
 
-print Print
+print __Print
 (
    (begin): BeginPrint,
    (end):   EndPrint,
@@ -176,7 +176,7 @@ print Print
    ACS_PrintPropertyBase()
 );
 
-print PrintBold
+print __PrintBold
 (
    (begin): BeginPrintBold,
    (end):   EndPrintBold,

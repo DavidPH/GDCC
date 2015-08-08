@@ -68,6 +68,7 @@ namespace GDCC
          virtual ExpCRef getExp_Unar_print(CC::Scope &scope, PrintDecl const *print);
 
          virtual ExpCRef getExp_Unar_Identi(CC::Scope &scope);
+         virtual ExpCRef getExp_Unar_KeyWrd(CC::Scope &scope);
 
          virtual ExpCRef getExp_Prim(CC::Scope &scope);
          virtual ExpCRef getExp_Post(CC::Scope &scope);

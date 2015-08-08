@@ -26,7 +26,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -98,6 +98,33 @@ namespace GDCC
          }
 
          return CC::Parser::getExp_Unar_Identi(scope);
+      }
+
+      //
+      // Parser::getExp_Unar_KeyWrd
+      //
+      AST::Exp::CRef Parser::getExp_Unar_KeyWrd(CC::Scope &scope)
+      {
+         switch(in.peek().str)
+         {
+         case Core::STR_hudmessage:
+         case Core::STR_hudmessagebold:
+         case Core::STR_log:
+         case Core::STR_print:
+         case Core::STR_printbold:
+         case Core::STR_strparam:
+            if(auto global = dynamic_cast<Scope_Global *>(&scope.global))
+            {
+               if(auto print = global->findPrint(Core::STR___ + in.peek().str))
+                  return getExp_Unar_print(scope, print);
+            }
+            break;
+
+         default:
+            break;
+         }
+
+         return CC::Parser::getExp_Unar_KeyWrd(scope);
       }
 
       //

@@ -50,7 +50,7 @@ namespace GDCC
 
          if(ctx.in.drop(Core::TOK_ParenO))
          {
-            if(!ctx.in.peek(Core::TOK_Identi))
+            if(!ctx.in.peek(Core::TOK_Identi) && !ctx.in.peek(Core::TOK_KeyWrd))
                throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
 
             nameSub = ctx.in.get().str;
@@ -133,7 +133,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -145,7 +145,7 @@ namespace GDCC
       //
       AST::Statement::CRef Parser::getDecl_Print(Scope_Global &scope)
       {
-         if(!in.peek(Core::TOK_Identi, Core::STR_print))
+         if(!in.peek(Core::TOK_KeyWrd, Core::STR_print))
             throw Core::ParseExceptExpect(in.peek(), "print-declaration", false);
 
          auto pos = in.get().pos;
