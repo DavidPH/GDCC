@@ -62,8 +62,27 @@ static void SortGnome(char *base, char *end, size_t size,
 static void SortQuick(char *begin, char *end, char *pivot, size_t size,
    int (*compar)(void const *, void const *))
 {
-   // Copy pivot value.
-   memcpy(pivot, begin + (((end - begin) / (ptrdiff_t)size) >> 1) * size, size);
+   // Select and copy pivot value.
+   {
+      // Consider the first, middle, and last element as pivots.
+      char *pivot0 = begin;
+      char *pivot1 = begin + (((end - begin) / (ptrdiff_t)size) >> 1) * size;
+      char *pivot2 = end - size;
+
+      // Do a simple Gnome sort on the three elements.
+      if(compar(pivot0, pivot1) > 0) {pivot0 = pivot1; pivot1 = begin;}
+      if(compar(pivot1, pivot2) > 0)
+      {
+         // No need to update pivot2, because it is not used again.
+         pivot1 = pivot2;
+
+         // Same for pivot0 after here.
+         if(compar(pivot0, pivot1) > 0) {pivot1 = pivot0;}
+      }
+
+      // Copy selected pivot value.
+      memcpy(pivot, pivot1, size);
+   }
 
    // Do partitioning.
    char *itrL = begin, *itrR = end - size;
@@ -111,7 +130,7 @@ static void SortQuick(char *begin, char *end, char *pivot, size_t size,
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 //=========================================================
