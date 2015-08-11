@@ -21,7 +21,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -76,6 +76,17 @@ namespace GDCC
          }
 
          alloc = false;
+      }
+
+      //
+      // Function::getOrigin
+      //
+      Core::Origin Function::getOrigin() const
+      {
+         if(!block.empty())
+            return block.begin()->pos;
+
+         return {nullptr, 0, 0};
       }
 
       //

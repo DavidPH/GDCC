@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,13 +12,15 @@
 
 #include "Bytecode/ZDACS/Info.hpp"
 
+#include "Core/Exception.hpp"
+
 #include "IR/CallType.hpp"
 #include "IR/Program.hpp"
 #include "IR/ScriptType.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -320,7 +322,10 @@ namespace GDCC
                   auto paramMax = GetParamMax(f->ctype);
                   auto param    = f->param < paramMax ? f->param : paramMax;
 
-                  auto localReg = std::max(f->getLocalReg(), param);
+                  auto localReg = std::max(f->getLocalReg(), f->param);
+
+                  if(localReg > 255)
+                     throw Core::ExceptStr(f->getOrigin(), "too many registers");
 
                   putByte(param);
                   putByte(localReg);
@@ -629,6 +634,9 @@ namespace GDCC
                if(!itr.defin) continue;
 
                if(itr.getLocalReg() <= 20) continue;
+
+               if(itr.getLocalReg() > 65535)
+                  throw Core::ExceptStr(itr.getOrigin(), "too many registers");
 
                putHWord(GetScriptValue(itr));
                putHWord(itr.getLocalReg());

@@ -53,6 +53,8 @@ namespace GDCC
 
          Core::FastU getLocalReg() const {return localReg + localTmp;}
 
+         Core::Origin getOrigin() const;
+
          void setLocalTmp(Core::FastU words)
             {if(localTmp < words) localTmp = words;}
 
@@ -81,7 +83,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
