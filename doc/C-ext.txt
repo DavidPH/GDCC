@@ -582,6 +582,83 @@ Semantics:
   Saves or restores the pragma state, as though entering or leaving a compound
   statement, respectively.
 
+===============================================================================
+Predefined Macro Names
+===============================================================================
+
+===========================================================
+Standard Macros
+===========================================================
+
+Macros that are conditionally defined or otherwise having
+implementation-defined values.
+
+-----------------------------------------------------------
+__STDC_NO_ATOMICS__
+-----------------------------------------------------------
+
+Always defined as 1.
+
+-----------------------------------------------------------
+__STDC_NO_COMPLEX__
+-----------------------------------------------------------
+
+Always defined as 1.
+
+-----------------------------------------------------------
+__STDC_NO_THREADS__
+-----------------------------------------------------------
+
+Always defined as 1.
+
+-----------------------------------------------------------
+__STDC_NO_VLA__
+-----------------------------------------------------------
+
+Always defined as 1.
+
+Variably modified types may be used as an argument to sizeof, but not in any
+other context.
+
+===========================================================
+Unconditional Macros
+===========================================================
+
+These are always defined, regardless of compiler options.
+
+-----------------------------------------------------------
+__GDCC__
+-----------------------------------------------------------
+
+Expands to a nonzero integer literal, indicating that source is being compiled
+by a GDCC compiler.
+
+===========================================================
+Conditional Macros
+===========================================================
+
+These may or may not be defined depending on compiler options.
+
+-----------------------------------------------------------
+__GDCC_Format__*__
+-----------------------------------------------------------
+
+Depending on the --bc-format option, one of the following will be defined as 1:
+  __GDCC_Format__None__
+  __GDCC_Format__ACSE__
+  __GDCC_Format__MgC_NTS__
+All others are undefined.
+
+-----------------------------------------------------------
+__GDCC_Target__*__
+-----------------------------------------------------------
+
+Depending on the --bc-target option, one of the following will be defined as 1:
+  __GDCC_Target__None__
+  __GDCC_Target__MageCraft__
+  __GDCC_Target__ZDoom__
+All others are undefined.
+
 ###############################################################################
 Grammar
 ###############################################################################
