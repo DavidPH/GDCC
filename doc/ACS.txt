@@ -2,6 +2,19 @@
 ACS Language Specification
 ###############################################################################
 
+This is an unofficial specification of the ACS language implemented by various
+versions of acc.
+
+Where not stated otherwise, semantics should be assumed to be equivalent to C.
+
+Due to lack of an official standard, gdcc-acc is implemented to this document.
+In addition, gdcc-acc implements the extensions documented in ACS-ext.txt.
+
+This document is incomplete and potentially inaccurate. Some liberties have
+been taken in the exact grammar with respect to acc's implementation. An
+attempt has been made to note where deviations occur, but there may be
+unrealized errors. Comments and corrections are welcome.
+
 ===============================================================================
 Lexical Elements
 ===============================================================================
@@ -325,6 +338,9 @@ Syntax:
     ; expression-list
 
   strcpy-expression:
+    <strcpy> ( <a> : ( expression-list ) , assignment-expression )
+    <strcpy> ( <a> : ( expression-list ) , assignment-expression ,
+      assignment-expression )
     <strcpy> ( <a> : assignment-expression , assignment-expression )
     <strcpy> ( <a> : assignment-expression , assignment-expression ,
       assignment-expression )
@@ -444,6 +460,9 @@ Syntax:
     logical-ior-expression
     logical-ior-expression ? expression : conditional-expression
 
+Notes:
+  The conditional operator is not implemented in acc.
+
 ===========================================================
 Assignment Expressions
 ===========================================================
@@ -456,6 +475,10 @@ Syntax:
   assignment-operator: one of
     = *= /= %= += -= <<= >>= &= ^= |=
 
+Notes:
+  In acc, The assignment expression can only be the full expression of an
+  expression statement.
+
 ===========================================================
 Comma Expressions
 ===========================================================
@@ -464,6 +487,9 @@ Syntax:
   expression:
     assignment-expression
     expression , assignment-expression
+
+Notes:
+  The comma operator is not implemented in acc.
 
 ===========================================================
 Constant Expressions
@@ -678,7 +704,7 @@ Syntax:
     <do> statement <while> ( expression ) ;
     <do> statement <until> ( expression ) ;
     <for> ( expression(opt) ; expression(opt) ; expression(opt) ) statement
-    <for> ( block-declaration expression(opt) ; expression(opt) ) statement
+    <for> ( declaration expression(opt) ; expression(opt) ) statement
 
 ===========================================================
 Jump Statements
@@ -758,6 +784,11 @@ Semantics:
   If a macro is defined with one define name and then later redefined using a
   different define name the behavior is undefined.
 
+Notes:
+  In acc, macro definitions result in named constants rather than token
+  substitution. In gdcc-acc, it uses token substitution with implicitly added
+  tokens to make the sequence a primary expression.
+
 ===========================================================
 Library Directive
 ===========================================================
@@ -765,7 +796,7 @@ Library Directive
 Semantics:
   When importing, a directive of the form
     # <library> string-literal new-line
-  inditifies a library to link with at runtime.
+  identifies a library to link with at runtime.
 
   The directive has no effect when not importing.
 
