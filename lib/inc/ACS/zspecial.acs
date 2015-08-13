@@ -652,6 +652,17 @@ special
    void  {379     }:PrintLocalCharRange(int, int, int, int),
    int   {380     }:StrCpyToLocalCharRange(int, int, int, int, str, int);
 
+createtranslation __CreateTranslation
+(
+   (begin): CreateTranslationStart,
+   (end):   CreateTranslationEnd,
+
+   (1:1=1:1): CreateTranslationPalette,
+   (1:1=3:3): CreateTranslationRGB,
+
+   %(1:1=3:3): CreateTranslationDesat
+);
+
 print __HudMessage
 (
    (begin): BeginHudMessage,

@@ -15,7 +15,7 @@
 
 #include "../CC/Scope/Global.hpp"
 
-#include "../ACC/Print.hpp"
+#include "../ACC/PropDecl.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -34,11 +34,14 @@ namespace GDCC
       public:
          explicit Scope_Global(Core::String label);
 
+         void addCreateTrans(Core::String name, CreateTransDecl &&decl);
          void addPrint(Core::String name, PrintDecl &&decl);
 
+         CreateTransDecl *findCreateTrans(Core::String name);
          PrintDecl *findPrint(Core::String name);
 
       protected:
+         std::unordered_map<Core::String, CreateTransDecl> globalCreateTrans;
          std::unordered_map<Core::String, PrintDecl> globalPrint;
       };
    }

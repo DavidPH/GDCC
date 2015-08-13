@@ -30,6 +30,16 @@ namespace GDCC
       }
 
       //
+      // Scope_Global::addCreateTrans
+      //
+      void Scope_Global::addCreateTrans(Core::String name, CreateTransDecl &&ctrans)
+      {
+         globalCreateTrans.emplace(std::piecewise_construct,
+            std::forward_as_tuple(name),
+            std::forward_as_tuple(ctrans));
+      }
+
+      //
       // Scope_Global::addPrint
       //
       void Scope_Global::addPrint(Core::String name, PrintDecl &&print)
@@ -37,6 +47,15 @@ namespace GDCC
          globalPrint.emplace(std::piecewise_construct,
             std::forward_as_tuple(name),
             std::forward_as_tuple(print));
+      }
+
+      //
+      // Scope_Global::findCreateTrans
+      //
+      CreateTransDecl *Scope_Global::findCreateTrans(Core::String name)
+      {
+         auto ctrans = globalCreateTrans.find(name);
+         return ctrans == globalCreateTrans.end() ? nullptr : &ctrans->second;
       }
 
       //

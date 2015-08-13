@@ -26,6 +26,7 @@ namespace GDCC
 {
    namespace ACC
    {
+      class CreateTransDecl;
       class PragmaData;
       class PrintDecl;
       class Scope_Global;
@@ -48,6 +49,8 @@ namespace GDCC
          virtual StatementCRef getDecl(Scope_Global &scope);
          virtual StatementCRef getDecl(CC::Scope_Local &scope);
 
+         virtual StatementCRef getDecl_CreateTrans(Scope_Global &scope);
+
          virtual StatementCRef getDecl_Enum(Scope_Global &scope);
 
          virtual StatementCRef getDecl_Function(Scope_Global &scope);
@@ -65,6 +68,8 @@ namespace GDCC
 
          virtual ExpCRef getExp_Post_ParenO(CC::Scope &scope, AST::Exp const *exp);
 
+         virtual ExpCRef getExp_Unar_createtranslation(CC::Scope &scope,
+            CreateTransDecl const *ctrans);
          virtual ExpCRef getExp_Unar_print(CC::Scope &scope, PrintDecl const *print);
 
          virtual ExpCRef getExp_Unar_Identi(CC::Scope &scope);

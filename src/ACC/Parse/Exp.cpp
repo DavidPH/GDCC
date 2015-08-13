@@ -93,6 +93,9 @@ namespace GDCC
       {
          if(auto global = dynamic_cast<Scope_Global *>(&scope.global))
          {
+            if(auto ctrans = global->findCreateTrans(in.peek().str))
+               return getExp_Unar_createtranslation(scope, ctrans);
+
             if(auto print = global->findPrint(in.peek().str))
                return getExp_Unar_print(scope, print);
          }
@@ -107,6 +110,14 @@ namespace GDCC
       {
          switch(in.peek().str)
          {
+         case Core::STR_createtranslation:
+            if(auto global = dynamic_cast<Scope_Global *>(&scope.global))
+            {
+               if(auto ctrans = global->findCreateTrans(Core::STR___ + in.peek().str))
+                  return getExp_Unar_createtranslation(scope, ctrans);
+            }
+            break;
+
          case Core::STR_hudmessage:
          case Core::STR_hudmessagebold:
          case Core::STR_log:

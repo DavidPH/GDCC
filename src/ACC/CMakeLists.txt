@@ -27,6 +27,7 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    PPTokenTBuf.cpp
    Parse.cpp
    Parse/Declaration.cpp
+   Parse/Declaration/CreateTrans.cpp
    Parse/Declaration/Enum.cpp
    Parse/Declaration/Function.cpp
    Parse/Declaration/Object.cpp
@@ -37,11 +38,13 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    Parse/DeclSpec.cpp
    Parse/Exp.cpp
    Parse/Exp/Prim.cpp
+   Parse/Exp/Unar/createtranslation.cpp
    Parse/Exp/Unar/print.cpp
    Parse/Statement.cpp
    Parse/TypeQual.cpp
    Parse/TypeSpec.cpp
    Pragma.cpp
+   PropDecl.cpp
    Scope.cpp
 
    ../../inc/ACC/DirectiveTBuf.hpp
@@ -52,7 +55,7 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    ../../inc/ACC/PPTokenTBuf
    ../../inc/ACC/Parse.hpp
    ../../inc/ACC/Pragma.hpp
-   ../../inc/ACC/Print.hpp
+   ../../inc/ACC/PropDecl.hpp
    ../../inc/ACC/Scope.hpp
    ../../inc/ACC/TStream.hpp
 )

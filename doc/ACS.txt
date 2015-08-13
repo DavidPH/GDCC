@@ -304,7 +304,7 @@ Syntax:
     translation-list , translation
 
   translation:
-    assignment-expression : conditional-expression = translation-part
+    conditional-expression : conditional-expression = translation-part
 
   translation-part:
     translation-palette
@@ -312,7 +312,7 @@ Syntax:
     translation-saturated
 
   translation-palette:
-    assignment-expression : assignment-expression
+    conditional-expression : conditional-expression
 
   translation-rgb:
     translation-triple : translation-triple
@@ -321,7 +321,7 @@ Syntax:
     % translation-triple : translation-triple
 
   translation-triple:
-    [ assignment-expression , assignment-expression , assignment-expression ]
+    [ conditional-expression , conditional-expression , conditional-expression ]
 
   print-expression:
     print-identifier ( print-specifier-list(opt) print-argument-list(opt) )

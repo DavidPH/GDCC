@@ -12,14 +12,12 @@
 
 #include "ACC/Parse.hpp"
 
-#include "ACC/Print.hpp"
 #include "ACC/Scope.hpp"
 
 #include "AST/Statement.hpp"
 #include "AST/Type.hpp"
 
 #include "CC/Exp.hpp"
-#include "CC/Scope/Global.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"

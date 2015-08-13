@@ -114,6 +114,30 @@ Syntax:
     ( declarator )
 
 ===========================================================
+CreateTranslation Declarations
+===========================================================
+
+Syntax:
+  create-translation-declaration:
+    <create-translation> identifier ( create-translation-property-list ) ;
+
+  create-translation-property-list:
+    create-translation-property
+    create-translation-property-list , create-translation-property
+
+  create-translation-property:
+    create-translation-property-prefix(opt) ( create-translation-property-name
+      ) : constant-expression
+
+  create-translation-property-prefix:
+    %
+
+  create-translation-property-name:
+    identifier
+    constant-expression : constant-expression = constant-expression :
+      constant-expression
+
+===========================================================
 Enumeration Declarations
 ===========================================================
 

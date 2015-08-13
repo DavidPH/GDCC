@@ -6,15 +6,18 @@
 //
 //-----------------------------------------------------------------------------
 //
-// ACS print declarations.
+// ACS property-based declarations.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__ACC__Print_H__
-#define GDCC__ACC__Print_H__
+#ifndef GDCC__ACC__PropDecl_H__
+#define GDCC__ACC__PropDecl_H__
 
 #include "../AST/Exp.hpp"
 
+#include "../Core/Token.hpp"
+
+#include <map>
 #include <unordered_map>
 
 
@@ -26,6 +29,39 @@ namespace GDCC
 {
    namespace ACC
    {
+      //
+      // CreateTransPropName
+      //
+      class CreateTransPropName
+      {
+      public:
+         bool operator < (CreateTransPropName const &r) const;
+
+         Core::Token prefix;
+         Core::FastU argc[4];
+      };
+
+      //
+      // CreateTransProp
+      //
+      class CreateTransProp
+      {
+      public:
+         AST::Exp::CPtr prop;
+      };
+
+      //
+      // CreateTransDecl
+      //
+      class CreateTransDecl
+      {
+      public:
+         std::map<CreateTransPropName, CreateTransProp> props;
+
+         AST::Exp::CPtr propBegin;
+         AST::Exp::CPtr propEnd;
+      };
+
       //
       // PrintProp
       //
@@ -58,5 +94,5 @@ namespace GDCC
    }
 }
 
-#endif//GDCC__ACC__Print_H__
+#endif//GDCC__ACC__PropDecl_H__
 
