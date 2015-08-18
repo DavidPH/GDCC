@@ -27,6 +27,8 @@
 
 #include "LD/Linker.hpp"
 
+#include "Platform/Platform.hpp"
+
 #include <iostream>
 
 
@@ -131,7 +133,8 @@ int main(int argc, char *argv[])
 
    opts.optSysSource.insert(&opts.list);
 
-   GDCC::LD::OutputIR = true;
+   // Default target to ZDoom, like acc.
+   GDCC::Platform::TargetCur = GDCC::Platform::Target::ZDoom;
 
    try
    {
