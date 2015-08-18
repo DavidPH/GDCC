@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2014 David Hill
+## Copyright (C) 2013-2015 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -16,18 +16,29 @@
 ##
 
 ##
+## gdcc-ld-lib
+##
+add_library(gdcc-ld-lib ${GDCC_SHARED_DECL}
+   Linker.cpp
+
+   ../../inc/LD/Linker.hpp
+)
+
+##
 ## gdcc-ld
 ##
 add_executable(gdcc-ld
    main_ld.cpp
 )
 
-target_link_libraries(gdcc-ld
+target_link_libraries(gdcc-ld-lib
    gdcc-bytecode-mgc-lib
    gdcc-bytecode-zdacs-lib
 )
 
-GDCC_INSTALL_PART(ld TRUE FALSE)
+target_link_libraries(gdcc-ld gdcc-ld-lib)
+
+GDCC_INSTALL_PART(ld TRUE TRUE)
 
 ## EOF
 
