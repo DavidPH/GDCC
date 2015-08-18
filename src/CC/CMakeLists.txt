@@ -153,7 +153,7 @@ add_executable(gdcc-cc
 
 target_link_libraries(gdcc-cc-lib gdcc-as-lib gdcc-ast-lib gdcc-cpp-lib)
 
-target_link_libraries(gdcc-cc gdcc-cc-lib)
+target_link_libraries(gdcc-cc gdcc-cc-lib gdcc-ld-lib)
 
 GDCC_INSTALL_PART(cc TRUE TRUE)
 
