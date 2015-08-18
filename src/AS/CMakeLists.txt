@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2014 David Hill
+## Copyright (C) 2013-2015 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -51,7 +51,7 @@ add_executable(gdcc-as
 )
 
 target_link_libraries(gdcc-as-lib gdcc-ir-lib)
-target_link_libraries(gdcc-as gdcc-as-lib)
+target_link_libraries(gdcc-as gdcc-as-lib gdcc-ld-lib)
 
 GDCC_INSTALL_PART(as TRUE TRUE)
 
