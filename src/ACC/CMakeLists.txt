@@ -74,7 +74,7 @@ target_link_libraries(gdcc-acc-lib
    gdcc-cpp-lib
 )
 
-target_link_libraries(gdcc-acc gdcc-acc-lib)
+target_link_libraries(gdcc-acc gdcc-acc-lib gdcc-ld-lib)
 
 GDCC_INSTALL_PART(acc TRUE TRUE)
 

@@ -23,10 +23,10 @@
 #include "Core/Path.hpp"
 #include "Core/StringBuf.hpp"
 
-#include "IR/OArchive.hpp"
 #include "IR/Program.hpp"
 
-#include <fstream>
+#include "LD/Linker.hpp"
+
 #include <iostream>
 
 
@@ -52,19 +52,8 @@ static void MakeACS()
    for(auto const &arg : GDCC::Core::GetOptions().optSysSource)
       ProcessFile(arg, prog);
 
-   auto outName = GDCC::Core::GetOptionOutput();
-
-   // Write IR data.
-   auto buf = GDCC::Core::FileOpenStream(outName,
-      std::ios_base::out | std::ios_base::binary);
-   if(!buf)
-   {
-      std::cerr << "couldn't open '" << outName << "' for writing\n";
-      throw EXIT_FAILURE;
-   }
-
-   std::ostream out{buf.get()};
-   GDCC::IR::OArchive(out).putHeader() << prog;
+   // Write output.
+   GDCC::LD::Link(prog, GDCC::Core::GetOptionOutput());
 }
 
 //
@@ -141,6 +130,8 @@ int main(int argc, char *argv[])
       "argument.";
 
    opts.optSysSource.insert(&opts.list);
+
+   GDCC::LD::OutputIR = true;
 
    try
    {
