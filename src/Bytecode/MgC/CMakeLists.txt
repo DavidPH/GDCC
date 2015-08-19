@@ -15,20 +15,22 @@
 ## Targets                                                                    |
 ##
 
-##
-## gdcc-bytecode-mgc-lib
-##
-add_library(gdcc-bytecode-mgc-lib ${GDCC_SHARED_DECL}
-   Info.cpp
-   Info/put.cpp
-   Info/tr.cpp
+if(GDCC_Bytecode_MgC)
+   ##
+   ## gdcc-bytecode-mgc-lib
+   ##
+   add_library(gdcc-bytecode-mgc-lib ${GDCC_SHARED_DECL}
+      Info.cpp
+      Info/put.cpp
+      Info/tr.cpp
 
-   ../../../inc/Bytecode/MgC/Info.hpp
-)
+      ../../../inc/Bytecode/MgC/Info.hpp
+   )
 
-target_link_libraries(gdcc-bytecode-mgc-lib gdcc-bytecode-lib)
+   target_link_libraries(gdcc-bytecode-mgc-lib gdcc-bytecode-lib)
 
-GDCC_INSTALL_PART(bytecode-mgc FALSE TRUE)
+   GDCC_INSTALL_PART(bytecode-mgc FALSE TRUE)
+endif()
 
 ## EOF
 

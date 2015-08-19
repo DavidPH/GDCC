@@ -12,8 +12,13 @@
 
 #include "LD/Linker.hpp"
 
+#if GDCC_Bytecode_MgC
 #include "Bytecode/MgC/Info.hpp"
+#endif
+
+#if GDCC_Bytecode_ZDACS
 #include "Bytecode/ZDACS/Info.hpp"
+#endif
 
 #include "Core/File.hpp"
 #include "Core/Option.hpp"
@@ -99,10 +104,18 @@ namespace GDCC
             return nullptr;
 
          case Platform::Target::MageCraft:
+            #if GDCC_Bytecode_MgC
             return std::unique_ptr<Bytecode::Info>{new Bytecode::MgC::Info};
+            #else
+            return nullptr;
+            #endif
 
          case Platform::Target::ZDoom:
+            #if GDCC_Bytecode_ZDACS
             return std::unique_ptr<Bytecode::Info>{new Bytecode::ZDACS::Info};
+            #else
+            return nullptr;
+            #endif
          }
 
          return nullptr;

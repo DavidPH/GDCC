@@ -80,6 +80,20 @@ endif()
 ##
 
 ##
+## GDCC_Bytecode_MgC
+##
+if(NOT DEFINED GDCC_Bytecode_MgC)
+   set(GDCC_Bytecode_MgC ON CACHE BOOL "Enable bytecode module: MgC")
+endif()
+
+##
+## GDCC_Bytecode_ZDACS
+##
+if(NOT DEFINED GDCC_Bytecode_ZDACS)
+   set(GDCC_Bytecode_ZDACS ON CACHE BOOL "Enable bytecode module: ZDACS")
+endif()
+
+##
 ## GDCC_INSTALL_API
 ##
 if(NOT DEFINED GDCC_INSTALL_API)
@@ -134,6 +148,14 @@ endif()
 ##
 
 include_directories(inc src)
+
+if(GDCC_Bytecode_MgC)
+   add_definitions(-DGDCC_Bytecode_MgC=1)
+endif()
+
+if(GDCC_Bytecode_ZDACS)
+   add_definitions(-DGDCC_Bytecode_ZDACS=1)
+endif()
 
 
 ##----------------------------------------------------------------------------|
