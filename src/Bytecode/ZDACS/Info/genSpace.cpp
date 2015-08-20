@@ -12,11 +12,11 @@
 
 #include "Bytecode/ZDACS/Info.hpp"
 
+#include "Core/Exception.hpp"
+
 #include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Program.hpp"
-
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -125,7 +125,14 @@ namespace GDCC
 
                auto idx = itr.value;
 
-               genSpaceInitiValue(ini, idx, itr.initi->getValue());
+               try
+               {
+                  genSpaceInitiValue(ini, idx, itr.initi->getValue());
+               }
+               catch(Core::Exception &e)
+               {
+                  e.setOrigin(itr.initi->pos);
+               }
 
                if(ini.max < idx)
                   ini.max = idx;
@@ -215,6 +222,9 @@ namespace GDCC
                   genSpaceInitiValue(ini, itr, v);
                break;
 
+            case IR::ValueBase::Empty:
+               throw Core::ExceptStr({nullptr}, "bad genSpaceInitiValue: Empty");
+
             case IR::ValueBase::Fixed:
                bits = val.vFixed.vtype.bitsI + val.vFixed.vtype.bitsF + val.vFixed.vtype.bitsS;
                for(Core::FastU w = 0, e = (bits + 31) / 32; w != e; ++w)
@@ -274,9 +284,8 @@ namespace GDCC
                   genSpaceInitiValue(ini, itr, v);
                break;
 
-            default:
-               std::cerr << "bad genSpaceInitiValue\n";
-               throw EXIT_FAILURE;
+            case IR::ValueBase::Union:
+               throw Core::ExceptStr({nullptr}, "genSpaceInitiValue stub: Union");
             }
          }
       }
