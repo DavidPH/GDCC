@@ -20,7 +20,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -220,6 +220,12 @@ namespace GDCC
             case IR::ValueBase::Assoc:
                for(auto const &v : val.vAssoc.value)
                   genSpaceInitiValue(ini, itr, v);
+               break;
+
+            case IR::ValueBase::DJump:
+               iv = &ini.vals[itr++];
+               iv->tag = InitTag::Fixed;
+               iv->val = val.vDJump.value;
                break;
 
             case IR::ValueBase::Empty:

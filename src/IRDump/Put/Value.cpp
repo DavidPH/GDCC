@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,7 +17,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 namespace GDCC
 {
@@ -76,6 +76,15 @@ namespace GDCC
             }
          }
          out << ')';
+      }
+
+      //
+      // PutValue_DJump
+      //
+      void PutValue_DJump(std::ostream &out, IR::Value_DJump const &val)
+      {
+         PutType_DJump(out << "Value ", val.vtype);
+         out << " (" << val.value << ')';
       }
 
       //

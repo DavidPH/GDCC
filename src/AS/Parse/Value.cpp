@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,7 +20,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -86,6 +86,20 @@ namespace GDCC
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
          return {{Core::Move, value.begin(), value.end()}, std::move(vtype)};
+      }
+
+      //
+      // GetValue_DJump
+      //
+      IR::Value_DJump GetValue_DJump(ParserCtx const &ctx)
+      {
+         auto vtype = GetType_DJump(ctx);
+
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+         auto value = GetFastU(ctx);
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+
+         return {value, std::move(vtype)};
       }
 
       //

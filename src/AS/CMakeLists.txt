@@ -25,6 +25,7 @@ add_library(gdcc-as-lib ${GDCC_SHARED_DECL}
    Parse.cpp
    Parse/Arg.cpp
    Parse/Block.cpp
+   Parse/DJump.cpp
    Parse/Declaration.cpp
    Parse/Exp.cpp
    Parse/Function.cpp

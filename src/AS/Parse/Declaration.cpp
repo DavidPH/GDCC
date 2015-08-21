@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,7 +21,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -37,6 +37,11 @@ namespace GDCC
 
          switch(TokenPeekIdenti(ctx).in.get().str)
          {
+         case Core::STR_DJump:
+            TokenPeekString(ctx);
+            ParseDJump(ctx, ctx.prog.getDJump(ctx.in.get().str));
+            break;
+
          case Core::STR_Function:
             TokenPeekString(ctx);
             ParseFunction(ctx, ctx.prog.getFunction(ctx.in.get().str));

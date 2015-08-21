@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 GDCC_IR_TypeList(Array)
 GDCC_IR_TypeList(Assoc)
+GDCC_IR_TypeList(DJump)
 GDCC_IR_TypeList(Empty)
 GDCC_IR_TypeList(Fixed)
 GDCC_IR_TypeList(Float)

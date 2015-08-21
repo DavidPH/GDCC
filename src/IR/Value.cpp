@@ -58,6 +58,13 @@ namespace GDCC
       }
 
       //
+      // Value_DJump constructor
+      //
+      Value_DJump::Value_DJump(IArchive &in) : vtype{in}, value{GetIR(in, value)}
+      {
+      }
+
+      //
       // Value_Empty constructor
       //
       Value_Empty::Value_Empty(IArchive &in) : vtype{in}
@@ -251,6 +258,9 @@ namespace GDCC
       {
          switch(v)
          {
+         case ValueBase::DJump:
+            return vDJump.value;
+
          case ValueBase::Fixed:
             return vFixed.getFastU();
 
@@ -281,6 +291,14 @@ namespace GDCC
       // operator OArchive << Value_Assoc
       //
       OArchive &operator << (OArchive &out, Value_Assoc const &in)
+      {
+         return out << in.vtype << in.value;
+      }
+
+      //
+      // operator OArchive << Value_DJump
+      //
+      OArchive &operator << (OArchive &out, Value_DJump const &in)
       {
          return out << in.vtype << in.value;
       }
@@ -378,6 +396,14 @@ namespace GDCC
       // operator IArchive >> Value_Assoc
       //
       IArchive &operator >> (IArchive &in, Value_Assoc &out)
+      {
+         return in >> out.vtype >> out.value;
+      }
+
+      //
+      // operator IArchive >> Value_DJump
+      //
+      IArchive &operator >> (IArchive &in, Value_DJump &out)
       {
          return in >> out.vtype >> out.value;
       }

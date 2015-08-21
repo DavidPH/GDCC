@@ -13,6 +13,7 @@
 #ifndef GDCC__IR__Program_H__
 #define GDCC__IR__Program_H__
 
+#include "../IR/DJump.hpp"
 #include "../IR/Function.hpp"
 #include "../IR/Glyph.hpp"
 #include "../IR/Import.hpp"
@@ -59,6 +60,7 @@ namespace GDCC
          Program &operator = (Program const &) = delete;
          Program &operator = (Program &&) = delete;
 
+         DJump     *findDJump      (Core::String glyph);
          Function  *findFunction   (Core::String glyph);
          GlyphData *findGlyphData  (Core::String glyph);
          Import    *findImport     (Core::String glyph);
@@ -71,6 +73,7 @@ namespace GDCC
          StrEnt    *findStrEnt     (Core::String glyph);
          StrEnt    *findStrEntVal  (Core::String value);
 
+         DJump     &getDJump      (Core::String glyph);
          Function  &getFunction   (Core::String glyph);
          GlyphData &getGlyphData  (Core::String glyph);
          Import    &getImport     (Core::String glyph);
@@ -86,6 +89,7 @@ namespace GDCC
          Space     &getSpaceWldReg();
          StrEnt    &getStrEnt     (Core::String glyph);
 
+         void mergeDJump    (DJump     &out, DJump     &&in);
          void mergeFunction (Function  &out, Function  &&in);
          void mergeGlyphData(GlyphData &out, GlyphData &&in);
          void mergeImport   (Import    &out, Import    &&in);
@@ -93,6 +97,8 @@ namespace GDCC
          void mergeSpace    (Space     &out, Space     &&in);
          void mergeStrEnt   (StrEnt    &out, StrEnt    &&in);
 
+         TableRange <DJump>     rangeDJump      ();
+         TableCRange<DJump>     rangeDJump      () const;
          TableRange <Function>  rangeFunction   ();
          TableCRange<Function>  rangeFunction   () const;
          TableRange <GlyphData> rangeGlyphData  ();
@@ -112,6 +118,7 @@ namespace GDCC
          TableRange <StrEnt>    rangeStrEnt     ();
          TableCRange<StrEnt>    rangeStrEnt     () const;
 
+         std::size_t sizeDJump()       const;
          std::size_t sizeFunction()    const;
          std::size_t sizeGlyphData()   const;
          std::size_t sizeImport()      const;
@@ -128,6 +135,7 @@ namespace GDCC
          friend IArchive &operator >> (IArchive &in, Program &out);
 
       private:
+         Table<DJump>     tableDJump;
          Table<Function>  tableFunction;
          Table<GlyphData> tableGlyphData;
          Table<Import>    tableImport;

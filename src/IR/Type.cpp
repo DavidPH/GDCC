@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,7 +21,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -87,6 +87,13 @@ namespace GDCC
       // Type_Assoc constructor
       //
       Type_Assoc::Type_Assoc(IArchive &in) : assoc{GetIR(in, assoc)}
+      {
+      }
+
+      //
+      // Type_DJump constructor
+      //
+      Type_DJump::Type_DJump(IArchive &)
       {
       }
 
@@ -238,6 +245,14 @@ namespace GDCC
       }
 
       //
+      // operator OArchive << Type_DJump
+      //
+      OArchive &operator << (OArchive &out, Type_DJump const &)
+      {
+         return out;
+      }
+
+      //
       // operator OArchive << Type_Empty
       //
       OArchive &operator << (OArchive &out, Type_Empty const &)
@@ -376,6 +391,14 @@ namespace GDCC
       IArchive &operator >> (IArchive &in, Type_Assoc &out)
       {
          return in >> out.assoc;
+      }
+
+      //
+      // operator IArchive >> Type_DJump
+      //
+      IArchive &operator >> (IArchive &in, Type_DJump &)
+      {
+         return in;
       }
 
       //

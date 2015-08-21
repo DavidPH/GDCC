@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -40,6 +40,7 @@ namespace GDCC
       class AddrSpace;
       class Arg;
       class Block;
+      class DJump;
       class Exp;
       class Function;
       class GlyphData;
@@ -91,7 +92,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -134,6 +135,8 @@ namespace GDCC
       IR::Value GetValue(ParserCtx const &ctx);
 
       void ParseBlock(ParserCtx const &ctx, IR::Block &block, Core::TokenType end);
+
+      void ParseDJump(ParserCtx const &ctx, IR::DJump &jump);
 
       void ParseDeclaration(ParserCtx const &ctx);
 

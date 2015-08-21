@@ -75,7 +75,7 @@ RangeTable(GDCC::IR::Program::Table<T> const &table)
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -98,6 +98,14 @@ namespace GDCC
       //
       Program::~Program()
       {
+      }
+
+      //
+      // Program::findDJump
+      //
+      DJump *Program::findDJump(Core::String glyph)
+      {
+         return FindTable(tableDJump, glyph);
       }
 
       //
@@ -208,6 +216,14 @@ namespace GDCC
          }
 
          return nullptr;
+      }
+
+      //
+      // Program::getDJump
+      //
+      DJump &Program::getDJump(Core::String glyph)
+      {
+         return GetTable(tableDJump, glyph, glyph);
       }
 
       //
@@ -340,6 +356,15 @@ namespace GDCC
       }
 
       //
+      // Program::mergeDJump
+      //
+      void Program::mergeDJump(DJump &out, DJump &&in)
+      {
+         if(!out.defin)
+            out = std::move(in);
+      }
+
+      //
       // Program::mergeFunction
       //
       void Program::mergeFunction(Function &out, Function &&in)
@@ -443,6 +468,22 @@ namespace GDCC
       {
          if(!out.defin)
             out = std::move(in);
+      }
+
+      //
+      // Program::rangeDJump
+      //
+      auto Program::rangeDJump() -> TableRange<DJump>
+      {
+         return RangeTable(tableDJump);
+      }
+
+      //
+      // Program::rangeDJump
+      //
+      auto Program::rangeDJump() const -> TableCRange<DJump>
+      {
+         return RangeTable(tableDJump);
       }
 
       //
@@ -590,6 +631,14 @@ namespace GDCC
       }
 
       //
+      // Program::sizeDJump
+      //
+      std::size_t Program::sizeDJump() const
+      {
+         return tableDJump.size();
+      }
+
+      //
       // Program::sizeFunction
       //
       std::size_t Program::sizeFunction() const
@@ -667,6 +716,7 @@ namespace GDCC
       OArchive &operator << (OArchive &out, Program const &in)
       {
          out
+            << in.tableDJump
             << in.tableFunction
             << in.tableGlyphData
             << in.tableImport
@@ -687,6 +737,15 @@ namespace GDCC
       IArchive &operator >> (IArchive &in, Program &out)
       {
          in.prog = &out;
+
+         // tableDJump
+         for(auto count = GetIR<Program::Table<DJump>::size_type>(in); count--;)
+         {
+            Core::String name;          in >> name;
+            DJump        newJump{name}; in >> newJump;
+
+            out.mergeDJump(out.getDJump(name), std::move(newJump));
+         }
 
          // tableFunction
          for(auto count = GetIR<Program::Table<Function>::size_type>(in); count--;)

@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2014 David Hill
+## Copyright (C) 2013-2015 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -24,6 +24,7 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    Block.cpp
    CallType.cpp
    Code.cpp
+   DJump.cpp
    Exp.cpp
    Exp/Binary.cpp
    Exp/Branch.cpp
@@ -71,6 +72,7 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    ../../inc/IR/CodeSet/Bitwise.hpp
    ../../inc/IR/CodeSet/Cmp.hpp
    ../../inc/IR/CodeSet/Unary.hpp
+   ../../inc/IR/DJump.hpp
    ../../inc/IR/Exp.hpp
    ../../inc/IR/Exp/Binary.hpp
    ../../inc/IR/Exp/Branch.hpp

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -78,6 +78,25 @@ namespace GDCC
 
          Type_Assoc         vtype;
          Core::Array<Value> value;
+      };
+
+      //
+      // Value_DJump
+      //
+      class Value_DJump
+      {
+      public:
+         Value_DJump() = default;
+
+         Value_DJump(Core::FastU value_, Type_DJump vtype_) :
+            vtype{vtype_}, value{value_} {}
+
+         explicit Value_DJump(IArchive &in);
+
+         explicit operator bool () const {return static_cast<bool>(value);}
+
+         Type_DJump  vtype;
+         Core::FastU value;
       };
 
       //
@@ -422,7 +441,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

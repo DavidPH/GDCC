@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -93,6 +93,19 @@ namespace GDCC
          bool operator == (Type_Assoc const &t) const {return assoc == t.assoc;}
 
          Core::Array<TypeAssoc> assoc;
+      };
+
+      //
+      // Type_DJump
+      //
+      class Type_DJump
+      {
+      public:
+         Type_DJump() = default;
+
+         explicit Type_DJump(IArchive &in);
+
+         bool operator == (Type_DJump const &) const {return true;}
       };
 
       //
@@ -408,7 +421,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

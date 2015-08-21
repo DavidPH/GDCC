@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,7 +21,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -86,6 +86,20 @@ namespace GDCC
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
          return {{Core::Move, assoc.begin(), assoc.end()}};
+      }
+
+      //
+      // GetType_DJump
+      //
+      IR::Type_DJump GetType_DJump(ParserCtx const &ctx)
+      {
+         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_DJump))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_DJump", false);
+
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+
+         return {};
       }
 
       //

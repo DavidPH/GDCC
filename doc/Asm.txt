@@ -16,6 +16,7 @@ Syntax:
 
   declaration:
     new-line
+    djump-declaration
     function-declaration
     glyph-declaration
     import-declaration
@@ -26,6 +27,55 @@ Syntax:
 
 Semantics:
   An assembly file is a series of declarations.
+
+===========================================================
+Dynamic Jump Targets
+===========================================================
+
+Syntax:
+  djump-declaration:
+    <DJump> string djump-argument-list(opt) new-line
+
+  djump-argument-list:
+    djump-argument djump-argument-list(opt)
+
+  djump-argument:
+    <alloc> = expression
+    <defin> = expression
+    <label> = string
+    <value> = expression
+
+Semantics:
+  Defines a dynamic jump target.
+
+-----------------------------------------------------------
+alloc
+-----------------------------------------------------------
+
+Semantics:
+  If 1, then the dynamic jump target will be given a generated value if needed.
+
+-----------------------------------------------------------
+defin
+-----------------------------------------------------------
+
+Semantics:
+  If 1, then the dynamic jump target is considered defined. Otherwise, it is
+  considered external and needing import.
+
+-----------------------------------------------------------
+label
+-----------------------------------------------------------
+
+Semantics:
+  Sets the dynamic jump target's label.
+
+-----------------------------------------------------------
+value
+-----------------------------------------------------------
+
+Semantics:
+  Sets the dynamic jump target's integer value.
 
 ===========================================================
 Functions
@@ -1393,6 +1443,8 @@ Grammar
     declaration(opt) assembly-unit(opt)
 
   declaration:
+    new-line
+    djump-declaration
     function-declaration
     glyph-declaration
     import-declaration
@@ -1400,6 +1452,18 @@ Grammar
     object-declaration
     space-declaration
     strent-declaration
+
+  djump-declaration:
+    <DJump> string djump-argument-list(opt) new-line
+
+  djump-argument-list:
+    djump-argument djump-argument-list(opt)
+
+  djump-argument:
+    <alloc> = expression
+    <defin> = expression
+    <label> = string
+    <value> = expression
 
   function-declaration:
     <Function> string function-argument-list(opt) new-line
