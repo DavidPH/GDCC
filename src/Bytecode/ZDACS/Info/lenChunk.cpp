@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,7 +17,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -43,6 +43,7 @@ namespace GDCC
             len += lenChunkFARY();
             len += lenChunkFNAM();
             len += lenChunkFUNC();
+            len += lenChunkJUMP();
             len += lenChunkLOAD();
             len += lenChunkMEXP();
             len += lenChunkMIMP();
@@ -209,6 +210,16 @@ namespace GDCC
             if(!numChunkFUNC) return 0;
 
             return numChunkFUNC * 8 + 8;
+         }
+
+         //
+         // Info::lenChunkJUMP
+         //
+         Core::FastU Info::lenChunkJUMP()
+         {
+            if(!numChunkJUMP) return 0;
+
+            return numChunkJUMP * 4 + 8;
          }
 
          //

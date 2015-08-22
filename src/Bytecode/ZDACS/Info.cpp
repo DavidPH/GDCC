@@ -210,7 +210,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -234,6 +234,7 @@ namespace GDCC
             numChunkCODE{0},
             numChunkFNAM{0},
             numChunkFUNC{0},
+            numChunkJUMP{0},
             numChunkLOAD{0},
             numChunkMEXP{0},
             numChunkMIMP{0},
@@ -245,6 +246,17 @@ namespace GDCC
             numChunkSTRL{0},
             numChunkSVCT{0}
          {
+         }
+
+         //
+         // Info::backGlyphDJump
+         //
+         void Info::backGlyphDJump(Core::String glyph, Core::FastU val)
+         {
+            auto &data = prog->getGlyphData(glyph);
+
+            data.type  = IR::Type_DJump();
+            data.value = IR::ExpCreate_Value(IR::Value_DJump(val, {}), {nullptr});
          }
 
          //

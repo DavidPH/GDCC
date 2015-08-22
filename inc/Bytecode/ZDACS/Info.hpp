@@ -93,6 +93,7 @@ namespace GDCC
             };
 
 
+            void backGlyphDJump(Core::String glyph, Core::FastU val);
             void backGlyphFunc(Core::String glyph, Core::FastU val, IR::CallType ctype);
             void backGlyphGlyph(Core::String glyph, Core::String val);
             void backGlyphObj(Core::String glyph, Core::FastU val);
@@ -100,6 +101,8 @@ namespace GDCC
             void backGlyphWord(Core::String glyph, Core::FastU val);
 
             virtual void gen();
+
+            virtual void genDJump();
 
             virtual void genFunc();
 
@@ -194,6 +197,7 @@ namespace GDCC
             Core::FastU lenChunkFARY();
             Core::FastU lenChunkFNAM();
             Core::FastU lenChunkFUNC();
+            Core::FastU lenChunkJUMP();
             Core::FastU lenChunkLOAD();
             Core::FastU lenChunkMEXP();
             Core::FastU lenChunkMIMP();
@@ -244,6 +248,7 @@ namespace GDCC
             void putChunkFARY();
             void putChunkFNAM();
             void putChunkFUNC();
+            void putChunkJUMP();
             void putChunkLOAD();
             void putChunkMEXP();
             void putChunkMIMP();
@@ -406,6 +411,7 @@ namespace GDCC
             Core::FastU numChunkCODE;
             Core::FastU numChunkFNAM;
             Core::FastU numChunkFUNC;
+            Core::FastU numChunkJUMP;
             Core::FastU numChunkLOAD;
             Core::FastU numChunkMEXP;
             Core::FastU numChunkMIMP;

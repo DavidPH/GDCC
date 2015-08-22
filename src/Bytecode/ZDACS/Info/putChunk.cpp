@@ -45,6 +45,7 @@ namespace GDCC
             putChunkFARY();
             putChunkFNAM();
             putChunkFUNC();
+            putChunkJUMP();
             putChunkLOAD();
             putChunkMEXP();
             putChunkMIMP();
@@ -340,6 +341,25 @@ namespace GDCC
                else
                   putData("\0\0\0\0\0\0\0\0", 8);
             }
+         }
+
+         //
+         // Info::putChunkJUMP
+         //
+         void Info::putChunkJUMP()
+         {
+            if(!numChunkJUMP) return;
+
+            Core::Array<IR::DJump const *> jumps{numChunkJUMP, nullptr};
+
+            for(auto const &itr : prog->rangeDJump())
+               jumps[itr.value] = &itr;
+
+            putData("JUMP", 4);
+            putWord(numChunkJUMP * 4);
+
+            for(auto j : jumps)
+               putWord(j ? GetWord(resolveGlyph(j->label)) : 0);
          }
 
          //

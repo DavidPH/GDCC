@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,7 +17,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -41,6 +41,20 @@ namespace GDCC
             genSpaceIniti(prog->getSpaceSta());
 
             genIniti();
+         }
+
+         //
+         // Info::genDJump
+         //
+         void Info::genDJump()
+         {
+            if(djump->alloc)
+               djump->allocValue(*prog);
+
+            if(numChunkJUMP <= djump->value)
+               numChunkJUMP = djump->value + 1;
+
+            backGlyphDJump(djump->glyph, djump->value);
          }
 
          //
