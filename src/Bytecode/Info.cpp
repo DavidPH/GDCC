@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,7 +39,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -62,8 +62,10 @@ namespace GDCC
          genSpace(prog->getSpaceWldReg());
 
          for(auto &itr : prog->rangeFunction()) genFunc(itr);
-         for(auto &itr : prog->rangeObject())   genObj(itr);
-         for(auto &itr : prog->rangeStrEnt())   genStr(itr);
+
+         for(auto &itr : prog->rangeDJump())  genDJump(itr);
+         for(auto &itr : prog->rangeObject()) genObj(itr);
+         for(auto &itr : prog->rangeStrEnt()) genStr(itr);
       }
 
       //
@@ -89,6 +91,14 @@ namespace GDCC
       void Info::genBlock(IR::Block &block_)
       {
          TryPointer(genBlock, block);
+      }
+
+      //
+      // Info::genDJump
+      //
+      void Info::genDJump(IR::DJump &djump_)
+      {
+         TryPointer(genDJump, djump);
       }
 
       //
@@ -161,6 +171,7 @@ namespace GDCC
          }
          catch(ResetFunc const &) {}
 
+         for(auto &itr : prog->rangeDJump())  preDJump(itr);
          for(auto &itr : prog->rangeObject()) preObj(itr);
          for(auto &itr : prog->rangeStrEnt()) preStr(itr);
       }
@@ -188,6 +199,14 @@ namespace GDCC
       void Info::preBlock(IR::Block &block_)
       {
          TryPointer(preBlock, block);
+      }
+
+      //
+      // Info::preDJump
+      //
+      void Info::preDJump(IR::DJump &djump_)
+      {
+         TryPointer(preDJump, djump);
       }
 
       //
@@ -280,6 +299,14 @@ namespace GDCC
       }
 
       //
+      // Info::putDJump
+      //
+      void Info::putDJump(IR::DJump &djump_)
+      {
+         TryPointer(putDJump, djump);
+      }
+
+      //
       // Info::putFunc
       //
       void Info::putFunc()
@@ -343,8 +370,10 @@ namespace GDCC
          trSpace(prog->getSpaceWldReg());
 
          for(auto &itr : prog->rangeFunction()) trFunc(itr);
-         for(auto &itr : prog->rangeObject())   trObj(itr);
-         for(auto &itr : prog->rangeStrEnt())   trStr(itr);
+
+         for(auto &itr : prog->rangeDJump())  trDJump(itr);
+         for(auto &itr : prog->rangeObject()) trObj(itr);
+         for(auto &itr : prog->rangeStrEnt()) trStr(itr);
       }
 
       //
@@ -381,6 +410,14 @@ namespace GDCC
       void Info::trBlock(IR::Block &block_)
       {
          TryPointer(trBlock, block);
+      }
+
+      //
+      // Info::trDJump
+      //
+      void Info::trDJump(IR::DJump &djump_)
+      {
+         TryPointer(trDJump, djump);
       }
 
       //

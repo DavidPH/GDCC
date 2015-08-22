@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -42,6 +42,7 @@ namespace GDCC
       class ArgPtr1;
       class ArgPtr2;
       class Block;
+      class DJump;
       class Exp;
       class Function;
       class Glyph;
@@ -102,6 +103,8 @@ namespace GDCC
          virtual void gen();
          virtual void genBlock();
                  void genBlock(IR::Block &block);
+         virtual void genDJump() {}
+                 void genDJump(IR::DJump &djump);
          virtual void genFunc();
                  void genFunc(IR::Function &func);
          virtual void genObj() {}
@@ -116,6 +119,8 @@ namespace GDCC
          virtual void pre();
          virtual void preBlock();
                  void preBlock(IR::Block &block);
+         virtual void preDJump() {}
+                 void preDJump(IR::DJump &djump);
          virtual void preFunc();
                  void preFunc(IR::Function &func);
          virtual void preObj() {}
@@ -130,6 +135,8 @@ namespace GDCC
          virtual void put() = 0;
          virtual void putBlock();
                  void putBlock(IR::Block &block);
+         virtual void putDJump() {}
+                 void putDJump(IR::DJump &djump);
          virtual void putFunc();
                  void putFunc(IR::Function &func);
          virtual void putObj() {}
@@ -144,6 +151,8 @@ namespace GDCC
          virtual void tr();
          virtual void trBlock();
                  void trBlock(IR::Block &block);
+         virtual void trDJump() {}
+                 void trDJump(IR::DJump &djump);
          virtual void trFunc();
                  void trFunc(IR::Function &func);
          virtual void trObj() {}
@@ -159,6 +168,7 @@ namespace GDCC
          bool moveArgStk_src(IR::Arg &idx, Core::FastU sizeMove);
 
          IR::Block     *block;
+         IR::DJump     *djump;
          IR::Function  *func;
          IR::Object    *obj;
          std::ostream  *out;
