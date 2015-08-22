@@ -20,7 +20,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -135,6 +135,8 @@ namespace GDCC
 
             case IR::Code::Jcnd_Nil: genStmnt_Jcnd_Nil(); break;
             case IR::Code::Jcnd_Tru: genStmnt_Jcnd_Tru(); break;
+
+            case IR::Code::Jdyn: numChunkCODE += 4; break;
 
             case IR::Code::Jump: genStmnt_Jump(); break;
 

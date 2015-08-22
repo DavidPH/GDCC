@@ -24,7 +24,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -113,6 +113,8 @@ namespace GDCC
 
             case IR::Code::Jcnd_Nil: putStmnt_Jcnd_Nil(); break;
             case IR::Code::Jcnd_Tru: putStmnt_Jcnd_Tru(); break;
+
+            case IR::Code::Jdyn: putCode(Code::Jdyn); break;
 
             case IR::Code::Jump: putStmnt_Jump(); break;
 

@@ -20,7 +20,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -124,6 +124,11 @@ namespace GDCC
 
             case IR::Code::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
             case IR::Code::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
+
+            case IR::Code::Jdyn:
+               CheckArgC(stmnt, 1);
+               moveArgStk_src(stmnt->args[0], 1);
+               break;
 
             case IR::Code::Jump: trStmnt_Jump(); break;
 

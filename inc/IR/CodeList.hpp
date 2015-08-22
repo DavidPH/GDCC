@@ -100,6 +100,9 @@ GDCC_IR_CodeList(InvU_W)
 GDCC_IR_CodeList(Jcnd_Nil)
 GDCC_IR_CodeList(Jcnd_Tru)
 
+// Jdyn src
+GDCC_IR_CodeList(Jdyn)
+
 // Jump src
 GDCC_IR_CodeList(Jump)
 

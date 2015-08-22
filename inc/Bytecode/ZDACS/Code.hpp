@@ -113,6 +113,7 @@ namespace GDCC
             Cnat        = 351,
             Pfun_Lit    = 359,
             Call_Stk    = 360,
+            Jdyn        = 363,
             Drop_LocArr = 364,
             Push_LocArr = 365,
          };

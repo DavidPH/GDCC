@@ -787,6 +787,16 @@ Semantics:
   If condition passes, branches execution to addr.
 
 -----------------------------------------------------------
+Jdyn (Dynamic Jump)
+-----------------------------------------------------------
+
+Arguments:
+  Jdyn 0, source[1] addr
+
+Semantics:
+  Branches execution to dynamic jump target addr.
+
+-----------------------------------------------------------
 Jump
 -----------------------------------------------------------
 
