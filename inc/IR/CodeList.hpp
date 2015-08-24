@@ -103,6 +103,13 @@ GDCC_IR_CodeList(Jcnd_Tru)
 // Jdyn src
 GDCC_IR_CodeList(Jdyn)
 
+// Jfar addr
+// Jfar addr jmpbuf res
+GDCC_IR_CodeList(Jfar)
+
+// Jset jmpbuf addr
+GDCC_IR_CodeList(Jset)
+
 // Jump src
 GDCC_IR_CodeList(Jump)
 
