@@ -187,7 +187,7 @@ static GDCC::Option::Int<GDCC::Core::FastU> ScriptSParamOpt
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Variables                                                           |
 //
 
 namespace GDCC
@@ -773,6 +773,38 @@ namespace GDCC
                len += lenPushArg(arg, lo);
 
             return len;
+         }
+
+         //
+         // lenPushIdx
+         //
+         Core::FastU Info::lenPushIdx(IR::Arg const &arg, Core::FastU w)
+         {
+            //
+            // lenSta
+            //
+            auto lenSta = [&](IR::Arg_Sta const &a) -> Core::FastU
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+                  return 8;
+               else
+               {
+                  Core::FastU len = lenPushArg(*a.idx, 0);
+
+                  if(a.off + w)
+                     len += 12;
+
+                  return len;
+               }
+            };
+
+            switch(arg.a)
+            {
+            case IR::ArgBase::Sta:    return lenSta(arg.aSta);
+
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad lenPushIdx");
+            }
          }
 
          //

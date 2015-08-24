@@ -130,6 +130,10 @@ namespace GDCC
                moveArgStk_src(stmnt->args[0], 1);
                break;
 
+            case IR::Code::Jfar: trStmnt_Jfar(); break;
+
+            case IR::Code::Jset: trStmnt_Jset(); break;
+
             case IR::Code::Jump: trStmnt_Jump(); break;
 
             case IR::Code::LAnd:

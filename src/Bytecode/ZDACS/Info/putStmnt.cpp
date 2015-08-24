@@ -116,6 +116,10 @@ namespace GDCC
 
             case IR::Code::Jdyn: putCode(Code::Jdyn); break;
 
+            case IR::Code::Jfar: putStmnt_Jfar(); break;
+
+            case IR::Code::Jset: putStmnt_Jset(); break;
+
             case IR::Code::Jump: putStmnt_Jump(); break;
 
             case IR::Code::LAnd:
@@ -618,6 +622,41 @@ namespace GDCC
                putCode(Code::Pfun_Lit);
 
             putWord(value);
+         }
+
+         //
+         // Info::putStmntPushIdx
+         //
+         void Info::putStmntPushIdx(IR::Arg const &arg, Core::FastU w)
+         {
+            //
+            // putSta
+            //
+            auto putSta = [&](IR::Arg_Sta const &a)
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+               {
+                  putCode(Code::Push_Lit,    GetWord(a.idx->aLit.value) + a.off + w);
+               }
+               else
+               {
+                  putStmntPushArg(*a.idx, 0);
+
+                  if(a.off + w)
+                  {
+                     putCode(Code::Push_Lit, a.off + w);
+                     putCode(Code::AddU);
+                  }
+               }
+            };
+
+            switch(arg.a)
+            {
+            case IR::ArgBase::Sta:    putSta(arg.aSta); break;
+
+            default:
+               throw Core::ExceptStr(stmnt->pos, "bad putStmntPushIdx");
+            }
          }
 
          //

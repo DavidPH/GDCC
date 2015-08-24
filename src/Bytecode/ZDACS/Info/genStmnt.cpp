@@ -138,6 +138,10 @@ namespace GDCC
 
             case IR::Code::Jdyn: numChunkCODE += 4; break;
 
+            case IR::Code::Jfar: genStmnt_Jfar(); break;
+
+            case IR::Code::Jset: genStmnt_Jset(); break;
+
             case IR::Code::Jump: genStmnt_Jump(); break;
 
             case IR::Code::LAnd:

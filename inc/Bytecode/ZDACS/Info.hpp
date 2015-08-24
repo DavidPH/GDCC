@@ -133,6 +133,8 @@ namespace GDCC
             void genStmnt_InvU_W();
             void genStmnt_Jcnd_Nil();
             void genStmnt_Jcnd_Tru();
+            void genStmnt_Jfar();
+            void genStmnt_Jset();
             void genStmnt_Jump();
             void genStmnt_Move_W();
             void genStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr);
@@ -219,6 +221,8 @@ namespace GDCC
             Core::FastU lenPushArg(IR::Arg const &arg, Core::FastU w);
             Core::FastU lenPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
+            Core::FastU lenPushIdx(IR::Arg const &arg, Core::FastU w);
+
             std::size_t lenString(Core::String str);
 
             virtual void preFunc();
@@ -296,6 +300,8 @@ namespace GDCC
             void putStmnt_InvU_W();
             void putStmnt_Jcnd_Nil();
             void putStmnt_Jcnd_Tru();
+            void putStmnt_Jfar();
+            void putStmnt_Jset();
             void putStmnt_Jump();
             void putStmnt_ModI_W();
             void putStmnt_Move_W();
@@ -341,6 +347,8 @@ namespace GDCC
 
             void putStmntPushFunct(Core::FastU value);
 
+            void putStmntPushIdx(IR::Arg const &arg, Core::FastU w);
+
             void putStmntPushRetn(Core::FastU ret);
 
             void putStmntPushStrEn(Core::FastU value);
@@ -374,6 +382,8 @@ namespace GDCC
             void trStmnt_InvU_W();
             void trStmnt_Jcnd_Nil();
             void trStmnt_Jcnd_Tru();
+            void trStmnt_Jfar();
+            void trStmnt_Jset();
             void trStmnt_Jump();
             void trStmnt_Move_W();
             void trStmnt_NegI_W();
