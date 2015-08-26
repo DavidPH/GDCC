@@ -978,11 +978,15 @@ namespace GDCC
 
             switch(val.v)
             {
+            case IR::ValueBase::DJump: return w ? 0 : val.vDJump.value;
             case IR::ValueBase::Fixed: return GetWord_Fixed(val.vFixed, w);
             case IR::ValueBase::Float: return GetWord_Float(val.vFloat, w);
             case IR::ValueBase::Funct: return w ? 0 : val.vFunct.value;
             case IR::ValueBase::Point: return w ? 0 : val.vPoint.value;
             case IR::ValueBase::StrEn: return w ? 0 : val.vFunct.value;
+
+            case IR::ValueBase::Empty:
+               throw Core::ExceptStr(exp->pos, "bad GetWord Value: Empty");
 
             default:
                throw Core::ExceptStr(exp->pos, "bad GetWord Value");

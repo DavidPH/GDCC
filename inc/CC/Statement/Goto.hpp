@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -52,6 +52,32 @@ namespace GDCC
          virtual bool v_isBranch() const {return true;}
          virtual bool v_isEffect() const {return false;}
          virtual bool v_isNoAuto() const {return true;}
+      };
+
+      //
+      // Statement_GotoDyn
+      //
+      class Statement_GotoDyn : public AST::Statement
+      {
+         GDCC_Core_CounterPreamble(
+            GDCC::CC::Statement_GotoDyn, GDCC::AST::Statement);
+
+      public:
+         Core::CounterRef<AST::Exp const> exp;
+
+
+         static CRef Create(Labels &&labels, Core::Origin pos, AST::Exp const *exp)
+            {return CRef(new This(std::move(labels), pos, exp));}
+
+      protected:
+         Statement_GotoDyn(Labels &&labels, Core::Origin pos, AST::Exp const *exp);
+         virtual ~Statement_GotoDyn();
+
+         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
+
+         virtual bool v_isBranch() const {return true;}
+         virtual bool v_isEffect() const {return false;}
+         virtual bool v_isNoAuto() const;
       };
    }
 }

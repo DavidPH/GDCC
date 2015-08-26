@@ -13,6 +13,7 @@
 #include "CC/Parse.hpp"
 
 #include "CC/Exp.hpp"
+#include "CC/Scope/Local.hpp"
 
 #include "AST/Exp.hpp"
 #include "AST/Type.hpp"
@@ -20,7 +21,7 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
-#include "IR/Glyph.hpp"
+#include "IR/Program.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -316,6 +317,34 @@ namespace GDCC
       }
 
       //
+      // GetExp_Unar_And2
+      //
+      static AST::Exp::CRef GetExp_Unar_And2(Parser &ctx, Scope &scope)
+      {
+         auto pos = ctx.in.get().pos;
+
+         auto scopeLocal = dynamic_cast<Scope_Local *>(&scope);
+         if(!scopeLocal)
+            throw Core::ExceptStr(pos, "invalid scope for unary &&");
+
+         if(!ctx.in.peek(Core::TOK_Identi))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
+
+         auto  label = scopeLocal->getLabel(ctx.in.get().str);
+         auto &djump = ctx.prog.getDJump(label + "$djump");
+
+         djump.label = label;
+         djump.alloc = true;
+         djump.defin = true;
+
+         ctx.prog.getGlyphData(djump.glyph).type = IR::Type_DJump();
+
+         return AST::ExpCreate_IRExp(
+            IR::ExpCreate_Glyph({ctx.prog, djump.glyph}, pos),
+            AST::Type::Label->getTypePointer(), pos);
+      }
+
+      //
       // GetExp_Unar_Inv
       //
       static AST::Exp::CRef GetExp_Unar_Inv(Parser &ctx, Scope &scope)
@@ -423,6 +452,7 @@ namespace GDCC
          case Core::TOK_Add:    return GetExp_Unar_Add   (*this, scope);
          case Core::TOK_Add2:   return GetExp_Unar_Add2  (*this, scope);
          case Core::TOK_And:    return GetExp_Unar_And   (*this, scope);
+         case Core::TOK_And2:   return GetExp_Unar_And2  (*this, scope);
          case Core::TOK_Inv:    return GetExp_Unar_Inv   (*this, scope);
          case Core::TOK_Mul:    return GetExp_Unar_Mul   (*this, scope);
          case Core::TOK_Not:    return GetExp_Unar_Not   (*this, scope);

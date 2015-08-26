@@ -295,9 +295,22 @@ namespace GDCC
          Scope_Local &scope, Core::Array<Core::String> &labels)
       {
          // <goto> identifier ;
+         // <goto> * cast-expression ;
 
          // <goto>
          auto pos = ctx.in.get().pos;
+
+         // * cast-expression ;
+         if(ctx.in.drop(Core::TOK_Mul))
+         {
+            auto exp = ctx.getExp_Cast(scope);
+
+            // ;
+            if(!ctx.in.drop(Core::TOK_Semico))
+               throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
+
+            return StatementCreate_Goto(std::move(labels), pos, exp);
+         }
 
          // identifier
          if(ctx.in.peek().tok != Core::TOK_Identi)
@@ -519,7 +532,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

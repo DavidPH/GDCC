@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -47,7 +47,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -96,6 +96,10 @@ namespace GDCC
 
       Core::CounterRef<AST::Statement const> StatementCreate_FuncPro(
          Core::Origin pos, Scope_Function &scope);
+
+      Core::CounterRef<AST::Statement const> StatementCreate_Goto(
+         Core::Array<Core::String> &&labels, Core::Origin pos,
+         AST::Exp const *exp);
 
       Core::CounterRef<AST::Statement const> StatementCreate_Goto(
          Core::Array<Core::String> const &labels, Core::Origin pos,

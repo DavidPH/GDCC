@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,7 +19,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -60,6 +60,9 @@ namespace GDCC
       {
          if(base->isTypeFunction())
             return IR::Type_Funct(IR::GetCallTypeIR(base->getCallType()));
+
+         if(base->isTypeLabel())
+            return IR::Type_DJump();
 
          if(base->isTypeStrEnt())
             return IR::Type_StrEn();
