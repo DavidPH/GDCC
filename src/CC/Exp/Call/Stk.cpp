@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "CC/Exp/Call.hpp"
+
+#include "CC/Scope/Function.hpp"
 
 #include "AST/Arg.hpp"
 #include "AST/Function.hpp"
@@ -49,12 +51,29 @@ namespace GDCC
             return false;
          }
       }
+
+      //
+      // IsLongJump
+      //
+      static bool IsLongJump(IR::CallType callType)
+      {
+         switch(callType)
+         {
+         case IR::CallType::SScriptI:
+         case IR::CallType::SScriptS:
+         case IR::CallType::StdCall:
+            return true;
+
+         default:
+            return false;
+         }
+      }
    }
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -101,8 +120,14 @@ namespace GDCC
          if(callType == IR::CallType::StdCall &&
             Platform::TargetCur == Platform::Target::ZDoom)
          {
-            ctx.block.addStatementArgs({IR::Code::Pltn, 0},
-               IR::Arg_Stk(), ctx.fn->localAut + vaWords);
+            Core::FastU autWords = ctx.fn->localAut + vaWords;
+
+            // Ensure auto pointer is unique for longjmp checks.
+            // TODO: Only ensure this for functions which use setjmp.
+            if(!autWords)
+               autWords = 1;
+
+            ctx.block.addStatementArgs({IR::Code::Pltn, 0}, IR::Arg_Stk(), autWords);
 
             ++stkWords;
          }
@@ -156,10 +181,7 @@ namespace GDCC
          if(callType != IR::CallType::AsmFunc)
             irWords += stkWords + 1;
          else
-         {
-            // TODO: const params
             irWords += 1;
-         }
 
          // Prepare IR args, preloaded with Stk for the call args.
          Core::Array<IR::Arg> irArgs{irWords, IR::Arg_Stk()};
@@ -203,6 +225,10 @@ namespace GDCC
             throw Core::ExceptStr(pos, "unsupported call type");
          }
          ctx.block.addStatementArgs({code, retWords}, std::move(irArgs));
+
+         // Long jump propagation.
+         if(IsLongJump(callType))
+            ctx.block.addStatementArgs({IR::Code::Jfar, retWords}, scope.fn.getLabelLJR());
 
          // Move to destination.
          GenStmnt_MovePart(this, ctx, dst, false, true);

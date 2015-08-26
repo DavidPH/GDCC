@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -48,9 +48,11 @@ namespace GDCC
          virtual Core::String getLabelCase(Core::Integ const &n, bool define);
          virtual Core::String getLabelContinue();
          virtual Core::String getLabelDefault(bool define);
+         Core::String getLabelLJR();
 
          Core::Array<Core::CounterRef<AST::Object>> params;
          Core::CounterRef<AST::Function>            fn;
+         Core::String                               labelLJR;
          Core::CounterPtr<AST::Exp const>           nameObj;
       };
    }

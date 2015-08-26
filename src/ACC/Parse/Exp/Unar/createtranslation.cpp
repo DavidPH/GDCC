@@ -115,7 +115,8 @@ namespace GDCC
          if(propItr == ctrans->props.end())
             throw Core::ExceptStr(pos, "no matching translation function");
 
-         return CC::ExpCreate_Call(propItr->second.prop, {expv.begin(), expv.end()}, pos);
+         return CC::ExpCreate_Call(propItr->second.prop,
+            {expv.begin(), expv.end()}, scope, pos);
       }
    }
 }
@@ -170,7 +171,7 @@ namespace GDCC
             }
 
             exp = CC::ExpCreate_Comma(exp, CC::ExpCreate_Call(ctrans->propBegin,
-               {argv.begin(), argv.end()}, pos), pos);
+               {argv.begin(), argv.end()}, scope, pos), pos);
          }
 
          // translation-list:
@@ -182,7 +183,7 @@ namespace GDCC
          if(ctrans->propEnd)
          {
             exp = CC::ExpCreate_Comma(exp,
-               CC::ExpCreate_Call(ctrans->propEnd, {}, pos), pos);
+               CC::ExpCreate_Call(ctrans->propEnd, {}, scope, pos), pos);
          }
 
          // )

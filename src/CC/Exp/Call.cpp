@@ -14,6 +14,7 @@
 
 #include "CC/Exp/Init.hpp"
 #include "CC/Init.hpp"
+#include "CC/Scope/Local.hpp"
 
 #include "AST/Function.hpp"
 #include "AST/Type.hpp"
@@ -68,7 +69,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -139,17 +140,18 @@ namespace GDCC
       // ExpCreate_Call
       //
       AST::Exp::CRef ExpCreate_Call(AST::Exp const *e,
-         Core::Array<AST::Exp::CRef> const &args_, Core::Origin pos)
+         Core::Array<AST::Exp::CRef> const &args_, Scope &scope,
+         Core::Origin pos)
       {
          auto args = args_;
-         return ExpCreate_Call(e, std::move(args), pos);
+         return ExpCreate_Call(e, std::move(args), scope, pos);
       }
 
       //
       // ExpCreate_Call
       //
       AST::Exp::CRef ExpCreate_Call(AST::Exp const *e,
-         Core::Array<AST::Exp::CRef> &&args, Core::Origin pos)
+         Core::Array<AST::Exp::CRef> &&args, Scope &scope, Core::Origin pos)
       {
          auto exp  = ExpPromo_LValue(e, pos);
          auto type = exp->getType();
@@ -210,7 +212,10 @@ namespace GDCC
          if(IsCallLit(exp, args))
             return Exp_CallLit::Create(exp, pos, std::move(args));
 
-         return Exp_CallStk::Create(exp, pos, std::move(args));
+         if(auto scopeLocal = dynamic_cast<Scope_Local *>(&scope))
+            return Exp_CallStk::Create(exp, pos, std::move(args), *scopeLocal);
+         else
+            throw Core::ExceptStr(pos, "invalid scope for call");
       }
    }
 }

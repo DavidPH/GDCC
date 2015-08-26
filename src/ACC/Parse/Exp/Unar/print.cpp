@@ -39,7 +39,7 @@ namespace GDCC
       //
       // GetPrintSpec_Array
       //
-      static AST::Exp::CPtr GetPrintSpec_Array(Parser &ctx,
+      static AST::Exp::CPtr GetPrintSpec_Array(Parser &ctx, CC::Scope &scope,
          AST::Exp const *propArray, AST::Exp const *propRange,
          Core::Array<AST::Exp::CRef> &&args, Core::Origin pos)
       {
@@ -52,15 +52,15 @@ namespace GDCC
             {ctx.prog, space.name}, pos), CC::TypeIntegPrS, pos);
 
          if(args.size() == 1 && propArray)
-            return CC::ExpCreate_Call(propArray, {indexExp, spaceExp}, pos);
+            return CC::ExpCreate_Call(propArray, {indexExp, spaceExp}, scope, pos);
 
          if(args.size() == 2 && propRange)
             return CC::ExpCreate_Call(propRange, {indexExp, spaceExp, args[1],
-               CC::ExpCreate_LitInt(CC::TypeIntegPrS, 0x7FFFFFFF, pos)}, pos);
+               CC::ExpCreate_LitInt(CC::TypeIntegPrS, 0x7FFFFFFF, pos)}, scope, pos);
 
          if(args.size() == 3 && propRange)
             return CC::ExpCreate_Call(propRange, {indexExp, spaceExp, args[1],
-               args[2]}, pos);
+               args[2]}, scope, pos);
 
          return nullptr;
       }
@@ -118,25 +118,25 @@ namespace GDCC
             if(type->isCTypeInteg()) switch(space.base)
             {
             case IR::AddrBase::GblArr:
-               if(auto exp = GetPrintSpec_Array(ctx, prop.propGlobalArray,
+               if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propGlobalArray,
                   prop.propGlobalRange, std::move(args), name.pos))
                   return static_cast<AST::Exp::CRef>(exp);
                break;
 
             case IR::AddrBase::LocArr:
-               if(auto exp = GetPrintSpec_Array(ctx, prop.propLocalArray,
+               if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propLocalArray,
                   prop.propLocalRange, std::move(args), name.pos))
                   return static_cast<AST::Exp::CRef>(exp);
                break;
 
             case IR::AddrBase::MapArr:
-               if(auto exp = GetPrintSpec_Array(ctx, prop.propMapArray,
+               if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propMapArray,
                   prop.propMapRange, std::move(args), name.pos))
                   return static_cast<AST::Exp::CRef>(exp);
                break;
 
             case IR::AddrBase::WldArr:
-               if(auto exp = GetPrintSpec_Array(ctx, prop.propWorldArray,
+               if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propWorldArray,
                   prop.propWorldRange, std::move(args), name.pos))
                   return static_cast<AST::Exp::CRef>(exp);
                break;
@@ -147,7 +147,7 @@ namespace GDCC
          }
 
          if(prop.prop)
-            return CC::ExpCreate_Call(prop.prop, std::move(args), name.pos);
+            return CC::ExpCreate_Call(prop.prop, std::move(args), scope, name.pos);
 
          throw Core::ExceptStr(name.pos, "no valid print property");
       }
@@ -156,7 +156,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -179,7 +179,7 @@ namespace GDCC
 
          if(print->propBegin)
             exp = CC::ExpCreate_Comma(exp,
-               CC::ExpCreate_Call(print->propBegin, {}, pos), pos);
+               CC::ExpCreate_Call(print->propBegin, {}, scope, pos), pos);
 
          // (
          if(!in.drop(Core::TOK_ParenO))
@@ -210,7 +210,7 @@ namespace GDCC
                   throw Core::ExceptStr(pos, "insufficient arguments");
 
                exp = CC::ExpCreate_Comma(exp, CC::ExpCreate_Call(
-                  print->propMore, {argp, argp + paramc}, pos), pos);
+                  print->propMore, {argp, argp + paramc}, scope, pos), pos);
 
                argp += paramc;
                argc -= paramc;
@@ -225,7 +225,7 @@ namespace GDCC
                   throw Core::ExceptStr(pos, "insufficient arguments");
 
                exp = CC::ExpCreate_Comma(exp, CC::ExpCreate_Call(
-                  print->propOpt, {argp, argp + paramc}, pos), pos);
+                  print->propOpt, {argp, argp + paramc}, scope, pos), pos);
 
                argp += paramc;
                argc -= paramc;
@@ -234,14 +234,14 @@ namespace GDCC
             if(print->propEnd)
             {
                exp = CC::ExpCreate_Comma(exp, CC::ExpCreate_Call(
-                 print->propEnd, {argp, argp + argc}, pos), pos);
+                 print->propEnd, {argp, argp + argc}, scope, pos), pos);
             }
          }
          else
          {
             if(print->propEnd)
                exp = CC::ExpCreate_Comma(exp,
-                  CC::ExpCreate_Call(print->propEnd, {}, pos), pos);
+                  CC::ExpCreate_Call(print->propEnd, {}, scope, pos), pos);
          }
 
          // )

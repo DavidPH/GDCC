@@ -24,7 +24,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -36,7 +36,10 @@ namespace GDCC
       //
       Scope_Function::Scope_Function(Scope_Global &parent_, AST::Function *fn_,
          Core::Array<AST::Object::Ref> &&params_) :
-         Scope_Local{parent_, *this}, params{std::move(params_)}, fn{fn_}
+         Scope_Local{parent_, *this},
+         params  {std::move(params_)},
+         fn      {fn_},
+         labelLJR{nullptr}
       {
          for(auto const &param : params)
          {
@@ -125,6 +128,17 @@ namespace GDCC
       Core::String Scope_Function::getLabelDefault(bool)
       {
          return Core::STRNULL;
+      }
+
+      //
+      // Scope_Function::getLabelLJR
+      //
+      Core::String Scope_Function::getLabelLJR()
+      {
+         if(!labelLJR)
+            labelLJR = fn->genLabel();
+
+         return labelLJR;
       }
    }
 }

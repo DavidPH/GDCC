@@ -63,7 +63,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -126,10 +126,10 @@ namespace GDCC
 
       Core::CounterRef<AST::Exp const> ExpCreate_Call(AST::Exp const *e,
          Core::Array<Core::CounterRef<AST::Exp const>> const &args,
-         Core::Origin pos);
+         Scope &scope, Core::Origin pos);
       Core::CounterRef<AST::Exp const> ExpCreate_Call(AST::Exp const *e,
          Core::Array<Core::CounterRef<AST::Exp const>>      &&args,
-         Core::Origin pos);
+         Scope &scope, Core::Origin pos);
 
       Core::CounterRef<AST::Exp const> ExpCreate_CmpEQ(AST::Exp const *l,
          AST::Exp const *r, Core::Origin pos);

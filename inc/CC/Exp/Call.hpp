@@ -28,6 +28,8 @@ namespace GDCC
 {
    namespace CC
    {
+      class Scope_Local;
+
       //
       // Exp_Call
       //
@@ -95,22 +97,26 @@ namespace GDCC
       public:
          // Create
          static CRef Create(AST::Exp const *e, Core::Origin pos,
-            Core::Array<AST::Exp::CRef> const &a)
-            {return CRef(new This(e, pos, a));}
+            Core::Array<AST::Exp::CRef> const &a, Scope_Local &scope)
+            {return CRef(new This(e, pos, a, scope));}
 
          // Create
          static CRef Create(AST::Exp const *e, Core::Origin pos,
-            Core::Array<AST::Exp::CRef> &&a)
-            {return CRef(new This(e, pos, std::move(a)));}
+            Core::Array<AST::Exp::CRef> &&a, Scope_Local &scope)
+            {return CRef(new This(e, pos, std::move(a), scope));}
 
       protected:
          Exp_CallStk(AST::Exp const *e, Core::Origin pos_,
-            Core::Array<AST::Exp::CRef> const &a) : Super{e, pos_, a} {}
+            Core::Array<AST::Exp::CRef> const &a, Scope_Local &scope_) :
+            Super{e, pos_, a}, scope(scope_) {}
          Exp_CallStk(AST::Exp const *e, Core::Origin pos_,
-            Core::Array<AST::Exp::CRef> &&a) : Super{e, pos_, std::move(a)} {}
+            Core::Array<AST::Exp::CRef> &&a, Scope_Local &scope_) :
+            Super{e, pos_, std::move(a)}, scope(scope_) {}
 
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
+
+         Scope_Local &scope;
       };
    }
 }

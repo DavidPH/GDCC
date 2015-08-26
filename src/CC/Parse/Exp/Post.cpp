@@ -91,7 +91,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -113,7 +113,7 @@ namespace GDCC
          if(!in.drop(Core::TOK_ParenC))
             throw Core::ParseExceptExpect(in.peek(), ")", true);
 
-         return ExpCreate_Call(exp, args, pos);
+         return ExpCreate_Call(exp, std::move(args), scope, pos);
       }
 
       //

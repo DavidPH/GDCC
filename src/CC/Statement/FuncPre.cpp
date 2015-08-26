@@ -54,7 +54,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -140,6 +140,21 @@ namespace GDCC
          {
             ctx.block.addStatementArgs(
                {IR::Code::Retn, scope.fn->retrn->getSizeWords()}, IR::Arg_Stk());
+         }
+
+         // Generate long jump return, if needed.
+         if(scope.labelLJR)
+         {
+            ctx.block.addLabel(scope.labelLJR);
+
+            if(scope.fn->allocLoc)
+               ctx.block.addStatementArgs({IR::Code::Plsf, 0});
+
+            if(scope.fn->retrn->isTypeVoid())
+               ctx.block.addStatementArgs({IR::Code::Retn, 0});
+            else
+               ctx.block.addStatementArgs(
+                  {IR::Code::Retn, scope.fn->retrn->getSizeWords()}, 0);
          }
       }
 

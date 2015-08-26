@@ -75,7 +75,7 @@ namespace GDCC
          if(!in.drop(Core::TOK_ParenC))
             throw Core::ParseExceptExpect(in.peek(), ")", true);
 
-         return CC::ExpCreate_Call(exp, std::move(args), pos);
+         return CC::ExpCreate_Call(exp, std::move(args), scope, pos);
       }
 
       //
