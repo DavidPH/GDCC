@@ -45,6 +45,8 @@ namespace GDCC
 
             static IR::Type_Fixed const TypeWord;
 
+            static Core::FastU FarJumpIndex;
+
             static Core::FastU InitScriptNumber;
 
             static Core::FastU StaArray;

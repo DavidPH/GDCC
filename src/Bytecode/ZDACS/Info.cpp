@@ -198,6 +198,8 @@ namespace GDCC
       {
          IR::Type_Fixed const Info::TypeWord{32, 0, false, false};
 
+         Core::FastU Info::FarJumpIndex = 1;
+
          Core::FastU Info::InitScriptNumber = 999;
 
          Core::FastU Info::StaArray = 0;

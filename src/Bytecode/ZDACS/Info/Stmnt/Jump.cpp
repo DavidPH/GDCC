@@ -130,7 +130,7 @@ namespace GDCC
                putStmntPushArg(stmnt->args[2], 0);
                putStmntDropArg(stmnt->args[1], 2);
 
-               putCode(Code::Push_Lit,    0);
+               putCode(Code::Push_Lit,    FarJumpIndex);
                putStmntPushIdx(stmnt->args[1], 0);
                putCode(Code::Drop_GblArr, StaArray);
 
@@ -140,7 +140,7 @@ namespace GDCC
             {
                // Check for ongoing far jump.
 
-               putCode(Code::Push_Lit,    0);
+               putCode(Code::Push_Lit,    FarJumpIndex);
                putCode(Code::Push_GblArr, StaArray);
                putCode(Code::Jcnd_Lit,    0, putPos + 12 + stmnt->op.size * 4
                   + 28 + 8 + (36 + 36 + 24 + 4));
@@ -159,19 +159,19 @@ namespace GDCC
             putCode(Code::Jump_Lit, GetWord(stmnt->args[0].aLit.value));
 
             // Match! Push result and execute dynamic branch.
-            putCode(Code::Push_Lit,    0);
+            putCode(Code::Push_Lit,    FarJumpIndex);
             putCode(Code::Push_GblArr, StaArray);
             putCode(Code::Push_Lit,    2);
             putCode(Code::AddU);
             putCode(Code::Push_GblArr, StaArray);
 
-            putCode(Code::Push_Lit,    0);
+            putCode(Code::Push_Lit,    FarJumpIndex);
             putCode(Code::Push_GblArr, StaArray);
             putCode(Code::Push_Lit,    1);
             putCode(Code::AddU);
             putCode(Code::Push_GblArr, StaArray);
 
-            putCode(Code::Push_Lit,    0);
+            putCode(Code::Push_Lit,    FarJumpIndex);
             putCode(Code::Push_Lit,    0);
             putCode(Code::Drop_GblArr, StaArray);
 
