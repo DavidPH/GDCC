@@ -186,6 +186,11 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpCreate_Inv(AST::Exp const *e,
          Core::Origin pos);
 
+      Core::CounterRef<AST::Exp const> ExpCreate_JmpLng(Scope &scope,
+         AST::Exp const *env, AST::Exp const *val, Core::Origin pos);
+      Core::CounterRef<AST::Exp const> ExpCreate_JmpSet(AST::Exp const *env,
+         Core::Origin pos);
+
       Core::CounterRef<AST::Exp const> ExpCreate_LitInt(AST::Type const *type,
          Core::Integ const &lit, Core::Origin pos);
       Core::CounterRef<AST::Exp const> ExpCreate_LitInt(AST::Type const *type,

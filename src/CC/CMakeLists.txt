@@ -36,6 +36,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    Exp/Func.cpp
    Exp/GenSel.cpp
    Exp/Init.cpp
+   Exp/Jmp.cpp
    Exp/Lit.cpp
    Exp/Mem.cpp
    Exp/Mod.cpp
@@ -111,6 +112,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    ../../inc/CC/Exp/Func.hpp
    ../../inc/CC/Exp/GenSel.hpp
    ../../inc/CC/Exp/Init.hpp
+   ../../inc/CC/Exp/Jmp.hpp
    ../../inc/CC/Exp/Mem.hpp
    ../../inc/CC/Exp/Not.hpp
    ../../inc/CC/Exp/Obj.hpp

@@ -124,6 +124,38 @@ namespace GDCC
       }
 
       //
+      // GetExp_Unar_longjmp
+      //
+      static AST::Exp::CRef GetExp_Unar_longjmp(Parser &ctx, Scope &scope)
+      {
+         // longjmp-expression:
+         //    <__longjmp> ( assignment-expression , assignment-expression )
+
+         // <__longjmp>
+         auto pos = ctx.in.get().pos;
+
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+
+         // assignment-expression
+         auto env = ctx.getExp_Assi(scope);
+
+         // ,
+         if(!ctx.in.drop(Core::TOK_Comma))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
+
+         // assignment-expression
+         auto val = ctx.getExp_Assi(scope);
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+
+         return ExpCreate_JmpLng(scope, env, val, pos);
+      }
+
+      //
       // GetExp_Unar_offsetof
       //
       static AST::Exp::CRef GetExp_Unar_offsetof(Parser &ctx, Scope &scope)
@@ -166,6 +198,31 @@ namespace GDCC
          {
             throw Core::ExceptStr(pos, "invalid member");
          }
+      }
+
+      //
+      // GetExp_Unar_setjmp
+      //
+      static AST::Exp::CRef GetExp_Unar_setjmp(Parser &ctx, Scope &scope)
+      {
+         // setjmp-expression:
+         //    <__setjmp> ( assignment-expression )
+
+         // <__setjmp>
+         auto pos = ctx.in.get().pos;
+
+         // (
+         if(!ctx.in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+
+         // assignment-expression
+         auto env = ctx.getExp_Assi(scope);
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+
+         return ExpCreate_JmpSet(env, pos);
       }
 
       //
@@ -328,7 +385,9 @@ namespace GDCC
          {
          case Core::STR___div:      return GetExp_Unar_div(*this, scope);
          case Core::STR___glyph:    return GetExp_Unar_glyph(*this, scope);
+         case Core::STR___longjmp:  return GetExp_Unar_longjmp(*this, scope);
          case Core::STR___offsetof: return GetExp_Unar_offsetof(*this, scope);
+         case Core::STR___setjmp:   return GetExp_Unar_setjmp(*this, scope);
          case Core::STR___va_arg:   return GetExp_Unar_va_arg(*this, scope);
 
          default: break;

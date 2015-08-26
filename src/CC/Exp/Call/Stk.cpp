@@ -22,6 +22,7 @@
 
 #include "IR/Block.hpp"
 #include "IR/CallType.hpp"
+#include "IR/Glyph.hpp"
 
 #include "Platform/Platform.hpp"
 
@@ -228,7 +229,8 @@ namespace GDCC
 
          // Long jump propagation.
          if(IsLongJump(callType))
-            ctx.block.addStatementArgs({IR::Code::Jfar, retWords}, scope.fn.getLabelLJR());
+            ctx.block.addStatementArgs({IR::Code::Jfar, retWords},
+               IR::Glyph(ctx.prog, scope.fn.getLabelLJR()));
 
          // Move to destination.
          GenStmnt_MovePart(this, ctx, dst, false, true);
