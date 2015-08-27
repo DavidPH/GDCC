@@ -12,13 +12,15 @@
 
 #include "ACC/DirectiveTBuf.hpp"
 
+#include "ACC/IStream.hpp"
 #include "ACC/Pragma.hpp"
 
 #include "Core/Exception.hpp"
+#include "Core/Parse.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -68,7 +70,8 @@ namespace GDCC
          if(src.peek().tok != Core::TOK_String)
             throw Core::ParseExceptExpect(src.peek(), "string-literal", false);
 
-         prag.stateLibrary.emplace_back(src.get().str);
+         prag.stateLibrary.emplace_back(
+            Core::ParseStringC(src.get().str, 0, '"', ParseEscape));
 
          if(src.peek().tok == Core::TOK_WSpace) src.get();
 

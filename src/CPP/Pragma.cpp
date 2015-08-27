@@ -13,6 +13,7 @@
 #include "CPP/Pragma.hpp"
 
 #include "Core/Exception.hpp"
+#include "Core/Parse.hpp"
 #include "Core/TokenStream.hpp"
 
 
@@ -133,7 +134,7 @@ namespace GDCC
             if(in.peek().tok != Core::TOK_String)
                throw Core::ParseExceptExpect(in.peek(), "string-literal", false);
 
-            data.stateLibrary.emplace_back(in.peek().str);
+            data.stateLibrary.emplace_back(Core::ParseStringC(in.get().str, 0, '"'));
 
             return true;
 
