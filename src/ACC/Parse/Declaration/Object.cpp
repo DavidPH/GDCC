@@ -171,10 +171,6 @@ namespace GDCC
             }
 
             obj->defin = true;
-
-            // Give default initializer.
-            obj->init = CC::Exp_Init::Create(
-               CC::Init::Create(obj->type, 0, attr.namePos), true);
          }
 
          // Set address, if one provided.
