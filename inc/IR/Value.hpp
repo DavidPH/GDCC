@@ -88,6 +88,8 @@ namespace GDCC
       public:
          Value_DJump() = default;
 
+         Value_DJump(Value_Fixed const &value, Type_DJump const &vtype);
+
          Value_DJump(Core::FastU value_, Type_DJump vtype_) :
             vtype{vtype_}, value{value_} {}
 
@@ -124,14 +126,13 @@ namespace GDCC
       public:
          Value_Fixed() = default;
 
+         Value_Fixed(Value_DJump const &value, Type_Fixed const &vtype);
          Value_Fixed(Value_Fixed const &value, Type_Fixed const &vtype);
-         Value_Fixed(Value_Fixed &&value, Type_Fixed const &vtype);
-
+         Value_Fixed(Value_Fixed      &&value, Type_Fixed const &vtype);
          Value_Fixed(Value_Float const &value, Type_Fixed const &vtype);
-         Value_Fixed(Value_Float &&value, Type_Fixed const &vtype);
-
+         Value_Fixed(Value_Funct const &value, Type_Fixed const &vtype);
          Value_Fixed(Value_Point const &value, Type_Fixed const &vtype);
-         Value_Fixed(Value_Point &&value, Type_Fixed const &vtype);
+         Value_Fixed(Value_StrEn const &value, Type_Fixed const &vtype);
 
          Value_Fixed(Core::Integ const &value_, Type_Fixed const &vtype_) :
             vtype{vtype_}, value{value_} {clamp();}
@@ -163,10 +164,8 @@ namespace GDCC
          Value_Float() = default;
 
          Value_Float(Value_Fixed const &value, Type_Float const &vtype);
-         Value_Float(Value_Fixed &&value, Type_Float const &vtype);
-
          Value_Float(Value_Float const &value, Type_Float const &vtype);
-         Value_Float(Value_Float &&value, Type_Float const &vtype);
+         Value_Float(Value_Float      &&value, Type_Float const &vtype);
 
          Value_Float(Core::Float const &value_, Type_Float const &vtype_) :
             vtype{vtype_}, value{value_} {clamp();}
@@ -193,6 +192,9 @@ namespace GDCC
       public:
          Value_Funct() = default;
 
+         Value_Funct(Value_Fixed const &value, Type_Funct const &vtype);
+         Value_Funct(Value_Funct const &value, Type_Funct const &vtype);
+
          Value_Funct(Core::FastU value_, Type_Funct const &vtype_) :
             vtype{vtype_}, value{value_} {}
 
@@ -212,15 +214,12 @@ namespace GDCC
       public:
          Value_Point() = default;
 
+         Value_Point(Value_Point const &value, Type_Point const &vtype);
+         Value_Point(Value_Fixed const &value, Type_Point const &vtype);
+
          Value_Point(Core::FastU value_, AddrBase addrB_, Core::String addrN_,
             Type_Point const &vtype_) :
             vtype{vtype_}, value{value_}, addrB{addrB_}, addrN{addrN_} {}
-
-         // Converts pointer type.
-         Value_Point(Value_Point const &value, Type_Point const &vtype);
-
-         // Converts from fixed-point to pointer.
-         Value_Point(Value_Fixed const &value, Type_Point const &vtype);
 
          explicit Value_Point(IArchive &in);
 
@@ -239,6 +238,8 @@ namespace GDCC
       {
       public:
          Value_StrEn() = default;
+
+         Value_StrEn(Value_Fixed const &value, Type_StrEn const &vtype);
 
          Value_StrEn(Core::FastU value_, Type_StrEn vtype_) :
             vtype{vtype_}, value{value_} {}

@@ -71,30 +71,58 @@ namespace GDCC
          auto e = exp->getValue();
          auto t = e.getType();
 
+         if(t == type)
+            return e;
+
          switch(t.t)
          {
+         case TypeBase::DJump:
+            switch(type.t)
+            {
+            case TypeBase::Fixed: return Value_Fixed(std::move(e.vDJump), type.tFixed);
+            default: return Value_Empty();
+            }
+
          case TypeBase::Fixed:
             switch(type.t)
             {
-            case TypeBase::Fixed: return Value_Fixed(e.vFixed, type.tFixed);
-            case TypeBase::Float: return Value_Float(e.vFixed, type.tFloat);
-            case TypeBase::Point: return Value_Point(e.vFixed, type.tPoint);
+            case TypeBase::DJump: return Value_DJump(std::move(e.vFixed), type.tDJump);
+            case TypeBase::Fixed: return Value_Fixed(std::move(e.vFixed), type.tFixed);
+            case TypeBase::Float: return Value_Float(std::move(e.vFixed), type.tFloat);
+            case TypeBase::Funct: return Value_Funct(std::move(e.vFixed), type.tFunct);
+            case TypeBase::Point: return Value_Point(std::move(e.vFixed), type.tPoint);
+            case TypeBase::StrEn: return Value_StrEn(std::move(e.vFixed), type.tStrEn);
             default: return Value_Empty();
             }
 
          case TypeBase::Float:
             switch(type.t)
             {
-            case TypeBase::Fixed: return Value_Fixed(e.vFloat, type.tFixed);
-            case TypeBase::Float: return Value_Float(e.vFloat, type.tFloat);
+            case TypeBase::Fixed: return Value_Fixed(std::move(e.vFloat), type.tFixed);
+            case TypeBase::Float: return Value_Float(std::move(e.vFloat), type.tFloat);
+            default: return Value_Empty();
+            }
+
+         case TypeBase::Funct:
+            switch(type.t)
+            {
+            case TypeBase::Fixed: return Value_Fixed(std::move(e.vFunct), type.tFixed);
+            case TypeBase::Funct: return Value_Funct(std::move(e.vFunct), type.tFunct);
             default: return Value_Empty();
             }
 
          case TypeBase::Point:
             switch(type.t)
             {
-            case TypeBase::Fixed: return Value_Fixed(e.vPoint, type.tFixed);
-            case TypeBase::Point: return Value_Point(e.vPoint, type.tPoint);
+            case TypeBase::Fixed: return Value_Fixed(std::move(e.vPoint), type.tFixed);
+            case TypeBase::Point: return Value_Point(std::move(e.vPoint), type.tPoint);
+            default: return Value_Empty();
+            }
+
+         case TypeBase::StrEn:
+            switch(type.t)
+            {
+            case TypeBase::Fixed: return Value_Fixed(std::move(e.vStrEn), type.tFixed);
             default: return Value_Empty();
             }
 
