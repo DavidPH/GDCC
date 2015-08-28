@@ -88,6 +88,7 @@ namespace GDCC
          {
             nullptr, Option::Base::Info()
                .setName("sys-source")
+               .setGroup("input")
                .setDescS("Adds source file from system directory."),
          }
       {
