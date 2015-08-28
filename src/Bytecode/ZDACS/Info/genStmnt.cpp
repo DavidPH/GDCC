@@ -173,8 +173,6 @@ namespace GDCC
             case IR::Code::OrIU_W: genStmntBitwise(); break;
             case IR::Code::OrXU_W: genStmntBitwise(); break;
 
-            case IR::Code::Plsa: numChunkCODE += 16; break;
-            case IR::Code::Plsf: numChunkCODE += 16; break;
             case IR::Code::Pltn: numChunkCODE += 12; break;
 
             case IR::Code::Retn: genStmnt_Retn(); break;

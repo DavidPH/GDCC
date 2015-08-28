@@ -155,8 +155,6 @@ namespace GDCC
             case IR::Code::OrIU_W: trStmntBitwise(); break;
             case IR::Code::OrXU_W: trStmntBitwise(); break;
 
-            case IR::Code::Plsa: trStmnt_Plsa(); break;
-            case IR::Code::Plsf: break;
             case IR::Code::Pltn: trStmntStk2(1, 1); break;
 
             case IR::Code::Retn: trStmnt_Retn(); break;
@@ -181,15 +179,6 @@ namespace GDCC
                   << ": cannot translate Code for ZDACS: " << stmnt->op << '\n';
                throw EXIT_FAILURE;
             }
-         }
-
-         //
-         // Info::trStmnt_Plsa
-         //
-         void Info::trStmnt_Plsa()
-         {
-            CheckArgC(stmnt, 1);
-            moveArgStk_src(stmnt->args[0], 1);
          }
 
          //

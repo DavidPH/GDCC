@@ -312,8 +312,6 @@ namespace GDCC
             void putStmnt_NegF_W();
             void putStmnt_NegI_W();
             void putStmnt_NotU_W();
-            void putStmnt_Plsa();
-            void putStmnt_Plsf();
             void putStmnt_Pltn();
             void putStmnt_Retn();
             void putStmnt_ShLU_W();
@@ -389,7 +387,6 @@ namespace GDCC
             void trStmnt_Jump();
             void trStmnt_Move_W();
             void trStmnt_NegI_W();
-            void trStmnt_Plsa();
             void trStmnt_Retn();
             void trStmnt_ShLU_W();
             void trStmnt_ShLU_W2();

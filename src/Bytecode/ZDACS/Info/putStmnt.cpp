@@ -165,8 +165,6 @@ namespace GDCC
             case IR::Code::OrIU_W: putStmntBitwise(Code::OrIU); break;
             case IR::Code::OrXU_W: putStmntBitwise(Code::OrXU); break;
 
-            case IR::Code::Plsa: putStmnt_Plsa(); break;
-            case IR::Code::Plsf: putStmnt_Plsf(); break;
             case IR::Code::Pltn: putStmnt_Pltn(); break;
 
             case IR::Code::Retn: putStmnt_Retn(); break;
@@ -198,24 +196,6 @@ namespace GDCC
          {
             if(auto i = stmnt->op.size) while(--i) putCode(Code::OrIU);
             putCode(Code::NotU);
-         }
-
-         //
-         // Info::putStmnt_Plsa
-         //
-         void Info::putStmnt_Plsa()
-         {
-            putCode(Code::Call_Lit,    GetWord(resolveGlyph("___GDCC__Plsa")));
-            putCode(Code::Drop_LocReg, getStkPtrIdx());
-         }
-
-         //
-         // Info::putStmnt_Plsf
-         //
-         void Info::putStmnt_Plsf()
-         {
-            putCode(Code::Push_LocReg, getStkPtrIdx());
-            putCode(Code::Call_Nul,    GetWord(resolveGlyph("___GDCC__Plsf")));
          }
 
          //

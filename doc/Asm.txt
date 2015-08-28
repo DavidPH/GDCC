@@ -575,8 +575,6 @@ Syntax:
     <NotU_W>
     <OrIU_W>
     <OrXU_W>
-    <Plsa>
-    <Plsf>
     <Pltn>
     <Retn>
     <ShLF_W>
@@ -930,26 +928,6 @@ Arguments:
 
 Semantics:
   Bitwise exclusive ors lop with rop and stores the result in dst.
-
------------------------------------------------------------
-Plsa (Pointer, Local Stack Allocate)
------------------------------------------------------------
-
-Arguments:
-  Plsa 0, source[1] size
-
-Semantics:
-  Allocates the local stack.
-
------------------------------------------------------------
-Plsf (Pointer, Local Stack Free)
------------------------------------------------------------
-
-Arguments:
-  Plsf 0
-
-Semantics:
-  Frees the local stack.
 
 -----------------------------------------------------------
 Pltn (Pointer, Local To Near)
@@ -1669,8 +1647,6 @@ Grammar
     <NotU_W>
     <OrIU_W>
     <OrXU_W>
-    <Plsa>
-    <Plsf>
     <Pltn>
     <Retn>
     <ShLF_W>
