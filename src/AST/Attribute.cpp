@@ -23,7 +23,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -36,7 +36,7 @@ namespace GDCC
       Attribute::Attribute() :
          addrI   {nullptr},
          addrS   {nullptr},
-         allocLoc{nullptr},
+         allocAut{nullptr},
          callt   {IR::CallType::None},
          linka   {IR::Linkage::None},
          name    {nullptr},

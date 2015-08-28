@@ -32,20 +32,26 @@
 // Options                                                                    |
 //
 
-//
-// --alloc-Loc
-//
-static GDCC::Core::FastU AllocLoc = 4096;
-static GDCC::Option::Int<GDCC::Core::FastU> AllocLocOpt
+namespace GDCC
 {
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("alloc-Loc")
-      .setGroup("codegen")
-      .setDescS("Sets the default Loc stack size.")
-      .setDescL("Sets the default Loc stack size. Default is 4096."),
+   namespace AST
+   {
+      //
+      // --alloc-Aut
+      //
+      static Core::FastU AllocAut = 4096;
+      static Option::Int<Core::FastU> AllocAutOpt
+      {
+         &Core::GetOptionList(), Option::Base::Info()
+            .setName("alloc-Aut")
+            .setGroup("codegen")
+            .setDescS("Sets the default Aut stack size.")
+            .setDescL("Sets the default Aut stack size. Default is 4096."),
 
-   &AllocLoc
-};
+         &AllocAut
+      };
+   }
+}
 
 
 //----------------------------------------------------------------------------|
@@ -60,7 +66,7 @@ namespace GDCC
       // Function constructor
       //
       Function::Function(Core::String name_, Core::String glyph_) :
-         allocLoc{0},
+         allocAut{0},
          ctype   {IR::CallType::None},
          glyph   {glyph_},
          label   {nullptr},
@@ -261,19 +267,19 @@ namespace GDCC
       }
 
       //
-      // Function::setAllocLoc
+      // Function::setAllocAut
       //
-      void Function::setAllocLoc(IR::Exp const *exp)
+      void Function::setAllocAut(IR::Exp const *exp)
       {
          if(exp)
-            allocLoc = exp->getValue().getFastU();
+            allocAut = exp->getValue().getFastU();
 
          else switch(IR::GetCallTypeIR(ctype))
          {
          case IR::CallType::ScriptI:
          case IR::CallType::ScriptS:
             if(!stmnt || !stmnt->isNoAuto())
-               allocLoc = AllocLoc;
+               allocAut = AllocAut;
             break;
 
          default:

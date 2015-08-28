@@ -114,7 +114,7 @@ namespace GDCC
          fn->stmnt = AST::StatementCreate_Multi(attr.namePos, std::move(stmnts));
          fn->defin = true;
 
-         fn->setAllocLoc(attr.allocLoc);
+         fn->setAllocAut(attr.allocAut);
 
          if(!fn->retrn->isTypeVoid() && fn->stmnt->isNoReturn())
             AST::WarnReturnType(attr.namePos, "no return in non-void function");

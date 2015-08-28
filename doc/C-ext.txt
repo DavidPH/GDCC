@@ -85,19 +85,19 @@ Semantics:
   arguments are constants.
 
 ===========================================================
-Alloc Loc
+Alloc Aut
 ===========================================================
 
 Syntax:
-  attribute-alloc_Loc:
-    attribute-alloc_Loc-name ( constant-expression )
+  attribute-alloc_Aut:
+    attribute-alloc_Aut-name ( constant-expression )
 
-  attribute-alloc_Loc-name:
-    <alloc_Loc>
-    <__alloc_Loc>
+  attribute-alloc_Aut-name:
+    <alloc_Aut>
+    <__alloc_Aut>
 
 Semantics:
-  Sets the Loc stack size for a function. Currently only applies to scripts.
+  Sets the Aut stack size for a function. Currently only applies to scripts.
 
 ===========================================================
 Call
@@ -703,12 +703,12 @@ Grammar
     <address>
     <__address>
 
-  attribute-alloc_Loc:
-    attribute-alloc_Loc-name ( constant-expression )
+  attribute-alloc_Aut:
+    attribute-alloc_Aut-name ( constant-expression )
 
-  attribute-alloc_Loc-name:
-    <alloc_Loc>
-    <__alloc_Loc>
+  attribute-alloc_Aut-name:
+    <alloc_Aut>
+    <__alloc_Aut>
 
   attribute-call:
     attribute-call-name ( string-literal )

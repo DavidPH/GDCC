@@ -73,12 +73,12 @@ namespace GDCC
          Core::String getLabelRes();
          Core::String getLabelTmp();
 
-         void setAllocLoc(IR::Exp const *exp);
+         void setAllocAut(IR::Exp const *exp);
 
          // Generally not useful directly. Use AST::Temporary, instead.
          LocalTmp       localTmp;
 
-         Core::FastU    allocLoc;
+         Core::FastU    allocAut;
          IR::CallType   ctype;
          Core::String   glyph;
          Core::String   label;

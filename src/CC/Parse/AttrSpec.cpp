@@ -126,23 +126,23 @@ namespace GDCC
       }
 
       //
-      // ParseAttr_alloc_Loc
+      // ParseAttr_alloc_Aut
       //
-      // attribute-alloc_Loc:
-      //    attribute-alloc_Loc-name ( constant-expression )
+      // attribute-alloc_Aut:
+      //    attribute-alloc_Aut-name ( constant-expression )
       //
-      // attribute-alloc_Loc-name:
-      //    <alloc_Loc>
-      //    <__alloc_Loc>
+      // attribute-alloc_Aut-name:
+      //    <alloc_Aut>
+      //    <__alloc_Aut>
       //
-      static void ParseAttr_alloc_Loc(Parser &ctx, Scope &scope, AST::Attribute &attr)
+      static void ParseAttr_alloc_Aut(Parser &ctx, Scope &scope, AST::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
             throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // constant-expression
-         attr.allocLoc = ctx.getExp_Cond(scope)->getIRExp();
+         attr.allocAut = ctx.getExp_Cond(scope)->getIRExp();
 
          // )
          if(!ctx.in.drop(Core::TOK_ParenC))
@@ -334,7 +334,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -398,8 +398,8 @@ namespace GDCC
          case Core::STR_address_Lit: case Core::STR___address_Lit:
             ParseAttr_address_Lit(*this, scope, attr); break;
 
-         case Core::STR_alloc_Loc: case Core::STR___alloc_Loc:
-            ParseAttr_alloc_Loc(*this, scope, attr); break;
+         case Core::STR_alloc_Aut: case Core::STR___alloc_Aut:
+            ParseAttr_alloc_Aut(*this, scope, attr); break;
 
          case Core::STR_call: case Core::STR___call:
             ParseAttr_call(*this, scope, attr); break;
