@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -52,7 +52,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Variables                                                           |
 //
 
 namespace GDCC
@@ -66,7 +66,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -81,6 +81,7 @@ namespace GDCC
       unsigned GetWordShift();
 
       // Does null have a zero representation?
+      bool IsZeroNull_DJump();
       bool IsZeroNull_Funct(IR::CallType call);
       bool IsZeroNull_Point(IR::AddrBase addr);
       bool IsZeroNull_StrEn();

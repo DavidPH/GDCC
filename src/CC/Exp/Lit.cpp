@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -25,7 +25,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -103,6 +103,21 @@ namespace GDCC
                val.vtype = {};
 
                if(Platform::IsZeroNull_StrEn())
+                  val.value = 0;
+               else
+                  val.value = static_cast<Core::FastU>(-1);
+
+               auto exp = IR::ExpCreate_Value(std::move(val), pos);
+               return AST::ExpCreate_IRExp(exp, type, pos);
+            }
+
+            // Pointer to dynamic jump target.
+            if(base->isTypeLabel())
+            {
+               IR::Value_DJump val;
+               val.vtype = {};
+
+               if(Platform::IsZeroNull_DJump())
                   val.value = 0;
                else
                   val.value = static_cast<Core::FastU>(-1);

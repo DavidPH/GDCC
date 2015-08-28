@@ -225,6 +225,14 @@ namespace GDCC
       }
 
       //
+      // IsZeroNull_DJump
+      //
+      bool IsZeroNull_DJump()
+      {
+         return true;
+      }
+
+      //
       // IsZeroNull_Funct
       //
       bool IsZeroNull_Funct(IR::CallType call)
