@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -67,7 +67,7 @@ static GDCC::Option::Bool DumpOrigin
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -81,6 +81,7 @@ namespace GDCC
       {
          out << "\nFunction "; PutString(out, fn.glyph);
 
+         if(fn.allocAut) out << " \\\n   allocAut=" << fn.alloc;
          if(fn.alloc)    out << " \\\n   alloc="    << fn.alloc;
                          out << " \\\n   ctype="    << fn.ctype;
          if(fn.defin)    out << " \\\n   defin="    << fn.defin;

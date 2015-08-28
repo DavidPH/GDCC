@@ -21,7 +21,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -117,6 +117,13 @@ namespace GDCC
          void Info::putFunc()
          {
             // Put function preamble.
+            if(func->defin && func->allocAut)
+            {
+               putCode(Code::Push_Lit,    func->allocAut);
+               putCode(Code::Call_Lit,    GetWord(resolveGlyph("___GDCC__Plsa")));
+               putCode(Code::Drop_LocReg, getStkPtrIdx());
+            }
+
             Core::FastU paramMax = GetParamMax(func->ctype);
             if(func->defin && func->param > paramMax)
             {

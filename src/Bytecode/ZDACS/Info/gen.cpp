@@ -84,6 +84,9 @@ namespace GDCC
             backGlyphWord(func->label, CodeBase() + numChunkCODE);
 
             // Gen function preamble.
+            if(func->allocAut)
+               numChunkCODE += 24;
+
             Core::FastU paramMax = GetParamMax(func->ctype);
             if(func->defin && func->param > paramMax)
                numChunkCODE += (func->param - paramMax) * 24;

@@ -148,6 +148,7 @@ namespace GDCC
          // Generate statements.
          if(stmnt) stmnt->genStmnt({fn.block, this, prog});
 
+         fn.allocAut = allocAut;
          fn.ctype    = IR::GetCallTypeIR(ctype);
          fn.label    = label;
          fn.linka    = linka;

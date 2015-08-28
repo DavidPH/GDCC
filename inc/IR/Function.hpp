@@ -58,6 +58,7 @@ namespace GDCC
          void setLocalTmp(Core::FastU words)
             {if(localTmp < words) localTmp = words;}
 
+         Core::FastU  allocAut;
          Block        block;
          CallType     ctype;
          Core::String glyph;

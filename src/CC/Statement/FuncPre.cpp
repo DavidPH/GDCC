@@ -69,10 +69,6 @@ namespace GDCC
          auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
          auto stype = scope.fn->stype;
 
-         // If script, allocate automatic storage area.
-         if(scope.fn->allocAut)
-            ctx.block.addStatementArgs({IR::Code::Plsa, 0}, scope.fn->allocAut);
-
          // Move parameter data to actual storage location.
          Core::FastU paramIdx = 0;
 
@@ -127,10 +123,6 @@ namespace GDCC
          if(scope.fn->labelEnd)
             ctx.block.addLabel(scope.fn->labelEnd);
 
-         // If script, free automatic storage area.
-         if(scope.fn->allocAut)
-            ctx.block.addStatementArgs({IR::Code::Plsf, 0});
-
          // Perform return.
          if(scope.fn->retrn->isTypeVoid())
          {
@@ -146,9 +138,6 @@ namespace GDCC
          if(scope.labelLJR)
          {
             ctx.block.addLabel(scope.labelLJR);
-
-            if(scope.fn->allocAut)
-               ctx.block.addStatementArgs({IR::Code::Plsf, 0});
 
             if(scope.fn->retrn->isTypeVoid())
                ctx.block.addStatementArgs({IR::Code::Retn, 0});

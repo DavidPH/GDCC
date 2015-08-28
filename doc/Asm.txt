@@ -89,6 +89,7 @@ Syntax:
     function-argument function-argument-list(opt)
 
   function-argument:
+    <allocAut> = expression
     <alloc> = expression
     <block> new-line { statement-list(opt) }
     <ctype> = call-type-specifier
@@ -112,6 +113,13 @@ Syntax:
 Semantics:
   Defines a function. This includes ACS scripts, which are distinguished by the
   call type.
+
+-----------------------------------------------------------
+allocAut
+-----------------------------------------------------------
+
+Semantics:
+  Size of automatic storage allocation.
 
 -----------------------------------------------------------
 alloc (boolean)
@@ -1511,6 +1519,7 @@ Grammar
     function-argument function-argument-list(opt)
 
   function-argument:
+    <allocAut> = expression
     <alloc> = expression
     <block> new-line { statement-list(opt) }
     <ctype> = call-type-specifier

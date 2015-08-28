@@ -32,6 +32,7 @@ namespace GDCC
       // Function constructor
       //
       Function::Function(Core::String glyph_) :
+         allocAut{0},
          block   {},
          ctype   {CallType::None},
          glyph   {glyph_},
@@ -95,6 +96,7 @@ namespace GDCC
       OArchive &operator << (OArchive &out, Function const &in)
       {
          return out
+            << in.allocAut
             << in.block
             << in.ctype
             << in.label
@@ -118,7 +120,8 @@ namespace GDCC
       //
       IArchive &operator >> (IArchive &in, Function &out)
       {
-         in >> out.block
+         in >> out.allocAut
+            >> out.block
             >> out.ctype
             >> out.label
             >> out.linka

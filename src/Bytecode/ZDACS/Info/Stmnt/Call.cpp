@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,7 +22,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -188,6 +188,9 @@ namespace GDCC
          void Info::genStmnt_Retn()
          {
             auto ret = stmnt->op.size;
+
+            if(func->allocAut)
+               numChunkCODE += 16;
 
             switch(func->ctype)
             {
@@ -499,6 +502,12 @@ namespace GDCC
          void Info::putStmnt_Retn()
          {
             auto ret = stmnt->op.size;
+
+            if(func->allocAut)
+            {
+               putCode(Code::Push_LocReg, getStkPtrIdx());
+               putCode(Code::Call_Nul,    GetWord(resolveGlyph("___GDCC__Plsf")));
+            }
 
             switch(func->ctype)
             {

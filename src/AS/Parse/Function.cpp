@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,7 +21,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -41,6 +41,7 @@ namespace GDCC
          while(!ctx.in.drop(Core::TOK_LnEnd))
             switch(TokenPeekIdenti(ctx).in.get().str)
          {
+         case Core::STR_allocAut: func.alloc    = GetFastU(TokenDropEq(ctx));      break;
          case Core::STR_alloc:    func.alloc    = GetFastU(TokenDropEq(ctx));      break;
          case Core::STR_ctype:    func.ctype    = GetCallType(TokenDropEq(ctx));   break;
          case Core::STR_defin:    func.defin    = GetFastU(TokenDropEq(ctx));      break;
