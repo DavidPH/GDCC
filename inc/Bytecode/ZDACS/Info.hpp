@@ -446,6 +446,12 @@ namespace GDCC
             static Core::FastU GetWord(IR::Arg_Lit const &arg, Core::FastU w = 0);
             static Core::FastU GetWord(IR::Exp const *exp, Core::FastU w = 0);
 
+            static bool IsNull(IR::Value_Funct const &val);
+            static bool IsNull(IR::Value_StrEn const &val);
+
+            static bool IsNull_Funct(Core::FastU val);
+            static bool IsNull_StrEn(Core::FastU val);
+
             static bool IsScript(IR::CallType ctype);
             static bool IsScriptS(IR::CallType ctype);
          };

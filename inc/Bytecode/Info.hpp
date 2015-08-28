@@ -53,6 +53,8 @@ namespace GDCC
       class Value_Array;
       class Value_Fixed;
       class Value_Float;
+      class Value_Funct;
+      class Value_StrEn;
       class Value_Tuple;
       class Space;
       class Statement;

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,6 +18,7 @@
 #include "IR/Addr.hpp"
 #include "IR/CallType.hpp"
 
+#include "Option/Bool.hpp"
 #include "Option/Exception.hpp"
 
 
@@ -25,79 +26,94 @@
 // Options                                                                    |
 //
 
-//
-// --bc-format
-//
-static GDCC::Option::Function FormatOpt
+namespace GDCC
 {
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-format")
-      .setGroup("output")
-      .setDescS("Selects bytecode format.")
-      .setDescL("Selects bytecode format. This option may affect higher level "
-         "codegen and should be set at all stages of compiling. Valid "
-         "arguments are: ACSE, MgC_NTS."),
-
-   [](GDCC::Option::Base *, GDCC::Option::Args const &args) -> std::size_t
+   namespace Platform
    {
-      using namespace GDCC;
 
-      if(!args.argC)
-         Option::Exception::Error(args, "argument required");
-
-      switch(Core::String::Find(args.argV[0]))
+      //
+      // --bc-format
+      //
+      static Option::Function FormatOpt
       {
-      case Core::STR_ACSE:
-         Platform::FormatCur = Platform::Format::ACSE;    break;
-      case Core::STR_MgC_NTS:
-         Platform::FormatCur = Platform::Format::MgC_NTS; break;
+         &Core::GetOptionList(), Option::Base::Info()
+            .setName("bc-format")
+            .setGroup("output")
+            .setDescS("Selects bytecode format.")
+            .setDescL("Selects bytecode format. This option may affect higher level "
+               "codegen and should be set at all stages of compiling. Valid "
+               "arguments are: ACSE, MgC_NTS."),
 
-      default:
-         Option::Exception::Error(args, "argument invalid");
-      }
+         [](Option::Base *, Option::Args const &args) -> std::size_t
+         {
+            if(!args.argC)
+               Option::Exception::Error(args, "argument required");
 
-      return 1;
-   }
-};
+            switch(Core::String::Find(args.argV[0]))
+            {
+            case Core::STR_ACSE:    FormatCur = Format::ACSE;    break;
+            case Core::STR_MgC_NTS: FormatCur = Format::MgC_NTS; break;
 
-//
-// --bc-target
-//
-static GDCC::Option::Function TargetOpt
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-target")
-      .setGroup("output")
-      .setDescS("Selects target engine.")
-      .setDescL("Selects target engine. This option may affect higher level "
-         "codegen and should be set at all stages of compiling. Valid "
-         "arguments are: MageCraft, ZDoom."),
+            default:
+               Option::Exception::Error(args, "argument invalid");
+            }
 
-   [](GDCC::Option::Base *, GDCC::Option::Args const &args) -> std::size_t
-   {
-      using namespace GDCC;
+            return 1;
+         }
+      };
 
-      if(!args.argC)
-         Option::Exception::Error(args, "argument required");
-
-      switch(Core::String::Find(args.argV[0]))
+      //
+      // --bc-target
+      //
+      static Option::Function TargetOpt
       {
-      case Core::STR_MageCraft:
-         Platform::TargetCur = Platform::Target::MageCraft; break;
-      case Core::STR_ZDoom:
-         Platform::TargetCur = Platform::Target::ZDoom;     break;
+         &Core::GetOptionList(), Option::Base::Info()
+            .setName("bc-target")
+            .setGroup("output")
+            .setDescS("Selects target engine.")
+            .setDescL("Selects target engine. This option may affect higher level "
+               "codegen and should be set at all stages of compiling. Valid "
+               "arguments are: MageCraft, ZDoom."),
 
-      default:
-         Option::Exception::Error(args, "argument invalid");
-      }
+         [](Option::Base *, Option::Args const &args) -> std::size_t
+         {
+            if(!args.argC)
+               Option::Exception::Error(args, "argument required");
 
-      return 1;
+            switch(Core::String::Find(args.argV[0]))
+            {
+            case Core::STR_MageCraft: TargetCur = Target::MageCraft; break;
+            case Core::STR_ZDoom:     TargetCur = Target::ZDoom;     break;
+
+            default:
+               Option::Exception::Error(args, "argument invalid");
+            }
+
+            return 1;
+         }
+      };
+
+      //
+      // --zero-null-StrEn
+      //
+      static bool ZeroNull_StrEn = true;
+      static Option::Bool ZeroNull_StrEnOpt
+      {
+         &Core::GetOptionList(), Option::Base::Info()
+            .setName("zero-null-StrEn")
+            .setGroup("codegen")
+            .setDescS("Enables zero representation for StrEn nulls.")
+            .setDescL("Enables zero representation for StrEn nulls. Default is "
+               "on. Option has no effect for MageCraft target."),
+
+         &ZeroNull_StrEn
+      };
    }
-};
+}
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Variables                                                           |
 //
 
 namespace GDCC
@@ -111,7 +127,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -246,12 +262,13 @@ namespace GDCC
       {
          switch(TargetCur)
          {
-         case Target::None:      return true;
-         case Target::ZDoom:     return false;
-         case Target::MageCraft: return true;
+         case Target::MageCraft:
+            return true;
+
+         default:
+            return ZeroNull_StrEn;
          }
 
-         return true;
       }
    }
 }

@@ -253,20 +253,15 @@ namespace GDCC
 
             case IR::ValueBase::Funct:
                iv = &ini.vals[itr++];
-               if(IsScriptS(val.vFunct.vtype.callT))
+               if(!IsNull(val.vFunct))
                {
-                  if((val.vFunct.value & 0xFFFFFFFF) == 0xFFFFFFFF)
-                     iv->tag = InitTag::Fixed;
-                  else
+                  if(IsScriptS(val.vFunct.vtype.callT))
                      iv->tag = InitTag::StrEn;
-               }
-               else
-               {
-                  if((val.vFunct.value & 0xFFFFFFFF) == 0)
-                     iv->tag = InitTag::Fixed;
                   else
                      iv->tag = InitTag::Funct;
                }
+               else
+                  iv->tag = InitTag::Fixed;
                iv->val = val.vFunct.value;
                break;
 
@@ -278,7 +273,7 @@ namespace GDCC
 
             case IR::ValueBase::StrEn:
                iv = &ini.vals[itr++];
-               if((val.vFunct.value & 0xFFFFFFFF) == 0xFFFFFFFF)
+               if(IsNull(val.vStrEn))
                   iv->tag = InitTag::Fixed;
                else
                   iv->tag = InitTag::StrEn;

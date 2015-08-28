@@ -124,6 +124,14 @@ namespace GDCC
 
          return IsZeroNull_Point(space.base) ? 1 : 0;
       }
+
+      //
+      // GetAllocMin_StrEn
+      //
+      Core::FastU GetAllocMin_StrEn()
+      {
+         return IsZeroNull_StrEn() ? 1 : 0;
+      }
    }
 }
 

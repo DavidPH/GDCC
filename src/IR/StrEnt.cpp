@@ -16,6 +16,8 @@
 #include "IR/OArchive.hpp"
 #include "IR/Program.hpp"
 
+#include "Platform/Alloc.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Variables                                                           |
@@ -44,6 +46,10 @@ namespace GDCC
       //
       void StrEnt::allocValue(Program &prog)
       {
+         Core::FastU allocMin = Platform::GetAllocMin_StrEn();
+         if(valueInt < allocMin)
+            valueInt = allocMin;
+
          // First, check for any strings to alias with.
          if(alias) for(auto const &itr : prog.rangeStrEnt())
          {

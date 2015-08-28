@@ -22,6 +22,8 @@
 #include "Option/Exception.hpp"
 #include "Option/Int.hpp"
 
+#include "Platform/Platform.hpp"
+
 #include <climits>
 #include <iostream>
 
@@ -1056,6 +1058,50 @@ namespace GDCC
             // Return requested word.
             if(w) valI >>= w * 32;
             return Core::NumberCast<Core::FastU>(valI) & 0xFFFFFFFF;
+         }
+
+         //
+         // Info::IsNull
+         //
+         bool Info::IsNull(IR::Value_Funct const &val)
+         {
+            if(Platform::IsZeroNull_Funct(val.vtype.callT))
+               return (val.value & 0xFFFFFFFF) == 0;
+            else
+               return (val.value & 0xFFFFFFFF) == 0xFFFFFFFF;
+         }
+
+         //
+         // Info::IsNull
+         //
+         bool Info::IsNull(IR::Value_StrEn const &val)
+         {
+            if(Platform::IsZeroNull_StrEn())
+               return (val.value & 0xFFFFFFFF) == 0;
+            else
+               return (val.value & 0xFFFFFFFF) == 0xFFFFFFFF;
+         }
+
+         //
+         // Info::isNull_Funct
+         //
+         bool Info::IsNull_Funct(Core::FastU val)
+         {
+            if(Platform::IsZeroNull_Funct(IR::CallType::StdCall))
+               return (val & 0xFFFFFFFF) == 0;
+            else
+               return (val & 0xFFFFFFFF) == 0xFFFFFFFF;
+         }
+
+         //
+         // Info::IsNull_StrEn
+         //
+         bool Info::IsNull_StrEn(Core::FastU val)
+         {
+            if(Platform::IsZeroNull_StrEn())
+               return (val & 0xFFFFFFFF) == 0;
+            else
+               return (val & 0xFFFFFFFF) == 0xFFFFFFFF;
          }
 
          //

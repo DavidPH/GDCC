@@ -30,7 +30,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -38,6 +38,8 @@ namespace GDCC
    namespace Platform
    {
       Core::FastU GetAllocMin(IR::AddrSpace space);
+
+      Core::FastU GetAllocMin_StrEn();
    }
 }
 

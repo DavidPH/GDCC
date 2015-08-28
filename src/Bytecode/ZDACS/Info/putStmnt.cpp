@@ -596,12 +596,7 @@ namespace GDCC
          //
          void Info::putStmntPushFunct(Core::FastU value)
          {
-            if((value & 0xFFFFFFFF) == 0)
-               putCode(Code::Push_Lit);
-            else
-               putCode(Code::Pfun_Lit);
-
-            putWord(value);
+            putCode(IsNull_Funct(value) ? Code::Push_Lit : Code::Pfun_Lit, value);
          }
 
          //
@@ -658,13 +653,8 @@ namespace GDCC
          //
          void Info::putStmntPushStrEn(Core::FastU value)
          {
-            putCode(Code::Push_Lit);
-            putWord(value);
-
-            if((value & 0xFFFFFFFF) == 0xFFFFFFFF)
-               putCode(Code::Nop);
-            else
-               putCode(Code::Pstr_Stk);
+            putCode(Code::Push_Lit, value);
+            putCode(IsNull_StrEn(value) ? Code::Nop : Code::Pstr_Stk);
          }
       }
    }
