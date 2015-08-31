@@ -12,7 +12,7 @@ Punctuators
 
 Syntax:
   punctuator: add one of
-    . -> ... ##
+    . ... ##
 
 ===========================================================
 Keywords
@@ -37,7 +37,6 @@ Suffix Expressions
 Syntax:
   suffix-expression: add
     suffix-expression . identifier
-    suffix-expression -> identifier
 
 ===========================================================
 Prefix Expressions
@@ -45,8 +44,6 @@ Prefix Expressions
 
 Syntax:
   prefix-expression: add
-    & cast-expression
-    * cast-expression
     <sizeof> ( type-name )
     <sizeof> prefix-expression
 

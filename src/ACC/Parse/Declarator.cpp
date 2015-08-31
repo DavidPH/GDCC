@@ -28,7 +28,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -56,27 +56,9 @@ namespace GDCC
       void Parser::parseDeclarator(CC::Scope &scope, AST::Attribute &attr)
       {
          std::vector<Core::Token> toks;
-         auto declQual = attr.type->getQual();
 
          // declarator:
-         //    pointer(opt) direct-declarator
-
-         // pointer:
-         //    * type-qualifier-list(opt)
-         //    * type-qualifier-list(opt) pointer
-         for(;;)
-         {
-            if(in.drop(Core::TOK_Mul))
-            {
-               attr.type = attr.type->getTypeQual(declQual)->getTypePointer();
-               declQual  = AST::QualNone;
-            }
-            else if(isTypeQual(scope))
-               parseTypeQual(scope, declQual);
-            else
-               break;
-         }
-         attr.type = attr.type->getTypeQual(declQual);
+         //    direct-declarator
 
          // direct-declarator:
          //    object-address(opt) identifier
