@@ -87,24 +87,28 @@ namespace GDCC
             case IR::Code::CmpF_LE_W:
             case IR::Code::CmpF_LT_W:
             case IR::Code::CmpF_NE_W:
-            case IR::Code::CmpU_GE_W:
-            case IR::Code::CmpU_GT_W:
-            case IR::Code::CmpU_LE_W:
-            case IR::Code::CmpU_LT_W:
                preStmntCall(1, stmnt->op.size * 2);
                break;
 
             case IR::Code::CmpI_EQ_W:
-            case IR::Code::CmpI_GE_W:
-            case IR::Code::CmpI_GT_W:
-            case IR::Code::CmpI_LE_W:
-            case IR::Code::CmpI_LT_W:
-            case IR::Code::CmpI_NE_W:
             case IR::Code::CmpU_EQ_W:
-            case IR::Code::CmpU_NE_W:
-               if(stmnt->op.size != 1)
-                  preStmntCall(1, stmnt->op.size * 2);
+               preStmnt_CmpU_EQ_W(IR::Code::CmpU_EQ_W, IR::Code::AndU_W);
                break;
+
+            case IR::Code::CmpI_GE_W: preStmnt_CmpI_GE_W(); break;
+            case IR::Code::CmpI_GT_W: preStmnt_CmpI_GT_W(); break;
+            case IR::Code::CmpI_LE_W: preStmnt_CmpI_LE_W(); break;
+            case IR::Code::CmpI_LT_W: preStmnt_CmpI_LT_W(); break;
+
+            case IR::Code::CmpI_NE_W:
+            case IR::Code::CmpU_NE_W:
+               preStmnt_CmpU_EQ_W(IR::Code::CmpU_NE_W, IR::Code::OrIU_W);
+               break;
+
+            case IR::Code::CmpU_GE_W: preStmnt_CmpU_GE_W(); break;
+            case IR::Code::CmpU_GT_W: preStmnt_CmpU_GT_W(); break;
+            case IR::Code::CmpU_LE_W: preStmnt_CmpU_LE_W(); break;
+            case IR::Code::CmpU_LT_W: preStmnt_CmpU_LT_W(); break;
 
             case IR::Code::DiXI_W:
                if(stmnt->op.size != 1)
@@ -183,6 +187,29 @@ namespace GDCC
                // Signal iterator to start over.
                throw ResetFunc();
             }
+         }
+
+         //
+         // Info::preStmntCallDef
+         //
+         IR::Function *Info::preStmntCallDef(Core::String name,
+            Core::FastU retrn, Core::FastU param, Core::FastU localReg,
+            char const *file, std::size_t line)
+         {
+            try {preStmntCall(name, retrn, param);} catch(ResetFunc const &) {}
+
+            IR::Function *newFunc = &prog->getFunction(name);
+
+            if(newFunc->defin)
+               return nullptr;
+
+            newFunc->defin    = true;
+            newFunc->label    = name + "$label";
+            newFunc->localReg = localReg;
+
+            newFunc->block.setOrigin({file, line});
+
+            return newFunc;
          }
 
          //

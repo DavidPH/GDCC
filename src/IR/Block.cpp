@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,7 +20,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -85,6 +85,15 @@ namespace GDCC
       }
 
       //
+      // Block::getExp
+      //
+      Exp::CRef Block::getExp(unsigned value)
+      {
+         Value_Fixed val{value, {sizeof(value) * CHAR_BIT, 0, false, false}};
+         return ExpCreate_Value(std::move(val), head.pos);
+      }
+
+      //
       // Block::unpackArg<Exp const *>
       //
       void Block::unpackArg(Arg *argv, Exp const *arg0)
@@ -120,6 +129,14 @@ namespace GDCC
       // Block::unpackArg<int>
       //
       void Block::unpackArg(Arg *argv, int arg0)
+      {
+         *argv = Arg_Lit(getExp(arg0));
+      }
+
+      //
+      // Block::unpackArg<unsigned>
+      //
+      void Block::unpackArg(Arg *argv, unsigned arg0)
       {
          *argv = Arg_Lit(getExp(arg0));
       }

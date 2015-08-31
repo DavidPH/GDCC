@@ -234,8 +234,24 @@ namespace GDCC
             virtual void preStmnt();
             void preStmnt_AddU_W(IR::Code code);
             void preStmnt_Bclz_W(bool ones);
+            void preStmnt_CmpI_GE_W();
+            void preStmnt_CmpI_GT_W();
+            void preStmnt_CmpI_LE_W();
+            void preStmnt_CmpI_LT_W();
+            void preStmnt_CmpU_EQ_W(IR::Code codeCmp, IR::Code codeAnd);
+            void preStmnt_CmpU_GE_W();
+            void preStmnt_CmpU_GT_W();
+            void preStmnt_CmpU_LE_W();
+            void preStmnt_CmpU_LT_W();
+            void preStmnt_CmpU_W1(IR::Code codeCmp, bool resGT, bool resLT);
+            void preStmnt_CmpU_Wn(IR::Code codeCmpHi, IR::Code codeCmpLo);
+
             void preStmntCall(Core::FastU retrn, Core::FastU param);
             void preStmntCall(Core::String name, Core::FastU retrn, Core::FastU param);
+
+            IR::Function *preStmntCallDef(Core::String name, Core::FastU retrn,
+               Core::FastU param, Core::FastU localReg, char const *file,
+               std::size_t line);
 
             virtual void preStr();
 

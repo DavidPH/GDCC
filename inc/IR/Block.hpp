@@ -91,6 +91,7 @@ namespace GDCC
          Exp::CRef getExp(Core::FastI value);
          Exp::CRef getExp(Core::FastU value);
          Exp::CRef getExp(int         value);
+         Exp::CRef getExp(unsigned    value);
 
          // getOrigin
          Core::Origin getOrigin() const {return head.pos;}
@@ -139,6 +140,10 @@ namespace GDCC
          void unpackArg(Arg *argv, Core::FastI arg0);
          void unpackArg(Arg *argv, Core::FastU arg0);
          void unpackArg(Arg *argv, int         arg0);
+         void unpackArg(Arg *argv, unsigned    arg0);
+
+         // String arg, explicitly forbidden.
+         void unpackArg(Arg *argv, Core::String arg0) = delete;
 
          //
          // unpackArgs
