@@ -134,6 +134,7 @@ namespace GDCC
             void genStmnt_DivI_W();
             void genStmnt_InvU_W();
             void genStmnt_Jcnd_Nil();
+            void genStmnt_Jcnd_Tab();
             void genStmnt_Jcnd_Tru();
             void genStmnt_Jfar();
             void genStmnt_Jset();
@@ -317,6 +318,7 @@ namespace GDCC
             void putStmnt_DivX_W();
             void putStmnt_InvU_W();
             void putStmnt_Jcnd_Nil();
+            void putStmnt_Jcnd_Tab();
             void putStmnt_Jcnd_Tru();
             void putStmnt_Jfar();
             void putStmnt_Jset();
@@ -397,6 +399,7 @@ namespace GDCC
             void trStmnt_DiXU_W();
             void trStmnt_InvU_W();
             void trStmnt_Jcnd_Nil();
+            void trStmnt_Jcnd_Tab();
             void trStmnt_Jcnd_Tru();
             void trStmnt_Jfar();
             void trStmnt_Jset();

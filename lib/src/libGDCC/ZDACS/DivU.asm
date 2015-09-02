@@ -1,6 +1,6 @@
 ;;-----------------------------------------------------------------------------
 ;;
-;; Copyright(C) 2014 David Hill
+;; Copyright(C) 2014-2015 David Hill
 ;;
 ;; See COPYLIB for license information.
 ;;
@@ -59,11 +59,11 @@ Function "___GDCC__DiXU_W1" \
 
    ; Halve l and divide by r, then double result.
    ; If the result of the division is 0, then immediately return {1, l - r}.
-   ShRU_W 1, Stk(), LocReg(Lit(0)), Lit(1)
-   DivI_W 1, Stk(), Stk(), LocReg(Lit(1))
-   Casm   0, Lit(84), Lit(0), Lit(:"$l1r01_1") ; Jcnd_Lit
-   ShLU_W 1, Stk(), Stk(), Lit(1)
-   Move_W 1, LocReg(Lit(2)), Stk()
+   ShRU_W   1, Stk(), LocReg(Lit(0)), Lit(1)
+   DivI_W   1, Stk(), Stk(), LocReg(Lit(1))
+   Jcnd_Tab 1, Stk(), Lit(0), Lit(:"$l1r01_1")
+   ShLU_W   1, Stk(), Stk(), Lit(1)
+   Move_W   1, LocReg(Lit(2)), Stk()
 
    ; If l - res * r >= r, add one to result.
    Move_W    1, Stk(), LocReg(Lit(0))
@@ -611,11 +611,11 @@ Function "___GDCC__DivU_W1" \
 
    ; Halve l and divide by r, then double result.
    ; If the result of the division is 0, then immediately return 1.
-   ShRU_W 1, Stk(), LocReg(Lit(0)), Lit(1)
-   DivI_W 1, Stk(), Stk(), LocReg(Lit(1))
-   Casm   0, Lit(84), Lit(0), Lit(:"$l1r01_1") ; Jcnd_Lit
-   ShLU_W 1, Stk(), Stk(), Lit(1)
-   Move_W 1, LocReg(Lit(2)), Stk()
+   ShRU_W   1, Stk(), LocReg(Lit(0)), Lit(1)
+   DivI_W   1, Stk(), Stk(), LocReg(Lit(1))
+   Jcnd_Tab 1, Stk(), Lit(0), Lit(:"$l1r01_1")
+   ShLU_W   1, Stk(), Stk(), Lit(1)
+   Move_W   1, LocReg(Lit(2)), Stk()
 
    ; If l - res * r >= r, add one to result.
    Move_W    1, Stk(), LocReg(Lit(0))
@@ -737,11 +737,11 @@ Function "___GDCC__ModU_W1" \
 
    ; Halve l and divide by r, then double result.
    ; If the result of the division is 0, then immediately return l - r.
-   ShRU_W 1, Stk(), LocReg(Lit(0)), Lit(1)
-   DivI_W 1, Stk(), Stk(), LocReg(Lit(1))
-   Casm   0, Lit(84), Lit(:"$l1r01_1") ; Jcnd_Lit
-   ShLU_W 1, Stk(), Stk(), Lit(1)
-   Move_W 1, LocReg(Lit(2)), Stk()
+   ShRU_W   1, Stk(), LocReg(Lit(0)), Lit(1)
+   DivI_W   1, Stk(), Stk(), LocReg(Lit(1))
+   Jcnd_Tab 1, Stk(), Lit(0), Lit(:"$l1r01_1")
+   ShLU_W   1, Stk(), Stk(), Lit(1)
+   Move_W   1, LocReg(Lit(2)), Stk()
 
    ; If l - res * r >= r, add one to result.
    Move_W    1, Stk(), LocReg(Lit(0))

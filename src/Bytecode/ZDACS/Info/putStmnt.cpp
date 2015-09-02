@@ -112,6 +112,7 @@ namespace GDCC
             case IR::Code::InvU_W: putStmnt_InvU_W(); break;
 
             case IR::Code::Jcnd_Nil: putStmnt_Jcnd_Nil(); break;
+            case IR::Code::Jcnd_Tab: putStmnt_Jcnd_Tab(); break;
             case IR::Code::Jcnd_Tru: putStmnt_Jcnd_Tru(); break;
 
             case IR::Code::Jdyn: putCode(Code::Jdyn); break;

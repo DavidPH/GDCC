@@ -107,6 +107,7 @@ namespace GDCC
             Drop_WldArr = 227,
             Push_GblArr = 235,
             Drop_GblArr = 236,
+            Jcnd_Tab    = 256,
             Drop_ScrRet = 257,
             Cspe_5R1    = 263,
             InvU        = 330,

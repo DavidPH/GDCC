@@ -134,6 +134,7 @@ namespace GDCC
             case IR::Code::InvU_W: genStmnt_InvU_W(); break;
 
             case IR::Code::Jcnd_Nil: genStmnt_Jcnd_Nil(); break;
+            case IR::Code::Jcnd_Tab: genStmnt_Jcnd_Tab(); break;
             case IR::Code::Jcnd_Tru: genStmnt_Jcnd_Tru(); break;
 
             case IR::Code::Jdyn: numChunkCODE += 4; break;

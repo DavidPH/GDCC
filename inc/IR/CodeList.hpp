@@ -96,8 +96,13 @@ GDCC_IR_CodeList(DivX_W)
 // Inv* dst src
 GDCC_IR_CodeList(InvU_W)
 
-// Jcnd src lab
+// Jcnd_Nil src lab
 GDCC_IR_CodeList(Jcnd_Nil)
+
+// Jcnd_Tab src [value lab]...
+GDCC_IR_CodeList(Jcnd_Tab)
+
+// Jcnd_Tru src lab
 GDCC_IR_CodeList(Jcnd_Tru)
 
 // Jdyn src

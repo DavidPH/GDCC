@@ -1,6 +1,6 @@
 ;;-----------------------------------------------------------------------------
 ;;
-;; Copyright(C) 2014 David Hill
+;; Copyright(C) 2014-2015 David Hill
 ;;
 ;; See COPYLIB for license information.
 ;;
@@ -29,11 +29,11 @@ Function "___GDCC__ShLF_W1" \
    retrn    = 1 \
    block
 {
-   AndU_W 1, Stk(), LocReg(Lit(0)), Lit(0x7F800000)
-   Casm   0, Lit(84), Lit(0x00000000), Lit(:"$emax") ; Jcnd_Lit
-   Casm   0, Lit(84), Lit(0x7F800000), Lit(:"$emax") ; Jcnd_Lit
-   ShRI_W 1, Stk(), Stk(), Lit(23)
-   AddU_W 1, LocReg(Lit(1)), LocReg(Lit(1)), Stk()
+   AndU_W   1, Stk(), LocReg(Lit(0)), Lit(0x7F800000)
+   Jcnd_Tab 1, Stk(), Lit(0x00000000), Lit(:"$emax")
+   Jcnd_Tab 1, Stk(), Lit(0x7F800000), Lit(:"$emax")
+   ShRI_W   1, Stk(), Stk(), Lit(23)
+   AddU_W   1, LocReg(Lit(1)), LocReg(Lit(1)), Stk()
 
    CmpI_GE_W 1, Stk(), LocReg(Lit(1)), Lit(0xFF)
    Jcnd_Tru  1, Stk(), Lit(:"$inf")
@@ -45,7 +45,7 @@ Function "___GDCC__ShLF_W1" \
 
 :"$inf"
    AndU_W 1, Stk(), LocReg(Lit(0)), Lit(0x80000000)
-   OrIU_W 1, Stk(), Stk(),             Lit(0x7F800000)
+   OrIU_W 1, Stk(), Stk(),          Lit(0x7F800000)
    Retn   1, Stk()
 
    ; If l is inf, nan, or zero, just return it.
@@ -68,11 +68,11 @@ Function "___GDCC__ShLF_W2" \
    retrn    = 2 \
    block
 {
-   AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
-   Casm   0,   Lit(84), Lit(0x00000000), Lit(:"$emax") ; Jcnd_Lit
-   Casm   0,   Lit(84), Lit(0x7FF00000), Lit(:"$emax") ; Jcnd_Lit
-   ShRI_W 1, Stk(), Stk(), Lit(20)
-   AddU_W 1, LocReg(Lit(2)), LocReg(Lit(2)), Stk()
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   Jcnd_Tab 1, Stk(), Lit(0x00000000), Lit(:"$emax")
+   Jcnd_Tab 1, Stk(), Lit(0x7FF00000), Lit(:"$emax")
+   ShRI_W   1, Stk(), Stk(), Lit(20)
+   AddU_W   1, LocReg(Lit(2)), LocReg(Lit(2)), Stk()
 
    CmpI_GE_W 1, Stk(), LocReg(Lit(2)), Lit(0x7FF)
    Jcnd_Tru  1, Stk(), Lit(:"$inf")
@@ -86,7 +86,7 @@ Function "___GDCC__ShLF_W2" \
 :"$inf"
    Move_W 1, Stk(), Lit(0)
    AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
-   OrIU_W 1, Stk(), Stk(),             Lit(0x7FF00000)
+   OrIU_W 1, Stk(), Stk(),          Lit(0x7FF00000)
    Retn   2, Stk()
 
    ; If l is inf, nan, or zero, just return it.
@@ -110,8 +110,9 @@ Function "___GDCC__ShLU_W2" \
    block
 {
    Move_W    1, Stk(), LocReg(Lit(2))
-   Casm      0, Lit(84), Lit(0),  Lit(:"$0")  ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(32), Lit(:"$32") ; Jcnd_Lit
+   Jcnd_Tab  1, Stk(), \
+      Lit(0),  Lit(:"$0"), \
+      Lit(32), Lit(:"$32")
    CmpI_LT_W 1, Stk(), Stk(), Lit(32)
    Jcnd_Nil  1, Stk(), Lit(:"$gt32")
 
@@ -164,9 +165,10 @@ Function "___GDCC__ShLU_W3" \
    block
 {
    Move_W    1, Stk(), LocReg(Lit(3))
-   Casm      0, Lit(84), Lit(0),  Lit(:"$0")  ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(32), Lit(:"$32") ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(64), Lit(:"$64") ; Jcnd_Lit
+   Jcnd_Tab  1, Stk(), \
+      Lit(0),  Lit(:"$0"), \
+      Lit(32), Lit(:"$32"), \
+      Lit(64), Lit(:"$64")
    CmpI_LT_W 1, Stk(), Stk(), Lit(32)
    Jcnd_Nil  1, Stk(), Lit(:"$gt32")
 
@@ -261,7 +263,7 @@ Function "___GDCC__ShRF_W1" \
    ShLU_W 1, LocReg(Lit(1)), LocReg(Lit(1)), Lit(23)
 
    AndU_W    1, Stk(), LocReg(Lit(0)), Lit(0x7F800000)
-   Casm      0, Lit(84), Lit(0x7F800000), Lit(:"$emax") ; Jcnd_Lit
+   Jcnd_Tab  1, Stk(), Lit(0x7F800000), Lit(:"$emax")
    CmpI_LE_W 1, Stk(), Stk(), LocReg(Lit(1))
    Jcnd_Tru  1, Stk(), Lit(:"$zero")
 
@@ -295,7 +297,7 @@ Function "___GDCC__ShRF_W2" \
    ShLU_W 1, LocReg(Lit(2)), LocReg(Lit(2)), Lit(20)
 
    AndU_W    1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
-   Casm      0, Lit(84), Lit(0x7FF00000), Lit(:"$emax") ; Jcnd_Lit
+   Jcnd_Tab  1, Stk(), Lit(0x7FF00000), Lit(:"$emax")
    CmpI_LE_W 1, Stk(), Stk(), LocReg(Lit(2))
    Jcnd_Tru  1, Stk(), Lit(:"$zero")
 
@@ -329,8 +331,9 @@ Function "___GDCC__ShRI_W2" \
    block
 {
    Move_W    1, Stk(), LocReg(Lit(2))
-   Casm      0, Lit(84), Lit(0),  Lit(:"$0")  ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(32), Lit(:"$32") ; Jcnd_Lit
+   Jcnd_Tab  1, Stk(), \
+      Lit(0),  Lit(:"$0"), \
+      Lit(32), Lit(:"$32")
    CmpI_LT_W 1, Stk(), Stk(), Lit(32)
    Jcnd_Nil  1, Stk(), Lit(:"$gt32")
 
@@ -383,9 +386,10 @@ Function "___GDCC__ShRI_W3" \
    block
 {
    Move_W    1, Stk(), LocReg(Lit(3))
-   Casm      0, Lit(84), Lit(0),  Lit(:"$0")  ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(32), Lit(:"$32") ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(64), Lit(:"$64") ; Jcnd_Lit
+   Jcnd_Tab  1, Stk(), \
+      Lit(0),  Lit(:"$0"), \
+      Lit(32), Lit(:"$32"), \
+      Lit(64), Lit(:"$64")
    CmpI_LT_W 1, Stk(), Stk(), Lit(32)
    Jcnd_Nil  1, Stk(), Lit(:"$gt32")
 
@@ -478,8 +482,9 @@ Function "___GDCC__ShRU_W2" \
    block
 {
    Move_W    1, Stk(), LocReg(Lit(2))
-   Casm      0, Lit(84), Lit(0),  Lit(:"$0")  ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(32), Lit(:"$32") ; Jcnd_Lit
+   Jcnd_Tab  1, Stk(), \
+      Lit(0),  Lit(:"$0"), \
+      Lit(32), Lit(:"$32")
    CmpI_LT_W 1, Stk(), Stk(), Lit(32)
    Jcnd_Nil  1, Stk(), Lit(:"$gt32")
 
@@ -532,9 +537,10 @@ Function "___GDCC__ShRU_W3" \
    block
 {
    Move_W    1, Stk(), LocReg(Lit(3))
-   Casm      0, Lit(84), Lit(0),  Lit(:"$0")  ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(32), Lit(:"$32") ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(64), Lit(:"$64") ; Jcnd_Lit
+   Jcnd_Tab  1, Stk(), \
+      Lit(0),  Lit(:"$0"), \
+      Lit(32), Lit(:"$32"), \
+      Lit(64), Lit(:"$64")
    CmpI_LT_W 1, Stk(), Stk(), Lit(32)
    Jcnd_Nil  1, Stk(), Lit(:"$gt32")
 

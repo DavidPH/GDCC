@@ -123,6 +123,7 @@ namespace GDCC
             case IR::Code::InvU_W: trStmnt_InvU_W(); break;
 
             case IR::Code::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
+            case IR::Code::Jcnd_Tab: trStmnt_Jcnd_Tab(); break;
             case IR::Code::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
 
             case IR::Code::Jdyn:

@@ -1,6 +1,6 @@
 ;;-----------------------------------------------------------------------------
 ;;
-;; Copyright(C) 2014 David Hill
+;; Copyright(C) 2014-2015 David Hill
 ;;
 ;; See COPYLIB for license information.
 ;;
@@ -41,13 +41,13 @@ Function "___GDCC__DivF_W1" \
    CmpI_GT_W 1, Stk(), LocReg(Lit(0)), Lit(0x7F800000)
    Jcnd_Tru  1, Stk(), Lit(:"$lnan")
    Move_W    1, Stk(), LocReg(Lit(1))
-   Casm      0, Lit(84), Lit(0x00000000), Lit(:"$r0") ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(0x7F800000), Lit(:"$rinf") ; Jcnd_Lit
+   Jcnd_Tab  1, Stk(), Lit(0x00000000), Lit(:"$r0")
+   Jcnd_Tab  1, Stk(), Lit(0x7F800000), Lit(:"$rinf")
    CmpI_GT_W 1, Stk(), Stk(), Lit(0x7F800000)
    Jcnd_Tru  1, Stk(), Lit(:"$rnan")
    Move_W    1, Stk(), LocReg(Lit(0))
-   Casm      0, Lit(84), Lit(0x00000000), Lit(:"$l0") ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(0x7F800000), Lit(:"$linf") ; Jcnd_Lit
+   Jcnd_Tab  1, Stk(), Lit(0x00000000), Lit(:"$l0")
+   Jcnd_Tab  1, Stk(), Lit(0x7F800000), Lit(:"$linf")
    Move_W    1, Nul(), Stk()
 
    ; Determine result exponent. Will be adjusted later, so no range check, yet.
@@ -183,13 +183,13 @@ Function "___GDCC__DivF_W2" \
    CmpI_GT_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
    Jcnd_Tru  1, Stk(), Lit(:"$lnan")
    Move_W    1, Stk(), LocReg(Lit(3))
-   Casm      0, Lit(84), Lit(0x00000000), Lit(:"$r0") ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(0x7FF00000), Lit(:"$rinf") ; Jcnd_Lit
+   Jcnd_Tab  1, Stk(), Lit(0x00000000), Lit(:"$r0")
+   Jcnd_Tab  1, Stk(), Lit(0x7FF00000), Lit(:"$rinf")
    CmpI_GT_W 1, Stk(), Stk(), Lit(0x7FF00000)
    Jcnd_Tru  1, Stk(), Lit(:"$rnan")
    Move_W    1, Stk(), LocReg(Lit(1))
-   Casm      0, Lit(84), Lit(0x00000000), Lit(:"$l0") ; Jcnd_Lit
-   Casm      0, Lit(84), Lit(0x7FF00000), Lit(:"$linf") ; Jcnd_Lit
+   Jcnd_Tab  1, Stk(), Lit(0x00000000), Lit(:"$l0")
+   Jcnd_Tab  1, Stk(), Lit(0x7FF00000), Lit(:"$linf")
    Move_W    1, Nul(), Stk()
 
    ; Determine result exponent. Will be adjusted later, so no range check, yet.

@@ -1,6 +1,6 @@
 ;;-----------------------------------------------------------------------------
 ;;
-;; Copyright(C) 2014 David Hill
+;; Copyright(C) 2014-2015 David Hill
 ;;
 ;; See COPYLIB for license information.
 ;;
@@ -59,16 +59,16 @@ Function "___GDCC__SubF_W1" \
 :"$rpos"
 
    ; Does l have special exponent?
-   AndU_W 1, Stk(), LocReg(Lit(0)), Lit(0x7F800000)
-   Casm   0, Lit(84), Lit(0x7F800000), Lit(:"$lemax") ; Jcnd_Lit
-   Casm   0, Lit(84), Lit(0x00000000), Lit(:"$lemin") ; Jcnd_Lit
-   ShRI_W 1, LocReg(Lit(2)), Stk(), Lit(23)
+   AndU_W   1, Stk(), LocReg(Lit(0)), Lit(0x7F800000)
+   Jcnd_Tab 1, Stk(), Lit(0x7F800000), Lit(:"$lemax")
+   Jcnd_Tab 1, Stk(), Lit(0x00000000), Lit(:"$lemin")
+   ShRI_W   1, LocReg(Lit(2)), Stk(), Lit(23)
 
    ; Does r have special exponent?
-   AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x7F800000)
-   Casm   0, Lit(84), Lit(0x7F800000), Lit(:"$remax") ; Jcnd_Lit
-   Casm   0, Lit(84), Lit(0x00000000), Lit(:"$remin") ; Jcnd_Lit
-   ShRI_W 1, LocReg(Lit(3)), Stk(), Lit(23)
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x7F800000)
+   Jcnd_Tab 1, Stk(), Lit(0x7F800000), Lit(:"$remax")
+   Jcnd_Tab 1, Stk(), Lit(0x00000000), Lit(:"$remin")
+   ShRI_W   1, LocReg(Lit(3)), Stk(), Lit(23)
 
 
    ; Both are normalized.
@@ -260,16 +260,16 @@ Function "___GDCC__SubF_W2" \
 :"$rpos"
 
    ; Does l have special exponent?
-   AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
-   Casm   0, Lit(84), Lit(0x7FF00000), Lit(:"$lemax") ; Jcnd_Lit
-   Casm   0, Lit(84), Lit(0x00000000), Lit(:"$lemin") ; Jcnd_Lit
-   ShRI_W 1, LocReg(Lit(4)), Stk(), Lit(20)
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   Jcnd_Tab 1, Stk(), Lit(0x7FF00000), Lit(:"$lemax")
+   Jcnd_Tab 1, Stk(), Lit(0x00000000), Lit(:"$lemin")
+   ShRI_W   1, LocReg(Lit(4)), Stk(), Lit(20)
 
    ; Does r have special exponent?
-   AndU_W 1, Stk(), LocReg(Lit(3)), Lit(0x7FF00000)
-   Casm   0, Lit(84), Lit(0x7FF00000), Lit(:"$remax") ; Jcnd_Lit
-   Casm   0, Lit(84), Lit(0x00000000), Lit(:"$remin") ; Jcnd_Lit
-   ShRI_W 1, LocReg(Lit(5)), Stk(), Lit(20)
+   AndU_W   1, Stk(), LocReg(Lit(3)), Lit(0x7FF00000)
+   Jcnd_Tab 1, Stk(), Lit(0x7FF00000), Lit(:"$remax")
+   Jcnd_Tab 1, Stk(), Lit(0x00000000), Lit(:"$remin")
+   ShRI_W   1, LocReg(Lit(5)), Stk(), Lit(20)
 
 
    ; Both are normalized.

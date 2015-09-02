@@ -1,6 +1,6 @@
 ;;-----------------------------------------------------------------------------
 ;;
-;; Copyright(C) 2014 David Hill
+;; Copyright(C) 2014-2015 David Hill
 ;;
 ;; See COPYLIB for license information.
 ;;

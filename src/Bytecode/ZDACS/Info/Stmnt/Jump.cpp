@@ -14,6 +14,8 @@
 
 #include "Bytecode/ZDACS/Code.hpp"
 
+#include "Core/Exception.hpp"
+
 #include "IR/Statement.hpp"
 
 
@@ -39,6 +41,17 @@ namespace GDCC
             }
 
             numChunkCODE += stmnt->op.size * 4 + 4;
+         }
+
+         //
+         // Info::genStmnt_Jcnd_Tab
+         //
+         void Info::genStmnt_Jcnd_Tab()
+         {
+            if(stmnt->args.size() == 3)
+               numChunkCODE += 12;
+            else
+               numChunkCODE += stmnt->args.size() * 4 + 4;
          }
 
          //
@@ -103,6 +116,51 @@ namespace GDCC
                putCode(Code::OrIU);
 
             putCode(Code::Jcnd_Nil, GetWord(stmnt->args[1].aLit));
+         }
+
+         //
+         // Info::putStmnt_Jcnd_Tab
+         //
+         void Info::putStmnt_Jcnd_Tab()
+         {
+            if(stmnt->args.size() == 3)
+            {
+               putCode(Code::Jcnd_Lit);
+               putWord(GetWord(stmnt->args[1].aLit));
+               putWord(GetWord(stmnt->args[2].aLit));
+            }
+            else
+            {
+               putCode(Code::Jcnd_Tab, stmnt->args.size() / 2);
+
+               struct JumpData {Core::FastU value, label;};
+
+               // Collect jump cases.
+               Core::Array<JumpData> Jumps{stmnt->args.size() / 2};
+               for(Core::FastU i = 0; i != Jumps.size(); ++i)
+               {
+                  Jumps[i].value = GetWord(stmnt->args[i * 2 + 1].aLit);
+                  Jumps[i].label = GetWord(stmnt->args[i * 2 + 2].aLit);
+               }
+
+               // Sort by value as signed.
+               std::sort(Jumps.begin(), Jumps.end(),
+                  [](JumpData const &l, JumpData const &r) -> bool
+                  {
+                     if(l.value & 0x80000000)
+                        return r.value & 0x80000000 ? l.value > r.value : false;
+                     else
+                        return r.value & 0x80000000 ? true : l.value < r.value;
+                  }
+               );
+
+               // Write sorted jump cases.
+               for(auto const &jump : Jumps)
+               {
+                  putWord(jump.value);
+                  putWord(jump.label);
+               }
+            }
          }
 
          //
@@ -208,6 +266,24 @@ namespace GDCC
             CheckArgC(stmnt, 2);
             CheckArgB(stmnt, 1, IR::ArgBase::Lit);
             moveArgStk_src(stmnt->args[0], stmnt->op.size);
+         }
+
+         //
+         // Info::trStmnt_Jcnd_Tab
+         //
+         void Info::trStmnt_Jcnd_Tab()
+         {
+            if(stmnt->op.size != 1)
+               throw Core::ExceptStr(stmnt->pos, "unsupported op size for Jcnd_Tab");
+
+            if(stmnt->args.size() % 2 != 1)
+               throw Core::ExceptStr(stmnt->pos, "invalied arg count for Jcnd_Tab");
+
+            for(Core::FastU i = 1; i != stmnt->args.size(); ++i)
+               CheckArgB(stmnt, i, IR::ArgBase::Lit);
+
+            // Argument gets left on stack, so do not just move to stack.
+            CheckArgB(stmnt, 0, IR::ArgBase::Stk);
          }
 
          //

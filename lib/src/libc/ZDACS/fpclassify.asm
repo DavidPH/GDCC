@@ -139,12 +139,12 @@ Function "___fpclassify" \
    retrn    = 1 \
    block
 {
-   AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
-   Casm   0, Lit(84), Lit(0x7FF00000), Lit(:"$emax") ; Jcnd_Lit
-   Casm   0, Lit(84), Lit(0x00000000), Lit(:"$emin") ; Jcnd_Lit
-   Move_W 1, Nul(), Stk()
-   Move_W 1, Stk(), Lit(3)
-   Retn   1, Stk()
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   Jcnd_Tab 1, Stk(), Lit(0x7FF00000), Lit(:"$emax")
+   Jcnd_Tab 1, Stk(), Lit(0x00000000), Lit(:"$emin")
+   Move_W   1, Nul(), Stk()
+   Move_W   1, Stk(), Lit(3)
+   Retn     1, Stk()
 
 :"$emax"
    AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
@@ -175,12 +175,12 @@ Function "___fpclassifyf" \
    retrn    = 1 \
    block
 {
-   AndU_W 1, Stk(), LocReg(Lit(0)), Lit(0x7F800000)
-   Casm   0, Lit(84), Lit(0x7F800000), Lit(:"$emax") ; Jcnd_Lit
-   Casm   0, Lit(84), Lit(0x00000000), Lit(:"$emin") ; Jcnd_Lit
-   Move_W 1, Nul(), Stk()
-   Move_W 1, Stk(), Lit(3)
-   Retn   1, Stk()
+   AndU_W   1, Stk(), LocReg(Lit(0)), Lit(0x7F800000)
+   Jcnd_Tab 1, Stk(), Lit(0x7F800000), Lit(:"$emax")
+   Jcnd_Tab 1, Stk(), Lit(0x00000000), Lit(:"$emin")
+   Move_W   1, Nul(), Stk()
+   Move_W   1, Stk(), Lit(3)
+   Retn     1, Stk()
 
 :"$emax"
    AndU_W 1, Stk(), LocReg(Lit(0)), Lit(0x007FFFFF)
@@ -211,12 +211,12 @@ Function "___fpclassifyl" \
    retrn    = 1 \
    block
 {
-   AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
-   Casm   0, Lit(84), Lit(0x7FF00000), Lit(:"$emax") ; Jcnd_Lit
-   Casm   0, Lit(84), Lit(0x00000000), Lit(:"$emin") ; Jcnd_Lit
-   Move_W 1, Nul(), Stk()
-   Move_W 1, Stk(), Lit(3)
-   Retn   1, Stk()
+   AndU_W   1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   Jcnd_Tab 1, Stk(), Lit(0x7FF00000), Lit(:"$emax")
+   Jcnd_Tab 1, Stk(), Lit(0x00000000), Lit(:"$emin")
+   Move_W   1, Nul(), Stk()
+   Move_W   1, Stk(), Lit(3)
+   Retn     1, Stk()
 
 :"$emax"
    AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
