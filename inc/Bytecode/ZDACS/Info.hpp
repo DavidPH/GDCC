@@ -146,15 +146,9 @@ namespace GDCC
             void genStmnt_NegI_W();
             void genStmnt_Retn();
             void genStmnt_ShLU_W();
-            void genStmnt_ShLU_W2();
-            void genStmnt_ShLU_W3();
             void genStmnt_ShRI_W();
-            void genStmnt_ShRI_W2();
-            void genStmnt_ShRI_W3();
             void genStmnt_ShRU_W();
             void genStmnt_ShRU_W1();
-            void genStmnt_ShRU_W2();
-            void genStmnt_ShRU_W3();
             void genStmnt_SuXU_W();
             void genStmnt_Swap_W();
 
@@ -333,15 +327,9 @@ namespace GDCC
             void putStmnt_Pltn();
             void putStmnt_Retn();
             void putStmnt_ShLU_W();
-            void putStmnt_ShLU_W2();
-            void putStmnt_ShLU_W3();
             void putStmnt_ShRI_W();
-            void putStmnt_ShRI_W2();
-            void putStmnt_ShRI_W3();
             void putStmnt_ShRU_W();
             void putStmnt_ShRU_W1();
-            void putStmnt_ShRU_W2();
-            void putStmnt_ShRU_W3();
             void putStmnt_SuXU_W();
             void putStmnt_SubU_W();
             void putStmnt_Swap_W();
@@ -408,15 +396,9 @@ namespace GDCC
             void trStmnt_NegI_W();
             void trStmnt_Retn();
             void trStmnt_ShLU_W();
-            void trStmnt_ShLU_W2();
-            void trStmnt_ShLU_W3();
             void trStmnt_ShRI_W();
-            void trStmnt_ShRI_W2();
-            void trStmnt_ShRI_W3();
             void trStmnt_ShRU_W();
             void trStmnt_ShRU_W1();
-            void trStmnt_ShRU_W2();
-            void trStmnt_ShRU_W3();
             void trStmnt_SuXU_W();
             void trStmnt_SubU_W();
             void trStmnt_Swap_W();

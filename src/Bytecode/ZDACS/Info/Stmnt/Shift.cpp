@@ -34,52 +34,32 @@ namespace GDCC
          //
          void Info::genStmnt_ShLU_W()
          {
-            switch(stmnt->op.size)
+            if(stmnt->op.size <= 1)
             {
-            case 1: numChunkCODE += 4; break;
-            case 2: genStmnt_ShLU_W2(); break;
-            case 3: genStmnt_ShLU_W3(); break;
-            default:
-               throw Core::ExceptStr(stmnt->pos, "unsupported ShLU_W size");
+               numChunkCODE += 4;
+               return;
             }
-         }
 
-         //
-         // Info::genStmnt_ShLU_W2
-         //
-         void Info::genStmnt_ShLU_W2()
-         {
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
+            if(stmnt->args[2].a != IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit) % 64;
-
-                    if(shift ==  0) numChunkCODE +=  0;
-               else if(shift <  32) numChunkCODE += 92;
-               else if(shift == 32) numChunkCODE += 16;
-               else                 numChunkCODE += 28;
+               genStmntCall(stmnt->op.size);
+               return;
             }
+
+            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+
+            // Shift of 0 is a no-op.
+            if(!shift) return;
+
+            Core::FastU shiftWords = shift / 32;
+            Core::FastU keepWords  = stmnt->op.size - shiftWords;
+
+            numChunkCODE += shiftWords * 12 + keepWords * 8;
+
+            if(shift % 32)
+               numChunkCODE += 20 + (keepWords - 1) * 56;
             else
-               genStmntCall(2);
-         }
-
-         //
-         // Info::genStmnt_ShLU_W3
-         //
-         void Info::genStmnt_ShLU_W3()
-         {
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
-            {
-               auto shift = GetWord(stmnt->args[2].aLit) % 96;
-
-                    if(shift ==  0) numChunkCODE +=   0;
-               else if(shift <  32) numChunkCODE += 156;
-               else if(shift == 32) numChunkCODE +=  32;
-               else if(shift <  64) numChunkCODE += 104;
-               else if(shift == 64) numChunkCODE +=  32;
-               else                 numChunkCODE +=  44;
-            }
-            else
-               genStmntCall(3);
+               numChunkCODE += keepWords * 8;
          }
 
          //
@@ -87,52 +67,35 @@ namespace GDCC
          //
          void Info::genStmnt_ShRI_W()
          {
-            switch(stmnt->op.size)
+            if(stmnt->op.size <= 1)
             {
-            case 1: numChunkCODE += 4; break;
-            case 2: genStmnt_ShRI_W2(); break;
-            case 3: genStmnt_ShRI_W3(); break;
-            default:
-               throw Core::ExceptStr(stmnt->pos, "unsupported ShRI_W size");
+               numChunkCODE += 4;
+               return;
             }
-         }
 
-         //
-         // Info::genStmnt_ShRI_W2
-         //
-         void Info::genStmnt_ShRI_W2()
-         {
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
+            if(stmnt->args[2].a != IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit) % 64;
-
-                    if(shift ==  0) numChunkCODE +=  0;
-               else if(shift <  32) numChunkCODE += 76;
-               else if(shift == 32) numChunkCODE += 24;
-               else                 numChunkCODE += 36;
+               genStmntCall(stmnt->op.size);
+               return;
             }
+
+            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+
+            // Shift of 0 is a no-op.
+            if(!shift) return;
+
+            Core::FastU shiftWords = shift / 32;
+            Core::FastU keepWords  = stmnt->op.size - shiftWords;
+
+            numChunkCODE += shiftWords * 4 + keepWords * 8;
+
+            if(shift % 32)
+               numChunkCODE += (keepWords - 1) * 56 + 20;
             else
-               genStmntCall(2);
-         }
+               numChunkCODE += keepWords * 8;
 
-         //
-         // Info::genStmnt_ShRI_W3
-         //
-         void Info::genStmnt_ShRI_W3()
-         {
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
-            {
-               auto shift = GetWord(stmnt->args[2].aLit) % 96;
-
-                    if(shift ==  0) numChunkCODE +=   0;
-               else if(shift <  32) numChunkCODE += 140;
-               else if(shift == 32) numChunkCODE +=  40;
-               else if(shift <  64) numChunkCODE += 100;
-               else if(shift == 64) numChunkCODE +=  36;
-               else                 numChunkCODE +=  48;
-            }
-            else
-               genStmntCall(3);
+            if(shiftWords)
+               numChunkCODE += 20 + (shiftWords - 1) * 4;
          }
 
          //
@@ -140,14 +103,40 @@ namespace GDCC
          //
          void Info::genStmnt_ShRU_W()
          {
-            switch(stmnt->op.size)
+            if(stmnt->op.size == 0)
             {
-            case 1: genStmnt_ShRU_W1(); break;
-            case 2: genStmnt_ShRU_W2(); break;
-            case 3: genStmnt_ShRU_W3(); break;
-            default:
-               throw Core::ExceptStr(stmnt->pos, "unsupported ShRU_W size");
+               numChunkCODE += 4;
+               return;
             }
+
+            if(stmnt->op.size == 1)
+            {
+               genStmnt_ShRU_W1();
+               return;
+            }
+
+            if(stmnt->args[2].a != IR::ArgBase::Lit)
+            {
+               genStmntCall(stmnt->op.size);
+               return;
+            }
+
+            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+
+            // Shift of 0 is a no-op.
+            if(!shift) return;
+
+            Core::FastU shiftWords = shift / 32;
+            Core::FastU keepWords  = stmnt->op.size - shiftWords;
+
+            numChunkCODE += shiftWords * 4 + keepWords * 8;
+
+            if(shift % 32)
+               numChunkCODE += (keepWords - 1) * 56 + 32;
+            else
+               numChunkCODE += keepWords * 8;
+
+            numChunkCODE += shiftWords * 8;
          }
 
          //
@@ -164,207 +153,73 @@ namespace GDCC
          }
 
          //
-         // Info::genStmnt_ShRU_W2
-         //
-         void Info::genStmnt_ShRU_W2()
-         {
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
-            {
-               auto shift = GetWord(stmnt->args[2].aLit) % 64;
-
-                    if(shift ==  0) numChunkCODE +=  0;
-               else if(shift <  32) numChunkCODE += 88;
-               else if(shift == 32) numChunkCODE += 16;
-               else                 numChunkCODE += 40;
-            }
-            else
-               genStmntCall(2);
-         }
-
-         //
-         // Info::genStmnt_ShRU_W3
-         //
-         void Info::genStmnt_ShRU_W3()
-         {
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
-            {
-               auto shift = GetWord(stmnt->args[2].aLit) % 96;
-
-                    if(shift ==  0) numChunkCODE +=   0;
-               else if(shift <  32) numChunkCODE += 152;
-               else if(shift == 32) numChunkCODE +=  32;
-               else if(shift <  64) numChunkCODE += 104;
-               else if(shift == 64) numChunkCODE +=  32;
-               else                 numChunkCODE +=  56;
-            }
-            else
-               genStmntCall(3);
-         }
-
-         //
          // Info::putStmnt_ShLU_W
          //
          void Info::putStmnt_ShLU_W()
          {
-            switch(stmnt->op.size)
+            if(stmnt->op.size == 0)
             {
-            case 1: putCode(Code::ShLU); break;
-            case 2: putStmnt_ShLU_W2(); break;
-            case 3: putStmnt_ShLU_W3(); break;
-            default:
-               throw Core::ExceptStr(stmnt->pos, "unsupported ShLU_W size");
+               putCode(Code::Drop_Nul);
+               return;
             }
-         }
 
-         //
-         // Info::putStmnt_ShLU_W2
-         //
-         void Info::putStmnt_ShLU_W2()
-         {
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
+            if(stmnt->op.size == 1)
             {
-               auto shift = GetWord(stmnt->args[2].aLit) % 64;
-
-               if(shift == 0)
-               {
-               }
-               else if(shift < 32)
-               {
-                  putCode(Code::Drop_LocReg, func->localReg + 1);
-                  putCode(Code::Drop_LocReg, func->localReg + 0);
-
-                  // ret0 = l0 << r
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit,    shift);
-                  putCode(Code::ShLU);
-
-                  // ret1 = (l1 << r) | (l0 >> (32 - r))
-                  putCode(Code::Push_LocReg, func->localReg + 1);
-                  putCode(Code::Push_Lit,    shift);
-                  putCode(Code::ShLU);
-
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putStmntShiftRU(32 - shift);
-
-                  putCode(Code::OrIU);
-               }
-               else if(shift == 32)
-               {
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Push_Lit, 0);
-                  putCode(Code::Swap);
-               }
-               else
-               {
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Push_Lit, shift - 32);
-                  putCode(Code::ShLU);
-                  putCode(Code::Push_Lit, 0);
-                  putCode(Code::Swap);
-               }
+               putCode(Code::ShLU);
+               return;
             }
-            else
-               putStmntCall("___GDCC__ShLU_W2", 2);
-         }
 
-         //
-         // Info::putStmnt_ShLU_W3
-         //
-         void Info::putStmnt_ShLU_W3()
-         {
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
+            if(stmnt->args[2].a != IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit) % 96;
+               putStmntCall(stmnt->op.size);
+               return;
+            }
 
-               if(shift == 0)
-               {
-               }
-               else if(shift < 32)
-               {
-                  putCode(Code::Drop_LocReg, func->localReg + 2);
-                  putCode(Code::Drop_LocReg, func->localReg + 1);
-                  putCode(Code::Drop_LocReg, func->localReg + 0);
+            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
 
-                  // ret0 = l0 << r
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit,    shift);
+            // Shift of 0 is a no-op.
+            if(!shift) return;
+
+            Core::FastU shiftBits  = shift % 32;
+            Core::FastU shiftWords = shift / 32;
+            Core::FastU keepWords  = stmnt->op.size - shiftWords;
+
+            for(Core::FastU n = shiftWords; n--;)
+               putCode(Code::Drop_Nul);
+
+            for(Core::FastU n = keepWords; n--;)
+               putCode(Code::Drop_LocReg, func->localReg + n);
+
+            for(Core::FastU n = shiftWords; n--;)
+               putCode(Code::Push_Lit, 0);
+
+            if(shiftBits)
+            {
+               // ret[0] = l[0] << r
+               putCode(Code::Push_LocReg, func->localReg + 0);
+               putCode(Code::Push_Lit,    shiftBits);
+               putCode(Code::ShLU);
+
+               for(Core::FastU n = 1; n != keepWords; ++n)
+               {
+                  // ret[n] = (l[n] << r) | (l[n-1] >> (32 - r))
+
+                  putCode(Code::Push_LocReg, func->localReg + n);
+                  putCode(Code::Push_Lit,    shiftBits);
                   putCode(Code::ShLU);
 
-                  // ret1 = (l1 << r) | (l0 >> (32 - r))
-                  putCode(Code::Push_LocReg, func->localReg + 1);
-                  putCode(Code::Push_Lit,    shift);
-                  putCode(Code::ShLU);
-
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putStmntShiftRU(32 - shift);
+                  putCode(Code::Push_LocReg, func->localReg + n - 1);
+                  putStmntShiftRU(32 - shiftBits);
 
                   putCode(Code::OrIU);
-
-                  // ret2 = (l2 << r) | (l1 >> (32 - r))
-                  putCode(Code::Push_LocReg, func->localReg + 2);
-                  putCode(Code::Push_Lit,    shift);
-                  putCode(Code::ShLU);
-
-                  putCode(Code::Push_LocReg, func->localReg + 1);
-                  putStmntShiftRU(32 - shift);
-
-                  putCode(Code::OrIU);
-               }
-               else if(shift == 32)
-               {
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Drop_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit, 0);
-                  putCode(Code::Swap);
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-               }
-               else if(shift < 64)
-               {
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Drop_LocReg, func->localReg + 1);
-                  putCode(Code::Drop_LocReg, func->localReg + 0);
-
-                  // ret0 = 0
-                  putCode(Code::Push_Lit, 0);
-
-                  // ret0 = l1 << r
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit,    shift - 32);
-                  putCode(Code::ShLU);
-
-                  // ret1 = (l2 << r) | (l1 >> (32 - r))
-                  putCode(Code::Push_LocReg, func->localReg + 1);
-                  putCode(Code::Push_Lit,    shift - 32);
-                  putCode(Code::ShLU);
-
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putStmntShiftRU(32 - (shift - 32));
-
-                  putCode(Code::OrIU);
-               }
-               else if(shift == 64)
-               {
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Push_Lit, 0);
-                  putCode(Code::Swap);
-                  putCode(Code::Push_Lit, 0);
-                  putCode(Code::Swap);
-               }
-               else
-               {
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Push_Lit, shift - 32);
-                  putCode(Code::ShLU);
-                  putCode(Code::Push_Lit, 0);
-                  putCode(Code::Swap);
-                  putCode(Code::Push_Lit, 0);
-                  putCode(Code::Swap);
                }
             }
             else
-               putStmntCall("___GDCC__ShLU_W3", 3);
+            {
+               // ret[n] = l[n]
+               for(Core::FastU n = 0; n != keepWords; ++n)
+                  putCode(Code::Push_LocReg, func->localReg + n);
+            }
          }
 
          //
@@ -372,174 +227,76 @@ namespace GDCC
          //
          void Info::putStmnt_ShRI_W()
          {
-            switch(stmnt->op.size)
+            if(stmnt->op.size == 0)
             {
-            case 1: putCode(Code::ShRI); break;
-            case 2: putStmnt_ShRI_W2(); break;
-            case 3: putStmnt_ShRI_W3(); break;
-            default:
-               throw Core::ExceptStr(stmnt->pos, "unsupported ShRI_W size");
+               putCode(Code::Drop_Nul);
+               return;
             }
-         }
 
-         //
-         // Info::putStmnt_ShRI_W2
-         //
-         void Info::putStmnt_ShRI_W2()
-         {
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
+            if(stmnt->op.size == 1)
             {
-               auto shift = GetWord(stmnt->args[2].aLit) % 64;
+               putCode(Code::ShRI);
+               return;
+            }
 
-               if(shift == 0)
-               {
-               }
-               else if(shift < 32)
-               {
-                  putCode(Code::Drop_LocReg, func->localReg + 0);
+            if(stmnt->args[2].a != IR::ArgBase::Lit)
+            {
+               putStmntCall(stmnt->op.size);
+               return;
+            }
 
-                  // ret0 = (l0 >> r) | (l1 << (32 - r))
-                  putStmntShiftRU(shift);
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit,    32 - shift);
+            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+
+            // Shift of 0 is a no-op.
+            if(!shift) return;
+
+            Core::FastU shiftBits  = shift % 32;
+            Core::FastU shiftWords = shift / 32;
+            Core::FastU keepWords  = stmnt->op.size - shiftWords;
+
+            for(Core::FastU n = keepWords; n--;)
+               putCode(Code::Drop_LocReg, func->localReg + n);
+
+            for(Core::FastU n = shiftWords; n--;)
+               putCode(Code::Drop_Nul);
+
+            if(shiftBits)
+            {
+               for(Core::FastU n = 0; n != keepWords - 1; ++n)
+               {
+                  // ret[n] = (l[n] >> r) | (l[n+1] << (32 - r))
+
+                  putCode(Code::Push_LocReg, func->localReg + n);
+                  putStmntShiftRU(shiftBits);
+
+                  putCode(Code::Push_LocReg, func->localReg + n + 1);
+                  putCode(Code::Push_Lit,    32 - shiftBits);
                   putCode(Code::ShLU);
+
                   putCode(Code::OrIU);
-
-                  // ret1 = l1 >> r
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit,    shift);
-                  putCode(Code::ShRI);
                }
-               else if(shift == 32)
-               {
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Copy);
-                  putCode(Code::Push_Lit, 31);
-                  putCode(Code::ShRI);
-               }
-               else
-               {
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
 
-                  // ret0 = l1 >> (r - 32)
-                  putCode(Code::Push_Lit, shift - 32);
-                  putCode(Code::ShRI);
-
-                  // ret1 = l1 < 0 ? -1 : 0
-                  putCode(Code::Copy);
-                  putCode(Code::Push_Lit, 31);
-                  putCode(Code::ShRI);
-               }
+               // ret[N-1] = l[N-1] >> r
+               putCode(Code::Push_LocReg, func->localReg + keepWords - 1);
+               putCode(Code::Push_Lit,    shiftBits);
+               putCode(Code::ShRI);
             }
             else
-               putStmntCall("___GDCC__ShRI_W2", 2);
-         }
-
-         //
-         // Info::putStmnt_ShRI_W3
-         //
-         void Info::putStmnt_ShRI_W3()
-         {
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               auto shift = GetWord(stmnt->args[2].aLit) % 96;
-
-               if(shift == 0)
-               {
-               }
-               else if(shift < 32)
-               {
-                  putCode(Code::Drop_LocReg, func->localReg + 1);
-                  putCode(Code::Drop_LocReg, func->localReg + 0);
-
-                  // ret0 = (l0 >> r) | (l1 << (32 - r))
-                  putStmntShiftRU(shift);
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit,    32 - shift);
-                  putCode(Code::ShLU);
-                  putCode(Code::OrIU);
-
-                  // ret1 = (l1 >> r) | (l2 << (32 - r))
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putStmntShiftRU(shift);
-                  putCode(Code::Push_LocReg, func->localReg + 1);
-                  putCode(Code::Push_Lit,    32 - shift);
-                  putCode(Code::ShLU);
-                  putCode(Code::OrIU);
-
-                  // ret2 = l2 >> r
-                  putCode(Code::Push_LocReg, func->localReg + 1);
-                  putCode(Code::Push_Lit,    shift);
-                  putCode(Code::ShRI);
-               }
-               else if(shift == 32)
-               {
-                  putCode(Code::Drop_LocReg, func->localReg + 0);
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Copy);
-                  putCode(Code::Push_Lit, 31);
-                  putCode(Code::ShRI);
-               }
-               else if(shift < 64)
-               {
-                  putCode(Code::Drop_LocReg, func->localReg + 0);
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-
-                  // ret0 = (l1 >> r) | (l2 << (32 - r))
-                  putStmntShiftRU(shift - 32);
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit,    32 - (shift - 32));
-                  putCode(Code::ShLU);
-                  putCode(Code::OrIU);
-
-                  // ret1 = l2 >> r
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit,    shift - 32);
-                  putCode(Code::ShRI);
-
-                  // ret1 = l2 < 0 ? -1 : 0
-                  putCode(Code::Copy);
-                  putCode(Code::Push_Lit, 31);
-                  putCode(Code::ShRI);
-               }
-               else if(shift == 64)
-               {
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Copy);
-                  putCode(Code::Push_Lit, 31);
-                  putCode(Code::ShRI);
-                  putCode(Code::Copy);
-               }
-               else
-               {
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-
-                  // ret0 = l2 >> (r - 64)
-                  putCode(Code::Push_Lit, shift - 64);
-                  putCode(Code::ShRI);
-
-                  // ret1 = l2 < 0 ? -1 : 0
-                  putCode(Code::Copy);
-                  putCode(Code::Push_Lit, 31);
-                  putCode(Code::ShRI);
-
-                  // ret2 = l2 < 0 ? -1 : 0
-                  putCode(Code::Copy);
-               }
+               // ret[n] = l[n]
+               for(Core::FastU n = 0; n != keepWords; ++n)
+                  putCode(Code::Push_LocReg, func->localReg + n);
             }
-            else
-               putStmntCall("___GDCC__ShRI_W3", 3);
+
+            if(shiftWords)
+            {
+               putCode(Code::Push_LocReg, func->localReg + keepWords - 1);
+               putCode(Code::Push_Lit,    31);
+               putCode(Code::ShRI);
+
+               for(Core::FastU n = shiftWords - 1; n--;)
+                  putCode(Code::Copy);
+            }
          }
 
          //
@@ -547,14 +304,68 @@ namespace GDCC
          //
          void Info::putStmnt_ShRU_W()
          {
-            switch(stmnt->op.size)
+            if(stmnt->op.size == 0)
             {
-            case 1: putStmnt_ShRU_W1(); break;
-            case 2: putStmnt_ShRU_W2(); break;
-            case 3: putStmnt_ShRU_W3(); break;
-            default:
-               throw Core::ExceptStr(stmnt->pos, "unsupported ShRU_W size");
+               putCode(Code::Drop_Nul);
+               return;
             }
+
+            if(stmnt->op.size == 1)
+            {
+               putStmnt_ShRU_W1();
+               return;
+            }
+
+            if(stmnt->args[2].a != IR::ArgBase::Lit)
+            {
+               putStmntCall(stmnt->op.size);
+               return;
+            }
+
+            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+
+            // Shift of 0 is a no-op.
+            if(!shift) return;
+
+            Core::FastU shiftBits  = shift % 32;
+            Core::FastU shiftWords = shift / 32;
+            Core::FastU keepWords  = stmnt->op.size - shiftWords;
+
+            for(Core::FastU n = keepWords; n--;)
+               putCode(Code::Drop_LocReg, func->localReg + n);
+
+            for(Core::FastU n = shiftWords; n--;)
+               putCode(Code::Drop_Nul);
+
+            if(shiftBits)
+            {
+               for(Core::FastU n = 0; n != keepWords - 1; ++n)
+               {
+                  // ret[n] = (l[n] >> r) | (l[n+1] << (32 - r))
+
+                  putCode(Code::Push_LocReg, func->localReg + n);
+                  putStmntShiftRU(shiftBits);
+
+                  putCode(Code::Push_LocReg, func->localReg + n + 1);
+                  putCode(Code::Push_Lit,    32 - shiftBits);
+                  putCode(Code::ShLU);
+
+                  putCode(Code::OrIU);
+               }
+
+               // ret[N-1] = l[N-1] >> r
+               putCode(Code::Push_LocReg, func->localReg + keepWords - 1);
+               putStmntShiftRU(shiftBits);
+            }
+            else
+            {
+               // ret[n] = l[n]
+               for(Core::FastU n = 0; n != keepWords; ++n)
+                  putCode(Code::Push_LocReg, func->localReg + n);
+            }
+
+            for(Core::FastU n = shiftWords; n--;)
+               putCode(Code::Push_Lit, 0);
          }
 
          //
@@ -609,149 +420,6 @@ namespace GDCC
          }
 
          //
-         // Info::putStmnt_ShRU_W2
-         //
-         void Info::putStmnt_ShRU_W2()
-         {
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
-            {
-               auto shift = GetWord(stmnt->args[2].aLit) % 64;
-
-               if(shift == 0)
-               {
-               }
-               else if(shift < 32)
-               {
-                  putCode(Code::Drop_LocReg, func->localReg + 0);
-
-                  // ret0 = (l0 >> r) | (l1 << (32 - r))
-                  putStmntShiftRU(shift);
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit,    32 - shift);
-                  putCode(Code::ShLU);
-                  putCode(Code::OrIU);
-
-                  // ret1 = l1 >> r
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putStmntShiftRU(shift);
-               }
-               else if(shift == 32)
-               {
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Push_Lit, 0);
-               }
-               else
-               {
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-
-                  // ret0 = l1 >> (r - 32)
-                  putStmntShiftRU(shift - 32);
-
-                  // ret1 = 0
-                  putCode(Code::Push_Lit, 0);
-               }
-            }
-            else
-               putStmntCall("___GDCC__ShRU_W2", 2);
-         }
-
-         //
-         // Info::putStmnt_ShRU_W3
-         //
-         void Info::putStmnt_ShRU_W3()
-         {
-            if(stmnt->args[2].a == IR::ArgBase::Lit)
-            {
-               auto shift = GetWord(stmnt->args[2].aLit) % 96;
-
-               if(shift == 0)
-               {
-               }
-               else if(shift < 32)
-               {
-                  putCode(Code::Drop_LocReg, func->localReg + 1);
-                  putCode(Code::Drop_LocReg, func->localReg + 0);
-
-                  // ret0 = (l0 >> r) | (l1 << (32 - r))
-                  putStmntShiftRU(shift);
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit,    32 - shift);
-                  putCode(Code::ShLU);
-                  putCode(Code::OrIU);
-
-                  // ret1 = (l1 >> r) | (l2 << (32 - r))
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putStmntShiftRU(shift);
-                  putCode(Code::Push_LocReg, func->localReg + 1);
-                  putCode(Code::Push_Lit,    32 - shift);
-                  putCode(Code::ShLU);
-                  putCode(Code::OrIU);
-
-                  // ret2 = l2 >> r
-                  putCode(Code::Push_LocReg, func->localReg + 1);
-                  putStmntShiftRU(shift);
-               }
-               else if(shift == 32)
-               {
-                  putCode(Code::Drop_LocReg, func->localReg + 0);
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit, 0);
-               }
-               else if(shift < 64)
-               {
-                  putCode(Code::Drop_LocReg, func->localReg + 0);
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-
-                  // ret0 = (l1 >> r) | (l2 << (32 - r))
-                  putStmntShiftRU(shift - 32);
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putCode(Code::Push_Lit,    32 - (shift - 32));
-                  putCode(Code::ShLU);
-                  putCode(Code::OrIU);
-
-                  // ret1 = l2 >> r
-                  putCode(Code::Push_LocReg, func->localReg + 0);
-                  putStmntShiftRU(shift - 32);
-
-                  // ret2 = 0
-                  putCode(Code::Push_Lit, 0);
-               }
-               else if(shift == 64)
-               {
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Push_Lit, 0);
-                  putCode(Code::Push_Lit, 0);
-               }
-               else
-               {
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-                  putCode(Code::Swap);
-                  putCode(Code::Drop_Nul);
-
-                  // ret0 = l2 >> (r - 64)
-                  putStmntShiftRU(shift - 64);
-
-                  // ret1 = 0
-                  putCode(Code::Push_Lit, 0);
-
-                  // ret2 = 0
-                  putCode(Code::Push_Lit, 0);
-               }
-            }
-            else
-               putStmntCall("___GDCC__ShRU_W3", 3);
-         }
-
-         //
          // Info::putStmntShiftRU
          //
          void Info::putStmntShiftRU(Core::FastU shift)
@@ -767,48 +435,19 @@ namespace GDCC
          //
          void Info::trStmnt_ShLU_W()
          {
-            switch(stmnt->op.size)
+            if(stmnt->op.size <= 1)
             {
-            case 1: trStmntShift(true); break;
-            case 2: trStmnt_ShLU_W2(); break;
-            case 3: trStmnt_ShLU_W3(); break;
-            default:
-               throw Core::ExceptStr(stmnt->pos, "unsupported ShLU_W size");
+               trStmntShift(true);
+               return;
             }
-         }
 
-         //
-         // Info::trStmnt_ShLU_W2
-         //
-         void Info::trStmnt_ShLU_W2()
-         {
-            if(trStmntShift())
-            {
-               auto shift = GetWord(stmnt->args[2].aLit) % 64;
+            if(!trStmntShift())
+               return;
 
-                    if(shift ==  0) func->setLocalTmp(0);
-               else if(shift <  32) func->setLocalTmp(2);
-               else if(shift == 32) func->setLocalTmp(0);
-               else                 func->setLocalTmp(0);
-            }
-         }
+            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
 
-         //
-         // Info::trStmnt_ShLU_W3
-         //
-         void Info::trStmnt_ShLU_W3()
-         {
-            if(trStmntShift())
-            {
-               auto shift = GetWord(stmnt->args[2].aLit) % 96;
-
-                    if(shift ==  0) func->setLocalTmp(0);
-               else if(shift <  32) func->setLocalTmp(3);
-               else if(shift == 32) func->setLocalTmp(1);
-               else if(shift <  64) func->setLocalTmp(2);
-               else if(shift == 64) func->setLocalTmp(0);
-               else                 func->setLocalTmp(0);
-            }
+            if(shift)
+               func->setLocalTmp(stmnt->op.size - shift / 32);
          }
 
          //
@@ -816,48 +455,19 @@ namespace GDCC
          //
          void Info::trStmnt_ShRI_W()
          {
-            switch(stmnt->op.size)
+            if(stmnt->op.size <= 1)
             {
-            case 1: trStmntShift(true); break;
-            case 2: trStmnt_ShRI_W2(); break;
-            case 3: trStmnt_ShRI_W3(); break;
-            default:
-               throw Core::ExceptStr(stmnt->pos, "unsupported ShRI_W size");
+               trStmntShift(true);
+               return;
             }
-         }
 
-         //
-         // Info::trStmnt_ShRI_W2
-         //
-         void Info::trStmnt_ShRI_W2()
-         {
-            if(trStmntShift())
-            {
-               auto shift = GetWord(stmnt->args[2].aLit) % 64;
+            if(!trStmntShift())
+               return;
 
-                    if(shift ==  0) func->setLocalTmp(0);
-               else if(shift <  32) func->setLocalTmp(1);
-               else if(shift == 32) func->setLocalTmp(0);
-               else                 func->setLocalTmp(0);
-            }
-         }
+            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
 
-         //
-         // Info::trStmnt_ShRI_W3
-         //
-         void Info::trStmnt_ShRI_W3()
-         {
-            if(trStmntShift())
-            {
-               auto shift = GetWord(stmnt->args[2].aLit) % 96;
-
-                    if(shift ==  0) func->setLocalTmp(0);
-               else if(shift <  32) func->setLocalTmp(2);
-               else if(shift == 32) func->setLocalTmp(1);
-               else if(shift <  64) func->setLocalTmp(1);
-               else if(shift == 64) func->setLocalTmp(0);
-               else                 func->setLocalTmp(0);
-            }
+            if(shift)
+               func->setLocalTmp(stmnt->op.size - shift / 32);
          }
 
          //
@@ -865,14 +475,25 @@ namespace GDCC
          //
          void Info::trStmnt_ShRU_W()
          {
-            switch(stmnt->op.size)
+            if(stmnt->op.size == 0)
             {
-            case 1: trStmnt_ShRU_W1(); break;
-            case 2: trStmnt_ShRU_W2(); break;
-            case 3: trStmnt_ShRU_W3(); break;
-            default:
-               throw Core::ExceptStr(stmnt->pos, "unsupported ShRU_W size");
+               trStmntShift(true);
+               return;
             }
+
+            if(stmnt->op.size == 1)
+            {
+               trStmnt_ShRU_W1();
+               return;
+            }
+
+            if(!trStmntShift())
+               return;
+
+            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+
+            if(shift)
+               func->setLocalTmp(stmnt->op.size - shift / 32);
          }
 
          //
@@ -893,40 +514,6 @@ namespace GDCC
             {
                func->setLocalTmp(1);
                moveArgStk_src(stmnt->args[2], 1);
-            }
-         }
-
-         //
-         // Info::trStmnt_ShRU_W2
-         //
-         void Info::trStmnt_ShRU_W2()
-         {
-            if(trStmntShift())
-            {
-               auto shift = GetWord(stmnt->args[2].aLit) % 64;
-
-                    if(shift ==  0) func->setLocalTmp(0);
-               else if(shift <  32) func->setLocalTmp(1);
-               else if(shift == 32) func->setLocalTmp(0);
-               else                 func->setLocalTmp(0);
-            }
-         }
-
-         //
-         // Info::trStmnt_ShRU_W3
-         //
-         void Info::trStmnt_ShRU_W3()
-         {
-            if(trStmntShift())
-            {
-               auto shift = GetWord(stmnt->args[2].aLit) % 96;
-
-                    if(shift ==  0) func->setLocalTmp(0);
-               else if(shift <  32) func->setLocalTmp(2);
-               else if(shift == 32) func->setLocalTmp(1);
-               else if(shift <  64) func->setLocalTmp(1);
-               else if(shift == 64) func->setLocalTmp(0);
-               else                 func->setLocalTmp(0);
             }
          }
 
