@@ -58,6 +58,14 @@ namespace GDCC
       }
 
       //
+      // Block::getExp<Glyph>
+      //
+      Exp::CRef Block::getExp(Glyph const &value)
+      {
+         return ExpCreate_Glyph(value, head.pos);
+      }
+
+      //
       // Block::getExp
       //
       Exp::CRef Block::getExp(Core::FastI value)
@@ -106,7 +114,7 @@ namespace GDCC
       //
       void Block::unpackArg(Arg *argv, Glyph const &arg0)
       {
-         *argv = Arg_Lit(ExpCreate_Glyph(arg0, head.pos));
+         *argv = Arg_Lit(getExp(arg0));
       }
 
       //

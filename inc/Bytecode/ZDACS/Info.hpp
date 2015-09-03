@@ -240,6 +240,7 @@ namespace GDCC
             void preStmnt_CmpU_LT_W();
             void preStmnt_CmpU_W1(IR::Code codeCmp, bool resGT, bool resLT);
             void preStmnt_CmpU_Wn(IR::Code codeCmpHi, IR::Code codeCmpLo);
+            void preStmnt_ShLU_W();
 
             void preStmntCall(Core::FastU retrn, Core::FastU param);
             void preStmntCall(Core::String name, Core::FastU retrn, Core::FastU param);

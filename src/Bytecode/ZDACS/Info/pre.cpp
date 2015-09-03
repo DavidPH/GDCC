@@ -141,12 +141,9 @@ namespace GDCC
                preStmntCall(stmnt->op.size, stmnt->op.size + 1);
                break;
 
-            case IR::Code::ShLU_W:
-            case IR::Code::ShRI_W:
-            case IR::Code::ShRU_W:
-               if(stmnt->op.size != 1)
-                  preStmntCall(stmnt->op.size, stmnt->op.size + 1);
-               break;
+            case IR::Code::ShLU_W: preStmnt_ShLU_W(); break;
+            case IR::Code::ShRI_W: preStmnt_ShLU_W(); break;
+            case IR::Code::ShRU_W: preStmnt_ShLU_W(); break;
 
             case IR::Code::SubI_W:
             case IR::Code::SubU_W:

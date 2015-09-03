@@ -88,10 +88,11 @@ namespace GDCC
          const_iterator end() const {return static_cast<const_iterator>(&head);}
 
          // getExp
-         Exp::CRef getExp(Core::FastI value);
-         Exp::CRef getExp(Core::FastU value);
-         Exp::CRef getExp(int         value);
-         Exp::CRef getExp(unsigned    value);
+         Exp::CRef getExp(Glyph const &value);
+         Exp::CRef getExp(Core::FastI  value);
+         Exp::CRef getExp(Core::FastU  value);
+         Exp::CRef getExp(int          value);
+         Exp::CRef getExp(unsigned     value);
 
          // getOrigin
          Core::Origin getOrigin() const {return head.pos;}
@@ -172,7 +173,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
