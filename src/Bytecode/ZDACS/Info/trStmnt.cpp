@@ -114,8 +114,6 @@ namespace GDCC
             case IR::Code::DivK_W:
             case IR::Code::DivU_W:
             case IR::Code::DivX_W:
-            case IR::Code::ModI_W:
-            case IR::Code::ModU_W:
             case IR::Code::SubF_W:
                trStmntStk3(stmnt->op.size, stmnt->op.size, true);
                break;
@@ -141,6 +139,9 @@ namespace GDCC
             case IR::Code::LOrI:
                trStmntStk3(1, stmnt->op.size, false);
                break;
+
+            case IR::Code::ModI_W: trStmnt_ModI_W(); break;
+            case IR::Code::ModU_W: trStmnt_ModU_W(); break;
 
             case IR::Code::Move_W: trStmnt_Move_W(); break;
 

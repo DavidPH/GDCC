@@ -58,8 +58,6 @@ namespace GDCC
             case IR::Code::AddF_W:
             case IR::Code::DivF_W:
             case IR::Code::DivK_W:
-            case IR::Code::DivU_W:
-            case IR::Code::ModU_W:
             case IR::Code::MulF_W:
             case IR::Code::MulK_W:
             case IR::Code::ShLF_W:
@@ -75,16 +73,10 @@ namespace GDCC
                genStmnt_AddU_W();
                break;
 
+            case IR::Code::AndU_W: genStmntBitwise(); break;
+
             case IR::Code::Bclo_W: genStmnt_Bclz_W(); break;
             case IR::Code::Bclz_W: genStmnt_Bclz_W(); break;
-
-            case IR::Code::DivI_W:
-            case IR::Code::DivX_W:
-            case IR::Code::ModI_W:
-               genStmnt_DivI_W();
-               break;
-
-            case IR::Code::AndU_W: genStmntBitwise(); break;
 
             case IR::Code::Call: genStmnt_Call(); break;
 
@@ -131,6 +123,10 @@ namespace GDCC
             case IR::Code::DiXI_W: genStmnt_DiXI_W(); break;
             case IR::Code::DiXU_W: genStmntCall(stmnt->op.size * 2); break;
 
+            case IR::Code::DivI_W: genStmnt_DivI_W(); break;
+            case IR::Code::DivU_W: genStmnt_DivU_W(); break;
+            case IR::Code::DivX_W: genStmnt_DivX_W(); break;
+
             case IR::Code::InvU_W: genStmnt_InvU_W(); break;
 
             case IR::Code::Jcnd_Nil: genStmnt_Jcnd_Nil(); break;
@@ -152,6 +148,9 @@ namespace GDCC
                else
                   genStmntCall(stmnt->op.size);
                break;
+
+            case IR::Code::ModI_W: genStmnt_ModI_W(); break;
+            case IR::Code::ModU_W: genStmnt_ModU_W(); break;
 
             case IR::Code::Move_W: genStmnt_Move_W(); break;
 

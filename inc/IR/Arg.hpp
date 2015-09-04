@@ -42,6 +42,9 @@
       Arg_##name &operator ++ () {++off; return *this;} \
       Arg_##name &operator -- () {--off; return *this;} \
       \
+      Arg_##name operator + (Core::FastU i) const \
+         {return Arg_##name(*idx, off + i);} \
+      \
       bool operator == (Arg_##name const &arg) const \
          {return *idx == *arg.idx && off == arg.off;} \
       \
@@ -72,6 +75,9 @@
       \
       Arg_##name &operator ++ () {++off; return *this;} \
       Arg_##name &operator -- () {++off; return *this;} \
+      \
+      Arg_##name operator + (Core::FastU i) const \
+         {return Arg_##name(*arr, *idx, off + i);} \
       \
       bool operator == (Arg_##name const &arg) const \
          {return *arr == *arg.arr && *idx == *arg.idx && off == arg.off;} \

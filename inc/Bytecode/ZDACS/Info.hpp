@@ -132,6 +132,8 @@ namespace GDCC
             void genStmnt_Cspe();
             void genStmnt_DiXI_W();
             void genStmnt_DivI_W();
+            void genStmnt_DivU_W();
+            void genStmnt_DivX_W();
             void genStmnt_InvU_W();
             void genStmnt_Jcnd_Nil();
             void genStmnt_Jcnd_Tab();
@@ -139,6 +141,8 @@ namespace GDCC
             void genStmnt_Jfar();
             void genStmnt_Jset();
             void genStmnt_Jump();
+            void genStmnt_ModI_W();
+            void genStmnt_ModU_W();
             void genStmnt_Move_W();
             void genStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr);
             void genStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr);
@@ -240,6 +244,10 @@ namespace GDCC
             void preStmnt_CmpU_LT_W();
             void preStmnt_CmpU_W1(IR::Code codeCmp, bool resGT, bool resLT);
             void preStmnt_CmpU_Wn(IR::Code codeCmpHi, IR::Code codeCmpLo);
+            void preStmnt_DiXI_W();
+            void preStmnt_DiXU_W();
+            void preStmnt_DiXU_W1();
+            void preStmnt_DivX_W(IR::Code code);
             void preStmnt_ShLU_W();
 
             void preStmntCall(Core::FastU retrn, Core::FastU param);
@@ -310,6 +318,7 @@ namespace GDCC
             void putStmnt_Cspe();
             void putStmnt_DiXI_W();
             void putStmnt_DivI_W();
+            void putStmnt_DivU_W();
             void putStmnt_DivX_W();
             void putStmnt_InvU_W();
             void putStmnt_Jcnd_Nil();
@@ -319,6 +328,7 @@ namespace GDCC
             void putStmnt_Jset();
             void putStmnt_Jump();
             void putStmnt_ModI_W();
+            void putStmnt_ModU_W();
             void putStmnt_Move_W();
             void putStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr, Code code);
             void putStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr, Code code);
@@ -393,6 +403,8 @@ namespace GDCC
             void trStmnt_Jfar();
             void trStmnt_Jset();
             void trStmnt_Jump();
+            void trStmnt_ModI_W();
+            void trStmnt_ModU_W();
             void trStmnt_Move_W();
             void trStmnt_NegI_W();
             void trStmnt_Retn();

@@ -47,8 +47,6 @@ namespace GDCC
             case IR::Code::AddF_W:
             case IR::Code::DivF_W:
             case IR::Code::DivK_W:
-            case IR::Code::DivU_W:
-            case IR::Code::ModU_W:
             case IR::Code::MulF_W:
             case IR::Code::MulK_W:
             case IR::Code::ShLF_W:
@@ -107,6 +105,7 @@ namespace GDCC
             case IR::Code::DiXU_W: putStmntCall(stmnt->op.size * 2); break;
 
             case IR::Code::DivI_W: putStmnt_DivI_W(); break;
+            case IR::Code::DivU_W: putStmnt_DivU_W(); break;
             case IR::Code::DivX_W: putStmnt_DivX_W(); break;
 
             case IR::Code::InvU_W: putStmnt_InvU_W(); break;
@@ -138,6 +137,7 @@ namespace GDCC
                break;
 
             case IR::Code::ModI_W: putStmnt_ModI_W(); break;
+            case IR::Code::ModU_W: putStmnt_ModU_W(); break;
 
             case IR::Code::Move_W: putStmnt_Move_W(); break;
 
