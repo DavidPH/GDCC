@@ -411,6 +411,8 @@ special
    int    -88:SetActorRoll(2, int, fixed),
    int    -89:ChangeActorRoll(2, int, fixed, int),
    fixed  -90:GetActorRoll(1, int),
+   int    -91:QuakeEx(8, int, int, int, int, int, int, int, str, int, fixed, fixed, fixed),
+   int    -92:Warp(6, int, fixed, fixed, fixed, fixed, int, str, int, fixed),
 
    // Zandronum's
    int   -100:ResetMap(0),
