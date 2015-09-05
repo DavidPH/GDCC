@@ -29,6 +29,7 @@ if(GDCC_Bytecode_ZDACS)
       Info/Stmnt/InvU.cpp
       Info/Stmnt/Jump.cpp
       Info/Stmnt/Move.cpp
+      Info/Stmnt/Mul.cpp
       Info/Stmnt/NegI.cpp
       Info/Stmnt/Shift.cpp
       Info/Stmnt/Swap.cpp

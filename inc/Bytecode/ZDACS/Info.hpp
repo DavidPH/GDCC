@@ -248,6 +248,11 @@ namespace GDCC
             void preStmnt_DiXU_W();
             void preStmnt_DiXU_W1();
             void preStmnt_DivX_W(IR::Code code);
+            void preStmnt_MuXU_W();
+            void preStmnt_MuXU_W1();
+            void preStmnt_MulK_W();
+            void preStmnt_MulU_W();
+            void preStmnt_MulX_W();
             void preStmnt_ShLU_W();
 
             void preStmntCall(Core::FastU retrn, Core::FastU param);

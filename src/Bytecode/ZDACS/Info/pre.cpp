@@ -65,7 +65,6 @@ namespace GDCC
             case IR::Code::AddF_W:
             case IR::Code::DivF_W:
             case IR::Code::MulF_W:
-            case IR::Code::MulK_W:
             case IR::Code::SubF_W:
                preStmntCall(stmnt->op.size, stmnt->op.size * 2);
                break;
@@ -119,19 +118,15 @@ namespace GDCC
                   preStmntCall(1, stmnt->op.size * 2);
                break;
 
-            case IR::Code::MuXU_W:
-               preStmntCall(stmnt->op.size * 2, stmnt->op.size * 2);
-               break;
-
             case IR::Code::ModI_W: preStmnt_DiXI_W(); break;
             case IR::Code::ModU_W: preStmnt_DiXU_W(); break;
 
-            case IR::Code::MulI_W:
-            case IR::Code::MulU_W:
-            case IR::Code::MulX_W:
-               if(stmnt->op.size != 1)
-                  preStmntCall(stmnt->op.size, stmnt->op.size * 2);
-               break;
+            case IR::Code::MuXU_W: preStmnt_MuXU_W(); break;
+
+            case IR::Code::MulI_W: preStmnt_MulU_W(); break;
+            case IR::Code::MulK_W: preStmnt_MulK_W(); break;
+            case IR::Code::MulU_W: preStmnt_MulU_W(); break;
+            case IR::Code::MulX_W: preStmnt_MulX_W(); break;
 
             case IR::Code::ShLF_W:
             case IR::Code::ShRF_W:
