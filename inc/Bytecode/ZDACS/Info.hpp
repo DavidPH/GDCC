@@ -35,6 +35,19 @@ namespace GDCC
          enum class Code;
 
          //
+         // FloatInfo
+         //
+         class FloatInfo
+         {
+         public:
+            Core::FastU bitsExp;
+
+            Core::FastU maskExp;
+
+            Core::FastU maxExp;
+         };
+
+         //
          // Info
          //
          class Info : public InfoBase
@@ -149,6 +162,7 @@ namespace GDCC
             void genStmnt_NegF_W();
             void genStmnt_NegI_W();
             void genStmnt_Retn();
+            void genStmnt_ShLF_W();
             void genStmnt_ShLU_W();
             void genStmnt_ShRI_W();
             void genStmnt_ShRU_W();
@@ -253,6 +267,7 @@ namespace GDCC
             void preStmnt_MulK_W();
             void preStmnt_MulU_W();
             void preStmnt_MulX_W();
+            void preStmnt_ShLF_W();
             void preStmnt_ShLU_W();
 
             void preStmntCall(Core::FastU retrn, Core::FastU param);
@@ -342,6 +357,7 @@ namespace GDCC
             void putStmnt_NotU_W();
             void putStmnt_Pltn();
             void putStmnt_Retn();
+            void putStmnt_ShLF_W();
             void putStmnt_ShLU_W();
             void putStmnt_ShRI_W();
             void putStmnt_ShRU_W();
@@ -413,6 +429,7 @@ namespace GDCC
             void trStmnt_Move_W();
             void trStmnt_NegI_W();
             void trStmnt_Retn();
+            void trStmnt_ShLF_W();
             void trStmnt_ShLU_W();
             void trStmnt_ShRI_W();
             void trStmnt_ShRU_W();
@@ -455,6 +472,8 @@ namespace GDCC
             static void CheckArg(IR::Arg const &arg, Core::Origin pos);
 
             static Core::FastU CodeBase();
+
+            static FloatInfo GetFloatInfo(Core::FastU words);
 
             static Core::FastU GetParamMax(IR::CallType call);
 

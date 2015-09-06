@@ -161,9 +161,9 @@ namespace GDCC
 
             case IR::Code::Retn: trStmnt_Retn(); break;
 
-            case IR::Code::ShLF_W: trStmntShift(true); break;
+            case IR::Code::ShLF_W: trStmnt_ShLF_W(); break;
             case IR::Code::ShLU_W: trStmnt_ShLU_W(); break;
-            case IR::Code::ShRF_W: trStmntShift(true); break;
+            case IR::Code::ShRF_W: trStmnt_ShLF_W(); break;
             case IR::Code::ShRI_W: trStmnt_ShRI_W(); break;
             case IR::Code::ShRU_W: trStmnt_ShRU_W(); break;
 

@@ -926,6 +926,26 @@ namespace GDCC
          }
 
          //
+         // Info::GetFloatInfo
+         //
+         FloatInfo Info::GetFloatInfo(Core::FastU words)
+         {
+            FloatInfo fi;
+
+            if(words == 1)
+               fi.bitsExp = 8;
+            else if(words <= 11)
+               fi.bitsExp = words * 2 + 7;
+            else
+               fi.bitsExp = 30;
+
+            fi.maxExp  = (Core::FastU(1) << fi.bitsExp) - 1;
+            fi.maskExp = fi.maxExp << (31 - fi.bitsExp);
+
+            return fi;
+         }
+
+         //
          // Info:GetParamMax
          //
          Core::FastU Info::GetParamMax(IR::CallType call)

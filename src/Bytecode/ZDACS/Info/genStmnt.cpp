@@ -60,8 +60,6 @@ namespace GDCC
             case IR::Code::DivK_W:
             case IR::Code::MulF_W:
             case IR::Code::MulK_W:
-            case IR::Code::ShLF_W:
-            case IR::Code::ShRF_W:
             case IR::Code::SubF_W:
                genStmntCall(stmnt->op.size);
                break;
@@ -177,7 +175,9 @@ namespace GDCC
 
             case IR::Code::Retn: genStmnt_Retn(); break;
 
+            case IR::Code::ShLF_W: genStmnt_ShLF_W(); break;
             case IR::Code::ShLU_W: genStmnt_ShLU_W(); break;
+            case IR::Code::ShRF_W: genStmnt_ShLF_W(); break;
             case IR::Code::ShRI_W: genStmnt_ShRI_W(); break;
             case IR::Code::ShRU_W: genStmnt_ShRU_W(); break;
 

@@ -33,6 +33,31 @@ namespace GDCC
       namespace ZDACS
       {
          //
+         // Info::genStmnt_ShLF_W
+         //
+         void Info::genStmnt_ShLF_W()
+         {
+            if(stmnt->op.size == 0)
+            {
+               numChunkCODE += 4;
+               return;
+            }
+
+            if(stmnt->op.size == 1)
+            {
+               genStmntCall(1);
+               return;
+            }
+
+            genStmntCall(2);
+
+            if(stmnt->op.size == 2)
+               return;
+
+            numChunkCODE += 8 + 16 + (stmnt->op.size - 1) * 12;
+         }
+
+         //
          // Info::genStmnt_ShLU_W
          //
          void Info::genStmnt_ShLU_W()
@@ -153,6 +178,107 @@ namespace GDCC
                numChunkCODE += 68;
             else
                numChunkCODE += 48 + lenPushArg(stmnt->args[2], 0) * 2;
+         }
+
+         //
+         // Info::preStmnt_ShLF_W
+         //
+         void Info::preStmnt_ShLF_W()
+         {
+            if(stmnt->op.size == 0)
+               return;
+
+            Core::FastU retWords = stmnt->op.size == 1 ? 1 : 2;
+            Core::FastU lopWords = stmnt->op.size == 2 ? 2 : 1;
+
+            Core::String name = getCallName();
+            auto newFunc = preStmntCallDef(name, retWords, lopWords + 1,
+               lopWords + 1, __FILE__, __LINE__);
+
+            if(!newFunc)
+               return;
+
+            bool left = stmnt->op.code == IR::Code::ShLF_W;
+
+            FloatInfo fi = GetFloatInfo(stmnt->op.size);
+
+            IR::Glyph labelEMax{prog, name + "$emax"};
+            IR::Glyph labelInf {prog, name + "$inf"};
+
+            IR::Arg_LocReg exp{IR::Arg_Lit(newFunc->block.getExp(lopWords - 1))};
+            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
+            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(lopWords))};
+
+            IR::Arg_Stk stk{};
+
+            #define AS_Stmnt newFunc->block.addStatementArgs
+
+            if(!left)
+               AS_Stmnt({IR::Code::ShLU_W, 1}, rop, rop, 31 - fi.bitsExp);
+
+            AS_Stmnt({IR::Code::AndU_W,   1}, stk, exp, fi.maskExp);
+            AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelEMax, 0, labelEMax);
+
+            if(left)
+            {
+               AS_Stmnt({IR::Code::ShRI_W, 1}, stk, stk, 31 - fi.bitsExp);
+               AS_Stmnt({IR::Code::AddU_W, 1}, rop, rop, stk);
+
+               AS_Stmnt({IR::Code::CmpI_GE_W, 1}, stk, rop, fi.maxExp);
+               AS_Stmnt({IR::Code::Jcnd_Tru,  1}, stk, labelInf);
+
+               if(lopWords > 1)
+                  AS_Stmnt({IR::Code::Move_W, lopWords - 1}, stk, lop);
+
+               AS_Stmnt({IR::Code::AndU_W, 1}, stk, exp, ~fi.maskExp);
+               AS_Stmnt({IR::Code::ShLU_W, 1}, stk, rop, 31 - fi.bitsExp);
+               AS_Stmnt({IR::Code::OrIU_W, 1}, stk, stk, stk);
+            }
+            else
+            {
+               AS_Stmnt({IR::Code::CmpI_LE_W, 1}, stk, stk, rop);
+               AS_Stmnt({IR::Code::Jcnd_Tru,  1}, stk, labelInf);
+
+               if(lopWords > 1)
+                  AS_Stmnt({IR::Code::Move_W, lopWords - 1}, stk, lop);
+
+               AS_Stmnt({IR::Code::SubU_W, 1}, stk, exp, rop);
+            }
+
+            if(lopWords < retWords)
+               AS_Stmnt({IR::Code::Move_W, retWords - lopWords}, stk, 0);
+
+            AS_Stmnt({IR::Code::Retn, retWords}, stk);
+
+            // Return INF or zero.
+            newFunc->block.addLabel(labelInf);
+
+            if(lopWords > 1)
+               AS_Stmnt({IR::Code::Move_W, lopWords - 1}, stk, 0);
+
+            AS_Stmnt({IR::Code::AndU_W, 1}, stk, exp, 0x80000000);
+
+            if(left)
+               AS_Stmnt({IR::Code::OrIU_W, 1}, stk, stk, fi.maskExp);
+
+            if(lopWords < retWords)
+               AS_Stmnt({IR::Code::Move_W, 1}, stk, 1);
+
+            AS_Stmnt({IR::Code::Retn, retWords}, stk);
+
+            // If lop is INF, NaN, or zero, return as-is.
+            newFunc->block.addLabel(labelEMax);
+
+            AS_Stmnt({IR::Code::Move_W, lopWords}, stk, lop);
+
+            if(lopWords < retWords)
+               AS_Stmnt({IR::Code::Move_W, retWords - lopWords}, stk, 0);
+
+            AS_Stmnt({IR::Code::Retn, retWords}, stk);
+
+            #undef AS_Stmnt
+
+            throw ResetFunc();
          }
 
          //
@@ -332,6 +458,43 @@ namespace GDCC
             #undef AS_Stmnt
 
             throw ResetFunc();
+         }
+
+         //
+         // Info::putStmnt_ShLF_W
+         //
+         void Info::putStmnt_ShLF_W()
+         {
+            if(stmnt->op.size == 0)
+            {
+               putCode(Code::Drop_Nul);
+               return;
+            }
+
+            if(stmnt->op.size == 1)
+            {
+               putStmntCall(1);
+               return;
+            }
+
+            putStmntCall(2);
+
+            if(stmnt->op.size == 2)
+               return;
+
+            // Check if returned word indicates INF.
+            putCode(Code::Jcnd_Nil, putPos + 8 + 16 + (stmnt->op.size - 1) * 12);
+
+            // Infinity! Drop everything and push INF.
+            putCode(Code::Drop_LocReg, func->localReg + 0);
+
+            for(Core::FastU n = stmnt->op.size; --n;)
+                putCode(Code::Drop_Nul);
+
+            for(Core::FastU n = stmnt->op.size; --n;)
+                putCode(Code::Push_Lit, 0);
+
+            putCode(Code::Push_LocReg, func->localReg + 0);
          }
 
          //
@@ -610,6 +773,20 @@ namespace GDCC
             putCode(Code::ShRI);
             putCode(Code::Push_Lit, 0xFFFFFFFF >> (shift % 32));
             putCode(Code::AndU);
+         }
+
+         //
+         // Info::trStmnt_ShLF_W
+         //
+         void Info::trStmnt_ShLF_W()
+         {
+            if(!trStmntShift(true))
+               return;
+
+            if(stmnt->op.size <= 2)
+               return;
+
+            func->setLocalTmp(1);
          }
 
          //

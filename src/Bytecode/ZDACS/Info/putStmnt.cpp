@@ -49,8 +49,6 @@ namespace GDCC
             case IR::Code::DivK_W:
             case IR::Code::MulF_W:
             case IR::Code::MulK_W:
-            case IR::Code::ShLF_W:
-            case IR::Code::ShRF_W:
             case IR::Code::SubF_W:
                putStmntCall(stmnt->op.size);
                break;
@@ -170,7 +168,9 @@ namespace GDCC
 
             case IR::Code::Retn: putStmnt_Retn(); break;
 
+            case IR::Code::ShLF_W: putStmnt_ShLF_W(); break;
             case IR::Code::ShLU_W: putStmnt_ShLU_W(); break;
+            case IR::Code::ShRF_W: putStmnt_ShLF_W(); break;
             case IR::Code::ShRI_W: putStmnt_ShRI_W(); break;
             case IR::Code::ShRU_W: putStmnt_ShRU_W(); break;
 
