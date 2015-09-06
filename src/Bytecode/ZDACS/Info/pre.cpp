@@ -75,14 +75,12 @@ namespace GDCC
             case IR::Code::Bclo_W: preStmnt_Bclz_W(true);  break;
             case IR::Code::Bclz_W: preStmnt_Bclz_W(false); break;
 
-            case IR::Code::CmpF_EQ_W:
-            case IR::Code::CmpF_GE_W:
-            case IR::Code::CmpF_GT_W:
-            case IR::Code::CmpF_LE_W:
-            case IR::Code::CmpF_LT_W:
-            case IR::Code::CmpF_NE_W:
-               preStmntCall(1, stmnt->op.size * 2);
-               break;
+            case IR::Code::CmpF_EQ_W: preStmnt_CmpF_EQ_W(); break;
+            case IR::Code::CmpF_GE_W: preStmnt_CmpF_GE_W(); break;
+            case IR::Code::CmpF_GT_W: preStmnt_CmpF_GT_W(); break;
+            case IR::Code::CmpF_LE_W: preStmnt_CmpF_LE_W(); break;
+            case IR::Code::CmpF_LT_W: preStmnt_CmpF_LT_W(); break;
+            case IR::Code::CmpF_NE_W: preStmnt_CmpF_NE_W(); break;
 
             case IR::Code::CmpI_EQ_W:
             case IR::Code::CmpU_EQ_W:
