@@ -942,6 +942,9 @@ namespace GDCC
             fi.maxExp  = (Core::FastU(1) << fi.bitsExp) - 1;
             fi.maskExp = fi.maxExp << (31 - fi.bitsExp);
 
+            fi.maskMan = 0x7FFFFFFF >> fi.bitsExp;
+            fi.maskSig = 0x80000000;
+
             return fi;
          }
 

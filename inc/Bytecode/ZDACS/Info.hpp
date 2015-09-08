@@ -43,6 +43,8 @@ namespace GDCC
             Core::FastU bitsExp;
 
             Core::FastU maskExp;
+            Core::FastU maskMan;
+            Core::FastU maskSig;
 
             Core::FastU maxExp;
          };
@@ -247,6 +249,13 @@ namespace GDCC
             virtual void preStmnt();
             void preStmnt_AddU_W(IR::Code code);
             void preStmnt_Bclz_W(bool ones);
+            void preStmnt_CmpF_EQ_W();
+            void preStmnt_CmpF_GE_W();
+            void preStmnt_CmpF_GT_W();
+            void preStmnt_CmpF_LE_W();
+            void preStmnt_CmpF_LT_W();
+            void preStmnt_CmpF_NE_W();
+            void preStmnt_CmpF_W(IR::Code codeCmpPos, IR::Code codeCmpNeg);
             void preStmnt_CmpI_GE_W();
             void preStmnt_CmpI_GT_W();
             void preStmnt_CmpI_LE_W();

@@ -64,6 +64,186 @@ namespace GDCC
          }
 
          //
+         // Info::preStmnt_CmpF_EQ_W
+         //
+         void Info::preStmnt_CmpF_EQ_W()
+         {
+            preStmnt_CmpF_W(IR::Code::CmpI_EQ_W, IR::Code::CmpI_EQ_W);
+         }
+
+         //
+         // Info::preStmnt_CmpF_GE_W
+         //
+         void Info::preStmnt_CmpF_GE_W()
+         {
+            preStmnt_CmpF_W(IR::Code::CmpI_GE_W, IR::Code::CmpI_LE_W);
+         }
+
+         //
+         // Info::preStmnt_CmpF_GT_W
+         //
+         void Info::preStmnt_CmpF_GT_W()
+         {
+            preStmnt_CmpF_W(IR::Code::CmpI_GT_W, IR::Code::CmpI_LT_W);
+         }
+
+         //
+         // Info::preStmnt_CmpF_LE_W
+         //
+         void Info::preStmnt_CmpF_LE_W()
+         {
+            preStmnt_CmpF_W(IR::Code::CmpI_LE_W, IR::Code::CmpI_GE_W);
+         }
+
+         //
+         // Info::preStmnt_CmpF_LT_W
+         //
+         void Info::preStmnt_CmpF_LT_W()
+         {
+            preStmnt_CmpF_W(IR::Code::CmpI_LT_W, IR::Code::CmpI_GT_W);
+         }
+
+         //
+         // Info::preStmnt_CmpF_NE_W
+         //
+         void Info::preStmnt_CmpF_NE_W()
+         {
+            preStmnt_CmpF_W(IR::Code::CmpI_NE_W, IR::Code::CmpI_NE_W);
+         }
+
+         //
+         // Info::preStmnt_CmpF_W
+         //
+         void Info::preStmnt_CmpF_W(IR::Code codeCmpPos, IR::Code codeCmpNeg)
+         {
+            if(stmnt->op.size == 0)
+               return;
+
+            Core::String name = getCallName();
+            auto newFunc = preStmntCallDef(name, 1, stmnt->op.size * 2,
+               stmnt->op.size * 2, __FILE__, __LINE__);
+
+            if(!newFunc)
+               return;
+
+            bool cmpEQ =
+               codeCmpPos == IR::Code::CmpI_EQ_W ||
+               codeCmpPos == IR::Code::CmpI_GE_W ||
+               codeCmpPos == IR::Code::CmpI_LE_W;
+
+            bool cmpGT =
+               codeCmpPos == IR::Code::CmpI_GE_W ||
+               codeCmpPos == IR::Code::CmpI_GT_W;
+
+            bool cmpNE =
+               codeCmpPos == IR::Code::CmpI_NE_W;
+
+            FloatInfo fi = GetFloatInfo(stmnt->op.size);
+
+            IR::Glyph label0{prog, name + "$0"};
+            IR::Glyph label1{prog, name + "$1"};
+
+            IR::Glyph labelCmp{prog, name + "$cmp"};
+
+            IR::Glyph labelLEMax{prog, name + "$lemax"};
+            IR::Glyph labelREMax{prog, name + "$remax"};
+
+            IR::Arg_LocReg lexp{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size - 1))};
+            IR::Arg_LocReg lop {IR::Arg_Lit(newFunc->block.getExp(0))};
+            IR::Arg_LocReg rexp{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 2 - 1))};
+            IR::Arg_LocReg rop {IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
+
+            IR::Arg_Nul nul{};
+            IR::Arg_Stk stk{};
+
+            #define AS_Stmnt newFunc->block.addStatementArgs
+
+            // Check for special cases.
+
+            // Does l have max exp?
+            AS_Stmnt({IR::Code::AndU_W,   1}, stk, lexp, fi.maskExp);
+            AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelLEMax);
+
+            // Does r have max exp?
+            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rexp, fi.maskExp);
+            AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelREMax);
+
+            // If l == +/-0 and r == +/-0, then l == r.
+            AS_Stmnt({IR::Code::OrIU_W,   1}, stk, stk, stk);
+            AS_Stmnt({IR::Code::Jcnd_Nil, 1}, stk, cmpEQ ? label1 : label0);
+
+            newFunc->block.addLabel(labelCmp);
+
+            if(codeCmpPos == codeCmpNeg)
+            {
+               AS_Stmnt({codeCmpPos,     stmnt->op.size}, stk, lop, rop);
+               AS_Stmnt({IR::Code::Retn, 1},              stk);
+            }
+            else
+            {
+               IR::Glyph labelL1{prog, name + "$l1"};
+
+               AS_Stmnt({IR::Code::AndU_W,   1}, stk, lexp, fi.maskSig);
+               AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelL1);
+
+               // l > 0
+
+               // If r < 0, then l > r.
+               AS_Stmnt({IR::Code::AndU_W,   1}, stk, rexp, fi.maskSig);
+               AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, cmpGT ? label1 : label0);
+
+               AS_Stmnt({codeCmpPos,     stmnt->op.size}, stk, lop, rop);
+               AS_Stmnt({IR::Code::Retn, 1},              stk);
+
+               // l < 0
+               newFunc->block.addLabel(labelL1);
+
+               // If r > 0, then l < r.
+               AS_Stmnt({IR::Code::AndU_W,   1}, stk, rexp, fi.maskSig);
+               AS_Stmnt({IR::Code::Jcnd_Nil, 1}, stk, cmpGT ? label0 : label1);
+
+               AS_Stmnt({codeCmpNeg,     stmnt->op.size}, stk, lop, rop);
+               AS_Stmnt({IR::Code::Retn, 1},              stk);
+            }
+
+            newFunc->block.addLabel(labelLEMax);
+
+            // If l is NaN, then l != r.
+            AS_Stmnt({IR::Code::Move_W,   stmnt->op.size}, stk, lop);
+            AS_Stmnt({IR::Code::AndU_W,   1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::Jcnd_Tru, stmnt->op.size}, stk, cmpNE ? label1 : label0);
+
+            // Check for r having max exponent...
+            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rexp, fi.maskExp);
+            AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelREMax);
+            AS_Stmnt({IR::Code::Move_W,   1}, nul, stk);
+
+            // ... And if not, jump to normal compare.
+            AS_Stmnt({IR::Code::Jump,     0}, labelCmp);
+
+            newFunc->block.addLabel(labelREMax);
+            AS_Stmnt({IR::Code::Move_W,   1}, nul, stk);
+
+            // If r is NaN, then l != r.
+            AS_Stmnt({IR::Code::Move_W,   stmnt->op.size}, stk, rop);
+            AS_Stmnt({IR::Code::AndU_W,   1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::Jcnd_Tru, stmnt->op.size}, stk, cmpNE ? label1 : label0);
+
+            // Jump to normal compare.
+            AS_Stmnt({IR::Code::Jump,     0}, labelCmp);
+
+            newFunc->block.addLabel(label0);
+            AS_Stmnt({IR::Code::Retn, 1}, 0);
+
+            newFunc->block.addLabel(label1);
+            AS_Stmnt({IR::Code::Retn, 1}, 1);
+
+            #undef AS_Stmnt
+
+            throw ResetFunc();
+         }
+
+         //
          // Info::preStmnt_CmpI_GE_W
          //
          void Info::preStmnt_CmpI_GE_W()
