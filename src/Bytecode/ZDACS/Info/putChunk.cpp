@@ -395,7 +395,7 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeObject())
             {
-               if(!itr.defin && itr.space.base == IR::AddrBase::MapReg)
+               if(itr.defin && itr.space.base == IR::AddrBase::MapReg)
                   strs[itr.value] = itr.glyph;
             }
 
