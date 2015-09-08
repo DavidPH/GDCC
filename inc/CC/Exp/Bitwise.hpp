@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,7 +21,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -108,7 +108,9 @@ namespace GDCC
          else
             expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
 
-         return ExpCreate_Arith<Base, Codes>(typeL, expL, expR, pos);
+         auto op = AST::ExpCode_ArithFixed<Codes>(typeL);
+
+         return AST::Exp_Arith<Base>::Create(op, typeL, expL, expR, pos);
       }
 
       //
@@ -136,7 +138,9 @@ namespace GDCC
          else
             expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
 
-         return ExpCreate_ArithEq<Base, Codes>(typeL, typeL, expL, expR, pos);
+         auto op = AST::ExpCode_ArithFixed<Codes>(typeL);
+
+         return AST::Exp_ArithEq<Base>::Create(typeL, op, false, typeL, expL, expR, pos);
       }
    }
 }
