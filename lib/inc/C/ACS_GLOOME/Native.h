@@ -45,8 +45,9 @@ ACS_NativeDeclFull(11202, 0, int,    SetInputLock, int);
 ACS_NativeDeclFull(11203, 0, int,    GetInputLock, void);
 ACS_NativeDeclFull(11204, 0, int,    KeyIsBoundSym, int, __str);
 ACS_NativeDeclFull(11205, 0, __str,  ReadUserData, __str);
-ACS_NativeDeclFull(11206, 0, __str,  ReadUserDataChar, int, int);
+ACS_NativeDeclFull(11206, 0, int,    ReadUserDataChar, __str, int);
 ACS_NativeDeclFull(11207, 0, int,    Squat, int, _Accum);
+ACS_NativeDeclFull(11028, 0, int,    GetUserDataSize, __str);
 
 #endif //__GDCC_Header__C__ACS_GLOOME__Native_h__
 

@@ -46,7 +46,8 @@ special
    int   -11204:KeyIsBoundSym(2, int, str),
    str   -11205:ReadUserData(1, str),
    int   -11206:ReadUserDataChar(2, str, int),
-   int   -11207:Squat(2, int, fixed);
+   int   -11207:Squat(2, int, fixed),
+   int   -11028:GetUserDataSize(1, str);
 
 #endif //__GDCC_Header__ACS__gspecial_acs__
 
