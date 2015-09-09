@@ -119,5 +119,18 @@ namespace GDCC
    }
 }
 
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace ACC
+   {
+      void ParseFile(char const *inName, IR::Program &prog);
+   }
+}
+
 #endif//GDCC__ACC__Parse_H__
 

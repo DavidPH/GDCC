@@ -43,6 +43,7 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    Parse/Statement.cpp
    Parse/TypeQual.cpp
    Parse/TypeSpec.cpp
+   ParseFile.cpp
    Pragma.cpp
    PropDecl.cpp
    Scope.cpp
