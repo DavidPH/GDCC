@@ -108,7 +108,7 @@ namespace GDCC
          else
             expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
 
-         auto op = AST::ExpCode_ArithFixed<Codes>(typeL);
+         auto op = AST::ExpCode_Arith<Codes>(typeL);
 
          return AST::Exp_Arith<Base>::Create(op, typeL, expL, expR, pos);
       }
@@ -138,7 +138,7 @@ namespace GDCC
          else
             expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
 
-         auto op = AST::ExpCode_ArithFixed<Codes>(typeL);
+         auto op = AST::ExpCode_Arith<Codes>(typeL);
 
          return AST::Exp_ArithEq<Base>::Create(typeL, op, false, typeL, expL, expR, pos);
       }
