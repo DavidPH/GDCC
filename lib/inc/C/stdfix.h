@@ -358,6 +358,24 @@ unsigned short accum strtofxuhk(char const *restrict nptr, char **restrict endpt
 unsigned accum strtofxuk(char const *restrict nptr, char **restrict endptr);
 unsigned long accum strtofxulk(char const *restrict nptr, char **restrict endptr);
 
+//
+// Implementation extensions.
+//
+
+short fract __strtofxhr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+fract __strtofxr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+long fract __strtofxlr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+short accum __strtofxhk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+accum __strtofxk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+long accum __strtofxlk_str(char const __str_ars *restrict nptr, char __str_ars **restrict endptr);
+
+unsigned short fract __strtofxuhr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+unsigned fract __strtofxur_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+unsigned long fract __strtofxulr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+unsigned short accum __strtofxuhk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+unsigned accum __strtofxuk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+unsigned long accum __strtofxulk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+
 #ifdef __cplusplus
 }
 #endif

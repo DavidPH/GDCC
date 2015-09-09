@@ -177,6 +177,21 @@ int wctomb(char *s, wchar_t wc);
 size_t mbstowcs(wchar_t *restrict pwcs, char const *restrict s, size_t n);
 size_t wcstombs(char *restrict s, wchar_t const *restrict pwcs, size_t n);
 
+//
+// Implementation extensions.
+//
+
+double __strtod_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+float __strtof_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+long double __strtold_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+
+int __strtoi_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
+long __strtol_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
+long long _strtoll_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
+unsigned int __strtoui_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
+unsigned long __strtoul_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
+unsigned long long __strtoull_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
+
 #ifdef __cplusplus
 };
 #endif

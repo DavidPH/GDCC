@@ -304,6 +304,13 @@ uintmax_t strtoumax(char const *restrict nptr, char **restrict endptr, int base)
 intmax_t wcstoimax(wchar_t const *restrict nptr, wchar_t **restrict endptr, int base);
 uintmax_t wcstoumax(wchar_t const *restrict nptr, wchar_t **restrict endptr, int base);
 
+//
+// Implementation extensions.
+//
+
+intmax_t __strtoimax_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
+uintmax_t __strtoumax_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
+
 #ifdef __cplusplus
 };
 #endif
