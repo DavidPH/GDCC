@@ -10,13 +10,9 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "AS/Macro.hpp"
 #include "AS/Parse.hpp"
-#include "AS/TStream.hpp"
 
-#include "Core/File.hpp"
 #include "Core/Option.hpp"
-#include "Core/Token.hpp"
 
 #include "IR/Program.hpp"
 
@@ -29,8 +25,6 @@
 // Static Functions                                                           |
 //
 
-static void ProcessFile(char const *inName, GDCC::IR::Program &prog);
-
 //
 // MakeAsm
 //
@@ -40,38 +34,18 @@ static void MakeAsm()
 
    // Process inputs.
    for(auto const &arg : GDCC::Core::GetOptionArgs())
-      ProcessFile(arg, prog);
+      GDCC::AS::ParseFile(arg, prog);
 
    for(auto const &arg : GDCC::Core::GetOptions().optSysSource)
-      ProcessFile(arg, prog);
+      GDCC::AS::ParseFile(arg, prog);
 
    // Write output.
    GDCC::LD::Link(prog, GDCC::Core::GetOptionOutput());
 }
 
-//
-// ProcessFile
-//
-static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
-{
-   auto buf = GDCC::Core::FileOpenStream(inName, std::ios_base::in);
-   if(!buf)
-   {
-      std::cerr << "couldn't open '" << inName << "' for reading\n";
-      throw EXIT_FAILURE;
-   }
-
-   GDCC::AS::TStream   in    {*buf, inName};
-   GDCC::AS::MacroMap  macros{};
-   GDCC::AS::ParserCtx ctx   {in, macros, prog};
-
-   while(!ctx.in.peek(GDCC::Core::TOK_EOF))
-      GDCC::AS::ParseDeclaration(ctx);
-}
-
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 //

@@ -36,6 +36,7 @@ add_library(gdcc-as-lib ${GDCC_SHARED_DECL}
    Parse/StrEnt.cpp
    Parse/Type.cpp
    Parse/Value.cpp
+   ParseFile.cpp
 
    ../../inc/AS/IStream.hpp
    ../../inc/AS/LabelTBuf.hpp

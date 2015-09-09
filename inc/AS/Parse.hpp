@@ -140,6 +140,8 @@ namespace GDCC
 
       void ParseDeclaration(ParserCtx const &ctx);
 
+      void ParseFile(char const *inName, IR::Program &prog);
+
       void ParseFunction(ParserCtx const &ctx, IR::Function &func);
 
       void ParseGlyph(ParserCtx const &ctx, IR::GlyphData &glyph);
