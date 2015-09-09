@@ -33,10 +33,17 @@ namespace GDCC
       //
       // IncludeDTBuf constructor
       //
-      IncludeDTBuf::IncludeDTBuf(Core::TokenBuf &src_, CPP::IStreamHeader &istr_,
-         MacroMap &macros_, PragmaData &pragd_, CPP::PragmaParserBase &pragp_,
-         Core::String dir_, Scope_Global &scope_, IR::Program &prog_) :
-         CPP::IncludeDTBuf{src_, istr_, macros_, pragd_, pragp_, dir_},
+      IncludeDTBuf::IncludeDTBuf(
+         Core::TokenBuf        &src_,
+         CPP::IStreamHeader    &istr_,
+         CPP::IncludeLang      &langs_,
+         MacroMap              &macros_,
+         PragmaData            &pragd_,
+         CPP::PragmaParserBase &pragp_,
+         Core::String           dir_,
+         Scope_Global          &scope_,
+         IR::Program           &prog_) :
+         CPP::IncludeDTBuf{src_, istr_, langs_, macros_, pragd_, pragp_, dir_},
          macros(macros_),
          pragd(pragd_),
          prog (prog_),
@@ -47,10 +54,17 @@ namespace GDCC
       //
       // ImportDTBuf constructor
       //
-      ImportDTBuf::ImportDTBuf(Core::TokenBuf &src_, CPP::IStreamHeader &istr_,
-         MacroMap &macros_, PragmaData &pragd_, CPP::PragmaParserBase &pragp_,
-         Core::String dir_, Scope_Global &scope_, IR::Program &prog_) :
-         IncludeDTBuf{src_, istr_, macros_, pragd_, pragp_, dir_, scope_, prog_}
+      ImportDTBuf::ImportDTBuf(
+         Core::TokenBuf        &src_,
+         CPP::IStreamHeader    &istr_,
+         CPP::IncludeLang      &langs_,
+         MacroMap              &macros_,
+         PragmaData            &pragd_,
+         CPP::PragmaParserBase &pragp_,
+         Core::String           dir_,
+         Scope_Global          &scope_,
+         IR::Program           &prog_) :
+         IncludeDTBuf{src_, istr_, langs_, macros_, pragd_, pragp_, dir_, scope_, prog_}
       {
       }
 
@@ -63,7 +77,7 @@ namespace GDCC
          macros.linePush(CPP::Macro::Stringize(name));
 
          str = std::move(newStr);
-         inc.reset(new IncStream(*str, macros, pragd, pragp, name,
+         inc.reset(new IncStream(*str, langs, macros, pragd, pragp, name,
             Core::PathDirname(name), scope, prog));
       }
 

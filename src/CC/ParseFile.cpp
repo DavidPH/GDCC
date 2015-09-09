@@ -63,13 +63,15 @@ namespace GDCC
             throw EXIT_FAILURE;
          }
 
+
          Core::String      file {inName};
+         CPP::IncludeLang  langs{"C"};
          CPP::MacroMap     macr {CPP::Macro::Stringize(file)};
          Core::String      path {Core::PathDirname(file)};
          CPP::PragmaData   pragd{};
          CPP::PragmaParser pragp{pragd};
          Core::StringBuf   sbuf {buf->data(), buf->size()};
-         CPP::TStream      tstr {sbuf, macr, pragd, pragp, file, path};
+         CPP::TStream      tstr {sbuf, langs, macr, pragd, pragp, file, path};
          Parser            ctx  {tstr, pragd, prog};
          Scope_Global      scope{GetGlobalLabel(buf->getHash())};
 

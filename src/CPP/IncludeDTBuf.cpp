@@ -79,20 +79,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Static Variables                                                           |
-//
-
-namespace GDCC
-{
-   namespace CPP
-   {
-      static std::vector<std::string> IncludeLang;
-   }
-}
-
-
-//----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -103,14 +90,15 @@ namespace GDCC
       // IncludeDTBuf constructor
       //
       IncludeDTBuf::IncludeDTBuf(Core::TokenBuf &src_, IStreamHeader &istr_,
-         MacroMap &macros_, PragmaDataBase &pragd_, PragmaParserBase &pragp_,
-         Core::String dir_) :
+         IncludeLang &langs_, MacroMap &macros_, PragmaDataBase &pragd_,
+         PragmaParserBase &pragp_, Core::String dir_) :
          DirectiveTBuf{src_},
-         istr(istr_),
+         istr  (istr_),
+         langs (langs_),
          macros(macros_),
-         pragd(pragd_),
-         pragp(pragp_),
-         dir{dir_}
+         pragd (pragd_),
+         pragp (pragp_),
+         dir   {dir_}
       {
       }
 
@@ -146,7 +134,7 @@ namespace GDCC
          macros.linePush(Macro::Stringize(name));
 
          str = std::move(newStr);
-         inc.reset(new IncStream(*str, macros, pragd, pragp, name,
+         inc.reset(new IncStream(*str, langs, macros, pragd, pragp, name,
             Core::PathDirname(name)));
       }
 
@@ -247,7 +235,7 @@ namespace GDCC
          }
 
          // Try language directories.
-         if(IncludeLangEnable) for(auto lang : IncludeLang)
+         if(IncludeLangEnable) for(auto lang : langs)
          {
             Core::PathAppend(lang, name);
             if(fbuf->open(lang.data(), std::ios_base::in))
@@ -306,15 +294,30 @@ namespace GDCC
       }
 
       //
-      // IncludeDTBuf::AddIncludeLang
+      // IncludeLang constructor
       //
-      void IncludeDTBuf::AddIncludeLang(char const *lang)
+      IncludeLang::IncludeLang()
+      {
+      }
+
+      //
+      // IncludeLang constructor
+      //
+      IncludeLang::IncludeLang(char const *lang)
+      {
+         addLang(lang);
+      }
+
+      //
+      // IncludeLang::addLang
+      //
+      void IncludeLang::addLang(char const *lang)
       {
          auto path = Core::GetSystemPath();
          Core::PathAppend(path, "lib");
          Core::PathAppend(path, "inc");
          Core::PathAppend(path, lang);
-         IncludeLang.emplace_back(std::move(path));
+         langs.emplace_back(std::move(path));
       }
    }
 }

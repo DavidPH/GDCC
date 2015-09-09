@@ -47,15 +47,16 @@ namespace GDCC
             throw EXIT_FAILURE;
          }
 
-         Core::String    file {inName};
-         MacroMap        macr {CPP::Macro::Stringize(file)};
-         Core::String    path {Core::PathDirname(file)};
-         PragmaData      pragd{};
-         PragmaParser    pragp{pragd};
-         Core::StringBuf sbuf{buf->data(), buf->size()};
-         Scope_Global    scope{CC::GetGlobalLabel(buf->getHash())};
-         TStream         tstr{sbuf, macr, pragd, pragp, file, path, scope, prog};
-         Parser          ctx {tstr, pragd, prog};
+         Core::String     file {inName};
+         CPP::IncludeLang langs{"ACS"};
+         MacroMap         macr {CPP::Macro::Stringize(file)};
+         Core::String     path {Core::PathDirname(file)};
+         PragmaData       pragd{};
+         PragmaParser     pragp{pragd};
+         Core::StringBuf  sbuf{buf->data(), buf->size()};
+         Scope_Global     scope{CC::GetGlobalLabel(buf->getHash())};
+         TStream          tstr{sbuf, langs, macr, pragd, pragp, file, path, scope, prog};
+         Parser           ctx {tstr, pragd, prog};
 
          // Read declarations.
          while(ctx.in.peek().tok != Core::TOK_EOF)

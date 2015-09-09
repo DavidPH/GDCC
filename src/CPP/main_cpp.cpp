@@ -33,14 +33,10 @@ static void PutStringEscape(std::ostream &out, GDCC::Core::String str);
 //
 static void MakeCPP()
 {
-   using namespace GDCC;
-
-   CPP::IncludeDTBuf::AddIncludeLang("C");
-
-   auto outName = Core::GetOptionOutput();
+   auto outName = GDCC::Core::GetOptionOutput();
 
    // Open output file.
-   auto buf = Core::FileOpenStream(outName, std::ios_base::out);
+   auto buf = GDCC::Core::FileOpenStream(outName, std::ios_base::out);
    if(!buf)
    {
       std::cerr << "couldn't open '" << GDCC::Core::GetOptionOutput()
@@ -59,36 +55,35 @@ static void MakeCPP()
 //
 static void ProcessFile(std::ostream &out, char const *inName)
 {
-   using namespace GDCC;
-
-   auto buf = Core::FileOpenStream(inName, std::ios_base::in);
+   auto buf = GDCC::Core::FileOpenStream(inName, std::ios_base::in);
    if(!buf)
    {
       std::cerr << "couldn't open '" << inName << "' for reading\n";
       throw EXIT_FAILURE;
    }
 
-   Core::String      file {inName};
-   CPP::MacroMap     macr {CPP::Macro::Stringize(file)};
-   Core::String      path {Core::PathDirname(file)};
-   CPP::PragmaData   pragd{};
-   CPP::PragmaParser pragp{pragd};
-   CPP::PPStream     in   {*buf, macr, pragd, pragp, file, path};
+   GDCC::Core::String      file {inName};
+   GDCC::CPP::IncludeLang  langs{"C"};
+   GDCC::CPP::MacroMap     macr {GDCC::CPP::Macro::Stringize(file)};
+   GDCC::Core::String      path {GDCC::Core::PathDirname(file)};
+   GDCC::CPP::PragmaData   pragd{};
+   GDCC::CPP::PragmaParser pragp{pragd};
+   GDCC::CPP::PPStream     in   {*buf, langs, macr, pragd, pragp, file, path};
 
-   for(Core::Token tok; in >> tok;) switch(tok.tok)
+   for(GDCC::Core::Token tok; in >> tok;) switch(tok.tok)
    {
-   case Core::TOK_ChrU16: out << 'u'; goto case_Charac;
-   case Core::TOK_ChrU32: out << 'U'; goto case_Charac;
-   case Core::TOK_ChrWid: out << 'L'; goto case_Charac;
-   case Core::TOK_Charac: case_Charac:
+   case GDCC::Core::TOK_ChrU16: out << 'u'; goto case_Charac;
+   case GDCC::Core::TOK_ChrU32: out << 'U'; goto case_Charac;
+   case GDCC::Core::TOK_ChrWid: out << 'L'; goto case_Charac;
+   case GDCC::Core::TOK_Charac: case_Charac:
       out << '\''; PutStringEscape(out, tok.str); out << '\''; break;
 
-   case Core::TOK_StrIdx: out << 's';  goto case_String;
-   case Core::TOK_StrU08: out << "u8"; goto case_String;
-   case Core::TOK_StrU16: out << 'u';  goto case_String;
-   case Core::TOK_StrU32: out << 'U';  goto case_String;
-   case Core::TOK_StrWid: out << 'L';  goto case_String;
-   case Core::TOK_String: case_String:
+   case GDCC::Core::TOK_StrIdx: out << 's';  goto case_String;
+   case GDCC::Core::TOK_StrU08: out << "u8"; goto case_String;
+   case GDCC::Core::TOK_StrU16: out << 'u';  goto case_String;
+   case GDCC::Core::TOK_StrU32: out << 'U';  goto case_String;
+   case GDCC::Core::TOK_StrWid: out << 'L';  goto case_String;
+   case GDCC::Core::TOK_String: case_String:
       out << '"'; PutStringEscape(out, tok.str); out << '"'; break;
 
    default: out << tok.str; break;
@@ -121,7 +116,7 @@ static void PutStringEscape(std::ostream &out, GDCC::Core::String str)
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 //
@@ -129,9 +124,7 @@ static void PutStringEscape(std::ostream &out, GDCC::Core::String str)
 //
 int main(int argc, char *argv[])
 {
-   using namespace GDCC;
-
-   auto &list = Core::GetOptionList();
+   auto &list = GDCC::Core::GetOptionList();
 
    list.name     = "gdcc-cpp";
    list.nameFull = "GDCC C Preprocessor";
@@ -143,7 +136,7 @@ int main(int argc, char *argv[])
 
    try
    {
-      Core::ProcessOptions(Core::GetOptions(), argc, argv);
+      GDCC::Core::ProcessOptions(GDCC::Core::GetOptions(), argc, argv);
       MakeCPP();
    }
    catch(std::exception const &e)

@@ -34,8 +34,6 @@
 //
 static void MakeACS()
 {
-   GDCC::CPP::IncludeDTBuf::AddIncludeLang("ACS");
-
    GDCC::IR::Program prog;
 
    // Process inputs.

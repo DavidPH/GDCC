@@ -32,8 +32,6 @@
 //
 static void MakeC()
 {
-   GDCC::CPP::IncludeDTBuf::AddIncludeLang("C");
-
    GDCC::IR::Program prog;
 
    // Process inputs.

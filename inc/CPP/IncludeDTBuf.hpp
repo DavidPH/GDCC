@@ -16,6 +16,7 @@
 #include "../CPP/DirectiveTBuf.hpp"
 
 #include <memory>
+#include <vector>
 
 
 //----------------------------------------------------------------------------|
@@ -32,6 +33,7 @@ namespace GDCC
    namespace CPP
    {
       class IStreamHeader;
+      class IncludeLang;
       class MacroMap;
       class PragmaDataBase;
       class PragmaParserBase;
@@ -42,13 +44,11 @@ namespace GDCC
       class IncludeDTBuf : public DirectiveTBuf
       {
       public:
-         IncludeDTBuf(Core::TokenBuf &src, IStreamHeader &istr, MacroMap &macros,
-            PragmaDataBase &pragd, PragmaParserBase &pragp, Core::String dir);
+         IncludeDTBuf(Core::TokenBuf &src, IStreamHeader &istr,
+            IncludeLang &langs, MacroMap &macros, PragmaDataBase &pragd,
+            PragmaParserBase &pragp, Core::String dir);
 
          virtual ~IncludeDTBuf();
-
-
-         static void AddIncludeLang(char const *lang);
 
       protected:
          virtual bool directive(Core::Token const &tok);
@@ -69,10 +69,32 @@ namespace GDCC
          std::unique_ptr<Core::TokenStream> inc;
 
          IStreamHeader    &istr;
+         IncludeLang      &langs;
          MacroMap         &macros;
          PragmaDataBase   &pragd;
          PragmaParserBase &pragp;
          Core::String      dir;
+      };
+
+      //
+      // IncludeLang
+      //
+      class IncludeLang
+      {
+      public:
+         IncludeLang();
+         explicit IncludeLang(char const *lang);
+
+         void addLang(char const *lang);
+
+         std::vector<std::string>::const_iterator
+         begin() const {return langs.begin();}
+
+         std::vector<std::string>::const_iterator
+         end() const {return langs.end();}
+
+      private:
+         std::vector<std::string> langs;
       };
    }
 }

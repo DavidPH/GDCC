@@ -41,8 +41,9 @@ namespace GDCC
       {
       public:
          IncludeDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
-            MacroMap &macros, PragmaData &pragd, CPP::PragmaParserBase &pragp,
-            Core::String dir, Scope_Global &scope, IR::Program &prog);
+            CPP::IncludeLang &langs, MacroMap &macros, PragmaData &pragd,
+            CPP::PragmaParserBase &pragp, Core::String dir,
+            Scope_Global &scope, IR::Program &prog);
 
       protected:
          virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
@@ -60,8 +61,9 @@ namespace GDCC
       {
       public:
          ImportDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
-            MacroMap &macros, PragmaData &pragd, CPP::PragmaParserBase &pragp,
-            Core::String dir, Scope_Global &scope, IR::Program &prog);
+            CPP::IncludeLang &langs, MacroMap &macros, PragmaData &pragd,
+            CPP::PragmaParserBase &pragp, Core::String dir,
+            Scope_Global &scope, IR::Program &prog);
 
       protected:
          virtual bool directive(Core::Token const &tok);

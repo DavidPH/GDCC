@@ -46,15 +46,16 @@ namespace GDCC
          //
          // constructor
          //
-         IncStream(std::streambuf &buf_, MacroMap &macros, PragmaDataBase &pragd,
-            PragmaParserBase &pragp, Core::String file, Core::String dir) :
+         IncStream(std::streambuf &buf_, IncludeLang &langs, MacroMap &macros,
+            PragmaDataBase &pragd, PragmaParserBase &pragp, Core::String file,
+            Core::String dir) :
             Core::TokenStream{&pbuf},
             istr{buf_, file},
             tbuf{istr},
             cdir{tbuf, macros},
             ddir{cdir, macros},
             edir{ddir},
-            idir{edir, istr, macros, pragd, pragp, dir},
+            idir{edir, istr, langs, macros, pragd, pragp, dir},
             ldir{idir, macros},
             pdir{ldir, pragp},
             udir{pdir, macros},
@@ -95,9 +96,10 @@ namespace GDCC
          //
          // constructor
          //
-         PPStream(std::streambuf &buf_, MacroMap &macros, PragmaDataBase &pragd,
-            PragmaParserBase &pragp, Core::String file, Core::String dir) :
-            IncStream{buf_, macros, pragd, pragp, file, dir},
+         PPStream(std::streambuf &buf_, IncludeLang &langs, MacroMap &macros,
+            PragmaDataBase &pragd, PragmaParserBase &pragp, Core::String file,
+            Core::String dir) :
+            IncStream{buf_, langs, macros, pragd, pragp, file, dir},
             mbuf{pbuf, macros},
             pubf{mbuf, pragd},
             sbuf{pubf},
@@ -127,9 +129,10 @@ namespace GDCC
          //
          // constructor
          //
-         TStream(std::streambuf &buf_, MacroMap &macros, PragmaDataBase &pragd,
-            PragmaParserBase &pragp, Core::String file, Core::String dir) :
-            PPStream{buf_, macros, pragd, pragp, file, dir},
+         TStream(std::streambuf &buf_, IncludeLang &langs, MacroMap &macros,
+            PragmaDataBase &pragd, PragmaParserBase &pragp, Core::String file,
+            Core::String dir) :
+            PPStream{buf_, langs, macros, pragd, pragp, file, dir},
             wbuf{cbuf},
             ppbf{wbuf},
             bbuf{ppbf}
