@@ -11,17 +11,10 @@
 //-----------------------------------------------------------------------------
 
 #include "CC/Parse.hpp"
-#include "CC/Scope/Global.hpp"
 
-#include "AST/Statement.hpp"
+#include "CPP/IncludeDTBuf.hpp"
 
-#include "CPP/Macro.hpp"
-#include "CPP/TStream.hpp"
-
-#include "Core/File.hpp"
 #include "Core/Option.hpp"
-#include "Core/Path.hpp"
-#include "Core/StringBuf.hpp"
 
 #include "IR/Program.hpp"
 
@@ -34,8 +27,6 @@
 // Static Functions                                                           |
 //
 
-static void ProcessFile(char const *inName, GDCC::IR::Program &prog);
-
 //
 // MakeC
 //
@@ -47,69 +38,18 @@ static void MakeC()
 
    // Process inputs.
    for(auto const &arg : GDCC::Core::GetOptionArgs())
-      ProcessFile(arg, prog);
+      GDCC::CC::ParseFile(arg, prog);
 
    for(auto const &arg : GDCC::Core::GetOptions().optSysSource)
-      ProcessFile(arg, prog);
+      GDCC::CC::ParseFile(arg, prog);
 
    // Write output.
    GDCC::LD::Link(prog, GDCC::Core::GetOptionOutput());
 }
 
-//
-// MakeGlobalLabel
-//
-static GDCC::Core::String MakeGlobalLabel(std::size_t hash)
-{
-   char buf[2 + (sizeof(std::size_t) * CHAR_BIT + 3) / 4 + 1];
-
-   buf[0] = '_';
-   buf[1] = '$';
-
-   std::sprintf(buf + 2, "%*zX", static_cast<int>(sizeof(buf) - 3), hash);
-
-   return {buf, sizeof(buf) - 1};
-}
-
-//
-// ProcessFile
-//
-static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
-{
-   auto buf = GDCC::Core::FileOpenBlock(inName);
-   if(!buf)
-   {
-      std::cerr << "couldn't open '" << inName << "' for reading\n";
-      throw EXIT_FAILURE;
-   }
-
-   GDCC::Core::String      file {inName};
-   GDCC::CPP::MacroMap     macr {GDCC::CPP::Macro::Stringize(file)};
-   GDCC::Core::String      path {GDCC::Core::PathDirname(file)};
-   GDCC::CPP::PragmaData   pragd{};
-   GDCC::CPP::PragmaParser pragp{pragd};
-   GDCC::Core::StringBuf   sbuf {buf->data(), buf->size()};
-   GDCC::CPP::TStream      tstr {sbuf, macr, pragd, pragp, file, path};
-   GDCC::CC::Parser        ctx  {tstr, pragd, prog};
-   GDCC::CC::Scope_Global  scope{MakeGlobalLabel(buf->getHash())};
-
-   // Read declarations.
-   while(ctx.in.peek().tok != GDCC::Core::TOK_EOF)
-      ctx.getDecl(scope);
-
-   // Add ACS libraries.
-   for(auto const &lib : pragd.stateLibrary)
-      prog.getImport(lib);
-
-   scope.allocAuto();
-
-   // Generate IR data.
-   scope.genIR(prog);
-}
-
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 //

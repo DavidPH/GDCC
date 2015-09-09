@@ -244,11 +244,15 @@ namespace GDCC
 {
    namespace CC
    {
+      Core::String GetGlobalLabel(std::size_t hash);
+
       Core::Array<IR::Value> GetStrU08(Core::String str);
       Core::Array<IR::Value> GetStrU16(Core::String str);
       Core::Array<IR::Value> GetStrU32(Core::String str);
       Core::Array<IR::Value> GetString(Core::String str);
       Core::Array<IR::Value> GetString(Core::Token const &tok);
+
+      void ParseFile(char const *inName, IR::Program &prog);
    }
 }
 
