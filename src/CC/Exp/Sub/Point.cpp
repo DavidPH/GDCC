@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,13 +14,14 @@
 
 #include "CC/Type.hpp"
 
+#include "AST/Temporary.hpp"
 #include "AST/Type.hpp"
 
 #include "IR/Block.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -69,13 +70,35 @@ namespace GDCC
       {
          if(GenStmntNul(this, ctx, dst)) return;
 
+         Core::FastU pointWords = expL->getType()->getSizeWords();
+
          // Evaluate both sub-expressions to stack.
          expL->genStmntStk(ctx);
          expR->genStmntStk(ctx);
 
-         // Subtract on stack.
-         ctx.block.addStatementArgs({IR::Code::SubI_W, 1},
-            IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+         if(pointWords > 1)
+         {
+            AST::Temporary tmp{ctx, pos, 1};
+
+            ctx.block.addStatementArgs({IR::Code::Move_W, 1},
+               tmp.getArg(), IR::Arg_Stk());
+            ctx.block.addStatementArgs({IR::Code::Move_W, pointWords - 1},
+               IR::Arg_Nul(), IR::Arg_Stk());
+
+            ctx.block.addStatementArgs({IR::Code::SubI_W, 1},
+               tmp.getArg(), IR::Arg_Stk(), tmp.getArg());
+            ctx.block.addStatementArgs({IR::Code::Move_W, pointWords - 1},
+               IR::Arg_Nul(), IR::Arg_Stk());
+
+            ctx.block.addStatementArgs({IR::Code::Move_W, 1},
+               IR::Arg_Stk(), tmp.getArg());
+         }
+         else
+         {
+            // Subtract on stack.
+            ctx.block.addStatementArgs({IR::Code::SubI_W, 1},
+               IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+         }
 
          // Adjust result, if needed.
          auto point = expL->getType()->getBaseType()->getSizePoint();

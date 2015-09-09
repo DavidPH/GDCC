@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,7 +22,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -88,14 +88,9 @@ namespace GDCC
                if(baseL->getTypeQual() != baseR->getTypeQual())
                   throw Core::ExceptStr(pos, "incompatible pointer types");
 
-               switch(typeL->getSizeWords())
-               {
-               case 1:
-                  return Exp_SubPtrPtrW::Create(TypeIntegPrS, expL, expR, pos);
-
-               default:
-                  throw Core::ExceptStr(pos, "unsupported pointer size");
-               }
+               // Similar to the above, although in this case there is some
+               // minor extra codegen by the Exp_SubPtrPtrW class.
+               return Exp_SubPtrPtrW::Create(TypeIntegPrS, expL, expR, pos);
             }
          }
 
