@@ -39,3 +39,8 @@ GDCC MageDefs (gdcc-magedefs)
 
 Processes plain text files into MageCraft NTS format by tokenizing.
 
+
+GDCC MakeLib (gdcc-makelib)
+
+Compiles entire libraries into IR data.
+
