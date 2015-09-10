@@ -1,12 +1,12 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2015 David Hill
+## Copyright (C) 2015 David Hill
 ##
 ## See COPYING for license information.
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for gdcc targets.
+## CMake file for gdcc-makelib.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -15,20 +15,16 @@
 ## Targets                                                                    |
 ##
 
-add_subdirectory(ACC)
-add_subdirectory(AS)
-add_subdirectory(AST)
-add_subdirectory(Bytecode)
-add_subdirectory(CC)
-add_subdirectory(CPP)
-add_subdirectory(Core)
-add_subdirectory(IR)
-add_subdirectory(IRDump)
-add_subdirectory(LD)
-add_subdirectory(MageDefs)
-add_subdirectory(MakeLib)
-add_subdirectory(Option)
-add_subdirectory(Platform)
+##
+## gdcc-makelib
+##
+add_executable(gdcc-makelib
+   main_makelib.cpp
+)
+
+target_link_libraries(gdcc-makelib gdcc-as-lib gdcc-cc-lib gdcc-ld-lib)
+
+GDCC_INSTALL_PART(makelib TRUE FALSE)
 
 ## EOF
 
