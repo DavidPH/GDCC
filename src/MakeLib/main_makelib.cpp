@@ -159,6 +159,12 @@ int main(int argc, char *argv[])
    opts.list.descS =
       "Compiles GDCC target libraries. Output defaults to last loose argument.";
 
+   opts.list.descL =
+      "Compiles GDCC target libraries. Inputs are names of libraries to "
+      "compile. Current target libraries: libGDCC, libacs, libc.\n"
+      "\n"
+      "Output defaults to last loose argument.";
+
    try
    {
       GDCC::Core::ProcessOptions(opts, argc, argv);
