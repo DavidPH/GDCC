@@ -12,7 +12,7 @@
 
 #include <GDCC.h>
 
-#if __GDCC_Target__ZDoom__
+#if __GDCC_Family__ZDACS__
 #include <ACS_ZDoom.h>
 #endif
 
@@ -93,7 +93,7 @@ static char AllocHeapRaw[__GDCC__AllocSize];
 [[no_init]]
 static MemBlockPtr AllocBase, AllocIter;
 
-#if __GDCC_Target__ZDoom__
+#if __GDCC_Family__ZDACS__
 static int AllocTime;
 #endif
 
@@ -317,7 +317,7 @@ static VoidPtr AllocNew(register size_t size)
 //
 // AllocTimeSet
 //
-#if __GDCC_Target__ZDoom__
+#if __GDCC_Family__ZDACS__
 [[addres(999), call("ScriptI"), script("Open")]]
 static void AllocTimeSet(void)
 {
@@ -381,7 +381,7 @@ void __GDCC__alloc_dump(void)
 {
    if(!AllocIter) AllocInit();
 
-   #if __GDCC_Target__ZDoom__
+   #if __GDCC_Family__ZDACS__
    MemBlockPtr iter = AllocBase;
    do
    {
@@ -406,7 +406,7 @@ void __GDCC__alloc_dump(void)
 //
 // __GDCC__Plsa
 //
-#if __GDCC_Target__ZDoom__
+#if __GDCC_Family__ZDACS__
 [[call("StkCall")]]
 VoidPtr __GDCC__Plsa(unsigned int size)
 {
@@ -426,7 +426,7 @@ VoidPtr __GDCC__Plsa(unsigned int size)
 //
 // __GDCC__Plsf
 //
-#if __GDCC_Target__ZDoom__
+#if __GDCC_Family__ZDACS__
 [[call("StkCall")]]
 void __GDCC__Plsf(VoidPtr ptr)
 {

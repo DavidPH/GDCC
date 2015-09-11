@@ -51,7 +51,7 @@
 //
 // FormatFixCoreDFLoop_k
 //
-#if __GDCC_Target__ZDoom__
+#if __GDCC_Family__ZDACS__
 #define FormatFixCoreDFLoop_k() \
    for(union {_Accum k; int i;} u = {data}; u.i && precDigs; --precDigs) \
    { \
@@ -72,7 +72,7 @@
 //
 // FormatFixCoreDFLoop_kl
 //
-#if __GDCC_Target__ZDoom__
+#if __GDCC_Family__ZDACS__
 #define FormatFixCoreDFLoop_kl() \
    for(union {long _Accum k; int i;} u = {data}; u.i && precDigs; --precDigs) \
    { \
