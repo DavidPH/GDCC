@@ -19,7 +19,7 @@
 
 #include <GDCC.h>
 
-#if __GDCC_Target__ZDoom__
+#if __GDCC_Family__ZDACS__
 #include <ACS_ZDoom.h>
 #endif
 
@@ -242,7 +242,7 @@ static int FILE_fn_pass_open(FILE *stream)
 //
 static int FILE_fn_stdout_flush(FILE *stream, int c)
 {
-   #if __GDCC_Target__ZDoom__
+   #if __GDCC_Family__ZDACS__
    // Because flushing in this way generates a spurious linefeed, do not honor
    // generic flush requests.
    if(c == EOF)

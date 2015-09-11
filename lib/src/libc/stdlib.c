@@ -21,7 +21,7 @@
 
 #include <GDCC.h>
 
-#if __GDCC_Target__ZDoom__
+#if __GDCC_Family__ZDoom__
 #include <ACS_ZDoom.h>
 #endif
 
@@ -125,7 +125,7 @@ void abort(void)
 {
    fprintf(stderr, "Aborted.\n");
 
-   #if __GDCC_Target__ZDoom__
+   #if __GDCC_Family__ZDoom__
    [[address(1), call("AsmFunc")]]
    extern void ACS_ScriptRet(void);
 
@@ -162,7 +162,7 @@ void exit(int status)
 //
 void _Exit(int status)
 {
-   #if __GDCC_Target__ZDoom__
+   #if __GDCC_Family__ZDoom__
    [[address(1), call("AsmFunc")]]
    extern void ACS_ScriptRet(void);
 
@@ -176,7 +176,7 @@ void _Exit(int status)
 //
 char *getenv(char const *name)
 {
-   #if __GDCC_Target__ZDoom__
+   #if __GDCC_Family__ZDoom__
    [[no_init]]
    static char buf[1024];
 

@@ -17,7 +17,7 @@
 #include <GDCC.h>
 #include <stdarg.h>
 
-#if __GDCC_Target__ZDoom__
+#if __GDCC_Family__ZDACS__
 #include <ACS_ZDoom.h>
 #endif
 
@@ -179,7 +179,7 @@
 //
 // FormatStr
 //
-#if __GDCC_Target__ZDoom__
+#if __GDCC_Family__ZDACS__
 #define FormatStr() \
    switch(fmtLen) \
    { \
@@ -470,7 +470,7 @@
 //
 // WriteStrEnt_s
 //
-#if __GDCC_Target__ZDoom__
+#if __GDCC_Family__ZDACS__
 #define WriteStrEnt_s(len) \
    do \
    { \
@@ -982,7 +982,7 @@ int __vfprintf_str(FILE *restrict stream,
 //
 int __vnprintf(char const *restrict format, va_list arg)
 {
-   #if __GDCC_Target__ZDoom__
+   #if __GDCC_Family__ZDACS__
    FormatDecl();
 
    while((fmtChr = *format++))
@@ -1007,7 +1007,7 @@ int __vnprintf(char const *restrict format, va_list arg)
 //
 int __vnprintf_str(char const __str_ars *restrict format, va_list arg)
 {
-   #if __GDCC_Target__ZDoom__
+   #if __GDCC_Family__ZDACS__
    FormatDecl();
 
    while((fmtChr = *format++))
