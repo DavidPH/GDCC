@@ -489,11 +489,17 @@ namespace GDCC
          #define Insert1(name) \
             table.insert({name, {{{{}, Core::STR_1, Core::TOK_Number}}}})
 
+         #define FamilyCheck(e, n) \
+            if(Platform::Is##e##_##n()) Insert1("__GDCC_" #e "__" #n "__")
+
          #define PlatformCase(e, n) \
             case Platform::e::n: Insert1("__GDCC_" #e "__" #n "__"); break
 
          // __GDCC__
          Insert1("__GDCC__");
+
+         // Set up __GDCC_Family__*__.
+         FamilyCheck(Family, ZDACS);
 
          // Set up __GDCC_Format__*__.
          switch(Platform::FormatCur)
@@ -511,14 +517,14 @@ namespace GDCC
             PlatformCase(Target, ZDoom);
          }
 
-         #undef PlatformCase
-
          // Conditional feature macros.
          Insert1("__STDC_NO_ATOMICS__");
          Insert1("__STDC_NO_COMPLEX__");
          Insert1("__STDC_NO_THREADS__");
          Insert1("__STDC_NO_VLA__");
 
+         #undef PlatformCase
+         #undef FamilyCheck
          #undef Insert1
 
          // Apply command line defines.

@@ -640,6 +640,14 @@ Conditional Macros
 These may or may not be defined depending on compiler options.
 
 -----------------------------------------------------------
+__GDCC_Family__*__
+-----------------------------------------------------------
+
+Depending on the --bc-format and --bc-target options, zero or more of the
+following will be defined as 1:
+  __GDCC_Family__ZDACS__
+
+-----------------------------------------------------------
 __GDCC_Format__*__
 -----------------------------------------------------------
 
