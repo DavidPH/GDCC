@@ -61,7 +61,7 @@ static void MakeLib_libGDCC(GDCC::IR::Program &prog)
    MakeLib_CC(prog, path, "alloc.c");
    MakeLib_CC(prog, path, "format.c");
 
-   if(GDCC::Platform::TargetCur == GDCC::Platform::Target::ZDoom)
+   if(GDCC::Platform::IsFamily_ZDACS())
    {
       std::string pathSub = path;
       GDCC::Core::PathAppend(pathSub, "ZDACS");
@@ -106,7 +106,7 @@ static void MakeLib_libc(GDCC::IR::Program &prog)
    MakeLib_CC(prog, path, "strto.c");
    MakeLib_CC(prog, path, "trig.c");
 
-   if(GDCC::Platform::TargetCur == GDCC::Platform::Target::ZDoom)
+   if(GDCC::Platform::IsFamily_ZDACS())
    {
       std::string pathSub = path;
       GDCC::Core::PathAppend(pathSub, "ZDACS");

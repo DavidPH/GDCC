@@ -52,7 +52,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Extern Variables                                                           |
+// Extern Objects                                                             |
 //
 
 namespace GDCC
@@ -74,11 +74,23 @@ namespace GDCC
    namespace Platform
    {
       unsigned GetByteBitsI();
+
+      // How many extra auto words does this type of call require?
+      unsigned GetCallAutoAdd(IR::CallType call);
+
       unsigned GetWordAlign();
       unsigned GetWordBits();
       unsigned GetWordBytes();
       unsigned GetWordPoint();
       unsigned GetWordShift();
+
+      // Does this type of call require explicit auto pointer propagation?
+      bool IsCallAutoProp(IR::CallType call);
+
+      // Do extra arguments to this type of call require variadic handling?
+      bool IsCallVaria(IR::CallType call);
+
+      bool IsFamily_ZDACS();
 
       // Does null have a zero representation?
       bool IsZeroNull_DJump();

@@ -109,19 +109,17 @@ namespace GDCC
             stkWords += arg->getType()->getSizeWords();
 
          // Is this a ZDACS variadic call?
-         if(stkWords > func->getCallWords() &&
-            callType == IR::CallType::StdCall &&
-            Platform::TargetCur == Platform::Target::ZDoom)
+         if(stkWords > func->getCallWords() && Platform::IsCallVaria(callType))
          {
             vaWords  = stkWords - callWords;
             stkWords = callWords;
          }
 
          // Propagate stack pointer.
-         if(callType == IR::CallType::StdCall &&
-            Platform::TargetCur == Platform::Target::ZDoom)
+         if(Platform::IsCallAutoProp(callType))
          {
-            Core::FastU autWords = ctx.fn->localAut + vaWords;
+            Core::FastU autWords = ctx.fn->localAut + vaWords
+               + Platform::GetCallAutoAdd(callType);
 
             // Ensure auto pointer is unique for longjmp checks.
             // TODO: Only ensure this for functions which use setjmp.
@@ -132,13 +130,10 @@ namespace GDCC
 
             ++stkWords;
          }
-         else if(callType == IR::CallType::SScriptI ||
+
+         if(callType == IR::CallType::SScriptI ||
             callType == IR::CallType::SScriptS)
          {
-            ctx.block.addStatementArgs({IR::Code::Pltn, 0},
-               IR::Arg_Stk(), ctx.fn->localAut + vaWords + 1);
-
-            ++stkWords;
             ++irWords;
          }
 
@@ -156,7 +151,7 @@ namespace GDCC
             // Pass-by-Aut arguments.
             for(; argItr != argEnd; ++argItr)
                (*argItr)->genStmntStk(ctx);
-            Core::FastU autItr = ctx.fn->localAut;
+            Core::FastU autItr = ctx.fn->localAut + Platform::GetCallAutoAdd(callType);
             for(; argItr-- != argEndStk;)
             {
                auto w = (*argItr)->getType()->getSizeWords();
@@ -192,7 +187,7 @@ namespace GDCC
             callType == IR::CallType::SScriptS)
          {
             irArgs[1] = IR::Arg_Aut(IR::Arg_Lit(
-               AST::ExpCreate_Size(ctx.fn->localAut + vaWords)->getIRExp()));
+               ctx.block.getExp(ctx.fn->localAut + vaWords)));
          }
 
          // Prepare function's address.

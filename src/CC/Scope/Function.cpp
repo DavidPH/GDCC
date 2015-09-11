@@ -61,18 +61,9 @@ namespace GDCC
       void Scope_Function::allocAuto()
       {
          AllocAutoInfo alloc;
-         switch(IR::GetCallTypeIR(fn->ctype))
-         {
-         case IR::CallType::SScriptI:
-         case IR::CallType::SScriptS:
-         case IR::CallType::StdCall:
-            if(Platform::TargetCur == Platform::Target::ZDoom)
-               ++alloc.localReg;
-            break;
 
-         default:
-            break;
-         }
+         if(Platform::IsCallAutoProp(IR::GetCallTypeIR(fn->ctype)))
+            ++alloc.localReg;
 
          // Allocate parameter objects.
          for(auto &obj : params)

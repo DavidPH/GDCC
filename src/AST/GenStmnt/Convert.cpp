@@ -82,53 +82,16 @@ namespace GDCC
       //
       static void ExtendSign(Exp const *, GenStmntCtx const &ctx, Core::FastI diffWords)
       {
-         // ZDACS has a sign-extending right shift, so use that.
-         // TODO: Platform::SignedShRI?
-         if(Platform::TargetCur == Platform::Target::ZDoom)
-         {
-            // Duplicate leading word and signed shift.
-            ctx.block.addStatementArgs({IR::Code::Copy_W, 1},
-               IR::Arg_Stk(), IR::Arg_Stk());
-            ctx.block.addStatementArgs({IR::Code::ShRI_W, 1},
-               IR::Arg_Stk(), IR::Arg_Stk(), 31);
-
-            // Duplicate that result for any additional words.
-            for(auto i = diffWords; --i;)
-               ctx.block.addStatementArgs({IR::Code::Copy_W, 1},
-                  IR::Arg_Stk(), IR::Arg_Stk());
-
-            return;
-         }
-
-         IR::Glyph labelEnd = {ctx.prog, ctx.fn->genLabel()};
-         IR::Glyph labelPos = {ctx.prog, ctx.fn->genLabel()};
-
-         // Duplicate leading word and check if negative.
+         // Duplicate leading word and signed shift.
          ctx.block.addStatementArgs({IR::Code::Copy_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk());
-         ctx.block.addStatementArgs({IR::Code::Move_W, 1},
-            IR::Arg_Stk(), 0);
-         ctx.block.addStatementArgs({IR::Code::CmpI_LT_W, 1},
-            IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+         ctx.block.addStatementArgs({IR::Code::ShRI_W, 1},
+            IR::Arg_Stk(), IR::Arg_Stk(), Platform::GetWordBits() - 1);
 
-         ctx.block.addStatementArgs({IR::Code::Jcnd_Nil, 1},
-            IR::Arg_Stk(), labelPos);
-
-         // Extend sign.
-         for(auto i = diffWords; i--;)
-            ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), -1);
-
-         ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelEnd);
-
-         // Positive?
-         ctx.block.addLabel(labelPos);
-
-         // Extend zero.
-         for(auto i = diffWords; i--;)
-            ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), 0);
-
-         // Done.
-         ctx.block.addLabel(labelEnd);
+         // Duplicate that result for any additional words.
+         for(auto i = diffWords; --i;)
+            ctx.block.addStatementArgs({IR::Code::Copy_W, 1},
+               IR::Arg_Stk(), IR::Arg_Stk());
       }
 
       //

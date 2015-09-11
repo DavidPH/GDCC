@@ -164,25 +164,16 @@ namespace GDCC
          fn.sflagClS = sflagClS;
 
          // Special rules for certain calling conventions.
-         switch(fn.ctype)
-         {
-         case IR::CallType::SScriptI:
-         case IR::CallType::SScriptS:
-         case IR::CallType::StdCall:
-            // Extra parameter for stack pointer. Extra register is handled
-            // during local allocations.
-            if(Platform::TargetCur == Platform::Target::ZDoom)
-               ++fn.param;
-            break;
 
-         case IR::CallType::ScriptI:
-         case IR::CallType::ScriptS:
+         // Extra parameter for stack pointer.
+         if(Platform::IsCallAutoProp(fn.ctype))
+            ++fn.param;
+
+         if(fn.ctype == IR::CallType::ScriptI ||
+            fn.ctype == IR::CallType::ScriptS)
+         {
             // Extra register for stack pointer.
             ++fn.localReg;
-            break;
-
-         default:
-            break;
          }
 
          // Check for explicit allocation.

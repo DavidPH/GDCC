@@ -150,6 +150,30 @@ namespace GDCC
       }
 
       //
+      // GetCallAutoAdd
+      //
+      unsigned GetCallAutoAdd(IR::CallType call)
+      {
+         switch(TargetCur)
+         {
+         case Target::ZDoom:
+            switch(call)
+            {
+            case IR::CallType::SScriptI:
+            case IR::CallType::SScriptS:
+            case IR::CallType::StdCall:
+               return 1;
+
+            default:
+               return 0;
+            }
+
+         default:
+            return 0;
+         }
+      }
+
+      //
       // GetWordAlign
       //
       unsigned GetWordAlign()
@@ -222,6 +246,69 @@ namespace GDCC
          }
 
          return 0;
+      }
+
+      //
+      // IsCallAutoProp
+      //
+      bool IsCallAutoProp(IR::CallType call)
+      {
+         switch(TargetCur)
+         {
+         case Target::ZDoom:
+            switch(call)
+            {
+            case IR::CallType::SScriptI:
+            case IR::CallType::SScriptS:
+            case IR::CallType::StdCall:
+               return true;
+
+            default:
+               return false;
+            }
+
+         default:
+            return false;
+         }
+      }
+
+      //
+      // IsCallVaria
+      //
+      bool IsCallVaria(IR::CallType call)
+      {
+         switch(TargetCur)
+         {
+         case Target::ZDoom:
+            switch(call)
+            {
+            case IR::CallType::SScriptI:
+            case IR::CallType::SScriptS:
+            case IR::CallType::StdCall:
+               return true;
+
+            default:
+               return false;
+            }
+
+         default:
+            return false;
+         }
+      }
+
+      //
+      // IsFamily_ZDACS
+      //
+      bool IsFamily_ZDACS()
+      {
+         switch(TargetCur)
+         {
+         case Target::ZDoom:
+            return true;
+
+         default:
+            return false;
+         }
       }
 
       //
