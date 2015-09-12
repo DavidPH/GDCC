@@ -1,0 +1,168 @@
+//-----------------------------------------------------------------------------
+//
+// Example ACS code for GDCC.
+//
+//-----------------------------------------------------------------------------
+
+// This include may be needed even when acc would compile without it, as GDCC
+// does not implicitly declare any ACS functions.
+#include "zcommon.acs"
+
+
+// Global and world arrays can be given dimensions and initializers.
+global int 7:SomeGlobalArray[2][5] = {{1, 1, 2, 3, 5}, {8, 13, 21, 34, 55}};
+
+
+// GDCC's ACS supports enumeration declarations. The syntax is as in C, except
+// that it is not a type specifier and therefore no terminating semicolon is
+// required. The contained names are available as constants of type int.
+enum SomeEnum
+{
+   FIRST,
+   SECOND = 5,
+   THIRD, // A trailing comma is allowed, as in C.
+}
+
+// The name of the enumeration becomes a type name, which behaves like an int.
+SomeEnum EnumMapVar = THIRD;
+
+
+// GDCC's ACS supports structure declarations. The syntax is mostly the same as
+// in C, except that it is not a type specifier and therefore no terminating
+// semicolon is required.
+struct SomeStruct
+{
+   // Members are declared like variables.
+   int i;
+
+   // Strings and integers can be mixed in structures.
+   str s;
+
+   // Members can be arrays. Structure types with array members can only have
+   // their array members accessed if they are themselves stored in an array.
+   int a[4];
+}
+
+// The name of the structure becomes an ordinary type name, usable wherever one
+// would use int or str.
+SomeStruct StructMapArray[13];
+
+// Functions can return structure types.
+function SomeStruct StructRetFunc(int n)
+{
+   // Structure initialization syntax as in C.
+   SomeStruct localStruct = {n * 3, "FOO", {89, 144, 233, 377}};
+
+   // And of course the members can be assigned directly.
+   localStruct.i = n % 4;
+   localStruct.s = "BAR";
+
+   // The previous note about array member access has one exception, and that
+   // is when the index is a constant.
+   localStruct.a[1] = localStruct.a[3] - localStruct.a[2];
+
+   // This would produce an error.
+ //localStruct.a[localStruct.i] = 55;
+
+   // But this is allowed.
+   SomeStuct arrayStruct[1];
+   arrayStruct[0].a[localStruct.i] = 55;
+
+   // Returning a structure works normally.
+   return localStruct;
+}
+
+// Functions can also take structure types as parameters.
+function str StructParamFunc(SomeStruct ss)
+{
+   // The ternary operator can be used to simplify cetain conditional code.
+   return ss.n > 0 ? ss.s : "ELSE";
+}
+
+
+// This function demonstrates use of the fixed type.
+function void FixedFunc(void)
+{
+   // To enable the fixed type and make fixed-point literals have fixed type, a
+   // pragma is needed. If used inside of a function like this, it will apply
+   // only inside the function. If used outside any function, it applies to the
+   // entire file after its use.
+   #pragma fixed on
+
+   // Variables with fixed type are declared as normal. Without the effect of
+   // the pragma, fixed is an alias for int.
+   fixed x;
+
+   // Similarly, without the pragma, fixed-point literals have int type.
+   x = 12.5;
+
+   // This will result in y being set to 6.25, as the use of FixedMul is
+   // implied by the fixed type.
+   fixed y = x * 0.5;
+
+   // And this will result in i being set to 6, the type conversion being
+   // performed implicitly.
+   int i = y;
+
+   // Similarly, this will result in x being set to 6.0.
+   x = i;
+
+   // When mixing int and fixed in an expression, the int expression will be
+   // converted to fixed type for the operation.
+   x = y + i; // x = 12.25
+
+   // Type conversion can be performed explicitly using the C type cast syntax.
+   y = (fixed)i / 8; // y = 0.75
+
+   // Without using the fixed pragma before including zcommon.acs, it is not
+   // possible to print actual fixed values. Attempting to do so will result in
+   // the value being converted and misinterpreted.
+ //Log(s: "A fixed number: ", f: x);
+}
+
+
+// In GDCC's ACS, it is not possible to forward reference functions. So if a
+// function needs to be referred to prior to its definition, a forward
+// declaration is needed.
+function void StructPrinter(SomeStruct ss);
+
+// It is possible in GDCC to declare extended print functions.
+print CoolPrint
+(
+   // This defines which function to call to start the print.
+   (begin): BeginPrint,
+
+   // And this defines which function to call to end the print. If this
+   // function returns a value, that value will be the result of the print.
+   (end): EndPrint,
+
+   // This is a macro in <zspecial.acs> which includes all the normal print
+   // specifiers. If none of them are desired, this can be omitted.
+   ACS_PrintPropertyBase(),
+
+   // Now to add our cool new print specifier.
+   ss: StructPrinter
+
+   // Note that the final specifier does not get a comma after it.
+);
+
+// Simple usage demonstration.
+function void PrintSomeStructs(SomeStruct ss1, SomeStruct ss2)
+{
+   // Such declared print functions are used exactly like the standard ones.
+   Log(s: "ss1: ", ss: ss1, s: "; ss2: ", ss: ss2);
+}
+
+// Do not forget to actually define forward declared functions. It can be
+// defined in another source file, or even an imported bytecode module, but if
+// a definition is not found, calls to the function will cause script
+// termination or worse.
+function void StructPrinter(SomeStruct ss)
+{
+   // When writing a custom print routine, you do not want to invoke a separate
+   // print, so PrintRaw is used instead.
+   PrintRaw(i: ss.i, c: ':', s: ss.s);
+}
+
+// EOF
+
