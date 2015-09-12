@@ -251,6 +251,22 @@ Pragma Directives
 ===========================================================
 
 -----------------------------------------------------------
+define raw
+-----------------------------------------------------------
+
+Syntax:
+  # <pragma> <define> <raw> on-off-switch
+
+Semantics:
+  When not in effect, object-like macro definitions are preprocessed and
+  altered to make them act like a primary-expression rather than simple token
+  substitution.
+
+  When in effect, object-like macro definitions are taken as-is as in C.
+
+  Follows the same scoping rules as STDC pragmas. The default state is OFF.
+
+-----------------------------------------------------------
 fixed
 -----------------------------------------------------------
 
