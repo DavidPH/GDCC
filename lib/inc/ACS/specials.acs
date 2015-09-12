@@ -184,5 +184,10 @@ print __PrintBold
    ACS_PrintPropertyBase()
 );
 
+print PrintRaw
+(
+   ACS_PrintPropertyBase()
+);
+
 #endif//__GDCC_Header__ACS__specials_acs__
 
