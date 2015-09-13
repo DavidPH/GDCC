@@ -102,8 +102,8 @@ namespace GDCC
       // GetDeclObjectSpace
       //
       template<typename T>
-      static void GetDeclObjectSpace(T &scope, AST::Attribute &attr,
-         IR::AddrBase base)
+      static void GetDeclObjectSpace(Parser &ctx, T &scope,
+         AST::Attribute &attr, IR::AddrBase base)
       {
          auto spaceAttr = attr;
 
@@ -112,7 +112,7 @@ namespace GDCC
 
          auto space = scope.getSpace(spaceAttr);
 
-         space->defin = true;
+         space->defin = !ctx.importing;
          space->value = spaceAttr.addrI;
 
          // Don't use the supplied address for the contained object.
@@ -133,21 +133,21 @@ namespace GDCC
          if(attr.storeGbl)
          {
             if(attr.type->isTypeArray())
-               GetDeclObjectSpace(scope, attr, IR::AddrBase::GblArr);
+               GetDeclObjectSpace(ctx, scope, attr, IR::AddrBase::GblArr);
             else
                attr.type = attr.type->getTypeQualAddr(IR::AddrBase::GblReg);
          }
          else if(attr.storeWld)
          {
             if(attr.type->isTypeArray())
-               GetDeclObjectSpace(scope, attr, IR::AddrBase::WldArr);
+               GetDeclObjectSpace(ctx, scope, attr, IR::AddrBase::WldArr);
             else
                attr.type = attr.type->getTypeQualAddr(IR::AddrBase::WldReg);
          }
          else
          {
             if(attr.type->isTypeArray())
-               GetDeclObjectSpace(scope, attr, IR::AddrBase::MapArr);
+               GetDeclObjectSpace(ctx, scope, attr, IR::AddrBase::MapArr);
             else
                attr.type = attr.type->getTypeQualAddr(IR::AddrBase::MapReg);
          }
@@ -170,7 +170,7 @@ namespace GDCC
                      "object with incomplete type");
             }
 
-            obj->defin = true;
+            obj->defin = !ctx.importing;
          }
 
          // Set address, if one provided.
@@ -183,7 +183,7 @@ namespace GDCC
       //
       // GetDeclObject (local)
       //
-      static AST::Object::Ref GetDeclObject(Parser &,
+      static AST::Object::Ref GetDeclObject(Parser &ctx,
          CC::Scope_Local &scope, AST::Attribute &attr, bool init)
       {
          // All block-scope declarations are definitions and all block-scope
@@ -199,14 +199,14 @@ namespace GDCC
          if(attr.storeInt)
          {
             if(attr.type->isTypeArray())
-               GetDeclObjectSpace(scope, attr, IR::AddrBase::MapArr);
+               GetDeclObjectSpace(ctx, scope, attr, IR::AddrBase::MapArr);
             else
                attr.type = attr.type->getTypeQualAddr(IR::AddrBase::MapReg);
          }
          else
          {
             if(attr.type->isTypeArray())
-               GetDeclObjectSpace(scope, attr, IR::AddrBase::LocArr);
+               GetDeclObjectSpace(ctx, scope, attr, IR::AddrBase::LocArr);
             else
                attr.type = attr.type->getTypeQualAddr(IR::AddrBase::LocReg);
          }
@@ -225,7 +225,7 @@ namespace GDCC
                   throw Core::ExceptStr(attr.namePos,
                      "object with incomplete type");
 
-               obj->defin = true;
+               obj->defin = !ctx.importing;
 
                // Give default initializer.
                obj->init = CC::Exp_Init::Create(
