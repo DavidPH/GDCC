@@ -85,7 +85,7 @@ namespace GDCC
          {
             if(!numChunkAIMP) return 0;
 
-            Core::FastU len = numChunkAIMP * 8 + 8;
+            Core::FastU len = numChunkAIMP * 8 + 12;
 
             for(auto const &itr : prog->rangeSpaceMapArs())
                if(!itr.defin) len += lenString(itr.glyph);

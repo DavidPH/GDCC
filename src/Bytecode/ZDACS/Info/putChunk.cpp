@@ -120,12 +120,13 @@ namespace GDCC
             for(auto const &sp : prog->rangeSpaceMapArs())
                if(!sp.defin) *itr++ = &sp;
 
-            Core::FastU size = numChunkAIMP * 8;
+            Core::FastU size = numChunkAIMP * 8 + 4;
             for(auto const &imp : imps)
                size += lenString(imp->glyph);
 
             putData("AIMP", 4);
             putWord(size);
+            putWord(numChunkAIMP);
 
             for(auto const &imp : imps)
             {
