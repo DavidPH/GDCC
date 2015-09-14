@@ -331,8 +331,11 @@ Syntax:
     print-specifier-list , print-specifier
 
   print-specifier:
-    identifier : ( expression-list )
-    identifier : assignment-expression
+    identifier : print-specifier-argument
+
+  print-sepcifier-argument:
+    ( expression-list )
+    assignment-expression
 
   print-argument-list:
     ; expression-list

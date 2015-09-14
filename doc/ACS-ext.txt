@@ -47,6 +47,28 @@ Syntax:
     <sizeof> ( type-name )
     <sizeof> prefix-expression
 
+  print-expression: add
+    print-identifier ( print-specifier-string print-argument-list(opt) )
+
+  print-specifier-string:
+    string-literal
+    string-literal , print-specifier-argument-list
+
+  print-specifier-argument-list:
+    print-specifier-argument
+    print-specifier-argument-list , print-specifier-argument
+
+-----------------------------------------------------------
+Print Expressions
+-----------------------------------------------------------
+
+Semantics:
+  A print expression using a print specifier string uses a string literal to
+  describe print specifiers. Within the string, a sequence beginning with a
+  percent (%) and ending with a colon (:) is a print specifier using the same
+  names as a print specifier list. All other sequences are taken as literal
+  characters to print.
+
 ===========================================================
 Cast Expressions
 ===========================================================

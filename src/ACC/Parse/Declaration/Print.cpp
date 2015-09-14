@@ -113,10 +113,12 @@ namespace GDCC
          {
             switch(nameSub)
             {
+            case Core::STR_char:  decl.propChar  = exp; break;
             case Core::STR_begin: decl.propBegin = exp; break;
             case Core::STR_end:   decl.propEnd   = exp; break;
             case Core::STR_more:  decl.propMore  = exp; break;
             case Core::STR_opt:   decl.propOpt   = exp; break;
+            case Core::STR_str:   decl.propStr   = exp; break;
 
             case Core::STRNULL:
                throw Core::ParseExceptStr(pos, "missing property name");

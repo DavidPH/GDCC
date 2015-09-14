@@ -87,9 +87,11 @@ namespace GDCC
          std::unordered_map<Core::String, PrintProp> props;
 
          AST::Exp::CPtr propBegin;
+         AST::Exp::CPtr propChar;
          AST::Exp::CPtr propEnd;
          AST::Exp::CPtr propMore;
          AST::Exp::CPtr propOpt;
+         AST::Exp::CPtr propStr;
       };
    }
 }

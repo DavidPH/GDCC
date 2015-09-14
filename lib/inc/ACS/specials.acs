@@ -21,6 +21,9 @@
 //
 
 #define ACS_PrintPropertyBase() \
+   (char): PrintChar, \
+   (str):  PrintString, \
+   \
    c: PrintChar, \
    d: PrintInt, \
    i: PrintInt, \

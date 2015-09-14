@@ -37,6 +37,19 @@ namespace GDCC
    namespace ACC
    {
       //
+      // GetPrintProp
+      //
+      static PrintProp const &GetPrintProp(PrintDecl const *print,
+         Core::String name, Core::Origin pos)
+      {
+         auto propItr = print->props.find(name);
+         if(propItr == print->props.end())
+            throw Core::ParseExceptExpect(pos, "print-specifier", name, false);
+
+         return propItr->second;
+      }
+
+      //
       // GetPrintSpec_Array
       //
       static AST::Exp::CPtr GetPrintSpec_Array(Parser &ctx, CC::Scope &scope,
@@ -69,27 +82,11 @@ namespace GDCC
       // GetPrintSpec
       //
       static AST::Exp::CRef GetPrintSpec(Parser &ctx, CC::Scope &scope,
-         PrintDecl const *print)
+         PrintProp const &prop, Core::Origin pos)
       {
          // print-specifier:
          //    identifier : ( expression-list )
          //    identifier : assignment-expression
-
-         // identifier
-         if(!ctx.in.peek(Core::TOK_Identi))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
-
-         auto name = ctx.in.get();
-
-         auto propItr = print->props.find(name.str);
-         if(propItr == print->props.end())
-            throw Core::ParseExceptExpect(name, "print-specifier", false);
-
-         PrintProp const &prop = propItr->second;
-
-         // :
-         if(!ctx.in.drop(Core::TOK_Colon))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
 
          Core::Array<AST::Exp::CRef> args;
 
@@ -119,25 +116,25 @@ namespace GDCC
             {
             case IR::AddrBase::GblArr:
                if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propGlobalArray,
-                  prop.propGlobalRange, std::move(args), name.pos))
+                  prop.propGlobalRange, std::move(args), pos))
                   return static_cast<AST::Exp::CRef>(exp);
                break;
 
             case IR::AddrBase::LocArr:
                if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propLocalArray,
-                  prop.propLocalRange, std::move(args), name.pos))
+                  prop.propLocalRange, std::move(args), pos))
                   return static_cast<AST::Exp::CRef>(exp);
                break;
 
             case IR::AddrBase::MapArr:
                if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propMapArray,
-                  prop.propMapRange, std::move(args), name.pos))
+                  prop.propMapRange, std::move(args), pos))
                   return static_cast<AST::Exp::CRef>(exp);
                break;
 
             case IR::AddrBase::WldArr:
                if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propWorldArray,
-                  prop.propWorldRange, std::move(args), name.pos))
+                  prop.propWorldRange, std::move(args), pos))
                   return static_cast<AST::Exp::CRef>(exp);
                break;
 
@@ -147,9 +144,106 @@ namespace GDCC
          }
 
          if(prop.prop)
-            return CC::ExpCreate_Call(prop.prop, std::move(args), scope, name.pos);
+            return CC::ExpCreate_Call(prop.prop, std::move(args), scope, pos);
 
-         throw Core::ExceptStr(name.pos, "no valid print property");
+         throw Core::ExceptStr(pos, "no valid print property");
+      }
+
+      //
+      // GetPrintSpecList
+      //
+      static AST::Exp::CRef GetPrintSpecList(AST::Exp::CRef exp, Parser &ctx,
+         CC::Scope &scope, PrintDecl const *print)
+      {
+         // print-specifier-list:
+         //    print-specifier
+         //    print-specifier-list , print-specifier
+
+         do
+         {
+            // print-specifier:
+            //    identifier : print-specifier-argument
+
+            // identifier
+            if(!ctx.in.peek(Core::TOK_Identi))
+               throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
+
+            auto name = ctx.in.get();
+
+            // :
+            if(!ctx.in.drop(Core::TOK_Colon))
+               throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
+
+            PrintProp const &prop = GetPrintProp(print, name.str, name.pos);
+            AST::Exp::CRef   spec = GetPrintSpec(ctx, scope, prop, name.pos);
+
+            exp = CC::ExpCreate_Comma(exp, spec, name.pos);
+         }
+         while(ctx.in.drop(Core::TOK_Comma));
+
+         return exp;
+      }
+
+      //
+      // GetPrintSpecString
+      //
+      static AST::Exp::CRef GetPrintSpecString(AST::Exp::CRef exp, Parser &ctx,
+         CC::Scope &scope, PrintDecl const *print)
+      {
+         // print-specifier-string:
+         //    string-literal
+         //    string-literal , print-specifier-argument-list
+
+         // string-literal
+         auto tok = ctx.in.get();
+         auto &pos = tok.pos;
+
+         for(auto strItr = tok.str.begin(), strEnd = tok.str.end();;)
+         {
+            auto strStr = strItr;
+
+            // Scan for format specifier or end of string.
+            while(strItr != strEnd && *strItr != '%') ++strItr;
+
+            // If preceeding portion is non-empty, add string print.
+            if(strStr != strItr)
+            {
+               if(!print->propStr)
+                  throw Core::ExceptStr(pos, "no (str) property");
+
+               auto strExp = CC::ExpCreate_StrIdx(ctx.prog, scope, {strStr, strItr}, pos);
+               auto call   = CC::ExpCreate_Call(print->propStr, {strExp}, scope, pos);
+
+               exp = CC::ExpCreate_Comma(exp, call, pos);
+            }
+
+            // If end-of-string, terminate.
+            if(strItr == strEnd) break;
+
+            // Skip specifier start.
+            strStr = ++strItr;
+
+            // Scan for end of print specifier.
+            while(strItr != strEnd && *strItr != ':')
+               ++strItr;
+
+            // Handle specifier.
+            if(!ctx.in.drop(Core::TOK_Comma))
+               throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
+
+            PrintProp const &prop = GetPrintProp(print, {strStr, strItr}, pos);
+            AST::Exp::CRef   spec = GetPrintSpec(ctx, scope, prop, pos);
+
+            exp = CC::ExpCreate_Comma(exp, spec, pos);
+
+            // If end-of-string, terminate.
+            if(strItr == strEnd) break;
+
+            // Skip specifier end.
+            ++strItr;
+         }
+
+         return exp;
       }
    }
 }
@@ -168,8 +262,9 @@ namespace GDCC
       //
       AST::Exp::CRef Parser::getExp_Unar_print(CC::Scope &scope, PrintDecl const *print)
       {
-         // print-identifier ( print-specifier-list(opt)
-         //    print-argument-list(opt) )
+         // print-expression:
+         //    print-identifier ( print-specifier-list(opt) print-argument-list(opt) )
+         //    print-identifier ( print-specifier-string print-argument-list(opt) )
 
          // print-identifier
          auto pos = in.get().pos;
@@ -185,12 +280,13 @@ namespace GDCC
          if(!in.drop(Core::TOK_ParenO))
             throw Core::ParseExceptExpect(in.peek(), "(", true);
 
-         // print-specifier-list:
-         //    print-specifier
-         //    print-specifier-list , print-specifier
-         if(in.peek(Core::TOK_Identi)) do
-            exp = CC::ExpCreate_Comma(exp, GetPrintSpec(*this, scope, print), pos);
-         while(in.drop(Core::TOK_Comma));
+         // print-specifier-string
+         if(in.peek().isTokString())
+            exp = GetPrintSpecString(exp, *this, scope, print);
+
+         // print-specifier-list(opt)
+         else if(in.peek(Core::TOK_Identi))
+            exp = GetPrintSpecList(exp, *this, scope, print);
 
          // print-argument-list:
          //    ; expression-list

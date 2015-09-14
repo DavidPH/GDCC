@@ -103,6 +103,8 @@ namespace GDCC
          String(char const *str, std::size_t len) : idx{Get(str, len).idx} {}
          String(char const *str, std::size_t len, std::size_t hash) :
             idx{Get(str, len, hash).idx} {}
+         String(char const *first, char const *last) :
+            idx{Get(first, last - first).idx} {}
          String(std::nullptr_t) : idx{STRNULL} {}
          explicit String(std::size_t idx_) : idx{idx_} {}
          constexpr String(StringIndex idx_) : idx{idx_} {}
@@ -175,7 +177,7 @@ namespace std
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

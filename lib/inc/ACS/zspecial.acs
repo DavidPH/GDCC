@@ -39,6 +39,9 @@
    while(0)
 
 #define ACS_PrintPropertyBase() \
+   (char): PrintChar, \
+   (str):  PrintString, \
+   \
    a(global): PrintGlobalCharArray, \
    a(global): PrintGlobalCharRange, \
    a(local):  PrintLocalCharArray, \
