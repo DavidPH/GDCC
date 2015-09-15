@@ -20,6 +20,8 @@
 #include "IR/Linkage.hpp"
 #include "IR/Program.hpp"
 
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -63,12 +65,15 @@ namespace GDCC
       //
       void Object::genObject(IR::Program &prog)
       {
-         if(!defin && !used) return;
+         IR::AddrSpace objSpace = type->getQualAddr();
+
+         if(!defin && !used && !Platform::MustEmitObject(objSpace.base))
+            return;
 
          IR::Object obj{glyph};
 
          obj.linka = linka;
-         obj.space = type->getQualAddr();
+         obj.space = objSpace;
          obj.words = type && type->isTypeComplete() ? type->getSizeWords() : 0;
 
          obj.alias = alias;

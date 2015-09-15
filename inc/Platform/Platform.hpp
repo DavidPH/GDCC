@@ -97,6 +97,9 @@ namespace GDCC
       bool IsZeroNull_Funct(IR::CallType call);
       bool IsZeroNull_Point(IR::AddrBase addr);
       bool IsZeroNull_StrEn();
+
+      // Must unsued, undefined objects in this space be emitted?
+      bool MustEmitObject(IR::AddrBase addr);
    }
 }
 

@@ -365,6 +365,19 @@ namespace GDCC
          }
 
       }
+
+      //
+      // MustEmitObject
+      //
+      bool MustEmitObject(IR::AddrBase addr)
+      {
+         switch(addr)
+         {
+         case IR::AddrBase::MapArr: return true;
+
+         default: return false;
+         }
+      }
    }
 }
 
