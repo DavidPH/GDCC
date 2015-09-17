@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2015 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -10,14 +10,12 @@
 //
 //-----------------------------------------------------------------------------
 
-#include <GDCC.h>
+#include <GDCC_libc.h>
 
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
 //
-
-#define BufferLen 8192
 
 //
 // FormatFixCoreD
@@ -27,26 +25,26 @@
    FormatFixCoreDI(T); \
    FormatFixCoreDF(op); \
    \
-   ret.len = ret.end - ret.begin;
+   ret._len = ret._end - ret._begin;
 
 //
 // FormatFixCoreDF
 //
 #define FormatFixCoreDF(op) \
    /* Fractional conversion. */ \
-   if(format.prec) \
+   if(format._prec) \
    { \
-      *ret.end++ = '.'; \
+      *ret._end++ = '.'; \
       \
-      unsigned precDigs = format.prec; \
+      unsigned precDigs = format._prec; \
       \
       FormatFixCoreDFLoop_##op(); \
       \
       for(; precDigs; --precDigs) \
-         *ret.end++ = '0'; \
+         *ret._end++ = '0'; \
    } \
-   else if(format.flags & __GDCC__FormatFlag_AltF) \
-      *ret.end++ = '.';
+   else if(format._flags & __GDCC__FormatFlag_AltF) \
+      *ret._end++ = '.';
 
 //
 // FormatFixCoreDFLoop_k
@@ -57,7 +55,7 @@
    { \
       u.i &= 0xFFFF; \
       u.i *= 10; \
-      *ret.end++ = (u.i >> 16) + '0'; \
+      *ret._end++ = (u.i >> 16) + '0'; \
    }
 #else
 #define FormatFixCoreDFLoop_k() \
@@ -65,7 +63,7 @@
    { \
       k -= (int)k; \
       k *= 10; \
-      *ret.end++ = (int)k + '0'; \
+      *ret._end++ = (int)k + '0'; \
    }
 #endif
 
@@ -76,7 +74,7 @@
 #define FormatFixCoreDFLoop_kl() \
    for(union {long _Accum k; int i;} u = {data}; u.i && precDigs; --precDigs) \
    { \
-      *ret.end++ = ((int)(((unsigned)u.i >> 24) * 10) >> 8) + '0'; \
+      *ret._end++ = ((int)(((unsigned)u.i >> 24) * 10) >> 8) + '0'; \
       u.i *= 10; \
    }
 #else
@@ -85,7 +83,7 @@
    { \
       k -= (long int)k; \
       k *= 10; \
-      *ret.end++ = (int)k + '0'; \
+      *ret._end++ = (int)k + '0'; \
    }
 #endif
 
@@ -97,22 +95,22 @@
    for(T int i = data; i;) \
    { \
       T __div_t d = __div(i, 10); \
-      *--ret.begin = d.rem + '0'; \
+      *--ret._begin = d.rem + '0'; \
       i = d.quot; \
    } \
    \
-   if(ret.begin == ret.end && \
-      (format.prec || !(format.flags & __GDCC__FormatFlag_AltF))) \
-      *--ret.begin = '0';
+   if(ret._begin == ret._end && \
+      (format._prec || !(format._flags & __GDCC__FormatFlag_AltF))) \
+      *--ret._begin = '0';
 
 //
 // FormatFixPreS
 //
 #define FormatFixPreS() \
    __GDCC__FormatRet ret; \
-   ret.begin = ret.end = Buffer + BufferLen / 2; \
+   ret._begin = ret._end = __GDCC__FormatBufMid; \
    \
-   if(format.prec == -1) format.prec = 6; \
+   if(format._prec == -1) format._prec = 6; \
    \
    char sign; \
    if(data < 0) \
@@ -120,9 +118,9 @@
       sign = '-'; \
       data = -data; \
    } \
-   else if(format.flags & __GDCC__FormatFlag_Sign) \
+   else if(format._flags & __GDCC__FormatFlag_Sign) \
       sign = '+'; \
-   else if(format.flags & __GDCC__FormatFlag_PadS) \
+   else if(format._flags & __GDCC__FormatFlag_PadS) \
       sign = ' '; \
    else \
       sign = '\0';
@@ -132,9 +130,9 @@
 //
 #define FormatFixPreU() \
    __GDCC__FormatRet ret; \
-   ret.begin = ret.end = Buffer + BufferLen / 2; \
+   ret._begin = ret._end = __GDCC__FormatBufMid; \
    \
-   if(format.prec == -1) format.prec = 6; \
+   if(format._prec == -1) format._prec = 6; \
    \
    char const sign = '\0';
 
@@ -143,13 +141,13 @@
 //
 #define FormatFixWidth() \
    /* Pad to width. */ \
-   if(format.flags & __GDCC__FormatFlag_Pad0 && \
-      !(format.flags & __GDCC__FormatFlag_Left)) \
+   if(format._flags & __GDCC__FormatFlag_Pad0 && \
+      !(format._flags & __GDCC__FormatFlag_Left)) \
    { \
-      if(sign && format.width) --format.width; \
+      if(sign && format._width) --format._width; \
       \
-      while(ret.len < format.width) \
-         *--ret.begin = '0', ++ret.len; \
+      while(ret._len < format._width) \
+         *--ret._begin = '0', ++ret._len; \
    }
 
 //
@@ -188,9 +186,9 @@
       sign = '-'; \
       (signWord) &= 0x7FFFFFFF; \
    } \
-   else if(format.flags & __GDCC__FormatFlag_Sign) \
+   else if(format._flags & __GDCC__FormatFlag_Sign) \
       sign = '+'; \
-   else if(format.flags & __GDCC__FormatFlag_PadS) \
+   else if(format._flags & __GDCC__FormatFlag_PadS) \
       sign = ' '; \
    else \
       sign = '\0';
@@ -204,13 +202,13 @@
    { \
       /* NaN */ \
       if(nanWord) \
-         ret.begin = bufNaN + 1, ret.end = bufNaN + 4, ret.len = 3; \
+         ret._begin = bufNaN + 1, ret._end = bufNaN + 4, ret._len = 3; \
       \
       /* infinity */ \
       else \
-         ret.begin = bufINF + 1, ret.end = bufINF + 9, ret.len = 8; \
+         ret._begin = bufINF + 1, ret._end = bufINF + 9, ret._len = 8; \
       \
-      if(sign) *--ret.begin = sign, ++ret.len; \
+      if(sign) *--ret._begin = sign, ++ret._len; \
       \
       return ret; \
    }
@@ -227,26 +225,26 @@
    FormatFltCoreXF_##op(table); \
    FormatFltCoreXE_##op(c); \
    \
-   ret.len = ret.end - ret.begin; \
+   ret._len = ret._end - ret._begin; \
    \
-   if(format.flags & __GDCC__FormatFlag_Pad0 && \
-      !(format.flags & __GDCC__FormatFlag_Left)) \
+   if(format._flags & __GDCC__FormatFlag_Pad0 && \
+      !(format._flags & __GDCC__FormatFlag_Left)) \
    { \
-      ret.len += 2; \
+      ret._len += 2; \
    }
 
 //
 // FormatFltCoreXE
 //
 #define FormatFltCoreXE(c) \
-   *ret.end++ = (c); \
+   *ret._end++ = (c); \
    if(exp < 0) \
    { \
       exp = -exp; \
-      *ret.end++ = '-'; \
+      *ret._end++ = '-'; \
    } \
    else \
-      *ret.end++ = '+'; \
+      *ret._end++ = '+'; \
 
 //
 // FormatFltCoreXE_f
@@ -254,13 +252,13 @@
 #define FormatFltCoreXE_f(c) \
    /* Perform core exponent conversion. */ \
    if(exp == -127) \
-      *ret.end++ = (c), *ret.end++ = '+', *ret.end++ = '0'; \
+      *ret._end++ = (c), *ret._end++ = '+', *ret._end++ = '0'; \
    else \
    { \
       FormatFltCoreXE(c); \
-      if(exp >= 100) {*ret.end++ = '1';} \
-      if(exp >=  10) {*ret.end++ = exp / 10 % 10 + '0';} \
-                     {*ret.end++ = exp      % 10 + '0';} \
+      if(exp >= 100) {*ret._end++ = '1';} \
+      if(exp >=  10) {*ret._end++ = exp / 10 % 10 + '0';} \
+                     {*ret._end++ = exp      % 10 + '0';} \
    }
 
 //
@@ -269,14 +267,14 @@
 #define FormatFltCoreXE_fl(c) \
    /* Perform core exponent conversion. */ \
    if(exp == -1023) \
-      *ret.end++ = (c), *ret.end++ = '+', *ret.end++ = '0'; \
+      *ret._end++ = (c), *ret._end++ = '+', *ret._end++ = '0'; \
    else \
    { \
       FormatFltCoreXE(c); \
-      if(exp >= 1000) {*ret.end++ = '1';} \
-      if(exp >=  100) {*ret.end++ = exp / 100 % 10 + '0';} \
-      if(exp >=   10) {*ret.end++ = exp /  10 % 10 + '0';} \
-                      {*ret.end++ = exp       % 10 + '0';} \
+      if(exp >= 1000) {*ret._end++ = '1';} \
+      if(exp >=  100) {*ret._end++ = exp / 100 % 10 + '0';} \
+      if(exp >=   10) {*ret._end++ = exp /  10 % 10 + '0';} \
+                      {*ret._end++ = exp       % 10 + '0';} \
    }
 
 //
@@ -284,91 +282,91 @@
 //
 #define FormatFltCoreXF_f(table) \
    /* Perform core fractional conversion. */ \
-   if(format.prec) \
+   if(format._prec) \
    { \
-      *ret.end++ = '.'; \
-      for(; format.prec; --format.prec) \
+      *ret._end++ = '.'; \
+      for(; format._prec; --format._prec) \
       { \
-         *ret.end++ = table[(u.i0 >> 19) & 0xF]; \
+         *ret._end++ = table[(u.i0 >> 19) & 0xF]; \
          u.i0 <<= 4; \
       } \
    } \
-   else if(format.flags & __GDCC__FormatFlag_AltF) \
-      *ret.end++ = '.';
+   else if(format._flags & __GDCC__FormatFlag_AltF) \
+      *ret._end++ = '.';
 
 //
 // FormatFltCoreXF_fl
 //
 #define FormatFltCoreXF_fl(table) \
    /* Perform core fractional conversion. */ \
-   if(format.prec) \
+   if(format._prec) \
    { \
-      *ret.end++ = '.'; \
+      *ret._end++ = '.'; \
       \
-      for(int i = 5; i && format.prec; --i, --format.prec) \
+      for(int i = 5; i && format._prec; --i, --format._prec) \
       { \
-         *ret.end++ = table[(u.i1 >> 16) & 0xF]; \
+         *ret._end++ = table[(u.i1 >> 16) & 0xF]; \
          u.i1 <<= 4; \
       } \
       \
-      for(; format.prec; --format.prec) \
+      for(; format._prec; --format._prec) \
       { \
-         *ret.end++ = table[(u.i0 >> 28) & 0xF]; \
+         *ret._end++ = table[(u.i0 >> 28) & 0xF]; \
          u.i0 <<= 4; \
       } \
    } \
-   else if(format.flags & __GDCC__FormatFlag_AltF) \
-      *ret.end++ = '.';
+   else if(format._flags & __GDCC__FormatFlag_AltF) \
+      *ret._end++ = '.';
 
 //
 // FormatFltCoreXI_f
 //
 #define FormatFltCoreXI_f() \
    /* Perform core integral conversion. */ \
-   *--ret.begin = '0' + (exp != -127);
+   *--ret._begin = '0' + (exp != -127);
 
 //
 // FormatFltCoreXI_fl
 //
 #define FormatFltCoreXI_fl() \
    /* Perform core integral conversion. */ \
-   *--ret.begin = '0' + (exp != -1023);
+   *--ret._begin = '0' + (exp != -1023);
 
 //
 // FormatFltPreS
 //
 #define FormatFltPreS(defPrec) \
    __GDCC__FormatRet ret; \
-   ret.begin = ret.end = Buffer + BufferLen / 2; \
+   ret._begin = ret._end = __GDCC__FormatBufMid; \
    \
-   if(format.prec == -1) format.prec = defPrec;
+   if(format._prec == -1) format._prec = defPrec;
 
 //
 // FormatFltPrefixX
 //
 #define FormatFltPrefixX(c) \
-   *--ret.begin = (c); \
-   *--ret.begin = '0'; \
+   *--ret._begin = (c); \
+   *--ret._begin = '0'; \
    \
-   if(!(format.flags & __GDCC__FormatFlag_Pad0) || \
-      format.flags & __GDCC__FormatFlag_Left) \
+   if(!(format._flags & __GDCC__FormatFlag_Pad0) || \
+      format._flags & __GDCC__FormatFlag_Left) \
    { \
-      ret.len += 2; \
+      ret._len += 2; \
    }
 
 //
 // FormatIntAltB
 //
 #define FormatIntAltB(c) \
-   if(format.flags & __GDCC__FormatFlag_AltF) \
+   if(format._flags & __GDCC__FormatFlag_AltF) \
    { \
-      *--ret.begin = (c); \
-      *--ret.begin = '0'; \
+      *--ret._begin = (c); \
+      *--ret._begin = '0'; \
       \
-      if(!(format.flags & __GDCC__FormatFlag_Pad0) || \
-         format.flags & __GDCC__FormatFlag_Left) \
+      if(!(format._flags & __GDCC__FormatFlag_Pad0) || \
+         format._flags & __GDCC__FormatFlag_Left) \
       { \
-         ret.len += 2; \
+         ret._len += 2; \
       } \
    }
 
@@ -376,15 +374,15 @@
 // FormatIntAltX
 //
 #define FormatIntAltX(c) \
-   if(format.flags & __GDCC__FormatFlag_AltF) \
+   if(format._flags & __GDCC__FormatFlag_AltF) \
    { \
-      *--ret.begin = (c); \
-      *--ret.begin = '0'; \
+      *--ret._begin = (c); \
+      *--ret._begin = '0'; \
       \
-      if(!(format.flags & __GDCC__FormatFlag_Pad0) || \
-         format.flags & __GDCC__FormatFlag_Left) \
+      if(!(format._flags & __GDCC__FormatFlag_Pad0) || \
+         format._flags & __GDCC__FormatFlag_Left) \
       { \
-         ret.len += 2; \
+         ret._len += 2; \
       } \
    }
 
@@ -394,15 +392,15 @@
 #define FormatIntCoreB() \
    /* Perform core conversion. */ \
    for(; data; data >>= 1) \
-      *--ret.begin = ((int)data & 1) + '0'; \
+      *--ret._begin = ((int)data & 1) + '0'; \
    \
-   ret.len = ret.end - ret.begin; \
+   ret._len = ret._end - ret._begin; \
    \
-   if(format.flags & __GDCC__FormatFlag_AltF && \
-      format.flags & __GDCC__FormatFlag_Pad0 && \
-      !(format.flags & __GDCC__FormatFlag_Left)) \
+   if(format._flags & __GDCC__FormatFlag_AltF && \
+      format._flags & __GDCC__FormatFlag_Pad0 && \
+      !(format._flags & __GDCC__FormatFlag_Left)) \
    { \
-      ret.len += 2; \
+      ret._len += 2; \
    }
 
 //
@@ -413,11 +411,11 @@
    while(data) \
    { \
       T __div_t d = __div(data, 10); \
-      *--ret.begin = (int)d.rem + '0'; \
+      *--ret._begin = (int)d.rem + '0'; \
       data = d.quot; \
    } \
    \
-   ret.len = ret.end - ret.begin;
+   ret._len = ret._end - ret._begin;
 
 //
 // FormatIntCoreO
@@ -425,15 +423,15 @@
 #define FormatIntCoreO() \
    /* Perform core conversion. */ \
    for(; data; data >>= 3) \
-      *--ret.begin = ((int)data & 7) + '0'; \
+      *--ret._begin = ((int)data & 7) + '0'; \
    \
-   if(format.flags & __GDCC__FormatFlag_AltF) \
+   if(format._flags & __GDCC__FormatFlag_AltF) \
    { \
-      if(ret.begin == ret.end || *ret.begin != '0') \
-         *--ret.begin = '0'; \
+      if(ret._begin == ret._end || *ret._begin != '0') \
+         *--ret._begin = '0'; \
    } \
    \
-   ret.len = ret.end - ret.begin;
+   ret._len = ret._end - ret._begin;
 
 //
 // FormatIntCoreX
@@ -441,15 +439,15 @@
 #define FormatIntCoreX(table) \
    /* Perform core conversion. */ \
    for(; data; data >>= 4) \
-      *--ret.begin = table[(int)data & 0xF]; \
+      *--ret._begin = table[(int)data & 0xF]; \
    \
-   ret.len = ret.end - ret.begin; \
+   ret._len = ret._end - ret._begin; \
    \
-   if(format.flags & __GDCC__FormatFlag_AltF && \
-      format.flags & __GDCC__FormatFlag_Pad0 && \
-      !(format.flags & __GDCC__FormatFlag_Left)) \
+   if(format._flags & __GDCC__FormatFlag_AltF && \
+      format._flags & __GDCC__FormatFlag_Pad0 && \
+      !(format._flags & __GDCC__FormatFlag_Left)) \
    { \
-      ret.len += 2; \
+      ret._len += 2; \
    }
 
 //
@@ -457,7 +455,7 @@
 //
 #define FormatIntPreS() \
    __GDCC__FormatRet ret; \
-   ret.begin = ret.end = Buffer + BufferLen / 2; \
+   ret._begin = ret._end = __GDCC__FormatBufMid; \
    \
    char sign; \
    if(data < 0) \
@@ -465,9 +463,9 @@
       sign = '-'; \
       data = -data; \
    } \
-   else if(format.flags & __GDCC__FormatFlag_Sign) \
+   else if(format._flags & __GDCC__FormatFlag_Sign) \
       sign = '+'; \
-   else if(format.flags & __GDCC__FormatFlag_PadS) \
+   else if(format._flags & __GDCC__FormatFlag_PadS) \
       sign = ' '; \
    else \
       sign = '\0';
@@ -477,7 +475,7 @@
 //
 #define FormatIntPreU() \
    __GDCC__FormatRet ret; \
-   ret.begin = ret.end = Buffer + BufferLen / 2; \
+   ret._begin = ret._end = __GDCC__FormatBufMid; \
    \
    char const sign = '\0';
 
@@ -486,48 +484,37 @@
 //
 #define FormatIntPrec() \
    /* Pad to precision. */ \
-   if(format.prec == -1) \
+   if(format._prec == -1) \
    { \
-      if(!ret.len) \
-         *--ret.begin = '0', ret.len = 1; \
+      if(!ret._len) \
+         *--ret._begin = '0', ret._len = 1; \
       \
       /* When padding to width with 0, use width as precision. */ \
-      if(format.flags & __GDCC__FormatFlag_Pad0 && \
-         !(format.flags & __GDCC__FormatFlag_Left)) \
+      if(format._flags & __GDCC__FormatFlag_Pad0 && \
+         !(format._flags & __GDCC__FormatFlag_Left)) \
       { \
-         if(sign && format.width) --format.width; \
+         if(sign && format._width) --format._width; \
          \
-         while(ret.len < format.width) \
-            *--ret.begin = '0', ++ret.len; \
+         while(ret._len < format._width) \
+            *--ret._begin = '0', ++ret._len; \
       } \
    } \
    else \
    { \
-      while(ret.len < format.prec) \
-         *--ret.begin = '0', ++ret.len; \
+      while(ret._len < format._prec) \
+         *--ret._begin = '0', ++ret._len; \
    }
 
 //
 // FormatIntSign
 //
 #define FormatIntSign() \
-   if(sign) *--ret.begin = sign, ++ret.len;
+   if(sign) *--ret._begin = sign, ++ret._len;
 
 
 //----------------------------------------------------------------------------|
-// Types                                                                      |
+// Static Objects                                                             |
 //
-
-typedef char __sta BufferChar;
-typedef BufferChar *BufferPtr;
-
-
-//----------------------------------------------------------------------------|
-// Static Variables                                                           |
-//
-
-[[no_init]]
-static BufferChar Buffer[BufferLen];
 
 static char Buffer_INFINITY[9] = " INFINITY";
 static char Buffer_NAN[4]      = " NAN";
@@ -539,13 +526,21 @@ static char const HexTableU[16] = "0123456789ABCDEF";
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Objects                                                             |
+//
+
+[[no_init]]
+char __GDCC__FormatBuf[__GDCC__FormatBufLen];
+
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
 //
 
 //
 // __GDCC__FormatF_X
 //
-__GDCC__FormatDecl(F, X, float)
+__GDCC__FormatDefn(F, X, float)
 {
    FormatFltPreS(6);
    FormatFltCoreX(f, HexTableU, 'P', Buffer_INFINITY, Buffer_NAN);
@@ -559,7 +554,7 @@ __GDCC__FormatDecl(F, X, float)
 //
 // __GDCC__FormatF_Xl
 //
-__GDCC__FormatDecl(F, Xl, double)
+__GDCC__FormatDefn(F, Xl, double)
 {
    FormatFltPreS(13);
    FormatFltCoreX(fl, HexTableU, 'P', Buffer_INFINITY, Buffer_NAN);
@@ -573,7 +568,7 @@ __GDCC__FormatDecl(F, Xl, double)
 //
 // __GDCC__FormatF_Xll
 //
-__GDCC__FormatDecl(F, Xll, long double)
+__GDCC__FormatDefn(F, Xll, long double)
 {
    FormatFltPreS(13);
    FormatFltCoreX(fl, HexTableU, 'P', Buffer_INFINITY, Buffer_NAN);
@@ -587,7 +582,7 @@ __GDCC__FormatDecl(F, Xll, long double)
 //
 // __GDCC__FormatF_x
 //
-__GDCC__FormatDecl(F, x, float)
+__GDCC__FormatDefn(F, x, float)
 {
    FormatFltPreS(6);
    FormatFltCoreX(f, HexTableL, 'p', Buffer_infinity, Buffer_nan);
@@ -601,7 +596,7 @@ __GDCC__FormatDecl(F, x, float)
 //
 // __GDCC__FormatF_xl
 //
-__GDCC__FormatDecl(F, xl, double)
+__GDCC__FormatDefn(F, xl, double)
 {
    FormatFltPreS(13);
    FormatFltCoreX(fl, HexTableL, 'p', Buffer_infinity, Buffer_nan);
@@ -615,7 +610,7 @@ __GDCC__FormatDecl(F, xl, double)
 //
 // __GDCC__FormatF_xll
 //
-__GDCC__FormatDecl(F, xll, long double)
+__GDCC__FormatDefn(F, xll, long double)
 {
    FormatFltPreS(13);
    FormatFltCoreX(fl, HexTableL, 'p', Buffer_infinity, Buffer_nan);
@@ -629,7 +624,7 @@ __GDCC__FormatDecl(F, xll, long double)
 //
 // __GDCC__FormatI_d
 //
-__GDCC__FormatDecl(I, d, int)
+__GDCC__FormatDefn(I, d, int)
 {
    FormatIntPreS();
    FormatIntCoreD(signed);
@@ -642,7 +637,7 @@ __GDCC__FormatDecl(I, d, int)
 //
 // __GDCC__FormatI_dl
 //
-__GDCC__FormatDecl(I, dl, long int)
+__GDCC__FormatDefn(I, dl, long int)
 {
    FormatIntPreS();
    FormatIntCoreD(long signed);
@@ -655,7 +650,7 @@ __GDCC__FormatDecl(I, dl, long int)
 //
 // __GDCC__FormatI_dll
 //
-__GDCC__FormatDecl(I, dll, long long int)
+__GDCC__FormatDefn(I, dll, long long int)
 {
    FormatIntPreS();
    FormatIntCoreD(long long signed);
@@ -668,7 +663,7 @@ __GDCC__FormatDecl(I, dll, long long int)
 //
 // __GDCC__FormatK_d
 //
-__GDCC__FormatDecl(K, d, _Accum)
+__GDCC__FormatDefn(K, d, _Accum)
 {
    FormatFixPreU();
    FormatFixCoreD(unsigned, k);
@@ -680,7 +675,7 @@ __GDCC__FormatDecl(K, d, _Accum)
 //
 // __GDCC__FormatK_dh
 //
-__GDCC__FormatDecl(K, dh, short _Accum)
+__GDCC__FormatDefn(K, dh, short _Accum)
 {
    FormatFixPreU();
    FormatFixCoreD(unsigned, k);
@@ -692,7 +687,7 @@ __GDCC__FormatDecl(K, dh, short _Accum)
 //
 // __GDCC__FormatK_dl
 //
-__GDCC__FormatDecl(K, dl, long _Accum)
+__GDCC__FormatDefn(K, dl, long _Accum)
 {
    FormatFixPreU();
    FormatFixCoreD(unsigned, kl);
@@ -704,7 +699,7 @@ __GDCC__FormatDecl(K, dl, long _Accum)
 //
 // __GDCC__FormatU_X
 //
-__GDCC__FormatDecl(U, X, unsigned)
+__GDCC__FormatDefn(U, X, unsigned)
 {
    FormatIntPreU();
    FormatIntCoreX(HexTableU);
@@ -717,7 +712,7 @@ __GDCC__FormatDecl(U, X, unsigned)
 //
 // __GDCC__FormatU_Xl
 //
-__GDCC__FormatDecl(U, Xl, long unsigned)
+__GDCC__FormatDefn(U, Xl, long unsigned)
 {
    FormatIntPreU();
    FormatIntCoreX(HexTableU);
@@ -730,7 +725,7 @@ __GDCC__FormatDecl(U, Xl, long unsigned)
 //
 // __GDCC__FormatU_Xll
 //
-__GDCC__FormatDecl(U, Xll, long long unsigned)
+__GDCC__FormatDefn(U, Xll, long long unsigned)
 {
    FormatIntPreU();
    FormatIntCoreX(HexTableU);
@@ -743,7 +738,7 @@ __GDCC__FormatDecl(U, Xll, long long unsigned)
 //
 // __GDCC__FormatU_b
 //
-__GDCC__FormatDecl(U, b, unsigned)
+__GDCC__FormatDefn(U, b, unsigned)
 {
    FormatIntPreU();
    FormatIntCoreB();
@@ -756,7 +751,7 @@ __GDCC__FormatDecl(U, b, unsigned)
 //
 // __GDCC__FormatU_bl
 //
-__GDCC__FormatDecl(U, bl, long unsigned)
+__GDCC__FormatDefn(U, bl, long unsigned)
 {
    FormatIntPreU();
    FormatIntCoreB();
@@ -769,7 +764,7 @@ __GDCC__FormatDecl(U, bl, long unsigned)
 //
 // __GDCC__FormatU_bll
 //
-__GDCC__FormatDecl(U, bll, long long unsigned)
+__GDCC__FormatDefn(U, bll, long long unsigned)
 {
    FormatIntPreU();
    FormatIntCoreB();
@@ -782,7 +777,7 @@ __GDCC__FormatDecl(U, bll, long long unsigned)
 //
 // __GDCC__FormatU_d
 //
-__GDCC__FormatDecl(U, d, unsigned)
+__GDCC__FormatDefn(U, d, unsigned)
 {
    FormatIntPreU();
    FormatIntCoreD(unsigned);
@@ -794,7 +789,7 @@ __GDCC__FormatDecl(U, d, unsigned)
 //
 // __GDCC__FormatU_dl
 //
-__GDCC__FormatDecl(U, dl, long unsigned)
+__GDCC__FormatDefn(U, dl, long unsigned)
 {
    FormatIntPreU();
    FormatIntCoreD(long unsigned);
@@ -806,7 +801,7 @@ __GDCC__FormatDecl(U, dl, long unsigned)
 //
 // __GDCC__FormatU_dll
 //
-__GDCC__FormatDecl(U, dll, long long unsigned)
+__GDCC__FormatDefn(U, dll, long long unsigned)
 {
    FormatIntPreU();
    FormatIntCoreD(long long unsigned);
@@ -818,7 +813,7 @@ __GDCC__FormatDecl(U, dll, long long unsigned)
 //
 // __GDCC__FormatU_o
 //
-__GDCC__FormatDecl(U, o, unsigned)
+__GDCC__FormatDefn(U, o, unsigned)
 {
    FormatIntPreU();
    FormatIntCoreO();
@@ -830,7 +825,7 @@ __GDCC__FormatDecl(U, o, unsigned)
 //
 // __GDCC__FormatU_ol
 //
-__GDCC__FormatDecl(U, ol, long unsigned)
+__GDCC__FormatDefn(U, ol, long unsigned)
 {
    FormatIntPreU();
    FormatIntCoreO();
@@ -842,7 +837,7 @@ __GDCC__FormatDecl(U, ol, long unsigned)
 //
 // __GDCC__FormatU_oll
 //
-__GDCC__FormatDecl(U, oll, long long unsigned)
+__GDCC__FormatDefn(U, oll, long long unsigned)
 {
    FormatIntPreU();
    FormatIntCoreO();
@@ -854,7 +849,7 @@ __GDCC__FormatDecl(U, oll, long long unsigned)
 //
 // __GDCC__FormatU_x
 //
-__GDCC__FormatDecl(U, x, unsigned)
+__GDCC__FormatDefn(U, x, unsigned)
 {
    FormatIntPreU();
    FormatIntCoreX(HexTableL);
@@ -867,7 +862,7 @@ __GDCC__FormatDecl(U, x, unsigned)
 //
 // __GDCC__FormatU_xl
 //
-__GDCC__FormatDecl(U, xl, long unsigned)
+__GDCC__FormatDefn(U, xl, long unsigned)
 {
    FormatIntPreU();
    FormatIntCoreX(HexTableL);
@@ -880,7 +875,7 @@ __GDCC__FormatDecl(U, xl, long unsigned)
 //
 // __GDCC__FormatU_xll
 //
-__GDCC__FormatDecl(U, xll, long long unsigned)
+__GDCC__FormatDefn(U, xll, long long unsigned)
 {
    FormatIntPreU();
    FormatIntCoreX(HexTableL);
@@ -893,7 +888,7 @@ __GDCC__FormatDecl(U, xll, long long unsigned)
 //
 // __GDCC__FormatX_d
 //
-__GDCC__FormatDecl(X, d, _Accum)
+__GDCC__FormatDefn(X, d, _Accum)
 {
    FormatFixPreS();
    FormatFixCoreD(signed, k);
@@ -906,7 +901,7 @@ __GDCC__FormatDecl(X, d, _Accum)
 //
 // __GDCC__FormatX_dh
 //
-__GDCC__FormatDecl(X, dh, short _Accum)
+__GDCC__FormatDefn(X, dh, short _Accum)
 {
    FormatFixPreS();
    FormatFixCoreD(signed, k);
@@ -919,7 +914,7 @@ __GDCC__FormatDecl(X, dh, short _Accum)
 //
 // __GDCC__FormatX_dl
 //
-__GDCC__FormatDecl(X, dl, long _Accum)
+__GDCC__FormatDefn(X, dl, long _Accum)
 {
    FormatFixPreS();
    FormatFixCoreD(signed, kl);

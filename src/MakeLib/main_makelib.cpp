@@ -59,7 +59,6 @@ static void MakeLib_libGDCC(GDCC::IR::Program &prog)
    GDCC::Core::PathAppend(path, "libGDCC");
 
    MakeLib_CC(prog, path, "alloc.c");
-   MakeLib_CC(prog, path, "format.c");
 
    if(GDCC::Platform::IsFamily_ZDACS())
    {
@@ -93,6 +92,7 @@ static void MakeLib_libc(GDCC::IR::Program &prog)
    MakeLib_CC(prog, path, "ctype.c");
    MakeLib_CC(prog, path, "errno.c");
    MakeLib_CC(prog, path, "exp.c");
+   MakeLib_CC(prog, path, "format.c");
    MakeLib_CC(prog, path, "locale.c");
    MakeLib_CC(prog, path, "math.c");
    MakeLib_CC(prog, path, "printf.c");
