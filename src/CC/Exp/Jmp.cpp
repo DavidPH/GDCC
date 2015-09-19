@@ -17,6 +17,7 @@
 
 #include "AST/Arg.hpp"
 #include "AST/Function.hpp"
+#include "AST/Temporary.hpp"
 #include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -77,11 +78,21 @@ namespace GDCC
       void Exp_JmpSet::v_genStmnt(AST::GenStmntCtx const &ctx, AST::Arg const &dst) const
       {
          // Generate IR arg for env.
-         IR::Arg envArg;
+         AST::Temporary envTmp{ctx, pos};
+         IR::Arg        envArg;
          if(env->getArg().isIRArg())
             envArg = IR::Arg_Sta(env->getArg().getIRArg(ctx.prog));
          else
-            throw Core::ExceptStr(pos, "non-IRArg env stub");
+         {
+            AST::Type::CRef envType = env->getType();
+            envTmp.alloc(envType->getSizeWords());
+            envArg = envTmp.getArg();
+
+            // TODO: Convert AST::Temporary to an AST::Arg to avoid stack op.
+            env->genStmntStk(ctx);
+            ctx.block.addStatementArgs({IR::Code::Move_W, envTmp.size()},
+               envArg, IR::Arg_Stk());
+         }
 
          // Generate dynamic jump target for addr.
          Core::String addrLabel = ctx.fn->genLabel();
