@@ -97,6 +97,9 @@ namespace GDCC
          // getOrigin
          Core::Origin getOrigin() const {return head.pos;}
 
+         // hasLabelPending
+         bool hasLabelPending() const {return !labs.empty();}
+
          // setArgs
          Block &setArgs() {head.args.clear(); return *this;}
 

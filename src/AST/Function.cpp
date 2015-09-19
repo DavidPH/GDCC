@@ -146,7 +146,12 @@ namespace GDCC
          IR::Function fn{glyph};
 
          // Generate statements.
-         if(stmnt) stmnt->genStmnt({fn.block, this, prog});
+         if(stmnt)
+         {
+            stmnt->genStmnt({fn.block, this, prog});
+            if(fn.block.hasLabelPending())
+               fn.block.addStatementArgs({IR::Code::Nop, 0});
+         }
 
          fn.allocAut = allocAut;
          fn.ctype    = IR::GetCallTypeIR(ctype);
