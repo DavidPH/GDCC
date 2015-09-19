@@ -31,7 +31,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -147,7 +147,7 @@ namespace GDCC
       AST::Exp::CRef ExpCreate_Comma(AST::Exp const *l, AST::Exp const *r,
          Core::Origin pos)
       {
-         return AST::Exp_Pair::Create(l, r, pos);
+         return AST::Exp_Pair::Create(l, ExpPromo_LValue(r, pos), pos);
       }
 
       //
