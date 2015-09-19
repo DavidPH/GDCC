@@ -33,7 +33,7 @@
 //
 // jmpbuf
 //
-typedef int jmpbuf[3];
+typedef int jmp_buf[3];
 
 
 //----------------------------------------------------------------------------|
@@ -44,7 +44,7 @@ typedef int jmpbuf[3];
 // Restore calling environment.
 //
 
-_Noreturn void (longjmp)(jmpbuf _env, int _val);
+_Noreturn void (longjmp)(jmp_buf _env, int _val);
 
 #endif//__GDCC_Header__C__setjmp_h__
 

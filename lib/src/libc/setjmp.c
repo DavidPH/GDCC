@@ -24,7 +24,7 @@
 //
 // longjmp
 //
-_Noreturn void (longjmp)(jmpbuf env, int val)
+_Noreturn void (longjmp)(jmp_buf env, int val)
 {
    if(!val)
       val = 1;
