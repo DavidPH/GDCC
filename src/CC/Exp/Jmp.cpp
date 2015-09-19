@@ -86,12 +86,12 @@ namespace GDCC
          {
             AST::Type::CRef envType = env->getType();
             envTmp.alloc(envType->getSizeWords());
-            envArg = envTmp.getArg();
+            envArg = IR::Arg_Sta(envTmp.getArg());
 
-            // TODO: Convert AST::Temporary to an AST::Arg to avoid stack op.
+            // TODO: Convert envTmp to an AST::Arg to avoid stack op.
             env->genStmntStk(ctx);
             ctx.block.addStatementArgs({IR::Code::Move_W, envTmp.size()},
-               envArg, IR::Arg_Stk());
+               envTmp.getArg(), IR::Arg_Stk());
          }
 
          // Generate dynamic jump target for addr.
