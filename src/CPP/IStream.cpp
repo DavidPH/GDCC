@@ -15,9 +15,39 @@
 #include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
 #include "Core/Token.hpp"
+#include "Core/Warning.hpp"
 
 #include <cctype>
 #include <iostream>
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+namespace GDCC
+{
+   namespace CPP
+   {
+      //
+      // --warn-unknown-encoding-prefix
+      //
+      static Core::Warning WarnUnknownEncodingPrefix
+         {&Core::WarnExtra, "--warn-unknown-encoding-prefix"};
+      static Core::WarnOpt WarnUnknownEncodingPrefixOpt
+      {
+         &Core::GetWarnOptList(), Option::Base::Info()
+            .setName("warn-unknown-encoding-prefix")
+            .setGroup("warnings")
+            .setDescS("Warns about unknown encoding prefixes.")
+            .setDescL("Warns when an unknown encoding prefix is encountered "
+               "and taken as a separate identifier.\n\n"
+               "Enabled by --warn-extra."),
+
+         &WarnUnknownEncodingPrefix
+      };
+   }
+}
 
 
 //----------------------------------------------------------------------------|
@@ -35,12 +65,38 @@ namespace GDCC
       {
          return std::isalnum(c) || c == '_' || c > 0x80;
       }
+
+      //
+      // ReadString
+      //
+      static IStream &ReadString(IStream &in, Core::Token &out,
+         std::string &str, int c)
+      {
+         // Parse character/string.
+         auto hold = in.holdComments();
+
+         in.unget();
+
+         try
+         {
+            str    += Core::ReadStringC(in, c);
+            out.str = {str.data(), str.size()};
+            out.tok = c == '"' ? Core::TOK_String : Core::TOK_Charac;
+
+            return in;
+         }
+         catch(Core::ParseException &e)
+         {
+            e.setOrigin(out.pos);
+            throw;
+         }
+      }
    }
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -239,23 +295,8 @@ namespace GDCC
          // Quoted string/character token.
          if(c == '"' || c == '\'')
          {
-            auto hold = in.holdComments();
-
-            in.unget();
-
-            try
-            {
-               std::string str = Core::ReadStringC(in, c);
-               out.str = {str.data(), str.size()};
-               out.tok = c == '"' ? Core::TOK_String : Core::TOK_Charac;
-
-               return in;
-            }
-            catch(Core::ParseException &e)
-            {
-               e.setOrigin(out.pos);
-               throw;
-            }
+            std::string str;
+            return ReadString(in, out, str, c);
          }
 
          // Number token.
@@ -279,26 +320,26 @@ namespace GDCC
             while((c = in.get()) != EOF && IsIdentiChar(c));
 
             // Character/string with encoding prefix.
-            if(c == '"' || c == '\'')
+            if(c == '"')
             {
-               // Parse character/string.
-               auto hold = in.holdComments();
+               if(str == "L" || str == "U" || str == "u" || str == "u8" ||
+                  str == "c" || str == "s")
+                  return ReadString(in, out, str, c);
+
+               WarnUnknownEncodingPrefix(out.pos,
+                  "splitting unknown string prefix: ", str);
 
                in.unget();
+            }
+            else if(c == '\'')
+            {
+               if(str == "L" || str == "U" || str == "u")
+                  return ReadString(in, out, str, c);
 
-               try
-               {
-                  str    += Core::ReadStringC(in, c);
-                  out.str = {str.data(), str.size()};
-                  out.tok = c == '"' ? Core::TOK_String : Core::TOK_Charac;
+               WarnUnknownEncodingPrefix(out.pos,
+                  "splitting unknown character prefix: ", str);
 
-                  return in;
-               }
-               catch(Core::ParseException &e)
-               {
-                  e.setOrigin(out.pos);
-                  throw;
-               }
+               in.unget();
             }
             else if(c != EOF)
                in.unget();
