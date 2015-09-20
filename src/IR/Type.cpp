@@ -117,36 +117,43 @@ namespace GDCC
       //
       Core::Integ &Type_Fixed::clamp(Core::Integ &value)
       {
-         Core::Integ max = 1; max <<= bitsF + bitsI;
+         Core::Integ max = 1; max <<= bitsF + bitsI; --max;
 
          if(bitsS)
          {
-            Core::Integ min = -max;
+            Core::Integ min = -max; --min;
 
             if(satur)
             {
-               if(value >= max) value = max, --value;
-               if(value <  min) value = min;
+                    if(value > max) value = max;
+               else if(value < min) value = min;
             }
-            else
+            else if(value > max || value < min)
             {
-               Core::Integ rng = max - min;
+               Core::FastU bit = bitsF + bitsI;
 
-               while(value >= max) value -= rng;
-               while(value <  min) value += rng;
+               max <<= 1; ++max;
+
+               value &= max;
+
+               if(mpz_tstbit(value.get_mpz_t(), bit))
+               {
+                  value ^= max;
+                  ++value;
+                  value = -value;
+               }
             }
          }
          else
          {
             if(satur)
             {
-               if(value >= max) value = max, --value;
-               if(value <  0)   value = 0;
+                    if(value > max) value = max;
+               else if(value < 0)   value = 0;
             }
             else
             {
-               while(value >= max) value -= max;
-               while(value <  0)   value += max;
+               value &= max;
             }
          }
 
