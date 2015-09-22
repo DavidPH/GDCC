@@ -41,6 +41,17 @@ namespace GDCC
                backGlyphWord("___GDCC__Sta", space->value);
                break;
 
+            case IR::AddrBase::GblArr:
+            case IR::AddrBase::WldArr:
+               // Even external arrays need an index.
+               if(space->alloc)
+                  space->allocValue(getAllocSpace(space->space.base));
+
+               // Back address glyph.
+               backGlyphWord(space->glyph, space->value);
+
+               break;
+
             case IR::AddrBase::LocArr:
                // Back address glyph.
                if(!space->alloc)
@@ -51,22 +62,8 @@ namespace GDCC
                // Even external arrays need an index.
                if(space->alloc)
                {
-                  space->allocValue(*prog, [](IR::Program &prog, IR::Space &space)
-                  {
-                     for(auto const &itr : prog.rangeObject())
-                     {
-                        if(itr.space.base != IR::AddrBase::MapReg) continue;
-                        if(itr.alloc) continue;
-
-                        auto lo = itr.value;
-                        auto hi = itr.words + lo;
-
-                        if(lo <= space.value && space.value < hi)
-                           return true;
-                     }
-
-                     return false;
-                  });
+                  space->allocValue(getAllocSpace(space->space.base));
+                  getAllocObj({IR::AddrBase::MapReg, Core::STR_}).allocAt(1, space->value);
                }
 
                if(space->defin)
@@ -78,27 +75,6 @@ namespace GDCC
                }
                else
                   ++numChunkAIMP;
-
-               // Back address glyph.
-               backGlyphWord(space->glyph, space->value);
-
-               break;
-
-            case IR::AddrBase::GblArr:
-               // Even external arrays need an index.
-               if(space->alloc)
-                  space->allocValue(*prog, [](IR::Program &, IR::Space &space)
-                     {return space.value == StaArray;});
-
-               // Back address glyph.
-               backGlyphWord(space->glyph, space->value);
-
-               break;
-
-            case IR::AddrBase::WldArr:
-               // Even external arrays need an index.
-               if(space->alloc)
-                  space->allocValue(*prog);
 
                // Back address glyph.
                backGlyphWord(space->glyph, space->value);

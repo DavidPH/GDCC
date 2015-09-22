@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,11 +15,12 @@
 #include "IR/IArchive.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/OArchive.hpp"
-#include "IR/Program.hpp"
+
+#include "Core/NumberAlloc.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -44,38 +45,9 @@ namespace GDCC
       //
       // Space::allocValue
       //
-      void Space::allocValue(Program &prog, bool (*test)(Program &, Space &))
+      void Space::allocValue(Core::NumberAllocMerge<Core::FastU> &allocator)
       {
-         Program::TableRange<Space> range;
-
-         switch(space.base)
-         {
-         case AddrBase::GblArs:
-         case AddrBase::GblArr: range = prog.rangeSpaceGblArs(); break;
-         case AddrBase::MapArs:
-         case AddrBase::MapArr: range = prog.rangeSpaceMapArs(); break;
-         case AddrBase::WldArs:
-         case AddrBase::WldArr: range = prog.rangeSpaceWldArs(); break;
-
-         default:
-            return;
-         }
-
-         for(;; ++value)
-         {
-            for(auto const &itr : range)
-            {
-               if(!itr.alloc && &itr != this && itr.value == value)
-                  goto nextValue;
-            }
-
-            if(test && test(prog, *this))
-               goto nextValue;
-
-            break;
-
-         nextValue:;
-         }
+         value = allocator.alloc(1, value);
 
          alloc = false;
       }

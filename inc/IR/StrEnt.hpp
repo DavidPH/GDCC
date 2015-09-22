@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,6 +23,12 @@
 
 namespace GDCC
 {
+   namespace Core
+   {
+      template<typename T>
+      class NumberAllocMerge;
+   }
+
    namespace IR
    {
       class IArchive;
@@ -37,7 +43,7 @@ namespace GDCC
       public:
          explicit StrEnt(Core::String glyph);
 
-         void allocValue(Program &prog);
+         void allocValue(Program &prog, Core::NumberAllocMerge<Core::FastU> &allocator);
 
          Core::String glyph;
          Core::FastU  valueInt;
@@ -52,7 +58,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

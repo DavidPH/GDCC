@@ -31,6 +31,8 @@ namespace GDCC
          //
          void Info::gen()
          {
+            prog->genObjectBySpace();
+
             InfoBase::gen();
 
             for(auto &itr : prog->rangeSpaceGblArs()) genSpaceIniti(itr);
@@ -49,7 +51,7 @@ namespace GDCC
          void Info::genDJump()
          {
             if(djump->alloc)
-               djump->allocValue(*prog);
+               djump->allocValue(getAllocDJump());
 
             if(numChunkJUMP <= djump->value)
                numChunkJUMP = djump->value + 1;
@@ -62,24 +64,6 @@ namespace GDCC
          //
          void Info::genFunc()
          {
-            static IR::CallType const FuncTypes[] =
-            {
-               IR::CallType::StdCall,
-               IR::CallType::StkCall,
-            };
-
-            static IR::CallType const ScriptTypesI[] =
-            {
-               IR::CallType::SScriptI,
-               IR::CallType::ScriptI,
-            };
-
-            static IR::CallType const ScriptTypesS[] =
-            {
-               IR::CallType::SScriptS,
-               IR::CallType::ScriptS,
-            };
-
             // Back label glyph.
             backGlyphWord(func->label, CodeBase() + numChunkCODE);
 
@@ -98,7 +82,7 @@ namespace GDCC
             case IR::CallType::StdCall:
             case IR::CallType::StkCall:
                if(func->alloc)
-                  func->allocValue(*prog, FuncTypes);
+                  func->allocValue(getAllocFunc(func->ctype));
 
                if(numChunkFUNC <= func->valueInt)
                   numChunkFUNC = func->valueInt + 1;
@@ -115,7 +99,7 @@ namespace GDCC
                if(!func->defin) break;
 
                if(func->alloc)
-                  func->allocValue(*prog, ScriptTypesI);
+                  func->allocValue(getAllocFunc(func->ctype));
 
                ++numChunkSPTR;
 
@@ -131,7 +115,7 @@ namespace GDCC
                if(!func->defin) break;
 
                if(func->alloc)
-                  func->allocValue(*prog, ScriptTypesS);
+                  func->allocValue(getAllocFunc(func->ctype));
 
                ++numChunkSPTR;
 
@@ -169,25 +153,14 @@ namespace GDCC
             case IR::AddrBase::WldArr:
             case IR::AddrBase::WldReg:
                if(obj->alloc)
-                  obj->allocValue(*prog);
+                  obj->allocValue(getAllocObj(obj->space));
                break;
 
             case IR::AddrBase::MapReg:
                if(obj->alloc)
                {
-                  obj->allocValue(*prog, [](IR::Program &prog, IR::Object &obj)
-                  {
-                     auto lo = obj.value;
-                     auto hi = obj.words + lo;
-
-                     for(auto const &itr : prog.rangeSpaceMapArs())
-                     {
-                        if(lo <= itr.value && itr.value < hi)
-                           return true;
-                     }
-
-                     return false;
-                  });
+                  obj->allocValue(getAllocObj(obj->space));
+                  getAllocSpace(IR::AddrBase::MapArr).allocAt(obj->words, obj->value);
                }
 
                if(!obj->defin)
@@ -223,7 +196,7 @@ namespace GDCC
             if(!str->defin) return;
 
             if(str->alloc)
-               str->allocValue(*prog);
+               str->allocValue(*prog, getAllocStrEnt());
 
             // Back address glyph.
             backGlyphStr(str->glyph, str->valueInt);

@@ -23,11 +23,16 @@
 
 namespace GDCC
 {
+   namespace Core
+   {
+      template<typename T>
+      class NumberAllocMerge;
+   }
+
    namespace IR
    {
       class IArchive;
       class OArchive;
-      class Program;
 
       //
       // DJump
@@ -37,7 +42,7 @@ namespace GDCC
       public:
          explicit DJump(Core::String glyph);
 
-         void allocValue(Program &prog);
+         void allocValue(Core::NumberAllocMerge<Core::FastU> &allocator);
 
          Core::String glyph;
          Core::String label;

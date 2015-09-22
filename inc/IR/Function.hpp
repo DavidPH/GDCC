@@ -24,12 +24,17 @@
 
 namespace GDCC
 {
+   namespace Core
+   {
+      template<typename T>
+      class NumberAllocMerge;
+   }
+
    namespace IR
    {
       enum class CallType;
       enum class Linkage;
       enum class ScriptType;
-      class Program;
 
       //
       // Function
@@ -42,14 +47,7 @@ namespace GDCC
       public:
          explicit Function(Core::String glyph);
 
-         void allocValue(Program &prog, CallType ctypeVec)
-            {allocValue(prog, &ctypeVec, 1);}
-
-         template<std::size_t ctypeLen>
-         void allocValue(Program &prog, CallType const (&ctypeVec)[ctypeLen])
-            {allocValue(prog, ctypeVec, ctypeLen);}
-
-         void allocValue(Program &prog, CallType const *ctypeVec, std::size_t ctypeLen);
+         void allocValue(Core::NumberAllocMerge<Core::FastU> &allocator);
 
          Core::FastU getLocalReg() const {return localReg + localTmp;}
 

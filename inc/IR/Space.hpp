@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,6 +24,12 @@
 
 namespace GDCC
 {
+   namespace Core
+   {
+      template<typename T>
+      class NumberAllocMerge;
+   }
+
    namespace IR
    {
       enum class Linkage;
@@ -37,7 +43,7 @@ namespace GDCC
       public:
          explicit Space(AddrSpace as);
 
-         void allocValue(Program &prog, bool (*test)(Program &, Space &) = nullptr);
+         void allocValue(Core::NumberAllocMerge<Core::FastU> &allocator);
 
          Core::String glyph;
          Linkage      linka;
@@ -53,7 +59,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

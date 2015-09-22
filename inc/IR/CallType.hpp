@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -38,9 +38,21 @@ namespace GDCC
    }
 }
 
+namespace std
+{
+   //
+   // hash<::GDCC::IR::CallType>
+   //
+   template<> struct hash<::GDCC::IR::CallType>
+   {
+      size_t operator () (::GDCC::IR::CallType ctype) const
+         {return static_cast<size_t>(ctype);}
+   };
+}
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

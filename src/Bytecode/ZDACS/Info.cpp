@@ -327,6 +327,133 @@ namespace GDCC
          }
 
          //
+         // Info::getAllocDJump
+         //
+         Core::NumberAllocMerge<Core::FastU> &Info::getAllocDJump()
+         {
+           if(allocDJump)
+              return *allocDJump;
+
+           allocDJump.reset(new Core::NumberAllocMerge<Core::FastU>);
+
+            for(auto const &j : prog->rangeDJump())
+               if(!j.alloc) allocDJump->allocAt(1, j.value);
+
+           return *allocDJump;
+         }
+
+         //
+         // Info::getAllocFunc
+         //
+         Core::NumberAllocMerge<Core::FastU> &Info::getAllocFunc(IR::CallType call)
+         {
+            auto trans = [](IR::CallType call)
+            {
+               switch(call)
+               {
+               case IR::CallType::StdCall:  return IR::CallType::StkCall;
+               case IR::CallType::SScriptI: return IR::CallType::ScriptI;
+               case IR::CallType::SScriptS: return IR::CallType::ScriptS;
+               default:                     return call;
+               }
+            };
+
+            IR::CallType ctype = trans(call);
+
+            if(allocFunc.count(ctype))
+               return allocFunc[ctype];
+
+            auto &alloc = allocFunc[ctype];
+
+            for(auto const &fn : prog->rangeFunction())
+               if(!fn.alloc && trans(fn.ctype) == ctype) alloc.allocAt(1, fn.valueInt);
+
+            return alloc;
+         }
+
+         //
+         // Info::getAllocObj
+         //
+         Core::NumberAllocMerge<Core::FastU> &Info::getAllocObj(IR::AddrSpace addr)
+         {
+            if(allocObj.count(addr))
+               return allocObj[addr];
+
+            auto &alloc = allocObj[addr];
+
+            for(auto const &ob : prog->rangeObjectBySpace(addr))
+               if(!ob->alloc) alloc.allocAt(ob->words, ob->value);
+
+            if(addr.base == IR::AddrBase::MapReg)
+            {
+               auto &as = getAllocSpace(addr.base);
+               for(auto const &ob : prog->rangeObjectBySpace(addr))
+                  if(!ob->alloc) as.allocAt(ob->words, ob->value);
+            }
+
+            return alloc;
+         }
+
+         //
+         // Info::getAllocSpace
+         //
+         Core::NumberAllocMerge<Core::FastU> &Info::getAllocSpace(IR::AddrBase addr)
+         {
+            if(allocSpace.count(addr))
+               return allocSpace[addr];
+
+            auto &alloc = allocSpace[addr];
+
+            switch(addr)
+            {
+            case IR::AddrBase::GblArr:
+               for(auto const &sp : prog->rangeSpaceGblArs())
+                  if(!sp.alloc) alloc.allocAt(1, sp.value);
+
+               alloc.allocAt(1, StaArray);
+               break;
+
+            case IR::AddrBase::MapArr:
+               for(auto const &sp : prog->rangeSpaceMapArs())
+                  if(!sp.alloc) alloc.allocAt(1, sp.value);
+
+               {
+                  auto &ao = getAllocObj({IR::AddrBase::MapReg, Core::STR_});
+                  for(auto const &sp : prog->rangeSpaceMapArs())
+                     if(!sp.alloc) ao.allocAt(1, sp.value);
+               }
+
+               break;
+
+            case IR::AddrBase::WldArr:
+               for(auto const &sp : prog->rangeSpaceWldArs())
+                  if(!sp.alloc) alloc.allocAt(1, sp.value);
+               break;
+
+            default:
+               break;
+            }
+
+            return alloc;
+         }
+
+         //
+         // Info::getAllocStrEnt
+         //
+         Core::NumberAllocMerge<Core::FastU> &Info::getAllocStrEnt()
+         {
+           if(allocStrEnt)
+              return *allocStrEnt;
+
+           allocStrEnt.reset(new Core::NumberAllocMerge<Core::FastU>);
+
+            for(auto const &s : prog->rangeStrEnt())
+               if(!s.alloc) allocStrEnt->allocAt(1, s.valueInt);
+
+           return *allocStrEnt;
+         }
+
+         //
          // Info::getCallName
          //
          Core::String Info::getCallName()

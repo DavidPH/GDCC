@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,11 +16,13 @@
 #include "IR/OArchive.hpp"
 #include "IR/Program.hpp"
 
+#include "Core/NumberAlloc.hpp"
+
 #include "Platform/Alloc.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -44,9 +46,10 @@ namespace GDCC
       //
       // StrEnt::allocValue
       //
-      void StrEnt::allocValue(Program &prog)
+      void StrEnt::allocValue(Program &prog, Core::NumberAllocMerge<Core::FastU> &allocator)
       {
          Core::FastU allocMin = Platform::GetAllocMin_StrEn();
+
          if(valueInt < allocMin)
             valueInt = allocMin;
 
@@ -63,18 +66,7 @@ namespace GDCC
          }
 
          // Otherwise, run allocation.
-         for(;; ++valueInt)
-         {
-            for(auto const &itr : prog.rangeStrEnt())
-            {
-               if(&itr != this && !itr.alloc && itr.valueInt == valueInt)
-                  goto nextValue;
-            }
-
-            break;
-
-         nextValue:;
-         }
+         valueInt = allocator.alloc(1, valueInt);
 
          alloc = false;
       }

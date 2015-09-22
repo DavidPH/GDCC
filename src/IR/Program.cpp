@@ -23,54 +23,58 @@
 // Static Functions                                                           |
 //
 
-//
-// FindTable
-//
-template<typename T>
-static T *FindTable(GDCC::IR::Program::Table<T> &table, GDCC::Core::String glyph)
+namespace GDCC
 {
-   auto itr = table.find(glyph);
-   return itr == table.end() ? nullptr : &itr->second;
-}
-
-//
-// GetTable
-//
-template<typename T, typename... Args>
-static T &GetTable(GDCC::IR::Program::Table<T> &table, GDCC::Core::String glyph,
-   Args &&...args)
-{
-   auto itr = table.find(glyph);
-
-   if(itr == table.end())
+   namespace IR
    {
-      itr = table.emplace(std::piecewise_construct,
-         std::forward_as_tuple(glyph),
-         std::forward_as_tuple(std::forward<Args>(args)...)
-         ).first;
+      //
+      // FindTable
+      //
+      template<typename T>
+      static T *FindTable(Program::Table<T> &table, Core::String glyph)
+      {
+         auto itr = table.find(glyph);
+         return itr == table.end() ? nullptr : &itr->second;
+      }
+
+      //
+      // GetTable
+      //
+      template<typename T, typename... Args>
+      static T &GetTable(Program::Table<T> &table, Core::String glyph,
+         Args &&...args)
+      {
+         auto itr = table.find(glyph);
+
+         if(itr == table.end())
+         {
+            itr = table.emplace(std::piecewise_construct,
+               std::forward_as_tuple(glyph),
+               std::forward_as_tuple(std::forward<Args>(args)...)
+               ).first;
+         }
+
+         return itr->second;
+      }
+
+      //
+      // RangeTable
+      //
+      template<typename T>
+      static Program::TableRange<T> RangeTable(Program::Table<T> &table)
+      {
+         return {table.begin(), table.end()};
+      }
+
+      //
+      // RangeTable
+      //
+      template<typename T>
+      static Program::TableCRange<T> RangeTable(Program::Table<T> const &table)
+      {
+         return {table.begin(), table.end()};
+      }
    }
-
-   return itr->second;
-}
-
-//
-// RangeTable
-//
-template<typename T>
-static GDCC::IR::Program::TableRange<T>
-RangeTable(GDCC::IR::Program::Table<T> &table)
-{
-   return {table.begin(), table.end()};
-}
-
-//
-// RangeTable
-//
-template<typename T>
-static GDCC::IR::Program::TableCRange<T>
-RangeTable(GDCC::IR::Program::Table<T> const &table)
-{
-   return {table.begin(), table.end()};
 }
 
 
@@ -91,6 +95,7 @@ namespace GDCC
          spaceSta   {AddrSpace(AddrBase::Sta,    Core::STR_)},
          spaceWldReg{AddrSpace(AddrBase::WldReg, Core::STR_)}
       {
+         tableObjectBySpace[{AddrBase::Sta, Core::STR_}];
       }
 
       //
@@ -216,6 +221,18 @@ namespace GDCC
          }
 
          return nullptr;
+      }
+
+      //
+      // Program::genObjectBySpace
+      //
+      void Program::genObjectBySpace()
+      {
+         tableObjectBySpace.clear();
+         tableObjectBySpace[{AddrBase::Sta, Core::STR_}];
+
+         for(auto &obj : rangeObject())
+            tableObjectBySpace[obj.space][obj.glyph] = &obj;
       }
 
       //
@@ -628,6 +645,19 @@ namespace GDCC
       auto Program::rangeStrEnt() const -> TableCRange<StrEnt>
       {
          return RangeTable(tableStrEnt);
+      }
+
+      //
+      // Program::rangeObjectBySpace
+      //
+      auto Program::rangeObjectBySpace(AddrSpace as) const -> TableCRange<Object const *>
+      {
+         auto itr = tableObjectBySpace.find(as);
+         if(itr != tableObjectBySpace.end())
+            return RangeTable(itr->second);
+
+         itr = tableObjectBySpace.find({IR::AddrBase::Sta, Core::STR_});
+         return {itr->second.end(), itr->second.end()};
       }
 
       //

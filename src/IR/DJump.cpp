@@ -14,7 +14,8 @@
 
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
-#include "IR/Program.hpp"
+
+#include "Core/NumberAlloc.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -41,20 +42,9 @@ namespace GDCC
       //
       // DJump::allocValue
       //
-      void DJump::allocValue(Program &prog)
+      void DJump::allocValue(Core::NumberAllocMerge<Core::FastU> &allocator)
       {
-         for(;; ++value)
-         {
-            for(auto const &itr : prog.rangeDJump())
-            {
-               if(&itr != this && !itr.alloc && itr.value == value)
-                  goto nextValue;
-            }
-
-            break;
-
-         nextValue:;
-         }
+         value = allocator.alloc(1, value);
 
          alloc = false;
       }

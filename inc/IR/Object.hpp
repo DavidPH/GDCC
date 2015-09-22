@@ -25,12 +25,17 @@
 
 namespace GDCC
 {
+   namespace Core
+   {
+      template<typename T>
+      class NumberAllocMerge;
+   }
+
    namespace IR
    {
       enum class Linkage;
 
       class Exp;
-      class Program;
 
       //
       // Object
@@ -44,7 +49,7 @@ namespace GDCC
          explicit Object(Core::String name);
          ~Object();
 
-         void allocValue(Program &prog, bool (*test)(Program &, Object &) = nullptr);
+         void allocValue(Core::NumberAllocMerge<Core::FastU> &allocator);
 
          Core::String glyph;
          ExpCPtr      initi;

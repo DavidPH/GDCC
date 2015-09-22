@@ -18,6 +18,10 @@
 #include "../../Core/Array.hpp"
 #include "../../Core/Counter.hpp"
 #include "../../Core/Number.hpp"
+#include "../../Core/NumberAlloc.hpp"
+
+#include "../../IR/Addr.hpp"
+#include "../../IR/CallType.hpp"
 
 #include <unordered_map>
 
@@ -183,6 +187,12 @@ namespace GDCC
             void genStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
             virtual void genStr();
+
+            Core::NumberAllocMerge<Core::FastU> &getAllocDJump();
+            Core::NumberAllocMerge<Core::FastU> &getAllocFunc(IR::CallType call);
+            Core::NumberAllocMerge<Core::FastU> &getAllocObj(IR::AddrSpace addr);
+            Core::NumberAllocMerge<Core::FastU> &getAllocSpace(IR::AddrBase addr);
+            Core::NumberAllocMerge<Core::FastU> &getAllocStrEnt();
 
             Core::String getCallName();
             Core::String getCallName(IR::OpCode op);
@@ -451,6 +461,12 @@ namespace GDCC
             bool trStmntShift(bool moveLit = false);
             void trStmntStk2(Core::FastU sizeDst, Core::FastU sizeSrc);
             void trStmntStk3(Core::FastU sizeDst, Core::FastU sizeSrc, bool ordered);
+
+            std::unique_ptr<Core::NumberAllocMerge<Core::FastU>> allocDJump;
+            std::unordered_map<IR::CallType, Core::NumberAllocMerge<Core::FastU>> allocFunc;
+            std::unordered_map<IR::AddrSpace, Core::NumberAllocMerge<Core::FastU>> allocObj;
+            std::unordered_map<IR::AddrBase, Core::NumberAllocMerge<Core::FastU>> allocSpace;
+            std::unique_ptr<Core::NumberAllocMerge<Core::FastU>> allocStrEnt;
 
             std::unordered_map<IR::Space const *, InitData> init;
 

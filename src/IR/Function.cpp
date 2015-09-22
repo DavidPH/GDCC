@@ -16,8 +16,9 @@
 #include "IR/Linkage.hpp"
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
-#include "IR/Program.hpp"
 #include "IR/ScriptType.hpp"
+
+#include "Core/NumberAlloc.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -57,24 +58,9 @@ namespace GDCC
       //
       // Function::allocValue
       //
-      void Function::allocValue(Program &prog, CallType const *ctypeVec,
-         std::size_t ctypeLen)
+      void Function::allocValue(Core::NumberAllocMerge<Core::FastU> &allocator)
       {
-         for(;; ++valueInt)
-         {
-            for(auto const &func : prog.rangeFunction())
-            {
-               if(&func != this && !func.alloc && func.valueInt == valueInt)
-               {
-                  for(auto ctypeItr : Core::MakeRange(ctypeVec, ctypeVec + ctypeLen))
-                     if(func.ctype == ctypeItr) goto nextValue;
-               }
-            }
-
-            break;
-
-         nextValue:;
-         }
+         valueInt = allocator.alloc(1, valueInt);
 
          alloc = false;
       }

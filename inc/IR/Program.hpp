@@ -73,6 +73,8 @@ namespace GDCC
          StrEnt    *findStrEnt     (Core::String glyph);
          StrEnt    *findStrEntVal  (Core::String value);
 
+         void genObjectBySpace();
+
          DJump     &getDJump      (Core::String glyph);
          Function  &getFunction   (Core::String glyph);
          GlyphData &getGlyphData  (Core::String glyph);
@@ -118,6 +120,8 @@ namespace GDCC
          TableRange <StrEnt>    rangeStrEnt     ();
          TableCRange<StrEnt>    rangeStrEnt     () const;
 
+         TableCRange<Object const *> rangeObjectBySpace(AddrSpace as) const;
+
          std::size_t sizeDJump()       const;
          std::size_t sizeFunction()    const;
          std::size_t sizeGlyphData()   const;
@@ -145,6 +149,8 @@ namespace GDCC
          Table<Space>     tableSpaceMapArs;
          Table<Space>     tableSpaceWldArs;
          Table<StrEnt>    tableStrEnt;
+
+         std::unordered_map<AddrSpace, Table<Object const *>> tableObjectBySpace;
 
          Space spaceGblReg;
          Space spaceMapReg;

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,14 +16,15 @@
 #include "IR/IArchive.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/OArchive.hpp"
-#include "IR/Program.hpp"
+
+#include "Core/NumberAlloc.hpp"
 
 #include "Platform/Alloc.hpp"
 #include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -57,46 +58,14 @@ namespace GDCC
       //
       // Object::allocValue
       //
-      void Object::allocValue(Program &prog, bool (*test)(Program &, Object &))
+      void Object::allocValue(Core::NumberAllocMerge<Core::FastU> &allocator)
       {
          auto valueMin = Platform::GetAllocMin(space);
 
          if(value < valueMin)
             value = valueMin;
 
-         auto objRange = prog.rangeObject();
-
-         for(;;)
-         {
-            auto lo = value;
-            auto hi = words + lo;
-
-            for(auto const &obj : objRange)
-            {
-               if(obj.alloc || &obj == this || obj.space != space)
-                  continue;
-
-               auto objLo = obj.value;
-               auto objHi = obj.words + objLo;
-
-               if((objLo <= lo && lo < objHi) || (objLo < hi && hi < objHi) ||
-                  (lo <= objLo && objLo < hi) || (lo < objHi && objHi < hi))
-               {
-                  value = objHi;
-                  goto nextValue;
-               }
-            }
-
-            if(test && test(prog, *this))
-            {
-               ++value;
-               goto nextValue;
-            }
-
-            break;
-
-         nextValue:;
-         }
+         value = allocator.alloc(words, value);
 
          alloc = false;
       }

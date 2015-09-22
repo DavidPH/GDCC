@@ -65,6 +65,15 @@ namespace GDCC
 namespace std
 {
    //
+   // hash<::GDCC::IR::AddrBase>
+   //
+   template<> struct hash<::GDCC::IR::AddrBase>
+   {
+      size_t operator () (::GDCC::IR::AddrBase base) const
+         {return static_cast<size_t>(base);}
+   };
+
+   //
    // hash<::GDCC::IR::AddrSpace>
    //
    template<> struct hash<::GDCC::IR::AddrSpace>
@@ -76,7 +85,7 @@ namespace std
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
