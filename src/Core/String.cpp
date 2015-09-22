@@ -13,7 +13,6 @@
 #include "Core/String.hpp"
 
 #include <cstring>
-#include <iostream>
 #include <vector>
 
 
@@ -23,7 +22,7 @@
 
 static std::vector<std::unique_ptr<char[]>> StringTableAlloc;
 
-static constexpr std::size_t StringTableHashC = 256;
+static constexpr std::size_t StringTableHashC = 1024;
 static std::size_t StringTableHash[StringTableHashC];
 
 static std::vector<GDCC::Core::StringData> StringTable =
@@ -37,7 +36,7 @@ static std::vector<GDCC::Core::StringData> StringTable =
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Variables                                                           |
 //
 
 namespace GDCC
@@ -51,7 +50,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -223,15 +222,6 @@ namespace GDCC
          if(!str) return STRNULL;
 
          if(auto s = Find(str, len, hash)) return s;
-
-         // Look for compatible substrings.
-         for(auto const &data : StringTable)
-         {
-            if(data.len <= len) continue;
-
-            if(std::memcmp(data.str + (data.len - len), str, len) == 0)
-               return Add(data.str + (data.len - len), len, hash);
-         }
 
          return Add(StrDup(str, len), len, hash);
       }
