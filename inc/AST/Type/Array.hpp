@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,7 +39,8 @@ namespace GDCC
          virtual Core::FastU getSizeShift() const {return base->getSizeShift();}
 
          // Type classification.
-         virtual bool isTypeArray() const {return true;}
+         virtual bool isTypeComplete() const;
+         virtual bool isTypeArray()    const {return true;}
 
          virtual bool isCTypeAggregat() const {return true;}
          virtual bool isCTypeObject()   const {return true;}
@@ -68,9 +69,8 @@ namespace GDCC
          virtual ExpCRef getSizeWordsVM() const;
 
          // Type classification.
-         virtual bool isTypeComplete() const {return true;}
-         virtual bool isTypeSizeVM()   const {return true;}
-         virtual bool isTypeVM()       const {return true;}
+         virtual bool isTypeSizeVM() const {return true;}
+         virtual bool isTypeVM()     const {return true;}
 
 
          friend Type::CRef Type::getTypeArray(Exp const *size) const;
@@ -133,9 +133,8 @@ namespace GDCC
          virtual ExpCRef     getSizeWordsVM() const;
 
          // Type classification.
-         virtual bool isTypeComplete() const {return true;}
-         virtual bool isTypeSizeVM()   const;
-         virtual bool isTypeVM()       const;
+         virtual bool isTypeSizeVM() const;
+         virtual bool isTypeVM()     const;
 
 
          friend Type::CRef Type::getTypeArray(Core::FastU size) const;
@@ -164,8 +163,9 @@ namespace GDCC
          virtual Type::CRef getTypeArrayQualAddr(IR::AddrSpace addr) const;
 
          // Type classification.
-         virtual bool isTypeSizeVM() const;
-         virtual bool isTypeVM()     const;
+         virtual bool isTypeComplete() const {return false;}
+         virtual bool isTypeSizeVM()   const;
+         virtual bool isTypeVM()       const;
 
 
          friend Type::CRef Type::getTypeArray() const;

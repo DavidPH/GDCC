@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,7 +20,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -82,6 +82,14 @@ namespace GDCC
 
          // Otherwise, create one and return it.
          return static_cast<CRef>(new Type_ArrVM(this, size));
+      }
+
+      //
+      // Type_ArrBase::isTypeComplete
+      //
+      bool Type_ArrBase::isTypeComplete() const
+      {
+         return base->isTypeComplete();
       }
 
       //
