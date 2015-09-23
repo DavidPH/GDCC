@@ -27,7 +27,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -160,6 +160,10 @@ namespace GDCC
             AST::TypeQual quals  = attr.type->getQualAddr();
             bool          isQual = false;
             bool          isStat = false;
+
+            // Element type must be complete.
+            if(!attr.type->isTypeComplete())
+               throw Core::ExceptStr(in.reget().pos, "incomplete element type");
 
             // type-qualifier-list(opt)
             if(isTypeQual(scope))
