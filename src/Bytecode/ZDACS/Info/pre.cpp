@@ -42,6 +42,9 @@ namespace GDCC
             default: break;
             }
 
+            if(func->defin && func->allocAut)
+               preStmntCall("___GDCC__Plsa", 1, 1);
+
             InfoBase::preFunc();
          }
 
@@ -125,6 +128,8 @@ namespace GDCC
             case IR::Code::MulK_W: preStmnt_MulK_W(); break;
             case IR::Code::MulU_W: preStmnt_MulU_W(); break;
             case IR::Code::MulX_W: preStmnt_MulX_W(); break;
+
+            case IR::Code::Retn: preStmnt_Retn(); break;
 
             case IR::Code::ShLF_W: preStmnt_ShLF_W(); break;
             case IR::Code::ShLU_W: preStmnt_ShLU_W(); break;

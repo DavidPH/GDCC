@@ -221,6 +221,15 @@ namespace GDCC
          }
 
          //
+         // Info::preStmnt_Retn
+         //
+         void Info::preStmnt_Retn()
+         {
+            if(func->allocAut)
+               preStmntCall("___GDCC__Plsf", 0, 1);
+         }
+
+         //
          // Info::putStmnt_Call
          //
          void Info::putStmnt_Call()

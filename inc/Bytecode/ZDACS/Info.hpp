@@ -286,6 +286,7 @@ namespace GDCC
             void preStmnt_MulK_W();
             void preStmnt_MulU_W();
             void preStmnt_MulX_W();
+            void preStmnt_Retn();
             void preStmnt_ShLF_W();
             void preStmnt_ShLU_W();
 
