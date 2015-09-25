@@ -257,6 +257,7 @@ namespace GDCC
             virtual void preObj();
 
             virtual void preStmnt();
+            void preStmnt_AdXU_W();
             void preStmnt_AddU_W(IR::Code code);
             void preStmnt_Bclz_W(bool ones);
             void preStmnt_CmpF_EQ_W();
@@ -289,6 +290,7 @@ namespace GDCC
             void preStmnt_Retn();
             void preStmnt_ShLF_W();
             void preStmnt_ShLU_W();
+            void preStmnt_SuXU_W();
 
             void preStmntCall(Core::FastU retrn, Core::FastU param);
             void preStmntCall(Core::String name, Core::FastU retrn, Core::FastU param);

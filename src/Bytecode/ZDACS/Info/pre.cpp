@@ -65,6 +65,8 @@ namespace GDCC
          {
             switch(stmnt->op.code)
             {
+            case IR::Code::AdXU_W: preStmnt_AdXU_W(); break;
+
             case IR::Code::AddF_W:
             case IR::Code::DivF_W:
             case IR::Code::MulF_W:
@@ -136,6 +138,8 @@ namespace GDCC
             case IR::Code::ShRF_W: preStmnt_ShLF_W(); break;
             case IR::Code::ShRI_W: preStmnt_ShLU_W(); break;
             case IR::Code::ShRU_W: preStmnt_ShLU_W(); break;
+
+            case IR::Code::SuXU_W: preStmnt_SuXU_W(); break;
 
             case IR::Code::SubI_W: preStmnt_AddU_W(IR::Code::SuXU_W); break;
             case IR::Code::SubU_W: preStmnt_AddU_W(IR::Code::SuXU_W); break;

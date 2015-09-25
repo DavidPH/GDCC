@@ -83,6 +83,15 @@ namespace GDCC
          }
 
          //
+         // Info::preStmnt_AdXU_W
+         //
+         void Info::preStmnt_AdXU_W()
+         {
+            if(stmnt->op.size)
+               preStmnt_CmpU_LT_W();
+         }
+
+         //
          // Info::preStmnt_AddU_W
          //
          void Info::preStmnt_AddU_W(IR::Code code)
@@ -130,6 +139,15 @@ namespace GDCC
                IR::Arg_Stk());
 
             throw ResetFunc();
+         }
+
+         //
+         // Info::preStmnt_SuXU_W
+         //
+         void Info::preStmnt_SuXU_W()
+         {
+            if(stmnt->op.size)
+               preStmnt_CmpU_GT_W();
          }
 
          //
