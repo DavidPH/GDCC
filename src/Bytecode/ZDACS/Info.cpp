@@ -974,7 +974,10 @@ namespace GDCC
             if(auto exp = prog->getGlyphData(glyph).value)
                return static_cast<IR::Exp::CRef>(exp);
 
-            std::cerr << "ERROR: unbacked glyph: '" << glyph << "'\n";
+            std::cerr << "ERROR: ";
+            if(stmnt) std::cerr << stmnt->pos << ": ";
+            std::cerr << "unbacked glyph: '" << glyph << "'\n";
+
             throw EXIT_FAILURE;
          }
 
