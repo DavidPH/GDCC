@@ -87,8 +87,7 @@ namespace GDCC
          //
          void Info::preStmnt_AdXU_W()
          {
-            if(stmnt->op.size)
-               preStmnt_CmpU_LT_W();
+            preStmnt_CmpU_W1(IR::Code::CmpU_LT_W, IR::Code::CmpI_LT_W, false, true);
          }
 
          //
@@ -100,43 +99,32 @@ namespace GDCC
                return;
 
             Core::String name = getCallName();
+            auto newFunc = preStmntCallDef(name, stmnt->op.size,
+               stmnt->op.size * 2, stmnt->op.size * 2, __FILE__, __LINE__);
 
-            preStmntCall(name, stmnt->op.size, stmnt->op.size * 2);
-
-            IR::Function &newFunc = prog->getFunction(name);
-
-            if(newFunc.defin)
+            if(!newFunc)
                return;
 
-            newFunc.defin    = true;
-            newFunc.label    = name + "$label";
-            newFunc.localReg = stmnt->op.size * 2;
+            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
+            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
 
-            newFunc.block.setOrigin({__FILE__, __LINE__});
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc.block.getExp(0))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc.block.getExp(stmnt->op.size))};
+            #define AS_Stmnt newFunc->block.addStatementArgs
 
             // First words.
-            newFunc.block.addStatementArgs({code, 1},
-               IR::Arg_Stk(), lop, rop);
+            AS_Stmnt({code, 1}, IR::Arg_Stk(), lop, rop);
 
             // Mid words.
             for(Core::FastU i = stmnt->op.size - 2; i--;)
-            {
-               newFunc.block.addStatementArgs({code, 1},
-                  IR::Arg_Stk(), ++lop, ++rop, IR::Arg_Stk());
-            }
+               AS_Stmnt({code, 1}, IR::Arg_Stk(), ++lop, ++rop, IR::Arg_Stk());
 
             // Last words.
-            newFunc.block.addStatementArgs({stmnt->op.code, 1},
-               IR::Arg_Stk(), ++lop, ++rop);
-            newFunc.block.addStatementArgs({IR::Code::AddU_W, 1},
-               IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+            AS_Stmnt({stmnt->op.code,   1}, IR::Arg_Stk(), ++lop, ++rop);
+            AS_Stmnt({IR::Code::AddU_W, 1}, IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
             // Return.
-            newFunc.block.addStatementArgs({IR::Code::Retn, stmnt->op.size},
-               IR::Arg_Stk());
+            AS_Stmnt({IR::Code::Retn, stmnt->op.size}, IR::Arg_Stk());
+
+            #undef AS_Stmnt
 
             throw ResetFunc();
          }
@@ -146,8 +134,7 @@ namespace GDCC
          //
          void Info::preStmnt_SuXU_W()
          {
-            if(stmnt->op.size)
-               preStmnt_CmpU_GT_W();
+            preStmnt_CmpU_W1(IR::Code::CmpU_GT_W, IR::Code::CmpI_GT_W, true, false);
          }
 
          //

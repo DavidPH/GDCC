@@ -331,7 +331,7 @@ namespace GDCC
                return;
 
             if(stmnt->op.size == 1)
-               preStmnt_CmpU_W1(IR::Code::CmpI_GE_W, true, false);
+               preStmnt_CmpU_W1(IR::Code::CmpU_GE_W, IR::Code::CmpI_GE_W, true, false);
             else
                preStmnt_CmpU_Wn(IR::Code::CmpU_GE_W, IR::Code::CmpU_GE_W);
          }
@@ -345,7 +345,7 @@ namespace GDCC
                return;
 
             if(stmnt->op.size == 1)
-               preStmnt_CmpU_W1(IR::Code::CmpI_GT_W, true, false);
+               preStmnt_CmpU_W1(IR::Code::CmpU_GT_W, IR::Code::CmpI_GT_W, true, false);
             else
                preStmnt_CmpU_Wn(IR::Code::CmpU_GT_W, IR::Code::CmpU_GT_W);
          }
@@ -359,7 +359,7 @@ namespace GDCC
                return;
 
             if(stmnt->op.size == 1)
-               preStmnt_CmpU_W1(IR::Code::CmpI_LE_W, false, true);
+               preStmnt_CmpU_W1(IR::Code::CmpU_LE_W, IR::Code::CmpI_LE_W, false, true);
             else
                preStmnt_CmpU_Wn(IR::Code::CmpU_LE_W, IR::Code::CmpU_LE_W);
          }
@@ -373,7 +373,7 @@ namespace GDCC
                return;
 
             if(stmnt->op.size == 1)
-               preStmnt_CmpU_W1(IR::Code::CmpI_LT_W, false, true);
+               preStmnt_CmpU_W1(IR::Code::CmpU_LT_W, IR::Code::CmpI_LT_W, false, true);
             else
                preStmnt_CmpU_Wn(IR::Code::CmpU_LT_W, IR::Code::CmpU_LT_W);
          }
@@ -381,7 +381,7 @@ namespace GDCC
          //
          // Info::preStmnt_CmpU_W1
          //
-         void Info::preStmnt_CmpU_W1(IR::Code codeCmp, bool resGT, bool resLT)
+         void Info::preStmnt_CmpU_W1(IR::Code code, IR::Code codeCmp, bool resGT, bool resLT)
          {
             // Unsigned word compare logic:
             //
@@ -389,7 +389,7 @@ namespace GDCC
             // else               {if(  r & 0x80000000 ) return -1;}
             // return cmp((int)l, (int)r)
 
-            Core::String name = getCallName();
+            Core::String name = getCallName({code, 1});
             auto newFunc = preStmntCallDef(name, 1, 2, 2, __FILE__, __LINE__);
 
             if(!newFunc)
