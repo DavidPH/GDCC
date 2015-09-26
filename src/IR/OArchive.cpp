@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,7 +16,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -64,7 +64,7 @@ namespace GDCC
       //
       OArchive &operator << (OArchive &out, Core::Origin const &in)
       {
-         return out << in.file << in.line;
+         return out << in.file << in.line << in.col;
       }
 
       //

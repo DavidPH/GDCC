@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -58,7 +58,7 @@ static GDCC::Core::String AddStringNTS(char const *str)
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -146,7 +146,7 @@ namespace GDCC
       //
       IArchive &operator >> (IArchive &in, Core::Origin &out)
       {
-         return in >> out.file >> out.line;
+         return in >> out.file >> out.line >> out.col;
       }
 
       //
