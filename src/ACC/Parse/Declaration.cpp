@@ -14,6 +14,8 @@
 
 #include "AST/Statement.hpp"
 
+#include "CC/Warning.hpp"
+
 #include "Core/TokenStream.hpp"
 
 
@@ -30,6 +32,13 @@ namespace GDCC
       //
       AST::Statement::CRef Parser::getDecl(Scope_Global &scope)
       {
+         if(in.peek(Core::TOK_Semico))
+         {
+            Core::Origin pos = in.get().pos;
+            CC::WarnFileSemico(pos, "extraneous file-scope semicolon");
+            return AST::StatementCreate_Empty(in.reget().pos);
+         }
+
          if(in.peek(Core::TOK_KeyWrd) || in.peek(Core::TOK_Identi)) switch(in.peek().str)
          {
          case Core::STR_createtranslation: return getDecl_CreateTrans(scope);
