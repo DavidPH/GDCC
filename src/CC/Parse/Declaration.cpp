@@ -18,6 +18,7 @@
 #include "CC/Scope/Function.hpp"
 #include "CC/Scope/Global.hpp"
 #include "CC/Statement.hpp"
+#include "CC/Warning.hpp"
 
 #include "AST/Attribute.hpp"
 #include "AST/Function.hpp"
@@ -470,6 +471,13 @@ namespace GDCC
       //
       AST::Statement::CRef Parser::getDecl(Scope_Global &scope)
       {
+         if(in.peek(Core::TOK_Semico))
+         {
+            Core::Origin pos = in.get().pos;
+            WarnFileSemico(pos, "extraneous file-scope semicolon");
+            return AST::StatementCreate_Empty(in.reget().pos);
+         }
+
          return GetDeclBase(*this, scope);
       }
 

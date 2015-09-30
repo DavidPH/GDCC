@@ -97,6 +97,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    Type/Fixed.cpp
    Type/Float.cpp
    Type/Struct.cpp
+   Warning.cpp
 
    ../../inc/CC/AsmGlyphTBuf.hpp
    ../../inc/CC/Exp.hpp
@@ -145,6 +146,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    ../../inc/CC/Type/Fixed.hpp
    ../../inc/CC/Type/Float.hpp
    ../../inc/CC/Type/Struct.hpp
+   ../../inc/CC/Warning.hpp
 )
 
 ##
