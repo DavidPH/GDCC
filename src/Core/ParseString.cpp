@@ -19,7 +19,41 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Static Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace Core
+   {
+      //
+      // PutUTF8
+      //
+      static void PutUTF8(std::ostream &out, char32_t in)
+      {
+         if(in <= 0x7F)       {out.put(0x00 | ((in >>  0) & 0x7F)); goto put0;}
+         if(in <= 0x7FF)      {out.put(0xC0 | ((in >>  6) & 0x1F)); goto put1;}
+         if(in <= 0xFFFF)     {out.put(0xE0 | ((in >> 12) & 0x0F)); goto put2;}
+         if(in <= 0x1FFFFF)   {out.put(0xF0 | ((in >> 18) & 0x07)); goto put3;}
+         if(in <= 0x3FFFFFF)  {out.put(0xF8 | ((in >> 24) & 0x03)); goto put4;}
+         if(in <= 0x7FFFFFFF) {out.put(0xFC | ((in >> 30) & 0x01)); goto put5;}
+
+         out.put(0xFE);
+
+               out.put(0x80 | ((in >> 30) & 0x3F));
+         put5: out.put(0x80 | ((in >> 24) & 0x3F));
+         put4: out.put(0x80 | ((in >> 18) & 0x3F));
+         put3: out.put(0x80 | ((in >> 12) & 0x3F));
+         put2: out.put(0x80 | ((in >>  6) & 0x3F));
+         put1: out.put(0x80 | ((in >>  0) & 0x3F));
+         put0: return;
+      }
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -51,7 +85,7 @@ namespace GDCC
          case 'v': out.put('\v'); return true;
 
          case 'x':
-            for(unsigned int i = 0;;) switch(c = in.get())
+            for(char32_t i = 0;;) switch(c = in.get())
             {
             case '0': i = i * 16 + 0x0; break;
             case '1': i = i * 16 + 0x1; break;
@@ -78,14 +112,14 @@ namespace GDCC
 
             default:
                in.putback(static_cast<char>(c));
-               out.put(i);
+               PutUTF8(out, i);
                return true;
             }
 
          case '0': case '1': case '2': case '3':
          case '4': case '5': case '6': case '7':
             c = escape;
-            for(unsigned int n = 2, i = 0;; --n)
+            for(char32_t n = 2, i = 0;; --n)
             {
                switch(c)
                {
@@ -106,7 +140,7 @@ namespace GDCC
                if(n) {c = in.get(); continue;}
 
             octal_done:
-               out.put(i);
+               PutUTF8(out, i);
                return true;
             }
 
