@@ -213,7 +213,7 @@ namespace GDCC
                {
                   iv = &ini.vals[itr++];
                   iv->tag = InitTag::Fixed;
-                  iv->val = Core::NumberCast<Core::FastU>(val.vFixed.value >> (w * 32));
+                  iv->val = GetWord_Fixed(val.vFixed, w);
                }
                break;
 
