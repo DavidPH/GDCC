@@ -440,9 +440,9 @@ namespace GDCC
             Core::Array<IR::Glyph> labelEq{stmnt->op.size - 1};
             for(Core::FastU i = stmnt->op.size - 1; i;)
             {
-               std::ostringstream oss; oss << name << "$eq" << i;
-               std::string str = oss.str();
-               labelEq[--i] = {prog, {str.data(), str.size()}};
+               std::ostringstream labelBuf; labelBuf << name << "$eq" << i;
+               std::string label = labelBuf.str();
+               labelEq[--i] = {prog, {label.data(), label.size()}};
             }
 
             IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size - 1))};

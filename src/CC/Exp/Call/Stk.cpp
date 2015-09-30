@@ -157,7 +157,7 @@ namespace GDCC
                auto w = (*argItr)->getType()->getSizeWords();
 
                auto autType = (*argItr)->getType()
-                  ->getTypeQual({{IR::AddrBase::Aut}})
+                  ->getTypeQual({{IR::AddrBase::Aut, Core::STR_}})
                   ->getTypePointer()->getIRType().tPoint;
 
                IR::Value_Point autVal =

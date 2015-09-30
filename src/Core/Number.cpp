@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,15 +14,25 @@
 
 
 //----------------------------------------------------------------------------|
-// Static Variables                                                           |
+// Static Objects                                                             |
 //
 
-// Slightly unfortunate hack to set default precision.
-auto static PrecInit = [](){mpf_set_default_prec(256); return 0;}();
+namespace GDCC
+{
+   namespace Core
+   {
+      // Highly unfortunate hack to set default precision.
+      // Will be removed when use of mpf_class is replaced with mpfr_t.
+      #ifdef __GNUC__
+      __attribute__((__unused__))
+      #endif
+      auto static PrecInit = [](){mpf_set_default_prec(256); return 0;}();
+   }
+}
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace std

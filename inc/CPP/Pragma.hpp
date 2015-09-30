@@ -86,7 +86,7 @@ namespace GDCC
       {
       public:
          template<typename Data>
-         explicit PragmaParserVA(Data &data) : Parsers{data}... {}
+         explicit PragmaParserVA(Data &data_) : Parsers{data_}... {}
 
          virtual bool parse(Core::Token const *toks, std::size_t n)
             {return PI<Parsers...>::Pragma(this, toks, n);}

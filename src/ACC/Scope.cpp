@@ -24,8 +24,8 @@ namespace GDCC
       //
       // Scope_Global constructor
       //
-      Scope_Global::Scope_Global(Core::String label) :
-         CC::Scope_Global{label}
+      Scope_Global::Scope_Global(Core::String label_) :
+         CC::Scope_Global{label_}
       {
       }
 

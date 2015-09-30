@@ -306,13 +306,13 @@ namespace GDCC
 
             for(Core::FastU i = stmnt->op.size; i--;)
             {
-               std::ostringstream oss;
+               std::ostringstream labelBuf;
 
-               std::string str = (oss << name << "$w" << i, oss).str();
-               labelW[i] = {prog, {str.data(), str.size()}};
+               std::string label = (labelBuf << name << "$w" << i, labelBuf).str();
+               labelW[i] = {prog, {label.data(), label.size()}};
 
-               str = (oss << "_0", oss).str();
-               label0[i] = {prog, {str.data(), str.size()}};
+               label = (labelBuf << "_0", labelBuf).str();
+               label0[i] = {prog, {label.data(), label.size()}};
             }
 
             IR::Glyph labelTab0{prog, name + "$tab0"};

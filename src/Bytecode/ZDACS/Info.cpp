@@ -347,14 +347,14 @@ namespace GDCC
          //
          Core::NumberAllocMerge<Core::FastU> &Info::getAllocFunc(IR::CallType call)
          {
-            auto trans = [](IR::CallType call)
+            auto trans = [](IR::CallType ctype)
             {
-               switch(call)
+               switch(ctype)
                {
                case IR::CallType::StdCall:  return IR::CallType::StkCall;
                case IR::CallType::SScriptI: return IR::CallType::ScriptI;
                case IR::CallType::SScriptS: return IR::CallType::ScriptS;
-               default:                     return call;
+               default:                     return ctype;
                }
             };
 

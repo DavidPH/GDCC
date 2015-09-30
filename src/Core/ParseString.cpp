@@ -38,7 +38,7 @@ namespace GDCC
          if(in <= 0x3FFFFFF)  {out.put(0xF8 | ((in >> 24) & 0x03)); goto put4;}
          if(in <= 0x7FFFFFFF) {out.put(0xFC | ((in >> 30) & 0x01)); goto put5;}
 
-         out.put(0xFE);
+         out.put('\xFE');
 
                out.put(0x80 | ((in >> 30) & 0x3F));
          put5: out.put(0x80 | ((in >> 24) & 0x3F));
