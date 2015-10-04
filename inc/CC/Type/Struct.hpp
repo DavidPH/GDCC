@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -97,7 +97,8 @@ namespace GDCC
          class Data
          {
          public:
-            Data(Core::String name, bool isUnion);
+            Data(Core::String name, bool isUnion, Type_Struct *type);
+            ~Data();
 
             Core::Array<MemberData> memb;
             Core::String      const name;
@@ -111,6 +112,17 @@ namespace GDCC
             bool       complete : 1;
             bool const isStruct : 1;
             bool const isUnion  : 1;
+
+         private:
+            Data();
+
+            Data *next, *prev;
+            Type_Struct *type;
+
+
+            static void Cleanup();
+
+            static Data Head;
          };
 
 

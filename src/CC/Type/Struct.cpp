@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,7 +20,20 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Objects                                                             |
+//
+
+namespace GDCC
+{
+   namespace CC
+   {
+      Type_Struct::Data Type_Struct::Data::Head{};
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -127,7 +140,30 @@ namespace GDCC
       //
       // Type_Struct::Data constructor
       //
-      Type_Struct::Data::Data(Core::String name_, bool isUnion_) :
+      Type_Struct::Data::Data() :
+         memb{},
+         name{nullptr},
+
+         sizeAlign{0},
+         sizeBytes{0},
+         sizePoint{0},
+         sizeShift{0},
+         sizeWords{0},
+
+         complete{false},
+         isStruct{false},
+         isUnion {false},
+
+         next{this},
+         prev{this},
+         type{nullptr}
+      {
+      }
+
+      //
+      // Type_Struct::Data constructor
+      //
+      Type_Struct::Data::Data(Core::String name_, bool isUnion_, Type_Struct *type_) :
          memb{},
          name{name_},
 
@@ -139,15 +175,47 @@ namespace GDCC
 
          complete{false},
          isStruct{!isUnion_},
-         isUnion { isUnion_}
+         isUnion { isUnion_},
+
+         next{&Head},
+         prev{Head.prev},
+         type{type_}
       {
+         next->prev = this;
+         prev->next = this;
+      }
+
+      //
+      // Type_Struct::Data destructor
+      //
+      Type_Struct::Data::~Data()
+      {
+         if(!type) Cleanup();
+
+         next->prev = prev;
+         prev->next = next;
+      }
+
+      //
+      // Type_Struct::Data::Cleanup
+      //
+      void Type_Struct::Data::Cleanup()
+      {
+         // Hold a reference to all the types, so the list doesn't change while
+         // clearing.
+         std::vector<Type_Struct::CRef> types;
+         for(Data *itr = Head.next; itr != &Head; itr = itr->next)
+            types.emplace_back(itr->type);
+
+         for(Data *itr = Head.next; itr != &Head; itr = itr->next)
+            itr->memb = {};
       }
 
       //
       // Type_Struct constructor
       //
       Type_Struct::Type_Struct(Core::String name, bool isUnion) :
-         data(*new Data(name, isUnion))
+         data(*new Data(name, isUnion, this))
       {
       }
 
