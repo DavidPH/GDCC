@@ -53,6 +53,9 @@ namespace GDCC
       //
       Scope_Global::~Scope_Global()
       {
+         // Break potential reference-cycles in functions.
+         for(auto &itr : globalFunc)
+            itr.second->stmnt = nullptr;
       }
 
       //
