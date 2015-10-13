@@ -323,6 +323,8 @@ namespace GDCC
                   n = std::max(n, getSpaceInitiSize(t));
                return n;
             }
+
+            return 0;
          }
       }
    }
