@@ -216,11 +216,11 @@ namespace GDCC
             Core::FastU arr, idx;
             Code        code;
 
-            if(isInitiWldArr())
+            if(isInitiHubArr())
             {
-               arr  = getInitWldArray();
-               idx  = getInitWldIndex();
-               code = Code::Push_WldArr;
+               arr  = getInitHubArray();
+               idx  = getInitHubIndex();
+               code = Code::Push_HubArr;
             }
             else if(isInitiGblArr())
             {
@@ -367,13 +367,14 @@ namespace GDCC
             case IR::ArgBase::Aut:    putAut(arg.aAut); break;
             case IR::ArgBase::GblArr: putArr(arg.aGblArr, Code::Drop_GblArr); break;
             case IR::ArgBase::GblReg: putReg(arg.aGblReg, Code::Drop_GblReg); break;
+            case IR::ArgBase::HubArr: putArr(arg.aHubArr, Code::Drop_HubArr); break;
+            case IR::ArgBase::HubReg: putReg(arg.aHubReg, Code::Drop_HubReg); break;
+            case IR::ArgBase::LocArr: putArr(arg.aLocArr, Code::Drop_LocArr); break;
             case IR::ArgBase::LocReg: putReg(arg.aLocReg, Code::Drop_LocReg); break;
-            case IR::ArgBase::MapArr: putArr(arg.aMapArr, Code::Drop_MapArr); break;
-            case IR::ArgBase::MapReg: putReg(arg.aMapReg, Code::Drop_MapReg); break;
+            case IR::ArgBase::ModArr: putArr(arg.aModArr, Code::Drop_ModArr); break;
+            case IR::ArgBase::ModReg: putReg(arg.aModReg, Code::Drop_ModReg); break;
             case IR::ArgBase::Nul:    putCode(Code::Drop_Nul); break;
             case IR::ArgBase::Sta:    putSta(arg.aSta); break;
-            case IR::ArgBase::WldArr: putArr(arg.aWldArr, Code::Drop_WldArr); break;
-            case IR::ArgBase::WldReg: putReg(arg.aWldReg, Code::Drop_WldReg); break;
 
             default:
                throw Core::ExceptStr(stmnt->pos, "bad putStmntDropArg");
@@ -421,9 +422,9 @@ namespace GDCC
             switch(arg.a)
             {
             case IR::ArgBase::GblReg: putReg(arg.aGblReg, Code::IncU_GblReg); break;
+            case IR::ArgBase::HubReg: putReg(arg.aHubReg, Code::IncU_HubReg); break;
             case IR::ArgBase::LocReg: putReg(arg.aLocReg, Code::IncU_LocReg); break;
-            case IR::ArgBase::MapReg: putReg(arg.aMapReg, Code::IncU_MapReg); break;
-            case IR::ArgBase::WldReg: putReg(arg.aWldReg, Code::IncU_WldReg); break;
+            case IR::ArgBase::ModReg: putReg(arg.aModReg, Code::IncU_ModReg); break;
 
             default:
                throw Core::ExceptStr(stmnt->pos, "bad putStmntIncUArg");
@@ -570,13 +571,14 @@ namespace GDCC
             case IR::ArgBase::Aut:    putAut(arg.aAut); break;
             case IR::ArgBase::GblArr: putArr(arg.aGblArr, Code::Push_GblArr); break;
             case IR::ArgBase::GblReg: putReg(arg.aGblReg, Code::Push_GblReg); break;
+            case IR::ArgBase::HubArr: putArr(arg.aHubArr, Code::Push_HubArr); break;
+            case IR::ArgBase::HubReg: putReg(arg.aHubReg, Code::Push_HubReg); break;
             case IR::ArgBase::Lit:    putLit(arg.aLit); break;
+            case IR::ArgBase::LocArr: putArr(arg.aLocArr, Code::Push_LocArr); break;
             case IR::ArgBase::LocReg: putReg(arg.aLocReg, Code::Push_LocReg); break;
-            case IR::ArgBase::MapArr: putArr(arg.aMapArr, Code::Push_MapArr); break;
-            case IR::ArgBase::MapReg: putReg(arg.aMapReg, Code::Push_MapReg); break;
+            case IR::ArgBase::ModArr: putArr(arg.aModArr, Code::Push_ModArr); break;
+            case IR::ArgBase::ModReg: putReg(arg.aModReg, Code::Push_ModReg); break;
             case IR::ArgBase::Sta:    putSta(arg.aSta); break;
-            case IR::ArgBase::WldArr: putArr(arg.aWldArr, Code::Push_WldArr); break;
-            case IR::ArgBase::WldReg: putReg(arg.aWldReg, Code::Push_WldReg); break;
 
             default:
                throw Core::ExceptStr(stmnt->pos, "bad putStmntPushArg");

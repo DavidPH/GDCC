@@ -113,7 +113,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Extern Variables                                                           |
+// Extern Objects                                                             |
 //
 
 namespace GDCC
@@ -342,9 +342,9 @@ namespace GDCC
          switch(addr)
          {
          case IR::AddrBase::GblArr: return false;
-         case IR::AddrBase::MapArr: return false;
+         case IR::AddrBase::HubArr: return false;
+         case IR::AddrBase::ModArr: return false;
          case IR::AddrBase::StrArr: return false;
-         case IR::AddrBase::WldArr: return false;
 
          default: return true;
          }
@@ -373,7 +373,7 @@ namespace GDCC
       {
          switch(addr)
          {
-         case IR::AddrBase::MapArr: return true;
+         case IR::AddrBase::ModArr: return true;
 
          default: return false;
          }

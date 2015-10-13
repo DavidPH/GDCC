@@ -91,9 +91,9 @@ namespace GDCC
       //
       Program::Program() :
          spaceGblReg{AddrSpace(AddrBase::GblReg, Core::STR_)},
-         spaceMapReg{AddrSpace(AddrBase::MapReg, Core::STR_)},
-         spaceSta   {AddrSpace(AddrBase::Sta,    Core::STR_)},
-         spaceWldReg{AddrSpace(AddrBase::WldReg, Core::STR_)}
+         spaceHubReg{AddrSpace(AddrBase::HubReg, Core::STR_)},
+         spaceModReg{AddrSpace(AddrBase::ModReg, Core::STR_)},
+         spaceSta   {AddrSpace(AddrBase::Sta,    Core::STR_)}
       {
          tableObjectBySpace[{AddrBase::Sta, Core::STR_}];
       }
@@ -155,14 +155,14 @@ namespace GDCC
          case AddrBase::GblArr:
          case AddrBase::GblArs: return findSpaceGblArr(as.name);
          case AddrBase::GblReg: return &getSpaceGblReg();
+         case AddrBase::HubArr:
+         case AddrBase::HubArs: return findSpaceHubArr(as.name);
+         case AddrBase::HubReg: return &getSpaceHubReg();
          case AddrBase::LocArr: return findSpaceLocArr(as.name);
-         case AddrBase::MapArr:
-         case AddrBase::MapArs: return findSpaceMapArr(as.name);
-         case AddrBase::MapReg: return &getSpaceMapReg();
+         case AddrBase::ModArr:
+         case AddrBase::ModArs: return findSpaceModArr(as.name);
+         case AddrBase::ModReg: return &getSpaceModReg();
          case AddrBase::Sta:    return &getSpaceSta();
-         case AddrBase::WldArr:
-         case AddrBase::WldArs: return findSpaceWldArr(as.name);
-         case AddrBase::WldReg: return &getSpaceWldReg();
 
          default:
             return nullptr;
@@ -178,6 +178,14 @@ namespace GDCC
       }
 
       //
+      // Program::findSpaceHubArr
+      //
+      Space *Program::findSpaceHubArr(Core::String glyph)
+      {
+         return FindTable(tableSpaceHubArs, glyph);
+      }
+
+      //
       // Program::findSpaceLocArr
       //
       Space *Program::findSpaceLocArr(Core::String glyph)
@@ -186,19 +194,11 @@ namespace GDCC
       }
 
       //
-      // Program::findSpaceMapArr
+      // Program::findSpaceModArr
       //
-      Space *Program::findSpaceMapArr(Core::String glyph)
+      Space *Program::findSpaceModArr(Core::String glyph)
       {
-         return FindTable(tableSpaceMapArs, glyph);
-      }
-
-      //
-      // Program::findSpaceWldArr
-      //
-      Space *Program::findSpaceWldArr(Core::String glyph)
-      {
-         return FindTable(tableSpaceWldArs, glyph);
+         return FindTable(tableSpaceModArs, glyph);
       }
 
       //
@@ -285,14 +285,14 @@ namespace GDCC
          case AddrBase::GblArr:
          case AddrBase::GblArs: return getSpaceGblArr(as.name);
          case AddrBase::GblReg: return getSpaceGblReg();
+         case AddrBase::HubArr:
+         case AddrBase::HubArs: return getSpaceHubArr(as.name);
+         case AddrBase::HubReg: return getSpaceHubReg();
          case AddrBase::LocArr: return getSpaceLocArr(as.name);
-         case AddrBase::MapArr:
-         case AddrBase::MapArs: return getSpaceMapArr(as.name);
-         case AddrBase::MapReg: return getSpaceMapReg();
+         case AddrBase::ModArr:
+         case AddrBase::ModArs: return getSpaceModArr(as.name);
+         case AddrBase::ModReg: return getSpaceModReg();
          case AddrBase::Sta:    return getSpaceSta();
-         case AddrBase::WldArr:
-         case AddrBase::WldArs: return getSpaceWldArr(as.name);
-         case AddrBase::WldReg: return getSpaceWldReg();
 
          default:
             std::cerr << "GDCC::IR::Program::getSpace: bad AddrBase\n";
@@ -317,6 +317,22 @@ namespace GDCC
       }
 
       //
+      // Program::getSpaceHubArr
+      //
+      Space &Program::getSpaceHubArr(Core::String glyph)
+      {
+         return GetTable(tableSpaceHubArs, glyph, AddrSpace(AddrBase::HubArr, glyph));
+      }
+
+      //
+      // Program::getSpaceHubReg
+      //
+      Space &Program::getSpaceHubReg()
+      {
+         return spaceHubReg;
+      }
+
+      //
       // Program::getSpaceLocArr
       //
       Space &Program::getSpaceLocArr(Core::String glyph)
@@ -325,19 +341,19 @@ namespace GDCC
       }
 
       //
-      // Program::getSpaceMapArr
+      // Program::getSpaceModArr
       //
-      Space &Program::getSpaceMapArr(Core::String glyph)
+      Space &Program::getSpaceModArr(Core::String glyph)
       {
-         return GetTable(tableSpaceMapArs, glyph, AddrSpace(AddrBase::MapArr, glyph));
+         return GetTable(tableSpaceModArs, glyph, AddrSpace(AddrBase::ModArr, glyph));
       }
 
       //
-      // Program::getSpaceMapReg
+      // Program::getSpaceModReg
       //
-      Space &Program::getSpaceMapReg()
+      Space &Program::getSpaceModReg()
       {
-         return spaceMapReg;
+         return spaceModReg;
       }
 
       //
@@ -346,22 +362,6 @@ namespace GDCC
       Space &Program::getSpaceSta()
       {
          return spaceSta;
-      }
-
-      //
-      // Program::getSpaceWldArr
-      //
-      Space &Program::getSpaceWldArr(Core::String glyph)
-      {
-         return GetTable(tableSpaceWldArs, glyph, AddrSpace(AddrBase::WldArr, glyph));
-      }
-
-      //
-      // Program::getSpaceWldReg
-      //
-      Space &Program::getSpaceWldReg()
-      {
-         return spaceWldReg;
       }
 
       //
@@ -584,6 +584,22 @@ namespace GDCC
       }
 
       //
+      // Program::rangeSpaceHubArs
+      //
+      auto Program::rangeSpaceHubArs() -> TableRange<Space>
+      {
+         return RangeTable(tableSpaceHubArs);
+      }
+
+      //
+      // Program::rangeSpaceHubArs
+      //
+      auto Program::rangeSpaceHubArs() const -> TableCRange<Space>
+      {
+         return RangeTable(tableSpaceHubArs);
+      }
+
+      //
       // Program::rangeSpaceLocArs
       //
       auto Program::rangeSpaceLocArs() -> TableRange<Space>
@@ -600,35 +616,19 @@ namespace GDCC
       }
 
       //
-      // Program::rangeSpaceMapArs
+      // Program::rangeSpaceModArs
       //
-      auto Program::rangeSpaceMapArs() -> TableRange<Space>
+      auto Program::rangeSpaceModArs() -> TableRange<Space>
       {
-         return RangeTable(tableSpaceMapArs);
+         return RangeTable(tableSpaceModArs);
       }
 
       //
-      // Program::rangeSpaceMapArs
+      // Program::rangeSpaceModArs
       //
-      auto Program::rangeSpaceMapArs() const -> TableCRange<Space>
+      auto Program::rangeSpaceModArs() const -> TableCRange<Space>
       {
-         return RangeTable(tableSpaceMapArs);
-      }
-
-      //
-      // Program::rangeSpaceWldArs
-      //
-      auto Program::rangeSpaceWldArs() -> TableRange<Space>
-      {
-         return RangeTable(tableSpaceWldArs);
-      }
-
-      //
-      // Program::rangeSpaceWldArs
-      //
-      auto Program::rangeSpaceWldArs() const -> TableCRange<Space>
-      {
-         return RangeTable(tableSpaceWldArs);
+         return RangeTable(tableSpaceModArs);
       }
 
       //
@@ -709,6 +709,14 @@ namespace GDCC
       }
 
       //
+      // Program::sizeSpaceHubArs
+      //
+      std::size_t Program::sizeSpaceHubArs() const
+      {
+         return tableSpaceHubArs.size();
+      }
+
+      //
       // Program::sizeSpaceLocArs
       //
       std::size_t Program::sizeSpaceLocArs() const
@@ -717,19 +725,11 @@ namespace GDCC
       }
 
       //
-      // Program::sizeSpaceMapArs
+      // Program::sizeSpaceModArs
       //
-      std::size_t Program::sizeSpaceMapArs() const
+      std::size_t Program::sizeSpaceModArs() const
       {
-         return tableSpaceMapArs.size();
-      }
-
-      //
-      // Program::sizeSpaceWldArs
-      //
-      std::size_t Program::sizeSpaceWldArs() const
-      {
-         return tableSpaceWldArs.size();
+         return tableSpaceModArs.size();
       }
 
       //
@@ -751,9 +751,9 @@ namespace GDCC
             << in.tableGlyphData
             << in.tableImport
             << in.tableSpaceGblArs
+            << in.tableSpaceHubArs
             << in.tableSpaceLocArs
-            << in.tableSpaceMapArs
-            << in.tableSpaceWldArs
+            << in.tableSpaceModArs
             << in.tableStrEnt
             << in.tableObject
          ;
@@ -817,9 +817,9 @@ namespace GDCC
          };
 
          getSpace(AddrBase::GblArr, &Program::getSpaceGblArr);
+         getSpace(AddrBase::HubArr, &Program::getSpaceHubArr);
          getSpace(AddrBase::LocArr, &Program::getSpaceLocArr);
-         getSpace(AddrBase::MapArr, &Program::getSpaceMapArr);
-         getSpace(AddrBase::WldArr, &Program::getSpaceWldArr);
+         getSpace(AddrBase::ModArr, &Program::getSpaceModArr);
 
          // tableStrEnt
          for(auto count = GetIR<Program::Table<StrEnt>::size_type>(in); count--;)

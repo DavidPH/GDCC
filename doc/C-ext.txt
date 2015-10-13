@@ -443,13 +443,13 @@ Syntax:
     <__far>
     <__gbl_ars>
     <__gbl_reg>
+    <__hub_ars>
+    <__hub_reg>
     <__loc_reg>
-    <__map_ars>
-    <__map_reg>
+    <__mod_ars>
+    <__mod_reg>
     <__sta>
     <__str_ars>
-    <__wld_ars>
-    <__wld_reg>
 
 ===========================================================
 Declarators
@@ -483,9 +483,9 @@ Syntax:
 
   address-space-specifier:
     <__gbl_arr>
+    <__hub_arr>
     <__loc_arr>
-    <__map_arr>
-    <__wld_arr>
+    <__mod_arr>
 
 Constraints:
   The storage class specifier, if provided, shall be either extern or static.
@@ -781,13 +781,13 @@ Grammar
     <__far>
     <__gbl_ars>
     <__gbl_reg>
+    <__hub_ars>
+    <__hub_reg>
     <__loc_reg>
-    <__map_ars>
-    <__map_reg>
+    <__mod_ars>
+    <__mod_reg>
     <__sta>
     <__str_ars>
-    <__wld_ars>
-    <__wld_reg>
 
   direct-declarator: add
     identifier attribute-specifier-list
@@ -811,9 +811,9 @@ Grammar
 
   address-space-specifier:
     <__gbl_arr>
+    <__hub_arr>
     <__loc_arr>
-    <__map_arr>
-    <__wld_arr>
+    <__mod_arr>
 
   statement: add
     asm-statement

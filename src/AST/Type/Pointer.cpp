@@ -140,9 +140,9 @@ namespace GDCC
          {
          case IR::AddrBase::Far:
          case IR::AddrBase::GblArs:
-         case IR::AddrBase::MapArs:
+         case IR::AddrBase::HubArs:
+         case IR::AddrBase::ModArs:
          case IR::AddrBase::StrArs:
-         case IR::AddrBase::WldArs:
             return 2;
 
          default:

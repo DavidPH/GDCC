@@ -117,7 +117,7 @@ namespace GDCC
             Core::Array<IR::Space const *> imps{numChunkAIMP};
 
             auto itr = imps.begin();
-            for(auto const &sp : prog->rangeSpaceMapArs())
+            for(auto const &sp : prog->rangeSpaceModArs())
                if(!sp.defin) *itr++ = &sp;
 
             Core::FastU size = numChunkAIMP * 8 + 4;
@@ -144,7 +144,7 @@ namespace GDCC
             if(!numChunkAINI) return;
 
             for(auto const &itr : init)
-               if(itr.first->space.base == IR::AddrBase::MapArr)
+               if(itr.first->space.base == IR::AddrBase::ModArr)
             {
                putData("AINI", 4);
                putWord(itr.second.max * 4 + 4);
@@ -171,7 +171,7 @@ namespace GDCC
             putData("ARAY", 4);
             putWord(numChunkARAY * 8);
 
-            for(auto const &itr : prog->rangeSpaceMapArs())
+            for(auto const &itr : prog->rangeSpaceModArs())
             {
                if(!itr.defin) continue;
 
@@ -191,7 +191,7 @@ namespace GDCC
             putWord(numChunkASTR * 4);
 
             for(auto const &itr : init)
-               if(itr.first->space.base == IR::AddrBase::MapArr)
+               if(itr.first->space.base == IR::AddrBase::ModArr)
             {
                if(itr.second.needTag && itr.second.onlyStr)
                   putWord(itr.first->value);
@@ -206,7 +206,7 @@ namespace GDCC
             if(!numChunkATAG) return;
 
             for(auto const &itr : init)
-               if(itr.first->space.base == IR::AddrBase::MapArr)
+               if(itr.first->space.base == IR::AddrBase::ModArr)
             {
                if(!itr.second.needTag || itr.second.onlyStr) continue;
 
@@ -394,13 +394,13 @@ namespace GDCC
             Core::Array<Core::String> strs{numChunkMEXP};
             for(auto &s : strs) s = Core::STR_;
 
-            for(auto const &itr : prog->rangeObject())
+            for(auto const &itr : prog->rangeObjectBySpace({IR::AddrBase::ModReg, Core::STR_}))
             {
-               if(itr.defin && itr.space.base == IR::AddrBase::MapReg)
-                  strs[itr.value] = itr.glyph;
+               if(itr->defin)
+                  strs[itr->value] = itr->glyph;
             }
 
-            for(auto const &itr : prog->rangeSpaceMapArs())
+            for(auto const &itr : prog->rangeSpaceModArs())
                if(itr.defin) strs[itr.value] = itr.glyph;
 
             putChunk("MEXP", strs, false);
@@ -417,10 +417,10 @@ namespace GDCC
 
             {
                auto imp = imps.begin();
-               for(auto const &itr : prog->rangeObject())
+               for(auto const &itr : prog->rangeObjectBySpace({IR::AddrBase::ModReg, Core::STR_}))
                {
-                  if(!itr.defin && itr.space.base == IR::AddrBase::MapReg)
-                     *imp++ = &itr;
+                  if(!itr->defin)
+                     *imp++ = itr;
                }
             }
 
@@ -445,7 +445,7 @@ namespace GDCC
          {
             if(!numChunkMINI) return;
 
-            for(auto const &itr : init[&prog->getSpaceMapReg()].vals) if(itr.second.val)
+            for(auto const &itr : init[&prog->getSpaceModReg()].vals) if(itr.second.val)
             {
                putData("MINI", 4);
                putWord(8);
@@ -464,7 +464,7 @@ namespace GDCC
             putData("MSTR", 4);
             putWord(numChunkMSTR * 4);
 
-            for(auto const &itr : init[&prog->getSpaceMapReg()].vals)
+            for(auto const &itr : init[&prog->getSpaceModReg()].vals)
                if(itr.second.tag == InitTag::StrEn) putWord(itr.first);
          }
 

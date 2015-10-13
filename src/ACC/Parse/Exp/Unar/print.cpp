@@ -120,21 +120,21 @@ namespace GDCC
                   return static_cast<AST::Exp::CRef>(exp);
                break;
 
+            case IR::AddrBase::HubArr:
+               if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propHubArray,
+                  prop.propHubRange, std::move(args), pos))
+                  return static_cast<AST::Exp::CRef>(exp);
+               break;
+
             case IR::AddrBase::LocArr:
                if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propLocalArray,
                   prop.propLocalRange, std::move(args), pos))
                   return static_cast<AST::Exp::CRef>(exp);
                break;
 
-            case IR::AddrBase::MapArr:
-               if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propMapArray,
-                  prop.propMapRange, std::move(args), pos))
-                  return static_cast<AST::Exp::CRef>(exp);
-               break;
-
-            case IR::AddrBase::WldArr:
-               if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propWorldArray,
-                  prop.propWorldRange, std::move(args), pos))
+            case IR::AddrBase::ModArr:
+               if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propModuleArray,
+                  prop.propModuleRange, std::move(args), pos))
                   return static_cast<AST::Exp::CRef>(exp);
                break;
 

@@ -62,10 +62,10 @@ namespace GDCC
          storeAuto  {false},
          storeExt   {false},
          storeGbl   {false},
+         storeHub   {false},
          storeInt   {false},
          storeReg   {false},
-         storeThread{false},
-         storeWld   {false}
+         storeThread{false}
       {
       }
 

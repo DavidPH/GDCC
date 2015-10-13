@@ -87,10 +87,10 @@ namespace GDCC
          bool storeAuto   : 1;
          bool storeExt    : 1;
          bool storeGbl    : 1;
+         bool storeHub    : 1;
          bool storeInt    : 1;
          bool storeReg    : 1;
          bool storeThread : 1;
-         bool storeWld    : 1;
       };
    }
 }

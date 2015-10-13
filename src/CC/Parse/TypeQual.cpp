@@ -16,6 +16,7 @@
 
 #include "AST/Space.hpp"
 #include "AST/Type.hpp"
+#include "AST/Warning.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
@@ -59,7 +60,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -89,9 +90,13 @@ namespace GDCC
          case Core::STR___far:     return true;
          case Core::STR___gbl_ars: return true;
          case Core::STR___gbl_reg: return true;
+         case Core::STR___hub_ars: return true;
+         case Core::STR___hub_reg: return true;
          case Core::STR___loc_reg: return true;
          case Core::STR___map_ars: return true;
          case Core::STR___map_reg: return true;
+         case Core::STR___mod_ars: return true;
+         case Core::STR___mod_reg: return true;
          case Core::STR___sta:     return true;
          case Core::STR___str_ars: return true;
          case Core::STR___va_addr: return true;
@@ -138,14 +143,26 @@ namespace GDCC
          case Core::STR___far:     setSpace(IR::AddrBase::Far);    break;
          case Core::STR___gbl_ars: setSpace(IR::AddrBase::GblArs); break;
          case Core::STR___gbl_reg: setSpace(IR::AddrBase::GblReg); break;
+         case Core::STR___wld_ars:
+            AST::WarnDeprecated(tok.pos,
+               "__wld_ars is deprecrated, use __hub_ars instead");
+         case Core::STR___hub_ars: setSpace(IR::AddrBase::HubArs); break;
+         case Core::STR___wld_reg:
+            AST::WarnDeprecated(tok.pos,
+               "__wld_reg is deprecrated, use __hub_reg instead");
+         case Core::STR___hub_reg: setSpace(IR::AddrBase::HubReg); break;
          case Core::STR___loc_reg: setSpace(IR::AddrBase::LocReg); break;
-         case Core::STR___map_ars: setSpace(IR::AddrBase::MapArs); break;
-         case Core::STR___map_reg: setSpace(IR::AddrBase::MapReg); break;
+         case Core::STR___map_ars:
+            AST::WarnDeprecated(tok.pos,
+               "__map_ars is deprecrated, use __mod_ars instead");
+         case Core::STR___mod_ars: setSpace(IR::AddrBase::ModArs); break;
+         case Core::STR___map_reg:
+            AST::WarnDeprecated(tok.pos,
+               "__map_reg is deprecrated, use __mod_reg instead");
+         case Core::STR___mod_reg: setSpace(IR::AddrBase::ModReg); break;
          case Core::STR___sta:     setSpace(IR::AddrBase::Sta);    break;
          case Core::STR___str_ars: setSpace(IR::AddrBase::StrArs); break;
          case Core::STR___va_addr: setSpace(IR::AddrBase::Vaa);    break;
-         case Core::STR___wld_ars: setSpace(IR::AddrBase::WldArs); break;
-         case Core::STR___wld_reg: setSpace(IR::AddrBase::WldReg); break;
 
             // Try a scope lookup for a user-defined address space.
          default:

@@ -67,9 +67,9 @@ namespace GDCC
          Object    *findObject     (Core::String glyph);
          Space     *findSpace      (AddrSpace    as);
          Space     *findSpaceGblArr(Core::String glyph);
+         Space     *findSpaceHubArr(Core::String glyph);
          Space     *findSpaceLocArr(Core::String glyph);
-         Space     *findSpaceMapArr(Core::String glyph);
-         Space     *findSpaceWldArr(Core::String glyph);
+         Space     *findSpaceModArr(Core::String glyph);
          StrEnt    *findStrEnt     (Core::String glyph);
          StrEnt    *findStrEntVal  (Core::String value);
 
@@ -83,12 +83,12 @@ namespace GDCC
          Space     &getSpace      (AddrSpace    as);
          Space     &getSpaceGblArr(Core::String glyph);
          Space     &getSpaceGblReg();
+         Space     &getSpaceHubArr(Core::String glyph);
+         Space     &getSpaceHubReg();
          Space     &getSpaceLocArr(Core::String glyph);
-         Space     &getSpaceMapArr(Core::String glyph);
-         Space     &getSpaceMapReg();
+         Space     &getSpaceModArr(Core::String glyph);
+         Space     &getSpaceModReg();
          Space     &getSpaceSta();
-         Space     &getSpaceWldArr(Core::String glyph);
-         Space     &getSpaceWldReg();
          StrEnt    &getStrEnt     (Core::String glyph);
 
          void mergeDJump    (DJump     &out, DJump     &&in);
@@ -111,12 +111,12 @@ namespace GDCC
          TableCRange<Object>    rangeObject     () const;
          TableRange <Space>     rangeSpaceGblArs();
          TableCRange<Space>     rangeSpaceGblArs() const;
+         TableRange <Space>     rangeSpaceHubArs();
+         TableCRange<Space>     rangeSpaceHubArs() const;
          TableRange <Space>     rangeSpaceLocArs();
          TableCRange<Space>     rangeSpaceLocArs() const;
-         TableRange <Space>     rangeSpaceMapArs();
-         TableCRange<Space>     rangeSpaceMapArs() const;
-         TableRange <Space>     rangeSpaceWldArs();
-         TableCRange<Space>     rangeSpaceWldArs() const;
+         TableRange <Space>     rangeSpaceModArs();
+         TableCRange<Space>     rangeSpaceModArs() const;
          TableRange <StrEnt>    rangeStrEnt     ();
          TableCRange<StrEnt>    rangeStrEnt     () const;
 
@@ -128,9 +128,9 @@ namespace GDCC
          std::size_t sizeImport()      const;
          std::size_t sizeObject()      const;
          std::size_t sizeSpaceGblArs() const;
+         std::size_t sizeSpaceHubArs() const;
          std::size_t sizeSpaceLocArs() const;
-         std::size_t sizeSpaceMapArs() const;
-         std::size_t sizeSpaceWldArs() const;
+         std::size_t sizeSpaceModArs() const;
          std::size_t sizeStrEnt()      const;
 
 
@@ -145,17 +145,17 @@ namespace GDCC
          Table<Import>    tableImport;
          Table<Object>    tableObject;
          Table<Space>     tableSpaceGblArs;
+         Table<Space>     tableSpaceHubArs;
          Table<Space>     tableSpaceLocArs;
-         Table<Space>     tableSpaceMapArs;
-         Table<Space>     tableSpaceWldArs;
+         Table<Space>     tableSpaceModArs;
          Table<StrEnt>    tableStrEnt;
 
          std::unordered_map<AddrSpace, Table<Object const *>> tableObjectBySpace;
 
          Space spaceGblReg;
-         Space spaceMapReg;
+         Space spaceHubReg;
+         Space spaceModReg;
          Space spaceSta;
-         Space spaceWldReg;
       };
    }
 }

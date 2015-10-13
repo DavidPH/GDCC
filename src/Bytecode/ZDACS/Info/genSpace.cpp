@@ -42,7 +42,7 @@ namespace GDCC
                break;
 
             case IR::AddrBase::GblArr:
-            case IR::AddrBase::WldArr:
+            case IR::AddrBase::HubArr:
                // Even external arrays need an index.
                if(space->alloc)
                   space->allocValue(getAllocSpace(space->space.base));
@@ -58,12 +58,12 @@ namespace GDCC
                   backGlyphWord(space->glyph, space->value);
                break;
 
-            case IR::AddrBase::MapArr:
+            case IR::AddrBase::ModArr:
                // Even external arrays need an index.
                if(space->alloc)
                {
                   space->allocValue(getAllocSpace(space->space.base));
-                  getAllocObj({IR::AddrBase::MapReg, Core::STR_}).allocAt(1, space->value);
+                  getAllocObj({IR::AddrBase::ModReg, Core::STR_}).allocAt(1, space->value);
                }
 
                if(space->defin)
@@ -118,7 +118,7 @@ namespace GDCC
             // If no initializers needed, skip remaining parts.
             if(ini.vals.empty()) return;
 
-            if(space->space.base == IR::AddrBase::MapArr)
+            if(space->space.base == IR::AddrBase::ModArr)
             {
                ++numChunkAINI;
 
@@ -149,7 +149,7 @@ namespace GDCC
                      ++numChunkATAG;
                }
             }
-            else if(space->space.base == IR::AddrBase::MapReg)
+            else if(space->space.base == IR::AddrBase::ModReg)
             {
                for(auto const &i : ini.vals)
                {
@@ -263,7 +263,65 @@ namespace GDCC
                break;
 
             case IR::ValueBase::Union:
-               throw Core::ExceptStr({nullptr}, "genSpaceInitiValue stub: Union");
+               {
+                  Core::FastU next = itr + getSpaceInitiSize(val.vUnion.vtype);
+                  genSpaceInitiValue(ini, itr, *val.vUnion.value);
+                  itr = next;
+               }
+               break;
+            }
+         }
+
+         //
+         // Info::getSpaceInitiSize
+         //
+         Core::FastU Info::getSpaceInitiSize(IR::Type const &type)
+         {
+            Core::FastU n;
+
+            switch(type.t)
+            {
+            case IR::TypeBase::Array:
+               return getSpaceInitiSize(*type.tArray.elemT) * type.tArray.elemC;
+
+            case IR::TypeBase::Assoc:
+               n = 0;
+               for(auto const &t : type.tAssoc.assoc)
+                  n = std::max(n, getSpaceInitiSize(t.type) + t.addr);
+               return n;
+
+            case IR::TypeBase::DJump:
+               return 1;
+
+            case IR::TypeBase::Empty:
+               return 0;
+
+            case IR::TypeBase::Fixed:
+               return (type.tFixed.bitsI + type.tFixed.bitsF + type.tFixed.bitsS + 31) / 32;
+
+            case IR::TypeBase::Float:
+               return (type.tFixed.bitsI + type.tFixed.bitsF + type.tFixed.bitsS + 31) / 32;
+
+            case IR::TypeBase::Funct:
+               return 1;
+
+            case IR::TypeBase::Point:
+               return 1;
+
+            case IR::TypeBase::StrEn:
+               return 1;
+
+            case IR::TypeBase::Tuple:
+               n = 0;
+               for(auto const &v : type.tTuple.types)
+                  n += getSpaceInitiSize(v);
+               return n;
+
+            case IR::TypeBase::Union:
+               n = 0;
+               for(auto const &t : type.tUnion.types)
+                  n = std::max(n, getSpaceInitiSize(t));
+               return n;
             }
          }
       }

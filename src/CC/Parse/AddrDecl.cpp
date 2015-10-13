@@ -27,6 +27,7 @@
 
 #include "AST/Attribute.hpp"
 #include "AST/Space.hpp"
+#include "AST/Warning.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
@@ -71,9 +72,15 @@ namespace GDCC
          switch(ctx.in.get().str)
          {
          case Core::STR___gbl_arr: attr.space.base = IR::AddrBase::GblArr; break;
+         case Core::STR___wld_arr:
+            AST::WarnDeprecated(attr.namePos,
+               "__wld_arr is deprecrated, use __hub_arr instead");
+         case Core::STR___hub_arr: attr.space.base = IR::AddrBase::HubArr; break;
          case Core::STR___loc_arr: attr.space.base = IR::AddrBase::LocArr; break;
-         case Core::STR___map_arr: attr.space.base = IR::AddrBase::MapArr; break;
-         case Core::STR___wld_arr: attr.space.base = IR::AddrBase::WldArr; break;
+         case Core::STR___map_arr:
+            AST::WarnDeprecated(attr.namePos,
+               "__map_arr is deprecrated, use __mod_arr instead");
+         case Core::STR___mod_arr: attr.space.base = IR::AddrBase::ModArr; break;
          default: throw Core::ParseExceptExpect(ctx.in.reget(),
             "address-space-specifier", false);
          }
@@ -114,7 +121,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

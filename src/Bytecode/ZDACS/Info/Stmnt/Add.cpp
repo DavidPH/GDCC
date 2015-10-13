@@ -20,7 +20,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -213,16 +213,16 @@ namespace GDCC
                putReg(stmnt->args[0].aGblReg, Code::AddU_GblReg, Code::IncU_GblReg);
                break;
 
+            case IR::ArgBase::HubReg:
+               putReg(stmnt->args[0].aHubReg, Code::AddU_HubReg, Code::IncU_HubReg);
+               break;
+
             case IR::ArgBase::LocReg:
                putReg(stmnt->args[0].aLocReg, Code::AddU_LocReg, Code::IncU_LocReg);
                break;
 
-            case IR::ArgBase::MapReg:
-               putReg(stmnt->args[0].aMapReg, Code::AddU_MapReg, Code::IncU_MapReg);
-               break;
-
-            case IR::ArgBase::WldReg:
-               putReg(stmnt->args[0].aWldReg, Code::AddU_WldReg, Code::IncU_WldReg);
+            case IR::ArgBase::ModReg:
+               putReg(stmnt->args[0].aModReg, Code::AddU_ModReg, Code::IncU_ModReg);
                break;
 
             default:
@@ -310,16 +310,16 @@ namespace GDCC
                putReg(stmnt->args[0].aGblReg, Code::SubU_GblReg, Code::DecU_GblReg);
                break;
 
+            case IR::ArgBase::HubReg:
+               putReg(stmnt->args[0].aHubReg, Code::SubU_HubReg, Code::DecU_HubReg);
+               break;
+
             case IR::ArgBase::LocReg:
                putReg(stmnt->args[0].aLocReg, Code::SubU_LocReg, Code::DecU_LocReg);
                break;
 
-            case IR::ArgBase::MapReg:
-               putReg(stmnt->args[0].aMapReg, Code::SubU_MapReg, Code::DecU_MapReg);
-               break;
-
-            case IR::ArgBase::WldReg:
-               putReg(stmnt->args[0].aWldReg, Code::SubU_WldReg, Code::DecU_WldReg);
+            case IR::ArgBase::ModReg:
+               putReg(stmnt->args[0].aModReg, Code::SubU_ModReg, Code::DecU_ModReg);
                break;
 
             default:
@@ -361,9 +361,9 @@ namespace GDCC
             if(stmnt->args[0] == stmnt->args[1]) switch(stmnt->args[0].a)
             {
             case IR::ArgBase::GblReg:
+            case IR::ArgBase::HubReg:
             case IR::ArgBase::LocReg:
-            case IR::ArgBase::MapReg:
-            case IR::ArgBase::WldReg:
+            case IR::ArgBase::ModReg:
                if(stmnt->args[2].a != IR::ArgBase::Lit ||
                   !stmnt->args[2].aLit.value->isValue() ||
                   GetWord(stmnt->args[2].aLit) != 1)
@@ -379,9 +379,9 @@ namespace GDCC
             else if(stmnt->args[0] == stmnt->args[2]) switch(stmnt->args[0].a)
             {
             case IR::ArgBase::GblReg:
+            case IR::ArgBase::HubReg:
             case IR::ArgBase::LocReg:
-            case IR::ArgBase::MapReg:
-            case IR::ArgBase::WldReg:
+            case IR::ArgBase::ModReg:
                std::swap(stmnt->args[1], stmnt->args[2]);
 
                if(stmnt->args[2].a != IR::ArgBase::Lit ||
@@ -433,9 +433,9 @@ namespace GDCC
             if(stmnt->args[0] == stmnt->args[1]) switch(stmnt->args[0].a)
             {
             case IR::ArgBase::GblReg:
+            case IR::ArgBase::HubReg:
             case IR::ArgBase::LocReg:
-            case IR::ArgBase::MapReg:
-            case IR::ArgBase::WldReg:
+            case IR::ArgBase::ModReg:
                if(stmnt->args[2].a != IR::ArgBase::Lit ||
                   !stmnt->args[2].aLit.value->isValue() ||
                   GetWord(stmnt->args[2].aLit) != 1)

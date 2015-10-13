@@ -111,7 +111,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -136,20 +136,20 @@ namespace GDCC
          case Core::STR_Far:    return GetArg2<IR::Arg_Far   >(ctx);
          case Core::STR_GblArs: return GetArg2<IR::Arg_GblArs>(ctx);
          case Core::STR_GblReg: return GetArg2<IR::Arg_GblReg>(ctx);
+         case Core::STR_HubArs: return GetArg2<IR::Arg_HubArs>(ctx);
+         case Core::STR_HubReg: return GetArg2<IR::Arg_HubReg>(ctx);
          case Core::STR_LocReg: return GetArg2<IR::Arg_LocReg>(ctx);
-         case Core::STR_MapArs: return GetArg2<IR::Arg_MapArs>(ctx);
-         case Core::STR_MapReg: return GetArg2<IR::Arg_MapReg>(ctx);
+         case Core::STR_ModArs: return GetArg2<IR::Arg_ModArs>(ctx);
+         case Core::STR_ModReg: return GetArg2<IR::Arg_ModReg>(ctx);
          case Core::STR_Sta:    return GetArg2<IR::Arg_Sta   >(ctx);
          case Core::STR_StrArs: return GetArg2<IR::Arg_StrArs>(ctx);
          case Core::STR_Vaa:    return GetArg2<IR::Arg_Vaa   >(ctx);
-         case Core::STR_WldArs: return GetArg2<IR::Arg_WldArs>(ctx);
-         case Core::STR_WldReg: return GetArg2<IR::Arg_WldReg>(ctx);
 
          case Core::STR_GblArr: return GetArg3<IR::Arg_GblArr>(ctx);
-         case Core::STR_LocArr: return GetArg3<IR::Arg_MapArr>(ctx);
-         case Core::STR_MapArr: return GetArg3<IR::Arg_MapArr>(ctx);
+         case Core::STR_HubArr: return GetArg3<IR::Arg_HubArr>(ctx);
+         case Core::STR_LocArr: return GetArg3<IR::Arg_LocArr>(ctx);
+         case Core::STR_ModArr: return GetArg3<IR::Arg_ModArr>(ctx);
          case Core::STR_StrArr: return GetArg3<IR::Arg_StrArr>(ctx);
-         case Core::STR_WldArr: return GetArg3<IR::Arg_WldArr>(ctx);
 
          default:
             ctx.in.unget();

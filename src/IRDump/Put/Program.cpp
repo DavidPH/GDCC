@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -146,7 +146,7 @@ static void PutHeader(std::ostream &out, char const *str)
 
 
 //----------------------------------------------------------------------------|
-// Glboal Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -178,9 +178,9 @@ namespace GDCC
             out << ";; Imports: "                 << prog.sizeImport()      << '\n';
             out << ";; Objects: "                 << prog.sizeObject()      << '\n';
             out << ";; Address Spaces (GblArs): " << prog.sizeSpaceGblArs() << '\n';
+            out << ";; Address Spaces (HubArs): " << prog.sizeSpaceHubArs() << '\n';
             out << ";; Address Spaces (LocArs): " << prog.sizeSpaceLocArs() << '\n';
-            out << ";; Address Spaces (MapArs): " << prog.sizeSpaceMapArs() << '\n';
-            out << ";; Address Spaces (WldArs): " << prog.sizeSpaceWldArs() << '\n';
+            out << ";; Address Spaces (ModArs): " << prog.sizeSpaceModArs() << '\n';
             out << ";; String Table Entries: "    << prog.sizeStrEnt()      << '\n';
 
             if(OptHeaders)
@@ -223,9 +223,9 @@ namespace GDCC
          {
             if(OptHeaders) PutHeader(out, "Address Spaces");
             for(auto const &sp : prog.rangeSpaceGblArs()) PutSpace(out, sp);
+            for(auto const &sp : prog.rangeSpaceHubArs()) PutSpace(out, sp);
             for(auto const &sp : prog.rangeSpaceLocArs()) PutSpace(out, sp);
-            for(auto const &sp : prog.rangeSpaceMapArs()) PutSpace(out, sp);
-            for(auto const &sp : prog.rangeSpaceWldArs()) PutSpace(out, sp);
+            for(auto const &sp : prog.rangeSpaceModArs()) PutSpace(out, sp);
          }
 
          // StrEnts

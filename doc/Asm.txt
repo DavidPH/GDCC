@@ -1033,20 +1033,20 @@ Syntax:
     <GblArs> ( argument argument-offset(opt) )
     <GblReg> ( argument argument-offset(opt) )
     <Gen> ( argument argument-offset(opt) )
+    <HubArr> ( argument , argument argument-offset(opt) )
+    <HubArs> ( argument argument-offset(opt) )
+    <HubReg> ( argument argument-offset(opt) )
     <Lit> ( expression argument-offset(opt) )
     <LocReg> ( argument argument-offset(opt) )
-    <MapArr> ( argument , argument argument-offset(opt) )
-    <MapArs> ( argument argument-offset(opt) )
-    <MapReg> ( argument argument-offset(opt) )
+    <ModArr> ( argument , argument argument-offset(opt) )
+    <ModArs> ( argument argument-offset(opt) )
+    <ModReg> ( argument argument-offset(opt) )
     <Nul> ( )
     <Sta> ( argument argument-offset(opt) )
     <Stk> ( )
     <StrArr> ( argument , argument argument-offset(opt) )
     <StrArs> ( argument argument-offset(opt) )
     <Vaa> ( argument argument-offset(opt) )
-    <WldArr> ( argument , argument argument-offset(opt) )
-    <WldArs> ( argument argument-offset(opt) )
-    <WldReg> ( argument argument-offset(opt) )
 
   argument-offset:
     , expression
@@ -1402,21 +1402,21 @@ Syntax:
     <GblArs>
     <GblReg>
     <Gen>
+    <HubArr>
+    <HubArs>
+    <HubReg>
     <Lit>
     <Loc>
     <LocArs>
     <LocReg>
-    <MapArr>
-    <MapArs>
-    <MapReg>
+    <ModArr>
+    <ModArs>
+    <ModReg>
     <Nul>
     <Stk>
     <StrArr>
     <StrArs>
     <Vaa>
-    <WldArr>
-    <WldArs>
-    <WldReg>
 
   call-type-specifier:
     <Action>
@@ -1670,20 +1670,20 @@ Grammar
     <GblArs> ( argument argument-offset(opt) )
     <GblReg> ( argument argument-offset(opt) )
     <Gen> ( argument argument-offset(opt) )
+    <HubArr> ( argument , argument argument-offset(opt) )
+    <HubArs> ( argument argument-offset(opt) )
+    <HubReg> ( argument argument-offset(opt) )
     <Lit> ( expression argument-offset(opt) )
     <LocReg> ( argument argument-offset(opt) )
-    <MapArr> ( argument , argument argument-offset(opt) )
-    <MapArs> ( argument argument-offset(opt) )
-    <MapReg> ( argument argument-offset(opt) )
+    <ModArr> ( argument , argument argument-offset(opt) )
+    <ModArs> ( argument argument-offset(opt) )
+    <ModReg> ( argument argument-offset(opt) )
     <Nul> ( )
     <Sta> ( argument argument-offset(opt) )
     <Stk> ( )
     <StrArr> ( argument , argument argument-offset(opt) )
     <StrArs> ( argument argument-offset(opt) )
     <Vaa> ( argument argument-offset(opt) )
-    <WldArr> ( argument , argument argument-offset(opt) )
-    <WldArs> ( argument argument-offset(opt) )
-    <WldReg> ( argument argument-offset(opt) )
 
   argument-offset:
     , expression
@@ -1949,21 +1949,21 @@ Grammar
     <GblArs>
     <GblReg>
     <Gen>
+    <HubArr>
+    <HubArs>
+    <HubReg>
     <Lit>
     <Loc>
     <LocArs>
     <LocReg>
-    <MapArr>
-    <MapArs>
-    <MapReg>
+    <ModArr>
+    <ModArs>
+    <ModReg>
     <Nul>
     <Stk>
     <StrArr>
     <StrArs>
     <Vaa>
-    <WldArr>
-    <WldArs>
-    <WldReg>
 
   call-type-specifier:
     <Action>

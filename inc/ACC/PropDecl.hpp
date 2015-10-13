@@ -73,9 +73,9 @@ namespace GDCC
 
          // Array print functions.
          AST::Exp::CPtr propGlobalArray, propGlobalRange;
+         AST::Exp::CPtr propHubArray,    propHubRange;
          AST::Exp::CPtr propLocalArray,  propLocalRange;
-         AST::Exp::CPtr propMapArray,    propMapRange;
-         AST::Exp::CPtr propWorldArray,  propWorldRange;
+         AST::Exp::CPtr propModuleArray, propModuleRange;
       };
 
       //

@@ -274,19 +274,29 @@ namespace GDCC
       GDCC_IR_MakeArgPtr1(GblReg);
 
       //
+      // Arg_HubArs
+      //
+      GDCC_IR_MakeArgPtr1(HubArs);
+
+      //
+      // Arg_HubReg
+      //
+      GDCC_IR_MakeArgPtr1(HubReg);
+
+      //
       // Arg_LocReg
       //
       GDCC_IR_MakeArgPtr1(LocReg);
 
       //
-      // Arg_MapArs
+      // Arg_ModArs
       //
-      GDCC_IR_MakeArgPtr1(MapArs);
+      GDCC_IR_MakeArgPtr1(ModArs);
 
       //
-      // Arg_MapReg
+      // Arg_ModReg
       //
-      GDCC_IR_MakeArgPtr1(MapReg);
+      GDCC_IR_MakeArgPtr1(ModReg);
 
       //
       // Arg_Sta
@@ -304,19 +314,14 @@ namespace GDCC
       GDCC_IR_MakeArgPtr1(Vaa);
 
       //
-      // Arg_WldArs
-      //
-      GDCC_IR_MakeArgPtr1(WldArs);
-
-      //
-      // Arg_WldReg
-      //
-      GDCC_IR_MakeArgPtr1(WldReg);
-
-      //
       // Arg_GblArr
       //
       GDCC_IR_MakeArgPtr2(GblArr);
+
+      //
+      // Arg_HubArr
+      //
+      GDCC_IR_MakeArgPtr2(HubArr);
 
       //
       // Arg_LocArr
@@ -324,19 +329,14 @@ namespace GDCC
       GDCC_IR_MakeArgPtr2(LocArr);
 
       //
-      // Arg_MapArr
+      // Arg_ModArr
       //
-      GDCC_IR_MakeArgPtr2(MapArr);
+      GDCC_IR_MakeArgPtr2(ModArr);
 
       //
       // Arg_StrArr
       //
       GDCC_IR_MakeArgPtr2(StrArr);
-
-      //
-      // Arg_WldArr
-      //
-      GDCC_IR_MakeArgPtr2(WldArr);
 
       //
       // Arg

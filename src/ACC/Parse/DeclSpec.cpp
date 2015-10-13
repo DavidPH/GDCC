@@ -20,7 +20,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -121,7 +121,7 @@ namespace GDCC
          case declStorNone:                       break;
          case declStorGlob: attr.storeGbl = true; break;
          case declStorStat: attr.storeInt = true; break;
-         case declStorWorl: attr.storeWld = true; break;
+         case declStorWorl: attr.storeHub = true; break;
          }
       }
    }

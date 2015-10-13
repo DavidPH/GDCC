@@ -137,19 +137,19 @@ namespace GDCC
             else
                attr.type = attr.type->getTypeQualAddr(IR::AddrBase::GblReg);
          }
-         else if(attr.storeWld)
+         else if(attr.storeHub)
          {
             if(attr.type->isTypeArray())
-               GetDeclObjectSpace(ctx, scope, attr, IR::AddrBase::WldArr);
+               GetDeclObjectSpace(ctx, scope, attr, IR::AddrBase::HubArr);
             else
-               attr.type = attr.type->getTypeQualAddr(IR::AddrBase::WldReg);
+               attr.type = attr.type->getTypeQualAddr(IR::AddrBase::HubReg);
          }
          else
          {
             if(attr.type->isTypeArray())
-               GetDeclObjectSpace(ctx, scope, attr, IR::AddrBase::MapArr);
+               GetDeclObjectSpace(ctx, scope, attr, IR::AddrBase::ModArr);
             else
-               attr.type = attr.type->getTypeQualAddr(IR::AddrBase::MapReg);
+               attr.type = attr.type->getTypeQualAddr(IR::AddrBase::ModReg);
          }
 
          // Fetch/generate object.
@@ -163,7 +163,7 @@ namespace GDCC
             if(!obj->type->isTypeComplete())
             {
                // Allow global/world arrays to be incomplete for compatibility.
-               if(obj->type->isTypeArray() && (attr.storeGbl || attr.storeWld))
+               if(obj->type->isTypeArray() && (attr.storeGbl || attr.storeHub))
                   obj->type = obj->type->getBaseType()->getTypeArray(1);
                else
                   throw Core::ExceptStr(attr.namePos,
@@ -193,15 +193,15 @@ namespace GDCC
          if(attr.storeGbl)
             throw Core::ExceptStr(attr.namePos, "block scope global");
 
-         if(attr.storeWld)
+         if(attr.storeHub)
             throw Core::ExceptStr(attr.namePos, "block scope world");
 
          if(attr.storeInt)
          {
             if(attr.type->isTypeArray())
-               GetDeclObjectSpace(ctx, scope, attr, IR::AddrBase::MapArr);
+               GetDeclObjectSpace(ctx, scope, attr, IR::AddrBase::ModArr);
             else
-               attr.type = attr.type->getTypeQualAddr(IR::AddrBase::MapReg);
+               attr.type = attr.type->getTypeQualAddr(IR::AddrBase::ModReg);
          }
          else
          {

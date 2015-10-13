@@ -51,7 +51,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -74,10 +74,10 @@ namespace GDCC
          return ArgT(std::move(idx), off);
       }
       GDCC_AST_GenGenStmnt_Move_GenArgPtr2(IR::Arg_GblArr)
+      GDCC_AST_GenGenStmnt_Move_GenArgPtr2(IR::Arg_HubArr)
       GDCC_AST_GenGenStmnt_Move_GenArgPtr2(IR::Arg_LocArr)
-      GDCC_AST_GenGenStmnt_Move_GenArgPtr2(IR::Arg_MapArr)
+      GDCC_AST_GenGenStmnt_Move_GenArgPtr2(IR::Arg_ModArr)
       GDCC_AST_GenGenStmnt_Move_GenArgPtr2(IR::Arg_StrArr)
-      GDCC_AST_GenGenStmnt_Move_GenArgPtr2(IR::Arg_WldArr)
 
       //
       // GenStmnt_MoveWordGetT

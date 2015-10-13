@@ -36,10 +36,10 @@ namespace GDCC
             InfoBase::gen();
 
             for(auto &itr : prog->rangeSpaceGblArs()) genSpaceIniti(itr);
-            for(auto &itr : prog->rangeSpaceMapArs()) genSpaceIniti(itr);
-            for(auto &itr : prog->rangeSpaceWldArs()) genSpaceIniti(itr);
+            for(auto &itr : prog->rangeSpaceHubArs()) genSpaceIniti(itr);
+            for(auto &itr : prog->rangeSpaceModArs()) genSpaceIniti(itr);
 
-            genSpaceIniti(prog->getSpaceMapReg());
+            genSpaceIniti(prog->getSpaceModReg());
             genSpaceIniti(prog->getSpaceSta());
 
             genIniti();
@@ -148,19 +148,19 @@ namespace GDCC
             {
             case IR::AddrBase::GblArr:
             case IR::AddrBase::GblReg:
-            case IR::AddrBase::MapArr:
+            case IR::AddrBase::HubArr:
+            case IR::AddrBase::HubReg:
+            case IR::AddrBase::ModArr:
             case IR::AddrBase::Sta:
-            case IR::AddrBase::WldArr:
-            case IR::AddrBase::WldReg:
                if(obj->alloc)
                   obj->allocValue(getAllocObj(obj->space));
                break;
 
-            case IR::AddrBase::MapReg:
+            case IR::AddrBase::ModReg:
                if(obj->alloc)
                {
                   obj->allocValue(getAllocObj(obj->space));
-                  getAllocSpace(IR::AddrBase::MapArr).allocAt(obj->words, obj->value);
+                  getAllocSpace(IR::AddrBase::ModArr).allocAt(obj->words, obj->value);
                }
 
                if(!obj->defin)

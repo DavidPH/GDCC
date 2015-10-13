@@ -89,15 +89,15 @@ namespace GDCC
                else throw Core::ExceptStr(exp->pos, "invalid argument count");
                break;
 
-            case Core::STR_map:
-                    if(paramC == 2) prop.propMapArray = exp;
-               else if(paramC == 4) prop.propMapRange = exp;
+            case Core::STR_module:
+                    if(paramC == 2) prop.propModuleArray = exp;
+               else if(paramC == 4) prop.propModuleRange = exp;
                else throw Core::ExceptStr(exp->pos, "invalid argument count");
                break;
 
             case Core::STR_world:
-                    if(paramC == 2) prop.propWorldArray = exp;
-               else if(paramC == 4) prop.propWorldRange = exp;
+                    if(paramC == 2) prop.propHubArray = exp;
+               else if(paramC == 4) prop.propHubRange = exp;
                else throw Core::ExceptStr(exp->pos, "invalid argument count");
                break;
 

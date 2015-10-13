@@ -199,8 +199,10 @@ namespace GDCC
 
             Core::FastU getInitGblArray();
             Core::FastU getInitGblIndex();
-            Core::FastU getInitWldArray();
-            Core::FastU getInitWldIndex();
+            Core::FastU getInitHubArray();
+            Core::FastU getInitHubIndex();
+
+            Core::FastU getSpaceInitiSize(IR::Type const &type);
 
             Core::FastU getStkPtrIdx();
 
@@ -211,7 +213,7 @@ namespace GDCC
             bool isFastArg(IR::Arg const &arg);
 
             bool isInitiGblArr();
-            bool isInitiWldArr();
+            bool isInitiHubArr();
 
             bool isPushArg(IR::Arg const &arg);
 

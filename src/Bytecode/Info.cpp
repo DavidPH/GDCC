@@ -52,14 +52,14 @@ namespace GDCC
       void Info::gen()
       {
          for(auto &itr : prog->rangeSpaceGblArs()) genSpace(itr);
+         for(auto &itr : prog->rangeSpaceHubArs()) genSpace(itr);
          for(auto &itr : prog->rangeSpaceLocArs()) genSpace(itr);
-         for(auto &itr : prog->rangeSpaceMapArs()) genSpace(itr);
-         for(auto &itr : prog->rangeSpaceWldArs()) genSpace(itr);
+         for(auto &itr : prog->rangeSpaceModArs()) genSpace(itr);
 
          genSpace(prog->getSpaceGblReg());
-         genSpace(prog->getSpaceMapReg());
+         genSpace(prog->getSpaceHubReg());
+         genSpace(prog->getSpaceModReg());
          genSpace(prog->getSpaceSta());
-         genSpace(prog->getSpaceWldReg());
 
          for(auto &itr : prog->rangeFunction()) genFunc(itr);
 
@@ -155,14 +155,14 @@ namespace GDCC
       void Info::pre()
       {
          for(auto &itr : prog->rangeSpaceGblArs()) preSpace(itr);
+         for(auto &itr : prog->rangeSpaceHubArs()) preSpace(itr);
          for(auto &itr : prog->rangeSpaceLocArs()) preSpace(itr);
-         for(auto &itr : prog->rangeSpaceMapArs()) preSpace(itr);
-         for(auto &itr : prog->rangeSpaceWldArs()) preSpace(itr);
+         for(auto &itr : prog->rangeSpaceModArs()) preSpace(itr);
 
          preSpace(prog->getSpaceGblReg());
-         preSpace(prog->getSpaceMapReg());
+         preSpace(prog->getSpaceHubReg());
+         preSpace(prog->getSpaceModReg());
          preSpace(prog->getSpaceSta());
-         preSpace(prog->getSpaceWldReg());
 
          for(;;) try
          {
@@ -361,13 +361,13 @@ namespace GDCC
       {
          for(auto &itr : prog->rangeSpaceGblArs()) trSpace(itr);
          for(auto &itr : prog->rangeSpaceLocArs()) trSpace(itr);
-         for(auto &itr : prog->rangeSpaceMapArs()) trSpace(itr);
-         for(auto &itr : prog->rangeSpaceWldArs()) trSpace(itr);
+         for(auto &itr : prog->rangeSpaceModArs()) trSpace(itr);
+         for(auto &itr : prog->rangeSpaceHubArs()) trSpace(itr);
 
          trSpace(prog->getSpaceGblReg());
-         trSpace(prog->getSpaceMapReg());
+         trSpace(prog->getSpaceHubReg());
+         trSpace(prog->getSpaceModReg());
          trSpace(prog->getSpaceSta());
-         trSpace(prog->getSpaceWldReg());
 
          for(auto &itr : prog->rangeFunction()) trFunc(itr);
 

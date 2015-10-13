@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,7 +18,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -33,20 +33,20 @@ namespace GDCC
          void Info::putIniti()
          {
             bool isGblArr = isInitiGblArr();
-            bool isWldArr = isInitiWldArr();
+            bool isHubArr = isInitiHubArr();
 
-            if(!isGblArr && !isWldArr)
+            if(!isGblArr && !isHubArr)
                return;
 
-            if(isWldArr)
+            if(isHubArr)
             {
-               Core::FastU arr = getInitWldArray();
-               Core::FastU idx = getInitWldIndex();
+               Core::FastU arr = getInitHubArray();
+               Core::FastU idx = getInitHubIndex();
 
                // Check if already initialized.
                putCode(Code::Push_Lit);
                putWord(idx);
-               putCode(Code::Push_WldArr);
+               putCode(Code::Push_HubArr);
                putWord(arr);
                putCode(Code::Jcnd_Tru);
                putWord(codeInitEnd);
@@ -56,12 +56,12 @@ namespace GDCC
                putWord(idx);
                putCode(Code::Push_Lit);
                putWord(1);
-               putCode(Code::Drop_WldArr);
+               putCode(Code::Drop_HubArr);
                putWord(arr);
 
                // Write instructions needed for initializers.
-               for(auto &itr : prog->rangeSpaceWldArs())
-                  putInitiSpace(itr, Code::Drop_WldArr);
+               for(auto &itr : prog->rangeSpaceHubArs())
+                  putInitiSpace(itr, Code::Drop_HubArr);
             }
 
             if(isGblArr)

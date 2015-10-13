@@ -87,7 +87,7 @@ namespace GDCC
 
             Core::FastU len = numChunkAIMP * 8 + 12;
 
-            for(auto const &itr : prog->rangeSpaceMapArs())
+            for(auto const &itr : prog->rangeSpaceModArs())
                if(!itr.defin) len += lenString(itr.glyph);
 
             return len;
@@ -103,7 +103,7 @@ namespace GDCC
             Core::FastU len = 0;
 
             for(auto const &itr : init)
-               if(itr.first->space.base == IR::AddrBase::MapArr)
+               if(itr.first->space.base == IR::AddrBase::ModArr)
                   len += itr.second.max * 4 + 12;
 
             return len;
@@ -139,7 +139,7 @@ namespace GDCC
             Core::FastU len = 0;
 
             for(auto const &itr : init)
-               if(itr.first->space.base == IR::AddrBase::MapArr)
+               if(itr.first->space.base == IR::AddrBase::ModArr)
             {
                if(itr.second.needTag && !itr.second.onlyStr)
                   len += itr.second.max + 13;
@@ -249,13 +249,13 @@ namespace GDCC
             Core::Array<Core::String> strs{numChunkMEXP};
             for(auto &s : strs) s = Core::STR_;
 
-            for(auto const &itr : prog->rangeObject())
+            for(auto const &itr : prog->rangeObjectBySpace({IR::AddrBase::ModReg, Core::STR_}))
             {
-               if(itr.defin && itr.space.base == IR::AddrBase::MapReg)
-                  strs[itr.value] = itr.glyph;
+               if(itr->defin)
+                  strs[itr->value] = itr->glyph;
             }
 
-            for(auto const &itr : prog->rangeSpaceMapArs())
+            for(auto const &itr : prog->rangeSpaceModArs())
                if(itr.defin) strs[itr.value] = itr.glyph;
 
             return lenChunk("MEXP", strs, false);
@@ -270,10 +270,10 @@ namespace GDCC
 
             Core::FastU len = numChunkMIMP * 4 + 8;
 
-            for(auto const &itr : prog->rangeObject())
+            for(auto const &itr : prog->rangeObjectBySpace({IR::AddrBase::ModReg, Core::STR_}))
             {
-               if(!itr.defin && itr.space.base == IR::AddrBase::MapReg)
-                  len += lenString(itr.glyph);
+               if(!itr->defin)
+                  len += lenString(itr->glyph);
             }
 
             return len;

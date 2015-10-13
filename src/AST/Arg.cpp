@@ -66,10 +66,10 @@ namespace GDCC
          return ArgT(arg.data->getArg().getIRArg(prog));
       }
       GenGetIRArg_ArgPtr2(IR::Arg_GblArr)
+      GenGetIRArg_ArgPtr2(IR::Arg_HubArr)
       GenGetIRArg_ArgPtr2(IR::Arg_LocArr)
-      GenGetIRArg_ArgPtr2(IR::Arg_MapArr)
+      GenGetIRArg_ArgPtr2(IR::Arg_ModArr)
       GenGetIRArg_ArgPtr2(IR::Arg_StrArr)
-      GenGetIRArg_ArgPtr2(IR::Arg_WldArr)
 
       // GetIRArg<IR::Arg_Cpy>
       template<>
@@ -99,10 +99,10 @@ namespace GDCC
          return arg.data->getArg().isIRArg();
       }
       GenIsIRArg_ArgPtr2(IR::Arg_GblArr)
+      GenIsIRArg_ArgPtr2(IR::Arg_HubArr)
       GenIsIRArg_ArgPtr2(IR::Arg_LocArr)
-      GenIsIRArg_ArgPtr2(IR::Arg_MapArr)
+      GenIsIRArg_ArgPtr2(IR::Arg_ModArr)
       GenIsIRArg_ArgPtr2(IR::Arg_StrArr)
-      GenIsIRArg_ArgPtr2(IR::Arg_WldArr)
 
       // IsIRArg<IR::Arg_Cpy>
       template<>
@@ -128,7 +128,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

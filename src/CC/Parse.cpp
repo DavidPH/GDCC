@@ -20,7 +20,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -120,7 +120,7 @@ namespace GDCC
 
             // Disallow extern, static, or typedef. Also ACS global or world.
             if(param.isTypedef || param.storeExt || param.storeInt ||
-               param.storeGbl || param.storeWld)
+               param.storeGbl || param.storeHub)
                throw Core::ExceptStr(in.reget().pos,
                   "bad parameter storage class");
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,7 +16,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -31,9 +31,9 @@ namespace GDCC
          void Info::genIniti()
          {
             bool isGblArr = isInitiGblArr();
-            bool isWldArr = isInitiWldArr();
+            bool isHubArr = isInitiHubArr();
 
-            if(!isGblArr && !isWldArr)
+            if(!isGblArr && !isHubArr)
                return;
 
             ++numChunkSPTR;
@@ -42,7 +42,7 @@ namespace GDCC
             codeInit = CodeBase() + numChunkCODE;
 
             // Initialize world arrays.
-            if(isWldArr)
+            if(isHubArr)
             {
                // Check if already initialized.
                // push_lit push_arr cjmp_tru
@@ -53,7 +53,7 @@ namespace GDCC
                numChunkCODE += 24;
 
                // Count instructions needed for initializers.
-               for(auto &itr : prog->rangeSpaceWldArs()) genInitiSpace(itr);
+               for(auto &itr : prog->rangeSpaceHubArs()) genInitiSpace(itr);
             }
 
             // Initialize global arrays.

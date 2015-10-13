@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,7 +19,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -116,18 +116,18 @@ namespace GDCC
 
          // Array spaces.
          if(encloser.base == AddrBase::GblArs && enclosee.base == AddrBase::GblArr) return true;
-         if(encloser.base == AddrBase::MapArs && enclosee.base == AddrBase::MapArr) return true;
+         if(encloser.base == AddrBase::HubArs && enclosee.base == AddrBase::HubArr) return true;
+         if(encloser.base == AddrBase::ModArs && enclosee.base == AddrBase::ModArr) return true;
          if(encloser.base == AddrBase::StrArs && enclosee.base == AddrBase::StrArr) return true;
-         if(encloser.base == AddrBase::WldArs && enclosee.base == AddrBase::WldArr) return true;
 
          // Far pointer.
          if(encloser.base == AddrBase::Far) switch(enclosee.base)
          {
          case AddrBase::Aut:    case AddrBase::Sta:
          case AddrBase::GblArr: case AddrBase::GblArs: case AddrBase::GblReg:
-       //case AddrBase::MapArr: case AddrBase::MapArs: case AddrBase::MapReg:
+       //case AddrBase::ModArr: case AddrBase::ModArs: case AddrBase::ModReg:
          case AddrBase::StrArr: case AddrBase::StrArs:
-         case AddrBase::WldArr: case AddrBase::WldArs: case AddrBase::WldReg:
+         case AddrBase::HubArr: case AddrBase::HubArs: case AddrBase::HubReg:
             return true;
 
          default: break;
