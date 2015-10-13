@@ -108,6 +108,7 @@ namespace GDCC
                catch(Core::Exception &e)
                {
                   e.setOrigin(itr.initi->pos);
+                  throw;
                }
 
                if(ini.max < idx)
