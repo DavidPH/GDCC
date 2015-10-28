@@ -61,7 +61,7 @@ namespace GDCC
                ++pos.line;
                if(pos.col) pos.col = 1;
             }
-            else if(pos.col)
+            else if((c & 0xC0) != 0x80 && pos.col)
                ++pos.col;
 
             return c;
