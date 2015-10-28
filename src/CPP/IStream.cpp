@@ -63,7 +63,7 @@ namespace GDCC
       //
       static bool IsIdentiChar(int c)
       {
-         return std::isalnum(c) || c == '_' || c > 0x80;
+         return std::isalnum(c) || c == '_' || c >= 0x80;
       }
 
       //
