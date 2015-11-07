@@ -512,7 +512,7 @@ special
    int   {130     }:GetInvasionState(void),
    void  {131     }:PrintName(int),
    void  {132     }:Music_Change(str, int),
-   void  {133, 134}:ConsoleCommand(1, str, int, int),
+   void  {134, 133}:ConsoleCommand(1, str, int, int),
    int   {135     }:SinglePlayer(void),
    int   {136     }:FixedMul(int, int),
    int   {137     }:FixedDiv(int, int),

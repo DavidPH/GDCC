@@ -35,7 +35,7 @@ ACS_AsmFuncDeclFull(129,    , 0, int,  GetInvasionWave, void);
 ACS_AsmFuncDeclFull(130,    , 0, int,  GetInvasionState, void);
 
 ACS_AsmFuncDeclFull(132,    , 0, void, Music_Change, __str, int);
-ACS_AsmFuncDeclFull(133, 134, 2, void, ConsoleCommand, __str, int, int);
+ACS_AsmFuncDeclFull(134, 133, 2, void, ConsoleCommand, __str, int, int);
 ACS_AsmFuncDeclFull(135,    , 0, int,  SinglePlayer, void);
 
 #endif//__GDCC_Header__C__ACS_Zandronum__AsmFunc_h__
