@@ -58,6 +58,8 @@ namespace GDCC
       protected:
          virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
             AST::Arg const &dst) const;
+
+         virtual bool v_isIRExp() const;
       };
 
       //

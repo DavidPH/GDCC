@@ -119,6 +119,24 @@ namespace GDCC
       }
 
       //
+      // Exp_ConvertPtrInt::v_isIRExp
+      //
+      bool Exp_ConvertPtrInt::v_isIRExp() const
+      {
+         // Do not allow conversion to __str at compile-time.
+         if(type->isTypePointer() && type->getBaseType()->isTypeStrEnt())
+            return false;
+
+         auto expT = exp->getType();
+
+         // Do not allow conversion from __str at compile-time.
+         if(expT->isTypePointer() && expT->getBaseType()->isTypeStrEnt())
+            return false;
+
+         return exp->isIRExp();
+      }
+
+      //
       // Exp_ConvertPtrInv::v_genStmnt
       //
       void Exp_ConvertPtrInv::v_genStmnt(AST::GenStmntCtx const &ctx,
