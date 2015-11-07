@@ -22,10 +22,10 @@
 // Global Functions                                                           |
 //
 
-ACS_SpecialDeclFull(136, 0, void, Player_SetTeam, int);
+ACS_SpecialDeclFull(145, 0, int, Player_SetTeam, int);
 
-ACS_SpecialDeclFull(152, 0, void, Team_Score, int, int);
-ACS_SpecialDeclFull(153, 0, void, Team_GivePoints, int, int, int);
+ACS_SpecialDeclFull(152, 0, int, Team_Score, int, int);
+ACS_SpecialDeclFull(153, 0, int, Team_GivePoints, int, int, int);
 
 #endif//__GDCC_Header__C__ACS_Zandronum__Special_h__
 
