@@ -426,7 +426,7 @@ special
    fixed -103:GetTeamPropertyFixed(2, int, int),
    str   -103:GetTeamPropertyString(2, int, int),
    int   -104:GetPlayerLivesLeft(1, int),
-   int   -105:SetPlayerLivesLeft(2, int),
+   int   -105:SetPlayerLivesLeft(2, int, int),
    int   -106:KickFromGame(2, int, str),
    int   -107:GetGamemodeState(0),
    int   -108:SetDBEntry(3, str, str, int),
