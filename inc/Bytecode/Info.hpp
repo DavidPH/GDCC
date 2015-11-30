@@ -92,6 +92,8 @@ namespace GDCC
 
          void gen(IR::Program &prog);
 
+         void opt(IR::Program &prog);
+
          void pre(IR::Program &prog);
 
          void put(IR::Program &prog, std::ostream &out);
@@ -117,6 +119,22 @@ namespace GDCC
                  void genStmnt(IR::Statement &stmnt);
          virtual void genStr() {}
                  void genStr(IR::StrEnt &str);
+
+         virtual void opt();
+         virtual void optBlock();
+                 void optBlock(IR::Block &block);
+         virtual void optDJump() {}
+                 void optDJump(IR::DJump &djump);
+         virtual void optFunc();
+                 void optFunc(IR::Function &func);
+         virtual void optObj() {}
+                 void optObj(IR::Object &obj);
+         virtual void optSpace() {}
+                 void optSpace(IR::Space &space);
+         virtual void optStmnt() {}
+                 void optStmnt(IR::Statement &stmnt);
+         virtual void optStr() {}
+                 void optStr(IR::StrEnt &str);
 
          virtual void pre();
          virtual void preBlock();

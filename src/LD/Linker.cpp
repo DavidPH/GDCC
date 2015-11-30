@@ -154,6 +154,9 @@ namespace GDCC
          if(!info) return;
 
          info->pre(prog);
+         info->opt(prog);
+         info->tr(prog);
+         info->opt(prog);
          info->tr(prog);
       }
 

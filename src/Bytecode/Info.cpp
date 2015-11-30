@@ -150,6 +150,114 @@ namespace GDCC
       }
 
       //
+      // Info::opt
+      //
+      void Info::opt()
+      {
+         for(auto &itr : prog->rangeSpaceGblArs()) optSpace(itr);
+         for(auto &itr : prog->rangeSpaceHubArs()) optSpace(itr);
+         for(auto &itr : prog->rangeSpaceLocArs()) optSpace(itr);
+         for(auto &itr : prog->rangeSpaceModArs()) optSpace(itr);
+
+         optSpace(prog->getSpaceGblReg());
+         optSpace(prog->getSpaceHubReg());
+         optSpace(prog->getSpaceModReg());
+         optSpace(prog->getSpaceSta());
+
+         for(;;) try
+         {
+            for(auto &itr : prog->rangeFunction()) optFunc(itr);
+            break;
+         }
+         catch(ResetFunc const &) {}
+
+         for(auto &itr : prog->rangeDJump())  optDJump(itr);
+         for(auto &itr : prog->rangeObject()) optObj(itr);
+         for(auto &itr : prog->rangeStrEnt()) optStr(itr);
+      }
+
+      //
+      // Info::opt
+      //
+      void Info::opt(IR::Program &prog_)
+      {
+         TryPointer(opt, prog);
+      }
+
+      //
+      // Info::optBlock
+      //
+      void Info::optBlock()
+      {
+         for(auto &stmnt_ : *block)
+            optStmnt(stmnt_);
+      }
+
+      //
+      // Info::optBlock
+      //
+      void Info::optBlock(IR::Block &block_)
+      {
+         TryPointer(optBlock, block);
+      }
+
+      //
+      // Info::optDJump
+      //
+      void Info::optDJump(IR::DJump &djump_)
+      {
+         TryPointer(optDJump, djump);
+      }
+
+      //
+      // Info::optFunc
+      //
+      void Info::optFunc()
+      {
+         optBlock(func->block);
+      }
+
+      //
+      // Info::optFunc
+      //
+      void Info::optFunc(IR::Function &func_)
+      {
+         TryPointer(optFunc, func);
+      }
+
+      //
+      // Info::optObj
+      //
+      void Info::optObj(IR::Object &obj_)
+      {
+         TryPointer(optObj, obj);
+      }
+
+      //
+      // Info::optSpace
+      //
+      void Info::optSpace(IR::Space &space_)
+      {
+         TryPointer(optSpace, space);
+      }
+
+      //
+      // Info::optStmnt
+      //
+      void Info::optStmnt(IR::Statement &stmnt_)
+      {
+         TryPointer(optStmnt, stmnt);
+      }
+
+      //
+      // Info::optStr
+      //
+      void Info::optStr(IR::StrEnt &str_)
+      {
+         TryPointer(optStr, str);
+      }
+
+      //
       // Info::pre
       //
       void Info::pre()
