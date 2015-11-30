@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2014 David Hill
+## Copyright (C) 2013-2015 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -24,6 +24,7 @@ add_subdirectory(ZDACS)
 add_library(gdcc-bytecode-lib ${GDCC_SHARED_DECL}
    Info.cpp
    Info/moveArg.cpp
+   Info/optStmnt.cpp
 
    ../../inc/Bytecode/Info.hpp
 )

@@ -131,7 +131,7 @@ namespace GDCC
                  void optObj(IR::Object &obj);
          virtual void optSpace() {}
                  void optSpace(IR::Space &space);
-         virtual void optStmnt() {}
+         virtual void optStmnt();
                  void optStmnt(IR::Statement &stmnt);
          virtual void optStr() {}
                  void optStr(IR::StrEnt &str);
@@ -186,6 +186,8 @@ namespace GDCC
 
          bool moveArgStk_dst(IR::Arg &idx, Core::FastU sizeMove);
          bool moveArgStk_src(IR::Arg &idx, Core::FastU sizeMove);
+
+         bool optStmnt_Cspe_Drop();
 
          IR::Block     *block;
          IR::DJump     *djump;
