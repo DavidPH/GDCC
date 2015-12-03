@@ -146,6 +146,7 @@ namespace GDCC
             IR::Glyph labelCmp{prog, name + "$cmp"};
 
             IR::Glyph labelLEMax{prog, name + "$lemax"};
+            IR::Glyph labelLEMin{prog, name + "$lemin"};
             IR::Glyph labelREMax{prog, name + "$remax"};
 
             IR::Arg_LocReg lexp{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size - 1))};
@@ -160,17 +161,15 @@ namespace GDCC
 
             // Check for special cases.
 
-            // Does l have max exp?
+            // Does l have min or max exp?
             AS_Stmnt({IR::Code::AndU_W,   1}, stk, lexp, fi.maskExp);
-            AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelLEMax);
+            AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelLEMax, 0, labelLEMin);
+            AS_Stmnt({IR::Code::Move_W,   1}, nul, stk);
 
             // Does r have max exp?
             AS_Stmnt({IR::Code::AndU_W,   1}, stk, rexp, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelREMax);
-
-            // If l == +/-0 and r == +/-0, then l == r.
-            AS_Stmnt({IR::Code::OrIU_W,   1}, stk, stk, stk);
-            AS_Stmnt({IR::Code::Jcnd_Nil, 1}, stk, cmpEQ ? label1 : label0);
+            AS_Stmnt({IR::Code::Move_W,   1}, nul, stk);
 
             newFunc->block.addLabel(labelCmp);
 
@@ -220,6 +219,27 @@ namespace GDCC
 
             // ... And if not, jump to normal compare.
             AS_Stmnt({IR::Code::Jump,     0}, labelCmp);
+
+            newFunc->block.addLabel(labelLEMin);
+
+            // Check for r having max exponent...
+            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rexp, fi.maskExp);
+            AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelREMax);
+            AS_Stmnt({IR::Code::Move_W,   1}, nul, stk);
+
+            // ... And if not, check for l being subnormal...
+            AS_Stmnt({IR::Code::Move_W,   stmnt->op.size}, stk, lop);
+            AS_Stmnt({IR::Code::AndU_W,   1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::Jcnd_Tru, stmnt->op.size}, stk, labelCmp);
+
+            // ... And if not, check for r being zero...
+            AS_Stmnt({IR::Code::Move_W,   stmnt->op.size}, stk, rop);
+            AS_Stmnt({IR::Code::AndU_W,   1},              stk, stk, fi.maskMan | fi.maskExp);
+
+            // ... And if it is, l == r, otherwise l != r.
+            AS_Stmnt({IR::Code::NotU_W,   stmnt->op.size}, stk, stk);
+            if(!cmpEQ) AS_Stmnt({IR::Code::NotU_W, 1},     stk, stk);
+            AS_Stmnt({IR::Code::Retn,     1},              stk);
 
             newFunc->block.addLabel(labelREMax);
             AS_Stmnt({IR::Code::Move_W,   1}, nul, stk);
