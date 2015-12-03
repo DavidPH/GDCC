@@ -63,6 +63,20 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
+// Extern Objects                                                             |
+//
+
+namespace GDCC
+{
+   namespace CC
+   {
+      extern Core::CounterRef<AST::Exp const> (*ExpPromo_Assign)(
+         AST::Type const *t, AST::Exp const *e, Core::Origin pos);
+   }
+}
+
+
+//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
@@ -284,7 +298,7 @@ namespace GDCC
       ExpPromo_Arith(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
 
       // Conversion as if by assignment.
-      Core::CounterRef<AST::Exp const> ExpPromo_Assign(AST::Type const *t,
+      Core::CounterRef<AST::Exp const> ExpPromo_AssignBase(AST::Type const *t,
          AST::Exp const *e, Core::Origin pos);
 
       // Equality expression contraints and promotion.

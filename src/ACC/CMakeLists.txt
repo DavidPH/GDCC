@@ -20,6 +20,7 @@
 ##
 add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    DirectiveTBuf.cpp
+   Exp.cpp
    IncludeDTBuf.cpp
    IStream.cpp
    Macro.cpp
@@ -49,6 +50,7 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    Scope.cpp
 
    ../../inc/ACC/DirectiveTBuf.hpp
+   ../../inc/ACC/Exp.hpp
    ../../inc/ACC/IncludeDTBuf.hpp
    ../../inc/ACC/IStream.hpp
    ../../inc/ACC/Macro.hpp

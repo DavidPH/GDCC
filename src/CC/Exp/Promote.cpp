@@ -56,10 +56,10 @@ namespace GDCC
       }
 
       //
-      // ExpPromo_Assign
+      // ExpPromo_AssignBase
       //
-      AST::Exp::CRef ExpPromo_Assign(AST::Type const *typeL, AST::Exp const *e,
-         Core::Origin pos)
+      AST::Exp::CRef ExpPromo_AssignBase(AST::Type const *typeL,
+         AST::Exp const *e, Core::Origin pos)
       {
          auto exp   = ExpPromo_LValue(e, pos);
          auto typeR = exp->getType();

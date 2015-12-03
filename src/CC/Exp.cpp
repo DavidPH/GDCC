@@ -31,6 +31,20 @@
 
 
 //----------------------------------------------------------------------------|
+// Extern Objects                                                             |
+//
+
+namespace GDCC
+{
+   namespace CC
+   {
+      Core::CounterRef<AST::Exp const> (*ExpPromo_Assign)(AST::Type const *t,
+         AST::Exp const *e, Core::Origin pos) = ExpPromo_AssignBase;
+   }
+}
+
+
+//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 

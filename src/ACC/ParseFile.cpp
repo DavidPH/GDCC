@@ -12,11 +12,14 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Exp.hpp"
 #include "ACC/Macro.hpp"
 #include "ACC/Scope.hpp"
 #include "ACC/TStream.hpp"
 
 #include "AST/Statement.hpp"
+
+#include "CC/Exp.hpp"
 
 #include "Core/File.hpp"
 #include "Core/Path.hpp"
@@ -40,6 +43,26 @@ namespace GDCC
       //
       void ParseFile(char const *inName, IR::Program &prog)
       {
+         // Saves and restores certain global function pointers.
+         struct FuncSave
+         {
+            FuncSave()
+            {
+               expPromo_Assign = CC::ExpPromo_Assign;
+               CC::ExpPromo_Assign = ACC::ExpPromo_Assign;
+            }
+
+            ~FuncSave()
+            {
+               CC::ExpPromo_Assign = expPromo_Assign;
+            }
+
+            AST::Exp::CRef (*expPromo_Assign)(AST::Type const *typeL,
+               AST::Exp const *e, Core::Origin pos);
+
+         } funcSave;
+
+
          auto buf = Core::FileOpenBlock(inName);
          if(!buf)
          {
