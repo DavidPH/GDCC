@@ -1067,17 +1067,14 @@ namespace GDCC
          {
             FloatInfo fi;
 
-            if(words == 1)
-               fi.bitsExp = 8;
-            else if(words <= 11)
-               fi.bitsExp = words * 2 + 7;
-            else
-               fi.bitsExp = 30;
+            fi.bitsExp     = words > 1 ? words <= 11 ? words * 2 + 7 : 30 : 8;
+            fi.bitsMan     = 31 - fi.bitsExp;
+            fi.bitsManFull = words * 32 - fi.bitsExp - 1;
 
             fi.maxExp  = (Core::FastU(1) << fi.bitsExp) - 1;
-            fi.maskExp = fi.maxExp << (31 - fi.bitsExp);
 
-            fi.maskMan = 0x7FFFFFFF >> fi.bitsExp;
+            fi.maskExp = fi.maxExp << fi.bitsMan;
+            fi.maskMan = (Core::FastU(1) << fi.bitsMan) - 1;
             fi.maskSig = 0x80000000;
 
             return fi;

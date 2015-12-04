@@ -45,6 +45,8 @@ namespace GDCC
          {
          public:
             Core::FastU bitsExp;
+            Core::FastU bitsMan;
+            Core::FastU bitsManFull;
 
             Core::FastU maskExp;
             Core::FastU maskMan;
@@ -260,6 +262,7 @@ namespace GDCC
 
             virtual void preStmnt();
             void preStmnt_AdXU_W();
+            void preStmnt_AddF_W();
             void preStmnt_AddU_W(IR::Code code);
             void preStmnt_Bclz_W(bool ones);
             void preStmnt_CmpF_EQ_W();
