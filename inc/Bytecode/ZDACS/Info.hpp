@@ -296,6 +296,7 @@ namespace GDCC
             void preStmnt_ShLF_W();
             void preStmnt_ShLU_W();
             void preStmnt_SuXU_W();
+            void preStmnt_SubF_W();
 
             void preStmntCall(Core::FastU retrn, Core::FastU param);
             void preStmntCall(Core::String name, Core::FastU retrn, Core::FastU param);

@@ -67,7 +67,6 @@ static void MakeLib_libGDCC(GDCC::IR::Program &prog)
 
       MakeLib_AS(prog, pathSub, "DivF.asm");
       MakeLib_AS(prog, pathSub, "MulF.asm");
-      MakeLib_AS(prog, pathSub, "SubF.asm");
    }
 }
 
