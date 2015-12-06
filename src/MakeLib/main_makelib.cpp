@@ -66,7 +66,6 @@ static void MakeLib_libGDCC(GDCC::IR::Program &prog)
       GDCC::Core::PathAppend(pathSub, "ZDACS");
 
       MakeLib_AS(prog, pathSub, "DivF.asm");
-      MakeLib_AS(prog, pathSub, "MulF.asm");
    }
 }
 

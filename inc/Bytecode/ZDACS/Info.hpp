@@ -53,6 +53,8 @@ namespace GDCC
             Core::FastU maskSig;
 
             Core::FastU maxExp;
+
+            Core::FastU offExp;
          };
 
          //
@@ -289,6 +291,7 @@ namespace GDCC
             void preStmnt_DivX_W(IR::Code code);
             void preStmnt_MuXU_W();
             void preStmnt_MuXU_W1();
+            void preStmnt_MulF_W();
             void preStmnt_MulK_W();
             void preStmnt_MulU_W();
             void preStmnt_MulX_W();
