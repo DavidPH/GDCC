@@ -101,6 +101,7 @@ static void MakeLib_libc(GDCC::IR::Program &prog)
    MakeLib_CC(prog, path, "stdlib.c");
    MakeLib_CC(prog, path, "string.c");
    MakeLib_CC(prog, path, "strto.c");
+   MakeLib_CC(prog, path, "time.c");
    MakeLib_CC(prog, path, "trig.c");
 
    if(GDCC::Platform::IsFamily_ZDACS())
