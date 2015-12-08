@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -60,6 +60,28 @@ namespace GDCC
          out << "Array ";
 
          PutType(out, exp->elemT);
+
+         out << " (";
+
+         if(!exp->elemV.empty())
+         {
+            auto itr = exp->elemV.begin(), end = exp->elemV.end();
+            PutExp(out, *itr++);
+            while(itr != end)
+               PutExp(out << ", ", *itr++);
+         }
+
+         out << ')';
+      }
+
+      //
+      // PutExpPart Assoc
+      //
+      static void PutExpPart(std::ostream &out, IR::Exp_Assoc const *exp)
+      {
+         out << "Assoc ";
+
+         PutType(out, exp->getType());
 
          out << " (";
 
@@ -170,7 +192,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -228,6 +250,10 @@ namespace GDCC
 
          case Core::STR_Array:
             PutExpPart(out, static_cast<IR::Exp_Array const *>(exp));
+            break;
+
+         case Core::STR_Assoc:
+            PutExpPart(out, static_cast<IR::Exp_Assoc const *>(exp));
             break;
 
          case Core::STR_Glyph:
