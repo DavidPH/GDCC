@@ -14,6 +14,7 @@
 #include <errno.h>
 #include <inttypes.h>
 #include <limits.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdfix.h>
 #include <stdlib.h>
@@ -22,6 +23,170 @@
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
 //
+
+//
+// StrToF_Body
+//
+#define StrToF_Body(ctype, type, F) \
+   StrToF_Pre(ctype, F); \
+   StrToK_Scan(ctype); \
+   StrToF_Loop(ctype, type); \
+   StrToF_Pro(ctype, F)
+
+//
+// StrToF_Loop
+//
+#define StrToF_Loop(ctype, type) \
+   /* Read number. */ \
+   type val = 0; \
+   \
+   StrToK_Loop_E(); \
+   StrToF_Loop_I(ctype, type); \
+   StrToK_Loop_F(ctype, type)
+
+//
+// StrToF_Loop_I
+//
+#define StrToF_Loop_I(ctype, type) \
+   /* Integer part. */ \
+   if(base == 10) \
+   { \
+      if(signE) \
+      { \
+         /* Integer portion. */ \
+         int idig = iend - iptr; \
+         if(idig > valE) \
+         { \
+            int exp = idig - valE; \
+            for(ctype const *ptr = iptr; exp; ++ptr, --exp) \
+               val = val * 10 + CharToInt(*ptr); \
+         } \
+      } \
+      else \
+      { \
+         int exp = valE; \
+         \
+         /* Integer portion. */ \
+         for(ctype const *ptr = iptr; ptr != iend; ++ptr) \
+            val = val * 10 + CharToInt(*ptr); \
+         \
+         /* Fractional portion. */ \
+         for(ctype const *ptr = fptr; ptr != fend && exp; ++ptr, --exp) \
+            val = val * 10 + CharToInt(*ptr); \
+         \
+         /* Apply any missing digits implied by exponent. */ \
+         for(; exp; --exp) \
+            val = val * 10; \
+      } \
+   } \
+   else \
+   { \
+      int digE = valE >> 2; \
+      int shft = valE & 3; \
+      \
+      ctype const *ptr; \
+      \
+      if(signE) \
+      { \
+         /* Integer portion. */ \
+         int idig = iend - iptr; \
+         if(idig >= digE) \
+         { \
+            int exp = idig - digE; \
+            for(ptr = iptr; exp; ++ptr, --exp) \
+               val = (val << 4) + ((type)CharToInt(*ptr) >> shft); \
+         } \
+      } \
+      else \
+      { \
+         int exp = digE; \
+         \
+         /* Integer portion. */ \
+         for(ptr = iptr; ptr != iend; ++ptr) \
+            val = (val << 4) + ((type)CharToInt(*ptr) << shft); \
+         \
+         /* Fractional portion. */ \
+         for(ptr = fptr; ptr != fend && exp; ++ptr, --exp) \
+            val = (val << 4) + ((type)CharToInt(*ptr) << shft); \
+         \
+         /* Apply any missing digits implied by exponent. */ \
+         for(; exp; --exp) \
+            val = val << 4; \
+      } \
+   }
+
+//
+// StrToF_Pre
+//
+#define StrToF_Pre(ctype, F) \
+   /* Skip leading whitespace. */ \
+   while(isspace(*nptr)) ++nptr; \
+   \
+   /* Read sign. */ \
+   bool sign; \
+        if(*nptr == '-') sign = true,  ++nptr; \
+   else if(*nptr == '+') sign = false, ++nptr; \
+   else                  sign = false; \
+   \
+   /* Check for INF/INFINITY */ \
+   if((nptr[0] == 'I' || nptr[0] == 'i') && \
+      (nptr[1] == 'N' || nptr[1] == 'n') && \
+      (nptr[2] == 'F' || nptr[2] == 'f')) \
+   { \
+      nptr += 3; \
+      \
+      if((nptr[0] == 'I' || nptr[0] == 'i') && \
+         (nptr[1] == 'N' || nptr[1] == 'n') && \
+         (nptr[1] == 'I' || nptr[1] == 'i') && \
+         (nptr[1] == 'T' || nptr[1] == 't') && \
+         (nptr[2] == 'Y' || nptr[2] == 'y')) \
+      { \
+         nptr += 5; \
+      } \
+      \
+      /* Set end pointer. */ \
+      if(endptr) *endptr = (ctype *)nptr; \
+      \
+      return sign ? -INFINITY : INFINITY; \
+   } \
+   \
+   /* Check for NAN/NAN(...) */ \
+   if((nptr[0] == 'N' || nptr[0] == 'n') && \
+      (nptr[1] == 'A' || nptr[1] == 'a') && \
+      (nptr[2] == 'N' || nptr[2] == 'n')) \
+   { \
+      nptr += 3; \
+      \
+      /* TODO: NAN(...) */ \
+      \
+      /* Set end pointer. */ \
+      if(endptr) *endptr = (ctype *)nptr; \
+      \
+      return sign ? -NAN : NAN; \
+   } \
+   \
+   /* Read prefix. */ \
+   int base; \
+   if(nptr[0] == '0' && (nptr[1] == 'X' || nptr[1] == 'x')) \
+      base = 16, nptr += 2; \
+   else \
+      base = 10;
+
+//
+// StrToF_Pro
+//
+#define StrToF_Pro(ctype, F) \
+   /* Set end pointer. */ \
+   if(endptr) *endptr = (ctype *)nptr; \
+   \
+   /* If overflowed, set errno and return MIN/MAX. */ \
+   if(isinf(val)) \
+   { \
+      errno = ERANGE; \
+      return sign ? -HUGE_VAL##F : HUGE_VAL##F; \
+   } \
+   \
+   return sign ? -val : val;
 
 //
 // StrToI_Body
@@ -694,11 +859,7 @@ long long atoll(char const *nptr)
 //
 double strtod(char const *restrict nptr, char **restrict endptr)
 {
-   // TODO
-
-   if(endptr) *endptr = (char *)nptr;
-
-   return 0;
+   StrToF_Body(char, double, );
 }
 
 //
@@ -706,11 +867,7 @@ double strtod(char const *restrict nptr, char **restrict endptr)
 //
 float strtof(char const *restrict nptr, char **restrict endptr)
 {
-   // TODO
-
-   if(endptr) *endptr = (char *)nptr;
-
-   return 0;
+   StrToF_Body(char, float, F);
 }
 
 //
@@ -718,11 +875,7 @@ float strtof(char const *restrict nptr, char **restrict endptr)
 //
 long double strtold(char const *restrict nptr, char **restrict endptr)
 {
-   // TODO
-
-   if(endptr) *endptr = (char *)nptr;
-
-   return 0;
+   StrToF_Body(char, long double, L);
 }
 
 //
@@ -777,9 +930,29 @@ unsigned long long strtoull(char const *restrict nptr, char **restrict endptr, i
 // Implementation extensions. (stdlib.h)
 //
 
-double __strtod_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-float __strtof_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-long double __strtold_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+//
+// __strtod_str
+//
+double __strtod_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
+{
+   StrToF_Body(char __str_ars, double, );
+}
+
+//
+// __strtof_str
+//
+float __strtof_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
+{
+   StrToF_Body(char __str_ars, float, F);
+}
+
+//
+// __strtold_str
+//
+long double __strtold_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
+{
+   StrToF_Body(char __str_ars, long double, );
+}
 
 //
 // __strtoi_str
