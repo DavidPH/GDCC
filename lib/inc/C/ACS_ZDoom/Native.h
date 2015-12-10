@@ -111,7 +111,7 @@ ACS_NativeDeclFull( 47, 0, int,    IsTIDUsed, int);
 ACS_NativeDeclFull( 48, 0, int,    Sqrt, int);
 ACS_NativeDeclFull( 49, 0, _Accum, FixedSqrt, _Accum);
 ACS_NativeDeclFull( 50, 0, _Accum, VectorLength, _Accum, _Accum);
-ACS_NativeDeclFull( 51, 1, int,    SetHudClipRect, int, int, int, int, int);
+ACS_NativeDeclFull( 51, 2, int,    SetHudClipRect, int, int, int, int, int, int);
 ACS_NativeDeclFull( 52, 0, int,    SetHudWrapWidth, int);
 ACS_NativeDeclFull( 53, 0, int,    SetCVar, __str, int);
 ACS_NativeDeclFull( 53, 0, int,    SetCVarFixed, __str, _Accum);

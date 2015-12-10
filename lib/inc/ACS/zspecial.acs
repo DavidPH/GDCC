@@ -369,7 +369,7 @@ special
    int    -48:Sqrt(1, int),
    fixed  -49:FixedSqrt(1, fixed),
    fixed  -50:VectorLength(2, fixed, fixed),
-   int    -51:SetHUDClipRect(4, int, int, int, int, int),
+   int    -51:SetHUDClipRect(4, int, int, int, int, int, int),
    int    -52:SetHUDWrapWidth(1, int),
    int    -53:SetCVar(2, str, int),
    int    -53:SetCVarFixed(2, str, fixed),
