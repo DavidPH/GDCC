@@ -14,6 +14,8 @@
 
 #include "IR/IArchive.hpp"
 
+#include "Core/Exception.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -80,7 +82,7 @@ namespace GDCC
             switch(type.t)
             {
             case TypeBase::Fixed: return Value_Fixed(std::move(e.vDJump), type.tFixed);
-            default: return Value_Empty();
+            default: throw Core::ExceptStr(pos, "bad Exp_Cst from DJump");
             }
 
          case TypeBase::Fixed:
@@ -92,7 +94,7 @@ namespace GDCC
             case TypeBase::Funct: return Value_Funct(std::move(e.vFixed), type.tFunct);
             case TypeBase::Point: return Value_Point(std::move(e.vFixed), type.tPoint);
             case TypeBase::StrEn: return Value_StrEn(std::move(e.vFixed), type.tStrEn);
-            default: return Value_Empty();
+            default: throw Core::ExceptStr(pos, "bad Exp_Cst from Fixed");
             }
 
          case TypeBase::Float:
@@ -100,7 +102,7 @@ namespace GDCC
             {
             case TypeBase::Fixed: return Value_Fixed(std::move(e.vFloat), type.tFixed);
             case TypeBase::Float: return Value_Float(std::move(e.vFloat), type.tFloat);
-            default: return Value_Empty();
+            default: throw Core::ExceptStr(pos, "bad Exp_Cst from Float");
             }
 
          case TypeBase::Funct:
@@ -108,7 +110,7 @@ namespace GDCC
             {
             case TypeBase::Fixed: return Value_Fixed(std::move(e.vFunct), type.tFixed);
             case TypeBase::Funct: return Value_Funct(std::move(e.vFunct), type.tFunct);
-            default: return Value_Empty();
+            default: throw Core::ExceptStr(pos, "bad Exp_Cst from Funct");
             }
 
          case TypeBase::Point:
@@ -116,17 +118,17 @@ namespace GDCC
             {
             case TypeBase::Fixed: return Value_Fixed(std::move(e.vPoint), type.tFixed);
             case TypeBase::Point: return Value_Point(std::move(e.vPoint), type.tPoint);
-            default: return Value_Empty();
+            default: throw Core::ExceptStr(pos, "bad Exp_Cst from Point");
             }
 
          case TypeBase::StrEn:
             switch(type.t)
             {
             case TypeBase::Fixed: return Value_Fixed(std::move(e.vStrEn), type.tFixed);
-            default: return Value_Empty();
+            default: throw Core::ExceptStr(pos, "bad Exp_Cst from StrEn");
             }
 
-         default: return Value_Empty();
+         default: throw Core::ExceptStr(pos, "bad Exp_Cst");
          }
       }
 
