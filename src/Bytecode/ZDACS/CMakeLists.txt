@@ -41,6 +41,7 @@ if(GDCC_Bytecode_ZDACS)
       Info/pre.cpp
       Info/put.cpp
       Info/putChunk.cpp
+      Info/putExtra.cpp
       Info/putIniti.cpp
       Info/putStmnt.cpp
       Info/tr.cpp

@@ -143,7 +143,12 @@ namespace GDCC
          if(OutputIR)
             PutIR(out, prog, info.get());
          else
+         {
             PutBytecode(out, prog, info.get());
+
+            if(info)
+               info->putExtra(prog);
+         }
       }
 
       //

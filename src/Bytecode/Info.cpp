@@ -463,6 +463,24 @@ namespace GDCC
       }
 
       //
+      // Info::putExtra
+      //
+      void Info::putExtra(IR::Program &prog_)
+      {
+         try
+         {
+            prog = &prog_;
+            putExtra();
+            prog = nullptr;
+         }
+         catch(...)
+         {
+            prog = nullptr;
+            throw;
+         }
+      }
+
+      //
       // Info::tr
       //
       void Info::tr()

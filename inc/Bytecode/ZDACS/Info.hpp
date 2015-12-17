@@ -312,6 +312,8 @@ namespace GDCC
 
             virtual void put();
 
+            virtual void putExtra();
+
             void putByte(Core::FastU i);
 
             void putChunk();

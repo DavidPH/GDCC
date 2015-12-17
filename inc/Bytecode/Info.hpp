@@ -98,6 +98,8 @@ namespace GDCC
 
          void put(IR::Program &prog, std::ostream &out);
 
+         void putExtra(IR::Program &prog);
+
          void tr(IR::Program &prog);
 
       protected:
@@ -167,6 +169,8 @@ namespace GDCC
                  void putStmnt(IR::Statement &stmnt);
          virtual void putStr() {}
                  void putStr(IR::StrEnt &str);
+
+         virtual void putExtra() {}
 
          virtual void tr();
          virtual void trBlock();
