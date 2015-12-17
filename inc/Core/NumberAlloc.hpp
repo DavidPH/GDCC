@@ -43,6 +43,8 @@ namespace GDCC
             T lo, hi;
             T size;
 
+            bool used : 1;
+
 
             friend class NumberAlloc;
             friend class NumberAllocMerge<T>;
@@ -55,9 +57,8 @@ namespace GDCC
             // constructor
             //
             explicit Block(Block *next_) :
-               lo{0}, hi{0}, size{0},
-               next{next_}, prev{next_->prev},
-               used{false}
+               lo{0}, hi{0}, size{0}, used{false},
+               next{next_}, prev{next_->prev}
             {
                next->prev = prev->next = this;
             }
@@ -66,9 +67,8 @@ namespace GDCC
             // constructor
             //
             Block(Block *next_, T const &lo_, T const &size_, bool used_) :
-               lo{lo_}, hi{lo_ + size_}, size{size_},
-               next{next_}, prev{next_->prev},
-               used{used_}
+               lo{lo_}, hi{lo_ + size_}, size{size_}, used{used_},
+               next{next_}, prev{next_->prev}
             {
                next->prev = prev->next = this;
             }
@@ -77,8 +77,6 @@ namespace GDCC
             ~Block() {next->prev = prev; prev->next = next;}
 
             Block *next, *prev;
-
-            bool used : 1;
          };
 
          using value_type       = Block;
@@ -312,14 +310,18 @@ namespace GDCC
          {
             for(auto &block : *this)
             {
-               if(block.lo > addr)
+               if(block.lo > addr || addr >= block.hi)
                   continue;
 
                allocAt(size, addr, &block);
                return;
             }
 
-            allocAt(size, addr, new Block(&head, head.prev->hi, size, true));
+            if(back().used)
+               allocAt(size, addr, new Block(&head, head.prev->hi, size, true));
+            else
+               allocAt(size, addr, &back());
+
          }
 
          // begin
@@ -353,7 +355,8 @@ namespace GDCC
                {
                   new Block(block, block->lo, hi - block->lo, false);
 
-                  block->lo = hi;
+                  block->lo   = hi;
+                  block->size = block->hi - block->lo;
 
                   block = block->prev;
                }
@@ -363,7 +366,8 @@ namespace GDCC
                {
                   new Block(block, block->lo, lo - block->lo, false);
 
-                  block->lo = lo;
+                  block->lo   = lo;
+                  block->size = block->hi - block->lo;
                }
 
                block->used = true;
