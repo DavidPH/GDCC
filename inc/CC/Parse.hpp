@@ -117,6 +117,8 @@ namespace GDCC
          virtual InitRaw getInitRaw(Scope &scope);
 
          virtual StatementCRef getStatement(Scope_Local &scope);
+         virtual ExpCRef getStatementCond(Scope &scope);
+         virtual ExpCRef getStatementCondExp(Scope &scope);
 
          virtual TypeCRef getType(Scope &scope);
 

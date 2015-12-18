@@ -163,18 +163,10 @@ namespace GDCC
             !ctx.in.drop(Core::TOK_KeyWrd, Core::STR_while))
             throw Core::ParseExceptExpect(ctx.in.peek(), "'while' or 'until'", false);
 
-         // (
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
-         // expression
-         auto cond = ctx.getExp(loopScope);
+         // ( expression )
+         auto cond = ctx.getStatementCond(loopScope);
          if(invert)
             cond = CC::ExpCreate_Not(cond, cond->pos);
-
-         // )
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
@@ -224,7 +216,7 @@ namespace GDCC
          // expression(opt)
          AST::Exp::CPtr cond;
          if(ctx.in.peek().tok != Core::TOK_Semico)
-            cond = ctx.getExp(loopScope);
+            cond = ctx.getStatementCondExp(loopScope);
          else
             cond = CC::ExpCreate_LitInt(CC::TypeIntegPrS, 1, pos);
 
@@ -262,16 +254,8 @@ namespace GDCC
          // <if>
          auto pos = ctx.in.get().pos;
 
-         // (
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
-         // expression
-         auto cond = ctx.getExp(scope);
-
-         // )
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+         // ( expression )
+         auto cond = ctx.getStatementCond(scope);
 
          // statement
          auto bodyT = ctx.getStatement(scope);
@@ -344,16 +328,8 @@ namespace GDCC
          // <switch>
          auto pos = ctx.in.get().pos;
 
-         // (
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
-         // expression
-         auto cond = ctx.getExp(switchScope);
-
-         // )
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+         // ( expression )
+         auto cond = ctx.getStatementCond(switchScope);
 
          // statement
          auto body = ctx.getStatement(switchScope);
@@ -378,18 +354,10 @@ namespace GDCC
          bool invert = ctx.in.peek().str == Core::STR_until;
          auto pos    = ctx.in.get().pos;
 
-         // (
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
-         // expression
-         auto cond = ctx.getExp(loopScope);
+         // ( expression )
+         auto cond = ctx.getStatementCond(loopScope);
          if(invert)
             cond = CC::ExpCreate_Not(cond, cond->pos);
-
-         // )
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
 
          // statement
          auto body = ctx.getStatement(loopScope);

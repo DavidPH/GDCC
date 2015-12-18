@@ -38,6 +38,7 @@ namespace GDCC
    namespace AST
    {
       extern Core::Warning WarnDeprecated;
+      extern Core::Warning WarnParentheses;
       extern Core::Warning WarnReturnType;
       extern Core::Warning WarnUnusedInit;
    }

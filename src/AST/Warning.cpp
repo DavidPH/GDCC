@@ -39,6 +39,21 @@ namespace GDCC
       };
 
       //
+      // --warn-parentheses
+      //
+      static Core::WarnOpt WarnParenthesesOpt
+      {
+         &Core::GetWarnOptList(), Option::Base::Info()
+            .setName("warn-parentheses")
+            .setGroup("warnings")
+            .setDescS("Warns on suspicious assignment in conditions.")
+            .setDescL("Warns on suspicious assignment in conditions.\n\n"
+               "Enabled by --warn-common."),
+
+         &WarnParentheses
+      };
+
+      //
       // --warn-return-type
       //
       static Core::WarnOpt WarnReturnTypeOpt
@@ -83,6 +98,7 @@ namespace GDCC
    namespace AST
    {
       Core::Warning WarnDeprecated{&Core::WarnCommon, "--warn-deprecated"};
+      Core::Warning WarnParentheses{&Core::WarnCommon, "--warn-parentheses"};
       Core::Warning WarnReturnType{&Core::WarnCommon, "--warn-return-type"};
       Core::Warning WarnUnusedInit{&Core::WarnCommon, "--warn-unused-initializer"};
    }

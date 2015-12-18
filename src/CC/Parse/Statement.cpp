@@ -13,7 +13,7 @@
 #include "CC/Parse.hpp"
 
 #include "CC/AsmGlyphTBuf.hpp"
-#include "CC/Exp.hpp"
+#include "CC/Exp/Assign.hpp"
 #include "CC/Scope/Case.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Statement.hpp"
@@ -25,6 +25,7 @@
 #include "AST/Exp.hpp"
 #include "AST/Function.hpp"
 #include "AST/Statement.hpp"
+#include "AST/Warning.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/StringBuf.hpp"
@@ -203,16 +204,8 @@ namespace GDCC
          if(!ctx.in.drop(Core::TOK_KeyWrd, Core::STR_while))
             throw Core::ParseExceptExpect(ctx.in.peek(), "while", true);
 
-         // (
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
-         // expression
-         auto cond = ctx.getExp(loopScope);
-
-         // )
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+         // ( expression )
+         auto cond = ctx.getStatementCond(loopScope);
 
          // ;
          if(!ctx.in.drop(Core::TOK_Semico))
@@ -262,7 +255,7 @@ namespace GDCC
          // expression(opt)
          AST::Exp::CPtr cond;
          if(ctx.in.peek().tok != Core::TOK_Semico)
-            cond = ctx.getExp(loopScope);
+            cond = ctx.getStatementCondExp(loopScope);
          else
             cond = ExpCreate_LitInt(TypeIntegPrS, 1, pos);
 
@@ -336,16 +329,8 @@ namespace GDCC
          // <if>
          auto pos = ctx.in.get().pos;
 
-         // (
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
-         // expression
-         auto cond = ctx.getExp(scope);
-
-         // )
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+         // ( expression )
+         auto cond = ctx.getStatementCond(scope);
 
          // statement
          auto bodyT = ctx.getStatement(scope);
@@ -400,16 +385,8 @@ namespace GDCC
          // <switch>
          auto pos = ctx.in.get().pos;
 
-         // (
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
-         // expression
-         auto cond = ctx.getExp(switchScope);
-
-         // )
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+         // ( expression )
+         auto cond = ctx.getStatementCond(switchScope);
 
          // statement
          auto body = ctx.getStatement(switchScope);
@@ -431,16 +408,8 @@ namespace GDCC
          // <while>
          auto pos = ctx.in.get().pos;
 
-         // (
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
-         // expression
-         auto cond = ctx.getExp(loopScope);
-
-         // )
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+         // ( expression )
+         auto cond = ctx.getStatementCond(loopScope);
 
          // statement
          auto body = ctx.getStatement(loopScope);
@@ -576,6 +545,48 @@ namespace GDCC
 
          // expression-statement
          return GetStatement_Exp(*this, scope, labels);
+      }
+
+      //
+      // Parse::getStatementCond
+      //
+      AST::Exp::CRef Parser::getStatementCond(Scope &scope)
+      {
+         // (
+         if(!in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(in.peek(), "(", true);
+
+         // expression
+         auto cond = getStatementCondExp(scope);
+
+         // )
+         if(!in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(in.peek(), ")", true);
+
+         return cond;
+      }
+
+      //
+      // Parse::getStatementCondExp
+      //
+      AST::Exp::CRef Parser::getStatementCondExp(Scope &scope)
+      {
+         bool parenPre = in.peek(Core::TOK_ParenO);
+
+         // expression
+         auto cond = getExp(scope);
+
+         bool parenPro = in.reget().tok == Core::TOK_ParenC;
+
+         // This check could be more elegant with a more direct check for a
+         // parenthesized expression. This will fail to warn for: if((x) = (y))
+         if(!(parenPre && parenPro) && dynamic_cast<Exp_Assign const *>(&*cond))
+         {
+            AST::WarnParentheses(cond->pos,
+               "assignment as a condition without parentheses");
+         }
+
+         return cond;
       }
    }
 }
