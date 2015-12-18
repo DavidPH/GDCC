@@ -46,8 +46,9 @@ namespace GDCC
          &Core::GetWarnOptList(), Option::Base::Info()
             .setName("warn-parentheses")
             .setGroup("warnings")
-            .setDescS("Warns on suspicious assignment in conditions.")
-            .setDescL("Warns on suspicious assignment in conditions.\n\n"
+            .setDescS("Warns on suspicious lack of parentheses.")
+            .setDescL("Warns on suspicious lack of parentheses, such as with "
+               "sizeof or assignments in conditions.\n\n"
                "Enabled by --warn-common."),
 
          &WarnParentheses

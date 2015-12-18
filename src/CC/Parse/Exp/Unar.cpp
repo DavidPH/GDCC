@@ -17,6 +17,7 @@
 
 #include "AST/Exp.hpp"
 #include "AST/Type.hpp"
+#include "AST/Warning.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
@@ -250,6 +251,8 @@ namespace GDCC
 
             ctx.in.unget();
          }
+         else
+            AST::WarnParentheses(pos, "sizeof without parentheses");
 
          return ExpCreate_SizeBytes(ctx.getExp_Unar(scope), pos);
       }
