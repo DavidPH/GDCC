@@ -47,6 +47,37 @@ static void MakeACS()
    GDCC::LD::Link(prog, GDCC::Core::GetOptionOutput());
 }
 
+//
+// MakeACSAlt
+//
+// Handles single-argument invocation.
+//
+static void MakeACSAlt()
+{
+   GDCC::IR::Program prog;
+
+   // Determine file extension.
+   std::string file{GDCC::Core::GetOptionOutput()};
+   auto        dot = file.rfind('.');
+
+   // If filename has no extension, use .acs.
+   if(dot == std::string::npos)
+   {
+      dot   = file.size();
+      file += ".acs";
+   }
+
+   // Process input.
+   GDCC::ACC::ParseFile(file.data(), prog);
+
+   // Replace extension with .o for output.
+   file.resize(dot + 2);
+   file[dot + 1] = 'o';
+
+   // Write output.
+   GDCC::LD::Link(prog, file.data());
+}
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -76,7 +107,11 @@ int main(int argc, char *argv[])
    try
    {
       GDCC::Core::ProcessOptions(opts, argc, argv);
-      MakeACS();
+
+      if(!opts.args.size() && !opts.optSysSource.size())
+         MakeACSAlt();
+      else
+         MakeACS();
    }
    catch(std::exception const &e)
    {
