@@ -60,7 +60,13 @@ clock_t clock()
    return ACS_Timer();
 }
 
-double difftime(time_t time1, time_t time0);
+//
+// difftime
+//
+double difftime(time_t time1, time_t time0)
+{
+   return (double)(time1 - time0);
+}
 
 time_t mktime(struct tm *timeptr);
 
