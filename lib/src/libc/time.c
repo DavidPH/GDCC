@@ -32,7 +32,7 @@ static time_t TimeBase;
 // TimeCount
 //
 #if __GDCC_Family__ZDACS__
-[[address(999), call("ScriptI"), script("Open")]]
+[[call("ScriptI"), script("Open")]]
 static void TimeCount(void)
 {
    for(;;)
