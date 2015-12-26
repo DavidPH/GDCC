@@ -81,7 +81,7 @@ namespace GDCC
       {
          out << "\nFunction "; PutString(out, fn.glyph);
 
-         if(fn.allocAut) out << " \\\n   allocAut=" << fn.alloc;
+         if(fn.allocAut) out << " \\\n   allocAut=" << fn.allocAut;
          if(fn.alloc)    out << " \\\n   alloc="    << fn.alloc;
                          out << " \\\n   ctype="    << fn.ctype;
          if(fn.defin)    out << " \\\n   defin="    << fn.defin;
