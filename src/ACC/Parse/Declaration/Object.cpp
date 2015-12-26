@@ -12,6 +12,7 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Pragma.hpp"
 #include "ACC/Scope.hpp"
 
 #include "AST/Attribute.hpp"
@@ -24,8 +25,9 @@
 #include "CC/Exp/Assign.hpp"
 #include "CC/Exp/Init.hpp"
 #include "CC/Init.hpp"
+#include "CC/Scope/Block.hpp"
+#include "CC/Scope/Function.hpp"
 #include "CC/Scope/Global.hpp"
-#include "CC/Scope/Local.hpp"
 #include "CC/Statement.hpp"
 
 #include "Core/Exception.hpp"
@@ -352,7 +354,10 @@ namespace GDCC
       //
       AST::Statement::CRef Parser::getDecl_Object(CC::Scope_Local &scope)
       {
-         return GetDeclBase_Object(*this, scope);
+         if(prag.stateBlockScope)
+            return GetDeclBase_Object(*this, scope);
+         else
+            return GetDeclBase_Object<CC::Scope_Local>(*this, scope.fn.getScopeFirst());
       }
    }
 }

@@ -58,8 +58,9 @@ namespace GDCC
       //
       PragmaData::PragmaData() :
          CPP::PragmaData{},
-         stateDefineRaw{false},
-         stateFixedType{false}
+         stateBlockScope{false},
+         stateDefineRaw {false},
+         stateFixedType {false}
       {
       }
 
@@ -72,9 +73,11 @@ namespace GDCC
 
          if(stackFixedType.empty()) return;
 
-         stateDefineRaw = stackDefineRaw.back();
-         stateFixedType = stackFixedType.back();
+         stateBlockScope = stackBlockScope.back();
+         stateDefineRaw  = stackDefineRaw.back();
+         stateFixedType  = stackFixedType.back();
 
+         stackBlockScope.pop_back();
          stackDefineRaw.pop_back();
          stackFixedType.pop_back();
       }
@@ -86,8 +89,9 @@ namespace GDCC
       {
          CPP::PragmaData::push();
 
-         stackDefineRaw.emplace_back(stateDefineRaw);
-         stackFixedType.emplace_back(stateFixedType);
+         stackBlockScope.emplace_back(stateBlockScope);
+         stackDefineRaw .emplace_back(stateDefineRaw);
+         stackFixedType .emplace_back(stateFixedType);
       }
 
       //
@@ -102,6 +106,10 @@ namespace GDCC
 
          switch(in.get().str)
          {
+         case Core::STR_block_scope:
+            data.stateBlockScope = PragmaOnOff(in, false);
+            return true;
+
          case Core::STR_fixed:
             data.stateFixedLiteral = data.stateFixedType = PragmaOnOff(in, false);
             return true;

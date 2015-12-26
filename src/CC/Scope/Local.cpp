@@ -278,6 +278,17 @@ namespace GDCC
       }
 
       //
+      // Scope_Local::getScopeFirst
+      //
+      Scope_Block &Scope_Local::getScopeFirst()
+      {
+         if(subScopes.empty())
+            createScopeBlock();
+
+         return *subScopes.front();
+      }
+
+      //
       // Scope_Local::getSpace
       //
       AST::Space::Ref Scope_Local::getSpace(AST::Attribute const &attr)

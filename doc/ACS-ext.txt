@@ -273,6 +273,21 @@ Pragma Directives
 ===========================================================
 
 -----------------------------------------------------------
+block_scope
+-----------------------------------------------------------
+
+Syntax:
+  # <pragma> <block_scope> on-off-switch
+
+Semantics:
+  When not in effect, block scope object declarations are visible at function
+  scope.
+
+  When in effect, block scope object declarations are block scoped.
+
+  Follows the same scoping rules as STDC pragmas. The default state is OFF.
+
+-----------------------------------------------------------
 define raw
 -----------------------------------------------------------
 

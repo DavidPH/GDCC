@@ -84,6 +84,8 @@ namespace GDCC
 
          Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
 
+         Scope_Block &getScopeFirst();
+
          Core::CounterRef<AST::Space> getSpace(AST::Attribute const &attr);
 
          Scope_Function &fn;
