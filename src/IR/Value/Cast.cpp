@@ -14,7 +14,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -153,6 +153,14 @@ namespace GDCC
       }
 
       //
+      // Value_Funct constructor
+      //
+      Value_Funct::Value_Funct(Value_StrEn const &value_, Type_Funct const &vtype_) :
+         vtype{vtype_}, value{value_.value}
+      {
+      }
+
+      //
       // Value_Point constructor
       //
       Value_Point::Value_Point(Value_Point const &value_, Type_Point const &vtype_) :
@@ -184,6 +192,14 @@ namespace GDCC
       Value_StrEn::Value_StrEn(Value_Fixed const &value_, Type_StrEn const &vtype_) :
          vtype{vtype_},
          value{Core::NumberCast<Core::FastU>(value_.value >> value_.vtype.bitsF)}
+      {
+      }
+
+      //
+      // Value_StrEn constructor
+      //
+      Value_StrEn::Value_StrEn(Value_Funct const &value_, Type_StrEn const &vtype_) :
+         vtype{vtype_}, value{value_.value}
       {
       }
    }

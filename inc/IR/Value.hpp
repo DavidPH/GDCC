@@ -194,6 +194,7 @@ namespace GDCC
 
          Value_Funct(Value_Fixed const &value, Type_Funct const &vtype);
          Value_Funct(Value_Funct const &value, Type_Funct const &vtype);
+         Value_Funct(Value_StrEn const &value, Type_Funct const &vtype);
 
          Value_Funct(Core::FastU value_, Type_Funct const &vtype_) :
             vtype{vtype_}, value{value_} {}
@@ -240,6 +241,7 @@ namespace GDCC
          Value_StrEn() = default;
 
          Value_StrEn(Value_Fixed const &value, Type_StrEn const &vtype);
+         Value_StrEn(Value_Funct const &value, Type_StrEn const &vtype);
 
          Value_StrEn(Core::FastU value_, Type_StrEn vtype_) :
             vtype{vtype_}, value{value_} {}

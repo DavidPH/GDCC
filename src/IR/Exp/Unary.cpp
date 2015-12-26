@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2015 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,7 +18,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -110,6 +110,7 @@ namespace GDCC
             {
             case TypeBase::Fixed: return Value_Fixed(std::move(e.vFunct), type.tFixed);
             case TypeBase::Funct: return Value_Funct(std::move(e.vFunct), type.tFunct);
+            case TypeBase::StrEn: return Value_StrEn(std::move(e.vFunct), type.tStrEn);
             default: throw Core::ExceptStr(pos, "bad Exp_Cst from Funct");
             }
 
@@ -125,6 +126,7 @@ namespace GDCC
             switch(type.t)
             {
             case TypeBase::Fixed: return Value_Fixed(std::move(e.vStrEn), type.tFixed);
+            case TypeBase::Funct: return Value_Funct(std::move(e.vStrEn), type.tFunct);
             default: throw Core::ExceptStr(pos, "bad Exp_Cst from StrEn");
             }
 
