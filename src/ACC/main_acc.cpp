@@ -14,6 +14,7 @@
 
 #include "CPP/IncludeDTBuf.hpp"
 
+#include "Core/File.hpp"
 #include "Core/Option.hpp"
 
 #include "IR/Program.hpp"
@@ -23,6 +24,22 @@
 #include "Platform/Platform.hpp"
 
 #include <iostream>
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+//
+// --error-file
+//
+GDCC::Option::CStr ErrorFile
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("error-file")
+      .setGroup("output")
+      .setDescS("Write errors to file.")
+};
 
 
 //----------------------------------------------------------------------------|
@@ -116,6 +133,19 @@ int main(int argc, char *argv[])
    catch(std::exception const &e)
    {
       std::cerr << e.what() << std::endl;
+
+      // Also write error to file, if requested.
+      if(auto outName = ErrorFile.data())
+      {
+         if(auto buf = GDCC::Core::FileOpenStream(outName, std::ios_base::out))
+         {
+            std::ostream out{buf.get()};
+            out << e.what() << std::endl;
+         }
+         else
+            std::cerr << "failed to open '" << outName << "' for writing\n";
+      }
+
       return EXIT_FAILURE;
    }
    catch(int e)
