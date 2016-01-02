@@ -39,14 +39,21 @@ namespace GDCC
 
          pos{exp.pos},
 
-         cacheIRExp{exp.cacheIRExp}
+         cacheIRExp{exp.cacheIRExp},
+
+         cacheIsIRExp{exp.cacheIsIRExp}
       {
       }
 
       //
       // Exp constructor
       //
-      Exp::Exp(Core::Origin pos_) : pos{pos_}
+      Exp::Exp(Core::Origin pos_) :
+         pos{pos_},
+
+         cacheIRExp{nullptr},
+
+         cacheIsIRExp{0}
       {
       }
 
@@ -231,7 +238,10 @@ namespace GDCC
       //
       bool Exp::isIRExp() const
       {
-         return v_isIRExp();
+         if(!cacheIsIRExp)
+            cacheIsIRExp = v_isIRExp() + 1;
+
+         return cacheIsIRExp - 1;
       }
 
       //

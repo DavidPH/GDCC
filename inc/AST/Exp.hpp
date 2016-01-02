@@ -138,6 +138,8 @@ namespace GDCC
 
       private:
          mutable IRExpCPtr cacheIRExp;
+
+         mutable int cacheIsIRExp;
       };
    }
 }
