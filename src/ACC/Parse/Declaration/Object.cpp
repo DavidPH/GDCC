@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -273,14 +273,29 @@ namespace GDCC
 
             scope.add(attr.name, obj);
 
-            obj->init = ctx.getExp_Init(scope, obj->type);
-            obj->type = obj->init->getType();
+            if(!ctx.importing)
+            {
+               obj->init = ctx.getExp_Init(scope, obj->type);
+               obj->type = obj->init->getType();
 
-            if(obj->store == AST::Storage::Static && !obj->init->isIRExp())
-               throw Core::ExceptStr(obj->init->pos,
-                  "non-constant initializer for static storage object");
+               if(obj->store == AST::Storage::Static && !obj->init->isIRExp())
+                  throw Core::ExceptStr(obj->init->pos,
+                     "non-constant initializer for static storage object");
 
-            SetDeclObjectInit(ctx, scope, attr, inits, obj);
+               SetDeclObjectInit(ctx, scope, attr, inits, obj);
+            }
+            else
+            {
+               // If importing, just skip the initializer tokens. They are
+               // unneeded and more importantly they might depend on other
+               // imports which have not been processed.
+               while(!ctx.in.peek(Core::TOK_Semico) &&
+                     !ctx.in.peek(Core::TOK_Comma) &&
+                     !ctx.in.peek(Core::TOK_EOF))
+               {
+                  ctx.skipBalancedToken();
+               }
+            }
          }
          else
             scope.add(attr.name, GetDeclObject(ctx, scope, attr, false));
