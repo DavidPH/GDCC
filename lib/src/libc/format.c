@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2015 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -922,6 +922,14 @@ __GDCC__FormatDefn(X, dl, long _Accum)
    FormatIntSign();
 
    return ret;
+}
+
+//
+// __GDCC__GetFormatBuf
+//
+char __sta *__GDCC__GetFormatBuf(void)
+{
+   return __GDCC__FormatBuf;
 }
 
 // EOF

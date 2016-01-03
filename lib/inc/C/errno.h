@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -16,6 +16,10 @@
 #define __GDCC_Header__C__errno_h__
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
 //
@@ -23,7 +27,11 @@
 //
 // errno
 //
+#ifdef __GDCC__DirectObject
 #define errno __errno
+#else
+#define errno (*__get_errno())
+#endif
 
 //
 // E*
@@ -35,16 +43,23 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Objects                                                             |
 //
 
 //
 // __errno
 //
-#ifdef __cplusplus
-extern "C" int __errno;
-#else
 extern int __errno;
+
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
+//
+
+int *__get_errno(void);
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif//__GDCC_Header__C__errno_h__

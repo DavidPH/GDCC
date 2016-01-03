@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015 David Hill
+// Copyright(C) 2015-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -19,6 +19,10 @@
 
 #include <GDCC.h>
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -184,10 +188,6 @@ extern char __GDCC__FormatBuf[__GDCC__FormatBufLen];
 // Extern Functions                                                           |
 //
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 __GDCC__FormatDecl(F, D, float);
 __GDCC__FormatDecl(F, Dl, double);
 __GDCC__FormatDecl(F, Dll, long double);
@@ -251,6 +251,8 @@ __GDCC__FormatDecl(U, xll, long long unsigned);
 __GDCC__FormatDecl(X, d, _Accum);
 __GDCC__FormatDecl(X, dh, short _Accum);
 __GDCC__FormatDecl(X, dl, long _Accum);
+
+char __sta *__GDCC__GetFormatBuf(void);
 
 #ifdef __cplusplus
 }

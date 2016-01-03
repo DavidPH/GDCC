@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -14,10 +14,23 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Objects                                                             |
 //
 
 int __errno = 0;
+
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
+//
+
+//
+// __get_errno
+//
+int *__get_errno(void)
+{
+   return &__errno;
+}
 
 // EOF
 

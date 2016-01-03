@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2015 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -15,6 +15,10 @@
 #ifndef __GDCC_Header__C__stdio_h__
 #define __GDCC_Header__C__stdio_h__
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -74,9 +78,15 @@
 //
 // stderr, stdin, stdout
 //
+#ifdef __GDCC__DirectObject
 #define stderr (&__stderr)
 #define stdin  (&__stdin)
 #define stdout (&__stdout)
+#else
+#define stderr (__get_stderr())
+#define stdin  (__get_stdin())
+#define stdout (__get_stdout())
+#endif
 
 //
 // _FILEFLAG_*
@@ -165,26 +175,18 @@ typedef struct __FILE
 
 
 //----------------------------------------------------------------------------|
-// Extern Variables                                                           |
+// Extern Objects                                                             |
 //
 
 //
 // __stderr, __stdin, __stdout
 //
-#ifdef __cplusplus
-extern "C" FILE __stderr, __stdin, __stdout;
-#else
 extern FILE __stderr, __stdin, __stdout;
-#endif
 
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 //
 // Operations on files.
@@ -287,6 +289,10 @@ int __vfprintf_str(FILE *restrict stream,
 int __vnprintf(char const *restrict format, __va_list arg);
 int __vnprintf_str(char const __str_ars *restrict format, __va_list arg);
 int __vprintf_str(char const __str_ars *restrict format, __va_list arg);
+
+FILE *__get_stderr(void);
+FILE *__get_stdin(void);
+FILE *__get_stdout(void);
 
 #ifdef __cplusplus
 }

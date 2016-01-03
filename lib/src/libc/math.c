@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015 David Hill
+// Copyright(C) 2015-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -9,6 +9,8 @@
 // Mathematics.
 //
 //-----------------------------------------------------------------------------
+
+#define __GDCC__DirectObject
 
 #include <math.h>
 

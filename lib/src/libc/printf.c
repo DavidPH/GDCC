@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2015 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -11,6 +11,8 @@
 // Formatted output functions.
 //
 //-----------------------------------------------------------------------------
+
+#define __GDCC__DirectObject
 
 #include <stdio.h>
 

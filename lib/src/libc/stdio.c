@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2015 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -9,6 +9,8 @@
 // Input/output.
 //
 //-----------------------------------------------------------------------------
+
+#define __GDCC__DirectObject
 
 #include <stdio.h>
 
@@ -967,6 +969,30 @@ size_t __fwrite_str(void const __str_ars *restrict ptr, size_t size,
    }
 
    return res;
+}
+
+//
+// __get_stderr
+//
+FILE *__get_stderr(void)
+{
+   return &__stderr;
+}
+
+//
+// __get_stdin
+//
+FILE *__get_stdin(void)
+{
+   return &__stdin;
+}
+
+//
+// __get_stdout
+//
+FILE *__get_stdout(void)
+{
+   return &__stdout;
 }
 
 // EOF
