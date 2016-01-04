@@ -417,6 +417,7 @@ special
    fixed  -90:GetActorRoll(1, int),
    int    -91:QuakeEx(8, int, int, int, int, int, int, int, str, int, fixed, fixed, fixed),
    int    -92:Warp(6, int, fixed, fixed, fixed, fixed, int, str, int, fixed),
+   int    -93:GetMaxInventory(2, int, str),
 
    // Zandronum's
    int   -100:ResetMap(0),
