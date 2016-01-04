@@ -31,6 +31,8 @@ SOFTWARE.
 #include <ACS_Zandronum/Native.h>
 
 // Global Functions
+ACS_NativeDeclFull(   60, 5, int,    LineAttack, int, _Accum, _Accum, int, __str, __str, _Accum, int, int);
+
 ACS_NativeDeclFull(11192, 3, int,    ChangeFlag, int, __str, int, int);
 //ACS_NativeDeclFull(11193, 0, int,    SetTicrate, int);
 ACS_NativeDeclFull(11194, 0, int,    GetTicrate, void);

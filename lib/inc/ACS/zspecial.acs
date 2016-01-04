@@ -381,7 +381,9 @@ special
    int    -57:SetCVarString(2, str, str),
    str    -58:GetUserCVarString(2, int, str),
    int    -59:SetUserCVarString(3, int, str, str),
+#ifndef __GDCC_Header__ACS__gspecial_acs__
    int    -60:LineAttack(4, int, fixed, fixed, int, str, str, fixed, int),
+#endif
    int    -61:PlaySound(2, int, str, int, fixed, int, fixed),
    int    -62:StopSound(1, int, int),
    int    -63:StrCmp(2, str, str, int),
