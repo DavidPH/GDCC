@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -91,8 +91,10 @@ namespace GDCC
          Core::Array<AST::Exp::CRef> args;
 
          // ( expression-list )
-         if(ctx.in.drop(Core::TOK_ParenO))
+         if(ctx.in.peek(Core::TOK_ParenO) && prop.isMultiArg())
          {
+            ctx.in.get();
+
             args = ctx.getExpList(scope);
 
             if(!ctx.in.drop(Core::TOK_ParenC))

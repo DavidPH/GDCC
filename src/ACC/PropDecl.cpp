@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "ACC/PropDecl.hpp"
+
+#include "AST/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -33,6 +35,34 @@ namespace GDCC
             std::begin(r.argc), std::end(r.argc));
 
          return false;
+      }
+
+      //
+      // PrintProp::isMultiArg
+      //
+      bool PrintProp::isMultiArg() const
+      {
+         return isMultiArg(prop) ||
+            isMultiArg(propGlobalArray) || isMultiArg(propGlobalRange) ||
+            isMultiArg(propHubArray)    || isMultiArg(propHubRange)    ||
+            isMultiArg(propLocalArray)  || isMultiArg(propLocalRange)  ||
+            isMultiArg(propModuleArray) || isMultiArg(propModuleRange);
+      }
+
+      //
+      // PrintProp::isMultiArg
+      //
+      bool PrintProp::isMultiArg(AST::Exp const *exp) const
+      {
+         if(!exp) return false;
+
+         AST::Type::CRef type = exp->getType();
+         if(!type->isTypePointer()) return false;
+
+         type = type->getBaseType();
+         if(!type->isCTypeFunction()) return false;
+
+         return type->getParameters()->size() > 1;
       }
    }
 }

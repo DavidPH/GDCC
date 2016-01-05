@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -68,6 +68,8 @@ namespace GDCC
       class PrintProp
       {
       public:
+         bool isMultiArg() const;
+
          // Generic print function.
          AST::Exp::CPtr prop;
 
@@ -76,6 +78,9 @@ namespace GDCC
          AST::Exp::CPtr propHubArray,    propHubRange;
          AST::Exp::CPtr propLocalArray,  propLocalRange;
          AST::Exp::CPtr propModuleArray, propModuleRange;
+
+      private:
+         bool isMultiArg(AST::Exp const *prop) const;
       };
 
       //
