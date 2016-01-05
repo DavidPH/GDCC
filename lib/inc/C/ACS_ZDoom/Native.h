@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -123,9 +123,7 @@ ACS_NativeDeclFull( 56, 0, __str,  GetCVarString, __str);
 ACS_NativeDeclFull( 57, 0, int,    SetCVarString, __str, __str);
 ACS_NativeDeclFull( 58, 0, __str,  GetUserCVarString, int, __str);
 ACS_NativeDeclFull( 59, 0, int,    SetUserCVarString, int, __str, __str);
-#ifndef __GDCC_Header__C__ACS_GLOOME__Native_h__
-ACS_NativeDeclFull( 60, 4, int,    LineAttack, int, _Accum, _Accum, int, __str, __str, _Accum, int);
-#endif
+ACS_NativeDeclFull( 60, 5, int,    LineAttack, int, _Accum, _Accum, int, __str, __str, _Accum, int, int);
 ACS_NativeDeclFull( 61, 4, int,    PlaySound, int, __str, int, _Accum, int, _Accum);
 ACS_NativeDeclFull( 62, 1, int,    StopSound, int, int);
 ACS_NativeDeclFull( 63, 1, int,    StrCmp, __str, __str, int);

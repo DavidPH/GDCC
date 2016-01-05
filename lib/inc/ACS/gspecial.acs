@@ -31,8 +31,6 @@ SOFTWARE.
 #include "zspecial.acs"
 
 special
-   int      -60:LineAttack(4, int, fixed, fixed, int, str, str, fixed, int, int),
-
    void  -11192:ChangeFlag(3, int, str, int, int),
    //void  -11193:SetTicrate(1, int),
    int   -11194:GetTicrate(0),
