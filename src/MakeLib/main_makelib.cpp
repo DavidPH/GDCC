@@ -87,6 +87,7 @@ static void MakeLib_libc(GDCC::IR::Program &prog)
    MakeLib_CC(prog, path, "ctype.c");
    MakeLib_CC(prog, path, "errno.c");
    MakeLib_CC(prog, path, "exp.c");
+   MakeLib_CC(prog, path, "fopen.c");
    MakeLib_CC(prog, path, "format.c");
    MakeLib_CC(prog, path, "locale.c");
    MakeLib_CC(prog, path, "math.c");
