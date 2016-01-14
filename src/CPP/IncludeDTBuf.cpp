@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -313,8 +313,7 @@ namespace GDCC
       //
       void IncludeLang::addLang(char const *lang)
       {
-         auto path = Core::GetSystemPath();
-         Core::PathAppend(path, "lib");
+         auto path = Core::GetOptionLibPath();
          Core::PathAppend(path, "inc");
          Core::PathAppend(path, lang);
          langs.emplace_back(std::move(path));

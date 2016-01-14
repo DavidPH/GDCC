@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -53,8 +53,7 @@ static void MakeLib_CC(GDCC::IR::Program &prog, std::string path, char const *na
 //
 static void MakeLib_libGDCC(GDCC::IR::Program &prog)
 {
-   std::string path = GDCC::Core::GetSystemPath();
-   GDCC::Core::PathAppend(path, "lib");
+   std::string path = GDCC::Core::GetOptionLibPath();
    GDCC::Core::PathAppend(path, "src");
    GDCC::Core::PathAppend(path, "libGDCC");
 
@@ -81,8 +80,7 @@ static void MakeLib_libacs(GDCC::IR::Program &)
 //
 static void MakeLib_libc(GDCC::IR::Program &prog)
 {
-   std::string path = GDCC::Core::GetSystemPath();
-   GDCC::Core::PathAppend(path, "lib");
+   std::string path = GDCC::Core::GetOptionLibPath();
    GDCC::Core::PathAppend(path, "src");
    GDCC::Core::PathAppend(path, "libc");
 
@@ -162,6 +160,8 @@ int main(int argc, char *argv[])
       "compile. Current target libraries: libGDCC, libacs, libc.\n"
       "\n"
       "Output defaults to last loose argument.";
+
+   opts.optLibPath.insert(&opts.list);
 
    try
    {

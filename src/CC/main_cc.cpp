@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
       "Compiles C source into IR data. Output defaults to last loose "
       "argument.";
 
+   opts.optLibPath.insert(&opts.list);
    opts.optSysSource.insert(&opts.list);
 
    GDCC::LD::OutputIR = true;

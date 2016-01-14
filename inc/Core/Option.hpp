@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -59,6 +59,7 @@ namespace GDCC
          Option::CStr     optOutput;
          Option::Function optVersion;
 
+         Option::CStr       optLibPath;
          SystemSourceOption optSysSource;
       };
    }
@@ -74,6 +75,8 @@ namespace GDCC
    namespace Core
    {
       Option::CStrV &GetOptionArgs();
+
+      std::string GetOptionLibPath();
 
       Option::Program &GetOptionList();
 

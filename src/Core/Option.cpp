@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -84,6 +84,20 @@ namespace GDCC
                {opt->getProgram()->putVersion(std::cout); throw EXIT_SUCCESS;}
          },
 
+         optLibPath
+         {
+            nullptr, Option::Base::Info()
+               .setName("lib-path")
+               .setGroup("input")
+               .setDescS("Sets the base path for library sources and headers.")
+               .setDescL("Sets the base path for library sources and headers. "
+                  "Sources will be found by appending src/<library name> to "
+                  "this path. Headers will be found by appending "
+                  "inc/<language> to this path.\n"
+                  "\n"
+                  "Default is <system path>/lib.")
+         },
+
          optSysSource
          {
             nullptr, Option::Base::Info()
@@ -130,6 +144,19 @@ namespace GDCC
       Option::CStrV &GetOptionArgs()
       {
          return GetOptions().args;
+      }
+
+      //
+      // GetOptionLibPath
+      //
+      std::string GetOptionLibPath()
+      {
+         if(auto path = GetOptions().optLibPath.data())
+            return path;
+
+         std::string path = GDCC::Core::GetSystemPath();
+         GDCC::Core::PathAppend(path, "lib");
+         return path;
       }
 
       //
