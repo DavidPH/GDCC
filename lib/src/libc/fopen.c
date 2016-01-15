@@ -29,6 +29,32 @@
 
 
 //----------------------------------------------------------------------------|
+// Types                                                                      |
+//
+
+//
+// __FILE_buf_str
+//
+typedef struct __FILE_buf_str
+{
+   char __str_ars *buf_beg;
+   char __str_ars *buf_ptr;
+   char __str_ars *buf_end;
+   int             buf_mode;
+} __FILE_buf_str;
+
+//
+// __FILE_str
+//
+typedef struct __FILE_str
+{
+   FILE f;
+
+   __FILE_buf_str buf_get;
+} __FILE_str;
+
+
+//----------------------------------------------------------------------------|
 // Static Prototypes                                                          |
 //
 
@@ -47,6 +73,18 @@ static int FILE_fn_pass_open(FILE *stream, char const *filename, char const *mod
 
 static int FILE_fn_stdout_flush(FILE *stream, int c);
 static int FILE_fn_stdout_setbuf(FILE *stream, char *buf, size_t size, int mode);
+
+static int FILE_fn_strr_getpos(FILE *stream, fpos_t *pos);
+static int FILE_fn_strr_setpos(FILE *stream, fpos_t const *pos);
+
+static int FILE_fn_strw_flush(FILE *stream, int c);
+static int FILE_fn_strw_getpos(FILE *stream, fpos_t *pos);
+static int FILE_fn_strw_setpos(FILE *stream, fpos_t const *pos);
+
+static int FILE_fn_strentr_fetch(FILE *stream);
+static int FILE_fn_strentr_getpos(FILE *stream, fpos_t *pos);
+static int FILE_fn_strentr_setpos(FILE *stream, fpos_t const *pos);
+static int FILE_fn_strentr_unget(FILE *stream, int c);
 
 
 //----------------------------------------------------------------------------|
@@ -138,6 +176,10 @@ FILE __stdout =
 // Static Functions                                                           |
 //
 
+//=========================================================
+// Automatic fail functions.
+//
+
 //
 // FILE_fn_fail_close
 //
@@ -213,6 +255,10 @@ static int FILE_fn_fail_unget(FILE *stream, int c)
    return EOF;
 }
 
+//=========================================================
+// Automatic success functions.
+//
+
 //
 // FILE_fn_pass_close
 //
@@ -228,6 +274,10 @@ static int FILE_fn_pass_open(FILE *stream)
 {
    return 0;
 }
+
+//=========================================================
+// stdout functions.
+//
 
 //
 // FILE_fn_stdout_flush
@@ -303,6 +353,125 @@ buf_good:
    stream->buf_put.buf_ptr  = buf + used;
    stream->buf_put.buf_end  = buf + size;
  //stream->buf_put.buf_mode = _IOLBF;
+}
+
+//=========================================================
+// __stropenr functions.
+//
+
+//
+// FILE_fn_strr_getpos
+//
+static int FILE_fn_strr_getpos(FILE *stream, fpos_t *pos)
+{
+   __ltofpos(pos, stream->buf_get.buf_ptr - stream->buf_get.buf_beg);
+   return 0;
+}
+
+//
+// FILE_fn_strr_setpos
+//
+static int FILE_fn_strr_setpos(FILE *stream, fpos_t const *pos)
+{
+   stream->buf_get.buf_ptr = stream->buf_get.buf_beg + __fpostol(pos);
+   return 0;
+}
+
+//=========================================================
+// __stropenr_str functions.
+//
+
+//
+// FILE_fn_strentr_fetch
+//
+static int FILE_fn_strentr_fetch(FILE *stream_)
+{
+   __FILE_str *stream = (__FILE_str *)stream_;
+
+   if(stream->buf_get.buf_ptr == stream->buf_get.buf_end)
+   {
+      stream->f.flags |= _FILEFLAG_EOF;
+      return EOF;
+   }
+
+   return *stream->buf_get.buf_ptr++;
+}
+
+//
+// FILE_fn_strentr_getpos
+//
+static int FILE_fn_strentr_getpos(FILE *stream_, fpos_t *pos)
+{
+   __FILE_str *stream = (__FILE_str *)stream_;
+
+   __ltofpos(pos, stream->buf_get.buf_ptr - stream->buf_get.buf_beg);
+   return 0;
+}
+
+//
+// FILE_fn_strentr_setpos
+//
+static int FILE_fn_strentr_setpos(FILE *stream_, fpos_t const *pos)
+{
+   __FILE_str *stream = (__FILE_str *)stream_;
+
+   stream->buf_get.buf_ptr = stream->buf_get.buf_beg + __fpostol(pos);
+   return 0;
+}
+
+//
+// FILE_fn_strentr_unget
+//
+static int FILE_fn_strentr_unget(FILE *stream_, int c)
+{
+   __FILE_str *stream = (__FILE_str *)stream_;
+
+   if(stream->buf_get.buf_ptr == stream->buf_get.buf_beg ||
+      *(stream->buf_get.buf_ptr - 1) != c)
+   {
+      return EOF;
+   }
+
+   --stream->buf_get.buf_ptr;
+
+   stream->f.flags &= ~_FILEFLAG_EOF;
+
+   return c;
+}
+
+//=========================================================
+// __stropenw functions.
+//
+
+//
+// FILE_fn_strw_flush
+//
+static int FILE_fn_strw_flush(FILE *stream, int c)
+{
+   // Can only handle generic flush requests...
+   if(c != EOF)
+      return EOF;
+
+   // ... Which are a no-op, because the buffer is the final output.
+   return 0;
+}
+
+//
+// FILE_fn_strw_getpos
+//
+static int FILE_fn_strw_getpos(FILE *stream, fpos_t *pos)
+{
+   __ltofpos(pos, stream->buf_put.buf_ptr - stream->buf_put.buf_beg);
+   return 0;
+}
+
+//
+// FILE_fn_strw_setpos
+//
+static int FILE_fn_strw_setpos(FILE *stream, fpos_t const *pos)
+{
+   stream->buf_put.buf_ptr = stream->buf_put.buf_beg + __fpostol(pos);
+   return 0;
 }
 
 
@@ -412,6 +581,96 @@ FILE *__fopen_fn(__FILE_fn const *fn, size_t size, void *data,
    if(!f->fn.fn_setbuf) f->fn.fn_setbuf = FILE_fn_fail_setbuf;
    if(!f->fn.fn_setpos) f->fn.fn_setpos = FILE_fn_fail_setpos;
    if(!f->fn.fn_unget)  f->fn.fn_unget  = FILE_fn_fail_unget;
+
+   return f;
+}
+
+//
+// __stropenr
+//
+FILE *__stropenr(char const *str, size_t size)
+{
+   FILE *f;
+
+   if(!(f = malloc(sizeof(FILE))))
+      return NULL;
+
+   char *buf = (char *)str;
+
+   f->buf_get = (__FILE_buf const){buf, buf, buf + size, _IOFBF};
+   f->buf_put = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
+   f->data    = NULL;
+   f->flags   = 0;
+
+   f->fn.fn_close  = FILE_fn_pass_close;
+   f->fn.fn_fetch  = FILE_fn_fail_fetch;
+   f->fn.fn_flush  = FILE_fn_fail_flush;
+   f->fn.fn_getpos = FILE_fn_strr_getpos;
+   f->fn.fn_open   = FILE_fn_pass_open;
+   f->fn.fn_reopen = FILE_fn_fail_reopen;
+   f->fn.fn_setbuf = FILE_fn_fail_setbuf;
+   f->fn.fn_setpos = FILE_fn_strr_setpos;
+   f->fn.fn_unget  = FILE_fn_fail_unget;
+
+   return f;
+}
+
+//
+// __stropenr_str
+//
+FILE *__stropenr_str(char __str_ars const *str, size_t size)
+{
+   __FILE_str *f;
+
+   if(!(f = malloc(sizeof(__FILE_str))))
+      return NULL;
+
+   f->f.buf_get = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
+   f->f.buf_put = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
+   f->f.data    = NULL;
+   f->f.flags   = 0;
+
+   f->f.fn.fn_close  = FILE_fn_pass_close;
+   f->f.fn.fn_fetch  = FILE_fn_strentr_fetch;
+   f->f.fn.fn_flush  = FILE_fn_fail_flush;
+   f->f.fn.fn_getpos = FILE_fn_strentr_getpos;
+   f->f.fn.fn_open   = FILE_fn_pass_open;
+   f->f.fn.fn_reopen = FILE_fn_fail_reopen;
+   f->f.fn.fn_setbuf = FILE_fn_fail_setbuf;
+   f->f.fn.fn_setpos = FILE_fn_strentr_setpos;
+   f->f.fn.fn_unget  = FILE_fn_strentr_unget;
+
+   char __str_ars *buf = (char __str_ars *)str;
+
+   f->buf_get = (__FILE_buf_str const){buf, buf, buf + size, _IOFBF};
+
+   return &f->f;
+}
+
+//
+// __stropenw
+//
+FILE *__stropenw(char *str, size_t size)
+{
+   FILE *f;
+
+   if(!(f = malloc(sizeof(FILE))))
+      return NULL;
+
+   f->buf_get = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
+   f->buf_put = (__FILE_buf const){str, str, str + size, _IOFBF};
+   f->data    = NULL;
+   f->flags   = 0;
+
+   f->fn.fn_close  = FILE_fn_pass_close;
+   f->fn.fn_fetch  = FILE_fn_fail_fetch;
+   f->fn.fn_flush  = FILE_fn_strw_flush;
+   f->fn.fn_getpos = FILE_fn_strw_getpos;
+   f->fn.fn_open   = FILE_fn_pass_open;
+   f->fn.fn_reopen = FILE_fn_fail_reopen;
+   f->fn.fn_setbuf = FILE_fn_fail_setbuf;
+   f->fn.fn_setpos = FILE_fn_strw_setpos;
+   f->fn.fn_unget  = FILE_fn_fail_unget;
 
    return f;
 }
