@@ -280,6 +280,7 @@ FILE *__fopen_fn(__FILE_fn const *fn, size_t size, void *data,
 FILE *__stropenr(char const *str, size_t size);
 FILE *__stropenr_str(char __str_ars const *str, size_t size);
 FILE *__stropenw(char *str, size_t size);
+FILE *__stropenw_nf(char *str, size_t size);
 
 int __fprintf_str(FILE *restrict stream,
    char const __str_ars *restrict format, ...);

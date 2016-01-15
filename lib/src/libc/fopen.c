@@ -69,6 +69,7 @@ static int FILE_fn_fail_setpos(FILE *stream, fpos_t const *pos);
 static int FILE_fn_fail_unget(FILE *stream, int c);
 
 static int FILE_fn_pass_close(FILE *stream);
+static int FILE_fn_pass_flush(FILE *stream, int c);
 static int FILE_fn_pass_open(FILE *stream, char const *filename, char const *mode);
 
 static int FILE_fn_stdout_flush(FILE *stream, int c);
@@ -263,6 +264,14 @@ static int FILE_fn_fail_unget(FILE *stream, int c)
 // FILE_fn_pass_close
 //
 static int FILE_fn_pass_close(FILE *stream)
+{
+   return 0;
+}
+
+//
+// FILE_fn_pass_flush
+//
+static int FILE_fn_pass_flush(FILE *stream, int c)
 {
    return 0;
 }
@@ -665,6 +674,34 @@ FILE *__stropenw(char *str, size_t size)
    f->fn.fn_close  = FILE_fn_pass_close;
    f->fn.fn_fetch  = FILE_fn_fail_fetch;
    f->fn.fn_flush  = FILE_fn_strw_flush;
+   f->fn.fn_getpos = FILE_fn_strw_getpos;
+   f->fn.fn_open   = FILE_fn_pass_open;
+   f->fn.fn_reopen = FILE_fn_fail_reopen;
+   f->fn.fn_setbuf = FILE_fn_fail_setbuf;
+   f->fn.fn_setpos = FILE_fn_strw_setpos;
+   f->fn.fn_unget  = FILE_fn_fail_unget;
+
+   return f;
+}
+
+//
+// __stropenw_nf
+//
+FILE *__stropenw_nf(char *str, size_t size)
+{
+   FILE *f;
+
+   if(!(f = malloc(sizeof(FILE))))
+      return NULL;
+
+   f->buf_get = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
+   f->buf_put = (__FILE_buf const){str, str, str + size, _IOFBF};
+   f->data    = NULL;
+   f->flags   = 0;
+
+   f->fn.fn_close  = FILE_fn_pass_close;
+   f->fn.fn_fetch  = FILE_fn_fail_fetch;
+   f->fn.fn_flush  = FILE_fn_pass_flush;
    f->fn.fn_getpos = FILE_fn_strw_getpos;
    f->fn.fn_open   = FILE_fn_pass_open;
    f->fn.fn_reopen = FILE_fn_fail_reopen;
