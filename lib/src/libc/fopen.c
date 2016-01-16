@@ -672,6 +672,18 @@ FILE *__stropenr(char const *str, size_t size)
 }
 
 //
+// __stropenr_sta
+//
+FILE *__stropenr_sta(char const *str, size_t size)
+{
+   char *buf = (char *)str;
+   __strfiler.buf_get = (__FILE_buf const){buf, buf, buf + size, _IOFBF};
+   __strfiler.flags   = 0;
+
+   return &__strfiler;
+}
+
+//
 // __stropenr_str
 //
 FILE *__stropenr_str(char __str_ars const *str, size_t size)
@@ -704,6 +716,18 @@ FILE *__stropenr_str(char __str_ars const *str, size_t size)
 }
 
 //
+// __stropenr_str_sta
+//
+FILE *__stropenr_str_sta(char __str_ars const *str, size_t size)
+{
+   char __str_ars *buf = (char __str_ars *)str;
+   __strfiler_str.buf_get = (__FILE_buf_str const){buf, buf, buf + size, _IOFBF};
+   __strfiler_str.f.flags = 0;
+
+   return &__strfiler_str.f;
+}
+
+//
 // __stropenw
 //
 FILE *__stropenw(char *str, size_t size)
@@ -729,6 +753,17 @@ FILE *__stropenw(char *str, size_t size)
    f->fn.fn_unget  = FILE_fn_fail_unget;
 
    return f;
+}
+
+//
+// __stropenw_sta
+//
+FILE *__stropenw_sta(char *str, size_t size)
+{
+   __strfilew.buf_put = (__FILE_buf const){str, str, str + size, _IOFBF};
+   __strfilew.flags   = 0;
+
+   return &__strfilew;
 }
 
 //

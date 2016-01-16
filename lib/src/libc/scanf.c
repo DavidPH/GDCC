@@ -676,11 +676,7 @@ int vscanf(char const *restrict format, __va_list arg)
 //
 int vsscanf(char const *restrict s, char const *restrict format, __va_list arg)
 {
-   char *buf = (char *)s;
-   __strfiler.buf_get = (__FILE_buf const){buf, buf, buf + strlen(s), _IOFBF};
-   __strfiler.flags   = 0;
-
-   return vfscanf(&__strfiler, format, arg);
+   return vfscanf(__stropenr_sta(s, strlen(s)), format, arg);
 }
 
 //=========================================================
@@ -790,11 +786,7 @@ int __vscanf_str(char __str_ars const *restrict format, __va_list arg)
 int __vsscanf_str(char const *restrict s,
    char __str_ars const *restrict format, __va_list arg)
 {
-   char *buf = (char *)s;
-   __strfiler.buf_get = (__FILE_buf const){buf, buf, buf + strlen(s), _IOFBF};
-   __strfiler.flags   = 0;
-
-   return __vfscanf_str(&__strfiler, format, arg);
+   return __vfscanf_str(__stropenr_sta(s, strlen(s)), format, arg);
 }
 
 //
@@ -803,11 +795,7 @@ int __vsscanf_str(char const *restrict s,
 int __vstrscanf(char __str_ars const *restrict s,
    char const *restrict format, __va_list arg)
 {
-   char __str_ars *buf = (char __str_ars *)s;
-   __strfiler_str.buf_get = (__FILE_buf_str const){buf, buf, buf + strlen_str(s), _IOFBF};
-   __strfiler_str.f.flags = 0;
-
-   return vfscanf(&__strfiler_str.f, format, arg);
+   return vfscanf(__stropenr_str_sta(s, strlen_str(s)), format, arg);
 }
 
 //
@@ -816,11 +804,7 @@ int __vstrscanf(char __str_ars const *restrict s,
 int __vstrscanf_str(char __str_ars const *restrict s,
    char __str_ars const *restrict format, __va_list arg)
 {
-   char __str_ars *buf = (char __str_ars *)s;
-   __strfiler_str.buf_get = (__FILE_buf_str const){buf, buf, buf + strlen_str(s), _IOFBF};
-   __strfiler_str.f.flags = 0;
-
-   return __vfscanf_str(&__strfiler_str.f, format, arg);
+   return __vfscanf_str(__stropenr_str_sta(s, strlen_str(s)), format, arg);
 }
 
 // EOF
