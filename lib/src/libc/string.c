@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -14,6 +14,10 @@
 
 #include <errno.h>
 #include <stdlib.h>
+
+#if __GDCC_Family__ZDACS__
+#include <ACS_ZDoom.h>
+#endif
 
 
 //----------------------------------------------------------------------------|
@@ -438,6 +442,34 @@ char *strerror(int errnum)
 //
 size_t strlen(char const *s)
 {
+   size_t n = 0;
+
+   while(*s++) ++n;
+
+   return n;
+}
+
+//=========================================================
+// Implementation extensions.
+//
+
+//
+// strlen_str
+//
+size_t strlen_str(char __str_ars const *s)
+{
+   #if __GDCC_Family__ZDACS__
+   {
+      union {char __str_ars const *s; struct {__str lo; int hi;};} u = {s};
+
+      if(!u.hi) return ACS_StrLen(u.lo);
+
+      int n = ACS_StrLen(u.lo);
+      if(n <= u.hi)
+         return u.hi - n;
+   }
+   #endif
+
    size_t n = 0;
 
    while(*s++) ++n;

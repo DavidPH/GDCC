@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -95,6 +95,12 @@ char *strtok(char *restrict s1, char const *restrict s2);
 void *memset(void *s, int c, size_t n);
 char *strerror(int errnum);
 size_t strlen(char const *s);
+
+//
+// Implementation extensions.
+//
+
+size_t strlen_str(char __str_ars const *s);
 
 #ifdef __cplusplus
 };
