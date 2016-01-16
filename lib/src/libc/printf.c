@@ -625,20 +625,15 @@ int vprintf(char const *restrict format, __va_list arg)
 //
 int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list arg)
 {
-   FILE *stream = __stropenw_nf(s, n);
+   __strfilew.buf_put = (__FILE_buf const){s, s, s + n, _IOFBF};
 
-   if(!stream)
-      return -1;
-
-   int ret = vfprintf(stream, format, arg);
+   int ret = vfprintf(&__strfilew, format, arg);
 
    // Null terminate result.
-   if(stream->buf_put.buf_ptr != stream->buf_put.buf_end)
-      *stream->buf_put.buf_ptr = '\0';
+   if(__strfilew.buf_put.buf_ptr != __strfilew.buf_put.buf_end)
+      *__strfilew.buf_put.buf_ptr = '\0';
    else if(n)
       s[n-1] = '\0';
-
-   fclose(stream);
 
    return ret;
 }
@@ -649,17 +644,12 @@ int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list
 int vsprintf(char *restrict s, char const *restrict format, va_list arg)
 {
    // Using -1 here is definitely not guaranteed to work in the future.
-   FILE *stream = __stropenw_nf(s, -1);
+   __strfilew.buf_put = (__FILE_buf const){s, s, s - 1, _IOFBF};
 
-   if(!stream)
-      return -1;
-
-   int ret = vfprintf(stream, format, arg);
+   int ret = vfprintf(&__strfilew, format, arg);
 
    // Null terminate result.
-   *stream->buf_put.buf_ptr = '\0';
-
-   fclose(stream);
+   *__strfilew.buf_put.buf_ptr = '\0';
 
    return ret;
 }
@@ -672,7 +662,7 @@ int vsprintf(char *restrict s, char const *restrict format, va_list arg)
 // __fprintf_str
 //
 int __fprintf_str(FILE *restrict stream,
-   char const __str_ars *restrict format, ...)
+   char __str_ars const *restrict format, ...)
 {
    va_list arg;
    int     ret;
@@ -702,7 +692,7 @@ int __nprintf(char const *restrict format, ...)
 //
 // __nprintf_str
 //
-int __nprintf_str(char const __str_ars *restrict format, ...)
+int __nprintf_str(char __str_ars const *restrict format, ...)
 {
    va_list arg;
    int     ret;
@@ -717,7 +707,7 @@ int __nprintf_str(char const __str_ars *restrict format, ...)
 //
 // __printf_str
 //
-int __printf_str(char const __str_ars *restrict format, ...)
+int __printf_str(char __str_ars const *restrict format, ...)
 {
    va_list arg;
    int     ret;
@@ -733,7 +723,7 @@ int __printf_str(char const __str_ars *restrict format, ...)
 // __vfprintf_str
 //
 int __vfprintf_str(FILE *restrict stream,
-   char const __str_ars *restrict format, __va_list arg)
+   char __str_ars const *restrict format, __va_list arg)
 {
    FormatDecl();
 
@@ -785,7 +775,7 @@ int __vnprintf(char const *restrict format, va_list arg)
 //
 // __vnprintf_str
 //
-int __vnprintf_str(char const __str_ars *restrict format, va_list arg)
+int __vnprintf_str(char __str_ars const *restrict format, va_list arg)
 {
    #if __GDCC_Family__ZDACS__
    FormatDecl();
@@ -810,7 +800,7 @@ int __vnprintf_str(char const __str_ars *restrict format, va_list arg)
 //
 // __vprintf_str
 //
-int __vprintf_str(char const __str_ars *restrict format, __va_list arg)
+int __vprintf_str(char __str_ars const *restrict format, __va_list arg)
 {
    return __vfprintf_str(stdout, format, arg);
 }

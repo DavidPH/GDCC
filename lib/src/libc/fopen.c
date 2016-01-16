@@ -29,32 +29,6 @@
 
 
 //----------------------------------------------------------------------------|
-// Types                                                                      |
-//
-
-//
-// __FILE_buf_str
-//
-typedef struct __FILE_buf_str
-{
-   char __str_ars *buf_beg;
-   char __str_ars *buf_ptr;
-   char __str_ars *buf_end;
-   int             buf_mode;
-} __FILE_buf_str;
-
-//
-// __FILE_str
-//
-typedef struct __FILE_str
-{
-   FILE f;
-
-   __FILE_buf_str buf_get;
-} __FILE_str;
-
-
-//----------------------------------------------------------------------------|
 // Static Prototypes                                                          |
 //
 
@@ -168,6 +142,79 @@ FILE __stdout =
 
    {NULL, NULL, NULL, 0},
    {Buffer_stdout, Buffer_stdout, Buffer_stdout + sizeof(Buffer_stdout), _IOLBF},
+
+   NULL, 0
+};
+
+//
+// __strfilr
+//
+FILE __strfilr =
+{
+   {
+      .fn_close  = FILE_fn_fail_close,
+      .fn_fetch  = FILE_fn_fail_fetch,
+      .fn_flush  = FILE_fn_fail_flush,
+      .fn_getpos = FILE_fn_strr_getpos,
+      .fn_open   = FILE_fn_fail_open,
+      .fn_reopen = FILE_fn_fail_reopen,
+      .fn_setbuf = FILE_fn_fail_setbuf,
+      .fn_setpos = FILE_fn_strr_setpos,
+      .fn_unget  = FILE_fn_fail_unget,
+   },
+
+   {NULL, NULL, NULL, 0},
+   {NULL, NULL, NULL, _IOFBF},
+
+   NULL, 0
+};
+
+//
+// __strfiler_str
+//
+FILE __strfilr_str =
+{
+   {
+      {
+         .fn_close  = FILE_fn_fail_close,
+         .fn_fetch  = FILE_fn_strentr_fetch,
+         .fn_flush  = FILE_fn_fail_flush,
+         .fn_getpos = FILE_fn_strentr_getpos,
+         .fn_open   = FILE_fn_fail_open,
+         .fn_reopen = FILE_fn_fail_reopen,
+         .fn_setbuf = FILE_fn_fail_setbuf,
+         .fn_setpos = FILE_fn_strentr_setpos,
+         .fn_unget  = FILE_fn_strentr_unget,
+      },
+
+      {NULL, NULL, NULL, 0},
+      {NULL, NULL, NULL, 0},
+
+      NULL, 0
+   },
+
+   {NULL, NULL, NULL, _IOFBF}
+};
+
+//
+// __strfilew
+//
+FILE __strfilew =
+{
+   {
+      .fn_close  = FILE_fn_fail_close,
+      .fn_fetch  = FILE_fn_fail_fetch,
+      .fn_flush  = FILE_fn_pass_flush,
+      .fn_getpos = FILE_fn_strw_getpos,
+      .fn_open   = FILE_fn_fail_open,
+      .fn_reopen = FILE_fn_fail_reopen,
+      .fn_setbuf = FILE_fn_fail_setbuf,
+      .fn_setpos = FILE_fn_strw_setpos,
+      .fn_unget  = FILE_fn_fail_unget,
+   },
+
+   {NULL, NULL, NULL, 0},
+   {NULL, NULL, NULL, _IOFBF},
 
    NULL, 0
 };
@@ -674,34 +721,6 @@ FILE *__stropenw(char *str, size_t size)
    f->fn.fn_close  = FILE_fn_pass_close;
    f->fn.fn_fetch  = FILE_fn_fail_fetch;
    f->fn.fn_flush  = FILE_fn_strw_flush;
-   f->fn.fn_getpos = FILE_fn_strw_getpos;
-   f->fn.fn_open   = FILE_fn_pass_open;
-   f->fn.fn_reopen = FILE_fn_fail_reopen;
-   f->fn.fn_setbuf = FILE_fn_fail_setbuf;
-   f->fn.fn_setpos = FILE_fn_strw_setpos;
-   f->fn.fn_unget  = FILE_fn_fail_unget;
-
-   return f;
-}
-
-//
-// __stropenw_nf
-//
-FILE *__stropenw_nf(char *str, size_t size)
-{
-   FILE *f;
-
-   if(!(f = malloc(sizeof(FILE))))
-      return NULL;
-
-   f->buf_get = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
-   f->buf_put = (__FILE_buf const){str, str, str + size, _IOFBF};
-   f->data    = NULL;
-   f->flags   = 0;
-
-   f->fn.fn_close  = FILE_fn_pass_close;
-   f->fn.fn_fetch  = FILE_fn_fail_fetch;
-   f->fn.fn_flush  = FILE_fn_pass_flush;
    f->fn.fn_getpos = FILE_fn_strw_getpos;
    f->fn.fn_open   = FILE_fn_pass_open;
    f->fn.fn_reopen = FILE_fn_fail_reopen;

@@ -173,6 +173,27 @@ typedef struct __FILE
    unsigned flags;
 } __FILE;
 
+//
+// __FILE_buf_str
+//
+typedef struct __FILE_buf_str
+{
+   char __str_ars *buf_beg;
+   char __str_ars *buf_ptr;
+   char __str_ars *buf_end;
+   int             buf_mode;
+} __FILE_buf_str;
+
+//
+// __FILE_str
+//
+typedef struct __FILE_str
+{
+   FILE f;
+
+   __FILE_buf_str buf_get;
+} __FILE_str;
+
 
 //----------------------------------------------------------------------------|
 // Extern Objects                                                             |
@@ -182,6 +203,15 @@ typedef struct __FILE
 // __stderr, __stdin, __stdout
 //
 extern FILE __stderr, __stdin, __stdout;
+
+//
+// __strfiler, __strfiler_str, __strfilew
+//
+// Used internally for sprintf/sscanf.
+//
+extern FILE       __strfiler;
+extern __FILE_str __strfiler_str;
+extern FILE       __strfilew;
 
 
 //----------------------------------------------------------------------------|
@@ -280,20 +310,19 @@ FILE *__fopen_fn(__FILE_fn const *fn, size_t size, void *data,
 FILE *__stropenr(char const *str, size_t size);
 FILE *__stropenr_str(char __str_ars const *str, size_t size);
 FILE *__stropenw(char *str, size_t size);
-FILE *__stropenw_nf(char *str, size_t size);
 
 int __fprintf_str(FILE *restrict stream,
-   char const __str_ars *restrict format, ...);
+   char __str_ars const *restrict format, ...);
 size_t __fwrite_str(void const __str_ars *restrict ptr, size_t size,
    size_t nmemb, FILE *restrict stream);
 int __nprintf(char const *restrict format, ...);
-int __nprintf_str(char const __str_ars *restrict format, ...);
-int __printf_str(char const __str_ars *restrict format, ...);
+int __nprintf_str(char __str_ars const *restrict format, ...);
+int __printf_str(char __str_ars const *restrict format, ...);
 int __vfprintf_str(FILE *restrict stream,
-   char const __str_ars *restrict format, __va_list arg);
+   char __str_ars const *restrict format, __va_list arg);
 int __vnprintf(char const *restrict format, __va_list arg);
-int __vnprintf_str(char const __str_ars *restrict format, __va_list arg);
-int __vprintf_str(char const __str_ars *restrict format, __va_list arg);
+int __vnprintf_str(char __str_ars const *restrict format, __va_list arg);
+int __vprintf_str(char __str_ars const *restrict format, __va_list arg);
 
 FILE *__get_stderr(void);
 FILE *__get_stdin(void);
