@@ -93,6 +93,7 @@ static void MakeLib_libc(GDCC::IR::Program &prog)
    MakeLib_CC(prog, path, "math.c");
    MakeLib_CC(prog, path, "printf.c");
    MakeLib_CC(prog, path, "round.c");
+   MakeLib_CC(prog, path, "scanf.c");
    MakeLib_CC(prog, path, "setjmp.c");
    MakeLib_CC(prog, path, "sort.c");
    MakeLib_CC(prog, path, "stdfix.c");

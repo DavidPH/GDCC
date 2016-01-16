@@ -311,9 +311,24 @@ FILE *__stropenr(char const *str, size_t size);
 FILE *__stropenr_str(char __str_ars const *str, size_t size);
 FILE *__stropenw(char *str, size_t size);
 
+int __fscanf_str(FILE *restrict stream, char __str_ars const *restrict format, ...);
+int __scanf_str(char __str_ars const *restrict format, ...);
+int __sscanf_str(char const *restrict s, char __str_ars const *restrict format, ...);
+int __strscanf(char __str_ars const *restrict s, char const *restrict format, ...);
+int __strscanf_str(char __str_ars const *restrict s, char __str_ars const *restrict format, ...);
+int __vfscanf_str(FILE *restrict stream, char __str_ars const *restrict format,
+   __va_list arg);
+int __vscanf_str(char __str_ars const *restrict format, __va_list arg);
+int __vsscanf_str(char const *restrict s,
+   char __str_ars const *restrict format, __va_list arg);
+int __vstrscanf(char __str_ars const *restrict s, char const *restrict format,
+   __va_list arg);
+int __vstrscanf_str(char __str_ars const *restrict s,
+   char __str_ars const *restrict format, __va_list arg);
+
 int __fprintf_str(FILE *restrict stream,
    char __str_ars const *restrict format, ...);
-size_t __fwrite_str(void const __str_ars *restrict ptr, size_t size,
+size_t __fwrite_str(void __str_ars const *restrict ptr, size_t size,
    size_t nmemb, FILE *restrict stream);
 int __nprintf(char const *restrict format, ...);
 int __nprintf_str(char __str_ars const *restrict format, ...);
