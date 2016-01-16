@@ -626,6 +626,7 @@ int vprintf(char const *restrict format, __va_list arg)
 int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list arg)
 {
    __strfilew.buf_put = (__FILE_buf const){s, s, s + n, _IOFBF};
+   __strfilew.flags   = 0;
 
    int ret = vfprintf(&__strfilew, format, arg);
 
@@ -645,6 +646,7 @@ int vsprintf(char *restrict s, char const *restrict format, va_list arg)
 {
    // Using -1 here is definitely not guaranteed to work in the future.
    __strfilew.buf_put = (__FILE_buf const){s, s, s - 1, _IOFBF};
+   __strfilew.flags   = 0;
 
    int ret = vfprintf(&__strfilew, format, arg);
 
