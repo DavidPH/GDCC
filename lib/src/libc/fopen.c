@@ -147,9 +147,9 @@ FILE __stdout =
 };
 
 //
-// __strfilr
+// __strfiler
 //
-FILE __strfilr =
+FILE __strfiler =
 {
    {
       .fn_close  = FILE_fn_fail_close,
@@ -172,7 +172,7 @@ FILE __strfilr =
 //
 // __strfiler_str
 //
-FILE __strfilr_str =
+__FILE_str __strfiler_str =
 {
    {
       {
