@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,8 +24,6 @@
 #include "Core/StringBuf.hpp"
 
 #include "IR/Program.hpp"
-
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -57,12 +55,6 @@ namespace GDCC
       void ParseFile(char const *inName, IR::Program &prog)
       {
          auto buf = Core::FileOpenBlock(inName);
-         if(!buf)
-         {
-            std::cerr << "couldn't open '" << inName << "' for reading\n";
-            throw EXIT_FAILURE;
-         }
-
 
          Core::String      file {inName};
          CPP::IncludeLang  langs{"C"};

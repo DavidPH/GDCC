@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "Core/File.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/String.hpp"
 
 #include <fstream>
@@ -117,17 +118,17 @@ namespace GDCC
          std::FILE *file;
 
          if(stat(filename, &statBuf) || !S_ISREG(statBuf.st_mode))
-            return nullptr;
+            throw Core::ExceptFile(filename, "reading");
 
          if(!(file = std::fopen(filename, "rb")))
-            return nullptr;
+            throw Core::ExceptFile(filename, "reading");
 
          // Allocate storage.
          std::unique_ptr<char[]> data{new char[statBuf.st_size]};
 
          // Read data.
          if(!std::fread(data.get(), statBuf.st_size, 1, file))
-            return std::fclose(file), nullptr;
+            throw std::fclose(file), Core::ExceptFile(filename, "reading");
 
          std::fclose(file);
 
@@ -140,11 +141,11 @@ namespace GDCC
 
          // Open file.
          if((fd = open(filename, O_RDONLY)) == -1)
-            return nullptr;
+            throw Core::ExceptFile(filename, "reading");
 
          // Stat file.
          if(fstat(fd, &statBuf) || !S_ISREG(statBuf.st_mode))
-            return close(fd), nullptr;
+            throw close(fd), Core::ExceptFile(filename, "reading");
 
          // Map file.
          auto map = mmap(nullptr, statBuf.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
@@ -156,7 +157,7 @@ namespace GDCC
 
             // Read data.
             if(read(fd, data.get(), statBuf.st_size) == -1)
-               return close(fd), nullptr;
+               throw close(fd), Core::ExceptFile(filename, "reading");
 
             close(fd);
 
@@ -200,7 +201,20 @@ namespace GDCC
                return {buf.release(), true};
          }
 
-         return {nullptr, true};
+         if(which & std::ios_base::in)
+         {
+            if(which & std::ios_base::out)
+               throw Core::ExceptFile(filename, "reading/writing");
+            else
+               throw Core::ExceptFile(filename, "reading");
+         }
+         else
+         {
+            if(which & std::ios_base::out)
+               throw Core::ExceptFile(filename, "writing");
+            else
+               throw Core::ExceptFile(filename, "unknown");
+         }
       }
    }
 }

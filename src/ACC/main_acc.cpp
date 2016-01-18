@@ -95,6 +95,25 @@ static void MakeACSAlt()
    GDCC::LD::Link(prog, file.data());
 }
 
+//
+// WriteError
+//
+static void WriteError(char const *filename, char const *what)
+{
+   if(!filename) return;
+
+   try
+   {
+      auto buf = GDCC::Core::FileOpenStream(filename, std::ios_base::out);
+      std::ostream out{buf.get()};
+      out << what << std::endl;
+   }
+   catch(std::exception const &e)
+   {
+      std::cerr << e.what() << std::endl;
+   }
+}
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -136,21 +155,16 @@ int main(int argc, char *argv[])
       std::cerr << e.what() << std::endl;
 
       // Also write error to file, if requested.
-      if(auto outName = ErrorFile.data())
-      {
-         if(auto buf = GDCC::Core::FileOpenStream(outName, std::ios_base::out))
-         {
-            std::ostream out{buf.get()};
-            out << e.what() << std::endl;
-         }
-         else
-            std::cerr << "failed to open '" << outName << "' for writing\n";
-      }
+      WriteError(ErrorFile.data(), e.what());
 
       return EXIT_FAILURE;
    }
    catch(int e)
    {
+      // Indicate failure to error file.
+      if(e == EXIT_FAILURE)
+         WriteError(ErrorFile.data(), "unknown error occurred");
+
       return e;
    }
 }

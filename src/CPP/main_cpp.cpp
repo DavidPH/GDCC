@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,7 +17,6 @@
 #include "Core/Option.hpp"
 #include "Core/Path.hpp"
 
-#include <fstream>
 #include <iostream>
 
 
@@ -37,12 +36,6 @@ static void MakeCPP()
 
    // Open output file.
    auto buf = GDCC::Core::FileOpenStream(outName, std::ios_base::out);
-   if(!buf)
-   {
-      std::cerr << "couldn't open '" << GDCC::Core::GetOptionOutput()
-         << "' for writing\n";
-      throw EXIT_FAILURE;
-   }
 
    // Process inputs.
    std::ostream out{buf.get()};
@@ -56,11 +49,6 @@ static void MakeCPP()
 static void ProcessFile(std::ostream &out, char const *inName)
 {
    auto buf = GDCC::Core::FileOpenStream(inName, std::ios_base::in);
-   if(!buf)
-   {
-      std::cerr << "couldn't open '" << inName << "' for reading\n";
-      throw EXIT_FAILURE;
-   }
 
    GDCC::Core::String      file {inName};
    GDCC::CPP::IncludeLang  langs{"C"};

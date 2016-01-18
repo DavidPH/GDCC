@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,8 +18,6 @@
 #include "Core/File.hpp"
 #include "Core/Token.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -35,11 +33,6 @@ namespace GDCC
       void ParseFile(char const *inName, IR::Program &prog)
       {
          auto buf = Core::FileOpenStream(inName, std::ios_base::in);
-         if(!buf)
-         {
-            std::cerr << "couldn't open '" << inName << "' for reading\n";
-            throw EXIT_FAILURE;
-         }
 
          TStream   in    {*buf, inName};
          MacroMap  macros{};

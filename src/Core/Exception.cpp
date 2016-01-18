@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -32,6 +32,19 @@ namespace GDCC
       {
          std::ostringstream oss;
          oss << "ERROR: " << pos << ": unknown error";
+         auto const &tmp = oss.str();
+         msg = StrDup(tmp.data(), tmp.size());
+      }
+
+      //
+      // ExceptFile::genMsg
+      //
+      void ExceptFile::genMsg() const
+      {
+         std::ostringstream oss;
+         oss << "ERROR: ";
+         if(pos.file) oss << pos << ": ";
+         oss << "could not open '" << filename << "' for " << mode;
          auto const &tmp = oss.str();
          msg = StrDup(tmp.data(), tmp.size());
       }

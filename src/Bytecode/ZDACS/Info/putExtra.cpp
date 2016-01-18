@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,8 +17,6 @@
 
 #include "IR/Linkage.hpp"
 #include "IR/Program.hpp"
-
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -67,11 +65,6 @@ namespace GDCC
             if(auto outName = DumpScriptI.data())
             {
                auto buf = Core::FileOpenStream(outName, std::ios_base::out);
-               if(!buf)
-               {
-                  std::cerr << "couldn't open '" << outName << "' for writing\n";
-                  throw EXIT_FAILURE;
-               }
 
                std::ostream out{buf.get()};
 

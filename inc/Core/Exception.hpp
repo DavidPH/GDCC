@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -47,6 +47,22 @@ namespace GDCC
          Origin pos;
 
          mutable std::unique_ptr<char[]> msg;
+      };
+
+      //
+      // ExceptFile
+      //
+      class ExceptFile : public Exception
+      {
+      public:
+         ExceptFile(String filename_, String mode_) noexcept :
+            Exception{{nullptr, 0}}, filename{filename_}, mode{mode_} {}
+
+      private:
+         virtual void genMsg() const;
+
+         String const filename;
+         String const mode;
       };
 
       //

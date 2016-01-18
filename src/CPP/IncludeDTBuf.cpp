@@ -23,7 +23,7 @@
 #include "Option/Bool.hpp"
 
 #include <fstream>
-#include <iostream>
+#include <sstream>
 
 
 //----------------------------------------------------------------------------|
@@ -79,6 +79,33 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
+// Types                                                                      |
+//
+
+namespace GDCC
+{
+   namespace CPP
+   {
+      //
+      // ExceptFileInc
+      //
+      class ExceptFileInc : public Core::Exception
+      {
+      public:
+         ExceptFileInc(Core::Origin pos_, Core::String filename_, char l_, char r_) noexcept :
+            Exception{pos_}, filename{filename_}, l{l_}, r{r_} {}
+
+      private:
+         virtual void genMsg() const;
+
+         Core::String const filename;
+         char         const l, r;
+      };
+   }
+}
+
+
+//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
@@ -86,6 +113,19 @@ namespace GDCC
 {
    namespace CPP
    {
+      //
+      // ExceptFileInc::genMsg
+      //
+      void ExceptFileInc::genMsg() const
+      {
+         std::ostringstream oss;
+         oss << "ERROR: ";
+         if(pos.file) oss << pos << ": ";
+         oss << "could not include " << l << filename << r;
+         auto const &tmp = oss.str();
+         msg = Core::StrDup(tmp.data(), tmp.size());
+      }
+
       //
       // IncludeDTBuf constructor
       //
@@ -146,8 +186,7 @@ namespace GDCC
          if(tryIncSys(name))
             return true;
 
-         std::cerr << "ERROR: " << pos << ": could not include <" << name << ">\n";
-         throw EXIT_FAILURE;
+         throw ExceptFileInc(pos, name, '<', '>');
       }
 
       //
@@ -158,8 +197,7 @@ namespace GDCC
          if(tryIncUsr(name) || tryIncSys(name))
             return true;
 
-         std::cerr << "ERROR: " << pos << ": could not include \"" << name << "\"\n";
-         throw EXIT_FAILURE;
+         throw ExceptFileInc(pos, name, '"', '"');
       }
 
       //

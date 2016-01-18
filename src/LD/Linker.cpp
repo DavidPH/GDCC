@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -131,11 +131,6 @@ namespace GDCC
             prog.getImport(lib);
 
          auto buf = Core::FileOpenStream(outName, std::ios_base::out | std::ios_base::binary);
-         if(!buf)
-         {
-            std::cerr << "couldn't open '" << outName << "' for writing\n";
-            throw EXIT_FAILURE;
-         }
          std::ostream out{buf.get()};
 
          auto info = GetBytecodeInfo(Platform::TargetCur, Platform::FormatCur);

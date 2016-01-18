@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,11 +12,11 @@
 
 #include "MageDefs/IStream.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/File.hpp"
 #include "Core/Option.hpp"
 #include "Core/Token.hpp"
 
-#include <fstream>
 #include <iostream>
 
 
@@ -67,12 +67,6 @@ static void MakeDefs()
    auto outName = Core::GetOptionOutput();
 
    auto buf = Core::FileOpenStream(outName, std::ios_base::out | std::ios_base::binary);
-   if(!buf)
-   {
-      std::cerr << "couldn't open '" << outName << "' for writing\n";
-      throw EXIT_FAILURE;
-   }
-
    std::ostream out{buf.get()};
 
    // Write format.
@@ -98,17 +92,9 @@ static void MakeDefs()
 //
 static void ProcessFile(std::ostream &out, char const *inName)
 {
-   using namespace GDCC;
-
-   auto buf = Core::FileOpenStream(inName, std::ios_base::in);
-   if(!buf)
-   {
-      std::cerr << "couldn't open '" << inName << "' for reading\n";
-      throw EXIT_FAILURE;
-   }
-
-   MageDefs::IStream in{*buf, inName};
-   for(Core::Token tok; in >> tok;)
+   auto buf = GDCC::Core::FileOpenStream(inName, std::ios_base::in);
+   GDCC::MageDefs::IStream in{*buf, inName};
+   for(GDCC::Core::Token tok; in >> tok;)
       out << tok.str << '\0';
 }
 
@@ -122,21 +108,19 @@ static void ProcessFile(std::ostream &out, char const *inName)
 //
 int main(int argc, char *argv[])
 {
-   using namespace GDCC;
+   auto &opts = GDCC::Core::GetOptions();
 
-   auto &list = Core::GetOptionList();
+   opts.list.name     = "gdcc-magedefs";
+   opts.list.nameFull = "GDCC MageDefs";
 
-   list.name     = "gdcc-magedefs";
-   list.nameFull = "GDCC MageDefs";
+   opts.list.usage = "[option]... [source]...";
 
-   list.usage = "[option]... [source]...";
-
-   list.descS =
+   opts.list.descS =
       "Converts text to MageCraft NTS. Output defaults to last loose argument.";
 
    try
    {
-      Core::ProcessOptions(Core::GetOptions(), argc, argv);
+      GDCC::Core::ProcessOptions(opts, argc, argv);
       MakeDefs();
    }
    catch(std::exception const &e)

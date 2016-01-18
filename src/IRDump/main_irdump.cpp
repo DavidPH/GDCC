@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -33,26 +33,18 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog);
 //
 static void MakeIRDump()
 {
-   using namespace GDCC;
-
-   IR::Program prog;
+   GDCC::IR::Program prog;
 
    // Process inputs.
-   for(auto const &arg : Core::GetOptionArgs())
+   for(auto const &arg : GDCC::Core::GetOptionArgs())
       ProcessFile(arg, prog);
 
-   auto outName = Core::GetOptionOutput();
+   auto outName = GDCC::Core::GetOptionOutput();
    if(!outName) outName = "-";
 
-   auto buf = Core::FileOpenStream(outName, std::ios_base::out);
-   if(!buf)
-   {
-      std::cerr << "couldn't open '" << outName << "' for writing\n";
-      throw EXIT_FAILURE;
-   }
-
+   auto buf = GDCC::Core::FileOpenStream(outName, std::ios_base::out);
    std::ostream out{buf.get()};
-   IRDump::PutProgram(out, prog);
+   GDCC::IRDump::PutProgram(out, prog);
 }
 
 //
@@ -60,17 +52,9 @@ static void MakeIRDump()
 //
 static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 {
-   using namespace GDCC;
-
-   auto buf = Core::FileOpenStream(inName, std::ios_base::in | std::ios_base::binary);
-   if(!buf)
-   {
-      std::cerr << "couldn't open '" << inName << "' for reading\n";
-      throw EXIT_FAILURE;
-   }
-
+   auto buf = GDCC::Core::FileOpenStream(inName, std::ios_base::in | std::ios_base::binary);
    std::istream in{buf.get()};
-   IR::IArchive(in).getHeader() >> prog;
+   GDCC::IR::IArchive(in).getHeader() >> prog;
 }
 
 
@@ -83,21 +67,19 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 //
 int main(int argc, char *argv[])
 {
-   using namespace GDCC;
+   auto &opts = GDCC::Core::GetOptions();
 
-   auto &list = Core::GetOptionList();
+   opts.list.name     = "gdcc-irdump";
+   opts.list.nameFull = "GDCC IR Dump";
 
-   list.name     = "gdcc-irdump";
-   list.nameFull = "GDCC IR Dump";
+   opts.list.usage = "[option]... [source]...";
 
-   list.usage = "[option]... [source]...";
-
-   list.descS =
+   opts.list.descS =
       "Dumps information on IR data. Output defaults to stdout.";
 
    try
    {
-      Core::ProcessOptions(Core::GetOptions(), argc, argv, false);
+      GDCC::Core::ProcessOptions(opts, argc, argv, false);
       MakeIRDump();
    }
    catch(std::exception const &e)

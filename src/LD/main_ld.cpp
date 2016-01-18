@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -48,12 +48,6 @@ static void MakeLinker()
 static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 {
    auto buf = GDCC::Core::FileOpenStream(inName, std::ios_base::in | std::ios_base::binary);
-   if(!buf)
-   {
-      std::cerr << "couldn't open '" << inName << "' for reading\n";
-      throw EXIT_FAILURE;
-   }
-
    std::istream in{buf.get()};
    GDCC::IR::IArchive(in).getHeader() >> prog;
 }
