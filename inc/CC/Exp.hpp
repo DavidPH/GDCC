@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -296,6 +296,13 @@ namespace GDCC
          Core::CounterRef<AST::Exp  const> /*expL*/,
          Core::CounterRef<AST::Exp  const> /*expR*/>
       ExpPromo_Arith(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+
+      // Usual arithmetic conversions, always promoted to common type.
+      std::tuple<
+         Core::CounterRef<AST::Type const> /*type*/,
+         Core::CounterRef<AST::Exp  const> /*expL*/,
+         Core::CounterRef<AST::Exp  const> /*expR*/>
+      ExpPromo_ArithAlways(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
 
       // Conversion as if by assignment.
       Core::CounterRef<AST::Exp const> ExpPromo_AssignBase(AST::Type const *t,

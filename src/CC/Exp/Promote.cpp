@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -163,7 +163,7 @@ namespace GDCC
 
          // Both operands have arithmetic types.
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
-            return ExpPromo_Arith(expL, expR, pos);
+            return ExpPromo_ArithAlways(expL, expR, pos);
 
          // Otherwise, they must be pointers.
          return ExpPromo_PtrEqu(expL, expR, pos);
@@ -183,7 +183,7 @@ namespace GDCC
 
          // C requires relational-expression operands to have real types.
          if(typeL->isCTypeReal() && typeR->isCTypeReal())
-            return ExpPromo_Arith(expL, expR, pos);
+            return ExpPromo_ArithAlways(expL, expR, pos);
 
          // Otherwise, they must be pointers.
          return ExpPromo_PtrRel(expL, expR, pos);

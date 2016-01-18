@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -241,6 +241,26 @@ namespace GDCC
             return ExpPromo_Arith_Integ(expL, expR, pos);
 
          throw Core::ExceptStr(pos, "cannot determine common real type");
+      }
+
+      //
+      // ExpPromo_ArithAlways
+      //
+      std::tuple<AST::Type::CRef, AST::Exp::CRef, AST::Exp::CRef>
+      ExpPromo_ArithAlways(AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+      {
+         AST::Exp::CRef  expL{l}, expR{r};
+         AST::Type::CRef type{AST::Type::None};
+
+         std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
+
+         if(expL->getType()->getTypeQual() != type)
+            expL = ExpConvert_Arith(type, expL, pos);
+
+         if(expR->getType()->getTypeQual() != type)
+            expR = ExpConvert_Arith(type, expR, pos);
+
+         return std::make_tuple(type, expL, expR);
       }
    }
 }
