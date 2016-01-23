@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,6 +39,7 @@ namespace GDCC
       public:
          using CC::Parser::getDecl;
          using CC::Parser::getExp_Post;
+         using CC::Parser::getStatement;
 
          Parser(Core::TokenStream &in, PragmaData &prag, IR::Program &prog,
             bool importing = false);
@@ -47,7 +48,7 @@ namespace GDCC
             {return static_cast<std::unique_ptr<Parser>>(cloneRaw(in_));}
 
          virtual StatementCRef getDecl(Scope_Global &scope);
-         virtual StatementCRef getDecl(CC::Scope_Local &scope);
+         virtual StatementCRef getDecl(CC::Scope_Local &scope, Labels &&labels);
 
          virtual StatementCRef getDecl_CreateTrans(Scope_Global &scope);
 
@@ -56,7 +57,7 @@ namespace GDCC
          virtual StatementCRef getDecl_Function(Scope_Global &scope);
 
          virtual StatementCRef getDecl_Object(Scope_Global &scope);
-         virtual StatementCRef getDecl_Object(CC::Scope_Local &scope);
+         virtual StatementCRef getDecl_Object(CC::Scope_Local &scope, Labels &&labels);
 
          virtual StatementCRef getDecl_Print(Scope_Global &scope);
 
@@ -81,7 +82,12 @@ namespace GDCC
 
          virtual CC::InitRaw getInitRaw(CC::Scope &scope);
 
-         virtual StatementCRef getStatement(CC::Scope_Local &scope);
+         virtual StatementCRef getStatement(CC::Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_do(CC::Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_restart(CC::Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_while(CC::Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_terminate(CC::Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatementCompound(CC::Scope_Local &scope, Labels &&labels);
 
          virtual bool isAttrSpec(CC::Scope &scope);
 

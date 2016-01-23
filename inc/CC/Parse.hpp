@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -68,6 +68,7 @@ namespace GDCC
       {
       protected:
          using ExpCRef       = Core::CounterRef<AST::Exp       const>;
+         using Labels        = Core::Array<Core::String>;
          using StatementCRef = Core::CounterRef<AST::Statement const>;
          using TypeCRef      = Core::CounterRef<AST::Type      const>;
          using TypeSetCRef   = Core::CounterRef<AST::TypeSet   const>;
@@ -81,7 +82,8 @@ namespace GDCC
             {return static_cast<std::unique_ptr<Parser>>(cloneRaw(in_));}
 
          virtual StatementCRef getDecl(Scope_Global &scope);
-         virtual StatementCRef getDecl(Scope_Local &scope);
+         StatementCRef getDecl(Scope_Local &scope);
+         virtual StatementCRef getDecl(Scope_Local &scope, Labels &&labels);
 
          virtual ExpCRef getExp_CLit(Scope &scope);
          virtual ExpCRef getExp_CLit(Scope &scope, AST::Type const *type);
@@ -116,7 +118,23 @@ namespace GDCC
 
          virtual InitRaw getInitRaw(Scope &scope);
 
-         virtual StatementCRef getStatement(Scope_Local &scope);
+         virtual Labels getLabels(Scope_Local &scope);
+
+         StatementCRef getStatement(Scope_Local &scope);
+         virtual StatementCRef getStatement(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_asm(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_break(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_continue(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_do(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_for(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_goto(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_if(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_return(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_switch(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_while(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatementCompound(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatementExp(Scope_Local &scope, Labels &&labels);
+
          virtual ExpCRef getStatementCond(Scope &scope);
          virtual ExpCRef getStatementCondExp(Scope &scope);
 

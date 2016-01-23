@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -379,7 +379,8 @@ namespace GDCC
       // GetDeclBase
       //
       template<typename T>
-      static AST::Statement::CRef GetDeclBase(Parser &ctx, T &scope)
+      static AST::Statement::CRef GetDeclBase(Parser &ctx, T &scope,
+         Core::Array<Core::String> &&labels)
       {
          auto pos = ctx.in.peek().pos;
 
@@ -448,9 +449,9 @@ namespace GDCC
          decl_end:
          switch(inits.size())
          {
-         case  0: return AST::StatementCreate_Empty(pos);
-         case  1: return inits[0];
-         default: return AST::StatementCreate_Multi(pos,
+         case  0: return AST::StatementCreate_Empty(std::move(labels), pos);
+         case  1: if(labels.empty()) return inits[0];
+         default: return AST::StatementCreate_Multi(std::move(labels), pos,
             Core::Array<AST::Statement::CRef>(inits.begin(), inits.end()));
          }
       }
@@ -478,7 +479,7 @@ namespace GDCC
             return AST::StatementCreate_Empty(in.reget().pos);
          }
 
-         return GetDeclBase(*this, scope);
+         return GetDeclBase(*this, scope, {});
       }
 
       //
@@ -486,7 +487,15 @@ namespace GDCC
       //
       AST::Statement::CRef Parser::getDecl(Scope_Local &scope)
       {
-         return GetDeclBase(*this, scope);
+         return getDecl(scope, {});
+      }
+
+      //
+      // Parser::getDecl
+      //
+      AST::Statement::CRef Parser::getDecl(Scope_Local &scope, Labels &&labels)
+      {
+         return GetDeclBase(*this, scope, std::move(labels));
       }
 
       //

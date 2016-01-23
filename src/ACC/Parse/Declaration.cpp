@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -57,9 +57,9 @@ namespace GDCC
       //
       // Parser::getDecl
       //
-      AST::Statement::CRef Parser::getDecl(CC::Scope_Local &scope)
+      AST::Statement::CRef Parser::getDecl(CC::Scope_Local &scope, Labels &&labels)
       {
-         return getDecl_Object(scope);
+         return getDecl_Object(scope, std::move(labels));
       }
 
       //

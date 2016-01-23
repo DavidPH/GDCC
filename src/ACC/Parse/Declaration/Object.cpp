@@ -49,7 +49,8 @@ namespace GDCC
       // GetDeclBase_Object
       //
       template<typename T>
-      static AST::Statement::CRef GetDeclBase_Object(Parser &ctx, T &scope)
+      static AST::Statement::CRef GetDeclBase_Object(Parser &ctx, T &scope,
+         Core::Array<Core::String> &&labels)
       {
          // object-declaration:
          //    declaration-specifiers init-declarator-list ;
@@ -93,9 +94,9 @@ namespace GDCC
 
          switch(inits.size())
          {
-         case  0: return AST::StatementCreate_Empty(pos);
-         case  1: return inits[0];
-         default: return AST::StatementCreate_Multi(pos,
+         case  0: return AST::StatementCreate_Empty(std::move(labels), pos);
+         case  1: if(labels.empty()) return inits[0];
+         default: return AST::StatementCreate_Multi(std::move(labels), pos,
             Core::Array<AST::Statement::CRef>(inits.begin(), inits.end()));
          }
       }
@@ -361,18 +362,23 @@ namespace GDCC
       //
       AST::Statement::CRef Parser::getDecl_Object(Scope_Global &scope)
       {
-         return GetDeclBase_Object(*this, scope);
+         return GetDeclBase_Object(*this, scope, {});
       }
 
       //
       // Parser::getDecl_Object
       //
-      AST::Statement::CRef Parser::getDecl_Object(CC::Scope_Local &scope)
+      AST::Statement::CRef Parser::getDecl_Object(CC::Scope_Local &scope, Labels &&labels)
       {
          if(prag.stateBlockScope)
-            return GetDeclBase_Object(*this, scope);
+         {
+            return GetDeclBase_Object(*this, scope, std::move(labels));
+         }
          else
-            return GetDeclBase_Object<CC::Scope_Local>(*this, scope.fn.getScopeFirst());
+         {
+            return GetDeclBase_Object<CC::Scope_Local>(
+               *this, scope.fn.getScopeFirst(), std::move(labels));
+         }
       }
    }
 }
