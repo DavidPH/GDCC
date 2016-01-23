@@ -121,6 +121,8 @@ namespace GDCC
             return label + name;
 
          case IR::Linkage::ExtACS:
+            return name.getLower();
+
          case IR::Linkage::ExtASM:
             return name;
 

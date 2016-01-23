@@ -83,10 +83,14 @@ namespace GDCC
          static std::size_t GetFirst(std::size_t hash);
 
       private:
+         bool isLower() const;
+
          char const *const str;
          std::size_t const len;
          std::size_t const hash;
          std::size_t const next;
+
+         mutable std::size_t idxLower;
 
          mutable std::size_t len16;
          mutable std::size_t len32;
@@ -131,6 +135,8 @@ namespace GDCC
          char const &front() const {return DataV[idx].front();}
 
          std::size_t getHash() const {return DataV[idx].getHash();}
+
+         String getLower() const;
 
          std::size_t size() const {return DataV[idx].size();}
          std::size_t size16() const {return DataV[idx].size16();}

@@ -61,12 +61,13 @@ namespace GDCC
       // StringData constructor
       //
       StringData::StringData(StringIndex) :
-         str  {""},
-         len  {0},
-         hash {0},
-         next {0},
-         len16{0},
-         len32{0}
+         str     {""},
+         len     {0},
+         hash    {0},
+         next    {0},
+         idxLower{0},
+         len16   {0},
+         len32   {0}
       {
       }
 
@@ -75,14 +76,28 @@ namespace GDCC
       //
       StringData::StringData(char const *str_, std::size_t len_,
          std::size_t hash_, std::size_t idx) :
-         str  {str_},
-         len  {len_},
-         hash {hash_},
-         next {StringTableHash[hash % StringTableHashC]},
-         len16{0},
-         len32{0}
+         str     {str_},
+         len     {len_},
+         hash    {hash_},
+         next    {StringTableHash[hash % StringTableHashC]},
+         idxLower{0},
+         len16   {0},
+         len32   {0}
       {
          StringTableHash[hash % StringTableHashC] = idx;
+      }
+
+      //
+      // StringData::isLower
+      //
+      bool StringData::isLower() const
+      {
+         // TODO: Unicode support.
+
+         for(char c : *this)
+            if(std::isupper(c)) return false;
+
+         return true;
       }
 
       //
@@ -125,6 +140,51 @@ namespace GDCC
       std::size_t StringData::GetFirst(std::size_t hash)
       {
          return StringTableHash[hash % StringTableHashC];
+      }
+
+      //
+      // String::getLower
+      //
+      String String::getLower() const
+      {
+         if(!StringTable[idx].idxLower)
+         {
+            StringData &data = StringTable[idx];
+
+            // Check if string is already lowercase.
+            if(data.isLower())
+               return String(data.idxLower = idx);
+
+            // TODO: Unicode support.
+
+            // Calculate new length.
+            std::size_t len = data.len;
+
+            // Convert case into buffer.
+            std::unique_ptr<char[]> str{new char[data.len + 1]};
+            char *out = str.get();
+            for(char c : data)
+               *out++ = std::tolower(c);
+            *out = '\0';
+
+            // Calculate new hash.
+            std::size_t hash = StrHash(str.get(), data.len);
+
+            // Find or add new string.
+            std::size_t idxLower;
+            if(auto s = Find(str.get(), len, hash))
+               idxLower = s.idx;
+            else
+               idxLower = Add(std::move(str), len, hash).idx;
+
+            // The call to Add might invalidate data's address, so avoid it.
+            StringTable[idx].idxLower = idxLower;
+
+            // Also set idxLower's idxLower to itself.
+            StringTable[idxLower].idxLower = idxLower;
+         }
+
+         return String(StringTable[idx].idxLower);
       }
 
       //
