@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -25,6 +25,7 @@ namespace GDCC
    namespace CC
    {
       extern Core::Warning WarnFileSemico;
+      extern Core::Warning WarnForwardRef;
    }
 }
 

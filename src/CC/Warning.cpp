@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -31,9 +31,24 @@ namespace GDCC
             .setGroup("warnings")
             .setDescS("Warns on extraneous file-scope semicolon.")
             .setDescL("Warns on extraneous file-scope semicolon.\n\n"
-               "Enabled by --warn-common."),
+               "Enabled by --warn-strict."),
 
          &WarnFileSemico
+      };
+
+      //
+      // --warn-forward-reference
+      //
+      static Core::WarnOpt WarnForwardRefOpt
+      {
+         &Core::GetWarnOptList(), Option::Base::Info()
+            .setName("warn-forward-reference")
+            .setGroup("warnings")
+            .setDescS("Warns on forward function references.")
+            .setDescL("Warns on forward function references.\n\n"
+               "Enabled by --warn-common."),
+
+         &WarnForwardRef
       };
    }
 }
@@ -47,7 +62,8 @@ namespace GDCC
 {
    namespace CC
    {
-      Core::Warning WarnFileSemico{&Core::WarnCommon, "--warn-file-scope-semicolon"};
+      Core::Warning WarnFileSemico{&Core::WarnStrict, "--warn-file-scope-semicolon"};
+      Core::Warning WarnForwardRef{&Core::WarnCommon, "--warn-forward-reference"};
    }
 }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,14 +22,17 @@
 #include "AST/Warning.hpp"
 
 #include "CC/Exp.hpp"
-#include "CC/Scope.hpp"
+#include "CC/Scope/Global.hpp"
 #include "CC/Type.hpp"
+#include "CC/Warning.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
 #include "Core/TokenStream.hpp"
 
+#include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
+#include "IR/Linkage.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -54,6 +57,53 @@ namespace GDCC
             AST::WarnDeprecated(tok.pos, tok.str, " is deprecated");
 
          entity->warnDone = true;
+      }
+
+      //
+      // GetExp_ForwardFunc
+      //
+      static AST::Exp::CRef GetExp_ForwardFunc(Parser &ctx, CC::Scope &scope,
+         Core::Token const &name)
+      {
+         CC::WarnForwardRef(name.pos, "implicitly declaring function ", name.str);
+
+         // (
+         auto pos = ctx.in.get().pos;
+
+         // expression-list(opt)
+         Core::Array<AST::Exp::CRef> args;
+         if(!ctx.in.peek(Core::TOK_ParenC))
+            args = ctx.getExpList(scope);
+
+         // )
+         if(!ctx.in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+
+         // Perform argument promotion before extracting types.
+         // Yes, this will promote floats to double. No, I do not care.
+         for(auto &arg : args)
+            arg = CC::ExpPromo_Arg(arg, pos);
+
+         Core::Array<AST::Type::CRef> types{args.begin(), args.end(),
+            [](AST::Exp const *e) {return e->getType()->getTypeQual();}};
+
+         // Generate attributes.
+         AST::Attribute attr;
+
+         attr.callt   = IR::CallType::LangACS;
+         attr.linka   = IR::Linkage::ExtACS;
+         attr.name    = name.str;
+         attr.namePos = name.pos;
+         attr.type    = CC::TypeIntegPrS->getTypeFunction(
+            AST::TypeSet::Get(types.data(), types.size(), false), attr.callt);
+
+         // Generate function.
+         auto fn    = scope.global.getFunction(attr);
+         auto fnExp = CC::ExpCreate_Func(ctx.prog, fn, name.pos);
+
+         scope.add(name.str, fn);
+
+         return CC::ExpCreate_Call(fnExp, std::move(args), scope, pos);
       }
 
       //
@@ -91,6 +141,10 @@ namespace GDCC
          default:
             throw Core::ParseExceptExpect(tok, "primary-expression", false);
          }
+
+         // Is this a forward function reference?
+         if(ctx.in.peek(Core::TOK_ParenO))
+            return GetExp_ForwardFunc(ctx, scope, tok);
 
          throw Core::ParseExceptExpect(tok, "declared identifier", false);
       }
