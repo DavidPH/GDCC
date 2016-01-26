@@ -45,9 +45,9 @@ namespace GDCC
    namespace CC
    {
       //
-      // GetLinkage
+      // GetLinkageFunc
       //
-      static IR::Linkage GetLinkage(AST::Attribute const &attr)
+      static IR::Linkage GetLinkageFunc(AST::Attribute const &attr)
       {
          if(attr.storeInt)
             return GetLinkageInt(attr.linka);
@@ -56,12 +56,34 @@ namespace GDCC
       }
 
       //
+      // GetLinkageObj (global)
+      //
+      static IR::Linkage GetLinkageObj(Scope_Global &, AST::Attribute const &attr)
+      {
+         if(attr.storeInt)
+            return GetLinkageInt(attr.linka);
+         else
+            return GetLinkageExt(attr.linka);
+      }
+
+      //
+      // GetLinkageObj (local)
+      //
+      static IR::Linkage GetLinkageObj(Scope_Local &, AST::Attribute const &attr)
+      {
+         if(attr.storeExt)
+            return GetLinkageExt(attr.linka);
+         else
+            return IR::Linkage::None;
+      }
+
+      //
       // GetDeclFunc (global)
       //
       static AST::Function::Ref GetDeclFunc(Scope_Global &scope, AST::Attribute &attr)
       {
          // Determine linkage.
-         attr.linka = GetLinkage(attr);
+         attr.linka = GetLinkageFunc(attr);
 
          auto fn = scope.getFunction(attr);
 
@@ -87,7 +109,7 @@ namespace GDCC
                "block scope function not extern or static");
 
          // Determine linkage.
-         attr.linka = GetLinkage(attr);
+         attr.linka = GetLinkageFunc(attr);
 
          auto fn = scope.global.getFunction(attr);
 
@@ -113,10 +135,7 @@ namespace GDCC
             throw Core::ExceptStr(attr.namePos, "file scope register");
 
          // Determine linkage.
-         if(attr.storeInt)
-            attr.linka = GetLinkageInt(attr.linka);
-         else
-            attr.linka = GetLinkageExt(attr.linka);
+         attr.linka = GetLinkageObj(scope, attr);
 
          // Fetch/generate object.
          auto obj = scope.getObject(attr);
@@ -155,10 +174,7 @@ namespace GDCC
          AST::Attribute &attr, bool init)
       {
          // Determine linkage.
-         if(attr.storeExt)
-            attr.linka = GetLinkageExt(attr.linka);
-         else
-            attr.linka = IR::Linkage::None;
+         attr.linka = GetLinkageObj(scope, attr);
 
          // Automatic storage objects can only have certain address spaces.
          if(!attr.storeExt && !attr.storeInt)
@@ -327,7 +343,7 @@ namespace GDCC
                WarnDeclCompat(attr.namePos,
                   "function redeclared with different call type");
 
-            if(fn->linka != GetLinkage(attr))
+            if(fn->linka != GetLinkageFunc(attr))
                WarnDeclCompat(attr.namePos,
                   "function redeclared with different linkage");
          }
@@ -366,7 +382,7 @@ namespace GDCC
                   "object redeclared with different type");
             }
 
-            if(obj->linka != GetLinkage(attr))
+            if(obj->linka != GetLinkageObj(scope, attr))
                WarnDeclCompat(attr.namePos,
                   "object redeclared with different linkage");
          }
