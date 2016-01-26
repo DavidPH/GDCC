@@ -45,15 +45,23 @@ namespace GDCC
    namespace CC
    {
       //
+      // GetLinkage
+      //
+      static IR::Linkage GetLinkage(AST::Attribute const &attr)
+      {
+         if(attr.storeInt)
+            return GetLinkageInt(attr.linka);
+         else
+            return GetLinkageExt(attr.linka);
+      }
+
+      //
       // GetDeclFunc (global)
       //
       static AST::Function::Ref GetDeclFunc(Scope_Global &scope, AST::Attribute &attr)
       {
          // Determine linkage.
-         if(attr.storeInt)
-            attr.linka = GetLinkageInt(attr.linka);
-         else
-            attr.linka = GetLinkageExt(attr.linka);
+         attr.linka = GetLinkage(attr);
 
          auto fn = scope.getFunction(attr);
 
@@ -74,14 +82,12 @@ namespace GDCC
       //
       static AST::Function::Ref GetDeclFunc(Scope_Local &scope, AST::Attribute &attr)
       {
-         // Determine linkage.
-         if(attr.storeExt)
-            attr.linka = GetLinkageExt(attr.linka);
-         else if(attr.storeInt)
-            attr.linka = GetLinkageInt(attr.linka);
-         else
+         if(!attr.storeExt && !attr.storeInt)
             throw Core::ExceptStr(attr.namePos,
-               "local scope function not extern or static");
+               "block scope function not extern or static");
+
+         // Determine linkage.
+         attr.linka = GetLinkage(attr);
 
          auto fn = scope.global.getFunction(attr);
 
@@ -309,11 +315,21 @@ namespace GDCC
                throw Core::ExceptStr(attr.namePos,
                   "name redefined as different kind of symbol");
 
-            if(lookup.resFunc->retrn != attr.type->getBaseType())
+            AST::Function::Ref fn = lookup.resFunc;
+
+            if(fn->retrn != attr.type->getBaseType())
                throw Core::ExceptStr(attr.namePos,
                   "function redeclared with different return type");
 
             // TODO: Compatible parameter types check.
+
+            if(fn->ctype != attr.callt)
+               WarnDeclCompat(attr.namePos,
+                  "function redeclared with different call type");
+
+            if(fn->linka != GetLinkage(attr))
+               WarnDeclCompat(attr.namePos,
+                  "function redeclared with different linkage");
          }
 
          auto fn = GetDeclFunc(scope, attr);
@@ -340,15 +356,19 @@ namespace GDCC
                throw Core::ExceptStr(attr.namePos,
                   "name redefined as different kind of symbol");
 
-            auto lookupType = lookup.resObj->type;
+            AST::Object::Ref obj = lookup.resObj;
 
-            if(lookupType != attr.type &&
-               (!lookupType->isTypeArray() || !attr.type->isTypeArray() ||
-                lookupType->getBaseType() != attr.type->getBaseType()))
+            if(obj->type != attr.type &&
+               (!obj->type->isTypeArray() || !attr.type->isTypeArray() ||
+                obj->type->getBaseType() != attr.type->getBaseType()))
             {
                throw Core::ExceptStr(attr.namePos,
                   "object redeclared with different type");
             }
+
+            if(obj->linka != GetLinkage(attr))
+               WarnDeclCompat(attr.namePos,
+                  "object redeclared with different linkage");
          }
 
          // Insert special declaration statement.

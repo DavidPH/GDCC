@@ -24,6 +24,7 @@ namespace GDCC
 {
    namespace CC
    {
+      extern Core::Warning WarnDeclCompat;
       extern Core::Warning WarnFileSemico;
       extern Core::Warning WarnForwardRef;
    }

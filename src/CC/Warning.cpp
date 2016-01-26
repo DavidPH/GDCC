@@ -22,6 +22,21 @@ namespace GDCC
    namespace CC
    {
       //
+      // --warn-incompatible-declaration
+      //
+      static Core::WarnOpt WarnDeclCompatOpt
+      {
+         &Core::GetWarnOptList(), Option::Base::Info()
+            .setName("warn-incompatible-declarationn")
+            .setGroup("warnings")
+            .setDescS("Warns on incompatible declarations.")
+            .setDescL("Warns on incompatible declarations.\n\n"
+               "Enabled by --warn-common."),
+
+         &WarnDeclCompat
+      };
+
+      //
       // --warn-file-scope-semicolon
       //
       static Core::WarnOpt WarnFileSemicoOpt
@@ -62,6 +77,7 @@ namespace GDCC
 {
    namespace CC
    {
+      Core::Warning WarnDeclCompat{&Core::WarnCommon, "--warn-incompatible-declaration"};
       Core::Warning WarnFileSemico{&Core::WarnStrict, "--warn-file-scope-semicolon"};
       Core::Warning WarnForwardRef{&Core::WarnCommon, "--warn-forward-reference"};
    }
