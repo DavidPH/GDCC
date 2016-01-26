@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -40,24 +40,13 @@ namespace GDCC
 
             if(isHubArr)
             {
-               Core::FastU arr = getInitHubArray();
-               Core::FastU idx = getInitHubIndex();
-
                // Check if already initialized.
                putCode(Code::Push_Lit);
-               putWord(idx);
+               putWord(getInitHubIndex());
                putCode(Code::Push_HubArr);
-               putWord(arr);
+               putWord(getInitHubArray());
                putCode(Code::Jcnd_Tru);
                putWord(codeInitEnd);
-
-               // Set initialized flag.
-               putCode(Code::Push_Lit);
-               putWord(idx);
-               putCode(Code::Push_Lit);
-               putWord(1);
-               putCode(Code::Drop_HubArr);
-               putWord(arr);
 
                // Write instructions needed for initializers.
                for(auto &itr : prog->rangeSpaceHubArs())
@@ -66,29 +55,47 @@ namespace GDCC
 
             if(isGblArr)
             {
-               Core::FastU arr = getInitGblArray();
-               Core::FastU idx = getInitGblIndex();
-
                // Check if already initialized.
                putCode(Code::Push_Lit);
-               putWord(idx);
+               putWord(getInitGblIndex());
                putCode(Code::Push_GblArr);
-               putWord(arr);
+               putWord(getInitGblArray());
                putCode(Code::Jcnd_Tru);
                putWord(codeInitEnd);
-
-               // Set initialized flag.
-               putCode(Code::Push_Lit);
-               putWord(idx);
-               putCode(Code::Push_Lit);
-               putWord(1);
-               putCode(Code::Drop_GblArr);
-               putWord(arr);
 
                // Write instructions needed for initializers.
                for(auto &itr : prog->rangeSpaceGblArs())
                   putInitiSpace(itr, Code::Drop_GblArr);
                putInitiSpace(prog->getSpaceSta(), Code::Drop_GblArr);
+            }
+
+            // Set initialized flag(s) after a delay to allow other
+            // initialization scripts to run on first tic.
+            if(InitDelay)
+            {
+               putCode(Code::Wait_Lit, 1);
+            }
+
+            if(isHubArr)
+            {
+               // Set initialized flag.
+               putCode(Code::Push_Lit);
+               putWord(getInitHubIndex());
+               putCode(Code::Push_Lit);
+               putWord(1);
+               putCode(Code::Drop_HubArr);
+               putWord(getInitHubArray());
+            }
+
+            if(isGblArr)
+            {
+               // Set initialized flag.
+               putCode(Code::Push_Lit);
+               putWord(getInitGblIndex());
+               putCode(Code::Push_Lit);
+               putWord(1);
+               putCode(Code::Drop_GblArr);
+               putWord(getInitGblArray());
             }
 
             putCode(Code::Rscr);

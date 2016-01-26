@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -32,160 +32,187 @@
 // Options                                                                    |
 //
 
-//
-// --bc-zdacs-Sta-array
-//
-static GDCC::Option::Int<GDCC::Core::FastU> LocArsArrayOpt
+namespace GDCC
 {
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-Sta-array")
-      .setGroup("codegen")
-      .setDescS("Sets the global array used for Sta."),
+   namespace Bytecode
+   {
+      namespace ZDACS
+      {
+         //
+         // --bc-zdacs-Sta-array
+         //
+         static Option::Int<Core::FastU> LocArsArrayOpt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-Sta-array")
+               .setGroup("codegen")
+               .setDescS("Sets the global array used for Sta."),
 
-   &GDCC::Bytecode::ZDACS::Info::StaArray
-};
+            &Info::StaArray
+         };
 
-//
-// --bc-zdacs-chunk-STRE
-//
-static GDCC::Option::Bool ChunkSTREOpt
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-chunk-STRE")
-      .setGroup("output")
-      .setDescS("Generates an encrypted string table."),
+         //
+         // --bc-zdacs-chunk-STRE
+         //
+         static Option::Bool ChunkSTREOpt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-chunk-STRE")
+               .setGroup("output")
+               .setDescS("Generates an encrypted string table."),
 
-   &GDCC::Bytecode::ZDACS::Info::UseChunkSTRE
-};
+            &Info::UseChunkSTRE
+         };
 
-//
-// --bc-zdacs-fake-ACS0
-//
-static GDCC::Option::Bool FakeACS0Opt
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-fake-ACS0")
-      .setGroup("output")
-      .setDescS("Generates a fake ACS0 header."),
+         //
+         // --bc-zdacs-fake-ACS0
+         //
+         static Option::Bool FakeACS0Opt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-fake-ACS0")
+               .setGroup("output")
+               .setDescS("Generates a fake ACS0 header."),
 
-   &GDCC::Bytecode::ZDACS::Info::UseFakeACS0
-};
+            &Info::UseFakeACS0
+         };
 
-//
-// --bc-zdacs-init-gbl-array
-//
-static GDCC::Core::FastU InitGblArray = 0;
-static GDCC::Option::Int<GDCC::Core::FastU> InitGblArrayOpt
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-init-gbl-array")
-      .setGroup("codegen")
-      .setDescS("Sets the global array used to store init status.")
-      .setDescL(
-         "Sets the global array used to store initialization status. "
-         "Default is to use the LocArs array."),
+         //
+         // --bc-zdacs-init-delay
+         //
+         static Option::Bool InitDelayOpt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-init-delay")
+               .setGroup("output")
+               .setDescS("Adds a delay before setting init flags.")
+               .setDescL(
+                  "Adds a delay before setting init flags. This is needed if "
+                  "there might be multiple init scripts that need to run, "
+                  "such as from having multiple modules."),
 
-   &InitGblArray
-};
+            &Info::InitDelay
+         };
 
-//
-// --bc-zdacs-init-gbl-index
-//
-static GDCC::Core::FastU InitGblIndex = 0;
-static GDCC::Option::Int<GDCC::Core::FastU> InitGblIndexOpt
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-init-gbl-index")
-      .setGroup("codegen")
-      .setDescS("Sets the global array index used to store init status.")
-      .setDescL(
-         "Sets the global array index used to store initialization status. "
-         "Default is 0 if using the LocArs array, -1 otherwise."),
+         //
+         // --bc-zdacs-init-gbl-array
+         //
+         static Core::FastU InitGblArray = 0;
+         static Option::Int<Core::FastU> InitGblArrayOpt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-init-gbl-array")
+               .setGroup("codegen")
+               .setDescS("Sets the global array used to store init status.")
+               .setDescL(
+                  "Sets the global array used to store initialization status. "
+                  "Default is to use the LocArs array."),
 
-   &InitGblIndex
-};
+            &InitGblArray
+         };
 
-//
-// --bc-zdacs-init-hub-array
-//
-static GDCC::Core::FastU InitHubArray = 0;
-static GDCC::Option::Int<GDCC::Core::FastU> InitHubArrayOpt
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-init-hub-array")
-      .setGroup("codegen")
-      .setDescS("Sets the hub array used to store init status.")
-      .setDescL(
-         "Sets the hub array used to store initialization status. "
-         "Default is to use any hub array with an initializer."),
+         //
+         // --bc-zdacs-init-gbl-index
+         //
+         static Core::FastU InitGblIndex = 0;
+         static Option::Int<Core::FastU> InitGblIndexOpt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-init-gbl-index")
+               .setGroup("codegen")
+               .setDescS("Sets the global array index used to store init status.")
+               .setDescL(
+                  "Sets the global array index used to store initialization "
+                  "status. Default is 0 if using the LocArs array, -1 "
+                  "otherwise."),
 
-   &InitHubArray
-};
+            &InitGblIndex
+         };
 
-//
-// --bc-zdacs-init-hub-index
-//
-static GDCC::Core::FastU InitHubIndex = 0xFFFFFFFF;
-static GDCC::Option::Int<GDCC::Core::FastU> InitHubIndexOpt
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-init-hub-index")
-      .setGroup("codegen")
-      .setDescS("Sets the hub array index used to store init status.")
-      .setDescL(
-         "Sets the hub array index used to store initialization status. "
-         "Default is -1."),
+         //
+         // --bc-zdacs-init-hub-array
+         //
+         static Core::FastU InitHubArray = 0;
+         static Option::Int<Core::FastU> InitHubArrayOpt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-init-hub-array")
+               .setGroup("codegen")
+               .setDescS("Sets the hub array used to store init status.")
+               .setDescL(
+                  "Sets the hub array used to store initialization status. "
+                  "Default is to use any hub array with an initializer."),
 
-   &InitHubIndex
-};
+            &InitHubArray
+         };
 
-//
-// --bc-zdacs-init-script-number
-//
-static GDCC::Option::Int<GDCC::Core::FastU> InitScriptNumberOpt
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-init-script-number")
-      .setGroup("codegen")
-      .setDescS("Sets the number for the init script.")
-      .setDescL(
-         "Sets the script number for the initialization script. "
-         "Default is 999."),
+         //
+         // --bc-zdacs-init-hub-index
+         //
+         static Core::FastU InitHubIndex = 0xFFFFFFFF;
+         static Option::Int<Core::FastU> InitHubIndexOpt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-init-hub-index")
+               .setGroup("codegen")
+               .setDescS("Sets the hub array index used to store init status.")
+               .setDescL(
+                  "Sets the hub array index used to store initialization "
+                  "status. Default is -1."),
 
-   &GDCC::Bytecode::ZDACS::Info::InitScriptNumber
-};
+            &InitHubIndex
+         };
 
-//
-// --bc-zdacs-scripti-param
-//
-static GDCC::Core::FastU ScriptIParam = 4;
-static GDCC::Option::Int<GDCC::Core::FastU> ScriptIParamOpt
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-scripti-param")
-      .setGroup("codegen")
-      .setDescS("Sets the number of native parameters for numbered scripts.")
-      .setDescL("Sets the number of native parameters for numbered scripts. "
-         "Default is 4."),
+         //
+         // --bc-zdacs-init-script-number
+         //
+         static Option::Int<Core::FastU> InitScriptNumberOpt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-init-script-number")
+               .setGroup("codegen")
+               .setDescS("Sets the number for the init script.")
+               .setDescL(
+                  "Sets the script number for the initialization script. "
+                  "Default is 999."),
 
-   &ScriptIParam
-};
+            &Info::InitScriptNumber
+         };
 
-//
-// --bc-zdacs-scripts-param
-//
-static GDCC::Core::FastU ScriptSParam = 4;
-static GDCC::Option::Int<GDCC::Core::FastU> ScriptSParamOpt
-{
-   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-      .setName("bc-zdacs-scripts-param")
-      .setGroup("codegen")
-      .setDescS("Sets the number of native parameters for named scripts.")
-      .setDescL("Sets the number of native parameters for named scripts. "
-         "Default is 4."),
+         //
+         // --bc-zdacs-scripti-param
+         //
+         static Core::FastU ScriptIParam = 4;
+         static Option::Int<Core::FastU> ScriptIParamOpt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-scripti-param")
+               .setGroup("codegen")
+               .setDescS("Sets the number of native parameters for numbered scripts.")
+               .setDescL("Sets the number of native parameters for numbered scripts. "
+                  "Default is 4."),
 
-   &ScriptSParam
-};
+            &ScriptIParam
+         };
+
+         //
+         // --bc-zdacs-scripts-param
+         //
+         static Core::FastU ScriptSParam = 4;
+         static Option::Int<Core::FastU> ScriptSParamOpt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-scripts-param")
+               .setGroup("codegen")
+               .setDescS("Sets the number of native parameters for named scripts.")
+               .setDescL("Sets the number of native parameters for named scripts. "
+                  "Default is 4."),
+
+            &ScriptSParam
+         };
+      }
+   }
+}
 
 
 //----------------------------------------------------------------------------|
@@ -206,6 +233,7 @@ namespace GDCC
 
          Core::FastU Info::StaArray = 0;
 
+         bool Info::InitDelay    = false;
          bool Info::UseChunkSTRE = false;
          bool Info::UseFakeACS0  = false;
       }

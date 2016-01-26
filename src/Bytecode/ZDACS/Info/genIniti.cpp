@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -48,10 +48,6 @@ namespace GDCC
                // push_lit push_arr cjmp_tru
                numChunkCODE += 24;
 
-               // Mark as initialized.
-               // push_lit push_lit drop_arr
-               numChunkCODE += 24;
-
                // Count instructions needed for initializers.
                for(auto &itr : prog->rangeSpaceHubArs()) genInitiSpace(itr);
             }
@@ -63,13 +59,30 @@ namespace GDCC
                // push_lit push_arr cjmp_tru
                numChunkCODE += 24;
 
-               // Mark as initialized.
-               // push_lit push_lit drop_arr
-               numChunkCODE += 24;
-
                // Count instructions needed for initializers.
                for(auto &itr : prog->rangeSpaceGblArs()) genInitiSpace(itr);
                genInitiSpace(prog->getSpaceSta());
+            }
+
+            // Delay before setting initialized flag(s).
+            if(InitDelay)
+            {
+               // wait_lit
+               numChunkCODE += 8;
+            }
+
+            if(isHubArr)
+            {
+               // Mark as initialized.
+               // push_lit push_lit drop_arr
+               numChunkCODE += 24;
+            }
+
+            if(isGblArr)
+            {
+               // Mark as initialized.
+               // push_lit push_lit drop_arr
+               numChunkCODE += 24;
             }
 
             // Save index for initializer end.
