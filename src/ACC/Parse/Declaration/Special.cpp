@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -98,6 +98,7 @@ namespace GDCC
          //    parameter-type-list
          if(ctx.in.peek(Core::TOK_NumInt))
          {
+            auto pos    = ctx.in.peek().pos;
             auto argMin = CC::ExpToFastU(ctx.getExp_Prim(scope));
 
             AST::TypeSet::CPtr types;
@@ -120,6 +121,9 @@ namespace GDCC
 
                types = AST::TypeSet::Get(param.data(), param.size(), false);
             }
+
+            if(argMin > types->size())
+               throw Core::ExceptStr(pos, "more minimum args than actual args");
 
             attr.type     = attr.type->getTypeFunction(types, attr.callt);
             attr.paramOpt = types->size() - argMin;
