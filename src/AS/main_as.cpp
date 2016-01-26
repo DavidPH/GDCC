@@ -67,8 +67,6 @@ int main(int argc, char *argv[])
    opts.optLibPath.insert(&opts.list);
    opts.optSysSource.insert(&opts.list);
 
-   GDCC::LD::OutputIR = true;
-
    try
    {
       GDCC::Core::ProcessOptions(opts, argc, argv);
