@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,6 +19,8 @@
 #include "IR/ScriptType.hpp"
 
 #include "Core/NumberAlloc.hpp"
+
+#include "Platform/Alloc.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -60,6 +62,11 @@ namespace GDCC
       //
       void Function::allocValue(Core::NumberAllocMerge<Core::FastU> &allocator)
       {
+         auto valueMin = Platform::GetAllocMin_Funct(ctype);
+
+         if(valueInt < valueMin)
+            valueInt = valueMin;
+
          valueInt = allocator.alloc(1, valueInt);
 
          alloc = false;

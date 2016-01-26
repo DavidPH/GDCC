@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,6 +17,7 @@
 #include "Core/Option.hpp"
 
 #include "IR/Addr.hpp"
+#include "IR/CallType.hpp"
 
 #include "Option/Exception.hpp"
 #include "Option/Function.hpp"
@@ -123,6 +124,22 @@ namespace GDCC
             return 2;
 
          return IsZeroNull_Point(space.base) ? 1 : 0;
+      }
+
+      //
+      // GetAllocMin_Funct
+      //
+      Core::FastU GetAllocMin_Funct(IR::CallType ctype)
+      {
+         switch(ctype)
+         {
+         case IR::CallType::SScriptI:
+         case IR::CallType::ScriptI:
+            return 1;
+
+         default:
+            return 0;
+         }
       }
 
       //

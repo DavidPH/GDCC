@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,6 +24,8 @@ namespace GDCC
 {
    namespace IR
    {
+      enum class CallType;
+
       class AddrSpace;
    }
 }
@@ -39,6 +41,7 @@ namespace GDCC
    {
       Core::FastU GetAllocMin(IR::AddrSpace space);
 
+      Core::FastU GetAllocMin_Funct(IR::CallType ctype);
       Core::FastU GetAllocMin_StrEn();
    }
 }
