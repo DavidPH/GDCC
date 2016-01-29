@@ -12,7 +12,11 @@
 
 #include "Bytecode/ZDACS/Info.hpp"
 
+#include "Core/Option.hpp"
+
 #include "IR/Program.hpp"
+
+#include <sstream>
 
 
 //----------------------------------------------------------------------------|
@@ -37,6 +41,26 @@ namespace GDCC
                return;
 
             ++numChunkSPTR;
+
+            // Extra information for named init script.
+            if(InitScriptNamed)
+            {
+               InitScriptNumber = ~numChunkSNAM;
+
+               ++numChunkSNAM;
+
+               // If no name set, generate one.
+               if(!InitScriptName)
+               {
+                  std::ostringstream oss;
+                  if(char const *s = Core::GetOptionOutput())
+                     oss << s;
+                  oss << "$init";
+
+                  auto const &s = oss.str();
+                  InitScriptName = {s.data(), s.size()};
+               }
+            }
 
             // Save index for initializer start.
             codeInit = CodeBase() + numChunkCODE;

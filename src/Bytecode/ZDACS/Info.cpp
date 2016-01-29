@@ -14,6 +14,7 @@
 
 #include "Core/Exception.hpp"
 #include "Core/Option.hpp"
+#include "Core/StringOption.hpp"
 
 #include "IR/CallType.hpp"
 #include "IR/Program.hpp"
@@ -164,6 +165,36 @@ namespace GDCC
          };
 
          //
+         // --bc-zdacs-init-script-name
+         //
+         static Core::StringOption InitScriptNameOpt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-init-script-name")
+               .setGroup("codegen")
+               .setDescS("Sets the name for the init script.")
+               .setDescL(
+                  "Sets the script name for the initialization script. "
+                  "Default is '<output filename>$init'."),
+
+            &Info::InitScriptName
+         };
+
+         //
+         // --bc-zdacs-init-script-named
+         //
+         static Option::Bool InitScriptNamedOpt
+         {
+            &Core::GetOptionList(), Option::Base::Info()
+               .setName("bc-zdacs-init-script-named")
+               .setGroup("codegen")
+               .setDescS("Enables a named init script.")
+               .setDescL("Enables a named init script. Default is on."),
+
+            &Info::InitScriptNamed
+         };
+
+         //
          // --bc-zdacs-init-script-number
          //
          static Option::Int<Core::FastU> InitScriptNumberOpt
@@ -229,11 +260,13 @@ namespace GDCC
 
          Core::FastU Info::FarJumpIndex = 1;
 
-         Core::FastU Info::InitScriptNumber = 999;
+         bool         Info::InitDelay        = false;
+         Core::String Info::InitScriptName   = nullptr;
+         bool         Info::InitScriptNamed  = true;
+         Core::FastU  Info::InitScriptNumber = 999;
 
          Core::FastU Info::StaArray = 0;
 
-         bool Info::InitDelay    = false;
          bool Info::UseChunkSTRE = false;
          bool Info::UseFakeACS0  = false;
       }
@@ -1142,7 +1175,7 @@ namespace GDCC
          Core::FastU Info::GetScriptValue(IR::Function const &script)
          {
             if(IsScriptS(script.ctype))
-               return -static_cast<Core::FastI>(script.valueInt) - 1;
+               return ~script.valueInt;
             else
                return script.valueInt;
          }

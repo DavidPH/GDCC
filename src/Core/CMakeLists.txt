@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2014 David Hill
+## Copyright (C) 2013-2016 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -30,6 +30,7 @@ add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    Path.cpp
    String.cpp
    StringGen.cpp
+   StringOption.cpp
    Warning.cpp
 
    ../../inc/Core/Array.hpp
@@ -59,6 +60,7 @@ add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    ../../inc/Core/StringBuf.hpp
    ../../inc/Core/StringGen.hpp
    ../../inc/Core/StringList.hpp
+   ../../inc/Core/StringOption.hpp
    ../../inc/Core/Token.hpp
    ../../inc/Core/TokenBuf.hpp
    ../../inc/Core/TokenStream.hpp

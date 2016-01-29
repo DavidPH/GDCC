@@ -70,11 +70,13 @@ namespace GDCC
 
             static Core::FastU FarJumpIndex;
 
-            static Core::FastU InitScriptNumber;
+            static bool         InitDelay;
+            static Core::String InitScriptName;
+            static bool         InitScriptNamed;
+            static Core::FastU  InitScriptNumber;
 
             static Core::FastU StaArray;
 
-            static bool InitDelay;
             static bool UseChunkSTRE;
             static bool UseFakeACS0;
 
