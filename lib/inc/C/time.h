@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015 David Hill
+// Copyright(C) 2015-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -94,26 +94,26 @@ extern "C" {
 
 clock_t clock();
 
-double difftime(time_t time1, time_t time0);
+double difftime(time_t _time1, time_t _time0);
 
-time_t mktime(struct tm *timeptr);
+time_t mktime(struct tm *_timeptr);
 
-time_t time(time_t *timer);
+time_t time(time_t *_timer);
 
 //
 // Time conversion functions.
 //
 
-char *asctime(struct tm const *timeptr);
+char *asctime(struct tm const *_timeptr);
 
-char *ctime(time_t const *timer);
+char *ctime(time_t const *_timer);
 
-struct tm *gmtime(time_t const *timer);
+struct tm *gmtime(time_t const *_timer);
 
-struct tm *localtime(time_t const *timer);
+struct tm *localtime(time_t const *_timer);
 
-size_t strftime(char *restrict s, size_t maxsize, char const *restrict format,
-   struct tm const *restrict timeptr);
+size_t strftime(char *restrict _s, size_t _maxsize, char const *restrict _format,
+   struct tm const *restrict _timeptr);
 
 #ifdef __cplusplus
 }

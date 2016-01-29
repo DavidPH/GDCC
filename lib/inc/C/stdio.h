@@ -148,15 +148,15 @@ typedef struct __FILE_buf
 //
 typedef struct __FILE_fn
 {
-   int (*fn_close)(FILE *stream);
-   int (*fn_fetch)(FILE *stream);
-   int (*fn_flush)(FILE *stream, int c);
-   int (*fn_getpos)(FILE *stream, fpos_t *pos);
-   int (*fn_open)(FILE *stream, char const *filename, char const *mode);
-   int (*fn_reopen)(FILE *stream, char const *filename, char const *mode);
-   int (*fn_setbuf)(FILE *stream, char *buf, size_t size, int mode);
-   int (*fn_setpos)(FILE *stream, fpos_t const *pos);
-   int (*fn_unget)(FILE *stream, int c);
+   int (*fn_close)(FILE *_stream);
+   int (*fn_fetch)(FILE *_stream);
+   int (*fn_flush)(FILE *_stream, int _c);
+   int (*fn_getpos)(FILE *_stream, fpos_t *_pos);
+   int (*fn_open)(FILE *_stream, char const *_filename, char const *_mode);
+   int (*fn_reopen)(FILE *_stream, char const *_filename, char const *_mode);
+   int (*fn_setbuf)(FILE *_stream, char *_buf, size_t _size, int _mode);
+   int (*fn_setpos)(FILE *_stream, fpos_t const *_pos);
+   int (*fn_unget)(FILE *_stream, int _c);
 } __FILE_fn;
 
 //
@@ -222,125 +222,126 @@ extern FILE       __strfilew;
 // Operations on files.
 //
 
-int remove(char const *filename);
-int rename(char const *oldname, char const *newname);
+int remove(char const *_filename);
+int rename(char const *oldname, char const *_newname);
 FILE *tmpfile(void);
-char *tmpnam(char *s);
+char *tmpnam(char *_s);
 
 //
 // File access functions.
 //
 
-int fclose(FILE *stream);
-int fflush(FILE *stream);
-FILE *fopen(char const *restrict filename, char const *restrict mode);
-FILE *freopen(char const *restrict filename, char const *restrict mode,
-   FILE *restrict stream);
-void setbuf(FILE *restrict stream, char *restrict buf);
-int setvbuf(FILE *restrict stream, char *restrict buf, int mode, size_t size);
+int fclose(FILE *_stream);
+int fflush(FILE *_stream);
+FILE *fopen(char const *restrict _filename, char const *restrict _mode);
+FILE *freopen(char const *restrict _filename, char const *restrict _mode,
+   FILE *restrict _stream);
+void setbuf(FILE *restrict _stream, char *restrict _buf);
+int setvbuf(FILE *restrict _stream, char *restrict _buf, int _mode, size_t _size);
 
 //
 // Formatted input/output functions.
 //
 
-int fprintf(FILE *restrict stream, char const *restrict format, ...);
-int fscanf(FILE *restrict stream, char const *restrict format, ...);
-int printf(char const *restrict format, ...);
-int scanf(char const *restrict format, ...);
-int snprintf(char *restrict s, size_t n, char const *restrict format, ...);
-int sprintf(char *restrict s, char const *restrict format, ...);
-int sscanf(char const *restrict s, char const *restrict format, ...);
-int vfprintf(FILE *restrict stream, char const *restrict format, __va_list arg);
-int vfscanf(FILE *restrict stream, char const *restrict format, __va_list arg);
-int vprintf(char const *restrict format, __va_list arg);
-int vscanf(char const *restrict format, __va_list arg);
-int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list arg);
-int vsprintf(char *restrict s, char const *restrict format, __va_list arg);
-int vsscanf(char const *restrict s, char const *restrict format, __va_list arg);
+int fprintf(FILE *restrict _stream, char const *restrict _format, ...);
+int fscanf(FILE *restrict _stream, char const *restrict _format, ...);
+int printf(char const *restrict _format, ...);
+int scanf(char const *restrict _format, ...);
+int snprintf(char *restrict _s, size_t _n, char const *restrict _format, ...);
+int sprintf(char *restrict _s, char const *restrict _format, ...);
+int sscanf(char const *restrict _s, char const *restrict _format, ...);
+int vfprintf(FILE *restrict _stream, char const *restrict _format, __va_list _arg);
+int vfscanf(FILE *restrict _stream, char const *restrict _format, __va_list _arg);
+int vprintf(char const *restrict _format, __va_list _arg);
+int vscanf(char const *restrict _format, __va_list _arg);
+int vsnprintf(char *restrict _s, size_t _n, char const *restrict _format, __va_list _arg);
+int vsprintf(char *restrict _s, char const *restrict _format, __va_list _arg);
+int vsscanf(char const *restrict _s, char const *restrict _format, __va_list _arg);
 
 //
 // Character input/output functions.
 //
 
-int fgetc(FILE *stream);
-char *fgets(char *restrict s, int n, FILE *restrict stream);
-int fputc(int c, FILE *stream);
-int fputs(char const *restrict s, FILE *restrict stream);
-int getc(FILE *stream);
+int fgetc(FILE *_stream);
+char *fgets(char *restrict _s, int _n, FILE *restrict _stream);
+int fputc(int _c, FILE *_stream);
+int fputs(char const *restrict _s, FILE *restrict _stream);
+int getc(FILE *_stream);
 int getchar(void);
-int putc(int c, FILE *stream);
-int putchar(int c);
-int puts(char const *s);
-int ungetc(int c, FILE *stream);
+int putc(int _c, FILE *_stream);
+int putchar(int _c);
+int puts(char const *_s);
+int ungetc(int _c, FILE *_stream);
 
 //
 // Direct input/output functions.
 //
 
-size_t fread(void *restrict ptr, size_t size, size_t nmemb,
-   FILE *restrict stream);
-size_t fwrite(void const *restrict ptr, size_t size, size_t nmemb,
-   FILE *restrict stream);
+size_t fread(void *restrict _ptr, size_t _size, size_t _nmemb,
+   FILE *restrict _stream);
+size_t fwrite(void const *restrict _ptr, size_t _size, size_t _nmemb,
+   FILE *restrict _stream);
 
 //
 // File positioning functions.
 //
 
-int fgetpos(FILE *restrict stream, fpos_t *restrict pos);
-int fseek(FILE *stream, long int offset, int whence);
-int fsetpos(FILE *stream, fpos_t const *pos);
-long int ftell(FILE *stream);
-void rewind(FILE *stream);
+int fgetpos(FILE *restrict _stream, fpos_t *restrict _pos);
+int fseek(FILE *_stream, long int _offset, int _whence);
+int fsetpos(FILE *_stream, fpos_t const *_pos);
+long int ftell(FILE *_stream);
+void rewind(FILE *_stream);
 
 //
 // Error-handling functions.
 //
 
-void clearerr(FILE *stream);
-int feof(FILE *stream);
-int ferror(FILE *stream);
-void perror(char const *s);
+void clearerr(FILE *_stream);
+int feof(FILE *_stream);
+int ferror(FILE *_stream);
+void perror(char const *_s);
 
 //
 // Implementation extensions.
 //
 
-FILE *__fopen_fn(__FILE_fn const *fn, size_t size, void *data,
-   char const *filename, char const *mode);
-FILE *__stropenr(char const *str, size_t size);
-FILE *__stropenr_sta(char const *str, size_t size);
-FILE *__stropenr_str(char __str_ars const *str, size_t size);
-FILE *__stropenr_str_sta(char __str_ars const *str, size_t size);
-FILE *__stropenw(char *str, size_t size);
-FILE *__stropenw_sta(char *str, size_t size);
+FILE *__fopen_fn(__FILE_fn const *_fn, size_t _size, void *_data,
+   char const *_filename, char const *_mode);
+FILE *__stropenr(char const *_str, size_t _size);
+FILE *__stropenr_sta(char const *_str, size_t _size);
+FILE *__stropenr_str(char __str_ars const *_str, size_t _size);
+FILE *__stropenr_str_sta(char __str_ars const *_str, size_t _size);
+FILE *__stropenw(char *_str, size_t _size);
+FILE *__stropenw_sta(char *_str, size_t _size);
 
-int __fscanf_str(FILE *restrict stream, char __str_ars const *restrict format, ...);
-int __scanf_str(char __str_ars const *restrict format, ...);
-int __sscanf_str(char const *restrict s, char __str_ars const *restrict format, ...);
-int __strscanf(char __str_ars const *restrict s, char const *restrict format, ...);
-int __strscanf_str(char __str_ars const *restrict s, char __str_ars const *restrict format, ...);
-int __vfscanf_str(FILE *restrict stream, char __str_ars const *restrict format,
-   __va_list arg);
-int __vscanf_str(char __str_ars const *restrict format, __va_list arg);
-int __vsscanf_str(char const *restrict s,
-   char __str_ars const *restrict format, __va_list arg);
-int __vstrscanf(char __str_ars const *restrict s, char const *restrict format,
-   __va_list arg);
-int __vstrscanf_str(char __str_ars const *restrict s,
-   char __str_ars const *restrict format, __va_list arg);
+int __fscanf_str(FILE *restrict _stream, char __str_ars const *restrict _format, ...);
+int __scanf_str(char __str_ars const *restrict _format, ...);
+int __sscanf_str(char const *restrict _s, char __str_ars const *restrict _format, ...);
+int __strscanf(char __str_ars const *restrict _s, char const *restrict _format, ...);
+int __strscanf_str(char __str_ars const *restrict _s, char __str_ars const *restrict _format, ...);
+int __vfscanf_str(FILE *restrict _stream, char __str_ars const *restrict _format,
+   __va_list _arg);
+int __vscanf_str(char __str_ars const *restrict _format, __va_list _arg);
+int __vsscanf_str(char const *restrict _s,
+   char __str_ars const *restrict _format, __va_list _arg);
+int __vstrscanf(char __str_ars const *restrict _s, char const *restrict _format,
+   __va_list _arg);
+int __vstrscanf_str(char __str_ars const *restrict _s,
+   char __str_ars const *restrict _format, __va_list _arg);
 
-int __fprintf_str(FILE *restrict stream,
-   char __str_ars const *restrict format, ...);
-size_t __fwrite_str(void __str_ars const *restrict ptr, size_t size,
-   size_t nmemb, FILE *restrict stream);
-int __nprintf(char const *restrict format, ...);
-int __nprintf_str(char __str_ars const *restrict format, ...);
-int __printf_str(char __str_ars const *restrict format, ...);
-int __vfprintf_str(FILE *restrict stream,
-   char __str_ars const *restrict format, __va_list arg);
-int __vnprintf(char const *restrict format, __va_list arg);
-int __vnprintf_str(char __str_ars const *restrict format, __va_list arg);
-int __vprintf_str(char __str_ars const *restrict format, __va_list arg);
+int __fprintf_str(FILE *restrict _stream,
+   char __str_ars const *restrict _format, ...);
+int __nprintf(char const *restrict _format, ...);
+int __nprintf_str(char __str_ars const *restrict _format, ...);
+int __printf_str(char __str_ars const *restrict _format, ...);
+int __vfprintf_str(FILE *restrict _stream,
+   char __str_ars const *restrict _format, __va_list _arg);
+int __vnprintf(char const *restrict _format, __va_list _arg);
+int __vnprintf_str(char __str_ars const *restrict _format, __va_list _arg);
+int __vprintf_str(char __str_ars const *restrict _format, __va_list _arg);
+
+size_t __fwrite_str(void __str_ars const *restrict _ptr, size_t _size,
+   size_t _nmemb, FILE *restrict _stream);
 
 FILE *__get_stderr(void);
 FILE *__get_stdin(void);

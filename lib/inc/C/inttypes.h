@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -297,19 +297,19 @@ extern "C" {
 // Functions for greatest-width integer types.
 //
 
-intmax_t imaxabs(intmax_t j);
-imaxdiv_t imaxdiv(intmax_t numer, intmax_t denom);
-intmax_t strtoimax(char const *restrict nptr, char **restrict endptr, int base);
-uintmax_t strtoumax(char const *restrict nptr, char **restrict endptr, int base);
-intmax_t wcstoimax(wchar_t const *restrict nptr, wchar_t **restrict endptr, int base);
-uintmax_t wcstoumax(wchar_t const *restrict nptr, wchar_t **restrict endptr, int base);
+intmax_t imaxabs(intmax_t _j);
+imaxdiv_t imaxdiv(intmax_t _numer, intmax_t _denom);
+intmax_t strtoimax(char const *restrict _nptr, char **restrict _endptr, int _base);
+uintmax_t strtoumax(char const *restrict _nptr, char **restrict _endptr, int _base);
+intmax_t wcstoimax(wchar_t const *restrict _nptr, wchar_t **restrict _endptr, int _base);
+uintmax_t wcstoumax(wchar_t const *restrict _nptr, wchar_t **restrict _endptr, int _base);
 
 //
 // Implementation extensions.
 //
 
-intmax_t __strtoimax_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
-uintmax_t __strtoumax_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
+intmax_t strtoimax_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
+uintmax_t strtoumax_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
 
 #ifdef __cplusplus
 };

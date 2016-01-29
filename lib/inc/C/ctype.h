@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -28,25 +28,25 @@ extern "C" {
 // Character classification functions.
 //
 
-int isalnum(int c);
-int isalpha(int c);
-int isblank(int c);
-int iscntrl(int c);
-int isdigit(int c);
-int isgraph(int c);
-int islower(int c);
-int isprint(int c);
-int ispunct(int c);
-int isspace(int c);
-int isupper(int c);
-int isxdigit(int c);
+int isalnum(int _c);
+int isalpha(int _c);
+int isblank(int _c);
+int iscntrl(int _c);
+int isdigit(int _c);
+int isgraph(int _c);
+int islower(int _c);
+int isprint(int _c);
+int ispunct(int _c);
+int isspace(int _c);
+int isupper(int _c);
+int isxdigit(int _c);
 
 //
 // Character case mapping functions.
 //
 
-int tolower(int c);
-int toupper(int c);
+int tolower(int _c);
+int toupper(int _c);
 
 #ifdef __cplusplus
 };

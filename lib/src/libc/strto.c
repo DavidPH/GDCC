@@ -685,17 +685,17 @@ uintmax_t wcstoumax(wchar_t const *restrict nptr, wchar_t **restrict endptr, int
 //
 
 //
-// __strtoimax_str
+// strtoimax_str
 //
-intmax_t __strtoimax_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
+intmax_t strtoimax_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
 {
    StrToI_Body(char __str_ars, intmax_t, INTMAX, S);
 }
 
 //
-// __strtoumax_str
+// strtoumax_str
 //
-uintmax_t __strtoumax_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
+uintmax_t strtoumax_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
 {
    StrToI_Body(char __str_ars, uintmax_t, UINTMAX, U);
 }
@@ -764,58 +764,58 @@ unsigned long accum strtofxulk(char const *restrict nptr, char **restrict endptr
 // Implementation extensions. (stdfix.h)
 //
 
-short fract __strtofxhr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-fract __strtofxr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-long fract __strtofxlr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+short fract strtofxhr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+fract strtofxr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+long fract strtofxlr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
 
 //
-// __strtofxhk_str
+// strtofxhk_str
 //
-short accum __strtofxhk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
+short accum strtofxhk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
 {
    StrToK_Body(char __str_ars, short accum, SACCUM, S);
 }
 
 //
-// __strtofxk_str
+// strtofxk_str
 //
-accum __strtofxk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
+accum strtofxk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
 {
    StrToK_Body(char __str_ars, accum, ACCUM, S);
 }
 
 //
-// __strtofxlk_str
+// strtofxlk_str
 //
-long accum __strtofxlk_str(char const __str_ars *restrict nptr, char __str_ars **restrict endptr)
+long accum strtofxlk_str(char const __str_ars *restrict nptr, char __str_ars **restrict endptr)
 {
    StrToK_Body(char __str_ars, long accum, LACCUM, S);
 }
 
-unsigned short fract __strtofxuhr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-unsigned fract __strtofxur_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-unsigned long fract __strtofxulr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+unsigned short fract strtofxuhr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+unsigned fract strtofxur_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+unsigned long fract strtofxulr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
 
 //
-// __strtofxuhk_str
+// strtofxuhk_str
 //
-unsigned short accum __strtofxuhk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
+unsigned short accum strtofxuhk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
 {
    StrToK_Body(char __str_ars, unsigned short accum, USACCUM, U);
 }
 
 //
-// __strtofxuk_str
+// strtofxuk_str
 //
-unsigned accum __strtofxuk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
+unsigned accum strtofxuk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
 {
    StrToK_Body(char __str_ars, unsigned accum, UACCUM, U);
 }
 
 //
-// __strtofxulk_str
+// strtofxulk_str
 //
-unsigned long accum __strtofxulk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
+unsigned long accum strtofxulk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
 {
    StrToK_Body(char __str_ars, unsigned long accum, ULACCUM, U);
 }
@@ -933,41 +933,41 @@ unsigned long long strtoull(char const *restrict nptr, char **restrict endptr, i
 //
 
 //
-// __strtod_str
+// strtod_str
 //
-double __strtod_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
+double strtod_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
 {
    StrToF_Body(char __str_ars, double, );
 }
 
 //
-// __strtof_str
+// strtof_str
 //
-float __strtof_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
+float strtof_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
 {
    StrToF_Body(char __str_ars, float, F);
 }
 
 //
-// __strtold_str
+// strtold_str
 //
-long double __strtold_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
+long double strtold_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr)
 {
    StrToF_Body(char __str_ars, long double, );
 }
 
 //
-// __strtoi_str
+// strtoi_str
 //
-int __strtoi_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
+int strtoi_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
 {
    StrToI_Body(char __str_ars, int, INT, S);
 }
 
 //
-// __strtol_str
+// strtol_str
 //
-long __strtol_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
+long strtol_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
 {
    StrToI_Body(char __str_ars, long, LONG, S);
 }
@@ -981,25 +981,25 @@ long long _strtoll_str(char __str_ars const *restrict nptr, char __str_ars **res
 }
 
 //
-// __strtoui_str
+// strtoui_str
 //
-unsigned int __strtoui_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
+unsigned int strtoui_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
 {
    StrToI_Body(char __str_ars, unsigned int, UINT, U);
 }
 
 //
-// __strtoul_str
+// strtoul_str
 //
-unsigned long __strtoul_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
+unsigned long strtoul_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
 {
    StrToI_Body(char __str_ars, unsigned long, ULONG, U);
 }
 
 //
-// __strtoull_str
+// strtoull_str
 //
-unsigned long long __strtoull_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
+unsigned long long strtoull_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
 {
    StrToI_Body(char __str_ars, unsigned long long, ULLONG, U);
 }

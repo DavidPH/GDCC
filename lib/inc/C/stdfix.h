@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015 David Hill
+// Copyright(C) 2015-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -261,120 +261,120 @@ unsigned long int idivulk(unsigned long accum, unsigned long accum);
 // The fixed-point absolute value functions.
 //
 
-short fract abshr(short fract f);
-fract absr(fract f);
-long fract abslr(long fract f);
-short accum abshk(short accum f);
-accum absk(accum f);
-long accum abslk(long accum f);
+short fract abshr(short fract _f);
+fract absr(fract _f);
+long fract abslr(long fract _f);
+short accum abshk(short accum _f);
+accum absk(accum _f);
+long accum abslk(long accum _f);
 
 //
 // The fixed-point rounding functions.
 //
 
-short fract roundhr(short fract f, int n);
-fract roundr(fract f, int n);
-long fract roundlr(long fract f, int n);
-short accum roundhk(short accum f, int n);
-accum roundk(accum f, int n);
-long accum roundlk(long accum f, int n);
+short fract roundhr(short fract _f, int _n);
+fract roundr(fract _f, int _n);
+long fract roundlr(long fract _f, int _n);
+short accum roundhk(short accum _f, int _n);
+accum roundk(accum _f, int _n);
+long accum roundlk(long accum _f, int _n);
 
-unsigned short fract rounduhr(unsigned short fract f, int n);
-unsigned fract roundur(unsigned fract f, int n);
-unsigned long fract roundulr(unsigned long fract f, int n);
-unsigned short accum rounduhk(unsigned short accum f, int n);
-unsigned accum rounduk(unsigned accum f, int n);
-unsigned long accum roundulk(unsigned long accum f, int n);
+unsigned short fract rounduhr(unsigned short fract _f, int _n);
+unsigned fract roundur(unsigned fract _f, int _n);
+unsigned long fract roundulr(unsigned long fract _f, int _n);
+unsigned short accum rounduhk(unsigned short accum _f, int _n);
+unsigned accum rounduk(unsigned accum _f, int _n);
+unsigned long accum roundulk(unsigned long accum _f, int _n);
 
 //
 // The fixed-point countls functions.
 //
 
-int countlshr(short fract f);
-int countlsr(fract f);
-int countlslr(long fract f);
-int countlshk(short accum f);
-int countlsk(accum f);
-int countlslk(long accum f);
+int countlshr(short fract _f);
+int countlsr(fract _f);
+int countlslr(long fract _f);
+int countlshk(short accum _f);
+int countlsk(accum _f);
+int countlslk(long accum _f);
 
-int countlsuhr(unsigned short fract f);
-int countlsur(unsigned fract f);
-int countlsulr(unsigned long fract f);
-int countlsuhk(unsigned short accum f);
-int countlsuk(unsigned accum f);
-int countlsulk(unsigned long accum f);
+int countlsuhr(unsigned short fract _f);
+int countlsur(unsigned fract _f);
+int countlsulr(unsigned long fract _f);
+int countlsuhk(unsigned short accum _f);
+int countlsuk(unsigned accum _f);
+int countlsulk(unsigned long accum _f);
 
 //
 // The bitwise fixed-point to integer conversion functions.
 //
 
-int_hr_t bitshr(short fract f);
-int_r_t bitsr(fract f);
-int_lr_t bitslr(long fract f);
-int_hk_t bitshk(short accum f);
-int_k_t bitsk(accum f);
-int_lk_t bitslk(long accum f);
+int_hr_t bitshr(short fract _f);
+int_r_t bitsr(fract _f);
+int_lr_t bitslr(long fract _f);
+int_hk_t bitshk(short accum _f);
+int_k_t bitsk(accum _f);
+int_lk_t bitslk(long accum _f);
 
-uint_uhr_t bitsuhr(unsigned short fract f);
-uint_ur_t bitsur(unsigned fract f);
-uint_ulr_t bitsulr(unsigned long fract f);
-uint_uhk_t bitsuhk(unsigned short accum f);
-uint_uk_t bitsuk(unsigned accum f);
-uint_ulk_t bitsulk(unsigned long accum f);
+uint_uhr_t bitsuhr(unsigned short fract _f);
+uint_ur_t bitsur(unsigned fract _f);
+uint_ulr_t bitsulr(unsigned long fract _f);
+uint_uhk_t bitsuhk(unsigned short accum _f);
+uint_uk_t bitsuk(unsigned accum _f);
+uint_ulk_t bitsulk(unsigned long accum _f);
 
 //
 // The bitwise integer to fixed-point conversion functions.
 //
 
-short fract hrbits(int_hr_t n);
-fract rbits(int_r_t n);
-long fract lrbits(int_lr_t n);
-short accum hkbits(int_hk_t n);
-accum kbits(int_k_t n);
-long accum lkbits(int_lk_t n);
+short fract hrbits(int_hr_t _n);
+fract rbits(int_r_t _n);
+long fract lrbits(int_lr_t _n);
+short accum hkbits(int_hk_t _n);
+accum kbits(int_k_t _n);
+long accum lkbits(int_lk_t _n);
 
-unsigned short fract uhrbits(uint_uhr_t n);
-unsigned fract urbits(uint_ur_t n);
-unsigned long fract ulrbits(uint_ulr_t n);
-unsigned short accum uhkbits(uint_uhk_t n);
-unsigned accum ukbits(uint_uk_t n);
-unsigned long accum ulkbits(uint_ulk_t n);
+unsigned short fract uhrbits(uint_uhr_t _n);
+unsigned fract urbits(uint_ur_t _n);
+unsigned long fract ulrbits(uint_ulr_t _n);
+unsigned short accum uhkbits(uint_uhk_t _n);
+unsigned accum ukbits(uint_uk_t _n);
+unsigned long accum ulkbits(uint_ulk_t _n);
 
 //
 // Numeric conversion functions.
 //
 
-short fract strtofxhr(char const *restrict nptr, char **restrict endptr);
-fract strtofxr(char const *restrict nptr, char **restrict endptr);
-long fract strtofxlr(char const *restrict nptr, char **restrict endptr);
-short accum strtofxhk(char const *restrict nptr, char **restrict endptr);
-accum strtofxk(char const *restrict nptr, char **restrict endptr);
-long accum strtofxlk(char const *restrict nptr, char **restrict endptr);
+short fract strtofxhr(char const *restrict _nptr, char **restrict _endptr);
+fract strtofxr(char const *restrict _nptr, char **restrict _endptr);
+long fract strtofxlr(char const *restrict _nptr, char **restrict _endptr);
+short accum strtofxhk(char const *restrict _nptr, char **restrict _endptr);
+accum strtofxk(char const *restrict _nptr, char **restrict _endptr);
+long accum strtofxlk(char const *restrict _nptr, char **restrict _endptr);
 
-unsigned short fract strtofxuhr(char const *restrict nptr, char **restrict endptr);
-unsigned fract strtofxur(char const *restrict nptr, char **restrict endptr);
-unsigned long fract strtofxulr(char const *restrict nptr, char **restrict endptr);
-unsigned short accum strtofxuhk(char const *restrict nptr, char **restrict endptr);
-unsigned accum strtofxuk(char const *restrict nptr, char **restrict endptr);
-unsigned long accum strtofxulk(char const *restrict nptr, char **restrict endptr);
+unsigned short fract strtofxuhr(char const *restrict _nptr, char **restrict _endptr);
+unsigned fract strtofxur(char const *restrict _nptr, char **restrict _endptr);
+unsigned long fract strtofxulr(char const *restrict _nptr, char **restrict _endptr);
+unsigned short accum strtofxuhk(char const *restrict _nptr, char **restrict _endptr);
+unsigned accum strtofxuk(char const *restrict _nptr, char **restrict _endptr);
+unsigned long accum strtofxulk(char const *restrict _nptr, char **restrict _endptr);
 
 //
 // Implementation extensions.
 //
 
-short fract __strtofxhr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-fract __strtofxr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-long fract __strtofxlr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-short accum __strtofxhk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-accum __strtofxk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-long accum __strtofxlk_str(char const __str_ars *restrict nptr, char __str_ars **restrict endptr);
+short fract strtofxhr_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
+fract strtofxr_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
+long fract strtofxlr_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
+short accum strtofxhk_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
+accum strtofxk_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
+long accum strtofxlk_str(char const __str_ars *restrict _nptr, char __str_ars **restrict _endptr);
 
-unsigned short fract __strtofxuhr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-unsigned fract __strtofxur_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-unsigned long fract __strtofxulr_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-unsigned short accum __strtofxuhk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-unsigned accum __strtofxuk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-unsigned long accum __strtofxulk_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+unsigned short fract strtofxuhr_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
+unsigned fract strtofxur_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
+unsigned long fract strtofxulr_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
+unsigned short accum strtofxuhk_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
+unsigned accum strtofxuk_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
+unsigned long accum strtofxulk_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
 
 #ifdef __cplusplus
 }

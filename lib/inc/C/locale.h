@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -82,7 +82,7 @@ struct lconv
 // Locale control.
 //
 
-char *setlocale(int category, const char *locale);
+char *setlocale(int _category, const char *_locale);
 
 //
 // Numeric formatting convention inquiry.

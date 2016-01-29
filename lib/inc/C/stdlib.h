@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -96,101 +96,101 @@ extern "C" {
 // Numeric conversion functions.
 //
 
-double atof(char const *nptr);
+double atof(char const *_nptr);
 
-int atoi(char const *nptr);
-long atol(char const *nptr);
-long long atoll(char const *nptr);
+int atoi(char const *_nptr);
+long atol(char const *_nptr);
+long long atoll(char const *_nptr);
 
-double strtod(char const *restrict nptr, char **restrict endptr);
-float strtof(char const *restrict nptr, char **restrict endptr);
-long double strtold(char const *restrict nptr, char **restrict endptr);
+double strtod(char const *restrict _nptr, char **restrict _endptr);
+float strtof(char const *restrict _nptr, char **restrict _endptr);
+long double strtold(char const *restrict _nptr, char **restrict _endptr);
 
-int strtoi(char const *restrict nptr, char **restrict endptr, int base);
-long strtol(char const *restrict nptr, char **restrict endptr, int base);
-long long strtoll(char const *restrict nptr, char **restrict endptr, int base);
-unsigned int strtoui(char const *restrict nptr, char **restrict endptr, int base);
-unsigned long strtoul(char const *restrict nptr, char **restrict endptr, int base);
-unsigned long long strtoull(char const *restrict nptr, char **restrict endptr, int base);
+int strtoi(char const *restrict _nptr, char **restrict _endptr, int _base);
+long strtol(char const *restrict _nptr, char **restrict _endptr, int _base);
+long long strtoll(char const *restrict _nptr, char **restrict _endptr, int _base);
+unsigned int strtoui(char const *restrict _nptr, char **restrict _endptr, int _base);
+unsigned long strtoul(char const *restrict _nptr, char **restrict _endptr, int _base);
+unsigned long long strtoull(char const *restrict _nptr, char **restrict _endptr, int _base);
 
 //
 // Pseudo-random sequence generation functions.
 //
 
 int rand(void);
-void srand(unsigned int seed);
+void srand(unsigned int _seed);
 
 //
 // Memory management functions.
 //
 
-void *calloc(size_t nmemb, size_t size);
-void free(void *ptr);
-void *malloc(size_t size);
-void *realloc(void *ptr, size_t size);
+void *calloc(size_t _nmemb, size_t _size);
+void free(void *_ptr);
+void *malloc(size_t _size);
+void *realloc(void *_ptr, size_t _size);
 
 //
 // Communication with the environment.
 //
 
 void abort(void);
-int atexit(void (*func)(void));
-void exit(int status);
-void _Exit(int status);
-char *getenv(char const *name);
-int system(char const *string);
+int atexit(void (*_func)(void));
+void exit(int _status);
+void _Exit(int _status);
+char *getenv(char const *_name);
+int system(char const *_string);
 
 //
 // Searching and sorting utilities.
 //
 
-void *bsearch(void const *key, void const *base, size_t nmemb, size_t size,
-   int (*compar)(void const *, void const *));
+void *bsearch(void const *_key, void const *_base, size_t _nmemb, size_t _size,
+   int (*_compar)(void const *, void const *));
 
-void qsort(void *base, size_t nmemb, size_t size,
-   int (*compar)(void const *, void const *));
+void qsort(void *_base, size_t _nmemb, size_t _size,
+   int (*_compar)(void const *, void const *));
 
 //
 // Integer arithmetic functions.
 //
 
-int abs(int j);
-long int labs(long int j);
-long long int llabs(long long int j);
+int abs(int _j);
+long int labs(long int _j);
+long long int llabs(long long int _j);
 
-div_t div(int numer, int denom);
-ldiv_t ldiv(long int numer, long int denom);
-lldiv_t lldiv(long long int numer, long long int denom);
+div_t div(int _numer, int _denom);
+ldiv_t ldiv(long int _numer, long int _denom);
+lldiv_t lldiv(long long int _numer, long long int _denom);
 
 //
 // Multibyte/wide character conversion functions.
 //
 
-int mblen(char const *s, size_t n);
-int mbtowc(wchar_t *restrict pwc, char const *restrict s, size_t n);
-int wctomb(char *s, wchar_t wc);
+int mblen(char const *_s, size_t _n);
+int mbtowc(wchar_t *restrict _pwc, char const *restrict _s, size_t _n);
+int wctomb(char *_s, wchar_t _wc);
 
 //
 // Multibyte/wide string conversion functions.
 //
 
-size_t mbstowcs(wchar_t *restrict pwcs, char const *restrict s, size_t n);
-size_t wcstombs(char *restrict s, wchar_t const *restrict pwcs, size_t n);
+size_t mbstowcs(wchar_t *restrict _pwcs, char const *restrict _s, size_t _n);
+size_t wcstombs(char *restrict _s, wchar_t const *restrict _pwcs, size_t _n);
 
 //
 // Implementation extensions.
 //
 
-double __strtod_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-float __strtof_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
-long double __strtold_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr);
+double strtod_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
+float strtof_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
+long double strtold_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
 
-int __strtoi_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
-long __strtol_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
-long long _strtoll_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
-unsigned int __strtoui_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
-unsigned long __strtoul_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
-unsigned long long __strtoull_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base);
+int strtoi_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
+long strtol_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
+long long strtoll_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
+unsigned int strtoui_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
+unsigned long strtoul_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
+unsigned long long strtoull_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
 
 #ifdef __cplusplus
 };
