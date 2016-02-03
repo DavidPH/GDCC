@@ -52,7 +52,7 @@ ACS_NativeDeclFull(119, 0, __str,  GetDBResultValueString, int, int);
 ACS_NativeDeclFull(120, 0, int,    GetDBResultValue, int, int);
 ACS_NativeDeclFull(120, 0, _Accum, GetDBResultValueFixed, int, int);
 ACS_NativeDeclFull(121, 0, int,    GetDBEntryRank, __str, __str, int);
-ACS_NativeDeclFull(122, 3, int,    RequestPukeScript, int, int, int, int);
+ACS_NativeDeclFull(122, 0, int,    RequestScriptPuke, int, int, int, int);
 ACS_NativeDeclFull(123, 0, int,    BeginDBTransaction, void);
 ACS_NativeDeclFull(124, 0, int,    EndDBTransaction, void);
 ACS_NativeDeclFull(125, 0, int,    GetDBEntries, __str);
