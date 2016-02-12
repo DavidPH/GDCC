@@ -1,12 +1,12 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2016 David Hill
+## Copyright (C) 2016 David Hill
 ##
 ## See COPYING for license information.
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for gdcc targets.
+## CMake file for gdcc-ar.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -15,21 +15,20 @@
 ## Targets                                                                    |
 ##
 
-add_subdirectory(ACC)
-add_subdirectory(AR)
-add_subdirectory(AS)
-add_subdirectory(AST)
-add_subdirectory(Bytecode)
-add_subdirectory(CC)
-add_subdirectory(CPP)
-add_subdirectory(Core)
-add_subdirectory(IR)
-add_subdirectory(IRDump)
-add_subdirectory(LD)
-add_subdirectory(MageDefs)
-add_subdirectory(MakeLib)
-add_subdirectory(Option)
-add_subdirectory(Platform)
+add_subdirectory(Wad)
+
+##
+## gdcc-ar-lib
+##
+add_library(gdcc-ar-lib ${GDCC_SHARED_DECL}
+   BinaryIO.cpp
+
+   ../../inc/AR/BinaryIO.hpp
+)
+
+target_link_libraries(gdcc-ar-lib gdcc-core-lib)
+
+GDCC_INSTALL_PART(ar FALSE TRUE)
 
 ## EOF
 

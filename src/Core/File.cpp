@@ -216,6 +216,19 @@ namespace GDCC
                throw Core::ExceptFile(filename, "unknown");
          }
       }
+
+      //
+      // FileSize
+      //
+      std::size_t FileSize(char const *filename)
+      {
+         struct stat statBuf;
+
+         if(stat(filename, &statBuf))
+            throw Core::ExceptFile(filename, "stat");
+
+         return statBuf.st_size;
+      }
    }
 }
 

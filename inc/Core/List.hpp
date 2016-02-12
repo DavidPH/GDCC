@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -25,9 +25,6 @@ namespace GDCC
 {
    namespace Core
    {
-      //
-      // ListItr
-      //
       template<typename T, typename std::remove_cv<T>::type *T::*P = &T::prev,
          typename std::remove_cv<T>::type *T::*N = &T::next>
       class ListItr
@@ -53,6 +50,58 @@ namespace GDCC
 
       private:
          T *p;
+      };
+
+      //
+      // ListUtil
+      //
+      template<typename T, typename std::remove_cv<T>::type *T::*P = &T::prev,
+         typename std::remove_cv<T>::type *T::*N = &T::next>
+      class ListUtil
+      {
+      public:
+         using Itr = ListItr<T, P, N>;
+         using CItr = ListItr<T const, P, N>;
+
+
+         //
+         // Insert
+         //
+         static void Insert(T *node, T *next)
+         {
+            node->*N = next;
+            node->*P = next->*P;
+
+            node->*N->*P = node;
+            node->*P->*N = node;
+         }
+
+         //
+         // Relink
+         //
+         static void Relink(T *node, T *next)
+         {
+            (node->*N)->*P = node->*P;
+            (node->*P)->*N = node->*N;
+
+            node->*N = next;
+            node->*P = next->*P;
+
+            node->*N->*P = node;
+            node->*P->*N = node;
+         }
+
+         //
+         // Unlink
+         //
+         static void Unlink(T *node)
+         {
+            (node->*N)->*P = node->*P;
+            (node->*P)->*N = node->*N;
+
+            node->*N = node;
+            node->*P = node;
+         }
       };
    }
 }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -69,6 +69,8 @@ namespace GDCC
 
       std::unique_ptr<std::streambuf, ConditionalDeleter<std::streambuf>>
       FileOpenStream(char const *filename, std::ios_base::openmode which);
+
+      std::size_t FileSize(char const *filename);
    }
 }
 
