@@ -190,8 +190,8 @@ Synopsis:
   bool optAffix : 1;
 
 Description:
-  The optAffix is set to indicate that the first argument was attached to the
-  option name.
+  The optAffix member is set to indicate that the first argument was attached
+  to the option name.
 
   Options may use this, for example, to require that an optional argument be
   attached.
