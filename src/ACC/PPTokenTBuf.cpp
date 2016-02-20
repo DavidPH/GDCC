@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,6 +15,8 @@
 #include "CPP/PPTokenTBuf.hpp"
 
 #include "Core/Exception.hpp"
+
+#include <cctype>
 
 
 //----------------------------------------------------------------------------|
