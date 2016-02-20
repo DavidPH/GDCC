@@ -12,6 +12,7 @@
 
 #include "Core/Parse.hpp"
 
+#include <cctype>
 #include <climits>
 
 
