@@ -26,6 +26,15 @@ namespace GDCC
    namespace Core
    {
       //
+      // Exception copy constructor
+      //
+      Exception::Exception(Exception const &e) :
+         pos{e.pos},
+         msg{e.msg ? StrDup(e.msg.get()) : nullptr}
+      {
+      }
+
+      //
       // Exception::genMsg
       //
       void Exception::genMsg() const
