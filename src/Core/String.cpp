@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,7 +17,20 @@
 
 
 //----------------------------------------------------------------------------|
-// Static Variables                                                           |
+// Static Prototypes                                                          |
+//
+
+namespace GDCC
+{
+   namespace Core
+   {
+      static std::vector<GDCC::Core::StringData> &StringTable();
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Static Objects                                                             |
 //
 
 static std::vector<std::unique_ptr<char[]>> StringTableAlloc;
@@ -25,26 +38,46 @@ static std::vector<std::unique_ptr<char[]>> StringTableAlloc;
 static constexpr std::size_t StringTableHashC = 1024;
 static std::size_t StringTableHash[StringTableHashC];
 
-static std::vector<GDCC::Core::StringData> StringTable =
-{
-   GDCC::Core::StringData(GDCC::Core::STRNULL),
-   GDCC::Core::StringData("__VA_ARGS__", GDCC::Core::STR___VA_ARGS__),
-   #define GDCC_Core_StringList(name, str) \
-      GDCC::Core::StringData(str, GDCC::Core::STR_##name),
-   #include "Core/StringList.hpp"
-};
 
 
 //----------------------------------------------------------------------------|
-// Extern Variables                                                           |
+// Extern Objects                                                             |
 //
 
 namespace GDCC
 {
    namespace Core
    {
-      std::size_t       String::DataC = StringTable.size();
-      StringData const *String::DataV = StringTable.data();
+      std::size_t       String::DataC = StringTable().size();
+      StringData const *String::DataV = StringTable().data();
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace Core
+   {
+      //
+      // StringTable
+      //
+      static std::vector<GDCC::Core::StringData> &StringTable()
+      {
+         static std::vector<GDCC::Core::StringData> table
+         {
+            GDCC::Core::StringData(GDCC::Core::STRNULL),
+            GDCC::Core::StringData("__VA_ARGS__", GDCC::Core::STR___VA_ARGS__),
+            #define GDCC_Core_StringList(name, str) \
+               GDCC::Core::StringData(str, GDCC::Core::STR_##name),
+            #include "Core/StringList.hpp"
+         };
+
+         return table;
+      }
    }
 }
 
@@ -147,9 +180,9 @@ namespace GDCC
       //
       String String::getLower() const
       {
-         if(!StringTable[idx].idxLower)
+         if(!StringTable()[idx].idxLower)
          {
-            StringData &data = StringTable[idx];
+            StringData &data = StringTable()[idx];
 
             // Check if string is already lowercase.
             if(data.isLower())
@@ -178,13 +211,13 @@ namespace GDCC
                idxLower = Add(std::move(str), len, hash).idx;
 
             // The call to Add might invalidate data's address, so avoid it.
-            StringTable[idx].idxLower = idxLower;
+            StringTable()[idx].idxLower = idxLower;
 
             // Also set idxLower's idxLower to itself.
-            StringTable[idxLower].idxLower = idxLower;
+            StringTable()[idxLower].idxLower = idxLower;
          }
 
-         return String(StringTable[idx].idxLower);
+         return String(StringTable()[idx].idxLower);
       }
 
       //
@@ -192,12 +225,12 @@ namespace GDCC
       //
       String String::Add(char const *str, std::size_t len, std::size_t hash)
       {
-         std::size_t idx = StringTable.size();
+         std::size_t idx = StringTable().size();
 
-         StringTable.emplace_back(str, len, hash, idx);
+         StringTable().emplace_back(str, len, hash, idx);
 
-         String::DataC = StringTable.size();
-         String::DataV = StringTable.data();
+         String::DataC = StringTable().size();
+         String::DataV = StringTable().data();
 
          return String(idx);
       }
@@ -242,7 +275,7 @@ namespace GDCC
 
          for(auto idx = StringTableHash[hash % StringTableHashC]; idx;)
          {
-            auto const &entry = StringTable[idx];
+            auto const &entry = StringTable()[idx];
 
             if(entry.hash == hash && entry.len == len && !std::memcmp(entry.str, str, len))
                return String(idx);

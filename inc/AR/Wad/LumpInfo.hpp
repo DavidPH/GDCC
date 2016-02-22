@@ -35,6 +35,7 @@ namespace GDCC
          {
             Data,
             File,
+            Wad,
          };
 
          //

@@ -23,10 +23,12 @@ add_library(gdcc-ar-wad-lib ${GDCC_SHARED_DECL}
    LumpInfo.cpp
    Wad.cpp
    Wad/AddLump.cpp
+   WadHeader.cpp
 
    ../../../inc/AR/Wad/Lump.hpp
    ../../../inc/AR/Wad/LumpInfo.hpp
    ../../../inc/AR/Wad/Wad.hpp
+   ../../../inc/AR/Wad/WadHeader.hpp
 )
 
 target_link_libraries(gdcc-ar-wad-lib gdcc-ar-lib)

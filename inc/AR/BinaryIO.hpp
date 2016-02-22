@@ -38,6 +38,10 @@ namespace GDCC
 {
    namespace AR
    {
+      std::uint_fast32_t ReadLE4(char const *in);
+
+      Core::String ReadStrN(char const *in, std::size_t n);
+
       void WriteLE4(std::ostream &out, std::uint_fast32_t in);
 
       void WriteStrN(std::ostream &out, Core::String in, std::size_t n);

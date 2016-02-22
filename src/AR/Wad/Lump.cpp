@@ -134,6 +134,41 @@ namespace GDCC
             for(int c; (c = in->sbumpc()) != EOF;)
               out.put(c);
          }
+
+         //
+         // Lump_FilePart constructor
+         //
+         Lump_FilePart::Lump_FilePart(Core::String name_, char const *data_,
+            std::size_t size_, std::shared_ptr<Core::FileBlock> const &file_) :
+            Lump{name_},
+            file{file_},
+            data{data_},
+            size{size_}
+         {
+         }
+
+         //
+         // Lump_FilePart destructor
+         //
+         Lump_FilePart::~Lump_FilePart()
+         {
+         }
+
+         //
+         // Lump_FilePart::sizeData
+         //
+         std::size_t Lump_FilePart::sizeData() const
+         {
+            return size;
+         }
+
+         //
+         // Lump_FilePart::writeData
+         //
+         void Lump_FilePart::writeData(std::ostream &out) const
+         {
+            out.write(data, size);
+         }
       }
    }
 }

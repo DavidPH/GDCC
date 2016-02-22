@@ -65,6 +65,9 @@ namespace GDCC
             else if(CheckLumpType(data, "file:"))
                info.type = LumpType::File, data += 5;
 
+            else if(CheckLumpType(data, "wad:"))
+               info.type = LumpType::Wad, data += 4;
+
             else
                info.type = LumpType::File;
 

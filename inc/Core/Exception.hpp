@@ -32,6 +32,7 @@ namespace GDCC
       class Exception : public std::exception
       {
       public:
+         Exception() : pos{nullptr, 0} {}
          Exception(Exception const &e);
          Exception(Exception &&) = default;
          explicit Exception(Origin pos_) noexcept : pos{pos_} {}

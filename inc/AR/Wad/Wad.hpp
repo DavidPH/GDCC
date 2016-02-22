@@ -68,7 +68,29 @@ namespace GDCC
             bool iwad;
 
          private:
+            void addLump_Wad(LumpInfo const &info);
+
             Lump_Empty head;
+         };
+
+         //
+         // Lump_Wad
+         //
+         class Lump_Wad : public Lump
+         {
+         public:
+            Lump_Wad(Core::String name);
+
+            virtual std::size_t sizeData() const;
+            virtual std::size_t sizeHead() const;
+
+            virtual void writeData(std::ostream &out) const;
+            virtual void writeHead(std::ostream &out, std::size_t offset) const;
+
+            Wad                   wad;
+            std::unique_ptr<Lump> head;
+            std::unique_ptr<Lump> tail;
+            bool                  embed;
          };
       }
    }

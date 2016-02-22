@@ -26,6 +26,11 @@
 
 namespace GDCC
 {
+   namespace Core
+   {
+      class FileBlock;
+   }
+
    namespace AR
    {
       namespace Wad
@@ -100,6 +105,27 @@ namespace GDCC
          private:
             std::unique_ptr<char[]> file;
             std::size_t             size;
+         };
+
+         //
+         // Lump_FilePart
+         //
+         class Lump_FilePart : public Lump
+         {
+         public:
+            Lump_FilePart(Core::String name, char const *data, std::size_t size,
+               std::shared_ptr<Core::FileBlock> const &file);
+            virtual ~Lump_FilePart();
+
+            virtual std::size_t sizeData() const;
+
+            virtual void writeData(std::ostream &out) const;
+
+         private:
+            std::shared_ptr<Core::FileBlock> file;
+
+            char const *data;
+            std::size_t size;
          };
       }
    }
