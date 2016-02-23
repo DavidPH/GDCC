@@ -52,6 +52,7 @@ namespace GDCC
 
             virtual void writeData(std::ostream &out) const = 0;
             virtual void writeHead(std::ostream &out, std::size_t offset) const;
+            virtual void writeList(std::ostream &out, std::string &path) const;
 
             Lump *wadNext, *wadPrev;
             Core::String name;

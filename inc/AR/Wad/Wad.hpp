@@ -64,6 +64,8 @@ namespace GDCC
             std::size_t sizeData() const;
 
             void writeData(std::ostream &out) const;
+            void writeList(std::ostream &out) const;
+            void writeList(std::ostream &out, std::string &path) const;
 
             bool iwad;
 
@@ -86,6 +88,7 @@ namespace GDCC
 
             virtual void writeData(std::ostream &out) const;
             virtual void writeHead(std::ostream &out, std::size_t offset) const;
+            virtual void writeList(std::ostream &out, std::string &path) const;
 
             Wad                   wad;
             std::unique_ptr<Lump> head;

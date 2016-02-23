@@ -21,6 +21,22 @@
 
 
 //----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+//
+// --list
+//
+static GDCC::Option::CStr OptionList
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("list")
+      .setGroup("output")
+      .setDescS("Outputs list of lumps to a file."),
+};
+
+
+//----------------------------------------------------------------------------|
 // Static Functions                                                           |
 //
 
@@ -37,11 +53,22 @@ static void MakeWad()
    for(auto const &arg : GDCC::Core::GetOptionArgs())
       ProcessFile(arg, wad);
 
+   // Write lump list.
+   if(auto listFile = OptionList.data())
+   {
+      auto buf = GDCC::Core::FileOpenStream(listFile, std::ios_base::out);
+      std::ostream out{buf.get()};
+      wad.writeList(out);
+   }
+
    // Write output.
-   auto buf = GDCC::Core::FileOpenStream(GDCC::Core::GetOptionOutput(),
-      std::ios_base::out | std::ios_base::binary);
-   std::ostream out{buf.get()};
-   wad.writeData(out);
+   if(auto outFile = GDCC::Core::GetOptionOutput())
+   {
+      auto buf = GDCC::Core::FileOpenStream(outFile,
+         std::ios_base::out | std::ios_base::binary);
+      std::ostream out{buf.get()};
+      wad.writeData(out);
+   }
 }
 
 //
@@ -69,12 +96,11 @@ int main(int argc, char *argv[])
 
    opts.list.usage = "[option]... [source]...";
 
-   opts.list.descS =
-      "Packs and unpacks Wad archives. Output defaults to last loose argument.";
+   opts.list.descS = "Packs and unpacks Wad archives.";
 
    try
    {
-      GDCC::Core::ProcessOptions(opts, argc, argv);
+      GDCC::Core::ProcessOptions(opts, argc, argv, false);
       MakeWad();
    }
    catch(std::exception const &e)

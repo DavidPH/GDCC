@@ -66,6 +66,14 @@ namespace GDCC
          }
 
          //
+         // Lump::writeList
+         //
+         void Lump::writeList(std::ostream &out, std::string &path) const
+         {
+            out << path << name << '\n';
+         }
+
+         //
          // Lump_Data constructor
          //
          Lump_Data::Lump_Data(Core::String name_,

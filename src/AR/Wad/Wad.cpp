@@ -100,6 +100,24 @@ namespace GDCC
          }
 
          //
+         // Wad::writeList
+         //
+         void Wad::writeList(std::ostream &out) const
+         {
+            std::string path;
+            writeList(out, path);
+         }
+
+         //
+         // Wad::writeList
+         //
+         void Wad::writeList(std::ostream &out, std::string &path) const
+         {
+            for(auto const &lump : *this)
+               lump.writeList(out, path);
+         }
+
+         //
          // Lump_Wad constructor
          //
          Lump_Wad::Lump_Wad(Core::String name_) :
@@ -181,6 +199,23 @@ namespace GDCC
             }
             else
                Lump::writeHead(out, offset);
+         }
+
+         //
+         // Lump_Wad::writeList
+         //
+         void Lump_Wad::writeList(std::ostream &out, std::string &path) const
+         {
+            auto pathLen = path.size();
+
+            path += name.data();
+            path += '/';
+            out << path << '\n';
+            if(head) out << path << head->name << '\n';
+            wad.writeList(out, path);
+            if(tail) out << path << tail->name << '\n';
+
+            path.resize(pathLen);
          }
       }
    }
