@@ -51,6 +51,7 @@ namespace GDCC
             virtual std::size_t sizeHead() const;
 
             virtual void writeData(std::ostream &out) const = 0;
+            virtual void writeDirs(std::string &out) const;
             virtual void writeHead(std::ostream &out, std::size_t offset) const;
             virtual void writeList(std::ostream &out, std::string &path) const;
 

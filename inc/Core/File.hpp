@@ -65,6 +65,8 @@ namespace GDCC
 {
    namespace Core
    {
+      void DirCreate(char const *dirname);
+
       std::unique_ptr<FileBlock> FileOpenBlock(char const *filename);
 
       std::unique_ptr<std::streambuf, ConditionalDeleter<std::streambuf>>

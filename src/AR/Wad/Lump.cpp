@@ -15,6 +15,7 @@
 #include "AR/BinaryIO.hpp"
 
 #include "Core/File.hpp"
+#include "Core/Path.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -53,6 +54,20 @@ namespace GDCC
          {
             // Normal lumps have a single header entry.
             return 1;
+         }
+
+         //
+         // Lump::writeDirs
+         //
+         void Lump::writeDirs(std::string &path) const
+         {
+            Core::PathRestore pathRestore{path};
+
+            Core::PathAppend(path, name);
+            auto buf = Core::FileOpenStream(path.data(),
+               std::ios_base::out | std::ios_base::binary);
+            std::ostream out{buf.get()};
+            writeData(out);
          }
 
          //

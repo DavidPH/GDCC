@@ -14,6 +14,9 @@
 
 #include "AR/BinaryIO.hpp"
 
+#include "Core/File.hpp"
+#include "Core/Path.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -100,6 +103,17 @@ namespace GDCC
          }
 
          //
+         // Wad::writeDirs
+         //
+         void Wad::writeDirs(std::string &path) const
+         {
+            Core::DirCreate(path.data());
+
+            for(auto const &lump : *this)
+               lump.writeDirs(path);
+         }
+
+         //
          // Wad::writeList
          //
          void Wad::writeList(std::ostream &out) const
@@ -182,6 +196,20 @@ namespace GDCC
          }
 
          //
+         // Lump_Wad::writeDirs
+         //
+         void Lump_Wad::writeDirs(std::string &path) const
+         {
+            Core::PathRestore pathRestore{path};
+
+            Core::PathAppend(path, name);
+
+            wad.writeDirs(path);
+            if(head) head->writeDirs(path);
+            if(tail) tail->writeDirs(path);
+         }
+
+         //
          // Lump_Wad::writeHead
          //
          void Lump_Wad::writeHead(std::ostream &out, std::size_t offset) const
@@ -206,7 +234,7 @@ namespace GDCC
          //
          void Lump_Wad::writeList(std::ostream &out, std::string &path) const
          {
-            auto pathLen = path.size();
+            Core::PathRestore pathRestore{path};
 
             path += name.data();
             path += '/';
@@ -214,8 +242,6 @@ namespace GDCC
             if(head) out << path << head->name << '\n';
             wad.writeList(out, path);
             if(tail) out << path << tail->name << '\n';
-
-            path.resize(pathLen);
          }
       }
    }

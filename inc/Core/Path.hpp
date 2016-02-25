@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,7 +17,32 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Types                                                                      |
+//
+
+namespace GDCC
+{
+   namespace Core
+   {
+      //
+      // PathRestore
+      //
+      class PathRestore
+      {
+      public:
+         PathRestore(std::string &path_) : path{path_}, len{path.size()} {}
+         ~PathRestore() {path.resize(len);}
+
+      private:
+         std::string           &path;
+         std::string::size_type len;
+      };
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
 //
 
 namespace GDCC

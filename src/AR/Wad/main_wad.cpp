@@ -16,6 +16,8 @@
 #include "Core/File.hpp"
 #include "Core/Option.hpp"
 
+#include "Option/Bool.hpp"
+
 #include <cstring>
 #include <iostream>
 
@@ -23,6 +25,20 @@
 //----------------------------------------------------------------------------|
 // Options                                                                    |
 //
+
+//
+// --extract
+//
+static bool Extract = false;
+static GDCC::Option::Bool ExtractOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("extract")
+      .setGroup("output")
+      .setDescS("Extracts to a directory instead of writing to archive."),
+
+   &Extract
+};
 
 //
 // --list
@@ -64,10 +80,18 @@ static void MakeWad()
    // Write output.
    if(auto outFile = GDCC::Core::GetOptionOutput())
    {
-      auto buf = GDCC::Core::FileOpenStream(outFile,
-         std::ios_base::out | std::ios_base::binary);
-      std::ostream out{buf.get()};
-      wad.writeData(out);
+      if(Extract)
+      {
+         std::string path{outFile};
+         wad.writeDirs(path);
+      }
+      else
+      {
+         auto buf = GDCC::Core::FileOpenStream(outFile,
+            std::ios_base::out | std::ios_base::binary);
+         std::ostream out{buf.get()};
+         wad.writeData(out);
+      }
    }
 }
 

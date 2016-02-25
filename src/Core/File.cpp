@@ -21,7 +21,9 @@
 
 #include <sys/stat.h>
 
-#ifndef _WIN32
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
@@ -94,6 +96,18 @@ namespace GDCC
             cacheHash = StrHash(data(), size());
 
          return cacheHash;
+      }
+
+      //
+      // DirCreate
+      //
+      void DirCreate(char const *dirname)
+      {
+         #ifdef _WIN32
+         CreateDirectory(dirname, nullptr);
+         #else
+         mkdir(dirname, S_IRWXU);
+         #endif
       }
 
       //
