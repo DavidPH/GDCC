@@ -17,6 +17,7 @@
 
 #include "Core/Dir.hpp"
 #include "Core/File.hpp"
+#include "Core/Path.hpp"
 
 #include <cstring>
 
@@ -61,7 +62,7 @@ namespace GDCC
 
             while(dir->next())
             {
-               Core::String name = dir->getPart();
+               Core::String name = GetNameFromFile(dir->getPart());
                char const  *path = dir->getFull();
 
                if(Core::IsDir(path))
@@ -154,7 +155,7 @@ namespace GDCC
          {
             while(dir->next())
             {
-               Core::String name = dir->getPart();
+               Core::String name = GetNameFromFile(dir->getPart());
                char const  *path = dir->getFull();
 
                if(Core::IsDir(path))
@@ -222,6 +223,19 @@ namespace GDCC
             else
                return new Lump_Empty{lump.name};
          }
+
+         //
+         // CreateLump_File
+         //
+         static Lump *CreateLump_File(LumpInfo const &info)
+         {
+            auto name = info.name;
+
+            if(!name)
+               name = GetNameFromFile(Core::PathFilename(info.data));
+
+            return new Lump_File{name, Core::StrDup(info.data)};
+         }
       }
    }
 }
@@ -249,7 +263,7 @@ namespace GDCC
                break;
 
             case LumpType::File:
-               addLump(new Lump_File(info.name, Core::StrDup(info.data)));
+               addLump(CreateLump_File(info));
                break;
 
             case LumpType::Wad:
@@ -280,13 +294,13 @@ namespace GDCC
             // Find and insert lumps.
             for(auto dir = Core::DirOpenStream(info.data); dir->next();)
             {
-               auto nameFull = dir->getFull();
-               auto namePart = dir->getPart();
+               Core::String name = GetNameFromFile(dir->getPart());
+               char const  *path = dir->getFull();
 
-               if(Core::IsDir(nameFull))
-                  AddWadDir(wad, namePart, Core::DirOpenStream(nameFull).get());
+               if(Core::IsDir(path))
+                  AddWadDir(wad, name, Core::DirOpenStream(path).get());
                else
-                  wad->addLump(new Lump_File{namePart, Core::StrDup(nameFull)});
+                  wad->addLump(new Lump_File{name, Core::StrDup(path)});
             }
 
             // Insert wad lump, if any.

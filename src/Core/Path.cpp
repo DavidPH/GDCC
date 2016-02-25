@@ -162,6 +162,21 @@ namespace GDCC
       }
 
       //
+      // PathFilename
+      //
+      char const *PathFilename(char const *path)
+      {
+         char const *filename = path;
+         for(; *path; ++path)
+         {
+            if(IsPathSep(*path))
+               filename = path + 1;
+         }
+
+         return filename;
+      }
+
+      //
       // PathNormalize
       //
       String PathNormalize(String path)

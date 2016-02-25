@@ -91,9 +91,13 @@ namespace GDCC
    {
       namespace Wad
       {
+         Core::String GetFileFromName(Core::String name);
+
          LumpInfo GetLumpInfo(char const *data);
 
          std::pair<Core::String, Core::String> GetNameEnd(Core::String name);
+
+         Core::String GetNameFromFile(char const *filename);
 
          bool IsNameBinMap(Core::String name);
          bool IsNameStart(Core::String name);

@@ -12,6 +12,8 @@
 
 #include "AR/Wad/Lump.hpp"
 
+#include "AR/Wad/LumpInfo.hpp"
+
 #include "AR/BinaryIO.hpp"
 
 #include "Core/File.hpp"
@@ -63,7 +65,7 @@ namespace GDCC
          {
             Core::PathRestore pathRestore{path};
 
-            Core::PathAppend(path, name);
+            Core::PathAppend(path, GetFileFromName(name));
             auto buf = Core::FileOpenStream(path.data(),
                std::ios_base::out | std::ios_base::binary);
             std::ostream out{buf.get()};

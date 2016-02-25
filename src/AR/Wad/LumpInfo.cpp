@@ -12,6 +12,7 @@
 
 #include "AR/Wad/LumpInfo.hpp"
 
+#include <algorithm>
 #include <cstring>
 
 
@@ -77,6 +78,26 @@ namespace GDCC
       namespace Wad
       {
          //
+         // GetFileFromName
+         //
+         Core::String GetFileFromName(Core::String name)
+         {
+            // Translate \ to ^.
+            if(std::find(name.begin(), name.end(), '\\'))
+            {
+               std::unique_ptr<char[]> tmp{new char[name.size()]};
+
+               auto itr = name.begin(), end = name.end();
+               for(char *out = tmp.get(); itr != end; ++itr, ++out)
+                  *out = *itr == '\\' ? '^' : *itr;
+
+               return {&tmp[0], &tmp[name.size()]};
+            }
+            else
+               return name;
+         }
+
+         //
          // GetLumpInfo
          //
          LumpInfo GetLumpInfo(char const *data)
@@ -136,6 +157,30 @@ namespace GDCC
                return {s, s + 1};
             else
                return {s, nullptr};
+         }
+
+         //
+         // GetNameFromFile
+         //
+         Core::String GetNameFromFile(char const *filename)
+         {
+            char const *end = std::strchr(filename, '.');
+            if(!end) end = filename + std::strlen(filename);
+            std::size_t len = end - filename;
+
+            // Translate ^ to \.
+            if(std::find(filename, end, '^'))
+            {
+               std::unique_ptr<char[]> tmp{new char[len]};
+
+               char const *itr = filename;
+               for(char *out = tmp.get(); itr != end; ++itr, ++out)
+                  *out = *itr == '^' ? '\\' : *itr;
+
+               return {&tmp[0], &tmp[len]};
+            }
+            else
+               return {filename, end};
          }
 
          //

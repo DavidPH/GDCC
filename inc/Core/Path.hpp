@@ -63,6 +63,8 @@ namespace GDCC
 
       std::string &PathDirnameEq(std::string &path);
 
+      char const *PathFilename(char const *path);
+
       String PathNormalize(String path);
 
       char        *PathNormalizeEq(char        *path);
