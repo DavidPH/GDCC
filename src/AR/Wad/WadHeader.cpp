@@ -17,7 +17,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Static Objects                                                             |
+// Extern Objects                                                             |
 //
 
 namespace GDCC
@@ -26,81 +26,19 @@ namespace GDCC
    {
       namespace Wad
       {
-         static Core::String const NameBEHAVIOR{"BEHAVIOR"};
-         static Core::String const NameBLOCKMAP{"BLOCKMAP"};
-         static Core::String const NameENDMAP  {"ENDMAP"};
-         static Core::String const NameLINEDEFS{"LINEDEFS"};
-         static Core::String const NameNODES   {"NODES"};
-         static Core::String const NameREJECT  {"REJECT"};
-         static Core::String const NameSECTORS {"SECTORS"};
-         static Core::String const NameSEGS    {"SEGS"};
-         static Core::String const NameSIDEDEFS{"SIDEDEFS"};
-         static Core::String const NameSSECTORS{"SSECTORS"};
-         static Core::String const NameTEXTMAP {"TEXTMAP"};
-         static Core::String const NameTHINGS  {"THINGS"};
-         static Core::String const NameVERTEXES{"VERTEXES"};
-      }
-   }
-}
-
-
-//----------------------------------------------------------------------------|
-// Static Functions                                                           |
-//
-
-namespace GDCC
-{
-   namespace AR
-   {
-      namespace Wad
-      {
-         //
-         // GetNameEnd
-         //
-         static std::pair<Core::String, Core::String> GetNameEnd(Core::String name)
-         {
-            char s[7]{name[0], name[1], '_', 'E', 'N', 'D'};
-
-            if(s[1] == '_')
-               s[1] = s[0];
-
-            if(s[1] == s[0])
-               return {s, s + 1};
-            else
-               return {s, nullptr};
-         }
-
-         //
-         // IsNameBinMap
-         //
-         static bool IsNameBinMap(Core::String name)
-         {
-            return
-               name == NameTHINGS   ||
-               name == NameLINEDEFS ||
-               name == NameSIDEDEFS ||
-               name == NameVERTEXES ||
-               name == NameSEGS     ||
-               name == NameSSECTORS ||
-               name == NameNODES    ||
-               name == NameSECTORS  ||
-               name == NameREJECT   ||
-               name == NameBLOCKMAP ||
-               name == NameBEHAVIOR;
-         }
-
-         //
-         // IsNameStart
-         //
-         static bool IsNameStart(Core::String name)
-         {
-            switch(name.size())
-            {
-            case 7: return std::equal(name.begin() + 1, name.end(), "_START");
-            case 8: return std::equal(name.begin() + 2, name.end(), "_START");
-            default: return false;
-            }
-         }
+         extern Core::String const NameBEHAVIOR{"BEHAVIOR"};
+         extern Core::String const NameBLOCKMAP{"BLOCKMAP"};
+         extern Core::String const NameENDMAP  {"ENDMAP"};
+         extern Core::String const NameLINEDEFS{"LINEDEFS"};
+         extern Core::String const NameNODES   {"NODES"};
+         extern Core::String const NameREJECT  {"REJECT"};
+         extern Core::String const NameSECTORS {"SECTORS"};
+         extern Core::String const NameSEGS    {"SEGS"};
+         extern Core::String const NameSIDEDEFS{"SIDEDEFS"};
+         extern Core::String const NameSSECTORS{"SSECTORS"};
+         extern Core::String const NameTEXTMAP {"TEXTMAP"};
+         extern Core::String const NameTHINGS  {"THINGS"};
+         extern Core::String const NameVERTEXES{"VERTEXES"};
       }
    }
 }
@@ -224,6 +162,55 @@ namespace GDCC
                found.push_back({{first, last}, nullptr, nullptr, nullptr});
 
             return {Core::Move, found.begin(), found.end()};
+         }
+
+         //
+         // GetNameEnd
+         //
+         std::pair<Core::String, Core::String> GetNameEnd(Core::String name)
+         {
+            char s[7]{name[0], name[1], '_', 'E', 'N', 'D'};
+
+            if(s[1] == '_')
+               s[1] = s[0];
+
+            // FIXME: First should always be the canonical name.
+            if(s[1] == s[0])
+               return {s, s + 1};
+            else
+               return {s, nullptr};
+         }
+
+         //
+         // IsNameBinMap
+         //
+         bool IsNameBinMap(Core::String name)
+         {
+            return
+               name == NameTHINGS   ||
+               name == NameLINEDEFS ||
+               name == NameSIDEDEFS ||
+               name == NameVERTEXES ||
+               name == NameSEGS     ||
+               name == NameSSECTORS ||
+               name == NameNODES    ||
+               name == NameSECTORS  ||
+               name == NameREJECT   ||
+               name == NameBLOCKMAP ||
+               name == NameBEHAVIOR;
+         }
+
+         //
+         // IsNameStart
+         //
+         bool IsNameStart(Core::String name)
+         {
+            switch(name.size())
+            {
+            case 7: return std::equal(name.begin() + 1, name.end(), "_START");
+            case 8: return std::equal(name.begin() + 2, name.end(), "_START");
+            default: return false;
+            }
          }
       }
    }

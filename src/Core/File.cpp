@@ -99,18 +99,6 @@ namespace GDCC
       }
 
       //
-      // DirCreate
-      //
-      void DirCreate(char const *dirname)
-      {
-         #ifdef _WIN32
-         CreateDirectory(dirname, nullptr);
-         #else
-         mkdir(dirname, S_IRWXU);
-         #endif
-      }
-
-      //
       // FileOpenBlock
       //
       std::unique_ptr<FileBlock> FileOpenBlock(char const *filename)

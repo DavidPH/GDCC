@@ -54,6 +54,7 @@ namespace GDCC
       constexpr bool IsPathSep(char c);
 
       std::string &PathAppend(std::string &l, String r);
+      std::string &PathAppend(std::string &l, char const *r);
 
       String PathConcat(char const *l, String r);
       String PathConcat(String      l, String r);
@@ -69,6 +70,8 @@ namespace GDCC
 
       char PathSep(char const *path);
       char PathSep(String      path);
+
+      std::string &PathTerminateEq(std::string &path);
    }
 }
 

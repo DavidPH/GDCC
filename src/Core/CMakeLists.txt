@@ -20,6 +20,7 @@
 ##
 add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    Counter.cpp
+   Dir.cpp
    Exception.cpp
    File.cpp
    Number.cpp
@@ -40,6 +41,7 @@ add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    ../../inc/Core/Compare.hpp
    ../../inc/Core/Counter.hpp
    ../../inc/Core/Deleter.hpp
+   ../../inc/Core/Dir.hpp
    ../../inc/Core/EscapeBuf.hpp
    ../../inc/Core/Exception.hpp
    ../../inc/Core/FeatureHold.hpp

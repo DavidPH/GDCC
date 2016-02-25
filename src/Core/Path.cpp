@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -63,8 +63,7 @@ namespace GDCC
       {
          if(l.empty()) return l = {r.data(), r.size()};
 
-         if(!IsPathSep(l.back()))
-            l += PathSep(l.data());
+         PathTerminateEq(l);
 
          if(!r.empty())
          {
@@ -75,6 +74,16 @@ namespace GDCC
          }
 
          return l;
+      }
+
+      //
+      // PathAppend
+      //
+      std::string &PathAppend(std::string &l, char const *r)
+      {
+         if(l.empty()) return l = r;
+
+         return PathTerminateEq(l).append(IsPathSep(*r) ? r + 1 : r);
       }
 
       //
@@ -196,6 +205,17 @@ namespace GDCC
          for(auto &c : path)
             if(IsPathSep(c)) c = sep;
          #endif
+
+         return path;
+      }
+
+      //
+      // PathTerminateEq
+      //
+      std::string &PathTerminateEq(std::string &path)
+      {
+         if(!path.empty() && !IsPathSep(path.back()))
+            path += PathSep(path.data());
 
          return path;
       }
