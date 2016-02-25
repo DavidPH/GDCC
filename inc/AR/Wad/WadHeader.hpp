@@ -72,34 +72,6 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Extern Objects                                                             |
-//
-
-namespace GDCC
-{
-   namespace AR
-   {
-      namespace Wad
-      {
-         extern Core::String const NameBEHAVIOR;
-         extern Core::String const NameBLOCKMAP;
-         extern Core::String const NameENDMAP;
-         extern Core::String const NameLINEDEFS;
-         extern Core::String const NameNODES;
-         extern Core::String const NameREJECT;
-         extern Core::String const NameSECTORS;
-         extern Core::String const NameSEGS;
-         extern Core::String const NameSIDEDEFS;
-         extern Core::String const NameSSECTORS;
-         extern Core::String const NameTEXTMAP;
-         extern Core::String const NameTHINGS;
-         extern Core::String const NameVERTEXES;
-      }
-   }
-}
-
-
-//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
@@ -109,10 +81,6 @@ namespace GDCC
    {
       namespace Wad
       {
-         std::pair<Core::String, Core::String> GetNameEnd(Core::String name);
-
-         bool IsNameBinMap(Core::String name);
-         bool IsNameStart(Core::String name);
       }
    }
 }
