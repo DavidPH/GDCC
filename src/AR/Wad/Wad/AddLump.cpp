@@ -23,7 +23,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Static Functions                                                           |
+// Types                                                                      |
 //
 
 namespace GDCC
@@ -33,12 +33,84 @@ namespace GDCC
       namespace Wad
       {
          //
-         // AddWadDirMap
+         // SubWadTemp
          //
-         static void AddWadDirMap(Lump_Wad *wadLump, Core::String nameHead,
-            Core::DirStream *dir)
+         class SubWadTemp
          {
-            Wad *wad = &wadLump->wad;
+         public:
+            SubWadTemp(Wad *wadRoot_, Core::String wadName) :
+               wadRoot{wadRoot_}
+            {
+               if(wadName)
+               {
+                  wadLump.reset(new Lump_Wad{wadName});
+                  wadLump->embed = true;
+                  wad = &wadLump->wad;
+               }
+               else
+                  wad = wadRoot;
+            }
+
+            Wad *operator -> () {return wad;}
+
+            operator Wad * () {return wad;}
+
+            void finish()
+            {
+               if(wadLump)
+                  wadRoot->addLump(wadLump.release());
+            }
+
+            Wad                      *wad;
+            Wad                      *wadRoot;
+            std::unique_ptr<Lump_Wad> wadLump;
+         };
+      }
+   }
+}
+
+
+//----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace GDCC
+{
+   namespace AR
+   {
+      namespace Wad
+      {
+         static Lump *CreateLump_Data(WadHeader::Lump const &lump,
+            std::shared_ptr<Core::FileBlock> const &data);
+
+         //
+         // AddDir
+         //
+         static void AddDir(Wad *wadRoot, Core::String wadName, Core::DirStream *dir)
+         {
+            SubWadTemp wad{wadRoot, wadName};
+
+            while(dir->next())
+            {
+               Core::String name = GetNameFromFile(dir->getPart());
+               char const  *path = dir->getFull();
+
+               if(Core::IsDir(path))
+                  AddDir(wad, name, Core::DirOpenStream(path).get());
+               else
+                  wad->addLump(new Lump_File{name, Core::StrDup(path)});
+            }
+
+            wad.finish();
+         }
+
+         //
+         // AddMapDir
+         //
+         static void AddMapDir(Wad *wadRoot, Core::String wadName, Core::DirStream *dir,
+            Core::String nameHead)
+         {
+            SubWadTemp wad{wadRoot, wadName};
 
             // UDMF core lumps.
             std::unique_ptr<Lump> lumpTEXTMAP;
@@ -74,7 +146,7 @@ namespace GDCC
                   std::unique_ptr<Lump> lump{new Lump_File{name, Core::StrDup(path)}};
 
                   if(name == nameHead)
-                     wadLump->head = std::move(lump);
+                     wad.wadLump->head = std::move(lump);
 
                   else if(name == NameTEXTMAP)  lumpTEXTMAP  = std::move(lump);
                   else if(name == NameENDMAP)   lumpENDMAP   = std::move(lump);
@@ -95,8 +167,8 @@ namespace GDCC
                }
             }
 
-            if(!wadLump->head)
-               wadLump->head.reset(new Lump_Empty{nameHead});
+            if(!wad.wadLump->head)
+               wad.wadLump->head.reset(new Lump_Empty{nameHead});
 
             if(lumpTEXTMAP)
             {
@@ -120,9 +192,9 @@ namespace GDCC
                   wad->addLump(lump.release());
 
                if(lumpENDMAP)
-                  wadLump->tail = std::move(lumpENDMAP);
+                  wad.wadLump->tail = std::move(lumpENDMAP);
                else
-                  wadLump->tail.reset(new Lump_Empty{NameENDMAP});
+                  wad.wadLump->tail.reset(new Lump_Empty{NameENDMAP});
             }
             else
             {
@@ -145,14 +217,18 @@ namespace GDCC
 
                if(lumpBEHAVIOR) wad->addLump(lumpBEHAVIOR.release());
             }
+
+            wad.finish();
          }
 
          //
-         // AddWadDirStart
+         // AddStartDir
          //
-         static void AddWadDirStart(Lump_Wad *wadLump, Core::String nameHead,
-            std::pair<Core::String, Core::String> nameTail, Core::DirStream *dir)
+         static void AddStartDir(Wad *wadRoot, Core::String wadName, Core::DirStream *dir,
+            Core::String nameHead, std::pair<Core::String, Core::String> nameTail)
          {
+            SubWadTemp wad{wadRoot, wadName};
+
             while(dir->next())
             {
                Core::String name = GetNameFromFile(dir->getPart());
@@ -160,39 +236,100 @@ namespace GDCC
 
                if(Core::IsDir(path))
                {
-                  // TODO
+                  if(IsNameStart(name))
+                     AddStartDir(wad, name, Core::DirOpenStream(path).get(),
+                        name, GetNameEnd(name));
+                  else
+                     AddDir(wad, name, Core::DirOpenStream(path).get());
                }
                else
                {
                   Lump *lump = new Lump_File{name, Core::StrDup(path)};
 
                   if(name == nameTail.first || name == nameTail.second)
-                     wadLump->tail.reset(lump);
+                     wad.wadLump->tail.reset(lump);
                   else if(name == nameHead)
-                     wadLump->head.reset(lump);
+                     wad.wadLump->head.reset(lump);
                   else
-                     wadLump->wad.addLump(lump);
+                     wad->addLump(lump);
                }
             }
 
-            if(!wadLump->head) wadLump->head.reset(new Lump_Empty{nameHead});
-            if(!wadLump->tail) wadLump->tail.reset(new Lump_Empty{nameTail.first});
+            if(!wad.wadLump->head) wad.wadLump->head.reset(new Lump_Empty{nameHead});
+            if(!wad.wadLump->tail) wad.wadLump->tail.reset(new Lump_Empty{nameTail.first});
+
+            wad.finish();
          }
 
          //
          // AddWadDir
          //
-         static void AddWadDir(Wad *wad, Core::String name, Core::DirStream *dir)
+         static void AddWadDir(Wad *wadRoot, Core::String wadName, Core::DirStream *dir)
          {
-            std::unique_ptr<Lump_Wad> wadLump{new Lump_Wad{name}};
-            wadLump->embed = true;
+            SubWadTemp wad{wadRoot, wadName};
 
-            if(IsNameStart(name))
-               AddWadDirStart(wadLump.get(), name, GetNameEnd(name), dir);
-            else
-               AddWadDirMap (wadLump.get(), name, dir);
+            while(dir->next())
+            {
+               Core::String name = GetNameFromFile(dir->getPart());
+               char const  *path = dir->getFull();
 
-            wad->addLump(wadLump.release());
+               if(Core::IsDir(path))
+               {
+                  if(IsNameStart(name))
+                     AddStartDir(wad, name, Core::DirOpenStream(path).get(),
+                        name, GetNameEnd(name));
+                  else
+                     AddMapDir(wad, name, Core::DirOpenStream(path).get(), name);
+               }
+               else
+                  wad->addLump(new Lump_File{name, Core::StrDup(path)});
+            }
+
+            wad.finish();
+         }
+
+         //
+         // AddWadFile
+         //
+         static void AddWadFile(Wad *wadRoot, Core::String wadName, char const *path)
+         {
+            // Load file data.
+            std::shared_ptr<Core::FileBlock> data
+               {Core::FileOpenBlock(path).release()};
+
+            // Parse wad header.
+            WadHeader header{data->data(), data->size()};
+
+            SubWadTemp wad{wadRoot, wadName};
+
+            // Insert lumps.
+            for(WadHeader::Dir const &dir : header.findDirs())
+            {
+               if(dir.name)
+               {
+                  std::unique_ptr<Lump_Wad> sub{new Lump_Wad{dir.name}};
+
+                  sub->embed = true;
+
+                  if(dir.head)
+                     sub->head.reset(CreateLump_Data(*dir.head, data));
+
+                  for(WadHeader::Lump const &lump : dir.lumps)
+                     sub->wad.addLump(CreateLump_Data(lump, data));
+
+                  if(dir.tail)
+                     sub->tail.reset(CreateLump_Data(*dir.tail, data));
+
+                  wad->addLump(sub.release());
+               }
+               else
+               {
+                  for(WadHeader::Lump const &lump : dir.lumps)
+                     wad->addLump(CreateLump_Data(lump, data));
+               }
+            }
+
+            wad.finish();
          }
 
          //
@@ -263,105 +400,19 @@ namespace GDCC
                break;
 
             case LumpType::File:
-               addLump(CreateLump_File(info));
+               if(Core::IsDir(info.data))
+                  AddDir(this, info.name, Core::DirOpenStream(info.data).get());
+               else
+                  addLump(CreateLump_File(info));
                break;
 
             case LumpType::Wad:
                if(Core::IsDir(info.data))
-                  addLump_WadDir(info);
+                  AddWadDir(this, info.name, Core::DirOpenStream(info.data).get());
                else
-                  addLump_WadFile(info);
+                  AddWadFile(this, info.name, info.data);
                break;
             }
-         }
-
-         //
-         // Wad::addLump_WadDir
-         //
-         void Wad::addLump_WadDir(LumpInfo const &info)
-         {
-            // Determine what Wad object to insert lumps into.
-            Wad                      *wad;
-            std::unique_ptr<Lump_Wad> wadLump;
-            if(info.name)
-            {
-               wadLump.reset(new Lump_Wad{info.name});
-               wad = &wadLump->wad;
-            }
-            else
-               wad = this;
-
-            // Find and insert lumps.
-            for(auto dir = Core::DirOpenStream(info.data); dir->next();)
-            {
-               Core::String name = GetNameFromFile(dir->getPart());
-               char const  *path = dir->getFull();
-
-               if(Core::IsDir(path))
-                  AddWadDir(wad, name, Core::DirOpenStream(path).get());
-               else
-                  wad->addLump(new Lump_File{name, Core::StrDup(path)});
-            }
-
-            // Insert wad lump, if any.
-            if(wadLump)
-               addLump(wadLump.release());
-         }
-
-         //
-         // Wad::addLump_WadFile
-         //
-         void Wad::addLump_WadFile(LumpInfo const &info)
-         {
-            // Load file data.
-            std::shared_ptr<Core::FileBlock> data
-               {Core::FileOpenBlock(info.data).release()};
-
-            // Parse wad header.
-            WadHeader header{data->data(), data->size()};
-
-            // Determine what Wad object to insert lumps into.
-            Wad                      *wad;
-            std::unique_ptr<Lump_Wad> wadLump;
-            if(info.name)
-            {
-               wadLump.reset(new Lump_Wad{info.name});
-               wadLump->wad.iwad = header.ident[0] == 'I';
-               wad = &wadLump->wad;
-            }
-            else
-               wad = this;
-
-            // Insert lumps.
-            for(WadHeader::Dir const &dir : header.findDirs())
-            {
-               if(dir.name)
-               {
-                  std::unique_ptr<Lump_Wad> sub{new Lump_Wad{dir.name}};
-
-                  sub->embed = true;
-
-                  if(dir.head)
-                     sub->head.reset(CreateLump_Data(*dir.head, data));
-
-                  for(WadHeader::Lump const &lump : dir.lumps)
-                     sub->wad.addLump(CreateLump_Data(lump, data));
-
-                  if(dir.tail)
-                     sub->tail.reset(CreateLump_Data(*dir.tail, data));
-
-                  wad->addLump(sub.release());
-               }
-               else
-               {
-                  for(WadHeader::Lump const &lump : dir.lumps)
-                     wad->addLump(CreateLump_Data(lump, data));
-               }
-            }
-
-            // Insert wad lump, if any.
-            if(wadLump)
-               addLump(wadLump.release());
          }
       }
    }

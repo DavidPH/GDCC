@@ -71,9 +71,6 @@ namespace GDCC
             bool iwad;
 
          private:
-            void addLump_WadDir(LumpInfo const &info);
-            void addLump_WadFile(LumpInfo const &info);
-
             Lump_Empty head;
          };
 
