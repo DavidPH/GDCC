@@ -21,10 +21,8 @@ add_subdirectory(Wad)
 ## gdcc-ar-lib
 ##
 add_library(gdcc-ar-lib ${GDCC_SHARED_DECL}
-   BinaryIO.cpp
    Exception.cpp
 
-   ../../inc/AR/BinaryIO.hpp
    ../../inc/AR/Exception.hpp
 )
 

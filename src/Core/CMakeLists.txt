@@ -19,6 +19,7 @@
 ## gdcc-core-lib
 ##
 add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
+   BinaryIO.cpp
    Counter.cpp
    Dir.cpp
    Exception.cpp
@@ -35,6 +36,7 @@ add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    Warning.cpp
 
    ../../inc/Core/Array.hpp
+   ../../inc/Core/BinaryIO.hpp
    ../../inc/Core/BufferBuf.hpp
    ../../inc/Core/BufferTBuf.hpp
    ../../inc/Core/CommentBuf.hpp

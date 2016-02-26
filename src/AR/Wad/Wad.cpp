@@ -12,8 +12,7 @@
 
 #include "AR/Wad/Wad.hpp"
 
-#include "AR/BinaryIO.hpp"
-
+#include "Core/BinaryIO.hpp"
 #include "Core/Dir.hpp"
 #include "Core/Path.hpp"
 
@@ -85,8 +84,8 @@ namespace GDCC
             // Write archive header.
             std::size_t offset = 16;
             out.write(iwad ? "IWAD" : "PWAD", 4);
-            WriteLE4(out, numLumps);
-            WriteLE4(out, offset);
+            Core::WriteLE4(out, numLumps);
+            Core::WriteLE4(out, offset);
             out.write("GDCC", 4);
 
             // Write lump headers.

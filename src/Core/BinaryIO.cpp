@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "AR/BinaryIO.hpp"
+#include "Core/BinaryIO.hpp"
 
 #include "Core/String.hpp"
 
@@ -21,7 +21,7 @@
 
 namespace GDCC
 {
-   namespace AR
+   namespace Core
    {
       //
       // ReadLE4
@@ -38,7 +38,7 @@ namespace GDCC
       //
       // ReadStrN
       //
-      Core::String ReadStrN(char const *in, std::size_t n)
+      String ReadStrN(char const *in, std::size_t n)
       {
          char const *end = in;
          for(; n && *end; ++end, --n) {}
@@ -59,7 +59,7 @@ namespace GDCC
       //
       // WriteStrN
       //
-      void WriteStrN(std::ostream &out, Core::String in, std::size_t n)
+      void WriteStrN(std::ostream &out, String in, std::size_t n)
       {
          for(auto itr = in.begin(), end = in.end(); n && in != end; ++itr, --n)
             out.put(*itr);

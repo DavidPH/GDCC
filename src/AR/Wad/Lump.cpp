@@ -14,8 +14,7 @@
 
 #include "AR/Wad/LumpInfo.hpp"
 
-#include "AR/BinaryIO.hpp"
-
+#include "Core/BinaryIO.hpp"
 #include "Core/File.hpp"
 #include "Core/Path.hpp"
 
@@ -77,9 +76,9 @@ namespace GDCC
          //
          void Lump::writeHead(std::ostream &out, std::size_t offset) const
          {
-            WriteLE4 (out, offset);
-            WriteLE4 (out, sizeData());
-            WriteStrN(out, name, 8);
+            Core::WriteLE4 (out, offset);
+            Core::WriteLE4 (out, sizeData());
+            Core::WriteStrN(out, name, 8);
          }
 
          //

@@ -14,8 +14,9 @@
 
 #include "AR/Wad/LumpInfo.hpp"
 
-#include "AR/BinaryIO.hpp"
 #include "AR/Exception.hpp"
+
+#include "Core/BinaryIO.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -39,8 +40,8 @@ namespace GDCC
 
             // Read wad header.
             ident = {{data[0], data[1], data[2], data[3]}};
-            std::size_t count = ReadLE4(data + 4);
-            std::size_t iter  = ReadLE4(data + 8);
+            std::size_t count = Core::ReadLE4(data + 4);
+            std::size_t iter  = Core::ReadLE4(data + 8);
 
             // Must both contain the index and have enough space there.
             if(size < iter || size - iter < count * 16)
@@ -49,9 +50,9 @@ namespace GDCC
             // Read lump headers.
             for(Lump &lump : lumps = Core::Array<Lump>{count})
             {
-               std::size_t idx = ReadLE4 (data + iter);    iter += 4;
-               lump.size       = ReadLE4 (data + iter);    iter += 4;
-               lump.name       = ReadStrN(data + iter, 8); iter += 8;
+               std::size_t idx = Core::ReadLE4 (data + iter);    iter += 4;
+               lump.size       = Core::ReadLE4 (data + iter);    iter += 4;
+               lump.name       = Core::ReadStrN(data + iter, 8); iter += 8;
 
                // Must both contain the index and have enough space there.
                if(size < idx || size - idx < lump.size)
