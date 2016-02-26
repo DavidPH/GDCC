@@ -73,6 +73,8 @@ namespace GDCC
          Core::CounterPtr<Type const>    type;
          Core::String                    warnUse;
 
+         bool declAuto : 1;
+
          bool funcInline   : 1;
          bool funcNoParam  : 1;
          bool funcNoReturn : 1;

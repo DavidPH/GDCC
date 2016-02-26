@@ -101,6 +101,7 @@ namespace GDCC
          Core::String   valueStr;
          Core::String   warnUse;
 
+         bool           declAuto : 1;
          bool           defin    : 1;
          bool           sflagNet : 1;
          bool           sflagClS : 1;

@@ -196,10 +196,31 @@ namespace GDCC
             fn->type     = attr.type;
             fn->warnUse  = attr.warnUse;
 
+            fn->declAuto = attr.declAuto;
             fn->sflagClS = attr.sflagClS;
             fn->sflagNet = attr.sflagNet;
 
             itr = globalFunc.emplace(glyph, fn).first;
+         }
+
+         // If not yet defined, update certain properties.
+         if(!itr->second->defin)
+         {
+            AST::Function::Ref &fn = itr->second;
+
+            fn->stype    = attr.stype;
+
+            fn->sflagClS = attr.sflagClS;
+            fn->sflagNet = attr.sflagNet;
+
+            // If previously auto-declared, replace type information.
+            if(fn->declAuto)
+            {
+               fn->retrn = attr.type->getBaseType();
+               fn->type  = attr.type;
+
+               fn->declAuto = attr.declAuto;
+            }
          }
 
          return itr->second;
