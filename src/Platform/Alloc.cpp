@@ -34,6 +34,7 @@ namespace GDCC
    namespace Platform
    {
       static std::unordered_map<IR::AddrSpace, Core::FastU> AllocMin;
+      static std::unordered_map<IR::CallType, Core::FastU> FuncMin;
 
       //
       // --alloc-minimum
@@ -97,6 +98,66 @@ namespace GDCC
             return 3;
          }
       };
+
+      //
+      // --func-minimum
+      //
+      static Option::Function FuncMinOpt
+      {
+         &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+            .setName("func-minimum")
+            .setGroup("codegen")
+            .setDescS("Sets the minimum address for functions.")
+            .setDescL(
+               "Sets the minimum address for functions. Consumes two "
+               "arguments, the calling convention and the minimum value.\n"
+               "\n"
+               "If the long option is negated with no-, the minimum for that "
+               "calling convention is removed and the option only takes the "
+               "first argument."),
+
+         [](Option::Base *, Option::Args const &args) -> std::size_t
+         {
+            if(args.optFalse)
+            {
+               if(args.argC < 1)
+                  Option::Exception::Error(args, "1 argument required");
+            }
+            else if(args.argC < 2)
+               Option::Exception::Error(args, "2 arguments required");
+
+            IR::CallType ctype;
+
+            switch(Core::String::Find(args.argV[0]))
+            {
+               #define GDCC_IR_CallTypeList(name) \
+                  case Core::STR_##name: ctype = IR::CallType::name; break;
+               #include "IR/CallTypeList.hpp"
+
+            default:
+               Option::Exception::Error(args, "invalid calling convention");
+            }
+
+            if(args.optFalse)
+            {
+               FuncMin.erase(ctype);
+               return 1;
+            }
+
+            Core::FastU min = 0;
+            for(auto s = args.argV[1]; *s; ++s)
+            {
+               if(*s < '0' || *s > '9')
+                  Option::Exception::Error(args, "invalid integer");
+
+               min = min * 10 + (*s - '0');
+            }
+
+            FuncMin[ctype] = min;
+
+            return 2;
+         }
+      };
    }
 }
 
@@ -131,6 +192,11 @@ namespace GDCC
       //
       Core::FastU GetAllocMin_Funct(IR::CallType ctype)
       {
+         auto itr = FuncMin.find(ctype);
+
+         if(itr != FuncMin.end())
+            return itr->second;
+
          switch(ctype)
          {
          case IR::CallType::SScriptI:
