@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -222,6 +222,7 @@ namespace GDCC
       //
       // attribute-extern-name:
       //    <extern>
+      //    <__extern>
       //
       static void ParseAttr_extern(Parser &ctx, Scope &, AST::Attribute &attr)
       {
@@ -407,7 +408,7 @@ namespace GDCC
          case Core::STR_deprecated: case Core::STR___deprecated:
             ParseAttr_deprecated(*this, scope, attr); break;
 
-         case Core::STR_extern:
+         case Core::STR_extern: case Core::STR___extern:
             ParseAttr_extern(*this, scope, attr); break;
 
          case Core::STR_no_init: case Core::STR___no_init:

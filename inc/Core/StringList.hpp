@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -31,6 +31,7 @@ GDCC_Core_StringList(__call, "__call")
 GDCC_Core_StringList(__deprecated, "__deprecated")
 GDCC_Core_StringList(__div, "__div")
 GDCC_Core_StringList(__div_t, "__div_t")
+GDCC_Core_StringList(__extern, "__extern")
 GDCC_Core_StringList(__far, "__far")
 GDCC_Core_StringList(__fixed, "__fixed")
 GDCC_Core_StringList(__func__, "__func__")
