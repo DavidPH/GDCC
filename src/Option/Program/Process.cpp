@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,6 +16,7 @@
 #include "Option/Exception.hpp"
 #include "Option/StrUtil.hpp"
 
+#include <cctype>
 #include <cstring>
 #include <fstream>
 #include <vector>
@@ -46,7 +47,7 @@ static GDCC::Option::Args &LimitArgs(GDCC::Option::Args &args)
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

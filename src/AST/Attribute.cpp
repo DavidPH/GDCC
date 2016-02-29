@@ -48,6 +48,8 @@ namespace GDCC
          type    {nullptr},
          warnUse {nullptr},
 
+         declAuto{false},
+
          funcInline  {false},
          funcNoParam {false},
          funcNoReturn{false},

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,6 +28,8 @@
 #include "IR/CodeSet/Unary.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Value.hpp"
+
+#include <vector>
 
 
 //----------------------------------------------------------------------------|

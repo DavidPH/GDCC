@@ -86,6 +86,7 @@ namespace GDCC
          valueStr{nullptr},
          warnUse {nullptr},
 
+         declAuto{false},
          defin   {false},
          sflagNet{false},
          sflagClS{false},

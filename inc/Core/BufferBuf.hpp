@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,7 @@
 #ifndef GDCC__Core__BufferBuf_H__
 #define GDCC__Core__BufferBuf_H__
 
+#include <algorithm>
 #include <streambuf>
 
 

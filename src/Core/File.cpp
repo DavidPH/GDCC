@@ -22,11 +22,14 @@
 #include <sys/stat.h>
 
 #ifdef _WIN32
-#include <windows.h>
+# include <windows.h>
+# if !defined(S_ISREG)
+#  define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
+# endif
 #else
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/mman.h>
+# include <fcntl.h>
+# include <unistd.h>
+# include <sys/mman.h>
 #endif
 
 

@@ -12,7 +12,9 @@
 
 #include "Core/String.hpp"
 
+#include <cctype>
 #include <cstring>
+#include <tuple>
 #include <vector>
 
 

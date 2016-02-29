@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,12 +15,14 @@
 #include "Option/Base.hpp"
 #include "Option/StrUtil.hpp"
 
+#include <algorithm>
+#include <cctype>
 #include <cstring>
 #include <ctime>
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 //
 

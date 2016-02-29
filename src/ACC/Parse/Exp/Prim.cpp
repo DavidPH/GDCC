@@ -97,6 +97,8 @@ namespace GDCC
          attr.type    = CC::TypeIntegPrS->getTypeFunction(
             AST::TypeSet::Get(types.data(), types.size(), false), attr.callt);
 
+         attr.declAuto = true;
+
          // Generate function.
          auto fn    = scope.global.getFunction(attr);
          auto fnExp = CC::ExpCreate_Func(ctx.prog, fn, name.pos);

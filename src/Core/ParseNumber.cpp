@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "Core/Parse.hpp"
 
+#include <cctype>
 #include <climits>
 
 
@@ -35,7 +36,7 @@ static bool IsNumberCharC(int c, int buf)
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -136,7 +137,7 @@ namespace GDCC
       //
       // ParseNumberBaseC
       //
-      std::pair<char const */*end*/, unsigned /*base*/>
+      std::pair<char const * /*end*/, unsigned /*base*/>
       ParseNumberBaseC(char const *in)
       {
          if(in[0] == '0') switch(in[1])
@@ -155,7 +156,7 @@ namespace GDCC
       //
       // ParseNumberExpC
       //
-      std::pair<char const */*end*/, FastI /*val*/>
+      std::pair<char const * /*end*/, FastI /*val*/>
       ParseNumberExpC(char const *s)
       {
          bool  signE;
@@ -179,7 +180,7 @@ namespace GDCC
       //
       // ParseNumberFastU
       //
-      std::tuple<char const */*end*/, FastU /*val*/, std::size_t /*len*/>
+      std::tuple<char const * /*end*/, FastU /*val*/, std::size_t /*len*/>
       ParseNumberFastU(char const *in, unsigned base)
       {
          auto t = ParseNumberInteg(in, base);
@@ -194,7 +195,7 @@ namespace GDCC
       //
       // ParseNumberInteg
       //
-      std::tuple<char const */*end*/, Integ /*val*/, std::size_t /*len*/>
+      std::tuple<char const * /*end*/, Integ /*val*/, std::size_t /*len*/>
       ParseNumberInteg(char const *in, unsigned base)
       {
          Integ val = 0;
@@ -209,7 +210,7 @@ namespace GDCC
       //
       // ParseNumberRatioC
       //
-      std::tuple<char const */*end*/, Ratio /*val*/, std::size_t /*len*/>
+      std::tuple<char const * /*end*/, Ratio /*val*/, std::size_t /*len*/>
       ParseNumberRatioC(char const *in, unsigned base)
       {
          char const *first = in;

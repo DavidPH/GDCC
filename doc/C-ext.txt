@@ -240,6 +240,7 @@ Syntax:
 
   attribute-extern-name:
     <extern>
+    <__extern>
 
 Semantics:
   Sets the affected object or function's language linkage. Supported strings
@@ -730,6 +731,7 @@ Grammar
 
   attribute-extern-name:
     <extern>
+    <__extern>
 
   attribute-no_init:
     attribute-no_init-name

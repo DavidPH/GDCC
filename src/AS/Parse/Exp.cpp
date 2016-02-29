@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -29,7 +29,7 @@
 //
 // ParseSuffix
 //
-static std::tuple<char const */*end*/, bool /*fixed*/, bool /*bitsS*/,
+static std::tuple<char const * /*end*/, bool /*fixed*/, bool /*bitsS*/,
    GDCC::Core::FastU /*bitsI*/, GDCC::Core::FastU /*bitsF*/, bool /*satur*/>
 ParseSuffix(char const *s, GDCC::Core::Token const &tok)
 {
@@ -56,7 +56,7 @@ ParseSuffix(char const *s, GDCC::Core::Token const &tok)
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

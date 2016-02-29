@@ -16,6 +16,8 @@
 #include "../Core/Counter.hpp"
 #include "../Core/Number.hpp"
 
+#include <tuple>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |

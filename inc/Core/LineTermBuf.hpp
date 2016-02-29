@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,7 +39,7 @@ namespace GDCC
       public:
          using Super = IBufferBuf<BufSize, BufBack, BufRead, CharT, Traits>;
 
-         using typename Super::Src;
+         using Src = typename Super::Src;
          using typename Super::int_type;
 
 

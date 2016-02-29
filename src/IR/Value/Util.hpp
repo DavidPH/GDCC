@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -35,7 +35,7 @@
 //
 // GDCC_IR_ValueBinOpBits
 //
-#define GDCC_IR_ValueBinOpBits(op) \
+#define GDCC_IR_ValueBinOpBits() \
    if(l.vtype.bitsF < r.vtype.bitsF) \
    { \
       l.value << (r.vtype.bitsF - l.vtype.bitsF); \

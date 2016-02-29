@@ -109,9 +109,9 @@ namespace GDCC
             idx{Get(str, len, hash).idx} {}
          String(char const *first, char const *last) :
             idx{Get(first, last - first).idx} {}
-         String(std::nullptr_t) : idx{STRNULL} {}
-         explicit String(std::size_t idx_) : idx{idx_} {}
-         constexpr String(StringIndex idx_) : idx{idx_} {}
+         constexpr String(std::nullptr_t) : idx{STRNULL} {}
+         explicit constexpr String(std::size_t idx_) : idx{idx_} {}
+         constexpr String(StringIndex idx_) : idx{static_cast<std::size_t>(idx_)} {}
 
          explicit constexpr operator bool () const {return idx != STRNULL;}
          explicit constexpr operator std::size_t () const {return idx;}
