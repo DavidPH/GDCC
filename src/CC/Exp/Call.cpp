@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -204,7 +204,7 @@ namespace GDCC
          auto argsItr  = args.begin(),   argsEnd  = args.end();
 
          for(; paramItr != paramEnd && argsItr != argsEnd; ++paramItr, ++argsItr)
-            *argsItr = ExpPromo_Assign(*paramItr, *argsItr, pos);
+            *argsItr = ExpPromo_Assign(*paramItr, *argsItr);
          for(; argsItr != argsEnd; ++argsItr)
             *argsItr = ExpPromo_Arg(*argsItr, pos);
 

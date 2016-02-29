@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -56,7 +56,7 @@ namespace GDCC
          }
 
          // Defer to C rules.
-         return CC::ExpPromo_AssignBase(typeL, exp, pos);
+         return CC::ExpPromo_Assign_Base(typeL, exp, pos);
       }
    }
 }
