@@ -89,10 +89,14 @@ namespace GDCC
       {
          // Build argument token ranges, if any.
 
-         if(macro.args.empty() && !argRng.empty())
-            throw Core::ExceptStr(argRng.begin()->pos, "args to no-arg macro");
+         if(macro.args.empty())
+         {
+            if(!argRng.empty())
+               throw Core::ExceptStr(argRng.begin()->pos, "args to no-arg macro");
 
-         if(!macro.args.empty())
+            return {};
+         }
+         else
          {
             Core::Array<MacroTBuf::Rng> argv{macro.args.size()};
             auto argi = argv.begin();
@@ -126,12 +130,15 @@ namespace GDCC
             argi->last = argRng.last;
 
             if(argi + 1 != argv.end())
-               throw Core::ExceptStr(argRng.begin()->pos, "not enough macro args");
+            {
+               if(macro.args.back() || argi + 2 != argv.end())
+                  throw Core::ExceptStr(argRng.begin()->pos, "not enough macro args");
+
+               *++argi = {argRng.end(), argRng.end()};
+            }
 
             return argv;
          }
-
-         return {};
       }
    }
 }
