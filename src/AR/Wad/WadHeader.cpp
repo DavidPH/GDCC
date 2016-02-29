@@ -18,6 +18,8 @@
 
 #include "Core/BinaryIO.hpp"
 
+#include <vector>
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |

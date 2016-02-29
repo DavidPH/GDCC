@@ -18,6 +18,8 @@
 #include "Core/File.hpp"
 #include "Core/Path.hpp"
 
+#include <string>
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |

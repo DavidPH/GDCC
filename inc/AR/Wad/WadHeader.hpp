@@ -17,6 +17,8 @@
 #include "../../Core/Range.hpp"
 #include "../../Core/String.hpp"
 
+#include <array>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
