@@ -46,16 +46,16 @@ namespace GDCC
          {
             FuncSave()
             {
-               expPromo_Assign = CC::ExpPromo_Assign;
-               CC::ExpPromo_Assign = ACC::ExpPromo_Assign;
+               expPromo_Assign_Ptr = CC::ExpPromo_Assign_Ptr;
+               CC::ExpPromo_Assign_Ptr = ACC::ExpPromo_Assign;
             }
 
             ~FuncSave()
             {
-               CC::ExpPromo_Assign = expPromo_Assign;
+               CC::ExpPromo_Assign_Ptr = expPromo_Assign_Ptr;
             }
 
-            AST::Exp::CRef (*expPromo_Assign)(AST::Type const *typeL,
+            AST::Exp::CRef (*expPromo_Assign_Ptr)(AST::Type const *typeL,
                AST::Exp const *e, Core::Origin pos);
 
          } funcSave;

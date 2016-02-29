@@ -56,9 +56,26 @@ namespace GDCC
       }
 
       //
-      // ExpPromo_AssignBase
+      // ExpPromo_Assign
       //
-      AST::Exp::CRef ExpPromo_AssignBase(AST::Type const *typeL,
+      AST::Exp::CRef ExpPromo_Assign(AST::Type const *t, AST::Exp const *e)
+      {
+         return ExpPromo_Assign_Ptr(t, e, e->pos);
+      }
+
+      //
+      // ExpPromo_Assign
+      //
+      AST::Exp::CRef ExpPromo_Assign(AST::Type const *t, AST::Exp const *e,
+         Core::Origin pos)
+      {
+         return ExpPromo_Assign_Ptr(t, e, pos);
+      }
+
+      //
+      // ExpPromo_Assign_Base
+      //
+      AST::Exp::CRef ExpPromo_Assign_Base(AST::Type const *typeL,
          AST::Exp const *e, Core::Origin pos)
       {
          auto exp   = ExpPromo_LValue(e, pos);

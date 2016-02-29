@@ -72,7 +72,7 @@ namespace GDCC
 {
    namespace CC
    {
-      extern Core::CounterRef<AST::Exp const> (*ExpPromo_Assign)(
+      extern Core::CounterRef<AST::Exp const> (*ExpPromo_Assign_Ptr)(
          AST::Type const *t, AST::Exp const *e, Core::Origin pos);
    }
 }
@@ -307,7 +307,11 @@ namespace GDCC
       ExpPromo_ArithAlways(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
 
       // Conversion as if by assignment.
-      Core::CounterRef<AST::Exp const> ExpPromo_AssignBase(AST::Type const *t,
+      Core::CounterRef<AST::Exp const> ExpPromo_Assign(AST::Type const *t,
+         AST::Exp const *e);
+      Core::CounterRef<AST::Exp const> ExpPromo_Assign(AST::Type const *t,
+         AST::Exp const *e, Core::Origin pos);
+      Core::CounterRef<AST::Exp const> ExpPromo_Assign_Base(AST::Type const *t,
          AST::Exp const *e, Core::Origin pos);
 
       // Equality expression contraints and promotion.
