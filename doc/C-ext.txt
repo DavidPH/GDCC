@@ -1212,6 +1212,36 @@ Returns:
   The __fpostol function returns a long int representing the fpos_t object.
 
 -----------------------------------------------------------
+__fprintf_str
+-----------------------------------------------------------
+
+Synopsis:
+  #include <stdio.h>
+  int __fprintf_str(FILE *restrict stream,
+    char __str_ars const *restrict format, ...);
+  int __nprintf_str(char __str_ars const *restrict format, ...);
+  int __printf_str(char __str_ars const *restrict format, ...);
+  int __snprintf_str(char *restrict s, size_t n,
+    char __str_ars const *restrict format, ...);
+  int __sprintf_str(char *restrict s,
+    char __str_ars const *restrict format, ...);
+  int __vfprintf_str(FILE *restrict stream,
+    char __str_ars const *restrict format, __va_list arg);
+  int __vnprintf_str(char __str_ars const *restrict format, __va_list arg);
+  int __vprintf_str(char __str_ars const *restrict format, __va_list arg);
+  int __vsnprintf_str(char *restrict s, size_t n,
+    char __str_ars const *restrict format, __va_list arg);
+  int __vsprintf_str(char *restrict s, char __str_ars const *restrict format, va_list arg);
+
+Description:
+  The __fprintf_str functions are equivalent to their non-_str counterparts,
+  with the format parameter replaced with an indexed string.
+
+Returns:
+  The __fprintf_str functions return the same value as their non-_str
+  counterparts.
+
+-----------------------------------------------------------
 __ltofpos
 -----------------------------------------------------------
 

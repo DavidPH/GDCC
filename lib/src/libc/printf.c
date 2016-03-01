@@ -716,6 +716,36 @@ int __printf_str(char __str_ars const *restrict format, ...)
 }
 
 //
+// __snprintf_str
+//
+int __snprintf_str(char *restrict s, size_t n, char __str_ars const *restrict format, ...)
+{
+   va_list arg;
+   int     ret;
+
+   va_start(arg, format);
+   ret = __vsnprintf_str(s, n, format, arg);
+   va_end(arg);
+
+   return ret;
+}
+
+//
+// __sprintf_str
+//
+int __sprintf_str(char *restrict s, char __str_ars const *restrict format, ...)
+{
+   va_list arg;
+   int     ret;
+
+   va_start(arg, format);
+   ret = __vsprintf_str(s, format, arg);
+   va_end(arg);
+
+   return ret;
+}
+
+//
 // __vfprintf_str
 //
 int __vfprintf_str(FILE *restrict stream,
@@ -799,6 +829,36 @@ int __vnprintf_str(char __str_ars const *restrict format, va_list arg)
 int __vprintf_str(char __str_ars const *restrict format, __va_list arg)
 {
    return __vfprintf_str(stdout, format, arg);
+}
+
+//
+// __vsnprintf_str
+//
+int __vsnprintf_str(char *restrict s, size_t n, char __str_ars const *restrict format, va_list arg)
+{
+   int ret = __vfprintf_str(__stropenw_sta(s, n), format, arg);
+
+   // Null terminate result.
+   if(__strfilew.buf_put.buf_ptr != __strfilew.buf_put.buf_end)
+      *__strfilew.buf_put.buf_ptr = '\0';
+   else if(n)
+      s[n-1] = '\0';
+
+   return ret;
+}
+
+//
+// __vsprintf_str
+//
+int __vsprintf_str(char *restrict s, char __str_ars const *restrict format, va_list arg)
+{
+   // Using -1 here is definitely not guaranteed to work in the future.
+   int ret = __vfprintf_str(__stropenw_sta(s, -1), format, arg);
+
+   // Null terminate result.
+   *__strfilew.buf_put.buf_ptr = '\0';
+
+   return ret;
 }
 
 // EOF

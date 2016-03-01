@@ -334,11 +334,16 @@ int __fprintf_str(FILE *restrict _stream,
 int __nprintf(char const *restrict _format, ...);
 int __nprintf_str(char __str_ars const *restrict _format, ...);
 int __printf_str(char __str_ars const *restrict _format, ...);
+int __snprintf_str(char *restrict _s, size_t _n, char __str_ars const *restrict _format, ...);
+int __sprintf_str(char *restrict _s, char __str_ars const *restrict _format, ...);
 int __vfprintf_str(FILE *restrict _stream,
    char __str_ars const *restrict _format, __va_list _arg);
 int __vnprintf(char const *restrict _format, __va_list _arg);
 int __vnprintf_str(char __str_ars const *restrict _format, __va_list _arg);
 int __vprintf_str(char __str_ars const *restrict _format, __va_list _arg);
+int __vsnprintf_str(char *restrict _s, size_t _n,
+   char __str_ars const *restrict _format, __va_list _arg);
+int __vsprintf_str(char *restrict _s, char __str_ars const *restrict _format, __va_list _arg);
 
 size_t __fwrite_str(void __str_ars const *restrict _ptr, size_t _size,
    size_t _nmemb, FILE *restrict _stream);
