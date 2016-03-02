@@ -301,9 +301,7 @@ namespace GDCC
          {
             if(!numChunkFUNC) return;
 
-            Core::Array<IR::Function const *> funcs{numChunkFUNC};
-
-            for(auto &f : funcs) f = nullptr;
+            Core::Array<IR::Function const *> funcs{numChunkFUNC, nullptr};
 
             for(auto const &itr : prog->rangeFunction())
             {
@@ -335,9 +333,17 @@ namespace GDCC
                   putByte(0);
 
                   if(f->defin)
+                  {
                      putWord(GetWord(resolveGlyph(f->label)));
+                  }
                   else
+                  {
+                     // Must have imports to import from.
+                     if(!prog->sizeImport())
+                        throw Core::ExceptUndef("Function", f->glyph);
+
                      putWord(0);
+                  }
                }
                else
                   putData("\0\0\0\0\0\0\0\0", 8);

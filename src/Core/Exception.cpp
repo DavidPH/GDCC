@@ -18,7 +18,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -65,6 +65,19 @@ namespace GDCC
       {
          std::ostringstream oss;
          oss << "ERROR: " << pos << ": " << str;
+         auto const &tmp = oss.str();
+         msg = StrDup(tmp.data(), tmp.size());
+      }
+
+      //
+      // ExceptUndef::genMsg
+      //
+      void ExceptUndef::genMsg() const
+      {
+         std::ostringstream oss;
+         oss << "ERROR: ";
+         if(pos.file) oss << pos << ": ";
+         oss << type << " undefined: '" << name << '\'';
          auto const &tmp = oss.str();
          msg = StrDup(tmp.data(), tmp.size());
       }

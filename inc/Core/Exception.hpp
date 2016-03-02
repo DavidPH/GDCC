@@ -84,6 +84,22 @@ namespace GDCC
       };
 
       //
+      // ExceptUndef
+      //
+      class ExceptUndef : public Exception
+      {
+      public:
+         ExceptUndef(String type_, String name_) noexcept :
+            Exception{{}}, type{type_}, name{name_} {}
+
+      protected:
+         virtual void genMsg() const;
+
+         String const type;
+         String const name;
+      };
+
+      //
       // ParseException
       //
       // Thrown by Parse and Get functions when encountering invalid syntax.
