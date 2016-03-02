@@ -120,7 +120,8 @@ namespace GDCC
       //
       void Warning::warnPre(Origin pos) const
       {
-         std::cerr << "WARNING: " << pos << ": ";
+         std::cerr << "WARNING: ";
+         if(pos.file) std::cerr << pos << ": ";
       }
 
       //

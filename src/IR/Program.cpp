@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,7 +16,37 @@
 #include "IR/Linkage.hpp"
 #include "IR/OArchive.hpp"
 
+#include "Core/Warning.hpp"
+
 #include <iostream>
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+namespace GDCC
+{
+   namespace IR
+   {
+      static Core::Warning WarnMultiDefin{&Core::WarnCommon, "--warn-redefinition"};
+
+      //
+      // --warn-redefinition
+      //
+      static Core::WarnOpt WarnMultiDefinOpt
+      {
+         &Core::GetWarnOptList(), Option::Base::Info()
+            .setName("warn-redefinition")
+            .setGroup("warnings")
+            .setDescS("Warns about redefinitions.")
+            .setDescL("Warns about redefinitions.\n\n"
+               "Enabled by --warn-common."),
+
+         &WarnMultiDefin
+      };
+   }
+}
 
 
 //----------------------------------------------------------------------------|
@@ -379,6 +409,8 @@ namespace GDCC
       {
          if(!out.defin)
             out = std::move(in);
+         else if(in.defin)
+            WarnMultiDefin({}, "DJump redefined: '", out.glyph, '\'');
       }
 
       //
@@ -388,6 +420,8 @@ namespace GDCC
       {
          if(!out.defin)
             out = std::move(in);
+         else if(in.defin)
+            WarnMultiDefin({}, "Function redefined: '", out.glyph, '\'');
       }
 
       //
@@ -448,6 +482,8 @@ namespace GDCC
                if(out.linka == Linkage::None) out.linka = in.linka;
             }
          }
+         else if(in.defin)
+            WarnMultiDefin({}, "Object redefined: '", out.glyph, '\'');
       }
 
       //
@@ -476,6 +512,8 @@ namespace GDCC
                if(out.linka == Linkage::None) out.linka = in.linka;
             }
          }
+         else if(in.defin)
+            WarnMultiDefin({}, "Space redefined: '", out.glyph, '\'');
       }
 
       //
@@ -485,6 +523,8 @@ namespace GDCC
       {
          if(!out.defin)
             out = std::move(in);
+         else if(in.defin)
+            WarnMultiDefin({}, "StrEnt redefined: '", out.glyph, '\'');
       }
 
       //
