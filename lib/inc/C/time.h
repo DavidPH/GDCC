@@ -34,6 +34,13 @@
 #define CLOCKS_PER_SEC 35
 #endif
 
+//
+// TIME_UTC
+//
+#ifndef TIME_UTC
+#define TIME_UTC 1
+#endif
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -99,6 +106,8 @@ double difftime(time_t _time1, time_t _time0);
 time_t mktime(struct tm *_timeptr);
 
 time_t time(time_t *_timer);
+
+int timespec_get(struct timespec *_ts, int _base);
 
 //
 // Time conversion functions.

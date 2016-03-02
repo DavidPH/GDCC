@@ -6,11 +6,15 @@
 //
 //-----------------------------------------------------------------------------
 //
+
+int timespec_get(struct timespec *_ts, int _base);
 // Date and time.
 //
 //-----------------------------------------------------------------------------
 
 #include <time.h>
+
+#include <stdio.h>
 
 #if __GDCC_Family__ZDACS__
 #include <ACS_ZDoom.h>
@@ -68,7 +72,14 @@ double difftime(time_t time1, time_t time0)
    return (double)(time1 - time0);
 }
 
-time_t mktime(struct tm *timeptr);
+//
+// mktime
+//
+time_t mktime(struct tm *timeptr)
+{
+   // TODO
+   return -1;
+}
 
 //
 // time
@@ -83,20 +94,82 @@ time_t time(time_t *timer)
    return t;
 }
 
+//
+// timespec_get
+//
+int timespec_get(struct timespec *ts, int base)
+{
+   // TODO
+   return 0;
+}
+
 //=========================================================
 // Time conversion functions.
 //
 
-char *asctime(struct tm const *timeptr);
+//
+// asctime
+//
+char *asctime(struct tm const *timeptr)
+{
+   static const char wday_name[7][3] =
+   {
+      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+   };
 
-char *ctime(time_t const *timer);
+   static const char mon_name[12][3] =
+   {
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+   };
 
-struct tm *gmtime(time_t const *timer);
+   static char result[26];
 
-struct tm *localtime(time_t const *timer);
+   sprintf(result, "%.3s %.3s %2d %.2d:%.2d:%.2d %d\n",
+      wday_name[timeptr->tm_wday],
+      mon_name[timeptr->tm_mon],
+      timeptr->tm_mday, timeptr->tm_hour,
+      timeptr->tm_min, timeptr->tm_sec,
+      1900 + timeptr->tm_year);
 
+   return result;
+}
+
+//
+// ctime
+//
+char *ctime(time_t const *timer)
+{
+   return asctime(localtime(timer));
+}
+
+//
+// gmtime
+//
+struct tm *gmtime(time_t const *timer)
+{
+   // TODO
+   return NULL;
+}
+
+//
+// localtime
+//
+struct tm *localtime(time_t const *timer)
+{
+   // TODO
+   return NULL;
+}
+
+//
+// strftime
+//
 size_t strftime(char *restrict s, size_t maxsize, char const *restrict format,
-   struct tm const *restrict timeptr);
+   struct tm const *restrict timeptr)
+{
+   // TODO
+   return 0;
+}
 
 // EOF
 
