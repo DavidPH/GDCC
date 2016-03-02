@@ -12,12 +12,14 @@
 
 #include "LD/Linker.hpp"
 
+#include "BC/Info.hpp"
+
 #if GDCC_Bytecode_MgC
-#include "Bytecode/MgC/Info.hpp"
+#include "BC/MgC/Info.hpp"
 #endif
 
 #if GDCC_Bytecode_ZDACS
-#include "Bytecode/ZDACS/Info.hpp"
+#include "BC/ZDACS/Info.hpp"
 #endif
 
 #include "Core/File.hpp"
@@ -95,7 +97,7 @@ namespace GDCC
       //
       // GetBytecodeInfo
       //
-      std::unique_ptr<Bytecode::Info> GetBytecodeInfo(Platform::Target target,
+      std::unique_ptr<BC::Info> GetBytecodeInfo(Platform::Target target,
          Platform::Format)
       {
          switch(target)
@@ -105,14 +107,14 @@ namespace GDCC
 
          case Platform::Target::MageCraft:
             #if GDCC_Bytecode_MgC
-            return std::unique_ptr<Bytecode::Info>{new Bytecode::MgC::Info};
+            return std::unique_ptr<BC::Info>{new BC::MgC::Info};
             #else
             return nullptr;
             #endif
 
          case Platform::Target::ZDoom:
             #if GDCC_Bytecode_ZDACS
-            return std::unique_ptr<Bytecode::Info>{new Bytecode::ZDACS::Info};
+            return std::unique_ptr<BC::Info>{new BC::ZDACS::Info};
             #else
             return nullptr;
             #endif
@@ -149,7 +151,7 @@ namespace GDCC
       //
       // ProcessIR
       //
-      void ProcessIR(IR::Program &prog, Bytecode::Info *info)
+      void ProcessIR(IR::Program &prog, BC::Info *info)
       {
          if(!info) return;
 
@@ -163,7 +165,7 @@ namespace GDCC
       //
       // PutBytecode
       //
-      void PutBytecode(std::ostream &out, IR::Program &prog, Bytecode::Info *info)
+      void PutBytecode(std::ostream &out, IR::Program &prog, BC::Info *info)
       {
          if(!info)
          {
@@ -180,7 +182,7 @@ namespace GDCC
       //
       // PutIR
       //
-      void PutIR(std::ostream &out, IR::Program &prog, Bytecode::Info *)
+      void PutIR(std::ostream &out, IR::Program &prog, BC::Info *)
       {
          IR::OArchive(out).putHeader() << prog;
       }

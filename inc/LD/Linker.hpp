@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,7 +23,7 @@
 
 namespace GDCC
 {
-   namespace Bytecode
+   namespace BC
    {
       class Info;
    }
@@ -62,15 +62,15 @@ namespace GDCC
 {
    namespace LD
    {
-      std::unique_ptr<Bytecode::Info> GetBytecodeInfo(Platform::Target target,
+      std::unique_ptr<BC::Info> GetBytecodeInfo(Platform::Target target,
          Platform::Format format);
 
       void Link(IR::Program &prog, char const *outName);
 
-      void ProcessIR(IR::Program &prog, Bytecode::Info *info);
+      void ProcessIR(IR::Program &prog, BC::Info *info);
 
-      void PutBytecode(std::ostream &out, IR::Program &prog, Bytecode::Info *info);
-      void PutIR(std::ostream &out, IR::Program &prog, Bytecode::Info *info);
+      void PutBytecode(std::ostream &out, IR::Program &prog, BC::Info *info);
+      void PutIR(std::ostream &out, IR::Program &prog, BC::Info *info);
    }
 }
 

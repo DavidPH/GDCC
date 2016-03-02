@@ -6,7 +6,7 @@
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for gdcc targets.
+## CMake file for gdcc-bc.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -15,21 +15,23 @@
 ## Targets                                                                    |
 ##
 
-add_subdirectory(ACC)
-add_subdirectory(AR)
-add_subdirectory(AS)
-add_subdirectory(AST)
-add_subdirectory(BC)
-add_subdirectory(CC)
-add_subdirectory(CPP)
-add_subdirectory(Core)
-add_subdirectory(IR)
-add_subdirectory(IRDump)
-add_subdirectory(LD)
-add_subdirectory(MageDefs)
-add_subdirectory(MakeLib)
-add_subdirectory(Option)
-add_subdirectory(Platform)
+add_subdirectory(MgC)
+add_subdirectory(ZDACS)
+
+##
+## gdcc-bc-lib
+##
+add_library(gdcc-bc-lib ${GDCC_SHARED_DECL}
+   Info.cpp
+   Info/moveArg.cpp
+   Info/optStmnt.cpp
+
+   ../../inc/BC/Info.hpp
+)
+
+target_link_libraries(gdcc-bc-lib gdcc-ir-lib)
+
+GDCC_INSTALL_PART(bc FALSE TRUE)
 
 ## EOF
 

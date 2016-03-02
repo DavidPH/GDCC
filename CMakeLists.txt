@@ -80,17 +80,17 @@ endif()
 ##
 
 ##
-## GDCC_Bytecode_MgC
+## GDCC_BC_MgC
 ##
-if(NOT DEFINED GDCC_Bytecode_MgC)
-   set(GDCC_Bytecode_MgC ON CACHE BOOL "Enable bytecode module: MgC")
+if(NOT DEFINED GDCC_BC_MgC)
+   set(GDCC_BC_MgC ON CACHE BOOL "Enable bytecode module: MgC")
 endif()
 
 ##
-## GDCC_Bytecode_ZDACS
+## GDCC_BC_ZDACS
 ##
-if(NOT DEFINED GDCC_Bytecode_ZDACS)
-   set(GDCC_Bytecode_ZDACS ON CACHE BOOL "Enable bytecode module: ZDACS")
+if(NOT DEFINED GDCC_BC_ZDACS)
+   set(GDCC_BC_ZDACS ON CACHE BOOL "Enable bytecode module: ZDACS")
 endif()
 
 ##

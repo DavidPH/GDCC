@@ -24,14 +24,14 @@ add_library(gdcc-ld-lib ${GDCC_SHARED_DECL}
    ../../inc/LD/Linker.hpp
 )
 
-target_link_libraries(gdcc-ld-lib gdcc-bytecode-lib)
+target_link_libraries(gdcc-ld-lib gdcc-bc-lib)
 
-if(GDCC_Bytecode_MgC)
-   target_link_libraries(gdcc-ld-lib gdcc-bytecode-mgc-lib)
+if(GDCC_BC_MgC)
+   target_link_libraries(gdcc-ld-lib gdcc-bc-mgc-lib)
 endif()
 
-if(GDCC_Bytecode_ZDACS)
-   target_link_libraries(gdcc-ld-lib gdcc-bytecode-zdacs-lib)
+if(GDCC_BC_ZDACS)
+   target_link_libraries(gdcc-ld-lib gdcc-bc-zdacs-lib)
 endif()
 
 ##
