@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -62,12 +62,28 @@ namespace GDCC
          &Core::GetWarnOptList(), Option::Base::Info()
             .setName("warn-return-type")
             .setGroup("warnings")
-            .setDescS("Warns on suspicious return type uasge.")
+            .setDescS("Warns on suspicious return type usage.")
             .setDescL("Warns on suspicious return type usage, such as having "
                "no return statement in a non-void function.\n\n"
                "Enabled by --warn-common."),
 
          &WarnReturnType
+      };
+
+      //
+      // --warn-extra-return-type
+      //
+      static Core::WarnOpt WarnReturnTypeExtOpt
+      {
+         &Core::GetWarnOptList(), Option::Base::Info()
+            .setName("warn-extra-return-type")
+            .setGroup("warnings")
+            .setDescS("Warns on possible suspicious return type uasge.")
+            .setDescL("Warns on possible suspicious return type usage, as in "
+               "--warn-return-type, but may include false positives.\n\n"
+               "Enabled by --warn-extra."),
+
+         &WarnReturnTypeExt
       };
 
       //
@@ -101,6 +117,7 @@ namespace GDCC
       Core::Warning WarnDeprecated{&Core::WarnCommon, "--warn-deprecated"};
       Core::Warning WarnParentheses{&Core::WarnCommon, "--warn-parentheses"};
       Core::Warning WarnReturnType{&Core::WarnCommon, "--warn-return-type"};
+      Core::Warning WarnReturnTypeExt{&Core::WarnExtra, "--warn-extra-return-type"};
       Core::Warning WarnUnusedInit{&Core::WarnCommon, "--warn-unused-initializer"};
    }
 }

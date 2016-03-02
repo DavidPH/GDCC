@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -62,6 +62,9 @@ namespace GDCC
          // Does this statement never return?
          bool isNoReturn() const {return v_isNoReturn();}
 
+         // Does this statement necessarily return?
+         bool isReturn() const {return v_isReturn();}
+
          // Can this statement forego codegen?
          bool isTrivial() const {return !isBranch() && !isEffect();}
 
@@ -83,13 +86,14 @@ namespace GDCC
          virtual bool v_isLabel() const {return false;}
          virtual bool v_isNoAuto() const = 0;
          virtual bool v_isNoReturn() const {return true;}
+         virtual bool v_isReturn() const {return false;}
       };
    }
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

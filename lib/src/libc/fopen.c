@@ -409,6 +409,8 @@ buf_good:
    stream->buf_put.buf_ptr  = buf + used;
    stream->buf_put.buf_end  = buf + size;
  //stream->buf_put.buf_mode = _IOLBF;
+
+   return 0;
 }
 
 //=========================================================

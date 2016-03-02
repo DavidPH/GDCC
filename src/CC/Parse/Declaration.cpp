@@ -285,8 +285,15 @@ namespace GDCC
 
          fn->setAllocAut(attr.allocAut);
 
-         if(!fn->retrn->isTypeVoid() && fn->stmnt->isNoReturn())
-            AST::WarnReturnType(attr.namePos, "no return in non-void function");
+         if(!fn->retrn->isTypeVoid())
+         {
+            if(fn->stmnt->isNoReturn())
+               AST::WarnReturnType(attr.namePos, "no return in non-void function");
+
+            else if(!fn->stmnt->isReturn())
+               AST::WarnReturnTypeExt(attr.namePos,
+                  "non-void function possibly does not return");
+         }
       }
 
       //

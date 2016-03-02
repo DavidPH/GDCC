@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -40,6 +40,7 @@ namespace GDCC
       extern Core::Warning WarnDeprecated;
       extern Core::Warning WarnParentheses;
       extern Core::Warning WarnReturnType;
+      extern Core::Warning WarnReturnTypeExt;
       extern Core::Warning WarnUnusedInit;
    }
 }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -277,6 +277,15 @@ namespace GDCC
       bool Statement_Switch::v_isNoReturn() const
       {
          return body->isNoReturn();
+      }
+
+      //
+      // Statement_Switch::v_isReturn
+      //
+      bool Statement_Switch::v_isReturn() const
+      {
+         // TODO: Somehow determine if all cases necessarily return.
+         return false;
       }
 
       //

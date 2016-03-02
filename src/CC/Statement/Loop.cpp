@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -115,7 +115,12 @@ namespace GDCC
       //
       bool Statement_Loop::v_isBranch() const
       {
-         return body->isBranch();
+         // If body executes at least once and the body necessarily branches,
+         // then the loop necessarily branches.
+         if((post || cond->isNonzero()) && body->isBranch())
+            return true;
+
+         return false;
       }
 
       //
@@ -150,6 +155,19 @@ namespace GDCC
       bool Statement_Loop::v_isNoReturn() const
       {
          return body->isNoReturn();
+      }
+
+      //
+      // Statement_Loop::v_isReturn
+      //
+      bool Statement_Loop::v_isReturn() const
+      {
+         // If body executes at least once and the body necessarily returns,
+         // then the loop necessarily returns.
+         if((post || cond->isNonzero()) && body->isReturn())
+            return true;
+
+         return false;
       }
 
       //

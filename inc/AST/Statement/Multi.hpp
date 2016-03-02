@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -70,6 +70,7 @@ namespace GDCC
          virtual bool v_isLabel() const;
          virtual bool v_isNoAuto() const;
          virtual bool v_isNoReturn() const;
+         virtual bool v_isReturn() const;
       };
    }
 }
