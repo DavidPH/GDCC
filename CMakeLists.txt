@@ -149,12 +149,12 @@ endif()
 
 include_directories(inc src)
 
-if(GDCC_Bytecode_MgC)
-   add_definitions(-DGDCC_Bytecode_MgC=1)
+if(GDCC_BC_MgC)
+   add_definitions(-DGDCC_BC_MgC=1)
 endif()
 
-if(GDCC_Bytecode_ZDACS)
-   add_definitions(-DGDCC_Bytecode_ZDACS=1)
+if(GDCC_BC_ZDACS)
+   add_definitions(-DGDCC_BC_ZDACS=1)
 endif()
 
 

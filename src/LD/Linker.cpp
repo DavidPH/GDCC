@@ -14,11 +14,11 @@
 
 #include "BC/Info.hpp"
 
-#if GDCC_Bytecode_MgC
+#if GDCC_BC_MgC
 #include "BC/MgC/Info.hpp"
 #endif
 
-#if GDCC_Bytecode_ZDACS
+#if GDCC_BC_ZDACS
 #include "BC/ZDACS/Info.hpp"
 #endif
 
@@ -106,14 +106,14 @@ namespace GDCC
             return nullptr;
 
          case Platform::Target::MageCraft:
-            #if GDCC_Bytecode_MgC
+            #if GDCC_BC_MgC
             return std::unique_ptr<BC::Info>{new BC::MgC::Info};
             #else
             return nullptr;
             #endif
 
          case Platform::Target::ZDoom:
-            #if GDCC_Bytecode_ZDACS
+            #if GDCC_BC_ZDACS
             return std::unique_ptr<BC::Info>{new BC::ZDACS::Info};
             #else
             return nullptr;
