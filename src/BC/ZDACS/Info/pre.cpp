@@ -101,12 +101,9 @@ namespace GDCC
             case IR::Code::CmpU_LE_W: preStmnt_CmpU_LE_W(); break;
             case IR::Code::CmpU_LT_W: preStmnt_CmpU_LT_W(); break;
 
+            case IR::Code::DivF_W: preStmnt_DivF_W(); break;
             case IR::Code::DiXI_W: preStmnt_DiXI_W(); break;
             case IR::Code::DiXU_W: preStmnt_DiXU_W(); break;
-
-            case IR::Code::DivF_W:
-               preStmntCall(stmnt->op.size, stmnt->op.size * 2);
-               break;
 
             case IR::Code::DivI_W: preStmnt_DiXI_W(); break;
             case IR::Code::DivK_W: preStmnt_DivX_W(IR::Code::DiXU_W); break;

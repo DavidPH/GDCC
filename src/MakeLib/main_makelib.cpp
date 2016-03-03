@@ -58,14 +58,6 @@ static void MakeLib_libGDCC(GDCC::IR::Program &prog)
    GDCC::Core::PathAppend(path, "libGDCC");
 
    MakeLib_CC(prog, path, "alloc.c");
-
-   if(GDCC::Platform::IsFamily_ZDACS())
-   {
-      std::string pathSub = path;
-      GDCC::Core::PathAppend(pathSub, "ZDACS");
-
-      MakeLib_AS(prog, pathSub, "DivF.asm");
-   }
 }
 
 //

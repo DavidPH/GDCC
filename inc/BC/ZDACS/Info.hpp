@@ -291,6 +291,7 @@ namespace GDCC
             void preStmnt_DiXI_W();
             void preStmnt_DiXU_W();
             void preStmnt_DiXU_W1();
+            void preStmnt_DivF_W();
             void preStmnt_DivX_W(IR::Code code);
             void preStmnt_MuXU_W();
             void preStmnt_MuXU_W1();
