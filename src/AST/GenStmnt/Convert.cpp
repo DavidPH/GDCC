@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -686,7 +686,7 @@ namespace GDCC
          auto codeWords = std::max(dstT->getSizeWords(), srcT->getSizeWords());
 
          auto expMid = dstT->getBias() - dstT->getSizeBitsS() - dstT->getSizeBitsF()
-            + srcT->getSizeBitsI() + srcT->getSizeBitsS() - srcT->getSizeBitsF();
+            + srcT->getSizeBitsI() + srcT->getSizeBitsS();
 
          auto headBits = dstT->getSizeBitsS() + dstT->getSizeBitsF();
 
