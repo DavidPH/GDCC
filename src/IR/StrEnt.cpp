@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -37,9 +37,10 @@ namespace GDCC
          valueInt{0},
          valueStr{Core::STRNULL},
 
-         alias{false},
-         alloc{false},
-         defin{false}
+         alias   {false},
+         alloc   {false},
+         defin   {false},
+         multiDef{false}
       {
       }
 
@@ -76,7 +77,13 @@ namespace GDCC
       //
       OArchive &operator << (OArchive &out, StrEnt const &in)
       {
-         return out << in.valueInt << in.valueStr << in.alias << in.alloc << in.defin;
+         return out
+            << in.valueInt
+            << in.valueStr
+            << in.alias
+            << in.alloc
+            << in.defin
+            << in.multiDef;
       }
 
       //
@@ -84,11 +91,13 @@ namespace GDCC
       //
       IArchive &operator >> (IArchive &in, StrEnt &out)
       {
-         in >> out.valueInt >> out.valueStr;
+         in >> out.valueInt
+            >> out.valueStr;
 
-         out.alias = GetIR<bool>(in);
-         out.alloc = GetIR<bool>(in);
-         out.defin = GetIR<bool>(in);
+         out.alias    = GetIR<bool>(in);
+         out.alloc    = GetIR<bool>(in);
+         out.defin    = GetIR<bool>(in);
+         out.multiDef = GetIR<bool>(in);
 
          return in;
       }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -56,7 +56,7 @@ static GDCC::Option::Function DumpAll
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Objects                                                             |
 //
 
 namespace GDCC
@@ -80,7 +80,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -163,6 +163,7 @@ namespace GDCC
          if(str.alias)    out << " \\\n   alias="    << str.alias;
          if(str.alloc)    out << " \\\n   alloc="    << str.alloc;
          if(str.defin)    out << " \\\n   defin="    << str.defin;
+         if(str.multiDef) out << " \\\n   multiDef=" << str.multiDef;
          if(str.valueInt) out << " \\\n   valueInt=" << str.valueInt;
          if(str.valueStr){out << " \\\n   valueStr=";   PutString(out, str.valueStr);}
 

@@ -523,7 +523,7 @@ namespace GDCC
       {
          if(!out.defin)
             out = std::move(in);
-         else if(in.defin)
+         else if(in.defin && !out.multiDef && !in.multiDef)
             WarnMultiDefin({}, "StrEnt redefined: '", out.glyph, '\'');
       }
 

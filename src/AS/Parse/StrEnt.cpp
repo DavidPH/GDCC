@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,7 +21,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -39,6 +39,7 @@ namespace GDCC
          case Core::STR_alias:    str.alias    = GetFastU(TokenDropEq(ctx));  break;
          case Core::STR_alloc:    str.alloc    = GetFastU(TokenDropEq(ctx));  break;
          case Core::STR_defin:    str.defin    = GetFastU(TokenDropEq(ctx));  break;
+         case Core::STR_multiDef: str.multiDef = GetFastU(TokenDropEq(ctx));  break;
          case Core::STR_valueInt: str.valueInt = GetFastU(TokenDropEq(ctx));  break;
          case Core::STR_valueStr: str.valueStr = GetString(TokenDropEq(ctx)); break;
 

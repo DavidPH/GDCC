@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -219,6 +219,7 @@ namespace GDCC
             strent.alias    = true;
             strent.alloc    = true;
             strent.defin    = true;
+            strent.multiDef = true;
 
             // Prepare associated glyph.
             prog.getGlyphData(strent.glyph).type = IR::Type_StrEn();

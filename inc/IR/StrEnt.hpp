@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -49,9 +49,10 @@ namespace GDCC
          Core::FastU  valueInt;
          Core::String valueStr;
 
-         bool         alias : 1;
-         bool         alloc : 1;
-         bool         defin : 1;
+         bool         alias    : 1;
+         bool         alloc    : 1;
+         bool         defin    : 1;
+         bool         multiDef : 1;
       };
    }
 }
