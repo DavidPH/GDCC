@@ -21,9 +21,30 @@
 
 #include "LD/Linker.hpp"
 
+#include "Option/Bool.hpp"
+
 #include "Platform/Platform.hpp"
 
 #include <iostream>
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+//
+// --progress
+//
+static bool Progress = false;
+static GDCC::Option::Bool ProgressOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("progress")
+      .setGroup("output")
+      .setDescS("Writes progress information to stderr."),
+
+   &Progress
+};
 
 
 //----------------------------------------------------------------------------|
@@ -36,6 +57,10 @@
 static void MakeLib_AS(GDCC::IR::Program &prog, std::string path, char const *name)
 {
    GDCC::Core::PathAppend(path, name);
+
+   if(Progress)
+      std::cerr << "gdcc-as " << path << std::endl;
+
    GDCC::AS::ParseFile(path.data(), prog);
 }
 
@@ -45,6 +70,10 @@ static void MakeLib_AS(GDCC::IR::Program &prog, std::string path, char const *na
 static void MakeLib_CC(GDCC::IR::Program &prog, std::string path, char const *name)
 {
    GDCC::Core::PathAppend(path, name);
+
+   if(Progress)
+      std::cerr << "gdcc-cc " << path << std::endl;
+
    GDCC::CC::ParseFile(path.data(), prog);
 }
 
