@@ -202,9 +202,10 @@
 
 
 //----------------------------------------------------------------------------|
-// Static Variables                                                           |
+// Static Objects                                                             |
 //
 
+#if !__GDCC__NoFloat
 //
 // CordicTable
 //
@@ -260,6 +261,7 @@ static long double const CordicTablel[] =
    0x1p-55L, 0x1p-56L, 0x1p-57L, 0x1p-58L, 0x1p-59L, 0x1p-60L, 0x1p-61L,
    0x1p-62L, 0x1p-63L,
 };
+#endif // !__GDCC__NoFloat
 
 
 //----------------------------------------------------------------------------|
@@ -270,6 +272,7 @@ static long double const CordicTablel[] =
 // Trigonometric functions.
 //
 
+#if !__GDCC__NoFloat
 //
 // acos
 //
@@ -512,11 +515,13 @@ long double tanl(long double z)
 
    return y / x;
 }
+#endif // !__GDCC__NoFloat
 
 //=========================================================
 // Implementation extensions.
 //
 
+#if !__GDCC__NoFloat
 //
 // __sincos
 //
@@ -558,6 +563,7 @@ void __sincosl(long double z, long double *sin, long double *cos)
    *sin = y * SinCosScalel;
    *cos = x * SinCosScalel;
 }
+#endif // !__GDCC__NoFloat
 
 // EOF
 

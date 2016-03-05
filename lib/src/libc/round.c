@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015 David Hill
+// Copyright(C) 2015-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -19,13 +19,14 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 //=========================================================
 // Nearest integer functions.
 //
 
+#if !__GDCC__NoFloat
 //
 // ceil
 //
@@ -319,11 +320,13 @@ long double truncl(long double x)
 
    return u.i &= ~(0x000FFFFFFFFFFFFF >> exp), u.f;
 }
+#endif // !__GDCC__NoFloat
 
 //=========================================================
 // Remainder functions.
 //
 
+#if !__GDCC__NoFloat
 //
 // fmod
 //
@@ -428,12 +431,14 @@ long double remquol(long double x, long double y, int *quo)
    *quo = __irmodl(roundl(q));
    return x - n * y;
 }
+#endif // !__GDCC__NoFloat
 
 
 //=========================================================
 // Implementation extensions.
 //
 
+#if !__GDCC__NoFloat
 //
 // __rinf
 //
@@ -579,6 +584,7 @@ int __irmodl(long double x)
 
    return sig ? -res : res;
 }
+#endif // !__GDCC__NoFloat
 
 // EOF
 

@@ -641,7 +641,7 @@ static int CharToInt(int c)
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 //=========================================================
@@ -824,6 +824,7 @@ unsigned long accum strtofxulk_str(char __str_ars const *restrict nptr, char __s
 // Numeric conversion functions. (stdlib.h)
 //
 
+#if !__GDCC__NoFloat
 //
 // atof
 //
@@ -831,6 +832,7 @@ double atof(char const *nptr)
 {
    return strtod(nptr, NULL);
 }
+#endif
 
 //
 // atoi
@@ -856,6 +858,7 @@ long long atoll(char const *nptr)
    return strtoll(nptr, NULL, 10);
 }
 
+#if !__GDCC__NoFloat
 //
 // strtod
 //
@@ -879,6 +882,7 @@ long double strtold(char const *restrict nptr, char **restrict endptr)
 {
    StrToF_Body(char, long double, L);
 }
+#endif
 
 //
 // strtoi
@@ -932,6 +936,7 @@ unsigned long long strtoull(char const *restrict nptr, char **restrict endptr, i
 // Implementation extensions. (stdlib.h)
 //
 
+#if !__GDCC__NoFloat
 //
 // strtod_str
 //
@@ -955,6 +960,8 @@ long double strtold_str(char __str_ars const *restrict nptr, char __str_ars **re
 {
    StrToF_Body(char __str_ars, long double, );
 }
+}
+#endif
 
 //
 // strtoi_str

@@ -64,6 +64,7 @@ clock_t clock()
    return ACS_Timer();
 }
 
+#if !__GDCC__NoFloat
 //
 // difftime
 //
@@ -71,6 +72,7 @@ double difftime(time_t time1, time_t time0)
 {
    return (double)(time1 - time0);
 }
+#endif
 
 //
 // mktime

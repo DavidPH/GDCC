@@ -92,12 +92,16 @@
 //
 // ScanFormat_f
 //
-#define ScanFormat_f() \
-   ScanNumberPre(); \
-   ScanNumber_flt(); \
-   ScanNumberPro(); \
-   \
-   ScanNumberRes_f();
+#if !__GDCC__NoFloat
+#  define ScanFormat_f() \
+      ScanNumberPre(); \
+      ScanNumber_flt(); \
+      ScanNumberPro(); \
+      \
+      ScanNumberRes_f();
+#else
+#  define ScanFormat_f() return ret;
+#endif
 
 //
 // ScanFormat_i

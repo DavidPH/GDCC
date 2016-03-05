@@ -19,13 +19,14 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 //=========================================================
 // Hyperbolic functions.
 //
 
+#if !__GDCC__NoFloat
 //
 // acosh
 //
@@ -181,11 +182,13 @@ long double tanhl(long double x)
 {
    return (expl(x << 1) - 1) / (expl(x << 1) + 1);
 }
+#endif // !__GDCC__NoFloat
 
 //=========================================================
 // Power and absolute-value functions.
 //
 
+#if !__GDCC__NoFloat
 //
 // cbrt
 //
@@ -356,6 +359,7 @@ long double sqrtl(long double x)
 
    return y;
 }
+#endif // !__GDCC__NoFloat
 
 //=========================================================
 // Error and gamma functions.
@@ -381,6 +385,7 @@ long double tgammal(long double x);
 // Manipulation functions.
 //
 
+#if !__GDCC__NoFloat
 //
 // copysign
 //
@@ -587,11 +592,13 @@ long double nexttowardl(long double x, long double y)
 
    return x;
 }
+#endif // !__GDCC__NoFloat
 
 //=========================================================
 // Maximum, minimum, and positive difference functions.
 //
 
+#if !__GDCC__NoFloat
 //
 // fdim
 //
@@ -690,11 +697,13 @@ long double fminl(long double x, long double y)
 
    return x < y ? x : y;
 }
+#endif // !__GDCC__NoFloat
 
 //=========================================================
 // Floating multiply-add.
 //
 
+#if !__GDCC__NoFloat
 //
 // fma
 //
@@ -718,6 +727,7 @@ long double fmal(long double x, long double y, long double z)
 {
    return x * y + z;
 }
+#endif // !__GDCC__NoFloat
 
 // EOF
 

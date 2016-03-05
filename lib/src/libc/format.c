@@ -537,6 +537,7 @@ char __GDCC__FormatBuf[__GDCC__FormatBufLen];
 // Extern Functions                                                           |
 //
 
+#if !__GDCC__NoFloat
 //
 // __GDCC__FormatF_X
 //
@@ -620,6 +621,7 @@ __GDCC__FormatDefn(F, xll, long double)
 
    return ret;
 }
+#endif // !__GDCC__NoFloat
 
 //
 // __GDCC__FormatI_d

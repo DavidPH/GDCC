@@ -110,9 +110,10 @@ struct __modfl_res {long double fval, ival;};
 
 
 //----------------------------------------------------------------------------|
-// Static Variables                                                           |
+// Static Objects                                                             |
 //
 
+#if !__GDCC__NoFloat
 //
 // Exp2Table
 //
@@ -471,10 +472,11 @@ static long double const ExpETablel[] =
    0x1.41C7A8814BEBAp+369L,
    0x1.9476504BA852Ep+738L,
 };
+#endif // !__GDCC__NoFloat
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 [[call("StkCall")]] struct __frexp_res  __approx_frexp(double value);
@@ -489,6 +491,7 @@ static long double const ExpETablel[] =
 // Exponential and logarithmic functions.
 //
 
+#if !__GDCC__NoFloat
 //
 // exp
 //
@@ -920,6 +923,8 @@ long double scalblnl(long double x, long int n)
 {
    return n < 0 ? x >> -n : x << n;
 }
+
+#endif // !__GDCC__NoFloat
 
 // EOF
 

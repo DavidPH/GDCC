@@ -89,15 +89,19 @@
 //
 // FormatF
 //
-#define FormatF(fmt) \
-   switch(fmtLen) \
-   { \
-   case FL_l: \
-   case FL_:  fmtRet = fmt(va_arg(arg, double),        fmtArg); break; \
-   case FL_L: fmtRet = fmt(va_arg(arg, long double),   fmtArg); break; \
-   case FL_h: fmtRet = fmt((float)va_arg(arg, double), fmtArg); break; \
-   default: return ~ret; \
-   }
+#if !__GDCC__NoFloat
+#  define FormatF(fmt) \
+      switch(fmtLen) \
+      { \
+      case FL_l: \
+      case FL_:  fmtRet = fmt(va_arg(arg, double),        fmtArg); break; \
+      case FL_L: fmtRet = fmt(va_arg(arg, long double),   fmtArg); break; \
+      case FL_h: fmtRet = fmt((float)va_arg(arg, double), fmtArg); break; \
+      default: return ~ret; \
+      }
+#else
+#  define FormatF(fmt) return ~ret;
+#endif
 
 //
 // FormatI
@@ -518,7 +522,7 @@ typedef enum FormatLen
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 //=========================================================
