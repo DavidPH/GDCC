@@ -70,7 +70,7 @@ static void MakeLib_libacs(GDCC::IR::Program &)
 //
 // MakeLib_libc
 //
-static void MakeLib_libc(GDCC::IR::Program &prog)
+static void MakeLib_libc(GDCC::IR::Program &prog, bool nomath = false)
 {
    std::string path = GDCC::Core::GetOptionLibPath();
    GDCC::Core::PathAppend(path, "src");
@@ -78,13 +78,10 @@ static void MakeLib_libc(GDCC::IR::Program &prog)
 
    MakeLib_CC(prog, path, "ctype.c");
    MakeLib_CC(prog, path, "errno.c");
-   MakeLib_CC(prog, path, "exp.c");
    MakeLib_CC(prog, path, "fopen.c");
    MakeLib_CC(prog, path, "format.c");
    MakeLib_CC(prog, path, "locale.c");
-   MakeLib_CC(prog, path, "math.c");
    MakeLib_CC(prog, path, "printf.c");
-   MakeLib_CC(prog, path, "round.c");
    MakeLib_CC(prog, path, "scanf.c");
    MakeLib_CC(prog, path, "setjmp.c");
    MakeLib_CC(prog, path, "sort.c");
@@ -94,15 +91,27 @@ static void MakeLib_libc(GDCC::IR::Program &prog)
    MakeLib_CC(prog, path, "string.c");
    MakeLib_CC(prog, path, "strto.c");
    MakeLib_CC(prog, path, "time.c");
-   MakeLib_CC(prog, path, "trig.c");
+
+   if(!nomath)
+   {
+      MakeLib_CC(prog, path, "exp.c");
+      MakeLib_CC(prog, path, "math.c");
+      MakeLib_CC(prog, path, "round.c");
+      MakeLib_CC(prog, path, "trig.c");
+   }
 
    if(GDCC::Platform::IsFamily_ZDACS())
    {
       std::string pathSub = path;
       GDCC::Core::PathAppend(pathSub, "ZDACS");
 
-      MakeLib_AS(prog, pathSub, "approx.asm");
+      // Floating point classification is needed outside of math.
       MakeLib_AS(prog, pathSub, "fpclassify.asm");
+
+      if(!nomath)
+      {
+         MakeLib_AS(prog, pathSub, "approx.asm");
+      }
    }
 }
 
@@ -115,9 +124,10 @@ static void MakeLib()
 
    for(auto const &arg : GDCC::Core::GetOptionArgs())
    {
-           if(!strcmp(arg, "libGDCC")) MakeLib_libGDCC(prog);
-      else if(!strcmp(arg, "libacs"))  MakeLib_libacs(prog);
-      else if(!strcmp(arg, "libc"))    MakeLib_libc(prog);
+           if(!strcmp(arg, "libGDCC"))     MakeLib_libGDCC(prog);
+      else if(!strcmp(arg, "libacs"))      MakeLib_libacs(prog);
+      else if(!strcmp(arg, "libc"))        MakeLib_libc(prog);
+      else if(!strcmp(arg, "libc-nomath")) MakeLib_libc(prog, true);
       else
       {
          std::cerr << "ERROR: unknown library: '" << arg << "'\n";
