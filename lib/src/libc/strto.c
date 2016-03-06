@@ -960,7 +960,6 @@ long double strtold_str(char __str_ars const *restrict nptr, char __str_ars **re
 {
    StrToF_Body(char __str_ars, long double, );
 }
-}
 #endif
 
 //
