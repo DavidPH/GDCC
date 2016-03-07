@@ -979,9 +979,9 @@ long strtol_str(char __str_ars const *restrict nptr, char __str_ars **restrict e
 }
 
 //
-// _strtoll_str
+// strtoll_str
 //
-long long _strtoll_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
+long long strtoll_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
 {
    StrToI_Body(char __str_ars, long long, LLONG, S);
 }
