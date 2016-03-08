@@ -38,12 +38,12 @@ int map_var MapInt;
 // Similarly, but for an array.
 unsigned int map_var MapIntArr[16];
 
-// If no address space ie specified, objects declared at file-scope use the
+// If no address space is specified, objects declared at file-scope use the
 // generic address space, which is implemented as a global array.
 int IntVar;
 
 // The typedef declaration can be used to give a type a new name, either for
-// abstraction of convenience of typing. The declared name is identical to the
+// abstraction or convenience of typing. The declared name is identical to the
 // underlying type, and either can be substituted for the other.
 typedef int map_var map_int;
 
