@@ -310,7 +310,7 @@ namespace GDCC
          //
          void Info::preStmnt_DiXU_W1()
          {
-            Core::String name = getCallName();
+            Core::String name = getCallName({IR::Code::DiXU_W, 1});
             auto newFunc = preStmntCallDef(name, 2, 2, 3, __FILE__, __LINE__);
 
             if(!newFunc)
