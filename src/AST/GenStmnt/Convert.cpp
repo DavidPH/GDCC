@@ -365,6 +365,13 @@ namespace GDCC
          // Shift mantissa left.
          GetMan(exp, ctx, srcT, src, true);
 
+         if(diffWords > 0)
+         {
+            // If expanding value, do so before left shifting.
+            for(auto i = diffWords; i--;)
+               ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), 0);
+         }
+
          GetExp(exp, ctx, srcT, src);
          ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), expMid);
          ctx.block.addStatementArgs({IR::Code::SubU_W, 1},
@@ -372,9 +379,6 @@ namespace GDCC
 
          if(diffWords > 0)
          {
-            for(auto i = diffWords; i--;)
-               ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), 0);
-
             ctx.block.addStatementArgs({IR::Code::ShLU_W, dstT->getSizeWords()},
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
