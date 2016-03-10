@@ -373,7 +373,7 @@ namespace GDCC
          if(diffWords > 0)
          {
             for(auto i = diffWords; i--;)
-               ctx.block.addStatementArgs({IR::Code::Move_W, 0}, IR::Arg_Stk(), 0);
+               ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), 0);
 
             ctx.block.addStatementArgs({IR::Code::ShLU_W, dstT->getSizeWords()},
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
