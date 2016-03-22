@@ -10,6 +10,11 @@ GDCC ACS Compiler (gdcc-acc)
 Compiles Hexen ACS source into IR data.
 
 
+GDCC Wad Archiver (gdcc-ar-wad)
+
+Packs and unpacks Doom WAD format archives.
+
+
 GDCC Assembler (gdcc-as)
 
 Compiles GDCC assembly into IR data for a low-level interface to the IR.
