@@ -120,7 +120,31 @@ int main(int argc, char *argv[])
 
    opts.list.usage = "[option]... [source]...";
 
-   opts.list.descS = "Packs and unpacks Wad archives.";
+   opts.list.descS =
+     "Packs and unpacks Wad archives. Sources are TYPE:LUMP=PATH. Types are "
+     "data, file, or wad.";
+
+   opts.list.descL =
+      "Packs and unpacks Wad archives.\n"
+      "Sources are in the form TYPE:LUMP=PATH (as in file:ACSLIB=acslib.bin). "
+      "The available types are: data, file, and wad. If the type is omitted, "
+      "it is assumed to be file.\n"
+      "\n"
+      "data - Adds a lump with PATH as the contents. If LUMP is omitted, PATH "
+      "is used as the name of an empty lump.\n"
+      "\n"
+      "file (file) - Adds a lump using the contents of the named file. If "
+      "LUMP is omitted, the lump name defaults to PATH with any extension "
+      "removed.\n"
+      "file (directory) - Adds a set of lumps from a directory. If LUMP is "
+      "omitted, the lumps are added directly to the root wad. Otherwise, they "
+      "are added to a sub-wad.\n"
+      "\n"
+      "wad (file) - Adds a wad's lumps. If LUMP is omitted, the lumps are "
+      "added directly to the root wad. Otherwise, they are added to a sub-wad.\n"
+      "wad (directory) - Adds a set of lumps from a directory. "
+      "Sub-directories are added as *_START or map sub-wads if applicable. "
+      "LUMP usage is the same as for a file.";
 
    try
    {
