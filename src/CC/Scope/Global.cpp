@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -30,7 +30,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -246,10 +246,15 @@ namespace GDCC
             itr = globalObj.emplace(glyph, obj).first;
          }
 
-         // If not yet defined, use newer type. This allows declaring with
-         // incomplete array type and then later defining it.
+         // If not yet defined, update certain properties.
          if(!itr->second->defin)
-            itr->second->type = attr.type;
+         {
+            AST::Object::Ref &obj = itr->second;
+
+            // Use newer type. This allows declaring with incomplete array type
+            // and then later defining it with a size.
+            obj->type = attr.type;
+         }
 
          return itr->second;
       }
@@ -277,5 +282,5 @@ namespace GDCC
    }
 }
 
-//EOF
+// EOF
 
