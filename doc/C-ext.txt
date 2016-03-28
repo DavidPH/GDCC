@@ -263,11 +263,8 @@ Syntax:
 
 Semantics:
   Suppresses the normal static-storage initialization rules for the affected
-  objects, instead leaving them with indeterminate values at startup.
-
-  If an object affected by this attribute has an initializer, then only the
-  explicit parts of the initializer take effect. That is, partial aggregate
-  initializers leave all other members indeterminate.
+  objects, instead leaving them with indeterminate values at startup. Only
+  affects object definitions.
 
 ===========================================================
 Optional Args
