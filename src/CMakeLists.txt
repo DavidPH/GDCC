@@ -15,21 +15,65 @@
 ## Targets                                                                    |
 ##
 
-add_subdirectory(ACC)
-add_subdirectory(AR)
-add_subdirectory(AS)
-add_subdirectory(AST)
-add_subdirectory(BC)
-add_subdirectory(CC)
-add_subdirectory(CPP)
-add_subdirectory(Core)
-add_subdirectory(IR)
-add_subdirectory(IRDump)
-add_subdirectory(LD)
-add_subdirectory(MageDefs)
-add_subdirectory(MakeLib)
-add_subdirectory(Option)
-add_subdirectory(Platform)
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/ACC")
+   add_subdirectory(ACC)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/AR")
+   add_subdirectory(AR)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/AS")
+   add_subdirectory(AS)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/AST")
+   add_subdirectory(AST)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC")
+   add_subdirectory(BC)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/CC")
+   add_subdirectory(CC)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/CPP")
+   add_subdirectory(CPP)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/Core")
+   add_subdirectory(Core)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/IR")
+   add_subdirectory(IR)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/IRDump")
+   add_subdirectory(IRDump)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/LD")
+   add_subdirectory(LD)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/MageDefs")
+   add_subdirectory(MageDefs)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/MakeLib")
+   add_subdirectory(MakeLib)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/Option")
+   add_subdirectory(Option)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/Platform")
+   add_subdirectory(Platform)
+endif()
 
 ## EOF
 

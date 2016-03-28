@@ -50,12 +50,12 @@ function(GDCC_INSTALL_PART name wantExe wantLib)
 endfunction()
 
 ##
-## TRY_CXX_COMPILER_FLAG
+## GDCC_TRY_CXX_FLAG
 ##
-function(TRY_CXX_COMPILER_FLAG flag name)
-   CHECK_CXX_COMPILER_FLAG(${flag} ${name})
+function(GDCC_TRY_CXX_FLAG flag name)
+   CHECK_CXX_COMPILER_FLAG(${flag} GDCC_FLAG_CXX_${name})
 
-   if(${name})
+   if(GDCC_FLAG_CXX_${name})
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" PARENT_SCOPE)
    endif()
 endfunction()
@@ -65,13 +65,15 @@ endfunction()
 ## Environment Detection                                                      |
 ##
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-   TRY_CXX_COMPILER_FLAG(-Wall      FLAG_CXX_Wall   )
-   TRY_CXX_COMPILER_FLAG(-Wextra    FLAG_CXX_Wextra )
-   TRY_CXX_COMPILER_FLAG(-Wpedantic FLAG_CXX_Wpedantic)
-   TRY_CXX_COMPILER_FLAG(-Wshadow   FLAG_CXX_Wshadow)
+if(NOT GDCC_NOFLAGS)
+   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+      GDCC_TRY_CXX_FLAG(-Wall      Wall   )
+      GDCC_TRY_CXX_FLAG(-Wextra    Wextra )
+      GDCC_TRY_CXX_FLAG(-Wpedantic Wpedantic)
+      GDCC_TRY_CXX_FLAG(-Wshadow   Wshadow)
 
-   TRY_CXX_COMPILER_FLAG(-std=c++11 FLAG_CXX_CXX11)
+      GDCC_TRY_CXX_FLAG(-std=c++11 CXX11)
+   endif()
 endif()
 
 
@@ -83,14 +85,22 @@ endif()
 ## GDCC_BC_MgC
 ##
 if(NOT DEFINED GDCC_BC_MgC)
-   set(GDCC_BC_MgC ON CACHE BOOL "Enable bytecode module: MgC")
+   if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/MgC")
+      set(GDCC_BC_MgC ON CACHE BOOL "Enable bytecode module: MgC")
+   else()
+      set(GDCC_BC_MgC OFF CACHE BOOL "Enable bytecode module: MgC")
+   endif()
 endif()
 
 ##
 ## GDCC_BC_ZDACS
 ##
 if(NOT DEFINED GDCC_BC_ZDACS)
-   set(GDCC_BC_ZDACS ON CACHE BOOL "Enable bytecode module: ZDACS")
+   if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/ZDACS")
+      set(GDCC_BC_ZDACS ON CACHE BOOL "Enable bytecode module: ZDACS")
+   else()
+      set(GDCC_BC_ZDACS OFF CACHE BOOL "Enable bytecode module: ZDACS")
+   endif()
 endif()
 
 ##

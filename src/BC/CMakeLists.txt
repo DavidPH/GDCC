@@ -15,8 +15,13 @@
 ## Targets                                                                    |
 ##
 
-add_subdirectory(MgC)
-add_subdirectory(ZDACS)
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/MgC")
+   add_subdirectory(MgC)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/ZDACS")
+   add_subdirectory(ZDACS)
+endif()
 
 ##
 ## gdcc-bc-lib
