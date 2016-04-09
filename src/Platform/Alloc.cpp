@@ -181,7 +181,7 @@ namespace GDCC
             return itr->second;
 
          // Special rules for allocation minimum.
-         if(TargetCur == Target::ZDoom && space.base == IR::AddrBase::Sta)
+         if(IsFamily_ZDACS() && space.base == IR::AddrBase::Sta)
             return 2;
 
          return IsZeroNull_Point(space.base) ? 1 : 0;

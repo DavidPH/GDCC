@@ -113,6 +113,7 @@ namespace GDCC
             #endif
 
          case Platform::Target::ZDoom:
+         case Platform::Target::Zandronum:
             #if GDCC_BC_ZDACS
             return std::unique_ptr<BC::Info>{new BC::ZDACS::Info};
             #else

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -46,6 +46,7 @@ namespace GDCC
          None,
          MageCraft,
          ZDoom,
+         Zandronum,
       };
    }
 }

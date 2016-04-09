@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -73,7 +73,7 @@ namespace GDCC
             .setDescS("Selects target engine.")
             .setDescL("Selects target engine. This option may affect higher level "
                "codegen and should be set at all stages of compiling. Valid "
-               "arguments are: MageCraft, ZDoom."),
+               "arguments are: MageCraft, ZDoom, Zandronum."),
 
          [](Option::Base *, Option::Args const &args) -> std::size_t
          {
@@ -84,6 +84,7 @@ namespace GDCC
             {
             case Core::STR_MageCraft: TargetCur = Target::MageCraft; break;
             case Core::STR_ZDoom:     TargetCur = Target::ZDoom;     break;
+            case Core::STR_Zandronum: TargetCur = Target::Zandronum; break;
 
             default:
                Option::Exception::Error(args, "argument invalid");
@@ -143,6 +144,7 @@ namespace GDCC
          {
          case Target::None:      return 8;
          case Target::ZDoom:     return 32;
+         case Target::Zandronum: return 32;
          case Target::MageCraft: return 8;
          }
 
@@ -157,6 +159,7 @@ namespace GDCC
          switch(TargetCur)
          {
          case Target::ZDoom:
+         case Target::Zandronum:
             switch(call)
             {
             case IR::CallType::SScriptI:
@@ -182,6 +185,7 @@ namespace GDCC
          {
          case Target::None:      return 1;
          case Target::ZDoom:     return 1;
+         case Target::Zandronum: return 1;
          case Target::MageCraft: return 4;
          }
 
@@ -197,6 +201,7 @@ namespace GDCC
          {
          case Target::None:      return 32;
          case Target::ZDoom:     return 32;
+         case Target::Zandronum: return 32;
          case Target::MageCraft: return 32;
          }
 
@@ -212,6 +217,7 @@ namespace GDCC
          {
          case Target::None:      return 1;
          case Target::ZDoom:     return 1;
+         case Target::Zandronum: return 1;
          case Target::MageCraft: return 4;
          }
 
@@ -227,6 +233,7 @@ namespace GDCC
          {
          case Target::None:      return 1;
          case Target::ZDoom:     return 1;
+         case Target::Zandronum: return 1;
          case Target::MageCraft: return 1;
          }
 
@@ -242,6 +249,7 @@ namespace GDCC
          {
          case Target::None:      return 1;
          case Target::ZDoom:     return 1;
+         case Target::Zandronum: return 1;
          case Target::MageCraft: return 4;
          }
 
@@ -256,6 +264,7 @@ namespace GDCC
          switch(TargetCur)
          {
          case Target::ZDoom:
+         case Target::Zandronum:
             switch(call)
             {
             case IR::CallType::SScriptI:
@@ -280,6 +289,7 @@ namespace GDCC
          switch(TargetCur)
          {
          case Target::ZDoom:
+         case Target::Zandronum:
             switch(call)
             {
             case IR::CallType::SScriptI:
@@ -304,6 +314,7 @@ namespace GDCC
          switch(TargetCur)
          {
          case Target::ZDoom:
+         case Target::Zandronum:
             return true;
 
          default:
