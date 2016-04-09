@@ -16,6 +16,8 @@
 
 #include "IR/Program.hpp"
 
+#include "Platform/Platform.hpp"
+
 #include <sstream>
 
 
@@ -42,12 +44,18 @@ namespace GDCC
 
             ++numChunkSPTR;
 
+            if(Platform::TargetCur == Platform::Target::Zandronum)
+               ++numChunkSPTR, ++numChunkSFLG;
+
             // Extra information for named init script.
             if(InitScriptNamed)
             {
                InitScriptNumber = ~numChunkSNAM;
 
                ++numChunkSNAM;
+
+               if(Platform::TargetCur == Platform::Target::Zandronum)
+                  ++numChunkSNAM, --InitScriptNumber;
 
                // If no name set, generate one.
                if(!InitScriptName)

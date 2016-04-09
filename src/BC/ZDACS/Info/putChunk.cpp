@@ -18,6 +18,8 @@
 #include "IR/Program.hpp"
 #include "IR/ScriptType.hpp"
 
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -523,6 +525,12 @@ namespace GDCC
                putHWord(GetScriptValue(itr));
                putHWord(flags);
             }
+
+            if(codeInit && Platform::TargetCur == Platform::Target::Zandronum)
+            {
+               putHWord(InitScriptNumber - 1);
+               putHWord(0x0002);
+            }
          }
 
          //
@@ -545,7 +553,12 @@ namespace GDCC
             }
 
             if(codeInit && InitScriptNamed)
-               strs.back() = InitScriptName;
+            {
+               *(strs.end() - 1) = InitScriptName;
+
+               if(Platform::TargetCur == Platform::Target::Zandronum)
+                  *(strs.end() - 2) = InitScriptName + "_ClS";
+            }
 
             putChunk("SNAM", strs, false);
          }
@@ -618,6 +631,14 @@ namespace GDCC
                   putByte(1);
                   putByte(0);
                   putWord(codeInit);
+
+                  if(Platform::TargetCur == Platform::Target::Zandronum)
+                  {
+                     putHWord(InitScriptNumber - 1);
+                     putByte(1);
+                     putByte(0);
+                     putWord(codeInit);
+                  }
                }
                else
                {
@@ -625,6 +646,14 @@ namespace GDCC
                   putHWord(1);
                   putWord(codeInit);
                   putWord(0);
+
+                  if(Platform::TargetCur == Platform::Target::Zandronum)
+                  {
+                     putHWord(InitScriptNumber - 1);
+                     putHWord(1);
+                     putWord(codeInit);
+                     putWord(0);
+                  }
                }
             }
          }

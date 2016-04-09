@@ -15,6 +15,8 @@
 #include "IR/CallType.hpp"
 #include "IR/Program.hpp"
 
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -351,7 +353,12 @@ namespace GDCC
             }
 
             if(codeInit && InitScriptNamed)
-               strs.back() = InitScriptName;
+            {
+               *(strs.end() - 1) = InitScriptName;
+
+               if(Platform::TargetCur == Platform::Target::Zandronum)
+                  *(strs.end() - 2) = InitScriptName + "_ClS";
+            }
 
             return lenChunk("SNAM", strs, false);
          }
