@@ -528,7 +528,7 @@ namespace GDCC
 
             if(codeInit && Platform::TargetCur == Platform::Target::Zandronum)
             {
-               putHWord(InitScriptNumber - 1);
+               putHWord(InitScriptNumber + 1);
                putHWord(0x0002);
             }
          }
@@ -634,7 +634,7 @@ namespace GDCC
 
                   if(Platform::TargetCur == Platform::Target::Zandronum)
                   {
-                     putHWord(InitScriptNumber - 1);
+                     putHWord(InitScriptNumber + 1);
                      putByte(1);
                      putByte(0);
                      putWord(codeInit);
@@ -649,7 +649,7 @@ namespace GDCC
 
                   if(Platform::TargetCur == Platform::Target::Zandronum)
                   {
-                     putHWord(InitScriptNumber - 1);
+                     putHWord(InitScriptNumber + 1);
                      putHWord(1);
                      putWord(codeInit);
                      putWord(0);
