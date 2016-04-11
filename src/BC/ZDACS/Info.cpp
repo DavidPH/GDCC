@@ -1202,14 +1202,21 @@ namespace GDCC
             case IR::ValueBase::Float: return GetWord_Float(val.vFloat, w);
             case IR::ValueBase::Funct: return w ? 0 : val.vFunct.value;
             case IR::ValueBase::Point: return w ? 0 : val.vPoint.value;
-            case IR::ValueBase::StrEn: return w ? 0 : val.vFunct.value;
+            case IR::ValueBase::StrEn: return w ? 0 : val.vStrEn.value;
 
             case IR::ValueBase::Empty:
                throw Core::ExceptStr(exp->pos, "bad GetWord Value: Empty");
-
-            default:
-               throw Core::ExceptStr(exp->pos, "bad GetWord Value");
+            case IR::ValueBase::Array:
+               throw Core::ExceptStr(exp->pos, "bad GetWord Value: Array");
+            case IR::ValueBase::Assoc:
+               throw Core::ExceptStr(exp->pos, "bad GetWord Value: Assoc");
+            case IR::ValueBase::Tuple:
+               throw Core::ExceptStr(exp->pos, "bad GetWord Value: Tuple");
+            case IR::ValueBase::Union:
+               throw Core::ExceptStr(exp->pos, "bad GetWord Value: Union");
             }
+
+            throw Core::ExceptStr(exp->pos, "bad GetWord Value");
          }
 
          //
