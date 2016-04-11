@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -118,6 +118,14 @@ namespace GDCC
       }
 
       //
+      // Type_ArrVM::getTypeArrayQual
+      //
+      Type::CRef Type_ArrVM::getTypeArrayQual() const
+      {
+         return base->getTypeArrayQual()->getTypeArray(size);
+      }
+
+      //
       // Type_ArrVM::getTypeArrayQualAddr
       //
       Type::CRef Type_ArrVM::getTypeArrayQualAddr(IR::AddrSpace addr) const
@@ -174,6 +182,14 @@ namespace GDCC
       }
 
       //
+      // Type_ArrVM0::getTypeArrayQual
+      //
+      Type::CRef Type_ArrVM0::getTypeArrayQual() const
+      {
+         return base->getTypeArrayQual()->getTypeArray(nullptr);
+      }
+
+      //
       // Type_ArrVM0::getTypeArrayQualAddr
       //
       Type::CRef Type_ArrVM0::getTypeArrayQualAddr(IR::AddrSpace addr) const
@@ -205,6 +221,14 @@ namespace GDCC
       Type_Array::~Type_Array()
       {
          GDCC_AST_Type_Unlink(arr);
+      }
+
+      //
+      // Type_Array::getTypeArrayQual
+      //
+      Type::CRef Type_Array::getTypeArrayQual() const
+      {
+         return base->getTypeArrayQual()->getTypeArray(size);
       }
 
       //
@@ -314,6 +338,14 @@ namespace GDCC
          // Only nullify base's reference if this is the unqualified pointer.
          if(base->arrType0 == this)
             base->arrType0 = nullptr;
+      }
+
+      //
+      // Type_Array0::getTypeArrayQual
+      //
+      Type::CRef Type_Array0::getTypeArrayQual() const
+      {
+         return base->getTypeArrayQual()->getTypeArray();
       }
 
       //

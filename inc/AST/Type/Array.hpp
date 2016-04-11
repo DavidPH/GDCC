@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -61,6 +61,7 @@ namespace GDCC
 
       public:
          // Type creation.
+         virtual Type::CRef getTypeArrayQual() const;
          virtual Type::CRef getTypeArrayQualAddr(IR::AddrSpace addr) const;
 
          // Type information.
@@ -96,6 +97,7 @@ namespace GDCC
 
       public:
          // Type creation.
+         virtual Type::CRef getTypeArrayQual() const;
          virtual Type::CRef getTypeArrayQualAddr(IR::AddrSpace addr) const;
 
          // Type classification.
@@ -120,6 +122,7 @@ namespace GDCC
 
       public:
          // Type creation.
+         virtual Type::CRef getTypeArrayQual() const;
          virtual Type::CRef getTypeArrayQualAddr(IR::AddrSpace addr) const;
 
          // Type information.
@@ -160,6 +163,7 @@ namespace GDCC
 
       public:
          // Type creation.
+         virtual Type::CRef getTypeArrayQual() const;
          virtual Type::CRef getTypeArrayQualAddr(IR::AddrSpace addr) const;
 
          // Type classification.

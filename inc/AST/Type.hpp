@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -196,6 +196,7 @@ namespace GDCC
          CRef getTypeRefL() const;                  // Type/Pointer.cpp
          CRef getTypeRefR() const;                  // Type/Pointer.cpp
 
+         virtual CRef getTypeArrayQual() const;
          // Returns a type with the given address space qualifer applied to
          // itself and (if an array type) its base type, recursively.
          virtual CRef getTypeArrayQualAddr(IR::AddrSpace addr) const;
@@ -399,7 +400,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Objects                                                             |
 //
 
 namespace GDCC

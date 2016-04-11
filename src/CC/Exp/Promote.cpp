@@ -143,7 +143,7 @@ namespace GDCC
 
             // Check underlying type compatibility.
             if(!baseL->isTypeVoid() && !baseR->isTypeVoid() &&
-               baseL->getTypeQual() != baseR->getTypeQual())
+               baseL->getTypeArrayQual() != baseR->getTypeArrayQual())
                throw Core::ExceptStr(pos, "cannot implicitly convert to "
                   "incompatible pointer type");
 
