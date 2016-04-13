@@ -416,7 +416,7 @@ special
    int    -89:ChangeActorRoll(2, int, fixed, int),
    fixed  -90:GetActorRoll(1, int),
    int    -91:QuakeEx(8, int, int, int, int, int, int, int, str, int, fixed, fixed, fixed),
-   int    -92:Warp(6, int, fixed, fixed, fixed, fixed, int, str, int, fixed),
+   int    -92:Warp(6, int, fixed, fixed, fixed, fixed, int, str, int, fixed, fixed, fixed),
    int    -93:GetMaxInventory(2, int, str),
    int    -94:SetSectorDamage(2, int, int, str, int, int),
    int    -95:SetSectorTerrain(3, int, int, str),

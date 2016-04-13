@@ -742,6 +742,8 @@
 #define WARPF_BOB               0x00000800
 #define WARPF_MOVEPTR           0x00001000
 #define WARPF_USEPTR            0x00002000
+#define WARPF_COPYVELOCITY      0x00004000
+#define WARPF_COPYPITCH         0x00008000
 
 #endif//__GDCC_Header__C__ACS_ZDoom__defs_h__
 

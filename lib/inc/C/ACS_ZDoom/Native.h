@@ -158,7 +158,7 @@ ACS_NativeDeclFull( 88, 0, int,    SetActorRoll, int, _Accum);
 ACS_NativeDeclFull( 89, 0, int,    ChangeActorRoll, int, _Accum, int);
 ACS_NativeDeclFull( 90, 0, _Accum, GetActorRoll, int);
 ACS_NativeDeclFull( 91, 4, int,    QuakeEx, int, int, int, int, int, int, int, __str, int, _Accum, _Accum, _Accum);
-ACS_NativeDeclFull( 92, 3, int,    Warp, int, _Accum, _Accum, _Accum, _Accum, int, __str, int, _Accum);
+ACS_NativeDeclFull( 92, 5, int,    Warp, int, _Accum, _Accum, _Accum, _Accum, int, __str, int, _Accum, _Accum, _Accum);
 ACS_NativeDeclFull( 93, 0, int,    GetMaxInventory, int, __str);
 ACS_NativeDeclFull( 94, 3, int,    SetSectorDamage, int, int, __str, int, int);
 ACS_NativeDeclFull( 95, 0, int,    SetSectorTerrain, int, int, __str);
