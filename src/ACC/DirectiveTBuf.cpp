@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -37,8 +37,10 @@ namespace GDCC
          switch(tok.str)
          {
          case Core::STR_encryptstrings:
+         case Core::STR_endregion:
          case Core::STR_nocompact:
          case Core::STR_nowadauthor:
+         case Core::STR_region:
          case Core::STR_wadauthor:
             return true;
 
