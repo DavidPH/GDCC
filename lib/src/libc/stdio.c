@@ -240,10 +240,9 @@ int ungetc(int c, FILE *stream)
 //
 // fread
 //
-size_t fread(void *restrict ptr, size_t size, size_t nmemb,
-   FILE *restrict stream)
+size_t fread(void *restrict ptr, size_t size, size_t nmemb, FILE *restrict stream)
 {
-   size_t res;
+   size_t res = 0;
    int c;
 
    for(char *itr = ptr; nmemb--; itr += size, ++res)
@@ -263,10 +262,9 @@ size_t fread(void *restrict ptr, size_t size, size_t nmemb,
 //
 // fwrite
 //
-size_t fwrite(void const *restrict ptr, size_t size, size_t nmemb,
-   FILE *restrict stream)
+size_t fwrite(void const *restrict ptr, size_t size, size_t nmemb, FILE *restrict stream)
 {
-   size_t res;
+   size_t res = 0;
 
    for(char const *itr = ptr; nmemb--; ++res)
    {
