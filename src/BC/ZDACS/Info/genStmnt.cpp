@@ -75,6 +75,9 @@ namespace GDCC
 
             case IR::Code::Bclo_W: genStmnt_Bclz_W(); break;
             case IR::Code::Bclz_W: genStmnt_Bclz_W(); break;
+            case IR::Code::Bges_W: genStmnt_Bges_W(); break;
+            case IR::Code::Bget_W: genStmnt_Bget_W(); break;
+            case IR::Code::Bset_W: genStmnt_Bset_W(); break;
 
             case IR::Code::Call: genStmnt_Call(); break;
 

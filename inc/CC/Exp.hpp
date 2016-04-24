@@ -92,6 +92,9 @@ namespace GDCC
       Core::CounterRef<AST::Exp const> ExpConvert_ArithPtr(AST::Type const *t,
          AST::Exp const *e, Core::Origin pos);
 
+      Core::CounterRef<AST::Exp const> ExpConvert_Bitfield(AST::Exp const *e,
+         Core::Origin pos);
+
       Core::CounterRef<AST::Exp const> ExpConvert_Bool(AST::Type const *t,
          AST::Exp const *e, Core::Origin pos);
 

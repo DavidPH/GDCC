@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -50,8 +50,21 @@ namespace GDCC
          GDCC_AST_Exp_UnaryCreator(Exp_ConvertArith);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
+      };
+
+      //
+      // Exp_ConvertBitfield
+      //
+      class Exp_ConvertBitfield : public Exp_Convert
+      {
+         GDCC_Core_CounterPreamble(
+            GDCC::AST::Exp_ConvertBitfield, GDCC::AST::Exp_Convert);
+
+         GDCC_AST_Exp_UnaryCreator(Exp_ConvertBitfield);
+
+      protected:
+         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
       };
    }
 }

@@ -60,6 +60,9 @@ namespace GDCC
 
             case IR::Code::Bclo_W: putStmnt_Bclz_W(true); break;
             case IR::Code::Bclz_W: putStmnt_Bclz_W(false); break;
+            case IR::Code::Bges_W: putStmnt_Bges_W(); break;
+            case IR::Code::Bget_W: putStmnt_Bget_W(); break;
+            case IR::Code::Bset_W: putStmnt_Bset_W(); break;
 
             case IR::Code::Call: putStmnt_Call(); break;
 

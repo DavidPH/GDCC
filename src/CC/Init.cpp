@@ -25,6 +25,8 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
+#include "IR/Block.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
@@ -102,22 +104,39 @@ namespace GDCC
       {
          if(value)
          {
-            if(!dst.data)
-               return value->genStmnt(ctx, dst);
+            AST::Arg tmp = dst;
 
-            // Convert dst's type to this's type and offset to this's offset.
-            // This codegen assumes a lack of side effects in dst.data.
+            if(tmp.data)
+            {
+               // Convert dst's type to this's type and offset to this's offset.
+               // This codegen assumes a lack of side effects in dst.data.
 
-            auto offsetType = type->getTypeQual(dst.type->getQual());
-            auto offsetPtrT = offsetType->getTypePointer();
+               auto offsetType = type->getTypeQual(tmp.type->getQual());
+               auto offsetPtrT = offsetType->getTypePointer();
 
-            auto offsetRaw = offset / type->getSizeShift();
-            auto offsetExp = ExpCreate_LitInt(AST::Type::Size, offsetRaw, pos);
-            auto offsetPtr = ExpConvert_Pointer(offsetPtrT, dst.data, pos);
-            offsetPtr = Exp_AddPtrRaw::Create(
-               offsetPtrT, offsetPtr, offsetExp, pos);
+               auto offsetRaw = offset / type->getSizeShift();
+               auto offsetExp = ExpCreate_LitInt(AST::Type::Size, offsetRaw, pos);
+               auto offsetPtr = ExpConvert_Pointer(offsetPtrT, dst.data, pos);
+               offsetPtr = Exp_AddPtrRaw::Create(
+                  offsetPtrT, offsetPtr, offsetExp, pos);
 
-            value->genStmnt(ctx, {offsetType, offsetPtr});
+               tmp = {offsetType, offsetPtr};
+            }
+
+            if(type->isTypeBitfield())
+            {
+               auto bits = type->getSizeBitsF() + type->getSizeBitsI() + type->getSizeBitsS();
+               auto offs = type->getSizeBitsO();
+
+               if(!tmp.isIRArg())
+                  throw Core::ExceptStr(pos, "bitfield init must be IR arg");
+
+               value->genStmntStk(ctx);
+               ctx.block.addStatementArgs({IR::Code::Bset_W, type->getSizeWords()},
+                  tmp.getIRArg(ctx.prog), IR::Arg_Stk(), bits, offs);
+            }
+            else
+               value->genStmnt(ctx, tmp);
          }
          else
             v_genStmnt(ctx, dst, skipZero);

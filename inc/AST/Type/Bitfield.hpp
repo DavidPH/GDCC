@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -40,7 +40,7 @@ namespace GDCC
          virtual Core::FastU getSizeBitsO() const {return bitsO;}
 
          // Type classification: General classifications.
-         virtual bool isTypeBitfield() const {return base->isTypeBitfield();}
+         virtual bool isTypeBitfield() const {return true;}
 
 
          friend Type::CRef Type::getTypeBitfield(Core::FastU bitsF,

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,6 +39,15 @@ GDCC_IR_CodeList(Bclo_W)
 
 // Bclz dst src (Bit, Count Leading Zeros)
 GDCC_IR_CodeList(Bclz_W)
+
+// Bges dst src width off (Bitfield, Get Signed)
+GDCC_IR_CodeList(Bges_W)
+
+// Bget dst src width off (Bitfield, Get)
+GDCC_IR_CodeList(Bget_W)
+
+// Bset dst src width off (Bitfield, Set)
+GDCC_IR_CodeList(Bset_W)
 
 // Call src ret arg...
 GDCC_IR_CodeList(Call)

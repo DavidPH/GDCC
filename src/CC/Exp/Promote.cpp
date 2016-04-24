@@ -86,7 +86,8 @@ namespace GDCC
             return exp;
 
          // bool = pointer
-         if(typeL->isTypeBoolean() && typeR->isTypePointer())
+         // bool = arithmetic
+         if(typeL->isTypeBoolean() && (typeR->isTypePointer() || typeR->isCTypeArith()))
          {
             return ExpConvert_Bool(typeL, exp, pos);
          }
@@ -279,19 +280,24 @@ namespace GDCC
       //
       // ExpPromo_Int
       //
-      AST::Exp::CRef ExpPromo_Int(AST::Exp const *exp, Core::Origin pos)
+      AST::Exp::CRef ExpPromo_Int(AST::Exp const *e, Core::Origin pos)
       {
-         auto type = exp->getType()->getTypeQual();
+         AST::Exp::CRef exp{e};
+         auto           type = exp->getType()->getTypeQual();
 
          // Non integers are unaffected.
          if(!type->isCTypeInteg())
-            return static_cast<AST::Exp::CRef>(exp);
+            return exp;
+
+         // Bitfield of T -> T.
+         if(type->isTypeBitfield())
+            type = (exp = ExpConvert_Bitfield(exp, pos))->getType();
 
          // Types with a rank higher than int are unaffected.
          try
          {
             if(type->getRankC() > AST::TypeRankC::Integ)
-               return static_cast<AST::Exp::CRef>(exp);
+               return exp;
          }
          catch(AST::TypeError const &)
          {
@@ -300,7 +306,7 @@ namespace GDCC
 
          // Int and unsigned int are unaffected.
          if(type == TypeIntegPrS || type == TypeIntegPrU)
-            return static_cast<AST::Exp::CRef>(exp);
+            return exp;
 
          // If the original type can be represented in int, convert to that.
          if(type->getSizeBitsI() <= TypeIntegPrS->getSizeBitsI())
@@ -321,9 +327,14 @@ namespace GDCC
       //
       // ExpPromo_LValue
       //
-      AST::Exp::CRef ExpPromo_LValue(AST::Exp const *exp, Core::Origin pos)
+      AST::Exp::CRef ExpPromo_LValue(AST::Exp const *e, Core::Origin pos)
       {
-         auto type = exp->getType();
+         AST::Exp::CRef exp{e};
+         auto           type = exp->getType();
+
+         // Bitfield of T -> T.
+         if(type->isTypeBitfield())
+            type = (exp = ExpConvert_Bitfield(exp, pos))->getType();
 
          // Array of T -> pointer to T.
          if(type->isTypeArray())
@@ -339,7 +350,7 @@ namespace GDCC
             return ExpCreate_Refer(exp, pos);
 
          // Conversion of lvalue to rvalue is internally implicit.
-         return static_cast<AST::Exp::CRef>(exp);
+         return exp;
       }
    }
 }

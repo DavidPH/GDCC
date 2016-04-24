@@ -148,6 +148,9 @@ namespace GDCC
             void genStmnt_AdXU_W();
             void genStmnt_AddU_W();
             void genStmnt_Bclz_W();
+            void genStmnt_Bges_W();
+            void genStmnt_Bget_W();
+            void genStmnt_Bset_W();
             void genStmnt_Call();
             void genStmnt_CmpI_W();
             void genStmnt_CmpU_EQ_W();
@@ -362,6 +365,9 @@ namespace GDCC
             void putStmnt_AdXU_W();
             void putStmnt_AddU_W();
             void putStmnt_Bclz_W(bool ones = false);
+            void putStmnt_Bges_W();
+            void putStmnt_Bget_W();
+            void putStmnt_Bset_W();
             void putStmnt_Call();
             void putStmnt_Casm();
             void putStmnt_CmpI_W(Code code);
@@ -443,6 +449,8 @@ namespace GDCC
             void trStmnt_AdXU_W();
             void trStmnt_AddU_W();
             void trStmnt_Bclz_W();
+            void trStmnt_Bget_W();
+            void trStmnt_Bset_W();
             void trStmnt_Call();
             void trStmnt_Casm();
             void trStmnt_CmpU_EQ_W();

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,11 +17,12 @@
 
 #include "Core/Exception.hpp"
 
+#include "IR/Block.hpp"
 #include "IR/Exp.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -43,10 +44,43 @@ namespace GDCC
       void Exp_Assign::v_genStmnt(AST::GenStmntCtx const &ctx,
          AST::Arg const &dst) const
       {
-         if(dst.type->getQualAddr().base == IR::AddrBase::Nul)
-            expR->genStmnt(ctx, expL->getArgDst());
+         auto typeL = expL->getType();
+
+         if(typeL->isTypeBitfield())
+         {
+            auto bits = typeL->getSizeBitsF() + typeL->getSizeBitsI() + typeL->getSizeBitsS();
+            auto offs = typeL->getSizeBitsO();
+
+            if(dst.type->getQualAddr().base == IR::AddrBase::Nul)
+            {
+               // TODO: Do not require an IR Arg.
+               if(!expL->getArg().isIRArg())
+                  throw Core::ExceptStr(pos, "bitfield write must be IR arg");
+               IR::Arg argL = expL->getArg().getIRArg(ctx.prog);
+
+               // Generate IR arg for right operand.
+               IR::Arg argR;
+               if(!expR->getArg().isIRArg())
+               {
+                  expR->genStmntStk(ctx);
+                  argR = IR::Arg_Stk();
+               }
+               else
+                  argR = expR->getArg().getIRArg(ctx.prog);
+
+               ctx.block.addStatementArgs({IR::Code::Bset_W, typeL->getSizeWords()},
+                  argL, argR, bits, offs);
+            }
+            else
+               throw Core::ExceptStr(pos, "bitfield write-and-read unimplemented");
+         }
          else
-            GenStmnt_Move(this, ctx, dst, expL->getArgDup(), expR->getArgSrc());
+         {
+            if(dst.type->getQualAddr().base == IR::AddrBase::Nul)
+               expR->genStmnt(ctx, expL->getArgDst());
+            else
+               GenStmnt_Move(this, ctx, dst, expL->getArgDup(), expR->getArgSrc());
+         }
       }
 
       //
@@ -83,7 +117,11 @@ namespace GDCC
          if(!IsModLValue(l))
             throw Core::ExceptStr(l->pos, "expected modifiable lvalue");
 
-         auto expR = ExpPromo_Assign(l->getType(), r, pos);
+         auto type = l->getType();
+         if(type->isTypeBitfield())
+            type = type->getBaseType();
+
+         auto expR = ExpPromo_Assign(type, r, pos);
 
          return Exp_Assign::Create(l, expR, pos);
       }

@@ -14,6 +14,8 @@
 
 #include "BC/ZDACS/Code.hpp"
 
+#include "Core/Exception.hpp"
+
 #include "IR/Program.hpp"
 
 
@@ -64,6 +66,40 @@ namespace GDCC
                for(Core::FastU i = stmnt->op.size; --i;)
                   numChunkCODE += i * 4;
             }
+         }
+
+         //
+         // Info::genStmnt_Bges_W
+         //
+         void Info::genStmnt_Bges_W()
+         {
+            numChunkCODE += 24;
+         }
+
+         //
+         // Info::genStmnt_Bget_W
+         //
+         void Info::genStmnt_Bget_W()
+         {
+            auto offs = GetWord(stmnt->args[3].aLit);
+
+            if(offs)
+               numChunkCODE += 12;
+
+            numChunkCODE += 12;
+         }
+
+         //
+         // Info::genStmnt_Bset_W
+         //
+         void Info::genStmnt_Bset_W()
+         {
+            auto offs = GetWord(stmnt->args[3].aLit);
+
+            if(offs)
+               numChunkCODE += 12;
+
+            numChunkCODE += 12 + lenPushArg(stmnt->args[0], 0) + 16 + lenDropArg(stmnt->args[0], 0);
          }
 
          //
@@ -315,6 +351,65 @@ namespace GDCC
          }
 
          //
+         // Info::putStmnt_Bges_W
+         //
+         void Info::putStmnt_Bges_W()
+         {
+            auto bits = GetWord(stmnt->args[2].aLit);
+            auto offs = GetWord(stmnt->args[3].aLit);
+
+            putCode(Code::Push_Lit, 32 - bits - offs);
+            putCode(Code::ShLU);
+
+            putCode(Code::Push_Lit, 32 - bits);
+            putCode(Code::ShRI);
+         }
+
+         //
+         // Info::putStmnt_Bget_W
+         //
+         void Info::putStmnt_Bget_W()
+         {
+            auto bits = GetWord(stmnt->args[2].aLit);
+            auto offs = GetWord(stmnt->args[3].aLit);
+            auto mask = (static_cast<Core::FastU>(1) << bits) - 1;
+
+            if(offs)
+            {
+               putCode(Code::Push_Lit, offs);
+               putCode(Code::ShRI);
+            }
+
+            putCode(Code::Push_Lit, mask);
+            putCode(Code::AndU);
+         }
+
+         //
+         // Info::putStmnt_Bset_W
+         //
+         void Info::putStmnt_Bset_W()
+         {
+            auto bits = GetWord(stmnt->args[2].aLit);
+            auto offs = GetWord(stmnt->args[3].aLit);
+            auto mask = (static_cast<Core::FastU>(1) << bits) - 1;
+
+            putCode(Code::Push_Lit, mask);
+            putCode(Code::AndU);
+
+            if(offs)
+            {
+               putCode(Code::Push_Lit, offs);
+               putCode(Code::ShLU);
+            }
+
+            putStmntPushArg(stmnt->args[0], 0);
+            putCode(Code::Push_Lit, ~(mask << offs));
+            putCode(Code::AndU);
+            putCode(Code::OrIU);
+            putStmntDropArg(stmnt->args[0], 0);
+         }
+
+         //
          // Info::putStmntBitwise
          //
          void Info::putStmntBitwise(Code code)
@@ -375,6 +470,36 @@ namespace GDCC
 
                func->setLocalTmp(1);
             }
+         }
+
+         //
+         // Info::trStmnt_Bget_W
+         //
+         void Info::trStmnt_Bget_W()
+         {
+            CheckArgC(stmnt, 4);
+            CheckArgB(stmnt, 2, IR::ArgBase::Lit);
+            CheckArgB(stmnt, 3, IR::ArgBase::Lit);
+
+            if(stmnt->op.size != 1)
+               throw Core::ExceptStr(stmnt->pos, "Bget_W must have size 1");
+
+            trStmntStk2(stmnt->op.size, stmnt->op.size);
+         }
+
+         //
+         // Info::trStmnt_Bset_W
+         //
+         void Info::trStmnt_Bset_W()
+         {
+            CheckArgC(stmnt, 4);
+            CheckArgB(stmnt, 2, IR::ArgBase::Lit);
+            CheckArgB(stmnt, 3, IR::ArgBase::Lit);
+
+            if(stmnt->op.size != 1)
+               throw Core::ExceptStr(stmnt->pos, "Bset_W must have size 1");
+
+            moveArgStk_src(stmnt->args[1], stmnt->op.size);
          }
 
          //

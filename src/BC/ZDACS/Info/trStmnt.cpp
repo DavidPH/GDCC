@@ -56,6 +56,9 @@ namespace GDCC
 
             case IR::Code::Bclo_W: trStmnt_Bclz_W(); break;
             case IR::Code::Bclz_W: trStmnt_Bclz_W(); break;
+            case IR::Code::Bges_W: trStmnt_Bget_W(); break;
+            case IR::Code::Bget_W: trStmnt_Bget_W(); break;
+            case IR::Code::Bset_W: trStmnt_Bset_W(); break;
 
             case IR::Code::Call: trStmnt_Call(); break;
 

@@ -73,6 +73,14 @@ namespace GDCC
       }
 
       //
+      // ExpConvert_Bitfield
+      //
+      AST::Exp::CRef ExpConvert_Bitfield(AST::Exp const *e, Core::Origin pos)
+      {
+         return AST::Exp_ConvertBitfield::Create(e->getType()->getBaseType(), e, pos);
+      }
+
+      //
       // ExpConvert_Bool
       //
       AST::Exp::CRef ExpConvert_Bool(AST::Type const *t, AST::Exp const *e,
