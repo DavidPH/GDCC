@@ -13,6 +13,7 @@
 //-----------------------------------------------------------------------------
 
 #define __GDCC__DirectObject
+#define _GNU_SOURCE
 
 #include <stdio.h>
 
@@ -29,37 +30,41 @@
 
 
 //----------------------------------------------------------------------------|
+// Types                                                                      |
+//
+
+//
+// __cookie_mem
+//
+typedef struct __cookie_mem
+{
+   char  *mem;
+   size_t len;
+   size_t pos;
+} __cookie_mem;
+
+//
+// __cookie_mem_str
+//
+typedef struct __cookie_mem_str
+{
+   char __str_ars *mem;
+   size_t          len;
+   size_t          pos;
+} __cookie_mem_str;
+
+
+//----------------------------------------------------------------------------|
 // Static Prototypes                                                          |
 //
 
-static int FILE_fn_fail_close(FILE *stream);
-static int FILE_fn_fail_fetch(FILE *stream);
-static int FILE_fn_fail_flush(FILE *stream, int c);
-static int FILE_fn_fail_getpos(FILE *stream, fpos_t *pos);
-static int FILE_fn_fail_open(FILE *stream, char const *filename, char const *mode);
-static int FILE_fn_fail_reopen(FILE *stream, char const *filename, char const *mode);
-static int FILE_fn_fail_setbuf(FILE *stream, char *buf, size_t size, int mode);
-static int FILE_fn_fail_setpos(FILE *stream, fpos_t const *pos);
-static int FILE_fn_fail_unget(FILE *stream, int c);
+static ssize_t FILE_fn_mem_read(void *cookie, char *buf, size_t size);
+static ssize_t FILE_fn_mem_read_str(void *cookie, char *buf, size_t size);
+static ssize_t FILE_fn_mem_write_sta(void *cookie, char const *buf, size_t size);
+static int     FILE_fn_mem_seek(void *cookie, off_t *offset, int whence);
+static int     FILE_fn_mem_seek_str(void *cookie, off_t *offset, int whence);
 
-static int FILE_fn_pass_close(FILE *stream);
-static int FILE_fn_pass_flush(FILE *stream, int c);
-static int FILE_fn_pass_open(FILE *stream, char const *filename, char const *mode);
-
-static int FILE_fn_stdout_flush(FILE *stream, int c);
-static int FILE_fn_stdout_setbuf(FILE *stream, char *buf, size_t size, int mode);
-
-static int FILE_fn_strr_getpos(FILE *stream, fpos_t *pos);
-static int FILE_fn_strr_setpos(FILE *stream, fpos_t const *pos);
-
-static int FILE_fn_strw_flush(FILE *stream, int c);
-static int FILE_fn_strw_getpos(FILE *stream, fpos_t *pos);
-static int FILE_fn_strw_setpos(FILE *stream, fpos_t const *pos);
-
-static int FILE_fn_strentr_fetch(FILE *stream);
-static int FILE_fn_strentr_getpos(FILE *stream, fpos_t *pos);
-static int FILE_fn_strentr_setpos(FILE *stream, fpos_t const *pos);
-static int FILE_fn_strentr_unget(FILE *stream, int c);
+static ssize_t FILE_fn_stdout_write(void *cookie, char const *buf, size_t size);
 
 
 //----------------------------------------------------------------------------|
@@ -67,10 +72,21 @@ static int FILE_fn_strentr_unget(FILE *stream, int c);
 //
 
 [[no_init]]
+static char Buffer_memfile[BUFSIZ];
+
+[[no_init]]
 static char Buffer_stderr[BUFSIZ];
 
 [[no_init]]
 static char Buffer_stdout[BUFSIZ];
+
+[[no_init]]
+static __cookie_mem Cookie_mem;
+
+[[no_init]]
+static __cookie_mem_str Cookie_mem_str;
+
+static FILE __memfile;
 
 
 //----------------------------------------------------------------------------|
@@ -83,21 +99,16 @@ static char Buffer_stdout[BUFSIZ];
 FILE __stderr =
 {
    {
-      .fn_close  = FILE_fn_fail_close,
-      .fn_fetch  = FILE_fn_fail_fetch,
-      .fn_flush  = FILE_fn_stdout_flush,
-      .fn_getpos = FILE_fn_fail_getpos,
-      .fn_open   = FILE_fn_fail_open,
-      .fn_reopen = FILE_fn_fail_reopen,
-      .fn_setbuf = FILE_fn_stdout_setbuf,
-      .fn_setpos = FILE_fn_fail_setpos,
-      .fn_unget  = FILE_fn_fail_unget,
+      .read  = NULL,
+      .write = FILE_fn_stdout_write,
+      .seek  = NULL,
+      .close = NULL,
    },
 
-   {NULL, NULL, NULL, 0},
-   {Buffer_stderr, Buffer_stderr, Buffer_stderr + sizeof(Buffer_stderr), _IOLBF},
+   {Buffer_stderr, Buffer_stderr, Buffer_stderr, 0},
+   {Buffer_stderr, Buffer_stderr, Buffer_stderr + sizeof(Buffer_stderr), sizeof(Buffer_stderr)},
 
-   NULL, 0
+   NULL, _FILEFLAG_LBF
 };
 
 //
@@ -106,15 +117,10 @@ FILE __stderr =
 FILE __stdin =
 {
    {
-      .fn_close  = FILE_fn_fail_close,
-      .fn_fetch  = FILE_fn_fail_fetch,
-      .fn_flush  = FILE_fn_fail_flush,
-      .fn_getpos = FILE_fn_fail_getpos,
-      .fn_open   = FILE_fn_fail_open,
-      .fn_reopen = FILE_fn_fail_reopen,
-      .fn_setbuf = FILE_fn_fail_setbuf,
-      .fn_setpos = FILE_fn_fail_setpos,
-      .fn_unget  = FILE_fn_fail_unget,
+      .read  = NULL,
+      .write = NULL,
+      .seek  = NULL,
+      .close = NULL,
    },
 
    {NULL, NULL, NULL, 0},
@@ -129,94 +135,16 @@ FILE __stdin =
 FILE __stdout =
 {
    {
-      .fn_close  = FILE_fn_fail_close,
-      .fn_fetch  = FILE_fn_fail_fetch,
-      .fn_flush  = FILE_fn_stdout_flush,
-      .fn_getpos = FILE_fn_fail_getpos,
-      .fn_open   = FILE_fn_fail_open,
-      .fn_reopen = FILE_fn_fail_reopen,
-      .fn_setbuf = FILE_fn_stdout_setbuf,
-      .fn_setpos = FILE_fn_fail_setpos,
-      .fn_unget  = FILE_fn_fail_unget,
+      .read  = NULL,
+      .write = FILE_fn_stdout_write,
+      .seek  = NULL,
+      .close = NULL,
    },
 
-   {NULL, NULL, NULL, 0},
-   {Buffer_stdout, Buffer_stdout, Buffer_stdout + sizeof(Buffer_stdout), _IOLBF},
+   {Buffer_stdout, Buffer_stdout, Buffer_stdout, 0},
+   {Buffer_stdout, Buffer_stdout, Buffer_stdout + sizeof(Buffer_stdout), sizeof(Buffer_stdout)},
 
-   NULL, 0
-};
-
-//
-// __strfiler
-//
-FILE __strfiler =
-{
-   {
-      .fn_close  = FILE_fn_fail_close,
-      .fn_fetch  = FILE_fn_fail_fetch,
-      .fn_flush  = FILE_fn_fail_flush,
-      .fn_getpos = FILE_fn_strr_getpos,
-      .fn_open   = FILE_fn_fail_open,
-      .fn_reopen = FILE_fn_fail_reopen,
-      .fn_setbuf = FILE_fn_fail_setbuf,
-      .fn_setpos = FILE_fn_strr_setpos,
-      .fn_unget  = FILE_fn_fail_unget,
-   },
-
-   {NULL, NULL, NULL, 0},
-   {NULL, NULL, NULL, _IOFBF},
-
-   NULL, 0
-};
-
-//
-// __strfiler_str
-//
-__FILE_str __strfiler_str =
-{
-   {
-      {
-         .fn_close  = FILE_fn_fail_close,
-         .fn_fetch  = FILE_fn_strentr_fetch,
-         .fn_flush  = FILE_fn_fail_flush,
-         .fn_getpos = FILE_fn_strentr_getpos,
-         .fn_open   = FILE_fn_fail_open,
-         .fn_reopen = FILE_fn_fail_reopen,
-         .fn_setbuf = FILE_fn_fail_setbuf,
-         .fn_setpos = FILE_fn_strentr_setpos,
-         .fn_unget  = FILE_fn_strentr_unget,
-      },
-
-      {NULL, NULL, NULL, 0},
-      {NULL, NULL, NULL, 0},
-
-      NULL, 0
-   },
-
-   {NULL, NULL, NULL, _IOFBF}
-};
-
-//
-// __strfilew
-//
-FILE __strfilew =
-{
-   {
-      .fn_close  = FILE_fn_fail_close,
-      .fn_fetch  = FILE_fn_fail_fetch,
-      .fn_flush  = FILE_fn_pass_flush,
-      .fn_getpos = FILE_fn_strw_getpos,
-      .fn_open   = FILE_fn_fail_open,
-      .fn_reopen = FILE_fn_fail_reopen,
-      .fn_setbuf = FILE_fn_fail_setbuf,
-      .fn_setpos = FILE_fn_strw_setpos,
-      .fn_unget  = FILE_fn_fail_unget,
-   },
-
-   {NULL, NULL, NULL, 0},
-   {NULL, NULL, NULL, _IOFBF},
-
-   NULL, 0
+   NULL, _FILEFLAG_LBF
 };
 
 
@@ -225,109 +153,130 @@ FILE __strfilew =
 //
 
 //=========================================================
-// Automatic fail functions.
+// memfile functions.
 //
 
 //
-// FILE_fn_fail_close
+// FILE_fn_mem_read
 //
-static int FILE_fn_fail_close(FILE *stream)
+static ssize_t FILE_fn_mem_read(void *cookie_, char *buf, size_t size)
 {
-   return EOF;
+   __cookie_mem *cookie = cookie_;
+   size_t        avail  = cookie->len - cookie->pos;
+
+   if(size > avail)
+      size = avail;
+
+   memcpy(buf, cookie->mem + cookie->pos, size);
+   cookie->pos += size;
+   return size;
 }
 
 //
-// FILE_fn_fail_fetch
+// FILE_fn_mem_write
 //
-static int FILE_fn_fail_fetch(FILE *stream)
+static ssize_t FILE_fn_mem_write(void *cookie_, char const *buf, size_t size)
 {
-   stream->flags |= _FILEFLAG_EOF;
-   return EOF;
+   __cookie_mem *cookie = cookie_;
+   size_t        avail  = cookie->len - cookie->pos;
+
+   if(size >= avail)
+   {
+      memcpy(cookie->mem + cookie->pos, buf, avail);
+      cookie->pos = cookie->len;
+      return avail;
+   }
+   else
+   {
+      memcpy(cookie->mem + cookie->pos, buf, size);
+      cookie->mem[cookie->pos += size] = '\0';
+      return size;
+   }
 }
 
 //
-// FILE_fn_fail_flush
+// FILE_fn_mem_write_sta
 //
-static int FILE_fn_fail_flush(FILE *stream, int c)
+static ssize_t FILE_fn_mem_write_sta(void *cookie_, char const *buf, size_t size)
 {
-   return EOF;
+   __cookie_mem *cookie = cookie_;
+   size_t        avail  = cookie->len - cookie->pos;
+
+   if(size >= avail)
+   {
+      memcpy(cookie->mem + cookie->pos, buf, avail);
+      cookie->pos = cookie->len;
+      return size; // Silently ignore unwritten data.
+   }
+   else
+   {
+      memcpy(cookie->mem + cookie->pos, buf, size);
+      cookie->mem[cookie->pos += size] = '\0';
+      return size;
+   }
 }
 
 //
-// FILE_fn_fail_getpos
+// FILE_fn_mem_seek
 //
-static int FILE_fn_fail_getpos(FILE *stream, fpos_t *pos)
+static int FILE_fn_mem_seek(void *cookie_, off_t *offset, int whence)
 {
-   errno = EBADF;
-   return EOF;
-}
+   __cookie_mem *cookie = cookie_;
+   size_t        pos;
 
-//
-// FILE_fn_fail_open
-//
-static int FILE_fn_fail_open(FILE *stream, char const *filename, char const *mode)
-{
-   return EOF;
-}
+   switch(whence)
+   {
+   case SEEK_SET: pos = *offset; break;
+   case SEEK_CUR: pos = *offset + cookie->pos; break;
+   case SEEK_END: pos = *offset + cookie->len; break;
+   default: return EOF;
+   }
 
-//
-// FILE_fn_fail_reopen
-//
-static int FILE_fn_fail_reopen(FILE *stream, char const *filename, char const *mode)
-{
-   return EOF;
-}
+   if(pos > cookie->len)
+      return EOF;
 
-//
-// FILE_fn_fail_setbuf
-//
-static int FILE_fn_fail_setbuf(FILE *stream, char *buf, size_t size, int mode)
-{
-   return EOF;
-}
+   *offset = cookie->pos = pos;
 
-//
-// FILE_fn_fail_setpos
-//
-static int FILE_fn_fail_setpos(FILE *stream, fpos_t const *pos)
-{
-   errno = EBADF;
-   return EOF;
-}
-
-//
-// FILE_fn_fail_unget
-//
-static int FILE_fn_fail_unget(FILE *stream, int c)
-{
-   return EOF;
-}
-
-//=========================================================
-// Automatic success functions.
-//
-
-//
-// FILE_fn_pass_close
-//
-static int FILE_fn_pass_close(FILE *stream)
-{
    return 0;
 }
 
 //
-// FILE_fn_pass_flush
+// FILE_fn_mem_read_str
 //
-static int FILE_fn_pass_flush(FILE *stream, int c)
+static ssize_t FILE_fn_mem_read_str(void *cookie_, char *buf, size_t size)
 {
-   return 0;
+   __cookie_mem_str *cookie = cookie_;
+   size_t            avail  = cookie->len - cookie->pos;
+
+   if(size > avail)
+      size = avail;
+
+   ACS_StrArsCpyToGlobalCharRange((int)buf, __GDCC__Sta, 0, size, cookie->mem + cookie->pos);
+   cookie->pos += size;
+   return size;
 }
 
 //
-// FILE_fn_pass_open
+// FILE_fn_mem_seek_str
 //
-static int FILE_fn_pass_open(FILE *stream)
+static int FILE_fn_mem_seek_str(void *cookie_, off_t *offset, int whence)
 {
+   __cookie_mem_str *cookie = cookie_;
+   size_t            pos;
+
+   switch(whence)
+   {
+   case SEEK_SET: pos = *offset; break;
+   case SEEK_CUR: pos = *offset + cookie->pos; break;
+   case SEEK_END: pos = *offset + cookie->len; break;
+   default: return EOF;
+   }
+
+   if(pos > cookie->len)
+      return EOF;
+
+   *offset = cookie->pos = pos;
+
    return 0;
 }
 
@@ -336,200 +285,22 @@ static int FILE_fn_pass_open(FILE *stream)
 //
 
 //
-// FILE_fn_stdout_flush
+// FILE_fn_stdout_write
 //
-static int FILE_fn_stdout_flush(FILE *stream, int c)
+static ssize_t FILE_fn_stdout_write(void *cookie, char const *buf, size_t size)
 {
    #if __GDCC_Family__ZDACS__
-   // Because flushing in this way generates a spurious linefeed, do not honor
-   // generic flush requests.
-   if(c == EOF)
-      return 0;
-
    ACS_BeginPrint();
-   ACS_PrintGlobalCharRange((int)stream->buf_put.buf_beg, __GDCC__Sta, 0,
-      stream->buf_put.buf_ptr - stream->buf_put.buf_beg);
-   if(c != '\n')
-      ACS_PrintChar(c);
+   if(buf[size - 1] == '\n')
+      ACS_PrintGlobalCharRange((int)buf, __GDCC__Sta, 0, size - 1);
+   else
+      ACS_PrintGlobalCharRange((int)buf, __GDCC__Sta, 0, size);
    ACS_EndLog();
 
-   stream->buf_put.buf_ptr = stream->buf_put.buf_beg;
-
-   return c != EOF ? c : 0;
+   return size;
    #else
-   return EOF;
+   return 0;
    #endif
-}
-
-//
-// FILE_fn_stdout_setbuf
-//
-static int FILE_fn_stdout_setbuf(FILE *stream, char *buf, size_t size, int mode)
-{
-   // Only buffered I/O is possible currently.
-   if(mode == _IONBF)
-      return EOF;
-
-   size_t used = stream->buf_put.buf_ptr - stream->buf_put.buf_beg;
-
-   // Buffer must be large enough for current buffer contents.
-   if(size < used)
-      return EOF;
-
-   if(!buf)
-   {
-      // If possible, reuse the associated static buffer.
-      if(stream == stderr)
-      {
-         if(size <= sizeof(Buffer_stderr))
-         {
-            buf  = Buffer_stderr;
-            size = sizeof(Buffer_stderr);
-            goto buf_good;
-         }
-      }
-      else
-      {
-         if(size <= sizeof(Buffer_stdout))
-         {
-            buf  = Buffer_stdout;
-            size = sizeof(Buffer_stdout);
-            goto buf_good;
-         }
-      }
-
-      return EOF;
-   }
-
-buf_good:
-   if(stream->buf_put.buf_ptr != stream->buf_put.buf_beg)
-      memcpy(buf, stream->buf_put.buf_beg, used);
-
-   stream->buf_put.buf_beg  = buf;
-   stream->buf_put.buf_ptr  = buf + used;
-   stream->buf_put.buf_end  = buf + size;
- //stream->buf_put.buf_mode = _IOLBF;
-
-   return 0;
-}
-
-//=========================================================
-// __stropenr functions.
-//
-
-//
-// FILE_fn_strr_getpos
-//
-static int FILE_fn_strr_getpos(FILE *stream, fpos_t *pos)
-{
-   __ltofpos(pos, stream->buf_get.buf_ptr - stream->buf_get.buf_beg);
-   return 0;
-}
-
-//
-// FILE_fn_strr_setpos
-//
-static int FILE_fn_strr_setpos(FILE *stream, fpos_t const *pos)
-{
-   stream->buf_get.buf_ptr = stream->buf_get.buf_beg + __fpostol(pos);
-   return 0;
-}
-
-//=========================================================
-// __stropenr_str functions.
-//
-
-//
-// FILE_fn_strentr_fetch
-//
-static int FILE_fn_strentr_fetch(FILE *stream_)
-{
-   __FILE_str *stream = (__FILE_str *)stream_;
-
-   if(stream->buf_get.buf_ptr == stream->buf_get.buf_end)
-   {
-      stream->f.flags |= _FILEFLAG_EOF;
-      return EOF;
-   }
-
-   return *stream->buf_get.buf_ptr++;
-}
-
-//
-// FILE_fn_strentr_getpos
-//
-static int FILE_fn_strentr_getpos(FILE *stream_, fpos_t *pos)
-{
-   __FILE_str *stream = (__FILE_str *)stream_;
-
-   __ltofpos(pos, stream->buf_get.buf_ptr - stream->buf_get.buf_beg);
-   return 0;
-}
-
-//
-// FILE_fn_strentr_setpos
-//
-static int FILE_fn_strentr_setpos(FILE *stream_, fpos_t const *pos)
-{
-   __FILE_str *stream = (__FILE_str *)stream_;
-
-   stream->buf_get.buf_ptr = stream->buf_get.buf_beg + __fpostol(pos);
-   return 0;
-}
-
-//
-// FILE_fn_strentr_unget
-//
-static int FILE_fn_strentr_unget(FILE *stream_, int c)
-{
-   __FILE_str *stream = (__FILE_str *)stream_;
-
-   if(stream->buf_get.buf_ptr == stream->buf_get.buf_beg ||
-      *(stream->buf_get.buf_ptr - 1) != c)
-   {
-      return EOF;
-   }
-
-   --stream->buf_get.buf_ptr;
-
-   stream->f.flags &= ~_FILEFLAG_EOF;
-
-   return c;
-}
-
-//=========================================================
-// __stropenw functions.
-//
-
-//
-// FILE_fn_strw_flush
-//
-static int FILE_fn_strw_flush(FILE *stream, int c)
-{
-   // Can only handle generic flush requests...
-   if(c != EOF)
-      return EOF;
-
-   // ... Which are a no-op, because the buffer is the final output.
-   return 0;
-}
-
-//
-// FILE_fn_strw_getpos
-//
-static int FILE_fn_strw_getpos(FILE *stream, fpos_t *pos)
-{
-   __ltofpos(pos, stream->buf_put.buf_ptr - stream->buf_put.buf_beg);
-   return 0;
-}
-
-//
-// FILE_fn_strw_setpos
-//
-static int FILE_fn_strw_setpos(FILE *stream, fpos_t const *pos)
-{
-   stream->buf_put.buf_ptr = stream->buf_put.buf_beg + __fpostol(pos);
-   return 0;
 }
 
 
@@ -548,13 +319,20 @@ int fclose(FILE *stream)
 {
    int res = 0;
 
-   if(stream->fn.fn_flush(stream, EOF) == EOF)
+   if(fflush(stream) == EOF)
       res = EOF;
 
-   if(stream->fn.fn_close(stream) == EOF)
+   if(stream->_fn.close && stream->_fn.close(stream->_cookie) == EOF)
       res = EOF;
 
-   free(stream);
+   if(stream->_flag & _FILEFLAG_FRB)
+      free(stream->_get._buf);
+
+   if(stream->_flag & _FILEFLAG_FRC)
+      free(stream->_cookie);
+
+   if(stream->_flag & _FILEFLAG_FRF)
+      free(stream);
 
    return res;
 }
@@ -564,7 +342,34 @@ int fclose(FILE *stream)
 //
 int fflush(FILE *stream)
 {
-   return stream->fn.fn_flush(stream, EOF);
+   size_t len;
+
+   if(stream->_flag & _FILEFLAG_ERR)
+      return EOF;
+
+   // Flush get buffer by ungetting read buffer.
+   len = stream->_get._end - stream->_get._ptr;
+   if(len && stream->_fn.read)
+   {
+      if(!stream->_fn.seek)
+         return stream->_flag |= _FILEFLAG_ERR, EOF;
+
+      off_t   off = -(off_t)len;
+      ssize_t res = stream->_fn.seek(stream->_cookie, &off, SEEK_CUR);
+      if(res == EOF) return stream->_flag |= _FILEFLAG_ERR, EOF;
+      stream->_get._end = stream->_get._ptr;
+   }
+
+   // Flush put buffer by writing it.
+   len = stream->_put._ptr - stream->_put._buf;
+   if(len && stream->_fn.write)
+   {
+      ssize_t res = stream->_fn.write(stream->_cookie, stream->_put._buf, len);
+      if(res != len) return stream->_flag |= _FILEFLAG_ERR, EOF;
+      stream->_put._ptr = stream->_put._buf;
+   }
+
+   return 0;
 }
 
 //
@@ -600,7 +405,161 @@ void setbuf(FILE *restrict stream, char *restrict buf)
 //
 int setvbuf(FILE *restrict stream, char *restrict buf, int mode, size_t size)
 {
-   return stream->fn.fn_setbuf(stream, buf, size, mode);
+   if(mode == _IOFBF || mode == _IOLBF)
+   {
+      // TODO: Allocate buffer.
+      if(!buf)
+         return EOF;
+
+      // Fuck off.
+      if(size < 4)
+         return EOF;
+   }
+   else if(mode == _IONBF)
+   {
+      // Discard passed buffer data for unbuffered mode.
+      buf  = NULL;
+      size = 0;
+   }
+   else
+   {
+      // Invalid mode.
+      errno = EINVAL;
+      return EOF;
+   }
+
+   size_t getUsed = stream->_get._end - stream->_get._ptr;
+   size_t putUsed = stream->_put._ptr - stream->_put._buf;
+
+   // Divide buffer as needed.
+   size_t getSize, putSize;
+   if(stream->_fn.write)
+   {
+      if(stream->_fn.read)
+      {
+         getSize = size / 2;
+         putSize = size - getSize;
+      }
+      else
+      {
+         getSize = 0;
+         putSize = size;
+      }
+   }
+   else
+   {
+      if(stream->_fn.read)
+      {
+         getSize = size;
+         putSize = 0;
+      }
+      else
+      {
+         return EOF;
+      }
+   }
+
+   // Line-buffered writes need a reserved byte.
+   if(mode == _IOLBF && stream->_fn.write)
+      --putSize;
+
+   // Check that new buffer large enough for existing contents.
+   if(getUsed > getSize || putUsed > putSize)
+      return EOF;
+
+   // TODO: Allocate new buffer, if needed.
+
+   // Transfer buffer contents.
+   memcpy(buf,           stream->_get._ptr, getUsed);
+   memcpy(buf + getSize, stream->_put._buf, putUsed);
+
+   // TODO: Free old buffer, if needed.
+
+   // Set buffers.
+   stream->_get._buf = buf;
+   stream->_get._ptr = buf;
+   stream->_get._end = buf + getUsed;
+   stream->_get._len = getSize;
+   stream->_put._buf = buf + getSize;
+   stream->_put._ptr = buf + getSize + putUsed;
+   stream->_put._end = buf + getSize + putSize;
+   stream->_put._len = putSize;
+
+   // Set linebuffer flag.
+   if(mode == _IOLBF)
+      stream->_flag |= _FILEFLAG_LBF;
+   else
+      stream->_flag &= ~_FILEFLAG_LBF;
+
+   return 0;
+}
+
+//=========================================================
+// POSIX extensions.
+//
+
+//
+// fmemopen
+//
+FILE *fmemopen(void *buf, size_t size, char const *mode)
+{
+   cookie_io_functions_t io_funcs =
+   {
+      .read  = FILE_fn_mem_read,
+      .write = FILE_fn_mem_write,
+      .seek  = FILE_fn_mem_seek,
+      .close = NULL,
+   };
+
+   FILE *stream = malloc(sizeof(FILE) + BUFSIZ + sizeof(__cookie_mem));
+   if(!stream) return NULL;
+
+   char         *buffer = (char *)(stream + 1);
+   __cookie_mem *cookie = (__cookie_mem *)(buffer + BUFSIZ);
+
+   cookie->mem = buf;
+   cookie->len = size;
+   cookie->pos = 0;
+
+   if(!__fopencookie_ctor(stream, cookie, mode, io_funcs))
+      return free(stream), NULL;
+
+   stream->_flag |= _FILEFLAG_FRF;
+
+   setvbuf(stream, buffer, _IOFBF, BUFSIZ);
+
+   return stream;
+}
+
+//
+// open_memstream
+//
+FILE *open_memstream(char **ptr, size_t *sizeloc)
+{
+   // TODO
+   return NULL;
+}
+
+//=========================================================
+// GNU extensions.
+//
+
+//
+// fopencookie
+//
+FILE *fopencookie(void *cookie, char const *mode, cookie_io_functions_t io_funcs)
+{
+   FILE *stream = malloc(sizeof(FILE) + BUFSIZ);
+   if(!stream) return NULL;
+
+   if(!__fopencookie_ctor(stream, cookie, mode, io_funcs))
+      return free(stream), NULL;
+
+   stream->_flag |= _FILEFLAG_FRF;
+
+   setvbuf(stream, (char *)(stream + 1), _IOFBF, BUFSIZ);
+
+   return stream;
 }
 
 //=========================================================
@@ -608,164 +567,199 @@ int setvbuf(FILE *restrict stream, char *restrict buf, int mode, size_t size)
 //
 
 //
-// __fopen_fn
+// __fopencookie_ctor
 //
-FILE *__fopen_fn(__FILE_fn const *fn, size_t size, void *data,
-   char const *filename, char const *mode)
+FILE *__fopencookie_ctor(FILE *stream, void *cookie, char const *mode,
+   cookie_io_functions_t io_funcs)
 {
-   FILE *f;
+   // Init members.
+   stream->_fn = io_funcs;
 
-   if(!(f = malloc(sizeof(FILE) + size)))
-      return NULL;
+   stream->_get._buf = NULL;
+   stream->_get._ptr = NULL;
+   stream->_get._end = NULL;
+   stream->_get._len = 0;
 
-   f->fn      = *fn;
-   f->buf_get = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
-   f->buf_put = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
-   f->data    = data;
-   f->flags   = 0;
+   stream->_put._buf = NULL;
+   stream->_put._ptr = NULL;
+   stream->_put._end = NULL;
+   stream->_put._len = 0;
 
-   if(f->fn.fn_open && f->fn.fn_open(f, filename, mode) == EOF)
+   stream->_cookie = cookie;
+
+   stream->_flag = 0;
+
+   // Parse mode string.
+   char modeBase = *mode++;
+
+   // Ignore binary mode flag.
+   if(*mode == 'b') ++mode;
+
+   _Bool modePlus = *mode == '+';
+   if(modePlus)
    {
-      free(f);
+      ++mode;
+      // TODO
       return NULL;
    }
 
-   if(!f->fn.fn_close)  f->fn.fn_close  = FILE_fn_pass_close;
-   if(!f->fn.fn_fetch)  f->fn.fn_fetch  = FILE_fn_fail_fetch;
-   if(!f->fn.fn_flush)  f->fn.fn_flush  = FILE_fn_fail_flush;
-   if(!f->fn.fn_getpos) f->fn.fn_getpos = FILE_fn_fail_getpos;
-   if(!f->fn.fn_open)   f->fn.fn_open   = FILE_fn_pass_open;
-   if(!f->fn.fn_reopen) f->fn.fn_reopen = FILE_fn_fail_reopen;
-   if(!f->fn.fn_setbuf) f->fn.fn_setbuf = FILE_fn_fail_setbuf;
-   if(!f->fn.fn_setpos) f->fn.fn_setpos = FILE_fn_fail_setpos;
-   if(!f->fn.fn_unget)  f->fn.fn_unget  = FILE_fn_fail_unget;
+   // Must be at end of mode string.
+   if(*mode)
+   {
+      errno = EINVAL;
+      return NULL;
+   }
 
-   return f;
-}
+   switch(modeBase)
+   {
+   case 'r':
+      if(!modePlus)
+         stream->_fn.write = NULL;
+      break;
 
-//
-// __stropenr
-//
-FILE *__stropenr(char const *str, size_t size)
-{
-   FILE *f;
+   case 'w':
+      if(!modePlus)
+         stream->_fn.read = NULL;
+      break;
 
-   if(!(f = malloc(sizeof(FILE))))
+   case 'a':
+      if(!modePlus)
+         stream->_fn.read = NULL;
+
+      // TODO: Seek to stream end.
       return NULL;
 
-   char *buf = (char *)str;
-
-   f->buf_get = (__FILE_buf const){buf, buf, buf + size, _IOFBF};
-   f->buf_put = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
-   f->data    = NULL;
-   f->flags   = 0;
-
-   f->fn.fn_close  = FILE_fn_pass_close;
-   f->fn.fn_fetch  = FILE_fn_fail_fetch;
-   f->fn.fn_flush  = FILE_fn_fail_flush;
-   f->fn.fn_getpos = FILE_fn_strr_getpos;
-   f->fn.fn_open   = FILE_fn_pass_open;
-   f->fn.fn_reopen = FILE_fn_fail_reopen;
-   f->fn.fn_setbuf = FILE_fn_fail_setbuf;
-   f->fn.fn_setpos = FILE_fn_strr_setpos;
-   f->fn.fn_unget  = FILE_fn_fail_unget;
-
-   return f;
-}
-
-//
-// __stropenr_sta
-//
-FILE *__stropenr_sta(char const *str, size_t size)
-{
-   char *buf = (char *)str;
-   __strfiler.buf_get = (__FILE_buf const){buf, buf, buf + size, _IOFBF};
-   __strfiler.flags   = 0;
-
-   return &__strfiler;
-}
-
-//
-// __stropenr_str
-//
-FILE *__stropenr_str(char __str_ars const *str, size_t size)
-{
-   __FILE_str *f;
-
-   if(!(f = malloc(sizeof(__FILE_str))))
+   default:
       return NULL;
+   }
 
-   f->f.buf_get = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
-   f->f.buf_put = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
-   f->f.data    = NULL;
-   f->f.flags   = 0;
-
-   f->f.fn.fn_close  = FILE_fn_pass_close;
-   f->f.fn.fn_fetch  = FILE_fn_strentr_fetch;
-   f->f.fn.fn_flush  = FILE_fn_fail_flush;
-   f->f.fn.fn_getpos = FILE_fn_strentr_getpos;
-   f->f.fn.fn_open   = FILE_fn_pass_open;
-   f->f.fn.fn_reopen = FILE_fn_fail_reopen;
-   f->f.fn.fn_setbuf = FILE_fn_fail_setbuf;
-   f->f.fn.fn_setpos = FILE_fn_strentr_setpos;
-   f->f.fn.fn_unget  = FILE_fn_strentr_unget;
-
-   char __str_ars *buf = (char __str_ars *)str;
-
-   f->buf_get = (__FILE_buf_str const){buf, buf, buf + size, _IOFBF};
-
-   return &f->f;
+   return stream;
 }
 
 //
-// __stropenr_str_sta
+// __fmemopen_sta_r
 //
-FILE *__stropenr_str_sta(char __str_ars const *str, size_t size)
+FILE *__fmemopen_sta_r(char const *buf, size_t size)
 {
-   char __str_ars *buf = (char __str_ars *)str;
-   __strfiler_str.buf_get = (__FILE_buf_str const){buf, buf, buf + size, _IOFBF};
-   __strfiler_str.f.flags = 0;
+   Cookie_mem.mem = (char *)buf;
+   Cookie_mem.len = size;
+   Cookie_mem.pos = 0;
 
-   return &__strfiler_str.f;
+   __memfile._fn.read  = FILE_fn_mem_read;
+   __memfile._fn.write = NULL;
+   __memfile._fn.seek  = FILE_fn_mem_seek;
+   __memfile._fn.close = NULL;
+
+   __memfile._get._buf = Buffer_memfile;
+   __memfile._get._ptr = Buffer_memfile;
+   __memfile._get._end = Buffer_memfile;
+   __memfile._get._len = sizeof(Buffer_memfile);
+
+   __memfile._put._buf = Buffer_memfile + sizeof(Buffer_memfile);
+   __memfile._put._ptr = Buffer_memfile + sizeof(Buffer_memfile);
+   __memfile._put._end = Buffer_memfile + sizeof(Buffer_memfile);
+   __memfile._put._len = 0;
+
+   __memfile._cookie = &Cookie_mem;
+
+   __memfile._flag = 0;
+
+   return &__memfile;
 }
 
 //
-// __stropenw
+// __fmemopen_sta_r_str
 //
-FILE *__stropenw(char *str, size_t size)
+FILE *__fmemopen_sta_r_str(char __str_ars const *buf, size_t size)
 {
-   FILE *f;
+   Cookie_mem_str.mem = (char __str_ars *)buf;
+   Cookie_mem_str.len = size;
+   Cookie_mem_str.pos = 0;
 
-   if(!(f = malloc(sizeof(FILE))))
-      return NULL;
+   __memfile._fn.read  = FILE_fn_mem_read_str;
+   __memfile._fn.write = NULL;
+   __memfile._fn.seek  = FILE_fn_mem_seek_str;
+   __memfile._fn.close = NULL;
 
-   f->buf_get = (__FILE_buf const){NULL, NULL, NULL, _IONBF};
-   f->buf_put = (__FILE_buf const){str, str, str + size, _IOFBF};
-   f->data    = NULL;
-   f->flags   = 0;
+   __memfile._get._buf = Buffer_memfile;
+   __memfile._get._ptr = Buffer_memfile;
+   __memfile._get._end = Buffer_memfile;
+   __memfile._get._len = sizeof(Buffer_memfile);
 
-   f->fn.fn_close  = FILE_fn_pass_close;
-   f->fn.fn_fetch  = FILE_fn_fail_fetch;
-   f->fn.fn_flush  = FILE_fn_strw_flush;
-   f->fn.fn_getpos = FILE_fn_strw_getpos;
-   f->fn.fn_open   = FILE_fn_pass_open;
-   f->fn.fn_reopen = FILE_fn_fail_reopen;
-   f->fn.fn_setbuf = FILE_fn_fail_setbuf;
-   f->fn.fn_setpos = FILE_fn_strw_setpos;
-   f->fn.fn_unget  = FILE_fn_fail_unget;
+   __memfile._put._buf = Buffer_memfile + sizeof(Buffer_memfile);
+   __memfile._put._ptr = Buffer_memfile + sizeof(Buffer_memfile);
+   __memfile._put._end = Buffer_memfile + sizeof(Buffer_memfile);
+   __memfile._put._len = 0;
 
-   return f;
+   __memfile._cookie = &Cookie_mem_str;
+
+   __memfile._flag = 0;
+
+   return &__memfile;
 }
 
 //
-// __stropenw_sta
+// __fmemopen_sta_w
 //
-FILE *__stropenw_sta(char *str, size_t size)
+FILE *__fmemopen_sta_w(char *buf, size_t size)
 {
-   __strfilew.buf_put = (__FILE_buf const){str, str, str + size, _IOFBF};
-   __strfilew.flags   = 0;
+   Cookie_mem.mem = buf;
+   Cookie_mem.pos = 0;
+   Cookie_mem.len = size;
 
-   return &__strfilew;
+   __memfile._fn.read  = NULL;
+   __memfile._fn.write = FILE_fn_mem_write_sta;
+   __memfile._fn.seek  = FILE_fn_mem_seek;
+   __memfile._fn.close = NULL;
+
+   __memfile._get._buf = Buffer_memfile;
+   __memfile._get._ptr = Buffer_memfile;
+   __memfile._get._end = Buffer_memfile;
+   __memfile._get._len = 0;
+
+   __memfile._put._buf = Buffer_memfile;
+   __memfile._put._ptr = Buffer_memfile;
+   __memfile._put._end = Buffer_memfile + sizeof(Buffer_memfile);
+   __memfile._put._len = sizeof(Buffer_memfile);
+
+   __memfile._cookie = &Cookie_mem;
+
+   __memfile._flag = 0;
+
+   return &__memfile;
+}
+
+//
+// __fmemopen_str
+//
+FILE *__fmemopen_str(char __str_ars *buf, size_t size, char const *mode)
+{
+   cookie_io_functions_t io_funcs =
+   {
+      .read  = FILE_fn_mem_read_str,
+      .write = NULL,
+      .seek  = FILE_fn_mem_seek_str,
+      .close = NULL,
+   };
+
+   FILE *stream = malloc(sizeof(FILE) + BUFSIZ + sizeof(__cookie_mem_str));
+   if(!stream) return NULL;
+
+   char             *buffer = (char *)(stream + 1);
+   __cookie_mem_str *cookie = (__cookie_mem_str *)(buffer + BUFSIZ);
+
+   cookie->mem = buf;
+   cookie->len = size;
+   cookie->pos = 0;
+
+   if(!__fopencookie_ctor(stream, cookie, mode, io_funcs))
+      return free(stream), NULL;
+
+   stream->_flag |= _FILEFLAG_FRF;
+
+   setvbuf(stream, buffer, _IOFBF, BUFSIZ);
+
+   return stream;
 }
 
 //

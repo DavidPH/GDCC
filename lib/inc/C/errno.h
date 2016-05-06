@@ -39,7 +39,8 @@ extern "C" {
 #define EBADF  1
 #define EDOM   2
 #define EILSEQ 3
-#define ERANGE 4
+#define EINVAL 4
+#define ERANGE 5
 
 
 //----------------------------------------------------------------------------|

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2015 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -169,8 +169,11 @@ ACS_AsmFuncDeclFull(353,    , 0, void,   PrintMapCharRange, int, int, int, int);
 ACS_AsmFuncDeclFull(354,    , 0, void,   PrintWorldCharRange, int, int, int, int);
 ACS_AsmFuncDeclFull(355,    , 0, void,   PrintGlobalCharRange, int, int, int, int);
 ACS_AsmFuncDeclFull(356,    , 0, int,    StrCpyToMapCharRange, int, int, int, int, __str, int);
+ACS_AsmFuncDeclFull(356,    , 0, int,    StrArsCpyToMapCharRange, int, int, int, int, char __str_ars const *);
 ACS_AsmFuncDeclFull(357,    , 0, int,    StrCpyToWorldCharRange, int, int, int, int, __str, int);
+ACS_AsmFuncDeclFull(357,    , 0, int,    StrArsCpyToWorldCharRange, int, int, int, int, char __str_ars const *);
 ACS_AsmFuncDeclFull(358,    , 0, int,    StrCpyToGlobalCharRange, int, int, int, int, __str, int);
+ACS_AsmFuncDeclFull(358,    , 0, int,    StrArsCpyToGlobalCharRange, int, int, int, int, char __str_ars const *);
 
 ACS_AsmFuncDeclFull(361,    , 0, void,   NamedScriptWait, __str);
 ACS_AsmFuncDeclFull(362,    , 0, void,   CreateTranslationDesat, int, int, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum);

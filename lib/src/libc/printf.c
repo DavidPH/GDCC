@@ -13,6 +13,7 @@
 //-----------------------------------------------------------------------------
 
 #define __GDCC__DirectObject
+#define _GNU_SOURCE
 
 #include <stdio.h>
 
@@ -629,13 +630,10 @@ int vprintf(char const *restrict format, __va_list arg)
 //
 int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list arg)
 {
-   int ret = vfprintf(__stropenw_sta(s, n), format, arg);
+   int ret = vfprintf(__fmemopen_sta_w(s, n), format, arg);
 
-   // Null terminate result.
-   if(__strfilew.buf_put.buf_ptr != __strfilew.buf_put.buf_end)
-      *__strfilew.buf_put.buf_ptr = '\0';
-   else if(n)
-      s[n-1] = '\0';
+   // Ensure null termination even if buffer was filled.
+   if(n) s[n - 1] = '\0';
 
    return ret;
 }
@@ -645,11 +643,7 @@ int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list
 //
 int vsprintf(char *restrict s, char const *restrict format, va_list arg)
 {
-   // Using -1 here is definitely not guaranteed to work in the future.
-   int ret = vfprintf(__stropenw_sta(s, -1), format, arg);
-
-   // Null terminate result.
-   *__strfilew.buf_put.buf_ptr = '\0';
+   int ret = vfprintf(__fmemopen_sta_w(s, -1), format, arg);
 
    return ret;
 }
@@ -840,13 +834,10 @@ int __vprintf_str(char __str_ars const *restrict format, __va_list arg)
 //
 int __vsnprintf_str(char *restrict s, size_t n, char __str_ars const *restrict format, va_list arg)
 {
-   int ret = __vfprintf_str(__stropenw_sta(s, n), format, arg);
+   int ret = __vfprintf_str(__fmemopen_sta_w(s, n), format, arg);
 
-   // Null terminate result.
-   if(__strfilew.buf_put.buf_ptr != __strfilew.buf_put.buf_end)
-      *__strfilew.buf_put.buf_ptr = '\0';
-   else if(n)
-      s[n-1] = '\0';
+   // Ensure null termination even if buffer was filled.
+   if(n) s[n - 1] = '\0';
 
    return ret;
 }
@@ -856,11 +847,7 @@ int __vsnprintf_str(char *restrict s, size_t n, char __str_ars const *restrict f
 //
 int __vsprintf_str(char *restrict s, char __str_ars const *restrict format, va_list arg)
 {
-   // Using -1 here is definitely not guaranteed to work in the future.
-   int ret = __vfprintf_str(__stropenw_sta(s, -1), format, arg);
-
-   // Null terminate result.
-   *__strfilew.buf_put.buf_ptr = '\0';
+   int ret = __vfprintf_str(__fmemopen_sta_w(s, -1), format, arg);
 
    return ret;
 }

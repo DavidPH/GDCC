@@ -12,6 +12,9 @@
 //
 //-----------------------------------------------------------------------------
 
+#define __GDCC__DirectObject
+#define _GNU_SOURCE
+
 #include <stdio.h>
 
 #include <ctype.h>
@@ -680,7 +683,7 @@ int vscanf(char const *restrict format, __va_list arg)
 //
 int vsscanf(char const *restrict s, char const *restrict format, __va_list arg)
 {
-   return vfscanf(__stropenr_sta(s, strlen(s)), format, arg);
+   return vfscanf(__fmemopen_sta_r(s, strlen(s)), format, arg);
 }
 
 //=========================================================
@@ -790,7 +793,7 @@ int __vscanf_str(char __str_ars const *restrict format, __va_list arg)
 int __vsscanf_str(char const *restrict s,
    char __str_ars const *restrict format, __va_list arg)
 {
-   return __vfscanf_str(__stropenr_sta(s, strlen(s)), format, arg);
+   return __vfscanf_str(__fmemopen_sta_r(s, strlen(s)), format, arg);
 }
 
 //
@@ -799,7 +802,7 @@ int __vsscanf_str(char const *restrict s,
 int __vstrscanf(char __str_ars const *restrict s,
    char const *restrict format, __va_list arg)
 {
-   return vfscanf(__stropenr_str_sta(s, strlen_str(s)), format, arg);
+   return vfscanf(__fmemopen_sta_r_str(s, strlen_str(s)), format, arg);
 }
 
 //
@@ -808,7 +811,7 @@ int __vstrscanf(char __str_ars const *restrict s,
 int __vstrscanf_str(char __str_ars const *restrict s,
    char __str_ars const *restrict format, __va_list arg)
 {
-   return __vfscanf_str(__stropenr_str_sta(s, strlen_str(s)), format, arg);
+   return __vfscanf_str(__fmemopen_sta_r_str(s, strlen_str(s)), format, arg);
 }
 
 // EOF
