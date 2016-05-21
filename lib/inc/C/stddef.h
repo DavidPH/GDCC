@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -14,6 +14,8 @@
 
 #ifndef __GDCC_Header__C__stddef_h__
 #define __GDCC_Header__C__stddef_h__
+
+#include <bits/types.h>
 
 
 //----------------------------------------------------------------------------|
@@ -44,7 +46,7 @@
 //
 #ifndef __GDCC_Have__ptrdiff_t__
 #define __GDCC_Have__ptrdiff_t__
-typedef int ptrdiff_t;
+typedef __ptrdiff_t ptrdiff_t;
 #endif
 
 //
@@ -52,7 +54,7 @@ typedef int ptrdiff_t;
 //
 #ifndef __GDCC_Have__size_t__
 #define __GDCC_Have__size_t__
-typedef unsigned size_t;
+typedef __size_t size_t;
 #endif
 
 //
@@ -60,7 +62,7 @@ typedef unsigned size_t;
 //
 #ifndef __GDCC_Have__max_align_t__
 #define __GDCC_Have__max_align_t__
-typedef int max_align_t;
+typedef __max_align_t max_align_t;
 #endif
 
 //
@@ -68,7 +70,7 @@ typedef int max_align_t;
 //
 #ifndef __GDCC_Have__wchar_t__
 #define __GDCC_Have__wchar_t__
-typedef unsigned wchar_t;
+typedef __wchar_t wchar_t;
 #endif
 
 

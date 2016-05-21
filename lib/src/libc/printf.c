@@ -19,6 +19,8 @@
 
 #include <GDCC_libc.h>
 #include <stdarg.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #if __GDCC_Family__ZDACS__
 #include <ACS_ZDoom.h>
@@ -297,7 +299,7 @@
    case FL_j:  fmtRet = fmt(va_arg(arg, uintmax_t),          fmtArg); break; \
    case FL_l:  fmtRet = fmt(va_arg(arg, long unsigned),      fmtArg); break; \
    case FL_ll: fmtRet = fmt(va_arg(arg, long long unsigned), fmtArg); break; \
-   case FL_t:  fmtRet = fmt(va_arg(arg, uptrdiff_t),         fmtArg); break; \
+   case FL_t:  fmtRet = fmt(va_arg(arg, __uptrdiff_t),       fmtArg); break; \
    case FL_z:  fmtRet = fmt(va_arg(arg, size_t),             fmtArg); break; \
    default: return ~ret; \
    }

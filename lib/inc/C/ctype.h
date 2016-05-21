@@ -15,6 +15,8 @@
 #ifndef __GDCC_Header__C__ctype_h__
 #define __GDCC_Header__C__ctype_h__
 
+#include <bits/features.h>
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |

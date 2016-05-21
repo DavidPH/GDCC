@@ -15,6 +15,8 @@
 #ifndef __GDCC_Header__C__errno_h__
 #define __GDCC_Header__C__errno_h__
 
+#include <bits/features.h>
+
 
 #ifdef __cplusplus
 extern "C" {

@@ -21,6 +21,7 @@
 #include <inttypes.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdfix.h>
 #include <stdlib.h>
 #include <string.h>
@@ -520,7 +521,7 @@
    case SFL_j:  *va_arg(arg, uintmax_t *)          = strtoumax(__GDCC__FormatBuf, NULL, base); ++ret; break; \
    case SFL_l:  *va_arg(arg, long unsigned *)      = strtoul(__GDCC__FormatBuf, NULL, base);   ++ret; break; \
    case SFL_ll: *va_arg(arg, long long unsigned *) = strtoull(__GDCC__FormatBuf, NULL, base);  ++ret; break; \
-   case SFL_t:  *va_arg(arg, uptrdiff_t *)         = strtoui(__GDCC__FormatBuf, NULL, base);   ++ret; break; \
+   case SFL_t:  *va_arg(arg, __uptrdiff_t *)       = strtoui(__GDCC__FormatBuf, NULL, base);   ++ret; break; \
    case SFL_z:  *va_arg(arg, size_t *)             = strtoui(__GDCC__FormatBuf, NULL, base);   ++ret; break; \
    default: return ret; \
    }

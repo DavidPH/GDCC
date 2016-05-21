@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -14,6 +14,8 @@
 
 #ifndef __GDCC_Header__C__stdint_h__
 #define __GDCC_Header__C__stdint_h__
+
+#include <bits/types.h>
 
 
 //----------------------------------------------------------------------------|
@@ -179,7 +181,7 @@ typedef unsigned long long int uint_fast96_t;
 //
 #ifndef __GDCC_Have__intptr_t__
 #define __GDCC_Have__intptr_t__
-typedef signed int intptr_t;
+typedef __intptr_t intptr_t;
 #endif
 
 //
@@ -187,7 +189,7 @@ typedef signed int intptr_t;
 //
 #ifndef __GDCC_Have__uintptr_t__
 #define __GDCC_Have__uintptr_t__
-typedef unsigned int uintptr_t;
+typedef __uintptr_t uintptr_t;
 #endif
 
 //
@@ -195,7 +197,7 @@ typedef unsigned int uintptr_t;
 //
 #ifndef __GDCC_Have__intmax_t__
 #define __GDCC_Have__intmax_t__
-typedef long long intmax_t;
+typedef __intmax_t intmax_t;
 #endif
 
 //
@@ -203,7 +205,7 @@ typedef long long intmax_t;
 //
 #ifndef __GDCC_Have__uintmax_t__
 #define __GDCC_Have__uintmax_t__
-typedef unsigned long long uintmax_t;
+typedef __uintmax_t uintmax_t;
 #endif
 
 #endif//__GDCC_Header__C__stdint_h__

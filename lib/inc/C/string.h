@@ -15,6 +15,8 @@
 #ifndef __GDCC_Header__C__string_h__
 #define __GDCC_Header__C__string_h__
 
+#include <bits/types.h>
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -37,7 +39,7 @@
 //
 #ifndef __GDCC_Have__size_t__
 #define __GDCC_Have__size_t__
-typedef unsigned size_t;
+typedef __size_t size_t;
 #endif
 
 

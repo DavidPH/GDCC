@@ -140,6 +140,14 @@ typedef __off_t fpos_t;
 typedef __off_t off_t;
 #endif
 
+//
+// ssize_t
+//
+#ifndef __GDCC_Have__ssize_t__
+#define __GDCC_Have__ssize_t__
+typedef __ssize_t ssize_t;
+#endif
+
 #endif
 
 //

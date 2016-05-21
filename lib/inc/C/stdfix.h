@@ -15,6 +15,8 @@
 #ifndef __GDCC_Header__C__stdfix_h__
 #define __GDCC_Header__C__stdfix_h__
 
+#include <bits/features.h>
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -157,7 +159,7 @@
 //
 // Not standard, but there is sufficient community momentum to justify it.
 //
-#ifndef fixed
+#if !defined(fixed) && !defined(__STRICT_ANSI__)
 #define fixed __fixed
 #endif
 

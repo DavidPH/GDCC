@@ -23,12 +23,19 @@
 //
 
 typedef unsigned int __clock_t;
+typedef long long __intmax_t;
+typedef signed int __intptr_t;
+typedef int __max_align_t;
 typedef long int __off_t;
 typedef int __ptrdiff_t;
 typedef unsigned int __size_t;
 typedef int __ssize_t;
 typedef long int __time_t;
+typedef unsigned long long __uintmax_t;
+typedef unsigned int __uintptr_t;
 typedef unsigned int __uptrdiff_t;
+typedef unsigned int __wchar_t;
+
 
 typedef __ssize_t __cookie_read_function_t(void *, char *, __size_t);
 typedef __ssize_t __cookie_write_function_t(void *, char const *, __size_t);

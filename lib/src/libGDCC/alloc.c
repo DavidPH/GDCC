@@ -75,8 +75,8 @@ struct MemBlock
 {
    MemBlockPtr next, prev;
 
-   size_t size;
-   size_t flag;
+   __size_t size;
+   __size_t flag;
 
    char data[];
 };
@@ -198,7 +198,7 @@ static void AllocInit(void)
 // AllocMerge
 //
 [[call("StkCall")]]
-static _Bool AllocMerge(register MemBlockPtr block, register size_t size)
+static _Bool AllocMerge(register MemBlockPtr block, register __size_t size)
 {
    // Check if next block is free and contains enough space.
    register MemBlockPtr blockNext = block->next;
@@ -206,18 +206,18 @@ static _Bool AllocMerge(register MemBlockPtr block, register size_t size)
       return 0;
 
    // Would the combined block have enough space?
-   register size_t sizeFull = block->size + blockNext->size + sizeof(MemBlock);
-   if((ssize_t)sizeFull < (ssize_t)size)
+   register __size_t sizeFull = block->size + blockNext->size + sizeof(MemBlock);
+   if(sizeFull < size)
       return 0;
 
    register MemBlockPtr blockNextNext = blockNext->next;
-   register size_t      sizeDiff      = sizeFull - size;
+   register __size_t    sizeDiff      = sizeFull - size;
 
    if(AllocIter == blockNext)
       AllocIter = block;
 
    // Big enough to split.
-   if((ssize_t)sizeDiff > (ssize_t)__GDCC__MinSplit)
+   if(sizeDiff > __GDCC__MinSplit)
    {
       // Place new block at end of current block.
       blockNext = (MemBlockPtr)(block->data + size);
@@ -249,7 +249,7 @@ static _Bool AllocMerge(register MemBlockPtr block, register size_t size)
 // AllocNew
 //
 [[call("StkCall")]]
-static VoidPtr AllocNew(register size_t size)
+static VoidPtr AllocNew(register __size_t size)
 {
    // TODO: Round size up to alignment of MemBlock.
 
@@ -270,12 +270,12 @@ static VoidPtr AllocNew(register size_t size)
       }
 
       // Bigger, possibly split?
-      if((ssize_t)iter->size > (ssize_t)size)
+      if(iter->size > size)
       {
-         register size_t sizeDiff = iter->size - size;
+         register __size_t sizeDiff = iter->size - size;
 
          // Big enough to split.
-         if((ssize_t)sizeDiff > (ssize_t)__GDCC__MinSplit)
+         if(sizeDiff > __GDCC__MinSplit)
          {
             // Place new block at end of current block.
             MemBlockPtr newBlock = PtrToBlock(iter->data + sizeDiff);
@@ -338,7 +338,7 @@ static void AllocTimeSet(void)
 // __GDCC__alloc
 //
 [[call("StkCall")]]
-VoidPtr __GDCC__alloc(register VoidPtr ptrOld, register size_t size)
+VoidPtr __GDCC__alloc(register VoidPtr ptrOld, register __size_t size)
 {
    if(!AllocIter) AllocInit();
 
@@ -353,7 +353,7 @@ VoidPtr __GDCC__alloc(register VoidPtr ptrOld, register size_t size)
       return AllocDel(block), 0;
 
    // If block already has enough space, then no need to realloc.
-   if((ssize_t)block->size >= (ssize_t)size)
+   if(block->size >= size)
       return ptrOld;
 
    // Try a merging block expansion.

@@ -15,6 +15,8 @@
 #ifndef __GDCC_Header__C__stdlib_h__
 #define __GDCC_Header__C__stdlib_h__
 
+#include <bits/types.h>
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -72,7 +74,7 @@ typedef long long __div_t lldiv_t;
 //
 #ifndef __GDCC_Have__size_t__
 #define __GDCC_Have__size_t__
-typedef unsigned size_t;
+typedef __size_t size_t;
 #endif
 
 //
@@ -80,7 +82,7 @@ typedef unsigned size_t;
 //
 #ifndef __GDCC_Have__wchar_t__
 #define __GDCC_Have__wchar_t__
-typedef unsigned wchar_t;
+typedef __wchar_t wchar_t;
 #endif
 
 
