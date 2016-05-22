@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,6 +18,7 @@
 #include "../Core/Token.hpp"
 
 #include <unordered_map>
+#include <vector>
 
 
 //----------------------------------------------------------------------------|
