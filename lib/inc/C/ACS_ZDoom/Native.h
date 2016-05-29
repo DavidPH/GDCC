@@ -52,7 +52,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 ACS_NativeDeclFull(  1, 0, int,    GetLineUDMFInt, int, __str);
@@ -164,6 +164,7 @@ ACS_NativeDeclFull( 94, 3, int,    SetSectorDamage, int, int, __str, int, int);
 ACS_NativeDeclFull( 95, 0, int,    SetSectorTerrain, int, int, __str);
 ACS_NativeDeclFull( 96,14, int,    SpawnParticle, int, int, int, int, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum, int, int);
 ACS_NativeDeclFull( 97, 0, int,    SetMusicVolume, int);
+ACS_NativeDeclFull( 98, 3, int,    CheckProximity, int, __str, _Accum, int, int, int);
 
 #endif//__GDCC_Header__C__ACS_ZDoom__Native_h__
 
