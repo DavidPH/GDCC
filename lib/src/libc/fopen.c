@@ -246,7 +246,7 @@ static ssize_t FILE_fn_mem_write(void *cookie_, char const *buf, size_t size)
 //
 // FILE_fn_mem_write_rea
 //
-static ssize_t FILE_fn_mem_write(void *cookie_, char const *buf, size_t size)
+static ssize_t FILE_fn_mem_write_rea(void *cookie_, char const *buf, size_t size)
 {
    __cookie_mem_rea *cookie = cookie_;
    size_t            avail  = cookie->len - cookie->pos;
@@ -642,7 +642,7 @@ FILE *open_memstream(char **ptr, size_t *sizeloc)
    cookie->len = 0;
    cookie->pos = 0;
 
-   if(!__fopencookie_ctor(stream, cookie, mode, io_funcs))
+   if(!__fopencookie_ctor(stream, cookie, "w+", io_funcs))
       return free(stream), NULL;
 
    stream->_flag |= _FILEFLAG_FRF;
@@ -712,7 +712,6 @@ FILE *__fopencookie_ctor(FILE *stream, void *cookie, char const *mode,
    {
       ++mode;
       // TODO
-      return NULL;
    }
 
    // Must be at end of mode string.
