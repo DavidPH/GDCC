@@ -442,6 +442,16 @@ float fmaf(float _x, float _y, float _z);
 long double fmal(long double _x, long double _y, long double _z);
 
 //
+// GNU extensions.
+//
+
+#if defined(_GNU_SOURCE)
+void sincos(double _x, double *_sin, double *_cos);
+void sincosf(float _x, float *_sin, float *_cos);
+void sincosl(long double _x, long double *_sin, long double *_cos);
+#endif
+
+//
 // Implementation extensions.
 //
 
@@ -452,10 +462,6 @@ long double __rinfl(long double _x);
 int __irmod(double _x);
 int __irmodf(float _x);
 int __irmodl(long double _x);
-
-void __sincos(double _x, double *_sin, double *_cos);
-void __sincosf(float _x, float *_sin, float *_cos);
-void __sincosl(long double _x, long double *_sin, long double *_cos);
 
 [[call("StkCall")]] double __approx_cbrt(double _x);
 [[call("StkCall")]] float __approx_cbrtf(float _x);
