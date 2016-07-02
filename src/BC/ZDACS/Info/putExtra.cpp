@@ -66,14 +66,14 @@ namespace GDCC
             {
                auto buf = Core::FileOpenStream(outName, std::ios_base::out);
 
-               std::ostream out{buf.get()};
+               std::ostream outStr{buf.get()};
 
                for(auto &fn : prog->rangeFunction())
                {
                   if(fn.ctype != IR::CallType::ScriptI)
                      continue;
 
-                  out << fn.glyph << ' ' << fn.linka << ' ' << fn.valueInt << '\n';
+                  outStr << fn.glyph << ' ' << fn.linka << ' ' << fn.valueInt << '\n';
                }
             }
          }

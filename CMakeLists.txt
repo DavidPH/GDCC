@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013 David Hill
+## Copyright (C) 2013-2016 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -71,6 +71,8 @@ if(NOT GDCC_NOFLAGS)
       GDCC_TRY_CXX_FLAG(-Wextra    Wextra )
       GDCC_TRY_CXX_FLAG(-Wpedantic Wpedantic)
       GDCC_TRY_CXX_FLAG(-Wshadow   Wshadow)
+
+      GDCC_TRY_CXX_FLAG(-Wno-misleading-indentation Wno_misleading_indentation)
 
       GDCC_TRY_CXX_FLAG(-std=c++11 CXX11)
    endif()

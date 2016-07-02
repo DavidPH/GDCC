@@ -104,7 +104,7 @@ ACS_SpecialDeclFull( 67, 0, int, Floor_RaiseInstant, int, int, int);
 ACS_SpecialDeclFull( 68, 0, int, Floor_MoveToValueTimes8, int, int, int, int);
 ACS_SpecialDeclFull( 69, 0, int, Ceiling_MoveToValueTimes8, int, int, int, int);
 ACS_SpecialDeclFull( 70, 2, int, Teleport, int, int, int);
-ACS_SpecialDeclFull( 71, 2, int, Teleport_NoFog, int, int, int);
+ACS_SpecialDeclFull( 71, 3, int, Teleport_NoFog, int, int, int, int);
 ACS_SpecialDeclFull( 72, 2, int, ThrustThing, int, int, int, int);
 ACS_SpecialDeclFull( 73, 1, int, DamageThing, int, int);
 ACS_SpecialDeclFull( 74, 1, int, Teleport_NewMap, int, int, int);

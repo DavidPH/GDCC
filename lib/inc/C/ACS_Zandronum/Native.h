@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -34,10 +34,10 @@ ACS_NativeDeclFull(104, 0, int,    GetPlayerLivesLeft, int);
 ACS_NativeDeclFull(105, 0, int,    SetPlayerLivesLeft, int, int);
 ACS_NativeDeclFull(106, 0, int,    KickFromGame, int, __str);
 ACS_NativeDeclFull(107, 0, int,    GetGameModeState, void);
-ACS_NativeDeclFull(118, 0, int,    SetDBEntry, __str, __str, int);
-ACS_NativeDeclFull(118, 0, int,    SetDBEntryFixed, __str, __str, _Accum);
-ACS_NativeDeclFull(119, 0, int,    GetDBEntry, __str, __str);
-ACS_NativeDeclFull(119, 0, _Accum, GetDBEntryFixed, __str, __str);
+ACS_NativeDeclFull(108, 0, int,    SetDBEntry, __str, __str, int);
+ACS_NativeDeclFull(108, 0, int,    SetDBEntryFixed, __str, __str, _Accum);
+ACS_NativeDeclFull(109, 0, int,    GetDBEntry, __str, __str);
+ACS_NativeDeclFull(109, 0, _Accum, GetDBEntryFixed, __str, __str);
 ACS_NativeDeclFull(110, 0, int,    SetDBEntryString, __str, __str, __str);
 ACS_NativeDeclFull(111, 0, __str,  GetDBEntryString, __str, __str);
 ACS_NativeDeclFull(112, 0, int,    IncrementDBEntry, __str, __str, int);

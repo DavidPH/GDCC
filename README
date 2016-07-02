@@ -49,3 +49,45 @@ GDCC MakeLib (gdcc-makelib)
 
 Compiles entire libraries into IR data.
 
+
+===============================================================================
+Usage Overview
+===============================================================================
+
+===========================================================
+Headers
+===========================================================
+
+By default, system headers are looked for under <system path>/lib, which must
+have the contents of the repository lib directory. <system path> under Windows
+is the executable directory, otherwise /usr/share/gdcc.
+
+If the lib directory is elsewhere, the --lib-path option must be used to locate
+it.
+
+
+===============================================================================
+Compilation
+===============================================================================
+
+===========================================================
+Dependencies
+===========================================================
+
+Currently, the only library dependency is GMP, the GNU Multiple Precision
+Arithmetic Library (https://gmplib.org/) and its C++ API.
+
+Additionally, cmake (https://cmake.org/) is required to build.
+
+===========================================================
+Linux
+===========================================================
+
+From the repository root, compilation can be done with the following commands:
+  mkdir build
+  cd build
+  cmake ..
+  make
+Executables and needed shared objects will be generated under their associated
+directories under build/src. (For example, gdcc-cc is under build/src/CC.)
+

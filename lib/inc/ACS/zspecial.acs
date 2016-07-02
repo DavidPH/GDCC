@@ -421,6 +421,8 @@ special
    int    -94:SetSectorDamage(2, int, int, str, int, int),
    int    -95:SetSectorTerrain(3, int, int, str),
    int    -96:SpawnParticle(1, int, int, int, int, fixed, fixed, fixed, fixed, fixed, fixed, fixed, fixed, fixed, int, int),
+   int    -97:SetMusicVolume(1, int),
+   int    -98:CheckProximity(3, int, str, fixed, int, int, int),
 
    // Zandronum's
    int   -100:ResetMap(0),

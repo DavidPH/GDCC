@@ -63,7 +63,7 @@ namespace GDCC
             if(!bufSpace() && (space = bufLive()) < BufSize)
             {
                itr = buf;
-               for(auto tok = tptr() - BufBack, end = itr + space; itr != end;)
+               for(Token *tok = tptr() - BufBack, *end = itr + space; itr != end;)
                   *itr++ = *tok++;
 
                sett(buf, itr, itr);

@@ -22,6 +22,8 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
+#include <vector>
+
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |

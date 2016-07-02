@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -124,7 +124,8 @@ namespace GDCC
          // CounterPtr = nullptr
          CounterPtr<T> &operator = (decltype(nullptr) p_)
          {
-            if(p && !--p->refCount) delete p; p = p_;
+            if(p && !--p->refCount) delete p;
+            p = p_;
             return *this;
          }
 

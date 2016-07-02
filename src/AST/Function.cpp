@@ -15,6 +15,7 @@
 #include "AST/Statement.hpp"
 #include "AST/Type.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/Option.hpp"
 
 #include "IR/CallType.hpp"
@@ -118,6 +119,9 @@ namespace GDCC
       void Function::genFunctionDecl(IR::Program &prog)
       {
          if(!defin && !used) return;
+
+         if(declAuto && !defin)
+            throw Core::ExceptUndef("forward reference", glyph);
 
          // Operate on a temporary function to be merged later.
          IR::Function fn{glyph};
