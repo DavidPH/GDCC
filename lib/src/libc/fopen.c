@@ -72,6 +72,7 @@ typedef struct __cookie_mem_str
 // Static Prototypes                                                          |
 //
 
+static int     FILE_fn_mem_close_rea(void *cookie);
 static ssize_t FILE_fn_mem_read(void *cookie, char *buf, size_t size);
 static ssize_t FILE_fn_mem_read_rea(void *cookie, char *buf, size_t size);
 static ssize_t FILE_fn_mem_read_str(void *cookie, char *buf, size_t size);
@@ -173,6 +174,18 @@ FILE __stdout =
 //=========================================================
 // memfile functions.
 //
+
+//
+// FILE_fn_mem_close_rea
+//
+static int FILE_fn_mem_close_rea(void *cookie_)
+{
+   __cookie_mem_rea *cookie = cookie_;
+
+   free(cookie->mem);
+
+   return 0;
+}
 
 //
 // FILE_fn_mem_read
@@ -643,7 +656,7 @@ FILE *open_memstream(char **ptr, size_t *sizeloc)
       .read  = FILE_fn_mem_read_rea,
       .write = FILE_fn_mem_write_rea,
       .seek  = FILE_fn_mem_seek_rea,
-      .close = NULL,
+      .close = FILE_fn_mem_close_rea,
    };
 
    FILE *stream = malloc(sizeof(FILE) + BUFSIZ + sizeof(__cookie_mem_rea));
