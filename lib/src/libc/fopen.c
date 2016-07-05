@@ -724,12 +724,10 @@ FILE *__fopencookie_ctor(FILE *stream, void *cookie, char const *mode,
    // Ignore binary mode flag.
    if(*mode == 'b') ++mode;
 
+   // Check + mode flag.
    _Bool modePlus = *mode == '+';
    if(modePlus)
-   {
       ++mode;
-      // TODO
-   }
 
    // Must be at end of mode string.
    if(*mode)
@@ -754,8 +752,15 @@ FILE *__fopencookie_ctor(FILE *stream, void *cookie, char const *mode,
       if(!modePlus)
          stream->_fn.read = NULL;
 
-      // TODO: Seek to stream end.
-      return NULL;
+      // Seek to stream end.
+
+      if(!stream->_fn.seek)
+         return errno = EINVAL, NULL;
+
+      if(stream->_fn.seek(stream->_cookie, &(off_t){0}, SEEK_END) == -1)
+         return NULL;
+
+      break;
 
    default:
       return NULL;
