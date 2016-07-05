@@ -19,6 +19,7 @@
 
 #include <errno.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -490,11 +491,13 @@ void setbuf(FILE *restrict stream, char *restrict buf)
 //
 int setvbuf(FILE *restrict stream, char *restrict buf, int mode, size_t size)
 {
+   bool alloc = false;
+
    if(mode == _IOFBF || mode == _IOLBF)
    {
-      // TODO: Allocate buffer.
+      // Allocate buffer.
       if(!buf)
-         return EOF;
+         alloc = true;
 
       // Fuck off.
       if(size < 4)
@@ -552,13 +555,23 @@ int setvbuf(FILE *restrict stream, char *restrict buf, int mode, size_t size)
    if(getUsed > getSize || putUsed > putSize)
       return EOF;
 
-   // TODO: Allocate new buffer, if needed.
+   // Allocate new buffer, if needed.
+   if(alloc)
+   {
+      if(!(buf = malloc(size)))
+         return EOF;
+   }
 
    // Transfer buffer contents.
    memcpy(buf,           stream->_get._ptr, getUsed);
    memcpy(buf + getSize, stream->_put._buf, putUsed);
 
-   // TODO: Free old buffer, if needed.
+   // Free old buffer, if needed.
+   if(stream->_flag & _FILEFLAG_FRB)
+   {
+      free(stream->_get._buf);
+      stream->_flag &= ~_FILEFLAG_FRB;
+   }
 
    // Set buffers.
    stream->_get._buf = buf;
@@ -569,6 +582,10 @@ int setvbuf(FILE *restrict stream, char *restrict buf, int mode, size_t size)
    stream->_put._ptr = buf + getSize + putUsed;
    stream->_put._end = buf + getSize + putSize;
    stream->_put._len = putSize;
+
+   // Set free buffer flag.
+   if(alloc)
+      stream->_flag |= _FILEFLAG_FRB;
 
    // Set linebuffer flag.
    if(mode == _IOLBF)
