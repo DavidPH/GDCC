@@ -11,6 +11,7 @@
 //-----------------------------------------------------------------------------
 
 #define __GDCC__DirectObject
+#define _GNU_SOURCE
 
 #include <stdio.h>
 
@@ -18,6 +19,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 
 #include <GDCC.h>
 
@@ -75,13 +77,34 @@ char *tmpnam(char *s)
 //
 int fgetc(FILE *stream)
 {
-   if(stream->flags & _FILEFLAG_EOF)
+   if(stream->_flag & (_FILEFLAG_EOF | _FILEFLAG_ERR))
       return EOF;
 
-   if(stream->buf_get.buf_ptr == stream->buf_get.buf_end)
-      return stream->fn.fn_fetch(stream);
+   // Buffer read.
+   if(stream->_get._ptr != stream->_get._end)
+      return *stream->_get._ptr++;
 
-   return *stream->buf_get.buf_ptr++;
+   // Not a readable stream.
+   if(!stream->_fn.read)
+      return stream->_flag |= _FILEFLAG_EOF, EOF;
+
+   // Unbuffered read.
+   if(!stream->_get._len)
+   {
+      char buf[1];
+      ssize_t res = stream->_fn.read(stream->_cookie, buf, 1);
+      if(res <  0) return stream->_flag |= _FILEFLAG_ERR, EOF;
+      if(res == 0) return stream->_flag |= _FILEFLAG_EOF, EOF;
+      return buf[0];
+   }
+
+   // Buffered read.
+   ssize_t res = stream->_fn.read(stream->_cookie, stream->_get._buf, stream->_get._len);
+   if(res <  0) return stream->_flag |= _FILEFLAG_ERR, EOF;
+   if(res == 0) return stream->_flag |= _FILEFLAG_EOF, EOF;
+   stream->_get._ptr = stream->_get._buf;
+   stream->_get._end = stream->_get._buf + res;
+   return *stream->_get._ptr++;
 }
 
 //
@@ -89,7 +112,7 @@ int fgetc(FILE *stream)
 //
 char *fgets(char *restrict s, int n, FILE *restrict stream)
 {
-   if(stream->flags & _FILEFLAG_EOF)
+   if(stream->_flag & (_FILEFLAG_EOF | _FILEFLAG_ERR))
       return NULL;
 
    char *itr = s;
@@ -99,7 +122,7 @@ char *fgets(char *restrict s, int n, FILE *restrict stream)
 
       if(c == EOF)
       {
-         if(itr == s || (stream->flags & _FILEFLAG_ERR))
+         if(itr == s || (stream->_flag & _FILEFLAG_ERR))
            return NULL;
 
          break;
@@ -118,12 +141,51 @@ char *fgets(char *restrict s, int n, FILE *restrict stream)
 //
 int fputc(int c, FILE *stream)
 {
-   if(stream->buf_put.buf_ptr == stream->buf_put.buf_end ||
-      (stream->buf_put.buf_mode == _IOLBF && c == '\n'))
-      return stream->fn.fn_flush(stream, c);
+   if(stream->_flag & _FILEFLAG_ERR)
+      return EOF;
 
-   *stream->buf_put.buf_ptr++ = c;
+   // Not a writable stream.
+   if(!stream->_fn.write)
+      return EOF;
 
+      // Unbuffered write.
+   if(stream->_put._len == 0)
+   {
+      char buf[1] = {c};
+      if(stream->_fn.write(stream->_cookie, buf, 1) != 1)
+         return stream->_flag |= _FILEFLAG_ERR, EOF;
+      return c;
+   }
+
+   // Line-buffered streams flush on linefeed.
+   if(c == '\n' && stream->_flag & _FILEFLAG_LBF)
+   {
+      // No need to check for space, as there is always a byte reserved.
+      *stream->_put._ptr++ = c;
+
+      // Flush buffer.
+      size_t  len = stream->_put._ptr - stream->_put._buf;
+      ssize_t res = stream->_fn.write(stream->_cookie, stream->_put._buf, len);
+      if(res != len) return stream->_flag |= _FILEFLAG_ERR, EOF;
+      stream->_put._ptr = stream->_put._buf;
+
+      // Return success.
+      return c;
+   }
+
+   // Flush buffer if full.
+   if(stream->_put._ptr == stream->_put._end)
+   {
+      size_t  len = stream->_put._ptr - stream->_put._buf;
+      ssize_t res = stream->_fn.write(stream->_cookie, stream->_put._buf, len);
+      if(res != len) return stream->_flag |= _FILEFLAG_ERR, EOF;
+      stream->_put._ptr = stream->_put._buf;
+   }
+
+   // Buffered write.
+   *stream->_put._ptr++ = c;
+
+   // Return success.
    return c;
 }
 
@@ -146,13 +208,7 @@ int fputs(char const *restrict s, FILE *restrict stream)
 //
 int getc(FILE *stream)
 {
-   if(stream->flags & _FILEFLAG_EOF)
-      return EOF;
-
-   if(stream->buf_get.buf_ptr == stream->buf_get.buf_end)
-      return stream->fn.fn_fetch(stream);
-
-   return *stream->buf_get.buf_ptr++;
+   return fgetc(stream);
 }
 
 //
@@ -160,13 +216,7 @@ int getc(FILE *stream)
 //
 int getchar(void)
 {
-   if(stdin->flags & _FILEFLAG_EOF)
-      return EOF;
-
-   if(stdin->buf_get.buf_ptr == stdin->buf_get.buf_end)
-      return stdin->fn.fn_fetch(stdin);
-
-   return *stdin->buf_get.buf_ptr++;
+   return fgetc(stdin);
 }
 
 //
@@ -174,13 +224,7 @@ int getchar(void)
 //
 int putc(int c, FILE *stream)
 {
-   if(stream->buf_put.buf_ptr == stream->buf_put.buf_end ||
-      (stream->buf_put.buf_mode == _IOLBF && c == '\n'))
-      return stream->fn.fn_flush(stream, c);
-
-   *stream->buf_put.buf_ptr++ = c;
-
-   return c;
+   return fputc(c, stream);
 }
 
 //
@@ -188,13 +232,7 @@ int putc(int c, FILE *stream)
 //
 int putchar(int c)
 {
-   if(stdout->buf_put.buf_ptr == stdout->buf_put.buf_end ||
-      (stdout->buf_put.buf_mode == _IOLBF && c == '\n'))
-      return stdout->fn.fn_flush(stdout, c);
-
-   *stdout->buf_put.buf_ptr++ = c;
-
-   return c;
+   return fputc(c, stdout);
 }
 
 //
@@ -222,13 +260,14 @@ int ungetc(int c, FILE *stream)
    if(c == EOF)
       return EOF;
 
-   if(stream->buf_get.buf_ptr == stream->buf_get.buf_beg ||
-      *(stream->buf_get.buf_ptr - 1) != c)
-      return stream->fn.fn_unget(stream, c);
+   // No unget space.
+   // TODO: Attempt to seek back the stream.
+   if(stream->_get._ptr == stream->_get._buf)
+      return EOF;
 
-   --stream->buf_get.buf_ptr;
+   *--stream->_get._ptr = c;
 
-   stream->flags &= ~_FILEFLAG_EOF;
+   stream->_flag &= ~_FILEFLAG_EOF;
 
    return c;
 }
@@ -287,9 +326,11 @@ size_t fwrite(void const *restrict ptr, size_t size, size_t nmemb, FILE *restric
 //
 int fgetpos(FILE *restrict stream, fpos_t *restrict pos)
 {
-   if(stream->fn.fn_getpos(stream, pos) == EOF)
+   long int off = ftell(stream);
+   if(off == EOF)
       return EOF;
 
+   *pos = off;
    return 0;
 }
 
@@ -298,32 +339,16 @@ int fgetpos(FILE *restrict stream, fpos_t *restrict pos)
 //
 int fseek(FILE *stream, long int offset, int whence)
 {
-   fpos_t pos;
+   if(!stream->_fn.seek) return EOF;
 
-   if(whence == SEEK_SET)
-   {
-      __ltofpos(&pos, offset);
-      if(stream->fn.fn_setpos(stream, &pos) == EOF)
-         return EOF;
+   if(fflush(stream) == EOF)
+      return EOF;
 
-      return 0;
-   }
+   off_t off = offset;
+   if(stream->_fn.seek(stream->_cookie, &off, whence) == -1)
+      return EOF;
 
-   if(whence == SEEK_CUR)
-   {
-      if(stream->fn.fn_getpos(stream, &pos) == EOF)
-         return EOF;
-
-      __ltofpos(&pos, offset + __fpostol(&pos));
-      if(stream->fn.fn_setpos(stream, &pos) == EOF)
-         return EOF;
-
-      return 0;
-   }
-
-   // SEEK_END is not supported.
-
-   return EOF;
+   return 0;
 }
 
 //
@@ -331,10 +356,7 @@ int fseek(FILE *stream, long int offset, int whence)
 //
 int fsetpos(FILE *stream, fpos_t const *pos)
 {
-   if(stream->fn.fn_setpos(stream, pos) == EOF)
-      return EOF;
-
-   return 0;
+   return fseek(stream, *pos, SEEK_SET);
 }
 
 //
@@ -342,11 +364,16 @@ int fsetpos(FILE *stream, fpos_t const *pos)
 //
 long int ftell(FILE *stream)
 {
-   fpos_t pos;
-   if(stream->fn.fn_getpos(stream, &pos) == EOF)
-      return -1L;
+   if(!stream->_fn.seek) return EOF;
 
-   return __fpostol(&pos);
+   if(fflush(stream) == EOF)
+      return EOF;
+
+   off_t off = 0;
+   if(stream->_fn.seek(stream->_cookie, &off, SEEK_CUR) == -1)
+      return EOF;
+
+   return off;
 }
 
 //
@@ -367,7 +394,7 @@ void rewind(FILE *stream)
 //
 void clearerr(FILE *stream)
 {
-   stream->flags &= ~(_FILEFLAG_EOF | _FILEFLAG_ERR);
+   stream->_flag &= ~(_FILEFLAG_EOF | _FILEFLAG_ERR);
 }
 
 //
@@ -375,7 +402,7 @@ void clearerr(FILE *stream)
 //
 int feof(FILE *stream)
 {
-   return stream->flags & _FILEFLAG_EOF;
+   return stream->_flag & _FILEFLAG_EOF;
 }
 
 //
@@ -383,7 +410,7 @@ int feof(FILE *stream)
 //
 int ferror(FILE *stream)
 {
-   return stream->flags & _FILEFLAG_ERR;
+   return stream->_flag & _FILEFLAG_ERR;
 }
 
 //

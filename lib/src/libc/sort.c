@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015 David Hill
+// Copyright(C) 2015-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -12,10 +12,15 @@
 //
 //-----------------------------------------------------------------------------
 
+#define __GDCC__DirectObject
+#define _GNU_SOURCE
+
 #include <stdlib.h>
 
 #include <GDCC.h>
+#include <stddef.h>
 #include <string.h>
+#include <sys/types.h>
 
 
 //----------------------------------------------------------------------------|

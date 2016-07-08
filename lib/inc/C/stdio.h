@@ -15,6 +15,8 @@
 #ifndef __GDCC_Header__C__stdio_h__
 #define __GDCC_Header__C__stdio_h__
 
+#include <bits/types.h>
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -93,30 +95,22 @@ extern "C" {
 //
 #define _FILEFLAG_EOF 0x00000001
 #define _FILEFLAG_ERR 0x00000002
-
-//
-// __fpostol
-//
-#define __fpostol(pos) ((long int)*(pos))
-
-//
-// __ltofpos
-//
-#define __ltofpos(pos, l) ((void)(*(pos) = (fpos_t)(long int)(l)))
+#define _FILEFLAG_FRB 0x00000004
+#define _FILEFLAG_FRC 0x00000008
+#define _FILEFLAG_FRF 0x00000010
+#define _FILEFLAG_LBF 0x00000020
 
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-struct __FILE;
-
 //
 // size_t
 //
 #ifndef __GDCC_Have__size_t__
 #define __GDCC_Have__size_t__
-typedef unsigned size_t;
+typedef __size_t size_t;
 #endif
 
 //
@@ -130,69 +124,86 @@ typedef struct __FILE FILE;
 //
 // fpos_t
 //
-typedef unsigned long int fpos_t;
+typedef __off_t fpos_t;
+
+//
+// POSIX extensions.
+//
+
+#if _POSIX_C_SOURCE >= 200809L
+
+//
+// off_t
+//
+#ifndef __GDCC_Have__off_t__
+#define __GDCC_Have__off_t__
+typedef __off_t off_t;
+#endif
+
+//
+// ssize_t
+//
+#ifndef __GDCC_Have__ssize_t__
+#define __GDCC_Have__ssize_t__
+typedef __ssize_t ssize_t;
+#endif
+
+#endif
+
+//
+// GNU extensions.
+//
+
+#if defined(_GNU_SOURCE)
+
+typedef __cookie_read_function_t cookie_read_function_t;
+typedef __cookie_write_function_t cookie_write_function_t;
+typedef __cookie_seek_function_t cookie_seek_function_t;
+typedef __cookie_close_function_t cookie_close_function_t;
+
+typedef struct __cookie_io_functions_t cookie_io_functions_t;
+
+#endif
+
+//
+// Implementation extensions.
+//
+
+//
+// __cookie_io_functions_t
+//
+struct __cookie_io_functions_t
+{
+   __cookie_read_function_t *read;
+   __cookie_write_function_t *write;
+   __cookie_seek_function_t *seek;
+   __cookie_close_function_t *close;
+};
 
 //
 // __FILE_buf
 //
 typedef struct __FILE_buf
 {
-   char *buf_beg;
-   char *buf_ptr;
-   char *buf_end;
-   int   buf_mode;
+   char  *_buf;
+   char  *_ptr;
+   char  *_end;
+   size_t _len;
 } __FILE_buf;
-
-//
-// __FILE_fn
-//
-typedef struct __FILE_fn
-{
-   int (*fn_close)(FILE *_stream);
-   int (*fn_fetch)(FILE *_stream);
-   int (*fn_flush)(FILE *_stream, int _c);
-   int (*fn_getpos)(FILE *_stream, fpos_t *_pos);
-   int (*fn_open)(FILE *_stream, char const *_filename, char const *_mode);
-   int (*fn_reopen)(FILE *_stream, char const *_filename, char const *_mode);
-   int (*fn_setbuf)(FILE *_stream, char *_buf, size_t _size, int _mode);
-   int (*fn_setpos)(FILE *_stream, fpos_t const *_pos);
-   int (*fn_unget)(FILE *_stream, int _c);
-} __FILE_fn;
 
 //
 // __FILE
 //
 typedef struct __FILE
 {
-   __FILE_fn fn;
+   struct __cookie_io_functions_t _fn;
 
-   __FILE_buf buf_get;
-   __FILE_buf buf_put;
+   __FILE_buf _get;
+   __FILE_buf _put;
 
-   void    *data;
-   unsigned flags;
+   void    *_cookie;
+   unsigned _flag;
 } __FILE;
-
-//
-// __FILE_buf_str
-//
-typedef struct __FILE_buf_str
-{
-   char __str_ars *buf_beg;
-   char __str_ars *buf_ptr;
-   char __str_ars *buf_end;
-   int             buf_mode;
-} __FILE_buf_str;
-
-//
-// __FILE_str
-//
-typedef struct __FILE_str
-{
-   FILE f;
-
-   __FILE_buf_str buf_get;
-} __FILE_str;
 
 
 //----------------------------------------------------------------------------|
@@ -204,15 +215,6 @@ typedef struct __FILE_str
 //
 extern FILE __stderr, __stdin, __stdout;
 
-//
-// __strfiler, __strfiler_str, __strfilew
-//
-// Used internally for sprintf/sscanf.
-//
-extern FILE       __strfiler;
-extern __FILE_str __strfiler_str;
-extern FILE       __strfilew;
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -223,7 +225,7 @@ extern FILE       __strfilew;
 //
 
 int remove(char const *_filename);
-int rename(char const *oldname, char const *_newname);
+int rename(char const *_oldname, char const *_newname);
 FILE *tmpfile(void);
 char *tmpnam(char *_s);
 
@@ -302,17 +304,33 @@ int ferror(FILE *_stream);
 void perror(char const *_s);
 
 //
+// POSIX extensions.
+//
+
+#if _POSIX_C_SOURCE >= 200809L
+FILE *fmemopen(void *_buf, size_t _size, char const *_mode);
+FILE *open_memstream(char **_ptr, size_t *_sizeloc);
+#endif
+
+//
+// GNU extensions.
+//
+
+#if defined(_GNU_SOURCE)
+FILE *fopencookie(void *_cookie, char const *_mode, cookie_io_functions_t _io_funcs);
+#endif
+
+//
 // Implementation extensions.
 //
 
-FILE *__fopen_fn(__FILE_fn const *_fn, size_t _size, void *_data,
-   char const *_filename, char const *_mode);
-FILE *__stropenr(char const *_str, size_t _size);
-FILE *__stropenr_sta(char const *_str, size_t _size);
-FILE *__stropenr_str(char __str_ars const *_str, size_t _size);
-FILE *__stropenr_str_sta(char __str_ars const *_str, size_t _size);
-FILE *__stropenw(char *_str, size_t _size);
-FILE *__stropenw_sta(char *_str, size_t _size);
+FILE *__fopencookie_ctor(FILE *_stream, void *_cookie, char const *_mode,
+   struct __cookie_io_functions_t _io_funcs);
+FILE *__fmemopen_str(char __str_ars const *_buf, size_t _size, char const *_mode);
+
+FILE *__fmemopen_sta_r(char const *_buf, size_t _size);
+FILE *__fmemopen_sta_r_str(char __str_ars const *_buf, size_t _size);
+FILE *__fmemopen_sta_w(char *_buf, size_t _size);
 
 int __fscanf_str(FILE *restrict _stream, char __str_ars const *restrict _format, ...);
 int __scanf_str(char __str_ars const *restrict _format, ...);

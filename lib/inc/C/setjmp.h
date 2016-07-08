@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015 David Hill
+// Copyright(C) 2015-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -14,6 +14,8 @@
 
 #ifndef __GDCC_Header__C__setjmp_h__
 #define __GDCC_Header__C__setjmp_h__
+
+#include <bits/features.h>
 
 
 //----------------------------------------------------------------------------|

@@ -15,6 +15,8 @@
 #ifndef __GDCC_Header__C__time_h__
 #define __GDCC_Header__C__time_h__
 
+#include <bits/types.h>
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -51,7 +53,7 @@
 //
 #ifndef __GDCC_Have__size_t__
 #define __GDCC_Have__size_t__
-typedef unsigned int size_t;
+typedef __size_t size_t;
 #endif
 
 //
@@ -59,7 +61,7 @@ typedef unsigned int size_t;
 //
 #ifndef __GDCC_Have__clock_t__
 #define __GDCC_Have__clock_t__
-typedef unsigned int clock_t;
+typedef __clock_t clock_t;
 #endif
 
 //
@@ -67,7 +69,7 @@ typedef unsigned int clock_t;
 //
 #ifndef __GDCC_Have__time_t__
 #define __GDCC_Have__time_t__
-typedef long int time_t;
+typedef __time_t time_t;
 #endif
 
 //

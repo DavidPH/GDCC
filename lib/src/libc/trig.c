@@ -13,6 +13,7 @@
 //-----------------------------------------------------------------------------
 
 #define __GDCC__DirectObject
+#define _GNU_SOURCE
 
 #include <math.h>
 
@@ -170,7 +171,7 @@
    /* Force input into range. */ \
    if(z < -M_PI_2##suffix) \
    { \
-      __sincos##suffix(z + M_PI##suffix, sin, cos); \
+      sincos##suffix(z + M_PI##suffix, sin, cos); \
       *sin = -*sin; \
       *cos = -*cos; \
       return; \
@@ -178,7 +179,7 @@
    \
    if(z >  M_PI_2##suffix) \
    { \
-      __sincos##suffix(z - M_PI##suffix, sin, cos); \
+      sincos##suffix(z - M_PI##suffix, sin, cos); \
       *sin = -*sin; \
       *cos = -*cos; \
       return; \
@@ -523,9 +524,9 @@ long double tanl(long double z)
 
 #if !__GDCC__NoFloat
 //
-// __sincos
+// sincos
 //
-void __sincos(double z, double *sin, double *cos)
+void sincos(double z, double *sin, double *cos)
 {
    Domain_SinCos();
 
@@ -537,9 +538,9 @@ void __sincos(double z, double *sin, double *cos)
 }
 
 //
-// __sincosf
+// sincosf
 //
-void __sincosf(float z, float *sin, float *cos)
+void sincosf(float z, float *sin, float *cos)
 {
    Domain_SinCos(f);
 
@@ -551,9 +552,9 @@ void __sincosf(float z, float *sin, float *cos)
 }
 
 //
-// __sincosl
+// sincosl
 //
-void __sincosl(long double z, long double *sin, long double *cos)
+void sincosl(long double z, long double *sin, long double *cos)
 {
    Domain_SinCos(l);
 

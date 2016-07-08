@@ -15,6 +15,8 @@
 #ifndef __GDCC_Header__C__errno_h__
 #define __GDCC_Header__C__errno_h__
 
+#include <bits/features.h>
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,7 +41,8 @@ extern "C" {
 #define EBADF  1
 #define EDOM   2
 #define EILSEQ 3
-#define ERANGE 4
+#define EINVAL 4
+#define ERANGE 5
 
 
 //----------------------------------------------------------------------------|

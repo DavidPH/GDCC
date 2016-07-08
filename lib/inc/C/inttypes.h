@@ -274,16 +274,6 @@
 //
 typedef long long __div_t imaxdiv_t;
 
-//
-// wchar_t
-//
-// Needed for wcsto*max. C doesn't say to define it, though.
-//
-#ifndef __GDCC_Have__wchar_t__
-#define __GDCC_Have__wchar_t__
-typedef unsigned wchar_t;
-#endif
-
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -301,8 +291,8 @@ intmax_t imaxabs(intmax_t _j);
 imaxdiv_t imaxdiv(intmax_t _numer, intmax_t _denom);
 intmax_t strtoimax(char const *restrict _nptr, char **restrict _endptr, int _base);
 uintmax_t strtoumax(char const *restrict _nptr, char **restrict _endptr, int _base);
-intmax_t wcstoimax(wchar_t const *restrict _nptr, wchar_t **restrict _endptr, int _base);
-uintmax_t wcstoumax(wchar_t const *restrict _nptr, wchar_t **restrict _endptr, int _base);
+intmax_t wcstoimax(__wchar_t const *restrict _nptr, __wchar_t **restrict _endptr, int _base);
+uintmax_t wcstoumax(__wchar_t const *restrict _nptr, __wchar_t **restrict _endptr, int _base);
 
 //
 // Implementation extensions.
