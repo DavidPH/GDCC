@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,12 +12,12 @@
 
 #include "CC/Exp/VaArg.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Type.hpp"
+#include "SR/Arg.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -27,8 +27,8 @@ namespace GDCC
       //
       // Exp_VaArg::v_genStmnt
       //
-      void Exp_VaArg::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_VaArg::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          GenStmnt_Move(this, ctx, dst, getArg());
       }
@@ -36,7 +36,7 @@ namespace GDCC
       //
       // Exp_VaArg::v_getArg
       //
-      AST::Arg Exp_VaArg::v_getArg() const
+      SR::Arg Exp_VaArg::v_getArg() const
       {
          // *--*(type __sta *__adr_cpy *)&exp
 
@@ -60,8 +60,8 @@ namespace GDCC
       //
       // ExpCreate_VaArg
       //
-      AST::Exp::CRef ExpCreate_VaArg(AST::Type const *type,
-         AST::Exp const *exp, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_VaArg(SR::Type const *type,
+         SR::Exp const *exp, Core::Origin pos)
       {
          return Exp_VaArg::Create(type, exp, pos);
       }

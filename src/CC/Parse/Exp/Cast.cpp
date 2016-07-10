@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,13 +18,13 @@
 #include "CC/Scope/Global.hpp"
 #include "CC/Scope/Local.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Exp.hpp"
-#include "AST/Object.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Exp.hpp"
+#include "SR/Object.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -38,11 +38,11 @@ namespace GDCC
       //
       // GetExp_CLit (global)
       //
-      static AST::Exp::CRef GetExp_CLit(
-         Parser         &ctx,
-         Scope_Global   &scope,
-         AST::Attribute &attr,
-         AST::Exp const *init)
+      static SR::Exp::CRef GetExp_CLit(
+         Parser        &ctx,
+         Scope_Global  &scope,
+         SR::Attribute &attr,
+         SR::Exp const *init)
       {
          auto obj = scope.getObject(attr);
 
@@ -55,11 +55,11 @@ namespace GDCC
       //
       // GetExp_CLit (local)
       //
-      static AST::Exp::CRef GetExp_CLit(
+      static SR::Exp::CRef GetExp_CLit(
          Parser         &ctx,
          Scope_Local    &scope,
-         AST::Attribute &attr,
-         AST::Exp const *init)
+         SR::Attribute &attr,
+         SR::Exp const *init)
       {
          auto pos = attr.namePos;
          auto obj = scope.getObject(attr);
@@ -78,7 +78,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -88,7 +88,7 @@ namespace GDCC
       //
       // Parser::getExp_CLit
       //
-      AST::Exp::CRef Parser::getExp_CLit(Scope &scope)
+      SR::Exp::CRef Parser::getExp_CLit(Scope &scope)
       {
          if(!in.drop(Core::TOK_ParenO))
             throw Core::ParseExceptExpect(in.peek(), "(", true);
@@ -104,12 +104,12 @@ namespace GDCC
       //
       // Parser::getExp_CLit
       //
-      AST::Exp::CRef Parser::getExp_CLit(Scope &scope, AST::Type const *type)
+      SR::Exp::CRef Parser::getExp_CLit(Scope &scope, SR::Type const *type)
       {
          if(in.peek().tok != Core::TOK_BraceO)
             throw Core::ParseExceptExpect(in.peek(), "{", true);
 
-         AST::Attribute attr;
+         SR::Attribute attr;
 
          attr.namePos = in.peek().pos;
 
@@ -128,7 +128,7 @@ namespace GDCC
       //
       // Parser::getExp_Cast
       //
-      AST::Exp::CRef Parser::getExp_Cast(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Cast(Scope &scope)
       {
          if(isExp_Cast(scope))
          {

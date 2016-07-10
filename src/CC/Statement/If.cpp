@@ -14,15 +14,15 @@
 
 #include "CC/Exp.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Function.hpp"
-
 #include "IR/Block.hpp"
 #include "IR/Glyph.hpp"
 
+#include "SR/Exp.hpp"
+#include "SR/Function.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -33,8 +33,8 @@ namespace GDCC
       // Statement_If contructor
       //
       Statement_If::Statement_If(Labels const &labels_, Core::Origin pos_,
-         AST::Exp const *cond_, AST::Statement const *bodyT_,
-         AST::Statement const *bodyF_) :
+         SR::Exp const *cond_, SR::Statement const *bodyT_,
+         SR::Statement const *bodyF_) :
          Super{labels_, pos_},
 
          cond {cond_},
@@ -47,8 +47,8 @@ namespace GDCC
       // Statement_If constructor
       //
       Statement_If::Statement_If(Labels &&labels_, Core::Origin pos_,
-         AST::Exp const *cond_, AST::Statement const *bodyT_,
-         AST::Statement const *bodyF_) :
+         SR::Exp const *cond_, SR::Statement const *bodyT_,
+         SR::Statement const *bodyF_) :
          Super{std::move(labels_), pos_},
 
          cond {cond_},
@@ -69,7 +69,7 @@ namespace GDCC
       //
       // Statement_If::v_genStmnt
       //
-      void Statement_If::v_genStmnt(AST::GenStmntCtx const &ctx) const
+      void Statement_If::v_genStmnt(SR::GenStmntCtx const &ctx) const
       {
          bool needT = !cond->isZero() || bodyT->isLabel();
          bool needF = bodyF && (!cond->isNonzero() || bodyF->isLabel());
@@ -181,9 +181,9 @@ namespace GDCC
       //
       // StatementCreate_If
       //
-      AST::Statement::CRef StatementCreate_If(
-         AST::Statement::Labels const &labels, Core::Origin pos,
-         AST::Exp const *cond, AST::Statement const *body)
+      SR::Statement::CRef StatementCreate_If(
+         SR::Statement::Labels const &labels, Core::Origin pos,
+         SR::Exp const *cond, SR::Statement const *body)
       {
          return Statement_If::Create(
             labels, pos, ExpPromo_Cond(cond, pos), body);
@@ -192,8 +192,8 @@ namespace GDCC
       //
       // StatementCreate_If
       //
-      AST::Statement::CRef StatementCreate_If(AST::Statement::Labels &&labels,
-         Core::Origin pos, AST::Exp const *cond, AST::Statement const *body)
+      SR::Statement::CRef StatementCreate_If(SR::Statement::Labels &&labels,
+         Core::Origin pos, SR::Exp const *cond, SR::Statement const *body)
       {
          return Statement_If::Create(
             std::move(labels), pos, ExpPromo_Cond(cond, pos), body);
@@ -202,10 +202,10 @@ namespace GDCC
       //
       // StatementCreate_If
       //
-      AST::Statement::CRef StatementCreate_If(
-         AST::Statement::Labels const &labels, Core::Origin pos,
-         AST::Exp const *cond, AST::Statement const *bodyT,
-         AST::Statement const *bodyF)
+      SR::Statement::CRef StatementCreate_If(
+         SR::Statement::Labels const &labels, Core::Origin pos,
+         SR::Exp const *cond, SR::Statement const *bodyT,
+         SR::Statement const *bodyF)
       {
          return Statement_If::Create(
             labels, pos, ExpPromo_Cond(cond, pos), bodyT, bodyF);
@@ -214,9 +214,9 @@ namespace GDCC
       //
       // StatementCreate_If
       //
-      AST::Statement::CRef StatementCreate_If(AST::Statement::Labels &&labels,
-         Core::Origin pos, AST::Exp const *cond, AST::Statement const *bodyT,
-         AST::Statement const *bodyF)
+      SR::Statement::CRef StatementCreate_If(SR::Statement::Labels &&labels,
+         Core::Origin pos, SR::Exp const *cond, SR::Statement const *bodyT,
+         SR::Statement const *bodyF)
       {
          return Statement_If::Create(
             std::move(labels), pos, ExpPromo_Cond(cond, pos), bodyT, bodyF);

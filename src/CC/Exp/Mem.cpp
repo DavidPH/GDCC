@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,14 +14,14 @@
 
 #include "CC/Exp/Add.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Type.hpp"
+#include "SR/Arg.hpp"
+#include "SR/Type.hpp"
 
 #include "Core/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -31,16 +31,15 @@ namespace GDCC
       //
       // Exp_Mem::v_genStmnt
       //
-      void Exp_Mem::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_Mem::v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const
       {
-         AST::GenStmnt_Move(this, ctx, dst, getArg());
+         SR::GenStmnt_Move(this, ctx, dst, getArg());
       }
 
       //
       // Exp_Mem::v_getArg
       //
-      AST::Arg Exp_Mem::v_getArg() const
+      SR::Arg Exp_Mem::v_getArg() const
       {
          try
          {
@@ -49,7 +48,7 @@ namespace GDCC
 
             // Calculate pointer offset.
             auto off  = mem.addr / mem.type->getSizeShift();
-            auto expO = ExpCreate_LitInt(AST::Type::Size, off, pos);
+            auto expO = ExpCreate_LitInt(SR::Type::Size, off, pos);
 
             // Create pointer expression.
             auto type = mem.type->getTypePointer();
@@ -59,7 +58,7 @@ namespace GDCC
             // Convert pointer into an arg.
             return {mem.type, addr};
          }
-         catch(AST::TypeError const &)
+         catch(SR::TypeError const &)
          {
             throw Core::ExceptStr(pos, "invalid member");
          }
@@ -68,13 +67,13 @@ namespace GDCC
       //
       // Exp_Mem::v_getType
       //
-      AST::Type::CRef Exp_Mem::v_getType() const
+      SR::Type::CRef Exp_Mem::v_getType() const
       {
          try
          {
             return expL->getType()->getMember(expR).type;
          }
-         catch(AST::TypeError const &)
+         catch(SR::TypeError const &)
          {
             throw Core::ExceptStr(pos, "invalid member");
          }
@@ -107,8 +106,7 @@ namespace GDCC
       //
       // ExpCreate_Mem
       //
-      AST::Exp::CRef ExpCreate_Mem(AST::Exp const *l, Core::String r,
-         Core::Origin pos)
+      SR::Exp::CRef ExpCreate_Mem(SR::Exp const *l, Core::String r, Core::Origin pos)
       {
          return Exp_Mem::Create(l, r, pos);
       }
@@ -116,8 +114,7 @@ namespace GDCC
       //
       // ExpCreate_MemPt
       //
-      AST::Exp::CRef ExpCreate_MemPt(AST::Exp const *l, Core::String r,
-         Core::Origin pos)
+      SR::Exp::CRef ExpCreate_MemPt(SR::Exp const *l, Core::String r, Core::Origin pos)
       {
          return Exp_Mem::Create(ExpCreate_Deref(l, pos), r, pos);
       }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Exp.hpp"
 
-#include "../../AST/Exp.hpp"
+#include "../../SR/Exp.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,9 +29,9 @@ namespace GDCC
       //
       // Exp_Func
       //
-      class Exp_Func : public AST::Exp
+      class Exp_Func : public SR::Exp
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Func, GDCC::AST::Exp);
+         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Func, GDCC::SR::Exp);
 
       public:
          FunctionRef const fn;
@@ -39,17 +39,16 @@ namespace GDCC
 
 
          // Create
-         static CRef Create(IR::Program &prog, AST::Function *fn, Core::Origin pos)
+         static CRef Create(IR::Program &prog, SR::Function *fn, Core::Origin pos)
             {return CRef(new This(prog, fn, pos));}
 
       protected:
-         Exp_Func(IR::Program &prog, AST::Function *fn, Core::Origin pos);
+         Exp_Func(IR::Program &prog, SR::Function *fn, Core::Origin pos);
          virtual ~Exp_Func();
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
-         virtual AST::Arg v_getArg() const;
+         virtual SR::Arg v_getArg() const;
 
          virtual FunctionRef v_getFunction() const;
 

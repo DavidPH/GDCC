@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Statement.hpp"
 
-#include "../../AST/Statement.hpp"
+#include "../../SR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,10 +29,10 @@ namespace GDCC
       //
       // Statement_Goto
       //
-      class Statement_Goto : public AST::Statement
+      class Statement_Goto : public SR::Statement
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Statement_Goto, GDCC::AST::Statement);
+            GDCC::CC::Statement_Goto, GDCC::SR::Statement);
 
       public:
          Core::String const label;
@@ -47,7 +47,7 @@ namespace GDCC
          Statement_Goto(Labels const &labels, Core::Origin pos, Core::String label);
          Statement_Goto(Labels &&labels, Core::Origin pos, Core::String label);
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 
          virtual bool v_isBranch() const {return true;}
          virtual bool v_isEffect() const {return false;}
@@ -57,23 +57,23 @@ namespace GDCC
       //
       // Statement_GotoDyn
       //
-      class Statement_GotoDyn : public AST::Statement
+      class Statement_GotoDyn : public SR::Statement
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Statement_GotoDyn, GDCC::AST::Statement);
+            GDCC::CC::Statement_GotoDyn, GDCC::SR::Statement);
 
       public:
-         Core::CounterRef<AST::Exp const> exp;
+         Core::CounterRef<SR::Exp const> exp;
 
 
-         static CRef Create(Labels &&labels, Core::Origin pos, AST::Exp const *exp)
+         static CRef Create(Labels &&labels, Core::Origin pos, SR::Exp const *exp)
             {return CRef(new This(std::move(labels), pos, exp));}
 
       protected:
-         Statement_GotoDyn(Labels &&labels, Core::Origin pos, AST::Exp const *exp);
+         Statement_GotoDyn(Labels &&labels, Core::Origin pos, SR::Exp const *exp);
          virtual ~Statement_GotoDyn();
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 
          virtual bool v_isBranch() const {return true;}
          virtual bool v_isEffect() const {return false;}

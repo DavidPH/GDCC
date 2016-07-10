@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,12 +14,12 @@
 
 #include "CC/Scope.hpp"
 
-#include "AST/Function.hpp"
-#include "AST/Object.hpp"
+#include "SR/Function.hpp"
+#include "SR/Object.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

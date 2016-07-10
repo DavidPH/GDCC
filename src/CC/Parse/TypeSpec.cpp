@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,10 +15,10 @@
 #include "CC/Scope.hpp"
 #include "CC/Type/Struct.hpp"
 
-#include "AST/Attribute.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Attribute.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -32,7 +32,7 @@ namespace GDCC
       //
       // TypeSpec::finish
       //
-      void TypeSpec::finish(AST::Attribute &attr, AST::TypeQual qual, Core::Origin pos) const
+      void TypeSpec::finish(SR::Attribute &attr, SR::TypeQual qual, Core::Origin pos) const
       {
          // Validate.
          if(specCplx && specImag) throw Core::ExceptStr(pos, "complex imaginary");
@@ -161,7 +161,7 @@ namespace GDCC
             if(specSign) throw Core::ExceptStr(pos, "signed void");
             if(specUnsi) throw Core::ExceptStr(pos, "unsigned void");
 
-            attr.type = AST::Type::Void;
+            attr.type = SR::Type::Void;
 
             break;
 
@@ -214,7 +214,7 @@ namespace GDCC
             if(specSign) throw Core::ExceptStr(pos, "signed str");
             if(specUnsi) throw Core::ExceptStr(pos, "unsigned str");
 
-            attr.type = AST::Type::StrEnt->getTypePointer();
+            attr.type = SR::Type::StrEnt->getTypePointer();
 
             break;
 
@@ -244,7 +244,7 @@ namespace GDCC
             if(specSign) throw Core::ExceptStr(pos, "signed label");
             if(specUnsi) throw Core::ExceptStr(pos, "unsigned label");
 
-            attr.type = AST::Type::Label;
+            attr.type = SR::Type::Label;
 
             break;
 
@@ -257,7 +257,7 @@ namespace GDCC
             if(specSign) throw Core::ExceptStr(pos, "signed str_ent");
             if(specUnsi) throw Core::ExceptStr(pos, "unsigned str_ent");
 
-            attr.type = AST::Type::StrEnt;
+            attr.type = SR::Type::StrEnt;
 
             break;
 
@@ -270,7 +270,7 @@ namespace GDCC
             if(specSign) throw Core::ExceptStr(pos, "signed va_list");
             if(specUnsi) throw Core::ExceptStr(pos, "unsigned va_list");
 
-            attr.type = AST::Type::Void
+            attr.type = SR::Type::Void
                ->getTypeQual({{IR::AddrBase::Sta, Core::STR_}})
                ->getTypePointer();
 
@@ -343,7 +343,7 @@ namespace GDCC
       //
       // Parser::parseTypeSpec
       //
-      void Parser::parseTypeSpec(Scope &scope, AST::Attribute &attr, TypeSpec &spec)
+      void Parser::parseTypeSpec(Scope &scope, SR::Attribute &attr, TypeSpec &spec)
       {
          auto const &tok = in.get();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)

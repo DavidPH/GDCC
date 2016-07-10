@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 #include "CC/Exp/Arith.hpp"
 #include "CC/Type.hpp"
 
-#include "AST/Exp/Unary.hpp"
+#include "SR/Exp/Unary.hpp"
 
 #include "IR/CodeSet/Arith.hpp"
 #include "IR/CodeSet/Unary.hpp"
@@ -32,7 +32,7 @@ namespace GDCC
       //
       // ExpCreate_Sub
       //
-      AST::Exp::CRef ExpCreate_Sub(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_Sub(SR::Exp const *e, Core::Origin pos)
       {
          auto exp  = ExpPromo_Int(ExpPromo_LValue(e, pos), pos);
          auto type = exp->getType();
@@ -40,15 +40,15 @@ namespace GDCC
          if(!type->isCTypeArith())
             throw Core::ExceptStr(pos, "expected arithmetic operand");
 
-         auto op = AST::ExpCode_Arith<IR::CodeSet_Neg>(type);
+         auto op = SR::ExpCode_Arith<IR::CodeSet_Neg>(type);
 
-         return AST::Exp_UnaryCode<AST::Exp_Neg>::Create(op, type, exp, pos);
+         return SR::Exp_UnaryCode<SR::Exp_Neg>::Create(op, type, exp, pos);
       }
 
       //
       // ExpCreate_Sub
       //
-      AST::Exp::CRef ExpCreate_Sub(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_Sub(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
          auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
@@ -97,24 +97,24 @@ namespace GDCC
          // arithmetic - arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
-            auto type = AST::Type::None;
+            auto type = SR::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
-            return ExpCreate_Arith<AST::Exp_Sub, IR::CodeSet_Sub>(type, expL, expR, pos);
+            return ExpCreate_Arith<SR::Exp_Sub, IR::CodeSet_Sub>(type, expL, expR, pos);
          }
 
          throw Core::ExceptStr(pos, "invalid operands to 'operator -'");
       }
 
       // ExpCreate_SubEq
-      AST::Exp::CRef ExpCreate_SubEq(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_SubEq(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
          {return ExpCreate_SubEq(l, r, pos, false);}
 
       //
       // ExpCreate_SubEq
       //
-      AST::Exp::CRef ExpCreate_SubEq(AST::Exp const *expL, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_SubEq(SR::Exp const *expL, SR::Exp const *r,
          Core::Origin pos, bool post)
       {
          if(!IsModLValue(expL))
@@ -148,10 +148,10 @@ namespace GDCC
          // arithmetic -= arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
-            AST::Type::CPtr evalT;
+            SR::Type::CPtr evalT;
             std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
 
-            return ExpCreate_ArithEq<AST::Exp_Sub, IR::CodeSet_Sub>(
+            return ExpCreate_ArithEq<SR::Exp_Sub, IR::CodeSet_Sub>(
                evalT, typeL, expL, expR, pos, post);
          }
 

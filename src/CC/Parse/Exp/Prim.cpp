@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,13 +16,6 @@
 #include "CC/Scope/Function.hpp"
 #include "CC/Type.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Exp.hpp"
-#include "AST/Function.hpp"
-#include "AST/Object.hpp"
-#include "AST/Type.hpp"
-#include "AST/Warning.hpp"
-
 #include "CPP/Pragma.hpp"
 
 #include "Core/Array.hpp"
@@ -32,6 +25,13 @@
 
 #include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Exp.hpp"
+#include "SR/Function.hpp"
+#include "SR/Object.hpp"
+#include "SR/Type.hpp"
+#include "SR/Warning.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -51,9 +51,9 @@ namespace GDCC
          if(!entity->warnUse || entity->warnDone) return;
 
          if(entity->warnUse != Core::STR_)
-            AST::WarnDeprecated(tok.pos, tok.str, " is deprecated: ", entity->warnUse);
+            SR::WarnDeprecated(tok.pos, tok.str, " is deprecated: ", entity->warnUse);
          else
-            AST::WarnDeprecated(tok.pos, tok.str, " is deprecated");
+            SR::WarnDeprecated(tok.pos, tok.str, " is deprecated");
 
          entity->warnDone = true;
       }
@@ -61,7 +61,7 @@ namespace GDCC
       //
       // GetExp_Prim_func
       //
-      static AST::Exp::CRef GetExp_Prim_func(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_func(Parser &ctx, Scope &scope)
       {
          auto &scopeFn = static_cast<Scope_Local &>(scope).fn;
 
@@ -71,13 +71,13 @@ namespace GDCC
          if(!scopeFn.nameObj)
             scopeFn.nameObj = ExpCreate_String(ctx.prog, scope, scopeFn.fn->name, tok.pos);
 
-         return static_cast<AST::Exp::CRef>(scopeFn.nameObj);
+         return static_cast<SR::Exp::CRef>(scopeFn.nameObj);
       }
 
       //
       // GetExp_Prim_generic
       //
-      static AST::Exp::CRef GetExp_Prim_generic(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_generic(Parser &ctx, Scope &scope)
       {
          // generic-selection:
          //    <_Generic> ( assignment-expression , generic-assoc-list )
@@ -95,7 +95,7 @@ namespace GDCC
          // generic-assoc-list:
          //    generic-association
          //    generic-assoc-list , generic-association
-         AST::Exp::CPtr        def;
+         SR::Exp::CPtr         def;
          std::vector<GenAssoc> vec;
          while(ctx.in.drop(Core::TOK_Comma))
          {
@@ -144,7 +144,7 @@ namespace GDCC
       //
       // GetExp_Prim_va_start
       //
-      static AST::Exp::CRef GetExp_Prim_va_start(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_va_start(Parser &ctx, Scope &scope)
       {
          // va_start-expression:
          //    <__va_start>
@@ -156,7 +156,7 @@ namespace GDCC
          if(!(scopeLocal = dynamic_cast<Scope_Local *>(&scope)))
             throw Core::ExceptStr(pos, "invalid scope for va_start");
 
-         auto base = AST::Type::Void->getTypeQual({{IR::AddrBase::Aut, Core::STR_}});
+         auto base = SR::Type::Void->getTypeQual({{IR::AddrBase::Aut, Core::STR_}});
          auto type = base->getTypePointer();
 
          IR::Value_Point val;
@@ -180,13 +180,13 @@ namespace GDCC
          }
 
          auto exp = IR::ExpCreate_Value(std::move(val), pos);
-         return AST::ExpCreate_IRExp(exp, type, pos);
+         return SR::ExpCreate_IRExp(exp, type, pos);
       }
 
       //
       // GetExp_Prim_Charac
       //
-      static AST::Exp::CRef GetExp_Prim_Charac(Parser &ctx, Scope &)
+      static SR::Exp::CRef GetExp_Prim_Charac(Parser &ctx, Scope &)
       {
          auto tok = ctx.in.get();
 
@@ -198,7 +198,7 @@ namespace GDCC
       //
       // GetExp_Prim_Identi
       //
-      static AST::Exp::CRef GetExp_Prim_Identi(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_Identi(Parser &ctx, Scope &scope)
       {
          switch(ctx.in.peek().str)
          {
@@ -240,7 +240,7 @@ namespace GDCC
       //
       // GetExp_Prim_KeyWrd
       //
-      static AST::Exp::CRef GetExp_Prim_KeyWrd(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_KeyWrd(Parser &ctx, Scope &scope)
       {
          switch(ctx.in.peek().str)
          {
@@ -253,7 +253,7 @@ namespace GDCC
       //
       // GetExp_Prim_NumFix
       //
-      static AST::Exp::CRef GetExp_Prim_NumFix(Parser &ctx, Scope &)
+      static SR::Exp::CRef GetExp_Prim_NumFix(Parser &ctx, Scope &)
       {
          auto tok = ctx.in.get();
 
@@ -287,7 +287,7 @@ namespace GDCC
             throw Core::ExceptStr(tok.pos, "malformed fixed-constant");
 
          // Dtermine type.
-         AST::Type::CPtr type;
+         SR::Type::CPtr type;
 
          if(k) switch(l)
          {
@@ -316,7 +316,7 @@ namespace GDCC
       //
       // GetExp_Prim_NumFlt
       //
-      static AST::Exp::CRef GetExp_Prim_NumFlt(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_NumFlt(Parser &ctx, Scope &scope)
       {
          // Check if this should be treated as a fixed-point literal.
          if(ctx.prag.stateFixedLiteral) switch(ctx.in.peek().str.back())
@@ -361,7 +361,7 @@ namespace GDCC
             throw Core::ExceptStr(tok.pos, "malformed floating-constant");
 
          // Dtermine type.
-         AST::Type::CPtr type;
+         SR::Type::CPtr type;
 
          switch(l)
          {
@@ -373,13 +373,13 @@ namespace GDCC
          // Create expression.
          auto valIR = IR::Value_Float(std::move(val), type->getIRType().tFloat);
          auto expIR = IR::ExpCreate_Value(std::move(valIR), tok.pos);
-         return AST::ExpCreate_IRExp(expIR, type, tok.pos);
+         return SR::ExpCreate_IRExp(expIR, type, tok.pos);
       }
 
       //
       // GetExp_Prim_NumInt
       //
-      static AST::Exp::CRef GetExp_Prim_NumInt(Parser &ctx, Scope &)
+      static SR::Exp::CRef GetExp_Prim_NumInt(Parser &ctx, Scope &)
       {
          auto tok = ctx.in.get();
 
@@ -439,7 +439,7 @@ namespace GDCC
       //
       // GetExp_Prim_ParenO
       //
-      static AST::Exp::CRef GetExp_Prim_ParenO(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_ParenO(Parser &ctx, Scope &scope)
       {
          // (
          ctx.in.get();
@@ -457,7 +457,7 @@ namespace GDCC
       //
       // GetExp_Prim_StrChr
       //
-      static AST::Exp::CRef GetExp_Prim_StrChr(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_StrChr(Parser &ctx, Scope &scope)
       {
          auto tok = ctx.in.get();
 
@@ -467,7 +467,7 @@ namespace GDCC
       //
       // GetExp_Prim_StrIdx
       //
-      static AST::Exp::CRef GetExp_Prim_StrIdx(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_StrIdx(Parser &ctx, Scope &scope)
       {
          auto tok = ctx.in.get();
 
@@ -477,7 +477,7 @@ namespace GDCC
       //
       // GetExp_Prim_StrU08
       //
-      static AST::Exp::CRef GetExp_Prim_StrU08(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_StrU08(Parser &ctx, Scope &scope)
       {
          auto tok = ctx.in.get();
 
@@ -487,7 +487,7 @@ namespace GDCC
       //
       // GetExp_Prim_StrU16
       //
-      static AST::Exp::CRef GetExp_Prim_StrU16(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_StrU16(Parser &ctx, Scope &scope)
       {
          auto tok = ctx.in.get();
 
@@ -497,7 +497,7 @@ namespace GDCC
       //
       // GetExp_Prim_StrU32
       //
-      static AST::Exp::CRef GetExp_Prim_StrU32(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_StrU32(Parser &ctx, Scope &scope)
       {
          auto tok = ctx.in.get();
 
@@ -507,7 +507,7 @@ namespace GDCC
       //
       // GetExp_Prim_String
       //
-      static AST::Exp::CRef GetExp_Prim_String(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_String(Parser &ctx, Scope &scope)
       {
          auto tok = ctx.in.get();
 
@@ -531,7 +531,7 @@ namespace GDCC
       //
       // Parser::getExp_Prim
       //
-      AST::Exp::CRef Parser::getExp_Prim(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Prim(Scope &scope)
       {
          switch(in.peek().tok)
          {

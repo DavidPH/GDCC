@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,12 +15,12 @@
 
 #include "../../CC/Exp/Arith.hpp"
 
-#include "../../AST/Exp/Cmp.hpp"
-#include "../../AST/ExpCode.hpp"
+#include "../../SR/Exp/Cmp.hpp"
+#include "../../SR/ExpCode.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -34,32 +34,32 @@ namespace GDCC
       // comparator expression creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_CmpArith(AST::Type const *bt, AST::Type const *t,
-         AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_CmpArith(SR::Type const *bt, SR::Type const *t,
+         SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
          IR::OpCode op;
 
          // Floating types.
          if(t->isCTypeFloat())
-            op = AST::ExpCode_ArithFloat<Codes>(t);
+            op = SR::ExpCode_ArithFloat<Codes>(t);
 
          // Fixed-point types.
          else if(t->isCTypeFixed())
-            op = AST::ExpCode_ArithFixed<Codes>(t);
+            op = SR::ExpCode_ArithFixed<Codes>(t);
 
          // Integer types.
          else if(t->isCTypeInteg())
-            op = AST::ExpCode_ArithInteg<Codes>(t);
+            op = SR::ExpCode_ArithInteg<Codes>(t);
 
          // Pointer types.
          else if(t->isTypePointer())
-            op = AST::ExpCode_ArithPoint<Codes>(t);
+            op = SR::ExpCode_ArithPoint<Codes>(t);
 
          // ???
          else
             throw Core::ExceptStr(pos, "unsupported arithmetic type");
 
-         return AST::Exp_Arith<Base>::Create(op, bt, l, r, pos);
+         return SR::Exp_Arith<Base>::Create(op, bt, l, r, pos);
       }
    }
 }

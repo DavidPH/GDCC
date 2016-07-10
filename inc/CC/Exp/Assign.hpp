@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Exp.hpp"
 
-#include "../../AST/Exp/Binary.hpp"
+#include "../../SR/Exp/Binary.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,20 +29,19 @@ namespace GDCC
       //
       // Exp_Assign
       //
-      class Exp_Assign : public AST::Exp_Binary
+      class Exp_Assign : public SR::Exp_Binary
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Assign, GDCC::AST::Exp_Binary);
+         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Assign, GDCC::SR::Exp_Binary);
 
       public:
          // Create
-         static CRef Create(AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+         static CRef Create(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
             {return CRef(new This(l, r, pos));}
 
       protected:
-         Exp_Assign(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+         Exp_Assign(SR::Exp const *l, SR::Exp const *r, Core::Origin pos);
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual IRExpCRef v_getIRExp() const;
 

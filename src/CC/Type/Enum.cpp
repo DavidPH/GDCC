@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,7 +16,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -53,10 +53,10 @@ namespace GDCC
       //
       // Type_Enum::getBaseType
       //
-      AST::Type::CRef Type_Enum::getBaseType() const
+      SR::Type::CRef Type_Enum::getBaseType() const
       {
-         if(!data.complete) throw AST::TypeError();
-         return static_cast<AST::Type::CRef>(data.type);
+         if(!data.complete) throw SR::TypeError();
+         return static_cast<SR::Type::CRef>(data.type);
       }
 
       //
@@ -70,9 +70,9 @@ namespace GDCC
       //
       // Type_Enum::getRankC
       //
-      AST::TypeRankC Type_Enum::getRankC() const
+      SR::TypeRankC Type_Enum::getRankC() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.type->getRankC();
       }
 
@@ -81,7 +81,7 @@ namespace GDCC
       //
       IR::Type Type_Enum::getIRType() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.type->getIRType();
       }
 
@@ -90,7 +90,7 @@ namespace GDCC
       //
       Core::FastU Type_Enum::getSizeAlign() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.type->getSizeAlign();
       }
 
@@ -99,7 +99,7 @@ namespace GDCC
       //
       Core::FastU Type_Enum::getSizeBitsF() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.type->getSizeBitsF();
       }
 
@@ -108,7 +108,7 @@ namespace GDCC
       //
       Core::FastU Type_Enum::getSizeBitsI() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.type->getSizeBitsI();
       }
 
@@ -117,7 +117,7 @@ namespace GDCC
       //
       bool Type_Enum::getSizeBitsS() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.type->getSizeBitsS();
       }
 
@@ -126,7 +126,7 @@ namespace GDCC
       //
       Core::FastU Type_Enum::getSizeBytes() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.type->getSizeBytes();
       }
 
@@ -135,7 +135,7 @@ namespace GDCC
       //
       Core::FastU Type_Enum::getSizePoint() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.type->getSizePoint();
       }
 
@@ -144,7 +144,7 @@ namespace GDCC
       //
       Core::FastU Type_Enum::getSizeShift() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.type->getSizeShift();
       }
 
@@ -153,16 +153,16 @@ namespace GDCC
       //
       Core::FastU Type_Enum::getSizeWords() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.type->getSizeWords();
       }
 
       //
       // Type_Enum::setComplete
       //
-      void Type_Enum::setComplete(AST::Type const *type)
+      void Type_Enum::setComplete(SR::Type const *type)
       {
-         if(data.complete) throw AST::TypeError();
+         if(data.complete) throw SR::TypeError();
 
          data.type     = type;
          data.complete = true;

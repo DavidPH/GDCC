@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,14 +15,14 @@
 #include "CC/Exp.hpp"
 #include "CC/Scope/Local.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Exp.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
 #include "IR/Glyph.hpp"
+
+#include "SR/Arg.hpp"
+#include "SR/Exp.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -58,7 +58,7 @@ namespace GDCC
       //
       // Statement_Goto::v_genStmnt
       //
-      void Statement_Goto::v_genStmnt(AST::GenStmntCtx const &ctx) const
+      void Statement_Goto::v_genStmnt(SR::GenStmntCtx const &ctx) const
       {
          ctx.block.addStatementArgs({IR::Code::Jump, 0}, IR::Glyph(ctx.prog, label));
       }
@@ -67,7 +67,7 @@ namespace GDCC
       // Statement_GotoDyn constructor
       //
       Statement_GotoDyn::Statement_GotoDyn(Labels &&labels_, Core::Origin pos_,
-         AST::Exp const *exp_) :
+         SR::Exp const *exp_) :
          Super{std::move(labels_), pos_},
 
          exp{exp_}
@@ -84,7 +84,7 @@ namespace GDCC
       //
       // Statement_GotoDyn::v_genStmnt
       //
-      void Statement_GotoDyn::v_genStmnt(AST::GenStmntCtx const &ctx) const
+      void Statement_GotoDyn::v_genStmnt(SR::GenStmntCtx const &ctx) const
       {
          if(exp->getArg().isIRArg())
          {
@@ -108,8 +108,8 @@ namespace GDCC
       //
       // StatementCreate_Break
       //
-      AST::Statement::CRef StatementCreate_Break(
-         AST::Statement::Labels const &labels, Core::Origin pos,
+      SR::Statement::CRef StatementCreate_Break(
+         SR::Statement::Labels const &labels, Core::Origin pos,
          Scope_Local &ctx)
       {
          if(auto label = ctx.getLabelBreak())
@@ -121,8 +121,8 @@ namespace GDCC
       //
       // StatementCreate_Break
       //
-      AST::Statement::CRef StatementCreate_Break(
-         AST::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx)
+      SR::Statement::CRef StatementCreate_Break(
+         SR::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx)
       {
          if(auto label = ctx.getLabelBreak())
             return Statement_Goto::Create(std::move(labels), pos, label);
@@ -133,8 +133,8 @@ namespace GDCC
       //
       // StatementCreate_Continue
       //
-      AST::Statement::CRef StatementCreate_Continue(
-         AST::Statement::Labels const &labels, Core::Origin pos,
+      SR::Statement::CRef StatementCreate_Continue(
+         SR::Statement::Labels const &labels, Core::Origin pos,
          Scope_Local &ctx)
       {
          if(auto label = ctx.getLabelContinue())
@@ -146,8 +146,8 @@ namespace GDCC
       //
       // StatementCreate_Continue
       //
-      AST::Statement::CRef StatementCreate_Continue(
-         AST::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx)
+      SR::Statement::CRef StatementCreate_Continue(
+         SR::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx)
       {
          if(auto label = ctx.getLabelContinue())
             return Statement_Goto::Create(std::move(labels), pos, label);
@@ -158,10 +158,10 @@ namespace GDCC
       //
       // StatementCreate_Goto
       //
-      AST::Statement::CRef StatementCreate_Goto(AST::Statement::Labels &&labels,
-          Core::Origin pos, AST::Exp const *exp_)
+      SR::Statement::CRef StatementCreate_Goto(SR::Statement::Labels &&labels,
+          Core::Origin pos, SR::Exp const *exp_)
       {
-         auto exp = ExpPromo_Assign(AST::Type::Label->getTypePointer(), exp_, pos);
+         auto exp = ExpPromo_Assign(SR::Type::Label->getTypePointer(), exp_, pos);
 
          return Statement_GotoDyn::Create(std::move(labels), pos, exp);
       }
@@ -169,8 +169,8 @@ namespace GDCC
       //
       // StatementCreate_Goto
       //
-      AST::Statement::CRef StatementCreate_Goto(
-         AST::Statement::Labels const &labels, Core::Origin pos,
+      SR::Statement::CRef StatementCreate_Goto(
+         SR::Statement::Labels const &labels, Core::Origin pos,
          Scope_Local &ctx, Core::String name)
       {
          return Statement_Goto::Create(labels, pos, ctx.getLabel(name));
@@ -179,8 +179,8 @@ namespace GDCC
       //
       // StatementCreate_Goto
       //
-      AST::Statement::CRef StatementCreate_Goto(
-         AST::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx,
+      SR::Statement::CRef StatementCreate_Goto(
+         SR::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx,
          Core::String name)
       {
          return Statement_Goto::Create(std::move(labels), pos, ctx.getLabel(name));

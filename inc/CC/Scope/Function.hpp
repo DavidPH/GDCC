@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,7 +24,7 @@
 
 namespace GDCC
 {
-   namespace AST
+   namespace SR
    {
       class Exp;
    }
@@ -37,8 +37,8 @@ namespace GDCC
       class Scope_Function : public Scope_Local
       {
       public:
-         Scope_Function(Scope_Global &parent, AST::Function *fn,
-            Core::Array<Core::CounterRef<AST::Object>> &&params);
+         Scope_Function(Scope_Global &parent, SR::Function *fn,
+            Core::Array<Core::CounterRef<SR::Object>> &&params);
          virtual ~Scope_Function();
 
          void allocAuto();
@@ -50,10 +50,10 @@ namespace GDCC
          virtual Core::String getLabelDefault(bool define);
          Core::String getLabelLJR();
 
-         Core::Array<Core::CounterRef<AST::Object>> params;
-         Core::CounterRef<AST::Function>            fn;
-         Core::String                               labelLJR;
-         Core::CounterPtr<AST::Exp const>           nameObj;
+         Core::Array<Core::CounterRef<SR::Object>> params;
+         Core::CounterRef<SR::Function>            fn;
+         Core::String                              labelLJR;
+         Core::CounterPtr<SR::Exp const>           nameObj;
       };
    }
 }

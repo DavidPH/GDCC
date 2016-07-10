@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,13 +14,13 @@
 
 #include "ACC/Scope.hpp"
 
-#include "AST/Statement.hpp"
-#include "AST/Type.hpp"
-
 #include "CC/Exp.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Statement.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -132,7 +132,7 @@ namespace GDCC
       //
       // Parser::getDecl_CreateTrans
       //
-      AST::Statement::CRef Parser::getDecl_CreateTrans(Scope_Global &scope)
+      SR::Statement::CRef Parser::getDecl_CreateTrans(Scope_Global &scope)
       {
          if(!in.peek(Core::TOK_KeyWrd, Core::STR_createtranslation))
             throw Core::ParseExceptExpect(in.peek(),
@@ -162,7 +162,7 @@ namespace GDCC
 
          scope.addCreateTrans(name, std::move(decl));
 
-         return AST::StatementCreate_Empty(pos);
+         return SR::StatementCreate_Empty(pos);
       }
    }
 }

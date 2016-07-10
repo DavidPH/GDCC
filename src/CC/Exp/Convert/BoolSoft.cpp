@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,17 +14,17 @@
 
 #include "CC/Type.hpp"
 
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
 
 #include "Platform/Platform.hpp"
 
+#include "SR/Type.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -34,8 +34,8 @@ namespace GDCC
       //
       // Exp_ConvertBoolSoft_Fixed::v_genStmnt
       //
-      void Exp_ConvertBoolSoft_Fixed::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_ConvertBoolSoft_Fixed::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          if(GenStmntNul(this, ctx, dst)) return;
 
@@ -52,8 +52,8 @@ namespace GDCC
       //
       // Exp_ConvertBoolSoft_Float::v_genStmnt
       //
-      void Exp_ConvertBoolSoft_Float::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_ConvertBoolSoft_Float::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          if(GenStmntNul(this, ctx, dst)) return;
 
@@ -77,8 +77,8 @@ namespace GDCC
       //
       // Exp_ConvertBoolSoft_PtrInv::v_genStmnt
       //
-      void Exp_ConvertBoolSoft_PtrInv::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_ConvertBoolSoft_PtrInv::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          if(GenStmntNul(this, ctx, dst)) return;
 
@@ -98,14 +98,14 @@ namespace GDCC
       //
       // ExpConvert_BoolSoft
       //
-      AST::Exp::CRef ExpConvert_BoolSoft(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpConvert_BoolSoft(SR::Exp const *e, Core::Origin pos)
       {
          auto type = e->getType();
 
          if(type->isCTypeFixed() || type->isCTypeInteg())
          {
             if(type->getSizeWords() == 1)
-               return static_cast<AST::Exp::CRef>(e);
+               return static_cast<SR::Exp::CRef>(e);
 
             return Exp_ConvertBoolSoft_Fixed::Create(TypeBoolSoft, e, pos);
          }
@@ -118,7 +118,7 @@ namespace GDCC
             if(Platform::IsZeroNull_Point(type->getBaseType()->getQualAddr().base))
             {
                if(type->getSizeWords() == 1)
-                  return static_cast<AST::Exp::CRef>(e);
+                  return static_cast<SR::Exp::CRef>(e);
 
                return Exp_ConvertBoolSoft_Fixed::Create(TypeBoolSoft, e, pos);
             }

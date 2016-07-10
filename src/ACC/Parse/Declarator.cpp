@@ -12,10 +12,6 @@
 
 #include "ACC/Parse.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Exp.hpp"
-#include "AST/Type.hpp"
-
 #include "CC/Exp.hpp"
 
 #include "Core/Exception.hpp"
@@ -23,6 +19,10 @@
 
 #include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Exp.hpp"
+#include "SR/Type.hpp"
 
 #include <vector>
 
@@ -53,7 +53,7 @@ namespace GDCC
       //
       // Parser::parseDeclarator
       //
-      void Parser::parseDeclarator(CC::Scope &scope, AST::Attribute &attr)
+      void Parser::parseDeclarator(CC::Scope &scope, SR::Attribute &attr)
       {
          std::vector<Core::Token> toks;
 
@@ -131,12 +131,12 @@ namespace GDCC
       //
       // Parser::parseDeclaratorSuffix
       //
-      void Parser::parseDeclaratorSuffix(CC::Scope &scope, AST::Attribute &attr)
+      void Parser::parseDeclaratorSuffix(CC::Scope &scope, SR::Attribute &attr)
       {
          // [ expression(opt) ]
          if(in.drop(Core::TOK_BrackO))
          {
-            AST::TypeQual quals  = attr.type->getQualAddr();
+            SR::TypeQual quals  = attr.type->getQualAddr();
 
             // ]
             if(in.drop(Core::TOK_BrackC))
@@ -172,8 +172,8 @@ namespace GDCC
          // ( parameter-type-list )
          else if(in.drop(Core::TOK_ParenO))
          {
-            Core::Array<AST::Attribute> params;
-            AST::TypeSet::CPtr          types;
+            Core::Array<SR::Attribute> params;
+            SR::TypeSet::CPtr          types;
 
             if(attr.callt == IR::CallType::None)
                attr.callt = IR::CallType::LangACS;
@@ -182,7 +182,7 @@ namespace GDCC
             if(in.drop(Core::TOK_ParenC))
             {
                attr.funcNoParam = true;
-               types = AST::TypeSet::Get(false);
+               types = SR::TypeSet::Get(false);
             }
 
             // parameter-type-list )

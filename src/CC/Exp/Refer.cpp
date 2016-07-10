@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,18 +12,18 @@
 
 #include "CC/Exp/Refer.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Function.hpp"
-#include "AST/Object.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Exp.hpp"
 
+#include "SR/Arg.hpp"
+#include "SR/Function.hpp"
+#include "SR/Object.hpp"
+#include "SR/Type.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -33,7 +33,7 @@ namespace GDCC
       //
       // Exp_Refer constructor
       //
-      Exp_Refer::Exp_Refer(AST::Exp const *e, Core::Origin pos_) :
+      Exp_Refer::Exp_Refer(SR::Exp const *e, Core::Origin pos_) :
          Super{e->getType()->getTypePointer(), e, pos_}
       {
       }
@@ -41,8 +41,8 @@ namespace GDCC
       //
       // Exp_Refer::v_genStmnt
       //
-      void Exp_Refer::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_Refer::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          auto arg = exp->getArg();
          if(!arg.data) throw Core::ExceptStr(pos, "expected arg data");
@@ -52,7 +52,7 @@ namespace GDCC
       //
       // Exp_Refer::v_getFunction
       //
-      AST::Function::Ref Exp_Refer::v_getFunction() const
+      SR::Function::Ref Exp_Refer::v_getFunction() const
       {
          return exp->getFunction();
       }
@@ -98,7 +98,7 @@ namespace GDCC
       //
       // ExpCreate_Refer
       //
-      AST::Exp::CRef ExpCreate_Refer(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_Refer(SR::Exp const *e, Core::Origin pos)
       {
          auto type = e->getType();
 

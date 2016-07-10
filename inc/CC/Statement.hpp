@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,13 +20,6 @@
 
 namespace GDCC
 {
-   namespace AST
-   {
-      class Exp;
-      class Function;
-      class Statement;
-   }
-
    namespace CC
    {
       class Scope;
@@ -43,6 +36,13 @@ namespace GDCC
       class String;
       class Token;
    }
+
+   namespace SR
+   {
+      class Exp;
+      class Function;
+      class Statement;
+   }
 }
 
 
@@ -54,99 +54,99 @@ namespace GDCC
 {
    namespace CC
    {
-      Core::CounterRef<AST::Statement const> StatementCreate_Asm(
+      Core::CounterRef<SR::Statement const> StatementCreate_Asm(
          Core::Array<Core::String> &&labels, Core::Origin pos,
          Core::Array<Core::Token> &&tokens);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_Break(
+      Core::CounterRef<SR::Statement const> StatementCreate_Break(
          Core::Array<Core::String> const &labels, Core::Origin pos,
          Scope_Local &ctx);
-      Core::CounterRef<AST::Statement const> StatementCreate_Break(
+      Core::CounterRef<SR::Statement const> StatementCreate_Break(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
          Scope_Local &ctx);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_Continue(
+      Core::CounterRef<SR::Statement const> StatementCreate_Continue(
          Core::Array<Core::String> const &labels, Core::Origin pos,
          Scope_Local &ctx);
-      Core::CounterRef<AST::Statement const> StatementCreate_Continue(
+      Core::CounterRef<SR::Statement const> StatementCreate_Continue(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
          Scope_Local &ctx);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_Decl(
+      Core::CounterRef<SR::Statement const> StatementCreate_Decl(
          Core::Origin pos, Scope &ctx);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_Do(
+      Core::CounterRef<SR::Statement const> StatementCreate_Do(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Statement const *body, AST::Exp const *cond);
-      Core::CounterRef<AST::Statement const> StatementCreate_Do(
+         Scope_Local &ctx, SR::Statement const *body, SR::Exp const *cond);
+      Core::CounterRef<SR::Statement const> StatementCreate_Do(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Statement const *body, AST::Exp const *cond);
+         Scope_Local &ctx, SR::Statement const *body, SR::Exp const *cond);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_For(
+      Core::CounterRef<SR::Statement const> StatementCreate_For(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Statement const *init, AST::Exp const *cond,
-         AST::Statement const *iter, AST::Statement const *body);
-      Core::CounterRef<AST::Statement const> StatementCreate_For(
+         Scope_Local &ctx, SR::Statement const *init, SR::Exp const *cond,
+         SR::Statement const *iter, SR::Statement const *body);
+      Core::CounterRef<SR::Statement const> StatementCreate_For(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Statement const *init, AST::Exp const *cond,
-         AST::Statement const *iter, AST::Statement const *body);
+         Scope_Local &ctx, SR::Statement const *init, SR::Exp const *cond,
+         SR::Statement const *iter, SR::Statement const *body);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_FuncPre(
+      Core::CounterRef<SR::Statement const> StatementCreate_FuncPre(
          Core::Origin pos, Scope_Function &scope);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_FuncPro(
+      Core::CounterRef<SR::Statement const> StatementCreate_FuncPro(
          Core::Origin pos, Scope_Function &scope);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_Goto(
+      Core::CounterRef<SR::Statement const> StatementCreate_Goto(
          Core::Array<Core::String> &&labels, Core::Origin pos,
-         AST::Exp const *exp);
+         SR::Exp const *exp);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_Goto(
+      Core::CounterRef<SR::Statement const> StatementCreate_Goto(
          Core::Array<Core::String> const &labels, Core::Origin pos,
          Scope_Local &ctx, Core::String name);
-      Core::CounterRef<AST::Statement const> StatementCreate_Goto(
+      Core::CounterRef<SR::Statement const> StatementCreate_Goto(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
          Scope_Local &ctx, Core::String name);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_If(
+      Core::CounterRef<SR::Statement const> StatementCreate_If(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         AST::Exp const *cond, AST::Statement const *body);
-      Core::CounterRef<AST::Statement const> StatementCreate_If(
+         SR::Exp const *cond, SR::Statement const *body);
+      Core::CounterRef<SR::Statement const> StatementCreate_If(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         AST::Exp const *cond, AST::Statement const *body);
+         SR::Exp const *cond, SR::Statement const *body);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_If(
+      Core::CounterRef<SR::Statement const> StatementCreate_If(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         AST::Exp const *cond, AST::Statement const *bodyT,
-         AST::Statement const *bodyF);
-      Core::CounterRef<AST::Statement const> StatementCreate_If(
+         SR::Exp const *cond, SR::Statement const *bodyT,
+         SR::Statement const *bodyF);
+      Core::CounterRef<SR::Statement const> StatementCreate_If(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         AST::Exp const *cond, AST::Statement const *bodyT,
-         AST::Statement const *bodyF);
+         SR::Exp const *cond, SR::Statement const *bodyT,
+         SR::Statement const *bodyF);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_Return(
+      Core::CounterRef<SR::Statement const> StatementCreate_Return(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         Scope_Function &scope, AST::Exp const *exp = nullptr);
-      Core::CounterRef<AST::Statement const> StatementCreate_Return(
+         Scope_Function &scope, SR::Exp const *exp = nullptr);
+      Core::CounterRef<SR::Statement const> StatementCreate_Return(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         Scope_Function &scope, AST::Exp const *exp = nullptr);
-      Core::CounterRef<AST::Statement const> StatementCreate_Return(
+         Scope_Function &scope, SR::Exp const *exp = nullptr);
+      Core::CounterRef<SR::Statement const> StatementCreate_Return(
          Core::Origin pos, Scope_Function &scope,
-         AST::Exp const *exp = nullptr);
+         SR::Exp const *exp = nullptr);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_Switch(
+      Core::CounterRef<SR::Statement const> StatementCreate_Switch(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         Scope_Case &ctx, AST::Exp const *cond, AST::Statement const *body);
-      Core::CounterRef<AST::Statement const> StatementCreate_Switch(
+         Scope_Case &ctx, SR::Exp const *cond, SR::Statement const *body);
+      Core::CounterRef<SR::Statement const> StatementCreate_Switch(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         Scope_Case &ctx, AST::Exp const *cond, AST::Statement const *body);
+         Scope_Case &ctx, SR::Exp const *cond, SR::Statement const *body);
 
-      Core::CounterRef<AST::Statement const> StatementCreate_While(
+      Core::CounterRef<SR::Statement const> StatementCreate_While(
          Core::Array<Core::String> const &labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Exp const *cond, AST::Statement const *body);
-      Core::CounterRef<AST::Statement const> StatementCreate_While(
+         Scope_Local &ctx, SR::Exp const *cond, SR::Statement const *body);
+      Core::CounterRef<SR::Statement const> StatementCreate_While(
          Core::Array<Core::String>      &&labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Exp const *cond, AST::Statement const *body);
+         Scope_Local &ctx, SR::Exp const *cond, SR::Statement const *body);
    }
 }
 

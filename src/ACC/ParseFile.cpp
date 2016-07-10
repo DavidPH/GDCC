@@ -17,8 +17,6 @@
 #include "ACC/Scope.hpp"
 #include "ACC/TStream.hpp"
 
-#include "AST/Statement.hpp"
-
 #include "CC/Exp.hpp"
 
 #include "Core/File.hpp"
@@ -26,6 +24,8 @@
 #include "Core/StringBuf.hpp"
 
 #include "IR/Program.hpp"
+
+#include "SR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -55,8 +55,8 @@ namespace GDCC
                CC::ExpPromo_Assign_Ptr = expPromo_Assign_Ptr;
             }
 
-            AST::Exp::CRef (*expPromo_Assign_Ptr)(AST::Type const *typeL,
-               AST::Exp const *e, Core::Origin pos);
+            SR::Exp::CRef (*expPromo_Assign_Ptr)(SR::Type const *typeL,
+               SR::Exp const *e, Core::Origin pos);
 
          } funcSave;
 

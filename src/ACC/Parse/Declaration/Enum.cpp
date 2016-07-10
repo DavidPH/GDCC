@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,13 +14,13 @@
 
 #include "ACC/Scope.hpp"
 
-#include "AST/Statement.hpp"
-
 #include "CC/Exp.hpp"
 #include "CC/Type/Enum.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -34,7 +34,7 @@ namespace GDCC
       //
       // Parser::getDecl_Enum
       //
-      AST::Statement::CRef Parser::getDecl_Enum(Scope_Global &scope)
+      SR::Statement::CRef Parser::getDecl_Enum(Scope_Global &scope)
       {
          // enum-declaration:
          //    <enum> identifier(opt) { enumeration-member-declaration-list }
@@ -91,7 +91,7 @@ namespace GDCC
          if(type)
             type->setComplete(CC::TypeIntegPrS);
 
-         return AST::StatementCreate_Empty(pos);
+         return SR::StatementCreate_Empty(pos);
       }
    }
 }

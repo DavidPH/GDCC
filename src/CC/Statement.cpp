@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,13 +12,13 @@
 
 #include "CC/Statement.hpp"
 
-#include "AST/Statement.hpp"
-
 #include "Core/Exception.hpp"
+
+#include "SR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -28,9 +28,9 @@ namespace GDCC
       //
       // StatementCreate_Decl
       //
-      AST::Statement::CRef StatementCreate_Decl(Core::Origin pos, Scope &)
+      SR::Statement::CRef StatementCreate_Decl(Core::Origin pos, Scope &)
       {
-         return AST::StatementCreate_Empty(pos);
+         return SR::StatementCreate_Empty(pos);
       }
    }
 }

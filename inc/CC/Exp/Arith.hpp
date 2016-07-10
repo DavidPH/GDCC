@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,14 +15,14 @@
 
 #include "../../CC/Exp.hpp"
 
-#include "../../AST/Exp/Arith.hpp"
-#include "../../AST/ExpCode.hpp"
-
 #include "../../Core/Exception.hpp"
+
+#include "../../SR/Exp/Arith.hpp"
+#include "../../SR/ExpCode.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -36,17 +36,17 @@ namespace GDCC
       // fixed-point expression creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_ArithFixed(AST::Type const *t,
-         AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_ArithFixed(SR::Type const *t,
+         SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
          // Fixed-point arithmetic promotion doesn't always convert to the
          // result type. For generic handling, do so.
          auto expL = ExpConvert_Arith(t, l, pos);
          auto expR = ExpConvert_Arith(t, r, pos);
 
-         auto op = AST::ExpCode_ArithFixed<Codes>(t);
+         auto op = SR::ExpCode_ArithFixed<Codes>(t);
 
-         return AST::Exp_Arith<Base>::Create(op, t, expL, expR, pos);
+         return SR::Exp_Arith<Base>::Create(op, t, expL, expR, pos);
       }
 
       //
@@ -56,12 +56,12 @@ namespace GDCC
       // floating expression creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_ArithFloat(AST::Type const *t,
-         AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_ArithFloat(SR::Type const *t,
+         SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
-         auto op = AST::ExpCode_ArithFloat<Codes>(t);
+         auto op = SR::ExpCode_ArithFloat<Codes>(t);
 
-         return AST::Exp_Arith<Base>::Create(op, t, l, r, pos);
+         return SR::Exp_Arith<Base>::Create(op, t, l, r, pos);
       }
 
       //
@@ -71,12 +71,12 @@ namespace GDCC
       // integer expression creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_ArithInteg(AST::Type const *t,
-         AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_ArithInteg(SR::Type const *t,
+         SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
-         auto op = AST::ExpCode_ArithInteg<Codes>(t);
+         auto op = SR::ExpCode_ArithInteg<Codes>(t);
 
-         return AST::Exp_Arith<Base>::Create(op, t, l, r, pos);
+         return SR::Exp_Arith<Base>::Create(op, t, l, r, pos);
       }
 
       //
@@ -86,8 +86,8 @@ namespace GDCC
       // expression creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_Arith(AST::Type const *t, AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_Arith(SR::Type const *t, SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos)
       {
          // Floating types.
          if(t->isCTypeFloat())
@@ -112,17 +112,17 @@ namespace GDCC
       // fixed-point expression creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_ArithEqFixed(AST::Type const *evalT,
-         AST::Type const *t, AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_ArithEqFixed(SR::Type const *evalT,
+         SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos, bool post = false)
       {
          // Fixed-point arithmetic promotion doesn't always convert to the
          // result type. For generic handling, do so.
          auto expR = ExpConvert_Arith(evalT, r, pos);
 
-         auto op = AST::ExpCode_ArithFixed<Codes>(evalT);
+         auto op = SR::ExpCode_ArithFixed<Codes>(evalT);
 
-         return AST::Exp_ArithEq<Base>::Create(evalT, op, post, t, l, expR, pos);
+         return SR::Exp_ArithEq<Base>::Create(evalT, op, post, t, l, expR, pos);
       }
 
       //
@@ -132,13 +132,13 @@ namespace GDCC
       // floating expression creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_ArithEqFloat(AST::Type const *evalT,
-         AST::Type const *t, AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_ArithEqFloat(SR::Type const *evalT,
+         SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos, bool post = false)
       {
-         auto op = AST::ExpCode_ArithFloat<Codes>(evalT);
+         auto op = SR::ExpCode_ArithFloat<Codes>(evalT);
 
-         return AST::Exp_ArithEq<Base>::Create(evalT, op, post, t, l, r, pos);
+         return SR::Exp_ArithEq<Base>::Create(evalT, op, post, t, l, r, pos);
       }
 
       //
@@ -148,13 +148,13 @@ namespace GDCC
       // integer expression creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_ArithEqInteg(AST::Type const *evalT,
-         AST::Type const *t, AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_ArithEqInteg(SR::Type const *evalT,
+         SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos, bool post = false)
       {
-         auto op = AST::ExpCode_ArithInteg<Codes>(evalT);
+         auto op = SR::ExpCode_ArithInteg<Codes>(evalT);
 
-         return AST::Exp_ArithEq<Base>::Create(evalT, op, post, t, l, r, pos);
+         return SR::Exp_ArithEq<Base>::Create(evalT, op, post, t, l, r, pos);
       }
 
       //
@@ -164,8 +164,8 @@ namespace GDCC
       // assignment expression creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_ArithEq(AST::Type const *evalT,
-         AST::Type const *t, AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_ArithEq(SR::Type const *evalT,
+         SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos, bool post = false)
       {
          // Floating types.

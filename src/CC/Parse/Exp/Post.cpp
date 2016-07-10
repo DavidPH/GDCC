@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,12 +14,12 @@
 
 #include "CC/Exp.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Array.hpp"
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Exp.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -33,7 +33,7 @@ namespace GDCC
       //
       // GetExp_Post_Add2
       //
-      static AST::Exp::CRef GetExp_Post_Add2(Parser &ctx, Scope &, AST::Exp const *exp)
+      static SR::Exp::CRef GetExp_Post_Add2(Parser &ctx, Scope &, SR::Exp const *exp)
       {
          return ExpCreate_IncSuf(exp, ctx.in.get().pos);
       }
@@ -41,7 +41,7 @@ namespace GDCC
       //
       // GetExp_Post_BrackO
       //
-      static AST::Exp::CRef GetExp_Post_BrackO(Parser &ctx, Scope &scope, AST::Exp const *exp)
+      static SR::Exp::CRef GetExp_Post_BrackO(Parser &ctx, Scope &scope, SR::Exp const *exp)
       {
          auto pos = ctx.in.get().pos;
 
@@ -56,7 +56,7 @@ namespace GDCC
       //
       // GetExp_Post_Dot
       //
-      static AST::Exp::CRef GetExp_Post_Dot(Parser &ctx, Scope &, AST::Exp const *exp)
+      static SR::Exp::CRef GetExp_Post_Dot(Parser &ctx, Scope &, SR::Exp const *exp)
       {
          auto pos = ctx.in.get().pos;
 
@@ -69,7 +69,7 @@ namespace GDCC
       //
       // GetExp_Post_Mem
       //
-      static AST::Exp::CRef GetExp_Post_Mem(Parser &ctx, Scope &, AST::Exp const *exp)
+      static SR::Exp::CRef GetExp_Post_Mem(Parser &ctx, Scope &, SR::Exp const *exp)
       {
          auto pos = ctx.in.get().pos;
 
@@ -82,7 +82,7 @@ namespace GDCC
       //
       // GetExp_Post_Sub2
       //
-      static AST::Exp::CRef GetExp_Post_Sub2(Parser &ctx, Scope &, AST::Exp const *exp)
+      static SR::Exp::CRef GetExp_Post_Sub2(Parser &ctx, Scope &, SR::Exp const *exp)
       {
          return ExpCreate_DecSuf(exp, ctx.in.get().pos);
       }
@@ -101,11 +101,11 @@ namespace GDCC
       //
       // Parser::getExp_Post_ParenO
       //
-      AST::Exp::CRef Parser::getExp_Post_ParenO(Scope &scope, AST::Exp const *exp)
+      SR::Exp::CRef Parser::getExp_Post_ParenO(Scope &scope, SR::Exp const *exp)
       {
          auto pos = in.get().pos;
 
-         Core::Array<AST::Exp::CRef> args;
+         Core::Array<SR::Exp::CRef> args;
 
          if(!in.peek(Core::TOK_ParenC))
             args = getExpList(scope);
@@ -119,7 +119,7 @@ namespace GDCC
       //
       // Parser::getExp_Post
       //
-      AST::Exp::CRef Parser::getExp_Post(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Post(Scope &scope)
       {
          if(isExp_Cast(scope))
             return getExp_Post(scope, getExp_CLit(scope));
@@ -130,9 +130,9 @@ namespace GDCC
       //
       // Parser::getExp_Post
       //
-      AST::Exp::CRef Parser::getExp_Post(Scope &scope, AST::Exp const *e)
+      SR::Exp::CRef Parser::getExp_Post(Scope &scope, SR::Exp const *e)
       {
-         AST::Exp::CRef exp{e};
+         SR::Exp::CRef exp{e};
 
          for(;;) switch(in.peek().tok)
          {

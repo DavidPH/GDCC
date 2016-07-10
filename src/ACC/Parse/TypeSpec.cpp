@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,10 +14,6 @@
 
 #include "ACC/Pragma.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Exp.hpp"
-#include "AST/Type.hpp"
-
 #include "CC/Exp.hpp"
 #include "CC/Scope.hpp"
 #include "CC/Type/Enum.hpp"
@@ -28,9 +24,13 @@
 
 #include "Platform/Platform.hpp"
 
+#include "SR/Attribute.hpp"
+#include "SR/Exp.hpp"
+#include "SR/Type.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -64,7 +64,7 @@ namespace GDCC
       //
       // Parser::parseTypeSpec
       //
-      void Parser::parseTypeSpec(CC::Scope &scope, AST::Attribute &attr, CC::TypeSpec &spec)
+      void Parser::parseTypeSpec(CC::Scope &scope, SR::Attribute &attr, CC::TypeSpec &spec)
       {
          auto const &tok = in.get();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)

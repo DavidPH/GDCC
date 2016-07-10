@@ -15,7 +15,7 @@
 
 #include "../../CC/Statement.hpp"
 
-#include "../../AST/Statement.hpp"
+#include "../../SR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,23 +29,23 @@ namespace GDCC
       //
       // Statement_If
       //
-      class Statement_If : public AST::Statement
+      class Statement_If : public SR::Statement
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Statement_If, GDCC::AST::Statement);
+            GDCC::CC::Statement_If, GDCC::SR::Statement);
 
       public:
-         Core::CounterRef<AST::Exp const> const cond;
-         AST::Statement::CRef             const bodyT;
-         AST::Statement::CPtr             const bodyF;
+         Core::CounterRef<SR::Exp const> const cond;
+         SR::Statement::CRef             const bodyT;
+         SR::Statement::CPtr             const bodyF;
 
 
          //
          // Create
          //
          static CRef Create(Labels const &labels, Core::Origin pos,
-            AST::Exp const *cond, AST::Statement const *bodyT,
-            AST::Statement const *bodyF = nullptr)
+            SR::Exp const *cond, SR::Statement const *bodyT,
+            SR::Statement const *bodyF = nullptr)
          {
             return CRef(new This(labels, pos, cond, bodyT, bodyF));
          }
@@ -54,21 +54,21 @@ namespace GDCC
          // Create
          //
          static CRef Create(Labels &&labels, Core::Origin pos,
-            AST::Exp const *cond, AST::Statement const *bodyT,
-            AST::Statement const *bodyF = nullptr)
+            SR::Exp const *cond, SR::Statement const *bodyT,
+            SR::Statement const *bodyF = nullptr)
          {
             return CRef(new This(std::move(labels), pos, cond, bodyT, bodyF));
          }
 
       protected:
          Statement_If(Labels const &labels, Core::Origin pos,
-            AST::Exp const *cond, AST::Statement const *bodyT,
-            AST::Statement const *bodyF);
-         Statement_If(Labels &&labels, Core::Origin pos, AST::Exp const *cond,
-            AST::Statement const *bodyT, AST::Statement const *bodyF);
+            SR::Exp const *cond, SR::Statement const *bodyT,
+            SR::Statement const *bodyF);
+         Statement_If(Labels &&labels, Core::Origin pos, SR::Exp const *cond,
+            SR::Statement const *bodyT, SR::Statement const *bodyF);
 
          virtual void v_genLabel(IR::Block &block) const;
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 
          virtual bool v_isBranch() const;
          virtual bool v_isEffect() const;

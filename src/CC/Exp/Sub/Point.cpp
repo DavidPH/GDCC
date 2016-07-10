@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,10 +14,10 @@
 
 #include "CC/Type.hpp"
 
-#include "AST/Temporary.hpp"
-#include "AST/Type.hpp"
-
 #include "IR/Block.hpp"
+
+#include "SR/Temporary.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -31,19 +31,19 @@ namespace GDCC
       //
       // Exp_SubPtrInt::v_genStmnt
       //
-      void Exp_SubPtrInt::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_SubPtrInt::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
-         AST::GenStmnt_Point(this, {IR::Code::SubU_W, 1}, ctx, dst);
+         SR::GenStmnt_Point(this, {IR::Code::SubU_W, 1}, ctx, dst);
       }
 
       //
       // Exp_SubPtrIntEq::v_genStmnt
       //
-      void Exp_SubPtrIntEq::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_SubPtrIntEq::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
-         AST::GenStmnt_PointEq(this, {IR::Code::SubU_W, 1}, ctx, dst, post);
+         SR::GenStmnt_PointEq(this, {IR::Code::SubU_W, 1}, ctx, dst, post);
       }
 
       //
@@ -65,8 +65,8 @@ namespace GDCC
       //
       // Exp_SubPtrPtrW::v_genStmnt
       //
-      void Exp_SubPtrPtrW::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_SubPtrPtrW::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          if(GenStmntNul(this, ctx, dst)) return;
 
@@ -78,7 +78,7 @@ namespace GDCC
 
          if(pointWords > 1)
          {
-            AST::Temporary tmp{ctx, pos, 1};
+            SR::Temporary tmp{ctx, pos, 1};
 
             ctx.block.addStatementArgs({IR::Code::Move_W, 1},
                tmp.getArg(), IR::Arg_Stk());
@@ -106,7 +106,7 @@ namespace GDCC
          {
             // TODO: Use a shift where possible. That is, where it is either
             // known that the result is positive or if the target has
-            // arithmetic shift. Also that the rounding behavior of shifting
+            // logical shift. Also that the rounding behavior of shifting
             // negative integers is acceptable. (That is, it will only break
             // if the pointers are already not properly aligned.)
 

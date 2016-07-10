@@ -14,9 +14,6 @@
 
 #include "ACC/Scope.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Type.hpp"
-
 #include "CC/Exp.hpp"
 #include "CC/Type.hpp"
 
@@ -26,6 +23,9 @@
 
 #include "IR/Exp.hpp"
 #include "IR/Glyph.hpp"
+
+#include "SR/Exp.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -52,16 +52,16 @@ namespace GDCC
       //
       // GetPrintSpec_Array
       //
-      static AST::Exp::CPtr GetPrintSpec_Array(Parser &ctx, CC::Scope &scope,
-         AST::Exp const *propArray, AST::Exp const *propRange,
-         Core::Array<AST::Exp::CRef> &&args, Core::Origin pos)
+      static SR::Exp::CPtr GetPrintSpec_Array(Parser &ctx, CC::Scope &scope,
+         SR::Exp const *propArray, SR::Exp const *propRange,
+         Core::Array<SR::Exp::CRef> &&args, Core::Origin pos)
       {
-         AST::Type::CRef type = args[0]->getType()->getBaseType();
+         SR::Type::CRef type = args[0]->getType()->getBaseType();
 
          auto space = type->getQualAddr();
 
          auto indexExp = CC::ExpCreate_Cst(CC::TypeIntegPrS, args[0]);
-         auto spaceExp = AST::ExpCreate_IRExp(IR::ExpCreate_Glyph(
+         auto spaceExp = SR::ExpCreate_IRExp(IR::ExpCreate_Glyph(
             {ctx.prog, space.name}, pos), CC::TypeIntegPrS, pos);
 
          if(args.size() == 1 && propArray)
@@ -81,14 +81,14 @@ namespace GDCC
       //
       // GetPrintSpec
       //
-      static AST::Exp::CRef GetPrintSpec(Parser &ctx, CC::Scope &scope,
+      static SR::Exp::CRef GetPrintSpec(Parser &ctx, CC::Scope &scope,
          PrintProp const &prop, Core::Origin pos)
       {
          // print-specifier:
          //    identifier : ( expression-list )
          //    identifier : assignment-expression
 
-         Core::Array<AST::Exp::CRef> args;
+         Core::Array<SR::Exp::CRef> args;
 
          // ( expression-list )
          if(ctx.in.peek(Core::TOK_ParenO) && prop.isMultiArg())
@@ -110,7 +110,7 @@ namespace GDCC
          // Possibly array special print?
          if(args.size() >= 1 && args[0]->getType()->isTypePointer())
          {
-            AST::Type::CRef type = args[0]->getType()->getBaseType();
+            SR::Type::CRef type = args[0]->getType()->getBaseType();
 
             auto space = type->getQualAddr();
 
@@ -119,25 +119,25 @@ namespace GDCC
             case IR::AddrBase::GblArr:
                if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propGlobalArray,
                   prop.propGlobalRange, std::move(args), pos))
-                  return static_cast<AST::Exp::CRef>(exp);
+                  return static_cast<SR::Exp::CRef>(exp);
                break;
 
             case IR::AddrBase::HubArr:
                if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propHubArray,
                   prop.propHubRange, std::move(args), pos))
-                  return static_cast<AST::Exp::CRef>(exp);
+                  return static_cast<SR::Exp::CRef>(exp);
                break;
 
             case IR::AddrBase::LocArr:
                if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propLocalArray,
                   prop.propLocalRange, std::move(args), pos))
-                  return static_cast<AST::Exp::CRef>(exp);
+                  return static_cast<SR::Exp::CRef>(exp);
                break;
 
             case IR::AddrBase::ModArr:
                if(auto exp = GetPrintSpec_Array(ctx, scope, prop.propModuleArray,
                   prop.propModuleRange, std::move(args), pos))
-                  return static_cast<AST::Exp::CRef>(exp);
+                  return static_cast<SR::Exp::CRef>(exp);
                break;
 
             default:
@@ -154,7 +154,7 @@ namespace GDCC
       //
       // GetPrintSpecList
       //
-      static AST::Exp::CRef GetPrintSpecList(AST::Exp::CRef exp, Parser &ctx,
+      static SR::Exp::CRef GetPrintSpecList(SR::Exp::CRef exp, Parser &ctx,
          CC::Scope &scope, PrintDecl const *print)
       {
          // print-specifier-list:
@@ -177,7 +177,7 @@ namespace GDCC
                throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
 
             PrintProp const &prop = GetPrintProp(print, name.str, name.pos);
-            AST::Exp::CRef   spec = GetPrintSpec(ctx, scope, prop, name.pos);
+            SR::Exp::CRef   spec = GetPrintSpec(ctx, scope, prop, name.pos);
 
             exp = CC::ExpCreate_Comma(exp, spec, name.pos);
          }
@@ -189,7 +189,7 @@ namespace GDCC
       //
       // GetPrintSpecString
       //
-      static AST::Exp::CRef GetPrintSpecString(AST::Exp::CRef exp, Parser &ctx,
+      static SR::Exp::CRef GetPrintSpecString(SR::Exp::CRef exp, Parser &ctx,
          CC::Scope &scope, PrintDecl const *print)
       {
          // print-specifier-string:
@@ -234,7 +234,7 @@ namespace GDCC
                throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
 
             PrintProp const &prop = GetPrintProp(print, {strStr, strItr}, pos);
-            AST::Exp::CRef   spec = GetPrintSpec(ctx, scope, prop, pos);
+            SR::Exp::CRef   spec = GetPrintSpec(ctx, scope, prop, pos);
 
             exp = CC::ExpCreate_Comma(exp, spec, pos);
 
@@ -262,7 +262,7 @@ namespace GDCC
       //
       // Parser::getExp_Unar_print
       //
-      AST::Exp::CRef Parser::getExp_Unar_print(CC::Scope &scope, PrintDecl const *print)
+      SR::Exp::CRef Parser::getExp_Unar_print(CC::Scope &scope, PrintDecl const *print)
       {
          // print-expression:
          //    print-identifier ( print-specifier-list(opt) print-argument-list(opt) )
@@ -272,7 +272,7 @@ namespace GDCC
          auto pos = in.get().pos;
 
          // Start with a no-op expression.
-         auto exp = AST::ExpCreate_Size(0);
+         auto exp = SR::ExpCreate_Size(0);
 
          if(print->propBegin)
             exp = CC::ExpCreate_Comma(exp,
@@ -296,8 +296,8 @@ namespace GDCC
          {
             auto args = getExpList(scope);
 
-            AST::Exp::CRef *argp = args.data();
-            std::size_t     argc = args.size();
+            SR::Exp::CRef *argp = args.data();
+            std::size_t    argc = args.size();
 
             if(print->propMore)
             {

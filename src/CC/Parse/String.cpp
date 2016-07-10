@@ -14,12 +14,12 @@
 
 #include "CC/Type.hpp"
 
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/Token.hpp"
 
 #include "IR/Value.hpp"
+
+#include "SR/Type.hpp"
 
 #include <tuple>
 #include <vector>
@@ -29,107 +29,111 @@
 // Static Functions                                                           |
 //
 
-//
-// CreateStr
-//
-template<typename StrLen, typename StrVal>
-static GDCC::Core::Array<GDCC::IR::Value> CreateStr(GDCC::Core::String str,
-   GDCC::AST::Type const *type, StrLen const &strLen, StrVal const &strVal)
+namespace GDCC
 {
-   using namespace GDCC;
-
-   // Calculate string length.
-   auto len = strLen(str);
-
-   // Convert string to IR value.
-   auto initType = type->getIRType().tFixed;
-
-   std::vector<IR::Value_Fixed> val; val.reserve(len);
-   strVal(str, val, initType);
-
-   return Core::Array<IR::Value>(Core::Move, val.begin(), val.end());
-}
-
-//
-// StrLen_ChrU08
-//
-static std::size_t StrLen_ChrU08(GDCC::Core::String str)
-{
-   return str.size() + 1;
-}
-
-//
-// StrLen_ChrU16
-//
-static std::size_t StrLen_ChrU16(GDCC::Core::String str)
-{
-   return str.size16() + 1;
-}
-
-//
-// StrLen_ChrU32
-//
-static std::size_t StrLen_ChrU32(GDCC::Core::String str)
-{
-   return str.size32() + 1;
-}
-
-//
-// StrVal_ChrU08
-//
-static void StrVal_ChrU08(GDCC::Core::String str,
-   std::vector<GDCC::IR::Value_Fixed> &val, GDCC::IR::Type_Fixed const &type)
-{
-   for(unsigned char c : str)
-      val.emplace_back(c, type);
-
-   val.emplace_back(0, type);
-}
-
-//
-// StrVal_ChrU16
-//
-static void StrVal_ChrU16(GDCC::Core::String str,
-   std::vector<GDCC::IR::Value_Fixed> &val, GDCC::IR::Type_Fixed const &type)
-{
-   for(auto itr = str.begin(), end = str.end(); itr != end;)
+   namespace CC
    {
-      char32_t c;
-      std::tie(c, itr) = GDCC::Core::Str8To32(itr, end);
-
-      if(c <= 0xFFFF)
-         val.emplace_back(c, type);
-      else
+      //
+      // CreateStr
+      //
+      template<typename StrLen, typename StrVal>
+      static Core::Array<IR::Value> CreateStr(Core::String str,
+         SR::Type const *type, StrLen const &strLen, StrVal const &strVal)
       {
-         c -= 0x10000;
-         val.emplace_back((c >> 10 & 0x3FF) | 0xD800, type);
-         val.emplace_back((c       & 0x3FF) | 0xDC00, type);
+         // Calculate string length.
+         auto len = strLen(str);
+
+         // Convert string to IR value.
+         auto initType = type->getIRType().tFixed;
+
+         std::vector<IR::Value_Fixed> val; val.reserve(len);
+         strVal(str, val, initType);
+
+         return Core::Array<IR::Value>(Core::Move, val.begin(), val.end());
+      }
+
+      //
+      // StrLen_ChrU08
+      //
+      static std::size_t StrLen_ChrU08(Core::String str)
+      {
+         return str.size() + 1;
+      }
+
+      //
+      // StrLen_ChrU16
+      //
+      static std::size_t StrLen_ChrU16(Core::String str)
+      {
+         return str.size16() + 1;
+      }
+
+      //
+      // StrLen_ChrU32
+      //
+      static std::size_t StrLen_ChrU32(Core::String str)
+      {
+         return str.size32() + 1;
+      }
+
+      //
+      // StrVal_ChrU08
+      //
+      static void StrVal_ChrU08(Core::String str,
+         std::vector<IR::Value_Fixed> &val, IR::Type_Fixed const &type)
+      {
+         for(unsigned char c : str)
+            val.emplace_back(c, type);
+
+         val.emplace_back(0, type);
+      }
+
+      //
+      // StrVal_ChrU16
+      //
+      static void StrVal_ChrU16(Core::String str,
+         std::vector<IR::Value_Fixed> &val, IR::Type_Fixed const &type)
+      {
+         for(auto itr = str.begin(), end = str.end(); itr != end;)
+         {
+            char32_t c;
+            std::tie(c, itr) = Core::Str8To32(itr, end);
+
+            if(c <= 0xFFFF)
+               val.emplace_back(c, type);
+            else
+            {
+               c -= 0x10000;
+               val.emplace_back((c >> 10 & 0x3FF) | 0xD800, type);
+               val.emplace_back((c       & 0x3FF) | 0xDC00, type);
+            }
+         }
+
+         val.emplace_back(0, type);
+      }
+
+      //
+      // StrVal_ChrU32
+      //
+      static void StrVal_ChrU32(Core::String str,
+         std::vector<IR::Value_Fixed> &val, IR::Type_Fixed const &type)
+      {
+         for(auto itr = str.begin(), end = str.end(); itr != end;)
+         {
+            char32_t c;
+            std::tie(c, itr) = Core::Str8To32(itr, end);
+
+            val.emplace_back(c, type);
+         }
+
+         val.emplace_back(0, type);
       }
    }
-
-   val.emplace_back(0, type);
-}
-
-//
-// StrVal_ChrU32
-//
-static void StrVal_ChrU32(GDCC::Core::String str,
-   std::vector<GDCC::IR::Value_Fixed> &val, GDCC::IR::Type_Fixed const &type)
-{
-   for(auto itr = str.begin(), end = str.end(); itr != end;)
-   {
-      char32_t c;
-      std::tie(c, itr) = GDCC::Core::Str8To32(itr, end);
-
-      val.emplace_back(c, type);
-   }
-
-   val.emplace_back(0, type);
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

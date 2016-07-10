@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,7 +22,7 @@
 
 namespace GDCC
 {
-   namespace AST
+   namespace SR
    {
       class Exp;
       class Type;
@@ -44,8 +44,8 @@ namespace GDCC
    namespace ACC
    {
       // Conversion as if by assignment.
-      Core::CounterRef<AST::Exp const> ExpPromo_Assign(AST::Type const *t,
-         AST::Exp const *e, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpPromo_Assign(SR::Type const *t,
+         SR::Exp const *e, Core::Origin pos);
    }
 }
 

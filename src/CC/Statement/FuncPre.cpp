@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,16 +16,16 @@
 
 #include "Core/Exception.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Function.hpp"
-#include "AST/Object.hpp"
-#include "AST/Type.hpp"
-
 #include "IR/Block.hpp"
 #include "IR/CallType.hpp"
 #include "IR/ScriptType.hpp"
 
 #include "Platform/Platform.hpp"
+
+#include "SR/Exp.hpp"
+#include "SR/Function.hpp"
+#include "SR/Object.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -40,11 +40,11 @@ namespace GDCC
       // MoveParam
       //
       template<typename ArgT>
-      static void MoveParam(AST::GenStmntCtx const &ctx, Core::FastU paramIdx,
+      static void MoveParam(SR::GenStmntCtx const &ctx, Core::FastU paramIdx,
          Core::FastU objValue, Core::FastU objWords)
       {
-         IR::Arg_Lit dstIdx{AST::ExpCreate_Size(objValue)->getIRExp()};
-         IR::Arg_Lit srcIdx{AST::ExpCreate_Size(paramIdx)->getIRExp()};
+         IR::Arg_Lit dstIdx{SR::ExpCreate_Size(objValue)->getIRExp()};
+         IR::Arg_Lit srcIdx{SR::ExpCreate_Size(paramIdx)->getIRExp()};
 
          ctx.block.addStatementArgs({IR::Code::Move_W, objWords},
             ArgT(dstIdx), IR::Arg_LocReg(srcIdx));
@@ -64,7 +64,7 @@ namespace GDCC
       //
       // Statement_FuncPre::v_genStmnt
       //
-      void Statement_FuncPre::v_genStmnt(AST::GenStmntCtx const &ctx) const
+      void Statement_FuncPre::v_genStmnt(SR::GenStmntCtx const &ctx) const
       {
          auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
          auto stype = scope.fn->stype;
@@ -111,7 +111,7 @@ namespace GDCC
       //
       // Statement_FuncPro::v_genStmnt
       //
-      void Statement_FuncPro::v_genStmnt(AST::GenStmntCtx const &ctx) const
+      void Statement_FuncPro::v_genStmnt(SR::GenStmntCtx const &ctx) const
       {
          auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
 
@@ -147,7 +147,7 @@ namespace GDCC
       //
       // StatementCreate_FuncPre
       //
-      AST::Statement::CRef StatementCreate_FuncPre(Core::Origin pos,
+      SR::Statement::CRef StatementCreate_FuncPre(Core::Origin pos,
          Scope_Function &scope)
       {
          return Statement_FuncPre::Create(pos, scope);
@@ -156,7 +156,7 @@ namespace GDCC
       //
       // StatementCreate_FuncPro
       //
-      AST::Statement::CRef StatementCreate_FuncPro(Core::Origin pos,
+      SR::Statement::CRef StatementCreate_FuncPro(Core::Origin pos,
          Scope_Function &scope)
       {
          return Statement_FuncPro::Create(pos, scope);

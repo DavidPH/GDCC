@@ -15,15 +15,15 @@
 #include "CC/Exp.hpp"
 #include "CC/Scope/Local.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Function.hpp"
+#include "SR/Exp.hpp"
+#include "SR/Function.hpp"
 
 #include "IR/Block.hpp"
 #include "IR/Glyph.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -34,8 +34,8 @@ namespace GDCC
       // Statement_Loop constructor
       //
       Statement_Loop::Statement_Loop(Labels const &labels_, Core::Origin pos_,
-         Scope_Local &ctx, AST::Statement const *init_, AST::Exp const *cond_,
-         AST::Statement const *iter_, AST::Statement const *body_, bool post_) :
+         Scope_Local &ctx, SR::Statement const *init_, SR::Exp const *cond_,
+         SR::Statement const *iter_, SR::Statement const *body_, bool post_) :
          Super{labels_, pos_}, scope(ctx),
          init{init_}, cond{cond_}, iter{iter_}, body{body_}, post{post_}
       {
@@ -45,8 +45,8 @@ namespace GDCC
       // Statement_Loop constructor
       //
       Statement_Loop::Statement_Loop(Labels &&labels_, Core::Origin pos_,
-         Scope_Local &ctx, AST::Statement const *init_, AST::Exp const *cond_,
-         AST::Statement const *iter_, AST::Statement const *body_, bool post_) :
+         Scope_Local &ctx, SR::Statement const *init_, SR::Exp const *cond_,
+         SR::Statement const *iter_, SR::Statement const *body_, bool post_) :
          Super{std::move(labels_), pos_}, scope(ctx),
          init{init_}, cond{cond_}, iter{iter_}, body{body_}, post{post_}
       {
@@ -63,7 +63,7 @@ namespace GDCC
       //
       // Statement_Loop::v_genStmnt
       //
-      void Statement_Loop::v_genStmnt(AST::GenStmntCtx const &ctx) const
+      void Statement_Loop::v_genStmnt(SR::GenStmntCtx const &ctx) const
       {
          // Labels.
          IR::Glyph labelBody  = {ctx.prog, ctx.fn->genLabel()};
@@ -173,9 +173,9 @@ namespace GDCC
       //
       // StatementCreate_Do
       //
-      AST::Statement::CRef StatementCreate_Do(
-         AST::Statement::Labels const &labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Statement const *body, AST::Exp const *cond)
+      SR::Statement::CRef StatementCreate_Do(
+         SR::Statement::Labels const &labels, Core::Origin pos,
+         Scope_Local &ctx, SR::Statement const *body, SR::Exp const *cond)
       {
          return Statement_Loop::Create(labels, pos, ctx,
             nullptr, ExpPromo_Cond(cond, pos), nullptr, body, true);
@@ -184,9 +184,9 @@ namespace GDCC
       //
       // StatementCreate_Do
       //
-      AST::Statement::CRef StatementCreate_Do(
-         AST::Statement::Labels &&labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Statement const *body, AST::Exp const *cond)
+      SR::Statement::CRef StatementCreate_Do(
+         SR::Statement::Labels &&labels, Core::Origin pos,
+         Scope_Local &ctx, SR::Statement const *body, SR::Exp const *cond)
       {
          return Statement_Loop::Create(std::move(labels), pos, ctx,
             nullptr, ExpPromo_Cond(cond, pos), nullptr, body, true);
@@ -195,10 +195,10 @@ namespace GDCC
       //
       // StatementCreate_For
       //
-      AST::Statement::CRef StatementCreate_For(
-         AST::Statement::Labels const &labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Statement const *init, AST::Exp const *cond,
-         AST::Statement const *iter, AST::Statement const *body)
+      SR::Statement::CRef StatementCreate_For(
+         SR::Statement::Labels const &labels, Core::Origin pos,
+         Scope_Local &ctx, SR::Statement const *init, SR::Exp const *cond,
+         SR::Statement const *iter, SR::Statement const *body)
       {
          return Statement_Loop::Create(labels, pos, ctx,
             init, ExpPromo_Cond(cond, pos), iter, body, false);
@@ -207,10 +207,10 @@ namespace GDCC
       //
       // StatementCreate_For
       //
-      AST::Statement::CRef StatementCreate_For(
-         AST::Statement::Labels &&labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Statement const *init, AST::Exp const *cond,
-         AST::Statement const *iter, AST::Statement const *body)
+      SR::Statement::CRef StatementCreate_For(
+         SR::Statement::Labels &&labels, Core::Origin pos,
+         Scope_Local &ctx, SR::Statement const *init, SR::Exp const *cond,
+         SR::Statement const *iter, SR::Statement const *body)
       {
          return Statement_Loop::Create(std::move(labels), pos, ctx,
             init, ExpPromo_Cond(cond, pos), iter, body, false);
@@ -219,9 +219,9 @@ namespace GDCC
       //
       // StatementCreate_While
       //
-      AST::Statement::CRef StatementCreate_While(
-         AST::Statement::Labels const &labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Exp const *cond, AST::Statement const *body)
+      SR::Statement::CRef StatementCreate_While(
+         SR::Statement::Labels const &labels, Core::Origin pos,
+         Scope_Local &ctx, SR::Exp const *cond, SR::Statement const *body)
       {
          return Statement_Loop::Create(labels, pos, ctx,
             nullptr, ExpPromo_Cond(cond, pos), nullptr, body, false);
@@ -230,9 +230,9 @@ namespace GDCC
       //
       // StatementCreate_While
       //
-      AST::Statement::CRef StatementCreate_While(
-         AST::Statement::Labels &&labels, Core::Origin pos,
-         Scope_Local &ctx, AST::Exp const *cond, AST::Statement const *body)
+      SR::Statement::CRef StatementCreate_While(
+         SR::Statement::Labels &&labels, Core::Origin pos,
+         Scope_Local &ctx, SR::Exp const *cond, SR::Statement const *body)
       {
          return Statement_Loop::Create(std::move(labels), pos, ctx,
             nullptr, ExpPromo_Cond(cond, pos), nullptr, body, false);

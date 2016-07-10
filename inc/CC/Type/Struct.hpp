@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,9 +15,9 @@
 
 #include "../../CC/Type.hpp"
 
-#include "../../AST/Type.hpp"
-
 #include "../../Core/Array.hpp"
+
+#include "../../SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -33,9 +33,9 @@ namespace GDCC
       //
       // A special structure-like type for storing the result of __div.
       //
-      class Type_Div final : public AST::Type
+      class Type_Div final : public SR::Type
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Type_Div, GDCC::AST::Type);
+         GDCC_Core_CounterPreamble(GDCC::CC::Type_Div, GDCC::SR::Type);
 
       public:
          // Type information.
@@ -59,20 +59,20 @@ namespace GDCC
          virtual bool isCTypeStruct()   const {return true;}
 
 
-         static CRef Get(AST::Type const *type);
+         static CRef Get(SR::Type const *type);
 
       protected:
-         Type_Div(AST::Type const *t) : type{t} {}
+         Type_Div(SR::Type const *t) : type{t} {}
 
-         AST::Type::CRef const type;
+         SR::Type::CRef const type;
       };
 
       //
       // Type_Struct
       //
-      class Type_Struct final : public AST::Type
+      class Type_Struct final : public SR::Type
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Type_Struct, GDCC::AST::Type);
+         GDCC_Core_CounterPreamble(GDCC::CC::Type_Struct, GDCC::SR::Type);
 
       public:
          //
@@ -81,14 +81,14 @@ namespace GDCC
          class MemberData
          {
          public:
-            MemberData(Core::String name_, AST::Type const *type_,
+            MemberData(Core::String name_, SR::Type const *type_,
                Core::FastU addr_, bool anon_) :
                name{name_}, type{type_}, addr{addr_}, anon{anon_} {}
 
-            Core::String    const name;
-            AST::Type::CRef const type;
-            Core::FastU     const addr;
-            bool            const anon : 1;
+            Core::String   const name;
+            SR::Type::CRef const type;
+            Core::FastU    const addr;
+            bool           const anon : 1;
          };
 
          //

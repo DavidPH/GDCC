@@ -13,13 +13,13 @@
 #ifndef GDCC__CC__Init_H__
 #define GDCC__CC__Init_H__
 
-#include "../AST/Exp.hpp"
-#include "../AST/Type.hpp"
-
 #include "../Core/Array.hpp"
 #include "../Core/Token.hpp"
 
 #include "../IR/Exp.hpp"
+
+#include "../SR/Exp.hpp"
+#include "../SR/Type.hpp"
 
 #include <vector>
 
@@ -30,15 +30,15 @@
 
 namespace GDCC
 {
-   namespace AST
-   {
-      class Arg;
-      class GenStmntCtx;
-   }
 
    namespace Core
    {
       class Token;
+   }
+   namespace SR
+   {
+      class Arg;
+      class GenStmntCtx;
    }
 
    namespace CC
@@ -73,7 +73,7 @@ namespace GDCC
 
          Core::Array<InitRawDes> desig;
 
-         AST::Exp::CPtr       valueExp;
+         SR::Exp::CPtr        valueExp;
          Core::Token          valueTok;
          Core::Array<InitRaw> valueSub;
       };
@@ -89,7 +89,7 @@ namespace GDCC
 
          virtual ~Init() {}
 
-         void genStmnt(AST::GenStmntCtx const &ctx, AST::Arg const &dst,
+         void genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst,
             bool skipZero) const;
 
          IR::Exp::CRef getIRExp() const;
@@ -105,25 +105,25 @@ namespace GDCC
             Parser &ctx, Scope &scope);
 
          Core::Origin      pos;
-         AST::Exp::CPtr    value;
-         AST::Type::CRef   type;
+         SR::Exp::CPtr     value;
+         SR::Type::CRef    type;
          Core::FastU const offset;
 
 
          // Creates an initializer hierarchy for a given type.
-         static Ptr Create(AST::Type const *type, Core::FastU offset, Core::Origin pos);
+         static Ptr Create(SR::Type const *type, Core::FastU offset, Core::Origin pos);
 
          static Ptr Create(InitRaw const &raw, Parser &ctx, Scope &scope,
-            AST::Type const *type);
+            SR::Type const *type);
 
-         static bool IsInitString(Core::Token const &tok, AST::Type const *type);
+         static bool IsInitString(Core::Token const &tok, SR::Type const *type);
 
       protected:
-         Init(AST::Type const *type_, Core::FastU offset_, Core::Origin pos_) :
+         Init(SR::Type const *type_, Core::FastU offset_, Core::Origin pos_) :
             pos{pos_}, type{type_}, offset{offset_}, parsed{false} {}
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst, bool skipZero) const = 0;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+            SR::Arg const &dst, bool skipZero) const = 0;
 
          virtual IR::Exp::CRef v_getIRExp() const;
 
@@ -163,7 +163,7 @@ namespace GDCC
       class Init_Aggregate : public Init
       {
       protected:
-         Init_Aggregate(AST::Type const *type_, Core::FastU offset_,
+         Init_Aggregate(SR::Type const *type_, Core::FastU offset_,
             Core::Origin pos_) : Init{type_, offset_, pos_} {}
 
          virtual std::size_t findSub(Core::String name);
@@ -192,14 +192,14 @@ namespace GDCC
       class Init_Array : public Init_Aggregate
       {
       public:
-         Init_Array(AST::Type const *type, Core::FastU offset,
+         Init_Array(SR::Type const *type, Core::FastU offset,
             Core::Origin pos, std::size_t width);
 
       protected:
          virtual Init *getSub(std::size_t index);
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst, bool skipZero) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+            SR::Arg const &dst, bool skipZero) const;
 
          virtual IR::Exp::CRef v_getIRExp() const;
 
@@ -216,14 +216,14 @@ namespace GDCC
       class Init_Array0 : public Init_Aggregate
       {
       public:
-         Init_Array0(AST::Type const *type, Core::FastU offset,
+         Init_Array0(SR::Type const *type, Core::FastU offset,
             Core::Origin pos);
 
       protected:
          virtual Init *getSub(std::size_t index);
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst, bool skipZero) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+            SR::Arg const &dst, bool skipZero) const;
 
          virtual IR::Exp::CRef v_getIRExp() const;
 
@@ -233,8 +233,8 @@ namespace GDCC
 
          std::vector<std::unique_ptr<Init>> subs;
 
-         AST::Type::CRef const subT;
-         Core::FastU     const subB;
+         SR::Type::CRef const subT;
+         Core::FastU    const subB;
       };
 
       //
@@ -252,8 +252,8 @@ namespace GDCC
 
          virtual std::size_t nextSub(std::size_t index) const;
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst, bool skipZero) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+            SR::Arg const &dst, bool skipZero) const;
 
          virtual IR::Exp::CRef v_getIRExp() const;
 
@@ -282,8 +282,8 @@ namespace GDCC
 
          virtual std::size_t nextSub(std::size_t index) const;
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst, bool skipZero) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+            SR::Arg const &dst, bool skipZero) const;
 
          virtual IR::Exp::CRef v_getIRExp() const;
 
@@ -306,8 +306,8 @@ namespace GDCC
             Core::Origin pos);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst, bool skipZero) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+            SR::Arg const &dst, bool skipZero) const;
 
          virtual IR::Exp::CRef v_getIRExp() const;
 
@@ -322,11 +322,11 @@ namespace GDCC
       class Init_Value : public Init
       {
       public:
-         Init_Value(AST::Type const *type, Core::FastU offset, Core::Origin pos);
+         Init_Value(SR::Type const *type, Core::FastU offset, Core::Origin pos);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst, bool skipZero) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+            SR::Arg const &dst, bool skipZero) const;
 
          virtual void v_parseBlock(InitRaw const &raw, Parser &ctx, Scope &scope);
 

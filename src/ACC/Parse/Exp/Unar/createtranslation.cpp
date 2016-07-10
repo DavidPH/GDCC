@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,7 +14,7 @@
 
 #include "ACC/PropDecl.hpp"
 
-#include "AST/Type.hpp"
+#include "SR/Type.hpp"
 
 #include "CC/Exp.hpp"
 
@@ -37,7 +37,7 @@ namespace GDCC
       // GetTranslationExp
       //
       static Core::FastU GetTranslationExp(Parser &ctx, CC::Scope &scope,
-         std::vector<AST::Exp::CRef> &expv)
+         std::vector<SR::Exp::CRef> &expv)
       {
          // translation-expression:
          //    conditional-expression
@@ -69,14 +69,14 @@ namespace GDCC
       //
       // GetTranslation
       //
-      static AST::Exp::CRef GetTranslation(Parser &ctx, CC::Scope &scope,
+      static SR::Exp::CRef GetTranslation(Parser &ctx, CC::Scope &scope,
          CreateTransDecl const *ctrans)
       {
          // translation:
          //    translation-expression : translation-expression =
          //       translation-prefix(opt) translation-expression : translation-expression
 
-         std::vector<AST::Exp::CRef> expv;
+         std::vector<SR::Exp::CRef> expv;
 
          CreateTransPropName name;
 
@@ -135,7 +135,7 @@ namespace GDCC
       //
       // Parser::getExp_Unar_createtranslation
       //
-      AST::Exp::CRef Parser::getExp_Unar_createtranslation(CC::Scope &scope,
+      SR::Exp::CRef Parser::getExp_Unar_createtranslation(CC::Scope &scope,
          CreateTransDecl const *ctrans)
       {
          // create-translation-expression:
@@ -150,13 +150,13 @@ namespace GDCC
             throw Core::ParseExceptExpect(in.peek(), "(", true);
 
          // Start with a no-op expression.
-         auto exp = AST::ExpCreate_Size(0);
+         auto exp = SR::ExpCreate_Size(0);
 
          if(ctrans->propBegin)
          {
             Core::FastU argc = ctrans->propBegin->getType()->getBaseType()->getParameters()->size();
 
-            std::vector<AST::Exp::CRef> argv;
+            std::vector<SR::Exp::CRef> argv;
 
             if(argc)
             {

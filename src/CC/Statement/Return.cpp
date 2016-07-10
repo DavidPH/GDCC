@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,55 +15,59 @@
 #include "CC/Exp.hpp"
 #include "CC/Scope/Function.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Exp.hpp"
-#include "AST/Function.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
 #include "IR/CallType.hpp"
 #include "IR/Glyph.hpp"
 
+#include "SR/Arg.hpp"
+#include "SR/Exp.hpp"
+#include "SR/Function.hpp"
+#include "SR/Type.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
 //
 
-//
-// CheckConstraint
-//
-static GDCC::AST::Exp::CPtr CheckConstraint(GDCC::Core::Origin pos,
-   GDCC::CC::Scope_Function &scope, GDCC::AST::Exp const *exp)
+namespace GDCC
 {
-   using namespace GDCC;
-
-   bool isVoid = scope.fn->retrn->isTypeVoid();
-
-   // Sanity check. This should have been caught by now.
-   if(!isVoid && !scope.fn->retrn->isTypeComplete())
-      throw Core::ExceptStr(pos, "complete type required for return");
-
-   if(exp)
+   namespace CC
    {
-      if(isVoid)
-         throw Core::ExceptStr(pos, "return expression forbidden");
+      //
+      // CheckConstraint
+      //
+      static SR::Exp::CPtr CheckConstraint(Core::Origin pos,
+         CC::Scope_Function &scope, SR::Exp const *exp)
+      {
+         bool isVoid = scope.fn->retrn->isTypeVoid();
 
-      return CC::ExpPromo_Assign(scope.fn->retrn, exp, pos);
-   }
-   else
-   {
-      if(!isVoid)
-         throw Core::ExceptStr(pos, "return expression required");
+         // Sanity check. This should have been caught by now.
+         if(!isVoid && !scope.fn->retrn->isTypeComplete())
+            throw Core::ExceptStr(pos, "complete type required for return");
 
-      return nullptr;
+         if(exp)
+         {
+            if(isVoid)
+               throw Core::ExceptStr(pos, "return expression forbidden");
+
+            return CC::ExpPromo_Assign(scope.fn->retrn, exp, pos);
+         }
+         else
+         {
+            if(!isVoid)
+               throw Core::ExceptStr(pos, "return expression required");
+
+            return nullptr;
+         }
+      }
    }
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -74,7 +78,7 @@ namespace GDCC
       // Statement_ReturnExp constructor
       //
       Statement_ReturnExp::Statement_ReturnExp(Labels const &labels_,
-         Core::Origin pos_, AST::Exp const *exp_, Scope_Function &scope_) :
+         Core::Origin pos_, SR::Exp const *exp_, Scope_Function &scope_) :
          Super{labels_, pos_}, exp{exp_}, scope(scope_)
       {
       }
@@ -83,7 +87,7 @@ namespace GDCC
       // Statement_ReturnExp constructor
       //
       Statement_ReturnExp::Statement_ReturnExp(Labels &&labels_,
-         Core::Origin pos_, AST::Exp const *exp_, Scope_Function &scope_) :
+         Core::Origin pos_, SR::Exp const *exp_, Scope_Function &scope_) :
          Super{std::move(labels_), pos_}, exp{exp_}, scope(scope_)
       {
       }
@@ -92,7 +96,7 @@ namespace GDCC
       // Statement_ReturnExp constructor
       //
       Statement_ReturnExp::Statement_ReturnExp(Core::Origin pos_,
-         AST::Exp const *exp_, Scope_Function &scope_) :
+         SR::Exp const *exp_, Scope_Function &scope_) :
          Super{pos_}, exp{exp_}, scope(scope_)
       {
       }
@@ -107,7 +111,7 @@ namespace GDCC
       //
       // Statement_ReturnExp::v_genStmnt
       //
-      void Statement_ReturnExp::v_genStmnt(AST::GenStmntCtx const &ctx) const
+      void Statement_ReturnExp::v_genStmnt(SR::GenStmntCtx const &ctx) const
       {
          auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
 
@@ -144,7 +148,7 @@ namespace GDCC
       //
       // Statement_ReturnNul::v_genStmnt
       //
-      void Statement_ReturnNul::v_genStmnt(AST::GenStmntCtx const &ctx) const
+      void Statement_ReturnNul::v_genStmnt(SR::GenStmntCtx const &ctx) const
       {
          auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
 
@@ -162,9 +166,9 @@ namespace GDCC
       //
       // StatementCreate_Return
       //
-      AST::Statement::CRef StatementCreate_Return(
-         AST::Statement::Labels const &labels, Core::Origin pos,
-         Scope_Function &scope, AST::Exp const *e)
+      SR::Statement::CRef StatementCreate_Return(
+         SR::Statement::Labels const &labels, Core::Origin pos,
+         Scope_Function &scope, SR::Exp const *e)
       {
          if(auto exp = CheckConstraint(pos, scope, e))
             return Statement_ReturnExp::Create(labels, pos, exp, scope);
@@ -175,9 +179,9 @@ namespace GDCC
       //
       // StatementCreate_Return
       //
-      AST::Statement::CRef StatementCreate_Return(
-         AST::Statement::Labels &&labels, Core::Origin pos,
-         Scope_Function &scope, AST::Exp const *e)
+      SR::Statement::CRef StatementCreate_Return(
+         SR::Statement::Labels &&labels, Core::Origin pos,
+         Scope_Function &scope, SR::Exp const *e)
       {
          if(auto exp = CheckConstraint(pos, scope, e))
             return Statement_ReturnExp::Create(std::move(labels), pos, exp, scope);
@@ -188,8 +192,8 @@ namespace GDCC
       //
       // StatementCreate_Return
       //
-      AST::Statement::CRef StatementCreate_Return(Core::Origin pos,
-         Scope_Function &scope, AST::Exp const *e)
+      SR::Statement::CRef StatementCreate_Return(Core::Origin pos,
+         Scope_Function &scope, SR::Exp const *e)
       {
          if(auto exp = CheckConstraint(pos, scope, e))
             return Statement_ReturnExp::Create(pos, exp, scope);

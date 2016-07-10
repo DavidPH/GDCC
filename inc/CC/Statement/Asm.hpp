@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Statement.hpp"
 
-#include "../../AST/Statement.hpp"
+#include "../../SR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,10 +29,10 @@ namespace GDCC
       //
       // Statement_Asm
       //
-      class Statement_Asm : public AST::Statement
+      class Statement_Asm : public SR::Statement
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Statement_Asm, GDCC::AST::Statement);
+            GDCC::CC::Statement_Asm, GDCC::SR::Statement);
 
       public:
          using Tokens = Core::Array<Core::Token>;
@@ -48,7 +48,7 @@ namespace GDCC
       protected:
          Statement_Asm(Labels &&labels, Core::Origin pos, Tokens &&tokens);
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 
          virtual bool v_isEffect() const {return true;}
          virtual bool v_isNoAuto() const {return true;}

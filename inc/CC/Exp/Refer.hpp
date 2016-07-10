@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Exp.hpp"
 
-#include "../../AST/Exp/Unary.hpp"
+#include "../../SR/Exp/Unary.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,20 +29,19 @@ namespace GDCC
       //
       // Exp_Refer
       //
-      class Exp_Refer : public AST::Exp_Unary
+      class Exp_Refer : public SR::Exp_Unary
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Refer, GDCC::AST::Exp_Unary);
+         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Refer, GDCC::SR::Exp_Unary);
 
       public:
          // Create
-         static CRef Create(AST::Exp const *e, Core::Origin pos)
+         static CRef Create(SR::Exp const *e, Core::Origin pos)
             {return CRef(new This(e, pos));}
 
       protected:
-         Exp_Refer(AST::Exp const *e, Core::Origin pos);
+         Exp_Refer(SR::Exp const *e, Core::Origin pos);
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual FunctionRef v_getFunction() const;
 

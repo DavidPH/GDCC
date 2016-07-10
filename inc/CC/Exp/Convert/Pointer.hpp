@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../../CC/Exp.hpp"
 
-#include "../../../AST/Exp/Convert.hpp"
+#include "../../../SR/Exp/Convert.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -31,16 +31,15 @@ namespace GDCC
       //
       // Changes the type of a pointer without bitwise conversion.
       //
-      class Exp_ConvertPtr : public AST::Exp_Convert
+      class Exp_ConvertPtr : public SR::Exp_Convert
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Exp_ConvertPtr, GDCC::AST::Exp_Convert);
+            GDCC::CC::Exp_ConvertPtr, GDCC::SR::Exp_Convert);
 
-         GDCC_AST_Exp_UnaryCreator(Exp_ConvertPtr);
+         GDCC_SR_Exp_UnaryCreator(Exp_ConvertPtr);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
       };
 
       //
@@ -48,16 +47,15 @@ namespace GDCC
       //
       // Converts between integer and pointer.
       //
-      class Exp_ConvertPtrInt : public AST::Exp_Convert
+      class Exp_ConvertPtrInt : public SR::Exp_Convert
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Exp_ConvertPtrInt, GDCC::AST::Exp_Convert);
+            GDCC::CC::Exp_ConvertPtrInt, GDCC::SR::Exp_Convert);
 
-         GDCC_AST_Exp_UnaryCreator(Exp_ConvertPtrInt);
+         GDCC_SR_Exp_UnaryCreator(Exp_ConvertPtrInt);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual bool v_isIRExp() const;
       };
@@ -67,16 +65,15 @@ namespace GDCC
       //
       // Converts between address spaces with inverted nulls.
       //
-      class Exp_ConvertPtrInv : public AST::Exp_Convert
+      class Exp_ConvertPtrInv : public SR::Exp_Convert
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Exp_ConvertPtrInv, GDCC::AST::Exp_Convert);
+            GDCC::CC::Exp_ConvertPtrInv, GDCC::SR::Exp_Convert);
 
-         GDCC_AST_Exp_UnaryCreator(Exp_ConvertPtrInv);
+         GDCC_SR_Exp_UnaryCreator(Exp_ConvertPtrInv);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
       };
 
       //
@@ -84,16 +81,15 @@ namespace GDCC
       //
       // Converts a pointer-to-loc to a pointer-to-loc_ars.
       //
-      class Exp_ConvertPtrLoc : public AST::Exp_Convert
+      class Exp_ConvertPtrLoc : public SR::Exp_Convert
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Exp_ConvertPtrLoc, GDCC::AST::Exp_Convert);
+            GDCC::CC::Exp_ConvertPtrLoc, GDCC::SR::Exp_Convert);
 
-         GDCC_AST_Exp_UnaryCreator(Exp_ConvertPtrLoc);
+         GDCC_SR_Exp_UnaryCreator(Exp_ConvertPtrLoc);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual bool v_isIRExp() const {return false;}
       };
@@ -101,16 +97,15 @@ namespace GDCC
       //
       // Exp_ConvertPtrSh
       //
-      class Exp_ConvertPtrSh : public AST::Exp_Convert
+      class Exp_ConvertPtrSh : public SR::Exp_Convert
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Exp_ConvertPtrSh, GDCC::AST::Exp_Convert);
+            GDCC::CC::Exp_ConvertPtrSh, GDCC::SR::Exp_Convert);
 
-         GDCC_AST_Exp_UnaryCreator(Exp_ConvertPtrSh);
+         GDCC_SR_Exp_UnaryCreator(Exp_ConvertPtrSh);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual bool v_isIRExp() const {return false;}
       };

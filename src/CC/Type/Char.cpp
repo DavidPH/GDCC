@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,7 +18,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -39,9 +39,9 @@ namespace GDCC
       //
       // Type_Char::getRankC
       //
-      AST::TypeRankC Type_Char::getRankC() const
+      SR::TypeRankC Type_Char::getRankC() const
       {
-         return AST::TypeRankC::IntegHH;
+         return SR::TypeRankC::IntegHH;
       }
 
       //

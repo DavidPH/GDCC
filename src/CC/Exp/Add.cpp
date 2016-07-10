@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,7 +19,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -29,7 +29,7 @@ namespace GDCC
       //
       // ExpCreate_Add
       //
-      AST::Exp::CRef ExpCreate_Add(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_Add(SR::Exp const *e, Core::Origin pos)
       {
          if(!e->getType()->isCTypeArith())
             throw Core::ExceptStr(pos, "expected arithmetic operand");
@@ -40,7 +40,7 @@ namespace GDCC
       //
       // ExpCreate_Add
       //
-      AST::Exp::CRef ExpCreate_Add(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_Add(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
          auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
@@ -70,7 +70,7 @@ namespace GDCC
             // __str_ent* + int = char const __str_ars*
             if(baseL->isTypeStrEnt())
             {
-               AST::TypeQual qual = {{IR::AddrBase::StrArs, Core::STR_}};
+               SR::TypeQual qual = {{IR::AddrBase::StrArs, Core::STR_}};
                qual.aCons = true;
                auto type = TypeChar->getTypeQual(qual)->getTypePointer();
                return Exp_AddStrEntInt::Create(type, expL, expR, pos);
@@ -88,24 +88,23 @@ namespace GDCC
          // arithmetic + arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
-            auto type = AST::Type::None;
+            auto type = SR::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
-            return ExpCreate_Arith<AST::Exp_Add, IR::CodeSet_Add>(type, expL, expR, pos);
+            return ExpCreate_Arith<SR::Exp_Add, IR::CodeSet_Add>(type, expL, expR, pos);
          }
 
          throw Core::ExceptStr(pos, "invalid operands to 'operator +'");
       }
 
       // ExpCreate_AddEq
-      AST::Exp::CRef ExpCreate_AddEq(AST::Exp const *l, AST::Exp const *r,
-         Core::Origin pos)
+      SR::Exp::CRef ExpCreate_AddEq(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
          {return ExpCreate_AddEq(l, r, pos, false);}
 
       //
       // ExpCreate_AddEq
       //
-      AST::Exp::CRef ExpCreate_AddEq(AST::Exp const *expL, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_AddEq(SR::Exp const *expL, SR::Exp const *r,
          Core::Origin pos, bool post)
       {
          if(!IsModLValue(expL))
@@ -139,10 +138,10 @@ namespace GDCC
          // arithmetic += arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
-            AST::Type::CPtr evalT;
+            SR::Type::CPtr evalT;
             std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
 
-            return ExpCreate_ArithEq<AST::Exp_Add, IR::CodeSet_Add>(
+            return ExpCreate_ArithEq<SR::Exp_Add, IR::CodeSet_Add>(
                evalT, typeL, expL, expR, pos, post);
          }
 

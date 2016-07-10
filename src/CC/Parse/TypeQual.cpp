@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,12 +14,12 @@
 
 #include "CC/Scope.hpp"
 
-#include "AST/Space.hpp"
-#include "AST/Type.hpp"
-#include "AST/Warning.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Space.hpp"
+#include "SR/Type.hpp"
+#include "SR/Warning.hpp"
 
 #include <iostream>
 
@@ -47,7 +47,7 @@ namespace GDCC
       //
       // ParseTypeQual_Atomic
       //
-      static void ParseTypeQual_Atomic(Parser &ctx, Scope &, AST::TypeQual &qual)
+      static void ParseTypeQual_Atomic(Parser &ctx, Scope &, SR::TypeQual &qual)
       {
          // If followed by a parenthesis, it is a type-specifier.
          if(ctx.in.peek().tok == Core::TOK_ParenO)
@@ -112,7 +112,7 @@ namespace GDCC
       //
       // Parser::parseTypeQual
       //
-      void Parser::parseTypeQual(Scope &scope, AST::TypeQual &qual)
+      void Parser::parseTypeQual(Scope &scope, SR::TypeQual &qual)
       {
          auto const &tok = in.get();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
@@ -144,20 +144,20 @@ namespace GDCC
          case Core::STR___gbl_ars: setSpace(IR::AddrBase::GblArs); break;
          case Core::STR___gbl_reg: setSpace(IR::AddrBase::GblReg); break;
          case Core::STR___wld_ars:
-            AST::WarnDeprecated(tok.pos,
+            SR::WarnDeprecated(tok.pos,
                "__wld_ars is deprecrated, use __hub_ars instead");
          case Core::STR___hub_ars: setSpace(IR::AddrBase::HubArs); break;
          case Core::STR___wld_reg:
-            AST::WarnDeprecated(tok.pos,
+            SR::WarnDeprecated(tok.pos,
                "__wld_reg is deprecrated, use __hub_reg instead");
          case Core::STR___hub_reg: setSpace(IR::AddrBase::HubReg); break;
          case Core::STR___loc_reg: setSpace(IR::AddrBase::LocReg); break;
          case Core::STR___map_ars:
-            AST::WarnDeprecated(tok.pos,
+            SR::WarnDeprecated(tok.pos,
                "__map_ars is deprecrated, use __mod_ars instead");
          case Core::STR___mod_ars: setSpace(IR::AddrBase::ModArs); break;
          case Core::STR___map_reg:
-            AST::WarnDeprecated(tok.pos,
+            SR::WarnDeprecated(tok.pos,
                "__map_reg is deprecrated, use __mod_reg instead");
          case Core::STR___mod_reg: setSpace(IR::AddrBase::ModReg); break;
          case Core::STR___sta:     setSpace(IR::AddrBase::Sta);    break;

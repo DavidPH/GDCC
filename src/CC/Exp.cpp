@@ -15,19 +15,19 @@
 #include "CC/Exp/Bitwise.hpp"
 #include "CC/Exp/Not.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Exp/Binary.hpp"
-#include "AST/Exp/Cnd.hpp"
-#include "AST/Exp/Convert.hpp"
-#include "AST/Exp/Logical.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/CodeSet/Bitwise.hpp"
 #include "IR/CodeSet/Unary.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Value.hpp"
+
+#include "SR/Arg.hpp"
+#include "SR/Exp/Binary.hpp"
+#include "SR/Exp/Cnd.hpp"
+#include "SR/Exp/Convert.hpp"
+#include "SR/Exp/Logical.hpp"
+#include "SR/Type.hpp"
 
 #include <vector>
 
@@ -40,8 +40,8 @@ namespace GDCC
 {
    namespace CC
    {
-      Core::CounterRef<AST::Exp const> (*ExpPromo_Assign_Ptr)(AST::Type const *t,
-         AST::Exp const *e, Core::Origin pos) = ExpPromo_Assign_Base;
+      Core::CounterRef<SR::Exp const> (*ExpPromo_Assign_Ptr)(SR::Type const *t,
+         SR::Exp const *e, Core::Origin pos) = ExpPromo_Assign_Base;
    }
 }
 
@@ -57,7 +57,7 @@ namespace GDCC
       //
       // GenAssoc constructor
       //
-      GenAssoc::GenAssoc(AST::Type const *type_, AST::Exp const *exp_) :
+      GenAssoc::GenAssoc(SR::Type const *type_, SR::Exp const *exp_) :
          type{type_},
          exp {exp_}
       {
@@ -66,24 +66,24 @@ namespace GDCC
       //
       // ExpConvert_Arith
       //
-      AST::Exp::CRef ExpConvert_Arith(AST::Type const *t, AST::Exp const *e,
+      SR::Exp::CRef ExpConvert_Arith(SR::Type const *t, SR::Exp const *e,
          Core::Origin pos)
       {
-         return AST::Exp_ConvertArith::Create(t, e, pos);
+         return SR::Exp_ConvertArith::Create(t, e, pos);
       }
 
       //
       // ExpConvert_Bitfield
       //
-      AST::Exp::CRef ExpConvert_Bitfield(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpConvert_Bitfield(SR::Exp const *e, Core::Origin pos)
       {
-         return AST::Exp_ConvertBitfield::Create(e->getType()->getBaseType(), e, pos);
+         return SR::Exp_ConvertBitfield::Create(e->getType()->getBaseType(), e, pos);
       }
 
       //
       // ExpConvert_Bool
       //
-      AST::Exp::CRef ExpConvert_Bool(AST::Type const *t, AST::Exp const *e,
+      SR::Exp::CRef ExpConvert_Bool(SR::Type const *t, SR::Exp const *e,
          Core::Origin pos)
       {
          return Exp_Not::Create(t, ExpCreate_Not(e, pos), pos);
@@ -92,7 +92,7 @@ namespace GDCC
       //
       // ExpCreate_Array
       //
-      AST::Exp::CRef ExpCreate_Array(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_Array(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
          return ExpCreate_Deref(ExpCreate_Add(l, r, pos), pos);
@@ -101,83 +101,83 @@ namespace GDCC
       //
       // ExpCreate_BitAnd
       //
-      AST::Exp::CRef ExpCreate_BitAnd(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_BitAnd(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return ExpCreate_Bitwise<AST::Exp_BitAnd, IR::CodeSet_And>(l, r, pos);
+         return ExpCreate_Bitwise<SR::Exp_BitAnd, IR::CodeSet_And>(l, r, pos);
       }
 
       //
       // ExpCreate_BitAndEq
       //
-      AST::Exp::CRef ExpCreate_BitAndEq(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_BitAndEq(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return ExpCreate_BitwiseEq<AST::Exp_BitAnd, IR::CodeSet_And>(l, r, pos);
+         return ExpCreate_BitwiseEq<SR::Exp_BitAnd, IR::CodeSet_And>(l, r, pos);
       }
 
       //
       // ExpCreate_BitOrI
       //
-      AST::Exp::CRef ExpCreate_BitOrI(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_BitOrI(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return ExpCreate_Bitwise<AST::Exp_BitOrI, IR::CodeSet_OrI>(l, r, pos);
+         return ExpCreate_Bitwise<SR::Exp_BitOrI, IR::CodeSet_OrI>(l, r, pos);
       }
 
       //
       // ExpCreate_BitOrIEq
       //
-      AST::Exp::CRef ExpCreate_BitOrIEq(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_BitOrIEq(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return ExpCreate_BitwiseEq<AST::Exp_BitOrI, IR::CodeSet_OrI>(l, r, pos);
+         return ExpCreate_BitwiseEq<SR::Exp_BitOrI, IR::CodeSet_OrI>(l, r, pos);
       }
 
       //
       // ExpCreate_BitOrX
       //
-      AST::Exp::CRef ExpCreate_BitOrX(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_BitOrX(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return ExpCreate_Bitwise<AST::Exp_BitOrX, IR::CodeSet_OrX>(l, r, pos);
+         return ExpCreate_Bitwise<SR::Exp_BitOrX, IR::CodeSet_OrX>(l, r, pos);
       }
 
       //
       // ExpCreate_BitOrXEq
       //
-      AST::Exp::CRef ExpCreate_BitOrXEq(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_BitOrXEq(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return ExpCreate_BitwiseEq<AST::Exp_BitOrX, IR::CodeSet_OrX>(l, r, pos);
+         return ExpCreate_BitwiseEq<SR::Exp_BitOrX, IR::CodeSet_OrX>(l, r, pos);
       }
 
       //
       // ExpCreate_Cnd
       //
-      AST::Exp::CRef ExpCreate_Cnd(AST::Exp const *c, AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_Cnd(SR::Exp const *c, SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos)
       {
-         AST::Type::CPtr type;
-         AST::Exp::CRef expC{c}, expL{l}, expR{r};
+         SR::Type::CPtr type;
+         SR::Exp::CRef expC{c}, expL{l}, expR{r};
 
          std::tie(type, expC, expL, expR) = ExpPromo_Cond(expC, expL, expR, pos);
-         return AST::Exp_Cnd::Create(type, expC, expL, expR, pos);
+         return SR::Exp_Cnd::Create(type, expC, expL, expR, pos);
       }
 
       //
       // ExpCreate_Comma
       //
-      AST::Exp::CRef ExpCreate_Comma(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_Comma(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return AST::Exp_Pair::Create(l, ExpPromo_LValue(r, pos), pos);
+         return SR::Exp_Pair::Create(l, ExpPromo_LValue(r, pos), pos);
       }
 
       //
       // ExpCreate_Cst
       //
-      AST::Exp::CRef ExpCreate_Cst(AST::Type const *typeL, AST::Exp const *e)
+      SR::Exp::CRef ExpCreate_Cst(SR::Type const *typeL, SR::Exp const *e)
       {
          return ExpCreate_Cst(typeL, e, e->pos);
       }
@@ -185,7 +185,7 @@ namespace GDCC
       //
       // ExpCreate_Cst
       //
-      AST::Exp::CRef ExpCreate_Cst(AST::Type const *typeL, AST::Exp const *e,
+      SR::Exp::CRef ExpCreate_Cst(SR::Type const *typeL, SR::Exp const *e,
          Core::Origin pos)
       {
          auto exp = ExpPromo_LValue(e, pos);
@@ -193,7 +193,7 @@ namespace GDCC
          auto typeR = exp->getType();
 
          if(typeL->getTypeQual() == typeR->getTypeQual())
-            return static_cast<AST::Exp::CRef>(exp);
+            return static_cast<SR::Exp::CRef>(exp);
 
          if(typeL->isTypeVoid())
             return ExpConvert_Void(typeL, exp, pos);
@@ -219,7 +219,7 @@ namespace GDCC
       //
       // ExpCreate_DecPre
       //
-      AST::Exp::CRef ExpCreate_DecPre(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_DecPre(SR::Exp const *e, Core::Origin pos)
       {
          return ExpCreate_SubEq(e, ExpCreate_LitInt(TypeIntegPrS, 1, pos), pos, false);
       }
@@ -227,7 +227,7 @@ namespace GDCC
       //
       // ExpCreate_DecPre
       //
-      AST::Exp::CRef ExpCreate_DecSuf(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_DecSuf(SR::Exp const *e, Core::Origin pos)
       {
          return ExpCreate_SubEq(e, ExpCreate_LitInt(TypeIntegPrS, 1, pos), pos, true);
       }
@@ -235,7 +235,7 @@ namespace GDCC
       //
       // ExpCreate_IncPre
       //
-      AST::Exp::CRef ExpCreate_IncPre(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_IncPre(SR::Exp const *e, Core::Origin pos)
       {
          return ExpCreate_AddEq(e, ExpCreate_LitInt(TypeIntegPrS, 1, pos), pos, false);
       }
@@ -243,7 +243,7 @@ namespace GDCC
       //
       // ExpCreate_IncSuf
       //
-      AST::Exp::CRef ExpCreate_IncSuf(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_IncSuf(SR::Exp const *e, Core::Origin pos)
       {
          return ExpCreate_AddEq(e, ExpCreate_LitInt(TypeIntegPrS, 1, pos), pos, true);
       }
@@ -251,7 +251,7 @@ namespace GDCC
       //
       // ExpCreate_Inv
       //
-      AST::Exp::CRef ExpCreate_Inv(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_Inv(SR::Exp const *e, Core::Origin pos)
       {
          auto exp  = ExpPromo_Int(ExpPromo_LValue(e, pos), pos);
          auto type = exp->getType();
@@ -259,74 +259,74 @@ namespace GDCC
          if(!type->isCTypeInteg())
             throw Core::ExceptStr(pos, "expected integer type");
 
-         auto op = AST::ExpCode_ArithInteg<IR::CodeSet_Inv>(type);
+         auto op = SR::ExpCode_ArithInteg<IR::CodeSet_Inv>(type);
 
          if(op.code == IR::Code::None)
             throw Core::ExceptStr(pos, "unsupported operand size");
 
-         return AST::Exp_UnaryCode<AST::Exp_Inv>::Create(op, type, exp, pos);
+         return SR::Exp_UnaryCode<SR::Exp_Inv>::Create(op, type, exp, pos);
       }
 
       //
       // ExpCreate_LogAnd
       //
-      AST::Exp::CRef ExpCreate_LogAnd(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_LogAnd(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return AST::Exp_LogAnd::Create(TypeIntegPrS,
+         return SR::Exp_LogAnd::Create(TypeIntegPrS,
             ExpPromo_Cond(l, pos), ExpPromo_Cond(r, pos), pos);
       }
 
       //
       // ExpCreate_LogOrI
       //
-      AST::Exp::CRef ExpCreate_LogOrI(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_LogOrI(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return AST::Exp_LogOrI::Create(TypeIntegPrS,
+         return SR::Exp_LogOrI::Create(TypeIntegPrS,
             ExpPromo_Cond(l, pos), ExpPromo_Cond(r, pos), pos);
       }
 
       //
       // ExpCreate_ShL
       //
-      AST::Exp::CRef ExpCreate_ShL(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_ShL(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return ExpCreate_Shift<AST::Exp_ShL, IR::CodeSet_ShL>(l, r, pos);
+         return ExpCreate_Shift<SR::Exp_ShL, IR::CodeSet_ShL>(l, r, pos);
       }
 
       //
       // ExpCreate_ShLEq
       //
-      AST::Exp::CRef ExpCreate_ShLEq(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_ShLEq(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return ExpCreate_ShiftEq<AST::Exp_ShL, IR::CodeSet_ShL>(l, r, pos);
+         return ExpCreate_ShiftEq<SR::Exp_ShL, IR::CodeSet_ShL>(l, r, pos);
       }
 
       //
       // ExpCreate_ShR
       //
-      AST::Exp::CRef ExpCreate_ShR(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_ShR(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return ExpCreate_Shift<AST::Exp_ShR, IR::CodeSet_ShR>(l, r, pos);
+         return ExpCreate_Shift<SR::Exp_ShR, IR::CodeSet_ShR>(l, r, pos);
       }
 
       //
       // ExpCreate_ShREq
       //
-      AST::Exp::CRef ExpCreate_ShREq(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_ShREq(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         return ExpCreate_ShiftEq<AST::Exp_ShR, IR::CodeSet_ShR>(l, r, pos);
+         return ExpCreate_ShiftEq<SR::Exp_ShR, IR::CodeSet_ShR>(l, r, pos);
       }
 
       //
       // ExpCreate_SizeAlign
       //
-      AST::Exp::CRef ExpCreate_SizeAlign(AST::Type const *t, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_SizeAlign(SR::Type const *t, Core::Origin pos)
       {
          if(!t->isCTypeObject() || !t->isTypeComplete())
             throw Core::ExceptStr(pos, "expected complete object type");
@@ -337,7 +337,7 @@ namespace GDCC
       //
       // ExpCreate_SizeBytes
       //
-      AST::Exp::CRef ExpCreate_SizeBytes(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_SizeBytes(SR::Exp const *e, Core::Origin pos)
       {
          return ExpCreate_SizeBytes(e->getType(), pos);
       }
@@ -345,7 +345,7 @@ namespace GDCC
       //
       // ExpCreate_SizeBytes
       //
-      AST::Exp::CRef ExpCreate_SizeBytes(AST::Type const *t, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_SizeBytes(SR::Type const *t, Core::Origin pos)
       {
          if(!t->isCTypeObject() || !t->isTypeComplete())
             throw Core::ExceptStr(pos, "expected complete object type");
@@ -359,7 +359,7 @@ namespace GDCC
       //
       // ExpToFastU
       //
-      Core::FastU ExpToFastU(AST::Exp const *exp)
+      Core::FastU ExpToFastU(SR::Exp const *exp)
       {
          auto i = ExpToInteg(exp);
 
@@ -371,7 +371,7 @@ namespace GDCC
       //
       // ExpToInteg
       //
-      Core::Integ ExpToInteg(AST::Exp const *exp)
+      Core::Integ ExpToInteg(SR::Exp const *exp)
       {
          auto val = exp->getIRExp()->getValue();
 
@@ -391,7 +391,7 @@ namespace GDCC
       //
       // IsLValue
       //
-      bool IsLValue(AST::Exp const *exp)
+      bool IsLValue(SR::Exp const *exp)
       {
          switch(exp->getArg().type->getQualAddr().base)
          {
@@ -409,7 +409,7 @@ namespace GDCC
       //
       // IsModLValue
       //
-      bool IsModLValue(AST::Exp const *exp)
+      bool IsModLValue(SR::Exp const *exp)
       {
          auto type = exp->getType();
 

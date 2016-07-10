@@ -1,19 +1,16 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// C "operator ()" stack-call expressions.
+// C "operator ()" literal-call expressions.
 //
 //-----------------------------------------------------------------------------
 
 #include "CC/Exp/Call.hpp"
-
-#include "AST/Function.hpp"
-#include "AST/Type.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -21,9 +18,12 @@
 #include "IR/Block.hpp"
 #include "IR/CallType.hpp"
 
+#include "SR/Function.hpp"
+#include "SR/Type.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -33,8 +33,8 @@ namespace GDCC
       //
       // Exp_CallLit::v_genStmnt
       //
-      void Exp_CallLit::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_CallLit::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          IR::CallType callType = IR::GetCallTypeIR(func->getCallType());
 

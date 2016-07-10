@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,9 +14,9 @@
 
 #include "CC/Type.hpp"
 
-#include "AST/Type.hpp"
-
 #include "IR/Block.hpp"
+
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -30,8 +30,8 @@ namespace GDCC
       //
       // Exp_Not::v_genStmnt
       //
-      void Exp_Not::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_Not::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          if(GenStmntNul(this, ctx, dst)) return;
 
@@ -65,7 +65,7 @@ namespace GDCC
       //
       // ExpCreate_Not
       //
-      AST::Exp::CRef ExpCreate_Not(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_Not(SR::Exp const *e, Core::Origin pos)
       {
          return Exp_Not::Create(TypeIntegPrS, ExpPromo_Cond(e, pos), pos);
       }

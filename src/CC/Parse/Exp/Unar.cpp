@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,14 +15,14 @@
 #include "CC/Exp.hpp"
 #include "CC/Scope/Local.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Type.hpp"
-#include "AST/Warning.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "IR/Program.hpp"
+
+#include "SR/Exp.hpp"
+#include "SR/Type.hpp"
+#include "SR/Warning.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -36,7 +36,7 @@ namespace GDCC
       //
       // GetExp_Unar_alignof
       //
-      static AST::Exp::CRef GetExp_Unar_alignof(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_alignof(Parser &ctx, Scope &scope)
       {
          auto pos = ctx.in.get().pos;
 
@@ -54,7 +54,7 @@ namespace GDCC
       //
       // GetExp_Unar_div
       //
-      static AST::Exp::CRef GetExp_Unar_div(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_div(Parser &ctx, Scope &scope)
       {
          // div-expression:
          //    <__div> ( assignment-expression , assignment-expression )
@@ -86,7 +86,7 @@ namespace GDCC
       //
       // GetExp_Unar_glyph
       //
-      static AST::Exp::CRef GetExp_Unar_glyph(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_glyph(Parser &ctx, Scope &scope)
       {
          // glyph-expression:
          //    <__glyph> ( type-name , string-literal )
@@ -122,13 +122,13 @@ namespace GDCC
          auto &glyphData = glyph.getData();
          glyphData.type = type->getIRType();
 
-         return AST::ExpCreate_IRExp(IR::ExpCreate_Glyph(glyph, pos), type, pos);
+         return SR::ExpCreate_IRExp(IR::ExpCreate_Glyph(glyph, pos), type, pos);
       }
 
       //
       // GetExp_Unar_longjmp
       //
-      static AST::Exp::CRef GetExp_Unar_longjmp(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_longjmp(Parser &ctx, Scope &scope)
       {
          // longjmp-expression:
          //    <__longjmp> ( assignment-expression , assignment-expression )
@@ -160,7 +160,7 @@ namespace GDCC
       //
       // GetExp_Unar_offsetof
       //
-      static AST::Exp::CRef GetExp_Unar_offsetof(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_offsetof(Parser &ctx, Scope &scope)
       {
          // offsetof-expression:
          //    <__offsetof> ( type-name , identifier )
@@ -194,9 +194,9 @@ namespace GDCC
 
          try
          {
-            return ExpCreate_LitInt(AST::Type::Size, type->getMember(name).addr, pos);
+            return ExpCreate_LitInt(SR::Type::Size, type->getMember(name).addr, pos);
          }
-         catch(AST::TypeError const &)
+         catch(SR::TypeError const &)
          {
             throw Core::ExceptStr(pos, "invalid member");
          }
@@ -205,7 +205,7 @@ namespace GDCC
       //
       // GetExp_Unar_setjmp
       //
-      static AST::Exp::CRef GetExp_Unar_setjmp(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_setjmp(Parser &ctx, Scope &scope)
       {
          // setjmp-expression:
          //    <__setjmp> ( assignment-expression )
@@ -230,7 +230,7 @@ namespace GDCC
       //
       // GetExp_Unar_sizeof
       //
-      static AST::Exp::CRef GetExp_Unar_sizeof(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_sizeof(Parser &ctx, Scope &scope)
       {
          auto pos = ctx.in.get().pos;
 
@@ -252,7 +252,7 @@ namespace GDCC
             ctx.in.unget();
          }
          else
-            AST::WarnParentheses(pos, "sizeof without parentheses");
+            SR::WarnParentheses(pos, "sizeof without parentheses");
 
          return ExpCreate_SizeBytes(ctx.getExp_Unar(scope), pos);
       }
@@ -260,7 +260,7 @@ namespace GDCC
       //
       // GetExp_Unar_va_arg
       //
-      static AST::Exp::CRef GetExp_Unar_va_arg(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_va_arg(Parser &ctx, Scope &scope)
       {
          // va_arg-expression:
          //    <__va_arg> ( assignment-expression , type-name )
@@ -292,7 +292,7 @@ namespace GDCC
       //
       // GetExp_Unar_Add
       //
-      static AST::Exp::CRef GetExp_Unar_Add(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_Add(Parser &ctx, Scope &scope)
       {
          auto pos = ctx.in.get().pos;
 
@@ -302,7 +302,7 @@ namespace GDCC
       //
       // GetExp_Unar_Add2
       //
-      static AST::Exp::CRef GetExp_Unar_Add2(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_Add2(Parser &ctx, Scope &scope)
       {
          auto pos = ctx.in.get().pos;
 
@@ -312,7 +312,7 @@ namespace GDCC
       //
       // GetExp_Unar_And
       //
-      static AST::Exp::CRef GetExp_Unar_And(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_And(Parser &ctx, Scope &scope)
       {
          auto pos = ctx.in.get().pos;
 
@@ -322,7 +322,7 @@ namespace GDCC
       //
       // GetExp_Unar_And2
       //
-      static AST::Exp::CRef GetExp_Unar_And2(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_And2(Parser &ctx, Scope &scope)
       {
          auto pos = ctx.in.get().pos;
 
@@ -342,15 +342,15 @@ namespace GDCC
 
          ctx.prog.getGlyphData(djump.glyph).type = IR::Type_DJump();
 
-         return AST::ExpCreate_IRExp(
+         return SR::ExpCreate_IRExp(
             IR::ExpCreate_Glyph({ctx.prog, djump.glyph}, pos),
-            AST::Type::Label->getTypePointer(), pos);
+            SR::Type::Label->getTypePointer(), pos);
       }
 
       //
       // GetExp_Unar_Inv
       //
-      static AST::Exp::CRef GetExp_Unar_Inv(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_Inv(Parser &ctx, Scope &scope)
       {
          auto pos = ctx.in.get().pos;
 
@@ -360,7 +360,7 @@ namespace GDCC
       //
       // GetExp_Unar_Mul
       //
-      static AST::Exp::CRef GetExp_Unar_Mul(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_Mul(Parser &ctx, Scope &scope)
       {
          auto pos = ctx.in.get().pos;
 
@@ -370,7 +370,7 @@ namespace GDCC
       //
       // GetExp_Unar_Not
       //
-      static AST::Exp::CRef GetExp_Unar_Not(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_Not(Parser &ctx, Scope &scope)
       {
          auto pos = ctx.in.get().pos;
 
@@ -380,7 +380,7 @@ namespace GDCC
       //
       // GetExp_Unar_Sub
       //
-      static AST::Exp::CRef GetExp_Unar_Sub(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_Sub(Parser &ctx, Scope &scope)
       {
          auto pos = ctx.in.get().pos;
 
@@ -390,7 +390,7 @@ namespace GDCC
       //
       // GetExp_Unar_Sub2
       //
-      static AST::Exp::CRef GetExp_Unar_Sub2(Parser &ctx, Scope &scope)
+      static SR::Exp::CRef GetExp_Unar_Sub2(Parser &ctx, Scope &scope)
       {
          auto pos = ctx.in.get().pos;
 
@@ -411,7 +411,7 @@ namespace GDCC
       //
       // Parser::getExp_Unar_Identi
       //
-      AST::Exp::CRef Parser::getExp_Unar_Identi(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Unar_Identi(Scope &scope)
       {
          switch(in.peek().str)
          {
@@ -431,7 +431,7 @@ namespace GDCC
       //
       // Parser::getExp_Unar_KeyWrd
       //
-      AST::Exp::CRef Parser::getExp_Unar_KeyWrd(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Unar_KeyWrd(Scope &scope)
       {
          switch(in.peek().str)
          {
@@ -446,7 +446,7 @@ namespace GDCC
       //
       // Parser::getExp_Unar
       //
-      AST::Exp::CRef Parser::getExp_Unar(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Unar(Scope &scope)
       {
          switch(in.peek().tok)
          {

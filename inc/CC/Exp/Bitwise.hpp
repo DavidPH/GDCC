@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,7 +17,7 @@
 
 #include "../../CC/Type.hpp"
 
-#include "../../AST/Exp/Bitwise.hpp"
+#include "../../SR/Exp/Bitwise.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -35,7 +35,7 @@ namespace GDCC
       // creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_Bitwise(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_Bitwise(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
          auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
@@ -47,7 +47,7 @@ namespace GDCC
          // integer op integer
          if(typeL->isCTypeInteg() && typeR->isCTypeInteg())
          {
-            auto type = AST::Type::None;
+            auto type = SR::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
             return ExpCreate_ArithInteg<Base, Codes>(type, expL, expR, pos);
@@ -62,8 +62,8 @@ namespace GDCC
       // expression creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_BitwiseEq(AST::Exp const *expL,
-         AST::Exp const *r, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_BitwiseEq(SR::Exp const *expL,
+         SR::Exp const *r, Core::Origin pos)
       {
          auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
 
@@ -73,7 +73,7 @@ namespace GDCC
          // integer op= integer
          if(typeL->isCTypeInteg() && typeR->isCTypeInteg())
          {
-            AST::Type::CPtr evalT;
+            SR::Type::CPtr evalT;
             std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
 
             return ExpCreate_ArithEqInteg<Base, Codes>(evalT, typeL, expL, expR, pos);
@@ -89,7 +89,7 @@ namespace GDCC
       // creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_Shift(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_Shift(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
          auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
@@ -108,9 +108,9 @@ namespace GDCC
          else
             expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
 
-         auto op = AST::ExpCode_Arith<Codes>(typeL);
+         auto op = SR::ExpCode_Arith<Codes>(typeL);
 
-         return AST::Exp_Arith<Base>::Create(op, typeL, expL, expR, pos);
+         return SR::Exp_Arith<Base>::Create(op, typeL, expL, expR, pos);
       }
 
       //
@@ -120,7 +120,7 @@ namespace GDCC
       // creation.
       //
       template<typename Base, typename Codes>
-      AST::Exp::CRef ExpCreate_ShiftEq(AST::Exp const *expL, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_ShiftEq(SR::Exp const *expL, SR::Exp const *r,
          Core::Origin pos)
       {
          auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
@@ -138,9 +138,9 @@ namespace GDCC
          else
             expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
 
-         auto op = AST::ExpCode_Arith<Codes>(typeL);
+         auto op = SR::ExpCode_Arith<Codes>(typeL);
 
-         return AST::Exp_ArithEq<Base>::Create(typeL, op, false, typeL, expL, expR, pos);
+         return SR::Exp_ArithEq<Base>::Create(typeL, op, false, typeL, expL, expR, pos);
       }
    }
 }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,13 +12,13 @@
 
 #include "CC/Parse.hpp"
 
-#include "AST/Type.hpp"
-
 #include "Core/TokenStream.hpp"
+
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -39,12 +39,12 @@ namespace GDCC
       //
       // Parser::parseSpecQual
       //
-      void Parser::parseSpecQual(Scope &scope, AST::Attribute &attr)
+      void Parser::parseSpecQual(Scope &scope, SR::Attribute &attr)
       {
          auto pos = in.peek().pos;
 
-         AST::TypeQual declQual = AST::QualNone;
-         TypeSpec      declSpec;
+         SR::TypeQual declQual = SR::QualNone;
+         TypeSpec     declSpec;
 
          // Read specifier-qualifier tokens until there are no more.
          for(;;)

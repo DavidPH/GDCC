@@ -25,13 +25,6 @@
 
 namespace GDCC
 {
-   namespace AST
-   {
-      class Exp;
-      class Function;
-      class Object;
-      class Type;
-   }
 
    namespace Core
    {
@@ -44,6 +37,13 @@ namespace GDCC
    {
       class Program;
    }
+   namespace SR
+   {
+      class Exp;
+      class Function;
+      class Object;
+      class Type;
+   }
 
    namespace CC
    {
@@ -55,10 +55,10 @@ namespace GDCC
       class GenAssoc
       {
       public:
-         GenAssoc(AST::Type const *type, AST::Exp const *exp);
+         GenAssoc(SR::Type const *type, SR::Exp const *exp);
 
-         Core::CounterRef<AST::Type const> type;
-         Core::CounterRef<AST::Exp const>  exp;
+         Core::CounterRef<SR::Type const> type;
+         Core::CounterRef<SR::Exp const>  exp;
       };
    }
 }
@@ -72,8 +72,8 @@ namespace GDCC
 {
    namespace CC
    {
-      extern Core::CounterRef<AST::Exp const> (*ExpPromo_Assign_Ptr)(
-         AST::Type const *t, AST::Exp const *e, Core::Origin pos);
+      extern Core::CounterRef<SR::Exp const> (*ExpPromo_Assign_Ptr)(
+         SR::Type const *t, SR::Exp const *e, Core::Origin pos);
    }
 }
 
@@ -86,302 +86,302 @@ namespace GDCC
 {
    namespace CC
    {
-      Core::CounterRef<AST::Exp const> ExpConvert_Arith(AST::Type const *t,
-         AST::Exp const *e, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpConvert_Arith(SR::Type const *t,
+         SR::Exp const *e, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpConvert_ArithPtr(AST::Type const *t,
-         AST::Exp const *e, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpConvert_ArithPtr(SR::Type const *t,
+         SR::Exp const *e, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpConvert_Bitfield(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpConvert_Bitfield(SR::Exp const *e,
          Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpConvert_Bool(AST::Type const *t,
-         AST::Exp const *e, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpConvert_Bool(SR::Type const *t,
+         SR::Exp const *e, Core::Origin pos);
 
       // Converts the expression to a soft boolean for conditional branching.
       // Will result in a hard boolean type if doing so is no more difficult.
-      Core::CounterRef<AST::Exp const> ExpConvert_BoolSoft(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpConvert_BoolSoft(SR::Exp const *e,
          Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpConvert_Pointer(AST::Type const *t,
-         AST::Exp const *e, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpConvert_Pointer(SR::Type const *t,
+         SR::Exp const *e, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpConvert_PtrArith(AST::Type const *t,
-         AST::Exp const *e, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpConvert_PtrArith(SR::Type const *t,
+         SR::Exp const *e, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpConvert_Void(AST::Type const *t,
-         AST::Exp const *e, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpConvert_Void(SR::Type const *t,
+         SR::Exp const *e, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Add(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpCreate_Add(SR::Exp const *e,
          Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Add(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_AddEq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_AddEq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos, bool post);
+      Core::CounterRef<SR::Exp const> ExpCreate_Add(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_AddEq(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_AddEq(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos, bool post);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Array(AST::Exp const *exp,
-         AST::Exp const *idx, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_Array(SR::Exp const *exp,
+         SR::Exp const *idx, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Assign(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_Assign(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_BitAnd(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_BitAndEq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_BitAnd(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_BitAndEq(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_BitOrI(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_BitOrIEq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_BitOrI(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_BitOrIEq(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_BitOrX(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_BitOrXEq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_BitOrX(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_BitOrXEq(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Call(AST::Exp const *e,
-         Core::Array<Core::CounterRef<AST::Exp const>> const &args,
+      Core::CounterRef<SR::Exp const> ExpCreate_Call(SR::Exp const *e,
+         Core::Array<Core::CounterRef<SR::Exp const>> const &args,
          Scope &scope, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_Call(AST::Exp const *e,
-         Core::Array<Core::CounterRef<AST::Exp const>>      &&args,
+      Core::CounterRef<SR::Exp const> ExpCreate_Call(SR::Exp const *e,
+         Core::Array<Core::CounterRef<SR::Exp const>>      &&args,
          Scope &scope, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_CmpEQ(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_CmpGE(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_CmpGT(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_CmpLE(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_CmpLT(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_CmpNE(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_CmpEQ(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_CmpGE(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_CmpGT(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_CmpLE(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_CmpLT(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_CmpNE(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Cnd(AST::Exp const *c,
-         AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_Cnd(SR::Exp const *c,
+         SR::Exp const *l, SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Comma(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_Comma(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Cst(AST::Type const *t,
-         AST::Exp const *e);
-      Core::CounterRef<AST::Exp const> ExpCreate_Cst(AST::Type const *t,
-         AST::Exp const *e, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_Cst(SR::Type const *t,
+         SR::Exp const *e);
+      Core::CounterRef<SR::Exp const> ExpCreate_Cst(SR::Type const *t,
+         SR::Exp const *e, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_DecPre(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpCreate_DecPre(SR::Exp const *e,
          Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_DecSuf(AST::Exp const *e,
-         Core::Origin pos);
-
-      Core::CounterRef<AST::Exp const> ExpCreate_Deref(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpCreate_DecSuf(SR::Exp const *e,
          Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Div(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_DivEq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_DivEx(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-
-      Core::CounterRef<AST::Exp const> ExpCreate_Func(IR::Program &prog,
-         AST::Function *fn, Core::Origin pos);
-
-      Core::CounterRef<AST::Exp const> ExpCreate_GenSel(AST::Exp const *exp,
-         AST::Exp const *def, Core::Array<GenAssoc> const &a, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_GenSel(AST::Exp const *exp,
-         AST::Exp const *def, Core::Array<GenAssoc>      &&a, Core::Origin pos);
-
-      Core::CounterRef<AST::Exp const> ExpCreate_IncPre(AST::Exp const *e,
-         Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_IncSuf(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpCreate_Deref(SR::Exp const *e,
          Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Inv(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpCreate_Div(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_DivEq(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_DivEx(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+
+      Core::CounterRef<SR::Exp const> ExpCreate_Func(IR::Program &prog,
+         SR::Function *fn, Core::Origin pos);
+
+      Core::CounterRef<SR::Exp const> ExpCreate_GenSel(SR::Exp const *exp,
+         SR::Exp const *def, Core::Array<GenAssoc> const &a, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_GenSel(SR::Exp const *exp,
+         SR::Exp const *def, Core::Array<GenAssoc>      &&a, Core::Origin pos);
+
+      Core::CounterRef<SR::Exp const> ExpCreate_IncPre(SR::Exp const *e,
+         Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_IncSuf(SR::Exp const *e,
          Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_JmpLng(Scope &scope,
-         AST::Exp const *env, AST::Exp const *val, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_JmpSet(AST::Exp const *env,
+      Core::CounterRef<SR::Exp const> ExpCreate_Inv(SR::Exp const *e,
          Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_LitInt(AST::Type const *type,
+      Core::CounterRef<SR::Exp const> ExpCreate_JmpLng(Scope &scope,
+         SR::Exp const *env, SR::Exp const *val, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_JmpSet(SR::Exp const *env,
+         Core::Origin pos);
+
+      Core::CounterRef<SR::Exp const> ExpCreate_LitInt(SR::Type const *type,
          Core::Integ const &lit, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_LitInt(AST::Type const *type,
+      Core::CounterRef<SR::Exp const> ExpCreate_LitInt(SR::Type const *type,
          Core::Integ      &&lit, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_LitNul(AST::Type const *type,
+      Core::CounterRef<SR::Exp const> ExpCreate_LitNul(SR::Type const *type,
          Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_LogAnd(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_LogAnd(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_LogOrI(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_LogOrI(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Mem(AST::Exp const *l,
+      Core::CounterRef<SR::Exp const> ExpCreate_Mem(SR::Exp const *l,
          Core::String r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_MemPt(AST::Exp const *l,
+      Core::CounterRef<SR::Exp const> ExpCreate_MemPt(SR::Exp const *l,
          Core::String r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Mod(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_ModEq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_Mod(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_ModEq(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Mul(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_MulEq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_Mul(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_MulEq(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Not(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpCreate_Not(SR::Exp const *e,
          Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Obj(IR::Program &prog,
-         AST::Object *obj, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_Obj(IR::Program &prog,
+         SR::Object *obj, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Refer(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpCreate_Refer(SR::Exp const *e,
          Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_ShL(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_ShLEq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_ShL(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_ShLEq(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_ShR(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_ShREq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_ShR(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_ShREq(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_SizeAlign(
-         AST::Type const *type, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_SizeAlign(
+         SR::Type const *type, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_SizeBytes(
-         AST::Exp const *type, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_SizeBytes(
-         AST::Type const *type, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_SizeBytes(
+         SR::Exp const *type, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_SizeBytes(
+         SR::Type const *type, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_StrIdx(IR::Program &prog,
+      Core::CounterRef<SR::Exp const> ExpCreate_StrIdx(IR::Program &prog,
          Scope &scope, Core::String lit, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_StrU08(IR::Program &prog,
+      Core::CounterRef<SR::Exp const> ExpCreate_StrU08(IR::Program &prog,
          Scope &scope, Core::String lit, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_StrU16(IR::Program &prog,
+      Core::CounterRef<SR::Exp const> ExpCreate_StrU16(IR::Program &prog,
          Scope &scope, Core::String lit, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_StrU32(IR::Program &prog,
+      Core::CounterRef<SR::Exp const> ExpCreate_StrU32(IR::Program &prog,
          Scope &scope, Core::String lit, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_String(IR::Program &prog,
+      Core::CounterRef<SR::Exp const> ExpCreate_String(IR::Program &prog,
          Scope &scope, Core::String lit, Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Sub(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpCreate_Sub(SR::Exp const *e,
          Core::Origin pos);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_Sub(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_SubEq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpCreate_SubEq(AST::Exp const *l,
-         AST::Exp const *r, Core::Origin pos, bool post);
+      Core::CounterRef<SR::Exp const> ExpCreate_Sub(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_SubEq(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_SubEq(SR::Exp const *l,
+         SR::Exp const *r, Core::Origin pos, bool post);
 
-      Core::CounterRef<AST::Exp const> ExpCreate_VaArg(AST::Type const *type,
-         AST::Exp const *exp, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpCreate_VaArg(SR::Type const *type,
+         SR::Exp const *exp, Core::Origin pos);
 
       // Default argument promotions.
-      Core::CounterRef<AST::Exp const> ExpPromo_Arg(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpPromo_Arg(SR::Exp const *e,
          Core::Origin pos);
 
       // Usual arithmtic conversions.
       std::tuple<
-         Core::CounterRef<AST::Type const> /*type*/,
-         Core::CounterRef<AST::Exp  const> /*expL*/,
-         Core::CounterRef<AST::Exp  const> /*expR*/>
-      ExpPromo_Arith(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+         Core::CounterRef<SR::Type const> /*type*/,
+         Core::CounterRef<SR::Exp  const> /*expL*/,
+         Core::CounterRef<SR::Exp  const> /*expR*/>
+      ExpPromo_Arith(SR::Exp const *l, SR::Exp const *r, Core::Origin pos);
 
       // Usual arithmetic conversions, always promoted to common type.
       std::tuple<
-         Core::CounterRef<AST::Type const> /*type*/,
-         Core::CounterRef<AST::Exp  const> /*expL*/,
-         Core::CounterRef<AST::Exp  const> /*expR*/>
-      ExpPromo_ArithAlways(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+         Core::CounterRef<SR::Type const> /*type*/,
+         Core::CounterRef<SR::Exp  const> /*expL*/,
+         Core::CounterRef<SR::Exp  const> /*expR*/>
+      ExpPromo_ArithAlways(SR::Exp const *l, SR::Exp const *r, Core::Origin pos);
 
       // Conversion as if by assignment.
-      Core::CounterRef<AST::Exp const> ExpPromo_Assign(AST::Type const *t,
-         AST::Exp const *e);
-      Core::CounterRef<AST::Exp const> ExpPromo_Assign(AST::Type const *t,
-         AST::Exp const *e, Core::Origin pos);
-      Core::CounterRef<AST::Exp const> ExpPromo_Assign_Base(AST::Type const *t,
-         AST::Exp const *e, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpPromo_Assign(SR::Type const *t,
+         SR::Exp const *e);
+      Core::CounterRef<SR::Exp const> ExpPromo_Assign(SR::Type const *t,
+         SR::Exp const *e, Core::Origin pos);
+      Core::CounterRef<SR::Exp const> ExpPromo_Assign_Base(SR::Type const *t,
+         SR::Exp const *e, Core::Origin pos);
 
       // Equality expression contraints and promotion.
       std::tuple<
-         Core::CounterRef<AST::Type const> /*type*/,
-         Core::CounterRef<AST::Exp  const> /*expL*/,
-         Core::CounterRef<AST::Exp  const> /*expR*/>
-      ExpPromo_CmpEqu(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+         Core::CounterRef<SR::Type const> /*type*/,
+         Core::CounterRef<SR::Exp  const> /*expL*/,
+         Core::CounterRef<SR::Exp  const> /*expR*/>
+      ExpPromo_CmpEqu(SR::Exp const *l, SR::Exp const *r, Core::Origin pos);
 
       // Relational expression contraints and promotion.
       std::tuple<
-         Core::CounterRef<AST::Type const> /*type*/,
-         Core::CounterRef<AST::Exp  const> /*expL*/,
-         Core::CounterRef<AST::Exp  const> /*expR*/>
-      ExpPromo_CmpRel(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+         Core::CounterRef<SR::Type const> /*type*/,
+         Core::CounterRef<SR::Exp  const> /*expL*/,
+         Core::CounterRef<SR::Exp  const> /*expR*/>
+      ExpPromo_CmpRel(SR::Exp const *l, SR::Exp const *r, Core::Origin pos);
 
       // Promotes a branch condition to a soft boolean.
-      Core::CounterRef<AST::Exp const> ExpPromo_Cond(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpPromo_Cond(SR::Exp const *e,
          Core::Origin pos);
 
       // Conditional expression contraints and promotion. (Center and right.)
       std::tuple<
-         Core::CounterRef<AST::Type const> /*type*/,
-         Core::CounterRef<AST::Exp  const> /*expL*/,
-         Core::CounterRef<AST::Exp  const> /*expR*/>
-      ExpPromo_Cond(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+         Core::CounterRef<SR::Type const> /*type*/,
+         Core::CounterRef<SR::Exp  const> /*expL*/,
+         Core::CounterRef<SR::Exp  const> /*expR*/>
+      ExpPromo_Cond(SR::Exp const *l, SR::Exp const *r, Core::Origin pos);
 
       // Conditional expression contraints and promotion.
       std::tuple<
-         Core::CounterRef<AST::Type const> /*type*/,
-         Core::CounterRef<AST::Exp  const> /*expC*/,
-         Core::CounterRef<AST::Exp  const> /*expL*/,
-         Core::CounterRef<AST::Exp  const> /*expR*/>
-      ExpPromo_Cond(AST::Exp const *c, AST::Exp const *l, AST::Exp const *r,
+         Core::CounterRef<SR::Type const> /*type*/,
+         Core::CounterRef<SR::Exp  const> /*expC*/,
+         Core::CounterRef<SR::Exp  const> /*expL*/,
+         Core::CounterRef<SR::Exp  const> /*expR*/>
+      ExpPromo_Cond(SR::Exp const *c, SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos);
 
       // Integer promotion.
-      Core::CounterRef<AST::Exp const> ExpPromo_Int(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpPromo_Int(SR::Exp const *e,
          Core::Origin pos);
 
       // Lvalues, arrays, and function designators.
-      Core::CounterRef<AST::Exp const> ExpPromo_LValue(AST::Exp const *e);
-      Core::CounterRef<AST::Exp const> ExpPromo_LValue(AST::Exp const *e,
+      Core::CounterRef<SR::Exp const> ExpPromo_LValue(SR::Exp const *e);
+      Core::CounterRef<SR::Exp const> ExpPromo_LValue(SR::Exp const *e,
          Core::Origin pos);
 
       // Equality expression contraints and promotion for pointers.
       std::tuple<
-         Core::CounterRef<AST::Type const> /*type*/,
-         Core::CounterRef<AST::Exp  const> /*expL*/,
-         Core::CounterRef<AST::Exp  const> /*expR*/>
-      ExpPromo_PtrEqu(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+         Core::CounterRef<SR::Type const> /*type*/,
+         Core::CounterRef<SR::Exp  const> /*expL*/,
+         Core::CounterRef<SR::Exp  const> /*expR*/>
+      ExpPromo_PtrEqu(SR::Exp const *l, SR::Exp const *r, Core::Origin pos);
 
       // Relational expression contraints and promotion for pointers.
       std::tuple<
-         Core::CounterRef<AST::Type const> /*type*/,
-         Core::CounterRef<AST::Exp  const> /*expL*/,
-         Core::CounterRef<AST::Exp  const> /*expR*/>
-      ExpPromo_PtrRel(AST::Exp const *l, AST::Exp const *r, Core::Origin pos);
+         Core::CounterRef<SR::Type const> /*type*/,
+         Core::CounterRef<SR::Exp  const> /*expL*/,
+         Core::CounterRef<SR::Exp  const> /*expR*/>
+      ExpPromo_PtrRel(SR::Exp const *l, SR::Exp const *r, Core::Origin pos);
 
-      Core::FastU ExpToFastU(AST::Exp const *exp);
-      Core::Integ ExpToInteg(AST::Exp const *exp);
+      Core::FastU ExpToFastU(SR::Exp const *exp);
+      Core::Integ ExpToInteg(SR::Exp const *exp);
 
       // Is exp an lvalue?
-      bool IsLValue(AST::Exp const *exp);
+      bool IsLValue(SR::Exp const *exp);
 
       // Is exp a modifiable lvalue?
-      bool IsModLValue(AST::Exp const *exp);
+      bool IsModLValue(SR::Exp const *exp);
    }
 }
 

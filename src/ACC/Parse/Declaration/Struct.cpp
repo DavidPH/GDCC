@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,13 +14,13 @@
 
 #include "ACC/Scope.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Statement.hpp"
-
 #include "CC/Type/Struct.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -65,7 +65,7 @@ namespace GDCC
       //
       // Parser::getDecl_Struct
       //
-      AST::Statement::CRef Parser::getDecl_Struct(Scope_Global &scope)
+      SR::Statement::CRef Parser::getDecl_Struct(Scope_Global &scope)
       {
          // structure-declaration:
          //    <struct> identifier { structure-member-declaration-sequence }
@@ -89,7 +89,7 @@ namespace GDCC
 
          // ;
          if(in.drop(Core::TOK_Semico))
-            return AST::StatementCreate_Empty(pos);
+            return SR::StatementCreate_Empty(pos);
 
          // {
          if(!in.drop(Core::TOK_BraceO))
@@ -146,7 +146,7 @@ namespace GDCC
                   "structure-member-declaration", false);
 
             // specifier-qualifier-list
-            AST::Attribute attrBase;
+            SR::Attribute attrBase;
             parseSpecQual(scope, attrBase);
 
             // structure-member-declarator-list:
@@ -157,7 +157,7 @@ namespace GDCC
                // structure-member-declarator:
                //    declarator
 
-               AST::Attribute attr = attrBase;
+               SR::Attribute attr = attrBase;
 
                parseDeclarator(scope, attr);
 
@@ -185,7 +185,7 @@ namespace GDCC
          if(!type->isTypeComplete())
             type->setMembers(memv.data(), memv.size(), size);
 
-         return AST::StatementCreate_Empty(pos);
+         return SR::StatementCreate_Empty(pos);
       }
    }
 }

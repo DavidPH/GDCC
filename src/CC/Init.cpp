@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,14 +18,14 @@
 #include "CC/Type.hpp"
 #include "CC/Type/Struct.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Type/Array.hpp"
-#include "AST/Warning.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "IR/Block.hpp"
+
+#include "SR/Arg.hpp"
+#include "SR/Type/Array.hpp"
+#include "SR/Warning.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -89,7 +89,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -99,12 +99,12 @@ namespace GDCC
       //
       // Init::genStmnt
       //
-      void Init::genStmnt(AST::GenStmntCtx const &ctx, AST::Arg const &dst,
+      void Init::genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst,
          bool skipZero) const
       {
          if(value)
          {
-            AST::Arg tmp = dst;
+            SR::Arg tmp = dst;
 
             if(tmp.data)
             {
@@ -115,7 +115,7 @@ namespace GDCC
                auto offsetPtrT = offsetType->getTypePointer();
 
                auto offsetRaw = offset / type->getSizeShift();
-               auto offsetExp = ExpCreate_LitInt(AST::Type::Size, offsetRaw, pos);
+               auto offsetExp = ExpCreate_LitInt(SR::Type::Size, offsetRaw, pos);
                auto offsetPtr = ExpConvert_Pointer(offsetPtrT, dst.data, pos);
                offsetPtr = Exp_AddPtrRaw::Create(
                   offsetPtrT, offsetPtr, offsetExp, pos);
@@ -181,7 +181,7 @@ namespace GDCC
       {
          // If already parsed, warn about overriding initializer.
          if(parsed)
-            AST::WarnUnusedInit(raw.valueTok.pos,
+            SR::WarnUnusedInit(raw.valueTok.pos,
                "overriding initializer from ", pos);
 
          pos = raw.valueTok.pos;
@@ -207,7 +207,7 @@ namespace GDCC
 
          // If already parsed, warn about overriding initializer.
          if(parsed)
-            AST::WarnUnusedInit(rawRef.valueTok.pos,
+            SR::WarnUnusedInit(rawRef.valueTok.pos,
                "overriding initializer from ", pos);
 
          pos = rawRef.valueTok.pos;
@@ -285,15 +285,15 @@ namespace GDCC
       //
       // Init::Create
       //
-      Init::Ptr Init::Create(AST::Type const *type,
+      Init::Ptr Init::Create(SR::Type const *type,
          Core::FastU offset, Core::Origin pos)
       {
          if(type->isTypeArray())
          {
-            if(dynamic_cast<AST::Type_Array0 const *>(type))
+            if(dynamic_cast<SR::Type_Array0 const *>(type))
                return Ptr(new Init_Array0(type, offset, pos));
 
-            if(auto t = dynamic_cast<AST::Type_Array const *>(type))
+            if(auto t = dynamic_cast<SR::Type_Array const *>(type))
                return Ptr(new Init_Array(t, offset, pos, t->getSizeWidth()));
 
             throw Core::ExceptStr(pos, "invalid array type for initializer");
@@ -325,7 +325,7 @@ namespace GDCC
       // Init::Create
       //
       Init::Ptr Init::Create(InitRaw const &raw, Parser &ctx, Scope &scope,
-         AST::Type const *type)
+         SR::Type const *type)
       {
          auto init = Create(type, 0, raw.valueTok.pos);
          init->parse(raw, ctx, scope);
@@ -335,7 +335,7 @@ namespace GDCC
       //
       // Init::IsInitString
       //
-      bool Init::IsInitString(Core::Token const &tok, AST::Type const *type)
+      bool Init::IsInitString(Core::Token const &tok, SR::Type const *type)
       {
          if(!type->isTypeArray()) return false;
 
@@ -462,7 +462,7 @@ namespace GDCC
                rawItr = rawPtr + sub->parse(raw, rawItr - rawPtr, ctx, scope);
             else
             {
-               AST::WarnUnusedInit(rawItr->valueTok.pos, "excess initializer");
+               SR::WarnUnusedInit(rawItr->valueTok.pos, "excess initializer");
                ++rawItr;
             }
          }
@@ -522,7 +522,7 @@ namespace GDCC
             if(auto sub = getSub(index))
             {
                auto cIR = IR::ExpCreate_Value(std::move(c), pos);
-               sub->value = AST::ExpCreate_IRExp(cIR, sub->type, pos);
+               sub->value = SR::ExpCreate_IRExp(cIR, sub->type, pos);
             }
 
             index = nextSub(index);
@@ -532,7 +532,7 @@ namespace GDCC
       //
       // Init_Array constructor
       //
-      Init_Array::Init_Array(AST::Type const *type_, Core::FastU offset_,
+      Init_Array::Init_Array(SR::Type const *type_, Core::FastU offset_,
          Core::Origin pos_, std::size_t width) :
          Init_Aggregate{type_, offset_, pos_}, subs{width}
       {
@@ -556,8 +556,8 @@ namespace GDCC
       //
       // Init_Array::v_genStmnt
       //
-      void Init_Array::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &arg, bool skipZero) const
+      void Init_Array::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &arg, bool skipZero) const
       {
          for(auto const &sub : subs) sub->genStmnt(ctx, arg, skipZero);
       }
@@ -593,7 +593,7 @@ namespace GDCC
       //
       // Init_Array0 constructor
       //
-      Init_Array0::Init_Array0(AST::Type const *type_, Core::FastU offset_,
+      Init_Array0::Init_Array0(SR::Type const *type_, Core::FastU offset_,
          Core::Origin pos_) :
          Init_Aggregate{type_, offset_, pos_},
          subT{type->getBaseType()},
@@ -622,8 +622,8 @@ namespace GDCC
       //
       // Init_Array0::v_genStmnt
       //
-      void Init_Array0::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &arg, bool skipZero) const
+      void Init_Array0::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &arg, bool skipZero) const
       {
          for(auto const &sub : subs) sub->genStmnt(ctx, arg, skipZero);
       }
@@ -700,8 +700,8 @@ namespace GDCC
       //
       // Init_Div::v_genStmnt
       //
-      void Init_Div::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &arg, bool skipZero) const
+      void Init_Div::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &arg, bool skipZero) const
       {
          subs[0]->genStmnt(ctx, arg, skipZero);
          subs[1]->genStmnt(ctx, arg, skipZero);
@@ -832,8 +832,8 @@ namespace GDCC
       //
       // Init_Struct::v_genStmnt
       //
-      void Init_Struct::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &arg, bool skipZero) const
+      void Init_Struct::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &arg, bool skipZero) const
       {
          for(auto const &sub : subs) sub.init->genStmnt(ctx, arg, skipZero);
       }
@@ -877,8 +877,8 @@ namespace GDCC
       //
       // Init_Union::v_genStmnt
       //
-      void Init_Union::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &arg, bool skipZero) const
+      void Init_Union::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &arg, bool skipZero) const
       {
          subs[subInit].init->genStmnt(ctx, arg, skipZero);
       }
@@ -911,7 +911,7 @@ namespace GDCC
       //
       // Init_Value constructor
       //
-      Init_Value::Init_Value(AST::Type const *type_, Core::FastU offset_,
+      Init_Value::Init_Value(SR::Type const *type_, Core::FastU offset_,
          Core::Origin pos_) :
          Init{type_, offset_, pos_}
       {
@@ -921,8 +921,8 @@ namespace GDCC
       //
       // Init_Value::v_genStmnt
       //
-      void Init_Value::v_genStmnt(AST::GenStmntCtx const &,
-         AST::Arg const &, bool) const
+      void Init_Value::v_genStmnt(SR::GenStmntCtx const &,
+         SR::Arg const &, bool) const
       {
          // This shouldn't be called.
          throw Core::ExceptStr(pos, "Init_Value::v_genStmnt");

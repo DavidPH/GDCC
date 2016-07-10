@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../../CC/Exp.hpp"
 
-#include "../../../AST/Exp/Convert.hpp"
+#include "../../../SR/Exp/Convert.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,16 +29,15 @@ namespace GDCC
       //
       // Exp_ConvertVoid
       //
-      class Exp_ConvertVoid : public AST::Exp_Convert
+      class Exp_ConvertVoid : public SR::Exp_Convert
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Exp_ConvertVoid, GDCC::AST::Exp_Convert);
+            GDCC::CC::Exp_ConvertVoid, GDCC::SR::Exp_Convert);
 
-         GDCC_AST_Exp_UnaryCreator(Exp_ConvertVoid);
+         GDCC_SR_Exp_UnaryCreator(Exp_ConvertVoid);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
       };
    }
 }

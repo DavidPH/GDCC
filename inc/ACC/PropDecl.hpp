@@ -13,9 +13,9 @@
 #ifndef GDCC__ACC__PropDecl_H__
 #define GDCC__ACC__PropDecl_H__
 
-#include "../AST/Exp.hpp"
-
 #include "../Core/Token.hpp"
+
+#include "../SR/Exp.hpp"
 
 #include <map>
 #include <unordered_map>
@@ -47,7 +47,7 @@ namespace GDCC
       class CreateTransProp
       {
       public:
-         AST::Exp::CPtr prop;
+         SR::Exp::CPtr prop;
       };
 
       //
@@ -58,8 +58,8 @@ namespace GDCC
       public:
          std::map<CreateTransPropName, CreateTransProp> props;
 
-         AST::Exp::CPtr propBegin;
-         AST::Exp::CPtr propEnd;
+         SR::Exp::CPtr propBegin;
+         SR::Exp::CPtr propEnd;
       };
 
       //
@@ -71,16 +71,16 @@ namespace GDCC
          bool isMultiArg() const;
 
          // Generic print function.
-         AST::Exp::CPtr prop;
+         SR::Exp::CPtr prop;
 
          // Array print functions.
-         AST::Exp::CPtr propGlobalArray, propGlobalRange;
-         AST::Exp::CPtr propHubArray,    propHubRange;
-         AST::Exp::CPtr propLocalArray,  propLocalRange;
-         AST::Exp::CPtr propModuleArray, propModuleRange;
+         SR::Exp::CPtr propGlobalArray, propGlobalRange;
+         SR::Exp::CPtr propHubArray,    propHubRange;
+         SR::Exp::CPtr propLocalArray,  propLocalRange;
+         SR::Exp::CPtr propModuleArray, propModuleRange;
 
       private:
-         bool isMultiArg(AST::Exp const *prop) const;
+         bool isMultiArg(SR::Exp const *prop) const;
       };
 
       //
@@ -91,12 +91,12 @@ namespace GDCC
       public:
          std::unordered_map<Core::String, PrintProp> props;
 
-         AST::Exp::CPtr propBegin;
-         AST::Exp::CPtr propChar;
-         AST::Exp::CPtr propEnd;
-         AST::Exp::CPtr propMore;
-         AST::Exp::CPtr propOpt;
-         AST::Exp::CPtr propStr;
+         SR::Exp::CPtr propBegin;
+         SR::Exp::CPtr propChar;
+         SR::Exp::CPtr propEnd;
+         SR::Exp::CPtr propMore;
+         SR::Exp::CPtr propOpt;
+         SR::Exp::CPtr propStr;
       };
    }
 }

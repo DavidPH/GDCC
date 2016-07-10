@@ -12,11 +12,11 @@
 
 #include "ACC/Parse.hpp"
 
-#include "AST/Statement.hpp"
-
 #include "CC/Warning.hpp"
 
 #include "Core/TokenStream.hpp"
+
+#include "SR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -30,13 +30,13 @@ namespace GDCC
       //
       // Parser::getDecl
       //
-      AST::Statement::CRef Parser::getDecl(Scope_Global &scope)
+      SR::Statement::CRef Parser::getDecl(Scope_Global &scope)
       {
          if(in.peek(Core::TOK_Semico))
          {
             Core::Origin pos = in.get().pos;
             CC::WarnFileSemico(pos, "extraneous file-scope semicolon");
-            return AST::StatementCreate_Empty(in.reget().pos);
+            return SR::StatementCreate_Empty(in.reget().pos);
          }
 
          if(in.peek(Core::TOK_KeyWrd) || in.peek(Core::TOK_Identi)) switch(in.peek().str)
@@ -57,7 +57,7 @@ namespace GDCC
       //
       // Parser::getDecl
       //
-      AST::Statement::CRef Parser::getDecl(CC::Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getDecl(CC::Scope_Local &scope, Labels &&labels)
       {
          return getDecl_Object(scope, std::move(labels));
       }

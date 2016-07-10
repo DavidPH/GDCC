@@ -48,8 +48,8 @@
 
 #include "CC/Exp.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Exp.hpp"
+#include "SR/Attribute.hpp"
+#include "SR/Exp.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
@@ -79,7 +79,7 @@ namespace GDCC
       //    <address>
       //    <__address>
       //
-      static void ParseAttr_address(Parser &ctx, Scope &scope, AST::Attribute &attr)
+      static void ParseAttr_address(Parser &ctx, Scope &scope, SR::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
@@ -108,7 +108,7 @@ namespace GDCC
       //    <address_Lit>
       //    <__address_Lit>
       //
-      static void ParseAttr_address_Lit(Parser &ctx, Scope &scope, AST::Attribute &attr)
+      static void ParseAttr_address_Lit(Parser &ctx, Scope &scope, SR::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
@@ -135,7 +135,7 @@ namespace GDCC
       //    <alloc_Aut>
       //    <__alloc_Aut>
       //
-      static void ParseAttr_alloc_Aut(Parser &ctx, Scope &scope, AST::Attribute &attr)
+      static void ParseAttr_alloc_Aut(Parser &ctx, Scope &scope, SR::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
@@ -159,7 +159,7 @@ namespace GDCC
       //    <call>
       //    <__call>
       //
-      static void ParseAttr_call(Parser &ctx, Scope &, AST::Attribute &attr)
+      static void ParseAttr_call(Parser &ctx, Scope &, SR::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
@@ -195,7 +195,7 @@ namespace GDCC
       //    <deprecated>
       //    <__deprecated>
       //
-      static void ParseAttr_deprecated(Parser &ctx, Scope &, AST::Attribute &attr)
+      static void ParseAttr_deprecated(Parser &ctx, Scope &, SR::Attribute &attr)
       {
          // ( string-literal )
          if(ctx.in.drop(Core::TOK_ParenO))
@@ -224,7 +224,7 @@ namespace GDCC
       //    <extern>
       //    <__extern>
       //
-      static void ParseAttr_extern(Parser &ctx, Scope &, AST::Attribute &attr)
+      static void ParseAttr_extern(Parser &ctx, Scope &, SR::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
@@ -262,7 +262,7 @@ namespace GDCC
       //    <no_init>
       //    <__no_init>
       //
-      static void ParseAttr_no_init(Parser &, Scope &, AST::Attribute &attr)
+      static void ParseAttr_no_init(Parser &, Scope &, SR::Attribute &attr)
       {
          attr.objNoInit = true;
       }
@@ -277,7 +277,7 @@ namespace GDCC
       //    <optional_args>
       //    <__optional_args>
       //
-      static void ParseAttr_optional_args(Parser &ctx, Scope &scope, AST::Attribute &attr)
+      static void ParseAttr_optional_args(Parser &ctx, Scope &scope, SR::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
@@ -301,7 +301,7 @@ namespace GDCC
       //    <script>
       //    <__script>
       //
-      static void ParseAttr_script(Parser &ctx, Scope &, AST::Attribute &attr)
+      static void ParseAttr_script(Parser &ctx, Scope &, SR::Attribute &attr)
       {
          // (
          if(!ctx.in.drop(Core::TOK_ParenO))
@@ -383,7 +383,7 @@ namespace GDCC
       //
       // Parser::parseAttr
       //
-      void Parser::parseAttr(Scope &scope, AST::Attribute &attr)
+      void Parser::parseAttr(Scope &scope, SR::Attribute &attr)
       {
          auto name = in.peek();
 
@@ -431,7 +431,7 @@ namespace GDCC
       //
       // Parser::parseAttrList
       //
-      void Parser::parseAttrList(Scope &scope, AST::Attribute &attr)
+      void Parser::parseAttrList(Scope &scope, SR::Attribute &attr)
       {
          // attribute-list:
          //    attribute
@@ -443,7 +443,7 @@ namespace GDCC
       //
       // Parser::parseAttrSpec
       //
-      void Parser::parseAttrSpec(Scope &scope, AST::Attribute &attr)
+      void Parser::parseAttrSpec(Scope &scope, SR::Attribute &attr)
       {
          // attribute-specifier:
          //    [ [ attribute-list ] ]
@@ -486,7 +486,7 @@ namespace GDCC
       //
       // Parser::parseAttrSpecList
       //
-      void Parser::parseAttrSpecList(Scope &scope, AST::Attribute &attr)
+      void Parser::parseAttrSpecList(Scope &scope, SR::Attribute &attr)
       {
          do parseAttrSpec(scope, attr);
          while(isAttrSpec(scope));

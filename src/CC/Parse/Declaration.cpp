@@ -20,20 +20,20 @@
 #include "CC/Statement.hpp"
 #include "CC/Warning.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Function.hpp"
-#include "AST/Object.hpp"
-#include "AST/Statement.hpp"
-#include "AST/Storage.hpp"
-#include "AST/Type.hpp"
-#include "AST/Warning.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Function.hpp"
+#include "SR/Object.hpp"
+#include "SR/Statement.hpp"
+#include "SR/Storage.hpp"
+#include "SR/Type.hpp"
+#include "SR/Warning.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -47,7 +47,7 @@ namespace GDCC
       //
       // GetLinkageFunc
       //
-      static IR::Linkage GetLinkageFunc(AST::Attribute const &attr)
+      static IR::Linkage GetLinkageFunc(SR::Attribute const &attr)
       {
          if(attr.storeInt)
             return GetLinkageInt(attr.linka);
@@ -58,7 +58,7 @@ namespace GDCC
       //
       // GetLinkageObj (global)
       //
-      static IR::Linkage GetLinkageObj(Scope_Global &, AST::Attribute const &attr)
+      static IR::Linkage GetLinkageObj(Scope_Global &, SR::Attribute const &attr)
       {
          if(attr.storeInt)
             return GetLinkageInt(attr.linka);
@@ -69,7 +69,7 @@ namespace GDCC
       //
       // GetLinkageObj (local)
       //
-      static IR::Linkage GetLinkageObj(Scope_Local &, AST::Attribute const &attr)
+      static IR::Linkage GetLinkageObj(Scope_Local &, SR::Attribute const &attr)
       {
          if(attr.storeExt)
             return GetLinkageExt(attr.linka);
@@ -80,7 +80,7 @@ namespace GDCC
       //
       // GetDeclFunc (global)
       //
-      static AST::Function::Ref GetDeclFunc(Scope_Global &scope, AST::Attribute &attr)
+      static SR::Function::Ref GetDeclFunc(Scope_Global &scope, SR::Attribute &attr)
       {
          // Determine linkage.
          attr.linka = GetLinkageFunc(attr);
@@ -102,7 +102,7 @@ namespace GDCC
       //
       // GetDeclFunc (local)
       //
-      static AST::Function::Ref GetDeclFunc(Scope_Local &scope, AST::Attribute &attr)
+      static SR::Function::Ref GetDeclFunc(Scope_Local &scope, SR::Attribute &attr)
       {
          if(!attr.storeExt && !attr.storeInt)
             throw Core::ExceptStr(attr.namePos,
@@ -125,8 +125,8 @@ namespace GDCC
       //
       // GetDeclObj (global)
       //
-      static AST::Object::Ref GetDeclObj(Scope_Global &scope,
-         AST::Attribute &attr, bool init)
+      static SR::Object::Ref GetDeclObj(Scope_Global &scope,
+         SR::Attribute &attr, bool init)
       {
          if(attr.storeAuto)
             throw Core::ExceptStr(attr.namePos, "file scope auto");
@@ -170,8 +170,8 @@ namespace GDCC
       //
       // GetDeclObj (local)
       //
-      static AST::Object::Ref GetDeclObj(Scope_Local &scope,
-         AST::Attribute &attr, bool init)
+      static SR::Object::Ref GetDeclObj(Scope_Local &scope,
+         SR::Attribute &attr, bool init)
       {
          // Determine linkage.
          attr.linka = GetLinkageObj(scope, attr);
@@ -210,7 +210,7 @@ namespace GDCC
                obj->defin = true;
 
                // Give default initializer, if a static storage object.
-               if(obj->store == AST::Storage::Static && !attr.objNoInit)
+               if(obj->store == SR::Storage::Static && !attr.objNoInit)
                {
                   obj->init = Exp_Init::Create(
                      Init::Create(obj->type, 0, attr.namePos), true);
@@ -233,8 +233,8 @@ namespace GDCC
       // SetDeclObjInit (global)
       //
       static void SetDeclObjInit(Parser &, Scope_Global &,
-         AST::Attribute &, std::vector<AST::Statement::CRef> &,
-         AST::Object *obj)
+         SR::Attribute &, std::vector<SR::Statement::CRef> &,
+         SR::Object *obj)
       {
          obj->defin = true;
 
@@ -245,27 +245,27 @@ namespace GDCC
       // SetDeclObjInit (local)
       //
       static void SetDeclObjInit(Parser &ctx, Scope_Local &,
-         AST::Attribute &attr, std::vector<AST::Statement::CRef> &inits,
-         AST::Object *obj)
+         SR::Attribute &attr, std::vector<SR::Statement::CRef> &inits,
+         SR::Object *obj)
       {
          obj->defin = true;
 
          // Block-scope statics must have constant initializers, so they can be
          // handled like file-scope statics.
-         if(obj->store == AST::Storage::Static)
+         if(obj->store == SR::Storage::Static)
             return;
 
          auto initExp = ExpCreate_Obj(ctx.prog, obj, attr.namePos);
          initExp = Exp_Assign::Create(initExp, obj->init, obj->init->pos);
 
-         inits.emplace_back(AST::StatementCreate_Exp(initExp));
+         inits.emplace_back(SR::StatementCreate_Exp(initExp));
       }
 
       //
       // ParseDecl_Function (global)
       //
       static void ParseDecl_Function(Parser &ctx, Scope_Global &scope,
-         AST::Attribute &attr, AST::Function *fn)
+         SR::Attribute &attr, SR::Function *fn)
       {
          if(!fn->retrn->isTypeComplete() && !fn->retrn->isTypeVoid())
             throw Core::ExceptStr(attr.namePos, "incomplete return");
@@ -277,10 +277,10 @@ namespace GDCC
          auto stmntPro  = StatementCreate_FuncPro(ctx.in.reget().pos, fnScope);
 
          // Create statements for the function.
-         Core::Array<AST::Statement::CRef> stmnts =
+         Core::Array<SR::Statement::CRef> stmnts =
             {Core::Pack, stmntPre, stmntBody, stmntPro};
 
-         fn->stmnt = AST::StatementCreate_Multi(attr.namePos, std::move(stmnts));
+         fn->stmnt = SR::StatementCreate_Multi(attr.namePos, std::move(stmnts));
          fn->defin = true;
 
          fn->setAllocAut(attr.allocAut);
@@ -288,10 +288,10 @@ namespace GDCC
          if(!fn->retrn->isTypeVoid())
          {
             if(fn->stmnt->isNoReturn())
-               AST::WarnReturnType(attr.namePos, "no return in non-void function");
+               SR::WarnReturnType(attr.namePos, "no return in non-void function");
 
             else if(!fn->stmnt->isReturn())
-               AST::WarnReturnTypeExt(attr.namePos,
+               SR::WarnReturnTypeExt(attr.namePos,
                   "non-void function possibly does not return");
          }
       }
@@ -300,7 +300,7 @@ namespace GDCC
       // ParseDecl_Function (local)
       //
       static void ParseDecl_Function(Parser &, Scope_Local &,
-         AST::Attribute &attr, AST::Function *)
+         SR::Attribute &attr, SR::Function *)
       {
          throw Core::ExceptStr(attr.namePos, "local function definition");
       }
@@ -308,7 +308,7 @@ namespace GDCC
       //
       // ParseDecl_typedef
       //
-      static void ParseDecl_typedef(Scope &scope, AST::Attribute &attr)
+      static void ParseDecl_typedef(Scope &scope, SR::Attribute &attr)
       {
          // Check compatibility with existing symbol, if any.
          if(auto lookup = scope.find(attr.name))
@@ -329,7 +329,7 @@ namespace GDCC
       // ParseDeclBase_Function
       //
       template<typename T>
-      static bool ParseDeclBase_Function(Parser &ctx, T &scope, AST::Attribute &attr)
+      static bool ParseDeclBase_Function(Parser &ctx, T &scope, SR::Attribute &attr)
       {
          // Check compatibility with existing symbol, if any.
          if(auto lookup = scope.find(attr.name))
@@ -338,7 +338,7 @@ namespace GDCC
                throw Core::ExceptStr(attr.namePos,
                   "name redefined as different kind of symbol");
 
-            AST::Function::Ref fn = lookup.resFunc;
+            SR::Function::Ref fn = lookup.resFunc;
 
             if(fn->retrn != attr.type->getBaseType())
                throw Core::ExceptStr(attr.namePos,
@@ -370,7 +370,7 @@ namespace GDCC
       //
       template<typename T>
       static void ParseDeclBase_Object(Parser &ctx, T &scope,
-         AST::Attribute &attr, std::vector<AST::Statement::CRef> &inits)
+         SR::Attribute &attr, std::vector<SR::Statement::CRef> &inits)
       {
          // Check compatibility with existing symbol, if any.
          if(auto lookup = scope.find(attr.name))
@@ -379,7 +379,7 @@ namespace GDCC
                throw Core::ExceptStr(attr.namePos,
                   "name redefined as different kind of symbol");
 
-            AST::Object::Ref obj = lookup.resObj;
+            SR::Object::Ref obj = lookup.resObj;
 
             if(obj->type != attr.type &&
                (!obj->type->isTypeArray() || !attr.type->isTypeArray() ||
@@ -408,7 +408,7 @@ namespace GDCC
             obj->init = ctx.getExp_Init(scope, obj->type);
             obj->type = obj->init->getType();
 
-            if(obj->store == AST::Storage::Static && !obj->init->isIRExp())
+            if(obj->store == SR::Storage::Static && !obj->init->isIRExp())
                throw Core::ExceptStr(obj->init->pos,
                   "non-constant initializer for static storage object");
 
@@ -422,7 +422,7 @@ namespace GDCC
       // GetDeclBase
       //
       template<typename T>
-      static AST::Statement::CRef GetDeclBase(Parser &ctx, T &scope,
+      static SR::Statement::CRef GetDeclBase(Parser &ctx, T &scope,
          Core::Array<Core::String> &&labels)
       {
          auto pos = ctx.in.peek().pos;
@@ -434,20 +434,20 @@ namespace GDCC
          //    address-space-declaration
 
          // attribute-specifier-list
-         AST::Attribute attrBase;
+         SR::Attribute attrBase;
          attrBase.linka = IR::Linkage::ExtC;
          if(ctx.isAttrSpec(scope))
             ctx.parseAttrSpecList(scope, attrBase);
 
          // address-space-declaration
          if(ctx.isAddrDecl(scope))
-            return ctx.parseAddrDecl(scope, attrBase), AST::StatementCreate_Empty(pos);
+            return ctx.parseAddrDecl(scope, attrBase), SR::StatementCreate_Empty(pos);
 
          // static_assert-declaration
          if(ctx.isStaticAssert(scope))
-            return ctx.parseStaticAssert(scope), AST::StatementCreate_Empty(pos);
+            return ctx.parseStaticAssert(scope), SR::StatementCreate_Empty(pos);
 
-         std::vector<AST::Statement::CRef> inits;
+         std::vector<SR::Statement::CRef> inits;
 
          // declaration-specifiers
          ctx.parseDeclSpec(scope, attrBase);
@@ -492,10 +492,10 @@ namespace GDCC
          decl_end:
          switch(inits.size())
          {
-         case  0: return AST::StatementCreate_Empty(std::move(labels), pos);
+         case  0: return SR::StatementCreate_Empty(std::move(labels), pos);
          case  1: if(labels.empty()) return inits[0];
-         default: return AST::StatementCreate_Multi(std::move(labels), pos,
-            Core::Array<AST::Statement::CRef>(inits.begin(), inits.end()));
+         default: return SR::StatementCreate_Multi(std::move(labels), pos,
+            Core::Array<SR::Statement::CRef>(inits.begin(), inits.end()));
          }
       }
    }
@@ -513,13 +513,13 @@ namespace GDCC
       //
       // Parser::getDecl
       //
-      AST::Statement::CRef Parser::getDecl(Scope_Global &scope)
+      SR::Statement::CRef Parser::getDecl(Scope_Global &scope)
       {
          if(in.peek(Core::TOK_Semico))
          {
             Core::Origin pos = in.get().pos;
             WarnFileSemico(pos, "extraneous file-scope semicolon");
-            return AST::StatementCreate_Empty(in.reget().pos);
+            return SR::StatementCreate_Empty(in.reget().pos);
          }
 
          return GetDeclBase(*this, scope, {});
@@ -528,7 +528,7 @@ namespace GDCC
       //
       // Parser::getDecl
       //
-      AST::Statement::CRef Parser::getDecl(Scope_Local &scope)
+      SR::Statement::CRef Parser::getDecl(Scope_Local &scope)
       {
          return getDecl(scope, {});
       }
@@ -536,7 +536,7 @@ namespace GDCC
       //
       // Parser::getDecl
       //
-      AST::Statement::CRef Parser::getDecl(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getDecl(Scope_Local &scope, Labels &&labels)
       {
          return GetDeclBase(*this, scope, std::move(labels));
       }

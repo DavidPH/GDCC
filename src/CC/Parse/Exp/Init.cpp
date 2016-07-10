@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -57,7 +57,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -67,7 +67,7 @@ namespace GDCC
       //
       // Parser::getExp_Init
       //
-      AST::Exp::CRef Parser::getExp_Init(Scope &scope, AST::Type const *type)
+      SR::Exp::CRef Parser::getExp_Init(Scope &scope, SR::Type const *type)
       {
          auto raw = getInitRaw(scope);
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,7 +19,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -29,7 +29,7 @@ namespace GDCC
       //
       // ExpCreate_Div
       //
-      AST::Exp::CRef ExpCreate_Div(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_Div(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
          auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
@@ -41,12 +41,12 @@ namespace GDCC
          // arithmetic / arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
-            auto type = AST::Type::None;
+            auto type = SR::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
             // TODO: fixed / integer doesn't require conversion.
 
-            return ExpCreate_Arith<AST::Exp_Div, IR::CodeSet_Div>(type, expL, expR, pos);
+            return ExpCreate_Arith<SR::Exp_Div, IR::CodeSet_Div>(type, expL, expR, pos);
          }
 
          throw Core::ExceptStr(pos, "invalid operands to 'operator /'");
@@ -55,7 +55,7 @@ namespace GDCC
       //
       // ExpCreate_DivEq
       //
-      AST::Exp::CRef ExpCreate_DivEq(AST::Exp const *expL, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_DivEq(SR::Exp const *expL, SR::Exp const *r,
          Core::Origin pos)
       {
          if(!IsModLValue(expL))
@@ -69,12 +69,12 @@ namespace GDCC
          // arithmetic /= arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
-            AST::Type::CPtr evalT;
+            SR::Type::CPtr evalT;
             std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
 
             // TODO: fixed /= integer doesn't require conversion.
 
-            return ExpCreate_ArithEq<AST::Exp_Div, IR::CodeSet_Div>(
+            return ExpCreate_ArithEq<SR::Exp_Div, IR::CodeSet_Div>(
                evalT, typeL, expL, expR, pos);
          }
 
@@ -84,7 +84,7 @@ namespace GDCC
       //
       // ExpCreate_DivEx
       //
-      AST::Exp::CRef ExpCreate_DivEx(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_DivEx(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
          auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
@@ -96,12 +96,12 @@ namespace GDCC
          // __div(integer, integer)
          if(typeL->isCTypeInteg() && typeR->isCTypeInteg())
          {
-            auto type = AST::Type::None;
+            auto type = SR::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
-            auto op = AST::ExpCode_ArithInteg<IR::CodeSet_DiX>(type);
+            auto op = SR::ExpCode_ArithInteg<IR::CodeSet_DiX>(type);
 
-            return AST::Exp_Arith<AST::Exp_DivEx>::Create(
+            return SR::Exp_Arith<SR::Exp_DivEx>::Create(
                op, Type_Div::Get(type), expL, expR, pos);
          }
 

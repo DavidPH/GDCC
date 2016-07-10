@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,19 +12,19 @@
 
 #include "CC/Exp/Obj.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Object.hpp"
-#include "AST/Storage.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Exp.hpp"
 #include "IR/Glyph.hpp"
 
+#include "SR/Arg.hpp"
+#include "SR/Object.hpp"
+#include "SR/Storage.hpp"
+#include "SR/Type.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -34,7 +34,7 @@ namespace GDCC
       //
       // Exp_Obj constructor
       //
-      Exp_Obj::Exp_Obj(IR::Program &prog_, AST::Object *obj_,
+      Exp_Obj::Exp_Obj(IR::Program &prog_, SR::Object *obj_,
          Core::Origin pos_) :
          Super{pos_},
          obj{obj_},
@@ -53,8 +53,7 @@ namespace GDCC
       //
       // Exp_Obj::v_genStmnt
       //
-      void Exp_Obj::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_Obj::v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const
       {
          GenStmnt_Move(this, ctx, dst, getArg());
       }
@@ -62,16 +61,16 @@ namespace GDCC
       //
       // Exp_Obj::v_getArg
       //
-      AST::Arg Exp_Obj::v_getArg() const
+      SR::Arg Exp_Obj::v_getArg() const
       {
          auto type = getType();
 
          IR::Glyph glyph{&prog, obj->glyph};
          auto addr = IR::ExpCreate_Glyph(glyph, pos);
          auto expt = type->getTypePointer();
-         auto exp  = AST::ExpCreate_IRExp(addr, expt, pos);
+         auto exp  = SR::ExpCreate_IRExp(addr, expt, pos);
 
-         return AST::Arg(type, exp);
+         return SR::Arg(type, exp);
       }
 
       //
@@ -91,7 +90,7 @@ namespace GDCC
       //
       // Exp_Obj::v_getObject
       //
-      AST::Object::Ref Exp_Obj::v_getObject() const
+      SR::Object::Ref Exp_Obj::v_getObject() const
       {
          return obj;
       }
@@ -99,12 +98,12 @@ namespace GDCC
       //
       // Exp_Obj::v_getType
       //
-      AST::Type::CRef Exp_Obj::v_getType() const
+      SR::Type::CRef Exp_Obj::v_getType() const
       {
          if(!obj->type)
             throw Core::ExceptStr(pos, "object has no type");
 
-         return static_cast<AST::Type::CRef>(obj->type);
+         return static_cast<SR::Type::CRef>(obj->type);
       }
 
       //
@@ -143,7 +142,7 @@ namespace GDCC
       //
       // Exp_ObjAut constructor
       //
-      Exp_ObjAut::Exp_ObjAut(IR::Program &prog_, AST::Object *obj_,
+      Exp_ObjAut::Exp_ObjAut(IR::Program &prog_, SR::Object *obj_,
          Core::Origin pos_) :
          Super{prog_, obj_, pos_}
       {
@@ -152,7 +151,7 @@ namespace GDCC
       //
       // Exp_ObjAut::v_getType
       //
-      AST::Type::CRef Exp_ObjAut::v_getType() const
+      SR::Type::CRef Exp_ObjAut::v_getType() const
       {
          auto type = Super::v_getType();
 
@@ -170,10 +169,10 @@ namespace GDCC
       //
       // ExpCreate_Obj
       //
-      AST::Exp::CRef ExpCreate_Obj(IR::Program &prog, AST::Object *obj,
+      SR::Exp::CRef ExpCreate_Obj(IR::Program &prog, SR::Object *obj,
          Core::Origin pos)
       {
-         if(obj->store == AST::Storage::Auto)
+         if(obj->store == SR::Storage::Auto)
             return Exp_ObjAut::Create(prog, obj, pos);
 
          return Exp_Obj::Create(prog, obj, pos);

@@ -16,13 +16,13 @@
 #include "CC/Scope.hpp"
 #include "CC/Type/Struct.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Exp.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "Platform/Platform.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Exp.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -42,7 +42,7 @@ namespace GDCC
       //    struct-or-union identifier
       //
       static void ParseTypeSpec_struct(Parser &ctx, Scope &scope,
-         AST::Attribute &attr, TypeSpec &spec, bool isUnion)
+         SR::Attribute &attr, TypeSpec &spec, bool isUnion)
       {
          if(spec.specBase)
             throw Core::ExceptStr(ctx.in.reget().pos, "multiple type-specifier base");
@@ -215,7 +215,7 @@ namespace GDCC
                   ctx.in.peek(Core::TOK_KeyWrd, Core::STR_union,  Core::TOK_BraceO);
 
                // specifier-qualifier-list
-               AST::Attribute attrBase;
+               SR::Attribute attrBase;
                ctx.parseSpecQual(scope, attrBase);
 
                // Special handling for non-declarator declaration.
@@ -240,7 +240,7 @@ namespace GDCC
                   //    declarator
                   //    declarator(opt) : constant-expression
 
-                  AST::Attribute attrTemp = attrBase;
+                  SR::Attribute attrTemp = attrBase;
 
                   if(ctx.isDeclarator(scope))
                      ctx.parseDeclarator(scope, attrTemp);
@@ -268,7 +268,7 @@ namespace GDCC
                         // Align underlying storage.
                         bitsAlign();
 
-                        AST::Type::CRef bitsType{attrTemp.type};
+                        SR::Type::CRef bitsType{attrTemp.type};
 
                         // bitsType must be qualified or unqualified signed int,
                         // unsigned int, or _Bool.
@@ -365,7 +365,7 @@ namespace GDCC
       //
       // Parser::parseTypeSpec_struct
       //
-      void Parser::parseTypeSpec_struct(Scope &scope, AST::Attribute &attr, TypeSpec &spec)
+      void Parser::parseTypeSpec_struct(Scope &scope, SR::Attribute &attr, TypeSpec &spec)
       {
          ParseTypeSpec_struct(*this, scope, attr, spec, false);
       }
@@ -373,7 +373,7 @@ namespace GDCC
       //
       // Parser::parseTypeSpec_union
       //
-      void Parser::parseTypeSpec_union(Scope &scope, AST::Attribute &attr, TypeSpec &spec)
+      void Parser::parseTypeSpec_union(Scope &scope, SR::Attribute &attr, TypeSpec &spec)
       {
          ParseTypeSpec_struct(*this, scope, attr, spec, true);
       }

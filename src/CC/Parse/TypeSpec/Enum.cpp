@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,8 +16,8 @@
 #include "CC/Scope.hpp"
 #include "CC/Type/Enum.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Exp.hpp"
+#include "SR/Attribute.hpp"
+#include "SR/Exp.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
@@ -39,7 +39,7 @@ namespace GDCC
       //    <enum> identifier(opt) { enumerator-list , }
       //    <enum> identifier
       //
-      void Parser::parseTypeSpec_enum(Scope &scope, AST::Attribute &attr, TypeSpec &spec)
+      void Parser::parseTypeSpec_enum(Scope &scope, SR::Attribute &attr, TypeSpec &spec)
       {
          if(spec.specBase)
             throw Core::ExceptStr(in.reget().pos, "multiple type-specifier base");

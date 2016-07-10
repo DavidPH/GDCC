@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,9 +15,9 @@
 
 #include "../../CC/Exp.hpp"
 
-#include "../../AST/Exp/Unary.hpp"
-
 #include "../../Core/Array.hpp"
+
+#include "../../SR/Exp/Unary.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -33,20 +33,20 @@ namespace GDCC
       //
       // Exp_Call
       //
-      class Exp_Call : public AST::Exp_Unary
+      class Exp_Call : public SR::Exp_Unary
       {
          GDCC_Core_CounterPreambleAbstract(
-            GDCC::CC::Exp_Call, GDCC::AST::Exp_Unary);
+            GDCC::CC::Exp_Call, GDCC::SR::Exp_Unary);
 
       public:
-         Core::Array<AST::Exp::CRef> const args;
+         Core::Array<SR::Exp::CRef> const args;
          TypeCRef                    const func;
 
       protected:
-         Exp_Call(AST::Exp const *e, Core::Origin pos,
-            Core::Array<AST::Exp::CRef> const &args);
-         Exp_Call(AST::Exp const *e, Core::Origin pos,
-            Core::Array<AST::Exp::CRef> &&args);
+         Exp_Call(SR::Exp const *e, Core::Origin pos,
+            Core::Array<SR::Exp::CRef> const &args);
+         Exp_Call(SR::Exp const *e, Core::Origin pos,
+            Core::Array<SR::Exp::CRef> &&args);
 
          virtual bool v_isEffect() const;
 
@@ -66,23 +66,22 @@ namespace GDCC
 
       public:
          // Create
-         static CRef Create(AST::Exp const *e, Core::Origin pos,
-            Core::Array<AST::Exp::CRef> const &a)
+         static CRef Create(SR::Exp const *e, Core::Origin pos,
+            Core::Array<SR::Exp::CRef> const &a)
             {return CRef(new This(e, pos, a));}
 
          // Create
-         static CRef Create(AST::Exp const *e, Core::Origin pos,
-            Core::Array<AST::Exp::CRef> &&a)
+         static CRef Create(SR::Exp const *e, Core::Origin pos,
+            Core::Array<SR::Exp::CRef> &&a)
             {return CRef(new This(e, pos, std::move(a)));}
 
       protected:
-         Exp_CallLit(AST::Exp const *e, Core::Origin pos_,
-            Core::Array<AST::Exp::CRef> const &a) : Super{e, pos_, a} {}
-         Exp_CallLit(AST::Exp const *e, Core::Origin pos_,
-            Core::Array<AST::Exp::CRef> &&a) : Super{e, pos_, std::move(a)} {}
+         Exp_CallLit(SR::Exp const *e, Core::Origin pos_,
+            Core::Array<SR::Exp::CRef> const &a) : Super{e, pos_, a} {}
+         Exp_CallLit(SR::Exp const *e, Core::Origin pos_,
+            Core::Array<SR::Exp::CRef> &&a) : Super{e, pos_, std::move(a)} {}
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
       };
 
       //
@@ -96,25 +95,24 @@ namespace GDCC
 
       public:
          // Create
-         static CRef Create(AST::Exp const *e, Core::Origin pos,
-            Core::Array<AST::Exp::CRef> const &a, Scope_Local &scope)
+         static CRef Create(SR::Exp const *e, Core::Origin pos,
+            Core::Array<SR::Exp::CRef> const &a, Scope_Local &scope)
             {return CRef(new This(e, pos, a, scope));}
 
          // Create
-         static CRef Create(AST::Exp const *e, Core::Origin pos,
-            Core::Array<AST::Exp::CRef> &&a, Scope_Local &scope)
+         static CRef Create(SR::Exp const *e, Core::Origin pos,
+            Core::Array<SR::Exp::CRef> &&a, Scope_Local &scope)
             {return CRef(new This(e, pos, std::move(a), scope));}
 
       protected:
-         Exp_CallStk(AST::Exp const *e, Core::Origin pos_,
-            Core::Array<AST::Exp::CRef> const &a, Scope_Local &scope_) :
+         Exp_CallStk(SR::Exp const *e, Core::Origin pos_,
+            Core::Array<SR::Exp::CRef> const &a, Scope_Local &scope_) :
             Super{e, pos_, a}, scope(scope_) {}
-         Exp_CallStk(AST::Exp const *e, Core::Origin pos_,
-            Core::Array<AST::Exp::CRef> &&a, Scope_Local &scope_) :
+         Exp_CallStk(SR::Exp const *e, Core::Origin pos_,
+            Core::Array<SR::Exp::CRef> &&a, Scope_Local &scope_) :
             Super{e, pos_, std::move(a)}, scope(scope_) {}
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          Scope_Local &scope;
       };

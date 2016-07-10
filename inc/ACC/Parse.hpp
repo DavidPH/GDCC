@@ -67,7 +67,7 @@ namespace GDCC
 
          virtual StatementCRef getDecl_Struct(Scope_Global &scope);
 
-         virtual ExpCRef getExp_Post_ParenO(CC::Scope &scope, AST::Exp const *exp);
+         virtual ExpCRef getExp_Post_ParenO(CC::Scope &scope, SR::Exp const *exp);
 
          virtual ExpCRef getExp_Unar_createtranslation(CC::Scope &scope,
             CreateTransDecl const *ctrans);
@@ -101,16 +101,16 @@ namespace GDCC
 
          virtual bool isTypeSpec(CC::Scope &scope);
 
-         virtual void parseAttrSpec(CC::Scope &scope, AST::Attribute &attr);
+         virtual void parseAttrSpec(CC::Scope &scope, SR::Attribute &attr);
 
-         virtual void parseDeclSpec(CC::Scope &scope, AST::Attribute &attr);
+         virtual void parseDeclSpec(CC::Scope &scope, SR::Attribute &attr);
 
-         virtual void parseDeclarator(CC::Scope &scope, AST::Attribute &attr);
-         virtual void parseDeclaratorSuffix(CC::Scope &scope, AST::Attribute &attr);
+         virtual void parseDeclarator(CC::Scope &scope, SR::Attribute &attr);
+         virtual void parseDeclaratorSuffix(CC::Scope &scope, SR::Attribute &attr);
 
-         virtual void parseTypeQual(CC::Scope &scope, AST::TypeQual &qual);
+         virtual void parseTypeQual(CC::Scope &scope, SR::TypeQual &qual);
 
-         virtual void parseTypeSpec(CC::Scope &scope, AST::Attribute &attr, CC::TypeSpec &spec);
+         virtual void parseTypeSpec(CC::Scope &scope, SR::Attribute &attr, CC::TypeSpec &spec);
 
          PragmaData &prag;
 

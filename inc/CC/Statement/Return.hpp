@@ -15,7 +15,7 @@
 
 #include "../../CC/Statement.hpp"
 
-#include "../../AST/Statement.hpp"
+#include "../../SR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,40 +29,40 @@ namespace GDCC
       //
       // Statement_ReturnExp
       //
-      class Statement_ReturnExp : public AST::Statement
+      class Statement_ReturnExp : public SR::Statement
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Statement_ReturnExp, GDCC::AST::Statement);
+            GDCC::CC::Statement_ReturnExp, GDCC::SR::Statement);
 
       public:
-         Core::CounterRef<AST::Exp const> const exp;
+         Core::CounterRef<SR::Exp const> const exp;
          Scope_Function                        &scope;
 
 
          // Create
          static CRef Create(Labels const &labels, Core::Origin pos,
-            AST::Exp const *exp, Scope_Function &scope)
+            SR::Exp const *exp, Scope_Function &scope)
             {return CRef(new This(labels, pos, exp, scope));}
 
          // Create
          static CRef Create(Labels &&labels, Core::Origin pos,
-            AST::Exp const *exp, Scope_Function &scope)
+            SR::Exp const *exp, Scope_Function &scope)
             {return CRef(new This(std::move(labels), pos, exp, scope));}
 
          // Create
-         static CRef Create(Core::Origin pos, AST::Exp const *exp, Scope_Function &scope)
+         static CRef Create(Core::Origin pos, SR::Exp const *exp, Scope_Function &scope)
             {return CRef(new This(pos, exp, scope));}
 
       protected:
          Statement_ReturnExp(Labels const &labels, Core::Origin pos,
-            AST::Exp const *exp, Scope_Function &scope);
+            SR::Exp const *exp, Scope_Function &scope);
          Statement_ReturnExp(Labels &&labels, Core::Origin pos,
-            AST::Exp const *exp, Scope_Function &scope);
-         Statement_ReturnExp(Core::Origin pos, AST::Exp const *exp,
+            SR::Exp const *exp, Scope_Function &scope);
+         Statement_ReturnExp(Core::Origin pos, SR::Exp const *exp,
             Scope_Function &scope);
          virtual ~Statement_ReturnExp();
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 
          virtual bool v_isBranch() const {return true;}
          virtual bool v_isEffect() const;
@@ -74,10 +74,10 @@ namespace GDCC
       //
       // Statement_ReturnNul
       //
-      class Statement_ReturnNul : public AST::Statement
+      class Statement_ReturnNul : public SR::Statement
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Statement_ReturnNul, GDCC::AST::Statement);
+            GDCC::CC::Statement_ReturnNul, GDCC::SR::Statement);
 
       public:
          Scope_Function &scope;
@@ -104,7 +104,7 @@ namespace GDCC
          Statement_ReturnNul(Core::Origin pos_, Scope_Function &scope_) :
             Super{pos_}, scope(scope_) {}
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 
          virtual bool v_isBranch() const {return true;}
          virtual bool v_isEffect() const {return false;}

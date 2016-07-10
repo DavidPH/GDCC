@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,7 +18,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -28,7 +28,7 @@ namespace GDCC
       //
       // ExpCreate_Mul
       //
-      AST::Exp::CRef ExpCreate_Mul(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_Mul(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
          auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
@@ -40,12 +40,12 @@ namespace GDCC
          // arithmetic * arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
-            auto type = AST::Type::None;
+            auto type = SR::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
             // TODO: fixed * integer doesn't require conversion.
 
-            return ExpCreate_Arith<AST::Exp_Mul, IR::CodeSet_Mul>(type, expL, expR, pos);
+            return ExpCreate_Arith<SR::Exp_Mul, IR::CodeSet_Mul>(type, expL, expR, pos);
          }
 
          throw Core::ExceptStr(pos, "invalid operands to 'operator *'");
@@ -54,7 +54,7 @@ namespace GDCC
       //
       // ExpCreate_MulEq
       //
-      AST::Exp::CRef ExpCreate_MulEq(AST::Exp const *expL, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_MulEq(SR::Exp const *expL, SR::Exp const *r,
          Core::Origin pos)
       {
          if(!IsModLValue(expL))
@@ -68,12 +68,12 @@ namespace GDCC
          // arithmetic *= arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
-            AST::Type::CPtr evalT;
+            SR::Type::CPtr evalT;
             std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
 
             // TODO: fixed *= integer doesn't require conversion.
 
-            return ExpCreate_ArithEq<AST::Exp_Mul, IR::CodeSet_Mul>(
+            return ExpCreate_ArithEq<SR::Exp_Mul, IR::CodeSet_Mul>(
                evalT, typeL, expL, expR, pos);
          }
 

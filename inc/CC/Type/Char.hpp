@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Type.hpp"
 
-#include "../../AST/Type.hpp"
+#include "../../SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,9 +29,9 @@ namespace GDCC
       //
       // Type_Char
       //
-      class Type_Char final : public AST::Type
+      class Type_Char final : public SR::Type
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Type_Char, GDCC::AST::Type);
+         GDCC_Core_CounterPreamble(GDCC::CC::Type_Char, GDCC::SR::Type);
 
       public:
          // Type information.
@@ -58,7 +58,7 @@ namespace GDCC
          virtual bool isCTypeScalar()   const {return true;}
 
 
-         friend AST::Type::CRef GetTypeChar();
+         friend SR::Type::CRef GetTypeChar();
 
       protected:
          Type_Char() = default;

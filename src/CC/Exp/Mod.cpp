@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,7 +18,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -28,7 +28,7 @@ namespace GDCC
       //
       // ExpCreate_Mod
       //
-      AST::Exp::CRef ExpCreate_Mod(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_Mod(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
          auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
@@ -40,13 +40,13 @@ namespace GDCC
          // arithmetic % arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
-            auto type = AST::Type::None;
+            auto type = SR::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
             if(!type->isCTypeInteg() && !type->isCTypeFixed())
                throw Core::ExceptStr(pos, "expected integer or fixed-point");
 
-            return ExpCreate_Arith<AST::Exp_Mod, IR::CodeSet_Mod>(type, expL, expR, pos);
+            return ExpCreate_Arith<SR::Exp_Mod, IR::CodeSet_Mod>(type, expL, expR, pos);
          }
 
          throw Core::ExceptStr(pos, "invalid operands to 'operator %'");
@@ -55,7 +55,7 @@ namespace GDCC
       //
       // ExpCreate_ModEq
       //
-      AST::Exp::CRef ExpCreate_ModEq(AST::Exp const *expL, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_ModEq(SR::Exp const *expL, SR::Exp const *r,
          Core::Origin pos)
       {
          if(!IsModLValue(expL))
@@ -69,13 +69,13 @@ namespace GDCC
          // arithmetic %= arithmetic
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
-            AST::Type::CPtr evalT;
+            SR::Type::CPtr evalT;
             std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
 
             if(!evalT->isCTypeInteg() && !evalT->isCTypeFixed())
                throw Core::ExceptStr(pos, "expected integer or fixed-point");
 
-            return ExpCreate_ArithEq<AST::Exp_Mod, IR::CodeSet_Mod>(
+            return ExpCreate_ArithEq<SR::Exp_Mod, IR::CodeSet_Mod>(
                evalT, typeL, expL, expR, pos);
          }
 

@@ -14,13 +14,6 @@
 
 #include "ACC/Pragma.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Exp.hpp"
-#include "AST/Function.hpp"
-#include "AST/Object.hpp"
-#include "AST/Type.hpp"
-#include "AST/Warning.hpp"
-
 #include "CC/Exp.hpp"
 #include "CC/Scope/Global.hpp"
 #include "CC/Type.hpp"
@@ -33,6 +26,13 @@
 #include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Exp.hpp"
+#include "SR/Function.hpp"
+#include "SR/Object.hpp"
+#include "SR/Type.hpp"
+#include "SR/Warning.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -52,9 +52,9 @@ namespace GDCC
          if(!entity->warnUse || entity->warnDone) return;
 
          if(entity->warnUse != Core::STR_)
-            AST::WarnDeprecated(tok.pos, tok.str, " is deprecated: ", entity->warnUse);
+            SR::WarnDeprecated(tok.pos, tok.str, " is deprecated: ", entity->warnUse);
          else
-            AST::WarnDeprecated(tok.pos, tok.str, " is deprecated");
+            SR::WarnDeprecated(tok.pos, tok.str, " is deprecated");
 
          entity->warnDone = true;
       }
@@ -62,7 +62,7 @@ namespace GDCC
       //
       // GetExp_ForwardFunc
       //
-      static AST::Exp::CRef GetExp_ForwardFunc(Parser &ctx, CC::Scope &scope,
+      static SR::Exp::CRef GetExp_ForwardFunc(Parser &ctx, CC::Scope &scope,
          Core::Token const &name)
       {
          CC::WarnForwardRef(name.pos, "implicitly declaring function ", name.str);
@@ -71,7 +71,7 @@ namespace GDCC
          auto pos = ctx.in.get().pos;
 
          // expression-list(opt)
-         Core::Array<AST::Exp::CRef> args;
+         Core::Array<SR::Exp::CRef> args;
          if(!ctx.in.peek(Core::TOK_ParenC))
             args = ctx.getExpList(scope);
 
@@ -84,18 +84,18 @@ namespace GDCC
          for(auto &arg : args)
             arg = CC::ExpPromo_Arg(arg, pos);
 
-         Core::Array<AST::Type::CRef> types{args.begin(), args.end(),
-            [](AST::Exp const *e) {return e->getType()->getTypeQual();}};
+         Core::Array<SR::Type::CRef> types{args.begin(), args.end(),
+            [](SR::Exp const *e) {return e->getType()->getTypeQual();}};
 
          // Generate attributes.
-         AST::Attribute attr;
+         SR::Attribute attr;
 
          attr.callt   = IR::CallType::LangACS;
          attr.linka   = IR::Linkage::ExtACS;
          attr.name    = name.str;
          attr.namePos = name.pos;
          attr.type    = CC::TypeIntegPrS->getTypeFunction(
-            AST::TypeSet::Get(types.data(), types.size(), false), attr.callt);
+            SR::TypeSet::Get(types.data(), types.size(), false), attr.callt);
 
          attr.declAuto = true;
 
@@ -111,7 +111,7 @@ namespace GDCC
       //
       // GetExp_Prim_Charac
       //
-      static AST::Exp::CRef GetExp_Prim_Charac(Parser &ctx, CC::Scope &)
+      static SR::Exp::CRef GetExp_Prim_Charac(Parser &ctx, CC::Scope &)
       {
          auto tok = ctx.in.get();
 
@@ -123,7 +123,7 @@ namespace GDCC
       //
       // GetExp_Prim_Identi
       //
-      static AST::Exp::CRef GetExp_Prim_Identi(Parser &ctx, CC::Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_Identi(Parser &ctx, CC::Scope &scope)
       {
          auto tok = ctx.in.get();
 
@@ -154,7 +154,7 @@ namespace GDCC
       //
       // GetExp_Prim_NumFix
       //
-      static AST::Exp::CRef GetExp_Prim_NumFix(Parser &ctx, CC::Scope &)
+      static SR::Exp::CRef GetExp_Prim_NumFix(Parser &ctx, CC::Scope &)
       {
          auto tok = ctx.in.get();
 
@@ -187,7 +187,7 @@ namespace GDCC
             throw Core::ExceptStr(tok.pos, "malformed fixed-constant");
 
          // Dtermine type.
-         AST::Type::CPtr type;
+         SR::Type::CPtr type;
 
          switch(l)
          {
@@ -208,7 +208,7 @@ namespace GDCC
       //
       // GetExp_Prim_NumFlt
       //
-      static AST::Exp::CRef GetExp_Prim_NumFlt(Parser &ctx, CC::Scope &)
+      static SR::Exp::CRef GetExp_Prim_NumFlt(Parser &ctx, CC::Scope &)
       {
          auto tok = ctx.in.get();
 
@@ -236,7 +236,7 @@ namespace GDCC
             throw Core::ExceptStr(tok.pos, "malformed floating-constant");
 
          // Dtermine type.
-         AST::Type::CPtr type;
+         SR::Type::CPtr type;
 
          switch(l)
          {
@@ -248,13 +248,13 @@ namespace GDCC
          // Create expression.
          auto valIR = IR::Value_Float(std::move(val), type->getIRType().tFloat);
          auto expIR = IR::ExpCreate_Value(std::move(valIR), tok.pos);
-         return AST::ExpCreate_IRExp(expIR, type, tok.pos);
+         return SR::ExpCreate_IRExp(expIR, type, tok.pos);
       }
 
       //
       // GetExp_Prim_NumInt
       //
-      static AST::Exp::CRef GetExp_Prim_NumInt(Parser &ctx, CC::Scope &)
+      static SR::Exp::CRef GetExp_Prim_NumInt(Parser &ctx, CC::Scope &)
       {
          auto tok = ctx.in.get();
 
@@ -314,7 +314,7 @@ namespace GDCC
       //
       // GetExp_Prim_ParenO
       //
-      static AST::Exp::CRef GetExp_Prim_ParenO(Parser &ctx, CC::Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_ParenO(Parser &ctx, CC::Scope &scope)
       {
          // (
          ctx.in.get();
@@ -332,7 +332,7 @@ namespace GDCC
       //
       // GetExp_Prim_String
       //
-      static AST::Exp::CRef GetExp_Prim_String(Parser &ctx, CC::Scope &scope)
+      static SR::Exp::CRef GetExp_Prim_String(Parser &ctx, CC::Scope &scope)
       {
          auto tok = ctx.in.get();
 
@@ -343,7 +343,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -353,7 +353,7 @@ namespace GDCC
       //
       // Parser::getExp_Prim
       //
-      AST::Exp::CRef Parser::getExp_Prim(CC::Scope &scope)
+      SR::Exp::CRef Parser::getExp_Prim(CC::Scope &scope)
       {
          switch(in.peek().tok)
          {

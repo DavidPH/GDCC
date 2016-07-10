@@ -22,14 +22,14 @@
 #include "AS/LabelTBuf.hpp"
 #include "AS/TStream.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Function.hpp"
-#include "AST/Statement.hpp"
-#include "AST/Warning.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/StringBuf.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Exp.hpp"
+#include "SR/Function.hpp"
+#include "SR/Statement.hpp"
+#include "SR/Warning.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -122,7 +122,7 @@ namespace GDCC
       //
       // Parser::getStatement
       //
-      AST::Statement::CRef Parser::getStatement(Scope_Local &scope)
+      SR::Statement::CRef Parser::getStatement(Scope_Local &scope)
       {
          return getStatement(scope, getLabels(scope));
       }
@@ -130,7 +130,7 @@ namespace GDCC
       //
       // Parser::getStatement
       //
-      AST::Statement::CRef Parser::getStatement(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement(Scope_Local &scope, Labels &&labels)
       {
          // compound-statement
          if(in.peek().tok == Core::TOK_BraceO)
@@ -167,7 +167,7 @@ namespace GDCC
       //
       // Parser::getStatement_asm
       //
-      AST::Statement::CRef Parser::getStatement_asm(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_asm(Scope_Local &scope, Labels &&labels)
       {
          // <__asm> ( string-literal ) ;
 
@@ -210,7 +210,7 @@ namespace GDCC
       //
       // Parser::getStatement_break
       //
-      AST::Statement::CRef Parser::getStatement_break(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_break(Scope_Local &scope, Labels &&labels)
       {
          // <break> ;
 
@@ -227,7 +227,7 @@ namespace GDCC
       //
       // Parser::getStatement_continue
       //
-      AST::Statement::CRef Parser::getStatement_continue(
+      SR::Statement::CRef Parser::getStatement_continue(
          Scope_Local &scope, Labels &&labels)
       {
          // <continue> ;
@@ -245,7 +245,7 @@ namespace GDCC
       //
       // Parser::getStatement_do
       //
-      AST::Statement::CRef Parser::getStatement_do(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_do(Scope_Local &scope, Labels &&labels)
       {
          auto &loopScope = scope.createScopeLoop();
 
@@ -274,7 +274,7 @@ namespace GDCC
       //
       // Parser::getStatement_for
       //
-      AST::Statement::CRef Parser::getStatement_for(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_for(Scope_Local &scope, Labels &&labels)
       {
          auto &loopScope = scope.createScopeLoop();
 
@@ -288,7 +288,7 @@ namespace GDCC
          if(!in.drop(Core::TOK_ParenO))
             throw Core::ParseExceptExpect(in.peek(), "(", true);
 
-         AST::Statement::CPtr init;
+         SR::Statement::CPtr init;
          // declaration
          if(isDecl(loopScope))
          {
@@ -299,9 +299,9 @@ namespace GDCC
          {
             // expression(opt)
             if(in.peek().tok != Core::TOK_Semico)
-               init = AST::StatementCreate_Exp(getExp(loopScope));
+               init = SR::StatementCreate_Exp(getExp(loopScope));
             else
-               init = AST::StatementCreate_Empty(pos);
+               init = SR::StatementCreate_Empty(pos);
 
             // ;
             if(!in.drop(Core::TOK_Semico))
@@ -309,7 +309,7 @@ namespace GDCC
          }
 
          // expression(opt)
-         AST::Exp::CPtr cond;
+         SR::Exp::CPtr cond;
          if(in.peek().tok != Core::TOK_Semico)
             cond = getStatementCondExp(loopScope);
          else
@@ -320,11 +320,11 @@ namespace GDCC
             throw Core::ParseExceptExpect(in.peek(), ";", true);
 
          // expression(opt)
-         AST::Statement::CPtr iter;
+         SR::Statement::CPtr iter;
          if(in.peek().tok != Core::TOK_ParenC)
-            iter = AST::StatementCreate_Exp(getExp(loopScope));
+            iter = SR::StatementCreate_Exp(getExp(loopScope));
          else
-            iter = AST::StatementCreate_Empty(pos);
+            iter = SR::StatementCreate_Empty(pos);
 
          // )
          if(!in.drop(Core::TOK_ParenC))
@@ -340,7 +340,7 @@ namespace GDCC
       //
       // Parser::getStatement_goto
       //
-      AST::Statement::CRef Parser::getStatement_goto(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_goto(Scope_Local &scope, Labels &&labels)
       {
          // <goto> identifier ;
          // <goto> * cast-expression ;
@@ -375,7 +375,7 @@ namespace GDCC
       //
       // Parser::getStatement_if
       //
-      AST::Statement::CRef Parser::getStatement_if(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_if(Scope_Local &scope, Labels &&labels)
       {
          // <if> ( expression ) statement
          // <if> ( expression ) statement <else> statement
@@ -404,7 +404,7 @@ namespace GDCC
       //
       // Parser::getStatement_return
       //
-      AST::Statement::CRef Parser::getStatement_return(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_return(Scope_Local &scope, Labels &&labels)
       {
          // <return> expression(opt) ;
 
@@ -428,7 +428,7 @@ namespace GDCC
       //
       // Parser::getStatement_switch
       //
-      AST::Statement::CRef Parser::getStatement_switch(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_switch(Scope_Local &scope, Labels &&labels)
       {
          auto &switchScope = scope.createScopeCase();
 
@@ -450,7 +450,7 @@ namespace GDCC
       //
       // Parser::getStatement_while
       //
-      AST::Statement::CRef Parser::getStatement_while(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_while(Scope_Local &scope, Labels &&labels)
       {
          auto &loopScope = scope.createScopeLoop();
 
@@ -471,7 +471,7 @@ namespace GDCC
       //
       // Parser::getStatementCompound
       //
-      AST::Statement::CRef Parser::getStatementCompound(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatementCompound(Scope_Local &scope, Labels &&labels)
       {
          // compound-statement:
          //    { block-item-list(opt) }
@@ -479,7 +479,7 @@ namespace GDCC
          // {
          auto pos = in.get().pos;
 
-         std::vector<AST::Statement::CRef> stmnts;
+         std::vector<SR::Statement::CRef> stmnts;
          auto &blockScope = scope.createScopeBlock();
 
          // block-item-list:
@@ -502,14 +502,14 @@ namespace GDCC
 
          // }
 
-         return AST::StatementCreate_Multi(std::move(labels), pos,
+         return SR::StatementCreate_Multi(std::move(labels), pos,
             {stmnts.begin(), stmnts.end()});
       }
 
       //
       // Parse::getStatementCond
       //
-      AST::Exp::CRef Parser::getStatementCond(Scope &scope)
+      SR::Exp::CRef Parser::getStatementCond(Scope &scope)
       {
          // (
          if(!in.drop(Core::TOK_ParenO))
@@ -528,7 +528,7 @@ namespace GDCC
       //
       // Parse::getStatementCondExp
       //
-      AST::Exp::CRef Parser::getStatementCondExp(Scope &scope)
+      SR::Exp::CRef Parser::getStatementCondExp(Scope &scope)
       {
          bool parenPre = in.peek(Core::TOK_ParenO);
 
@@ -541,7 +541,7 @@ namespace GDCC
          // parenthesized expression. This will fail to warn for: if((x) = (y))
          if(!(parenPre && parenPro) && dynamic_cast<Exp_Assign const *>(&*cond))
          {
-            AST::WarnParentheses(cond->pos,
+            SR::WarnParentheses(cond->pos,
                "assignment as a condition without parentheses");
          }
 
@@ -551,7 +551,7 @@ namespace GDCC
       //
       // Parser::GetStatementExp
       //
-      AST::Statement::CRef Parser::getStatementExp(Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatementExp(Scope_Local &scope, Labels &&labels)
       {
          // expression-statement:
          //    expression(opt) ;
@@ -560,7 +560,7 @@ namespace GDCC
 
          // ;
          if(in.drop(Core::TOK_Semico))
-            return AST::StatementCreate_Empty(std::move(labels), pos);
+            return SR::StatementCreate_Empty(std::move(labels), pos);
 
          // expression
          auto exp = getExp(scope);
@@ -569,7 +569,7 @@ namespace GDCC
          if(!in.drop(Core::TOK_Semico))
             throw Core::ParseExceptExpect(in.peek(), ";", true);
 
-         return AST::StatementCreate_Exp(std::move(labels), pos, exp);
+         return SR::StatementCreate_Exp(std::move(labels), pos, exp);
       }
    }
 }

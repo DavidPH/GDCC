@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,15 +15,15 @@
 #include "CC/Scope.hpp"
 #include "CC/Type.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
+#include "SR/Attribute.hpp"
+#include "SR/Type.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -66,7 +66,7 @@ namespace GDCC
       //
       // Parser::parseDeclSpec
       //
-      void Parser::parseDeclSpec(Scope &scope, AST::Attribute &attr)
+      void Parser::parseDeclSpec(Scope &scope, SR::Attribute &attr)
       {
          enum DeclStor
          {
@@ -81,10 +81,10 @@ namespace GDCC
 
          auto pos = in.peek().pos;
 
-         AST::TypeQual declQual = AST::QualNone;
-         TypeSpec      declSpec;
-         DeclStor      declStor = declStorNone;
-         int           declThrd = 0;
+         SR::TypeQual declQual = SR::QualNone;
+         TypeSpec     declSpec;
+         DeclStor     declStor = declStorNone;
+         int          declThrd = 0;
 
          //
          // setDeclStor

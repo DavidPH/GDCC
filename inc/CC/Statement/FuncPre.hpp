@@ -15,7 +15,7 @@
 
 #include "../../CC/Statement.hpp"
 
-#include "../../AST/Statement.hpp"
+#include "../../SR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,10 +29,10 @@ namespace GDCC
       //
       // Statement_FuncPre
       //
-      class Statement_FuncPre : public AST::Statement
+      class Statement_FuncPre : public SR::Statement
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Statement_FuncPre, GDCC::AST::Statement);
+            GDCC::CC::Statement_FuncPre, GDCC::SR::Statement);
 
       public:
          Scope_Function &scope;
@@ -46,7 +46,7 @@ namespace GDCC
          Statement_FuncPre(Core::Origin pos_, Scope_Function &scope_) :
             Super{pos_}, scope(scope_) {}
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 
          virtual bool v_isEffect() const {return true;}
          virtual bool v_isNoAuto() const {return true;}
@@ -55,10 +55,10 @@ namespace GDCC
       //
       // Statement_FuncPro
       //
-      class Statement_FuncPro : public AST::Statement
+      class Statement_FuncPro : public SR::Statement
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Statement_FuncPro, GDCC::AST::Statement);
+            GDCC::CC::Statement_FuncPro, GDCC::SR::Statement);
 
       public:
          Scope_Function &scope;
@@ -72,7 +72,7 @@ namespace GDCC
          Statement_FuncPro(Core::Origin pos_, Scope_Function &scope_) :
             Super{pos_}, scope(scope_) {}
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 
          virtual bool v_isEffect() const {return true;}
          virtual bool v_isNoAuto() const {return true;}

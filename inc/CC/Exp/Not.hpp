@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Exp.hpp"
 
-#include "../../AST/Exp/Unary.hpp"
+#include "../../SR/Exp/Unary.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,15 +29,14 @@ namespace GDCC
       //
       // Exp_Not
       //
-      class Exp_Not : public AST::Exp_Unary
+      class Exp_Not : public SR::Exp_Unary
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Not, GDCC::AST::Exp_Unary);
+         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Not, GDCC::SR::Exp_Unary);
 
-         GDCC_AST_Exp_UnaryCreator(Exp_Not);
+         GDCC_SR_Exp_UnaryCreator(Exp_Not);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual IRExpCRef v_getIRExp() const;
 

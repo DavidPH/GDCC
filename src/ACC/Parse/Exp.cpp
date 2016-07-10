@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,15 +14,15 @@
 
 #include "ACC/Scope.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Exp.hpp"
-#include "AST/Type.hpp"
-
 #include "CC/Exp.hpp"
 #include "CC/Init.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Exp.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -36,7 +36,7 @@ namespace GDCC
       //
       // Parser::getExp_Cast
       //
-      AST::Exp::CRef Parser::getExp_Cast(CC::Scope &scope)
+      SR::Exp::CRef Parser::getExp_Cast(CC::Scope &scope)
       {
          if(isExp_Cast(scope))
          {
@@ -59,7 +59,7 @@ namespace GDCC
       //
       // Parser::getExp_Post_ParenO
       //
-      AST::Exp::CRef Parser::getExp_Post_ParenO(CC::Scope &scope, AST::Exp const *exp)
+      SR::Exp::CRef Parser::getExp_Post_ParenO(CC::Scope &scope, SR::Exp const *exp)
       {
          auto pos = in.get().pos;
 
@@ -67,7 +67,7 @@ namespace GDCC
          //    <const> :
          in.drop(Core::TOK_KeyWrd, Core::STR_const, Core::TOK_Colon);
 
-         Core::Array<AST::Exp::CRef> args;
+         Core::Array<SR::Exp::CRef> args;
 
          if(!in.peek(Core::TOK_ParenC))
             args = getExpList(scope);
@@ -81,7 +81,7 @@ namespace GDCC
       //
       // Parser::getExp_Post
       //
-      AST::Exp::CRef Parser::getExp_Post(CC::Scope &scope)
+      SR::Exp::CRef Parser::getExp_Post(CC::Scope &scope)
       {
          return getExp_Post(scope, getExp_Prim(scope));
       }
@@ -89,7 +89,7 @@ namespace GDCC
       //
       // Parser::getExp_Unar_Identi
       //
-      AST::Exp::CRef Parser::getExp_Unar_Identi(CC::Scope &scope)
+      SR::Exp::CRef Parser::getExp_Unar_Identi(CC::Scope &scope)
       {
          if(auto global = dynamic_cast<Scope_Global *>(&scope.global))
          {
@@ -106,7 +106,7 @@ namespace GDCC
       //
       // Parser::getExp_Unar_KeyWrd
       //
-      AST::Exp::CRef Parser::getExp_Unar_KeyWrd(CC::Scope &scope)
+      SR::Exp::CRef Parser::getExp_Unar_KeyWrd(CC::Scope &scope)
       {
          switch(in.peek().str)
          {

@@ -27,10 +27,6 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/src/AS")
    add_subdirectory(AS)
 endif()
 
-if(EXISTS "${CMAKE_SOURCE_DIR}/src/AST")
-   add_subdirectory(AST)
-endif()
-
 if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC")
    add_subdirectory(BC)
 endif()
@@ -73,6 +69,10 @@ endif()
 
 if(EXISTS "${CMAKE_SOURCE_DIR}/src/Platform")
    add_subdirectory(Platform)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/SR")
+   add_subdirectory(SR)
 endif()
 
 ## EOF

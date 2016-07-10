@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,19 +17,19 @@
 #include "CC/Scope/Global.hpp"
 #include "CC/Scope/Loop.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Function.hpp"
-#include "AST/Object.hpp"
-#include "AST/Space.hpp"
-#include "AST/Storage.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 
 #include "Platform/Platform.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Function.hpp"
+#include "SR/Object.hpp"
+#include "SR/Space.hpp"
+#include "SR/Storage.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -87,10 +87,10 @@ namespace GDCC
       //
       // Scope_Local::allocAutoObj
       //
-      void Scope_Local::allocAutoObj(AllocAutoInfo &alloc, AST::Object *obj)
+      void Scope_Local::allocAutoObj(AllocAutoInfo &alloc, SR::Object *obj)
       {
          // This function only applies to automatic storage objects.
-         if(obj->store != AST::Storage::Auto)
+         if(obj->store != SR::Storage::Auto)
             return;
 
          IR::Type_Fixed idxType{Platform::GetWordBits(), 0, 0, 0};
@@ -132,7 +132,7 @@ namespace GDCC
       //
       // Scope_Local::allocAutoSpace
       //
-      void Scope_Local::allocAutoSpace(AllocAutoInfo &alloc, AST::Space *space)
+      void Scope_Local::allocAutoSpace(AllocAutoInfo &alloc, SR::Space *space)
       {
          IR::Type_Fixed idxType{Platform::GetWordBits(), 0, 0, 0};
 
@@ -249,22 +249,22 @@ namespace GDCC
       //
       // Scope_Local::getObject
       //
-      AST::Object::Ref Scope_Local::getObject(AST::Attribute const &attr)
+      SR::Object::Ref Scope_Local::getObject(SR::Attribute const &attr)
       {
          if(attr.storeExt)
             return global.getObject(attr);
 
          auto glyph = genGlyphObj(attr.name, attr.linka);
-         auto obj   = AST::Object::Create(attr.name, glyph);
+         auto obj   = SR::Object::Create(attr.name, glyph);
 
          obj->linka    = attr.linka;
          obj->type     = attr.type;
          obj->warnUse  = attr.warnUse;
 
          if(attr.storeInt)
-            obj->store = AST::Storage::Static;
+            obj->store = SR::Storage::Static;
          else
-            obj->store = AST::Storage::Auto;
+            obj->store = SR::Storage::Auto;
 
          // If declaration is explicitly auto, always make it addressable.
          obj->refer = attr.storeAuto;
@@ -291,13 +291,13 @@ namespace GDCC
       //
       // Scope_Local::getSpace
       //
-      AST::Space::Ref Scope_Local::getSpace(AST::Attribute const &attr)
+      SR::Space::Ref Scope_Local::getSpace(SR::Attribute const &attr)
       {
          if(attr.storeExt)
             return global.getSpace(attr);
 
          auto glyph = genGlyphObj(attr.name, attr.linka);
-         auto space = AST::Space::Create(attr.name, glyph);
+         auto space = SR::Space::Create(attr.name, glyph);
 
          space->linka = attr.linka;
          space->space = attr.space.base;

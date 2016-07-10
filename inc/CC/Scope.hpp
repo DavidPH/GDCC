@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -27,7 +27,7 @@
 
 namespace GDCC
 {
-   namespace AST
+   namespace SR
    {
       class Function;
       class Object;
@@ -48,10 +48,10 @@ namespace GDCC
       {
       public:
          using ResultEnum  = Core::Integ const *;
-         using ResultFunc  = Core::CounterRef<AST::Function>;
-         using ResultObj   = Core::CounterRef<AST::Object>;
-         using ResultSpace = Core::CounterRef<AST::Space>;
-         using ResultType  = Core::CounterRef<AST::Type const>;
+         using ResultFunc  = Core::CounterRef<SR::Function>;
+         using ResultObj   = Core::CounterRef<SR::Object>;
+         using ResultSpace = Core::CounterRef<SR::Space>;
+         using ResultType  = Core::CounterRef<SR::Type const>;
 
          //
          // Result
@@ -70,10 +70,10 @@ namespace GDCC
          Lookup(std::nullptr_t = nullptr) : res{None} {}
          Lookup(Lookup const &lookup);
          explicit Lookup(Core::Integ const *e);
-         explicit Lookup(AST::Function     *func);
-         explicit Lookup(AST::Object       *obj);
-         explicit Lookup(AST::Space        *space);
-         explicit Lookup(AST::Type   const *type);
+         explicit Lookup(SR::Function      *func);
+         explicit Lookup(SR::Object        *obj);
+         explicit Lookup(SR::Space         *space);
+         explicit Lookup(SR::Type    const *type);
          ~Lookup();
 
          explicit operator bool () const {return res != None;}
@@ -106,36 +106,36 @@ namespace GDCC
          Scope(Scope const &) = delete;
          Scope(Scope &&) = delete;
 
-         void add(Core::String name, AST::Function   *fn);
-         void add(Core::String name, AST::Object     *obj);
-         void add(Core::String name, AST::Space      *space);
-         void add(Core::String name, AST::Type const *type);
+         void add(Core::String name, SR::Function   *fn);
+         void add(Core::String name, SR::Object     *obj);
+         void add(Core::String name, SR::Space      *space);
+         void add(Core::String name, SR::Type const *type);
 
          void addEnum(Core::String name, Core::Integ const &e);
 
-         void addTypeTag(Core::String name, AST::Type *type);
+         void addTypeTag(Core::String name, SR::Type *type);
 
          // Searches this scope for the identifier.
          Lookup find(Core::String name) const;
 
          Core::Integ const *findEnum(Core::String name) const;
 
-         Core::CounterPtr<AST::Function> findFunction(Core::String name) const;
+         Core::CounterPtr<SR::Function> findFunction(Core::String name) const;
 
-         Core::CounterPtr<AST::Object> findObject(Core::String name) const;
+         Core::CounterPtr<SR::Object> findObject(Core::String name) const;
 
-         Core::CounterPtr<AST::Space> findSpace(Core::String name) const;
+         Core::CounterPtr<SR::Space> findSpace(Core::String name) const;
 
-         Core::CounterPtr<AST::Type const> findType(Core::String name) const;
+         Core::CounterPtr<SR::Type const> findType(Core::String name) const;
 
          // Searches this scope for a tagged type (struct, union, enum).
-         Core::CounterPtr<AST::Type> findTypeTag(Core::String name) const;
+         Core::CounterPtr<SR::Type> findTypeTag(Core::String name) const;
 
          // Performs a recursive lookup.
          Lookup lookup(Core::String name) const;
 
          // Searches for a tagged type (struct, union, enum).
-         Core::CounterPtr<AST::Type> lookupTypeTag(Core::String name) const;
+         Core::CounterPtr<SR::Type> lookupTypeTag(Core::String name) const;
 
 
          Scope  *const parent;
@@ -152,11 +152,11 @@ namespace GDCC
 
          std::unordered_map<Core::String, Core::Integ> tableEnum;
 
-         LookupTable<AST::Function>   tableFunc;
-         LookupTable<AST::Object>     tableObj;
-         LookupTable<AST::Space>      tableSpace;
-         LookupTable<AST::Type const> tableType;
-         LookupTable<AST::Type>       tableTypeTag;
+         LookupTable<SR::Function>   tableFunc;
+         LookupTable<SR::Object>     tableObj;
+         LookupTable<SR::Space>      tableSpace;
+         LookupTable<SR::Type const> tableType;
+         LookupTable<SR::Type>       tableTypeTag;
       };
    }
 }

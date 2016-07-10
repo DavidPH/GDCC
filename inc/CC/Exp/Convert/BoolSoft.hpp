@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../../CC/Exp.hpp"
 
-#include "../../../AST/Exp/Convert.hpp"
+#include "../../../SR/Exp/Convert.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -31,16 +31,15 @@ namespace GDCC
       //
       // Converts fixed-point and integer types to a single-word soft boolean.
       //
-      class Exp_ConvertBoolSoft_Fixed : public AST::Exp_Convert
+      class Exp_ConvertBoolSoft_Fixed : public SR::Exp_Convert
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Exp_ConvertBoolSoft_Fixed, GDCC::AST::Exp_Convert);
+            GDCC::CC::Exp_ConvertBoolSoft_Fixed, GDCC::SR::Exp_Convert);
 
-         GDCC_AST_Exp_UnaryCreator(Exp_ConvertBoolSoft_Fixed);
+         GDCC_SR_Exp_UnaryCreator(Exp_ConvertBoolSoft_Fixed);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual bool v_isIRExp() const {return false;}
       };
@@ -50,16 +49,15 @@ namespace GDCC
       //
       // Converts floating-point types to a single-word soft boolean.
       //
-      class Exp_ConvertBoolSoft_Float : public AST::Exp_Convert
+      class Exp_ConvertBoolSoft_Float : public SR::Exp_Convert
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Exp_ConvertBoolSoft_Float, GDCC::AST::Exp_Convert);
+            GDCC::CC::Exp_ConvertBoolSoft_Float, GDCC::SR::Exp_Convert);
 
-         GDCC_AST_Exp_UnaryCreator(Exp_ConvertBoolSoft_Float);
+         GDCC_SR_Exp_UnaryCreator(Exp_ConvertBoolSoft_Float);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual bool v_isIRExp() const {return false;}
       };
@@ -69,16 +67,15 @@ namespace GDCC
       //
       // Converts nonzero null pointer types to a single-word soft boolean.
       //
-      class Exp_ConvertBoolSoft_PtrInv : public AST::Exp_Convert
+      class Exp_ConvertBoolSoft_PtrInv : public SR::Exp_Convert
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Exp_ConvertBoolSoft_PtrInv, GDCC::AST::Exp_Convert);
+            GDCC::CC::Exp_ConvertBoolSoft_PtrInv, GDCC::SR::Exp_Convert);
 
-         GDCC_AST_Exp_UnaryCreator(Exp_ConvertBoolSoft_PtrInv);
+         GDCC_SR_Exp_UnaryCreator(Exp_ConvertBoolSoft_PtrInv);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual bool v_isIRExp() const {return false;}
       };

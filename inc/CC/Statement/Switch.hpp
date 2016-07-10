@@ -15,7 +15,7 @@
 
 #include "../../CC/Statement.hpp"
 
-#include "../../AST/Statement.hpp"
+#include "../../SR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,35 +29,35 @@ namespace GDCC
       //
       // Statement_Switch
       //
-      class Statement_Switch : public AST::Statement
+      class Statement_Switch : public SR::Statement
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Statement_Switch, GDCC::AST::Statement);
+            GDCC::CC::Statement_Switch, GDCC::SR::Statement);
 
       public:
-         Scope_Case                            &scope;
-         Core::CounterRef<AST::Exp const> const cond;
-         AST::Statement::CRef             const body;
+         Scope_Case                           &scope;
+         Core::CounterRef<SR::Exp const> const cond;
+         SR::Statement::CRef             const body;
 
 
          // Create
          static CRef Create(Labels const &labels, Core::Origin pos,
-            Scope_Case &scope, AST::Exp const *cond, AST::Statement const *body)
+            Scope_Case &scope, SR::Exp const *cond, SR::Statement const *body)
             {return CRef(new This(labels, pos, scope, cond, body));}
 
          // Create
          static CRef Create(Labels &&labels, Core::Origin pos,
-            Scope_Case &scope, AST::Exp const *cond, AST::Statement const *body)
+            Scope_Case &scope, SR::Exp const *cond, SR::Statement const *body)
             {return CRef(new This(std::move(labels), pos, scope, cond, body));}
 
       protected:
          Statement_Switch(Labels const &labels, Core::Origin pos,
-            Scope_Case &scope, AST::Exp const *cond, AST::Statement const *body);
+            Scope_Case &scope, SR::Exp const *cond, SR::Statement const *body);
          Statement_Switch(Labels &&labels, Core::Origin pos, Scope_Case &scope,
-            AST::Exp const *cond, AST::Statement const *body);
+            SR::Exp const *cond, SR::Statement const *body);
 
          virtual void v_genLabel(IR::Block &block) const;
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 
          virtual bool v_isBranch() const;
          virtual bool v_isEffect() const;

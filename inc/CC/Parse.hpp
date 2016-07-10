@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015-2016 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,16 +22,6 @@
 
 namespace GDCC
 {
-   namespace AST
-   {
-      class Attribute;
-      class Exp;
-      class Statement;
-      class Type;
-      class TypeQual;
-      class TypeSet;
-   }
-
    namespace Core
    {
       template<typename T> class Array;
@@ -53,6 +43,16 @@ namespace GDCC
       class Value;
    }
 
+   namespace SR
+   {
+      class Attribute;
+      class Exp;
+      class Statement;
+      class Type;
+      class TypeQual;
+      class TypeSet;
+   }
+
    namespace CC
    {
       class InitRaw;
@@ -67,11 +67,11 @@ namespace GDCC
       class Parser
       {
       protected:
-         using ExpCRef       = Core::CounterRef<AST::Exp       const>;
+         using ExpCRef       = Core::CounterRef<SR::Exp       const>;
          using Labels        = Core::Array<Core::String>;
-         using StatementCRef = Core::CounterRef<AST::Statement const>;
-         using TypeCRef      = Core::CounterRef<AST::Type      const>;
-         using TypeSetCRef   = Core::CounterRef<AST::TypeSet   const>;
+         using StatementCRef = Core::CounterRef<SR::Statement const>;
+         using TypeCRef      = Core::CounterRef<SR::Type      const>;
+         using TypeSetCRef   = Core::CounterRef<SR::TypeSet   const>;
 
       public:
          Parser(Core::TokenStream &in, CPP::PragmaData &prag, IR::Program &prog);
@@ -86,18 +86,18 @@ namespace GDCC
          virtual StatementCRef getDecl(Scope_Local &scope, Labels &&labels);
 
          virtual ExpCRef getExp_CLit(Scope &scope);
-         virtual ExpCRef getExp_CLit(Scope &scope, AST::Type const *type);
+         virtual ExpCRef getExp_CLit(Scope &scope, SR::Type const *type);
 
-         virtual ExpCRef getExp_Post_ParenO(Scope &scope, AST::Exp const *exp);
+         virtual ExpCRef getExp_Post_ParenO(Scope &scope, SR::Exp const *exp);
 
-         virtual ExpCRef getExp_Init(Scope &scope, AST::Type const *type);
+         virtual ExpCRef getExp_Init(Scope &scope, SR::Type const *type);
 
          virtual ExpCRef getExp_Unar_Identi(Scope &scope);
          virtual ExpCRef getExp_Unar_KeyWrd(Scope &scope);
 
          virtual ExpCRef getExp_Prim(Scope &scope);
          virtual ExpCRef getExp_Post(Scope &scope);
-         virtual ExpCRef getExp_Post(Scope &scope, AST::Exp const *exp);
+         virtual ExpCRef getExp_Post(Scope &scope, SR::Exp const *exp);
          virtual ExpCRef getExp_Unar(Scope &scope);
          virtual ExpCRef getExp_Cast(Scope &scope);
          virtual ExpCRef getExp_Mult(Scope &scope);
@@ -140,7 +140,7 @@ namespace GDCC
 
          virtual TypeCRef getType(Scope &scope);
 
-         virtual std::pair<TypeSetCRef, Core::Array<AST::Attribute>>
+         virtual std::pair<TypeSetCRef, Core::Array<SR::Attribute>>
          getTypeList(CC::Scope &scope);
 
          virtual bool isAddrDecl(Scope &scope);
@@ -166,30 +166,30 @@ namespace GDCC
          virtual bool isTypeSpec(Scope &scope);
          virtual bool isTypeSpec_atomic(Scope &scope);
 
-         virtual void parseAddrDecl(Scope_Global &scope, AST::Attribute &attr);
-         virtual void parseAddrDecl(Scope_Local &scope, AST::Attribute &attr);
+         virtual void parseAddrDecl(Scope_Global &scope, SR::Attribute &attr);
+         virtual void parseAddrDecl(Scope_Local &scope, SR::Attribute &attr);
 
-         virtual void parseAttr(Scope &scope, AST::Attribute &attr);
-         virtual void parseAttrList(Scope &scope, AST::Attribute &attr);
-         virtual void parseAttrSpec(Scope &scope, AST::Attribute &attr);
-         virtual void parseAttrSpecList(Scope &scope, AST::Attribute &attr);
+         virtual void parseAttr(Scope &scope, SR::Attribute &attr);
+         virtual void parseAttrList(Scope &scope, SR::Attribute &attr);
+         virtual void parseAttrSpec(Scope &scope, SR::Attribute &attr);
+         virtual void parseAttrSpecList(Scope &scope, SR::Attribute &attr);
 
-         virtual void parseDeclSpec(Scope &scope, AST::Attribute &attr);
+         virtual void parseDeclSpec(Scope &scope, SR::Attribute &attr);
 
-         virtual void parseDeclarator(Scope &scope, AST::Attribute &attr);
-         virtual void parseDeclaratorSuffix(Scope &scope, AST::Attribute &attr);
+         virtual void parseDeclarator(Scope &scope, SR::Attribute &attr);
+         virtual void parseDeclaratorSuffix(Scope &scope, SR::Attribute &attr);
 
-         virtual void parseSpecQual(Scope &scope, AST::Attribute &attr);
+         virtual void parseSpecQual(Scope &scope, SR::Attribute &attr);
 
          virtual void parseStaticAssert(Scope &scope);
 
-         virtual void parseTypeQual(Scope &scope, AST::TypeQual &qual);
+         virtual void parseTypeQual(Scope &scope, SR::TypeQual &qual);
 
-         virtual void parseTypeSpec(Scope &scope, AST::Attribute &attr, TypeSpec &spec);
-         virtual void parseTypeSpec_atomic(Scope &scope, AST::Attribute &attr, TypeSpec &spec);
-         virtual void parseTypeSpec_enum(Scope &scope, AST::Attribute &attr, TypeSpec &spec);
-         virtual void parseTypeSpec_struct(Scope &scope, AST::Attribute &attr, TypeSpec &spec);
-         virtual void parseTypeSpec_union(Scope &scope, AST::Attribute &attr, TypeSpec &spec);
+         virtual void parseTypeSpec(Scope &scope, SR::Attribute &attr, TypeSpec &spec);
+         virtual void parseTypeSpec_atomic(Scope &scope, SR::Attribute &attr, TypeSpec &spec);
+         virtual void parseTypeSpec_enum(Scope &scope, SR::Attribute &attr, TypeSpec &spec);
+         virtual void parseTypeSpec_struct(Scope &scope, SR::Attribute &attr, TypeSpec &spec);
+         virtual void parseTypeSpec_union(Scope &scope, SR::Attribute &attr, TypeSpec &spec);
 
          virtual void skipBalancedToken();
 
@@ -240,7 +240,7 @@ namespace GDCC
             BaseVaLi,
          };
 
-         void finish(AST::Attribute &attr, AST::TypeQual qual,
+         void finish(SR::Attribute &attr, SR::TypeQual qual,
             Core::Origin pos) const;
 
          SpecBase specBase = BaseNone;

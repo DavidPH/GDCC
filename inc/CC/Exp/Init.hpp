@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef GDCC__CC__Exp__Init_H__
 #define GDCC__CC__Exp__Init_H__
 
-#include "../../AST/Exp.hpp"
+#include "../../SR/Exp.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,9 +29,9 @@ namespace GDCC
       //
       // Exp_Init
       //
-      class Exp_Init : public AST::Exp
+      class Exp_Init : public SR::Exp
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Init, GDCC::AST::Exp);
+         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Init, GDCC::SR::Exp);
 
       public:
          std::shared_ptr<Init> const init;
@@ -47,8 +47,7 @@ namespace GDCC
          Exp_Init(std::unique_ptr<Init> &&init, bool skipZero, Core::Origin pos);
          virtual ~Exp_Init();
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual IRExpCRef v_getIRExp() const;
 

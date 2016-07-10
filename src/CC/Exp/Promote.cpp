@@ -14,12 +14,12 @@
 
 #include "CC/Type.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/CallType.hpp"
+
+#include "SR/Exp.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -33,7 +33,7 @@ namespace GDCC
       //
       // ExpPromo_Arg
       //
-      AST::Exp::CRef ExpPromo_Arg(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpPromo_Arg(SR::Exp const *e, Core::Origin pos)
       {
          auto exp = ExpPromo_Int(ExpPromo_LValue(e, pos), pos);
 
@@ -58,7 +58,7 @@ namespace GDCC
       //
       // ExpPromo_Assign
       //
-      AST::Exp::CRef ExpPromo_Assign(AST::Type const *t, AST::Exp const *e)
+      SR::Exp::CRef ExpPromo_Assign(SR::Type const *t, SR::Exp const *e)
       {
          return ExpPromo_Assign_Ptr(t, e, e->pos);
       }
@@ -66,7 +66,7 @@ namespace GDCC
       //
       // ExpPromo_Assign
       //
-      AST::Exp::CRef ExpPromo_Assign(AST::Type const *t, AST::Exp const *e,
+      SR::Exp::CRef ExpPromo_Assign(SR::Type const *t, SR::Exp const *e,
          Core::Origin pos)
       {
          return ExpPromo_Assign_Ptr(t, e, pos);
@@ -75,8 +75,8 @@ namespace GDCC
       //
       // ExpPromo_Assign_Base
       //
-      AST::Exp::CRef ExpPromo_Assign_Base(AST::Type const *typeL,
-         AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpPromo_Assign_Base(SR::Type const *typeL,
+         SR::Exp const *e, Core::Origin pos)
       {
          auto exp   = ExpPromo_LValue(e, pos);
          auto typeR = exp->getType();
@@ -137,7 +137,7 @@ namespace GDCC
             // Treat __str_ent* as char const __str_ars* for these checks.
             if(baseR->isTypeStrEnt())
             {
-               AST::TypeQual qual = {{IR::AddrBase::StrArs, Core::STR_}};
+               SR::TypeQual qual = {{IR::AddrBase::StrArs, Core::STR_}};
                qual.aCons = true;
                baseR = TypeChar->getTypeQual(qual);
             }
@@ -170,8 +170,8 @@ namespace GDCC
       //
       // ExpPromo_CmpEqu
       //
-      std::tuple<AST::Type::CRef, AST::Exp::CRef, AST::Exp::CRef>
-      ExpPromo_CmpEqu(AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+      std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
+      ExpPromo_CmpEqu(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
          auto expL = ExpPromo_LValue(l, pos);
          auto expR = ExpPromo_LValue(r, pos);
@@ -190,8 +190,8 @@ namespace GDCC
       //
       // ExpPromo_CmpRel
       //
-      std::tuple<AST::Type::CRef, AST::Exp::CRef, AST::Exp::CRef>
-      ExpPromo_CmpRel(AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+      std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
+      ExpPromo_CmpRel(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
          auto expL = ExpPromo_LValue(l, pos);
          auto expR = ExpPromo_LValue(r, pos);
@@ -210,7 +210,7 @@ namespace GDCC
       //
       // ExpPromo_Cond
       //
-      AST::Exp::CRef ExpPromo_Cond(AST::Exp const *exp, Core::Origin pos)
+      SR::Exp::CRef ExpPromo_Cond(SR::Exp const *exp, Core::Origin pos)
       {
          if(!exp->getType()->isCTypeScalar())
             throw Core::ExceptStr(pos, "expected scalar type");
@@ -221,8 +221,8 @@ namespace GDCC
       //
       // ExpPromo_Cond
       //
-      std::tuple<AST::Type::CRef, AST::Exp::CRef, AST::Exp::CRef>
-      ExpPromo_Cond(AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+      std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
+      ExpPromo_Cond(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
          auto expL = ExpPromo_LValue(l, pos);
          auto expR = ExpPromo_LValue(r, pos);
@@ -234,7 +234,7 @@ namespace GDCC
          if(typeL->isCTypeArith() && typeR->isCTypeArith())
          {
             // Use normal arithmetic promotion.
-            AST::Type::CRef type = AST::Type::None;
+            SR::Type::CRef type = SR::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
             // But always convert to the result type.
@@ -256,7 +256,7 @@ namespace GDCC
 
          // Both operands have void type.
          if(typeL->isTypeVoid() && typeR->isTypeVoid())
-            return std::make_tuple(AST::Type::Void, expL, expR);
+            return std::make_tuple(SR::Type::Void, expL, expR);
 
          // Remaining constraints all concern pointers.
          return ExpPromo_PtrEqu(expL, expR, pos);
@@ -265,12 +265,12 @@ namespace GDCC
       //
       // ExpPromo_Cond
       //
-      std::tuple<AST::Type::CRef, AST::Exp::CRef, AST::Exp::CRef, AST::Exp::CRef>
-      ExpPromo_Cond(AST::Exp const *c, AST::Exp const *l, AST::Exp const *r,
+      std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef, SR::Exp::CRef>
+      ExpPromo_Cond(SR::Exp const *c, SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
-         AST::Type::CRef type = AST::Type::None;
-         AST::Exp::CRef expL{l}, expR{r};
+         SR::Type::CRef type = SR::Type::None;
+         SR::Exp::CRef expL{l}, expR{r};
 
          std::tie(type, expL, expR) = ExpPromo_Cond(expL, expR, pos);
 
@@ -280,10 +280,10 @@ namespace GDCC
       //
       // ExpPromo_Int
       //
-      AST::Exp::CRef ExpPromo_Int(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpPromo_Int(SR::Exp const *e, Core::Origin pos)
       {
-         AST::Exp::CRef exp{e};
-         auto           type = exp->getType()->getTypeQual();
+         SR::Exp::CRef exp{e};
+         auto          type = exp->getType()->getTypeQual();
 
          // Non integers are unaffected.
          if(!type->isCTypeInteg())
@@ -296,10 +296,10 @@ namespace GDCC
          // Types with a rank higher than int are unaffected.
          try
          {
-            if(type->getRankC() > AST::TypeRankC::Integ)
+            if(type->getRankC() > SR::TypeRankC::Integ)
                return exp;
          }
-         catch(AST::TypeError const &)
+         catch(SR::TypeError const &)
          {
             throw Core::ExceptStr(pos, "unranked integer type");
          }
@@ -319,7 +319,7 @@ namespace GDCC
       //
       // ExpPromo_LValue
       //
-      AST::Exp::CRef ExpPromo_LValue(AST::Exp const *exp)
+      SR::Exp::CRef ExpPromo_LValue(SR::Exp const *exp)
       {
          return ExpPromo_LValue(exp, exp->pos);
       }
@@ -327,10 +327,10 @@ namespace GDCC
       //
       // ExpPromo_LValue
       //
-      AST::Exp::CRef ExpPromo_LValue(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpPromo_LValue(SR::Exp const *e, Core::Origin pos)
       {
-         AST::Exp::CRef exp{e};
-         auto           type = exp->getType();
+         SR::Exp::CRef exp{e};
+         auto          type = exp->getType();
 
          // Bitfield of T -> T.
          if(type->isTypeBitfield())

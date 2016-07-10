@@ -12,11 +12,11 @@
 
 #include "CC/Parse.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Type.hpp"
 
 #include <vector>
 
@@ -53,15 +53,15 @@ namespace GDCC
       // type-name:
       //    specifier-qualifier-list abstract-declarator(opt)
       //
-      AST::Type::CRef Parser::getType(Scope &scope)
+      SR::Type::CRef Parser::getType(Scope &scope)
       {
-         AST::Attribute attr;
+         SR::Attribute attr;
 
          parseSpecQual(scope, attr);
          if(isDeclarator(scope))
             parseDeclarator(scope, attr);
 
-         return static_cast<AST::Type::CRef>(attr.type);
+         return static_cast<SR::Type::CRef>(attr.type);
       }
 
       //
@@ -93,10 +93,10 @@ namespace GDCC
       //
       // Parser::getTypeList
       //
-      std::pair<AST::TypeSet::CRef, Core::Array<AST::Attribute>>
+      std::pair<SR::TypeSet::CRef, Core::Array<SR::Attribute>>
       Parser::getTypeList(Scope &scope)
       {
-         std::vector<AST::Attribute> params;
+         std::vector<SR::Attribute> params;
 
          bool varia = false;
 
@@ -146,12 +146,12 @@ namespace GDCC
          while(in.drop(Core::TOK_Comma));
 
          // Generate TypeSet.
-         std::vector<AST::Type::CRef> typev;
+         std::vector<SR::Type::CRef> typev;
          typev.reserve(params.size());
          for(auto &param : params)
             typev.emplace_back(param.type);
 
-         auto types = AST::TypeSet::Get(typev.data(), typev.size(), varia);
+         auto types = SR::TypeSet::Get(typev.data(), typev.size(), varia);
 
          return {types, {Core::Move, params.begin(), params.end()}};
       }

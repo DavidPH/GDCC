@@ -12,7 +12,7 @@
 
 #include "ACC/PropDecl.hpp"
 
-#include "AST/Type.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -52,11 +52,11 @@ namespace GDCC
       //
       // PrintProp::isMultiArg
       //
-      bool PrintProp::isMultiArg(AST::Exp const *exp) const
+      bool PrintProp::isMultiArg(SR::Exp const *exp) const
       {
          if(!exp) return false;
 
-         AST::Type::CRef type = exp->getType();
+         SR::Type::CRef type = exp->getType();
          if(!type->isTypePointer()) return false;
 
          type = type->getBaseType();

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,14 +14,14 @@
 
 #include "CC/Exp.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Exp.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "IR/CallType.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Exp.hpp"
+#include "SR/Type.hpp"
 
 #include <vector>
 
@@ -52,7 +52,7 @@ namespace GDCC
       //
       // Parser::parseDeclarator
       //
-      void Parser::parseDeclarator(Scope &scope, AST::Attribute &attr)
+      void Parser::parseDeclarator(Scope &scope, SR::Attribute &attr)
       {
          std::vector<Core::Token> toks;
          auto declQual = attr.type->getQual();
@@ -68,7 +68,7 @@ namespace GDCC
             if(in.drop(Core::TOK_Mul))
             {
                attr.type = attr.type->getTypeQual(declQual)->getTypePointer();
-               declQual  = AST::QualNone;
+               declQual  = SR::QualNone;
 
                // Check for attributes.
                auto attrType = attr;
@@ -149,7 +149,7 @@ namespace GDCC
       //
       // Parser::parseDeclaratorSuffix
       //
-      void Parser::parseDeclaratorSuffix(Scope &scope, AST::Attribute &attr)
+      void Parser::parseDeclaratorSuffix(Scope &scope, SR::Attribute &attr)
       {
          // [ type-qualifier-list(opt) assignment-expression(opt) ]
          // [ <static> type-qualifier-list(opt) assignment-expression ]
@@ -157,7 +157,7 @@ namespace GDCC
          // [ type-qualifier-list(opt) * ]
          if(in.drop(Core::TOK_BrackO))
          {
-            AST::TypeQual quals  = attr.type->getQualAddr();
+            SR::TypeQual quals  = attr.type->getQualAddr();
             bool          isQual = false;
             bool          isStat = false;
 
@@ -261,8 +261,8 @@ namespace GDCC
          // ( identifier-list(opt) )
          else if(in.drop(Core::TOK_ParenO))
          {
-            Core::Array<AST::Attribute> params;
-            AST::TypeSet::CPtr          types;
+            Core::Array<SR::Attribute> params;
+            SR::TypeSet::CPtr          types;
 
             if(attr.callt == IR::CallType::None)
                attr.callt = IR::CallType::LangC;
@@ -271,7 +271,7 @@ namespace GDCC
             if(in.drop(Core::TOK_ParenC))
             {
                attr.funcNoParam = true;
-               types = AST::TypeSet::Get(false);
+               types = SR::TypeSet::Get(false);
             }
 
             // parameter-type-list )
@@ -290,23 +290,23 @@ namespace GDCC
                   if(in.peek().tok != Core::TOK_Identi)
                      throw Core::ParseExceptExpect(in.peek(), "identifier", false);
 
-                  std::vector<AST::Attribute> paramv;
+                  std::vector<SR::Attribute> paramv;
 
                   do
                   {
                      paramv.emplace_back();
                      paramv.back().name = in.get().str;
-                     paramv.back().type = AST::Type::None;
+                     paramv.back().type = SR::Type::None;
                   }
                   while(in.drop(Core::TOK_Comma));
 
                   // Generate TypeSet.
-                  std::vector<AST::Type::CRef> typev;
+                  std::vector<SR::Type::CRef> typev;
                   typev.reserve(paramv.size());
                   for(auto &param : paramv)
                      typev.emplace_back(param.type);
 
-                  types  = AST::TypeSet::Get(typev.data(), typev.size(), false);
+                  types  = SR::TypeSet::Get(typev.data(), typev.size(), false);
                   params = {Core::Move, paramv.begin(), paramv.end()};
                }
 
@@ -328,7 +328,7 @@ namespace GDCC
 
             // Create type.
             attr.type = attr.type->getTypeFunction(types, attrFunc.callt);
-            attr.param = Core::Array<AST::Attribute>(
+            attr.param = Core::Array<SR::Attribute>(
                Core::Move, params.begin(), params.end());
          }
       }

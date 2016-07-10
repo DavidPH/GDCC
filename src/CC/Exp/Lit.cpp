@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,9 +12,6 @@
 
 #include "CC/Exp.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/CallType.hpp"
@@ -22,6 +19,9 @@
 #include "IR/Value.hpp"
 
 #include "Platform/Platform.hpp"
+
+#include "SR/Exp.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -35,29 +35,29 @@ namespace GDCC
       //
       // ExpCreate_LitInt
       //
-      AST::Exp::CRef ExpCreate_LitInt(AST::Type const *t, Core::Integ const &i,
+      SR::Exp::CRef ExpCreate_LitInt(SR::Type const *t, Core::Integ const &i,
          Core::Origin pos)
       {
          auto val = IR::Value_Fixed(i, t->getIRType().tFixed);
          auto exp = IR::ExpCreate_Value(std::move(val), pos);
-         return AST::ExpCreate_IRExp(exp, t, pos);
+         return SR::ExpCreate_IRExp(exp, t, pos);
       }
 
       //
       // ExpCreate_LitInt
       //
-      AST::Exp::CRef ExpCreate_LitInt(AST::Type const *t, Core::Integ &&i,
+      SR::Exp::CRef ExpCreate_LitInt(SR::Type const *t, Core::Integ &&i,
          Core::Origin pos)
       {
          auto val = IR::Value_Fixed(std::move(i), t->getIRType().tFixed);
          auto exp = IR::ExpCreate_Value(std::move(val), pos);
-         return AST::ExpCreate_IRExp(exp, t, pos);
+         return SR::ExpCreate_IRExp(exp, t, pos);
       }
 
       //
       // ExpCreate_LitNul
       //
-      AST::Exp::CRef ExpCreate_LitNul(AST::Type const *type, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_LitNul(SR::Type const *type, Core::Origin pos)
       {
          // Pointer.
          if(type->isTypePointer())
@@ -76,7 +76,7 @@ namespace GDCC
                   val.value = static_cast<Core::FastU>(-1);
 
                auto exp = IR::ExpCreate_Value(std::move(val), pos);
-               return AST::ExpCreate_IRExp(exp, type, pos);
+               return SR::ExpCreate_IRExp(exp, type, pos);
             }
 
             // Pointer to object.
@@ -93,7 +93,7 @@ namespace GDCC
                   val.value = static_cast<Core::FastU>(-1);
 
                auto exp = IR::ExpCreate_Value(std::move(val), pos);
-               return AST::ExpCreate_IRExp(exp, type, pos);
+               return SR::ExpCreate_IRExp(exp, type, pos);
             }
 
             // Pointer to string entry.
@@ -108,7 +108,7 @@ namespace GDCC
                   val.value = static_cast<Core::FastU>(-1);
 
                auto exp = IR::ExpCreate_Value(std::move(val), pos);
-               return AST::ExpCreate_IRExp(exp, type, pos);
+               return SR::ExpCreate_IRExp(exp, type, pos);
             }
 
             // Pointer to dynamic jump target.
@@ -123,7 +123,7 @@ namespace GDCC
                   val.value = static_cast<Core::FastU>(-1);
 
                auto exp = IR::ExpCreate_Value(std::move(val), pos);
-               return AST::ExpCreate_IRExp(exp, type, pos);
+               return SR::ExpCreate_IRExp(exp, type, pos);
             }
          }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Type.hpp"
 
-#include "../../AST/Type.hpp"
+#include "../../SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,9 +29,9 @@ namespace GDCC
       //
       // Type_Enum
       //
-      class Type_Enum final : public AST::Type
+      class Type_Enum final : public SR::Type
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Type_Enum, GDCC::AST::Type);
+         GDCC_Core_CounterPreamble(GDCC::CC::Type_Enum, GDCC::SR::Type);
 
       public:
          //
@@ -43,7 +43,7 @@ namespace GDCC
             Data(Core::String name);
 
             Core::String const name;
-            AST::Type::CPtr    type;
+            SR::Type::CPtr     type;
 
             bool complete : 1;
          };
@@ -76,7 +76,7 @@ namespace GDCC
          virtual bool isCTypeScalar() const {return true;}
 
          // Type alteration.
-         void setComplete(AST::Type const *type);
+         void setComplete(SR::Type const *type);
 
 
          static Ref Create(Core::String name);

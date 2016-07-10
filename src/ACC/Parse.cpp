@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -55,7 +55,7 @@ namespace GDCC
       //
       // Parser::parseAttrSpec
       //
-      void Parser::parseAttrSpec(CC::Scope &, AST::Attribute &)
+      void Parser::parseAttrSpec(CC::Scope &, SR::Attribute &)
       {
       }
    }

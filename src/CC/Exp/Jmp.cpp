@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,14 +15,14 @@
 #include "CC/Scope/Function.hpp"
 #include "CC/Type.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Function.hpp"
-#include "AST/Temporary.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Program.hpp"
+
+#include "SR/Arg.hpp"
+#include "SR/Function.hpp"
+#include "SR/Temporary.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -36,7 +36,7 @@ namespace GDCC
       //
       // Exp_JmpLng::v_genStmnt
       //
-      void Exp_JmpLng::v_genStmnt(AST::GenStmntCtx const &ctx, AST::Arg const &) const
+      void Exp_JmpLng::v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &) const
       {
          // Generate IR arg for env.
          IR::Arg envArg;
@@ -59,9 +59,9 @@ namespace GDCC
       //
       // Exp_JmpLng::v_getType
       //
-      AST::Type::CRef Exp_JmpLng::v_getType() const
+      SR::Type::CRef Exp_JmpLng::v_getType() const
       {
-         return AST::Type::Void;
+         return SR::Type::Void;
       }
 
       //
@@ -75,20 +75,20 @@ namespace GDCC
       //
       // Exp_JmpSet::v_genStmnt
       //
-      void Exp_JmpSet::v_genStmnt(AST::GenStmntCtx const &ctx, AST::Arg const &dst) const
+      void Exp_JmpSet::v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const
       {
          // Generate IR arg for env.
-         AST::Temporary envTmp{ctx, pos};
-         IR::Arg        envArg;
+         SR::Temporary envTmp{ctx, pos};
+         IR::Arg       envArg;
          if(env->getArg().isIRArg())
             envArg = IR::Arg_Sta(env->getArg().getIRArg(ctx.prog));
          else
          {
-            AST::Type::CRef envType = env->getType();
+            SR::Type::CRef envType = env->getType();
             envTmp.alloc(envType->getSizeWords());
             envArg = IR::Arg_Sta(envTmp.getArg());
 
-            // TODO: Convert envTmp to an AST::Arg to avoid stack op.
+            // TODO: Convert envTmp to an SR::Arg to avoid stack op.
             env->genStmntStk(ctx);
             ctx.block.addStatementArgs({IR::Code::Move_W, envTmp.size()},
                envTmp.getArg(), IR::Arg_Stk());
@@ -113,7 +113,7 @@ namespace GDCC
       //
       // Exp_JmpSet::v_getType
       //
-      AST::Type::CRef Exp_JmpSet::v_getType() const
+      SR::Type::CRef Exp_JmpSet::v_getType() const
       {
          return TypeIntegPrS;
       }
@@ -129,8 +129,8 @@ namespace GDCC
       //
       // ExpCreate_JmpLng
       //
-      AST::Exp::CRef ExpCreate_JmpLng(Scope &scope, AST::Exp const *env_,
-         AST::Exp const *val_, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_JmpLng(Scope &scope, SR::Exp const *env_,
+         SR::Exp const *val_, Core::Origin pos)
       {
          auto env = ExpPromo_Assign(TypeIntegPrS->getTypePointer(), env_, pos);
          auto val = ExpPromo_Assign(TypeIntegPrS, val_, pos);
@@ -145,7 +145,7 @@ namespace GDCC
       //
       // ExpCreate_JmpSet
       //
-      AST::Exp::CRef ExpCreate_JmpSet(AST::Exp const *env_, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_JmpSet(SR::Exp const *env_, Core::Origin pos)
       {
          auto env = ExpPromo_Assign(TypeIntegPrS->getTypePointer(), env_, pos);
 

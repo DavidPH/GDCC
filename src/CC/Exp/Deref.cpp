@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,16 +12,16 @@
 
 #include "CC/Exp/Deref.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Addr.hpp"
 
+#include "SR/Arg.hpp"
+#include "SR/Type.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -31,8 +31,8 @@ namespace GDCC
       //
       // Exp_Deref::v_genStmnt
       //
-      void Exp_Deref::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_Deref::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          GenStmnt_Move(this, ctx, dst, getArg());
       }
@@ -40,9 +40,9 @@ namespace GDCC
       //
       // Exp_Deref::v_getArg
       //
-      AST::Arg Exp_Deref::v_getArg() const
+      SR::Arg Exp_Deref::v_getArg() const
       {
-         return AST::Arg(type, exp);
+         return SR::Arg(type, exp);
       }
 
       //
@@ -72,7 +72,7 @@ namespace GDCC
       //
       // ExpCreate_Deref
       //
-      AST::Exp::CRef ExpCreate_Deref(AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_Deref(SR::Exp const *e, Core::Origin pos)
       {
          auto exp  = ExpPromo_LValue(e, pos);
          auto type = exp->getType();

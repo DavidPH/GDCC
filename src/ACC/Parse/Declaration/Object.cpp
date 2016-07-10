@@ -15,12 +15,6 @@
 #include "ACC/Pragma.hpp"
 #include "ACC/Scope.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Object.hpp"
-#include "AST/Space.hpp"
-#include "AST/Statement.hpp"
-#include "AST/Storage.hpp"
-
 #include "CC/Exp.hpp"
 #include "CC/Exp/Assign.hpp"
 #include "CC/Exp/Init.hpp"
@@ -36,6 +30,12 @@
 #include "IR/Addr.hpp"
 #include "IR/Linkage.hpp"
 
+#include "SR/Attribute.hpp"
+#include "SR/Object.hpp"
+#include "SR/Space.hpp"
+#include "SR/Statement.hpp"
+#include "SR/Storage.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
@@ -49,13 +49,13 @@ namespace GDCC
       // GetDeclBase_Object
       //
       template<typename T>
-      static AST::Statement::CRef GetDeclBase_Object(Parser &ctx, T &scope,
+      static SR::Statement::CRef GetDeclBase_Object(Parser &ctx, T &scope,
          Core::Array<Core::String> &&labels)
       {
          // object-declaration:
          //    declaration-specifiers init-declarator-list ;
 
-         AST::Attribute attrBase;
+         SR::Attribute attrBase;
          attrBase.linka = IR::Linkage::ExtACS;
 
          // declaration-specifiers
@@ -66,7 +66,7 @@ namespace GDCC
 
          ctx.parseDeclSpec(scope, attrBase);
 
-         std::vector<AST::Statement::CRef> inits;
+         std::vector<SR::Statement::CRef> inits;
 
          // init-declarator-list:
          //    init-declarator
@@ -94,10 +94,10 @@ namespace GDCC
 
          switch(inits.size())
          {
-         case  0: return AST::StatementCreate_Empty(std::move(labels), pos);
+         case  0: return SR::StatementCreate_Empty(std::move(labels), pos);
          case  1: if(labels.empty()) return inits[0];
-         default: return AST::StatementCreate_Multi(std::move(labels), pos,
-            Core::Array<AST::Statement::CRef>(inits.begin(), inits.end()));
+         default: return SR::StatementCreate_Multi(std::move(labels), pos,
+            Core::Array<SR::Statement::CRef>(inits.begin(), inits.end()));
          }
       }
 
@@ -106,7 +106,7 @@ namespace GDCC
       //
       template<typename T>
       static void GetDeclObjectSpace(Parser &ctx, T &scope,
-         AST::Attribute &attr, IR::AddrBase base)
+         SR::Attribute &attr, IR::AddrBase base)
       {
          auto spaceAttr = attr;
 
@@ -127,8 +127,8 @@ namespace GDCC
       //
       // GetDeclObject (global)
       //
-      static AST::Object::Ref GetDeclObject(Parser &ctx,
-         CC::Scope_Global &scope, AST::Attribute &attr, bool init)
+      static SR::Object::Ref GetDeclObject(Parser &ctx,
+         CC::Scope_Global &scope, SR::Attribute &attr, bool init)
       {
          if(attr.storeInt)
             throw Core::ExceptStr(attr.namePos, "file scope static");
@@ -186,8 +186,8 @@ namespace GDCC
       //
       // GetDeclObject (local)
       //
-      static AST::Object::Ref GetDeclObject(Parser &ctx,
-         CC::Scope_Local &scope, AST::Attribute &attr, bool init)
+      static SR::Object::Ref GetDeclObject(Parser &ctx,
+         CC::Scope_Local &scope, SR::Attribute &attr, bool init)
       {
          // All block-scope declarations are definitions and all block-scope
          // definitions must have no linkage.
@@ -248,9 +248,9 @@ namespace GDCC
       //
       template<typename T>
       static void ParseDeclObject(Parser &ctx, T &scope,
-         AST::Attribute &attr, std::vector<AST::Statement::CRef> &inits)
+         SR::Attribute &attr, std::vector<SR::Statement::CRef> &inits)
       {
-         AST::Type::CPtr lookupType;
+         SR::Type::CPtr lookupType;
 
          // Check compatibility with existing symbol, if any.
          if(auto lookup = scope.find(attr.name))
@@ -279,7 +279,7 @@ namespace GDCC
                obj->init = ctx.getExp_Init(scope, obj->type);
                obj->type = obj->init->getType();
 
-               if(obj->store == AST::Storage::Static && !obj->init->isIRExp())
+               if(obj->store == SR::Storage::Static && !obj->init->isIRExp())
                   throw Core::ExceptStr(obj->init->pos,
                      "non-constant initializer for static storage object");
 
@@ -315,8 +315,8 @@ namespace GDCC
       // SetDeclObjectInit (global)
       //
       static void SetDeclObjectInit(Parser &ctx, CC::Scope_Global &,
-         AST::Attribute &, std::vector<AST::Statement::CRef> &,
-         AST::Object *obj)
+         SR::Attribute &, std::vector<SR::Statement::CRef> &,
+         SR::Object *obj)
       {
          if(ctx.importing)
             return;
@@ -330,20 +330,20 @@ namespace GDCC
       // SetDeclObjectInit (local)
       //
       static void SetDeclObjectInit(Parser &ctx, CC::Scope_Local &,
-         AST::Attribute &attr, std::vector<AST::Statement::CRef> &inits,
-         AST::Object *obj)
+         SR::Attribute &attr, std::vector<SR::Statement::CRef> &inits,
+         SR::Object *obj)
       {
          obj->defin = true;
 
          // Block-scope statics must have constant initializers, so they can be
          // handled like file-scope statics.
-         if(obj->store == AST::Storage::Static)
+         if(obj->store == SR::Storage::Static)
             return;
 
          auto initExp = CC::ExpCreate_Obj(ctx.prog, obj, attr.namePos);
          initExp = CC::Exp_Assign::Create(initExp, obj->init, obj->init->pos);
 
-         inits.emplace_back(AST::StatementCreate_Exp(initExp));
+         inits.emplace_back(SR::StatementCreate_Exp(initExp));
       }
    }
 }
@@ -360,7 +360,7 @@ namespace GDCC
       //
       // Parser::getDecl_Object
       //
-      AST::Statement::CRef Parser::getDecl_Object(Scope_Global &scope)
+      SR::Statement::CRef Parser::getDecl_Object(Scope_Global &scope)
       {
          return GetDeclBase_Object(*this, scope, {});
       }
@@ -368,7 +368,7 @@ namespace GDCC
       //
       // Parser::getDecl_Object
       //
-      AST::Statement::CRef Parser::getDecl_Object(CC::Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getDecl_Object(CC::Scope_Local &scope, Labels &&labels)
       {
          if(prag.stateBlockScope)
          {

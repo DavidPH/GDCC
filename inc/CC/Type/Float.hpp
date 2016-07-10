@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Type.hpp"
 
-#include "../../AST/Type.hpp"
+#include "../../SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,9 +29,9 @@ namespace GDCC
       //
       // Type_Float
       //
-      class Type_Float final : public AST::Type
+      class Type_Float final : public SR::Type
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Type_Float, GDCC::AST::Type);
+         GDCC_Core_CounterPreamble(GDCC::CC::Type_Float, GDCC::SR::Type);
 
       public:
          // Type information.
@@ -64,17 +64,17 @@ namespace GDCC
          virtual bool isCTypeScalar()  const {return true;}
 
 
-         friend AST::Type::CRef GetTypeFloatCS();
-         friend AST::Type::CRef GetTypeFloatCSL();
-         friend AST::Type::CRef GetTypeFloatCSLL();
+         friend SR::Type::CRef GetTypeFloatCS();
+         friend SR::Type::CRef GetTypeFloatCSL();
+         friend SR::Type::CRef GetTypeFloatCSLL();
 
-         friend AST::Type::CRef GetTypeFloatIS();
-         friend AST::Type::CRef GetTypeFloatISL();
-         friend AST::Type::CRef GetTypeFloatISLL();
+         friend SR::Type::CRef GetTypeFloatIS();
+         friend SR::Type::CRef GetTypeFloatISL();
+         friend SR::Type::CRef GetTypeFloatISLL();
 
-         friend AST::Type::CRef GetTypeFloatRS();
-         friend AST::Type::CRef GetTypeFloatRSL();
-         friend AST::Type::CRef GetTypeFloatRSLL();
+         friend SR::Type::CRef GetTypeFloatRS();
+         friend SR::Type::CRef GetTypeFloatRSL();
+         friend SR::Type::CRef GetTypeFloatRSLL();
 
       protected:
          Type_Float(unsigned size, bool cplx, bool imag, bool sign);

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Exp.hpp"
 
-#include "../../AST/Exp/Arith.hpp"
+#include "../../SR/Exp/Arith.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,40 +29,39 @@ namespace GDCC
       //
       // Exp_AddPoint
       //
-      class Exp_AddPoint : public AST::Exp_Add
+      class Exp_AddPoint : public SR::Exp_Add
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Exp_AddPoint, GDCC::AST::Exp_Add);
+         GDCC_Core_CounterPreamble(GDCC::CC::Exp_AddPoint, GDCC::SR::Exp_Add);
 
-         GDCC_AST_Exp_BinaryCreator(Exp_AddPoint);
+         GDCC_SR_Exp_BinaryCreator(Exp_AddPoint);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+            SR::Arg const &dst) const;
       };
 
       //
       // Exp_AddPointEq
       //
-      class Exp_AddPointEq : public AST::Exp_Add
+      class Exp_AddPointEq : public SR::Exp_Add
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Exp_AddPointEq, GDCC::AST::Exp_Add);
+            GDCC::CC::Exp_AddPointEq, GDCC::SR::Exp_Add);
 
       public:
          bool const post : 1;
 
 
-         static CRef Create(bool post, AST::Type const *t,
-            AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+         static CRef Create(bool post, SR::Type const *t,
+            SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
             {return CRef(new This(post, t, l, r, pos));}
 
       protected:
-         Exp_AddPointEq(bool post_, AST::Type const *t, AST::Exp const *l,
-            AST::Exp const *r, Core::Origin pos_) :
+         Exp_AddPointEq(bool post_, SR::Type const *t, SR::Exp const *l,
+            SR::Exp const *r, Core::Origin pos_) :
             Super{t, l, r, pos_}, post{post_} {}
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual IR::Exp::CRef v_getIRExp() const;
 
@@ -74,16 +73,15 @@ namespace GDCC
       //
       // Exp_AddPtrRaw
       //
-      class Exp_AddPtrRaw : public AST::Exp_Add
+      class Exp_AddPtrRaw : public SR::Exp_Add
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Exp_AddPtrRaw, GDCC::AST::Exp_Add);
+            GDCC::CC::Exp_AddPtrRaw, GDCC::SR::Exp_Add);
 
-         GDCC_AST_Exp_BinaryCreator(Exp_AddPtrRaw);
+         GDCC_SR_Exp_BinaryCreator(Exp_AddPtrRaw);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual IRExpCRef v_getIRExp() const;
       };
@@ -91,16 +89,15 @@ namespace GDCC
       //
       // Exp_AddStrEntInt
       //
-      class Exp_AddStrEntInt : public AST::Exp_Binary
+      class Exp_AddStrEntInt : public SR::Exp_Binary
       {
          GDCC_Core_CounterPreamble(
-            GDCC::CC::Exp_AddStrEntInt, GDCC::AST::Exp_Binary);
+            GDCC::CC::Exp_AddStrEntInt, GDCC::SR::Exp_Binary);
 
-         GDCC_AST_Exp_BinaryCreator(Exp_AddStrEntInt);
+         GDCC_SR_Exp_BinaryCreator(Exp_AddStrEntInt);
 
       protected:
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual bool v_isIRExp() const {return false;}
       };

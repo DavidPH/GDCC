@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,14 +12,14 @@
 
 #include "CC/Scope.hpp"
 
-#include "AST/Function.hpp"
-#include "AST/Object.hpp"
-#include "AST/Space.hpp"
-#include "AST/Type.hpp"
+#include "SR/Function.hpp"
+#include "SR/Object.hpp"
+#include "SR/Space.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -52,28 +52,28 @@ namespace GDCC
       //
       // Lookup constructor
       //
-      Lookup::Lookup(AST::Function *func) : res{Func}, resFunc{func}
+      Lookup::Lookup(SR::Function *func) : res{Func}, resFunc{func}
       {
       }
 
       //
       // Lookup constructor
       //
-      Lookup::Lookup(AST::Object *obj) : res{Obj}, resObj{obj}
+      Lookup::Lookup(SR::Object *obj) : res{Obj}, resObj{obj}
       {
       }
 
       //
       // Lookup constructor
       //
-      Lookup::Lookup(AST::Space *space) : res{Space}, resSpace{space}
+      Lookup::Lookup(SR::Space *space) : res{Space}, resSpace{space}
       {
       }
 
       //
       // Lookup constructor
       //
-      Lookup::Lookup(AST::Type const *type) : res{Type}, resType{type}
+      Lookup::Lookup(SR::Type const *type) : res{Type}, resType{type}
       {
       }
 
@@ -144,7 +144,7 @@ namespace GDCC
       //
       // Scope::add
       //
-      void Scope::add(Core::String name, AST::Function *fn)
+      void Scope::add(Core::String name, SR::Function *fn)
       {
          tableFunc.emplace(std::piecewise_construct,
             std::forward_as_tuple(name),
@@ -154,7 +154,7 @@ namespace GDCC
       //
       // Scope::add
       //
-      void Scope::add(Core::String name, AST::Object *obj)
+      void Scope::add(Core::String name, SR::Object *obj)
       {
          tableObj.emplace(std::piecewise_construct,
             std::forward_as_tuple(name),
@@ -164,7 +164,7 @@ namespace GDCC
       //
       // Scope::add
       //
-      void Scope::add(Core::String name, AST::Space *space)
+      void Scope::add(Core::String name, SR::Space *space)
       {
          tableSpace.emplace(std::piecewise_construct,
             std::forward_as_tuple(name),
@@ -174,7 +174,7 @@ namespace GDCC
       //
       // Scope::add
       //
-      void Scope::add(Core::String name, AST::Type const *type)
+      void Scope::add(Core::String name, SR::Type const *type)
       {
          tableType.emplace(std::piecewise_construct,
             std::forward_as_tuple(name),
@@ -194,7 +194,7 @@ namespace GDCC
       //
       // Scope::addTypeTag
       //
-      void Scope::addTypeTag(Core::String name, AST::Type *type)
+      void Scope::addTypeTag(Core::String name, SR::Type *type)
       {
          tableTypeTag.emplace(std::piecewise_construct,
             std::forward_as_tuple(name),
@@ -230,7 +230,7 @@ namespace GDCC
       //
       // Scope::findFunction
       //
-      AST::Function::Ptr Scope::findFunction(Core::String name) const
+      SR::Function::Ptr Scope::findFunction(Core::String name) const
       {
          auto fn = tableFunc.find(name);
          return fn == tableFunc.end() ? nullptr : &*fn->second;
@@ -239,7 +239,7 @@ namespace GDCC
       //
       // Scope::findObject
       //
-      AST::Object::Ptr Scope::findObject(Core::String name) const
+      SR::Object::Ptr Scope::findObject(Core::String name) const
       {
          auto obj = tableObj.find(name);
          return obj == tableObj.end() ? nullptr : &*obj->second;
@@ -248,7 +248,7 @@ namespace GDCC
       //
       // Scope::findSpace
       //
-      AST::Space::Ptr Scope::findSpace(Core::String name) const
+      SR::Space::Ptr Scope::findSpace(Core::String name) const
       {
          auto space = tableSpace.find(name);
          return space == tableSpace.end() ? nullptr : &*space->second;
@@ -257,7 +257,7 @@ namespace GDCC
       //
       // Scope::findType
       //
-      AST::Type::CPtr Scope::findType(Core::String name) const
+      SR::Type::CPtr Scope::findType(Core::String name) const
       {
          auto type = tableType.find(name);
          return type == tableType.end() ? nullptr : &*type->second;
@@ -266,7 +266,7 @@ namespace GDCC
       //
       // Scope::findTypeTag
       //
-      AST::Type::Ptr Scope::findTypeTag(Core::String name) const
+      SR::Type::Ptr Scope::findTypeTag(Core::String name) const
       {
          auto type = tableTypeTag.find(name);
          return type == tableTypeTag.end() ? nullptr : &*type->second;
@@ -285,7 +285,7 @@ namespace GDCC
       //
       // Scope::lookupTypeTag
       //
-      AST::Type::Ptr Scope::lookupTypeTag(Core::String name) const
+      SR::Type::Ptr Scope::lookupTypeTag(Core::String name) const
       {
          if(auto res = findTypeTag(name)) return res;
          if(parent) return parent->lookupTypeTag(name);

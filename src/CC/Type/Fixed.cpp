@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,57 +18,63 @@
 
 
 //----------------------------------------------------------------------------|
-// Static Variables                                                           |
+// Static Objects                                                             |
 //
 
-// Table: Type_Fixed::getBaseType
-static GDCC::AST::Type::CRef const FixedTable_BaseType[6] =
+namespace GDCC
 {
-   GDCC::CC::GetTypeFixedPrUH(),
-   GDCC::CC::GetTypeFixedPrSH(),
-   GDCC::CC::GetTypeFixedPrU(),
-   GDCC::CC::GetTypeFixedPrS(),
-   GDCC::CC::GetTypeFixedPrUL(),
-   GDCC::CC::GetTypeFixedPrSL(),
-};
+   namespace CC
+   {
+      // Table: Type_Fixed::getBaseType
+      static SR::Type::CRef const FixedTable_BaseType[6] =
+      {
+         GetTypeFixedPrUH(),
+         GetTypeFixedPrSH(),
+         GetTypeFixedPrU(),
+         GetTypeFixedPrS(),
+         GetTypeFixedPrUL(),
+         GetTypeFixedPrSL(),
+      };
 
-// Table: Type_Fract::getBaseType
-static GDCC::AST::Type::CRef const FractTable_BaseType[6] =
-{
-   GDCC::CC::GetTypeFractPrUH(),
-   GDCC::CC::GetTypeFractPrSH(),
-   GDCC::CC::GetTypeFractPrU(),
-   GDCC::CC::GetTypeFractPrS(),
-   GDCC::CC::GetTypeFractPrUL(),
-   GDCC::CC::GetTypeFractPrSL(),
-};
+      // Table: Type_Fract::getBaseType
+      static SR::Type::CRef const FractTable_BaseType[6] =
+      {
+         GetTypeFractPrUH(),
+         GetTypeFractPrSH(),
+         GetTypeFractPrU(),
+         GetTypeFractPrS(),
+         GetTypeFractPrUL(),
+         GetTypeFractPrSL(),
+      };
 
-// Table: Type_Integ::getBaseType
-static GDCC::AST::Type::CRef const IntegTable_BaseType[10] =
-{
-   GDCC::CC::GetTypeIntegPrUHH(),
-   GDCC::CC::GetTypeIntegPrSHH(),
-   GDCC::CC::GetTypeIntegPrUH(),
-   GDCC::CC::GetTypeIntegPrSH(),
-   GDCC::CC::GetTypeIntegPrU(),
-   GDCC::CC::GetTypeIntegPrS(),
-   GDCC::CC::GetTypeIntegPrUL(),
-   GDCC::CC::GetTypeIntegPrSL(),
-   GDCC::CC::GetTypeIntegPrULL(),
-   GDCC::CC::GetTypeIntegPrSLL(),
-};
+      // Table: Type_Integ::getBaseType
+      static SR::Type::CRef const IntegTable_BaseType[10] =
+      {
+         GetTypeIntegPrUHH(),
+         GetTypeIntegPrSHH(),
+         GetTypeIntegPrUH(),
+         GetTypeIntegPrSH(),
+         GetTypeIntegPrU(),
+         GetTypeIntegPrS(),
+         GetTypeIntegPrUL(),
+         GetTypeIntegPrSL(),
+         GetTypeIntegPrULL(),
+         GetTypeIntegPrSLL(),
+      };
 
-// Table: Type_Integ::getSizeBitsI ZDACS
-static constexpr GDCC::Core::FastU IntegTable_SizeBitsI_ZDACS[5] =
-   {32, 32, 32, 64, 96};
+      // Table: Type_Integ::getSizeBitsI ZDACS
+      static constexpr Core::FastU IntegTable_SizeBitsI_ZDACS[5] =
+         {32, 32, 32, 64, 96};
 
-// Table: Type_Integ::getSizeBytes ZDACS
-static constexpr GDCC::Core::FastU IntegTable_SizeBytes_ZDACS[5] =
-   {1, 1, 1, 2, 3};
+      // Table: Type_Integ::getSizeBytes ZDACS
+      static constexpr Core::FastU IntegTable_SizeBytes_ZDACS[5] =
+         {1, 1, 1, 2, 3};
+   }
+}
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -144,31 +150,31 @@ namespace GDCC
       //
       // Type_Fixed::getBaseType
       //
-      AST::Type::CRef Type_Fixed::getBaseType() const
+      SR::Type::CRef Type_Fixed::getBaseType() const
       {
-         if(prim) throw AST::TypeError();
+         if(prim) throw SR::TypeError();
          return FixedTable_BaseType[(size << 1) | sign];
       }
 
       //
       // Type_Fixed::getRankC
       //
-      AST::TypeRankC Type_Fixed::getRankC() const
+      SR::TypeRankC Type_Fixed::getRankC() const
       {
          switch(size)
          {
-         case 0: return AST::TypeRankC::FixedH;
-         case 1: return AST::TypeRankC::Fixed;
-         case 2: return AST::TypeRankC::FixedL;
+         case 0: return SR::TypeRankC::FixedH;
+         case 1: return SR::TypeRankC::Fixed;
+         case 2: return SR::TypeRankC::FixedL;
          }
 
-         return AST::TypeRankC::None;
+         return SR::TypeRankC::None;
       }
 
       //
       // Type_Fixed::getSignType
       //
-      AST::Type::CRef Type_Fixed::getSignType() const
+      SR::Type::CRef Type_Fixed::getSignType() const
       {
          return FixedTable_BaseType[(size << 1) | 1];
       }
@@ -260,7 +266,7 @@ namespace GDCC
       //
       // Type_Fixed::getUnsiType
       //
-      AST::Type::CRef Type_Fixed::getUnsiType() const
+      SR::Type::CRef Type_Fixed::getUnsiType() const
       {
          return FixedTable_BaseType[(size << 1) | 0];
       }
@@ -276,31 +282,31 @@ namespace GDCC
       //
       // Type_Fract::getBaseType
       //
-      AST::Type::CRef Type_Fract::getBaseType() const
+      SR::Type::CRef Type_Fract::getBaseType() const
       {
-         if(prim) throw AST::TypeError();
+         if(prim) throw SR::TypeError();
          return FractTable_BaseType[(size << 1) | sign];
       }
 
       //
       // Type_Fract::getRankC
       //
-      AST::TypeRankC Type_Fract::getRankC() const
+      SR::TypeRankC Type_Fract::getRankC() const
       {
          switch(size)
          {
-         case 0: return AST::TypeRankC::FractH;
-         case 1: return AST::TypeRankC::Fract;
-         case 2: return AST::TypeRankC::FractL;
+         case 0: return SR::TypeRankC::FractH;
+         case 1: return SR::TypeRankC::Fract;
+         case 2: return SR::TypeRankC::FractL;
          }
 
-         return AST::TypeRankC::None;
+         return SR::TypeRankC::None;
       }
 
       //
       // Type_Fract::getSignType
       //
-      AST::Type::CRef Type_Fract::getSignType() const
+      SR::Type::CRef Type_Fract::getSignType() const
       {
          return FractTable_BaseType[(size << 1) | 1];
       }
@@ -368,7 +374,7 @@ namespace GDCC
       //
       // Type_Fract::getUnsiType
       //
-      AST::Type::CRef Type_Fract::getUnsiType() const
+      SR::Type::CRef Type_Fract::getUnsiType() const
       {
          return FractTable_BaseType[(size << 1) | 0];
       }
@@ -384,24 +390,24 @@ namespace GDCC
       //
       // Type_Integ::getRankC
       //
-      AST::TypeRankC Type_Integ::getRankC() const
+      SR::TypeRankC Type_Integ::getRankC() const
       {
          switch(size)
          {
-         case 0: return AST::TypeRankC::IntegHH;
-         case 1: return AST::TypeRankC::IntegH;
-         case 2: return AST::TypeRankC::Integ;
-         case 3: return AST::TypeRankC::IntegL;
-         case 4: return AST::TypeRankC::IntegLL;
+         case 0: return SR::TypeRankC::IntegHH;
+         case 1: return SR::TypeRankC::IntegH;
+         case 2: return SR::TypeRankC::Integ;
+         case 3: return SR::TypeRankC::IntegL;
+         case 4: return SR::TypeRankC::IntegLL;
          }
 
-         return AST::TypeRankC::None;
+         return SR::TypeRankC::None;
       }
 
       //
       // Type_Integ::getSignType
       //
-      AST::Type::CRef Type_Integ::getSignType() const
+      SR::Type::CRef Type_Integ::getSignType() const
       {
          return IntegTable_BaseType[(size << 1) | 1];
       }
@@ -481,7 +487,7 @@ namespace GDCC
       //
       // Type_Integ::getUnsiType
       //
-      AST::Type::CRef Type_Integ::getUnsiType() const
+      SR::Type::CRef Type_Integ::getUnsiType() const
       {
          return IntegTable_BaseType[(size << 1) | 0];
       }

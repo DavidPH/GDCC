@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Exp.hpp"
 
-#include "../../AST/Exp.hpp"
+#include "../../SR/Exp.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,9 +29,9 @@ namespace GDCC
       //
       // Exp_Obj
       //
-      class Exp_Obj : public AST::Exp
+      class Exp_Obj : public SR::Exp
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Obj, GDCC::AST::Exp);
+         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Obj, GDCC::SR::Exp);
 
       public:
          ObjectRef const obj;
@@ -39,17 +39,16 @@ namespace GDCC
 
 
          // Create
-         static CRef Create(IR::Program &prog, AST::Object *obj, Core::Origin pos)
+         static CRef Create(IR::Program &prog, SR::Object *obj, Core::Origin pos)
             {return CRef(new This(prog, obj, pos));}
 
       protected:
-         Exp_Obj(IR::Program &prog, AST::Object *obj, Core::Origin pos);
+         Exp_Obj(IR::Program &prog, SR::Object *obj, Core::Origin pos);
          virtual ~Exp_Obj();
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx,
-            AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
-         virtual AST::Arg v_getArg() const;
+         virtual SR::Arg v_getArg() const;
 
          virtual IRExpCRef v_getIRExp() const;
 
@@ -77,11 +76,11 @@ namespace GDCC
 
       public:
          // Create
-         static CRef Create(IR::Program &prog, AST::Object *obj, Core::Origin pos)
+         static CRef Create(IR::Program &prog, SR::Object *obj, Core::Origin pos)
             {return CRef(new This(prog, obj, pos));}
 
       protected:
-         Exp_ObjAut(IR::Program &prog, AST::Object *obj, Core::Origin pos);
+         Exp_ObjAut(IR::Program &prog, SR::Object *obj, Core::Origin pos);
 
          virtual TypeCRef v_getType() const;
       };

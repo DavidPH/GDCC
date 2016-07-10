@@ -14,8 +14,6 @@
 
 #include "CC/Scope/Global.hpp"
 
-#include "AST/Statement.hpp"
-
 #include "CPP/Macro.hpp"
 #include "CPP/TStream.hpp"
 
@@ -24,6 +22,8 @@
 #include "Core/StringBuf.hpp"
 
 #include "IR/Program.hpp"
+
+#include "SR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|

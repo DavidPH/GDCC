@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Type.hpp"
 
-#include "../../AST/Type.hpp"
+#include "../../SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,10 +29,10 @@ namespace GDCC
       //
       // Type_FixedBase
       //
-      class Type_FixedBase : public AST::Type
+      class Type_FixedBase : public SR::Type
       {
          GDCC_Core_CounterPreambleAbstract(
-            GDCC::CC::Type_FixedBase, GDCC::AST::Type);
+            GDCC::CC::Type_FixedBase, GDCC::SR::Type);
 
       public:
          // Type information.
@@ -94,19 +94,19 @@ namespace GDCC
          virtual bool isCTypeFixedSaU() const {return satu && unsi;}
 
 
-         friend AST::Type::CRef GetTypeFixedPrS();
-         friend AST::Type::CRef GetTypeFixedPrSH();
-         friend AST::Type::CRef GetTypeFixedPrSL();
-         friend AST::Type::CRef GetTypeFixedPrU();
-         friend AST::Type::CRef GetTypeFixedPrUH();
-         friend AST::Type::CRef GetTypeFixedPrUL();
+         friend SR::Type::CRef GetTypeFixedPrS();
+         friend SR::Type::CRef GetTypeFixedPrSH();
+         friend SR::Type::CRef GetTypeFixedPrSL();
+         friend SR::Type::CRef GetTypeFixedPrU();
+         friend SR::Type::CRef GetTypeFixedPrUH();
+         friend SR::Type::CRef GetTypeFixedPrUL();
 
-         friend AST::Type::CRef GetTypeFixedSaS();
-         friend AST::Type::CRef GetTypeFixedSaSH();
-         friend AST::Type::CRef GetTypeFixedSaSL();
-         friend AST::Type::CRef GetTypeFixedSaU();
-         friend AST::Type::CRef GetTypeFixedSaUH();
-         friend AST::Type::CRef GetTypeFixedSaUL();
+         friend SR::Type::CRef GetTypeFixedSaS();
+         friend SR::Type::CRef GetTypeFixedSaSH();
+         friend SR::Type::CRef GetTypeFixedSaSL();
+         friend SR::Type::CRef GetTypeFixedSaU();
+         friend SR::Type::CRef GetTypeFixedSaUH();
+         friend SR::Type::CRef GetTypeFixedSaUL();
 
       protected:
          Type_Fixed(unsigned size, bool prim, bool sign);
@@ -117,8 +117,8 @@ namespace GDCC
       //
       class Type_Fract final : public Type_FixedBase
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Type_Fract,
-            GDCC::CC::Type_FixedBase);
+         GDCC_Core_CounterPreamble(
+            GDCC::CC::Type_Fract, GDCC::CC::Type_FixedBase);
 
       public:
          // Type information.
@@ -147,19 +147,19 @@ namespace GDCC
          virtual bool isCTypeFractU()   const {return unsi;}
 
 
-         friend AST::Type::CRef GetTypeFractPrS();
-         friend AST::Type::CRef GetTypeFractPrSH();
-         friend AST::Type::CRef GetTypeFractPrSL();
-         friend AST::Type::CRef GetTypeFractPrU();
-         friend AST::Type::CRef GetTypeFractPrUH();
-         friend AST::Type::CRef GetTypeFractPrUL();
+         friend SR::Type::CRef GetTypeFractPrS();
+         friend SR::Type::CRef GetTypeFractPrSH();
+         friend SR::Type::CRef GetTypeFractPrSL();
+         friend SR::Type::CRef GetTypeFractPrU();
+         friend SR::Type::CRef GetTypeFractPrUH();
+         friend SR::Type::CRef GetTypeFractPrUL();
 
-         friend AST::Type::CRef GetTypeFractSaS();
-         friend AST::Type::CRef GetTypeFractSaSH();
-         friend AST::Type::CRef GetTypeFractSaSL();
-         friend AST::Type::CRef GetTypeFractSaU();
-         friend AST::Type::CRef GetTypeFractSaUH();
-         friend AST::Type::CRef GetTypeFractSaUL();
+         friend SR::Type::CRef GetTypeFractSaS();
+         friend SR::Type::CRef GetTypeFractSaSH();
+         friend SR::Type::CRef GetTypeFractSaSL();
+         friend SR::Type::CRef GetTypeFractSaU();
+         friend SR::Type::CRef GetTypeFractSaUH();
+         friend SR::Type::CRef GetTypeFractSaUL();
 
       protected:
          Type_Fract(unsigned size, bool prim, bool sign);
@@ -170,8 +170,8 @@ namespace GDCC
       //
       class Type_Integ final : public Type_FixedBase
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Type_Integ,
-            GDCC::CC::Type_FixedBase);
+         GDCC_Core_CounterPreamble(
+            GDCC::CC::Type_Integ, GDCC::CC::Type_FixedBase);
 
       public:
          // Type information.
@@ -193,16 +193,16 @@ namespace GDCC
          virtual bool isCTypeIntegU() const {return unsi;}
 
 
-         friend AST::Type::CRef GetTypeIntegPrS();
-         friend AST::Type::CRef GetTypeIntegPrSH();
-         friend AST::Type::CRef GetTypeIntegPrSHH();
-         friend AST::Type::CRef GetTypeIntegPrSL();
-         friend AST::Type::CRef GetTypeIntegPrSLL();
-         friend AST::Type::CRef GetTypeIntegPrU();
-         friend AST::Type::CRef GetTypeIntegPrUH();
-         friend AST::Type::CRef GetTypeIntegPrUHH();
-         friend AST::Type::CRef GetTypeIntegPrUL();
-         friend AST::Type::CRef GetTypeIntegPrULL();
+         friend SR::Type::CRef GetTypeIntegPrS();
+         friend SR::Type::CRef GetTypeIntegPrSH();
+         friend SR::Type::CRef GetTypeIntegPrSHH();
+         friend SR::Type::CRef GetTypeIntegPrSL();
+         friend SR::Type::CRef GetTypeIntegPrSLL();
+         friend SR::Type::CRef GetTypeIntegPrU();
+         friend SR::Type::CRef GetTypeIntegPrUH();
+         friend SR::Type::CRef GetTypeIntegPrUHH();
+         friend SR::Type::CRef GetTypeIntegPrUL();
+         friend SR::Type::CRef GetTypeIntegPrULL();
 
       protected:
          Type_Integ(unsigned size, bool prim, bool sign);

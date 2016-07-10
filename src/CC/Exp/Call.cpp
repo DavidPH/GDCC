@@ -16,12 +16,12 @@
 #include "CC/Init.hpp"
 #include "CC/Scope/Local.hpp"
 
-#include "AST/Function.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/CallType.hpp"
+
+#include "SR/Function.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -35,8 +35,8 @@ namespace GDCC
       //
       // IsCallLit
       //
-      static bool IsCallLit(AST::Exp const *exp,
-         Core::Array<AST::Exp::CRef> const &args)
+      static bool IsCallLit(SR::Exp const *exp,
+         Core::Array<SR::Exp::CRef> const &args)
       {
          auto type = exp->getType()->getBaseType();
 
@@ -79,8 +79,8 @@ namespace GDCC
       //
       // Exp_Call constructor
       //
-      Exp_Call::Exp_Call(AST::Exp const *e, Core::Origin pos_,
-         Core::Array<AST::Exp::CRef> const &args_) :
+      Exp_Call::Exp_Call(SR::Exp const *e, Core::Origin pos_,
+         Core::Array<SR::Exp::CRef> const &args_) :
          Super{e->getType()->getBaseType()->getBaseType(), e, pos_},
          args{args_},
          func{e->getType()->getBaseType()}
@@ -90,8 +90,8 @@ namespace GDCC
       //
       // Exp_Call constructor
       //
-      Exp_Call::Exp_Call(AST::Exp const *e, Core::Origin pos_,
-         Core::Array<AST::Exp::CRef> &&args_) :
+      Exp_Call::Exp_Call(SR::Exp const *e, Core::Origin pos_,
+         Core::Array<SR::Exp::CRef> &&args_) :
          Super{e->getType()->getBaseType()->getBaseType(), e, pos_},
          args{std::move(args_)},
          func{e->getType()->getBaseType()}
@@ -139,8 +139,8 @@ namespace GDCC
       //
       // ExpCreate_Call
       //
-      AST::Exp::CRef ExpCreate_Call(AST::Exp const *e,
-         Core::Array<AST::Exp::CRef> const &args_, Scope &scope,
+      SR::Exp::CRef ExpCreate_Call(SR::Exp const *e,
+         Core::Array<SR::Exp::CRef> const &args_, Scope &scope,
          Core::Origin pos)
       {
          auto args = args_;
@@ -150,8 +150,8 @@ namespace GDCC
       //
       // ExpCreate_Call
       //
-      AST::Exp::CRef ExpCreate_Call(AST::Exp const *e,
-         Core::Array<AST::Exp::CRef> &&args, Scope &scope, Core::Origin pos)
+      SR::Exp::CRef ExpCreate_Call(SR::Exp const *e,
+         Core::Array<SR::Exp::CRef> &&args, Scope &scope, Core::Origin pos)
       {
          auto exp  = ExpPromo_LValue(e, pos);
          auto type = exp->getType();
@@ -163,7 +163,7 @@ namespace GDCC
          auto param = type->getParameters();
          if(args.size() < param->size())
          {
-            AST::Function::Ptr fn;
+            SR::Function::Ptr fn;
             if(exp->isFunction())
                fn = exp->getFunction();
 
@@ -179,7 +179,7 @@ namespace GDCC
                break;
 
             default:
-               std::vector<AST::Exp::CRef> argsNew;
+               std::vector<SR::Exp::CRef> argsNew;
                argsNew.reserve(param->size());
                auto paramItr = param->begin(), paramEnd = param->end();
                auto argsItr  = args.begin(),   argsEnd  = args.end();

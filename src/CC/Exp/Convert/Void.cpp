@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,14 +12,14 @@
 
 #include "CC/Exp/Convert/Void.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
+
+#include "SR/Arg.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -29,8 +29,8 @@ namespace GDCC
       //
       // Exp_ConvertVoid::v_genStmnt
       //
-      void Exp_ConvertVoid::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_ConvertVoid::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          if(dst.type->getQualAddr().base != IR::AddrBase::Nul)
             throw Core::ExceptStr(pos, "evaluating void to non-Nul");
@@ -41,7 +41,7 @@ namespace GDCC
       //
       // ExpConvert_Void
       //
-      AST::Exp::CRef ExpConvert_Void(AST::Type const *t, AST::Exp const *e,
+      SR::Exp::CRef ExpConvert_Void(SR::Type const *t, SR::Exp const *e,
          Core::Origin pos)
       {
          return Exp_ConvertVoid::Create(t, e, pos);

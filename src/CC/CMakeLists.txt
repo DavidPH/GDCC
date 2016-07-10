@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2015 David Hill
+## Copyright (C) 2013-2016 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -156,7 +156,7 @@ add_executable(gdcc-cc
    main_cc.cpp
 )
 
-target_link_libraries(gdcc-cc-lib gdcc-as-lib gdcc-ast-lib gdcc-cpp-lib)
+target_link_libraries(gdcc-cc-lib gdcc-as-lib gdcc-cpp-lib gdcc-sr-lib)
 
 target_link_libraries(gdcc-cc gdcc-cc-lib gdcc-ld-lib)
 

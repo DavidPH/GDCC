@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,14 +13,6 @@
 #include "ACC/Parse.hpp"
 
 #include "ACC/Scope.hpp"
-
-#include "AST/Attribute.hpp"
-#include "AST/Function.hpp"
-#include "AST/Space.hpp"
-#include "AST/Statement.hpp"
-#include "AST/Storage.hpp"
-#include "AST/Type.hpp"
-#include "AST/Warning.hpp"
 
 #include "CC/Exp.hpp"
 #include "CC/Exp/Assign.hpp"
@@ -39,6 +31,14 @@
 #include "IR/Linkage.hpp"
 #include "IR/ScriptType.hpp"
 
+#include "SR/Attribute.hpp"
+#include "SR/Function.hpp"
+#include "SR/Space.hpp"
+#include "SR/Statement.hpp"
+#include "SR/Storage.hpp"
+#include "SR/Type.hpp"
+#include "SR/Warning.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
@@ -51,8 +51,8 @@ namespace GDCC
       //
       // GetDeclFunction
       //
-      static AST::Function::Ref GetDeclFunction(Scope_Global &scope,
-         AST::Attribute &attr)
+      static SR::Function::Ref GetDeclFunction(Scope_Global &scope,
+         SR::Attribute &attr)
       {
          auto fn = scope.getFunction(attr);
 
@@ -68,7 +68,7 @@ namespace GDCC
       //
       // ParseDeclFunction
       //
-      static void ParseDeclFunction(Parser &ctx, Scope_Global &scope, AST::Attribute &attr)
+      static void ParseDeclFunction(Parser &ctx, Scope_Global &scope, SR::Attribute &attr)
       {
          // Check compatibility with existing symbol, if any.
          if(auto lookup = scope.find(attr.name))
@@ -108,23 +108,23 @@ namespace GDCC
          auto stmntPro  = CC::StatementCreate_FuncPro(ctx.in.reget().pos, fnScope);
 
          // Create statements for the function.
-         Core::Array<AST::Statement::CRef> stmnts =
+         Core::Array<SR::Statement::CRef> stmnts =
             {Core::Pack, stmntPre, stmntBody, stmntPro};
 
-         fn->stmnt = AST::StatementCreate_Multi(attr.namePos, std::move(stmnts));
+         fn->stmnt = SR::StatementCreate_Multi(attr.namePos, std::move(stmnts));
          fn->defin = true;
 
          fn->setAllocAut(attr.allocAut);
 
          if(!fn->retrn->isTypeVoid() && fn->stmnt->isNoReturn())
-            AST::WarnReturnType(attr.namePos, "no return in non-void function");
+            SR::WarnReturnType(attr.namePos, "no return in non-void function");
       }
 
       //
       // ParseScriptAddr
       //
       static void ParseScriptAddr(Parser &ctx, Scope_Global &scope,
-         AST::Attribute &attr)
+         SR::Attribute &attr)
       {
          // script-address:
          //    integer
@@ -149,7 +149,7 @@ namespace GDCC
       //
       // ParseScriptFlagList
       //
-      static void ParseScriptFlagList(Parser &ctx, AST::Attribute &attr)
+      static void ParseScriptFlagList(Parser &ctx, SR::Attribute &attr)
       {
          while(ctx.in.peek(Core::TOK_KeyWrd)) switch(ctx.in.get().str)
          {
@@ -163,7 +163,7 @@ namespace GDCC
       // ParseScriptParameters
       //
       static void ParseScriptParameters(Parser &ctx, Scope_Global &scope,
-         AST::Attribute &attr)
+         SR::Attribute &attr)
       {
          // script-parameters:
          //    ( parameter-type-list )
@@ -173,7 +173,7 @@ namespace GDCC
             throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
 
          // parameter-type-list
-         AST::TypeSet::CPtr types;
+         SR::TypeSet::CPtr types;
          std::tie(types, attr.param) = ctx.getTypeList(scope);
          attr.type = attr.type->getTypeFunction(types, attr.callt);
 
@@ -185,7 +185,7 @@ namespace GDCC
       //
       // ParseScriptType
       //
-      static void ParseScriptType(Parser &ctx, AST::Attribute &attr)
+      static void ParseScriptType(Parser &ctx, SR::Attribute &attr)
       {
          if(ctx.in.peek(Core::TOK_KeyWrd)) switch(ctx.in.get().str)
          {
@@ -221,7 +221,7 @@ namespace GDCC
       //
       // Parser::getDecl_Function
       //
-      AST::Statement::CRef Parser::getDecl_Function(Scope_Global &scope)
+      SR::Statement::CRef Parser::getDecl_Function(Scope_Global &scope)
       {
          // function-declaration:
          //    <function> declaration-specifiers identifier (
@@ -229,7 +229,7 @@ namespace GDCC
          //    <function> declaration-specifiers identifier (
          //       parameter-type-list ) ;
 
-         AST::Attribute attr;
+         SR::Attribute attr;
          attr.callt = IR::CallType::LangACS;
          attr.linka = IR::Linkage::ExtACS;
 
@@ -253,13 +253,13 @@ namespace GDCC
 
          ParseDeclFunction(*this, scope, attr);
 
-         return AST::StatementCreate_Empty(pos);
+         return SR::StatementCreate_Empty(pos);
       }
 
       //
       // Parser::getDecl_Script
       //
-      AST::Statement::CRef Parser::getDecl_Script(Scope_Global &scope)
+      SR::Statement::CRef Parser::getDecl_Script(Scope_Global &scope)
       {
          // script-declaration:
          //    <script> script-address script-parameters(opt) script-type
@@ -267,8 +267,8 @@ namespace GDCC
          //    <script> script-address script-parameters script-flag-sequence(opt)
          //       compound-statement
 
-         AST::Attribute attr;
-         attr.type = AST::Type::Void;
+         SR::Attribute attr;
+         attr.type = SR::Type::Void;
 
          // <script>
          if(!in.peek(Core::TOK_KeyWrd, Core::STR_script))
@@ -283,7 +283,7 @@ namespace GDCC
          if(in.peek(Core::TOK_ParenO))
             ParseScriptParameters(*this, scope, attr);
          else
-            attr.type = attr.type->getTypeFunction(AST::TypeSet::Get(false), attr.callt);
+            attr.type = attr.type->getTypeFunction(SR::TypeSet::Get(false), attr.callt);
 
          // script-type(opt)
          ParseScriptType(*this, attr);
@@ -296,7 +296,7 @@ namespace GDCC
 
          ParseDeclFunction(*this, scope, attr);
 
-         return AST::StatementCreate_Empty(pos);
+         return SR::StatementCreate_Empty(pos);
       }
    }
 }

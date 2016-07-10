@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,13 +14,13 @@
 
 #include "CC/Init.hpp"
 
-#include "AST/Type.hpp"
-
 #include "IR/Exp.hpp"
+
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -49,8 +49,8 @@ namespace GDCC
       //
       // Exp_Init::v_genStmnt
       //
-      void Exp_Init::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_Init::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          init->genStmnt(ctx, dst, skipZero);
       }
@@ -66,7 +66,7 @@ namespace GDCC
       //
       // Exp_Init::v_getType
       //
-      AST::Type::CRef Exp_Init::v_getType() const
+      SR::Type::CRef Exp_Init::v_getType() const
       {
          return init->type;
       }

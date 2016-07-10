@@ -14,19 +14,19 @@
 
 #include "CC/Scope/Function.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Function.hpp"
-#include "AST/Object.hpp"
-#include "AST/Space.hpp"
-#include "AST/Statement.hpp"
-#include "AST/Storage.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/Program.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Function.hpp"
+#include "SR/Object.hpp"
+#include "SR/Space.hpp"
+#include "SR/Statement.hpp"
+#include "SR/Storage.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -70,8 +70,8 @@ namespace GDCC
       //
       // Scope_Global::createScope
       //
-      Scope_Function &Scope_Global::createScope(AST::Attribute const &attr,
-         AST::Function *fn)
+      Scope_Function &Scope_Global::createScope(SR::Attribute const &attr,
+         SR::Function *fn)
       {
          // Set the function's label.
          if(!fn->label)
@@ -81,15 +81,15 @@ namespace GDCC
          Core::String ctxLabel =
             attr.param.empty() ? Core::String(Core::STRNULL) : fn->genLabel();
 
-         // Create an AST::Object for each parameter.
-         std::vector<AST::Object::Ref> params;
+         // Create an SR::Object for each parameter.
+         std::vector<SR::Object::Ref> params;
          params.reserve(attr.param.size());
          for(auto const &param : attr.param)
          {
-            auto obj = AST::Object::Create(param.name,
+            auto obj = SR::Object::Create(param.name,
                param.name ? ctxLabel + param.name : fn->genLabel());
 
-            obj->store = AST::Storage::Auto;
+            obj->store = SR::Storage::Auto;
             obj->type  = param.type;
             obj->defin = true;
 
@@ -101,7 +101,7 @@ namespace GDCC
 
          // Create new scope.
          auto fnCtx = new Scope_Function(*this, fn,
-            Core::Array<AST::Object::Ref>(params.begin(), params.end()));
+            Core::Array<SR::Object::Ref>(params.begin(), params.end()));
          fnCtx->label = ctxLabel;
 
          subScopes.emplace_back(fnCtx);
@@ -170,20 +170,20 @@ namespace GDCC
       //
       // Scope_Global::getFunction
       //
-      AST::Function::Ref Scope_Global::getFunction(AST::Attribute const &attr)
+      SR::Function::Ref Scope_Global::getFunction(SR::Attribute const &attr)
       {
          auto glyph = genGlyphObj(attr.name, attr.linka);
 
          auto itr = globalFunc.find(glyph);
          if(itr == globalFunc.end())
          {
-            auto fn = AST::Function::Create(attr.name, glyph);
+            auto fn = SR::Function::Create(attr.name, glyph);
 
             try
             {
                fn->param = attr.type->getCallWords();
             }
-            catch(AST::TypeError const &)
+            catch(SR::TypeError const &)
             {
                 throw Core::ExceptStr(attr.namePos, "incomplete parameter");
             }
@@ -206,7 +206,7 @@ namespace GDCC
          // If not yet defined, update certain properties.
          if(!itr->second->defin)
          {
-            AST::Function::Ref &fn = itr->second;
+            SR::Function::Ref &fn = itr->second;
 
             fn->stype    = attr.stype;
 
@@ -229,17 +229,17 @@ namespace GDCC
       //
       // Scope_Global::getObject
       //
-      AST::Object::Ref Scope_Global::getObject(AST::Attribute const &attr)
+      SR::Object::Ref Scope_Global::getObject(SR::Attribute const &attr)
       {
          auto glyph = genGlyphObj(attr.name, attr.linka);
 
          auto itr = globalObj.find(glyph);
          if(itr == globalObj.end())
          {
-            auto obj = AST::Object::Create(attr.name, glyph);
+            auto obj = SR::Object::Create(attr.name, glyph);
 
             obj->linka    = attr.linka;
-            obj->store    = AST::Storage::Static;
+            obj->store    = SR::Storage::Static;
             obj->type     = attr.type;
             obj->warnUse  = attr.warnUse;
 
@@ -249,7 +249,7 @@ namespace GDCC
          // If not yet defined, update certain properties.
          if(!itr->second->defin)
          {
-            AST::Object::Ref &obj = itr->second;
+            SR::Object::Ref &obj = itr->second;
 
             // Use newer type. This allows declaring with incomplete array type
             // and then later defining it with a size.
@@ -262,14 +262,14 @@ namespace GDCC
       //
       // Scope_Globa::getSpace
       //
-      AST::Space::Ref Scope_Global::getSpace(AST::Attribute const &attr)
+      SR::Space::Ref Scope_Global::getSpace(SR::Attribute const &attr)
       {
          auto glyph = genGlyphObj(attr.name, attr.linka);
 
          auto itr = globalSpace.find(glyph);
          if(itr == globalSpace.end())
          {
-            auto space = AST::Space::Create(attr.name, glyph);
+            auto space = SR::Space::Create(attr.name, glyph);
 
             space->linka = attr.linka;
             space->space = attr.space.base;

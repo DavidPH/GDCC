@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,66 +14,70 @@
 
 #include "CC/Type.hpp"
 
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
 
 #include "Platform/Platform.hpp"
 
+#include "SR/Type.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
 //
 
-//
-// ExpConvert_PtrSpace
-//
-static GDCC::AST::Exp::CRef ExpConvert_PtrSpace(GDCC::AST::Type const *typeL,
-   GDCC::AST::Exp const *exp, GDCC::Core::Origin pos)
+namespace GDCC
 {
-   using namespace GDCC;
-
-   auto typeR = exp->getType();
-
-   auto baseL = typeL->getBaseType();
-   auto baseR = typeR->getBaseType();
-
-   auto addrL = baseL->getQualAddr();
-   auto addrR = baseR->getQualAddr();
-
-   // To far.
-   if(addrL.base == IR::AddrBase::Far)
+   namespace CC
    {
-      throw Core::ExceptStr(pos, "convert to far pointer stub");
+      //
+      // ExpConvert_PtrSpace
+      //
+      static SR::Exp::CRef ExpConvert_PtrSpace(SR::Type const *typeL,
+         SR::Exp const *exp, Core::Origin pos)
+      {
+         auto typeR = exp->getType();
+
+         auto baseL = typeL->getBaseType();
+         auto baseR = typeR->getBaseType();
+
+         auto addrL = baseL->getQualAddr();
+         auto addrR = baseR->getQualAddr();
+
+         // To far.
+         if(addrL.base == IR::AddrBase::Far)
+         {
+            throw Core::ExceptStr(pos, "convert to far pointer stub");
+         }
+
+         // From far.
+         if(addrR.base == IR::AddrBase::Far)
+         {
+            throw Core::ExceptStr(pos, "convert from far pointer stub");
+         }
+
+         // As a last resort, same size pointers can fall back to direct bitwise copy.
+         if(typeL->getSizeWords() == typeR->getSizeWords())
+         {
+            baseR = baseR->getTypeQualAddr(addrL);
+            typeR = baseR->getTypePointer();
+
+            // If null representation is different, perform inversion.
+            if(Platform::IsZeroNull_Point(addrL.base) != Platform::IsZeroNull_Point(addrR.base))
+               return Exp_ConvertPtrInv::Create(typeR, exp, pos);
+            else
+               return Exp_ConvertPtr::Create(typeR, exp, pos);
+         }
+
+         throw Core::ExceptStr(pos, "unsupported pointer conversion");
+      }
    }
-
-   // From far.
-   if(addrR.base == IR::AddrBase::Far)
-   {
-      throw Core::ExceptStr(pos, "convert from far pointer stub");
-   }
-
-   // As a last resort, same size pointers can fall back to direct bitwise copy.
-   if(typeL->getSizeWords() == typeR->getSizeWords())
-   {
-      baseR = baseR->getTypeQualAddr(addrL);
-      typeR = baseR->getTypePointer();
-
-      // If null representation is different, perform inversion.
-      if(Platform::IsZeroNull_Point(addrL.base) != Platform::IsZeroNull_Point(addrR.base))
-         return CC::Exp_ConvertPtrInv::Create(typeR, exp, pos);
-      else
-         return CC::Exp_ConvertPtr::Create(typeR, exp, pos);
-   }
-
-   throw Core::ExceptStr(pos, "unsupported pointer conversion");
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -83,8 +87,8 @@ namespace GDCC
       //
       // Exp_ConvertPtr::v_genStmnt
       //
-      void Exp_ConvertPtr::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_ConvertPtr::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          return exp->genStmnt(ctx, dst);
       }
@@ -92,8 +96,8 @@ namespace GDCC
       //
       // Exp_ConvertPtrInt::v_genStmnt
       //
-      void Exp_ConvertPtrInt::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_ConvertPtrInt::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          auto dstW = type->getSizeWords();
          auto srcW = exp->getType()->getSizeWords();
@@ -139,8 +143,8 @@ namespace GDCC
       //
       // Exp_ConvertPtrInv::v_genStmnt
       //
-      void Exp_ConvertPtrInv::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_ConvertPtrInv::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          if(GenStmntNul(this, ctx, dst)) return;
 
@@ -158,8 +162,8 @@ namespace GDCC
       //
       // Exp_ConvertPtrLoc::v_genStmnt
       //
-      void Exp_ConvertPtrLoc::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_ConvertPtrLoc::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          if(GenStmntNul(this, ctx, dst)) return;
 
@@ -177,8 +181,8 @@ namespace GDCC
       //
       // Exp_ConvertPtrSh::v_genStmnt
       //
-      void Exp_ConvertPtrSh::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_ConvertPtrSh::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          if(GenStmntNul(this, ctx, dst)) return;
 
@@ -190,13 +194,13 @@ namespace GDCC
          auto shiftR = exp->getType()->getBaseType()->getSizeShift();
          if(shiftL > shiftR)
          {
-            auto lit = AST::ExpCreate_Size(shiftL / shiftR)->getIRExp();
+            auto lit = SR::ExpCreate_Size(shiftL / shiftR)->getIRExp();
             ctx.block.addStatementArgs({IR::Code::DivU_W, 1},
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Lit(lit));
          }
          else
          {
-            auto lit = AST::ExpCreate_Size(shiftR / shiftL)->getIRExp();
+            auto lit = SR::ExpCreate_Size(shiftR / shiftL)->getIRExp();
             ctx.block.addStatementArgs({IR::Code::MulU_W, 1},
                IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Lit(lit));
          }
@@ -208,10 +212,10 @@ namespace GDCC
       //
       // ExpConvert_ArithPtr
       //
-      AST::Exp::CRef ExpConvert_ArithPtr(AST::Type const *typeL,
-         AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpConvert_ArithPtr(SR::Type const *typeL,
+         SR::Exp const *e, Core::Origin pos)
       {
-         AST::Exp::CRef exp{e};
+         SR::Exp::CRef exp{e};
 
          auto typeR = exp->getType();
 
@@ -230,10 +234,10 @@ namespace GDCC
       //
       // ExpConvert_Pointer
       //
-      AST::Exp::CRef ExpConvert_Pointer(AST::Type const *typeL,
-         AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpConvert_Pointer(SR::Type const *typeL,
+         SR::Exp const *e, Core::Origin pos)
       {
-         AST::Exp::CRef exp{e};
+         SR::Exp::CRef exp{e};
 
          auto typeR = exp->getType();
 
@@ -300,10 +304,10 @@ namespace GDCC
       //
       // ExpConvert_PtrArith
       //
-      AST::Exp::CRef ExpConvert_PtrArith(AST::Type const *typeL,
-         AST::Exp const *e, Core::Origin pos)
+      SR::Exp::CRef ExpConvert_PtrArith(SR::Type const *typeL,
+         SR::Exp const *e, Core::Origin pos)
       {
-         AST::Exp::CRef exp{e};
+         SR::Exp::CRef exp{e};
 
          auto typeR = exp->getType();
 

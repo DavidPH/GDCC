@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,18 +12,18 @@
 
 #include "CC/Exp/Func.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Function.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Exp.hpp"
 #include "IR/Glyph.hpp"
 
+#include "SR/Arg.hpp"
+#include "SR/Function.hpp"
+#include "SR/Type.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -33,8 +33,7 @@ namespace GDCC
       //
       // Exp_Func constructor
       //
-      Exp_Func::Exp_Func(IR::Program &prog_, AST::Function *fn_,
-         Core::Origin pos_) :
+      Exp_Func::Exp_Func(IR::Program &prog_, SR::Function *fn_, Core::Origin pos_) :
          Super{pos_},
          fn{fn_},
          prog(prog_)
@@ -52,8 +51,7 @@ namespace GDCC
       //
       // Exp_Func::v_genStmnt
       //
-      void Exp_Func::v_genStmnt(AST::GenStmntCtx const &,
-         AST::Arg const &) const
+      void Exp_Func::v_genStmnt(SR::GenStmntCtx const &, SR::Arg const &) const
       {
          throw Core::ExceptStr(pos, "genStmnt on function");
       }
@@ -61,7 +59,7 @@ namespace GDCC
       //
       // Exp_Func::v_getArg
       //
-      AST::Arg Exp_Func::v_getArg() const
+      SR::Arg Exp_Func::v_getArg() const
       {
          if(!fn->type)
             throw Core::ExceptStr(pos, "function has no type");
@@ -69,15 +67,15 @@ namespace GDCC
          IR::Glyph glyph{&prog, fn->glyph};
          auto addr = IR::ExpCreate_Glyph(glyph, pos);
          auto type = fn->type->getTypePointer();
-         auto exp  = AST::ExpCreate_IRExp(addr, type, pos);
+         auto exp  = SR::ExpCreate_IRExp(addr, type, pos);
 
-         return AST::Arg(fn->type, exp);
+         return SR::Arg(fn->type, exp);
       }
 
       //
       // Exp_Func::v_getFunction
       //
-      AST::Function::Ref Exp_Func::v_getFunction() const
+      SR::Function::Ref Exp_Func::v_getFunction() const
       {
          return fn;
       }
@@ -85,12 +83,12 @@ namespace GDCC
       //
       // Exp_Func::v_getType
       //
-      AST::Type::CRef Exp_Func::v_getType() const
+      SR::Type::CRef Exp_Func::v_getType() const
       {
          if(!fn->type)
             throw Core::ExceptStr(pos, "function has no type");
 
-         return static_cast<AST::Type::CRef>(fn->type);
+         return static_cast<SR::Type::CRef>(fn->type);
       }
 
       //
@@ -112,7 +110,7 @@ namespace GDCC
       //
       // ExpCreate_Func
       //
-      AST::Exp::CRef ExpCreate_Func(IR::Program &prog, AST::Function *fn,
+      SR::Exp::CRef ExpCreate_Func(IR::Program &prog, SR::Function *fn,
          Core::Origin pos)
       {
          return Exp_Func::Create(prog, fn, pos);

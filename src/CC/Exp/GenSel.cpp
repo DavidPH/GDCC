@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,29 +12,34 @@
 
 #include "CC/Exp/GenSel.hpp"
 
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
+
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
 //
 
-//
-// CheckConstraint
-//
-static void CheckConstraint(GDCC::Core::Array<GDCC::CC::GenAssoc> const &sel,
-   GDCC::Core::Origin pos)
+namespace GDCC
 {
-   for(auto const &assoc : sel)
-      if(!assoc.type->isCTypeObject() || !assoc.type->isTypeComplete())
-         throw GDCC::Core::ExceptStr(pos, "expected complete object type");
+   namespace CC
+   {
+      //
+      // CheckConstraint
+      //
+      static void CheckConstraint(Core::Array<GenAssoc> const &sel, Core::Origin pos)
+      {
+         for(auto const &assoc : sel)
+            if(!assoc.type->isCTypeObject() || !assoc.type->isTypeComplete())
+               throw Core::ExceptStr(pos, "expected complete object type");
+      }
+   }
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -44,14 +49,14 @@ namespace GDCC
       //
       // Exp_GenSel::v_getDefer
       //
-      AST::Exp::CRef Exp_GenSel::v_getDefer() const
+      SR::Exp::CRef Exp_GenSel::v_getDefer() const
       {
          auto type = exp->getType()->getTypeQual();
 
          for(auto const &assoc : sel)
             if(type == assoc.type) return assoc.exp;
 
-         if(def) return static_cast<AST::Exp::CRef>(def);
+         if(def) return static_cast<SR::Exp::CRef>(def);
 
          throw Core::ExceptStr(pos, "no matching generic-selection");
       }
@@ -59,7 +64,7 @@ namespace GDCC
       //
       // ExpCreate_GenSel
       //
-      AST::Exp::CRef ExpCreate_GenSel(AST::Exp const *exp, AST::Exp const *def,
+      SR::Exp::CRef ExpCreate_GenSel(SR::Exp const *exp, SR::Exp const *def,
          Core::Array<GenAssoc> const &sel, Core::Origin pos)
       {
          CheckConstraint(sel, pos);
@@ -70,7 +75,7 @@ namespace GDCC
       //
       // ExpCreate_GenSel
       //
-      AST::Exp::CRef ExpCreate_GenSel(AST::Exp const *exp, AST::Exp const *def,
+      SR::Exp::CRef ExpCreate_GenSel(SR::Exp const *exp, SR::Exp const *def,
          Core::Array<GenAssoc> &&sel, Core::Origin pos)
       {
          CheckConstraint(sel, pos);

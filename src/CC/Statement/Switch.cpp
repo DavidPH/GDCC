@@ -15,16 +15,16 @@
 #include "CC/Exp/Arith.hpp"
 #include "CC/Scope/Case.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Function.hpp"
-#include "AST/Temporary.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
 #include "IR/CodeSet/Cmp.hpp"
 #include "IR/Glyph.hpp"
+
+#include "SR/Exp.hpp"
+#include "SR/Function.hpp"
+#include "SR/Temporary.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -51,10 +51,10 @@ namespace GDCC
       //
       // GenCond_Codes
       //
-      static OpCodePair GenCond_Codes(AST::Statement const *, AST::Type const *t)
+      static OpCodePair GenCond_Codes(SR::Statement const *, SR::Type const *t)
       {
-         return {AST::ExpCode_ArithInteg<IR::CodeSet_CmpLT>(t),
-                 AST::ExpCode_ArithInteg<IR::CodeSet_CmpEQ>(t)};
+         return {SR::ExpCode_ArithInteg<IR::CodeSet_CmpLT>(t),
+                 SR::ExpCode_ArithInteg<IR::CodeSet_CmpEQ>(t)};
       }
 
       //
@@ -73,7 +73,7 @@ namespace GDCC
       // GenCond_BranchDefault
       //
       static void GenCond_BranchDefault(Statement_Switch const *stmnt,
-         AST::GenStmntCtx const &ctx)
+         SR::GenStmntCtx const &ctx)
       {
          IR::Glyph defLabel = {ctx.prog, stmnt->scope.getLabelDefault(false)};
 
@@ -86,9 +86,9 @@ namespace GDCC
       //
       static void GenCond_SearchPart(
          Statement_Switch        const *stmnt,
-         AST::GenStmntCtx        const &ctx,
+         SR::GenStmntCtx         const &ctx,
          OpCodePair              const &ops,
-         AST::Temporary          const &cond,
+         SR::Temporary           const &cond,
          Scope_Case::Case const *const *begin,
          Scope_Case::Case const *const *end)
       {
@@ -155,7 +155,7 @@ namespace GDCC
       // GenCond_Search
       //
       static void GenCond_Search(Statement_Switch const *stmnt,
-         AST::GenStmntCtx const &ctx, OpCodePair const &ops)
+         SR::GenStmntCtx const &ctx, OpCodePair const &ops)
       {
          // Collect and sort cases.
          std::vector<Scope_Case::Case const *> cases;
@@ -173,7 +173,7 @@ namespace GDCC
          // Evaluate condition and store in temporary.
          stmnt->cond->genStmntStk(ctx);
 
-         AST::Temporary tmp{ctx, stmnt->pos, stmnt->cond->getType()->getSizeWords()};
+         SR::Temporary tmp{ctx, stmnt->pos, stmnt->cond->getType()->getSizeWords()};
          ctx.block.addStatementArgs({IR::Code::Move_W, tmp.size()},
             tmp.getArg(), IR::Arg_Stk());
 
@@ -186,7 +186,7 @@ namespace GDCC
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -197,8 +197,8 @@ namespace GDCC
       // Statement_Switch constructor
       //
       Statement_Switch::Statement_Switch(Labels const &labels_,
-         Core::Origin pos_, Scope_Case &scope_, AST::Exp const *cond_,
-         AST::Statement const *body_) :
+         Core::Origin pos_, Scope_Case &scope_, SR::Exp const *cond_,
+         SR::Statement const *body_) :
          Super{labels_, pos_}, scope(scope_), cond{cond_}, body{body_}
       {
       }
@@ -207,7 +207,7 @@ namespace GDCC
       // Statement_Switch constructor
       //
       Statement_Switch::Statement_Switch(Labels &&labels_, Core::Origin pos_,
-         Scope_Case &scope_, AST::Exp const *cond_, AST::Statement const *body_) :
+         Scope_Case &scope_, SR::Exp const *cond_, SR::Statement const *body_) :
          Super{std::move(labels_), pos_}, scope(scope_), cond{cond_}, body{body_}
       {
       }
@@ -223,7 +223,7 @@ namespace GDCC
       //
       // Statement_Switch::v_genStmnt
       //
-      void Statement_Switch::v_genStmnt(AST::GenStmntCtx const &ctx) const
+      void Statement_Switch::v_genStmnt(SR::GenStmntCtx const &ctx) const
       {
          // Generate condition.
          GenCond_Search(this, ctx, GenCond_Codes(this, cond->getType()));
@@ -291,9 +291,9 @@ namespace GDCC
       //
       // StatementCreate_Switch
       //
-      AST::Statement::CRef StatementCreate_Switch(
-         AST::Statement::Labels const &labels, Core::Origin pos,
-         Scope_Case &scope, AST::Exp const *cond_, AST::Statement const *body)
+      SR::Statement::CRef StatementCreate_Switch(
+         SR::Statement::Labels const &labels, Core::Origin pos,
+         Scope_Case &scope, SR::Exp const *cond_, SR::Statement const *body)
       {
          auto cond = ExpPromo_Int(cond_, pos);
          auto type = cond->getType();
@@ -307,9 +307,9 @@ namespace GDCC
       //
       // StatementCreate_Switch
       //
-      AST::Statement::CRef StatementCreate_Switch(
-         AST::Statement::Labels &&labels, Core::Origin pos,
-         Scope_Case &scope, AST::Exp const *cond_, AST::Statement const *body)
+      SR::Statement::CRef StatementCreate_Switch(
+         SR::Statement::Labels &&labels, Core::Origin pos,
+         Scope_Case &scope, SR::Exp const *cond_, SR::Statement const *body)
       {
          auto cond = ExpPromo_Int(cond_, pos);
          auto type = cond->getType();

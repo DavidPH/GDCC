@@ -103,7 +103,7 @@ namespace GDCC
       //
       // Type_Div::getMember
       //
-      AST::Type::Member Type_Div::getMember(Core::String name) const
+      SR::Type::Member Type_Div::getMember(Core::String name) const
       {
          switch(name)
          {
@@ -114,16 +114,16 @@ namespace GDCC
             return {type->getSizeBytes(), type->getTypeQual(getQual())};
 
          default:
-            throw AST::TypeError();
+            throw SR::TypeError();
          }
       }
 
       //
       // Type_Div::Get
       //
-      Type_Div::CRef Type_Div::Get(AST::Type const *type)
+      Type_Div::CRef Type_Div::Get(SR::Type const *type)
       {
-         static std::map<AST::Type::CRef, Type_Div::CRef> divs;
+         static std::map<SR::Type::CRef, Type_Div::CRef> divs;
 
          auto itr = divs.find(type->getTypeQual());
 
@@ -234,7 +234,7 @@ namespace GDCC
       //
       IR::Type Type_Struct::getIRType() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
 
          if(data.isStruct)
          {
@@ -254,12 +254,12 @@ namespace GDCC
       //
       // Type_Struct::getMember
       //
-      AST::Type::Member Type_Struct::getMember(Core::String name) const
+      SR::Type::Member Type_Struct::getMember(Core::String name) const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
 
          // getMemQual
-         auto getMemQual = [&](AST::Type const *t)
+         auto getMemQual = [&](SR::Type const *t)
          {
             auto q = getQual();
 
@@ -284,10 +284,10 @@ namespace GDCC
                auto m = mem.type->getMember(name);
                return {mem.addr + m.addr, getMemQual(m.type)};
             }
-            catch(AST::TypeError const &) {}
+            catch(SR::TypeError const &) {}
          }
 
-         throw AST::TypeError();
+         throw SR::TypeError();
       }
 
       //
@@ -303,7 +303,7 @@ namespace GDCC
       //
       Core::FastU Type_Struct::getSizeAlign() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.sizeAlign;
       }
 
@@ -312,7 +312,7 @@ namespace GDCC
       //
       Core::FastU Type_Struct::getSizeBytes() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.sizeBytes;
       }
 
@@ -321,7 +321,7 @@ namespace GDCC
       //
       Core::FastU Type_Struct::getSizePoint() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.sizePoint;
       }
 
@@ -330,7 +330,7 @@ namespace GDCC
       //
       Core::FastU Type_Struct::getSizeShift() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.sizeShift;
       }
 
@@ -339,7 +339,7 @@ namespace GDCC
       //
       Core::FastU Type_Struct::getSizeWords() const
       {
-         if(!data.complete) throw AST::TypeError();
+         if(!data.complete) throw SR::TypeError();
          return data.sizeWords;
       }
 
@@ -349,7 +349,7 @@ namespace GDCC
       void Type_Struct::setMembers(MemberData const *memv, std::size_t memc,
          Core::FastU sizeBytes)
       {
-         if(data.complete) throw AST::TypeError();
+         if(data.complete) throw SR::TypeError();
 
          for(auto const &mem : data.memb = Core::Array<MemberData>(memv, memv + memc))
          {

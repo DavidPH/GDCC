@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,17 +24,17 @@
 
 namespace GDCC
 {
-   namespace AST
-   {
-      class Attribute;
-      class Function;
-   }
-
    namespace IR
    {
       enum class Linkage;
 
       class Program;
+   }
+
+   namespace SR
+   {
+      class Attribute;
+      class Function;
    }
 
    namespace CC
@@ -82,11 +82,11 @@ namespace GDCC
          virtual Core::String getLabelContinue();
          virtual Core::String getLabelDefault(bool define = false);
 
-         Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
+         Core::CounterRef<SR::Object> getObject(SR::Attribute const &attr);
 
          Scope_Block &getScopeFirst();
 
-         Core::CounterRef<AST::Space> getSpace(AST::Attribute const &attr);
+         Core::CounterRef<SR::Space> getSpace(SR::Attribute const &attr);
 
          Scope_Function &fn;
          Scope_Global   &global;
@@ -97,14 +97,14 @@ namespace GDCC
          explicit Scope_Local(Scope_Local &parent);
          virtual ~Scope_Local();
 
-         void allocAutoObj(AllocAutoInfo &alloc, AST::Object *obj);
+         void allocAutoObj(AllocAutoInfo &alloc, SR::Object *obj);
 
-         void allocAutoSpace(AllocAutoInfo &alloc, AST::Space *space);
+         void allocAutoSpace(AllocAutoInfo &alloc, SR::Space *space);
 
          Core::FastU getSpaceValue(Core::String name) const;
 
-         LookupTable<AST::Object> localObj;
-         LookupTable<AST::Space>  localSpace;
+         LookupTable<SR::Object> localObj;
+         LookupTable<SR::Space>  localSpace;
 
          std::vector<std::unique_ptr<Scope_Block>> subScopes;
       };

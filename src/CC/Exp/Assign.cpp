@@ -12,13 +12,13 @@
 
 #include "CC/Exp/Assign.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
 #include "IR/Exp.hpp"
+
+#include "SR/Arg.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -32,8 +32,7 @@ namespace GDCC
       //
       // Exp_Assign constructor
       //
-      Exp_Assign::Exp_Assign(AST::Exp const *l, AST::Exp const *r,
-         Core::Origin pos_) :
+      Exp_Assign::Exp_Assign(SR::Exp const *l, SR::Exp const *r, Core::Origin pos_) :
          Super{l->getType(), l, r, pos_}
       {
       }
@@ -41,8 +40,8 @@ namespace GDCC
       //
       // Exp_Assign::v_genStmnt
       //
-      void Exp_Assign::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_Assign::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          auto typeL = expL->getType();
 
@@ -111,7 +110,7 @@ namespace GDCC
       //
       // ExpCreate_Assign
       //
-      AST::Exp::CRef ExpCreate_Assign(AST::Exp const *l, AST::Exp const *r,
+      SR::Exp::CRef ExpCreate_Assign(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
          if(!IsModLValue(l))

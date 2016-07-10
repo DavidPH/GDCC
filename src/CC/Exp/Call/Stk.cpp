@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,10 +14,6 @@
 
 #include "CC/Scope/Function.hpp"
 
-#include "AST/Arg.hpp"
-#include "AST/Function.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
@@ -25,6 +21,10 @@
 #include "IR/Glyph.hpp"
 
 #include "Platform/Platform.hpp"
+
+#include "SR/Arg.hpp"
+#include "SR/Function.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -84,8 +84,8 @@ namespace GDCC
       //
       // Exp_CallStk::v_genStmnt
       //
-      void Exp_CallStk::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_CallStk::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          IR::CallType callType  = IR::GetCallTypeIR(func->getCallType());
          Core::FastU  callWords = func->getCallWords();

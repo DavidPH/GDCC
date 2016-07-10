@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,63 +14,67 @@
 
 #include "CC/Type.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
+
+#include "SR/Exp.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
 //
 
-//
-// AddrPromo
-//
-static GDCC::IR::AddrSpace AddrPromo(GDCC::IR::AddrSpace addrL,
-   GDCC::IR::AddrSpace addrR, GDCC::Core::Origin pos)
+namespace GDCC
 {
-   using namespace GDCC;
-
-   if(IR::IsAddrEnclosed(addrL, addrR))
+   namespace CC
    {
-      // If both enclose the other, they are either the same address space, or
-      // one is the generic address space and the other is the implementation
-      // of the generic address space. In the latter case, return the other
-      // address space in keeping with producing the most-qualified type.
-      if(IR::IsAddrEnclosed(addrR, addrL))
-         return addrL.base == IR::AddrBase::Gen ? addrR : addrL;
-      else
-         return addrL;
-   }
-   else
-   {
-      if(IR::IsAddrEnclosed(addrR, addrL))
-         return addrR;
-      else
-         throw Core::ExceptStr(pos, "cannot promote disjoint address spaces");
-   }
-}
+      //
+      // AddrPromo
+      //
+      static IR::AddrSpace AddrPromo(IR::AddrSpace addrL, IR::AddrSpace addrR,
+         Core::Origin pos)
+      {
+         if(IR::IsAddrEnclosed(addrL, addrR))
+         {
+            // If both enclose the other, they are either the same address space, or
+            // one is the generic address space and the other is the implementation
+            // of the generic address space. In the latter case, return the other
+            // address space in keeping with producing the most-qualified type.
+            if(IR::IsAddrEnclosed(addrR, addrL))
+               return addrL.base == IR::AddrBase::Gen ? addrR : addrL;
+            else
+               return addrL;
+         }
+         else
+         {
+            if(IR::IsAddrEnclosed(addrR, addrL))
+               return addrR;
+            else
+               throw Core::ExceptStr(pos, "cannot promote disjoint address spaces");
+         }
+      }
 
-//
-// QualPromo
-//
-static GDCC::AST::TypeQual QualPromo(GDCC::AST::TypeQual qualL,
-   GDCC::AST::TypeQual qualR, GDCC::Core::Origin pos)
-{
-   // Merge qualifiers.
-   qualL.space  = AddrPromo(qualL.space, qualR.space, pos);
-   qualL.aAtom |= qualR.aAtom;
-   qualL.aCons |= qualR.aCons;
-   qualL.aRest |= qualR.aRest;
-   qualL.aVola |= qualR.aVola;
+      //
+      // QualPromo
+      //
+      static SR::TypeQual QualPromo(SR::TypeQual qualL, SR::TypeQual qualR,
+         Core::Origin pos)
+      {
+         // Merge qualifiers.
+         qualL.space  = AddrPromo(qualL.space, qualR.space, pos);
+         qualL.aAtom |= qualR.aAtom;
+         qualL.aCons |= qualR.aCons;
+         qualL.aRest |= qualR.aRest;
+         qualL.aVola |= qualR.aVola;
 
-   return qualL;
+         return qualL;
+      }
+   }
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -80,10 +84,10 @@ namespace GDCC
       //
       // ExpPromo_PtrEqu
       //
-      std::tuple<AST::Type::CRef, AST::Exp::CRef, AST::Exp::CRef>
-      ExpPromo_PtrEqu(AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+      std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
+      ExpPromo_PtrEqu(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
-         AST::Exp::CRef expL{l}, expR{r};
+         SR::Exp::CRef expL{l}, expR{r};
 
          auto typeL = expL->getType();
          auto typeR = expR->getType();
@@ -137,7 +141,7 @@ namespace GDCC
                throw Core::ExceptStr(pos, "expected pointer to object");
 
             auto qual = QualPromo(baseL->getQual(), baseR->getQual(), pos);
-            auto type = AST::Type::Void->getTypeQual(qual)
+            auto type = SR::Type::Void->getTypeQual(qual)
                ->getTypeArrayQualAddr(qual.space)->getTypePointer();
 
             expL = ExpConvert_Pointer(type, expL, pos);
@@ -152,10 +156,10 @@ namespace GDCC
       //
       // ExpPromo_PtrRel
       //
-      std::tuple<AST::Type::CRef, AST::Exp::CRef, AST::Exp::CRef>
-      ExpPromo_PtrRel(AST::Exp const *l, AST::Exp const *r, Core::Origin pos)
+      std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
+      ExpPromo_PtrRel(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
-         AST::Exp::CRef expL{l}, expR{r};
+         SR::Exp::CRef expL{l}, expR{r};
 
          auto typeL = expL->getType();
          auto typeR = expR->getType();

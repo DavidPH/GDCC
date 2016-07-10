@@ -15,11 +15,11 @@
 
 #include "ACC/Exp.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Type.hpp"
-
 #include "CC/Exp.hpp"
 #include "CC/Type.hpp"
+
+#include "SR/Exp.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -35,7 +35,7 @@ namespace GDCC
       //
       // Allows additional implicit conversions over C.
       //
-      AST::Exp::CRef ExpPromo_Assign(AST::Type const *typeL, AST::Exp const *e,
+      SR::Exp::CRef ExpPromo_Assign(SR::Type const *typeL, SR::Exp const *e,
          Core::Origin pos)
       {
          auto exp   = CC::ExpPromo_LValue(e, pos);

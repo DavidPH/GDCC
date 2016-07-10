@@ -14,11 +14,11 @@
 
 #include "CC/Exp.hpp"
 
-#include "AST/Exp.hpp"
-
 #include "Core/Array.hpp"
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Exp.hpp"
 
 #include <vector>
 
@@ -30,8 +30,8 @@
 #define DeclExpCreate(getter1, getter2) \
    auto exp = getter1(scope); \
    \
-   auto expCreate = [&](AST::Exp::CRef (*creator)(AST::Exp const *, \
-      AST::Exp const *, Core::Origin)) \
+   auto expCreate = [&](SR::Exp::CRef (*creator)(SR::Exp const *, \
+      SR::Exp const *, Core::Origin)) \
    { \
       auto pos = in.get().pos; \
       return creator(exp, getter2(scope), pos); \
@@ -39,7 +39,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -49,7 +49,7 @@ namespace GDCC
       //
       // Parser::getExp_Mult
       //
-      AST::Exp::CRef Parser::getExp_Mult(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Mult(Scope &scope)
       {
          DeclExpCreate(getExp_Cast, getExp_Cast);
 
@@ -68,7 +68,7 @@ namespace GDCC
       //
       // Parser::getExp_Addi
       //
-      AST::Exp::CRef Parser::getExp_Addi(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Addi(Scope &scope)
       {
          DeclExpCreate(getExp_Mult, getExp_Mult);
 
@@ -85,7 +85,7 @@ namespace GDCC
       //
       // Parser::getExp_Shft
       //
-      AST::Exp::CRef Parser::getExp_Shft(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Shft(Scope &scope)
       {
          DeclExpCreate(getExp_Addi, getExp_Addi);
 
@@ -102,7 +102,7 @@ namespace GDCC
       //
       // Parser::getExp_Rela
       //
-      AST::Exp::CRef Parser::getExp_Rela(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Rela(Scope &scope)
       {
          DeclExpCreate(getExp_Shft, getExp_Shft);
 
@@ -121,7 +121,7 @@ namespace GDCC
       //
       // Parser::getExp_Equa
       //
-      AST::Exp::CRef Parser::getExp_Equa(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Equa(Scope &scope)
       {
          DeclExpCreate(getExp_Rela, getExp_Rela);
 
@@ -138,7 +138,7 @@ namespace GDCC
       //
       // Parser::getExp_BAnd
       //
-      AST::Exp::CRef Parser::getExp_BAnd(Scope &scope)
+      SR::Exp::CRef Parser::getExp_BAnd(Scope &scope)
       {
          DeclExpCreate(getExp_Equa, getExp_Equa);
 
@@ -151,7 +151,7 @@ namespace GDCC
       //
       // Parser::getExp_BOrX
       //
-      AST::Exp::CRef Parser::getExp_BOrX(Scope &scope)
+      SR::Exp::CRef Parser::getExp_BOrX(Scope &scope)
       {
          DeclExpCreate(getExp_BAnd, getExp_BAnd);
 
@@ -164,7 +164,7 @@ namespace GDCC
       //
       // Parser::getExp_BOrI
       //
-      AST::Exp::CRef Parser::getExp_BOrI(Scope &scope)
+      SR::Exp::CRef Parser::getExp_BOrI(Scope &scope)
       {
          DeclExpCreate(getExp_BOrX, getExp_BOrX);
 
@@ -177,7 +177,7 @@ namespace GDCC
       //
       // Parser::getExp_LAnd
       //
-      AST::Exp::CRef Parser::getExp_LAnd(Scope &scope)
+      SR::Exp::CRef Parser::getExp_LAnd(Scope &scope)
       {
          DeclExpCreate(getExp_BOrI, getExp_BOrI);
 
@@ -190,7 +190,7 @@ namespace GDCC
       //
       // Parser::getExp_LOrI
       //
-      AST::Exp::CRef Parser::getExp_LOrI(Scope &scope)
+      SR::Exp::CRef Parser::getExp_LOrI(Scope &scope)
       {
          DeclExpCreate(getExp_LAnd, getExp_LAnd);
 
@@ -203,7 +203,7 @@ namespace GDCC
       //
       // Parser::getExp_Cond
       //
-      AST::Exp::CRef Parser::getExp_Cond(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Cond(Scope &scope)
       {
          auto exp = getExp_LOrI(scope);
 
@@ -225,7 +225,7 @@ namespace GDCC
       //
       // Parser::getExp_Assi
       //
-      AST::Exp::CRef Parser::getExp_Assi(Scope &scope)
+      SR::Exp::CRef Parser::getExp_Assi(Scope &scope)
       {
          DeclExpCreate(getExp_Cond, getExp_Assi);
 
@@ -251,7 +251,7 @@ namespace GDCC
       //
       // Parser::getExp
       //
-      AST::Exp::CRef Parser::getExp(Scope &scope)
+      SR::Exp::CRef Parser::getExp(Scope &scope)
       {
          DeclExpCreate(getExp_Assi, getExp_Assi);
 
@@ -264,9 +264,9 @@ namespace GDCC
       //
       // Parser::getExpList
       //
-      Core::Array<AST::Exp::CRef> Parser::getExpList(CC::Scope &scope)
+      Core::Array<SR::Exp::CRef> Parser::getExpList(CC::Scope &scope)
       {
-         std::vector<AST::Exp::CRef> args;
+         std::vector<SR::Exp::CRef> args;
 
          do
             args.emplace_back(getExp_Assi(scope));

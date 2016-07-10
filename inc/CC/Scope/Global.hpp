@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,16 +24,16 @@
 
 namespace GDCC
 {
-   namespace AST
-   {
-      class Attribute;
-   }
-
    namespace IR
    {
       enum class Linkage;
 
       class Program;
+   }
+
+   namespace SR
+   {
+      class Attribute;
    }
 
    namespace CC
@@ -51,25 +51,25 @@ namespace GDCC
 
          void allocAuto();
 
-         Scope_Function &createScope(AST::Attribute const &attr, AST::Function *fn);
+         Scope_Function &createScope(SR::Attribute const &attr, SR::Function *fn);
 
          Core::String genGlyphObj(Core::String name, IR::Linkage linka);
 
          void genIR(IR::Program &prog);
 
          // Finds/creates a function, but does not add to lookup table.
-         Core::CounterRef<AST::Function> getFunction(AST::Attribute const &attr);
+         Core::CounterRef<SR::Function> getFunction(SR::Attribute const &attr);
 
-         Core::CounterRef<AST::Object> getObject(AST::Attribute const &attr);
+         Core::CounterRef<SR::Object> getObject(SR::Attribute const &attr);
 
-         Core::CounterRef<AST::Space> getSpace(AST::Attribute const &attr);
+         Core::CounterRef<SR::Space> getSpace(SR::Attribute const &attr);
 
          Core::String const label;
 
       protected:
-         LookupTable<AST::Function> globalFunc;
-         LookupTable<AST::Object>   globalObj;
-         LookupTable<AST::Space>    globalSpace;
+         LookupTable<SR::Function> globalFunc;
+         LookupTable<SR::Object>   globalObj;
+         LookupTable<SR::Space>    globalSpace;
 
          std::vector<std::unique_ptr<Scope_Function>> subScopes;
 

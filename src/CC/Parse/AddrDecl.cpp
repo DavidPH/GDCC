@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -25,16 +25,16 @@
 #include "CC/Scope/Global.hpp"
 #include "CC/Scope/Local.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Space.hpp"
-#include "AST/Warning.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "IR/Addr.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Space.hpp"
+#include "SR/Warning.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -50,7 +50,7 @@ namespace GDCC
       //
       template<typename ScopeT>
       static void ParseAddrDeclBase(Parser &ctx, ScopeT &scope,
-         AST::Attribute &attr)
+         SR::Attribute &attr)
       {
          attr.linka = IR::Linkage::ExtC;
 
@@ -73,12 +73,12 @@ namespace GDCC
          {
          case Core::STR___gbl_arr: attr.space.base = IR::AddrBase::GblArr; break;
          case Core::STR___wld_arr:
-            AST::WarnDeprecated(attr.namePos,
+            SR::WarnDeprecated(attr.namePos,
                "__wld_arr is deprecrated, use __hub_arr instead");
          case Core::STR___hub_arr: attr.space.base = IR::AddrBase::HubArr; break;
          case Core::STR___loc_arr: attr.space.base = IR::AddrBase::LocArr; break;
          case Core::STR___map_arr:
-            AST::WarnDeprecated(attr.namePos,
+            SR::WarnDeprecated(attr.namePos,
                "__map_arr is deprecrated, use __mod_arr instead");
          case Core::STR___mod_arr: attr.space.base = IR::AddrBase::ModArr; break;
          default: throw Core::ParseExceptExpect(ctx.in.reget(),
@@ -139,7 +139,7 @@ namespace GDCC
       //
       // Parser::parseAddrDecl
       //
-      void Parser::parseAddrDecl(Scope_Global &scope, AST::Attribute &attr)
+      void Parser::parseAddrDecl(Scope_Global &scope, SR::Attribute &attr)
       {
          ParseAddrDeclBase(*this, scope, attr);
       }
@@ -147,7 +147,7 @@ namespace GDCC
       //
       // Parser::parseAddrDecl
       //
-      void Parser::parseAddrDecl(Scope_Local &scope, AST::Attribute &attr)
+      void Parser::parseAddrDecl(Scope_Local &scope, SR::Attribute &attr)
       {
          ParseAddrDeclBase(*this, scope, attr);
       }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,7 +39,7 @@ namespace GDCC
       //
       // Statement_Asm::v_genStmnt
       //
-      void Statement_Asm::v_genStmnt(AST::GenStmntCtx const &ctx) const
+      void Statement_Asm::v_genStmnt(SR::GenStmntCtx const &ctx) const
       {
          Core::ArrayTBuf   buf{tokens.data(), tokens.size()};
          Core::TokenStream in {&buf};
@@ -51,8 +51,8 @@ namespace GDCC
       //
       // StatementCreate_Asm
       //
-      AST::Statement::CRef StatementCreate_Asm(
-         AST::Statement::Labels &&labels, Core::Origin pos,
+      SR::Statement::CRef StatementCreate_Asm(
+         SR::Statement::Labels &&labels, Core::Origin pos,
          Statement_Asm::Tokens &&tokens)
       {
          return Statement_Asm::Create(std::move(labels), pos, std::move(tokens));

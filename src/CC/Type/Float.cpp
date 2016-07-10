@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,7 +18,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Static Variables                                                           |
+// Static Objects                                                             |
 //
 
 namespace GDCC
@@ -26,7 +26,7 @@ namespace GDCC
    namespace CC
    {
       // Table: Type_Float::getBaseType
-      static AST::Type::CRef const FloatTable_BaseType[4] =
+      static SR::Type::CRef const FloatTable_BaseType[4] =
       {
          GetTypeFloatRS(), // FIXME
          GetTypeFloatRS(),
@@ -99,9 +99,9 @@ namespace GDCC
       //
       // Type_Float::getBaseType
       //
-      AST::Type::CRef Type_Float::getBaseType() const
+      SR::Type::CRef Type_Float::getBaseType() const
       {
-         if(real) throw AST::TypeError();
+         if(real) throw SR::TypeError();
          return FloatTable_BaseType[size];
       }
 

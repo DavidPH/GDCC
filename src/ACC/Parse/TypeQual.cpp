@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,14 +12,14 @@
 
 #include "ACC/Parse.hpp"
 
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
+#include "SR/Type.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -48,7 +48,7 @@ namespace GDCC
       //
       // Parser::parseTypeQual
       //
-      void Parser::parseTypeQual(CC::Scope &, AST::TypeQual &qual)
+      void Parser::parseTypeQual(CC::Scope &, SR::TypeQual &qual)
       {
          auto const &tok = in.get();
          if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)

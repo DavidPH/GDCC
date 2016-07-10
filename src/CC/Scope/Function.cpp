@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,13 +14,13 @@
 
 #include "CC/Scope/Block.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Function.hpp"
-#include "AST/Object.hpp"
-
 #include "IR/CallType.hpp"
 
 #include "Platform/Platform.hpp"
+
+#include "SR/Exp.hpp"
+#include "SR/Function.hpp"
+#include "SR/Object.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -34,8 +34,8 @@ namespace GDCC
       //
       // Scope_Function constructor
       //
-      Scope_Function::Scope_Function(Scope_Global &parent_, AST::Function *fn_,
-         Core::Array<AST::Object::Ref> &&params_) :
+      Scope_Function::Scope_Function(Scope_Global &parent_, SR::Function *fn_,
+         Core::Array<SR::Object::Ref> &&params_) :
          Scope_Local{parent_, *this},
          params  {std::move(params_)},
          fn      {fn_},

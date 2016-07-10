@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,11 +12,11 @@
 
 #include "CC/Parse.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -45,7 +45,7 @@ namespace GDCC
       // atomic-type-specifier:
       //    <_Atomic> ( type-name )
       //
-      void Parser::parseTypeSpec_atomic(Scope &scope, AST::Attribute &attr, TypeSpec &spec)
+      void Parser::parseTypeSpec_atomic(Scope &scope, SR::Attribute &attr, TypeSpec &spec)
       {
          if(spec.specBase)
             throw Core::ExceptStr(in.reget().pos, "multiple type-specifier base");

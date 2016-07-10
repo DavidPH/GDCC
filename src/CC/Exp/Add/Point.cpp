@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,9 +14,9 @@
 
 #include "CC/Type.hpp"
 
-#include "AST/Type.hpp"
-
 #include "IR/Block.hpp"
+
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -30,19 +30,19 @@ namespace GDCC
       //
       // Exp_AddPoint::v_genStmnt
       //
-      void Exp_AddPoint::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_AddPoint::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
-         AST::GenStmnt_Point(this, {IR::Code::AddU_W, 1}, ctx, dst);
+         SR::GenStmnt_Point(this, {IR::Code::AddU_W, 1}, ctx, dst);
       }
 
       //
       // Exp_AddPointEq::v_genStmnt
       //
-      void Exp_AddPointEq::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_AddPointEq::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
-         AST::GenStmnt_PointEq(this, {IR::Code::AddU_W, 1}, ctx, dst, post);
+         SR::GenStmnt_PointEq(this, {IR::Code::AddU_W, 1}, ctx, dst, post);
       }
 
       //
@@ -64,8 +64,8 @@ namespace GDCC
       //
       // Exp_AddPtrRaw::v_genStmnt
       //
-      void Exp_AddPtrRaw::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_AddPtrRaw::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          if(GenStmntNul(this, ctx, dst)) return;
 
@@ -94,8 +94,8 @@ namespace GDCC
       //
       // Exp_AddStrEntInt::v_genStmnt
       //
-      void Exp_AddStrEntInt::v_genStmnt(AST::GenStmntCtx const &ctx,
-         AST::Arg const &dst) const
+      void Exp_AddStrEntInt::v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst) const
       {
          if(GenStmntNul(this, ctx, dst)) return;
 

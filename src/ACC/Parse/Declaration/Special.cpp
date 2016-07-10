@@ -14,11 +14,6 @@
 
 #include "ACC/Scope.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Function.hpp"
-#include "AST/Statement.hpp"
-#include "AST/Type.hpp"
-
 #include "CC/Exp.hpp"
 #include "CC/Scope/Global.hpp"
 #include "CC/Type.hpp"
@@ -29,6 +24,11 @@
 #include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Function.hpp"
+#include "SR/Statement.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -42,7 +42,7 @@ namespace GDCC
       //
       // ParseAddress
       //
-      static void ParseAddress(Parser &ctx, CC::Scope &scope, AST::Attribute &attr)
+      static void ParseAddress(Parser &ctx, CC::Scope &scope, SR::Attribute &attr)
       {
          // special-address:
          //    integer-constant :
@@ -89,7 +89,7 @@ namespace GDCC
       //
       // ParseParameters
       //
-      static void ParseParameters(Parser &ctx, CC::Scope &scope, AST::Attribute &attr)
+      static void ParseParameters(Parser &ctx, CC::Scope &scope, SR::Attribute &attr)
       {
          // special-parameters:
          //    integer-constant
@@ -101,25 +101,25 @@ namespace GDCC
             auto pos    = ctx.in.peek().pos;
             auto argMin = CC::ExpToFastU(ctx.getExp_Prim(scope));
 
-            AST::TypeSet::CPtr types;
+            SR::TypeSet::CPtr types;
             if(ctx.in.drop(Core::TOK_Comma))
             {
                if(ctx.in.peek(Core::TOK_NumInt))
                {
                   auto argMax = CC::ExpToFastU(ctx.getExp_Prim(scope));
 
-                  Core::Array<AST::Type::CRef> param{argMax, CC::TypeIntegPrS};
+                  Core::Array<SR::Type::CRef> param{argMax, CC::TypeIntegPrS};
 
-                  types = AST::TypeSet::Get(param.data(), param.size(), false);
+                  types = SR::TypeSet::Get(param.data(), param.size(), false);
                }
                else
                   types = std::get<0>(ctx.getTypeList(scope));
             }
             else
             {
-               Core::Array<AST::Type::CRef> param{argMin, CC::TypeIntegPrS};
+               Core::Array<SR::Type::CRef> param{argMin, CC::TypeIntegPrS};
 
-               types = AST::TypeSet::Get(param.data(), param.size(), false);
+               types = SR::TypeSet::Get(param.data(), param.size(), false);
             }
 
             if(argMin > types->size())
@@ -149,7 +149,7 @@ namespace GDCC
       //
       // Parser::getDecl_Special
       //
-      AST::Statement::CRef Parser::getDecl_Special(Scope_Global &scope)
+      SR::Statement::CRef Parser::getDecl_Special(Scope_Global &scope)
       {
          if(!in.peek(Core::TOK_KeyWrd, Core::STR_special))
             throw Core::ParseExceptExpect(in.peek(), "special-declaration", false);
@@ -161,7 +161,7 @@ namespace GDCC
          //    special-list , special-item
          do
          {
-            AST::Attribute attr;
+            SR::Attribute attr;
             attr.linka = IR::Linkage::ExtACS;
 
             // special-item:
@@ -224,7 +224,7 @@ namespace GDCC
          if(!in.drop(Core::TOK_Semico))
             throw Core::ParseExceptExpect(in.peek(), ";", true);
 
-         return AST::StatementCreate_Empty(pos);
+         return SR::StatementCreate_Empty(pos);
       }
    }
 }

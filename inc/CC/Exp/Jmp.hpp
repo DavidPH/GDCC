@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Exp.hpp"
 
-#include "../../AST/Exp.hpp"
+#include "../../SR/Exp.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -31,21 +31,21 @@ namespace GDCC
       //
       // Exp_JmpLng
       //
-      class Exp_JmpLng : public AST::Exp
+      class Exp_JmpLng : public SR::Exp
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Exp_JmpLng, GDCC::AST::Exp);
+         GDCC_Core_CounterPreamble(GDCC::CC::Exp_JmpLng, GDCC::SR::Exp);
 
       public:
-         static CRef Create(Scope_Local &scope, AST::Exp const *env,
-            AST::Exp const *val, Core::Origin pos)
+         static CRef Create(Scope_Local &scope, SR::Exp const *env,
+            SR::Exp const *val, Core::Origin pos)
             {return CRef(new This(scope, env, val, pos));}
 
       protected:
-         Exp_JmpLng(Scope_Local &scope_, AST::Exp const *env_,
-            AST::Exp const *val_, Core::Origin pos_) :
+         Exp_JmpLng(Scope_Local &scope_, SR::Exp const *env_,
+            SR::Exp const *val_, Core::Origin pos_) :
             Super{pos_}, scope(scope_), env{env_}, val{val_} {}
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx, AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual TypeCRef v_getType() const;
 
@@ -55,26 +55,26 @@ namespace GDCC
 
          virtual bool v_isNoAuto() const;
 
-         Scope_Local   &scope;
-         AST::Exp::CRef env;
-         AST::Exp::CRef val;
+         Scope_Local  &scope;
+         SR::Exp::CRef env;
+         SR::Exp::CRef val;
       };
 
       //
       // Exp_JmpSet
       //
-      class Exp_JmpSet : public AST::Exp
+      class Exp_JmpSet : public SR::Exp
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Exp_JmpSet, GDCC::AST::Exp);
+         GDCC_Core_CounterPreamble(GDCC::CC::Exp_JmpSet, GDCC::SR::Exp);
 
       public:
-         static CRef Create(AST::Exp const *env, Core::Origin pos)
+         static CRef Create(SR::Exp const *env, Core::Origin pos)
             {return CRef(new This(env, pos));}
 
       protected:
-         Exp_JmpSet(AST::Exp const *env_, Core::Origin pos_) : Super{pos_}, env{env_} {}
+         Exp_JmpSet(SR::Exp const *env_, Core::Origin pos_) : Super{pos_}, env{env_} {}
 
-         virtual void v_genStmnt(AST::GenStmntCtx const &ctx, AST::Arg const &dst) const;
+         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
          virtual TypeCRef v_getType() const;
 
@@ -84,7 +84,7 @@ namespace GDCC
 
          virtual bool v_isNoAuto() const;
 
-         AST::Exp::CRef env;
+         SR::Exp::CRef env;
       };
    }
 }

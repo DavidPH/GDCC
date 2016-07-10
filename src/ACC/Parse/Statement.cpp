@@ -15,10 +15,6 @@
 #include "AS/LabelTBuf.hpp"
 #include "AS/TStream.hpp"
 
-#include "AST/Exp.hpp"
-#include "AST/Function.hpp"
-#include "AST/Statement.hpp"
-
 #include "CC/AsmGlyphTBuf.hpp"
 #include "CC/Exp.hpp"
 #include "CC/Scope/Case.hpp"
@@ -30,9 +26,13 @@
 #include "Core/StringBuf.hpp"
 #include "Core/TokenStream.hpp"
 
+#include "SR/Exp.hpp"
+#include "SR/Function.hpp"
+#include "SR/Statement.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -42,7 +42,7 @@ namespace GDCC
       //
       // Parser::getStatement
       //
-      AST::Statement::CRef Parser::getStatement(CC::Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement(CC::Scope_Local &scope, Labels &&labels)
       {
          // compound-statement
          if(in.peek().tok == Core::TOK_BraceO)
@@ -78,7 +78,7 @@ namespace GDCC
       //
       // Parser::getStatement_do
       //
-      AST::Statement::CRef Parser::getStatement_do(CC::Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_do(CC::Scope_Local &scope, Labels &&labels)
       {
          auto &loopScope = scope.createScopeLoop();
 
@@ -113,7 +113,7 @@ namespace GDCC
       //
       // Parser::getStatement_restart
       //
-      AST::Statement::CRef Parser::getStatement_restart(CC::Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_restart(CC::Scope_Local &scope, Labels &&labels)
       {
          // <restart> ;
 
@@ -130,7 +130,7 @@ namespace GDCC
       //
       // Parser::getStatement_while
       //
-      AST::Statement::CRef Parser::getStatement_while(CC::Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_while(CC::Scope_Local &scope, Labels &&labels)
       {
          auto &loopScope = scope.createScopeLoop();
 
@@ -156,7 +156,7 @@ namespace GDCC
       //
       // Parser::getStatement_terminate
       //
-      AST::Statement::CRef Parser::getStatement_terminate(CC::Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatement_terminate(CC::Scope_Local &scope, Labels &&labels)
       {
          // <terminate> ;
 
@@ -173,7 +173,7 @@ namespace GDCC
       //
       // Parser::getStatementCompound
       //
-      AST::Statement::CRef Parser::getStatementCompound(CC::Scope_Local &scope, Labels &&labels)
+      SR::Statement::CRef Parser::getStatementCompound(CC::Scope_Local &scope, Labels &&labels)
       {
          // compound-statement:
          //    { block-item-list(opt) }
@@ -181,7 +181,7 @@ namespace GDCC
          // {
          auto pos = in.get().pos;
 
-         std::vector<AST::Statement::CRef> stmnts;
+         std::vector<SR::Statement::CRef> stmnts;
          auto &blockScope = scope.createScopeBlock();
 
          // block-item-list:
@@ -204,7 +204,7 @@ namespace GDCC
 
          // }
 
-         return AST::StatementCreate_Multi(std::move(labels), pos,
+         return SR::StatementCreate_Multi(std::move(labels), pos,
             {stmnts.begin(), stmnts.end()});
       }
    }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,11 +12,11 @@
 
 #include "ACC/Parse.hpp"
 
-#include "AST/Attribute.hpp"
-#include "AST/Type.hpp"
-
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
+
+#include "SR/Attribute.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -53,7 +53,7 @@ namespace GDCC
       //
       // Parser::parseDeclSpec
       //
-      void Parser::parseDeclSpec(CC::Scope &scope, AST::Attribute &attr)
+      void Parser::parseDeclSpec(CC::Scope &scope, SR::Attribute &attr)
       {
          enum DeclStor
          {
@@ -66,7 +66,7 @@ namespace GDCC
 
          auto pos = in.peek().pos;
 
-         AST::TypeQual declQual = AST::QualNone;
+         SR::TypeQual declQual = SR::QualNone;
          CC::TypeSpec  declSpec;
          DeclStor      declStor = declStorNone;
 

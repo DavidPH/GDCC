@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,72 +12,72 @@
 
 #include "CC/Type.hpp"
 
-#include "AST/Type.hpp"
+#include "SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Objects                                                             |
 //
 
 namespace GDCC
 {
    namespace CC
    {
-      AST::Type::CRef TypeBool    {GetTypeBool()};
-      AST::Type::CRef TypeBoolSoft{GetTypeBoolSoft()};
+      SR::Type::CRef TypeBool    {GetTypeBool()};
+      SR::Type::CRef TypeBoolSoft{GetTypeBoolSoft()};
 
-      AST::Type::CRef TypeChar{GetTypeChar()};
+      SR::Type::CRef TypeChar{GetTypeChar()};
 
-      AST::Type::CRef TypeFixedPrS {GetTypeFixedPrS ()};
-      AST::Type::CRef TypeFixedPrSH{GetTypeFixedPrSH()};
-      AST::Type::CRef TypeFixedPrSL{GetTypeFixedPrSL()};
-      AST::Type::CRef TypeFixedPrU {GetTypeFixedPrU ()};
-      AST::Type::CRef TypeFixedPrUH{GetTypeFixedPrUH()};
-      AST::Type::CRef TypeFixedPrUL{GetTypeFixedPrUL()};
+      SR::Type::CRef TypeFixedPrS {GetTypeFixedPrS ()};
+      SR::Type::CRef TypeFixedPrSH{GetTypeFixedPrSH()};
+      SR::Type::CRef TypeFixedPrSL{GetTypeFixedPrSL()};
+      SR::Type::CRef TypeFixedPrU {GetTypeFixedPrU ()};
+      SR::Type::CRef TypeFixedPrUH{GetTypeFixedPrUH()};
+      SR::Type::CRef TypeFixedPrUL{GetTypeFixedPrUL()};
 
-      AST::Type::CRef TypeFixedSaS {GetTypeFixedSaS ()};
-      AST::Type::CRef TypeFixedSaSH{GetTypeFixedSaSH()};
-      AST::Type::CRef TypeFixedSaSL{GetTypeFixedSaSL()};
-      AST::Type::CRef TypeFixedSaU {GetTypeFixedSaU ()};
-      AST::Type::CRef TypeFixedSaUH{GetTypeFixedSaUH()};
-      AST::Type::CRef TypeFixedSaUL{GetTypeFixedSaUL()};
+      SR::Type::CRef TypeFixedSaS {GetTypeFixedSaS ()};
+      SR::Type::CRef TypeFixedSaSH{GetTypeFixedSaSH()};
+      SR::Type::CRef TypeFixedSaSL{GetTypeFixedSaSL()};
+      SR::Type::CRef TypeFixedSaU {GetTypeFixedSaU ()};
+      SR::Type::CRef TypeFixedSaUH{GetTypeFixedSaUH()};
+      SR::Type::CRef TypeFixedSaUL{GetTypeFixedSaUL()};
 
-      AST::Type::CRef TypeFloatCS  {GetTypeFloatCS  ()};
-      AST::Type::CRef TypeFloatCSL {GetTypeFloatCSL ()};
-      AST::Type::CRef TypeFloatCSLL{GetTypeFloatCSLL()};
+      SR::Type::CRef TypeFloatCS  {GetTypeFloatCS  ()};
+      SR::Type::CRef TypeFloatCSL {GetTypeFloatCSL ()};
+      SR::Type::CRef TypeFloatCSLL{GetTypeFloatCSLL()};
 
-      AST::Type::CRef TypeFloatIS  {GetTypeFloatIS  ()};
-      AST::Type::CRef TypeFloatISL {GetTypeFloatISL ()};
-      AST::Type::CRef TypeFloatISLL{GetTypeFloatISLL()};
+      SR::Type::CRef TypeFloatIS  {GetTypeFloatIS  ()};
+      SR::Type::CRef TypeFloatISL {GetTypeFloatISL ()};
+      SR::Type::CRef TypeFloatISLL{GetTypeFloatISLL()};
 
-      AST::Type::CRef TypeFloatRS  {GetTypeFloatRS  ()};
-      AST::Type::CRef TypeFloatRSL {GetTypeFloatRSL ()};
-      AST::Type::CRef TypeFloatRSLL{GetTypeFloatRSLL()};
+      SR::Type::CRef TypeFloatRS  {GetTypeFloatRS  ()};
+      SR::Type::CRef TypeFloatRSL {GetTypeFloatRSL ()};
+      SR::Type::CRef TypeFloatRSLL{GetTypeFloatRSLL()};
 
-      AST::Type::CRef TypeFractPrS {GetTypeFractPrS ()};
-      AST::Type::CRef TypeFractPrSH{GetTypeFractPrSH()};
-      AST::Type::CRef TypeFractPrSL{GetTypeFractPrSL()};
-      AST::Type::CRef TypeFractPrU {GetTypeFractPrU ()};
-      AST::Type::CRef TypeFractPrUH{GetTypeFractPrUH()};
-      AST::Type::CRef TypeFractPrUL{GetTypeFractPrUL()};
+      SR::Type::CRef TypeFractPrS {GetTypeFractPrS ()};
+      SR::Type::CRef TypeFractPrSH{GetTypeFractPrSH()};
+      SR::Type::CRef TypeFractPrSL{GetTypeFractPrSL()};
+      SR::Type::CRef TypeFractPrU {GetTypeFractPrU ()};
+      SR::Type::CRef TypeFractPrUH{GetTypeFractPrUH()};
+      SR::Type::CRef TypeFractPrUL{GetTypeFractPrUL()};
 
-      AST::Type::CRef TypeFractSaS {GetTypeFractSaS ()};
-      AST::Type::CRef TypeFractSaSH{GetTypeFractSaSH()};
-      AST::Type::CRef TypeFractSaSL{GetTypeFractSaSL()};
-      AST::Type::CRef TypeFractSaU {GetTypeFractSaU ()};
-      AST::Type::CRef TypeFractSaUH{GetTypeFractSaUH()};
-      AST::Type::CRef TypeFractSaUL{GetTypeFractSaUL()};
+      SR::Type::CRef TypeFractSaS {GetTypeFractSaS ()};
+      SR::Type::CRef TypeFractSaSH{GetTypeFractSaSH()};
+      SR::Type::CRef TypeFractSaSL{GetTypeFractSaSL()};
+      SR::Type::CRef TypeFractSaU {GetTypeFractSaU ()};
+      SR::Type::CRef TypeFractSaUH{GetTypeFractSaUH()};
+      SR::Type::CRef TypeFractSaUL{GetTypeFractSaUL()};
 
-      AST::Type::CRef TypeIntegPrS  {GetTypeIntegPrS  ()};
-      AST::Type::CRef TypeIntegPrSH {GetTypeIntegPrSH ()};
-      AST::Type::CRef TypeIntegPrSHH{GetTypeIntegPrSHH()};
-      AST::Type::CRef TypeIntegPrSL {GetTypeIntegPrSL ()};
-      AST::Type::CRef TypeIntegPrSLL{GetTypeIntegPrSLL()};
-      AST::Type::CRef TypeIntegPrU  {GetTypeIntegPrU  ()};
-      AST::Type::CRef TypeIntegPrUH {GetTypeIntegPrUH ()};
-      AST::Type::CRef TypeIntegPrUHH{GetTypeIntegPrUHH()};
-      AST::Type::CRef TypeIntegPrUL {GetTypeIntegPrUL ()};
-      AST::Type::CRef TypeIntegPrULL{GetTypeIntegPrULL()};
+      SR::Type::CRef TypeIntegPrS  {GetTypeIntegPrS  ()};
+      SR::Type::CRef TypeIntegPrSH {GetTypeIntegPrSH ()};
+      SR::Type::CRef TypeIntegPrSHH{GetTypeIntegPrSHH()};
+      SR::Type::CRef TypeIntegPrSL {GetTypeIntegPrSL ()};
+      SR::Type::CRef TypeIntegPrSLL{GetTypeIntegPrSLL()};
+      SR::Type::CRef TypeIntegPrU  {GetTypeIntegPrU  ()};
+      SR::Type::CRef TypeIntegPrUH {GetTypeIntegPrUH ()};
+      SR::Type::CRef TypeIntegPrUHH{GetTypeIntegPrUHH()};
+      SR::Type::CRef TypeIntegPrUL {GetTypeIntegPrUL ()};
+      SR::Type::CRef TypeIntegPrULL{GetTypeIntegPrULL()};
    }
 }
 

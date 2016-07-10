@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,7 +15,7 @@
 
 #include "../../CC/Type.hpp"
 
-#include "../../AST/Type.hpp"
+#include "../../SR/Type.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,9 +29,9 @@ namespace GDCC
       //
       // Type_Bool
       //
-      class Type_Bool final : public AST::Type
+      class Type_Bool final : public SR::Type
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Type_Bool, GDCC::AST::Type);
+         GDCC_Core_CounterPreamble(GDCC::CC::Type_Bool, GDCC::SR::Type);
 
       public:
          // Type information.
@@ -60,7 +60,7 @@ namespace GDCC
          virtual bool isCTypeScalar() const {return true;}
 
 
-         friend AST::Type::CRef GetTypeBool();
+         friend SR::Type::CRef GetTypeBool();
 
       protected:
          Type_Bool() = default;
@@ -69,9 +69,9 @@ namespace GDCC
       //
       // Type_BoolSoft
       //
-      class Type_BoolSoft final : public AST::Type
+      class Type_BoolSoft final : public SR::Type
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Type_BoolSoft, GDCC::AST::Type);
+         GDCC_Core_CounterPreamble(GDCC::CC::Type_BoolSoft, GDCC::SR::Type);
 
       public:
          // Type information.
@@ -90,7 +90,7 @@ namespace GDCC
          virtual bool isCTypeScalar() const {return true;}
 
 
-         friend AST::Type::CRef GetTypeBoolSoft();
+         friend SR::Type::CRef GetTypeBoolSoft();
 
       protected:
          Type_BoolSoft() = default;
