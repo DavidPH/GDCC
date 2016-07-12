@@ -72,9 +72,9 @@ add_executable(gdcc-acc
 
 target_link_libraries(gdcc-acc-lib
    gdcc-as-lib
-   gdcc-ast-lib
    gdcc-cc-lib
    gdcc-cpp-lib
+   gdcc-sr-lib
 )
 
 target_link_libraries(gdcc-acc gdcc-acc-lib gdcc-ld-lib)
