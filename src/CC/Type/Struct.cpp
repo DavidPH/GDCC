@@ -236,17 +236,27 @@ namespace GDCC
       {
          if(!data.complete) throw SR::TypeError();
 
+         auto membBegin = data.memb.begin();
+         auto membEnd   = data.memb.end();
+
+         // Strip trailing flexible array member, if any.
+         if(membBegin != membEnd && (membEnd - 1)->type->isTypeArray() &&
+            !(membEnd - 1)->type->isTypeComplete())
+         {
+            --membEnd;
+         }
+
          if(data.isStruct)
          {
             return IR::Type_Assoc(
-               {data.memb.begin(), data.memb.end(),
+               {membBegin, membEnd,
                   [](MemberData const &m) -> IR::TypeAssoc
                      {return {m.type->getIRType(), m.name, m.addr};}});
          }
          else
          {
             return IR::Type_Union(
-               {data.memb.begin(), data.memb.end(),
+               {membBegin, membEnd,
                   [](MemberData const &m) {return m.type->getIRType();}});
          }
       }
