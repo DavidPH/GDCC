@@ -148,9 +148,9 @@ namespace GDCC
                   [](JumpData const &l, JumpData const &r) -> bool
                   {
                      if(l.value & 0x80000000)
-                        return r.value & 0x80000000 ? l.value > r.value : false;
+                        return r.value & 0x80000000 ? l.value < r.value : true;
                      else
-                        return r.value & 0x80000000 ? true : l.value < r.value;
+                        return r.value & 0x80000000 ? false : l.value < r.value;
                   }
                );
 
