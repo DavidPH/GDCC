@@ -100,30 +100,35 @@ namespace GDCC
       //
       SR::Exp::CRef ExpConvert_BoolSoft(SR::Exp const *e, Core::Origin pos)
       {
-         auto type = e->getType();
+         SR::Exp::CRef exp{e};
+         auto          type = exp->getType();
+
+         // TODO: Bitfield conversion with mask, but not shift.
+         if(type->isTypeBitfield())
+            type = (exp = ExpConvert_Bitfield(exp, pos))->getType();
 
          if(type->isCTypeFixed() || type->isCTypeInteg())
          {
             if(type->getSizeWords() == 1)
-               return static_cast<SR::Exp::CRef>(e);
+               return exp;
 
-            return Exp_ConvertBoolSoft_Fixed::Create(TypeBoolSoft, e, pos);
+            return Exp_ConvertBoolSoft_Fixed::Create(TypeBoolSoft, exp, pos);
          }
 
          if(type->isCTypeRealFlt())
-            return Exp_ConvertBoolSoft_Float::Create(TypeBoolSoft, e, pos);
+            return Exp_ConvertBoolSoft_Float::Create(TypeBoolSoft, exp, pos);
 
          if(type->isTypePointer())
          {
             if(Platform::IsZeroNull_Point(type->getBaseType()->getQualAddr().base))
             {
                if(type->getSizeWords() == 1)
-                  return static_cast<SR::Exp::CRef>(e);
+                  return exp;
 
-               return Exp_ConvertBoolSoft_Fixed::Create(TypeBoolSoft, e, pos);
+               return Exp_ConvertBoolSoft_Fixed::Create(TypeBoolSoft, exp, pos);
             }
             else
-               return Exp_ConvertBoolSoft_PtrInv::Create(TypeBoolSoft, e, pos);
+               return Exp_ConvertBoolSoft_PtrInv::Create(TypeBoolSoft, exp, pos);
          }
 
          throw Core::ExceptStr(pos, "soft bool stub");
