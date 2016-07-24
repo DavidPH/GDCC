@@ -21,6 +21,8 @@
 #include "IR/CodeSet/Cmp.hpp"
 #include "IR/Glyph.hpp"
 
+#include "Platform/Platform.hpp"
+
 #include "SR/Exp.hpp"
 #include "SR/Function.hpp"
 #include "SR/Temporary.hpp"
@@ -181,6 +183,37 @@ namespace GDCC
          GenCond_SearchPart(stmnt, ctx, ops, tmp, cases.data() + 1,
             cases.data() + cases.size() - 1);
       }
+
+      //
+      // GenCond_Search_Jcnd_Tab
+      //
+      static void GenCond_Search_Jcnd_Tab(Statement_Switch const *stmnt,
+         SR::GenStmntCtx const &ctx)
+      {
+         Core::FastU caseSize = stmnt->cond->getType()->getSizeWords();
+
+         Core::Array<IR::Arg> args{stmnt->scope.size() * 2 + 1};
+         auto argItr = args.begin();
+
+         // Evaluate condition.
+         stmnt->cond->genStmntStk(ctx);
+         *argItr++ = IR::Arg_Stk();
+
+         // Determine IR type of case values.
+         auto caseType = stmnt->cond->getType()->getIRType().tFixed;
+
+         // Generate cases. Sorting is handled by the BC module, as needed.
+         for(auto const &c : stmnt->scope)
+         {
+            *argItr++ = IR::Arg_Lit{IR::ExpCreate_Value(
+               IR::Value_Fixed{c.value, caseType}, stmnt->cond->pos)};
+            *argItr++ = IR::Arg_Lit{ctx.block.getExp({ctx.prog, c.label})};
+         }
+
+         ctx.block.addStatementArgs({IR::Code::Jcnd_Tab, caseSize}, std::move(args));
+         ctx.block.addStatementArgs({IR::Code::Move_W,   caseSize}, IR::Arg_Nul{}, IR::Arg_Stk{});
+         GenCond_BranchDefault(stmnt, ctx);
+      }
    }
 }
 
@@ -226,7 +259,10 @@ namespace GDCC
       void Statement_Switch::v_genStmnt(SR::GenStmntCtx const &ctx) const
       {
          // Generate condition.
-         GenCond_Search(this, ctx, GenCond_Codes(this, cond->getType()));
+         if(Platform::IsFamily_ZDACS() && cond->getType()->getSizeWords() == 1)
+            GenCond_Search_Jcnd_Tab(this, ctx);
+         else
+            GenCond_Search(this, ctx, GenCond_Codes(this, cond->getType()));
 
          // Generate body.
          body->genStmnt(ctx);
