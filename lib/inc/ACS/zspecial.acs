@@ -504,6 +504,8 @@ special
    void  {103     }:LocalAmbientSound(str, int),
    void  {104     }:SetLineMonsterBlocking(int, int),
 
+   int   {118     }:IsMultiplayer(void),
+   int   {118     }:IsNetworkGame(void),
    int   {119     }:PlayerTeam(void),
    int   {120     }:PlayerHealth(void),
    int   {121     }:PlayerArmorPoints(void),

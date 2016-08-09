@@ -22,6 +22,7 @@
 // Global Functions                                                           |
 //
 
+ACS_AsmFuncDeclFull(118,    , 0, int,  IsMultiplayer, void);
 ACS_AsmFuncDeclFull(119,    , 0, int,  PlayerTeam, void);
 ACS_AsmFuncDeclFull(120,    , 0, int,  PlayerHealth, void);
 ACS_AsmFuncDeclFull(121,    , 0, int,  PlayerArmorPoints, void);

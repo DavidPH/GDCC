@@ -31,6 +31,8 @@ ACS_AsmFuncDeclFull(102,    , 0, void,   ActivatorSound, __str, int);
 ACS_AsmFuncDeclFull(103,    , 0, void,   LocalAmbientSound, __str, int);
 ACS_AsmFuncDeclFull(104,    , 0, void,   SetLineMonsterBlocking, int, int);
 
+ACS_AsmFuncDeclFull(118,    , 0, int,    IsNetworkGame, void);
+
 ACS_AsmFuncDeclFull(122,    , 0, int,    PlayerFrags, void);
 
 ACS_AsmFuncDeclFull(131,    , 0, void,   PrintName, int);
