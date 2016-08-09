@@ -179,8 +179,10 @@ namespace GDCC
          if(Platform::IsCallAutoProp(fn.ctype))
             ++fn.param;
 
-         if(fn.ctype == IR::CallType::ScriptI ||
-            fn.ctype == IR::CallType::ScriptS)
+         if(fn.allocAut &&
+            (fn.ctype == IR::CallType::ScriptI ||
+             fn.ctype == IR::CallType::ScriptS ||
+             fn.ctype == IR::CallType::StkCall))
          {
             // Extra register for stack pointer.
             ++fn.localReg;
@@ -281,6 +283,7 @@ namespace GDCC
          {
          case IR::CallType::ScriptI:
          case IR::CallType::ScriptS:
+         case IR::CallType::StkCall:
             if(!stmnt || !stmnt->isNoAuto())
                allocAut = AllocAut;
             break;

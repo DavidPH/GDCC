@@ -633,9 +633,14 @@ namespace GDCC
 
             case IR::CallType::ScriptI:
             case IR::CallType::ScriptS:
-               return func->localReg - 1;
+            case IR::CallType::StkCall:
+               if(func->allocAut)
+                  return func->localReg - 1;
+
+               goto case_def;
 
             default:
+            case_def:
                std::cerr << "ERROR: " << stmnt->pos << ": bad getStkPtrIdx\n";
                throw EXIT_FAILURE;
             }
