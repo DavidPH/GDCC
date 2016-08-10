@@ -331,6 +331,8 @@ namespace GDCC
       template<typename T>
       static bool ParseDeclBase_Function(Parser &ctx, T &scope, SR::Attribute &attr)
       {
+         bool defin = ctx.in.peek(Core::TOK_BraceO);
+
          // Check compatibility with existing symbol, if any.
          if(auto lookup = scope.find(attr.name))
          {
@@ -339,6 +341,9 @@ namespace GDCC
                   "name redefined as different kind of symbol");
 
             SR::Function::Ref fn = lookup.resFunc;
+
+            if(fn->defin && defin)
+               throw Core::ExceptStr(attr.namePos, "function redefined");
 
             if(fn->retrn != attr.type->getBaseType())
                throw Core::ExceptStr(attr.namePos,
@@ -359,7 +364,7 @@ namespace GDCC
 
          scope.add(attr.name, fn);
 
-         if(ctx.in.peek().tok == Core::TOK_BraceO)
+         if(defin)
             return ParseDecl_Function(ctx, scope, attr, fn), true;
 
          return false;
