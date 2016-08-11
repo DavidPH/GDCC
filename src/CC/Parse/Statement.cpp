@@ -29,6 +29,7 @@
 #include "SR/Exp.hpp"
 #include "SR/Function.hpp"
 #include "SR/Statement.hpp"
+#include "SR/Type.hpp"
 #include "SR/Warning.hpp"
 
 
@@ -568,6 +569,9 @@ namespace GDCC
          // ;
          if(!in.drop(Core::TOK_Semico))
             throw Core::ParseExceptExpect(in.peek(), ";", true);
+
+         if(!exp->isEffect() && !exp->getType()->isTypeVoid())
+            SR::WarnUnusedValue(exp->pos, "expression result unused");
 
          return SR::StatementCreate_Exp(std::move(labels), pos, exp);
       }

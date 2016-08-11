@@ -102,6 +102,22 @@ namespace GDCC
 
          &WarnUnusedInit
       };
+
+      //
+      // --warn-unused-value
+      //
+      static Core::WarnOpt WarnUnusedValueOpt
+      {
+         &Core::GetWarnOptList(), Option::Base::Info()
+            .setName("warn-unused-value")
+            .setGroup("warnings")
+            .setDescS("Warns about expressions with unused value.")
+            .setDescL("Warns about expressions with unused value and no side "
+               "effects.\n\n"
+               "Enabled by --warn-common."),
+
+         &WarnUnusedValue
+      };
    }
 }
 
@@ -119,6 +135,7 @@ namespace GDCC
       Core::Warning WarnReturnType{&Core::WarnCommon, "--warn-return-type"};
       Core::Warning WarnReturnTypeExt{&Core::WarnExtra, "--warn-extra-return-type"};
       Core::Warning WarnUnusedInit{&Core::WarnCommon, "--warn-unused-initializer"};
+      Core::Warning WarnUnusedValue{&Core::WarnCommon, "--warn-unused-value"};
    }
 }
 

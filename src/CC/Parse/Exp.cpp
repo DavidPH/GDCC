@@ -19,6 +19,8 @@
 #include "Core/TokenStream.hpp"
 
 #include "SR/Exp.hpp"
+#include "SR/Type.hpp"
+#include "SR/Warning.hpp"
 
 #include <vector>
 
@@ -256,7 +258,12 @@ namespace GDCC
          DeclExpCreate(getExp_Assi, getExp_Assi);
 
          while(in.peek().tok == Core::TOK_Comma)
+         {
+            if(!exp->isEffect() && !exp->getType()->isTypeVoid())
+               SR::WarnUnusedValue(exp->pos, "expression result unused");
+
             exp = expCreate(ExpCreate_Comma);
+         }
 
          return exp;
       }

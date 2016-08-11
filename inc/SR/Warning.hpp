@@ -29,6 +29,7 @@ namespace GDCC
       extern Core::Warning WarnReturnType;
       extern Core::Warning WarnReturnTypeExt;
       extern Core::Warning WarnUnusedInit;
+      extern Core::Warning WarnUnusedValue;
    }
 }
 
