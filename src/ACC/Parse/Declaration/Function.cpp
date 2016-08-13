@@ -194,6 +194,7 @@ namespace GDCC
          case Core::STR_disconnect:  attr.stype = IR::ScriptType::Disconnect;  break;
          case Core::STR_enter:       attr.stype = IR::ScriptType::Enter;       break;
          case Core::STR_event:       attr.stype = IR::ScriptType::Event;       break;
+         case Core::STR_kill:        attr.stype = IR::ScriptType::Kill;        break;
          case Core::STR_lightning:   attr.stype = IR::ScriptType::Lightning;   break;
          case Core::STR_open:        attr.stype = IR::ScriptType::Open;        break;
          case Core::STR_pickup:      attr.stype = IR::ScriptType::Pickup;      break;

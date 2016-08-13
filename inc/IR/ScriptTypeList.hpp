@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,6 +17,7 @@ GDCC_IR_ScriptTypeList(Death)
 GDCC_IR_ScriptTypeList(Disconnect)
 GDCC_IR_ScriptTypeList(Enter)
 GDCC_IR_ScriptTypeList(Event)
+GDCC_IR_ScriptTypeList(Kill)
 GDCC_IR_ScriptTypeList(Lightning)
 GDCC_IR_ScriptTypeList(Open)
 GDCC_IR_ScriptTypeList(Pickup)

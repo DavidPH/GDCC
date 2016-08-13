@@ -592,6 +592,7 @@ namespace GDCC
                case IR::ScriptType::Disconnect:  stype = 14; break;
                case IR::ScriptType::Enter:       stype =  4; break;
                case IR::ScriptType::Event:       stype = 16; break;
+               case IR::ScriptType::Kill:        stype = 17; break;
                case IR::ScriptType::Lightning:   stype = 12; break;
                case IR::ScriptType::Open:        stype =  1; break;
                case IR::ScriptType::Pickup:      stype =  5; break;
