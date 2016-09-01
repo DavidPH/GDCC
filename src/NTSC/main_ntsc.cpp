@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "MageDefs/IStream.hpp"
+#include "NTSC/IStream.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/File.hpp"
@@ -23,6 +23,19 @@
 //----------------------------------------------------------------------------|
 // Options                                                                    |
 //
+
+//
+// -f, --nts-format
+//
+static GDCC::Option::CStr NTSFormat
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("nts-format").setName('f')
+      .setGroup("output")
+      .setDescS("Sets the format field. Default: DGE_NTS"),
+
+   "DGE_NTS", false
+};
 
 //
 // -t, --nts-type
@@ -62,15 +75,15 @@ static void ProcessFile(std::ostream &out, char const *inName);
 //
 static void MakeDefs()
 {
-   using namespace GDCC;
+   auto outName = GDCC::Core::GetOptionOutput();
 
-   auto outName = Core::GetOptionOutput();
-
-   auto buf = Core::FileOpenStream(outName, std::ios_base::out | std::ios_base::binary);
+   auto buf = GDCC::Core::FileOpenStream(outName, std::ios_base::out | std::ios_base::binary);
    std::ostream out{buf.get()};
 
    // Write format.
-   out << "MgC_NTS" << '\0';
+   if(NTSFormat.data())
+      out << NTSFormat.data();
+   out << '\0';
 
    // Write type.
    if(NTSType.data())
@@ -83,7 +96,7 @@ static void MakeDefs()
    out << '\0';
 
    // Process inputs.
-   for(auto const &arg : Core::GetOptionArgs())
+   for(auto const &arg : GDCC::Core::GetOptionArgs())
       ProcessFile(out, arg);
 }
 
@@ -93,7 +106,7 @@ static void MakeDefs()
 static void ProcessFile(std::ostream &out, char const *inName)
 {
    auto buf = GDCC::Core::FileOpenStream(inName, std::ios_base::in);
-   GDCC::MageDefs::IStream in{*buf, inName};
+   GDCC::NTSC::IStream in{*buf, inName};
    for(GDCC::Core::Token tok; in >> tok;)
       out << tok.str << '\0';
 }
@@ -110,13 +123,14 @@ int main(int argc, char *argv[])
 {
    auto &opts = GDCC::Core::GetOptions();
 
-   opts.list.name     = "gdcc-magedefs";
-   opts.list.nameFull = "GDCC MageDefs";
+   opts.list.name     = "gdcc-ntsc";
+   opts.list.nameFull = "GDCC NTS Compiler";
 
    opts.list.usage = "[option]... [source]...";
 
    opts.list.descS =
-      "Converts text to MageCraft NTS. Output defaults to last loose argument.";
+      "Converts text to Null-Terminated String format. Output defaults to last "
+      "loose argument.";
 
    try
    {

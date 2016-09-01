@@ -6,12 +6,12 @@
 //
 //-----------------------------------------------------------------------------
 //
-// MageDefs input stream.
+// NTSC input stream.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__MageDefs__IStream_H__
-#define GDCC__MageDefs__IStream_H__
+#ifndef GDCC__NTSC__IStream_H__
+#define GDCC__NTSC__IStream_H__
 
 #include "../Core/CommentBuf.hpp"
 #include "../Core/FeatureHold.hpp"
@@ -32,7 +32,7 @@ namespace GDCC
       class Token;
    }
 
-   namespace MageDefs
+   namespace NTSC
    {
       //
       // IStream
@@ -73,11 +73,11 @@ namespace GDCC
 
 namespace GDCC
 {
-   namespace MageDefs
+   namespace NTSC
    {
       IStream &operator >> (IStream &in, Core::Token &out);
    }
 }
 
-#endif//GDCC__MageDefs__IStream_H__
+#endif//GDCC__NTSC__IStream_H__
 

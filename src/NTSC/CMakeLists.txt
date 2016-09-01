@@ -1,12 +1,12 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2014 David Hill
+## Copyright (C) 2013-2016 David Hill
 ##
 ## See COPYING for license information.
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for gdcc-magedefs.
+## CMake file for gdcc-ntsc.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -16,26 +16,26 @@
 ##
 
 ##
-## gdcc-magedefs-lib
+## gdcc-ntsc-lib
 ##
-add_library(gdcc-magedefs-lib ${GDCC_SHARED_DECL}
+add_library(gdcc-ntsc-lib ${GDCC_SHARED_DECL}
    IStream.cpp
 
-   ../../inc/MageDefs/IStream.hpp
+   ../../inc/NTSC/IStream.hpp
 )
 
 ##
-## gdcc-magedefs
+## gdcc-ntsc
 ##
-add_executable(gdcc-magedefs
-   main_magedefs.cpp
+add_executable(gdcc-ntsc
+   main_ntsc.cpp
 )
 
-target_link_libraries(gdcc-magedefs-lib gdcc-core-lib)
+target_link_libraries(gdcc-ntsc-lib gdcc-core-lib)
 
-target_link_libraries(gdcc-magedefs gdcc-magedefs-lib)
+target_link_libraries(gdcc-ntsc gdcc-ntsc-lib)
 
-GDCC_INSTALL_PART(magedefs TRUE TRUE)
+GDCC_INSTALL_PART(ntsc TRUE TRUE)
 
 ## EOF
 

@@ -55,12 +55,12 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/src/LD")
    add_subdirectory(LD)
 endif()
 
-if(EXISTS "${CMAKE_SOURCE_DIR}/src/MageDefs")
-   add_subdirectory(MageDefs)
-endif()
-
 if(EXISTS "${CMAKE_SOURCE_DIR}/src/MakeLib")
    add_subdirectory(MakeLib)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/NTSC")
+   add_subdirectory(NTSC)
 endif()
 
 if(EXISTS "${CMAKE_SOURCE_DIR}/src/Option")

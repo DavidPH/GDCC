@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// MageDefs input stream.
+// NTSC input stream.
 //
 //-----------------------------------------------------------------------------
 
-#include "MageDefs/IStream.hpp"
+#include "NTSC/IStream.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
@@ -43,7 +43,7 @@ static bool IsIdentifierC(int c)
 
 namespace GDCC
 {
-   namespace MageDefs
+   namespace NTSC
    {
       IStream &operator >> (IStream &in, Core::Token &out)
       {
