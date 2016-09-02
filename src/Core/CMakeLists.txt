@@ -72,7 +72,11 @@ add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    ../../inc/Core/Warning.hpp
 )
 
-target_link_libraries(gdcc-core-lib gdcc-option-lib gmpxx gmp)
+target_link_libraries(gdcc-core-lib gdcc-option-lib)
+
+if(GDCC_Core_BigNum)
+   target_link_libraries(gdcc-core-lib ${GMP_LIBRARIES})
+endif()
 
 GDCC_INSTALL_PART(core FALSE TRUE)
 

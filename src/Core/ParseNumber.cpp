@@ -92,6 +92,7 @@ namespace GDCC
          }
       }
 
+      #if GDCC_Core_BigNum
       //
       // MergeNumberFixedC
       //
@@ -133,6 +134,7 @@ namespace GDCC
 
          return std::move(val);
       }
+      #endif
 
       //
       // ParseNumberBaseC
@@ -153,6 +155,7 @@ namespace GDCC
             return {in, 10};
       }
 
+      #if GDCC_Core_BigNum
       //
       // ParseNumberExpC
       //
@@ -176,7 +179,9 @@ namespace GDCC
 
          return {s, valE};
       }
+      #endif
 
+      #if GDCC_Core_BigNum
       //
       // ParseNumberFastU
       //
@@ -191,7 +196,9 @@ namespace GDCC
 
          return std::make_tuple(end, NumberCast<FastU>(val), len);
       }
+      #endif
 
+      #if GDCC_Core_BigNum
       //
       // ParseNumberInteg
       //
@@ -206,7 +213,9 @@ namespace GDCC
 
          return std::make_tuple(s, std::move(val), s - in);
       }
+      #endif
 
+      #if GDCC_Core_BigNum
       //
       // ParseNumberRatioC
       //
@@ -258,6 +267,7 @@ namespace GDCC
 
          return std::make_tuple(in, std::move(val), in - first);
       }
+      #endif
 
       //
       // ReadNumberC

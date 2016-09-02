@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,8 +13,13 @@
 #ifndef GDCC__Core__Number_H__
 #define GDCC__Core__Number_H__
 
+#include "GDCC/Config.hpp"
+
 #include <cstdint>
+
+#if GDCC_Core_BigNum
 #include <gmpxx.h>
+#endif
 
 
 //----------------------------------------------------------------------------|
@@ -25,10 +30,12 @@ namespace GDCC
 {
    namespace Core
    {
+      #if GDCC_Core_BigNum
       // Unlimited precision numeric types.
       typedef mpf_class Float;
       typedef mpz_class Integ;
       typedef mpq_class Ratio;
+      #endif
 
       // Faster, native numeric types.
       // FastU shall be suitable for storing the sizes of the target's objects.
@@ -39,13 +46,14 @@ namespace GDCC
       //
       // NumberCast_T
       //
-      // Implements ::number_cast.
+      // Implements NumberCast.
       //
       template<typename Out, typename In> struct NumberCast_T
       {
          static Out Cast(In &&i);
       };
 
+      #if GDCC_Core_BigNum
       // NumberCast_T<FastI, Integ>
       template<> struct NumberCast_T<FastI, Integ>
          {static FastI Cast(Integ const &i) {return i.get_si();}};
@@ -73,6 +81,7 @@ namespace GDCC
       // NumberCast_T<Ratio>
       template<typename In> struct NumberCast_T<Ratio, In>
          {static Ratio Cast(In &&i) {return static_cast<Ratio>(i);}};
+      #endif
    }
 }
 
@@ -99,6 +108,7 @@ namespace GDCC
 
 namespace std
 {
+   #if GDCC_Core_BigNum
    //
    // hash<mpz_class>
    //
@@ -106,6 +116,7 @@ namespace std
    {
       size_t operator () (mpz_class const &i) const;
    };
+   #endif
 }
 
 #endif//GDCC__Core__Number_H__

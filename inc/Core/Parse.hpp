@@ -32,14 +32,17 @@ namespace GDCC
    {
       bool IsDigit(char c, unsigned base);
 
+      #if GDCC_Core_BigNum
       Integ MergeNumberFixedC(Integ valI, Integ valF, FastI valE,
          std::size_t digF, unsigned base);
+      #endif
 
       bool ParseEscapeC(std::ostream &out, std::istream &in, char escape);
 
       std::pair<char const * /*end*/, unsigned /*base*/>
       ParseNumberBaseC(char const *in);
 
+      #if GDCC_Core_BigNum
       std::pair<char const * /*end*/, FastI /*val*/>
       ParseNumberExpC(char const *in);
 
@@ -51,6 +54,7 @@ namespace GDCC
 
       std::tuple<char const * /*end*/, Ratio /*val*/, std::size_t /*len*/>
       ParseNumberRatioC(char const *in, unsigned base);
+      #endif
 
       String ParseStringC(std::istream &in, char term,
          bool (*escaper)(std::ostream &, std::istream &, char));

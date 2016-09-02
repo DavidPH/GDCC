@@ -14,6 +14,7 @@ cmake_minimum_required(VERSION 2.6)
 
 project(gdcc)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
 include(CheckCXXCompilerFlag)
 
 
@@ -78,6 +79,8 @@ if(NOT GDCC_NOFLAGS)
    endif()
 endif()
 
+find_package(GMP)
+
 
 ##----------------------------------------------------------------------------|
 ## Variables                                                                  |
@@ -103,6 +106,14 @@ if(NOT DEFINED GDCC_BC_ZDACS)
    else()
       set(GDCC_BC_ZDACS OFF CACHE BOOL "Enable bytecode module: ZDACS")
    endif()
+endif()
+
+##
+## GDCC_Core_BigNum
+##
+if(NOT DEFINED GDCC_Core_BigNum)
+   set(GDCC_Core_BigNum ${GMP_FOUND} CACHE BOOL
+      "Enable extended precision types and functions.")
 endif()
 
 ##
@@ -159,7 +170,9 @@ endif()
 ## Environment Configuration                                                  |
 ##
 
-include_directories(inc src)
+configure_file(${CMAKE_SOURCE_DIR}/inc/Config.hpp ${CMAKE_BINARY_DIR}/inc/GDCC/Config.hpp)
+
+include_directories(${CMAKE_BINARY_DIR}/inc inc src ${GMP_INCLUDE_DIRS})
 
 if(GDCC_BC_MgC)
    add_definitions(-DGDCC_BC_MgC=1)
