@@ -66,6 +66,8 @@ endfunction()
 ## Environment Detection                                                      |
 ##
 
+set(GDCC_SHARED_DEFAULT ON)
+
 if(NOT GDCC_NOFLAGS)
    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
       GDCC_TRY_CXX_FLAG(-Wall      Wall   )
@@ -81,10 +83,14 @@ endif()
 
 if(MSVC)
    add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-   add_definitions(/wd4996 /wd4800 /wd4244 /wd4800 /wd4146)
+   add_definitions(/wd4146) # Unary minus applied to unsigned.
+   add_definitions(/wd4244) # Possible loss of data by conversion.
+   add_definitions(/wd4800) # Forcing value to boolean. (All my hate.)
+   add_definitions(/wd4996) # Deprecated declaration.
+
+   # Disable shared by default, as the source does not contain the needed
+   # declaration annotations to make that work under MSVC.
    set(GDCC_SHARED_DEFAULT OFF)
-else()
-   set(GDCC_SHARED_DEFAULT ON)
 endif()
 
 find_package(GMP)
@@ -155,11 +161,12 @@ endif()
 ##
 ## GDCC_SHARED
 ##
-## If true (or equiavalent), libraries will be built as SHARED. Otherwise,
+## If true (or equivalent), libraries will be built as SHARED. Otherwise,
 ## they are built as STATIC.
 ##
 if(NOT DEFINED GDCC_SHARED)
-   set(GDCC_SHARED ${GDCC_SHARED_DEFAULT} CACHE BOOL "Build libraries as shared objects.")
+   set(GDCC_SHARED ${GDCC_SHARED_DEFAULT} CACHE BOOL
+      "Build libraries as shared objects.")
 endif()
 
 ##
@@ -178,11 +185,11 @@ endif()
 ## Environment Configuration                                                  |
 ##
 
-configure_file(${CMAKE_SOURCE_DIR}/inc/Config.hpp ${CMAKE_BINARY_DIR}/inc/GDCC/Config.hpp)
+configure_file(inc/Config.hpp inc/GDCC/Config.hpp)
 
 include_directories(${CMAKE_BINARY_DIR}/inc inc src)
 
-if(GDCC_Core_BigNum)
+if(GMP_FOUND)
    include_directories(${GMP_INCLUDE_DIRS})
 endif()
 
