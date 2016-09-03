@@ -79,6 +79,14 @@ if(NOT GDCC_NOFLAGS)
    endif()
 endif()
 
+if(MSVC)
+   add_definitions(-D_SCL_SECURE_NO_WARNINGS)
+   add_definitions(/wd4996 /wd4800 /wd4244 /wd4800 /wd4146)
+   set(GDCC_SHARED_DEFAULT OFF)
+else()
+   set(GDCC_SHARED_DEFAULT ON)
+endif()
+
 find_package(GMP)
 
 
@@ -151,7 +159,7 @@ endif()
 ## they are built as STATIC.
 ##
 if(NOT DEFINED GDCC_SHARED)
-   set(GDCC_SHARED ON CACHE BOOL "Build libraries as shared objects.")
+   set(GDCC_SHARED ${GDCC_SHARED_DEFAULT} CACHE BOOL "Build libraries as shared objects.")
 endif()
 
 ##
@@ -172,7 +180,11 @@ endif()
 
 configure_file(${CMAKE_SOURCE_DIR}/inc/Config.hpp ${CMAKE_BINARY_DIR}/inc/GDCC/Config.hpp)
 
-include_directories(${CMAKE_BINARY_DIR}/inc inc src ${GMP_INCLUDE_DIRS})
+include_directories(${CMAKE_BINARY_DIR}/inc inc src)
+
+if(GDCC_Core_BigNum)
+   include_directories(${GMP_INCLUDE_DIRS})
+endif()
 
 if(GDCC_BC_MgC)
    add_definitions(-DGDCC_BC_MgC=1)
