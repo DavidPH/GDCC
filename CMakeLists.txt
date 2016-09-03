@@ -193,14 +193,6 @@ if(GMP_FOUND)
    include_directories(${GMP_INCLUDE_DIRS})
 endif()
 
-if(GDCC_BC_MgC)
-   add_definitions(-DGDCC_BC_MgC=1)
-endif()
-
-if(GDCC_BC_ZDACS)
-   add_definitions(-DGDCC_BC_ZDACS=1)
-endif()
-
 
 ##----------------------------------------------------------------------------|
 ## Targets                                                                    |

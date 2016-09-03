@@ -18,6 +18,8 @@
 // Macros                                                                     |
 //
 
+#cmakedefine01 GDCC_BC_MgC
+#cmakedefine01 GDCC_BC_ZDACS
 #cmakedefine01 GDCC_Core_BigNum
 
 #endif//GDCC__Config_H__
