@@ -305,12 +305,14 @@ namespace GDCC
 
                      bitsReset();
 
+                     bool anon = attrTemp.objAnonymous;
+
                      // Normally, only allow complete types.
                      if(attrTemp.type->isTypeComplete())
                      {
                         addrAlign(attrTemp.type->getSizeAlign());
 
-                        memv.emplace_back(attrTemp.name, attrTemp.type, addr, false);
+                        memv.emplace_back(attrTemp.name, attrTemp.type, addr, anon);
 
                         addrBytes(attrTemp.type->getSizeBytes());
                      }
@@ -322,7 +324,7 @@ namespace GDCC
 
                         addrAlign(attrTemp.type->getSizeAlign());
 
-                        memv.emplace_back(attrTemp.name, attrTemp.type, addr, false);
+                        memv.emplace_back(attrTemp.name, attrTemp.type, addr, anon);
 
                         // A flexible array member must be the last member.
                         // Therefore, there must be no further declarators.

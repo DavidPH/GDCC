@@ -81,7 +81,8 @@ namespace GDCC
 
          bool isTypedef : 1;
 
-         bool objNoInit : 1;
+         bool objAnonymous : 1;
+         bool objNoInit    : 1;
 
          bool sflagClS : 1;
          bool sflagNet : 1;

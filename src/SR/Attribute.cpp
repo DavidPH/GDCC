@@ -56,7 +56,8 @@ namespace GDCC
 
          isTypedef{false},
 
-         objNoInit{false},
+         objAnonymous{false},
+         objNoInit   {false},
 
          sflagClS{false},
          sflagNet{false},

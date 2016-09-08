@@ -100,6 +100,24 @@ Semantics:
   Sets the Aut stack size for a function. Currently only applies to scripts.
 
 ===========================================================
+Anonymous
+===========================================================
+
+Syntax:
+  attribute-anonymous:
+    attribute-anonymous-name
+
+  attribute-anonymous-name:
+    <anonymous>
+    <__anonymous>
+
+Constraints:
+  Shall only be applied to structure members with structure type.
+
+Semantics:
+  Makes the affected member's members visible in the containing structure.
+
+===========================================================
 Call
 ===========================================================
 

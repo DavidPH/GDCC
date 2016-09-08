@@ -150,6 +150,21 @@ namespace GDCC
       }
 
       //
+      // ParseAttr_anonymous
+      //
+      // attribute-anonymous:
+      //    attribute-anonymous-name
+      //
+      // attribute-anonymous-name:
+      //    <anonymous>
+      //    <__anonymous>
+      //
+      static void ParseAttr_anonymous(Parser &, Scope &, SR::Attribute &attr)
+      {
+         attr.objAnonymous = true;
+      }
+
+      //
       // ParseAttr_call
       //
       // attribute-call:
@@ -401,6 +416,9 @@ namespace GDCC
 
          case Core::STR_alloc_Aut: case Core::STR___alloc_Aut:
             ParseAttr_alloc_Aut(*this, scope, attr); break;
+
+         case Core::STR_anonymous: case Core::STR___anonymous:
+            ParseAttr_anonymous(*this, scope, attr); break;
 
          case Core::STR_call: case Core::STR___call:
             ParseAttr_call(*this, scope, attr); break;
