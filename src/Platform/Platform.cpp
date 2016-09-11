@@ -42,7 +42,7 @@ namespace GDCC
             .setDescS("Selects bytecode format.")
             .setDescL("Selects bytecode format. This option may affect higher level "
                "codegen and should be set at all stages of compiling. Valid "
-               "arguments are: ACSE, MgC_NTS."),
+               "arguments are: ACSE, DGE_NTS, MgC_NTS."),
 
          [](Option::Base *, Option::Args const &args) -> std::size_t
          {
@@ -52,6 +52,7 @@ namespace GDCC
             switch(Core::String::Find(args.argV[0]))
             {
             case Core::STR_ACSE:    FormatCur = Format::ACSE;    break;
+            case Core::STR_DGE_NTS: FormatCur = Format::DGE_NTS; break;
             case Core::STR_MgC_NTS: FormatCur = Format::MgC_NTS; break;
 
             default:
@@ -73,7 +74,7 @@ namespace GDCC
             .setDescS("Selects target engine.")
             .setDescL("Selects target engine. This option may affect higher level "
                "codegen and should be set at all stages of compiling. Valid "
-               "arguments are: MageCraft, ZDoom, Zandronum."),
+               "arguments are: Doominati, MageCraft, ZDoom, Zandronum."),
 
          [](Option::Base *, Option::Args const &args) -> std::size_t
          {
@@ -82,6 +83,7 @@ namespace GDCC
 
             switch(Core::String::Find(args.argV[0]))
             {
+            case Core::STR_Doominati: TargetCur = Target::Doominati; break;
             case Core::STR_MageCraft: TargetCur = Target::MageCraft; break;
             case Core::STR_ZDoom:     TargetCur = Target::ZDoom;     break;
             case Core::STR_Zandronum: TargetCur = Target::Zandronum; break;
@@ -143,9 +145,10 @@ namespace GDCC
          switch(TargetCur)
          {
          case Target::None:      return 8;
-         case Target::ZDoom:     return 32;
-         case Target::Zandronum: return 32;
+         case Target::Doominati: return 8;
          case Target::MageCraft: return 8;
+         case Target::Zandronum: return 32;
+         case Target::ZDoom:     return 32;
          }
 
          return 0;
@@ -158,8 +161,8 @@ namespace GDCC
       {
          switch(TargetCur)
          {
-         case Target::ZDoom:
          case Target::Zandronum:
+         case Target::ZDoom:
             switch(call)
             {
             case IR::CallType::SScriptI:
@@ -184,9 +187,10 @@ namespace GDCC
          switch(TargetCur)
          {
          case Target::None:      return 1;
-         case Target::ZDoom:     return 1;
-         case Target::Zandronum: return 1;
+         case Target::Doominati: return 4;
          case Target::MageCraft: return 4;
+         case Target::Zandronum: return 1;
+         case Target::ZDoom:     return 1;
          }
 
          return 0;
@@ -200,9 +204,10 @@ namespace GDCC
          switch(TargetCur)
          {
          case Target::None:      return 32;
-         case Target::ZDoom:     return 32;
-         case Target::Zandronum: return 32;
+         case Target::Doominati: return 32;
          case Target::MageCraft: return 32;
+         case Target::Zandronum: return 32;
+         case Target::ZDoom:     return 32;
          }
 
          return 0;
@@ -216,9 +221,10 @@ namespace GDCC
          switch(TargetCur)
          {
          case Target::None:      return 1;
-         case Target::ZDoom:     return 1;
-         case Target::Zandronum: return 1;
+         case Target::Doominati: return 4;
          case Target::MageCraft: return 4;
+         case Target::Zandronum: return 1;
+         case Target::ZDoom:     return 1;
          }
 
          return 0;
@@ -232,9 +238,10 @@ namespace GDCC
          switch(TargetCur)
          {
          case Target::None:      return 1;
-         case Target::ZDoom:     return 1;
-         case Target::Zandronum: return 1;
+         case Target::Doominati: return 4;
          case Target::MageCraft: return 1;
+         case Target::Zandronum: return 1;
+         case Target::ZDoom:     return 1;
          }
 
          return 0;
@@ -248,9 +255,10 @@ namespace GDCC
          switch(TargetCur)
          {
          case Target::None:      return 1;
-         case Target::ZDoom:     return 1;
-         case Target::Zandronum: return 1;
+         case Target::Doominati: return 1;
          case Target::MageCraft: return 4;
+         case Target::Zandronum: return 1;
+         case Target::ZDoom:     return 1;
          }
 
          return 0;
@@ -263,8 +271,8 @@ namespace GDCC
       {
          switch(TargetCur)
          {
-         case Target::ZDoom:
          case Target::Zandronum:
+         case Target::ZDoom:
             switch(call)
             {
             case IR::CallType::SScriptI:
@@ -288,8 +296,8 @@ namespace GDCC
       {
          switch(TargetCur)
          {
-         case Target::ZDoom:
          case Target::Zandronum:
+         case Target::ZDoom:
             switch(call)
             {
             case IR::CallType::SScriptI:
@@ -313,8 +321,8 @@ namespace GDCC
       {
          switch(TargetCur)
          {
-         case Target::ZDoom:
          case Target::Zandronum:
+         case Target::ZDoom:
             return true;
 
          default:
@@ -368,6 +376,7 @@ namespace GDCC
       {
          switch(TargetCur)
          {
+         case Target::Doominati:
          case Target::MageCraft:
             return true;
 

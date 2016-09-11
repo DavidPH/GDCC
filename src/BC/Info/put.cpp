@@ -6,22 +6,31 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Numeric typedefs and utilities.
+// Generic output functions.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__Config_H__
-#define GDCC__Config_H__
+#include "BC/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Macros                                                                     |
+// Extern Functions                                                           |
 //
 
-#cmakedefine01 GDCC_BC_DGE
-#cmakedefine01 GDCC_BC_MgC
-#cmakedefine01 GDCC_BC_ZDACS
-#cmakedefine01 GDCC_Core_BigNum
+namespace GDCC
+{
+   namespace BC
+   {
+      //
+      // putData
+      //
+      void Info::putData(char const *data, std::size_t size)
+      {
+         out->write(data, size);
+         putPos += size;
+      }
+   }
+}
 
-#endif//GDCC__Config_H__
+// EOF
 

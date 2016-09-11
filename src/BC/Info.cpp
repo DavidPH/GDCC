@@ -519,8 +519,17 @@ namespace GDCC
          {
             auto end   = static_cast<IR::Statement *>(block->end());
                  stmnt = static_cast<IR::Statement *>(block->begin());
-            for(; stmnt != end; stmnt = stmnt->next)
-               trStmnt();
+            while(stmnt != end)
+            {
+               try
+               {
+                  trStmnt();
+                  stmnt = stmnt->next;
+               }
+               catch(ResetStmnt const &)
+               {
+               }
+            }
             stmnt = nullptr;
          }
          catch(...)

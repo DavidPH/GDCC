@@ -98,6 +98,7 @@ namespace GDCC
       StringData::StringData(StringIndex) :
          str     {""},
          len     {0},
+         len0    {0},
          hash    {0},
          next    {0},
          idxLower{0},
@@ -113,6 +114,7 @@ namespace GDCC
          std::size_t hash_, std::size_t idx) :
          str     {str_},
          len     {len_},
+         len0    {std::strlen(str_)},
          hash    {hash_},
          next    {StringTableHash[hash % StringTableHashC]},
          idxLower{0},

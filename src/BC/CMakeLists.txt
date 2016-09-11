@@ -15,6 +15,10 @@
 ## Targets                                                                    |
 ##
 
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/DGE")
+   add_subdirectory(DGE)
+endif()
+
 if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/MgC")
    add_subdirectory(MgC)
 endif()
@@ -30,6 +34,8 @@ add_library(gdcc-bc-lib ${GDCC_SHARED_DECL}
    Info.cpp
    Info/moveArg.cpp
    Info/optStmnt.cpp
+   Info/put.cpp
+   Info/trStmnt.cpp
 
    ../../inc/BC/Info.hpp
 )

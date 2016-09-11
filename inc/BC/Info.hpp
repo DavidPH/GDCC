@@ -104,6 +104,7 @@ namespace GDCC
 
       protected:
          class ResetFunc {};
+         class ResetStmnt {};
 
 
          virtual void gen();
@@ -188,10 +189,15 @@ namespace GDCC
          virtual void trStr() {}
                  void trStr(IR::StrEnt &str);
 
-         bool moveArgStk_dst(IR::Arg &idx, Core::FastU sizeMove);
-         bool moveArgStk_src(IR::Arg &idx, Core::FastU sizeMove);
+         void putData(char const *data, std::size_t size);
+
+         void moveArgStk_dst(IR::Arg &idx, Core::FastU sizeMove);
+         void moveArgStk_src(IR::Arg &idx, Core::FastU sizeMove);
 
          bool optStmnt_Cspe_Drop();
+
+         void trStmntStk2(Core::FastU sizeDst, Core::FastU sizeSrc);
+         void trStmntStk3(Core::FastU sizeDst, Core::FastU sizeSrc, bool ordered);
 
          IR::Block     *block;
          IR::DJump     *djump;

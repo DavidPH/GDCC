@@ -102,16 +102,6 @@ namespace GDCC
          }
 
          //
-         // Info::putData
-         //
-         void Info::putData(char const *s, std::size_t len)
-         {
-            out->write(s, len);
-
-            putPos += len;
-         }
-
-         //
          // Info::putFunc
          //
          void Info::putFunc()

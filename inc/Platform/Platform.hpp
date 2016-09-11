@@ -35,6 +35,7 @@ namespace GDCC
       {
          None,
          ACSE,
+         DGE_NTS,
          MgC_NTS,
       };
 
@@ -44,6 +45,7 @@ namespace GDCC
       enum class Target
       {
          None,
+         Doominati,
          MageCraft,
          ZDoom,
          Zandronum,

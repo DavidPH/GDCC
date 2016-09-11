@@ -49,7 +49,7 @@ GDCC_IR_CodeList(Bget_W)
 // Bset dst src width off (Bitfield, Set)
 GDCC_IR_CodeList(Bset_W)
 
-// Call src ret arg...
+// Call src arg...
 GDCC_IR_CodeList(Call)
 
 // Casm src arg...
@@ -75,20 +75,20 @@ GDCC_IR_CodeList(CmpU_LE_W)
 GDCC_IR_CodeList(CmpU_LT_W)
 GDCC_IR_CodeList(CmpU_NE_W)
 
-// Cnat src ret arg...
+// Cnat src arg...
 GDCC_IR_CodeList(Cnat)
 
 // Copy lop rop
 GDCC_IR_CodeList(Copy_W)
 
-// Cscr_* src ret arg...
+// Cscr_* src arg...
 // Integer/String Asynchronous/Synchronous
 GDCC_IR_CodeList(Cscr_IA)
 GDCC_IR_CodeList(Cscr_IS)
 GDCC_IR_CodeList(Cscr_SA)
 GDCC_IR_CodeList(Cscr_SS)
 
-// Cspe src ret arg...
+// Cspe src arg...
 GDCC_IR_CodeList(Cspe)
 
 // DiX* dst lop rop

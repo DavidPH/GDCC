@@ -351,8 +351,6 @@ namespace GDCC
             void putCode(Code code, Core::FastU arg0);
             void putCode(Code code, Core::FastU arg0, Core::FastU);
 
-            void putData(char const *s, std::size_t len);
-
             using InfoBase::putFunc;
             virtual void putFunc();
 
@@ -485,8 +483,6 @@ namespace GDCC
 
             void trStmntBitwise();
             bool trStmntShift(bool moveLit = false);
-            void trStmntStk2(Core::FastU sizeDst, Core::FastU sizeSrc);
-            void trStmntStk3(Core::FastU sizeDst, Core::FastU sizeSrc, bool ordered);
 
             std::unique_ptr<Core::NumberAllocMerge<Core::FastU>> allocDJump;
             std::unordered_map<IR::CallType, Core::NumberAllocMerge<Core::FastU>> allocFunc;

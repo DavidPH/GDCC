@@ -101,6 +101,17 @@ find_package(GMP)
 ##
 
 ##
+## GDCC_BC_DGE
+##
+if(NOT DEFINED GDCC_BC_DGE)
+   if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/DGE")
+      set(GDCC_BC_DGE ON CACHE BOOL "Enable bytecode module: DGE")
+   else()
+      set(GDCC_BC_DGE OFF CACHE BOOL "Enable bytecode module: DGE")
+   endif()
+endif()
+
+##
 ## GDCC_BC_MgC
 ##
 if(NOT DEFINED GDCC_BC_MgC)

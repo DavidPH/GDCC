@@ -867,7 +867,7 @@ namespace GDCC
                throw Core::ExceptStr(stmnt->pos, "trStmnt_ShRU_W1 disorder");
 
             moveArgStk_dst(stmnt->args[0], stmnt->op.size);
-            if(moveArgStk_src(stmnt->args[1], stmnt->op.size)) return;
+            moveArgStk_src(stmnt->args[1], stmnt->op.size);
 
             if(!isPushArg(stmnt->args[2]) || !isFastArg(stmnt->args[2]))
             {
@@ -888,7 +888,7 @@ namespace GDCC
                throw Core::ExceptStr(stmnt->pos, "trStmntShift disorder");
 
             moveArgStk_dst(stmnt->args[0], stmnt->op.size);
-            if(moveArgStk_src(stmnt->args[1], stmnt->op.size)) return false;
+            moveArgStk_src(stmnt->args[1], stmnt->op.size);
 
             if(!moveLit && stmnt->args[2].a == IR::ArgBase::Lit)
                return true;
