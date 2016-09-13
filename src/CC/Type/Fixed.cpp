@@ -184,11 +184,7 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizeAlign() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return 4;
-         default:                          return 1;
-         }
+         return Platform::GetWordAlign();
       }
 
       //
@@ -196,11 +192,10 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizeBitsF() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return (8 << size) - 1;
-         default:                          return size > 1 ? 32 : 16;
-         }
+         if(Platform::IsFamily_ZDACS())
+            return size <= 1 ? 16 : 32;
+
+         return size <= 1 ? (8 << size) - 1 : 32;
       }
 
       //
@@ -208,11 +203,10 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizeBitsI() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return (24 << size) + unsi;
-         default:                          return (size > 1 ? 31 : 15) + unsi;
-         }
+         if(Platform::IsFamily_ZDACS())
+            return (size <= 1 ? 15 : 31) + unsi;
+
+         return (size <= 1 ? (24 << size) : 63) + unsi;
       }
 
       //
@@ -220,11 +214,10 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizeBytes() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return 4 << size;
-         default:                          return size > 1 ? 2 : 1;
-         }
+         if(Platform::IsFamily_ZDACS())
+            return size <= 1 ? 1 : 2;
+
+         return (size + 1) * Platform::GetWordBytes();
       }
 
       //
@@ -232,11 +225,10 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizePoint() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return 1 << size;
-         default:                          return size > 1 ? 2 : 1;
-         }
+         if(Platform::IsFamily_ZDACS())
+            return size <= 1 ? 1 : 2;
+
+         return (size + 1) * Platform::GetWordPoint();
       }
 
       //
@@ -244,11 +236,7 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizeShift() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return 4;
-         default:                          return 1;
-         }
+         return 1;
       }
 
       //
@@ -256,11 +244,10 @@ namespace GDCC
       //
       Core::FastU Type_Fixed::getSizeWords() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return 1 << size;
-         default:                          return size > 1 ? 2 : 1;
-         }
+         if(Platform::IsFamily_ZDACS())
+            return size <= 1 ? 1 : 2;
+
+         return size + 1;
       }
 
       //
@@ -316,11 +303,7 @@ namespace GDCC
       //
       Core::FastU Type_Fract::getSizeAlign() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return 1 << size;
-         default:                          return 1;
-         }
+         return Platform::GetWordAlign();
       }
 
       //
@@ -336,11 +319,10 @@ namespace GDCC
       //
       Core::FastU Type_Fract::getSizeBytes() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return 1 << size;
-         default:                          return 1;
-         }
+         if(Platform::IsFamily_ZDACS())
+            return 1;
+
+         return 1 << size;
       }
 
       //
@@ -348,7 +330,10 @@ namespace GDCC
       //
       Core::FastU Type_Fract::getSizePoint() const
       {
-         return 1;
+         if(Platform::IsFamily_ZDACS())
+            return 1;
+
+         return 1 << size;
       }
 
       //
@@ -356,11 +341,7 @@ namespace GDCC
       //
       Core::FastU Type_Fract::getSizeShift() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return 1 << size;
-         default:                          return 1;
-         }
+         return 1;
       }
 
       //
@@ -417,11 +398,10 @@ namespace GDCC
       //
       Core::FastU Type_Integ::getSizeAlign() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return size < 2 ? 1 << size : 4;
-         default:                          return 1;
-         }
+         if(Platform::IsFamily_ZDACS())
+            return 1;
+
+         return size <= 1 ? 1 << size : Platform::GetWordAlign();
       }
 
       //
@@ -429,11 +409,10 @@ namespace GDCC
       //
       Core::FastU Type_Integ::getSizeBitsI() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return (8 << size) - sign;
-         default:                          return IntegTable_SizeBitsI_ZDACS[size] - sign;
-         }
+         if(Platform::IsFamily_ZDACS())
+            return IntegTable_SizeBitsI_ZDACS[size] - sign;
+
+         return (size <= 3 ? 8 << size : 96) - sign;
       }
 
       //
@@ -441,11 +420,10 @@ namespace GDCC
       //
       Core::FastU Type_Integ::getSizeBytes() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return 1 << size;
-         default:                          return IntegTable_SizeBytes_ZDACS[size];
-         }
+         if(Platform::IsFamily_ZDACS())
+            return IntegTable_SizeBytes_ZDACS[size];
+
+         return size <= 3 ? 1 << size : 12;
       }
 
       //
@@ -453,11 +431,10 @@ namespace GDCC
       //
       Core::FastU Type_Integ::getSizePoint() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return size > 2 ? 1 << (size - 2) : 1;
-         default:                          return IntegTable_SizeBytes_ZDACS[size];
-         }
+         if(Platform::IsFamily_ZDACS())
+            return IntegTable_SizeBytes_ZDACS[size];
+
+         return size <= 3 ? 1 << size : 12;
       }
 
       //
@@ -465,11 +442,7 @@ namespace GDCC
       //
       Core::FastU Type_Integ::getSizeShift() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return size < 2 ? 1 << size : 4;
-         default:                          return 1;
-         }
+         return 1;
       }
 
       //
@@ -477,11 +450,10 @@ namespace GDCC
       //
       Core::FastU Type_Integ::getSizeWords() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return size > 2 ? 1 << (size - 2) : 1;
-         default:                          return IntegTable_SizeBytes_ZDACS[size];
-         }
+         if(Platform::IsFamily_ZDACS())
+            return IntegTable_SizeBytes_ZDACS[size] ;
+
+         return size <= 2 ? 1 : size - 2;
       }
 
       //

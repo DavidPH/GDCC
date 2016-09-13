@@ -44,20 +44,20 @@ namespace GDCC
       // Table: Type_Float::getSizeBitsI
       static constexpr Core::FastU FloatTable_SizeBitsI[4] = {10, 23, 52, 52};
 
-      // Table: Type_Float::getSizeBytes MageCraft
-      static constexpr Core::FastU FloatTable_SizeBytes_MageCraft[8] =
+      // Table: Type_Float::getSizeBytes 8-bit byte
+      static constexpr Core::FastU FloatTable_SizeBytes_B8[8] =
          {2, 4, 4, 8, 8, 16, 8, 16};
 
-      // Table: Type_Float::getSizeBytes ZDoom
-      static constexpr Core::FastU FloatTable_SizeBytes_ZDoom[8] =
+      // Table: Type_Float::getSizeBytes ZDACS
+      static constexpr Core::FastU FloatTable_SizeBytes_ZDACS[8] =
          {1, 1, 1, 2, 2, 4, 2, 4};
 
-      // Table: Type_Float::getSizePoint MageCraft
-      static constexpr Core::FastU FloatTable_SizePoint_MageCraft[8] =
-         {1, 1, 1, 2, 2, 4, 2, 4};
+      // Table: Type_Float::getSizePoint 8-bit byte
+      static constexpr Core::FastU FloatTable_SizePoint_B8[8] =
+         {2, 4, 4, 8, 8, 16, 8, 16};
 
-      // Table: Type_Float::getSizeWords MageCraft
-      static constexpr Core::FastU FloatTable_SizeWords_MageCraft[8] =
+      // Table: Type_Float::getSizeWords 8-bit byte
+      static constexpr Core::FastU FloatTable_SizeWords_B8[8] =
          {1, 1, 1, 2, 2, 4, 2, 4};
    }
 }
@@ -127,11 +127,10 @@ namespace GDCC
       //
       Core::FastU Type_Float::getSizeAlign() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return !size && !cplx ? 2 : 4;
-         default:                          return 1;
-         }
+         if(Platform::IsFamily_ZDACS())
+            return 1;
+
+         return !size && !cplx ? 2 : 4;
       }
 
       //
@@ -155,14 +154,10 @@ namespace GDCC
       //
       Core::FastU Type_Float::getSizeBytes() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft:
-            return FloatTable_SizeBytes_MageCraft[(size << 1) | cplx];
+         if(Platform::IsFamily_ZDACS())
+            return FloatTable_SizeBytes_ZDACS[(size << 1) | cplx];
 
-         default:
-            return FloatTable_SizeBytes_ZDoom[(size << 1) | cplx];
-         }
+         return FloatTable_SizeBytes_B8[(size << 1) | cplx];
       }
 
       //
@@ -170,14 +165,10 @@ namespace GDCC
       //
       Core::FastU Type_Float::getSizePoint() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft:
-            return FloatTable_SizePoint_MageCraft[(size << 1) | cplx];
+         if(Platform::IsFamily_ZDACS())
+            return FloatTable_SizeBytes_ZDACS[(size << 1) | cplx];
 
-         default:
-            return FloatTable_SizeBytes_ZDoom[(size << 1) | cplx];
-         }
+         return FloatTable_SizePoint_B8[(size << 1) | cplx];
       }
 
       //
@@ -185,11 +176,7 @@ namespace GDCC
       //
       Core::FastU Type_Float::getSizeShift() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return !size && !cplx ? 2 : 4;
-         default:                          return 1;
-         }
+         return 1;
       }
 
       //
@@ -197,14 +184,10 @@ namespace GDCC
       //
       Core::FastU Type_Float::getSizeWords() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft:
-            return FloatTable_SizeWords_MageCraft[(size << 1) | cplx];
+         if(Platform::IsFamily_ZDACS())
+            return FloatTable_SizeBytes_ZDACS[(size << 1) | cplx];
 
-         default:
-            return FloatTable_SizeBytes_ZDoom[(size << 1) | cplx];
-         }
+         return FloatTable_SizeWords_B8[(size << 1) | cplx];
       }
    }
 }
