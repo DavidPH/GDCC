@@ -38,6 +38,8 @@ namespace GDCC
             {
             case IR::Code::AddU_W:
             case IR::Code::AndU_W:
+            case IR::Code::CmpI_EQ_W:
+            case IR::Code::CmpI_NE_W:
             case IR::Code::CmpU_EQ_W:
             case IR::Code::CmpU_NE_W:
             case IR::Code::MulU_W:

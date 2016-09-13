@@ -16,6 +16,7 @@
 
 #include "IR/Exp/Binary.hpp"
 #include "IR/Exp/Glyph.hpp"
+#include "IR/Exp/Unary.hpp"
 #include "IR/Program.hpp"
 
 #include <cstdio>
@@ -96,7 +97,25 @@ namespace GDCC
             if(exp->isValue())
                return putValue(exp->getValue());
 
-            throw Core::ExceptStr(exp->pos, "putExp full stub");
+            switch(exp->getName())
+            {
+            case Core::STR_Add:
+               putNTS("Add");
+               putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
+               putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
+               break;
+
+            case Core::STR_Cst:
+               putExp_Cst(static_cast<IR::Exp_Cst const *>(exp));
+               break;
+
+            case Core::STR_Glyph:
+               putNTS(static_cast<IR::Exp_Glyph const *>(exp)->glyph);
+               break;
+
+            default:
+               throw Core::ExceptStr(exp->pos, "bad getExp");
+            }
          }
 
          //
@@ -118,12 +137,43 @@ namespace GDCC
                putExp(static_cast<IR::Exp_Binary const *>(exp)->expR, 0);
                break;
 
+            case Core::STR_Cst:
+               putExp_Cst(static_cast<IR::Exp_Cst const *>(exp));
+               break;
+
             case Core::STR_Glyph:
                putNTS(static_cast<IR::Exp_Glyph const *>(exp)->glyph);
                break;
 
             default:
                throw Core::ExceptStr(exp->pos, "bad getExp");
+            }
+         }
+
+         //
+         // Info::putExp_Cst
+         //
+         void Info::putExp_Cst(IR::Exp_Cst const *exp)
+         {
+            IR::Type const &tIn  = exp->exp->getType();
+            IR::Type const &tOut = exp->type;
+
+            switch(tIn.t)
+            {
+            case IR::TypeBase::Point:
+               switch(tOut.t)
+               {
+               case IR::TypeBase::Point:
+                  putExp(exp->exp);
+                  break;
+
+               default:
+                  throw Core::ExceptStr(exp->pos, "unknown getExp_Cst Point->");
+               }
+               break;
+
+            default:
+               throw Core::ExceptStr(exp->pos, "unknown getExp_Cst");
             }
          }
 
@@ -221,6 +271,10 @@ namespace GDCC
 
             switch(val.v)
             {
+            case IR::ValueBase::Array:
+               putValueMulti(val.vArray.value);
+               break;
+
             case IR::ValueBase::Fixed:
                bits = val.vFixed.vtype.getBits();
                putInt(GetWord_Fixed(val.vFixed, 0));
@@ -281,7 +335,7 @@ namespace GDCC
 
                if(!bucketBits) return;
 
-               *out << bucket << '\0';
+               putInt(bucket);
 
                bucket     = 0;
                bucketBits = 0;
@@ -295,7 +349,7 @@ namespace GDCC
                if(bucketBits + bits > 32)
                   flushBucket();
 
-               value &= ~((static_cast<Core::FastU>(1) << bits) - 1);
+               value &= (static_cast<Core::FastU>(1) << bits) - 1;
                value <<= bucketBits;
                bucket |= value;
                bucketBits += bits;

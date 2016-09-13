@@ -14,7 +14,7 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/Arg.hpp"
+#include "IR/Program.hpp"
 
 #include <iostream>
 
@@ -29,6 +29,17 @@ namespace GDCC
    {
       namespace DGE
       {
+         //
+         // Info::backGlyphObj
+         //
+         void Info::backGlyphObj(Core::String glyph, Core::FastU val)
+         {
+            auto &data = prog->getGlyphData(glyph);
+
+            data.value = IR::ExpCreate_Value(IR::Value_Point(val,
+               data.type.tPoint.reprB, data.type.tPoint.reprN, data.type.tPoint), {nullptr, 0});
+         }
+
          //
          // Info::CheckArg
          //

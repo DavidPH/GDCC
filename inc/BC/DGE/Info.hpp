@@ -22,6 +22,11 @@
 
 namespace GDCC
 {
+   namespace IR
+   {
+      class Exp_Cst;
+   }
+
    namespace BC
    {
       namespace DGE
@@ -32,6 +37,10 @@ namespace GDCC
          class Info : public InfoBase
          {
          protected:
+            void backGlyphObj(Core::String glyph, Core::FastU val);
+
+            virtual void genObj();
+
             virtual void put();
 
             void putCode(char const *code);
@@ -41,6 +50,8 @@ namespace GDCC
 
             void putExp(IR::Exp const *exp); // Full output.
             void putExp(IR::Exp const *exp, Core::FastU w);
+
+            void putExp_Cst(IR::Exp_Cst const *exp);
 
             virtual void putFunc();
             using InfoBase::putFunc;

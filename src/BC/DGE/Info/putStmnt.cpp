@@ -42,10 +42,12 @@ namespace GDCC
             case IR::Code::AddU_W: putCode("AddU"); break;
             case IR::Code::AndU_W: putCode("AndU"); break;
 
+            case IR::Code::CmpI_EQ_W: putCode("CmpU_EQ"); break;
             case IR::Code::CmpI_LE_W: putCode("CmpI_LE"); break;
             case IR::Code::CmpI_LT_W: putCode("CmpI_LT"); break;
             case IR::Code::CmpI_GE_W: putCode("CmpI_GE"); break;
             case IR::Code::CmpI_GT_W: putCode("CmpI_GT"); break;
+            case IR::Code::CmpI_NE_W: putCode("CmpU_NE"); break;
             case IR::Code::CmpU_EQ_W: putCode("CmpU_EQ"); break;
             case IR::Code::CmpU_LE_W: putCode("CmpU_LE"); break;
             case IR::Code::CmpU_LT_W: putCode("CmpU_LT"); break;
