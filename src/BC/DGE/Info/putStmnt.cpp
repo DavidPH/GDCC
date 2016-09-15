@@ -39,6 +39,7 @@ namespace GDCC
 
             switch(stmnt->op.code)
             {
+            case IR::Code::AddI_W:
             case IR::Code::AddU_W: putCode("AddU"); break;
             case IR::Code::AndU_W: putCode("AndU"); break;
 
@@ -64,12 +65,8 @@ namespace GDCC
             case IR::Code::Jcnd_Nil: putCode("Jcnd_Nil", stmnt->args[1].aLit); break;
             case IR::Code::Jcnd_Tru: putCode("Jcnd_Tru", stmnt->args[1].aLit); break;
 
-            case IR::Code::Jump:
-               if(stmnt->args[0].a == IR::ArgBase::Lit)
-                  putCode("Jump_Lit", stmnt->args[0].aLit);
-               else
-                  putCode("Jump");
-               break;
+            case IR::Code::Jfar: putStmnt_Jfar(); break;
+            case IR::Code::Jump: putStmnt_Jump(); break;
 
             case IR::Code::ModI_W: putCode("ModI"); break;
             case IR::Code::ModU_W: putCode("ModU"); break;
@@ -81,8 +78,14 @@ namespace GDCC
             case IR::Code::OrIU_W: putCode("OrIU"); break;
             case IR::Code::OrXU_W: putCode("OrXU"); break;
 
+            case IR::Code::Pltn:
+               putCode("Push_Reg", getStkPtrIdx());
+               putCode("AddU");
+               break;
+
             case IR::Code::Retn: putStmnt_Retn(); break;
 
+            case IR::Code::SubI_W:
             case IR::Code::SubU_W: putCode("SubU"); break;
             case IR::Code::Swap_W: putCode("Swap"); break;
 
@@ -108,6 +111,19 @@ namespace GDCC
             // push_?
             if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
             {
+            case IR::ArgBase::Aut:
+               putCode("Push_Reg", getStkPtrIdx());
+               putCode("AddU");
+
+               if(stmnt->args[1].aAut.off)
+               {
+                  putCode("Push_Lit", stmnt->args[1].aAut.off);
+                  putCode("AddU");
+               }
+
+               putCode("Push_Ptr");
+               break;
+
             case IR::ArgBase::Sta:
                if(stmnt->args[1].aSta.off)
                {
@@ -126,6 +142,19 @@ namespace GDCC
             // drop_?
             else if(stmnt->args[1].a == IR::ArgBase::Stk) switch(stmnt->args[0].a)
             {
+            case IR::ArgBase::Aut:
+               putCode("Push_Reg", getStkPtrIdx());
+               putCode("AddU");
+
+               if(stmnt->args[0].aAut.off)
+               {
+                  putCode("Push_Lit", stmnt->args[0].aAut.off);
+                  putCode("AddU");
+               }
+
+               putCode("Drop_Ptr");
+               break;
+
             case IR::ArgBase::Nul:
                putCode("Drop_Nul");
                break;
@@ -155,6 +184,35 @@ namespace GDCC
          //
          void Info::putStmntDropArg(IR::Arg const &arg, Core::FastU w)
          {
+            //
+            // putAut
+            //
+            auto putAut = [&](IR::Arg_Aut const &a)
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+               {
+                  putCode("Push_Lit", GetWord(a.idx->aLit) + a.off + w);
+                  putCode("Push_Reg", getStkPtrIdx());
+                  putCode("AddU");
+                  putCode("Drop_Ptr");
+               }
+               else
+               {
+                  putStmntPushArg(*a.idx, 0);
+
+                  putCode("Push_Reg", getStkPtrIdx());
+                  putCode("AddU");
+
+                  if(a.off + w)
+                  {
+                     putCode("Push_Lit", a.off + w);
+                     putCode("AddU");
+                  }
+
+                  putCode("Drop_Ptr");
+               }
+            };
+
             //
             // putReg
             //
@@ -189,9 +247,10 @@ namespace GDCC
 
             switch(arg.a)
             {
+            case IR::ArgBase::Aut:    putAut(arg.aAut);    break;
             case IR::ArgBase::LocReg: putReg(arg.aLocReg); break;
             case IR::ArgBase::Nul:    putCode("Drop_Nul"); break;
-            case IR::ArgBase::Sta:    putSta(arg.aSta); break;
+            case IR::ArgBase::Sta:    putSta(arg.aSta);    break;
 
             default:
                throw Core::ExceptStr(stmnt->pos, "bad putStmntDropArg");
@@ -211,6 +270,35 @@ namespace GDCC
          //
          void Info::putStmntPushArg(IR::Arg const &arg, Core::FastU w)
          {
+            //
+            // putAut
+            //
+            auto putAut = [&](IR::Arg_Aut const &a)
+            {
+               if(a.idx->a == IR::ArgBase::Lit)
+               {
+                  putCode("Push_Lit", GetWord(a.idx->aLit) + a.off + w);
+                  putCode("Push_Reg", getStkPtrIdx());
+                  putCode("AddU");
+                  putCode("Push_Ptr");
+               }
+               else
+               {
+                  putStmntPushArg(*a.idx, 0);
+
+                  putCode("Push_Reg", getStkPtrIdx());
+                  putCode("AddU");
+
+                  if(a.off + w)
+                  {
+                     putCode("Push_Lit", a.off + w);
+                     putCode("AddU");
+                  }
+
+                  putCode("Push_Ptr");
+               }
+            };
+
             //
             // putLit
             //
@@ -254,6 +342,7 @@ namespace GDCC
 
             switch(arg.a)
             {
+            case IR::ArgBase::Aut:    putAut(arg.aAut);    break;
             case IR::ArgBase::Lit:    putLit(arg.aLit);    break;
             case IR::ArgBase::LocReg: putReg(arg.aLocReg); break;
             case IR::ArgBase::Sta:    putSta(arg.aSta);    break;

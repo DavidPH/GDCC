@@ -36,6 +36,7 @@ namespace GDCC
          {
             switch(stmnt->op.code)
             {
+            case IR::Code::AddI_W:
             case IR::Code::AddU_W:
             case IR::Code::AndU_W:
             case IR::Code::CmpI_EQ_W:
@@ -60,6 +61,7 @@ namespace GDCC
             case IR::Code::DivU_W:
             case IR::Code::ModI_W:
             case IR::Code::ModU_W:
+            case IR::Code::SubI_W:
             case IR::Code::SubU_W:
                trStmntStk3(stmnt->op.size, stmnt->op.size, true);
                break;
@@ -74,15 +76,18 @@ namespace GDCC
                CheckArgB(stmnt, 1, IR::ArgBase::Lit);
                break;
 
-            case IR::Code::Jump:
-               CheckArgC(stmnt, 1);
-               if(stmnt->args[0].a != IR::ArgBase::Lit)
-                  moveArgStk_src(stmnt->args[0], stmnt->op.size);
-               break;
+            case IR::Code::Jfar: trStmnt_Jfar(); break;
+            case IR::Code::Jump: trStmnt_Jump(); break;
 
             case IR::Code::Move_W: trStmnt_Move_W(); break;
 
             case IR::Code::NotU_W: trStmntStk2(1, stmnt->op.size); break;
+
+            case IR::Code::Pltn:
+               CheckArgC(stmnt, 2);
+               moveArgStk_dst(stmnt->args[0], stmnt->op.size);
+               moveArgStk_src(stmnt->args[1], stmnt->op.size);
+               break;
 
             case IR::Code::Retn: trStmnt_Retn(); break;
 

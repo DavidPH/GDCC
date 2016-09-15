@@ -13,7 +13,7 @@
 #include "BC/DGE/Info.hpp"
 
 #include "IR/Arg.hpp"
-#include "IR/Statement.hpp"
+#include "IR/Function.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -84,6 +84,13 @@ namespace GDCC
          //
          void Info::putStmnt_Retn()
          {
+            if(func->allocAut)
+            {
+               putCode("Push_Reg", getStkPtrIdx());
+               putCode("Push_Lit", "___GDCC__Plsf");
+               putCode("Call",     1);
+            }
+
             putCode("Retn");
          }
       }

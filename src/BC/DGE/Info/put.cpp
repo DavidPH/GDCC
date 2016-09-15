@@ -21,6 +21,8 @@
 
 #include <cstdio>
 
+#include <iostream>
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -51,6 +53,17 @@ namespace GDCC
          {
             putNTS(code);
             putNTS('(');
+            putNTS(')');
+         }
+
+         //
+         // Info::putCode
+         //
+         void Info::putCode(char const *code, char const *arg0)
+         {
+            putNTS(code);
+            putNTS('(');
+            putNTS(arg0);
             putNTS(')');
          }
 
@@ -196,6 +209,13 @@ namespace GDCC
             // Put the function code.
             putNTS("block"); putNTS(func->label);
             putNTS('{');
+               if(func->allocAut)
+               {
+                  putCode("Push_Lit", func->allocAut);
+                  putCode("Push_Lit", "___GDCC__Plsa");
+                  putCode("Call",     1);
+                  putCode("Drop_Reg", getStkPtrIdx());
+               }
                putBlock(func->block);
             putNTS('}');
          }
@@ -282,6 +302,10 @@ namespace GDCC
                   putInt(GetWord_Fixed(val.vFixed, i));
                break;
 
+            case IR::ValueBase::Point:
+               putInt(val.vPoint.value);
+               break;
+
             case IR::ValueBase::Tuple:
                putValueMulti(val.vTuple.value);
                break;
@@ -300,6 +324,10 @@ namespace GDCC
             {
             case IR::ValueBase::Fixed:
                putInt(GetWord_Fixed(val.vFixed, w));
+               break;
+
+            case IR::ValueBase::Point:
+               putInt(w == 0 ? val.vPoint.value : 0);
                break;
 
             default:

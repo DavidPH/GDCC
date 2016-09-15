@@ -122,8 +122,10 @@ namespace GDCC
          default: return; // Any other address space is an error.
          }
 
+         Core::FastU value = *idx * Platform::GetWordBytes() / Platform::GetWordShift();
+
          // Set object's value (index/address).
-         obj->value = IR::ExpCreate_Value(IR::Value_Fixed(*idx, idxType), {nullptr, 0});
+         obj->value = IR::ExpCreate_Value(IR::Value_Fixed(value, idxType), {});
 
          // Update allocation info.
          *idx += obj->type->getSizeWords();

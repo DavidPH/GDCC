@@ -14,6 +14,7 @@
 
 #include "Core/Exception.hpp"
 
+#include "IR/CallType.hpp"
 #include "IR/Program.hpp"
 
 #include <iostream>
@@ -41,12 +42,54 @@ namespace GDCC
          }
 
          //
+         // Info::getStkPtrIdx
+         //
+         Core::FastU Info::getStkPtrIdx()
+         {
+            switch(func->ctype)
+            {
+            case IR::CallType::StdCall:
+               return 0;
+
+            case IR::CallType::StkCall:
+               if(func->allocAut)
+                  return func->localReg - 1;
+
+               goto case_def;
+
+            default:
+            case_def:
+               std::cerr << "ERROR: " << stmnt->pos << ": bad getStkPtrIdx\n";
+               throw EXIT_FAILURE;
+            }
+         }
+
+         //
+         // Info::isPushArg
+         //
+         bool Info::isPushArg(IR::Arg const &arg)
+         {
+            switch(arg.a)
+            {
+            case IR::ArgBase::Aut:    return isPushArg(*arg.aAut.idx);
+            case IR::ArgBase::Lit:    return true;
+            case IR::ArgBase::LocReg: return true;
+            case IR::ArgBase::Sta:    return isPushArg(*arg.aSta.idx);
+            default:                  return false;
+            }
+         }
+
+         //
          // Info::CheckArg
          //
          void Info::CheckArg(IR::Arg const &arg, Core::Origin const &pos)
          {
             switch(arg.a)
             {
+            case IR::ArgBase::Aut:
+               CheckArg(*arg.aAut.idx, pos);
+               break;
+
             case IR::ArgBase::Lit: break;
             case IR::ArgBase::Nul: break;
             case IR::ArgBase::Stk: break;

@@ -41,9 +41,14 @@ namespace GDCC
 
             virtual void genObj();
 
+            Core::FastU getStkPtrIdx();
+
+            bool isPushArg(IR::Arg const &arg);
+
             virtual void put();
 
             void putCode(char const *code);
+            void putCode(char const *code, char const *arg0);
             void putCode(char const *code, Core::FastU arg0);
             void putCode(char const *code, Core::FastU arg0, IR::Arg_Lit const &arg1);
             void putCode(char const *code, IR::Arg_Lit const &arg0);
@@ -71,6 +76,8 @@ namespace GDCC
             virtual void putStmnt();
             void putStmnt_Call();
             void putStmnt_Cnat();
+            void putStmnt_Jfar();
+            void putStmnt_Jump();
             void putStmnt_Move_W();
             void putStmnt_Retn();
 
@@ -87,6 +94,8 @@ namespace GDCC
             virtual void trStmnt();
             void trStmnt_Call();
             void trStmnt_Cnat();
+            void trStmnt_Jfar();
+            void trStmnt_Jump();
             void trStmnt_Move_W();
             void trStmnt_Retn();
 
