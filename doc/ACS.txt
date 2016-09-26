@@ -106,6 +106,7 @@ Syntax:
     <hudmessagebold>
     <if>
     <int>
+    <kill>
     <lightning>
     <log>
     <net>
@@ -114,6 +115,7 @@ Syntax:
     <print>
     <printbold>
     <redreturn>
+    <reopen>
     <respawn>
     <restart>
     <return>
