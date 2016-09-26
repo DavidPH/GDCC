@@ -632,7 +632,9 @@ int vprintf(char const *restrict format, __va_list arg)
 //
 int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list arg)
 {
-   int ret = vfprintf(__fmemopen_sta_w(s, n), format, arg);
+   FILE *stream = __fmemopen_sta_w(s, n);
+   int ret = vfprintf(stream, format, arg);
+   fflush(stream);
 
    // Ensure null termination even if buffer was filled.
    if(n) s[n - 1] = '\0';
@@ -645,7 +647,9 @@ int vsnprintf(char *restrict s, size_t n, char const *restrict format, __va_list
 //
 int vsprintf(char *restrict s, char const *restrict format, va_list arg)
 {
-   int ret = vfprintf(__fmemopen_sta_w(s, -1), format, arg);
+   FILE *stream = __fmemopen_sta_w(s, -1);
+   int ret = vfprintf(stream, format, arg);
+   fflush(stream);
 
    return ret;
 }
@@ -836,7 +840,9 @@ int __vprintf_str(char __str_ars const *restrict format, __va_list arg)
 //
 int __vsnprintf_str(char *restrict s, size_t n, char __str_ars const *restrict format, va_list arg)
 {
-   int ret = __vfprintf_str(__fmemopen_sta_w(s, n), format, arg);
+   FILE *stream = __fmemopen_sta_w(s, n);
+   int ret = __vfprintf_str(stream, format, arg);
+   fflush(stream);
 
    // Ensure null termination even if buffer was filled.
    if(n) s[n - 1] = '\0';
@@ -849,7 +855,9 @@ int __vsnprintf_str(char *restrict s, size_t n, char __str_ars const *restrict f
 //
 int __vsprintf_str(char *restrict s, char __str_ars const *restrict format, va_list arg)
 {
-   int ret = __vfprintf_str(__fmemopen_sta_w(s, -1), format, arg);
+   FILE *stream = __fmemopen_sta_w(s, -1);
+   int ret = __vfprintf_str(stream, format, arg);
+   fflush(stream);
 
    return ret;
 }
