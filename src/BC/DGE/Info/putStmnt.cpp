@@ -245,6 +245,9 @@ namespace GDCC
                }
             };
 
+            // Offset is in words, but output offset is in bytes.
+            w *= 4;
+
             switch(arg.a)
             {
             case IR::ArgBase::Aut:    putAut(arg.aAut);    break;
@@ -339,6 +342,9 @@ namespace GDCC
                   putCode("Push_Ptr");
                }
             };
+
+            // Offset is in words, but output offset is in bytes.
+            w *= 4;
 
             switch(arg.a)
             {
