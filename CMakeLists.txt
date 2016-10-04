@@ -70,24 +70,25 @@ set(GDCC_SHARED_DEFAULT ON)
 
 if(NOT GDCC_NOFLAGS)
    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-      GDCC_TRY_CXX_FLAG(-Wall      Wall   )
-      GDCC_TRY_CXX_FLAG(-Wextra    Wextra )
-      GDCC_TRY_CXX_FLAG(-Wpedantic Wpedantic)
-      GDCC_TRY_CXX_FLAG(-Wshadow   Wshadow)
+      GDCC_TRY_CXX_FLAG(-Wall    Wall)
+      GDCC_TRY_CXX_FLAG(-Wextra  Wextra)
+      GDCC_TRY_CXX_FLAG(-Wshadow Wshadow)
 
       GDCC_TRY_CXX_FLAG(-Wno-misleading-indentation Wno_misleading_indentation)
 
-      GDCC_TRY_CXX_FLAG(-std=c++11 CXX11)
+      GDCC_TRY_CXX_FLAG(-std=c++1z STD_CXX)
+   endif()
+
+   if(MSVC)
+      add_definitions(-D_SCL_SECURE_NO_WARNINGS)
+      add_definitions(/wd4146) # Unary minus applied to unsigned.
+      add_definitions(/wd4244) # Possible loss of data by conversion.
+      add_definitions(/wd4800) # Forcing value to boolean. (All my hate.)
+      add_definitions(/wd4996) # Deprecated declaration.
    endif()
 endif()
 
 if(MSVC)
-   add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-   add_definitions(/wd4146) # Unary minus applied to unsigned.
-   add_definitions(/wd4244) # Possible loss of data by conversion.
-   add_definitions(/wd4800) # Forcing value to boolean. (All my hate.)
-   add_definitions(/wd4996) # Deprecated declaration.
-
    # Disable shared by default, as the source does not contain the needed
    # declaration annotations to make that work under MSVC.
    set(GDCC_SHARED_DEFAULT OFF)
