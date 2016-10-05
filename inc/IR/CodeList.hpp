@@ -138,6 +138,7 @@ GDCC_IR_CodeList(ModI_W)
 GDCC_IR_CodeList(ModU_W)
 
 // Move dst src
+GDCC_IR_CodeList(Move_B)
 GDCC_IR_CodeList(Move_W)
 
 // MuX* dst lop rop

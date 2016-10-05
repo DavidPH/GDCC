@@ -61,6 +61,44 @@ namespace GDCC
 
          throw ResetStmnt();
       }
+
+      //
+      // Info::moveArgStkB_dst
+      //
+      // If idx is not Stk, makes it one by adding a new Move_W statement.
+      //
+      void Info::moveArgStkB_dst(IR::Arg &idx, Core::FastU sizeMove)
+      {
+         if(idx.a == IR::ArgBase::Stk) return;
+
+         block->setOrigin(stmnt->pos);
+         block->addStatementArgs(stmnt->next, {IR::Code::Move_B, sizeMove},
+            std::move(idx), IR::Arg_Stk());
+
+         idx = IR::Arg_Stk();
+      }
+
+      //
+      // Info::moveArgStkB_src
+      //
+      // If idx is not Stk, makes it one by adding a new Move_W statement.
+      //
+      void Info::moveArgStkB_src(IR::Arg &idx, Core::FastU sizeMove)
+      {
+         if(idx.a == IR::ArgBase::Stk) return;
+
+         block->setOrigin(stmnt->pos);
+         block->addLabel(std::move(stmnt->labs));
+         block->addStatementArgs(stmnt, {IR::Code::Move_B, sizeMove},
+            IR::Arg_Stk(), std::move(idx));
+
+         idx = IR::Arg_Stk();
+
+         // Reset iterator for further translation.
+         stmnt = stmnt->prev;
+
+         throw ResetStmnt();
+      }
    }
 }
 

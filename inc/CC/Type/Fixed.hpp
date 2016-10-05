@@ -134,6 +134,9 @@ namespace GDCC
          virtual Core::FastU getSizeWords() const;
          virtual Type::CRef  getUnsiType()  const;
 
+         // Type classification: General classifications.
+         virtual bool isTypeSubWord() const;
+
          // Type classification: C/C++ classifications.
          virtual bool isCTypeFixed()    const {return true;}
          virtual bool isCTypeFixedPr()  const {return prim;}
@@ -185,6 +188,9 @@ namespace GDCC
          virtual Core::FastU getSizeShift() const;
          virtual Core::FastU getSizeWords() const;
          virtual Type::CRef  getUnsiType()  const;
+
+         // Type classification: General classifications.
+         virtual bool isTypeSubWord() const;
 
          // Type classification: C/C++ classifications.
          virtual bool isCTypeChar()   const {return size == 0;}

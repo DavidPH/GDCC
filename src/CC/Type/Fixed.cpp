@@ -361,6 +361,17 @@ namespace GDCC
       }
 
       //
+      // Type_Fract::isTypeSubWord
+      //
+      bool Type_Fract::isTypeSubWord() const
+      {
+         if(Platform::IsFamily_ZDACS())
+            return false;
+
+         return size < 2;
+      }
+
+      //
       // Type_Integ constructor
       //
       Type_Integ::Type_Integ(unsigned size_, bool prim_, bool sign_) :
@@ -462,6 +473,17 @@ namespace GDCC
       SR::Type::CRef Type_Integ::getUnsiType() const
       {
          return IntegTable_BaseType[(size << 1) | 0];
+      }
+
+      //
+      // Type_Integ::isTypeSubWord
+      //
+      bool Type_Integ::isTypeSubWord() const
+      {
+         if(Platform::IsFamily_ZDACS())
+            return false;
+
+         return size < 2;
       }
    }
 }

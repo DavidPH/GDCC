@@ -193,6 +193,8 @@ namespace GDCC
 
          void moveArgStk_dst(IR::Arg &idx, Core::FastU sizeMove);
          void moveArgStk_src(IR::Arg &idx, Core::FastU sizeMove);
+         void moveArgStkB_dst(IR::Arg &idx, Core::FastU sizeMove);
+         void moveArgStkB_src(IR::Arg &idx, Core::FastU sizeMove);
 
          bool optStmnt_Cspe_Drop();
 

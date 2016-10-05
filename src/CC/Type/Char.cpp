@@ -62,6 +62,17 @@ namespace GDCC
 
          return false;
       }
+
+      //
+      // Type_Char::isTypeSubWord
+      //
+      bool Type_Char::isTypeSubWord() const
+      {
+         if(Platform::IsFamily_ZDACS())
+            return false;
+
+         return true;
+      }
    }
 }
 
