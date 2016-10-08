@@ -84,6 +84,9 @@ namespace GDCC::BC::DGE
       void putStmntPushArg(IR::Arg const &arg, Core::FastU w);
       void putStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
+      virtual void putStr();
+      using InfoBase::putStr;
+
       void putNTS(char nts);
       void putNTS(char const *nts);
       void putNTS(Core::String nts);
