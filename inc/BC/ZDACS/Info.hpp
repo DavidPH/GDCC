@@ -271,7 +271,7 @@ namespace GDCC
             virtual void preStmnt();
             void preStmnt_AdXU_W();
             void preStmnt_AddF_W();
-            void preStmnt_AddU_W(IR::Code code);
+            void preStmnt_AddU_W();
             void preStmnt_Bclz_W(bool ones);
             void preStmnt_CmpF_EQ_W();
             void preStmnt_CmpF_GE_W();
@@ -307,6 +307,7 @@ namespace GDCC
             void preStmnt_ShLU_W();
             void preStmnt_SuXU_W();
             void preStmnt_SubF_W();
+            void preStmnt_SubU_W();
 
             void preStmntCall(Core::FastU retrn, Core::FastU param);
             void preStmntCall(Core::String name, Core::FastU retrn, Core::FastU param);

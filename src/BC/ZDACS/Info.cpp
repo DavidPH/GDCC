@@ -527,12 +527,6 @@ namespace GDCC
          //
          Core::String Info::getCallName(IR::OpCode op)
          {
-            char        buf[sizeof("___GDCC__Code_XX_Wx")];
-            std::size_t len;
-
-            char const *code;
-            int         size;
-
             // Some codes get mapped to other function names.
             switch(op.code)
             {
@@ -544,29 +538,7 @@ namespace GDCC
             default: break;
             }
 
-            // Convert code to string.
-            switch(op.code)
-            {
-               #define GDCC_IR_CodeList(c) case IR::Code::c: code = #c; break;
-               #include "IR/CodeList.hpp"
-
-            default:
-               throw Core::ExceptStr(stmnt->pos, "bad getCallName code");
-            }
-
-            // Convert size to int.
-            if(op.size > INT_MAX)
-               throw Core::ExceptStr(stmnt->pos, "bad getCallName size");
-
-            size = static_cast<int>(op.size);
-
-            // Format function name.
-            len = std::snprintf(buf, sizeof(buf), "___GDCC__%s%i", code, size);
-
-            if(len >= sizeof(buf))
-               throw Core::ExceptStr(stmnt->pos, "bad getCallName");
-
-            return {buf, len};
+            return getFuncName(op);
          }
 
          //

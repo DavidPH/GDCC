@@ -68,8 +68,8 @@ namespace GDCC
             case IR::Code::AdXU_W: preStmnt_AdXU_W(); break;
 
             case IR::Code::AddF_W: preStmnt_AddF_W(); break;
-            case IR::Code::AddI_W: preStmnt_AddU_W(IR::Code::AdXU_W); break;
-            case IR::Code::AddU_W: preStmnt_AddU_W(IR::Code::AdXU_W); break;
+            case IR::Code::AddI_W: preStmnt_AddU_W(); break;
+            case IR::Code::AddU_W: preStmnt_AddU_W(); break;
 
             case IR::Code::Bclo_W: preStmnt_Bclz_W(true);  break;
             case IR::Code::Bclz_W: preStmnt_Bclz_W(false); break;
@@ -138,8 +138,8 @@ namespace GDCC
             case IR::Code::SuXU_W: preStmnt_SuXU_W(); break;
 
             case IR::Code::SubF_W: preStmnt_SubF_W(); break;
-            case IR::Code::SubI_W: preStmnt_AddU_W(IR::Code::SuXU_W); break;
-            case IR::Code::SubU_W: preStmnt_AddU_W(IR::Code::SuXU_W); break;
+            case IR::Code::SubI_W: preStmnt_SubU_W(); break;
+            case IR::Code::SubU_W: preStmnt_SubU_W(); break;
 
             default:
                break;

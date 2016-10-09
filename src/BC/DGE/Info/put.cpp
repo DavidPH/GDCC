@@ -91,6 +91,17 @@ namespace GDCC::BC::DGE
    //
    // Info::putCode
    //
+   void Info::putCode(char const *code, Core::String arg0)
+   {
+      putNTS(code);
+      putNTS('(');
+      putNTS(arg0);
+      putNTS(')');
+   }
+
+   //
+   // Info::putCode
+   //
    void Info::putCode(char const *code, IR::Arg_Lit const &arg0)
    {
       putNTS(code);

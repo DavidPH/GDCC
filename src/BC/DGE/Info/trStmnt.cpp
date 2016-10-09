@@ -32,8 +32,10 @@ namespace GDCC::BC::DGE
    {
       switch(stmnt->op.code)
       {
+      case IR::Code::AdXU_W: trStmnt_AdXU_W(); break;
       case IR::Code::AddI_W:
-      case IR::Code::AddU_W:
+      case IR::Code::AddU_W: trStmnt_AddU_W(); break;
+
       case IR::Code::AndU_W:
       case IR::Code::CmpI_EQ_W:
       case IR::Code::CmpI_NE_W:
@@ -57,8 +59,6 @@ namespace GDCC::BC::DGE
       case IR::Code::DivU_W:
       case IR::Code::ModI_W:
       case IR::Code::ModU_W:
-      case IR::Code::SubI_W:
-      case IR::Code::SubU_W:
          trStmntStk3(stmnt->op.size, stmnt->op.size, true);
          break;
 
@@ -87,6 +87,10 @@ namespace GDCC::BC::DGE
          break;
 
       case IR::Code::Retn: trStmnt_Retn(); break;
+
+      case IR::Code::SuXU_W: trStmnt_SuXU_W(); break;
+      case IR::Code::SubI_W:
+      case IR::Code::SubU_W: trStmnt_SubU_W(); break;
 
       case IR::Code::Swap_W:
          CheckArgC(stmnt, 2);

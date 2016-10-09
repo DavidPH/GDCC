@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -122,6 +122,7 @@ namespace GDCC
 
          // setOrigin
          Block &setOrigin(Core::Origin pos) {head.pos = pos; return *this;}
+         Block &setOrigin(Core::FastU line) {head.pos.line = line; return *this;}
 
          size_type size() const {return std::distance(begin(), end());}
 

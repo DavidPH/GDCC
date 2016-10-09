@@ -41,12 +41,18 @@ namespace GDCC::BC::DGE
 
       bool isPushArg(IR::Arg const &arg);
 
+      virtual void preStmnt();
+
+      void preStmnt_AddU_W();
+      void preStmnt_SubU_W();
+
       virtual void put();
 
       void putCode(char const *code);
       void putCode(char const *code, char const *arg0);
       void putCode(char const *code, Core::FastU arg0);
       void putCode(char const *code, Core::FastU arg0, IR::Arg_Lit const &arg1);
+      void putCode(char const *code, Core::String arg0);
       void putCode(char const *code, IR::Arg_Lit const &arg0);
 
       void putExp(IR::Exp const *exp); // Full output.
@@ -70,6 +76,8 @@ namespace GDCC::BC::DGE
       void putValueMulti(Core::Array<IR::Value> const &val, Core::FastU w);
 
       virtual void putStmnt();
+      void putStmnt_AdXU_W();
+      void putStmnt_AddU_W();
       void putStmnt_Call();
       void putStmnt_Cnat();
       void putStmnt_Jfar();
@@ -77,6 +85,8 @@ namespace GDCC::BC::DGE
       void putStmnt_Move_B();
       void putStmnt_Move_W();
       void putStmnt_Retn();
+      void putStmnt_SuXU_W();
+      void putStmnt_SubU_W();
 
       void putStmntDropArg(IR::Arg const &arg, Core::FastU w);
       void putStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
@@ -92,6 +102,8 @@ namespace GDCC::BC::DGE
       void putNTS(Core::String nts);
 
       virtual void trStmnt();
+      void trStmnt_AdXU_W();
+      void trStmnt_AddU_W();
       void trStmnt_Call();
       void trStmnt_Cnat();
       void trStmnt_Jfar();
@@ -99,6 +111,8 @@ namespace GDCC::BC::DGE
       void trStmnt_Move_B();
       void trStmnt_Move_W();
       void trStmnt_Retn();
+      void trStmnt_SuXU_W();
+      void trStmnt_SubU_W();
 
 
       static void CheckArg(IR::Arg const &arg, Core::Origin const &pos);

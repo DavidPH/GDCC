@@ -32,11 +32,14 @@ endif()
 ##
 add_library(gdcc-bc-lib ${GDCC_SHARED_DECL}
    Info.cpp
+   Info/Stmnt/Add.cpp
+   Info/addFunc.cpp
    Info/moveArg.cpp
    Info/optStmnt.cpp
    Info/put.cpp
    Info/trStmnt.cpp
 
+   ../../inc/BC/AddFunc.hpp
    ../../inc/BC/Info.hpp
 )
 

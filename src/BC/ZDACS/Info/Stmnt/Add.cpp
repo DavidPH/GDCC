@@ -321,40 +321,12 @@ namespace GDCC
          //
          // Info::preStmnt_AddU_W
          //
-         void Info::preStmnt_AddU_W(IR::Code code)
+         void Info::preStmnt_AddU_W()
          {
-            if(stmnt->op.size < 2)
+            if(stmnt->op.size <= 1)
                return;
 
-            Core::String name = getCallName();
-            auto newFunc = preStmntCallDef(name, stmnt->op.size,
-               stmnt->op.size * 2, stmnt->op.size * 2, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            // First words.
-            AS_Stmnt({code, 1}, IR::Arg_Stk(), lop, rop);
-
-            // Mid words.
-            for(Core::FastU i = stmnt->op.size - 2; i--;)
-               AS_Stmnt({code, 1}, IR::Arg_Stk(), IR::Arg_Stk(), ++lop, ++rop);
-
-            // Last words.
-            AS_Stmnt({stmnt->op.code,   1}, IR::Arg_Stk(), ++lop, ++rop);
-            AS_Stmnt({IR::Code::AddU_W, 1}, IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
-
-            // Return.
-            AS_Stmnt({IR::Code::Retn, stmnt->op.size}, IR::Arg_Stk());
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+            addFunc_AddU_W(stmnt->op.size);
          }
 
          //
@@ -591,6 +563,17 @@ namespace GDCC
             #undef AS_Stmnt
 
             throw ResetFunc();
+         }
+
+         //
+         // Info::preStmnt_SubU_W
+         //
+         void Info::preStmnt_SubU_W()
+         {
+            if(stmnt->op.size <= 1)
+               return;
+
+            addFunc_SubU_W(stmnt->op.size);
          }
 
          //

@@ -189,6 +189,16 @@ namespace GDCC
          virtual void trStr() {}
                  void trStr(IR::StrEnt &str);
 
+         void addFunc(Core::String name, Core::FastU retrn, Core::FastU param);
+
+         void addFunc_AddU_W(Core::FastU n);
+         void addFunc_SubU_W(Core::FastU n);
+
+         IR::Function *getFuncDefn(Core::String name, Core::FastU retrn,
+            Core::FastU param, Core::FastU localReg, char const *file);
+
+         Core::String getFuncName(IR::OpCode op);
+
          void putData(char const *data, std::size_t size);
 
          void moveArgStk_dst(IR::Arg &idx, Core::FastU sizeMove);
@@ -217,6 +227,9 @@ namespace GDCC
          static void CheckArgB(IR::Statement *stmnt, std::size_t a, IR::AddrBase b);
 
          static void CheckArgC(IR::Statement *stmnt, std::size_t c);
+
+      private:
+         void addFunc_AddU_W(Core::FastU n, IR::Code codeAdd, IR::Code codeAdX);
       };
    }
 }
