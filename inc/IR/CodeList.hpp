@@ -23,7 +23,7 @@
 GDCC_IR_CodeList(Nop)
 
 // AdX* dst lop rop
-// AdX* dst lop rop carry
+// AdX* dst carry lop rop
 GDCC_IR_CodeList(AdXU_W)
 
 // Add* dst lop rop

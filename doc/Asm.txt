@@ -603,7 +603,7 @@ AdXU_W (Expanding Add Unsigned Integer Word)
 
 Arguments:
   AdXU_W N, destination[N+1] dst, source[N] lop, source[N] rop
-  AdXU_W N, destination[N+1] dst, source[N] lop, source[N] rop, source[1] carry
+  AdXU_W N, destination[N+1] dst, source[1] carry, source[N] lop, source[N] rop
 
 Semantics:
   Adds rop to lop and stores the result with carry in dst.
@@ -989,7 +989,7 @@ SuXU_W (Expanding Subtract Unsigned Integer Word)
 
 Arguments:
   SuXU_W N, destination[N+1] dst, source[N] lop, source[N] rop
-  SuXU_W N, destination[N+1] dst, source[N] lop, source[N] rop, source[1] carry
+  SuXU_W N, destination[N+1] dst, source[1] carry, source[N] lop, source[N] rop
 
 Semantics:
   Subtracts rop from lop and stores the result with carry in dst.

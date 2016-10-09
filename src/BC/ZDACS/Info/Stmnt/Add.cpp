@@ -34,9 +34,10 @@ namespace GDCC
          //
          void Info::genStmnt_AdXU_W()
          {
+            Core::FastU lop = stmnt->args.size() == 3 ? 1 : 2, rop = lop + 1;
             Core::FastU lenAdXU_W1 =
-               lenPushArg(stmnt->args[1], 0) * 2 +
-               lenPushArg(stmnt->args[2], 0) + 16;
+               lenPushArg(stmnt->args[lop], 0) * 2 +
+               lenPushArg(stmnt->args[rop], 0) + 16;
 
             // No carry.
             if(stmnt->args.size() == 3)
@@ -69,9 +70,10 @@ namespace GDCC
          //
          void Info::genStmnt_SuXU_W()
          {
+            Core::FastU lop = stmnt->args.size() == 3 ? 1 : 2, rop = lop + 1;
             Core::FastU lenSuXU_W1 =
-               lenPushArg(stmnt->args[1], 0) * 2 +
-               lenPushArg(stmnt->args[2], 0) + 20;
+               lenPushArg(stmnt->args[lop], 0) * 2 +
+               lenPushArg(stmnt->args[rop], 0) + 20;
 
             // No carry.
             if(stmnt->args.size() == 3)
@@ -341,7 +343,7 @@ namespace GDCC
 
             // Mid words.
             for(Core::FastU i = stmnt->op.size - 2; i--;)
-               AS_Stmnt({code, 1}, IR::Arg_Stk(), ++lop, ++rop, IR::Arg_Stk());
+               AS_Stmnt({code, 1}, IR::Arg_Stk(), IR::Arg_Stk(), ++lop, ++rop);
 
             // Last words.
             AS_Stmnt({stmnt->op.code,   1}, IR::Arg_Stk(), ++lop, ++rop);
@@ -596,31 +598,31 @@ namespace GDCC
          //
          void Info::putStmnt_AdXU_W()
          {
+            Core::FastU lop = stmnt->args.size() == 3 ? 1 : 2, rop = lop + 1;
+
             //
             // putAdXU_W1
             //
             auto putAdXU_W1 = [&]()
             {
-               putStmntPushArg(stmnt->args[1], 0);
-               putStmntPushArg(stmnt->args[2], 0);
+               putStmntPushArg(stmnt->args[lop], 0);
+               putStmntPushArg(stmnt->args[rop], 0);
                putCode(Code::AddU);
                putCode(Code::Copy);
-               putStmntPushArg(stmnt->args[1], 0);
+               putStmntPushArg(stmnt->args[lop], 0);
                putStmntCall("___GDCC__CmpU_LT_W1", 1);
             };
 
             // No carry.
             if(stmnt->args.size() == 3)
-            {
                putAdXU_W1();
-            }
 
             // With carry.
             else
             {
                Core::FastU lenAdXU_W1 =
-                  lenPushArg(stmnt->args[1], 0) * 2 +
-                  lenPushArg(stmnt->args[2], 0) + 16;
+                  lenPushArg(stmnt->args[lop], 0) * 2 +
+                  lenPushArg(stmnt->args[rop], 0) + 16;
 
                Core::FastU lenCarry0 = lenAdXU_W1 +  8;
                Core::FastU lenCarry1 = lenAdXU_W1 + 40;
@@ -690,32 +692,32 @@ namespace GDCC
          //
          void Info::putStmnt_SuXU_W()
          {
+            Core::FastU lop = stmnt->args.size() == 3 ? 1 : 2, rop = lop + 1;
+
             //
             // putSuXU_W1
             //
             auto putSuXU_W1 = [&]()
             {
-               putStmntPushArg(stmnt->args[1], 0);
-               putStmntPushArg(stmnt->args[2], 0);
+               putStmntPushArg(stmnt->args[lop], 0);
+               putStmntPushArg(stmnt->args[rop], 0);
                putCode(Code::SubU);
                putCode(Code::Copy);
-               putStmntPushArg(stmnt->args[1], 0);
+               putStmntPushArg(stmnt->args[lop], 0);
                putStmntCall("___GDCC__CmpU_GT_W1", 1);
                putCode(Code::NegI);
             };
 
             // No carry.
             if(stmnt->args.size() == 3)
-            {
                putSuXU_W1();
-            }
 
             // With carry.
             else
             {
                Core::FastU lenSuXU_W1 =
-                  lenPushArg(stmnt->args[1], 0) * 2 +
-                  lenPushArg(stmnt->args[2], 0) + 20;
+                  lenPushArg(stmnt->args[lop], 0) * 2 +
+                  lenPushArg(stmnt->args[rop], 0) + 20;
 
                Core::FastU lenCarry0 = lenSuXU_W1 +  8;
                Core::FastU lenCarry1 = lenSuXU_W1 + 48;
@@ -797,7 +799,7 @@ namespace GDCC
             if(stmnt->args.size() > 3)
             {
                func->setLocalTmp(1);
-               moveArgStk_src(stmnt->args[3], 1);
+               moveArgStk_src(stmnt->args[1], 1);
             }
          }
 
@@ -869,7 +871,7 @@ namespace GDCC
             if(stmnt->args.size() > 3)
             {
                func->setLocalTmp(1);
-               moveArgStk_src(stmnt->args[3], 1);
+               moveArgStk_src(stmnt->args[1], 1);
             }
          }
 
