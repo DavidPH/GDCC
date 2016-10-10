@@ -44,6 +44,8 @@ namespace GDCC::BC::DGE
       virtual void preStmnt();
 
       void preStmnt_AddU_W();
+      void preStmnt_MuXU_W();
+      void preStmnt_MulU_W();
       void preStmnt_SubU_W();
 
       virtual void put();
@@ -85,11 +87,15 @@ namespace GDCC::BC::DGE
       void putStmnt_Jump();
       void putStmnt_Move_B();
       void putStmnt_Move_W();
+      void putStmnt_MuXU_W();
+      void putStmnt_MulU_W();
       void putStmnt_OrIU_W();
       void putStmnt_OrXU_W();
       void putStmnt_Retn();
       void putStmnt_SuXU_W();
       void putStmnt_SubU_W();
+
+      void putStmntCall(Core::String name, Core::FastU argc);
 
       void putStmntDropArg(IR::Arg const &arg, Core::FastU w);
       void putStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
@@ -114,6 +120,8 @@ namespace GDCC::BC::DGE
       void trStmnt_Jump();
       void trStmnt_Move_B();
       void trStmnt_Move_W();
+      void trStmnt_MuXU_W();
+      void trStmnt_MulU_W();
       void trStmnt_OrIU_W();
       void trStmnt_OrXU_W();
       void trStmnt_Retn();

@@ -40,50 +40,7 @@ namespace GDCC
                return;
             }
 
-            Core::String name = getCallName();
-            auto newFunc = preStmntCallDef(name, stmnt->op.size * 2,
-               stmnt->op.size * 2, stmnt->op.size * 2, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
-
-            IR::Arg_Stk stk{};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            AS_Stmnt({IR::Code::MuXU_W, 1}, stk, lop, rop);
-            AS_Stmnt({IR::Code::Move_W, 1}, stk, 0);
-
-            Core::FastU colEnd = stmnt->op.size * 2 - 1;
-            for(Core::FastU col = 1; col != colEnd; ++col)
-            {
-               if(colEnd - col > 1)
-                  AS_Stmnt({IR::Code::Move_W, 1}, stk, 0);
-
-               Core::FastU sizeAdd = col < colEnd - 1 ? 3 : 2;
-
-               Core::FastU rowEnd = std::min(col + 1, stmnt->op.size);
-               lop.off = std::min(col, stmnt->op.size - 1);
-               rop.off = col < stmnt->op.size ? 0 : col - stmnt->op.size + 1;
-               for(; rop.off != rowEnd; --lop, ++rop)
-               {
-                  AS_Stmnt({IR::Code::MuXU_W, 1}, stk, lop, rop);
-
-                  if(sizeAdd == 3)
-                     AS_Stmnt({IR::Code::Move_W, 1}, stk, 0);
-
-                  AS_Stmnt({IR::Code::AddU_W, sizeAdd}, stk, stk, stk);
-               }
-            }
-
-            AS_Stmnt({IR::Code::Retn, stmnt->op.size * 2}, stk);
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+            addFunc_MuXU_W(stmnt->op.size);
          }
 
          //
@@ -343,53 +300,7 @@ namespace GDCC
             if(stmnt->op.size <= 1)
                return;
 
-            Core::String name = getCallName();
-            auto newFunc = preStmntCallDef(name, stmnt->op.size,
-               stmnt->op.size * 2, stmnt->op.size * 2, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
-
-            IR::Arg_Stk stk{};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            AS_Stmnt({IR::Code::MuXU_W, 1}, stk, lop, rop);
-
-            if(stmnt->op.size > 2)
-               AS_Stmnt({IR::Code::Move_W, 1}, stk, 0);
-
-            for(Core::FastU col = 1; col != stmnt->op.size; ++col)
-            {
-               if(stmnt->op.size - col > 3)
-                  AS_Stmnt({IR::Code::Move_W, 1}, stk, 0);
-
-               Core::FastU sizeAdd = std::min<Core::FastU>(3, stmnt->op.size - col);
-               IR::Code    codeMul =
-                  col < stmnt->op.size - 1 ? IR::Code::MuXU_W : IR::Code::MulU_W;
-
-               Core::FastU rowEnd = col + 1;
-               lop.off = col;
-               rop.off = 0;
-               for(; rop.off != rowEnd; --lop, ++rop)
-               {
-                  AS_Stmnt({codeMul, 1}, stk, lop, rop);
-
-                  if(sizeAdd == 3)
-                     AS_Stmnt({IR::Code::Move_W, 1}, stk, 0);
-
-                  AS_Stmnt({IR::Code::AddU_W, sizeAdd}, stk, stk, stk);
-               }
-            }
-
-            AS_Stmnt({IR::Code::Retn, stmnt->op.size}, stk);
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+            addFunc_MulU_W(stmnt->op.size);
          }
 
          //

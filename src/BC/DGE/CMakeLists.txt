@@ -26,6 +26,7 @@ if(GDCC_BC_DGE)
       Info/Stmnt/Call.cpp
       Info/Stmnt/Jump.cpp
       Info/Stmnt/Move.cpp
+      Info/Stmnt/Mul.cpp
       Info/gen.cpp
       Info/preStmnt.cpp
       Info/put.cpp

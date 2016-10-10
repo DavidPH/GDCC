@@ -192,6 +192,8 @@ namespace GDCC
          void addFunc(Core::String name, Core::FastU retrn, Core::FastU param);
 
          void addFunc_AddU_W(Core::FastU n);
+         void addFunc_MuXU_W(Core::FastU n);
+         void addFunc_MulU_W(Core::FastU n);
          void addFunc_SubU_W(Core::FastU n);
 
          IR::Function *getFuncDefn(Core::String name, Core::FastU retrn,

@@ -65,13 +65,9 @@ namespace GDCC::BC::DGE
          return;
 
       if(stmnt->op.size == 1)
-      {
-         putCode("AddU");
-         return;
-      }
+         return putCode("AddU");
 
-      putCode("Push_Lit", getFuncName(stmnt->op));
-      putCode("Call",     stmnt->op.size * 2);
+      putStmntCall(getFuncName({IR::Code::AddU_W, stmnt->op.size}), stmnt->op.size * 2);
    }
 
    //
@@ -94,13 +90,9 @@ namespace GDCC::BC::DGE
          return;
 
       if(stmnt->op.size == 1)
-      {
-         putCode("SubU");
-         return;
-      }
+         return putCode("SubU");
 
-      putCode("Push_Lit", getFuncName(stmnt->op));
-      putCode("Call",     stmnt->op.size * 2);
+      putStmntCall(getFuncName({IR::Code::SubU_W, stmnt->op.size}), stmnt->op.size * 2);
    }
 
    //
@@ -129,7 +121,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_AddU_W()
    {
-      // TODO: Do not call for multiword push-args.
+      // TODO: Inline multiword push-args.
 
       trStmntStk3(stmnt->op.size, stmnt->op.size, false);
    }
@@ -167,7 +159,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_SubU_W()
    {
-      // TODO: Do not call for multiword push-args.
+      // TODO: Inline multiword push-args.
 
       trStmntStk3(stmnt->op.size, stmnt->op.size, true);
    }

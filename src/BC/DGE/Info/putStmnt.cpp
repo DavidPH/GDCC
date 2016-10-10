@@ -70,8 +70,9 @@ namespace GDCC::BC::DGE
 
       case IR::Code::Move_B: putStmnt_Move_B(); break;
       case IR::Code::Move_W: putStmnt_Move_W(); break;
-
-      case IR::Code::MulU_W: putCode("MulU"); break;
+      case IR::Code::MuXU_W: putStmnt_MuXU_W(); break;
+      case IR::Code::MulI_W:
+      case IR::Code::MulU_W: putStmnt_MulU_W(); break;
       case IR::Code::NotU_W: putCode("LNot"); break;
       case IR::Code::OrIU_W: putStmnt_OrIU_W(); break;
       case IR::Code::OrXU_W: putStmnt_OrXU_W(); break;
@@ -93,6 +94,15 @@ namespace GDCC::BC::DGE
             << ": cannot output Code for DGE: " << stmnt->op << '\n';
          throw EXIT_FAILURE;
       }
+   }
+
+   //
+   // Info::putStmntCall
+   //
+   void Info::putStmntCall(Core::String name, Core::FastU argc)
+   {
+      putCode("Push_Lit", name);
+      putCode("Call",     argc);
    }
 
    //
