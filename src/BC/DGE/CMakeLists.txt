@@ -22,6 +22,7 @@ if(GDCC_BC_DGE)
    add_library(gdcc-bc-dge-lib ${GDCC_SHARED_DECL}
       Info.cpp
       Info/Stmnt/Add.cpp
+      Info/Stmnt/Bit.cpp
       Info/Stmnt/Call.cpp
       Info/Stmnt/Jump.cpp
       Info/Stmnt/Move.cpp

@@ -38,7 +38,7 @@ namespace GDCC::BC::DGE
       case IR::Code::AdXU_W: putStmnt_AdXU_W(); break;
       case IR::Code::AddI_W:
       case IR::Code::AddU_W: putStmnt_AddU_W(); break;
-      case IR::Code::AndU_W: putCode("AndU"); break;
+      case IR::Code::AndU_W: putStmnt_AndU_W(); break;
 
       case IR::Code::CmpI_EQ_W: putCode("CmpU_EQ"); break;
       case IR::Code::CmpI_LE_W: putCode("CmpI_LE"); break;
@@ -73,8 +73,8 @@ namespace GDCC::BC::DGE
 
       case IR::Code::MulU_W: putCode("MulU"); break;
       case IR::Code::NotU_W: putCode("LNot"); break;
-      case IR::Code::OrIU_W: putCode("OrIU"); break;
-      case IR::Code::OrXU_W: putCode("OrXU"); break;
+      case IR::Code::OrIU_W: putStmnt_OrIU_W(); break;
+      case IR::Code::OrXU_W: putStmnt_OrXU_W(); break;
 
       case IR::Code::Pltn:
          putCode("Push_Reg", getStkPtrIdx());
