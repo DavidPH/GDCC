@@ -464,7 +464,7 @@ namespace GDCC
          if(Platform::IsFamily_ZDACS())
             return IntegTable_SizeBytes_ZDACS[size] ;
 
-         return size <= 2 ? 1 : size - 2;
+         return size <= 2 ? 1 : size - 1;
       }
 
       //
