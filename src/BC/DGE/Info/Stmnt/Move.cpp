@@ -124,8 +124,23 @@ namespace GDCC::BC::DGE
       // Multi-word?
       if(stmnt->op.size != 1)
       {
-         // TODO
-         throw Core::ExceptStr(stmnt->pos, "multiword Move_W");
+         if(stmnt->args[0].a != IR::ArgBase::Stk)
+         {
+            if(stmnt->args[1].a != IR::ArgBase::Stk)
+            {
+               for(Core::FastU w = 0; w != stmnt->op.size; ++w)
+               {
+                  putStmntPushArg(stmnt->args[1], w);
+                  putStmntDropArg(stmnt->args[0], w);
+               }
+            }
+            else
+               putStmntDropArg(stmnt->args[0], 0, stmnt->op.size);
+         }
+         else if(stmnt->args[1].a != IR::ArgBase::Stk)
+            putStmntPushArg(stmnt->args[1], 0, stmnt->op.size);
+
+         return;
       }
 
       // push_?
