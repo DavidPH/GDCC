@@ -62,12 +62,8 @@ namespace GDCC::BC::DGE
       case IR::Code::Call: trStmnt_Call(); break;
       case IR::Code::Cnat: trStmnt_Cnat(); break;
 
-      case IR::Code::Jcnd_Nil:
-      case IR::Code::Jcnd_Tru:
-         CheckArgC(stmnt, 2);
-         moveArgStk_src(stmnt->args[0], stmnt->op.size);
-         CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-         break;
+      case IR::Code::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
+      case IR::Code::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
 
       case IR::Code::Jfar: trStmnt_Jfar(); break;
       case IR::Code::Jump: trStmnt_Jump(); break;

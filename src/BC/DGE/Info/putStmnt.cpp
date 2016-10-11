@@ -59,8 +59,8 @@ namespace GDCC::BC::DGE
       case IR::Code::DivI_W: putCode("DivI"); break;
       case IR::Code::DivU_W: putCode("DivU"); break;
 
-      case IR::Code::Jcnd_Nil: putCode("Jcnd_Nil", stmnt->args[1].aLit); break;
-      case IR::Code::Jcnd_Tru: putCode("Jcnd_Tru", stmnt->args[1].aLit); break;
+      case IR::Code::Jcnd_Nil: putStmnt_Jcnd_Nil(); break;
+      case IR::Code::Jcnd_Tru: putStmnt_Jcnd_Tru(); break;
 
       case IR::Code::Jfar: putStmnt_Jfar(); break;
       case IR::Code::Jump: putStmnt_Jump(); break;

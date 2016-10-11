@@ -83,6 +83,8 @@ namespace GDCC::BC::DGE
       void putStmnt_AndU_W(char const *code = "AndU");
       void putStmnt_Call();
       void putStmnt_Cnat();
+      void putStmnt_Jcnd_Nil(char const *code = "Jcnd_Nil");
+      void putStmnt_Jcnd_Tru();
       void putStmnt_Jfar();
       void putStmnt_Jump();
       void putStmnt_Move_B();
@@ -116,6 +118,8 @@ namespace GDCC::BC::DGE
       void trStmnt_AndU_W();
       void trStmnt_Call();
       void trStmnt_Cnat();
+      void trStmnt_Jcnd_Nil();
+      void trStmnt_Jcnd_Tru();
       void trStmnt_Jfar();
       void trStmnt_Jump();
       void trStmnt_Move_B();
