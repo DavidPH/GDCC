@@ -284,13 +284,12 @@ namespace GDCC
             void preStmnt_CmpI_GT_W();
             void preStmnt_CmpI_LE_W();
             void preStmnt_CmpI_LT_W();
-            void preStmnt_CmpU_EQ_W(IR::Code codeCmp, IR::Code codeAnd);
+            void preStmnt_CmpU_EQ_W(IR::Code codeCmp);
             void preStmnt_CmpU_GE_W();
             void preStmnt_CmpU_GT_W();
             void preStmnt_CmpU_LE_W();
             void preStmnt_CmpU_LT_W();
             void preStmnt_CmpU_W1(IR::Code code, IR::Code codeCmp, bool resGT, bool resLT);
-            void preStmnt_CmpU_Wn(IR::Code codeCmpHi, IR::Code codeCmpLo);
             void preStmnt_DiXI_W();
             void preStmnt_DiXU_W();
             void preStmnt_DiXU_W1();

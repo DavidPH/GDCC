@@ -19,6 +19,12 @@
 //
 
 //
+// GDCC_BC_AddFuncEnd
+//
+#define GDCC_BC_AddFuncEnd() \
+   throw ResetFunc()
+
+//
 // GDCC_BC_AddFuncPre
 //
 #define GDCC_BC_AddFuncPre(code, size, retrn, param, local, file) \
@@ -29,10 +35,31 @@
       return
 
 //
+// GDCC_BC_AddFuncObj
+//
+#define GDCC_BC_AddFuncObj() \
+   IR::Arg_Nul nul{}; ((void)nul); \
+   IR::Arg_Stk stk{}; ((void)stk)
+
+//
+// GDCC_BC_AddFuncObjBin
+//
+#define GDCC_BC_AddFuncObjBin(size) \
+   GDCC_BC_AddFuncObj(); \
+   \
+   IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))}; \
+   IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(size))}
+
+//
 // GDCC_BC_AddStmnt
 //
 #define GDCC_BC_AddStmnt(...) \
-   newFunc->block.setOrigin(__LINE__).addStatementArgs(__VA_ARGS__)
+   do \
+   { \
+      using IR::Code; \
+      newFunc->block.setOrigin(__LINE__).addStatementArgs(__VA_ARGS__); \
+   } \
+   while(false)
 
 #endif//GDCC__BC__AddFunc_H__
 

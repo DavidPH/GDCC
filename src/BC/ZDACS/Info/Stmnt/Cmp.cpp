@@ -271,7 +271,7 @@ namespace GDCC
             if(stmnt->op.size < 2)
                return;
 
-            preStmnt_CmpU_Wn(IR::Code::CmpI_GE_W, IR::Code::CmpU_GE_W);
+            addFunc_CmpI_GE_W(stmnt->op.size);
          }
 
          //
@@ -282,7 +282,7 @@ namespace GDCC
             if(stmnt->op.size < 2)
                return;
 
-            preStmnt_CmpU_Wn(IR::Code::CmpI_GT_W, IR::Code::CmpU_GT_W);
+            addFunc_CmpI_GT_W(stmnt->op.size);
          }
 
          //
@@ -293,7 +293,7 @@ namespace GDCC
             if(stmnt->op.size < 2)
                return;
 
-            preStmnt_CmpU_Wn(IR::Code::CmpI_LE_W, IR::Code::CmpU_LE_W);
+            addFunc_CmpI_LE_W(stmnt->op.size);
          }
 
          //
@@ -304,42 +304,21 @@ namespace GDCC
             if(stmnt->op.size < 2)
                return;
 
-            preStmnt_CmpU_Wn(IR::Code::CmpI_LT_W, IR::Code::CmpU_LT_W);
+            addFunc_CmpI_LT_W(stmnt->op.size);
          }
 
          //
          // Info::preStmnt_CmpU_EQ_W
          //
-         void Info::preStmnt_CmpU_EQ_W(IR::Code codeCmp, IR::Code codeAnd)
+         void Info::preStmnt_CmpU_EQ_W(IR::Code codeCmp)
          {
             if(stmnt->op.size < 2)
                return;
 
-            Core::String name = getCallName();
-            auto newFunc = preStmntCallDef(name, stmnt->op.size,
-               stmnt->op.size * 2, stmnt->op.size * 2, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
-
-            // First words.
-            newFunc->block.addStatementArgs({codeCmp, 1}, IR::Arg_Stk(), lop, rop);
-
-            // Mid words.
-            for(Core::FastU i = stmnt->op.size - 1; i--;)
-            {
-               newFunc->block.addStatementArgs({codeCmp, 1},
-                  IR::Arg_Stk(), ++lop, ++rop);
-               newFunc->block.addStatementArgs({codeAnd, 1},
-                  IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
-            }
-
-            newFunc->block.addStatementArgs({IR::Code::Retn, 1}, IR::Arg_Stk());
-
-            throw ResetFunc();
+            if(codeCmp == IR::Code::CmpU_EQ_W)
+               addFunc_CmpU_EQ_W(stmnt->op.size);
+            else
+               addFunc_CmpU_NE_W(stmnt->op.size);
          }
 
          //
@@ -353,7 +332,7 @@ namespace GDCC
             if(stmnt->op.size == 1)
                preStmnt_CmpU_W1(IR::Code::CmpU_GE_W, IR::Code::CmpI_GE_W, true, false);
             else
-               preStmnt_CmpU_Wn(IR::Code::CmpU_GE_W, IR::Code::CmpU_GE_W);
+               addFunc_CmpU_GE_W(stmnt->op.size);
          }
 
          //
@@ -367,7 +346,7 @@ namespace GDCC
             if(stmnt->op.size == 1)
                preStmnt_CmpU_W1(IR::Code::CmpU_GT_W, IR::Code::CmpI_GT_W, true, false);
             else
-               preStmnt_CmpU_Wn(IR::Code::CmpU_GT_W, IR::Code::CmpU_GT_W);
+               addFunc_CmpU_GT_W(stmnt->op.size);
          }
 
          //
@@ -381,7 +360,7 @@ namespace GDCC
             if(stmnt->op.size == 1)
                preStmnt_CmpU_W1(IR::Code::CmpU_LE_W, IR::Code::CmpI_LE_W, false, true);
             else
-               preStmnt_CmpU_Wn(IR::Code::CmpU_LE_W, IR::Code::CmpU_LE_W);
+               addFunc_CmpU_LE_W(stmnt->op.size);
          }
 
          //
@@ -395,7 +374,7 @@ namespace GDCC
             if(stmnt->op.size == 1)
                preStmnt_CmpU_W1(IR::Code::CmpU_LT_W, IR::Code::CmpI_LT_W, false, true);
             else
-               preStmnt_CmpU_Wn(IR::Code::CmpU_LT_W, IR::Code::CmpU_LT_W);
+               addFunc_CmpU_LT_W(stmnt->op.size);
          }
 
          //
@@ -437,60 +416,6 @@ namespace GDCC
 
             newFunc->block.addLabel(labelCmp);
             AS_Stmnt({codeCmp,        1}, IR::Arg_Stk(), lop, rop);
-            AS_Stmnt({IR::Code::Retn, 1}, IR::Arg_Stk());
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
-         }
-
-         //
-         // Info::preStmnt_CmpU_Wn
-         //
-         void Info::preStmnt_CmpU_Wn(IR::Code codeCmpHi, IR::Code codeCmpLo)
-         {
-            Core::String name = getCallName();
-            auto newFunc = preStmntCallDef(name, 1, stmnt->op.size * 2,
-               stmnt->op.size * 2, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            // Generate labels.
-            Core::Array<IR::Glyph> labelEq{stmnt->op.size - 1};
-            for(Core::FastU i = stmnt->op.size - 1; i;)
-            {
-               std::ostringstream labelBuf; labelBuf << name << "$eq" << i;
-               std::string label = labelBuf.str();
-               labelEq[--i] = {prog, {label.data(), label.size()}};
-            }
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size - 1))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 2 - 1))};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            // First words
-            AS_Stmnt({IR::Code::CmpU_EQ_W, 1}, IR::Arg_Stk(), lop, rop);
-            AS_Stmnt({IR::Code::Jcnd_Tru,  1}, IR::Arg_Stk(), labelEq[stmnt->op.size - 2]);
-
-            AS_Stmnt({codeCmpHi,      1}, IR::Arg_Stk(), lop, rop);
-            AS_Stmnt({IR::Code::Retn, 1}, IR::Arg_Stk());
-
-            // Middle words.
-            if(stmnt->op.size > 2) for(Core::FastU i = stmnt->op.size - 2; i;)
-            {
-               newFunc->block.addLabel(labelEq[i]);
-               AS_Stmnt({IR::Code::CmpU_EQ_W, 1}, IR::Arg_Stk(), --lop, --rop);
-               AS_Stmnt({IR::Code::Jcnd_Tru,  1}, IR::Arg_Stk(), labelEq[--i]);
-
-               AS_Stmnt({codeCmpLo,      1}, IR::Arg_Stk(), lop, rop);
-               AS_Stmnt({IR::Code::Retn, 1}, IR::Arg_Stk());
-            }
-
-            // Last words.
-            newFunc->block.addLabel(labelEq[0]);
-            AS_Stmnt({codeCmpLo,      1}, IR::Arg_Stk(), --lop, --rop);
             AS_Stmnt({IR::Code::Retn, 1}, IR::Arg_Stk());
 
             #undef AS_Stmnt

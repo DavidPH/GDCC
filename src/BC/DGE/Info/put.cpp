@@ -67,6 +67,17 @@ namespace GDCC::BC::DGE
    //
    // Info::putCode
    //
+   void Info::putCode(char const *code, int arg0)
+   {
+      putNTS(code);
+      putNTS('(');
+      putInt(arg0);
+      putNTS(')');
+   }
+
+   //
+   // Info::putCode
+   //
    void Info::putCode(char const *code, Core::FastU arg0)
    {
       putNTS(code);
@@ -226,6 +237,14 @@ namespace GDCC::BC::DGE
          }
          putBlock(func->block);
       putNTS('}');
+   }
+
+   //
+   // Info::putInt
+   //
+   void Info::putInt(int i)
+   {
+      putInt(static_cast<Core::FastU>(i));
    }
 
    //

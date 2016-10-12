@@ -15,6 +15,8 @@
 
 #include "../../BC/Info.hpp"
 
+#include "../../IR/Code.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -44,6 +46,18 @@ namespace GDCC::BC::DGE
       virtual void preStmnt();
 
       void preStmnt_AddU_W();
+      void preStmnt_CmpI_EQ_W() {preStmnt_CmpU_EQ_W();}
+      void preStmnt_CmpI_GE_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpI_GE_W);}
+      void preStmnt_CmpI_GT_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpI_GT_W);}
+      void preStmnt_CmpI_LE_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpI_LE_W);}
+      void preStmnt_CmpI_LT_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpI_LT_W);}
+      void preStmnt_CmpI_NE_W() {preStmnt_CmpU_NE_W();}
+      void preStmnt_CmpU_EQ_W(void (Info::*fn)(Core::FastU) = &Info::addFunc_CmpU_EQ_W);
+      void preStmnt_CmpU_GE_W(void (Info::*fn)(Core::FastU) = &Info::addFunc_CmpU_GE_W);
+      void preStmnt_CmpU_GT_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpU_GT_W);}
+      void preStmnt_CmpU_LE_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpU_LE_W);}
+      void preStmnt_CmpU_LT_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpU_LT_W);}
+      void preStmnt_CmpU_NE_W() {preStmnt_CmpU_EQ_W(&Info::addFunc_CmpU_NE_W);}
       void preStmnt_MuXU_W();
       void preStmnt_MulU_W();
       void preStmnt_SubU_W();
@@ -52,6 +66,7 @@ namespace GDCC::BC::DGE
 
       void putCode(char const *code);
       void putCode(char const *code, char const *arg0);
+      void putCode(char const *code, int arg0);
       void putCode(char const *code, Core::FastU arg0);
       void putCode(char const *code, Core::FastU arg0, IR::Arg_Lit const &arg1);
       void putCode(char const *code, Core::String arg0);
@@ -65,6 +80,7 @@ namespace GDCC::BC::DGE
       virtual void putFunc();
       using InfoBase::putFunc;
 
+      void putInt(int i);
       void putInt(Core::FastU i);
       void putInt(Core::FastI i);
 
@@ -82,6 +98,18 @@ namespace GDCC::BC::DGE
       void putStmnt_AddU_W();
       void putStmnt_AndU_W(char const *code = "AndU");
       void putStmnt_Call();
+      void putStmnt_CmpI_EQ_W() {putStmnt_CmpU_EQ_W();}
+      void putStmnt_CmpI_GE_W() {putStmnt_CmpU_GE_W("CmpI_GE");}
+      void putStmnt_CmpI_GT_W() {putStmnt_CmpU_GE_W("CmpI_GT");}
+      void putStmnt_CmpI_LE_W() {putStmnt_CmpU_GE_W("CmpI_LE");}
+      void putStmnt_CmpI_LT_W() {putStmnt_CmpU_GE_W("CmpI_LT");}
+      void putStmnt_CmpI_NE_W() {putStmnt_CmpU_NE_W();}
+      void putStmnt_CmpU_EQ_W(IR::Code code = IR::Code::CmpU_EQ_W);
+      void putStmnt_CmpU_GE_W(char const *code = "CmpU_GE");
+      void putStmnt_CmpU_GT_W() {putStmnt_CmpU_GE_W("CmpI_GT");}
+      void putStmnt_CmpU_LE_W() {putStmnt_CmpU_GE_W("CmpI_LE");}
+      void putStmnt_CmpU_LT_W() {putStmnt_CmpU_GE_W("CmpI_LT");}
+      void putStmnt_CmpU_NE_W() {putStmnt_CmpU_EQ_W(IR::Code::CmpU_NE_W);}
       void putStmnt_Cnat();
       void putStmnt_Jcnd_Nil(char const *code = "Jcnd_Nil");
       void putStmnt_Jcnd_Tru();
@@ -118,6 +146,18 @@ namespace GDCC::BC::DGE
       void trStmnt_AddU_W();
       void trStmnt_AndU_W();
       void trStmnt_Call();
+      void trStmnt_CmpI_EQ_W() {trStmnt_CmpU_EQ_W();}
+      void trStmnt_CmpI_GE_W() {trStmnt_CmpU_GE_W();}
+      void trStmnt_CmpI_GT_W() {trStmnt_CmpU_GE_W();}
+      void trStmnt_CmpI_LE_W() {trStmnt_CmpU_GE_W();}
+      void trStmnt_CmpI_LT_W() {trStmnt_CmpU_GE_W();}
+      void trStmnt_CmpI_NE_W() {trStmnt_CmpU_EQ_W();}
+      void trStmnt_CmpU_EQ_W();
+      void trStmnt_CmpU_GE_W();
+      void trStmnt_CmpU_GT_W() {trStmnt_CmpU_GE_W();}
+      void trStmnt_CmpU_LE_W() {trStmnt_CmpU_GE_W();}
+      void trStmnt_CmpU_LT_W() {trStmnt_CmpU_GE_W();}
+      void trStmnt_CmpU_NE_W() {trStmnt_CmpU_EQ_W();}
       void trStmnt_Cnat();
       void trStmnt_Jcnd_Nil();
       void trStmnt_Jcnd_Tru();

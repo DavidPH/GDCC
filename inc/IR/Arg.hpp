@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -44,12 +44,17 @@
       \
       Arg_##name operator + (Core::FastU i) const \
          {return Arg_##name(*idx, off + i);} \
+      Arg_##name operator - (Core::FastU i) const \
+         {return Arg_##name(*idx, off - i);} \
       \
       bool operator == (Arg_##name const &arg) const \
          {return *idx == *arg.idx && off == arg.off;} \
       \
       Arg_##name &operator = (Arg_##name const &) = default; \
       Arg_##name &operator = (Arg_##name &&) = default; \
+      \
+      Arg_##name &operator += (Core::FastU i) {return off += i, *this;} \
+      Arg_##name &operator -= (Core::FastU i) {return off -= i, *this;} \
       \
       Arg_##name getOffset(Core::FastU w) const {return {*idx, off + w};} \
    }
@@ -78,12 +83,17 @@
       \
       Arg_##name operator + (Core::FastU i) const \
          {return Arg_##name(*arr, *idx, off + i);} \
+      Arg_##name operator - (Core::FastU i) const \
+         {return Arg_##name(*arr, *idx, off - i);} \
       \
       bool operator == (Arg_##name const &arg) const \
          {return *arr == *arg.arr && *idx == *arg.idx && off == arg.off;} \
       \
       Arg_##name &operator = (Arg_##name const &) = default; \
       Arg_##name &operator = (Arg_##name &&) = default; \
+      \
+      Arg_##name &operator += (Core::FastU i) {return off += i, *this;} \
+      Arg_##name &operator -= (Core::FastU i) {return off -= i, *this;} \
       \
       Arg_##name getOffset(Core::FastU w) const {return {*arr, *idx, off + w};} \
    }

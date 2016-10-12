@@ -37,21 +37,19 @@ namespace GDCC::BC::DGE
       case IR::Code::AddU_W: trStmnt_AddU_W(); break;
       case IR::Code::AndU_W: trStmnt_AndU_W(); break;
 
-      case IR::Code::CmpI_EQ_W:
-      case IR::Code::CmpI_NE_W:
-      case IR::Code::CmpU_EQ_W:
-      case IR::Code::CmpU_NE_W:
-         trStmntStk3(stmnt->op.size, stmnt->op.size, false);
-         break;
+      case IR::Code::CmpI_EQ_W: trStmnt_CmpI_EQ_W(); break;
+      case IR::Code::CmpI_GE_W: trStmnt_CmpI_GE_W(); break;
+      case IR::Code::CmpI_GT_W: trStmnt_CmpI_GT_W(); break;
+      case IR::Code::CmpI_LE_W: trStmnt_CmpI_LE_W(); break;
+      case IR::Code::CmpI_LT_W: trStmnt_CmpI_LT_W(); break;
+      case IR::Code::CmpI_NE_W: trStmnt_CmpI_NE_W(); break;
+      case IR::Code::CmpU_EQ_W: trStmnt_CmpU_EQ_W(); break;
+      case IR::Code::CmpU_GE_W: trStmnt_CmpU_GE_W(); break;
+      case IR::Code::CmpU_GT_W: trStmnt_CmpU_GT_W(); break;
+      case IR::Code::CmpU_LE_W: trStmnt_CmpU_LE_W(); break;
+      case IR::Code::CmpU_LT_W: trStmnt_CmpU_LT_W(); break;
+      case IR::Code::CmpU_NE_W: trStmnt_CmpU_NE_W(); break;
 
-      case IR::Code::CmpI_GE_W:
-      case IR::Code::CmpI_GT_W:
-      case IR::Code::CmpI_LE_W:
-      case IR::Code::CmpI_LT_W:
-      case IR::Code::CmpU_GE_W:
-      case IR::Code::CmpU_GT_W:
-      case IR::Code::CmpU_LE_W:
-      case IR::Code::CmpU_LT_W:
       case IR::Code::DivI_W:
       case IR::Code::DivU_W:
       case IR::Code::ModI_W:

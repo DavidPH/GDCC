@@ -24,6 +24,7 @@ if(GDCC_BC_DGE)
       Info/Stmnt/Add.cpp
       Info/Stmnt/Bit.cpp
       Info/Stmnt/Call.cpp
+      Info/Stmnt/Cmp.cpp
       Info/Stmnt/Jump.cpp
       Info/Stmnt/Log.cpp
       Info/Stmnt/Move.cpp

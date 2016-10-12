@@ -83,7 +83,7 @@ namespace GDCC
 
             case IR::Code::CmpI_EQ_W:
             case IR::Code::CmpU_EQ_W:
-               preStmnt_CmpU_EQ_W(IR::Code::CmpU_EQ_W, IR::Code::AndU_W);
+               preStmnt_CmpU_EQ_W(IR::Code::CmpU_EQ_W);
                break;
 
             case IR::Code::CmpI_GE_W: preStmnt_CmpI_GE_W(); break;
@@ -93,7 +93,7 @@ namespace GDCC
 
             case IR::Code::CmpI_NE_W:
             case IR::Code::CmpU_NE_W:
-               preStmnt_CmpU_EQ_W(IR::Code::CmpU_NE_W, IR::Code::OrIU_W);
+               preStmnt_CmpU_EQ_W(IR::Code::CmpU_NE_W);
                break;
 
             case IR::Code::CmpU_GE_W: preStmnt_CmpU_GE_W(); break;

@@ -33,6 +33,7 @@ endif()
 add_library(gdcc-bc-lib ${GDCC_SHARED_DECL}
    Info.cpp
    Info/Stmnt/Add.cpp
+   Info/Stmnt/Cmp.cpp
    Info/Stmnt/Mul.cpp
    Info/addFunc.cpp
    Info/moveArg.cpp

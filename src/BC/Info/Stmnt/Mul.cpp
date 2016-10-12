@@ -29,20 +29,16 @@ namespace GDCC::BC
    void Info::addFunc_MuXU_W(Core::FastU n)
    {
       GDCC_BC_AddFuncPre({IR::Code::MuXU_W, n}, n * 2, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncObjBin(n);
 
-      IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-      IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(n))};
-
-      IR::Arg_Stk stk{};
-
-      GDCC_BC_AddStmnt({IR::Code::MuXU_W, 1}, stk, lop, rop);
-      GDCC_BC_AddStmnt({IR::Code::Move_W, 1}, stk, 0);
+      GDCC_BC_AddStmnt({Code::MuXU_W, 1}, stk, lop, rop);
+      GDCC_BC_AddStmnt({Code::Move_W, 1}, stk, 0);
 
       Core::FastU colEnd = n * 2 - 1;
       for(Core::FastU col = 1; col != colEnd; ++col)
       {
          if(colEnd - col > 1)
-            GDCC_BC_AddStmnt({IR::Code::Move_W, 1}, stk, 0);
+            GDCC_BC_AddStmnt({Code::Move_W, 1}, stk, 0);
 
          Core::FastU sizeAdd = col < colEnd - 1 ? 3 : 2;
 
@@ -51,18 +47,18 @@ namespace GDCC::BC
          rop.off = col < n ? 0 : col - n + 1;
          for(; rop.off != rowEnd; --lop, ++rop)
          {
-            GDCC_BC_AddStmnt({IR::Code::MuXU_W, 1}, stk, lop, rop);
+            GDCC_BC_AddStmnt({Code::MuXU_W, 1}, stk, lop, rop);
 
             if(sizeAdd == 3)
-               GDCC_BC_AddStmnt({IR::Code::Move_W, 1}, stk, 0);
+               GDCC_BC_AddStmnt({Code::Move_W, 1}, stk, 0);
 
-            GDCC_BC_AddStmnt({IR::Code::AddU_W, sizeAdd}, stk, stk, stk);
+            GDCC_BC_AddStmnt({Code::AddU_W, sizeAdd}, stk, stk, stk);
          }
       }
 
-      GDCC_BC_AddStmnt({IR::Code::Retn, n * 2}, stk);
+      GDCC_BC_AddStmnt({Code::Retn, n * 2}, stk);
 
-      throw ResetFunc();
+      GDCC_BC_AddFuncEnd();
    }
 
    //
@@ -71,21 +67,17 @@ namespace GDCC::BC
    void Info::addFunc_MulU_W(Core::FastU n)
    {
       GDCC_BC_AddFuncPre({IR::Code::MulU_W, n}, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncObjBin(n);
 
-      IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-      IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(n))};
-
-      IR::Arg_Stk stk{};
-
-      GDCC_BC_AddStmnt({IR::Code::MuXU_W, 1}, stk, lop, rop);
+      GDCC_BC_AddStmnt({Code::MuXU_W, 1}, stk, lop, rop);
 
       if(n > 2)
-         GDCC_BC_AddStmnt({IR::Code::Move_W, 1}, stk, 0);
+         GDCC_BC_AddStmnt({Code::Move_W, 1}, stk, 0);
 
       for(Core::FastU col = 1; col != n; ++col)
       {
          if(n - col > 3)
-            GDCC_BC_AddStmnt({IR::Code::Move_W, 1}, stk, 0);
+            GDCC_BC_AddStmnt({Code::Move_W, 1}, stk, 0);
 
          Core::FastU sizeAdd = std::min<Core::FastU>(3, n - col);
          IR::Code    codeMul = col < n - 1 ? IR::Code::MuXU_W : IR::Code::MulU_W;
@@ -98,15 +90,15 @@ namespace GDCC::BC
             GDCC_BC_AddStmnt({codeMul, 1}, stk, lop, rop);
 
             if(sizeAdd == 3)
-               GDCC_BC_AddStmnt({IR::Code::Move_W, 1}, stk, 0);
+               GDCC_BC_AddStmnt({Code::Move_W, 1}, stk, 0);
 
-            GDCC_BC_AddStmnt({IR::Code::AddU_W, sizeAdd}, stk, stk, stk);
+            GDCC_BC_AddStmnt({Code::AddU_W, sizeAdd}, stk, stk, stk);
          }
       }
 
-      GDCC_BC_AddStmnt({IR::Code::Retn, n}, stk);
+      GDCC_BC_AddStmnt({Code::Retn, n}, stk);
 
-      throw ResetFunc();
+      GDCC_BC_AddFuncEnd();
    }
 }
 

@@ -37,25 +37,23 @@ namespace GDCC::BC
    void Info::addFunc_AddU_W(Core::FastU n, IR::Code codeAdd, IR::Code codeAdX)
    {
       GDCC_BC_AddFuncPre({codeAdd, n}, n, n * 2, n * 2, __FILE__);
-
-      IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-      IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(n))};
+      GDCC_BC_AddFuncObjBin(n);
 
       // First words.
-      GDCC_BC_AddStmnt({codeAdX, 1}, IR::Arg_Stk(), lop, rop);
+      GDCC_BC_AddStmnt({codeAdX, 1}, stk, lop, rop);
 
       // Mid words.
       for(Core::FastU i = n - 2; i--;)
-         GDCC_BC_AddStmnt({codeAdX, 1}, IR::Arg_Stk(), IR::Arg_Stk(), ++lop, ++rop);
+         GDCC_BC_AddStmnt({codeAdX, 1}, stk, stk, ++lop, ++rop);
 
       // Last words.
-      GDCC_BC_AddStmnt({codeAdd,          1}, IR::Arg_Stk(), ++lop, ++rop);
-      GDCC_BC_AddStmnt({IR::Code::AddU_W, 1}, IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
+      GDCC_BC_AddStmnt({codeAdd,      1}, stk, ++lop, ++rop);
+      GDCC_BC_AddStmnt({Code::AddU_W, 1}, stk,   stk,   stk);
 
       // Return.
-      GDCC_BC_AddStmnt({IR::Code::Retn, n}, IR::Arg_Stk());
+      GDCC_BC_AddStmnt({Code::Retn, n}, stk);
 
-      throw ResetFunc();
+      GDCC_BC_AddFuncEnd();
    }
 
    //

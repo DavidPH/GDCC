@@ -40,18 +40,18 @@ namespace GDCC::BC::DGE
       case IR::Code::AddU_W: putStmnt_AddU_W(); break;
       case IR::Code::AndU_W: putStmnt_AndU_W(); break;
 
-      case IR::Code::CmpI_EQ_W: putCode("CmpU_EQ"); break;
-      case IR::Code::CmpI_LE_W: putCode("CmpI_LE"); break;
-      case IR::Code::CmpI_LT_W: putCode("CmpI_LT"); break;
-      case IR::Code::CmpI_GE_W: putCode("CmpI_GE"); break;
-      case IR::Code::CmpI_GT_W: putCode("CmpI_GT"); break;
-      case IR::Code::CmpI_NE_W: putCode("CmpU_NE"); break;
-      case IR::Code::CmpU_EQ_W: putCode("CmpU_EQ"); break;
-      case IR::Code::CmpU_LE_W: putCode("CmpU_LE"); break;
-      case IR::Code::CmpU_LT_W: putCode("CmpU_LT"); break;
-      case IR::Code::CmpU_GE_W: putCode("CmpU_GE"); break;
-      case IR::Code::CmpU_GT_W: putCode("CmpU_GT"); break;
-      case IR::Code::CmpU_NE_W: putCode("CmpU_NE"); break;
+      case IR::Code::CmpI_EQ_W: putStmnt_CmpI_EQ_W(); break;
+      case IR::Code::CmpI_GE_W: putStmnt_CmpI_GE_W(); break;
+      case IR::Code::CmpI_GT_W: putStmnt_CmpI_LT_W(); break;
+      case IR::Code::CmpI_LE_W: putStmnt_CmpI_LE_W(); break;
+      case IR::Code::CmpI_LT_W: putStmnt_CmpI_LT_W(); break;
+      case IR::Code::CmpI_NE_W: putStmnt_CmpI_NE_W(); break;
+      case IR::Code::CmpU_EQ_W: putStmnt_CmpU_EQ_W(); break;
+      case IR::Code::CmpU_GE_W: putStmnt_CmpU_GE_W(); break;
+      case IR::Code::CmpU_GT_W: putStmnt_CmpU_GT_W(); break;
+      case IR::Code::CmpU_LE_W: putStmnt_CmpU_LE_W(); break;
+      case IR::Code::CmpU_LT_W: putStmnt_CmpU_LT_W(); break;
+      case IR::Code::CmpU_NE_W: putStmnt_CmpU_NE_W(); break;
 
       case IR::Code::Call: putStmnt_Call(); break;
       case IR::Code::Cnat: putStmnt_Cnat(); break;
