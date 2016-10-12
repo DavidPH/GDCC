@@ -67,15 +67,13 @@ namespace GDCC::BC::DGE
 
       case IR::Code::Jfar: trStmnt_Jfar(); break;
       case IR::Code::Jump: trStmnt_Jump(); break;
+      case IR::Code::LNot: trStmnt_LNot(); break;
 
       case IR::Code::Move_B: trStmnt_Move_B(); break;
       case IR::Code::Move_W: trStmnt_Move_W(); break;
       case IR::Code::MuXU_W: trStmnt_MuXU_W(); break;
       case IR::Code::MulI_W:
       case IR::Code::MulU_W: trStmnt_MulU_W(); break;
-
-      case IR::Code::NotU_W: trStmntStk2(1, stmnt->op.size); break;
-
       case IR::Code::OrIU_W: trStmnt_OrIU_W(); break;
       case IR::Code::OrXU_W: trStmnt_OrXU_W(); break;
 

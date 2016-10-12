@@ -237,8 +237,8 @@ namespace GDCC
             AS_Stmnt({IR::Code::AndU_W,   1},              stk, stk, fi.maskMan | fi.maskExp);
 
             // ... And if it is, l == r, otherwise l != r.
-            AS_Stmnt({IR::Code::NotU_W,   stmnt->op.size}, stk, stk);
-            if(!cmpEQ) AS_Stmnt({IR::Code::NotU_W, 1},     stk, stk);
+            AS_Stmnt({IR::Code::LNot,     stmnt->op.size}, stk, stk);
+            if(!cmpEQ) AS_Stmnt({IR::Code::LNot, 1},       stk, stk);
             AS_Stmnt({IR::Code::Retn,     1},              stk);
 
             newFunc->block.addLabel(labelREMax);

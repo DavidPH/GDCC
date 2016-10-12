@@ -149,14 +149,14 @@ Function "___fpclassify" \
 :"$emax"
    AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
    OrIU_W 1, Stk(), Stk(), LocReg(Lit(0))
-   NotU_W 1, Stk(), Stk()
+   LNot   1, Stk(), Stk()
    AddU_W 1, Stk(), Stk(), Lit(1)
    Retn   1, Stk()
 
 :"$emin"
    AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
    OrIU_W 1, Stk(), Stk(), LocReg(Lit(0))
-   NotU_W 1, Stk(), Stk()
+   LNot   1, Stk(), Stk()
    AddU_W 1, Stk(), Stk(), Lit(4)
    Retn   1, Stk()
 }
@@ -185,14 +185,14 @@ Function "___fpclassifyf" \
 :"$emax"
    AndU_W 1, Stk(), LocReg(Lit(0)), Lit(0x007FFFFF)
    OrIU_W 1, Stk(), Stk(), LocReg(Lit(0))
-   NotU_W 1, Stk(), Stk()
+   LNot   1, Stk(), Stk()
    AddU_W 1, Stk(), Stk(), Lit(1)
    Retn   1, Stk()
 
 :"$emin"
    AndU_W 1, Stk(), LocReg(Lit(0)), Lit(0x007FFFFF)
    OrIU_W 1, Stk(), Stk(), LocReg(Lit(0))
-   NotU_W 1, Stk(), Stk()
+   LNot   1, Stk(), Stk()
    AddU_W 1, Stk(), Stk(), Lit(4)
    Retn   1, Stk()
 }
@@ -221,14 +221,14 @@ Function "___fpclassifyl" \
 :"$emax"
    AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
    OrIU_W 1, Stk(), Stk(), LocReg(Lit(0))
-   NotU_W 1, Stk(), Stk()
+   LNot   1, Stk(), Stk()
    AddU_W 1, Stk(), Stk(), Lit(1)
    Retn   1, Stk()
 
 :"$emin"
    AndU_W 1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
    OrIU_W 1, Stk(), Stk(), LocReg(Lit(0))
-   NotU_W 1, Stk(), Stk()
+   LNot   1, Stk(), Stk()
    AddU_W 1, Stk(), Stk(), Lit(4)
    Retn   1, Stk()
 }

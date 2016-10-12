@@ -150,6 +150,8 @@ namespace GDCC
                   genStmntCall(stmnt->op.size);
                break;
 
+            case IR::Code::LNot: numChunkCODE += stmnt->op.size * 4; break;
+
             case IR::Code::ModI_W: genStmnt_ModI_W(); break;
             case IR::Code::ModU_W: genStmnt_ModU_W(); break;
 
@@ -168,8 +170,6 @@ namespace GDCC
 
             case IR::Code::NegF_W: genStmnt_NegF_W(); break;
             case IR::Code::NegI_W: genStmnt_NegI_W(); break;
-
-            case IR::Code::NotU_W: numChunkCODE += stmnt->op.size * 4; break;
 
             case IR::Code::OrIU_W: genStmntBitwise(); break;
             case IR::Code::OrXU_W: genStmntBitwise(); break;

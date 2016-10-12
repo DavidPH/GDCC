@@ -130,6 +130,8 @@ namespace GDCC
                   putStmntCall(stmnt->op.size);
                break;
 
+            case IR::Code::LNot: putStmnt_LNot(); break;
+
             case IR::Code::LOrI:
                if(stmnt->op.size == 1)
                   putCode(Code::LOrI);
@@ -162,8 +164,6 @@ namespace GDCC
             case IR::Code::NegF_W: putStmnt_NegF_W(); break;
             case IR::Code::NegI_W: putStmnt_NegI_W(); break;
 
-            case IR::Code::NotU_W: putStmnt_NotU_W(); break;
-
             case IR::Code::OrIU_W: putStmntBitwise(Code::OrIU); break;
             case IR::Code::OrXU_W: putStmntBitwise(Code::OrXU); break;
 
@@ -194,12 +194,12 @@ namespace GDCC
          }
 
          //
-         // Info::putStmnt_NotU_W
+         // Info::putStmnt_LNot
          //
-         void Info::putStmnt_NotU_W()
+         void Info::putStmnt_LNot()
          {
             if(auto i = stmnt->op.size) while(--i) putCode(Code::OrIU);
-            putCode(Code::NotU);
+            putCode(Code::LNot);
          }
 
          //

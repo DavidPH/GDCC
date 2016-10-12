@@ -130,6 +130,9 @@ GDCC_IR_CodeList(Jump)
 // LAnd dst lop rop
 GDCC_IR_CodeList(LAnd)
 
+// LNot dst src
+GDCC_IR_CodeList(LNot)
+
 // LOrI dst lop rop
 GDCC_IR_CodeList(LOrI)
 
@@ -154,9 +157,6 @@ GDCC_IR_CodeList(MulX_W)
 // Neg* dst src
 GDCC_IR_CodeList(NegF_W)
 GDCC_IR_CodeList(NegI_W)
-
-// Not* dst src
-GDCC_IR_CodeList(NotU_W)
 
 // OrI* dst lop rop
 GDCC_IR_CodeList(OrIU_W)

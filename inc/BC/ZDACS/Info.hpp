@@ -389,6 +389,7 @@ namespace GDCC
             void putStmnt_Jfar();
             void putStmnt_Jset();
             void putStmnt_Jump();
+            void putStmnt_LNot();
             void putStmnt_ModI_W();
             void putStmnt_ModU_W();
             void putStmnt_Move_W();
@@ -396,7 +397,6 @@ namespace GDCC
             void putStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr, Code code);
             void putStmnt_NegF_W();
             void putStmnt_NegI_W();
-            void putStmnt_NotU_W();
             void putStmnt_Pltn();
             void putStmnt_Retn();
             void putStmnt_ShLF_W();

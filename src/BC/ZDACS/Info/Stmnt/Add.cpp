@@ -620,7 +620,7 @@ namespace GDCC
                putCode(Code::Push_Lit,    1);
                putCode(Code::AddU);
                putCode(Code::Copy);
-               putCode(Code::NotU);
+               putCode(Code::LNot);
                putCode(Code::Push_LocReg, func->localReg + 0);
                putCode(Code::OrIU);
             }
@@ -716,7 +716,7 @@ namespace GDCC
                putCode(Code::SubU);
                putCode(Code::Copy);
                putCode(Code::InvU);
-               putCode(Code::NotU);
+               putCode(Code::LNot);
                putCode(Code::NegI);
                putCode(Code::Push_LocReg, func->localReg + 0);
                putCode(Code::OrIU);

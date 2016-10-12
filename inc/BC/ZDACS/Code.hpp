@@ -80,7 +80,7 @@ namespace GDCC
             AndU        =  72,
             OrIU        =  73,
             OrXU        =  74,
-            NotU        =  75,
+            LNot        =  75,
             ShLU        =  76,
             ShRI        =  77,
             NegI        =  78,

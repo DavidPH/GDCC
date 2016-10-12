@@ -87,6 +87,7 @@ namespace GDCC::BC::DGE
       void putStmnt_Jcnd_Tru();
       void putStmnt_Jfar();
       void putStmnt_Jump();
+      void putStmnt_LNot();
       void putStmnt_Move_B();
       void putStmnt_Move_W();
       void putStmnt_MuXU_W();
@@ -122,6 +123,7 @@ namespace GDCC::BC::DGE
       void trStmnt_Jcnd_Tru();
       void trStmnt_Jfar();
       void trStmnt_Jump();
+      void trStmnt_LNot();
       void trStmnt_Move_B();
       void trStmnt_Move_W();
       void trStmnt_MuXU_W();

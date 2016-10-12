@@ -241,9 +241,9 @@ namespace GDCC
       void GenStmnt_ConvertBoolFix(Exp const *, Type const *,
          Type const *srcT, GenStmntCtx const &ctx)
       {
-         ctx.block.addStatementArgs({IR::Code::NotU_W, srcT->getSizeWords()},
+         ctx.block.addStatementArgs({IR::Code::LNot, srcT->getSizeWords()},
             IR::Arg_Stk(), IR::Arg_Stk());
-         ctx.block.addStatementArgs({IR::Code::NotU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::LNot, 1},
             IR::Arg_Stk(), IR::Arg_Stk());
       }
 
@@ -255,9 +255,9 @@ namespace GDCC
       {
          ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk(), ~GetMaskSig(srcT));
-         ctx.block.addStatementArgs({IR::Code::NotU_W, srcT->getSizeWords()},
+         ctx.block.addStatementArgs({IR::Code::LNot, srcT->getSizeWords()},
             IR::Arg_Stk(), IR::Arg_Stk());
-         ctx.block.addStatementArgs({IR::Code::NotU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::LNot, 1},
             IR::Arg_Stk(), IR::Arg_Stk());
       }
 

@@ -66,14 +66,14 @@ namespace GDCC
                trStmnt_Jump();
                break;
 
-            case IR::Code::Move_W:
-               trStmnt_Move_W();
-               break;
-
-            case IR::Code::NotU_W:
+            case IR::Code::LNot:
                CheckArgC(stmnt, 2);
                CheckArgB(stmnt, 0, IR::ArgBase::Stk);
                CheckArgB(stmnt, 1, IR::ArgBase::Stk);
+               break;
+
+            case IR::Code::Move_W:
+               trStmnt_Move_W();
                break;
 
             case IR::Code::Retn:

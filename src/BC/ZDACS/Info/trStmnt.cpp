@@ -143,6 +143,8 @@ namespace GDCC
                trStmntStk3(1, stmnt->op.size, false);
                break;
 
+            case IR::Code::LNot: trStmntStk2(1, stmnt->op.size); break;
+
             case IR::Code::ModI_W: trStmnt_ModI_W(); break;
             case IR::Code::ModU_W: trStmnt_ModU_W(); break;
 
@@ -154,8 +156,6 @@ namespace GDCC
 
             case IR::Code::NegF_W: trStmntStk2(stmnt->op.size, stmnt->op.size); break;
             case IR::Code::NegI_W: trStmnt_NegI_W(); break;
-
-            case IR::Code::NotU_W: trStmntStk2(1, stmnt->op.size); break;
 
             case IR::Code::OrIU_W: trStmntBitwise(); break;
             case IR::Code::OrXU_W: trStmntBitwise(); break;

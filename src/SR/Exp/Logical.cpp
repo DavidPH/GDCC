@@ -86,9 +86,9 @@ namespace GDCC
             {
                exp->expR->genStmntStk(ctx);
 
-               ctx.block.addStatementArgs({IR::Code::NotU_W, 1},
+               ctx.block.addStatementArgs({IR::Code::LNot, 1},
                   IR::Arg_Stk(), IR::Arg_Stk());
-               ctx.block.addStatementArgs({IR::Code::NotU_W, 1},
+               ctx.block.addStatementArgs({IR::Code::LNot, 1},
                   IR::Arg_Stk(), IR::Arg_Stk());
 
                // Move to destination.
