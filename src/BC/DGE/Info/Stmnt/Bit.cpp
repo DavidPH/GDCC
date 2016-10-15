@@ -22,6 +22,28 @@
 namespace GDCC::BC::DGE
 {
    //
+   // Info::preStmnt_Bclo_W
+   //
+   void Info::preStmnt_Bclo_W()
+   {
+      if(stmnt->op.size <= 1)
+         return;
+
+      addFunc_Bclo_W(stmnt->op.size);
+   }
+
+   //
+   // Info::preStmnt_Bclz_W
+   //
+   void Info::preStmnt_Bclz_W()
+   {
+      if(stmnt->op.size <= 1)
+         return;
+
+      addFunc_Bclz_W(stmnt->op.size);
+   }
+
+   //
    // Info::putStmnt_AndU_W
    //
    void Info::putStmnt_AndU_W(char const *code)
@@ -57,6 +79,20 @@ namespace GDCC::BC::DGE
    }
 
    //
+   // Info::putStmnt_Bclz_W
+   //
+   void Info::putStmnt_Bclz_W(char const *code)
+   {
+      if(stmnt->op.size == 0)
+         return putCode("Push_Lit", 0);
+
+      if(stmnt->op.size == 1)
+         return putCode(code);
+
+      putStmntCall(getFuncName(stmnt->op), stmnt->op.size);
+   }
+
+   //
    // Info::putStmnt_OrIU_W
    //
    void Info::putStmnt_OrIU_W()
@@ -88,6 +124,14 @@ namespace GDCC::BC::DGE
       }
       else
          moveArgStk_dst(stmnt->args[0], stmnt->op.size);
+   }
+
+   //
+   // Info::trStmnt_Bclz_W
+   //
+   void Info::trStmnt_Bclz_W()
+   {
+      trStmntStk2(1, stmnt->op.size);
    }
 
    //

@@ -32,6 +32,8 @@ namespace GDCC::BC::DGE
       {
       case IR::Code::AddI_W:
       case IR::Code::AddU_W: preStmnt_AddU_W(); break;
+      case IR::Code::Bclo_W: preStmnt_Bclo_W(); break;
+      case IR::Code::Bclz_W: preStmnt_Bclz_W(); break;
 
       case IR::Code::CmpI_EQ_W: preStmnt_CmpI_EQ_W(); break;
       case IR::Code::CmpI_GE_W: preStmnt_CmpI_GE_W(); break;

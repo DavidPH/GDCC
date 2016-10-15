@@ -51,6 +51,14 @@
    IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(size))}
 
 //
+// GDCC_BC_AddFuncObjUna
+//
+#define GDCC_BC_AddFuncObjUna(size) \
+   GDCC_BC_AddFuncObj(); \
+   \
+   IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))}
+
+//
 // GDCC_BC_AddStmnt
 //
 #define GDCC_BC_AddStmnt(...) \

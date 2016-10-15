@@ -36,6 +36,8 @@ namespace GDCC::BC::DGE
       case IR::Code::AddI_W:
       case IR::Code::AddU_W: trStmnt_AddU_W(); break;
       case IR::Code::AndU_W: trStmnt_AndU_W(); break;
+      case IR::Code::Bclo_W: trStmnt_Bclo_W(); break;
+      case IR::Code::Bclz_W: trStmnt_Bclz_W(); break;
 
       case IR::Code::CmpI_EQ_W: trStmnt_CmpI_EQ_W(); break;
       case IR::Code::CmpI_GE_W: trStmnt_CmpI_GE_W(); break;

@@ -192,6 +192,8 @@ namespace GDCC
          void addFunc(Core::String name, Core::FastU retrn, Core::FastU param);
 
          void addFunc_AddU_W(Core::FastU n);
+         void addFunc_Bclo_W(Core::FastU n);
+         void addFunc_Bclz_W(Core::FastU n);
          void addFunc_CmpI_GE_W(Core::FastU n);
          void addFunc_CmpI_GT_W(Core::FastU n);
          void addFunc_CmpI_LE_W(Core::FastU n);
@@ -242,6 +244,7 @@ namespace GDCC
 
       private:
          void addFunc_AddU_W(Core::FastU n, IR::Code codeAdd, IR::Code codeAdX);
+         void addFunc_Bclz_W(Core::FastU n, IR::Code code, Core::FastU skip);
          void addFunc_CmpU_EQ_W(Core::FastU n, IR::Code codeCmp, IR::Code codeAnd);
          void addFunc_CmpU_GE_W(Core::FastU n, IR::Code codeCmpHi, IR::Code codeCmpLo);
       };

@@ -46,6 +46,8 @@ namespace GDCC::BC::DGE
       virtual void preStmnt();
 
       void preStmnt_AddU_W();
+      void preStmnt_Bclo_W();
+      void preStmnt_Bclz_W();
       void preStmnt_CmpI_EQ_W() {preStmnt_CmpU_EQ_W();}
       void preStmnt_CmpI_GE_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpI_GE_W);}
       void preStmnt_CmpI_GT_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpI_GT_W);}
@@ -97,6 +99,8 @@ namespace GDCC::BC::DGE
       void putStmnt_AdXU_W();
       void putStmnt_AddU_W();
       void putStmnt_AndU_W(char const *code = "AndU");
+      void putStmnt_Bclo_W() {putStmnt_Bclz_W("Bclo");}
+      void putStmnt_Bclz_W(char const *code = "Bclz");
       void putStmnt_Call();
       void putStmnt_CmpI_EQ_W() {putStmnt_CmpU_EQ_W();}
       void putStmnt_CmpI_GE_W() {putStmnt_CmpU_GE_W("CmpI_GE");}
@@ -145,6 +149,8 @@ namespace GDCC::BC::DGE
       void trStmnt_AdXU_W();
       void trStmnt_AddU_W();
       void trStmnt_AndU_W();
+      void trStmnt_Bclo_W() {trStmnt_Bclz_W();}
+      void trStmnt_Bclz_W();
       void trStmnt_Call();
       void trStmnt_CmpI_EQ_W() {trStmnt_CmpU_EQ_W();}
       void trStmnt_CmpI_GE_W() {trStmnt_CmpU_GE_W();}
