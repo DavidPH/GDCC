@@ -66,7 +66,9 @@ namespace GDCC::BC::DGE
 
       case IR::Code::Jfar: putStmnt_Jfar(); break;
       case IR::Code::Jump: putStmnt_Jump(); break;
+      case IR::Code::LAnd: putStmnt_LAnd(); break;
       case IR::Code::LNot: putStmnt_LNot(); break;
+      case IR::Code::LOrI: putStmnt_LOrI(); break;
 
       case IR::Code::ModI_W: putCode("ModI"); break;
       case IR::Code::ModU_W: putCode("ModU"); break;

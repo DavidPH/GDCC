@@ -110,16 +110,18 @@ namespace GDCC::BC::DGE
       void putStmnt_CmpI_NE_W() {putStmnt_CmpU_NE_W();}
       void putStmnt_CmpU_EQ_W(IR::Code code = IR::Code::CmpU_EQ_W);
       void putStmnt_CmpU_GE_W(char const *code = "CmpU_GE");
-      void putStmnt_CmpU_GT_W() {putStmnt_CmpU_GE_W("CmpI_GT");}
-      void putStmnt_CmpU_LE_W() {putStmnt_CmpU_GE_W("CmpI_LE");}
-      void putStmnt_CmpU_LT_W() {putStmnt_CmpU_GE_W("CmpI_LT");}
+      void putStmnt_CmpU_GT_W() {putStmnt_CmpU_GE_W("CmpU_GT");}
+      void putStmnt_CmpU_LE_W() {putStmnt_CmpU_GE_W("CmpU_LE");}
+      void putStmnt_CmpU_LT_W() {putStmnt_CmpU_GE_W("CmpU_LT");}
       void putStmnt_CmpU_NE_W() {putStmnt_CmpU_EQ_W(IR::Code::CmpU_NE_W);}
       void putStmnt_Cnat();
       void putStmnt_Jcnd_Nil(char const *code = "Jcnd_Nil");
       void putStmnt_Jcnd_Tru();
       void putStmnt_Jfar();
       void putStmnt_Jump();
+      void putStmnt_LAnd(char const *code = "LAnd");
       void putStmnt_LNot();
+      void putStmnt_LOrI() {putStmnt_LAnd("LOrI");}
       void putStmnt_Move_B();
       void putStmnt_Move_W();
       void putStmnt_MuXU_W();
@@ -169,7 +171,9 @@ namespace GDCC::BC::DGE
       void trStmnt_Jcnd_Tru();
       void trStmnt_Jfar();
       void trStmnt_Jump();
+      void trStmnt_LAnd();
       void trStmnt_LNot();
+      void trStmnt_LOrI() {trStmnt_LAnd();}
       void trStmnt_Move_B();
       void trStmnt_Move_W();
       void trStmnt_MuXU_W();

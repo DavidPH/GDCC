@@ -12,7 +12,7 @@
 
 #include "BC/DGE/Info.hpp"
 
-#include "IR/Statement.hpp"
+#include "IR/Function.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -21,6 +21,41 @@
 
 namespace GDCC::BC::DGE
 {
+   //
+   // Info::putStmnt_LAnd
+   //
+   void Info::putStmnt_LAnd(char const *code)
+   {
+      if(stmnt->op.size == 0)
+         putCode("Push_Lit", 0);
+
+      if(stmnt->op.size == 1)
+         putCode(code);
+
+      if(stmnt->args[1].a == IR::ArgBase::Stk)
+      {
+         for(Core::FastU i = stmnt->op.size; --i;)
+            putCode("OrIU");
+         putCode("Drop_Reg", func->localReg + 0);
+
+         for(Core::FastU i = stmnt->op.size; --i;)
+            putCode("OrIU");
+         putCode("Push_Reg", func->localReg + 0);
+      }
+      else
+      {
+         putStmntPushArg(stmnt->args[1], 0);
+         for(Core::FastU i = stmnt->op.size; --i;)
+            putStmntPushArg(stmnt->args[1], i), putCode("OrIU");
+
+         putStmntPushArg(stmnt->args[2], 0);
+         for(Core::FastU i = stmnt->op.size; --i;)
+            putStmntPushArg(stmnt->args[2], i), putCode("OrIU");
+      }
+
+      putCode(code);
+   }
+
    //
    // Info::putStmnt_LNot
    //
@@ -33,6 +68,26 @@ namespace GDCC::BC::DGE
          putCode("OrIU");
 
       putCode("LNot");
+   }
+
+   //
+   // Info::trStmnt_LAnd
+   //
+   void Info::trStmnt_LAnd()
+   {
+      if(stmnt->op.size == 0)
+         return;
+
+      if(stmnt->op.size == 1)
+         return trStmntStk3(1, stmnt->op.size, false);
+
+      if(!isPushArg(stmnt->args[1]) || !isPushArg(stmnt->args[2]))
+      {
+         trStmntStk3(1, stmnt->op.size, false);
+         func->setLocalTmp(1);
+      }
+      else
+         moveArgStk_dst(stmnt->args[0], 1);
    }
 
    //
