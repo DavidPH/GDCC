@@ -289,175 +289,12 @@ namespace GDCC
             if(stmnt->op.size <= 1)
                return;
 
-            Core::String name = getCallName();
-            auto newFunc = preStmntCallDef(name, stmnt->op.size,
-               stmnt->op.size + 1, stmnt->op.size + 1, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            bool left = stmnt->op.code == IR::Code::ShLU_W;
-            bool sign = stmnt->op.code == IR::Code::ShRI_W;
-
-            // Generate labels.
-
-            Core::Array<IR::Glyph> label0{stmnt->op.size};
-            Core::Array<IR::Glyph> labelW{stmnt->op.size};
-
-            for(Core::FastU i = stmnt->op.size; i--;)
-            {
-               std::ostringstream labelBuf;
-
-               std::string label = (labelBuf << name << "$w" << i, labelBuf).str();
-               labelW[i] = {prog, {label.data(), label.size()}};
-
-               label = (labelBuf << "_0", labelBuf).str();
-               label0[i] = {prog, {label.data(), label.size()}};
-            }
-
-            IR::Glyph labelTab0{prog, name + "$tab0"};
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            //
-            // fillZeroes
-            //
-            auto fillZeroes = [&](Core::FastU words)
-            {
-               if(!words) return;
-
-               if(sign)
-               {
-                  lop.off = stmnt->op.size - 1;
-                  AS_Stmnt({IR::Code::ShRI_W, 1}, IR::Arg_Stk(), lop, 31);
-
-                  for(Core::FastU n = words - 1; n--;)
-                     AS_Stmnt({IR::Code::Copy_W, 1}, IR::Arg_Stk(), IR::Arg_Stk());
-               }
-               else
-                  AS_Stmnt({IR::Code::Move_W, words}, IR::Arg_Stk(), 0);
-            };
-
-            // Calculate shiftWords.
-            AS_Stmnt({IR::Code::ShRI_W, 1}, IR::Arg_Stk(), rop, 5);
-
-            // Calculate shiftBits
-            AS_Stmnt({IR::Code::AndU_W, 1}, IR::Arg_Stk(), rop, 31);
-
-            // If shiftBits is 0, branch to whole word shift table.
-            AS_Stmnt({IR::Code::Jcnd_Tab, 1}, IR::Arg_Stk(), 0, labelTab0);
-
-            // Otherwise, store shiftBits and branch on shiftWords.
-            AS_Stmnt({IR::Code::Move_W, 1}, rop, IR::Arg_Stk());
-
-            // Partial word shift jump table.
-            {
-               Core::Array<IR::Arg> args{stmnt->op.size * 2 + 1};
-               args[0] = IR::Arg_Stk();
-
-               for(Core::FastU n = stmnt->op.size; n--;)
-               {
-                  args[n * 2 + 1] = IR::Arg_Lit(newFunc->block.getExp(n));
-                  args[n * 2 + 2] = IR::Arg_Lit(newFunc->block.getExp(labelW[n]));
-               }
-
-               AS_Stmnt({IR::Code::Jcnd_Tab, 1}, std::move(args));
-            }
-
-            // Whole word shift jump table.
-            newFunc->block.addLabel(labelTab0);
-            {
-               Core::Array<IR::Arg> args{stmnt->op.size * 2 + 1};
-               args[0] = IR::Arg_Stk();
-
-               for(Core::FastU n = stmnt->op.size; n--;)
-               {
-                  args[n * 2 + 1] = IR::Arg_Lit(newFunc->block.getExp(n));
-                  args[n * 2 + 2] = IR::Arg_Lit(newFunc->block.getExp(label0[n]));
-               }
-
-               AS_Stmnt({IR::Code::Jcnd_Tab, 1}, std::move(args));
-            }
-
-            // Emergency fallback, return 0.
-            AS_Stmnt({IR::Code::Move_W, 1}, IR::Arg_Nul(), IR::Arg_Stk());
-            fillZeroes(stmnt->op.size);
-            AS_Stmnt({IR::Code::Retn, stmnt->op.size}, IR::Arg_Stk());
-
-            // Generate shift cases.
-            for(Core::FastU shiftWords = 0; shiftWords != stmnt->op.size; ++shiftWords)
-            {
-               Core::FastU keepWords = stmnt->op.size - shiftWords;
-
-               // Generate partial word shift.
-               newFunc->block.addLabel(labelW[shiftWords]);
-
-               if(left)
-               {
-                  lop.off = 0;
-
-                  fillZeroes(shiftWords);
-
-                  AS_Stmnt({stmnt->op.code, 1}, IR::Arg_Stk(), lop, rop);
-
-                  for(Core::FastU n = 1; n != keepWords; ++n)
-                  {
-                     AS_Stmnt({IR::Code::Move_W, 1}, IR::Arg_Stk(), lop);
-                     AS_Stmnt({IR::Code::SubU_W, 1}, IR::Arg_Stk(), 32, rop);
-                     AS_Stmnt({IR::Code::ShRU_W, 1}, IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
-
-                     AS_Stmnt({IR::Code::ShLU_W, 1}, IR::Arg_Stk(), ++lop, rop);
-
-                     AS_Stmnt({IR::Code::OrIU_W, 1}, IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
-                  }
-               }
-               else
-               {
-                  lop.off = shiftWords;
-
-                  for(Core::FastU n = 0; n != keepWords - 1; ++n)
-                  {
-                     AS_Stmnt({IR::Code::ShRU_W, 1}, IR::Arg_Stk(), lop, rop);
-
-                     AS_Stmnt({IR::Code::Move_W, 1}, IR::Arg_Stk(), ++lop);
-                     AS_Stmnt({IR::Code::SubU_W, 1}, IR::Arg_Stk(), 32, rop);
-                     AS_Stmnt({IR::Code::ShLU_W, 1}, IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
-
-                     AS_Stmnt({IR::Code::OrIU_W, 1}, IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
-                  }
-
-                  AS_Stmnt({stmnt->op.code, 1}, IR::Arg_Stk(), lop, rop);
-
-                  fillZeroes(shiftWords);
-               }
-
-               AS_Stmnt({IR::Code::Retn, stmnt->op.size}, IR::Arg_Stk());
-
-               // Generate full word shift.
-               newFunc->block.addLabel(label0[shiftWords]);
-
-               if(left)
-               {
-                  lop.off = 0;
-                  fillZeroes(shiftWords);
-                  AS_Stmnt({IR::Code::Move_W, keepWords}, IR::Arg_Stk(), lop);
-               }
-               else
-               {
-                  lop.off = shiftWords;
-                  AS_Stmnt({IR::Code::Move_W, keepWords}, IR::Arg_Stk(), lop);
-                  fillZeroes(shiftWords);
-               }
-
-               AS_Stmnt({IR::Code::Retn, stmnt->op.size}, IR::Arg_Stk());
-            }
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+            if(stmnt->op.code == IR::Code::ShLU_W)
+               addFunc_ShLU_W(stmnt->op.size);
+            else if(stmnt->op.code == IR::Code::ShRI_W)
+               addFunc_ShRI_W(stmnt->op.size);
+            else
+               addFunc_ShRU_W(stmnt->op.size);
          }
 
          //
@@ -780,7 +617,7 @@ namespace GDCC
          //
          void Info::trStmnt_ShLF_W()
          {
-            if(!trStmntShift(true))
+            if(!trStmntShift(stmnt->op.size, true))
                return;
 
             if(stmnt->op.size <= 2)
@@ -795,12 +632,9 @@ namespace GDCC
          void Info::trStmnt_ShLU_W()
          {
             if(stmnt->op.size <= 1)
-            {
-               trStmntShift(true);
-               return;
-            }
+               return (void)trStmntShift(stmnt->op.size, true);
 
-            if(!trStmntShift())
+            if(!trStmntShift(stmnt->op.size, false))
                return;
 
             Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
@@ -815,12 +649,9 @@ namespace GDCC
          void Info::trStmnt_ShRI_W()
          {
             if(stmnt->op.size <= 1)
-            {
-               trStmntShift(true);
-               return;
-            }
+               return (void)trStmntShift(stmnt->op.size, true);
 
-            if(!trStmntShift())
+            if(!trStmntShift(stmnt->op.size, false))
                return;
 
             Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
@@ -835,18 +666,12 @@ namespace GDCC
          void Info::trStmnt_ShRU_W()
          {
             if(stmnt->op.size == 0)
-            {
-               trStmntShift(true);
-               return;
-            }
+               return (void)trStmntShift(stmnt->op.size, true);
 
             if(stmnt->op.size == 1)
-            {
-               trStmnt_ShRU_W1();
-               return;
-            }
+               return trStmnt_ShRU_W1();
 
-            if(!trStmntShift())
+            if(!trStmntShift(stmnt->op.size, false))
                return;
 
             Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
@@ -874,27 +699,6 @@ namespace GDCC
                func->setLocalTmp(1);
                moveArgStk_src(stmnt->args[2], 1);
             }
-         }
-
-         //
-         // Info::trStmntShift
-         //
-         bool Info::trStmntShift(bool moveLit)
-         {
-            CheckArgC(stmnt, 3);
-
-            if(stmnt->args[1].a != IR::ArgBase::Stk &&
-               stmnt->args[2].a == IR::ArgBase::Stk)
-               throw Core::ExceptStr(stmnt->pos, "trStmntShift disorder");
-
-            moveArgStk_dst(stmnt->args[0], stmnt->op.size);
-            moveArgStk_src(stmnt->args[1], stmnt->op.size);
-
-            if(!moveLit && stmnt->args[2].a == IR::ArgBase::Lit)
-               return true;
-
-            moveArgStk_src(stmnt->args[2], 1);
-            return false;
          }
       }
    }

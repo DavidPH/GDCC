@@ -69,5 +69,10 @@
    } \
    while(false)
 
+//
+// GDCC_BC_ArgLit
+//
+#define GDCC_BC_ArgLit(val) (::GDCC::IR::Arg_Lit{newFunc->block.getExp(val)})
+
 #endif//GDCC__BC__AddFunc_H__
 

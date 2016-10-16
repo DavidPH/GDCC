@@ -51,6 +51,27 @@ namespace GDCC
          moveArgStk_src(stmnt->args[1], sizeSrc);
          moveArgStk_src(stmnt->args[2], sizeSrc);
       }
+
+      //
+      // Info::trStmntShift
+      //
+      bool Info::trStmntShift(Core::FastU size, bool moveLit)
+      {
+         CheckArgC(stmnt, 3);
+
+         if(stmnt->args[1].a != IR::ArgBase::Stk &&
+            stmnt->args[2].a == IR::ArgBase::Stk)
+            throw Core::ExceptStr(stmnt->pos, "trStmntShift disorder");
+
+         moveArgStk_dst(stmnt->args[0], size);
+         moveArgStk_src(stmnt->args[1], size);
+
+         if(!moveLit && stmnt->args[2].a == IR::ArgBase::Lit)
+            return true;
+
+         moveArgStk_src(stmnt->args[2], 1);
+         return false;
+      }
    }
 }
 

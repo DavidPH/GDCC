@@ -482,7 +482,6 @@ namespace GDCC
             void trStmnt_Swap_W();
 
             void trStmntBitwise();
-            bool trStmntShift(bool moveLit = false);
 
             std::unique_ptr<Core::NumberAllocMerge<Core::FastU>> allocDJump;
             std::unordered_map<IR::CallType, Core::NumberAllocMerge<Core::FastU>> allocFunc;

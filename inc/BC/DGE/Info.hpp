@@ -62,6 +62,9 @@ namespace GDCC::BC::DGE
       void preStmnt_CmpU_NE_W() {preStmnt_CmpU_EQ_W(&Info::addFunc_CmpU_NE_W);}
       void preStmnt_MuXU_W();
       void preStmnt_MulU_W();
+      void preStmnt_ShLU_W();
+      void preStmnt_ShRI_W();
+      void preStmnt_ShRU_W();
       void preStmnt_SubU_W();
 
       virtual void put();
@@ -129,6 +132,9 @@ namespace GDCC::BC::DGE
       void putStmnt_OrIU_W();
       void putStmnt_OrXU_W();
       void putStmnt_Retn();
+      void putStmnt_ShLU_W(char const *code = "ShLU");
+      void putStmnt_ShRI_W() {putStmnt_ShLU_W("ShRI");}
+      void putStmnt_ShRU_W() {putStmnt_ShLU_W("ShRU");}
       void putStmnt_SuXU_W();
       void putStmnt_SubU_W();
 
@@ -181,6 +187,9 @@ namespace GDCC::BC::DGE
       void trStmnt_OrIU_W();
       void trStmnt_OrXU_W();
       void trStmnt_Retn();
+      void trStmnt_ShLU_W();
+      void trStmnt_ShRI_W() {trStmnt_ShLU_W();}
+      void trStmnt_ShRU_W() {trStmnt_ShLU_W();}
       void trStmnt_SuXU_W();
       void trStmnt_SubU_W();
 

@@ -87,6 +87,9 @@ namespace GDCC::BC::DGE
 
       case IR::Code::Retn: trStmnt_Retn(); break;
 
+      case IR::Code::ShLU_W: trStmnt_ShLU_W(); break;
+      case IR::Code::ShRI_W: trStmnt_ShRI_W(); break;
+      case IR::Code::ShRU_W: trStmnt_ShRU_W(); break;
       case IR::Code::SuXU_W: trStmnt_SuXU_W(); break;
       case IR::Code::SubI_W:
       case IR::Code::SubU_W: trStmnt_SubU_W(); break;

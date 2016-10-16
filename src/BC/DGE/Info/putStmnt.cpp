@@ -88,6 +88,9 @@ namespace GDCC::BC::DGE
 
       case IR::Code::Retn: putStmnt_Retn(); break;
 
+      case IR::Code::ShLU_W: putStmnt_ShLU_W(); break;
+      case IR::Code::ShRI_W: putStmnt_ShRI_W(); break;
+      case IR::Code::ShRU_W: putStmnt_ShRU_W(); break;
       case IR::Code::SuXU_W: putStmnt_SuXU_W(); break;
       case IR::Code::SubI_W:
       case IR::Code::SubU_W: putStmnt_SubU_W(); break;

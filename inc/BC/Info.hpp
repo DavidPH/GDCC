@@ -206,6 +206,9 @@ namespace GDCC
          void addFunc_CmpU_NE_W(Core::FastU n);
          void addFunc_MuXU_W(Core::FastU n);
          void addFunc_MulU_W(Core::FastU n);
+         void addFunc_ShLU_W(Core::FastU n);
+         void addFunc_ShRI_W(Core::FastU n);
+         void addFunc_ShRU_W(Core::FastU n);
          void addFunc_SubU_W(Core::FastU n);
 
          IR::Function *getFuncDefn(Core::String name, Core::FastU retrn,
@@ -224,6 +227,7 @@ namespace GDCC
 
          void trStmntStk2(Core::FastU sizeDst, Core::FastU sizeSrc);
          void trStmntStk3(Core::FastU sizeDst, Core::FastU sizeSrc, bool ordered);
+         bool trStmntShift(Core::FastU size, bool moveLit);
 
          IR::Block     *block;
          IR::DJump     *djump;
@@ -247,6 +251,7 @@ namespace GDCC
          void addFunc_Bclz_W(Core::FastU n, IR::Code code, Core::FastU skip);
          void addFunc_CmpU_EQ_W(Core::FastU n, IR::Code codeCmp, IR::Code codeAnd);
          void addFunc_CmpU_GE_W(Core::FastU n, IR::Code codeCmpHi, IR::Code codeCmpLo);
+         void addFunc_ShLU_W(Core::FastU n, IR::Code code, bool left, bool sign);
       };
    }
 }
