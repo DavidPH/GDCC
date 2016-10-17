@@ -544,6 +544,7 @@ Statements
 Syntax:
   statement: add
     asm-statement
+    with-statement
 
 ===========================================================
 Assembly Statement
@@ -556,6 +557,34 @@ Syntax:
 Semantics:
   Passes the contents of the string literal to the IR assembler as a statement
   list.
+
+===========================================================
+With Statement
+===========================================================
+
+Syntax:
+  with-statement:
+    <__with> ( with-declaration-sequence(opt) ) statement
+
+  with-declaration-sequence:
+    with-declaration
+    with-declaration-sequence with-declaration
+
+  with-declaration:
+    declaration
+    expression ;
+
+Semantics:
+  The with statement creates a new scope for a single statement, with
+  declarations and expressions inserted in that new scope before the statement.
+
+  The statement
+    __with(X; Y;) Z;
+  is equivalent to
+    {X; Y; Z;}
+  with regards to scoping and lifetimes.
+
+  It is unspecified whether or not the with statement affects pragma scoping.
 
 ===============================================================================
 Pragma Directives
@@ -849,9 +878,21 @@ Grammar
 
   statement: add
     asm-statement
+    with-statement
 
   asm-statement:
     <__asm> ( string-literal ) ;
+
+  with-statement:
+    <__with> ( with-declaration-sequence(opt) ) statement
+
+  with-declaration-sequence:
+    with-declaration
+    with-declaration-sequence with-declaration
+
+  with-declaration:
+    declaration
+    expression ;
 
   # <pragma> <ACS> <library> string-literal
 

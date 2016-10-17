@@ -132,6 +132,7 @@ namespace GDCC
          virtual StatementCRef getStatement_return(Scope_Local &scope, Labels &&labels);
          virtual StatementCRef getStatement_switch(Scope_Local &scope, Labels &&labels);
          virtual StatementCRef getStatement_while(Scope_Local &scope, Labels &&labels);
+         virtual StatementCRef getStatement_with(Scope_Local &scope, Labels &&labels);
          virtual StatementCRef getStatementCompound(Scope_Local &scope, Labels &&labels);
          virtual StatementCRef getStatementExp(Scope_Local &scope, Labels &&labels);
 
