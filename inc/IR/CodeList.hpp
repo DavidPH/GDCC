@@ -31,8 +31,17 @@ GDCC_IR_CodeList(AddF_W)
 GDCC_IR_CodeList(AddI_W)
 GDCC_IR_CodeList(AddU_W)
 
-// And* dst lop rop
-GDCC_IR_CodeList(AndU_W)
+// BAnd dst lop rop
+GDCC_IR_CodeList(BAnd_W)
+
+// BNot dst src
+GDCC_IR_CodeList(BNot_W)
+
+// BOrI dst lop rop
+GDCC_IR_CodeList(BOrI_W)
+
+// BOrX dst lop rop
+GDCC_IR_CodeList(BOrX_W)
 
 // Bclo dst src (Bit, Count Leading Ones)
 GDCC_IR_CodeList(Bclo_W)
@@ -102,9 +111,6 @@ GDCC_IR_CodeList(DivK_W)
 GDCC_IR_CodeList(DivU_W)
 GDCC_IR_CodeList(DivX_W)
 
-// Inv* dst src
-GDCC_IR_CodeList(InvU_W)
-
 // Jcnd_Nil src lab
 GDCC_IR_CodeList(Jcnd_Nil)
 
@@ -157,12 +163,6 @@ GDCC_IR_CodeList(MulX_W)
 // Neg* dst src
 GDCC_IR_CodeList(NegF_W)
 GDCC_IR_CodeList(NegI_W)
-
-// OrI* dst lop rop
-GDCC_IR_CodeList(OrIU_W)
-
-// OrX* dst lop rop
-GDCC_IR_CodeList(OrXU_W)
 
 // Pltn dst src (Pointer, Local to Near)
 GDCC_IR_CodeList(Pltn)

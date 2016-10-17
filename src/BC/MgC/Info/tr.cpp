@@ -38,7 +38,7 @@ namespace GDCC
                break;
 
             case IR::Code::AddU_W:
-            case IR::Code::AndU_W:
+            case IR::Code::BAnd_W:
             case IR::Code::CmpU_EQ_W:
             case IR::Code::CmpU_GE_W:
             case IR::Code::CmpU_GT_W:

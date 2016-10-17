@@ -152,7 +152,7 @@ namespace GDCC
          exp->genStmntStk(ctx);
 
          // Operate on stack.
-         ctx.block.addStatementArgs({IR::Code::InvU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BNot_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk());
 
          // Move to destination.

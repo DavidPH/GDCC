@@ -113,7 +113,7 @@ namespace GDCC
             }
 
             for(auto i = stmnt->op.size; --i;)
-               putCode(Code::OrIU);
+               putCode(Code::BOrI);
 
             putCode(Code::Jcnd_Nil, GetWord(stmnt->args[1].aLit));
          }
@@ -171,7 +171,7 @@ namespace GDCC
             if(stmnt->op.size == 0) return;
 
             for(auto i = stmnt->op.size; --i;)
-               putCode(Code::OrIU);
+               putCode(Code::BOrI);
 
             putCode(Code::Jcnd_Tru, GetWord(stmnt->args[1].aLit));
          }

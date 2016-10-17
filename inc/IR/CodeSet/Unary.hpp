@@ -30,8 +30,8 @@ namespace GDCC
       struct CodeSet_Inv
       {
          static constexpr Code
-            CodeI_W = Code::InvU_W,
-            CodeU_W = Code::InvU_W;
+            CodeI_W = Code::BNot_W,
+            CodeU_W = Code::BNot_W;
       };
 
       //

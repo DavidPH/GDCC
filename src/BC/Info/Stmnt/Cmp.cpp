@@ -38,7 +38,7 @@ namespace GDCC::BC
    void Info::addFunc_CmpI_LT_W(Core::FastU n)
       {addFunc_CmpU_GE_W(n, IR::Code::CmpI_LT_W, IR::Code::CmpU_LT_W);}
    void Info::addFunc_CmpU_EQ_W(Core::FastU n)
-      {addFunc_CmpU_EQ_W(n, IR::Code::CmpU_EQ_W, IR::Code::AndU_W);}
+      {addFunc_CmpU_EQ_W(n, IR::Code::CmpU_EQ_W, IR::Code::BAnd_W);}
    void Info::addFunc_CmpU_GE_W(Core::FastU n)
       {addFunc_CmpU_GE_W(n, IR::Code::CmpU_GE_W, IR::Code::CmpU_GE_W);}
    void Info::addFunc_CmpU_GT_W(Core::FastU n)
@@ -48,7 +48,7 @@ namespace GDCC::BC
    void Info::addFunc_CmpU_LT_W(Core::FastU n)
       {addFunc_CmpU_GE_W(n, IR::Code::CmpU_LT_W, IR::Code::CmpU_LT_W);}
    void Info::addFunc_CmpU_NE_W(Core::FastU n)
-      {addFunc_CmpU_EQ_W(n, IR::Code::CmpU_NE_W, IR::Code::OrIU_W);}
+      {addFunc_CmpU_EQ_W(n, IR::Code::CmpU_NE_W, IR::Code::BOrI_W);}
 
    //
    // Info::addFunc_CmpU_EQ_W

@@ -52,7 +52,10 @@ namespace GDCC
             case IR::Code::AddI_W:
             case IR::Code::AddU_W: trStmnt_AddU_W(); break;
 
-            case IR::Code::AndU_W: trStmntBitwise(); break;
+            case IR::Code::BAnd_W: trStmntBitwise(); break;
+            case IR::Code::BNot_W: trStmnt_BNot_W(); break;
+            case IR::Code::BOrI_W: trStmntBitwise(); break;
+            case IR::Code::BOrX_W: trStmntBitwise(); break;
 
             case IR::Code::Bclo_W: trStmnt_Bclz_W(); break;
             case IR::Code::Bclz_W: trStmnt_Bclz_W(); break;
@@ -121,8 +124,6 @@ namespace GDCC
                trStmntStk3(stmnt->op.size, stmnt->op.size, true);
                break;
 
-            case IR::Code::InvU_W: trStmnt_InvU_W(); break;
-
             case IR::Code::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
             case IR::Code::Jcnd_Tab: trStmnt_Jcnd_Tab(); break;
             case IR::Code::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
@@ -156,9 +157,6 @@ namespace GDCC
 
             case IR::Code::NegF_W: trStmntStk2(stmnt->op.size, stmnt->op.size); break;
             case IR::Code::NegI_W: trStmnt_NegI_W(); break;
-
-            case IR::Code::OrIU_W: trStmntBitwise(); break;
-            case IR::Code::OrXU_W: trStmntBitwise(); break;
 
             case IR::Code::Pltn: trStmntStk2(1, 1); break;
 

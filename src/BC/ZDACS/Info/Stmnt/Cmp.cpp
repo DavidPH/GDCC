@@ -162,12 +162,12 @@ namespace GDCC
             // Check for special cases.
 
             // Does l have min or max exp?
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, lexp, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, lexp, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelLEMax, 0, labelLEMin);
             AS_Stmnt({IR::Code::Move_W,   1}, nul, stk);
 
             // Does r have max exp?
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rexp, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rexp, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelREMax);
             AS_Stmnt({IR::Code::Move_W,   1}, nul, stk);
 
@@ -182,13 +182,13 @@ namespace GDCC
             {
                IR::Glyph labelL1{prog, name + "$l1"};
 
-               AS_Stmnt({IR::Code::AndU_W,   1}, stk, lexp, fi.maskSig);
+               AS_Stmnt({IR::Code::BAnd_W,   1}, stk, lexp, fi.maskSig);
                AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelL1);
 
                // l > 0
 
                // If r < 0, then l > r.
-               AS_Stmnt({IR::Code::AndU_W,   1}, stk, rexp, fi.maskSig);
+               AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rexp, fi.maskSig);
                AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, cmpGT ? label1 : label0);
 
                AS_Stmnt({codeCmpPos,     stmnt->op.size}, stk, lop, rop);
@@ -198,7 +198,7 @@ namespace GDCC
                newFunc->block.addLabel(labelL1);
 
                // If r > 0, then l < r.
-               AS_Stmnt({IR::Code::AndU_W,   1}, stk, rexp, fi.maskSig);
+               AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rexp, fi.maskSig);
                AS_Stmnt({IR::Code::Jcnd_Nil, 1}, stk, cmpGT ? label0 : label1);
 
                AS_Stmnt({codeCmpNeg,     stmnt->op.size}, stk, lop, rop);
@@ -209,11 +209,11 @@ namespace GDCC
 
             // If l is NaN, then l != r.
             AS_Stmnt({IR::Code::Move_W,   stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::AndU_W,   1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W,   1},              stk, stk, fi.maskMan);
             AS_Stmnt({IR::Code::Jcnd_Tru, stmnt->op.size}, stk, cmpNE ? label1 : label0);
 
             // Check for r having max exponent...
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rexp, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rexp, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelREMax);
             AS_Stmnt({IR::Code::Move_W,   1}, nul, stk);
 
@@ -223,18 +223,18 @@ namespace GDCC
             newFunc->block.addLabel(labelLEMin);
 
             // Check for r having max exponent...
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rexp, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rexp, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelREMax);
             AS_Stmnt({IR::Code::Move_W,   1}, nul, stk);
 
             // ... And if not, check for l being subnormal...
             AS_Stmnt({IR::Code::Move_W,   stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::AndU_W,   1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W,   1},              stk, stk, fi.maskMan);
             AS_Stmnt({IR::Code::Jcnd_Tru, stmnt->op.size}, stk, labelCmp);
 
             // ... And if not, check for r being zero...
             AS_Stmnt({IR::Code::Move_W,   stmnt->op.size}, stk, rop);
-            AS_Stmnt({IR::Code::AndU_W,   1},              stk, stk, fi.maskMan | fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1},              stk, stk, fi.maskMan | fi.maskExp);
 
             // ... And if it is, l == r, otherwise l != r.
             AS_Stmnt({IR::Code::LNot,     stmnt->op.size}, stk, stk);
@@ -246,7 +246,7 @@ namespace GDCC
 
             // If r is NaN, then l != r.
             AS_Stmnt({IR::Code::Move_W,   stmnt->op.size}, stk, rop);
-            AS_Stmnt({IR::Code::AndU_W,   1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W,   1},              stk, stk, fi.maskMan);
             AS_Stmnt({IR::Code::Jcnd_Tru, stmnt->op.size}, stk, cmpNE ? label1 : label0);
 
             // Jump to normal compare.
@@ -402,15 +402,15 @@ namespace GDCC
 
             #define AS_Stmnt newFunc->block.addStatementArgs
 
-            AS_Stmnt({IR::Code::AndU_W,   1}, IR::Arg_Stk(), lop, 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, IR::Arg_Stk(), lop, 0x80000000);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1}, IR::Arg_Stk(), labelPos);
 
-            AS_Stmnt({IR::Code::AndU_W,   1}, IR::Arg_Stk(), rop, 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, IR::Arg_Stk(), rop, 0x80000000);
             AS_Stmnt({IR::Code::Jcnd_Tru, 1}, IR::Arg_Stk(), labelCmp);
             AS_Stmnt({IR::Code::Retn,     1}, resGT);
 
             newFunc->block.addLabel(labelPos);
-            AS_Stmnt({IR::Code::AndU_W,   1}, IR::Arg_Stk(), rop, 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, IR::Arg_Stk(), rop, 0x80000000);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1}, IR::Arg_Stk(), labelCmp);
             AS_Stmnt({IR::Code::Retn,     1}, resLT);
 
@@ -453,7 +453,7 @@ namespace GDCC
                   putStmntPushArg(stmnt->args[1], i);
                   putStmntPushArg(stmnt->args[2], i);
                   putCode(Code::CmpU_EQ);
-                  putCode(Code::AndU);
+                  putCode(Code::BAnd);
                }
             }
             else if(stmnt->op.size == 1)
@@ -481,7 +481,7 @@ namespace GDCC
                   putStmntPushArg(stmnt->args[1], i);
                   putStmntPushArg(stmnt->args[2], i);
                   putCode(Code::CmpU_NE);
-                  putCode(Code::OrIU);
+                  putCode(Code::BOrI);
                }
             }
             else if(stmnt->op.size == 1)

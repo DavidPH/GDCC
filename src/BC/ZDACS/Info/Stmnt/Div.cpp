@@ -163,10 +163,10 @@ namespace GDCC
 
             #define AS_Stmnt newFunc->block.addStatementArgs
 
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, lop + (stmnt->op.size - 1), 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, lop + (stmnt->op.size - 1), 0x80000000);
             AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelL1);
 
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rop + (stmnt->op.size - 1), 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rop + (stmnt->op.size - 1), 0x80000000);
             AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelL0R1);
 
             // +dividend, +divisor -> +quotient, +remainder
@@ -186,7 +186,7 @@ namespace GDCC
             newFunc->block.addLabel(labelL1);
             AS_Stmnt({IR::Code::NegI_W, stmnt->op.size}, lop, lop);
 
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rop + (stmnt->op.size - 1), 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rop + (stmnt->op.size - 1), 0x80000000);
             AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelL1R1);
 
             // -dividend, +divisor -> -quotient, +remainder
@@ -247,7 +247,7 @@ namespace GDCC
             #define AS_Stmnt newFunc->block.addStatementArgs
 
             // If both operands have the high word clear, defer to smaller op.
-            AS_Stmnt({IR::Code::OrIU_W,   1}, stk,
+            AS_Stmnt({IR::Code::BOrI_W,   1}, stk,
                lop + (stmnt->op.size - 1), rop + (stmnt->op.size - 1));
             AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelFull);
 
@@ -280,7 +280,7 @@ namespace GDCC
             AS_Stmnt({IR::Code::CmpU_GE_W, stmnt->op.size}, stk, rem, rop);
             AS_Stmnt({IR::Code::Jcnd_Nil,  1}, stk, labelLoopShft);
 
-            AS_Stmnt({IR::Code::OrIU_W, stmnt->op.size}, quot, quot, mask);
+            AS_Stmnt({IR::Code::BOrI_W, stmnt->op.size}, quot, quot, mask);
             AS_Stmnt({IR::Code::SubU_W, stmnt->op.size}, rem,  rem,  rop);
 
             newFunc->block.addLabel(labelLoopShft);
@@ -290,10 +290,10 @@ namespace GDCC
             newFunc->block.addLabel(labelLoopCond);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, mask);
             for(Core::FastU n = stmnt->op.size; --n;)
-               AS_Stmnt({IR::Code::OrIU_W, 1}, stk, stk, stk);
+               AS_Stmnt({IR::Code::BOrI_W, 1}, stk, stk, stk);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rem);
             for(Core::FastU n = stmnt->op.size; --n;)
-               AS_Stmnt({IR::Code::OrIU_W, 1}, stk, stk, stk);
+               AS_Stmnt({IR::Code::BOrI_W, 1}, stk, stk, stk);
             AS_Stmnt({IR::Code::LAnd, 1}, stk, stk, stk);
             AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelLoopBody);
 
@@ -332,11 +332,11 @@ namespace GDCC
 
             #define AS_Stmnt newFunc->block.addStatementArgs
 
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, lop, 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, lop, 0x80000000);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1}, stk, labelL0);
 
             // l has high bit set.
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rop, 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rop, 0x80000000);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1}, stk, labelL1R0);
 
             // l and r have high bit set.
@@ -355,7 +355,7 @@ namespace GDCC
 
             // l has high bit set, r does not.
             newFunc->block.addLabel(labelL1R0);
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rop, 1);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rop, 1);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1}, stk, labelL1R00);
 
             // r has low bit set.
@@ -406,7 +406,7 @@ namespace GDCC
 
             // l does not have high bit set.
             newFunc->block.addLabel(labelL0);
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rop, 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rop, 0x80000000);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1}, stk, labelL0R0);
 
             // l does not have high bit set, r does.
@@ -471,12 +471,12 @@ namespace GDCC
             #define AS_Stmnt newFunc->block.addStatementArgs
 
             // Determine result sign.
-            AS_Stmnt({IR::Code::OrXU_W,    1}, stk, lhi, rhi);
-            AS_Stmnt({IR::Code::AndU_W,    1}, sig, stk, 0x80000000);
+            AS_Stmnt({IR::Code::BOrX_W,    1}, stk, lhi, rhi);
+            AS_Stmnt({IR::Code::BAnd_W,    1}, sig, stk, 0x80000000);
 
             // Clear operand signs.
-            AS_Stmnt({IR::Code::AndU_W,    1}, lhi, lhi, 0x7FFFFFFF);
-            AS_Stmnt({IR::Code::AndU_W,    1}, rhi, rhi, 0x7FFFFFFF);
+            AS_Stmnt({IR::Code::BAnd_W,    1}, lhi, lhi, 0x7FFFFFFF);
+            AS_Stmnt({IR::Code::BAnd_W,    1}, rhi, rhi, 0x7FFFFFFF);
 
             // Check for special operands.
             AS_Stmnt({IR::Code::CmpI_GT_W, 1}, stk, lhi, fi.maskExp);
@@ -497,10 +497,10 @@ namespace GDCC
             AS_Stmnt({IR::Code::AddU_W,    1}, exp, stk, stk);
 
             // Clear operand exponents and add implicit bit.
-            AS_Stmnt({IR::Code::AndU_W,    1}, stk, lhi, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W,    1}, lhi, stk, fi.maskMan + 1);
-            AS_Stmnt({IR::Code::AndU_W,    1}, stk, rhi, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W,    1}, rhi, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W,    1}, stk, lhi, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W,    1}, lhi, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W,    1}, stk, rhi, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W,    1}, rhi, stk, fi.maskMan + 1);
 
             // Division loop.
             AS_Stmnt({IR::Code::Move_W,    stmnt->op.size}, man, 0);
@@ -531,7 +531,7 @@ namespace GDCC
             AS_Stmnt({IR::Code::ShLU_W,    stmnt->op.size}, man, man, tmp);
             AS_Stmnt({IR::Code::SubU_W,    1},              exp, exp, tmp);
 
-            AS_Stmnt({IR::Code::AndU_W,    1},              mhi, mhi, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W,    1},              mhi, mhi, fi.maskMan);
 
             // Check for out of range exponent.
             AS_Stmnt({IR::Code::CmpI_GE_W, 1},              stk, exp, fi.maxExp);
@@ -542,15 +542,15 @@ namespace GDCC
             // Return result.
             AS_Stmnt({IR::Code::Move_W,    stmnt->op.size}, stk, man);
             AS_Stmnt({IR::Code::ShLU_W,    1},              stk, exp, fi.bitsMan);
-            AS_Stmnt({IR::Code::OrIU_W,    1},              stk, stk, stk);
-            AS_Stmnt({IR::Code::OrIU_W,    1},              stk, stk, sig);
+            AS_Stmnt({IR::Code::BOrI_W,    1},              stk, stk, stk);
+            AS_Stmnt({IR::Code::BOrI_W,    1},              stk, stk, sig);
             AS_Stmnt({IR::Code::Retn,      stmnt->op.size}, stk);
 
             // Return NaN.
             newFunc->block.addLabel(labelNaN);
             for(auto n = stmnt->op.size - 1; n--;)
                AS_Stmnt({IR::Code::Move_W, 1},              stk, 0xFFFFFFFF);
-            AS_Stmnt({IR::Code::OrIU_W,    1},              stk, sig, fi.maskExp | fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W,    1},              stk, sig, fi.maskExp | fi.maskMan);
             AS_Stmnt({IR::Code::Retn,      stmnt->op.size}, stk);
 
             // l is NaN. Therefore, result is l.
@@ -560,13 +560,13 @@ namespace GDCC
             // l is INF, r is normal. Therefore, result is l.
             newFunc->block.addLabel(labelLINF);
             AS_Stmnt({IR::Code::Move_W,    stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::OrIU_W,    1},              stk, stk, sig);
+            AS_Stmnt({IR::Code::BOrI_W,    1},              stk, stk, sig);
             AS_Stmnt({IR::Code::Retn,      stmnt->op.size}, stk);
 
             // r is NaN. Therefore, result is r.
             newFunc->block.addLabel(labelRNaN);
             AS_Stmnt({IR::Code::Move_W,    stmnt->op.size},              stk, rop);
-            AS_Stmnt({IR::Code::OrIU_W,    1},              stk, stk, sig);
+            AS_Stmnt({IR::Code::BOrI_W,    1},              stk, stk, sig);
             AS_Stmnt({IR::Code::Retn,      stmnt->op.size}, stk);
 
             // r is 0.
@@ -579,7 +579,7 @@ namespace GDCC
             newFunc->block.addLabel(labelINF);
             for(auto n = stmnt->op.size - 1; n--;)
                AS_Stmnt({IR::Code::Move_W, 1},              stk, 0);
-            AS_Stmnt({IR::Code::OrIU_W,    1},              stk, sig, fi.maskExp);
+            AS_Stmnt({IR::Code::BOrI_W,    1},              stk, sig, fi.maskExp);
             AS_Stmnt({IR::Code::Retn,      stmnt->op.size}, stk);
 
             // r is INF.

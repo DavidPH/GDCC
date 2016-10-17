@@ -300,7 +300,7 @@ namespace GDCC
                *out << "addu_stk" << '\0' << '(' << '\0' << ')' << '\0';
                break;
 
-            case IR::Code::AndU_W:
+            case IR::Code::BAnd_W:
                *out << "andu_stk" << '\0' << '(' << '\0' << ')' << '\0';
                break;
 

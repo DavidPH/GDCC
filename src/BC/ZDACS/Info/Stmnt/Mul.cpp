@@ -68,10 +68,10 @@ namespace GDCC
             #define AS_Stmnt newFunc->block.addStatementArgs
 
             // Split arguments to 16-bit pieces. Take care due to aliasing.
-            AS_Stmnt({IR::Code::AndU_W, 1}, rop_lo, rop, 0xFFFF);
+            AS_Stmnt({IR::Code::BAnd_W, 1}, rop_lo, rop, 0xFFFF);
             AS_Stmnt({IR::Code::ShRU_W, 1}, rop_hi, rop, 16);
             AS_Stmnt({IR::Code::ShRU_W, 1}, lop_hi, lop, 16);
-            AS_Stmnt({IR::Code::AndU_W, 1}, lop_lo, lop, 0xFFFF);
+            AS_Stmnt({IR::Code::BAnd_W, 1}, lop_lo, lop, 0xFFFF);
 
             // Column 0.
             AS_Stmnt({IR::Code::MulU_W, 1}, stk, lop_lo, rop_lo);
@@ -138,19 +138,19 @@ namespace GDCC
             #define AS_Stmnt newFunc->block.addStatementArgs
 
             // Determine result sign.
-            AS_Stmnt({IR::Code::OrXU_W, 1}, stk, lhi, rhi);
-            AS_Stmnt({IR::Code::AndU_W, 1}, sig, stk, fi.maskSig);
+            AS_Stmnt({IR::Code::BOrX_W, 1}, stk, lhi, rhi);
+            AS_Stmnt({IR::Code::BAnd_W, 1}, sig, stk, fi.maskSig);
 
             // Clear operand signs.
-            AS_Stmnt({IR::Code::AndU_W, 1}, lhi, lhi, fi.maskExp | fi.maskMan);
-            AS_Stmnt({IR::Code::AndU_W, 1}, rhi, rhi, fi.maskExp | fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W, 1}, lhi, lhi, fi.maskExp | fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W, 1}, rhi, rhi, fi.maskExp | fi.maskMan);
 
             // Check for l being NaN before other special exponent checks.
             if(stmnt->op.size > 1)
             {
                AS_Stmnt({IR::Code::Move_W,    1}, stk, lop);
                for(Core::FastU i = 1, e = stmnt->op.size - 1; i != e; ++i)
-                  AS_Stmnt({IR::Code::OrIU_W, 1}, stk, stk, lop + i);
+                  AS_Stmnt({IR::Code::BOrI_W, 1}, stk, stk, lop + i);
 
                AS_Stmnt({IR::Code::CmpI_GT_W, 1}, stk, lhi, fi.maskExp);
                AS_Stmnt({IR::Code::LAnd,      1}, stk, stk, stk);
@@ -160,10 +160,10 @@ namespace GDCC
             AS_Stmnt({IR::Code::Jcnd_Tru,     1}, stk, labelRetL);
 
             // Check for special operands and calculate result exponent.
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rhi, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rhi, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelRetR, 0, labelRetR);
             AS_Stmnt({IR::Code::ShRI_W,   1}, exp, stk, fi.bitsMan);
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, lhi, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, lhi, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelRetL, 0, labelRetL);
             AS_Stmnt({IR::Code::ShRI_W,   1}, stk, stk, fi.bitsMan);
             AS_Stmnt({IR::Code::AddU_W,   1}, exp, exp, stk);
@@ -171,11 +171,11 @@ namespace GDCC
 
             // Perform expanding multiply.
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, fi.maskMan + 1);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rop);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, fi.maskMan + 1);
             AS_Stmnt({IR::Code::MuXU_W, stmnt->op.size}, stk, stk, stk);
 
             // Discard the lower bits.
@@ -202,29 +202,29 @@ namespace GDCC
 
             // return result.
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, tmp);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
             AS_Stmnt({IR::Code::ShLU_W, 1},              stk, exp, fi.bitsMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, stk);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, sig);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, stk);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, sig);
             AS_Stmnt({IR::Code::Retn,   stmnt->op.size}, stk);
 
             // Return l with sign.
             newFunc->block.addLabel(labelRetL);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, sig);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, sig);
             AS_Stmnt({IR::Code::Retn,   stmnt->op.size}, stk);
 
             // Return r with sign.
             newFunc->block.addLabel(labelRetR);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rop);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, sig);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, sig);
             AS_Stmnt({IR::Code::Retn,   stmnt->op.size}, stk);
 
             // Return infinity with sign.
             newFunc->block.addLabel(labelRetINF);
             if(stmnt->op.size > 1)
                AS_Stmnt({IR::Code::Move_W, stmnt->op.size - 1}, stk, 0);
-            AS_Stmnt({IR::Code::OrIU_W,    1},                  stk, sig, fi.maskExp);
+            AS_Stmnt({IR::Code::BOrI_W,    1},                  stk, sig, fi.maskExp);
             AS_Stmnt({IR::Code::Retn,      stmnt->op.size},     stk);
 
             // Return zero with sign.

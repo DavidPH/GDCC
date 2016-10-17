@@ -44,9 +44,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_AndU_W
+   // Info::putStmnt_BAnd_W
    //
-   void Info::putStmnt_AndU_W(char const *code)
+   void Info::putStmnt_BAnd_W(char const *code)
    {
       if(stmnt->args[1].a == IR::ArgBase::Stk)
       {
@@ -93,25 +93,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_OrIU_W
+   // Info::trStmnt_BAnd_W
    //
-   void Info::putStmnt_OrIU_W()
-   {
-      putStmnt_AndU_W("OrIU");
-   }
-
-   //
-   // Info::putStmnt_OrXU_W
-   //
-   void Info::putStmnt_OrXU_W()
-   {
-      putStmnt_AndU_W("OrXU");
-   }
-
-   //
-   // Info::trStmnt_AndU_W
-   //
-   void Info::trStmnt_AndU_W()
+   void Info::trStmnt_BAnd_W()
    {
       CheckArgC(stmnt, 3);
 
@@ -132,22 +116,6 @@ namespace GDCC::BC::DGE
    void Info::trStmnt_Bclz_W()
    {
       trStmntStk2(1, stmnt->op.size);
-   }
-
-   //
-   // Info::trStmnt_OrIU_W
-   //
-   void Info::trStmnt_OrIU_W()
-   {
-      trStmnt_AndU_W();
-   }
-
-   //
-   // Info::trStmnt_OrXU_W
-   //
-   void Info::trStmnt_OrXU_W()
-   {
-      trStmnt_AndU_W();
    }
 }
 

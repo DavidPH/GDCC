@@ -56,7 +56,10 @@ namespace GDCC
             case IR::Code::AddI_W:
             case IR::Code::AddU_W: putStmnt_AddU_W(); break;
 
-            case IR::Code::AndU_W: putStmntBitwise(Code::AndU); break;
+            case IR::Code::BAnd_W: putStmntBitwise(Code::BAnd); break;
+            case IR::Code::BNot_W: putStmnt_BNot_W(); break;
+            case IR::Code::BOrI_W: putStmntBitwise(Code::BOrI); break;
+            case IR::Code::BOrX_W: putStmntBitwise(Code::BOrX); break;
 
             case IR::Code::Bclo_W: putStmnt_Bclz_W(true); break;
             case IR::Code::Bclz_W: putStmnt_Bclz_W(false); break;
@@ -108,8 +111,6 @@ namespace GDCC
             case IR::Code::DivI_W: putStmnt_DivI_W(); break;
             case IR::Code::DivU_W: putStmnt_DivU_W(); break;
             case IR::Code::DivX_W: putStmnt_DivX_W(); break;
-
-            case IR::Code::InvU_W: putStmnt_InvU_W(); break;
 
             case IR::Code::Jcnd_Nil: putStmnt_Jcnd_Nil(); break;
             case IR::Code::Jcnd_Tab: putStmnt_Jcnd_Tab(); break;
@@ -164,9 +165,6 @@ namespace GDCC
             case IR::Code::NegF_W: putStmnt_NegF_W(); break;
             case IR::Code::NegI_W: putStmnt_NegI_W(); break;
 
-            case IR::Code::OrIU_W: putStmntBitwise(Code::OrIU); break;
-            case IR::Code::OrXU_W: putStmntBitwise(Code::OrXU); break;
-
             case IR::Code::Pltn: putStmnt_Pltn(); break;
 
             case IR::Code::Retn: putStmnt_Retn(); break;
@@ -198,7 +196,7 @@ namespace GDCC
          //
          void Info::putStmnt_LNot()
          {
-            if(auto i = stmnt->op.size) while(--i) putCode(Code::OrIU);
+            if(auto i = stmnt->op.size) while(--i) putCode(Code::BOrI);
             putCode(Code::LNot);
          }
 

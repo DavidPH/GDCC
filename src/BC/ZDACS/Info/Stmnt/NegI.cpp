@@ -75,7 +75,7 @@ namespace GDCC
          void Info::putStmnt_NegF_W()
          {
             putCode(Code::Push_Lit, 0x80000000);
-            putCode(Code::OrXU);
+            putCode(Code::BOrX);
          }
 
          //
@@ -100,7 +100,7 @@ namespace GDCC
             {
                for(auto i = stmnt->op.size; i--;)
                {
-                  putCode(Code::InvU);
+                  putCode(Code::BNot);
                   putCode(Code::Drop_LocReg, func->localReg + i);
                }
 
@@ -120,7 +120,7 @@ namespace GDCC
             {
                for(auto i = stmnt->op.size; i--;)
                {
-                  putCode(Code::InvU);
+                  putCode(Code::BNot);
                   putStmntDropArg(stmnt->args[0], i);
                }
 

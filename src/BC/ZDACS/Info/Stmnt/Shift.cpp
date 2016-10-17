@@ -216,7 +216,7 @@ namespace GDCC
             if(!left)
                AS_Stmnt({IR::Code::ShLU_W, 1}, rop, rop, 31 - fi.bitsExp);
 
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, exp, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, exp, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelEMax, 0, labelEMax);
 
             if(left)
@@ -230,9 +230,9 @@ namespace GDCC
                if(lopWords > 1)
                   AS_Stmnt({IR::Code::Move_W, lopWords - 1}, stk, lop);
 
-               AS_Stmnt({IR::Code::AndU_W, 1}, stk, exp, ~fi.maskExp);
+               AS_Stmnt({IR::Code::BAnd_W, 1}, stk, exp, ~fi.maskExp);
                AS_Stmnt({IR::Code::ShLU_W, 1}, stk, rop, 31 - fi.bitsExp);
-               AS_Stmnt({IR::Code::OrIU_W, 1}, stk, stk, stk);
+               AS_Stmnt({IR::Code::BOrI_W, 1}, stk, stk, stk);
             }
             else
             {
@@ -256,10 +256,10 @@ namespace GDCC
             if(lopWords > 1)
                AS_Stmnt({IR::Code::Move_W, lopWords - 1}, stk, 0);
 
-            AS_Stmnt({IR::Code::AndU_W, 1}, stk, exp, 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W, 1}, stk, exp, 0x80000000);
 
             if(left)
-               AS_Stmnt({IR::Code::OrIU_W, 1}, stk, stk, fi.maskExp);
+               AS_Stmnt({IR::Code::BOrI_W, 1}, stk, stk, fi.maskExp);
 
             if(lopWords < retWords)
                AS_Stmnt({IR::Code::Move_W, 1}, stk, 1);
@@ -393,7 +393,7 @@ namespace GDCC
                   putCode(Code::Push_LocReg, func->localReg + n - 1);
                   putStmntShiftRU(32 - shiftBits);
 
-                  putCode(Code::OrIU);
+                  putCode(Code::BOrI);
                }
             }
             else
@@ -455,7 +455,7 @@ namespace GDCC
                   putCode(Code::Push_Lit,    32 - shiftBits);
                   putCode(Code::ShLU);
 
-                  putCode(Code::OrIU);
+                  putCode(Code::BOrI);
                }
 
                // ret[N-1] = l[N-1] >> r
@@ -532,7 +532,7 @@ namespace GDCC
                   putCode(Code::Push_Lit,    32 - shiftBits);
                   putCode(Code::ShLU);
 
-                  putCode(Code::OrIU);
+                  putCode(Code::BOrI);
                }
 
                // ret[N-1] = l[N-1] >> r
@@ -578,8 +578,8 @@ namespace GDCC
                putCode(Code::Push_LocReg);
                putWord(func->localReg + 0);
                putCode(Code::ShRI);
-               putCode(Code::InvU);
-               putCode(Code::AndU);
+               putCode(Code::BNot);
+               putCode(Code::BAnd);
             }
             else
             {
@@ -596,8 +596,8 @@ namespace GDCC
                putCode(Code::Push_Lit, 1);
                putCode(Code::SubU);
                putCode(Code::ShRI);
-               putCode(Code::InvU);
-               putCode(Code::AndU);
+               putCode(Code::BNot);
+               putCode(Code::BAnd);
             }
          }
 
@@ -609,7 +609,7 @@ namespace GDCC
             putCode(Code::Push_Lit, shift % 32);
             putCode(Code::ShRI);
             putCode(Code::Push_Lit, 0xFFFFFFFF >> (shift % 32));
-            putCode(Code::AndU);
+            putCode(Code::BAnd);
          }
 
          //

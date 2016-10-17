@@ -35,7 +35,9 @@ namespace GDCC::BC::DGE
       case IR::Code::AdXU_W: trStmnt_AdXU_W(); break;
       case IR::Code::AddI_W:
       case IR::Code::AddU_W: trStmnt_AddU_W(); break;
-      case IR::Code::AndU_W: trStmnt_AndU_W(); break;
+      case IR::Code::BAnd_W: trStmnt_BAnd_W(); break;
+      case IR::Code::BOrI_W: trStmnt_BOrI_W(); break;
+      case IR::Code::BOrX_W: trStmnt_BOrX_W(); break;
       case IR::Code::Bclo_W: trStmnt_Bclo_W(); break;
       case IR::Code::Bclz_W: trStmnt_Bclz_W(); break;
 
@@ -76,8 +78,6 @@ namespace GDCC::BC::DGE
       case IR::Code::MuXU_W: trStmnt_MuXU_W(); break;
       case IR::Code::MulI_W:
       case IR::Code::MulU_W: trStmnt_MulU_W(); break;
-      case IR::Code::OrIU_W: trStmnt_OrIU_W(); break;
-      case IR::Code::OrXU_W: trStmnt_OrXU_W(); break;
 
       case IR::Code::Pltn:
          CheckArgC(stmnt, 2);

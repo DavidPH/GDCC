@@ -147,6 +147,7 @@ namespace GDCC
             virtual void genStmnt();
             void genStmnt_AdXU_W();
             void genStmnt_AddU_W();
+            void genStmnt_BNot_W();
             void genStmnt_Bclz_W();
             void genStmnt_Bges_W();
             void genStmnt_Bget_W();
@@ -163,7 +164,6 @@ namespace GDCC
             void genStmnt_DivI_W();
             void genStmnt_DivU_W();
             void genStmnt_DivX_W();
-            void genStmnt_InvU_W();
             void genStmnt_Jcnd_Nil();
             void genStmnt_Jcnd_Tab();
             void genStmnt_Jcnd_Tru();
@@ -362,6 +362,7 @@ namespace GDCC
             virtual void putStmnt();
             void putStmnt_AdXU_W();
             void putStmnt_AddU_W();
+            void putStmnt_BNot_W();
             void putStmnt_Bclz_W(bool ones = false);
             void putStmnt_Bges_W();
             void putStmnt_Bget_W();
@@ -381,7 +382,6 @@ namespace GDCC
             void putStmnt_DivI_W();
             void putStmnt_DivU_W();
             void putStmnt_DivX_W();
-            void putStmnt_InvU_W();
             void putStmnt_Jcnd_Nil();
             void putStmnt_Jcnd_Tab();
             void putStmnt_Jcnd_Tru();
@@ -446,6 +446,7 @@ namespace GDCC
             virtual void trStmnt();
             void trStmnt_AdXU_W();
             void trStmnt_AddU_W();
+            void trStmnt_BNot_W();
             void trStmnt_Bclz_W();
             void trStmnt_Bget_W();
             void trStmnt_Bset_W();
@@ -460,7 +461,6 @@ namespace GDCC
             void trStmnt_Cspe();
             void trStmnt_DiXI_W();
             void trStmnt_DiXU_W();
-            void trStmnt_InvU_W();
             void trStmnt_Jcnd_Nil();
             void trStmnt_Jcnd_Tab();
             void trStmnt_Jcnd_Tru();

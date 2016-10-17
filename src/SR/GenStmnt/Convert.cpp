@@ -45,7 +45,7 @@ namespace GDCC
          Type const *srcT, Temporary &src, IR::OpCode opCmp,
          Core::FastU exp, IR::OpCode opJcnd, IR::Glyph label)
       {
-         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BAnd_W, 1},
             IR::Arg_Stk(), src.getArg(src.size() - 1), GetMaskExp(srcT));
 
          ctx.block.addStatementArgs(opCmp, IR::Arg_Stk(), IR::Arg_Stk(),
@@ -120,7 +120,7 @@ namespace GDCC
       static void GetExp(Exp const *, GenStmntCtx const &ctx,
          Type const *srcT, Temporary &src)
       {
-         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BAnd_W, 1},
             IR::Arg_Stk(), src.getArg(src.size() - 1), GetMaskExp(srcT));
 
          ctx.block.addStatementArgs({IR::Code::ShRI_W, 1}, IR::Arg_Stk(),
@@ -136,10 +136,10 @@ namespace GDCC
          ctx.block.addStatementArgs({IR::Code::Move_W, src.size()},
             IR::Arg_Stk(), src.getArg());
 
-         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BAnd_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk(), GetMaskMan(srcT));
 
-         if(full) ctx.block.addStatementArgs({IR::Code::OrIU_W, 1},
+         if(full) ctx.block.addStatementArgs({IR::Code::BOrI_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk(), GetMaskMan(srcT) + 1);
       }
 
@@ -253,7 +253,7 @@ namespace GDCC
       void GenStmnt_ConvertBoolFlt(Exp const *, Type const *,
          Type const *srcT, GenStmntCtx const &ctx)
       {
-         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BAnd_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk(), ~GetMaskSig(srcT));
          ctx.block.addStatementArgs({IR::Code::LNot, srcT->getSizeWords()},
             IR::Arg_Stk(), IR::Arg_Stk());
@@ -322,7 +322,7 @@ namespace GDCC
          ctx.block.addLabel(labelINF);
          if(dstT->getSizeBitsS())
          {
-            ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
+            ctx.block.addStatementArgs({IR::Code::BAnd_W, 1},
                IR::Arg_Stk(), src.getArg(src.size() - 1), GetMaskSig(srcT));
             ctx.block.addStatementArgs({IR::Code::Jcnd_Tru, 1},
                IR::Arg_Stk(), labelNI);
@@ -428,7 +428,7 @@ namespace GDCC
          // Convert sign.
          ctx.block.addLabel(labelSig);
 
-         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BAnd_W, 1},
             IR::Arg_Stk(), src.getArg(src.size() - 1), GetMaskSig(srcT));
          ctx.block.addStatementArgs({IR::Code::Jcnd_Nil, 1},
             IR::Arg_Stk(), labelPos);
@@ -560,7 +560,7 @@ namespace GDCC
             src.getArg(), IR::Arg_Stk());
 
          // Check if source is NaN.
-         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BAnd_W, 1},
             IR::Arg_Stk(), src.getArg(src.size() - 1),
             GetMaskMan(srcT) | GetMaskExp(srcT));
          ctx.block.addStatementArgs({IR::Code::CmpI_GT_W, 1},
@@ -637,7 +637,7 @@ namespace GDCC
             DropLow(exp, ctx, dstT, diffWords);
 
          // Convert exponent.
-         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BAnd_W, 1},
             IR::Arg_Stk(), src.getArg(src.size() - 1), GetMaskExp(srcT));
 
          if(diffBitsF > 0)
@@ -661,14 +661,14 @@ namespace GDCC
                IR::Arg_Stk(), IR::Arg_Stk(), -diffBitsF);
          }
 
-         ctx.block.addStatementArgs({IR::Code::OrIU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BOrI_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
 
          // Convert sign.
          ctx.block.addLabel(labelSig);
-         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BAnd_W, 1},
             IR::Arg_Stk(), src.getArg(src.size() - 1), GetMaskSig(srcT));
-         ctx.block.addStatementArgs({IR::Code::OrIU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BOrI_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Stk());
       }
 
@@ -715,13 +715,13 @@ namespace GDCC
             // Check sign of source.
             ctx.block.addStatementArgs({IR::Code::Copy_W, 1},
                IR::Arg_Stk(), IR::Arg_Stk());
-            ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
+            ctx.block.addStatementArgs({IR::Code::BAnd_W, 1},
                IR::Arg_Stk(), IR::Arg_Stk(), GetMaskSig(srcT));
             ctx.block.addStatementArgs({IR::Code::Jcnd_Nil, 1},
                IR::Arg_Stk(), labelPos);
 
             // Set sign bit and negate source.
-            ctx.block.addStatementArgs({IR::Code::OrIU_W, 1},
+            ctx.block.addStatementArgs({IR::Code::BOrI_W, 1},
                dst.getArg(), dst.getArg(), GetMaskSig(dstT));
 
             ctx.block.addStatementArgs({IR::Code::NegI_W, srcT->getSizeWords()},
@@ -810,9 +810,9 @@ namespace GDCC
             DropLow(exp, ctx, dstT, diffWords);
 
          // Add sign and exponent.
-         ctx.block.addStatementArgs({IR::Code::AndU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BAnd_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk(), GetMaskMan(dstT));
-         ctx.block.addStatementArgs({IR::Code::OrIU_W, 1},
+         ctx.block.addStatementArgs({IR::Code::BOrI_W, 1},
             IR::Arg_Stk(), IR::Arg_Stk(), dst.getArg());
 
          ctx.block.addLabel(labelEnd);

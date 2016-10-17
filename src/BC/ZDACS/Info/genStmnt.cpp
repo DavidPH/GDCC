@@ -71,7 +71,10 @@ namespace GDCC
                genStmnt_AddU_W();
                break;
 
-            case IR::Code::AndU_W: genStmntBitwise(); break;
+            case IR::Code::BAnd_W: genStmntBitwise(); break;
+            case IR::Code::BNot_W: genStmnt_BNot_W(); break;
+            case IR::Code::BOrI_W: genStmntBitwise(); break;
+            case IR::Code::BOrX_W: genStmntBitwise(); break;
 
             case IR::Code::Bclo_W: genStmnt_Bclz_W(); break;
             case IR::Code::Bclz_W: genStmnt_Bclz_W(); break;
@@ -128,8 +131,6 @@ namespace GDCC
             case IR::Code::DivU_W: genStmnt_DivU_W(); break;
             case IR::Code::DivX_W: genStmnt_DivX_W(); break;
 
-            case IR::Code::InvU_W: genStmnt_InvU_W(); break;
-
             case IR::Code::Jcnd_Nil: genStmnt_Jcnd_Nil(); break;
             case IR::Code::Jcnd_Tab: genStmnt_Jcnd_Tab(); break;
             case IR::Code::Jcnd_Tru: genStmnt_Jcnd_Tru(); break;
@@ -170,9 +171,6 @@ namespace GDCC
 
             case IR::Code::NegF_W: genStmnt_NegF_W(); break;
             case IR::Code::NegI_W: genStmnt_NegI_W(); break;
-
-            case IR::Code::OrIU_W: genStmntBitwise(); break;
-            case IR::Code::OrXU_W: genStmntBitwise(); break;
 
             case IR::Code::Pltn: numChunkCODE += 12; break;
 

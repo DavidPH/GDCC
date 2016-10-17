@@ -101,7 +101,9 @@ namespace GDCC::BC::DGE
       virtual void putStmnt();
       void putStmnt_AdXU_W();
       void putStmnt_AddU_W();
-      void putStmnt_AndU_W(char const *code = "AndU");
+      void putStmnt_BAnd_W(char const *code = "BAnd");
+      void putStmnt_BOrI_W() {putStmnt_BAnd_W("BOrI");}
+      void putStmnt_BOrX_W() {putStmnt_BAnd_W("BOrX");}
       void putStmnt_Bclo_W() {putStmnt_Bclz_W("Bclo");}
       void putStmnt_Bclz_W(char const *code = "Bclz");
       void putStmnt_Call();
@@ -129,8 +131,6 @@ namespace GDCC::BC::DGE
       void putStmnt_Move_W();
       void putStmnt_MuXU_W();
       void putStmnt_MulU_W();
-      void putStmnt_OrIU_W();
-      void putStmnt_OrXU_W();
       void putStmnt_Retn();
       void putStmnt_ShLU_W(char const *code = "ShLU");
       void putStmnt_ShRI_W() {putStmnt_ShLU_W("ShRI");}
@@ -156,7 +156,9 @@ namespace GDCC::BC::DGE
       virtual void trStmnt();
       void trStmnt_AdXU_W();
       void trStmnt_AddU_W();
-      void trStmnt_AndU_W();
+      void trStmnt_BAnd_W();
+      void trStmnt_BOrI_W() {trStmnt_BAnd_W();}
+      void trStmnt_BOrX_W() {trStmnt_BAnd_W();}
       void trStmnt_Bclo_W() {trStmnt_Bclz_W();}
       void trStmnt_Bclz_W();
       void trStmnt_Call();
@@ -184,8 +186,6 @@ namespace GDCC::BC::DGE
       void trStmnt_Move_W();
       void trStmnt_MuXU_W();
       void trStmnt_MulU_W();
-      void trStmnt_OrIU_W();
-      void trStmnt_OrXU_W();
       void trStmnt_Retn();
       void trStmnt_ShLU_W();
       void trStmnt_ShRI_W() {trStmnt_ShLU_W();}

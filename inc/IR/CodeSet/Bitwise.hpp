@@ -30,8 +30,8 @@ namespace GDCC
       struct CodeSet_And
       {
          static constexpr Code
-            CodeI_W = Code::AndU_W,
-            CodeU_W = Code::AndU_W;
+            CodeI_W = Code::BAnd_W,
+            CodeU_W = Code::BAnd_W;
       };
 
       //
@@ -40,8 +40,8 @@ namespace GDCC
       struct CodeSet_OrI
       {
          static constexpr Code
-            CodeI_W = Code::OrIU_W,
-            CodeU_W = Code::OrIU_W;
+            CodeI_W = Code::BOrI_W,
+            CodeU_W = Code::BOrI_W;
       };
 
       //
@@ -50,8 +50,8 @@ namespace GDCC
       struct CodeSet_OrX
       {
          static constexpr Code
-            CodeI_W = Code::OrXU_W,
-            CodeU_W = Code::OrXU_W;
+            CodeI_W = Code::BOrX_W,
+            CodeU_W = Code::BOrX_W;
       };
 
       //

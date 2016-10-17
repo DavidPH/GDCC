@@ -83,7 +83,7 @@ namespace GDCC::BC
       GDCC_BC_AddStmnt({Code::ShRI_W, 1}, stk, rop, 5);
 
       // Calculate shiftBits
-      GDCC_BC_AddStmnt({Code::AndU_W, 1}, stk, rop, 31);
+      GDCC_BC_AddStmnt({Code::BAnd_W, 1}, stk, rop, 31);
 
       // If shiftBits is 0, branch to whole word shift table.
       GDCC_BC_AddStmnt({Code::Jcnd_Tab, 1}, stk, 0, labelTab0);
@@ -149,7 +149,7 @@ namespace GDCC::BC
 
                GDCC_BC_AddStmnt({Code::ShLU_W, 1}, stk, ++lop, rop);
 
-               GDCC_BC_AddStmnt({Code::OrIU_W, 1}, stk, stk, stk);
+               GDCC_BC_AddStmnt({Code::BOrI_W, 1}, stk, stk, stk);
             }
          }
          else
@@ -164,7 +164,7 @@ namespace GDCC::BC
                GDCC_BC_AddStmnt({Code::SubU_W, 1}, stk, 32, rop);
                GDCC_BC_AddStmnt({Code::ShLU_W, 1}, stk, stk, stk);
 
-               GDCC_BC_AddStmnt({Code::OrIU_W, 1}, stk, stk, stk);
+               GDCC_BC_AddStmnt({Code::BOrI_W, 1}, stk, stk, stk);
             }
 
             GDCC_BC_AddStmnt({code, 1}, stk, lop, rop);

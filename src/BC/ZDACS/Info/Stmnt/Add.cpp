@@ -139,7 +139,7 @@ namespace GDCC
             #define AS_Stmnt newFunc->block.addStatementArgs
 
             // Is l negative? l + r = r + l = r - -l
-            AS_Stmnt({IR::Code::AndU_W,   1},              stk, lhi, fi.maskSig);
+            AS_Stmnt({IR::Code::BAnd_W,   1},              stk, lhi, fi.maskSig);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1},              stk, labelLPos);
             AS_Stmnt({IR::Code::Move_W,   stmnt->op.size}, stk, rop);
             AS_Stmnt({IR::Code::NegF_W,   stmnt->op.size}, stk, lop);
@@ -148,7 +148,7 @@ namespace GDCC
             newFunc->block.addLabel(labelLPos);
 
             // Is r negative? l + r = l - -r
-            AS_Stmnt({IR::Code::AndU_W,   1},              stk, rhi, fi.maskSig);
+            AS_Stmnt({IR::Code::BAnd_W,   1},              stk, rhi, fi.maskSig);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1},              stk, labelRPos);
             AS_Stmnt({IR::Code::Move_W,   stmnt->op.size}, stk, lop);
             AS_Stmnt({IR::Code::NegF_W,   stmnt->op.size}, stk, rop);
@@ -157,12 +157,12 @@ namespace GDCC
             newFunc->block.addLabel(labelRPos);
 
             // Does l have special exponent?
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, lhi, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, lhi, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelLEMax, 0, labelLEMin);
             AS_Stmnt({IR::Code::ShRI_W,   1}, expL, stk, fi.bitsMan);
 
             // Does r have special exponent?
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rhi, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rhi, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelREMax, 0, labelREMin);
             AS_Stmnt({IR::Code::ShRI_W,   1}, expR, stk, fi.bitsMan);
 
@@ -180,11 +180,11 @@ namespace GDCC
 
             // tmp = l.manfull + r.manfull;
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, fi.maskMan + 1);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rop);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, fi.maskMan + 1);
             AS_Stmnt({IR::Code::AddU_W, stmnt->op.size}, tmp, stk, stk);
 
             // If mantissa overflow, increment exponent.
@@ -200,9 +200,9 @@ namespace GDCC
 
             newFunc->block.addLabel(labelLEQRRet);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, tmp);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
             AS_Stmnt({IR::Code::ShLU_W, 1},              stk, expL, fi.bitsMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, stk);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, stk);
             AS_Stmnt({IR::Code::Retn,   stmnt->op.size}, stk);
 
             // l.exp > r.exp
@@ -218,11 +218,11 @@ namespace GDCC
 
             // tmp = l.manfull + (r.manfull >> difference);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, fi.maskMan + 1);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rop);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, fi.maskMan + 1);
             AS_Stmnt({IR::Code::ShRI_W, stmnt->op.size}, stk, stk, tmp);
             AS_Stmnt({IR::Code::AddU_W, stmnt->op.size}, tmp, stk, stk);
 
@@ -239,9 +239,9 @@ namespace GDCC
 
             newFunc->block.addLabel(labelLGTRRet);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, tmp);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
             AS_Stmnt({IR::Code::ShLU_W, 1},              stk, expL, fi.bitsMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, stk);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, stk);
             AS_Stmnt({IR::Code::Retn,   stmnt->op.size}, stk);
 
             // l.exp < r.exp
@@ -257,12 +257,12 @@ namespace GDCC
 
             // tmp = (l.manfull >> difference) + r.manfull;
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, fi.maskMan + 1);
             AS_Stmnt({IR::Code::ShRI_W, stmnt->op.size}, stk, stk, tmp);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rop);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, fi.maskMan + 1);
             AS_Stmnt({IR::Code::AddU_W, stmnt->op.size}, tmp, stk, stk);
 
             // If mantissa overflow, increment exponent.
@@ -278,9 +278,9 @@ namespace GDCC
 
             newFunc->block.addLabel(labelLLTRRet);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, tmp);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
             AS_Stmnt({IR::Code::ShLU_W, 1},              stk, expR, fi.bitsMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, stk);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, stk);
             AS_Stmnt({IR::Code::Retn,   stmnt->op.size}, stk);
 
             // Special exponents.
@@ -288,11 +288,11 @@ namespace GDCC
             // l has max exponent. It is either INF or NaN. Either way, return it.
             newFunc->block.addLabel(labelLEMax);
             // Unless r is NaN, then return r.
-            AS_Stmnt({IR::Code::AndU_W,    1},              stk, rhi, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,    1},              stk, rhi, fi.maskExp);
             AS_Stmnt({IR::Code::CmpU_EQ_W, 1},              stk, stk, fi.maskExp);
-            AS_Stmnt({IR::Code::AndU_W,    1},              stk, rhi, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W,    1},              stk, rhi, fi.maskMan);
             for(Core::FastU i = stmnt->op.size - 1; i--;)
-               AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, rop + i);
+               AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, rop + i);
             AS_Stmnt({IR::Code::LAnd,      1},              stk, stk, stk);
             AS_Stmnt({IR::Code::Jcnd_Tru,  1},              stk, labelLEMin);
 
@@ -385,16 +385,16 @@ namespace GDCC
             #define AS_Stmnt newFunc->block.addStatementArgs
 
             // +0 - +0 = +0
-            AS_Stmnt({IR::Code::OrIU_W,   stmnt->op.size}, stk, lop, rop);
+            AS_Stmnt({IR::Code::BOrI_W,   stmnt->op.size}, stk, lop, rop);
             AS_Stmnt({IR::Code::Jcnd_Nil, stmnt->op.size}, stk, labelPos0);
 
             // -0 - -0 = +0
-            AS_Stmnt({IR::Code::OrIU_W,   stmnt->op.size}, stk, lop, rop);
+            AS_Stmnt({IR::Code::BOrI_W,   stmnt->op.size}, stk, lop, rop);
             AS_Stmnt({IR::Code::CmpU_NE_W, 1},             stk, stk, fi.maskSig);
             AS_Stmnt({IR::Code::Jcnd_Nil, stmnt->op.size}, stk, labelPos0);
 
             // Is l negative? l - r = -(-l + r)
-            AS_Stmnt({IR::Code::AndU_W,   1},              stk, lhi, fi.maskSig);
+            AS_Stmnt({IR::Code::BAnd_W,   1},              stk, lhi, fi.maskSig);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1},              stk, labelLPos);
             AS_Stmnt({IR::Code::NegF_W,   stmnt->op.size}, stk, lop);
             AS_Stmnt({IR::Code::Move_W,   stmnt->op.size}, stk, rop);
@@ -404,7 +404,7 @@ namespace GDCC
             newFunc->block.addLabel(labelLPos);
 
             // Is r negative? l - r = l + -r
-            AS_Stmnt({IR::Code::AndU_W,   1},              stk, rhi, fi.maskSig);
+            AS_Stmnt({IR::Code::BAnd_W,   1},              stk, rhi, fi.maskSig);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1},              stk, labelRPos);
             AS_Stmnt({IR::Code::Move_W,   stmnt->op.size}, stk, lop);
             AS_Stmnt({IR::Code::NegF_W,   stmnt->op.size}, stk, rop);
@@ -413,12 +413,12 @@ namespace GDCC
             newFunc->block.addLabel(labelRPos);
 
             // Does l have specal exponent?
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, lhi, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, lhi, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelLEMax, 0, labelLEMin);
             AS_Stmnt({IR::Code::ShRI_W,   1}, expL, stk, fi.bitsMan);
 
             // Does r have specal exponent?
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rhi, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rhi, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelREMax, 0, labelREMin);
             AS_Stmnt({IR::Code::ShRI_W,   1}, expR, stk, fi.bitsMan);
 
@@ -448,11 +448,11 @@ namespace GDCC
 
             // tmp = l.manfull - (r.manfull >> difference);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, fi.maskMan + 1);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rop);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, fi.maskMan + 1);
             AS_Stmnt({IR::Code::ShRI_W, stmnt->op.size}, stk, stk, tmp);
             AS_Stmnt({IR::Code::SubU_W, stmnt->op.size}, tmp, stk, stk);
 
@@ -468,9 +468,9 @@ namespace GDCC
 
             // Otherwise, combine exponent and mantissa to form result.
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, tmp);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
             AS_Stmnt({IR::Code::ShLU_W, 1},              stk, expL, fi.bitsMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, stk);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, stk);
             AS_Stmnt({IR::Code::Retn,   stmnt->op.size}, stk);
 
             // l < r
@@ -486,11 +486,11 @@ namespace GDCC
 
             // tmp = -(r.manfull - (l.manfull >> difference));
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rop);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, fi.maskMan + 1);
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, fi.maskMan + 1);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, fi.maskMan + 1);
             AS_Stmnt({IR::Code::ShRI_W, stmnt->op.size}, stk, stk, tmp);
             AS_Stmnt({IR::Code::SubU_W, stmnt->op.size}, tmp, stk, stk);
 
@@ -506,16 +506,16 @@ namespace GDCC
 
             // Otherwise, combine exponent and mantissa to form result.
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, tmp);
-            AS_Stmnt({IR::Code::AndU_W, 1},              stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W, 1},              stk, stk, fi.maskMan);
             AS_Stmnt({IR::Code::ShLU_W, 1},              stk, expR, fi.bitsMan);
-            AS_Stmnt({IR::Code::OrIU_W, 1},              stk, stk, stk);
+            AS_Stmnt({IR::Code::BOrI_W, 1},              stk, stk, stk);
             AS_Stmnt({IR::Code::NegF_W, stmnt->op.size}, stk, stk);
             AS_Stmnt({IR::Code::Retn,   stmnt->op.size}, stk);
 
             // l has max exponent. It is either INF or NaN.
             newFunc->block.addLabel(labelLEMax);
             // Check r for max exponent.
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rhi, fi.maskExp);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rhi, fi.maskExp);
             AS_Stmnt({IR::Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelLREMax);
             AS_Stmnt({IR::Code::Move_W,   1}, nul, stk);
 
@@ -535,12 +535,12 @@ namespace GDCC
 
             // Is l NaN? If so, return l.
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size},   stk, lop);
-            AS_Stmnt({IR::Code::AndU_W, 1},                stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W, 1},                stk, stk, fi.maskMan);
             AS_Stmnt({IR::Code::Jcnd_Tru, stmnt->op.size}, stk, labelREMin);
 
             // Is r NaN? If so, return r. (Sign inversion is fine.)
             AS_Stmnt({IR::Code::Move_W, stmnt->op.size},   stk, rop);
-            AS_Stmnt({IR::Code::AndU_W, 1},                stk, stk, fi.maskMan);
+            AS_Stmnt({IR::Code::BAnd_W, 1},                stk, stk, fi.maskMan);
             AS_Stmnt({IR::Code::Jcnd_Tru, stmnt->op.size}, stk, labelLEMin);
 
             // +INF - +INF = NaN.
@@ -622,7 +622,7 @@ namespace GDCC
                putCode(Code::Copy);
                putCode(Code::LNot);
                putCode(Code::Push_LocReg, func->localReg + 0);
-               putCode(Code::OrIU);
+               putCode(Code::BOrI);
             }
          }
 
@@ -715,11 +715,11 @@ namespace GDCC
                putCode(Code::Push_Lit,    1);
                putCode(Code::SubU);
                putCode(Code::Copy);
-               putCode(Code::InvU);
+               putCode(Code::BNot);
                putCode(Code::LNot);
                putCode(Code::NegI);
                putCode(Code::Push_LocReg, func->localReg + 0);
-               putCode(Code::OrIU);
+               putCode(Code::BOrI);
             }
          }
 
