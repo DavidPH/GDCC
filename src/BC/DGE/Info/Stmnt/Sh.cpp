@@ -12,7 +12,7 @@
 
 #include "BC/DGE/Info.hpp"
 
-#include "IR/Function.hpp"
+#include "IR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|

@@ -14,7 +14,7 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/Statement.hpp"
+#include "IR/Function.hpp"
 
 #include <iostream>
 
@@ -39,6 +39,7 @@ namespace GDCC::BC::DGE
       case IR::Code::AddI_W:
       case IR::Code::AddU_W: putStmnt_AddU_W(); break;
       case IR::Code::BAnd_W: putStmnt_BAnd_W(); break;
+      case IR::Code::BNot_W: putStmnt_BNot_W(); break;
       case IR::Code::BOrI_W: putStmnt_BOrI_W(); break;
       case IR::Code::BOrX_W: putStmnt_BOrX_W(); break;
       case IR::Code::Bclo_W: putStmnt_Bclo_W(); break;
@@ -199,6 +200,24 @@ namespace GDCC::BC::DGE
       while(hi-- != lo)
          putStmntDropArg(arg, hi);
    }
+
+   //
+   // Info::putStmntDropTmp
+   //
+   void Info::putStmntDropTmp(Core::FastU w)
+   {
+      putCode("Drop_Reg", (func->localReg + w) * 4);
+   }
+
+   //
+   // Info::putStmntDropTmp
+   //
+   void Info::putStmntDropTmp(Core::FastU lo, Core::FastU hi)
+   {
+      while(hi-- != lo)
+         putStmntDropTmp(hi);
+   }
+
    //
    // Info::putStmntPushArg
    //
@@ -293,6 +312,23 @@ namespace GDCC::BC::DGE
    {
       for(; lo != hi; ++lo)
          putStmntPushArg(arg, lo);
+   }
+
+   //
+   // Info::putStmntPushTmp
+   //
+   void Info::putStmntPushTmp(Core::FastU w)
+   {
+      putCode("Push_Reg", (func->localReg + w) * 4);
+   }
+
+   //
+   // Info::putStmntPushTmp
+   //
+   void Info::putStmntPushTmp(Core::FastU lo, Core::FastU hi)
+   {
+      for(; lo != hi; ++lo)
+         putStmntPushTmp(lo);
    }
 }
 

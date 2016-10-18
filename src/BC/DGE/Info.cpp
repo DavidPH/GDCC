@@ -61,6 +61,21 @@ namespace GDCC::BC::DGE
    }
 
    //
+   // Info::isDropArg
+   //
+   bool Info::isDropArg(IR::Arg const &arg)
+   {
+      switch(arg.a)
+      {
+      case IR::ArgBase::Aut:    return isPushArg(*arg.aAut.idx);
+      case IR::ArgBase::LocReg: return true;
+      case IR::ArgBase::Nul:    return true;
+      case IR::ArgBase::Sta:    return isPushArg(*arg.aSta.idx);
+      default:                  return false;
+      }
+   }
+
+   //
    // Info::isPushArg
    //
    bool Info::isPushArg(IR::Arg const &arg)

@@ -14,7 +14,7 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/Statement.hpp"
+#include "IR/Function.hpp"
 
 #include <iostream>
 
@@ -36,6 +36,7 @@ namespace GDCC::BC::DGE
       case IR::Code::AddI_W:
       case IR::Code::AddU_W: trStmnt_AddU_W(); break;
       case IR::Code::BAnd_W: trStmnt_BAnd_W(); break;
+      case IR::Code::BNot_W: trStmnt_BNot_W(); break;
       case IR::Code::BOrI_W: trStmnt_BOrI_W(); break;
       case IR::Code::BOrX_W: trStmnt_BOrX_W(); break;
       case IR::Code::Bclo_W: trStmnt_Bclo_W(); break;
@@ -106,6 +107,14 @@ namespace GDCC::BC::DGE
             << ": cannot translate Code for DGE: " << stmnt->op << '\n';
          throw EXIT_FAILURE;
       }
+   }
+
+   //
+   // Info::trStmntTmp
+   //
+   void Info::trStmntTmp(Core::FastU n)
+   {
+      func->setLocalTmp(n);
    }
 }
 

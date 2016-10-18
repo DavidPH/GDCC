@@ -43,6 +43,8 @@ namespace GDCC::BC::DGE
 
       bool isPushArg(IR::Arg const &arg);
 
+      bool isDropArg(IR::Arg const &arg);
+
       virtual void preStmnt();
 
       void preStmnt_AddU_W();
@@ -100,6 +102,7 @@ namespace GDCC::BC::DGE
       void putStmnt_AdXU_W();
       void putStmnt_AddU_W();
       void putStmnt_BAnd_W(char const *code = "BAnd");
+      void putStmnt_BNot_W();
       void putStmnt_BOrI_W() {putStmnt_BAnd_W("BOrI");}
       void putStmnt_BOrX_W() {putStmnt_BAnd_W("BOrX");}
       void putStmnt_Bclo_W() {putStmnt_Bclz_W("Bclo");}
@@ -142,8 +145,14 @@ namespace GDCC::BC::DGE
       void putStmntDropArg(IR::Arg const &arg, Core::FastU w);
       void putStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
+      void putStmntDropTmp(Core::FastU w);
+      void putStmntDropTmp(Core::FastU lo, Core::FastU hi);
+
       void putStmntPushArg(IR::Arg const &arg, Core::FastU w);
       void putStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
+
+      void putStmntPushTmp(Core::FastU w);
+      void putStmntPushTmp(Core::FastU lo, Core::FastU hi);
 
       virtual void putStr();
       using InfoBase::putStr;
@@ -156,6 +165,7 @@ namespace GDCC::BC::DGE
       void trStmnt_AdXU_W();
       void trStmnt_AddU_W();
       void trStmnt_BAnd_W();
+      void trStmnt_BNot_W();
       void trStmnt_BOrI_W() {trStmnt_BAnd_W();}
       void trStmnt_BOrX_W() {trStmnt_BAnd_W();}
       void trStmnt_Bclo_W() {trStmnt_Bclz_W();}
@@ -192,6 +202,8 @@ namespace GDCC::BC::DGE
       void trStmnt_ShRU_W() {trStmnt_ShLU_W();}
       void trStmnt_SuXU_W();
       void trStmnt_SubU_W();
+
+      void trStmntTmp(Core::FastU n);
 
 
       static void CheckArg(IR::Arg const &arg, Core::Origin const &pos);

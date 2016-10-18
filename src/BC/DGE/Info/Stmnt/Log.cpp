@@ -12,7 +12,7 @@
 
 #include "BC/DGE/Info.hpp"
 
-#include "IR/Function.hpp"
+#include "IR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -36,11 +36,11 @@ namespace GDCC::BC::DGE
       {
          for(Core::FastU i = stmnt->op.size; --i;)
             putCode("OrIU");
-         putCode("Drop_Reg", func->localReg + 0);
+         putStmntDropTmp(0);
 
          for(Core::FastU i = stmnt->op.size; --i;)
             putCode("OrIU");
-         putCode("Push_Reg", func->localReg + 0);
+         putStmntPushTmp(0);
       }
       else
       {
@@ -84,7 +84,7 @@ namespace GDCC::BC::DGE
       if(!isPushArg(stmnt->args[1]) || !isPushArg(stmnt->args[2]))
       {
          trStmntStk3(1, stmnt->op.size, false);
-         func->setLocalTmp(1);
+         trStmntTmp(1);
       }
       else
          moveArgStk_dst(stmnt->args[0], 1);
