@@ -64,6 +64,7 @@ namespace GDCC::BC::DGE
       case IR::Code::DivU_W: putCode("DivU"); break;
 
       case IR::Code::Jcnd_Nil: putStmnt_Jcnd_Nil(); break;
+      case IR::Code::Jcnd_Tab: putStmnt_Jcnd_Tab(); break;
       case IR::Code::Jcnd_Tru: putStmnt_Jcnd_Tru(); break;
 
       case IR::Code::Jfar: putStmnt_Jfar(); break;

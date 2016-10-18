@@ -12,6 +12,8 @@
 
 #include "BC/DGE/Info.hpp"
 
+#include "Core/Exception.hpp"
+
 #include "IR/Statement.hpp"
 
 
@@ -33,6 +35,32 @@ namespace GDCC::BC::DGE
          putCode("OrIU");
 
       putCode(code, stmnt->args[1].aLit);
+   }
+
+   //
+   // Info::putStmnt_Jcnd_Tab
+   //
+   void Info::putStmnt_Jcnd_Tab()
+   {
+      if(stmnt->args.size() == 1)
+         return;
+
+      if(stmnt->args.size() == 3)
+         return putCode("Jcnd_Lit", stmnt->args[1].aLit, stmnt->args[2].aLit);
+
+      putNTS("Jcnd_Tab");
+      putNTS('(');
+
+      // Write sorted jump cases.
+      putCodeArg(stmnt->args[1].aLit); putNTS(',');
+      putCodeArg(stmnt->args[2].aLit);
+      for(Core::FastU i = 2; i != stmnt->args.size();)
+      {
+         putNTS(','); putCodeArg(stmnt->args[++i].aLit);
+         putNTS(','); putCodeArg(stmnt->args[++i].aLit);
+      }
+
+      putNTS(')');
    }
 
    //
@@ -84,6 +112,24 @@ namespace GDCC::BC::DGE
       CheckArgC(stmnt, 2);
       moveArgStk_src(stmnt->args[0], stmnt->op.size);
       CheckArgB(stmnt, 1, IR::ArgBase::Lit);
+   }
+
+   //
+   // Info::trStmnt_Jcnd_Tab
+   //
+   void Info::trStmnt_Jcnd_Tab()
+   {
+      if(stmnt->op.size != 1)
+         throw Core::ExceptStr(stmnt->pos, "unsupported op size for Jcnd_Tab");
+
+      if(stmnt->args.size() % 2 != 1)
+         throw Core::ExceptStr(stmnt->pos, "invalied arg count for Jcnd_Tab");
+
+      for(Core::FastU i = 1; i != stmnt->args.size(); ++i)
+         CheckArgB(stmnt, i, IR::ArgBase::Lit);
+
+      // Argument gets left on stack, so do not just move to stack.
+      CheckArgB(stmnt, 0, IR::ArgBase::Stk);
    }
 
    //

@@ -69,13 +69,11 @@ namespace GDCC::BC::DGE
 
       virtual void put();
 
-      void putCode(char const *code);
-      void putCode(char const *code, char const *arg0);
-      void putCode(char const *code, int arg0);
-      void putCode(char const *code, Core::FastU arg0);
-      void putCode(char const *code, Core::FastU arg0, IR::Arg_Lit const &arg1);
-      void putCode(char const *code, Core::String arg0);
-      void putCode(char const *code, IR::Arg_Lit const &arg0);
+      void putCode(char const *code) {putNTS(code); putNTS('('); putNTS(')');}
+      template<typename Arg0>
+      void putCode(char const *code, Arg0 &&arg0);
+      template<typename Arg0, typename Arg1>
+      void putCode(char const *code, Arg0 &&arg0, Arg1 &&arg1);
 
       void putExp(IR::Exp const *exp); // Full output.
       void putExp(IR::Exp const *exp, Core::FastU w);
@@ -121,6 +119,7 @@ namespace GDCC::BC::DGE
       void putStmnt_CmpU_NE_W() {putStmnt_CmpU_EQ_W(IR::Code::CmpU_NE_W);}
       void putStmnt_Cnat();
       void putStmnt_Jcnd_Nil(char const *code = "Jcnd_Nil");
+      void putStmnt_Jcnd_Tab();
       void putStmnt_Jcnd_Tru();
       void putStmnt_Jfar();
       void putStmnt_Jump();
@@ -176,6 +175,7 @@ namespace GDCC::BC::DGE
       void trStmnt_CmpU_NE_W() {trStmnt_CmpU_EQ_W();}
       void trStmnt_Cnat();
       void trStmnt_Jcnd_Nil();
+      void trStmnt_Jcnd_Tab();
       void trStmnt_Jcnd_Tru();
       void trStmnt_Jfar();
       void trStmnt_Jump();
@@ -200,7 +200,43 @@ namespace GDCC::BC::DGE
       static Core::FastU GetWord(IR::Exp const *exp, Core::FastU w = 0);
 
       static Core::FastU GetWord_Fixed(IR::Value_Fixed const &val, Core::FastU w);
+
+   private:
+      void putCodeArg(char const        *arg) {putNTS(arg);}
+      void putCodeArg(int                arg) {putInt(arg);}
+      void putCodeArg(Core::FastU        arg) {putInt(arg);}
+      void putCodeArg(Core::String       arg);
+      void putCodeArg(IR::Arg_Lit const &arg);
    };
+}
+
+
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
+//
+
+namespace GDCC::BC::DGE
+{
+   //
+   // Info::putCode
+   //
+   template<typename Arg0>
+   void Info::putCode(char const *code, Arg0 &&arg0)
+   {
+      putNTS(    code); putNTS('(');
+      putCodeArg(arg0); putNTS(')');
+   }
+
+   //
+   // Info::putCode
+   //
+   template<typename Arg0, typename Arg1>
+   void Info::putCode(char const *code, Arg0 &&arg0, Arg1 &&arg1)
+   {
+      putNTS(    code); putNTS('(');
+      putCodeArg(arg0); putNTS(',');
+      putCodeArg(arg1); putNTS(')');
+   }
 }
 
 #endif//GDCC__BC__DGE__Info_H__

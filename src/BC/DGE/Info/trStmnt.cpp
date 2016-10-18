@@ -65,6 +65,7 @@ namespace GDCC::BC::DGE
       case IR::Code::Cnat: trStmnt_Cnat(); break;
 
       case IR::Code::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
+      case IR::Code::Jcnd_Tab: trStmnt_Jcnd_Tab(); break;
       case IR::Code::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
 
       case IR::Code::Jfar: trStmnt_Jfar(); break;

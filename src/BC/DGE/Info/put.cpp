@@ -44,81 +44,19 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putCode
+   // Info::putCodeArg
    //
-   void Info::putCode(char const *code)
+   void Info::putCodeArg(Core::String arg)
    {
-      putNTS(code);
-      putNTS('(');
-      putNTS(')');
+      putNTS(arg);
    }
 
    //
-   // Info::putCode
+   // Info::putCodeArg
    //
-   void Info::putCode(char const *code, char const *arg0)
+   void Info::putCodeArg(IR::Arg_Lit const &arg)
    {
-      putNTS(code);
-      putNTS('(');
-      putNTS(arg0);
-      putNTS(')');
-   }
-
-   //
-   // Info::putCode
-   //
-   void Info::putCode(char const *code, int arg0)
-   {
-      putNTS(code);
-      putNTS('(');
-      putInt(arg0);
-      putNTS(')');
-   }
-
-   //
-   // Info::putCode
-   //
-   void Info::putCode(char const *code, Core::FastU arg0)
-   {
-      putNTS(code);
-      putNTS('(');
-      putInt(arg0);
-      putNTS(')');
-   }
-
-   //
-   // Info::putCode
-   //
-   void Info::putCode(char const *code, Core::FastU arg0, IR::Arg_Lit const &arg1)
-   {
-      putNTS(code);
-      putNTS('(');
-      putInt(arg0);
-      putNTS(',');
-      putExp(arg1.value, arg1.off);
-      putNTS(')');
-   }
-
-   //
-   // Info::putCode
-   //
-   void Info::putCode(char const *code, Core::String arg0)
-   {
-      putNTS(code);
-      putNTS('(');
-      putNTS(arg0);
-      putNTS(')');
-   }
-
-   //
-   // Info::putCode
-   //
-   void Info::putCode(char const *code, IR::Arg_Lit const &arg0)
-   {
-      putNTS(code);
-      putNTS('(');
-      putExp(arg0.value, arg0.off);
-      putNTS(')');
+      putExp(arg.value, arg.off);
    }
 
    //
