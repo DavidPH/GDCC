@@ -145,68 +145,7 @@ namespace GDCC
             if(stmnt->op.size <= 1)
                return;
 
-            Core::String name = getCallName({IR::Code::DiXI_W, stmnt->op.size});
-            auto newFunc = preStmntCallDef(name, stmnt->op.size * 2,
-               stmnt->op.size * 2, stmnt->op.size * 2, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            IR::Glyph labelL0R1{prog, name + "$l0r1"};
-            IR::Glyph labelL1  {prog, name + "$l1"};
-            IR::Glyph labelL1R1{prog, name + "$l1r1"};
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
-
-            IR::Arg_Stk stk{};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, lop + (stmnt->op.size - 1), 0x80000000);
-            AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelL1);
-
-            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rop + (stmnt->op.size - 1), 0x80000000);
-            AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelL0R1);
-
-            // +dividend, +divisor -> +quotient, +remainder
-            AS_Stmnt({IR::Code::DiXU_W, stmnt->op.size},     stk, lop, rop);
-            AS_Stmnt({IR::Code::Retn,   stmnt->op.size * 2}, stk);
-
-            newFunc->block.addLabel(labelL0R1);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size}, rop, rop);
-
-            // +dividend, -divisor -> -quotient, -remainder
-            AS_Stmnt({IR::Code::DiXU_W, stmnt->op.size},     stk, lop, rop);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size},     rop, stk);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size},     stk, stk);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size},     stk, rop);
-            AS_Stmnt({IR::Code::Retn,   stmnt->op.size * 2}, stk);
-
-            newFunc->block.addLabel(labelL1);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size}, lop, lop);
-
-            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rop + (stmnt->op.size - 1), 0x80000000);
-            AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelL1R1);
-
-            // -dividend, +divisor -> -quotient, +remainder
-            AS_Stmnt({IR::Code::DiXU_W, stmnt->op.size},     stk, lop, rop);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size},     rop, stk);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size},     stk, stk);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size},     stk, rop);
-            AS_Stmnt({IR::Code::Retn,   stmnt->op.size * 2}, stk);
-
-            newFunc->block.addLabel(labelL1R1);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size}, rop, rop);
-
-            // -dividend, -divisor -> +quotient, -remainder
-            AS_Stmnt({IR::Code::DiXU_W, stmnt->op.size},     stk, lop, rop);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size},     stk, stk);
-            AS_Stmnt({IR::Code::Retn,   stmnt->op.size * 2}, stk);
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+            addFunc_DiXI_W(stmnt->op.size);
          }
 
          //
@@ -218,91 +157,9 @@ namespace GDCC
                return;
 
             if(stmnt->op.size == 1)
-            {
-               preStmnt_DiXU_W1();
-               return;
-            }
+               return preStmnt_DiXU_W1();
 
-            Core::String name = getCallName({IR::Code::DiXU_W, stmnt->op.size});
-            auto newFunc = preStmntCallDef(name, stmnt->op.size * 2,
-               stmnt->op.size * 2, stmnt->op.size * 5, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            IR::Glyph labelFull    {prog, name + "$full"};
-            IR::Glyph labelLoopBody{prog, name + "$loop_body"};
-            IR::Glyph labelLoopCond{prog, name + "$loop_cond"};
-            IR::Glyph labelLoopShft{prog, name + "$loop_shft"};
-            IR::Glyph labelRetn    {prog, name + "$retn"};
-
-            IR::Arg_LocReg lop {IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 0))};
-            IR::Arg_LocReg rop {IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 1))};
-            IR::Arg_LocReg quot{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 2))};
-            IR::Arg_LocReg rem {IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 3))};
-            IR::Arg_LocReg mask{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 4))};
-
-            IR::Arg_Stk stk{};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            // If both operands have the high word clear, defer to smaller op.
-            AS_Stmnt({IR::Code::BOrI_W,   1}, stk,
-               lop + (stmnt->op.size - 1), rop + (stmnt->op.size - 1));
-            AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelFull);
-
-            AS_Stmnt({IR::Code::DiXU_W, stmnt->op.size - 1}, stk, lop, rop);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size - 1}, rop, stk);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size - 1}, lop, stk);
-
-            AS_Stmnt({IR::Code::Retn, stmnt->op.size * 2}, lop);
-
-            newFunc->block.addLabel(labelFull);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, quot, 0);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, rem,  lop);
-
-            // If lop < rop, return now.
-            AS_Stmnt({IR::Code::CmpU_LT_W, stmnt->op.size}, stk, lop, rop);
-            AS_Stmnt({IR::Code::Jcnd_Tru,  1},              stk, labelRetn);
-
-            // Calculate mask and adjust divisor.
-            AS_Stmnt({IR::Code::Bclz_W, stmnt->op.size}, stk, rop);
-            AS_Stmnt({IR::Code::Bclz_W, stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::SubU_W, 1}, mask, stk, stk);
-
-            AS_Stmnt({IR::Code::ShLU_W, stmnt->op.size}, rop,  rop, mask);
-            AS_Stmnt({IR::Code::ShLU_W, stmnt->op.size}, mask, 1,   mask);
-
-            // Division loop.
-            AS_Stmnt({IR::Code::Jump, 1}, labelLoopCond);
-
-            newFunc->block.addLabel(labelLoopBody);
-            AS_Stmnt({IR::Code::CmpU_GE_W, stmnt->op.size}, stk, rem, rop);
-            AS_Stmnt({IR::Code::Jcnd_Nil,  1}, stk, labelLoopShft);
-
-            AS_Stmnt({IR::Code::BOrI_W, stmnt->op.size}, quot, quot, mask);
-            AS_Stmnt({IR::Code::SubU_W, stmnt->op.size}, rem,  rem,  rop);
-
-            newFunc->block.addLabel(labelLoopShft);
-            AS_Stmnt({IR::Code::ShRU_W, stmnt->op.size}, rop,  rop,  1);
-            AS_Stmnt({IR::Code::ShRU_W, stmnt->op.size}, mask, mask, 1);
-
-            newFunc->block.addLabel(labelLoopCond);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, mask);
-            for(Core::FastU n = stmnt->op.size; --n;)
-               AS_Stmnt({IR::Code::BOrI_W, 1}, stk, stk, stk);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rem);
-            for(Core::FastU n = stmnt->op.size; --n;)
-               AS_Stmnt({IR::Code::BOrI_W, 1}, stk, stk, stk);
-            AS_Stmnt({IR::Code::LAnd, 1}, stk, stk, stk);
-            AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelLoopBody);
-
-            newFunc->block.addLabel(labelRetn);
-            AS_Stmnt({IR::Code::Retn, stmnt->op.size * 2}, quot);
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+            addFunc_DiXU_W(stmnt->op.size);
          }
 
          //

@@ -62,6 +62,12 @@ namespace GDCC::BC::DGE
       void preStmnt_CmpU_LE_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpU_LE_W);}
       void preStmnt_CmpU_LT_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpU_LT_W);}
       void preStmnt_CmpU_NE_W() {preStmnt_CmpU_EQ_W(&Info::addFunc_CmpU_NE_W);}
+      void preStmnt_DiXI_W();
+      void preStmnt_DiXU_W();
+      void preStmnt_DivI_W() {preStmnt_DiXI_W();}
+      void preStmnt_DivU_W() {preStmnt_DiXU_W();}
+      void preStmnt_ModI_W() {preStmnt_DiXI_W();}
+      void preStmnt_ModU_W() {preStmnt_DiXU_W();}
       void preStmnt_MuXU_W();
       void preStmnt_MulU_W();
       void preStmnt_ShLU_W();
@@ -121,6 +127,10 @@ namespace GDCC::BC::DGE
       void putStmnt_CmpU_LT_W() {putStmnt_CmpU_GE_W("CmpU_LT");}
       void putStmnt_CmpU_NE_W() {putStmnt_CmpU_EQ_W(IR::Code::CmpU_NE_W);}
       void putStmnt_Cnat();
+      void putStmnt_DiXI_W() {putStmnt_DiXU_W("DiXI");}
+      void putStmnt_DiXU_W(char const *code = "DiXU");
+      void putStmnt_DivI_W() {putStmnt_DivU_W("DivI", IR::Code::DiXI_W, false);}
+      void putStmnt_DivU_W() {putStmnt_DivU_W("DivU", IR::Code::DiXU_W, false);}
       void putStmnt_Jcnd_Nil(char const *code = "Jcnd_Nil");
       void putStmnt_Jcnd_Tab();
       void putStmnt_Jcnd_Tru();
@@ -129,6 +139,8 @@ namespace GDCC::BC::DGE
       void putStmnt_LAnd(char const *code = "LAnd");
       void putStmnt_LNot();
       void putStmnt_LOrI() {putStmnt_LAnd("LOrI");}
+      void putStmnt_ModI_W() {putStmnt_DivU_W("ModI", IR::Code::DiXI_W, true);}
+      void putStmnt_ModU_W() {putStmnt_DivU_W("ModU", IR::Code::DiXU_W, true);}
       void putStmnt_Move_B();
       void putStmnt_Move_W();
       void putStmnt_MuXU_W();
@@ -184,6 +196,10 @@ namespace GDCC::BC::DGE
       void trStmnt_CmpU_LT_W() {trStmnt_CmpU_GE_W();}
       void trStmnt_CmpU_NE_W() {trStmnt_CmpU_EQ_W();}
       void trStmnt_Cnat();
+      void trStmnt_DiXI_W() {trStmnt_DiXU_W();}
+      void trStmnt_DiXU_W();
+      void trStmnt_DivI_W() {trStmnt_DivU_W();}
+      void trStmnt_DivU_W();
       void trStmnt_Jcnd_Nil();
       void trStmnt_Jcnd_Tab();
       void trStmnt_Jcnd_Tru();
@@ -192,6 +208,8 @@ namespace GDCC::BC::DGE
       void trStmnt_LAnd();
       void trStmnt_LNot();
       void trStmnt_LOrI() {trStmnt_LAnd();}
+      void trStmnt_ModI_W() {trStmnt_ModU_W();}
+      void trStmnt_ModU_W();
       void trStmnt_Move_B();
       void trStmnt_Move_W();
       void trStmnt_MuXU_W();
@@ -219,6 +237,8 @@ namespace GDCC::BC::DGE
       void putCodeArg(Core::FastU        arg) {putInt(arg);}
       void putCodeArg(Core::String       arg);
       void putCodeArg(IR::Arg_Lit const &arg);
+
+      void putStmnt_DivU_W(char const *code, IR::Code codeX, bool mod);
    };
 }
 

@@ -28,7 +28,11 @@
 // GDCC_BC_AddFuncPre
 //
 #define GDCC_BC_AddFuncPre(code, size, retrn, param, local, file) \
-   Core::String name = getFuncName(code, size); \
+   Core::String name; \
+   { \
+      using IR::Code; \
+      name = getFuncName(code, size); \
+   } \
    auto newFunc = getFuncDefn(name, retrn, param, local, file); \
    \
    if(!newFunc) \
@@ -57,6 +61,12 @@
    GDCC_BC_AddFuncObj(); \
    \
    IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))}
+
+//
+// GDCC_BC_AddLabel
+//
+#define GDCC_BC_AddLabel(lab) \
+   newFunc->block.addLabel(lab)
 
 //
 // GDCC_BC_AddStmnt

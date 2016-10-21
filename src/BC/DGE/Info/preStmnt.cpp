@@ -48,6 +48,12 @@ namespace GDCC::BC::DGE
       case IR::Code::CmpU_LT_W: preStmnt_CmpU_LT_W(); break;
       case IR::Code::CmpU_NE_W: preStmnt_CmpU_NE_W(); break;
 
+      case IR::Code::DiXI_W: preStmnt_DiXI_W(); break;
+      case IR::Code::DiXU_W: preStmnt_DiXU_W(); break;
+      case IR::Code::DivI_W: preStmnt_DivI_W(); break;
+      case IR::Code::DivU_W: preStmnt_DivU_W(); break;
+      case IR::Code::ModI_W: preStmnt_ModI_W(); break;
+      case IR::Code::ModU_W: preStmnt_ModU_W(); break;
       case IR::Code::MuXU_W: preStmnt_MuXU_W(); break;
       case IR::Code::MulI_W:
       case IR::Code::MulU_W: preStmnt_MulU_W(); break;

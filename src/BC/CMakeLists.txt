@@ -35,6 +35,7 @@ add_library(gdcc-bc-lib ${GDCC_SHARED_DECL}
    Info/Stmnt/Add.cpp
    Info/Stmnt/Bit.cpp
    Info/Stmnt/Cmp.cpp
+   Info/Stmnt/Div.cpp
    Info/Stmnt/Mul.cpp
    Info/Stmnt/Sh.cpp
    Info/addFunc.cpp

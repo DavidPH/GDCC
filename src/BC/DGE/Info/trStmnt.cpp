@@ -55,15 +55,13 @@ namespace GDCC::BC::DGE
       case IR::Code::CmpU_LT_W: trStmnt_CmpU_LT_W(); break;
       case IR::Code::CmpU_NE_W: trStmnt_CmpU_NE_W(); break;
 
-      case IR::Code::DivI_W:
-      case IR::Code::DivU_W:
-      case IR::Code::ModI_W:
-      case IR::Code::ModU_W:
-         trStmntStk3(stmnt->op.size, stmnt->op.size, true);
-         break;
-
       case IR::Code::Call: trStmnt_Call(); break;
       case IR::Code::Cnat: trStmnt_Cnat(); break;
+
+      case IR::Code::DiXI_W: trStmnt_DiXI_W(); break;
+      case IR::Code::DiXU_W: trStmnt_DiXU_W(); break;
+      case IR::Code::DivI_W: trStmnt_DivI_W(); break;
+      case IR::Code::DivU_W: trStmnt_DivU_W(); break;
 
       case IR::Code::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
       case IR::Code::Jcnd_Tab: trStmnt_Jcnd_Tab(); break;
@@ -74,6 +72,9 @@ namespace GDCC::BC::DGE
       case IR::Code::LAnd: trStmnt_LAnd(); break;
       case IR::Code::LNot: trStmnt_LNot(); break;
       case IR::Code::LOrI: trStmnt_LOrI(); break;
+
+      case IR::Code::ModI_W: trStmnt_ModI_W(); break;
+      case IR::Code::ModU_W: trStmnt_ModU_W(); break;
 
       case IR::Code::Move_B: trStmnt_Move_B(); break;
       case IR::Code::Move_W: trStmnt_Move_W(); break;
