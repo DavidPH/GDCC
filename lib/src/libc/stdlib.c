@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2015 David Hill
+// Copyright(C) 2014-2016 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -10,6 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
+#define _GNU_SOURCE
+
 #include <stdlib.h>
 
 #include <ctype.h>
@@ -18,6 +20,7 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <wchar.h>
 
 #include <GDCC.h>
 
@@ -34,8 +37,10 @@
 
 
 //----------------------------------------------------------------------------|
-// Static Variables                                                           |
+// Static Objects                                                             |
 //
+
+static mbstate_t MBState;
 
 [[no_init]]
 static void (*ExitArr[ExitMax])(void);
@@ -45,7 +50,7 @@ static unsigned long RandSeed = 1;
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 //=========================================================
@@ -266,11 +271,7 @@ lldiv_t lldiv(long long int numer, long long int denom)
 //
 int mblen(char const *s, size_t n)
 {
-   if(!s) return 0;
-
-   if(!n) return -1;
-
-   return 1;
+   return mbrtowc(NULL, s, n, &MBState);
 }
 
 //
@@ -278,13 +279,7 @@ int mblen(char const *s, size_t n)
 //
 int mbtowc(wchar_t *restrict pwc, char const *restrict s, size_t n)
 {
-   if(!s) return 0;
-
-   if(!n) return -1;
-
-   if(pwc) *pwc = *s;
-
-   return !!*s;
+   return mbrtowc(pwc, s, n, &MBState);
 }
 
 //
@@ -292,11 +287,7 @@ int mbtowc(wchar_t *restrict pwc, char const *restrict s, size_t n)
 //
 int wctomb(char *s, wchar_t wc)
 {
-   if(!s) return 0;
-
-   *s = wc;
-
-   return 1;
+   return wcrtomb(s, wc, &MBState);
 }
 
 //=========================================================
@@ -306,39 +297,17 @@ int wctomb(char *s, wchar_t wc)
 //
 // mbstowcs
 //
-size_t mbstowcs(wchar_t *restrict pwcs, char const *restrict s, size_t n)
+size_t mbstowcs(wchar_t *pwcs, char const *s, size_t n)
 {
-   size_t i = 0;
-
-   while(*s)
-   {
-      if(i++ == n) return n;
-
-      *pwcs++ = *s++;
-   }
-
-   *pwcs = 0;
-
-   return i;
+   return mbsrtowcs(pwcs, &s, n, &MBState);
 }
 
 //
 // wcstombs
 //
-size_t wcstombs(char *restrict s, wchar_t const *restrict pwcs, size_t n)
+size_t wcstombs(char *s, wchar_t const *pwcs, size_t n)
 {
-   size_t i = 0;
-
-   while(*pwcs)
-   {
-      if(i++ == n) return n;
-
-      *s++ = *pwcs++;
-   }
-
-   *s = 0;
-
-   return i;
+   return wcsrtombs(s, &pwcs, n, &MBState);
 }
 
 //=========================================================
