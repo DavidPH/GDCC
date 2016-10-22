@@ -35,7 +35,7 @@
 //
 // MB_CUR_MAX
 //
-#define MB_CUR_MAX ((size_t)1)
+#define MB_CUR_MAX ((size_t)6)
 
 //
 // NULL
