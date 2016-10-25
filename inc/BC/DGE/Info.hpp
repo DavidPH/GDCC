@@ -150,6 +150,7 @@ namespace GDCC::BC::DGE
       void putStmnt_MuXU_W();
       void putStmnt_MulI_W() {putStmnt_MulU_W();}
       void putStmnt_MulU_W();
+      void putStmnt_Pltn();
       void putStmnt_Retn();
       void putStmnt_ShLU_W(char const *code = "ShLU");
       void putStmnt_ShRI_W() {putStmnt_ShLU_W("ShRI");}
@@ -223,6 +224,7 @@ namespace GDCC::BC::DGE
       void trStmnt_MuXU_W();
       void trStmnt_MulI_W() {trStmnt_MulU_W();}
       void trStmnt_MulU_W();
+      void trStmnt_Pltn();
       void trStmnt_Retn();
       void trStmnt_ShLU_W();
       void trStmnt_ShRI_W() {trStmnt_ShLU_W();}

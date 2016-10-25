@@ -78,18 +78,13 @@ namespace GDCC::BC::DGE
 
       case IR::Code::ModI_W: putStmnt_ModI_W(); break;
       case IR::Code::ModU_W: putStmnt_ModU_W(); break;
-
       case IR::Code::Move_B: putStmnt_Move_B(); break;
       case IR::Code::Move_W: putStmnt_Move_W(); break;
       case IR::Code::MuXU_W: putStmnt_MuXU_W(); break;
       case IR::Code::MulI_W: putStmnt_MulI_W(); break;
       case IR::Code::MulU_W: putStmnt_MulU_W(); break;
 
-      case IR::Code::Pltn:
-         putCode("Push_Reg", getStkPtrIdx());
-         putCode("AddU");
-         break;
-
+      case IR::Code::Pltn: putStmnt_Pltn(); break;
       case IR::Code::Retn: putStmnt_Retn(); break;
 
       case IR::Code::ShLU_W: putStmnt_ShLU_W(); break;
@@ -105,6 +100,15 @@ namespace GDCC::BC::DGE
             << ": cannot output Code for DGE: " << stmnt->op << '\n';
          throw EXIT_FAILURE;
       }
+   }
+
+   //
+   // Info::putStmnt_Pltn
+   //
+   void Info::putStmnt_Pltn()
+   {
+      putCode("Push_Reg", getStkPtrIdx());
+      putCode("AddU");
    }
 
    //

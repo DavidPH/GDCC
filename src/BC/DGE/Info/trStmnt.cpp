@@ -81,12 +81,7 @@ namespace GDCC::BC::DGE
       case IR::Code::MulI_W: trStmnt_MulI_W(); break;
       case IR::Code::MulU_W: trStmnt_MulU_W(); break;
 
-      case IR::Code::Pltn:
-         CheckArgC(stmnt, 2);
-         moveArgStk_dst(stmnt->args[0], stmnt->op.size);
-         moveArgStk_src(stmnt->args[1], stmnt->op.size);
-         break;
-
+      case IR::Code::Pltn: trStmnt_Pltn(); break;
       case IR::Code::Retn: trStmnt_Retn(); break;
 
       case IR::Code::ShLU_W: trStmnt_ShLU_W(); break;
@@ -102,6 +97,19 @@ namespace GDCC::BC::DGE
             << ": cannot translate Code for DGE: " << stmnt->op << '\n';
          throw EXIT_FAILURE;
       }
+   }
+
+   //
+   // Info::trStmnt_Pltn
+   //
+   void Info::trStmnt_Pltn()
+   {
+      if(stmnt->op.size != 1)
+         throw Core::ExceptStr(stmnt->pos, "unsupported size for Pltn");
+
+      CheckArgC(stmnt, 2);
+      moveArgStk_dst(stmnt->args[0], stmnt->op.size);
+      moveArgStk_src(stmnt->args[1], stmnt->op.size);
    }
 
    //
