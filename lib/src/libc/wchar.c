@@ -71,11 +71,59 @@ wchar_t *wmemmove(wchar_t *s1, wchar_t const *s2, size_t n)
 }
 
 //=========================================================
+// Wide string search functions.
+//
+
+//
+// wcschr
+//
+wchar_t *wcschr(wchar_t const *s, wchar_t c)
+{
+   do
+   {
+      if(*s == c)
+         return (wchar_t *)s;
+   }
+   while(*s++);
+
+   return NULL;
+}
+
+size_t wcscspn(wchar_t const *s1, wchar_t const *s2);
+
+wchar_t *wcspbrk(wchar_t const *s1, wchar_t const *s2);
+
+//
+// wcsrchr
+//
+wchar_t *wcsrchr(wchar_t const *s, wchar_t c)
+{
+   wchar_t const *found = NULL;
+
+   do
+   {
+      if(*s == c)
+         found = s;
+   }
+   while(*s++);
+
+   return (wchar_t *)found;
+}
+
+size_t wcsspn(wchar_t const *s1, wchar_t const *s2);
+
+wchar_t *wcsstr(wchar_t const *s1, wchar_t const *s2);
+
+wchar_t *wcstok(wchar_t *restrict s1, wchar_t const *restrict s2, wchar_t **restrict ptr);
+
+wchar_t *wmemchr(wchar_t const *s, wchar_t c, size_t n);
+
+//=========================================================
 // Miscellaneous functions.
 //
 
 //
-// wcslebn
+// wcslen
 //
 size_t wcslen(wchar_t const *s)
 {
