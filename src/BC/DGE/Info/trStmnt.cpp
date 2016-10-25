@@ -75,7 +75,6 @@ namespace GDCC::BC::DGE
 
       case IR::Code::ModI_W: trStmnt_ModI_W(); break;
       case IR::Code::ModU_W: trStmnt_ModU_W(); break;
-
       case IR::Code::Move_B: trStmnt_Move_B(); break;
       case IR::Code::Move_W: trStmnt_Move_W(); break;
       case IR::Code::MuXU_W: trStmnt_MuXU_W(); break;
@@ -96,12 +95,7 @@ namespace GDCC::BC::DGE
       case IR::Code::SuXU_W: trStmnt_SuXU_W(); break;
       case IR::Code::SubI_W:
       case IR::Code::SubU_W: trStmnt_SubU_W(); break;
-
-      case IR::Code::Swap_W:
-         CheckArgC(stmnt, 2);
-         CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-         CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-         break;
+      case IR::Code::Swap_W: trStmnt_Swap_W(); break;
 
       default:
          std::cerr << "ERROR: " << stmnt->pos

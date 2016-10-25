@@ -215,6 +215,22 @@ namespace GDCC::BC::DGE
    }
 
    //
+   // Info::putStmnt_Swap_W
+   //
+   void Info::putStmnt_Swap_W()
+   {
+      if(stmnt->op.size == 0)
+         return;
+
+      if(stmnt->op.size == 1)
+         return putCode("Swap");
+
+      putStmntDropTmp(0, stmnt->op.size * 2);
+      putStmntPushTmp(stmnt->op.size, stmnt->op.size * 2);
+      putStmntPushTmp(0, stmnt->op.size);
+   }
+
+   //
    // Info::trStmnt_Move_B
    //
    void Info::trStmnt_Move_B()
@@ -313,6 +329,21 @@ namespace GDCC::BC::DGE
          moveArgStk_src(stmnt->args[1], stmnt->op.size);
 
       #undef moveIdx
+   }
+
+   //
+   // Info::trStmnt_Swap_W
+   //
+   void Info::trStmnt_Swap_W()
+   {
+      CheckArgC(stmnt, 2);
+      CheckArgB(stmnt, 0, IR::ArgBase::Stk);
+      CheckArgB(stmnt, 1, IR::ArgBase::Stk);
+
+      if(stmnt->op.size <= 1)
+         return;
+
+      trStmntTmp(stmnt->op.size * 2);
    }
 }
 

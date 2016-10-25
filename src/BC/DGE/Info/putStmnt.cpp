@@ -98,7 +98,7 @@ namespace GDCC::BC::DGE
       case IR::Code::SuXU_W: putStmnt_SuXU_W(); break;
       case IR::Code::SubI_W:
       case IR::Code::SubU_W: putStmnt_SubU_W(); break;
-      case IR::Code::Swap_W: putCode("Swap"); break;
+      case IR::Code::Swap_W: putStmnt_Swap_W(); break;
 
       default:
          std::cerr << "ERROR: " << stmnt->pos

@@ -151,6 +151,7 @@ namespace GDCC::BC::DGE
       void putStmnt_ShRU_W() {putStmnt_ShLU_W("ShRU");}
       void putStmnt_SuXU_W();
       void putStmnt_SubU_W();
+      void putStmnt_Swap_W();
 
       void putStmntCall(Core::String name, Core::FastU argc);
 
@@ -220,6 +221,7 @@ namespace GDCC::BC::DGE
       void trStmnt_ShRU_W() {trStmnt_ShLU_W();}
       void trStmnt_SuXU_W();
       void trStmnt_SubU_W();
+      void trStmnt_Swap_W();
 
       void trStmntTmp(Core::FastU n);
 
