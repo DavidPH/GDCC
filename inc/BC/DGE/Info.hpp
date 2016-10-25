@@ -47,6 +47,7 @@ namespace GDCC::BC::DGE
 
       virtual void preStmnt();
 
+      void preStmnt_AddI_W() {preStmnt_AddU_W();}
       void preStmnt_AddU_W();
       void preStmnt_Bclo_W();
       void preStmnt_Bclz_W();
@@ -69,10 +70,12 @@ namespace GDCC::BC::DGE
       void preStmnt_ModI_W() {preStmnt_DiXI_W();}
       void preStmnt_ModU_W() {preStmnt_DiXU_W();}
       void preStmnt_MuXU_W();
+      void preStmnt_MulI_W() {preStmnt_MulU_W();}
       void preStmnt_MulU_W();
       void preStmnt_ShLU_W();
       void preStmnt_ShRI_W();
       void preStmnt_ShRU_W();
+      void preStmnt_SubI_W() {preStmnt_SubU_W();}
       void preStmnt_SubU_W();
 
       virtual void put();
@@ -106,6 +109,7 @@ namespace GDCC::BC::DGE
 
       virtual void putStmnt();
       void putStmnt_AdXU_W();
+      void putStmnt_AddI_W() {putStmnt_AddU_W();}
       void putStmnt_AddU_W();
       void putStmnt_BAnd_W(char const *code = "BAnd");
       void putStmnt_BNot_W();
@@ -144,12 +148,14 @@ namespace GDCC::BC::DGE
       void putStmnt_Move_B();
       void putStmnt_Move_W();
       void putStmnt_MuXU_W();
+      void putStmnt_MulI_W() {putStmnt_MulU_W();}
       void putStmnt_MulU_W();
       void putStmnt_Retn();
       void putStmnt_ShLU_W(char const *code = "ShLU");
       void putStmnt_ShRI_W() {putStmnt_ShLU_W("ShRI");}
       void putStmnt_ShRU_W() {putStmnt_ShLU_W("ShRU");}
       void putStmnt_SuXU_W();
+      void putStmnt_SubI_W() {putStmnt_SubU_W();}
       void putStmnt_SubU_W();
       void putStmnt_Swap_W();
 
@@ -176,6 +182,7 @@ namespace GDCC::BC::DGE
 
       virtual void trStmnt();
       void trStmnt_AdXU_W();
+      void trStmnt_AddI_W() {trStmnt_AddU_W();}
       void trStmnt_AddU_W();
       void trStmnt_BAnd_W();
       void trStmnt_BNot_W();
@@ -214,12 +221,14 @@ namespace GDCC::BC::DGE
       void trStmnt_Move_B();
       void trStmnt_Move_W();
       void trStmnt_MuXU_W();
+      void trStmnt_MulI_W() {trStmnt_MulU_W();}
       void trStmnt_MulU_W();
       void trStmnt_Retn();
       void trStmnt_ShLU_W();
       void trStmnt_ShRI_W() {trStmnt_ShLU_W();}
       void trStmnt_ShRU_W() {trStmnt_ShLU_W();}
       void trStmnt_SuXU_W();
+      void trStmnt_SubI_W() {trStmnt_SubU_W();}
       void trStmnt_SubU_W();
       void trStmnt_Swap_W();
 

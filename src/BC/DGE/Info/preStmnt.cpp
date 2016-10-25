@@ -30,7 +30,7 @@ namespace GDCC::BC::DGE
    {
       switch(stmnt->op.code)
       {
-      case IR::Code::AddI_W:
+      case IR::Code::AddI_W: preStmnt_AddI_W(); break;
       case IR::Code::AddU_W: preStmnt_AddU_W(); break;
       case IR::Code::Bclo_W: preStmnt_Bclo_W(); break;
       case IR::Code::Bclz_W: preStmnt_Bclz_W(); break;
@@ -55,12 +55,12 @@ namespace GDCC::BC::DGE
       case IR::Code::ModI_W: preStmnt_ModI_W(); break;
       case IR::Code::ModU_W: preStmnt_ModU_W(); break;
       case IR::Code::MuXU_W: preStmnt_MuXU_W(); break;
-      case IR::Code::MulI_W:
+      case IR::Code::MulI_W: preStmnt_MulI_W(); break;
       case IR::Code::MulU_W: preStmnt_MulU_W(); break;
       case IR::Code::ShLU_W: preStmnt_ShLU_W(); break;
       case IR::Code::ShRI_W: preStmnt_ShRI_W(); break;
       case IR::Code::ShRU_W: preStmnt_ShRU_W(); break;
-      case IR::Code::SubI_W:
+      case IR::Code::SubI_W: preStmnt_SubI_W(); break;
       case IR::Code::SubU_W: preStmnt_SubU_W(); break;
 
       default:

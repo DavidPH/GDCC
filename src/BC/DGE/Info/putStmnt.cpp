@@ -36,7 +36,7 @@ namespace GDCC::BC::DGE
       switch(stmnt->op.code)
       {
       case IR::Code::AdXU_W: putStmnt_AdXU_W(); break;
-      case IR::Code::AddI_W:
+      case IR::Code::AddI_W: putStmnt_AddI_W(); break;
       case IR::Code::AddU_W: putStmnt_AddU_W(); break;
       case IR::Code::BAnd_W: putStmnt_BAnd_W(); break;
       case IR::Code::BNot_W: putStmnt_BNot_W(); break;
@@ -82,7 +82,7 @@ namespace GDCC::BC::DGE
       case IR::Code::Move_B: putStmnt_Move_B(); break;
       case IR::Code::Move_W: putStmnt_Move_W(); break;
       case IR::Code::MuXU_W: putStmnt_MuXU_W(); break;
-      case IR::Code::MulI_W:
+      case IR::Code::MulI_W: putStmnt_MulI_W(); break;
       case IR::Code::MulU_W: putStmnt_MulU_W(); break;
 
       case IR::Code::Pltn:
@@ -96,7 +96,7 @@ namespace GDCC::BC::DGE
       case IR::Code::ShRI_W: putStmnt_ShRI_W(); break;
       case IR::Code::ShRU_W: putStmnt_ShRU_W(); break;
       case IR::Code::SuXU_W: putStmnt_SuXU_W(); break;
-      case IR::Code::SubI_W:
+      case IR::Code::SubI_W: putStmnt_SubI_W(); break;
       case IR::Code::SubU_W: putStmnt_SubU_W(); break;
       case IR::Code::Swap_W: putStmnt_Swap_W(); break;
 
