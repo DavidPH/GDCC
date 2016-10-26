@@ -200,7 +200,7 @@ namespace GDCC
 
             bool left = stmnt->op.code == IR::Code::ShLF_W;
 
-            FloatInfo fi = GetFloatInfo(stmnt->op.size);
+            FloatInfo fi = getFloatInfo(stmnt->op.size);
 
             IR::Glyph labelEMax{prog, name + "$emax"};
             IR::Glyph labelInf {prog, name + "$inf"};

@@ -39,25 +39,6 @@ namespace GDCC
          enum class Code;
 
          //
-         // FloatInfo
-         //
-         class FloatInfo
-         {
-         public:
-            Core::FastU bitsExp;
-            Core::FastU bitsMan;
-            Core::FastU bitsManFull;
-
-            Core::FastU maskExp;
-            Core::FastU maskMan;
-            Core::FastU maskSig;
-
-            Core::FastU maxExp;
-
-            Core::FastU offExp;
-         };
-
-         //
          // Info
          //
          class Info : public InfoBase
@@ -518,8 +499,6 @@ namespace GDCC
             static void CheckArg(IR::Arg const &arg, Core::Origin pos);
 
             static Core::FastU CodeBase();
-
-            static FloatInfo GetFloatInfo(Core::FastU words);
 
             static Core::FastU GetParamMax(IR::CallType call);
 

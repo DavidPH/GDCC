@@ -30,6 +30,7 @@ namespace GDCC::BC::DGE
    {
       switch(stmnt->op.code)
       {
+      case IR::Code::AddF_W: preStmnt_AddF_W(); break;
       case IR::Code::AddI_W: preStmnt_AddI_W(); break;
       case IR::Code::AddU_W: preStmnt_AddU_W(); break;
       case IR::Code::Bclo_W: preStmnt_Bclo_W(); break;
@@ -60,12 +61,24 @@ namespace GDCC::BC::DGE
       case IR::Code::ShLU_W: preStmnt_ShLU_W(); break;
       case IR::Code::ShRI_W: preStmnt_ShRI_W(); break;
       case IR::Code::ShRU_W: preStmnt_ShRU_W(); break;
+      case IR::Code::SubF_W: preStmnt_SubF_W(); break;
       case IR::Code::SubI_W: preStmnt_SubI_W(); break;
       case IR::Code::SubU_W: preStmnt_SubU_W(); break;
 
       default:
          break;
       }
+   }
+
+   //
+   // Info::preStmntSykBin
+   //
+   void Info::preStmntStkBin(Core::FastU min, AddFunc add)
+   {
+      if(stmnt->op.size < min)
+         return;
+
+      (this->*add)(stmnt->op.size);
    }
 }
 

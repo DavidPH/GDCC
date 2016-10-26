@@ -24,25 +24,25 @@ namespace GDCC::BC::DGE
    //
    // Info::preStmnt_CmpU_EQ_W
    //
-   void Info::preStmnt_CmpU_EQ_W(void (Info::*fn)(Core::FastU))
+   void Info::preStmnt_CmpU_EQ_W(AddFunc add)
    {
       if(stmnt->op.size <= 1)
          return;
 
       // TODO: Inline multi-word push-args.
 
-      (this->*fn)(stmnt->op.size);
+      (this->*add)(stmnt->op.size);
    }
 
    //
    // Info::preStmnt_CmpU_GE_W
    //
-   void Info::preStmnt_CmpU_GE_W(void (Info::*fn)(Core::FastU))
+   void Info::preStmnt_CmpU_GE_W(AddFunc add)
    {
       if(stmnt->op.size <= 1)
          return;
 
-      (this->*fn)(stmnt->op.size);
+      (this->*add)(stmnt->op.size);
    }
 
    //

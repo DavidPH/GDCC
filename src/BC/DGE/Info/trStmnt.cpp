@@ -33,6 +33,7 @@ namespace GDCC::BC::DGE
       switch(stmnt->op.code)
       {
       case IR::Code::AdXU_W: trStmnt_AdXU_W(); break;
+      case IR::Code::AddF_W: trStmnt_AddF_W(); break;
       case IR::Code::AddI_W: trStmnt_AddI_W(); break;
       case IR::Code::AddU_W: trStmnt_AddU_W(); break;
       case IR::Code::BAnd_W: trStmnt_BAnd_W(); break;
@@ -88,6 +89,7 @@ namespace GDCC::BC::DGE
       case IR::Code::ShRI_W: trStmnt_ShRI_W(); break;
       case IR::Code::ShRU_W: trStmnt_ShRU_W(); break;
       case IR::Code::SuXU_W: trStmnt_SuXU_W(); break;
+      case IR::Code::SubF_W: trStmnt_SubF_W(); break;
       case IR::Code::SubI_W: trStmnt_SubI_W(); break;
       case IR::Code::SubU_W: trStmnt_SubU_W(); break;
       case IR::Code::Swap_W: trStmnt_Swap_W(); break;
@@ -110,6 +112,14 @@ namespace GDCC::BC::DGE
       CheckArgC(stmnt, 2);
       moveArgStk_dst(stmnt->args[0], stmnt->op.size);
       moveArgStk_src(stmnt->args[1], stmnt->op.size);
+   }
+
+   //
+   // Info::trStmntStkBin
+   //
+   void Info::trStmntStkBin(bool ordered)
+   {
+      trStmntStk3(stmnt->op.size, stmnt->op.size, ordered);
    }
 
    //

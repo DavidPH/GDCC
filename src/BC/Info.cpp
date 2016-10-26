@@ -604,6 +604,41 @@ namespace GDCC
       }
 
       //
+      // getFloatInfo
+      //
+      FloatInfo Info::getFloatInfo(Core::FastU n)
+      {
+         FloatInfo fi;
+
+         // TODO: Somehow not assume a 32 bit word.
+
+         switch(n)
+         {
+         case  1: fi.bitsExp =  8;
+         case  2: fi.bitsExp = 11;
+         case  3:
+         case  4: fi.bitsExp = 15;
+         case  5:
+         case  6:
+         case  7:
+         case  8: fi.bitsExp = 19;
+         default: fi.bitsExp = 23;
+         }
+
+         fi.bitsMan     = 31 - fi.bitsExp;
+         fi.bitsManFull = n * 32 - fi.bitsExp - 1;
+
+         fi.maxExp  = (Core::FastU(1) << fi.bitsExp) - 1;
+         fi.offExp  = fi.maxExp / 2;
+
+         fi.maskExp = fi.maxExp << fi.bitsMan;
+         fi.maskMan = (Core::FastU(1) << fi.bitsMan) - 1;
+         fi.maskSig = 0x80000000;
+
+         return fi;
+      }
+
+      //
       // Info::CheckArgB
       //
       void Info::CheckArgB(IR::Arg const &arg, IR::AddrBase b, Core::Origin pos)

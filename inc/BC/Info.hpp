@@ -70,6 +70,26 @@ namespace GDCC
       typedef Info InfoBase;
 
       //
+      // FloatInfo
+      //
+      class FloatInfo
+      {
+      public:
+         Core::FastU bitsExp;
+         Core::FastU bitsMan;
+         Core::FastU bitsManFull;
+         Core::FastU bitsSig;
+
+         Core::FastU maskExp;
+         Core::FastU maskMan;
+         Core::FastU maskSig;
+
+         Core::FastU maxExp;
+
+         Core::FastU offExp;
+      };
+
+      //
       // Info
       //
       class Info
@@ -103,6 +123,8 @@ namespace GDCC
          void tr(IR::Program &prog);
 
       protected:
+         using AddFunc = void (Info::*)(Core::FastU);
+
          class ResetFunc {};
          class ResetStmnt {};
 
@@ -191,6 +213,7 @@ namespace GDCC
 
          void addFunc(Core::String name, Core::FastU retrn, Core::FastU param);
 
+         void addFunc_AddF_W(Core::FastU n);
          void addFunc_AddU_W(Core::FastU n);
          void addFunc_Bclo_W(Core::FastU n);
          void addFunc_Bclz_W(Core::FastU n);
@@ -211,7 +234,11 @@ namespace GDCC
          void addFunc_ShLU_W(Core::FastU n);
          void addFunc_ShRI_W(Core::FastU n);
          void addFunc_ShRU_W(Core::FastU n);
+         void addFunc_SubF_W(Core::FastU n);
          void addFunc_SubU_W(Core::FastU n);
+
+         // Default behavior is to assume IEEE float layout and 32-bit word.
+         virtual FloatInfo getFloatInfo(Core::FastU n);
 
          IR::Function *getFuncDefn(Core::String name, Core::FastU retrn,
             Core::FastU param, Core::FastU localReg, char const *file);

@@ -296,7 +296,7 @@ namespace GDCC
             if(!newFunc)
                return;
 
-            FloatInfo fi = GetFloatInfo(stmnt->op.size);
+            FloatInfo fi = getFloatInfo(stmnt->op.size);
 
             IR::Glyph labelL0  {prog, name + "$l0"};
             IR::Glyph labelLINF{prog, name + "$linf"};

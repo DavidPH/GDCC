@@ -138,7 +138,7 @@ namespace GDCC
             bool cmpNE =
                codeCmpPos == IR::Code::CmpI_NE_W;
 
-            FloatInfo fi = GetFloatInfo(stmnt->op.size);
+            FloatInfo fi = getFloatInfo(stmnt->op.size);
 
             IR::Glyph label0{prog, name + "$0"};
             IR::Glyph label1{prog, name + "$1"};

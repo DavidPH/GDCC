@@ -51,8 +51,8 @@
 #define GDCC_BC_AddFuncObjBin(size) \
    GDCC_BC_AddFuncObj(); \
    \
-   IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))}; \
-   IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(size))}
+   IR::Arg_LocReg lop{GDCC_BC_ArgLit(0)}; \
+   IR::Arg_LocReg rop{GDCC_BC_ArgLit(size)}
 
 //
 // GDCC_BC_AddFuncObjUna
@@ -60,7 +60,7 @@
 #define GDCC_BC_AddFuncObjUna(size) \
    GDCC_BC_AddFuncObj(); \
    \
-   IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))}
+   IR::Arg_LocReg lop{GDCC_BC_ArgLit(0)}
 
 //
 // GDCC_BC_AddLabel
