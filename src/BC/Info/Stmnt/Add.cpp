@@ -301,16 +301,14 @@ namespace GDCC::BC
       IR::Glyph labelNeg0{prog, name + "$neg0"};
       IR::Glyph labelPos0{prog, name + "$pos0"};
 
-      #define AS_Stmnt newFunc->block.addStatementArgs
-
       // +0 - +0 = +0
       GDCC_BC_AddStmnt({Code::BOrI_W,   n}, stk, lop, rop);
       GDCC_BC_AddStmnt({Code::Jcnd_Nil, n}, stk, labelPos0);
 
       // -0 - -0 = +0
-      GDCC_BC_AddStmnt({Code::BOrI_W,   n}, stk, lop, rop);
-      GDCC_BC_AddStmnt({Code::CmpU_NE_W, 1},             stk, stk, fi.maskSig);
-      GDCC_BC_AddStmnt({Code::Jcnd_Nil, n}, stk, labelPos0);
+      GDCC_BC_AddStmnt({Code::BOrI_W,    n}, stk, lop, rop);
+      GDCC_BC_AddStmnt({Code::CmpU_NE_W, 1}, stk, stk, fi.maskSig);
+      GDCC_BC_AddStmnt({Code::Jcnd_Nil,  n}, stk, labelPos0);
 
       // Is l negative? l - r = -(-l + r)
       GDCC_BC_AddStmnt({Code::BAnd_W,   1}, stk, lhi, fi.maskSig);
@@ -453,13 +451,13 @@ namespace GDCC::BC
       GDCC_BC_AddLabel(labelLREMax);
 
       // Is l NaN? If so, return l.
-      GDCC_BC_AddStmnt({Code::Move_W, n},   stk, lop);
-      GDCC_BC_AddStmnt({Code::BAnd_W, 1},   stk, stk, fi.maskMan);
+      GDCC_BC_AddStmnt({Code::Move_W,   n}, stk, lop);
+      GDCC_BC_AddStmnt({Code::BAnd_W,   1}, stk, stk, fi.maskMan);
       GDCC_BC_AddStmnt({Code::Jcnd_Tru, n}, stk, labelREMin);
 
       // Is r NaN? If so, return r. (Sign inversion is fine.)
-      GDCC_BC_AddStmnt({Code::Move_W, n},   stk, rop);
-      GDCC_BC_AddStmnt({Code::BAnd_W, 1},   stk, stk, fi.maskMan);
+      GDCC_BC_AddStmnt({Code::Move_W,   n}, stk, rop);
+      GDCC_BC_AddStmnt({Code::BAnd_W,   1}, stk, stk, fi.maskMan);
       GDCC_BC_AddStmnt({Code::Jcnd_Tru, n}, stk, labelLEMin);
 
       // +INF - +INF = NaN.
