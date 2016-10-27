@@ -31,8 +31,9 @@ namespace GDCC::BC::DGE
       if(stmnt->op.size <= 1)
          return;
 
-      if(!isPushArg(stmnt->args[1]) || !isPushArg(stmnt->args[2]))
-         addFunc_AddU_W(stmnt->op.size);
+      // TODO: Inline multiword push-args.
+
+      addFunc_AddU_W(stmnt->op.size);
    }
 
    //
@@ -43,8 +44,9 @@ namespace GDCC::BC::DGE
       if(stmnt->op.size <= 1)
          return;
 
-      if(!isPushArg(stmnt->args[1]) || !isPushArg(stmnt->args[2]))
-         addFunc_SubU_W(stmnt->op.size);
+      // TODO: Inline multiword push-args.
+
+      addFunc_SubU_W(stmnt->op.size);
    }
 
    //
