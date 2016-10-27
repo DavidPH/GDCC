@@ -614,15 +614,15 @@ namespace GDCC
 
          switch(n)
          {
-         case  1: fi.bitsExp =  8;
-         case  2: fi.bitsExp = 11;
+         case  1: fi.bitsExp =  8; break;
+         case  2: fi.bitsExp = 11; break;
          case  3:
-         case  4: fi.bitsExp = 15;
+         case  4: fi.bitsExp = 15; break;
          case  5:
          case  6:
          case  7:
-         case  8: fi.bitsExp = 19;
-         default: fi.bitsExp = 23;
+         case  8: fi.bitsExp = 19; break;
+         default: fi.bitsExp = 23; break;
          }
 
          fi.bitsMan     = 31 - fi.bitsExp;
