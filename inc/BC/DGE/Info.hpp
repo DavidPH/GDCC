@@ -106,6 +106,7 @@ namespace GDCC::BC::DGE
       using InfoBase::putFunc;
 
       void putInt(int i);
+      void putInt(unsigned int i);
       void putInt(Core::FastU i);
       void putInt(Core::FastI i);
 
@@ -281,6 +282,7 @@ namespace GDCC::BC::DGE
    private:
       void putCodeArg(char const        *arg) {putNTS(arg);}
       void putCodeArg(int                arg) {putInt(arg);}
+      void putCodeArg(unsigned int       arg) {putInt(arg);}
       void putCodeArg(Core::FastU        arg) {putInt(arg);}
       void putCodeArg(Core::String       arg);
       void putCodeArg(IR::Arg_Lit const &arg);

@@ -188,6 +188,14 @@ namespace GDCC::BC::DGE
    //
    // Info::putInt
    //
+   void Info::putInt(unsigned int i)
+   {
+      putInt(static_cast<Core::FastU>(i));
+   }
+
+   //
+   // Info::putInt
+   //
    void Info::putInt(Core::FastU i)
    {
       char buf[sizeof(std::uintmax_t) * CHAR_BIT / 4 + 1];
