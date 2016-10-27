@@ -627,6 +627,7 @@ namespace GDCC
 
          fi.bitsMan     = 31 - fi.bitsExp;
          fi.bitsManFull = n * 32 - fi.bitsExp - 1;
+         fi.bitsSig     = 1;
 
          fi.maxExp  = (Core::FastU(1) << fi.bitsExp) - 1;
          fi.offExp  = fi.maxExp / 2;
