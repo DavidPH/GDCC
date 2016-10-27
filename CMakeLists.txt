@@ -134,7 +134,7 @@ endif()
 ## GDCC_INSTALL_API
 ##
 if(NOT DEFINED GDCC_INSTALL_API)
-   set(GDCC_INSTALL_API OFF CACHE BOOL "Install headers.")
+   set(GDCC_INSTALL_API ON CACHE BOOL "Install headers.")
 endif()
 
 ##
