@@ -260,7 +260,6 @@ namespace GDCC
             void preStmnt_CmpF_LE_W();
             void preStmnt_CmpF_LT_W();
             void preStmnt_CmpF_NE_W();
-            void preStmnt_CmpF_W(IR::Code codeCmpPos, IR::Code codeCmpNeg);
             void preStmnt_CmpI_GE_W();
             void preStmnt_CmpI_GT_W();
             void preStmnt_CmpI_LE_W();

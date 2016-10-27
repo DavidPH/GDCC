@@ -52,17 +52,23 @@ namespace GDCC::BC::DGE
       void preStmnt_AddU_W();
       void preStmnt_Bclo_W();
       void preStmnt_Bclz_W();
+      void preStmnt_CmpF_EQ_W() {preStmntStkCmp(1, &Info::addFunc_CmpF_EQ_W);}
+      void preStmnt_CmpF_GE_W() {preStmntStkCmp(1, &Info::addFunc_CmpF_GE_W);}
+      void preStmnt_CmpF_GT_W() {preStmntStkCmp(1, &Info::addFunc_CmpF_GT_W);}
+      void preStmnt_CmpF_LE_W() {preStmntStkCmp(1, &Info::addFunc_CmpF_LE_W);}
+      void preStmnt_CmpF_LT_W() {preStmntStkCmp(1, &Info::addFunc_CmpF_LT_W);}
+      void preStmnt_CmpF_NE_W() {preStmntStkCmp(1, &Info::addFunc_CmpF_NE_W);}
       void preStmnt_CmpI_EQ_W() {preStmnt_CmpU_EQ_W();}
-      void preStmnt_CmpI_GE_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpI_GE_W);}
-      void preStmnt_CmpI_GT_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpI_GT_W);}
-      void preStmnt_CmpI_LE_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpI_LE_W);}
-      void preStmnt_CmpI_LT_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpI_LT_W);}
+      void preStmnt_CmpI_GE_W() {preStmntStkCmp(2, &Info::addFunc_CmpI_GE_W);}
+      void preStmnt_CmpI_GT_W() {preStmntStkCmp(2, &Info::addFunc_CmpI_GT_W);}
+      void preStmnt_CmpI_LE_W() {preStmntStkCmp(2, &Info::addFunc_CmpI_LE_W);}
+      void preStmnt_CmpI_LT_W() {preStmntStkCmp(2, &Info::addFunc_CmpI_LT_W);}
       void preStmnt_CmpI_NE_W() {preStmnt_CmpU_NE_W();}
       void preStmnt_CmpU_EQ_W(AddFunc add = &Info::addFunc_CmpU_EQ_W);
-      void preStmnt_CmpU_GE_W(AddFunc add = &Info::addFunc_CmpU_GE_W);
-      void preStmnt_CmpU_GT_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpU_GT_W);}
-      void preStmnt_CmpU_LE_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpU_LE_W);}
-      void preStmnt_CmpU_LT_W() {preStmnt_CmpU_GE_W(&Info::addFunc_CmpU_LT_W);}
+      void preStmnt_CmpU_GE_W() {preStmntStkCmp(2, &Info::addFunc_CmpU_GE_W);}
+      void preStmnt_CmpU_GT_W() {preStmntStkCmp(2, &Info::addFunc_CmpU_GT_W);}
+      void preStmnt_CmpU_LE_W() {preStmntStkCmp(2, &Info::addFunc_CmpU_LE_W);}
+      void preStmnt_CmpU_LT_W() {preStmntStkCmp(2, &Info::addFunc_CmpU_LT_W);}
       void preStmnt_CmpU_NE_W() {preStmnt_CmpU_EQ_W(&Info::addFunc_CmpU_NE_W);}
       void preStmnt_DiXI_W();
       void preStmnt_DiXU_W();
@@ -81,6 +87,7 @@ namespace GDCC::BC::DGE
       void preStmnt_SubU_W();
 
       void preStmntStkBin(Core::FastU min, AddFunc add);
+      void preStmntStkCmp(Core::FastU min, AddFunc add) {preStmntStkBin(min, add);}
 
       virtual void put();
 
@@ -124,17 +131,23 @@ namespace GDCC::BC::DGE
       void putStmnt_Bclo_W() {putStmnt_Bclz_W("Bclo");}
       void putStmnt_Bclz_W(char const *code = "Bclz");
       void putStmnt_Call();
+      void putStmnt_CmpF_EQ_W() {putStmntStkCmp(1);}
+      void putStmnt_CmpF_GE_W() {putStmntStkCmp(1);}
+      void putStmnt_CmpF_GT_W() {putStmntStkCmp(0);}
+      void putStmnt_CmpF_LE_W() {putStmntStkCmp(1);}
+      void putStmnt_CmpF_LT_W() {putStmntStkCmp(0);}
+      void putStmnt_CmpF_NE_W() {putStmntStkCmp(0);}
       void putStmnt_CmpI_EQ_W() {putStmnt_CmpU_EQ_W();}
-      void putStmnt_CmpI_GE_W() {putStmnt_CmpU_GE_W("CmpI_GE");}
-      void putStmnt_CmpI_GT_W() {putStmnt_CmpU_GE_W("CmpI_GT");}
-      void putStmnt_CmpI_LE_W() {putStmnt_CmpU_GE_W("CmpI_LE");}
-      void putStmnt_CmpI_LT_W() {putStmnt_CmpU_GE_W("CmpI_LT");}
+      void putStmnt_CmpI_GE_W() {putStmntStkCmp(1, "CmpI_GE");}
+      void putStmnt_CmpI_GT_W() {putStmntStkCmp(0, "CmpI_GT");}
+      void putStmnt_CmpI_LE_W() {putStmntStkCmp(1, "CmpI_LE");}
+      void putStmnt_CmpI_LT_W() {putStmntStkCmp(0, "CmpI_LT");}
       void putStmnt_CmpI_NE_W() {putStmnt_CmpU_NE_W();}
       void putStmnt_CmpU_EQ_W(IR::Code code = IR::Code::CmpU_EQ_W);
-      void putStmnt_CmpU_GE_W(char const *code = "CmpU_GE");
-      void putStmnt_CmpU_GT_W() {putStmnt_CmpU_GE_W("CmpU_GT");}
-      void putStmnt_CmpU_LE_W() {putStmnt_CmpU_GE_W("CmpU_LE");}
-      void putStmnt_CmpU_LT_W() {putStmnt_CmpU_GE_W("CmpU_LT");}
+      void putStmnt_CmpU_GE_W() {putStmntStkCmp(1, "CmpU_GE");}
+      void putStmnt_CmpU_GT_W() {putStmntStkCmp(0, "CmpU_GT");}
+      void putStmnt_CmpU_LE_W() {putStmntStkCmp(1, "CmpU_LE");}
+      void putStmnt_CmpU_LT_W() {putStmntStkCmp(0, "CmpU_LT");}
       void putStmnt_CmpU_NE_W() {putStmnt_CmpU_EQ_W(IR::Code::CmpU_NE_W);}
       void putStmnt_Cnat();
       void putStmnt_DiXI_W() {putStmnt_DiXU_W("DiXI");}
@@ -182,6 +195,7 @@ namespace GDCC::BC::DGE
       void putStmntPushTmp(Core::FastU lo, Core::FastU hi);
 
       void putStmntStkBin(char const *code = nullptr);
+      void putStmntStkCmp(int res0, char const *code = nullptr);
 
       virtual void putStr();
       using InfoBase::putStr;
@@ -202,17 +216,23 @@ namespace GDCC::BC::DGE
       void trStmnt_Bclo_W() {trStmnt_Bclz_W();}
       void trStmnt_Bclz_W();
       void trStmnt_Call();
+      void trStmnt_CmpF_EQ_W() {trStmntStkCmp(false);}
+      void trStmnt_CmpF_GE_W() {trStmntStkCmp(true);}
+      void trStmnt_CmpF_GT_W() {trStmntStkCmp(true);}
+      void trStmnt_CmpF_LE_W() {trStmntStkCmp(true);}
+      void trStmnt_CmpF_LT_W() {trStmntStkCmp(true);}
+      void trStmnt_CmpF_NE_W() {trStmntStkCmp(false);}
       void trStmnt_CmpI_EQ_W() {trStmnt_CmpU_EQ_W();}
-      void trStmnt_CmpI_GE_W() {trStmnt_CmpU_GE_W();}
-      void trStmnt_CmpI_GT_W() {trStmnt_CmpU_GE_W();}
-      void trStmnt_CmpI_LE_W() {trStmnt_CmpU_GE_W();}
-      void trStmnt_CmpI_LT_W() {trStmnt_CmpU_GE_W();}
+      void trStmnt_CmpI_GE_W() {trStmntStkCmp(true);}
+      void trStmnt_CmpI_GT_W() {trStmntStkCmp(true);}
+      void trStmnt_CmpI_LE_W() {trStmntStkCmp(true);}
+      void trStmnt_CmpI_LT_W() {trStmntStkCmp(true);}
       void trStmnt_CmpI_NE_W() {trStmnt_CmpU_EQ_W();}
       void trStmnt_CmpU_EQ_W();
-      void trStmnt_CmpU_GE_W();
-      void trStmnt_CmpU_GT_W() {trStmnt_CmpU_GE_W();}
-      void trStmnt_CmpU_LE_W() {trStmnt_CmpU_GE_W();}
-      void trStmnt_CmpU_LT_W() {trStmnt_CmpU_GE_W();}
+      void trStmnt_CmpU_GE_W() {trStmntStkCmp(true);}
+      void trStmnt_CmpU_GT_W() {trStmntStkCmp(true);}
+      void trStmnt_CmpU_LE_W() {trStmntStkCmp(true);}
+      void trStmnt_CmpU_LT_W() {trStmntStkCmp(true);}
       void trStmnt_CmpU_NE_W() {trStmnt_CmpU_EQ_W();}
       void trStmnt_Cnat();
       void trStmnt_DiXI_W() {trStmnt_DiXU_W();}
@@ -246,6 +266,7 @@ namespace GDCC::BC::DGE
       void trStmnt_Swap_W();
 
       void trStmntStkBin(bool ordered);
+      void trStmntStkCmp(bool ordered);
 
       void trStmntTmp(Core::FastU n);
 

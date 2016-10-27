@@ -46,6 +46,12 @@ namespace GDCC::BC::DGE
       case IR::Code::Bclo_W: putStmnt_Bclo_W(); break;
       case IR::Code::Bclz_W: putStmnt_Bclz_W(); break;
 
+      case IR::Code::CmpF_EQ_W: putStmnt_CmpF_EQ_W(); break;
+      case IR::Code::CmpF_GE_W: putStmnt_CmpF_GE_W(); break;
+      case IR::Code::CmpF_GT_W: putStmnt_CmpF_LT_W(); break;
+      case IR::Code::CmpF_LE_W: putStmnt_CmpF_LE_W(); break;
+      case IR::Code::CmpF_LT_W: putStmnt_CmpF_LT_W(); break;
+      case IR::Code::CmpF_NE_W: putStmnt_CmpF_NE_W(); break;
       case IR::Code::CmpI_EQ_W: putStmnt_CmpI_EQ_W(); break;
       case IR::Code::CmpI_GE_W: putStmnt_CmpI_GE_W(); break;
       case IR::Code::CmpI_GT_W: putStmnt_CmpI_LT_W(); break;
@@ -346,6 +352,20 @@ namespace GDCC::BC::DGE
    {
       if(stmnt->op.size == 0)
          return;
+
+      if(stmnt->op.size == 1 && code)
+         return putCode(code);
+
+      putStmntCall(getFuncName(stmnt->op), stmnt->op.size * 2);
+   }
+
+   //
+   // Info::putStmntStkCmp
+   //
+   void Info::putStmntStkCmp(int res0, char const *code)
+   {
+      if(stmnt->op.size == 0)
+         return putCode("Push_Lit", res0);
 
       if(stmnt->op.size == 1 && code)
          return putCode(code);

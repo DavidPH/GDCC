@@ -43,6 +43,12 @@ namespace GDCC::BC::DGE
       case IR::Code::Bclo_W: trStmnt_Bclo_W(); break;
       case IR::Code::Bclz_W: trStmnt_Bclz_W(); break;
 
+      case IR::Code::CmpF_EQ_W: trStmnt_CmpF_EQ_W(); break;
+      case IR::Code::CmpF_GE_W: trStmnt_CmpF_GE_W(); break;
+      case IR::Code::CmpF_GT_W: trStmnt_CmpF_GT_W(); break;
+      case IR::Code::CmpF_LE_W: trStmnt_CmpF_LE_W(); break;
+      case IR::Code::CmpF_LT_W: trStmnt_CmpF_LT_W(); break;
+      case IR::Code::CmpF_NE_W: trStmnt_CmpF_NE_W(); break;
       case IR::Code::CmpI_EQ_W: trStmnt_CmpI_EQ_W(); break;
       case IR::Code::CmpI_GE_W: trStmnt_CmpI_GE_W(); break;
       case IR::Code::CmpI_GT_W: trStmnt_CmpI_GT_W(); break;
@@ -120,6 +126,14 @@ namespace GDCC::BC::DGE
    void Info::trStmntStkBin(bool ordered)
    {
       trStmntStk3(stmnt->op.size, stmnt->op.size, ordered);
+   }
+
+   //
+   // Info::trStmntStkCmp
+   //
+   void Info::trStmntStkCmp(bool ordered)
+   {
+      trStmntStk3(1, stmnt->op.size, ordered);
    }
 
    //

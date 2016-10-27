@@ -217,6 +217,12 @@ namespace GDCC
          void addFunc_AddU_W(Core::FastU n);
          void addFunc_Bclo_W(Core::FastU n);
          void addFunc_Bclz_W(Core::FastU n);
+         void addFunc_CmpF_EQ_W(Core::FastU n);
+         void addFunc_CmpF_GE_W(Core::FastU n);
+         void addFunc_CmpF_GT_W(Core::FastU n);
+         void addFunc_CmpF_LE_W(Core::FastU n);
+         void addFunc_CmpF_LT_W(Core::FastU n);
+         void addFunc_CmpF_NE_W(Core::FastU n);
          void addFunc_CmpI_GE_W(Core::FastU n);
          void addFunc_CmpI_GT_W(Core::FastU n);
          void addFunc_CmpI_LE_W(Core::FastU n);
@@ -278,6 +284,7 @@ namespace GDCC
       private:
          void addFunc_AddU_W(Core::FastU n, IR::Code codeAdd, IR::Code codeAdX);
          void addFunc_Bclz_W(Core::FastU n, IR::Code code, Core::FastU skip);
+         void addFunc_CmpF_W(Core::FastU n, IR::Code code, IR::Code codePos, IR::Code codeNeg);
          void addFunc_CmpU_EQ_W(Core::FastU n, IR::Code codeCmp, IR::Code codeAnd);
          void addFunc_CmpU_GE_W(Core::FastU n, IR::Code codeCmpHi, IR::Code codeCmpLo);
          void addFunc_ShLU_W(Core::FastU n, IR::Code code, bool left, bool sign);

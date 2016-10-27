@@ -35,17 +35,6 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::preStmnt_CmpU_GE_W
-   //
-   void Info::preStmnt_CmpU_GE_W(AddFunc add)
-   {
-      if(stmnt->op.size <= 1)
-         return;
-
-      (this->*add)(stmnt->op.size);
-   }
-
-   //
    // Info::putStmnt_CmpU_EQ_W
    //
    void Info::putStmnt_CmpU_EQ_W(IR::Code code)
@@ -62,20 +51,6 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_CmpU_GE_W
-   //
-   void Info::putStmnt_CmpU_GE_W(char const *code)
-   {
-      if(stmnt->op.size == 0)
-         return putCode("Push_Lit", code[6] == 'E');
-
-      if(stmnt->op.size == 1)
-         return putCode(code);
-
-      putStmntCall(getFuncName(stmnt->op), stmnt->op.size * 2);
-   }
-
-   //
    // Info::trStmnt_CmpU_EQ_W
    //
    void Info::trStmnt_CmpU_EQ_W()
@@ -83,14 +58,6 @@ namespace GDCC::BC::DGE
       // TODO: Inline multi-word push-args.
 
       trStmntStk3(1, stmnt->op.size, false);
-   }
-
-   //
-   // Info::trStmnt_CmpU_GE_W
-   //
-   void Info::trStmnt_CmpU_GE_W()
-   {
-      trStmntStk3(1, stmnt->op.size, true);
    }
 }
 
