@@ -35,6 +35,7 @@ typedef unsigned long long __uintmax_t;
 typedef unsigned int __uintptr_t;
 typedef unsigned int __uptrdiff_t;
 typedef unsigned int __wchar_t;
+typedef int __wint_t;
 
 
 typedef __ssize_t __cookie_read_function_t(void *, char *, __size_t);
@@ -44,6 +45,7 @@ typedef int __cookie_close_function_t(void *);
 
 struct __FILE;
 struct __cookie_io_functions_t;
+struct __mbstate_t;
 
 #endif//__GDCC_Header__C__bits__types_h__
 

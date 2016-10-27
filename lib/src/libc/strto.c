@@ -885,14 +885,6 @@ long double strtold(char const *restrict nptr, char **restrict endptr)
 #endif
 
 //
-// strtoi
-//
-int strtoi(char const *restrict nptr, char **restrict endptr, int base)
-{
-   StrToI_Body(char, int, INT, S);
-}
-
-//
 // strtol
 //
 long strtol(char const *restrict nptr, char **restrict endptr, int base)
@@ -906,14 +898,6 @@ long strtol(char const *restrict nptr, char **restrict endptr, int base)
 long long strtoll(char const *restrict nptr, char **restrict endptr, int base)
 {
    StrToI_Body(char, long long, LLONG, S);
-}
-
-//
-// strtoui
-//
-unsigned int strtoui(char const *restrict nptr, char **restrict endptr, int base)
-{
-   StrToI_Body(char, unsigned int, UINT, U);
 }
 
 //
@@ -963,6 +947,14 @@ long double strtold_str(char __str_ars const *restrict nptr, char __str_ars **re
 #endif
 
 //
+// strtoi
+//
+int strtoi(char const *restrict nptr, char **restrict endptr, int base)
+{
+   StrToI_Body(char, int, INT, S);
+}
+
+//
 // strtoi_str
 //
 int strtoi_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
@@ -984,6 +976,14 @@ long strtol_str(char __str_ars const *restrict nptr, char __str_ars **restrict e
 long long strtoll_str(char __str_ars const *restrict nptr, char __str_ars **restrict endptr, int base)
 {
    StrToI_Body(char __str_ars, long long, LLONG, S);
+}
+
+//
+// strtoui
+//
+unsigned int strtoui(char const *restrict nptr, char **restrict endptr, int base)
+{
+   StrToI_Body(char, unsigned int, UINT, U);
 }
 
 //

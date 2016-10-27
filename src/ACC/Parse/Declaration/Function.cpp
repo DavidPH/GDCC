@@ -199,6 +199,7 @@ namespace GDCC
          case Core::STR_open:        attr.stype = IR::ScriptType::Open;        break;
          case Core::STR_pickup:      attr.stype = IR::ScriptType::Pickup;      break;
          case Core::STR_redreturn:   attr.stype = IR::ScriptType::RedReturn;   break;
+         case Core::STR_reopen:      attr.stype = IR::ScriptType::Reopen;      break;
          case Core::STR_respawn:     attr.stype = IR::ScriptType::Respawn;     break;
          case Core::STR_return:      attr.stype = IR::ScriptType::Return;      break;
          case Core::STR_unloading:   attr.stype = IR::ScriptType::Unloading;   break;

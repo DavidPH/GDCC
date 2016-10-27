@@ -597,6 +597,7 @@ namespace GDCC
                case IR::ScriptType::Open:        stype =  1; break;
                case IR::ScriptType::Pickup:      stype =  5; break;
                case IR::ScriptType::RedReturn:   stype =  7; break;
+               case IR::ScriptType::Reopen:      stype = 18; break;
                case IR::ScriptType::Respawn:     stype =  2; break;
                case IR::ScriptType::Return:      stype = 15; break;
                case IR::ScriptType::Unloading:   stype = 13; break;

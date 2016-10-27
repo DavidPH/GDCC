@@ -165,6 +165,11 @@ ACS_NativeDeclFull( 95, 0, int,    SetSectorTerrain, int, int, __str);
 ACS_NativeDeclFull( 96,14, int,    SpawnParticle, int, int, int, int, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum, int, int);
 ACS_NativeDeclFull( 97, 0, int,    SetMusicVolume, _Accum);
 ACS_NativeDeclFull( 98, 3, int,    CheckProximity, int, __str, _Accum, int, int, int);
+ACS_NativeDeclFull( 99, 1, int,    CheckActorState, int, __str, int);
+
+ACS_NativeDeclFull(200, 2, int,    CheckClass, __str, int, int);
+ACS_NativeDeclFull(201, 0, int,    DamageActor, int, int, int, int, int, __str);
+ACS_NativeDeclFull(202, 0, int,    SetActorFlag, int, __str, int);
 
 #endif//__GDCC_Header__C__ACS_ZDoom__Native_h__
 

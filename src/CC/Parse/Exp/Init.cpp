@@ -86,7 +86,7 @@ namespace GDCC
          {
             std::vector<InitRaw> sub;
 
-            do
+            if(!in.peek(Core::TOK_BraceC)) do
             {
                // Designators.
                if(in.peek(Core::TOK_Dot) || in.peek(Core::TOK_BrackO))

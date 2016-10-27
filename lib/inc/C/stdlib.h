@@ -35,7 +35,7 @@
 //
 // MB_CUR_MAX
 //
-#define MB_CUR_MAX ((size_t)1)
+#define MB_CUR_MAX ((size_t)6)
 
 //
 // NULL
@@ -87,7 +87,7 @@ typedef __wchar_t wchar_t;
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 #ifdef __cplusplus
@@ -108,10 +108,8 @@ double strtod(char const *restrict _nptr, char **restrict _endptr);
 float strtof(char const *restrict _nptr, char **restrict _endptr);
 long double strtold(char const *restrict _nptr, char **restrict _endptr);
 
-int strtoi(char const *restrict _nptr, char **restrict _endptr, int _base);
 long strtol(char const *restrict _nptr, char **restrict _endptr, int _base);
 long long strtoll(char const *restrict _nptr, char **restrict _endptr, int _base);
-unsigned int strtoui(char const *restrict _nptr, char **restrict _endptr, int _base);
 unsigned long strtoul(char const *restrict _nptr, char **restrict _endptr, int _base);
 unsigned long long strtoull(char const *restrict _nptr, char **restrict _endptr, int _base);
 
@@ -187,9 +185,11 @@ double strtod_str(char __str_ars const *restrict _nptr, char __str_ars **restric
 float strtof_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
 long double strtold_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr);
 
+int strtoi(char const *restrict _nptr, char **restrict _endptr, int _base);
 int strtoi_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
 long strtol_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
 long long strtoll_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
+unsigned int strtoui(char const *restrict _nptr, char **restrict _endptr, int _base);
 unsigned int strtoui_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
 unsigned long strtoul_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);
 unsigned long long strtoull_str(char __str_ars const *restrict _nptr, char __str_ars **restrict _endptr, int _base);

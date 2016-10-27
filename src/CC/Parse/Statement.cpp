@@ -158,6 +158,9 @@ namespace GDCC
             // asm-statement
          case Core::STR___asm: return getStatement_asm(scope, std::move(labels));
 
+            // with-statement
+         case Core::STR___with: return getStatement_with(scope, std::move(labels));
+
          default: break;
          }
 
@@ -467,6 +470,61 @@ namespace GDCC
          auto body = getStatement(loopScope);
 
          return StatementCreate_While(std::move(labels), pos, loopScope, cond, body);
+      }
+
+      //
+      // Parser::getStatement_with
+      //
+      SR::Statement::CRef Parser::getStatement_with(Scope_Local &scope, Labels &&labels)
+      {
+         auto &withScope = scope.createScopeBlock();
+
+         // with-statement:
+         //    <__with> ( with-declaration-sequence(opt) ) statement
+
+         // <__with>
+         auto pos = in.get().pos;
+
+         // (
+         if(!in.drop(Core::TOK_ParenO))
+            throw Core::ParseExceptExpect(in.peek(), "(", true);
+
+         // with-declaration-sequence:
+         //    with-declaration
+         //    with-declaration-sequence with-declaration
+         std::vector<SR::Statement::CRef> stmnts;
+         while(!in.peek(Core::TOK_ParenC))
+         {
+            // with-declaration:
+            //    declaration
+            //    expression ;
+
+            // declaration
+            if(isDecl(withScope))
+            {
+               stmnts.push_back(getDecl(withScope));
+            }
+            // expression ;
+            else
+            {
+               // expression
+               stmnts.push_back(SR::StatementCreate_Exp(getExp(withScope)));
+
+               // ;
+               if(!in.drop(Core::TOK_Semico))
+                  throw Core::ParseExceptExpect(in.peek(), ";", true);
+            }
+         }
+
+         // )
+         if(!in.drop(Core::TOK_ParenC))
+            throw Core::ParseExceptExpect(in.peek(), ")", true);
+
+         // statement
+         stmnts.push_back(getStatement(withScope));
+
+         return SR::StatementCreate_Multi(std::move(labels), pos,
+            {stmnts.begin(), stmnts.end()});
       }
 
       //

@@ -120,6 +120,7 @@ static void MakeLib_libc(GDCC::IR::Program &prog, bool nomath = false)
    MakeLib_CC(prog, path, "string.c");
    MakeLib_CC(prog, path, "strto.c");
    MakeLib_CC(prog, path, "time.c");
+   MakeLib_CC(prog, path, "wchar.c");
 
    if(!nomath)
    {

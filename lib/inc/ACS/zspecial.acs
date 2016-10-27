@@ -423,6 +423,7 @@ special
    int    -96:SpawnParticle(1, int, int, int, int, fixed, fixed, fixed, fixed, fixed, fixed, fixed, fixed, fixed, int, int),
    int    -97:SetMusicVolume(1, fixed),
    int    -98:CheckProximity(3, int, str, fixed, int, int, int),
+   int    -99:CheckActorState(2, int, str, int),
 
    // Zandronum's
    int   -100:ResetMap(0),
@@ -457,6 +458,11 @@ special
    int   -123:BeginDBTransaction(0),
    int   -124:EndDBTransaction(0),
    int   -125:GetDBEntries(1, str),
+
+   // ZDoom's (continued)
+   int   -200:CheckClass(1, str, int, int),
+   int   -201:DamageActor(6, int, int, int, int, int, str),
+   int   -202:SetACtorFlag(3, int, str, int),
 
    // ZDaemon's
    int -19260:GetTeamScore(1),

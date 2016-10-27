@@ -16,7 +16,7 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/Statement.hpp"
+#include "IR/Function.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -80,7 +80,8 @@ namespace GDCC
                numChunkCODE += 28;
             }
 
-            numChunkCODE += stmnt->op.size * 4 + 28 + 8 + (36 + 36 + 24 + 4);
+            numChunkCODE += !!stmnt->op.size * 16 + stmnt->op.size * 4
+               + 28 + 8 + (36 + 36 + 24 + 4);
          }
 
          //
@@ -200,12 +201,20 @@ namespace GDCC
 
                putCode(Code::Push_Lit,    FarJumpIndex);
                putCode(Code::Push_GblArr, StaArray);
-               putCode(Code::Jcnd_Lit,    0, putPos + 12 + stmnt->op.size * 4
+               putCode(Code::Jcnd_Lit,    0, putPos + 12
+                  + !!stmnt->op.size * 16 + stmnt->op.size * 4
                   + 28 + 8 + (36 + 36 + 24 + 4));
             }
 
-            for(auto i = stmnt->op.size; i--;)
-               putCode(Code::Drop_Nul);
+            if(stmnt->op.size)
+            {
+               putCode(Code::Drop_LocReg, func->localReg + 0);
+
+               for(auto i = stmnt->op.size; i--;)
+                  putCode(Code::Drop_Nul);
+
+               putCode(Code::Push_LocReg, func->localReg + 0);
+            }
 
             // Check auto pointer match.
             putCode(Code::Push_GblArr, StaArray);
@@ -310,6 +319,9 @@ namespace GDCC
                CheckArgC(stmnt, 3);
                CheckArgB(stmnt, 1, IR::ArgBase::Sta);
             }
+
+            if(stmnt->op.size)
+               func->setLocalTmp(1);
          }
 
          //
