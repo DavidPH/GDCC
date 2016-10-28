@@ -70,12 +70,13 @@ namespace GDCC::BC::DGE
       void preStmnt_CmpU_LE_W() {preStmntStkCmp(2, &Info::addFunc_CmpU_LE_W);}
       void preStmnt_CmpU_LT_W() {preStmntStkCmp(2, &Info::addFunc_CmpU_LT_W);}
       void preStmnt_CmpU_NE_W() {preStmnt_CmpU_EQ_W(&Info::addFunc_CmpU_NE_W);}
-      void preStmnt_DiXI_W();
-      void preStmnt_DiXU_W();
-      void preStmnt_DivI_W() {preStmnt_DiXI_W();}
-      void preStmnt_DivU_W() {preStmnt_DiXU_W();}
-      void preStmnt_ModI_W() {preStmnt_DiXI_W();}
-      void preStmnt_ModU_W() {preStmnt_DiXU_W();}
+      void preStmnt_DiXI_W() {preStmntStkBin(2, &Info::addFunc_DiXI_W);}
+      void preStmnt_DiXU_W() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
+      void preStmnt_DivF_W() {preStmntStkBin(1, &Info::addFunc_DivF_W);}
+      void preStmnt_DivI_W() {preStmntStkBin(2, &Info::addFunc_DiXI_W);}
+      void preStmnt_DivU_W() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
+      void preStmnt_ModI_W() {preStmntStkBin(2, &Info::addFunc_DiXI_W);}
+      void preStmnt_ModU_W() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
       void preStmnt_MuXU_W();
       void preStmnt_MulI_W() {preStmnt_MulU_W();}
       void preStmnt_MulU_W();
@@ -151,8 +152,9 @@ namespace GDCC::BC::DGE
       void putStmnt_CmpU_LT_W() {putStmntStkCmp(0, "CmpU_LT");}
       void putStmnt_CmpU_NE_W() {putStmnt_CmpU_EQ_W(IR::Code::CmpU_NE_W);}
       void putStmnt_Cnat();
-      void putStmnt_DiXI_W() {putStmnt_DiXU_W("DiXI");}
-      void putStmnt_DiXU_W(char const *code = "DiXU");
+      void putStmnt_DiXI_W() {putStmntStkBin("DiXI");}
+      void putStmnt_DiXU_W() {putStmntStkBin("DiXU");}
+      void putStmnt_DivF_W() {putStmntStkBin();}
       void putStmnt_DivI_W() {putStmnt_DivU_W("DivI", IR::Code::DiXI_W, false);}
       void putStmnt_DivU_W() {putStmnt_DivU_W("DivU", IR::Code::DiXU_W, false);}
       void putStmnt_Jcnd_Nil(char const *code = "Jcnd_Nil");
@@ -238,8 +240,9 @@ namespace GDCC::BC::DGE
       void trStmnt_Cnat();
       void trStmnt_DiXI_W() {trStmnt_DiXU_W();}
       void trStmnt_DiXU_W();
-      void trStmnt_DivI_W() {trStmnt_DivU_W();}
-      void trStmnt_DivU_W();
+      void trStmnt_DivF_W() {trStmntStkBin(true);}
+      void trStmnt_DivI_W() {trStmntStkBin(true);}
+      void trStmnt_DivU_W() {trStmntStkBin(true);}
       void trStmnt_Jcnd_Nil();
       void trStmnt_Jcnd_Tab();
       void trStmnt_Jcnd_Tru();

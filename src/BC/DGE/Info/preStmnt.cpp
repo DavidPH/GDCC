@@ -57,6 +57,7 @@ namespace GDCC::BC::DGE
 
       case IR::Code::DiXI_W: preStmnt_DiXI_W(); break;
       case IR::Code::DiXU_W: preStmnt_DiXU_W(); break;
+      case IR::Code::DivF_W: preStmnt_DivF_W(); break;
       case IR::Code::DivI_W: preStmnt_DivI_W(); break;
       case IR::Code::DivU_W: preStmnt_DivU_W(); break;
       case IR::Code::ModI_W: preStmnt_ModI_W(); break;

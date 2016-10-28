@@ -70,6 +70,7 @@ namespace GDCC::BC::DGE
 
       case IR::Code::DiXI_W: putStmnt_DiXI_W(); break;
       case IR::Code::DiXU_W: putStmnt_DiXU_W(); break;
+      case IR::Code::DivF_W: putStmnt_DivF_W(); break;
       case IR::Code::DivI_W: putStmnt_DivI_W(); break;
       case IR::Code::DivU_W: putStmnt_DivU_W(); break;
 

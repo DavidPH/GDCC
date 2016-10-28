@@ -235,6 +235,7 @@ namespace GDCC
          void addFunc_CmpU_NE_W(Core::FastU n);
          void addFunc_DiXI_W(Core::FastU n);
          void addFunc_DiXU_W(Core::FastU n);
+         void addFunc_DivF_W(Core::FastU n);
          void addFunc_MuXU_W(Core::FastU n);
          void addFunc_MulU_W(Core::FastU n);
          void addFunc_ShLU_W(Core::FastU n);

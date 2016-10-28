@@ -154,6 +154,167 @@ namespace GDCC::BC
 
       GDCC_BC_AddFuncEnd();
    }
+
+   //
+   // Info::addFunc_DivF_W
+   //
+   void Info::addFunc_DivF_W(Core::FastU n)
+   {
+      GDCC_BC_AddFuncPre({Code::DivF_W, n}, n, n * 2, n * 3 + 3, __FILE__);
+      GDCC_BC_AddFuncObjBin(n);
+
+      IR::Arg_LocReg lhi{GDCC_BC_ArgLit(n * 1 - 1)};
+      IR::Arg_LocReg rhi{GDCC_BC_ArgLit(n * 2 - 1)};
+      IR::Arg_LocReg man{GDCC_BC_ArgLit(n * 2)};
+      IR::Arg_LocReg mhi{GDCC_BC_ArgLit(n * 3 - 1)};
+      IR::Arg_LocReg sig{GDCC_BC_ArgLit(n * 3 + 0)};
+      IR::Arg_LocReg exp{GDCC_BC_ArgLit(n * 3 + 1)};
+      IR::Arg_LocReg tmp{GDCC_BC_ArgLit(n * 3 + 2)};
+
+      FloatInfo fi = getFloatInfo(n);
+
+      IR::Glyph labelL0  {prog, name + "$l0"};
+      IR::Glyph labelLINF{prog, name + "$linf"};
+      IR::Glyph labelLNaN{prog, name + "$lnan"};
+      IR::Glyph labelR0  {prog, name + "$r0"};
+      IR::Glyph labelRINF{prog, name + "$rinf"};
+      IR::Glyph labelRNaN{prog, name + "$rnan"};
+
+      IR::Glyph labelLoop   {prog, name + "$loop"};
+      IR::Glyph labelLoopNil{prog, name + "$loopnil"};
+
+      IR::Glyph label0  {prog, name + "$0"};
+      IR::Glyph labelINF{prog, name + "$inf"};
+      IR::Glyph labelNaN{prog, name + "$nan"};
+
+      // Determine result sign.
+      GDCC_BC_AddStmnt({Code::BOrX_W,    1}, stk, lhi, rhi);
+      GDCC_BC_AddStmnt({Code::BAnd_W,    1}, sig, stk, fi.maskSig);
+
+      // Clear operand signs.
+      GDCC_BC_AddStmnt({Code::BAnd_W,    1}, lhi, lhi, ~fi.maskSig);
+      GDCC_BC_AddStmnt({Code::BAnd_W,    1}, rhi, rhi, ~fi.maskSig);
+
+      // Check for special operands.
+      GDCC_BC_AddStmnt({Code::CmpI_GT_W, 1}, stk, lhi, fi.maskExp);
+      GDCC_BC_AddStmnt({Code::Jcnd_Tru,  1}, stk, labelLNaN);
+      GDCC_BC_AddStmnt({Code::Move_W,    1}, stk, rhi);
+      GDCC_BC_AddStmnt({Code::Jcnd_Tab,  1}, stk, 0, labelR0, fi.maskExp, labelRINF);
+      GDCC_BC_AddStmnt({Code::CmpI_GT_W, 1}, stk, stk, fi.maskExp);
+      GDCC_BC_AddStmnt({Code::Jcnd_Tru,  1}, stk, labelRNaN);
+      GDCC_BC_AddStmnt({Code::Move_W,    1}, stk, lhi);
+      GDCC_BC_AddStmnt({Code::Jcnd_Tab,  1}, stk, 0, labelL0, fi.maskExp, labelLINF);
+      GDCC_BC_AddStmnt({Code::Move_W,    1}, nul, stk);
+
+      // Determine result exponent. Will be adjusted, so no range check.
+      GDCC_BC_AddStmnt({Code::Move_W,    1}, stk, fi.offExp);
+      GDCC_BC_AddStmnt({Code::ShRI_W,    1}, stk, rhi, fi.bitsMan);
+      GDCC_BC_AddStmnt({Code::SubU_W,    1}, stk, stk, stk);
+      GDCC_BC_AddStmnt({Code::ShRI_W,    1}, stk, lhi, fi.bitsMan);
+      GDCC_BC_AddStmnt({Code::AddU_W,    1}, exp, stk, stk);
+
+      // Clear operand exponents and add implicit bit.
+      GDCC_BC_AddStmnt({Code::BAnd_W,    1}, stk, lhi, fi.maskMan);
+      GDCC_BC_AddStmnt({Code::BOrI_W,    1}, lhi, stk, fi.maskMan + 1);
+      GDCC_BC_AddStmnt({Code::BAnd_W,    1}, stk, rhi, fi.maskMan);
+      GDCC_BC_AddStmnt({Code::BOrI_W,    1}, rhi, stk, fi.maskMan + 1);
+
+      // Division loop.
+      GDCC_BC_AddStmnt({Code::Move_W,    n}, man, 0);
+      GDCC_BC_AddStmnt({Code::Move_W,    1}, tmp, fi.bitsManFull);
+
+      // Division check.
+      GDCC_BC_AddLabel(labelLoop);
+      GDCC_BC_AddStmnt({Code::CmpI_GE_W, n}, stk, lop, rop);
+      GDCC_BC_AddStmnt({Code::Jcnd_Nil,  1}, stk, labelLoopNil);
+      GDCC_BC_AddStmnt({Code::SubU_W,    n}, lop, lop, rop);
+      GDCC_BC_AddStmnt({Code::AddU_W,    1}, man, man, 1);
+
+      GDCC_BC_AddLabel(labelLoopNil);
+      GDCC_BC_AddStmnt({Code::ShLU_W,    n}, lop, lop, 1);
+      GDCC_BC_AddStmnt({Code::ShLU_W,    n}, man, man, 1);
+
+      GDCC_BC_AddStmnt({Code::SubU_W,    1}, tmp, tmp, 1);
+      GDCC_BC_AddStmnt({Code::Jcnd_Tru,  1}, tmp, labelLoop);
+
+      // Final division check.
+      GDCC_BC_AddStmnt({Code::CmpI_GE_W, n}, stk, lop, rop);
+      GDCC_BC_AddStmnt({Code::AddU_W,    1}, man, man, stk);
+
+      // Shift 1 into implicit bit.
+      GDCC_BC_AddStmnt({Code::Bclz_W,    n}, tmp, man);
+      GDCC_BC_AddStmnt({Code::SubU_W,    1}, tmp, tmp, fi.bitsExp);
+
+      GDCC_BC_AddStmnt({Code::ShLU_W,    n}, man, man, tmp);
+      GDCC_BC_AddStmnt({Code::SubU_W,    1}, exp, exp, tmp);
+
+      GDCC_BC_AddStmnt({Code::BAnd_W,    1}, mhi, mhi, fi.maskMan);
+
+      // Check for out of range exponent.
+      GDCC_BC_AddStmnt({Code::CmpI_GE_W, 1}, stk, exp, fi.maxExp);
+      GDCC_BC_AddStmnt({Code::Jcnd_Tru,  1}, stk, labelINF);
+      GDCC_BC_AddStmnt({Code::CmpI_LE_W, 1}, stk, exp, 0);
+      GDCC_BC_AddStmnt({Code::Jcnd_Tru,  1}, stk, label0);
+
+      // Return result.
+      GDCC_BC_AddStmnt({Code::Move_W,    n}, stk, man);
+      GDCC_BC_AddStmnt({Code::ShLU_W,    1}, stk, exp, fi.bitsMan);
+      GDCC_BC_AddStmnt({Code::BOrI_W,    1}, stk, stk, stk);
+      GDCC_BC_AddStmnt({Code::BOrI_W,    1}, stk, stk, sig);
+      GDCC_BC_AddStmnt({Code::Retn,      n}, stk);
+
+      // Return NaN.
+      GDCC_BC_AddLabel(labelNaN);
+      for(auto i = n - 1; i--;)
+         GDCC_BC_AddStmnt({Code::Move_W, 1}, stk, 0xFFFFFFFF);
+      GDCC_BC_AddStmnt({Code::BOrI_W,    1}, stk, sig, fi.maskExp | fi.maskMan);
+      GDCC_BC_AddStmnt({Code::Retn,      n}, stk);
+
+      // l is NaN. Therefore, result is l.
+      GDCC_BC_AddLabel(labelLNaN);
+      // l is 0, r is normal. Therefore, result is l.
+      GDCC_BC_AddLabel(labelL0);
+      // l is INF, r is normal. Therefore, result is l.
+      GDCC_BC_AddLabel(labelLINF);
+      GDCC_BC_AddStmnt({Code::Move_W,    n}, stk, lop);
+      GDCC_BC_AddStmnt({Code::BOrI_W,    1}, stk, stk, sig);
+      GDCC_BC_AddStmnt({Code::Retn,      n}, stk);
+
+      // r is NaN. Therefore, result is r.
+      GDCC_BC_AddLabel(labelRNaN);
+      GDCC_BC_AddStmnt({Code::Move_W,    n}, stk, rop);
+      GDCC_BC_AddStmnt({Code::BOrI_W,    1}, stk, stk, sig);
+      GDCC_BC_AddStmnt({Code::Retn,      n}, stk);
+
+      // r is 0.
+      GDCC_BC_AddLabel(labelR0);
+
+      // 0 / 0 = NaN.
+      GDCC_BC_AddStmnt({Code::Jcnd_Nil, n}, lop, labelNaN);
+
+      // Otherwise, result is INF.
+      GDCC_BC_AddLabel(labelINF);
+      for(auto i = n - 1; i--;)
+         GDCC_BC_AddStmnt({Code::Move_W, 1}, stk, 0);
+      GDCC_BC_AddStmnt({Code::BOrI_W,    1}, stk, sig, fi.maskExp);
+      GDCC_BC_AddStmnt({Code::Retn,      n}, stk);
+
+      // r is INF.
+      GDCC_BC_AddLabel(labelRINF);
+
+      // INF / INF = NaN.
+      GDCC_BC_AddStmnt({Code::CmpU_EQ_W, 1}, stk, lhi, fi.maskMan);
+      GDCC_BC_AddStmnt({Code::Jcnd_Tru,  1}, stk, labelNaN);
+
+      // Otherwie result is 0.
+      GDCC_BC_AddLabel(label0);
+      for(auto i = n - 1; i--;)
+         GDCC_BC_AddStmnt({Code::Move_W, 1}, stk, 0);
+      GDCC_BC_AddStmnt({Code::Move_W,    1}, stk, sig);
+      GDCC_BC_AddStmnt({Code::Retn,      n}, stk);
+
+      GDCC_BC_AddFuncEnd();
+   }
 }
 
 // EOF
