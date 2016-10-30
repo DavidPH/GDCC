@@ -89,6 +89,7 @@ namespace GDCC::BC::DGE
       case IR::Code::Move_B: putStmnt_Move_B(); break;
       case IR::Code::Move_W: putStmnt_Move_W(); break;
       case IR::Code::MuXU_W: putStmnt_MuXU_W(); break;
+      case IR::Code::MulF_W: putStmnt_MulF_W(); break;
       case IR::Code::MulI_W: putStmnt_MulI_W(); break;
       case IR::Code::MulU_W: putStmnt_MulU_W(); break;
       case IR::Code::NegF_W: putStmnt_NegF_W(); break;

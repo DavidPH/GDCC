@@ -77,9 +77,10 @@ namespace GDCC::BC::DGE
       void preStmnt_DivU_W() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
       void preStmnt_ModI_W() {preStmntStkBin(2, &Info::addFunc_DiXI_W);}
       void preStmnt_ModU_W() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
-      void preStmnt_MuXU_W();
-      void preStmnt_MulI_W() {preStmnt_MulU_W();}
-      void preStmnt_MulU_W();
+      void preStmnt_MuXU_W() {preStmntStkBin(2, &Info::addFunc_MuXU_W);}
+      void preStmnt_MulF_W() {preStmntStkBin(1, &Info::addFunc_MulF_W);}
+      void preStmnt_MulI_W() {preStmntStkBin(2, &Info::addFunc_MulU_W);}
+      void preStmnt_MulU_W() {preStmntStkBin(2, &Info::addFunc_MulU_W);}
       void preStmnt_NegI_W() {preStmntStkUna(2, &Info::addFunc_NegI_W);}
       void preStmnt_ShLU_W();
       void preStmnt_ShRI_W();
@@ -171,7 +172,8 @@ namespace GDCC::BC::DGE
       void putStmnt_ModU_W() {putStmnt_DivU_W("ModU", IR::Code::DiXU_W, true);}
       void putStmnt_Move_B();
       void putStmnt_Move_W();
-      void putStmnt_MuXU_W();
+      void putStmnt_MuXU_W() {putStmntStkBin("MuXU");}
+      void putStmnt_MulF_W() {putStmntStkBin();}
       void putStmnt_MulI_W() {putStmnt_MulU_W();}
       void putStmnt_MulU_W();
       void putStmnt_NegF_W();
@@ -261,8 +263,9 @@ namespace GDCC::BC::DGE
       void trStmnt_Move_B();
       void trStmnt_Move_W();
       void trStmnt_MuXU_W();
-      void trStmnt_MulI_W() {trStmnt_MulU_W();}
-      void trStmnt_MulU_W();
+      void trStmnt_MulF_W() {trStmntStkBin(false);}
+      void trStmnt_MulI_W() {trStmntStkBin(false);}
+      void trStmnt_MulU_W() {trStmntStkBin(false);}
       void trStmnt_NegF_W() {trStmntStkUna();}
       void trStmnt_NegI_W() {trStmntStkUna();}
       void trStmnt_Pltn();

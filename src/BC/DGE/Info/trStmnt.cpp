@@ -86,6 +86,7 @@ namespace GDCC::BC::DGE
       case IR::Code::Move_B: trStmnt_Move_B(); break;
       case IR::Code::Move_W: trStmnt_Move_W(); break;
       case IR::Code::MuXU_W: trStmnt_MuXU_W(); break;
+      case IR::Code::MulF_W: trStmnt_MulF_W(); break;
       case IR::Code::MulI_W: trStmnt_MulI_W(); break;
       case IR::Code::MulU_W: trStmnt_MulU_W(); break;
       case IR::Code::NegF_W: trStmnt_NegF_W(); break;
