@@ -88,6 +88,8 @@ namespace GDCC::BC::DGE
       case IR::Code::MuXU_W: trStmnt_MuXU_W(); break;
       case IR::Code::MulI_W: trStmnt_MulI_W(); break;
       case IR::Code::MulU_W: trStmnt_MulU_W(); break;
+      case IR::Code::NegF_W: trStmnt_NegF_W(); break;
+      case IR::Code::NegI_W: trStmnt_NegI_W(); break;
 
       case IR::Code::Pltn: trStmnt_Pltn(); break;
       case IR::Code::Retn: trStmnt_Retn(); break;
@@ -135,6 +137,14 @@ namespace GDCC::BC::DGE
    void Info::trStmntStkCmp(bool ordered)
    {
       trStmntStk3(1, stmnt->op.size, ordered);
+   }
+
+   //
+   // Info::trStmntStkUna
+   //
+   void Info::trStmntStkUna()
+   {
+      trStmntStk2(stmnt->op.size, stmnt->op.size);
    }
 
    //

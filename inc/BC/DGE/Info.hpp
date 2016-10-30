@@ -80,6 +80,7 @@ namespace GDCC::BC::DGE
       void preStmnt_MuXU_W();
       void preStmnt_MulI_W() {preStmnt_MulU_W();}
       void preStmnt_MulU_W();
+      void preStmnt_NegI_W() {preStmntStkUna(2, &Info::addFunc_NegI_W);}
       void preStmnt_ShLU_W();
       void preStmnt_ShRI_W();
       void preStmnt_ShRU_W();
@@ -89,6 +90,7 @@ namespace GDCC::BC::DGE
 
       void preStmntStkBin(Core::FastU min, AddFunc add);
       void preStmntStkCmp(Core::FastU min, AddFunc add) {preStmntStkBin(min, add);}
+      void preStmntStkUna(Core::FastU min, AddFunc add) {preStmntStkBin(min, add);}
 
       virtual void put();
 
@@ -172,6 +174,8 @@ namespace GDCC::BC::DGE
       void putStmnt_MuXU_W();
       void putStmnt_MulI_W() {putStmnt_MulU_W();}
       void putStmnt_MulU_W();
+      void putStmnt_NegF_W();
+      void putStmnt_NegI_W() {putStmntStkUna("NegI");}
       void putStmnt_Pltn();
       void putStmnt_Retn();
       void putStmnt_ShLU_W(char const *code = "ShLU");
@@ -199,6 +203,7 @@ namespace GDCC::BC::DGE
 
       void putStmntStkBin(char const *code = nullptr);
       void putStmntStkCmp(int res0, char const *code = nullptr);
+      void putStmntStkUna(char const *code = nullptr);
 
       virtual void putStr();
       using InfoBase::putStr;
@@ -258,6 +263,8 @@ namespace GDCC::BC::DGE
       void trStmnt_MuXU_W();
       void trStmnt_MulI_W() {trStmnt_MulU_W();}
       void trStmnt_MulU_W();
+      void trStmnt_NegF_W() {trStmntStkUna();}
+      void trStmnt_NegI_W() {trStmntStkUna();}
       void trStmnt_Pltn();
       void trStmnt_Retn();
       void trStmnt_ShLU_W();
@@ -271,6 +278,7 @@ namespace GDCC::BC::DGE
 
       void trStmntStkBin(bool ordered);
       void trStmntStkCmp(bool ordered);
+      void trStmntStkUna();
 
       void trStmntTmp(Core::FastU n);
 
