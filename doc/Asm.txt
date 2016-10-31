@@ -524,10 +524,14 @@ Statement Names
 Syntax:
   statement-name:
     <Nop>
+    <AdXU_W>
     <AddF_W>
     <AddI_W>
     <AddU_W>
-    <AndU_W>
+    <BAnd_W>
+    <BNot_W>
+    <BOrI_W>
+    <BOrX_W>
     <Call>
     <Casm>
     <CmpF_EQ_W>
@@ -560,10 +564,12 @@ Syntax:
     <DivF_W>
     <DivI_W>
     <DivX_W>
-    <InvU_W>
     <Jcnd_Nil>
     <Jcnd_Tru>
     <Jump>
+    <LAnd>
+    <LNot>
+    <LOrI>
     <ModI_W>
     <Move_W>
     <MuXU_W>
@@ -572,9 +578,6 @@ Syntax:
     <MulX_W>
     <NegF_W>
     <NegI_W>
-    <NotU_W>
-    <OrIU_W>
-    <OrXU_W>
     <Pltn>
     <Retn>
     <ShLF_W>
@@ -625,14 +628,44 @@ Semantics:
   Adds rop to lop and stores the result in dst.
 
 -----------------------------------------------------------
-AndU_W (Bitwise And Unsigned Integer Word)
+BAnd_W (Bitwise And Word)
 -----------------------------------------------------------
 
 Arguments:
-  AndU_W N, desination[N] dst, source[N] lop, source[N] rop
+  BAnd_W N, desination[N] dst, source[N] lop, source[N] rop
 
 Semantics:
   Bitwise ands lop with rop and stores the result in dst.
+
+-----------------------------------------------------------
+BNot_W (Bitwise Invert Word)
+-----------------------------------------------------------
+
+Argument:
+  BNot_W N, destination[N] dst, source[N] src
+
+Semantics:
+  Bitwise inverts src and stores the result in dst.
+
+-----------------------------------------------------------
+BOrI_W (Bitwise Inclusive Or Word)
+-----------------------------------------------------------
+
+Arguments:
+  BOrI_W N, destination[N] dst, source[N] lop, source[N] rop
+
+Semantics:
+  Bitwise inclusive ors lop with rop and stores the result in dst.
+
+-----------------------------------------------------------
+BOrX_W (Bitwise Exclusive Or Word)
+-----------------------------------------------------------
+
+Arguments:
+  BOrX_W N, destination[N] dst, source[N] lop, source[N] rop
+
+Semantics:
+  Bitwise exclusive ors lop with rop and stores the result in dst.
 
 -----------------------------------------------------------
 Call
@@ -767,16 +800,6 @@ Semantics:
   Divides lop by rop and stores the quotient in dst.
 
 -----------------------------------------------------------
-InvU_W (Bitwise Invert Unsigned Integer Word
------------------------------------------------------------
-
-Argument:
-  InvU_W N, destination[N] dst, source[N] src
-
-Semantics:
-  Bitwise inverts src and stores the result in dst.
-
------------------------------------------------------------
 Jcnd_Nil (Conditional Jump, Nil)
 Jcnd_Tru (Conditional Jump, True)
 -----------------------------------------------------------
@@ -842,6 +865,36 @@ Semantics:
   Branches execution to addr.
 
 -----------------------------------------------------------
+LAnd (Logical And)
+-----------------------------------------------------------
+
+Arguments:
+  LAnd N, destination[1] dst, source[N] lop, source[N] rop
+
+Semantics:
+  Logically ands lop with rop and stores the result in dst.
+
+-----------------------------------------------------------
+LNot (Logical Invert)
+-----------------------------------------------------------
+
+Arguments:
+  LNot N, destination[1] dst, source[N] src
+
+Semantics:
+  Logically inverts src and stores the result in dst.
+
+-----------------------------------------------------------
+LOrI (Logical Inclusive Or)
+-----------------------------------------------------------
+
+Arguments:
+  LOrI N, destination[1] dst, source[N] lop, source[N] rop
+
+Semantics:
+  Logically inclusive ors lop with rop and stores the result in dst.
+
+-----------------------------------------------------------
 ModI_W (Modulus Signed Integer Word)
 ModU_W (Modulus Unsigned Integer Word)
 -----------------------------------------------------------
@@ -898,36 +951,6 @@ Arguments:
 
 Semantics:
   Negates src and stores the result in dst.
-
------------------------------------------------------------
-NotU_W (Logical Invert Unsigned Integer Word)
------------------------------------------------------------
-
-Arguments:
-  NotU_W N, destination[1] dst, source[N] src
-
-Semantics:
-  Logically inverts src and stores the result in dst.
-
------------------------------------------------------------
-OrIU_W (Bitwise Inclusive Or Unsigned Integer Word)
------------------------------------------------------------
-
-Arguments:
-  OrIU_W N, destination[N] dst, source[N] lop, source[N] rop
-
-Semantics:
-  Bitwise inclusive ors lop with rop and stores the result in dst.
-
------------------------------------------------------------
-OrXU_W (Bitwise Exclusive Or Unsigned Integer Word)
------------------------------------------------------------
-
-Arguments:
-  OrXU_W N, destination[N] dst, source[N] lop, source[N] rop
-
-Semantics:
-  Bitwise exclusive ors lop with rop and stores the result in dst.
 
 -----------------------------------------------------------
 Pltn (Pointer, Local To Near)
@@ -1599,10 +1622,14 @@ Grammar
 
   statement-name:
     <Nop>
+    <AdXU_W>
     <AddF_W>
     <AddI_W>
     <AddU_W>
-    <AndU_W>
+    <BAnd_W>
+    <BNot_W>
+    <BOrI_W>
+    <BOrX_W>
     <Call>
     <Casm>
     <CmpF_EQ_W>
@@ -1633,10 +1660,12 @@ Grammar
     <DivF_W>
     <DivI_W>
     <DivX_W>
-    <InvU_W>
     <Jcnd_Nil>
     <Jcnd_Tru>
     <Jump>
+    <LAnd>
+    <LNot>
+    <LOrI>
     <ModI_W>
     <Move_W>
     <MulF_W>
@@ -1644,9 +1673,6 @@ Grammar
     <MulX_W>
     <NegF_W>
     <NegI_W>
-    <NotU_W>
-    <OrIU_W>
-    <OrXU_W>
     <Pltn>
     <Retn>
     <ShLF_W>
