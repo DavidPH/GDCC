@@ -98,7 +98,9 @@ namespace GDCC::BC::DGE
       case IR::Code::Pltn: putStmnt_Pltn(); break;
       case IR::Code::Retn: putStmnt_Retn(); break;
 
+      case IR::Code::ShLF_W: putStmnt_ShLF_W(); break;
       case IR::Code::ShLU_W: putStmnt_ShLU_W(); break;
+      case IR::Code::ShRF_W: putStmnt_ShRF_W(); break;
       case IR::Code::ShRI_W: putStmnt_ShRI_W(); break;
       case IR::Code::ShRU_W: putStmnt_ShRU_W(); break;
       case IR::Code::SuXU_W: putStmnt_SuXU_W(); break;
@@ -375,6 +377,20 @@ namespace GDCC::BC::DGE
          return putCode(code);
 
       putStmntCall(getFuncName(stmnt->op), stmnt->op.size * 2);
+   }
+
+   //
+   // Info::putStmntStkShi
+   //
+   void Info::putStmntStkShi(char const *code)
+   {
+      if(stmnt->op.size == 0)
+         return;
+
+      if(stmnt->op.size == 1 && code)
+         return putCode(code);
+
+      putStmntCall(getFuncName(stmnt->op), stmnt->op.size + 1);
    }
 
    //

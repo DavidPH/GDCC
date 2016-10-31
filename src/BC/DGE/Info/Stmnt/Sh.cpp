@@ -29,8 +29,9 @@ namespace GDCC::BC::DGE
       if(stmnt->op.size <= 1)
          return;
 
-      if(stmnt->args[2].a == IR::ArgBase::Stk)
-         addFunc_ShLU_W(stmnt->op.size);
+      // TODO: Inline literal shift.
+
+      addFunc_ShLU_W(stmnt->op.size);
    }
 
    //
@@ -41,8 +42,9 @@ namespace GDCC::BC::DGE
       if(stmnt->op.size <= 1)
          return;
 
-      if(stmnt->args[2].a == IR::ArgBase::Stk)
-         addFunc_ShRI_W(stmnt->op.size);
+      // TODO: Inline literal shift.
+
+      addFunc_ShRI_W(stmnt->op.size);
    }
 
    //
@@ -53,8 +55,9 @@ namespace GDCC::BC::DGE
       if(stmnt->op.size <= 1)
          return;
 
-      if(stmnt->args[2].a == IR::ArgBase::Stk)
-         addFunc_ShRU_W(stmnt->op.size);
+      // TODO: Inline literal shift.
+
+      addFunc_ShRU_W(stmnt->op.size);
    }
 
    //

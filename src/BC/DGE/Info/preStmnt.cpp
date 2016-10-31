@@ -67,7 +67,9 @@ namespace GDCC::BC::DGE
       case IR::Code::MulI_W: preStmnt_MulI_W(); break;
       case IR::Code::MulU_W: preStmnt_MulU_W(); break;
       case IR::Code::NegI_W: preStmnt_NegI_W(); break;
+      case IR::Code::ShLF_W: preStmnt_ShLF_W(); break;
       case IR::Code::ShLU_W: preStmnt_ShLU_W(); break;
+      case IR::Code::ShRF_W: preStmnt_ShRF_W(); break;
       case IR::Code::ShRI_W: preStmnt_ShRI_W(); break;
       case IR::Code::ShRU_W: preStmnt_ShRU_W(); break;
       case IR::Code::SubF_W: preStmnt_SubF_W(); break;

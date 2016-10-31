@@ -240,7 +240,9 @@ namespace GDCC
          void addFunc_MulF_W(Core::FastU n);
          void addFunc_MulU_W(Core::FastU n);
          void addFunc_NegI_W(Core::FastU n);
+         void addFunc_ShLF_W(Core::FastU n);
          void addFunc_ShLU_W(Core::FastU n);
+         void addFunc_ShRF_W(Core::FastU n);
          void addFunc_ShRI_W(Core::FastU n);
          void addFunc_ShRU_W(Core::FastU n);
          void addFunc_SubF_W(Core::FastU n);
@@ -290,6 +292,7 @@ namespace GDCC
          void addFunc_CmpF_W(Core::FastU n, IR::Code code, IR::Code codePos, IR::Code codeNeg);
          void addFunc_CmpU_EQ_W(Core::FastU n, IR::Code codeCmp, IR::Code codeAnd);
          void addFunc_CmpU_GE_W(Core::FastU n, IR::Code codeCmpHi, IR::Code codeCmpLo);
+         void addFunc_ShLF_W(Core::FastU n, IR::Code code, bool left);
          void addFunc_ShLU_W(Core::FastU n, IR::Code code, bool left, bool sign);
       };
    }

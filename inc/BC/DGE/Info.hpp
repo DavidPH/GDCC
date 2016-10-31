@@ -82,7 +82,9 @@ namespace GDCC::BC::DGE
       void preStmnt_MulI_W() {preStmntStkBin(2, &Info::addFunc_MulU_W);}
       void preStmnt_MulU_W() {preStmntStkBin(2, &Info::addFunc_MulU_W);}
       void preStmnt_NegI_W() {preStmntStkUna(2, &Info::addFunc_NegI_W);}
+      void preStmnt_ShLF_W() {preStmntStkShi(1, &Info::addFunc_ShLF_W);}
       void preStmnt_ShLU_W();
+      void preStmnt_ShRF_W() {preStmntStkShi(1, &Info::addFunc_ShRF_W);}
       void preStmnt_ShRI_W();
       void preStmnt_ShRU_W();
       void preStmnt_SubF_W() {preStmntStkBin(1, &Info::addFunc_SubF_W);}
@@ -91,6 +93,7 @@ namespace GDCC::BC::DGE
 
       void preStmntStkBin(Core::FastU min, AddFunc add);
       void preStmntStkCmp(Core::FastU min, AddFunc add) {preStmntStkBin(min, add);}
+      void preStmntStkShi(Core::FastU min, AddFunc add) {preStmntStkBin(min, add);}
       void preStmntStkUna(Core::FastU min, AddFunc add) {preStmntStkBin(min, add);}
 
       virtual void put();
@@ -180,7 +183,9 @@ namespace GDCC::BC::DGE
       void putStmnt_NegI_W() {putStmntStkUna("NegI");}
       void putStmnt_Pltn();
       void putStmnt_Retn();
+      void putStmnt_ShLF_W() {putStmntStkShi();}
       void putStmnt_ShLU_W(char const *code = "ShLU");
+      void putStmnt_ShRF_W() {putStmntStkShi();}
       void putStmnt_ShRI_W() {putStmnt_ShLU_W("ShRI");}
       void putStmnt_ShRU_W() {putStmnt_ShLU_W("ShRU");}
       void putStmnt_SuXU_W();
@@ -205,6 +210,7 @@ namespace GDCC::BC::DGE
 
       void putStmntStkBin(char const *code = nullptr);
       void putStmntStkCmp(int res0, char const *code = nullptr);
+      void putStmntStkShi(char const *code = nullptr);
       void putStmntStkUna(char const *code = nullptr);
 
       virtual void putStr();
@@ -270,7 +276,9 @@ namespace GDCC::BC::DGE
       void trStmnt_NegI_W() {trStmntStkUna();}
       void trStmnt_Pltn();
       void trStmnt_Retn();
+      void trStmnt_ShLF_W() {trStmntStkShi();}
       void trStmnt_ShLU_W();
+      void trStmnt_ShRF_W() {trStmntStkShi();}
       void trStmnt_ShRI_W() {trStmnt_ShLU_W();}
       void trStmnt_ShRU_W() {trStmnt_ShLU_W();}
       void trStmnt_SuXU_W();
@@ -281,6 +289,7 @@ namespace GDCC::BC::DGE
 
       void trStmntStkBin(bool ordered);
       void trStmntStkCmp(bool ordered);
+      void trStmntStkShi();
       void trStmntStkUna();
 
       void trStmntTmp(Core::FastU n);
