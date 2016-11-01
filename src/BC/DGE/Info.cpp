@@ -113,6 +113,10 @@ namespace GDCC::BC::DGE
          CheckArg(*arg.aSta.idx, pos);
          break;
 
+      case IR::ArgBase::StrArs:
+         CheckArg(*arg.aStrArs.idx, pos);
+         break;
+
       default:
          std::cerr << "ERROR: " << pos << ": DGE cannot use Arg: "
             << arg.a << '\n';

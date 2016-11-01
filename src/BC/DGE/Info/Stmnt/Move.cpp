@@ -183,6 +183,16 @@ namespace GDCC::BC::DGE
          putCode("Push_Ptr");
          break;
 
+      case IR::ArgBase::StrArs:
+         if(stmnt->args[1].aStrArs.off)
+         {
+            putCode("Push_Lit", stmnt->args[1].aStrArs.off);
+            putCode("AddU");
+         }
+
+         putCode("Push_Str");
+         break;
+
       default:
          putStmntPushArg(stmnt->args[1], 0);
          break;
