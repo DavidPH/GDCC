@@ -230,7 +230,11 @@ static ssize_t FILE_fn_mem_read_str(void *cookie_, char *buf, size_t size)
    if(size > avail)
       size = avail;
 
+   #if __GDCC_Family__ZDACS__
    ACS_StrArsCpyToGlobalCharRange((int)buf, __GDCC__Sta, 0, size, cookie->mem + cookie->pos);
+   #else
+   // TODO
+   #endif
    cookie->pos += size;
    return size;
 }

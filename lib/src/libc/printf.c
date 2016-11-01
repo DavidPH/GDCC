@@ -823,7 +823,7 @@ int __vnprintf_str(char __str_ars const *restrict format, va_list arg)
 
    return ret;
    #else
-   return vfprintf(stdout, format, arg);
+   return __vfprintf_str(stdout, format, arg);
    #endif
 }
 
