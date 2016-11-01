@@ -14,7 +14,7 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/Statement.hpp"
+#include "IR/Block.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -43,12 +43,21 @@ namespace GDCC
       {
          CheckArgC(stmnt, 3);
 
-         if(ordered && stmnt->args[1].a != IR::ArgBase::Stk &&
-            stmnt->args[2].a == IR::ArgBase::Stk)
-            throw Core::ExceptStr(stmnt->pos, "trStmntStk3 disorder");
-
          moveArgStk_dst(stmnt->args[0], sizeDst);
-         moveArgStk_src(stmnt->args[1], sizeSrc);
+
+         try
+         {
+            moveArgStk_src(stmnt->args[1], sizeSrc);
+         }
+         catch(ResetStmnt const &)
+         {
+            if(ordered && stmnt->next->args[2].a == IR::ArgBase::Stk)
+               block->addStatementArgs(stmnt->next, {IR::Code::Swap_W, sizeSrc},
+                  IR::Arg_Stk(), IR::Arg_Stk());
+
+            throw;
+         }
+
          moveArgStk_src(stmnt->args[2], sizeSrc);
       }
 
