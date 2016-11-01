@@ -119,9 +119,6 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_Pltn()
    {
-      if(stmnt->op.size != 1)
-         throw Core::ExceptStr(stmnt->pos, "unsupported size for Pltn");
-
       CheckArgC(stmnt, 2);
       moveArgStk_dst(stmnt->args[0], stmnt->op.size);
       moveArgStk_src(stmnt->args[1], stmnt->op.size);
