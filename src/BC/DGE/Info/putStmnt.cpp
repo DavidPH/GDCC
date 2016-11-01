@@ -84,6 +84,7 @@ namespace GDCC::BC::DGE
       case IR::Code::LNot: putStmnt_LNot(); break;
       case IR::Code::LOrI: putStmnt_LOrI(); break;
 
+      case IR::Code::Copy_W: putStmnt_Copy_W(); break;
       case IR::Code::ModI_W: putStmnt_ModI_W(); break;
       case IR::Code::ModU_W: putStmnt_ModU_W(); break;
       case IR::Code::Move_B: putStmnt_Move_B(); break;

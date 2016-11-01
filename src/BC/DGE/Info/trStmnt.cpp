@@ -65,6 +65,7 @@ namespace GDCC::BC::DGE
       case IR::Code::Call: trStmnt_Call(); break;
       case IR::Code::Cnat: trStmnt_Cnat(); break;
 
+      case IR::Code::Copy_W: trStmnt_Copy_W(); break;
       case IR::Code::DiXI_W: trStmnt_DiXI_W(); break;
       case IR::Code::DiXU_W: trStmnt_DiXU_W(); break;
       case IR::Code::DivF_W: trStmnt_DivF_W(); break;

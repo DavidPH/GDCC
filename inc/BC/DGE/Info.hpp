@@ -158,6 +158,7 @@ namespace GDCC::BC::DGE
       void putStmnt_CmpU_LT_W() {putStmntStkCmp(0, "CmpU_LT");}
       void putStmnt_CmpU_NE_W() {putStmnt_CmpU_EQ_W(IR::Code::CmpU_NE_W);}
       void putStmnt_Cnat();
+      void putStmnt_Copy_W();
       void putStmnt_DiXI_W() {putStmntStkBin("DiXI");}
       void putStmnt_DiXU_W() {putStmntStkBin("DiXU");}
       void putStmnt_DivF_W() {putStmntStkBin();}
@@ -251,6 +252,7 @@ namespace GDCC::BC::DGE
       void trStmnt_CmpU_LT_W() {trStmntStkCmp(true);}
       void trStmnt_CmpU_NE_W() {trStmnt_CmpU_EQ_W();}
       void trStmnt_Cnat();
+      void trStmnt_Copy_W();
       void trStmnt_DiXI_W() {trStmnt_DiXU_W();}
       void trStmnt_DiXU_W();
       void trStmnt_DivF_W() {trStmntStkBin(true);}

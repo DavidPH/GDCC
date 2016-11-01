@@ -24,6 +24,20 @@
 namespace GDCC::BC::DGE
 {
    //
+   // Info::putStmnt_Copy_W
+   //
+   void Info::putStmnt_Copy_W()
+   {
+      if(stmnt->op.size == 0)
+         return;
+
+      if(stmnt->op.size == 1)
+         return putCode("Copy");
+
+      throw Core::ExceptStr(stmnt->pos, "unsupported size for Copy_W");
+   }
+
+   //
    // Info::putStmnt_Move_B
    //
    void Info::putStmnt_Move_B()
@@ -228,6 +242,16 @@ namespace GDCC::BC::DGE
       putStmntDropTmp(0, stmnt->op.size * 2);
       putStmntPushTmp(stmnt->op.size, stmnt->op.size * 2);
       putStmntPushTmp(0, stmnt->op.size);
+   }
+
+   //
+   // Info::trStmnt_Copy_W
+   //
+   void Info::trStmnt_Copy_W()
+   {
+      CheckArgC(stmnt, 2);
+      CheckArgB(stmnt, 0, IR::ArgBase::Stk);
+      CheckArgB(stmnt, 1, IR::ArgBase::Stk);
    }
 
    //
