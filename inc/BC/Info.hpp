@@ -70,6 +70,20 @@ namespace GDCC
       typedef Info InfoBase;
 
       //
+      // FixedInfo
+      //
+      class FixedInfo
+      {
+      public:
+         Core::FastU bitsF;
+         Core::FastU bitsI;
+         Core::FastU bitsS;
+
+         Core::FastU wordsF;
+         Core::FastU wordsI;
+      };
+
+      //
       // FloatInfo
       //
       class FloatInfo
@@ -236,9 +250,13 @@ namespace GDCC
          void addFunc_DiXI_W(Core::FastU n);
          void addFunc_DiXU_W(Core::FastU n);
          void addFunc_DivF_W(Core::FastU n);
+         void addFunc_DivK_W(Core::FastU n);
+         void addFunc_DivX_W(Core::FastU n);
          void addFunc_MuXU_W(Core::FastU n);
          void addFunc_MulF_W(Core::FastU n);
+         void addFunc_MulK_W(Core::FastU n);
          void addFunc_MulU_W(Core::FastU n);
+         void addFunc_MulX_W(Core::FastU n);
          void addFunc_NegI_W(Core::FastU n);
          void addFunc_ShLF_W(Core::FastU n);
          void addFunc_ShLU_W(Core::FastU n);
@@ -247,6 +265,8 @@ namespace GDCC
          void addFunc_ShRU_W(Core::FastU n);
          void addFunc_SubF_W(Core::FastU n);
          void addFunc_SubU_W(Core::FastU n);
+
+         virtual FixedInfo getFixedInfo(Core::FastU n, bool s);
 
          // Default behavior is to assume IEEE float layout and 32-bit word.
          virtual FloatInfo getFloatInfo(Core::FastU n);
@@ -292,6 +312,7 @@ namespace GDCC
          void addFunc_CmpF_W(Core::FastU n, IR::Code code, IR::Code codePos, IR::Code codeNeg);
          void addFunc_CmpU_EQ_W(Core::FastU n, IR::Code codeCmp, IR::Code codeAnd);
          void addFunc_CmpU_GE_W(Core::FastU n, IR::Code codeCmpHi, IR::Code codeCmpLo);
+         void addFunc_DivX_W(Core::FastU n, IR::Code code, IR::Code codeDiv, bool sign);
          void addFunc_ShLF_W(Core::FastU n, IR::Code code, bool left);
          void addFunc_ShLU_W(Core::FastU n, IR::Code code, bool left, bool sign);
       };

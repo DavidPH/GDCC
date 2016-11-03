@@ -70,7 +70,9 @@ namespace GDCC::BC::DGE
       case IR::Code::DiXU_W: trStmnt_DiXU_W(); break;
       case IR::Code::DivF_W: trStmnt_DivF_W(); break;
       case IR::Code::DivI_W: trStmnt_DivI_W(); break;
+      case IR::Code::DivK_W: trStmnt_DivK_W(); break;
       case IR::Code::DivU_W: trStmnt_DivU_W(); break;
+      case IR::Code::DivX_W: trStmnt_DivX_W(); break;
 
       case IR::Code::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
       case IR::Code::Jcnd_Tab: trStmnt_Jcnd_Tab(); break;
@@ -89,7 +91,9 @@ namespace GDCC::BC::DGE
       case IR::Code::MuXU_W: trStmnt_MuXU_W(); break;
       case IR::Code::MulF_W: trStmnt_MulF_W(); break;
       case IR::Code::MulI_W: trStmnt_MulI_W(); break;
+      case IR::Code::MulK_W: trStmnt_MulK_W(); break;
       case IR::Code::MulU_W: trStmnt_MulU_W(); break;
+      case IR::Code::MulX_W: trStmnt_MulX_W(); break;
       case IR::Code::NegF_W: trStmnt_NegF_W(); break;
       case IR::Code::NegI_W: trStmnt_NegI_W(); break;
 

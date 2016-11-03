@@ -311,65 +311,10 @@ namespace GDCC
                   return;
             }
 
-            Core::String name = getCallName();
-            auto newFunc = preStmntCallDef(name, stmnt->op.size * 2,
-               stmnt->op.size * 2, stmnt->op.size * 2, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            Core::FastU fracWords;
-            Core::FastU divWords;
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
-
-            IR::Arg_Nul nul{};
-            IR::Arg_Stk stk{};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            if(stmnt->op.size == 1)
-            {
-               fracWords = 1;
-               divWords  = 2;
-
-               AS_Stmnt({IR::Code::Move_W, 1}, stk, lop);
-               AS_Stmnt({IR::Code::Move_W, 1}, stk, 0);
-               AS_Stmnt({IR::Code::ShLU_W, 1}, stk, stk, 16);
-
-               AS_Stmnt({IR::Code::Move_W, 1}, stk, rop);
-               AS_Stmnt({IR::Code::Move_W, 1}, stk, 0);
-            }
+            if(sign)
+               addFunc_DivX_W(stmnt->op.size);
             else
-            {
-               fracWords = stmnt->op.size / 2;
-               divWords  = stmnt->op.size + fracWords;
-
-               AS_Stmnt({IR::Code::Move_W, fracWords},      stk, 0);
-               AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, lop);
-
-               AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rop);
-               if(sign)
-               {
-                  AS_Stmnt({IR::Code::Copy_W, 1}, stk, stk);
-                  AS_Stmnt({IR::Code::ShRI_W, 1}, stk, stk, 31);
-                  for(Core::FastU n = fracWords - 1; n--;)
-                     AS_Stmnt({IR::Code::Copy_W, 1}, stk, stk);
-               }
-               else
-                  AS_Stmnt({IR::Code::Move_W, fracWords}, stk, 0);
-            }
-
-            AS_Stmnt({code,             divWords},  stk, stk, stk);
-            AS_Stmnt({IR::Code::Move_W, divWords},  nul, stk);
-            AS_Stmnt({IR::Code::Move_W, fracWords}, nul, stk);
-
-            AS_Stmnt({IR::Code::Retn, stmnt->op.size}, stk);
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+               addFunc_DivK_W(stmnt->op.size);
          }
 
          //

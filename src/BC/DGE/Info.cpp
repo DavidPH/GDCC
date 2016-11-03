@@ -38,6 +38,30 @@ namespace GDCC::BC::DGE
    }
 
    //
+   // Info::getFixedInfo
+   //
+   FixedInfo Info::getFixedInfo(Core::FastU n, bool s)
+   {
+      FixedInfo fi;
+
+      fi.bitsS = s;
+
+      switch(n)
+      {
+      case  1: fi.bitsF =  7; break;
+      case  2: fi.bitsF = 15; break;
+      default: fi.bitsF = 32; break;
+      }
+
+      fi.bitsI = n * 32 - fi.bitsF - fi.bitsS;
+
+      fi.wordsF = (fi.bitsF + 31) / 32;
+      fi.wordsI = (fi.bitsI + 31) / 32;
+
+      return fi;
+   }
+
+   //
    // Info::getStkPtrIdx
    //
    Core::FastU Info::getStkPtrIdx()

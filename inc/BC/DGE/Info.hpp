@@ -39,6 +39,8 @@ namespace GDCC::BC::DGE
 
       virtual void genObj();
 
+      virtual FixedInfo getFixedInfo(Core::FastU n, bool s);
+
       Core::FastU getStkPtrIdx();
 
       bool isPushArg(IR::Arg const &arg);
@@ -74,13 +76,17 @@ namespace GDCC::BC::DGE
       void preStmnt_DiXU_W() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
       void preStmnt_DivF_W() {preStmntStkBin(1, &Info::addFunc_DivF_W);}
       void preStmnt_DivI_W() {preStmntStkBin(2, &Info::addFunc_DiXI_W);}
+      void preStmnt_DivK_W() {preStmntStkBin(1, &Info::addFunc_DivK_W);}
       void preStmnt_DivU_W() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
+      void preStmnt_DivX_W() {preStmntStkBin(1, &Info::addFunc_DivX_W);}
       void preStmnt_ModI_W() {preStmntStkBin(2, &Info::addFunc_DiXI_W);}
       void preStmnt_ModU_W() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
       void preStmnt_MuXU_W() {preStmntStkBin(2, &Info::addFunc_MuXU_W);}
       void preStmnt_MulF_W() {preStmntStkBin(1, &Info::addFunc_MulF_W);}
       void preStmnt_MulI_W() {preStmntStkBin(2, &Info::addFunc_MulU_W);}
+      void preStmnt_MulK_W() {preStmntStkBin(1, &Info::addFunc_MulK_W);}
       void preStmnt_MulU_W() {preStmntStkBin(2, &Info::addFunc_MulU_W);}
+      void preStmnt_MulX_W() {preStmntStkBin(1, &Info::addFunc_MulX_W);}
       void preStmnt_NegI_W() {preStmntStkUna(2, &Info::addFunc_NegI_W);}
       void preStmnt_ShLF_W() {preStmntStkShi(1, &Info::addFunc_ShLF_W);}
       void preStmnt_ShLU_W();
@@ -163,7 +169,9 @@ namespace GDCC::BC::DGE
       void putStmnt_DiXU_W() {putStmntStkBin("DiXU");}
       void putStmnt_DivF_W() {putStmntStkBin();}
       void putStmnt_DivI_W() {putStmnt_DivU_W("DivI", IR::Code::DiXI_W, false);}
+      void putStmnt_DivK_W() {putStmntStkBin();}
       void putStmnt_DivU_W() {putStmnt_DivU_W("DivU", IR::Code::DiXU_W, false);}
+      void putStmnt_DivX_W() {putStmntStkBin();}
       void putStmnt_Jcnd_Nil(char const *code = "Jcnd_Nil");
       void putStmnt_Jcnd_Tab();
       void putStmnt_Jcnd_Tru();
@@ -179,7 +187,9 @@ namespace GDCC::BC::DGE
       void putStmnt_MuXU_W() {putStmntStkBin("MuXU");}
       void putStmnt_MulF_W() {putStmntStkBin();}
       void putStmnt_MulI_W() {putStmnt_MulU_W();}
+      void putStmnt_MulK_W() {putStmntStkBin();}
       void putStmnt_MulU_W();
+      void putStmnt_MulX_W() {putStmntStkBin();}
       void putStmnt_NegF_W();
       void putStmnt_NegI_W() {putStmntStkUna("NegI");}
       void putStmnt_Pltn();
@@ -257,7 +267,9 @@ namespace GDCC::BC::DGE
       void trStmnt_DiXU_W();
       void trStmnt_DivF_W() {trStmntStkBin(true);}
       void trStmnt_DivI_W() {trStmntStkBin(true);}
+      void trStmnt_DivK_W() {trStmntStkBin(true);}
       void trStmnt_DivU_W() {trStmntStkBin(true);}
+      void trStmnt_DivX_W() {trStmntStkBin(true);}
       void trStmnt_Jcnd_Nil();
       void trStmnt_Jcnd_Tab();
       void trStmnt_Jcnd_Tru();
@@ -273,7 +285,9 @@ namespace GDCC::BC::DGE
       void trStmnt_MuXU_W();
       void trStmnt_MulF_W() {trStmntStkBin(false);}
       void trStmnt_MulI_W() {trStmntStkBin(false);}
+      void trStmnt_MulK_W() {trStmntStkBin(false);}
       void trStmnt_MulU_W() {trStmntStkBin(false);}
+      void trStmnt_MulX_W() {trStmntStkBin(false);}
       void trStmnt_NegF_W() {trStmntStkUna();}
       void trStmnt_NegI_W() {trStmntStkUna();}
       void trStmnt_Pltn();

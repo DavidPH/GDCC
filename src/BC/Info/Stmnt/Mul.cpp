@@ -186,6 +186,44 @@ namespace GDCC::BC
    }
 
    //
+   // Info::addFunc_MulK_W
+   //
+   void Info::addFunc_MulK_W(Core::FastU n)
+   {
+      GDCC_BC_AddFuncPre({Code::MulK_W, n}, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncObjBin(n);
+
+      FixedInfo fi = getFixedInfo(n, false);
+
+      Core::FastU nf = fi.wordsF;
+      Core::FastU nm = n + nf;
+
+      if(nm == n * 2)
+      {
+         GDCC_BC_AddStmnt({Code::MuXU_W, n},  stk, lop, rop);
+         GDCC_BC_AddStmnt({Code::ShRU_W, nm}, stk, stk, fi.bitsF);
+         GDCC_BC_AddStmnt({Code::Move_W, nf}, nul, stk);
+         GDCC_BC_AddStmnt({Code::Retn,   n},  stk);
+      }
+      else
+      {
+         GDCC_BC_AddStmnt({Code::Move_W, n},  stk, lop);
+         GDCC_BC_AddStmnt({Code::Move_W, nf}, stk, 0);
+         GDCC_BC_AddStmnt({Code::Move_W, n},  stk, rop);
+         GDCC_BC_AddStmnt({Code::Move_W, nf}, stk, 0);
+
+         GDCC_BC_AddStmnt({Code::MulU_W, nm}, stk, stk, stk);
+
+         GDCC_BC_AddStmnt({Code::Move_W, n},  lop, stk);
+         GDCC_BC_AddStmnt({Code::Move_W, nf}, nul, stk);
+
+         GDCC_BC_AddStmnt({Code::Retn,   n},  lop);
+      }
+
+      GDCC_BC_AddFuncEnd();
+   }
+
+   //
    // Info::addFunc_MulU_W
    //
    void Info::addFunc_MulU_W(Core::FastU n)
@@ -221,6 +259,49 @@ namespace GDCC::BC
       }
 
       GDCC_BC_AddStmnt({Code::Retn, n}, stk);
+
+      GDCC_BC_AddFuncEnd();
+   }
+
+   //
+   // Info::addFunc_MulX_W
+   //
+   void Info::addFunc_MulX_W(Core::FastU n)
+   {
+      GDCC_BC_AddFuncPre({Code::MulX_W, n}, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncObjBin(n);
+
+      FixedInfo fi = getFixedInfo(n, true);
+
+      Core::FastU nf = fi.wordsF;
+      Core::FastU nm = n + nf;
+
+      GDCC_BC_AddStmnt({Code::Move_W, n}, stk, lop);
+      GDCC_BC_AddStmnt({Code::ShRI_W, 1}, stk, lop + (n - 1), 31);
+      for(Core::FastU i = nf - 1; i--;)
+         GDCC_BC_AddStmnt({Code::Copy_W, 1}, stk, stk);
+
+      GDCC_BC_AddStmnt({Code::Move_W, n}, stk, rop);
+      GDCC_BC_AddStmnt({Code::ShRI_W, 1}, stk, rop + (n - 1), 31);
+      for(Core::FastU i = nf - 1; i--;)
+         GDCC_BC_AddStmnt({Code::Copy_W, 1}, stk, stk);
+
+      GDCC_BC_AddStmnt({Code::MulI_W, nm}, stk, stk, stk);
+
+      if(fi.bitsF % 32)
+      {
+         GDCC_BC_AddStmnt({Code::ShRI_W, nm}, stk, stk, fi.bitsF);
+         GDCC_BC_AddStmnt({Code::Move_W, nf}, nul, stk);
+
+         GDCC_BC_AddStmnt({Code::Retn,   n},  stk);
+      }
+      else
+      {
+         GDCC_BC_AddStmnt({Code::Move_W, n},  lop, stk);
+         GDCC_BC_AddStmnt({Code::Move_W, nf}, nul, stk);
+
+         GDCC_BC_AddStmnt({Code::Retn,  n},   lop);
+      }
 
       GDCC_BC_AddFuncEnd();
    }

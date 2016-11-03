@@ -68,11 +68,14 @@ namespace GDCC::BC::DGE
       case IR::Code::Call: putStmnt_Call(); break;
       case IR::Code::Cnat: putStmnt_Cnat(); break;
 
+      case IR::Code::Copy_W: putStmnt_Copy_W(); break;
       case IR::Code::DiXI_W: putStmnt_DiXI_W(); break;
       case IR::Code::DiXU_W: putStmnt_DiXU_W(); break;
       case IR::Code::DivF_W: putStmnt_DivF_W(); break;
       case IR::Code::DivI_W: putStmnt_DivI_W(); break;
+      case IR::Code::DivK_W: putStmnt_DivK_W(); break;
       case IR::Code::DivU_W: putStmnt_DivU_W(); break;
+      case IR::Code::DivX_W: putStmnt_DivX_W(); break;
 
       case IR::Code::Jcnd_Nil: putStmnt_Jcnd_Nil(); break;
       case IR::Code::Jcnd_Tab: putStmnt_Jcnd_Tab(); break;
@@ -84,7 +87,6 @@ namespace GDCC::BC::DGE
       case IR::Code::LNot: putStmnt_LNot(); break;
       case IR::Code::LOrI: putStmnt_LOrI(); break;
 
-      case IR::Code::Copy_W: putStmnt_Copy_W(); break;
       case IR::Code::ModI_W: putStmnt_ModI_W(); break;
       case IR::Code::ModU_W: putStmnt_ModU_W(); break;
       case IR::Code::Move_B: putStmnt_Move_B(); break;
@@ -92,7 +94,9 @@ namespace GDCC::BC::DGE
       case IR::Code::MuXU_W: putStmnt_MuXU_W(); break;
       case IR::Code::MulF_W: putStmnt_MulF_W(); break;
       case IR::Code::MulI_W: putStmnt_MulI_W(); break;
+      case IR::Code::MulK_W: putStmnt_MulK_W(); break;
       case IR::Code::MulU_W: putStmnt_MulU_W(); break;
+      case IR::Code::MulX_W: putStmnt_MulX_W(); break;
       case IR::Code::NegF_W: putStmnt_NegF_W(); break;
       case IR::Code::NegI_W: putStmnt_NegI_W(); break;
 

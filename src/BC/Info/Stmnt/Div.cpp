@@ -315,6 +315,75 @@ namespace GDCC::BC
 
       GDCC_BC_AddFuncEnd();
    }
+
+   //
+   // Info::addFunc_DivK_W
+   //
+   void Info::addFunc_DivK_W(Core::FastU n)
+   {
+      addFunc_DivX_W(n, IR::Code::DivK_W, IR::Code::DivU_W, false);
+   }
+
+   //
+   // Info::addFunc_DivX_W
+   //
+   void Info::addFunc_DivX_W(Core::FastU n)
+   {
+      addFunc_DivX_W(n, IR::Code::DivX_W, IR::Code::DivI_W, true);
+   }
+
+   //
+   // Info::addFunc_DivX_W
+   //
+   void Info::addFunc_DivX_W(Core::FastU n, IR::Code code, IR::Code codeDiv, bool sign)
+   {
+      GDCC_BC_AddFuncPre({code, n}, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncObjBin(n);
+
+      FixedInfo fi = getFixedInfo(n, sign);
+
+      Core::FastU nf = fi.wordsF;
+      Core::FastU nd = n + nf;
+
+      if(fi.bitsF % 32)
+      {
+         GDCC_BC_AddStmnt({Code::Move_W, n},  stk, lop);
+         if(sign)
+         {
+            GDCC_BC_AddStmnt({Code::Copy_W, 1}, stk, stk);
+            GDCC_BC_AddStmnt({Code::ShRI_W, 1}, stk, stk, 31);
+            for(Core::FastU i = nf - 1; i--;)
+               GDCC_BC_AddStmnt({Code::Copy_W, 1}, stk, stk);
+         }
+         else
+            GDCC_BC_AddStmnt({Code::Move_W, nf}, stk, 0);
+
+         GDCC_BC_AddStmnt({Code::ShLU_W, nd}, stk, stk, fi.bitsF);
+      }
+      else
+      {
+         GDCC_BC_AddStmnt({Code::Move_W, nf}, stk, 0);
+         GDCC_BC_AddStmnt({Code::Move_W, n},  stk, lop);
+      }
+
+      GDCC_BC_AddStmnt({Code::Move_W, n}, stk, rop);
+      if(sign)
+      {
+         GDCC_BC_AddStmnt({Code::Copy_W, 1}, stk, stk);
+         GDCC_BC_AddStmnt({Code::ShRI_W, 1}, stk, stk, 31);
+         for(Core::FastU i = nf - 1; i--;)
+            GDCC_BC_AddStmnt({Code::Copy_W, 1}, stk, stk);
+      }
+      else
+         GDCC_BC_AddStmnt({Code::Move_W, nf}, stk, 0);
+
+      GDCC_BC_AddStmnt({codeDiv,      nd}, stk, stk, stk);
+      GDCC_BC_AddStmnt({Code::Move_W, nf}, nul, stk);
+
+      GDCC_BC_AddStmnt({Code::Retn, n}, stk);
+
+      GDCC_BC_AddFuncEnd();
+   }
 }
 
 // EOF

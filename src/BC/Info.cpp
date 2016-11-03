@@ -604,7 +604,24 @@ namespace GDCC
       }
 
       //
-      // getFloatInfo
+      // Info::getFixedInfo
+      //
+      FixedInfo Info::getFixedInfo(Core::FastU n, bool s)
+      {
+         FixedInfo fi;
+
+         fi.bitsS = s;
+         fi.bitsF = n <= 1 ? 16 : 32;
+         fi.bitsI = n * 32 - fi.bitsF - s;
+
+         fi.wordsF = (fi.bitsF + 31) / 32;
+         fi.wordsI = (fi.bitsI + 31) / 32;
+
+         return fi;
+      }
+
+      //
+      // Info::getFloatInfo
       //
       FloatInfo Info::getFloatInfo(Core::FastU n)
       {

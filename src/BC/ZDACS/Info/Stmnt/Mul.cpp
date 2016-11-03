@@ -119,49 +119,7 @@ namespace GDCC
             if(stmnt->op.size == 0)
                return;
 
-            Core::String name = getCallName();
-            auto newFunc = preStmntCallDef(name, stmnt->op.size,
-               stmnt->op.size * 2, stmnt->op.size * 2, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
-
-            IR::Arg_Nul nul{};
-            IR::Arg_Stk stk{};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            if(stmnt->op.size == 1)
-            {
-               AS_Stmnt({IR::Code::MuXU_W, 1}, stk, lop, rop);
-               AS_Stmnt({IR::Code::ShRU_W, 2}, stk, stk, 16);
-               AS_Stmnt({IR::Code::Move_W, 1}, nul, stk);
-               AS_Stmnt({IR::Code::Retn,   1}, stk);
-            }
-            else
-            {
-               Core::FastU fracWords = stmnt->op.size / 2;
-               Core::FastU mulWords  = stmnt->op.size + fracWords;
-
-               AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, lop);
-               AS_Stmnt({IR::Code::Move_W, fracWords},      stk, 0);
-               AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rop);
-               AS_Stmnt({IR::Code::Move_W, fracWords},      stk, 0);
-
-               AS_Stmnt({IR::Code::MulU_W, mulWords},       stk, stk, stk);
-
-               AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, lop, stk);
-               AS_Stmnt({IR::Code::Move_W, fracWords},      nul, stk);
-
-               AS_Stmnt({IR::Code::Retn, stmnt->op.size},   lop);
-            }
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+            addFunc_MulK_W(stmnt->op.size);
          }
 
          //
@@ -183,44 +141,7 @@ namespace GDCC
             if(stmnt->op.size <= 1)
                return;
 
-            Core::String name = getCallName();
-            auto newFunc = preStmntCallDef(name, stmnt->op.size,
-               stmnt->op.size * 2, stmnt->op.size * 2, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
-
-            IR::Arg_Nul nul{};
-            IR::Arg_Stk stk{};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            Core::FastU fracWords = stmnt->op.size / 2;
-            Core::FastU mulWords  = stmnt->op.size + fracWords;
-
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::ShRI_W, 1}, stk, lop + (stmnt->op.size - 1), 31);
-            for(Core::FastU n = fracWords - 1; n--;)
-               AS_Stmnt({IR::Code::Copy_W, 1}, stk, stk);
-
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rop);
-            AS_Stmnt({IR::Code::ShRI_W, 1}, stk, rop + (stmnt->op.size - 1), 31);
-            for(Core::FastU n = fracWords - 1; n--;)
-               AS_Stmnt({IR::Code::Copy_W, 1}, stk, stk);
-
-            AS_Stmnt({IR::Code::MulI_W, mulWords}, stk, stk, stk);
-
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, lop, stk);
-            AS_Stmnt({IR::Code::Move_W, fracWords},      nul, stk);
-
-            AS_Stmnt({IR::Code::Retn, stmnt->op.size}, lop);
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+            addFunc_MulX_W(stmnt->op.size);
          }
       }
    }
