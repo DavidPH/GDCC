@@ -382,7 +382,7 @@ special
    str    -58:GetUserCVarString(2, int, str),
    int    -59:SetUserCVarString(3, int, str, str),
    int    -60:LineAttack(4, int, fixed, fixed, int, str, str, fixed, int, int),
-   int    -61:PlaySound(2, int, str, int, fixed, int, fixed),
+   int    -61:PlaySound(2, int, str, int, fixed, int, fixed, int),
    int    -62:StopSound(1, int, int),
    int    -63:StrCmp(2, str, str, int),
    int    -64:StrICmp(2, str, str, int),
@@ -462,7 +462,12 @@ special
    // ZDoom's (continued)
    int   -200:CheckClass(1, str, int, int),
    int   -201:DamageActor(6, int, int, int, int, int, str),
-   int   -202:SetACtorFlag(3, int, str, int),
+   int   -202:SetActorFlag(3, int, str, int),
+   int   -203:SetTranslation(2, int, str),
+
+   // Eternity's
+   fixed -300:GetLineX(3, int, fixed, fixed),
+   fixed -301:GetLineY(3, int, fixed, fixed),
 
    // ZDaemon's
    int -19260:GetTeamScore(1),
