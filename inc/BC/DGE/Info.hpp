@@ -113,6 +113,8 @@ namespace GDCC::BC::DGE
       void putExp(IR::Exp const *exp); // Full output.
       void putExp(IR::Exp const *exp, Core::FastU w);
 
+      void putExpAdd(IR::Exp const *expL, Core::FastU expR);
+
       void putExp_Cst(IR::Exp_Cst const *exp);
 
       virtual void putFunc();

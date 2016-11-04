@@ -135,6 +135,19 @@ namespace GDCC::BC::DGE
    }
 
    //
+   // Info::putExpAdd
+   //
+   void Info::putExpAdd(IR::Exp const *expL, Core::FastU expR)
+   {
+      if(expL->isValue())
+         return putInt(getWord(expL) + expR);
+
+      putNTS("Add");
+      putExp(expL);
+      putInt(expR);
+   }
+
+   //
    // Info::putExp_Cst
    //
    void Info::putExp_Cst(IR::Exp_Cst const *exp)

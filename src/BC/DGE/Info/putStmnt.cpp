@@ -190,7 +190,10 @@ namespace GDCC::BC::DGE
       {
          if(a.idx->a == IR::ArgBase::Lit)
          {
-            putCode("Push_Lit", getWord(a.idx->aLit.value) + (a.off + w) * 4);
+            putNTS("Push_Lit");
+            putNTS('(');
+            putExpAdd(a.idx->aLit.value, (a.off + w) * 4);
+            putNTS(')');
             putCode("Drop_Ptr");
          }
          else
@@ -303,7 +306,10 @@ namespace GDCC::BC::DGE
       {
          if(a.idx->a == IR::ArgBase::Lit)
          {
-            putCode("Push_Lit", getWord(a.idx->aLit.value) + (a.off + w) * 4);
+            putNTS("Push_Lit");
+            putNTS('(');
+            putExpAdd(a.idx->aLit.value, (a.off + w) * 4);
+            putNTS(')');
             putCode("Push_Ptr");
          }
          else
