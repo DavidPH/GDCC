@@ -35,6 +35,8 @@ namespace GDCC::BC::DGE
 
       switch(stmnt->op.code)
       {
+      case IR::Code::Nop: break;
+
       case IR::Code::AdXU_W: putStmnt_AdXU_W(); break;
       case IR::Code::AddF_W: putStmnt_AddF_W(); break;
       case IR::Code::AddI_W: putStmnt_AddI_W(); break;
