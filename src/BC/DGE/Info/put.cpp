@@ -65,11 +65,18 @@ namespace GDCC::BC::DGE
    void Info::putExp(IR::Exp const *exp)
    {
       if(exp->isValue())
-         return putValue(exp->getValue());
+         return putValue(exp->pos, exp->getValue());
 
       switch(exp->getName())
       {
       case Core::STR_Add:
+         // TODO: Do pointer adjustments as needed.
+         putNTS("Add");
+         putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
+         putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
+         break;
+
+      case Core::STR_AddPtrRaw:
          putNTS("Add");
          putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
          putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
@@ -84,7 +91,7 @@ namespace GDCC::BC::DGE
          break;
 
       default:
-         throw Core::ExceptStr(exp->pos, "bad putExp");
+         throw Core::ExceptStr(exp->pos, "bad putExp full");
       }
    }
 
@@ -94,7 +101,7 @@ namespace GDCC::BC::DGE
    void Info::putExp(IR::Exp const *exp, Core::FastU w)
    {
       if(exp->isValue())
-         return putValue(exp->getValue(), w);
+         return putValue(exp->pos, exp->getValue(), w);
 
       if(w)
          throw Core::ExceptStr(exp->pos, "putExp w");
@@ -102,6 +109,13 @@ namespace GDCC::BC::DGE
       switch(exp->getName())
       {
       case Core::STR_Add:
+         // TODO: Do pointer adjustments as needed.
+         putNTS("Add");
+         putExp(static_cast<IR::Exp_Binary const *>(exp)->expL, 0);
+         putExp(static_cast<IR::Exp_Binary const *>(exp)->expR, 0);
+         break;
+
+      case Core::STR_AddPtrRaw:
          putNTS("Add");
          putExp(static_cast<IR::Exp_Binary const *>(exp)->expL, 0);
          putExp(static_cast<IR::Exp_Binary const *>(exp)->expR, 0);
@@ -284,14 +298,14 @@ namespace GDCC::BC::DGE
    //
    // Info::putValue
    //
-   void Info::putValue(IR::Value const &val)
+   void Info::putValue(Core::Origin pos, IR::Value const &val)
    {
       Core::FastU bits;
 
       switch(val.v)
       {
       case IR::ValueBase::Array:
-         putValueMulti(val.vArray.value);
+         putValueMulti(pos, val.vArray.value);
          break;
 
       case IR::ValueBase::Fixed:
@@ -306,7 +320,7 @@ namespace GDCC::BC::DGE
          break;
 
       case IR::ValueBase::Tuple:
-         putValueMulti(val.vTuple.value);
+         putValueMulti(pos, val.vTuple.value);
          break;
 
       default:
@@ -317,31 +331,15 @@ namespace GDCC::BC::DGE
    //
    // Info::putValue
    //
-   void Info::putValue(IR::Value const &val, Core::FastU w)
+   void Info::putValue(Core::Origin pos, IR::Value const &val, Core::FastU w)
    {
-      switch(val.v)
-      {
-      case IR::ValueBase::Fixed:
-         putInt(getWord_Fixed(val.vFixed, w));
-         break;
-
-      case IR::ValueBase::Point:
-         putInt(w == 0 ? val.vPoint.value : 0);
-         break;
-
-      case IR::ValueBase::Float:
-         putInt(getWord_Float(val.vFloat, w));
-         break;
-
-      default:
-         throw Core::ExceptStr({}, "bad putValue");
-      }
+      putInt(getWord(pos, val, w));
    }
 
    //
    // Info::putValueMulti
    //
-   void Info::putValueMulti(Core::Array<IR::Value> const &val)
+   void Info::putValueMulti(Core::Origin pos, Core::Array<IR::Value> const &val)
    {
       Core::FastU bucket = 0, bucketBits = 0;
       Core::FastU bits;
@@ -399,7 +397,7 @@ namespace GDCC::BC::DGE
          default:
          defcase:
             flushBucket();
-            putValue(v);
+            putValue(pos, v);
             break;
          }
       }

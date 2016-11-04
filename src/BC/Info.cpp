@@ -671,8 +671,14 @@ namespace GDCC
       //
       Core::FastU Info::getWord(IR::Exp const *exp, Core::FastU w)
       {
-         auto val = exp->getValue();
+         return getWord(exp->pos, exp->getValue(), w);
+      }
 
+      //
+      // Info::getWord
+      //
+      Core::FastU Info::getWord(Core::Origin pos, IR::Value const &val, Core::FastU w)
+      {
          switch(val.v)
          {
          case IR::ValueBase::DJump: return w ? 0 : val.vDJump.value;
@@ -683,18 +689,18 @@ namespace GDCC
          case IR::ValueBase::StrEn: return w ? 0 : val.vStrEn.value;
 
          case IR::ValueBase::Empty:
-            throw Core::ExceptStr(exp->pos, "bad getWord Value: Empty");
+            throw Core::ExceptStr(pos, "bad getWord Value: Empty");
          case IR::ValueBase::Array:
-            throw Core::ExceptStr(exp->pos, "bad getWord Value: Array");
+            throw Core::ExceptStr(pos, "bad getWord Value: Array");
          case IR::ValueBase::Assoc:
-            throw Core::ExceptStr(exp->pos, "bad getWord Value: Assoc");
+            throw Core::ExceptStr(pos, "bad getWord Value: Assoc");
          case IR::ValueBase::Tuple:
-            throw Core::ExceptStr(exp->pos, "bad getWord Value: Tuple");
+            throw Core::ExceptStr(pos, "bad getWord Value: Tuple");
          case IR::ValueBase::Union:
-            throw Core::ExceptStr(exp->pos, "bad getWord Value: Union");
+            throw Core::ExceptStr(pos, "bad getWord Value: Union");
          }
 
-         throw Core::ExceptStr(exp->pos, "bad getWord Value");
+         throw Core::ExceptStr(pos, "bad getWord Value");
       }
 
       //

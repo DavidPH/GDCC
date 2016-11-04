@@ -126,11 +126,11 @@ namespace GDCC::BC::DGE
       virtual void putObj();
       using InfoBase::putObj;
 
-      void putValue(IR::Value const &val); // Full output.
-      void putValue(IR::Value const &val, Core::FastU w);
+      void putValue(Core::Origin pos, IR::Value const &val); // Full output.
+      void putValue(Core::Origin pos, IR::Value const &val, Core::FastU w);
 
-      void putValueMulti(Core::Array<IR::Value> const &val); // Full output.
-      void putValueMulti(Core::Array<IR::Value> const &val, Core::FastU w);
+      void putValueMulti(Core::Origin pos, Core::Array<IR::Value> const &val); // Full output.
+      void putValueMulti(Core::Origin pos, Core::Array<IR::Value> const &val, Core::FastU w);
 
       virtual void putStmnt();
 
