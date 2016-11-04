@@ -54,10 +54,10 @@ namespace GDCC::BC::DGE
       // Write sorted jump cases.
       putCodeArg(stmnt->args[1].aLit); putNTS(',');
       putCodeArg(stmnt->args[2].aLit);
-      for(Core::FastU i = 2; i != stmnt->args.size();)
+      for(Core::FastU i = 3, e = stmnt->args.size(); i != e;)
       {
-         putNTS(','); putCodeArg(stmnt->args[++i].aLit);
-         putNTS(','); putCodeArg(stmnt->args[++i].aLit);
+         putNTS(','); putCodeArg(stmnt->args[i++].aLit);
+         putNTS(','); putCodeArg(stmnt->args[i++].aLit);
       }
 
       putNTS(')');
