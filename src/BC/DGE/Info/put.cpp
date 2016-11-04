@@ -84,7 +84,7 @@ namespace GDCC::BC::DGE
          break;
 
       default:
-         throw Core::ExceptStr(exp->pos, "bad getExp");
+         throw Core::ExceptStr(exp->pos, "bad putExp");
       }
    }
 
@@ -116,7 +116,7 @@ namespace GDCC::BC::DGE
          break;
 
       default:
-         throw Core::ExceptStr(exp->pos, "bad getExp");
+         throw Core::ExceptStr(exp->pos, "bad putExp");
       }
    }
 
@@ -130,6 +130,18 @@ namespace GDCC::BC::DGE
 
       switch(tIn.t)
       {
+      case IR::TypeBase::Funct:
+         switch(tOut.t)
+         {
+         case IR::TypeBase::Funct:
+            putExp(exp->exp);
+            break;
+
+         default:
+            throw Core::ExceptStr(exp->pos, "unknown putExp_Cst Funct->");
+         }
+         break;
+
       case IR::TypeBase::Point:
          switch(tOut.t)
          {
@@ -138,12 +150,12 @@ namespace GDCC::BC::DGE
             break;
 
          default:
-            throw Core::ExceptStr(exp->pos, "unknown getExp_Cst Point->");
+            throw Core::ExceptStr(exp->pos, "unknown putExp_Cst Point->");
          }
          break;
 
       default:
-         throw Core::ExceptStr(exp->pos, "unknown getExp_Cst");
+         throw Core::ExceptStr(exp->pos, "unknown putExp_Cst");
       }
    }
 
