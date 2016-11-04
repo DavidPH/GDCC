@@ -503,11 +503,6 @@ namespace GDCC
 
             static Core::FastU GetScriptValue(IR::Function const &script);
 
-            static Core::FastU GetWord_Fixed(IR::Value_Fixed const &val, Core::FastU w);
-            static Core::FastU GetWord_Float(IR::Value_Float const &val, Core::FastU w);
-            static Core::FastU GetWord(IR::Arg_Lit const &arg, Core::FastU w = 0);
-            static Core::FastU GetWord(IR::Exp const *exp, Core::FastU w = 0);
-
             static bool IsNull(IR::Value_Funct const &val);
             static bool IsNull(IR::Value_StrEn const &val);
 

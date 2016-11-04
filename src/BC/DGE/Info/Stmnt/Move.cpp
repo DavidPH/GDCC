@@ -69,7 +69,7 @@ namespace GDCC::BC::DGE
 
       case IR::ArgBase::LocReg:
          putCode(b ? "Push_RegB" : "Push_RegH",
-            GetWord(stmnt->args[1].aLocReg.idx->aLit) + stmnt->args[1].aLocReg.off);
+            getWord(stmnt->args[1].aLocReg.idx->aLit) + stmnt->args[1].aLocReg.off);
          break;
 
       case IR::ArgBase::Sta:
@@ -104,7 +104,7 @@ namespace GDCC::BC::DGE
 
       case IR::ArgBase::LocReg:
          putCode(b ? "Drop_RegB" : "Drop_RegH",
-            GetWord(stmnt->args[0].aLocReg.idx->aLit) + stmnt->args[0].aLocReg.off);
+            getWord(stmnt->args[0].aLocReg.idx->aLit) + stmnt->args[0].aLocReg.off);
          break;
 
       case IR::ArgBase::Nul:

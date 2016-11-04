@@ -108,7 +108,7 @@ namespace GDCC
          //
          void Info::genStmnt_Bget_W()
          {
-            auto offs = GetWord(stmnt->args[3].aLit);
+            auto offs = getWord(stmnt->args[3].aLit);
 
             if(offs)
                numChunkCODE += 12;
@@ -121,7 +121,7 @@ namespace GDCC
          //
          void Info::genStmnt_Bset_W()
          {
-            auto offs = GetWord(stmnt->args[3].aLit);
+            auto offs = getWord(stmnt->args[3].aLit);
 
             if(offs)
                numChunkCODE += 12;
@@ -334,7 +334,7 @@ namespace GDCC
             }
 
             Core::FastU skip = ones ? 0xFFFFFFFF : 0;
-            Core::FastU fIdx = GetWord(resolveGlyph(name));
+            Core::FastU fIdx = getWord(resolveGlyph(name));
 
             if(stmnt->args[1].a != IR::ArgBase::Stk)
             {
@@ -432,8 +432,8 @@ namespace GDCC
          //
          void Info::putStmnt_Bges_W()
          {
-            auto bits = GetWord(stmnt->args[2].aLit);
-            auto offs = GetWord(stmnt->args[3].aLit);
+            auto bits = getWord(stmnt->args[2].aLit);
+            auto offs = getWord(stmnt->args[3].aLit);
 
             putCode(Code::Push_Lit, 32 - bits - offs);
             putCode(Code::ShLU);
@@ -447,8 +447,8 @@ namespace GDCC
          //
          void Info::putStmnt_Bget_W()
          {
-            auto bits = GetWord(stmnt->args[2].aLit);
-            auto offs = GetWord(stmnt->args[3].aLit);
+            auto bits = getWord(stmnt->args[2].aLit);
+            auto offs = getWord(stmnt->args[3].aLit);
             auto mask = (static_cast<Core::FastU>(1) << bits) - 1;
 
             if(offs)
@@ -466,8 +466,8 @@ namespace GDCC
          //
          void Info::putStmnt_Bset_W()
          {
-            auto bits = GetWord(stmnt->args[2].aLit);
-            auto offs = GetWord(stmnt->args[3].aLit);
+            auto bits = getWord(stmnt->args[2].aLit);
+            auto offs = getWord(stmnt->args[3].aLit);
             auto mask = (static_cast<Core::FastU>(1) << bits) - 1;
 
             putCode(Code::Push_Lit, mask);

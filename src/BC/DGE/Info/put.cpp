@@ -284,9 +284,9 @@ namespace GDCC::BC::DGE
 
       case IR::ValueBase::Fixed:
          bits = val.vFixed.vtype.getBits();
-         putInt(GetWord_Fixed(val.vFixed, 0));
+         putInt(getWord_Fixed(val.vFixed, 0));
          if(bits > 32) for(Core::FastU w = bits / 32, i = 1; i != w; ++i)
-            putInt(GetWord_Fixed(val.vFixed, i));
+            putInt(getWord_Fixed(val.vFixed, i));
          break;
 
       case IR::ValueBase::Point:
@@ -310,11 +310,15 @@ namespace GDCC::BC::DGE
       switch(val.v)
       {
       case IR::ValueBase::Fixed:
-         putInt(GetWord_Fixed(val.vFixed, w));
+         putInt(getWord_Fixed(val.vFixed, w));
          break;
 
       case IR::ValueBase::Point:
          putInt(w == 0 ? val.vPoint.value : 0);
+         break;
+
+      case IR::ValueBase::Float:
+         putInt(getWord_Float(val.vFloat, w));
          break;
 
       default:
@@ -377,7 +381,7 @@ namespace GDCC::BC::DGE
          case IR::ValueBase::Fixed:
             bits = v.vFixed.vtype.getBits();
             if(bits >= 32) goto defcase;
-            putBucket(GetWord_Fixed(v.vFixed, 0));
+            putBucket(getWord_Fixed(v.vFixed, 0));
             break;
 
          default:

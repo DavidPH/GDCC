@@ -109,14 +109,14 @@ namespace GDCC
          {
             if(stmnt->op.size == 0)
             {
-               putCode(Code::Jump_Lit, GetWord(stmnt->args[1].aLit));
+               putCode(Code::Jump_Lit, getWord(stmnt->args[1].aLit));
                return;
             }
 
             for(auto i = stmnt->op.size; --i;)
                putCode(Code::BOrI);
 
-            putCode(Code::Jcnd_Nil, GetWord(stmnt->args[1].aLit));
+            putCode(Code::Jcnd_Nil, getWord(stmnt->args[1].aLit));
          }
 
          //
@@ -127,8 +127,8 @@ namespace GDCC
             if(stmnt->args.size() == 3)
             {
                putCode(Code::Jcnd_Lit);
-               putWord(GetWord(stmnt->args[1].aLit));
-               putWord(GetWord(stmnt->args[2].aLit));
+               putWord(getWord(stmnt->args[1].aLit));
+               putWord(getWord(stmnt->args[2].aLit));
             }
             else
             {
@@ -140,8 +140,8 @@ namespace GDCC
                Core::Array<JumpData> Jumps{stmnt->args.size() / 2};
                for(Core::FastU i = 0; i != Jumps.size(); ++i)
                {
-                  Jumps[i].value = GetWord(stmnt->args[i * 2 + 1].aLit);
-                  Jumps[i].label = GetWord(stmnt->args[i * 2 + 2].aLit);
+                  Jumps[i].value = getWord(stmnt->args[i * 2 + 1].aLit);
+                  Jumps[i].label = getWord(stmnt->args[i * 2 + 2].aLit);
                }
 
                // Sort by value as signed.
@@ -174,7 +174,7 @@ namespace GDCC
             for(auto i = stmnt->op.size; --i;)
                putCode(Code::BOrI);
 
-            putCode(Code::Jcnd_Tru, GetWord(stmnt->args[1].aLit));
+            putCode(Code::Jcnd_Tru, getWord(stmnt->args[1].aLit));
          }
 
          //
@@ -223,7 +223,7 @@ namespace GDCC
             putCode(Code::Jcnd_Tru,    putPos + 8 + 8);
 
             // Non-match! Branch to addr.
-            putCode(Code::Jump_Lit, GetWord(stmnt->args[0].aLit.value));
+            putCode(Code::Jump_Lit, getWord(stmnt->args[0].aLit.value));
 
             // Match! Push result and execute dynamic branch.
             putCode(Code::Push_Lit,    FarJumpIndex);
@@ -264,7 +264,7 @@ namespace GDCC
          //
          void Info::putStmnt_Jump()
          {
-            putCode(Code::Jump_Lit, GetWord(stmnt->args[0].aLit));
+            putCode(Code::Jump_Lit, getWord(stmnt->args[0].aLit));
          }
 
          //

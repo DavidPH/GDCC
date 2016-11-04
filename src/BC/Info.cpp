@@ -12,6 +12,8 @@
 
 #include "BC/Info.hpp"
 
+#include "Core/Exception.hpp"
+
 #include "IR/Program.hpp"
 
 #include <iostream>
@@ -654,6 +656,110 @@ namespace GDCC
          fi.maskSig = 0x80000000;
 
          return fi;
+      }
+
+      //
+      // Info::getWord
+      //
+      Core::FastU Info::getWord(IR::Arg_Lit const &arg, Core::FastU w)
+      {
+         return getWord(arg.value, arg.off + w);
+      }
+
+      //
+      // Info::getWord
+      //
+      Core::FastU Info::getWord(IR::Exp const *exp, Core::FastU w)
+      {
+         auto val = exp->getValue();
+
+         switch(val.v)
+         {
+         case IR::ValueBase::DJump: return w ? 0 : val.vDJump.value;
+         case IR::ValueBase::Fixed: return getWord_Fixed(val.vFixed, w);
+         case IR::ValueBase::Float: return getWord_Float(val.vFloat, w);
+         case IR::ValueBase::Funct: return w ? 0 : val.vFunct.value;
+         case IR::ValueBase::Point: return w ? 0 : val.vPoint.value;
+         case IR::ValueBase::StrEn: return w ? 0 : val.vStrEn.value;
+
+         case IR::ValueBase::Empty:
+            throw Core::ExceptStr(exp->pos, "bad getWord Value: Empty");
+         case IR::ValueBase::Array:
+            throw Core::ExceptStr(exp->pos, "bad getWord Value: Array");
+         case IR::ValueBase::Assoc:
+            throw Core::ExceptStr(exp->pos, "bad getWord Value: Assoc");
+         case IR::ValueBase::Tuple:
+            throw Core::ExceptStr(exp->pos, "bad getWord Value: Tuple");
+         case IR::ValueBase::Union:
+            throw Core::ExceptStr(exp->pos, "bad getWord Value: Union");
+         }
+
+         throw Core::ExceptStr(exp->pos, "bad getWord Value");
+      }
+
+      //
+      // Info::getWord_Fixed
+      //
+      Core::FastU Info::getWord_Fixed(IR::Value_Fixed const &val, Core::FastU w)
+      {
+         Core::FastU valI;
+
+         if(w)
+         {
+            if(val.vtype.bitsS)
+               valI = Core::NumberCast<Core::FastI>(val.value >> (w * 32));
+            else
+               valI = Core::NumberCast<Core::FastU>(val.value >> (w * 32));
+         }
+         else
+         {
+            if(val.vtype.bitsS)
+               valI = Core::NumberCast<Core::FastI>(val.value);
+            else
+               valI = Core::NumberCast<Core::FastU>(val.value);
+         }
+
+         return valI & 0xFFFFFFFF;
+      }
+
+      //
+      // Info::getWord_Float
+      //
+      Core::FastU Info::getWord_Float(IR::Value_Float const &val, Core::FastU w)
+      {
+         // Special handling for 0.
+         // TODO: Negative zero. May require replacing mpf_class.
+         if(!val.value) return 0;
+
+         // Convert float to binary string.
+         // The sign and mantissa bits are stored in the string, while the
+         // exponent is stored in exp. The string includes the implicit
+         // leading 1 which will be skipped.
+         std::unique_ptr<char[]> buf{new char[val.vtype.bitsI + 3]};
+         mp_exp_t                exp;
+         mpf_get_str(buf.get(), &exp, 2, val.vtype.bitsI + 1, val.value.get_mpf_t());
+
+         Core::Integ valI = 0;
+
+         // Sign bit.
+         auto start = buf.get();
+         if(*start == '-') valI |= 1, ++start;
+
+         // Exponent bits.
+         exp += (1 << (val.vtype.bitsF - 1)) - 2;
+         exp &= (1 << (val.vtype.bitsF    )) - 1;
+
+         valI <<= val.vtype.bitsF;
+         valI |= exp;
+
+         // Mantissa bits. Skip first bit because it is an implicit 1.
+         auto itr = ++start;
+         for(; *itr; ++itr) {valI <<= 1; if(*itr == '1') ++valI;}
+         valI <<= val.vtype.bitsI - (itr - start);
+
+         // Return requested word.
+         if(w) valI >>= w * 32;
+         return Core::NumberCast<Core::FastU>(valI) & 0xFFFFFFFF;
       }
 
       //

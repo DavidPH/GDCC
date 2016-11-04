@@ -336,7 +336,7 @@ namespace GDCC
 
                   if(f->defin)
                   {
-                     putWord(GetWord(resolveGlyph(f->label)));
+                     putWord(getWord(resolveGlyph(f->label)));
                   }
                   else
                   {
@@ -368,7 +368,7 @@ namespace GDCC
             putWord(numChunkJUMP * 4);
 
             for(auto j : jumps)
-               putWord(j ? GetWord(resolveGlyph(j->label)) : 0);
+               putWord(j ? getWord(resolveGlyph(j->label)) : 0);
          }
 
          //
@@ -613,13 +613,13 @@ namespace GDCC
                   putHWord(GetScriptValue(itr));
                   putByte(stype);
                   putByte(param);
-                  putWord(GetWord(resolveGlyph(itr.label)));
+                  putWord(getWord(resolveGlyph(itr.label)));
                }
                else
                {
                   putHWord(GetScriptValue(itr));
                   putHWord(stype);
-                  putWord(GetWord(resolveGlyph(itr.label)));
+                  putWord(getWord(resolveGlyph(itr.label)));
                   putWord(param);
                }
             }

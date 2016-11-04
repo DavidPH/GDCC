@@ -276,6 +276,11 @@ namespace GDCC
 
          Core::String getFuncName(IR::OpCode op);
 
+         Core::FastU getWord(IR::Arg_Lit const &arg, Core::FastU w = 0);
+         virtual Core::FastU getWord(IR::Exp const *exp, Core::FastU w = 0);
+         virtual Core::FastU getWord_Fixed(IR::Value_Fixed const &val, Core::FastU w);
+         virtual Core::FastU getWord_Float(IR::Value_Float const &val, Core::FastU w);
+
          void putData(char const *data, std::size_t size);
 
          void moveArgStk_dst(IR::Arg &idx, Core::FastU sizeMove);

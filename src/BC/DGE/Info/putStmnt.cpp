@@ -153,7 +153,7 @@ namespace GDCC::BC::DGE
       {
          if(a.idx->a == IR::ArgBase::Lit)
          {
-            putCode("Push_Lit", GetWord(a.idx->aLit) + (a.off + w) * 4);
+            putCode("Push_Lit", getWord(a.idx->aLit) + (a.off + w) * 4);
             putCode("Push_Reg", getStkPtrIdx());
             putCode("AddU");
             putCode("Drop_Ptr");
@@ -180,7 +180,7 @@ namespace GDCC::BC::DGE
       //
       auto putReg = [&](IR::ArgPtr1 const &a)
       {
-         putCode("Drop_Reg", GetWord(a.idx->aLit) + (a.off + w) * 4);
+         putCode("Drop_Reg", getWord(a.idx->aLit) + (a.off + w) * 4);
       };
 
       //
@@ -190,7 +190,7 @@ namespace GDCC::BC::DGE
       {
          if(a.idx->a == IR::ArgBase::Lit)
          {
-            putCode("Push_Lit", GetWord(a.idx->aLit.value) + (a.off + w) * 4);
+            putCode("Push_Lit", getWord(a.idx->aLit.value) + (a.off + w) * 4);
             putCode("Drop_Ptr");
          }
          else
@@ -257,7 +257,7 @@ namespace GDCC::BC::DGE
       {
          if(a.idx->a == IR::ArgBase::Lit)
          {
-            putCode("Push_Lit", GetWord(a.idx->aLit) + (a.off + w) * 4);
+            putCode("Push_Lit", getWord(a.idx->aLit) + (a.off + w) * 4);
             putCode("Push_Reg", getStkPtrIdx());
             putCode("AddU");
             putCode("Push_Ptr");
@@ -293,7 +293,7 @@ namespace GDCC::BC::DGE
       //
       auto putReg = [&](IR::ArgPtr1 const &a)
       {
-         putCode("Push_Reg", GetWord(a.idx->aLit) + (a.off + w) * 4);
+         putCode("Push_Reg", getWord(a.idx->aLit) + (a.off + w) * 4);
       };
 
       //
@@ -303,7 +303,7 @@ namespace GDCC::BC::DGE
       {
          if(a.idx->a == IR::ArgBase::Lit)
          {
-            putCode("Push_Lit", GetWord(a.idx->aLit.value) + (a.off + w) * 4);
+            putCode("Push_Lit", getWord(a.idx->aLit.value) + (a.off + w) * 4);
             putCode("Push_Ptr");
          }
          else

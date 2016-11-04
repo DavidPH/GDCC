@@ -313,11 +313,6 @@ namespace GDCC::BC::DGE
 
       static void CheckArg(IR::Arg const &arg, Core::Origin const &pos);
 
-      static Core::FastU GetWord(IR::Arg_Lit const &arg, Core::FastU w = 0);
-      static Core::FastU GetWord(IR::Exp const *exp, Core::FastU w = 0);
-
-      static Core::FastU GetWord_Fixed(IR::Value_Fixed const &val, Core::FastU w);
-
    private:
       void putCodeArg(char const        *arg) {putNTS(arg);}
       void putCodeArg(int                arg) {putInt(arg);}

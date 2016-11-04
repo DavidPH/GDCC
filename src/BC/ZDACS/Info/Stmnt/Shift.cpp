@@ -63,7 +63,7 @@ namespace GDCC
                return;
             }
 
-            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+            Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
 
             // Shift of 0 is a no-op.
             if(!shift) return;
@@ -96,7 +96,7 @@ namespace GDCC
                return;
             }
 
-            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+            Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
 
             // Shift of 0 is a no-op.
             if(!shift) return;
@@ -138,7 +138,7 @@ namespace GDCC
                return;
             }
 
-            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+            Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
 
             // Shift of 0 is a no-op.
             if(!shift) return;
@@ -233,7 +233,7 @@ namespace GDCC
                return;
             }
 
-            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+            Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
 
             // Shift of 0 is a no-op.
             if(!shift) return;
@@ -303,7 +303,7 @@ namespace GDCC
                return;
             }
 
-            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+            Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
 
             // Shift of 0 is a no-op.
             if(!shift) return;
@@ -380,7 +380,7 @@ namespace GDCC
                return;
             }
 
-            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+            Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
 
             // Shift of 0 is a no-op.
             if(!shift) return;
@@ -433,7 +433,7 @@ namespace GDCC
          {
             if(stmnt->args[2].a == IR::ArgBase::Lit)
             {
-               putStmntShiftRU(GetWord(stmnt->args[2].aLit));
+               putStmntShiftRU(getWord(stmnt->args[2].aLit));
             }
             else if(stmnt->args[2].a == IR::ArgBase::Stk)
             {
@@ -513,7 +513,7 @@ namespace GDCC
             if(!trStmntShift(stmnt->op.size, false))
                return;
 
-            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+            Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
 
             if(shift)
                func->setLocalTmp(stmnt->op.size - shift / 32);
@@ -530,7 +530,7 @@ namespace GDCC
             if(!trStmntShift(stmnt->op.size, false))
                return;
 
-            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+            Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
 
             if(shift)
                func->setLocalTmp(stmnt->op.size - shift / 32);
@@ -550,7 +550,7 @@ namespace GDCC
             if(!trStmntShift(stmnt->op.size, false))
                return;
 
-            Core::FastU shift = GetWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
+            Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * stmnt->op.size);
 
             if(shift)
                func->setLocalTmp(stmnt->op.size - shift / 32);
