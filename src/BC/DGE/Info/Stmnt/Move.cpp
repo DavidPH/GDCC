@@ -82,6 +82,16 @@ namespace GDCC::BC::DGE
          putCode(b ? "Push_PtrB" : "Push_PtrH");
          break;
 
+      case IR::ArgBase::StrArs:
+         if(stmnt->args[1].aStrArs.off)
+         {
+            putCode("Push_Lit", stmnt->args[1].aStrArs.off);
+            putCode("AddU");
+         }
+
+         putCode(b ? "Push_StrB" : "Push_StrH");
+         break;
+
       default:
          throw Core::ExceptStr(stmnt->pos, "bad put Move_B push");
       }
