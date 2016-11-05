@@ -325,7 +325,14 @@ namespace GDCC::BC::DGE
          bits = val.vFixed.vtype.getBits();
          putInt(getWord_Fixed(val.vFixed, 0));
          if(bits > 32) for(Core::FastU w = bits / 32, i = 1; i != w; ++i)
-            putInt(getWord_Fixed(val.vFixed, i));
+            putNTS(','), putInt(getWord_Fixed(val.vFixed, i));
+         break;
+
+      case IR::ValueBase::Float:
+         bits = val.vFloat.vtype.getBits();
+         putInt(getWord_Float(val.vFloat, 0));
+         if(bits > 32) for(Core::FastU w = bits / 32, i = 1; i != w; ++i)
+            putNTS(','), putInt(getWord_Float(val.vFloat, i));
          break;
 
       case IR::ValueBase::Point:
@@ -337,7 +344,7 @@ namespace GDCC::BC::DGE
          break;
 
       default:
-         throw Core::ExceptStr({}, "bad putValue full");
+         throw Core::ExceptStr(pos, "bad putValue full");
       }
    }
 
