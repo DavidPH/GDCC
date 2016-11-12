@@ -13,6 +13,7 @@
 #ifndef GDCC__BC__Info_H__
 #define GDCC__BC__Info_H__
 
+#include "../Core/Counter.hpp"
 #include "../Core/Number.hpp"
 
 #include <ostream>
@@ -44,6 +45,10 @@ namespace GDCC
       class Block;
       class DJump;
       class Exp;
+      class Exp_Array;
+      class Exp_Assoc;
+      class Exp_Tuple;
+      class Exp_Union;
       class Function;
       class Glyph;
       class Object;
@@ -60,7 +65,11 @@ namespace GDCC
       class Statement;
       class StrEnt;
       class Type;
+      class Type_Assoc;
       class Type_Fixed;
+      class Type_Point;
+      class Type_Tuple;
+      class Type_Union;
    }
 
    namespace BC
@@ -138,9 +147,19 @@ namespace GDCC
 
       protected:
          using AddFunc = void (Info::*)(Core::FastU);
+         using IRExpCPtr = Core::CounterPtr<IR::Exp const>;
 
          class ResetFunc {};
          class ResetStmnt {};
+
+         class WordValue
+         {
+         public:
+            IRExpCPtr   exp;
+            Core::FastU val;
+         };
+
+         using WordArray = Core::Array<WordValue>;
 
 
          virtual void gen();
@@ -281,6 +300,20 @@ namespace GDCC
          virtual Core::FastU getWord(Core::Origin pos, IR::Value const &val, Core::FastU w = 0);
          virtual Core::FastU getWord_Fixed(IR::Value_Fixed const &val, Core::FastU w);
          virtual Core::FastU getWord_Float(IR::Value_Float const &val, Core::FastU w);
+
+         Core::FastU getWordCount(IR::Type const &type);
+         Core::FastU getWordCount_Assoc(IR::Type_Assoc const &type);
+         virtual Core::FastU getWordCount_Point(IR::Type_Point const &type);
+         Core::FastU getWordCount_Tuple(IR::Type_Tuple const &type);
+         Core::FastU getWordCount_Union(IR::Type_Union const &type);
+
+         WordArray getWords(IR::Arg_Lit const &arg);
+         WordArray getWords(IR::Exp const *exp);
+         WordArray getWords(Core::Origin pos, IR::Value const &val);
+         WordArray getWords_Array(IR::Exp_Array const *exp);
+         WordArray getWords_Assoc(IR::Exp_Assoc const *exp);
+         WordArray getWords_Tuple(IR::Exp_Tuple const *exp);
+         WordArray getWords_Union(IR::Exp_Union const *exp);
 
          void putData(char const *data, std::size_t size);
 

@@ -125,14 +125,12 @@ namespace GDCC::BC::DGE
       void putInt(Core::FastU i);
       void putInt(Core::FastI i);
 
+      void putNTS(char nts);
+      void putNTS(char const *nts);
+      void putNTS(Core::String nts);
+
       virtual void putObj();
       using InfoBase::putObj;
-
-      void putValue(Core::Origin pos, IR::Value const &val); // Full output.
-      void putValue(Core::Origin pos, IR::Value const &val, Core::FastU w);
-
-      void putValueMulti(Core::Origin pos, Core::Array<IR::Value> const &val); // Full output.
-      void putValueMulti(Core::Origin pos, Core::Array<IR::Value> const &val, Core::FastU w);
 
       virtual void putStmnt();
 
@@ -229,9 +227,13 @@ namespace GDCC::BC::DGE
       virtual void putStr();
       using InfoBase::putStr;
 
-      void putNTS(char nts);
-      void putNTS(char const *nts);
-      void putNTS(Core::String nts);
+      void putValue(Core::Origin pos, IR::Value const &val); // Full output.
+      void putValue(Core::Origin pos, IR::Value const &val, Core::FastU w);
+
+      void putValueMulti(Core::Origin pos, Core::Array<IR::Value> const &val); // Full output.
+      void putValueMulti(Core::Origin pos, Core::Array<IR::Value> const &val, Core::FastU w);
+
+      void putWord(WordValue const &w);
 
       virtual void trStmnt();
       void trStmnt_AdXU_W();

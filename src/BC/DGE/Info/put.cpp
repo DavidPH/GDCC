@@ -82,6 +82,15 @@ namespace GDCC::BC::DGE
          putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
          break;
 
+      case Core::STR_Assoc:
+         {
+            auto words = getWords(exp);
+            auto itr = words.begin(), end = words.end();
+            if(itr != end) for(putWord(*itr++); itr != end; ++itr)
+               putNTS(','), putWord(*itr);
+         }
+         break;
+
       case Core::STR_Cst:
          putExp_Cst(static_cast<IR::Exp_Cst const *>(exp));
          break;
@@ -321,6 +330,11 @@ namespace GDCC::BC::DGE
          putValueMulti(pos, val.vArray.value);
          break;
 
+      case IR::ValueBase::Assoc:
+         // TODO: Not assume members are in order.
+         putValueMulti(pos, val.vAssoc.value);
+         break;
+
       case IR::ValueBase::Fixed:
          bits = val.vFixed.vtype.getBits();
          putInt(getWord_Fixed(val.vFixed, 0));
@@ -333,6 +347,10 @@ namespace GDCC::BC::DGE
          putInt(getWord_Float(val.vFloat, 0));
          if(bits > 32) for(Core::FastU w = bits / 32, i = 1; i != w; ++i)
             putNTS(','), putInt(getWord_Float(val.vFloat, i));
+         break;
+
+      case IR::ValueBase::Funct:
+         putInt(val.vFunct.value);
          break;
 
       case IR::ValueBase::Point:
@@ -421,6 +439,17 @@ namespace GDCC::BC::DGE
             break;
          }
       }
+   }
+
+   //
+   // Info::putWord
+   //
+   void Info::putWord(WordValue const &w)
+   {
+      if(w.exp)
+         putExp(w.exp, w.val);
+      else
+         putInt(w.val);
    }
 }
 
