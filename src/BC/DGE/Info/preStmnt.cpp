@@ -38,13 +38,13 @@ namespace GDCC::BC::DGE
 
       case IR::Code::CmpF_EQ_W: preStmnt_CmpF_EQ_W(); break;
       case IR::Code::CmpF_GE_W: preStmnt_CmpF_GE_W(); break;
-      case IR::Code::CmpF_GT_W: preStmnt_CmpF_LT_W(); break;
+      case IR::Code::CmpF_GT_W: preStmnt_CmpF_GT_W(); break;
       case IR::Code::CmpF_LE_W: preStmnt_CmpF_LE_W(); break;
       case IR::Code::CmpF_LT_W: preStmnt_CmpF_LT_W(); break;
       case IR::Code::CmpF_NE_W: preStmnt_CmpF_NE_W(); break;
       case IR::Code::CmpI_EQ_W: preStmnt_CmpI_EQ_W(); break;
       case IR::Code::CmpI_GE_W: preStmnt_CmpI_GE_W(); break;
-      case IR::Code::CmpI_GT_W: preStmnt_CmpI_LT_W(); break;
+      case IR::Code::CmpI_GT_W: preStmnt_CmpI_GT_W(); break;
       case IR::Code::CmpI_LE_W: preStmnt_CmpI_LE_W(); break;
       case IR::Code::CmpI_LT_W: preStmnt_CmpI_LT_W(); break;
       case IR::Code::CmpI_NE_W: preStmnt_CmpI_NE_W(); break;
