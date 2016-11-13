@@ -130,7 +130,8 @@ static void MakeLib_libc(GDCC::IR::Program &prog, bool nomath = false)
       MakeLib_CC(prog, path, "trig.c");
    }
 
-   if(GDCC::Platform::IsFamily_ZDACS())
+   if(GDCC::Platform::IsFamily_ZDACS() ||
+      GDCC::Platform::TargetCur == GDCC::Platform::Target::Doominati)
    {
       std::string pathSub = path;
       GDCC::Core::PathAppend(pathSub, "ZDACS");
