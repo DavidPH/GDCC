@@ -439,6 +439,8 @@ namespace GDCC::BC::DGE
             break;
          }
       }
+
+      flushBucket();
    }
 
    //
