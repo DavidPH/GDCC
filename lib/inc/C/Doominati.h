@@ -52,5 +52,9 @@
 [[call("Native")]] void DGE_PrintChar(unsigned c);
 [[call("Native")]] void DGE_PrintWordD(unsigned d);
 
+[[call("Native")]] unsigned DGE_SysRead(char *buf, unsigned len);
+[[call("Native")]] unsigned DGE_SysWrite(char const *buf, unsigned len);
+[[call("Native")]] unsigned DGE_SysWriteErr(char const *buf, unsigned len);
+
 #endif//__GDCC_Header__C__Doominati_h__
 

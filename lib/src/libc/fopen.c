@@ -29,6 +29,10 @@
 #include <ACS_ZDoom.h>
 #endif
 
+#if __GDCC_Target__Doominati__
+#include <Doominati.h>
+#endif
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -401,6 +405,8 @@ static ssize_t FILE_fn_stdout_write(void *cookie, char const *buf, size_t size)
    ACS_EndLog();
 
    return size;
+   #elif __GDCC_Target__Doominati__
+   return DGE_SysWrite(buf, size);
    #else
    return 0;
    #endif
