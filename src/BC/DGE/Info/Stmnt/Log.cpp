@@ -35,22 +35,22 @@ namespace GDCC::BC::DGE
       if(stmnt->args[1].a == IR::ArgBase::Stk)
       {
          for(Core::FastU i = stmnt->op.size; --i;)
-            putCode("OrIU");
+            putCode("BOrI");
          putStmntDropTmp(0);
 
          for(Core::FastU i = stmnt->op.size; --i;)
-            putCode("OrIU");
+            putCode("BOrI");
          putStmntPushTmp(0);
       }
       else
       {
          putStmntPushArg(stmnt->args[1], 0);
          for(Core::FastU i = stmnt->op.size; --i;)
-            putStmntPushArg(stmnt->args[1], i), putCode("OrIU");
+            putStmntPushArg(stmnt->args[1], i), putCode("BOrI");
 
          putStmntPushArg(stmnt->args[2], 0);
          for(Core::FastU i = stmnt->op.size; --i;)
-            putStmntPushArg(stmnt->args[2], i), putCode("OrIU");
+            putStmntPushArg(stmnt->args[2], i), putCode("BOrI");
       }
 
       putCode(code);
@@ -65,7 +65,7 @@ namespace GDCC::BC::DGE
          return;
 
       for(auto n = stmnt->op.size; --n;)
-         putCode("OrIU");
+         putCode("BOrI");
 
       putCode("LNot");
    }

@@ -32,7 +32,7 @@ namespace GDCC::BC::DGE
          return putCode("Jump_Lit", stmnt->args[1].aLit);
 
       for(auto n = stmnt->op.size; --n;)
-         putCode("OrIU");
+         putCode("BOrI");
 
       putCode(code, stmnt->args[1].aLit);
    }
