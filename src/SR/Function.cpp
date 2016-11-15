@@ -209,8 +209,8 @@ namespace GDCC
 
             gdata.type  = Type::Size->getIRType();
             gdata.value = IR::ExpCreate_Value(
-               IR::Value_Fixed(localReg, gdata.type.tFixed),
-               Core::Origin(Core::STRNULL, 0));
+               IR::Value_Fixed(localReg * Platform::GetWordBytes(),
+               gdata.type.tFixed), {nullptr, 0});
          }
 
          // If this is a named script, generate a StrEnt, too.
