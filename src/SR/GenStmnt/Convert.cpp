@@ -451,6 +451,16 @@ namespace GDCC
          auto diffBitsF = static_cast<Core::FastI>(dstT->getSizeBitsF()) -
                           static_cast<Core::FastI>(srcT->getSizeBitsF());
 
+         // If source is signed subword, do subword sign extension.
+         if(srcT->isTypeSubWord() && srcT->getSizeBitsS())
+         {
+            auto srcBits = srcT->getSizeBitsF() + srcT->getSizeBitsI() + srcT->getSizeBitsS();
+            auto shift   = Platform::GetWordBits() - srcBits;
+
+            ctx.block.addStatementArgs({IR::Code::ShLU_W, 1}, IR::Arg_Stk{}, IR::Arg_Stk{}, shift);
+            ctx.block.addStatementArgs({IR::Code::ShRI_W, 1}, IR::Arg_Stk{}, IR::Arg_Stk{}, shift);
+         }
+
          // Expand value.
          if(diffWords > 0)
          {
@@ -508,6 +518,27 @@ namespace GDCC
             for(auto i = diffWords; i++;)
                ctx.block.addStatementArgs({IR::Code::Move_W, 1},
                   IR::Arg_Nul(), IR::Arg_Stk());
+         }
+
+         // If destination is subword, mask.
+         if(dstT->isTypeSubWord())
+         {
+            auto dstBits = dstT->getSizeBitsF() + dstT->getSizeBitsI() + dstT->getSizeBitsS();
+
+            // If signed, also do sign extension.
+            if(dstT->getSizeBitsS())
+            {
+               auto shift = Platform::GetWordBits() - dstBits;
+
+               ctx.block.addStatementArgs({IR::Code::ShLU_W, 1}, IR::Arg_Stk{}, IR::Arg_Stk{}, shift);
+               ctx.block.addStatementArgs({IR::Code::ShRI_W, 1}, IR::Arg_Stk{}, IR::Arg_Stk{}, shift);
+            }
+            else
+            {
+               auto mask = (Core::FastU{1} << dstBits) - 1;
+
+               ctx.block.addStatementArgs({IR::Code::BAnd_W, 1}, IR::Arg_Stk{}, IR::Arg_Stk{}, mask);
+            }
          }
       }
 
