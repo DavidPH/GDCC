@@ -126,8 +126,8 @@ namespace GDCC::BC::DGE
    void Info::trStmnt_Pltn()
    {
       CheckArgC(stmnt, 2);
-      moveArgStk_dst(stmnt->args[0], stmnt->op.size);
-      moveArgStk_src(stmnt->args[1], stmnt->op.size);
+      moveArgStk_dst(stmnt->args[0], 1);
+      moveArgStk_src(stmnt->args[1], 1);
    }
 
    //

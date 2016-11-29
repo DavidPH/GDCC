@@ -161,6 +161,7 @@ namespace GDCC
       {
          switch(TargetCur)
          {
+         case Target::Doominati:
          case Target::Zandronum:
          case Target::ZDoom:
             switch(call)
@@ -271,6 +272,7 @@ namespace GDCC
       {
          switch(TargetCur)
          {
+         case Target::Doominati:
          case Target::Zandronum:
          case Target::ZDoom:
             switch(call)
@@ -296,6 +298,7 @@ namespace GDCC
       {
          switch(TargetCur)
          {
+         case Target::Doominati:
          case Target::Zandronum:
          case Target::ZDoom:
             switch(call)
