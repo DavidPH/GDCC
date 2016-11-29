@@ -43,7 +43,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_DiXU_W()
    {
-      trStmntStk3(stmnt->op.size * 2, stmnt->op.size * 2, true);
+      trStmntStk3(stmnt->op.size * 2, stmnt->op.size, true);
    }
 
    //
@@ -51,7 +51,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_ModU_W()
    {
-      trStmntStk3(stmnt->op.size, stmnt->op.size * 2, true);
+      trStmntStk3(stmnt->op.size, stmnt->op.size, true);
 
       if(stmnt->op.size > 1)
          trStmntTmp(stmnt->op.size);
