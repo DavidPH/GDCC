@@ -23,6 +23,7 @@
 [[call("Native")]] void DGE_CallbackDrawBegin(void (*callback)(void) [[call("StkCall")]]);
 [[call("Native")]] void DGE_CallbackDrawEnd(void (*callback)(void) [[call("StkCall")]]);
 
+[[call("Native")]] void DGE_DebugDataStk(void);
 [[call("Native")]] void DGE_DebugLocReg(void);
 
 [[call("Native")]] void DGE_Delay(unsigned ticks);

@@ -56,7 +56,7 @@ namespace GDCC::BC::DGE
       case IR::Code::CmpF_NE_W: putStmnt_CmpF_NE_W(); break;
       case IR::Code::CmpI_EQ_W: putStmnt_CmpI_EQ_W(); break;
       case IR::Code::CmpI_GE_W: putStmnt_CmpI_GE_W(); break;
-      case IR::Code::CmpI_GT_W: putStmnt_CmpI_LT_W(); break;
+      case IR::Code::CmpI_GT_W: putStmnt_CmpI_GT_W(); break;
       case IR::Code::CmpI_LE_W: putStmnt_CmpI_LE_W(); break;
       case IR::Code::CmpI_LT_W: putStmnt_CmpI_LT_W(); break;
       case IR::Code::CmpI_NE_W: putStmnt_CmpI_NE_W(); break;
