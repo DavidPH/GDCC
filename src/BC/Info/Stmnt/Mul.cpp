@@ -17,6 +17,8 @@
 #include "IR/Function.hpp"
 #include "IR/Glyph.hpp"
 
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -70,12 +72,12 @@ namespace GDCC::BC
       GDCC_BC_AddFuncPre({Code::MulF_W, n}, n, n * 2, n * 3 + 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n);
 
-      IR::Arg_LocReg lhi{GDCC_BC_ArgLit(n * 1 - 1)};
-      IR::Arg_LocReg rhi{GDCC_BC_ArgLit(n * 2 - 1)};
-      IR::Arg_LocReg tmp{GDCC_BC_ArgLit(n * 2)};
-      IR::Arg_LocReg thi{GDCC_BC_ArgLit(n * 3 - 1)};
-      IR::Arg_LocReg exp{GDCC_BC_ArgLit(n * 3 + 0)};
-      IR::Arg_LocReg sig{GDCC_BC_ArgLit(n * 3 + 1)};
+      GDCC_BC_AddFuncObjReg(lhi, n * 1 - 1);
+      GDCC_BC_AddFuncObjReg(rhi, n * 2 - 1);
+      GDCC_BC_AddFuncObjReg(tmp, n * 2);
+      GDCC_BC_AddFuncObjReg(thi, n * 3 - 1);
+      GDCC_BC_AddFuncObjReg(exp, n * 3 + 0);
+      GDCC_BC_AddFuncObjReg(sig, n * 3 + 1);
 
       FloatInfo fi = getFloatInfo(n);
 

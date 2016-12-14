@@ -17,6 +17,8 @@
 #include "IR/Function.hpp"
 #include "IR/Glyph.hpp"
 
+#include "Platform/Platform.hpp"
+
 #include <sstream>
 
 
@@ -42,7 +44,7 @@ namespace GDCC::BC
       GDCC_BC_AddFuncPre({code, n}, n, n + 1, n + 1, __FILE__);
       GDCC_BC_AddFuncObjBin(n);
 
-      IR::Arg_LocReg exp{GDCC_BC_ArgLit(n - 1)};
+      GDCC_BC_AddFuncObjReg(exp, n - 1);
 
       FloatInfo fi = getFloatInfo(stmnt->op.size);
 

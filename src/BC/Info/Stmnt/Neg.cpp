@@ -17,6 +17,8 @@
 #include "IR/Function.hpp"
 #include "IR/Glyph.hpp"
 
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |

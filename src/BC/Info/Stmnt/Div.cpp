@@ -17,6 +17,8 @@
 #include "IR/Function.hpp"
 #include "IR/Glyph.hpp"
 
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -94,9 +96,9 @@ namespace GDCC::BC
       IR::Glyph labelLoopShft{prog, name + "$loop_shft"};
       IR::Glyph labelRetn    {prog, name + "$retn"};
 
-      IR::Arg_LocReg quot{GDCC_BC_ArgLit(n * 2)};
-      IR::Arg_LocReg rem {GDCC_BC_ArgLit(n * 3)};
-      IR::Arg_LocReg mask{GDCC_BC_ArgLit(n * 4)};
+      GDCC_BC_AddFuncObjReg(quot, n * 2);
+      GDCC_BC_AddFuncObjReg(rem,  n * 3);
+      GDCC_BC_AddFuncObjReg(mask, n * 4);
 
       // If both operands have the high word clear, defer to smaller op.
       GDCC_BC_AddStmnt({Code::BOrI_W,   1}, stk, lop + (n - 1), rop + (n - 1));
@@ -163,13 +165,13 @@ namespace GDCC::BC
       GDCC_BC_AddFuncPre({Code::DivF_W, n}, n, n * 2, n * 3 + 3, __FILE__);
       GDCC_BC_AddFuncObjBin(n);
 
-      IR::Arg_LocReg lhi{GDCC_BC_ArgLit(n * 1 - 1)};
-      IR::Arg_LocReg rhi{GDCC_BC_ArgLit(n * 2 - 1)};
-      IR::Arg_LocReg man{GDCC_BC_ArgLit(n * 2)};
-      IR::Arg_LocReg mhi{GDCC_BC_ArgLit(n * 3 - 1)};
-      IR::Arg_LocReg sig{GDCC_BC_ArgLit(n * 3 + 0)};
-      IR::Arg_LocReg exp{GDCC_BC_ArgLit(n * 3 + 1)};
-      IR::Arg_LocReg tmp{GDCC_BC_ArgLit(n * 3 + 2)};
+      GDCC_BC_AddFuncObjReg(lhi, n * 1 - 1);
+      GDCC_BC_AddFuncObjReg(rhi, n * 2 - 1);
+      GDCC_BC_AddFuncObjReg(man, n * 2);
+      GDCC_BC_AddFuncObjReg(mhi, n * 3 - 1);
+      GDCC_BC_AddFuncObjReg(sig, n * 3 + 0);
+      GDCC_BC_AddFuncObjReg(exp, n * 3 + 1);
+      GDCC_BC_AddFuncObjReg(tmp, n * 3 + 2);
 
       FloatInfo fi = getFloatInfo(n);
 

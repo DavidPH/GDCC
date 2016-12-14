@@ -51,8 +51,14 @@
 #define GDCC_BC_AddFuncObjBin(size) \
    GDCC_BC_AddFuncObj(); \
    \
-   IR::Arg_LocReg lop{GDCC_BC_ArgLit(0)}; \
-   IR::Arg_LocReg rop{GDCC_BC_ArgLit(size)}
+   GDCC_BC_AddFuncObjReg(lop, 0); \
+   GDCC_BC_AddFuncObjReg(rop, size)
+
+//
+// GDCC_BC_AddFuncObjReg
+//
+#define GDCC_BC_AddFuncObjReg(name, addr) \
+   IR::Arg_LocReg name{GDCC_BC_ArgLit((addr) * Platform::GetWordBytes())}
 
 //
 // GDCC_BC_AddFuncObjUna
@@ -60,7 +66,7 @@
 #define GDCC_BC_AddFuncObjUna(size) \
    GDCC_BC_AddFuncObj(); \
    \
-   IR::Arg_LocReg lop{GDCC_BC_ArgLit(0)}
+   GDCC_BC_AddFuncObjReg(lop, 0)
 
 //
 // GDCC_BC_AddLabel
