@@ -43,13 +43,21 @@ namespace GDCC
          // constructor
          //
          DirStream_FindFile(char const *dirname) :
-            DirStream{dirname}
+            DirStream{dirname}, ended{false}
          {
+            if(!IsDir(nameBuf.data()))
+               throw ExceptFile(dirname, "directory");
+
             nameBuf += '*';
 
             dir = FindFirstFile(nameBuf.data(), &diritr);
             if(dir == INVALID_HANDLE_VALUE)
-               throw ExceptFile(dirname, "directory");
+            {
+               if(GetLastError() != ERROR_FILE_NOT_FOUND)
+                  throw ExceptFile(dirname, "directory");
+
+               ended = true;
+            }
          }
 
          //
@@ -79,7 +87,7 @@ namespace GDCC
 
          HANDLE          dir;
          WIN32_FIND_DATA diritr;
-         bool            ended;
+         bool            ended : 1;
       };
       #else
       //
