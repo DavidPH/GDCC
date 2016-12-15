@@ -13,15 +13,40 @@
 #include "BC/DGE/Info.hpp"
 
 #include "Core/Exception.hpp"
+#include "Core/Option.hpp"
 
 #include "IR/Exp/Binary.hpp"
 #include "IR/Exp/Glyph.hpp"
 #include "IR/Exp/Unary.hpp"
 #include "IR/Program.hpp"
 
+#include "Option/Bool.hpp"
+
 #include <cstdio>
 
 #include <iostream>
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+namespace GDCC::BC::DGE
+{
+   //
+   // --bc-dge-origins
+   //
+   static bool OutputOrigin = false;
+   static Option::Bool OutputOriginOpt
+   {
+      &Core::GetOptionList(), Option::Base::Info()
+         .setName("bc-dge-origins")
+         .setGroup("output")
+         .setDescS("Output origin data in bytecode."),
+
+      &OutputOrigin
+   };
+}
 
 
 //----------------------------------------------------------------------------|
@@ -214,8 +239,12 @@ namespace GDCC::BC::DGE
       // Put the function code.
       putNTS("block"); putNTS(func->label);
       putNTS('{');
+         putOriginFunc(func->glyph);
          if(func->allocAut)
          {
+            if(!func->block.empty())
+               putOrigin(func->block.begin()->pos);
+
             putCode("Push_Lit", func->allocAut);
             putCode("Push_Lit", "___GDCC__Plsa");
             putCode("Call",     1);
@@ -301,6 +330,36 @@ namespace GDCC::BC::DGE
       }
       else
          putNTS(';');
+   }
+
+   //
+   // Info::putOrigin
+   //
+   void Info::putOrigin(Core::Origin pos)
+   {
+      if(!OutputOrigin || !pos) return;
+
+      if(lastOrigin.file != pos.file && pos.file)
+      {
+         lastOrigin.file = pos.file;
+         putNTS("@file"); putNTS(pos.file);
+      }
+
+      if(lastOrigin.line != pos.line && pos.line)
+      {
+         lastOrigin.line = pos.line;
+         putNTS("@l"); putInt(pos.line);
+      }
+   }
+
+   //
+   // Info::putOriginFunc
+   //
+   void Info::putOriginFunc(Core::String pos)
+   {
+      if(!OutputOrigin) return;
+
+      putNTS("@func"); putNTS(pos);
    }
 
    //

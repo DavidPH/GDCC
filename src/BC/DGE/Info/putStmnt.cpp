@@ -30,6 +30,8 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt()
    {
+      putOrigin(stmnt->pos);
+
       for(auto const &label : stmnt->labs)
          putNTS("label"), putNTS('('), putNTS(label), putNTS(')');
 

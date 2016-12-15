@@ -15,6 +15,8 @@
 
 #include "../../BC/Info.hpp"
 
+#include "../../Core/Origin.hpp"
+
 #include "../../IR/Code.hpp"
 
 
@@ -131,6 +133,9 @@ namespace GDCC::BC::DGE
 
       virtual void putObj();
       using InfoBase::putObj;
+
+      void putOrigin(Core::Origin pos);
+      void putOriginFunc(Core::String pos);
 
       virtual void putStmnt();
 
@@ -326,6 +331,8 @@ namespace GDCC::BC::DGE
       void putCodeArg(IR::Arg_Lit const &arg);
 
       void putStmnt_DivU_W(char const *code, IR::Code codeX, bool mod);
+
+      Core::Origin lastOrigin;
    };
 }
 
