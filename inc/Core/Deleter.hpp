@@ -36,6 +36,21 @@ namespace GDCC
       private:
          bool free;
       };
+
+      //
+      // ConditionalDeleter<T[]>
+      //
+      template<typename T>
+      class ConditionalDeleter<T[]>
+      {
+      public:
+         ConditionalDeleter(bool free_) : free{free_} {}
+
+         void operator () (T *p) const {if(free) delete[] p;}
+
+      private:
+         bool free;
+      };
    }
 }
 
