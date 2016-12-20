@@ -27,10 +27,10 @@ namespace GDCC::BC::DGE
    void Info::putStmnt_LAnd(char const *code)
    {
       if(stmnt->op.size == 0)
-         putCode("Push_Lit", 0);
+         return putCode("Push_Lit", 0);
 
       if(stmnt->op.size == 1)
-         putCode(code);
+         return putCode(code);
 
       if(stmnt->args[1].a == IR::ArgBase::Stk)
       {
