@@ -68,6 +68,21 @@
 #endif
 
 //
+// FormatFixCoreDFLoop_kh
+//
+#if __GDCC_Family__ZDACS__
+#define FormatFixCoreDFLoop_kh(T) FormatFixCoreDFLoop_k(T)
+#else
+#define FormatFixCoreDFLoop_kh(T) \
+   for(T short _Accum k = data; k && precDigs; --precDigs) \
+   { \
+      k -= (T FormatTypeInt_kh)k; \
+      k *= 10; \
+      *ret._end++ = (int)k + '0'; \
+   }
+#endif
+
+//
 // FormatFixCoreDFLoop_kl
 //
 #if __GDCC_Family__ZDACS__
@@ -703,7 +718,7 @@ __GDCC__FormatDefn(K, d, _Accum)
 __GDCC__FormatDefn(K, dh, short _Accum)
 {
    FormatFixPreU();
-   FormatFixCoreD(unsigned, k);
+   FormatFixCoreD(unsigned, kh);
    FormatFixWidth();
 
    return ret;
@@ -929,7 +944,7 @@ __GDCC__FormatDefn(X, d, _Accum)
 __GDCC__FormatDefn(X, dh, short _Accum)
 {
    FormatFixPreS();
-   FormatFixCoreD(signed, k);
+   FormatFixCoreD(signed, kh);
    FormatFixWidth();
    FormatIntSign();
 
