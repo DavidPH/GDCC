@@ -32,27 +32,19 @@ namespace GDCC
       static void GenStmnt_MovePartIdx(Exp const *exp, GenStmntCtx const &ctx,
          Arg const &arg, IdxT const &idx, bool get, bool set)
       {
+         IR::OpCode op;
+         if(arg.type->isTypeSubWord())
+            op = {IR::Code::Move_B, arg.type->getSizeBytes()};
+         else
+            op = {IR::Code::Move_W, arg.type->getSizeWords()};
+
          if(set)
-         {
-            if(arg.type->isTypeSubWord())
-               ctx.block.addStatementArgs({IR::Code::Move_B, arg.type->getSizeBytes()},
-                  GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0),
-                  IR::Arg_Stk());
-            else
-               for(Core::FastU n = arg.type->getSizeWords(); n--;)
-                  GenStmnt_MoveWordSetT<ArgT>(exp, ctx, arg, idx, n);
-         }
+            ctx.block.addStatementArgs(op,
+               GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0), IR::Arg_Stk());
 
          if(get)
-         {
-            if(arg.type->isTypeSubWord())
-               ctx.block.addStatementArgs({IR::Code::Move_B, arg.type->getSizeBytes()},
-                  IR::Arg_Stk(),
-                  GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
-            else
-               for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
-                  GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
-         }
+            ctx.block.addStatementArgs(op,
+               IR::Arg_Stk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
       }
 
       //
@@ -222,13 +214,26 @@ namespace GDCC
          {
             auto dupIR = dup.getIRArg(ctx.prog);
 
-            ctx.block.addStatementArgs(
-               {IR::Code::Move_W, src.type->getSizeWords()},
-               dupIR, src.getIRArg(ctx.prog));
+            if(src.type->isTypeSubWord())
+            {
+               ctx.block.addStatementArgs(
+                  {IR::Code::Move_B, src.type->getSizeBytes()},
+                  dupIR, src.getIRArg(ctx.prog));
 
-            ctx.block.addStatementArgs(
-               {IR::Code::Move_W, src.type->getSizeWords()},
-               dst.getIRArg(ctx.prog), dupIR);
+               ctx.block.addStatementArgs(
+                  {IR::Code::Move_B, src.type->getSizeBytes()},
+                  dst.getIRArg(ctx.prog), dupIR);
+            }
+            else
+            {
+               ctx.block.addStatementArgs(
+                  {IR::Code::Move_W, src.type->getSizeWords()},
+                  dupIR, src.getIRArg(ctx.prog));
+
+               ctx.block.addStatementArgs(
+                  {IR::Code::Move_W, src.type->getSizeWords()},
+                  dst.getIRArg(ctx.prog), dupIR);
+            }
 
             return;
          }

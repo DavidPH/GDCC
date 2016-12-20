@@ -40,16 +40,16 @@ namespace GDCC
          if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
          {
             // Push l.
-            for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
-               GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
+            ctx.block.addStatementArgs({IR::Code::Move_W, arg.type->getSizeWords()},
+               IR::Arg_Stk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
             // Assign dst.
             GenStmnt_MovePart(exp, ctx, dst, false, true);
          }
 
          // Push l.
-         for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
-            GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
+         ctx.block.addStatementArgs({IR::Code::Move_W, arg.type->getSizeWords()},
+            IR::Arg_Stk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
          // Convert to evaluation type.
          GenStmnt_ConvertArith(exp, evalT, exp->type, ctx);
@@ -77,15 +77,15 @@ namespace GDCC
          GenStmnt_ConvertArith(exp, exp->type, evalT, ctx);
 
          // Assign l.
-         for(Core::FastU n = arg.type->getSizeWords(); n--;)
-            GenStmnt_MoveWordSetT<ArgT>(exp, ctx, arg, idx, n);
+         ctx.block.addStatementArgs({IR::Code::Move_W, arg.type->getSizeWords()},
+            GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0), IR::Arg_Stk());
 
          // Duplicate to destination, if necessary.
          if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
          {
             // Push l.
-            for(Core::FastU n = 0, e = arg.type->getSizeWords(); n != e; ++n)
-               GenStmnt_MoveWordGetT<ArgT>(exp, ctx, arg, idx, n);
+            ctx.block.addStatementArgs({IR::Code::Move_W, arg.type->getSizeWords()},
+               IR::Arg_Stk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
             // Assign dst.
             GenStmnt_MovePart(exp, ctx, dst, false, true);
