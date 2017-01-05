@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -348,7 +348,7 @@ namespace GDCC::BC::DGE
       if(lastOrigin.line != pos.line && pos.line)
       {
          lastOrigin.line = pos.line;
-         putNTS("@l"); putInt(pos.line);
+         putNTS("@l"); putInt(static_cast<Core::FastU>(pos.line));
       }
    }
 
