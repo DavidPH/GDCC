@@ -16,6 +16,7 @@
 #include "GDCC/Config.hpp"
 
 #include <cstdint>
+#include <utility>
 
 #if GDCC_Core_BigNum
 #include <gmpxx.h>
