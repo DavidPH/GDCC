@@ -107,11 +107,11 @@ namespace GDCC
       {
          PragmaDataBase::push();
 
-         stackCXLimitedRange.emplace_back(stateCXLimitedRange);
-         stackFEnvAccess    .emplace_back(stateFEnvAccess);
-         stackFPContract    .emplace_back(stateFPContract);
-         stackFixedLiteral  .emplace_back(stateFixedLiteral);
-         stackStrEntLiteral .emplace_back(stateStrEntLiteral);
+         stackCXLimitedRange.push_back(stateCXLimitedRange);
+         stackFEnvAccess    .push_back(stateFEnvAccess);
+         stackFPContract    .push_back(stateFPContract);
+         stackFixedLiteral  .push_back(stateFixedLiteral);
+         stackStrEntLiteral .push_back(stateStrEntLiteral);
       }
 
       //
