@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2016 David Hill
+// Copyright(C) 2014-2017 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -174,6 +174,9 @@ ACS_NativeDeclFull(203, 0, int,    SetTranslation, int, __str);
 
 ACS_NativeDeclFull(300, 0, _Accum, GetLineX, int, _Accum, _Accum);
 ACS_NativeDeclFull(301, 0, _Accum, GetLineY, int, _Accum, _Accum);
+
+ACS_NativeDeclFull(400, 0, int,    SetSectorGlow, int, int, int, int, int, int);
+ACS_NativeDeclFull(401, 0, int,    SetFogDensity, int, int);
 
 #endif//__GDCC_Header__C__ACS_ZDoom__Native_h__
 

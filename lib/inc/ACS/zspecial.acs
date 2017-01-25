@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015-2016 David Hill
+// Copyright(C) 2015-2017 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -468,6 +468,10 @@ special
    // Eternity's
    fixed -300:GetLineX(3, int, fixed, fixed),
    fixed -301:GetLineY(3, int, fixed, fixed),
+
+   // GZDoom's
+   int   -400:SetSectorGlow(6, int, int, int, int, int, int),
+   int   -401:SetFogDensity(2, int, int),
 
    // ZDaemon's
    int -19260:GetTeamScore(1),
