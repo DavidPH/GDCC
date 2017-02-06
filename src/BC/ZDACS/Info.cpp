@@ -1229,24 +1229,12 @@ namespace GDCC
          //
          Core::FastU Info::GetWord_Fixed(IR::Value_Fixed const &val, Core::FastU w)
          {
-            Core::FastU valI;
+            auto valI = val.value;
 
-            if(w)
-            {
-               if(val.vtype.bitsS)
-                  valI = Core::NumberCast<Core::FastI>(val.value >> (w * 32));
-               else
-                  valI = Core::NumberCast<Core::FastU>(val.value >> (w * 32));
-            }
-            else
-            {
-               if(val.vtype.bitsS)
-                  valI = Core::NumberCast<Core::FastI>(val.value);
-               else
-                  valI = Core::NumberCast<Core::FastU>(val.value);
-            }
+            valI >>= w * 32;
+            valI  &= 0xFFFFFFFF;
 
-            return valI & 0xFFFFFFFF;
+            return Core::NumberCast<Core::FastU>(valI);
          }
 
          //
