@@ -86,6 +86,7 @@ namespace GDCC::BC::DGE
       case IR::Code::Jcnd_Tru: putStmnt_Jcnd_Tru(); break;
 
       case IR::Code::Jfar: putStmnt_Jfar(); break;
+      case IR::Code::Jset: putStmnt_Jset(); break;
       case IR::Code::Jump: putStmnt_Jump(); break;
       case IR::Code::LAnd: putStmnt_LAnd(); break;
       case IR::Code::LNot: putStmnt_LNot(); break;
@@ -337,6 +338,44 @@ namespace GDCC::BC::DGE
 
       default:
          throw Core::ExceptStr(stmnt->pos, "bad putStmntPushArg");
+      }
+   }
+
+   //
+   // Info::putStmntPushIdx
+   //
+   void Info::putStmntPushIdx(IR::Arg const &arg, Core::FastU w)
+   {
+      //
+      // putSta
+      //
+      auto putSta = [&](IR::Arg_Sta const &a)
+      {
+         if(a.idx->a == IR::ArgBase::Lit)
+         {
+            putNTS("Push_Lit");
+            putNTS('(');
+            putExpAdd(a.idx->aLit.value, (a.off + w) * 4);
+            putNTS(')');
+         }
+         else
+         {
+            putStmntPushArg(*a.idx, 0);
+
+            if(a.off + w)
+            {
+               putCode("Push_Lit", (a.off + w) * 4);
+               putCode("AddU");
+            }
+         }
+      };
+
+      switch(arg.a)
+      {
+      case IR::ArgBase::Sta:    putSta(arg.aSta); break;
+
+      default:
+         throw Core::ExceptStr(stmnt->pos, "bad putStmntPushIdx");
       }
    }
 

@@ -181,6 +181,7 @@ namespace GDCC::BC::DGE
       void putStmnt_Jcnd_Tab();
       void putStmnt_Jcnd_Tru();
       void putStmnt_Jfar();
+      void putStmnt_Jset();
       void putStmnt_Jump();
       void putStmnt_LAnd(char const *code = "LAnd");
       void putStmnt_LNot();
@@ -220,6 +221,8 @@ namespace GDCC::BC::DGE
 
       void putStmntPushArg(IR::Arg const &arg, Core::FastU w);
       void putStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
+
+      void putStmntPushIdx(IR::Arg const &arg, Core::FastU w);
 
       void putStmntPushTmp(Core::FastU w);
       void putStmntPushTmp(Core::FastU lo, Core::FastU hi);
@@ -283,6 +286,7 @@ namespace GDCC::BC::DGE
       void trStmnt_Jcnd_Tab();
       void trStmnt_Jcnd_Tru();
       void trStmnt_Jfar();
+      void trStmnt_Jset();
       void trStmnt_Jump();
       void trStmnt_LAnd();
       void trStmnt_LNot();

@@ -81,6 +81,7 @@ namespace GDCC::BC::DGE
       case IR::Code::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
 
       case IR::Code::Jfar: trStmnt_Jfar(); break;
+      case IR::Code::Jset: trStmnt_Jset(); break;
       case IR::Code::Jump: trStmnt_Jump(); break;
       case IR::Code::LAnd: trStmnt_LAnd(); break;
       case IR::Code::LNot: trStmnt_LNot(); break;

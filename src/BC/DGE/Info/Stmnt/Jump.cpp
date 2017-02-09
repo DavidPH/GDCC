@@ -82,15 +82,27 @@ namespace GDCC::BC::DGE
       if(stmnt->args.size() > 1)
       {
          // Initiate far jump.
-
-         // TODO
+         putStmntPushArg(stmnt->args[2], 0);
+         putStmntPushIdx(stmnt->args[1], 0);
+         putCode("Jfar_Sta", 1, stmnt->args[0].aLit);
       }
       else
       {
          // Check for ongoing far jump.
-
-         // TODO
+         putCode("Jfar_Pro", stmnt->op.size, stmnt->args[0].aLit);
       }
+   }
+
+   //
+   // Info::putStmnt_Jset
+   //
+   void Info::putStmnt_Jset()
+   {
+      // Push non-jump result.
+      putCode("Push_Lit", 0);
+
+      putStmntPushIdx(stmnt->args[0], 0);
+      putCode("Jfar_Set", 1, stmnt->args[1].aLit);
    }
 
    //
@@ -154,6 +166,17 @@ namespace GDCC::BC::DGE
          CheckArgC(stmnt, 3);
          CheckArgB(stmnt, 1, IR::ArgBase::Sta);
       }
+   }
+
+   //
+   // Info::trStmnt_Jset
+   //
+   void Info::trStmnt_Jset()
+   {
+      CheckArgC(stmnt, 2);
+
+      CheckArgB(stmnt, 0, IR::ArgBase::Sta);
+      CheckArgB(stmnt, 1, IR::ArgBase::Lit);
    }
 
    //
