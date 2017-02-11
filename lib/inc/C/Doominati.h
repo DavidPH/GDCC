@@ -20,7 +20,7 @@
 // Types                                                                      |
 //
 
-typedef void (*DGE_CallbackType)(int w, int h) [[call("StkCall")]];
+typedef void (*DGE_CallbackType)(void) [[call("StkCall")]];
 
 enum // DGE_Align
 {
@@ -42,10 +42,8 @@ enum // DGE_Align
 // Extern Functions                                                           |
 //
 
-[[call("Native")]] void DGE_CallbackRegister(char const *name,
-   void (*callback)(void) [[call("StkCall")]]);
-[[call("Native")]] void DGE_CallbackUnregister(char const *name,
-   void (*callback)(void) [[call("StkCall")]]);
+[[call("Native")]] void DGE_CallbackRegister(char const *name, DGE_CallbackType callback);
+[[call("Native")]] void DGE_CallbackUnregister(char const *name, DGE_CallbackType callback);
 
 [[call("Native")]] void DGE_DebugCallStk(void);
 [[optional_args(1)]]
