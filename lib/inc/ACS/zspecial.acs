@@ -178,6 +178,8 @@ special
 // int 103:Scroll_Texture_Down,
    int 104:Ceiling_CrushAndRaiseSilentDist(4,5),
 
+   int 107:Line_SetPortalTarget(2),
+
    int 109:Light_ForceLightning(1),
    int 110:Light_RaiseByValue(2),
    int 111:Light_LowerByValue(2),
