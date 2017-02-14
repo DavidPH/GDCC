@@ -77,11 +77,6 @@ namespace GDCC::BC
 
       FloatInfo fi = getFloatInfo(n);
 
-      bool cmpEQ =
-         codePos == IR::Code::CmpI_EQ_W ||
-         codePos == IR::Code::CmpI_GE_W ||
-         codePos == IR::Code::CmpI_LE_W;
-
       bool cmpGT =
          codePos == IR::Code::CmpI_GE_W ||
          codePos == IR::Code::CmpI_GT_W;
@@ -166,19 +161,8 @@ namespace GDCC::BC
       GDCC_BC_AddStmnt({Code::Jcnd_Tab, 1}, stk, fi.maskExp, labelREMax);
       GDCC_BC_AddStmnt({Code::Move_W,   1}, nul, stk);
 
-      // ... And if not, check for l being subnormal...
-      GDCC_BC_AddStmnt({Code::Move_W,   n}, stk, lop);
-      GDCC_BC_AddStmnt({Code::BAnd_W,   1},              stk, stk, fi.maskMan);
-      GDCC_BC_AddStmnt({Code::Jcnd_Tru, n}, stk, labelCmp);
-
-      // ... And if not, check for r being zero...
-      GDCC_BC_AddStmnt({Code::Move_W,   n}, stk, rop);
-      GDCC_BC_AddStmnt({Code::BAnd_W,   1}, stk, stk, fi.maskMan | fi.maskExp);
-
-      // ... And if it is, l == r, otherwise l != r.
-      GDCC_BC_AddStmnt({Code::LNot,     n}, stk, stk);
-      if(!cmpEQ) GDCC_BC_AddStmnt({Code::LNot, 1}, stk, stk);
-      GDCC_BC_AddStmnt({Code::Retn,     1}, stk);
+      // ... And if not, jump to normal compare.
+      GDCC_BC_AddStmnt({Code::Jump,     0}, labelCmp);
 
       GDCC_BC_AddLabel(labelREMax);
       GDCC_BC_AddStmnt({Code::Move_W,   1}, nul, stk);
