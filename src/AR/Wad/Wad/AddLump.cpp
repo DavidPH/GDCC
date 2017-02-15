@@ -93,8 +93,8 @@ namespace GDCC
 
             while(dir->next())
             {
-               Core::String name = GetNameFromFile(dir->getPart());
-               char const  *path = dir->getFull();
+               Core::String name = GetNameFromFile(dir->getStrPart());
+               char const  *path = dir->getStrFull();
 
                if(Core::IsDir(path))
                   AddDir(wad, name, Core::DirOpenStream(path).get());
@@ -135,8 +135,8 @@ namespace GDCC
 
             while(dir->next())
             {
-               Core::String name = GetNameFromFile(dir->getPart());
-               char const  *path = dir->getFull();
+               Core::String name = GetNameFromFile(dir->getStrPart());
+               char const  *path = dir->getStrFull();
 
                if(Core::IsDir(path))
                {
@@ -232,8 +232,8 @@ namespace GDCC
 
             while(dir->next())
             {
-               Core::String name = GetNameFromFile(dir->getPart());
-               char const  *path = dir->getFull();
+               Core::String name = GetNameFromFile(dir->getStrPart());
+               char const  *path = dir->getStrFull();
 
                if(Core::IsDir(path))
                {
@@ -271,8 +271,8 @@ namespace GDCC
 
             while(dir->next())
             {
-               Core::String name = GetNameFromFile(dir->getPart());
-               char const  *path = dir->getFull();
+               Core::String name = GetNameFromFile(dir->getStrPart());
+               char const  *path = dir->getStrFull();
 
                if(Core::IsDir(path))
                {

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2016 David Hill
+// Copyright(C) 2014-2017 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -124,7 +124,7 @@ ACS_NativeDeclFull( 57, 0, int,    SetCVarString, __str, __str);
 ACS_NativeDeclFull( 58, 0, __str,  GetUserCVarString, int, __str);
 ACS_NativeDeclFull( 59, 0, int,    SetUserCVarString, int, __str, __str);
 ACS_NativeDeclFull( 60, 5, int,    LineAttack, int, _Accum, _Accum, int, __str, __str, _Accum, int, int);
-ACS_NativeDeclFull( 61, 4, int,    PlaySound, int, __str, int, _Accum, int, _Accum);
+ACS_NativeDeclFull( 61, 5, int,    PlaySound, int, __str, int, _Accum, int, _Accum, int);
 ACS_NativeDeclFull( 62, 1, int,    StopSound, int, int);
 ACS_NativeDeclFull( 63, 1, int,    StrCmp, __str, __str, int);
 ACS_NativeDeclFull( 64, 1, int,    StrCaseCmp, __str, __str, int);
@@ -170,6 +170,13 @@ ACS_NativeDeclFull( 99, 1, int,    CheckActorState, int, __str, int);
 ACS_NativeDeclFull(200, 2, int,    CheckClass, __str, int, int);
 ACS_NativeDeclFull(201, 0, int,    DamageActor, int, int, int, int, int, __str);
 ACS_NativeDeclFull(202, 0, int,    SetActorFlag, int, __str, int);
+ACS_NativeDeclFull(203, 0, int,    SetTranslation, int, __str);
+
+ACS_NativeDeclFull(300, 0, _Accum, GetLineX, int, _Accum, _Accum);
+ACS_NativeDeclFull(301, 0, _Accum, GetLineY, int, _Accum, _Accum);
+
+ACS_NativeDeclFull(400, 0, int,    SetSectorGlow, int, int, int, int, int, int);
+ACS_NativeDeclFull(401, 0, int,    SetFogDensity, int, int);
 
 #endif//__GDCC_Header__C__ACS_ZDoom__Native_h__
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2016 David Hill
+// Copyright (C) 2015-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,6 +17,8 @@
 
 #include "CC/Exp.hpp"
 #include "CC/Type.hpp"
+
+#include "IR/CallType.hpp"
 
 #include "SR/Exp.hpp"
 #include "SR/Type.hpp"
@@ -53,6 +55,14 @@ namespace GDCC
             typeR->isCTypeInteg())
          {
             return CC::ExpConvert_PtrArith(typeL, exp, pos);
+         }
+
+         // integer = special
+         if(typeL->isCTypeInteg() &&
+            typeR->isTypePointer() && typeR->getBaseType()->isTypeFunction() &&
+               typeR->getBaseType()->getCallType() == IR::CallType::Special)
+         {
+            return CC::ExpConvert_ArithPtr(typeL, exp, pos);
          }
 
          // Defer to C rules.

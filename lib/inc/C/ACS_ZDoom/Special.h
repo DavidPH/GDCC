@@ -67,6 +67,8 @@ ACS_SpecialDeclFull( 98, 1, int, Sector_SetTranslucent, int, int, int, int);
 
 ACS_SpecialDeclFull(104, 1, int, Ceiling_CrushAndRaiseSilentDist, int, int, int, int, int);
 
+ACS_SpecialDeclFull(107, 0, int, Line_SetPortalTarget);
+
 ACS_SpecialDeclFull(117, 0, int, Light_Stop, int);
 
 ACS_SpecialDeclFull(119, 1, int, Thing_Damage, int, int, int);

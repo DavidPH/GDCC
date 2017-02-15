@@ -13,6 +13,8 @@
 #ifndef GDCC__Core__Dir_H__
 #define GDCC__Core__Dir_H__
 
+#include "../Core/Stat.hpp"
+
 #include <memory>
 #include <string>
 
@@ -33,8 +35,14 @@ namespace GDCC
       public:
          virtual ~DirStream();
 
-         char const *getFull() const {return nameBuf.data();}
-         char const *getPart() const {return nameBuf.data() + nameLen;}
+         Stat const &getStat() const {return statBuf;}
+
+         char const *getStrFull() const {return nameBuf.data();}
+         char const *getStrPart() const {return nameBuf.data() + nameLen;}
+
+         std::size_t getLenBase() const {return nameLen;}
+         std::size_t getLenFull() const {return nameBuf.size();}
+         std::size_t getLenPart() const {return nameBuf.size() - nameLen;}
 
          bool next() {return v_next();}
 
@@ -45,13 +53,15 @@ namespace GDCC
 
          std::string            nameBuf;
          std::string::size_type nameLen;
+
+         Stat statBuf;
       };
    }
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC

@@ -43,13 +43,21 @@ namespace GDCC
          // constructor
          //
          DirStream_FindFile(char const *dirname) :
-            DirStream{dirname}
+            DirStream{dirname}, ended{false}
          {
+            if(!IsDir(nameBuf.data()))
+               throw ExceptFile(dirname, "directory");
+
             nameBuf += '*';
 
             dir = FindFirstFile(nameBuf.data(), &diritr);
             if(dir == INVALID_HANDLE_VALUE)
-               throw ExceptFile(dirname, "directory");
+            {
+               if(GetLastError() != ERROR_FILE_NOT_FOUND)
+                  throw ExceptFile(dirname, "directory");
+
+               ended = true;
+            }
          }
 
          //
@@ -68,9 +76,17 @@ namespace GDCC
          {
             if(ended) return false;
 
+            // Set name.
             nameBuf.resize(nameLen);
             Core::PathAppend(nameBuf, diritr.cFileName);
 
+            // Set stat.
+            if(diritr.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+               statBuf.type = Stat::Type::Dir;
+            else
+               statBuf.type = Stat::Type::File;
+
+            // Find next file for next time.
             if(!FindNextFile(dir, &diritr))
                ended = true;
 
@@ -79,7 +95,7 @@ namespace GDCC
 
          HANDLE          dir;
          WIN32_FIND_DATA diritr;
-         bool            ended;
+         bool            ended : 1;
       };
       #else
       //
@@ -112,26 +128,39 @@ namespace GDCC
          //
          virtual bool v_next()
          {
-            dirent  diritr;
-            dirent *dirres;
+            dirent *diritr;
 
             for(;;)
             {
-               // TODO: This should throw an exception.
-               if(readdir_r(dir, &diritr, &dirres) != 0)
+               if(!(diritr = readdir(dir)))
                   return false;
 
-               if(!dirres) return false;
-
                // Skip self and parent.
-               if(diritr.d_name[0] == '.' && (diritr.d_name[1] == '\0' ||
-                 (diritr.d_name[1] == '.' &&  diritr.d_name[2] == '\0')))
+               if(diritr->d_name[0] == '.' && (diritr->d_name[1] == '\0' ||
+                 (diritr->d_name[1] == '.' &&  diritr->d_name[2] == '\0')))
                {
                   continue;
                }
 
+               // Set name.
                nameBuf.resize(nameLen);
-               PathAppend(nameBuf, diritr.d_name);
+               PathAppend(nameBuf, diritr->d_name);
+
+               // Set stat.
+               switch(diritr->d_type)
+               {
+               case DT_UNKNOWN:
+                  if(IsDir(nameBuf.data()))
+                     case DT_DIR: statBuf.type = Stat::Type::Dir;
+                  else
+                     case DT_REG: statBuf.type = Stat::Type::File;
+                  break;
+
+               default:
+                  statBuf.type = Stat::Type::None;
+                  break;
+               }
+
                return true;
             }
          }
