@@ -109,6 +109,7 @@ static void MakeLib_libc(GDCC::IR::Program &prog, bool nomath = false)
    MakeLib_CC(prog, path, "errno.c");
    MakeLib_CC(prog, path, "fopen.c");
    MakeLib_CC(prog, path, "format.c");
+   MakeLib_AS(prog, path, "fpclassify.asm");
    MakeLib_CC(prog, path, "locale.c");
    MakeLib_CC(prog, path, "printf.c");
    MakeLib_CC(prog, path, "scanf.c");
@@ -124,25 +125,27 @@ static void MakeLib_libc(GDCC::IR::Program &prog, bool nomath = false)
 
    if(!nomath)
    {
+      MakeLib_AS(prog, path, "approx.asm");
       MakeLib_CC(prog, path, "exp.c");
       MakeLib_CC(prog, path, "math.c");
       MakeLib_CC(prog, path, "round.c");
       MakeLib_CC(prog, path, "trig.c");
    }
 
-   if(GDCC::Platform::IsFamily_ZDACS() ||
-      GDCC::Platform::TargetCur == GDCC::Platform::Target::Doominati)
+   if(GDCC::Platform::TargetCur == GDCC::Platform::Target::Doominati)
+   {
+      std::string pathSub = path;
+      GDCC::Core::PathAppend(pathSub, "DGE");
+
+      MakeLib_AS(prog, pathSub, "defs.asm");
+   }
+
+   if(GDCC::Platform::IsFamily_ZDACS())
    {
       std::string pathSub = path;
       GDCC::Core::PathAppend(pathSub, "ZDACS");
 
-      // Floating point classification is needed outside of math.
-      MakeLib_AS(prog, pathSub, "fpclassify.asm");
-
-      if(!nomath)
-      {
-         MakeLib_AS(prog, pathSub, "approx.asm");
-      }
+      MakeLib_AS(prog, pathSub, "defs.asm");
    }
 }
 

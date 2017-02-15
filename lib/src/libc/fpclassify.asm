@@ -1,6 +1,6 @@
 ;;-----------------------------------------------------------------------------
 ;;
-;; Copyright(C) 2015 David Hill
+;; Copyright(C) 2015-2017 David Hill
 ;;
 ;; See COPYLIB for license information.
 ;;
@@ -35,8 +35,8 @@ Function "___inf" \
    Retn   2, Stk()
 }
 
-;;f
-;; ___inf
+;;
+;; ___inff
 ;;
 Function "___inff" \
    alloc    = 1 \
@@ -139,7 +139,7 @@ Function "___fpclassify" \
    retrn    = 1 \
    block
 {
-   BAnd_W   1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W   1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
    Jcnd_Tab 1, Stk(), Lit(0x7FF00000), Lit(:"$emax")
    Jcnd_Tab 1, Stk(), Lit(0x00000000), Lit(:"$emin")
    Move_W   1, Nul(), Stk()
@@ -147,14 +147,14 @@ Function "___fpclassify" \
    Retn     1, Stk()
 
 :"$emax"
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x000FFFFF)
    BOrI_W 1, Stk(), Stk(), LocReg(Lit(0))
    LNot   1, Stk(), Stk()
    AddU_W 1, Stk(), Stk(), Lit(1)
    Retn   1, Stk()
 
 :"$emin"
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x000FFFFF)
    BOrI_W 1, Stk(), Stk(), LocReg(Lit(0))
    LNot   1, Stk(), Stk()
    AddU_W 1, Stk(), Stk(), Lit(4)
@@ -211,7 +211,7 @@ Function "___fpclassifyl" \
    retrn    = 1 \
    block
 {
-   BAnd_W   1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W   1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
    Jcnd_Tab 1, Stk(), Lit(0x7FF00000), Lit(:"$emax")
    Jcnd_Tab 1, Stk(), Lit(0x00000000), Lit(:"$emin")
    Move_W   1, Nul(), Stk()
@@ -219,14 +219,14 @@ Function "___fpclassifyl" \
    Retn     1, Stk()
 
 :"$emax"
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x000FFFFF)
    BOrI_W 1, Stk(), Stk(), LocReg(Lit(0))
    LNot   1, Stk(), Stk()
    AddU_W 1, Stk(), Stk(), Lit(1)
    Retn   1, Stk()
 
 :"$emin"
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x000FFFFF)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x000FFFFF)
    BOrI_W 1, Stk(), Stk(), LocReg(Lit(0))
    LNot   1, Stk(), Stk()
    AddU_W 1, Stk(), Stk(), Lit(4)
@@ -247,7 +247,7 @@ Function "___isfinite" \
    retrn    = 1 \
    block
 {
-   BAnd_W    1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W    1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
    CmpI_NE_W 1, Stk(), Stk(), Lit(0x7FF00000)
    Retn      1, Stk()
 }
@@ -285,7 +285,7 @@ Function "___isfinitel" \
    retrn    = 1 \
    block
 {
-   BAnd_W    1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W    1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
    CmpI_NE_W 1, Stk(), Stk(), Lit(0x7FF00000)
    Retn      1, Stk()
 }
@@ -304,7 +304,7 @@ Function "___isinf" \
    retrn    = 1 \
    block
 {
-   BAnd_W    1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W    1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
    CmpI_EQ_W 1, Stk(), Stk(), Lit(0x7FF00000)
    Retn      1, Stk()
 }
@@ -342,7 +342,7 @@ Function "___isinfl" \
    retrn    = 1 \
    block
 {
-   BAnd_W    1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W    1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
    CmpI_EQ_W 1, Stk(), Stk(), Lit(0x7FF00000)
    Retn      1, Stk()
 }
@@ -361,7 +361,7 @@ Function "___isnan" \
    retrn    = 1 \
    block
 {
-   BAnd_W    1, Stk(), LocReg(Lit(1)), Lit(0x7FFFFFFF)
+   BAnd_W    1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FFFFFFF)
    CmpI_GT_W 1, Stk(), Stk(), Lit(0x7FF00000)
    Retn      1, Stk()
 }
@@ -399,7 +399,7 @@ Function "___isnanl" \
    retrn    = 1 \
    block
 {
-   BAnd_W    1, Stk(), LocReg(Lit(1)), Lit(0x7FFFFFFF)
+   BAnd_W    1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FFFFFFF)
    CmpI_GT_W 1, Stk(), Stk(), Lit(0x7FF00000)
    Retn      1, Stk()
 }
@@ -418,9 +418,9 @@ Function "___isnormal" \
    retrn    = 1 \
    block
 {
-   BAnd_W    1, LocReg(Lit(1)), LocReg(Lit(1)), Lit(0x7FF00000)
-   CmpI_LE_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FE00000)
-   CmpI_GE_W 1, Stk(), LocReg(Lit(1)), Lit(0x00100000)
+   BAnd_W    1, LocReg(Lit("___MathRegSize")), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
+   CmpI_LE_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FE00000)
+   CmpI_GE_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x00100000)
    BAnd_W    1, Stk(), Stk(), Stk()
    Retn      1, Stk()
 }
@@ -460,9 +460,9 @@ Function "___isnormall" \
    retrn    = 1 \
    block
 {
-   BAnd_W    1, LocReg(Lit(1)), LocReg(Lit(1)), Lit(0x7FF00000)
-   CmpI_LE_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FE00000)
-   CmpI_GE_W 1, Stk(), LocReg(Lit(1)), Lit(0x00100000)
+   BAnd_W    1, LocReg(Lit("___MathRegSize")), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
+   CmpI_LE_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FE00000)
+   CmpI_GE_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x00100000)
    BAnd_W    1, Stk(), Stk(), Stk()
    Retn      1, Stk()
 }
@@ -481,7 +481,7 @@ Function "___signbit" \
    retrn    = 1 \
    block
 {
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x80000000)
    Retn   1, Stk()
 }
 
@@ -517,7 +517,7 @@ Function "___signbitl" \
    retrn    = 1 \
    block
 {
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x80000000)
    Retn   1, Stk()
 }
 

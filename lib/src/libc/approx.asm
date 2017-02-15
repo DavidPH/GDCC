@@ -1,6 +1,6 @@
 ;;-----------------------------------------------------------------------------
 ;;
-;; Copyright(C) 2015 David Hill
+;; Copyright(C) 2015-2017 David Hill
 ;;
 ;; See COPYLIB for license information.
 ;;
@@ -33,8 +33,8 @@ Function "___approx_cbrt" \
 {
    Move_W 1, Stk(), LocReg(Lit(0))
 
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x800FFFFF)
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x800FFFFF)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
    ShRI_W 1, Stk(), Stk(), Lit(20)
    SubI_W 1, Stk(), Stk(), Lit(1023)
    DivI_W 1, Stk(), Stk(), Lit(3)
@@ -87,8 +87,8 @@ Function "___approx_cbrtl" \
 {
    Move_W 1, Stk(), LocReg(Lit(0))
 
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x800FFFFF)
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x800FFFFF)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
    ShRI_W 1, Stk(), Stk(), Lit(20)
    SubI_W 1, Stk(), Stk(), Lit(1023)
    DivI_W 1, Stk(), Stk(), Lit(3)
@@ -113,14 +113,14 @@ Function "___approx_frexp" \
    retrn    = 3 \
    block
 {
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
    ShRI_W 1, Stk(), Stk(), Lit(20)
-   SubI_W 1, LocReg(Lit(2)), Stk(), Lit(1022)
+   SubI_W 1, LocReg(Lit(Mul("___MathRegSize", 2))), Stk(), Lit(1022)
 
    Move_W 1, Stk(), LocReg(Lit(0))
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x800FFFFF)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x800FFFFF)
    BOrI_W 1, Stk(), Stk(),          Lit(0x3FE00000)
-   Move_W 1, Stk(), LocReg(Lit(2))
+   Move_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 2)))
    Retn   3, Stk()
 }
 
@@ -140,11 +140,11 @@ Function "___approx_frexpf" \
 {
    BAnd_W 1, Stk(), LocReg(Lit(0)), Lit(0x7F800000)
    ShRI_W 1, Stk(), Stk(), Lit(23)
-   SubI_W 1, LocReg(Lit(1)), Stk(), Lit(126)
+   SubI_W 1, LocReg(Lit("___MathRegSize")), Stk(), Lit(126)
 
    BAnd_W 1, Stk(), LocReg(Lit(0)), Lit(0x807FFFFF)
    BOrI_W 1, Stk(), Stk(),          Lit(0x3F000000)
-   Move_W 1, Stk(), LocReg(Lit(1))
+   Move_W 1, Stk(), LocReg(Lit("___MathRegSize"))
    Retn   2, Stk()
 }
 
@@ -162,14 +162,14 @@ Function "___approx_frexpl" \
    retrn    = 3 \
    block
 {
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
    ShRI_W 1, Stk(), Stk(), Lit(20)
-   SubI_W 1, LocReg(Lit(2)), Stk(), Lit(1022)
+   SubI_W 1, LocReg(Lit(Mul("___MathRegSize", 2))), Stk(), Lit(1022)
 
    Move_W 1, Stk(), LocReg(Lit(0))
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x800FFFFF)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x800FFFFF)
    BOrI_W 1, Stk(), Stk(),          Lit(0x3FE00000)
-   Move_W 1, Stk(), LocReg(Lit(2))
+   Move_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 2)))
    Retn   3, Stk()
 }
 
@@ -187,7 +187,7 @@ Function "___approx_log2" \
    retrn    = 1 \
    block
 {
-   ShRI_W 1, Stk(), LocReg(Lit(1)), Lit(20)
+   ShRI_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(20)
    SubI_W 1, Stk(), Stk(), Lit(1023)
    Retn   1, Stk()
 }
@@ -225,7 +225,7 @@ Function "___approx_log2l" \
    retrn    = 1 \
    block
 {
-   ShRI_W 1, Stk(), LocReg(Lit(1)), Lit(20)
+   ShRI_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(20)
    SubI_W 1, Stk(), Stk(), Lit(1023)
    Retn   1, Stk()
 }
@@ -245,48 +245,48 @@ Function "___approx_modf" \
    block
 {
    ; Extract exponent as signed int.
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 1))), Lit(0x7FF00000)
    ShRI_W 1, Stk(), Stk(), Lit(20)
-   SubI_W 1, LocReg(Lit(2)), Stk(), Lit(1023)
+   SubI_W 1, LocReg(Lit(Mul("___MathRegSize", 2))), Stk(), Lit(1023)
 
    ; Check for having only integral or fractional component.
-   CmpI_GT_W 1, Stk(), LocReg(Lit(2)), Lit(52)
+   CmpI_GT_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 2))), Lit(52)
    Jcnd_Tru  1,  Stk(), Lit(:"$onlyi")
-   CmpI_LT_W 1, Stk(), LocReg(Lit(2)), Lit(0)
+   CmpI_LT_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 2))), Lit(0)
    Jcnd_Tru  1,  Stk(), Lit(:"$onlyf")
 
    ; Extract low bits.
-   ShRI_W 2, Stk(), Lit(0x000FFFFFFFFFFFFF_64.0), LocReg(Lit(2))
-   BAnd_W 2, LocReg(Lit(3)), Stk(), LocReg(Lit(0))
+   ShRI_W 2, Stk(), Lit(0x000FFFFFFFFFFFFF_64.0), LocReg(Lit(Mul("___MathRegSize", 2)))
+   BAnd_W 2, LocReg(Lit(Mul("___MathRegSize", 3))), Stk(), LocReg(Lit(0))
 
-   Move_W 1, LocReg(Lit(5)), Lit(0)
-   ShLU_W 2, LocReg(Lit(3)), LocReg(Lit(3)), LocReg(Lit(2))
+   Move_W 1, LocReg(Lit(Mul("___MathRegSize", 5))), Lit(0)
+   ShLU_W 2, LocReg(Lit(Mul("___MathRegSize", 3))), LocReg(Lit(Mul("___MathRegSize", 3))), LocReg(Lit(Mul("___MathRegSize", 2)))
 
-   BOrI_W   1, Stk(), LocReg(Lit(3)), LocReg(Lit(4))
+   BOrI_W   1, Stk(), LocReg(Lit(Mul("___MathRegSize", 3))), LocReg(Lit(Mul("___MathRegSize", 4)))
    Jcnd_Tru 1, Stk(), Lit(:"$fracl")
 
    Move_W 1, Stk(), Lit(0)
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   BAnd_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 1))), Lit(0x80000000)
    Jump   0, Lit(:"$integ")
 
 :"$fracl"
-   ShLU_W 2, LocReg(Lit(3)), LocReg(Lit(3)), Lit(1)
-   SubI_W 1, LocReg(Lit(5)), LocReg(Lit(5)), Lit(1)
+   ShLU_W 2, LocReg(Lit(Mul("___MathRegSize", 3))), LocReg(Lit(Mul("___MathRegSize", 3))), Lit(1)
+   SubI_W 1, LocReg(Lit(Mul("___MathRegSize", 5))), LocReg(Lit(Mul("___MathRegSize", 5))), Lit(1)
 
-   BAnd_W   1, Stk(), LocReg(Lit(4)), Lit(0x00100000)
+   BAnd_W   1, Stk(), LocReg(Lit(Mul("___MathRegSize", 4))), Lit(0x00100000)
    Jcnd_Nil 1, Stk(), Lit(:"$fracl")
 
-   Move_W 2, Stk(), LocReg(Lit(3))
+   Move_W 2, Stk(), LocReg(Lit(Mul("___MathRegSize", 3)))
    BAnd_W 1, Stk(), Stk(), Lit(0x000FFFFF)
-   AddI_W 1, Stk(), LocReg(Lit(5)), Lit(1023)
+   AddI_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 5))), Lit(1023)
    ShLU_W 1, Stk(), Stk(), Lit(20)
    BOrI_W 1, Stk(), Stk(), Stk()
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   BAnd_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 1))), Lit(0x80000000)
    BOrI_W 1, Stk(), Stk(), Stk()
 
    ; Mask out the low bits for integral result.
 :"$integ"
-   ShRI_W 2, Stk(), Lit(0x000FFFFFFFFFFFFF_64.0), LocReg(Lit(2))
+   ShRI_W 2, Stk(), Lit(0x000FFFFFFFFFFFFF_64.0), LocReg(Lit(Mul("___MathRegSize", 2)))
    BNot_W 2, Stk(), Stk()
    BAnd_W 2, Stk(), Stk(), LocReg(Lit(0))
 
@@ -294,14 +294,14 @@ Function "___approx_modf" \
 
 :"$onlyi"
    Move_W 1, Stk(), Lit(0)
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   BAnd_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 1))), Lit(0x80000000)
    Move_W 2, Stk(), LocReg(Lit(0))
    Retn   4, Stk()
 
 :"$onlyf"
    Move_W 2, Stk(), LocReg(Lit(0))
    Move_W 1, Stk(), Lit(0)
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   BAnd_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 1))), Lit(0x80000000)
    Retn   4, Stk()
 }
 
@@ -322,36 +322,36 @@ Function "___approx_modff" \
    ; Extract exponent as signed int.
    BAnd_W 1, Stk(), LocReg(Lit(0)), Lit(0x7F800000)
    ShRI_W 1, Stk(), Stk(), Lit(23)
-   SubI_W 1, LocReg(Lit(1)), Stk(), Lit(127)
+   SubI_W 1, LocReg(Lit(Mul("___MathRegSize", 1))), Stk(), Lit(127)
 
    ; Check for having only integral or fractional component.
-   CmpI_GT_W 1, Stk(), LocReg(Lit(1)), Lit(23)
+   CmpI_GT_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 1))), Lit(23)
    Jcnd_Tru  1, Stk(), Lit(:"$onlyi")
-   CmpI_LT_W 1, Stk(), LocReg(Lit(1)), Lit(0)
+   CmpI_LT_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 1))), Lit(0)
    Jcnd_Tru  1, Stk(), Lit(:"$onlyf")
 
    ; Extract low bits.
-   ShRI_W 1, Stk(), Lit(0x007FFFFF_32.0), LocReg(Lit(1))
-   BAnd_W 1, LocReg(Lit(2)), Stk(), LocReg(Lit(0))
+   ShRI_W 1, Stk(), Lit(0x007FFFFF_32.0), LocReg(Lit(Mul("___MathRegSize", 1)))
+   BAnd_W 1, LocReg(Lit(Mul("___MathRegSize", 2))), Stk(), LocReg(Lit(0))
 
-   Move_W 1, LocReg(Lit(3)), Lit(0)
-   ShLU_W 1, LocReg(Lit(2)), LocReg(Lit(2)), LocReg(Lit(1))
+   Move_W 1, LocReg(Lit(Mul("___MathRegSize", 3))), Lit(0)
+   ShLU_W 1, LocReg(Lit(Mul("___MathRegSize", 2))), LocReg(Lit(Mul("___MathRegSize", 2))), LocReg(Lit(Mul("___MathRegSize", 1)))
 
-   Jcnd_Tru 1, LocReg(Lit(2)), Lit(:"$fracl")
+   Jcnd_Tru 1, LocReg(Lit(Mul("___MathRegSize", 2))), Lit(:"$fracl")
 
    BAnd_W 1, Stk(), LocReg(Lit(0)), Lit(0x80000000)
    Jump   0, Lit(:"$integ")
 
 :"$fracl"
-   ShLU_W 1, LocReg(Lit(2)), LocReg(Lit(2)), Lit(1)
-   SubI_W 1, LocReg(Lit(3)), LocReg(Lit(3)), Lit(1)
+   ShLU_W 1, LocReg(Lit(Mul("___MathRegSize", 2))), LocReg(Lit(Mul("___MathRegSize", 2))), Lit(1)
+   SubI_W 1, LocReg(Lit(Mul("___MathRegSize", 3))), LocReg(Lit(Mul("___MathRegSize", 3))), Lit(1)
 
-   BAnd_W   1, Stk(), LocReg(Lit(2)), Lit(0x00800000)
+   BAnd_W   1, Stk(), LocReg(Lit(Mul("___MathRegSize", 2))), Lit(0x00800000)
    Jcnd_Nil 1, Stk(), Lit(:"$fracl")
 
-   Move_W 1, Stk(), LocReg(Lit(2))
+   Move_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 2)))
    BAnd_W 1, Stk(), Stk(), Lit(0x007FFFFF)
-   AddI_W 1, Stk(), LocReg(Lit(3)), Lit(127)
+   AddI_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 3))), Lit(127)
    ShLU_W 1, Stk(), Stk(), Lit(23)
    BOrI_W 1, Stk(), Stk(), Stk()
    BAnd_W 1, Stk(), LocReg(Lit(0)), Lit(0x80000000)
@@ -359,7 +359,7 @@ Function "___approx_modff" \
 
    ; Mask out the low bits for integral result.
 :"$integ"
-   ShRI_W 1, Stk(), Lit(0x007FFFFF_32.0), LocReg(Lit(1))
+   ShRI_W 1, Stk(), Lit(0x007FFFFF_32.0), LocReg(Lit(Mul("___MathRegSize", 1)))
    BNot_W 1, Stk(), Stk()
    BAnd_W 1, Stk(), Stk(), LocReg(Lit(0))
 
@@ -391,48 +391,48 @@ Function "___approx_modfl" \
    block
 {
    ; Extract exponent as signed int.
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 1))), Lit(0x7FF00000)
    ShRI_W 1, Stk(), Stk(), Lit(20)
-   SubI_W 1, LocReg(Lit(2)), Stk(), Lit(1023)
+   SubI_W 1, LocReg(Lit(Mul("___MathRegSize", 2))), Stk(), Lit(1023)
 
    ; Check for having only integral or fractional component.
-   CmpI_GT_W 1, Stk(), LocReg(Lit(2)), Lit(52)
+   CmpI_GT_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 2))), Lit(52)
    Jcnd_Tru  1, Stk(), Lit(:"$onlyi")
-   CmpI_LT_W 1, Stk(), LocReg(Lit(2)), Lit(0)
+   CmpI_LT_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 2))), Lit(0)
    Jcnd_Tru  1, Stk(), Lit(:"$onlyf")
 
    ; Extract low bits.
-   ShRI_W 2, Stk(), Lit(0x000FFFFFFFFFFFFF_64.0), LocReg(Lit(2))
-   BAnd_W 2, LocReg(Lit(3)), Stk(), LocReg(Lit(0))
+   ShRI_W 2, Stk(), Lit(0x000FFFFFFFFFFFFF_64.0), LocReg(Lit(Mul("___MathRegSize", 2)))
+   BAnd_W 2, LocReg(Lit(Mul("___MathRegSize", 3))), Stk(), LocReg(Lit(0))
 
-   Move_W 1, LocReg(Lit(5)), Lit(0)
-   ShLU_W 2, LocReg(Lit(3)), LocReg(Lit(3)), LocReg(Lit(2))
+   Move_W 1, LocReg(Lit(Mul("___MathRegSize", 5))), Lit(0)
+   ShLU_W 2, LocReg(Lit(Mul("___MathRegSize", 3))), LocReg(Lit(Mul("___MathRegSize", 3))), LocReg(Lit(Mul("___MathRegSize", 2)))
 
-   BOrI_W   1, Stk(), LocReg(Lit(3)), LocReg(Lit(4))
+   BOrI_W   1, Stk(), LocReg(Lit(Mul("___MathRegSize", 3))), LocReg(Lit(Mul("___MathRegSize", 4)))
    Jcnd_Tru 1, Stk(), Lit(:"$fracl")
 
    Move_W 1, Stk(), Lit(0)
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   BAnd_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 1))), Lit(0x80000000)
    Jump   0, Lit(:"$integ")
 
 :"$fracl"
-   ShLU_W 2, LocReg(Lit(3)), LocReg(Lit(3)), Lit(1)
-   SubI_W 1, LocReg(Lit(5)), LocReg(Lit(5)), Lit(1)
+   ShLU_W 2, LocReg(Lit(Mul("___MathRegSize", 3))), LocReg(Lit(Mul("___MathRegSize", 3))), Lit(1)
+   SubI_W 1, LocReg(Lit(Mul("___MathRegSize", 5))), LocReg(Lit(Mul("___MathRegSize", 5))), Lit(1)
 
-   BAnd_W   1, Stk(), LocReg(Lit(4)), Lit(0x00100000)
+   BAnd_W   1, Stk(), LocReg(Lit(Mul("___MathRegSize", 4))), Lit(0x00100000)
    Jcnd_Nil 1, Stk(), Lit(:"$fracl")
 
-   Move_W 2, Stk(), LocReg(Lit(3))
+   Move_W 2, Stk(), LocReg(Lit(Mul("___MathRegSize", 3)))
    BAnd_W 1, Stk(), Stk(), Lit(0x000FFFFF)
-   AddI_W 1, Stk(), LocReg(Lit(5)), Lit(1023)
+   AddI_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 5))), Lit(1023)
    ShLU_W 1, Stk(), Stk(), Lit(20)
    BOrI_W 1, Stk(), Stk(), Stk()
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   BAnd_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 1))), Lit(0x80000000)
    BOrI_W 1, Stk(), Stk(), Stk()
 
    ; Mask out the low bits for integral result.
 :"$integ"
-   ShRI_W 2, Stk(), Lit(0x000FFFFFFFFFFFFF_64.0), LocReg(Lit(2))
+   ShRI_W 2, Stk(), Lit(0x000FFFFFFFFFFFFF_64.0), LocReg(Lit(Mul("___MathRegSize", 2)))
    BNot_W 2, Stk(), Stk()
    BAnd_W 2, Stk(), Stk(), LocReg(Lit(0))
 
@@ -440,14 +440,14 @@ Function "___approx_modfl" \
 
 :"$onlyi"
    Move_W 1, Stk(), Lit(0)
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   BAnd_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 1))), Lit(0x80000000)
    Move_W 2, Stk(), LocReg(Lit(0))
    Retn   4, Stk(), Stk(), Stk(), Stk()
 
 :"$onlyf"
    Move_W 2, Stk(), LocReg(Lit(0))
    Move_W 1, Stk(), Lit(0)
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x80000000)
+   BAnd_W 1, Stk(), LocReg(Lit(Mul("___MathRegSize", 1))), Lit(0x80000000)
    Retn   4, Stk(), Stk(), Stk(), Stk()
 }
 
@@ -467,8 +467,8 @@ Function "___approx_sqrt" \
 {
    Move_W 1, Stk(), LocReg(Lit(0))
 
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x800FFFFF)
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x800FFFFF)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
    ShRI_W 1, Stk(), Stk(), Lit(20)
    SubI_W 1, Stk(), Stk(), Lit(1023)
    ShRI_W 1, Stk(), Stk(), Lit(1)
@@ -521,8 +521,8 @@ Function "___approx_sqrtl" \
 {
    Move_W 1, Stk(), LocReg(Lit(0))
 
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x800FFFFF)
-   BAnd_W 1, Stk(), LocReg(Lit(1)), Lit(0x7FF00000)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x800FFFFF)
+   BAnd_W 1, Stk(), LocReg(Lit("___MathRegSize")), Lit(0x7FF00000)
    ShRI_W 1, Stk(), Stk(), Lit(20)
    SubI_W 1, Stk(), Stk(), Lit(1023)
    ShRI_W 1, Stk(), Stk(), Lit(1)
