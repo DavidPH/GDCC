@@ -104,7 +104,7 @@ namespace GDCC
             // Check for attributes.
             if(isAttrSpec(scope))
             {
-               parseAttrSpecList(scope, declAttr);
+               parseAttrSpecList(scope, attr);
                continue;
             }
 
