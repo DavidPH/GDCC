@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2016 David Hill
+// Copyright(C) 2014-2017 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -25,6 +25,10 @@
 //
 // PRId*
 //
+#if !__GDCC_Family__ZDACS__
+#define PRId8       "hhd"
+#define PRId16       "hd"
+#endif
 #define PRId32        "d"
 #define PRId64       "ld"
 #define PRId96      "lld"
@@ -47,6 +51,10 @@
 //
 // PRIi*
 //
+#if !__GDCC_Family__ZDACS__
+#define PRIi8       "hhi"
+#define PRIi16       "hi"
+#endif
 #define PRIi32        "i"
 #define PRIi64       "li"
 #define PRIi96      "lli"
@@ -69,6 +77,10 @@
 //
 // PRIo*
 //
+#if !__GDCC_Family__ZDACS__
+#define PRIo8       "hho"
+#define PRIo16       "ho"
+#endif
 #define PRIo32        "o"
 #define PRIo64       "lo"
 #define PRIo96      "llo"
@@ -91,6 +103,10 @@
 //
 // PRIu*
 //
+#if !__GDCC_Family__ZDACS__
+#define PRIu8       "hhu"
+#define PRIu16       "hu"
+#endif
 #define PRIu32        "u"
 #define PRIu64       "lu"
 #define PRIu96      "llu"
@@ -113,6 +129,10 @@
 //
 // PRIx*
 //
+#if !__GDCC_Family__ZDACS__
+#define PRIx8       "hhx"
+#define PRIx16       "hx"
+#endif
 #define PRIx32        "x"
 #define PRIx64       "lx"
 #define PRIx96      "llx"
@@ -135,6 +155,10 @@
 //
 // PRIX*
 //
+#if !__GDCC_Family__ZDACS__
+#define PRIX8       "hhX"
+#define PRIX16       "hX"
+#endif
 #define PRIX32        "X"
 #define PRIX64       "lX"
 #define PRIX96      "llX"
@@ -157,12 +181,16 @@
 //
 // SCNd*
 //
+#if !__GDCC_Family__ZDACS__
+#define SCNd8       "hhd"
+#define SCNd16       "hd"
+#endif
 #define SCNd32        "d"
 #define SCNd64       "ld"
 #define SCNd96      "lld"
 
-#define SCNdLEAST8    "d"
-#define SCNdLEAST16   "d"
+#define SCNdLEAST8  "hhd"
+#define SCNdLEAST16  "hd"
 #define SCNdLEAST32   "d"
 #define SCNdLEAST64  "ld"
 #define SCNdLEAST96 "lld"
@@ -179,12 +207,16 @@
 //
 // SCNi*
 //
+#if !__GDCC_Family__ZDACS__
+#define SCNi8       "hhi"
+#define SCNi16       "hi"
+#endif
 #define SCNi32        "i"
 #define SCNi64       "li"
 #define SCNi96      "lli"
 
-#define SCNiLEAST8    "i"
-#define SCNiLEAST16   "i"
+#define SCNiLEAST8  "hhi"
+#define SCNiLEAST16  "hi"
 #define SCNiLEAST32   "i"
 #define SCNiLEAST64  "li"
 #define SCNiLEAST96 "lli"
@@ -201,12 +233,16 @@
 //
 // SCNo*
 //
+#if !__GDCC_Family__ZDACS__
+#define SCNo8       "hho"
+#define SCNo16       "ho"
+#endif
 #define SCNo32        "o"
 #define SCNo64       "lo"
 #define SCNo96      "llo"
 
-#define SCNoLEAST8    "o"
-#define SCNoLEAST16   "o"
+#define SCNoLEAST8  "hho"
+#define SCNoLEAST16  "ho"
 #define SCNoLEAST32   "o"
 #define SCNoLEAST64  "lo"
 #define SCNoLEAST96 "llo"
@@ -223,12 +259,16 @@
 //
 // SCNu*
 //
+#if !__GDCC_Family__ZDACS__
+#define SCNu8       "hhu"
+#define SCNu16       "hu"
+#endif
 #define SCNu32        "u"
 #define SCNu64       "lu"
 #define SCNu96      "llu"
 
-#define SCNuLEAST8    "u"
-#define SCNuLEAST16   "u"
+#define SCNuLEAST8  "hhu"
+#define SCNuLEAST16  "hu"
 #define SCNuLEAST32   "u"
 #define SCNuLEAST64  "lu"
 #define SCNuLEAST96 "llu"
@@ -245,12 +285,16 @@
 //
 // SCNx*
 //
+#if !__GDCC_Family__ZDACS__
+#define SCNx8       "hhx"
+#define SCNx16       "hx"
+#endif
 #define SCNx32        "x"
 #define SCNx64       "lx"
 #define SCNx96      "llx"
 
-#define SCNxLEAST8    "x"
-#define SCNxLEAST16   "x"
+#define SCNxLEAST8  "hhx"
+#define SCNxLEAST16  "hx"
 #define SCNxLEAST32   "x"
 #define SCNxLEAST64  "lx"
 #define SCNxLEAST96 "llx"
