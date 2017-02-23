@@ -35,8 +35,31 @@
 
 
 //----------------------------------------------------------------------------|
+// Types                                                                      |
+//
+
+//
+// __cookie_file
+//
+typedef struct __cookie_file
+{
+   #if __GDCC_Target__Doominati__
+   unsigned int fd;
+   unsigned int pos;
+   #else
+   int pos;
+   #endif
+} __cookie_file;
+
+
+//----------------------------------------------------------------------------|
 // Static Prototypes                                                          |
 //
+
+static int     FILE_fn_file_close(void *cookie);
+static ssize_t FILE_fn_file_read(void *cookie, char *buf, size_t size);
+static ssize_t FILE_fn_file_write(void *cookie, char const *buf, size_t size);
+static int     FILE_fn_file_seek(void *cookie, off_t *offset, int whence);
 
 static ssize_t FILE_fn_stdout_write(void *cookie, char const *buf, size_t size);
 
@@ -114,6 +137,83 @@ FILE __stdout =
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |
 //
+
+//=========================================================
+// file functions
+//
+
+//
+// FILE_fn_file_close
+//
+static int FILE_fn_file_close(void *cookie_)
+{
+   __cookie_file *cookie = cookie_;
+
+   #if __GDCC_Target__Doominati__
+   DGE_FileClose(cookie->fd);
+   #endif
+
+   return 0;
+}
+
+//
+// FILE_fn_file_read
+//
+static ssize_t FILE_fn_file_read(void *cookie_, char *buf, size_t size)
+{
+   __cookie_file *cookie = cookie_;
+
+   #if __GDCC_Target__Doominati__
+   int read = DGE_FileRead(cookie->fd, cookie->pos, buf, size);
+
+   if(read < 0)
+      return EOF;
+
+   cookie->pos += read;
+   return read;
+   #else
+   return 0;
+   #endif
+}
+
+//
+// FILE_fn_file_write
+//
+static ssize_t FILE_fn_file_write(void *cookie_, char const *buf, size_t size)
+{
+   __cookie_file *cookie = cookie_;
+
+   return 0;
+}
+
+//
+// FILE_fn_file_seek
+//
+static int FILE_fn_file_seek(void *cookie_, off_t *offset, int whence)
+{
+   __cookie_file *cookie = cookie_;
+
+   #if __GDCC_Target__Doominati__
+   switch(whence)
+   {
+   case SEEK_END:
+      *offset = cookie->pos = DGE_FileSize(cookie->fd) - *offset;
+      break;
+
+   case SEEK_CUR:
+      *offset = cookie->pos += *offset;
+      break;
+
+   case SEEK_SET:
+      cookie->pos = *offset;
+      break;
+   }
+
+   return 0;
+   #else
+   return EOF;
+   #endif
+}
 
 //=========================================================
 // stdout functions.
@@ -214,7 +314,44 @@ int fflush(FILE *stream)
 //
 FILE *fopen(char const *restrict filename, char const *restrict mode)
 {
+   cookie_io_functions_t io_funcs =
+   {
+      .read  = FILE_fn_file_read,
+      .write = FILE_fn_file_write,
+      .seek  = FILE_fn_file_seek,
+      .close = FILE_fn_file_close,
+   };
+
+   #if __GDCC_Target__Doominati__
+   int fd;
+   if(*mode == 'r')
+   {
+      if((fd = DGE_FileOpen(filename)) == -1)
+         return NULL;
+   }
+   else
+      return NULL;
+
+   FILE *stream = malloc(sizeof(FILE) + sizeof(__cookie_file) + BUFSIZ);
+   if(!stream) return DGE_FileClose(fd), NULL;
+
+   __cookie_file *cookie = (__cookie_file *)(stream + 1);
+   char          *buffer = (char *)(cookie + 1);
+
+   cookie->fd  = fd;
+   cookie->pos = 0;
+
+   if(!__fopencookie_ctor(stream, cookie, mode, io_funcs))
+      return free(stream), DGE_FileClose(fd), NULL;
+
+   stream->_flag |= _FILEFLAG_FRF;
+
+   setvbuf(stream, buffer, _IOFBF, BUFSIZ);
+
+   return stream;
+   #else
    return NULL;
+   #endif
 }
 
 //
