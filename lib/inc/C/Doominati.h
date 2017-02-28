@@ -65,6 +65,7 @@ enum // DGE_Axis
 [[call("Native")]] void DGE_CallbackRegister(char const *name, DGE_CallbackType callback);
 [[call("Native")]] void DGE_CallbackUnregister(char const *name, DGE_CallbackType callback);
 
+[[call("Native")]] unsigned DGE_CreatePointThinker(unsigned ext);
 [[call("Native")]] unsigned DGE_CreateShaderData(__str name, char const *frag, char const *vert);
 [[call("Native")]] unsigned DGE_CreateShaderFile(__str name, char const *frag, char const *vert);
 
@@ -143,6 +144,16 @@ enum // DGE_Axis
 
 [[optional_args(1)]]
 [[call("Native")]] void DGE_TextAlignment(int h, int v);
+
+[[call("Native")]] unsigned long _Fract DGE_ThinkerMemberGetLA(unsigned id, unsigned mem)
+[[call("Native")]] unsigned DGE_ThinkerMemberGetU(unsigned id, unsigned mem)
+[[call("Native")]] short _Accum DGE_ThinkerMemberGetX(unsigned id, unsigned mem)
+[[call("Native")]] void DGE_ThinkerMemberSetLA(unsigned id, unsigned mem, unsigned long _Fract val)
+[[call("Native")]] void DGE_ThinkerMemberSetU(unsigned id, unsigned mem, unsigned val)
+[[call("Native")]] void DGE_ThinkerMemberSetX(unsigned id, unsigned mem, short _Accum val)
+[[call("Native")]] void DGE_ThinkerRefAdd(unsigned id)
+[[call("Native")]] void DGE_ThinkerRefSub(unsigned id)
+[[call("Native")]] void DGE_ThinkerUnlink(unsigned id)
 
 #endif//__GDCC_Header__C__Doominati_h__
 
