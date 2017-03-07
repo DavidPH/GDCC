@@ -36,7 +36,6 @@ namespace GDCC
          None,
          ACSE,
          DGE_NTS,
-         MgC_NTS,
       };
 
       //
@@ -46,7 +45,6 @@ namespace GDCC
       {
          None,
          Doominati,
-         MageCraft,
          ZDoom,
          Zandronum,
       };

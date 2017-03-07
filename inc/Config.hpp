@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,7 +19,6 @@
 //
 
 #cmakedefine01 GDCC_BC_DGE
-#cmakedefine01 GDCC_BC_MgC
 #cmakedefine01 GDCC_BC_ZDACS
 #cmakedefine01 GDCC_Core_BigNum
 

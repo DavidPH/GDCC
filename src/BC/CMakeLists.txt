@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2016 David Hill
+## Copyright (C) 2013-2017 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -17,10 +17,6 @@
 
 if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/DGE")
    add_subdirectory(DGE)
-endif()
-
-if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/MgC")
-   add_subdirectory(MgC)
 endif()
 
 if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/ZDACS")

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2016 David Hill
+// Copyright (C) 2015-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,10 +16,6 @@
 
 #if GDCC_BC_DGE
 #include "BC/DGE/Info.hpp"
-#endif
-
-#if GDCC_BC_MgC
-#include "BC/MgC/Info.hpp"
 #endif
 
 #if GDCC_BC_ZDACS
@@ -112,13 +108,6 @@ namespace GDCC
          case Platform::Target::Doominati:
             #if GDCC_BC_DGE
             return std::unique_ptr<BC::Info>{new BC::DGE::Info};
-            #else
-            return nullptr;
-            #endif
-
-         case Platform::Target::MageCraft:
-            #if GDCC_BC_MgC
-            return std::unique_ptr<BC::Info>{new BC::MgC::Info};
             #else
             return nullptr;
             #endif

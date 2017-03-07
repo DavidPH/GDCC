@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -257,12 +257,10 @@ GDCC_Core_StringList(LogAnd, "LogAnd")
 GDCC_Core_StringList(LogOrI, "LogOrI")
 GDCC_Core_StringList(LogOrX, "LogOrX")
 GDCC_Core_StringList(Macro, "Macro")
-GDCC_Core_StringList(MageCraft, "MageCraft")
 GDCC_Core_StringList(MapArr, "MapArr")
 GDCC_Core_StringList(MapArs, "MapArs")
 GDCC_Core_StringList(MapReg, "MapReg")
 GDCC_Core_StringList(Mem, "Mem")
-GDCC_Core_StringList(MgC_NTS, "MgC_NTS")
 GDCC_Core_StringList(Mod, "Mod")
 GDCC_Core_StringList(ModArr, "ModArr")
 GDCC_Core_StringList(ModArs, "ModArs")

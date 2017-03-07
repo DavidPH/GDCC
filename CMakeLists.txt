@@ -113,17 +113,6 @@ if(NOT DEFINED GDCC_BC_DGE)
 endif()
 
 ##
-## GDCC_BC_MgC
-##
-if(NOT DEFINED GDCC_BC_MgC)
-   if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/MgC")
-      set(GDCC_BC_MgC ON CACHE BOOL "Enable bytecode module: MgC")
-   else()
-      set(GDCC_BC_MgC OFF CACHE BOOL "Enable bytecode module: MgC")
-   endif()
-endif()
-
-##
 ## GDCC_BC_ZDACS
 ##
 if(NOT DEFINED GDCC_BC_ZDACS)

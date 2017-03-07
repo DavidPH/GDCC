@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -507,7 +507,6 @@ namespace GDCC
             PlatformCase(Format, None);
             PlatformCase(Format, ACSE);
             PlatformCase(Format, DGE_NTS);
-            PlatformCase(Format, MgC_NTS);
          }
 
          // Set up __GDCC_Target__*__.
@@ -515,7 +514,6 @@ namespace GDCC
          {
             PlatformCase(Target, None);
             PlatformCase(Target, Doominati);
-            PlatformCase(Target, MageCraft);
             PlatformCase(Target, ZDoom);
             PlatformCase(Target, Zandronum);
          }

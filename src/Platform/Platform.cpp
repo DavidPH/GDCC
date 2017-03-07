@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -53,7 +53,6 @@ namespace GDCC
             {
             case Core::STR_ACSE:    FormatCur = Format::ACSE;    break;
             case Core::STR_DGE_NTS: FormatCur = Format::DGE_NTS; break;
-            case Core::STR_MgC_NTS: FormatCur = Format::MgC_NTS; break;
 
             default:
                Option::Exception::Error(args, "argument invalid");
@@ -84,7 +83,6 @@ namespace GDCC
             switch(Core::String::Find(args.argV[0]))
             {
             case Core::STR_Doominati: TargetCur = Target::Doominati; break;
-            case Core::STR_MageCraft: TargetCur = Target::MageCraft; break;
             case Core::STR_ZDoom:     TargetCur = Target::ZDoom;     break;
             case Core::STR_Zandronum: TargetCur = Target::Zandronum; break;
 
@@ -146,7 +144,6 @@ namespace GDCC
          {
          case Target::None:      return 8;
          case Target::Doominati: return 8;
-         case Target::MageCraft: return 8;
          case Target::Zandronum: return 32;
          case Target::ZDoom:     return 32;
          }
@@ -189,7 +186,6 @@ namespace GDCC
          {
          case Target::None:      return 1;
          case Target::Doominati: return 4;
-         case Target::MageCraft: return 4;
          case Target::Zandronum: return 1;
          case Target::ZDoom:     return 1;
          }
@@ -206,7 +202,6 @@ namespace GDCC
          {
          case Target::None:      return 32;
          case Target::Doominati: return 32;
-         case Target::MageCraft: return 32;
          case Target::Zandronum: return 32;
          case Target::ZDoom:     return 32;
          }
@@ -223,7 +218,6 @@ namespace GDCC
          {
          case Target::None:      return 1;
          case Target::Doominati: return 4;
-         case Target::MageCraft: return 4;
          case Target::Zandronum: return 1;
          case Target::ZDoom:     return 1;
          }
@@ -240,7 +234,6 @@ namespace GDCC
          {
          case Target::None:      return 1;
          case Target::Doominati: return 4;
-         case Target::MageCraft: return 1;
          case Target::Zandronum: return 1;
          case Target::ZDoom:     return 1;
          }
@@ -257,7 +250,6 @@ namespace GDCC
          {
          case Target::None:      return 1;
          case Target::Doominati: return 1;
-         case Target::MageCraft: return 4;
          case Target::Zandronum: return 1;
          case Target::ZDoom:     return 1;
          }
@@ -380,7 +372,6 @@ namespace GDCC
          switch(TargetCur)
          {
          case Target::Doominati:
-         case Target::MageCraft:
             return true;
 
          default:
