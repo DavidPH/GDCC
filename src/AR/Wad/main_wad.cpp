@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
    }
    catch(std::exception const &e)
    {
-      std::cerr << e.what() << std::endl;
+      std::cerr << "ERROR: " << e.what() << std::endl;
       return EXIT_FAILURE;
    }
    catch(int e)

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -44,6 +44,10 @@ namespace GDCC
 
       protected:
          virtual void genMsg() const;
+
+         std::ostream &putOrigin(std::ostream &out) const;
+
+         void setMsg(std::string const &str) const;
 
          Origin pos;
 

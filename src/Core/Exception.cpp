@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -40,9 +40,25 @@ namespace GDCC
       void Exception::genMsg() const
       {
          std::ostringstream oss;
-         oss << "ERROR: " << pos << ": unknown error";
-         auto const &tmp = oss.str();
-         msg = StrDup(tmp.data(), tmp.size());
+         putOrigin(oss) << "unknown error";
+         setMsg(oss.str());
+      }
+
+      //
+      // Exception::putOrigin
+      //
+      std::ostream &Exception::putOrigin(std::ostream &out) const
+      {
+         if(pos.file) out << pos << ": ";
+         return out;
+      }
+
+      //
+      // Exception::setMsg
+      //
+      void Exception::setMsg(std::string const &str) const
+      {
+         msg = StrDup(str. data(), str.size());
       }
 
       //
@@ -51,11 +67,8 @@ namespace GDCC
       void ExceptFile::genMsg() const
       {
          std::ostringstream oss;
-         oss << "ERROR: ";
-         if(pos.file) oss << pos << ": ";
-         oss << "could not open '" << filename << "' for " << mode;
-         auto const &tmp = oss.str();
-         msg = StrDup(tmp.data(), tmp.size());
+         putOrigin(oss) << "could not open '" << filename << "' for " << mode;
+         setMsg(oss.str());
       }
 
       //
@@ -64,7 +77,7 @@ namespace GDCC
       void ExceptStr::genMsg() const
       {
          std::ostringstream oss;
-         oss << "ERROR: " << pos << ": " << str;
+         putOrigin(oss) << str;
          auto const &tmp = oss.str();
          msg = StrDup(tmp.data(), tmp.size());
       }
@@ -75,11 +88,8 @@ namespace GDCC
       void ExceptUndef::genMsg() const
       {
          std::ostringstream oss;
-         oss << "ERROR: ";
-         if(pos.file) oss << pos << ": ";
-         oss << type << " undefined: '" << name << '\'';
-         auto const &tmp = oss.str();
-         msg = StrDup(tmp.data(), tmp.size());
+         putOrigin(oss) << type << " undefined: '" << name << '\'';
+         setMsg(oss.str());
       }
 
       //
@@ -102,7 +112,7 @@ namespace GDCC
       {
          std::ostringstream oss;
 
-         oss << "ERROR: " << pos << ":";
+         putOrigin(oss);
 
          oss << " expected ";
          if(expQ) oss << '\'';
@@ -114,8 +124,7 @@ namespace GDCC
          oss << got;
          if(gotQ) oss << '\'';
 
-         auto const &tmp = oss.str();
-         msg = StrDup(tmp.data(), tmp.size());
+         setMsg(oss.str());
       }
 
       //
@@ -124,9 +133,8 @@ namespace GDCC
       void ParseExceptStr::genMsg() const
       {
          std::ostringstream oss;
-         oss << "ERROR: " << pos << ": " << str;
-         auto const &tmp = oss.str();
-         msg = StrDup(tmp.data(), tmp.size());
+         putOrigin(oss) << str;
+         setMsg(oss.str());
       }
    }
 }

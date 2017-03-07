@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2016 David Hill
+// Copyright (C) 2015-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -106,11 +106,11 @@ static void WriteError(char const *filename, char const *what)
    {
       auto buf = GDCC::Core::FileOpenStream(filename, std::ios_base::out);
       std::ostream out{buf.get()};
-      out << what << std::endl;
+      out << "ERROR: " << what << std::endl;
    }
    catch(std::exception const &e)
    {
-      std::cerr << e.what() << std::endl;
+      std::cerr << "ERROR: " << e.what() << std::endl;
    }
 }
 
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
    }
    catch(std::exception const &e)
    {
-      std::cerr << e.what() << std::endl;
+      std::cerr << "ERROR: " << e.what() << std::endl;
 
       // Also write error to file, if requested.
       WriteError(ErrorFile.data(), e.what());
