@@ -40,9 +40,9 @@ GDCC Linker (gdcc-ld)
 Linker program for converting intermediary representation files to bytecode.
 
 
-GDCC MageDefs (gdcc-magedefs)
+GDCC NTS Compiler (gdcc-ntsc)
 
-Processes plain text files into MageCraft NTS format by tokenizing.
+Processes plain text files into Doominati NTS format by tokenizing.
 
 
 GDCC MakeLib (gdcc-makelib)
