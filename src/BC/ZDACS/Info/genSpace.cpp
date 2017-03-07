@@ -214,7 +214,7 @@ namespace GDCC
                {
                   iv = &ini.vals[itr++];
                   iv->tag = InitTag::Fixed;
-                  iv->val = GetWord_Fixed(val.vFixed, w);
+                  iv->val = getWord_Fixed(val.vFixed, w);
                }
                break;
 
@@ -224,7 +224,7 @@ namespace GDCC
                {
                   iv = &ini.vals[itr++];
                   iv->tag = InitTag::Fixed;
-                  iv->val = GetWord_Float(val.vFloat, w);
+                  iv->val = getWord_Float(val.vFloat, w);
                }
                break;
 

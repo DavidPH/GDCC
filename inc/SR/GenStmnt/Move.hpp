@@ -78,30 +78,6 @@ namespace GDCC
       GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_LocArr)
       GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_ModArr)
       GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_StrArr)
-
-      //
-      // GenStmnt_MoveWordGetT
-      //
-      template<typename ArgT, typename IdxT>
-      void GenStmnt_MoveWordGetT(Exp const *exp, GenStmntCtx const &ctx,
-         Arg const &arg, IdxT &&idx, Core::FastU off)
-      {
-         ctx.block.addStatementArgs({IR::Code::Move_W, 1},
-            IR::Arg_Stk(),
-            GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, std::forward<IdxT>(idx), off));
-      }
-
-      //
-      // GenStmnt_MoveWordSetT
-      //
-      template<typename ArgT, typename IdxT>
-      void GenStmnt_MoveWordSetT(Exp const *exp, GenStmntCtx const &ctx,
-         Arg const &arg, IdxT &&idx, Core::FastU off)
-      {
-         ctx.block.addStatementArgs({IR::Code::Move_W, 1},
-            GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, std::forward<IdxT>(idx), off),
-            IR::Arg_Stk());
-      }
    }
 }
 

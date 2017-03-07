@@ -48,6 +48,7 @@ namespace GDCC
 
          // Type classification: General classifications.
          virtual bool isTypeComplete() const {return true;}
+         virtual bool isTypeSubWord()  const;
 
          // Type classification: C/C++ classifications.
          virtual bool isCTypeArith()    const {return true;}

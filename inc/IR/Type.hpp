@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -163,6 +163,8 @@ namespace GDCC
             bitsI{bitsI_}, bitsF{bitsF_}, bitsS{bitsS_}, satur{satur_} {}
 
          explicit Type_Float(IArchive &in);
+
+         Core::FastU getBits() const {return bitsI + bitsF + bitsS;}
 
          bool operator == (Type_Float const &t) const
             {return bitsI == t.bitsI && bitsF == t.bitsF &&

@@ -30,6 +30,33 @@ namespace GDCC
       namespace ZDACS
       {
          //
+         // Info::genStmnt_BNot_W
+         //
+         void Info::genStmnt_BNot_W()
+         {
+            if(isPushArg(stmnt->args[1]))
+            {
+               numChunkCODE += lenPushArg(stmnt->args[1], 0, stmnt->op.size);
+               numChunkCODE += stmnt->op.size * 4;
+            }
+            else if(isDropArg(stmnt->args[0]))
+            {
+               numChunkCODE += lenDropArg(stmnt->args[0], 0, stmnt->op.size);
+               numChunkCODE += stmnt->op.size * 4;
+            }
+            else
+            {
+               numChunkCODE += stmnt->op.size * 4;
+
+               if(stmnt->op.size > 1)
+                  numChunkCODE += 8;
+
+               if(stmnt->op.size > 2)
+                  numChunkCODE += (stmnt->op.size - 2) * 16;
+            }
+         }
+
+         //
          // Info::genStmnt_Bclz_W
          //
          void Info::genStmnt_Bclz_W()
@@ -81,7 +108,7 @@ namespace GDCC
          //
          void Info::genStmnt_Bget_W()
          {
-            auto offs = GetWord(stmnt->args[3].aLit);
+            auto offs = getWord(stmnt->args[3].aLit);
 
             if(offs)
                numChunkCODE += 12;
@@ -94,7 +121,7 @@ namespace GDCC
          //
          void Info::genStmnt_Bset_W()
          {
-            auto offs = GetWord(stmnt->args[3].aLit);
+            auto offs = getWord(stmnt->args[3].aLit);
 
             if(offs)
                numChunkCODE += 12;
@@ -150,14 +177,14 @@ namespace GDCC
             // Counting leading ones works the same way if inverted.
             // May be advantageous to invert the conditions, instead, though.
             if(ones)
-               newFunc.block.addStatementArgs({IR::Code::InvU_W, 1}, src, src);
+               newFunc.block.addStatementArgs({IR::Code::BNot_W, 1}, src, src);
 
             // Node codegen, mask-and-branch.
             auto node = [&](char const *label, Core::FastU mask, char const *dst)
             {
                if(label) newFunc.block.addLabel(name + label);
                IR::Glyph dstGlyph{prog, name + dst};
-               newFunc.block.addStatementArgs({IR::Code::AndU_W,   1}, IR::Arg_Stk(), src, mask);
+               newFunc.block.addStatementArgs({IR::Code::BAnd_W,   1}, IR::Arg_Stk(), src, mask);
                newFunc.block.addStatementArgs({IR::Code::Jcnd_Tru, 1}, IR::Arg_Stk(), dstGlyph);
             };
 
@@ -238,6 +265,56 @@ namespace GDCC
          }
 
          //
+         // Info::putStmnt_BNot_W
+         //
+         void Info::putStmnt_BNot_W()
+         {
+            if(isPushArg(stmnt->args[1]))
+            {
+               for(Core::FastU i = 0; i != stmnt->op.size; ++i)
+               {
+                  putStmntPushArg(stmnt->args[1], i);
+                  putCode(Code::BNot);
+               }
+            }
+            else if(isDropArg(stmnt->args[0]))
+            {
+               if(auto i = stmnt->op.size) while(i--)
+               {
+                  putCode(Code::BNot);
+                  putStmntDropArg(stmnt->args[0], i);
+               }
+            }
+            else
+            {
+               if(stmnt->op.size > 2)
+               {
+                  for(Core::FastU i = stmnt->op.size - 2; i--;)
+                  {
+                     putCode(Code::BNot);
+                     putCode(Code::Drop_LocReg, func->localReg + i);
+                  }
+               }
+
+               if(stmnt->op.size > 0)
+                  putCode(Code::BNot);
+
+               if(stmnt->op.size > 1)
+               {
+                  putCode(Code::Swap);
+                  putCode(Code::BNot);
+                  putCode(Code::Swap);
+               }
+
+               if(stmnt->op.size > 2)
+               {
+                  for(Core::FastU i = 0, e = stmnt->op.size - 2; i != e; ++i)
+                     putCode(Code::Push_LocReg, func->localReg + i);
+               }
+            }
+         }
+
+         //
          // Info::putStmnt_Bclz_W
          //
          void Info::putStmnt_Bclz_W(bool ones)
@@ -257,7 +334,7 @@ namespace GDCC
             }
 
             Core::FastU skip = ones ? 0xFFFFFFFF : 0;
-            Core::FastU fIdx = GetWord(resolveGlyph(name));
+            Core::FastU fIdx = getWord(resolveGlyph(name));
 
             if(stmnt->args[1].a != IR::ArgBase::Stk)
             {
@@ -355,8 +432,8 @@ namespace GDCC
          //
          void Info::putStmnt_Bges_W()
          {
-            auto bits = GetWord(stmnt->args[2].aLit);
-            auto offs = GetWord(stmnt->args[3].aLit);
+            auto bits = getWord(stmnt->args[2].aLit);
+            auto offs = getWord(stmnt->args[3].aLit);
 
             putCode(Code::Push_Lit, 32 - bits - offs);
             putCode(Code::ShLU);
@@ -370,8 +447,8 @@ namespace GDCC
          //
          void Info::putStmnt_Bget_W()
          {
-            auto bits = GetWord(stmnt->args[2].aLit);
-            auto offs = GetWord(stmnt->args[3].aLit);
+            auto bits = getWord(stmnt->args[2].aLit);
+            auto offs = getWord(stmnt->args[3].aLit);
             auto mask = (static_cast<Core::FastU>(1) << bits) - 1;
 
             if(offs)
@@ -381,7 +458,7 @@ namespace GDCC
             }
 
             putCode(Code::Push_Lit, mask);
-            putCode(Code::AndU);
+            putCode(Code::BAnd);
          }
 
          //
@@ -389,12 +466,12 @@ namespace GDCC
          //
          void Info::putStmnt_Bset_W()
          {
-            auto bits = GetWord(stmnt->args[2].aLit);
-            auto offs = GetWord(stmnt->args[3].aLit);
+            auto bits = getWord(stmnt->args[2].aLit);
+            auto offs = getWord(stmnt->args[3].aLit);
             auto mask = (static_cast<Core::FastU>(1) << bits) - 1;
 
             putCode(Code::Push_Lit, mask);
-            putCode(Code::AndU);
+            putCode(Code::BAnd);
 
             if(offs)
             {
@@ -404,8 +481,8 @@ namespace GDCC
 
             putStmntPushArg(stmnt->args[0], 0);
             putCode(Code::Push_Lit, ~(mask << offs));
-            putCode(Code::AndU);
-            putCode(Code::OrIU);
+            putCode(Code::BAnd);
+            putCode(Code::BOrI);
             putStmntDropArg(stmnt->args[0], 0);
          }
 
@@ -442,6 +519,27 @@ namespace GDCC
                   putStmntPushArg(stmnt->args[2], i);
                   putCode(code);
                }
+            }
+         }
+
+         //
+         // Info::trStmnt_BNot_W
+         //
+         void Info::trStmnt_BNot_W()
+         {
+            CheckArgC(stmnt, 2);
+
+            if(isPushArg(stmnt->args[1]))
+               moveArgStk_dst(stmnt->args[0], stmnt->op.size);
+            else if(isDropArg(stmnt->args[0]))
+               moveArgStk_src(stmnt->args[1], stmnt->op.size);
+            else
+            {
+               if(stmnt->op.size > 2)
+                  func->setLocalTmp(stmnt->op.size - 2);
+
+               moveArgStk_dst(stmnt->args[0], stmnt->op.size);
+               moveArgStk_src(stmnt->args[1], stmnt->op.size);
             }
          }
 

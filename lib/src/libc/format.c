@@ -22,15 +22,15 @@
 //
 #define FormatFixCoreD(T, op) \
    /* Perform core conversion. */ \
-   FormatFixCoreDI(T); \
-   FormatFixCoreDF(op); \
+   FormatFixCoreDI(T, op); \
+   FormatFixCoreDF(T, op); \
    \
    ret._len = ret._end - ret._begin;
 
 //
 // FormatFixCoreDF
 //
-#define FormatFixCoreDF(op) \
+#define FormatFixCoreDF(T, op) \
    /* Fractional conversion. */ \
    if(format._prec) \
    { \
@@ -38,7 +38,7 @@
       \
       unsigned precDigs = format._prec; \
       \
-      FormatFixCoreDFLoop_##op(); \
+      FormatFixCoreDFLoop_##op(T); \
       \
       for(; precDigs; --precDigs) \
          *ret._end++ = '0'; \
@@ -50,18 +50,33 @@
 // FormatFixCoreDFLoop_k
 //
 #if __GDCC_Family__ZDACS__
-#define FormatFixCoreDFLoop_k() \
-   for(union {_Accum k; int i;} u = {data}; u.i && precDigs; --precDigs) \
+#define FormatFixCoreDFLoop_k(T) \
+   for(union {T _Accum k; T int i;} u = {data}; u.i && precDigs; --precDigs) \
    { \
       u.i &= 0xFFFF; \
       u.i *= 10; \
       *ret._end++ = (u.i >> 16) + '0'; \
    }
 #else
-#define FormatFixCoreDFLoop_k() \
-   for(_Accum k = data; k && precDigs; --precDigs) \
+#define FormatFixCoreDFLoop_k(T) \
+   for(T _Accum k = data; k && precDigs; --precDigs) \
    { \
-      k -= (int)k; \
+      k -= (T FormatTypeInt_k)k; \
+      k *= 10; \
+      *ret._end++ = (int)k + '0'; \
+   }
+#endif
+
+//
+// FormatFixCoreDFLoop_kh
+//
+#if __GDCC_Family__ZDACS__
+#define FormatFixCoreDFLoop_kh(T) FormatFixCoreDFLoop_k(T)
+#else
+#define FormatFixCoreDFLoop_kh(T) \
+   for(T short _Accum k = data; k && precDigs; --precDigs) \
+   { \
+      k -= (T FormatTypeInt_kh)k; \
       k *= 10; \
       *ret._end++ = (int)k + '0'; \
    }
@@ -71,17 +86,17 @@
 // FormatFixCoreDFLoop_kl
 //
 #if __GDCC_Family__ZDACS__
-#define FormatFixCoreDFLoop_kl() \
-   for(union {long _Accum k; int i;} u = {data}; u.i && precDigs; --precDigs) \
+#define FormatFixCoreDFLoop_kl(T) \
+   for(union {T long _Accum k; T int i;} u = {data}; u.i && precDigs; --precDigs) \
    { \
       *ret._end++ = ((int)(((unsigned)u.i >> 24) * 10) >> 8) + '0'; \
       u.i *= 10; \
    }
 #else
-#define FormatFixCoreDFLoop_kl() \
-   for(long _Accum k = data; k && precDigs; --precDigs) \
+#define FormatFixCoreDFLoop_kl(T) \
+   for(T long _Accum k = data; k && precDigs; --precDigs) \
    { \
-      k -= (long int)k; \
+      k -= (T FormatTypeInt_kl)k; \
       k *= 10; \
       *ret._end++ = (int)k + '0'; \
    }
@@ -90,11 +105,11 @@
 //
 // FormatFixCoreDI
 //
-#define FormatFixCoreDI(T) \
+#define FormatFixCoreDI(T, op) \
    /* Integral conversion. */ \
-   for(T int i = data; i;) \
+   for(T FormatTypeInt_##op int i = data; i;) \
    { \
-      T __div_t d = __div(i, 10); \
+      T FormatTypeInt_##op __div_t d = __div(i, 10); \
       *--ret._begin = d.rem + '0'; \
       i = d.quot; \
    } \
@@ -511,6 +526,29 @@
 #define FormatIntSign() \
    if(sign) *--ret._begin = sign, ++ret._len;
 
+//
+// FormatTypeInt_k
+//
+#if __GDCC_Target__Doominati__
+#define FormatTypeInt_k long
+#else
+#define FormatTypeInt_k
+#endif
+
+//
+// FormatTypeInt_kh
+//
+#define FormatTypeInt_kh
+
+//
+// FormatTypeInt_kl
+//
+#if __GDCC_Target__Doominati__
+#define FormatTypeInt_kl long
+#else
+#define FormatTypeInt_kl long
+#endif
+
 
 //----------------------------------------------------------------------------|
 // Static Objects                                                             |
@@ -680,7 +718,7 @@ __GDCC__FormatDefn(K, d, _Accum)
 __GDCC__FormatDefn(K, dh, short _Accum)
 {
    FormatFixPreU();
-   FormatFixCoreD(unsigned, k);
+   FormatFixCoreD(unsigned, kh);
    FormatFixWidth();
 
    return ret;
@@ -906,7 +944,7 @@ __GDCC__FormatDefn(X, d, _Accum)
 __GDCC__FormatDefn(X, dh, short _Accum)
 {
    FormatFixPreS();
-   FormatFixCoreD(signed, k);
+   FormatFixCoreD(signed, kh);
    FormatFixWidth();
    FormatIntSign();
 

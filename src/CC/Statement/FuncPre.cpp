@@ -70,10 +70,11 @@ namespace GDCC
          auto stype = scope.fn->stype;
 
          // Move parameter data to actual storage location.
-         Core::FastU paramIdx = 0;
+         Core::FastU paramIdx  = 0;
+         Core::FastU paramStep = Platform::GetWordBytes();
 
          if(Platform::IsCallAutoProp(ctype))
-            ++paramIdx;
+            paramIdx += paramStep;
 
          for(auto const &obj : scope.params)
          {
@@ -97,7 +98,7 @@ namespace GDCC
                break;
             }
 
-            paramIdx += objWords;
+            paramIdx += objWords * paramStep;
          }
 
          if((ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS) &&

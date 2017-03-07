@@ -102,16 +102,6 @@ namespace GDCC
          }
 
          //
-         // Info::putData
-         //
-         void Info::putData(char const *s, std::size_t len)
-         {
-            out->write(s, len);
-
-            putPos += len;
-         }
-
-         //
          // Info::putFunc
          //
          void Info::putFunc()
@@ -120,7 +110,7 @@ namespace GDCC
             if(func->defin && func->allocAut)
             {
                putCode(Code::Push_Lit,    func->allocAut);
-               putCode(Code::Call_Lit,    GetWord(resolveGlyph("___GDCC__Plsa")));
+               putCode(Code::Call_Lit,    getWord(resolveGlyph("___GDCC__Plsa")));
                putCode(Code::Drop_LocReg, getStkPtrIdx());
             }
 

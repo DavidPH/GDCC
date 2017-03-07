@@ -145,68 +145,7 @@ namespace GDCC
             if(stmnt->op.size <= 1)
                return;
 
-            Core::String name = getCallName({IR::Code::DiXI_W, stmnt->op.size});
-            auto newFunc = preStmntCallDef(name, stmnt->op.size * 2,
-               stmnt->op.size * 2, stmnt->op.size * 2, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            IR::Glyph labelL0R1{prog, name + "$l0r1"};
-            IR::Glyph labelL1  {prog, name + "$l1"};
-            IR::Glyph labelL1R1{prog, name + "$l1r1"};
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
-
-            IR::Arg_Stk stk{};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, lop + (stmnt->op.size - 1), 0x80000000);
-            AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelL1);
-
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rop + (stmnt->op.size - 1), 0x80000000);
-            AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelL0R1);
-
-            // +dividend, +divisor -> +quotient, +remainder
-            AS_Stmnt({IR::Code::DiXU_W, stmnt->op.size},     stk, lop, rop);
-            AS_Stmnt({IR::Code::Retn,   stmnt->op.size * 2}, stk);
-
-            newFunc->block.addLabel(labelL0R1);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size}, rop, rop);
-
-            // +dividend, -divisor -> -quotient, -remainder
-            AS_Stmnt({IR::Code::DiXU_W, stmnt->op.size},     stk, lop, rop);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size},     rop, stk);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size},     stk, stk);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size},     stk, rop);
-            AS_Stmnt({IR::Code::Retn,   stmnt->op.size * 2}, stk);
-
-            newFunc->block.addLabel(labelL1);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size}, lop, lop);
-
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rop + (stmnt->op.size - 1), 0x80000000);
-            AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelL1R1);
-
-            // -dividend, +divisor -> -quotient, +remainder
-            AS_Stmnt({IR::Code::DiXU_W, stmnt->op.size},     stk, lop, rop);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size},     rop, stk);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size},     stk, stk);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size},     stk, rop);
-            AS_Stmnt({IR::Code::Retn,   stmnt->op.size * 2}, stk);
-
-            newFunc->block.addLabel(labelL1R1);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size}, rop, rop);
-
-            // -dividend, -divisor -> +quotient, -remainder
-            AS_Stmnt({IR::Code::DiXU_W, stmnt->op.size},     stk, lop, rop);
-            AS_Stmnt({IR::Code::NegI_W, stmnt->op.size},     stk, stk);
-            AS_Stmnt({IR::Code::Retn,   stmnt->op.size * 2}, stk);
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+            addFunc_DiXI_W(stmnt->op.size);
          }
 
          //
@@ -218,91 +157,9 @@ namespace GDCC
                return;
 
             if(stmnt->op.size == 1)
-            {
-               preStmnt_DiXU_W1();
-               return;
-            }
+               return preStmnt_DiXU_W1();
 
-            Core::String name = getCallName({IR::Code::DiXU_W, stmnt->op.size});
-            auto newFunc = preStmntCallDef(name, stmnt->op.size * 2,
-               stmnt->op.size * 2, stmnt->op.size * 5, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            IR::Glyph labelFull    {prog, name + "$full"};
-            IR::Glyph labelLoopBody{prog, name + "$loop_body"};
-            IR::Glyph labelLoopCond{prog, name + "$loop_cond"};
-            IR::Glyph labelLoopShft{prog, name + "$loop_shft"};
-            IR::Glyph labelRetn    {prog, name + "$retn"};
-
-            IR::Arg_LocReg lop {IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 0))};
-            IR::Arg_LocReg rop {IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 1))};
-            IR::Arg_LocReg quot{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 2))};
-            IR::Arg_LocReg rem {IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 3))};
-            IR::Arg_LocReg mask{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 4))};
-
-            IR::Arg_Stk stk{};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            // If both operands have the high word clear, defer to smaller op.
-            AS_Stmnt({IR::Code::OrIU_W,   1}, stk,
-               lop + (stmnt->op.size - 1), rop + (stmnt->op.size - 1));
-            AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelFull);
-
-            AS_Stmnt({IR::Code::DiXU_W, stmnt->op.size - 1}, stk, lop, rop);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size - 1}, rop, stk);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size - 1}, lop, stk);
-
-            AS_Stmnt({IR::Code::Retn, stmnt->op.size * 2}, lop);
-
-            newFunc->block.addLabel(labelFull);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, quot, 0);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, rem,  lop);
-
-            // If lop < rop, return now.
-            AS_Stmnt({IR::Code::CmpU_LT_W, stmnt->op.size}, stk, lop, rop);
-            AS_Stmnt({IR::Code::Jcnd_Tru,  1},              stk, labelRetn);
-
-            // Calculate mask and adjust divisor.
-            AS_Stmnt({IR::Code::Bclz_W, stmnt->op.size}, stk, rop);
-            AS_Stmnt({IR::Code::Bclz_W, stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::SubU_W, 1}, mask, stk, stk);
-
-            AS_Stmnt({IR::Code::ShLU_W, stmnt->op.size}, rop,  rop, mask);
-            AS_Stmnt({IR::Code::ShLU_W, stmnt->op.size}, mask, 1,   mask);
-
-            // Division loop.
-            AS_Stmnt({IR::Code::Jump, 1}, labelLoopCond);
-
-            newFunc->block.addLabel(labelLoopBody);
-            AS_Stmnt({IR::Code::CmpU_GE_W, stmnt->op.size}, stk, rem, rop);
-            AS_Stmnt({IR::Code::Jcnd_Nil,  1}, stk, labelLoopShft);
-
-            AS_Stmnt({IR::Code::OrIU_W, stmnt->op.size}, quot, quot, mask);
-            AS_Stmnt({IR::Code::SubU_W, stmnt->op.size}, rem,  rem,  rop);
-
-            newFunc->block.addLabel(labelLoopShft);
-            AS_Stmnt({IR::Code::ShRU_W, stmnt->op.size}, rop,  rop,  1);
-            AS_Stmnt({IR::Code::ShRU_W, stmnt->op.size}, mask, mask, 1);
-
-            newFunc->block.addLabel(labelLoopCond);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, mask);
-            for(Core::FastU n = stmnt->op.size; --n;)
-               AS_Stmnt({IR::Code::OrIU_W, 1}, stk, stk, stk);
-            AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rem);
-            for(Core::FastU n = stmnt->op.size; --n;)
-               AS_Stmnt({IR::Code::OrIU_W, 1}, stk, stk, stk);
-            AS_Stmnt({IR::Code::LAnd, 1}, stk, stk, stk);
-            AS_Stmnt({IR::Code::Jcnd_Tru, 1}, stk, labelLoopBody);
-
-            newFunc->block.addLabel(labelRetn);
-            AS_Stmnt({IR::Code::Retn, stmnt->op.size * 2}, quot);
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+            addFunc_DiXU_W(stmnt->op.size);
          }
 
          //
@@ -332,11 +189,11 @@ namespace GDCC
 
             #define AS_Stmnt newFunc->block.addStatementArgs
 
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, lop, 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, lop, 0x80000000);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1}, stk, labelL0);
 
             // l has high bit set.
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rop, 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rop, 0x80000000);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1}, stk, labelL1R0);
 
             // l and r have high bit set.
@@ -355,7 +212,7 @@ namespace GDCC
 
             // l has high bit set, r does not.
             newFunc->block.addLabel(labelL1R0);
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rop, 1);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rop, 1);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1}, stk, labelL1R00);
 
             // r has low bit set.
@@ -406,7 +263,7 @@ namespace GDCC
 
             // l does not have high bit set.
             newFunc->block.addLabel(labelL0);
-            AS_Stmnt({IR::Code::AndU_W,   1}, stk, rop, 0x80000000);
+            AS_Stmnt({IR::Code::BAnd_W,   1}, stk, rop, 0x80000000);
             AS_Stmnt({IR::Code::Jcnd_Nil, 1}, stk, labelL0R0);
 
             // l does not have high bit set, r does.
@@ -432,173 +289,10 @@ namespace GDCC
          //
          void Info::preStmnt_DivF_W()
          {
-            Core::String name = getCallName();
-            auto newFunc = preStmntCallDef(name, stmnt->op.size,
-               stmnt->op.size * 2, stmnt->op.size * 3 + 3, __FILE__, __LINE__);
-
-            if(!newFunc)
+            if(stmnt->op.size == 0)
                return;
 
-            FloatInfo fi = GetFloatInfo(stmnt->op.size);
-
-            IR::Glyph labelL0  {prog, name + "$l0"};
-            IR::Glyph labelLINF{prog, name + "$linf"};
-            IR::Glyph labelLNaN{prog, name + "$lnan"};
-            IR::Glyph labelR0  {prog, name + "$r0"};
-            IR::Glyph labelRINF{prog, name + "$rinf"};
-            IR::Glyph labelRNaN{prog, name + "$rnan"};
-
-            IR::Glyph labelLoop   {prog, name + "$loop"};
-            IR::Glyph labelLoopNil{prog, name + "$loopnil"};
-
-            IR::Glyph label0  {prog, name + "$0"};
-            IR::Glyph labelINF{prog, name + "$inf"};
-            IR::Glyph labelNaN{prog, name + "$nan"};
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 0))};
-            IR::Arg_LocReg lhi{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 1 - 1))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 1))};
-            IR::Arg_LocReg rhi{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 2 - 1))};
-            IR::Arg_LocReg man{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 2))};
-            IR::Arg_LocReg mhi{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 3 - 1))};
-            IR::Arg_LocReg sig{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 3 + 0))};
-            IR::Arg_LocReg exp{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 3 + 1))};
-            IR::Arg_LocReg tmp{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size * 3 + 2))};
-
-            IR::Arg_Nul nul{};
-            IR::Arg_Stk stk{};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            // Determine result sign.
-            AS_Stmnt({IR::Code::OrXU_W,    1}, stk, lhi, rhi);
-            AS_Stmnt({IR::Code::AndU_W,    1}, sig, stk, 0x80000000);
-
-            // Clear operand signs.
-            AS_Stmnt({IR::Code::AndU_W,    1}, lhi, lhi, 0x7FFFFFFF);
-            AS_Stmnt({IR::Code::AndU_W,    1}, rhi, rhi, 0x7FFFFFFF);
-
-            // Check for special operands.
-            AS_Stmnt({IR::Code::CmpI_GT_W, 1}, stk, lhi, fi.maskExp);
-            AS_Stmnt({IR::Code::Jcnd_Tru,  1}, stk, labelLNaN);
-            AS_Stmnt({IR::Code::Move_W,    1}, stk, rhi);
-            AS_Stmnt({IR::Code::Jcnd_Tab,  1}, stk, 0, labelR0, fi.maskExp, labelRINF);
-            AS_Stmnt({IR::Code::CmpI_GT_W, 1}, stk, stk, fi.maskExp);
-            AS_Stmnt({IR::Code::Jcnd_Tru,  1}, stk, labelRNaN);
-            AS_Stmnt({IR::Code::Move_W,    1}, stk, lhi);
-            AS_Stmnt({IR::Code::Jcnd_Tab,  1}, stk, 0, labelL0, fi.maskExp, labelLINF);
-            AS_Stmnt({IR::Code::Move_W,    1}, nul, stk);
-
-            // Determine result exponent. Will be adjusted, so no range check.
-            AS_Stmnt({IR::Code::Move_W,    1}, stk, fi.offExp);
-            AS_Stmnt({IR::Code::ShRI_W,    1}, stk, rhi, fi.bitsMan);
-            AS_Stmnt({IR::Code::SubU_W,    1}, stk, stk, stk);
-            AS_Stmnt({IR::Code::ShRI_W,    1}, stk, lhi, fi.bitsMan);
-            AS_Stmnt({IR::Code::AddU_W,    1}, exp, stk, stk);
-
-            // Clear operand exponents and add implicit bit.
-            AS_Stmnt({IR::Code::AndU_W,    1}, stk, lhi, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W,    1}, lhi, stk, fi.maskMan + 1);
-            AS_Stmnt({IR::Code::AndU_W,    1}, stk, rhi, fi.maskMan);
-            AS_Stmnt({IR::Code::OrIU_W,    1}, rhi, stk, fi.maskMan + 1);
-
-            // Division loop.
-            AS_Stmnt({IR::Code::Move_W,    stmnt->op.size}, man, 0);
-            AS_Stmnt({IR::Code::Move_W,    1},              tmp, fi.bitsManFull);
-
-            // Division check.
-            newFunc->block.addLabel(labelLoop);
-            AS_Stmnt({IR::Code::CmpI_GE_W, stmnt->op.size}, stk, lop, rop);
-            AS_Stmnt({IR::Code::Jcnd_Nil,  1},              stk, labelLoopNil);
-            AS_Stmnt({IR::Code::SubU_W,    stmnt->op.size}, lop, lop, rop);
-            AS_Stmnt({IR::Code::AddU_W,    1},              man, man, 1);
-
-            newFunc->block.addLabel(labelLoopNil);
-            AS_Stmnt({IR::Code::ShLU_W,    stmnt->op.size}, lop, lop, 1);
-            AS_Stmnt({IR::Code::ShLU_W,    stmnt->op.size}, man, man, 1);
-
-            AS_Stmnt({IR::Code::SubU_W,    1},              tmp, tmp, 1);
-            AS_Stmnt({IR::Code::Jcnd_Tru,  1},              tmp, labelLoop);
-
-            // Final division check.
-            AS_Stmnt({IR::Code::CmpI_GE_W, stmnt->op.size}, stk, lop, rop);
-            AS_Stmnt({IR::Code::AddU_W,    1},              man, man, stk);
-
-            // Shift 1 into implicit bit.
-            AS_Stmnt({IR::Code::Bclz_W,    stmnt->op.size}, tmp, man);
-            AS_Stmnt({IR::Code::SubU_W,    1},              tmp, tmp, fi.bitsExp);
-
-            AS_Stmnt({IR::Code::ShLU_W,    stmnt->op.size}, man, man, tmp);
-            AS_Stmnt({IR::Code::SubU_W,    1},              exp, exp, tmp);
-
-            AS_Stmnt({IR::Code::AndU_W,    1},              mhi, mhi, fi.maskMan);
-
-            // Check for out of range exponent.
-            AS_Stmnt({IR::Code::CmpI_GE_W, 1},              stk, exp, fi.maxExp);
-            AS_Stmnt({IR::Code::Jcnd_Tru,  1},              stk, labelINF);
-            AS_Stmnt({IR::Code::CmpI_LE_W, 1},              stk, exp, 0);
-            AS_Stmnt({IR::Code::Jcnd_Tru,  1},              stk, label0);
-
-            // Return result.
-            AS_Stmnt({IR::Code::Move_W,    stmnt->op.size}, stk, man);
-            AS_Stmnt({IR::Code::ShLU_W,    1},              stk, exp, fi.bitsMan);
-            AS_Stmnt({IR::Code::OrIU_W,    1},              stk, stk, stk);
-            AS_Stmnt({IR::Code::OrIU_W,    1},              stk, stk, sig);
-            AS_Stmnt({IR::Code::Retn,      stmnt->op.size}, stk);
-
-            // Return NaN.
-            newFunc->block.addLabel(labelNaN);
-            for(auto n = stmnt->op.size - 1; n--;)
-               AS_Stmnt({IR::Code::Move_W, 1},              stk, 0xFFFFFFFF);
-            AS_Stmnt({IR::Code::OrIU_W,    1},              stk, sig, fi.maskExp | fi.maskMan);
-            AS_Stmnt({IR::Code::Retn,      stmnt->op.size}, stk);
-
-            // l is NaN. Therefore, result is l.
-            newFunc->block.addLabel(labelLNaN);
-            // l is 0, r is normal. Therefore, result is l.
-            newFunc->block.addLabel(labelL0);
-            // l is INF, r is normal. Therefore, result is l.
-            newFunc->block.addLabel(labelLINF);
-            AS_Stmnt({IR::Code::Move_W,    stmnt->op.size}, stk, lop);
-            AS_Stmnt({IR::Code::OrIU_W,    1},              stk, stk, sig);
-            AS_Stmnt({IR::Code::Retn,      stmnt->op.size}, stk);
-
-            // r is NaN. Therefore, result is r.
-            newFunc->block.addLabel(labelRNaN);
-            AS_Stmnt({IR::Code::Move_W,    stmnt->op.size},              stk, rop);
-            AS_Stmnt({IR::Code::OrIU_W,    1},              stk, stk, sig);
-            AS_Stmnt({IR::Code::Retn,      stmnt->op.size}, stk);
-
-            // r is 0.
-            newFunc->block.addLabel(labelR0);
-
-            // 0 / 0 = NaN.
-            AS_Stmnt({IR::Code::Jcnd_Nil, stmnt->op.size}, lop, labelNaN);
-
-            // Otherwise, result is INF.
-            newFunc->block.addLabel(labelINF);
-            for(auto n = stmnt->op.size - 1; n--;)
-               AS_Stmnt({IR::Code::Move_W, 1},              stk, 0);
-            AS_Stmnt({IR::Code::OrIU_W,    1},              stk, sig, fi.maskExp);
-            AS_Stmnt({IR::Code::Retn,      stmnt->op.size}, stk);
-
-            // r is INF.
-            newFunc->block.addLabel(labelRINF);
-
-            // INF / INF = NaN.
-            AS_Stmnt({IR::Code::CmpU_EQ_W, 1},              stk, lhi, fi.maskMan);
-            AS_Stmnt({IR::Code::Jcnd_Tru,  1},              stk, labelNaN);
-
-            // Otherwie result is 0.
-            newFunc->block.addLabel(label0);
-            for(auto n = stmnt->op.size - 1; n--;)
-               AS_Stmnt({IR::Code::Move_W, 1},              stk, 0);
-            AS_Stmnt({IR::Code::Move_W,    1},              stk, sig);
-            AS_Stmnt({IR::Code::Retn,      stmnt->op.size}, stk);
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+            addFunc_DivF_W(stmnt->op.size);
          }
 
          //
@@ -617,65 +311,10 @@ namespace GDCC
                   return;
             }
 
-            Core::String name = getCallName();
-            auto newFunc = preStmntCallDef(name, stmnt->op.size * 2,
-               stmnt->op.size * 2, stmnt->op.size * 2, __FILE__, __LINE__);
-
-            if(!newFunc)
-               return;
-
-            Core::FastU fracWords;
-            Core::FastU divWords;
-
-            IR::Arg_LocReg lop{IR::Arg_Lit(newFunc->block.getExp(0))};
-            IR::Arg_LocReg rop{IR::Arg_Lit(newFunc->block.getExp(stmnt->op.size))};
-
-            IR::Arg_Nul nul{};
-            IR::Arg_Stk stk{};
-
-            #define AS_Stmnt newFunc->block.addStatementArgs
-
-            if(stmnt->op.size == 1)
-            {
-               fracWords = 1;
-               divWords  = 2;
-
-               AS_Stmnt({IR::Code::Move_W, 1}, stk, lop);
-               AS_Stmnt({IR::Code::Move_W, 1}, stk, 0);
-               AS_Stmnt({IR::Code::ShLU_W, 1}, stk, stk, 16);
-
-               AS_Stmnt({IR::Code::Move_W, 1}, stk, rop);
-               AS_Stmnt({IR::Code::Move_W, 1}, stk, 0);
-            }
+            if(sign)
+               addFunc_DivX_W(stmnt->op.size);
             else
-            {
-               fracWords = stmnt->op.size / 2;
-               divWords  = stmnt->op.size + fracWords;
-
-               AS_Stmnt({IR::Code::Move_W, fracWords},      stk, 0);
-               AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, lop);
-
-               AS_Stmnt({IR::Code::Move_W, stmnt->op.size}, stk, rop);
-               if(sign)
-               {
-                  AS_Stmnt({IR::Code::Copy_W, 1}, stk, stk);
-                  AS_Stmnt({IR::Code::ShRI_W, 1}, stk, stk, 31);
-                  for(Core::FastU n = fracWords - 1; n--;)
-                     AS_Stmnt({IR::Code::Copy_W, 1}, stk, stk);
-               }
-               else
-                  AS_Stmnt({IR::Code::Move_W, fracWords}, stk, 0);
-            }
-
-            AS_Stmnt({code,             divWords},  stk, stk, stk);
-            AS_Stmnt({IR::Code::Move_W, divWords},  nul, stk);
-            AS_Stmnt({IR::Code::Move_W, fracWords}, nul, stk);
-
-            AS_Stmnt({IR::Code::Retn, stmnt->op.size}, stk);
-
-            #undef AS_Stmnt
-
-            throw ResetFunc();
+               addFunc_DivK_W(stmnt->op.size);
          }
 
          //

@@ -26,7 +26,6 @@ if(GDCC_BC_ZDACS)
       Info/Stmnt/Call.cpp
       Info/Stmnt/Cmp.cpp
       Info/Stmnt/Div.cpp
-      Info/Stmnt/InvU.cpp
       Info/Stmnt/Jump.cpp
       Info/Stmnt/Move.cpp
       Info/Stmnt/Mul.cpp

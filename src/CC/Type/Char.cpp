@@ -57,11 +57,21 @@ namespace GDCC
       //
       bool Type_Char::getSizeBitsS() const
       {
-         switch(Platform::TargetCur)
-         {
-         case Platform::Target::MageCraft: return false;
-         default:                          return true;
-         }
+         if(Platform::IsFamily_ZDACS())
+            return true;
+
+         return false;
+      }
+
+      //
+      // Type_Char::isTypeSubWord
+      //
+      bool Type_Char::isTypeSubWord() const
+      {
+         if(Platform::IsFamily_ZDACS())
+            return false;
+
+         return true;
       }
    }
 }

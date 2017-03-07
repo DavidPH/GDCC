@@ -12,6 +12,8 @@
 
 #include "BC/Info.hpp"
 
+#include "Core/Exception.hpp"
+
 #include "IR/Program.hpp"
 
 #include <iostream>
@@ -519,8 +521,17 @@ namespace GDCC
          {
             auto end   = static_cast<IR::Statement *>(block->end());
                  stmnt = static_cast<IR::Statement *>(block->begin());
-            for(; stmnt != end; stmnt = stmnt->next)
-               trStmnt();
+            while(stmnt != end)
+            {
+               try
+               {
+                  trStmnt();
+                  stmnt = stmnt->next;
+               }
+               catch(ResetStmnt const &)
+               {
+               }
+            }
             stmnt = nullptr;
          }
          catch(...)
@@ -592,6 +603,59 @@ namespace GDCC
       void Info::trStr(IR::StrEnt &str_)
       {
          TryPointer(trStr, str);
+      }
+
+      //
+      // Info::getFixedInfo
+      //
+      FixedInfo Info::getFixedInfo(Core::FastU n, bool s)
+      {
+         FixedInfo fi;
+
+         fi.bitsS = s;
+         fi.bitsF = n <= 1 ? 16 : 32;
+         fi.bitsI = n * 32 - fi.bitsF - s;
+
+         fi.wordsF = (fi.bitsF + 31) / 32;
+         fi.wordsI = (fi.bitsI + 31) / 32;
+
+         return fi;
+      }
+
+      //
+      // Info::getFloatInfo
+      //
+      FloatInfo Info::getFloatInfo(Core::FastU n)
+      {
+         FloatInfo fi;
+
+         // TODO: Somehow not assume a 32 bit word.
+
+         switch(n)
+         {
+         case  1: fi.bitsExp =  8; break;
+         case  2: fi.bitsExp = 11; break;
+         case  3:
+         case  4: fi.bitsExp = 15; break;
+         case  5:
+         case  6:
+         case  7:
+         case  8: fi.bitsExp = 19; break;
+         default: fi.bitsExp = 23; break;
+         }
+
+         fi.bitsMan     = 31 - fi.bitsExp;
+         fi.bitsManFull = n * 32 - fi.bitsExp - 1;
+         fi.bitsSig     = 1;
+
+         fi.maxExp  = (Core::FastU(1) << fi.bitsExp) - 1;
+         fi.offExp  = fi.maxExp / 2;
+
+         fi.maskExp = fi.maxExp << fi.bitsMan;
+         fi.maskMan = (Core::FastU(1) << fi.bitsMan) - 1;
+         fi.maskSig = 0x80000000;
+
+         return fi;
       }
 
       //

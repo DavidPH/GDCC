@@ -249,7 +249,7 @@ namespace GDCC
                else
                   putCode(Code::Call_Lit);
 
-               putWord(GetWord(stmnt->args[0].aLit));
+               putWord(getWord(stmnt->args[0].aLit));
 
                if(ret)
                   putStmntPushRetn(ret - 1);
@@ -277,7 +277,7 @@ namespace GDCC
          void Info::putStmnt_Casm()
          {
             for(auto const &arg : stmnt->args)
-               putWord(GetWord(arg.aLit));
+               putWord(getWord(arg.aLit));
          }
 
          //
@@ -287,7 +287,7 @@ namespace GDCC
          {
             putCode(Code::Cnat);
             putWord(stmnt->args.size() - 1);
-            putWord(GetWord(stmnt->args[0].aLit));
+            putWord(getWord(stmnt->args[0].aLit));
          }
 
          //
@@ -441,10 +441,10 @@ namespace GDCC
                   for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 1, stmnt->args.end()))
                   {
                      putCode(Code::Push_Lit);
-                     putWord(GetWord(arg.aLit));
+                     putWord(getWord(arg.aLit));
                   }
 
-                  putCode(Code::Cspe_5R1, GetWord(stmnt->args[0].aLit));
+                  putCode(Code::Cspe_5R1, getWord(stmnt->args[0].aLit));
 
                   break;
                }
@@ -459,14 +459,14 @@ namespace GDCC
                case 5: putCode(Code::Cspe_5L); break;
                }
 
-               putWord(GetWord(stmnt->args[0].aLit));
+               putWord(getWord(stmnt->args[0].aLit));
 
                // Dummy arg.
                if(argc == 0)
                   putWord(0);
 
                for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 1, stmnt->args.end()))
-                  putWord(GetWord(arg.aLit));
+                  putWord(getWord(arg.aLit));
 
                break;
 
@@ -496,7 +496,7 @@ namespace GDCC
                   }
                }
 
-               putWord(GetWord(stmnt->args[0].aLit));
+               putWord(getWord(stmnt->args[0].aLit));
 
                break;
 
@@ -515,7 +515,7 @@ namespace GDCC
             if(func->allocAut)
             {
                putCode(Code::Push_LocReg, getStkPtrIdx());
-               putCode(Code::Call_Nul,    GetWord(resolveGlyph("___GDCC__Plsf")));
+               putCode(Code::Call_Nul,    getWord(resolveGlyph("___GDCC__Plsf")));
             }
 
             switch(func->ctype)

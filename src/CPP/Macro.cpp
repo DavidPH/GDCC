@@ -506,6 +506,7 @@ namespace GDCC
          {
             PlatformCase(Format, None);
             PlatformCase(Format, ACSE);
+            PlatformCase(Format, DGE_NTS);
             PlatformCase(Format, MgC_NTS);
          }
 
@@ -513,6 +514,7 @@ namespace GDCC
          switch(Platform::TargetCur)
          {
             PlatformCase(Target, None);
+            PlatformCase(Target, Doominati);
             PlatformCase(Target, MageCraft);
             PlatformCase(Target, ZDoom);
             PlatformCase(Target, Zandronum);

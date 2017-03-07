@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -74,6 +74,7 @@ namespace GDCC
          std::size_t getNext() const {return next;}
 
          std::size_t size() const {return len;}
+         std::size_t size0() const {return len0;}
          std::size_t size16() const;
          std::size_t size32() const;
 
@@ -87,6 +88,7 @@ namespace GDCC
 
          char const *const str;
          std::size_t const len;
+         std::size_t const len0;
          std::size_t const hash;
          std::size_t const next;
 
@@ -139,6 +141,7 @@ namespace GDCC
          String getLower() const;
 
          std::size_t size() const {return DataV[idx].size();}
+         std::size_t size0() const {return DataV[idx].size0();}
          std::size_t size16() const {return DataV[idx].size16();}
          std::size_t size32() const {return DataV[idx].size32();}
 

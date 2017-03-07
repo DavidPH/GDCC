@@ -52,7 +52,10 @@ namespace GDCC
             case IR::Code::AddI_W:
             case IR::Code::AddU_W: trStmnt_AddU_W(); break;
 
-            case IR::Code::AndU_W: trStmntBitwise(); break;
+            case IR::Code::BAnd_W: trStmntBitwise(); break;
+            case IR::Code::BNot_W: trStmnt_BNot_W(); break;
+            case IR::Code::BOrI_W: trStmntBitwise(); break;
+            case IR::Code::BOrX_W: trStmntBitwise(); break;
 
             case IR::Code::Bclo_W: trStmnt_Bclz_W(); break;
             case IR::Code::Bclz_W: trStmnt_Bclz_W(); break;
@@ -121,8 +124,6 @@ namespace GDCC
                trStmntStk3(stmnt->op.size, stmnt->op.size, true);
                break;
 
-            case IR::Code::InvU_W: trStmnt_InvU_W(); break;
-
             case IR::Code::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
             case IR::Code::Jcnd_Tab: trStmnt_Jcnd_Tab(); break;
             case IR::Code::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
@@ -143,6 +144,8 @@ namespace GDCC
                trStmntStk3(1, stmnt->op.size, false);
                break;
 
+            case IR::Code::LNot: trStmntStk2(1, stmnt->op.size); break;
+
             case IR::Code::ModI_W: trStmnt_ModI_W(); break;
             case IR::Code::ModU_W: trStmnt_ModU_W(); break;
 
@@ -154,11 +157,6 @@ namespace GDCC
 
             case IR::Code::NegF_W: trStmntStk2(stmnt->op.size, stmnt->op.size); break;
             case IR::Code::NegI_W: trStmnt_NegI_W(); break;
-
-            case IR::Code::NotU_W: trStmntStk2(1, stmnt->op.size); break;
-
-            case IR::Code::OrIU_W: trStmntBitwise(); break;
-            case IR::Code::OrXU_W: trStmntBitwise(); break;
 
             case IR::Code::Pltn: trStmntStk2(1, 1); break;
 
@@ -184,33 +182,6 @@ namespace GDCC
                   << ": cannot translate Code for ZDACS: " << stmnt->op << '\n';
                throw EXIT_FAILURE;
             }
-         }
-
-         //
-         // Info::trStmntStk2
-         //
-         void Info::trStmntStk2(Core::FastU sizeDst, Core::FastU sizeSrc)
-         {
-            CheckArgC(stmnt, 2);
-
-            moveArgStk_dst(stmnt->args[0], sizeDst);
-            moveArgStk_src(stmnt->args[1], sizeSrc);
-         }
-
-         //
-         // Info::trStmntStk3
-         //
-         void Info::trStmntStk3(Core::FastU sizeDst, Core::FastU sizeSrc, bool ordered)
-         {
-            CheckArgC(stmnt, 3);
-
-            if(ordered && stmnt->args[1].a != IR::ArgBase::Stk &&
-               stmnt->args[2].a == IR::ArgBase::Stk)
-               throw Core::ExceptStr(stmnt->pos, "trStmntStk3 disorder");
-
-            moveArgStk_dst(stmnt->args[0], sizeDst);
-            if(moveArgStk_src(stmnt->args[1], sizeSrc)) return;
-            moveArgStk_src(stmnt->args[2], sizeSrc);
          }
       }
    }

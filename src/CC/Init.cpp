@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -745,6 +745,8 @@ namespace GDCC
          auto subItr = subs.begin();
          SubInit(typeS, subItr, offset, pos);
 
+         subTotal = subs.size();
+
          for(auto const &sub : subs)
          {
             if(sub.anon)
@@ -752,8 +754,6 @@ namespace GDCC
                if(auto init = dynamic_cast<Init_Struct *>(&*sub.init))
                   subTotal += init->subTotal;
             }
-            else
-               ++subTotal;
          }
       }
 
@@ -769,6 +769,8 @@ namespace GDCC
             if(sub.name == name)
                return subInit = index;
 
+            ++index;
+
             if(sub.anon)
             {
                if(auto init = dynamic_cast<Init_Struct *>(&*sub.init))
@@ -780,8 +782,6 @@ namespace GDCC
                      return index + subIdx;
                }
             }
-            else
-               ++index;
          }
 
          return -1;
@@ -794,6 +794,9 @@ namespace GDCC
       {
          for(auto &sub : subs)
          {
+            if(!index--)
+               return &sub;
+
             if(sub.anon)
             {
                if(auto init = dynamic_cast<Init_Struct *>(&*sub.init))
@@ -804,8 +807,6 @@ namespace GDCC
                      index -= init->subTotal;
                }
             }
-            else if(!index--)
-               return &sub;
          }
 
          return nullptr;
@@ -825,8 +826,18 @@ namespace GDCC
       //
       std::size_t Init_Struct::nextSub(std::size_t index) const
       {
-         auto mem = getMem(index);
-         return index + (mem ? mem->step : 1);
+         if(auto mem = getMem(index))
+         {
+            Init_Struct *init;
+            if(mem->anon && (init = dynamic_cast<Init_Struct *>(&*mem->init)))
+               index += init->subTotal + 1;
+            else
+               index += mem->step;
+         }
+         else
+            ++index;
+
+         return index;
       }
 
       //

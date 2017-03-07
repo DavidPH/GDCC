@@ -13,6 +13,7 @@
 #ifndef GDCC__BC__Info_H__
 #define GDCC__BC__Info_H__
 
+#include "../Core/Counter.hpp"
 #include "../Core/Number.hpp"
 
 #include <ostream>
@@ -44,6 +45,10 @@ namespace GDCC
       class Block;
       class DJump;
       class Exp;
+      class Exp_Array;
+      class Exp_Assoc;
+      class Exp_Tuple;
+      class Exp_Union;
       class Function;
       class Glyph;
       class Object;
@@ -60,7 +65,11 @@ namespace GDCC
       class Statement;
       class StrEnt;
       class Type;
+      class Type_Assoc;
       class Type_Fixed;
+      class Type_Point;
+      class Type_Tuple;
+      class Type_Union;
    }
 
    namespace BC
@@ -68,6 +77,40 @@ namespace GDCC
       class Info;
 
       typedef Info InfoBase;
+
+      //
+      // FixedInfo
+      //
+      class FixedInfo
+      {
+      public:
+         Core::FastU bitsF;
+         Core::FastU bitsI;
+         Core::FastU bitsS;
+
+         Core::FastU wordsF;
+         Core::FastU wordsI;
+      };
+
+      //
+      // FloatInfo
+      //
+      class FloatInfo
+      {
+      public:
+         Core::FastU bitsExp;
+         Core::FastU bitsMan;
+         Core::FastU bitsManFull;
+         Core::FastU bitsSig;
+
+         Core::FastU maskExp;
+         Core::FastU maskMan;
+         Core::FastU maskSig;
+
+         Core::FastU maxExp;
+
+         Core::FastU offExp;
+      };
 
       //
       // Info
@@ -103,7 +146,20 @@ namespace GDCC
          void tr(IR::Program &prog);
 
       protected:
+         using AddFunc = void (Info::*)(Core::FastU);
+         using IRExpCPtr = Core::CounterPtr<IR::Exp const>;
+
          class ResetFunc {};
+         class ResetStmnt {};
+
+         class WordValue
+         {
+         public:
+            IRExpCPtr   exp;
+            Core::FastU val;
+         };
+
+         using WordArray = Core::Array<WordValue>;
 
 
          virtual void gen();
@@ -188,10 +244,89 @@ namespace GDCC
          virtual void trStr() {}
                  void trStr(IR::StrEnt &str);
 
-         bool moveArgStk_dst(IR::Arg &idx, Core::FastU sizeMove);
-         bool moveArgStk_src(IR::Arg &idx, Core::FastU sizeMove);
+         void addFunc(Core::String name, Core::FastU retrn, Core::FastU param);
+
+         void addFunc_AddF_W(Core::FastU n);
+         void addFunc_AddU_W(Core::FastU n);
+         void addFunc_Bclo_W(Core::FastU n);
+         void addFunc_Bclz_W(Core::FastU n);
+         void addFunc_CmpF_EQ_W(Core::FastU n);
+         void addFunc_CmpF_GE_W(Core::FastU n);
+         void addFunc_CmpF_GT_W(Core::FastU n);
+         void addFunc_CmpF_LE_W(Core::FastU n);
+         void addFunc_CmpF_LT_W(Core::FastU n);
+         void addFunc_CmpF_NE_W(Core::FastU n);
+         void addFunc_CmpI_GE_W(Core::FastU n);
+         void addFunc_CmpI_GT_W(Core::FastU n);
+         void addFunc_CmpI_LE_W(Core::FastU n);
+         void addFunc_CmpI_LT_W(Core::FastU n);
+         void addFunc_CmpU_EQ_W(Core::FastU n);
+         void addFunc_CmpU_GE_W(Core::FastU n);
+         void addFunc_CmpU_GT_W(Core::FastU n);
+         void addFunc_CmpU_LE_W(Core::FastU n);
+         void addFunc_CmpU_LT_W(Core::FastU n);
+         void addFunc_CmpU_NE_W(Core::FastU n);
+         void addFunc_DiXI_W(Core::FastU n);
+         void addFunc_DiXU_W(Core::FastU n);
+         void addFunc_DivF_W(Core::FastU n);
+         void addFunc_DivK_W(Core::FastU n);
+         void addFunc_DivX_W(Core::FastU n);
+         void addFunc_MuXU_W(Core::FastU n);
+         void addFunc_MulF_W(Core::FastU n);
+         void addFunc_MulK_W(Core::FastU n);
+         void addFunc_MulU_W(Core::FastU n);
+         void addFunc_MulX_W(Core::FastU n);
+         void addFunc_NegI_W(Core::FastU n);
+         void addFunc_ShLF_W(Core::FastU n);
+         void addFunc_ShLU_W(Core::FastU n);
+         void addFunc_ShRF_W(Core::FastU n);
+         void addFunc_ShRI_W(Core::FastU n);
+         void addFunc_ShRU_W(Core::FastU n);
+         void addFunc_SubF_W(Core::FastU n);
+         void addFunc_SubU_W(Core::FastU n);
+
+         virtual FixedInfo getFixedInfo(Core::FastU n, bool s);
+
+         // Default behavior is to assume IEEE float layout and 32-bit word.
+         virtual FloatInfo getFloatInfo(Core::FastU n);
+
+         IR::Function *getFuncDefn(Core::String name, Core::FastU retrn,
+            Core::FastU param, Core::FastU localReg, char const *file);
+
+         Core::String getFuncName(IR::OpCode op);
+
+         Core::FastU getWord(IR::Arg_Lit const &arg, Core::FastU w = 0);
+         Core::FastU getWord(IR::Exp const *exp, Core::FastU w = 0);
+         virtual Core::FastU getWord(Core::Origin pos, IR::Value const &val, Core::FastU w = 0);
+         virtual Core::FastU getWord_Fixed(IR::Value_Fixed const &val, Core::FastU w);
+         virtual Core::FastU getWord_Float(IR::Value_Float const &val, Core::FastU w);
+
+         Core::FastU getWordCount(IR::Type const &type);
+         Core::FastU getWordCount_Assoc(IR::Type_Assoc const &type);
+         virtual Core::FastU getWordCount_Point(IR::Type_Point const &type);
+         Core::FastU getWordCount_Tuple(IR::Type_Tuple const &type);
+         Core::FastU getWordCount_Union(IR::Type_Union const &type);
+
+         WordArray getWords(IR::Arg_Lit const &arg);
+         WordArray getWords(IR::Exp const *exp);
+         WordArray getWords(Core::Origin pos, IR::Value const &val);
+         WordArray getWords_Array(IR::Exp_Array const *exp);
+         WordArray getWords_Assoc(IR::Exp_Assoc const *exp);
+         WordArray getWords_Tuple(IR::Exp_Tuple const *exp);
+         WordArray getWords_Union(IR::Exp_Union const *exp);
+
+         void putData(char const *data, std::size_t size);
+
+         void moveArgStk_dst(IR::Arg &idx, Core::FastU sizeMove);
+         void moveArgStk_src(IR::Arg &idx, Core::FastU sizeMove);
+         void moveArgStkB_dst(IR::Arg &idx, Core::FastU sizeMove);
+         void moveArgStkB_src(IR::Arg &idx, Core::FastU sizeMove);
 
          bool optStmnt_Cspe_Drop();
+
+         void trStmntStk2(Core::FastU sizeDst, Core::FastU sizeSrc);
+         void trStmntStk3(Core::FastU sizeDst, Core::FastU sizeSrc, bool ordered);
+         bool trStmntShift(Core::FastU size, bool moveLit);
 
          IR::Block     *block;
          IR::DJump     *djump;
@@ -209,6 +344,16 @@ namespace GDCC
          static void CheckArgB(IR::Statement *stmnt, std::size_t a, IR::AddrBase b);
 
          static void CheckArgC(IR::Statement *stmnt, std::size_t c);
+
+      private:
+         void addFunc_AddU_W(Core::FastU n, IR::Code codeAdd, IR::Code codeAdX);
+         void addFunc_Bclz_W(Core::FastU n, IR::Code code, Core::FastU skip);
+         void addFunc_CmpF_W(Core::FastU n, IR::Code code, IR::Code codePos, IR::Code codeNeg);
+         void addFunc_CmpU_EQ_W(Core::FastU n, IR::Code codeCmp, IR::Code codeAnd);
+         void addFunc_CmpU_GE_W(Core::FastU n, IR::Code codeCmpHi, IR::Code codeCmpLo);
+         void addFunc_DivX_W(Core::FastU n, IR::Code code, IR::Code codeDiv, bool sign);
+         void addFunc_ShLF_W(Core::FastU n, IR::Code code, bool left);
+         void addFunc_ShLU_W(Core::FastU n, IR::Code code, bool left, bool sign);
       };
    }
 }

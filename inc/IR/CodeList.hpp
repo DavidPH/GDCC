@@ -23,7 +23,7 @@
 GDCC_IR_CodeList(Nop)
 
 // AdX* dst lop rop
-// AdX* dst lop rop carry
+// AdX* dst carry lop rop
 GDCC_IR_CodeList(AdXU_W)
 
 // Add* dst lop rop
@@ -31,8 +31,17 @@ GDCC_IR_CodeList(AddF_W)
 GDCC_IR_CodeList(AddI_W)
 GDCC_IR_CodeList(AddU_W)
 
-// And* dst lop rop
-GDCC_IR_CodeList(AndU_W)
+// BAnd dst lop rop
+GDCC_IR_CodeList(BAnd_W)
+
+// BNot dst src
+GDCC_IR_CodeList(BNot_W)
+
+// BOrI dst lop rop
+GDCC_IR_CodeList(BOrI_W)
+
+// BOrX dst lop rop
+GDCC_IR_CodeList(BOrX_W)
 
 // Bclo dst src (Bit, Count Leading Ones)
 GDCC_IR_CodeList(Bclo_W)
@@ -49,7 +58,7 @@ GDCC_IR_CodeList(Bget_W)
 // Bset dst src width off (Bitfield, Set)
 GDCC_IR_CodeList(Bset_W)
 
-// Call src ret arg...
+// Call src arg...
 GDCC_IR_CodeList(Call)
 
 // Casm src arg...
@@ -75,20 +84,20 @@ GDCC_IR_CodeList(CmpU_LE_W)
 GDCC_IR_CodeList(CmpU_LT_W)
 GDCC_IR_CodeList(CmpU_NE_W)
 
-// Cnat src ret arg...
+// Cnat src arg...
 GDCC_IR_CodeList(Cnat)
 
 // Copy lop rop
 GDCC_IR_CodeList(Copy_W)
 
-// Cscr_* src ret arg...
+// Cscr_* src arg...
 // Integer/String Asynchronous/Synchronous
 GDCC_IR_CodeList(Cscr_IA)
 GDCC_IR_CodeList(Cscr_IS)
 GDCC_IR_CodeList(Cscr_SA)
 GDCC_IR_CodeList(Cscr_SS)
 
-// Cspe src ret arg...
+// Cspe src arg...
 GDCC_IR_CodeList(Cspe)
 
 // DiX* dst lop rop
@@ -101,9 +110,6 @@ GDCC_IR_CodeList(DivI_W)
 GDCC_IR_CodeList(DivK_W)
 GDCC_IR_CodeList(DivU_W)
 GDCC_IR_CodeList(DivX_W)
-
-// Inv* dst src
-GDCC_IR_CodeList(InvU_W)
 
 // Jcnd_Nil src lab
 GDCC_IR_CodeList(Jcnd_Nil)
@@ -130,6 +136,9 @@ GDCC_IR_CodeList(Jump)
 // LAnd dst lop rop
 GDCC_IR_CodeList(LAnd)
 
+// LNot dst src
+GDCC_IR_CodeList(LNot)
+
 // LOrI dst lop rop
 GDCC_IR_CodeList(LOrI)
 
@@ -138,6 +147,7 @@ GDCC_IR_CodeList(ModI_W)
 GDCC_IR_CodeList(ModU_W)
 
 // Move dst src
+GDCC_IR_CodeList(Move_B)
 GDCC_IR_CodeList(Move_W)
 
 // MuX* dst lop rop
@@ -153,15 +163,6 @@ GDCC_IR_CodeList(MulX_W)
 // Neg* dst src
 GDCC_IR_CodeList(NegF_W)
 GDCC_IR_CodeList(NegI_W)
-
-// Not* dst src
-GDCC_IR_CodeList(NotU_W)
-
-// OrI* dst lop rop
-GDCC_IR_CodeList(OrIU_W)
-
-// OrX* dst lop rop
-GDCC_IR_CodeList(OrXU_W)
 
 // Pltn dst src (Pointer, Local to Near)
 GDCC_IR_CodeList(Pltn)

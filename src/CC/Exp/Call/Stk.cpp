@@ -93,6 +93,7 @@ namespace GDCC
          Core::FastU  retWords;
          Core::FastU  stkWords  = 0;
          Core::FastU  vaWords   = 0;
+         Core::FastU  wordBytes = Platform::GetWordBytes();
 
          bool addrPre = IsAddrPre(callType);
 
@@ -126,7 +127,7 @@ namespace GDCC
             if(!autWords)
                autWords = 1;
 
-            ctx.block.addStatementArgs({IR::Code::Pltn, 0}, IR::Arg_Stk(), autWords);
+            ctx.block.addStatementArgs({IR::Code::Pltn, 0}, IR::Arg_Stk(), autWords * wordBytes);
 
             ++stkWords;
          }
@@ -161,7 +162,7 @@ namespace GDCC
                   ->getTypePointer()->getIRType().tPoint;
 
                IR::Value_Point autVal =
-                  {autItr, IR::ArgBase::Aut, Core::STR_, std::move(autType)};
+                  {autItr * wordBytes, IR::ArgBase::Aut, Core::STR_, std::move(autType)};
 
                auto autExp = IR::ExpCreate_Value(std::move(autVal), pos);
 

@@ -253,6 +253,7 @@ namespace GDCC
          virtual bool isTypeSaturate() const {return false;}
          virtual bool isTypeSizeVM()   const {return false;}
          virtual bool isTypeStrEnt()   const {return false;}
+         virtual bool isTypeSubWord()  const {return false;}
          virtual bool isTypeVM()       const {return false;}
          virtual bool isTypeVoid()     const {return false;}
 

@@ -300,7 +300,7 @@ namespace GDCC
                *out << "addu_stk" << '\0' << '(' << '\0' << ')' << '\0';
                break;
 
-            case IR::Code::AndU_W:
+            case IR::Code::BAnd_W:
                *out << "andu_stk" << '\0' << '(' << '\0' << ')' << '\0';
                break;
 
@@ -350,16 +350,16 @@ namespace GDCC
                putStmnt_Jump();
                break;
 
+            case IR::Code::LNot:
+               *out << "notu_stk" << '\0' << '(' << '\0' << ')' << '\0';
+               break;
+
             case IR::Code::Move_W:
                putStmnt_Move_W();
                break;
 
             case IR::Code::MulU_W:
                *out << "mulu_stk" << '\0' << '(' << '\0' << ')' << '\0';
-               break;
-
-            case IR::Code::NotU_W:
-               *out << "notu_stk" << '\0' << '(' << '\0' << ')' << '\0';
                break;
 
             case IR::Code::Retn:

@@ -39,25 +39,6 @@ namespace GDCC
          enum class Code;
 
          //
-         // FloatInfo
-         //
-         class FloatInfo
-         {
-         public:
-            Core::FastU bitsExp;
-            Core::FastU bitsMan;
-            Core::FastU bitsManFull;
-
-            Core::FastU maskExp;
-            Core::FastU maskMan;
-            Core::FastU maskSig;
-
-            Core::FastU maxExp;
-
-            Core::FastU offExp;
-         };
-
-         //
          // Info
          //
          class Info : public InfoBase
@@ -147,6 +128,7 @@ namespace GDCC
             virtual void genStmnt();
             void genStmnt_AdXU_W();
             void genStmnt_AddU_W();
+            void genStmnt_BNot_W();
             void genStmnt_Bclz_W();
             void genStmnt_Bges_W();
             void genStmnt_Bget_W();
@@ -163,7 +145,6 @@ namespace GDCC
             void genStmnt_DivI_W();
             void genStmnt_DivU_W();
             void genStmnt_DivX_W();
-            void genStmnt_InvU_W();
             void genStmnt_Jcnd_Nil();
             void genStmnt_Jcnd_Tab();
             void genStmnt_Jcnd_Tru();
@@ -271,7 +252,7 @@ namespace GDCC
             virtual void preStmnt();
             void preStmnt_AdXU_W();
             void preStmnt_AddF_W();
-            void preStmnt_AddU_W(IR::Code code);
+            void preStmnt_AddU_W();
             void preStmnt_Bclz_W(bool ones);
             void preStmnt_CmpF_EQ_W();
             void preStmnt_CmpF_GE_W();
@@ -279,18 +260,16 @@ namespace GDCC
             void preStmnt_CmpF_LE_W();
             void preStmnt_CmpF_LT_W();
             void preStmnt_CmpF_NE_W();
-            void preStmnt_CmpF_W(IR::Code codeCmpPos, IR::Code codeCmpNeg);
             void preStmnt_CmpI_GE_W();
             void preStmnt_CmpI_GT_W();
             void preStmnt_CmpI_LE_W();
             void preStmnt_CmpI_LT_W();
-            void preStmnt_CmpU_EQ_W(IR::Code codeCmp, IR::Code codeAnd);
+            void preStmnt_CmpU_EQ_W(IR::Code codeCmp);
             void preStmnt_CmpU_GE_W();
             void preStmnt_CmpU_GT_W();
             void preStmnt_CmpU_LE_W();
             void preStmnt_CmpU_LT_W();
             void preStmnt_CmpU_W1(IR::Code code, IR::Code codeCmp, bool resGT, bool resLT);
-            void preStmnt_CmpU_Wn(IR::Code codeCmpHi, IR::Code codeCmpLo);
             void preStmnt_DiXI_W();
             void preStmnt_DiXU_W();
             void preStmnt_DiXU_W1();
@@ -307,6 +286,7 @@ namespace GDCC
             void preStmnt_ShLU_W();
             void preStmnt_SuXU_W();
             void preStmnt_SubF_W();
+            void preStmnt_SubU_W();
 
             void preStmntCall(Core::FastU retrn, Core::FastU param);
             void preStmntCall(Core::String name, Core::FastU retrn, Core::FastU param);
@@ -351,8 +331,6 @@ namespace GDCC
             void putCode(Code code, Core::FastU arg0);
             void putCode(Code code, Core::FastU arg0, Core::FastU);
 
-            void putData(char const *s, std::size_t len);
-
             using InfoBase::putFunc;
             virtual void putFunc();
 
@@ -364,6 +342,7 @@ namespace GDCC
             virtual void putStmnt();
             void putStmnt_AdXU_W();
             void putStmnt_AddU_W();
+            void putStmnt_BNot_W();
             void putStmnt_Bclz_W(bool ones = false);
             void putStmnt_Bges_W();
             void putStmnt_Bget_W();
@@ -383,13 +362,13 @@ namespace GDCC
             void putStmnt_DivI_W();
             void putStmnt_DivU_W();
             void putStmnt_DivX_W();
-            void putStmnt_InvU_W();
             void putStmnt_Jcnd_Nil();
             void putStmnt_Jcnd_Tab();
             void putStmnt_Jcnd_Tru();
             void putStmnt_Jfar();
             void putStmnt_Jset();
             void putStmnt_Jump();
+            void putStmnt_LNot();
             void putStmnt_ModI_W();
             void putStmnt_ModU_W();
             void putStmnt_Move_W();
@@ -397,7 +376,6 @@ namespace GDCC
             void putStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr, Code code);
             void putStmnt_NegF_W();
             void putStmnt_NegI_W();
-            void putStmnt_NotU_W();
             void putStmnt_Pltn();
             void putStmnt_Retn();
             void putStmnt_ShLF_W();
@@ -448,6 +426,7 @@ namespace GDCC
             virtual void trStmnt();
             void trStmnt_AdXU_W();
             void trStmnt_AddU_W();
+            void trStmnt_BNot_W();
             void trStmnt_Bclz_W();
             void trStmnt_Bget_W();
             void trStmnt_Bset_W();
@@ -462,7 +441,6 @@ namespace GDCC
             void trStmnt_Cspe();
             void trStmnt_DiXI_W();
             void trStmnt_DiXU_W();
-            void trStmnt_InvU_W();
             void trStmnt_Jcnd_Nil();
             void trStmnt_Jcnd_Tab();
             void trStmnt_Jcnd_Tru();
@@ -484,9 +462,6 @@ namespace GDCC
             void trStmnt_Swap_W();
 
             void trStmntBitwise();
-            bool trStmntShift(bool moveLit = false);
-            void trStmntStk2(Core::FastU sizeDst, Core::FastU sizeSrc);
-            void trStmntStk3(Core::FastU sizeDst, Core::FastU sizeSrc, bool ordered);
 
             std::unique_ptr<Core::NumberAllocMerge<Core::FastU>> allocDJump;
             std::unordered_map<IR::CallType, Core::NumberAllocMerge<Core::FastU>> allocFunc;
@@ -524,16 +499,9 @@ namespace GDCC
 
             static Core::FastU CodeBase();
 
-            static FloatInfo GetFloatInfo(Core::FastU words);
-
             static Core::FastU GetParamMax(IR::CallType call);
 
             static Core::FastU GetScriptValue(IR::Function const &script);
-
-            static Core::FastU GetWord_Fixed(IR::Value_Fixed const &val, Core::FastU w);
-            static Core::FastU GetWord_Float(IR::Value_Float const &val, Core::FastU w);
-            static Core::FastU GetWord(IR::Arg_Lit const &arg, Core::FastU w = 0);
-            static Core::FastU GetWord(IR::Exp const *exp, Core::FastU w = 0);
 
             static bool IsNull(IR::Value_Funct const &val);
             static bool IsNull(IR::Value_StrEn const &val);

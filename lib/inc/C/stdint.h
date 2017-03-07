@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2016 David Hill
+// Copyright(C) 2014-2017 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -22,6 +22,18 @@
 // Macros                                                                     |
 //
 
+#if !__GDCC_Family__ZDACS__
+#define  INT8_MIN (-0x7F-1)
+#define  INT8_MAX ( 0x7F  )
+#define UINT8_MAX ( 0xFFU )
+#endif
+
+#if !__GDCC_Family__ZDACS__
+#define  INT16_MIN (-0x7FFF-1)
+#define  INT16_MAX ( 0x7FFF  )
+#define UINT16_MAX ( 0xFFFFU )
+#endif
+
 #define  INT32_MIN (-0x7FFFFFFF-1)
 #define  INT32_MAX ( 0x7FFFFFFF  )
 #define UINT32_MAX ( 0xFFFFFFFFU )
@@ -34,13 +46,25 @@
 #define  INT96_MAX ( 0x7FFFFFFFFFFFFFFFFFFFFFFF  )
 #define UINT96_MAX ( 0xFFFFFFFFFFFFFFFFFFFFFFFFU )
 
+#if __GDCC_Family__ZDACS__
 #define  INT_LEAST8_MIN (-0x7FFFFFFF-1)
 #define  INT_LEAST8_MAX ( 0x7FFFFFFF  )
 #define UINT_LEAST8_MAX ( 0xFFFFFFFFU )
+#else
+#define  INT_LEAST8_MIN (-0x7F-1)
+#define  INT_LEAST8_MAX ( 0x7F  )
+#define UINT_LEAST8_MAX ( 0xFFU )
+#endif
 
+#if __GDCC_Family__ZDACS__
 #define  INT_LEAST16_MIN (-0x7FFFFFFF-1)
 #define  INT_LEAST16_MAX ( 0x7FFFFFFF  )
 #define UINT_LEAST16_MAX ( 0xFFFFFFFFU )
+#else
+#define  INT_LEAST16_MIN (-0x7FFF-1)
+#define  INT_LEAST16_MAX ( 0x7FFF  )
+#define UINT_LEAST16_MAX ( 0xFFFFU )
+#endif
 
 #define  INT_LEAST32_MIN (-0x7FFFFFFF-1)
 #define  INT_LEAST32_MAX ( 0x7FFFFFFF  )
@@ -129,6 +153,10 @@
 //
 // intN_t
 //
+#if !__GDCC_Family__ZDACS__
+typedef signed          char int8_t;
+typedef signed     short int int16_t;
+#endif
 typedef signed           int int32_t;
 typedef signed      long int int64_t;
 typedef signed long long int int96_t;
@@ -136,6 +164,10 @@ typedef signed long long int int96_t;
 //
 // uintN_t
 //
+#if !__GDCC_Family__ZDACS__
+typedef unsigned          char uint8_t;
+typedef unsigned     short int uint16_t;
+#endif
 typedef unsigned           int uint32_t;
 typedef unsigned      long int uint64_t;
 typedef unsigned long long int uint96_t;
@@ -143,8 +175,8 @@ typedef unsigned long long int uint96_t;
 //
 // int_leastN_t
 //
-typedef signed           int int_least8_t;
-typedef signed           int int_least16_t;
+typedef signed          char int_least8_t;
+typedef signed     short int int_least16_t;
 typedef signed           int int_least32_t;
 typedef signed      long int int_least64_t;
 typedef signed long long int int_least96_t;
@@ -152,8 +184,8 @@ typedef signed long long int int_least96_t;
 //
 // uint_leastN_t
 //
-typedef unsigned           int uint_least8_t;
-typedef unsigned           int uint_least16_t;
+typedef unsigned          char uint_least8_t;
+typedef unsigned     short int uint_least16_t;
 typedef unsigned           int uint_least32_t;
 typedef unsigned      long int uint_least64_t;
 typedef unsigned long long int uint_least96_t;

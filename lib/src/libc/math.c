@@ -393,9 +393,9 @@ double copysign(double x, double y)
 {
    __asm
    (
-      "AndU_W 1, LocReg(Lit(:x), 1), LocReg(Lit(:x), 1), Lit(0x7FFFFFFF)\n"
-      "AndU_W 1, Stk(), LocReg(Lit(:y), 1), Lit(0x80000000)\n"
-      "OrIU_W 1, LocReg(Lit(:x), 1), LocReg(Lit(:x), 1), Stk()\n"
+      "BAnd_W 1, LocReg(Lit(:x), 1), LocReg(Lit(:x), 1), Lit(0x7FFFFFFF)\n"
+      "BAnd_W 1, Stk(), LocReg(Lit(:y), 1), Lit(0x80000000)\n"
+      "BOrI_W 1, LocReg(Lit(:x), 1), LocReg(Lit(:x), 1), Stk()\n"
    );
 
    return x;
@@ -408,9 +408,9 @@ float copysignf(float x, float y)
 {
    __asm
    (
-      "AndU_W 1, LocReg(Lit(:x), 0), LocReg(Lit(:x), 0), Lit(0x7FFFFFFF)\n"
-      "AndU_W 1, Stk(), LocReg(Lit(:y), 0), Lit(0x80000000)\n"
-      "OrIU_W 1, LocReg(Lit(:x), 0), LocReg(Lit(:x), 0), Stk()\n"
+      "BAnd_W 1, LocReg(Lit(:x), 0), LocReg(Lit(:x), 0), Lit(0x7FFFFFFF)\n"
+      "BAnd_W 1, Stk(), LocReg(Lit(:y), 0), Lit(0x80000000)\n"
+      "BOrI_W 1, LocReg(Lit(:x), 0), LocReg(Lit(:x), 0), Stk()\n"
    );
 
    return x;
@@ -423,9 +423,9 @@ long double copysignl(long double x, long double y)
 {
    __asm
    (
-      "AndU_W 1, LocReg(Lit(:x), 1), LocReg(Lit(:x), 1), Lit(0x7FFFFFFF)\n"
-      "AndU_W 1, Stk(), LocReg(Lit(:y), 1), Lit(0x80000000)\n"
-      "OrIU_W 1, LocReg(Lit(:x), 1), LocReg(Lit(:x), 1), Stk()\n"
+      "BAnd_W 1, LocReg(Lit(:x), 1), LocReg(Lit(:x), 1), Lit(0x7FFFFFFF)\n"
+      "BAnd_W 1, Stk(), LocReg(Lit(:y), 1), Lit(0x80000000)\n"
+      "BOrI_W 1, LocReg(Lit(:x), 1), LocReg(Lit(:x), 1), Stk()\n"
    );
 
    return x;

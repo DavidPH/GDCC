@@ -527,12 +527,6 @@ namespace GDCC
          //
          Core::String Info::getCallName(IR::OpCode op)
          {
-            char        buf[sizeof("___GDCC__Code_XX_Wx")];
-            std::size_t len;
-
-            char const *code;
-            int         size;
-
             // Some codes get mapped to other function names.
             switch(op.code)
             {
@@ -544,29 +538,7 @@ namespace GDCC
             default: break;
             }
 
-            // Convert code to string.
-            switch(op.code)
-            {
-               #define GDCC_IR_CodeList(c) case IR::Code::c: code = #c; break;
-               #include "IR/CodeList.hpp"
-
-            default:
-               throw Core::ExceptStr(stmnt->pos, "bad getCallName code");
-            }
-
-            // Convert size to int.
-            if(op.size > INT_MAX)
-               throw Core::ExceptStr(stmnt->pos, "bad getCallName size");
-
-            size = static_cast<int>(op.size);
-
-            // Format function name.
-            len = std::snprintf(buf, sizeof(buf), "___GDCC__%s%i", code, size);
-
-            if(len >= sizeof(buf))
-               throw Core::ExceptStr(stmnt->pos, "bad getCallName");
-
-            return {buf, len};
+            return getFuncName(op);
          }
 
          //
@@ -1127,27 +1099,6 @@ namespace GDCC
          }
 
          //
-         // Info::GetFloatInfo
-         //
-         FloatInfo Info::GetFloatInfo(Core::FastU words)
-         {
-            FloatInfo fi;
-
-            fi.bitsExp     = words > 1 ? words <= 11 ? words * 2 + 7 : 30 : 8;
-            fi.bitsMan     = 31 - fi.bitsExp;
-            fi.bitsManFull = words * 32 - fi.bitsExp - 1;
-
-            fi.maxExp  = (Core::FastU(1) << fi.bitsExp) - 1;
-            fi.offExp  = fi.maxExp / 2;
-
-            fi.maskExp = fi.maxExp << fi.bitsMan;
-            fi.maskMan = (Core::FastU(1) << fi.bitsMan) - 1;
-            fi.maskSig = 0x80000000;
-
-            return fi;
-         }
-
-         //
          // Info:GetParamMax
          //
          Core::FastU Info::GetParamMax(IR::CallType call)
@@ -1183,98 +1134,6 @@ namespace GDCC
                return ~script.valueInt;
             else
                return script.valueInt;
-         }
-
-         //
-         // Info::GetWord
-         //
-         Core::FastU Info::GetWord(IR::Arg_Lit const &arg, Core::FastU w)
-         {
-            return GetWord(arg.value, arg.off + w);
-         }
-
-         //
-         // Info::GetWord
-         //
-         Core::FastU Info::GetWord(IR::Exp const *exp, Core::FastU w)
-         {
-            auto val = exp->getValue();
-
-            switch(val.v)
-            {
-            case IR::ValueBase::DJump: return w ? 0 : val.vDJump.value;
-            case IR::ValueBase::Fixed: return GetWord_Fixed(val.vFixed, w);
-            case IR::ValueBase::Float: return GetWord_Float(val.vFloat, w);
-            case IR::ValueBase::Funct: return w ? 0 : val.vFunct.value;
-            case IR::ValueBase::Point: return w ? 0 : val.vPoint.value;
-            case IR::ValueBase::StrEn: return w ? 0 : val.vStrEn.value;
-
-            case IR::ValueBase::Empty:
-               throw Core::ExceptStr(exp->pos, "bad GetWord Value: Empty");
-            case IR::ValueBase::Array:
-               throw Core::ExceptStr(exp->pos, "bad GetWord Value: Array");
-            case IR::ValueBase::Assoc:
-               throw Core::ExceptStr(exp->pos, "bad GetWord Value: Assoc");
-            case IR::ValueBase::Tuple:
-               throw Core::ExceptStr(exp->pos, "bad GetWord Value: Tuple");
-            case IR::ValueBase::Union:
-               throw Core::ExceptStr(exp->pos, "bad GetWord Value: Union");
-            }
-
-            throw Core::ExceptStr(exp->pos, "bad GetWord Value");
-         }
-
-         //
-         // GetWord_Fixed
-         //
-         Core::FastU Info::GetWord_Fixed(IR::Value_Fixed const &val, Core::FastU w)
-         {
-            auto valI = val.value;
-
-            valI >>= w * 32;
-            valI  &= 0xFFFFFFFF;
-
-            return Core::NumberCast<Core::FastU>(valI);
-         }
-
-         //
-         // GetWord_Float
-         //
-         Core::FastU Info::GetWord_Float(IR::Value_Float const &val, Core::FastU w)
-         {
-            // Special handling for 0.
-            // TODO: Negative zero. May require replacing mpf_class.
-            if(!val.value) return 0;
-
-            // Convert float to binary string.
-            // The sign and mantissa bits are stored in the string, while the
-            // exponent is stored in exp. The string includes the implicit
-            // leading 1 which will be skipped.
-            std::unique_ptr<char[]> str{new char[val.vtype.bitsI + 3]};
-            mp_exp_t                exp;
-            mpf_get_str(str.get(), &exp, 2, val.vtype.bitsI + 1, val.value.get_mpf_t());
-
-            Core::Integ valI = 0;
-
-            // Sign bit.
-            auto start = str.get();
-            if(*start == '-') valI |= 1, ++start;
-
-            // Exponent bits.
-            exp += (1 << (val.vtype.bitsF - 1)) - 2;
-            exp &= (1 << (val.vtype.bitsF    )) - 1;
-
-            valI <<= val.vtype.bitsF;
-            valI |= exp;
-
-            // Mantissa bits. Skip first bit because it is an implicit 1.
-            auto itr = ++start;
-            for(; *itr; ++itr) {valI <<= 1; if(*itr == '1') ++valI;}
-            valI <<= val.vtype.bitsI - (itr - start);
-
-            // Return requested word.
-            if(w) valI >>= w * 32;
-            return Core::NumberCast<Core::FastU>(valI) & 0xFFFFFFFF;
          }
 
          //

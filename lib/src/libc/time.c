@@ -59,7 +59,14 @@ static void TimeCount(void)
 //
 clock_t clock()
 {
+   #if __GDCC_Family__ZDACS__
    return ACS_Timer();
+   #elif __GDCC_Target__Doominati__
+   // TODO
+   return 0;
+   #else
+   return 0;
+   #endif
 }
 
 #if !__GDCC__NoFloat

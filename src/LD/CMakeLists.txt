@@ -26,6 +26,10 @@ add_library(gdcc-ld-lib ${GDCC_SHARED_DECL}
 
 target_link_libraries(gdcc-ld-lib gdcc-bc-lib)
 
+if(GDCC_BC_DGE)
+   target_link_libraries(gdcc-ld-lib gdcc-bc-dge-lib)
+endif()
+
 if(GDCC_BC_MgC)
    target_link_libraries(gdcc-ld-lib gdcc-bc-mgc-lib)
 endif()

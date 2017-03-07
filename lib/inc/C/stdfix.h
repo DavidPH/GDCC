@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015-2016 David Hill
+// Copyright(C) 2015-2017 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -91,53 +91,98 @@
 //
 // SACCUM_*
 //
-#define SACCUM_FBIT 16
-#define SACCUM_IBIT 15
-#define SACCUM_MIN (-0x4000p-0HK-0x4000p-0HK)
-#define SACCUM_MAX 0x7FFF.FFFFp-0HK
-#define SACCUM_EPSILON 0x1p-16HK
+#if __GDCC_Target__Doominati__
+# define SACCUM_FBIT 7
+# define SACCUM_IBIT 24
+# define SACCUM_MIN (-0x800000p-0HK-0x800000p-0HK)
+# define SACCUM_MAX 0xFFFFFF.FEp-0HK
+# define SACCUM_EPSILON 0x1p-7HK
+#else
+# define SACCUM_FBIT 16
+# define SACCUM_IBIT 15
+# define SACCUM_MIN (-0x4000p-0HK-0x4000p-0HK)
+# define SACCUM_MAX 0x7FFF.FFFFp-0HK
+# define SACCUM_EPSILON 0x1p-16HK
+#endif
 
 //
 // USACCUM_*
 //
-#define USACCUM_FBIT 16
-#define USACCUM_IBIT 16
-#define USACCUM_MAX 0xFFFF.FFFFp-0UHK
-#define USACCUM_EPSILON 0x1p-16UHK
+#if __GDCC_Target__Doominati__
+# define USACCUM_FBIT 7
+# define USACCUM_IBIT 25
+# define USACCUM_MAX 0x1FFFFFF.FEp-0UHK
+# define USACCUM_EPSILON 0x1p-7UHK
+#else
+# define USACCUM_FBIT 16
+# define USACCUM_IBIT 16
+# define USACCUM_MAX 0xFFFF.FFFFp-0UHK
+# define USACCUM_EPSILON 0x1p-16UHK
+#endif
 
 //
 // ACCUM_*
 //
-#define ACCUM_FBIT 16
-#define ACCUM_IBIT 15
-#define ACCUM_MIN (-0x4000p-0K-0x4000p-0K)
-#define ACCUM_MAX 0x7FFF.FFFFp-0K
-#define ACCUM_EPSILON 0x1p-16K
+#if __GDCC_Target__Doominati__
+# define ACCUM_FBIT 15
+# define ACCUM_IBIT 48
+# define ACCUM_MIN (-0x800000000000p-0K-0x800000000000p-0K)
+# define ACCUM_MAX 0xFFFFFFFFFFFF.FFFEp-0K
+# define ACCUM_EPSILON 0x1p-15K
+#else
+# define ACCUM_FBIT 16
+# define ACCUM_IBIT 15
+# define ACCUM_MIN (-0x4000p-0K-0x4000p-0K)
+# define ACCUM_MAX 0x7FFF.FFFFp-0K
+# define ACCUM_EPSILON 0x1p-16K
+#endif
 
 //
 // UACCUM_*
 //
-#define UACCUM_FBIT 16
-#define UACCUM_IBIT 16
-#define UACCUM_MAX 0xFFFF.FFFFp-0UK
-#define UACCUM_EPSILON 0x1p-16UK
+#if __GDCC_Target__Doominati__
+# define UACCUM_FBIT 15
+# define UACCUM_IBIT 49
+# define UACCUM_MAX 0x1FFFFFFFFFFFF.FFFEp-0K
+# define UACCUM_EPSILON 0x1p-15UK
+#else
+# define UACCUM_FBIT 16
+# define UACCUM_IBIT 16
+# define UACCUM_MAX 0xFFFF.FFFFp-0UK
+# define UACCUM_EPSILON 0x1p-16UK
+#endif
 
 //
 // LACCUM_*
 //
-#define LACCUM_FBIT 32
-#define LACCUM_IBIT 31
-#define LACCUM_MIN (-0x40000000p-0LK-0x40000000p-0LK)
-#define LACCUM_MAX 0x7FFFFFFF.FFFFFFFFp-0LK
-#define LACCUM_EPSILON 0x1p-32LK
+#if __GDCC_Target__Doominati__
+# define LACCUM_FBIT 32
+# define LACCUM_IBIT 63
+# define LACCUM_MIN (-0x4000000000000000p-0LK-0x4000000000000000p-0LK)
+# define LACCUM_MAX 0x7FFFFFFFFFFFFFFF.FFFFFFFFp-0LK
+# define LACCUM_EPSILON 0x1p-32LK
+#else
+# define LACCUM_FBIT 32
+# define LACCUM_IBIT 31
+# define LACCUM_MIN (-0x40000000p-0LK-0x40000000p-0LK)
+# define LACCUM_MAX 0x7FFFFFFF.FFFFFFFFp-0LK
+# define LACCUM_EPSILON 0x1p-32LK
+#endif
 
 //
 // ULACCUM_*
 //
-#define ULACCUM_FBIT 32
-#define ULACCUM_IBIT 32
-#define ULACCUM_MAX 0xFFFFFFFF.FFFFFFFFp-0ULK
-#define ULACCUM_EPSILON 0x1p-32ULK
+#if __GDCC_Target__Doominati__
+# define ULACCUM_FBIT 32
+# define ULACCUM_IBIT 64
+# define ULACCUM_MAX 0xFFFFFFFFFFFFFFFF.FFFFFFFFp-0ULK
+# define ULACCUM_EPSILON 0x1p-32ULK
+#else
+# define ULACCUM_FBIT 32
+# define ULACCUM_IBIT 32
+# define ULACCUM_MAX 0xFFFFFFFF.FFFFFFFFp-0ULK
+# define ULACCUM_EPSILON 0x1p-32ULK
+#endif
 
 //
 // absfx
