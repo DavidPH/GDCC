@@ -150,7 +150,7 @@ print CoolPrint
 function void PrintSomeStructs(SomeStruct ss1, SomeStruct ss2)
 {
    // Such declared print functions are used exactly like the standard ones.
-   Log(s: "ss1: ", ss: ss1, s: "; ss2: ", ss: ss2);
+   CoolPrint(s: "ss1: ", ss: ss1, s: "; ss2: ", ss: ss2);
 }
 
 // Do not forget to actually define forward declared functions. It can be
