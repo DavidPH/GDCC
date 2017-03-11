@@ -465,6 +465,91 @@ Semantics:
   __str_ent is a non-object type used to represent string table entries.
 
 ===========================================================
+Structure and Union Specifiers
+===========================================================
+
+Syntax:
+  struct-declaration: add
+    struct-property-declaration
+
+  struct-property-declaration:
+    <__prop> identifier { struct-property-list } ;
+
+  struct-property-list:
+    struct-property
+    struct-property-list , struct-property
+
+  struct-property:
+    struct-property-name : primary-expression (
+      struct-property-argument-list(opt) )
+
+  struct-property-name:
+    <call>
+    <get>
+    <set>
+    <__call>
+    <__get>
+    <__set>
+
+  struct-property-argument-list:
+    struct-property-argument
+    struct-property-argument-list , struct-property-argument
+
+  struct-property-argument:
+    <this>
+    <__arg>
+    <__this>
+    * <this>
+    * <__this>
+    constant-expression
+
+-----------------------------------------------------------
+Structure Property Declarations
+-----------------------------------------------------------
+
+Constraints:
+  In a struct property list, each struct property name (call, get, and set (or
+  their respective aliases, __call, __get, and __set)) shall appear at most
+  once.
+
+  The primary expression in a struct property shall be a constant expression.
+
+  In a struct property argument list, this (or its alias, __this) shall appear
+  at most once.
+
+Semantics:
+  Declares a structure member whose access is controlled by the specified
+  functions. Such a member is known as a structure property member.
+
+  An individual property is specified as a function and argument list. When
+  invoked, the function is passed that argument list with the following
+  substitutions made:
+    Each this is replaced with a pointer to the containing object.
+
+    Each *this is replaced with the containing object.
+
+    Each arg is replaced with a subsequent argument being passed to the
+    structure property expression.
+  If there are any remaining arguments to the structure property expression,
+  they are added as if the argument list contained a corresponding number of
+  arg arguments.
+
+  When a structure property member is accessed, the result is evaluated
+  depending on context:
+    If subject to the call operator and there is a call property, then it is
+    invoked with the call expressions as arguments.
+
+    Otherwise, if subject to the call operator and there is no call property,
+    then the get property is invoked and the result is called.
+
+    Otherwise, if subject to the assignment operator, the set property is
+    invoked with the right expression as the argument.
+
+    Otherwise, if converted to an rvalue, the get property is invoked.
+
+    Otherwise, the expression has no type or value.
+
+===========================================================
 Type Qualifiers
 ===========================================================
 

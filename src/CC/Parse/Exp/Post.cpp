@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -56,27 +56,27 @@ namespace GDCC
       //
       // GetExp_Post_Dot
       //
-      static SR::Exp::CRef GetExp_Post_Dot(Parser &ctx, Scope &, SR::Exp const *exp)
+      static SR::Exp::CRef GetExp_Post_Dot(Parser &ctx, Scope &scope, SR::Exp const *exp)
       {
          auto pos = ctx.in.get().pos;
 
          if(ctx.in.peek().tok != Core::TOK_Identi)
             throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
 
-         return ExpCreate_Mem(exp, ctx.in.get().str, pos);
+         return ExpCreate_Mem(exp, ctx.in.get().str, pos, scope);
       }
 
       //
       // GetExp_Post_Mem
       //
-      static SR::Exp::CRef GetExp_Post_Mem(Parser &ctx, Scope &, SR::Exp const *exp)
+      static SR::Exp::CRef GetExp_Post_Mem(Parser &ctx, Scope &scope, SR::Exp const *exp)
       {
          auto pos = ctx.in.get().pos;
 
          if(ctx.in.peek().tok != Core::TOK_Identi)
             throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
 
-         return ExpCreate_MemPt(exp, ctx.in.get().str, pos);
+         return ExpCreate_MemPt(exp, ctx.in.get().str, pos, scope);
       }
 
       //

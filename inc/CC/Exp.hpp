@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -225,10 +225,10 @@ namespace GDCC
          SR::Exp const *r, Core::Origin pos);
 
       Core::CounterRef<SR::Exp const> ExpCreate_Mem(SR::Exp const *l,
-         Core::String r, Core::Origin pos);
+         Core::String r, Core::Origin pos, Scope &scope);
 
       Core::CounterRef<SR::Exp const> ExpCreate_MemPt(SR::Exp const *l,
-         Core::String r, Core::Origin pos);
+         Core::String r, Core::Origin pos, Scope &scope);
 
       Core::CounterRef<SR::Exp const> ExpCreate_Mod(SR::Exp const *l,
          SR::Exp const *r, Core::Origin pos);

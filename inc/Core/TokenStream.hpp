@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -84,6 +84,14 @@ namespace GDCC
             }
             else
                return false;
+         }
+
+         //
+         // drop
+         //
+         bool drop(TokenType tt1, TokenType tt2, String ts2)
+         {
+            return drop(tt1) ? drop(tt2, ts2) ? true : (unget(), false) : false;
          }
 
          //

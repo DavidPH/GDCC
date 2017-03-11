@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "CC/Exp/Assign.hpp"
+
+#include "CC/Exp/Mem.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -225,6 +227,10 @@ namespace GDCC
       SR::Exp::CRef ExpCreate_Assign(SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos)
       {
+         // Special check for structure property.
+         if(auto expL = dynamic_cast<Exp_MemProp const *>(l))
+            return expL->createExp_set(SR::Exp::CRef{r});
+
          if(!IsModLValue(l))
             throw Core::ExceptStr(l->pos, "expected modifiable lvalue");
 

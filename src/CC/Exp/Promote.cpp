@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "CC/Exp.hpp"
 
+#include "CC/Exp/Mem.hpp"
 #include "CC/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -329,6 +330,10 @@ namespace GDCC
       //
       SR::Exp::CRef ExpPromo_LValue(SR::Exp const *e, Core::Origin pos)
       {
+         // Special check for structure property.
+         if(auto exp = dynamic_cast<Exp_MemProp const *>(e))
+            return exp->createExp_get();
+
          SR::Exp::CRef exp{e};
          auto          type = exp->getType();
 

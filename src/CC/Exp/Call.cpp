@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,7 @@
 #include "CC/Exp/Call.hpp"
 
 #include "CC/Exp/Init.hpp"
+#include "CC/Exp/Mem.hpp"
 #include "CC/Init.hpp"
 #include "CC/Scope/Local.hpp"
 
@@ -153,6 +154,10 @@ namespace GDCC
       SR::Exp::CRef ExpCreate_Call(SR::Exp const *e,
          Core::Array<SR::Exp::CRef> &&args, Scope &scope, Core::Origin pos)
       {
+         // Special check for structure property.
+         if(auto exp = dynamic_cast<Exp_MemProp const *>(e))
+            return exp->createExp_call(std::move(args));
+
          auto exp  = ExpPromo_LValue(e, pos);
          auto type = exp->getType();
 
