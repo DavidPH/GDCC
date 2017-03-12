@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2017 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -25,7 +25,7 @@
 ACS_SpecialDeclFull( 14, 0, int, Door_Animated, int, int, int);
 ACS_SpecialDeclFull( 15, 0, int, Autosave, void);
 
-ACS_SpecialDeclFull( 17, 0, int, Thing_Raise, int);
+ACS_SpecialDeclFull( 17, 1, int, Thing_Raise, int, int);
 ACS_SpecialDeclFull( 18, 1, int, StartConversation, int, int);
 ACS_SpecialDeclFull( 19, 0, int, Thing_Stop, int);
 
@@ -38,7 +38,7 @@ ACS_SpecialDeclFull( 39, 0, int, Teleport_ZombieChanger, int, int);
 
 ACS_SpecialDeclFull( 47, 1, int, Ceiling_MoveToValue, int, int, int, int);
 
-ACS_SpecialDeclFull( 49, 1, int, GlassBreak, int);
+ACS_SpecialDeclFull( 49, 2, int, GlassBreak, int, int);
 
 ACS_SpecialDeclFull( 51, 0, int, Sector_SetLink, int, int, int, int);
 ACS_SpecialDeclFull( 52, 0, int, Scroll_Wall, int, int, int, int, int);
