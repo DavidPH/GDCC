@@ -100,16 +100,9 @@ namespace GDCC
       //
       SR::Exp::CRef ExpConvert_BoolSoft(SR::Exp const *e, Core::Origin pos)
       {
-         SR::Exp::CRef exp{e};
-         auto          type = exp->getType();
-
          // TODO: Bitfield conversion with mask, but not shift.
-         if(type->isTypeBitfield())
-            type = (exp = ExpConvert_Bitfield(exp, pos))->getType();
-
-         // Other types need to go through lvalue promotion.
-         else
-            type = (exp = ExpPromo_LValue(exp, pos))->getType();
+         SR::Exp::CRef exp  = ExpPromo_LValue(e, pos);
+         auto          type = exp->getType();
 
          if(type->isCTypeFixed() || type->isCTypeInteg())
          {
