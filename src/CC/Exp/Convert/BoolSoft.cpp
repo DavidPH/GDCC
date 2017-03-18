@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -106,6 +106,10 @@ namespace GDCC
          // TODO: Bitfield conversion with mask, but not shift.
          if(type->isTypeBitfield())
             type = (exp = ExpConvert_Bitfield(exp, pos))->getType();
+
+         // Other types need to go through lvalue promotion.
+         else
+            type = (exp = ExpPromo_LValue(exp, pos))->getType();
 
          if(type->isCTypeFixed() || type->isCTypeInteg())
          {
