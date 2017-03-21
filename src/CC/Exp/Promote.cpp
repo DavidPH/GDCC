@@ -211,8 +211,10 @@ namespace GDCC
       //
       // ExpPromo_Cond
       //
-      SR::Exp::CRef ExpPromo_Cond(SR::Exp const *exp, Core::Origin pos)
+      SR::Exp::CRef ExpPromo_Cond(SR::Exp const *e, Core::Origin pos)
       {
+         SR::Exp::CRef exp = ExpPromo_LValue(e, pos);
+
          if(!exp->getType()->isCTypeScalar())
             throw Core::ExceptStr(pos, "expected scalar type");
 

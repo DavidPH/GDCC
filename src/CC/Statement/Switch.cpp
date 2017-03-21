@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -331,7 +331,7 @@ namespace GDCC
          SR::Statement::Labels const &labels, Core::Origin pos,
          Scope_Case &scope, SR::Exp const *cond_, SR::Statement const *body)
       {
-         auto cond = ExpPromo_Int(cond_, pos);
+         auto cond = ExpPromo_Int(ExpPromo_LValue(cond_), pos);
          auto type = cond->getType();
 
          if(!type->isCTypeInteg())
@@ -347,7 +347,7 @@ namespace GDCC
          SR::Statement::Labels &&labels, Core::Origin pos,
          Scope_Case &scope, SR::Exp const *cond_, SR::Statement const *body)
       {
-         auto cond = ExpPromo_Int(cond_, pos);
+         auto cond = ExpPromo_Int(ExpPromo_LValue(cond_), pos);
          auto type = cond->getType();
 
          if(!type->isCTypeInteg())
