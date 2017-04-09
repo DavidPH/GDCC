@@ -15,7 +15,27 @@
 #ifndef __GDCC_Header__C__Doominati_h__
 #define __GDCC_Header__C__Doominati_h__
 
+
+//----------------------------------------------------------------------------|
+// Macros                                                                     |
+//
+
 #define DGE_GlobalSound 1
+
+//
+// DGE_TM_*
+//
+// Thinker Member macros
+//
+#define DGE_TM(mem) (__glyph(int, "{ThinkerMember}" #mem))
+#define DGE_TM_id    DGE_TM(id)
+#define DGE_TM_next  DGE_TM(next)
+#define DGE_TM_pitch DGE_TM(pitch)
+#define DGE_TM_prev  DGE_TM(prev)
+#define DGE_TM_x     DGE_TM(x)
+#define DGE_TM_y     DGE_TM(y)
+#define DGE_TM_yaw   DGE_TM(yaw)
+#define DGE_TM_z     DGE_TM(z)
 
 
 //----------------------------------------------------------------------------|
@@ -39,6 +59,12 @@ enum // DGE_Align
  //DGE_Align_Center,
 };
 
+enum // DGE_Axis
+{
+   DGE_Axis_X,
+   DGE_Axis_Y,
+};
+
 enum // DGE_Button
 {
    DGE_Button1 = 1 << 0,
@@ -49,12 +75,6 @@ enum // DGE_Button
    DGE_Button6 = 1 << 5,
    DGE_Button7 = 1 << 6,
    DGE_Button8 = 1 << 7,
-};
-
-enum // DGE_Axis
-{
-   DGE_Axis_X,
-   DGE_Axis_Y,
 };
 
 
