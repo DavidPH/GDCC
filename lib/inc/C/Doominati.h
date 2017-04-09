@@ -27,7 +27,7 @@
 //
 // Thinker Member macros
 //
-#define DGE_TM(mem) (__glyph(int, "{ThinkerMember}" #mem))
+#define DGE_TM(mem) (__glyph(unsigned, "{ThinkerMember}" #mem))
 #define DGE_TM_id    DGE_TM(id)
 #define DGE_TM_next  DGE_TM(next)
 #define DGE_TM_pitch DGE_TM(pitch)
