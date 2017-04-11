@@ -218,7 +218,7 @@
 #define APROP_Stamina          34
 #define APROP_Height           35
 #define APROP_Radius           36
-#define APROP_Reactiontime     37
+#define APROP_ReactionTime     37
 #define APROP_MeleeRange       38
 #define APROP_ViewHeight       39
 #define APROP_AttackZOffset    40
