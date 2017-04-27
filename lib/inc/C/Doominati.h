@@ -23,29 +23,29 @@
 #define DGE_GlobalSound 1
 
 //
-// DGE_TM_*
+// DGE_OM_*
 //
 // Thinker Member macros
 //
-#define DGE_TM(mem) (__glyph(unsigned, "{ThinkerMember}" #mem))
-#define DGE_TM_id     DGE_TM(id)
-#define DGE_TM_next   DGE_TM(next)
-#define DGE_TM_pitch  DGE_TM(pitch)
-#define DGE_TM_prev   DGE_TM(prev)
-#define DGE_TM_rsx    DGE_TM(rsx)
-#define DGE_TM_rsy    DGE_TM(rsy)
-#define DGE_TM_rsz    DGE_TM(rsz)
-#define DGE_TM_sprite DGE_TM(sprite)
-#define DGE_TM_sx     DGE_TM(sx)
-#define DGE_TM_sy     DGE_TM(sy)
-#define DGE_TM_sz     DGE_TM(sz)
-#define DGE_TM_vx     DGE_TM(vx)
-#define DGE_TM_vy     DGE_TM(vy)
-#define DGE_TM_vz     DGE_TM(vz)
-#define DGE_TM_x      DGE_TM(x)
-#define DGE_TM_y      DGE_TM(y)
-#define DGE_TM_yaw    DGE_TM(yaw)
-#define DGE_TM_z      DGE_TM(z)
+#define DGE_OM(mem) (__glyph(unsigned, "{ObjectMember}" #mem))
+#define DGE_OM_id     DGE_OM(id)
+#define DGE_OM_next   DGE_OM(next)
+#define DGE_OM_pitch  DGE_OM(pitch)
+#define DGE_OM_prev   DGE_OM(prev)
+#define DGE_OM_rsx    DGE_OM(rsx)
+#define DGE_OM_rsy    DGE_OM(rsy)
+#define DGE_OM_rsz    DGE_OM(rsz)
+#define DGE_OM_sprite DGE_OM(sprite)
+#define DGE_OM_sx     DGE_OM(sx)
+#define DGE_OM_sy     DGE_OM(sy)
+#define DGE_OM_sz     DGE_OM(sz)
+#define DGE_OM_vx     DGE_OM(vx)
+#define DGE_OM_vy     DGE_OM(vy)
+#define DGE_OM_vz     DGE_OM(vz)
+#define DGE_OM_x      DGE_OM(x)
+#define DGE_OM_y      DGE_OM(y)
+#define DGE_OM_yaw    DGE_OM(yaw)
+#define DGE_OM_z      DGE_OM(z)
 
 
 //----------------------------------------------------------------------------|
@@ -143,6 +143,12 @@ enum // DGE_Button
 [[call("Native")]] unsigned DGE_GetShader(__str name);
 [[call("Native")]] unsigned DGE_GetTexture(__str name);
 
+[[call("Native")]] unsigned long _Fract DGE_ObjectMemberGetLA(unsigned id, unsigned mem);
+[[call("Native")]] unsigned DGE_ObjectMemberGetU(unsigned id, unsigned mem);
+[[call("Native")]] short _Accum DGE_ObjectMemberGetX(unsigned id, unsigned mem);
+[[call("Native")]] void DGE_ObjectMemberSetLA(unsigned id, unsigned mem, unsigned long _Fract val);
+[[call("Native")]] void DGE_ObjectMemberSetU(unsigned id, unsigned mem, unsigned val);
+[[call("Native")]] void DGE_ObjectMemberSetX(unsigned id, unsigned mem, short _Accum val);
 [[call("Native")]] void DGE_ObjectRefAdd(unsigned id);
 [[call("Native")]] void DGE_ObjectRefSub(unsigned id);
 
@@ -182,12 +188,6 @@ enum // DGE_Button
 [[optional_args(1)]]
 [[call("Native")]] void DGE_TextAlignment(int h, int v);
 
-[[call("Native")]] unsigned long _Fract DGE_ThinkerMemberGetLA(unsigned id, unsigned mem);
-[[call("Native")]] unsigned DGE_ThinkerMemberGetU(unsigned id, unsigned mem);
-[[call("Native")]] short _Accum DGE_ThinkerMemberGetX(unsigned id, unsigned mem);
-[[call("Native")]] void DGE_ThinkerMemberSetLA(unsigned id, unsigned mem, unsigned long _Fract val);
-[[call("Native")]] void DGE_ThinkerMemberSetU(unsigned id, unsigned mem, unsigned val);
-[[call("Native")]] void DGE_ThinkerMemberSetX(unsigned id, unsigned mem, short _Accum val);
 [[call("Native")]] void DGE_ThinkerUnlink(unsigned id);
 
 #endif//__GDCC_Header__C__Doominati_h__
