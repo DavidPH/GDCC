@@ -28,14 +28,24 @@
 // Thinker Member macros
 //
 #define DGE_TM(mem) (__glyph(unsigned, "{ThinkerMember}" #mem))
-#define DGE_TM_id    DGE_TM(id)
-#define DGE_TM_next  DGE_TM(next)
-#define DGE_TM_pitch DGE_TM(pitch)
-#define DGE_TM_prev  DGE_TM(prev)
-#define DGE_TM_x     DGE_TM(x)
-#define DGE_TM_y     DGE_TM(y)
-#define DGE_TM_yaw   DGE_TM(yaw)
-#define DGE_TM_z     DGE_TM(z)
+#define DGE_TM_id     DGE_TM(id)
+#define DGE_TM_next   DGE_TM(next)
+#define DGE_TM_pitch  DGE_TM(pitch)
+#define DGE_TM_prev   DGE_TM(prev)
+#define DGE_TM_rsx    DGE_TM(rsx)
+#define DGE_TM_rsy    DGE_TM(rsy)
+#define DGE_TM_rsz    DGE_TM(rsz)
+#define DGE_TM_sprite DGE_TM(sprite)
+#define DGE_TM_sx     DGE_TM(sx)
+#define DGE_TM_sy     DGE_TM(sy)
+#define DGE_TM_sz     DGE_TM(sz)
+#define DGE_TM_vx     DGE_TM(vx)
+#define DGE_TM_vy     DGE_TM(vy)
+#define DGE_TM_vz     DGE_TM(vz)
+#define DGE_TM_x      DGE_TM(x)
+#define DGE_TM_y      DGE_TM(y)
+#define DGE_TM_yaw    DGE_TM(yaw)
+#define DGE_TM_z      DGE_TM(z)
 
 
 //----------------------------------------------------------------------------|
@@ -85,6 +95,7 @@ enum // DGE_Button
 [[call("Native")]] void DGE_CallbackRegister(char const *name, DGE_CallbackType callback);
 [[call("Native")]] void DGE_CallbackUnregister(char const *name, DGE_CallbackType callback);
 
+[[call("Native")]] unsigned DGE_CreatePhysicsThinker(unsigned ext);
 [[call("Native")]] unsigned DGE_CreatePointThinker(unsigned ext);
 [[call("Native")]] unsigned DGE_CreateShaderData(__str name, char const *frag, char const *vert);
 [[call("Native")]] unsigned DGE_CreateShaderFile(__str name, char const *frag, char const *vert);
@@ -132,6 +143,12 @@ enum // DGE_Button
 [[call("Native")]] unsigned DGE_GetShader(__str name);
 [[call("Native")]] unsigned DGE_GetTexture(__str name);
 
+[[call("Native")]] void DGE_ObjectRefAdd(unsigned id);
+[[call("Native")]] void DGE_ObjectRefSub(unsigned id);
+
+[[call("Native")]] void DGE_PhysicsThinkerBlock(unsigned id);
+[[call("Native")]] void DGE_PhysicsThinkerUnblock(unsigned id);
+
 [[call("Native")]] void DGE_PrintChar(unsigned c);
 [[call("Native")]] void DGE_PrintWordD(unsigned d);
 
@@ -171,8 +188,6 @@ enum // DGE_Button
 [[call("Native")]] void DGE_ThinkerMemberSetLA(unsigned id, unsigned mem, unsigned long _Fract val);
 [[call("Native")]] void DGE_ThinkerMemberSetU(unsigned id, unsigned mem, unsigned val);
 [[call("Native")]] void DGE_ThinkerMemberSetX(unsigned id, unsigned mem, short _Accum val);
-[[call("Native")]] void DGE_ThinkerRefAdd(unsigned id);
-[[call("Native")]] void DGE_ThinkerRefSub(unsigned id);
 [[call("Native")]] void DGE_ThinkerUnlink(unsigned id);
 
 #endif//__GDCC_Header__C__Doominati_h__
