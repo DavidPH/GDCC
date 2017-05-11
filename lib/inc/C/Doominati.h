@@ -29,23 +29,32 @@
 //
 #define DGE_OM(mem) (__glyph(unsigned, "{ObjectMember}" #mem))
 #define DGE_OM_id     DGE_OM(id)
+#define DGE_OM_mass   DGE_OM(mass)
 #define DGE_OM_next   DGE_OM(next)
+#define DGE_OM_pc     DGE_OM(pc)
 #define DGE_OM_pitch  DGE_OM(pitch)
 #define DGE_OM_prev   DGE_OM(prev)
 #define DGE_OM_rsx    DGE_OM(rsx)
 #define DGE_OM_rsy    DGE_OM(rsy)
-#define DGE_OM_rsz    DGE_OM(rsz)
 #define DGE_OM_sprite DGE_OM(sprite)
 #define DGE_OM_sx     DGE_OM(sx)
 #define DGE_OM_sy     DGE_OM(sy)
 #define DGE_OM_sz     DGE_OM(sz)
+#define DGE_OM_texc   DGE_OM(texc)
+#define DGE_OM_texf   DGE_OM(texf)
 #define DGE_OM_vx     DGE_OM(vx)
 #define DGE_OM_vy     DGE_OM(vy)
 #define DGE_OM_vz     DGE_OM(vz)
 #define DGE_OM_x      DGE_OM(x)
+#define DGE_OM_xh     DGE_OM(xh)
+#define DGE_OM_xl     DGE_OM(xl)
 #define DGE_OM_y      DGE_OM(y)
+#define DGE_OM_yh     DGE_OM(yh)
+#define DGE_OM_yl     DGE_OM(yl)
 #define DGE_OM_yaw    DGE_OM(yaw)
 #define DGE_OM_z      DGE_OM(z)
+#define DGE_OM_zh     DGE_OM(zh)
+#define DGE_OM_zl     DGE_OM(zl)
 
 
 //----------------------------------------------------------------------------|
@@ -87,6 +96,11 @@ enum // DGE_Button
    DGE_Button8 = 1 << 7,
 };
 
+typedef struct DGE_Point2
+{
+   short _Accum x, y;
+} DGE_Point2;
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -95,6 +109,7 @@ enum // DGE_Button
 [[call("Native")]] void DGE_CallbackRegister(char const *name, DGE_CallbackType callback);
 [[call("Native")]] void DGE_CallbackUnregister(char const *name, DGE_CallbackType callback);
 
+[[call("Native")]] unsigned DGE_CreateSector(unsigned pc, unsigned ext);
 [[call("Native")]] unsigned DGE_CreatePhysicsThinker(unsigned ext);
 [[call("Native")]] unsigned DGE_CreatePointThinker(unsigned ext);
 [[call("Native")]] unsigned DGE_CreateShaderData(__str name, char const *frag, char const *vert);
@@ -157,6 +172,12 @@ enum // DGE_Button
 
 [[call("Native")]] void DGE_PrintChar(unsigned c);
 [[call("Native")]] void DGE_PrintWordD(unsigned d);
+
+[[call("Native")]] void DGE_SectorBlock(unsigned id);
+[[call("Native")]] void DGE_SectorCalcBounds(unsigned id);
+[[call("Native")]] DGE_Point2 DGE_SectorPointGet(unsigned id, unsigned p);
+[[call("Native")]] void DGE_SectorPointSet(unsigned id, unsigned p, DGE_Point2 val);
+[[call("Native")]] void DGE_SectorUnblock(unsigned id);
 
 [[call("Native")]] void DGE_SetVirtualResolution(unsigned w, unsigned h);
 [[call("Native")]] void DGE_SetWindowTitle(char const *str);
