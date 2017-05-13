@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2016 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,62 +22,57 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   template<typename T>
+   class NumberAllocMerge;
+}
+
+namespace GDCC::IR
+{
+   enum class CallType;
+   enum class Linkage;
+
+   //
+   // Function
+   //
+   class Function
    {
-      template<typename T>
-      class NumberAllocMerge;
-   }
+   protected:
+      using LocalArr   = std::unordered_map<Core::FastU, Core::FastU>;
+      using ScriptType = Core::Array<Core::String>;
 
-   namespace IR
-   {
-      enum class CallType;
-      enum class Linkage;
-      enum class ScriptType;
+   public:
+      explicit Function(Core::String glyph);
 
-      //
-      // Function
-      //
-      class Function
-      {
-      protected:
-         using LocalArr = std::unordered_map<Core::FastU, Core::FastU>;
+      void allocValue(Core::NumberAllocMerge<Core::FastU> &allocator);
 
-      public:
-         explicit Function(Core::String glyph);
+      Core::FastU getLocalReg() const {return localReg + localTmp;}
 
-         void allocValue(Core::NumberAllocMerge<Core::FastU> &allocator);
+      Core::Origin getOrigin() const;
 
-         Core::FastU getLocalReg() const {return localReg + localTmp;}
+      void setLocalTmp(Core::FastU words)
+         {if(localTmp < words) localTmp = words;}
 
-         Core::Origin getOrigin() const;
+      Core::FastU  allocAut;
+      Block        block;
+      CallType     ctype;
+      Core::String glyph;
+      Core::String label;
+      Linkage      linka;
+      LocalArr     localArr;
+      Core::FastU  localAut;
+      Core::FastU  localReg;
+      Core::FastU  localTmp;
+      Core::FastU  param;
+      Core::FastU  retrn;
+      ScriptType   stype;
+      Core::FastU  valueInt;
+      Core::String valueStr;
 
-         void setLocalTmp(Core::FastU words)
-            {if(localTmp < words) localTmp = words;}
-
-         Core::FastU  allocAut;
-         Block        block;
-         CallType     ctype;
-         Core::String glyph;
-         Core::String label;
-         Linkage      linka;
-         LocalArr     localArr;
-         Core::FastU  localAut;
-         Core::FastU  localReg;
-         Core::FastU  localTmp;
-         Core::FastU  param;
-         Core::FastU  retrn;
-         ScriptType   stype;
-         Core::FastU  valueInt;
-         Core::String valueStr;
-
-         bool         alloc    : 1;
-         bool         defin    : 1;
-         bool         sflagNet : 1;
-         bool         sflagClS : 1;
-      };
-   }
+      bool         alloc    : 1;
+      bool         defin    : 1;
+   };
 }
 
 
@@ -85,14 +80,11 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
-   {
-      OArchive &operator << (OArchive &out, Function const &in);
+   OArchive &operator << (OArchive &out, Function const &in);
 
-      IArchive &operator >> (IArchive &in, Function &out);
-   }
+   IArchive &operator >> (IArchive &in, Function &out);
 }
 
 #endif//GDCC__IR__Function_H__

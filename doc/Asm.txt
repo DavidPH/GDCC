@@ -101,14 +101,16 @@ Syntax:
     <localReg> = expression
     <param> = expression
     <retrn> = expression
-    <sflagClS> = expression
-    <sflagNet> = expression
-    <stype> = script-type-specifier
+    <stype> = [ string-list(opt) ]
     <valueInt> = expression
     <valueStr> = string
 
   statement-list:
     statement statement-list(opt)
+
+  string-list:
+    string
+    string-list , string
 
 Semantics:
   Defines a function. This includes ACS scripts, which are distinguished by the
@@ -1467,22 +1469,6 @@ Syntax:
     <IntC>
     <IntCXX>
 
-  script-type-specifier:
-    <None>
-    <BlueReturn>
-    <Death>
-    <Disconnect>
-    <Enter>
-    <Event>
-    <Lightning>
-    <Open>
-    <Pickup>
-    <RedReturn>
-    <Respawn>
-    <Return>
-    <Unloading>
-    <WhiteReturn>
-
 ===============================================================================
 Grammar
 ===============================================================================
@@ -1532,11 +1518,16 @@ Grammar
     <localReg> = expression
     <param> = expression
     <retrn> = expression
-    <sflagClS> = expression
-    <sflagNet> = expression
-    <stype> = script-type-specifier
+    <stype> = [ string-list(opt) ]
     <valueInt> = expression
     <valueStr> = string
+
+  statement-list:
+    statement statement-list(opt)
+
+  string-list:
+    string
+    string-list , string
 
   glyph-declaration:
     <Glyph> string glyph-argument-list(opt) new-line
@@ -1608,9 +1599,6 @@ Grammar
     <defin> = expression
     <valueInt> = expression
     <valueStr> = string
-
-  statement-list:
-    statement statement-list(opt)
 
   statement:
     statement-label-list(opt) statement-name expression argument-list(opt)
@@ -2016,22 +2004,6 @@ Grammar
     <ExtDS>
     <IntC>
     <IntCXX>
-
-  script-type-specifier:
-    <None>
-    <BlueReturn>
-    <Death>
-    <Disconnect>
-    <Enter>
-    <Event>
-    <Lightning>
-    <Open>
-    <Pickup>
-    <RedReturn>
-    <Respawn>
-    <Return>
-    <Unloading>
-    <WhiteReturn>
 
 ###############################################################################
 EOF

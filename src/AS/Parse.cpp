@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,179 +19,159 @@
 #include "IR/CallType.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/OpCode.hpp"
-#include "IR/ScriptType.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::AS
 {
-   namespace AS
+   //
+   // GetAddrBase
+   //
+   IR::AddrBase GetAddrBase(ParserCtx const &ctx)
    {
-      //
-      // GetAddrBase
-      //
-      IR::AddrBase GetAddrBase(ParserCtx const &ctx)
+      switch(TokenPeekIdenti(ctx).in.get().str)
       {
-         switch(TokenPeekIdenti(ctx).in.get().str)
-         {
-            #define GDCC_IR_AddrList(name) \
-               case Core::STR_##name: return IR::AddrBase::name;
-            #include "IR/AddrList.hpp"
+         #define GDCC_IR_AddrList(name) \
+            case Core::STR_##name: return IR::AddrBase::name;
+         #include "IR/AddrList.hpp"
 
-         default:
-            throw Core::ParseExceptExpect(ctx.in.reget(), "AddrBase", false);
-         }
+      default:
+         throw Core::ParseExceptExpect(ctx.in.reget(), "AddrBase", false);
       }
+   }
 
-      //
-      // GetAddrSpace
-      //
-      IR::AddrSpace GetAddrSpace(ParserCtx const &ctx)
+   //
+   // GetAddrSpace
+   //
+   IR::AddrSpace GetAddrSpace(ParserCtx const &ctx)
+   {
+      IR::AddrSpace space;
+
+      space.base = GetAddrBase(ctx);
+      space.name = TokenPeekString(ctx).in.get().str;
+
+      if(space.name == Core::STR_)
+         space.name = Core::STRNULL;
+
+      return space;
+   }
+
+   //
+   // GetCallType
+   //
+   IR::CallType GetCallType(ParserCtx const &ctx)
+   {
+      switch(TokenPeekIdenti(ctx).in.get().str)
       {
-         IR::AddrSpace space;
+         #define GDCC_IR_CallTypeList(name) \
+            case Core::STR_##name: return IR::CallType::name;
+         #include "IR/CallTypeList.hpp"
 
-         space.base = GetAddrBase(ctx);
-         space.name = TokenPeekString(ctx).in.get().str;
-
-         if(space.name == Core::STR_)
-            space.name = Core::STRNULL;
-
-         return space;
+      default:
+         throw Core::ParseExceptExpect(ctx.in.reget(), "CallType", false);
       }
+   }
 
-      //
-      // GetCallType
-      //
-      IR::CallType GetCallType(ParserCtx const &ctx)
+   //
+   // GetCode
+   //
+   IR::Code GetCode(ParserCtx const &ctx)
+   {
+      switch(TokenPeekIdenti(ctx).in.get().str)
       {
-         switch(TokenPeekIdenti(ctx).in.get().str)
-         {
-            #define GDCC_IR_CallTypeList(name) \
-               case Core::STR_##name: return IR::CallType::name;
-            #include "IR/CallTypeList.hpp"
+         #define GDCC_IR_CodeList(c) \
+            case Core::STR_##c: return IR::Code::c; break;
+         #include "IR/CodeList.hpp"
 
-         default:
-            throw Core::ParseExceptExpect(ctx.in.reget(), "CallType", false);
-         }
+      default:
+         throw Core::ParseExceptExpect(ctx.in.reget(), "Code", false);
       }
+   }
 
-      //
-      // GetCode
-      //
-      IR::Code GetCode(ParserCtx const &ctx)
+   //
+   // GetLinkage
+   //
+   IR::Linkage GetLinkage(ParserCtx const &ctx)
+   {
+      switch(TokenPeekIdenti(ctx).in.get().str)
       {
-         switch(TokenPeekIdenti(ctx).in.get().str)
-         {
-            #define GDCC_IR_CodeList(c) \
-               case Core::STR_##c: return IR::Code::c; break;
-            #include "IR/CodeList.hpp"
+         #define GDCC_IR_LinkageList(name) \
+            case Core::STR_##name: return IR::Linkage::name;
+         #include "IR/LinkageList.hpp"
 
-         default:
-            throw Core::ParseExceptExpect(ctx.in.reget(), "Code", false);
-         }
+      default:
+         throw Core::ParseExceptExpect(ctx.in.reget(), "Linkage", false);
       }
+   }
 
-      //
-      // GetLinkage
-      //
-      IR::Linkage GetLinkage(ParserCtx const &ctx)
-      {
-         switch(TokenPeekIdenti(ctx).in.get().str)
-         {
-            #define GDCC_IR_LinkageList(name) \
-               case Core::STR_##name: return IR::Linkage::name;
-            #include "IR/LinkageList.hpp"
+   //
+   // GetOpCode
+   //
+   IR::OpCode GetOpCode(ParserCtx const &ctx)
+   {
+      IR::OpCode op;
+      op.code = GetCode(ctx);
+      op.size = GetFastU(ctx);
+      return op;
+   }
 
-         default:
-            throw Core::ParseExceptExpect(ctx.in.reget(), "Linkage", false);
-         }
-      }
+   //
+   // GetString
+   //
+   Core::String GetString(ParserCtx const &ctx)
+   {
+      return TokenPeekString(ctx).in.get().str;
+   }
 
-      //
-      // GetOpCode
-      //
-      IR::OpCode GetOpCode(ParserCtx const &ctx)
-      {
-         IR::OpCode op;
-         op.code = GetCode(ctx);
-         op.size = GetFastU(ctx);
-         return op;
-      }
+   //
+   // TokenDrop
+   //
+   ParserCtx const &TokenDrop(ParserCtx const &ctx, Core::TokenType tt,
+      char const *expect)
+   {
+      if(!ctx.in.drop(tt))
+         throw Core::ParseExceptExpect(ctx.in.peek(), expect, false);
 
-      //
-      // GetScriptType
-      //
-      IR::ScriptType GetScriptType(ParserCtx const &ctx)
-      {
-         switch(TokenPeekIdenti(ctx).in.get().str)
-         {
-            #define GDCC_IR_ScriptTypeList(name) \
-               case Core::STR_##name: return IR::ScriptType::name;
-            #include "IR/ScriptTypeList.hpp"
+      return ctx;
+   }
 
-         default:
-            throw Core::ParseExceptExpect(ctx.in.reget(), "ScriptType", false);
-         }
-      }
+   //
+   // TokenDropEq
+   //
+   ParserCtx const &TokenDropEq(ParserCtx const &ctx)
+   {
+      return TokenDrop(ctx, Core::TOK_Equal, "'='");
+   }
 
-      //
-      // GetString
-      //
-      Core::String GetString(ParserCtx const &ctx)
-      {
-         return TokenPeekString(ctx).in.get().str;
-      }
+   //
+   // TokenPeek
+   //
+   ParserCtx const &TokenPeek(ParserCtx const &ctx, Core::TokenType tt,
+      char const *expect)
+   {
+      if(!ctx.in.peek(tt))
+         throw Core::ParseExceptExpect(ctx.in.peek(), expect, false);
 
-      //
-      // TokenDrop
-      //
-      ParserCtx const &TokenDrop(ParserCtx const &ctx, Core::TokenType tt,
-         char const *expect)
-      {
-         if(!ctx.in.drop(tt))
-            throw Core::ParseExceptExpect(ctx.in.peek(), expect, false);
+      return ctx;
+   }
 
-         return ctx;
-      }
+   //
+   // TokenPeekIdenti
+   //
+   ParserCtx const &TokenPeekIdenti(ParserCtx const &ctx)
+   {
+      return TokenPeek(ctx, Core::TOK_Identi, "identifier");
+   }
 
-      //
-      // TokenDropEq
-      //
-      ParserCtx const &TokenDropEq(ParserCtx const &ctx)
-      {
-         return TokenDrop(ctx, Core::TOK_Equal, "'='");
-      }
-
-      //
-      // TokenPeek
-      //
-      ParserCtx const &TokenPeek(ParserCtx const &ctx, Core::TokenType tt,
-         char const *expect)
-      {
-         if(!ctx.in.peek(tt))
-            throw Core::ParseExceptExpect(ctx.in.peek(), expect, false);
-
-         return ctx;
-      }
-
-      //
-      // TokenPeekIdenti
-      //
-      ParserCtx const &TokenPeekIdenti(ParserCtx const &ctx)
-      {
-         return TokenPeek(ctx, Core::TOK_Identi, "identifier");
-      }
-
-      //
-      // TokenPeekString
-      //
-      ParserCtx const &TokenPeekString(ParserCtx const &ctx)
-      {
-         return TokenPeek(ctx, Core::TOK_String, "string");
-      }
+   //
+   // TokenPeekString
+   //
+   ParserCtx const &TokenPeekString(ParserCtx const &ctx)
+   {
+      return TokenPeek(ctx, Core::TOK_String, "string");
    }
 }
 

@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2015 David Hill
+## Copyright (C) 2013-2017 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -41,7 +41,6 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    Object.cpp
    OpCode.cpp
    Program.cpp
-   ScriptType.cpp
    Space.cpp
    Statement.cpp
    StrEnt.cpp
@@ -89,7 +88,6 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    ../../inc/IR/Object.hpp
    ../../inc/IR/OpCode.hpp
    ../../inc/IR/Program.hpp
-   ../../inc/IR/ScriptType.hpp
    ../../inc/IR/Space.hpp
    ../../inc/IR/Statement.hpp
    ../../inc/IR/StrEnt.hpp

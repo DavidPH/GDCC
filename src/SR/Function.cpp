@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,7 +22,6 @@
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/Program.hpp"
-#include "IR/ScriptType.hpp"
 
 #include "Option/Int.hpp"
 
@@ -33,25 +32,22 @@
 // Options                                                                    |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // --alloc-Aut
+   //
+   static Core::FastU AllocAut = 4096;
+   static Option::Int<Core::FastU> AllocAutOpt
    {
-      //
-      // --alloc-Aut
-      //
-      static Core::FastU AllocAut = 4096;
-      static Option::Int<Core::FastU> AllocAutOpt
-      {
-         &Core::GetOptionList(), Option::Base::Info()
-            .setName("alloc-Aut")
-            .setGroup("codegen")
-            .setDescS("Sets the default Aut stack size.")
-            .setDescL("Sets the default Aut stack size. Default is 4096."),
+      &Core::GetOptionList(), Option::Base::Info()
+         .setName("alloc-Aut")
+         .setGroup("codegen")
+         .setDescS("Sets the default Aut stack size.")
+         .setDescL("Sets the default Aut stack size. Default is 4096."),
 
-         &AllocAut
-      };
-   }
+      &AllocAut
+   };
 }
 
 
@@ -59,247 +55,237 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Function constructor
+   //
+   Function::Function(Core::String name_, Core::String glyph_) :
+      allocAut{0},
+      ctype   {IR::CallType::None},
+      glyph   {glyph_},
+      label   {nullptr},
+      labelEnd{nullptr},
+      labelRes{nullptr},
+      labelTmp{nullptr},
+      linka   {IR::Linkage::None},
+      localAut{0},
+      localReg{0},
+      name    {name_},
+      param   {0},
+      paramOpt{0},
+      retrn   {nullptr},
+      stmnt   {nullptr},
+      stype   {},
+      valueInt{nullptr},
+      valueStr{nullptr},
+      warnUse {nullptr},
+
+      declAuto{false},
+      defin   {false},
+      used    {false},
+      warnDone{false},
+
+      labeller{glyph, "$L$"}
    {
-      //
-      // Function constructor
-      //
-      Function::Function(Core::String name_, Core::String glyph_) :
-         allocAut{0},
-         ctype   {IR::CallType::None},
-         glyph   {glyph_},
-         label   {nullptr},
-         labelEnd{nullptr},
-         labelRes{nullptr},
-         labelTmp{nullptr},
-         linka   {IR::Linkage::None},
-         localAut{0},
-         localReg{0},
-         name    {name_},
-         param   {0},
-         paramOpt{0},
-         retrn   {nullptr},
-         stmnt   {nullptr},
-         stype   {IR::ScriptType::None},
-         valueInt{nullptr},
-         valueStr{nullptr},
-         warnUse {nullptr},
+   }
 
-         declAuto{false},
-         defin   {false},
-         sflagNet{false},
-         sflagClS{false},
-         used    {false},
-         warnDone{false},
+   //
+   // Function destructor
+   //
+   Function::~Function()
+   {
+   }
 
-         labeller{glyph, "$L$"}
+   //
+   // Function::genLabel
+   //
+   Core::String Function::genLabel()
+   {
+      return labeller();
+   }
+
+   //
+   // Function::genFunctionDecl
+   //
+   void Function::genFunctionDecl(IR::Program &prog)
+   {
+      if(!defin && !used) return;
+
+      if(declAuto && !defin)
+         throw Core::ExceptUndef("forward reference", glyph);
+
+      // Operate on a temporary function to be merged later.
+      IR::Function fn{glyph};
+
+      fn.ctype = IR::GetCallTypeIR(ctype);
+      fn.linka = linka;
+      fn.stype = stype;
+
+      // Configure glyph's type, even if the glyph won't be backed.
+      prog.getGlyphData(glyph).type = IR::Type_Funct(fn.ctype);
+
+      // Merge into existing function (if any).
+      prog.mergeFunction(prog.getFunction(glyph), std::move(fn));
+   }
+
+   //
+   // Function::genFunctionDefn
+   //
+   void Function::genFunctionDefn(IR::Program &prog)
+   {
+      if(!defin && !used) return;
+
+      // Operate on a temporary function to be merged later.
+      IR::Function fn{glyph};
+
+      // Generate statements.
+      if(stmnt)
       {
+         stmnt->genStmnt({fn.block, this, prog});
+         if(fn.block.hasLabelPending())
+            fn.block.addStatementArgs({IR::Code::Nop, 0});
       }
 
-      //
-      // Function destructor
-      //
-      Function::~Function()
+      fn.allocAut = allocAut;
+      fn.ctype    = IR::GetCallTypeIR(ctype);
+      fn.label    = label;
+      fn.linka    = linka;
+      fn.localArr = localArr;
+      fn.localAut = localAut;
+      fn.localReg = localReg + localTmp.max();
+      fn.param    = param;
+      fn.retrn    = retrn && !retrn->isTypeVoid() ? retrn->getSizeWords() : 0;
+      fn.stype    = stype;
+
+      fn.defin    = defin;
+
+      // Special rules for certain calling conventions.
+
+      // Extra parameter for stack pointer.
+      if(Platform::IsCallAutoProp(fn.ctype))
+         ++fn.param;
+
+      if(fn.allocAut &&
+         (fn.ctype == IR::CallType::ScriptI ||
+            fn.ctype == IR::CallType::ScriptS ||
+            fn.ctype == IR::CallType::StkCall))
       {
+         // Extra register for stack pointer.
+         ++fn.localReg;
       }
 
-      //
-      // Function::genLabel
-      //
-      Core::String Function::genLabel()
+      // Check for explicit allocation.
+      if(valueInt)
       {
-         return labeller();
+         auto val = valueInt->getValue();
+         if(val.v == IR::ValueBase::Fixed)
+            fn.valueInt = Core::NumberCast<Core::FastU>(val.vFixed.value);
+      }
+      else
+         fn.alloc = true;
+
+      // Having a valueStr must not prevent automatic valueInt allocation.
+      if(valueStr)
+         fn.valueStr = valueStr;
+
+      // If any temporaries generated, back the base glyph.
+      if(labelTmp && localTmp.max())
+      {
+         auto &gdata = prog.getGlyphData(labelTmp);
+
+         gdata.type  = Type::Size->getIRType();
+         gdata.value = IR::ExpCreate_Value(
+            IR::Value_Fixed(localReg * Platform::GetWordBytes(),
+            gdata.type.tFixed), {nullptr, 0});
       }
 
-      //
-      // Function::genFunctionDecl
-      //
-      void Function::genFunctionDecl(IR::Program &prog)
+      // If this is a named script, generate a StrEnt, too.
+      if(fn.ctype == IR::CallType::SScriptS ||
+         fn.ctype == IR::CallType::ScriptS)
       {
-         if(!defin && !used) return;
+         // Create StrEnt.
+         auto &strent = prog.getStrEnt(glyph + Core::String("$StrEnt"));
 
-         if(declAuto && !defin)
-            throw Core::ExceptUndef("forward reference", glyph);
+         // Configure StrEnt.
+         strent.valueStr = fn.valueStr ? fn.valueStr : fn.glyph;
+         strent.alias    = true;
+         strent.alloc    = true;
+         strent.defin    = true;
+         strent.multiDef = true;
 
-         // Operate on a temporary function to be merged later.
-         IR::Function fn{glyph};
-
-         fn.ctype    = IR::GetCallTypeIR(ctype);
-         fn.linka    = linka;
-         fn.stype    = stype;
-
-         fn.sflagNet = sflagNet;
-         fn.sflagClS = sflagClS;
-
-         // Configure glyph's type, even if the glyph won't be backed.
-         prog.getGlyphData(glyph).type = IR::Type_Funct(fn.ctype);
-
-         // Merge into existing function (if any).
-         prog.mergeFunction(prog.getFunction(glyph), std::move(fn));
+         // Prepare associated glyph.
+         prog.getGlyphData(strent.glyph).type = IR::Type_StrEn();
       }
 
-      //
-      // Function::genFunctionDefn
-      //
-      void Function::genFunctionDefn(IR::Program &prog)
+      // Configure glyph's type, even if the glyph won't be backed.
+      prog.getGlyphData(glyph).type = IR::Type_Funct(fn.ctype);
+
+      // Merge into existing function (if any).
+      prog.mergeFunction(prog.getFunction(glyph), std::move(fn));
+   }
+
+   //
+   // Function::getLabelEnd
+   //
+   Core::String Function::getLabelEnd()
+   {
+      if(!labelEnd)
+         labelEnd = genLabel();
+
+      return labelEnd;
+   }
+
+   //
+   // Function::getLabelRes
+   //
+   Core::String Function::getLabelRes()
+   {
+      if(!labelRes)
+         labelRes = genLabel();
+
+      return labelRes;
+   }
+
+   //
+   // Function::getLabelTmp
+   //
+   Core::String Function::getLabelTmp()
+   {
+      if(!labelTmp)
+         labelTmp = genLabel();
+
+      return labelTmp;
+   }
+
+   //
+   // Function::setAllocAut
+   //
+   void Function::setAllocAut(IR::Exp const *exp)
+   {
+      if(exp)
+         allocAut = exp->getValue().getFastU();
+
+      else switch(IR::GetCallTypeIR(ctype))
       {
-         if(!defin && !used) return;
+      case IR::CallType::ScriptI:
+      case IR::CallType::ScriptS:
+      case IR::CallType::StkCall:
+         if(!stmnt || !stmnt->isNoAuto())
+            allocAut = AllocAut;
+         break;
 
-         // Operate on a temporary function to be merged later.
-         IR::Function fn{glyph};
-
-         // Generate statements.
-         if(stmnt)
-         {
-            stmnt->genStmnt({fn.block, this, prog});
-            if(fn.block.hasLabelPending())
-               fn.block.addStatementArgs({IR::Code::Nop, 0});
-         }
-
-         fn.allocAut = allocAut;
-         fn.ctype    = IR::GetCallTypeIR(ctype);
-         fn.label    = label;
-         fn.linka    = linka;
-         fn.localArr = localArr;
-         fn.localAut = localAut;
-         fn.localReg = localReg + localTmp.max();
-         fn.param    = param;
-         fn.retrn    = retrn && !retrn->isTypeVoid() ? retrn->getSizeWords() : 0;
-         fn.stype    = stype;
-
-         fn.defin    = defin;
-         fn.sflagNet = sflagNet;
-         fn.sflagClS = sflagClS;
-
-         // Special rules for certain calling conventions.
-
-         // Extra parameter for stack pointer.
-         if(Platform::IsCallAutoProp(fn.ctype))
-            ++fn.param;
-
-         if(fn.allocAut &&
-            (fn.ctype == IR::CallType::ScriptI ||
-             fn.ctype == IR::CallType::ScriptS ||
-             fn.ctype == IR::CallType::StkCall))
-         {
-            // Extra register for stack pointer.
-            ++fn.localReg;
-         }
-
-         // Check for explicit allocation.
-         if(valueInt)
-         {
-            auto val = valueInt->getValue();
-            if(val.v == IR::ValueBase::Fixed)
-               fn.valueInt = Core::NumberCast<Core::FastU>(val.vFixed.value);
-         }
-         else
-            fn.alloc = true;
-
-         // Having a valueStr must not prevent automatic valueInt allocation.
-         if(valueStr)
-            fn.valueStr = valueStr;
-
-         // If any temporaries generated, back the base glyph.
-         if(labelTmp && localTmp.max())
-         {
-            auto &gdata = prog.getGlyphData(labelTmp);
-
-            gdata.type  = Type::Size->getIRType();
-            gdata.value = IR::ExpCreate_Value(
-               IR::Value_Fixed(localReg * Platform::GetWordBytes(),
-               gdata.type.tFixed), {nullptr, 0});
-         }
-
-         // If this is a named script, generate a StrEnt, too.
-         if(fn.ctype == IR::CallType::SScriptS ||
-            fn.ctype == IR::CallType::ScriptS)
-         {
-            // Create StrEnt.
-            auto &strent = prog.getStrEnt(glyph + Core::String("$StrEnt"));
-
-            // Configure StrEnt.
-            strent.valueStr = fn.valueStr ? fn.valueStr : fn.glyph;
-            strent.alias    = true;
-            strent.alloc    = true;
-            strent.defin    = true;
-            strent.multiDef = true;
-
-            // Prepare associated glyph.
-            prog.getGlyphData(strent.glyph).type = IR::Type_StrEn();
-         }
-
-         // Configure glyph's type, even if the glyph won't be backed.
-         prog.getGlyphData(glyph).type = IR::Type_Funct(fn.ctype);
-
-         // Merge into existing function (if any).
-         prog.mergeFunction(prog.getFunction(glyph), std::move(fn));
+      default:
+         break;
       }
+   }
 
-      //
-      // Function::getLabelEnd
-      //
-      Core::String Function::getLabelEnd()
-      {
-         if(!labelEnd)
-            labelEnd = genLabel();
-
-         return labelEnd;
-      }
-
-      //
-      // Function::getLabelRes
-      //
-      Core::String Function::getLabelRes()
-      {
-         if(!labelRes)
-            labelRes = genLabel();
-
-         return labelRes;
-      }
-
-      //
-      // Function::getLabelTmp
-      //
-      Core::String Function::getLabelTmp()
-      {
-         if(!labelTmp)
-            labelTmp = genLabel();
-
-         return labelTmp;
-      }
-
-      //
-      // Function::setAllocAut
-      //
-      void Function::setAllocAut(IR::Exp const *exp)
-      {
-         if(exp)
-            allocAut = exp->getValue().getFastU();
-
-         else switch(IR::GetCallTypeIR(ctype))
-         {
-         case IR::CallType::ScriptI:
-         case IR::CallType::ScriptS:
-         case IR::CallType::StkCall:
-            if(!stmnt || !stmnt->isNoAuto())
-               allocAut = AllocAut;
-            break;
-
-         default:
-            break;
-         }
-      }
-
-      //
-      // Function::Create
-      //
-      Function::Ref Function::Create(Core::String name, Core::String glyph)
-      {
-         return static_cast<Ref>(new Function(name, glyph));
-      }
+   //
+   // Function::Create
+   //
+   Function::Ref Function::Create(Core::String name, Core::String glyph)
+   {
+      return static_cast<Ref>(new Function(name, glyph));
    }
 }
 

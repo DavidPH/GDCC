@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,7 +18,6 @@
 
 #include "IR/Block.hpp"
 #include "IR/CallType.hpp"
-#include "IR/ScriptType.hpp"
 
 #include "Platform/Platform.hpp"
 
@@ -32,23 +31,37 @@
 // Static Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // MoveParam
+   //
+   template<typename ArgT>
+   static void MoveParam(SR::GenStmntCtx const &ctx, Core::FastU paramIdx,
+      Core::FastU objValue, Core::FastU objWords)
    {
-      //
-      // MoveParam
-      //
-      template<typename ArgT>
-      static void MoveParam(SR::GenStmntCtx const &ctx, Core::FastU paramIdx,
-         Core::FastU objValue, Core::FastU objWords)
-      {
-         IR::Arg_Lit dstIdx{SR::ExpCreate_Size(objValue)->getIRExp()};
-         IR::Arg_Lit srcIdx{SR::ExpCreate_Size(paramIdx)->getIRExp()};
+      IR::Arg_Lit dstIdx{SR::ExpCreate_Size(objValue)->getIRExp()};
+      IR::Arg_Lit srcIdx{SR::ExpCreate_Size(paramIdx)->getIRExp()};
 
-         ctx.block.addStatementArgs({IR::Code::Move_W, objWords},
-            ArgT(dstIdx), IR::Arg_LocReg(srcIdx));
+      ctx.block.addStatementArgs({IR::Code::Move_W, objWords},
+         ArgT(dstIdx), IR::Arg_LocReg(srcIdx));
+   }
+
+   //
+   // NeedSID
+   //
+   static bool NeedSID(IR::CallType ctype, Core::Array<Core::String> const &stype)
+   {
+      if(ctype != IR::CallType::ScriptI && ctype != IR::CallType::ScriptS)
+         return false;
+
+      for(auto const &st : stype)
+      {
+         if(st == Core::STR_Enter || st == Core::STR_Open)
+            return true;
       }
+
+      return false;
    }
 }
 
@@ -57,111 +70,106 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Statement_FuncPre::v_genStmnt
+   //
+   void Statement_FuncPre::v_genStmnt(SR::GenStmntCtx const &ctx) const
    {
-      //
-      // Statement_FuncPre::v_genStmnt
-      //
-      void Statement_FuncPre::v_genStmnt(SR::GenStmntCtx const &ctx) const
+      auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
+
+      // Move parameter data to actual storage location.
+      Core::FastU paramIdx  = 0;
+      Core::FastU paramStep = Platform::GetWordBytes();
+
+      if(Platform::IsCallAutoProp(ctype))
+         paramIdx += paramStep;
+
+      for(auto const &obj : scope.params)
       {
-         auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
-         auto stype = scope.fn->stype;
+         if(!obj->value) continue;
 
-         // Move parameter data to actual storage location.
-         Core::FastU paramIdx  = 0;
-         Core::FastU paramStep = Platform::GetWordBytes();
+         Core::FastU objValue = obj->value->getValue().getFastU();
+         Core::FastU objWords = obj->type->getSizeWords();
 
-         if(Platform::IsCallAutoProp(ctype))
-            paramIdx += paramStep;
-
-         for(auto const &obj : scope.params)
+         switch(obj->type->getQualAddr().base)
          {
-            if(!obj->value) continue;
+         case IR::AddrBase::Aut:
+            MoveParam<IR::Arg_Aut>(ctx, paramIdx, objValue, objWords);
+            break;
 
-            Core::FastU objValue = obj->value->getValue().getFastU();
-            Core::FastU objWords = obj->type->getSizeWords();
+         case IR::AddrBase::LocReg:
+            if(objValue != paramIdx)
+               MoveParam<IR::Arg_LocReg>(ctx, paramIdx, objValue, objWords);
+            break;
 
-            switch(obj->type->getQualAddr().base)
-            {
-            case IR::AddrBase::Aut:
-               MoveParam<IR::Arg_Aut>(ctx, paramIdx, objValue, objWords);
-               break;
-
-            case IR::AddrBase::LocReg:
-               if(objValue != paramIdx)
-                  MoveParam<IR::Arg_LocReg>(ctx, paramIdx, objValue, objWords);
-               break;
-
-            default:
-               break;
-            }
-
-            paramIdx += objWords * paramStep;
+         default:
+            break;
          }
 
-         if((ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS) &&
-            (stype == IR::ScriptType::Open || stype == IR::ScriptType::Enter))
-            ctx.block.addStatementArgs({IR::Code::Xcod_SID, 0});
-
-         if(scope.fn->labelRes)
-            ctx.block.addLabel(scope.fn->labelRes);
+         paramIdx += objWords * paramStep;
       }
 
-      //
-      // Statement_FuncPro::v_genStmnt
-      //
-      void Statement_FuncPro::v_genStmnt(SR::GenStmntCtx const &ctx) const
+      if(NeedSID(ctype, scope.fn->stype))
+         ctx.block.addStatementArgs({IR::Code::Xcod_SID, 0});
+
+      if(scope.fn->labelRes)
+         ctx.block.addLabel(scope.fn->labelRes);
+   }
+
+   //
+   // Statement_FuncPro::v_genStmnt
+   //
+   void Statement_FuncPro::v_genStmnt(SR::GenStmntCtx const &ctx) const
+   {
+      auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
+
+      // Add label for exit point. Unless it was never generated and is
+      // therefore unused.
+      if(scope.fn->labelEnd)
+         ctx.block.addLabel(scope.fn->labelEnd);
+
+      // Perform return.
+      if(scope.fn->retrn->isTypeVoid())
       {
-         auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
+         ctx.block.addStatementArgs({IR::Code::Retn, 0});
+      }
+      else if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
+      {
+         ctx.block.addStatementArgs(
+            {IR::Code::Retn, scope.fn->retrn->getSizeWords()}, IR::Arg_Stk());
+      }
 
-         // Add label for exit point. Unless it was never generated and is
-         // therefore unused.
-         if(scope.fn->labelEnd)
-            ctx.block.addLabel(scope.fn->labelEnd);
+      // Generate long jump return, if needed.
+      if(scope.labelLJR)
+      {
+         ctx.block.addLabel(scope.labelLJR);
 
-         // Perform return.
          if(scope.fn->retrn->isTypeVoid())
-         {
             ctx.block.addStatementArgs({IR::Code::Retn, 0});
-         }
-         else if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
-         {
+         else
             ctx.block.addStatementArgs(
-               {IR::Code::Retn, scope.fn->retrn->getSizeWords()}, IR::Arg_Stk());
-         }
-
-         // Generate long jump return, if needed.
-         if(scope.labelLJR)
-         {
-            ctx.block.addLabel(scope.labelLJR);
-
-            if(scope.fn->retrn->isTypeVoid())
-               ctx.block.addStatementArgs({IR::Code::Retn, 0});
-            else
-               ctx.block.addStatementArgs(
-                  {IR::Code::Retn, scope.fn->retrn->getSizeWords()}, 0);
-         }
+               {IR::Code::Retn, scope.fn->retrn->getSizeWords()}, 0);
       }
+   }
 
-      //
-      // StatementCreate_FuncPre
-      //
-      SR::Statement::CRef StatementCreate_FuncPre(Core::Origin pos,
-         Scope_Function &scope)
-      {
-         return Statement_FuncPre::Create(pos, scope);
-      }
+   //
+   // StatementCreate_FuncPre
+   //
+   SR::Statement::CRef StatementCreate_FuncPre(Core::Origin pos,
+      Scope_Function &scope)
+   {
+      return Statement_FuncPre::Create(pos, scope);
+   }
 
-      //
-      // StatementCreate_FuncPro
-      //
-      SR::Statement::CRef StatementCreate_FuncPro(Core::Origin pos,
-         Scope_Function &scope)
-      {
-         return Statement_FuncPro::Create(pos, scope);
-      }
+   //
+   // StatementCreate_FuncPro
+   //
+   SR::Statement::CRef StatementCreate_FuncPro(Core::Origin pos,
+      Scope_Function &scope)
+   {
+      return Statement_FuncPro::Create(pos, scope);
    }
 }
 
