@@ -21,6 +21,96 @@
 
 
 //----------------------------------------------------------------------------|
+// Macros                                                                     |
+//
+
+//
+// StrStrImpl
+//
+#define StrStrImpl(type, suf) \
+   size_t wordLen = strlen##suf(word); \
+   \
+   /* Special cases. */ \
+   if(wordLen == 0) return (type *)text; \
+   if(wordLen == 1) return strchr##suf(text, *word); \
+   \
+   /* Allocate partial match table. */ \
+   size_t wordTabAuto[128], *wordTab; \
+   if(wordLen <= 128) \
+      wordTab = wordTabAuto; \
+   else \
+      wordTab = malloc(sizeof(size_t) * wordLen); \
+   \
+   /* Memory exhaustion, fall back to a no alloc algorithm. */ \
+   if(!wordTab) \
+   { \
+      while((text = strchr##suf(text, *word))) \
+      { \
+         for(type const *textItr = text + 1, *wordItr = word + 1;; ++textItr, ++wordItr) \
+         { \
+            if(!*wordItr) return (type *)text; \
+            if(!*textItr) return NULL; \
+            \
+            if(*textItr != *wordItr) break; \
+         } \
+         \
+         ++text; \
+      } \
+      \
+      return NULL; \
+   } \
+   \
+   /* Index 0 has special handling, so just leave wordTab[0] alone entirely. */ \
+   wordTab[1] = 0; \
+   \
+   /* Compute partial match table. */ \
+   for(size_t pos = 2, cnd = 0; pos != wordLen;) \
+   { \
+      if(word[cnd] == word[pos - 1]) \
+         wordTab[pos++] = ++cnd; \
+      else if(cnd) \
+         cnd = wordTab[cnd]; \
+      else \
+         wordTab[pos++] = 0; \
+   } \
+   \
+   /* Perform search. */ \
+   type const *textItr = text; \
+   type const *textEnd = text + strlen##suf(text); \
+   size_t      wordIdx = 0; \
+   \
+   while(textItr + wordIdx != textEnd) \
+   { \
+      /* Character match? */ \
+      if(word[wordIdx] == textItr[wordIdx]) \
+      { \
+         /* Word match? */ \
+         if(++wordIdx == wordLen) \
+         { \
+            if(wordTab != wordTabAuto) free(wordTab); \
+            return (type *)textItr; \
+         } \
+      } \
+      else \
+      { \
+         /* Not at start of word match? */ \
+         if(wordIdx) \
+         { \
+            textItr += wordIdx - wordTab[wordIdx]; \
+            wordIdx = wordTab[wordIdx]; \
+         } \
+         \
+         /* First character failure, just advance text iterator. */ \
+         else \
+            ++textItr; \
+      } \
+   } \
+   \
+   if(wordTab != wordTabAuto) free(wordTab); \
+   return NULL;
+
+
+//----------------------------------------------------------------------------|
 // Global Functions                                                           |
 //
 
@@ -289,88 +379,7 @@ size_t strspn(char const *s1, char const *s2)
 //
 char *strstr(char const *text, char const *word)
 {
-   size_t wordLen = strlen(word);
-
-   // Special cases.
-   if(wordLen == 0) return (char *)text;
-   if(wordLen == 1) return strchr(text, *word);
-
-   // Allocate partial match table.
-   size_t wordTabAuto[128], *wordTab;
-   if(wordLen <= 128)
-      wordTab = wordTabAuto;
-   else
-      wordTab = malloc(sizeof(size_t) * wordLen);
-
-   // Memory exhaustion, fall back to a no alloc algorithm.
-   if(!wordTab)
-   {
-      while((text = strchr(text, *word)))
-      {
-         for(char const *textItr = text + 1, *wordItr = word + 1;; ++textItr, ++wordItr)
-         {
-            if(!*wordItr) return (char *)text;
-            if(!*textItr) return NULL;
-
-            if(*textItr != *wordItr) break;
-         }
-
-         ++text;
-      }
-
-      return NULL;
-   }
-
-   // Index 0 has special handling, so just leave wordTab[0] alone entirely.
-   wordTab[1] = 0;
-
-   // Compute partial match table.
-   for(size_t pos = 2, cnd = 0; pos != wordLen;)
-   {
-      if(word[cnd] == word[pos - 1])
-         wordTab[pos++] = ++cnd;
-
-      else if(cnd)
-         cnd = wordTab[cnd];
-
-      else
-         wordTab[pos++] = 0;
-   }
-
-   // Perform search.
-   char const *textItr = text;
-   char const *textEnd = text + strlen(text);
-   size_t      wordIdx = 0;
-
-   while(textItr + wordIdx != textEnd)
-   {
-      // Character match?
-      if(word[wordIdx] == textItr[wordIdx])
-      {
-         // Word match?
-         if(++wordIdx == wordLen)
-         {
-            if(wordTab != wordTabAuto) free(wordTab);
-            return (char *)textItr;
-         }
-      }
-      else
-      {
-         // Not at start of word match?
-         if(wordIdx)
-         {
-            textItr += wordIdx - wordTab[wordIdx];
-            wordIdx = wordTab[wordIdx];
-         }
-
-         // First character failure, just advance text iterator.
-         else
-            ++textItr;
-      }
-   }
-
-   if(wordTab != wordTabAuto) free(wordTab);
-   return NULL;
+   StrStrImpl(char,);
 }
 
 //
@@ -454,6 +463,21 @@ size_t strlen(char const *s)
 //
 
 //
+// strchr_str
+//
+char __str_ars *strchr_str(char __str_ars const *s, int c)
+{
+   do
+   {
+      if(*s == (char)c)
+         return (char __str_ars *)s;
+   }
+   while(*s++);
+
+   return NULL;
+}
+
+//
 // strlen_str
 //
 size_t strlen_str(char __str_ars const *s)
@@ -475,6 +499,14 @@ size_t strlen_str(char __str_ars const *s)
    while(*s++) ++n;
 
    return n;
+}
+
+//
+// strstr_str
+//
+char __str_ars *strstr_str(char __str_ars const *text, char __str_ars const *word)
+{
+   StrStrImpl(char __str_ars, _str);
 }
 
 // EOF

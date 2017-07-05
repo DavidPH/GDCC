@@ -102,7 +102,9 @@ size_t strlen(char const *_s);
 // Implementation extensions.
 //
 
+char __str_ars *strchr_str(char __str_ars const *_s, int _c);
 size_t strlen_str(char __str_ars const *_s);
+char __str_ars *strstr_str(char __str_ars const *_s1, char __str_ars const *_s2);
 
 #ifdef __cplusplus
 };
