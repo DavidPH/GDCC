@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2016 David Hill
+// Copyright(C) 2014-2017 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -10,8 +10,11 @@
 //
 //-----------------------------------------------------------------------------
 
+#define _GNU_SOURCE
+
 #include <string.h>
 
+#include <ctype.h>
 #include <errno.h>
 #include <stdlib.h>
 
@@ -27,12 +30,12 @@
 //
 // StrStrImpl
 //
-#define StrStrImpl(type, suf) \
-   size_t wordLen = strlen##suf(word); \
+#define StrStrImpl(type, conv, name_case, name_str) \
+   size_t wordLen = strlen##name_str(word); \
    \
    /* Special cases. */ \
    if(wordLen == 0) return (type *)text; \
-   if(wordLen == 1) return strchr##suf(text, *word); \
+   if(wordLen == 1) return str##name_case##chr##name_str(text, *word); \
    \
    /* Allocate partial match table. */ \
    size_t wordTabAuto[128], *wordTab; \
@@ -44,14 +47,14 @@
    /* Memory exhaustion, fall back to a no alloc algorithm. */ \
    if(!wordTab) \
    { \
-      while((text = strchr##suf(text, *word))) \
+      while((text = str##name_case##chr##name_str(text, *word))) \
       { \
          for(type const *textItr = text + 1, *wordItr = word + 1;; ++textItr, ++wordItr) \
          { \
             if(!*wordItr) return (type *)text; \
             if(!*textItr) return NULL; \
             \
-            if(*textItr != *wordItr) break; \
+            if(conv(*textItr) != conv(*wordItr)) break; \
          } \
          \
          ++text; \
@@ -66,7 +69,7 @@
    /* Compute partial match table. */ \
    for(size_t pos = 2, cnd = 0; pos != wordLen;) \
    { \
-      if(word[cnd] == word[pos - 1]) \
+      if(conv(word[cnd]) == conv(word[pos - 1])) \
          wordTab[pos++] = ++cnd; \
       else if(cnd) \
          cnd = wordTab[cnd]; \
@@ -76,13 +79,13 @@
    \
    /* Perform search. */ \
    type const *textItr = text; \
-   type const *textEnd = text + strlen##suf(text); \
+   type const *textEnd = text + strlen##name_str(text); \
    size_t      wordIdx = 0; \
    \
    while(textItr + wordIdx != textEnd) \
    { \
       /* Character match? */ \
-      if(word[wordIdx] == textItr[wordIdx]) \
+      if(conv(word[wordIdx]) == conv(textItr[wordIdx])) \
       { \
          /* Word match? */ \
          if(++wordIdx == wordLen) \
@@ -379,7 +382,7 @@ size_t strspn(char const *s1, char const *s2)
 //
 char *strstr(char const *text, char const *word)
 {
-   StrStrImpl(char,);
+   StrStrImpl(char,,,);
 }
 
 //
@@ -459,8 +462,62 @@ size_t strlen(char const *s)
 }
 
 //=========================================================
+// GNU extensions.
+//
+
+//
+// strcasestr
+//
+char *strcasestr(char const *text, char const *word)
+{
+   StrStrImpl(char, toupper, case,);
+}
+
+//=========================================================
 // Implementation extensions.
 //
+
+//
+// strcasechr
+//
+char *strcasechr(char const *s, int c)
+{
+   c = toupper(c);
+
+   do
+   {
+      if(toupper(*s) == (char)c)
+         return (char *)s;
+   }
+   while(*s++);
+
+   return NULL;
+}
+
+//
+// strcasechr_str
+//
+char __str_ars *strcasechr_str(char __str_ars const *s, int c)
+{
+   c = toupper(c);
+
+   do
+   {
+      if(toupper(*s) == (char)c)
+         return (char __str_ars *)s;
+   }
+   while(*s++);
+
+   return NULL;
+}
+
+//
+// strcasestr_str
+//
+char __str_ars *strcasestr_str(char __str_ars const *text, char __str_ars const *word)
+{
+   StrStrImpl(char __str_ars, toupper, case, _str);
+}
 
 //
 // strchr_str
@@ -506,7 +563,7 @@ size_t strlen_str(char __str_ars const *s)
 //
 char __str_ars *strstr_str(char __str_ars const *text, char __str_ars const *word)
 {
-   StrStrImpl(char __str_ars, _str);
+   StrStrImpl(char __str_ars,,, _str);
 }
 
 // EOF

@@ -99,9 +99,20 @@ char *strerror(int _errnum);
 size_t strlen(char const *_s);
 
 //
+// GNU extensions.
+//
+
+#if defined(_GNU_SOURCE)
+char *strcasestr(char const *_s1, char const *_s2);
+#endif
+
+//
 // Implementation extensions.
 //
 
+char *strcasechr(char const *_s, int _c);
+char __str_ars *strcasechr_str(char __str_ars const *_s, int _c);
+char __str_ars *strcasestr_str(char __str_ars const *_s1, char __str_ars const *_s2);
 char __str_ars *strchr_str(char __str_ars const *_s, int _c);
 size_t strlen_str(char __str_ars const *_s);
 char __str_ars *strstr_str(char __str_ars const *_s1, char __str_ars const *_s2);
