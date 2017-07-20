@@ -28,9 +28,12 @@
 // Thinker Member macros
 //
 #define DGE_OM(mem) (__glyph(unsigned, "{ObjectMember}" #mem))
+#define DGE_OM_damage DGE_OM(damage)
+#define DGE_OM_health DGE_OM(health)
 #define DGE_OM_id     DGE_OM(id)
 #define DGE_OM_mass   DGE_OM(mass)
 #define DGE_OM_next   DGE_OM(next)
+#define DGE_OM_owner  DGE_OM(owner)
 #define DGE_OM_pc     DGE_OM(pc)
 #define DGE_OM_pitch  DGE_OM(pitch)
 #define DGE_OM_prev   DGE_OM(prev)
@@ -101,6 +104,11 @@ typedef struct DGE_Point2
    short _Accum x, y;
 } DGE_Point2;
 
+typedef struct DGE_Point2I
+{
+   int x, y;
+} DGE_Point2I;
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -109,9 +117,11 @@ typedef struct DGE_Point2
 [[call("Native")]] void DGE_CallbackRegister(char const *name, DGE_CallbackType callback);
 [[call("Native")]] void DGE_CallbackUnregister(char const *name, DGE_CallbackType callback);
 
-[[call("Native")]] unsigned DGE_CreateSector(unsigned pc, unsigned ext);
+[[call("Native")]] unsigned DGE_CreateEntity(unsigned ext);
+[[call("Native")]] unsigned DGE_CreateMissileEntity(unsigned ext);
 [[call("Native")]] unsigned DGE_CreatePhysicsThinker(unsigned ext);
 [[call("Native")]] unsigned DGE_CreatePointThinker(unsigned ext);
+[[call("Native")]] unsigned DGE_CreateSector(unsigned pc, unsigned ext);
 [[call("Native")]] unsigned DGE_CreateShaderData(__str name, char const *frag, char const *vert);
 [[call("Native")]] unsigned DGE_CreateShaderFile(__str name, char const *frag, char const *vert);
 
@@ -154,6 +164,7 @@ typedef struct DGE_Point2
 
 [[call("Native")]] long _Fract DGE_GetInputAxis(unsigned num, unsigned axis);
 [[call("Native")]] unsigned DGE_GetInputButtons(void);
+[[call("Native")]] DGE_Point2I DGE_GetInputCursor(void);
 [[call("Native")]] unsigned DGE_GetSound(__str name);
 [[call("Native")]] unsigned DGE_GetShader(__str name);
 [[call("Native")]] unsigned DGE_GetTexture(__str name);
