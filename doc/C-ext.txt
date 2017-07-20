@@ -501,6 +501,7 @@ Syntax:
     <__this>
     * <this>
     * <__this>
+    -> identifier
     constant-expression
 
 -----------------------------------------------------------
@@ -514,8 +515,8 @@ Constraints:
 
   The primary expression in a struct property shall be a constant expression.
 
-  In a struct property argument list, this (or its alias, __this) shall appear
-  at most once.
+  In a struct property argument list, this (or its alias, __this) or
+  ->identifier shall appear at most once.
 
 Semantics:
   Declares a structure member whose access is controlled by the specified
@@ -530,6 +531,9 @@ Semantics:
 
     Each arg is replaced with a subsequent argument being passed to the
     structure property expression.
+
+    Each ->identifier is replaced with the named member of the containing
+    object.
   If there are any remaining arguments to the structure property expression,
   they are added as if the argument list contained a corresponding number of
   arg arguments.

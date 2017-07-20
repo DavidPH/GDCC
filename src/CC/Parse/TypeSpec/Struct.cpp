@@ -205,11 +205,14 @@ namespace GDCC::CC
             return StructPropArg::ThisPtr;
 
          if(ctx.in.drop(Core::TOK_Identi, Core::STR___arg))
-            return nullptr;
+            return StructPropArg::Value;
 
          if(ctx.in.drop(Core::TOK_Mul, Core::TOK_Identi, Core::STR_this) ||
             ctx.in.drop(Core::TOK_Mul, Core::TOK_Identi, Core::STR___this))
             return StructPropArg::ThisRef;
+
+         if(ctx.in.peek(Core::TOK_Mem, Core::TOK_Identi))
+            return ctx.in.get(), ctx.in.get().str;
 
          return {ctx.getExp_Cond(scope)};
       };

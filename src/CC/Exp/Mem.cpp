@@ -118,6 +118,11 @@ namespace GDCC::CC
       {
          switch(arg.spec)
          {
+         case StructPropArg::Member:
+            // TODO: Avoid multiple evaluation.
+            args.emplace_back(ExpCreate_Mem(expL, arg.name, pos, scope));
+            break;
+
          case StructPropArg::ThisPtr:
             // TODO: Avoid multiple evaluation.
             args.emplace_back(ExpCreate_Refer(expL, pos));

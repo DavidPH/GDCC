@@ -38,15 +38,18 @@ namespace GDCC::CC
       //
       enum Special
       {
+         Member,
          ThisPtr,
          ThisRef,
          Value,
       };
 
 
-      StructPropArg(SR::Exp const *val_) : val{val_}, spec{Value} {}
-      StructPropArg(Special spec_) : val{nullptr}, spec{spec_} {}
+      StructPropArg(Core::String name_) : name{name_}, val{nullptr}, spec{Member} {}
+      StructPropArg(SR::Exp const *val_) : name{nullptr}, val{val_}, spec{Value} {}
+      StructPropArg(Special spec_) : name{nullptr}, val{nullptr}, spec{spec_} {}
 
+      Core::String  name;
       SR::Exp::CPtr val;
       Special       spec;
    };
