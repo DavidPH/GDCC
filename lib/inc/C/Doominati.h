@@ -222,5 +222,127 @@ typedef struct DGE_Point2I
 
 [[call("Native")]] void DGE_ThinkerUnlink(unsigned id);
 
+
+//----------------------------------------------------------------------------|
+// Property Types                                                             |
+//
+
+//
+// DGE_Object
+//
+#define DGE_ObjectProps()
+typedef struct DGE_Object
+{
+   int id;
+
+   DGE_ObjectProps()
+} DGE_Object;
+
+//
+// DGE_Thinker
+//
+#define DGE_ThinkerProps() DGE_ObjectProps() \
+   __prop next {__get: DGE_ObjectMemberGetU(->id, DGE_OM_next), \
+                __set: DGE_ObjectMemberSetU(->id, DGE_OM_next)} \
+   __prop prev {__get: DGE_ObjectMemberGetU(->id, DGE_OM_prev), \
+                __set: DGE_ObjectMemberSetU(->id, DGE_OM_prev)}
+typedef struct DGE_Thinker
+{
+   int id;
+
+   DGE_ThinkerProps()
+} DGE_Thinker;
+
+//
+// DGE_PointThinker
+//
+#define DGE_PointThinkerProps() DGE_ThinkerProps() \
+   __prop pitch {__get: DGE_ObjectMemberGetLA(->id, DGE_OM_pitch), \
+                 __set: DGE_ObjectMemberSetLA(->id, DGE_OM_pitch)} \
+   __prop x     {__get: DGE_ObjectMemberGetX(->id, DGE_OM_x), \
+                 __set: DGE_ObjectMemberSetX(->id, DGE_OM_x)} \
+   __prop y     {__get: DGE_ObjectMemberGetX(->id, DGE_OM_y), \
+                 __set: DGE_ObjectMemberSetX(->id, DGE_OM_y)} \
+   __prop yaw   {__get: DGE_ObjectMemberGetLA(->id, DGE_OM_yaw), \
+                 __set: DGE_ObjectMemberSetLA(->id, DGE_OM_yaw)} \
+   __prop z     {__get: DGE_ObjectMemberGetX(->id, DGE_OM_z), \
+                 __set: DGE_ObjectMemberSetX(->id, DGE_OM_z)}
+typedef struct DGE_PointThinker
+{
+   int id;
+
+   DGE_PointThinkerProps()
+} DGE_PointThinker;
+
+//
+// DGE_RenderThinker
+//
+#define DGE_RenderThinkerProps() DGE_PointThinkerProps() \
+   __prop rsx    {__get: DGE_ObjectMemberGetX(->id, DGE_OM_rsx), \
+                  __set: DGE_ObjectMemberSetX(->id, DGE_OM_rsx)} \
+   __prop rsy    {__get: DGE_ObjectMemberGetX(->id, DGE_OM_rsy), \
+                  __set: DGE_ObjectMemberSetX(->id, DGE_OM_rsy)} \
+   __prop sprite {__get: DGE_ObjectMemberGetU(->id, DGE_OM_sprite), \
+                  __set: DGE_ObjectMemberSetU(->id, DGE_OM_sprite)}
+typedef struct DGE_RenderThinker
+{
+   int id;
+
+   DGE_RenderThinkerProps()
+} DGE_RenderThinker;
+
+//
+// DGE_PhysicsThinker
+//
+#define DGE_PhysicsThinkerProps() DGE_RenderThinkerProps() \
+   __prop mass {__get: DGE_ObjectMemberGetU(->id, DGE_OM_mass), \
+                __set: DGE_ObjectMemberSetU(->id, DGE_OM_mass)} \
+   __prop sx   {__get: DGE_ObjectMemberGetX(->id, DGE_OM_sx), \
+                __set: DGE_ObjectMemberSetX(->id, DGE_OM_sx)} \
+   __prop sy   {__get: DGE_ObjectMemberGetX(->id, DGE_OM_sy), \
+                __set: DGE_ObjectMemberSetX(->id, DGE_OM_sy)} \
+   __prop sz   {__get: DGE_ObjectMemberGetX(->id, DGE_OM_sz), \
+                __set: DGE_ObjectMemberSetX(->id, DGE_OM_sz)} \
+   __prop vx   {__get: DGE_ObjectMemberGetX(->id, DGE_OM_vx), \
+                __set: DGE_ObjectMemberSetX(->id, DGE_OM_vx)} \
+   __prop vy   {__get: DGE_ObjectMemberGetX(->id, DGE_OM_vy), \
+                __set: DGE_ObjectMemberSetX(->id, DGE_OM_vy)} \
+   __prop vz   {__get: DGE_ObjectMemberGetX(->id, DGE_OM_vz), \
+                __set: DGE_ObjectMemberSetX(->id, DGE_OM_vz)}
+typedef struct DGE_PhysicsThinker
+{
+   int id;
+
+   DGE_PhysicsThinkerProps()
+} DGE_PhysicsThinker;
+
+//
+// DGE_Entity
+//
+#define DGE_EntityProps() DGE_PhysicsThinkerProps() \
+   __prop health {__get: DGE_ObjectMemberGetU(->id, DGE_OM_health), \
+                  __set: DGE_ObjectMemberSetU(->id, DGE_OM_health)}
+typedef struct DGE_Entity
+{
+   int id;
+
+   DGE_EntityProps()
+} DGE_Entity;
+
+//
+// DGE_MissileEntity
+//
+#define DGE_MissileEntityProps() DGE_EntityProps() \
+   __prop damage {__get: DGE_ObjectMemberGetU(->id, DGE_OM_damage), \
+                  __set: DGE_ObjectMemberSetU(->id, DGE_OM_damage)} \
+   __prop owner  {__get: DGE_ObjectMemberGetU(->id, DGE_OM_owner), \
+                  __set: DGE_ObjectMemberSetU(->id, DGE_OM_owner)}
+typedef struct DGE_MissileEntity
+{
+   int id;
+
+   DGE_MissileEntityProps()
+} DGE_MissileEntity;
+
 #endif//__GDCC_Header__C__Doominati_h__
 
