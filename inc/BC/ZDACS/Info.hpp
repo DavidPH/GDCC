@@ -516,5 +516,5 @@ namespace GDCC
    }
 }
 
-#endif//GDCC__BC__MgC__Info_H__
+#endif//GDCC__BC__ZDACS__Info_H__
 

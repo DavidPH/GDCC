@@ -115,7 +115,7 @@ namespace GDCC
       //
       IArchive &IArchive::getHeader()
       {
-         if(std::strcmp(get(), "MgC_NTS")  ||
+         if(std::strcmp(get(), "DGE_NTS")  ||
             std::strcmp(get(), "GDCC::IR") ||
             std::strcmp(get(), ""))
          {

@@ -42,7 +42,7 @@ namespace GDCC
             .setDescS("Selects bytecode format.")
             .setDescL("Selects bytecode format. This option may affect higher level "
                "codegen and should be set at all stages of compiling. Valid "
-               "arguments are: ACSE, DGE_NTS, MgC_NTS."),
+               "arguments are: ACSE, DGE_NTS."),
 
          [](Option::Base *, Option::Args const &args) -> std::size_t
          {

@@ -28,7 +28,7 @@ namespace GDCC
       //
       OArchive &OArchive::putHeader()
       {
-         out << "MgC_NTS" << '\0' << "GDCC::IR" << '\0' << '\0';
+         out << "DGE_NTS" << '\0' << "GDCC::IR" << '\0' << '\0';
          putTablesString();
          return *this;
       }
