@@ -114,7 +114,7 @@ namespace GDCC::ACC
       fn->setAllocAut(attr.allocAut);
 
       if(!fn->retrn->isTypeVoid() && fn->stmnt->isNoReturn())
-         SR::WarnReturnType(attr.namePos, "no return in non-void function");
+         throw Core::ExceptStr(attr.namePos, "no return in non-void function");
    }
 
    //
