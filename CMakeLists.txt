@@ -75,6 +75,7 @@ if(NOT GDCC_NOFLAGS)
       GDCC_TRY_CXX_FLAG(-Wshadow Wshadow)
 
       GDCC_TRY_CXX_FLAG(-Wno-misleading-indentation Wno_misleading_indentation)
+      GDCC_TRY_CXX_FLAG(-Wno-implicit-fallthrough   Wno_implicit_fallthrough)
 
       GDCC_TRY_CXX_FLAG(-std=c++1z STD_CXX)
    endif()
