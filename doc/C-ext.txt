@@ -473,7 +473,7 @@ Syntax:
     struct-property-declaration
 
   struct-property-declaration:
-    <__prop> identifier { struct-property-list } ;
+    <__prop> identifier { struct-property-list }
 
   struct-property-list:
     struct-property
