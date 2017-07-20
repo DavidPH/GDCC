@@ -122,17 +122,6 @@ namespace std
       using reference         = T &;
       using iterator_category = bidirectional_iterator_tag;
    };
-   template<typename T, typename remove_cv<T>::type *T::*P,
-      typename remove_cv<T>::type *T::*N>
-   class iterator_traits<::GDCC::Core::ListItr<T const, P, N>>
-   {
-   public:
-      using difference_type   = ptrdiff_t;
-      using value_type        = typename remove_cv<T>::type;
-      using pointer           = T *;
-      using reference         = T &;
-      using iterator_category = bidirectional_iterator_tag;
-   };
 }
 
 #endif//GDCC__Core__List_H__
