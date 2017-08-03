@@ -491,6 +491,9 @@
 #define CHAN_VOICE       0x00000002
 #define CHAN_ITEM        0x00000003
 #define CHAN_BODY        0x00000004
+#define CHAN_5           0x00000005
+#define CHAN_6           0x00000006
+#define CHAN_7           0x00000007
 #define CHAN_LISTENERZ   0x00000008
 #define CHAN_MAYBE_LOCAL 0x00000010
 #define CHAN_UI          0x00000020
