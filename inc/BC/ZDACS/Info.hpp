@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -91,13 +91,14 @@ namespace GDCC
             class InitData
             {
             public:
-               InitData() : max{0}, needTag{false}, onlyStr{true} {}
+               InitData() : max{0}, needTag{false}, onlyNil{true}, onlyStr{true} {}
 
                std::unordered_map<Core::FastU, InitVal> vals;
 
                Core::FastU max;
 
                bool needTag : 1;
+               bool onlyNil : 1;
                bool onlyStr : 1;
             };
 

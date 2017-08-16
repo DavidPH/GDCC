@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -105,7 +105,7 @@ namespace GDCC
             Core::FastU len = 0;
 
             for(auto const &itr : init)
-               if(itr.first->space.base == IR::AddrBase::ModArr)
+               if(itr.first->space.base == IR::AddrBase::ModArr && !itr.second.onlyNil)
                   len += itr.second.max * 4 + 12;
 
             return len;

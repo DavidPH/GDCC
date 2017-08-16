@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -115,31 +115,35 @@ namespace GDCC
                   ini.max = idx;
             }
 
-            // If no initializers needed, skip remaining parts.
-            if(ini.vals.empty()) return;
-
             if(space->space.base == IR::AddrBase::ModArr)
             {
-               ++numChunkAINI;
-
-               for(auto const &i : ini.vals) switch(i.second.tag)
+               for(auto const &i : ini.vals)
                {
-               case InitTag::Empty:
-                  break;
+                  if(i.second.val)
+                     ini.onlyNil = false;
 
-               case InitTag::Fixed:
-                  ini.onlyStr = false;
-                  break;
+                  switch(i.second.tag)
+                  {
+                  case InitTag::Empty:
+                     break;
 
-               case InitTag::Funct:
-                  ini.needTag = true;
-                  ini.onlyStr = false;
-                  break;
+                  case InitTag::Fixed:
+                     ini.onlyStr = false;
+                     break;
 
-               case InitTag::StrEn:
-                  ini.needTag = true;
-                  break;
+                  case InitTag::Funct:
+                     ini.needTag = true;
+                     ini.onlyStr = false;
+                     break;
+
+                  case InitTag::StrEn:
+                     ini.needTag = true;
+                     break;
+                  }
                }
+
+               if(!ini.onlyNil)
+                  ++numChunkAINI;
 
                if(ini.needTag)
                {

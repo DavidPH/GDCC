@@ -141,7 +141,7 @@ namespace GDCC::BC::ZDACS
       if(!numChunkAINI) return;
 
       for(auto const &itr : init)
-         if(itr.first->space.base == IR::AddrBase::ModArr)
+         if(itr.first->space.base == IR::AddrBase::ModArr && !itr.second.onlyNil)
       {
          putData("AINI", 4);
          putWord(itr.second.max * 4 + 4);
