@@ -50,46 +50,65 @@
 #else
 #define DGE_OM(mem) 0
 #endif
-#define DGE_OM_damage DGE_OM(damage)
-#define DGE_OM_health DGE_OM(health)
-#define DGE_OM_id     DGE_OM(id)
-#define DGE_OM_mass   DGE_OM(mass)
-#define DGE_OM_next   DGE_OM(next)
-#define DGE_OM_owner  DGE_OM(owner)
-#define DGE_OM_pc     DGE_OM(pc)
-#define DGE_OM_pitch  DGE_OM(pitch)
-#define DGE_OM_prev   DGE_OM(prev)
-#define DGE_OM_rsx    DGE_OM(rsx)
-#define DGE_OM_rsy    DGE_OM(rsy)
-#define DGE_OM_sprite DGE_OM(sprite)
-#define DGE_OM_sx     DGE_OM(sx)
-#define DGE_OM_sy     DGE_OM(sy)
-#define DGE_OM_sz     DGE_OM(sz)
-#define DGE_OM_texc   DGE_OM(texc)
-#define DGE_OM_texf   DGE_OM(texf)
-#define DGE_OM_vx     DGE_OM(vx)
-#define DGE_OM_vy     DGE_OM(vy)
-#define DGE_OM_vz     DGE_OM(vz)
-#define DGE_OM_x      DGE_OM(x)
-#define DGE_OM_xh     DGE_OM(xh)
-#define DGE_OM_xl     DGE_OM(xl)
-#define DGE_OM_y      DGE_OM(y)
-#define DGE_OM_yh     DGE_OM(yh)
-#define DGE_OM_yl     DGE_OM(yl)
-#define DGE_OM_yaw    DGE_OM(yaw)
-#define DGE_OM_z      DGE_OM(z)
-#define DGE_OM_zh     DGE_OM(zh)
-#define DGE_OM_zl     DGE_OM(zl)
+#define DGE_OM_bvx      DGE_OM(bvx)
+#define DGE_OM_bvy      DGE_OM(bvy)
+#define DGE_OM_bvz      DGE_OM(bvz)
+#define DGE_OM_damage   DGE_OM(damage)
+#define DGE_OM_entfi    DGE_OM(entfi)
+#define DGE_OM_entla    DGE_OM(entla)
+#define DGE_OM_frictair DGE_OM(frictair)
+#define DGE_OM_friction DGE_OM(friction)
+#define DGE_OM_grabx    DGE_OM(grabx)
+#define DGE_OM_graby    DGE_OM(graby)
+#define DGE_OM_grabz    DGE_OM(grabz)
+#define DGE_OM_grabx    DGE_OM(gx)
+#define DGE_OM_grabx    DGE_OM(gy)
+#define DGE_OM_grabx    DGE_OM(gz)
+#define DGE_OM_health   DGE_OM(health)
+#define DGE_OM_id       DGE_OM(id)
+#define DGE_OM_mass     DGE_OM(mass)
+#define DGE_OM_next     DGE_OM(next)
+#define DGE_OM_owner    DGE_OM(owner)
+#define DGE_OM_pc       DGE_OM(pc)
+#define DGE_OM_pitch    DGE_OM(pitch)
+#define DGE_OM_prev     DGE_OM(prev)
+#define DGE_OM_rsx      DGE_OM(rsx)
+#define DGE_OM_rsy      DGE_OM(rsy)
+#define DGE_OM_sprite   DGE_OM(sprite)
+#define DGE_OM_sx       DGE_OM(sx)
+#define DGE_OM_sy       DGE_OM(sy)
+#define DGE_OM_sz       DGE_OM(sz)
+#define DGE_OM_team     DGE_OM(team)
+#define DGE_OM_teamfi   DGE_OM(teamfi)
+#define DGE_OM_teamla   DGE_OM(teamla)
+#define DGE_OM_teamne   DGE_OM(teamne)
+#define DGE_OM_teampr   DGE_OM(teampr)
+#define DGE_OM_texc     DGE_OM(texc)
+#define DGE_OM_texf     DGE_OM(texf)
+#define DGE_OM_vx       DGE_OM(vx)
+#define DGE_OM_vy       DGE_OM(vy)
+#define DGE_OM_vz       DGE_OM(vz)
+#define DGE_OM_x        DGE_OM(x)
+#define DGE_OM_xh       DGE_OM(xh)
+#define DGE_OM_xl       DGE_OM(xl)
+#define DGE_OM_y        DGE_OM(y)
+#define DGE_OM_yh       DGE_OM(yh)
+#define DGE_OM_yl       DGE_OM(yl)
+#define DGE_OM_yaw      DGE_OM(yaw)
+#define DGE_OM_z        DGE_OM(z)
+#define DGE_OM_zh       DGE_OM(zh)
+#define DGE_OM_zl       DGE_OM(zl)
 
 //
 // DGE_Object_MemberGet
 //
 #define DGE_Object_MemberGet(T, ...) \
    _Generic((T)0, \
-      int:         DGE_ObjectMemberGetI, \
-      DGE_ULFract: DGE_ObjectMemberGetLA, \
-      unsigned:    DGE_ObjectMemberGetU, \
-        DGE_Accum: DGE_ObjectMemberGetX \
+      int:         DGE_Object_MemberGetI, \
+      DGE_ULFract: DGE_Object_MemberGetLA, \
+      DGE_LFract:  DGE_Object_MemberGetLR, \
+      unsigned:    DGE_Object_MemberGetU, \
+        DGE_Accum: DGE_Object_MemberGetX \
    )(__VA_ARGS__)
 
 //
@@ -97,10 +116,11 @@
 //
 #define DGE_Object_MemberSet(T, ...) \
    _Generic((T)0, \
-      int:         DGE_ObjectMemberSetI, \
-      DGE_ULFract: DGE_ObjectMemberSetLA, \
-      unsigned:    DGE_ObjectMemberSetU, \
-      DGE_Accum:   DGE_ObjectMemberSetX \
+      int:         DGE_Object_MemberSetI, \
+      DGE_ULFract: DGE_Object_MemberSetLA, \
+      DGE_LFract:  DGE_Object_MemberSetLR, \
+      unsigned:    DGE_Object_MemberSetU, \
+      DGE_Accum:   DGE_Object_MemberSetX \
    )(__VA_ARGS__)
 
 //
@@ -214,6 +234,7 @@ typedef struct DGE_Point2I
 
 struct DGE_Object;
  struct DGE_Sector;
+ struct DGE_Team;
  struct DGE_Thinker;
   struct DGE_PointThinker;
    struct DGE_RenderThinker;
@@ -227,6 +248,7 @@ struct DGE_Object;
 //
 
 DGE_Native unsigned DGE_BlockMap_Find(DGE_Accum xl, DGE_Accum yl, DGE_Accum xh, DGE_Accum yh);
+DGE_Native unsigned DGE_BlockMap_FindAll(void);
 DGE_Native unsigned DGE_BlockMap_FindCountSector(unsigned find);
 DGE_Native unsigned DGE_BlockMap_FindCountThinker(unsigned find);
 DGE_Native void DGE_BlockMap_FindFree(unsigned find);
@@ -241,7 +263,6 @@ DGE_Native unsigned DGE_CreateEntity(unsigned ext);
 DGE_Native unsigned DGE_CreateMissileEntity(unsigned ext);
 DGE_Native unsigned DGE_CreatePhysicsThinker(unsigned ext);
 DGE_Native unsigned DGE_CreatePointThinker(unsigned ext);
-DGE_Native unsigned DGE_CreateSector(unsigned pc, unsigned ext);
 DGE_Native unsigned DGE_CreateShaderData(DGE_Str name, char const *frag, char const *vert);
 DGE_Native unsigned DGE_CreateShaderFile(DGE_Str name, char const *frag, char const *vert);
 
@@ -288,16 +309,18 @@ DGE_Native unsigned DGE_GetSound(DGE_Str name);
 DGE_Native unsigned DGE_GetShader(DGE_Str name);
 DGE_Native unsigned DGE_GetTexture(DGE_Str name);
 
-DGE_Native int DGE_ObjectMemberGetI(unsigned id, unsigned mem);
-DGE_Native DGE_ULFract DGE_ObjectMemberGetLA(unsigned id, unsigned mem);
-DGE_Native unsigned DGE_ObjectMemberGetU(unsigned id, unsigned mem);
-DGE_Native DGE_Accum DGE_ObjectMemberGetX(unsigned id, unsigned mem);
-DGE_Native void DGE_ObjectMemberSetI(unsigned id, unsigned mem, int val);
-DGE_Native void DGE_ObjectMemberSetLA(unsigned id, unsigned mem, DGE_ULFract val);
-DGE_Native void DGE_ObjectMemberSetU(unsigned id, unsigned mem, unsigned val);
-DGE_Native void DGE_ObjectMemberSetX(unsigned id, unsigned mem, DGE_Accum val);
-DGE_Native void DGE_ObjectRefAdd(unsigned id);
-DGE_Native void DGE_ObjectRefSub(unsigned id);
+DGE_Native int DGE_Object_MemberGetI(unsigned id, unsigned mem);
+DGE_Native DGE_ULFract DGE_Object_MemberGetLA(unsigned id, unsigned mem);
+DGE_Native DGE_LFract DGE_Object_MemberGetLR(unsigned id, unsigned mem);
+DGE_Native unsigned DGE_Object_MemberGetU(unsigned id, unsigned mem);
+DGE_Native DGE_Accum DGE_Object_MemberGetX(unsigned id, unsigned mem);
+DGE_Native void DGE_Object_MemberSetI(unsigned id, unsigned mem, int val);
+DGE_Native void DGE_Object_MemberSetLA(unsigned id, unsigned mem, DGE_ULFract val);
+DGE_Native void DGE_Object_MemberSetLR(unsigned id, unsigned mem, DGE_LFract val);
+DGE_Native void DGE_Object_MemberSetU(unsigned id, unsigned mem, unsigned val);
+DGE_Native void DGE_Object_MemberSetX(unsigned id, unsigned mem, DGE_Accum val);
+DGE_Native void DGE_Object_RefAdd(unsigned id);
+DGE_Native void DGE_Object_RefSub(unsigned id);
 
 DGE_Native void DGE_PhysicsThinkerBlock(unsigned id);
 DGE_Native void DGE_PhysicsThinkerUnblock(unsigned id);
@@ -305,11 +328,12 @@ DGE_Native void DGE_PhysicsThinkerUnblock(unsigned id);
 DGE_Native void DGE_PrintChar(unsigned c);
 DGE_Native void DGE_PrintWordD(unsigned d);
 
-DGE_Native void DGE_SectorBlock(unsigned id);
-DGE_Native void DGE_SectorCalcBounds(unsigned id);
-DGE_Native DGE_Point2 DGE_SectorPointGet(unsigned id, unsigned p);
-DGE_Native void DGE_SectorPointSet(unsigned id, unsigned p, DGE_Point2 val);
-DGE_Native void DGE_SectorUnblock(unsigned id);
+DGE_Native void DGE_Sector_Block(unsigned id);
+DGE_Native void DGE_Sector_CalcBounds(unsigned id);
+DGE_Native unsigned DGE_Sector_Create(unsigned pc, unsigned ext);
+DGE_Native DGE_Point2 DGE_Sector_PointGet(unsigned id, unsigned p);
+DGE_Native void DGE_Sector_PointSet(unsigned id, unsigned p, DGE_Point2 val);
+DGE_Native void DGE_Sector_Unblock(unsigned id);
 
 DGE_Native void DGE_SetViewpoint(unsigned id);
 DGE_Native void DGE_SetVirtualResolution(unsigned w, unsigned h);
@@ -341,6 +365,8 @@ DGE_Native unsigned DGE_SysWriteErr(char const *buf, unsigned len);
 
 DGE_Native unsigned DGE_Task_Create(unsigned thread, DGE_CallbackType fn, ...);
 
+DGE_Native unsigned DGE_Team_Create(unsigned ext);
+
 DGE_OptArgs(1)
 DGE_Native void DGE_TextAlignment(int h, int v);
 
@@ -367,21 +393,44 @@ typedef struct DGE_Object
 // DGE_Sector
 //
 #define DGE_SectorProps() DGE_ObjectProps() \
-   DGE_PropMem(unsigned,  pc) \
-   DGE_PropMem(unsigned,  texc) \
-   DGE_PropMem(unsigned,  texf) \
-   DGE_PropMem(DGE_Accum, xh) \
-   DGE_PropMem(DGE_Accum, xl) \
-   DGE_PropMem(DGE_Accum, yh) \
-   DGE_PropMem(DGE_Accum, yl) \
-   DGE_PropMem(DGE_Accum, zh) \
-   DGE_PropMem(DGE_Accum, zl)
+   DGE_PropMem(DGE_LFract, frictair) \
+   DGE_PropMem(DGE_LFract, friction) \
+   DGE_PropMem(DGE_Accum,  gx) \
+   DGE_PropMem(DGE_Accum,  gy) \
+   DGE_PropMem(DGE_Accum,  gz) \
+   DGE_PropMem(unsigned,   pc) \
+   DGE_PropMem(unsigned,   texc) \
+   DGE_PropMem(unsigned,   texf) \
+   DGE_PropMem(DGE_Accum,  xh) \
+   DGE_PropMem(DGE_Accum,  xl) \
+   DGE_PropMem(DGE_Accum,  yh) \
+   DGE_PropMem(DGE_Accum,  yl) \
+   DGE_PropMem(DGE_Accum,  zh) \
+   DGE_PropMem(DGE_Accum,  zl)
 typedef struct DGE_Sector
 {
    int id;
 
    DGE_SectorProps()
 } DGE_Sector;
+
+//
+// DGE_Team
+//
+#define DGE_TeamProps() DGE_ObjectProps() \
+   DGE_PropMem(unsigned, entfi) \
+   DGE_PropMem(unsigned, entla) \
+   DGE_PropMem(unsigned, owner) \
+   DGE_PropMem(unsigned, teamfi) \
+   DGE_PropMem(unsigned, teamla) \
+   DGE_PropMem(unsigned, teamne) \
+   DGE_PropMem(unsigned, teampr)
+typedef struct DGE_Team
+{
+   int id;
+
+   DGE_TeamProps()
+} DGE_Team;
 
 //
 // DGE_Thinker
@@ -430,13 +479,20 @@ typedef struct DGE_RenderThinker
 // DGE_PhysicsThinker
 //
 #define DGE_PhysicsThinkerProps() DGE_RenderThinkerProps() \
-   DGE_PropMem(unsigned,  mass) \
-   DGE_PropMem(DGE_Accum, sx) \
-   DGE_PropMem(DGE_Accum, sy) \
-   DGE_PropMem(DGE_Accum, sz) \
-   DGE_PropMem(DGE_Accum, vx) \
-   DGE_PropMem(DGE_Accum, vy) \
-   DGE_PropMem(DGE_Accum, vz)
+   DGE_PropMem(DGE_Accum,  bvx) \
+   DGE_PropMem(DGE_Accum,  bvy) \
+   DGE_PropMem(DGE_Accum,  bvz) \
+   DGE_PropMem(DGE_LFract, friction) \
+   DGE_PropMem(DGE_Accum,  grabx) \
+   DGE_PropMem(DGE_Accum,  graby) \
+   DGE_PropMem(DGE_Accum,  grabz) \
+   DGE_PropMem(DGE_Accum,  mass) \
+   DGE_PropMem(DGE_Accum,  sx) \
+   DGE_PropMem(DGE_Accum,  sy) \
+   DGE_PropMem(DGE_Accum,  sz) \
+   DGE_PropMem(DGE_Accum,  vx) \
+   DGE_PropMem(DGE_Accum,  vy) \
+   DGE_PropMem(DGE_Accum,  vz)
 typedef struct DGE_PhysicsThinker
 {
    int id;
@@ -448,7 +504,10 @@ typedef struct DGE_PhysicsThinker
 // DGE_Entity
 //
 #define DGE_EntityProps() DGE_PhysicsThinkerProps() \
-   DGE_PropMem(int, health)
+   DGE_PropMem(int,      health) \
+   DGE_PropMem(unsigned, team) \
+   DGE_PropMem(unsigned, teamne) \
+   DGE_PropMem(unsigned, teampr)
 typedef struct DGE_Entity
 {
    int id;
