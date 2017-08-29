@@ -93,5 +93,13 @@
 #define DB_ORDER_ASC  0
 #define DB_ORDER_DESC 1
 
+#define TM_SECOND  0
+#define TM_MINUTE  1
+#define TM_HOUR    2
+#define TM_DAY     3
+#define TM_MONTH   4
+#define TM_YEAR    5
+#define TM_WEEKDAY 6
+
 #endif//__GDCC_Header__C__ACS_Zandronum__defs_h__
 
