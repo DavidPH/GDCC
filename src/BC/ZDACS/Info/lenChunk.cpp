@@ -346,7 +346,7 @@ namespace GDCC
 
             for(auto const &itr : prog->rangeFunction())
             {
-               if(!IsScriptS(itr.ctype))
+               if(!itr.defin || !IsScriptS(itr.ctype))
                   continue;
 
                strs[itr.valueInt] = itr.valueStr;
