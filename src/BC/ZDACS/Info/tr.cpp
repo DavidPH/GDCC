@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,30 +20,24 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::BC::ZDACS
 {
-   namespace BC
+   //
+   // Info::trFunc
+   //
+   void Info::trFunc()
    {
-      namespace ZDACS
+      trBlock(func->block);
+
+      switch(func->ctype)
       {
-         //
-         // Info::trFunc
-         //
-         void Info::trFunc()
-         {
-            trBlock(func->block);
+      case IR::CallType::SScriptS:
+      case IR::CallType::ScriptS:
+         if(!func->valueStr)
+            func->valueStr = func->glyph;
+         break;
 
-            if(func->defin) switch(func->ctype)
-            {
-            case IR::CallType::SScriptS:
-            case IR::CallType::ScriptS:
-               if(!func->valueStr)
-                  func->valueStr = func->glyph;
-               break;
-
-            default: break;
-            }
-         }
+      default: break;
       }
    }
 }
