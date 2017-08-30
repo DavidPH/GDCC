@@ -104,34 +104,37 @@ namespace GDCC::BC::ZDACS
 
       case IR::CallType::SScriptI:
       case IR::CallType::ScriptI:
-         if(!func->defin) break;
+         if(func->defin)
+         {
+            if(func->alloc)
+               func->allocValue(getAllocFunc(func->ctype));
 
-         if(func->alloc)
-            func->allocValue(getAllocFunc(func->ctype));
+            ++numChunkSPTR;
 
-         ++numChunkSPTR;
+            if(isScriptFlag(func->stype)) ++numChunkSFLG;
+            if(func->getLocalReg() > 20)  ++numChunkSVCT;
+         }
 
-         if(isScriptFlag(func->stype)) ++numChunkSFLG;
-         if(func->getLocalReg() > 20) ++numChunkSVCT;
-
-         backGlyphWord(func->glyph, func->valueInt);
+         if(!func->alloc)
+            backGlyphWord(func->glyph, func->valueInt);
 
          break;
 
       case IR::CallType::SScriptS:
       case IR::CallType::ScriptS:
-         if(!func->defin) break;
+         if(func->defin)
+         {
+            if(func->alloc)
+               func->allocValue(getAllocFunc(func->ctype));
 
-         if(func->alloc)
-            func->allocValue(getAllocFunc(func->ctype));
+            ++numChunkSPTR;
 
-         ++numChunkSPTR;
+            if(isScriptFlag(func->stype)) ++numChunkSFLG;
+            if(func->getLocalReg() > 20)  ++numChunkSVCT;
 
-         if(isScriptFlag(func->stype)) ++numChunkSFLG;
-         if(func->getLocalReg() > 20) ++numChunkSVCT;
-
-         if(numChunkSNAM <= func->valueInt)
-            numChunkSNAM = func->valueInt + 1;
+            if(numChunkSNAM <= func->valueInt)
+               numChunkSNAM = func->valueInt + 1;
+         }
 
          if(auto s = prog->findStrEntVal(func->valueStr))
             backGlyphGlyph(func->glyph, s->glyph);
