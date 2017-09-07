@@ -193,13 +193,15 @@ namespace GDCC
             //    declaration
             //    statement
 
+            auto labs = getLabels(blockScope);
+
             // declaration
             if(isDecl(blockScope))
-               stmnts.emplace_back(getDecl(blockScope, getLabels(blockScope)));
+               stmnts.emplace_back(getDecl(blockScope, std::move(labs)));
 
             // statement
             else
-               stmnts.emplace_back(getStatement(blockScope));
+               stmnts.emplace_back(getStatement(blockScope, std::move(labs)));
          }
 
          // }
