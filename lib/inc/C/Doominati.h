@@ -43,7 +43,7 @@
 //
 // DGE_OM_*
 //
-// Object Member macros
+// Object Member macros.
 //
 #if __GDCC__
 #define DGE_OM(mem) (__glyph(unsigned, "{ObjectMember}" #mem))
@@ -61,9 +61,9 @@
 #define DGE_OM_grabx    DGE_OM(grabx)
 #define DGE_OM_graby    DGE_OM(graby)
 #define DGE_OM_grabz    DGE_OM(grabz)
-#define DGE_OM_grabx    DGE_OM(gx)
-#define DGE_OM_grabx    DGE_OM(gy)
-#define DGE_OM_grabx    DGE_OM(gz)
+#define DGE_OM_gx       DGE_OM(gx)
+#define DGE_OM_gy       DGE_OM(gy)
+#define DGE_OM_gz       DGE_OM(gz)
 #define DGE_OM_health   DGE_OM(health)
 #define DGE_OM_id       DGE_OM(id)
 #define DGE_OM_mass     DGE_OM(mass)
@@ -98,6 +98,26 @@
 #define DGE_OM_z        DGE_OM(z)
 #define DGE_OM_zh       DGE_OM(zh)
 #define DGE_OM_zl       DGE_OM(zl)
+
+//
+// DGE_OT_*
+//
+// Object Type macros.
+//
+#if __GDCC__
+#define DGE_OT(type) (__glyph(unsigned, "{ObjectType}" #type))
+#else
+#define DGE_OT(type) 0
+#endif
+#define DGE_OT_Object              DGE_OT(Object)
+# define DGE_OT_Sector             DGE_OT(Sector)
+# define DGE_OT_Team               DGE_OT(Team)
+# define DGE_OT_Thinker            DGE_OT(Thinker)
+#  define DGE_OT_PointThinker      DGE_OT(PointThinker)
+#   define DGE_OT_RenderThinker    DGE_OT(RenderThinker)
+#    define DGE_OT_PhysicsThinker  DGE_OT(PhysicsThinker)
+#     define DGE_OT_Entity         DGE_OT(Entity)
+#      define DGE_OT_MissileEntity DGE_OT(MissileEntity)
 
 //
 // DGE_Object_MemberGet
@@ -309,6 +329,7 @@ DGE_Native unsigned DGE_GetSound(DGE_Str name);
 DGE_Native unsigned DGE_GetShader(DGE_Str name);
 DGE_Native unsigned DGE_GetTexture(DGE_Str name);
 
+DGE_Native unsigned DGE_Object_Cast(unsigned id, unsigned type);
 DGE_Native int DGE_Object_MemberGetI(unsigned id, unsigned mem);
 DGE_Native DGE_ULFract DGE_Object_MemberGetLA(unsigned id, unsigned mem);
 DGE_Native DGE_LFract DGE_Object_MemberGetLR(unsigned id, unsigned mem);
