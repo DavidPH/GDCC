@@ -279,10 +279,6 @@ DGE_Native void DGE_BlockMap_Split(DGE_Accum minSize, unsigned maxObj);
 DGE_Native void DGE_CallbackRegister(char const *name, DGE_CallbackType callback);
 DGE_Native void DGE_CallbackUnregister(char const *name, DGE_CallbackType callback);
 
-DGE_Native unsigned DGE_CreateEntity(unsigned ext);
-DGE_Native unsigned DGE_CreateMissileEntity(unsigned ext);
-DGE_Native unsigned DGE_CreatePhysicsThinker(unsigned ext);
-DGE_Native unsigned DGE_CreatePointThinker(unsigned ext);
 DGE_Native unsigned DGE_CreateShaderData(DGE_Str name, char const *frag, char const *vert);
 DGE_Native unsigned DGE_CreateShaderFile(DGE_Str name, char const *frag, char const *vert);
 
@@ -313,6 +309,8 @@ DGE_Native void DGE_DrawTexture(unsigned tex);
 DGE_Native void DGE_DrawTriangle(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2, DGE_Accum x3, DGE_Accum y3);
 DGE_Native void DGE_DrawTriangleLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2, DGE_Accum x3, DGE_Accum y3);
 
+DGE_Native unsigned DGE_Entity_Create(unsigned ext);
+
 DGE_Native void DGE_FileClose(int fd);
 DGE_Native int DGE_FileGet(int fd, unsigned idx);
 DGE_Native int DGE_FileOpen(char const *name);
@@ -329,6 +327,8 @@ DGE_Native unsigned DGE_GetSound(DGE_Str name);
 DGE_Native unsigned DGE_GetShader(DGE_Str name);
 DGE_Native unsigned DGE_GetTexture(DGE_Str name);
 
+DGE_Native unsigned DGE_MissileEntity_Create(unsigned ext);
+
 DGE_Native unsigned DGE_Object_Cast(unsigned id, unsigned type);
 DGE_Native int DGE_Object_MemberGetI(unsigned id, unsigned mem);
 DGE_Native DGE_ULFract DGE_Object_MemberGetLA(unsigned id, unsigned mem);
@@ -343,8 +343,11 @@ DGE_Native void DGE_Object_MemberSetX(unsigned id, unsigned mem, DGE_Accum val);
 DGE_Native void DGE_Object_RefAdd(unsigned id);
 DGE_Native void DGE_Object_RefSub(unsigned id);
 
-DGE_Native void DGE_PhysicsThinkerBlock(unsigned id);
-DGE_Native void DGE_PhysicsThinkerUnblock(unsigned id);
+DGE_Native void DGE_PhysicsThinker_Block(unsigned id);
+DGE_Native unsigned DGE_PhysicsThinker_Create(unsigned ext);
+DGE_Native void DGE_PhysicsThinker_Unblock(unsigned id);
+
+DGE_Native unsigned DGE_PointThinker_Create(unsigned ext);
 
 DGE_Native void DGE_PrintChar(unsigned c);
 DGE_Native void DGE_PrintWordD(unsigned d);
@@ -391,8 +394,9 @@ DGE_Native unsigned DGE_Team_Create(unsigned ext);
 DGE_OptArgs(1)
 DGE_Native void DGE_TextAlignment(int h, int v);
 
-DGE_Native unsigned DGE_ThinkerCap(void);
-DGE_Native void DGE_ThinkerUnlink(unsigned id);
+DGE_Native unsigned DGE_Thinker_Head(void);
+DGE_Native void DGE_Thinker_Insert(unsigned id);
+DGE_Native void DGE_Thinker_Unlink(unsigned id);
 
 
 //----------------------------------------------------------------------------|
