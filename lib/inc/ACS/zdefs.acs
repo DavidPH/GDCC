@@ -225,6 +225,17 @@
 #define APROP_StencilColor     41
 #define APROP_Friction         42
 #define APROP_DamageMultiplier 43
+#define APROP_MaxStepHeight    44
+#define APROP_MaxDropOffHeight 45
+#define APROP_DamageType       46
+#define APROP_Counter0        100
+#define APROP_Counter1        101
+#define APROP_Counter2        102
+#define APROP_Counter3        103
+#define APROP_Counter4        104
+#define APROP_Counter5        105
+#define APROP_Counter6        106
+#define APROP_Counter7        107
 
 #define STYLE_None                0
 #define STYLE_Normal              1
