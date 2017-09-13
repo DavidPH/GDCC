@@ -174,29 +174,29 @@ ACS_SpecialDeclFull(252, 0, int, Ceiling_RaiseToNearest, int, int);
 ACS_SpecialDeclFull(253, 0, int, Ceiling_LowerToLowest, int, int);
 ACS_SpecialDeclFull(254, 0, int, Ceiling_LowerToFloor, int, int);
 ACS_SpecialDeclFull(255, 1, int, Ceiling_CrushRaiseAndStaySilA, int, int, int, int, int);
-ACS_SpecialDeclFull(256, 1, int, Floor_LowerToHighestEE, int, int, int),
-ACS_SpecialDeclFull(257, 1, int, Floor_RaiseToLowest, int, int, int),
-ACS_SpecialDeclFull(258, 1, int, Floor_LowerToLowestCeiling, int, int, int),
-ACS_SpecialDeclFull(259, 3, int, Floor_RaiseToCeiling, int, int, int, int, int),
-ACS_SpecialDeclFull(260, 3, int, Floor_ToCeilingInstant, int, int, int, int),
-ACS_SpecialDeclFull(261, 1, int, Floor_LowerByTexture, int, int, int),
-ACS_SpecialDeclFull(262, 1, int, Ceiling_RaiseToHighest, int, int, int),
-ACS_SpecialDeclFull(263, 2, int, Ceiling_ToHighestInstant, int, int, int),
-ACS_SpecialDeclFull(264, 2, int, Ceiling_LowerToNearest, int, int, int, int),
-ACS_SpecialDeclFull(265, 1, int, Ceiling_RaiseToLowest, int, int, int),
-ACS_SpecialDeclFull(266, 1, int, Ceiling_RaiseToHighestFloor, int, int, int),
-ACS_SpecialDeclFull(267, 3, int, Ceiling_ToFloorInstant, int, int, int, int),
-ACS_SpecialDeclFull(268, 1, int, Ceiling_RaiseByTexture, int, int, int),
-ACS_SpecialDeclFull(269, 2, int, Ceiling_LowerByTexture, int, int, int, int),
-ACS_SpecialDeclFull(270, 0, int, Stairs_BuildDownDoom, int, int, int, int, int),
-ACS_SpecialDeclFull(271, 0, int, Stairs_BuildUpDoomSync, int, int, int, int),
-ACS_SpecialDeclFull(272, 0, int, Stairs_BuildDownDoomSync, int, int, int, int),
-ACS_SpecialDeclFull(273, 0, int, Stairs_BuildUpDoomCrush, int, int, int, int, int),
-ACS_SpecialDeclFull(274, 0, int, Door_AnimatedClose, int, int),
-ACS_SpecialDeclFull(275, 0, int, Floor_Stop, int),
-ACS_SpecialDeclFull(276, 0, int, Ceiling_Stop, int),
-ACS_SpecialDeclFull(277, 0, int, Sector_SetFloorGlow, int, int, int, int, int),
-ACS_SpecialDeclFull(278, 0, int, Sector_SetCeilingGlow, int, int, int, int, int),
+ACS_SpecialDeclFull(256, 1, int, Floor_LowerToHighestEE, int, int, int);
+ACS_SpecialDeclFull(257, 1, int, Floor_RaiseToLowest, int, int, int);
+ACS_SpecialDeclFull(258, 1, int, Floor_LowerToLowestCeiling, int, int, int);
+ACS_SpecialDeclFull(259, 3, int, Floor_RaiseToCeiling, int, int, int, int, int);
+ACS_SpecialDeclFull(260, 3, int, Floor_ToCeilingInstant, int, int, int, int);
+ACS_SpecialDeclFull(261, 1, int, Floor_LowerByTexture, int, int, int);
+ACS_SpecialDeclFull(262, 1, int, Ceiling_RaiseToHighest, int, int, int);
+ACS_SpecialDeclFull(263, 2, int, Ceiling_ToHighestInstant, int, int, int);
+ACS_SpecialDeclFull(264, 2, int, Ceiling_LowerToNearest, int, int, int, int);
+ACS_SpecialDeclFull(265, 1, int, Ceiling_RaiseToLowest, int, int, int);
+ACS_SpecialDeclFull(266, 1, int, Ceiling_RaiseToHighestFloor, int, int, int);
+ACS_SpecialDeclFull(267, 3, int, Ceiling_ToFloorInstant, int, int, int, int);
+ACS_SpecialDeclFull(268, 1, int, Ceiling_RaiseByTexture, int, int, int);
+ACS_SpecialDeclFull(269, 2, int, Ceiling_LowerByTexture, int, int, int, int);
+ACS_SpecialDeclFull(270, 0, int, Stairs_BuildDownDoom, int, int, int, int, int);
+ACS_SpecialDeclFull(271, 0, int, Stairs_BuildUpDoomSync, int, int, int, int);
+ACS_SpecialDeclFull(272, 0, int, Stairs_BuildDownDoomSync, int, int, int, int);
+ACS_SpecialDeclFull(273, 0, int, Stairs_BuildUpDoomCrush, int, int, int, int, int);
+ACS_SpecialDeclFull(274, 0, int, Door_AnimatedClose, int, int);
+ACS_SpecialDeclFull(275, 0, int, Floor_Stop, int);
+ACS_SpecialDeclFull(276, 0, int, Ceiling_Stop, int);
+ACS_SpecialDeclFull(277, 0, int, Sector_SetFloorGlow, int, int, int, int, int);
+ACS_SpecialDeclFull(278, 0, int, Sector_SetCeilingGlow, int, int, int, int, int);
 
 #endif//__GDCC_Header__C__ACS_ZDoom__Special_h__
 
