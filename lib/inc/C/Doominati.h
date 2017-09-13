@@ -26,9 +26,9 @@
 // DGE_CB_*
 //
 #if __GDCC__
-#define DGE_OM(cb) (__glyph(unsigned, "{Callback}" #cb))
+#define DGE_CB(cb) (__glyph(unsigned, "{Callback}" #cb))
 #else
-#define DGE_OM(cb) 0
+#define DGE_CB(cb) 0
 #endif
 #define DGE_CB_Draw     DGE_CB(Draw)
 #define DGE_CB_DrawPost DGE_CB(DrawPost)
