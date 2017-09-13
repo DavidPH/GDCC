@@ -23,6 +23,19 @@
 #define DGE_GlobalSound 1
 
 //
+// DGE_CB_*
+//
+#if __GDCC__
+#define DGE_OM(cb) (__glyph(unsigned, "{Callback}" #cb))
+#else
+#define DGE_OM(cb) 0
+#endif
+#define DGE_CB_Draw     DGE_CB(Draw)
+#define DGE_CB_DrawPost DGE_CB(DrawPost)
+#define DGE_CB_DrawPre  DGE_CB(DrawPre)
+#define DGE_CB_Resize   DGE_CB(Resize)
+
+//
 // DGE_Callback
 //
 #if __GDCC__
@@ -276,8 +289,8 @@ DGE_Native unsigned DGE_BlockMap_FindGetSector(unsigned find, unsigned idx);
 DGE_Native unsigned DGE_BlockMap_FindGetThinker(unsigned find, unsigned idx);
 DGE_Native void DGE_BlockMap_Split(DGE_Accum minSize, unsigned maxObj);
 
-DGE_Native void DGE_CallbackRegister(char const *name, DGE_CallbackType callback);
-DGE_Native void DGE_CallbackUnregister(char const *name, DGE_CallbackType callback);
+DGE_Native void DGE_Callback_Register(unsigned cb, DGE_CallbackType fn);
+DGE_Native void DGE_Callback_Unregister(unsigned cb, DGE_CallbackType fn);
 
 DGE_Native unsigned DGE_CreateShaderData(DGE_Str name, char const *frag, char const *vert);
 DGE_Native unsigned DGE_CreateShaderFile(DGE_Str name, char const *frag, char const *vert);
@@ -286,8 +299,6 @@ DGE_Native void DGE_DebugCallStk(void);
 DGE_OptArgs(1)
 DGE_Native void DGE_DebugDataStk(int dump);
 DGE_Native void DGE_DebugLocReg(void);
-
-DGE_Native void DGE_Delay(unsigned ticks);
 
 DGE_Native void DGE_DopplerSpeed(DGE_Accum meterspersecond);
 
@@ -388,6 +399,7 @@ DGE_Native unsigned DGE_SysWrite(char const *buf, unsigned len);
 DGE_Native unsigned DGE_SysWriteErr(char const *buf, unsigned len);
 
 DGE_Native unsigned DGE_Task_Create(unsigned thread, DGE_CallbackType fn, ...);
+DGE_Native void DGE_Task_Sleep(unsigned id, unsigned ticks);
 
 DGE_Native unsigned DGE_Team_Create(unsigned ext);
 
