@@ -133,6 +133,19 @@ namespace GDCC
          {
          }
 
+         //
+         // constructor
+         //
+         ParseExceptExpect(String exp_, String got_, bool expQ_,
+            bool gotQ_ = true) noexcept :
+            ParseException{},
+            exp {exp_},
+            got {got_},
+            expQ{expQ_},
+            gotQ{gotQ_}
+         {
+         }
+
          ParseExceptExpect(Token const &tok, String exp, bool expQ,
             bool gotQ = true) noexcept;
 
