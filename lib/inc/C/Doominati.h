@@ -363,6 +363,8 @@ DGE_Native unsigned DGE_PointThinker_Create(unsigned ext);
 DGE_Native void DGE_PrintChar(unsigned c);
 DGE_Native void DGE_PrintWordD(unsigned d);
 
+DGE_Native unsigned DGE_RenderThinker_Create(unsigned ext);
+
 DGE_Native void DGE_Sector_Block(unsigned id);
 DGE_Native void DGE_Sector_CalcBounds(unsigned id);
 DGE_Native unsigned DGE_Sector_Create(unsigned pc, unsigned ext);
