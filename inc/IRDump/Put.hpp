@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,100 +20,95 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
-   {
-      class String;
-   }
+   class String;
+}
 
-   namespace IR
-   {
-      class AddrSpace;
-      class Arg;
-      class Exp;
-      class Function;
-      class GlyphData;
-      class Import;
-      class Object;
-      class Program;
-      class Space;
-      class Statement;
-      class StrEnt;
-      class Type;
-      class Value;
+namespace GDCC::IR
+{
+   class AddrSpace;
+   class Arg;
+   class DJump;
+   class Exp;
+   class Function;
+   class GlyphData;
+   class Import;
+   class Object;
+   class Program;
+   class Space;
+   class Statement;
+   class StrEnt;
+   class Type;
+   class Value;
 
-      #define GDCC_IR_TypeList(t) \
-         class Type_##t; \
-         class Value_##t;
-      #include "../IR/TypeList.hpp"
-   }
+   #define GDCC_IR_TypeList(t) \
+      class Type_##t; \
+      class Value_##t;
+   #include "../IR/TypeList.hpp"
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IRDump
 {
-   namespace IRDump
-   {
-      void PutAddrSpace(std::ostream &out, IR::AddrSpace const &space);
+   void PutAddrSpace(std::ostream &out, IR::AddrSpace const &space);
 
-      void PutArg(std::ostream &out, IR::Arg const &arg);
+   void PutArg(std::ostream &out, IR::Arg const &arg);
 
-      void PutExp(std::ostream &out, IR::Exp const *exp);
+   void PutDJump(std::ostream &out, IR::DJump const &jump);
 
-      void PutFunction(std::ostream &out, IR::Function const &fn);
+   void PutExp(std::ostream &out, IR::Exp const *exp);
 
-      void PutGlyphData(std::ostream &out, IR::GlyphData const &data);
+   void PutFunction(std::ostream &out, IR::Function const &fn);
 
-      void PutImport(std::ostream &out, IR::Import const &imp);
+   void PutGlyphData(std::ostream &out, IR::GlyphData const &data);
 
-      void PutObject(std::ostream &out, IR::Object const &obj);
+   void PutImport(std::ostream &out, IR::Import const &imp);
 
-      void PutProgram(std::ostream &out, IR::Program const &prog);
+   void PutObject(std::ostream &out, IR::Object const &obj);
 
-      void PutSpace(std::ostream &out, IR::Space const &sp);
+   void PutProgram(std::ostream &out, IR::Program const &prog);
 
-      void PutStrEnt(std::ostream &out, IR::StrEnt const &str);
+   void PutSpace(std::ostream &out, IR::Space const &sp);
 
-      void PutType(std::ostream &out, IR::Type const &type);
+   void PutStrEnt(std::ostream &out, IR::StrEnt const &str);
 
-      void PutValue(std::ostream &out, IR::Value const &val);
+   void PutType(std::ostream &out, IR::Type const &type);
 
-      void PutString(std::ostream &out, Core::String str);
+   void PutValue(std::ostream &out, IR::Value const &val);
 
-      #define GDCC_IR_TypeList(t) \
-         void PutType_##t(std::ostream &out, IR::Type_##t const &type); \
-         void PutValue_##t(std::ostream &out, IR::Value_##t const &val);
-      #include "../IR/TypeList.hpp"
-   }
+   void PutString(std::ostream &out, Core::String str);
+
+   #define GDCC_IR_TypeList(t) \
+      void PutType_##t(std::ostream &out, IR::Type_##t const &type); \
+      void PutValue_##t(std::ostream &out, IR::Value_##t const &val);
+   #include "../IR/TypeList.hpp"
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Objects                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IRDump
 {
-   namespace IRDump
-   {
-      extern bool OptBlock;
-      extern bool OptExpName;
-      extern bool OptFunction;
-      extern bool OptGlyph;
-      extern bool OptHeaders;
-      extern bool OptImport;
-      extern bool OptLabels;
-      extern bool OptObject;
-      extern bool OptOrigin;
-      extern bool OptSpace;
-      extern bool OptStatistics;
-      extern bool OptStrEnt;
-   }
+   extern bool OptBlock;
+   extern bool OptDJump;
+   extern bool OptExpName;
+   extern bool OptFunction;
+   extern bool OptGlyph;
+   extern bool OptHeaders;
+   extern bool OptImport;
+   extern bool OptLabels;
+   extern bool OptObject;
+   extern bool OptOrigin;
+   extern bool OptSpace;
+   extern bool OptStatistics;
+   extern bool OptStrEnt;
 }
 
 #endif//GDCC__IRDump__IRDump_H__
