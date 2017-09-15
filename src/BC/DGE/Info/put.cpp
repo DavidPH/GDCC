@@ -85,6 +85,20 @@ namespace GDCC::BC::DGE
    }
 
    //
+   // Info::putDJump
+   //
+   void Info::putDJump()
+   {
+      if(!djump->defin) return;
+
+      putNTS("define");
+      putNTS(djump->glyph);
+      putNTS('=');
+      putNTS(djump->label);
+      putNTS(';');
+   }
+
+   //
    // Info::putExp
    //
    void Info::putExp(IR::Exp const *exp)
