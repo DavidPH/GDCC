@@ -113,6 +113,7 @@ namespace GDCC::BC::DGE
       void putCode(char const *code, Arg0 &&arg0, Arg1 &&arg1);
 
       virtual void putDJump();
+      using InfoBase::putDJump;
 
       void putExp(IR::Exp const *exp); // Full output.
       void putExp(IR::Exp const *exp, Core::FastU w);

@@ -63,6 +63,7 @@ namespace GDCC::BC::DGE
       // DGE_NTS header.
       putData("DGE_NTS\0CODEDEFS\0", 18);
 
+      for(auto &itr : prog->rangeDJump())    putDJump(itr);
       for(auto &itr : prog->rangeFunction()) putFunc(itr);
       for(auto &itr : prog->rangeObject())   putObj(itr);
       for(auto &itr : prog->rangeStrEnt())   putStr(itr);
