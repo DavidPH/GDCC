@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -107,8 +107,7 @@ namespace GDCC
       //
       Core::FastU Type_PtrBase::getSizePoint() const
       {
-         // Pointers to pointers are word-oriented pointers.
-         return getSizeWords();
+         return getSizeBytes();
       }
 
       //
