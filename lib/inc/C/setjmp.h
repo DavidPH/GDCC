@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015-2016 David Hill
+// Copyright(C) 2015-2017 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -35,7 +35,11 @@
 //
 // jmpbuf
 //
+#if !__GDCC_Family__ZDACS__
+typedef int jmp_buf[4];
+#else
 typedef int jmp_buf[3];
+#endif
 
 
 //----------------------------------------------------------------------------|
