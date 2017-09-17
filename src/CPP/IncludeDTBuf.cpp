@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -48,12 +48,12 @@ namespace GDCC
       };
 
       //
-      // --sys-include
+      // -I, --sys-include
       //
       static Option::CStrV IncludeSys
       {
          &Core::GetOptionList(), Option::Base::Info()
-            .setName("sys-include")
+            .setName("sys-include").setName('I')
             .setGroup("preprocessor")
             .setDescS("Adds a system include directory."),
 
