@@ -205,12 +205,12 @@ typedef int DGE_LFract;
 #endif
 
 //
-// DGE_Str
+// DGE_String
 //
 #if __GDCC__
-typedef __str DGE_Str;
+typedef __str DGE_String;
 #else
-typedef unsigned DGE_Str;
+typedef unsigned DGE_String;
 #endif
 
 //
@@ -292,8 +292,8 @@ DGE_Native void DGE_BlockMap_Split(DGE_Accum minSize, unsigned maxObj);
 DGE_Native void DGE_Callback_Register(unsigned cb, DGE_CallbackType fn);
 DGE_Native void DGE_Callback_Unregister(unsigned cb, DGE_CallbackType fn);
 
-DGE_Native unsigned DGE_CreateShaderData(DGE_Str name, char const *frag, char const *vert);
-DGE_Native unsigned DGE_CreateShaderFile(DGE_Str name, char const *frag, char const *vert);
+DGE_Native unsigned DGE_CreateShaderData(DGE_String name, char const *frag, char const *vert);
+DGE_Native unsigned DGE_CreateShaderFile(DGE_String name, char const *frag, char const *vert);
 
 DGE_Native void DGE_DebugCallStk(void);
 DGE_OptArgs(1)
@@ -334,9 +334,9 @@ DGE_Native void *DGE_FreestoreEnd(void);
 DGE_Native DGE_LFract DGE_GetInputAxis(unsigned num, unsigned axis);
 DGE_Native unsigned DGE_GetInputButtons(void);
 DGE_Native DGE_Point2I DGE_GetInputCursor(void);
-DGE_Native unsigned DGE_GetSound(DGE_Str name);
-DGE_Native unsigned DGE_GetShader(DGE_Str name);
-DGE_Native unsigned DGE_GetTexture(DGE_Str name);
+DGE_Native unsigned DGE_GetSound(DGE_String name);
+DGE_Native unsigned DGE_GetShader(DGE_String name);
+DGE_Native unsigned DGE_GetTexture(DGE_String name);
 
 DGE_Native unsigned DGE_MissileEntity_Create(unsigned ext);
 
@@ -395,6 +395,8 @@ DGE_OptArgs(1)
 DGE_Native unsigned DGE_SoundSrcPlay(unsigned src, unsigned snd, unsigned chan);
 DGE_Native void DGE_SoundSrcPosition(unsigned src, DGE_Accum x, DGE_Accum y, DGE_Accum z);
 DGE_Native void DGE_SoundSrcVelocity(unsigned src, DGE_Accum x, DGE_Accum y, DGE_Accum z);
+
+DGE_Native DGE_String DGE_String_Create(char const *str, unsigned len);
 
 DGE_Native unsigned DGE_SysRead(char *buf, unsigned len);
 DGE_Native unsigned DGE_SysWrite(char const *buf, unsigned len);
