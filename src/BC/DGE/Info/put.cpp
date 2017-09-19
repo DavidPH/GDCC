@@ -122,6 +122,7 @@ namespace GDCC::BC::DGE
          putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
          break;
 
+      case Core::STR_Array:
       case Core::STR_Assoc:
          {
             auto words = getWords(exp);

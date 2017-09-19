@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -217,6 +217,9 @@ namespace GDCC::BC
 
       switch(exp->getName())
       {
+      case Core::STR_Array:
+         return getWords_Array(static_cast<IR::Exp_Array const *>(exp));
+
       case Core::STR_Assoc:
          return getWords_Assoc(static_cast<IR::Exp_Assoc const *>(exp));
 
@@ -241,6 +244,24 @@ namespace GDCC::BC
 
       for(Core::FastU w = 0; w != size; ++w)
          words[w] = {nullptr, getWord(pos, val, w)};
+
+      return words;
+   }
+
+   //
+   // Info::getWords_Array
+   //
+   Info::WordArray Info::getWords_Array(IR::Exp_Array const *exp)
+   {
+      Core::FastU elemSize = getWordCount(exp->elemT);
+      WordArray   words{elemSize * exp->elemV.size()};
+
+      for(std::size_t i = 0; i != exp->elemV.size(); ++i)
+      {
+         auto w = getWords(exp->elemV[i]);
+
+         std::move(w.begin(), w.end(), &words[i * elemSize]);
+      }
 
       return words;
    }
