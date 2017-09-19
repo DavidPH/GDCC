@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -60,10 +60,12 @@ namespace GDCC
       struct CodeSet_ShL
       {
          static constexpr Code
+            CodeA_B = Code::ShLU_B,
             CodeA_W = Code::ShLU_W,
             CodeF_W = Code::ShLF_W,
             CodeI_W = Code::ShLU_W,
             CodeK_W = Code::ShLU_W,
+            CodeR_B = Code::ShLU_B,
             CodeR_W = Code::ShLU_W,
             CodeU_W = Code::ShLU_W,
             CodeX_W = Code::ShLU_W;
@@ -75,10 +77,12 @@ namespace GDCC
       struct CodeSet_ShR
       {
          static constexpr Code
+            CodeA_B = Code::ShRU_B,
             CodeA_W = Code::ShRU_W,
             CodeF_W = Code::ShRF_W,
             CodeI_W = Code::ShRI_W,
             CodeK_W = Code::ShRU_W,
+            CodeR_B = Code::ShRI_B,
             CodeR_W = Code::ShRI_W,
             CodeU_W = Code::ShRU_W,
             CodeX_W = Code::ShRI_W;

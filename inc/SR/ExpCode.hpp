@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -42,9 +42,15 @@ namespace GDCC
          else
          {
             if(t->getSizeBitsS())
-               return {Codes::CodeR_W, t->getSizeWords()};
+               if(t->isTypeSubWord())
+                  return {Codes::CodeR_B, t->getSizeBytes()};
+               else
+                  return {Codes::CodeR_W, t->getSizeWords()};
             else
-               return {Codes::CodeA_W, t->getSizeWords()};
+               if(t->isTypeSubWord())
+                  return {Codes::CodeA_B, t->getSizeBytes()};
+               else
+                  return {Codes::CodeA_W, t->getSizeWords()};
          }
       }
 

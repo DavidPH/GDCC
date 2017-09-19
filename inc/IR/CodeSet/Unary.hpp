@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -40,10 +40,12 @@ namespace GDCC
       struct CodeSet_Neg
       {
          static constexpr Code
+            CodeA_B = Code::NegI_B,
             CodeA_W = Code::NegI_W,
             CodeF_W = Code::NegF_W,
             CodeI_W = Code::NegI_W,
             CodeK_W = Code::NegI_W,
+            CodeR_B = Code::NegI_B,
             CodeR_W = Code::NegI_W,
             CodeU_W = Code::NegI_W,
             CodeX_W = Code::NegI_W;

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,7 +28,9 @@ GDCC_IR_CodeList(AdXU_W)
 
 // Add* dst lop rop
 GDCC_IR_CodeList(AddF_W)
+GDCC_IR_CodeList(AddI_B)
 GDCC_IR_CodeList(AddI_W)
+GDCC_IR_CodeList(AddU_B)
 GDCC_IR_CodeList(AddU_W)
 
 // BAnd dst lop rop
@@ -71,17 +73,29 @@ GDCC_IR_CodeList(CmpF_GT_W)
 GDCC_IR_CodeList(CmpF_LE_W)
 GDCC_IR_CodeList(CmpF_LT_W)
 GDCC_IR_CodeList(CmpF_NE_W)
+GDCC_IR_CodeList(CmpI_EQ_B)
 GDCC_IR_CodeList(CmpI_EQ_W)
+GDCC_IR_CodeList(CmpI_GE_B)
 GDCC_IR_CodeList(CmpI_GE_W)
+GDCC_IR_CodeList(CmpI_GT_B)
 GDCC_IR_CodeList(CmpI_GT_W)
+GDCC_IR_CodeList(CmpI_LE_B)
 GDCC_IR_CodeList(CmpI_LE_W)
+GDCC_IR_CodeList(CmpI_LT_B)
 GDCC_IR_CodeList(CmpI_LT_W)
+GDCC_IR_CodeList(CmpI_NE_B)
 GDCC_IR_CodeList(CmpI_NE_W)
+GDCC_IR_CodeList(CmpU_EQ_B)
 GDCC_IR_CodeList(CmpU_EQ_W)
+GDCC_IR_CodeList(CmpU_GE_B)
 GDCC_IR_CodeList(CmpU_GE_W)
+GDCC_IR_CodeList(CmpU_GT_B)
 GDCC_IR_CodeList(CmpU_GT_W)
+GDCC_IR_CodeList(CmpU_LE_B)
 GDCC_IR_CodeList(CmpU_LE_W)
+GDCC_IR_CodeList(CmpU_LT_B)
 GDCC_IR_CodeList(CmpU_LT_W)
+GDCC_IR_CodeList(CmpU_NE_B)
 GDCC_IR_CodeList(CmpU_NE_W)
 
 // Cnat src arg...
@@ -105,9 +119,13 @@ GDCC_IR_CodeList(DiXI_W)
 GDCC_IR_CodeList(DiXU_W)
 
 // Div* dst lop rop
+GDCC_IR_CodeList(DivA_B)
+GDCC_IR_CodeList(DivA_W)
 GDCC_IR_CodeList(DivF_W)
 GDCC_IR_CodeList(DivI_W)
 GDCC_IR_CodeList(DivK_W)
+GDCC_IR_CodeList(DivR_B)
+GDCC_IR_CodeList(DivR_W)
 GDCC_IR_CodeList(DivU_W)
 GDCC_IR_CodeList(DivX_W)
 
@@ -143,7 +161,9 @@ GDCC_IR_CodeList(LNot)
 GDCC_IR_CodeList(LOrI)
 
 // Mod* dst lop rop
+GDCC_IR_CodeList(ModI_B)
 GDCC_IR_CodeList(ModI_W)
+GDCC_IR_CodeList(ModU_B)
 GDCC_IR_CodeList(ModU_W)
 
 // Move dst src
@@ -154,14 +174,19 @@ GDCC_IR_CodeList(Move_W)
 GDCC_IR_CodeList(MuXU_W)
 
 // Mul* dst lop rop
+GDCC_IR_CodeList(MulA_B)
+GDCC_IR_CodeList(MulA_W)
 GDCC_IR_CodeList(MulF_W)
 GDCC_IR_CodeList(MulI_W)
 GDCC_IR_CodeList(MulK_W)
+GDCC_IR_CodeList(MulR_B)
+GDCC_IR_CodeList(MulR_W)
 GDCC_IR_CodeList(MulU_W)
 GDCC_IR_CodeList(MulX_W)
 
 // Neg* dst src
 GDCC_IR_CodeList(NegF_W)
+GDCC_IR_CodeList(NegI_B)
 GDCC_IR_CodeList(NegI_W)
 
 // Pltn dst src (Pointer, Local to Near)
@@ -172,11 +197,14 @@ GDCC_IR_CodeList(Retn)
 
 // ShL* dst lop rop
 GDCC_IR_CodeList(ShLF_W)
+GDCC_IR_CodeList(ShLU_B)
 GDCC_IR_CodeList(ShLU_W)
 
 // ShR* dst lop rop
 GDCC_IR_CodeList(ShRF_W)
+GDCC_IR_CodeList(ShRI_B)
 GDCC_IR_CodeList(ShRI_W)
+GDCC_IR_CodeList(ShRU_B)
 GDCC_IR_CodeList(ShRU_W)
 
 // SuX* dst lop rop
@@ -185,7 +213,9 @@ GDCC_IR_CodeList(SuXU_W)
 
 // Sub* dst lop rop
 GDCC_IR_CodeList(SubF_W)
+GDCC_IR_CodeList(SubI_B)
 GDCC_IR_CodeList(SubI_W)
+GDCC_IR_CodeList(SubU_B)
 GDCC_IR_CodeList(SubU_W)
 
 // Swap lop rop
