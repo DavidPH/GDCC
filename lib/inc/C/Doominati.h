@@ -280,6 +280,10 @@ struct DGE_Object;
 // Extern Functions                                                           |
 //
 
+DGE_Native void DGE_Audio_SetDopplerSpeed(DGE_Accum meterspersecond);
+DGE_OptArgs(4)
+DGE_Native void DGE_Audio_SetListener(DGE_Accum x, DGE_Accum y, DGE_Accum z, DGE_Accum velx, DGE_Accum vely, DGE_Accum velz, DGE_Accum angle);
+
 DGE_Native unsigned DGE_BlockMap_Find(DGE_Accum xl, DGE_Accum yl, DGE_Accum xu, DGE_Accum yu);
 DGE_Native unsigned DGE_BlockMap_FindAll(void);
 DGE_Native unsigned DGE_BlockMap_FindCountSector(unsigned find);
@@ -292,33 +296,28 @@ DGE_Native void DGE_BlockMap_Split(DGE_Accum minSize, unsigned maxObj);
 DGE_Native void DGE_Callback_Register(unsigned cb, DGE_CallbackType fn);
 DGE_Native void DGE_Callback_Unregister(unsigned cb, DGE_CallbackType fn);
 
-DGE_Native unsigned DGE_CreateShaderData(DGE_String name, char const *frag, char const *vert);
-DGE_Native unsigned DGE_CreateShaderFile(DGE_String name, char const *frag, char const *vert);
-
 DGE_Native void DGE_DebugCallStk(void);
 DGE_OptArgs(1)
 DGE_Native void DGE_DebugDataStk(int dump);
 DGE_Native void DGE_DebugLocReg(void);
 
-DGE_Native void DGE_DopplerSpeed(DGE_Accum meterspersecond);
-
 DGE_OptArgs(1)
-DGE_Native void DGE_DrawColor(DGE_ULFract r, DGE_ULFract g, DGE_ULFract b, DGE_ULFract a);
-DGE_Native void DGE_DrawCircle(DGE_Accum x, DGE_Accum y, DGE_Accum r);
-DGE_Native void DGE_DrawCircleLine(DGE_Accum x, DGE_Accum y, DGE_Accum r);
-DGE_Native void DGE_DrawCirclePrecision(int subdivisions);
-DGE_Native void DGE_DrawEllipse(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
-DGE_Native void DGE_DrawEllipseLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
-DGE_Native void DGE_DrawRectangle(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
-DGE_Native void DGE_DrawRectangleLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
-DGE_Native void DGE_DrawShader(unsigned shd);
-DGE_Native void DGE_DrawLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
-DGE_Native void DGE_DrawLineSmooth(unsigned on);
-DGE_Native void DGE_DrawLineWidth(int width);
-DGE_Native void DGE_DrawText(DGE_Accum x, DGE_Accum y, char const *str);
-DGE_Native void DGE_DrawTexture(unsigned tex);
-DGE_Native void DGE_DrawTriangle(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2, DGE_Accum x3, DGE_Accum y3);
-DGE_Native void DGE_DrawTriangleLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2, DGE_Accum x3, DGE_Accum y3);
+DGE_Native void DGE_Draw_Color(DGE_ULFract r, DGE_ULFract g, DGE_ULFract b, DGE_ULFract a);
+DGE_Native void DGE_Draw_Circle(DGE_Accum x, DGE_Accum y, DGE_Accum r);
+DGE_Native void DGE_Draw_CircleLine(DGE_Accum x, DGE_Accum y, DGE_Accum r);
+DGE_Native void DGE_Draw_CirclePrecision(int subdivisions);
+DGE_Native void DGE_Draw_Ellipse(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
+DGE_Native void DGE_Draw_EllipseLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
+DGE_Native void DGE_Draw_Rectangle(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
+DGE_Native void DGE_Draw_RectangleLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
+DGE_OptArgs(1)
+DGE_Native void DGE_Draw_SetTextAlignment(int h, int v);
+DGE_Native void DGE_Draw_Line(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
+DGE_Native void DGE_Draw_LineSmooth(unsigned on);
+DGE_Native void DGE_Draw_LineWidth(int width);
+DGE_Native void DGE_Draw_Text(DGE_Accum x, DGE_Accum y, char const *str);
+DGE_Native void DGE_Draw_Triangle(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2, DGE_Accum x3, DGE_Accum y3);
+DGE_Native void DGE_Draw_TriangleLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2, DGE_Accum x3, DGE_Accum y3);
 
 DGE_Native unsigned DGE_Entity_Create(unsigned ext);
 
@@ -334,9 +333,6 @@ DGE_Native void *DGE_FreestoreEnd(void);
 DGE_Native DGE_LFract DGE_GetInputAxis(unsigned num, unsigned axis);
 DGE_Native unsigned DGE_GetInputButtons(void);
 DGE_Native DGE_Point2I DGE_GetInputCursor(void);
-DGE_Native unsigned DGE_GetSound(DGE_String name);
-DGE_Native unsigned DGE_GetShader(DGE_String name);
-DGE_Native unsigned DGE_GetTexture(DGE_String name);
 
 DGE_Native unsigned DGE_MissileEntity_Create(unsigned ext);
 
@@ -363,6 +359,9 @@ DGE_Native unsigned DGE_PointThinker_Create(unsigned ext);
 DGE_Native void DGE_PrintChar(unsigned c);
 DGE_Native void DGE_PrintWordD(unsigned d);
 
+DGE_Native void DGE_Renderer_SetViewpoint(unsigned id);
+DGE_Native void DGE_Renderer_SetVirtualRes(unsigned w, unsigned h);
+
 DGE_Native unsigned DGE_RenderThinker_Create(unsigned ext);
 
 DGE_Native void DGE_Sector_Block(unsigned id);
@@ -372,29 +371,28 @@ DGE_Native DGE_Point2 DGE_Sector_PointGet(unsigned id, unsigned p);
 DGE_Native void DGE_Sector_PointSet(unsigned id, unsigned p, DGE_Point2 val);
 DGE_Native void DGE_Sector_Unblock(unsigned id);
 
-DGE_Native void DGE_SetViewpoint(unsigned id);
-DGE_Native void DGE_SetVirtualResolution(unsigned w, unsigned h);
-DGE_Native void DGE_SetWindowTitle(char const *str);
+DGE_Native void DGE_Shader_Bind(unsigned shd);
+DGE_Native unsigned DGE_Shader_CreateData(DGE_String name, char const *frag, char const *vert);
+DGE_Native unsigned DGE_Shader_CreateFile(DGE_String name, char const *frag, char const *vert);
+DGE_Native unsigned DGE_Shader_Get(DGE_String name);
 
-DGE_Native void DGE_SoundChanLoop(unsigned src, unsigned chan, unsigned on);
+DGE_Native unsigned DGE_Sound_Get(DGE_String name);
+DGE_Native void DGE_Sound_Play(unsigned src, unsigned chan);
+DGE_Native void DGE_Sound_SetLoop(unsigned src, unsigned chan, unsigned on);
 DGE_OptArgs(1)
-DGE_Native void DGE_SoundChanPitch(unsigned src, unsigned chan, DGE_ULFract pitch);
-DGE_Native void DGE_SoundChanPlay(unsigned src, unsigned chan);
-DGE_Native void DGE_SoundChanPosition(unsigned src, unsigned chan, DGE_Accum x, DGE_Accum y, DGE_Accum z);
-DGE_Native void DGE_SoundChanStop(unsigned src, unsigned chan);
-DGE_Native void DGE_SoundChanVolume(unsigned src, unsigned chan, DGE_ULFract volume);
+DGE_Native DGE_Accum DGE_Sound_SetPitch(unsigned src, unsigned chan, DGE_ULFract pitch);
+DGE_Native void DGE_Sound_SetPos(unsigned src, unsigned chan, DGE_Accum x, DGE_Accum y, DGE_Accum z);
+DGE_Native void DGE_Sound_SetVolume(unsigned src, unsigned chan, DGE_ULFract volume);
+DGE_Native void DGE_Sound_Stop(unsigned src, unsigned chan);
 
-DGE_OptArgs(4)
-DGE_Native void DGE_SoundListener(DGE_Accum x, DGE_Accum y, DGE_Accum z, DGE_Accum velx, DGE_Accum vely, DGE_Accum velz, DGE_Accum angle);
-
-DGE_Native unsigned DGE_SoundSource(DGE_Accum x, DGE_Accum y, DGE_Accum z);
 DGE_OptArgs(1)
-DGE_Native unsigned DGE_SoundSrcBind(unsigned src, unsigned snd, unsigned chan);
-DGE_Native void DGE_SoundSrcDestroy(unsigned src);
+DGE_Native unsigned DGE_SoundSrc_Bind(unsigned src, unsigned snd, unsigned chan);
+DGE_Native unsigned DGE_SoundSrc_Create(DGE_Accum x, DGE_Accum y, DGE_Accum z);
+DGE_Native void DGE_SoundSrc_Destroy(unsigned src);
 DGE_OptArgs(1)
-DGE_Native unsigned DGE_SoundSrcPlay(unsigned src, unsigned snd, unsigned chan);
-DGE_Native void DGE_SoundSrcPosition(unsigned src, DGE_Accum x, DGE_Accum y, DGE_Accum z);
-DGE_Native void DGE_SoundSrcVelocity(unsigned src, DGE_Accum x, DGE_Accum y, DGE_Accum z);
+DGE_Native unsigned DGE_SoundSrc_Play(unsigned src, unsigned snd, unsigned chan);
+DGE_Native void DGE_SoundSrc_SetPos(unsigned src, DGE_Accum x, DGE_Accum y, DGE_Accum z);
+DGE_Native void DGE_SoundSrc_SetVel(unsigned src, DGE_Accum x, DGE_Accum y, DGE_Accum z);
 
 DGE_Native DGE_String DGE_String_Create(char const *str, unsigned len);
 
@@ -407,12 +405,16 @@ DGE_Native void DGE_Task_Sleep(unsigned id, unsigned ticks);
 
 DGE_Native unsigned DGE_Team_Create(unsigned ext);
 
-DGE_OptArgs(1)
-DGE_Native void DGE_TextAlignment(int h, int v);
+DGE_Native unsigned DGE_Texture_Get(DGE_String name);
+DGE_Native void DGE_Texture_Bind(unsigned tex);
 
 DGE_Native unsigned DGE_Thinker_Head(void);
 DGE_Native void DGE_Thinker_Insert(unsigned id);
 DGE_Native void DGE_Thinker_Unlink(unsigned id);
+
+DGE_Native int DGE_Window_GetHeight(void);
+DGE_Native int DGE_Window_GetWidth(void);
+DGE_Native void DGE_Window_SetTitle(char const *str);
 
 
 //----------------------------------------------------------------------------|
