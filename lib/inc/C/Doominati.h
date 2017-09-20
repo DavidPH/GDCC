@@ -327,6 +327,10 @@ DGE_Native int DGE_FileOpen(char const *name);
 DGE_Native int DGE_FileRead(int fd, unsigned idx, char *buf, unsigned len);
 DGE_Native unsigned DGE_FileSize(int fd);
 
+DGE_Native void DGE_Font_Bind(unsigned fnt);
+DGE_Native unsigned DGE_Font_Create(DGE_String name, char const *fname, int ptSize);
+DGE_Native unsigned DGE_Font_Get(DGE_String name);
+
 DGE_Native void *DGE_FreestoreBegin(void);
 DGE_Native void *DGE_FreestoreEnd(void);
 
