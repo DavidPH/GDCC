@@ -102,15 +102,15 @@
 #define DGE_OM_vy       DGE_OM(vy)
 #define DGE_OM_vz       DGE_OM(vz)
 #define DGE_OM_x        DGE_OM(x)
-#define DGE_OM_xh       DGE_OM(xh)
 #define DGE_OM_xl       DGE_OM(xl)
+#define DGE_OM_xu       DGE_OM(xu)
 #define DGE_OM_y        DGE_OM(y)
-#define DGE_OM_yh       DGE_OM(yh)
 #define DGE_OM_yl       DGE_OM(yl)
+#define DGE_OM_yu       DGE_OM(yu)
 #define DGE_OM_yaw      DGE_OM(yaw)
 #define DGE_OM_z        DGE_OM(z)
-#define DGE_OM_zh       DGE_OM(zh)
 #define DGE_OM_zl       DGE_OM(zl)
+#define DGE_OM_zu       DGE_OM(zu)
 
 //
 // DGE_OT_*
@@ -280,7 +280,7 @@ struct DGE_Object;
 // Extern Functions                                                           |
 //
 
-DGE_Native unsigned DGE_BlockMap_Find(DGE_Accum xl, DGE_Accum yl, DGE_Accum xh, DGE_Accum yh);
+DGE_Native unsigned DGE_BlockMap_Find(DGE_Accum xl, DGE_Accum yl, DGE_Accum xu, DGE_Accum yu);
 DGE_Native unsigned DGE_BlockMap_FindAll(void);
 DGE_Native unsigned DGE_BlockMap_FindCountSector(unsigned find);
 DGE_Native unsigned DGE_BlockMap_FindCountThinker(unsigned find);
@@ -442,12 +442,12 @@ typedef struct DGE_Object
    DGE_PropMem(unsigned,   pc) \
    DGE_PropMem(unsigned,   texc) \
    DGE_PropMem(unsigned,   texf) \
-   DGE_PropMem(DGE_Accum,  xh) \
    DGE_PropMem(DGE_Accum,  xl) \
-   DGE_PropMem(DGE_Accum,  yh) \
+   DGE_PropMem(DGE_Accum,  xu) \
    DGE_PropMem(DGE_Accum,  yl) \
-   DGE_PropMem(DGE_Accum,  zh) \
-   DGE_PropMem(DGE_Accum,  zl)
+   DGE_PropMem(DGE_Accum,  yu) \
+   DGE_PropMem(DGE_Accum,  zl) \
+   DGE_PropMem(DGE_Accum,  zu)
 typedef struct DGE_Sector
 {
    int id;
