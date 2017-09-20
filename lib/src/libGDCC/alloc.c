@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2016 David Hill
+// Copyright(C) 2014-2017 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -24,6 +24,15 @@
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
 //
+
+//
+// __GDCC__AllocAlign
+//
+// Controls the minimum alignment requirement of allocations.
+//
+#ifndef __GDCC__AllocAlign
+#define __GDCC__AllocAlign (_Alignof(MemBlock))
+#endif
 
 //
 // __GDCC__AllocSize
@@ -264,7 +273,8 @@ static _Bool AllocMerge(register MemBlockPtr block, register __size_t size)
 [[call("StkCall")]]
 static VoidPtr AllocNew(register __size_t size)
 {
-   // TODO: Round size up to alignment of MemBlock.
+   // Round size up to alignment of MemBlock.
+   size = (size + (__GDCC__AllocAlign - 1)) & ~(__GDCC__AllocAlign - 1);
 
    register MemBlockPtr iter = AllocIter;
 
