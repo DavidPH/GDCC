@@ -311,7 +311,7 @@ DGE_Native void DGE_Draw_EllipseLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, D
 DGE_Native void DGE_Draw_Rectangle(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
 DGE_Native void DGE_Draw_RectangleLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
 DGE_OptArgs(1)
-DGE_Native void DGE_Draw_SetTextAlignment(int h, int v);
+DGE_Native void DGE_Draw_SetTextAlign(int h, int v);
 DGE_Native void DGE_Draw_Line(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
 DGE_Native void DGE_Draw_LineSmooth(unsigned on);
 DGE_Native void DGE_Draw_LineWidth(int width);
@@ -409,6 +409,7 @@ DGE_Native void DGE_Task_Sleep(unsigned id, unsigned ticks);
 
 DGE_Native unsigned DGE_Team_Create(unsigned ext);
 
+DGE_Native unsigned DGE_Texture_Create(DGE_String name, char const *fname);
 DGE_Native unsigned DGE_Texture_Get(DGE_String name);
 DGE_Native void DGE_Texture_Bind(unsigned tex);
 
