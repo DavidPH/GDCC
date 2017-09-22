@@ -301,8 +301,6 @@ DGE_OptArgs(1)
 DGE_Native void DGE_DebugDataStk(int dump);
 DGE_Native void DGE_DebugLocReg(void);
 
-DGE_OptArgs(1)
-DGE_Native void DGE_Draw_Color(DGE_ULFract r, DGE_ULFract g, DGE_ULFract b, DGE_ULFract a);
 DGE_Native void DGE_Draw_Circle(DGE_Accum x, DGE_Accum y, DGE_Accum r);
 DGE_Native void DGE_Draw_CircleLine(DGE_Accum x, DGE_Accum y, DGE_Accum r);
 DGE_Native void DGE_Draw_CirclePrecision(int subdivisions);
@@ -310,6 +308,8 @@ DGE_Native void DGE_Draw_Ellipse(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_A
 DGE_Native void DGE_Draw_EllipseLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
 DGE_Native void DGE_Draw_Rectangle(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
 DGE_Native void DGE_Draw_RectangleLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
+DGE_OptArgs(4)
+DGE_Native void DGE_Draw_SetColor(DGE_ULFract r, DGE_ULFract g, DGE_ULFract b, DGE_ULFract a);
 DGE_OptArgs(1)
 DGE_Native void DGE_Draw_SetTextAlign(int h, int v);
 DGE_Native void DGE_Draw_Line(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
@@ -363,6 +363,7 @@ DGE_Native unsigned DGE_PointThinker_Create(unsigned ext);
 DGE_Native void DGE_PrintChar(unsigned c);
 DGE_Native void DGE_PrintWordD(unsigned d);
 
+DGE_Native DGE_Point2 DGE_Renderer_GetViewpoint(void);
 DGE_Native void DGE_Renderer_SetViewpoint(unsigned id);
 DGE_Native void DGE_Renderer_SetVirtualRes(unsigned w, unsigned h);
 
