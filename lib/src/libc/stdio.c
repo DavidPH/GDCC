@@ -284,7 +284,7 @@ size_t fread(void *restrict ptr, size_t size, size_t nmemb, FILE *restrict strea
    size_t res = 0;
    int c;
 
-   for(char *itr = ptr; nmemb--; itr += size, ++res)
+   for(char *itr = ptr; nmemb--; ++res)
    {
       for(size_t i = size; i--;)
       {
