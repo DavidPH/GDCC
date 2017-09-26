@@ -74,6 +74,7 @@
 #define DGE_OM_grabx    DGE_OM(grabx)
 #define DGE_OM_graby    DGE_OM(graby)
 #define DGE_OM_grabz    DGE_OM(grabz)
+#define DGE_OM_gravity  DGE_OM(gravity)
 #define DGE_OM_gx       DGE_OM(gx)
 #define DGE_OM_gy       DGE_OM(gy)
 #define DGE_OM_gz       DGE_OM(gz)
@@ -535,6 +536,7 @@ typedef struct DGE_RenderThinker
    DGE_PropMem(DGE_Accum,  grabx) \
    DGE_PropMem(DGE_Accum,  graby) \
    DGE_PropMem(DGE_Accum,  grabz) \
+   DGE_PropMem(DGE_Accum,  gravity) \
    DGE_PropMem(DGE_Accum,  mass) \
    DGE_PropMem(DGE_Accum,  sx) \
    DGE_PropMem(DGE_Accum,  sy) \
