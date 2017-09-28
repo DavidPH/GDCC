@@ -114,6 +114,26 @@
 #define DGE_OM_zu       DGE_OM(zu)
 
 //
+// DGE_OME_*
+//
+// Object Member Extension macros.
+//
+#if __GDCC__
+#define DGE_OME(mem) (__glyph(unsigned, "{ObjectMemberExt}" #mem))
+#else
+#define DGE_OME(mem) 0
+#endif
+#define DGE_OME_Object              DGE_OME(Object)
+# define DGE_OME_Sector             DGE_OME(Sector)
+# define DGE_OME_Team               DGE_OME(Team)
+# define DGE_OME_Thinker            DGE_OME(Thinker)
+#  define DGE_OME_PointThinker      DGE_OME(PointThinker)
+#   define DGE_OME_RenderThinker    DGE_OME(RenderThinker)
+#    define DGE_OME_PhysicsThinker  DGE_OME(PhysicsThinker)
+#     define DGE_OME_Entity         DGE_OME(Entity)
+#      define DGE_OME_MissileEntity DGE_OME(MissileEntity)
+
+//
 // DGE_OT_*
 //
 // Object Type macros.
@@ -142,7 +162,7 @@
       DGE_ULFract: DGE_Object_MemberGetLA, \
       DGE_LFract:  DGE_Object_MemberGetLR, \
       unsigned:    DGE_Object_MemberGetU, \
-        DGE_Accum: DGE_Object_MemberGetX \
+      DGE_Accum:   DGE_Object_MemberGetX \
    )(__VA_ARGS__)
 
 //
