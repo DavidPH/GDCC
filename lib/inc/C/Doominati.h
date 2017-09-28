@@ -336,7 +336,8 @@ DGE_Native void DGE_Draw_SetTextAlign(int h, int v);
 DGE_Native void DGE_Draw_Line(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
 DGE_Native void DGE_Draw_LineSmooth(unsigned on);
 DGE_Native void DGE_Draw_LineWidth(int width);
-DGE_Native void DGE_Draw_Text(DGE_Accum x, DGE_Accum y, char const *str);
+DGE_OptArgs(1)
+DGE_Native DGE_Point2 DGE_Draw_Text(DGE_Accum x, DGE_Accum y, char const *str, DGE_Accum maxwidth);
 DGE_Native void DGE_Draw_Triangle(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2, DGE_Accum x3, DGE_Accum y3);
 DGE_Native void DGE_Draw_TriangleLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2, DGE_Accum x3, DGE_Accum y3);
 
@@ -351,6 +352,7 @@ DGE_Native unsigned DGE_FileSize(int fd);
 DGE_Native void DGE_Font_Bind(unsigned fnt);
 DGE_Native unsigned DGE_Font_Create(DGE_String name, char const *fname, int ptSize);
 DGE_Native unsigned DGE_Font_Get(DGE_String name);
+DGE_Native DGE_Point2 DGE_Font_GetTextSize(unsigned fnt, char const *text);
 
 DGE_Native void *DGE_FreestoreBegin(void);
 DGE_Native void *DGE_FreestoreEnd(void);
@@ -431,9 +433,10 @@ DGE_Native void DGE_Task_Sleep(unsigned id, unsigned ticks);
 
 DGE_Native unsigned DGE_Team_Create(unsigned ext);
 
+DGE_Native void DGE_Texture_Bind(unsigned tex);
 DGE_Native unsigned DGE_Texture_Create(DGE_String name, char const *fname);
 DGE_Native unsigned DGE_Texture_Get(DGE_String name);
-DGE_Native void DGE_Texture_Bind(unsigned tex);
+DGE_Native DGE_Point2I DGE_Texture_GetSize(unsigned tex);
 
 DGE_Native unsigned DGE_Thinker_Head(void);
 DGE_Native void DGE_Thinker_Insert(unsigned id);
