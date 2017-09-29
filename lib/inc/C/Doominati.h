@@ -127,6 +127,7 @@
 # define DGE_OME_Sector             DGE_OME(Sector)
 # define DGE_OME_Team               DGE_OME(Team)
 # define DGE_OME_Thinker            DGE_OME(Thinker)
+#  define DGE_OME_ParticleSys       DGE_OME(ParticleSys)
 #  define DGE_OME_PointThinker      DGE_OME(PointThinker)
 #   define DGE_OME_RenderThinker    DGE_OME(RenderThinker)
 #    define DGE_OME_PhysicsThinker  DGE_OME(PhysicsThinker)
@@ -147,6 +148,7 @@
 # define DGE_OT_Sector             DGE_OT(Sector)
 # define DGE_OT_Team               DGE_OT(Team)
 # define DGE_OT_Thinker            DGE_OT(Thinker)
+#  define DGE_OT_ParticleSys       DGE_OT(ParticleSys)
 #  define DGE_OT_PointThinker      DGE_OT(PointThinker)
 #   define DGE_OT_RenderThinker    DGE_OT(RenderThinker)
 #    define DGE_OT_PhysicsThinker  DGE_OT(PhysicsThinker)
@@ -286,10 +288,32 @@ typedef struct DGE_Point2I
    int x, y;
 } DGE_Point2I;
 
+typedef struct DGE_Color
+{
+   DGE_ULFract r, g, b, a;
+} DGE_Color;
+
+typedef struct DGE_Particle
+{
+   int        life;
+   DGE_Point2 pos;
+   DGE_Point2 vel;
+   DGE_Point2 accel;
+   DGE_Point2 size;
+   DGE_Point2 sizedest;
+   DGE_Accum  sizespeed;
+   DGE_Color  color;
+   DGE_Color  colordest;
+   DGE_Accum  colorspeed;
+   DGE_Accum  rot;
+   DGE_Accum  rotspeed;
+} DGE_Particle;
+
 struct DGE_Object;
  struct DGE_Sector;
  struct DGE_Team;
  struct DGE_Thinker;
+  struct DGE_ParticleSys;
   struct DGE_PointThinker;
    struct DGE_RenderThinker;
     struct DGE_PhysicsThinker;
@@ -327,8 +351,10 @@ DGE_Native void DGE_Draw_CircleLine(DGE_Accum x, DGE_Accum y, DGE_Accum r);
 DGE_Native void DGE_Draw_CirclePrecision(int subdivisions);
 DGE_Native void DGE_Draw_Ellipse(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
 DGE_Native void DGE_Draw_EllipseLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
-DGE_Native void DGE_Draw_Rectangle(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
-DGE_Native void DGE_Draw_RectangleLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2);
+DGE_OptArgs(1)
+DGE_Native void DGE_Draw_Rectangle(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2, DGE_ULFract rot);
+DGE_OptArgs(1)
+DGE_Native void DGE_Draw_RectangleLine(DGE_Accum x1, DGE_Accum y1, DGE_Accum x2, DGE_Accum y2, DGE_ULFract rot);
 DGE_OptArgs(4)
 DGE_Native void DGE_Draw_SetColor(DGE_ULFract r, DGE_ULFract g, DGE_ULFract b, DGE_ULFract a);
 DGE_OptArgs(1)
@@ -376,6 +402,9 @@ DGE_Native void DGE_Object_MemberSetU(unsigned id, unsigned mem, unsigned val);
 DGE_Native void DGE_Object_MemberSetX(unsigned id, unsigned mem, DGE_Accum val);
 DGE_Native void DGE_Object_RefAdd(unsigned id);
 DGE_Native void DGE_Object_RefSub(unsigned id);
+
+DGE_Native void DGE_ParticleSys_Add(unsigned id, DGE_Particle prt);
+DGE_Native unsigned DGE_ParticleSys_Create(unsigned ext, unsigned npr);
 
 DGE_Native void DGE_PhysicsThinker_Block(unsigned id);
 DGE_Native unsigned DGE_PhysicsThinker_Create(unsigned ext);
@@ -517,6 +546,20 @@ typedef struct DGE_Thinker
 
    DGE_ThinkerProps()
 } DGE_Thinker;
+
+//
+// DGE_ParticleSys
+//
+#define DGE_ParticleSysProps() DGE_ThinkerProps() \
+   DGE_PropMem(unsigned,  sprite) \
+   DGE_PropMem(DGE_Accum, x) \
+   DGE_PropMem(DGE_Accum, y)
+typedef struct DGE_ParticleSys
+{
+   int id;
+
+   DGE_ParticleSysProps()
+} DGE_ParticleSys;
 
 //
 // DGE_PointThinker
