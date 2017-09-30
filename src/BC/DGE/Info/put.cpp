@@ -246,6 +246,8 @@ namespace GDCC::BC::DGE
       // Put the function header.
       putNTS("function"); putNTS(func->glyph);
       putNTS('{');
+         for(auto call : func->stype)
+            putNTS("call"), putNTS('='), putNTS(call), putNTS(';');
          putNTS("param"); putNTS('='); putInt(func->param);         putNTS(';');
          putNTS("label"); putNTS('='); putNTS(func->label);         putNTS(';');
          putNTS("local"); putNTS('='); putInt(func->getLocalReg()); putNTS(';');
