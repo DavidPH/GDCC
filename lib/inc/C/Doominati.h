@@ -406,7 +406,11 @@ DGE_Native void DGE_Object_RefSub(unsigned id);
 DGE_Native void DGE_ParticleSys_Add(unsigned id, DGE_Particle prt);
 DGE_Native unsigned DGE_ParticleSys_Create(unsigned ext, unsigned npr);
 
+DGE_Native void DGE_PhysicsThinker_ApplyFriction(unsigned id, DGE_LFract f);
 DGE_Native void DGE_PhysicsThinker_Block(unsigned id);
+DGE_OptArgs(1)
+DGE_Native unsigned DGE_PhysicsThinker_Collide(unsigned id, DGE_Accum *oldx,
+   DGE_Accum *oldy, DGE_Accum *oldz, DGE_LFract *fric);
 DGE_Native unsigned DGE_PhysicsThinker_Create(unsigned ext);
 DGE_Native void DGE_PhysicsThinker_Unblock(unsigned id);
 
