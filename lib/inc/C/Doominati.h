@@ -159,7 +159,7 @@
 //
 #define DGE_Object_MemberGetT(T, id, mem) \
    ((T (*)(unsigned, unsigned, unsigned) DGE_Native)DGE_Object_MemberGet) \
-      (id, mem, sizeof(T))
+      (id, mem, sizeof(T) / 4)
 
 //
 // DGE_Object_MemberSetT
