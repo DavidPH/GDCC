@@ -155,28 +155,18 @@
 #      define DGE_OT_MissileEntity DGE_OT(MissileEntity)
 
 //
-// DGE_Object_MemberGet
+// DGE_Object_MemberGetT
 //
-#define DGE_Object_MemberGet(T, ...) \
-   _Generic((T)0, \
-      int:         DGE_Object_MemberGetI, \
-      DGE_ULFract: DGE_Object_MemberGetLA, \
-      DGE_LFract:  DGE_Object_MemberGetLR, \
-      unsigned:    DGE_Object_MemberGetU, \
-      DGE_Accum:   DGE_Object_MemberGetX \
-   )(__VA_ARGS__)
+#define DGE_Object_MemberGetT(T, id, mem) \
+   ((T (*)(unsigned, unsigned, unsigned) DGE_Native)DGE_Object_MemberGet) \
+      (id, mem, sizeof(T))
 
 //
-// DGE_Object_MemberSet
+// DGE_Object_MemberSetT
 //
-#define DGE_Object_MemberSet(T, ...) \
-   _Generic((T)0, \
-      int:         DGE_Object_MemberSetI, \
-      DGE_ULFract: DGE_Object_MemberSetLA, \
-      DGE_LFract:  DGE_Object_MemberSetLR, \
-      unsigned:    DGE_Object_MemberSetU, \
-      DGE_Accum:   DGE_Object_MemberSetX \
-   )(__VA_ARGS__)
+#define DGE_Object_MemberSetT(T, id, mem, ...) \
+   ((void (*)(unsigned, unsigned, T) DGE_Native)DGE_Object_MemberSet) \
+      (id, mem, __VA_ARGS__)
 
 //
 // DGE_OptArgs
@@ -192,8 +182,8 @@
 //
 #if __GDCC__
 #define DGE_PropMem(T, name) \
-   __prop name {__get: DGE_Object_MemberGet(T, ->id, DGE_OM_##name), \
-                __set: DGE_Object_MemberSet(T, ->id, DGE_OM_##name)}
+   __prop name {__get: DGE_Object_MemberGetT(T, ->id, DGE_OM_##name), \
+                __set: DGE_Object_MemberSetT(T, ->id, DGE_OM_##name, __arg)}
 #else
 #define DGE_PropMem(T, name) T name;
 #endif
@@ -389,16 +379,8 @@ DGE_Native DGE_Point2I DGE_GetInputCursor(void);
 DGE_Native unsigned DGE_MissileEntity_Create(unsigned ext);
 
 DGE_Native unsigned DGE_Object_Cast(unsigned id, unsigned type);
-DGE_Native int DGE_Object_MemberGetI(unsigned id, unsigned mem);
-DGE_Native DGE_ULFract DGE_Object_MemberGetLA(unsigned id, unsigned mem);
-DGE_Native DGE_LFract DGE_Object_MemberGetLR(unsigned id, unsigned mem);
-DGE_Native unsigned DGE_Object_MemberGetU(unsigned id, unsigned mem);
-DGE_Native DGE_Accum DGE_Object_MemberGetX(unsigned id, unsigned mem);
-DGE_Native void DGE_Object_MemberSetI(unsigned id, unsigned mem, int val);
-DGE_Native void DGE_Object_MemberSetLA(unsigned id, unsigned mem, DGE_ULFract val);
-DGE_Native void DGE_Object_MemberSetLR(unsigned id, unsigned mem, DGE_LFract val);
-DGE_Native void DGE_Object_MemberSetU(unsigned id, unsigned mem, unsigned val);
-DGE_Native void DGE_Object_MemberSetX(unsigned id, unsigned mem, DGE_Accum val);
+DGE_Native unsigned DGE_Object_MemberGet(unsigned id, unsigned mem, unsigned len);
+DGE_Native void DGE_Object_MemberSet(unsigned id, unsigned mem, unsigned len, ...);
 DGE_Native void DGE_Object_RefAdd(unsigned id);
 DGE_Native void DGE_Object_RefSub(unsigned id);
 
