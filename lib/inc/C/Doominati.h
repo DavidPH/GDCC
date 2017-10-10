@@ -63,6 +63,10 @@
 #else
 #define DGE_OM(mem) 0
 #endif
+#define DGE_OM_ca       DGE_OM(ca)
+#define DGE_OM_cb       DGE_OM(cb)
+#define DGE_OM_cg       DGE_OM(cg)
+#define DGE_OM_cr       DGE_OM(cr)
 #define DGE_OM_bvx      DGE_OM(bvx)
 #define DGE_OM_bvy      DGE_OM(bvy)
 #define DGE_OM_bvz      DGE_OM(bvz)
@@ -88,6 +92,7 @@
 #define DGE_OM_rsx      DGE_OM(rsx)
 #define DGE_OM_rsy      DGE_OM(rsy)
 #define DGE_OM_sprite   DGE_OM(sprite)
+#define DGE_OM_shader   DGE_OM(shader)
 #define DGE_OM_sx       DGE_OM(sx)
 #define DGE_OM_sy       DGE_OM(sy)
 #define DGE_OM_sz       DGE_OM(sz)
@@ -251,20 +256,93 @@ enum // DGE_Align
 
 enum // DGE_Axis
 {
-   DGE_Axis_X,
-   DGE_Axis_Y,
+   DGE_Axis_Up,
+   DGE_Axis_Down,
+   DGE_Axis_Left,
+   DGE_Axis_Right,
+   DGE_Axis_Forward,
+   DGE_Axis_Backward,
 };
 
-enum // DGE_Button
+enum // DGE_ButtonState
 {
-   DGE_Button1 = 1 << 0,
-   DGE_Button2 = 1 << 1,
-   DGE_Button3 = 1 << 2,
-   DGE_Button4 = 1 << 3,
-   DGE_Button5 = 1 << 4,
-   DGE_Button6 = 1 << 5,
-   DGE_Button7 = 1 << 6,
-   DGE_Button8 = 1 << 7,
+   DGE_Button_Down    = 1 << 0,
+   DGE_Button_WasDown = 1 << 1,
+   DGE_Button_Hold    = DGE_Button_Down | DGE_Button_WasDown,
+   DGE_Button_Release = DGE_Button_WasDown,
+   DGE_Button_Press   = DGE_Button_Down,
+};
+
+enum // DGE_Key
+{
+   DGE_Key_Backspace = '\b',
+   DGE_Key_Tab       = '\t',
+   DGE_Key_Return    = '\r',
+   DGE_Key_Escape    = '\033',
+   DGE_Key_Delete    = '\177',
+
+   DGE_Key_Special  = 0x40000000,
+   DGE_Key_Capslock = DGE_Key_Special + 0x39,
+
+   DGE_Key_F1, DGE_Key_F2,  DGE_Key_F3,  DGE_Key_F4,
+   DGE_Key_F5, DGE_Key_F6,  DGE_Key_F7,  DGE_Key_F8,
+   DGE_Key_F9, DGE_Key_F10, DGE_Key_F11, DGE_Key_F12,
+   DGE_Key_SysRq,
+   DGE_Key_ScrollLock,
+   DGE_Key_Pause,
+
+   DGE_Key_Insert, DGE_Key_Home, DGE_Key_PageUp,
+                   DGE_Key_End,  DGE_Key_PageDown,
+
+   DGE_Key_Right, DGE_Key_Left, DGE_Key_Down, DGE_Key_Up,
+
+   DGE_Key_NumLock,
+   DGE_Key_KP_Div, DGE_Key_KP_Mul, DGE_Key_KP_Sub, DGE_Key_KP_Add,
+   DGE_Key_KP_Enter,
+   DGE_Key_KP_1, DGE_Key_KP_2, DGE_Key_KP_3,
+   DGE_Key_KP_4, DGE_Key_KP_5, DGE_Key_KP_6,
+   DGE_Key_KP_7, DGE_Key_KP_8, DGE_Key_KP_9,
+   DGE_Key_KP_0, DGE_Key_KP_Dot
+};
+
+enum // DGE_MouseButton
+{
+   DGE_Mouse_Left,
+   DGE_Mouse_Middle,
+   DGE_Mouse_Right,
+   DGE_Mouse_Extra1,
+   DGE_Mouse_Extra2,
+   DGE_Mouse_Extra3,
+   DGE_Mouse_Extra4
+};
+
+enum // DGE_PadControl
+{
+   DGE_Pad_A,
+   DGE_Pad_B,
+   DGE_Pad_X,
+   DGE_Pad_Y,
+   DGE_Pad_Back,
+   DGE_Pad_Menu,
+   DGE_Pad_Start,
+   DGE_Pad_StickLeft,
+   DGE_Pad_StickRight,
+   DGE_Pad_ShoulderLeft,
+   DGE_Pad_ShoulderRight,
+   DGE_Pad_DPadUp,
+   DGE_Pad_DPadDown,
+   DGE_Pad_DPadLeft,
+   DGE_Pad_DPadRight,
+   DGE_Pad_LStickUp,
+   DGE_Pad_LStickDown,
+   DGE_Pad_LStickLeft,
+   DGE_Pad_LStickRight,
+   DGE_Pad_RStickUp,
+   DGE_Pad_RStickDown,
+   DGE_Pad_RStickLeft,
+   DGE_Pad_RStickRight,
+   DGE_Pad_TriggerLeft,
+   DGE_Pad_TriggerRight
 };
 
 typedef struct DGE_Point2
@@ -276,6 +354,11 @@ typedef struct DGE_Point2I
 {
    int x, y;
 } DGE_Point2I;
+
+typedef struct DGE_Point3R
+{
+   DGE_LFract x, y, z;
+} DGE_Point3R;
 
 typedef struct DGE_Color
 {
@@ -372,9 +455,15 @@ DGE_Native DGE_Point2 DGE_Font_GetTextSize(unsigned fnt, char const *text);
 DGE_Native void *DGE_FreestoreBegin(void);
 DGE_Native void *DGE_FreestoreEnd(void);
 
-DGE_Native DGE_LFract DGE_GetInputAxis(unsigned num, unsigned axis);
-DGE_Native unsigned DGE_GetInputButtons(void);
-DGE_Native DGE_Point2I DGE_GetInputCursor(void);
+DGE_Native DGE_Point3R DGE_Input_GetAxis(unsigned player, unsigned num);
+DGE_Native unsigned DGE_Input_GetButton(unsigned player, unsigned btn);
+DGE_Native DGE_Point2I DGE_Input_GetCursor(unsigned player);
+DGE_Native void DGE_Input_SetAxisKey(unsigned num, unsigned axis, int set);
+DGE_Native void DGE_Input_SetAxisPad(unsigned num, unsigned axis, unsigned set);
+DGE_Native void DGE_Input_SetAxisMouse(unsigned num, unsigned axis, unsigned set);
+DGE_Native void DGE_Input_SetBindKey(unsigned btn, int ch);
+DGE_Native void DGE_Input_SetBindPad(unsigned btn, unsigned num);
+DGE_Native void DGE_Input_SetBindMouse(unsigned btn, unsigned num);
 
 DGE_Native unsigned DGE_MissileEntity_Create(unsigned ext);
 
@@ -446,6 +535,8 @@ DGE_Native unsigned DGE_Task_Create(unsigned thread, DGE_CallbackType fn, ...);
 DGE_Native void DGE_Task_Sleep(unsigned id, unsigned ticks);
 
 DGE_Native unsigned DGE_Team_Create(unsigned ext);
+
+DGE_Native unsigned DGE_Text_Read(DGE_String name, char *buf, unsigned len);
 
 DGE_Native void DGE_Texture_Bind(unsigned tex);
 DGE_Native unsigned DGE_Texture_Create(DGE_String name, char const *fname);
@@ -566,9 +657,14 @@ typedef struct DGE_PointThinker
 // DGE_RenderThinker
 //
 #define DGE_RenderThinkerProps() DGE_PointThinkerProps() \
-   DGE_PropMem(DGE_Accum, rsx) \
-   DGE_PropMem(DGE_Accum, rsy) \
-   DGE_PropMem(unsigned,  sprite)
+   DGE_PropMem(DGE_ULFract, ca) \
+   DGE_PropMem(DGE_ULFract, cb) \
+   DGE_PropMem(DGE_ULFract, cg) \
+   DGE_PropMem(DGE_ULFract, cr) \
+   DGE_PropMem(DGE_Accum,   rsx) \
+   DGE_PropMem(DGE_Accum,   rsy) \
+   DGE_PropMem(unsigned,    sprite) \
+   DGE_PropMem(unsigned,    shader)
 typedef struct DGE_RenderThinker
 {
    int id;
