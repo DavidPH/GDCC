@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -91,7 +91,7 @@ namespace GDCC
 
          if(macro.args.empty())
          {
-            if(!argRng.empty())
+            if(!IsEmpty(argRng))
                throw Core::ExceptStr(argRng.begin()->pos, "args to no-arg macro");
 
             return {};

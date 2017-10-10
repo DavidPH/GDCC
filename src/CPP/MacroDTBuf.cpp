@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,7 +21,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -66,9 +66,11 @@ namespace GDCC
       {
          std::vector<Core::String> args;
 
-         if(src.peek().tok != Core::TOK_ParenC) for(;;)
+         for(;;)
          {
             if(src.peek().tok == Core::TOK_WSpace) src.get();
+
+            if(src.peek().tok == Core::TOK_ParenC) {src.get(); break;}
 
             if(src.peek().tok == Core::TOK_Identi)
             {
@@ -98,8 +100,6 @@ namespace GDCC
             throw Core::ParseExceptExpect(src.peek().pos,
               "identifier or '...'", src.peek().str, false);
          }
-         else
-            src.get();
 
          return {Core::Move, args.begin(), args.end()};
       }
