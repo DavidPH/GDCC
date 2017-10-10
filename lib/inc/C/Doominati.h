@@ -70,6 +70,8 @@
 #define DGE_OM_bvx      DGE_OM(bvx)
 #define DGE_OM_bvy      DGE_OM(bvy)
 #define DGE_OM_bvz      DGE_OM(bvz)
+#define DGE_OM_collideF DGE_OM(collideF)
+#define DGE_OM_collideI DGE_OM(collideI)
 #define DGE_OM_damage   DGE_OM(damage)
 #define DGE_OM_entfi    DGE_OM(entfi)
 #define DGE_OM_entla    DGE_OM(entla)
@@ -103,6 +105,7 @@
 #define DGE_OM_teampr   DGE_OM(teampr)
 #define DGE_OM_texc     DGE_OM(texc)
 #define DGE_OM_texf     DGE_OM(texf)
+#define DGE_OM_think    DGE_OM(think)
 #define DGE_OM_vx       DGE_OM(vx)
 #define DGE_OM_vy       DGE_OM(vy)
 #define DGE_OM_vz       DGE_OM(vz)
@@ -127,16 +130,17 @@
 #else
 #define DGE_OME(mem) 0
 #endif
-#define DGE_OME_Object              DGE_OME(Object)
-# define DGE_OME_Sector             DGE_OME(Sector)
-# define DGE_OME_Team               DGE_OME(Team)
-# define DGE_OME_Thinker            DGE_OME(Thinker)
-#  define DGE_OME_ParticleSys       DGE_OME(ParticleSys)
-#  define DGE_OME_PointThinker      DGE_OME(PointThinker)
-#   define DGE_OME_RenderThinker    DGE_OME(RenderThinker)
-#    define DGE_OME_PhysicsThinker  DGE_OME(PhysicsThinker)
-#     define DGE_OME_Entity         DGE_OME(Entity)
-#      define DGE_OME_MissileEntity DGE_OME(MissileEntity)
+#define DGE_OME_Object               DGE_OME(Object)
+# define DGE_OME_Sector              DGE_OME(Sector)
+# define DGE_OME_Team                DGE_OME(Team)
+# define DGE_OME_Thinker             DGE_OME(Thinker)
+#  define DGE_OME_ParticleSys        DGE_OME(ParticleSys)
+#  define DGE_OME_PointThinker       DGE_OME(PointThinker)
+#   define DGE_OME_RenderThinker     DGE_OME(RenderThinker)
+#    define DGE_OME_PhysicsThinker   DGE_OME(PhysicsThinker)
+#     define DGE_OME_Entity          DGE_OME(Entity)
+#      define DGE_OME_MissileEntity  DGE_OME(MissileEntity)
+#      define DGE_OME_ScriptedEntity DGE_OME(ScriptedEntity)
 
 //
 // DGE_OT_*
@@ -148,16 +152,17 @@
 #else
 #define DGE_OT(type) 0
 #endif
-#define DGE_OT_Object              DGE_OT(Object)
-# define DGE_OT_Sector             DGE_OT(Sector)
-# define DGE_OT_Team               DGE_OT(Team)
-# define DGE_OT_Thinker            DGE_OT(Thinker)
-#  define DGE_OT_ParticleSys       DGE_OT(ParticleSys)
-#  define DGE_OT_PointThinker      DGE_OT(PointThinker)
-#   define DGE_OT_RenderThinker    DGE_OT(RenderThinker)
-#    define DGE_OT_PhysicsThinker  DGE_OT(PhysicsThinker)
-#     define DGE_OT_Entity         DGE_OT(Entity)
-#      define DGE_OT_MissileEntity DGE_OT(MissileEntity)
+#define DGE_OT_Object               DGE_OT(Object)
+# define DGE_OT_Sector              DGE_OT(Sector)
+# define DGE_OT_Team                DGE_OT(Team)
+# define DGE_OT_Thinker             DGE_OT(Thinker)
+#  define DGE_OT_ParticleSys        DGE_OT(ParticleSys)
+#  define DGE_OT_PointThinker       DGE_OT(PointThinker)
+#   define DGE_OT_RenderThinker     DGE_OT(RenderThinker)
+#    define DGE_OT_PhysicsThinker   DGE_OT(PhysicsThinker)
+#     define DGE_OT_Entity          DGE_OT(Entity)
+#      define DGE_OT_MissileEntity  DGE_OT(MissileEntity)
+#      define DGE_OT_ScriptedEntity DGE_OT(ScriptedEntity)
 
 //
 // DGE_Object_MemberGetT
@@ -211,6 +216,8 @@ typedef int DGE_Accum;
 // DGE_CallbackType
 //
 typedef void (*DGE_CallbackType)(void) DGE_Callback;
+typedef unsigned (*DGE_CallbackUUU)(unsigned, unsigned) DGE_Callback;
+typedef void (*DGE_CallbackVU)(unsigned) DGE_Callback;
 
 //
 // DGE_LFract
@@ -391,6 +398,7 @@ struct DGE_Object;
     struct DGE_PhysicsThinker;
      struct DGE_Entity;
       struct DGE_MissileEntity;
+      struct DGE_ScriptedEntity;
 
 
 //----------------------------------------------------------------------------|
@@ -494,6 +502,8 @@ DGE_Native void DGE_Renderer_SetViewpoint(unsigned id);
 DGE_Native void DGE_Renderer_SetVirtualRes(unsigned w, unsigned h);
 
 DGE_Native unsigned DGE_RenderThinker_Create(unsigned ext);
+
+DGE_Native unsigned DGE_ScriptedEntity_Create(unsigned ext);
 
 DGE_Native void DGE_Sector_Block(unsigned id);
 DGE_Native void DGE_Sector_CalcBounds(unsigned id);
@@ -727,6 +737,14 @@ typedef struct DGE_MissileEntity
 
    DGE_MissileEntityProps()
 } DGE_MissileEntity;
+
+//
+// DGE_ScriptedEntity
+//
+#define DGE_ScriptedEntityProps() DGE_EntityProps() \
+   DGE_PropMem(DGE_CallbackUUU, collideF) \
+   DGE_PropMem(DGE_CallbackUUU, collideI) \
+   DGE_PropMem(DGE_CallbackVU,  think)
 
 #endif//__GDCC_Header__C__Doominati_h__
 
