@@ -250,6 +250,11 @@ typedef unsigned DGE_String;
 typedef unsigned DGE_Unsig;
 
 //
+// DGE_UnsigL
+//
+typedef unsigned long DGE_UnsigL;
+
+//
 // DGE_Callback*
 //
 typedef void (*DGE_CallbackType)(void) DGE_Callback;
@@ -436,6 +441,15 @@ DGE_OptArgs(1)
 DGE_Native void DGE_DebugDataStk(DGE_Unsig dump);
 DGE_Native void DGE_DebugLocReg(void);
 
+DGE_Native void DGE_Dir_Close(DGE_Integ fd);
+DGE_Native DGE_Unsig DGE_Dir_Name(DGE_Integ fd, char *buf, DGE_Unsig len);
+DGE_Native DGE_Integ DGE_Dir_Open(char const *name);
+DGE_Native DGE_Integ DGE_Dir_Read(DGE_Integ fd);
+DGE_Native DGE_Integ DGE_Dir_ReadDir(DGE_Integ fd);
+DGE_Native DGE_Integ DGE_Dir_ReadFile(DGE_Integ fd);
+DGE_Native DGE_Unsig DGE_Dir_ReadName(DGE_Integ fd, char *buf, DGE_Unsig len);
+DGE_Native void DGE_Dir_Rewind(DGE_Integ fd);
+
 DGE_Native void DGE_Draw_Circle(DGE_Fixed x, DGE_Fixed y, DGE_Fixed r);
 DGE_Native void DGE_Draw_CircleLine(DGE_Fixed x, DGE_Fixed y, DGE_Fixed r);
 DGE_Native void DGE_Draw_CirclePrecision(DGE_Integ subdivisions);
@@ -459,11 +473,12 @@ DGE_Native void DGE_Draw_TriangleLine(DGE_Fixed x1, DGE_Fixed y1, DGE_Fixed x2, 
 
 DGE_Native DGE_Unsig DGE_Entity_Create(DGE_Unsig ext);
 
-DGE_Native void DGE_FileClose(DGE_Integ fd);
-DGE_Native DGE_Integ DGE_FileGet(DGE_Integ fd, DGE_Unsig idx);
-DGE_Native DGE_Integ DGE_FileOpen(char const *name);
-DGE_Native DGE_Integ DGE_FileRead(DGE_Integ fd, DGE_Unsig idx, char *buf, DGE_Unsig len);
-DGE_Native DGE_Unsig DGE_FileSize(DGE_Integ fd);
+DGE_Native void DGE_File_Close(DGE_Integ fd);
+DGE_Native DGE_Integ DGE_File_Get(DGE_Integ fd, DGE_UnsigL idx);
+DGE_Native DGE_Unsig DGE_File_Name(DGE_Integ fd, char *buf, DGE_Unsig len);
+DGE_Native DGE_Integ DGE_File_Open(char const *name);
+DGE_Native DGE_Integ DGE_File_Read(DGE_Integ fd, DGE_UnsigL idx, char *buf, DGE_Unsig len);
+DGE_Native DGE_UnsigL DGE_File_Size(DGE_Integ fd);
 
 DGE_Native void DGE_Font_Bind(DGE_Unsig fnt);
 DGE_Native DGE_Unsig DGE_Font_Create(DGE_String name, char const *fname, DGE_Integ ptSize);

@@ -44,8 +44,8 @@
 typedef struct __cookie_file
 {
    #if __GDCC_Target__Doominati__
-   unsigned int fd;
-   unsigned int pos;
+   unsigned int  fd;
+   unsigned long pos;
    #else
    int pos;
    #endif
@@ -150,7 +150,7 @@ static int FILE_fn_file_close(void *cookie_)
    __cookie_file *cookie = cookie_;
 
    #if __GDCC_Target__Doominati__
-   DGE_FileClose(cookie->fd);
+   DGE_File_Close(cookie->fd);
    #endif
 
    return 0;
@@ -164,7 +164,7 @@ static ssize_t FILE_fn_file_read(void *cookie_, char *buf, size_t size)
    __cookie_file *cookie = cookie_;
 
    #if __GDCC_Target__Doominati__
-   int read = DGE_FileRead(cookie->fd, cookie->pos, buf, size);
+   int read = DGE_File_Read(cookie->fd, cookie->pos, buf, size);
 
    if(read < 0)
       return EOF;
@@ -197,7 +197,7 @@ static int FILE_fn_file_seek(void *cookie_, off_t *offset, int whence)
    switch(whence)
    {
    case SEEK_END:
-      *offset = cookie->pos = DGE_FileSize(cookie->fd) - *offset;
+      *offset = cookie->pos = DGE_File_Size(cookie->fd) - *offset;
       break;
 
    case SEEK_CUR:
@@ -326,14 +326,14 @@ FILE *fopen(char const *restrict filename, char const *restrict mode)
    int fd;
    if(*mode == 'r')
    {
-      if((fd = DGE_FileOpen(filename)) == -1)
+      if((fd = DGE_File_Open(filename)) == -1)
          return NULL;
    }
    else
       return NULL;
 
    FILE *stream = malloc(sizeof(FILE) + sizeof(__cookie_file) + BUFSIZ);
-   if(!stream) return DGE_FileClose(fd), NULL;
+   if(!stream) return DGE_File_Close(fd), NULL;
 
    __cookie_file *cookie = (__cookie_file *)(stream + 1);
    char          *buffer = (char *)(cookie + 1);
@@ -342,7 +342,7 @@ FILE *fopen(char const *restrict filename, char const *restrict mode)
    cookie->pos = 0;
 
    if(!__fopencookie_ctor(stream, cookie, mode, io_funcs))
-      return free(stream), DGE_FileClose(fd), NULL;
+      return free(stream), DGE_File_Close(fd), NULL;
 
    stream->_flag |= _FILEFLAG_FRF;
 
