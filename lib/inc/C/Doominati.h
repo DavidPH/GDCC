@@ -73,6 +73,7 @@
 #define DGE_OM_collideF DGE_OM(collideF)
 #define DGE_OM_collideI DGE_OM(collideI)
 #define DGE_OM_damage   DGE_OM(damage)
+#define DFE_OM_emc      DGE_OM(emc)
 #define DGE_OM_entfi    DGE_OM(entfi)
 #define DGE_OM_entla    DGE_OM(entla)
 #define DGE_OM_frictair DGE_OM(frictair)
@@ -84,6 +85,7 @@
 #define DGE_OM_gy       DGE_OM(gy)
 #define DGE_OM_gz       DGE_OM(gz)
 #define DGE_OM_health   DGE_OM(health)
+#define DGE_OM_ic       DGE_OM(ic)
 #define DGE_OM_id       DGE_OM(id)
 #define DGE_OM_mass     DGE_OM(mass)
 #define DGE_OM_next     DGE_OM(next)
@@ -367,6 +369,18 @@ enum // DGE_PadControl
    DGE_Pad_TriggerRight
 };
 
+typedef struct DGE_Color
+{
+   DGE_Angle r, g, b, a;
+} DGE_Color;
+
+typedef struct DGE_Item
+{
+   DGE_Unsig type;
+   DGE_Unsig data;
+   DGE_Unsig size;
+} DGE_Item;
+
 typedef struct DGE_Point2X
 {
    DGE_Fixed x, y;
@@ -381,11 +395,6 @@ typedef struct DGE_Point3R
 {
    DGE_Fract x, y, z;
 } DGE_Point3R;
-
-typedef struct DGE_Color
-{
-   DGE_Angle r, g, b, a;
-} DGE_Color;
 
 typedef struct DGE_Particle
 {
@@ -404,6 +413,9 @@ typedef struct DGE_Particle
 } DGE_Particle;
 
 struct DGE_Object;
+ struct DGE_Inventory;
+ struct DGE_ItemData;
+ struct DGE_ItemType;
  struct DGE_Sector;
  struct DGE_Team;
  struct DGE_Thinker;
@@ -498,11 +510,19 @@ DGE_Native void DGE_Input_SetBindKey(DGE_Unsig btn, DGE_Integ ch);
 DGE_Native void DGE_Input_SetBindPad(DGE_Unsig btn, DGE_Unsig num);
 DGE_Native void DGE_Input_SetBindMouse(DGE_Unsig btn, DGE_Unsig num);
 
+DGE_Native DGE_Unsig DGE_Inventory_Create(DGE_Unsig ic, DGE_Unsig ext);
+DGE_Native DGE_Item DGE_Inventory_ItemGet(DGE_Unsig id, DGE_Unsig i);
+DGE_Native void DGE_Inventory_ItemSet(DGE_Unsig id, DGE_Unsig i, DGE_Item val);
+
+DGE_Native DGE_Unsig DGE_ItemData_Create(DGE_Unsig ext);
+
+DGE_Native DGE_Unsig DGE_ItemType_Create(DGE_Unsig ext);
+
 DGE_Native DGE_Unsig DGE_MissileEntity_Create(DGE_Unsig ext);
 
 DGE_Native DGE_Unsig DGE_Object_Cast(DGE_Unsig id, DGE_Unsig type);
 DGE_Native DGE_Unsig DGE_Object_MemberGet(DGE_Unsig id, DGE_Unsig mem, DGE_Unsig len);
-DGE_Native void DGE_Object_MemberSet(DGE_Unsig id, DGE_Unsig mem, DGE_Unsig len, ...);
+DGE_Native void DGE_Object_MemberSet(DGE_Unsig id, DGE_Unsig mem, ...);
 DGE_Native void DGE_Object_RefAdd(DGE_Unsig id);
 DGE_Native void DGE_Object_RefSub(DGE_Unsig id);
 
@@ -594,13 +614,48 @@ DGE_Native void DGE_Window_SetTitle(char const *str);
 //
 // DGE_Object
 //
-#define DGE_ObjectProps()
+#define DGE_ObjectProps() \
+   DGE_PropMem(DGE_Unsig, emc, DGE_OM_ic)
 typedef struct DGE_Object
 {
    DGE_Unsig id;
 
    DGE_ObjectProps()
 } DGE_Object;
+
+//
+// DGE_Inventory
+//
+#define DGE_InventoryProps() DGE_ObjectProps() \
+   DGE_PropMem(DGE_Unsig, ic, DGE_OM_ic)
+typedef struct DGE_Inventory
+{
+   DGE_Unsig id;
+
+   DGE_InventoryProps()
+} DGE_Inventory;
+
+//
+// DGE_ItemData
+//
+#define DGE_ItemDataProps() DGE_ObjectProps()
+typedef struct DGE_ItemData
+{
+   DGE_Unsig id;
+
+   DGE_ItemDataProps()
+} DGE_ItemData;
+
+//
+// DGE_ItemType
+//
+#define DGE_ItemTypeProps() DGE_ObjectProps()
+typedef struct DGE_ItemType
+{
+   DGE_Unsig id;
+
+   DGE_ItemTypeProps()
+} DGE_ItemType;
 
 //
 // DGE_Sector
