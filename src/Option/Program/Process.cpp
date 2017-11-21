@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -96,12 +96,10 @@ namespace GDCC
                   argsTemp.drop(processShrt(argsTemp));
                }
             }
-            else if(argp[0] == '@')
+            else if(argp[0] == '@' && processFile && processFile(this, argp + 1))
             {
-               if(processFile(argp + 1))
-                  argsTemp.drop();
-               else
-                  argsTemp.drop(processArgs(argsTemp));
+               // @*
+               argsTemp.drop();
             }
             else
             {
@@ -132,82 +130,6 @@ namespace GDCC
             return processLoose->process(args);
          else
             return args.argC;
-      }
-
-      //
-      // Program::processFile
-      //
-      bool Program::processFile(char const *file)
-      {
-         std::filebuf fbuf;
-
-         // Open the file for reading.
-         if(!fbuf.open(file, std::ios_base::in))
-            return false;
-
-         // Skip any leading whitespace.
-         while(std::isspace(fbuf.sgetc())) fbuf.sbumpc();
-
-         std::vector<char>        buf;
-         std::vector<std::size_t> args{0};
-
-         // Read arguments.
-         while(fbuf.sgetc() != EOF)
-         {
-            // Arguments are whitespace terminated.
-            if(std::isspace(fbuf.sgetc()))
-            {
-               // Skip the entire whitespace sequence.
-               do fbuf.sbumpc(); while(std::isspace(fbuf.sgetc()));
-
-               // If not at end of stream...
-               if(fbuf.sgetc() != EOF)
-               {
-                  // Null terminate last argument.
-                  buf.push_back('\0');
-
-                  // Save index for next argument.
-                  args.emplace_back(buf.size());
-               }
-            }
-
-            // Quoted string.
-            else if(fbuf.sgetc() == '"' || fbuf.sgetc() == '\'')
-            {
-               auto c = fbuf.sbumpc();
-               while(fbuf.sgetc() != c && fbuf.sgetc() != EOF)
-               {
-                  if(fbuf.sgetc() == '\\')
-                     fbuf.sbumpc();
-
-                  buf.push_back(fbuf.sbumpc());
-               }
-
-               fbuf.sbumpc();
-            }
-
-            // Escaped character.
-            else if(fbuf.sgetc() == '\\')
-               buf.push_back((fbuf.sbumpc(), fbuf.sbumpc()));
-
-            // Normal character.
-            else
-               buf.push_back(fbuf.sbumpc());
-         }
-
-         // Null terminate last argument.
-         buf.push_back('\0');
-
-         // Create argv.
-         std::unique_ptr<char const*[]> argv{new char const *[args.size()]};
-         for(std::size_t i = 0, e = args.size(); i != e; ++i)
-            argv[i] = &buf[args[i]];
-
-         // Process arguments.
-         process(Args().setArgs(argv.get(), args.size()));
-
-         // If no exception occurred, then option file was successful!
-         return true;
       }
 
       //
@@ -321,6 +243,82 @@ namespace GDCC
          }
 
          return used;
+      }
+
+      //
+      // Program::ProcessFileDefault
+      //
+      bool Program::ProcessFileDefault(Program *prog, char const *file)
+      {
+         std::filebuf fbuf;
+
+         // Open the file for reading.
+         if(!fbuf.open(file, std::ios_base::in))
+            return false;
+
+         // Skip any leading whitespace.
+         while(std::isspace(fbuf.sgetc())) fbuf.sbumpc();
+
+         std::vector<char>        buf;
+         std::vector<std::size_t> args{0};
+
+         // Read arguments.
+         while(fbuf.sgetc() != EOF)
+         {
+            // Arguments are whitespace terminated.
+            if(std::isspace(fbuf.sgetc()))
+            {
+               // Skip the entire whitespace sequence.
+               do fbuf.sbumpc(); while(std::isspace(fbuf.sgetc()));
+
+               // If not at end of stream...
+               if(fbuf.sgetc() != EOF)
+               {
+                  // Null terminate last argument.
+                  buf.push_back('\0');
+
+                  // Save index for next argument.
+                  args.emplace_back(buf.size());
+               }
+            }
+
+            // Quoted string.
+            else if(fbuf.sgetc() == '"' || fbuf.sgetc() == '\'')
+            {
+               auto c = fbuf.sbumpc();
+               while(fbuf.sgetc() != c && fbuf.sgetc() != EOF)
+               {
+                  if(fbuf.sgetc() == '\\')
+                     fbuf.sbumpc();
+
+                  buf.push_back(fbuf.sbumpc());
+               }
+
+               fbuf.sbumpc();
+            }
+
+            // Escaped character.
+            else if(fbuf.sgetc() == '\\')
+               buf.push_back((fbuf.sbumpc(), fbuf.sbumpc()));
+
+            // Normal character.
+            else
+               buf.push_back(fbuf.sbumpc());
+         }
+
+         // Null terminate last argument.
+         buf.push_back('\0');
+
+         // Create argv.
+         std::unique_ptr<char const*[]> argv{new char const *[args.size()]};
+         for(std::size_t i = 0, e = args.size(); i != e; ++i)
+            argv[i] = &buf[args[i]];
+
+         // Process arguments.
+         prog->process(Args().setArgs(argv.get(), args.size()));
+
+         // If no exception occurred, then option file was successful!
+         return true;
       }
    }
 }

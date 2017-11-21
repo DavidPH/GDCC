@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2017 David Hill
 //
 // See COPYING for license information.
 //
@@ -33,6 +33,9 @@ namespace GDCC
       class Program
       {
       public:
+         using ProcessFileFunc = bool (*)(Program *, char const *);
+
+
          Program() = default;
 
          Program(Program const &) = delete;
@@ -56,7 +59,8 @@ namespace GDCC
          void putHelpLong(std::ostream &out, std::size_t width = 0);
          void putVersion(std::ostream &out, std::size_t width = 0);
 
-         Base *processLoose = nullptr;
+         ProcessFileFunc processFile  = ProcessFileDefault;
+         Base           *processLoose = nullptr;
 
          char const *descL    = nullptr;
          char const *descS    = nullptr;
@@ -67,6 +71,8 @@ namespace GDCC
 
 
          friend class Base;
+
+         static bool ProcessFileDefault(Program *prog, char const *file);
 
          static void PutWrapped(std::ostream &out, std::size_t width,
             char const *str, std::size_t baselen, char const *prefix = nullptr);
@@ -100,7 +106,6 @@ namespace GDCC
          void insertShrt(Base *opt);
 
          std::size_t processArgs(Args args);
-         bool        processFile(char const *file);
          std::size_t processLong(Args args);
          std::size_t processShrt(Args args);
 
