@@ -61,6 +61,8 @@ static ssize_t FILE_fn_file_read(void *cookie, char *buf, size_t size);
 static ssize_t FILE_fn_file_write(void *cookie, char const *buf, size_t size);
 static int     FILE_fn_file_seek(void *cookie, off_t *offset, int whence);
 
+static ssize_t FILE_fn_stdin_read(void *cookie, char *buf, size_t size);
+
 static ssize_t FILE_fn_stdout_write(void *cookie, char const *buf, size_t size);
 
 
@@ -70,6 +72,9 @@ static ssize_t FILE_fn_stdout_write(void *cookie, char const *buf, size_t size);
 
 [[no_init]]
 static char Buffer_stderr[BUFSIZ];
+
+[[no_init]]
+static char Buffer_stdin[BUFSIZ];
 
 [[no_init]]
 static char Buffer_stdout[BUFSIZ];
@@ -103,14 +108,14 @@ FILE __stderr =
 FILE __stdin =
 {
    {
-      .read  = NULL,
+      .read  = FILE_fn_stdin_read,
       .write = NULL,
       .seek  = NULL,
       .close = NULL,
    },
 
-   {NULL, NULL, NULL, 0},
-   {NULL, NULL, NULL, 0},
+   {Buffer_stdin, Buffer_stdin, Buffer_stdin, 0},
+   {Buffer_stdin, Buffer_stdin, Buffer_stdin + sizeof(Buffer_stdin), sizeof(Buffer_stdin)},
 
    NULL, 0
 };
@@ -216,6 +221,25 @@ static int FILE_fn_file_seek(void *cookie_, off_t *offset, int whence)
 }
 
 //=========================================================
+// stdin functions.
+//
+
+//
+// FILE_fn_stdin_read
+//
+static ssize_t FILE_fn_stdin_read(void *cookie, char *buf, size_t size)
+{
+   #if __GDCC_Target__Doominati__
+   int res;
+   while((res = DGE_Shell_ReadStd(0, buf, size)) == 0)
+      DGE_Task_Sleep(0, 1);
+   return res;
+   #else
+   return 0;
+   #endif
+}
+
+//=========================================================
 // stdout functions.
 //
 
@@ -234,7 +258,7 @@ static ssize_t FILE_fn_stdout_write(void *cookie, char const *buf, size_t size)
 
    return size;
    #elif __GDCC_Target__Doominati__
-   return DGE_SysWrite(buf, size);
+   return DGE_Shell_WriteStd(0, buf, size);
    #else
    return 0;
    #endif

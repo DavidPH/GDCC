@@ -562,6 +562,14 @@ DGE_Native DGE_Unsig DGE_Shader_CreateData(DGE_String name, char const *frag, ch
 DGE_Native DGE_Unsig DGE_Shader_CreateFile(DGE_String name, char const *frag, char const *vert);
 DGE_Native DGE_Unsig DGE_Shader_Get(DGE_String name);
 
+DGE_Native void DGE_Shell_GetArgBuf(DGE_Unsig sh, char *buf);
+DGE_Native DGE_Unsig DGE_Shell_GetArgBufLen(DGE_Unsig sh);
+DGE_Native DGE_Unsig DGE_Shell_GetArgC(DGE_Unsig sh);
+DGE_Native void DGE_Shell_GetArgV(DGE_Unsig sh, char **argv, char *buf);
+DGE_Native DGE_Unsig DGE_Shell_ReadStd(DGE_Unsig sh, char *buf, DGE_Unsig len);
+DGE_Native DGE_Unsig DGE_Shell_WriteErr(DGE_Unsig sh, char const *buf, DGE_Unsig len);
+DGE_Native DGE_Unsig DGE_Shell_WriteStd(DGE_Unsig sh, char const *buf, DGE_Unsig len);
+
 DGE_Native DGE_Unsig DGE_Sound_Get(DGE_String name);
 DGE_Native void DGE_Sound_Play(DGE_Unsig src, DGE_Unsig chan);
 DGE_Native void DGE_Sound_SetLoop(DGE_Unsig src, DGE_Unsig chan, DGE_Unsig on);
@@ -581,10 +589,6 @@ DGE_Native void DGE_SoundSrc_SetPos(DGE_Unsig src, DGE_Fixed x, DGE_Fixed y, DGE
 DGE_Native void DGE_SoundSrc_SetVel(DGE_Unsig src, DGE_Fixed x, DGE_Fixed y, DGE_Fixed z);
 
 DGE_Native DGE_String DGE_String_Create(char const *str, DGE_Unsig len);
-
-DGE_Native DGE_Unsig DGE_SysRead(char *buf, DGE_Unsig len);
-DGE_Native DGE_Unsig DGE_SysWrite(char const *buf, DGE_Unsig len);
-DGE_Native DGE_Unsig DGE_SysWriteErr(char const *buf, DGE_Unsig len);
 
 DGE_Native DGE_Unsig DGE_Task_Create(DGE_Unsig thread, DGE_CallbackType fn, ...);
 DGE_Native void DGE_Task_Sleep(DGE_Unsig id, DGE_Unsig ticks);
