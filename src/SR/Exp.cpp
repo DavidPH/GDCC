@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -172,6 +172,22 @@ namespace GDCC
       Function::Ref Exp::getFunction() const
       {
          return v_getFunction();
+      }
+
+      //
+      // Exp::getIRArgLit
+      //
+      IR::Arg_Lit Exp::getIRArgLit() const
+      {
+         return {getType()->getSizeBytes(), getIRExp()};
+      }
+
+      //
+      // Exp::getIRArgStk
+      //
+      IR::Arg_Stk Exp::getIRArgStk() const
+      {
+         return IR::Arg_Stk{getType()->getSizeBytes()};
       }
 
       //

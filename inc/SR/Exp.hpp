@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,13 +24,15 @@
 // Types                                                                      |
 //
 
+namespace GDCC::IR
+{
+   class Arg_Lit;
+   class Arg_Stk;
+   class Exp;
+}
+
 namespace GDCC
 {
-   namespace IR
-   {
-      class Exp;
-   }
-
    namespace SR
    {
       class Arg;
@@ -65,6 +67,9 @@ namespace GDCC
          Arg getArgSrc() const;
 
          FunctionRef getFunction() const;
+
+         IR::Arg_Lit getIRArgLit() const;
+         IR::Arg_Stk getIRArgStk() const;
 
          IRExpCRef getIRExp() const;
 

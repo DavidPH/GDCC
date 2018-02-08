@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,13 +23,14 @@
 // Types                                                                      |
 //
 
+namespace GDCC::IR
+{
+   class Arg_LocReg;
+   class Arg_Stk;
+}
+
 namespace GDCC
 {
-   namespace IR
-   {
-      class Arg_LocReg;
-   }
-
    namespace SR
    {
       //
@@ -53,8 +54,10 @@ namespace GDCC
 
          IR::Arg_LocReg getArg() const;
          IR::Arg_LocReg getArg(Core::FastU off) const;
+         IR::Arg_Stk getArgStk() const;
 
          Core::FastU size() const {return block->size;}
+         Core::FastU sizeBytes() const {return block->size * w;}
 
       private:
          void init();
@@ -64,6 +67,7 @@ namespace GDCC
          Core::CounterPtr<IR::Exp const>  expB;
          Function::Ref                    fn;
          IR::Program                     *prog;
+         Core::FastU                      w;
       };
    }
 }

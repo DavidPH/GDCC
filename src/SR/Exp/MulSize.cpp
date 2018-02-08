@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -40,7 +40,7 @@ namespace GDCC
       //
       void Exp_MulSize::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
       {
-         GenStmnt_Arith(this, {IR::Code::MulU_W, 1}, ctx, dst);
+         GenStmnt_Arith(this, IR::Code::MulU_W, ctx, dst);
       }
 
       //

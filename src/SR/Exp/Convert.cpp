@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -69,8 +69,8 @@ namespace GDCC
          auto bits = bitT->getSizeBitsF() + bitT->getSizeBitsI() + sign;
          auto offs = bitT->getSizeBitsO();
          auto code = sign ? IR::Code::Bges_W : IR::Code::Bget_W;
-         ctx.block.addStatementArgs({code, bitT->getSizeWords()},
-            IR::Arg_Stk(), IR::Arg_Stk(), bits, offs);
+         ctx.block.setArgSize()
+            .addStmnt(code, dst.getIRArgStk(), exp->getIRArgStk(), bits, offs);
 
          // Move to destination.
          GenStmnt_MovePart(exp, ctx, dst, false, true);

@@ -143,7 +143,7 @@ namespace GDCC
    namespace SR
    {
       // Does generic codegen centered around a 2-arg unary instruction.
-      void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::OpCode op,
+      void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::Code code,
          GenStmntCtx const &ctx, Arg const &dst);
 
       // Returns true if only evaluating for side effects.

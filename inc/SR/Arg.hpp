@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -30,6 +30,7 @@ namespace GDCC
       enum class AddrBase;
 
       class Arg;
+      class Arg_Stk;
       class Program;
    }
 
@@ -55,6 +56,8 @@ namespace GDCC
          ~Arg();
 
          IR::Arg getIRArg(IR::Program &prog) const;
+
+         IR::Arg_Stk getIRArgStk() const;
 
          bool isIRArg() const;
 

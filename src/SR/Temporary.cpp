@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,6 +18,8 @@
 #include "IR/Exp.hpp"
 #include "IR/Glyph.hpp"
 
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Global Functions                                                           |
@@ -33,7 +35,8 @@ namespace GDCC
       Temporary::Temporary(GenStmntCtx const &ctx, Core::Origin pos_) :
          pos  {pos_},
          fn   {ctx.fn},
-         prog {&ctx.prog}
+         prog {&ctx.prog},
+         w    {Platform::GetWordBytes()}
       {
          init();
       }
@@ -45,7 +48,8 @@ namespace GDCC
          Core::FastU allocSize) :
          pos  {pos_},
          fn   {ctx.fn},
-         prog {&ctx.prog}
+         prog {&ctx.prog},
+         w    {Platform::GetWordBytes()}
       {
          init();
          alloc(allocSize);
@@ -59,7 +63,8 @@ namespace GDCC
          block{tmp.block},
          expB {tmp.expB},
          fn   {tmp.fn},
-         prog {tmp.prog}
+         prog {tmp.prog},
+         w    {tmp.w}
       {
          tmp.block = nullptr;
       }
@@ -86,6 +91,7 @@ namespace GDCC
          expB  = tmp.expB;
          fn    = tmp.fn;
          prog  = tmp.prog;
+         w     = tmp.w;
 
          tmp.block = nullptr;
 
@@ -126,7 +132,7 @@ namespace GDCC
       //
       IR::Arg_LocReg Temporary::getArg() const
       {
-         return {IR::Arg_Lit(expB), block->lo};
+         return {sizeBytes(), IR::Arg_Lit(w, expB), block->lo};
       }
 
       //
@@ -134,7 +140,15 @@ namespace GDCC
       //
       IR::Arg_LocReg Temporary::getArg(Core::FastU off) const
       {
-         return {IR::Arg_Lit(expB), block->lo + off};
+         return {w, IR::Arg_Lit(w, expB), block->lo + off};
+      }
+
+      //
+      // Temporary::getArgStk
+      //
+      IR::Arg_Stk Temporary::getArgStk() const
+      {
+         return IR::Arg_Stk{sizeBytes()};
       }
 
       //

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -43,12 +43,12 @@
       Arg_##name &operator -- () {--off; return *this;} \
       \
       Arg_##name operator + (Core::FastU i) const \
-         {return Arg_##name(*idx, off + i);} \
+         {return {size, *idx, off + i};} \
       Arg_##name operator - (Core::FastU i) const \
-         {return Arg_##name(*idx, off - i);} \
+         {return {size, *idx, off - i};} \
       \
       bool operator == (Arg_##name const &arg) const \
-         {return *idx == *arg.idx && off == arg.off;} \
+         {return ArgPtr1::operator == (arg);} \
       \
       Arg_##name &operator = (Arg_##name const &) = default; \
       Arg_##name &operator = (Arg_##name &&) = default; \
@@ -56,7 +56,7 @@
       Arg_##name &operator += (Core::FastU i) {return off += i, *this;} \
       Arg_##name &operator -= (Core::FastU i) {return off -= i, *this;} \
       \
-      Arg_##name getOffset(Core::FastU w) const {return {*idx, off + w};} \
+      Arg_##name getOffset(Core::FastU w) const {return {size, *idx, off + w};} \
    }
 
 //
@@ -82,12 +82,12 @@
       Arg_##name &operator -- () {++off; return *this;} \
       \
       Arg_##name operator + (Core::FastU i) const \
-         {return Arg_##name(*arr, *idx, off + i);} \
+         {return {size, *arr, *idx, off + i};} \
       Arg_##name operator - (Core::FastU i) const \
-         {return Arg_##name(*arr, *idx, off - i);} \
+         {return {size, *arr, *idx, off - i};} \
       \
       bool operator == (Arg_##name const &arg) const \
-         {return *arr == *arg.arr && *idx == *arg.idx && off == arg.off;} \
+         {return ArgPtr2::operator == (arg);} \
       \
       Arg_##name &operator = (Arg_##name const &) = default; \
       Arg_##name &operator = (Arg_##name &&) = default; \
@@ -95,7 +95,7 @@
       Arg_##name &operator += (Core::FastU i) {return off += i, *this;} \
       Arg_##name &operator -= (Core::FastU i) {return off -= i, *this;} \
       \
-      Arg_##name getOffset(Core::FastU w) const {return {*arr, *idx, off + w};} \
+      Arg_##name getOffset(Core::FastU w) const {return {size, *arr, *idx, off + w};} \
    }
 
 
@@ -103,384 +103,429 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   class Arg;
+
+   typedef AddrBase ArgBase;
+
+   bool operator == (Arg const &l, Arg const &r);
+
+   //
+   // ArgPart
+   //
+   class ArgPart
    {
-      class Arg;
+   public:
+      explicit ArgPart(Core::FastU size_) : size{size_} {}
+      explicit ArgPart(IArchive &in);
 
-      typedef AddrBase ArgBase;
+      IArchive &getIR(IArchive &in);
 
-      bool operator == (Arg const &l, Arg const &r);
+      OArchive &putIR(OArchive &out) const;
+
+      Core::FastU size;
+
+   protected:
+      ArgPart(ArgPart const &) = default;
+      ArgPart(ArgPart &&) = default;
+
+      bool operator == (ArgPart const &arg) const
+         {return size == arg.size;}
+
+      ArgPart &operator = (ArgPart const &) = default;
+      ArgPart &operator = (ArgPart &&) = default;
+   };
+
+   //
+   // ArgPtr1
+   //
+   class ArgPtr1 : public ArgPart
+   {
+   public:
+      ArgPtr1(Core::FastU size, Arg const &idx);
+      ArgPtr1(Core::FastU size, Arg &&idx);
+      ArgPtr1(Core::FastU size, Arg const &idx, Core::FastU off);
+      ArgPtr1(Core::FastU size, Arg &&idx, Core::FastU off);
+      explicit ArgPtr1(IArchive &in);
+
+      IArchive &getIR(IArchive &in);
+
+      OArchive &putIR(OArchive &out) const;
+
+      Arg        *idx;
+      Core::FastU off;
+
+   protected:
+      ArgPtr1(ArgPtr1 const &arg);
+      ArgPtr1(ArgPtr1 &&arg);
+      ~ArgPtr1();
+
+      bool operator == (ArgPtr1 const &arg) const
+         {return ArgPart::operator == (arg) &&
+             off == arg.off && *idx == *arg.idx;}
+
+      ArgPtr1 &operator = (ArgPtr1 const &arg);
+      ArgPtr1 &operator = (ArgPtr1 &&arg);
+   };
+
+   //
+   // ArgPtr2
+   //
+   class ArgPtr2 : public ArgPart
+   {
+   public:
+      ArgPtr2(Core::FastU size, Arg const &arr, Arg const &idx);
+      ArgPtr2(Core::FastU size, Arg const &arr, Arg &&idx);
+      ArgPtr2(Core::FastU size, Arg &&arr, Arg const &idx);
+      ArgPtr2(Core::FastU size, Arg &&arr, Arg &&idx);
+      ArgPtr2(Core::FastU size, Arg const &arr, Arg const &idx, Core::FastU off);
+      ArgPtr2(Core::FastU size, Arg const &arr, Arg &&idx, Core::FastU off);
+      ArgPtr2(Core::FastU size, Arg &&arr, Arg const &idx, Core::FastU off);
+      ArgPtr2(Core::FastU size, Arg &&arr, Arg &&idx, Core::FastU off);
+      explicit ArgPtr2(IArchive &in);
+
+      IArchive &getIR(IArchive &in);
+
+      OArchive &putIR(OArchive &out) const;
+
+      Arg        *arr;
+      Arg        *idx;
+      Core::FastU off;
+
+   protected:
+      ArgPtr2(ArgPtr2 const &arg);
+      ArgPtr2(ArgPtr2 &&arg);
+      ~ArgPtr2();
+
+      bool operator == (ArgPtr2 const &arg) const
+         {return ArgPart::operator == (arg) &&
+             off == arg.off && *idx == *arg.idx && *arr == *arg.arr;}
+
+      ArgPtr2 &operator = (ArgPtr2 const &arg);
+      ArgPtr2 &operator = (ArgPtr2 &&arg);
+   };
+
+   //
+   // Arg_Gen
+   //
+   GDCC_IR_MakeArgPtr1(Gen);
+
+   //
+   // Arg_Cpy
+   //
+   // Not a valid arg type.
+   // Used for argument placeholders in assembler macros.
+   //
+   class Arg_Cpy : public ArgPart
+   {
+   public:
+      Arg_Cpy() : ArgPart{0}, value{0} {}
+      Arg_Cpy(Core::FastU size_, Core::FastU value_) : ArgPart{size_}, value{value_} {}
+      explicit Arg_Cpy(IArchive &in);
+
+      bool operator == (Arg_Cpy const &arg) const
+         {return ArgPart::operator == (arg) && value == arg.value;}
+
+      IArchive &getIR(IArchive &in);
+
+      Arg_Cpy getOffset(Core::FastU) const {return *this;}
+
+      OArchive &putIR(OArchive &out) const;
+
+      Core::FastU value;
+   };
+
+   //
+   // Arg_Lit
+   //
+   // Only valid as a source.
+   //
+   class Arg_Lit : public ArgPart
+   {
+   public:
+      Arg_Lit(Core::FastU size_, Exp const *value_) :
+         ArgPart{size_}, value{value_}, off{0} {}
+      Arg_Lit(Core::FastU size_, Exp const *value_, Core::FastU off_) :
+         ArgPart{size_}, value{value_}, off{off_} {}
+      explicit Arg_Lit(IArchive &in);
+
+      bool operator == (Arg_Lit const &arg) const
+         {return ArgPart::operator == (arg) &&
+             off == arg.off && *value == *arg.value;}
+
+      IArchive &getIR(IArchive &in);
+
+      Arg_Lit getOffset(Core::FastU w) const {return {size, value, off + w};}
+
+      OArchive &putIR(OArchive &out) const;
+
+      Exp::CRef   value;
+      Core::FastU off;
+   };
+
+   //
+   // Arg_Nul
+   //
+   // Only valid as a destination.
+   //
+   class Arg_Nul : public ArgPart
+   {
+   public:
+      using ArgPart::ArgPart;
+
+      bool operator == (Arg_Nul const &arg) const
+         {return ArgPart::operator == (arg);}
+
+      Arg_Nul getOffset(Core::FastU) const {return *this;}
+   };
+
+   //
+   // Arg_Stk
+   //
+   class Arg_Stk : public ArgPart
+   {
+   public:
+      using ArgPart::ArgPart;
+
+      bool operator == (Arg_Stk const &arg) const
+         {return ArgPart::operator == (arg);}
+
+      Arg_Stk getOffset(Core::FastU) const {return *this;}
+   };
+
+   //
+   // Arg_Aut
+   //
+   GDCC_IR_MakeArgPtr1(Aut);
+
+   //
+   // Arg_Far
+   //
+   GDCC_IR_MakeArgPtr1(Far);
+
+   //
+   // Arg_GblArs
+   //
+   GDCC_IR_MakeArgPtr1(GblArs);
+
+   //
+   // Arg_GblReg
+   //
+   GDCC_IR_MakeArgPtr1(GblReg);
+
+   //
+   // Arg_HubArs
+   //
+   GDCC_IR_MakeArgPtr1(HubArs);
+
+   //
+   // Arg_HubReg
+   //
+   GDCC_IR_MakeArgPtr1(HubReg);
+
+   //
+   // Arg_LocReg
+   //
+   GDCC_IR_MakeArgPtr1(LocReg);
+
+   //
+   // Arg_ModArs
+   //
+   GDCC_IR_MakeArgPtr1(ModArs);
+
+   //
+   // Arg_ModReg
+   //
+   GDCC_IR_MakeArgPtr1(ModReg);
+
+   //
+   // Arg_Sta
+   //
+   GDCC_IR_MakeArgPtr1(Sta);
+
+   //
+   // Arg_StrArs
+   //
+   GDCC_IR_MakeArgPtr1(StrArs);
+
+   //
+   // Arg_Vaa
+   //
+   GDCC_IR_MakeArgPtr1(Vaa);
+
+   //
+   // Arg_GblArr
+   //
+   GDCC_IR_MakeArgPtr2(GblArr);
+
+   //
+   // Arg_HubArr
+   //
+   GDCC_IR_MakeArgPtr2(HubArr);
+
+   //
+   // Arg_LocArr
+   //
+   GDCC_IR_MakeArgPtr2(LocArr);
+
+   //
+   // Arg_ModArr
+   //
+   GDCC_IR_MakeArgPtr2(ModArr);
+
+   //
+   // Arg_StrArr
+   //
+   GDCC_IR_MakeArgPtr2(StrArr);
+
+   //
+   // Arg
+   //
+   class Arg
+   {
+   public:
+      Arg() : a{ArgBase::Cpy}, aCpy{} {}
 
       //
-      // ArgPtr1
+      // copy constructor
       //
-      class ArgPtr1
+      Arg(Arg const &arg) : a{arg.a}
       {
-      public:
-         ArgPtr1(ArgPtr1 const &arg);
-         ArgPtr1(ArgPtr1 &&arg);
-         ArgPtr1(Arg const &idx);
-         ArgPtr1(Arg &&idx);
-         ArgPtr1(Arg const &idx, Core::FastU off);
-         ArgPtr1(Arg &&idx, Core::FastU off);
-         explicit ArgPtr1(IArchive &in);
-         ~ArgPtr1();
-
-         ArgPtr1 &operator = (ArgPtr1 const &arg);
-         ArgPtr1 &operator = (ArgPtr1 &&arg);
-
-         IArchive &getIR(IArchive &in);
-
-         OArchive &putIR(OArchive &out) const;
-
-         Arg        *idx;
-         Core::FastU off;
-      };
-
-      //
-      // ArgPtr2
-      //
-      class ArgPtr2
-      {
-      public:
-         ArgPtr2(ArgPtr2 const &arg);
-         ArgPtr2(ArgPtr2 &&arg);
-         ArgPtr2(Arg const &arr, Arg const &idx);
-         ArgPtr2(Arg const &arr, Arg &&idx);
-         ArgPtr2(Arg &&arr, Arg const &idx);
-         ArgPtr2(Arg &&arr, Arg &&idx);
-         ArgPtr2(Arg const &arr, Arg const &idx, Core::FastU off);
-         ArgPtr2(Arg const &arr, Arg &&idx, Core::FastU off);
-         ArgPtr2(Arg &&arr, Arg const &idx, Core::FastU off);
-         ArgPtr2(Arg &&arr, Arg &&idx, Core::FastU off);
-         explicit ArgPtr2(IArchive &in);
-         ~ArgPtr2();
-
-         ArgPtr2 &operator = (ArgPtr2 const &arg);
-         ArgPtr2 &operator = (ArgPtr2 &&arg);
-
-         IArchive &getIR(IArchive &in);
-
-         OArchive &putIR(OArchive &out) const;
-
-         Arg        *arr;
-         Arg        *idx;
-         Core::FastU off;
-      };
-
-      //
-      // Arg_Gen
-      //
-      GDCC_IR_MakeArgPtr1(Gen);
-
-      //
-      // Arg_Cpy
-      //
-      // Not a valid arg type.
-      // Used for argument placeholders in assembler macros.
-      //
-      class Arg_Cpy
-      {
-      public:
-         Arg_Cpy() : value{0} {}
-         explicit Arg_Cpy(Core::FastU value_) : value{value_} {}
-         explicit Arg_Cpy(IArchive &in);
-
-         bool operator == (Arg_Cpy const &arg) const
-            {return value == arg.value;}
-
-         IArchive &getIR(IArchive &in);
-
-         Arg_Cpy getOffset(Core::FastU) const {return Arg_Cpy(value);}
-
-         OArchive &putIR(OArchive &out) const;
-
-         Core::FastU value;
-      };
-
-      //
-      // Arg_Lit
-      //
-      // Only valid as a source.
-      //
-      class Arg_Lit
-      {
-      public:
-         explicit Arg_Lit(Exp const *value_) : value{value_}, off{0} {}
-         Arg_Lit(Exp const *value_, Core::FastU off_) : value{value_}, off{off_} {}
-         explicit Arg_Lit(IArchive &in);
-
-         bool operator == (Arg_Lit const &arg) const
-            {return off == arg.off && *value == *arg.value;}
-
-         IArchive &getIR(IArchive &in);
-
-         Arg_Lit getOffset(Core::FastU w) const {return {value, off + w};}
-
-         OArchive &putIR(OArchive &out) const;
-
-         Exp::CRef   value;
-         Core::FastU off;
-      };
-
-      //
-      // Arg_Nul
-      //
-      // Only valid as a destination.
-      //
-      class Arg_Nul
-      {
-      public:
-         Arg_Nul() = default;
-         explicit Arg_Nul(IArchive &) {}
-
-         bool operator == (Arg_Nul const &) const {return true;}
-
-         IArchive &getIR(IArchive &in) {return in;}
-
-         Arg_Nul getOffset(Core::FastU) const {return {};}
-
-         OArchive &putIR(OArchive &out) const {return out;}
-      };
-
-      //
-      // Arg_Stk
-      //
-      class Arg_Stk
-      {
-      public:
-         Arg_Stk() = default;
-         explicit Arg_Stk(IArchive &) {}
-
-         bool operator == (Arg_Stk const &) const {return true;}
-
-         IArchive &getIR(IArchive &in) {return in;}
-
-         Arg_Stk getOffset(Core::FastU) const {return {};}
-
-         OArchive &putIR(OArchive &out) const {return out;}
-      };
-
-      //
-      // Arg_Aut
-      //
-      GDCC_IR_MakeArgPtr1(Aut);
-
-      //
-      // Arg_Far
-      //
-      GDCC_IR_MakeArgPtr1(Far);
-
-      //
-      // Arg_GblArs
-      //
-      GDCC_IR_MakeArgPtr1(GblArs);
-
-      //
-      // Arg_GblReg
-      //
-      GDCC_IR_MakeArgPtr1(GblReg);
-
-      //
-      // Arg_HubArs
-      //
-      GDCC_IR_MakeArgPtr1(HubArs);
-
-      //
-      // Arg_HubReg
-      //
-      GDCC_IR_MakeArgPtr1(HubReg);
-
-      //
-      // Arg_LocReg
-      //
-      GDCC_IR_MakeArgPtr1(LocReg);
-
-      //
-      // Arg_ModArs
-      //
-      GDCC_IR_MakeArgPtr1(ModArs);
-
-      //
-      // Arg_ModReg
-      //
-      GDCC_IR_MakeArgPtr1(ModReg);
-
-      //
-      // Arg_Sta
-      //
-      GDCC_IR_MakeArgPtr1(Sta);
-
-      //
-      // Arg_StrArs
-      //
-      GDCC_IR_MakeArgPtr1(StrArs);
-
-      //
-      // Arg_Vaa
-      //
-      GDCC_IR_MakeArgPtr1(Vaa);
-
-      //
-      // Arg_GblArr
-      //
-      GDCC_IR_MakeArgPtr2(GblArr);
-
-      //
-      // Arg_HubArr
-      //
-      GDCC_IR_MakeArgPtr2(HubArr);
-
-      //
-      // Arg_LocArr
-      //
-      GDCC_IR_MakeArgPtr2(LocArr);
-
-      //
-      // Arg_ModArr
-      //
-      GDCC_IR_MakeArgPtr2(ModArr);
-
-      //
-      // Arg_StrArr
-      //
-      GDCC_IR_MakeArgPtr2(StrArr);
-
-      //
-      // Arg
-      //
-      class Arg
-      {
-      public:
-         Arg() : a{ArgBase::Cpy}, aCpy{} {}
-
-         //
-         // copy constructor
-         //
-         Arg(Arg const &arg) : a{arg.a}
+         switch(a)
          {
-            switch(a)
-            {
-               #define GDCC_IR_AddrList(name) case ArgBase::name: \
-                  new(&a##name) Arg_##name(arg.a##name); break;
-               #include "../IR/AddrList.hpp"
-            }
-         }
-
-         //
-         // move constructor
-         //
-         Arg(Arg &&arg) : a{arg.a}
-         {
-            switch(a)
-            {
-               #define GDCC_IR_AddrList(name) case ArgBase::name: \
-                  new(&a##name) Arg_##name(std::move(arg.a##name)); break;
-               #include "../IR/AddrList.hpp"
-            }
-         }
-
-         //
-         // cast constructors
-         //
-         #define GDCC_IR_AddrList(name) \
-            Arg(Arg_##name const &arg) : a{ArgBase::name}, a##name(          arg ) {} \
-            Arg(Arg_##name      &&arg) : a{ArgBase::name}, a##name(std::move(arg)) {}
-         #include "../IR/AddrList.hpp"
-
-         explicit Arg(IArchive &in);
-
-         //
-         // destructor
-         //
-         ~Arg()
-         {
-            switch(a)
-            {
-               #define GDCC_IR_AddrList(name) \
-                  case ArgBase::name: a##name.~Arg_##name(); break;
-               #include "../IR/AddrList.hpp"
-            }
-         }
-
-         //
-         // copy assignment
-         //
-         Arg &operator = (Arg const &arg)
-         {
-            if(arg.a == a) switch(a)
-            {
-               #define GDCC_IR_AddrList(name) \
-                  case ArgBase::name: a##name = arg.a##name; break;
-               #include "../IR/AddrList.hpp"
-            }
-            else
-               new((this->~Arg(), this)) Arg(arg);
-
-            return *this;
-         }
-
-         //
-         // move assignment
-         //
-         Arg &operator = (Arg &&arg)
-         {
-            if(arg.a == a) switch(a)
-            {
-               #define GDCC_IR_AddrList(name) \
-                  case ArgBase::name: a##name = std::move(arg.a##name); break;
-               #include "../IR/AddrList.hpp"
-            }
-            else
-               new((this->~Arg(), this)) Arg(std::move(arg));
-
-            return *this;
-         }
-
-         //
-         // cast assignments
-         //
-         #define GDCC_IR_AddrList(name) \
-            Arg &operator = (Arg_##name const &arg) \
-            { \
-               if(a == ArgBase::name) a##name = arg; \
-               else new((this->~Arg(), this)) Arg(arg); \
-               return *this; \
-            } \
-            Arg &operator = (Arg_##name &&arg) \
-            { \
-               if(a == ArgBase::name) a##name = std::move(arg); \
-               else new((this->~Arg(), this)) Arg(std::move(arg)); \
-               return *this; \
-            }
-         #include "../IR/AddrList.hpp"
-
-         //
-         // getOffset
-         //
-         Arg getOffset(Core::FastU w) const
-         {
-            switch(a)
-            {
-               #define GDCC_IR_AddrList(name) \
-                  case ArgBase::name: return a##name.getOffset(w);
-               #include "../IR/AddrList.hpp"
-            }
-
-            return *this;
-         }
-
-         ArgBase a;
-
-         union
-         {
-            #define GDCC_IR_AddrList(name) Arg_##name a##name;
+            #define GDCC_IR_AddrList(name) case ArgBase::name: \
+               new(&a##name) Arg_##name(arg.a##name); break;
             #include "../IR/AddrList.hpp"
-         };
+         }
+      }
+
+      //
+      // move constructor
+      //
+      Arg(Arg &&arg) : a{arg.a}
+      {
+         switch(a)
+         {
+            #define GDCC_IR_AddrList(name) case ArgBase::name: \
+               new(&a##name) Arg_##name(std::move(arg.a##name)); break;
+            #include "../IR/AddrList.hpp"
+         }
+      }
+
+      //
+      // cast constructors
+      //
+      #define GDCC_IR_AddrList(name) \
+         Arg(Arg_##name const &arg) : a{ArgBase::name}, a##name(          arg ) {} \
+         Arg(Arg_##name      &&arg) : a{ArgBase::name}, a##name(std::move(arg)) {}
+      #include "../IR/AddrList.hpp"
+
+      explicit Arg(IArchive &in);
+
+      //
+      // destructor
+      //
+      ~Arg()
+      {
+         switch(a)
+         {
+            #define GDCC_IR_AddrList(name) \
+               case ArgBase::name: a##name.~Arg_##name(); break;
+            #include "../IR/AddrList.hpp"
+         }
+      }
+
+      //
+      // copy assignment
+      //
+      Arg &operator = (Arg const &arg)
+      {
+         if(arg.a == a) switch(a)
+         {
+            #define GDCC_IR_AddrList(name) \
+               case ArgBase::name: a##name = arg.a##name; break;
+            #include "../IR/AddrList.hpp"
+         }
+         else
+            new((this->~Arg(), this)) Arg(arg);
+
+         return *this;
+      }
+
+      //
+      // move assignment
+      //
+      Arg &operator = (Arg &&arg)
+      {
+         if(arg.a == a) switch(a)
+         {
+            #define GDCC_IR_AddrList(name) \
+               case ArgBase::name: a##name = std::move(arg.a##name); break;
+            #include "../IR/AddrList.hpp"
+         }
+         else
+            new((this->~Arg(), this)) Arg(std::move(arg));
+
+         return *this;
+      }
+
+      //
+      // cast assignments
+      //
+      #define GDCC_IR_AddrList(name) \
+         Arg &operator = (Arg_##name const &arg) \
+         { \
+            if(a == ArgBase::name) a##name = arg; \
+            else new((this->~Arg(), this)) Arg(arg); \
+            return *this; \
+         } \
+         Arg &operator = (Arg_##name &&arg) \
+         { \
+            if(a == ArgBase::name) a##name = std::move(arg); \
+            else new((this->~Arg(), this)) Arg(std::move(arg)); \
+            return *this; \
+         }
+      #include "../IR/AddrList.hpp"
+
+      //
+      // getOffset
+      //
+      Arg getOffset(Core::FastU w) const
+      {
+         switch(a)
+         {
+            #define GDCC_IR_AddrList(name) \
+               case ArgBase::name: return a##name.getOffset(w);
+            #include "../IR/AddrList.hpp"
+         }
+
+         return *this;
+      }
+
+      //
+      // getSize
+      //
+      Core::FastU getSize() const
+      {
+         switch(a)
+         {
+            #define GDCC_IR_AddrList(name) \
+               case ArgBase::name: return a##name.size;
+            #include "../IR/AddrList.hpp"
+         }
+
+         return 0;
+      }
+
+      ArgBase a;
+
+      union
+      {
+         #define GDCC_IR_AddrList(name) Arg_##name a##name;
+         #include "../IR/AddrList.hpp"
       };
-   }
+   };
 }
 
 
@@ -488,27 +533,24 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
-   {
-      bool operator == (Arg const &l, Arg const &r);
-      bool operator != (Arg const &l, Arg const &r);
+   bool operator == (Arg const &l, Arg const &r);
+   bool operator != (Arg const &l, Arg const &r);
 
-      #define GDCC_IR_AddrList(name) \
-         inline OArchive &operator << (OArchive &out, Arg_##name const &in) \
-            {return in.putIR(out);}
-      #include "../IR/AddrList.hpp"
+   #define GDCC_IR_AddrList(name) \
+      inline OArchive &operator << (OArchive &out, Arg_##name const &in) \
+         {return in.putIR(out);}
+   #include "../IR/AddrList.hpp"
 
-      OArchive &operator << (OArchive &out, Arg const &in);
+   OArchive &operator << (OArchive &out, Arg const &in);
 
-      #define GDCC_IR_AddrList(name) \
-         inline IArchive &operator >> (IArchive &in, Arg_##name &out) \
-            {return out.getIR(in);}
-      #include "../IR/AddrList.hpp"
+   #define GDCC_IR_AddrList(name) \
+      inline IArchive &operator >> (IArchive &in, Arg_##name &out) \
+         {return out.getIR(in);}
+   #include "../IR/AddrList.hpp"
 
-      IArchive &operator >> (IArchive &in, Arg &out);
-   }
+   IArchive &operator >> (IArchive &in, Arg &out);
 }
 
 #endif//GDCC__IR__Arg_H__

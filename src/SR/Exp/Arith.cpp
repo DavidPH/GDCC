@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -50,7 +50,7 @@ namespace GDCC
       //
       // GenStmnt_Arith
       //
-      void GenStmnt_Arith(Exp_Binary const *exp, IR::OpCode op,
+      void GenStmnt_Arith(Exp_Binary const *exp, IR::Code code,
          GenStmntCtx const &ctx, SR::Arg const &dst)
       {
          if(GenStmntNul(exp, ctx, dst)) return;
@@ -74,7 +74,7 @@ namespace GDCC
                // Evaluate left expression to stack.
                exp->expL->genStmntStk(ctx);
 
-               irArgL = IR::Arg_Stk();
+               irArgL = argL.getIRArgStk();
                irArgR = argR.getIRArg(ctx.prog);
             }
          }
@@ -84,18 +84,19 @@ namespace GDCC
             exp->expL->genStmntStk(ctx);
             exp->expR->genStmntStk(ctx);
 
-            irArgL = IR::Arg_Stk();
-            irArgR = IR::Arg_Stk();
+            irArgL = argL.getIRArgStk();
+            irArgR = argR.getIRArgStk();
          }
 
          if(dst.isIRArg())
          {
             auto irDst = dst.getIRArg(ctx.prog);
-            ctx.block.addStatementArgs(op, irDst, irArgL, irArgR);
+            ctx.block.addStmnt(code, irDst, irArgL, irArgR);
          }
          else
          {
-            ctx.block.addStatementArgs(op, IR::Arg_Stk(), irArgL, irArgR);
+            IR::Arg_Stk irDst{dst.type->getSizeBytes()};
+            ctx.block.addStmnt(code, irDst, irArgL, irArgR);
 
             // Move to destination.
             GenStmnt_MovePart(exp, ctx, dst, false, true);

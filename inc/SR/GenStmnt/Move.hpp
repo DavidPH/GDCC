@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,6 +20,8 @@
 #include "../../IR/Block.hpp"
 #include "../../IR/Glyph.hpp"
 
+#include "../../Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -36,8 +38,9 @@
    { \
       IR::Glyph glyph{&ctx.prog, arg.type->getQualAddr().name}; \
       auto arr = IR::ExpCreate_Glyph(glyph, exp->pos); \
+      auto arrN = Platform::GetWordBytes(); \
       \
-      return ArgT(IR::Arg_Lit(arr), idx, off); \
+      return ArgT(arg.type->getSizeBytes(), IR::Arg_Lit(arrN, arr), idx, off); \
    } \
    \
    template<> inline ArgT GenStmnt_Move_GenArg<ArgT>(Exp const *exp, \
@@ -45,8 +48,9 @@
    { \
       IR::Glyph glyph{&ctx.prog, arg.type->getQualAddr().name}; \
       auto arr = IR::ExpCreate_Glyph(glyph, exp->pos); \
+      auto arrN = Platform::GetWordBytes(); \
       \
-      return ArgT(IR::Arg_Lit(arr), std::move(idx), off); \
+      return ArgT(arg.type->getSizeBytes(), IR::Arg_Lit(arrN, arr), std::move(idx), off); \
    }
 
 
@@ -62,16 +66,16 @@ namespace GDCC
       // GenStmnt_Move_GenArg
       //
       template<typename ArgT>
-      ArgT GenStmnt_Move_GenArg(Exp const *, GenStmntCtx const &, Arg const &,
+      ArgT GenStmnt_Move_GenArg(Exp const *, GenStmntCtx const &, Arg const &arg,
          IR::Arg const &idx, Core::FastU off)
       {
-         return ArgT(idx, off);
+         return ArgT(arg.type->getSizeBytes(), idx, off);
       }
       template<typename ArgT>
-      ArgT GenStmnt_Move_GenArg(Exp const *, GenStmntCtx const &, Arg const &,
+      ArgT GenStmnt_Move_GenArg(Exp const *, GenStmntCtx const &, Arg const &arg,
          IR::Arg &&idx, Core::FastU off)
       {
-         return ArgT(std::move(idx), off);
+         return ArgT(arg.type->getSizeBytes(), std::move(idx), off);
       }
       GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_GblArr)
       GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_HubArr)

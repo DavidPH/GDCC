@@ -192,11 +192,11 @@ namespace GDCC
    namespace SR
    {
       // Does generic codegen centered around a 3-arg arithmetic instruction.
-      void GenStmnt_Arith(Exp_Binary const *exp, IR::OpCode op,
+      void GenStmnt_Arith(Exp_Binary const *exp, IR::Code code,
          GenStmntCtx const &ctx, Arg const &dst);
 
       // As in GenStmnt_Arith, but also assigns the result to the left operand.
-      void GenStmnt_ArithEq(Exp_Binary const *exp, IR::OpCode op,
+      void GenStmnt_ArithEq(Exp_Binary const *exp, IR::Code code,
          GenStmntCtx const &ctx, Arg const &dst, Type const *evalT,
          bool post = false);
    }

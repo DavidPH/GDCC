@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,7 +14,7 @@
 #define GDCC__IR__Statement_H__
 
 #include "../IR/Arg.hpp"
-#include "../IR/OpCode.hpp"
+#include "../IR/Code.hpp"
 
 #include "../Core/Array.hpp"
 
@@ -23,49 +23,43 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // Statement
+   //
+   class Statement
    {
-      //
-      // Statement
-      //
-      class Statement
-      {
-      public:
-         Statement();
-         Statement(Statement const &) = delete;
-         Statement(Statement &&stmnt);
-         explicit Statement(Statement *head);
-         Statement(Statement *head, Statement *link, OpCode op);
-         ~Statement();
+   public:
+      Statement();
+      Statement(Statement const &) = delete;
+      Statement(Statement &&stmnt);
+      Statement(Statement &&stmnt, Statement *link, Code code);
+      explicit Statement(Statement *head);
+      ~Statement();
 
-         Statement &operator = (Statement &&stmnt);
+      Statement &operator = (Statement &&stmnt);
 
-         Core::Origin pos;
+      Core::Origin pos;
 
-         Statement *next, *prev;
+      Statement *next, *prev;
 
-         Core::Array<Arg>          args;
-         Core::Array<Core::String> labs;
-         OpCode                    op;
-      };
-   }
+      Core::Array<Arg>          args;
+      Core::Array<Core::String> labs;
+      Code                      code;
+   };
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
-   {
-      OArchive &operator << (OArchive &out, Statement const &in);
+   OArchive &operator << (OArchive &out, Statement const &in);
 
-      IArchive &operator >> (IArchive &in, Statement &out);
-   }
+   IArchive &operator >> (IArchive &in, Statement &out);
 }
 
 #endif//GDCC__IR__Statement_H__

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2017 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -144,7 +144,7 @@ namespace GDCC::SR
       {
          stmnt->genStmnt({fn.block, this, prog});
          if(fn.block.hasLabelPending())
-            fn.block.addStatementArgs({IR::Code::Nop, 0});
+            fn.block.addStmnt(IR::Code::Nop);
       }
 
       fn.allocAut = allocAut;

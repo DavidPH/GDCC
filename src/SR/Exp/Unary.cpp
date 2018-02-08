@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -108,7 +108,7 @@ namespace GDCC
       //
       // GenStmnt_UnaryCode
       //
-      void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::OpCode op,
+      void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::Code code,
          GenStmntCtx const &ctx, Arg const &dst)
       {
          if(GenStmntNul(exp, ctx, dst)) return;
@@ -117,7 +117,7 @@ namespace GDCC
          exp->exp->genStmntStk(ctx);
 
          // Operate on stack.
-         ctx.block.addStatementArgs(op, IR::Arg_Stk(), IR::Arg_Stk());
+         ctx.block.addStmnt(code, dst.getIRArgStk(), exp->exp->getIRArgStk());
 
          // Move to destination.
          GenStmnt_MovePart(exp, ctx, dst, false, true);

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "SR/Exp/Cnd.hpp"
 
+#include "SR/Arg.hpp"
 #include "SR/Function.hpp"
 #include "SR/Type.hpp"
 
@@ -37,12 +38,21 @@ namespace GDCC
          IR::Glyph labelEnd = {ctx.prog, ctx.fn->genLabel()};
 
          // Evaluate condition.
-         expC->genStmntStk(ctx);
-         ctx.block.addStatementArgs({IR::Code::Jcnd_Nil, 1}, IR::Arg_Stk(), labelNil);
+         if(auto argC = expC->getArg(); argC.isIRArg())
+         {
+            ctx.block.setArgSize()
+               .addStmnt(IR::Code::Jcnd_Nil, argC.getIRArg(ctx.prog), labelNil);
+         }
+         else
+         {
+            expC->genStmntStk(ctx);
+            ctx.block.setArgSize()
+               .addStmnt(IR::Code::Jcnd_Nil, expC->getIRArgStk(), labelNil);
+         }
 
          // Left (true) expression.
          expL->genStmnt(ctx, dst);
-         ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelEnd);
+         ctx.block.setArgSize().addStmnt(IR::Code::Jump, labelEnd);
 
          // Right (false) expression.
          ctx.block.addLabel(labelNil);

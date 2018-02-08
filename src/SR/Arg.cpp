@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,6 +20,8 @@
 #include "IR/Arg.hpp"
 #include "IR/Glyph.hpp"
 
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -34,8 +36,10 @@
    { \
       IR::Glyph glyph{prog, arg.type->getQualAddr().name}; \
       auto arr = IR::ExpCreate_Glyph(glyph, arg.data->pos); \
+      auto arrN = Platform::GetWordBytes(); \
       \
-      return ArgT(IR::Arg_Lit(arr), arg.data->getArg().getIRArg(prog)); \
+      return {arg.type->getSizeBytes(), IR::Arg_Lit(arrN, arr), \
+         arg.data->getArg().getIRArg(prog)}; \
    }
 
 //
@@ -63,7 +67,7 @@ namespace GDCC
       template<typename ArgT>
       static ArgT GetIRArg(SR::Arg const &arg, IR::Program &prog)
       {
-         return ArgT(arg.data->getArg().getIRArg(prog));
+         return ArgT(arg.type->getSizeBytes(), arg.data->getArg().getIRArg(prog));
       }
       GenGetIRArg_ArgPtr2(IR::Arg_GblArr)
       GenGetIRArg_ArgPtr2(IR::Arg_HubArr)
@@ -79,17 +83,17 @@ namespace GDCC
       // GetIRArg<IR::Arg_Lit>
       template<>
       IR::Arg_Lit GetIRArg<IR::Arg_Lit>(SR::Arg const &arg, IR::Program &)
-         {return IR::Arg_Lit(arg.data->getIRExp());}
+         {return IR::Arg_Lit(arg.type->getSizeBytes(), arg.data->getIRExp());}
 
       // GetIRArg<IR::Arg_Nul>
       template<>
-      IR::Arg_Nul GetIRArg<IR::Arg_Nul>(SR::Arg const &, IR::Program &)
-         {return IR::Arg_Nul();}
+      IR::Arg_Nul GetIRArg<IR::Arg_Nul>(SR::Arg const &arg, IR::Program &)
+         {return IR::Arg_Nul(arg.type->getSizeBytes());}
 
       // GetIRArg<IR::Arg_Stk>
       template<>
-      IR::Arg_Stk GetIRArg<IR::Arg_Stk>(SR::Arg const &, IR::Program &)
-         {return IR::Arg_Stk();}
+      IR::Arg_Stk GetIRArg<IR::Arg_Stk>(SR::Arg const &arg, IR::Program &)
+         {return IR::Arg_Stk(arg.type->getSizeBytes());}
 
       //
       // IsIRArg
@@ -195,6 +199,14 @@ namespace GDCC
             throw Core::ExceptStr(data->pos, "bad Arg::getIRArg");
          else
             throw Core::ExceptStr({nullptr, 0}, "bad Arg::getIRArg");
+      }
+
+      //
+      // Arg::getIRArgStk
+      //
+      IR::Arg_Stk Arg::getIRArgStk() const
+      {
+         return IR::Arg_Stk{type->getSizeBytes()};
       }
 
       //
