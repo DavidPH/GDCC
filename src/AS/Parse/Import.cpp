@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,24 +19,22 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::AS
 {
-   namespace AS
+   //
+   // ParseImport
+   //
+   void ParseImport(ParserCtx const &ctx, IR::Import &)
    {
-      //
-      // ParseImport
-      //
-      void ParseImport(ParserCtx const &ctx, IR::Import &)
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      while(!ctx.in.drop(Core::TOK_ParenC))
+         switch(TokenPeekIdenti(ctx).in.get().str)
       {
-         while(!ctx.in.drop(Core::TOK_LnEnd))
-            switch(TokenPeekIdenti(ctx).in.get().str)
-         {
-         default:
-            throw Core::ParseExceptExpect(ctx.in.reget(), "Import argument", false);
-         }
+      default:
+         throw Core::ParseExceptExpect(ctx.in.reget(), "Import argument", false);
       }
    }
 }

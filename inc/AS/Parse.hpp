@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2017 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -97,7 +97,7 @@ namespace GDCC::AS
 
    IR::AddrSpace GetAddrSpace(ParserCtx const &ctx);
 
-   IR::Arg GetArg(ParserCtx const &ctx);
+   IR::Arg GetArg(ParserCtx const &ctx, Core::FastU w, Core::FastU n);
 
    IR::Value_Array GetArrayString(ParserCtx const &ctx);
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,7 +20,7 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC
@@ -32,9 +32,9 @@ namespace GDCC
       //
       IStream &operator >> (IStream &in, Core::Token &out)
       {
-         // Skip leading whitespace except for linefeed, which generates a token.
+         // Skip leading whitespace.
          int c = in.get();
-         while(std::isspace(c) && c != '\n') c = in.get();
+         while(std::isspace(c)) c = in.get();
 
          out.pos = in.getOrigin();
 
@@ -53,7 +53,6 @@ namespace GDCC
          case ']':  GDCC_Core_Token_SetStrTok(out, BrackC); return in;
          case '(':  GDCC_Core_Token_SetStrTok(out, ParenO); return in;
          case ')':  GDCC_Core_Token_SetStrTok(out, ParenC); return in;
-         case '\n': GDCC_Core_Token_SetStrTok(out, LnEnd);  return in;
 
          case '+':
             c = in.get();

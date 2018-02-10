@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,29 +21,27 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::AS
 {
-   namespace AS
+   //
+   // ParseDJump
+   //
+   void ParseDJump(ParserCtx const &ctx, IR::DJump &jump)
    {
-      //
-      // ParseDJump
-      //
-      void ParseDJump(ParserCtx const &ctx, IR::DJump &jump)
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      while(ctx.in.drop(Core::TOK_ParenC))
+         switch(TokenPeekIdenti(ctx).in.get().str)
       {
-         while(!ctx.in.drop(Core::TOK_LnEnd))
-            switch(TokenPeekIdenti(ctx).in.get().str)
-         {
-         case Core::STR_alloc: jump.alloc = GetFastU(TokenDropEq(ctx));  break;
-         case Core::STR_defin: jump.defin = GetFastU(TokenDropEq(ctx));  break;
-         case Core::STR_label: jump.label = GetString(TokenDropEq(ctx)); break;
-         case Core::STR_value: jump.value = GetFastU(TokenDropEq(ctx));  break;
+      case Core::STR_alloc: jump.alloc = GetFastU(TokenDropEq(ctx));  break;
+      case Core::STR_defin: jump.defin = GetFastU(TokenDropEq(ctx));  break;
+      case Core::STR_label: jump.label = GetString(TokenDropEq(ctx)); break;
+      case Core::STR_value: jump.value = GetFastU(TokenDropEq(ctx));  break;
 
-         default:
-            throw Core::ParseExceptExpect(ctx.in.reget(), "DJump argument", false);
-         }
+      default:
+         throw Core::ParseExceptExpect(ctx.in.reget(), "DJump argument", false);
       }
    }
 }

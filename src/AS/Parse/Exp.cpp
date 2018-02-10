@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -119,7 +119,6 @@ namespace GDCC
                #define doE2(name, token) case Core::token: \
                   TokenDrop(ctx, Core::TOK_ParenO, "'('"); \
                   l = GetExp(ctx); \
-                  TokenDrop(ctx, Core::TOK_Comma, "','"); \
                   r = GetExp(ctx); \
                   TokenDrop(ctx, Core::TOK_ParenC, "')'"); \
                   return IR::ExpCreate_##name(l, r, tok.pos)
@@ -127,9 +126,7 @@ namespace GDCC
                #define doE3(name, token) case Core::token: \
                   TokenDrop(ctx, Core::TOK_ParenO, "'('"); \
                   c = GetExp(ctx); \
-                  TokenDrop(ctx, Core::TOK_Comma, "','"); \
                   l = GetExp(ctx); \
-                  TokenDrop(ctx, Core::TOK_Comma, "','"); \
                   r = GetExp(ctx); \
                   TokenDrop(ctx, Core::TOK_ParenC, "')'"); \
                   return IR::ExpCreate_##name(c, l, r, tok.pos)
@@ -166,7 +163,6 @@ namespace GDCC
             case Core::STR_Cst:
                TokenDrop(ctx, Core::TOK_ParenO, "'('");
                t = GetType(ctx);
-               TokenDrop(ctx, Core::TOK_Comma, "','");
                l = GetExp(ctx);
                TokenDrop(ctx, Core::TOK_ParenC, "')'");
                return IR::ExpCreate_Cst(std::move(t), l, tok.pos);
@@ -174,11 +170,8 @@ namespace GDCC
             case Core::STR_Tuple:
                TokenDrop(ctx, Core::TOK_ParenO, "'('");
 
-               if(!ctx.in.peek(Core::TOK_ParenC)) do
+               while(!ctx.in.drop(Core::TOK_ParenC))
                   v.emplace_back(GetExp(ctx));
-               while(ctx.in.drop(Core::TOK_Comma));
-
-               TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
                return IR::ExpCreate_Tuple({Core::Move, v.begin(), v.end()}, tok.pos);
 
@@ -239,11 +232,8 @@ namespace GDCC
             #undef doE1
 
          case Core::TOK_BraceO:
-            if(!ctx.in.peek(Core::TOK_BraceC)) do
+            while(!ctx.in.drop(Core::TOK_BraceC))
                v.emplace_back(GetExp(ctx));
-            while(ctx.in.drop(Core::TOK_Comma));
-
-            TokenDrop(ctx, Core::TOK_BraceC, "'}'");
 
             return IR::ExpCreate_Tuple({Core::Move, v.begin(), v.end()}, tok.pos);
 
@@ -408,11 +398,8 @@ namespace GDCC
 
          TokenDrop(ctx, Core::TOK_BrackO, "'['");
 
-         if(!ctx.in.peek(Core::TOK_BrackC)) do
+         while(!ctx.in.drop(Core::TOK_BrackC))
             val.emplace_back(GetExp(ctx)->getValue());
-         while(ctx.in.drop(Core::TOK_Comma));
-
-         TokenDrop(ctx, Core::TOK_BrackC, "']'");
 
          Core::Array<IR::Value> vals{Core::Move, val.begin(), val.end()};
          Core::Array<IR::Type> types{vals.size()};

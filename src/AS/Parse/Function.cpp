@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2017 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -36,7 +36,8 @@ namespace GDCC::AS
       Core::TokenStream ts {&ltb};
       ParserCtx         ctx{ctx_, ts};
 
-      while(!ctx.in.drop(Core::TOK_LnEnd))
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      while(!ctx.in.drop(Core::TOK_ParenC))
          switch(TokenPeekIdenti(ctx).in.get().str)
       {
       case Core::STR_allocAut: func.alloc    = GetFastU(TokenDropEq(ctx));      break;
@@ -54,8 +55,8 @@ namespace GDCC::AS
 
       case Core::STR_block:
          while(ctx.in.drop(Core::TOK_LnEnd)) {}
-         TokenDrop(ctx, Core::TOK_BraceO, "'{'");
-         ParseBlock(ctx, func.block, Core::TOK_BraceC);
+         TokenDrop(ctx, Core::TOK_BraceO, "'('");
+         ParseBlock(ctx, func.block, Core::TOK_ParenC);
          break;
 
       case Core::STR_localArr:
@@ -69,14 +70,10 @@ namespace GDCC::AS
 
       case Core::STR_stype:
          {
-            TokenDropEq(ctx);
-
-            TokenDrop(ctx, Core::TOK_BrackO, "'['");
+            TokenDrop(ctx, Core::TOK_ParenO, "'('");
             std::vector<Core::String> stype;
-            if(!ctx.in.peek(Core::TOK_BrackC)) do
+            while(!ctx.in.drop(Core::TOK_ParenC))
                stype.push_back(TokenPeekString(ctx).in.get().str);
-            while(ctx.in.drop(Core::TOK_Comma));
-            TokenDrop(ctx, Core::TOK_BrackC, "']'");
 
             func.stype = {stype.begin(), stype.end()};
          }

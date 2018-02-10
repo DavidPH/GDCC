@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,72 +19,99 @@
 
 #include "IR/Block.hpp"
 
+#include "Platform/Platform.hpp"
+
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::AS
 {
-   namespace AS
+   //
+   // ParseBlock
+   //
+   void ParseBlock(ParserCtx const &ctx, IR::Block &block, Core::TokenType end)
    {
-      //
-      // ParseBlock
-      //
-      void ParseBlock(ParserCtx const &ctx, IR::Block &block, Core::TokenType end)
+      std::vector<IR::Arg> args;
+      IR::Code             code;
+      Core::FastU          w, n;
+
+      while(!ctx.in.drop(end)) switch(ctx.in.peek().tok)
       {
-         std::vector<IR::Arg> args;
-         IR::OpCode op;
+      case Core::TOK_String:
+         block.addLabel(ctx.in.get().str);
+         break;
 
-         while(!ctx.in.drop(end)) switch(ctx.in.peek().tok)
+      case Core::TOK_Identi:
+         block.setOrigin(ctx.in.peek().pos);
+
+         code = GetCode(ctx);
+
+         if(ctx.in.drop(Core::TOK_Identi, Core::STR_B))
+            w = 1, n = 1;
+         else if(ctx.in.drop(Core::TOK_Identi, Core::STR_W))
+            w = Platform::GetWordBytes(), n = 1;
+         else
+            w = 1, n = Platform::GetWordBytes();
+
+         if(!ctx.in.peek(Core::TOK_ParenO))
+            n = GetFastU(ctx);
+
+         // Read arguments to instruction.
+         args.clear();
+
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+
+         while(!ctx.in.drop(Core::TOK_ParenC))
+            args.push_back(GetArg(ctx, w, n));
+
+         TokenDrop(ctx, Core::TOK_LnEnd, "end of line");
+
+         block.addStmntArgs(code, {Core::Move, args.begin(), args.end()});
+
+         break;
+
+      case Core::TOK_Not:
+         ctx.in.get();
+         if(auto macro = ctx.macros.find(TokenPeekString(ctx).in.peek()))
          {
-         case Core::TOK_String:
-            block.addLabel(ctx.in.get().str);
-            break;
+            block.setOrigin(ctx.in.get().pos);
 
-         case Core::TOK_Identi:
-            block.setOrigin(ctx.in.peek().pos);
+            if(ctx.in.drop(Core::TOK_Identi, Core::STR_B))
+               w = 1, n = 1;
+            else if(ctx.in.drop(Core::TOK_Identi, Core::STR_W))
+               w = Platform::GetWordBytes(), n = 1;
+            else
+               w = 1, n = Platform::GetWordBytes();
 
-            op = GetOpCode(ctx);
+            if(!ctx.in.peek(Core::TOK_ParenO))
+               n = GetFastU(ctx);
 
-            // Read arguments to instruction.
+            // Read arguments to macro invocation.
             args.clear();
 
-            while(!ctx.in.peek(Core::TOK_LnEnd))
-               args.push_back(GetArg(TokenDrop(ctx, Core::TOK_Comma, "end of line")));
+            TokenDrop(ctx, Core::TOK_ParenO, "'('");
 
-            block.setArgs(Core::Array<IR::Arg>(Core::Move, args.begin(), args.end()));
-            block.addStatement(op);
+            while(ctx.in.drop(Core::TOK_ParenC))
+               args.push_back(GetArg(ctx, w, n));
 
-            break;
+            TokenDrop(ctx, Core::TOK_LnEnd, "end of line");
 
-         case Core::TOK_Not:
-            ctx.in.get();
-            if(auto macro = ctx.macros.find(TokenPeekIdenti(ctx).in.peek()))
-            {
-               block.setOrigin(ctx.in.get().pos);
-
-               // Read arguments to macro invocation.
-               args.clear();
-
-               while(!ctx.in.peek(Core::TOK_LnEnd))
-                  args.push_back(GetArg(TokenDrop(ctx, Core::TOK_Comma, "end of line")));
-
-               // Expand macro.
-               macro->expand(block, args.data(), args.size());
-            }
-            else
-               throw Core::ParseExceptExpect(ctx.in.peek(), "macro name", false);
-
-            break;
-
-         case Core::TOK_LnEnd:
-            ctx.in.get();
-            break;
-
-         default:
-            throw Core::ParseExceptExpect(ctx.in.peek(), "block terminator", false);
+            // Expand macro.
+            macro->expand(block, args.data(), args.size());
          }
+         else
+            throw Core::ParseExceptExpect(ctx.in.peek(), "macro name", false);
+
+         break;
+
+      case Core::TOK_LnEnd:
+         ctx.in.get();
+         break;
+
+      default:
+         throw Core::ParseExceptExpect(ctx.in.peek(), "block terminator", false);
       }
    }
 }

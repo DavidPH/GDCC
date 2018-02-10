@@ -60,11 +60,8 @@ namespace GDCC
 
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
 
-         if(!ctx.in.peek(Core::TOK_ParenC)) do
+         while(!ctx.in.drop(Core::TOK_ParenC))
             value.emplace_back(GetExp(ctx)->getValue());
-         while(ctx.in.drop(Core::TOK_Comma));
-
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
          return {{Core::Move, value.begin(), value.end()}, std::move(vtype)};
       }
@@ -81,11 +78,8 @@ namespace GDCC
 
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
 
-         if(!ctx.in.peek(Core::TOK_ParenC)) do
+         while(!ctx.in.drop(Core::TOK_ParenC))
             value.emplace_back(GetExp(ctx)->getValue());
-         while(ctx.in.drop(Core::TOK_Comma));
-
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
          return {{Core::Move, value.begin(), value.end()}, std::move(vtype)};
       }
@@ -156,7 +150,6 @@ namespace GDCC
 
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
          auto value = GetFastU(ctx);
-         TokenDrop(ctx, Core::TOK_Comma, "','");
          auto addrB = GetAddrBase(ctx);
          auto addrN = GetString(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
@@ -190,11 +183,8 @@ namespace GDCC
 
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
 
-         if(!ctx.in.peek(Core::TOK_ParenC)) do
+         while(!ctx.in.drop(Core::TOK_ParenC))
             value.emplace_back(GetExp(ctx)->getValue());
-         while(ctx.in.drop(Core::TOK_Comma));
-
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
          return {{Core::Move, value.begin(), value.end()}, std::move(vtype)};
       }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,59 +17,56 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::AS
 {
-   namespace AS
+   //
+   // Macro::expand
+   //
+   void Macro::expand(IR::Block &block, IR::Arg const *argv,
+      std::size_t argc) const
    {
-      //
-      // Macro::expand
-      //
-      void Macro::expand(IR::Block &block, IR::Arg const *argv,
-         std::size_t argc) const
+      for(auto const &stmnt : list)
       {
-         for(auto const &stmnt : list)
+         auto args = stmnt.args;
+         for(auto &arg : args) if(arg.a == IR::ArgBase::Cpy)
          {
-            auto args = stmnt.args;
-            for(auto &arg : args) if(arg.a == IR::ArgBase::Cpy)
-            {
-               if(arg.aCpy.value >= argc)
-                  throw Core::ExceptStr(block.getOrigin(),
-                     "insufficient macro arguments");
+            if(arg.aCpy.value >= argc)
+               throw Core::ExceptStr(block.getOrigin(),
+                  "insufficient macro arguments");
 
-               arg = argv[arg.aCpy.value];
-            }
-
-            block.addStatementArgs(stmnt.op, std::move(args));
+            arg = argv[arg.aCpy.value];
          }
-      }
 
-      //
-      // MacroMap::add
-      //
-      void MacroMap::add(Core::String name, Macro &&macro)
-      {
-         table.emplace(name, std::move(macro));
+         block.addStmntArgs(stmnt.code, std::move(args));
       }
+   }
 
-      //
-      // MacroMap::find
-      //
-      Macro const *MacroMap::find(Core::Token const &tok)
-      {
-         auto itr = table.find(tok.str);
-         return itr == table.end() ? nullptr : &itr->second;
-      }
+   //
+   // MacroMap::add
+   //
+   void MacroMap::add(Core::String name, Macro &&macro)
+   {
+      table.emplace(name, std::move(macro));
+   }
 
-      //
-      // MacroMap::rem
-      //
-      void MacroMap::rem(Core::String name)
-      {
-         table.erase(name);
-      }
+   //
+   // MacroMap::find
+   //
+   Macro const *MacroMap::find(Core::Token const &tok)
+   {
+      auto itr = table.find(tok.str);
+      return itr == table.end() ? nullptr : &itr->second;
+   }
+
+   //
+   // MacroMap::rem
+   //
+   void MacroMap::rem(Core::String name)
+   {
+      table.erase(name);
    }
 }
 

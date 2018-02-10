@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,28 +24,26 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::AS
 {
-   namespace AS
+   //
+   // ParseStrEnt
+   //
+   void ParseStrEnt(ParserCtx const &ctx, IR::StrEnt &str)
    {
-      //
-      // ParseStrEnt
-      //
-      void ParseStrEnt(ParserCtx const &ctx, IR::StrEnt &str)
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      while(!ctx.in.drop(Core::TOK_ParenC))
+         switch(TokenPeekIdenti(ctx).in.get().str)
       {
-         while(!ctx.in.drop(Core::TOK_LnEnd))
-            switch(TokenPeekIdenti(ctx).in.get().str)
-         {
-         case Core::STR_alias:    str.alias    = GetFastU(TokenDropEq(ctx));  break;
-         case Core::STR_alloc:    str.alloc    = GetFastU(TokenDropEq(ctx));  break;
-         case Core::STR_defin:    str.defin    = GetFastU(TokenDropEq(ctx));  break;
-         case Core::STR_multiDef: str.multiDef = GetFastU(TokenDropEq(ctx));  break;
-         case Core::STR_valueInt: str.valueInt = GetFastU(TokenDropEq(ctx));  break;
-         case Core::STR_valueStr: str.valueStr = GetString(TokenDropEq(ctx)); break;
+      case Core::STR_alias:    str.alias    = GetFastU(TokenDropEq(ctx));  break;
+      case Core::STR_alloc:    str.alloc    = GetFastU(TokenDropEq(ctx));  break;
+      case Core::STR_defin:    str.defin    = GetFastU(TokenDropEq(ctx));  break;
+      case Core::STR_multiDef: str.multiDef = GetFastU(TokenDropEq(ctx));  break;
+      case Core::STR_valueInt: str.valueInt = GetFastU(TokenDropEq(ctx));  break;
+      case Core::STR_valueStr: str.valueStr = GetString(TokenDropEq(ctx)); break;
 
-         default:
-            throw Core::ParseExceptExpect(ctx.in.reget(), "StrEnt argument", false);
-         }
+      default:
+         throw Core::ParseExceptExpect(ctx.in.reget(), "StrEnt argument", false);
       }
    }
 }

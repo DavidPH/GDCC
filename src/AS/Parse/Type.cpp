@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -54,7 +54,6 @@ namespace GDCC
 
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
          auto elemT = GetType(ctx);
-         TokenDrop(ctx, Core::TOK_Comma, "','");
          auto elemC = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
@@ -73,7 +72,7 @@ namespace GDCC
 
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
 
-         if(!ctx.in.peek(Core::TOK_ParenC)) do
+         while(!ctx.in.drop(Core::TOK_ParenC))
          {
             auto type = GetType(ctx);
             auto name = GetString(ctx);
@@ -81,9 +80,6 @@ namespace GDCC
 
             assoc.emplace_back(std::move(type), name, addr);
          }
-         while(ctx.in.drop(Core::TOK_Comma));
-
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
          return {{Core::Move, assoc.begin(), assoc.end()}};
       }
@@ -126,11 +122,8 @@ namespace GDCC
 
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
          auto bitsI = GetFastU(ctx);
-         TokenDrop(ctx, Core::TOK_Comma, "','");
          auto bitsF = GetFastU(ctx);
-         TokenDrop(ctx, Core::TOK_Comma, "','");
          bool bitsS = GetFastU(ctx);
-         TokenDrop(ctx, Core::TOK_Comma, "','");
          bool satur = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
@@ -147,11 +140,8 @@ namespace GDCC
 
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
          auto bitsI = GetFastU(ctx);
-         TokenDrop(ctx, Core::TOK_Comma, "','");
          auto bitsF = GetFastU(ctx);
-         TokenDrop(ctx, Core::TOK_Comma, "','");
          bool bitsS = GetFastU(ctx);
-         TokenDrop(ctx, Core::TOK_Comma, "','");
          bool satur = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
@@ -184,9 +174,7 @@ namespace GDCC
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
          auto addrB = GetAddrBase(ctx);
          auto addrN = GetString(ctx);
-         TokenDrop(ctx, Core::TOK_Comma, "','");
          auto addrS = GetFastU(ctx);
-         TokenDrop(ctx, Core::TOK_Comma, "','");
          auto addrW = GetFastU(ctx);
          TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
@@ -219,11 +207,8 @@ namespace GDCC
 
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
 
-         if(!ctx.in.peek(Core::TOK_ParenC)) do
+         while(!ctx.in.drop(Core::TOK_ParenC))
             typev.emplace_back(GetType(ctx));
-         while(ctx.in.drop(Core::TOK_Comma));
-
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
          return {{Core::Move, typev.begin(), typev.end()}};
       }
@@ -240,11 +225,8 @@ namespace GDCC
 
          TokenDrop(ctx, Core::TOK_ParenO, "'('");
 
-         if(!ctx.in.peek(Core::TOK_ParenC)) do
+         while(!ctx.in.drop(Core::TOK_ParenC))
             typev.emplace_back(GetType(ctx));
-         while(ctx.in.drop(Core::TOK_Comma));
-
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
          return {{Core::Move, typev.begin(), typev.end()}};
       }

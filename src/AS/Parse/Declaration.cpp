@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -33,8 +33,6 @@ namespace GDCC
       //
       void ParseDeclaration(ParserCtx const &ctx)
       {
-         if(ctx.in.drop(Core::TOK_LnEnd)) return;
-
          switch(TokenPeekIdenti(ctx).in.get().str)
          {
          case Core::STR_DJump:
@@ -58,14 +56,13 @@ namespace GDCC
             break;
 
          case Core::STR_Macro:
-            TokenPeekIdenti(ctx);
+            TokenPeekString(ctx);
             {
                Core::String name = ctx.in.get().str;
                IR::Block    list;
 
-               while(ctx.in.drop(Core::TOK_LnEnd)) {}
-               TokenDrop(ctx, Core::TOK_BraceO, "'{'");
-               ParseBlock(ctx, list, Core::TOK_BraceC);
+               TokenDrop(ctx, Core::TOK_ParenO, "'('");
+               ParseBlock(ctx, list, Core::TOK_ParenC);
 
                ctx.macros.add(name, Macro(std::move(list)));
             }
