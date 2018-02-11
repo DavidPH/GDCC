@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -99,10 +99,10 @@ namespace GDCC
             auto type = SR::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
-            auto op = SR::ExpCode_ArithInteg<IR::CodeSet_DiX>(type);
+            auto code = SR::ExpCode_ArithInteg<IR::CodeSet_DiX>(type).code;
 
             return SR::Exp_Arith<SR::Exp_DivEx>::Create(
-               op, Type_Div::Get(type), expL, expR, pos);
+               code, Type_Div::Get(type), expL, expR, pos);
          }
 
          throw Core::ExceptStr(pos, "invalid operands to __div");

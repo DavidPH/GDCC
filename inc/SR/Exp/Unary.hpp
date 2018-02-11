@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -83,22 +83,22 @@ namespace GDCC
          GDCC_Core_CounterPreamble(GDCC::SR::Exp_UnaryCode<Base>, Base);
 
       public:
-         IR::OpCode const op;
+         IR::Code const code;
 
 
          // Create
-         static Exp::CRef Create(IR::OpCode op, Type const *t, Exp const *e,
+         static Exp::CRef Create(IR::Code code, Type const *t, Exp const *e,
             Core::Origin pos)
-            {return Exp::CRef(new This(op, t, e, pos));}
+            {return Exp::CRef(new This(code, t, e, pos));}
 
       protected:
          // constructor
-         Exp_UnaryCode(IR::OpCode c, Type const *t, Exp const *e, Core::Origin pos_) :
-            Super{t, e, pos_}, op{c} {}
+         Exp_UnaryCode(IR::Code c, Type const *t, Exp const *e, Core::Origin pos_) :
+            Super{t, e, pos_}, code{c} {}
 
          // v_genStmnt
          virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
-            {GenStmnt_UnaryCode(this, op, ctx, dst);}
+            {GenStmnt_UnaryCode(this, code, ctx, dst);}
       };
 
       //

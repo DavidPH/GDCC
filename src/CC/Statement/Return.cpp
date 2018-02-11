@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -119,14 +119,11 @@ namespace GDCC
 
          if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
          {
-            ctx.block.addStatementArgs({IR::Code::Jump, 0},
+            ctx.block.setArgSize().addStmnt(IR::Code::Jump,
                IR::Glyph(ctx.prog, scope.fn->getLabelEnd()));
          }
          else
-         {
-            ctx.block.addStatementArgs(
-               {IR::Code::Retn, exp->getType()->getSizeWords()}, IR::Arg_Stk());
-         }
+            ctx.block.addStmnt(IR::Code::Retn, IR::Arg_Stk(exp->getType()->getSizeBytes()));
       }
 
       //
@@ -154,13 +151,11 @@ namespace GDCC
 
          if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
          {
-            ctx.block.addStatementArgs({IR::Code::Jump, 0},
+            ctx.block.setArgSize().addStmnt(IR::Code::Jump,
                IR::Glyph(ctx.prog, scope.fn->getLabelEnd()));
          }
          else
-         {
-            ctx.block.addStatementArgs({IR::Code::Retn, 0});
-         }
+            ctx.block.addStmnt(IR::Code::Retn);
       }
 
       //

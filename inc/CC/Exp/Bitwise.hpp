@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -108,9 +108,9 @@ namespace GDCC
          else
             expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
 
-         auto op = SR::ExpCode_Arith<Codes>(typeL);
+         auto code = SR::ExpCode_Arith<Codes>(typeL).code;
 
-         return SR::Exp_Arith<Base>::Create(op, typeL, expL, expR, pos);
+         return SR::Exp_Arith<Base>::Create(code, typeL, expL, expR, pos);
       }
 
       //
@@ -138,9 +138,9 @@ namespace GDCC
          else
             expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
 
-         auto op = SR::ExpCode_Arith<Codes>(typeL);
+         auto code = SR::ExpCode_Arith<Codes>(typeL).code;
 
-         return SR::Exp_ArithEq<Base>::Create(typeL, op, false, typeL, expL, expR, pos);
+         return SR::Exp_ArithEq<Base>::Create(typeL, code, false, typeL, expL, expR, pos);
       }
    }
 }

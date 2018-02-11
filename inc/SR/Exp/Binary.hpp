@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -49,7 +49,7 @@ namespace GDCC
 {
    namespace IR
    {
-      class OpCode;
+      enum class Code;
    }
 
    namespace SR
@@ -114,11 +114,11 @@ namespace GDCC
    namespace SR
    {
       // Does pointer-integer codegen using a 3-arg arithmetic instruction.
-      void GenStmnt_Point(Exp_Binary const *exp, IR::OpCode op,
+      void GenStmnt_Point(Exp_Binary const *exp, IR::Code code,
          GenStmntCtx const &ctx, Arg const &dst);
 
       // As in GenStmnt_Point, but also assigns the result to the left operand.
-      void GenStmnt_PointEq(Exp_Binary const *exp, IR::OpCode op,
+      void GenStmnt_PointEq(Exp_Binary const *exp, IR::Code code,
          GenStmntCtx const &ctx, Arg const &dst, bool post = false);
 
       // Returns true if only evaluating for side effects.

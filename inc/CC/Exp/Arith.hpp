@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -44,9 +44,9 @@ namespace GDCC
          auto expL = ExpConvert_Arith(t, l, pos);
          auto expR = ExpConvert_Arith(t, r, pos);
 
-         auto op = SR::ExpCode_ArithFixed<Codes>(t);
+         auto code = SR::ExpCode_ArithFixed<Codes>(t).code;
 
-         return SR::Exp_Arith<Base>::Create(op, t, expL, expR, pos);
+         return SR::Exp_Arith<Base>::Create(code, t, expL, expR, pos);
       }
 
       //
@@ -59,9 +59,9 @@ namespace GDCC
       SR::Exp::CRef ExpCreate_ArithFloat(SR::Type const *t,
          SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
-         auto op = SR::ExpCode_ArithFloat<Codes>(t);
+         auto code = SR::ExpCode_ArithFloat<Codes>(t).code;
 
-         return SR::Exp_Arith<Base>::Create(op, t, l, r, pos);
+         return SR::Exp_Arith<Base>::Create(code, t, l, r, pos);
       }
 
       //
@@ -74,9 +74,9 @@ namespace GDCC
       SR::Exp::CRef ExpCreate_ArithInteg(SR::Type const *t,
          SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
-         auto op = SR::ExpCode_ArithInteg<Codes>(t);
+         auto code = SR::ExpCode_ArithInteg<Codes>(t).code;
 
-         return SR::Exp_Arith<Base>::Create(op, t, l, r, pos);
+         return SR::Exp_Arith<Base>::Create(code, t, l, r, pos);
       }
 
       //
@@ -120,9 +120,9 @@ namespace GDCC
          // result type. For generic handling, do so.
          auto expR = ExpConvert_Arith(evalT, r, pos);
 
-         auto op = SR::ExpCode_ArithFixed<Codes>(evalT);
+         auto code = SR::ExpCode_ArithFixed<Codes>(evalT).code;
 
-         return SR::Exp_ArithEq<Base>::Create(evalT, op, post, t, l, expR, pos);
+         return SR::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, expR, pos);
       }
 
       //
@@ -136,9 +136,9 @@ namespace GDCC
          SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos, bool post = false)
       {
-         auto op = SR::ExpCode_ArithFloat<Codes>(evalT);
+         auto code = SR::ExpCode_ArithFloat<Codes>(evalT).code;
 
-         return SR::Exp_ArithEq<Base>::Create(evalT, op, post, t, l, r, pos);
+         return SR::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, r, pos);
       }
 
       //
@@ -152,9 +152,9 @@ namespace GDCC
          SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos, bool post = false)
       {
-         auto op = SR::ExpCode_ArithInteg<Codes>(evalT);
+         auto code = SR::ExpCode_ArithInteg<Codes>(evalT).code;
 
-         return SR::Exp_ArithEq<Base>::Create(evalT, op, post, t, l, r, pos);
+         return SR::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, r, pos);
       }
 
       //

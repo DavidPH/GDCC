@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,44 +23,41 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // ExpCreate_CmpArith
+   //
+   // Uses a base type and code set to generalize basic arithmetic
+   // comparator expression creation.
+   //
+   template<typename Base, typename Codes>
+   SR::Exp::CRef ExpCreate_CmpArith(SR::Type const *bt, SR::Type const *t,
+      SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
-      //
-      // ExpCreate_CmpArith
-      //
-      // Uses a base type and code set to generalize basic arithmetic
-      // comparator expression creation.
-      //
-      template<typename Base, typename Codes>
-      SR::Exp::CRef ExpCreate_CmpArith(SR::Type const *bt, SR::Type const *t,
-         SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
-      {
-         IR::OpCode op;
+      IR::Code code;
 
-         // Floating types.
-         if(t->isCTypeFloat())
-            op = SR::ExpCode_ArithFloat<Codes>(t);
+      // Floating types.
+      if(t->isCTypeFloat())
+         code = SR::ExpCode_ArithFloat<Codes>(t).code;
 
-         // Fixed-point types.
-         else if(t->isCTypeFixed())
-            op = SR::ExpCode_ArithFixed<Codes>(t);
+      // Fixed-point types.
+      else if(t->isCTypeFixed())
+         code = SR::ExpCode_ArithFixed<Codes>(t).code;
 
-         // Integer types.
-         else if(t->isCTypeInteg())
-            op = SR::ExpCode_ArithInteg<Codes>(t);
+      // Integer types.
+      else if(t->isCTypeInteg())
+         code = SR::ExpCode_ArithInteg<Codes>(t).code;
 
-         // Pointer types.
-         else if(t->isTypePointer())
-            op = SR::ExpCode_ArithPoint<Codes>(t);
+      // Pointer types.
+      else if(t->isTypePointer())
+         code = SR::ExpCode_ArithPoint<Codes>(t).code;
 
-         // ???
-         else
-            throw Core::ExceptStr(pos, "unsupported arithmetic type");
+      // ???
+      else
+         throw Core::ExceptStr(pos, "unsupported arithmetic type");
 
-         return SR::Exp_Arith<Base>::Create(op, bt, l, r, pos);
-      }
+      return SR::Exp_Arith<Base>::Create(code, bt, l, r, pos);
    }
 }
 

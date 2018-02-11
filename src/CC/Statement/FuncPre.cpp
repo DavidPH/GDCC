@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2017 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -38,13 +38,13 @@ namespace GDCC::CC
    //
    template<typename ArgT>
    static void MoveParam(SR::GenStmntCtx const &ctx, Core::FastU paramIdx,
-      Core::FastU objValue, Core::FastU objWords)
+      Core::FastU objValue, Core::FastU objBytes)
    {
-      IR::Arg_Lit dstIdx{SR::ExpCreate_Size(objValue)->getIRExp()};
-      IR::Arg_Lit srcIdx{SR::ExpCreate_Size(paramIdx)->getIRExp()};
+      IR::Arg_Lit dstIdx{Platform::GetWordBytes(), SR::ExpCreate_Size(objValue)->getIRExp()};
+      IR::Arg_Lit srcIdx{Platform::GetWordBytes(), SR::ExpCreate_Size(paramIdx)->getIRExp()};
 
-      ctx.block.addStatementArgs({IR::Code::Move_W, objWords},
-         ArgT(dstIdx), IR::Arg_LocReg(srcIdx));
+      ctx.block.addStmnt(IR::Code::Move_W,
+         ArgT(objBytes, dstIdx), IR::Arg_LocReg(objBytes, srcIdx));
    }
 
    //
@@ -80,39 +80,38 @@ namespace GDCC::CC
       auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
 
       // Move parameter data to actual storage location.
-      Core::FastU paramIdx  = 0;
-      Core::FastU paramStep = Platform::GetWordBytes();
+      Core::FastU paramIdx = 0;
 
       if(Platform::IsCallAutoProp(ctype))
-         paramIdx += paramStep;
+         paramIdx += Platform::GetWordBytes();
 
       for(auto const &obj : scope.params)
       {
          if(!obj->value) continue;
 
          Core::FastU objValue = obj->value->getValue().getFastU();
-         Core::FastU objWords = obj->type->getSizeWords();
+         Core::FastU objBytes = obj->type->getSizeWords();
 
          switch(obj->type->getQualAddr().base)
          {
          case IR::AddrBase::Aut:
-            MoveParam<IR::Arg_Aut>(ctx, paramIdx, objValue, objWords);
+            MoveParam<IR::Arg_Aut>(ctx, paramIdx, objValue, objBytes);
             break;
 
          case IR::AddrBase::LocReg:
             if(objValue != paramIdx)
-               MoveParam<IR::Arg_LocReg>(ctx, paramIdx, objValue, objWords);
+               MoveParam<IR::Arg_LocReg>(ctx, paramIdx, objValue, objBytes);
             break;
 
          default:
             break;
          }
 
-         paramIdx += objWords * paramStep;
+         paramIdx += objBytes;
       }
 
       if(NeedSID(ctype, scope.fn->stype))
-         ctx.block.addStatementArgs({IR::Code::Xcod_SID, 0});
+         ctx.block.addStmnt(IR::Code::Xcod_SID);
 
       if(scope.fn->labelRes)
          ctx.block.addLabel(scope.fn->labelRes);
@@ -133,12 +132,11 @@ namespace GDCC::CC
       // Perform return.
       if(scope.fn->retrn->isTypeVoid())
       {
-         ctx.block.addStatementArgs({IR::Code::Retn, 0});
+         ctx.block.addStmnt(IR::Code::Retn);
       }
       else if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
       {
-         ctx.block.addStatementArgs(
-            {IR::Code::Retn, scope.fn->retrn->getSizeWords()}, IR::Arg_Stk());
+         ctx.block.addStmnt(IR::Code::Retn, IR::Arg_Stk(scope.fn->retrn->getSizeBytes()));
       }
 
       // Generate long jump return, if needed.
@@ -147,10 +145,9 @@ namespace GDCC::CC
          ctx.block.addLabel(scope.labelLJR);
 
          if(scope.fn->retrn->isTypeVoid())
-            ctx.block.addStatementArgs({IR::Code::Retn, 0});
+            ctx.block.addStmnt(IR::Code::Retn);
          else
-            ctx.block.addStatementArgs(
-               {IR::Code::Retn, scope.fn->retrn->getSizeWords()}, 0);
+            ctx.block.setArgSize(scope.fn->retrn->getSizeBytes()).addStmnt(IR::Code::Retn, 0);
       }
    }
 

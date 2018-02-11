@@ -19,6 +19,8 @@
 #include "IR/Block.hpp"
 #include "IR/Exp.hpp"
 
+#include "Platform/Platform.hpp"
+
 #include "SR/Arg.hpp"
 #include "SR/GenStmnt/Move.hpp"
 #include "SR/Temporary.hpp"
@@ -39,9 +41,9 @@ namespace GDCC::CC
       SR::GenStmntCtx const &ctx, SR::Arg const &arg, IdxT &&idx,
       Core::FastU bits, Core::FastU offs)
    {
-      ctx.block.addStatementArgs({IR::Code::Bset_W, arg.type->getSizeWords()},
+      ctx.block.addStmnt(IR::Code::Bset_W,
          SR::GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, std::forward<IdxT>(idx), 0),
-         IR::Arg_Stk(), bits, offs);
+         IR::Arg_Stk(arg.type->getSizeBytes()), bits, offs);
    }
 
    //
@@ -60,7 +62,7 @@ namespace GDCC::CC
 
          // Use literal as index.
          GenStmnt_SetBitsPartIdx<ArgT>(exp, ctx, arg,
-            IR::Arg_Lit(arg.data->getIRExp()), bits, offs);
+            IR::Arg_Lit(Platform::GetWordBytes(), arg.data->getIRExp()), bits, offs);
 
          return;
       }
@@ -82,8 +84,7 @@ namespace GDCC::CC
 
          // Move to temporary.
          SR::Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
-         ctx.block.addStatementArgs({IR::Code::Move_W, tmp.size()},
-            tmp.getArg(), IR::Arg_Stk());
+         ctx.block.addStmnt(IR::Code::Move_W, tmp.getArg(), tmp.getArgStk());
 
          // Use temporary as index.
          GenStmnt_SetBitsPartIdx<ArgT>(exp, ctx, arg, tmp.getArg(), bits, offs);
@@ -116,9 +117,8 @@ namespace GDCC::CC
    template<> void GenStmnt_SetBitsPartT<IR::Arg_Nul>(SR::Exp const *,
       SR::GenStmntCtx const &ctx, SR::Arg const &arg, Core::FastU, Core::FastU)
    {
-      ctx.block.addStatementArgs(
-         {IR::Code::Move_W, arg.type->getSizeWords()},
-         IR::Arg_Nul(), IR::Arg_Stk());
+      ctx.block.setArgSize(arg.type->getSizeBytes()).addStmnt(
+         IR::Code::Move_W, IR::Block::Nul(), IR::Block::Stk());
    }
 
    //
@@ -164,8 +164,8 @@ namespace GDCC::CC
 
          // If duplicating the result, just duplicate it on the stack.
          if(dst.type->getQualAddr().base != IR::AddrBase::Nul)
-            ctx.block.addStatementArgs({IR::Code::Copy_W, expR->getType()->getSizeWords()},
-               IR::Arg_Stk{}, IR::Arg_Stk{});
+            ctx.block.setArgSize(expR->getType()->getSizeBytes()).addStmnt(
+               IR::Code::Copy_W, IR::Block::Stk(), IR::Block::Stk());
 
          auto argL = expL->getArg();
 

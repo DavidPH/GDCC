@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,8 +39,8 @@ namespace GDCC
          exp->genStmntStk(ctx);
 
          // Operate on stack.
-         ctx.block.addStatementArgs({IR::Code::LNot, 1},
-            IR::Arg_Stk(), IR::Arg_Stk());
+         ctx.block.setArgSize().addStmnt(IR::Code::LNot,
+            IR::Block::Stk(), IR::Block::Stk());
 
          // Move to destination.
          GenStmnt_MovePart(this, ctx, dst, false, true);

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -92,15 +92,15 @@ namespace GDCC
             cond->genStmnt(ctx);
 
             if(needT)
-               ctx.block.addStatementArgs({IR::Code::Jump, 0},
+               ctx.block.setArgSize().addStmnt(IR::Code::Jump,
                   labelT = {ctx.prog, ctx.fn->genLabel()});
          }
          else
          {
             cond->genStmntStk(ctx);
 
-            ctx.block.addStatementArgs({IR::Code::Jcnd_Nil, 1}, IR::Arg_Stk(),
-               labelT = {ctx.prog, ctx.fn->genLabel()});
+            ctx.block.setArgSize().addStmnt(IR::Code::Jcnd_Nil,
+               IR::Block::Stk(), labelT = {ctx.prog, ctx.fn->genLabel()});
          }
 
          // Generate true body.
@@ -114,7 +114,7 @@ namespace GDCC
             if(!bodyF->isTrivial())
             {
                IR::Glyph labelF = {ctx.prog, ctx.fn->genLabel()};
-               ctx.block.addStatementArgs({IR::Code::Jump, 0}, labelF);
+               ctx.block.setArgSize().addStmnt(IR::Code::Jump, labelF);
 
                if(labelT) ctx.block.addLabel(labelT);
                bodyF->genStmnt(ctx);

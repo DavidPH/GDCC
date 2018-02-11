@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2017 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -132,8 +132,8 @@ namespace GDCC
                   throw Core::ExceptStr(pos, "bitfield init must be IR arg");
 
                value->genStmntStk(ctx);
-               ctx.block.addStatementArgs({IR::Code::Bset_W, type->getSizeWords()},
-                  tmp.getIRArg(ctx.prog), IR::Arg_Stk(), bits, offs);
+               ctx.block.setArgSize().addStmnt(IR::Code::Bset_W,
+                  tmp.getIRArg(ctx.prog), IR::Arg_Stk(type->getSizeBytes()), bits, offs);
             }
             else
                value->genStmnt(ctx, tmp);

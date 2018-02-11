@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -106,16 +106,17 @@ namespace GDCC
          exp->genStmntStk(ctx);
 
          // Expand/contract on stack.
+         ctx.block.setArgSize();
          if(srcW < dstW)
          {
             for(auto i = srcW - dstW; i--;)
-               ctx.block.addStatementArgs({IR::Code::Move_W, 1}, IR::Arg_Stk(), 0);
+               ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), 0);
          }
          else if(srcW > dstW)
          {
             for(auto i = srcW - dstW; i--;)
-               ctx.block.addStatementArgs({IR::Code::Move_W, 1},
-                  IR::Arg_Nul(), IR::Arg_Stk());
+               ctx.block.addStmnt(IR::Code::Move_W,
+                  IR::Block::Nul(), IR::Block::Stk());
          }
 
          // Move to destination.
@@ -152,8 +153,8 @@ namespace GDCC
          exp->genStmntStk(ctx);
 
          // Operate on stack.
-         ctx.block.addStatementArgs({IR::Code::BNot_W, 1},
-            IR::Arg_Stk(), IR::Arg_Stk());
+         ctx.block.setArgSize().addStmnt(IR::Code::BNot_W,
+            IR::Block::Stk(), IR::Block::Stk());
 
          // Move to destination.
          GenStmnt_MovePart(exp, ctx, dst, false, true);
@@ -171,8 +172,8 @@ namespace GDCC
          exp->genStmntStk(ctx);
 
          // Operate on stack.
-         ctx.block.addStatementArgs({IR::Code::Pltn, 0},
-            IR::Arg_Stk(), IR::Arg_Stk());
+         ctx.block.setArgSize().addStmnt(IR::Code::Pltn,
+            IR::Block::Stk(), IR::Block::Stk());
 
          // Move to destination.
          GenStmnt_MovePart(exp, ctx, dst, false, true);
@@ -192,17 +193,16 @@ namespace GDCC
          // Operate on stack.
          auto shiftL = type->getBaseType()->getSizeShift();
          auto shiftR = exp->getType()->getBaseType()->getSizeShift();
+         ctx.block.setArgSize();
          if(shiftL > shiftR)
          {
             auto lit = SR::ExpCreate_Size(shiftL / shiftR)->getIRExp();
-            ctx.block.addStatementArgs({IR::Code::DivU_W, 1},
-               IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Lit(lit));
+            ctx.block.addStmnt(IR::Code::DivU_W, IR::Block::Stk(), IR::Block::Stk(), lit);
          }
          else
          {
             auto lit = SR::ExpCreate_Size(shiftR / shiftL)->getIRExp();
-            ctx.block.addStatementArgs({IR::Code::MulU_W, 1},
-               IR::Arg_Stk(), IR::Arg_Stk(), IR::Arg_Lit(lit));
+            ctx.block.addStmnt(IR::Code::MulU_W, IR::Block::Stk(), IR::Block::Stk(), lit);
          }
 
          // Move to destination.

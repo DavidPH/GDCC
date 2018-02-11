@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2017 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -37,7 +37,7 @@ namespace GDCC
 {
    namespace CC
    {
-      using OpCodePair = std::pair<IR::OpCode, IR::OpCode>;
+      using CodePair = std::pair<IR::Code, IR::Code>;
    }
 }
 
@@ -53,10 +53,10 @@ namespace GDCC
       //
       // GenCond_Codes
       //
-      static OpCodePair GenCond_Codes(SR::Statement const *, SR::Type const *t)
+      static CodePair GenCond_Codes(SR::Statement const *, SR::Type const *t)
       {
-         return {SR::ExpCode_ArithInteg<IR::CodeSet_CmpLT>(t),
-                 SR::ExpCode_ArithInteg<IR::CodeSet_CmpEQ>(t)};
+         return {SR::ExpCode_ArithInteg<IR::CodeSet_CmpLT>(t).code,
+                 SR::ExpCode_ArithInteg<IR::CodeSet_CmpEQ>(t).code};
       }
 
       //
@@ -80,7 +80,7 @@ namespace GDCC
          IR::Glyph defLabel = {ctx.prog, stmnt->scope.getLabelDefault(false)};
 
          // Unconditional branch.
-         ctx.block.addStatementArgs({IR::Code::Jump, 0}, defLabel);
+         ctx.block.setArgSize().addStmnt(IR::Code::Jump, defLabel);
       }
 
       //
@@ -89,7 +89,7 @@ namespace GDCC
       static void GenCond_SearchPart(
          Statement_Switch        const *stmnt,
          SR::GenStmntCtx         const &ctx,
-         OpCodePair              const &ops,
+         CodePair                const &codes,
          SR::Temporary           const &cond,
          Scope_Case::Case const *const *begin,
          Scope_Case::Case const *const *end)
@@ -110,20 +110,21 @@ namespace GDCC
             // If this case is one more than the previous and one less than the
             // next, then there is no need for further comparisons.
             if(begin[-1] && begin[+1] && begin[-1]->value + 1 == begin[+1]->value - 1)
-               ctx.block.addStatementArgs({IR::Code::Jump, 0}, caseLabel);
+               ctx.block.setArgSize().addStmnt(IR::Code::Jump, caseLabel);
 
             // Otherwise, check against value.
             else
             {
                auto caseValue = GenCond_GenValue(stmnt, begin[0]);
 
+               ctx.block.setArgSize();
+
                // Compare condition to case value for equality.
-               ctx.block.addStatementArgs(ops.second,
-                  IR::Arg_Stk(), cond.getArg(), caseValue);
+               ctx.block.addStmnt(codes.second,
+                  IR::Block::Stk(), cond.getArg(), caseValue);
 
                // If true, branch to case.
-               ctx.block.addStatementArgs({IR::Code::Jcnd_Tru, 1},
-                  IR::Arg_Stk(), caseLabel);
+               ctx.block.addStmnt(IR::Code::Jcnd_Tru, IR::Block::Stk(), caseLabel);
 
                // Otherwise, branch to default.
                GenCond_BranchDefault(stmnt, ctx);
@@ -137,27 +138,28 @@ namespace GDCC
          IR::Glyph pivotLabel = {ctx.prog, ctx.fn->genLabel()};
          auto      pivotValue = GenCond_GenValue(stmnt, *pivot);
 
+         ctx.block.setArgSize();
+
          // Compare condition against pivot.
-         ctx.block.addStatementArgs(ops.first,
-            IR::Arg_Stk(), cond.getArg(), IR::Arg_Lit(pivotValue));
+         ctx.block.addStmnt(codes.first,
+            IR::Block::Stk(), cond.getArg(), IR::Arg_Lit(cond.sizeBytes(), pivotValue));
 
          // Skip if false.
-         ctx.block.addStatementArgs({IR::Code::Jcnd_Nil, 1},
-            IR::Arg_Stk(), pivotLabel);
+         ctx.block.addStmnt(IR::Code::Jcnd_Nil, IR::Block::Stk(), pivotLabel);
 
          // Search left half.
-         GenCond_SearchPart(stmnt, ctx, ops, cond, begin, pivot);
+         GenCond_SearchPart(stmnt, ctx, codes, cond, begin, pivot);
 
          // Search right half.
          ctx.block.addLabel(pivotLabel);
-         GenCond_SearchPart(stmnt, ctx, ops, cond, pivot, end);
+         GenCond_SearchPart(stmnt, ctx, codes, cond, pivot, end);
       }
 
       //
       // GenCond_Search
       //
       static void GenCond_Search(Statement_Switch const *stmnt,
-         SR::GenStmntCtx const &ctx, OpCodePair const &ops)
+         SR::GenStmntCtx const &ctx, CodePair const &codes)
       {
          // Collect and sort cases.
          std::vector<Scope_Case::Case const *> cases;
@@ -176,11 +178,10 @@ namespace GDCC
          stmnt->cond->genStmntStk(ctx);
 
          SR::Temporary tmp{ctx, stmnt->pos, stmnt->cond->getType()->getSizeWords()};
-         ctx.block.addStatementArgs({IR::Code::Move_W, tmp.size()},
-            tmp.getArg(), IR::Arg_Stk());
+         ctx.block.addStmnt(IR::Code::Move_W, tmp.getArg(), tmp.getArgStk());
 
          // Begin binary search.
-         GenCond_SearchPart(stmnt, ctx, ops, tmp, cases.data() + 1,
+         GenCond_SearchPart(stmnt, ctx, codes, tmp, cases.data() + 1,
             cases.data() + cases.size() - 1);
       }
 
@@ -190,14 +191,14 @@ namespace GDCC
       static void GenCond_Search_Jcnd_Tab(Statement_Switch const *stmnt,
          SR::GenStmntCtx const &ctx)
       {
-         Core::FastU caseSize = stmnt->cond->getType()->getSizeWords();
+         Core::FastU caseSize = stmnt->cond->getType()->getSizeBytes();
 
          Core::Array<IR::Arg> args{stmnt->scope.size() * 2 + 1};
          auto argItr = args.begin();
 
          // Evaluate condition.
          stmnt->cond->genStmntStk(ctx);
-         *argItr++ = IR::Arg_Stk();
+         *argItr++ = IR::Arg_Stk(caseSize);
 
          // Determine IR type of case values.
          auto caseType = stmnt->cond->getType()->getIRType().tFixed;
@@ -205,13 +206,14 @@ namespace GDCC
          // Generate cases. Sorting is handled by the BC module, as needed.
          for(auto const &c : stmnt->scope)
          {
-            *argItr++ = IR::Arg_Lit{IR::ExpCreate_Value(
-               IR::Value_Fixed{c.value, caseType}, stmnt->cond->pos)};
-            *argItr++ = IR::Arg_Lit{ctx.block.getExp({ctx.prog, c.label})};
+            *argItr++ = IR::Arg_Lit(caseSize, IR::ExpCreate_Value(
+               IR::Value_Fixed{c.value, caseType}, stmnt->cond->pos));
+            *argItr++ = IR::Arg_Lit(caseSize, ctx.block.getExp({ctx.prog, c.label}));
          }
 
-         ctx.block.addStatementArgs({IR::Code::Jcnd_Tab, caseSize}, std::move(args));
-         ctx.block.addStatementArgs({IR::Code::Move_W,   caseSize}, IR::Arg_Nul{}, IR::Arg_Stk{});
+         ctx.block.addStmntArgs(IR::Code::Jcnd_Tab, std::move(args));
+         ctx.block.addStmnt(IR::Code::Move_W,
+            IR::Arg_Nul(caseSize), IR::Arg_Stk(caseSize));
          GenCond_BranchDefault(stmnt, ctx);
       }
    }

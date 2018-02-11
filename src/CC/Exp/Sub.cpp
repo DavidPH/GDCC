@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -40,9 +40,9 @@ namespace GDCC
          if(!type->isCTypeArith())
             throw Core::ExceptStr(pos, "expected arithmetic operand");
 
-         auto op = SR::ExpCode_Arith<IR::CodeSet_Neg>(type);
+         auto code = SR::ExpCode_Arith<IR::CodeSet_Neg>(type).code;
 
-         return SR::Exp_UnaryCode<SR::Exp_Neg>::Create(op, type, exp, pos);
+         return SR::Exp_UnaryCode<SR::Exp_Neg>::Create(code, type, exp, pos);
       }
 
       //

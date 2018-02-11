@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2016 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,6 +18,8 @@
 #include "Core/Exception.hpp"
 
 #include "IR/Program.hpp"
+
+#include "Platform/Platform.hpp"
 
 #include "SR/Arg.hpp"
 #include "SR/Function.hpp"
@@ -41,7 +43,8 @@ namespace GDCC
          // Generate IR arg for env.
          IR::Arg envArg;
          if(env->getArg().isIRArg())
-            envArg = IR::Arg_Sta(env->getArg().getIRArg(ctx.prog));
+            envArg = IR::Arg_Sta(Platform::GetWordBytes(),
+               env->getArg().getIRArg(ctx.prog));
          else
             throw Core::ExceptStr(pos, "non-IRArg env stub");
 
@@ -52,8 +55,9 @@ namespace GDCC
          else
             throw Core::ExceptStr(pos, "non-IRArg val stub");
 
-         ctx.block.addStatementArgs({IR::Code::Jfar, 0},
-            IR::Glyph(ctx.prog, scope.fn.getLabelLJR()), envArg, valArg);
+         ctx.block.setArgSize().addStmnt(IR::Code::Jfar,
+            IR::Glyph(ctx.prog, scope.fn.getLabelLJR()),
+            std::move(envArg), std::move(valArg));
       }
 
       //
@@ -81,17 +85,17 @@ namespace GDCC
          SR::Temporary envTmp{ctx, pos};
          IR::Arg       envArg;
          if(env->getArg().isIRArg())
-            envArg = IR::Arg_Sta(env->getArg().getIRArg(ctx.prog));
+            envArg = IR::Arg_Sta(Platform::GetWordBytes(),
+               env->getArg().getIRArg(ctx.prog));
          else
          {
             SR::Type::CRef envType = env->getType();
             envTmp.alloc(envType->getSizeWords());
-            envArg = IR::Arg_Sta(envTmp.getArg());
+            envArg = IR::Arg_Sta(Platform::GetWordBytes(), envTmp.getArg());
 
             // TODO: Convert envTmp to an SR::Arg to avoid stack op.
             env->genStmntStk(ctx);
-            ctx.block.addStatementArgs({IR::Code::Move_W, envTmp.size()},
-               envTmp.getArg(), IR::Arg_Stk());
+            ctx.block.addStmnt(IR::Code::Move_W, envTmp.getArg(), envTmp.getArgStk());
          }
 
          // Generate dynamic jump target for addr.
@@ -101,8 +105,8 @@ namespace GDCC
          addrDJump.alloc = true;
          addrDJump.defin = true;
 
-         ctx.block.addStatementArgs({IR::Code::Jset, 0},
-            envArg, IR::Glyph(ctx.prog, addrDJump.glyph));
+         ctx.block.setArgSize().addStmnt(IR::Code::Jset,
+            std::move(envArg), IR::Glyph(ctx.prog, addrDJump.glyph));
 
          ctx.block.addLabel(addrLabel);
 

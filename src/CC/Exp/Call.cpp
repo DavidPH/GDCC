@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2017 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -58,10 +58,7 @@ namespace GDCC
          }
 
          for(auto const &arg : args)
-         {
             if(!arg->isIRExp()) return false;
-            if(arg->getType()->getSizeWords() != 1) return false;
-         }
 
          return true;
       }
