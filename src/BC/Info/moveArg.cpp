@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,85 +20,86 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::BC
 {
-   namespace BC
+   //
+   // Info::moveArgStk_dst
+   //
+   // If idx is not Stk, makes it one by adding a new Move_W statement.
+   //
+   void Info::moveArgStk_dst(IR::Arg &idx)
    {
-      //
-      // Info::moveArgStk_dst
-      //
-      // If idx is not Stk, makes it one by adding a new Move_W statement.
-      //
-      void Info::moveArgStk_dst(IR::Arg &idx, Core::FastU sizeMove)
-      {
-         if(idx.a == IR::ArgBase::Stk) return;
+      if(idx.a == IR::ArgBase::Stk) return;
 
-         block->setOrigin(stmnt->pos);
-         block->addStatementArgs(stmnt->next, {IR::Code::Move_W, sizeMove},
-            std::move(idx), IR::Arg_Stk());
+      auto size = idx.getSize();
 
-         idx = IR::Arg_Stk();
-      }
+      block->setOrigin(stmnt->pos);
+      block->addStmnt(stmnt->next, IR::Code::Move_W, std::move(idx), IR::Arg_Stk(size));
 
-      //
-      // Info::moveArgStk_src
-      //
-      // If idx is not Stk, makes it one by adding a new Move_W statement.
-      //
-      void Info::moveArgStk_src(IR::Arg &idx, Core::FastU sizeMove)
-      {
-         if(idx.a == IR::ArgBase::Stk) return;
+      idx = IR::Arg_Stk(size);
+   }
 
-         block->setOrigin(stmnt->pos);
-         block->addLabel(std::move(stmnt->labs));
-         block->addStatementArgs(stmnt, {IR::Code::Move_W, sizeMove},
-            IR::Arg_Stk(), std::move(idx));
+   //
+   // Info::moveArgStk_src
+   //
+   // If idx is not Stk, makes it one by adding a new Move_W statement.
+   //
+   void Info::moveArgStk_src(IR::Arg &idx)
+   {
+      if(idx.a == IR::ArgBase::Stk) return;
 
-         idx = IR::Arg_Stk();
+      auto size = idx.getSize();
 
-         // Reset iterator for further translation.
-         stmnt = stmnt->prev;
+      block->setOrigin(stmnt->pos);
+      block->addLabel(std::move(stmnt->labs));
+      block->addStmnt(stmnt, IR::Code::Move_W, IR::Arg_Stk(size), std::move(idx));
 
-         throw ResetStmnt();
-      }
+      idx = IR::Arg_Stk(size);
 
-      //
-      // Info::moveArgStkB_dst
-      //
-      // If idx is not Stk, makes it one by adding a new Move_W statement.
-      //
-      void Info::moveArgStkB_dst(IR::Arg &idx, Core::FastU sizeMove)
-      {
-         if(idx.a == IR::ArgBase::Stk) return;
+      // Reset iterator for further translation.
+      stmnt = stmnt->prev;
 
-         block->setOrigin(stmnt->pos);
-         block->addStatementArgs(stmnt->next, {IR::Code::Move_B, sizeMove},
-            std::move(idx), IR::Arg_Stk());
+      throw ResetStmnt();
+   }
 
-         idx = IR::Arg_Stk();
-      }
+   //
+   // Info::moveArgStkB_dst
+   //
+   // If idx is not Stk, makes it one by adding a new Move_W statement.
+   //
+   void Info::moveArgStkB_dst(IR::Arg &idx)
+   {
+      if(idx.a == IR::ArgBase::Stk) return;
 
-      //
-      // Info::moveArgStkB_src
-      //
-      // If idx is not Stk, makes it one by adding a new Move_W statement.
-      //
-      void Info::moveArgStkB_src(IR::Arg &idx, Core::FastU sizeMove)
-      {
-         if(idx.a == IR::ArgBase::Stk) return;
+      auto size = idx.getSize();
 
-         block->setOrigin(stmnt->pos);
-         block->addLabel(std::move(stmnt->labs));
-         block->addStatementArgs(stmnt, {IR::Code::Move_B, sizeMove},
-            IR::Arg_Stk(), std::move(idx));
+      block->setOrigin(stmnt->pos);
+      block->addStmnt(stmnt->next, IR::Code::Move_B, std::move(idx), IR::Arg_Stk(size));
 
-         idx = IR::Arg_Stk();
+      idx = IR::Arg_Stk(size);
+   }
 
-         // Reset iterator for further translation.
-         stmnt = stmnt->prev;
+   //
+   // Info::moveArgStkB_src
+   //
+   // If idx is not Stk, makes it one by adding a new Move_W statement.
+   //
+   void Info::moveArgStkB_src(IR::Arg &idx)
+   {
+      if(idx.a == IR::ArgBase::Stk) return;
 
-         throw ResetStmnt();
-      }
+      auto size = idx.getSize();
+
+      block->setOrigin(stmnt->pos);
+      block->addLabel(std::move(stmnt->labs));
+      block->addStmnt(stmnt, IR::Code::Move_B, IR::Arg_Stk(size), std::move(idx));
+
+      idx = IR::Arg_Stk(size);
+
+      // Reset iterator for further translation.
+      stmnt = stmnt->prev;
+
+      throw ResetStmnt();
    }
 }
 

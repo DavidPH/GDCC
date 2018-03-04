@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -49,7 +49,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Bclz_W(Core::FastU n, IR::Code code, Core::FastU skip)
    {
-      GDCC_BC_AddFuncPre({code, n}, 1, n, n, __FILE__);
+      GDCC_BC_AddFuncPre(code, n, 1, n, n, __FILE__);
       GDCC_BC_AddFuncObjUna(n);
 
       // Generate labels.
@@ -63,29 +63,27 @@ namespace GDCC::BC
 
       Core::FastU bits = Platform::GetWordBits();
 
-      lop += n;
-
       Core::FastU i = n;
 
-      GDCC_BC_AddStmnt({Code::Move_W,   1}, stk, --lop);
-      GDCC_BC_AddStmnt({Code::Jcnd_Tab, 1}, stk, skip, labelSkip[--i]);
+      GDCC_BC_AddStmnt(Code::Move_W,   1, stk, lop[--i]);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, skip, labelSkip[i]);
 
-      GDCC_BC_AddStmnt({code,           1}, stk, stk);
-      GDCC_BC_AddStmnt({Code::Retn,     1}, stk);
+      GDCC_BC_AddStmnt(code,           1, stk, stk);
+      GDCC_BC_AddStmnt(Code::Retn,     1, stk);
 
       while(i)
       {
          newFunc->block.addLabel(labelSkip[i]);
-         GDCC_BC_AddStmnt({Code::Move_W,   1}, stk, --lop);
-         GDCC_BC_AddStmnt({Code::Jcnd_Tab, 1}, stk, skip, labelSkip[--i]);
+         GDCC_BC_AddStmnt(Code::Move_W,   1, stk, lop[--i]);
+         GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, skip, labelSkip[i]);
 
-         GDCC_BC_AddStmnt({code,           1}, stk, stk);
-         GDCC_BC_AddStmnt({Code::AddU_W,   1}, stk, stk, (n - 1 - i) * bits);
-         GDCC_BC_AddStmnt({Code::Retn,     1}, stk);
+         GDCC_BC_AddStmnt(code,           1, stk, stk);
+         GDCC_BC_AddStmnt(Code::AddU_W,   1, stk, stk, (n - 1 - i) * bits);
+         GDCC_BC_AddStmnt(Code::Retn,     1, stk);
       }
 
       newFunc->block.addLabel(labelSkip[0]);
-      GDCC_BC_AddStmnt({Code::Retn, 1}, n * bits);
+      GDCC_BC_AddStmnt(Code::Retn, 1, n * bits);
 
       GDCC_BC_AddFuncEnd();
    }

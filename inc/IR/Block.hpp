@@ -45,8 +45,8 @@ namespace GDCC::IR
       using reverse_iterator       = std::reverse_iterator<iterator>;
       using size_type              = std::size_t;
 
-      struct Nul {};
-      struct Stk {};
+      struct Nul {Nul(Core::FastU n_ = 1) : n{n_} {} Core::FastU n;};
+      struct Stk {Stk(Core::FastU n_ = 1) : n{n_} {} Core::FastU n;};
 
 
       Block() = default;
@@ -130,6 +130,11 @@ namespace GDCC::IR
          return sizeof...(Args);
       }
 
+      #define GDCC_IR_AddrList(a) \
+         void unpackArg(Arg *argv, Arg_##a const &arg0) {*argv = arg0;} \
+         void unpackArg(Arg *argv, Arg_##a      &&arg0) {*argv = std::move(arg0);}
+      #include "../IR/AddrList.hpp"
+
       void unpackArg(Arg *argv, Arg const &arg0) {*argv = arg0;}
       void unpackArg(Arg *argv, Arg      &&arg0) {*argv = std::move(arg0);}
 
@@ -137,12 +142,12 @@ namespace GDCC::IR
       void unpackArg(Arg *argv, Exp const *arg0);
 
       // Block::Nul arg, converted to Arg_Nul using current arg size.
-      void unpackArg(Arg *argv, Nul const &)
-         {*argv = IR::Arg_Nul(argSize);}
+      void unpackArg(Arg *argv, Nul const &nul)
+         {*argv = IR::Arg_Nul(argSize * nul.n);}
 
       // Block::Stk arg, converted to Arg_Stk using current arg size.
-      void unpackArg(Arg *argv, Stk const &)
-         {*argv = IR::Arg_Stk(argSize);}
+      void unpackArg(Arg *argv, Stk const &stk)
+         {*argv = IR::Arg_Stk(argSize * stk.n);}
 
       // Glyph arg, converted to expression, converted to Arg_Lit.
       void unpackArg(Arg *argv, Glyph const &arg0);

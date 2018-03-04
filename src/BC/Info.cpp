@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -678,7 +678,7 @@ namespace GDCC
       {
          if(stmnt->args[a].a != b)
          {
-            std::cerr << "ERROR: " << stmnt->pos << ": " << stmnt->op
+            std::cerr << "ERROR: " << stmnt->pos << ": " << stmnt->code
                << " must have " << b << " args[" << a << "]\n";
             throw EXIT_FAILURE;
          }
@@ -691,7 +691,7 @@ namespace GDCC
       {
          if(stmnt->args.size() < c)
          {
-            std::cerr << "ERROR: " << stmnt->pos << ": bad argc for " << stmnt->op
+            std::cerr << "ERROR: " << stmnt->pos << ": bad argc for " << stmnt->code
                << ": " << stmnt->args.size() << " < " << c << '\n';
             throw EXIT_FAILURE;
          }

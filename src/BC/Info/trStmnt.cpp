@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,66 +21,65 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::BC
 {
-   namespace BC
+   //
+   // Info::trStmntStk2
+   //
+   void Info::trStmntStk2()
    {
-      //
-      // Info::trStmntStk2
-      //
-      void Info::trStmntStk2(Core::FastU sizeDst, Core::FastU sizeSrc)
-      {
-         CheckArgC(stmnt, 2);
+      CheckArgC(stmnt, 2);
 
-         moveArgStk_dst(stmnt->args[0], sizeDst);
-         moveArgStk_src(stmnt->args[1], sizeSrc);
+      moveArgStk_dst(stmnt->args[0]);
+      moveArgStk_src(stmnt->args[1]);
+   }
+
+   //
+   // Info::trStmntStk3
+   //
+   void Info::trStmntStk3(bool ordered)
+   {
+      CheckArgC(stmnt, 3);
+
+      moveArgStk_dst(stmnt->args[0]);
+
+      auto size = stmnt->args[1].getSize();
+
+      try
+      {
+         moveArgStk_src(stmnt->args[1]);
+      }
+      catch(ResetStmnt const &)
+      {
+         if(ordered && stmnt->next->args[2].a == IR::ArgBase::Stk)
+            block->addStmnt(stmnt->next, IR::Code::Swap_W,
+               IR::Arg_Stk(size), IR::Arg_Stk(size));
+
+         throw;
       }
 
-      //
-      // Info::trStmntStk3
-      //
-      void Info::trStmntStk3(Core::FastU sizeDst, Core::FastU sizeSrc, bool ordered)
-      {
-         CheckArgC(stmnt, 3);
+      moveArgStk_src(stmnt->args[2]);
+   }
 
-         moveArgStk_dst(stmnt->args[0], sizeDst);
+   //
+   // Info::trStmntShift
+   //
+   bool Info::trStmntShift(bool moveLit)
+   {
+      CheckArgC(stmnt, 3);
 
-         try
-         {
-            moveArgStk_src(stmnt->args[1], sizeSrc);
-         }
-         catch(ResetStmnt const &)
-         {
-            if(ordered && stmnt->next->args[2].a == IR::ArgBase::Stk)
-               block->addStatementArgs(stmnt->next, {IR::Code::Swap_W, sizeSrc},
-                  IR::Arg_Stk(), IR::Arg_Stk());
+      if(stmnt->args[1].a != IR::ArgBase::Stk &&
+         stmnt->args[2].a == IR::ArgBase::Stk)
+         throw Core::ExceptStr(stmnt->pos, "trStmntShift disorder");
 
-            throw;
-         }
+      moveArgStk_dst(stmnt->args[0]);
+      moveArgStk_src(stmnt->args[1]);
 
-         moveArgStk_src(stmnt->args[2], sizeSrc);
-      }
+      if(!moveLit && stmnt->args[2].a == IR::ArgBase::Lit)
+         return true;
 
-      //
-      // Info::trStmntShift
-      //
-      bool Info::trStmntShift(Core::FastU size, bool moveLit)
-      {
-         CheckArgC(stmnt, 3);
-
-         if(stmnt->args[1].a != IR::ArgBase::Stk &&
-            stmnt->args[2].a == IR::ArgBase::Stk)
-            throw Core::ExceptStr(stmnt->pos, "trStmntShift disorder");
-
-         moveArgStk_dst(stmnt->args[0], size);
-         moveArgStk_src(stmnt->args[1], size);
-
-         if(!moveLit && stmnt->args[2].a == IR::ArgBase::Lit)
-            return true;
-
-         moveArgStk_src(stmnt->args[2], 1);
-         return false;
-      }
+      moveArgStk_src(stmnt->args[2]);
+      return false;
    }
 }
 

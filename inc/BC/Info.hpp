@@ -293,7 +293,7 @@ namespace GDCC
          IR::Function *getFuncDefn(Core::String name, Core::FastU retrn,
             Core::FastU param, Core::FastU localReg, char const *file);
 
-         Core::String getFuncName(IR::OpCode op);
+         Core::String getFuncName(IR::Code code, Core::FastU n);
 
          Core::FastU getWord(IR::Arg_Lit const &arg, Core::FastU w = 0);
          Core::FastU getWord(IR::Exp const *exp, Core::FastU w = 0);
@@ -317,16 +317,16 @@ namespace GDCC
 
          void putData(char const *data, std::size_t size);
 
-         void moveArgStk_dst(IR::Arg &idx, Core::FastU sizeMove);
-         void moveArgStk_src(IR::Arg &idx, Core::FastU sizeMove);
-         void moveArgStkB_dst(IR::Arg &idx, Core::FastU sizeMove);
-         void moveArgStkB_src(IR::Arg &idx, Core::FastU sizeMove);
+         void moveArgStk_dst(IR::Arg &idx);
+         void moveArgStk_src(IR::Arg &idx);
+         void moveArgStkB_dst(IR::Arg &idx);
+         void moveArgStkB_src(IR::Arg &idx);
 
          bool optStmnt_Cspe_Drop();
 
-         void trStmntStk2(Core::FastU sizeDst, Core::FastU sizeSrc);
-         void trStmntStk3(Core::FastU sizeDst, Core::FastU sizeSrc, bool ordered);
-         bool trStmntShift(Core::FastU size, bool moveLit);
+         void trStmntStk2();
+         void trStmntStk3(bool ordered);
+         bool trStmntShift(bool moveLit);
 
          IR::Block     *block;
          IR::DJump     *djump;
