@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2017 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -84,34 +84,34 @@ namespace GDCC::IRDump
       //
       auto putSType = [&out](Core::Array<Core::String> const &stype)
       {
-         out << '[';
+         out << '(';
          auto itr = stype.begin(), end = stype.end();
-         if   (itr != end) PutString(out,         *itr++);
-         while(itr != end) PutString(out << ", ", *itr++);
-         out << ']';
+         if   (itr != end) PutString(out,        *itr++);
+         while(itr != end) PutString(out << ' ', *itr++);
+         out << ')';
       };
 
-      out << "\nFunction "; PutString(out, fn.glyph);
+      out << "\nFunction "; PutString(out, fn.glyph); out << "\n(";
 
-      if(fn.allocAut) out << " \\\n   allocAut=" << fn.allocAut;
-      if(fn.alloc)    out << " \\\n   alloc="    << fn.alloc;
-                      out << " \\\n   ctype="    << fn.ctype;
-      if(fn.defin)    out << " \\\n   defin="    << fn.defin;
-      if(fn.label)   {out << " \\\n   label=";      PutString(out, fn.label);}
-                      out << " \\\n   linka="    << fn.linka;
+      if(fn.allocAut) out << "\n   allocAut=" << fn.allocAut;
+      if(fn.alloc)    out << "\n   alloc="    << fn.alloc;
+                      out << "\n   ctype="    << fn.ctype;
+      if(fn.defin)    out << "\n   defin="    << fn.defin;
+      if(fn.label)   {out << "\n   label=";      PutString(out, fn.label);}
+                      out << "\n   linka="    << fn.linka;
       for(auto const &itr : fn.localArr)
-         out << " \\\n   localArr[" << itr.first << "]=" << itr.second;
-      if(fn.localAut) out << " \\\n   localAut=" << fn.localAut;
-      if(fn.localReg) out << " \\\n   localReg=" << fn.localReg;
-      if(fn.param)    out << " \\\n   param="    << fn.param;
-      if(fn.retrn)    out << " \\\n   retrn="    << fn.retrn;
-                      out << " \\\n   stype=";      putSType(fn.stype);
-      if(fn.valueInt) out << " \\\n   valueInt=" << fn.valueInt;
-      if(fn.valueStr){out << " \\\n   valueStr=";   PutString(out, fn.valueStr);}
+         out << "\n   localArr[" << itr.first << "]=" << itr.second;
+      if(fn.localAut) out << "\n   localAut=" << fn.localAut;
+      if(fn.localReg) out << "\n   localReg=" << fn.localReg;
+      if(fn.param)    out << "\n   param="    << fn.param;
+      if(fn.retrn)    out << "\n   retrn="    << fn.retrn;
+                      out << "\n   stype=";      putSType(fn.stype);
+      if(fn.valueInt) out << "\n   valueInt=" << fn.valueInt;
+      if(fn.valueStr){out << "\n   valueStr=";   PutString(out, fn.valueStr);}
 
       if(OptBlock && !fn.block.empty())
       {
-         out << " \\\n   block\n{\n";
+         out << "\n   block\n   (\n";
 
          Core::Origin pos{Core::STRNULL, 0};
 
@@ -121,32 +121,34 @@ namespace GDCC::IRDump
             if(OptOrigin && stmnt.pos != pos)
             {
                if(pos.file) out << '\n';
-               out << "   ; " << (pos = stmnt.pos) << '\n';
+               out << "      ; " << (pos = stmnt.pos) << '\n';
             }
 
             // Dump labels.
             if(OptLabels) for(auto const &lab : stmnt.labs)
             {
+               out << "   ";
                PutString(out, lab);
                out << '\n';
             }
 
             // Dump instruction and arguments.
-            out << "   " << stmnt.op;
+            out << "      " << stmnt.code << '(';
 
-            for(auto const &arg : stmnt.args)
+            if(auto i = stmnt.args.begin(), e = stmnt.args.end(); i != e) for(;;)
             {
-               out << ", ";
-               PutArg(out, arg);
+               PutArg(out, *i);
+               if(++i == e) break;
+               out << ' ';
             }
 
-            out << '\n';
+            out << ")\n";
          }
 
-         out << "}";
+         out << "   )";
       }
 
-      out << '\n';
+      out << "\n)\n";
    }
 }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2015 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,178 +19,167 @@
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
-namespace GDCC
+
+namespace GDCC::IRDump
 {
-   namespace IRDump
+   //
+   // PutValue
+   //
+   void PutValue(std::ostream &out, IR::Value const &val)
    {
-      //
-      // PutValue
-      //
-      void PutValue(std::ostream &out, IR::Value const &val)
+      switch(val.v)
       {
-         switch(val.v)
-         {
-            #define GDCC_IR_TypeList(tp) \
-               case IR::ValueBase::tp: PutValue_##tp(out, val.v##tp); break;
-            #include "IR/TypeList.hpp"
-         }
+         #define GDCC_IR_TypeList(tp) \
+            case IR::ValueBase::tp: PutValue_##tp(out, val.v##tp); break;
+         #include "IR/TypeList.hpp"
       }
+   }
 
-      //
-      // PutValue_Array
-      //
-      void PutValue_Array(std::ostream &out, IR::Value_Array const &val)
+   //
+   // PutValue_Array
+   //
+   void PutValue_Array(std::ostream &out, IR::Value_Array const &val)
+   {
+      PutType_Array(out << "Value ", val.vtype);
+
+      out << " (";
+      if(!val.value.empty())
       {
-         PutType_Array(out << "Value ", val.vtype);
-
-         out << " (";
-         if(!val.value.empty())
-         {
-            auto itr = val.value.begin(), end = val.value.end();
-            PutValue(out, *itr++);
-            while(itr != end)
-            {
-               out << ", ";
-               PutValue(out, *itr++);
-            }
-         }
-         out << ')';
+         auto itr = val.value.begin(), end = val.value.end();
+         PutValue(out, *itr++);
+         while(itr != end)
+            PutValue(out << ' ', *itr++);
       }
+      out << ')';
+   }
 
-      //
-      // PutValue_Assoc
-      //
-      void PutValue_Assoc(std::ostream &out, IR::Value_Assoc const &val)
+   //
+   // PutValue_Assoc
+   //
+   void PutValue_Assoc(std::ostream &out, IR::Value_Assoc const &val)
+   {
+      PutType_Assoc(out << "Value ", val.vtype);
+
+      out << " (";
+      if(!val.value.empty())
       {
-         PutType_Assoc(out << "Value ", val.vtype);
-
-         out << " (";
-         if(!val.value.empty())
-         {
-            auto itr = val.value.begin(), end = val.value.end();
-            PutValue(out, *itr++);
-            while(itr != end)
-            {
-               out << ", ";
-               PutValue(out, *itr++);
-            }
-         }
-         out << ')';
+         auto itr = val.value.begin(), end = val.value.end();
+         PutValue(out, *itr++);
+         while(itr != end)
+            PutValue(out << ' ', *itr++);
       }
+      out << ')';
+   }
 
-      //
-      // PutValue_DJump
-      //
-      void PutValue_DJump(std::ostream &out, IR::Value_DJump const &val)
-      {
-         PutType_DJump(out << "Value ", val.vtype);
-         out << " (" << val.value << ')';
-      }
+   //
+   // PutValue_DJump
+   //
+   void PutValue_DJump(std::ostream &out, IR::Value_DJump const &val)
+   {
+      PutType_DJump(out << "Value ", val.vtype);
+      out << " (" << val.value << ')';
+   }
 
-      //
-      // PutValue_Empty
-      //
-      void PutValue_Empty(std::ostream &out, IR::Value_Empty const &val)
-      {
-         PutType_Empty(out << "Value ", val.vtype);
-         out << " ()";
-      }
+   //
+   // PutValue_Empty
+   //
+   void PutValue_Empty(std::ostream &out, IR::Value_Empty const &val)
+   {
+      PutType_Empty(out << "Value ", val.vtype);
+      out << " ()";
+   }
 
-      //
-      // PutValue_Fixed
-      //
-      void PutValue_Fixed(std::ostream &out, IR::Value_Fixed const &val)
-      {
-         if(val.vtype.bitsF)
-            out << (static_cast<Core::Float>(val.value) >> val.vtype.bitsF);
-         else
-            out << val.value;
-
-         out << '_';
-         if(val.vtype.bitsS) out << 's';
-         out << val.vtype.bitsI << '.' << val.vtype.bitsF;
-         if(val.vtype.satur) out << 's';
-
-      }
-
-      //
-      // PutValue_Float
-      //
-      void PutValue_Float(std::ostream &out, IR::Value_Float const &val)
-      {
+   //
+   // PutValue_Fixed
+   //
+   void PutValue_Fixed(std::ostream &out, IR::Value_Fixed const &val)
+   {
+      if(val.vtype.bitsF)
+         out << (static_cast<Core::Float>(val.value) >> val.vtype.bitsF);
+      else
          out << val.value;
 
-         out << '_';
-         out << 'f';
-         if(val.vtype.bitsS) out << 's';
-         out << val.vtype.bitsI << '.' << val.vtype.bitsF;
-         if(val.vtype.satur) out << 's';
+      out << '_';
+      if(val.vtype.bitsS) out << 's';
+      out << val.vtype.bitsI << '.' << val.vtype.bitsF;
+      if(val.vtype.satur) out << 's';
 
-      }
+   }
 
-      //
-      // PutValue_Funct
-      //
-      void PutValue_Funct(std::ostream &out, IR::Value_Funct const &val)
+   //
+   // PutValue_Float
+   //
+   void PutValue_Float(std::ostream &out, IR::Value_Float const &val)
+   {
+      out << val.value;
+
+      out << '_';
+      out << 'f';
+      if(val.vtype.bitsS) out << 's';
+      out << val.vtype.bitsI << '.' << val.vtype.bitsF;
+      if(val.vtype.satur) out << 's';
+
+   }
+
+   //
+   // PutValue_Funct
+   //
+   void PutValue_Funct(std::ostream &out, IR::Value_Funct const &val)
+   {
+      PutType_Funct(out << "Value ", val.vtype);
+      out << " (" << val.value << ')';
+   }
+
+   //
+   // PutValue_Point
+   //
+   void PutValue_Point(std::ostream &out, IR::Value_Point const &val)
+   {
+      PutType_Point(out << "Value ", val.vtype);
+
+      out << " (";
+      out << val.value;
+      out << ' ';
+      out << val.addrB << ' ';
+      PutString(out, val.addrN);
+      out << ')';
+   }
+
+   //
+   // PutValue_StrEn
+   //
+   void PutValue_StrEn(std::ostream &out, IR::Value_StrEn const &val)
+   {
+      PutType_StrEn(out << "Value ", val.vtype);
+      out << " (" << val.value << ')';
+   }
+
+   //
+   // PutValue_Tuple
+   //
+   void PutValue_Tuple(std::ostream &out, IR::Value_Tuple const &val)
+   {
+      out << '[';
+      if(!val.value.empty())
       {
-         PutType_Funct(out << "Value ", val.vtype);
-         out << " (" << val.value << ')';
+         auto itr = val.value.begin(), end = val.value.end();
+         PutValue(out, *itr++);
+         while(itr != end)
+            PutValue(out << ' ', *itr++);
       }
+      out << ']';
+   }
 
-      //
-      // PutValue_Point
-      //
-      void PutValue_Point(std::ostream &out, IR::Value_Point const &val)
-      {
-         PutType_Point(out << "Value ", val.vtype);
+   //
+   // PutValue_Union
+   //
+   void PutValue_Union(std::ostream &out, IR::Value_Union const &val)
+   {
+      PutType_Union(out << "Value ", val.vtype);
 
-         out << " (";
-         out << val.value;
-         out << ", ";
-         out << val.addrB << ' ';
-         PutString(out, val.addrN);
-         out << ')';
-      }
-
-      //
-      // PutValue_StrEn
-      //
-      void PutValue_StrEn(std::ostream &out, IR::Value_StrEn const &val)
-      {
-         PutType_StrEn(out << "Value ", val.vtype);
-         out << " (" << val.value << ')';
-      }
-
-      //
-      // PutValue_Tuple
-      //
-      void PutValue_Tuple(std::ostream &out, IR::Value_Tuple const &val)
-      {
-         out << '[';
-         if(!val.value.empty())
-         {
-            auto itr = val.value.begin(), end = val.value.end();
-            PutValue(out, *itr++);
-            while(itr != end)
-            {
-               out << ", ";
-               PutValue(out, *itr++);
-            }
-         }
-         out << ']';
-      }
-
-      //
-      // PutValue_Union
-      //
-      void PutValue_Union(std::ostream &out, IR::Value_Union const &val)
-      {
-         PutType_Union(out << "Value ", val.vtype);
-
-         out << " (";
-         PutValue(out, *val.value);
-         out << ')';
-      }
+      out << " (";
+      PutValue(out, *val.value);
+      out << ')';
    }
 }
 

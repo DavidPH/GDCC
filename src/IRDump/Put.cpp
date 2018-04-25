@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2017 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -101,14 +101,14 @@ namespace GDCC::IRDump
    //
    void PutDJump(std::ostream &out, IR::DJump const &jump)
    {
-      out << "\nDJump "; PutString(out, jump.glyph);
+      out << "\nDJump "; PutString(out, jump.glyph); out << "\n(";
 
-      if(jump.alloc) out << " \\\n   alloc=" << jump.alloc;
-      if(jump.defin) out << " \\\n   defin=" << jump.defin;
-      if(jump.label){out << " \\\n   label=";   PutString(out, jump.label);}
-      if(jump.value) out << " \\\n   value=" << jump.value;
+      if(jump.alloc) out << "\n   alloc=" << jump.alloc;
+      if(jump.defin) out << "\n   defin=" << jump.defin;
+      if(jump.label){out << "\n   label=";   PutString(out, jump.label);}
+      if(jump.value) out << "\n   value=" << jump.value;
 
-      out << '\n';
+      out << "\n)\n";
    }
 
    //
@@ -116,12 +116,12 @@ namespace GDCC::IRDump
    //
    void PutGlyphData(std::ostream &out, IR::GlyphData const &data)
    {
-      out << "\nGlyph "; PutString(out, data.glyph);
+      out << "\nGlyph "; PutString(out, data.glyph); out << "\n(\n";
 
-      if(data.type) {out << " \\\n   type=";  PutType(out, data.type );}
-      if(data.value){out << " \\\n   value="; PutExp (out, data.value);}
+      if(data.type) {out << "\n   type=";  PutType(out, data.type );}
+      if(data.value){out << "\n   value="; PutExp (out, data.value);}
 
-      out << '\n';
+      out << "\n)\n";
    }
 
    //
@@ -129,9 +129,7 @@ namespace GDCC::IRDump
    //
    void PutImport(std::ostream &out, IR::Import const &imp)
    {
-      out << "\nImport "; PutString(out, imp.glyph);
-
-      out << '\n';
+      out << "\nImport "; PutString(out, imp.glyph); out << "()\n";
    }
 
    //
@@ -139,18 +137,18 @@ namespace GDCC::IRDump
    //
    void PutObject(std::ostream &out, IR::Object const &obj)
    {
-      out << "\nObject "; PutString(out, obj.glyph);
+      out << "\nObject "; PutString(out, obj.glyph); out << "\n(";
 
-      if(obj.alias) out << " \\\n   alias=" << obj.alias;
-      if(obj.alloc) out << " \\\n   alloc=" << obj.alloc;
-      if(obj.defin) out << " \\\n   defin=" << obj.defin;
-      if(obj.initi){out << " \\\n   initi=";   PutExp      (out, obj.initi);}
-                    out << " \\\n   linka=" << obj.linka;
-                   {out << " \\\n   space=";   PutAddrSpace(out, obj.space);}
-      if(obj.value) out << " \\\n   value=" << obj.value;
-      if(obj.words) out << " \\\n   words=" << obj.words;
+      if(obj.alias) out << "\n   alias=" << obj.alias;
+      if(obj.alloc) out << "\n   alloc=" << obj.alloc;
+      if(obj.defin) out << "\n   defin=" << obj.defin;
+      if(obj.initi){out << "\n   initi=";   PutExp      (out, obj.initi);}
+                    out << "\n   linka=" << obj.linka;
+                    out << "\n   space=";   PutAddrSpace(out, obj.space);
+      if(obj.value) out << "\n   value=" << obj.value;
+      if(obj.words) out << "\n   words=" << obj.words;
 
-      out << '\n';
+      out << "\n)\n";
    }
 
    //
@@ -158,15 +156,15 @@ namespace GDCC::IRDump
    //
    void PutSpace(std::ostream &out, IR::Space const &sp)
    {
-      out << "\nSpace "; PutAddrSpace(out, sp.space);
+      out << "\nSpace "; PutAddrSpace(out, sp.space); out << "\n(";
 
-      if(sp.alloc) out << " \\\n   alloc=" << sp.alloc;
-      if(sp.defin) out << " \\\n   defin=" << sp.defin;
-                     out << " \\\n   linka=" << sp.linka;
-      if(sp.value) out << " \\\n   value=" << sp.value;
-      if(sp.words) out << " \\\n   words=" << sp.words;
+      if(sp.alloc) out << "\n   alloc=" << sp.alloc;
+      if(sp.defin) out << "\n   defin=" << sp.defin;
+                   out << "\n   linka=" << sp.linka;
+      if(sp.value) out << "\n   value=" << sp.value;
+      if(sp.words) out << "\n   words=" << sp.words;
 
-      out << '\n';
+      out << "\n)\n";
    }
 
    //
@@ -174,16 +172,16 @@ namespace GDCC::IRDump
    //
    void PutStrEnt(std::ostream &out, IR::StrEnt const &str)
    {
-      out << "\nStrEnt "; PutString(out, str.glyph);
+      out << "\nStrEnt "; PutString(out, str.glyph); out << "\n(";
 
-      if(str.alias)    out << " \\\n   alias="    << str.alias;
-      if(str.alloc)    out << " \\\n   alloc="    << str.alloc;
-      if(str.defin)    out << " \\\n   defin="    << str.defin;
-      if(str.multiDef) out << " \\\n   multiDef=" << str.multiDef;
-      if(str.valueInt) out << " \\\n   valueInt=" << str.valueInt;
-      if(str.valueStr){out << " \\\n   valueStr=";   PutString(out, str.valueStr);}
+      if(str.alias)    out << "\n   alias="    << str.alias;
+      if(str.alloc)    out << "\n   alloc="    << str.alloc;
+      if(str.defin)    out << "\n   defin="    << str.defin;
+      if(str.multiDef) out << "\n   multiDef=" << str.multiDef;
+      if(str.valueInt) out << "\n   valueInt=" << str.valueInt;
+      if(str.valueStr){out << "\n   valueStr=";   PutString(out, str.valueStr);}
 
-      out << '\n';
+      out << "\n)\n";
    }
 
    //

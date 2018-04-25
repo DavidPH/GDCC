@@ -25,6 +25,30 @@
 namespace GDCC::IR
 {
    //
+   // ArgPart constructor
+   //
+   ArgPart::ArgPart(IArchive &in) :
+      size{GetIR(in, size)}
+   {
+   }
+
+   //
+   // ArgPart::getIR
+   //
+   IArchive &ArgPart::getIR(IArchive &in)
+   {
+      return in >> size;
+   }
+
+   //
+   // ArgPart::putIR
+   //
+   OArchive &ArgPart::putIR(OArchive &out) const
+   {
+      return out << size;
+   }
+
+   //
    // ArgPtr1 copy constructor
    //
    ArgPtr1::ArgPtr1(ArgPtr1 const &arg) :
