@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,7 +28,7 @@ namespace GDCC::BC::DGE
    //
    void Info::preStmnt()
    {
-      switch(stmnt->op.code)
+      switch(stmnt->code)
       {
       case IR::Code::AddF_W: preStmnt_AddF_W(); break;
       case IR::Code::AddI_W: preStmnt_AddI_W(); break;
@@ -90,10 +90,12 @@ namespace GDCC::BC::DGE
    //
    void Info::preStmntStkBin(Core::FastU min, AddFunc add)
    {
-      if(stmnt->op.size < min)
+      auto n = getStmntSizeW();
+
+      if(n < min)
          return;
 
-      (this->*add)(stmnt->op.size);
+      (this->*add)(n);
    }
 }
 

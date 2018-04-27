@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -26,10 +26,12 @@ namespace GDCC::BC::DGE
    //
    void Info::preStmnt_Bclo_W()
    {
-      if(stmnt->op.size <= 1)
+      auto n = getStmntSizeW();
+
+      if(n <= 1)
          return;
 
-      addFunc_Bclo_W(stmnt->op.size);
+      addFunc_Bclo_W(n);
    }
 
    //
@@ -37,10 +39,12 @@ namespace GDCC::BC::DGE
    //
    void Info::preStmnt_Bclz_W()
    {
-      if(stmnt->op.size <= 1)
+      auto n = getStmntSizeW();
+
+      if(n <= 1)
          return;
 
-      addFunc_Bclz_W(stmnt->op.size);
+      addFunc_Bclz_W(n);
    }
 
    //
@@ -48,29 +52,31 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_BAnd_W(char const *code)
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return;
 
-      if(stmnt->op.size == 1)
+      if(n == 1)
          return putCode(code);
 
       if(stmnt->args[1].a == IR::ArgBase::Stk)
       {
-         putStmntDropTmp(0, stmnt->op.size * 2 - 1);
+         putStmntDropTmp(0, n * 2 - 1);
 
-         putStmntPushTmp(stmnt->op.size - 1);
+         putStmntPushTmp(n - 1);
          putCode(code);
 
-         for(Core::FastU i = 0, e = stmnt->op.size - 1; i != e; ++i)
+         for(Core::FastU i = 0, e = n - 1; i != e; ++i)
          {
-            putStmntPushTmp(i + stmnt->op.size);
+            putStmntPushTmp(i + n);
             putStmntPushTmp(i);
             putCode(code);
          }
       }
       else
       {
-         for(Core::FastU i = 0; i != stmnt->op.size; ++i)
+         for(Core::FastU i = 0; i != n; ++i)
          {
             putStmntPushArg(stmnt->args[1], i);
             putStmntPushArg(stmnt->args[2], i);
@@ -84,10 +90,12 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_BNot_W()
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return;
 
-      if(stmnt->op.size == 1)
+      if(n == 1)
          return putCode("BNot");
 
       bool stk0 = stmnt->args[0].a == IR::ArgBase::Stk;
@@ -95,14 +103,14 @@ namespace GDCC::BC::DGE
 
       if(stk0 && stk1)
       {
-         for(auto i = stmnt->op.size - 1; i--;)
+         for(auto i = n - 1; i--;)
             putCode("BNot"), putStmntDropTmp(i);
          putCode("BNot");
-         putStmntPushTmp(0, stmnt->op.size - 1);
+         putStmntPushTmp(0, n - 1);
       }
       else
       {
-         for(Core::FastU i = 0; i != stmnt->op.size; ++i)
+         for(Core::FastU i = 0; i != n; ++i)
          {
             if(!stk1) putStmntPushArg(stmnt->args[1], i);
             putCode("BNot");
@@ -116,13 +124,15 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_Bclz_W(char const *code)
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return putCode("Push_Lit", 0);
 
-      if(stmnt->op.size == 1)
+      if(n == 1)
          return putCode(code);
 
-      putStmntCall(getFuncName(stmnt->op), stmnt->op.size);
+      putStmntCall(getFuncName(stmnt->code, n), n);
    }
 
    //
@@ -130,18 +140,20 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_BAnd_W()
    {
-      if(stmnt->op.size <= 1)
-         trStmntStk3(stmnt->op.size, stmnt->op.size, false);
+      auto n = getStmntSizeW();
+
+      if(n <= 1)
+         trStmntStk3(false);
 
       CheckArgC(stmnt, 3);
 
       if(!isPushArg(stmnt->args[1]) || !isPushArg(stmnt->args[2]))
       {
-         trStmntStk3(stmnt->op.size, stmnt->op.size, false);
-         trStmntTmp(stmnt->op.size * 2 - 1);
+         trStmntStk3(false);
+         trStmntTmp(n * 2 - 1);
       }
       else
-         moveArgStk_dst(stmnt->args[0], stmnt->op.size);
+         moveArgStk_dst(stmnt->args[0]);
    }
 
    //
@@ -149,21 +161,23 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_BNot_W()
    {
-      if(stmnt->op.size <= 1)
-         trStmntStk2(stmnt->op.size, stmnt->op.size);
+      auto n = getStmntSizeW();
+
+      if(n <= 1)
+         trStmntStk2();
 
       CheckArgC(stmnt, 2);
 
       bool stk0, stk1;
 
       if((stk0 = !isDropArg(stmnt->args[0])))
-         moveArgStk_dst(stmnt->args[0], stmnt->op.size);
+         moveArgStk_dst(stmnt->args[0]);
 
       if((stk1 = !isPushArg(stmnt->args[1])))
-         moveArgStk_src(stmnt->args[1], stmnt->op.size);
+         moveArgStk_src(stmnt->args[1]);
 
       if(stk0 && stk1)
-         trStmntTmp(stmnt->op.size - 1);
+         trStmntTmp(n - 1);
    }
 
    //
@@ -171,7 +185,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_Bclz_W()
    {
-      trStmntStk2(1, stmnt->op.size);
+      trStmntStk2();
    }
 }
 

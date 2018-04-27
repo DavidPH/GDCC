@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -35,7 +35,7 @@ namespace GDCC::BC::DGE
       for(auto const &label : stmnt->labs)
          putNTS("label"), putNTS('('), putNTS(label), putNTS(')');
 
-      switch(stmnt->op.code)
+      switch(stmnt->code)
       {
       case IR::Code::Nop: break;
 
@@ -121,7 +121,7 @@ namespace GDCC::BC::DGE
 
       default:
          std::cerr << "ERROR: " << stmnt->pos
-            << ": cannot output Code for DGE: " << stmnt->op << '\n';
+            << ": cannot output Code for DGE: " << stmnt->code << '\n';
          throw EXIT_FAILURE;
       }
    }
@@ -156,7 +156,7 @@ namespace GDCC::BC::DGE
       {
          if(a.idx->a == IR::ArgBase::Lit)
          {
-            putCode("Push_Lit", getWord(a.idx->aLit) + (a.off + w) * 4);
+            putCode("Push_Lit", getWord(a.idx->aLit) + a.off + w * 4);
             putCode("Push_Reg", getStkPtrIdx());
             putCode("AddU");
             putCode("Drop_Ptr");
@@ -170,7 +170,7 @@ namespace GDCC::BC::DGE
 
             if(a.off + w)
             {
-               putCode("Push_Lit", (a.off + w) * 4);
+               putCode("Push_Lit", a.off + w * 4);
                putCode("AddU");
             }
 
@@ -183,7 +183,7 @@ namespace GDCC::BC::DGE
       //
       auto putReg = [&](IR::ArgPtr1 const &a)
       {
-         putCode("Drop_Reg", getWord(a.idx->aLit) + (a.off + w) * 4);
+         putCode("Drop_Reg", getWord(a.idx->aLit) + a.off + w * 4);
       };
 
       //
@@ -195,7 +195,7 @@ namespace GDCC::BC::DGE
          {
             putNTS("Push_Lit");
             putNTS('(');
-            putExpAdd(a.idx->aLit.value, (a.off + w) * 4);
+            putExpAdd(a.idx->aLit.value, a.off + w * 4);
             putNTS(')');
             putCode("Drop_Ptr");
          }
@@ -205,7 +205,7 @@ namespace GDCC::BC::DGE
 
             if(a.off + w)
             {
-               putCode("Push_Lit", (a.off + w) * 4);
+               putCode("Push_Lit", a.off + w * 4);
                putCode("AddU");
             }
 
@@ -263,7 +263,7 @@ namespace GDCC::BC::DGE
       {
          if(a.idx->a == IR::ArgBase::Lit)
          {
-            putCode("Push_Lit", getWord(a.idx->aLit) + (a.off + w) * 4);
+            putCode("Push_Lit", getWord(a.idx->aLit) + a.off + w * 4);
             putCode("Push_Reg", getStkPtrIdx());
             putCode("AddU");
             putCode("Push_Ptr");
@@ -277,7 +277,7 @@ namespace GDCC::BC::DGE
 
             if(a.off + w)
             {
-               putCode("Push_Lit", (a.off + w) * 4);
+               putCode("Push_Lit", a.off + w * 4);
                putCode("AddU");
             }
 
@@ -299,7 +299,7 @@ namespace GDCC::BC::DGE
       //
       auto putReg = [&](IR::ArgPtr1 const &a)
       {
-         putCode("Push_Reg", getWord(a.idx->aLit) + (a.off + w) * 4);
+         putCode("Push_Reg", getWord(a.idx->aLit) + a.off + w * 4);
       };
 
       //
@@ -311,7 +311,7 @@ namespace GDCC::BC::DGE
          {
             putNTS("Push_Lit");
             putNTS('(');
-            putExpAdd(a.idx->aLit.value, (a.off + w) * 4);
+            putExpAdd(a.idx->aLit.value, a.off + w * 4);
             putNTS(')');
             putCode("Push_Ptr");
          }
@@ -321,7 +321,7 @@ namespace GDCC::BC::DGE
 
             if(a.off + w)
             {
-               putCode("Push_Lit", (a.off + w) * 4);
+               putCode("Push_Lit", a.off + w * 4);
                putCode("AddU");
             }
 
@@ -355,7 +355,7 @@ namespace GDCC::BC::DGE
          {
             putNTS("Push_Lit");
             putNTS('(');
-            putExpAdd(a.idx->aLit.value, (a.off + w) * 4);
+            putExpAdd(a.idx->aLit.value, a.off + w * 4);
             putNTS(')');
          }
          else
@@ -364,7 +364,7 @@ namespace GDCC::BC::DGE
 
             if(a.off + w)
             {
-               putCode("Push_Lit", (a.off + w) * 4);
+               putCode("Push_Lit", a.off + w * 4);
                putCode("AddU");
             }
          }
@@ -372,7 +372,7 @@ namespace GDCC::BC::DGE
 
       switch(arg.a)
       {
-      case IR::ArgBase::Sta:    putSta(arg.aSta); break;
+      case IR::ArgBase::Sta: putSta(arg.aSta); break;
 
       default:
          throw Core::ExceptStr(stmnt->pos, "bad putStmntPushIdx");
@@ -410,13 +410,15 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmntStkBin(char const *code)
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return;
 
-      if(stmnt->op.size == 1 && code)
+      if(n == 1 && code)
          return putCode(code);
 
-      putStmntCall(getFuncName(stmnt->op), stmnt->op.size * 2);
+      putStmntCall(getFuncName(stmnt->code, n), n * 2);
    }
 
    //
@@ -424,13 +426,15 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmntStkCmp(int res0, char const *code)
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return putCode("Push_Lit", res0);
 
-      if(stmnt->op.size == 1 && code)
+      if(n == 1 && code)
          return putCode(code);
 
-      putStmntCall(getFuncName(stmnt->op), stmnt->op.size * 2);
+      putStmntCall(getFuncName(stmnt->code, n), n * 2);
    }
 
    //
@@ -438,13 +442,15 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmntStkShi(char const *code)
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return;
 
-      if(stmnt->op.size == 1 && code)
+      if(n == 1 && code)
          return putCode(code);
 
-      putStmntCall(getFuncName(stmnt->op), stmnt->op.size + 1);
+      putStmntCall(getFuncName(stmnt->code, n), n + 1);
    }
 
    //
@@ -452,13 +458,15 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmntStkUna(char const *code)
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return;
 
-      if(stmnt->op.size == 1 && code)
+      if(n == 1 && code)
          return putCode(code);
 
-      putStmntCall(getFuncName(stmnt->op), stmnt->op.size);
+      putStmntCall(getFuncName(stmnt->code, n), n);
    }
 }
 

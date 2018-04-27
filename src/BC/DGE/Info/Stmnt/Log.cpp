@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -26,30 +26,32 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_LAnd(char const *code)
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return putCode("Push_Lit", 0);
 
-      if(stmnt->op.size == 1)
+      if(n == 1)
          return putCode(code);
 
       if(stmnt->args[1].a == IR::ArgBase::Stk)
       {
-         for(Core::FastU i = stmnt->op.size; --i;)
+         for(Core::FastU i = n; --i;)
             putCode("BOrI");
          putStmntDropTmp(0);
 
-         for(Core::FastU i = stmnt->op.size; --i;)
+         for(Core::FastU i = n; --i;)
             putCode("BOrI");
          putStmntPushTmp(0);
       }
       else
       {
          putStmntPushArg(stmnt->args[1], 0);
-         for(Core::FastU i = stmnt->op.size; --i;)
+         for(Core::FastU i = n; --i;)
             putStmntPushArg(stmnt->args[1], i), putCode("BOrI");
 
          putStmntPushArg(stmnt->args[2], 0);
-         for(Core::FastU i = stmnt->op.size; --i;)
+         for(Core::FastU i = n; --i;)
             putStmntPushArg(stmnt->args[2], i), putCode("BOrI");
       }
 
@@ -61,10 +63,12 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_LNot()
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return;
 
-      for(auto n = stmnt->op.size; --n;)
+      for(auto i = n; --i;)
          putCode("BOrI");
 
       putCode("LNot");
@@ -75,19 +79,21 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_LAnd()
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return;
 
-      if(stmnt->op.size == 1)
-         return trStmntStk3(1, stmnt->op.size, false);
+      if(n == 1)
+         return trStmntStk3(false);
 
       if(!isPushArg(stmnt->args[1]) || !isPushArg(stmnt->args[2]))
       {
-         trStmntStk3(1, stmnt->op.size, false);
+         trStmntStk3(false);
          trStmntTmp(1);
       }
       else
-         moveArgStk_dst(stmnt->args[0], 1);
+         moveArgStk_dst(stmnt->args[0]);
    }
 
    //
@@ -95,7 +101,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_LNot()
    {
-      trStmntStk2(1, stmnt->op.size);
+      trStmntStk2();
    }
 }
 

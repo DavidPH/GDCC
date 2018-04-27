@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -26,16 +26,18 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_DivU_W(char const *code, IR::Code codeX, bool mod)
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return;
 
-      if(stmnt->op.size == 1)
+      if(n == 1)
          return putCode(code);
 
-      putStmntCall(getFuncName({codeX, stmnt->op.size}), stmnt->op.size * 2);
-      if(mod) putStmntDropTmp(0, stmnt->op.size);
-      for(Core::FastU i = stmnt->op.size; i--;) putCode("Drop_Nul");
-      if(mod) putStmntPushTmp(0, stmnt->op.size);
+      putStmntCall(getFuncName(codeX, n), n * 2);
+      if(mod) putStmntDropTmp(0, n);
+      for(Core::FastU i = n; i--;) putCode("Drop_Nul");
+      if(mod) putStmntPushTmp(0, n);
    }
 
    //
@@ -43,7 +45,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_DiXU_W()
    {
-      trStmntStk3(stmnt->op.size * 2, stmnt->op.size, true);
+      trStmntStk3(true);
    }
 
    //
@@ -51,10 +53,12 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_ModU_W()
    {
-      trStmntStk3(stmnt->op.size, stmnt->op.size, true);
+      auto n = getStmntSizeW();
 
-      if(stmnt->op.size > 1)
-         trStmntTmp(stmnt->op.size);
+      trStmntStk3(true);
+
+      if(n > 1)
+         trStmntTmp(n);
    }
 }
 

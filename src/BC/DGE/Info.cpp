@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -82,6 +82,18 @@ namespace GDCC::BC::DGE
          std::cerr << "ERROR: " << stmnt->pos << ": bad getStkPtrIdx\n";
          throw EXIT_FAILURE;
       }
+   }
+
+   //
+   // Info::getStmntSizeW
+   //
+   Core::FastU Info::getStmntSizeW()
+   {
+      auto n = getStmntSize();
+
+      if(n % 4) throw Core::ExceptStr(stmnt->pos, "expected word statement");
+
+      return n / 4;
    }
 
    //

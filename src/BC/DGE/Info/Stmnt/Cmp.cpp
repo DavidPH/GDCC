@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -26,12 +26,12 @@ namespace GDCC::BC::DGE
    //
    void Info::preStmnt_CmpU_EQ_W(AddFunc add)
    {
-      if(stmnt->op.size <= 1)
+      auto n = getStmntSizeW();
+
+      if(n <= 1)
          return;
 
-      // TODO: Inline multi-word push-args.
-
-      (this->*add)(stmnt->op.size);
+      (this->*add)(n);
    }
 
    //
@@ -39,25 +39,15 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_CmpU_EQ_W(IR::Code code)
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return putCode("Push_Lit", code == IR::Code::CmpU_EQ_W);
 
-      if(stmnt->op.size == 1)
+      if(n == 1)
          return putCode(code == IR::Code::CmpU_EQ_W ? "CmpU_EQ" : "CmpU_NE");
 
-      // TODO: Inline multi-word push-args.
-
-      putStmntCall(getFuncName({code, stmnt->op.size}), stmnt->op.size * 2);
-   }
-
-   //
-   // Info::trStmnt_CmpU_EQ_W
-   //
-   void Info::trStmnt_CmpU_EQ_W()
-   {
-      // TODO: Inline multi-word push-args.
-
-      trStmntStk3(1, stmnt->op.size, false);
+      putStmntCall(getFuncName(code, n), n * 2);
    }
 }
 

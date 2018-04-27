@@ -52,7 +52,6 @@ namespace GDCC
       class Function;
       class Glyph;
       class Object;
-      class OpCode;
       class Program;
       class Value;
       class Value_Array;
@@ -294,6 +293,8 @@ namespace GDCC
             Core::FastU param, Core::FastU localReg, char const *file);
 
          Core::String getFuncName(IR::Code code, Core::FastU n);
+
+         virtual Core::FastU getStmntSize();
 
          Core::FastU getWord(IR::Arg_Lit const &arg, Core::FastU w = 0);
          Core::FastU getWord(IR::Exp const *exp, Core::FastU w = 0);

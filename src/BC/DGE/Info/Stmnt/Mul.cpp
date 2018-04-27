@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -26,13 +26,15 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_MulU_W()
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return;
 
-      if(stmnt->op.size == 1)
+      if(n == 1)
          return putCode("MulU");
 
-      putStmntCall(getFuncName({IR::Code::MulU_W, stmnt->op.size}), stmnt->op.size * 2);
+      putStmntCall(getFuncName(IR::Code::MulU_W, n), n * 2);
    }
 
    //
@@ -40,7 +42,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_MuXU_W()
    {
-      trStmntStk3(stmnt->op.size * 2, stmnt->op.size, false);
+      trStmntStk3(false);
    }
 }
 

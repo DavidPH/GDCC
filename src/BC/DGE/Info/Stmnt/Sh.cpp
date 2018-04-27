@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -26,12 +26,12 @@ namespace GDCC::BC::DGE
    //
    void Info::preStmnt_ShLU_W()
    {
-      if(stmnt->op.size <= 1)
+      auto n = getStmntSizeW();
+
+      if(n <= 1)
          return;
 
-      // TODO: Inline literal shift.
-
-      addFunc_ShLU_W(stmnt->op.size);
+      addFunc_ShLU_W(n);
    }
 
    //
@@ -39,12 +39,12 @@ namespace GDCC::BC::DGE
    //
    void Info::preStmnt_ShRI_W()
    {
-      if(stmnt->op.size <= 1)
+      auto n = getStmntSizeW();
+
+      if(n <= 1)
          return;
 
-      // TODO: Inline literal shift.
-
-      addFunc_ShRI_W(stmnt->op.size);
+      addFunc_ShRI_W(n);
    }
 
    //
@@ -52,12 +52,12 @@ namespace GDCC::BC::DGE
    //
    void Info::preStmnt_ShRU_W()
    {
-      if(stmnt->op.size <= 1)
+      auto n = getStmntSizeW();
+
+      if(n <= 1)
          return;
 
-      // TODO: Inline literal shift.
-
-      addFunc_ShRU_W(stmnt->op.size);
+      addFunc_ShRU_W(n);
    }
 
    //
@@ -65,15 +65,15 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_ShLU_W(char const *code)
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return putCode("Drop_Nul");
 
-      if(stmnt->op.size == 1)
+      if(n == 1)
          return putCode(code);
 
-      // TODO: Inline literal shift.
-
-      putStmntCall(getFuncName(stmnt->op), stmnt->op.size + 1);
+      putStmntCall(getFuncName(stmnt->code, n), n + 1);
    }
 
    //
@@ -81,12 +81,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_ShLU_W()
    {
-      if(stmnt->op.size <= 1)
-         trStmntShift(stmnt->op.size, true);
-
-      // TODO: Inline literal shift.
-
-      trStmntShift(stmnt->op.size, true);
+      trStmntShift(true);
    }
 }
 

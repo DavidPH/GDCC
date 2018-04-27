@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2017 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -192,7 +192,8 @@ GDCC_IR_CodeList(NegI_W)
 // Pltn dst src (Pointer, Local to Near)
 GDCC_IR_CodeList(Pltn)
 
-// Retn src...
+// Retn
+// Retn src
 GDCC_IR_CodeList(Retn)
 
 // ShL* dst lop rop

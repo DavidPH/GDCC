@@ -659,6 +659,38 @@ namespace GDCC
       }
 
       //
+      // Info::getStmntSize
+      //
+      Core::FastU Info::getStmntSize()
+      {
+         if(stmnt->args.empty())
+            return 0;
+
+         Core::FastU size;
+
+         switch(stmnt->code)
+         {
+         case IR::Code::Call:
+         case IR::Code::Cnat:
+            size = 0;
+            if(stmnt->args.size() > 2)
+               for(auto i = stmnt->args.begin() + 2, e = stmnt->args.end(); i != e; ++i)
+                  size += i->getSize();
+            return size;
+
+         case IR::Code::Jcnd_Nil:
+            return stmnt->args[0].getSize();
+
+         default:
+            size = stmnt->args[0].getSize();
+            for(auto const &a : stmnt->args)
+               if(a.getSize() != size)
+                  throw Core::ExceptStr(stmnt->pos, "irregular statement size");
+            return size;
+         }
+      }
+
+      //
       // Info::CheckArgB
       //
       void Info::CheckArgB(IR::Arg const &arg, IR::AddrBase b, Core::Origin pos)

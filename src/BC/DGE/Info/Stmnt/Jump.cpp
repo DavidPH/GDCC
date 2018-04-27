@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,10 +28,12 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_Jcnd_Nil(char const *code)
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return putCode("Jump_Lit", stmnt->args[1].aLit);
 
-      for(auto n = stmnt->op.size; --n;)
+      for(auto i = n; --i;)
          putCode("BOrI");
 
       putCode(code, stmnt->args[1].aLit);
@@ -68,7 +70,9 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_Jcnd_Tru()
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return;
 
       putStmnt_Jcnd_Nil("Jcnd_Tru");
@@ -79,6 +83,8 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_Jfar()
    {
+      auto n = getStmntSizeW();
+
       if(stmnt->args.size() > 1)
       {
          // Initiate far jump.
@@ -89,7 +95,7 @@ namespace GDCC::BC::DGE
       else
       {
          // Check for ongoing far jump.
-         putCode("Jfar_Pro", stmnt->op.size, stmnt->args[0].aLit);
+         putCode("Jfar_Pro", n, stmnt->args[0].aLit);
       }
    }
 
@@ -122,7 +128,7 @@ namespace GDCC::BC::DGE
    void Info::trStmnt_Jcnd_Nil()
    {
       CheckArgC(stmnt, 2);
-      moveArgStk_src(stmnt->args[0], stmnt->op.size);
+      moveArgStk_src(stmnt->args[0]);
       CheckArgB(stmnt, 1, IR::ArgBase::Lit);
    }
 
@@ -131,7 +137,9 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_Jcnd_Tab()
    {
-      if(stmnt->op.size != 1)
+      auto n = getStmntSizeW();
+
+      if(n != 1)
          throw Core::ExceptStr(stmnt->pos, "unsupported op size for Jcnd_Tab");
 
       if(stmnt->args.size() % 2 != 1)
@@ -186,7 +194,7 @@ namespace GDCC::BC::DGE
    {
       CheckArgC(stmnt, 1);
       if(stmnt->args[0].a != IR::ArgBase::Lit)
-         moveArgStk_src(stmnt->args[0], stmnt->op.size);
+         moveArgStk_src(stmnt->args[0]);
    }
 }
 

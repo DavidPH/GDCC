@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,10 +28,12 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_Copy_W()
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return;
 
-      if(stmnt->op.size == 1)
+      if(n == 1)
          return putCode("Copy");
 
       throw Core::ExceptStr(stmnt->pos, "unsupported size for Copy_W");
@@ -42,10 +44,12 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_Move_B()
    {
-      if(stmnt->op.size != 1 && stmnt->op.size != 2)
+      auto n = getStmntSize();
+
+      if(n != 1 && n != 2)
          throw Core::ExceptStr(stmnt->pos, "unsupported size for Move_B");
 
-      bool b = stmnt->op.size == 1;
+      bool b = n == 1;
 
       // push_?
       if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
@@ -145,24 +149,26 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_Move_W()
    {
+      auto n = getStmntSizeW();
+
       // Multi-word?
-      if(stmnt->op.size != 1)
+      if(n != 1)
       {
          if(stmnt->args[0].a != IR::ArgBase::Stk)
          {
             if(stmnt->args[1].a != IR::ArgBase::Stk)
             {
-               for(Core::FastU w = 0; w != stmnt->op.size; ++w)
+               for(Core::FastU w = 0; w != n; ++w)
                {
                   putStmntPushArg(stmnt->args[1], w);
                   putStmntDropArg(stmnt->args[0], w);
                }
             }
             else
-               putStmntDropArg(stmnt->args[0], 0, stmnt->op.size);
+               putStmntDropArg(stmnt->args[0], 0, n);
          }
          else if(stmnt->args[1].a != IR::ArgBase::Stk)
-            putStmntPushArg(stmnt->args[1], 0, stmnt->op.size);
+            putStmntPushArg(stmnt->args[1], 0, n);
 
          return;
       }
@@ -253,15 +259,17 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_Swap_W()
    {
-      if(stmnt->op.size == 0)
+      auto n = getStmntSizeW();
+
+      if(n == 0)
          return;
 
-      if(stmnt->op.size == 1)
+      if(n == 1)
          return putCode("Swap");
 
-      putStmntDropTmp(0, stmnt->op.size * 2);
-      putStmntPushTmp(stmnt->op.size, stmnt->op.size * 2);
-      putStmntPushTmp(0, stmnt->op.size);
+      putStmntDropTmp(0, n * 2);
+      putStmntPushTmp(n, n * 2);
+      putStmntPushTmp(0, n);
    }
 
    //
@@ -283,11 +291,13 @@ namespace GDCC::BC::DGE
       CheckArg(stmnt->args[0], stmnt->pos);
       CheckArg(stmnt->args[1], stmnt->pos);
 
-      if(stmnt->op.size != 1 && stmnt->op.size != 2)
+      auto n = getStmntSizeW();
+
+      if(n != 1 && n != 2)
          throw Core::ExceptStr(stmnt->pos, "unsupported size for Move_B");
 
-      #define moveIdx(name, n, w) \
-         moveArgStk_src(*stmnt->args[n].a##name.idx, w)
+      #define moveIdx(name, i) \
+         moveArgStk_src(*stmnt->args[i].a##name.idx)
 
       // Push to stack?
       if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
@@ -295,9 +305,9 @@ namespace GDCC::BC::DGE
       case IR::ArgBase::Lit:    break;
       case IR::ArgBase::LocReg: break;
 
-      case IR::ArgBase::Aut:    moveIdx(Aut,    1, 1); break;
-      case IR::ArgBase::Sta:    moveIdx(Sta,    1, 1); break;
-      case IR::ArgBase::StrArs: moveIdx(StrArs, 1, 2); break;
+      case IR::ArgBase::Aut:    moveIdx(Aut,    1); break;
+      case IR::ArgBase::Sta:    moveIdx(Sta,    1); break;
+      case IR::ArgBase::StrArs: moveIdx(StrArs, 1); break;
 
       default:
          throw Core::ExceptStr(stmnt->pos, "bad tr Move_B push");
@@ -309,9 +319,9 @@ namespace GDCC::BC::DGE
       case IR::ArgBase::LocReg: break;
       case IR::ArgBase::Nul:    break;
 
-      case IR::ArgBase::Aut:    moveIdx(Aut,    0, 1); break;
-      case IR::ArgBase::Sta:    moveIdx(Sta,    0, 1); break;
-      case IR::ArgBase::StrArs: moveIdx(StrArs, 0, 2); break;
+      case IR::ArgBase::Aut:    moveIdx(Aut,    0); break;
+      case IR::ArgBase::Sta:    moveIdx(Sta,    0); break;
+      case IR::ArgBase::StrArs: moveIdx(StrArs, 0); break;
 
       default:
          throw Core::ExceptStr(stmnt->pos, "bad tr Move_B drop");
@@ -319,7 +329,7 @@ namespace GDCC::BC::DGE
 
       // Neither stack, split move and rescan.
       else
-         moveArgStkB_src(stmnt->args[1], stmnt->op.size);
+         moveArgStkB_src(stmnt->args[1]);
 
       #undef moveIdx
    }
@@ -333,12 +343,14 @@ namespace GDCC::BC::DGE
       CheckArg(stmnt->args[0], stmnt->pos);
       CheckArg(stmnt->args[1], stmnt->pos);
 
+      auto n = getStmntSizeW();
+
       // Multi-word?
-      if(stmnt->op.size != 1)
+      if(n != 1)
          return;
 
-      #define moveIdx(name, n, w) \
-         moveArgStk_src(*stmnt->args[n].a##name.idx, w)
+      #define moveIdx(name, i) \
+         moveArgStk_src(*stmnt->args[i].a##name.idx)
 
       // Push to stack?
       if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
@@ -346,9 +358,9 @@ namespace GDCC::BC::DGE
       case IR::ArgBase::Lit:    break;
       case IR::ArgBase::LocReg: break;
 
-      case IR::ArgBase::Aut:    moveIdx(Aut,    1, 1); break;
-      case IR::ArgBase::Sta:    moveIdx(Sta,    1, 1); break;
-      case IR::ArgBase::StrArs: moveIdx(StrArs, 1, 2); break;
+      case IR::ArgBase::Aut:    moveIdx(Aut,    1); break;
+      case IR::ArgBase::Sta:    moveIdx(Sta,    1); break;
+      case IR::ArgBase::StrArs: moveIdx(StrArs, 1); break;
 
       default:
          throw Core::ExceptStr(stmnt->pos, "bad tr Move_W push");
@@ -360,9 +372,9 @@ namespace GDCC::BC::DGE
       case IR::ArgBase::LocReg: break;
       case IR::ArgBase::Nul:    break;
 
-      case IR::ArgBase::Aut:    moveIdx(Aut,    0, 1); break;
-      case IR::ArgBase::Sta:    moveIdx(Sta,    0, 1); break;
-      case IR::ArgBase::StrArs: moveIdx(StrArs, 0, 2); break;
+      case IR::ArgBase::Aut:    moveIdx(Aut,    0); break;
+      case IR::ArgBase::Sta:    moveIdx(Sta,    0); break;
+      case IR::ArgBase::StrArs: moveIdx(StrArs, 0); break;
 
       default:
          throw Core::ExceptStr(stmnt->pos, "bad tr Move_W drop");
@@ -370,7 +382,7 @@ namespace GDCC::BC::DGE
 
       // Neither stack, split move and rescan.
       else
-         moveArgStk_src(stmnt->args[1], stmnt->op.size);
+         moveArgStk_src(stmnt->args[1]);
 
       #undef moveIdx
    }
@@ -384,10 +396,12 @@ namespace GDCC::BC::DGE
       CheckArgB(stmnt, 0, IR::ArgBase::Stk);
       CheckArgB(stmnt, 1, IR::ArgBase::Stk);
 
-      if(stmnt->op.size <= 1)
+      auto n = getStmntSizeW();
+
+      if(n <= 1)
          return;
 
-      trStmntTmp(stmnt->op.size * 2);
+      trStmntTmp(n * 2);
    }
 }
 

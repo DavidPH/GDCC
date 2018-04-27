@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -30,7 +30,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt()
    {
-      switch(stmnt->op.code)
+      switch(stmnt->code)
       {
       case IR::Code::Nop: break;
 
@@ -116,7 +116,7 @@ namespace GDCC::BC::DGE
 
       default:
          std::cerr << "ERROR: " << stmnt->pos
-            << ": cannot translate Code for DGE: " << stmnt->op << '\n';
+            << ": cannot translate Code for DGE: " << stmnt->code << '\n';
          throw EXIT_FAILURE;
       }
    }
@@ -127,8 +127,8 @@ namespace GDCC::BC::DGE
    void Info::trStmnt_Pltn()
    {
       CheckArgC(stmnt, 2);
-      moveArgStk_dst(stmnt->args[0], 1);
-      moveArgStk_src(stmnt->args[1], 1);
+      moveArgStk_dst(stmnt->args[0]);
+      moveArgStk_src(stmnt->args[1]);
    }
 
    //
@@ -136,7 +136,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmntStkBin(bool ordered)
    {
-      trStmntStk3(stmnt->op.size, stmnt->op.size, ordered);
+      trStmntStk3(ordered);
    }
 
    //
@@ -144,7 +144,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmntStkCmp(bool ordered)
    {
-      trStmntStk3(1, stmnt->op.size, ordered);
+      trStmntStk3(ordered);
    }
 
    //
@@ -152,7 +152,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmntStkShi()
    {
-      trStmntShift(stmnt->op.size, true);
+      trStmntShift(true);
    }
 
    //
@@ -160,7 +160,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmntStkUna()
    {
-      trStmntStk2(stmnt->op.size, stmnt->op.size);
+      trStmntStk2();
    }
 
    //

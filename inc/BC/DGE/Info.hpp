@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -44,6 +44,8 @@ namespace GDCC::BC::DGE
       virtual FixedInfo getFixedInfo(Core::FastU n, bool s);
 
       Core::FastU getStkPtrIdx();
+
+      Core::FastU getStmntSizeW();
 
       bool isPushArg(IR::Arg const &arg);
 
@@ -264,18 +266,18 @@ namespace GDCC::BC::DGE
       void trStmnt_CmpF_LE_W() {trStmntStkCmp(true);}
       void trStmnt_CmpF_LT_W() {trStmntStkCmp(true);}
       void trStmnt_CmpF_NE_W() {trStmntStkCmp(false);}
-      void trStmnt_CmpI_EQ_W() {trStmnt_CmpU_EQ_W();}
+      void trStmnt_CmpI_EQ_W() {trStmntStkCmp(false);}
       void trStmnt_CmpI_GE_W() {trStmntStkCmp(true);}
       void trStmnt_CmpI_GT_W() {trStmntStkCmp(true);}
       void trStmnt_CmpI_LE_W() {trStmntStkCmp(true);}
       void trStmnt_CmpI_LT_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpI_NE_W() {trStmnt_CmpU_EQ_W();}
-      void trStmnt_CmpU_EQ_W();
+      void trStmnt_CmpI_NE_W() {trStmntStkCmp(false);}
+      void trStmnt_CmpU_EQ_W() {trStmntStkCmp(false);}
       void trStmnt_CmpU_GE_W() {trStmntStkCmp(true);}
       void trStmnt_CmpU_GT_W() {trStmntStkCmp(true);}
       void trStmnt_CmpU_LE_W() {trStmntStkCmp(true);}
       void trStmnt_CmpU_LT_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpU_NE_W() {trStmnt_CmpU_EQ_W();}
+      void trStmnt_CmpU_NE_W() {trStmntStkCmp(false);}
       void trStmnt_Cnat();
       void trStmnt_Copy_W();
       void trStmnt_DiXI_W() {trStmnt_DiXU_W();}
