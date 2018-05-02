@@ -85,7 +85,7 @@ namespace GDCC::BC::DGE
    {
       auto n = getStmntSizeW();
 
-      if(stmnt->args.size() > 1)
+      if(stmnt->args.size() > 2)
       {
          // Initiate far jump.
          putStmntPushArg(stmnt->args[3], 0);
