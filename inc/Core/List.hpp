@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -30,6 +30,13 @@ namespace GDCC
       class ListItr
       {
       public:
+         using difference_type   = std::ptrdiff_t;
+         using value_type        = typename std::remove_cv<T>::type;
+         using pointer           = T *;
+         using reference         = T &;
+         using iterator_category = std::bidirectional_iterator_tag;
+
+
          ListItr() = default;
          explicit ListItr(T *p_) : p{p_} {}
 
@@ -104,24 +111,6 @@ namespace GDCC
          }
       };
    }
-}
-
-namespace std
-{
-   //
-   // iterator_traits<::GDCC::Core::ListItr>
-   //
-   template<typename T, typename remove_cv<T>::type *T::*P,
-      typename remove_cv<T>::type *T::*N>
-   class iterator_traits<::GDCC::Core::ListItr<T, P, N>>
-   {
-   public:
-      using difference_type   = ptrdiff_t;
-      using value_type        = typename remove_cv<T>::type;
-      using pointer           = T *;
-      using reference         = T &;
-      using iterator_category = bidirectional_iterator_tag;
-   };
 }
 
 #endif//GDCC__Core__List_H__
