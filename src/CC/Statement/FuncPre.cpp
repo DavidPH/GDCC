@@ -90,7 +90,7 @@ namespace GDCC::CC
          if(!obj->value) continue;
 
          Core::FastU objValue = obj->value->getValue().getFastU();
-         Core::FastU objBytes = obj->type->getSizeWords();
+         Core::FastU objBytes = obj->type->getSizeBytes();
 
          switch(obj->type->getQualAddr().base)
          {
