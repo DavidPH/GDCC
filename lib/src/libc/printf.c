@@ -21,9 +21,14 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 #if __GDCC_Family__ZDACS__
 #include <ACS_ZDoom.h>
+#endif
+
+#if __GDCC_Target__Doominati__
+#include <Doominati.h>
 #endif
 
 
@@ -217,6 +222,24 @@
       fmtStr = ACS_EndStrParam(); \
       fmtRet._len = ACS_StrLen(fmtStr); \
       goto fmt_str; \
+   \
+   default: return ~ret; \
+   }
+#elif __GDCC_Target__Doominati__
+#define FormatStr() \
+   switch(fmtLen) \
+   { \
+   case FL_: \
+      fmtStr = va_arg(arg, __str); \
+      fmtRet._len = strlen_str(fmtStr); \
+      goto fmt_str; \
+   \
+   case FL_L: \
+      fmtRet._len   = DGE_Text_Read(va_arg(arg, __str), __GDCC__FormatBuf, \
+         sizeof(__GDCC__FormatBuf)); \
+      fmtRet._begin = __GDCC__FormatBuf; \
+      fmtRet._end   = fmtRet._begin + fmtRet._len; \
+      break; \
    \
    default: return ~ret; \
    }
