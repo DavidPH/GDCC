@@ -34,8 +34,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt()
    {
-      auto n = getStmntSizeW();
-
       switch(stmnt->code)
       {
       case IR::Code::Nop: putCode(Code::Nop); break;
@@ -48,7 +46,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::MulF_W:
       case IR::Code::MulK_W:
       case IR::Code::SubF_W:
-         putStmntCall(n);
+         putStmntCall(getStmntSizeW());
          break;
 
       case IR::Code::AddI_W:
@@ -104,7 +102,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Cspe: putStmnt_Cspe(); break;
 
       case IR::Code::DiXI_W: putStmnt_DiXI_W(); break;
-      case IR::Code::DiXU_W: putStmntCall(n * 2); break;
+      case IR::Code::DiXU_W: putStmntCall(getStmntSizeW() * 2); break;
 
       case IR::Code::DivI_W: putStmnt_DivI_W(); break;
       case IR::Code::DivU_W: putStmnt_DivU_W(); break;
@@ -123,7 +121,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Jump: putStmnt_Jump(); break;
 
       case IR::Code::LAnd:
-         if(n == 1)
+         if(auto n = getStmntSizeW(); n == 1)
             putCode(Code::LAnd);
          else
             putStmntCall(n);
@@ -132,7 +130,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::LNot: putStmnt_LNot(); break;
 
       case IR::Code::LOrI:
-         if(n == 1)
+         if(auto n = getStmntSizeW(); n == 1)
             putCode(Code::LOrI);
          else
             putStmntCall(n);
@@ -143,18 +141,18 @@ namespace GDCC::BC::ZDACS
 
       case IR::Code::Move_W: putStmnt_Move_W(); break;
 
-      case IR::Code::MuXU_W: putStmntCall(n * 2); break;
+      case IR::Code::MuXU_W: putStmntCall(getStmntSizeW() * 2); break;
 
       case IR::Code::MulI_W:
       case IR::Code::MulU_W:
-         if(n == 1)
+         if(auto n = getStmntSizeW(); n == 1)
             putCode(Code::MulU);
          else
             putStmntCall(n);
          break;
 
       case IR::Code::MulX_W:
-         if(n == 1)
+         if(auto n = getStmntSizeW(); n == 1)
             putCode(Code::MulX);
          else
             putStmntCall(n);

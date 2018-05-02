@@ -45,8 +45,6 @@ namespace GDCC::BC::ZDACS
          }
       }
 
-      auto n = getStmntSizeW();
-
       switch(stmnt->code)
       {
       case IR::Code::Nop: numChunkCODE += 4; break;
@@ -59,7 +57,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::MulF_W:
       case IR::Code::MulK_W:
       case IR::Code::SubF_W:
-         genStmntCall(n);
+         genStmntCall(getStmntSizeW());
          break;
 
       case IR::Code::AddI_W:
@@ -123,7 +121,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Cspe: genStmnt_Cspe(); break;
 
       case IR::Code::DiXI_W: genStmnt_DiXI_W(); break;
-      case IR::Code::DiXU_W: genStmntCall(n * 2); break;
+      case IR::Code::DiXU_W: genStmntCall(getStmntSizeW() * 2); break;
 
       case IR::Code::DivI_W: genStmnt_DivI_W(); break;
       case IR::Code::DivU_W: genStmnt_DivU_W(); break;
@@ -143,25 +141,25 @@ namespace GDCC::BC::ZDACS
 
       case IR::Code::LAnd:
       case IR::Code::LOrI:
-         if(n == 1)
+         if(auto n = getStmntSizeW(); n == 1)
             numChunkCODE += 4;
          else
-            genStmntCall(n);
+            genStmntCall(getStmntSizeW());
          break;
 
-      case IR::Code::LNot: numChunkCODE += n * 4; break;
+      case IR::Code::LNot: numChunkCODE += getStmntSizeW() * 4; break;
 
       case IR::Code::ModI_W: genStmnt_ModI_W(); break;
       case IR::Code::ModU_W: genStmnt_ModU_W(); break;
 
       case IR::Code::Move_W: genStmnt_Move_W(); break;
 
-      case IR::Code::MuXU_W: genStmntCall(n * 2); break;
+      case IR::Code::MuXU_W: genStmntCall(getStmntSizeW() * 2); break;
 
       case IR::Code::MulI_W:
       case IR::Code::MulU_W:
       case IR::Code::MulX_W:
-         if(n == 1)
+         if(auto n = getStmntSizeW(); n == 1)
             numChunkCODE += 4;
          else
             genStmntCall(n);
