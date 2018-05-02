@@ -671,14 +671,28 @@ namespace GDCC
          switch(stmnt->code)
          {
          case IR::Code::Call:
+         case IR::Code::Casm:
          case IR::Code::Cnat:
+         case IR::Code::Cscr_IA:
+         case IR::Code::Cscr_SA:
+         case IR::Code::Cspe:
             size = 0;
             if(stmnt->args.size() > 2)
                for(auto i = stmnt->args.begin() + 2, e = stmnt->args.end(); i != e; ++i)
                   size += i->getSize();
             return size;
 
+         case IR::Code::Cscr_IS:
+         case IR::Code::Cscr_SS:
+            size = 0;
+            if(stmnt->args.size() > 3)
+               for(auto i = stmnt->args.begin() + 3, e = stmnt->args.end(); i != e; ++i)
+                  size += i->getSize();
+            return size;
+
          case IR::Code::Jcnd_Nil:
+         case IR::Code::Jcnd_Tab:
+         case IR::Code::Jcnd_Tru:
             return stmnt->args[0].getSize();
 
          default:

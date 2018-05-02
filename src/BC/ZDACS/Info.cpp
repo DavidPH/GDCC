@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -517,28 +517,20 @@ namespace GDCC
          //
          // Info::getCallName
          //
-         Core::String Info::getCallName()
-         {
-            return getCallName(stmnt->op);
-         }
-
-         //
-         // Info::getCallName
-         //
-         Core::String Info::getCallName(IR::OpCode op)
+         Core::String Info::getCallName(IR::Code code, Core::FastU n)
          {
             // Some codes get mapped to other function names.
-            switch(op.code)
+            switch(code)
             {
-            case IR::Code::AddI_W:    op.code = IR::Code::AddU_W;    break;
-            case IR::Code::CmpI_EQ_W: op.code = IR::Code::CmpU_EQ_W; break;
-            case IR::Code::CmpI_NE_W: op.code = IR::Code::CmpU_NE_W; break;
-            case IR::Code::MulI_W:    op.code = IR::Code::MulU_W;    break;
-            case IR::Code::SubI_W:    op.code = IR::Code::SubU_W;    break;
+            case IR::Code::AddI_W:    code = IR::Code::AddU_W;    break;
+            case IR::Code::CmpI_EQ_W: code = IR::Code::CmpU_EQ_W; break;
+            case IR::Code::CmpI_NE_W: code = IR::Code::CmpU_NE_W; break;
+            case IR::Code::MulI_W:    code = IR::Code::MulU_W;    break;
+            case IR::Code::SubI_W:    code = IR::Code::SubU_W;    break;
             default: break;
             }
 
-            return getFuncName(op);
+            return getFuncName(code, n);
          }
 
          //

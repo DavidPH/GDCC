@@ -141,8 +141,8 @@ GDCC_IR_CodeList(Jcnd_Tru)
 // Jdyn src
 GDCC_IR_CodeList(Jdyn)
 
-// Jfar addr
-// Jfar addr jmpbuf res
+// Jfar addr drop
+// Jfar addr drop jmpbuf res
 GDCC_IR_CodeList(Jfar)
 
 // Jset jmpbuf addr

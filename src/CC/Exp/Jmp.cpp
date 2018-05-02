@@ -57,7 +57,7 @@ namespace GDCC
 
          ctx.block.setArgSize().addStmnt(IR::Code::Jfar,
             IR::Glyph(ctx.prog, scope.fn.getLabelLJR()),
-            std::move(envArg), std::move(valArg));
+            IR::Arg_Stk(0), std::move(envArg), std::move(valArg));
       }
 
       //
