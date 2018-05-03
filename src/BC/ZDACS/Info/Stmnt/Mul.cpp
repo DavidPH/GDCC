@@ -51,10 +51,10 @@ namespace GDCC::BC::ZDACS
       GDCC_BC_AddFuncPre(Code::MuXU_W, 1, 2, 2, 5, __FILE__);
       GDCC_BC_AddFuncObjBin(1, 1);
 
-      GDCC_BC_AddFuncObjReg(lhi, 1, 0);
-      GDCC_BC_AddFuncObjReg(llo, 1, 1);
-      GDCC_BC_AddFuncObjReg(rhi, 1, 2);
-      GDCC_BC_AddFuncObjReg(rlo, 1, 3);
+      GDCC_BC_AddFuncObjReg(llo, 1, 0);
+      GDCC_BC_AddFuncObjReg(lhi, 1, 1);
+      GDCC_BC_AddFuncObjReg(rlo, 1, 2);
+      GDCC_BC_AddFuncObjReg(rhi, 1, 3);
       GDCC_BC_AddFuncObjReg(tmp, 1, 4);
 
       // Split arguments to 16-bit pieces. Take care due to aliasing.

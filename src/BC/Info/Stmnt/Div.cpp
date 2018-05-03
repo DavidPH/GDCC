@@ -31,7 +31,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_DiXI_W(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::DiXI_W, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre(Code::DiXI_W, n, n * 2, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       IR::Glyph labelL0R1{prog, name + "$l0r1"};
@@ -45,14 +45,14 @@ namespace GDCC::BC
       GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelL0R1);
 
       // +dividend, +divisor -> +quotient, +remainder
-      GDCC_BC_AddStmnt(Code::DiXU_W, n,     stk, lop, rop);
+      GDCC_BC_AddStmnt(Code::DiXU_W, n * 2, stk, lop, rop);
       GDCC_BC_AddStmnt(Code::Retn,   n * 2, stk);
 
       GDCC_BC_AddLabel(labelL0R1);
       GDCC_BC_AddStmnt(Code::NegI_W, n, rop, rop);
 
       // +dividend, -divisor -> -quotient, -remainder
-      GDCC_BC_AddStmnt(Code::DiXU_W, n,     stk, lop, rop);
+      GDCC_BC_AddStmnt(Code::DiXU_W, n * 2, stk, lop, rop);
       GDCC_BC_AddStmnt(Code::NegI_W, n,     rop, stk);
       GDCC_BC_AddStmnt(Code::NegI_W, n,     stk, stk);
       GDCC_BC_AddStmnt(Code::Move_W, n,     stk, rop);
@@ -65,7 +65,7 @@ namespace GDCC::BC
       GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelL1R1);
 
       // -dividend, +divisor -> -quotient, +remainder
-      GDCC_BC_AddStmnt(Code::DiXU_W, n,     stk, lop, rop);
+      GDCC_BC_AddStmnt(Code::DiXU_W, n * 2, stk, lop, rop);
       GDCC_BC_AddStmnt(Code::Move_W, n,     rop, stk);
       GDCC_BC_AddStmnt(Code::NegI_W, n,     stk, stk);
       GDCC_BC_AddStmnt(Code::Move_W, n,     stk, rop);
@@ -75,7 +75,7 @@ namespace GDCC::BC
       GDCC_BC_AddStmnt(Code::NegI_W, n, rop, rop);
 
       // -dividend, -divisor -> +quotient, -remainder
-      GDCC_BC_AddStmnt(Code::DiXU_W, n,     stk, lop, rop);
+      GDCC_BC_AddStmnt(Code::DiXU_W, n * 2, stk, lop, rop);
       GDCC_BC_AddStmnt(Code::NegI_W, n,     stk, stk);
       GDCC_BC_AddStmnt(Code::Retn,   n * 2, stk);
 
@@ -87,7 +87,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_DiXU_W(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::DiXU_W, n, n, n * 2, n * 5, __FILE__);
+      GDCC_BC_AddFuncPre(Code::DiXU_W, n, n * 2, n * 2, n * 5, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       IR::Glyph labelFull    {prog, name + "$full"};
@@ -109,9 +109,9 @@ namespace GDCC::BC
       GDCC_BC_AddStmnt(Code::BOrI_W,   1, stk, lop.hi, rop.hi);
       GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelFull);
 
-      GDCC_BC_AddStmnt(Code::DiXU_W, n - 1, stk, lpart, rpart);
-      GDCC_BC_AddStmnt(Code::Move_W, n - 1, rop, stk);
-      GDCC_BC_AddStmnt(Code::Move_W, n - 1, lop, stk);
+      GDCC_BC_AddStmnt(Code::DiXU_W, n*2-2, stk, lpart, rpart);
+      GDCC_BC_AddStmnt(Code::Move_W, n - 1, rpart, stk);
+      GDCC_BC_AddStmnt(Code::Move_W, n - 1, lpart, stk);
 
       GDCC_BC_AddStmnt(Code::Retn, n * 2, respt);
 
@@ -232,7 +232,7 @@ namespace GDCC::BC
       GDCC_BC_AddStmnt(Code::CmpI_GE_W, 1, stk, lop, rop);
       GDCC_BC_AddStmnt(Code::Jcnd_Nil,  1, stk, labelLoopNil);
       GDCC_BC_AddStmnt(Code::SubU_W,    n, lop, lop, rop);
-      GDCC_BC_AddStmnt(Code::AddU_W,    1, man, man, 1);
+      GDCC_BC_AddStmnt(Code::AddU_W,    n, man, man, 1);
 
       GDCC_BC_AddLabel(labelLoopNil);
       GDCC_BC_AddStmnt(Code::ShLU_W,    1, lop, lop, 1);

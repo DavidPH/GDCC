@@ -80,7 +80,7 @@ namespace GDCC::SR
 
          // Use Stk as index.
          GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg,
-            IR::Arg_Stk(arg.type->getSizeBytes()), get, set);
+            arg.data->getIRArgStk(), get, set);
 
          return;
       }

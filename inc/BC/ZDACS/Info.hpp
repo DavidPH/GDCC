@@ -131,6 +131,7 @@ namespace GDCC::BC::ZDACS
       void genStmnt_Bget_W();
       void genStmnt_Bset_W();
       void genStmnt_Call();
+      void genStmnt_Casm();
       void genStmnt_CmpI_W();
       void genStmnt_CmpU_EQ_W();
       void genStmnt_Cscr_IA();

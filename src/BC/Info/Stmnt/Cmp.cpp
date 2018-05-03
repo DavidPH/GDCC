@@ -149,7 +149,7 @@ namespace GDCC::BC
       GDCC_BC_AddStmnt(Code::Move_W,   1, nul, stk);
 
       // ... And if not, jump to normal compare.
-      GDCC_BC_AddStmnt(Code::Jump,     0, labelCmp);
+      GDCC_BC_AddStmnt(Code::Jump,     1, labelCmp);
 
       GDCC_BC_AddLabel(labelLEMin);
 
@@ -159,7 +159,7 @@ namespace GDCC::BC
       GDCC_BC_AddStmnt(Code::Move_W,   1, nul, stk);
 
       // ... And if not, jump to normal compare.
-      GDCC_BC_AddStmnt(Code::Jump,     0, labelCmp);
+      GDCC_BC_AddStmnt(Code::Jump,     1, labelCmp);
 
       GDCC_BC_AddLabel(labelREMax);
       GDCC_BC_AddStmnt(Code::Move_W,   1, nul, stk);
@@ -170,7 +170,7 @@ namespace GDCC::BC
       GDCC_BC_AddStmnt(Code::Jcnd_Tru, n, stk, cmpNE ? label1 : label0);
 
       // Jump to normal compare.
-      GDCC_BC_AddStmnt(Code::Jump,     0, labelCmp);
+      GDCC_BC_AddStmnt(Code::Jump,     1, labelCmp);
 
       GDCC_BC_AddLabel(label0);
       GDCC_BC_AddStmnt(Code::Retn, 1, 0);
@@ -225,17 +225,17 @@ namespace GDCC::BC
       GDCC_BC_AddStmnt(Code::CmpU_EQ_W, 1, stk, lop.hi, rop.hi);
       GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelEq[n - 2]);
 
-      GDCC_BC_AddStmnt(codeCmpHi,  1, stk, lop, rop);
+      GDCC_BC_AddStmnt(codeCmpHi,  1, stk, lop.hi, rop.hi);
       GDCC_BC_AddStmnt(Code::Retn, 1, stk);
 
       // Middle words.
-      for(Core::FastU i = n - 2; i;)
+      for(Core::FastU i = n - 2; i; --i)
       {
          GDCC_BC_AddLabel(labelEq[i]);
          GDCC_BC_AddStmnt(Code::CmpU_EQ_W, 1, stk, lop[i], rop[i]);
-         GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelEq[--i]);
+         GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelEq[i - 1]);
 
-         GDCC_BC_AddStmnt(codeCmpLo,  1, stk, lop, rop);
+         GDCC_BC_AddStmnt(codeCmpLo,  1, stk, lop[i], rop[i]);
          GDCC_BC_AddStmnt(Code::Retn, 1, stk);
       }
 

@@ -66,13 +66,14 @@ namespace GDCC::SR
       GenStmntCtx const &ctx, Arg const &dst, bool post, Arg const &arg,
       IdxT const &idx)
    {
-      IR::Arg_Stk stk = arg.getIRArgStk();
+      IR::Arg_Stk stkL = exp->expL->getIRArgStk();
+      IR::Arg_Stk stkR = exp->expR->getIRArgStk();
 
       // Duplicate to destination, if necessary.
       if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
          // Push l.
-         ctx.block.addStmnt(IR::Code::Move_W, stk,
+         ctx.block.addStmnt(IR::Code::Move_W, stkL,
             GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
          // Assign dst.
@@ -80,25 +81,25 @@ namespace GDCC::SR
       }
 
       // Push l.
-      ctx.block.addStmnt(IR::Code::Move_W, stk,
+      ctx.block.addStmnt(IR::Code::Move_W, stkL,
          GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
       // Push r.
       GenStmnt_PointIdx(exp->expR, exp->type->getBaseType()->getSizePoint(), ctx);
 
       // Operate on stack.
-      ctx.block.addStmnt(code, stk, stk, stk);
+      ctx.block.addStmnt(code, stkR, stkR, stkR);
 
       // Assign l.
       ctx.block.addStmnt(IR::Code::Move_W,
-         GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0), stk);
+         GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0), stkL);
 
       // Duplicate to destination, if necessary.
       if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
          // Push l.
          ctx.block.addStmnt(IR::Code::Move_W,
-            stk, GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
+            stkL, GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
          // Assign dst.
          GenStmnt_MovePart(exp, ctx, dst, false, true);
@@ -192,7 +193,7 @@ namespace GDCC::SR
    {
       if(GenStmntNul(exp, ctx, dst)) return;
 
-      IR::Arg_Stk stk = exp->expL->getIRArgStk();
+      IR::Arg_Stk stk = exp->expR->getIRArgStk();
 
       // Evaluate pointer to stack.
       exp->expL->genStmntStk(ctx);

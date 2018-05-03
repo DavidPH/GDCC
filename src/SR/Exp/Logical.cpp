@@ -107,7 +107,7 @@ namespace GDCC::SR
       exp->expL->genStmntStk(ctx);
 
       // Possibly jump to short result.
-      ctx.block.addStmnt(codeShrt, exp->expL->getIRArgStk(), labelShort);
+      ctx.block.setArgSize().addStmnt(codeShrt, exp->expL->getIRArgStk(), labelShort);
 
       // Evaluate right operand to stack.
       exp->expR->genStmntStk(ctx);
@@ -119,6 +119,8 @@ namespace GDCC::SR
       }
       else
       {
+         ctx.block.setArgSize();
+
          // Possibly jump to short result.
          ctx.block.addStmnt(codeShrt, exp->expR->getIRArgStk(), labelShort);
 

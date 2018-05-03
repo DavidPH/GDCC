@@ -120,7 +120,7 @@ namespace GDCC::SR
 
          // Move to temporary.
          Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
-         ctx.block.addStmnt(IR::Code::Move_W, tmp.getArg(), arg.getIRArgStk());
+         ctx.block.addStmnt(IR::Code::Move_W, tmp.getArg(), tmp.getArgStk());
 
          // Use temporary as index.
          GenStmnt_ArithEqIdx<ArgT>(exp, code, ctx, dst, evalT, post, arg, tmp.getArg());

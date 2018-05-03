@@ -79,8 +79,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Bset_W: genStmnt_Bset_W(); break;
 
       case IR::Code::Call: genStmnt_Call(); break;
-
-      case IR::Code::Casm: numChunkCODE += stmnt->args.size() * 4; break;
+      case IR::Code::Casm: genStmnt_Casm(); break;
 
       case IR::Code::CmpF_EQ_W:
       case IR::Code::CmpF_GE_W:

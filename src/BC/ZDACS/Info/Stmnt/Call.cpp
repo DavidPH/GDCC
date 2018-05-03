@@ -63,6 +63,19 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::genStmnt_Casm
+   //
+   void Info::genStmnt_Casm()
+   {
+      numChunkCODE += 4;
+      for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
+      {
+         if(arg.a == IR::ArgBase::Lit)
+            numChunkCODE += arg.aLit.size * 4;
+      }
+   }
+
+   //
    // Info::genStmnt_Cscr_IA
    //
    void Info::genStmnt_Cscr_IA()

@@ -28,12 +28,12 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_Jcnd_Nil(char const *code)
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return putCode("Jump_Lit", stmnt->args[1].aLit);
 
-      for(auto i = n; --i;)
+      for(auto i = (n + 3) / 4; --i;)
          putCode("BOrI");
 
       putCode(code, stmnt->args[1].aLit);
@@ -70,7 +70,7 @@ namespace GDCC::BC::DGE
    //
    void Info::putStmnt_Jcnd_Tru()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return;

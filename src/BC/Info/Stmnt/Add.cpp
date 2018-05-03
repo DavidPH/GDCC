@@ -251,11 +251,11 @@ namespace GDCC::BC
       GDCC_BC_AddFuncObjBin(n, n);
 
       // First words.
-      GDCC_BC_AddStmnt(codeAdX, 1, stk, lop.lo, rop.lo);
+      GDCC_BC_AddStmnt(codeAdX, 1, Stk(2), lop.lo, rop.lo);
 
       // Mid words.
       for(Core::FastU i = 1; i != n - 1; ++i)
-         GDCC_BC_AddStmnt(codeAdX, 1, stk, stk, lop[i], rop[i]);
+         GDCC_BC_AddStmnt(codeAdX, 1, Stk(2), stk, lop[i], rop[i]);
 
       // Last words.
       GDCC_BC_AddStmnt(codeAdd,      1, stk, lop.hi, rop.hi);
@@ -391,7 +391,7 @@ namespace GDCC::BC
       GDCC_BC_AddLabel(labelLLTR);
 
       // Calculate exponent difference.
-      GDCC_BC_AddStmnt(Code::SubU_W, 1, tmp, expR, expL);
+      GDCC_BC_AddStmnt(Code::SubU_W, 1, tmp.lo, expR, expL);
 
       // If difference >= total mantissa bits, l is too small to affect r.
       GDCC_BC_AddStmnt(Code::CmpI_GE_W, 1, stk, tmp.lo, fi.bitsManFull + 1);

@@ -136,9 +136,10 @@ namespace GDCC::BC
    {
    public:
       AddFuncObj(IR::Block &block, Core::FastU w, Core::FastU n, Core::FastU addr) :
-         a{w, IR::Arg_Lit(w * n, block.getExp(addr))},
+         a{w * n, IR::Arg_Lit(w, block.getExp(w * addr))},
          v{Core::IntItr<Core::FastU>(0), Core::IntItr<Core::FastU>(n),
-            [&](Core::FastU i){return ArgT(w, a.idx->aLit, w * i);}},
+            [&](Core::FastU i)
+               {return ArgT(w, IR::Arg_Lit(w, block.getExp(w * (addr + i))));}},
          hi{v[n-1]},
          lo{v[0]}
       {

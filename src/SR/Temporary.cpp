@@ -132,7 +132,7 @@ namespace GDCC
       //
       IR::Arg_LocReg Temporary::getArg() const
       {
-         return {sizeBytes(), IR::Arg_Lit(w, expB), block->lo};
+         return {sizeBytes(), IR::Arg_Lit(w, expB), block->lo * w};
       }
 
       //
@@ -140,7 +140,7 @@ namespace GDCC
       //
       IR::Arg_LocReg Temporary::getArg(Core::FastU off) const
       {
-         return {w, IR::Arg_Lit(w, expB), block->lo + off};
+         return {w, IR::Arg_Lit(w, expB), (block->lo + off) * w};
       }
 
       //
