@@ -55,7 +55,7 @@ namespace GDCC::AS
 
       case Core::STR_block:
          while(ctx.in.drop(Core::TOK_LnEnd)) {}
-         TokenDrop(ctx, Core::TOK_BraceO, "'('");
+         TokenDrop(ctx, Core::TOK_ParenO, "'('");
          ParseBlock(ctx, func.block, Core::TOK_ParenC);
          break;
 

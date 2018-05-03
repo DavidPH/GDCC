@@ -66,8 +66,6 @@ namespace GDCC::AS
          while(!ctx.in.drop(Core::TOK_ParenC))
             args.push_back(GetArg(ctx, w, n));
 
-         TokenDrop(ctx, Core::TOK_LnEnd, "end of line");
-
          block.addStmntArgs(code, {Core::Move, args.begin(), args.end()});
 
          break;

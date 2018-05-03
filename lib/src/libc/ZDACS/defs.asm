@@ -15,7 +15,7 @@
 ;; Glyphs                                                                     |
 ;;
 
-Glyph "___MathRegSize" type=Fixed(32, 0, 0, 0) value=1
+Glyph "___MathRegSize"(type=Fixed(32 0 0 0) value=1)
 
 ;; EOF
 
