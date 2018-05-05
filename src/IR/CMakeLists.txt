@@ -39,7 +39,6 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    Linkage.cpp
    OArchive.cpp
    Object.cpp
-   OpCode.cpp
    Program.cpp
    Space.cpp
    Statement.cpp
@@ -86,7 +85,6 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    ../../inc/IR/Linkage.hpp
    ../../inc/IR/OArchive.hpp
    ../../inc/IR/Object.hpp
-   ../../inc/IR/OpCode.hpp
    ../../inc/IR/Program.hpp
    ../../inc/IR/Space.hpp
    ../../inc/IR/Statement.hpp

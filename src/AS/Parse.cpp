@@ -18,7 +18,7 @@
 #include "IR/Addr.hpp"
 #include "IR/CallType.hpp"
 #include "IR/Linkage.hpp"
-#include "IR/OpCode.hpp"
+#include "IR/Code.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -105,17 +105,6 @@ namespace GDCC::AS
       default:
          throw Core::ParseExceptExpect(ctx.in.reget(), "Linkage", false);
       }
-   }
-
-   //
-   // GetOpCode
-   //
-   IR::OpCode GetOpCode(ParserCtx const &ctx)
-   {
-      IR::OpCode op;
-      op.code = GetCode(ctx);
-      op.size = GetFastU(ctx);
-      return op;
    }
 
    //
