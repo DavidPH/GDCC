@@ -34,7 +34,7 @@ namespace GDCC::BC
       auto size = idx.getSize();
 
       block->setOrigin(stmnt->pos);
-      block->addStmnt(stmnt->next, IR::Code::Move_W, std::move(idx), IR::Arg_Stk(size));
+      block->addStmnt(stmnt->next, IR::Code::Move, std::move(idx), IR::Arg_Stk(size));
 
       idx = IR::Arg_Stk(size);
    }
@@ -52,47 +52,7 @@ namespace GDCC::BC
 
       block->setOrigin(stmnt->pos);
       block->addLabel(std::move(stmnt->labs));
-      block->addStmnt(stmnt, IR::Code::Move_W, IR::Arg_Stk(size), std::move(idx));
-
-      idx = IR::Arg_Stk(size);
-
-      // Reset iterator for further translation.
-      stmnt = stmnt->prev;
-
-      throw ResetStmnt();
-   }
-
-   //
-   // Info::moveArgStkB_dst
-   //
-   // If idx is not Stk, makes it one by adding a new Move_W statement.
-   //
-   void Info::moveArgStkB_dst(IR::Arg &idx)
-   {
-      if(idx.a == IR::ArgBase::Stk) return;
-
-      auto size = idx.getSize();
-
-      block->setOrigin(stmnt->pos);
-      block->addStmnt(stmnt->next, IR::Code::Move_B, std::move(idx), IR::Arg_Stk(size));
-
-      idx = IR::Arg_Stk(size);
-   }
-
-   //
-   // Info::moveArgStkB_src
-   //
-   // If idx is not Stk, makes it one by adding a new Move_W statement.
-   //
-   void Info::moveArgStkB_src(IR::Arg &idx)
-   {
-      if(idx.a == IR::ArgBase::Stk) return;
-
-      auto size = idx.getSize();
-
-      block->setOrigin(stmnt->pos);
-      block->addLabel(std::move(stmnt->labs));
-      block->addStmnt(stmnt, IR::Code::Move_B, IR::Arg_Stk(size), std::move(idx));
+      block->addStmnt(stmnt, IR::Code::Move, IR::Arg_Stk(size), std::move(idx));
 
       idx = IR::Arg_Stk(size);
 

@@ -29,11 +29,11 @@
 namespace GDCC::BC::ZDACS
 {
    //
-   // Info::genStmnt_ShLF_W
+   // Info::genStmnt_ShLF
    //
-   void Info::genStmnt_ShLF_W()
+   void Info::genStmnt_ShLF()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
       {
@@ -45,11 +45,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_ShLU_W
+   // Info::genStmnt_ShLU
    //
-   void Info::genStmnt_ShLU_W()
+   void Info::genStmnt_ShLU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n <= 1)
       {
@@ -80,11 +80,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_ShRI_W
+   // Info::genStmnt_ShRI
    //
-   void Info::genStmnt_ShRI_W()
+   void Info::genStmnt_ShRI()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n <= 1)
       {
@@ -118,11 +118,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_ShRU_W
+   // Info::genStmnt_ShRU
    //
-   void Info::genStmnt_ShRU_W()
+   void Info::genStmnt_ShRU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
       {
@@ -132,7 +132,7 @@ namespace GDCC::BC::ZDACS
 
       if(n == 1)
       {
-         genStmnt_ShRU_W1();
+         genStmnt_ShRU1();
          return;
       }
 
@@ -161,9 +161,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_ShRU_W1
+   // Info::genStmnt_ShRU1
    //
-   void Info::genStmnt_ShRU_W1()
+   void Info::genStmnt_ShRU1()
    {
       if(stmnt->args[2].a == IR::ArgBase::Lit)
          numChunkCODE += 24;
@@ -174,45 +174,45 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::preStmnt_ShLF_W
+   // Info::preStmnt_ShLF
    //
-   void Info::preStmnt_ShLF_W()
+   void Info::preStmnt_ShLF()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return;
 
-      if(stmnt->code == IR::Code::ShLF_W)
+      if(stmnt->code == IR::Code::ShLF)
          addFunc_ShLF_W(n);
       else
          addFunc_ShRF_W(n);
    }
 
    //
-   // Info::preStmnt_ShLU_W
+   // Info::preStmnt_ShLU
    //
-   void Info::preStmnt_ShLU_W()
+   void Info::preStmnt_ShLU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n <= 1)
          return;
 
-      if(stmnt->code == IR::Code::ShLU_W)
+      if(stmnt->code == IR::Code::ShLU)
          addFunc_ShLU_W(n);
-      else if(stmnt->code == IR::Code::ShRI_W)
+      else if(stmnt->code == IR::Code::ShRI)
          addFunc_ShRI_W(n);
       else
          addFunc_ShRU_W(n);
    }
 
    //
-   // Info::putStmnt_ShLF_W
+   // Info::putStmnt_ShLF
    //
-   void Info::putStmnt_ShLF_W()
+   void Info::putStmnt_ShLF()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return putCode(Code::Drop_Nul);
@@ -221,11 +221,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_ShLU_W
+   // Info::putStmnt_ShLU
    //
-   void Info::putStmnt_ShLU_W()
+   void Info::putStmnt_ShLU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
       {
@@ -293,11 +293,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_ShRI_W
+   // Info::putStmnt_ShRI
    //
-   void Info::putStmnt_ShRI_W()
+   void Info::putStmnt_ShRI()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
       {
@@ -372,11 +372,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_ShRU_W
+   // Info::putStmnt_ShRU
    //
-   void Info::putStmnt_ShRU_W()
+   void Info::putStmnt_ShRU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
       {
@@ -386,7 +386,7 @@ namespace GDCC::BC::ZDACS
 
       if(n == 1)
       {
-         putStmnt_ShRU_W1();
+         putStmnt_ShRU1();
          return;
       }
 
@@ -443,9 +443,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_ShRU_W1
+   // Info::putStmnt_ShRU1
    //
-   void Info::putStmnt_ShRU_W1()
+   void Info::putStmnt_ShRU1()
    {
       if(stmnt->args[2].a == IR::ArgBase::Lit)
       {
@@ -505,11 +505,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_ShLF_W
+   // Info::trStmnt_ShLF
    //
-   void Info::trStmnt_ShLF_W()
+   void Info::trStmnt_ShLF()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(!trStmntShift(true))
          return;
@@ -521,11 +521,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_ShLU_W
+   // Info::trStmnt_ShLU
    //
-   void Info::trStmnt_ShLU_W()
+   void Info::trStmnt_ShLU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n <= 1)
          return (void)trStmntShift(true);
@@ -540,11 +540,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_ShRI_W
+   // Info::trStmnt_ShRI
    //
-   void Info::trStmnt_ShRI_W()
+   void Info::trStmnt_ShRI()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n <= 1)
          return (void)trStmntShift(true);
@@ -559,17 +559,17 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_ShRU_W
+   // Info::trStmnt_ShRU
    //
-   void Info::trStmnt_ShRU_W()
+   void Info::trStmnt_ShRU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return (void)trStmntShift(true);
 
       if(n == 1)
-         return trStmnt_ShRU_W1();
+         return trStmnt_ShRU1();
 
       if(!trStmntShift(false))
          return;
@@ -581,15 +581,15 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_ShRU_W1
+   // Info::trStmnt_ShRU1
    //
-   void Info::trStmnt_ShRU_W1()
+   void Info::trStmnt_ShRU1()
    {
       CheckArgC(stmnt, 3);
 
       if(stmnt->args[1].a != IR::ArgBase::Stk &&
          stmnt->args[2].a == IR::ArgBase::Stk)
-         throw Core::ExceptStr(stmnt->pos, "trStmnt_ShRU_W1 disorder");
+         throw Core::ExceptStr(stmnt->pos, "trStmnt_ShRU1 disorder");
 
       moveArgStk_dst(stmnt->args[0]);
       moveArgStk_src(stmnt->args[1]);

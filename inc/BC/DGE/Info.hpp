@@ -53,53 +53,53 @@ namespace GDCC::BC::DGE
 
       virtual void preStmnt();
 
-      void preStmnt_AddF_W() {preStmntStkBin(1, &Info::addFunc_AddF_W);}
-      void preStmnt_AddI_W() {preStmnt_AddU_W();}
-      void preStmnt_AddU_W();
-      void preStmnt_Bclo_W();
-      void preStmnt_Bclz_W();
-      void preStmnt_CmpF_EQ_W() {preStmntStkCmp(1, &Info::addFunc_CmpF_EQ_W);}
-      void preStmnt_CmpF_GE_W() {preStmntStkCmp(1, &Info::addFunc_CmpF_GE_W);}
-      void preStmnt_CmpF_GT_W() {preStmntStkCmp(1, &Info::addFunc_CmpF_GT_W);}
-      void preStmnt_CmpF_LE_W() {preStmntStkCmp(1, &Info::addFunc_CmpF_LE_W);}
-      void preStmnt_CmpF_LT_W() {preStmntStkCmp(1, &Info::addFunc_CmpF_LT_W);}
-      void preStmnt_CmpF_NE_W() {preStmntStkCmp(1, &Info::addFunc_CmpF_NE_W);}
-      void preStmnt_CmpI_EQ_W() {preStmnt_CmpU_EQ_W();}
-      void preStmnt_CmpI_GE_W() {preStmntStkCmp(2, &Info::addFunc_CmpI_GE_W);}
-      void preStmnt_CmpI_GT_W() {preStmntStkCmp(2, &Info::addFunc_CmpI_GT_W);}
-      void preStmnt_CmpI_LE_W() {preStmntStkCmp(2, &Info::addFunc_CmpI_LE_W);}
-      void preStmnt_CmpI_LT_W() {preStmntStkCmp(2, &Info::addFunc_CmpI_LT_W);}
-      void preStmnt_CmpI_NE_W() {preStmnt_CmpU_NE_W();}
-      void preStmnt_CmpU_EQ_W(AddFunc add = &Info::addFunc_CmpU_EQ_W);
-      void preStmnt_CmpU_GE_W() {preStmntStkCmp(2, &Info::addFunc_CmpU_GE_W);}
-      void preStmnt_CmpU_GT_W() {preStmntStkCmp(2, &Info::addFunc_CmpU_GT_W);}
-      void preStmnt_CmpU_LE_W() {preStmntStkCmp(2, &Info::addFunc_CmpU_LE_W);}
-      void preStmnt_CmpU_LT_W() {preStmntStkCmp(2, &Info::addFunc_CmpU_LT_W);}
-      void preStmnt_CmpU_NE_W() {preStmnt_CmpU_EQ_W(&Info::addFunc_CmpU_NE_W);}
-      void preStmnt_DiXI_W() {preStmntStkBin(2, &Info::addFunc_DiXI_W);}
-      void preStmnt_DiXU_W() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
-      void preStmnt_DivF_W() {preStmntStkBin(1, &Info::addFunc_DivF_W);}
-      void preStmnt_DivI_W() {preStmntStkBin(2, &Info::addFunc_DiXI_W);}
-      void preStmnt_DivK_W() {preStmntStkBin(1, &Info::addFunc_DivK_W);}
-      void preStmnt_DivU_W() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
-      void preStmnt_DivX_W() {preStmntStkBin(1, &Info::addFunc_DivX_W);}
-      void preStmnt_ModI_W() {preStmntStkBin(2, &Info::addFunc_DiXI_W);}
-      void preStmnt_ModU_W() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
-      void preStmnt_MuXU_W() {preStmntStkBin(2, &Info::addFunc_MuXU_W);}
-      void preStmnt_MulF_W() {preStmntStkBin(1, &Info::addFunc_MulF_W);}
-      void preStmnt_MulI_W() {preStmntStkBin(2, &Info::addFunc_MulU_W);}
-      void preStmnt_MulK_W() {preStmntStkBin(1, &Info::addFunc_MulK_W);}
-      void preStmnt_MulU_W() {preStmntStkBin(2, &Info::addFunc_MulU_W);}
-      void preStmnt_MulX_W() {preStmntStkBin(1, &Info::addFunc_MulX_W);}
-      void preStmnt_NegI_W() {preStmntStkUna(2, &Info::addFunc_NegI_W);}
-      void preStmnt_ShLF_W() {preStmntStkShi(1, &Info::addFunc_ShLF_W);}
-      void preStmnt_ShLU_W();
-      void preStmnt_ShRF_W() {preStmntStkShi(1, &Info::addFunc_ShRF_W);}
-      void preStmnt_ShRI_W();
-      void preStmnt_ShRU_W();
-      void preStmnt_SubF_W() {preStmntStkBin(1, &Info::addFunc_SubF_W);}
-      void preStmnt_SubI_W() {preStmnt_SubU_W();}
-      void preStmnt_SubU_W();
+      void preStmnt_AddF() {preStmntStkBin(1, &Info::addFunc_AddF_W);}
+      void preStmnt_AddI() {preStmnt_AddU();}
+      void preStmnt_AddU();
+      void preStmnt_Bclo();
+      void preStmnt_Bclz();
+      void preStmnt_CmpF_EQ() {preStmntStkCmp(1, &Info::addFunc_CmpF_EQ_W);}
+      void preStmnt_CmpF_GE() {preStmntStkCmp(1, &Info::addFunc_CmpF_GE_W);}
+      void preStmnt_CmpF_GT() {preStmntStkCmp(1, &Info::addFunc_CmpF_GT_W);}
+      void preStmnt_CmpF_LE() {preStmntStkCmp(1, &Info::addFunc_CmpF_LE_W);}
+      void preStmnt_CmpF_LT() {preStmntStkCmp(1, &Info::addFunc_CmpF_LT_W);}
+      void preStmnt_CmpF_NE() {preStmntStkCmp(1, &Info::addFunc_CmpF_NE_W);}
+      void preStmnt_CmpI_EQ() {preStmnt_CmpU_EQ();}
+      void preStmnt_CmpI_GE() {preStmntStkCmp(2, &Info::addFunc_CmpI_GE_W);}
+      void preStmnt_CmpI_GT() {preStmntStkCmp(2, &Info::addFunc_CmpI_GT_W);}
+      void preStmnt_CmpI_LE() {preStmntStkCmp(2, &Info::addFunc_CmpI_LE_W);}
+      void preStmnt_CmpI_LT() {preStmntStkCmp(2, &Info::addFunc_CmpI_LT_W);}
+      void preStmnt_CmpI_NE() {preStmnt_CmpU_NE();}
+      void preStmnt_CmpU_EQ(AddFunc add = &Info::addFunc_CmpU_EQ_W);
+      void preStmnt_CmpU_GE() {preStmntStkCmp(2, &Info::addFunc_CmpU_GE_W);}
+      void preStmnt_CmpU_GT() {preStmntStkCmp(2, &Info::addFunc_CmpU_GT_W);}
+      void preStmnt_CmpU_LE() {preStmntStkCmp(2, &Info::addFunc_CmpU_LE_W);}
+      void preStmnt_CmpU_LT() {preStmntStkCmp(2, &Info::addFunc_CmpU_LT_W);}
+      void preStmnt_CmpU_NE() {preStmnt_CmpU_EQ(&Info::addFunc_CmpU_NE_W);}
+      void preStmnt_DiXI() {preStmntStkBin(2, &Info::addFunc_DiXI_W);}
+      void preStmnt_DiXU() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
+      void preStmnt_DivF() {preStmntStkBin(1, &Info::addFunc_DivF_W);}
+      void preStmnt_DivI() {preStmntStkBin(2, &Info::addFunc_DiXI_W);}
+      void preStmnt_DivK() {preStmntStkBin(1, &Info::addFunc_DivK_W);}
+      void preStmnt_DivU() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
+      void preStmnt_DivX() {preStmntStkBin(1, &Info::addFunc_DivX_W);}
+      void preStmnt_ModI() {preStmntStkBin(2, &Info::addFunc_DiXI_W);}
+      void preStmnt_ModU() {preStmntStkBin(2, &Info::addFunc_DiXU_W);}
+      void preStmnt_MuXU() {preStmntStkBin(2, &Info::addFunc_MuXU_W);}
+      void preStmnt_MulF() {preStmntStkBin(1, &Info::addFunc_MulF_W);}
+      void preStmnt_MulI() {preStmntStkBin(2, &Info::addFunc_MulU_W);}
+      void preStmnt_MulK() {preStmntStkBin(1, &Info::addFunc_MulK_W);}
+      void preStmnt_MulU() {preStmntStkBin(2, &Info::addFunc_MulU_W);}
+      void preStmnt_MulX() {preStmntStkBin(1, &Info::addFunc_MulX_W);}
+      void preStmnt_NegI() {preStmntStkUna(2, &Info::addFunc_NegI_W);}
+      void preStmnt_ShLF() {preStmntStkShi(1, &Info::addFunc_ShLF_W);}
+      void preStmnt_ShLU();
+      void preStmnt_ShRF() {preStmntStkShi(1, &Info::addFunc_ShRF_W);}
+      void preStmnt_ShRI();
+      void preStmnt_ShRU();
+      void preStmnt_SubF() {preStmntStkBin(1, &Info::addFunc_SubF_W);}
+      void preStmnt_SubI() {preStmnt_SubU();}
+      void preStmnt_SubU();
 
       void preStmntStkBin(Core::FastU min, AddFunc add);
       void preStmntStkCmp(Core::FastU min, AddFunc add) {preStmntStkBin(min, add);}
@@ -144,44 +144,44 @@ namespace GDCC::BC::DGE
 
       virtual void putStmnt();
 
-      void putStmnt_AdXU_W();
-      void putStmnt_AddF_W() {putStmntStkBin();}
-      void putStmnt_AddI_W() {putStmnt_AddU_W();}
-      void putStmnt_AddU_W();
-      void putStmnt_BAnd_W(char const *code = "BAnd");
-      void putStmnt_BNot_W();
-      void putStmnt_BOrI_W() {putStmnt_BAnd_W("BOrI");}
-      void putStmnt_BOrX_W() {putStmnt_BAnd_W("BOrX");}
-      void putStmnt_Bclo_W() {putStmnt_Bclz_W("Bclo");}
-      void putStmnt_Bclz_W(char const *code = "Bclz");
+      void putStmnt_AdXU();
+      void putStmnt_AddF() {putStmntStkBin();}
+      void putStmnt_AddI() {putStmnt_AddU();}
+      void putStmnt_AddU();
+      void putStmnt_BAnd(char const *code = "BAnd");
+      void putStmnt_BNot();
+      void putStmnt_BOrI() {putStmnt_BAnd("BOrI");}
+      void putStmnt_BOrX() {putStmnt_BAnd("BOrX");}
+      void putStmnt_Bclo() {putStmnt_Bclz("Bclo");}
+      void putStmnt_Bclz(char const *code = "Bclz");
       void putStmnt_Call();
-      void putStmnt_CmpF_EQ_W() {putStmntStkCmp(1);}
-      void putStmnt_CmpF_GE_W() {putStmntStkCmp(1);}
-      void putStmnt_CmpF_GT_W() {putStmntStkCmp(0);}
-      void putStmnt_CmpF_LE_W() {putStmntStkCmp(1);}
-      void putStmnt_CmpF_LT_W() {putStmntStkCmp(0);}
-      void putStmnt_CmpF_NE_W() {putStmntStkCmp(0);}
-      void putStmnt_CmpI_EQ_W() {putStmnt_CmpU_EQ_W();}
-      void putStmnt_CmpI_GE_W() {putStmntStkCmp(1, "CmpI_GE");}
-      void putStmnt_CmpI_GT_W() {putStmntStkCmp(0, "CmpI_GT");}
-      void putStmnt_CmpI_LE_W() {putStmntStkCmp(1, "CmpI_LE");}
-      void putStmnt_CmpI_LT_W() {putStmntStkCmp(0, "CmpI_LT");}
-      void putStmnt_CmpI_NE_W() {putStmnt_CmpU_NE_W();}
-      void putStmnt_CmpU_EQ_W(IR::Code code = IR::Code::CmpU_EQ_W);
-      void putStmnt_CmpU_GE_W() {putStmntStkCmp(1, "CmpU_GE");}
-      void putStmnt_CmpU_GT_W() {putStmntStkCmp(0, "CmpU_GT");}
-      void putStmnt_CmpU_LE_W() {putStmntStkCmp(1, "CmpU_LE");}
-      void putStmnt_CmpU_LT_W() {putStmntStkCmp(0, "CmpU_LT");}
-      void putStmnt_CmpU_NE_W() {putStmnt_CmpU_EQ_W(IR::Code::CmpU_NE_W);}
+      void putStmnt_CmpF_EQ() {putStmntStkCmp(1);}
+      void putStmnt_CmpF_GE() {putStmntStkCmp(1);}
+      void putStmnt_CmpF_GT() {putStmntStkCmp(0);}
+      void putStmnt_CmpF_LE() {putStmntStkCmp(1);}
+      void putStmnt_CmpF_LT() {putStmntStkCmp(0);}
+      void putStmnt_CmpF_NE() {putStmntStkCmp(0);}
+      void putStmnt_CmpI_EQ() {putStmnt_CmpU_EQ();}
+      void putStmnt_CmpI_GE() {putStmntStkCmp(1, "CmpI_GE");}
+      void putStmnt_CmpI_GT() {putStmntStkCmp(0, "CmpI_GT");}
+      void putStmnt_CmpI_LE() {putStmntStkCmp(1, "CmpI_LE");}
+      void putStmnt_CmpI_LT() {putStmntStkCmp(0, "CmpI_LT");}
+      void putStmnt_CmpI_NE() {putStmnt_CmpU_NE();}
+      void putStmnt_CmpU_EQ(IR::Code code = IR::Code::CmpU_EQ);
+      void putStmnt_CmpU_GE() {putStmntStkCmp(1, "CmpU_GE");}
+      void putStmnt_CmpU_GT() {putStmntStkCmp(0, "CmpU_GT");}
+      void putStmnt_CmpU_LE() {putStmntStkCmp(1, "CmpU_LE");}
+      void putStmnt_CmpU_LT() {putStmntStkCmp(0, "CmpU_LT");}
+      void putStmnt_CmpU_NE() {putStmnt_CmpU_EQ(IR::Code::CmpU_NE);}
       void putStmnt_Cnat();
-      void putStmnt_Copy_W();
-      void putStmnt_DiXI_W() {putStmntStkBin("DiXI");}
-      void putStmnt_DiXU_W() {putStmntStkBin("DiXU");}
-      void putStmnt_DivF_W() {putStmntStkBin();}
-      void putStmnt_DivI_W() {putStmnt_DivU_W("DivI", IR::Code::DiXI_W, false);}
-      void putStmnt_DivK_W() {putStmntStkBin();}
-      void putStmnt_DivU_W() {putStmnt_DivU_W("DivU", IR::Code::DiXU_W, false);}
-      void putStmnt_DivX_W() {putStmntStkBin();}
+      void putStmnt_Copy();
+      void putStmnt_DiXI() {putStmntStkBin("DiXI");}
+      void putStmnt_DiXU() {putStmntStkBin("DiXU");}
+      void putStmnt_DivF() {putStmntStkBin();}
+      void putStmnt_DivI() {putStmnt_DivU("DivI", IR::Code::DiXI, false);}
+      void putStmnt_DivK() {putStmntStkBin();}
+      void putStmnt_DivU() {putStmnt_DivU("DivU", IR::Code::DiXU, false);}
+      void putStmnt_DivX() {putStmntStkBin();}
       void putStmnt_Jcnd_Nil(char const *code = "Jcnd_Nil");
       void putStmnt_Jcnd_Tab();
       void putStmnt_Jcnd_Tru();
@@ -191,30 +191,29 @@ namespace GDCC::BC::DGE
       void putStmnt_LAnd(char const *code = "LAnd");
       void putStmnt_LNot();
       void putStmnt_LOrI() {putStmnt_LAnd("LOrI");}
-      void putStmnt_ModI_W() {putStmnt_DivU_W("ModI", IR::Code::DiXI_W, true);}
-      void putStmnt_ModU_W() {putStmnt_DivU_W("ModU", IR::Code::DiXU_W, true);}
-      void putStmnt_Move_B();
-      void putStmnt_Move_W();
-      void putStmnt_MuXU_W() {putStmntStkBin("MuXU");}
-      void putStmnt_MulF_W() {putStmntStkBin();}
-      void putStmnt_MulI_W() {putStmnt_MulU_W();}
-      void putStmnt_MulK_W() {putStmntStkBin();}
-      void putStmnt_MulU_W();
-      void putStmnt_MulX_W() {putStmntStkBin();}
-      void putStmnt_NegF_W();
-      void putStmnt_NegI_W() {putStmntStkUna("NegI");}
+      void putStmnt_ModI() {putStmnt_DivU("ModI", IR::Code::DiXI, true);}
+      void putStmnt_ModU() {putStmnt_DivU("ModU", IR::Code::DiXU, true);}
+      void putStmnt_Move();
+      void putStmnt_MuXU() {putStmntStkBin("MuXU");}
+      void putStmnt_MulF() {putStmntStkBin();}
+      void putStmnt_MulI() {putStmnt_MulU();}
+      void putStmnt_MulK() {putStmntStkBin();}
+      void putStmnt_MulU();
+      void putStmnt_MulX() {putStmntStkBin();}
+      void putStmnt_NegF();
+      void putStmnt_NegI() {putStmntStkUna("NegI");}
       void putStmnt_Pltn();
       void putStmnt_Retn();
-      void putStmnt_ShLF_W() {putStmntStkShi();}
-      void putStmnt_ShLU_W(char const *code = "ShLU");
-      void putStmnt_ShRF_W() {putStmntStkShi();}
-      void putStmnt_ShRI_W() {putStmnt_ShLU_W("ShRI");}
-      void putStmnt_ShRU_W() {putStmnt_ShLU_W("ShRU");}
-      void putStmnt_SuXU_W();
-      void putStmnt_SubF_W() {putStmntStkBin();}
-      void putStmnt_SubI_W() {putStmnt_SubU_W();}
-      void putStmnt_SubU_W();
-      void putStmnt_Swap_W();
+      void putStmnt_ShLF() {putStmntStkShi();}
+      void putStmnt_ShLU(char const *code = "ShLU");
+      void putStmnt_ShRF() {putStmntStkShi();}
+      void putStmnt_ShRI() {putStmnt_ShLU("ShRI");}
+      void putStmnt_ShRU() {putStmnt_ShLU("ShRU");}
+      void putStmnt_SuXU();
+      void putStmnt_SubF() {putStmntStkBin();}
+      void putStmnt_SubI() {putStmnt_SubU();}
+      void putStmnt_SubU();
+      void putStmnt_Swap();
 
       void putStmntCall(Core::String name, Core::FastU argc);
 
@@ -249,44 +248,44 @@ namespace GDCC::BC::DGE
       void putWord(WordValue const &w);
 
       virtual void trStmnt();
-      void trStmnt_AdXU_W();
-      void trStmnt_AddF_W() {trStmntStkBin(false);}
-      void trStmnt_AddI_W() {trStmnt_AddU_W();}
-      void trStmnt_AddU_W();
-      void trStmnt_BAnd_W();
-      void trStmnt_BNot_W();
-      void trStmnt_BOrI_W() {trStmnt_BAnd_W();}
-      void trStmnt_BOrX_W() {trStmnt_BAnd_W();}
-      void trStmnt_Bclo_W() {trStmnt_Bclz_W();}
-      void trStmnt_Bclz_W();
+      void trStmnt_AdXU();
+      void trStmnt_AddF() {trStmntStkBin(false);}
+      void trStmnt_AddI() {trStmnt_AddU();}
+      void trStmnt_AddU();
+      void trStmnt_BAnd();
+      void trStmnt_BNot();
+      void trStmnt_BOrI() {trStmnt_BAnd();}
+      void trStmnt_BOrX() {trStmnt_BAnd();}
+      void trStmnt_Bclo() {trStmnt_Bclz();}
+      void trStmnt_Bclz();
       void trStmnt_Call();
-      void trStmnt_CmpF_EQ_W() {trStmntStkCmp(false);}
-      void trStmnt_CmpF_GE_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpF_GT_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpF_LE_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpF_LT_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpF_NE_W() {trStmntStkCmp(false);}
-      void trStmnt_CmpI_EQ_W() {trStmntStkCmp(false);}
-      void trStmnt_CmpI_GE_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpI_GT_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpI_LE_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpI_LT_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpI_NE_W() {trStmntStkCmp(false);}
-      void trStmnt_CmpU_EQ_W() {trStmntStkCmp(false);}
-      void trStmnt_CmpU_GE_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpU_GT_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpU_LE_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpU_LT_W() {trStmntStkCmp(true);}
-      void trStmnt_CmpU_NE_W() {trStmntStkCmp(false);}
+      void trStmnt_CmpF_EQ() {trStmntStkCmp(false);}
+      void trStmnt_CmpF_GE() {trStmntStkCmp(true);}
+      void trStmnt_CmpF_GT() {trStmntStkCmp(true);}
+      void trStmnt_CmpF_LE() {trStmntStkCmp(true);}
+      void trStmnt_CmpF_LT() {trStmntStkCmp(true);}
+      void trStmnt_CmpF_NE() {trStmntStkCmp(false);}
+      void trStmnt_CmpI_EQ() {trStmntStkCmp(false);}
+      void trStmnt_CmpI_GE() {trStmntStkCmp(true);}
+      void trStmnt_CmpI_GT() {trStmntStkCmp(true);}
+      void trStmnt_CmpI_LE() {trStmntStkCmp(true);}
+      void trStmnt_CmpI_LT() {trStmntStkCmp(true);}
+      void trStmnt_CmpI_NE() {trStmntStkCmp(false);}
+      void trStmnt_CmpU_EQ() {trStmntStkCmp(false);}
+      void trStmnt_CmpU_GE() {trStmntStkCmp(true);}
+      void trStmnt_CmpU_GT() {trStmntStkCmp(true);}
+      void trStmnt_CmpU_LE() {trStmntStkCmp(true);}
+      void trStmnt_CmpU_LT() {trStmntStkCmp(true);}
+      void trStmnt_CmpU_NE() {trStmntStkCmp(false);}
       void trStmnt_Cnat();
-      void trStmnt_Copy_W();
-      void trStmnt_DiXI_W() {trStmnt_DiXU_W();}
-      void trStmnt_DiXU_W();
-      void trStmnt_DivF_W() {trStmntStkBin(true);}
-      void trStmnt_DivI_W() {trStmntStkBin(true);}
-      void trStmnt_DivK_W() {trStmntStkBin(true);}
-      void trStmnt_DivU_W() {trStmntStkBin(true);}
-      void trStmnt_DivX_W() {trStmntStkBin(true);}
+      void trStmnt_Copy();
+      void trStmnt_DiXI() {trStmnt_DiXU();}
+      void trStmnt_DiXU();
+      void trStmnt_DivF() {trStmntStkBin(true);}
+      void trStmnt_DivI() {trStmntStkBin(true);}
+      void trStmnt_DivK() {trStmntStkBin(true);}
+      void trStmnt_DivU() {trStmntStkBin(true);}
+      void trStmnt_DivX() {trStmntStkBin(true);}
       void trStmnt_Jcnd_Nil();
       void trStmnt_Jcnd_Tab();
       void trStmnt_Jcnd_Tru();
@@ -296,30 +295,29 @@ namespace GDCC::BC::DGE
       void trStmnt_LAnd();
       void trStmnt_LNot();
       void trStmnt_LOrI() {trStmnt_LAnd();}
-      void trStmnt_ModI_W() {trStmnt_ModU_W();}
-      void trStmnt_ModU_W();
-      void trStmnt_Move_B();
-      void trStmnt_Move_W();
-      void trStmnt_MuXU_W();
-      void trStmnt_MulF_W() {trStmntStkBin(false);}
-      void trStmnt_MulI_W() {trStmntStkBin(false);}
-      void trStmnt_MulK_W() {trStmntStkBin(false);}
-      void trStmnt_MulU_W() {trStmntStkBin(false);}
-      void trStmnt_MulX_W() {trStmntStkBin(false);}
-      void trStmnt_NegF_W() {trStmntStkUna();}
-      void trStmnt_NegI_W() {trStmntStkUna();}
+      void trStmnt_ModI() {trStmnt_ModU();}
+      void trStmnt_ModU();
+      void trStmnt_Move();
+      void trStmnt_MuXU();
+      void trStmnt_MulF() {trStmntStkBin(false);}
+      void trStmnt_MulI() {trStmntStkBin(false);}
+      void trStmnt_MulK() {trStmntStkBin(false);}
+      void trStmnt_MulU() {trStmntStkBin(false);}
+      void trStmnt_MulX() {trStmntStkBin(false);}
+      void trStmnt_NegF() {trStmntStkUna();}
+      void trStmnt_NegI() {trStmntStkUna();}
       void trStmnt_Pltn();
       void trStmnt_Retn();
-      void trStmnt_ShLF_W() {trStmntStkShi();}
-      void trStmnt_ShLU_W();
-      void trStmnt_ShRF_W() {trStmntStkShi();}
-      void trStmnt_ShRI_W() {trStmnt_ShLU_W();}
-      void trStmnt_ShRU_W() {trStmnt_ShLU_W();}
-      void trStmnt_SuXU_W();
-      void trStmnt_SubF_W() {trStmntStkBin(true);}
-      void trStmnt_SubI_W() {trStmnt_SubU_W();}
-      void trStmnt_SubU_W();
-      void trStmnt_Swap_W();
+      void trStmnt_ShLF() {trStmntStkShi();}
+      void trStmnt_ShLU();
+      void trStmnt_ShRF() {trStmntStkShi();}
+      void trStmnt_ShRI() {trStmnt_ShLU();}
+      void trStmnt_ShRU() {trStmnt_ShLU();}
+      void trStmnt_SuXU();
+      void trStmnt_SubF() {trStmntStkBin(true);}
+      void trStmnt_SubI() {trStmnt_SubU();}
+      void trStmnt_SubU();
+      void trStmnt_Swap();
 
       void trStmntStkBin(bool ordered);
       void trStmntStkCmp(bool ordered);
@@ -339,7 +337,7 @@ namespace GDCC::BC::DGE
       void putCodeArg(Core::String       arg);
       void putCodeArg(IR::Arg_Lit const &arg);
 
-      void putStmnt_DivU_W(char const *code, IR::Code codeX, bool mod);
+      void putStmnt_DivU(char const *code, IR::Code codeX, bool mod);
 
       Core::Origin lastOrigin;
    };

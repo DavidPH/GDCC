@@ -32,7 +32,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Call()
    {
-      auto argc = getStmntSizeW();
+      auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::StdCall);
       auto ret  = stmnt->args[0].getSize();
 
@@ -80,7 +80,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Cscr_IA()
    {
-      auto argc = getStmntSizeW();
+      auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::ScriptI);
       auto argn = argc < argm ? argc : argm;
       auto ret  = stmnt->args[0].getSize();
@@ -102,7 +102,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Cscr_IS()
    {
-      auto argc = getStmntSizeW();
+      auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptI);
       auto ret  = stmnt->args[0].getSize();
 
@@ -122,7 +122,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Cscr_SA()
    {
-      auto argc = getStmntSizeW();
+      auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::ScriptS);
       auto ret  = stmnt->args[0].getSize();
 
@@ -142,7 +142,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Cscr_SS()
    {
-      auto argc = getStmntSizeW();
+      auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptS);
       auto ret  = stmnt->args[0].getSize();
 
@@ -162,8 +162,8 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Cspe()
    {
-      auto argc = getStmntSizeW();
-      auto ret  = stmnt->args[0].getSize();
+      auto argc = getStmntSize();
+      auto ret  = stmnt->args[0].a == IR::ArgBase::Nul ? 0 : stmnt->args[0].getSize();
 
       // No call args.
       if(argc == 0)
@@ -196,7 +196,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Retn()
    {
-      auto ret = getStmntSizeW();
+      auto ret = getStmntSize();
 
       if(func->allocAut)
          numChunkCODE += 16;
@@ -243,7 +243,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt_Call()
    {
-      auto argc = getStmntSizeW();
+      auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::StdCall);
       auto ret  = stmnt->args[0].getSize();
 
@@ -299,7 +299,7 @@ namespace GDCC::BC::ZDACS
    void Info::putStmnt_Cnat()
    {
       putCode(Code::Cnat);
-      putWord(getStmntSizeW());
+      putWord(getStmntSize());
       putWord(getWord(stmnt->args[1].aLit));
    }
 
@@ -308,7 +308,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt_Cscr_IA()
    {
-      auto argc = getStmntSizeW();
+      auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::ScriptI);
       auto argn = argc < argm ? argc : argm;
       auto ret  = stmnt->args[0].getSize();
@@ -344,7 +344,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt_Cscr_IS()
    {
-      auto argc = getStmntSizeW();
+      auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptI);
       auto argn = argc < argm ? argc : argm;
       auto ret  = stmnt->args[0].getSize();
@@ -383,7 +383,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt_Cscr_SA()
    {
-      auto argc = getStmntSizeW();
+      auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::ScriptS);
       auto ret  = stmnt->args[0].getSize();
 
@@ -405,7 +405,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt_Cscr_SS()
    {
-      auto argc = getStmntSizeW();
+      auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptS);
       auto ret  = stmnt->args[0].getSize();
 
@@ -437,8 +437,8 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt_Cspe()
    {
-      auto argc = getStmntSizeW();
-      auto ret  = stmnt->args[0].getSize();
+      auto argc = getStmntSize();
+      auto ret  = stmnt->args[0].a == IR::ArgBase::Nul ? 0 : stmnt->args[0].getSize();
 
       IR::ArgBase a;
       if(argc == 0)
@@ -526,7 +526,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt_Retn()
    {
-      auto ret = getStmntSizeW();
+      auto ret = getStmntSize();
 
       if(func->allocAut)
       {
@@ -712,13 +712,13 @@ namespace GDCC::BC::ZDACS
       CheckArgC(stmnt, 2);
       CheckArgB(stmnt, 1, IR::ArgBase::Lit);
 
-      auto ret = stmnt->args[0].getSize();
+      auto ret = stmnt->args[0].a == IR::ArgBase::Nul ? 0 : stmnt->args[0].getSize();
 
       if(ret > 1)
          throw Core::ExceptStr(stmnt->pos, "bad tr Cspe ret");
 
       // Too many call args.
-      if(getStmntSizeW() > 5)
+      if(getStmntSize() > 5)
          throw Core::ExceptStr(stmnt->pos, "bad tr Cspe argc");
 
       // No call args.

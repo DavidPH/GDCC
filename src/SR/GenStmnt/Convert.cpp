@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -45,7 +45,7 @@ namespace GDCC::SR
    {
       ctx.block.setArgSize();
 
-      ctx.block.addStmnt(IR::Code::BAnd_W,
+      ctx.block.addStmnt(IR::Code::BAnd,
          IR::Block::Stk(), src.getArg(src.size() - 1), GetMaskExp(srcT));
 
       ctx.block.addStmnt(codeCmp, IR::Block::Stk(), IR::Block::Stk(),
@@ -63,15 +63,15 @@ namespace GDCC::SR
       Temporary tmpSwap{ctx, exp->pos, dstT->getSizeWords()};
 
       // Store desired words in a temporary...
-      ctx.block.addStmnt(IR::Code::Move_W,
+      ctx.block.addStmnt(IR::Code::Move,
          tmpSwap.getArg(), IR::Arg_Stk(dstT->getSizeBytes()));
 
       // ... drop unneeded words...
-      ctx.block.addStmnt(IR::Code::Move_W,
+      ctx.block.addStmnt(IR::Code::Move,
          IR::Arg_Nul(-diffWords), IR::Arg_Stk(-diffWords));
 
       // ... and reclaim desired words.
-      ctx.block.addStmnt(IR::Code::Move_W,
+      ctx.block.addStmnt(IR::Code::Move,
          IR::Arg_Stk(dstT->getSizeBytes()), tmpSwap.getArg());
    }
 
@@ -83,13 +83,13 @@ namespace GDCC::SR
       ctx.block.setArgSize();
 
       // Duplicate leading word and signed shift.
-      ctx.block.addStmnt(IR::Code::Copy_W, IR::Block::Stk(), IR::Block::Stk());
-      ctx.block.addStmnt(IR::Code::ShRI_W,
+      ctx.block.addStmnt(IR::Code::Copy, IR::Block::Stk(), IR::Block::Stk());
+      ctx.block.addStmnt(IR::Code::ShRI,
          IR::Block::Stk(), IR::Block::Stk(), Platform::GetWordBits() - 1);
 
       // Duplicate that result for any additional words.
       for(auto i = diffWords; --i;)
-         ctx.block.addStmnt(IR::Code::Copy_W, IR::Block::Stk(), IR::Block::Stk());
+         ctx.block.addStmnt(IR::Code::Copy, IR::Block::Stk(), IR::Block::Stk());
    }
 
    //
@@ -100,7 +100,7 @@ namespace GDCC::SR
       ctx.block.setArgSize();
 
       for(auto i = diffWords; i--;)
-         ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), 0);
+         ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), 0);
    }
 
    //
@@ -112,16 +112,16 @@ namespace GDCC::SR
       Temporary tmp{ctx, exp->pos, srcT->getSizeWords()};
 
       // Store current words in a temporary...
-      ctx.block.addStmnt(IR::Code::Move_W,
+      ctx.block.addStmnt(IR::Code::Move,
          tmp.getArg(), IR::Arg_Stk(srcT->getSizeBytes()));
 
       // ... push needed words...
       ctx.block.setArgSize();
       for(auto i = diffWords; i--;)
-         ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), 0);
+         ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), 0);
 
       // ... and reclaim original words.
-      ctx.block.addStmnt(IR::Code::Move_W,
+      ctx.block.addStmnt(IR::Code::Move,
          IR::Arg_Stk(srcT->getSizeBytes()), tmp.getArg());
    }
 
@@ -133,10 +133,10 @@ namespace GDCC::SR
    {
       ctx.block.setArgSize();
 
-      ctx.block.addStmnt(IR::Code::BAnd_W,
+      ctx.block.addStmnt(IR::Code::BAnd,
          IR::Block::Stk(), src.getArg(src.size() - 1), GetMaskExp(srcT));
 
-      ctx.block.addStmnt(IR::Code::ShRI_W, IR::Block::Stk(),
+      ctx.block.addStmnt(IR::Code::ShRI, IR::Block::Stk(),
          IR::Block::Stk(), srcT->getSizeBitsI() % Platform::GetWordBits());
    }
 
@@ -146,12 +146,12 @@ namespace GDCC::SR
    static void GetMan(Exp const *, GenStmntCtx const &ctx,
       Type const *srcT, Temporary &src, bool full)
    {
-      ctx.block.addStmnt(IR::Code::Move_W, src.getArgStk(), src.getArg());
+      ctx.block.addStmnt(IR::Code::Move, src.getArgStk(), src.getArg());
 
-      ctx.block.setArgSize().addStmnt(IR::Code::BAnd_W,
+      ctx.block.setArgSize().addStmnt(IR::Code::BAnd,
          IR::Block::Stk(), IR::Block::Stk(), GetMaskMan(srcT));
 
-      if(full) ctx.block.addStmnt(IR::Code::BOrI_W,
+      if(full) ctx.block.addStmnt(IR::Code::BOrI,
          IR::Block::Stk(), IR::Block::Stk(), GetMaskMan(srcT) + 1);
    }
 
@@ -262,7 +262,7 @@ namespace GDCC::SR
       Type const *srcT, GenStmntCtx const &ctx)
    {
       ctx.block.setArgSize();
-      ctx.block.addStmnt(IR::Code::BAnd_W,
+      ctx.block.addStmnt(IR::Code::BAnd,
          IR::Block::Stk(), IR::Block::Stk(), ~GetMaskSig(srcT));
       ctx.block.addStmnt(IR::Code::LNot,
          IR::Block::Stk(), IR::Arg_Stk(srcT->getSizeBytes()));
@@ -307,18 +307,18 @@ namespace GDCC::SR
 
       // Store source in a temporary.
       Temporary src{ctx, exp->pos, srcT->getSizeWords()};
-      ctx.block.addStmnt(IR::Code::Move_W, src.getArg(), src.getArgStk());
+      ctx.block.addStmnt(IR::Code::Move, src.getArg(), src.getArgStk());
 
       // Check if result is INF.
-      CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_GE_W, expMax,
+      CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_GE, expMax,
          IR::Code::Jcnd_Tru, labelINF);
 
       // Check if exponent more than mid.
-      CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_GT_W, expMid,
+      CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_GT, expMid,
          IR::Code::Jcnd_Tru, labelGT);
 
       // Check if exponent less than mid.
-      CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_LT_W, expMid,
+      CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_LT, expMid,
          IR::Code::Jcnd_Tru, labelLT);
 
       // Exponent is equal to mid.
@@ -331,14 +331,14 @@ namespace GDCC::SR
       {
          ctx.block.setArgSize();
 
-         ctx.block.addStmnt(IR::Code::BAnd_W,
+         ctx.block.addStmnt(IR::Code::BAnd,
             IR::Block::Stk(), src.getArg(src.size() - 1), GetMaskSig(srcT));
          ctx.block.addStmnt(IR::Code::Jcnd_Tru, IR::Block::Stk(), labelNI);
 
          // Positive infinity.
          for(auto i = dstT->getSizeWords(); --i;)
-            ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), -1);
-         ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(),
+            ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), -1);
+         ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(),
             (Core::FastU(1) << (dstT->getSizeBitsI() % wordBits)) - 1);
 
          ctx.block.addStmnt(IR::Code::Jump, labelPos);
@@ -347,8 +347,8 @@ namespace GDCC::SR
          ctx.block.addLabel(labelNI);
 
          for(auto i = dstT->getSizeWords(); --i;)
-            ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), 0);
-         ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(),
+            ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), 0);
+         ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(),
             Core::FastU(1) << (dstT->getSizeBitsI() % wordBits));
 
          ctx.block.addStmnt(IR::Code::Jump, labelPos);
@@ -358,7 +358,7 @@ namespace GDCC::SR
          ctx.block.setArgSize();
 
          for(auto i = dstT->getSizeWords(); i--;)
-            ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), -1);
+            ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), -1);
 
          ctx.block.addStmnt(IR::Code::Jump, labelPos);
       }
@@ -366,7 +366,7 @@ namespace GDCC::SR
       // Generate 0.
       ctx.block.addLabel(label0);
       for(auto i = dstT->getSizeWords(); i--;)
-         ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), 0);
+         ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), 0);
       ctx.block.addStmnt(IR::Code::Jump, labelPos);
 
       // Exponent is more than mid.
@@ -381,25 +381,25 @@ namespace GDCC::SR
 
          // If expanding value, do so before left shifting.
          for(auto i = diffWords; i--;)
-            ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), 0);
+            ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), 0);
       }
 
       GetExp(exp, ctx, srcT, src);
       ctx.block.setArgSize();
-      ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), expMid);
-      ctx.block.addStmnt(IR::Code::SubU_W,
+      ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), expMid);
+      ctx.block.addStmnt(IR::Code::SubU,
          IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
 
       if(diffWords > 0)
       {
-         ctx.block.addStmnt(IR::Code::ShLU_W, IR::Arg_Stk(dstT->getSizeBytes()),
+         ctx.block.addStmnt(IR::Code::ShLU, IR::Arg_Stk(dstT->getSizeBytes()),
             IR::Arg_Stk(dstT->getSizeBytes()), IR::Block::Stk());
 
          ctx.block.addStmnt(IR::Code::Jump, labelSig);
       }
       else
       {
-         ctx.block.addStmnt(IR::Code::ShLU_W, IR::Arg_Stk(srcT->getSizeBytes()),
+         ctx.block.addStmnt(IR::Code::ShLU, IR::Arg_Stk(srcT->getSizeBytes()),
             IR::Arg_Stk(srcT->getSizeBytes()), IR::Block::Stk());
 
          ctx.block.addStmnt(IR::Code::Jump, labelMan);
@@ -409,18 +409,18 @@ namespace GDCC::SR
       ctx.block.addLabel(labelLT);
 
       // Check if result is 0.
-      CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_LT_W, expMin,
+      CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_LT, expMin,
          IR::Code::Jcnd_Tru, label0);
 
       // Shift mantissa right.
       GetMan(exp, ctx, srcT, src, true);
 
-      ctx.block.setArgSize().addStmnt(IR::Code::Move_W, IR::Block::Stk(), expMid);
+      ctx.block.setArgSize().addStmnt(IR::Code::Move, IR::Block::Stk(), expMid);
       GetExp(exp, ctx, srcT, src);
-      ctx.block.setArgSize().addStmnt(IR::Code::SubU_W,
+      ctx.block.setArgSize().addStmnt(IR::Code::SubU,
          IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
 
-      ctx.block.addStmnt(IR::Code::ShRU_W, IR::Arg_Stk(srcT->getSizeBytes()),
+      ctx.block.addStmnt(IR::Code::ShRU, IR::Arg_Stk(srcT->getSizeBytes()),
          IR::Arg_Stk(srcT->getSizeBytes()), IR::Block::Stk());
 
       // Shrink or expand value.
@@ -429,11 +429,11 @@ namespace GDCC::SR
       {
          // Value is currently positive, so no sign extend.
          for(auto i = diffWords; i--;)
-            ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), 0);
+            ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), 0);
       }
       else if(diffWords < 0)
       {
-         ctx.block.addStmnt(IR::Code::Move_W,
+         ctx.block.addStmnt(IR::Code::Move,
             IR::Arg_Nul(-diffWords), IR::Arg_Stk(-diffWords));
       }
 
@@ -442,12 +442,12 @@ namespace GDCC::SR
 
       ctx.block.setArgSize();
 
-      ctx.block.addStmnt(IR::Code::BAnd_W,
+      ctx.block.addStmnt(IR::Code::BAnd,
          IR::Block::Stk(), src.getArg(src.size() - 1), GetMaskSig(srcT));
       ctx.block.addStmnt(IR::Code::Jcnd_Nil,
          IR::Block::Stk(), labelPos);
 
-      ctx.block.addStmnt(IR::Code::NegI_W,
+      ctx.block.addStmnt(IR::Code::NegI,
          IR::Arg_Stk(dstT->getSizeBytes()), IR::Arg_Stk(dstT->getSizeBytes()));
 
       ctx.block.addLabel(labelPos);
@@ -472,8 +472,8 @@ namespace GDCC::SR
          auto shift   = Platform::GetWordBits() - srcBits;
 
          ctx.block.setArgSize();
-         ctx.block.addStmnt(IR::Code::ShLU_W, IR::Block::Stk(), IR::Block::Stk(), shift);
-         ctx.block.addStmnt(IR::Code::ShRI_W, IR::Block::Stk(), IR::Block::Stk(), shift);
+         ctx.block.addStmnt(IR::Code::ShLU, IR::Block::Stk(), IR::Block::Stk(), shift);
+         ctx.block.addStmnt(IR::Code::ShRI, IR::Block::Stk(), IR::Block::Stk(), shift);
       }
 
       // Expand value.
@@ -511,12 +511,12 @@ namespace GDCC::SR
 
          if(diffBitsF > 0)
          {
-            shiftCode = ExpCode_ArithInteg<IR::CodeSet_ShL>(shiftType).code;
+            shiftCode = ExpCode_ArithInteg<IR::CodeSet_ShL>(shiftType);
             shiftVal  = +diffBitsF;
          }
          else
          {
-            shiftCode = ExpCode_ArithInteg<IR::CodeSet_ShR>(shiftType).code;
+            shiftCode = ExpCode_ArithInteg<IR::CodeSet_ShR>(shiftType);
             shiftVal  = -diffBitsF;
          }
 
@@ -533,7 +533,7 @@ namespace GDCC::SR
       {
          ctx.block.setArgSize();
          for(auto i = diffWords; i++;)
-            ctx.block.addStmnt(IR::Code::Move_W,
+            ctx.block.addStmnt(IR::Code::Move,
                IR::Block::Nul(), IR::Block::Stk());
       }
 
@@ -548,14 +548,14 @@ namespace GDCC::SR
          {
             auto shift = Platform::GetWordBits() - dstBits;
 
-            ctx.block.addStmnt(IR::Code::ShLU_W, IR::Block::Stk(), IR::Block::Stk(), shift);
-            ctx.block.addStmnt(IR::Code::ShRI_W, IR::Block::Stk(), IR::Block::Stk(), shift);
+            ctx.block.addStmnt(IR::Code::ShLU, IR::Block::Stk(), IR::Block::Stk(), shift);
+            ctx.block.addStmnt(IR::Code::ShRI, IR::Block::Stk(), IR::Block::Stk(), shift);
          }
          else
          {
             auto mask = (Core::FastU{1} << dstBits) - 1;
 
-            ctx.block.addStmnt(IR::Code::BAnd_W, IR::Block::Stk(), IR::Block::Stk(), mask);
+            ctx.block.addStmnt(IR::Code::BAnd, IR::Block::Stk(), IR::Block::Stk(), mask);
          }
       }
    }
@@ -605,14 +605,14 @@ namespace GDCC::SR
 
       // Store source in a temporary.
       Temporary src{ctx, exp->pos, srcT->getSizeWords()};
-      ctx.block.addStmnt(IR::Code::Move_W, src.getArg(), src.getArgStk());
+      ctx.block.addStmnt(IR::Code::Move, src.getArg(), src.getArgStk());
 
       // Check if source is NaN.
       ctx.block.setArgSize();
-      ctx.block.addStmnt(IR::Code::BAnd_W,
+      ctx.block.addStmnt(IR::Code::BAnd,
          IR::Block::Stk(), src.getArg(src.size() - 1),
          GetMaskMan(srcT) | GetMaskExp(srcT));
-      ctx.block.addStmnt(IR::Code::CmpI_GT_W,
+      ctx.block.addStmnt(IR::Code::CmpI_GT,
          IR::Block::Stk(), IR::Block::Stk(), GetMaskExp(srcT));
       ctx.block.addStmnt(IR::Code::Jcnd_Nil,
          IR::Block::Stk(), labelChkINF);
@@ -620,33 +620,33 @@ namespace GDCC::SR
       // Generate NaN.
       ctx.block.setArgSize();
       for(auto i = dstT->getSizeWords(); --i;)
-         ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(),
+         ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(),
             (Core::FastU(1) << Platform::GetWordBits()) - 1);
-      ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(),
+      ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(),
          (Core::FastU(1) << (Platform::GetWordBits() - 1)) - 1);
       ctx.block.addStmnt(IR::Code::Jump, labelSig);
 
       // Check if result is INF.
       ctx.block.addLabel(labelChkINF);
-      CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_GE_W, expMax,
+      CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_GE, expMax,
          IR::Code::Jcnd_Nil, labelChk0);
 
       // Generate INF.
       ctx.block.setArgSize();
       for(auto i = dstT->getSizeWords(); --i;)
-         ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), 0);
-      ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), GetMaskExp(dstT));
+         ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), 0);
+      ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), GetMaskExp(dstT));
       ctx.block.addStmnt(IR::Code::Jump, labelSig);
 
       // Check if result is 0.
       ctx.block.addLabel(labelChk0);
-      CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_LE_W, expMin,
+      CheckExp(exp, ctx, srcT, src, IR::Code::CmpI_LE, expMin,
          IR::Code::Jcnd_Nil, labelMan);
 
       // Generate 0.
       ctx.block.setArgSize();
       for(auto i = dstT->getSizeWords(); i--;)
-         ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), 0);
+         ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), 0);
       ctx.block.addStmnt(IR::Code::Jump, labelSig);
 
       // Convert mantissa.
@@ -655,7 +655,7 @@ namespace GDCC::SR
       if(diffWords > 0)
       {
          for(auto i = diffWords; i--;)
-            ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), 0);
+            ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), 0);
       }
 
       GetMan(exp, ctx, srcT, src, false);
@@ -670,12 +670,12 @@ namespace GDCC::SR
 
          if(diffBitsI > 0)
          {
-            shiftCode = IR::Code::ShLU_W;
+            shiftCode = IR::Code::ShLU;
             shiftVal  = +diffBitsI;
          }
          else
          {
-            shiftCode = IR::Code::ShRU_W;
+            shiftCode = IR::Code::ShRU;
             shiftVal  = -diffBitsI;
          }
 
@@ -688,7 +688,7 @@ namespace GDCC::SR
          DropLow(exp, ctx, dstT, diffWords);
 
       // Convert exponent.
-      ctx.block.setArgSize().addStmnt(IR::Code::BAnd_W,
+      ctx.block.setArgSize().addStmnt(IR::Code::BAnd,
          IR::Block::Stk(), src.getArg(src.size() - 1), GetMaskExp(srcT));
 
       if(diffBitsF > 0)
@@ -696,9 +696,9 @@ namespace GDCC::SR
          Core::FastU bitsI    = dstT->getSizeBitsI() % wordBits;
          Core::FastU diffBias = dstT->getBias() - srcT->getBias();
 
-         ctx.block.addStmnt(IR::Code::ShRI_W,
+         ctx.block.addStmnt(IR::Code::ShRI,
             IR::Block::Stk(), IR::Block::Stk(), diffBitsF);
-         ctx.block.addStmnt(IR::Code::AddU_W,
+         ctx.block.addStmnt(IR::Code::AddU,
             IR::Block::Stk(), IR::Block::Stk(), diffBias << bitsI);
       }
       else if(diffBitsF < 0)
@@ -706,20 +706,20 @@ namespace GDCC::SR
          Core::FastU bitsI    = srcT->getSizeBitsI() % wordBits;
          Core::FastU diffBias = srcT->getBias() - dstT->getBias();
 
-         ctx.block.addStmnt(IR::Code::SubU_W,
+         ctx.block.addStmnt(IR::Code::SubU,
             IR::Block::Stk(), IR::Block::Stk(), diffBias << bitsI);
-         ctx.block.addStmnt(IR::Code::ShLU_W,
+         ctx.block.addStmnt(IR::Code::ShLU,
             IR::Block::Stk(), IR::Block::Stk(), -diffBitsF);
       }
 
-      ctx.block.addStmnt(IR::Code::BOrI_W,
+      ctx.block.addStmnt(IR::Code::BOrI,
          IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
 
       // Convert sign.
       ctx.block.addLabel(labelSig);
-      ctx.block.addStmnt(IR::Code::BAnd_W,
+      ctx.block.addStmnt(IR::Code::BAnd,
          IR::Block::Stk(), src.getArg(src.size() - 1), GetMaskSig(srcT));
-      ctx.block.addStmnt(IR::Code::BOrI_W,
+      ctx.block.addStmnt(IR::Code::BOrI,
          IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
    }
 
@@ -754,7 +754,7 @@ namespace GDCC::SR
       Temporary dst{ctx, exp->pos, 1};
 
       // Set initial exponent value.
-      ctx.block.setArgSize().addStmnt(IR::Code::Move_W, dst.getArg(),
+      ctx.block.setArgSize().addStmnt(IR::Code::Move, dst.getArg(),
          expMid << (dstT->getSizeBitsI() % Platform::GetWordBits()));
 
       // Sign handling, if source type is signed.
@@ -764,18 +764,18 @@ namespace GDCC::SR
          IR::Glyph labelPos = {ctx.prog, ctx.fn->genLabel()};
 
          // Check sign of source.
-         ctx.block.addStmnt(IR::Code::Copy_W,
+         ctx.block.addStmnt(IR::Code::Copy,
             IR::Block::Stk(), IR::Block::Stk());
-         ctx.block.addStmnt(IR::Code::BAnd_W,
+         ctx.block.addStmnt(IR::Code::BAnd,
             IR::Block::Stk(), IR::Block::Stk(), GetMaskSig(srcT));
          ctx.block.addStmnt(IR::Code::Jcnd_Nil,
             IR::Block::Stk(), labelPos);
 
          // Set sign bit and negate source.
-         ctx.block.addStmnt(IR::Code::BOrI_W,
+         ctx.block.addStmnt(IR::Code::BOrI,
             dst.getArg(), dst.getArg(), GetMaskSig(dstT));
 
-         ctx.block.addStmnt(IR::Code::NegI_W,
+         ctx.block.addStmnt(IR::Code::NegI,
             IR::Arg_Stk(srcT->getSizeBytes()), IR::Arg_Stk(srcT->getSizeBytes()));
 
          ctx.block.addLabel(labelPos);
@@ -789,7 +789,7 @@ namespace GDCC::SR
          IR::Glyph labelTru = {ctx.prog, ctx.fn->genLabel()};
 
          Temporary tmp{ctx, exp->pos, srcT->getSizeWords()};
-         ctx.block.addStmnt(IR::Code::Move_W,
+         ctx.block.addStmnt(IR::Code::Move,
             tmp.getArg(), tmp.getArgStk());
 
          // Test for 0.
@@ -797,14 +797,14 @@ namespace GDCC::SR
 
          // Push 0 and end.
          for(auto i = dstT->getSizeWords(); i--;)
-         ctx.block.addStmnt(IR::Code::Move_W, IR::Block::Stk(), 0);
+         ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), 0);
          ctx.block.addStmnt(IR::Code::Jump, labelEnd);
 
          // Otherwise, put source back on stack and continue conversion.
          // Also use the opportunity to count leading zeros.
          ctx.block.addLabel(labelTru);
-         ctx.block.addStmnt(IR::Code::Bclz_W, clz.getArg(), tmp.getArg());
-         ctx.block.addStmnt(IR::Code::Move_W, tmp.getArgStk(), tmp.getArg());
+         ctx.block.addStmnt(IR::Code::Bclz, clz.getArg(), tmp.getArg());
+         ctx.block.addStmnt(IR::Code::Move, tmp.getArgStk(), tmp.getArg());
       }
 
       // Expand word count.
@@ -815,20 +815,20 @@ namespace GDCC::SR
 
       ctx.block.setArgSize();
 
-      ctx.block.addStmnt(IR::Code::CmpI_LT_W,
+      ctx.block.addStmnt(IR::Code::CmpI_LT,
          IR::Block::Stk(), clz.getArg(), headBits - 1);
       ctx.block.addStmnt(IR::Code::Jcnd_Nil,
          IR::Block::Stk(), labelShL);
 
-      ctx.block.addStmnt(IR::Code::SubU_W,
+      ctx.block.addStmnt(IR::Code::SubU,
          clz.getArg(), headBits - 1, clz.getArg());
 
-      ctx.block.addStmnt(IR::Code::ShRU_W,
+      ctx.block.addStmnt(IR::Code::ShRU,
          IR::Arg_Stk(codeBytes), IR::Arg_Stk(codeBytes), clz.getArg());
 
-      ctx.block.addStmnt(IR::Code::ShLU_W,
+      ctx.block.addStmnt(IR::Code::ShLU,
          IR::Block::Stk(), clz.getArg(), Platform::GetWordBits() - headBits);
-      ctx.block.addStmnt(IR::Code::AddU_W,
+      ctx.block.addStmnt(IR::Code::AddU,
          dst.getArg(), dst.getArg(), IR::Block::Stk());
 
       ctx.block.addStmnt(IR::Code::Jump, labelShLB);
@@ -837,20 +837,20 @@ namespace GDCC::SR
 
       ctx.block.addLabel(labelShL);
 
-      ctx.block.addStmnt(IR::Code::CmpI_GT_W,
+      ctx.block.addStmnt(IR::Code::CmpI_GT,
          IR::Block::Stk(), clz.getArg(), headBits - 1);
       ctx.block.addStmnt(IR::Code::Jcnd_Nil,
          IR::Block::Stk(), labelShLB);
 
-      ctx.block.addStmnt(IR::Code::SubU_W,
+      ctx.block.addStmnt(IR::Code::SubU,
          clz.getArg(), clz.getArg(), headBits - 1);
 
-      ctx.block.addStmnt(IR::Code::ShLU_W,
+      ctx.block.addStmnt(IR::Code::ShLU,
          IR::Arg_Stk(codeBytes), IR::Arg_Stk(codeBytes), clz.getArg());
 
-      ctx.block.addStmnt(IR::Code::ShLU_W,
+      ctx.block.addStmnt(IR::Code::ShLU,
          IR::Block::Stk(), clz.getArg(), Platform::GetWordBits() - headBits);
-      ctx.block.addStmnt(IR::Code::SubU_W,
+      ctx.block.addStmnt(IR::Code::SubU,
          dst.getArg(), dst.getArg(), IR::Block::Stk());
 
       ctx.block.addLabel(labelShLB);
@@ -861,9 +861,9 @@ namespace GDCC::SR
 
       // Add sign and exponent.
       ctx.block.setArgSize();
-      ctx.block.addStmnt(IR::Code::BAnd_W,
+      ctx.block.addStmnt(IR::Code::BAnd,
          IR::Block::Stk(), IR::Block::Stk(), GetMaskMan(dstT));
-      ctx.block.addStmnt(IR::Code::BOrI_W,
+      ctx.block.addStmnt(IR::Code::BOrI,
          IR::Block::Stk(), IR::Block::Stk(), dst.getArg());
 
       ctx.block.addLabel(labelEnd);

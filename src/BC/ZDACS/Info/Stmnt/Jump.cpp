@@ -30,7 +30,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Jcnd_Nil()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
       {
@@ -57,7 +57,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Jcnd_Tru()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0) return;
 
@@ -109,7 +109,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt_Jcnd_Nil()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
       {
@@ -173,7 +173,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt_Jcnd_Tru()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0) return;
 

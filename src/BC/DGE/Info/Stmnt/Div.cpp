@@ -22,9 +22,9 @@
 namespace GDCC::BC::DGE
 {
    //
-   // Info::putStmnt_DivU_W
+   // Info::putStmnt_DivU
    //
-   void Info::putStmnt_DivU_W(char const *code, IR::Code codeX, bool mod)
+   void Info::putStmnt_DivU(char const *code, IR::Code codeX, bool mod)
    {
       auto n = getStmntSizeW();
 
@@ -41,17 +41,17 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_DiXU_W
+   // Info::trStmnt_DiXU
    //
-   void Info::trStmnt_DiXU_W()
+   void Info::trStmnt_DiXU()
    {
       trStmntStk3(true);
    }
 
    //
-   // Info::trStmnt_ModU_W
+   // Info::trStmnt_ModU
    //
-   void Info::trStmnt_ModU_W()
+   void Info::trStmnt_ModU()
    {
       auto n = getStmntSizeW();
 

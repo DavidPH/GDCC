@@ -68,7 +68,7 @@ namespace GDCC
          auto sign = bitT->getSizeBitsS();
          auto bits = bitT->getSizeBitsF() + bitT->getSizeBitsI() + sign;
          auto offs = bitT->getSizeBitsO();
-         auto code = sign ? IR::Code::Bges_W : IR::Code::Bget_W;
+         auto code = sign ? IR::Code::Bges : IR::Code::Bget;
          ctx.block.setArgSize()
             .addStmnt(code, dst.getIRArgStk(), exp->getIRArgStk(), bits, offs);
 

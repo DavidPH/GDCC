@@ -679,8 +679,8 @@ namespace GDCC::BC
       case IR::Code::Xcod_SID:
          throw Core::ExceptStr(stmnt->pos, "irregular statement size");
 
-      case IR::Code::AdXU_W:
-      case IR::Code::SuXU_W:
+      case IR::Code::AdXU:
+      case IR::Code::SuXU:
          size = stmnt->args[2].getSize();
          if(stmnt->args.size() == 3)
          {
@@ -696,72 +696,57 @@ namespace GDCC::BC
          }
          return size;
 
-      case IR::Code::AddF_W:
-      case IR::Code::AddI_B:
-      case IR::Code::AddI_W:
-      case IR::Code::AddU_B:
-      case IR::Code::AddU_W:
-      case IR::Code::BAnd_W:
-      case IR::Code::BOrI_W:
-      case IR::Code::BOrX_W:
-      case IR::Code::DivA_B:
-      case IR::Code::DivA_W:
-      case IR::Code::DivF_W:
-      case IR::Code::DivI_W:
-      case IR::Code::DivK_W:
-      case IR::Code::DivR_B:
-      case IR::Code::DivR_W:
-      case IR::Code::DivU_W:
-      case IR::Code::DivX_W:
-      case IR::Code::ModI_B:
-      case IR::Code::ModI_W:
-      case IR::Code::ModU_B:
-      case IR::Code::ModU_W:
-      case IR::Code::MulA_B:
-      case IR::Code::MulA_W:
-      case IR::Code::MulF_W:
-      case IR::Code::MulI_W:
-      case IR::Code::MulK_W:
-      case IR::Code::MulR_B:
-      case IR::Code::MulR_W:
-      case IR::Code::MulU_W:
-      case IR::Code::MulX_W:
-      case IR::Code::SubF_W:
-      case IR::Code::SubI_B:
-      case IR::Code::SubI_W:
-      case IR::Code::SubU_B:
-      case IR::Code::SubU_W:
+      case IR::Code::AddF:
+      case IR::Code::AddI:
+      case IR::Code::AddU:
+      case IR::Code::BAnd:
+      case IR::Code::BOrI:
+      case IR::Code::BOrX:
+      case IR::Code::DivA:
+      case IR::Code::DivF:
+      case IR::Code::DivI:
+      case IR::Code::DivK:
+      case IR::Code::DivR:
+      case IR::Code::DivU:
+      case IR::Code::DivX:
+      case IR::Code::ModI:
+      case IR::Code::ModU:
+      case IR::Code::MulA:
+      case IR::Code::MulF:
+      case IR::Code::MulI:
+      case IR::Code::MulK:
+      case IR::Code::MulR:
+      case IR::Code::MulU:
+      case IR::Code::MulX:
+      case IR::Code::SubF:
+      case IR::Code::SubI:
+      case IR::Code::SubU:
          size = stmnt->args[0].getSize();
          if(stmnt->args[1].getSize() != size || stmnt->args[2].getSize() != size)
             throw Core::ExceptStr(stmnt->pos, "irregular statement size");
          return size;
 
-      case IR::Code::BNot_W:
-      case IR::Code::Bges_W:
-      case IR::Code::Bget_W:
-      case IR::Code::Bset_W:
-      case IR::Code::Copy_W:
-      case IR::Code::Move_B:
-      case IR::Code::Move_W:
-      case IR::Code::NegF_W:
-      case IR::Code::NegI_B:
-      case IR::Code::NegI_W:
-      case IR::Code::ShLF_W:
-      case IR::Code::ShLU_B:
-      case IR::Code::ShLU_W:
-      case IR::Code::ShRF_W:
-      case IR::Code::ShRI_B:
-      case IR::Code::ShRI_W:
-      case IR::Code::ShRU_B:
-      case IR::Code::ShRU_W:
-      case IR::Code::Swap_W:
+      case IR::Code::BNot:
+      case IR::Code::Bges:
+      case IR::Code::Bget:
+      case IR::Code::Bset:
+      case IR::Code::Copy:
+      case IR::Code::Move:
+      case IR::Code::NegF:
+      case IR::Code::NegI:
+      case IR::Code::ShLF:
+      case IR::Code::ShLU:
+      case IR::Code::ShRF:
+      case IR::Code::ShRI:
+      case IR::Code::ShRU:
+      case IR::Code::Swap:
          size = stmnt->args[0].getSize();
          if(stmnt->args[1].getSize() != size)
             throw Core::ExceptStr(stmnt->pos, "irregular statement size");
          return size;
 
-      case IR::Code::Bclo_W:
-      case IR::Code::Bclz_W:
+      case IR::Code::Bclo:
+      case IR::Code::Bclz:
       case IR::Code::Jfar:
       case IR::Code::LNot:
          return stmnt->args[1].getSize();
@@ -777,36 +762,24 @@ namespace GDCC::BC
                size += i->getSize();
          return size;
 
-      case IR::Code::CmpF_EQ_W:
-      case IR::Code::CmpF_GE_W:
-      case IR::Code::CmpF_GT_W:
-      case IR::Code::CmpF_LE_W:
-      case IR::Code::CmpF_LT_W:
-      case IR::Code::CmpF_NE_W:
-      case IR::Code::CmpI_EQ_B:
-      case IR::Code::CmpI_EQ_W:
-      case IR::Code::CmpI_GE_B:
-      case IR::Code::CmpI_GE_W:
-      case IR::Code::CmpI_GT_B:
-      case IR::Code::CmpI_GT_W:
-      case IR::Code::CmpI_LE_B:
-      case IR::Code::CmpI_LE_W:
-      case IR::Code::CmpI_LT_B:
-      case IR::Code::CmpI_LT_W:
-      case IR::Code::CmpI_NE_B:
-      case IR::Code::CmpI_NE_W:
-      case IR::Code::CmpU_EQ_B:
-      case IR::Code::CmpU_EQ_W:
-      case IR::Code::CmpU_GE_B:
-      case IR::Code::CmpU_GE_W:
-      case IR::Code::CmpU_GT_B:
-      case IR::Code::CmpU_GT_W:
-      case IR::Code::CmpU_LE_B:
-      case IR::Code::CmpU_LE_W:
-      case IR::Code::CmpU_LT_B:
-      case IR::Code::CmpU_LT_W:
-      case IR::Code::CmpU_NE_B:
-      case IR::Code::CmpU_NE_W:
+      case IR::Code::CmpF_EQ:
+      case IR::Code::CmpF_GE:
+      case IR::Code::CmpF_GT:
+      case IR::Code::CmpF_LE:
+      case IR::Code::CmpF_LT:
+      case IR::Code::CmpF_NE:
+      case IR::Code::CmpI_EQ:
+      case IR::Code::CmpI_GE:
+      case IR::Code::CmpI_GT:
+      case IR::Code::CmpI_LE:
+      case IR::Code::CmpI_LT:
+      case IR::Code::CmpI_NE:
+      case IR::Code::CmpU_EQ:
+      case IR::Code::CmpU_GE:
+      case IR::Code::CmpU_GT:
+      case IR::Code::CmpU_LE:
+      case IR::Code::CmpU_LT:
+      case IR::Code::CmpU_NE:
       case IR::Code::LAnd:
       case IR::Code::LOrI:
          size = stmnt->args[1].getSize();
@@ -822,9 +795,9 @@ namespace GDCC::BC
                size += i->getSize();
          return size;
 
-      case IR::Code::DiXI_W:
-      case IR::Code::DiXU_W:
-      case IR::Code::MuXU_W:
+      case IR::Code::DiXI:
+      case IR::Code::DiXU:
+      case IR::Code::MuXU:
          size = stmnt->args[1].getSize();
          if(stmnt->args[0].getSize() != size * 2 || stmnt->args[2].getSize() != size)
             throw Core::ExceptStr(stmnt->pos, "irregular statement size");

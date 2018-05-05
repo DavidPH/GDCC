@@ -38,61 +38,61 @@ namespace GDCC::BC::ZDACS
       {
       case IR::Code::Nop: putCode(Code::Nop); break;
 
-      case IR::Code::AdXU_W: putStmnt_AdXU_W(); break;
+      case IR::Code::AdXU: putStmnt_AdXU(); break;
 
-      case IR::Code::AddF_W:
-      case IR::Code::DivF_W:
-      case IR::Code::DivK_W:
-      case IR::Code::MulF_W:
-      case IR::Code::MulK_W:
-      case IR::Code::SubF_W:
-         putStmntCall(getStmntSizeW());
+      case IR::Code::AddF:
+      case IR::Code::DivF:
+      case IR::Code::DivK:
+      case IR::Code::MulF:
+      case IR::Code::MulK:
+      case IR::Code::SubF:
+         putStmntCall(getStmntSize());
          break;
 
-      case IR::Code::AddI_W:
-      case IR::Code::AddU_W: putStmnt_AddU_W(); break;
+      case IR::Code::AddI:
+      case IR::Code::AddU: putStmnt_AddU(); break;
 
-      case IR::Code::BAnd_W: putStmntBitwise(Code::BAnd); break;
-      case IR::Code::BNot_W: putStmnt_BNot_W(); break;
-      case IR::Code::BOrI_W: putStmntBitwise(Code::BOrI); break;
-      case IR::Code::BOrX_W: putStmntBitwise(Code::BOrX); break;
+      case IR::Code::BAnd: putStmntBitwise(Code::BAnd); break;
+      case IR::Code::BNot: putStmnt_BNot(); break;
+      case IR::Code::BOrI: putStmntBitwise(Code::BOrI); break;
+      case IR::Code::BOrX: putStmntBitwise(Code::BOrX); break;
 
-      case IR::Code::Bclo_W: putStmnt_Bclz_W(true); break;
-      case IR::Code::Bclz_W: putStmnt_Bclz_W(false); break;
-      case IR::Code::Bges_W: putStmnt_Bges_W(); break;
-      case IR::Code::Bget_W: putStmnt_Bget_W(); break;
-      case IR::Code::Bset_W: putStmnt_Bset_W(); break;
+      case IR::Code::Bclo: putStmnt_Bclz(true); break;
+      case IR::Code::Bclz: putStmnt_Bclz(false); break;
+      case IR::Code::Bges: putStmnt_Bges(); break;
+      case IR::Code::Bget: putStmnt_Bget(); break;
+      case IR::Code::Bset: putStmnt_Bset(); break;
 
       case IR::Code::Call: putStmnt_Call(); break;
 
       case IR::Code::Casm: putStmnt_Casm(); break;
 
-      case IR::Code::CmpF_EQ_W:
-      case IR::Code::CmpF_GE_W:
-      case IR::Code::CmpF_GT_W:
-      case IR::Code::CmpF_LE_W:
-      case IR::Code::CmpF_LT_W:
-      case IR::Code::CmpF_NE_W:
-      case IR::Code::CmpU_GE_W:
-      case IR::Code::CmpU_GT_W:
-      case IR::Code::CmpU_LE_W:
-      case IR::Code::CmpU_LT_W:
+      case IR::Code::CmpF_EQ:
+      case IR::Code::CmpF_GE:
+      case IR::Code::CmpF_GT:
+      case IR::Code::CmpF_LE:
+      case IR::Code::CmpF_LT:
+      case IR::Code::CmpF_NE:
+      case IR::Code::CmpU_GE:
+      case IR::Code::CmpU_GT:
+      case IR::Code::CmpU_LE:
+      case IR::Code::CmpU_LT:
          putStmntCall(1);
          break;
 
-      case IR::Code::CmpI_EQ_W: putStmnt_CmpU_EQ_W(); break;
-      case IR::Code::CmpI_GE_W: putStmnt_CmpI_W(Code::CmpI_GE); break;
-      case IR::Code::CmpI_GT_W: putStmnt_CmpI_W(Code::CmpI_GT); break;
-      case IR::Code::CmpI_LE_W: putStmnt_CmpI_W(Code::CmpI_LE); break;
-      case IR::Code::CmpI_LT_W: putStmnt_CmpI_W(Code::CmpI_LT); break;
-      case IR::Code::CmpI_NE_W: putStmnt_CmpU_NE_W(); break;
+      case IR::Code::CmpI_EQ: putStmnt_CmpU_EQ(); break;
+      case IR::Code::CmpI_GE: putStmnt_CmpI(Code::CmpI_GE); break;
+      case IR::Code::CmpI_GT: putStmnt_CmpI(Code::CmpI_GT); break;
+      case IR::Code::CmpI_LE: putStmnt_CmpI(Code::CmpI_LE); break;
+      case IR::Code::CmpI_LT: putStmnt_CmpI(Code::CmpI_LT); break;
+      case IR::Code::CmpI_NE: putStmnt_CmpU_NE(); break;
 
-      case IR::Code::CmpU_EQ_W: putStmnt_CmpU_EQ_W(); break;
-      case IR::Code::CmpU_NE_W: putStmnt_CmpU_NE_W(); break;
+      case IR::Code::CmpU_EQ: putStmnt_CmpU_EQ(); break;
+      case IR::Code::CmpU_NE: putStmnt_CmpU_NE(); break;
 
       case IR::Code::Cnat: putStmnt_Cnat(); break;
 
-      case IR::Code::Copy_W: putCode(Code::Copy); break;
+      case IR::Code::Copy: putCode(Code::Copy); break;
 
       case IR::Code::Cscr_IA: putStmnt_Cscr_IA(); break;
       case IR::Code::Cscr_IS: putStmnt_Cscr_IS(); break;
@@ -101,12 +101,12 @@ namespace GDCC::BC::ZDACS
 
       case IR::Code::Cspe: putStmnt_Cspe(); break;
 
-      case IR::Code::DiXI_W: putStmnt_DiXI_W(); break;
-      case IR::Code::DiXU_W: putStmntCall(getStmntSizeW() * 2); break;
+      case IR::Code::DiXI: putStmnt_DiXI(); break;
+      case IR::Code::DiXU: putStmntCall(getStmntSize() * 2); break;
 
-      case IR::Code::DivI_W: putStmnt_DivI_W(); break;
-      case IR::Code::DivU_W: putStmnt_DivU_W(); break;
-      case IR::Code::DivX_W: putStmnt_DivX_W(); break;
+      case IR::Code::DivI: putStmnt_DivI(); break;
+      case IR::Code::DivU: putStmnt_DivU(); break;
+      case IR::Code::DivX: putStmnt_DivX(); break;
 
       case IR::Code::Jcnd_Nil: putStmnt_Jcnd_Nil(); break;
       case IR::Code::Jcnd_Tab: putStmnt_Jcnd_Tab(); break;
@@ -121,7 +121,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Jump: putStmnt_Jump(); break;
 
       case IR::Code::LAnd:
-         if(auto n = getStmntSizeW(); n == 1)
+         if(auto n = getStmntSize(); n == 1)
             putCode(Code::LAnd);
          else
             putStmntCall(n);
@@ -130,53 +130,53 @@ namespace GDCC::BC::ZDACS
       case IR::Code::LNot: putStmnt_LNot(); break;
 
       case IR::Code::LOrI:
-         if(auto n = getStmntSizeW(); n == 1)
+         if(auto n = getStmntSize(); n == 1)
             putCode(Code::LOrI);
          else
             putStmntCall(n);
          break;
 
-      case IR::Code::ModI_W: putStmnt_ModI_W(); break;
-      case IR::Code::ModU_W: putStmnt_ModU_W(); break;
+      case IR::Code::ModI: putStmnt_ModI(); break;
+      case IR::Code::ModU: putStmnt_ModU(); break;
 
-      case IR::Code::Move_W: putStmnt_Move_W(); break;
+      case IR::Code::Move: putStmnt_Move(); break;
 
-      case IR::Code::MuXU_W: putStmntCall(getStmntSizeW() * 2); break;
+      case IR::Code::MuXU: putStmntCall(getStmntSize() * 2); break;
 
-      case IR::Code::MulI_W:
-      case IR::Code::MulU_W:
-         if(auto n = getStmntSizeW(); n == 1)
+      case IR::Code::MulI:
+      case IR::Code::MulU:
+         if(auto n = getStmntSize(); n == 1)
             putCode(Code::MulU);
          else
             putStmntCall(n);
          break;
 
-      case IR::Code::MulX_W:
-         if(auto n = getStmntSizeW(); n == 1)
+      case IR::Code::MulX:
+         if(auto n = getStmntSize(); n == 1)
             putCode(Code::MulX);
          else
             putStmntCall(n);
          break;
 
-      case IR::Code::NegF_W: putStmnt_NegF_W(); break;
-      case IR::Code::NegI_W: putStmnt_NegI_W(); break;
+      case IR::Code::NegF: putStmnt_NegF(); break;
+      case IR::Code::NegI: putStmnt_NegI(); break;
 
       case IR::Code::Pltn: putStmnt_Pltn(); break;
 
       case IR::Code::Retn: putStmnt_Retn(); break;
 
-      case IR::Code::ShLF_W: putStmnt_ShLF_W(); break;
-      case IR::Code::ShLU_W: putStmnt_ShLU_W(); break;
-      case IR::Code::ShRF_W: putStmnt_ShLF_W(); break;
-      case IR::Code::ShRI_W: putStmnt_ShRI_W(); break;
-      case IR::Code::ShRU_W: putStmnt_ShRU_W(); break;
+      case IR::Code::ShLF: putStmnt_ShLF(); break;
+      case IR::Code::ShLU: putStmnt_ShLU(); break;
+      case IR::Code::ShRF: putStmnt_ShLF(); break;
+      case IR::Code::ShRI: putStmnt_ShRI(); break;
+      case IR::Code::ShRU: putStmnt_ShRU(); break;
 
-      case IR::Code::SuXU_W: putStmnt_SuXU_W(); break;
+      case IR::Code::SuXU: putStmnt_SuXU(); break;
 
-      case IR::Code::SubI_W:
-      case IR::Code::SubU_W: putStmnt_SubU_W(); break;
+      case IR::Code::SubI:
+      case IR::Code::SubU: putStmnt_SubU(); break;
 
-      case IR::Code::Swap_W: putStmnt_Swap_W(); break;
+      case IR::Code::Swap: putStmnt_Swap(); break;
 
       case IR::Code::Xcod_SID: putStmnt_Xcod_SID(); break;
 
@@ -192,7 +192,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt_LNot()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(auto i = n) while(--i) putCode(Code::BOrI);
       putCode(Code::LNot);
@@ -250,7 +250,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmntCall(Core::FastU ret)
    {
-      putStmntCall(getCallName(stmnt->code, getStmntSizeW()), ret);
+      putStmntCall(getCallName(stmnt->code, getStmntSize()), ret);
    }
 
    //

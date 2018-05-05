@@ -40,7 +40,7 @@ namespace GDCC
          if(!type->isCTypeArith())
             throw Core::ExceptStr(pos, "expected arithmetic operand");
 
-         auto code = SR::ExpCode_Arith<IR::CodeSet_Neg>(type).code;
+         auto code = SR::ExpCode_Arith<IR::CodeSet_Neg>(type);
 
          return SR::Exp_UnaryCode<SR::Exp_Neg>::Create(code, type, exp, pos);
       }

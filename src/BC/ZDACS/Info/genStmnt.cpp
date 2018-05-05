@@ -49,66 +49,66 @@ namespace GDCC::BC::ZDACS
       {
       case IR::Code::Nop: numChunkCODE += 4; break;
 
-      case IR::Code::AdXU_W: genStmnt_AdXU_W(); break;
+      case IR::Code::AdXU: genStmnt_AdXU(); break;
 
-      case IR::Code::AddF_W:
-      case IR::Code::DivF_W:
-      case IR::Code::DivK_W:
-      case IR::Code::MulF_W:
-      case IR::Code::MulK_W:
-      case IR::Code::SubF_W:
-         genStmntCall(getStmntSizeW());
+      case IR::Code::AddF:
+      case IR::Code::DivF:
+      case IR::Code::DivK:
+      case IR::Code::MulF:
+      case IR::Code::MulK:
+      case IR::Code::SubF:
+         genStmntCall(getStmntSize());
          break;
 
-      case IR::Code::AddI_W:
-      case IR::Code::AddU_W:
-      case IR::Code::SubI_W:
-      case IR::Code::SubU_W:
-         genStmnt_AddU_W();
+      case IR::Code::AddI:
+      case IR::Code::AddU:
+      case IR::Code::SubI:
+      case IR::Code::SubU:
+         genStmnt_AddU();
          break;
 
-      case IR::Code::BAnd_W: genStmntBitwise(); break;
-      case IR::Code::BNot_W: genStmnt_BNot_W(); break;
-      case IR::Code::BOrI_W: genStmntBitwise(); break;
-      case IR::Code::BOrX_W: genStmntBitwise(); break;
+      case IR::Code::BAnd: genStmntBitwise(); break;
+      case IR::Code::BNot: genStmnt_BNot(); break;
+      case IR::Code::BOrI: genStmntBitwise(); break;
+      case IR::Code::BOrX: genStmntBitwise(); break;
 
-      case IR::Code::Bclo_W: genStmnt_Bclz_W(); break;
-      case IR::Code::Bclz_W: genStmnt_Bclz_W(); break;
-      case IR::Code::Bges_W: genStmnt_Bges_W(); break;
-      case IR::Code::Bget_W: genStmnt_Bget_W(); break;
-      case IR::Code::Bset_W: genStmnt_Bset_W(); break;
+      case IR::Code::Bclo: genStmnt_Bclz(); break;
+      case IR::Code::Bclz: genStmnt_Bclz(); break;
+      case IR::Code::Bges: genStmnt_Bges(); break;
+      case IR::Code::Bget: genStmnt_Bget(); break;
+      case IR::Code::Bset: genStmnt_Bset(); break;
 
       case IR::Code::Call: genStmnt_Call(); break;
       case IR::Code::Casm: genStmnt_Casm(); break;
 
-      case IR::Code::CmpF_EQ_W:
-      case IR::Code::CmpF_GE_W:
-      case IR::Code::CmpF_GT_W:
-      case IR::Code::CmpF_LE_W:
-      case IR::Code::CmpF_LT_W:
-      case IR::Code::CmpF_NE_W:
-      case IR::Code::CmpU_GE_W:
-      case IR::Code::CmpU_GT_W:
-      case IR::Code::CmpU_LE_W:
-      case IR::Code::CmpU_LT_W:
+      case IR::Code::CmpF_EQ:
+      case IR::Code::CmpF_GE:
+      case IR::Code::CmpF_GT:
+      case IR::Code::CmpF_LE:
+      case IR::Code::CmpF_LT:
+      case IR::Code::CmpF_NE:
+      case IR::Code::CmpU_GE:
+      case IR::Code::CmpU_GT:
+      case IR::Code::CmpU_LE:
+      case IR::Code::CmpU_LT:
          genStmntCall(1);
          break;
 
-      case IR::Code::CmpI_EQ_W:
-      case IR::Code::CmpI_NE_W:
-      case IR::Code::CmpU_EQ_W:
-      case IR::Code::CmpU_NE_W:
-         genStmnt_CmpU_EQ_W();
+      case IR::Code::CmpI_EQ:
+      case IR::Code::CmpI_NE:
+      case IR::Code::CmpU_EQ:
+      case IR::Code::CmpU_NE:
+         genStmnt_CmpU_EQ();
          break;
 
-      case IR::Code::CmpI_GE_W:
-      case IR::Code::CmpI_GT_W:
-      case IR::Code::CmpI_LE_W:
-      case IR::Code::CmpI_LT_W:
-         genStmnt_CmpI_W();
+      case IR::Code::CmpI_GE:
+      case IR::Code::CmpI_GT:
+      case IR::Code::CmpI_LE:
+      case IR::Code::CmpI_LT:
+         genStmnt_CmpI();
          break;
 
-      case IR::Code::Copy_W: numChunkCODE += 4; break;
+      case IR::Code::Copy: numChunkCODE += 4; break;
 
       case IR::Code::Cnat: numChunkCODE += 12; break;
 
@@ -119,12 +119,12 @@ namespace GDCC::BC::ZDACS
 
       case IR::Code::Cspe: genStmnt_Cspe(); break;
 
-      case IR::Code::DiXI_W: genStmnt_DiXI_W(); break;
-      case IR::Code::DiXU_W: genStmntCall(getStmntSizeW() * 2); break;
+      case IR::Code::DiXI: genStmnt_DiXI(); break;
+      case IR::Code::DiXU: genStmntCall(getStmntSize() * 2); break;
 
-      case IR::Code::DivI_W: genStmnt_DivI_W(); break;
-      case IR::Code::DivU_W: genStmnt_DivU_W(); break;
-      case IR::Code::DivX_W: genStmnt_DivX_W(); break;
+      case IR::Code::DivI: genStmnt_DivI(); break;
+      case IR::Code::DivU: genStmnt_DivU(); break;
+      case IR::Code::DivX: genStmnt_DivX(); break;
 
       case IR::Code::Jcnd_Nil: genStmnt_Jcnd_Nil(); break;
       case IR::Code::Jcnd_Tab: genStmnt_Jcnd_Tab(); break;
@@ -140,46 +140,46 @@ namespace GDCC::BC::ZDACS
 
       case IR::Code::LAnd:
       case IR::Code::LOrI:
-         if(auto n = getStmntSizeW(); n == 1)
+         if(auto n = getStmntSize(); n == 1)
             numChunkCODE += 4;
          else
-            genStmntCall(getStmntSizeW());
+            genStmntCall(getStmntSize());
          break;
 
-      case IR::Code::LNot: numChunkCODE += getStmntSizeW() * 4; break;
+      case IR::Code::LNot: numChunkCODE += getStmntSize() * 4; break;
 
-      case IR::Code::ModI_W: genStmnt_ModI_W(); break;
-      case IR::Code::ModU_W: genStmnt_ModU_W(); break;
+      case IR::Code::ModI: genStmnt_ModI(); break;
+      case IR::Code::ModU: genStmnt_ModU(); break;
 
-      case IR::Code::Move_W: genStmnt_Move_W(); break;
+      case IR::Code::Move: genStmnt_Move(); break;
 
-      case IR::Code::MuXU_W: genStmntCall(getStmntSizeW() * 2); break;
+      case IR::Code::MuXU: genStmntCall(getStmntSize() * 2); break;
 
-      case IR::Code::MulI_W:
-      case IR::Code::MulU_W:
-      case IR::Code::MulX_W:
-         if(auto n = getStmntSizeW(); n == 1)
+      case IR::Code::MulI:
+      case IR::Code::MulU:
+      case IR::Code::MulX:
+         if(auto n = getStmntSize(); n == 1)
             numChunkCODE += 4;
          else
             genStmntCall(n);
          break;
 
-      case IR::Code::NegF_W: genStmnt_NegF_W(); break;
-      case IR::Code::NegI_W: genStmnt_NegI_W(); break;
+      case IR::Code::NegF: genStmnt_NegF(); break;
+      case IR::Code::NegI: genStmnt_NegI(); break;
 
       case IR::Code::Pltn: numChunkCODE += 12; break;
 
       case IR::Code::Retn: genStmnt_Retn(); break;
 
-      case IR::Code::ShLF_W: genStmnt_ShLF_W(); break;
-      case IR::Code::ShLU_W: genStmnt_ShLU_W(); break;
-      case IR::Code::ShRF_W: genStmnt_ShLF_W(); break;
-      case IR::Code::ShRI_W: genStmnt_ShRI_W(); break;
-      case IR::Code::ShRU_W: genStmnt_ShRU_W(); break;
+      case IR::Code::ShLF: genStmnt_ShLF(); break;
+      case IR::Code::ShLU: genStmnt_ShLU(); break;
+      case IR::Code::ShRF: genStmnt_ShLF(); break;
+      case IR::Code::ShRI: genStmnt_ShRI(); break;
+      case IR::Code::ShRU: genStmnt_ShRU(); break;
 
-      case IR::Code::SuXU_W: genStmnt_SuXU_W(); break;
+      case IR::Code::SuXU: genStmnt_SuXU(); break;
 
-      case IR::Code::Swap_W: genStmnt_Swap_W(); break;
+      case IR::Code::Swap: genStmnt_Swap(); break;
 
       case IR::Code::Xcod_SID: numChunkCODE += 32; break;
 

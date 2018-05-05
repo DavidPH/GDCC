@@ -34,7 +34,7 @@ namespace GDCC::CC
    void Exp_SubPtrInt::v_genStmnt(SR::GenStmntCtx const &ctx,
       SR::Arg const &dst) const
    {
-      SR::GenStmnt_Point(this, IR::Code::SubU_W, ctx, dst);
+      SR::GenStmnt_Point(this, IR::Code::SubU, ctx, dst);
    }
 
    //
@@ -43,7 +43,7 @@ namespace GDCC::CC
    void Exp_SubPtrIntEq::v_genStmnt(SR::GenStmntCtx const &ctx,
       SR::Arg const &dst) const
    {
-      SR::GenStmnt_PointEq(this, IR::Code::SubU_W, ctx, dst, post);
+      SR::GenStmnt_PointEq(this, IR::Code::SubU, ctx, dst, post);
    }
 
    //
@@ -82,23 +82,23 @@ namespace GDCC::CC
 
          SR::Temporary tmp{ctx, pos, 1};
 
-         ctx.block.addStmnt(IR::Code::Move_W,
-            tmp.getArg(), tmp.getArgStk());
-         ctx.block.addStmnt(IR::Code::Move_W,
+         ctx.block.addStmnt(IR::Code::Move,
+            tmp. getArg(), tmp.getArgStk());
+         ctx.block.addStmnt(IR::Code::Move,
             IR::Arg_Nul(diffBytes), IR::Arg_Stk(diffBytes));
 
-         ctx.block.addStmnt(IR::Code::SubI_W,
+         ctx.block.addStmnt(IR::Code::SubI,
             tmp.getArg(), tmp.getArgStk(), tmp.getArg());
-         ctx.block.addStmnt(IR::Code::Move_W,
+         ctx.block.addStmnt(IR::Code::Move,
             IR::Arg_Nul(diffBytes), IR::Arg_Stk(diffBytes));
 
-         ctx.block.addStmnt(IR::Code::Move_W,
+         ctx.block.addStmnt(IR::Code::Move,
             tmp.getArgStk(), tmp.getArg());
       }
       else
       {
          // Subtract on stack.
-         ctx.block.setArgSize().addStmnt(IR::Code::SubI_W,
+         ctx.block.setArgSize().addStmnt(IR::Code::SubI,
             IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
       }
 
@@ -113,7 +113,7 @@ namespace GDCC::CC
          // if the pointers are already not properly aligned.)
 
          auto lit = ExpCreate_LitInt(type, point, pos)->getIRExp();
-         ctx.block.setArgSize().addStmnt(IR::Code::DivI_W,
+         ctx.block.setArgSize().addStmnt(IR::Code::DivI,
             IR::Block::Stk(), IR::Block::Stk(), lit);
       }
 

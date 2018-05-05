@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2017 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,112 +20,97 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // CodeSet_CmpEQ
+   //
+   struct CodeSet_CmpEQ
    {
-      //
-      // CodeSet_CmpEQ
-      //
-      struct CodeSet_CmpEQ
-      {
-         static constexpr Code
-            CodeA_B = Code::CmpU_EQ_B,
-            CodeA_W = Code::CmpU_EQ_W,
-            CodeF_W = Code::CmpF_EQ_W,
-            CodeI_W = Code::CmpI_EQ_W,
-            CodeK_W = Code::CmpU_EQ_W,
-            CodeR_B = Code::CmpI_EQ_B,
-            CodeR_W = Code::CmpI_EQ_W,
-            CodeU_W = Code::CmpU_EQ_W,
-            CodeX_W = Code::CmpI_EQ_W;
-      };
+      static constexpr Code
+         CodeA = Code::CmpU_EQ,
+         CodeF = Code::CmpF_EQ,
+         CodeI = Code::CmpI_EQ,
+         CodeK = Code::CmpU_EQ,
+         CodeR = Code::CmpI_EQ,
+         CodeU = Code::CmpU_EQ,
+         CodeX = Code::CmpI_EQ;
+   };
 
-      //
-      // CodeSet_CmpGE
-      //
-      struct CodeSet_CmpGE
-      {
-         static constexpr Code
-            CodeA_B = Code::CmpU_GE_B,
-            CodeA_W = Code::CmpU_GE_W,
-            CodeF_W = Code::CmpF_GE_W,
-            CodeI_W = Code::CmpI_GE_W,
-            CodeK_W = Code::CmpU_GE_W,
-            CodeR_B = Code::CmpI_GE_B,
-            CodeR_W = Code::CmpI_GE_W,
-            CodeU_W = Code::CmpU_GE_W,
-            CodeX_W = Code::CmpI_GE_W;
-      };
+   //
+   // CodeSet_CmpGE
+   //
+   struct CodeSet_CmpGE
+   {
+      static constexpr Code
+         CodeA = Code::CmpU_GE,
+         CodeF = Code::CmpF_GE,
+         CodeI = Code::CmpI_GE,
+         CodeK = Code::CmpU_GE,
+         CodeR = Code::CmpI_GE,
+         CodeU = Code::CmpU_GE,
+         CodeX = Code::CmpI_GE;
+   };
 
-      //
-      // CodeSet_CmpGT
-      //
-      struct CodeSet_CmpGT
-      {
-         static constexpr Code
-            CodeA_B = Code::CmpU_GT_B,
-            CodeA_W = Code::CmpU_GT_W,
-            CodeF_W = Code::CmpF_GT_W,
-            CodeI_W = Code::CmpI_GT_W,
-            CodeK_W = Code::CmpU_GT_W,
-            CodeR_B = Code::CmpI_GT_B,
-            CodeR_W = Code::CmpI_GT_W,
-            CodeU_W = Code::CmpU_GT_W,
-            CodeX_W = Code::CmpI_GT_W;
-      };
+   //
+   // CodeSet_CmpGT
+   //
+   struct CodeSet_CmpGT
+   {
+      static constexpr Code
+         CodeA = Code::CmpU_GT,
+         CodeF = Code::CmpF_GT,
+         CodeI = Code::CmpI_GT,
+         CodeK = Code::CmpU_GT,
+         CodeR = Code::CmpI_GT,
+         CodeU = Code::CmpU_GT,
+         CodeX = Code::CmpI_GT;
+   };
 
-      //
-      // CodeSet_CmpLE
-      //
-      struct CodeSet_CmpLE
-      {
-         static constexpr Code
-            CodeA_B = Code::CmpU_LE_B,
-            CodeA_W = Code::CmpU_LE_W,
-            CodeF_W = Code::CmpF_LE_W,
-            CodeI_W = Code::CmpI_LE_W,
-            CodeK_W = Code::CmpU_LE_W,
-            CodeR_B = Code::CmpI_LE_B,
-            CodeR_W = Code::CmpI_LE_W,
-            CodeU_W = Code::CmpU_LE_W,
-            CodeX_W = Code::CmpI_LE_W;
-      };
+   //
+   // CodeSet_CmpLE
+   //
+   struct CodeSet_CmpLE
+   {
+      static constexpr Code
+         CodeA = Code::CmpU_LE,
+         CodeF = Code::CmpF_LE,
+         CodeI = Code::CmpI_LE,
+         CodeK = Code::CmpU_LE,
+         CodeR = Code::CmpI_LE,
+         CodeU = Code::CmpU_LE,
+         CodeX = Code::CmpI_LE;
+   };
 
-      //
-      // CodeSet_CmpLT
-      //
-      struct CodeSet_CmpLT
-      {
-         static constexpr Code
-            CodeA_B = Code::CmpU_LT_B,
-            CodeA_W = Code::CmpU_LT_W,
-            CodeF_W = Code::CmpF_LT_W,
-            CodeI_W = Code::CmpI_LT_W,
-            CodeK_W = Code::CmpU_LT_W,
-            CodeR_B = Code::CmpI_LT_B,
-            CodeR_W = Code::CmpI_LT_W,
-            CodeU_W = Code::CmpU_LT_W,
-            CodeX_W = Code::CmpI_LT_W;
-      };
+   //
+   // CodeSet_CmpLT
+   //
+   struct CodeSet_CmpLT
+   {
+      static constexpr Code
+         CodeA = Code::CmpU_LT,
+         CodeF = Code::CmpF_LT,
+         CodeI = Code::CmpI_LT,
+         CodeK = Code::CmpU_LT,
+         CodeR = Code::CmpI_LT,
+         CodeU = Code::CmpU_LT,
+         CodeX = Code::CmpI_LT;
+   };
 
-      //
-      // CodeSet_CmpNE
-      //
-      struct CodeSet_CmpNE
-      {
-         static constexpr Code
-            CodeA_B = Code::CmpU_NE_B,
-            CodeA_W = Code::CmpU_NE_W,
-            CodeF_W = Code::CmpF_NE_W,
-            CodeI_W = Code::CmpI_NE_W,
-            CodeK_W = Code::CmpU_NE_W,
-            CodeR_B = Code::CmpI_NE_B,
-            CodeR_W = Code::CmpI_NE_W,
-            CodeU_W = Code::CmpU_NE_W,
-            CodeX_W = Code::CmpI_NE_W;
-      };
-   }
+   //
+   // CodeSet_CmpNE
+   //
+   struct CodeSet_CmpNE
+   {
+      static constexpr Code
+         CodeA = Code::CmpU_NE,
+         CodeF = Code::CmpF_NE,
+         CodeI = Code::CmpI_NE,
+         CodeK = Code::CmpU_NE,
+         CodeR = Code::CmpI_NE,
+         CodeU = Code::CmpU_NE,
+         CodeX = Code::CmpI_NE;
+   };
 }
 
 #endif//GDCC__IR__CodeSet__Cmp_H__

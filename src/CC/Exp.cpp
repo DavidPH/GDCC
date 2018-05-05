@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -259,7 +259,7 @@ namespace GDCC
          if(!type->isCTypeInteg())
             throw Core::ExceptStr(pos, "expected integer type");
 
-         auto code = SR::ExpCode_ArithInteg<IR::CodeSet_Inv>(type).code;
+         auto code = SR::ExpCode_ArithInteg<IR::CodeSet_Inv>(type);
 
          if(code == IR::Code::None)
             throw Core::ExceptStr(pos, "unsupported operand size");

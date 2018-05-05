@@ -22,9 +22,9 @@
 namespace GDCC::BC::DGE
 {
    //
-   // Info::putStmnt_MulU_W
+   // Info::putStmnt_MulU
    //
-   void Info::putStmnt_MulU_W()
+   void Info::putStmnt_MulU()
    {
       auto n = getStmntSizeW();
 
@@ -34,13 +34,13 @@ namespace GDCC::BC::DGE
       if(n == 1)
          return putCode("MulU");
 
-      putStmntCall(getFuncName(IR::Code::MulU_W, n), n * 2);
+      putStmntCall(getFuncName(IR::Code::MulU, n), n * 2);
    }
 
    //
-   // Info::trStmnt_MuXU_W
+   // Info::trStmnt_MuXU
    //
-   void Info::trStmnt_MuXU_W()
+   void Info::trStmnt_MuXU()
    {
       trStmntStk3(false);
    }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -61,81 +61,72 @@ namespace GDCC::BC::ZDACS
    {
       switch(stmnt->code)
       {
-      case IR::Code::AdXU_W: preStmnt_AdXU_W(); break;
+      case IR::Code::AdXU: preStmnt_AdXU(); break;
+      case IR::Code::AddF: preStmnt_AddF(); break;
+      case IR::Code::AddI: preStmnt_AddU(); break;
+      case IR::Code::AddU: preStmnt_AddU(); break;
+      case IR::Code::Bclo: preStmnt_Bclz(true);  break;
+      case IR::Code::Bclz: preStmnt_Bclz(false); break;
 
-      case IR::Code::AddF_W: preStmnt_AddF_W(); break;
-      case IR::Code::AddI_W: preStmnt_AddU_W(); break;
-      case IR::Code::AddU_W: preStmnt_AddU_W(); break;
+      case IR::Code::CmpF_EQ: preStmnt_CmpF_EQ(); break;
+      case IR::Code::CmpF_GE: preStmnt_CmpF_GE(); break;
+      case IR::Code::CmpF_GT: preStmnt_CmpF_GT(); break;
+      case IR::Code::CmpF_LE: preStmnt_CmpF_LE(); break;
+      case IR::Code::CmpF_LT: preStmnt_CmpF_LT(); break;
+      case IR::Code::CmpF_NE: preStmnt_CmpF_NE(); break;
 
-      case IR::Code::Bclo_W: preStmnt_Bclz_W(true);  break;
-      case IR::Code::Bclz_W: preStmnt_Bclz_W(false); break;
-
-      case IR::Code::CmpF_EQ_W: preStmnt_CmpF_EQ_W(); break;
-      case IR::Code::CmpF_GE_W: preStmnt_CmpF_GE_W(); break;
-      case IR::Code::CmpF_GT_W: preStmnt_CmpF_GT_W(); break;
-      case IR::Code::CmpF_LE_W: preStmnt_CmpF_LE_W(); break;
-      case IR::Code::CmpF_LT_W: preStmnt_CmpF_LT_W(); break;
-      case IR::Code::CmpF_NE_W: preStmnt_CmpF_NE_W(); break;
-
-      case IR::Code::CmpI_EQ_W:
-      case IR::Code::CmpU_EQ_W:
-         preStmnt_CmpU_EQ_W(IR::Code::CmpU_EQ_W);
+      case IR::Code::CmpI_EQ:
+      case IR::Code::CmpU_EQ:
+         preStmnt_CmpU_EQ(IR::Code::CmpU_EQ);
          break;
 
-      case IR::Code::CmpI_GE_W: preStmnt_CmpI_GE_W(); break;
-      case IR::Code::CmpI_GT_W: preStmnt_CmpI_GT_W(); break;
-      case IR::Code::CmpI_LE_W: preStmnt_CmpI_LE_W(); break;
-      case IR::Code::CmpI_LT_W: preStmnt_CmpI_LT_W(); break;
+      case IR::Code::CmpI_GE: preStmnt_CmpI_GE(); break;
+      case IR::Code::CmpI_GT: preStmnt_CmpI_GT(); break;
+      case IR::Code::CmpI_LE: preStmnt_CmpI_LE(); break;
+      case IR::Code::CmpI_LT: preStmnt_CmpI_LT(); break;
 
-      case IR::Code::CmpI_NE_W:
-      case IR::Code::CmpU_NE_W:
-         preStmnt_CmpU_EQ_W(IR::Code::CmpU_NE_W);
+      case IR::Code::CmpI_NE:
+      case IR::Code::CmpU_NE:
+         preStmnt_CmpU_EQ(IR::Code::CmpU_NE);
          break;
 
-      case IR::Code::CmpU_GE_W: preStmnt_CmpU_GE_W(); break;
-      case IR::Code::CmpU_GT_W: preStmnt_CmpU_GT_W(); break;
-      case IR::Code::CmpU_LE_W: preStmnt_CmpU_LE_W(); break;
-      case IR::Code::CmpU_LT_W: preStmnt_CmpU_LT_W(); break;
+      case IR::Code::CmpU_GE: preStmnt_CmpU_GE(); break;
+      case IR::Code::CmpU_GT: preStmnt_CmpU_GT(); break;
+      case IR::Code::CmpU_LE: preStmnt_CmpU_LE(); break;
+      case IR::Code::CmpU_LT: preStmnt_CmpU_LT(); break;
 
-      case IR::Code::DivF_W: preStmnt_DivF_W(); break;
-      case IR::Code::DiXI_W: preStmnt_DiXI_W(); break;
-      case IR::Code::DiXU_W: preStmnt_DiXU_W(); break;
-
-      case IR::Code::DivI_W: preStmnt_DiXI_W(); break;
-      case IR::Code::DivK_W: preStmnt_DivX_W(IR::Code::DiXU_W); break;
-      case IR::Code::DivU_W: preStmnt_DiXU_W(); break;
-      case IR::Code::DivX_W: preStmnt_DivX_W(IR::Code::DiXI_W); break;
+      case IR::Code::DiXI: preStmnt_DiXI(); break;
+      case IR::Code::DiXU: preStmnt_DiXU(); break;
+      case IR::Code::DivF: preStmnt_DivF(); break;
+      case IR::Code::DivI: preStmnt_DiXI(); break;
+      case IR::Code::DivK: preStmnt_DivX(IR::Code::DiXU); break;
+      case IR::Code::DivU: preStmnt_DiXU(); break;
+      case IR::Code::DivX: preStmnt_DivX(IR::Code::DiXI); break;
 
       case IR::Code::LAnd:
       case IR::Code::LOrI:
-         if(auto n = getStmntSizeW(); n > 1)
+         if(auto n = getStmntSize(); n > 1)
             preStmntCall(1, n * 2);
          break;
 
-      case IR::Code::ModI_W: preStmnt_DiXI_W(); break;
-      case IR::Code::ModU_W: preStmnt_DiXU_W(); break;
-
-      case IR::Code::MuXU_W: preStmnt_MuXU_W(); break;
-
-      case IR::Code::MulF_W: preStmnt_MulF_W(); break;
-      case IR::Code::MulI_W: preStmnt_MulU_W(); break;
-      case IR::Code::MulK_W: preStmnt_MulK_W(); break;
-      case IR::Code::MulU_W: preStmnt_MulU_W(); break;
-      case IR::Code::MulX_W: preStmnt_MulX_W(); break;
-
+      case IR::Code::ModI: preStmnt_DiXI(); break;
+      case IR::Code::ModU: preStmnt_DiXU(); break;
+      case IR::Code::MuXU: preStmnt_MuXU(); break;
+      case IR::Code::MulF: preStmnt_MulF(); break;
+      case IR::Code::MulI: preStmnt_MulU(); break;
+      case IR::Code::MulK: preStmnt_MulK(); break;
+      case IR::Code::MulU: preStmnt_MulU(); break;
+      case IR::Code::MulX: preStmnt_MulX(); break;
       case IR::Code::Retn: preStmnt_Retn(); break;
-
-      case IR::Code::ShLF_W: preStmnt_ShLF_W(); break;
-      case IR::Code::ShLU_W: preStmnt_ShLU_W(); break;
-      case IR::Code::ShRF_W: preStmnt_ShLF_W(); break;
-      case IR::Code::ShRI_W: preStmnt_ShLU_W(); break;
-      case IR::Code::ShRU_W: preStmnt_ShLU_W(); break;
-
-      case IR::Code::SuXU_W: preStmnt_SuXU_W(); break;
-
-      case IR::Code::SubF_W: preStmnt_SubF_W(); break;
-      case IR::Code::SubI_W: preStmnt_SubU_W(); break;
-      case IR::Code::SubU_W: preStmnt_SubU_W(); break;
+      case IR::Code::ShLF: preStmnt_ShLF(); break;
+      case IR::Code::ShLU: preStmnt_ShLU(); break;
+      case IR::Code::ShRF: preStmnt_ShLF(); break;
+      case IR::Code::ShRI: preStmnt_ShLU(); break;
+      case IR::Code::ShRU: preStmnt_ShLU(); break;
+      case IR::Code::SuXU: preStmnt_SuXU(); break;
+      case IR::Code::SubF: preStmnt_SubF(); break;
+      case IR::Code::SubI: preStmnt_SubU(); break;
+      case IR::Code::SubU: preStmnt_SubU(); break;
 
       default:
          break;
@@ -147,7 +138,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::preStmntCall(Core::FastU retrn, Core::FastU param)
    {
-      preStmntCall(getCallName(stmnt->code, getStmntSizeW()), retrn, param);
+      preStmntCall(getCallName(stmnt->code, getStmntSize()), retrn, param);
    }
 
    //
@@ -171,29 +162,6 @@ namespace GDCC::BC::ZDACS
          // Signal iterator to start over.
          throw ResetFunc();
       }
-   }
-
-   //
-   // Info::preStmntCallDef
-   //
-   IR::Function *Info::preStmntCallDef(Core::String name,
-      Core::FastU retrn, Core::FastU param, Core::FastU localReg,
-      char const *file, std::size_t line)
-   {
-      try {preStmntCall(name, retrn, param);} catch(ResetFunc const &) {}
-
-      IR::Function *newFunc = &prog->getFunction(name);
-
-      if(newFunc->defin)
-         return nullptr;
-
-      newFunc->defin    = true;
-      newFunc->label    = name + "$label";
-      newFunc->localReg = localReg;
-
-      newFunc->block.setOrigin({file, line});
-
-      return newFunc;
    }
 
    //

@@ -22,9 +22,9 @@
 namespace GDCC::BC::DGE
 {
    //
-   // Info::preStmnt_CmpU_EQ_W
+   // Info::preStmnt_CmpU_EQ
    //
-   void Info::preStmnt_CmpU_EQ_W(AddFunc add)
+   void Info::preStmnt_CmpU_EQ(AddFunc add)
    {
       auto n = getStmntSizeW();
 
@@ -35,17 +35,17 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_CmpU_EQ_W
+   // Info::putStmnt_CmpU_EQ
    //
-   void Info::putStmnt_CmpU_EQ_W(IR::Code code)
+   void Info::putStmnt_CmpU_EQ(IR::Code code)
    {
       auto n = getStmntSizeW();
 
       if(n == 0)
-         return putCode("Push_Lit", code == IR::Code::CmpU_EQ_W);
+         return putCode("Push_Lit", code == IR::Code::CmpU_EQ);
 
       if(n == 1)
-         return putCode(code == IR::Code::CmpU_EQ_W ? "CmpU_EQ" : "CmpU_NE");
+         return putCode(code == IR::Code::CmpU_EQ ? "CmpU_EQ" : "CmpU_NE");
 
       putStmntCall(getFuncName(code, n), n * 2);
    }

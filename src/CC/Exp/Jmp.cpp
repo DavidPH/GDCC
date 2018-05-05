@@ -95,7 +95,7 @@ namespace GDCC
 
             // TODO: Convert envTmp to an SR::Arg to avoid stack op.
             env->genStmntStk(ctx);
-            ctx.block.addStmnt(IR::Code::Move_W, envTmp.getArg(), envTmp.getArgStk());
+            ctx.block.addStmnt(IR::Code::Move, envTmp.getArg(), envTmp.getArgStk());
          }
 
          // Generate dynamic jump target for addr.

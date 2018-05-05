@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2017 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,37 +20,32 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // CodeSet_Inv
+   //
+   struct CodeSet_Inv
    {
-      //
-      // CodeSet_Inv
-      //
-      struct CodeSet_Inv
-      {
-         static constexpr Code
-            CodeI_W = Code::BNot_W,
-            CodeU_W = Code::BNot_W;
-      };
+      static constexpr Code
+         CodeI = Code::BNot,
+         CodeU = Code::BNot;
+   };
 
-      //
-      // CodeSet_Neg
-      //
-      struct CodeSet_Neg
-      {
-         static constexpr Code
-            CodeA_B = Code::NegI_B,
-            CodeA_W = Code::NegI_W,
-            CodeF_W = Code::NegF_W,
-            CodeI_W = Code::NegI_W,
-            CodeK_W = Code::NegI_W,
-            CodeR_B = Code::NegI_B,
-            CodeR_W = Code::NegI_W,
-            CodeU_W = Code::NegI_W,
-            CodeX_W = Code::NegI_W;
-      };
-   }
+   //
+   // CodeSet_Neg
+   //
+   struct CodeSet_Neg
+   {
+      static constexpr Code
+         CodeA = Code::NegI,
+         CodeF = Code::NegF,
+         CodeI = Code::NegI,
+         CodeK = Code::NegI,
+         CodeR = Code::NegI,
+         CodeU = Code::NegI,
+         CodeX = Code::NegI;
+   };
 }
 
 #endif//GDCC__IR__CodeSet__Unary_H__

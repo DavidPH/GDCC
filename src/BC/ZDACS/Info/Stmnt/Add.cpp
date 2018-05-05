@@ -26,30 +26,30 @@
 namespace GDCC::BC::ZDACS
 {
    //
-   // Info::genStmnt_AdXU_W
+   // Info::genStmnt_AdXU
    //
-   void Info::genStmnt_AdXU_W()
+   void Info::genStmnt_AdXU()
    {
       Core::FastU lop = stmnt->args.size() == 3 ? 1 : 2, rop = lop + 1;
-      Core::FastU lenAdXU_W1 =
+      Core::FastU lenAdXU1 =
          lenPushArg(stmnt->args[lop], 0) * 2 +
          lenPushArg(stmnt->args[rop], 0) + 16;
 
       // No carry.
       if(stmnt->args.size() == 3)
-         numChunkCODE += lenAdXU_W1;
+         numChunkCODE += lenAdXU1;
 
       // With carry.
       else
-         numChunkCODE += lenAdXU_W1 * 2 + 56;
+         numChunkCODE += lenAdXU1 * 2 + 56;
    }
 
    //
-   // Info::genStmnt_AddU_W
+   // Info::genStmnt_AddU
    //
-   void Info::genStmnt_AddU_W()
+   void Info::genStmnt_AddU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n != 1)
       {
@@ -64,38 +64,38 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_SuXU_W
+   // Info::genStmnt_SuXU
    //
-   void Info::genStmnt_SuXU_W()
+   void Info::genStmnt_SuXU()
    {
       Core::FastU lop = stmnt->args.size() == 3 ? 1 : 2, rop = lop + 1;
-      Core::FastU lenSuXU_W1 =
+      Core::FastU lenSuXU1 =
          lenPushArg(stmnt->args[lop], 0) * 2 +
          lenPushArg(stmnt->args[rop], 0) + 20;
 
       // No carry.
       if(stmnt->args.size() == 3)
-         numChunkCODE += lenSuXU_W1;
+         numChunkCODE += lenSuXU1;
 
       // With carry.
       else
-         numChunkCODE += lenSuXU_W1 * 2 + 64;
+         numChunkCODE += lenSuXU1 * 2 + 64;
    }
 
    //
-   // Info::preStmnt_AdXU_W
+   // Info::preStmnt_AdXU
    //
-   void Info::preStmnt_AdXU_W()
+   void Info::preStmnt_AdXU()
    {
-      preStmnt_CmpU_W1(IR::Code::CmpU_LT_W, IR::Code::CmpI_LT_W, false, true);
+      preStmnt_CmpU1(IR::Code::CmpU_LT, IR::Code::CmpI_LT, false, true);
    }
 
    //
-   // Info::preStmnt_AddF_W
+   // Info::preStmnt_AddF
    //
-   void Info::preStmnt_AddF_W()
+   void Info::preStmnt_AddF()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return;
@@ -104,11 +104,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::preStmnt_AddU_W
+   // Info::preStmnt_AddU
    //
-   void Info::preStmnt_AddU_W()
+   void Info::preStmnt_AddU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n <= 1)
          return;
@@ -117,19 +117,19 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::preStmnt_SuXU_W
+   // Info::preStmnt_SuXU
    //
-   void Info::preStmnt_SuXU_W()
+   void Info::preStmnt_SuXU()
    {
-      preStmnt_CmpU_W1(IR::Code::CmpU_GT_W, IR::Code::CmpI_GT_W, true, false);
+      preStmnt_CmpU1(IR::Code::CmpU_GT, IR::Code::CmpI_GT, true, false);
    }
 
    //
-   // Info::preStmnt_SubF_W
+   // Info::preStmnt_SubF
    //
-   void Info::preStmnt_SubF_W()
+   void Info::preStmnt_SubF()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return;
@@ -138,11 +138,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::preStmnt_SubU_W
+   // Info::preStmnt_SubU
    //
-   void Info::preStmnt_SubU_W()
+   void Info::preStmnt_SubU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n <= 1)
          return;
@@ -151,45 +151,45 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_AdXU_W
+   // Info::putStmnt_AdXU
    //
-   void Info::putStmnt_AdXU_W()
+   void Info::putStmnt_AdXU()
    {
       Core::FastU lop = stmnt->args.size() == 3 ? 1 : 2, rop = lop + 1;
 
       //
-      // putAdXU_W1
+      // putAdXU1
       //
-      auto putAdXU_W1 = [&]()
+      auto putAdXU1 = [&]()
       {
          putStmntPushArg(stmnt->args[lop], 0);
          putStmntPushArg(stmnt->args[rop], 0);
          putCode(Code::AddU);
          putCode(Code::Copy);
          putStmntPushArg(stmnt->args[lop], 0);
-         putStmntCall("___GDCC__CmpU_LT_W1", 1);
+         putStmntCall(getCallName(IR::Code::CmpU_LT, 1), 1);
       };
 
       // No carry.
       if(stmnt->args.size() == 3)
-         putAdXU_W1();
+         putAdXU1();
 
       // With carry.
       else
       {
-         Core::FastU lenAdXU_W1 =
+         Core::FastU lenAdXU1 =
             lenPushArg(stmnt->args[lop], 0) * 2 +
             lenPushArg(stmnt->args[rop], 0) + 16;
 
-         Core::FastU lenCarry0 = lenAdXU_W1 +  8;
-         Core::FastU lenCarry1 = lenAdXU_W1 + 40;
+         Core::FastU lenCarry0 = lenAdXU1 +  8;
+         Core::FastU lenCarry1 = lenAdXU1 + 40;
 
          putCode(Code::Jcnd_Tru, putPos + lenCarry0 + 8);
 
-         putAdXU_W1();
+         putAdXU1();
          putCode(Code::Jump_Lit, putPos + lenCarry1 + 8);
 
-         putAdXU_W1();
+         putAdXU1();
          putCode(Code::Drop_LocReg, func->localReg + 0);
          putCode(Code::Push_Lit,    1);
          putCode(Code::AddU);
@@ -201,11 +201,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_AddU_W
+   // Info::putStmnt_AddU
    //
-   void Info::putStmnt_AddU_W()
+   void Info::putStmnt_AddU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n != 1)
       {
@@ -247,46 +247,46 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_SuXU_W
+   // Info::putStmnt_SuXU
    //
-   void Info::putStmnt_SuXU_W()
+   void Info::putStmnt_SuXU()
    {
       Core::FastU lop = stmnt->args.size() == 3 ? 1 : 2, rop = lop + 1;
 
       //
-      // putSuXU_W1
+      // putSuXU1
       //
-      auto putSuXU_W1 = [&]()
+      auto putSuXU1 = [&]()
       {
          putStmntPushArg(stmnt->args[lop], 0);
          putStmntPushArg(stmnt->args[rop], 0);
          putCode(Code::SubU);
          putCode(Code::Copy);
          putStmntPushArg(stmnt->args[lop], 0);
-         putStmntCall("___GDCC__CmpU_GT_W1", 1);
+         putStmntCall(getCallName(IR::Code::CmpU_GT, 1), 1);
          putCode(Code::NegI);
       };
 
       // No carry.
       if(stmnt->args.size() == 3)
-         putSuXU_W1();
+         putSuXU1();
 
       // With carry.
       else
       {
-         Core::FastU lenSuXU_W1 =
+         Core::FastU lenSuXU1 =
             lenPushArg(stmnt->args[lop], 0) * 2 +
             lenPushArg(stmnt->args[rop], 0) + 20;
 
-         Core::FastU lenCarry0 = lenSuXU_W1 +  8;
-         Core::FastU lenCarry1 = lenSuXU_W1 + 48;
+         Core::FastU lenCarry0 = lenSuXU1 +  8;
+         Core::FastU lenCarry1 = lenSuXU1 + 48;
 
          putCode(Code::Jcnd_Tru, putPos + lenCarry0 + 8);
 
-         putSuXU_W1();
+         putSuXU1();
          putCode(Code::Jump_Lit, putPos + lenCarry1 + 8);
 
-         putSuXU_W1();
+         putSuXU1();
          putCode(Code::Drop_LocReg, func->localReg + 0);
          putCode(Code::Push_Lit,    1);
          putCode(Code::SubU);
@@ -300,11 +300,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_SubU_W
+   // Info::putStmnt_SubU
    //
-   void Info::putStmnt_SubU_W()
+   void Info::putStmnt_SubU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n != 1)
       {
@@ -346,13 +346,13 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_AdXU_W
+   // Info::trStmnt_AdXU
    //
-   void Info::trStmnt_AdXU_W()
+   void Info::trStmnt_AdXU()
    {
       CheckArgC(stmnt, 3);
 
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n != 1)
          throw Core::ExceptStr(stmnt->pos, "unsupported AdXU_W size");
@@ -367,11 +367,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_AddU_W
+   // Info::trStmnt_AddU
    //
-   void Info::trStmnt_AddU_W()
+   void Info::trStmnt_AddU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n != 1)
       {
@@ -422,13 +422,13 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_SuXU_W
+   // Info::trStmnt_SuXU
    //
-   void Info::trStmnt_SuXU_W()
+   void Info::trStmnt_SuXU()
    {
       CheckArgC(stmnt, 3);
 
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n != 1)
          throw Core::ExceptStr(stmnt->pos, "unsupported SuXU_W size");
@@ -443,11 +443,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_SubU_W
+   // Info::trStmnt_SubU
    //
-   void Info::trStmnt_SubU_W()
+   void Info::trStmnt_SubU()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n != 1)
       {

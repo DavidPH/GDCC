@@ -55,8 +55,8 @@ namespace GDCC
       //
       static CodePair GenCond_Codes(SR::Statement const *, SR::Type const *t)
       {
-         return {SR::ExpCode_ArithInteg<IR::CodeSet_CmpLT>(t).code,
-                 SR::ExpCode_ArithInteg<IR::CodeSet_CmpEQ>(t).code};
+         return {SR::ExpCode_ArithInteg<IR::CodeSet_CmpLT>(t),
+                 SR::ExpCode_ArithInteg<IR::CodeSet_CmpEQ>(t)};
       }
 
       //
@@ -178,7 +178,7 @@ namespace GDCC
          stmnt->cond->genStmntStk(ctx);
 
          SR::Temporary tmp{ctx, stmnt->pos, stmnt->cond->getType()->getSizeWords()};
-         ctx.block.addStmnt(IR::Code::Move_W, tmp.getArg(), tmp.getArgStk());
+         ctx.block.addStmnt(IR::Code::Move, tmp.getArg(), tmp.getArgStk());
 
          // Begin binary search.
          GenCond_SearchPart(stmnt, ctx, codes, tmp, cases.data() + 1,
@@ -212,7 +212,7 @@ namespace GDCC
          }
 
          ctx.block.addStmntArgs(IR::Code::Jcnd_Tab, std::move(args));
-         ctx.block.addStmnt(IR::Code::Move_W,
+         ctx.block.addStmnt(IR::Code::Move,
             IR::Arg_Nul(caseSize), IR::Arg_Stk(caseSize));
          GenCond_BranchDefault(stmnt, ctx);
       }

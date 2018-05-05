@@ -320,8 +320,6 @@ namespace GDCC
 
          void moveArgStk_dst(IR::Arg &idx);
          void moveArgStk_src(IR::Arg &idx);
-         void moveArgStkB_dst(IR::Arg &idx);
-         void moveArgStkB_src(IR::Arg &idx);
 
          bool optStmnt_Cspe_Drop();
 

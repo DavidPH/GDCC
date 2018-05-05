@@ -24,9 +24,9 @@
 namespace GDCC::BC::DGE
 {
    //
-   // Info::putStmnt_Copy_W
+   // Info::putStmnt_Copy
    //
-   void Info::putStmnt_Copy_W()
+   void Info::putStmnt_Copy()
    {
       auto n = getStmntSizeW();
 
@@ -40,17 +40,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_Move_B
+   // Info::putStmnt_Move
    //
-   void Info::putStmnt_Move_B()
-   {
-      putStmnt_Move_W();
-   }
-
-   //
-   // Info::putStmnt_Move_W
-   //
-   void Info::putStmnt_Move_W()
+   void Info::putStmnt_Move()
    {
       auto n = getStmntSize();
 
@@ -177,9 +169,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_Swap_W
+   // Info::putStmnt_Swap
    //
-   void Info::putStmnt_Swap_W()
+   void Info::putStmnt_Swap()
    {
       auto n = getStmntSizeW();
 
@@ -195,9 +187,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_Copy_W
+   // Info::trStmnt_Copy
    //
-   void Info::trStmnt_Copy_W()
+   void Info::trStmnt_Copy()
    {
       CheckArgC(stmnt, 2);
       CheckArgB(stmnt, 0, IR::ArgBase::Stk);
@@ -205,18 +197,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_Move_B
+   // Info::trStmnt_Move
    //
-   void Info::trStmnt_Move_B()
-   {
-      stmnt->code = IR::Code::Move_W;
-      trStmnt_Move_W();
-   }
-
-   //
-   // Info::trStmnt_Move_W
-   //
-   void Info::trStmnt_Move_W()
+   void Info::trStmnt_Move()
    {
       CheckArgC(stmnt, 2);
       CheckArg(stmnt->args[0], stmnt->pos);
@@ -273,9 +256,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_Swap_W
+   // Info::trStmnt_Swap
    //
-   void Info::trStmnt_Swap_W()
+   void Info::trStmnt_Swap()
    {
       CheckArgC(stmnt, 2);
       CheckArgB(stmnt, 0, IR::ArgBase::Stk);

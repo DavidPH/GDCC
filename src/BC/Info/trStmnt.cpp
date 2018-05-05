@@ -52,7 +52,7 @@ namespace GDCC::BC
       catch(ResetStmnt const &)
       {
          if(ordered && stmnt->next->args[2].a == IR::ArgBase::Stk)
-            block->addStmnt(stmnt->next, IR::Code::Swap_W,
+            block->addStmnt(stmnt->next, IR::Code::Swap,
                IR::Arg_Stk(size), IR::Arg_Stk(size));
 
          throw;

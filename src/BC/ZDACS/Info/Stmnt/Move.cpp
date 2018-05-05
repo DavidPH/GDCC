@@ -26,11 +26,11 @@
 namespace GDCC::BC::ZDACS
 {
    //
-   // Info::genStmnt_Move_W
+   // Info::genStmnt_Move
    //
-   void Info::genStmnt_Move_W()
+   void Info::genStmnt_Move()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       // Multi-word?
       if(n != 1)
@@ -52,19 +52,19 @@ namespace GDCC::BC::ZDACS
          break;
 
       case IR::ArgBase::GblArr:
-         genStmnt_Move_W__Stk_Arr(stmnt->args[1].aGblArr);
+         genStmnt_Move__Stk_Arr(stmnt->args[1].aGblArr);
          break;
 
       case IR::ArgBase::HubArr:
-         genStmnt_Move_W__Stk_Arr(stmnt->args[1].aHubArr);
+         genStmnt_Move__Stk_Arr(stmnt->args[1].aHubArr);
          break;
 
       case IR::ArgBase::LocArr:
-         genStmnt_Move_W__Stk_Arr(stmnt->args[1].aLocArr);
+         genStmnt_Move__Stk_Arr(stmnt->args[1].aLocArr);
          break;
 
       case IR::ArgBase::ModArr:
-         genStmnt_Move_W__Stk_Arr(stmnt->args[1].aModArr);
+         genStmnt_Move__Stk_Arr(stmnt->args[1].aModArr);
          break;
 
       case IR::ArgBase::Sta:
@@ -90,19 +90,19 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::Nul: numChunkCODE += 4; break;
 
       case IR::ArgBase::GblArr:
-         genStmnt_Move_W__Arr_Stk(stmnt->args[0].aGblArr);
+         genStmnt_Move__Arr_Stk(stmnt->args[0].aGblArr);
          break;
 
       case IR::ArgBase::HubArr:
-         genStmnt_Move_W__Arr_Stk(stmnt->args[0].aHubArr);
+         genStmnt_Move__Arr_Stk(stmnt->args[0].aHubArr);
          break;
 
       case IR::ArgBase::LocArr:
-         genStmnt_Move_W__Arr_Stk(stmnt->args[0].aLocArr);
+         genStmnt_Move__Arr_Stk(stmnt->args[0].aLocArr);
          break;
 
       case IR::ArgBase::ModArr:
-         genStmnt_Move_W__Arr_Stk(stmnt->args[0].aModArr);
+         genStmnt_Move__Arr_Stk(stmnt->args[0].aModArr);
          break;
 
       case IR::ArgBase::Sta:
@@ -120,27 +120,27 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_Move_W__Arr_Stk
+   // Info::genStmnt_Move__Arr_Stk
    //
-   void Info::genStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr)
+   void Info::genStmnt_Move__Arr_Stk(IR::ArgPtr2 const &arr)
    {
       numChunkCODE += arr.off ? 24 : 12;
    }
 
    //
-   // Info::genStmnt_Move_W__Stk_Arr
+   // Info::genStmnt_Move__Stk_Arr
    //
-   void Info::genStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr)
+   void Info::genStmnt_Move__Stk_Arr(IR::ArgPtr2 const &arr)
    {
       numChunkCODE += arr.off ? 20 : 8;
    }
 
    //
-   // Info::putStmnt_Move_W
+   // Info::putStmnt_Move
    //
-   void Info::putStmnt_Move_W()
+   void Info::putStmnt_Move()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       // Multi-word?
       if(n != 1)
@@ -184,19 +184,19 @@ namespace GDCC::BC::ZDACS
          break;
 
       case IR::ArgBase::GblArr:
-         putStmnt_Move_W__Stk_Arr(stmnt->args[1].aGblArr, Code::Push_GblArr);
+         putStmnt_Move__Stk_Arr(stmnt->args[1].aGblArr, Code::Push_GblArr);
          break;
 
       case IR::ArgBase::HubArr:
-         putStmnt_Move_W__Stk_Arr(stmnt->args[1].aHubArr, Code::Push_HubArr);
+         putStmnt_Move__Stk_Arr(stmnt->args[1].aHubArr, Code::Push_HubArr);
          break;
 
       case IR::ArgBase::LocArr:
-         putStmnt_Move_W__Stk_Arr(stmnt->args[1].aLocArr, Code::Push_LocArr);
+         putStmnt_Move__Stk_Arr(stmnt->args[1].aLocArr, Code::Push_LocArr);
          break;
 
       case IR::ArgBase::ModArr:
-         putStmnt_Move_W__Stk_Arr(stmnt->args[1].aModArr, Code::Push_ModArr);
+         putStmnt_Move__Stk_Arr(stmnt->args[1].aModArr, Code::Push_ModArr);
          break;
 
       case IR::ArgBase::Sta:
@@ -250,15 +250,15 @@ namespace GDCC::BC::ZDACS
          break;
 
       case IR::ArgBase::GblArr:
-         putStmnt_Move_W__Arr_Stk(stmnt->args[0].aGblArr, Code::Drop_GblArr);
+         putStmnt_Move__Arr_Stk(stmnt->args[0].aGblArr, Code::Drop_GblArr);
          break;
 
       case IR::ArgBase::LocArr:
-         putStmnt_Move_W__Arr_Stk(stmnt->args[0].aLocArr, Code::Drop_LocArr);
+         putStmnt_Move__Arr_Stk(stmnt->args[0].aLocArr, Code::Drop_LocArr);
          break;
 
       case IR::ArgBase::ModArr:
-         putStmnt_Move_W__Arr_Stk(stmnt->args[0].aModArr, Code::Drop_ModArr);
+         putStmnt_Move__Arr_Stk(stmnt->args[0].aModArr, Code::Drop_ModArr);
          break;
 
       case IR::ArgBase::Nul:
@@ -279,7 +279,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       case IR::ArgBase::HubArr:
-         putStmnt_Move_W__Arr_Stk(stmnt->args[0].aHubArr, Code::Drop_HubArr);
+         putStmnt_Move__Arr_Stk(stmnt->args[0].aHubArr, Code::Drop_HubArr);
          break;
 
       default:
@@ -293,9 +293,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_Move_W__Arr_Stk
+   // Info::putStmnt_Move__Arr_Stk
    //
-   void Info::putStmnt_Move_W__Arr_Stk(IR::ArgPtr2 const &arr, Code code)
+   void Info::putStmnt_Move__Arr_Stk(IR::ArgPtr2 const &arr, Code code)
    {
       if(arr.off)
       {
@@ -310,9 +310,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_Move_W__Stk_Arr
+   // Info::putStmnt_Move__Stk_Arr
    //
-   void Info::putStmnt_Move_W__Stk_Arr(IR::ArgPtr2 const &arr, Code code)
+   void Info::putStmnt_Move__Stk_Arr(IR::ArgPtr2 const &arr, Code code)
    {
       if(arr.off)
       {
@@ -326,15 +326,15 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_Move_W
+   // Info::trStmnt_Move
    //
-   void Info::trStmnt_Move_W()
+   void Info::trStmnt_Move()
    {
       CheckArgC(stmnt, 2);
       CheckArg(stmnt->args[0], stmnt->pos);
       CheckArg(stmnt->args[1], stmnt->pos);
 
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       // Multi-word?
       if(n != 1)

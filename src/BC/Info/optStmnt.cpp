@@ -52,7 +52,7 @@ namespace GDCC::BC
          return false;
 
       // Must be followed by a Move(Nul() Stk()).
-      if(next->code != IR::Code::Move_W || next->args.size() != 2 ||
+      if(next->code != IR::Code::Move || next->args.size() != 2 ||
          next->args[0].a != IR::ArgBase::Nul || next->args[1].a != IR::ArgBase::Stk)
          return false;
 

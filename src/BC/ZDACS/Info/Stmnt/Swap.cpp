@@ -24,11 +24,11 @@
 namespace GDCC::BC::ZDACS
 {
    //
-   // Info::genStmnt_Swap_W
+   // Info::genStmnt_Swap
    //
-   void Info::genStmnt_Swap_W()
+   void Info::genStmnt_Swap()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 1)
          numChunkCODE += 4;
@@ -37,11 +37,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_Swap_W
+   // Info::putStmnt_Swap
    //
-   void Info::putStmnt_Swap_W()
+   void Info::putStmnt_Swap()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 1)
       {
@@ -61,13 +61,13 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_Swap_W
+   // Info::trStmnt_Swap
    //
-   void Info::trStmnt_Swap_W()
+   void Info::trStmnt_Swap()
    {
       CheckArgC(stmnt, 2);
 
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n != 1)
          func->setLocalTmp(n * 2);

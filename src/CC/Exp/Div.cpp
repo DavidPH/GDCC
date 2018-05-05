@@ -99,7 +99,7 @@ namespace GDCC
             auto type = SR::Type::None;
             std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
-            auto code = SR::ExpCode_ArithInteg<IR::CodeSet_DiX>(type).code;
+            auto code = SR::ExpCode_ArithInteg<IR::CodeSet_DiX>(type);
 
             return SR::Exp_Arith<SR::Exp_DivEx>::Create(
                code, Type_Div::Get(type), expL, expR, pos);

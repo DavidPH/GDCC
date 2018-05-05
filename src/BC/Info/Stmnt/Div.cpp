@@ -31,53 +31,53 @@ namespace GDCC::BC
    //
    void Info::addFunc_DiXI_W(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::DiXI_W, n, n * 2, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre(Code::DiXI, n, n * 2, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       IR::Glyph labelL0R1{prog, name + "$l0r1"};
       IR::Glyph labelL1  {prog, name + "$l1"};
       IR::Glyph labelL1R1{prog, name + "$l1r1"};
 
-      GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, lop.hi, 0x80000000);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, lop.hi, 0x80000000);
       GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelL1);
 
-      GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, rop.hi, 0x80000000);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, rop.hi, 0x80000000);
       GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelL0R1);
 
       // +dividend, +divisor -> +quotient, +remainder
-      GDCC_BC_AddStmnt(Code::DiXU_W, n * 2, stk, lop, rop);
-      GDCC_BC_AddStmnt(Code::Retn,   n * 2, stk);
+      GDCC_BC_AddStmnt(Code::DiXU, n * 2, stk, lop, rop);
+      GDCC_BC_AddStmnt(Code::Retn, n * 2, stk);
 
       GDCC_BC_AddLabel(labelL0R1);
-      GDCC_BC_AddStmnt(Code::NegI_W, n, rop, rop);
+      GDCC_BC_AddStmnt(Code::NegI, n, rop, rop);
 
       // +dividend, -divisor -> -quotient, -remainder
-      GDCC_BC_AddStmnt(Code::DiXU_W, n * 2, stk, lop, rop);
-      GDCC_BC_AddStmnt(Code::NegI_W, n,     rop, stk);
-      GDCC_BC_AddStmnt(Code::NegI_W, n,     stk, stk);
-      GDCC_BC_AddStmnt(Code::Move_W, n,     stk, rop);
-      GDCC_BC_AddStmnt(Code::Retn,   n * 2, stk);
+      GDCC_BC_AddStmnt(Code::DiXU, n * 2, stk, lop, rop);
+      GDCC_BC_AddStmnt(Code::NegI, n,     rop, stk);
+      GDCC_BC_AddStmnt(Code::NegI, n,     stk, stk);
+      GDCC_BC_AddStmnt(Code::Move, n,     stk, rop);
+      GDCC_BC_AddStmnt(Code::Retn, n * 2, stk);
 
       GDCC_BC_AddLabel(labelL1);
-      GDCC_BC_AddStmnt(Code::NegI_W, n, lop, lop);
+      GDCC_BC_AddStmnt(Code::NegI, n, lop, lop);
 
-      GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, rop.hi, 0x80000000);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, rop.hi, 0x80000000);
       GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelL1R1);
 
       // -dividend, +divisor -> -quotient, +remainder
-      GDCC_BC_AddStmnt(Code::DiXU_W, n * 2, stk, lop, rop);
-      GDCC_BC_AddStmnt(Code::Move_W, n,     rop, stk);
-      GDCC_BC_AddStmnt(Code::NegI_W, n,     stk, stk);
-      GDCC_BC_AddStmnt(Code::Move_W, n,     stk, rop);
-      GDCC_BC_AddStmnt(Code::Retn,   n * 2, stk);
+      GDCC_BC_AddStmnt(Code::DiXU, n * 2, stk, lop, rop);
+      GDCC_BC_AddStmnt(Code::Move, n,     rop, stk);
+      GDCC_BC_AddStmnt(Code::NegI, n,     stk, stk);
+      GDCC_BC_AddStmnt(Code::Move, n,     stk, rop);
+      GDCC_BC_AddStmnt(Code::Retn, n * 2, stk);
 
       GDCC_BC_AddLabel(labelL1R1);
-      GDCC_BC_AddStmnt(Code::NegI_W, n, rop, rop);
+      GDCC_BC_AddStmnt(Code::NegI, n, rop, rop);
 
       // -dividend, -divisor -> +quotient, -remainder
-      GDCC_BC_AddStmnt(Code::DiXU_W, n * 2, stk, lop, rop);
-      GDCC_BC_AddStmnt(Code::NegI_W, n,     stk, stk);
-      GDCC_BC_AddStmnt(Code::Retn,   n * 2, stk);
+      GDCC_BC_AddStmnt(Code::DiXU, n * 2, stk, lop, rop);
+      GDCC_BC_AddStmnt(Code::NegI, n,     stk, stk);
+      GDCC_BC_AddStmnt(Code::Retn, n * 2, stk);
 
       GDCC_BC_AddFuncEnd();
    }
@@ -87,7 +87,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_DiXU_W(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::DiXU_W, n, n * 2, n * 2, n * 5, __FILE__);
+      GDCC_BC_AddFuncPre(Code::DiXU, n, n * 2, n * 2, n * 5, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       IR::Glyph labelFull    {prog, name + "$full"};
@@ -106,55 +106,55 @@ namespace GDCC::BC
       GDCC_BC_AddFuncObjReg(mask, n, n * 4);
 
       // If both operands have the high word clear, defer to smaller op.
-      GDCC_BC_AddStmnt(Code::BOrI_W,   1, stk, lop.hi, rop.hi);
+      GDCC_BC_AddStmnt(Code::BOrI,     1, stk, lop.hi, rop.hi);
       GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelFull);
 
-      GDCC_BC_AddStmnt(Code::DiXU_W, n*2-2, stk, lpart, rpart);
-      GDCC_BC_AddStmnt(Code::Move_W, n - 1, rpart, stk);
-      GDCC_BC_AddStmnt(Code::Move_W, n - 1, lpart, stk);
+      GDCC_BC_AddStmnt(Code::DiXU, n*2-2, stk, lpart, rpart);
+      GDCC_BC_AddStmnt(Code::Move, n - 1, rpart, stk);
+      GDCC_BC_AddStmnt(Code::Move, n - 1, lpart, stk);
 
       GDCC_BC_AddStmnt(Code::Retn, n * 2, respt);
 
       GDCC_BC_AddLabel(labelFull);
-      GDCC_BC_AddStmnt(Code::Move_W, n, quot, 0);
-      GDCC_BC_AddStmnt(Code::Move_W, n, rem,  lop);
+      GDCC_BC_AddStmnt(Code::Move, n, quot, 0);
+      GDCC_BC_AddStmnt(Code::Move, n, rem,  lop);
 
       // If lop < rop, return now.
-      GDCC_BC_AddStmnt(Code::CmpU_LT_W, 1, stk, lop, rop);
-      GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelRetn);
+      GDCC_BC_AddStmnt(Code::CmpU_LT,  1, stk, lop, rop);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelRetn);
 
       // Calculate mask and adjust divisor.
-      GDCC_BC_AddStmnt(Code::Bclz_W, 1, stk, rop);
-      GDCC_BC_AddStmnt(Code::Bclz_W, 1, stk, lop);
-      GDCC_BC_AddStmnt(Code::SubU_W, 1, mask.lo, stk, stk);
+      GDCC_BC_AddStmnt(Code::Bclz, 1, stk, rop);
+      GDCC_BC_AddStmnt(Code::Bclz, 1, stk, lop);
+      GDCC_BC_AddStmnt(Code::SubU, 1, mask.lo, stk, stk);
 
-      GDCC_BC_AddStmnt(Code::ShLU_W, n, rop,  rop, mask.lo);
-      GDCC_BC_AddStmnt(Code::ShLU_W, n, mask, 1,   mask.lo);
+      GDCC_BC_AddStmnt(Code::ShLU, n, rop,  rop, mask.lo);
+      GDCC_BC_AddStmnt(Code::ShLU, n, mask, 1,   mask.lo);
 
       // Division loop.
       GDCC_BC_AddStmnt(Code::Jump, 1, labelLoopCond);
 
       GDCC_BC_AddLabel(labelLoopBody);
-      GDCC_BC_AddStmnt(Code::CmpU_GE_W, 1, stk, rem, rop);
-      GDCC_BC_AddStmnt(Code::Jcnd_Nil,  1, stk, labelLoopShft);
+      GDCC_BC_AddStmnt(Code::CmpU_GE,  1, stk, rem, rop);
+      GDCC_BC_AddStmnt(Code::Jcnd_Nil, 1, stk, labelLoopShft);
 
-      GDCC_BC_AddStmnt(Code::BOrI_W, n, quot, quot, mask);
-      GDCC_BC_AddStmnt(Code::SubU_W, n, rem,  rem,  rop);
+      GDCC_BC_AddStmnt(Code::BOrI, n, quot, quot, mask);
+      GDCC_BC_AddStmnt(Code::SubU, n, rem,  rem,  rop);
 
       GDCC_BC_AddLabel(labelLoopShft);
-      GDCC_BC_AddStmnt(Code::ShRU_W, 1, rop,  rop,  1);
-      GDCC_BC_AddStmnt(Code::ShRU_W, 1, mask, mask, 1);
+      GDCC_BC_AddStmnt(Code::ShRU, 1, rop,  rop,  1);
+      GDCC_BC_AddStmnt(Code::ShRU, 1, mask, mask, 1);
 
       GDCC_BC_AddLabel(labelLoopCond);
       // TODO: Use multiword LAnd.
-      GDCC_BC_AddStmnt(Code::Move_W,    n, stk, mask);
+      GDCC_BC_AddStmnt(Code::Move,     n, stk, mask);
       for(Core::FastU i = n; --i;)
-         GDCC_BC_AddStmnt(Code::BOrI_W, 1, stk, stk, stk);
-      GDCC_BC_AddStmnt(Code::Move_W,    n, stk, rem);
+         GDCC_BC_AddStmnt(Code::BOrI,  1, stk, stk, stk);
+      GDCC_BC_AddStmnt(Code::Move,     n, stk, rem);
       for(Core::FastU i = n; --i;)
-         GDCC_BC_AddStmnt(Code::BOrI_W, 1, stk, stk, stk);
-      GDCC_BC_AddStmnt(Code::LAnd,      1, stk, stk, stk);
-      GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelLoopBody);
+         GDCC_BC_AddStmnt(Code::BOrI,  1, stk, stk, stk);
+      GDCC_BC_AddStmnt(Code::LAnd,     1, stk, stk, stk);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelLoopBody);
 
       GDCC_BC_AddLabel(labelRetn);
       GDCC_BC_AddStmnt(Code::Retn, n * 2, res);
@@ -167,7 +167,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_DivF_W(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::DivF_W, n, n, n * 2, n * 3 + 3, __FILE__);
+      GDCC_BC_AddFuncPre(Code::DivF, n, n, n * 2, n * 3 + 3, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       GDCC_BC_AddFuncObjReg(man, n, n * 2);
@@ -192,87 +192,87 @@ namespace GDCC::BC
       IR::Glyph labelNaN{prog, name + "$nan"};
 
       // Determine result sign.
-      GDCC_BC_AddStmnt(Code::BOrX_W,    1, stk, lop.hi, rop.hi);
-      GDCC_BC_AddStmnt(Code::BAnd_W,    1, sig, stk,    fi.maskSig);
+      GDCC_BC_AddStmnt(Code::BOrX,     1, stk, lop.hi, rop.hi);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, sig, stk,    fi.maskSig);
 
       // Clear operand signs.
-      GDCC_BC_AddStmnt(Code::BAnd_W,    1, lop.hi, lop.hi, ~fi.maskSig);
-      GDCC_BC_AddStmnt(Code::BAnd_W,    1, rop.hi, rop.hi, ~fi.maskSig);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, lop.hi, lop.hi, ~fi.maskSig);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, rop.hi, rop.hi, ~fi.maskSig);
 
       // Check for special operands.
-      GDCC_BC_AddStmnt(Code::CmpI_GT_W, 1, stk, lop.hi, fi.maskExp);
-      GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelLNaN);
-      GDCC_BC_AddStmnt(Code::Move_W,    1, stk, rop.hi);
-      GDCC_BC_AddStmnt(Code::Jcnd_Tab,  1, stk, 0, labelR0, fi.maskExp, labelRINF);
-      GDCC_BC_AddStmnt(Code::CmpI_GT_W, 1, stk, stk, fi.maskExp);
-      GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelRNaN);
-      GDCC_BC_AddStmnt(Code::Move_W,    1, stk, lop.hi);
-      GDCC_BC_AddStmnt(Code::Jcnd_Tab,  1, stk, 0, labelL0, fi.maskExp, labelLINF);
-      GDCC_BC_AddStmnt(Code::Move_W,    1, nul, stk);
+      GDCC_BC_AddStmnt(Code::CmpI_GT,  1, stk, lop.hi, fi.maskExp);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelLNaN);
+      GDCC_BC_AddStmnt(Code::Move,     1, stk, rop.hi);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, 0, labelR0, fi.maskExp, labelRINF);
+      GDCC_BC_AddStmnt(Code::CmpI_GT,  1, stk, stk, fi.maskExp);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelRNaN);
+      GDCC_BC_AddStmnt(Code::Move,     1, stk, lop.hi);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, 0, labelL0, fi.maskExp, labelLINF);
+      GDCC_BC_AddStmnt(Code::Move,     1, nul, stk);
 
       // Determine result exponent. Will be adjusted, so no range check.
-      GDCC_BC_AddStmnt(Code::Move_W,    1, stk, fi.offExp);
-      GDCC_BC_AddStmnt(Code::ShRI_W,    1, stk, rop.hi, fi.bitsMan);
-      GDCC_BC_AddStmnt(Code::SubU_W,    1, stk, stk, stk);
-      GDCC_BC_AddStmnt(Code::ShRI_W,    1, stk, lop.hi, fi.bitsMan);
-      GDCC_BC_AddStmnt(Code::AddU_W,    1, exp, stk, stk);
+      GDCC_BC_AddStmnt(Code::Move,     1, stk, fi.offExp);
+      GDCC_BC_AddStmnt(Code::ShRI,     1, stk, rop.hi, fi.bitsMan);
+      GDCC_BC_AddStmnt(Code::SubU,     1, stk, stk, stk);
+      GDCC_BC_AddStmnt(Code::ShRI,     1, stk, lop.hi, fi.bitsMan);
+      GDCC_BC_AddStmnt(Code::AddU,     1, exp, stk, stk);
 
       // Clear operand exponents and add implicit bit.
-      GDCC_BC_AddStmnt(Code::BAnd_W,    1, stk, lop.hi, fi.maskMan);
-      GDCC_BC_AddStmnt(Code::BOrI_W,    1, lop.hi, stk, fi.maskMan + 1);
-      GDCC_BC_AddStmnt(Code::BAnd_W,    1, stk, rop.hi, fi.maskMan);
-      GDCC_BC_AddStmnt(Code::BOrI_W,    1, rop.hi, stk, fi.maskMan + 1);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, lop.hi, fi.maskMan);
+      GDCC_BC_AddStmnt(Code::BOrI,     1, lop.hi, stk, fi.maskMan + 1);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, rop.hi, fi.maskMan);
+      GDCC_BC_AddStmnt(Code::BOrI,     1, rop.hi, stk, fi.maskMan + 1);
 
       // Division loop.
-      GDCC_BC_AddStmnt(Code::Move_W,    n, man, 0);
-      GDCC_BC_AddStmnt(Code::Move_W,    1, tmp, fi.bitsManFull);
+      GDCC_BC_AddStmnt(Code::Move,     n, man, 0);
+      GDCC_BC_AddStmnt(Code::Move,     1, tmp, fi.bitsManFull);
 
       // Division check.
       GDCC_BC_AddLabel(labelLoop);
-      GDCC_BC_AddStmnt(Code::CmpI_GE_W, 1, stk, lop, rop);
-      GDCC_BC_AddStmnt(Code::Jcnd_Nil,  1, stk, labelLoopNil);
-      GDCC_BC_AddStmnt(Code::SubU_W,    n, lop, lop, rop);
-      GDCC_BC_AddStmnt(Code::AddU_W,    n, man, man, 1);
+      GDCC_BC_AddStmnt(Code::CmpI_GE,  1, stk, lop, rop);
+      GDCC_BC_AddStmnt(Code::Jcnd_Nil, 1, stk, labelLoopNil);
+      GDCC_BC_AddStmnt(Code::SubU,     n, lop, lop, rop);
+      GDCC_BC_AddStmnt(Code::AddU,     n, man, man, 1);
 
       GDCC_BC_AddLabel(labelLoopNil);
-      GDCC_BC_AddStmnt(Code::ShLU_W,    1, lop, lop, 1);
-      GDCC_BC_AddStmnt(Code::ShLU_W,    1, man, man, 1);
+      GDCC_BC_AddStmnt(Code::ShLU,     1, lop, lop, 1);
+      GDCC_BC_AddStmnt(Code::ShLU,     1, man, man, 1);
 
-      GDCC_BC_AddStmnt(Code::SubU_W,    1, tmp, tmp, 1);
-      GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, tmp, labelLoop);
+      GDCC_BC_AddStmnt(Code::SubU,     1, tmp, tmp, 1);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, tmp, labelLoop);
 
       // Final division check.
-      GDCC_BC_AddStmnt(Code::CmpI_GE_W, 1, stk, lop, rop);
-      GDCC_BC_AddStmnt(Code::AddU_W,    1, man.lo, man.lo, stk);
+      GDCC_BC_AddStmnt(Code::CmpI_GE,  1, stk, lop, rop);
+      GDCC_BC_AddStmnt(Code::AddU,     1, man.lo, man.lo, stk);
 
       // Shift 1 into implicit bit.
-      GDCC_BC_AddStmnt(Code::Bclz_W,    n, tmp, man);
-      GDCC_BC_AddStmnt(Code::SubU_W,    1, tmp, tmp, fi.bitsExp);
+      GDCC_BC_AddStmnt(Code::Bclz,     n, tmp, man);
+      GDCC_BC_AddStmnt(Code::SubU,     1, tmp, tmp, fi.bitsExp);
 
-      GDCC_BC_AddStmnt(Code::ShLU_W,    n, man, man, tmp);
-      GDCC_BC_AddStmnt(Code::SubU_W,    1, exp, exp, tmp);
+      GDCC_BC_AddStmnt(Code::ShLU,     n, man, man, tmp);
+      GDCC_BC_AddStmnt(Code::SubU,     1, exp, exp, tmp);
 
-      GDCC_BC_AddStmnt(Code::BAnd_W,    1, man.hi, man.hi, fi.maskMan);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, man.hi, man.hi, fi.maskMan);
 
       // Check for out of range exponent.
-      GDCC_BC_AddStmnt(Code::CmpI_GE_W, 1, stk, exp, fi.maxExp);
-      GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelINF);
-      GDCC_BC_AddStmnt(Code::CmpI_LE_W, 1, stk, exp, 0);
-      GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, label0);
+      GDCC_BC_AddStmnt(Code::CmpI_GE,  1, stk, exp, fi.maxExp);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelINF);
+      GDCC_BC_AddStmnt(Code::CmpI_LE,  1, stk, exp, 0);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, label0);
 
       // Return result.
-      GDCC_BC_AddStmnt(Code::Move_W,    n, stk, man);
-      GDCC_BC_AddStmnt(Code::ShLU_W,    1, stk, exp, fi.bitsMan);
-      GDCC_BC_AddStmnt(Code::BOrI_W,    1, stk, stk, stk);
-      GDCC_BC_AddStmnt(Code::BOrI_W,    1, stk, stk, sig);
-      GDCC_BC_AddStmnt(Code::Retn,      n, stk);
+      GDCC_BC_AddStmnt(Code::Move,     n, stk, man);
+      GDCC_BC_AddStmnt(Code::ShLU,     1, stk, exp, fi.bitsMan);
+      GDCC_BC_AddStmnt(Code::BOrI,     1, stk, stk, stk);
+      GDCC_BC_AddStmnt(Code::BOrI,     1, stk, stk, sig);
+      GDCC_BC_AddStmnt(Code::Retn,     n, stk);
 
       // Return NaN.
       GDCC_BC_AddLabel(labelNaN);
       for(auto i = n - 1; i--;)
-         GDCC_BC_AddStmnt(Code::Move_W, 1, stk, 0xFFFFFFFF);
-      GDCC_BC_AddStmnt(Code::BOrI_W,    1, stk, sig, fi.maskExp | fi.maskMan);
-      GDCC_BC_AddStmnt(Code::Retn,      n, stk);
+         GDCC_BC_AddStmnt(Code::Move,  1, stk, 0xFFFFFFFF);
+      GDCC_BC_AddStmnt(Code::BOrI,     1, stk, sig, fi.maskExp | fi.maskMan);
+      GDCC_BC_AddStmnt(Code::Retn,     n, stk);
 
       // l is NaN. Therefore, result is l.
       GDCC_BC_AddLabel(labelLNaN);
@@ -280,15 +280,15 @@ namespace GDCC::BC
       GDCC_BC_AddLabel(labelL0);
       // l is INF, r is normal. Therefore, result is l.
       GDCC_BC_AddLabel(labelLINF);
-      GDCC_BC_AddStmnt(Code::Move_W,    n, stk, lop);
-      GDCC_BC_AddStmnt(Code::BOrI_W,    1, stk, stk, sig);
-      GDCC_BC_AddStmnt(Code::Retn,      n, stk);
+      GDCC_BC_AddStmnt(Code::Move,     n, stk, lop);
+      GDCC_BC_AddStmnt(Code::BOrI,     1, stk, stk, sig);
+      GDCC_BC_AddStmnt(Code::Retn,     n, stk);
 
       // r is NaN. Therefore, result is r.
       GDCC_BC_AddLabel(labelRNaN);
-      GDCC_BC_AddStmnt(Code::Move_W,    n, stk, rop);
-      GDCC_BC_AddStmnt(Code::BOrI_W,    1, stk, stk, sig);
-      GDCC_BC_AddStmnt(Code::Retn,      n, stk);
+      GDCC_BC_AddStmnt(Code::Move,     n, stk, rop);
+      GDCC_BC_AddStmnt(Code::BOrI,     1, stk, stk, sig);
+      GDCC_BC_AddStmnt(Code::Retn,     n, stk);
 
       // r is 0.
       GDCC_BC_AddLabel(labelR0);
@@ -299,23 +299,23 @@ namespace GDCC::BC
       // Otherwise, result is INF.
       GDCC_BC_AddLabel(labelINF);
       for(auto i = n - 1; i--;)
-         GDCC_BC_AddStmnt(Code::Move_W, 1, stk, 0);
-      GDCC_BC_AddStmnt(Code::BOrI_W,    1, stk, sig, fi.maskExp);
-      GDCC_BC_AddStmnt(Code::Retn,      n, stk);
+         GDCC_BC_AddStmnt(Code::Move,  1, stk, 0);
+      GDCC_BC_AddStmnt(Code::BOrI,     1, stk, sig, fi.maskExp);
+      GDCC_BC_AddStmnt(Code::Retn,     n, stk);
 
       // r is INF.
       GDCC_BC_AddLabel(labelRINF);
 
       // INF / INF = NaN.
-      GDCC_BC_AddStmnt(Code::CmpU_EQ_W, 1, stk, lop.hi, fi.maskMan);
-      GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelNaN);
+      GDCC_BC_AddStmnt(Code::CmpU_EQ,  1, stk, lop.hi, fi.maskMan);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelNaN);
 
       // Otherwie result is 0.
       GDCC_BC_AddLabel(label0);
       for(auto i = n - 1; i--;)
-         GDCC_BC_AddStmnt(Code::Move_W, 1, stk, 0);
-      GDCC_BC_AddStmnt(Code::Move_W,    1, stk, sig);
-      GDCC_BC_AddStmnt(Code::Retn,      n, stk);
+         GDCC_BC_AddStmnt(Code::Move,  1, stk, 0);
+      GDCC_BC_AddStmnt(Code::Move,     1, stk, sig);
+      GDCC_BC_AddStmnt(Code::Retn,     n, stk);
 
       GDCC_BC_AddFuncEnd();
    }
@@ -325,7 +325,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_DivK_W(Core::FastU n)
    {
-      addFunc_DivX_W(n, IR::Code::DivK_W, IR::Code::DivU_W, false);
+      addFunc_DivX_W(n, IR::Code::DivK, IR::Code::DivU, false);
    }
 
    //
@@ -333,7 +333,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_DivX_W(Core::FastU n)
    {
-      addFunc_DivX_W(n, IR::Code::DivX_W, IR::Code::DivI_W, true);
+      addFunc_DivX_W(n, IR::Code::DivX, IR::Code::DivI, true);
    }
 
    //
@@ -351,38 +351,38 @@ namespace GDCC::BC
 
       if(fi.bitsF % 32)
       {
-         GDCC_BC_AddStmnt(Code::Move_W, n, stk, lop);
+         GDCC_BC_AddStmnt(Code::Move, n, stk, lop);
          if(sign)
          {
-            GDCC_BC_AddStmnt(Code::Copy_W, 1, stk, stk);
-            GDCC_BC_AddStmnt(Code::ShRI_W, 1, stk, stk, 31);
+            GDCC_BC_AddStmnt(Code::Copy, 1, stk, stk);
+            GDCC_BC_AddStmnt(Code::ShRI, 1, stk, stk, 31);
             for(Core::FastU i = nf - 1; i--;)
-               GDCC_BC_AddStmnt(Code::Copy_W, 1, stk, stk);
+               GDCC_BC_AddStmnt(Code::Copy, 1, stk, stk);
          }
          else
-            GDCC_BC_AddStmnt(Code::Move_W, nf, stk, 0);
+            GDCC_BC_AddStmnt(Code::Move, nf, stk, 0);
 
-         GDCC_BC_AddStmnt(Code::ShLU_W, 1, Stk(nd), Stk(nd), fi.bitsF);
+         GDCC_BC_AddStmnt(Code::ShLU, 1, Stk(nd), Stk(nd), fi.bitsF);
       }
       else
       {
-         GDCC_BC_AddStmnt(Code::Move_W, nf, stk, 0);
-         GDCC_BC_AddStmnt(Code::Move_W, n,  stk, lop);
+         GDCC_BC_AddStmnt(Code::Move, nf, stk, 0);
+         GDCC_BC_AddStmnt(Code::Move, n,  stk, lop);
       }
 
-      GDCC_BC_AddStmnt(Code::Move_W, n, stk, rop);
+      GDCC_BC_AddStmnt(Code::Move, n, stk, rop);
       if(sign)
       {
-         GDCC_BC_AddStmnt(Code::Copy_W, 1, stk, stk);
-         GDCC_BC_AddStmnt(Code::ShRI_W, 1, stk, stk, 31);
+         GDCC_BC_AddStmnt(Code::Copy, 1, stk, stk);
+         GDCC_BC_AddStmnt(Code::ShRI, 1, stk, stk, 31);
          for(Core::FastU i = nf - 1; i--;)
-            GDCC_BC_AddStmnt(Code::Copy_W, 1, stk, stk);
+            GDCC_BC_AddStmnt(Code::Copy, 1, stk, stk);
       }
       else
-         GDCC_BC_AddStmnt(Code::Move_W, nf, stk, 0);
+         GDCC_BC_AddStmnt(Code::Move, nf, stk, 0);
 
-      GDCC_BC_AddStmnt(codeDiv,      nd, stk, stk, stk);
-      GDCC_BC_AddStmnt(Code::Move_W, nf, nul, stk);
+      GDCC_BC_AddStmnt(codeDiv,    nd, stk, stk, stk);
+      GDCC_BC_AddStmnt(Code::Move, nf, nul, stk);
 
       GDCC_BC_AddStmnt(Code::Retn, n, stk);
 

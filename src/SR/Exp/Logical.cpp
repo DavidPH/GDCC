@@ -125,13 +125,13 @@ namespace GDCC::SR
          ctx.block.addStmnt(codeShrt, exp->expR->getIRArgStk(), labelShort);
 
          // Long result.
-         ctx.block.addStmnt(IR::Code::Move_W, dst.getIRArgStk(), valLong);
+         ctx.block.addStmnt(IR::Code::Move, dst.getIRArgStk(), valLong);
          ctx.block.addStmnt(IR::Code::Jump, labelEnd);
       }
 
       // Short result.
       ctx.block.addLabel(labelShort);
-      ctx.block.addStmnt(IR::Code::Move_W, dst.getIRArgStk(), valShrt);
+      ctx.block.addStmnt(IR::Code::Move, dst.getIRArgStk(), valShrt);
 
       // End.
       ctx.block.addLabel(labelEnd);

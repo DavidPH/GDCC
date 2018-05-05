@@ -28,11 +28,11 @@
 namespace GDCC::BC::ZDACS
 {
    //
-   // Info::genStmnt_BNot_W
+   // Info::genStmnt_BNot
    //
-   void Info::genStmnt_BNot_W()
+   void Info::genStmnt_BNot()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(isPushArg(stmnt->args[1]))
       {
@@ -57,11 +57,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_Bclz_W
+   // Info::genStmnt_Bclz
    //
-   void Info::genStmnt_Bclz_W()
+   void Info::genStmnt_Bclz()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
       {
@@ -98,17 +98,17 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_Bges_W
+   // Info::genStmnt_Bges
    //
-   void Info::genStmnt_Bges_W()
+   void Info::genStmnt_Bges()
    {
       numChunkCODE += 24;
    }
 
    //
-   // Info::genStmnt_Bget_W
+   // Info::genStmnt_Bget
    //
-   void Info::genStmnt_Bget_W()
+   void Info::genStmnt_Bget()
    {
       auto offs = getWord(stmnt->args[3].aLit);
 
@@ -119,9 +119,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_Bset_W
+   // Info::genStmnt_Bset
    //
-   void Info::genStmnt_Bset_W()
+   void Info::genStmnt_Bset()
    {
       auto offs = getWord(stmnt->args[3].aLit);
 
@@ -136,7 +136,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmntBitwise()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(stmnt->args[1].a == IR::ArgBase::Stk &&
          stmnt->args[2].a == IR::ArgBase::Stk)
@@ -154,29 +154,29 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::preStmnt_Bclz_W
+   // Info::preStmnt_Bclz
    //
-   void Info::preStmnt_Bclz_W(bool ones)
+   void Info::preStmnt_Bclz(bool ones)
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return;
 
-      GDCC_BC_AddFuncPre(ones ? Code::Bclo_W : Code::Bclz_W, 1, 1, 1, 1, __FILE__);
+      GDCC_BC_AddFuncPre(ones ? Code::Bclo : Code::Bclz, 1, 1, 1, 1, __FILE__);
       GDCC_BC_AddFuncObjUna(1);
 
       // Counting leading ones works the same way if inverted.
       // May be advantageous to invert the conditions, instead, though.
       if(ones)
-         GDCC_BC_AddStmnt(Code::BNot_W, 1, lop, lop);
+         GDCC_BC_AddStmnt(Code::BNot, 1, lop, lop);
 
       // Node codegen, mask-and-branch.
       auto node = [&](char const *label, Core::FastU mask, char const *dst)
       {
          if(label) GDCC_BC_AddLabel(name + label);
          IR::Glyph dstGlyph{prog, name + dst};
-         GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, lop, mask);
+         GDCC_BC_AddStmnt(Code::BAnd,     1, stk, lop, mask);
          GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, dstGlyph);
       };
 
@@ -193,8 +193,8 @@ namespace GDCC::BC::ZDACS
       node(nullptr,     0x000000F0, "$000000F0");
       node(nullptr,     0x0000000C, "$0000000C");
       node(nullptr,     0x00000002, "$00000002");
-      GDCC_BC_AddStmnt(Code::SubU_W, 1, stk, 32, lop);
-      GDCC_BC_AddStmnt(Code::Retn,   1, stk);
+      GDCC_BC_AddStmnt(Code::SubU, 1, stk, 32, lop);
+      GDCC_BC_AddStmnt(Code::Retn, 1, stk);
       leaf("$00000002",         30);
       node("$0000000C", 0x00000008, "$00000008");
       leaf(nullptr,             29);
@@ -257,11 +257,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_BNot_W
+   // Info::putStmnt_BNot
    //
-   void Info::putStmnt_BNot_W()
+   void Info::putStmnt_BNot()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(isPushArg(stmnt->args[1]))
       {
@@ -309,11 +309,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_Bclz_W
+   // Info::putStmnt_Bclz
    //
-   void Info::putStmnt_Bclz_W(bool ones)
+   void Info::putStmnt_Bclz(bool ones)
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
       {
@@ -321,7 +321,7 @@ namespace GDCC::BC::ZDACS
          return;
       }
 
-      Core::String name = ones ? "___GDCC__Bclo_W1" : "___GDCC__Bclz_W1";
+      Core::String name = getCallName(ones ? IR::Code::Bclo : IR::Code::Bclz, 1);
 
       if(n == 1)
       {
@@ -424,9 +424,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_Bges_W
+   // Info::putStmnt_Bges
    //
-   void Info::putStmnt_Bges_W()
+   void Info::putStmnt_Bges()
    {
       auto bits = getWord(stmnt->args[2].aLit);
       auto offs = getWord(stmnt->args[3].aLit);
@@ -439,9 +439,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_Bget_W
+   // Info::putStmnt_Bget
    //
-   void Info::putStmnt_Bget_W()
+   void Info::putStmnt_Bget()
    {
       auto bits = getWord(stmnt->args[2].aLit);
       auto offs = getWord(stmnt->args[3].aLit);
@@ -458,9 +458,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_Bset_W
+   // Info::putStmnt_Bset
    //
-   void Info::putStmnt_Bset_W()
+   void Info::putStmnt_Bset()
    {
       auto bits = getWord(stmnt->args[2].aLit);
       auto offs = getWord(stmnt->args[3].aLit);
@@ -487,7 +487,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmntBitwise(Code code)
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(stmnt->args[1].a == IR::ArgBase::Stk &&
          stmnt->args[2].a == IR::ArgBase::Stk)
@@ -521,13 +521,13 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_BNot_W
+   // Info::trStmnt_BNot
    //
-   void Info::trStmnt_BNot_W()
+   void Info::trStmnt_BNot()
    {
       CheckArgC(stmnt, 2);
 
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(isPushArg(stmnt->args[1]))
          moveArgStk_dst(stmnt->args[0]);
@@ -544,13 +544,13 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_Bclz_W
+   // Info::trStmnt_Bclz
    //
-   void Info::trStmnt_Bclz_W()
+   void Info::trStmnt_Bclz()
    {
       CheckArgC(stmnt, 2);
 
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n <= 1)
       {
@@ -573,15 +573,15 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_Bget_W
+   // Info::trStmnt_Bget
    //
-   void Info::trStmnt_Bget_W()
+   void Info::trStmnt_Bget()
    {
       CheckArgC(stmnt, 4);
       CheckArgB(stmnt, 2, IR::ArgBase::Lit);
       CheckArgB(stmnt, 3, IR::ArgBase::Lit);
 
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n != 1)
          throw Core::ExceptStr(stmnt->pos, "Bget_W must have size 1");
@@ -590,15 +590,15 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_Bset_W
+   // Info::trStmnt_Bset
    //
-   void Info::trStmnt_Bset_W()
+   void Info::trStmnt_Bset()
    {
       CheckArgC(stmnt, 4);
       CheckArgB(stmnt, 2, IR::ArgBase::Lit);
       CheckArgB(stmnt, 3, IR::ArgBase::Lit);
 
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n != 1)
          throw Core::ExceptStr(stmnt->pos, "Bset_W must have size 1");
@@ -613,7 +613,7 @@ namespace GDCC::BC::ZDACS
    {
       CheckArgC(stmnt, 3);
 
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
       {

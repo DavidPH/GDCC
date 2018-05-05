@@ -522,11 +522,11 @@ namespace GDCC
             // Some codes get mapped to other function names.
             switch(code)
             {
-            case IR::Code::AddI_W:    code = IR::Code::AddU_W;    break;
-            case IR::Code::CmpI_EQ_W: code = IR::Code::CmpU_EQ_W; break;
-            case IR::Code::CmpI_NE_W: code = IR::Code::CmpU_NE_W; break;
-            case IR::Code::MulI_W:    code = IR::Code::MulU_W;    break;
-            case IR::Code::SubI_W:    code = IR::Code::SubU_W;    break;
+            case IR::Code::AddI:    code = IR::Code::AddU;    break;
+            case IR::Code::CmpI_EQ: code = IR::Code::CmpU_EQ; break;
+            case IR::Code::CmpI_NE: code = IR::Code::CmpU_NE; break;
+            case IR::Code::MulI:    code = IR::Code::MulU;    break;
+            case IR::Code::SubI:    code = IR::Code::SubU;    break;
             default: break;
             }
 

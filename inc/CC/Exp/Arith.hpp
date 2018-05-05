@@ -44,7 +44,7 @@ namespace GDCC
          auto expL = ExpConvert_Arith(t, l, pos);
          auto expR = ExpConvert_Arith(t, r, pos);
 
-         auto code = SR::ExpCode_ArithFixed<Codes>(t).code;
+         auto code = SR::ExpCode_ArithFixed<Codes>(t);
 
          return SR::Exp_Arith<Base>::Create(code, t, expL, expR, pos);
       }
@@ -59,7 +59,7 @@ namespace GDCC
       SR::Exp::CRef ExpCreate_ArithFloat(SR::Type const *t,
          SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
-         auto code = SR::ExpCode_ArithFloat<Codes>(t).code;
+         auto code = SR::ExpCode_ArithFloat<Codes>(t);
 
          return SR::Exp_Arith<Base>::Create(code, t, l, r, pos);
       }
@@ -74,7 +74,7 @@ namespace GDCC
       SR::Exp::CRef ExpCreate_ArithInteg(SR::Type const *t,
          SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
       {
-         auto code = SR::ExpCode_ArithInteg<Codes>(t).code;
+         auto code = SR::ExpCode_ArithInteg<Codes>(t);
 
          return SR::Exp_Arith<Base>::Create(code, t, l, r, pos);
       }
@@ -120,7 +120,7 @@ namespace GDCC
          // result type. For generic handling, do so.
          auto expR = ExpConvert_Arith(evalT, r, pos);
 
-         auto code = SR::ExpCode_ArithFixed<Codes>(evalT).code;
+         auto code = SR::ExpCode_ArithFixed<Codes>(evalT);
 
          return SR::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, expR, pos);
       }
@@ -136,7 +136,7 @@ namespace GDCC
          SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos, bool post = false)
       {
-         auto code = SR::ExpCode_ArithFloat<Codes>(evalT).code;
+         auto code = SR::ExpCode_ArithFloat<Codes>(evalT);
 
          return SR::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, r, pos);
       }
@@ -152,7 +152,7 @@ namespace GDCC
          SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
          Core::Origin pos, bool post = false)
       {
-         auto code = SR::ExpCode_ArithInteg<Codes>(evalT).code;
+         auto code = SR::ExpCode_ArithInteg<Codes>(evalT);
 
          return SR::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, r, pos);
       }

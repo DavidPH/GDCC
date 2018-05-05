@@ -22,9 +22,9 @@
 namespace GDCC::BC::DGE
 {
    //
-   // Info::preStmnt_ShLU_W
+   // Info::preStmnt_ShLU
    //
-   void Info::preStmnt_ShLU_W()
+   void Info::preStmnt_ShLU()
    {
       auto n = getStmntSizeW();
 
@@ -35,9 +35,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::preStmnt_ShRI_W
+   // Info::preStmnt_ShRI
    //
-   void Info::preStmnt_ShRI_W()
+   void Info::preStmnt_ShRI()
    {
       auto n = getStmntSizeW();
 
@@ -48,9 +48,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::preStmnt_ShRU_W
+   // Info::preStmnt_ShRU
    //
-   void Info::preStmnt_ShRU_W()
+   void Info::preStmnt_ShRU()
    {
       auto n = getStmntSizeW();
 
@@ -61,9 +61,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_ShLU_W
+   // Info::putStmnt_ShLU
    //
-   void Info::putStmnt_ShLU_W(char const *code)
+   void Info::putStmnt_ShLU(char const *code)
    {
       auto n = getStmntSizeW();
 
@@ -77,9 +77,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_ShLU_W
+   // Info::trStmnt_ShLU
    //
-   void Info::trStmnt_ShLU_W()
+   void Info::trStmnt_ShLU()
    {
       trStmntShift(true);
    }

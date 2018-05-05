@@ -24,9 +24,9 @@
 namespace GDCC::BC::DGE
 {
    //
-   // Info::preStmnt_AddU_W
+   // Info::preStmnt_AddU
    //
-   void Info::preStmnt_AddU_W()
+   void Info::preStmnt_AddU()
    {
       auto n = getStmntSizeW();
 
@@ -37,9 +37,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::preStmnt_SubU_W
+   // Info::preStmnt_SubU
    //
-   void Info::preStmnt_SubU_W()
+   void Info::preStmnt_SubU()
    {
       auto n = getStmntSizeW();
 
@@ -50,9 +50,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_AdXU_W
+   // Info::putStmnt_AdXU
    //
-   void Info::putStmnt_AdXU_W()
+   void Info::putStmnt_AdXU()
    {
       if(stmnt->args.size() > 3)
          putCode("Ad3U");
@@ -61,9 +61,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_AddU_W
+   // Info::putStmnt_AddU
    //
-   void Info::putStmnt_AddU_W()
+   void Info::putStmnt_AddU()
    {
       auto n = getStmntSizeW();
 
@@ -73,13 +73,13 @@ namespace GDCC::BC::DGE
       if(n == 1)
          return putCode("AddU");
 
-      putStmntCall(getFuncName(IR::Code::AddU_W, n), n * 2);
+      putStmntCall(getFuncName(IR::Code::AddU, n), n * 2);
    }
 
    //
-   // Info::putStmnt_SuXU_W
+   // Info::putStmnt_SuXU
    //
-   void Info::putStmnt_SuXU_W()
+   void Info::putStmnt_SuXU()
    {
       if(stmnt->args.size() > 3)
          putCode("Su3U");
@@ -88,9 +88,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_SubU_W
+   // Info::putStmnt_SubU
    //
-   void Info::putStmnt_SubU_W()
+   void Info::putStmnt_SubU()
    {
       auto n = getStmntSizeW();
 
@@ -100,13 +100,13 @@ namespace GDCC::BC::DGE
       if(n == 1)
          return putCode("SubU");
 
-      putStmntCall(getFuncName(IR::Code::SubU_W, n), n * 2);
+      putStmntCall(getFuncName(IR::Code::SubU, n), n * 2);
    }
 
    //
-   // Info::trStmnt_AdXU_W
+   // Info::trStmnt_AdXU
    //
-   void Info::trStmnt_AdXU_W()
+   void Info::trStmnt_AdXU()
    {
       CheckArgC(stmnt, 3);
 
@@ -127,17 +127,17 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_AddU_W
+   // Info::trStmnt_AddU
    //
-   void Info::trStmnt_AddU_W()
+   void Info::trStmnt_AddU()
    {
       trStmntStk3(false);
    }
 
    //
-   // Info::trStmnt_SuXU_W
+   // Info::trStmnt_SuXU
    //
-   void Info::trStmnt_SuXU_W()
+   void Info::trStmnt_SuXU()
    {
       CheckArgC(stmnt, 3);
 
@@ -165,9 +165,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_SubU_W
+   // Info::trStmnt_SubU
    //
-   void Info::trStmnt_SubU_W()
+   void Info::trStmnt_SubU()
    {
       trStmntStk3(true);
    }

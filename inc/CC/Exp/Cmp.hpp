@@ -39,19 +39,19 @@ namespace GDCC::CC
 
       // Floating types.
       if(t->isCTypeFloat())
-         code = SR::ExpCode_ArithFloat<Codes>(t).code;
+         code = SR::ExpCode_ArithFloat<Codes>(t);
 
       // Fixed-point types.
       else if(t->isCTypeFixed())
-         code = SR::ExpCode_ArithFixed<Codes>(t).code;
+         code = SR::ExpCode_ArithFixed<Codes>(t);
 
       // Integer types.
       else if(t->isCTypeInteg())
-         code = SR::ExpCode_ArithInteg<Codes>(t).code;
+         code = SR::ExpCode_ArithInteg<Codes>(t);
 
       // Pointer types.
       else if(t->isTypePointer())
-         code = SR::ExpCode_ArithPoint<Codes>(t).code;
+         code = SR::ExpCode_ArithPoint<Codes>(t);
 
       // ???
       else

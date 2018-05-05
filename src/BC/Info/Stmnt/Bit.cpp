@@ -33,7 +33,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Bclo_W(Core::FastU n)
    {
-      addFunc_Bclz_W(n, IR::Code::Bclo_W, -1);
+      addFunc_Bclz_W(n, IR::Code::Bclo, -1);
    }
 
    //
@@ -41,7 +41,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Bclz_W(Core::FastU n)
    {
-      addFunc_Bclz_W(n, IR::Code::Bclz_W, 0);
+      addFunc_Bclz_W(n, IR::Code::Bclz, 0);
    }
 
    //
@@ -65,7 +65,7 @@ namespace GDCC::BC
 
       Core::FastU i = n;
 
-      GDCC_BC_AddStmnt(Code::Move_W,   1, stk, lop[--i]);
+      GDCC_BC_AddStmnt(Code::Move,     1, stk, lop[--i]);
       GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, skip, labelSkip[i]);
 
       GDCC_BC_AddStmnt(code,           1, stk, stk);
@@ -74,11 +74,11 @@ namespace GDCC::BC
       while(i)
       {
          newFunc->block.addLabel(labelSkip[i]);
-         GDCC_BC_AddStmnt(Code::Move_W,   1, stk, lop[--i]);
+         GDCC_BC_AddStmnt(Code::Move,     1, stk, lop[--i]);
          GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, skip, labelSkip[i]);
 
          GDCC_BC_AddStmnt(code,           1, stk, stk);
-         GDCC_BC_AddStmnt(Code::AddU_W,   1, stk, stk, (n - 1 - i) * bits);
+         GDCC_BC_AddStmnt(Code::AddU,     1, stk, stk, (n - 1 - i) * bits);
          GDCC_BC_AddStmnt(Code::Retn,     1, stk);
       }
 

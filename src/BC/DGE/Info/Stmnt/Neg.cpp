@@ -22,9 +22,9 @@
 namespace GDCC::BC::DGE
 {
    //
-   // Info::putStmnt_NegF_W
+   // Info::putStmnt_NegF
    //
-   void Info::putStmnt_NegF_W()
+   void Info::putStmnt_NegF()
    {
       auto n = getStmntSizeW();
 

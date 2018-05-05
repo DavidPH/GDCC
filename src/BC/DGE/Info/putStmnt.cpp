@@ -39,47 +39,47 @@ namespace GDCC::BC::DGE
       {
       case IR::Code::Nop: break;
 
-      case IR::Code::AdXU_W: putStmnt_AdXU_W(); break;
-      case IR::Code::AddF_W: putStmnt_AddF_W(); break;
-      case IR::Code::AddI_W: putStmnt_AddI_W(); break;
-      case IR::Code::AddU_W: putStmnt_AddU_W(); break;
-      case IR::Code::BAnd_W: putStmnt_BAnd_W(); break;
-      case IR::Code::BNot_W: putStmnt_BNot_W(); break;
-      case IR::Code::BOrI_W: putStmnt_BOrI_W(); break;
-      case IR::Code::BOrX_W: putStmnt_BOrX_W(); break;
-      case IR::Code::Bclo_W: putStmnt_Bclo_W(); break;
-      case IR::Code::Bclz_W: putStmnt_Bclz_W(); break;
+      case IR::Code::AdXU: putStmnt_AdXU(); break;
+      case IR::Code::AddF: putStmnt_AddF(); break;
+      case IR::Code::AddI: putStmnt_AddI(); break;
+      case IR::Code::AddU: putStmnt_AddU(); break;
+      case IR::Code::BAnd: putStmnt_BAnd(); break;
+      case IR::Code::BNot: putStmnt_BNot(); break;
+      case IR::Code::BOrI: putStmnt_BOrI(); break;
+      case IR::Code::BOrX: putStmnt_BOrX(); break;
+      case IR::Code::Bclo: putStmnt_Bclo(); break;
+      case IR::Code::Bclz: putStmnt_Bclz(); break;
 
-      case IR::Code::CmpF_EQ_W: putStmnt_CmpF_EQ_W(); break;
-      case IR::Code::CmpF_GE_W: putStmnt_CmpF_GE_W(); break;
-      case IR::Code::CmpF_GT_W: putStmnt_CmpF_LT_W(); break;
-      case IR::Code::CmpF_LE_W: putStmnt_CmpF_LE_W(); break;
-      case IR::Code::CmpF_LT_W: putStmnt_CmpF_LT_W(); break;
-      case IR::Code::CmpF_NE_W: putStmnt_CmpF_NE_W(); break;
-      case IR::Code::CmpI_EQ_W: putStmnt_CmpI_EQ_W(); break;
-      case IR::Code::CmpI_GE_W: putStmnt_CmpI_GE_W(); break;
-      case IR::Code::CmpI_GT_W: putStmnt_CmpI_GT_W(); break;
-      case IR::Code::CmpI_LE_W: putStmnt_CmpI_LE_W(); break;
-      case IR::Code::CmpI_LT_W: putStmnt_CmpI_LT_W(); break;
-      case IR::Code::CmpI_NE_W: putStmnt_CmpI_NE_W(); break;
-      case IR::Code::CmpU_EQ_W: putStmnt_CmpU_EQ_W(); break;
-      case IR::Code::CmpU_GE_W: putStmnt_CmpU_GE_W(); break;
-      case IR::Code::CmpU_GT_W: putStmnt_CmpU_GT_W(); break;
-      case IR::Code::CmpU_LE_W: putStmnt_CmpU_LE_W(); break;
-      case IR::Code::CmpU_LT_W: putStmnt_CmpU_LT_W(); break;
-      case IR::Code::CmpU_NE_W: putStmnt_CmpU_NE_W(); break;
+      case IR::Code::CmpF_EQ: putStmnt_CmpF_EQ(); break;
+      case IR::Code::CmpF_GE: putStmnt_CmpF_GE(); break;
+      case IR::Code::CmpF_GT: putStmnt_CmpF_LT(); break;
+      case IR::Code::CmpF_LE: putStmnt_CmpF_LE(); break;
+      case IR::Code::CmpF_LT: putStmnt_CmpF_LT(); break;
+      case IR::Code::CmpF_NE: putStmnt_CmpF_NE(); break;
+      case IR::Code::CmpI_EQ: putStmnt_CmpI_EQ(); break;
+      case IR::Code::CmpI_GE: putStmnt_CmpI_GE(); break;
+      case IR::Code::CmpI_GT: putStmnt_CmpI_GT(); break;
+      case IR::Code::CmpI_LE: putStmnt_CmpI_LE(); break;
+      case IR::Code::CmpI_LT: putStmnt_CmpI_LT(); break;
+      case IR::Code::CmpI_NE: putStmnt_CmpI_NE(); break;
+      case IR::Code::CmpU_EQ: putStmnt_CmpU_EQ(); break;
+      case IR::Code::CmpU_GE: putStmnt_CmpU_GE(); break;
+      case IR::Code::CmpU_GT: putStmnt_CmpU_GT(); break;
+      case IR::Code::CmpU_LE: putStmnt_CmpU_LE(); break;
+      case IR::Code::CmpU_LT: putStmnt_CmpU_LT(); break;
+      case IR::Code::CmpU_NE: putStmnt_CmpU_NE(); break;
 
       case IR::Code::Call: putStmnt_Call(); break;
       case IR::Code::Cnat: putStmnt_Cnat(); break;
 
-      case IR::Code::Copy_W: putStmnt_Copy_W(); break;
-      case IR::Code::DiXI_W: putStmnt_DiXI_W(); break;
-      case IR::Code::DiXU_W: putStmnt_DiXU_W(); break;
-      case IR::Code::DivF_W: putStmnt_DivF_W(); break;
-      case IR::Code::DivI_W: putStmnt_DivI_W(); break;
-      case IR::Code::DivK_W: putStmnt_DivK_W(); break;
-      case IR::Code::DivU_W: putStmnt_DivU_W(); break;
-      case IR::Code::DivX_W: putStmnt_DivX_W(); break;
+      case IR::Code::Copy: putStmnt_Copy(); break;
+      case IR::Code::DiXI: putStmnt_DiXI(); break;
+      case IR::Code::DiXU: putStmnt_DiXU(); break;
+      case IR::Code::DivF: putStmnt_DivF(); break;
+      case IR::Code::DivI: putStmnt_DivI(); break;
+      case IR::Code::DivK: putStmnt_DivK(); break;
+      case IR::Code::DivU: putStmnt_DivU(); break;
+      case IR::Code::DivX: putStmnt_DivX(); break;
 
       case IR::Code::Jcnd_Nil: putStmnt_Jcnd_Nil(); break;
       case IR::Code::Jcnd_Tab: putStmnt_Jcnd_Tab(); break;
@@ -92,32 +92,31 @@ namespace GDCC::BC::DGE
       case IR::Code::LNot: putStmnt_LNot(); break;
       case IR::Code::LOrI: putStmnt_LOrI(); break;
 
-      case IR::Code::ModI_W: putStmnt_ModI_W(); break;
-      case IR::Code::ModU_W: putStmnt_ModU_W(); break;
-      case IR::Code::Move_B: putStmnt_Move_B(); break;
-      case IR::Code::Move_W: putStmnt_Move_W(); break;
-      case IR::Code::MuXU_W: putStmnt_MuXU_W(); break;
-      case IR::Code::MulF_W: putStmnt_MulF_W(); break;
-      case IR::Code::MulI_W: putStmnt_MulI_W(); break;
-      case IR::Code::MulK_W: putStmnt_MulK_W(); break;
-      case IR::Code::MulU_W: putStmnt_MulU_W(); break;
-      case IR::Code::MulX_W: putStmnt_MulX_W(); break;
-      case IR::Code::NegF_W: putStmnt_NegF_W(); break;
-      case IR::Code::NegI_W: putStmnt_NegI_W(); break;
+      case IR::Code::ModI: putStmnt_ModI(); break;
+      case IR::Code::ModU: putStmnt_ModU(); break;
+      case IR::Code::Move: putStmnt_Move(); break;
+      case IR::Code::MuXU: putStmnt_MuXU(); break;
+      case IR::Code::MulF: putStmnt_MulF(); break;
+      case IR::Code::MulI: putStmnt_MulI(); break;
+      case IR::Code::MulK: putStmnt_MulK(); break;
+      case IR::Code::MulU: putStmnt_MulU(); break;
+      case IR::Code::MulX: putStmnt_MulX(); break;
+      case IR::Code::NegF: putStmnt_NegF(); break;
+      case IR::Code::NegI: putStmnt_NegI(); break;
 
       case IR::Code::Pltn: putStmnt_Pltn(); break;
       case IR::Code::Retn: putStmnt_Retn(); break;
 
-      case IR::Code::ShLF_W: putStmnt_ShLF_W(); break;
-      case IR::Code::ShLU_W: putStmnt_ShLU_W(); break;
-      case IR::Code::ShRF_W: putStmnt_ShRF_W(); break;
-      case IR::Code::ShRI_W: putStmnt_ShRI_W(); break;
-      case IR::Code::ShRU_W: putStmnt_ShRU_W(); break;
-      case IR::Code::SuXU_W: putStmnt_SuXU_W(); break;
-      case IR::Code::SubF_W: putStmnt_SubF_W(); break;
-      case IR::Code::SubI_W: putStmnt_SubI_W(); break;
-      case IR::Code::SubU_W: putStmnt_SubU_W(); break;
-      case IR::Code::Swap_W: putStmnt_Swap_W(); break;
+      case IR::Code::ShLF: putStmnt_ShLF(); break;
+      case IR::Code::ShLU: putStmnt_ShLU(); break;
+      case IR::Code::ShRF: putStmnt_ShRF(); break;
+      case IR::Code::ShRI: putStmnt_ShRI(); break;
+      case IR::Code::ShRU: putStmnt_ShRU(); break;
+      case IR::Code::SuXU: putStmnt_SuXU(); break;
+      case IR::Code::SubF: putStmnt_SubF(); break;
+      case IR::Code::SubI: putStmnt_SubI(); break;
+      case IR::Code::SubU: putStmnt_SubU(); break;
+      case IR::Code::Swap: putStmnt_Swap(); break;
 
       default:
          std::cerr << "ERROR: " << stmnt->pos

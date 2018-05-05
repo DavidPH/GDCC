@@ -43,7 +43,7 @@ namespace GDCC::CC
       IR::Arg_Lit dstIdx{Platform::GetWordBytes(), SR::ExpCreate_Size(objValue)->getIRExp()};
       IR::Arg_Lit srcIdx{Platform::GetWordBytes(), SR::ExpCreate_Size(paramIdx)->getIRExp()};
 
-      ctx.block.addStmnt(IR::Code::Move_W,
+      ctx.block.addStmnt(IR::Code::Move,
          ArgT(objBytes, dstIdx), IR::Arg_LocReg(objBytes, srcIdx));
    }
 

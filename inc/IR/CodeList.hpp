@@ -24,41 +24,39 @@ GDCC_IR_CodeList(Nop)
 
 // AdX* dst lop rop
 // AdX* dst carry lop rop
-GDCC_IR_CodeList(AdXU_W)
+GDCC_IR_CodeList(AdXU)
 
 // Add* dst lop rop
-GDCC_IR_CodeList(AddF_W)
-GDCC_IR_CodeList(AddI_B)
-GDCC_IR_CodeList(AddI_W)
-GDCC_IR_CodeList(AddU_B)
-GDCC_IR_CodeList(AddU_W)
+GDCC_IR_CodeList(AddF)
+GDCC_IR_CodeList(AddI)
+GDCC_IR_CodeList(AddU)
 
 // BAnd dst lop rop
-GDCC_IR_CodeList(BAnd_W)
+GDCC_IR_CodeList(BAnd)
 
 // BNot dst src
-GDCC_IR_CodeList(BNot_W)
+GDCC_IR_CodeList(BNot)
 
 // BOrI dst lop rop
-GDCC_IR_CodeList(BOrI_W)
+GDCC_IR_CodeList(BOrI)
 
 // BOrX dst lop rop
-GDCC_IR_CodeList(BOrX_W)
+GDCC_IR_CodeList(BOrX)
 
 // Bclo dst src (Bit, Count Leading Ones)
-GDCC_IR_CodeList(Bclo_W)
+GDCC_IR_CodeList(Bclo)
 
 // Bclz dst src (Bit, Count Leading Zeros)
-GDCC_IR_CodeList(Bclz_W)
+GDCC_IR_CodeList(Bclz)
 
 // Bges dst src width off (Bitfield, Get Signed)
-GDCC_IR_CodeList(Bges_W)
+GDCC_IR_CodeList(Bges)
 
 // Bget dst src width off (Bitfield, Get)
-GDCC_IR_CodeList(Bget_W)
+GDCC_IR_CodeList(Bget)
 
 // Bset dst src width off (Bitfield, Set)
-GDCC_IR_CodeList(Bset_W)
+GDCC_IR_CodeList(Bset)
 
 // Call dst src arg...
 GDCC_IR_CodeList(Call)
@@ -67,42 +65,30 @@ GDCC_IR_CodeList(Call)
 GDCC_IR_CodeList(Casm)
 
 // Cmp* dst lop rop
-GDCC_IR_CodeList(CmpF_EQ_W)
-GDCC_IR_CodeList(CmpF_GE_W)
-GDCC_IR_CodeList(CmpF_GT_W)
-GDCC_IR_CodeList(CmpF_LE_W)
-GDCC_IR_CodeList(CmpF_LT_W)
-GDCC_IR_CodeList(CmpF_NE_W)
-GDCC_IR_CodeList(CmpI_EQ_B)
-GDCC_IR_CodeList(CmpI_EQ_W)
-GDCC_IR_CodeList(CmpI_GE_B)
-GDCC_IR_CodeList(CmpI_GE_W)
-GDCC_IR_CodeList(CmpI_GT_B)
-GDCC_IR_CodeList(CmpI_GT_W)
-GDCC_IR_CodeList(CmpI_LE_B)
-GDCC_IR_CodeList(CmpI_LE_W)
-GDCC_IR_CodeList(CmpI_LT_B)
-GDCC_IR_CodeList(CmpI_LT_W)
-GDCC_IR_CodeList(CmpI_NE_B)
-GDCC_IR_CodeList(CmpI_NE_W)
-GDCC_IR_CodeList(CmpU_EQ_B)
-GDCC_IR_CodeList(CmpU_EQ_W)
-GDCC_IR_CodeList(CmpU_GE_B)
-GDCC_IR_CodeList(CmpU_GE_W)
-GDCC_IR_CodeList(CmpU_GT_B)
-GDCC_IR_CodeList(CmpU_GT_W)
-GDCC_IR_CodeList(CmpU_LE_B)
-GDCC_IR_CodeList(CmpU_LE_W)
-GDCC_IR_CodeList(CmpU_LT_B)
-GDCC_IR_CodeList(CmpU_LT_W)
-GDCC_IR_CodeList(CmpU_NE_B)
-GDCC_IR_CodeList(CmpU_NE_W)
+GDCC_IR_CodeList(CmpF_EQ)
+GDCC_IR_CodeList(CmpF_GE)
+GDCC_IR_CodeList(CmpF_GT)
+GDCC_IR_CodeList(CmpF_LE)
+GDCC_IR_CodeList(CmpF_LT)
+GDCC_IR_CodeList(CmpF_NE)
+GDCC_IR_CodeList(CmpI_EQ)
+GDCC_IR_CodeList(CmpI_GE)
+GDCC_IR_CodeList(CmpI_GT)
+GDCC_IR_CodeList(CmpI_LE)
+GDCC_IR_CodeList(CmpI_LT)
+GDCC_IR_CodeList(CmpI_NE)
+GDCC_IR_CodeList(CmpU_EQ)
+GDCC_IR_CodeList(CmpU_GE)
+GDCC_IR_CodeList(CmpU_GT)
+GDCC_IR_CodeList(CmpU_LE)
+GDCC_IR_CodeList(CmpU_LT)
+GDCC_IR_CodeList(CmpU_NE)
 
 // Cnat dst src arg...
 GDCC_IR_CodeList(Cnat)
 
 // Copy lop rop
-GDCC_IR_CodeList(Copy_W)
+GDCC_IR_CodeList(Copy)
 
 // Cscr_* dst src arg...
 // Integer/String Asynchronous/Synchronous
@@ -115,19 +101,17 @@ GDCC_IR_CodeList(Cscr_SS)
 GDCC_IR_CodeList(Cspe)
 
 // DiX* dst lop rop
-GDCC_IR_CodeList(DiXI_W)
-GDCC_IR_CodeList(DiXU_W)
+GDCC_IR_CodeList(DiXI)
+GDCC_IR_CodeList(DiXU)
 
 // Div* dst lop rop
-GDCC_IR_CodeList(DivA_B)
-GDCC_IR_CodeList(DivA_W)
-GDCC_IR_CodeList(DivF_W)
-GDCC_IR_CodeList(DivI_W)
-GDCC_IR_CodeList(DivK_W)
-GDCC_IR_CodeList(DivR_B)
-GDCC_IR_CodeList(DivR_W)
-GDCC_IR_CodeList(DivU_W)
-GDCC_IR_CodeList(DivX_W)
+GDCC_IR_CodeList(DivA)
+GDCC_IR_CodeList(DivF)
+GDCC_IR_CodeList(DivI)
+GDCC_IR_CodeList(DivK)
+GDCC_IR_CodeList(DivR)
+GDCC_IR_CodeList(DivU)
+GDCC_IR_CodeList(DivX)
 
 // Jcnd_Nil src lab
 GDCC_IR_CodeList(Jcnd_Nil)
@@ -161,33 +145,27 @@ GDCC_IR_CodeList(LNot)
 GDCC_IR_CodeList(LOrI)
 
 // Mod* dst lop rop
-GDCC_IR_CodeList(ModI_B)
-GDCC_IR_CodeList(ModI_W)
-GDCC_IR_CodeList(ModU_B)
-GDCC_IR_CodeList(ModU_W)
+GDCC_IR_CodeList(ModI)
+GDCC_IR_CodeList(ModU)
 
 // Move dst src
-GDCC_IR_CodeList(Move_B)
-GDCC_IR_CodeList(Move_W)
+GDCC_IR_CodeList(Move)
 
 // MuX* dst lop rop
-GDCC_IR_CodeList(MuXU_W)
+GDCC_IR_CodeList(MuXU)
 
 // Mul* dst lop rop
-GDCC_IR_CodeList(MulA_B)
-GDCC_IR_CodeList(MulA_W)
-GDCC_IR_CodeList(MulF_W)
-GDCC_IR_CodeList(MulI_W)
-GDCC_IR_CodeList(MulK_W)
-GDCC_IR_CodeList(MulR_B)
-GDCC_IR_CodeList(MulR_W)
-GDCC_IR_CodeList(MulU_W)
-GDCC_IR_CodeList(MulX_W)
+GDCC_IR_CodeList(MulA)
+GDCC_IR_CodeList(MulF)
+GDCC_IR_CodeList(MulI)
+GDCC_IR_CodeList(MulK)
+GDCC_IR_CodeList(MulR)
+GDCC_IR_CodeList(MulU)
+GDCC_IR_CodeList(MulX)
 
 // Neg* dst src
-GDCC_IR_CodeList(NegF_W)
-GDCC_IR_CodeList(NegI_B)
-GDCC_IR_CodeList(NegI_W)
+GDCC_IR_CodeList(NegF)
+GDCC_IR_CodeList(NegI)
 
 // Pltn dst src (Pointer, Local to Near)
 GDCC_IR_CodeList(Pltn)
@@ -197,30 +175,25 @@ GDCC_IR_CodeList(Pltn)
 GDCC_IR_CodeList(Retn)
 
 // ShL* dst lop rop
-GDCC_IR_CodeList(ShLF_W)
-GDCC_IR_CodeList(ShLU_B)
-GDCC_IR_CodeList(ShLU_W)
+GDCC_IR_CodeList(ShLF)
+GDCC_IR_CodeList(ShLU)
 
 // ShR* dst lop rop
-GDCC_IR_CodeList(ShRF_W)
-GDCC_IR_CodeList(ShRI_B)
-GDCC_IR_CodeList(ShRI_W)
-GDCC_IR_CodeList(ShRU_B)
-GDCC_IR_CodeList(ShRU_W)
+GDCC_IR_CodeList(ShRF)
+GDCC_IR_CodeList(ShRI)
+GDCC_IR_CodeList(ShRU)
 
 // SuX* dst lop rop
 // SuX* dst lop rop carry
-GDCC_IR_CodeList(SuXU_W)
+GDCC_IR_CodeList(SuXU)
 
 // Sub* dst lop rop
-GDCC_IR_CodeList(SubF_W)
-GDCC_IR_CodeList(SubI_B)
-GDCC_IR_CodeList(SubI_W)
-GDCC_IR_CodeList(SubU_B)
-GDCC_IR_CodeList(SubU_W)
+GDCC_IR_CodeList(SubF)
+GDCC_IR_CodeList(SubI)
+GDCC_IR_CodeList(SubU)
 
 // Swap lop rop
-GDCC_IR_CodeList(Swap_W)
+GDCC_IR_CodeList(Swap)
 
 // Xcod_SID (Static Initialization Delay)
 GDCC_IR_CodeList(Xcod_SID)

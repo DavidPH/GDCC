@@ -29,40 +29,40 @@
 namespace GDCC::BC
 {
    //
-   // Info::addFunc_Cmp*_*_W
+   // Info::addFunc_Cmp*_*
    //
    void Info::addFunc_CmpF_EQ_W(Core::FastU n)
-      {addFunc_CmpF_W(n, IR::Code::CmpF_EQ_W, IR::Code::CmpI_EQ_W, IR::Code::CmpI_EQ_W);}
+      {addFunc_CmpF_W(n, IR::Code::CmpF_EQ, IR::Code::CmpI_EQ, IR::Code::CmpI_EQ);}
    void Info::addFunc_CmpF_GE_W(Core::FastU n)
-      {addFunc_CmpF_W(n, IR::Code::CmpF_GE_W, IR::Code::CmpI_GE_W, IR::Code::CmpI_LE_W);}
+      {addFunc_CmpF_W(n, IR::Code::CmpF_GE, IR::Code::CmpI_GE, IR::Code::CmpI_LE);}
    void Info::addFunc_CmpF_GT_W(Core::FastU n)
-      {addFunc_CmpF_W(n, IR::Code::CmpF_GT_W, IR::Code::CmpI_GT_W, IR::Code::CmpI_LT_W);}
+      {addFunc_CmpF_W(n, IR::Code::CmpF_GT, IR::Code::CmpI_GT, IR::Code::CmpI_LT);}
    void Info::addFunc_CmpF_LE_W(Core::FastU n)
-      {addFunc_CmpF_W(n, IR::Code::CmpF_LE_W, IR::Code::CmpI_LE_W, IR::Code::CmpI_GE_W);}
+      {addFunc_CmpF_W(n, IR::Code::CmpF_LE, IR::Code::CmpI_LE, IR::Code::CmpI_GE);}
    void Info::addFunc_CmpF_LT_W(Core::FastU n)
-      {addFunc_CmpF_W(n, IR::Code::CmpF_LT_W, IR::Code::CmpI_LT_W, IR::Code::CmpI_GT_W);}
+      {addFunc_CmpF_W(n, IR::Code::CmpF_LT, IR::Code::CmpI_LT, IR::Code::CmpI_GT);}
    void Info::addFunc_CmpF_NE_W(Core::FastU n)
-      {addFunc_CmpF_W(n, IR::Code::CmpF_NE_W, IR::Code::CmpI_NE_W, IR::Code::CmpI_NE_W);}
+      {addFunc_CmpF_W(n, IR::Code::CmpF_NE, IR::Code::CmpI_NE, IR::Code::CmpI_NE);}
    void Info::addFunc_CmpI_GE_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpI_GE_W, IR::Code::CmpU_GE_W);}
+      {addFunc_CmpU_GE_W(n, IR::Code::CmpI_GE, IR::Code::CmpU_GE);}
    void Info::addFunc_CmpI_GT_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpI_GT_W, IR::Code::CmpU_GT_W);}
+      {addFunc_CmpU_GE_W(n, IR::Code::CmpI_GT, IR::Code::CmpU_GT);}
    void Info::addFunc_CmpI_LE_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpI_LE_W, IR::Code::CmpU_LE_W);}
+      {addFunc_CmpU_GE_W(n, IR::Code::CmpI_LE, IR::Code::CmpU_LE);}
    void Info::addFunc_CmpI_LT_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpI_LT_W, IR::Code::CmpU_LT_W);}
+      {addFunc_CmpU_GE_W(n, IR::Code::CmpI_LT, IR::Code::CmpU_LT);}
    void Info::addFunc_CmpU_EQ_W(Core::FastU n)
-      {addFunc_CmpU_EQ_W(n, IR::Code::CmpU_EQ_W, IR::Code::BAnd_W);}
+      {addFunc_CmpU_EQ_W(n, IR::Code::CmpU_EQ, IR::Code::BAnd);}
    void Info::addFunc_CmpU_GE_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpU_GE_W, IR::Code::CmpU_GE_W);}
+      {addFunc_CmpU_GE_W(n, IR::Code::CmpU_GE, IR::Code::CmpU_GE);}
    void Info::addFunc_CmpU_GT_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpU_GT_W, IR::Code::CmpU_GT_W);}
+      {addFunc_CmpU_GE_W(n, IR::Code::CmpU_GT, IR::Code::CmpU_GT);}
    void Info::addFunc_CmpU_LE_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpU_LE_W, IR::Code::CmpU_LE_W);}
+      {addFunc_CmpU_GE_W(n, IR::Code::CmpU_LE, IR::Code::CmpU_LE);}
    void Info::addFunc_CmpU_LT_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpU_LT_W, IR::Code::CmpU_LT_W);}
+      {addFunc_CmpU_GE_W(n, IR::Code::CmpU_LT, IR::Code::CmpU_LT);}
    void Info::addFunc_CmpU_NE_W(Core::FastU n)
-      {addFunc_CmpU_EQ_W(n, IR::Code::CmpU_NE_W, IR::Code::BOrI_W);}
+      {addFunc_CmpU_EQ_W(n, IR::Code::CmpU_NE, IR::Code::BOrI);}
 
    //
    // Info::addFunc_CmpF_W
@@ -75,11 +75,11 @@ namespace GDCC::BC
       FloatInfo fi = getFloatInfo(n);
 
       bool cmpGT =
-         codePos == IR::Code::CmpI_GE_W ||
-         codePos == IR::Code::CmpI_GT_W;
+         codePos == IR::Code::CmpI_GE ||
+         codePos == IR::Code::CmpI_GT;
 
       bool cmpNE =
-         codePos == IR::Code::CmpI_NE_W;
+         codePos == IR::Code::CmpI_NE;
 
       IR::Glyph label0{prog, name + "$0"};
       IR::Glyph label1{prog, name + "$1"};
@@ -93,14 +93,14 @@ namespace GDCC::BC
       // Check for special cases.
 
       // Does l have min or max exp?
-      GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, lop.hi, fi.maskExp);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, lop.hi, fi.maskExp);
       GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, fi.maskExp, labelLEMax, 0, labelLEMin);
-      GDCC_BC_AddStmnt(Code::Move_W,   1, nul, stk);
+      GDCC_BC_AddStmnt(Code::Move,     1, nul, stk);
 
       // Does r have max exp?
-      GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, rop.hi, fi.maskExp);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, rop.hi, fi.maskExp);
       GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, fi.maskExp, labelREMax);
-      GDCC_BC_AddStmnt(Code::Move_W,   1, nul, stk);
+      GDCC_BC_AddStmnt(Code::Move,     1, nul, stk);
 
       GDCC_BC_AddLabel(labelCmp);
 
@@ -113,13 +113,13 @@ namespace GDCC::BC
       {
          IR::Glyph labelL1{prog, name + "$l1"};
 
-         GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, lop.hi, fi.maskSig);
+         GDCC_BC_AddStmnt(Code::BAnd,     1, stk, lop.hi, fi.maskSig);
          GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelL1);
 
          // l > 0
 
          // If r < 0, then l > r.
-         GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, rop.hi, fi.maskSig);
+         GDCC_BC_AddStmnt(Code::BAnd,     1, stk, rop.hi, fi.maskSig);
          GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, cmpGT ? label1 : label0);
 
          GDCC_BC_AddStmnt(codePos,        1, stk, lop, rop);
@@ -129,7 +129,7 @@ namespace GDCC::BC
          GDCC_BC_AddLabel(labelL1);
 
          // If r > 0, then l < r.
-         GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, rop.hi, fi.maskSig);
+         GDCC_BC_AddStmnt(Code::BAnd,     1, stk, rop.hi, fi.maskSig);
          GDCC_BC_AddStmnt(Code::Jcnd_Nil, 1, stk, cmpGT ? label0 : label1);
 
          GDCC_BC_AddStmnt(codeNeg,        1, stk, lop, rop);
@@ -139,14 +139,14 @@ namespace GDCC::BC
       GDCC_BC_AddLabel(labelLEMax);
 
       // If l is NaN, then l != r.
-      GDCC_BC_AddStmnt(Code::Move_W,   n, stk, lop);
-      GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, stk, fi.maskMan);
+      GDCC_BC_AddStmnt(Code::Move,     n, stk, lop);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, stk, fi.maskMan);
       GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, cmpNE ? label1 : label0);
 
       // Check for r having max exponent...
-      GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, rop.hi, fi.maskExp);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, rop.hi, fi.maskExp);
       GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, fi.maskExp, labelREMax);
-      GDCC_BC_AddStmnt(Code::Move_W,   1, nul, stk);
+      GDCC_BC_AddStmnt(Code::Move,     1, nul, stk);
 
       // ... And if not, jump to normal compare.
       GDCC_BC_AddStmnt(Code::Jump,     1, labelCmp);
@@ -154,19 +154,19 @@ namespace GDCC::BC
       GDCC_BC_AddLabel(labelLEMin);
 
       // Check for r having max exponent...
-      GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, rop.hi, fi.maskExp);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, rop.hi, fi.maskExp);
       GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, fi.maskExp, labelREMax);
-      GDCC_BC_AddStmnt(Code::Move_W,   1, nul, stk);
+      GDCC_BC_AddStmnt(Code::Move,     1, nul, stk);
 
       // ... And if not, jump to normal compare.
       GDCC_BC_AddStmnt(Code::Jump,     1, labelCmp);
 
       GDCC_BC_AddLabel(labelREMax);
-      GDCC_BC_AddStmnt(Code::Move_W,   1, nul, stk);
+      GDCC_BC_AddStmnt(Code::Move,     1, nul, stk);
 
       // If r is NaN, then l != r.
-      GDCC_BC_AddStmnt(Code::Move_W,   n, stk, rop);
-      GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, stk, fi.maskMan);
+      GDCC_BC_AddStmnt(Code::Move,     n, stk, rop);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, stk, fi.maskMan);
       GDCC_BC_AddStmnt(Code::Jcnd_Tru, n, stk, cmpNE ? label1 : label0);
 
       // Jump to normal compare.
@@ -222,8 +222,8 @@ namespace GDCC::BC
       }
 
       // First words
-      GDCC_BC_AddStmnt(Code::CmpU_EQ_W, 1, stk, lop.hi, rop.hi);
-      GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelEq[n - 2]);
+      GDCC_BC_AddStmnt(Code::CmpU_EQ,  1, stk, lop.hi, rop.hi);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelEq[n - 2]);
 
       GDCC_BC_AddStmnt(codeCmpHi,  1, stk, lop.hi, rop.hi);
       GDCC_BC_AddStmnt(Code::Retn, 1, stk);
@@ -232,8 +232,8 @@ namespace GDCC::BC
       for(Core::FastU i = n - 2; i; --i)
       {
          GDCC_BC_AddLabel(labelEq[i]);
-         GDCC_BC_AddStmnt(Code::CmpU_EQ_W, 1, stk, lop[i], rop[i]);
-         GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelEq[i - 1]);
+         GDCC_BC_AddStmnt(Code::CmpU_EQ,  1, stk, lop[i], rop[i]);
+         GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelEq[i - 1]);
 
          GDCC_BC_AddStmnt(codeCmpLo,  1, stk, lop[i], rop[i]);
          GDCC_BC_AddStmnt(Code::Retn, 1, stk);

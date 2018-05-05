@@ -33,7 +33,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_ShLF_W(Core::FastU n)
    {
-      addFunc_ShLF_W(n, IR::Code::ShLF_W, true);
+      addFunc_ShLF_W(n, IR::Code::ShLF, true);
    }
 
    //
@@ -50,31 +50,31 @@ namespace GDCC::BC
       IR::Glyph labelInf {prog, name + "$inf"};
 
       if(!left)
-         GDCC_BC_AddStmnt(Code::ShLU_W, 1, rop, rop, 31 - fi.bitsExp);
+         GDCC_BC_AddStmnt(Code::ShLU, 1, rop, rop, 31 - fi.bitsExp);
 
-      GDCC_BC_AddStmnt(Code::BAnd_W,   1, stk, lop.hi, fi.maskExp);
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, lop.hi, fi.maskExp);
       GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, fi.maskExp, labelEMax, 0, labelEMax);
 
       if(left)
       {
-         GDCC_BC_AddStmnt(Code::ShRI_W, 1, stk, stk, 31 - fi.bitsExp);
-         GDCC_BC_AddStmnt(Code::AddU_W, 1, rop, rop, stk);
+         GDCC_BC_AddStmnt(Code::ShRI, 1, stk, stk, 31 - fi.bitsExp);
+         GDCC_BC_AddStmnt(Code::AddU, 1, rop, rop, stk);
 
-         GDCC_BC_AddStmnt(Code::CmpI_GE_W, 1, stk, rop, fi.maxExp);
-         GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelInf);
+         GDCC_BC_AddStmnt(Code::CmpI_GE,  1, stk, rop, fi.maxExp);
+         GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelInf);
 
-         GDCC_BC_AddStmnt(Code::Move_W, n, stk, lop);
-         GDCC_BC_AddStmnt(Code::BAnd_W, 1, stk, stk, ~fi.maskExp);
-         GDCC_BC_AddStmnt(Code::ShLU_W, 1, stk, rop, 31 - fi.bitsExp);
-         GDCC_BC_AddStmnt(Code::BOrI_W, 1, stk, stk, stk);
+         GDCC_BC_AddStmnt(Code::Move, n, stk, lop);
+         GDCC_BC_AddStmnt(Code::BAnd, 1, stk, stk, ~fi.maskExp);
+         GDCC_BC_AddStmnt(Code::ShLU, 1, stk, rop, 31 - fi.bitsExp);
+         GDCC_BC_AddStmnt(Code::BOrI, 1, stk, stk, stk);
       }
       else
       {
-         GDCC_BC_AddStmnt(Code::CmpI_LE_W, 1, stk, stk, rop);
-         GDCC_BC_AddStmnt(Code::Jcnd_Tru,  1, stk, labelInf);
+         GDCC_BC_AddStmnt(Code::CmpI_LE,  1, stk, stk, rop);
+         GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelInf);
 
-         GDCC_BC_AddStmnt(Code::Move_W, n, stk, lop);
-         GDCC_BC_AddStmnt(Code::SubU_W, 1, stk, stk, rop);
+         GDCC_BC_AddStmnt(Code::Move, n, stk, lop);
+         GDCC_BC_AddStmnt(Code::SubU, 1, stk, stk, rop);
       }
 
       GDCC_BC_AddStmnt(Code::Retn, n, stk);
@@ -83,12 +83,12 @@ namespace GDCC::BC
       GDCC_BC_AddLabel(labelInf);
 
       if(n > 1)
-         GDCC_BC_AddStmnt(Code::Move_W, n - 1, stk, 0);
+         GDCC_BC_AddStmnt(Code::Move, n - 1, stk, 0);
 
-      GDCC_BC_AddStmnt(Code::BAnd_W, 1, stk, lop.hi, 0x80000000);
+      GDCC_BC_AddStmnt(Code::BAnd, 1, stk, lop.hi, 0x80000000);
 
       if(left)
-         GDCC_BC_AddStmnt(Code::BOrI_W, 1, stk, stk, fi.maskExp);
+         GDCC_BC_AddStmnt(Code::BOrI, 1, stk, stk, fi.maskExp);
 
       GDCC_BC_AddStmnt(Code::Retn, n, stk);
 
@@ -105,7 +105,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_ShLU_W(Core::FastU n)
    {
-      addFunc_ShLU_W(n, IR::Code::ShLU_W, true, false);
+      addFunc_ShLU_W(n, IR::Code::ShLU, true, false);
    }
 
    //
@@ -143,26 +143,26 @@ namespace GDCC::BC
 
          if(sign)
          {
-            GDCC_BC_AddStmnt(Code::ShRI_W, 1, stk, lop.hi, 31);
+            GDCC_BC_AddStmnt(Code::ShRI, 1, stk, lop.hi, 31);
 
             for(Core::FastU i = words - 1; i--;)
-               GDCC_BC_AddStmnt(Code::Copy_W, 1, stk, stk);
+               GDCC_BC_AddStmnt(Code::Copy, 1, stk, stk);
          }
          else
-            GDCC_BC_AddStmnt(Code::Move_W, words, stk, 0);
+            GDCC_BC_AddStmnt(Code::Move, words, stk, 0);
       };
 
       // Calculate shiftWords.
-      GDCC_BC_AddStmnt(Code::ShRI_W, 1, stk, rop, 5);
+      GDCC_BC_AddStmnt(Code::ShRI, 1, stk, rop, 5);
 
       // Calculate shiftBits
-      GDCC_BC_AddStmnt(Code::BAnd_W, 1, stk, rop, 31);
+      GDCC_BC_AddStmnt(Code::BAnd, 1, stk, rop, 31);
 
       // If shiftBits is 0, branch to whole word shift table.
       GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, 0, labelTab0);
 
       // Otherwise, store shiftBits and branch on shiftWords.
-      GDCC_BC_AddStmnt(Code::Move_W, 1, rop, stk);
+      GDCC_BC_AddStmnt(Code::Move, 1, rop, stk);
 
       // Partial word shift jump table.
       {
@@ -194,7 +194,7 @@ namespace GDCC::BC
       }
 
       // Emergency fallback, return 0.
-      GDCC_BC_AddStmnt(Code::Move_W, 1, nul, stk);
+      GDCC_BC_AddStmnt(Code::Move, 1, nul, stk);
       fillZeroes(n);
       GDCC_BC_AddStmnt(Code::Retn, n, stk);
 
@@ -214,26 +214,26 @@ namespace GDCC::BC
 
             for(Core::FastU i = 1; i != keepWords; ++i)
             {
-               GDCC_BC_AddStmnt(Code::Move_W, 1, stk, lop[i - 1]);
-               GDCC_BC_AddStmnt(Code::SubU_W, 1, stk, 32, rop);
-               GDCC_BC_AddStmnt(Code::ShRU_W, 1, stk, stk, stk);
+               GDCC_BC_AddStmnt(Code::Move, 1, stk, lop[i - 1]);
+               GDCC_BC_AddStmnt(Code::SubU, 1, stk, 32, rop);
+               GDCC_BC_AddStmnt(Code::ShRU, 1, stk, stk, stk);
 
-               GDCC_BC_AddStmnt(Code::ShLU_W, 1, stk, lop[i], rop);
+               GDCC_BC_AddStmnt(Code::ShLU, 1, stk, lop[i], rop);
 
-               GDCC_BC_AddStmnt(Code::BOrI_W, 1, stk, stk, stk);
+               GDCC_BC_AddStmnt(Code::BOrI, 1, stk, stk, stk);
             }
          }
          else
          {
             for(Core::FastU i = 0; i != keepWords - 1;)
             {
-               GDCC_BC_AddStmnt(Code::ShRU_W, 1, stk, lop[shiftWords + i], rop);
+               GDCC_BC_AddStmnt(Code::ShRU, 1, stk, lop[shiftWords + i], rop);
 
-               GDCC_BC_AddStmnt(Code::Move_W, 1, stk, lop[shiftWords + ++i]);
-               GDCC_BC_AddStmnt(Code::SubU_W, 1, stk, 32, rop);
-               GDCC_BC_AddStmnt(Code::ShLU_W, 1, stk, stk, stk);
+               GDCC_BC_AddStmnt(Code::Move, 1, stk, lop[shiftWords + ++i]);
+               GDCC_BC_AddStmnt(Code::SubU, 1, stk, 32, rop);
+               GDCC_BC_AddStmnt(Code::ShLU, 1, stk, stk, stk);
 
-               GDCC_BC_AddStmnt(Code::BOrI_W, 1, stk, stk, stk);
+               GDCC_BC_AddStmnt(Code::BOrI, 1, stk, stk, stk);
             }
 
             GDCC_BC_AddStmnt(code, 1, stk, lop.hi, rop);
@@ -250,12 +250,12 @@ namespace GDCC::BC
          {
             fillZeroes(shiftWords);
             for(Core::FastU i = 0; i != keepWords; ++i)
-               GDCC_BC_AddStmnt(Code::Move_W, 1, stk, lop[i]);
+               GDCC_BC_AddStmnt(Code::Move, 1, stk, lop[i]);
          }
          else
          {
             for(Core::FastU i = 0; i != keepWords; ++i)
-               GDCC_BC_AddStmnt(Code::Move_W, 1, stk, lop[shiftWords + i]);
+               GDCC_BC_AddStmnt(Code::Move, 1, stk, lop[shiftWords + i]);
             fillZeroes(shiftWords);
          }
 
@@ -270,7 +270,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_ShRF_W(Core::FastU n)
    {
-      addFunc_ShLF_W(n, IR::Code::ShRF_W, false);
+      addFunc_ShLF_W(n, IR::Code::ShRF, false);
    }
 
    //
@@ -278,7 +278,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_ShRI_W(Core::FastU n)
    {
-      addFunc_ShLU_W(n, IR::Code::ShRI_W, false, true);
+      addFunc_ShLU_W(n, IR::Code::ShRI, false, true);
    }
 
    //
@@ -286,7 +286,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_ShRU_W(Core::FastU n)
    {
-      addFunc_ShLU_W(n, IR::Code::ShRU_W, false, false);
+      addFunc_ShLU_W(n, IR::Code::ShRU, false, false);
    }
 }
 

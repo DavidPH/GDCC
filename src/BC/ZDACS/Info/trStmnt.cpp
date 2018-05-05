@@ -34,68 +34,68 @@ namespace GDCC::BC::ZDACS
       {
       case IR::Code::Nop: break;
 
-      case IR::Code::AdXU_W: trStmnt_AdXU_W(); break;
+      case IR::Code::AdXU: trStmnt_AdXU(); break;
 
-      case IR::Code::AddF_W:
-      case IR::Code::MulF_W:
-      case IR::Code::MulI_W:
-      case IR::Code::MulK_W:
-      case IR::Code::MulU_W:
-      case IR::Code::MulX_W:
+      case IR::Code::AddF:
+      case IR::Code::MulF:
+      case IR::Code::MulI:
+      case IR::Code::MulK:
+      case IR::Code::MulU:
+      case IR::Code::MulX:
          trStmntStk3(false);
          break;
 
-      case IR::Code::AddI_W:
-      case IR::Code::AddU_W: trStmnt_AddU_W(); break;
+      case IR::Code::AddI:
+      case IR::Code::AddU: trStmnt_AddU(); break;
 
-      case IR::Code::BAnd_W: trStmntBitwise(); break;
-      case IR::Code::BNot_W: trStmnt_BNot_W(); break;
-      case IR::Code::BOrI_W: trStmntBitwise(); break;
-      case IR::Code::BOrX_W: trStmntBitwise(); break;
+      case IR::Code::BAnd: trStmntBitwise(); break;
+      case IR::Code::BNot: trStmnt_BNot(); break;
+      case IR::Code::BOrI: trStmntBitwise(); break;
+      case IR::Code::BOrX: trStmntBitwise(); break;
 
-      case IR::Code::Bclo_W: trStmnt_Bclz_W(); break;
-      case IR::Code::Bclz_W: trStmnt_Bclz_W(); break;
-      case IR::Code::Bges_W: trStmnt_Bget_W(); break;
-      case IR::Code::Bget_W: trStmnt_Bget_W(); break;
-      case IR::Code::Bset_W: trStmnt_Bset_W(); break;
+      case IR::Code::Bclo: trStmnt_Bclz(); break;
+      case IR::Code::Bclz: trStmnt_Bclz(); break;
+      case IR::Code::Bges: trStmnt_Bget(); break;
+      case IR::Code::Bget: trStmnt_Bget(); break;
+      case IR::Code::Bset: trStmnt_Bset(); break;
 
       case IR::Code::Call: trStmnt_Call(); break;
 
       case IR::Code::Casm: trStmnt_Casm(); break;
 
-      case IR::Code::CmpF_EQ_W:
-      case IR::Code::CmpF_NE_W:
+      case IR::Code::CmpF_EQ:
+      case IR::Code::CmpF_NE:
          trStmntStk3(false);
          break;
 
-      case IR::Code::CmpF_GE_W:
-      case IR::Code::CmpF_GT_W:
-      case IR::Code::CmpF_LE_W:
-      case IR::Code::CmpF_LT_W:
+      case IR::Code::CmpF_GE:
+      case IR::Code::CmpF_GT:
+      case IR::Code::CmpF_LE:
+      case IR::Code::CmpF_LT:
          trStmntStk3(true);
          break;
 
-      case IR::Code::CmpI_EQ_W:
-      case IR::Code::CmpI_NE_W:
-      case IR::Code::CmpU_EQ_W:
-      case IR::Code::CmpU_NE_W:
-         trStmnt_CmpU_EQ_W();
+      case IR::Code::CmpI_EQ:
+      case IR::Code::CmpI_NE:
+      case IR::Code::CmpU_EQ:
+      case IR::Code::CmpU_NE:
+         trStmnt_CmpU_EQ();
          break;
 
-      case IR::Code::CmpI_GE_W:
-      case IR::Code::CmpI_GT_W:
-      case IR::Code::CmpI_LE_W:
-      case IR::Code::CmpI_LT_W:
-      case IR::Code::CmpU_GE_W:
-      case IR::Code::CmpU_GT_W:
-      case IR::Code::CmpU_LE_W:
-      case IR::Code::CmpU_LT_W:
+      case IR::Code::CmpI_GE:
+      case IR::Code::CmpI_GT:
+      case IR::Code::CmpI_LE:
+      case IR::Code::CmpI_LT:
+      case IR::Code::CmpU_GE:
+      case IR::Code::CmpU_GT:
+      case IR::Code::CmpU_LE:
+      case IR::Code::CmpU_LT:
          trStmntStk3(true);
          break;
 
       case IR::Code::Cnat: trStmnt_Cnat(); break;
 
-      case IR::Code::Copy_W:
+      case IR::Code::Copy:
          CheckArgC(stmnt, 2);
          CheckArgB(stmnt, 0, IR::ArgBase::Stk);
          CheckArgB(stmnt, 1, IR::ArgBase::Stk);
@@ -108,15 +108,15 @@ namespace GDCC::BC::ZDACS
 
       case IR::Code::Cspe: trStmnt_Cspe(); break;
 
-      case IR::Code::DiXI_W: trStmnt_DiXI_W(); break;
-      case IR::Code::DiXU_W: trStmnt_DiXU_W(); break;
+      case IR::Code::DiXI: trStmnt_DiXI(); break;
+      case IR::Code::DiXU: trStmnt_DiXU(); break;
 
-      case IR::Code::DivF_W:
-      case IR::Code::DivI_W:
-      case IR::Code::DivK_W:
-      case IR::Code::DivU_W:
-      case IR::Code::DivX_W:
-      case IR::Code::SubF_W:
+      case IR::Code::DivF:
+      case IR::Code::DivI:
+      case IR::Code::DivK:
+      case IR::Code::DivU:
+      case IR::Code::DivX:
+      case IR::Code::SubF:
          trStmntStk3(true);
          break;
 
@@ -142,34 +142,34 @@ namespace GDCC::BC::ZDACS
 
       case IR::Code::LNot: trStmntStk2(); break;
 
-      case IR::Code::ModI_W: trStmnt_ModI_W(); break;
-      case IR::Code::ModU_W: trStmnt_ModU_W(); break;
+      case IR::Code::ModI: trStmnt_ModI(); break;
+      case IR::Code::ModU: trStmnt_ModU(); break;
 
-      case IR::Code::Move_W: trStmnt_Move_W(); break;
+      case IR::Code::Move: trStmnt_Move(); break;
 
-      case IR::Code::MuXU_W:
+      case IR::Code::MuXU:
          trStmntStk3(false);
          break;
 
-      case IR::Code::NegF_W: trStmntStk2(); break;
-      case IR::Code::NegI_W: trStmnt_NegI_W(); break;
+      case IR::Code::NegF: trStmntStk2(); break;
+      case IR::Code::NegI: trStmnt_NegI(); break;
 
       case IR::Code::Pltn: trStmntStk2(); break;
 
       case IR::Code::Retn: trStmnt_Retn(); break;
 
-      case IR::Code::ShLF_W: trStmnt_ShLF_W(); break;
-      case IR::Code::ShLU_W: trStmnt_ShLU_W(); break;
-      case IR::Code::ShRF_W: trStmnt_ShLF_W(); break;
-      case IR::Code::ShRI_W: trStmnt_ShRI_W(); break;
-      case IR::Code::ShRU_W: trStmnt_ShRU_W(); break;
+      case IR::Code::ShLF: trStmnt_ShLF(); break;
+      case IR::Code::ShLU: trStmnt_ShLU(); break;
+      case IR::Code::ShRF: trStmnt_ShLF(); break;
+      case IR::Code::ShRI: trStmnt_ShRI(); break;
+      case IR::Code::ShRU: trStmnt_ShRU(); break;
 
-      case IR::Code::SuXU_W: trStmnt_SuXU_W(); break;
+      case IR::Code::SuXU: trStmnt_SuXU(); break;
 
-      case IR::Code::SubI_W:
-      case IR::Code::SubU_W: trStmnt_SubU_W(); break;
+      case IR::Code::SubI:
+      case IR::Code::SubU: trStmnt_SubU(); break;
 
-      case IR::Code::Swap_W: trStmnt_Swap_W(); break;
+      case IR::Code::Swap: trStmnt_Swap(); break;
 
       case IR::Code::Xcod_SID: break;
 

@@ -22,9 +22,9 @@
 namespace GDCC::BC::DGE
 {
    //
-   // Info::preStmnt_Bclo_W
+   // Info::preStmnt_Bclo
    //
-   void Info::preStmnt_Bclo_W()
+   void Info::preStmnt_Bclo()
    {
       auto n = getStmntSizeW();
 
@@ -35,9 +35,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::preStmnt_Bclz_W
+   // Info::preStmnt_Bclz
    //
-   void Info::preStmnt_Bclz_W()
+   void Info::preStmnt_Bclz()
    {
       auto n = getStmntSizeW();
 
@@ -48,9 +48,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_BAnd_W
+   // Info::putStmnt_BAnd
    //
-   void Info::putStmnt_BAnd_W(char const *code)
+   void Info::putStmnt_BAnd(char const *code)
    {
       auto n = getStmntSizeW();
 
@@ -86,9 +86,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_BNot_W
+   // Info::putStmnt_BNot
    //
-   void Info::putStmnt_BNot_W()
+   void Info::putStmnt_BNot()
    {
       auto n = getStmntSizeW();
 
@@ -120,9 +120,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_Bclz_W
+   // Info::putStmnt_Bclz
    //
-   void Info::putStmnt_Bclz_W(char const *code)
+   void Info::putStmnt_Bclz(char const *code)
    {
       auto n = getStmntSizeW();
 
@@ -136,9 +136,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_BAnd_W
+   // Info::trStmnt_BAnd
    //
-   void Info::trStmnt_BAnd_W()
+   void Info::trStmnt_BAnd()
    {
       auto n = getStmntSizeW();
 
@@ -157,9 +157,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_BNot_W
+   // Info::trStmnt_BNot
    //
-   void Info::trStmnt_BNot_W()
+   void Info::trStmnt_BNot()
    {
       auto n = getStmntSizeW();
 
@@ -181,9 +181,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_Bclz_W
+   // Info::trStmnt_Bclz
    //
-   void Info::trStmnt_Bclz_W()
+   void Info::trStmnt_Bclz()
    {
       trStmntStk2();
    }

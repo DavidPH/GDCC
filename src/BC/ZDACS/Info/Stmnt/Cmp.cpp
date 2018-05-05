@@ -31,11 +31,11 @@
 namespace GDCC::BC::ZDACS
 {
    //
-   // Info::genStmnt_CmpI_W
+   // Info::genStmnt_CmpI
    //
-   void Info::genStmnt_CmpI_W()
+   void Info::genStmnt_CmpI()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0) return;
 
@@ -46,11 +46,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_CmpU_EQ_W
+   // Info::genStmnt_CmpU_EQ
    //
-   void Info::genStmnt_CmpU_EQ_W()
+   void Info::genStmnt_CmpU_EQ()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0) return;
 
@@ -68,59 +68,59 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::preStmnt_CmpF_EQ_W
+   // Info::preStmnt_CmpF_EQ
    //
-   void Info::preStmnt_CmpF_EQ_W()
+   void Info::preStmnt_CmpF_EQ()
    {
-      addFunc_CmpF_EQ_W(getStmntSizeW());
+      addFunc_CmpF_EQ_W(getStmntSize());
    }
 
    //
-   // Info::preStmnt_CmpF_GE_W
+   // Info::preStmnt_CmpF_GE
    //
-   void Info::preStmnt_CmpF_GE_W()
+   void Info::preStmnt_CmpF_GE()
    {
-      addFunc_CmpF_GE_W(getStmntSizeW());
+      addFunc_CmpF_GE_W(getStmntSize());
    }
 
    //
-   // Info::preStmnt_CmpF_GT_W
+   // Info::preStmnt_CmpF_GT
    //
-   void Info::preStmnt_CmpF_GT_W()
+   void Info::preStmnt_CmpF_GT()
    {
-      addFunc_CmpF_GT_W(getStmntSizeW());
+      addFunc_CmpF_GT_W(getStmntSize());
    }
 
    //
-   // Info::preStmnt_CmpF_LE_W
+   // Info::preStmnt_CmpF_LE
    //
-   void Info::preStmnt_CmpF_LE_W()
+   void Info::preStmnt_CmpF_LE()
    {
-      addFunc_CmpF_LE_W(getStmntSizeW());
+      addFunc_CmpF_LE_W(getStmntSize());
    }
 
    //
-   // Info::preStmnt_CmpF_LT_W
+   // Info::preStmnt_CmpF_LT
    //
-   void Info::preStmnt_CmpF_LT_W()
+   void Info::preStmnt_CmpF_LT()
    {
-      addFunc_CmpF_LT_W(getStmntSizeW());
+      addFunc_CmpF_LT_W(getStmntSize());
    }
 
    //
-   // Info::preStmnt_CmpF_NE_W
+   // Info::preStmnt_CmpF_NE
    //
-   void Info::preStmnt_CmpF_NE_W()
+   void Info::preStmnt_CmpF_NE()
    {
-      addFunc_CmpF_NE_W(getStmntSizeW());
+      addFunc_CmpF_NE_W(getStmntSize());
    }
 
    //
-   // Info::preStmnt_CmpI_GE_W
+   // Info::preStmnt_CmpI_GE
    //
-   void Info::preStmnt_CmpI_GE_W()
+   void Info::preStmnt_CmpI_GE()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n < 2)
          return;
@@ -129,11 +129,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::preStmnt_CmpI_GT_W
+   // Info::preStmnt_CmpI_GT
    //
-   void Info::preStmnt_CmpI_GT_W()
+   void Info::preStmnt_CmpI_GT()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n < 2)
          return;
@@ -142,11 +142,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::preStmnt_CmpI_LE_W
+   // Info::preStmnt_CmpI_LE
    //
-   void Info::preStmnt_CmpI_LE_W()
+   void Info::preStmnt_CmpI_LE()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n < 2)
          return;
@@ -155,11 +155,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::preStmnt_CmpI_LT_W
+   // Info::preStmnt_CmpI_LT
    //
-   void Info::preStmnt_CmpI_LT_W()
+   void Info::preStmnt_CmpI_LT()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n < 2)
          return;
@@ -168,89 +168,89 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::preStmnt_CmpU_EQ_W
+   // Info::preStmnt_CmpU_EQ
    //
-   void Info::preStmnt_CmpU_EQ_W(IR::Code codeCmp)
+   void Info::preStmnt_CmpU_EQ(IR::Code codeCmp)
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n < 2)
          return;
 
-      if(codeCmp == IR::Code::CmpU_EQ_W)
+      if(codeCmp == IR::Code::CmpU_EQ)
          addFunc_CmpU_EQ_W(n);
       else
          addFunc_CmpU_NE_W(n);
    }
 
    //
-   // Info::preStmnt_CmpU_GE_W
+   // Info::preStmnt_CmpU_GE
    //
-   void Info::preStmnt_CmpU_GE_W()
+   void Info::preStmnt_CmpU_GE()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return;
 
       if(n == 1)
-         preStmnt_CmpU_W1(IR::Code::CmpU_GE_W, IR::Code::CmpI_GE_W, true, false);
+         preStmnt_CmpU1(IR::Code::CmpU_GE, IR::Code::CmpI_GE, true, false);
       else
          addFunc_CmpU_GE_W(n);
    }
 
    //
-   // Info::preStmnt_CmpU_GT_W
+   // Info::preStmnt_CmpU_GT
    //
-   void Info::preStmnt_CmpU_GT_W()
+   void Info::preStmnt_CmpU_GT()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return;
 
       if(n == 1)
-         preStmnt_CmpU_W1(IR::Code::CmpU_GT_W, IR::Code::CmpI_GT_W, true, false);
+         preStmnt_CmpU1(IR::Code::CmpU_GT, IR::Code::CmpI_GT, true, false);
       else
          addFunc_CmpU_GT_W(n);
    }
 
    //
-   // Info::preStmnt_CmpU_LE_W
+   // Info::preStmnt_CmpU_LE
    //
-   void Info::preStmnt_CmpU_LE_W()
+   void Info::preStmnt_CmpU_LE()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return;
 
       if(n == 1)
-         preStmnt_CmpU_W1(IR::Code::CmpU_LE_W, IR::Code::CmpI_LE_W, false, true);
+         preStmnt_CmpU1(IR::Code::CmpU_LE, IR::Code::CmpI_LE, false, true);
       else
          addFunc_CmpU_LE_W(n);
    }
 
    //
-   // Info::preStmnt_CmpU_LT_W
+   // Info::preStmnt_CmpU_LT
    //
-   void Info::preStmnt_CmpU_LT_W()
+   void Info::preStmnt_CmpU_LT()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return;
 
       if(n == 1)
-         preStmnt_CmpU_W1(IR::Code::CmpU_LT_W, IR::Code::CmpI_LT_W, false, true);
+         preStmnt_CmpU1(IR::Code::CmpU_LT, IR::Code::CmpI_LT, false, true);
       else
          addFunc_CmpU_LT_W(n);
    }
 
    //
-   // Info::preStmnt_CmpU_W1
+   // Info::preStmnt_CmpU1
    //
-   void Info::preStmnt_CmpU_W1(IR::Code code, IR::Code codeCmp, bool resGT, bool resLT)
+   void Info::preStmnt_CmpU1(IR::Code code, IR::Code codeCmp, bool resGT, bool resLT)
    {
       // Unsigned word compare logic:
       //
@@ -264,15 +264,15 @@ namespace GDCC::BC::ZDACS
       IR::Glyph labelPos{prog, name + "$pos"};
       IR::Glyph labelCmp{prog, name + "$cmp"};
 
-      GDCC_BC_AddStmnt(IR::Code::BAnd_W,   1, stk, lop, 0x80000000);
+      GDCC_BC_AddStmnt(IR::Code::BAnd,     1, stk, lop, 0x80000000);
       GDCC_BC_AddStmnt(IR::Code::Jcnd_Nil, 1, stk, labelPos);
 
-      GDCC_BC_AddStmnt(IR::Code::BAnd_W,   1, stk, rop, 0x80000000);
+      GDCC_BC_AddStmnt(IR::Code::BAnd,     1, stk, rop, 0x80000000);
       GDCC_BC_AddStmnt(IR::Code::Jcnd_Tru, 1, stk, labelCmp);
       GDCC_BC_AddStmnt(IR::Code::Retn,     1, resGT);
 
       GDCC_BC_AddLabel(labelPos);
-      GDCC_BC_AddStmnt(IR::Code::BAnd_W,   1, stk, rop, 0x80000000);
+      GDCC_BC_AddStmnt(IR::Code::BAnd,     1, stk, rop, 0x80000000);
       GDCC_BC_AddStmnt(IR::Code::Jcnd_Nil, 1, stk, labelCmp);
       GDCC_BC_AddStmnt(IR::Code::Retn,     1, resLT);
 
@@ -284,11 +284,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_CmpI_W
+   // Info::putStmnt_CmpI
    //
-   void Info::putStmnt_CmpI_W(Code code)
+   void Info::putStmnt_CmpI(Code code)
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0) return;
 
@@ -299,11 +299,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_CmpU_EQ_W
+   // Info::putStmnt_CmpU_EQ
    //
-   void Info::putStmnt_CmpU_EQ_W()
+   void Info::putStmnt_CmpU_EQ()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0) return;
 
@@ -329,11 +329,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_CmpU_NE_W
+   // Info::putStmnt_CmpU_NE
    //
-   void Info::putStmnt_CmpU_NE_W()
+   void Info::putStmnt_CmpU_NE()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0) return;
 
@@ -359,9 +359,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_CmpU_EQ_W
+   // Info::trStmnt_CmpU_EQ
    //
-   void Info::trStmnt_CmpU_EQ_W()
+   void Info::trStmnt_CmpU_EQ()
    {
       CheckArgC(stmnt, 3);
 

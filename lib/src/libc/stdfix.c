@@ -26,9 +26,9 @@
    int res; \
    \
    if(f < 0) \
-      __asm("Bclo_W W(LocReg(Lit(:res)) LocReg " #w "(Lit(:f)))"); \
+      __asm("Bclo W(LocReg(Lit(:res)) LocReg " #w "(Lit(:f)))"); \
    else \
-      __asm("Bclz_W W(LocReg(Lit(:res)) LocReg " #w "(Lit(:f)))"); \
+      __asm("Bclz W(LocReg(Lit(:res)) LocReg " #w "(Lit(:f)))"); \
    \
    return res mod;
 
@@ -37,7 +37,7 @@
 //
 #define CountlsFXU(w, mod) \
    int res; \
-   __asm("Bclz_W W(LocReg(Lit(:res)) LocReg " #w "(Lit(:f)))"); \
+   __asm("Bclz W(LocReg(Lit(:res)) LocReg " #w "(Lit(:f)))"); \
    return res mod;
 
 //

@@ -26,19 +26,19 @@
 namespace GDCC::BC::ZDACS
 {
    //
-   // Info::genStmnt_NegF_W
+   // Info::genStmnt_NegF
    //
-   void Info::genStmnt_NegF_W()
+   void Info::genStmnt_NegF()
    {
       numChunkCODE += 12;
    }
 
    //
-   // Info::genStmnt_NegI_W
+   // Info::genStmnt_NegI
    //
-   void Info::genStmnt_NegI_W()
+   void Info::genStmnt_NegI()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return;
@@ -68,20 +68,20 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_NegF_W
+   // Info::putStmnt_NegF
    //
-   void Info::putStmnt_NegF_W()
+   void Info::putStmnt_NegF()
    {
       putCode(Code::Push_Lit, 0x80000000);
       putCode(Code::BOrX);
    }
 
    //
-   // Info::putStmnt_NegI_W
+   // Info::putStmnt_NegI
    //
-   void Info::putStmnt_NegI_W()
+   void Info::putStmnt_NegI()
    {
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(n == 0)
          return;
@@ -140,13 +140,13 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_NegI_W
+   // Info::trStmnt_NegI
    //
-   void Info::trStmnt_NegI_W()
+   void Info::trStmnt_NegI()
    {
       CheckArgC(stmnt, 2);
 
-      auto n = getStmntSizeW();
+      auto n = getStmntSize();
 
       if(!isCopyArg(stmnt->args[0]) || !isFastArg(stmnt->args[0]))
       {

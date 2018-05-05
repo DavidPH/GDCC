@@ -156,7 +156,7 @@ namespace GDCC::CC
 
             auto autExp = IR::ExpCreate_Value(std::move(autVal), pos);
 
-            ctx.block.addStmnt(IR::Code::Move_W,
+            ctx.block.addStmnt(IR::Code::Move,
                IR::Arg_Aut(autBytes, IR::Arg_Lit(wordBytes, autExp)),
                IR::Arg_Stk(autBytes));
 

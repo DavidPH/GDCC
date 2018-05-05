@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2017 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,85 +22,79 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // ExpCode_ArithFixed
+   //
+   template<typename Codes>
+   IR::Code ExpCode_ArithFixed(Type const *t)
    {
-      //
-      // ExpCode_ArithFixed
-      //
-      template<typename Codes>
-      IR::OpCode ExpCode_ArithFixed(Type const *t)
-      {
-         if(t->isCTypeAccum())
-         {
-            if(t->getSizeBitsS())
-               return {Codes::CodeX_W, t->getSizeWords()};
-            else
-               return {Codes::CodeK_W, t->getSizeWords()};
-         }
-         else
-         {
-            if(t->getSizeBitsS())
-               if(t->isTypeSubWord())
-                  return {Codes::CodeR_B, t->getSizeBytes()};
-               else
-                  return {Codes::CodeR_W, t->getSizeWords()};
-            else
-               if(t->isTypeSubWord())
-                  return {Codes::CodeA_B, t->getSizeBytes()};
-               else
-                  return {Codes::CodeA_W, t->getSizeWords()};
-         }
-      }
-
-      //
-      // ExpCode_ArithFloat
-      //
-      template<typename Codes>
-      IR::OpCode ExpCode_ArithFloat(Type const *t)
-      {
-         return {Codes::CodeF_W, t->getSizeWords()};
-      }
-
-      //
-      // ExpCode_ArithInteg
-      //
-      template<typename Codes>
-      IR::OpCode ExpCode_ArithInteg(Type const *t)
+      if(t->isCTypeAccum())
       {
          if(t->getSizeBitsS())
-            return {Codes::CodeI_W, t->getSizeWords()};
+            return Codes::CodeX;
          else
-            return {Codes::CodeU_W, t->getSizeWords()};
+            return Codes::CodeK;
       }
-
-      //
-      // ExpCode_ArithPoint
-      //
-      template<typename Codes>
-      IR::OpCode ExpCode_ArithPoint(Type const *t)
+      else
       {
-         return {Codes::CodeU_W, t->getSizeWords()};
+         if(t->getSizeBitsS())
+            return Codes::CodeR;
+         else
+            return Codes::CodeA;
       }
+   }
 
-      //
-      // ExpCode_Arith
-      //
-      template<typename Codes>
-      IR::OpCode ExpCode_Arith(Type const *t)
-      {
-         if(t->isCTypeInteg())
-            return ExpCode_ArithInteg<Codes>(t);
+   //
+   // ExpCode_ArithFloat
+   //
+   template<typename Codes>
+   IR::Code ExpCode_ArithFloat(Type const *t)
+   {
+      if(t->getSizeBitsS())
+         return Codes::CodeF;
+      else
+         return IR::Code::None;
+   }
 
-         if(t->isCTypeFixed())
-            return ExpCode_ArithFixed<Codes>(t);
+   //
+   // ExpCode_ArithInteg
+   //
+   template<typename Codes>
+   IR::Code ExpCode_ArithInteg(Type const *t)
+   {
+      if(t->getSizeBitsS())
+         return Codes::CodeI;
+      else
+         return Codes::CodeU;
+   }
 
-         if(t->isCTypeRealFlt())
-            return ExpCode_ArithFloat<Codes>(t);
+   //
+   // ExpCode_ArithPoint
+   //
+   template<typename Codes>
+   IR::Code ExpCode_ArithPoint(Type const *)
+   {
+      return Codes::CodeU;
+   }
 
-         return {IR::Code::None, 0};
-      }
+   //
+   // ExpCode_Arith
+   //
+   template<typename Codes>
+   IR::Code ExpCode_Arith(Type const *t)
+   {
+      if(t->isCTypeInteg())
+         return ExpCode_ArithInteg<Codes>(t);
+
+      if(t->isCTypeFixed())
+         return ExpCode_ArithFixed<Codes>(t);
+
+      if(t->isCTypeRealFlt())
+         return ExpCode_ArithFloat<Codes>(t);
+
+      return IR::Code::None;
    }
 }
 

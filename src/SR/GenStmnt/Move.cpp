@@ -30,16 +30,15 @@ namespace GDCC::SR
    static void GenStmnt_MovePartIdx(Exp const *exp, GenStmntCtx const &ctx,
       Arg const &arg, IdxT const &idx, bool get, bool set)
    {
-      IR::Code    code = arg.type->isTypeSubWord() ? IR::Code::Move_B : IR::Code::Move_W;
-      Core::FastU size = arg.type->getSizeBytes();
+      IR::Arg_Stk stk{arg.type->getSizeBytes()};
 
       if(set)
-         ctx.block.addStmnt(code,
-            GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0), IR::Arg_Stk(size));
+         ctx.block.addStmnt(IR::Code::Move,
+            GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0), stk);
 
       if(get)
-         ctx.block.addStmnt(code,
-            IR::Arg_Stk(size), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
+         ctx.block.addStmnt(IR::Code::Move,
+            stk, GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
    }
 
    //
@@ -92,7 +91,7 @@ namespace GDCC::SR
 
          // Move to temporary.
          Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
-         ctx.block.addStmnt(IR::Code::Move_W, tmp.getArg(), tmp.getArgStk());
+         ctx.block.addStmnt(IR::Code::Move, tmp.getArg(), tmp.getArgStk());
 
          // Use temporary as index.
          GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg, tmp.getArg(), get, set);
@@ -126,7 +125,7 @@ namespace GDCC::SR
             arg.data->genStmnt(ctx);
 
             ctx.block.setArgSize(arg.type->getSizeBytes()).addStmnt(
-               IR::Code::Move_W, IR::Block::Stk(), arg.data->getIRExp());
+               IR::Code::Move, IR::Block::Stk(), arg.data->getIRExp());
          }
          else
             arg.data->genStmnt(ctx, Arg(arg.type, IR::AddrBase::Stk));
@@ -142,7 +141,7 @@ namespace GDCC::SR
       if(set)
       {
          ctx.block.setArgSize(arg.type->getSizeBytes()).addStmnt(
-            IR::Code::Move_W, IR::Block::Nul(), IR::Block::Stk());
+            IR::Code::Move, IR::Block::Nul(), IR::Block::Stk());
       }
 
       if(get) throw Core::ExceptStr(exp->pos, "AddrBase::Nul get");
@@ -176,12 +175,8 @@ namespace GDCC::SR
       // Try to use IR args.
       if(dst.isIRArg() && src.isIRArg())
       {
-         if(src.type->isTypeSubWord())
-            ctx.block.addStmnt(IR::Code::Move_B,
-               dst.getIRArg(ctx.prog), src.getIRArg(ctx.prog));
-         else
-            ctx.block.addStmnt(IR::Code::Move_W,
-               dst.getIRArg(ctx.prog), src.getIRArg(ctx.prog));
+         ctx.block.addStmnt(IR::Code::Move,
+            dst.getIRArg(ctx.prog), src.getIRArg(ctx.prog));
 
          return;
       }
@@ -202,22 +197,11 @@ namespace GDCC::SR
       {
          auto dupIR = dup.getIRArg(ctx.prog);
 
-         if(src.type->isTypeSubWord())
-         {
-            ctx.block.addStmnt(IR::Code::Move_B,
-               dupIR, src.getIRArg(ctx.prog));
+         ctx.block.addStmnt(IR::Code::Move,
+            dupIR, src.getIRArg(ctx.prog));
 
-            ctx.block.addStmnt(IR::Code::Move_B,
-               dst.getIRArg(ctx.prog), dupIR);
-         }
-         else
-         {
-            ctx.block.addStmnt(IR::Code::Move_W,
-               dupIR, src.getIRArg(ctx.prog));
-
-            ctx.block.addStmnt(IR::Code::Move_W,
-               dst.getIRArg(ctx.prog), dupIR);
-         }
+         ctx.block.addStmnt(IR::Code::Move,
+            dst.getIRArg(ctx.prog), dupIR);
 
          return;
       }
