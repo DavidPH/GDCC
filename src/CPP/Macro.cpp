@@ -486,8 +486,11 @@ namespace GDCC
          // Set up __LINE__.
          macroLINE.list[0] = {{nullptr, 0}, nullptr, Core::TOK_Number};
 
+         #define InsertN(name, n) \
+            table.insert({name, {{{{}, n, Core::TOK_Number}}}})
+
          #define Insert1(name) \
-            table.insert({name, {{{{}, Core::STR_1, Core::TOK_Number}}}})
+            InsertN(name, Core::STR_1)
 
          #define FamilyCheck(e, n) \
             if(Platform::Is##e##_##n()) Insert1("__GDCC_" #e "__" #n "__")
@@ -518,15 +521,22 @@ namespace GDCC
             PlatformCase(Target, Zandronum);
          }
 
+         // __STDC__
+         Insert1("__STDC__");
+
          // Conditional feature macros.
          Insert1("__STDC_NO_ATOMICS__");
          Insert1("__STDC_NO_COMPLEX__");
          Insert1("__STDC_NO_THREADS__");
          Insert1("__STDC_NO_VLA__");
 
+         // __STDC_VERSION__
+         InsertN("__STDC_VERSION__", "201112L");
+
          #undef PlatformCase
          #undef FamilyCheck
          #undef Insert1
+         #undef InsertN
 
          // Apply command line defines.
          for(auto const &delta : Deltas)
