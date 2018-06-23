@@ -79,8 +79,7 @@ namespace GDCC::BC::DGE
 
       default:
       case_def:
-         std::cerr << "ERROR: " << stmnt->pos << ": bad getStkPtrIdx\n";
-         throw EXIT_FAILURE;
+         throw Core::ExceptStr(stmnt ? stmnt->pos : func->getOrigin(), "bad getStkPtrIdx");
       }
    }
 
