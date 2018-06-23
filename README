@@ -95,7 +95,7 @@ directories under build/src. (For example, gdcc-cc is under build/src/CC.)
 Windows (mingw-w64)
 ===========================================================
 
-To build and install libgmp from its source, the following ca be used:
+To build and install libgmp from its source, the following can be used:
   ./configure
   make
   make check
