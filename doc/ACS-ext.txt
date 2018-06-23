@@ -93,10 +93,25 @@ Function Declarations
 
 Syntax:
   function-declaration: add
-    <function> declaration-specifiers identifier ( parameter-type-list ) ;
+    <function> declaration-specifiers identifier ( parameter-type-list )
+      identifier-sequence(opt) ;
+    <function> declaration-specifiers identifier ( parameter-type-list )
+      identifier-sequence compound-statement
 
   parameter-type-list: add
     parameter-list , ...
+
+  identifier-sequence:
+    identifier identifier-sequence(opt)
+
+===========================================================
+Script Declarations
+===========================================================
+
+Syntax:
+  script-declaration: add
+    <script> script-address script-parameters(opt) identifier-sequence(opt)
+      compound-statement
 
 ===========================================================
 Special Declarations

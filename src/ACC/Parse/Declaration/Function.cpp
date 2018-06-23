@@ -181,9 +181,10 @@ namespace GDCC::ACC
    {
       // function-declaration:
       //    <function> declaration-specifiers identifier (
-      //       parameter-type-list ) compound-statement
+      //       parameter-type-list ) identifier-sequence(opt)
+      //       compound-statement
       //    <function> declaration-specifiers identifier (
-      //       parameter-type-list ) ;
+      //       parameter-type-list ) identifier-sequence(opt) ;
 
       SR::Attribute attr;
       attr.callt = IR::CallType::LangACS;
@@ -207,6 +208,10 @@ namespace GDCC::ACC
       // ( parameter-type-list )
       ParseScriptParameters(*this, scope, attr);
 
+      // identifier-sequence(opt)
+      while(in.peek(Core::TOK_KeyWrd) || in.peek(Core::TOK_Identi))
+         attr.stype.push_back(in.get().str);
+
       ParseDeclFunction(*this, scope, attr);
 
       return SR::StatementCreate_Empty(pos);
@@ -222,6 +227,8 @@ namespace GDCC::ACC
       //       script-flag-sequence(opt) compound-statement
       //    <script> script-address script-parameters script-flag-sequence(opt)
       //       compound-statement
+      //    <script> script-address script-parameters(opt)
+      //       identifier-sequence(opt) compound-statement
 
       SR::Attribute attr;
       attr.type = SR::Type::Void;
@@ -243,6 +250,7 @@ namespace GDCC::ACC
 
       // script-type(opt)
       // script-flag-list(opt)
+      // identifier-sequence(opt)
       while(in.peek(Core::TOK_KeyWrd) || in.peek(Core::TOK_Identi))
          attr.stype.push_back(in.get().str);
 
