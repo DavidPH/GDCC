@@ -42,25 +42,25 @@ namespace GDCC::BC::ZDACS
          for(auto const &st : func->stype) switch(st)
          {
          // Flags.
-         case Core::STR_Clientside:
-         case Core::STR_Net:
+         case Core::STR_clientside:
+         case Core::STR_net:
 
          // Types.
-         case Core::STR_BlueReturn:
-         case Core::STR_Death:
-         case Core::STR_Disconnect:
-         case Core::STR_Enter:
-         case Core::STR_Event:
-         case Core::STR_Kill:
-         case Core::STR_Lightning:
-         case Core::STR_Open:
-         case Core::STR_Pickup:
-         case Core::STR_RedReturn:
-         case Core::STR_Reopen:
-         case Core::STR_Respawn:
-         case Core::STR_Return:
-         case Core::STR_Unloading:
-         case Core::STR_WhiteReturn:
+         case Core::STR_bluereturn:
+         case Core::STR_death:
+         case Core::STR_disconnect:
+         case Core::STR_enter:
+         case Core::STR_event:
+         case Core::STR_kill:
+         case Core::STR_lightning:
+         case Core::STR_open:
+         case Core::STR_pickup:
+         case Core::STR_redreturn:
+         case Core::STR_reopen:
+         case Core::STR_respawn:
+         case Core::STR_return:
+         case Core::STR_unloading:
+         case Core::STR_whitereturn:
             break;
 
          default:

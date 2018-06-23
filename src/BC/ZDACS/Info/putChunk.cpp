@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2017 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -515,8 +515,8 @@ namespace GDCC::BC::ZDACS
          // Convert script flag.
          for(auto const &st : itr.stype) switch(st)
          {
-         case Core::STR_Clientside: flags |= 0x0002; break;
-         case Core::STR_Net:        flags |= 0x0001; break;
+         case Core::STR_clientside: flags |= 0x0002; break;
+         case Core::STR_net:        flags |= 0x0001; break;
          default: break;
          }
 
@@ -585,22 +585,21 @@ namespace GDCC::BC::ZDACS
          // Convert script type.
          for(auto const &st : itr.stype) switch(st)
          {
-         case Core::STR_None:        stype =  0; break;
-         case Core::STR_BlueReturn:  stype =  6; break;
-         case Core::STR_Death:       stype =  3; break;
-         case Core::STR_Disconnect:  stype = 14; break;
-         case Core::STR_Enter:       stype =  4; break;
-         case Core::STR_Event:       stype = 16; break;
-         case Core::STR_Kill:        stype = 17; break;
-         case Core::STR_Lightning:   stype = 12; break;
-         case Core::STR_Open:        stype =  1; break;
-         case Core::STR_Pickup:      stype =  5; break;
-         case Core::STR_RedReturn:   stype =  7; break;
-         case Core::STR_Reopen:      stype = 18; break;
-         case Core::STR_Respawn:     stype =  2; break;
-         case Core::STR_Return:      stype = 15; break;
-         case Core::STR_Unloading:   stype = 13; break;
-         case Core::STR_WhiteReturn: stype =  8; break;
+         case Core::STR_bluereturn:  stype =  6; break;
+         case Core::STR_death:       stype =  3; break;
+         case Core::STR_disconnect:  stype = 14; break;
+         case Core::STR_enter:       stype =  4; break;
+         case Core::STR_event:       stype = 16; break;
+         case Core::STR_kill:        stype = 17; break;
+         case Core::STR_lightning:   stype = 12; break;
+         case Core::STR_open:        stype =  1; break;
+         case Core::STR_pickup:      stype =  5; break;
+         case Core::STR_redreturn:   stype =  7; break;
+         case Core::STR_reopen:      stype = 18; break;
+         case Core::STR_respawn:     stype =  2; break;
+         case Core::STR_return:      stype = 15; break;
+         case Core::STR_unloading:   stype = 13; break;
+         case Core::STR_whitereturn: stype =  8; break;
          default: break;
          }
 

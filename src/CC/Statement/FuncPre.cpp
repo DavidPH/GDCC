@@ -57,7 +57,7 @@ namespace GDCC::CC
 
       for(auto const &st : stype)
       {
-         if(st == Core::STR_Enter || st == Core::STR_Open)
+         if(st == Core::STR_enter || st == Core::STR_open)
             return true;
       }
 

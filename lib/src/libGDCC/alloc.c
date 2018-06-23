@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2017 David Hill
+// Copyright(C) 2014-2018 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -341,7 +341,7 @@ static VoidPtr AllocNew(register __size_t size)
 // AllocTimeSet
 //
 #if __GDCC_Family__ZDACS__
-[[call("ScriptS"), script("Open")]]
+[[call("ScriptS"), script("open")]]
 static void AllocTimeSet(void)
 {
    if(!ACS_Timer())

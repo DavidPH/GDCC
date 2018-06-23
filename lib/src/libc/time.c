@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015-2016 David Hill
+// Copyright(C) 2015-2018 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -34,7 +34,7 @@ static time_t TimeBase;
 // TimeCount
 //
 #if __GDCC_Family__ZDACS__
-[[call("ScriptS"), script("Open")]]
+[[call("ScriptS"), script("open")]]
 static void TimeCount(void)
 {
    for(;;)

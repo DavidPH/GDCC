@@ -321,9 +321,9 @@ Constraints:
 
 Semantics:
   Sets the affected function's script type or flags. Supported types are:
-  "BlueReturn", "Death", "Disconnect", "Enter", "Event", "Lightning", "Open",
-  "Pickup", "RedReturn", "Respawn", "Return", "Unloading", "WhiteReturn".
-  Supported flags are: "Clientside", "Net".
+  "bluereturn", "death", "disconnect", "enter", "event", "lightning", "open",
+  "pickup", "redreturn", "respawn", "return", "unloading", "whitereturn".
+  Supported flags are: "clientside", "net".
 
 ===============================================================================
 Lexical Elements

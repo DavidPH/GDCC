@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2017 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -144,19 +144,6 @@ namespace GDCC::ACC
    }
 
    //
-   // ParseScriptFlagList
-   //
-   static void ParseScriptFlagList(Parser &ctx, SR::Attribute &attr)
-   {
-      while(ctx.in.peek(Core::TOK_KeyWrd)) switch(ctx.in.get().str)
-      {
-      case Core::STR_clientside: attr.stype.push_back(Core::STR_Clientside); break;
-      case Core::STR_net:        attr.stype.push_back(Core::STR_Net);        break;
-      default: ctx.in.unget(); return;
-      }
-   }
-
-   //
    // ParseScriptParameters
    //
    static void ParseScriptParameters(Parser &ctx, Scope_Global &scope,
@@ -177,33 +164,6 @@ namespace GDCC::ACC
       // )
       if(!ctx.in.drop(Core::TOK_ParenC))
          throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
-   }
-
-   //
-   // ParseScriptType
-   //
-   static void ParseScriptType(Parser &ctx, SR::Attribute &attr)
-   {
-      if(ctx.in.peek(Core::TOK_KeyWrd)) switch(ctx.in.get().str)
-      {
-      case Core::STR_bluereturn:  attr.stype.push_back(Core::STR_BlueReturn);  break;
-      case Core::STR_death:       attr.stype.push_back(Core::STR_Death);       break;
-      case Core::STR_disconnect:  attr.stype.push_back(Core::STR_Disconnect);  break;
-      case Core::STR_enter:       attr.stype.push_back(Core::STR_Enter);       break;
-      case Core::STR_event:       attr.stype.push_back(Core::STR_Event);       break;
-      case Core::STR_kill:        attr.stype.push_back(Core::STR_Kill);        break;
-      case Core::STR_lightning:   attr.stype.push_back(Core::STR_Lightning);   break;
-      case Core::STR_open:        attr.stype.push_back(Core::STR_Open);        break;
-      case Core::STR_pickup:      attr.stype.push_back(Core::STR_Pickup);      break;
-      case Core::STR_redreturn:   attr.stype.push_back(Core::STR_RedReturn);   break;
-      case Core::STR_reopen:      attr.stype.push_back(Core::STR_Reopen);      break;
-      case Core::STR_respawn:     attr.stype.push_back(Core::STR_Respawn);     break;
-      case Core::STR_return:      attr.stype.push_back(Core::STR_Return);      break;
-      case Core::STR_unloading:   attr.stype.push_back(Core::STR_Unloading);   break;
-      case Core::STR_whitereturn: attr.stype.push_back(Core::STR_WhiteReturn); break;
-
-      default: ctx.in.unget(); break;
-      }
    }
 }
 
@@ -282,10 +242,9 @@ namespace GDCC::ACC
          attr.type = attr.type->getTypeFunction(SR::TypeSet::Get(false), attr.callt);
 
       // script-type(opt)
-      ParseScriptType(*this, attr);
-
       // script-flag-list(opt)
-      ParseScriptFlagList(*this, attr);
+      while(in.peek(Core::TOK_KeyWrd) || in.peek(Core::TOK_Identi))
+         attr.stype.push_back(in.get().str);
 
       if(!in.peek(Core::TOK_BraceO))
          throw Core::ParseExceptExpect(in.peek(), "{", true);
