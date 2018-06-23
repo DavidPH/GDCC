@@ -91,3 +91,20 @@ From the repository root, compilation can be done with the following commands:
 Executables and needed shared objects will be generated under their associated
 directories under build/src. (For example, gdcc-cc is under build/src/CC.)
 
+===========================================================
+Windows (mingw-w64)
+===========================================================
+
+To build and install libgmp from its source, the following ca be used:
+  ./configure
+  make
+  make check
+  make install
+
+From the repository root, compilation can be done with the following commands:
+  mkdir build
+  cd build
+  cmake ..
+  mingw32-make
+  mingw32-make install
+

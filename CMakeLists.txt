@@ -206,13 +206,23 @@ if(GDCC_INSTALL_API)
    install(DIRECTORY inc/ DESTINATION include/GDCC)
 endif()
 
-if(GDCC_INSTALL_DOC)
-   install(DIRECTORY doc/ DESTINATION share/gdcc/doc)
-   install(FILES COPYING DESTINATION share/gdcc/doc)
-   install(FILES COPYLIB DESTINATION share/gdcc/doc)
-endif()
+if(WIN32)
+   if(GDCC_INSTALL_DOC)
+      install(DIRECTORY doc/ DESTINATION doc)
+      install(FILES COPYING DESTINATION doc)
+      install(FILES COPYLIB DESTINATION doc)
+   endif()
 
-install(DIRECTORY lib/ DESTINATION share/gdcc/lib)
+   install(DIRECTORY lib/ DESTINATION bin/lib)
+else()
+   if(GDCC_INSTALL_DOC)
+      install(DIRECTORY doc/ DESTINATION share/gdcc/doc)
+      install(FILES COPYING DESTINATION share/gdcc/doc)
+      install(FILES COPYLIB DESTINATION share/gdcc/doc)
+   endif()
+
+   install(DIRECTORY lib/ DESTINATION share/gdcc/lib)
+endif()
 
 ## EOF
 
