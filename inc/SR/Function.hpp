@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2017 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -88,7 +88,6 @@ namespace GDCC::SR
       Core::FastU    localAut;
       Core::FastU    localReg;
       Core::String   name;
-      Core::FastU    param;
       Core::FastU    paramOpt;
       TypeCPtr       retrn;
       StatementCPtr  stmnt;

@@ -72,7 +72,6 @@ namespace GDCC::SR
       localAut{0},
       localReg{0},
       name    {name_},
-      param   {0},
       paramOpt{0},
       retrn   {nullptr},
       stmnt   {nullptr},
@@ -147,6 +146,15 @@ namespace GDCC::SR
             fn.block.addStmnt(IR::Code::Nop);
       }
 
+      try
+      {
+         fn.param = type->getCallWords();
+      }
+      catch(SR::TypeError const &)
+      {
+         throw Core::ExceptStr(stmnt ? stmnt->pos : Core::Origin(), "incomplete parameter");
+      }
+
       fn.allocAut = allocAut;
       fn.ctype    = IR::GetCallTypeIR(ctype);
       fn.label    = label;
@@ -154,7 +162,6 @@ namespace GDCC::SR
       fn.localArr = localArr;
       fn.localAut = localAut;
       fn.localReg = localReg + localTmp.max();
-      fn.param    = param;
       fn.retrn    = retrn && !retrn->isTypeVoid() ? retrn->getSizeWords() : 0;
       fn.stype    = stype;
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2017 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -176,15 +176,6 @@ namespace GDCC::CC
       if(itr == globalFunc.end())
       {
          auto fn = SR::Function::Create(attr.name, glyph);
-
-         try
-         {
-            fn->param = attr.type->getCallWords();
-         }
-         catch(SR::TypeError const &)
-         {
-               throw Core::ExceptStr(attr.namePos, "incomplete parameter");
-         }
 
          fn->ctype    = attr.callt;
          fn->linka    = attr.linka;
