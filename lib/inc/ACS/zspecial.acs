@@ -484,10 +484,14 @@ special
    int   -120:GetDBResultValue(2, int, int),
    fixed -120:GetDBResultValueFixed(2, int, int),
    int   -121:GetDBEntryRank(3, str, str, int),
-   int   -122:RequestScriptPuke(4, int, int, int, int),
+   int   -122:RequestScriptPuke(4, int, int, int, int, int),
    int   -123:BeginDBTransaction(0),
    int   -124:EndDBTransaction(0),
    int   -125:GetDBEntries(1, str),
+   int   -126:NamedRequestScriptPuke(1, str, int, int, int ,int),
+   int   -127:SystemTime(0),
+   int   -128:GetTimeProperty(2, int, int, int),
+   int   -129:Strftime(2, int, str, int),
 
    // ZDoom's (continued)
    int   -200:CheckClass(1, str, int, int),
