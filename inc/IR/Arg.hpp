@@ -105,7 +105,6 @@
 
 namespace GDCC::IR
 {
-   class Arg;
 
    typedef AddrBase ArgBase;
 

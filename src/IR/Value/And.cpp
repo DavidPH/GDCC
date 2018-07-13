@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,55 +14,52 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   GDCC_IR_ValueBinOpImplEq(&, Fixed)
+
+   //
+   // Type::PromoteBitAnd
+   //
+   Type Type::PromoteBitAnd(Type const &l, Type const &r)
    {
-      GDCC_IR_ValueBinOpImplEq(&, Fixed)
+      if(l.t == TypeBase::Fixed && r.t == TypeBase::Fixed)
+         return Type_Fixed::Promote(l.tFixed, r.tFixed);
 
-      //
-      // Type::PromoteBitAnd
-      //
-      Type Type::PromoteBitAnd(Type const &l, Type const &r)
-      {
-         if(l.t == TypeBase::Fixed && r.t == TypeBase::Fixed)
-            return Type_Fixed::Promote(l.tFixed, r.tFixed);
+      return Type_Empty();
+   }
 
-         return Type_Empty();
-      }
+   //
+   // operator Value & Value
+   //
+   Value operator & (Value const &l, Value const &r)
+   {
+      if(l.v == ValueBase::Fixed && r.v == ValueBase::Fixed) return l.vFixed & r.vFixed;
 
-      //
-      // operator Value & Value
-      //
-      Value operator & (Value const &l, Value const &r)
-      {
-         if(l.v == ValueBase::Fixed && r.v == ValueBase::Fixed) return l.vFixed & r.vFixed;
+      throw TypeError();
+   }
 
-         throw TypeError();
-      }
+   //
+   // operator Value &= Value
+   //
+   Value &operator &= (Value &l, Value const &r)
+   {
+      if(l.v == ValueBase::Fixed && r.v == ValueBase::Fixed) return l.vFixed &= r.vFixed, l;
 
-      //
-      // operator Value &= Value
-      //
-      Value &operator &= (Value &l, Value const &r)
-      {
-         if(l.v == ValueBase::Fixed && r.v == ValueBase::Fixed) return l.vFixed &= r.vFixed, l;
+      throw TypeError();
+   }
 
-         throw TypeError();
-      }
+   //
+   // operator Value_Fixed &= Value_Fixed
+   //
+   Value_Fixed &operator &= (Value_Fixed &l, Value_Fixed const &r)
+   {
+      GDCC_IR_ValueBinOpBitsOp(&);
 
-      //
-      // operator Value_Fixed &= Value_Fixed
-      //
-      Value_Fixed &operator &= (Value_Fixed &l, Value_Fixed const &r)
-      {
-         GDCC_IR_ValueBinOpBitsOp(&);
-
-         return l;
-      }
+      return l;
    }
 }
 

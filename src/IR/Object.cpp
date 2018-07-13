@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -27,85 +27,82 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // Object constructor
+   //
+   Object::Object(Core::String name) :
+      glyph{name},
+      initi{},
+      linka{Linkage::None},
+      space{AddrBase::Cpy, Core::STR_},
+      value{0},
+      words{0},
+
+      alias{false},
+      alloc{false},
+      defin{false}
    {
-      //
-      // Object constructor
-      //
-      Object::Object(Core::String name) :
-         glyph{name},
-         initi{},
-         linka{Linkage::None},
-         space{AddrBase::Cpy, Core::STR_},
-         value{0},
-         words{0},
+   }
 
-         alias{false},
-         alloc{false},
-         defin{false}
-      {
-      }
+   //
+   // Object destructor
+   //
+   Object::~Object()
+   {
+   }
 
-      //
-      // Object destructor
-      //
-      Object::~Object()
-      {
-      }
+   //
+   // Object::allocValue
+   //
+   void Object::allocValue(Core::NumberAllocMerge<Core::FastU> &allocator)
+   {
+      auto valueMin = Platform::GetAllocMin(space);
 
-      //
-      // Object::allocValue
-      //
-      void Object::allocValue(Core::NumberAllocMerge<Core::FastU> &allocator)
-      {
-         auto valueMin = Platform::GetAllocMin(space);
+      if(value < valueMin)
+         value = valueMin;
 
-         if(value < valueMin)
-            value = valueMin;
+      value = allocator.alloc(words, value);
 
-         value = allocator.alloc(words, value);
+      alloc = false;
+   }
 
-         alloc = false;
-      }
+   //
+   // operator OArchive << Object
+   //
+   OArchive &operator << (OArchive &out, Object const &in)
+   {
+      return out
+         << in.initi
+         << in.linka
+         << in.space
+         << in.value
+         << in.words
+         << in.alias
+         << in.alloc
+         << in.defin
+      ;
+   }
 
-      //
-      // operator OArchive << Object
-      //
-      OArchive &operator << (OArchive &out, Object const &in)
-      {
-         return out
-            << in.initi
-            << in.linka
-            << in.space
-            << in.value
-            << in.words
-            << in.alias
-            << in.alloc
-            << in.defin
-         ;
-      }
+   //
+   // operator IArchive >> Object
+   //
+   IArchive &operator >> (IArchive &in, Object &out)
+   {
+      in
+         >> out.initi
+         >> out.linka
+         >> out.space
+         >> out.value
+         >> out.words
+      ;
 
-      //
-      // operator IArchive >> Object
-      //
-      IArchive &operator >> (IArchive &in, Object &out)
-      {
-         in
-            >> out.initi
-            >> out.linka
-            >> out.space
-            >> out.value
-            >> out.words
-         ;
+      out.alias = GetIR<bool>(in);
+      out.alloc = GetIR<bool>(in);
+      out.defin = GetIR<bool>(in);
 
-         out.alias = GetIR<bool>(in);
-         out.alloc = GetIR<bool>(in);
-         out.defin = GetIR<bool>(in);
-
-         return in;
-      }
+      return in;
    }
 }
 

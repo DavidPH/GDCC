@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,81 +18,78 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // Exp_Glyph constructor
+   //
+   Exp_Glyph::Exp_Glyph(IArchive &in) : Super{in},
+      glyph{GetIR(in, glyph)}
    {
-      //
-      // Exp_Glyph constructor
-      //
-      Exp_Glyph::Exp_Glyph(IArchive &in) : Super{in},
-         glyph{GetIR(in, glyph)}
-      {
-      }
+   }
 
-      //
-      // Exp_Glyph::v_getValue
-      //
-      Value Exp_Glyph::v_getValue() const
+   //
+   // Exp_Glyph::v_getValue
+   //
+   Value Exp_Glyph::v_getValue() const
+   {
+      if(auto value = glyph.getData().value)
+         return value->getValue();
+      else
       {
-         if(auto value = glyph.getData().value)
-            return value->getValue();
-         else
-         {
-            std::cerr << "ERROR: " << pos << ": undefined glyph: '"
-               << static_cast<Core::String>(glyph) << "'\n";
-            throw EXIT_FAILURE;
-         }
+         std::cerr << "ERROR: " << pos << ": undefined glyph: '"
+            << static_cast<Core::String>(glyph) << "'\n";
+         throw EXIT_FAILURE;
       }
+   }
 
-      //
-      // Exp_Glyph::v_isValue
-      //
-      bool Exp_Glyph::v_isValue() const
+   //
+   // Exp_Glyph::v_isValue
+   //
+   bool Exp_Glyph::v_isValue() const
+   {
+      return glyph.getData().value;
+   }
+
+   //
+   // Exp_Glyph::v_putIR
+   //
+   OArchive &Exp_Glyph::v_putIR(OArchive &out) const
+   {
+      return Super::v_putIR(out) << glyph;
+   }
+
+   //
+   // Exp_Glyph::v_isEqual
+   //
+   bool Exp_Glyph::v_isEqual(Exp const *e) const
+   {
+      switch(e->getName())
       {
-         return glyph.getData().value;
-      }
+      case Core::STR_Glyph:
+         return glyph == static_cast<Exp_Glyph const *>(e)->glyph;
 
-      //
-      // Exp_Glyph::v_putIR
-      //
-      OArchive &Exp_Glyph::v_putIR(OArchive &out) const
-      {
-         return Super::v_putIR(out) << glyph;
+      default: return false;
       }
+   }
 
-      //
-      // Exp_Glyph::v_isEqual
-      //
-      bool Exp_Glyph::v_isEqual(Exp const *e) const
-      {
-         switch(e->getName())
-         {
-         case Core::STR_Glyph:
-            return glyph == static_cast<Exp_Glyph const *>(e)->glyph;
+   //
+   // ExpCreate_Glyph
+   //
+   Exp::CRef ExpCreate_Glyph(Glyph glyph, Core::Origin pos)
+   {
+      return static_cast<Exp::CRef>(new Exp_Glyph(glyph, pos));
+   }
 
-         default: return false;
-         }
-      }
-
-      //
-      // ExpCreate_Glyph
-      //
-      Exp::CRef ExpCreate_Glyph(Glyph glyph, Core::Origin pos)
-      {
-         return static_cast<Exp::CRef>(new Exp_Glyph(glyph, pos));
-      }
-
-      //
-      // ExpGetIR_Glyph
-      //
-      Exp::CRef ExpGetIR_Glyph(IArchive &in)
-      {
-         return static_cast<Exp::CRef>(new Exp_Glyph(in));
-      }
+   //
+   // ExpGetIR_Glyph
+   //
+   Exp::CRef ExpGetIR_Glyph(IArchive &in)
+   {
+      return static_cast<Exp::CRef>(new Exp_Glyph(in));
    }
 }
 

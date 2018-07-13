@@ -22,17 +22,8 @@
 // Types                                                                      |
 //
 
-namespace GDCC::Core
-{
-   template<typename T>
-   class NumberAllocMerge;
-}
-
 namespace GDCC::IR
 {
-   enum class CallType;
-   enum class Linkage;
-
    //
    // Function
    //

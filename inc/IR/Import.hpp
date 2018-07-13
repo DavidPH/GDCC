@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #ifndef GDCC__IR__Import_H__
 #define GDCC__IR__Import_H__
 
+#include "../IR/Types.hpp"
+
 #include "../Core/String.hpp"
 
 
@@ -20,39 +22,30 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // Import
+   //
+   class Import
    {
-      class IArchive;
-      class OArchive;
+   public:
+      explicit Import(Core::String glyph);
 
-      //
-      // Import
-      //
-      class Import
-      {
-      public:
-         explicit Import(Core::String glyph);
-
-         Core::String glyph;
-      };
-   }
+      Core::String glyph;
+   };
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
-   {
-      OArchive &operator << (OArchive &out, Import const &in);
+   OArchive &operator << (OArchive &out, Import const &in);
 
-      IArchive &operator >> (IArchive &in, Import &out);
-   }
+   IArchive &operator >> (IArchive &in, Import &out);
 }
 
 #endif//GDCC__IR__Import_H__

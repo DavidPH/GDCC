@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -78,73 +78,70 @@ public: \
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // Exp_Unary
+   //
+   class Exp_Unary : public Exp
    {
-      //
-      // Exp_Unary
-      //
-      class Exp_Unary : public Exp
-      {
-         GDCC_Core_CounterPreambleAbstract(GDCC::IR::Exp_Unary, GDCC::IR::Exp);
+      GDCC_Core_CounterPreambleAbstract(GDCC::IR::Exp_Unary, GDCC::IR::Exp);
 
-      public:
-         Exp::CRef const exp;
+   public:
+      Exp::CRef const exp;
 
-      protected:
-         Exp_Unary(Exp_Unary const &) = default;
-         Exp_Unary(Exp const *e, Core::Origin pos_) : Super{pos_}, exp{e} {}
-         explicit Exp_Unary(IArchive &in);
+   protected:
+      Exp_Unary(Exp_Unary const &) = default;
+      Exp_Unary(Exp const *e, Core::Origin pos_) : Super{pos_}, exp{e} {}
+      explicit Exp_Unary(IArchive &in);
 
-         virtual Type v_getType() const {return exp->getType();}
+      virtual Type v_getType() const {return exp->getType();}
 
-         virtual bool v_isValue() const
-            {return exp->isValue();}
+      virtual bool v_isValue() const
+         {return exp->isValue();}
 
-         virtual OArchive &v_putIR(OArchive &out) const;
-      };
+      virtual OArchive &v_putIR(OArchive &out) const;
+   };
 
-      GDCC_IR_Exp_UnaryDeclClass(Inv);
-      GDCC_IR_Exp_UnaryDeclClass(Neg);
+   GDCC_IR_Exp_UnaryDeclClass(Inv);
+   GDCC_IR_Exp_UnaryDeclClass(Neg);
 
-      //
-      // Exp_Cst
-      //
-      class Exp_Cst : public Exp_Unary
-      {
-         GDCC_Core_CounterPreamble(GDCC::IR::Exp_Cst, GDCC::IR::Exp_Unary);
+   //
+   // Exp_Cst
+   //
+   class Exp_Cst : public Exp_Unary
+   {
+      GDCC_Core_CounterPreamble(GDCC::IR::Exp_Cst, GDCC::IR::Exp_Unary);
 
-      public:
-         Type const type;
+   public:
+      Type const type;
 
-         virtual Core::String getName() const {return Core::STR_Cst;}
+      virtual Core::String getName() const {return Core::STR_Cst;}
 
 
-         friend Exp::CRef ExpCreate_Cst(Type const &t, Exp const *e);
-         friend Exp::CRef ExpCreate_Cst(Type const &t, Exp const *e,
-            Core::Origin pos);
-         friend Exp::CRef ExpCreate_Cst(Type &&t, Exp const *e);
-         friend Exp::CRef ExpCreate_Cst(Type &&t, Exp const *e,
-            Core::Origin pos);
+      friend Exp::CRef ExpCreate_Cst(Type const &t, Exp const *e);
+      friend Exp::CRef ExpCreate_Cst(Type const &t, Exp const *e,
+         Core::Origin pos);
+      friend Exp::CRef ExpCreate_Cst(Type &&t, Exp const *e);
+      friend Exp::CRef ExpCreate_Cst(Type &&t, Exp const *e,
+         Core::Origin pos);
 
-         friend Exp::CRef ExpGetIR_Cst(IArchive &in);
+      friend Exp::CRef ExpGetIR_Cst(IArchive &in);
 
-      protected:
-         Exp_Cst(Exp_Cst const &) = default;
-         Exp_Cst(Type const &t, Exp const *e, Core::Origin pos_) :
-            Super{e, pos_} , type{t} {}
-         Exp_Cst(Type &&t, Exp const *e, Core::Origin pos_) :
-            Super{e, pos_} , type{std::move(t)} {}
-         explicit Exp_Cst(IArchive &in);
+   protected:
+      Exp_Cst(Exp_Cst const &) = default;
+      Exp_Cst(Type const &t, Exp const *e, Core::Origin pos_) :
+         Super{e, pos_} , type{t} {}
+      Exp_Cst(Type &&t, Exp const *e, Core::Origin pos_) :
+         Super{e, pos_} , type{std::move(t)} {}
+      explicit Exp_Cst(IArchive &in);
 
-         virtual Type v_getType() const {return type;}
+      virtual Type v_getType() const {return type;}
 
-         virtual Value v_getValue() const;
+      virtual Value v_getValue() const;
 
-         virtual OArchive &v_putIR(OArchive &out) const;
-      };
-   }
+      virtual OArchive &v_putIR(OArchive &out) const;
+   };
 }
 
 #endif//GDCC__IR__Exp__Unary_H__

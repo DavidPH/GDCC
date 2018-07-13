@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -76,45 +76,42 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // Exp_Binary
+   //
+   class Exp_Binary : public Exp
    {
-      //
-      // Exp_Binary
-      //
-      class Exp_Binary : public Exp
-      {
-         GDCC_Core_CounterPreambleAbstract(
-            GDCC::IR::Exp_Binary, GDCC::IR::Exp);
+      GDCC_Core_CounterPreambleAbstract(
+         GDCC::IR::Exp_Binary, GDCC::IR::Exp);
 
-      public:
-         Exp::CRef const expL, expR;
+   public:
+      Exp::CRef const expL, expR;
 
-      protected:
-         Exp_Binary(Exp_Binary const &) = default;
-         Exp_Binary(Exp const *l, Exp const *r, Core::Origin pos_) :
-            Super{pos_}, expL{l}, expR{r} {}
-         explicit Exp_Binary(IArchive &in);
+   protected:
+      Exp_Binary(Exp_Binary const &) = default;
+      Exp_Binary(Exp const *l, Exp const *r, Core::Origin pos_) :
+         Super{pos_}, expL{l}, expR{r} {}
+      explicit Exp_Binary(IArchive &in);
 
-         virtual bool v_isValue() const
-            {return expL->isValue() && expR->isValue();}
+      virtual bool v_isValue() const
+         {return expL->isValue() && expR->isValue();}
 
-         virtual OArchive &v_putIR(OArchive &out) const;
-      };
+      virtual OArchive &v_putIR(OArchive &out) const;
+   };
 
-      GDCC_IR_Exp_BinaryDecl(Add);
-      GDCC_IR_Exp_BinaryDecl(AddPtrRaw);
-      GDCC_IR_Exp_BinaryDecl(BitAnd);
-      GDCC_IR_Exp_BinaryDecl(BitOrI);
-      GDCC_IR_Exp_BinaryDecl(BitOrX);
-      GDCC_IR_Exp_BinaryDecl(Div);
-      GDCC_IR_Exp_BinaryDecl(Mod);
-      GDCC_IR_Exp_BinaryDecl(Mul);
-      GDCC_IR_Exp_BinaryDecl(ShL);
-      GDCC_IR_Exp_BinaryDecl(ShR);
-      GDCC_IR_Exp_BinaryDecl(Sub);
-   }
+   GDCC_IR_Exp_BinaryDecl(Add);
+   GDCC_IR_Exp_BinaryDecl(AddPtrRaw);
+   GDCC_IR_Exp_BinaryDecl(BitAnd);
+   GDCC_IR_Exp_BinaryDecl(BitOrI);
+   GDCC_IR_Exp_BinaryDecl(BitOrX);
+   GDCC_IR_Exp_BinaryDecl(Div);
+   GDCC_IR_Exp_BinaryDecl(Mod);
+   GDCC_IR_Exp_BinaryDecl(Mul);
+   GDCC_IR_Exp_BinaryDecl(ShL);
+   GDCC_IR_Exp_BinaryDecl(ShR);
+   GDCC_IR_Exp_BinaryDecl(Sub);
 }
 
 #endif//GDCC__IR__Exp__Binary_H__

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,39 +22,27 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace Core
+   //
+   // Space
+   //
+   class Space
    {
-      template<typename T>
-      class NumberAllocMerge;
-   }
+   public:
+      explicit Space(AddrSpace as);
 
-   namespace IR
-   {
-      enum class Linkage;
-      class Program;
+      void allocValue(Core::NumberAllocMerge<Core::FastU> &allocator);
 
-      //
-      // Space
-      //
-      class Space
-      {
-      public:
-         explicit Space(AddrSpace as);
+      Core::String glyph;
+      Linkage      linka;
+      AddrSpace    space;
+      Core::FastU  value;
+      Core::FastU  words;
 
-         void allocValue(Core::NumberAllocMerge<Core::FastU> &allocator);
-
-         Core::String glyph;
-         Linkage      linka;
-         AddrSpace    space;
-         Core::FastU  value;
-         Core::FastU  words;
-
-         bool         alloc : 1;
-         bool         defin : 1;
-      };
-   }
+      bool         alloc : 1;
+      bool         defin : 1;
+   };
 }
 
 
@@ -62,14 +50,11 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
-   {
-      OArchive &operator << (OArchive &out, Space const &in);
+   OArchive &operator << (OArchive &out, Space const &in);
 
-      IArchive &operator >> (IArchive &in, Space &out);
-   }
+   IArchive &operator >> (IArchive &in, Space &out);
 }
 
 #endif//GDCC__IR__Space_H__

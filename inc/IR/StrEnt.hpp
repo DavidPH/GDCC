@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #ifndef GDCC__IR__StrEnt_H__
 #define GDCC__IR__StrEnt_H__
 
+#include "../IR/Types.hpp"
+
 #include "../Core/Number.hpp"
 #include "../Core/String.hpp"
 
@@ -21,40 +23,27 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace Core
+   //
+   // StrEnt
+   //
+   class StrEnt
    {
-      template<typename T>
-      class NumberAllocMerge;
-   }
+   public:
+      explicit StrEnt(Core::String glyph);
 
-   namespace IR
-   {
-      class IArchive;
-      class OArchive;
-      class Program;
+      void allocValue(Program &prog, Core::NumberAllocMerge<Core::FastU> &allocator);
 
-      //
-      // StrEnt
-      //
-      class StrEnt
-      {
-      public:
-         explicit StrEnt(Core::String glyph);
+      Core::String glyph;
+      Core::FastU  valueInt;
+      Core::String valueStr;
 
-         void allocValue(Program &prog, Core::NumberAllocMerge<Core::FastU> &allocator);
-
-         Core::String glyph;
-         Core::FastU  valueInt;
-         Core::String valueStr;
-
-         bool         alias    : 1;
-         bool         alloc    : 1;
-         bool         defin    : 1;
-         bool         multiDef : 1;
-      };
-   }
+      bool         alias    : 1;
+      bool         alloc    : 1;
+      bool         defin    : 1;
+      bool         multiDef : 1;
+   };
 }
 
 
@@ -62,14 +51,11 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
-   {
-      OArchive &operator << (OArchive &out, StrEnt const &in);
+   OArchive &operator << (OArchive &out, StrEnt const &in);
 
-      IArchive &operator >> (IArchive &in, StrEnt &out);
-   }
+   IArchive &operator >> (IArchive &in, StrEnt &out);
 }
 
 #endif//GDCC__IR__StrEnt_H__

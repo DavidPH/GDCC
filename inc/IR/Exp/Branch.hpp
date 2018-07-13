@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -188,109 +188,106 @@ protected: \
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // Exp_Branch
+   //
+   class Exp_Branch : public Exp
    {
-      //
-      // Exp_Branch
-      //
-      class Exp_Branch : public Exp
-      {
-         GDCC_Core_CounterPreambleAbstract(GDCC::IR::Exp_Branch, GDCC::IR::Exp);
+      GDCC_Core_CounterPreambleAbstract(GDCC::IR::Exp_Branch, GDCC::IR::Exp);
 
-      public:
-         static Type_Fixed const BoolRaw;
-         static Type const BoolType;
+   public:
+      static Type_Fixed const BoolRaw;
+      static Type const BoolType;
 
-      protected:
-         Exp_Branch(Exp_Branch const &) = default;
-         Exp_Branch(Core::Origin pos_) : Super{pos_} {}
-         explicit Exp_Branch(IArchive &in) : Super{in} {}
+   protected:
+      Exp_Branch(Exp_Branch const &) = default;
+      Exp_Branch(Core::Origin pos_) : Super{pos_} {}
+      explicit Exp_Branch(IArchive &in) : Super{in} {}
 
-         virtual Type v_getType() const {return BoolRaw;}
-      };
+      virtual Type v_getType() const {return BoolRaw;}
+   };
 
-      //
-      // Exp_BraBin
-      //
-      class Exp_BraBin : public Exp_Branch
-      {
-         GDCC_Core_CounterPreambleAbstract(
-            GDCC::IR::Exp_BraBin, GDCC::IR::Exp_Branch);
+   //
+   // Exp_BraBin
+   //
+   class Exp_BraBin : public Exp_Branch
+   {
+      GDCC_Core_CounterPreambleAbstract(
+         GDCC::IR::Exp_BraBin, GDCC::IR::Exp_Branch);
 
-      public:
-         Exp::CRef const expL, expR;
+   public:
+      Exp::CRef const expL, expR;
 
-      protected:
-         Exp_BraBin(Exp_BraBin const &) = default;
-         Exp_BraBin(Exp const *l, Exp const *r, Core::Origin pos_) :
-            Super{pos_}, expL{l}, expR{r} {}
-         explicit Exp_BraBin(IArchive &in);
+   protected:
+      Exp_BraBin(Exp_BraBin const &) = default;
+      Exp_BraBin(Exp const *l, Exp const *r, Core::Origin pos_) :
+         Super{pos_}, expL{l}, expR{r} {}
+      explicit Exp_BraBin(IArchive &in);
 
-         virtual bool v_isValue() const
-            {return expL->isValue() && expR->isValue();}
+      virtual bool v_isValue() const
+         {return expL->isValue() && expR->isValue();}
 
-         virtual OArchive &v_putIR(OArchive &out) const;
-      };
+      virtual OArchive &v_putIR(OArchive &out) const;
+   };
 
-      //
-      // Exp_BraTer
-      //
-      class Exp_BraTer : public Exp_BraBin
-      {
-         GDCC_Core_CounterPreambleAbstract(
-            GDCC::IR::Exp_BraTer, GDCC::IR::Exp_BraBin);
+   //
+   // Exp_BraTer
+   //
+   class Exp_BraTer : public Exp_BraBin
+   {
+      GDCC_Core_CounterPreambleAbstract(
+         GDCC::IR::Exp_BraTer, GDCC::IR::Exp_BraBin);
 
-      public:
-         Exp::CRef const expC;
+   public:
+      Exp::CRef const expC;
 
-      protected:
-         Exp_BraTer(Exp_BraTer const &) = default;
-         Exp_BraTer(Exp const *c, Exp const *l, Exp const *r, Core::Origin pos_) :
-            Super{l, r, pos_}, expC{c} {}
-         explicit Exp_BraTer(IArchive &in);
+   protected:
+      Exp_BraTer(Exp_BraTer const &) = default;
+      Exp_BraTer(Exp const *c, Exp const *l, Exp const *r, Core::Origin pos_) :
+         Super{l, r, pos_}, expC{c} {}
+      explicit Exp_BraTer(IArchive &in);
 
-         virtual bool v_isValue() const
-            {return Super::v_isValue() && expC->isValue();}
+      virtual bool v_isValue() const
+         {return Super::v_isValue() && expC->isValue();}
 
-         virtual OArchive &v_putIR(OArchive &out) const;
-      };
+      virtual OArchive &v_putIR(OArchive &out) const;
+   };
 
-      //
-      // Exp_BraUna
-      //
-      class Exp_BraUna : public Exp_Branch
-      {
-         GDCC_Core_CounterPreambleAbstract(
-            GDCC::IR::Exp_BraUna, GDCC::IR::Exp_Branch);
+   //
+   // Exp_BraUna
+   //
+   class Exp_BraUna : public Exp_Branch
+   {
+      GDCC_Core_CounterPreambleAbstract(
+         GDCC::IR::Exp_BraUna, GDCC::IR::Exp_Branch);
 
-      public:
-         Exp::CRef const exp;
+   public:
+      Exp::CRef const exp;
 
-      protected:
-         Exp_BraUna(Exp_BraUna const &) = default;
-         Exp_BraUna(Exp const *e, Core::Origin pos_) : Super{pos_}, exp{e} {}
-         explicit Exp_BraUna(IArchive &in);
+   protected:
+      Exp_BraUna(Exp_BraUna const &) = default;
+      Exp_BraUna(Exp const *e, Core::Origin pos_) : Super{pos_}, exp{e} {}
+      explicit Exp_BraUna(IArchive &in);
 
-         virtual bool v_isValue() const
-            {return exp->isValue();}
+      virtual bool v_isValue() const
+         {return exp->isValue();}
 
-         virtual OArchive &v_putIR(OArchive &out) const;
-      };
+      virtual OArchive &v_putIR(OArchive &out) const;
+   };
 
-      GDCC_IR_Exp_BraBinDeclClass(CmpEQ);
-      GDCC_IR_Exp_BraBinDeclClass(CmpGE);
-      GDCC_IR_Exp_BraBinDeclClass(CmpGT);
-      GDCC_IR_Exp_BraBinDeclClass(CmpLE);
-      GDCC_IR_Exp_BraBinDeclClass(CmpLT);
-      GDCC_IR_Exp_BraBinDeclClass(CmpNE);
-      GDCC_IR_Exp_BraTerDeclClass(Cnd);
-      GDCC_IR_Exp_BraBinDeclClass(LogAnd);
-      GDCC_IR_Exp_BraBinDeclClass(LogOrI);
-      GDCC_IR_Exp_BraBinDeclClass(LogOrX);
-      GDCC_IR_Exp_BraUnaDeclClass(Not);
-   }
+   GDCC_IR_Exp_BraBinDeclClass(CmpEQ);
+   GDCC_IR_Exp_BraBinDeclClass(CmpGE);
+   GDCC_IR_Exp_BraBinDeclClass(CmpGT);
+   GDCC_IR_Exp_BraBinDeclClass(CmpLE);
+   GDCC_IR_Exp_BraBinDeclClass(CmpLT);
+   GDCC_IR_Exp_BraBinDeclClass(CmpNE);
+   GDCC_IR_Exp_BraTerDeclClass(Cnd);
+   GDCC_IR_Exp_BraBinDeclClass(LogAnd);
+   GDCC_IR_Exp_BraBinDeclClass(LogOrI);
+   GDCC_IR_Exp_BraBinDeclClass(LogOrX);
+   GDCC_IR_Exp_BraUnaDeclClass(Not);
 }
 
 #endif//GDCC__IR__Exp__Branch_H__

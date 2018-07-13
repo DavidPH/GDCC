@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #ifndef GDCC__IR__DJump_H__
 #define GDCC__IR__DJump_H__
 
+#include "../IR/Types.hpp"
+
 #include "../Core/Number.hpp"
 #include "../Core/String.hpp"
 
@@ -21,37 +23,25 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace Core
+   //
+   // DJump
+   //
+   class DJump
    {
-      template<typename T>
-      class NumberAllocMerge;
-   }
+   public:
+      explicit DJump(Core::String glyph);
 
-   namespace IR
-   {
-      class IArchive;
-      class OArchive;
+      void allocValue(Core::NumberAllocMerge<Core::FastU> &allocator);
 
-      //
-      // DJump
-      //
-      class DJump
-      {
-      public:
-         explicit DJump(Core::String glyph);
+      Core::String glyph;
+      Core::String label;
+      Core::FastU  value;
 
-         void allocValue(Core::NumberAllocMerge<Core::FastU> &allocator);
-
-         Core::String glyph;
-         Core::String label;
-         Core::FastU  value;
-
-         bool         alloc : 1;
-         bool         defin : 1;
-      };
-   }
+      bool         alloc : 1;
+      bool         defin : 1;
+   };
 }
 
 
@@ -59,14 +49,11 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
-   {
-      OArchive &operator << (OArchive &out, DJump const &in);
+   OArchive &operator << (OArchive &out, DJump const &in);
 
-      IArchive &operator >> (IArchive &in, DJump &out);
-   }
+   IArchive &operator >> (IArchive &in, DJump &out);
 }
 
 #endif//GDCC__IR__DJump_H__

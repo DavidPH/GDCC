@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -25,82 +25,79 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // StrEnt constructor
+   //
+   StrEnt::StrEnt(Core::String glyph_) :
+      glyph{glyph_},
+      valueInt{0},
+      valueStr{Core::STRNULL},
+
+      alias   {false},
+      alloc   {false},
+      defin   {false},
+      multiDef{false}
    {
-      //
-      // StrEnt constructor
-      //
-      StrEnt::StrEnt(Core::String glyph_) :
-         glyph{glyph_},
-         valueInt{0},
-         valueStr{Core::STRNULL},
+   }
 
-         alias   {false},
-         alloc   {false},
-         defin   {false},
-         multiDef{false}
+   //
+   // StrEnt::allocValue
+   //
+   void StrEnt::allocValue(Program &prog, Core::NumberAllocMerge<Core::FastU> &allocator)
+   {
+      Core::FastU allocMin = Platform::GetAllocMin_StrEn();
+
+      if(valueInt < allocMin)
+         valueInt = allocMin;
+
+      // First, check for any strings to alias with.
+      if(alias) for(auto const &itr : prog.rangeStrEnt())
       {
+         if(&itr == this || itr.alloc || !itr.alias) continue;
+         if(itr.valueStr != valueStr) continue;
+         if(itr.valueInt <  valueInt) continue;
+
+         alloc    = false;
+         valueInt = itr.valueInt;
+         return;
       }
 
-      //
-      // StrEnt::allocValue
-      //
-      void StrEnt::allocValue(Program &prog, Core::NumberAllocMerge<Core::FastU> &allocator)
-      {
-         Core::FastU allocMin = Platform::GetAllocMin_StrEn();
+      // Otherwise, run allocation.
+      valueInt = allocator.alloc(1, valueInt);
 
-         if(valueInt < allocMin)
-            valueInt = allocMin;
+      alloc = false;
+   }
 
-         // First, check for any strings to alias with.
-         if(alias) for(auto const &itr : prog.rangeStrEnt())
-         {
-            if(&itr == this || itr.alloc || !itr.alias) continue;
-            if(itr.valueStr != valueStr) continue;
-            if(itr.valueInt <  valueInt) continue;
+   //
+   // operator OArchive << StrEnt
+   //
+   OArchive &operator << (OArchive &out, StrEnt const &in)
+   {
+      return out
+         << in.valueInt
+         << in.valueStr
+         << in.alias
+         << in.alloc
+         << in.defin
+         << in.multiDef;
+   }
 
-            alloc    = false;
-            valueInt = itr.valueInt;
-            return;
-         }
+   //
+   // Operator IArchive >> StrEnt
+   //
+   IArchive &operator >> (IArchive &in, StrEnt &out)
+   {
+      in >> out.valueInt
+         >> out.valueStr;
 
-         // Otherwise, run allocation.
-         valueInt = allocator.alloc(1, valueInt);
+      out.alias    = GetIR<bool>(in);
+      out.alloc    = GetIR<bool>(in);
+      out.defin    = GetIR<bool>(in);
+      out.multiDef = GetIR<bool>(in);
 
-         alloc = false;
-      }
-
-      //
-      // operator OArchive << StrEnt
-      //
-      OArchive &operator << (OArchive &out, StrEnt const &in)
-      {
-         return out
-            << in.valueInt
-            << in.valueStr
-            << in.alias
-            << in.alloc
-            << in.defin
-            << in.multiDef;
-      }
-
-      //
-      // Operator IArchive >> StrEnt
-      //
-      IArchive &operator >> (IArchive &in, StrEnt &out)
-      {
-         in >> out.valueInt
-            >> out.valueStr;
-
-         out.alias    = GetIR<bool>(in);
-         out.alloc    = GetIR<bool>(in);
-         out.defin    = GetIR<bool>(in);
-         out.multiDef = GetIR<bool>(in);
-
-         return in;
-      }
+      return in;
    }
 }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,61 +23,45 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace Core
+   //
+   // Object
+   //
+   class Object
    {
-      template<typename T>
-      class NumberAllocMerge;
-   }
-
-   namespace IR
-   {
-      enum class Linkage;
-
-      class Exp;
-
-      //
-      // Object
-      //
-      class Object
-      {
-      public:
-         using ExpCPtr = Core::CounterPtr<Exp const>;
+   public:
+      using ExpCPtr = Core::CounterPtr<Exp const>;
 
 
-         explicit Object(Core::String name);
-         ~Object();
+      explicit Object(Core::String name);
+      ~Object();
 
-         void allocValue(Core::NumberAllocMerge<Core::FastU> &allocator);
+      void allocValue(Core::NumberAllocMerge<Core::FastU> &allocator);
 
-         Core::String glyph;
-         ExpCPtr      initi;
-         Linkage      linka;
-         AddrSpace    space;
-         Core::FastU  value;
-         Core::FastU  words;
+      Core::String glyph;
+      ExpCPtr      initi;
+      Linkage      linka;
+      AddrSpace    space;
+      Core::FastU  value;
+      Core::FastU  words;
 
-         bool         alias : 1;
-         bool         alloc : 1;
-         bool         defin : 1;
-      };
-   }
+      bool         alias : 1;
+      bool         alloc : 1;
+      bool         defin : 1;
+   };
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
-   {
-      OArchive &operator << (OArchive &out, Object const &in);
+   OArchive &operator << (OArchive &out, Object const &in);
 
-      IArchive &operator >> (IArchive &in, Object &out);
-   }
+   IArchive &operator >> (IArchive &in, Object &out);
 }
 
 #endif//GDCC__IR__Object_H__

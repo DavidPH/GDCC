@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,52 +14,49 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   GDCC_IR_ValueBinOpImplEq(>>, Fixed)
+
+   //
+   // Type::PromoteShR
+   //
+   Type Type::PromoteShR(Type const &l, Type const &)
    {
-      GDCC_IR_ValueBinOpImplEq(>>, Fixed)
+      return l;
+   }
 
-      //
-      // Type::PromoteShR
-      //
-      Type Type::PromoteShR(Type const &l, Type const &)
-      {
-         return l;
-      }
+   //
+   // operator Value >> Value
+   //
+   Value operator >> (Value const &l, Value const &r)
+   {
+      if(l.v == ValueBase::Fixed && r.v == ValueBase::Fixed) return l.vFixed >> r.vFixed;
 
-      //
-      // operator Value >> Value
-      //
-      Value operator >> (Value const &l, Value const &r)
-      {
-         if(l.v == ValueBase::Fixed && r.v == ValueBase::Fixed) return l.vFixed >> r.vFixed;
+      throw TypeError();
+   }
 
-         throw TypeError();
-      }
+   //
+   // operator Value >>= Value
+   //
+   Value &operator >>= (Value &l, Value const &r)
+   {
+      if(l.v == ValueBase::Fixed && r.v == ValueBase::Fixed) return l.vFixed >>= r.vFixed, l;
 
-      //
-      // operator Value >>= Value
-      //
-      Value &operator >>= (Value &l, Value const &r)
-      {
-         if(l.v == ValueBase::Fixed && r.v == ValueBase::Fixed) return l.vFixed >>= r.vFixed, l;
+      throw TypeError();
+   }
 
-         throw TypeError();
-      }
+   //
+   // operator Value_Fixed >>= Value_Fixed
+   //
+   Value_Fixed &operator >>= (Value_Fixed &l, Value_Fixed const &r)
+   {
+      l.value >>= Core::NumberCast<Core::FastU>(r.value >> r.vtype.bitsF);
 
-      //
-      // operator Value_Fixed >>= Value_Fixed
-      //
-      Value_Fixed &operator >>= (Value_Fixed &l, Value_Fixed const &r)
-      {
-         l.value >>= Core::NumberCast<Core::FastU>(r.value >> r.vtype.bitsF);
-
-         return l.clamp();
-      }
+      return l.clamp();
    }
 }
 

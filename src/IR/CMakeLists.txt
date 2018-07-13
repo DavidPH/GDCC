@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2017 David Hill
+## Copyright (C) 2013-2018 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -91,6 +91,7 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    ../../inc/IR/StrEnt.hpp
    ../../inc/IR/Type.hpp
    ../../inc/IR/TypeList.hpp
+   ../../inc/IR/Types.hpp
    ../../inc/IR/Value.hpp
 )
 

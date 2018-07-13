@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,92 +21,89 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // operator OArchive << Linkage
+   //
+   OArchive &operator << (OArchive &out, Linkage in)
    {
-      //
-      // operator OArchive << Linkage
-      //
-      OArchive &operator << (OArchive &out, Linkage in)
+      switch(in)
       {
-         switch(in)
-         {
-         #define GDCC_IR_LinkageList(name) \
-            case Linkage::name: return out << Core::STR_##name;
-         #include "IR/LinkageList.hpp"
-         }
+      #define GDCC_IR_LinkageList(name) \
+         case Linkage::name: return out << Core::STR_##name;
+      #include "IR/LinkageList.hpp"
+      }
 
-         std::cerr << "invalid enum GDCC::IR::Linkage\n";
+      std::cerr << "invalid enum GDCC::IR::Linkage\n";
+      throw EXIT_FAILURE;
+   }
+
+   //
+   // operator std::ostream << Linkage
+   //
+   std::ostream  &operator << (std::ostream &out, Linkage in)
+   {
+      switch(in)
+      {
+      #define GDCC_IR_LinkageList(name) \
+         case Linkage::name: return out << #name;
+      #include "IR/LinkageList.hpp"
+      }
+
+      std::cerr << "invalid enum GDCC::IR::Linkage\n";
+      throw EXIT_FAILURE;
+   }
+
+   //
+   // operator IArchive >> Linkage
+   //
+   IArchive &operator >> (IArchive &in, Linkage &out)
+   {
+      switch(GetIR<Core::StringIndex>(in))
+      {
+      #define GDCC_IR_LinkageList(name) \
+         case Core::STR_##name: out = Linkage::name; return in;
+      #include "IR/LinkageList.hpp"
+
+      default:
+         std::cerr << "invalid GDCC::IR::Linkage\n";
          throw EXIT_FAILURE;
       }
+   }
 
-      //
-      // operator std::ostream << Linkage
-      //
-      std::ostream  &operator << (std::ostream &out, Linkage in)
+   //
+   // GetLinkageExt
+   //
+   Linkage GetLinkageExt(Linkage linka)
+   {
+      switch(linka)
       {
-         switch(in)
-         {
-         #define GDCC_IR_LinkageList(name) \
-            case Linkage::name: return out << #name;
-         #include "IR/LinkageList.hpp"
-         }
+      case Linkage::IntC:   return Linkage::ExtC;
+      case Linkage::IntCXX: return Linkage::ExtCXX;
 
-         std::cerr << "invalid enum GDCC::IR::Linkage\n";
-         throw EXIT_FAILURE;
+      default: return linka;
       }
+   }
 
-      //
-      // operator IArchive >> Linkage
-      //
-      IArchive &operator >> (IArchive &in, Linkage &out)
+   //
+   // GetLinkageInt
+   //
+   Linkage GetLinkageInt(Linkage linka)
+   {
+      switch(linka)
       {
-         switch(GetIR<Core::StringIndex>(in))
-         {
-         #define GDCC_IR_LinkageList(name) \
-            case Core::STR_##name: out = Linkage::name; return in;
-         #include "IR/LinkageList.hpp"
+      case Linkage::ExtACS: return Linkage::IntC;
+      case Linkage::ExtASM: return Linkage::IntC;
+      case Linkage::ExtAXX: return Linkage::IntCXX;
+      case Linkage::ExtC:   return Linkage::IntC;
+      case Linkage::ExtCXX: return Linkage::IntCXX;
+      case Linkage::ExtDS:  return Linkage::IntCXX;
 
-         default:
-            std::cerr << "invalid GDCC::IR::Linkage\n";
-            throw EXIT_FAILURE;
-         }
-      }
-
-      //
-      // GetLinkageExt
-      //
-      Linkage GetLinkageExt(Linkage linka)
-      {
-         switch(linka)
-         {
-         case Linkage::IntC:   return Linkage::ExtC;
-         case Linkage::IntCXX: return Linkage::ExtCXX;
-
-         default: return linka;
-         }
-      }
-
-      //
-      // GetLinkageInt
-      //
-      Linkage GetLinkageInt(Linkage linka)
-      {
-         switch(linka)
-         {
-         case Linkage::ExtACS: return Linkage::IntC;
-         case Linkage::ExtASM: return Linkage::IntC;
-         case Linkage::ExtAXX: return Linkage::IntCXX;
-         case Linkage::ExtC:   return Linkage::IntC;
-         case Linkage::ExtCXX: return Linkage::IntCXX;
-         case Linkage::ExtDS:  return Linkage::IntCXX;
-
-         default: return linka;
-         }
+      default: return linka;
       }
    }
 }

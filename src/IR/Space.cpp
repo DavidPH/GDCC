@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,65 +23,62 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // Space constructor
+   //
+   Space::Space(AddrSpace as) :
+      glyph{as.name},
+      linka{Linkage::None},
+      space{as},
+      value{0},
+      words{0},
+
+      alloc{false},
+      defin{false}
    {
-      //
-      // Space constructor
-      //
-      Space::Space(AddrSpace as) :
-         glyph{as.name},
-         linka{Linkage::None},
-         space{as},
-         value{0},
-         words{0},
+   }
 
-         alloc{false},
-         defin{false}
-      {
-      }
+   //
+   // Space::allocValue
+   //
+   void Space::allocValue(Core::NumberAllocMerge<Core::FastU> &allocator)
+   {
+      value = allocator.alloc(1, value);
 
-      //
-      // Space::allocValue
-      //
-      void Space::allocValue(Core::NumberAllocMerge<Core::FastU> &allocator)
-      {
-         value = allocator.alloc(1, value);
+      alloc = false;
+   }
 
-         alloc = false;
-      }
+   //
+   // operator OArchive << Space
+   //
+   OArchive &operator << (OArchive &out, Space const &in)
+   {
+      return out
+         << in.linka
+         << in.value
+         << in.words
+         << in.alloc
+         << in.defin
+      ;
+   }
 
-      //
-      // operator OArchive << Space
-      //
-      OArchive &operator << (OArchive &out, Space const &in)
-      {
-         return out
-            << in.linka
-            << in.value
-            << in.words
-            << in.alloc
-            << in.defin
-         ;
-      }
+   //
+   // operator IArchive >> Space
+   //
+   IArchive &operator >> (IArchive &in, Space &out)
+   {
+      in
+         >> out.linka
+         >> out.value
+         >> out.words
+      ;
 
-      //
-      // operator IArchive >> Space
-      //
-      IArchive &operator >> (IArchive &in, Space &out)
-      {
-         in
-            >> out.linka
-            >> out.value
-            >> out.words
-         ;
+      out.alloc = GetIR<bool>(in);
+      out.defin = GetIR<bool>(in);
 
-         out.alloc = GetIR<bool>(in);
-         out.defin = GetIR<bool>(in);
-
-         return in;
-      }
+      return in;
    }
 }
 

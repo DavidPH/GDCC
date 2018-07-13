@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,8 +10,10 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__IR__Types_H__
-#define GDCC__IR__Types_H__
+#ifndef GDCC__IR__Linkage_H__
+#define GDCC__IR__Linkage_H__
+
+#include "../IR/Types.hpp"
 
 #include <ostream>
 
@@ -20,43 +22,34 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // Linkage
+   //
+   enum class Linkage
    {
-      class IArchive;
-      class OArchive;
-
-      //
-      // Linkage
-      //
-      enum class Linkage
-      {
-         #define GDCC_IR_LinkageList(name) name,
-         #include "../IR/LinkageList.hpp"
-      };
-   }
+      #define GDCC_IR_LinkageList(name) name,
+      #include "../IR/LinkageList.hpp"
+   };
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
-   {
-      OArchive &operator << (OArchive &out, Linkage in);
-      std::ostream &operator << (std::ostream &out, Linkage in);
+   OArchive &operator << (OArchive &out, Linkage in);
+   std::ostream &operator << (std::ostream &out, Linkage in);
 
-      IArchive &operator >> (IArchive &in, Linkage &out);
+   IArchive &operator >> (IArchive &in, Linkage &out);
 
-      Linkage GetLinkageExt(Linkage linka);
+   Linkage GetLinkageExt(Linkage linka);
 
-      Linkage GetLinkageInt(Linkage linka);
-   }
+   Linkage GetLinkageInt(Linkage linka);
 }
 
-#endif//GDCC__IR__Types_H__
+#endif//GDCC__IR__Linkage_H__
 

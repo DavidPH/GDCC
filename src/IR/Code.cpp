@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,63 +21,60 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
+   //
+   // operator OArchive << Code
+   //
+   OArchive &operator << (OArchive &out, Code in)
    {
-      //
-      // operator OArchive << Code
-      //
-      OArchive &operator << (OArchive &out, Code in)
+      switch(in)
       {
-         switch(in)
-         {
-            #define GDCC_IR_CodeList(name) \
-               case Code::name: return out << Core::STR_##name;
-            #include "IR/CodeList.hpp"
-         case Code::None: return out << Core::STR_None;
-         }
-
-         std::cerr << "invalid enum GDCC::IR::Code\n";
-         throw EXIT_FAILURE;
+         #define GDCC_IR_CodeList(name) \
+            case Code::name: return out << Core::STR_##name;
+         #include "IR/CodeList.hpp"
+      case Code::None: return out << Core::STR_None;
       }
 
-      //
-      // operator std::ostream << Code
-      //
-      std::ostream &operator << (std::ostream &out, Code in)
-      {
-         switch(in)
-         {
-            #define GDCC_IR_CodeList(name) \
-               case Code::name: return out << #name;
-            #include "IR/CodeList.hpp"
-         case Code::None: return out << "None";
-         }
+      std::cerr << "invalid enum GDCC::IR::Code\n";
+      throw EXIT_FAILURE;
+   }
 
-         std::cerr << "invalid enum GDCC::IR::Code\n";
-         throw EXIT_FAILURE;
+   //
+   // operator std::ostream << Code
+   //
+   std::ostream &operator << (std::ostream &out, Code in)
+   {
+      switch(in)
+      {
+         #define GDCC_IR_CodeList(name) \
+            case Code::name: return out << #name;
+         #include "IR/CodeList.hpp"
+      case Code::None: return out << "None";
       }
 
-      //
-      // operator IArchive >> Code
-      //
-      IArchive &operator >> (IArchive &in, Code &out)
-      {
-         switch(GetIR<Core::StringIndex>(in))
-         {
-            #define GDCC_IR_CodeList(name) \
-               case Core::STR_##name: out = Code::name; return in;
-            #include "IR/CodeList.hpp"
-         case Core::STR_None: out = Code::None; return in;
+      std::cerr << "invalid enum GDCC::IR::Code\n";
+      throw EXIT_FAILURE;
+   }
 
-         default:
-            std::cerr << "invalid Code\n";
-            throw EXIT_FAILURE;
-         }
+   //
+   // operator IArchive >> Code
+   //
+   IArchive &operator >> (IArchive &in, Code &out)
+   {
+      switch(GetIR<Core::StringIndex>(in))
+      {
+         #define GDCC_IR_CodeList(name) \
+            case Core::STR_##name: out = Code::name; return in;
+         #include "IR/CodeList.hpp"
+      case Core::STR_None: out = Code::None; return in;
+
+      default:
+         std::cerr << "invalid Code\n";
+         throw EXIT_FAILURE;
       }
    }
 }

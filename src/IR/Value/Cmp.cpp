@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -60,33 +60,30 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::IR
 {
-   namespace IR
-   {
-      GDCC_IR_ValueCmpOpBitsImpl(<)
-      GDCC_IR_ValueCmpOpFltsImpl(<)
-      GDCC_IR_ValueCmpOpValsImpl(<)
-      GDCC_IR_ValueCmpOpBitsImpl(>)
-      GDCC_IR_ValueCmpOpFltsImpl(>)
-      GDCC_IR_ValueCmpOpValsImpl(>)
-      GDCC_IR_ValueCmpOpBitsImpl(<=)
-      GDCC_IR_ValueCmpOpFltsImpl(<=)
-      GDCC_IR_ValueCmpOpValsImpl(<=)
-      GDCC_IR_ValueCmpOpBitsImpl(>=)
-      GDCC_IR_ValueCmpOpFltsImpl(>=)
-      GDCC_IR_ValueCmpOpValsImpl(>=)
+   GDCC_IR_ValueCmpOpBitsImpl(<)
+   GDCC_IR_ValueCmpOpFltsImpl(<)
+   GDCC_IR_ValueCmpOpValsImpl(<)
+   GDCC_IR_ValueCmpOpBitsImpl(>)
+   GDCC_IR_ValueCmpOpFltsImpl(>)
+   GDCC_IR_ValueCmpOpValsImpl(>)
+   GDCC_IR_ValueCmpOpBitsImpl(<=)
+   GDCC_IR_ValueCmpOpFltsImpl(<=)
+   GDCC_IR_ValueCmpOpValsImpl(<=)
+   GDCC_IR_ValueCmpOpBitsImpl(>=)
+   GDCC_IR_ValueCmpOpFltsImpl(>=)
+   GDCC_IR_ValueCmpOpValsImpl(>=)
 
-      GDCC_IR_ValueCmpOpBitsImpl(==)
-      GDCC_IR_ValueCmpOpFltsImpl(==)
-      GDCC_IR_ValueCmpOpValsImpl(==)
-      GDCC_IR_ValueCmpOpBitsImpl(!=)
-      GDCC_IR_ValueCmpOpFltsImpl(!=)
-      GDCC_IR_ValueCmpOpValsImpl(!=)
-   }
+   GDCC_IR_ValueCmpOpBitsImpl(==)
+   GDCC_IR_ValueCmpOpFltsImpl(==)
+   GDCC_IR_ValueCmpOpValsImpl(==)
+   GDCC_IR_ValueCmpOpBitsImpl(!=)
+   GDCC_IR_ValueCmpOpFltsImpl(!=)
+   GDCC_IR_ValueCmpOpValsImpl(!=)
 }
 
 // EOF
