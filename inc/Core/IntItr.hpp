@@ -13,6 +13,8 @@
 #ifndef GDCC__Core__IntItr_H__
 #define GDCC__Core__IntItr_H__
 
+#include "../Core/Types.hpp"
+
 #include <iterator>
 
 

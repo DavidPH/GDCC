@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,36 +13,35 @@
 #ifndef GDCC__Core__Stat_H__
 #define GDCC__Core__Stat_H__
 
+#include "../Core/Types.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // Stat
+   //
+   class Stat
    {
+   public:
       //
-      // Stat
+      // Type
       //
-      class Stat
+      enum class Type
       {
-      public:
-         //
-         // Type
-         //
-         enum class Type
-         {
-            None,
+         None,
 
-            Dir,
-            File
-         };
-
-
-         Type type;
+         Dir,
+         File
       };
-   }
+
+
+      Type type;
+   };
 }
 
 #endif//GDCC__Core__Stat_H__

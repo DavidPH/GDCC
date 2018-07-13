@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,55 +23,49 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // FileBlock
+   //
+   class FileBlock
    {
-      //
-      // FileBlock
-      //
-      class FileBlock
-      {
-      public:
-         virtual ~FileBlock() {}
+   public:
+      virtual ~FileBlock() {}
 
-         char const *begin() const {return data();}
+      char const *begin() const {return data();}
 
-         char const *data() const {return v_data();}
+      char const *data() const {return v_data();}
 
-         char const *end() const {return data() + size();}
+      char const *end() const {return data() + size();}
 
-         std::size_t getHash() const;
+      std::size_t getHash() const;
 
-         std::size_t size() const {return v_size();}
+      std::size_t size() const {return v_size();}
 
-      protected:
-         virtual char const *v_data() const = 0;
+   protected:
+      virtual char const *v_data() const = 0;
 
-         virtual std::size_t v_size() const = 0;
+      virtual std::size_t v_size() const = 0;
 
-      private:
-         mutable std::size_t cacheHash = 0;
-      };
-   }
+   private:
+      mutable std::size_t cacheHash = 0;
+   };
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
-   {
-      std::unique_ptr<FileBlock> FileOpenBlock(char const *filename);
+   std::unique_ptr<FileBlock> FileOpenBlock(char const *filename);
 
-      std::unique_ptr<std::streambuf, ConditionalDeleter<std::streambuf>>
-      FileOpenStream(char const *filename, std::ios_base::openmode which);
+   std::unique_ptr<std::streambuf, ConditionalDeleter<std::streambuf>>
+   FileOpenStream(char const *filename, std::ios_base::openmode which);
 
-      std::size_t FileSize(char const *filename);
-   }
+   std::size_t FileSize(char const *filename);
 }
 
 #endif//GDCC__Core__File_H__

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,129 +24,117 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // WarnOpt
+   //
+   class WarnOpt : public Option::Base
    {
-      class Warning;
+   public:
+      WarnOpt(Option::Program *program, Info const &optInfo, Warning *ptr) :
+         Option::Base{program, optInfo}, dptr{ptr} {}
+
+   protected:
+      virtual std::size_t v_process(Option::Args const &args);
+
+   private:
+      Warning *const dptr;
+   };
+
+   //
+   // WarnOptList
+   //
+   // Common warning options.
+   //
+   class WarnOptList
+   {
+   public:
+      explicit WarnOptList(Option::Program &list);
+
+      Option::Program &list;
+
+      WarnOpt optAll;
+      WarnOpt optCommon;
+      WarnOpt optExtra;
+      WarnOpt optStrict;
+   };
+
+   //
+   // Warning
+   //
+   class Warning
+   {
+   public:
+      enum class State {Off, On, Def};
+
+
+      Warning(Warning const *base, char const *opt, State state = State::Def);
+
+      explicit operator bool () const;
 
       //
-      // WarnOpt
+      // warn
       //
-      class WarnOpt : public Option::Base
+      template<typename... Args>
+      void operator () (Origin pos, Args const &...args) const
       {
-      public:
-         WarnOpt(Option::Program *program, Info const &optInfo, Warning *ptr) :
-            Option::Base{program, optInfo}, dptr{ptr} {}
+         if(!*this) return;
 
-      protected:
-         virtual std::size_t v_process(Option::Args const &args);
+         warnPre(pos);
+         warnArg(args...);
+         warnPro();
+      }
 
-      private:
-         Warning *const dptr;
-      };
+
+      friend class WarnOpt;
+
+   private:
+      void warnArg() const {}
 
       //
-      // WarnOptList
+      // warnArg
       //
-      // Common warning options.
-      //
-      class WarnOptList
+      template<typename Arg0, typename... Args>
+      void warnArg(Arg0 const &arg0, Args const &...args) const
       {
-      public:
-         explicit WarnOptList(Option::Program &list);
+         std::cerr << arg0;
+         warnArg(args...);
+      }
 
-         Option::Program &list;
-
-         WarnOpt optAll;
-         WarnOpt optCommon;
-         WarnOpt optExtra;
-         WarnOpt optStrict;
-      };
-
-      //
-      // Warning
-      //
-      class Warning
-      {
-      public:
-         enum class State {Off, On, Def};
+      void warnPre(Origin pos) const;
+      void warnPro() const;
 
 
-         Warning(Warning const *base, char const *opt, State state = State::Def);
-
-         explicit operator bool () const;
-
-         //
-         // warn
-         //
-         template<typename... Args>
-         void operator () (Origin pos, Args const &...args) const
-         {
-            if(!*this) return;
-
-            warnPre(pos);
-            warnArg(args...);
-            warnPro();
-         }
-
-
-         friend class WarnOpt;
-
-      private:
-
-         void warnArg() const {}
-
-         //
-         // warnArg
-         //
-         template<typename Arg0, typename... Args>
-         void warnArg(Arg0 const &arg0, Args const &...args) const
-         {
-            std::cerr << arg0;
-            warnArg(args...);
-         }
-
-         void warnPre(Origin pos) const;
-         void warnPro() const;
-
-
-         Warning const *base;
-         char const    *opt;
-         State          state;
-      };
-   }
+      Warning const *base;
+      char const    *opt;
+      State          state;
+   };
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Objects                                                             |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
-   {
-      extern Warning WarnAll;
-      extern Warning WarnCommon;
-      extern Warning WarnExtra;
-      extern Warning WarnStrict;
-   }
+   extern Warning WarnAll;
+   extern Warning WarnCommon;
+   extern Warning WarnExtra;
+   extern Warning WarnStrict;
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
-   {
-      Option::Program &GetWarnOptList();
+   Option::Program &GetWarnOptList();
 
-      WarnOptList &GetWarnOpts();
-   }
+   WarnOptList &GetWarnOpts();
 }
 
 #endif//GDCC__Core__Warning_H__

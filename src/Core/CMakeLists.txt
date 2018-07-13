@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2016 David Hill
+## Copyright (C) 2013-2018 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -68,6 +68,7 @@ add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    ../../inc/Core/Token.hpp
    ../../inc/Core/TokenBuf.hpp
    ../../inc/Core/TokenStream.hpp
+   ../../inc/Core/Types.hpp
    ../../inc/Core/WSpaceTBuf.hpp
    ../../inc/Core/Warning.hpp
 )

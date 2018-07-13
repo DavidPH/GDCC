@@ -13,6 +13,8 @@
 #ifndef GDCC__Option__Types_H__
 #define GDCC__Option__Types_H__
 
+#include "GDCC/Config.hpp"
+
 #include <cstddef>
 
 

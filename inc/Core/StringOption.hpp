@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,25 +22,22 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // StringOption
+   //
+   class StringOption : public Option::Base
    {
-      //
-      // StringOption
-      //
-      class StringOption : public Option::Base
-      {
-      public:
-         StringOption(Option::Program *program, Info const &optInfo, String *ptr);
+   public:
+      StringOption(Option::Program *program, Info const &optInfo, String *ptr);
 
-      protected:
-         virtual std::size_t v_process(Option::Args const &args);
+   protected:
+      virtual std::size_t v_process(Option::Args const &args);
 
-      private:
-         String *dptr;
-      };
-   }
+   private:
+      String *dptr;
+   };
 }
 
 #endif//GDCC__Core__StringOption_H__

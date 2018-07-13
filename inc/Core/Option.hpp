@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #ifndef GDCC__Core__Option_H__
 #define GDCC__Core__Option_H__
 
+#include "../Core/Types.hpp"
+
 #include "../Option/CStr.hpp"
 #include "../Option/CStrV.hpp"
 #include "../Option/Function.hpp"
@@ -23,70 +25,64 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // SystemSourceOption
+   //
+   class SystemSourceOption : public Option::CStrV
    {
-      //
-      // SystemSourceOption
-      //
-      class SystemSourceOption : public Option::CStrV
-      {
-      public:
-         SystemSourceOption(Option::Program *program, Info const &optInfo);
+   public:
+      SystemSourceOption(Option::Program *program, Info const &optInfo);
 
-      protected:
-         virtual std::size_t v_process(Option::Args const &args);
-      };
+   protected:
+      virtual std::size_t v_process(Option::Args const &args);
+   };
 
-      //
-      // OptionList
-      //
-      // Stores an option list and basic options.
-      //
-      class OptionList
-      {
-      public:
-         OptionList();
+   //
+   // OptionList
+   //
+   // Stores an option list and basic options.
+   //
+   class OptionList
+   {
+   public:
+      OptionList();
 
-         Option::Program list;
+      Option::Program list;
 
-         Option::CStrV args;
+      Option::CStrV args;
 
-         Option::Function optHelp;
-         Option::Function optHelpADoc;
-         Option::Function optHelpLong;
-         Option::CStr     optOutput;
-         Option::Function optVersion;
+      Option::Function optHelp;
+      Option::Function optHelpADoc;
+      Option::Function optHelpLong;
+      Option::CStr     optOutput;
+      Option::Function optVersion;
 
-         Option::CStr       optLibPath;
-         SystemSourceOption optSysSource;
-      };
-   }
+      Option::CStr       optLibPath;
+      SystemSourceOption optSysSource;
+   };
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
-   {
-      Option::CStrV &GetOptionArgs();
+   Option::CStrV &GetOptionArgs();
 
-      std::string GetOptionLibPath();
+   std::string GetOptionLibPath();
 
-      Option::Program &GetOptionList();
+   Option::Program &GetOptionList();
 
-      char const *GetOptionOutput();
+   char const *GetOptionOutput();
 
-      OptionList &GetOptions();
+   OptionList &GetOptions();
 
-      void ProcessOptions(OptionList &opts, int argc, char const *const *argv,
-         bool needOutput = true);
-   }
+   void ProcessOptions(OptionList &opts, int argc, char const *const *argv,
+      bool needOutput = true);
 }
 
 #endif//GDCC__Core__Option_H__

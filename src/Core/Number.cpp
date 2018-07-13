@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,19 +17,16 @@
 // Static Objects                                                             |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
-   {
-      #if GDCC_Core_BigNum
-      // Highly unfortunate hack to set default precision.
-      // Will be removed when use of mpf_class is replaced with mpfr_t.
-      #ifdef __GNUC__
-      __attribute__((__unused__))
-      #endif
-      auto static PrecInit = [](){mpf_set_default_prec(256); return 0;}();
-      #endif
-   }
+   #if GDCC_Core_BigNum
+   // Highly unfortunate hack to set default precision.
+   // Will be removed when use of mpf_class is replaced with mpfr_t.
+   #ifdef __GNUC__
+   __attribute__((__unused__))
+   #endif
+   auto static PrecInit = [](){mpf_set_default_prec(256); return 0;}();
+   #endif
 }
 
 

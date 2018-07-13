@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #ifndef GDCC__Core__Range_H__
 #define GDCC__Core__Range_H__
 
+#include "../Core/Types.hpp"
+
 #include <iterator>
 
 
@@ -20,49 +22,44 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // Range
+   //
+   template<typename T>
+   class Range
    {
-      //
-      // Range
-      //
-      template<typename T> class Range
-      {
-      public:
-         Range() = default;
-         constexpr Range(T first_, T last_) : first{first_}, last{last_} {}
+   public:
+      Range() = default;
+      constexpr Range(T first_, T last_) : first{first_}, last{last_} {}
 
-         T begin() const {return first;}
+      T begin() const {return first;}
 
-         bool empty() const {return first == last;}
+      bool empty() const {return first == last;}
 
-         T end() const {return last;}
+      T end() const {return last;}
 
-         std::size_t size() const {return std::distance(first, last);}
+      std::size_t size() const {return std::distance(first, last);}
 
-         T first, last;
-      };
-   }
+      T first, last;
+   };
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+      //
+   // MakeRange
+   //
+   template<typename T>
+   Range<T> MakeRange(T first, T last)
    {
-      //
-      // MakeRange
-      //
-      template<typename T>
-      Range<T> MakeRange(T first, T last)
-      {
-         return Range<T>(first, last);
-      }
+      return Range<T>(first, last);
    }
 }
 

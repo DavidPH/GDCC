@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,45 +13,44 @@
 #ifndef GDCC__Core__Deleter_H__
 #define GDCC__Core__Deleter_H__
 
+#include "../Core/Types.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // ConditionalDeleter
+   //
+   template<typename T>
+   class ConditionalDeleter
    {
-      //
-      // ConditionalDeleter
-      //
-      template<typename T>
-      class ConditionalDeleter
-      {
-      public:
-         ConditionalDeleter(bool free_) : free{free_} {}
+   public:
+      ConditionalDeleter(bool free_) : free{free_} {}
 
-         void operator () (T *p) const {if(free) delete p;}
+      void operator () (T *p) const {if(free) delete p;}
 
-      private:
-         bool free;
-      };
+   private:
+      bool free;
+   };
 
-      //
-      // ConditionalDeleter<T[]>
-      //
-      template<typename T>
-      class ConditionalDeleter<T[]>
-      {
-      public:
-         ConditionalDeleter(bool free_) : free{free_} {}
+   //
+   // ConditionalDeleter<T[]>
+   //
+   template<typename T>
+   class ConditionalDeleter<T[]>
+   {
+   public:
+      ConditionalDeleter(bool free_) : free{free_} {}
 
-         void operator () (T *p) const {if(free) delete[] p;}
+      void operator () (T *p) const {if(free) delete[] p;}
 
-      private:
-         bool free;
-      };
-   }
+   private:
+      bool free;
+   };
 }
 
 #endif//GDCC__Core__Deleter_H__

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,25 +17,22 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // operator std::ostream << Origin
+   //
+   std::ostream &operator << (std::ostream &out, Origin const &in)
    {
-      //
-      // operator std::ostream << Origin
-      //
-      std::ostream &operator << (std::ostream &out, Origin const &in)
-      {
-         if(in.file)
-            out << in.file;
-         else
-            out << "(no file)";
+      if(in.file)
+         out << in.file;
+      else
+         out << "(no file)";
 
-         if(in.line) out << ':' << in.line;
-         if(in.col)  out << ':' << in.col;
+      if(in.line) out << ':' << in.line;
+      if(in.col)  out << ':' << in.col;
 
-         return out;
-      }
+      return out;
    }
 }
 

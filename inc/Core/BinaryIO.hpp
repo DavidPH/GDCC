@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,21 +13,9 @@
 #ifndef GDCC__Core__BinaryIO_H__
 #define GDCC__Core__BinaryIO_H__
 
-#include <cstdint>
+#include "../Core/Types.hpp"
+
 #include <ostream>
-
-
-//----------------------------------------------------------------------------|
-// Types                                                                      |
-//
-
-namespace GDCC
-{
-   namespace Core
-   {
-      class String;
-   }
-}
 
 
 //----------------------------------------------------------------------------|

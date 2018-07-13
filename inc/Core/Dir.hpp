@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,40 +23,37 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // DirStream
+   //
+   class DirStream
    {
-      //
-      // DirStream
-      //
-      class DirStream
-      {
-      public:
-         virtual ~DirStream();
+   public:
+      virtual ~DirStream();
 
-         Stat const &getStat() const {return statBuf;}
+      Stat const &getStat() const {return statBuf;}
 
-         char const *getStrFull() const {return nameBuf.data();}
-         char const *getStrPart() const {return nameBuf.data() + nameLen;}
+      char const *getStrFull() const {return nameBuf.data();}
+      char const *getStrPart() const {return nameBuf.data() + nameLen;}
 
-         std::size_t getLenBase() const {return nameLen;}
-         std::size_t getLenFull() const {return nameBuf.size();}
-         std::size_t getLenPart() const {return nameBuf.size() - nameLen;}
+      std::size_t getLenBase() const {return nameLen;}
+      std::size_t getLenFull() const {return nameBuf.size();}
+      std::size_t getLenPart() const {return nameBuf.size() - nameLen;}
 
-         bool next() {return v_next();}
+      bool next() {return v_next();}
 
-      protected:
-         DirStream(char const *dirname);
+   protected:
+      DirStream(char const *dirname);
 
-         virtual bool v_next() = 0;
+      virtual bool v_next() = 0;
 
-         std::string            nameBuf;
-         std::string::size_type nameLen;
+      std::string            nameBuf;
+      std::string::size_type nameLen;
 
-         Stat statBuf;
-      };
-   }
+      Stat statBuf;
+   };
 }
 
 
@@ -64,16 +61,13 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
-   {
-      void DirCreate(char const *dirname);
+   void DirCreate(char const *dirname);
 
-      std::unique_ptr<DirStream> DirOpenStream(char const *dirname);
+   std::unique_ptr<DirStream> DirOpenStream(char const *dirname);
 
-      bool IsDir(char const *dirname);
-   }
+   bool IsDir(char const *dirname);
 }
 
 #endif//GDCC__Core__Dir_H__

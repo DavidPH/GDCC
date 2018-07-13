@@ -13,6 +13,8 @@
 #ifndef GDCC__Core__List_H__
 #define GDCC__Core__List_H__
 
+#include "../Core/Types.hpp"
+
 #include <iterator>
 #include <type_traits>
 
@@ -21,96 +23,93 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   template<typename T, typename std::remove_cv<T>::type *T::*P = &T::prev,
+      typename std::remove_cv<T>::type *T::*N = &T::next>
+   class ListItr
    {
-      template<typename T, typename std::remove_cv<T>::type *T::*P = &T::prev,
-         typename std::remove_cv<T>::type *T::*N = &T::next>
-      class ListItr
-      {
-      public:
-         using difference_type   = std::ptrdiff_t;
-         using value_type        = typename std::remove_cv<T>::type;
-         using pointer           = T *;
-         using reference         = T &;
-         using iterator_category = std::bidirectional_iterator_tag;
+   public:
+      using difference_type   = std::ptrdiff_t;
+      using value_type        = typename std::remove_cv<T>::type;
+      using pointer           = T *;
+      using reference         = T &;
+      using iterator_category = std::bidirectional_iterator_tag;
 
 
-         ListItr() = default;
-         explicit ListItr(T *p_) : p{p_} {}
+      ListItr() = default;
+      explicit ListItr(T *p_) : p{p_} {}
 
-         explicit operator bool () const {return p;}
-         explicit operator T * () const {return p;}
+      explicit operator bool () const {return p;}
+      explicit operator T * () const {return p;}
 
-         T *operator -> () const {return p;}
-         T &operator * () const {return *p;}
+      T *operator -> () const {return p;}
+      T &operator * () const {return *p;}
 
-         ListItr operator ++ (int) {auto i = *this; p = p->*N; return i;}
-         ListItr operator -- (int) {auto i = *this; p = p->*P; return i;}
+      ListItr operator ++ (int) {auto i = *this; p = p->*N; return i;}
+      ListItr operator -- (int) {auto i = *this; p = p->*P; return i;}
 
-         ListItr &operator ++ () {p = p->*N; return *this;}
-         ListItr &operator -- () {p = p->*P; return *this;}
+      ListItr &operator ++ () {p = p->*N; return *this;}
+      ListItr &operator -- () {p = p->*P; return *this;}
 
-         bool operator == (ListItr const &i) {return p == i.p;}
-         bool operator != (ListItr const &i) {return p != i.p;}
+      bool operator == (ListItr const &i) {return p == i.p;}
+      bool operator != (ListItr const &i) {return p != i.p;}
 
-      private:
-         T *p;
-      };
+   private:
+      T *p;
+   };
+
+   //
+   // ListUtil
+   //
+   template<typename T, typename std::remove_cv<T>::type *T::*P = &T::prev,
+      typename std::remove_cv<T>::type *T::*N = &T::next>
+   class ListUtil
+   {
+   public:
+      using Itr = ListItr<T, P, N>;
+      using CItr = ListItr<T const, P, N>;
+
 
       //
-      // ListUtil
+      // Insert
       //
-      template<typename T, typename std::remove_cv<T>::type *T::*P = &T::prev,
-         typename std::remove_cv<T>::type *T::*N = &T::next>
-      class ListUtil
+      static void Insert(T *node, T *next)
       {
-      public:
-         using Itr = ListItr<T, P, N>;
-         using CItr = ListItr<T const, P, N>;
+         node->*N = next;
+         node->*P = next->*P;
 
+         node->*N->*P = node;
+         node->*P->*N = node;
+      }
 
-         //
-         // Insert
-         //
-         static void Insert(T *node, T *next)
-         {
-            node->*N = next;
-            node->*P = next->*P;
+      //
+      // Relink
+      //
+      static void Relink(T *node, T *next)
+      {
+         (node->*N)->*P = node->*P;
+         (node->*P)->*N = node->*N;
 
-            node->*N->*P = node;
-            node->*P->*N = node;
-         }
+         node->*N = next;
+         node->*P = next->*P;
 
-         //
-         // Relink
-         //
-         static void Relink(T *node, T *next)
-         {
-            (node->*N)->*P = node->*P;
-            (node->*P)->*N = node->*N;
+         node->*N->*P = node;
+         node->*P->*N = node;
+      }
 
-            node->*N = next;
-            node->*P = next->*P;
+      //
+      // Unlink
+      //
+      static void Unlink(T *node)
+      {
+         (node->*N)->*P = node->*P;
+         (node->*P)->*N = node->*N;
 
-            node->*N->*P = node;
-            node->*P->*N = node;
-         }
-
-         //
-         // Unlink
-         //
-         static void Unlink(T *node)
-         {
-            (node->*N)->*P = node->*P;
-            (node->*P)->*N = node->*N;
-
-            node->*N = node;
-            node->*P = node;
-         }
-      };
-   }
+         node->*N = node;
+         node->*P = node;
+      }
+   };
 }
 
 #endif//GDCC__Core__List_H__

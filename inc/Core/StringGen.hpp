@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,47 +22,44 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // StringGen
+   //
+   class StringGen
    {
-      //
-      // StringGen
-      //
-      class StringGen
-      {
-      public:
-         StringGen() {reset();}
-         StringGen(StringGen const &gen);
-         StringGen(StringGen &&gen);
-         explicit StringGen(String str) {reset(str);}
-         StringGen(String str, char const *suf) {reset(str, suf);}
+   public:
+      StringGen() {reset();}
+      StringGen(StringGen const &gen);
+      StringGen(StringGen &&gen);
+      explicit StringGen(String str) {reset(str);}
+      StringGen(String str, char const *suf) {reset(str, suf);}
 
-         String operator () () {return (*this)(++number);}
-         String operator () (std::size_t i);
+      String operator () () {return (*this)(++number);}
+      String operator () (std::size_t i);
 
-         StringGen &operator = (StringGen const &gen);
-         StringGen &operator = (StringGen &&gen) {swap(gen); return *this;}
+      StringGen &operator = (StringGen const &gen);
+      StringGen &operator = (StringGen &&gen) {swap(gen); return *this;}
 
-         void reset();
-         void reset(String str);
-         void reset(String str, char const *suf);
+      void reset();
+      void reset(String str);
+      void reset(String str, char const *suf);
 
-         void swap(StringGen  &gen);
-         void swap(StringGen &&gen) {swap(gen);}
+      void swap(StringGen  &gen);
+      void swap(StringGen &&gen) {swap(gen);}
 
-      private:
-         std::unique_ptr<char[]> buffer;
-         char                   *suffix;
-         std::size_t             baseHash;
-         std::size_t             baseLen;
-         std::size_t             number;
+   private:
+      std::unique_ptr<char[]> buffer;
+      char                   *suffix;
+      std::size_t             baseHash;
+      std::size_t             baseLen;
+      std::size_t             number;
 
 
-         static constexpr std::size_t NumLen =
-            (sizeof(std::size_t) * CHAR_BIT + 2) / 3;
-      };
-   }
+      static constexpr std::size_t NumLen =
+         (sizeof(std::size_t) * CHAR_BIT + 2) / 3;
+   };
 }
 
 #endif//GDCC__Core__StringGen_H__

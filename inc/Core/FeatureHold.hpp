@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,30 +13,29 @@
 #ifndef GDCC__Core__FeatureHold_H__
 #define GDCC__Core__FeatureHold_H__
 
+#include "../Core/Types.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // FeatureHold
+   //
+   template<typename T, void(T::*D)(), void(T::*E)()> class FeatureHold
    {
-      //
-      // FeatureHold
-      //
-      template<typename T, void(T::*D)(), void(T::*E)()> class FeatureHold
-      {
-      public:
-         FeatureHold(FeatureHold const &) = delete;
-         FeatureHold(FeatureHold &&hold) : str{hold.str} {hold.str = nullptr;}
-         explicit FeatureHold(T &str_) : str{&str_} {(str->*D)();}
-         ~FeatureHold() {if(str) (str->*E)();}
+   public:
+      FeatureHold(FeatureHold const &) = delete;
+      FeatureHold(FeatureHold &&hold) : str{hold.str} {hold.str = nullptr;}
+      explicit FeatureHold(T &str_) : str{&str_} {(str->*D)();}
+      ~FeatureHold() {if(str) (str->*E)();}
 
-      private:
-         T *str;
-      };
-   }
+   private:
+      T *str;
+   };
 }
 
 #endif//GDCC__Core__FeatureHold_H__

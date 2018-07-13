@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,42 +13,39 @@
 #ifndef GDCC__Core__StreamTBuf_H__
 #define GDCC__Core__StreamTBuf_H__
 
-#include "TokenBuf.hpp"
+#include "../Core/TokenBuf.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // StreamTBuf
+   //
+   template<typename Src, std::size_t BufSize = 1>
+   class StreamTBuf : public TokenBuf
    {
+   public:
+      explicit StreamTBuf(Src &src_) : src(src_) {}
+
+   protected:
       //
-      // StreamTBuf
+      // underflow
       //
-      template<typename Src, std::size_t BufSize = 1>
-      class StreamTBuf : public TokenBuf
+      virtual void underflow()
       {
-      public:
-         explicit StreamTBuf(Src &src_) : src(src_) {}
+         Token *itr = buf;
+         if(src) while((src >> *itr++) && itr != buf + BufSize) {}
 
-      protected:
-         //
-         // underflow
-         //
-         virtual void underflow()
-         {
-            Token *itr = buf;
-            if(src) while((src >> *itr++) && itr != buf + BufSize) {}
+         sett(buf, buf, itr);
+      }
 
-            sett(buf, buf, itr);
-         }
-
-         Token buf[BufSize];
-         Src &src;
-      };
-   }
+      Token buf[BufSize];
+      Src &src;
+   };
 }
 
 #endif//GDCC__Core__StreamTBuf_H__

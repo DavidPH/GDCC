@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,141 +16,135 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Variables                                                           |
+// Extern Objects                                                             |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
-   {
-      Warning WarnAll   {nullptr,    "--warn-all"};
-      Warning WarnExtra {&WarnAll,   "--warn-extra"};
-      Warning WarnCommon{&WarnExtra, "--warn-common", Warning::State::On};
-      Warning WarnStrict{&WarnAll,   "--warn-strict"};
-   }
+   Warning WarnAll   {nullptr,    "--warn-all"};
+   Warning WarnExtra {&WarnAll,   "--warn-extra"};
+   Warning WarnCommon{&WarnExtra, "--warn-common", Warning::State::On};
+   Warning WarnStrict{&WarnAll,   "--warn-strict"};
 }
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::Core
 {
-   namespace Core
+   //
+   // WarnOpt::v_process
+   //
+   std::size_t WarnOpt::v_process(Option::Args const &args)
    {
-      //
-      // WarnOpt::v_process
-      //
-      std::size_t WarnOpt::v_process(Option::Args const &args)
+      dptr->state = args.optFalse ? Warning::State::Off : Warning::State::On;
+      return 0;
+   }
+
+   //
+   // WarnOptList constructor
+   //
+   WarnOptList::WarnOptList(Option::Program &list_) :
+      list(list_),
+
+      optAll
       {
-         dptr->state = args.optFalse ? Warning::State::Off : Warning::State::On;
-         return 0;
-      }
+         &list, Option::Base::Info()
+            .setName("warn-all")
+            .setGroup("warnings")
+            .setDescS("Enables all warnings."),
 
-      //
-      // WarnOptList constructor
-      //
-      WarnOptList::WarnOptList(Option::Program &list_) :
-         list(list_),
+         &WarnAll
+      },
 
-         optAll
-         {
-            &list, Option::Base::Info()
-               .setName("warn-all")
-               .setGroup("warnings")
-               .setDescS("Enables all warnings."),
-
-            &WarnAll
-         },
-
-         optCommon
-         {
-            &list, Option::Base::Info()
-               .setName("warn-common")
-               .setGroup("warnings")
-               .setDescS("Enables common warnings."),
-
-            &WarnCommon
-         },
-
-         optExtra
-         {
-            &list, Option::Base::Info()
-               .setName("warn-extra")
-               .setGroup("warnings")
-               .setDescS("Enables common and extra warnings."),
-
-            &WarnExtra
-         },
-
-         optStrict
-         {
-            &list, Option::Base::Info()
-               .setName("warn-strict")
-               .setGroup("warnings")
-               .setDescS("Enables strict warnings."),
-
-            &WarnStrict
-         }
+      optCommon
       {
-      }
+         &list, Option::Base::Info()
+            .setName("warn-common")
+            .setGroup("warnings")
+            .setDescS("Enables common warnings."),
 
-      //
-      // Warning constructor
-      //
-      Warning::Warning(Warning const *base_, char const *opt_, State state_) :
-         base{base_}, opt{opt_}, state{state_}
+         &WarnCommon
+      },
+
+      optExtra
       {
-      }
+         &list, Option::Base::Info()
+            .setName("warn-extra")
+            .setGroup("warnings")
+            .setDescS("Enables common and extra warnings."),
 
-      //
-      // Warning::operator bool
-      //
-      Warning::operator bool () const
+         &WarnExtra
+      },
+
+      optStrict
       {
-         if(state == State::On)  return true;
-         if(state == State::Off) return false;
-         if(base) return base->operator bool();
-         return false;
-      }
+         &list, Option::Base::Info()
+            .setName("warn-strict")
+            .setGroup("warnings")
+            .setDescS("Enables strict warnings."),
 
-      //
-      // Warning::warnPre
-      //
-      void Warning::warnPre(Origin pos) const
-      {
-         std::cerr << "WARNING: ";
-         if(pos.file) std::cerr << pos << ": ";
+         &WarnStrict
       }
+   {
+   }
 
-      //
-      // Warning::warnPro
-      //
-      void Warning::warnPro() const
-      {
-         if(opt)
-            std::cerr << " [" << opt << ']';
+   //
+   // Warning constructor
+   //
+   Warning::Warning(Warning const *base_, char const *opt_, State state_) :
+      base{base_}, opt{opt_}, state{state_}
+   {
+   }
 
-         std::cerr << std::endl;
-      }
+   //
+   // Warning::operator bool
+   //
+   Warning::operator bool () const
+   {
+      if(state == State::On)  return true;
+      if(state == State::Off) return false;
+      if(base) return base->operator bool();
+      return false;
+   }
 
-      //
-      // GetWarnOptList
-      //
-      Option::Program &GetWarnOptList()
-      {
-         return GetWarnOpts().list;
-      }
+   //
+   // Warning::warnPre
+   //
+   void Warning::warnPre(Origin pos) const
+   {
+      std::cerr << "WARNING: ";
+      if(pos.file) std::cerr << pos << ": ";
+   }
 
-      //
-      // GetWarnOpts
-      //
-      WarnOptList &GetWarnOpts()
-      {
-         static WarnOptList opts{GetOptionList()};
-         return opts;
-      }
+   //
+   // Warning::warnPro
+   //
+   void Warning::warnPro() const
+   {
+      if(opt)
+         std::cerr << " [" << opt << ']';
+
+      std::cerr << std::endl;
+   }
+
+   //
+   // GetWarnOptList
+   //
+   Option::Program &GetWarnOptList()
+   {
+      return GetWarnOpts().list;
+   }
+
+   //
+   // GetWarnOpts
+   //
+   WarnOptList &GetWarnOpts()
+   {
+      static WarnOptList opts{GetOptionList()};
+      return opts;
    }
 }
 
