@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2016 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,37 +13,21 @@
 #ifndef GDCC__Platform__Alloc_H__
 #define GDCC__Platform__Alloc_H__
 
+#include "../Platform/Types.hpp"
+
 #include "../Core/Number.hpp"
-
-
-//----------------------------------------------------------------------------|
-// Types                                                                      |
-//
-
-namespace GDCC
-{
-   namespace IR
-   {
-      enum class CallType;
-
-      class AddrSpace;
-   }
-}
 
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::Platform
 {
-   namespace Platform
-   {
-      Core::FastU GetAllocMin(IR::AddrSpace space);
+   Core::FastU GetAllocMin(IR::AddrSpace space);
 
-      Core::FastU GetAllocMin_Funct(IR::CallType ctype);
-      Core::FastU GetAllocMin_StrEn();
-   }
+   Core::FastU GetAllocMin_Funct(IR::CallType ctype);
+   Core::FastU GetAllocMin_StrEn();
 }
 
 #endif//GDCC__Platform__Alloc_H__
