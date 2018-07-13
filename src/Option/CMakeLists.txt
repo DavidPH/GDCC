@@ -37,6 +37,7 @@ add_library(gdcc-option-lib ${GDCC_SHARED_DECL}
    ../../inc/Option/Int.hpp
    ../../inc/Option/Program.hpp
    ../../inc/Option/StrUtil.hpp
+   ../../inc/Option/Types.hpp
 )
 
 GDCC_INSTALL_PART(option FALSE TRUE)

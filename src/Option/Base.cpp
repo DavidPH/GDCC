@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,64 +19,61 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::Option
 {
-   namespace Option
+   //
+   // Base constructor
+   //
+   Base::Base(Program *program, Info const &optInfo) :
+      info{optInfo},
+
+      processed{false},
+
+      hashNext{this}, hashPrev{this},
+      shrtNext{this}, shrtPrev{this},
+
+      hash{StrHash(optInfo.nameL)},
+      lenL{optInfo.nameL ? std::strlen(optInfo.nameL) : 0}
    {
-      //
-      // Base constructor
-      //
-      Base::Base(Program *program, Info const &optInfo) :
-         info{optInfo},
+      if(program) program->insert(this);
+   }
 
-         processed{false},
+   //
+   // Base destructor
+   //
+   Base::~Base()
+   {
+      if(prog) prog->remove(this);
+   }
 
-         hashNext{this}, hashPrev{this},
-         shrtNext{this}, shrtPrev{this},
+   //
+   // Base::insert
+   //
+   void Base::insert(Program *program)
+   {
+      if(prog   ) prog   ->remove(this);
+      if(program) program->insert(this);
+   }
 
-         hash{StrHash(optInfo.nameL)},
-         lenL{optInfo.nameL ? std::strlen(optInfo.nameL) : 0}
-      {
-         if(program) program->insert(this);
-      }
+   //
+   // Base::process
+   //
+   std::size_t Base::process(Args const &args)
+   {
+      auto ret = v_process(args);
+      processed = true;
+      return ret;
+   }
 
-      //
-      // Base destructor
-      //
-      Base::~Base()
-      {
-         if(prog) prog->remove(this);
-      }
-
-      //
-      // Base::insert
-      //
-      void Base::insert(Program *program)
-      {
-         if(prog   ) prog   ->remove(this);
-         if(program) program->insert(this);
-      }
-
-      //
-      // Base::process
-      //
-      std::size_t Base::process(Args const &args)
-      {
-         auto ret = v_process(args);
-         processed = true;
-         return ret;
-      }
-
-      //
-      // Base::remove
-      //
-      void Base::remove()
-      {
-         if(prog) prog->remove(this);
-      }
+   //
+   // Base::remove
+   //
+   void Base::remove()
+   {
+      if(prog) prog->remove(this);
    }
 }
 

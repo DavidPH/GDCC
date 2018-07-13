@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,34 +20,31 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Option
 {
-   namespace Option
+   //
+   // Bool
+   //
+   class Bool : public Base
    {
+   public:
+      // constructor
+      Bool(Program *program, Info const &optInfo, bool *ptr) :
+         Base{program, optInfo}, dptr{ptr} {}
+
+   protected:
       //
-      // Bool
+      // v_process
       //
-      class Bool : public Base
+      virtual std::size_t v_process(Args const &args)
       {
-      public:
-         // constructor
-         Bool(Program *program, Info const &optInfo, bool *ptr) :
-            Base{program, optInfo}, dptr{ptr} {}
+         *dptr = !args.optFalse;
+         return 0;
+      }
 
-      protected:
-         //
-         // v_process
-         //
-         virtual std::size_t v_process(Args const &args)
-         {
-            *dptr = !args.optFalse;
-            return 0;
-         }
-
-      private:
-         bool *const dptr;
-      };
-   }
+   private:
+      bool *const dptr;
+   };
 }
 
 #endif//GDCC__Option__Bool_H__

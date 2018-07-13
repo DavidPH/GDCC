@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,38 +20,35 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::Option
 {
-   namespace Option
+   //
+   // CStr
+   //
+   class CStr : public Base
    {
-      //
-      // CStr
-      //
-      class CStr : public Base
-      {
-      public:
-         CStr(Program *program, Info const &optInfo);
-         CStr(Program *program, Info const &optInfo, char const *s, bool copy);
+   public:
+      CStr(Program *program, Info const &optInfo);
+      CStr(Program *program, Info const &optInfo, char const *s, bool copy);
 
-         virtual ~CStr();
+      virtual ~CStr();
 
-         char const *data() const {return str;}
+      char const *data() const {return str;}
 
-         std::size_t size() const {return len;}
+      std::size_t size() const {return len;}
 
-      protected:
-         virtual std::size_t v_process(Args const &args);
+   protected:
+      virtual std::size_t v_process(Args const &args);
 
-      private:
-         void reset();
-         void reset(char const *s, bool copy);
+   private:
+      void reset();
+      void reset(char const *s, bool copy);
 
-         char const *str;
-         std::size_t len;
+      char const *str;
+      std::size_t len;
 
-         bool alloc;
-      };
-   }
+      bool alloc;
+   };
 }
 
 #endif//GDCC__Option__CStr_H__
