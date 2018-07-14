@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2017 David Hill
+## Copyright (C) 2013-2018 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -44,6 +44,7 @@ add_library(gdcc-bc-lib ${GDCC_SHARED_DECL}
 
    ../../inc/BC/AddFunc.hpp
    ../../inc/BC/Info.hpp
+   ../../inc/BC/Types.hpp
 )
 
 target_link_libraries(gdcc-bc-lib gdcc-ir-lib)

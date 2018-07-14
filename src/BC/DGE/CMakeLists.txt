@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2016 David Hill
+## Copyright (C) 2016-2018 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -39,6 +39,7 @@ if(GDCC_BC_DGE)
       Info/trStmnt.cpp
 
       ../../../inc/BC/DGE/Info.hpp
+      ../../../inc/BC/DGE/Types.hpp
    )
 
    target_link_libraries(gdcc-bc-dge-lib gdcc-bc-lib)

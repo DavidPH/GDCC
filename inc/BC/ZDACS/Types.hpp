@@ -1,33 +1,31 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2018 David Hill
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// Generic output functions.
+// Common typedefs and class forward declarations.
 //
 //-----------------------------------------------------------------------------
 
-#include "BC/Info.hpp"
+#ifndef GDCC__BC__ZDACS__Types_H__
+#define GDCC__BC__ZDACS__Types_H__
+
+#include "../../BC/Types.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Extern Functions                                                           |
+// Types                                                                      |
 //
 
-namespace GDCC::BC
+namespace GDCC::BC::ZDACS
 {
-   //
-   // putData
-   //
-   void Info::putData(char const *data, std::size_t size)
-   {
-      out->write(data, size);
-      putPos += size;
-   }
+   enum class Code;
+
+   class Info;
 }
 
-// EOF
+#endif//GDCC__BC__ZDACS__Types_H__
 

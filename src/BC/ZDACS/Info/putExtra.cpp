@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,27 +23,21 @@
 // Options                                                                    |
 //
 
-namespace GDCC
+namespace GDCC::BC::ZDACS
 {
-   namespace BC
+   //
+   // --bc-zdacs-dump-ScriptI
+   //
+   static Option::CStr DumpScriptI
    {
-      namespace ZDACS
-      {
-         //
-         // --bc-zdacs-dump-ScriptI
-         //
-         static GDCC::Option::CStr DumpScriptI
-         {
-            &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
-               .setName("bc-zdacs-dump-ScriptI")
-               .setGroup("output")
-               .setDescS("Writes a list of numbered scripts to a file.")
-               .setDescS("Writes a list of numbered scripts to a file. "
-                  "Use - to write to stdout. Structure is: <glyph> <linka> "
-                  "<valueInt>")
-         };
-      }
-   }
+      &Core::GetOptionList(), Option::Base::Info()
+         .setName("bc-zdacs-dump-ScriptI")
+         .setGroup("output")
+         .setDescS("Writes a list of numbered scripts to a file.")
+         .setDescS("Writes a list of numbered scripts to a file. "
+            "Use - to write to stdout. Structure is: <glyph> <linka> "
+            "<valueInt>")
+   };
 }
 
 
@@ -51,31 +45,25 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::BC::ZDACS
 {
-   namespace BC
+   //
+   // Info::putExtra
+   //
+   void Info::putExtra()
    {
-      namespace ZDACS
+      if(auto outName = DumpScriptI.data())
       {
-         //
-         // Info::putExtra
-         //
-         void Info::putExtra()
+         auto buf = Core::FileOpenStream(outName, std::ios_base::out);
+
+         std::ostream outStr{buf.get()};
+
+         for(auto &fn : prog->rangeFunction())
          {
-            if(auto outName = DumpScriptI.data())
-            {
-               auto buf = Core::FileOpenStream(outName, std::ios_base::out);
+            if(fn.ctype != IR::CallType::ScriptI)
+               continue;
 
-               std::ostream outStr{buf.get()};
-
-               for(auto &fn : prog->rangeFunction())
-               {
-                  if(fn.ctype != IR::CallType::ScriptI)
-                     continue;
-
-                  outStr << fn.glyph << ' ' << fn.linka << ' ' << fn.valueInt << '\n';
-               }
-            }
+            outStr << fn.glyph << ' ' << fn.linka << ' ' << fn.valueInt << '\n';
          }
       }
    }

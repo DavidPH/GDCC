@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,8 @@
 
 #ifndef GDCC__BC__AddFunc_H__
 #define GDCC__BC__AddFunc_H__
+
+#include "../BC/Types.hpp"
 
 #include "../Core/Array.hpp"
 #include "../Core/IntItr.hpp"

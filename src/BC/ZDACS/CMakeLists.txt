@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2016 David Hill
+## Copyright (C) 2013-2018 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -48,6 +48,7 @@ if(GDCC_BC_ZDACS)
 
       ../../../inc/BC/ZDACS/Info.hpp
       ../../../inc/BC/ZDACS/Code.hpp
+      ../../../inc/BC/ZDACS/Types.hpp
    )
 
    target_link_libraries(gdcc-bc-zdacs-lib gdcc-bc-lib)

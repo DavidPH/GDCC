@@ -13,6 +13,8 @@
 #ifndef GDCC__BC__ZDACS__Info_H__
 #define GDCC__BC__ZDACS__Info_H__
 
+#include "../../BC/ZDACS/Types.hpp"
+
 #include "../../BC/Info.hpp"
 
 #include "../../Core/Array.hpp"
@@ -32,8 +34,6 @@
 
 namespace GDCC::BC::ZDACS
 {
-   enum class Code;
-
    //
    // Info
    //

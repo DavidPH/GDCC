@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,24 +19,18 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::BC::DGE
 {
-   namespace BC
+   //
+   // Info::genObj
+   //
+   void Info::genObj()
    {
-      namespace DGE
+      // Generic actions to take for allocated objects.
+      if(!obj->alloc)
       {
-         //
-         // Info::genObj
-         //
-         void Info::genObj()
-         {
-            // Generic actions to take for allocated objects.
-            if(!obj->alloc)
-            {
-               // Back address glyph.
-               backGlyphObj(obj->glyph, obj->value);
-            }
-         }
+         // Back address glyph.
+         backGlyphObj(obj->glyph, obj->value);
       }
    }
 }

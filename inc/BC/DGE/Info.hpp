@@ -13,6 +13,8 @@
 #ifndef GDCC__BC__DGE__Info_H__
 #define GDCC__BC__DGE__Info_H__
 
+#include "../../BC/DGE/Types.hpp"
+
 #include "../../BC/Info.hpp"
 
 #include "../../Core/Origin.hpp"
@@ -23,11 +25,6 @@
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
-
-namespace GDCC::IR
-{
-   class Exp_Cst;
-}
 
 namespace GDCC::BC::DGE
 {

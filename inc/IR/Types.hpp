@@ -30,6 +30,9 @@ namespace GDCC::IR
 
    class AddrSpace;
    class Arg;
+   class ArgPart;
+   class ArgPtr1;
+   class ArgPtr2;
    class Block;
    class DJump;
    class Glyph;
