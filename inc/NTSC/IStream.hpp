@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,8 @@
 
 #ifndef GDCC__NTSC__IStream_H__
 #define GDCC__NTSC__IStream_H__
+
+#include "../NTSC/Types.hpp"
 
 #include "../Core/CommentBuf.hpp"
 #include "../Core/FeatureHold.hpp"
@@ -25,58 +27,46 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::NTSC
 {
-   namespace Core
+   //
+   // IStream
+   //
+   class IStream : public std::istream
    {
-      class Token;
-   }
+   public:
+      explicit IStream(std::streambuf &buf, Core::String file) :
+         std::istream{&cbuf}, lbuf{buf}, obuf{lbuf, {file, 1, 1}}, cbuf{obuf} {}
 
-   namespace NTSC
-   {
-      //
-      // IStream
-      //
-      class IStream : public std::istream
-      {
-      public:
-         explicit IStream(std::streambuf &buf, Core::String file) :
-            std::istream{&cbuf}, lbuf{buf}, obuf{lbuf, {file, 1, 1}},
-            cbuf{obuf} {}
+      void disableComments() {rdbuf(&obuf);}
 
-         void disableComments() {rdbuf(&obuf);}
+      void enableComments() {rdbuf(&cbuf);}
 
-         void enableComments() {rdbuf(&cbuf);}
+      Core::Origin getOrigin() const {return obuf.getOrigin();}
 
-         Core::Origin getOrigin() const {return obuf.getOrigin();}
+      using CommentsHold = Core::FeatureHold<IStream,
+         &IStream::disableComments, &IStream::enableComments>;
 
-         using CommentsHold = Core::FeatureHold<IStream,
-            &IStream::disableComments, &IStream::enableComments>;
+      CommentsHold holdComments() {return CommentsHold(*this);}
 
-         CommentsHold holdComments() {return CommentsHold(*this);}
+   protected:
+      using LBuf = Core::LineTermBuf<8>;
+      using OBuf = Core::OriginBuf<8>;
+      using CBuf = Core::LineCommentBuf<8, 1, 1, char, '#'>;
 
-      protected:
-         using LBuf = Core::LineTermBuf<8>;
-         using OBuf = Core::OriginBuf<8>;
-         using CBuf = Core::LineCommentBuf<8, 1, 1, char, '#'>;
-
-         LBuf lbuf;
-         OBuf obuf;
-         CBuf cbuf;
-      };
-   }
+      LBuf lbuf;
+      OBuf obuf;
+      CBuf cbuf;
+   };
 }
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::NTSC
 {
-   namespace NTSC
-   {
-      IStream &operator >> (IStream &in, Core::Token &out);
-   }
+   IStream &operator >> (IStream &in, Core::Token &out);
 }
 
 #endif//GDCC__NTSC__IStream_H__

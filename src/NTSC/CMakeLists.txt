@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2016 David Hill
+## Copyright (C) 2013-2018 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -22,6 +22,7 @@ add_library(gdcc-ntsc-lib ${GDCC_SHARED_DECL}
    IStream.cpp
 
    ../../inc/NTSC/IStream.hpp
+   ../../inc/NTSC/Types.hpp
 )
 
 ##
