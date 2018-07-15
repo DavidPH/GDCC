@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2014 David Hill
+## Copyright (C) 2013-2018 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -30,6 +30,7 @@ add_executable(gdcc-irdump
    Put/Value.cpp
 
    ../../inc/IRDump/Put.hpp
+   ../../inc/IRDump/Types.hpp
 )
 
 target_link_libraries(gdcc-irdump gdcc-ir-lib)

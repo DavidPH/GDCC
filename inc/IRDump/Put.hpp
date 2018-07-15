@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2017 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,40 +13,9 @@
 #ifndef GDCC__IRDump__IRDump_H__
 #define GDCC__IRDump__IRDump_H__
 
+#include "../IRDump/Types.hpp"
+
 #include <ostream>
-
-
-//----------------------------------------------------------------------------|
-// Types                                                                      |
-//
-
-namespace GDCC::Core
-{
-   class String;
-}
-
-namespace GDCC::IR
-{
-   class AddrSpace;
-   class Arg;
-   class DJump;
-   class Exp;
-   class Function;
-   class GlyphData;
-   class Import;
-   class Object;
-   class Program;
-   class Space;
-   class Statement;
-   class StrEnt;
-   class Type;
-   class Value;
-
-   #define GDCC_IR_TypeList(t) \
-      class Type_##t; \
-      class Value_##t;
-   #include "../IR/TypeList.hpp"
-}
 
 
 //----------------------------------------------------------------------------|
