@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2015 David Hill
+## Copyright (C) 2013-2018 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -43,6 +43,7 @@ add_library(gdcc-as-lib ${GDCC_SHARED_DECL}
    ../../inc/AS/Macro.hpp
    ../../inc/AS/Parse.hpp
    ../../inc/AS/TStream.hpp
+   ../../inc/AS/Types.hpp
 )
 
 ##

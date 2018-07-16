@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,27 +23,24 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::AS
 {
-   namespace AS
+   //
+   // TStream
+   //
+   class TStream : public Core::TokenStream
    {
-      //
-      // TStream
-      //
-      class TStream : public Core::TokenStream
-      {
-      public:
-         TStream(std::streambuf &buf_, Core::String file, std::size_t line = 1) :
-            Core::TokenStream{&tbuf}, istr{buf_, file, line}, tbuf{istr} {}
+   public:
+      TStream(std::streambuf &buf_, Core::String file, std::size_t line = 1) :
+         Core::TokenStream{&tbuf}, istr{buf_, file, line}, tbuf{istr} {}
 
-      protected:
-         using IStr = IStream;
-         using TBuf = Core::StreamTBuf<IStr, 8>;
+   protected:
+      using IStr = IStream;
+      using TBuf = Core::StreamTBuf<IStr, 8>;
 
-         IStr istr;
-         TBuf tbuf;
-      };
-   }
+      IStr istr;
+      TBuf tbuf;
+   };
 }
 
 #endif//GDCC__AS__TStream_H__

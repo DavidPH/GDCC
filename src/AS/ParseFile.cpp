@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2016 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,24 +23,21 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::AS
 {
-   namespace AS
+   //
+   // ParseFile
+   //
+   void ParseFile(char const *inName, IR::Program &prog)
    {
-      //
-      // ParseFile
-      //
-      void ParseFile(char const *inName, IR::Program &prog)
-      {
-         auto buf = Core::FileOpenStream(inName, std::ios_base::in);
+      auto buf = Core::FileOpenStream(inName, std::ios_base::in);
 
-         TStream   in    {*buf, inName};
-         MacroMap  macros{};
-         ParserCtx ctx   {in, macros, prog};
+      TStream   in    {*buf, inName};
+      MacroMap  macros{};
+      ParserCtx ctx   {in, macros, prog};
 
-         while(!ctx.in.peek(Core::TOK_EOF))
-            AS::ParseDeclaration(ctx);
-      }
+      while(!ctx.in.peek(Core::TOK_EOF))
+         AS::ParseDeclaration(ctx);
    }
 }
 

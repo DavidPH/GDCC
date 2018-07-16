@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #ifndef GDCC__AS__Macro_H__
 #define GDCC__AS__Macro_H__
 
+#include "../AS/Types.hpp"
+
 #include "../IR/Block.hpp"
 
 #include <unordered_map>
@@ -22,49 +24,41 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::AS
 {
-   namespace Core
+   //
+   // Macro
+   //
+   class Macro
    {
-      class Token;
-   }
+   public:
+      explicit Macro(IR::Block &&list_) : list{std::move(list_)} {}
 
-   namespace AS
+      void expand(IR::Block &block, IR::Arg const *argv,
+         std::size_t argc) const;
+
+   private:
+      IR::Block list;
+   };
+
+   //
+   // MacroMap
+   //
+   class MacroMap
    {
-      //
-      // Macro
-      //
-      class Macro
-      {
-      public:
-         explicit Macro(IR::Block &&list_) : list{std::move(list_)} {}
+   public:
+      // Adds a macro.
+      void add(Core::String name, Macro &&macro);
 
-         void expand(IR::Block &block, IR::Arg const *argv,
-            std::size_t argc) const;
+      // Gets the macro by the specified name or null if not defined.
+      Macro const *find(Core::Token const &tok);
 
-      private:
-         IR::Block list;
-      };
+      // Removes a macro.
+      void rem(Core::String name);
 
-      //
-      // MacroMap
-      //
-      class MacroMap
-      {
-      public:
-         // Adds a macro.
-         void add(Core::String name, Macro &&macro);
-
-         // Gets the macro by the specified name or null if not defined.
-         Macro const *find(Core::Token const &tok);
-
-         // Removes a macro.
-         void rem(Core::String name);
-
-      private:
-         std::unordered_map<Core::String, Macro> table;
-      };
-   }
+   private:
+      std::unordered_map<Core::String, Macro> table;
+   };
 }
 
 #endif//GDCC__AS__Macro_H__

@@ -13,6 +13,8 @@
 #ifndef GDCC__AS__Parse_H__
 #define GDCC__AS__Parse_H__
 
+#include "../AS/Types.hpp"
+
 #include "../Core/Counter.hpp"
 #include "../Core/Number.hpp"
 #include "../Core/Token.hpp"
@@ -22,44 +24,8 @@
 // Types                                                                      |
 //
 
-namespace GDCC::Core
-{
-   class TokenStream;
-}
-
-namespace GDCC::IR
-{
-   enum class AddrBase;
-   enum class CallType;
-   enum class Code;
-   enum class Linkage;
-
-   class AddrSpace;
-   class Arg;
-   class Block;
-   class DJump;
-   class Exp;
-   class Function;
-   class GlyphData;
-   class Import;
-   class Object;
-   class OpCode;
-   class Program;
-   class Space;
-   class StrEnt;
-   class Type;
-   class Value;
-
-   #define GDCC_IR_TypeList(t) \
-      class Type_##t; \
-      class Value_##t;
-   #include "../IR/TypeList.hpp"
-}
-
 namespace GDCC::AS
 {
-   class MacroMap;
-
    //
    // ParserCtx
    //
@@ -115,8 +81,6 @@ namespace GDCC::AS
    IR::Linkage GetLinkage(ParserCtx const &ctx);
 
    IR::Value GetNumber(Core::Token const &tok);
-
-   IR::OpCode GetOpCode(ParserCtx const &ctx);
 
    Core::String GetString(ParserCtx const &ctx);
 

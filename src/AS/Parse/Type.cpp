@@ -24,212 +24,209 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::AS
 {
-   namespace AS
+   //
+   // GetType
+   //
+   IR::Type GetType(ParserCtx const &ctx)
    {
-      //
-      // GetType
-      //
-      IR::Type GetType(ParserCtx const &ctx)
+      switch(TokenPeekIdenti(ctx).in.peek().str)
       {
-         switch(TokenPeekIdenti(ctx).in.peek().str)
-         {
-            #define GDCC_IR_TypeList(name) \
-               case Core::STR_##name: return GetType_##name(ctx);
-            #include "IR/TypeList.hpp"
+         #define GDCC_IR_TypeList(name) \
+            case Core::STR_##name: return GetType_##name(ctx);
+         #include "IR/TypeList.hpp"
 
-         default:
-            throw Core::ParseExceptExpect(ctx.in.reget(), "Type", false);
-         }
+      default:
+         throw Core::ParseExceptExpect(ctx.in.reget(), "Type", false);
+      }
+   }
+
+   //
+   // GetType_Array
+   //
+   IR::Type_Array GetType_Array(ParserCtx const &ctx)
+   {
+      if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Array))
+         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Array", false);
+
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      auto elemT = GetType(ctx);
+      auto elemC = GetFastU(ctx);
+      TokenDrop(ctx, Core::TOK_ParenC, "')'");
+
+      return {std::move(elemT), elemC};
+   }
+
+   //
+   // GetType_Assoc
+   //
+   IR::Type_Assoc GetType_Assoc(ParserCtx const &ctx)
+   {
+      if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Assoc))
+         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Assoc", false);
+
+      std::vector<IR::TypeAssoc> assoc;
+
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+
+      while(!ctx.in.drop(Core::TOK_ParenC))
+      {
+         auto type = GetType(ctx);
+         auto name = GetString(ctx);
+         auto addr = GetFastU(ctx);
+
+         assoc.emplace_back(std::move(type), name, addr);
       }
 
-      //
-      // GetType_Array
-      //
-      IR::Type_Array GetType_Array(ParserCtx const &ctx)
-      {
-         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Array))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Array", false);
+      return {{Core::Move, assoc.begin(), assoc.end()}};
+   }
 
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
-         auto elemT = GetType(ctx);
-         auto elemC = GetFastU(ctx);
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+   //
+   // GetType_DJump
+   //
+   IR::Type_DJump GetType_DJump(ParserCtx const &ctx)
+   {
+      if(!ctx.in.drop(Core::TOK_Identi, Core::STR_DJump))
+         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_DJump", false);
 
-         return {std::move(elemT), elemC};
-      }
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-      //
-      // GetType_Assoc
-      //
-      IR::Type_Assoc GetType_Assoc(ParserCtx const &ctx)
-      {
-         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Assoc))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Assoc", false);
+      return {};
+   }
 
-         std::vector<IR::TypeAssoc> assoc;
+   //
+   // GetType_Empty
+   //
+   IR::Type_Empty GetType_Empty(ParserCtx const &ctx)
+   {
+      if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Empty))
+         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Empty", false);
 
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-         while(!ctx.in.drop(Core::TOK_ParenC))
-         {
-            auto type = GetType(ctx);
-            auto name = GetString(ctx);
-            auto addr = GetFastU(ctx);
+      return {};
+   }
 
-            assoc.emplace_back(std::move(type), name, addr);
-         }
+   //
+   // GetType_Fixed
+   //
+   IR::Type_Fixed GetType_Fixed(ParserCtx const &ctx)
+   {
+      if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Fixed))
+         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Fixed", false);
 
-         return {{Core::Move, assoc.begin(), assoc.end()}};
-      }
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      auto bitsI = GetFastU(ctx);
+      auto bitsF = GetFastU(ctx);
+      bool bitsS = GetFastU(ctx);
+      bool satur = GetFastU(ctx);
+      TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-      //
-      // GetType_DJump
-      //
-      IR::Type_DJump GetType_DJump(ParserCtx const &ctx)
-      {
-         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_DJump))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_DJump", false);
+      return {bitsI, bitsF, bitsS, satur};
+   }
 
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+   //
+   // GetType_Float
+   //
+   IR::Type_Float GetType_Float(ParserCtx const &ctx)
+   {
+      if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Float))
+         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Float", false);
 
-         return {};
-      }
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      auto bitsI = GetFastU(ctx);
+      auto bitsF = GetFastU(ctx);
+      bool bitsS = GetFastU(ctx);
+      bool satur = GetFastU(ctx);
+      TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-      //
-      // GetType_Empty
-      //
-      IR::Type_Empty GetType_Empty(ParserCtx const &ctx)
-      {
-         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Empty))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Empty", false);
+      return {bitsI, bitsF, bitsS, satur};
+   }
 
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+   //
+   // GetType_Funct
+   //
+   IR::Type_Funct GetType_Funct(ParserCtx const &ctx)
+   {
+      if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Funct))
+         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Funct", false);
 
-         return {};
-      }
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      auto callT = GetCallType(ctx);
+      TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-      //
-      // GetType_Fixed
-      //
-      IR::Type_Fixed GetType_Fixed(ParserCtx const &ctx)
-      {
-         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Fixed))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Fixed", false);
+      return {callT};
+   }
 
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
-         auto bitsI = GetFastU(ctx);
-         auto bitsF = GetFastU(ctx);
-         bool bitsS = GetFastU(ctx);
-         bool satur = GetFastU(ctx);
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+   //
+   // GetType_Point
+   //
+   IR::Type_Point GetType_Point(ParserCtx const &ctx)
+   {
+      if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Point))
+         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Point", false);
 
-         return {bitsI, bitsF, bitsS, satur};
-      }
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      auto addrB = GetAddrBase(ctx);
+      auto addrN = GetString(ctx);
+      auto addrS = GetFastU(ctx);
+      auto addrW = GetFastU(ctx);
+      TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-      //
-      // GetType_Float
-      //
-      IR::Type_Float GetType_Float(ParserCtx const &ctx)
-      {
-         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Float))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Float", false);
+      return {addrB, addrN, addrS, addrW};
+   }
 
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
-         auto bitsI = GetFastU(ctx);
-         auto bitsF = GetFastU(ctx);
-         bool bitsS = GetFastU(ctx);
-         bool satur = GetFastU(ctx);
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+   //
+   // GetType_StrEn
+   //
+   IR::Type_StrEn GetType_StrEn(ParserCtx const &ctx)
+   {
+      if(!ctx.in.drop(Core::TOK_Identi, Core::STR_StrEn))
+         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_StrEn", false);
 
-         return {bitsI, bitsF, bitsS, satur};
-      }
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
+      TokenDrop(ctx, Core::TOK_ParenC, "')'");
 
-      //
-      // GetType_Funct
-      //
-      IR::Type_Funct GetType_Funct(ParserCtx const &ctx)
-      {
-         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Funct))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Funct", false);
+      return {};
+   }
 
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
-         auto callT = GetCallType(ctx);
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+   //
+   // GetType_Tuple
+   //
+   IR::Type_Tuple GetType_Tuple(ParserCtx const &ctx)
+   {
+      if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Tuple))
+         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Tuple", false);
 
-         return {callT};
-      }
+      std::vector<IR::Type> typev;
 
-      //
-      // GetType_Point
-      //
-      IR::Type_Point GetType_Point(ParserCtx const &ctx)
-      {
-         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Point))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Point", false);
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
 
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
-         auto addrB = GetAddrBase(ctx);
-         auto addrN = GetString(ctx);
-         auto addrS = GetFastU(ctx);
-         auto addrW = GetFastU(ctx);
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+      while(!ctx.in.drop(Core::TOK_ParenC))
+         typev.emplace_back(GetType(ctx));
 
-         return {addrB, addrN, addrS, addrW};
-      }
+      return {{Core::Move, typev.begin(), typev.end()}};
+   }
 
-      //
-      // GetType_StrEn
-      //
-      IR::Type_StrEn GetType_StrEn(ParserCtx const &ctx)
-      {
-         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_StrEn))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_StrEn", false);
+   //
+   // GetType_Union
+   //
+   IR::Type_Union GetType_Union(ParserCtx const &ctx)
+   {
+      if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Union))
+         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Union", false);
 
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
-         TokenDrop(ctx, Core::TOK_ParenC, "')'");
+      std::vector<IR::Type> typev;
 
-         return {};
-      }
+      TokenDrop(ctx, Core::TOK_ParenO, "'('");
 
-      //
-      // GetType_Tuple
-      //
-      IR::Type_Tuple GetType_Tuple(ParserCtx const &ctx)
-      {
-         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Tuple))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Tuple", false);
+      while(!ctx.in.drop(Core::TOK_ParenC))
+         typev.emplace_back(GetType(ctx));
 
-         std::vector<IR::Type> typev;
-
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
-
-         while(!ctx.in.drop(Core::TOK_ParenC))
-            typev.emplace_back(GetType(ctx));
-
-         return {{Core::Move, typev.begin(), typev.end()}};
-      }
-
-      //
-      // GetType_Union
-      //
-      IR::Type_Union GetType_Union(ParserCtx const &ctx)
-      {
-         if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Union))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Union", false);
-
-         std::vector<IR::Type> typev;
-
-         TokenDrop(ctx, Core::TOK_ParenO, "'('");
-
-         while(!ctx.in.drop(Core::TOK_ParenC))
-            typev.emplace_back(GetType(ctx));
-
-         return {{Core::Move, typev.begin(), typev.end()}};
-      }
+      return {{Core::Move, typev.begin(), typev.end()}};
    }
 }
 
