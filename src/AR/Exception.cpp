@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,22 +19,19 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::AR
 {
-   namespace AR
+   //
+   // ReadError::genMsg
+   //
+   void ReadError::genMsg() const
    {
-      //
-      // ReadError::genMsg
-      //
-      void ReadError::genMsg() const
-      {
-         std::ostringstream oss;
-         oss << "ERROR: ";
-         if(pos.file) oss << pos << ": ";
-         oss << err;
-         auto const &tmp = oss.str();
-         msg = Core::StrDup(tmp.data(), tmp.size());
-      }
+      std::ostringstream oss;
+      oss << "ERROR: ";
+      if(pos.file) oss << pos << ": ";
+      oss << err;
+      auto const &tmp = oss.str();
+      msg = Core::StrDup(tmp.data(), tmp.size());
    }
 }
 

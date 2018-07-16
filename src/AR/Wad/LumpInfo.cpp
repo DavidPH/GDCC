@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,27 +20,21 @@
 // Extern Objects                                                             |
 //
 
-namespace GDCC
+namespace GDCC::AR::Wad
 {
-   namespace AR
-   {
-      namespace Wad
-      {
-         extern Core::String const NameBEHAVIOR{"BEHAVIOR"};
-         extern Core::String const NameBLOCKMAP{"BLOCKMAP"};
-         extern Core::String const NameENDMAP  {"ENDMAP"};
-         extern Core::String const NameLINEDEFS{"LINEDEFS"};
-         extern Core::String const NameNODES   {"NODES"};
-         extern Core::String const NameREJECT  {"REJECT"};
-         extern Core::String const NameSECTORS {"SECTORS"};
-         extern Core::String const NameSEGS    {"SEGS"};
-         extern Core::String const NameSIDEDEFS{"SIDEDEFS"};
-         extern Core::String const NameSSECTORS{"SSECTORS"};
-         extern Core::String const NameTEXTMAP {"TEXTMAP"};
-         extern Core::String const NameTHINGS  {"THINGS"};
-         extern Core::String const NameVERTEXES{"VERTEXES"};
-      }
-   }
+   extern Core::String const NameBEHAVIOR{"BEHAVIOR"};
+   extern Core::String const NameBLOCKMAP{"BLOCKMAP"};
+   extern Core::String const NameENDMAP  {"ENDMAP"};
+   extern Core::String const NameLINEDEFS{"LINEDEFS"};
+   extern Core::String const NameNODES   {"NODES"};
+   extern Core::String const NameREJECT  {"REJECT"};
+   extern Core::String const NameSECTORS {"SECTORS"};
+   extern Core::String const NameSEGS    {"SEGS"};
+   extern Core::String const NameSIDEDEFS{"SIDEDEFS"};
+   extern Core::String const NameSSECTORS{"SSECTORS"};
+   extern Core::String const NameTEXTMAP {"TEXTMAP"};
+   extern Core::String const NameTHINGS  {"THINGS"};
+   extern Core::String const NameVERTEXES{"VERTEXES"};
 }
 
 
@@ -48,21 +42,15 @@ namespace GDCC
 // Static Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::AR::Wad
 {
-   namespace AR
+   //
+   // CheckLumpType
+   //
+   template<std::size_t N>
+   static bool CheckLumpType(char const *data, char const (&type)[N])
    {
-      namespace Wad
-      {
-         //
-         // CheckLumpType
-         //
-         template<std::size_t N>
-         static bool CheckLumpType(char const *data, char const (&type)[N])
-         {
-            return std::equal(type, type + (N-1), data);
-         }
-      }
+      return std::equal(type, type + (N-1), data);
    }
 }
 
@@ -71,149 +59,143 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::AR::Wad
 {
-   namespace AR
+   //
+   // GetFileFromName
+   //
+   Core::String GetFileFromName(Core::String name)
    {
-      namespace Wad
+      // Translate \ to ^.
+      if(std::find(name.begin(), name.end(), '\\'))
       {
-         //
-         // GetFileFromName
-         //
-         Core::String GetFileFromName(Core::String name)
-         {
-            // Translate \ to ^.
-            if(std::find(name.begin(), name.end(), '\\'))
-            {
-               std::unique_ptr<char[]> tmp{new char[name.size()]};
+         std::unique_ptr<char[]> tmp{new char[name.size()]};
 
-               auto itr = name.begin(), end = name.end();
-               for(char *out = tmp.get(); itr != end; ++itr, ++out)
-                  *out = *itr == '\\' ? '^' : *itr;
+         auto itr = name.begin(), end = name.end();
+         for(char *out = tmp.get(); itr != end; ++itr, ++out)
+            *out = *itr == '\\' ? '^' : *itr;
 
-               return {&tmp[0], &tmp[name.size()]};
-            }
-            else
-               return name;
-         }
+         return {&tmp[0], &tmp[name.size()]};
+      }
+      else
+         return name;
+   }
 
-         //
-         // GetLumpInfo
-         //
-         LumpInfo GetLumpInfo(char const *data)
-         {
-            LumpInfo info;
+   //
+   // GetLumpInfo
+   //
+   LumpInfo GetLumpInfo(char const *data)
+   {
+      LumpInfo info;
 
-            // Get type.
-            if(data[0] == ':')
-               info.type = LumpType::File, data += 1;
+      // Get type.
+      if(data[0] == ':')
+         info.type = LumpType::File, data += 1;
 
-            else if(CheckLumpType(data, "data:"))
-               info.type = LumpType::Data, data += 5;
+      else if(CheckLumpType(data, "data:"))
+         info.type = LumpType::Data, data += 5;
 
-            else if(CheckLumpType(data, "file:"))
-               info.type = LumpType::File, data += 5;
+      else if(CheckLumpType(data, "file:"))
+         info.type = LumpType::File, data += 5;
 
-            else if(CheckLumpType(data, "wad:"))
-               info.type = LumpType::Wad, data += 4;
+      else if(CheckLumpType(data, "wad:"))
+         info.type = LumpType::Wad, data += 4;
 
-            else
-               info.type = LumpType::File;
+      else
+         info.type = LumpType::File;
 
-            // Get name.
-            if(data[0] == '=')
-            {
-               info.name = nullptr;
-               data     += 1;
-            }
-            else if(auto eq = std::strchr(data, '='))
-            {
-               // TODO: Process path.
+      // Get name.
+      if(data[0] == '=')
+      {
+         info.name = nullptr;
+         data     += 1;
+      }
+      else if(auto eq = std::strchr(data, '='))
+      {
+         // TODO: Process path.
 
-               info.name = {data, eq};
-               data      = eq + 1;
-            }
-            else
-               info.name = nullptr;
+         info.name = {data, eq};
+         data      = eq + 1;
+      }
+      else
+         info.name = nullptr;
 
-            // Data is the remainder of the string.
-            info.data = data;
+      // Data is the remainder of the string.
+      info.data = data;
 
-            return info;
-         }
+      return info;
+   }
 
-         //
-         // GetNameEnd
-         //
-         std::pair<Core::String, Core::String> GetNameEnd(Core::String name)
-         {
-            char s[7]{name[0], name[1], '_', 'E', 'N', 'D'};
+   //
+   // GetNameEnd
+   //
+   std::pair<Core::String, Core::String> GetNameEnd(Core::String name)
+   {
+      char s[7]{name[0], name[1], '_', 'E', 'N', 'D'};
 
-            if(s[1] == '_')
-               s[1] = s[0];
+      if(s[1] == '_')
+         s[1] = s[0];
 
-            // FIXME: First should always be the canonical name.
-            if(s[1] == s[0])
-               return {s, s + 1};
-            else
-               return {s, nullptr};
-         }
+      // FIXME: First should always be the canonical name.
+      if(s[1] == s[0])
+         return {s, s + 1};
+      else
+         return {s, nullptr};
+   }
 
-         //
-         // GetNameFromFile
-         //
-         Core::String GetNameFromFile(char const *filename)
-         {
-            char const *end = std::strchr(filename, '.');
-            if(!end) end = filename + std::strlen(filename);
-            std::size_t len = end - filename;
+   //
+   // GetNameFromFile
+   //
+   Core::String GetNameFromFile(char const *filename)
+   {
+      char const *end = std::strchr(filename, '.');
+      if(!end) end = filename + std::strlen(filename);
+      std::size_t len = end - filename;
 
-            // Translate ^ to \.
-            if(std::find(filename, end, '^'))
-            {
-               std::unique_ptr<char[]> tmp{new char[len]};
+      // Translate ^ to \.
+      if(std::find(filename, end, '^'))
+      {
+         std::unique_ptr<char[]> tmp{new char[len]};
 
-               char const *itr = filename;
-               for(char *out = tmp.get(); itr != end; ++itr, ++out)
-                  *out = *itr == '^' ? '\\' : *itr;
+         char const *itr = filename;
+         for(char *out = tmp.get(); itr != end; ++itr, ++out)
+            *out = *itr == '^' ? '\\' : *itr;
 
-               return {&tmp[0], &tmp[len]};
-            }
-            else
-               return {filename, end};
-         }
+         return {&tmp[0], &tmp[len]};
+      }
+      else
+         return {filename, end};
+   }
 
-         //
-         // IsNameBinMap
-         //
-         bool IsNameBinMap(Core::String name)
-         {
-            return
-               name == NameTHINGS   ||
-               name == NameLINEDEFS ||
-               name == NameSIDEDEFS ||
-               name == NameVERTEXES ||
-               name == NameSEGS     ||
-               name == NameSSECTORS ||
-               name == NameNODES    ||
-               name == NameSECTORS  ||
-               name == NameREJECT   ||
-               name == NameBLOCKMAP ||
-               name == NameBEHAVIOR;
-         }
+   //
+   // IsNameBinMap
+   //
+   bool IsNameBinMap(Core::String name)
+   {
+      return
+         name == NameTHINGS   ||
+         name == NameLINEDEFS ||
+         name == NameSIDEDEFS ||
+         name == NameVERTEXES ||
+         name == NameSEGS     ||
+         name == NameSSECTORS ||
+         name == NameNODES    ||
+         name == NameSECTORS  ||
+         name == NameREJECT   ||
+         name == NameBLOCKMAP ||
+         name == NameBEHAVIOR;
+   }
 
-         //
-         // IsNameStart
-         //
-         bool IsNameStart(Core::String name)
-         {
-            switch(name.size())
-            {
-            case 7: return std::equal(name.begin() + 1, name.end(), "_START");
-            case 8: return std::equal(name.begin() + 2, name.end(), "_START");
-            default: return false;
-            }
-         }
+   //
+   // IsNameStart
+   //
+   bool IsNameStart(Core::String name)
+   {
+      switch(name.size())
+      {
+      case 7: return std::equal(name.begin() + 1, name.end(), "_START");
+      case 8: return std::equal(name.begin() + 2, name.end(), "_START");
+      default: return false;
       }
    }
 }

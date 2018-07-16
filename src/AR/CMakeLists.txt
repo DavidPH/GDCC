@@ -24,6 +24,7 @@ add_library(gdcc-ar-lib ${GDCC_SHARED_DECL}
    Exception.cpp
 
    ../../inc/AR/Exception.hpp
+   ../../inc/AR/Types.hpp
 )
 
 target_link_libraries(gdcc-ar-lib gdcc-core-lib)

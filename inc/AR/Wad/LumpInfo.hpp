@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016 David Hill
+// Copyright (C) 2016-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,34 +22,28 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::AR::Wad
 {
-   namespace AR
+   //
+   // LumpType
+   //
+   enum class LumpType
    {
-      namespace Wad
-      {
-         //
-         // LumpType
-         //
-         enum class LumpType
-         {
-            Data,
-            File,
-            Wad,
-         };
+      Data,
+      File,
+      Wad,
+   };
 
-         //
-         // LumpInfo
-         //
-         class LumpInfo
-         {
-         public:
-            char const  *data;
-            Core::String name;
-            LumpType     type;
-         };
-      }
-   }
+   //
+   // LumpInfo
+   //
+   class LumpInfo
+   {
+   public:
+      char const  *data;
+      Core::String name;
+      LumpType     type;
+   };
 }
 
 
@@ -57,27 +51,21 @@ namespace GDCC
 // Extern Objects                                                             |
 //
 
-namespace GDCC
+namespace GDCC::AR::Wad
 {
-   namespace AR
-   {
-      namespace Wad
-      {
-         extern Core::String const NameBEHAVIOR;
-         extern Core::String const NameBLOCKMAP;
-         extern Core::String const NameENDMAP;
-         extern Core::String const NameLINEDEFS;
-         extern Core::String const NameNODES;
-         extern Core::String const NameREJECT;
-         extern Core::String const NameSECTORS;
-         extern Core::String const NameSEGS;
-         extern Core::String const NameSIDEDEFS;
-         extern Core::String const NameSSECTORS;
-         extern Core::String const NameTEXTMAP;
-         extern Core::String const NameTHINGS;
-         extern Core::String const NameVERTEXES;
-      }
-   }
+   extern Core::String const NameBEHAVIOR;
+   extern Core::String const NameBLOCKMAP;
+   extern Core::String const NameENDMAP;
+   extern Core::String const NameLINEDEFS;
+   extern Core::String const NameNODES;
+   extern Core::String const NameREJECT;
+   extern Core::String const NameSECTORS;
+   extern Core::String const NameSEGS;
+   extern Core::String const NameSIDEDEFS;
+   extern Core::String const NameSSECTORS;
+   extern Core::String const NameTEXTMAP;
+   extern Core::String const NameTHINGS;
+   extern Core::String const NameVERTEXES;
 }
 
 
@@ -85,24 +73,18 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::AR::Wad
 {
-   namespace AR
-   {
-      namespace Wad
-      {
-         Core::String GetFileFromName(Core::String name);
+   Core::String GetFileFromName(Core::String name);
 
-         LumpInfo GetLumpInfo(char const *data);
+   LumpInfo GetLumpInfo(char const *data);
 
-         std::pair<Core::String, Core::String> GetNameEnd(Core::String name);
+   std::pair<Core::String, Core::String> GetNameEnd(Core::String name);
 
-         Core::String GetNameFromFile(char const *filename);
+   Core::String GetNameFromFile(char const *filename);
 
-         bool IsNameBinMap(Core::String name);
-         bool IsNameStart(Core::String name);
-      }
-   }
+   bool IsNameBinMap(Core::String name);
+   bool IsNameStart(Core::String name);
 }
 
 #endif//GDCC__AR__Wad__LumpInfo_H__

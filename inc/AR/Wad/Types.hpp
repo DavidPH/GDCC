@@ -1,43 +1,36 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2018 David Hill
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// Archive exceptions.
+// Common typedefs and class forward declarations.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__AR__Exception_H__
-#define GDCC__AR__Exception_H__
+#ifndef GDCC__AR__Types_H__
+#define GDCC__AR__Types_H__
 
-#include "../AR/Types.hpp"
-
-#include "../Core/Exception.hpp"
+#include "../../AR/Types.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-namespace GDCC::AR
+namespace GDCC::AR::Wad
 {
-   //
-   // ReadError
-   //
-   class ReadError : public Core::Exception
-   {
-   public:
-      ReadError(char const *err_) noexcept : err{err_} {}
+   enum class LumpType;
 
-      virtual void genMsg() const;
-
-   private:
-      char const *err;
-   };
+   class Lump;
+   class Lump_Data;
+   class Lump_Empty;
+   class Lump_File;
+   class Lump_FilePart;
+   class LumpInfo;
 }
 
-#endif//GDCC__AR__Exception_H__
+#endif//GDCC__AR__Types_H__
 

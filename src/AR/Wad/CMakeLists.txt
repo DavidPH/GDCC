@@ -27,6 +27,7 @@ add_library(gdcc-ar-wad-lib ${GDCC_SHARED_DECL}
 
    ../../../inc/AR/Wad/Lump.hpp
    ../../../inc/AR/Wad/LumpInfo.hpp
+   ../../../inc/AR/Wad/Types.hpp
    ../../../inc/AR/Wad/Wad.hpp
    ../../../inc/AR/Wad/WadHeader.hpp
 )
