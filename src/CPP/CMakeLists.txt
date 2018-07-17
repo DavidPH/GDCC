@@ -46,8 +46,9 @@ add_library(gdcc-cpp-lib ${GDCC_SHARED_DECL}
    ../../inc/CPP/Pragma.hpp
    ../../inc/CPP/PragmaDTBuf.hpp
    ../../inc/CPP/StringTBuf.hpp
-   ../../inc/CPP/TrigraphBuf.hpp
    ../../inc/CPP/TStream.hpp
+   ../../inc/CPP/TrigraphBuf.hpp
+   ../../inc/CPP/Types.hpp
 )
 
 ##

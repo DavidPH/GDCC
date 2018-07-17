@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,80 +28,69 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::CPP
 {
-   namespace Core
+   //
+   // IStreamHeader
+   //
+   class IStreamHeader : public std::istream
    {
-      class Token;
-   }
+   public:
+      IStreamHeader(std::streambuf *buf) : std::istream{buf} {}
 
-   namespace CPP
+      virtual void setNeedHeader() = 0;
+
+
+      static bool GetHeader(std::istream &in, Core::Token &out);
+   };
+
+   //
+   // IStream
+   //
+   class IStream : public IStreamHeader
    {
-      //
-      // IStreamHeader
-      //
-      class IStreamHeader : public std::istream
-      {
-      public:
-         IStreamHeader(std::streambuf *buf) : std::istream{buf} {}
+   public:
+      IStream(std::streambuf &buf, Core::String file, std::size_t line = 1) :
+         IStreamHeader{&cbuf}, needHeader{false}, lbuf{buf},
+         obuf{lbuf, {file, line, 1}}, tbuf{obuf}, ebuf{tbuf}, cbuf{ebuf} {}
 
-         virtual void setNeedHeader() = 0;
+      void disableComments() {rdbuf(&ebuf);}
 
+      void enableComments() {rdbuf(&cbuf);}
 
-         static bool GetHeader(std::istream &in, Core::Token &out);
-      };
+      Core::Origin getOrigin() const {return obuf.getOrigin();}
 
-      //
-      // IStream
-      //
-      class IStream : public IStreamHeader
-      {
-      public:
-         IStream(std::streambuf &buf, Core::String file, std::size_t line = 1) :
-            IStreamHeader{&cbuf}, needHeader{false}, lbuf{buf},
-            obuf{lbuf, {file, line, 1}}, tbuf{obuf}, ebuf{tbuf}, cbuf{ebuf} {}
+      using CommentsHold = Core::FeatureHold<IStream,
+         &IStream::disableComments, &IStream::enableComments>;
 
-         void disableComments() {rdbuf(&ebuf);}
+      CommentsHold holdComments() {return CommentsHold(*this);}
 
-         void enableComments() {rdbuf(&cbuf);}
+      virtual void setNeedHeader() {needHeader = true;}
 
-         Core::Origin getOrigin() const {return obuf.getOrigin();}
+      bool needHeader : 1;
 
-         using CommentsHold = Core::FeatureHold<IStream,
-            &IStream::disableComments, &IStream::enableComments>;
+   protected:
+      using LBuf = Core::LineTermBuf<8>;
+      using OBuf = Core::OriginBuf<8, 2>;
+      using TBuf = TrigraphBuf<8>;
+      using EBuf = Core::StripEscapeBuf<8, 1, 1, char, '\n'>;
+      using CBuf = Core::CCommentBuf<8>;
 
-         CommentsHold holdComments() {return CommentsHold(*this);}
-
-         virtual void setNeedHeader() {needHeader = true;}
-
-         bool needHeader : 1;
-
-      protected:
-         using LBuf = Core::LineTermBuf<8>;
-         using OBuf = Core::OriginBuf<8, 2>;
-         using TBuf = TrigraphBuf<8>;
-         using EBuf = Core::StripEscapeBuf<8, 1, 1, char, '\n'>;
-         using CBuf = Core::CCommentBuf<8>;
-
-         LBuf lbuf;
-         OBuf obuf;
-         TBuf tbuf;
-         EBuf ebuf;
-         CBuf cbuf;
-      };
-   }
+      LBuf lbuf;
+      OBuf obuf;
+      TBuf tbuf;
+      EBuf ebuf;
+      CBuf cbuf;
+   };
 }
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CPP
 {
-   namespace CPP
-   {
-      IStream &operator >> (IStream &in, Core::Token &out);
-   }
+   IStream &operator >> (IStream &in, Core::Token &out);
 }
 
 #endif//GDCC__CPP__IStream_H__

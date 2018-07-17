@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #ifndef GDCC__CPP__ConcatTBuf_H__
 #define GDCC__CPP__ConcatTBuf_H__
 
+#include "../CPP/Types.hpp"
+
 #include "../Core/TokenBuf.hpp"
 
 #include <vector>
@@ -22,25 +24,22 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::CPP
 {
-   namespace CPP
+   //
+   // ConcatTBuf
+   //
+   class ConcatTBuf : public Core::TokenBuf
    {
-      //
-      // ConcatTBuf
-      //
-      class ConcatTBuf : public Core::TokenBuf
-      {
-      public:
-         ConcatTBuf(Core::TokenBuf &src_) : src(src_) {}
+   public:
+      ConcatTBuf(Core::TokenBuf &src_) : src(src_) {}
 
-      protected:
-         virtual void underflow();
+   protected:
+      virtual void underflow();
 
-         Core::TokenBuf          &src;
-         std::vector<Core::Token> buf;
-      };
-   }
+      Core::TokenBuf          &src;
+      std::vector<Core::Token> buf;
+   };
 }
 
 #endif//GDCC__CPP__ConcatTBuf_H__

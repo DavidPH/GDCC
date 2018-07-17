@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2014 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,61 +16,58 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CPP
 {
-   namespace CPP
+   //
+   // ConcatTBuf::underflow
+   //
+   void ConcatTBuf::underflow()
    {
-      //
-      // ConcatTBuf::underflow
-      //
-      void ConcatTBuf::underflow()
+      if(tptr() != tend()) return;
+
+      buf.clear();
+
+      buf.emplace_back(src.get());
+
+      switch(buf[0].tok)
       {
-         if(tptr() != tend()) return;
-
-         buf.clear();
-
-         buf.emplace_back(src.get());
-
-         switch(buf[0].tok)
+      case Core::TOK_StrIdx:
+      case Core::TOK_StrU08:
+      case Core::TOK_StrU16:
+      case Core::TOK_StrU32:
+      case Core::TOK_StrWid:
+      case Core::TOK_String:
+         for(;;) switch(src.peek().tok)
          {
          case Core::TOK_StrIdx:
          case Core::TOK_StrU08:
          case Core::TOK_StrU16:
          case Core::TOK_StrU32:
          case Core::TOK_StrWid:
+            if(buf[0].tok != Core::TOK_String && buf[0].tok != src.peek().tok)
+               throw Core::ExceptStr(src.peek().pos, "invalid concatenation");
+
+            buf[0].tok = src.peek().tok;
          case Core::TOK_String:
-            for(;;) switch(src.peek().tok)
-            {
-            case Core::TOK_StrIdx:
-            case Core::TOK_StrU08:
-            case Core::TOK_StrU16:
-            case Core::TOK_StrU32:
-            case Core::TOK_StrWid:
-               if(buf[0].tok != Core::TOK_String && buf[0].tok != src.peek().tok)
-                  throw Core::ExceptStr(src.peek().pos, "invalid concatenation");
+            buf[0].str += src.get().str;
+            break;
 
-               buf[0].tok = src.peek().tok;
-            case Core::TOK_String:
-               buf[0].str += src.get().str;
-               break;
+         case Core::TOK_WSpace:
+         case Core::TOK_LnEnd:
+            buf.emplace_back(src.get());
+            break;
 
-            case Core::TOK_WSpace:
-            case Core::TOK_LnEnd:
-               buf.emplace_back(src.get());
-               break;
-
-            default: goto flowed;
-            }
-
-         default: break;
+         default: goto flowed;
          }
 
-      flowed:
-         sett(buf.data(), buf.data(), buf.data() + buf.size());
+      default: break;
       }
+
+   flowed:
+      sett(buf.data(), buf.data(), buf.data() + buf.size());
    }
 }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,51 +13,31 @@
 #ifndef GDCC__CPP__GetExpIR_H__
 #define GDCC__CPP__GetExpIR_H__
 
-
-//----------------------------------------------------------------------------|
-// Types                                                                      |
-//
-
-namespace GDCC
-{
-   namespace Core
-   {
-      template<typename T> class CounterRef;
-      class TokenStream;
-   }
-
-   namespace IR
-   {
-      class Exp;
-   }
-}
+#include "../CPP/Types.hpp"
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CPP
 {
-   namespace CPP
-   {
-      Core::CounterRef<IR::Exp const> GetExpIR_Prim(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_Post(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_Unar(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_Mult(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_Addi(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_Shft(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_Rela(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_Equa(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_BAnd(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_BOrX(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_BOrI(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_LAnd(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_LOrI(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_Cond(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR_Assi(Core::TokenStream &in);
-      Core::CounterRef<IR::Exp const> GetExpIR(Core::TokenStream &in);
-   }
+   Core::CounterRef<IR::Exp const> GetExpIR_Prim(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_Post(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_Unar(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_Mult(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_Addi(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_Shft(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_Rela(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_Equa(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_BAnd(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_BOrX(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_BOrI(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_LAnd(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_LOrI(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_Cond(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR_Assi(Core::TokenStream &in);
+   Core::CounterRef<IR::Exp const> GetExpIR(Core::TokenStream &in);
 }
 
 #endif//GDCC__CPP__GetExpIR_H__

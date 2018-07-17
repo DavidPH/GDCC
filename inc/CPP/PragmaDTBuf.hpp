@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2015 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,59 +21,56 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::CPP
 {
-   namespace CPP
+   //
+   // PragmaDTBuf
+   //
+   class PragmaDTBuf final : public DirectiveTBuf
    {
-      //
-      // PragmaDTBuf
-      //
-      class PragmaDTBuf final : public DirectiveTBuf
-      {
-      public:
-         explicit PragmaDTBuf(Core::TokenBuf &src_, PragmaParserBase &prag_) :
-            DirectiveTBuf{src_}, prag(prag_) {}
+   public:
+      explicit PragmaDTBuf(Core::TokenBuf &src_, PragmaParserBase &prag_) :
+         DirectiveTBuf{src_}, prag(prag_) {}
 
-      protected:
-         virtual bool directive(Core::Token const &tok);
+   protected:
+      virtual bool directive(Core::Token const &tok);
 
-         PragmaParserBase &prag;
-      };
+      PragmaParserBase &prag;
+   };
 
-      //
-      // PragmaPushTBuf
-      //
-      class PragmaPushTBuf final : public Core::TokenBuf
-      {
-      public:
-         explicit PragmaPushTBuf(Core::TokenBuf &src_, PragmaDataBase &prag_) :
-            src(src_), prag(prag_) {sett(buf, buf, buf);}
+   //
+   // PragmaPushTBuf
+   //
+   class PragmaPushTBuf final : public Core::TokenBuf
+   {
+   public:
+      explicit PragmaPushTBuf(Core::TokenBuf &src_, PragmaDataBase &prag_) :
+         src(src_), prag(prag_) {sett(buf, buf, buf);}
 
-      protected:
-         virtual void underflow();
+   protected:
+      virtual void underflow();
 
-         Core::TokenBuf &src;
-         PragmaDataBase &prag;
-         Core::Token     buf[1];
-      };
+      Core::TokenBuf &src;
+      PragmaDataBase &prag;
+      Core::Token     buf[1];
+   };
 
-      //
-      // PragmaTBuf
-      //
-      class PragmaTBuf final : public Core::TokenBuf
-      {
-      public:
-         explicit PragmaTBuf(Core::TokenBuf &src_, PragmaParserBase &prag_) :
-            src(src_), prag(prag_) {sett(buf, buf, buf);}
+   //
+   // PragmaTBuf
+   //
+   class PragmaTBuf final : public Core::TokenBuf
+   {
+   public:
+      explicit PragmaTBuf(Core::TokenBuf &src_, PragmaParserBase &prag_) :
+         src(src_), prag(prag_) {sett(buf, buf, buf);}
 
-      protected:
-         virtual void underflow();
+   protected:
+      virtual void underflow();
 
-         Core::TokenBuf   &src;
-         PragmaParserBase &prag;
-         Core::Token       buf[1];
-      };
-   }
+      Core::TokenBuf   &src;
+      PragmaParserBase &prag;
+      Core::Token       buf[1];
+   };
 }
 
 #endif//GDCC__CPP__PragmaDTBuf_H__
