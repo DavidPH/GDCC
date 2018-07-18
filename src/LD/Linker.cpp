@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2017 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -40,36 +40,33 @@
 // Options                                                                    |
 //
 
-namespace GDCC
+namespace GDCC::LD
 {
-   namespace LD
+   //
+   // -c, --ir-output
+   //
+   static Option::Bool OutputIROpt
    {
-      //
-      // -c, --ir-output
-      //
-      static Option::Bool OutputIROpt
-      {
-         &Core::GetOptionList(), Option::Base::Info()
-            .setName("ir-output").setName('c')
-            .setGroup("output")
-            .setDescS("Generate an IR file instead of bytecode."),
+      &Core::GetOptionList(), Option::Base::Info()
+         .setName("ir-output").setName('c')
+         .setGroup("output")
+         .setDescS("Generate an IR file instead of bytecode."),
 
-         &OutputIR
-      };
+      &OutputIR
+   };
 
-      //
-      // -l, --library
-      //
-      static Option::CStrV Libraries
-      {
-         &Core::GetOptionList(), Option::Base::Info()
-            .setName("library").setName('l')
-            .setGroup("output")
-            .setDescS("Adds a library name to import at runtime."),
+   //
+   // -l, --library
+   //
+   static Option::CStrV Libraries
+   {
+      &Core::GetOptionList(), Option::Base::Info()
+         .setName("library").setName('l')
+         .setGroup("output")
+         .setDescS("Adds a library name to import at runtime."),
 
-         1
-      };
-   }
+      1
+   };
 }
 
 
@@ -77,12 +74,9 @@ namespace GDCC
 // Extern Obects                                                              |
 //
 
-namespace GDCC
+namespace GDCC::LD
 {
-   namespace LD
-   {
-      bool OutputIR = false;
-   }
+   bool OutputIR = false;
 }
 
 
@@ -90,103 +84,100 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::LD
 {
-   namespace LD
+   //
+   // GetBytecodeInfo
+   //
+   std::unique_ptr<BC::Info> GetBytecodeInfo(Platform::Target target,
+      Platform::Format)
    {
-      //
-      // GetBytecodeInfo
-      //
-      std::unique_ptr<BC::Info> GetBytecodeInfo(Platform::Target target,
-         Platform::Format)
+      switch(target)
       {
-         switch(target)
-         {
-         case Platform::Target::None:
-            return nullptr;
-
-         case Platform::Target::Doominati:
-            #if GDCC_BC_DGE
-            return std::unique_ptr<BC::Info>{new BC::DGE::Info};
-            #else
-            return nullptr;
-            #endif
-
-         case Platform::Target::ZDoom:
-         case Platform::Target::Zandronum:
-            #if GDCC_BC_ZDACS
-            return std::unique_ptr<BC::Info>{new BC::ZDACS::Info};
-            #else
-            return nullptr;
-            #endif
-         }
-
+      case Platform::Target::None:
          return nullptr;
+
+      case Platform::Target::Doominati:
+         #if GDCC_BC_DGE
+         return std::unique_ptr<BC::Info>{new BC::DGE::Info};
+         #else
+         return nullptr;
+         #endif
+
+      case Platform::Target::ZDoom:
+      case Platform::Target::Zandronum:
+         #if GDCC_BC_ZDACS
+         return std::unique_ptr<BC::Info>{new BC::ZDACS::Info};
+         #else
+         return nullptr;
+         #endif
       }
 
-      //
-      // Link
-      //
-      void Link(IR::Program &prog, char const *outName)
+      return nullptr;
+   }
+
+   //
+   // Link
+   //
+   void Link(IR::Program &prog, char const *outName)
+   {
+      // Add libraries.
+      for(auto const &lib : Libraries)
+         prog.getImport(lib);
+
+      auto buf = Core::FileOpenStream(outName, std::ios_base::out | std::ios_base::binary);
+      std::ostream out{buf.get()};
+
+      auto info = GetBytecodeInfo(Platform::TargetCur, Platform::FormatCur);
+
+      if(OutputIR)
+         PutIR(out, prog, info.get());
+      else
       {
-         // Add libraries.
-         for(auto const &lib : Libraries)
-            prog.getImport(lib);
+         PutBytecode(out, prog, info.get());
 
-         auto buf = Core::FileOpenStream(outName, std::ios_base::out | std::ios_base::binary);
-         std::ostream out{buf.get()};
-
-         auto info = GetBytecodeInfo(Platform::TargetCur, Platform::FormatCur);
-
-         if(OutputIR)
-            PutIR(out, prog, info.get());
-         else
-         {
-            PutBytecode(out, prog, info.get());
-
-            if(info)
-               info->putExtra(prog);
-         }
+         if(info)
+            info->putExtra(prog);
       }
+   }
 
-      //
-      // ProcessIR
-      //
-      void ProcessIR(IR::Program &prog, BC::Info *info)
+   //
+   // ProcessIR
+   //
+   void ProcessIR(IR::Program &prog, BC::Info *info)
+   {
+      if(!info) return;
+
+      info->pre(prog);
+      info->opt(prog);
+      info->tr(prog);
+      info->opt(prog);
+      info->tr(prog);
+   }
+
+   //
+   // PutBytecode
+   //
+   void PutBytecode(std::ostream &out, IR::Program &prog, BC::Info *info)
+   {
+      if(!info)
       {
-         if(!info) return;
-
-         info->pre(prog);
-         info->opt(prog);
-         info->tr(prog);
-         info->opt(prog);
-         info->tr(prog);
+         std::cerr << "invalid target\n";
+         throw EXIT_FAILURE;
       }
 
-      //
-      // PutBytecode
-      //
-      void PutBytecode(std::ostream &out, IR::Program &prog, BC::Info *info)
-      {
-         if(!info)
-         {
-            std::cerr << "invalid target\n";
-            throw EXIT_FAILURE;
-         }
+      ProcessIR(prog, info);
 
-         ProcessIR(prog, info);
+      info->gen(prog);
+      info->put(prog, out);
+   }
 
-         info->gen(prog);
-         info->put(prog, out);
-      }
-
-      //
-      // PutIR
-      //
-      void PutIR(std::ostream &out, IR::Program &prog, BC::Info *)
-      {
-         IR::OArchive(out).putHeader() << prog;
-      }
+   //
+   // PutIR
+   //
+   void PutIR(std::ostream &out, IR::Program &prog, BC::Info *)
+   {
+      IR::OArchive(out).putHeader() << prog;
    }
 }
 

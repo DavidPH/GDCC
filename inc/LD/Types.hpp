@@ -10,29 +10,19 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__Platform__Types_H__
-#define GDCC__Platform__Types_H__
+#ifndef GDCC__LD__Types_H__
+#define GDCC__LD__Types_H__
 
-#include "../Core/Types.hpp"
+#include "../BC/Types.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-namespace GDCC::IR
+namespace GDCC::LD
 {
-   enum class AddrBase;
-   enum class CallType;
-
-   class AddrSpace;
 }
 
-namespace GDCC::Platform
-{
-   enum class Format;
-   enum class Target;
-}
-
-#endif//GDCC__Platform__Types_H__
+#endif//GDCC__LD__Types_H__
 
