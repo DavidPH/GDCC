@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,41 +22,38 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Exp_Arg
+   //
+   class Exp_Arg : public Exp
    {
-      //
-      // Exp_Arg
-      //
-      class Exp_Arg : public Exp
-      {
-         GDCC_Core_CounterPreamble(GDCC::SR::Exp_Arg, GDCC::SR::Exp);
+      GDCC_Core_CounterPreamble(GDCC::SR::Exp_Arg, GDCC::SR::Exp);
 
-      public:
-         Arg const arg;
+   public:
+      Arg const arg;
 
 
-         friend Exp::CRef ExpCreate_Arg(Arg const &arg, Core::Origin pos);
+      friend Exp::CRef ExpCreate_Arg(Arg const &arg, Core::Origin pos);
 
-      protected:
-         Exp_Arg(Arg const &arg, Core::Origin pos);
+   protected:
+      Exp_Arg(Arg const &arg, Core::Origin pos);
 
-         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
+      virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 
-         virtual Arg v_getArg() const;
+      virtual Arg v_getArg() const;
 
-         virtual IRExpCRef v_getIRExp() const;
+      virtual IRExpCRef v_getIRExp() const;
 
-         virtual TypeCRef v_getType() const;
+      virtual TypeCRef v_getType() const;
 
-         virtual bool v_isEffect() const;
+      virtual bool v_isEffect() const;
 
-         virtual bool v_isIRExp() const;
+      virtual bool v_isIRExp() const;
 
-         virtual bool v_isNoAuto() const;
-      };
-   }
+      virtual bool v_isNoAuto() const;
+   };
 }
 
 #endif//GDCC__SR__Exp__Arg_H__

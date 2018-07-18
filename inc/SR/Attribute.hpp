@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2017 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,8 @@
 
 #ifndef GDCC__SR__Attribute_H__
 #define GDCC__SR__Attribute_H__
+
+#include "../SR/Types.hpp"
 
 #include "../Core/Array.hpp"
 #include "../Core/Counter.hpp"
@@ -26,25 +28,8 @@
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
-
-namespace GDCC::Core
-{
-   class Token;
-}
-
-namespace GDCC::IR
-{
-   enum class CallType;
-   enum class Linkage;
-   enum class ScriptType;
-
-   class Exp;
-}
-
 namespace GDCC::SR
 {
-   class Type;
-
    //
    // Attribute
    //

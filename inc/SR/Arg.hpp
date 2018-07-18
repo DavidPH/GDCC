@@ -16,6 +16,8 @@
 #ifndef GDCC__SR__Arg_H__
 #define GDCC__SR__Arg_H__
 
+#include "../SR/Types.hpp"
+
 #include "../Core/Counter.hpp"
 
 
@@ -23,48 +25,33 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace IR
+   //
+   // Arg
+   //
+   class Arg
    {
-      enum class AddrBase;
+   protected:
+      using ExpCPtr  = Core::CounterPtr<Exp const>;
+      using TypeCRef = Core::CounterRef<Type const>;
 
-      class Arg;
-      class Arg_Stk;
-      class Program;
-   }
+   public:
+      Arg(Arg const &arg);
+      explicit Arg(Type const *type);
+      Arg(Type const *type, Exp const *data);
+      Arg(Type const *type, IR::AddrBase base, Exp const *data = nullptr);
+      ~Arg();
 
-   namespace SR
-   {
-      class Exp;
-      class Type;
+      IR::Arg getIRArg(IR::Program &prog) const;
 
-      //
-      // Arg
-      //
-      class Arg
-      {
-      protected:
-         using ExpCPtr  = Core::CounterPtr<Exp const>;
-         using TypeCRef = Core::CounterRef<Type const>;
+      IR::Arg_Stk getIRArgStk() const;
 
-      public:
-         Arg(Arg const &arg);
-         explicit Arg(Type const *type);
-         Arg(Type const *type, Exp const *data);
-         Arg(Type const *type, IR::AddrBase base, Exp const *data = nullptr);
-         ~Arg();
+      bool isIRArg() const;
 
-         IR::Arg getIRArg(IR::Program &prog) const;
-
-         IR::Arg_Stk getIRArgStk() const;
-
-         bool isIRArg() const;
-
-         TypeCRef type;
-         ExpCPtr  data;
-      };
-   }
+      TypeCRef type;
+      ExpCPtr  data;
+   };
 }
 
 #endif//GDCC__SR__Arg_H__

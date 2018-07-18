@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,123 +20,120 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Type_Label
+   //
+   class Type_Label final : public SR::Type
    {
-      //
-      // Type_Label
-      //
-      class Type_Label final : public SR::Type
-      {
-         GDCC_Core_CounterPreamble(GDCC::SR::Type_Label, GDCC::SR::Type);
+      GDCC_Core_CounterPreamble(GDCC::SR::Type_Label, GDCC::SR::Type);
 
-      public:
-         // Type classification: General classifications.
-         virtual bool isTypeLabel() const {return true;}
+   public:
+      // Type classification: General classifications.
+      virtual bool isTypeLabel() const {return true;}
 
 
-         friend Type::CRef Type::GetLabel();
+      friend Type::CRef Type::GetLabel();
 
-      protected:
-         Type_Label() = default;
-      };
+   protected:
+      Type_Label() = default;
+   };
 
-      //
-      // Type_None
-      //
-      class Type_None final : public Type
-      {
-         GDCC_Core_CounterPreamble(GDCC::SR::Type_None, GDCC::SR::Type);
+   //
+   // Type_None
+   //
+   class Type_None final : public Type
+   {
+      GDCC_Core_CounterPreamble(GDCC::SR::Type_None, GDCC::SR::Type);
 
-      public:
-         friend Type::CRef Type::GetNone();
+   public:
+      friend Type::CRef Type::GetNone();
 
-      protected:
-         Type_None() {}
-      };
+   protected:
+      Type_None() {}
+   };
 
-      //
-      // Type_Size
-      //
-      class Type_Size final : public Type
-      {
-         GDCC_Core_CounterPreamble(GDCC::SR::Type_Size, GDCC::SR::Type);
+   //
+   // Type_Size
+   //
+   class Type_Size final : public Type
+   {
+      GDCC_Core_CounterPreamble(GDCC::SR::Type_Size, GDCC::SR::Type);
 
-      public:
-         // Type information.
-         virtual IR::Type    getIRType()    const;
-         virtual Core::FastU getSizeAlign() const;
-         virtual Core::FastU getSizeBitsF() const {return 0;}
-         virtual Core::FastU getSizeBitsI() const;
-         virtual Core::FastU getSizeBitsO() const {return 0;}
-         virtual bool        getSizeBitsS() const {return false;}
-         virtual Core::FastU getSizeBytes() const;
-         virtual Core::FastU getSizePoint() const;
-         virtual Core::FastU getSizeShift() const;
-         virtual Core::FastU getSizeWords() const;
+   public:
+      // Type information.
+      virtual IR::Type    getIRType()    const;
+      virtual Core::FastU getSizeAlign() const;
+      virtual Core::FastU getSizeBitsF() const {return 0;}
+      virtual Core::FastU getSizeBitsI() const;
+      virtual Core::FastU getSizeBitsO() const {return 0;}
+      virtual bool        getSizeBitsS() const {return false;}
+      virtual Core::FastU getSizeBytes() const;
+      virtual Core::FastU getSizePoint() const;
+      virtual Core::FastU getSizeShift() const;
+      virtual Core::FastU getSizeWords() const;
 
-         // Type classification: General classifications.
-         virtual bool isTypeComplete() const {return true;}
+      // Type classification: General classifications.
+      virtual bool isTypeComplete() const {return true;}
 
-         // Type classification: C/C++ classifications.
-         virtual bool isCTypeArith()    const {return true;}
-         virtual bool isCTypeInteg()    const {return true;}
-         virtual bool isCTypeIntegU()   const {return true;}
-         virtual bool isCTypeObject()   const {return true;}
-         virtual bool isCTypeReal()     const {return true;}
-         virtual bool isCTypeScalar()   const {return true;}
-
-
-         friend Type::CRef Type::GetSize();
-
-      protected:
-         Type_Size() {}
-      };
-
-      //
-      // Type_StrEnt
-      //
-      class Type_StrEnt final : public SR::Type
-      {
-         GDCC_Core_CounterPreamble(GDCC::SR::Type_StrEnt, GDCC::SR::Type);
-
-      public:
-         // Type classification: General classifications.
-         virtual bool isTypeStrEnt() const {return true;}
+      // Type classification: C/C++ classifications.
+      virtual bool isCTypeArith()    const {return true;}
+      virtual bool isCTypeInteg()    const {return true;}
+      virtual bool isCTypeIntegU()   const {return true;}
+      virtual bool isCTypeObject()   const {return true;}
+      virtual bool isCTypeReal()     const {return true;}
+      virtual bool isCTypeScalar()   const {return true;}
 
 
-         friend Type::CRef Type::GetStrEnt();
+      friend Type::CRef Type::GetSize();
 
-      protected:
-         Type_StrEnt() = default;
-      };
+   protected:
+      Type_Size() {}
+   };
 
-      //
-      // Type_Void
-      //
-      class Type_Void final : public SR::Type
-      {
-         GDCC_Core_CounterPreamble(GDCC::SR::Type_Void, GDCC::SR::Type);
+   //
+   // Type_StrEnt
+   //
+   class Type_StrEnt final : public SR::Type
+   {
+      GDCC_Core_CounterPreamble(GDCC::SR::Type_StrEnt, GDCC::SR::Type);
 
-      public:
-         // Type information.
-         virtual IR::Type    getIRType()    const;
-         virtual Core::FastU getSizeShift() const {return 1;}
-
-         // Type classification: General classifications.
-         virtual bool isTypeVoid() const {return true;}
-
-         // Type classification: C/C++ classifications.
-         virtual bool isCTypeObject() const {return true;}
+   public:
+      // Type classification: General classifications.
+      virtual bool isTypeStrEnt() const {return true;}
 
 
-         friend Type::CRef Type::GetVoid();
+      friend Type::CRef Type::GetStrEnt();
 
-      protected:
-         Type_Void() = default;
-      };
-   }
+   protected:
+      Type_StrEnt() = default;
+   };
+
+   //
+   // Type_Void
+   //
+   class Type_Void final : public SR::Type
+   {
+      GDCC_Core_CounterPreamble(GDCC::SR::Type_Void, GDCC::SR::Type);
+
+   public:
+      // Type information.
+      virtual IR::Type    getIRType()    const;
+      virtual Core::FastU getSizeShift() const {return 1;}
+
+      // Type classification: General classifications.
+      virtual bool isTypeVoid() const {return true;}
+
+      // Type classification: C/C++ classifications.
+      virtual bool isCTypeObject() const {return true;}
+
+
+      friend Type::CRef Type::GetVoid();
+
+   protected:
+      Type_Void() = default;
+   };
 }
 
 #endif//GDCC__SR__Type__Primary_H__

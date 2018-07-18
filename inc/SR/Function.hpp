@@ -13,6 +13,8 @@
 #ifndef GDCC__SR__Function_H__
 #define GDCC__SR__Function_H__
 
+#include "../SR/Types.hpp"
+
 #include "../Core/Array.hpp"
 #include "../Core/Counter.hpp"
 #include "../Core/Number.hpp"
@@ -26,21 +28,8 @@
 // Types                                                                      |
 //
 
-namespace GDCC::IR
-{
-   enum class CallType;
-   enum class Linkage;
-
-   class Exp;
-   class Function;
-   class Program;
-}
-
 namespace GDCC::SR
 {
-   class Statement;
-   class Type;
-
    //
    // Function
    //

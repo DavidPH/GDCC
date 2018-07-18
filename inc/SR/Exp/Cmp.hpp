@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -34,58 +34,55 @@ protected: \
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Exp_CmpEQ
+   //
+   class Exp_CmpEQ : public Exp_Binary
    {
-      //
-      // Exp_CmpEQ
-      //
-      class Exp_CmpEQ : public Exp_Binary
-      {
-         GDCC_SR_Exp_CmpPreamble(Exp_CmpEQ);
-      };
+      GDCC_SR_Exp_CmpPreamble(Exp_CmpEQ);
+   };
 
-      //
-      // Exp_CmpGE
-      //
-      class Exp_CmpGE : public Exp_Binary
-      {
-         GDCC_SR_Exp_CmpPreamble(Exp_CmpGE);
-      };
+   //
+   // Exp_CmpGE
+   //
+   class Exp_CmpGE : public Exp_Binary
+   {
+      GDCC_SR_Exp_CmpPreamble(Exp_CmpGE);
+   };
 
-      //
-      // Exp_CmpGT
-      //
-      class Exp_CmpGT : public Exp_Binary
-      {
-         GDCC_SR_Exp_CmpPreamble(Exp_CmpGT);
-      };
+   //
+   // Exp_CmpGT
+   //
+   class Exp_CmpGT : public Exp_Binary
+   {
+      GDCC_SR_Exp_CmpPreamble(Exp_CmpGT);
+   };
 
-      //
-      // Exp_CmpLE
-      //
-      class Exp_CmpLE : public Exp_Binary
-      {
-         GDCC_SR_Exp_CmpPreamble(Exp_CmpLE);
-      };
+   //
+   // Exp_CmpLE
+   //
+   class Exp_CmpLE : public Exp_Binary
+   {
+      GDCC_SR_Exp_CmpPreamble(Exp_CmpLE);
+   };
 
-      //
-      // Exp_CmpLT
-      //
-      class Exp_CmpLT : public Exp_Binary
-      {
-         GDCC_SR_Exp_CmpPreamble(Exp_CmpLT);
-      };
+   //
+   // Exp_CmpLT
+   //
+   class Exp_CmpLT : public Exp_Binary
+   {
+      GDCC_SR_Exp_CmpPreamble(Exp_CmpLT);
+   };
 
-      //
-      // Exp_CmpNE
-      //
-      class Exp_CmpNE : public Exp_Binary
-      {
-         GDCC_SR_Exp_CmpPreamble(Exp_CmpNE);
-      };
-   }
+   //
+   // Exp_CmpNE
+   //
+   class Exp_CmpNE : public Exp_Binary
+   {
+      GDCC_SR_Exp_CmpPreamble(Exp_CmpNE);
+   };
 }
 
 #endif//GDCC__SR__Exp__Cmp_H__

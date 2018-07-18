@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,52 +20,49 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Exp_Defer
+   //
+   class Exp_Defer : public Exp
    {
-      //
-      // Exp_Defer
-      //
-      class Exp_Defer : public Exp
-      {
-         GDCC_Core_CounterPreambleAbstract(
-            GDCC::SR::Exp_Defer, GDCC::SR::Exp);
+      GDCC_Core_CounterPreambleAbstract(
+         GDCC::SR::Exp_Defer, GDCC::SR::Exp);
 
-      public:
-         Exp::CRef getDefer() const;
+   public:
+      Exp::CRef getDefer() const;
 
-      protected:
-         Exp_Defer(Core::Origin pos_) : Super{pos_} {}
+   protected:
+      Exp_Defer(Core::Origin pos_) : Super{pos_} {}
 
-         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
+      virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 
-         virtual Arg v_getArg() const;
+      virtual Arg v_getArg() const;
 
-         virtual Exp::CRef v_getDefer() const = 0;
+      virtual Exp::CRef v_getDefer() const = 0;
 
-         virtual FunctionRef v_getFunction() const;
+      virtual FunctionRef v_getFunction() const;
 
-         virtual IRExpCRef v_getIRExp() const;
+      virtual IRExpCRef v_getIRExp() const;
 
-         virtual ObjectRef v_getObject() const;
+      virtual ObjectRef v_getObject() const;
 
-         virtual TypeCRef v_getType() const;
+      virtual TypeCRef v_getType() const;
 
-         virtual bool v_isEffect() const;
+      virtual bool v_isEffect() const;
 
-         virtual bool v_isFunction() const;
+      virtual bool v_isFunction() const;
 
-         virtual bool v_isIRExp() const;
+      virtual bool v_isIRExp() const;
 
-         virtual bool v_isNoAuto() const;
+      virtual bool v_isNoAuto() const;
 
-         virtual bool v_isObject() const;
+      virtual bool v_isObject() const;
 
-      private:
-         mutable Exp::CPtr cacheDefer;
-      };
-   }
+   private:
+      mutable Exp::CPtr cacheDefer;
+   };
 }
 
 #endif//GDCC__SR__Exp__Defer_H__

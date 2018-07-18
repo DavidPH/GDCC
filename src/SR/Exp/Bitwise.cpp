@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -34,16 +34,13 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
-   {
-      GDCC_SR_Exp_BitwiseImpl(Exp_BitAnd, BitAnd)
-      GDCC_SR_Exp_BitwiseImpl(Exp_BitOrI, BitOrI)
-      GDCC_SR_Exp_BitwiseImpl(Exp_BitOrX, BitOrX)
-      GDCC_SR_Exp_BitwiseImpl(Exp_ShL,    ShL)
-      GDCC_SR_Exp_BitwiseImpl(Exp_ShR,    ShR)
-   }
+   GDCC_SR_Exp_BitwiseImpl(Exp_BitAnd, BitAnd)
+   GDCC_SR_Exp_BitwiseImpl(Exp_BitOrI, BitOrI)
+   GDCC_SR_Exp_BitwiseImpl(Exp_BitOrX, BitOrX)
+   GDCC_SR_Exp_BitwiseImpl(Exp_ShL,    ShL)
+   GDCC_SR_Exp_BitwiseImpl(Exp_ShR,    ShR)
 }
 
 // EOF

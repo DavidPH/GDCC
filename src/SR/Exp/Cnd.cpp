@@ -25,76 +25,73 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Exp_Cnd::v_genStmnt
+   //
+   void Exp_Cnd::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
    {
-      //
-      // Exp_Cnd::v_genStmnt
-      //
-      void Exp_Cnd::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
+      IR::Glyph labelNil = {ctx.prog, ctx.fn->genLabel()};
+      IR::Glyph labelEnd = {ctx.prog, ctx.fn->genLabel()};
+
+      // Evaluate condition.
+      if(auto argC = expC->getArg(); argC.isIRArg())
       {
-         IR::Glyph labelNil = {ctx.prog, ctx.fn->genLabel()};
-         IR::Glyph labelEnd = {ctx.prog, ctx.fn->genLabel()};
-
-         // Evaluate condition.
-         if(auto argC = expC->getArg(); argC.isIRArg())
-         {
-            ctx.block.setArgSize()
-               .addStmnt(IR::Code::Jcnd_Nil, argC.getIRArg(ctx.prog), labelNil);
-         }
-         else
-         {
-            expC->genStmntStk(ctx);
-            ctx.block.setArgSize()
-               .addStmnt(IR::Code::Jcnd_Nil, expC->getIRArgStk(), labelNil);
-         }
-
-         // Left (true) expression.
-         expL->genStmnt(ctx, dst);
-         ctx.block.setArgSize().addStmnt(IR::Code::Jump, labelEnd);
-
-         // Right (false) expression.
-         ctx.block.addLabel(labelNil);
-         expR->genStmnt(ctx, dst);
-
-         ctx.block.addLabel(labelEnd);
+         ctx.block.setArgSize()
+            .addStmnt(IR::Code::Jcnd_Nil, argC.getIRArg(ctx.prog), labelNil);
+      }
+      else
+      {
+         expC->genStmntStk(ctx);
+         ctx.block.setArgSize()
+            .addStmnt(IR::Code::Jcnd_Nil, expC->getIRArgStk(), labelNil);
       }
 
-      //
-      // Exp_Cnd::v_getIRExp
-      //
-      IR::Exp::CRef Exp_Cnd::v_getIRExp() const
-      {
-         return IR::ExpCreate_Cnd(expC->getIRExp(), expL->getIRExp(),
-            expR->getIRExp(), pos);
-      }
+      // Left (true) expression.
+      expL->genStmnt(ctx, dst);
+      ctx.block.setArgSize().addStmnt(IR::Code::Jump, labelEnd);
 
-      //
-      // Exp_Cnd::v_isEffect
-      //
-      bool Exp_Cnd::v_isEffect() const
-      {
-         // TODO: For a known condition value, only check needed expressions.
+      // Right (false) expression.
+      ctx.block.addLabel(labelNil);
+      expR->genStmnt(ctx, dst);
 
-         return expC->isEffect() || expL->isEffect() || expR->isEffect();
-      }
+      ctx.block.addLabel(labelEnd);
+   }
 
-      //
-      // Exp_Cnd::v_isIRExp
-      //
-      bool Exp_Cnd::v_isIRExp() const
-      {
-         return expC->isIRExp() && expL->isIRExp() && expR->isIRExp();
-      }
+   //
+   // Exp_Cnd::v_getIRExp
+   //
+   IR::Exp::CRef Exp_Cnd::v_getIRExp() const
+   {
+      return IR::ExpCreate_Cnd(expC->getIRExp(), expL->getIRExp(),
+         expR->getIRExp(), pos);
+   }
 
-      //
-      // Exp_Cnd::v_isNoAuto
-      //
-      bool Exp_Cnd::v_isNoAuto() const
-      {
-         return expC->isNoAuto() && expL->isNoAuto() && expR->isNoAuto();
-      }
+   //
+   // Exp_Cnd::v_isEffect
+   //
+   bool Exp_Cnd::v_isEffect() const
+   {
+      // TODO: For a known condition value, only check needed expressions.
+
+      return expC->isEffect() || expL->isEffect() || expR->isEffect();
+   }
+
+   //
+   // Exp_Cnd::v_isIRExp
+   //
+   bool Exp_Cnd::v_isIRExp() const
+   {
+      return expC->isIRExp() && expL->isIRExp() && expR->isIRExp();
+   }
+
+   //
+   // Exp_Cnd::v_isNoAuto
+   //
+   bool Exp_Cnd::v_isNoAuto() const
+   {
+      return expC->isNoAuto() && expL->isNoAuto() && expR->isNoAuto();
    }
 }
 

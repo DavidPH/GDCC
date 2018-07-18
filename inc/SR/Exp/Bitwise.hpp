@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,50 +20,47 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Exp_BitAnd
+   //
+   class Exp_BitAnd : public Exp_Binary
    {
-      //
-      // Exp_BitAnd
-      //
-      class Exp_BitAnd : public Exp_Binary
-      {
-         GDCC_SR_Exp_ArithPreamble(Exp_BitAnd);
-      };
+      GDCC_SR_Exp_ArithPreamble(Exp_BitAnd);
+   };
 
-      //
-      // Exp_BitOrI
-      //
-      class Exp_BitOrI : public Exp_Binary
-      {
-         GDCC_SR_Exp_ArithPreamble(Exp_BitOrI);
-      };
+   //
+   // Exp_BitOrI
+   //
+   class Exp_BitOrI : public Exp_Binary
+   {
+      GDCC_SR_Exp_ArithPreamble(Exp_BitOrI);
+   };
 
-      //
-      // Exp_BitOrX
-      //
-      class Exp_BitOrX : public Exp_Binary
-      {
-         GDCC_SR_Exp_ArithPreamble(Exp_BitOrX);
-      };
+   //
+   // Exp_BitOrX
+   //
+   class Exp_BitOrX : public Exp_Binary
+   {
+      GDCC_SR_Exp_ArithPreamble(Exp_BitOrX);
+   };
 
-      //
-      // Exp_ShL
-      //
-      class Exp_ShL : public Exp_Binary
-      {
-         GDCC_SR_Exp_ArithPreamble(Exp_ShL);
-      };
+   //
+   // Exp_ShL
+   //
+   class Exp_ShL : public Exp_Binary
+   {
+      GDCC_SR_Exp_ArithPreamble(Exp_ShL);
+   };
 
-      //
-      // Exp_ShR
-      //
-      class Exp_ShR : public Exp_Binary
-      {
-         GDCC_SR_Exp_ArithPreamble(Exp_ShR);
-      };
-   }
+   //
+   // Exp_ShR
+   //
+   class Exp_ShR : public Exp_Binary
+   {
+      GDCC_SR_Exp_ArithPreamble(Exp_ShR);
+   };
 }
 
 #endif//GDCC__SR__Exp__Bitwise_H__

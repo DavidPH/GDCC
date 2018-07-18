@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2014 David Hill
+## Copyright (C) 2013-2018 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -89,6 +89,7 @@ add_library(gdcc-sr-lib ${GDCC_SHARED_DECL}
    ../../inc/SR/Type/Pointer.hpp
    ../../inc/SR/Type/Primary.hpp
    ../../inc/SR/Type/Wrapper.hpp
+   ../../inc/SR/Types.hpp
    ../../inc/SR/Warning.hpp
 )
 

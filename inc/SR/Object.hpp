@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #ifndef GDCC__SR__Object_H__
 #define GDCC__SR__Object_H__
 
+#include "../SR/Types.hpp"
+
 #include "../Core/Counter.hpp"
 #include "../Core/String.hpp"
 
@@ -21,64 +23,47 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace IR
+   //
+   // Object
+   //
+   class Object final : public Core::CounterBase
    {
-      enum class Linkage;
+      GDCC_Core_CounterPreambleNoVirtual(
+         GDCC::SR::Object, GDCC::Core::CounterBase);
 
-      class Exp;
-      class Object;
-      class Program;
-   }
+   protected:
+      using ExpCPtr   = Core::CounterPtr<Exp     const>;
+      using IRExpCPtr = Core::CounterPtr<IR::Exp const>;
+      using TypeCPtr  = Core::CounterPtr<Type    const>;
 
-   namespace SR
-   {
-      enum class Storage;
+   public:
+      void genObject(IR::Program &prog);
 
-      class Exp;
-      class Type;
+      Core::String glyph;
+      ExpCPtr      init;
+      IR::Linkage  linka;
+      Core::String name;
+      Storage      store;
+      TypeCPtr     type;
+      IRExpCPtr    value;
+      Core::String warnUse;
 
-      //
-      // Object
-      //
-      class Object final : public Core::CounterBase
-      {
-         GDCC_Core_CounterPreambleNoVirtual(
-            GDCC::SR::Object, GDCC::Core::CounterBase);
-
-      protected:
-         using ExpCPtr   = Core::CounterPtr<Exp     const>;
-         using IRExpCPtr = Core::CounterPtr<IR::Exp const>;
-         using TypeCPtr  = Core::CounterPtr<Type    const>;
-
-      public:
-         void genObject(IR::Program &prog);
-
-         Core::String glyph;
-         ExpCPtr      init;
-         IR::Linkage  linka;
-         Core::String name;
-         Storage      store;
-         TypeCPtr     type;
-         IRExpCPtr    value;
-         Core::String warnUse;
-
-         bool         alias    : 1; // Can alias?
-         bool         defin    : 1; // Is defined?
-         bool         noRef    : 1; // Forbids pointer-to?
-         bool         refer    : 1; // Needs pointer-to?
-         bool         used     : 1; // Is used?
-         bool         warnDone : 1;
+      bool         alias    : 1; // Can alias?
+      bool         defin    : 1; // Is defined?
+      bool         noRef    : 1; // Forbids pointer-to?
+      bool         refer    : 1; // Needs pointer-to?
+      bool         used     : 1; // Is used?
+      bool         warnDone : 1;
 
 
-         static Ref Create(Core::String name, Core::String glyph);
+      static Ref Create(Core::String name, Core::String glyph);
 
-      protected:
-         Object(Core::String name, Core::String glyph);
-         ~Object();
-      };
-   }
+   protected:
+      Object(Core::String name, Core::String glyph);
+      ~Object();
+   };
 }
 
 #endif//GDCC__AST__Object_H__

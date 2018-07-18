@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,41 +21,38 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Type_Wrapper::getIRType
+   //
+   IR::Type Type_Wrapper::getIRType() const
    {
-      //
-      // Type_Wrapper::getIRType
-      //
-      IR::Type Type_Wrapper::getIRType() const
-      {
-         return base->getIRType();
-      }
+      return base->getIRType();
+   }
 
-      //
-      // Type_Wrapper::getSizeBytesVM
-      //
-      Exp::CRef Type_Wrapper::getSizeBytesVM() const
-      {
-         return base->getSizeBytesVM();
-      }
+   //
+   // Type_Wrapper::getSizeBytesVM
+   //
+   Exp::CRef Type_Wrapper::getSizeBytesVM() const
+   {
+      return base->getSizeBytesVM();
+   }
 
-      //
-      // Type_Wrapper::getSizePointVM
-      //
-      Exp::CRef Type_Wrapper::getSizePointVM() const
-      {
-         return base->getSizePointVM();
-      }
+   //
+   // Type_Wrapper::getSizePointVM
+   //
+   Exp::CRef Type_Wrapper::getSizePointVM() const
+   {
+      return base->getSizePointVM();
+   }
 
-      //
-      // Type_Wrapper::getSizeWordsVM
-      //
-      Exp::CRef Type_Wrapper::getSizeWordsVM() const
-      {
-         return base->getSizeWordsVM();
-      }
+   //
+   // Type_Wrapper::getSizeWordsVM
+   //
+   Exp::CRef Type_Wrapper::getSizeWordsVM() const
+   {
+      return base->getSizeWordsVM();
    }
 }
 

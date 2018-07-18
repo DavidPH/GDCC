@@ -58,31 +58,28 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // GenStmnt_Move_GenArg
+   //
+   template<typename ArgT>
+   ArgT GenStmnt_Move_GenArg(Exp const *, GenStmntCtx const &, Arg const &arg,
+      IR::Arg const &idx, Core::FastU off)
    {
-      //
-      // GenStmnt_Move_GenArg
-      //
-      template<typename ArgT>
-      ArgT GenStmnt_Move_GenArg(Exp const *, GenStmntCtx const &, Arg const &arg,
-         IR::Arg const &idx, Core::FastU off)
-      {
-         return ArgT(arg.type->getSizeBytes(), idx, off);
-      }
-      template<typename ArgT>
-      ArgT GenStmnt_Move_GenArg(Exp const *, GenStmntCtx const &, Arg const &arg,
-         IR::Arg &&idx, Core::FastU off)
-      {
-         return ArgT(arg.type->getSizeBytes(), std::move(idx), off);
-      }
-      GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_GblArr)
-      GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_HubArr)
-      GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_LocArr)
-      GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_ModArr)
-      GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_StrArr)
+      return ArgT(arg.type->getSizeBytes(), idx, off);
    }
+   template<typename ArgT>
+   ArgT GenStmnt_Move_GenArg(Exp const *, GenStmntCtx const &, Arg const &arg,
+      IR::Arg &&idx, Core::FastU off)
+   {
+      return ArgT(arg.type->getSizeBytes(), std::move(idx), off);
+   }
+   GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_GblArr)
+   GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_HubArr)
+   GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_LocArr)
+   GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_ModArr)
+   GDCC_SR_GenGenStmnt_Move_GenArgPtr2(IR::Arg_StrArr)
 }
 
 #endif//GDCC__SR__GenStmnt__Move_H__

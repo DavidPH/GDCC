@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #ifndef GDCC__SR__Space_H__
 #define GDCC__SR__Space_H__
 
+#include "../SR/Types.hpp"
+
 #include "../Core/Counter.hpp"
 #include "../Core/String.hpp"
 
@@ -21,49 +23,37 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace IR
+   //
+   // Space
+   //
+   class Space final : public Core::CounterBase
    {
-      enum class AddrBase;
-      enum class Linkage;
+      GDCC_Core_CounterPreambleNoVirtual(
+         GDCC::SR::Space, GDCC::Core::CounterBase);
 
-      class Exp;
-      class Program;
-   }
+   protected:
+      using IRExpCPtr = Core::CounterPtr<IR::Exp const>;
 
-   namespace SR
-   {
-      //
-      // Space
-      //
-      class Space final : public Core::CounterBase
-      {
-         GDCC_Core_CounterPreambleNoVirtual(
-            GDCC::SR::Space, GDCC::Core::CounterBase);
+   public:
+      void genSpace(IR::Program &prog) const;
 
-      protected:
-         using IRExpCPtr = Core::CounterPtr<IR::Exp const>;
+      Core::String glyph;
+      IR::Linkage  linka;
+      Core::String name;
+      IR::AddrBase space;
+      IRExpCPtr    value;
 
-      public:
-         void genSpace(IR::Program &prog) const;
-
-         Core::String glyph;
-         IR::Linkage  linka;
-         Core::String name;
-         IR::AddrBase space;
-         IRExpCPtr    value;
-
-         bool         defin : 1; // Is defined?
+      bool         defin : 1; // Is defined?
 
 
-         static Ref Create(Core::String name, Core::String glyph);
+      static Ref Create(Core::String name, Core::String glyph);
 
-      protected:
-         Space(Core::String name, Core::String glyph);
-         ~Space();
-      };
-   }
+   protected:
+      Space(Core::String name, Core::String glyph);
+      ~Space();
+   };
 }
 
 #endif//GDCC__SR__Space_H__

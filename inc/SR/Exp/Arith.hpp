@@ -44,141 +44,138 @@ protected: \
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Exp_Arith
+   //
+   // Implements statement generation as a call to GenStmnt_Arith. Uses a
+   // template base class to implement other expression properties.
+   //
+   template<typename Base>
+   class Exp_Arith : public Base
    {
+      GDCC_Core_CounterPreamble(GDCC::SR::Exp_Arith<Base>, Base);
+
+   public:
+      IR::Code const code;
+
+
       //
-      // Exp_Arith
+      // Create
       //
-      // Implements statement generation as a call to GenStmnt_Arith. Uses a
-      // template base class to implement other expression properties.
-      //
-      template<typename Base>
-      class Exp_Arith : public Base
+      static Exp::CRef Create(IR::Code code, Type const *t, Exp const *l,
+         Exp const *r, Core::Origin pos)
       {
-         GDCC_Core_CounterPreamble(GDCC::SR::Exp_Arith<Base>, Base);
+         return Exp::CRef(new Exp_Arith<Base>(code, t, l, r, pos));
+      }
 
-      public:
-         IR::Code const code;
+   protected:
+      Exp_Arith(IR::Code c, Type const *t, Exp const *l, Exp const *r,
+         Core::Origin pos_) : Super{t, l, r, pos_}, code{c} {}
 
+      // v_genStmnt
+      virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
+         {GenStmnt_Arith(this, code, ctx, dst);}
+   };
 
-         //
-         // Create
-         //
-         static Exp::CRef Create(IR::Code code, Type const *t, Exp const *l,
-            Exp const *r, Core::Origin pos)
-         {
-            return Exp::CRef(new Exp_Arith<Base>(code, t, l, r, pos));
-         }
+   //
+   // Exp_ArithEq
+   //
+   // Implements statement generation as a call to GenStmnt_ArithEq. Uses a
+   // template base class to implement other expression properties.
+   //
+   template<typename Base>
+   class Exp_ArithEq : public Base
+   {
+      GDCC_Core_CounterPreamble(GDCC::SR::Exp_ArithEq<Base>, Base);
 
-      protected:
-         Exp_Arith(IR::Code c, Type const *t, Exp const *l, Exp const *r,
-            Core::Origin pos_) : Super{t, l, r, pos_}, code{c} {}
-
-         // v_genStmnt
-         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
-            {GenStmnt_Arith(this, code, ctx, dst);}
-      };
-
-      //
-      // Exp_ArithEq
-      //
-      // Implements statement generation as a call to GenStmnt_ArithEq. Uses a
-      // template base class to implement other expression properties.
-      //
-      template<typename Base>
-      class Exp_ArithEq : public Base
-      {
-         GDCC_Core_CounterPreamble(GDCC::SR::Exp_ArithEq<Base>, Base);
-
-      public:
-         Type::CRef const evalT;
-         IR::Code   const code;
-         bool       const post : 1;
+   public:
+      Type::CRef const evalT;
+      IR::Code   const code;
+      bool       const post : 1;
 
 
-         // Create
-         static CRef Create(Type const *evalT, IR::Code code, bool post,
-            Type const *t, Exp const *l, Exp const *r, Core::Origin pos)
-            {return CRef(new This(evalT, code, post, t, l, r, pos));}
+      // Create
+      static CRef Create(Type const *evalT, IR::Code code, bool post,
+         Type const *t, Exp const *l, Exp const *r, Core::Origin pos)
+         {return CRef(new This(evalT, code, post, t, l, r, pos));}
 
-      protected:
-         Exp_ArithEq(Type const *evalT_, IR::Code c, bool post_, Type const *t,
-            Exp const *l, Exp const *r, Core::Origin pos_) :
-            Super{t, l, r, pos_}, evalT{evalT_}, code{c}, post{post_} {}
+   protected:
+      Exp_ArithEq(Type const *evalT_, IR::Code c, bool post_, Type const *t,
+         Exp const *l, Exp const *r, Core::Origin pos_) :
+         Super{t, l, r, pos_}, evalT{evalT_}, code{c}, post{post_} {}
 
-         // v_genStmnt
-         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
-            {GenStmnt_ArithEq(this, code, ctx, dst, evalT, post);}
+      // v_genStmnt
+      virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
+         {GenStmnt_ArithEq(this, code, ctx, dst, evalT, post);}
 
-         // v_getIRExp
-         virtual IR::Exp::CRef v_getIRExp() const
-            {return post ? Super::expL->getIRExp() : Super::v_getIRExp();}
+      // v_getIRExp
+      virtual IR::Exp::CRef v_getIRExp() const
+         {return post ? Super::expL->getIRExp() : Super::v_getIRExp();}
 
-         // v_isEffect
-         virtual bool v_isEffect() const {return true;}
+      // v_isEffect
+      virtual bool v_isEffect() const {return true;}
 
-         // v_isIRExp
-         virtual bool v_isIRExp() const
-            {return post ? Super::expL->isIRExp() : Super::v_isIRExp();}
-      };
+      // v_isIRExp
+      virtual bool v_isIRExp() const
+         {return post ? Super::expL->isIRExp() : Super::v_isIRExp();}
+   };
 
-      //
-      // Exp_Add
-      //
-      class Exp_Add : public Exp_Binary
-      {
-         GDCC_SR_Exp_ArithPreamble(Exp_Add);
-      };
+   //
+   // Exp_Add
+   //
+   class Exp_Add : public Exp_Binary
+   {
+      GDCC_SR_Exp_ArithPreamble(Exp_Add);
+   };
 
-      //
-      // Exp_Div
-      //
-      class Exp_Div : public Exp_Binary
-      {
-         GDCC_SR_Exp_ArithPreamble(Exp_Div);
-      };
+   //
+   // Exp_Div
+   //
+   class Exp_Div : public Exp_Binary
+   {
+      GDCC_SR_Exp_ArithPreamble(Exp_Div);
+   };
 
-      //
-      // Exp_DivEx
-      //
-      class Exp_DivEx : public Exp_Binary
-      {
-         GDCC_Core_CounterPreambleAbstract(
-            GDCC::SR::Exp_DivEx, GDCC::SR::Exp_Binary);
+   //
+   // Exp_DivEx
+   //
+   class Exp_DivEx : public Exp_Binary
+   {
+      GDCC_Core_CounterPreambleAbstract(
+         GDCC::SR::Exp_DivEx, GDCC::SR::Exp_Binary);
 
-      protected:
-         Exp_DivEx(Type const *t, Exp const *l, Exp const *r,
-            Core::Origin pos_) : Super{t, l, r, pos_} {}
+   protected:
+      Exp_DivEx(Type const *t, Exp const *l, Exp const *r,
+         Core::Origin pos_) : Super{t, l, r, pos_} {}
 
-         virtual bool v_isIRExp() const {return false;}
-      };
+      virtual bool v_isIRExp() const {return false;}
+   };
 
-      //
-      // Exp_Mod
-      //
-      class Exp_Mod : public Exp_Binary
-      {
-         GDCC_SR_Exp_ArithPreamble(Exp_Mod);
-      };
+   //
+   // Exp_Mod
+   //
+   class Exp_Mod : public Exp_Binary
+   {
+      GDCC_SR_Exp_ArithPreamble(Exp_Mod);
+   };
 
-      //
-      // Exp_Mul
-      //
-      class Exp_Mul : public Exp_Binary
-      {
-         GDCC_SR_Exp_ArithPreamble(Exp_Mul);
-      };
+   //
+   // Exp_Mul
+   //
+   class Exp_Mul : public Exp_Binary
+   {
+      GDCC_SR_Exp_ArithPreamble(Exp_Mul);
+   };
 
-      //
-      // Exp_Sub
-      //
-      class Exp_Sub : public Exp_Binary
-      {
-         GDCC_SR_Exp_ArithPreamble(Exp_Sub);
-      };
-   }
+   //
+   // Exp_Sub
+   //
+   class Exp_Sub : public Exp_Binary
+   {
+      GDCC_SR_Exp_ArithPreamble(Exp_Sub);
+   };
 }
 
 
@@ -186,19 +183,16 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
-   {
-      // Does generic codegen centered around a 3-arg arithmetic instruction.
-      void GenStmnt_Arith(Exp_Binary const *exp, IR::Code code,
-         GenStmntCtx const &ctx, Arg const &dst);
+   // Does generic codegen centered around a 3-arg arithmetic instruction.
+   void GenStmnt_Arith(Exp_Binary const *exp, IR::Code code,
+      GenStmntCtx const &ctx, Arg const &dst);
 
-      // As in GenStmnt_Arith, but also assigns the result to the left operand.
-      void GenStmnt_ArithEq(Exp_Binary const *exp, IR::Code code,
-         GenStmntCtx const &ctx, Arg const &dst, Type const *evalT,
-         bool post = false);
-   }
+   // As in GenStmnt_Arith, but also assigns the result to the left operand.
+   void GenStmnt_ArithEq(Exp_Binary const *exp, IR::Code code,
+      GenStmntCtx const &ctx, Arg const &dst, Type const *evalT,
+      bool post = false);
 }
 
 #endif//GDCC__SR__Exp__Arith_H__

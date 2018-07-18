@@ -23,105 +23,102 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Exp_Unary constructor
+   //
+   Exp_Unary::Exp_Unary(Type const *t, Exp const *e, Core::Origin pos_) :
+      Super{pos_}, exp{e}, type{t}
    {
-      //
-      // Exp_Unary constructor
-      //
-      Exp_Unary::Exp_Unary(Type const *t, Exp const *e, Core::Origin pos_) :
-         Super{pos_}, exp{e}, type{t}
+   }
+
+   //
+   // Exp_Unary Exp_Unary
+   //
+   Exp_Unary::~Exp_Unary()
+   {
+   }
+
+   //
+   // Exp_Unary::v_getType
+   //
+   Type::CRef Exp_Unary::v_getType() const
+   {
+      return type;
+   }
+
+   //
+   // Exp_Unary::v_isEffect
+   //
+   bool Exp_Unary::v_isEffect() const
+   {
+      return exp->isEffect();
+   }
+
+   //
+   // Exp_Unary::v_isIRExp
+   //
+   bool Exp_Unary::v_isIRExp() const
+   {
+      return exp->isIRExp();
+   }
+
+   //
+   // Exp_Unary::v_isNoAuto
+   //
+   bool Exp_Unary::v_isNoAuto() const
+   {
+      return exp->isNoAuto();
+   }
+
+   //
+   // Exp_Inv::v_getIRExp
+   //
+   IR::Exp::CRef Exp_Inv::v_getIRExp() const
+   {
+      return IR::ExpCreate_Inv(exp->getIRExp(), pos);
+   }
+
+   //
+   // Exp_Neg::v_getIRExp
+   //
+   IR::Exp::CRef Exp_Neg::v_getIRExp() const
+   {
+      return IR::ExpCreate_Neg(exp->getIRExp(), pos);
+   }
+
+   //
+   // GenStmntNul
+   //
+   bool GenStmntNul(Exp_Unary const *exp, GenStmntCtx const &ctx, Arg const &dst)
+   {
+      // If only evaluating for side-effect, just evaluate sub-expression.
+      if(dst.type->getQualAddr().base == IR::AddrBase::Nul)
       {
+         exp->exp->genStmnt(ctx);
+         return true;
       }
 
-      //
-      // Exp_Unary Exp_Unary
-      //
-      Exp_Unary::~Exp_Unary()
-      {
-      }
+      return false;
+   }
 
-      //
-      // Exp_Unary::v_getType
-      //
-      Type::CRef Exp_Unary::v_getType() const
-      {
-         return type;
-      }
+   //
+   // GenStmnt_UnaryCode
+   //
+   void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::Code code,
+      GenStmntCtx const &ctx, Arg const &dst)
+   {
+      if(GenStmntNul(exp, ctx, dst)) return;
 
-      //
-      // Exp_Unary::v_isEffect
-      //
-      bool Exp_Unary::v_isEffect() const
-      {
-         return exp->isEffect();
-      }
+      // Evaluate both sub-expressions to stack.
+      exp->exp->genStmntStk(ctx);
 
-      //
-      // Exp_Unary::v_isIRExp
-      //
-      bool Exp_Unary::v_isIRExp() const
-      {
-         return exp->isIRExp();
-      }
+      // Operate on stack.
+      ctx.block.addStmnt(code, dst.getIRArgStk(), exp->exp->getIRArgStk());
 
-      //
-      // Exp_Unary::v_isNoAuto
-      //
-      bool Exp_Unary::v_isNoAuto() const
-      {
-         return exp->isNoAuto();
-      }
-
-      //
-      // Exp_Inv::v_getIRExp
-      //
-      IR::Exp::CRef Exp_Inv::v_getIRExp() const
-      {
-         return IR::ExpCreate_Inv(exp->getIRExp(), pos);
-      }
-
-      //
-      // Exp_Neg::v_getIRExp
-      //
-      IR::Exp::CRef Exp_Neg::v_getIRExp() const
-      {
-         return IR::ExpCreate_Neg(exp->getIRExp(), pos);
-      }
-
-      //
-      // GenStmntNul
-      //
-      bool GenStmntNul(Exp_Unary const *exp, GenStmntCtx const &ctx, Arg const &dst)
-      {
-         // If only evaluating for side-effect, just evaluate sub-expression.
-         if(dst.type->getQualAddr().base == IR::AddrBase::Nul)
-         {
-            exp->exp->genStmnt(ctx);
-            return true;
-         }
-
-         return false;
-      }
-
-      //
-      // GenStmnt_UnaryCode
-      //
-      void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::Code code,
-         GenStmntCtx const &ctx, Arg const &dst)
-      {
-         if(GenStmntNul(exp, ctx, dst)) return;
-
-         // Evaluate both sub-expressions to stack.
-         exp->exp->genStmntStk(ctx);
-
-         // Operate on stack.
-         ctx.block.addStmnt(code, dst.getIRArgStk(), exp->exp->getIRArgStk());
-
-         // Move to destination.
-         GenStmnt_MovePart(exp, ctx, dst, false, true);
-      }
+      // Move to destination.
+      GenStmnt_MovePart(exp, ctx, dst, false, true);
    }
 }
 

@@ -37,70 +37,67 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   GDCC_SR_Exp_ArithImpl(Exp_Add, Add)
+   GDCC_SR_Exp_ArithImpl(Exp_Div, Div)
+   GDCC_SR_Exp_ArithImpl(Exp_Mod, Mod)
+   GDCC_SR_Exp_ArithImpl(Exp_Mul, Mul)
+   GDCC_SR_Exp_ArithImpl(Exp_Sub, Sub)
+
+   //
+   // GenStmnt_Arith
+   //
+   void GenStmnt_Arith(Exp_Binary const *exp, IR::Code code,
+      GenStmntCtx const &ctx, SR::Arg const &dst)
    {
-      GDCC_SR_Exp_ArithImpl(Exp_Add, Add)
-      GDCC_SR_Exp_ArithImpl(Exp_Div, Div)
-      GDCC_SR_Exp_ArithImpl(Exp_Mod, Mod)
-      GDCC_SR_Exp_ArithImpl(Exp_Mul, Mul)
-      GDCC_SR_Exp_ArithImpl(Exp_Sub, Sub)
+      if(GenStmntNul(exp, ctx, dst)) return;
 
-      //
-      // GenStmnt_Arith
-      //
-      void GenStmnt_Arith(Exp_Binary const *exp, IR::Code code,
-         GenStmntCtx const &ctx, SR::Arg const &dst)
+      auto argL = exp->expL->getArg();
+      auto argR = exp->expR->getArg();
+
+      IR::Arg irArgL, irArgR;
+
+      // Try to use IR args instead of stack args.
+      // However, avoid a stack arg only on the left for asymmetric ops.
+      if(argR.isIRArg())
       {
-         if(GenStmntNul(exp, ctx, dst)) return;
-
-         auto argL = exp->expL->getArg();
-         auto argR = exp->expR->getArg();
-
-         IR::Arg irArgL, irArgR;
-
-         // Try to use IR args instead of stack args.
-         // However, avoid a stack arg only on the left for asymmetric ops.
-         if(argR.isIRArg())
+         if(argL.isIRArg())
          {
-            if(argL.isIRArg())
-            {
-               irArgL = argL.getIRArg(ctx.prog);
-               irArgR = argR.getIRArg(ctx.prog);
-            }
-            else
-            {
-               // Evaluate left expression to stack.
-               exp->expL->genStmntStk(ctx);
-
-               irArgL = argL.getIRArgStk();
-               irArgR = argR.getIRArg(ctx.prog);
-            }
+            irArgL = argL.getIRArg(ctx.prog);
+            irArgR = argR.getIRArg(ctx.prog);
          }
          else
          {
-            // Evaluate both sub-expressions to stack.
+            // Evaluate left expression to stack.
             exp->expL->genStmntStk(ctx);
-            exp->expR->genStmntStk(ctx);
 
             irArgL = argL.getIRArgStk();
-            irArgR = argR.getIRArgStk();
+            irArgR = argR.getIRArg(ctx.prog);
          }
+      }
+      else
+      {
+         // Evaluate both sub-expressions to stack.
+         exp->expL->genStmntStk(ctx);
+         exp->expR->genStmntStk(ctx);
 
-         if(dst.isIRArg())
-         {
-            auto irDst = dst.getIRArg(ctx.prog);
-            ctx.block.addStmnt(code, irDst, irArgL, irArgR);
-         }
-         else
-         {
-            IR::Arg_Stk irDst{dst.type->getSizeBytes()};
-            ctx.block.addStmnt(code, irDst, irArgL, irArgR);
+         irArgL = argL.getIRArgStk();
+         irArgR = argR.getIRArgStk();
+      }
 
-            // Move to destination.
-            GenStmnt_MovePart(exp, ctx, dst, false, true);
-         }
+      if(dst.isIRArg())
+      {
+         auto irDst = dst.getIRArg(ctx.prog);
+         ctx.block.addStmnt(code, irDst, irArgL, irArgR);
+      }
+      else
+      {
+         IR::Arg_Stk irDst{dst.type->getSizeBytes()};
+         ctx.block.addStmnt(code, irDst, irArgL, irArgR);
+
+         // Move to destination.
+         GenStmnt_MovePart(exp, ctx, dst, false, true);
       }
    }
 }

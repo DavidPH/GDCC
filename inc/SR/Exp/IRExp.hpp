@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,43 +20,40 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Exp_IRExp
+   //
+   class Exp_IRExp : public Exp
    {
-      //
-      // Exp_IRExp
-      //
-      class Exp_IRExp : public Exp
-      {
-         GDCC_Core_CounterPreamble(GDCC::SR::Exp_IRExp, GDCC::SR::Exp);
+      GDCC_Core_CounterPreamble(GDCC::SR::Exp_IRExp, GDCC::SR::Exp);
 
-      public:
-         IRExpCRef const exp;
-         TypeCRef  const type;
+   public:
+      IRExpCRef const exp;
+      TypeCRef  const type;
 
 
-         friend Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type);
-         friend Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type,
-            Core::Origin pos);
+      friend Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type);
+      friend Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type,
+         Core::Origin pos);
 
-      protected:
-         Exp_IRExp(IR::Exp const *exp, Type const *type, Core::Origin pos);
-         virtual ~Exp_IRExp();
+   protected:
+      Exp_IRExp(IR::Exp const *exp, Type const *type, Core::Origin pos);
+      virtual ~Exp_IRExp();
 
-         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
+      virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 
-         virtual IRExpCRef v_getIRExp() const;
+      virtual IRExpCRef v_getIRExp() const;
 
-         virtual TypeCRef v_getType() const;
+      virtual TypeCRef v_getType() const;
 
-         virtual bool v_isEffect() const {return false;}
+      virtual bool v_isEffect() const {return false;}
 
-         virtual bool v_isIRExp() const {return true;}
+      virtual bool v_isIRExp() const {return true;}
 
-         virtual bool v_isNoAuto() const {return true;}
-      };
-   }
+      virtual bool v_isNoAuto() const {return true;}
+   };
 }
 
 #endif//GDCC__SR__Exp__IRExp_H__

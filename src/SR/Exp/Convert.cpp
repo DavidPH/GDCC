@@ -23,58 +23,55 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Exp_Convert::v_getIRExp
+   //
+   IR::Exp::CRef Exp_Convert::v_getIRExp() const
    {
-      //
-      // Exp_Convert::v_getIRExp
-      //
-      IR::Exp::CRef Exp_Convert::v_getIRExp() const
-      {
-         // The conversion logic is handled in Exp::getIRExp.
-         return exp->getIRExp();
-      }
+      // The conversion logic is handled in Exp::getIRExp.
+      return exp->getIRExp();
+   }
 
-      //
-      // Exp_ConvertArith::v_genStmnt
-      //
-      void Exp_ConvertArith::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
-      {
-         if(GenStmntNul(this, ctx, dst)) return;
+   //
+   // Exp_ConvertArith::v_genStmnt
+   //
+   void Exp_ConvertArith::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
+   {
+      if(GenStmntNul(this, ctx, dst)) return;
 
-         // Evaluate expression to stack.
-         exp->genStmntStk(ctx);
+      // Evaluate expression to stack.
+      exp->genStmntStk(ctx);
 
-         // Convert on stack.
-         GenStmnt_ConvertArith(this, type, exp->getType(), ctx);
+      // Convert on stack.
+      GenStmnt_ConvertArith(this, type, exp->getType(), ctx);
 
-         // Move to destination.
-         GenStmnt_MovePart(exp, ctx, dst, false, true);
-      }
+      // Move to destination.
+      GenStmnt_MovePart(exp, ctx, dst, false, true);
+   }
 
-      //
-      // Exp_ConvertBitfield::v_genStmnt
-      //
-      void Exp_ConvertBitfield::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
-      {
-         if(GenStmntNul(this, ctx, dst)) return;
+   //
+   // Exp_ConvertBitfield::v_genStmnt
+   //
+   void Exp_ConvertBitfield::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
+   {
+      if(GenStmntNul(this, ctx, dst)) return;
 
-         // Evaluate expression to stack.
-         exp->genStmntStk(ctx);
+      // Evaluate expression to stack.
+      exp->genStmntStk(ctx);
 
-         // Convert on stack.
-         auto bitT = exp->getType();
-         auto sign = bitT->getSizeBitsS();
-         auto bits = bitT->getSizeBitsF() + bitT->getSizeBitsI() + sign;
-         auto offs = bitT->getSizeBitsO();
-         auto code = sign ? IR::Code::Bges : IR::Code::Bget;
-         ctx.block.setArgSize()
-            .addStmnt(code, dst.getIRArgStk(), exp->getIRArgStk(), bits, offs);
+      // Convert on stack.
+      auto bitT = exp->getType();
+      auto sign = bitT->getSizeBitsS();
+      auto bits = bitT->getSizeBitsF() + bitT->getSizeBitsI() + sign;
+      auto offs = bitT->getSizeBitsO();
+      auto code = sign ? IR::Code::Bges : IR::Code::Bget;
+      ctx.block.setArgSize()
+         .addStmnt(code, dst.getIRArgStk(), exp->getIRArgStk(), bits, offs);
 
-         // Move to destination.
-         GenStmnt_MovePart(exp, ctx, dst, false, true);
-      }
+      // Move to destination.
+      GenStmnt_MovePart(exp, ctx, dst, false, true);
    }
 }
 

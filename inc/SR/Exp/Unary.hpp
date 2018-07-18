@@ -45,92 +45,89 @@ protected: \
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Exp_Unary
+   //
+   class Exp_Unary : public Exp
    {
-      //
-      // Exp_Unary
-      //
-      class Exp_Unary : public Exp
-      {
-         GDCC_Core_CounterPreambleAbstract(
-            GDCC::SR::Exp_Unary, GDCC::SR::Exp);
+      GDCC_Core_CounterPreambleAbstract(
+         GDCC::SR::Exp_Unary, GDCC::SR::Exp);
 
-      public:
-         Exp::CRef const exp;
-         TypeCRef  const type;
+   public:
+      Exp::CRef const exp;
+      TypeCRef  const type;
 
-      protected:
-         Exp_Unary(Type const *t, Exp const *e, Core::Origin pos);
-         virtual ~Exp_Unary();
+   protected:
+      Exp_Unary(Type const *t, Exp const *e, Core::Origin pos);
+      virtual ~Exp_Unary();
 
-         virtual TypeCRef v_getType() const;
+      virtual TypeCRef v_getType() const;
 
-         virtual bool v_isEffect() const;
+      virtual bool v_isEffect() const;
 
-         virtual bool v_isIRExp() const;
+      virtual bool v_isIRExp() const;
 
-         virtual bool v_isNoAuto() const;
-      };
+      virtual bool v_isNoAuto() const;
+   };
 
-      //
-      // Exp_UnaryCode
-      //
-      template<typename Base>
-      class Exp_UnaryCode : public Base
-      {
-         GDCC_Core_CounterPreamble(GDCC::SR::Exp_UnaryCode<Base>, Base);
+   //
+   // Exp_UnaryCode
+   //
+   template<typename Base>
+   class Exp_UnaryCode : public Base
+   {
+      GDCC_Core_CounterPreamble(GDCC::SR::Exp_UnaryCode<Base>, Base);
 
-      public:
-         IR::Code const code;
+   public:
+      IR::Code const code;
 
 
-         // Create
-         static Exp::CRef Create(IR::Code code, Type const *t, Exp const *e,
-            Core::Origin pos)
-            {return Exp::CRef(new This(code, t, e, pos));}
+      // Create
+      static Exp::CRef Create(IR::Code code, Type const *t, Exp const *e,
+         Core::Origin pos)
+         {return Exp::CRef(new This(code, t, e, pos));}
 
-      protected:
-         // constructor
-         Exp_UnaryCode(IR::Code c, Type const *t, Exp const *e, Core::Origin pos_) :
-            Super{t, e, pos_}, code{c} {}
+   protected:
+      // constructor
+      Exp_UnaryCode(IR::Code c, Type const *t, Exp const *e, Core::Origin pos_) :
+         Super{t, e, pos_}, code{c} {}
 
-         // v_genStmnt
-         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
-            {GenStmnt_UnaryCode(this, code, ctx, dst);}
-      };
+      // v_genStmnt
+      virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
+         {GenStmnt_UnaryCode(this, code, ctx, dst);}
+   };
 
-      //
-      // Exp_Inv
-      //
-      class Exp_Inv : public Exp_Unary
-      {
-         GDCC_Core_CounterPreambleAbstract(
-            GDCC::SR::Exp_Inv, GDCC::SR::Exp_Unary);
+   //
+   // Exp_Inv
+   //
+   class Exp_Inv : public Exp_Unary
+   {
+      GDCC_Core_CounterPreambleAbstract(
+         GDCC::SR::Exp_Inv, GDCC::SR::Exp_Unary);
 
-      protected:
-         Exp_Inv(Type const *t, Exp const *e, Core::Origin pos_) :
-            Super{t, e, pos_} {}
+   protected:
+      Exp_Inv(Type const *t, Exp const *e, Core::Origin pos_) :
+         Super{t, e, pos_} {}
 
-         virtual IRExpCRef v_getIRExp() const;
-      };
+      virtual IRExpCRef v_getIRExp() const;
+   };
 
-      //
-      // Exp_Neg
-      //
-      class Exp_Neg : public Exp_Unary
-      {
-         GDCC_Core_CounterPreambleAbstract(
-            GDCC::SR::Exp_Neg, GDCC::SR::Exp_Unary);
+   //
+   // Exp_Neg
+   //
+   class Exp_Neg : public Exp_Unary
+   {
+      GDCC_Core_CounterPreambleAbstract(
+         GDCC::SR::Exp_Neg, GDCC::SR::Exp_Unary);
 
-      protected:
-         Exp_Neg(Type const *t, Exp const *e, Core::Origin pos_) :
-            Super{t, e, pos_} {}
+   protected:
+      Exp_Neg(Type const *t, Exp const *e, Core::Origin pos_) :
+         Super{t, e, pos_} {}
 
-         virtual IRExpCRef v_getIRExp() const;
-      };
-   }
+      virtual IRExpCRef v_getIRExp() const;
+   };
 }
 
 
@@ -138,18 +135,15 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
-   {
-      // Does generic codegen centered around a 2-arg unary instruction.
-      void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::Code code,
-         GenStmntCtx const &ctx, Arg const &dst);
+   // Does generic codegen centered around a 2-arg unary instruction.
+   void GenStmnt_UnaryCode(Exp_Unary const *exp, IR::Code code,
+      GenStmntCtx const &ctx, Arg const &dst);
 
-      // Returns true if only evaluating for side effects.
-      bool GenStmntNul(Exp_Unary const *exp, GenStmntCtx const &ctx,
-         Arg const &dst);
-   }
+   // Returns true if only evaluating for side effects.
+   bool GenStmntNul(Exp_Unary const *exp, GenStmntCtx const &ctx,
+      Arg const &dst);
 }
 
 #endif//GDCC__SR__Exp__Binary_H__

@@ -45,63 +45,55 @@ protected: \
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace IR
+   //
+   // Exp_Binary
+   //
+   class Exp_Binary : public Exp
    {
-      enum class Code;
-   }
+      GDCC_Core_CounterPreambleAbstract(
+         GDCC::SR::Exp_Binary, GDCC::SR::Exp);
 
-   namespace SR
+   public:
+      Exp::CRef const expL, expR;
+      TypeCRef  const type;
+
+   protected:
+      Exp_Binary(Exp_Binary const &e);
+      Exp_Binary(Type const *t, Exp const *l, Exp const *r,
+         Core::Origin pos);
+      virtual ~Exp_Binary();
+
+      virtual TypeCRef v_getType() const;
+
+      virtual bool v_isEffect() const;
+
+      virtual bool v_isIRExp() const;
+
+      virtual bool v_isNoAuto() const;
+   };
+
+   //
+   // Exp_Pair
+   //
+   class Exp_Pair : public Exp_Binary
    {
-      //
-      // Exp_Binary
-      //
-      class Exp_Binary : public Exp
-      {
-         GDCC_Core_CounterPreambleAbstract(
-            GDCC::SR::Exp_Binary, GDCC::SR::Exp);
+      GDCC_Core_CounterPreamble(GDCC::SR::Exp_Pair, GDCC::SR::Exp_Binary);
 
-      public:
-         Exp::CRef const expL, expR;
-         TypeCRef  const type;
+   public:
+      static Exp::CRef Create(Exp const *l, Exp const *r, Core::Origin pos)
+         {return static_cast<Exp::CRef>(new Exp_Pair(l, r, pos));}
 
-      protected:
-         Exp_Binary(Exp_Binary const &e);
-         Exp_Binary(Type const *t, Exp const *l, Exp const *r,
-            Core::Origin pos);
-         virtual ~Exp_Binary();
+   protected:
+      Exp_Pair(Exp const *l, Exp const *r, Core::Origin pos);
 
-         virtual TypeCRef v_getType() const;
+      virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 
-         virtual bool v_isEffect() const;
+      virtual IRExpCRef v_getIRExp() const;
 
-         virtual bool v_isIRExp() const;
-
-         virtual bool v_isNoAuto() const;
-      };
-
-      //
-      // Exp_Pair
-      //
-      class Exp_Pair : public Exp_Binary
-      {
-         GDCC_Core_CounterPreamble(GDCC::SR::Exp_Pair, GDCC::SR::Exp_Binary);
-
-      public:
-         static Exp::CRef Create(Exp const *l, Exp const *r, Core::Origin pos)
-            {return static_cast<Exp::CRef>(new Exp_Pair(l, r, pos));}
-
-      protected:
-         Exp_Pair(Exp const *l, Exp const *r, Core::Origin pos);
-
-         virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
-
-         virtual IRExpCRef v_getIRExp() const;
-
-         virtual bool v_isIRExp() const;
-      };
-   }
+      virtual bool v_isIRExp() const;
+   };
 }
 
 
@@ -109,22 +101,19 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
-   {
-      // Does pointer-integer codegen using a 3-arg arithmetic instruction.
-      void GenStmnt_Point(Exp_Binary const *exp, IR::Code code,
-         GenStmntCtx const &ctx, Arg const &dst);
+   // Does pointer-integer codegen using a 3-arg arithmetic instruction.
+   void GenStmnt_Point(Exp_Binary const *exp, IR::Code code,
+      GenStmntCtx const &ctx, Arg const &dst);
 
-      // As in GenStmnt_Point, but also assigns the result to the left operand.
-      void GenStmnt_PointEq(Exp_Binary const *exp, IR::Code code,
-         GenStmntCtx const &ctx, Arg const &dst, bool post = false);
+   // As in GenStmnt_Point, but also assigns the result to the left operand.
+   void GenStmnt_PointEq(Exp_Binary const *exp, IR::Code code,
+      GenStmntCtx const &ctx, Arg const &dst, bool post = false);
 
-      // Returns true if only evaluating for side effects.
-      bool GenStmntNul(Exp_Binary const *exp, GenStmntCtx const &ctx,
-         Arg const &dst);
-   }
+   // Returns true if only evaluating for side effects.
+   bool GenStmntNul(Exp_Binary const *exp, GenStmntCtx const &ctx,
+      Arg const &dst);
 }
 
 #endif//GDCC__SR__Exp__Binary_H__

@@ -22,143 +22,140 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::SR
 {
-   namespace SR
+   //
+   // Temporary constructor
+   //
+   Temporary::Temporary(GenStmntCtx const &ctx, Core::Origin pos_) :
+      pos  {pos_},
+      fn   {ctx.fn},
+      prog {&ctx.prog},
+      w    {Platform::GetWordBytes()}
    {
-      //
-      // Temporary constructor
-      //
-      Temporary::Temporary(GenStmntCtx const &ctx, Core::Origin pos_) :
-         pos  {pos_},
-         fn   {ctx.fn},
-         prog {&ctx.prog},
-         w    {Platform::GetWordBytes()}
-      {
-         init();
-      }
+      init();
+   }
 
-      //
-      // Temporary constructor
-      //
-      Temporary::Temporary(GenStmntCtx const &ctx, Core::Origin pos_,
-         Core::FastU allocSize) :
-         pos  {pos_},
-         fn   {ctx.fn},
-         prog {&ctx.prog},
-         w    {Platform::GetWordBytes()}
-      {
-         init();
-         alloc(allocSize);
-      }
+   //
+   // Temporary constructor
+   //
+   Temporary::Temporary(GenStmntCtx const &ctx, Core::Origin pos_,
+      Core::FastU allocSize) :
+      pos  {pos_},
+      fn   {ctx.fn},
+      prog {&ctx.prog},
+      w    {Platform::GetWordBytes()}
+   {
+      init();
+      alloc(allocSize);
+   }
 
-      //
-      // Temporary move constructor
-      //
-      Temporary::Temporary(Temporary &&tmp) :
-         pos  {tmp.pos},
-         block{tmp.block},
-         expB {tmp.expB},
-         fn   {tmp.fn},
-         prog {tmp.prog},
-         w    {tmp.w}
-      {
-         tmp.block = nullptr;
-      }
+   //
+   // Temporary move constructor
+   //
+   Temporary::Temporary(Temporary &&tmp) :
+      pos  {tmp.pos},
+      block{tmp.block},
+      expB {tmp.expB},
+      fn   {tmp.fn},
+      prog {tmp.prog},
+      w    {tmp.w}
+   {
+      tmp.block = nullptr;
+   }
 
-      //
-      // Temporary destructor
-      //
-      Temporary::~Temporary()
-      {
-         if(block)
-            fn->localTmp.free(block);
-      }
-
-      //
-      // Temporary::operator = Temporary
-      //
-      Temporary &Temporary::operator = (Temporary &&tmp)
-      {
-         if(block)
-            fn->localTmp.free(block);
-
-         pos   = tmp.pos;
-         block = tmp.block;
-         expB  = tmp.expB;
-         fn    = tmp.fn;
-         prog  = tmp.prog;
-         w     = tmp.w;
-
-         tmp.block = nullptr;
-
-         return *this;
-      }
-
-      //
-      // Temporary::alloc
-      //
-      void Temporary::alloc(Core::FastU allocSize)
-      {
-         // Check if already allocated.
-         if(block)
-         {
-            // If already allocated at size, just keep that.
-            if(block->size == allocSize) return;
-
-            // Otherwise, free and allocate a new temporary.
-            fn->localTmp.free(block);
-         }
-
-         block = fn->localTmp.alloc(allocSize);
-      }
-
-      //
-      // Temporary::free
-      //
-      void Temporary::free()
-      {
-         if(!block) return;
-
+   //
+   // Temporary destructor
+   //
+   Temporary::~Temporary()
+   {
+      if(block)
          fn->localTmp.free(block);
-         block = nullptr;
+   }
+
+   //
+   // Temporary::operator = Temporary
+   //
+   Temporary &Temporary::operator = (Temporary &&tmp)
+   {
+      if(block)
+         fn->localTmp.free(block);
+
+      pos   = tmp.pos;
+      block = tmp.block;
+      expB  = tmp.expB;
+      fn    = tmp.fn;
+      prog  = tmp.prog;
+      w     = tmp.w;
+
+      tmp.block = nullptr;
+
+      return *this;
+   }
+
+   //
+   // Temporary::alloc
+   //
+   void Temporary::alloc(Core::FastU allocSize)
+   {
+      // Check if already allocated.
+      if(block)
+      {
+         // If already allocated at size, just keep that.
+         if(block->size == allocSize) return;
+
+         // Otherwise, free and allocate a new temporary.
+         fn->localTmp.free(block);
       }
 
-      //
-      // Temporary::getArg
-      //
-      IR::Arg_LocReg Temporary::getArg() const
-      {
-         return {sizeBytes(), IR::Arg_Lit(w, expB), block->lo * w};
-      }
+      block = fn->localTmp.alloc(allocSize);
+   }
 
-      //
-      // Temporary::getArg
-      //
-      IR::Arg_LocReg Temporary::getArg(Core::FastU off) const
-      {
-         return {w, IR::Arg_Lit(w, expB), (block->lo + off) * w};
-      }
+   //
+   // Temporary::free
+   //
+   void Temporary::free()
+   {
+      if(!block) return;
 
-      //
-      // Temporary::getArgStk
-      //
-      IR::Arg_Stk Temporary::getArgStk() const
-      {
-         return IR::Arg_Stk{sizeBytes()};
-      }
+      fn->localTmp.free(block);
+      block = nullptr;
+   }
 
-      //
-      // Temporary::init
-      //
-      void Temporary::init()
-      {
-         block = nullptr;
-         expB  = IR::ExpCreate_Glyph({prog, fn->getLabelTmp()}, pos);
-      }
+   //
+   // Temporary::getArg
+   //
+   IR::Arg_LocReg Temporary::getArg() const
+   {
+      return {sizeBytes(), IR::Arg_Lit(w, expB), block->lo * w};
+   }
+
+   //
+   // Temporary::getArg
+   //
+   IR::Arg_LocReg Temporary::getArg(Core::FastU off) const
+   {
+      return {w, IR::Arg_Lit(w, expB), (block->lo + off) * w};
+   }
+
+   //
+   // Temporary::getArgStk
+   //
+   IR::Arg_Stk Temporary::getArgStk() const
+   {
+      return IR::Arg_Stk{sizeBytes()};
+   }
+
+   //
+   // Temporary::init
+   //
+   void Temporary::init()
+   {
+      block = nullptr;
+      expB  = IR::ExpCreate_Glyph({prog, fn->getLabelTmp()}, pos);
    }
 }
 
