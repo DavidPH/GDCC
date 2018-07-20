@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2016 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #ifndef GDCC__CC__Warning_H__
 #define GDCC__CC__Warning_H__
 
+#include "../CC/Types.hpp"
+
 #include "../Core/Warning.hpp"
 
 
@@ -20,14 +22,11 @@
 // Extern Objects                                                             |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
-   {
-      extern Core::Warning WarnDeclCompat;
-      extern Core::Warning WarnFileSemico;
-      extern Core::Warning WarnForwardRef;
-   }
+   extern Core::Warning WarnDeclCompat;
+   extern Core::Warning WarnFileSemico;
+   extern Core::Warning WarnForwardRef;
 }
 
 #endif//GDCC__CC__Warning_H__

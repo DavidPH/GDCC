@@ -25,164 +25,161 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // ExpCreate_ArithFixed
+   //
+   // Uses a base type and code set to generalize basic arithmetic
+   // fixed-point expression creation.
+   //
+   template<typename Base, typename Codes>
+   SR::Exp::CRef ExpCreate_ArithFixed(SR::Type const *t,
+      SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
-      //
-      // ExpCreate_ArithFixed
-      //
-      // Uses a base type and code set to generalize basic arithmetic
-      // fixed-point expression creation.
-      //
-      template<typename Base, typename Codes>
-      SR::Exp::CRef ExpCreate_ArithFixed(SR::Type const *t,
-         SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
-      {
-         // Fixed-point arithmetic promotion doesn't always convert to the
-         // result type. For generic handling, do so.
-         auto expL = ExpConvert_Arith(t, l, pos);
-         auto expR = ExpConvert_Arith(t, r, pos);
+      // Fixed-point arithmetic promotion doesn't always convert to the
+      // result type. For generic handling, do so.
+      auto expL = ExpConvert_Arith(t, l, pos);
+      auto expR = ExpConvert_Arith(t, r, pos);
 
-         auto code = SR::ExpCode_ArithFixed<Codes>(t);
+      auto code = SR::ExpCode_ArithFixed<Codes>(t);
 
-         return SR::Exp_Arith<Base>::Create(code, t, expL, expR, pos);
-      }
+      return SR::Exp_Arith<Base>::Create(code, t, expL, expR, pos);
+   }
 
-      //
-      // ExpCreate_ArithFloat
-      //
-      // Uses a base type and code set to generalize basic arithmetic
-      // floating expression creation.
-      //
-      template<typename Base, typename Codes>
-      SR::Exp::CRef ExpCreate_ArithFloat(SR::Type const *t,
-         SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
-      {
-         auto code = SR::ExpCode_ArithFloat<Codes>(t);
+   //
+   // ExpCreate_ArithFloat
+   //
+   // Uses a base type and code set to generalize basic arithmetic
+   // floating expression creation.
+   //
+   template<typename Base, typename Codes>
+   SR::Exp::CRef ExpCreate_ArithFloat(SR::Type const *t,
+      SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   {
+      auto code = SR::ExpCode_ArithFloat<Codes>(t);
 
-         return SR::Exp_Arith<Base>::Create(code, t, l, r, pos);
-      }
+      return SR::Exp_Arith<Base>::Create(code, t, l, r, pos);
+   }
 
-      //
-      // ExpCreate_ArithInteg
-      //
-      // Uses a base type and code set to generalize basic arithmetic
-      // integer expression creation.
-      //
-      template<typename Base, typename Codes>
-      SR::Exp::CRef ExpCreate_ArithInteg(SR::Type const *t,
-         SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
-      {
-         auto code = SR::ExpCode_ArithInteg<Codes>(t);
+   //
+   // ExpCreate_ArithInteg
+   //
+   // Uses a base type and code set to generalize basic arithmetic
+   // integer expression creation.
+   //
+   template<typename Base, typename Codes>
+   SR::Exp::CRef ExpCreate_ArithInteg(SR::Type const *t,
+      SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   {
+      auto code = SR::ExpCode_ArithInteg<Codes>(t);
 
-         return SR::Exp_Arith<Base>::Create(code, t, l, r, pos);
-      }
+      return SR::Exp_Arith<Base>::Create(code, t, l, r, pos);
+   }
 
-      //
-      // ExpCreate_Arith
-      //
-      // Uses a base type and code set to generalize basic arithmetic
-      // expression creation.
-      //
-      template<typename Base, typename Codes>
-      SR::Exp::CRef ExpCreate_Arith(SR::Type const *t, SR::Exp const *l,
-         SR::Exp const *r, Core::Origin pos)
-      {
-         // Floating types.
-         if(t->isCTypeFloat())
-            return ExpCreate_ArithFloat<Base, Codes>(t, l, r, pos);
+   //
+   // ExpCreate_Arith
+   //
+   // Uses a base type and code set to generalize basic arithmetic
+   // expression creation.
+   //
+   template<typename Base, typename Codes>
+   SR::Exp::CRef ExpCreate_Arith(SR::Type const *t, SR::Exp const *l,
+      SR::Exp const *r, Core::Origin pos)
+   {
+      // Floating types.
+      if(t->isCTypeFloat())
+         return ExpCreate_ArithFloat<Base, Codes>(t, l, r, pos);
 
-         // Fixed-point types.
-         if(t->isCTypeFixed())
-            return ExpCreate_ArithFixed<Base, Codes>(t, l, r, pos);
+      // Fixed-point types.
+      if(t->isCTypeFixed())
+         return ExpCreate_ArithFixed<Base, Codes>(t, l, r, pos);
 
-         // Integer types.
-         if(t->isCTypeInteg())
-            return ExpCreate_ArithInteg<Base, Codes>(t, l, r, pos);
+      // Integer types.
+      if(t->isCTypeInteg())
+         return ExpCreate_ArithInteg<Base, Codes>(t, l, r, pos);
 
-         // ???
-         throw Core::ExceptStr(pos, "unsupported arithmetic type");
-      }
+      // ???
+      throw Core::ExceptStr(pos, "unsupported arithmetic type");
+   }
 
-      //
-      // ExpCreate_ArithEqFixed
-      //
-      // Uses a base type and code set to generalize basic arithmetic
-      // fixed-point expression creation.
-      //
-      template<typename Base, typename Codes>
-      SR::Exp::CRef ExpCreate_ArithEqFixed(SR::Type const *evalT,
-         SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
-         Core::Origin pos, bool post = false)
-      {
-         // Fixed-point arithmetic promotion doesn't always convert to the
-         // result type. For generic handling, do so.
-         auto expR = ExpConvert_Arith(evalT, r, pos);
+   //
+   // ExpCreate_ArithEqFixed
+   //
+   // Uses a base type and code set to generalize basic arithmetic
+   // fixed-point expression creation.
+   //
+   template<typename Base, typename Codes>
+   SR::Exp::CRef ExpCreate_ArithEqFixed(SR::Type const *evalT,
+      SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos, bool post = false)
+   {
+      // Fixed-point arithmetic promotion doesn't always convert to the
+      // result type. For generic handling, do so.
+      auto expR = ExpConvert_Arith(evalT, r, pos);
 
-         auto code = SR::ExpCode_ArithFixed<Codes>(evalT);
+      auto code = SR::ExpCode_ArithFixed<Codes>(evalT);
 
-         return SR::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, expR, pos);
-      }
+      return SR::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, expR, pos);
+   }
 
-      //
-      // ExpCreate_ArithEqFloat
-      //
-      // Uses a base type and code set to generalize basic arithmetic
-      // floating expression creation.
-      //
-      template<typename Base, typename Codes>
-      SR::Exp::CRef ExpCreate_ArithEqFloat(SR::Type const *evalT,
-         SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
-         Core::Origin pos, bool post = false)
-      {
-         auto code = SR::ExpCode_ArithFloat<Codes>(evalT);
+   //
+   // ExpCreate_ArithEqFloat
+   //
+   // Uses a base type and code set to generalize basic arithmetic
+   // floating expression creation.
+   //
+   template<typename Base, typename Codes>
+   SR::Exp::CRef ExpCreate_ArithEqFloat(SR::Type const *evalT,
+      SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos, bool post = false)
+   {
+      auto code = SR::ExpCode_ArithFloat<Codes>(evalT);
 
-         return SR::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, r, pos);
-      }
+      return SR::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, r, pos);
+   }
 
-      //
-      // ExpCreate_ArithEqInteg
-      //
-      // Uses a base type and code set to generalize basic arithmetic
-      // integer expression creation.
-      //
-      template<typename Base, typename Codes>
-      SR::Exp::CRef ExpCreate_ArithEqInteg(SR::Type const *evalT,
-         SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
-         Core::Origin pos, bool post = false)
-      {
-         auto code = SR::ExpCode_ArithInteg<Codes>(evalT);
+   //
+   // ExpCreate_ArithEqInteg
+   //
+   // Uses a base type and code set to generalize basic arithmetic
+   // integer expression creation.
+   //
+   template<typename Base, typename Codes>
+   SR::Exp::CRef ExpCreate_ArithEqInteg(SR::Type const *evalT,
+      SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos, bool post = false)
+   {
+      auto code = SR::ExpCode_ArithInteg<Codes>(evalT);
 
-         return SR::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, r, pos);
-      }
+      return SR::Exp_ArithEq<Base>::Create(evalT, code, post, t, l, r, pos);
+   }
 
-      //
-      // ExpCreate_ArithEq
-      //
-      // Uses a base type and code set to generalize basic arithmetic
-      // assignment expression creation.
-      //
-      template<typename Base, typename Codes>
-      SR::Exp::CRef ExpCreate_ArithEq(SR::Type const *evalT,
-         SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
-         Core::Origin pos, bool post = false)
-      {
-         // Floating types.
-         if(evalT->isCTypeFloat())
-            return ExpCreate_ArithEqFloat<Base, Codes>(evalT, t, l, r, pos, post);
+   //
+   // ExpCreate_ArithEq
+   //
+   // Uses a base type and code set to generalize basic arithmetic
+   // assignment expression creation.
+   //
+   template<typename Base, typename Codes>
+   SR::Exp::CRef ExpCreate_ArithEq(SR::Type const *evalT,
+      SR::Type const *t, SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos, bool post = false)
+   {
+      // Floating types.
+      if(evalT->isCTypeFloat())
+         return ExpCreate_ArithEqFloat<Base, Codes>(evalT, t, l, r, pos, post);
 
-         // Fixed-point types.
-         if(evalT->isCTypeFixed())
-            return ExpCreate_ArithEqFixed<Base, Codes>(evalT, t, l, r, pos, post);
+      // Fixed-point types.
+      if(evalT->isCTypeFixed())
+         return ExpCreate_ArithEqFixed<Base, Codes>(evalT, t, l, r, pos, post);
 
-         // Integer types.
-         if(evalT->isCTypeInteg())
-            return ExpCreate_ArithEqInteg<Base, Codes>(evalT, t, l, r, pos, post);
+      // Integer types.
+      if(evalT->isCTypeInteg())
+         return ExpCreate_ArithEqInteg<Base, Codes>(evalT, t, l, r, pos, post);
 
-         // ???
-         throw Core::ExceptStr(pos, "unsupported arithmetic type");
-      }
+      // ???
+      throw Core::ExceptStr(pos, "unsupported arithmetic type");
    }
 }
 

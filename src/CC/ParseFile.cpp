@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2016 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -30,56 +30,53 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // GetGlobalLabel
+   //
+   Core::String GetGlobalLabel(std::size_t hash)
    {
-      //
-      // GetGlobalLabel
-      //
-      Core::String GetGlobalLabel(std::size_t hash)
-      {
-         char buf[2 + (sizeof(std::size_t) * CHAR_BIT + 3) / 4 + 1];
+      char buf[2 + (sizeof(std::size_t) * CHAR_BIT + 3) / 4 + 1];
 
-         buf[0] = '_';
-         buf[1] = '$';
+      buf[0] = '_';
+      buf[1] = '$';
 
-         std::sprintf(buf + 2, "%*zX", static_cast<int>(sizeof(buf) - 3), hash);
+      std::sprintf(buf + 2, "%*zX", static_cast<int>(sizeof(buf) - 3), hash);
 
-         return {buf, sizeof(buf) - 1};
-      }
+      return {buf, sizeof(buf) - 1};
+   }
 
-      //
-      // ParseFile
-      //
-      void ParseFile(char const *inName, IR::Program &prog)
-      {
-         auto buf = Core::FileOpenBlock(inName);
+   //
+   // ParseFile
+   //
+   void ParseFile(char const *inName, IR::Program &prog)
+   {
+      auto buf = Core::FileOpenBlock(inName);
 
-         Core::String      file {inName};
-         CPP::IncludeLang  langs{"C"};
-         CPP::MacroMap     macr {CPP::Macro::Stringize(file)};
-         Core::String      path {Core::PathDirname(file)};
-         CPP::PragmaData   pragd{};
-         CPP::PragmaParser pragp{pragd};
-         Core::StringBuf   sbuf {buf->data(), buf->size()};
-         CPP::TStream      tstr {sbuf, langs, macr, pragd, pragp, file, path};
-         Parser            ctx  {tstr, pragd, prog};
-         Scope_Global      scope{GetGlobalLabel(buf->getHash())};
+      Core::String      file {inName};
+      CPP::IncludeLang  langs{"C"};
+      CPP::MacroMap     macr {CPP::Macro::Stringize(file)};
+      Core::String      path {Core::PathDirname(file)};
+      CPP::PragmaData   pragd{};
+      CPP::PragmaParser pragp{pragd};
+      Core::StringBuf   sbuf {buf->data(), buf->size()};
+      CPP::TStream      tstr {sbuf, langs, macr, pragd, pragp, file, path};
+      Parser            ctx  {tstr, pragd, prog};
+      Scope_Global      scope{GetGlobalLabel(buf->getHash())};
 
-         // Read declarations.
-         while(ctx.in.peek().tok != Core::TOK_EOF)
-            ctx.getDecl(scope);
+      // Read declarations.
+      while(ctx.in.peek().tok != Core::TOK_EOF)
+         ctx.getDecl(scope);
 
-         // Add ACS libraries.
-         for(auto const &lib : pragd.stateLibrary)
-            prog.getImport(lib);
+      // Add ACS libraries.
+      for(auto const &lib : pragd.stateLibrary)
+         prog.getImport(lib);
 
-         scope.allocAuto();
+      scope.allocAuto();
 
-         // Generate IR data.
-         scope.genIR(prog);
-      }
+      // Generate IR data.
+      scope.genIR(prog);
    }
 }
 

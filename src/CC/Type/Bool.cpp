@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,69 +21,66 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   GDCC_CC_Type_ImplGet(Bool,     Bool,)
+   GDCC_CC_Type_ImplGet(BoolSoft, BoolSoft,)
+
+   //
+   // Type_Bool::getIRType
+   //
+   IR::Type Type_Bool::getIRType() const
    {
-      GDCC_CC_Type_ImplGet(Bool,     Bool,)
-      GDCC_CC_Type_ImplGet(BoolSoft, BoolSoft,)
+      return IR::Type_Fixed(getSizeBitsI(), getSizeBitsF(), getSizeBitsS(),
+         isTypeSaturate());
+   }
 
-      //
-      // Type_Bool::getIRType
-      //
-      IR::Type Type_Bool::getIRType() const
-      {
-         return IR::Type_Fixed(getSizeBitsI(), getSizeBitsF(), getSizeBitsS(),
-            isTypeSaturate());
-      }
+   //
+   // Type_Bool::getRankC
+   //
+   SR::TypeRankC Type_Bool::getRankC() const
+   {
+      return SR::TypeRankC::Bool;
+   }
 
-      //
-      // Type_Bool::getRankC
-      //
-      SR::TypeRankC Type_Bool::getRankC() const
-      {
-         return SR::TypeRankC::Bool;
-      }
+   //
+   // Type_BoolSoft::getSizeAlign
+   //
+   Core::FastU Type_BoolSoft::getSizeAlign() const
+   {
+      return Platform::GetWordAlign();
+   }
 
-      //
-      // Type_BoolSoft::getSizeAlign
-      //
-      Core::FastU Type_BoolSoft::getSizeAlign() const
-      {
-         return Platform::GetWordAlign();
-      }
+   //
+   // Type_BoolSoft::getSizeBytes
+   //
+   Core::FastU Type_BoolSoft::getSizeBytes() const
+   {
+      return Platform::GetWordBytes();
+   }
 
-      //
-      // Type_BoolSoft::getSizeBytes
-      //
-      Core::FastU Type_BoolSoft::getSizeBytes() const
-      {
-         return Platform::GetWordBytes();
-      }
+   //
+   // Type_BoolSoft::getSizePoint
+   //
+   Core::FastU Type_BoolSoft::getSizePoint() const
+   {
+      return 1;
+   }
 
-      //
-      // Type_BoolSoft::getSizePoint
-      //
-      Core::FastU Type_BoolSoft::getSizePoint() const
-      {
-         return 1;
-      }
+   //
+   // Type_BoolSoft::getSizeShift
+   //
+   Core::FastU Type_BoolSoft::getSizeShift() const
+   {
+      return Platform::GetWordShift();
+   }
 
-      //
-      // Type_BoolSoft::getSizeShift
-      //
-      Core::FastU Type_BoolSoft::getSizeShift() const
-      {
-         return Platform::GetWordShift();
-      }
-
-      //
-      // Type_BoolSoft::getSizeWords
-      //
-      Core::FastU Type_BoolSoft::getSizeWords() const
-      {
-         return 1;
-      }
+   //
+   // Type_BoolSoft::getSizeWords
+   //
+   Core::FastU Type_BoolSoft::getSizeWords() const
+   {
+      return 1;
    }
 }
 

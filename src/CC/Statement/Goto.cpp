@@ -29,162 +29,159 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Statement_Goto constructor
+   //
+   Statement_Goto::Statement_Goto(Labels const &labels_, Core::Origin pos_,
+      Core::String label_) :
+      Super{labels_, pos_},
+
+      label{label_}
    {
-      //
-      // Statement_Goto constructor
-      //
-      Statement_Goto::Statement_Goto(Labels const &labels_, Core::Origin pos_,
-         Core::String label_) :
-         Super{labels_, pos_},
+   }
 
-         label{label_}
+   //
+   // Statement_Goto constructor
+   //
+   Statement_Goto::Statement_Goto(Labels &&labels_, Core::Origin pos_,
+      Core::String label_) :
+      Super{std::move(labels_), pos_},
+
+      label{label_}
+   {
+   }
+
+   //
+   // Statement_Goto::v_genStmnt
+   //
+   void Statement_Goto::v_genStmnt(SR::GenStmntCtx const &ctx) const
+   {
+      ctx.block.setArgSize().addStmnt(IR::Code::Jump, IR::Glyph(ctx.prog, label));
+   }
+
+   //
+   // Statement_GotoDyn constructor
+   //
+   Statement_GotoDyn::Statement_GotoDyn(Labels &&labels_, Core::Origin pos_,
+      SR::Exp const *exp_) :
+      Super{std::move(labels_), pos_},
+
+      exp{exp_}
+   {
+   }
+
+   //
+   // Statement_GotoDyn destructor
+   //
+   Statement_GotoDyn::~Statement_GotoDyn()
+   {
+   }
+
+   //
+   // Statement_GotoDyn::v_genStmnt
+   //
+   void Statement_GotoDyn::v_genStmnt(SR::GenStmntCtx const &ctx) const
+   {
+      if(exp->getArg().isIRArg())
       {
+         ctx.block.addStmnt(IR::Code::Jdyn, exp->getArg().getIRArg(ctx.prog));
       }
-
-      //
-      // Statement_Goto constructor
-      //
-      Statement_Goto::Statement_Goto(Labels &&labels_, Core::Origin pos_,
-         Core::String label_) :
-         Super{std::move(labels_), pos_},
-
-         label{label_}
+      else
       {
+         exp->genStmntStk(ctx);
+         ctx.block.setArgSize().addStmnt(IR::Code::Jdyn, IR::Block::Stk());
       }
+   }
 
-      //
-      // Statement_Goto::v_genStmnt
-      //
-      void Statement_Goto::v_genStmnt(SR::GenStmntCtx const &ctx) const
-      {
-         ctx.block.setArgSize().addStmnt(IR::Code::Jump, IR::Glyph(ctx.prog, label));
-      }
+   //
+   // Statement_GotoDyn::v_isNoAuto
+   //
+   bool Statement_GotoDyn::v_isNoAuto() const
+   {
+      return exp->isNoAuto();
+   }
 
-      //
-      // Statement_GotoDyn constructor
-      //
-      Statement_GotoDyn::Statement_GotoDyn(Labels &&labels_, Core::Origin pos_,
-         SR::Exp const *exp_) :
-         Super{std::move(labels_), pos_},
+   //
+   // StatementCreate_Break
+   //
+   SR::Statement::CRef StatementCreate_Break(
+      SR::Statement::Labels const &labels, Core::Origin pos,
+      Scope_Local &ctx)
+   {
+      if(auto label = ctx.getLabelBreak())
+         return Statement_Goto::Create(labels, pos, label);
 
-         exp{exp_}
-      {
-      }
+      throw Core::ExceptStr(pos, "invalid break");
+   }
 
-      //
-      // Statement_GotoDyn destructor
-      //
-      Statement_GotoDyn::~Statement_GotoDyn()
-      {
-      }
+   //
+   // StatementCreate_Break
+   //
+   SR::Statement::CRef StatementCreate_Break(
+      SR::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx)
+   {
+      if(auto label = ctx.getLabelBreak())
+         return Statement_Goto::Create(std::move(labels), pos, label);
 
-      //
-      // Statement_GotoDyn::v_genStmnt
-      //
-      void Statement_GotoDyn::v_genStmnt(SR::GenStmntCtx const &ctx) const
-      {
-         if(exp->getArg().isIRArg())
-         {
-            ctx.block.addStmnt(IR::Code::Jdyn, exp->getArg().getIRArg(ctx.prog));
-         }
-         else
-         {
-            exp->genStmntStk(ctx);
-            ctx.block.setArgSize().addStmnt(IR::Code::Jdyn, IR::Block::Stk());
-         }
-      }
+      throw Core::ExceptStr(pos, "invalid break");
+   }
 
-      //
-      // Statement_GotoDyn::v_isNoAuto
-      //
-      bool Statement_GotoDyn::v_isNoAuto() const
-      {
-         return exp->isNoAuto();
-      }
+   //
+   // StatementCreate_Continue
+   //
+   SR::Statement::CRef StatementCreate_Continue(
+      SR::Statement::Labels const &labels, Core::Origin pos,
+      Scope_Local &ctx)
+   {
+      if(auto label = ctx.getLabelContinue())
+         return Statement_Goto::Create(labels, pos, label);
 
-      //
-      // StatementCreate_Break
-      //
-      SR::Statement::CRef StatementCreate_Break(
-         SR::Statement::Labels const &labels, Core::Origin pos,
-         Scope_Local &ctx)
-      {
-         if(auto label = ctx.getLabelBreak())
-            return Statement_Goto::Create(labels, pos, label);
+      throw Core::ExceptStr(pos, "invalid continue");
+   }
 
-         throw Core::ExceptStr(pos, "invalid break");
-      }
+   //
+   // StatementCreate_Continue
+   //
+   SR::Statement::CRef StatementCreate_Continue(
+      SR::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx)
+   {
+      if(auto label = ctx.getLabelContinue())
+         return Statement_Goto::Create(std::move(labels), pos, label);
 
-      //
-      // StatementCreate_Break
-      //
-      SR::Statement::CRef StatementCreate_Break(
-         SR::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx)
-      {
-         if(auto label = ctx.getLabelBreak())
-            return Statement_Goto::Create(std::move(labels), pos, label);
+      throw Core::ExceptStr(pos, "invalid continue");
+   }
 
-         throw Core::ExceptStr(pos, "invalid break");
-      }
+   //
+   // StatementCreate_Goto
+   //
+   SR::Statement::CRef StatementCreate_Goto(SR::Statement::Labels &&labels,
+         Core::Origin pos, SR::Exp const *exp_)
+   {
+      auto exp = ExpPromo_Assign(SR::Type::Label->getTypePointer(), exp_, pos);
 
-      //
-      // StatementCreate_Continue
-      //
-      SR::Statement::CRef StatementCreate_Continue(
-         SR::Statement::Labels const &labels, Core::Origin pos,
-         Scope_Local &ctx)
-      {
-         if(auto label = ctx.getLabelContinue())
-            return Statement_Goto::Create(labels, pos, label);
+      return Statement_GotoDyn::Create(std::move(labels), pos, exp);
+   }
 
-         throw Core::ExceptStr(pos, "invalid continue");
-      }
+   //
+   // StatementCreate_Goto
+   //
+   SR::Statement::CRef StatementCreate_Goto(
+      SR::Statement::Labels const &labels, Core::Origin pos,
+      Scope_Local &ctx, Core::String name)
+   {
+      return Statement_Goto::Create(labels, pos, ctx.getLabel(name));
+   }
 
-      //
-      // StatementCreate_Continue
-      //
-      SR::Statement::CRef StatementCreate_Continue(
-         SR::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx)
-      {
-         if(auto label = ctx.getLabelContinue())
-            return Statement_Goto::Create(std::move(labels), pos, label);
-
-         throw Core::ExceptStr(pos, "invalid continue");
-      }
-
-      //
-      // StatementCreate_Goto
-      //
-      SR::Statement::CRef StatementCreate_Goto(SR::Statement::Labels &&labels,
-          Core::Origin pos, SR::Exp const *exp_)
-      {
-         auto exp = ExpPromo_Assign(SR::Type::Label->getTypePointer(), exp_, pos);
-
-         return Statement_GotoDyn::Create(std::move(labels), pos, exp);
-      }
-
-      //
-      // StatementCreate_Goto
-      //
-      SR::Statement::CRef StatementCreate_Goto(
-         SR::Statement::Labels const &labels, Core::Origin pos,
-         Scope_Local &ctx, Core::String name)
-      {
-         return Statement_Goto::Create(labels, pos, ctx.getLabel(name));
-      }
-
-      //
-      // StatementCreate_Goto
-      //
-      SR::Statement::CRef StatementCreate_Goto(
-         SR::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx,
-         Core::String name)
-      {
-         return Statement_Goto::Create(std::move(labels), pos, ctx.getLabel(name));
-      }
+   //
+   // StatementCreate_Goto
+   //
+   SR::Statement::CRef StatementCreate_Goto(
+      SR::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx,
+      Core::String name)
+   {
+      return Statement_Goto::Create(std::move(labels), pos, ctx.getLabel(name));
    }
 }
 

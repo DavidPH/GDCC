@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,117 +21,114 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // ExpCreate_CmpEQ
+   //
+   SR::Exp::CRef ExpCreate_CmpEQ(SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos)
    {
-      //
-      // ExpCreate_CmpEQ
-      //
-      SR::Exp::CRef ExpCreate_CmpEQ(SR::Exp const *l, SR::Exp const *r,
-         Core::Origin pos)
-      {
-         auto promo = ExpPromo_CmpEqu(l, r, pos);
-         auto &type = std::get<0>(promo);
-         auto &expL = std::get<1>(promo);
-         auto &expR = std::get<2>(promo);
+      auto promo = ExpPromo_CmpEqu(l, r, pos);
+      auto &type = std::get<0>(promo);
+      auto &expL = std::get<1>(promo);
+      auto &expR = std::get<2>(promo);
 
-         if(type->isCTypeArith() || type->isTypePointer())
-            return ExpCreate_CmpArith<SR::Exp_CmpEQ, IR::CodeSet_CmpEQ>(
-               TypeIntegPrS, type, expL, expR, pos);
+      if(type->isCTypeArith() || type->isTypePointer())
+         return ExpCreate_CmpArith<SR::Exp_CmpEQ, IR::CodeSet_CmpEQ>(
+            TypeIntegPrS, type, expL, expR, pos);
 
-         throw Core::ExceptStr(pos, "invalid operands to 'operator =='");
-      }
+      throw Core::ExceptStr(pos, "invalid operands to 'operator =='");
+   }
 
-      //
-      // ExpCreate_CmpGE
-      //
-      SR::Exp::CRef ExpCreate_CmpGE(SR::Exp const *l, SR::Exp const *r,
-         Core::Origin pos)
-      {
-         auto promo = ExpPromo_CmpRel(l, r, pos);
-         auto &type = std::get<0>(promo);
-         auto &expL = std::get<1>(promo);
-         auto &expR = std::get<2>(promo);
+   //
+   // ExpCreate_CmpGE
+   //
+   SR::Exp::CRef ExpCreate_CmpGE(SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos)
+   {
+      auto promo = ExpPromo_CmpRel(l, r, pos);
+      auto &type = std::get<0>(promo);
+      auto &expL = std::get<1>(promo);
+      auto &expR = std::get<2>(promo);
 
-         if(type->isCTypeArith() || type->isTypePointer())
-            return ExpCreate_CmpArith<SR::Exp_CmpGE, IR::CodeSet_CmpGE>(
-               TypeIntegPrS, type, expL, expR, pos);
+      if(type->isCTypeArith() || type->isTypePointer())
+         return ExpCreate_CmpArith<SR::Exp_CmpGE, IR::CodeSet_CmpGE>(
+            TypeIntegPrS, type, expL, expR, pos);
 
-         throw Core::ExceptStr(pos, "invalid operands to 'operator >='");
-      }
+      throw Core::ExceptStr(pos, "invalid operands to 'operator >='");
+   }
 
-      //
-      // ExpCreate_CmpGT
-      //
-      SR::Exp::CRef ExpCreate_CmpGT(SR::Exp const *l, SR::Exp const *r,
-         Core::Origin pos)
-      {
-         auto promo = ExpPromo_CmpRel(l, r, pos);
-         auto &type = std::get<0>(promo);
-         auto &expL = std::get<1>(promo);
-         auto &expR = std::get<2>(promo);
+   //
+   // ExpCreate_CmpGT
+   //
+   SR::Exp::CRef ExpCreate_CmpGT(SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos)
+   {
+      auto promo = ExpPromo_CmpRel(l, r, pos);
+      auto &type = std::get<0>(promo);
+      auto &expL = std::get<1>(promo);
+      auto &expR = std::get<2>(promo);
 
-         if(type->isCTypeArith() || type->isTypePointer())
-            return ExpCreate_CmpArith<SR::Exp_CmpGT, IR::CodeSet_CmpGT>(
-               TypeIntegPrS, type, expL, expR, pos);
+      if(type->isCTypeArith() || type->isTypePointer())
+         return ExpCreate_CmpArith<SR::Exp_CmpGT, IR::CodeSet_CmpGT>(
+            TypeIntegPrS, type, expL, expR, pos);
 
-         throw Core::ExceptStr(pos, "invalid operands to 'operator >='");
-      }
+      throw Core::ExceptStr(pos, "invalid operands to 'operator >='");
+   }
 
-      //
-      // ExpCreate_CmpLE
-      //
-      SR::Exp::CRef ExpCreate_CmpLE(SR::Exp const *l, SR::Exp const *r,
-         Core::Origin pos)
-      {
-         auto promo = ExpPromo_CmpRel(l, r, pos);
-         auto &type = std::get<0>(promo);
-         auto &expL = std::get<1>(promo);
-         auto &expR = std::get<2>(promo);
+   //
+   // ExpCreate_CmpLE
+   //
+   SR::Exp::CRef ExpCreate_CmpLE(SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos)
+   {
+      auto promo = ExpPromo_CmpRel(l, r, pos);
+      auto &type = std::get<0>(promo);
+      auto &expL = std::get<1>(promo);
+      auto &expR = std::get<2>(promo);
 
-         if(type->isCTypeArith() || type->isTypePointer())
-            return ExpCreate_CmpArith<SR::Exp_CmpLE, IR::CodeSet_CmpLE>(
-               TypeIntegPrS, type, expL, expR, pos);
+      if(type->isCTypeArith() || type->isTypePointer())
+         return ExpCreate_CmpArith<SR::Exp_CmpLE, IR::CodeSet_CmpLE>(
+            TypeIntegPrS, type, expL, expR, pos);
 
-         throw Core::ExceptStr(pos, "invalid operands to 'operator >='");
-      }
+      throw Core::ExceptStr(pos, "invalid operands to 'operator >='");
+   }
 
-      //
-      // ExpCreate_CmpLT
-      //
-      SR::Exp::CRef ExpCreate_CmpLT(SR::Exp const *l, SR::Exp const *r,
-         Core::Origin pos)
-      {
-         auto promo = ExpPromo_CmpRel(l, r, pos);
-         auto &type = std::get<0>(promo);
-         auto &expL = std::get<1>(promo);
-         auto &expR = std::get<2>(promo);
+   //
+   // ExpCreate_CmpLT
+   //
+   SR::Exp::CRef ExpCreate_CmpLT(SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos)
+   {
+      auto promo = ExpPromo_CmpRel(l, r, pos);
+      auto &type = std::get<0>(promo);
+      auto &expL = std::get<1>(promo);
+      auto &expR = std::get<2>(promo);
 
-         if(type->isCTypeArith() || type->isTypePointer())
-            return ExpCreate_CmpArith<SR::Exp_CmpLT, IR::CodeSet_CmpLT>(
-               TypeIntegPrS, type, expL, expR, pos);
+      if(type->isCTypeArith() || type->isTypePointer())
+         return ExpCreate_CmpArith<SR::Exp_CmpLT, IR::CodeSet_CmpLT>(
+            TypeIntegPrS, type, expL, expR, pos);
 
-         throw Core::ExceptStr(pos, "invalid operands to 'operator >='");
-      }
+      throw Core::ExceptStr(pos, "invalid operands to 'operator >='");
+   }
 
-      //
-      // ExpCreate_CmpNE
-      //
-      SR::Exp::CRef ExpCreate_CmpNE(SR::Exp const *l, SR::Exp const *r,
-         Core::Origin pos)
-      {
-         auto promo = ExpPromo_CmpEqu(l, r, pos);
-         auto &type = std::get<0>(promo);
-         auto &expL = std::get<1>(promo);
-         auto &expR = std::get<2>(promo);
+   //
+   // ExpCreate_CmpNE
+   //
+   SR::Exp::CRef ExpCreate_CmpNE(SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos)
+   {
+      auto promo = ExpPromo_CmpEqu(l, r, pos);
+      auto &type = std::get<0>(promo);
+      auto &expL = std::get<1>(promo);
+      auto &expR = std::get<2>(promo);
 
-         if(type->isCTypeArith() || type->isTypePointer())
-            return ExpCreate_CmpArith<SR::Exp_CmpNE, IR::CodeSet_CmpNE>(
-               TypeIntegPrS, type, expL, expR, pos);
+      if(type->isCTypeArith() || type->isTypePointer())
+         return ExpCreate_CmpArith<SR::Exp_CmpNE, IR::CodeSet_CmpNE>(
+            TypeIntegPrS, type, expL, expR, pos);
 
-         throw Core::ExceptStr(pos, "invalid operands to 'operator !='");
-      }
+      throw Core::ExceptStr(pos, "invalid operands to 'operator !='");
    }
 }
 

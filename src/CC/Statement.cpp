@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,17 +21,14 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // StatementCreate_Decl
+   //
+   SR::Statement::CRef StatementCreate_Decl(Core::Origin pos, Scope &)
    {
-      //
-      // StatementCreate_Decl
-      //
-      SR::Statement::CRef StatementCreate_Decl(Core::Origin pos, Scope &)
-      {
-         return SR::StatementCreate_Empty(pos);
-      }
+      return SR::StatementCreate_Empty(pos);
    }
 }
 

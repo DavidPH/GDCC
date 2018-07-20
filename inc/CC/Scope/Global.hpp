@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2016 David Hill
+// Copyright (C) 2013-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,60 +22,43 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace IR
+   //
+   // Scope_Global
+   //
+   class Scope_Global : public Scope
    {
-      enum class Linkage;
+   public:
+      explicit Scope_Global(Core::String label);
+      virtual ~Scope_Global();
 
-      class Program;
-   }
+      void allocAuto();
 
-   namespace SR
-   {
-      class Attribute;
-   }
+      Scope_Function &createScope(SR::Attribute const &attr, SR::Function *fn);
 
-   namespace CC
-   {
-      class Scope_Function;
+      Core::String genGlyphObj(Core::String name, IR::Linkage linka);
 
-      //
-      // Scope_Global
-      //
-      class Scope_Global : public Scope
-      {
-      public:
-         explicit Scope_Global(Core::String label);
-         virtual ~Scope_Global();
+      void genIR(IR::Program &prog);
 
-         void allocAuto();
+      // Finds/creates a function, but does not add to lookup table.
+      Core::CounterRef<SR::Function> getFunction(SR::Attribute const &attr);
 
-         Scope_Function &createScope(SR::Attribute const &attr, SR::Function *fn);
+      Core::CounterRef<SR::Object> getObject(SR::Attribute const &attr);
 
-         Core::String genGlyphObj(Core::String name, IR::Linkage linka);
+      Core::CounterRef<SR::Space> getSpace(SR::Attribute const &attr);
 
-         void genIR(IR::Program &prog);
+      Core::String const label;
 
-         // Finds/creates a function, but does not add to lookup table.
-         Core::CounterRef<SR::Function> getFunction(SR::Attribute const &attr);
+   protected:
+      LookupTable<SR::Function> globalFunc;
+      LookupTable<SR::Object>   globalObj;
+      LookupTable<SR::Space>    globalSpace;
 
-         Core::CounterRef<SR::Object> getObject(SR::Attribute const &attr);
+      std::vector<std::unique_ptr<Scope_Function>> subScopes;
 
-         Core::CounterRef<SR::Space> getSpace(SR::Attribute const &attr);
-
-         Core::String const label;
-
-      protected:
-         LookupTable<SR::Function> globalFunc;
-         LookupTable<SR::Object>   globalObj;
-         LookupTable<SR::Space>    globalSpace;
-
-         std::vector<std::unique_ptr<Scope_Function>> subScopes;
-
-         Core::StringGen stringGen;
-      };
-   }
+      Core::StringGen stringGen;
+   };
 }
 
 #endif//GDCC__CC__Scope__Global_H__

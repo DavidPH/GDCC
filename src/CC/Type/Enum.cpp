@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,162 +19,159 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Type_Enum::Data constructor
+   //
+   Type_Enum::Data::Data(Core::String name_) :
+      name{name_},
+      type{nullptr},
+
+      complete{false}
    {
-      //
-      // Type_Enum::Data constructor
-      //
-      Type_Enum::Data::Data(Core::String name_) :
-         name{name_},
-         type{nullptr},
+   }
 
-         complete{false}
-      {
-      }
+   //
+   // Type_Enum constructor
+   //
+   Type_Enum::Type_Enum(Core::String name) : data{*new Data(name)}
+   {
+   }
 
-      //
-      // Type_Enum constructor
-      //
-      Type_Enum::Type_Enum(Core::String name) : data{*new Data(name)}
-      {
-      }
+   //
+   // Type_Enum destructor
+   //
+   Type_Enum::~Type_Enum()
+   {
+      if(!getQual())
+         delete &data;
+   }
 
-      //
-      // Type_Enum destructor
-      //
-      Type_Enum::~Type_Enum()
-      {
-         if(!getQual())
-            delete &data;
-      }
+   //
+   // Type_Enum::getBaseType
+   //
+   SR::Type::CRef Type_Enum::getBaseType() const
+   {
+      if(!data.complete) throw SR::TypeError();
+      return static_cast<SR::Type::CRef>(data.type);
+   }
 
-      //
-      // Type_Enum::getBaseType
-      //
-      SR::Type::CRef Type_Enum::getBaseType() const
-      {
-         if(!data.complete) throw SR::TypeError();
-         return static_cast<SR::Type::CRef>(data.type);
-      }
+   //
+   // Type_Enum::getName
+   //
+   Core::String Type_Enum::getName() const
+   {
+      return data.name;
+   }
 
-      //
-      // Type_Enum::getName
-      //
-      Core::String Type_Enum::getName() const
-      {
-         return data.name;
-      }
+   //
+   // Type_Enum::getRankC
+   //
+   SR::TypeRankC Type_Enum::getRankC() const
+   {
+      if(!data.complete) throw SR::TypeError();
+      return data.type->getRankC();
+   }
 
-      //
-      // Type_Enum::getRankC
-      //
-      SR::TypeRankC Type_Enum::getRankC() const
-      {
-         if(!data.complete) throw SR::TypeError();
-         return data.type->getRankC();
-      }
+   //
+   // Type_Enum::getIRType
+   //
+   IR::Type Type_Enum::getIRType() const
+   {
+      if(!data.complete) throw SR::TypeError();
+      return data.type->getIRType();
+   }
 
-      //
-      // Type_Enum::getIRType
-      //
-      IR::Type Type_Enum::getIRType() const
-      {
-         if(!data.complete) throw SR::TypeError();
-         return data.type->getIRType();
-      }
+   //
+   // Type_Enum::getSizeAlign
+   //
+   Core::FastU Type_Enum::getSizeAlign() const
+   {
+      if(!data.complete) throw SR::TypeError();
+      return data.type->getSizeAlign();
+   }
 
-      //
-      // Type_Enum::getSizeAlign
-      //
-      Core::FastU Type_Enum::getSizeAlign() const
-      {
-         if(!data.complete) throw SR::TypeError();
-         return data.type->getSizeAlign();
-      }
+   //
+   // Type_Enum::getSizeBitsF
+   //
+   Core::FastU Type_Enum::getSizeBitsF() const
+   {
+      if(!data.complete) throw SR::TypeError();
+      return data.type->getSizeBitsF();
+   }
 
-      //
-      // Type_Enum::getSizeBitsF
-      //
-      Core::FastU Type_Enum::getSizeBitsF() const
-      {
-         if(!data.complete) throw SR::TypeError();
-         return data.type->getSizeBitsF();
-      }
+   //
+   // Type_Enum::getSizeBitsI
+   //
+   Core::FastU Type_Enum::getSizeBitsI() const
+   {
+      if(!data.complete) throw SR::TypeError();
+      return data.type->getSizeBitsI();
+   }
 
-      //
-      // Type_Enum::getSizeBitsI
-      //
-      Core::FastU Type_Enum::getSizeBitsI() const
-      {
-         if(!data.complete) throw SR::TypeError();
-         return data.type->getSizeBitsI();
-      }
+   //
+   // Type_Enum::getSizeBitsS
+   //
+   bool Type_Enum::getSizeBitsS() const
+   {
+      if(!data.complete) throw SR::TypeError();
+      return data.type->getSizeBitsS();
+   }
 
-      //
-      // Type_Enum::getSizeBitsS
-      //
-      bool Type_Enum::getSizeBitsS() const
-      {
-         if(!data.complete) throw SR::TypeError();
-         return data.type->getSizeBitsS();
-      }
+   //
+   // Type_Enum::getSizeBytes
+   //
+   Core::FastU Type_Enum::getSizeBytes() const
+   {
+      if(!data.complete) throw SR::TypeError();
+      return data.type->getSizeBytes();
+   }
 
-      //
-      // Type_Enum::getSizeBytes
-      //
-      Core::FastU Type_Enum::getSizeBytes() const
-      {
-         if(!data.complete) throw SR::TypeError();
-         return data.type->getSizeBytes();
-      }
+   //
+   // Type_Enum::getSizePoint
+   //
+   Core::FastU Type_Enum::getSizePoint() const
+   {
+      if(!data.complete) throw SR::TypeError();
+      return data.type->getSizePoint();
+   }
 
-      //
-      // Type_Enum::getSizePoint
-      //
-      Core::FastU Type_Enum::getSizePoint() const
-      {
-         if(!data.complete) throw SR::TypeError();
-         return data.type->getSizePoint();
-      }
+   //
+   // Type_Enum::getSizeShift
+   //
+   Core::FastU Type_Enum::getSizeShift() const
+   {
+      if(!data.complete) throw SR::TypeError();
+      return data.type->getSizeShift();
+   }
 
-      //
-      // Type_Enum::getSizeShift
-      //
-      Core::FastU Type_Enum::getSizeShift() const
-      {
-         if(!data.complete) throw SR::TypeError();
-         return data.type->getSizeShift();
-      }
+   //
+   // Type_Enum::getSizeWords
+   //
+   Core::FastU Type_Enum::getSizeWords() const
+   {
+      if(!data.complete) throw SR::TypeError();
+      return data.type->getSizeWords();
+   }
 
-      //
-      // Type_Enum::getSizeWords
-      //
-      Core::FastU Type_Enum::getSizeWords() const
-      {
-         if(!data.complete) throw SR::TypeError();
-         return data.type->getSizeWords();
-      }
+   //
+   // Type_Enum::setComplete
+   //
+   void Type_Enum::setComplete(SR::Type const *type)
+   {
+      if(data.complete) throw SR::TypeError();
 
-      //
-      // Type_Enum::setComplete
-      //
-      void Type_Enum::setComplete(SR::Type const *type)
-      {
-         if(data.complete) throw SR::TypeError();
+      data.type     = type;
+      data.complete = true;
+   }
 
-         data.type     = type;
-         data.complete = true;
-      }
-
-      //
-      // Type_Enum::Create
-      //
-      Type_Enum::Ref Type_Enum::Create(Core::String name)
-      {
-         return Ref(new Type_Enum(name));
-      }
+   //
+   // Type_Enum::Create
+   //
+   Type_Enum::Ref Type_Enum::Create(Core::String name)
+   {
+      return Ref(new Type_Enum(name));
    }
 }
 

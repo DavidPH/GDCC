@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,32 +21,29 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Scope_Break constructor
+   //
+   Scope_Break::Scope_Break(Scope_Local &parent_) :
+      Scope_Block{parent_},
+
+      labelBreak{Core::STRNULL}
    {
-      //
-      // Scope_Break constructor
-      //
-      Scope_Break::Scope_Break(Scope_Local &parent_) :
-         Scope_Block{parent_},
+   }
 
-         labelBreak{Core::STRNULL}
-      {
-      }
+   //
+   // Scope_Break::getLabelBreak
+   //
+   Core::String Scope_Break::getLabelBreak()
+   {
+      if(!labelBreak)
+         labelBreak = fn.fn->genLabel();
 
-      //
-      // Scope_Break::getLabelBreak
-      //
-      Core::String Scope_Break::getLabelBreak()
-      {
-         if(!labelBreak)
-            labelBreak = fn.fn->genLabel();
-
-         return labelBreak;
-      }
+      return labelBreak;
    }
 }
 
-//EOF
+// EOF
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,53 +21,50 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Parser::isSpecQual
+   //
+   bool Parser::isSpecQual(Scope &scope)
    {
-      //
-      // Parser::isSpecQual
-      //
-      bool Parser::isSpecQual(Scope &scope)
+      return
+         isAttrSpec(scope) ||
+         isTypeQual(scope) ||
+         isTypeSpec(scope);
+   }
+
+   //
+   // Parser::parseSpecQual
+   //
+   void Parser::parseSpecQual(Scope &scope, SR::Attribute &attr)
+   {
+      auto pos = in.peek().pos;
+
+      SR::TypeQual declQual = SR::QualNone;
+      TypeSpec     declSpec;
+
+      // Read specifier-qualifier tokens until there are no more.
+      for(;;)
       {
-         return
-            isAttrSpec(scope) ||
-            isTypeQual(scope) ||
-            isTypeSpec(scope);
+         // attribute-specifier
+         if(isAttrSpec(scope))
+            parseAttrSpec(scope, attr);
+
+         // type-specifier
+         else if(isTypeSpec(scope))
+            parseTypeSpec(scope, attr, declSpec);
+
+         // type-qualifier
+         else if(isTypeQual(scope))
+               parseTypeQual(scope, declQual);
+
+         else
+            break;
       }
 
-      //
-      // Parser::parseSpecQual
-      //
-      void Parser::parseSpecQual(Scope &scope, SR::Attribute &attr)
-      {
-         auto pos = in.peek().pos;
-
-         SR::TypeQual declQual = SR::QualNone;
-         TypeSpec     declSpec;
-
-         // Read specifier-qualifier tokens until there are no more.
-         for(;;)
-         {
-            // attribute-specifier
-            if(isAttrSpec(scope))
-               parseAttrSpec(scope, attr);
-
-            // type-specifier
-            else if(isTypeSpec(scope))
-               parseTypeSpec(scope, attr, declSpec);
-
-            // type-qualifier
-            else if(isTypeQual(scope))
-                parseTypeQual(scope, declQual);
-
-            else
-               break;
-         }
-
-         // Finalize the type specifiers.
-         declSpec.finish(attr, declQual, pos);
-      }
+      // Finalize the type specifiers.
+      declSpec.finish(attr, declQual, pos);
    }
 }
 

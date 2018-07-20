@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2016 David Hill
+## Copyright (C) 2013-2018 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -146,6 +146,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    ../../inc/CC/Type/Fixed.hpp
    ../../inc/CC/Type/Float.hpp
    ../../inc/CC/Type/Struct.hpp
+   ../../inc/CC/Types.hpp
    ../../inc/CC/Warning.hpp
 )
 

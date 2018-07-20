@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -27,122 +27,119 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Parser::parseTypeSpec_enum
+   //
+   // enum-specifier:
+   //    <enum> identifier(opt) { enumerator-list }
+   //    <enum> identifier(opt) { enumerator-list , }
+   //    <enum> identifier
+   //
+   void Parser::parseTypeSpec_enum(Scope &scope, SR::Attribute &attr, TypeSpec &spec)
    {
-      //
-      // Parser::parseTypeSpec_enum
-      //
-      // enum-specifier:
-      //    <enum> identifier(opt) { enumerator-list }
-      //    <enum> identifier(opt) { enumerator-list , }
-      //    <enum> identifier
-      //
-      void Parser::parseTypeSpec_enum(Scope &scope, SR::Attribute &attr, TypeSpec &spec)
+      if(spec.specBase)
+         throw Core::ExceptStr(in.reget().pos, "multiple type-specifier base");
+
+      spec.specBase = TypeSpec::BaseName;
+
+      Type_Enum::Ptr type;
+
+      // Named enumeration.
+      if(in.peek().tok == Core::TOK_Identi)
       {
-         if(spec.specBase)
-            throw Core::ExceptStr(in.reget().pos, "multiple type-specifier base");
+         auto name  = in.get();
+         bool defin = in.peek().tok == Core::TOK_BraceO;
 
-         spec.specBase = TypeSpec::BaseName;
+         // Start with a local lookup. If the full lookup type is
+         // incompatible, it is only an error if it is incompatible with a
+         // type from this scope.
+         auto lookup = scope.findTypeTag(name.str);
+         bool local  = lookup;
 
-         Type_Enum::Ptr type;
+         // If definition, only check for existing in current scope.
+         if(!lookup && !defin) lookup = scope.lookupTypeTag(name.str);
 
-         // Named enumeration.
-         if(in.peek().tok == Core::TOK_Identi)
+         // Existing type, check for compatibility.
+         if(lookup)
          {
-            auto name  = in.get();
-            bool defin = in.peek().tok == Core::TOK_BraceO;
+            char const *err = nullptr;
 
-            // Start with a local lookup. If the full lookup type is
-            // incompatible, it is only an error if it is incompatible with a
-            // type from this scope.
-            auto lookup = scope.findTypeTag(name.str);
-            bool local  = lookup;
+            if(!lookup->isCTypeEnum())
+               err = "tag redefined as union";
 
-            // If definition, only check for existing in current scope.
-            if(!lookup && !defin) lookup = scope.lookupTypeTag(name.str);
+            else if(defin && lookup->isTypeComplete())
+               err = "tag redefined";
 
-            // Existing type, check for compatibility.
-            if(lookup)
+            if(err)
             {
-               char const *err = nullptr;
-
-               if(!lookup->isCTypeEnum())
-                  err = "tag redefined as union";
-
-               else if(defin && lookup->isTypeComplete())
-                  err = "tag redefined";
-
-               if(err)
-               {
-                  if(local) throw Core::ExceptStr(name.pos, err);
-                  lookup = nullptr;
-               }
+               if(local) throw Core::ExceptStr(name.pos, err);
+               lookup = nullptr;
             }
-
-            // No existing compatible type.
-            if(!lookup)
-            {
-               type = Type_Enum::Create(name.str);
-               scope.addTypeTag(name.str, type);
-            }
-            else
-               type = static_cast<Type_Enum *>(&*lookup);
          }
 
-         // Anonymous enumeration.
+         // No existing compatible type.
+         if(!lookup)
+         {
+            type = Type_Enum::Create(name.str);
+            scope.addTypeTag(name.str, type);
+         }
          else
-         {
-            // Must be a definition.
-            if(in.peek().tok != Core::TOK_BraceO)
-               throw Core::ExceptStr(in.peek().pos, "expected identifier");
-
-            type = Type_Enum::Create(nullptr);
-         }
-
-         attr.type = type;
-
-         // Remainder of this function deals with parsing the definition itself.
-         if(!in.drop(Core::TOK_BraceO))
-            return;
-
-         if(in.peek().tok == Core::TOK_BraceC)
-            throw Core::ExceptStr(in.peek().pos, "empty enumerator-list");
-
-         Core::Integ value = 0;
-
-         // enumerator-list:
-         //    enumerator
-         //    enumerator-list , enumerator
-         do
-         {
-            if(in.peek().tok == Core::TOK_BraceC) break;
-
-            // enumerator:
-            //    enumeration-constant
-            //    enumeration-constant = constant-expression
-            if(in.peek().tok != Core::TOK_Identi)
-               throw Core::ExceptStr(in.peek().pos, "expected identifier");
-
-            auto name = in.get().str;
-
-            // = constant-expression
-            if(in.drop(Core::TOK_Equal))
-               value = ExpToInteg(getExp_Cond(scope));
-
-            // Add constant to scope.
-            scope.addEnum(name, value);
-
-            ++value;
-         }
-         while(in.drop(Core::TOK_Comma));
-
-         if(!in.drop(Core::TOK_BraceC))
-            throw Core::ExceptStr(in.peek().pos, "expected '}'");
-
-         type->setComplete(TypeIntegPrS);
+            type = static_cast<Type_Enum *>(&*lookup);
       }
+
+      // Anonymous enumeration.
+      else
+      {
+         // Must be a definition.
+         if(in.peek().tok != Core::TOK_BraceO)
+            throw Core::ExceptStr(in.peek().pos, "expected identifier");
+
+         type = Type_Enum::Create(nullptr);
+      }
+
+      attr.type = type;
+
+      // Remainder of this function deals with parsing the definition itself.
+      if(!in.drop(Core::TOK_BraceO))
+         return;
+
+      if(in.peek().tok == Core::TOK_BraceC)
+         throw Core::ExceptStr(in.peek().pos, "empty enumerator-list");
+
+      Core::Integ value = 0;
+
+      // enumerator-list:
+      //    enumerator
+      //    enumerator-list , enumerator
+      do
+      {
+         if(in.peek().tok == Core::TOK_BraceC) break;
+
+         // enumerator:
+         //    enumeration-constant
+         //    enumeration-constant = constant-expression
+         if(in.peek().tok != Core::TOK_Identi)
+            throw Core::ExceptStr(in.peek().pos, "expected identifier");
+
+         auto name = in.get().str;
+
+         // = constant-expression
+         if(in.drop(Core::TOK_Equal))
+            value = ExpToInteg(getExp_Cond(scope));
+
+         // Add constant to scope.
+         scope.addEnum(name, value);
+
+         ++value;
+      }
+      while(in.drop(Core::TOK_Comma));
+
+      if(!in.drop(Core::TOK_BraceC))
+         throw Core::ExceptStr(in.peek().pos, "expected '}'");
+
+      type->setComplete(TypeIntegPrS);
    }
 }
 

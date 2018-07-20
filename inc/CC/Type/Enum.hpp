@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,72 +22,69 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Type_Enum
+   //
+   class Type_Enum final : public SR::Type
    {
+      GDCC_Core_CounterPreamble(GDCC::CC::Type_Enum, GDCC::SR::Type);
+
+   public:
       //
-      // Type_Enum
+      // Data
       //
-      class Type_Enum final : public SR::Type
+      class Data
       {
-         GDCC_Core_CounterPreamble(GDCC::CC::Type_Enum, GDCC::SR::Type);
-
       public:
-         //
-         // Data
-         //
-         class Data
-         {
-         public:
-            Data(Core::String name);
+         Data(Core::String name);
 
-            Core::String const name;
-            SR::Type::CPtr     type;
+         Core::String const name;
+         SR::Type::CPtr     type;
 
-            bool complete : 1;
-         };
-
-
-         // Type information.
-         virtual Type::CRef   getBaseType()  const;
-                 Data  const &getData()      const {return data;}
-         virtual IR::Type     getIRType()    const;
-         virtual Core::String getName()      const;
-         virtual RankC        getRankC()     const;
-         virtual Core::FastU  getSizeAlign() const;
-         virtual Core::FastU  getSizeBitsF() const;
-         virtual Core::FastU  getSizeBitsI() const;
-         virtual bool         getSizeBitsS() const;
-         virtual Core::FastU  getSizeBytes() const;
-         virtual Core::FastU  getSizePoint() const;
-         virtual Core::FastU  getSizeShift() const;
-         virtual Core::FastU  getSizeWords() const;
-
-         // Type classification: General classifications.
-         virtual bool isTypeComplete() const {return data.complete;}
-
-         // Type classification: C/C++ classifications.
-         virtual bool isCTypeArith()  const {return true;}
-         virtual bool isCTypeEnum()   const {return true;}
-         virtual bool isCTypeInteg()  const {return true;}
-         virtual bool isCTypeObject() const {return true;}
-         virtual bool isCTypeReal()   const {return true;}
-         virtual bool isCTypeScalar() const {return true;}
-
-         // Type alteration.
-         void setComplete(SR::Type const *type);
-
-
-         static Ref Create(Core::String name);
-
-      protected:
-         Type_Enum(Core::String name);
-         virtual ~Type_Enum();
-
-         Data &data;
+         bool complete : 1;
       };
-   }
+
+
+      // Type information.
+      virtual Type::CRef   getBaseType()  const;
+              Data  const &getData()      const {return data;}
+      virtual IR::Type     getIRType()    const;
+      virtual Core::String getName()      const;
+      virtual RankC        getRankC()     const;
+      virtual Core::FastU  getSizeAlign() const;
+      virtual Core::FastU  getSizeBitsF() const;
+      virtual Core::FastU  getSizeBitsI() const;
+      virtual bool         getSizeBitsS() const;
+      virtual Core::FastU  getSizeBytes() const;
+      virtual Core::FastU  getSizePoint() const;
+      virtual Core::FastU  getSizeShift() const;
+      virtual Core::FastU  getSizeWords() const;
+
+      // Type classification: General classifications.
+      virtual bool isTypeComplete() const {return data.complete;}
+
+      // Type classification: C/C++ classifications.
+      virtual bool isCTypeArith()  const {return true;}
+      virtual bool isCTypeEnum()   const {return true;}
+      virtual bool isCTypeInteg()  const {return true;}
+      virtual bool isCTypeObject() const {return true;}
+      virtual bool isCTypeReal()   const {return true;}
+      virtual bool isCTypeScalar() const {return true;}
+
+      // Type alteration.
+      void setComplete(SR::Type const *type);
+
+
+      static Ref Create(Core::String name);
+
+   protected:
+      Type_Enum(Core::String name);
+      virtual ~Type_Enum();
+
+      Data &data;
+   };
 }
 
 #endif//GDCC__CC__Type__Enum_H__

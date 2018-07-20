@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,19 +21,16 @@
 // Static Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // CheckConstraint
+   //
+   static void CheckConstraint(Core::Array<GenAssoc> const &sel, Core::Origin pos)
    {
-      //
-      // CheckConstraint
-      //
-      static void CheckConstraint(Core::Array<GenAssoc> const &sel, Core::Origin pos)
-      {
-         for(auto const &assoc : sel)
-            if(!assoc.type->isCTypeObject() || !assoc.type->isTypeComplete())
-               throw Core::ExceptStr(pos, "expected complete object type");
-      }
+      for(auto const &assoc : sel)
+         if(!assoc.type->isCTypeObject() || !assoc.type->isTypeComplete())
+            throw Core::ExceptStr(pos, "expected complete object type");
    }
 }
 
@@ -42,46 +39,43 @@ namespace GDCC
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Exp_GenSel::v_getDefer
+   //
+   SR::Exp::CRef Exp_GenSel::v_getDefer() const
    {
-      //
-      // Exp_GenSel::v_getDefer
-      //
-      SR::Exp::CRef Exp_GenSel::v_getDefer() const
-      {
-         auto type = exp->getType()->getTypeQual();
+      auto type = exp->getType()->getTypeQual();
 
-         for(auto const &assoc : sel)
-            if(type == assoc.type) return assoc.exp;
+      for(auto const &assoc : sel)
+         if(type == assoc.type) return assoc.exp;
 
-         if(def) return static_cast<SR::Exp::CRef>(def);
+      if(def) return static_cast<SR::Exp::CRef>(def);
 
-         throw Core::ExceptStr(pos, "no matching generic-selection");
-      }
+      throw Core::ExceptStr(pos, "no matching generic-selection");
+   }
 
-      //
-      // ExpCreate_GenSel
-      //
-      SR::Exp::CRef ExpCreate_GenSel(SR::Exp const *exp, SR::Exp const *def,
-         Core::Array<GenAssoc> const &sel, Core::Origin pos)
-      {
-         CheckConstraint(sel, pos);
+   //
+   // ExpCreate_GenSel
+   //
+   SR::Exp::CRef ExpCreate_GenSel(SR::Exp const *exp, SR::Exp const *def,
+      Core::Array<GenAssoc> const &sel, Core::Origin pos)
+   {
+      CheckConstraint(sel, pos);
 
-         return Exp_GenSel::Create(exp, def, sel, pos);
-      }
+      return Exp_GenSel::Create(exp, def, sel, pos);
+   }
 
-      //
-      // ExpCreate_GenSel
-      //
-      SR::Exp::CRef ExpCreate_GenSel(SR::Exp const *exp, SR::Exp const *def,
-         Core::Array<GenAssoc> &&sel, Core::Origin pos)
-      {
-         CheckConstraint(sel, pos);
+   //
+   // ExpCreate_GenSel
+   //
+   SR::Exp::CRef ExpCreate_GenSel(SR::Exp const *exp, SR::Exp const *def,
+      Core::Array<GenAssoc> &&sel, Core::Origin pos)
+   {
+      CheckConstraint(sel, pos);
 
-         return Exp_GenSel::Create(exp, def, std::move(sel), pos);
-      }
+      return Exp_GenSel::Create(exp, def, std::move(sel), pos);
    }
 }
 

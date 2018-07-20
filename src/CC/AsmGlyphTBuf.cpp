@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,42 +22,39 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // AsmGlyphTBuf::underflow
+   //
+   void AsmGlyphTBuf::underflow()
    {
-      //
-      // AsmGlyphTBuf::underflow
-      //
-      void AsmGlyphTBuf::underflow()
+      if(tptr() != tend()) return;
+
+      if((buf[0] = src.get()).tok == Core::TOK_Colon)
       {
-         if(tptr() != tend()) return;
-
-         if((buf[0] = src.get()).tok == Core::TOK_Colon)
+         auto tok = src.peek();
+         if(tok.tok == Core::TOK_Identi)
          {
-            auto tok = src.peek();
-            if(tok.tok == Core::TOK_Identi)
+            if(auto lookup = scope.lookup(tok.str)) switch(lookup.res)
             {
-               if(auto lookup = scope.lookup(tok.str)) switch(lookup.res)
-               {
-               case Lookup::Func:
-                  src.get();
-                  buf[0].setStrTok(lookup.resFunc->glyph, Core::TOK_String);
-                  break;
+            case Lookup::Func:
+               src.get();
+               buf[0].setStrTok(lookup.resFunc->glyph, Core::TOK_String);
+               break;
 
-               case Lookup::Obj:
-                  src.get();
-                  buf[0].setStrTok(lookup.resObj->glyph, Core::TOK_String);
-                  break;
+            case Lookup::Obj:
+               src.get();
+               buf[0].setStrTok(lookup.resObj->glyph, Core::TOK_String);
+               break;
 
-               default:
-                  break;
-               }
+            default:
+               break;
             }
          }
-
-         sett(buf, buf, buf + 1);
       }
+
+      sett(buf, buf, buf + 1);
    }
 }
 

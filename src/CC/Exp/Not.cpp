@@ -23,52 +23,49 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Exp_Not::v_genStmnt
+   //
+   void Exp_Not::v_genStmnt(SR::GenStmntCtx const &ctx,
+      SR::Arg const &dst) const
    {
-      //
-      // Exp_Not::v_genStmnt
-      //
-      void Exp_Not::v_genStmnt(SR::GenStmntCtx const &ctx,
-         SR::Arg const &dst) const
-      {
-         if(GenStmntNul(this, ctx, dst)) return;
+      if(GenStmntNul(this, ctx, dst)) return;
 
-         // Evaluate sub-expression to stack.
-         exp->genStmntStk(ctx);
+      // Evaluate sub-expression to stack.
+      exp->genStmntStk(ctx);
 
-         // Operate on stack.
-         ctx.block.setArgSize().addStmnt(IR::Code::LNot,
-            IR::Block::Stk(), IR::Block::Stk());
+      // Operate on stack.
+      ctx.block.setArgSize().addStmnt(IR::Code::LNot,
+         IR::Block::Stk(), IR::Block::Stk());
 
-         // Move to destination.
-         GenStmnt_MovePart(this, ctx, dst, false, true);
-      }
+      // Move to destination.
+      GenStmnt_MovePart(this, ctx, dst, false, true);
+   }
 
-      //
-      // Exp_Not::v_getIRExp
-      //
-      IR::Exp::CRef Exp_Not::v_getIRExp() const
-      {
-         return IR::ExpCreate_Not(exp->getIRExp(), pos);
-      }
+   //
+   // Exp_Not::v_getIRExp
+   //
+   IR::Exp::CRef Exp_Not::v_getIRExp() const
+   {
+      return IR::ExpCreate_Not(exp->getIRExp(), pos);
+   }
 
-      //
-      // Exp_Not::v_isBoolean
-      //
-      bool Exp_Not::v_isBoolean() const
-      {
-         return true;
-      }
+   //
+   // Exp_Not::v_isBoolean
+   //
+   bool Exp_Not::v_isBoolean() const
+   {
+      return true;
+   }
 
-      //
-      // ExpCreate_Not
-      //
-      SR::Exp::CRef ExpCreate_Not(SR::Exp const *e, Core::Origin pos)
-      {
-         return Exp_Not::Create(TypeIntegPrS, ExpPromo_Cond(e, pos), pos);
-      }
+   //
+   // ExpCreate_Not
+   //
+   SR::Exp::CRef ExpCreate_Not(SR::Exp const *e, Core::Origin pos)
+   {
+      return Exp_Not::Create(TypeIntegPrS, ExpPromo_Cond(e, pos), pos);
    }
 }
 

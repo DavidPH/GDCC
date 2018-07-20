@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,44 +19,41 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Statement_Asm constructor
+   //
+   Statement_Asm::Statement_Asm(Labels &&labels_, Core::Origin pos_,
+      Tokens &&tokens_) :
+      Super{std::move(labels_), pos_},
+      tokens{std::move(tokens_)}
    {
-      //
-      // Statement_Asm constructor
-      //
-      Statement_Asm::Statement_Asm(Labels &&labels_, Core::Origin pos_,
-         Tokens &&tokens_) :
-         Super{std::move(labels_), pos_},
-         tokens{std::move(tokens_)}
-      {
-      }
+   }
 
-      //
-      // Statement_Asm::v_genStmnt
-      //
-      void Statement_Asm::v_genStmnt(SR::GenStmntCtx const &ctx) const
-      {
-         Core::ArrayTBuf   buf{tokens.data(), tokens.size()};
-         Core::TokenStream in {&buf};
-         AS::MacroMap      mac{};
+   //
+   // Statement_Asm::v_genStmnt
+   //
+   void Statement_Asm::v_genStmnt(SR::GenStmntCtx const &ctx) const
+   {
+      Core::ArrayTBuf   buf{tokens.data(), tokens.size()};
+      Core::TokenStream in {&buf};
+      AS::MacroMap      mac{};
 
-         AS::ParseBlock({in, mac, ctx.prog}, ctx.block, Core::TOK_EOF);
-      }
+      AS::ParseBlock({in, mac, ctx.prog}, ctx.block, Core::TOK_EOF);
+   }
 
-      //
-      // StatementCreate_Asm
-      //
-      SR::Statement::CRef StatementCreate_Asm(
-         SR::Statement::Labels &&labels, Core::Origin pos,
-         Statement_Asm::Tokens &&tokens)
-      {
-         return Statement_Asm::Create(std::move(labels), pos, std::move(tokens));
-      }
+   //
+   // StatementCreate_Asm
+   //
+   SR::Statement::CRef StatementCreate_Asm(
+      SR::Statement::Labels &&labels, Core::Origin pos,
+      Statement_Asm::Tokens &&tokens)
+   {
+      return Statement_Asm::Create(std::move(labels), pos, std::move(tokens));
    }
 }
 

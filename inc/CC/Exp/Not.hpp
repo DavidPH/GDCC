@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,27 +22,24 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Exp_Not
+   //
+   class Exp_Not : public SR::Exp_Unary
    {
-      //
-      // Exp_Not
-      //
-      class Exp_Not : public SR::Exp_Unary
-      {
-         GDCC_Core_CounterPreamble(GDCC::CC::Exp_Not, GDCC::SR::Exp_Unary);
+      GDCC_Core_CounterPreamble(GDCC::CC::Exp_Not, GDCC::SR::Exp_Unary);
 
-         GDCC_SR_Exp_UnaryCreator(Exp_Not);
+      GDCC_SR_Exp_UnaryCreator(Exp_Not);
 
-      protected:
-         virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
+   protected:
+      virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
-         virtual IRExpCRef v_getIRExp() const;
+      virtual IRExpCRef v_getIRExp() const;
 
-         virtual bool v_isBoolean() const;
-      };
-   }
+      virtual bool v_isBoolean() const;
+   };
 }
 
 #endif//GDCC__CC__Exp__Not_H__

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,26 +20,23 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Scope_Loop
+   //
+   // A scope that supports break and continue. In C, do, for, and while scopes.
+   //
+   class Scope_Loop : public Scope_Break
    {
-      //
-      // Scope_Loop
-      //
-      // A scope that supports break and continue. In C, do, for, and while scopes.
-      //
-      class Scope_Loop : public Scope_Break
-      {
-      public:
-         explicit Scope_Loop(Scope_Local &parent);
+   public:
+      explicit Scope_Loop(Scope_Local &parent);
 
-         virtual Core::String getLabelContinue();
+      virtual Core::String getLabelContinue();
 
-      protected:
-         Core::String labelContinue;
-      };
-   }
+   protected:
+      Core::String labelContinue;
+   };
 }
 
 #endif//GDCC__CC__Scope__Loop_H__

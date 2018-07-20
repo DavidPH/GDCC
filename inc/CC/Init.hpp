@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,8 @@
 
 #ifndef GDCC__CC__Init_H__
 #define GDCC__CC__Init_H__
+
+#include "../CC/Types.hpp"
 
 #include "../Core/Array.hpp"
 #include "../Core/Token.hpp"
@@ -28,314 +30,294 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-
-   namespace Core
+   //
+   // InitRawDes
+   //
+   class InitRawDes
    {
-      class Token;
-   }
-   namespace SR
+   public:
+      InitRawDes(Core::FastU i) : desigStr{Core::STRNULL}, desigInt{i} {}
+      InitRawDes(Core::String s) : desigStr{s}, desigInt{0} {}
+
+      Core::String desigStr;
+      Core::FastU  desigInt;
+   };
+
+   //
+   // InitRaw
+   //
+   class InitRaw
    {
-      class Arg;
-      class GenStmntCtx;
-   }
+   public:
+      InitRaw(Core::Origin const &pos_) :
+         valueTok{pos_, Core::STRNULL, Core::TOK_EOF} {}
 
-   namespace CC
+      Core::Array<InitRawDes> desig;
+
+      SR::Exp::CPtr        valueExp;
+      Core::Token          valueTok;
+      Core::Array<InitRaw> valueSub;
+   };
+
+   //
+   // Init
+   //
+   class Init
    {
-      class Parser;
-      class ParserCtx;
-      class Scope;
-      class Type_Div;
-      class Type_Struct;
+   public:
+      using Ptr = std::unique_ptr<Init>;
 
-      //
-      // InitRawDes
-      //
-      class InitRawDes
-      {
-      public:
-         InitRawDes(Core::FastU i) : desigStr{Core::STRNULL}, desigInt{i} {}
-         InitRawDes(Core::String s) : desigStr{s}, desigInt{0} {}
 
-         Core::String desigStr;
-         Core::FastU  desigInt;
-      };
+      virtual ~Init() {}
 
-      //
-      // InitRaw
-      //
-      class InitRaw
-      {
-      public:
-         InitRaw(Core::Origin const &pos_) :
-            valueTok{pos_, Core::STRNULL, Core::TOK_EOF} {}
+      void genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst,
+         bool skipZero) const;
 
-         Core::Array<InitRawDes> desig;
+      IR::Exp::CRef getIRExp() const;
 
-         SR::Exp::CPtr        valueExp;
-         Core::Token          valueTok;
-         Core::Array<InitRaw> valueSub;
-      };
+      bool isEffect() const;
 
-      //
-      // Init
-      //
-      class Init
-      {
-      public:
-         using Ptr = std::unique_ptr<Init>;
+      bool isIRExp() const;
 
+      bool isNoAuto() const;
 
-         virtual ~Init() {}
+      void parse(InitRaw const &raw, Parser &ctx, Scope &scope);
+      std::size_t parse(InitRaw const &raw, std::size_t rawIdx,
+         Parser &ctx, Scope &scope);
 
-         void genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst,
-            bool skipZero) const;
+      Core::Origin      pos;
+      SR::Exp::CPtr     value;
+      SR::Type::CRef    type;
+      Core::FastU const offset;
 
-         IR::Exp::CRef getIRExp() const;
 
-         bool isEffect() const;
+      // Creates an initializer hierarchy for a given type.
+      static Ptr Create(SR::Type const *type, Core::FastU offset, Core::Origin pos);
 
-         bool isIRExp() const;
+      static Ptr Create(InitRaw const &raw, Parser &ctx, Scope &scope,
+         SR::Type const *type);
 
-         bool isNoAuto() const;
+      static bool IsInitString(Core::Token const &tok, SR::Type const *type);
 
-         void parse(InitRaw const &raw, Parser &ctx, Scope &scope);
-         std::size_t parse(InitRaw const &raw, std::size_t rawIdx,
-            Parser &ctx, Scope &scope);
+   protected:
+      Init(SR::Type const *type_, Core::FastU offset_, Core::Origin pos_) :
+         pos{pos_}, type{type_}, offset{offset_}, parsed{false} {}
 
-         Core::Origin      pos;
-         SR::Exp::CPtr     value;
-         SR::Type::CRef    type;
-         Core::FastU const offset;
+      virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst, bool skipZero) const = 0;
 
+      virtual IR::Exp::CRef v_getIRExp() const;
 
-         // Creates an initializer hierarchy for a given type.
-         static Ptr Create(SR::Type const *type, Core::FastU offset, Core::Origin pos);
+      virtual bool v_isEffect() const;
 
-         static Ptr Create(InitRaw const &raw, Parser &ctx, Scope &scope,
-            SR::Type const *type);
+      virtual bool v_isIRExp() const;
 
-         static bool IsInitString(Core::Token const &tok, SR::Type const *type);
+      virtual bool v_isNoAuto() const = 0;
 
-      protected:
-         Init(SR::Type const *type_, Core::FastU offset_, Core::Origin pos_) :
-            pos{pos_}, type{type_}, offset{offset_}, parsed{false} {}
+      virtual void v_parseBlock(InitRaw const &raw, Parser &ctx, Scope &scope) = 0;
 
-         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
-            SR::Arg const &dst, bool skipZero) const = 0;
+      virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
+         Parser &ctx, Scope &scope) = 0;
 
-         virtual IR::Exp::CRef v_getIRExp() const;
+      virtual void v_parseSingle(InitRaw const &raw, Parser &ctx, Scope &scope);
 
-         virtual bool v_isEffect() const;
+      virtual void v_parseString(Core::Token const &tok);
 
-         virtual bool v_isIRExp() const;
+      bool parsed : 1;
+   };
 
-         virtual bool v_isNoAuto() const = 0;
+   //
+   // InitMem
+   //
+   class InitMem
+   {
+   public:
+      Init::Ptr    init;
+      Core::String name;
+      std::size_t  step;
+      bool         anon : 1;
+   };
 
-         virtual void v_parseBlock(InitRaw const &raw, Parser &ctx, Scope &scope) = 0;
+   //
+   // Init_Aggregate
+   //
+   class Init_Aggregate : public Init
+   {
+   protected:
+      Init_Aggregate(SR::Type const *type_, Core::FastU offset_,
+         Core::Origin pos_) : Init{type_, offset_, pos_} {}
 
-         virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
-            Parser &ctx, Scope &scope) = 0;
+      virtual std::size_t findSub(Core::String name);
 
-         virtual void v_parseSingle(InitRaw const &raw, Parser &ctx, Scope &scope);
+      virtual std::size_t firstSub() const;
 
-         virtual void v_parseString(Core::Token const &tok);
+      virtual Init *getSub(std::size_t index) = 0;
 
-         bool parsed : 1;
-      };
+      virtual std::size_t nextSub(std::size_t index) const;
 
-      //
-      // InitMem
-      //
-      class InitMem
-      {
-      public:
-         Init::Ptr    init;
-         Core::String name;
-         std::size_t  step;
-         bool         anon : 1;
-      };
+      virtual void v_parseBlock(InitRaw const &raw, Parser &ctx, Scope &scope);
 
-      //
-      // Init_Aggregate
-      //
-      class Init_Aggregate : public Init
-      {
-      protected:
-         Init_Aggregate(SR::Type const *type_, Core::FastU offset_,
-            Core::Origin pos_) : Init{type_, offset_, pos_} {}
+      virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
+         Parser &ctx, Scope &scope);
 
-         virtual std::size_t findSub(Core::String name);
+      virtual void v_parseString(Core::Token const &tok);
 
-         virtual std::size_t firstSub() const;
+   private:
+      std::pair<std::size_t, Init *> getDes(
+         Core::Array<InitRawDes> const &desig, std::size_t desigIdx = 0);
+   };
 
-         virtual Init *getSub(std::size_t index) = 0;
+   //
+   // Init_Array
+   //
+   class Init_Array : public Init_Aggregate
+   {
+   public:
+      Init_Array(SR::Type const *type, Core::FastU offset,
+         Core::Origin pos, std::size_t width);
 
-         virtual std::size_t nextSub(std::size_t index) const;
+   protected:
+      virtual Init *getSub(std::size_t index);
 
-         virtual void v_parseBlock(InitRaw const &raw, Parser &ctx, Scope &scope);
+      virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst, bool skipZero) const;
 
-         virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
-            Parser &ctx, Scope &scope);
+      virtual IR::Exp::CRef v_getIRExp() const;
 
-         virtual void v_parseString(Core::Token const &tok);
+      virtual bool v_isIRExp() const;
 
-      private:
-         std::pair<std::size_t, Init *> getDes(
-           Core::Array<InitRawDes> const &desig, std::size_t desigIdx = 0);
-      };
+      virtual bool v_isNoAuto() const;
 
-      //
-      // Init_Array
-      //
-      class Init_Array : public Init_Aggregate
-      {
-      public:
-         Init_Array(SR::Type const *type, Core::FastU offset,
-            Core::Origin pos, std::size_t width);
+      Core::Array<std::unique_ptr<Init>> subs;
+   };
 
-      protected:
-         virtual Init *getSub(std::size_t index);
+   //
+   // Init_Array0
+   //
+   class Init_Array0 : public Init_Aggregate
+   {
+   public:
+      Init_Array0(SR::Type const *type, Core::FastU offset,
+         Core::Origin pos);
 
-         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
-            SR::Arg const &dst, bool skipZero) const;
+   protected:
+      virtual Init *getSub(std::size_t index);
 
-         virtual IR::Exp::CRef v_getIRExp() const;
+      virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst, bool skipZero) const;
 
-         virtual bool v_isIRExp() const;
+      virtual IR::Exp::CRef v_getIRExp() const;
 
-         virtual bool v_isNoAuto() const;
+      virtual bool v_isIRExp() const;
 
-         Core::Array<std::unique_ptr<Init>> subs;
-      };
+      virtual bool v_isNoAuto() const;
 
-      //
-      // Init_Array0
-      //
-      class Init_Array0 : public Init_Aggregate
-      {
-      public:
-         Init_Array0(SR::Type const *type, Core::FastU offset,
-            Core::Origin pos);
+      std::vector<std::unique_ptr<Init>> subs;
 
-      protected:
-         virtual Init *getSub(std::size_t index);
+      SR::Type::CRef const subT;
+      Core::FastU    const subB;
+   };
 
-         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
-            SR::Arg const &dst, bool skipZero) const;
+   //
+   // Init_Div
+   //
+   class Init_Div : public Init_Aggregate
+   {
+   public:
+      Init_Div(Type_Div const *type, Core::FastU offset, Core::Origin pos);
 
-         virtual IR::Exp::CRef v_getIRExp() const;
+   protected:
+      virtual std::size_t findSub(Core::String name);
 
-         virtual bool v_isIRExp() const;
+      virtual Init *getSub(std::size_t index);
 
-         virtual bool v_isNoAuto() const;
+      virtual std::size_t nextSub(std::size_t index) const;
 
-         std::vector<std::unique_ptr<Init>> subs;
+      virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst, bool skipZero) const;
 
-         SR::Type::CRef const subT;
-         Core::FastU    const subB;
-      };
+      virtual IR::Exp::CRef v_getIRExp() const;
 
-      //
-      // Init_Div
-      //
-      class Init_Div : public Init_Aggregate
-      {
-      public:
-         Init_Div(Type_Div const *type, Core::FastU offset, Core::Origin pos);
+      virtual bool v_isIRExp() const;
 
-      protected:
-         virtual std::size_t findSub(Core::String name);
+      virtual bool v_isNoAuto() const;
 
-         virtual Init *getSub(std::size_t index);
+      std::unique_ptr<Init> subs[2];
+   };
 
-         virtual std::size_t nextSub(std::size_t index) const;
+   //
+   // Init_Struct
+   //
+   class Init_Struct : public Init_Aggregate
+   {
+   public:
+      Init_Struct(Type_Struct const *type, Core::FastU offset,
+         Core::Origin pos);
 
-         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
-            SR::Arg const &dst, bool skipZero) const;
+   protected:
+      virtual std::size_t findSub(Core::String name);
 
-         virtual IR::Exp::CRef v_getIRExp() const;
+      InitMem const *getMem(std::size_t index) const;
 
-         virtual bool v_isIRExp() const;
+      virtual Init *getSub(std::size_t index);
 
-         virtual bool v_isNoAuto() const;
+      virtual std::size_t nextSub(std::size_t index) const;
 
-         std::unique_ptr<Init> subs[2];
-      };
+      virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst, bool skipZero) const;
 
-      //
-      // Init_Struct
-      //
-      class Init_Struct : public Init_Aggregate
-      {
-      public:
-         Init_Struct(Type_Struct const *type, Core::FastU offset,
-            Core::Origin pos);
+      virtual IR::Exp::CRef v_getIRExp() const;
 
-      protected:
-         virtual std::size_t findSub(Core::String name);
+      virtual bool v_isIRExp() const;
 
-         InitMem const *getMem(std::size_t index) const;
+      virtual bool v_isNoAuto() const;
 
-         virtual Init *getSub(std::size_t index);
+      Core::Array<InitMem> subs;
+      std::size_t          subInit;
+      std::size_t          subTotal;
+   };
 
-         virtual std::size_t nextSub(std::size_t index) const;
+   //
+   // Init_Union
+   //
+   class Init_Union : public Init_Struct
+   {
+   public:
+      Init_Union(Type_Struct const *type, Core::FastU offset,
+         Core::Origin pos);
 
-         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
-            SR::Arg const &dst, bool skipZero) const;
+   protected:
+      virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst, bool skipZero) const;
 
-         virtual IR::Exp::CRef v_getIRExp() const;
+      virtual IR::Exp::CRef v_getIRExp() const;
 
-         virtual bool v_isIRExp() const;
+      virtual bool v_isIRExp() const;
 
-         virtual bool v_isNoAuto() const;
+      virtual bool v_isNoAuto() const;
+   };
 
-         Core::Array<InitMem> subs;
-         std::size_t          subInit;
-         std::size_t          subTotal;
-      };
+   //
+   // Init_Value
+   //
+   class Init_Value : public Init
+   {
+   public:
+      Init_Value(SR::Type const *type, Core::FastU offset, Core::Origin pos);
 
-      //
-      // Init_Union
-      //
-      class Init_Union : public Init_Struct
-      {
-      public:
-         Init_Union(Type_Struct const *type, Core::FastU offset,
-            Core::Origin pos);
+   protected:
+      virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
+         SR::Arg const &dst, bool skipZero) const;
 
-      protected:
-         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
-            SR::Arg const &dst, bool skipZero) const;
+      virtual void v_parseBlock(InitRaw const &raw, Parser &ctx, Scope &scope);
 
-         virtual IR::Exp::CRef v_getIRExp() const;
+      virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
+         Parser &ctx, Scope &scope);
 
-         virtual bool v_isIRExp() const;
-
-         virtual bool v_isNoAuto() const;
-      };
-
-      //
-      // Init_Value
-      //
-      class Init_Value : public Init
-      {
-      public:
-         Init_Value(SR::Type const *type, Core::FastU offset, Core::Origin pos);
-
-      protected:
-         virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
-            SR::Arg const &dst, bool skipZero) const;
-
-         virtual void v_parseBlock(InitRaw const &raw, Parser &ctx, Scope &scope);
-
-         virtual std::size_t v_parseOpen(InitRaw const &raw, std::size_t rawIdx,
-            Parser &ctx, Scope &scope);
-
-         virtual bool v_isNoAuto() const;
-      };
-   }
+      virtual bool v_isNoAuto() const;
+   };
 }
 
 #endif//GDCC__CC__Init_H__

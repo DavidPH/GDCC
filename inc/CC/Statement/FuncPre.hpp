@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2016 David Hill
+// Copyright (C) 2014-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,62 +22,59 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Statement_FuncPre
+   //
+   class Statement_FuncPre : public SR::Statement
    {
-      //
-      // Statement_FuncPre
-      //
-      class Statement_FuncPre : public SR::Statement
-      {
-         GDCC_Core_CounterPreamble(
-            GDCC::CC::Statement_FuncPre, GDCC::SR::Statement);
+      GDCC_Core_CounterPreamble(
+         GDCC::CC::Statement_FuncPre, GDCC::SR::Statement);
 
-      public:
-         Scope_Function &scope;
+   public:
+      Scope_Function &scope;
 
 
-         // Create
-         static CRef Create(Core::Origin pos, Scope_Function &scope)
-            {return CRef(new This(pos, scope));}
+      // Create
+      static CRef Create(Core::Origin pos, Scope_Function &scope)
+         {return CRef(new This(pos, scope));}
 
-      protected:
-         Statement_FuncPre(Core::Origin pos_, Scope_Function &scope_) :
-            Super{pos_}, scope(scope_) {}
+   protected:
+      Statement_FuncPre(Core::Origin pos_, Scope_Function &scope_) :
+         Super{pos_}, scope(scope_) {}
 
-         virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
+      virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 
-         virtual bool v_isEffect() const {return true;}
-         virtual bool v_isNoAuto() const {return true;}
-      };
+      virtual bool v_isEffect() const {return true;}
+      virtual bool v_isNoAuto() const {return true;}
+   };
 
-      //
-      // Statement_FuncPro
-      //
-      class Statement_FuncPro : public SR::Statement
-      {
-         GDCC_Core_CounterPreamble(
-            GDCC::CC::Statement_FuncPro, GDCC::SR::Statement);
+   //
+   // Statement_FuncPro
+   //
+   class Statement_FuncPro : public SR::Statement
+   {
+      GDCC_Core_CounterPreamble(
+         GDCC::CC::Statement_FuncPro, GDCC::SR::Statement);
 
-      public:
-         Scope_Function &scope;
+   public:
+      Scope_Function &scope;
 
 
-         // Create
-         static CRef Create(Core::Origin pos, Scope_Function &scope)
-            {return CRef(new This(pos, scope));}
+      // Create
+      static CRef Create(Core::Origin pos, Scope_Function &scope)
+         {return CRef(new This(pos, scope));}
 
-      protected:
-         Statement_FuncPro(Core::Origin pos_, Scope_Function &scope_) :
-            Super{pos_}, scope(scope_) {}
+   protected:
+      Statement_FuncPro(Core::Origin pos_, Scope_Function &scope_) :
+         Super{pos_}, scope(scope_) {}
 
-         virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
+      virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 
-         virtual bool v_isEffect() const {return true;}
-         virtual bool v_isNoAuto() const {return true;}
-      };
-   }
+      virtual bool v_isEffect() const {return true;}
+      virtual bool v_isNoAuto() const {return true;}
+   };
 }
 
 #endif//GDCC__CC__Statement__FuncPre_H__

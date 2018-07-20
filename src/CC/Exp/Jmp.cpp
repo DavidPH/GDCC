@@ -31,130 +31,127 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::CC
 {
-   namespace CC
+   //
+   // Exp_JmpLng::v_genStmnt
+   //
+   void Exp_JmpLng::v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &) const
    {
-      //
-      // Exp_JmpLng::v_genStmnt
-      //
-      void Exp_JmpLng::v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &) const
+      // Generate IR arg for env.
+      IR::Arg envArg;
+      if(env->getArg().isIRArg())
+         envArg = IR::Arg_Sta(Platform::GetWordBytes(),
+            env->getArg().getIRArg(ctx.prog));
+      else
+         throw Core::ExceptStr(pos, "non-IRArg env stub");
+
+      // Generate IR arg for val.
+      IR::Arg valArg;
+      if(val->getArg().isIRArg())
+         valArg = val->getArg().getIRArg(ctx.prog);
+      else
+         throw Core::ExceptStr(pos, "non-IRArg val stub");
+
+      ctx.block.setArgSize().addStmnt(IR::Code::Jfar,
+         IR::Glyph(ctx.prog, scope.fn.getLabelLJR()),
+         IR::Arg_Stk(0), std::move(envArg), std::move(valArg));
+   }
+
+   //
+   // Exp_JmpLng::v_getType
+   //
+   SR::Type::CRef Exp_JmpLng::v_getType() const
+   {
+      return SR::Type::Void;
+   }
+
+   //
+   // Exp_JmpLng::v_isNoAuto
+   //
+   bool Exp_JmpLng::v_isNoAuto() const
+   {
+      return env->isNoAuto() && val->isNoAuto();
+   }
+
+   //
+   // Exp_JmpSet::v_genStmnt
+   //
+   void Exp_JmpSet::v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const
+   {
+      // Generate IR arg for env.
+      SR::Temporary envTmp{ctx, pos};
+      IR::Arg       envArg;
+      if(env->getArg().isIRArg())
+         envArg = IR::Arg_Sta(Platform::GetWordBytes(),
+            env->getArg().getIRArg(ctx.prog));
+      else
       {
-         // Generate IR arg for env.
-         IR::Arg envArg;
-         if(env->getArg().isIRArg())
-            envArg = IR::Arg_Sta(Platform::GetWordBytes(),
-               env->getArg().getIRArg(ctx.prog));
-         else
-            throw Core::ExceptStr(pos, "non-IRArg env stub");
+         SR::Type::CRef envType = env->getType();
+         envTmp.alloc(envType->getSizeWords());
+         envArg = IR::Arg_Sta(Platform::GetWordBytes(), envTmp.getArg());
 
-         // Generate IR arg for val.
-         IR::Arg valArg;
-         if(val->getArg().isIRArg())
-            valArg = val->getArg().getIRArg(ctx.prog);
-         else
-            throw Core::ExceptStr(pos, "non-IRArg val stub");
-
-         ctx.block.setArgSize().addStmnt(IR::Code::Jfar,
-            IR::Glyph(ctx.prog, scope.fn.getLabelLJR()),
-            IR::Arg_Stk(0), std::move(envArg), std::move(valArg));
+         // TODO: Convert envTmp to an SR::Arg to avoid stack op.
+         env->genStmntStk(ctx);
+         ctx.block.addStmnt(IR::Code::Move, envTmp.getArg(), envTmp.getArgStk());
       }
 
-      //
-      // Exp_JmpLng::v_getType
-      //
-      SR::Type::CRef Exp_JmpLng::v_getType() const
-      {
-         return SR::Type::Void;
-      }
+      // Generate dynamic jump target for addr.
+      Core::String addrLabel = ctx.fn->genLabel();
+      IR::DJump   &addrDJump = ctx.prog.getDJump(ctx.fn->genLabel());
+      addrDJump.label = addrLabel;
+      addrDJump.alloc = true;
+      addrDJump.defin = true;
 
-      //
-      // Exp_JmpLng::v_isNoAuto
-      //
-      bool Exp_JmpLng::v_isNoAuto() const
-      {
-         return env->isNoAuto() && val->isNoAuto();
-      }
+      ctx.block.setArgSize().addStmnt(IR::Code::Jset,
+         std::move(envArg), IR::Glyph(ctx.prog, addrDJump.glyph));
 
-      //
-      // Exp_JmpSet::v_genStmnt
-      //
-      void Exp_JmpSet::v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const
-      {
-         // Generate IR arg for env.
-         SR::Temporary envTmp{ctx, pos};
-         IR::Arg       envArg;
-         if(env->getArg().isIRArg())
-            envArg = IR::Arg_Sta(Platform::GetWordBytes(),
-               env->getArg().getIRArg(ctx.prog));
-         else
-         {
-            SR::Type::CRef envType = env->getType();
-            envTmp.alloc(envType->getSizeWords());
-            envArg = IR::Arg_Sta(Platform::GetWordBytes(), envTmp.getArg());
+      ctx.block.addLabel(addrLabel);
 
-            // TODO: Convert envTmp to an SR::Arg to avoid stack op.
-            env->genStmntStk(ctx);
-            ctx.block.addStmnt(IR::Code::Move, envTmp.getArg(), envTmp.getArgStk());
-         }
+      // Move to destination from stack.
+      GenStmnt_MovePart(this, ctx, dst, false, true);
+   }
 
-         // Generate dynamic jump target for addr.
-         Core::String addrLabel = ctx.fn->genLabel();
-         IR::DJump   &addrDJump = ctx.prog.getDJump(ctx.fn->genLabel());
-         addrDJump.label = addrLabel;
-         addrDJump.alloc = true;
-         addrDJump.defin = true;
+   //
+   // Exp_JmpSet::v_getType
+   //
+   SR::Type::CRef Exp_JmpSet::v_getType() const
+   {
+      return TypeIntegPrS;
+   }
 
-         ctx.block.setArgSize().addStmnt(IR::Code::Jset,
-            std::move(envArg), IR::Glyph(ctx.prog, addrDJump.glyph));
+   //
+   // Exp_JmpSet::v_isNoAuto
+   //
+   bool Exp_JmpSet::v_isNoAuto() const
+   {
+      return env->isNoAuto();
+   }
 
-         ctx.block.addLabel(addrLabel);
+   //
+   // ExpCreate_JmpLng
+   //
+   SR::Exp::CRef ExpCreate_JmpLng(Scope &scope, SR::Exp const *env_,
+      SR::Exp const *val_, Core::Origin pos)
+   {
+      auto env = ExpPromo_Assign(TypeIntegPrS->getTypePointer(), env_, pos);
+      auto val = ExpPromo_Assign(TypeIntegPrS, val_, pos);
 
-         // Move to destination from stack.
-         GenStmnt_MovePart(this, ctx, dst, false, true);
-      }
+      if(auto scopeLocal = dynamic_cast<Scope_Local *>(&scope))
+         return Exp_JmpLng::Create(*scopeLocal, env, val, pos);
+      else
+         throw Core::ExceptStr(pos, "invalid scope for longjmp");
 
-      //
-      // Exp_JmpSet::v_getType
-      //
-      SR::Type::CRef Exp_JmpSet::v_getType() const
-      {
-         return TypeIntegPrS;
-      }
+   }
 
-      //
-      // Exp_JmpSet::v_isNoAuto
-      //
-      bool Exp_JmpSet::v_isNoAuto() const
-      {
-         return env->isNoAuto();
-      }
+   //
+   // ExpCreate_JmpSet
+   //
+   SR::Exp::CRef ExpCreate_JmpSet(SR::Exp const *env_, Core::Origin pos)
+   {
+      auto env = ExpPromo_Assign(TypeIntegPrS->getTypePointer(), env_, pos);
 
-      //
-      // ExpCreate_JmpLng
-      //
-      SR::Exp::CRef ExpCreate_JmpLng(Scope &scope, SR::Exp const *env_,
-         SR::Exp const *val_, Core::Origin pos)
-      {
-         auto env = ExpPromo_Assign(TypeIntegPrS->getTypePointer(), env_, pos);
-         auto val = ExpPromo_Assign(TypeIntegPrS, val_, pos);
-
-         if(auto scopeLocal = dynamic_cast<Scope_Local *>(&scope))
-            return Exp_JmpLng::Create(*scopeLocal, env, val, pos);
-         else
-            throw Core::ExceptStr(pos, "invalid scope for longjmp");
-
-      }
-
-      //
-      // ExpCreate_JmpSet
-      //
-      SR::Exp::CRef ExpCreate_JmpSet(SR::Exp const *env_, Core::Origin pos)
-      {
-         auto env = ExpPromo_Assign(TypeIntegPrS->getTypePointer(), env_, pos);
-
-         return Exp_JmpSet::Create(env, pos);
-      }
+      return Exp_JmpSet::Create(env, pos);
    }
 }
 
