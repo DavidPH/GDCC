@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2017 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,46 +28,43 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::ACC
 {
-   namespace ACC
+   //
+   // ExpPromo_Assign
+   //
+   // Allows additional implicit conversions over C.
+   //
+   SR::Exp::CRef ExpPromo_Assign(SR::Type const *typeL, SR::Exp const *e,
+      Core::Origin pos)
    {
-      //
-      // ExpPromo_Assign
-      //
-      // Allows additional implicit conversions over C.
-      //
-      SR::Exp::CRef ExpPromo_Assign(SR::Type const *typeL, SR::Exp const *e,
-         Core::Origin pos)
+      auto exp   = CC::ExpPromo_LValue(e, pos);
+      auto typeR = exp->getType();
+
+      // integer = str
+      if(typeL->isCTypeInteg() &&
+         typeR->isTypePointer() && typeR->getBaseType()->isTypeStrEnt())
       {
-         auto exp   = CC::ExpPromo_LValue(e, pos);
-         auto typeR = exp->getType();
-
-         // integer = str
-         if(typeL->isCTypeInteg() &&
-            typeR->isTypePointer() && typeR->getBaseType()->isTypeStrEnt())
-         {
-            return CC::ExpConvert_ArithPtr(typeL, exp, pos);
-         }
-
-         // str = integer
-         if(typeL->isTypePointer() && typeL->getBaseType()->isTypeStrEnt() &&
-            typeR->isCTypeInteg())
-         {
-            return CC::ExpConvert_PtrArith(typeL, exp, pos);
-         }
-
-         // integer = special
-         if(typeL->isCTypeInteg() &&
-            typeR->isTypePointer() && typeR->getBaseType()->isTypeFunction() &&
-               typeR->getBaseType()->getCallType() == IR::CallType::Special)
-         {
-            return CC::ExpConvert_ArithPtr(typeL, exp, pos);
-         }
-
-         // Defer to C rules.
-         return CC::ExpPromo_Assign_Base(typeL, exp, pos);
+         return CC::ExpConvert_ArithPtr(typeL, exp, pos);
       }
+
+      // str = integer
+      if(typeL->isTypePointer() && typeL->getBaseType()->isTypeStrEnt() &&
+         typeR->isCTypeInteg())
+      {
+         return CC::ExpConvert_PtrArith(typeL, exp, pos);
+      }
+
+      // integer = special
+      if(typeL->isCTypeInteg() &&
+         typeR->isTypePointer() && typeR->getBaseType()->isTypeFunction() &&
+            typeR->getBaseType()->getCallType() == IR::CallType::Special)
+      {
+         return CC::ExpConvert_ArithPtr(typeL, exp, pos);
+      }
+
+      // Defer to C rules.
+      return CC::ExpPromo_Assign_Base(typeL, exp, pos);
    }
 }
 

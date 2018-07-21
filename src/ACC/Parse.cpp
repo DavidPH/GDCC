@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2016 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,48 +16,45 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::ACC
 {
-   namespace ACC
+   //
+   // Parser constructor
+   //
+   Parser::Parser(Core::TokenStream &in_, PragmaData &prag_,
+      IR::Program &prog_, bool importing_) :
+      CC::Parser{in_, prag_, prog_},
+      prag     (prag_),
+      importing{importing_}
    {
-      //
-      // Parser constructor
-      //
-      Parser::Parser(Core::TokenStream &in_, PragmaData &prag_,
-         IR::Program &prog_, bool importing_) :
-         CC::Parser{in_, prag_, prog_},
-         prag     (prag_),
-         importing{importing_}
-      {
-      }
+   }
 
-      //
-      // Parser constructor
-      //
-      Parser::Parser(Parser const &ctx, Core::TokenStream &in_) :
-         CC::Parser{ctx, in_},
-         prag     (ctx.prag),
-         importing{ctx.importing}
-      {
-      }
+   //
+   // Parser constructor
+   //
+   Parser::Parser(Parser const &ctx, Core::TokenStream &in_) :
+      CC::Parser{ctx, in_},
+      prag     (ctx.prag),
+      importing{ctx.importing}
+   {
+   }
 
-      //
-      // Parser::isAttrSpec
-      //
-      bool Parser::isAttrSpec(CC::Scope &)
-      {
-         return false;
-      }
+   //
+   // Parser::isAttrSpec
+   //
+   bool Parser::isAttrSpec(CC::Scope &)
+   {
+      return false;
+   }
 
-      //
-      // Parser::parseAttrSpec
-      //
-      void Parser::parseAttrSpec(CC::Scope &, SR::Attribute &)
-      {
-      }
+   //
+   // Parser::parseAttrSpec
+   //
+   void Parser::parseAttrSpec(CC::Scope &, SR::Attribute &)
+   {
    }
 }
 

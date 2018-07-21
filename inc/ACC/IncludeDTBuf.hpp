@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,64 +13,53 @@
 #ifndef GDCC__ACC__IncludeDTBuf_H__
 #define GDCC__ACC__IncludeDTBuf_H__
 
-#include "../CPP/IncludeDTBuf.hpp"
-
 #include "../ACC/Pragma.hpp"
+
+#include "../CPP/IncludeDTBuf.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::ACC
 {
-   namespace IR
+   //
+   // IncludeDTBuf
+   //
+   class IncludeDTBuf : public CPP::IncludeDTBuf
    {
-      class Program;
-   }
+   public:
+      IncludeDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
+         CPP::IncludeLang &langs, MacroMap &macros, PragmaData &pragd,
+         CPP::PragmaParserBase &pragp, Core::String dir,
+         Scope_Global &scope, IR::Program &prog);
 
-   namespace ACC
+   protected:
+      virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
+
+      MacroMap     &macros;
+      PragmaData   &pragd;
+      IR::Program  &prog;
+      Scope_Global &scope;
+   };
+
+   //
+   // ImportDTBuf
+   //
+   class ImportDTBuf : public IncludeDTBuf
    {
-      class MacroMap;
-      class Scope_Global;
+   public:
+      ImportDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
+         CPP::IncludeLang &langs, MacroMap &macros, PragmaData &pragd,
+         CPP::PragmaParserBase &pragp, Core::String dir,
+         Scope_Global &scope, IR::Program &prog);
 
-      //
-      // IncludeDTBuf
-      //
-      class IncludeDTBuf : public CPP::IncludeDTBuf
-      {
-      public:
-         IncludeDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
-            CPP::IncludeLang &langs, MacroMap &macros, PragmaData &pragd,
-            CPP::PragmaParserBase &pragp, Core::String dir,
-            Scope_Global &scope, IR::Program &prog);
+   protected:
+      virtual bool directive(Core::Token const &tok);
 
-      protected:
-         virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
-
-         MacroMap     &macros;
-         PragmaData   &pragd;
-         IR::Program  &prog;
-         Scope_Global &scope;
-      };
-
-      //
-      // ImportDTBuf
-      //
-      class ImportDTBuf : public IncludeDTBuf
-      {
-      public:
-         ImportDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
-            CPP::IncludeLang &langs, MacroMap &macros, PragmaData &pragd,
-            CPP::PragmaParserBase &pragp, Core::String dir,
-            Scope_Global &scope, IR::Program &prog);
-
-      protected:
-         virtual bool directive(Core::Token const &tok);
-
-         virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
-      };
-   }
+      virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
+   };
 }
 
 #endif//GDCC__ACC__IncludeDTBuf_H__

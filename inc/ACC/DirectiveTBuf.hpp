@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,8 @@
 #ifndef GDCC__ACC__DirectiveTBuf_H__
 #define GDCC__ACC__DirectiveTBuf_H__
 
+#include "../ACC/Types.hpp"
+
 #include "../CPP/DirectiveTBuf.hpp"
 
 
@@ -20,42 +22,37 @@
 // Types                                                                      |
 //
 
-namespace GDCC
+namespace GDCC::ACC
 {
-   namespace ACC
+   //
+   // IgnoreDTBuf
+   //
+   class IgnoreDTBuf : public CPP::DirectiveTBuf
    {
-      class PragmaData;
+   public:
+      IgnoreDTBuf(Core::TokenBuf &src_, bool importing_) :
+         CPP::DirectiveTBuf{src_}, importing{importing_} {}
 
-      //
-      // IgnoreDTBuf
-      //
-      class IgnoreDTBuf : public CPP::DirectiveTBuf
-      {
-      public:
-         IgnoreDTBuf(Core::TokenBuf &src_, bool importing_) :
-            CPP::DirectiveTBuf{src_}, importing{importing_} {}
+   protected:
+      virtual bool directive(Core::Token const &tok);
 
-      protected:
-         virtual bool directive(Core::Token const &tok);
+      bool importing;
+   };
 
-         bool importing;
-      };
+   //
+   // LibraryDTBuf
+   //
+   class LibraryDTBuf : public CPP::DirectiveTBuf
+   {
+   public:
+      LibraryDTBuf(Core::TokenBuf &src_, PragmaData &prag_) :
+         CPP::DirectiveTBuf{src_}, prag(prag_) {}
 
-      //
-      // LibraryDTBuf
-      //
-      class LibraryDTBuf : public CPP::DirectiveTBuf
-      {
-      public:
-         LibraryDTBuf(Core::TokenBuf &src_, PragmaData &prag_) :
-            CPP::DirectiveTBuf{src_}, prag(prag_) {}
+   protected:
+      virtual bool directive(Core::Token const &tok);
 
-      protected:
-         virtual bool directive(Core::Token const &tok);
-
-         PragmaData &prag;
-      };
-   }
+      PragmaData &prag;
+   };
 }
 
 #endif//GDCC__ACC__DirectiveTBuf_H__

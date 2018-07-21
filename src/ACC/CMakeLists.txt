@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2015 David Hill
+## Copyright (C) 2015-2018 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -61,6 +61,7 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    ../../inc/ACC/PropDecl.hpp
    ../../inc/ACC/Scope.hpp
    ../../inc/ACC/TStream.hpp
+   ../../inc/ACC/Types.hpp
 )
 
 ##

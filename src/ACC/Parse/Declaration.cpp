@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2016 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,52 +23,49 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::ACC
 {
-   namespace ACC
+   //
+   // Parser::getDecl
+   //
+   SR::Statement::CRef Parser::getDecl(Scope_Global &scope)
    {
-      //
-      // Parser::getDecl
-      //
-      SR::Statement::CRef Parser::getDecl(Scope_Global &scope)
+      if(in.peek(Core::TOK_Semico))
       {
-         if(in.peek(Core::TOK_Semico))
-         {
-            Core::Origin pos = in.get().pos;
-            CC::WarnFileSemico(pos, "extraneous file-scope semicolon");
-            return SR::StatementCreate_Empty(in.reget().pos);
-         }
-
-         if(in.peek(Core::TOK_KeyWrd) || in.peek(Core::TOK_Identi)) switch(in.peek().str)
-         {
-         case Core::STR_createtranslation: return getDecl_CreateTrans(scope);
-         case Core::STR_enum:              return getDecl_Enum(scope);
-         case Core::STR_function:          return getDecl_Function(scope);
-         case Core::STR_print:             return getDecl_Print(scope);
-         case Core::STR_script:            return getDecl_Script(scope);
-         case Core::STR_special:           return getDecl_Special(scope);
-         case Core::STR_struct:            return getDecl_Struct(scope);
-         default: break;
-         }
-
-         return getDecl_Object(scope);
+         Core::Origin pos = in.get().pos;
+         CC::WarnFileSemico(pos, "extraneous file-scope semicolon");
+         return SR::StatementCreate_Empty(in.reget().pos);
       }
 
-      //
-      // Parser::getDecl
-      //
-      SR::Statement::CRef Parser::getDecl(CC::Scope_Local &scope, Labels &&labels)
+      if(in.peek(Core::TOK_KeyWrd) || in.peek(Core::TOK_Identi)) switch(in.peek().str)
       {
-         return getDecl_Object(scope, std::move(labels));
+      case Core::STR_createtranslation: return getDecl_CreateTrans(scope);
+      case Core::STR_enum:              return getDecl_Enum(scope);
+      case Core::STR_function:          return getDecl_Function(scope);
+      case Core::STR_print:             return getDecl_Print(scope);
+      case Core::STR_script:            return getDecl_Script(scope);
+      case Core::STR_special:           return getDecl_Special(scope);
+      case Core::STR_struct:            return getDecl_Struct(scope);
+      default: break;
       }
 
-      //
-      // Parser::isDecl
-      //
-      bool Parser::isDecl(CC::Scope &scope)
-      {
-         return isDeclSpec(scope);
-      }
+      return getDecl_Object(scope);
+   }
+
+   //
+   // Parser::getDecl
+   //
+   SR::Statement::CRef Parser::getDecl(CC::Scope_Local &scope, Labels &&labels)
+   {
+      return getDecl_Object(scope, std::move(labels));
+   }
+
+   //
+   // Parser::isDecl
+   //
+   bool Parser::isDecl(CC::Scope &scope)
+   {
+      return isDeclSpec(scope);
    }
 }
 

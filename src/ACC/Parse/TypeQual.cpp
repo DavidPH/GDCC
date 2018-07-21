@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2016 David Hill
+// Copyright (C) 2015-2018 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,46 +22,43 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC
+namespace GDCC::ACC
 {
-   namespace ACC
+   //
+   // Parser::isTypeQual
+   //
+   bool Parser::isTypeQual(CC::Scope &)
    {
-      //
-      // Parser::isTypeQual
-      //
-      bool Parser::isTypeQual(CC::Scope &)
+      auto const &tok = in.peek();
+      if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
+         return false;
+
+      switch(tok.str)
       {
-         auto const &tok = in.peek();
-         if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
-            return false;
+         // Standard C qualifiers.
+      case Core::STR_const: return true;
 
-         switch(tok.str)
-         {
-            // Standard C qualifiers.
-         case Core::STR_const: return true;
-
-         default:
-            return false;
-         }
+      default:
+         return false;
       }
+   }
 
-      //
-      // Parser::parseTypeQual
-      //
-      void Parser::parseTypeQual(CC::Scope &, SR::TypeQual &qual)
+   //
+   // Parser::parseTypeQual
+   //
+   void Parser::parseTypeQual(CC::Scope &, SR::TypeQual &qual)
+   {
+      auto const &tok = in.get();
+      if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
+         throw Core::ParseExceptExpect(tok, "identifier", false);
+
+      switch(tok.str)
       {
-         auto const &tok = in.get();
-         if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
-            throw Core::ParseExceptExpect(tok, "identifier", false);
+         // Standard C qualifiers.
+      case Core::STR_const: qual.aCons = true; break;
 
-         switch(tok.str)
-         {
-            // Standard C qualifiers.
-         case Core::STR_const: qual.aCons = true; break;
-
-         default:
-            throw Core::ParseExceptExpect(tok, "type-qualifier", false);
-         }
+      default:
+         throw Core::ParseExceptExpect(tok, "type-qualifier", false);
       }
    }
 }
