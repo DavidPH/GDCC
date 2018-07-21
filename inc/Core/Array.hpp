@@ -349,7 +349,7 @@ namespace GDCC::Core
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace std
@@ -366,10 +366,7 @@ namespace GDCC::Core
    template<typename T> bool operator <= (Array<T> const &l, Array<T> const &r);
    template<typename T> bool operator >  (Array<T> const &l, Array<T> const &r);
    template<typename T> bool operator >= (Array<T> const &l, Array<T> const &r);
-}
 
-namespace GDCC::Core
-{
    //
    // operator Array == Array
    //

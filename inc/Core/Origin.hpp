@@ -48,7 +48,7 @@ namespace GDCC::Core
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC::Core

@@ -37,7 +37,7 @@ namespace GDCC::IR
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
 namespace GDCC::IR
