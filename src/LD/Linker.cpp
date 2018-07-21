@@ -148,6 +148,7 @@ namespace GDCC::LD
    {
       if(!info) return;
 
+      info->chk(prog);
       info->pre(prog);
       info->opt(prog);
       info->tr(prog);

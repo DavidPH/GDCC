@@ -82,6 +82,8 @@ namespace GDCC::BC
 
       virtual ~Info() {}
 
+      void chk(IR::Program &prog);
+
       void gen(IR::Program &prog);
 
       void opt(IR::Program &prog);
@@ -111,87 +113,103 @@ namespace GDCC::BC
       using WordArray = Core::Array<WordValue>;
 
 
+      virtual void chk();
+      virtual void chkBlock();
+              void chkBlock(IR::Block &block);
+      virtual void chkDJump() {}
+              void chkDJump(IR::DJump &djump);
+      virtual void chkFunc();
+              void chkFunc(IR::Function &func);
+      virtual void chkObj() {}
+              void chkObj(IR::Object &obj);
+      virtual void chkSpace() {}
+              void chkSpace(IR::Space &space);
+      virtual void chkStmnt() {}
+              void chkStmnt(IR::Statement &stmnt);
+      virtual void chkStr() {}
+              void chkStr(IR::StrEnt &str);
+
       virtual void gen();
       virtual void genBlock();
-               void genBlock(IR::Block &block);
+              void genBlock(IR::Block &block);
       virtual void genDJump() {}
-               void genDJump(IR::DJump &djump);
+              void genDJump(IR::DJump &djump);
       virtual void genFunc();
-               void genFunc(IR::Function &func);
+              void genFunc(IR::Function &func);
       virtual void genObj() {}
-               void genObj(IR::Object &obj);
+              void genObj(IR::Object &obj);
       virtual void genSpace() {}
-               void genSpace(IR::Space &space);
+              void genSpace(IR::Space &space);
       virtual void genStmnt() {}
-               void genStmnt(IR::Statement &stmnt);
+              void genStmnt(IR::Statement &stmnt);
       virtual void genStr() {}
-               void genStr(IR::StrEnt &str);
+              void genStr(IR::StrEnt &str);
 
       virtual void opt();
       virtual void optBlock();
-               void optBlock(IR::Block &block);
+              void optBlock(IR::Block &block);
       virtual void optDJump() {}
-               void optDJump(IR::DJump &djump);
+              void optDJump(IR::DJump &djump);
       virtual void optFunc();
-               void optFunc(IR::Function &func);
+              void optFunc(IR::Function &func);
       virtual void optObj() {}
-               void optObj(IR::Object &obj);
+              void optObj(IR::Object &obj);
       virtual void optSpace() {}
-               void optSpace(IR::Space &space);
+              void optSpace(IR::Space &space);
       virtual void optStmnt();
-               void optStmnt(IR::Statement &stmnt);
+              void optStmnt(IR::Statement &stmnt);
       virtual void optStr() {}
-               void optStr(IR::StrEnt &str);
+              void optStr(IR::StrEnt &str);
 
       virtual void pre();
       virtual void preBlock();
-               void preBlock(IR::Block &block);
+              void preBlock(IR::Block &block);
       virtual void preDJump() {}
-               void preDJump(IR::DJump &djump);
+              void preDJump(IR::DJump &djump);
       virtual void preFunc();
-               void preFunc(IR::Function &func);
+              void preFunc(IR::Function &func);
       virtual void preObj() {}
-               void preObj(IR::Object &obj);
+              void preObj(IR::Object &obj);
       virtual void preSpace() {}
-               void preSpace(IR::Space &space);
+              void preSpace(IR::Space &space);
       virtual void preStmnt() {}
-               void preStmnt(IR::Statement &stmnt);
+              void preStmnt(IR::Statement &stmnt);
       virtual void preStr() {}
-               void preStr(IR::StrEnt &str);
+              void preStr(IR::StrEnt &str);
 
       virtual void put() = 0;
       virtual void putBlock();
-               void putBlock(IR::Block &block);
+              void putBlock(IR::Block &block);
       virtual void putDJump() {}
-               void putDJump(IR::DJump &djump);
+              void putDJump(IR::DJump &djump);
       virtual void putFunc();
-               void putFunc(IR::Function &func);
+              void putFunc(IR::Function &func);
       virtual void putObj() {}
-               void putObj(IR::Object &obj);
+              void putObj(IR::Object &obj);
       virtual void putSpace() {}
-               void putSpace(IR::Space &space);
+              void putSpace(IR::Space &space);
       virtual void putStmnt() {}
-               void putStmnt(IR::Statement &stmnt);
+              void putStmnt(IR::Statement &stmnt);
       virtual void putStr() {}
-               void putStr(IR::StrEnt &str);
+              void putStr(IR::StrEnt &str);
 
       virtual void putExtra() {}
 
       virtual void tr();
       virtual void trBlock();
-               void trBlock(IR::Block &block);
+              void trBlock(IR::Block &block);
       virtual void trDJump() {}
-               void trDJump(IR::DJump &djump);
+              void trDJump(IR::DJump &djump);
       virtual void trFunc();
-               void trFunc(IR::Function &func);
+              void trFunc(IR::Function &func);
       virtual void trObj() {}
-               void trObj(IR::Object &obj);
+              void trObj(IR::Object &obj);
       virtual void trSpace() {}
-               void trSpace(IR::Space &space);
+              void trSpace(IR::Space &space);
       virtual void trStmnt() {}
-               void trStmnt(IR::Statement &stmnt);
+              void trStmnt(IR::Statement &stmnt);
       virtual void trStr() {}
-               void trStr(IR::StrEnt &str);
+              void trStr(IR::StrEnt &str);
 
       void addFunc(Core::String name, Core::FastU retrn, Core::FastU param);
 
