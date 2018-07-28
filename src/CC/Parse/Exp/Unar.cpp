@@ -37,14 +37,9 @@ namespace GDCC::CC
    static SR::Exp::CRef GetExp_Unar_alignof(Parser &ctx, Scope &scope)
    {
       auto pos = ctx.in.get().pos;
-
-      if(!ctx.in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
+      ctx.expect(Core::TOK_ParenO);
       auto type = ctx.getType(scope);
-
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
 
       return ExpCreate_SizeAlign(type, pos);
    }
@@ -57,26 +52,12 @@ namespace GDCC::CC
       // div-expression:
       //    <__div> ( assignment-expression , assignment-expression )
 
-      // <__div>
       auto pos = ctx.in.get().pos;
-
-      // (
-      if(!ctx.in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
-      // assignment-expression
+      ctx.expect(Core::TOK_ParenO);
       auto l = ctx.getExp_Assi(scope);
-
-      // ,
-      if(!ctx.in.drop(Core::TOK_Comma))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
-
-      // assignment-expression
+      ctx.expect(Core::TOK_Comma);
       auto r = ctx.getExp_Assi(scope);
-
-      // )
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
 
       return ExpCreate_DivEx(l, r, pos);
    }
@@ -93,28 +74,22 @@ namespace GDCC::CC
       auto pos = ctx.in.get().pos;
 
       // (
-      if(!ctx.in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+      ctx.expect(Core::TOK_ParenO);
 
       // type-name
       auto type = ctx.getType(scope);
 
       if(!type->isCTypeObject() || !type->isTypeComplete())
-         throw Core::ExceptStr(pos, "expected complete object type");
+         Core::Error(pos, "expected complete object type");
 
       // ,
-      if(!ctx.in.drop(Core::TOK_Comma))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
+      ctx.expect(Core::TOK_Comma);
 
       // string-literal
-      if(!ctx.in.peek().isTokString())
-         throw Core::ParseExceptExpect(ctx.in.peek(), "string-literal", false);
-
-      IR::Glyph glyph = {ctx.prog, ctx.in.get().str};
+      IR::Glyph glyph = {ctx.prog, ctx.expectString().str};
 
       // )
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
 
       // If the glyph has no type yet, set it now.
       auto &glyphData = glyph.getData();
@@ -131,26 +106,12 @@ namespace GDCC::CC
       // longjmp-expression:
       //    <__longjmp> ( assignment-expression , assignment-expression )
 
-      // <__longjmp>
       auto pos = ctx.in.get().pos;
-
-      // (
-      if(!ctx.in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
-      // assignment-expression
+      ctx.expect(Core::TOK_ParenO);
       auto env = ctx.getExp_Assi(scope);
-
-      // ,
-      if(!ctx.in.drop(Core::TOK_Comma))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
-
-      // assignment-expression
+      ctx.expect(Core::TOK_Comma);
       auto val = ctx.getExp_Assi(scope);
-
-      // )
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
 
       return ExpCreate_JmpLng(scope, env, val, pos);
    }
@@ -167,28 +128,22 @@ namespace GDCC::CC
       auto pos = ctx.in.get().pos;
 
       // (
-      if(!ctx.in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+      ctx.expect(Core::TOK_ParenO);
 
       // type-name
       auto type = ctx.getType(scope);
 
       if(!type->isCTypeObject() || !type->isTypeComplete())
-         throw Core::ExceptStr(pos, "expected complete object type");
+         Core::Error(pos, "expected complete object type");
 
       // ,
-      if(!ctx.in.drop(Core::TOK_Comma))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
+      ctx.expect(Core::TOK_Comma);
 
       // identifier
-      if(!ctx.in.peek(Core::TOK_Identi))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
-
-      Core::String name = ctx.in.get().str;
+      Core::String name = ctx.expectIdenti().str;
 
       // )
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
 
       try
       {
@@ -196,7 +151,7 @@ namespace GDCC::CC
       }
       catch(SR::TypeError const &)
       {
-         throw Core::ExceptStr(pos, "invalid member");
+         Core::Error(pos, "invalid member");
       }
    }
 
@@ -208,19 +163,10 @@ namespace GDCC::CC
       // setjmp-expression:
       //    <__setjmp> ( assignment-expression )
 
-      // <__setjmp>
       auto pos = ctx.in.get().pos;
-
-      // (
-      if(!ctx.in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
-      // assignment-expression
+      ctx.expect(Core::TOK_ParenO);
       auto env = ctx.getExp_Assi(scope);
-
-      // )
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
 
       return ExpCreate_JmpSet(env, pos);
    }
@@ -241,8 +187,7 @@ namespace GDCC::CC
             auto type = ctx.getType(scope);
 
             // )
-            if(!ctx.in.drop(Core::TOK_ParenC))
-               throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+            ctx.expect(Core::TOK_ParenC);
 
             return ExpCreate_SizeBytes(type, pos);
          }
@@ -263,26 +208,12 @@ namespace GDCC::CC
       // va_arg-expression:
       //    <__va_arg> ( assignment-expression , type-name )
 
-      // <__va_arg>
       auto pos = ctx.in.get().pos;
-
-      // (
-      if(!ctx.in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
-
-      // assignment-expression
+      ctx.expect(Core::TOK_ParenO);
       auto exp = ctx.getExp_Assi(scope);
-
-      // ,
-      if(!ctx.in.drop(Core::TOK_Comma))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
-
-      // type-name
+      ctx.expect(Core::TOK_Comma);
       auto type = ctx.getType(scope);
-
-      // )
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
 
       return ExpCreate_VaArg(type, exp, pos);
    }
@@ -326,12 +257,9 @@ namespace GDCC::CC
 
       auto scopeLocal = dynamic_cast<Scope_Local *>(&scope);
       if(!scopeLocal)
-         throw Core::ExceptStr(pos, "invalid scope for unary &&");
+         Core::Error(pos, "invalid scope for unary &&");
 
-      if(!ctx.in.peek(Core::TOK_Identi))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
-
-      auto  label = scopeLocal->getLabel(ctx.in.get().str);
+      auto  label = scopeLocal->getLabel(ctx.expectIdenti().str);
       auto &djump = ctx.prog.getDJump(label + "$djump");
 
       djump.label = label;

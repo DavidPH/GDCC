@@ -154,7 +154,7 @@ namespace GDCC::CC
       auto type = exp->getType();
 
       if(!type->isTypePointer() || !(type = type->getBaseType())->isCTypeFunction())
-         throw Core::ExceptStr(pos, "expected pointer-to-function");
+         Core::Error(pos, "expected pointer-to-function");
 
       // Check argument count.
       auto param = type->getParameters();
@@ -166,7 +166,7 @@ namespace GDCC::CC
 
          // Possible optional args?
          if(!fn || param->size() - args.size() > fn->paramOpt)
-            throw Core::ExceptStr(pos, "insufficient arguments");
+            Core::Error(pos, "insufficient arguments");
 
          switch(IR::GetCallTypeIR(type->getCallType()))
          {
@@ -194,7 +194,7 @@ namespace GDCC::CC
       }
 
       if(args.size() > param->size() && !param->variadic())
-         throw Core::ExceptStr(pos, "too many arguments");
+         Core::Error(pos, "too many arguments");
 
       // Promote/convert args.
       auto paramItr = param->begin(), paramEnd = param->end();
@@ -212,7 +212,7 @@ namespace GDCC::CC
       if(auto scopeLocal = dynamic_cast<Scope_Local *>(&scope))
          return Exp_CallStk::Create(exp, pos, std::move(args), *scopeLocal);
       else
-         throw Core::ExceptStr(pos, "invalid scope for call");
+         Core::Error(pos, "invalid scope for call");
    }
 }
 

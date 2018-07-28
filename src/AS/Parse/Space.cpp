@@ -42,7 +42,7 @@ namespace GDCC::AS
       case Core::STR_words: space.words = GetFastU(TokenDropEq(ctx));   break;
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.reget(), "Space argument", false);
+         Core::ErrorExpect("Space argument", ctx.in.reget());
       }
    }
 }

@@ -64,7 +64,7 @@ namespace GDCC::CC
       case IR::CallType::AsmFunc: code = IR::Code::Casm; break;
       case IR::CallType::Special: code = IR::Code::Cspe; break;
       default:
-         throw Core::ExceptStr(pos, "unsupported call type");
+         Core::Error(pos, "unsupported call type");
       }
       ctx.block.addStmntArgs(code, std::move(irArgs));
 

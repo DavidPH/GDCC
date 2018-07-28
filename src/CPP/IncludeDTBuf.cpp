@@ -76,47 +76,11 @@ namespace GDCC::CPP
 
 
 //----------------------------------------------------------------------------|
-// Types                                                                      |
-//
-
-namespace GDCC::CPP
-{
-   //
-   // ExceptFileInc
-   //
-   class ExceptFileInc : public Core::Exception
-   {
-   public:
-      ExceptFileInc(Core::Origin pos_, Core::String filename_, char l_, char r_) noexcept :
-         Exception{pos_}, filename{filename_}, l{l_}, r{r_} {}
-
-   private:
-      virtual void genMsg() const;
-
-      Core::String const filename;
-      char         const l, r;
-   };
-}
-
-
-//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
 namespace GDCC::CPP
 {
-   //
-   // ExceptFileInc::genMsg
-   //
-   void ExceptFileInc::genMsg() const
-   {
-      std::ostringstream oss;
-      putOrigin(oss);
-      oss << "could not include " << l << filename << r;
-      auto const &tmp = oss.str();
-      msg = Core::StrDup(tmp.data(), tmp.size());
-   }
-
    //
    // IncludeDTBuf constructor
    //
@@ -177,7 +141,7 @@ namespace GDCC::CPP
       if(tryIncSys(name))
          return true;
 
-      throw ExceptFileInc(pos, name, '<', '>');
+      Core::ErrorFileInc(pos, name, '<', '>');
    }
 
    //
@@ -188,7 +152,7 @@ namespace GDCC::CPP
       if(tryIncUsr(name) || tryIncSys(name))
          return true;
 
-      throw ExceptFileInc(pos, name, '"', '"');
+      Core::ErrorFileInc(pos, name, '"', '"');
    }
 
    //
@@ -237,14 +201,14 @@ namespace GDCC::CPP
 
       // Not a valid header token.
       else
-         throw Core::ExceptStr(tok.pos, "invalid include syntax");
+         Core::Error(tok.pos, "invalid include syntax");
 
       // Skip whitespace.
       while(mbuf.peek().tok == Core::TOK_WSpace) mbuf.get();
 
       // Must be at end of line.
       if(mbuf.peek().tok != Core::TOK_EOF)
-         throw Core::ExceptStr(tok.pos, "invalid include syntax");
+         Core::Error(tok.pos, "invalid include syntax");
    }
 
    //

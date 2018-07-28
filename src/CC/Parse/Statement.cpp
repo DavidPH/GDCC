@@ -60,13 +60,12 @@ namespace GDCC::CC
 
                auto val = ExpToInteg(getExp_Cond(scope));
 
-               if(!in.drop(Core::TOK_Colon))
-                  throw Core::ParseExceptExpect(in.peek(), ":", true);
+               expect(Core::TOK_Colon);
 
                auto label = scope.getLabelCase(val, true);
 
                if(!label)
-                  throw Core::ExceptStr(tok.pos, "case redefined");
+                  Core::Error(tok.pos, "case redefined");
 
                labels.emplace_back(label);
             }
@@ -76,13 +75,12 @@ namespace GDCC::CC
             {
                in.get();
 
-               if(!in.drop(Core::TOK_Colon))
-                  throw Core::ParseExceptExpect(in.peek(), ":", true);
+               expect(Core::TOK_Colon);
 
                auto label = scope.getLabelDefault(true);
 
                if(!label)
-                  throw Core::ExceptStr(tok.pos, "default redefined");
+                  Core::Error(tok.pos, "default redefined");
 
                labels.emplace_back(label);
             }
@@ -100,7 +98,7 @@ namespace GDCC::CC
                auto label = scope.getLabel(tok.str);
 
                if(!label)
-                  throw Core::ExceptStr(tok.pos, "label redefined");
+                  Core::Error(tok.pos, "label redefined");
 
                labels.emplace_back(label);
             }
@@ -172,27 +170,11 @@ namespace GDCC::CC
    SR::Statement::CRef Parser::getStatement_asm(Scope_Local &scope, Labels &&labels)
    {
       // <__asm> ( string-literal ) ;
-
-      // <__asm>
       auto pos = in.get().pos;
-
-      // (
-      if(!in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(in.peek(), "(", true);
-
-      // string-literal
-      if(!in.peek().isTokString())
-         throw Core::ExceptStr(in.peek().pos, "expected string-literal");
-
-      auto tok = in.get();
-
-      // )
-      if(!in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(in.peek(), ")", true);
-
-      // ;
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      expect(Core::TOK_ParenO);
+      auto tok = expectString();
+      expect(Core::TOK_ParenC);
+      expect(Core::TOK_Semico);
 
       // Convert string to a series of assembly tokens.
       Core::StringBuf sbuf{tok.str.data(), tok.str.size()};
@@ -215,13 +197,8 @@ namespace GDCC::CC
    SR::Statement::CRef Parser::getStatement_break(Scope_Local &scope, Labels &&labels)
    {
       // <break> ;
-
-      // <break>
       auto pos = in.get().pos;
-
-      // ;
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      expect(Core::TOK_Semico);
 
       return StatementCreate_Break(std::move(labels), pos, scope);
    }
@@ -233,13 +210,8 @@ namespace GDCC::CC
       Scope_Local &scope, Labels &&labels)
    {
       // <continue> ;
-
-      // <continue>
       auto pos = in.get().pos;
-
-      // ;
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      expect(Core::TOK_Semico);
 
       return StatementCreate_Continue(std::move(labels), pos, scope);
    }
@@ -260,15 +232,13 @@ namespace GDCC::CC
       auto body = getStatement(loopScope);
 
       // <while>
-      if(!in.drop(Core::TOK_KeyWrd, Core::STR_while))
-         throw Core::ParseExceptExpect(in.peek(), "while", true);
+      expect(Core::TOK_KeyWrd, Core::STR_while);
 
       // ( expression )
       auto cond = getStatementCond(loopScope);
 
       // ;
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      expect(Core::TOK_Semico);
 
       return StatementCreate_Do(std::move(labels), pos, loopScope, body, cond);
    }
@@ -287,8 +257,7 @@ namespace GDCC::CC
       auto pos = in.get().pos;
 
       // (
-      if(!in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(in.peek(), "(", true);
+      expect(Core::TOK_ParenO);
 
       SR::Statement::CPtr init;
       // declaration
@@ -306,8 +275,7 @@ namespace GDCC::CC
             init = SR::StatementCreate_Empty(pos);
 
          // ;
-         if(!in.drop(Core::TOK_Semico))
-            throw Core::ParseExceptExpect(in.peek(), ";", true);
+         expect(Core::TOK_Semico);
       }
 
       // expression(opt)
@@ -318,8 +286,7 @@ namespace GDCC::CC
          cond = ExpCreate_LitInt(TypeIntegPrS, 1, pos);
 
       // ;
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      expect(Core::TOK_Semico);
 
       // expression(opt)
       SR::Statement::CPtr iter;
@@ -329,8 +296,7 @@ namespace GDCC::CC
          iter = SR::StatementCreate_Empty(pos);
 
       // )
-      if(!in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(in.peek(), ")", true);
+      expect(Core::TOK_ParenC);
 
       // statement
       auto body = getStatement(loopScope);
@@ -354,22 +320,16 @@ namespace GDCC::CC
       if(in.drop(Core::TOK_Mul))
       {
          auto exp = getExp_Cast(scope);
-
-         // ;
-         if(!in.drop(Core::TOK_Semico))
-            throw Core::ParseExceptExpect(in.peek(), ";", true);
+         expect(Core::TOK_Semico);
 
          return StatementCreate_Goto(std::move(labels), pos, exp);
       }
 
       // identifier
-      if(in.peek().tok != Core::TOK_Identi)
-         throw Core::ParseExceptExpect(in.peek(), "identifier", false);
-      auto name = in.get().str;
+      auto name = expectIdenti().str;
 
       // ;
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      expect(Core::TOK_Semico);
 
       return StatementCreate_Goto(std::move(labels), pos, scope, name);
    }
@@ -421,8 +381,7 @@ namespace GDCC::CC
       auto exp = getExp(scope);
 
       // ;
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      expect(Core::TOK_Semico);
 
       return StatementCreate_Return(std::move(labels), pos, scope.fn, exp);
    }
@@ -484,8 +443,7 @@ namespace GDCC::CC
       auto pos = in.get().pos;
 
       // (
-      if(!in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(in.peek(), "(", true);
+      expect(Core::TOK_ParenO);
 
       // with-declaration-sequence:
       //    with-declaration
@@ -509,14 +467,12 @@ namespace GDCC::CC
             stmnts.push_back(SR::StatementCreate_Exp(getExp(withScope)));
 
             // ;
-            if(!in.drop(Core::TOK_Semico))
-               throw Core::ParseExceptExpect(in.peek(), ";", true);
+            expect(Core::TOK_Semico);
          }
       }
 
       // )
-      if(!in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(in.peek(), ")", true);
+      expect(Core::TOK_ParenC);
 
       // statement
       stmnts.push_back(getStatement(withScope));
@@ -569,15 +525,13 @@ namespace GDCC::CC
    SR::Exp::CRef Parser::getStatementCond(Scope &scope)
    {
       // (
-      if(!in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(in.peek(), "(", true);
+      expect(Core::TOK_ParenO);
 
       // expression
       auto cond = getStatementCondExp(scope);
 
       // )
-      if(!in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(in.peek(), ")", true);
+      expect(Core::TOK_ParenC);
 
       return cond;
    }
@@ -623,8 +577,7 @@ namespace GDCC::CC
       auto exp = getExp(scope);
 
       // ;
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      expect(Core::TOK_Semico);
 
       if(!exp->isEffect() && !exp->getType()->isTypeVoid())
          SR::WarnUnusedValue(exp->pos, "expression result unused");

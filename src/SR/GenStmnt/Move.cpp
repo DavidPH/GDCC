@@ -106,8 +106,8 @@ namespace GDCC::SR
    template<> void GenStmnt_MovePartT<IR::Arg_Cpy>(Exp const *exp,
       GenStmntCtx const &, Arg const &, bool get, bool set)
    {
-      if(set) throw Core::ExceptStr(exp->pos, "AddrBase::Cpy set");
-      if(get) throw Core::ExceptStr(exp->pos, "AddrBase::Cpy get");
+      if(set) Core::Error(exp->pos, "AddrBase::Cpy set");
+      if(get) Core::Error(exp->pos, "AddrBase::Cpy get");
    }
 
    //
@@ -116,7 +116,7 @@ namespace GDCC::SR
    template<> void GenStmnt_MovePartT<IR::Arg_Lit>(Exp const *exp,
       GenStmntCtx const &ctx, Arg const &arg, bool get, bool set)
    {
-      if(set) throw Core::ExceptStr(exp->pos, "AddrBase::Lit set");
+      if(set) Core::Error(exp->pos, "AddrBase::Lit set");
 
       if(get)
       {
@@ -144,7 +144,7 @@ namespace GDCC::SR
             IR::Code::Move, IR::Block::Nul(), IR::Block::Stk());
       }
 
-      if(get) throw Core::ExceptStr(exp->pos, "AddrBase::Nul get");
+      if(get) Core::Error(exp->pos, "AddrBase::Nul get");
    }
 
    //
@@ -155,7 +155,7 @@ namespace GDCC::SR
       Arg const &, bool get, bool set)
    {
       if(get && set)
-         throw Core::ExceptStr(exp->pos, "AddrBase::Stk get && set");
+         Core::Error(exp->pos, "AddrBase::Stk get && set");
    }
 }
 
@@ -224,7 +224,7 @@ namespace GDCC::SR
       if(arg.type->isTypeVoid())
       {
          // A void src is an error.
-         if(get) throw Core::ExceptStr(exp->pos, "void src");
+         if(get) Core::Error(exp->pos, "void src");
 
          // A void dst is a no-op.
          if(set) return;

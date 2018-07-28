@@ -159,7 +159,7 @@ namespace GDCC::Core
          int c = in.get();
 
          if(c == EOF)
-            throw ParseExceptStr({}, "unterminated string literal");
+            Error({}, "unterminated string literal");
 
          if(static_cast<char>(c) == term)
             break;
@@ -167,14 +167,14 @@ namespace GDCC::Core
          if(c == '\\')
          {
             if((c = in.get()) == EOF)
-               throw ParseExceptStr({}, "unterminated string literal");
+               Error({}, "unterminated string literal");
 
             if(!escaper(buf, in, static_cast<char>(c)))
             {
                char str[] = "unknown escape character: ' '";
                std::size_t len = sizeof(str) - 1;
                str[len - 2] = static_cast<char>(c);
-               throw ParseExceptStr({}, {str, len});
+               Error({}, {str, len});
             }
          }
          else
@@ -229,7 +229,7 @@ namespace GDCC::Core
          int c = in.get();
 
          if(c == EOF || c == '\n')
-            throw ParseExceptStr({}, "unterminated string literal");
+            Error({}, "unterminated string literal");
 
          buf.put(c);
 
@@ -239,7 +239,7 @@ namespace GDCC::Core
          if(c == '\\')
          {
             if((c = in.get()) == EOF || c == '\n')
-               throw ParseExceptStr({}, "unterminated string literal");
+               Error({}, "unterminated string literal");
 
             buf.put(c);
          }

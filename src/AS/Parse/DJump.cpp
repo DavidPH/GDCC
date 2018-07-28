@@ -41,7 +41,7 @@ namespace GDCC::AS
       case Core::STR_value: jump.value = GetFastU(TokenDropEq(ctx));  break;
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.reget(), "DJump argument", false);
+         Core::ErrorExpect("DJump argument", ctx.in.reget());
       }
    }
 }

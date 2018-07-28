@@ -17,7 +17,6 @@
 #include "CC/Exp.hpp"
 #include "CC/Init.hpp"
 
-#include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "SR/Attribute.hpp"
@@ -45,8 +44,7 @@ namespace GDCC::ACC
          auto type = getType(scope);
 
          // )
-         if(!in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(in.peek(), ")", true);
+         expect(Core::TOK_ParenC);
 
          return CC::ExpCreate_Cst(type, getExp_Cast(scope), pos);
       }
@@ -70,8 +68,7 @@ namespace GDCC::ACC
       if(!in.peek(Core::TOK_ParenC))
          args = getExpList(scope);
 
-      if(!in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(in.peek(), ")", true);
+      expect(Core::TOK_ParenC);
 
       return CC::ExpCreate_Call(exp, std::move(args), scope, pos);
    }
@@ -154,8 +151,7 @@ namespace GDCC::ACC
          }
          while(in.drop(Core::TOK_Comma) && !in.peek(Core::TOK_BraceC));
 
-         if(!in.drop(Core::TOK_BraceC))
-            throw Core::ParseExceptExpect(in.peek(), "}", true);
+         expect(Core::TOK_BraceC);
 
          init.valueSub = {Core::Move, sub.begin(), sub.end()};
       }

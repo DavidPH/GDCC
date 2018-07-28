@@ -291,10 +291,10 @@ namespace GDCC::BC::ZDACS
    void Info::trStmnt_Jcnd_Tab()
    {
       if(stmnt->args[0].getSize() != 1)
-         throw Core::ExceptStr(stmnt->pos, "unsupported op size for Jcnd_Tab");
+         Core::Error(stmnt->pos, "unsupported op size for Jcnd_Tab");
 
       if(stmnt->args.size() % 2 != 1)
-         throw Core::ExceptStr(stmnt->pos, "invalied arg count for Jcnd_Tab");
+         Core::Error(stmnt->pos, "invalied arg count for Jcnd_Tab");
 
       for(Core::FastU i = 1; i != stmnt->args.size(); ++i)
          CheckArgB(stmnt, i, IR::ArgBase::Lit);

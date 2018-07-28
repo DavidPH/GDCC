@@ -77,7 +77,7 @@ namespace GDCC::CC
    IR::Exp::CRef Exp_Obj::v_getIRExp() const
    {
       if(!obj->type)
-         throw Core::ExceptStr(pos, "object has no type");
+         Core::Error(pos, "object has no type");
 
       if(!obj->type->getQualCons() || !obj->init)
          return Super::v_getIRExp();
@@ -99,7 +99,7 @@ namespace GDCC::CC
    SR::Type::CRef Exp_Obj::v_getType() const
    {
       if(!obj->type)
-         throw Core::ExceptStr(pos, "object has no type");
+         Core::Error(pos, "object has no type");
 
       return static_cast<SR::Type::CRef>(obj->type);
    }

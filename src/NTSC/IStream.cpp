@@ -32,7 +32,7 @@ namespace GDCC::NTSC
    static bool IsIdentifierC(int c)
    {
       return std::isalnum(c) || c == '_' ||
-      (c & 0x80) || // UTF-8.
+       (c & 0x80) || // UTF-8.
          c == '.' || // Number component.
          c == '/' || // Path separator.
          c == ':';   // Common name component.
@@ -82,7 +82,7 @@ namespace GDCC::NTSC
 
             return in;
          }
-         catch(Core::ParseException &e)
+         catch(Core::Exception &e)
          {
             e.setOrigin(out.pos);
             throw;

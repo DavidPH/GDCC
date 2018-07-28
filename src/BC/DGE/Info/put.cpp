@@ -141,7 +141,7 @@ namespace GDCC::BC::DGE
          break;
 
       default:
-         throw Core::ExceptStr(exp->pos, "bad putExp full");
+         Core::Error(exp->pos, "bad putExp full");
       }
    }
 
@@ -154,7 +154,7 @@ namespace GDCC::BC::DGE
          return putValue(exp->pos, exp->getValue(), w);
 
       if(w)
-         throw Core::ExceptStr(exp->pos, "putExp w");
+         Core::Error(exp->pos, "putExp w");
 
       switch(exp->getName())
       {
@@ -180,7 +180,7 @@ namespace GDCC::BC::DGE
          break;
 
       default:
-         throw Core::ExceptStr(exp->pos, "bad putExp");
+         Core::Error(exp->pos, "bad putExp");
       }
    }
 
@@ -215,7 +215,7 @@ namespace GDCC::BC::DGE
             break;
 
          default:
-            throw Core::ExceptStr(exp->pos, "unknown putExp_Cst Funct->");
+            Core::Error(exp->pos, "unknown putExp_Cst Funct->");
          }
          break;
 
@@ -227,12 +227,12 @@ namespace GDCC::BC::DGE
             break;
 
          default:
-            throw Core::ExceptStr(exp->pos, "unknown putExp_Cst Point->");
+            Core::Error(exp->pos, "unknown putExp_Cst Point->");
          }
          break;
 
       default:
-         throw Core::ExceptStr(exp->pos, "unknown putExp_Cst");
+         Core::Error(exp->pos, "unknown putExp_Cst");
       }
    }
 
@@ -439,7 +439,7 @@ namespace GDCC::BC::DGE
          break;
 
       default:
-         throw Core::ExceptStr(pos, "bad putValue full");
+         Core::Error(pos, "bad putValue full");
       }
    }
 

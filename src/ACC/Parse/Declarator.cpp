@@ -73,13 +73,9 @@ namespace GDCC::ACC
       {
          attr.addrI = getExp_Prim(scope)->getIRExp();
 
-         if(!in.drop(Core::TOK_Colon))
-            throw Core::ParseExceptExpect(in.peek(), ":", true);
+         expect(Core::TOK_Colon);
 
-         if(!in.peek(Core::TOK_Identi))
-            throw Core::ParseExceptExpect(in.peek(), "identifier", false);
-
-         attr.setName(in.get());
+         attr.setName(expectIdenti());
       }
 
       // identifier
@@ -100,10 +96,10 @@ namespace GDCC::ACC
                auto const &tok = in.get();
                toks.push_back(tok);
 
-                     if(tok.tok == Core::TOK_ParenO) ++depth;
+                    if(tok.tok == Core::TOK_ParenO) ++depth;
                else if(tok.tok == Core::TOK_ParenC) --depth;
                else if(tok.tok == Core::TOK_EOF)
-                  throw Core::ExceptStr(tok.pos, "unexpected end of file");
+                  Core::Error(tok.pos, "unexpected end of file");
             }
          }
          else
@@ -153,8 +149,7 @@ namespace GDCC::ACC
             auto exp = getExp(scope);
 
             // ]
-            if(!in.drop(Core::TOK_BrackC))
-               throw Core::ParseExceptExpect(in.peek(), "]", true);
+            expect(Core::TOK_BrackC);
 
             // Parse the next declarator suffix before creating new type.
             parseDeclaratorSuffix(scope, attr);
@@ -190,8 +185,7 @@ namespace GDCC::ACC
             std::tie(types, params) = getTypeList(scope);
 
             // )
-            if(!in.drop(Core::TOK_ParenC))
-               throw Core::ParseExceptExpect(in.peek(), ")", true);
+            expect(Core::TOK_ParenC);
          }
 
          auto attrFunc = attr;

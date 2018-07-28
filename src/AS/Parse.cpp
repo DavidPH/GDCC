@@ -39,7 +39,7 @@ namespace GDCC::AS
          #include "IR/AddrList.hpp"
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.reget(), "AddrBase", false);
+         Core::ErrorExpect("AddrBase", ctx.in.reget());
       }
    }
 
@@ -71,7 +71,7 @@ namespace GDCC::AS
          #include "IR/CallTypeList.hpp"
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.reget(), "CallType", false);
+         Core::ErrorExpect("CallType", ctx.in.reget());
       }
    }
 
@@ -87,7 +87,7 @@ namespace GDCC::AS
          #include "IR/CodeList.hpp"
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.reget(), "Code", false);
+         Core::ErrorExpect("Code", ctx.in.reget());
       }
    }
 
@@ -103,7 +103,7 @@ namespace GDCC::AS
          #include "IR/LinkageList.hpp"
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.reget(), "Linkage", false);
+         Core::ErrorExpect("Linkage", ctx.in.reget());
       }
    }
 
@@ -122,7 +122,7 @@ namespace GDCC::AS
       char const *expect)
    {
       if(!ctx.in.drop(tt))
-         throw Core::ParseExceptExpect(ctx.in.peek(), expect, false);
+         Core::ErrorExpect(expect, ctx.in.peek());
 
       return ctx;
    }
@@ -142,7 +142,7 @@ namespace GDCC::AS
       char const *expect)
    {
       if(!ctx.in.peek(tt))
-         throw Core::ParseExceptExpect(ctx.in.peek(), expect, false);
+         Core::ErrorExpect(expect, ctx.in.peek());
 
       return ctx;
    }

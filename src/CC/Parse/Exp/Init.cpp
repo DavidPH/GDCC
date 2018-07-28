@@ -33,22 +33,18 @@ namespace GDCC::CC
    {
       if(ctx.in.drop(Core::TOK_Dot))
       {
-         if(!ctx.in.peek(Core::TOK_Identi))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
-
-         return ctx.in.get().str;
+         return ctx.expectIdenti().str;
       }
       else if(ctx.in.drop(Core::TOK_BrackO))
       {
          InitRawDes desig = ExpToFastU(ctx.getExp_Cond(scope));
 
-         if(!ctx.in.drop(Core::TOK_BrackC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "]", true);
+         ctx.expect(Core::TOK_BrackC);
 
          return desig;
       }
       else
-         throw Core::ParseExceptExpect(ctx.in.peek(), "designator", false);
+         Core::ErrorExpect("designator", ctx.in.peek());
    }
 }
 
@@ -101,8 +97,7 @@ namespace GDCC::CC
          }
          while(in.drop(Core::TOK_Comma) && !in.peek(Core::TOK_BraceC));
 
-         if(!in.drop(Core::TOK_BraceC))
-            throw Core::ParseExceptExpect(in.peek(), "}", true);
+         expect(Core::TOK_BraceC);
 
          init.valueSub = {Core::Move, sub.begin(), sub.end()};
       }

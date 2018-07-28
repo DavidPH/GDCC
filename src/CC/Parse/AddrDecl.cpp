@@ -54,20 +54,16 @@ namespace GDCC::CC
 
       // <__addrdef>
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR___addrdef))
-         throw Core::ParseExceptExpect(ctx.in.peek(),
-            "address-space-declaration", false);
+         Core::ErrorExpect("address-space-declaration", ctx.in.peek());
 
       // storage-class-specifier(opt)
-            if(ctx.in.drop(Core::TOK_KeyWrd, Core::STR_extern))
+           if(ctx.in.drop(Core::TOK_KeyWrd, Core::STR_extern))
          attr.storeExt = true;
       else if(ctx.in.drop(Core::TOK_KeyWrd, Core::STR_static))
          attr.storeInt = true;
 
       // address-space-specifier
-      if(!ctx.in.peek(Core::TOK_Identi))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
-
-      switch(ctx.in.get().str)
+      switch(ctx.expectIdenti().str)
       {
       case Core::STR___gbl_arr: attr.space.base = IR::AddrBase::GblArr; break;
       case Core::STR___wld_arr:
@@ -79,23 +75,18 @@ namespace GDCC::CC
          SR::WarnDeprecated(attr.namePos,
             "__map_arr is deprecrated, use __mod_arr instead");
       case Core::STR___mod_arr: attr.space.base = IR::AddrBase::ModArr; break;
-      default: throw Core::ParseExceptExpect(ctx.in.reget(),
-         "address-space-specifier", false);
+      default: Core::ErrorExpect("address-space-specifier", ctx.in.reget());
       }
 
       // identifier
-      if(!ctx.in.peek(Core::TOK_Identi))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
-
-      attr.setName(ctx.in.get());
+      attr.setName(ctx.expectIdenti());
 
       // attribute-specifier-list(opt)
       if(ctx.isAttrSpec(scope))
          ctx.parseAttrSpecList(scope, attr);
 
       // ;
-      if(!ctx.in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
+      ctx.expect(Core::TOK_Semico);
 
       // Determine linkage.
       if(attr.space.base == IR::AddrBase::LocArr)

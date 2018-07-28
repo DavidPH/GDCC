@@ -44,14 +44,14 @@ namespace GDCC::CC
          envArg = IR::Arg_Sta(Platform::GetWordBytes(),
             env->getArg().getIRArg(ctx.prog));
       else
-         throw Core::ExceptStr(pos, "non-IRArg env stub");
+         Core::Error(pos, "non-IRArg env stub");
 
       // Generate IR arg for val.
       IR::Arg valArg;
       if(val->getArg().isIRArg())
          valArg = val->getArg().getIRArg(ctx.prog);
       else
-         throw Core::ExceptStr(pos, "non-IRArg val stub");
+         Core::Error(pos, "non-IRArg val stub");
 
       ctx.block.setArgSize().addStmnt(IR::Code::Jfar,
          IR::Glyph(ctx.prog, scope.fn.getLabelLJR()),
@@ -140,7 +140,7 @@ namespace GDCC::CC
       if(auto scopeLocal = dynamic_cast<Scope_Local *>(&scope))
          return Exp_JmpLng::Create(*scopeLocal, env, val, pos);
       else
-         throw Core::ExceptStr(pos, "invalid scope for longjmp");
+         Core::Error(pos, "invalid scope for longjmp");
 
    }
 

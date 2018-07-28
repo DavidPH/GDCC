@@ -770,7 +770,7 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::Nul:    return 4;
       case IR::ArgBase::Sta:    return lenSta(arg.aSta);
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad lenDropArg");
+         Core::Error(stmnt->pos, "bad lenDropArg");
       }
    }
 
@@ -799,7 +799,7 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::LocReg: return 8;
       case IR::ArgBase::ModReg: return 8;
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad lenIncUArg");
+         Core::Error(stmnt->pos, "bad lenIncUArg");
       }
    }
 
@@ -908,7 +908,7 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::Sta:    return lenSta(arg.aSta);
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad lenPushArg");
+         Core::Error(stmnt->pos, "bad lenPushArg");
       }
    }
 
@@ -953,7 +953,7 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::Sta:    return lenSta(arg.aSta);
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad lenPushIdx");
+         Core::Error(stmnt->pos, "bad lenPushIdx");
       }
    }
 
@@ -993,11 +993,7 @@ namespace GDCC::BC::ZDACS
       if(auto exp = prog->getGlyphData(glyph).value)
          return static_cast<IR::Exp::CRef>(exp);
 
-      std::cerr << "ERROR: ";
-      if(stmnt) std::cerr << stmnt->pos << ": ";
-      std::cerr << "unbacked glyph: '" << glyph << "'\n";
-
-      throw EXIT_FAILURE;
+      Core::ErrorUndef(stmnt->pos, "glyph", glyph);
    }
 
    //

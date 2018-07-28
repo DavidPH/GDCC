@@ -51,7 +51,7 @@ namespace GDCC::CC
          return ExpCreate_ArithInteg<Base, Codes>(type, expL, expR, pos);
       }
 
-      throw Core::ExceptStr(pos, "expected integer type");
+      Core::Error(pos, "expected integer type");
    }
    //
    // ExpCreate_BitwiseEq
@@ -77,7 +77,7 @@ namespace GDCC::CC
          return ExpCreate_ArithEqInteg<Base, Codes>(evalT, typeL, expL, expR, pos);
       }
 
-      throw Core::ExceptStr(pos, "expected integer type");
+      Core::Error(pos, "expected integer type");
    }
 
    //
@@ -98,7 +98,7 @@ namespace GDCC::CC
 
       // Prepare shift-amount operand.
       if(!typeR->isCTypeInteg())
-         throw Core::ExceptStr(pos, "expected integer type");
+         Core::Error(pos, "expected integer type");
 
       // Convert to int rank, retaining sign.
       if(typeR->getSizeBitsS())
@@ -128,7 +128,7 @@ namespace GDCC::CC
 
       // Prepare shift-amount operand.
       if(!typeR->isCTypeInteg())
-         throw Core::ExceptStr(pos, "expected integer type");
+         Core::Error(pos, "expected integer type");
 
       // Convert to int rank, retaining sign.
       if(typeR->getSizeBitsS())

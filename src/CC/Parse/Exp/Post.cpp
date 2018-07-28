@@ -15,7 +15,6 @@
 #include "CC/Exp.hpp"
 
 #include "Core/Array.hpp"
-#include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "SR/Exp.hpp"
@@ -45,8 +44,7 @@ namespace GDCC::CC
 
       auto idx = ctx.getExp(scope);
 
-      if(!ctx.in.drop(Core::TOK_BrackC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "]", true);
+      ctx.expect(Core::TOK_BrackC);
 
       return ExpCreate_Array(exp, idx, pos);
    }
@@ -58,10 +56,8 @@ namespace GDCC::CC
    {
       auto pos = ctx.in.get().pos;
 
-      if(ctx.in.peek().tok != Core::TOK_Identi)
-         throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
-
-      return ExpCreate_Mem(exp, ctx.in.get().str, pos, scope);
+      return ExpCreate_Mem(exp,
+         ctx.expectIdenti().str, pos, scope);
    }
 
    //
@@ -71,10 +67,8 @@ namespace GDCC::CC
    {
       auto pos = ctx.in.get().pos;
 
-      if(ctx.in.peek().tok != Core::TOK_Identi)
-         throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
-
-      return ExpCreate_MemPt(exp, ctx.in.get().str, pos, scope);
+      return ExpCreate_MemPt(exp,
+         ctx.expectIdenti().str, pos, scope);
    }
 
    //
@@ -105,8 +99,7 @@ namespace GDCC::CC
       if(!in.peek(Core::TOK_ParenC))
          args = getExpList(scope);
 
-      if(!in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(in.peek(), ")", true);
+      expect(Core::TOK_ParenC);
 
       return ExpCreate_Call(exp, std::move(args), scope, pos);
    }

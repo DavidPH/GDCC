@@ -37,7 +37,7 @@ namespace GDCC::ACC
       default: in.unget(); break;
       }
 
-      throw Core::ParseExceptExpect(in.peek(), "on-off-switch", false);
+      Core::ErrorExpect("on-off-switch", in.peek());
    }
 }
 

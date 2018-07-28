@@ -99,7 +99,7 @@ namespace GDCC::CC
    template<> void GenStmnt_SetBitsPartT<IR::Arg_Cpy>(SR::Exp const *exp,
       SR::GenStmntCtx const &, SR::Arg const &, Core::FastU, Core::FastU)
    {
-      throw Core::ExceptStr(exp->pos, "AddrBase::Cpy set");
+      Core::Error(exp->pos, "AddrBase::Cpy set");
    }
 
    //
@@ -108,7 +108,7 @@ namespace GDCC::CC
    template<> void GenStmnt_SetBitsPartT<IR::Arg_Lit>(SR::Exp const *exp,
       SR::GenStmntCtx const &, SR::Arg const &, Core::FastU, Core::FastU)
    {
-      throw Core::ExceptStr(exp->pos, "AddrBase::Lit set");
+      Core::Error(exp->pos, "AddrBase::Lit set");
    }
 
    //
@@ -127,7 +127,7 @@ namespace GDCC::CC
    template<> void GenStmnt_SetBitsPartT<IR::Arg_Stk>(SR::Exp const *exp,
       SR::GenStmntCtx const &, SR::Arg const &, Core::FastU, Core::FastU)
    {
-      throw Core::ExceptStr(exp->pos, "AddrBase::Stk set");
+      Core::Error(exp->pos, "AddrBase::Stk set");
    }
 }
 
@@ -231,7 +231,7 @@ namespace GDCC::CC
          return expL->createExp_set(SR::Exp::CRef{r});
 
       if(!IsModLValue(l))
-         throw Core::ExceptStr(l->pos, "expected modifiable lvalue");
+         Core::Error(l->pos, "expected modifiable lvalue");
 
       auto type = l->getType();
       if(type->isTypeBitfield())

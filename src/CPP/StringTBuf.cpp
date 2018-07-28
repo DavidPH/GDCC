@@ -44,7 +44,7 @@ namespace GDCC::CPP
             else if(s[0] == 'u' && s[1] == '\'')
                buf[0].tok = Core::TOK_ChrU16;
             else
-               throw Core::ParseExceptExpect(buf[0], "character-literal", false, false);
+               Core::ErrorExpect("character-literal", buf[0], false, false);
 
             buf[0].str = Core::ParseStringC(buf[0].str, 1, '\'', escaper);
          }
@@ -73,7 +73,7 @@ namespace GDCC::CPP
             else if(s[0] == 's' && s[1] == '"')
                buf[0].tok = Core::TOK_StrIdx, o = 1;
             else
-               throw Core::ParseExceptExpect(buf[0], "string-literal", false, false);
+               Core::ErrorExpect("string-literal", buf[0], false, false);
 
             buf[0].str = Core::ParseStringC(buf[0].str, o, '"', escaper);
          }

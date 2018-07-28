@@ -208,7 +208,7 @@ namespace GDCC::CC
       if(typeL->isTypePointer() && typeR->isTypePointer())
          return ExpConvert_Pointer(typeL, exp, pos);
 
-      throw Core::ExceptStr(pos, "unsupported cast");
+      Core::Error(pos, "unsupported cast");
    }
 
    //
@@ -252,12 +252,12 @@ namespace GDCC::CC
       auto type = exp->getType();
 
       if(!type->isCTypeInteg())
-         throw Core::ExceptStr(pos, "expected integer type");
+         Core::Error(pos, "expected integer type");
 
       auto code = SR::ExpCode_ArithInteg<IR::CodeSet_Inv>(type);
 
       if(code == IR::Code::None)
-         throw Core::ExceptStr(pos, "unsupported operand size");
+         Core::Error(pos, "unsupported operand size");
 
       return SR::Exp_UnaryCode<SR::Exp_Inv>::Create(code, type, exp, pos);
    }
@@ -324,7 +324,7 @@ namespace GDCC::CC
    SR::Exp::CRef ExpCreate_SizeAlign(SR::Type const *t, Core::Origin pos)
    {
       if(!t->isCTypeObject() || !t->isTypeComplete())
-         throw Core::ExceptStr(pos, "expected complete object type");
+         Core::Error(pos, "expected complete object type");
 
       return ExpCreate_LitInt(TypeIntegPrU, t->getSizeAlign(), pos);
    }
@@ -343,10 +343,10 @@ namespace GDCC::CC
    SR::Exp::CRef ExpCreate_SizeBytes(SR::Type const *t, Core::Origin pos)
    {
       if(!t->isCTypeObject() || !t->isTypeComplete())
-         throw Core::ExceptStr(pos, "expected complete object type");
+         Core::Error(pos, "expected complete object type");
 
       if(t->isTypeBitfield())
-         throw Core::ExceptStr(pos, "cannot sizeof bitfield");
+         Core::Error(pos, "cannot sizeof bitfield");
 
       return ExpCreate_LitInt(TypeIntegPrU, t->getSizeBytes(), pos);
    }
@@ -379,7 +379,7 @@ namespace GDCC::CC
          return Core::NumberCast<Core::Integ>(val.vFloat.value);
 
       default:
-         throw Core::ExceptStr(exp->pos, "invalid integer constant");
+         Core::Error(exp->pos, "invalid integer constant");
       }
    }
 

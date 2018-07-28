@@ -64,9 +64,7 @@ namespace GDCC::ACC
    //
    void Parser::parseTypeSpec(CC::Scope &scope, SR::Attribute &attr, CC::TypeSpec &spec)
    {
-      auto const &tok = in.get();
-      if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
-         throw Core::ParseExceptExpect(tok, "type-specifier", false);
+      auto const &tok = expectIdenti(true);
 
       //
       // setSpecBase
@@ -74,7 +72,7 @@ namespace GDCC::ACC
       auto setSpecBase = [&](CC::TypeSpec::SpecBase base)
       {
          if(spec.specBase)
-            throw Core::ExceptStr(tok.pos, "multiple type-specifier base");
+            Core::Error(tok.pos, "multiple type-specifier base");
 
          spec.specBase = base;
       };
@@ -99,7 +97,7 @@ namespace GDCC::ACC
          // typedef-name
          auto lookup = scope.lookup(tok.str);
          if(lookup.res != CC::Lookup::Type)
-            throw Core::ParseExceptExpect(tok, "type-specifier", false);
+            Core::ErrorExpect("type-specifier", tok);
 
          setSpecBase(CC::TypeSpec::BaseName);
          attr.type = lookup.resType;

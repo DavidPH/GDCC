@@ -37,7 +37,7 @@ namespace GDCC::AS
       case Core::STR_value: glyph.value = GetExp(TokenDropEq(ctx));  break;
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.reget(), "Glyph argument", false);
+         Core::ErrorExpect("Glyph argument", ctx.in.reget());
       }
    }
 }

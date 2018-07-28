@@ -103,8 +103,7 @@ namespace GDCC::CC
    static SR::Function::Ref GetDeclFunc(Scope_Local &scope, SR::Attribute &attr)
    {
       if(!attr.storeExt && !attr.storeInt)
-         throw Core::ExceptStr(attr.namePos,
-            "block scope function not extern or static");
+         Core::Error(attr.namePos, "block scope function not extern or static");
 
       // Determine linkage.
       attr.linka = GetLinkageFunc(attr);
@@ -127,10 +126,10 @@ namespace GDCC::CC
       SR::Attribute &attr, bool init)
    {
       if(attr.storeAuto)
-         throw Core::ExceptStr(attr.namePos, "file scope auto");
+         Core::Error(attr.namePos, "file scope auto");
 
       if(attr.storeReg)
-         throw Core::ExceptStr(attr.namePos, "file scope register");
+         Core::Error(attr.namePos, "file scope register");
 
       // Determine linkage.
       attr.linka = GetLinkageObj(scope, attr);
@@ -145,8 +144,7 @@ namespace GDCC::CC
       {
          // First, make sure it has a complete type.
          if(!obj->type->isTypeComplete())
-            throw Core::ExceptStr(attr.namePos,
-               "object with incomplete type");
+            Core::Error(attr.namePos, "object with incomplete type");
 
          obj->defin = true;
 
@@ -186,8 +184,7 @@ namespace GDCC::CC
             break;
 
          default:
-            throw Core::ExceptStr(attr.namePos,
-               "invalid address space for automatic storage object");
+            Core::Error(attr.namePos, "invalid address space for automatic storage object");
          }
       }
 
@@ -202,8 +199,7 @@ namespace GDCC::CC
          {
             // First, make sure it has a complete type.
             if(!obj->type->isTypeComplete())
-               throw Core::ExceptStr(attr.namePos,
-                  "object with incomplete type");
+               Core::Error(attr.namePos, "object with incomplete type");
 
             obj->defin = true;
 
@@ -217,8 +213,7 @@ namespace GDCC::CC
       }
       // Local scope objects with linkage must not have an initializer.
       else if(init)
-         throw Core::ExceptStr(attr.namePos,
-            "linkage local with initializer");
+         Core::Error(attr.namePos, "linkage local with initializer");
 
       // Set address, if one provided.
       if(attr.addrI)
@@ -266,7 +261,7 @@ namespace GDCC::CC
       SR::Attribute &attr, SR::Function *fn)
    {
       if(!fn->retrn->isTypeComplete() && !fn->retrn->isTypeVoid())
-         throw Core::ExceptStr(attr.namePos, "incomplete return");
+         Core::Error(attr.namePos, "incomplete return");
 
       auto &fnScope = scope.createScope(attr, fn);
 
@@ -300,7 +295,7 @@ namespace GDCC::CC
    static void ParseDecl_Function(Parser &, Scope_Local &,
       SR::Attribute &attr, SR::Function *)
    {
-      throw Core::ExceptStr(attr.namePos, "local function definition");
+      Core::Error(attr.namePos, "local function definition");
    }
 
    //
@@ -312,12 +307,10 @@ namespace GDCC::CC
       if(auto lookup = scope.find(attr.name))
       {
          if(lookup.res != Lookup::Type)
-            throw Core::ExceptStr(attr.namePos,
-               "name redefined as different kind of symbol");
+            Core::Error(attr.namePos, "name redefined as different kind of symbol");
 
          if(lookup.resType != attr.type)
-            throw Core::ExceptStr(attr.namePos,
-               "typedef redefined as different type");
+            Core::Error(attr.namePos, "typedef redefined as different type");
       }
 
       scope.add(attr.name, attr.type);
@@ -335,27 +328,23 @@ namespace GDCC::CC
       if(auto lookup = scope.find(attr.name))
       {
          if(lookup.res != Lookup::Func)
-            throw Core::ExceptStr(attr.namePos,
-               "name redefined as different kind of symbol");
+            Core::Error(attr.namePos, "name redefined as different kind of symbol");
 
          SR::Function::Ref fn = lookup.resFunc;
 
          if(fn->defin && defin)
-            throw Core::ExceptStr(attr.namePos, "function redefined");
+            Core::Error(attr.namePos, "function redefined");
 
          if(fn->retrn != attr.type->getBaseType())
-            throw Core::ExceptStr(attr.namePos,
-               "function redeclared with different return type");
+            Core::Error(attr.namePos, "function redeclared with different return type");
 
          // TODO: Compatible parameter types check.
 
          if(fn->ctype != attr.callt)
-            WarnDeclCompat(attr.namePos,
-               "function redeclared with different call type");
+            WarnDeclCompat(attr.namePos, "function redeclared with different call type");
 
          if(fn->linka != GetLinkageFunc(attr))
-            WarnDeclCompat(attr.namePos,
-               "function redeclared with different linkage");
+            WarnDeclCompat(attr.namePos, "function redeclared with different linkage");
       }
 
       auto fn = GetDeclFunc(scope, attr);
@@ -379,8 +368,7 @@ namespace GDCC::CC
       if(auto lookup = scope.find(attr.name))
       {
          if(lookup.res != Lookup::Obj)
-            throw Core::ExceptStr(attr.namePos,
-               "name redefined as different kind of symbol");
+            Core::Error(attr.namePos, "name redefined as different kind of symbol");
 
          SR::Object::Ref obj = lookup.resObj;
 
@@ -388,13 +376,11 @@ namespace GDCC::CC
             (!obj->type->isTypeArray() || !attr.type->isTypeArray() ||
                obj->type->getBaseType() != attr.type->getBaseType()))
          {
-            throw Core::ExceptStr(attr.namePos,
-               "object redeclared with different type");
+            Core::Error(attr.namePos, "object redeclared with different type");
          }
 
          if(obj->linka != GetLinkageObj(scope, attr))
-            WarnDeclCompat(attr.namePos,
-               "object redeclared with different linkage");
+            WarnDeclCompat(attr.namePos, "object redeclared with different linkage");
       }
 
       // Insert special declaration statement.
@@ -412,8 +398,7 @@ namespace GDCC::CC
          obj->type = obj->init->getType();
 
          if(obj->store == SR::Storage::Static && !obj->init->isIRExp())
-            throw Core::ExceptStr(obj->init->pos,
-               "non-constant initializer for static storage object");
+            Core::Error(obj->init->pos, "non-constant initializer for static storage object");
 
          SetDeclObjInit(ctx, scope, attr, inits, obj);
       }
@@ -483,14 +468,13 @@ namespace GDCC::CC
 
          // Must otherwise be an object type.
          if(!attr.type->isCTypeObject())
-            throw Core::ExceptStr(attr.namePos, "expected object type");
+            Core::Error(attr.namePos, "expected object type");
 
          ParseDeclBase_Object(ctx, scope, attr, inits);
       }
       while(ctx.in.drop(Core::TOK_Comma));
 
-      if(!ctx.in.drop(Core::TOK_Semico))
-         throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+      ctx.expect(Core::TOK_Semico);
 
       decl_end:
       switch(inits.size())

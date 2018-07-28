@@ -51,7 +51,7 @@ namespace GDCC::CC
    //
    void Exp_Func::v_genStmnt(SR::GenStmntCtx const &, SR::Arg const &) const
    {
-      throw Core::ExceptStr(pos, "genStmnt on function");
+      Core::Error(pos, "genStmnt on function");
    }
 
    //
@@ -60,7 +60,7 @@ namespace GDCC::CC
    SR::Arg Exp_Func::v_getArg() const
    {
       if(!fn->type)
-         throw Core::ExceptStr(pos, "function has no type");
+         Core::Error(pos, "function has no type");
 
       IR::Glyph glyph{&prog, fn->glyph};
       auto addr = IR::ExpCreate_Glyph(glyph, pos);
@@ -84,7 +84,7 @@ namespace GDCC::CC
    SR::Type::CRef Exp_Func::v_getType() const
    {
       if(!fn->type)
-         throw Core::ExceptStr(pos, "function has no type");
+         Core::Error(pos, "function has no type");
 
       return static_cast<SR::Type::CRef>(fn->type);
    }

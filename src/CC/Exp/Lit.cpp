@@ -125,7 +125,7 @@ namespace GDCC::CC
          }
       }
 
-      throw Core::ExceptStr(pos, "invalid LitNul type");
+      Core::Error(pos, "invalid LitNul type");
    }
 }
 

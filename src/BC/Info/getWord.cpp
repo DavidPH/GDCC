@@ -57,18 +57,18 @@ namespace GDCC::BC
       case IR::ValueBase::StrEn: return w ? 0 : val.vStrEn.value;
 
       case IR::ValueBase::Empty:
-         throw Core::ExceptStr(pos, "bad getWord Value: Empty");
+         Core::Error(pos, "bad getWord Value: Empty");
       case IR::ValueBase::Array:
-         throw Core::ExceptStr(pos, "bad getWord Value: Array");
+         Core::Error(pos, "bad getWord Value: Array");
       case IR::ValueBase::Assoc:
-         throw Core::ExceptStr(pos, "bad getWord Value: Assoc");
+         Core::Error(pos, "bad getWord Value: Assoc");
       case IR::ValueBase::Tuple:
-         throw Core::ExceptStr(pos, "bad getWord Value: Tuple");
+         Core::Error(pos, "bad getWord Value: Tuple");
       case IR::ValueBase::Union:
-         throw Core::ExceptStr(pos, "bad getWord Value: Union");
+         Core::Error(pos, "bad getWord Value: Union");
       }
 
-      throw Core::ExceptStr(pos, "bad getWord Value");
+      Core::Error(pos, "bad getWord Value");
    }
 
    //
@@ -145,7 +145,7 @@ namespace GDCC::BC
       case IR::TypeBase::Union: return getWordCount_Union(type.tUnion);
       }
 
-      throw Core::ExceptStr({}, "bad getWordCount Type");
+      Core::Error({}, "bad getWordCount Type");
    }
 
    //

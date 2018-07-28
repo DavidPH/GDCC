@@ -48,8 +48,7 @@ namespace GDCC::ACC
          name.prefix = Core::TokenEOF;
 
       // (
-      if(!ctx.in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+      ctx.expect(Core::TOK_ParenO);
 
       // create-translation-property-name:
       //    identifier
@@ -65,38 +64,20 @@ namespace GDCC::ACC
       {
          nameSpecial = nullptr;
 
-         // constant-expression
          name.argc[0] = CC::ExpToFastU(ctx.getExp_Cond(scope));
-
-         // :
-         if(!ctx.in.drop(Core::TOK_Colon))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
-
-         // constant-expression
+         ctx.expect(Core::TOK_Colon);
          name.argc[1] = CC::ExpToFastU(ctx.getExp_Cond(scope));
-
-         // =
-         if(!ctx.in.drop(Core::TOK_Equal))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "=", true);
-
-         // constant-expression
+         ctx.expect(Core::TOK_Equal);
          name.argc[2] = CC::ExpToFastU(ctx.getExp_Cond(scope));
-
-         // :
-         if(!ctx.in.drop(Core::TOK_Colon))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
-
-         // constant-expression
+         ctx.expect(Core::TOK_Colon);
          name.argc[3] = CC::ExpToFastU(ctx.getExp_Cond(scope));
       }
 
       // )
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
 
       // :
-      if(!ctx.in.drop(Core::TOK_Colon))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
+      ctx.expect(Core::TOK_Colon);
 
       // constant-expression;
       auto exp = CC::ExpPromo_LValue(ctx.getExp_Assi(scope));
@@ -104,14 +85,14 @@ namespace GDCC::ACC
       auto type = exp->getType();
 
       if(!type->isTypePointer() || !(type = type->getBaseType())->isTypeFunction())
-         throw Core::ExceptStr(exp->pos, "expected function type");
+         Core::Error(exp->pos, "expected function type");
 
       if(nameSpecial) switch(nameSpecial)
       {
       case Core::STR_begin: decl.propBegin = exp; break;
       case Core::STR_end:   decl.propEnd   = exp; break;
       default:
-         throw Core::ExceptStr(namePos, "unrecognized special name");
+         Core::Error(namePos, "unrecognized special name");
       }
       else
       {
@@ -132,31 +113,31 @@ namespace GDCC::ACC
    //
    SR::Statement::CRef Parser::getDecl_CreateTrans(Scope_Global &scope)
    {
-      if(!in.peek(Core::TOK_KeyWrd, Core::STR_createtranslation))
-         throw Core::ParseExceptExpect(in.peek(),
-            "create-translation-declaration", false);
+      // create-translation-declaration:
+      //    <createtranslation> identifier ( create-translation-property-list ) ;
 
-      auto pos = in.get().pos;
+      // <createtranslation>
+      auto pos = expect(Core::TOK_KeyWrd, Core::STR_createtranslation).pos;
 
-      if(!in.peek(Core::TOK_Identi))
-         throw Core::ParseExceptExpect(in.peek(), "identifier", false);
+      // identifier
+      auto name = expectIdenti().str;
 
-      auto name = in.get().str;
+      // (
+      expect(Core::TOK_ParenO);
 
-      if(!in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(in.peek(), "(", true);
-
+      // create-translation-property-list:
+      //    create-translation-property
+      //    create-translation-property-list , create-translation-property
       CreateTransDecl decl;
-
       do
          ParseDecl_CreateTransProp(*this, scope, decl);
       while(in.drop(Core::TOK_Comma));
 
-      if(!in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(in.peek(), ")", true);
+      // )
+      expect(Core::TOK_ParenC);
 
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      // ;
+      expect(Core::TOK_Semico);
 
       scope.addCreateTrans(name, std::move(decl));
 

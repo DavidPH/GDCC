@@ -376,7 +376,7 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::Sta:    putSta(arg.aSta); break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad putStmntDropArg");
+         Core::Error(stmnt->pos, "bad putStmntDropArg");
       }
    }
 
@@ -426,7 +426,7 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::ModReg: putReg(arg.aModReg, Code::IncU_ModReg); break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad putStmntIncUArg");
+         Core::Error(stmnt->pos, "bad putStmntIncUArg");
       }
    }
 
@@ -580,7 +580,7 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::Sta:    putSta(arg.aSta); break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad putStmntPushArg");
+         Core::Error(stmnt->pos, "bad putStmntPushArg");
       }
    }
 
@@ -632,7 +632,7 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::Sta:    putSta(arg.aSta); break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad putStmntPushIdx");
+         Core::Error(stmnt->pos, "bad putStmntPushIdx");
       }
    }
 

@@ -31,10 +31,7 @@ namespace GDCC::CC
    bool Parser::isTypeSpec_atomic(Scope &)
    {
       // If not followed by a parenthesis, it is a type-qualifier.
-      in.get();
-      bool res = in.peek().tok == Core::TOK_ParenO;
-      in.unget();
-      return res;
+      return in.peek(Core::TOK_KeyWrd, Core::STR__Atomic, Core::TOK_ParenO);
    }
 
    //
@@ -46,30 +43,28 @@ namespace GDCC::CC
    void Parser::parseTypeSpec_atomic(Scope &scope, SR::Attribute &attr, TypeSpec &spec)
    {
       if(spec.specBase)
-         throw Core::ExceptStr(in.reget().pos, "multiple type-specifier base");
+         Core::Error(in.reget().pos, "multiple type-specifier base");
 
       spec.specBase = TypeSpec::BaseName;
 
       // (
-      if(!in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(in.peek(), "(", true);
+      expect(Core::TOK_ParenO);
 
       // type-name
       auto type = getType(scope);
 
       // )
-      if(!in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(in.peek(), ")", true);
+      expect(Core::TOK_ParenC);
 
       // Constraints.
       if(type->isTypeArray())
-         throw Core::ExceptStr(in.peek().pos, "atomic array");
+         Core::Error(in.peek().pos, "atomic array");
 
       if(type->isCTypeFunction())
-         throw Core::ExceptStr(in.peek().pos, "atomic function");
+         Core::Error(in.peek().pos, "atomic function");
 
       if(type->getQual())
-         throw Core::ExceptStr(in.peek().pos, "atomic qualified");
+         Core::Error(in.peek().pos, "atomic qualified");
 
       // Set attribute type.
       auto qual = type->getQual();

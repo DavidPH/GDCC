@@ -44,7 +44,7 @@ namespace GDCC::Core
          DirStream{dirname}, ended{false}
       {
          if(!IsDir(nameBuf.data()))
-            throw ExceptFile(dirname, "directory");
+            ErrorFile(dirname, "directory");
 
          nameBuf += '*';
 
@@ -52,7 +52,7 @@ namespace GDCC::Core
          if(dir == INVALID_HANDLE_VALUE)
          {
             if(GetLastError() != ERROR_FILE_NOT_FOUND)
-               throw ExceptFile(dirname, "directory");
+               ErrorFile(dirname, "directory");
 
             ended = true;
          }
@@ -109,7 +109,7 @@ namespace GDCC::Core
          DirStream{dirname}
       {
          if(!(dir = opendir(dirname)))
-            throw ExceptFile(dirname, "directory");
+            ErrorFile(dirname, "directory");
       }
 
       //

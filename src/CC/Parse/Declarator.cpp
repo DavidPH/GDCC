@@ -118,10 +118,10 @@ namespace GDCC::CC
                auto const &tok = in.get();
                toks.push_back(tok);
 
-                     if(tok.tok == Core::TOK_ParenO) ++depth;
+                    if(tok.tok == Core::TOK_ParenO) ++depth;
                else if(tok.tok == Core::TOK_ParenC) --depth;
                else if(tok.tok == Core::TOK_EOF)
-                  throw Core::ExceptStr(tok.pos, "unexpected end of file");
+                  Core::Error(tok.pos, "unexpected end of file");
             }
          }
          else
@@ -161,7 +161,7 @@ namespace GDCC::CC
 
          // Element type must be complete.
          if(!attr.type->isTypeComplete())
-            throw Core::ExceptStr(in.reget().pos, "incomplete element type");
+            Core::Error(in.reget().pos, "incomplete element type");
 
          // type-qualifier-list(opt)
          if(isTypeQual(scope))
@@ -175,8 +175,7 @@ namespace GDCC::CC
          if(in.drop(Core::TOK_Mul))
          {
             // ]
-            if(!in.drop(Core::TOK_BrackC))
-               throw Core::ParseExceptExpect(in.peek(), "]", true);
+            expect(Core::TOK_BrackC);
 
             // Check for array attributes.
             auto attrArray = attr;
@@ -209,10 +208,7 @@ namespace GDCC::CC
          if(in.drop(Core::TOK_BrackC))
          {
             if(isStat)
-            {
-               throw Core::ParseExceptExpect(in.reget(),
-                  "assignment-expression", false);
-            }
+               Core::ErrorExpect("assignment-expression", in.reget());
 
             // Check for array attributes.
             auto attrArray = attr;
@@ -233,8 +229,7 @@ namespace GDCC::CC
             auto exp = getExp_Assi(scope);
 
             // ]
-            if(!in.drop(Core::TOK_BrackC))
-               throw Core::ParseExceptExpect(in.peek(), "]", true);
+            expect(Core::TOK_BrackC);
 
             // Check for array attributes.
             auto attrArray = attr;
@@ -285,15 +280,12 @@ namespace GDCC::CC
             // identifier-list
             else
             {
-               if(in.peek().tok != Core::TOK_Identi)
-                  throw Core::ParseExceptExpect(in.peek(), "identifier", false);
-
                std::vector<SR::Attribute> paramv;
 
                do
                {
                   paramv.emplace_back();
-                  paramv.back().name = in.get().str;
+                  paramv.back().name = expectIdenti().str;
                   paramv.back().type = SR::Type::None;
                }
                while(in.drop(Core::TOK_Comma));
@@ -309,8 +301,7 @@ namespace GDCC::CC
             }
 
             // )
-            if(!in.drop(Core::TOK_ParenC))
-               throw Core::ParseExceptExpect(in.peek(), ")", true);
+            expect(Core::TOK_ParenC);
          }
 
          // Check for function attributes.

@@ -153,7 +153,7 @@ CreateTranslation Declarations
 
 Syntax:
   create-translation-declaration:
-    <create-translation> identifier ( create-translation-property-list ) ;
+    <createtranslation> identifier ( create-translation-property-list ) ;
 
   create-translation-property-list:
     create-translation-property

@@ -52,8 +52,7 @@ namespace GDCC::ACC
          while(ctx.in.drop(Core::TOK_Comma));
 
          // ]
-         if(!ctx.in.drop(Core::TOK_BrackC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "]", true);
+         ctx.expect(Core::TOK_BrackC);
 
          return argc;
       }
@@ -84,15 +83,13 @@ namespace GDCC::ACC
       name.argc[0] = GetTranslationExp(ctx, scope, expv);
 
       // :
-      if(!ctx.in.drop(Core::TOK_Colon))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
+      ctx.expect(Core::TOK_Colon);
 
       // translation-expression
       name.argc[1] = GetTranslationExp(ctx, scope, expv);
 
       // =
-      if(!ctx.in.drop(Core::TOK_Equal))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
+      ctx.expect(Core::TOK_Equal);
 
       // translation-prefix:
       //    %
@@ -105,15 +102,14 @@ namespace GDCC::ACC
       name.argc[2] = GetTranslationExp(ctx, scope, expv);
 
       // :
-      if(!ctx.in.drop(Core::TOK_Colon))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
+      ctx.expect(Core::TOK_Colon);
 
       // translation-expression
       name.argc[3] = GetTranslationExp(ctx, scope, expv);
 
       auto propItr = ctrans->props.find(name);
       if(propItr == ctrans->props.end())
-         throw Core::ExceptStr(pos, "no matching translation function");
+         Core::Error(pos, "no matching translation function");
 
       return CC::ExpCreate_Call(propItr->second.prop,
          {expv.begin(), expv.end()}, scope, pos);
@@ -138,11 +134,10 @@ namespace GDCC::ACC
       //    <createtranslation> ( assignment-expression , translation-list )
 
       // <createtranslation>
-      auto pos = in.get().pos;
+      auto pos = expect(Core::TOK_KeyWrd, Core::STR_createtranslation).pos;
 
       // (
-      if(!in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(in.peek(), "(", true);
+      expect(Core::TOK_ParenO);
 
       // Start with a no-op expression.
       auto exp = SR::ExpCreate_Size(0);
@@ -160,8 +155,7 @@ namespace GDCC::ACC
             while(--argc)
             {
                // ,
-               if(!in.drop(Core::TOK_Comma))
-                  throw Core::ParseExceptExpect(in.peek(), ",", true);
+               expect(Core::TOK_Comma);
 
                argv.emplace_back(getExp_Cond(scope));
             }
@@ -184,8 +178,7 @@ namespace GDCC::ACC
       }
 
       // )
-      if(!in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(in.peek(), ")", true);
+      expect(Core::TOK_ParenC);
 
       return exp;
    }

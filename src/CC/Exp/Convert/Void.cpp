@@ -31,7 +31,7 @@ namespace GDCC::CC
       SR::Arg const &dst) const
    {
       if(dst.type->getQualAddr().base != IR::AddrBase::Nul)
-         throw Core::ExceptStr(pos, "evaluating void to non-Nul");
+         Core::Error(pos, "evaluating void to non-Nul");
 
       exp->genStmnt(ctx, dst);
    }

@@ -74,7 +74,7 @@ namespace GDCC::ACC
       auto setDeclStor = [&](DeclStor stor)
       {
          if(declStor)
-            throw Core::ExceptStr(pos, "multiple storage class specifier");
+            Core::Error(pos, "multiple storage class specifier");
 
          declStor = stor;
       };

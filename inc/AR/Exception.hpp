@@ -19,24 +19,13 @@
 
 
 //----------------------------------------------------------------------------|
-// Types                                                                      |
+// Extern Functions                                                           |
 //
 
 namespace GDCC::AR
 {
-   //
-   // ReadError
-   //
-   class ReadError : public Core::Exception
-   {
-   public:
-      ReadError(char const *err_) noexcept : err{err_} {}
-
-      virtual void genMsg() const;
-
-   private:
-      char const *err;
-   };
+   [[noreturn]]
+   void Error(char const *str);
 }
 
 #endif//GDCC__AR__Exception_H__

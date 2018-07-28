@@ -80,7 +80,7 @@ namespace GDCC::IR
          switch(type.t)
          {
          case TypeBase::Fixed: return Value_Fixed(std::move(e.vDJump), type.tFixed);
-         default: throw Core::ExceptStr(pos, "bad Exp_Cst from DJump");
+         default: Core::Error(pos, "bad Exp_Cst from DJump");
          }
 
       case TypeBase::Fixed:
@@ -92,7 +92,7 @@ namespace GDCC::IR
          case TypeBase::Funct: return Value_Funct(std::move(e.vFixed), type.tFunct);
          case TypeBase::Point: return Value_Point(std::move(e.vFixed), type.tPoint);
          case TypeBase::StrEn: return Value_StrEn(std::move(e.vFixed), type.tStrEn);
-         default: throw Core::ExceptStr(pos, "bad Exp_Cst from Fixed");
+         default: Core::Error(pos, "bad Exp_Cst from Fixed");
          }
 
       case TypeBase::Float:
@@ -100,7 +100,7 @@ namespace GDCC::IR
          {
          case TypeBase::Fixed: return Value_Fixed(std::move(e.vFloat), type.tFixed);
          case TypeBase::Float: return Value_Float(std::move(e.vFloat), type.tFloat);
-         default: throw Core::ExceptStr(pos, "bad Exp_Cst from Float");
+         default: Core::Error(pos, "bad Exp_Cst from Float");
          }
 
       case TypeBase::Funct:
@@ -109,7 +109,7 @@ namespace GDCC::IR
          case TypeBase::Fixed: return Value_Fixed(std::move(e.vFunct), type.tFixed);
          case TypeBase::Funct: return Value_Funct(std::move(e.vFunct), type.tFunct);
          case TypeBase::StrEn: return Value_StrEn(std::move(e.vFunct), type.tStrEn);
-         default: throw Core::ExceptStr(pos, "bad Exp_Cst from Funct");
+         default: Core::Error(pos, "bad Exp_Cst from Funct");
          }
 
       case TypeBase::Point:
@@ -117,7 +117,7 @@ namespace GDCC::IR
          {
          case TypeBase::Fixed: return Value_Fixed(std::move(e.vPoint), type.tFixed);
          case TypeBase::Point: return Value_Point(std::move(e.vPoint), type.tPoint);
-         default: throw Core::ExceptStr(pos, "bad Exp_Cst from Point");
+         default: Core::Error(pos, "bad Exp_Cst from Point");
          }
 
       case TypeBase::StrEn:
@@ -125,10 +125,10 @@ namespace GDCC::IR
          {
          case TypeBase::Fixed: return Value_Fixed(std::move(e.vStrEn), type.tFixed);
          case TypeBase::Funct: return Value_Funct(std::move(e.vStrEn), type.tFunct);
-         default: throw Core::ExceptStr(pos, "bad Exp_Cst from StrEn");
+         default: Core::Error(pos, "bad Exp_Cst from StrEn");
          }
 
-      default: throw Core::ExceptStr(pos, "bad Exp_Cst");
+      default: Core::Error(pos, "bad Exp_Cst");
       }
    }
 

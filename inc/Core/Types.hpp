@@ -35,9 +35,6 @@ namespace GDCC::Core
    template<typename T>
    class CounterRef;
    class DirStream;
-   class ExceptFile;
-   class ExceptStr;
-   class ExceptUndef;
    class Exception;
    template<typename T, void(T::*D)(), void(T::*E)()>
    class FeatureHold;
@@ -52,9 +49,6 @@ namespace GDCC::Core
    class OptionList;
    class Origin;
    class PackType;
-   class ParseExceptExpect;
-   class ParseExceptStr;
-   class ParseException;
    class PathRestore;
    template<typename T>
    class Range;

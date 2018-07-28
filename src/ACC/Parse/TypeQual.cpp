@@ -48,9 +48,7 @@ namespace GDCC::ACC
    //
    void Parser::parseTypeQual(CC::Scope &, SR::TypeQual &qual)
    {
-      auto const &tok = in.get();
-      if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
-         throw Core::ParseExceptExpect(tok, "identifier", false);
+      auto const &tok = expectIdenti(true);
 
       switch(tok.str)
       {
@@ -58,7 +56,7 @@ namespace GDCC::ACC
       case Core::STR_const: qual.aCons = true; break;
 
       default:
-         throw Core::ParseExceptExpect(tok, "type-qualifier", false);
+         Core::ErrorExpect("type-qualifier", tok);
       }
    }
 }

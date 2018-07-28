@@ -43,7 +43,7 @@ namespace GDCC::CC
       SR::Arg const &dst) const
    {
       auto arg = exp->getArg();
-      if(!arg.data) throw Core::ExceptStr(pos, "expected arg data");
+      if(!arg.data) Core::Error(pos, "expected arg data");
       arg.data->genStmnt(ctx, dst);
    }
 
@@ -61,7 +61,7 @@ namespace GDCC::CC
    IR::Exp::CRef Exp_Refer::v_getIRExp() const
    {
       auto arg = exp->getArg();
-      if(!arg.data) throw Core::ExceptStr(pos, "expected arg data");
+      if(!arg.data) Core::Error(pos, "expected arg data");
       return arg.data->getIRExp();
    }
 
@@ -104,14 +104,14 @@ namespace GDCC::CC
          return Exp_Refer::Create(e, pos);
 
       if(!IsLValue(e))
-         throw Core::ExceptStr(pos, "expected function or lvalue");
+         Core::Error(pos, "expected function or lvalue");
 
       if(type->isTypeBitfield())
-         throw Core::ExceptStr(pos, "cannot get address of bitfield");
+         Core::Error(pos, "cannot get address of bitfield");
 
       // Check if e is an object declared as register.
       if(e->isObject() && e->getObject()->noRef)
-         throw Core::ExceptStr(pos, "cannot get address of register object");
+         Core::Error(pos, "cannot get address of register object");
 
       e->setRefer();
 

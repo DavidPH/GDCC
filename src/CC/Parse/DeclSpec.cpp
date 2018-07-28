@@ -91,7 +91,7 @@ namespace GDCC::CC
       auto setDeclStor = [&](DeclStor stor)
       {
          if(declStor)
-            throw Core::ExceptStr(pos, "multiple storage class specifier");
+            Core::Error(pos, "multiple storage class specifier");
 
          declStor = stor;
       };
@@ -125,7 +125,7 @@ namespace GDCC::CC
          case Core::STR_inline:    attr.funcInline   = true; break;
 
             // alignment-specifier
-         case Core::STR__Alignas: throw Core::ExceptStr(pos, "_Alignas stub");
+         case Core::STR__Alignas: Core::Error(pos, "_Alignas stub");
 
          default:
             // type-specifier
@@ -147,7 +147,7 @@ namespace GDCC::CC
       // Validate the storage class.
       if(declThrd > 1 || (declThrd && declStor != declStorNone &&
          declStor != declStorExte && declStor != declStorStat))
-         throw Core::ExceptStr(pos, "invalid thread_local");
+         Core::Error(pos, "invalid thread_local");
 
       // Finalize the type specifiers.
       declSpec.finish(declAttr, declQual, pos);

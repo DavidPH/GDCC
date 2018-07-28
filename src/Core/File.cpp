@@ -118,17 +118,17 @@ namespace GDCC::Core
       std::FILE *file;
 
       if(stat(filename, &statBuf) || !S_ISREG(statBuf.st_mode))
-         throw Core::ExceptFile(filename, "reading");
+         ErrorFile(filename, "reading");
 
       if(!(file = std::fopen(filename, "rb")))
-         throw Core::ExceptFile(filename, "reading");
+         ErrorFile(filename, "reading");
 
       // Allocate storage.
       std::unique_ptr<char[]> data{new char[statBuf.st_size]};
 
       // Read data.
       if(!std::fread(data.get(), statBuf.st_size, 1, file))
-         throw std::fclose(file), Core::ExceptFile(filename, "reading");
+         std::fclose(file), ErrorFile(filename, "reading");
 
       std::fclose(file);
 
@@ -141,11 +141,11 @@ namespace GDCC::Core
 
       // Open file.
       if((fd = open(filename, O_RDONLY)) == -1)
-         throw Core::ExceptFile(filename, "reading");
+         ErrorFile(filename, "reading");
 
       // Stat file.
       if(fstat(fd, &statBuf) || !S_ISREG(statBuf.st_mode))
-         throw close(fd), Core::ExceptFile(filename, "reading");
+         close(fd), ErrorFile(filename, "reading");
 
       // Map file.
       auto map = mmap(nullptr, statBuf.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
@@ -157,7 +157,7 @@ namespace GDCC::Core
 
          // Read data.
          if(read(fd, data.get(), statBuf.st_size) == -1)
-            throw close(fd), Core::ExceptFile(filename, "reading");
+            close(fd), ErrorFile(filename, "reading");
 
          close(fd);
 
@@ -204,16 +204,16 @@ namespace GDCC::Core
       if(which & std::ios_base::in)
       {
          if(which & std::ios_base::out)
-            throw Core::ExceptFile(filename, "reading/writing");
+            ErrorFile(filename, "reading/writing");
          else
-            throw Core::ExceptFile(filename, "reading");
+            ErrorFile(filename, "reading");
       }
       else
       {
          if(which & std::ios_base::out)
-            throw Core::ExceptFile(filename, "writing");
+            ErrorFile(filename, "writing");
          else
-            throw Core::ExceptFile(filename, "unknown");
+            ErrorFile(filename, "unknown");
       }
    }
 
@@ -225,7 +225,7 @@ namespace GDCC::Core
       struct stat statBuf;
 
       if(stat(filename, &statBuf))
-         throw Core::ExceptFile(filename, "stat");
+         ErrorFile(filename, "stat");
 
       return statBuf.st_size;
    }

@@ -43,19 +43,19 @@ namespace GDCC::CC
 
       // Sanity check. This should have been caught by now.
       if(!isVoid && !scope.fn->retrn->isTypeComplete())
-         throw Core::ExceptStr(pos, "complete type required for return");
+         Core::Error(pos, "complete type required for return");
 
       if(exp)
       {
          if(isVoid)
-            throw Core::ExceptStr(pos, "return expression forbidden");
+            Core::Error(pos, "return expression forbidden");
 
          return CC::ExpPromo_Assign(scope.fn->retrn, exp, pos);
       }
       else
       {
          if(!isVoid)
-            throw Core::ExceptStr(pos, "return expression required");
+            Core::Error(pos, "return expression required");
 
          return nullptr;
       }

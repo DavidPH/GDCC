@@ -50,7 +50,7 @@ namespace GDCC::IR
       try {return v_getType();}
       catch(TypeError const &)
       {
-         throw Core::ExceptStr(pos, "type mismatch");
+         Core::Error(pos, "type mismatch");
       }
    }
 
@@ -62,7 +62,7 @@ namespace GDCC::IR
       try {return v_getValue();}
       catch(TypeError const &)
       {
-         throw Core::ExceptStr(pos, "type mismatch");
+         Core::Error(pos, "type mismatch");
       }
    }
 

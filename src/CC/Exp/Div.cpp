@@ -47,7 +47,7 @@ namespace GDCC::CC
          return ExpCreate_Arith<SR::Exp_Div, IR::CodeSet_Div>(type, expL, expR, pos);
       }
 
-      throw Core::ExceptStr(pos, "invalid operands to 'operator /'");
+      Core::Error(pos, "invalid operands to 'operator /'");
    }
 
    //
@@ -57,7 +57,7 @@ namespace GDCC::CC
       Core::Origin pos)
    {
       if(!IsModLValue(expL))
-         throw Core::ExceptStr(pos, "expected modifiable lvalue");
+         Core::Error(pos, "expected modifiable lvalue");
 
       auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
 
@@ -76,7 +76,7 @@ namespace GDCC::CC
             evalT, typeL, expL, expR, pos);
       }
 
-      throw Core::ExceptStr(pos, "invalid operands to 'operator /='");
+      Core::Error(pos, "invalid operands to 'operator /='");
    }
 
    //
@@ -103,7 +103,7 @@ namespace GDCC::CC
             code, Type_Div::Get(type), expL, expR, pos);
       }
 
-      throw Core::ExceptStr(pos, "invalid operands to __div");
+      Core::Error(pos, "invalid operands to __div");
    }
 }
 

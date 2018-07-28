@@ -43,33 +43,15 @@ namespace GDCC::CC
       // static_assert-declaration:
       //    <_Static_assert> ( constant-expression , string-literal )
 
-      // <_Static_assert>
-      if(!in.drop(Core::TOK_KeyWrd, Core::STR__Static_assert))
-         throw Core::ExceptStr(in.peek().pos,
-            "expected static_assert-declaration");
-
-      // (
-      if(!in.drop(Core::TOK_ParenO))
-         throw Core::ExceptStr(in.peek().pos, "expected '('");
-
-      // constant-expression
+      expect(Core::TOK_KeyWrd, Core::STR__Static_assert);
+      expect(Core::TOK_ParenO);
       auto exp = getExp_Cond(scope);
-
-      // ,
-      if(!in.drop(Core::TOK_Comma))
-         throw Core::ExceptStr(in.peek().pos, "expected ','");
-
-      // string-literal
-      auto msg = in.get();
-      if(!msg.isTokString())
-         throw Core::ExceptStr(in.peek().pos, "expected string-literal");
-
-      // )
-      if(!in.drop(Core::TOK_ParenC))
-         throw Core::ExceptStr(in.peek().pos, "expected ')'");
+      expect(Core::TOK_Comma);
+      auto msg = expectString();
+      expect(Core::TOK_ParenC);
 
       if(!ExpToInteg(exp))
-         throw Core::ExceptStr(msg.pos, msg.str);
+         Core::Error(msg.pos, msg.str);
    }
 }
 

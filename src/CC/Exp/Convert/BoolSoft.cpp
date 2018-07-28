@@ -132,7 +132,7 @@ namespace GDCC::CC
             return Exp_ConvertBoolSoft_PtrInv::Create(TypeBoolSoft, exp, pos);
       }
 
-      throw Core::ExceptStr(pos, "soft bool stub");
+      Core::Error(pos, "soft bool stub");
    }
 }
 

@@ -15,7 +15,6 @@
 #include "CC/Exp.hpp"
 
 #include "Core/Array.hpp"
-#include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "SR/Exp.hpp"
@@ -213,8 +212,7 @@ namespace GDCC::CC
 
          auto expT = getExp(scope);
 
-         if(!in.drop(Core::TOK_Colon))
-            throw Core::ExceptStr(in.peek().pos, "expected ':'");
+         expect(Core::TOK_Colon);
 
          return ExpCreate_Cnd(exp, expT, getExp_Cond(scope), pos);
       }

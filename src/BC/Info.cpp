@@ -265,7 +265,7 @@ namespace GDCC::BC
       case IR::Code::Jump:
       case IR::Code::Pltn:
       case IR::Code::Xcod_SID:
-         throw Core::ExceptStr(stmnt->pos, "irregular statement size");
+         Core::Error(stmnt->pos, "irregular statement size");
 
       case IR::Code::AdXU:
       case IR::Code::SuXU:
@@ -274,13 +274,13 @@ namespace GDCC::BC
          {
             if(stmnt->args[1].getSize() != size ||
                stmnt->args[0].getSize() <= size)
-               throw Core::ExceptStr(stmnt->pos, "irregular statement size");
+               Core::Error(stmnt->pos, "irregular statement size");
          }
          else
          {
             if(stmnt->args[3].getSize() != size ||
                stmnt->args[0].getSize() - stmnt->args[1].getSize() != size)
-               throw Core::ExceptStr(stmnt->pos, "irregular statement size");
+               Core::Error(stmnt->pos, "irregular statement size");
          }
          return size;
 
@@ -311,7 +311,7 @@ namespace GDCC::BC
       case IR::Code::SubU:
          size = stmnt->args[0].getSize();
          if(stmnt->args[1].getSize() != size || stmnt->args[2].getSize() != size)
-            throw Core::ExceptStr(stmnt->pos, "irregular statement size");
+            Core::Error(stmnt->pos, "irregular statement size");
          return size;
 
       case IR::Code::BNot:
@@ -330,7 +330,7 @@ namespace GDCC::BC
       case IR::Code::Swap:
          size = stmnt->args[0].getSize();
          if(stmnt->args[1].getSize() != size)
-            throw Core::ExceptStr(stmnt->pos, "irregular statement size");
+            Core::Error(stmnt->pos, "irregular statement size");
          return size;
 
       case IR::Code::Bclo:
@@ -372,7 +372,7 @@ namespace GDCC::BC
       case IR::Code::LOrI:
          size = stmnt->args[1].getSize();
          if(stmnt->args[2].getSize() != size)
-            throw Core::ExceptStr(stmnt->pos, "irregular statement size");
+            Core::Error(stmnt->pos, "irregular statement size");
          return size;
 
       case IR::Code::Cscr_IS:
@@ -388,7 +388,7 @@ namespace GDCC::BC
       case IR::Code::MuXU:
          size = stmnt->args[1].getSize();
          if(stmnt->args[0].getSize() != size * 2 || stmnt->args[2].getSize() != size)
-            throw Core::ExceptStr(stmnt->pos, "irregular statement size");
+            Core::Error(stmnt->pos, "irregular statement size");
          return size;
 
       case IR::Code::Jcnd_Nil:
@@ -399,7 +399,7 @@ namespace GDCC::BC
          return stmnt->args[0].getSize();
       }
 
-      throw Core::ExceptStr(stmnt->pos, "irregular statement size");
+      Core::Error(stmnt->pos, "irregular statement size");
    }
 
    //

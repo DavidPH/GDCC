@@ -191,9 +191,9 @@ namespace GDCC::SR
       // Callers should always check isIRArg, so this should never get
       // invoked. But if it does, any possible source position could help.
       if(data)
-         throw Core::ExceptStr(data->pos, "bad Arg::getIRArg");
+         Core::Error(data->pos, "bad Arg::getIRArg");
       else
-         throw Core::ExceptStr({nullptr, 0}, "bad Arg::getIRArg");
+         Core::Error({}, "bad Arg::getIRArg");
    }
 
    //

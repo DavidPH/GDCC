@@ -44,7 +44,7 @@ namespace GDCC::ACC
       }
 
       if(!lookup->isCTypeStruct())
-         throw Core::ExceptStr(name.pos, "expected structure type");
+         Core::Error(name.pos, "expected structure type");
 
       return static_cast<CC::Type_Struct::Ref>(&*lookup);
    }
@@ -67,16 +67,10 @@ namespace GDCC::ACC
       //    <struct> identifier ;
 
       // <struct>
-      if(!in.peek(Core::TOK_KeyWrd, Core::STR_struct))
-         throw Core::ParseExceptExpect(in.peek(), "structure-declaration", false);
-
-      auto pos = in.get().pos;
+      auto pos = expect(Core::TOK_KeyWrd, Core::STR_struct).pos;
 
       // identifier
-      if(!in.peek(Core::TOK_Identi))
-         throw Core::ParseExceptExpect(in.peek(), "identifier", false);
-
-      auto name = in.get();
+      auto name = expectIdenti();
 
       auto type = GetDeclStruct(name, scope);
 
@@ -87,8 +81,7 @@ namespace GDCC::ACC
          return SR::StatementCreate_Empty(pos);
 
       // {
-      if(!in.drop(Core::TOK_BraceO))
-         throw Core::ParseExceptExpect(in.peek(), "{", true);
+      expect(Core::TOK_BraceO);
 
       // List of members.
       std::vector<CC::Type_Struct::MemberData> memv;
@@ -137,8 +130,7 @@ namespace GDCC::ACC
          //    specifier-qualifier-sequence structure-member-declarator-list ;
 
          if(!isSpecQual(scope))
-            throw Core::ParseExceptExpect(in.peek(),
-               "structure-member-declaration", false);
+            Core::ErrorExpect("structure-member-declaration", in.peek());
 
          // specifier-qualifier-list
          SR::Attribute attrBase;
@@ -157,10 +149,10 @@ namespace GDCC::ACC
             parseDeclarator(scope, attr);
 
             if(findName(attr.name))
-               throw Core::ExceptStr(attr.namePos, "name reused");
+               Core::Error(attr.namePos, "name reused");
 
             if(!attr.type->isTypeComplete())
-               throw Core::ExceptStr(attr.namePos, "incomplete member");
+               Core::Error(attr.namePos, "incomplete member");
 
             addrAlign(attr.type->getSizeAlign());
             memv.emplace_back(attr.name, attr.type, addr, false);
@@ -169,13 +161,12 @@ namespace GDCC::ACC
          while(in.drop(Core::TOK_Comma));
 
          // ;
-         if(!in.drop(Core::TOK_Semico))
-            throw Core::ParseExceptExpect(in.peek(), ";", true);
+         expect(Core::TOK_Semico);
       }
       while(!in.drop(Core::TOK_BraceC));
 
       if(memv.empty())
-         throw Core::ExceptStr(pos, "empty structure");
+         Core::Error(pos, "empty structure");
 
       if(!type->isTypeComplete())
          type->setMembers(memv.data(), memv.size(), size);

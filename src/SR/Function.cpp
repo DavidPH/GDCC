@@ -112,7 +112,7 @@ namespace GDCC::SR
       if(!defin && !used) return;
 
       if(declAuto && !defin)
-         throw Core::ExceptUndef("forward reference", glyph);
+         Core::ErrorUndef("forward reference", glyph);
 
       // Operate on a temporary function to be merged later.
       IR::Function fn{glyph};
@@ -152,7 +152,7 @@ namespace GDCC::SR
       }
       catch(SR::TypeError const &)
       {
-         throw Core::ExceptStr(stmnt ? stmnt->pos : Core::Origin(), "incomplete parameter");
+         Core::Error(stmnt ? stmnt->pos : Core::Origin(), "incomplete parameter");
       }
 
       fn.allocAut = allocAut;

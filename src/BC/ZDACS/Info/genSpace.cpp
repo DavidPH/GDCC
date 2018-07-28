@@ -206,7 +206,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       case IR::ValueBase::Empty:
-         throw Core::ExceptStr({nullptr}, "bad genSpaceInitiValue: Empty");
+         Core::Error({nullptr}, "bad genSpaceInitiValue: Empty");
 
       case IR::ValueBase::Fixed:
          bits = val.vFixed.vtype.bitsI + val.vFixed.vtype.bitsF + val.vFixed.vtype.bitsS;

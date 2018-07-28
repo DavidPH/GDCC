@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__AR__Types_H__
-#define GDCC__AR__Types_H__
+#ifndef GDCC__AR__Wad__Types_H__
+#define GDCC__AR__Wad__Types_H__
 
 #include "../../AR/Types.hpp"
 
@@ -32,5 +32,5 @@ namespace GDCC::AR::Wad
    class LumpInfo;
 }
 
-#endif//GDCC__AR__Types_H__
+#endif//GDCC__AR__Wad__Types_H__
 

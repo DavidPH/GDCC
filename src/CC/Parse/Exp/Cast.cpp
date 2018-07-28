@@ -85,13 +85,9 @@ namespace GDCC::CC
    //
    SR::Exp::CRef Parser::getExp_CLit(Scope &scope)
    {
-      if(!in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(in.peek(), "(", true);
-
+      expect(Core::TOK_ParenO);
       auto type = getType(scope);
-
-      if(!in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(in.peek(), ")", true);
+      expect(Core::TOK_ParenC);
 
       return getExp_CLit(scope, type);
    }
@@ -101,8 +97,8 @@ namespace GDCC::CC
    //
    SR::Exp::CRef Parser::getExp_CLit(Scope &scope, SR::Type const *type)
    {
-      if(in.peek().tok != Core::TOK_BraceO)
-         throw Core::ParseExceptExpect(in.peek(), "{", true);
+      if(!in.peek(Core::TOK_BraceO))
+         Core::ErrorExpect("{", in.peek(), true);
 
       SR::Attribute attr;
 
@@ -117,7 +113,7 @@ namespace GDCC::CC
       if(auto s = dynamic_cast<Scope_Local *>(&scope))
          return GetExp_CLit(*this, *s, attr, init);
 
-      throw Core::ExceptStr(attr.namePos, "invalid scope for compound literal");
+      Core::Error(attr.namePos, "invalid scope for compound literal");
    }
 
    //
@@ -134,8 +130,7 @@ namespace GDCC::CC
          auto type = getType(scope);
 
          // )
-         if(!in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(in.peek(), ")", true);
+         expect(Core::TOK_ParenC);
 
          // Compound literal.
          if(in.peek(Core::TOK_BraceO))

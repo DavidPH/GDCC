@@ -42,7 +42,7 @@ namespace GDCC::CC
       SR::Attribute &attr, TypeSpec &spec, bool isUnion)
    {
       if(spec.specBase)
-         throw Core::ExceptStr(ctx.in.reget().pos, "multiple type-specifier base");
+         Core::Error(ctx.in.reget().pos, "multiple type-specifier base");
 
       spec.specBase = TypeSpec::BaseName;
 
@@ -79,7 +79,7 @@ namespace GDCC::CC
 
             if(err)
             {
-               if(local) throw Core::ExceptStr(name.pos, err);
+               if(local) Core::Error(name.pos, err);
                lookup = nullptr;
             }
          }
@@ -98,8 +98,8 @@ namespace GDCC::CC
       else
       {
          // Must be a definition.
-         if(ctx.in.peek().tok != Core::TOK_BraceO)
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected identifier");
+         if(!ctx.in.peek(Core::TOK_BraceO))
+            Core::ErrorExpect("identifier", ctx.in.peek());
 
          type = Type_Struct::Create(Core::STRNULL, isUnion);
       }
@@ -230,15 +230,13 @@ namespace GDCC::CC
          ctx.in.get();
 
          // :
-         if(!ctx.in.drop(Core::TOK_Colon))
-            throw Core::ParseExceptExpect{ctx.in.reget(), ":", true};
+         ctx.expect(Core::TOK_Colon);
 
          // primary-expression
          SR::Exp::CRef func = ctx.getExp_Prim(scope);
 
          // (
-         if(!ctx.in.drop(Core::TOK_ParenO))
-            throw Core::ParseExceptExpect{ctx.in.reget(), "(", true};
+         ctx.expect(Core::TOK_ParenO);
 
          // struct-property-argument-list(opt)
          std::vector<StructPropArg> argv;
@@ -254,8 +252,7 @@ namespace GDCC::CC
          while(ctx.in.drop(Core::TOK_Comma));
 
          // )
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect{ctx.in.reget(), ")", true};
+         ctx.expect(Core::TOK_ParenC);
 
          return {func, {argv.begin(), argv.end()}};
       };
@@ -272,16 +269,12 @@ namespace GDCC::CC
          ctx.in.get();
 
          // identifier
-         if(!ctx.in.peek(Core::TOK_Identi))
-            throw Core::ParseExceptExpect{ctx.in.peek(), "identifier", false};
-
-         Core::String name = ctx.in.get().str;
+         Core::String name = ctx.expectIdenti().str;
 
          StructProp propCall, propGet, propSet;
 
          // {
-         if(!ctx.in.drop(Core::TOK_BraceO))
-            throw Core::ParseExceptExpect{ctx.in.reget(), "{", true};
+         ctx.expect(Core::TOK_BraceO);
 
          // struct-property-list
          do
@@ -301,13 +294,12 @@ namespace GDCC::CC
                ctx.in.peek(Core::TOK_Identi, Core::STR_set))
                propSet = getStructProp();
             else
-               throw Core::ParseExceptExpect{ctx.in.peek(), "struct-property-name", false};
+               Core::ErrorExpect("struct-property-name", ctx.in.peek());
          }
          while(ctx.in.drop(Core::TOK_Comma));
 
          // }
-         if(!ctx.in.drop(Core::TOK_BraceC))
-            throw Core::ParseExceptExpect{ctx.in.reget(), "}", true};
+         ctx.expect(Core::TOK_BraceC);
 
          return {name, static_cast<SR::Type::CRef>(type), 0,
             std::move(propCall), std::move(propGet), std::move(propSet)};
@@ -335,8 +327,7 @@ namespace GDCC::CC
          else if(ctx.isSpecQual(scope))
          {
             if(hasFAM)
-               throw Core::ExceptStr(ctx.in.peek().pos,
-                  "member after flexible array");
+               Core::Error(ctx.in.peek().pos, "member after flexible array");
 
             // Check for possible anonymous struct/union: struct-or-union {
             bool maybeAnon =
@@ -351,7 +342,7 @@ namespace GDCC::CC
             if(ctx.in.peek().tok == Core::TOK_Semico)
             {
                if(!attrBase.type->isTypeComplete())
-                  throw Core::ExceptStr(ctx.in.reget().pos, "incomplete member");
+                  Core::Error(ctx.in.reget().pos, "incomplete member");
 
                addrAlign(attrBase.type->getSizeAlign());
 
@@ -384,11 +375,11 @@ namespace GDCC::CC
                   {
                      // Check that name is valid.
                      if(findName(attrTemp.name))
-                        throw Core::ExceptStr(pos, "name reused");
+                        Core::Error(pos, "name reused");
 
                      // Check for too many bits to fit in a word.
                      if(bits > bitsWord)
-                        throw Core::ExceptStr(pos, "too many bits");
+                        Core::Error(pos, "too many bits");
 
                      // Check for enough size in the current word.
                      if(bitsAddr + bits > bitsWord)
@@ -402,7 +393,7 @@ namespace GDCC::CC
                      // bitsType must be qualified or unqualified signed int,
                      // unsigned int, or _Bool.
                      if(!bitsType->isCTypeInteg())
-                        throw Core::ExceptStr(pos, "required integer type");
+                        Core::Error(pos, "required integer type");
 
                      // Create bitfield type.
                      bitsType = bitsType
@@ -420,7 +411,7 @@ namespace GDCC::CC
                   else
                   {
                      if(attrTemp.name)
-                        throw Core::ExceptStr(pos, "named empty bitfield");
+                        Core::Error(pos, "named empty bitfield");
 
                      bitsReset();
                   }
@@ -430,7 +421,7 @@ namespace GDCC::CC
                else
                {
                   if(findName(attrTemp.name))
-                     throw Core::ExceptStr(ctx.in.reget().pos, "name reused");
+                     Core::Error(ctx.in.reget().pos, "name reused");
 
                   bitsReset();
 
@@ -449,7 +440,7 @@ namespace GDCC::CC
                   {
                      // Unless this is a flexible array member.
                      if(!attrTemp.type->isTypeArray())
-                        throw Core::ExceptStr(ctx.in.reget().pos, "incomplete member");
+                        Core::Error(ctx.in.reget().pos, "incomplete member");
 
                      addrAlign(attrTemp.type->getSizeAlign());
 
@@ -465,17 +456,16 @@ namespace GDCC::CC
             while(ctx.in.drop(Core::TOK_Comma));
 
             // ;
-            if(!ctx.in.drop(Core::TOK_Semico))
-               throw Core::ExceptStr(ctx.in.peek().pos, "expected ';'");
+            ctx.expect(Core::TOK_Semico);
          }
 
          else
-            throw Core::ExceptStr(ctx.in.peek().pos, "expected struct-declaration");
+            Core::ErrorExpect("struct-declaration", ctx.in.peek());
       }
       while(!ctx.in.drop(Core::TOK_BraceC));
 
       if(memv.empty())
-         throw Core::ExceptStr(ctx.in.reget().pos, "empty structure");
+         Core::Error(ctx.in.reget().pos, "empty structure");
 
       bitsReset();
 

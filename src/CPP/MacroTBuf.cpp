@@ -90,7 +90,7 @@ namespace GDCC::CPP
       if(macro.args.empty())
       {
          if(!IsEmpty(argRng))
-            throw Core::ExceptStr(argRng.begin()->pos, "args to no-arg macro");
+            Core::Error(argRng.begin()->pos, "args to no-arg macro");
 
          return {};
       }
@@ -111,7 +111,7 @@ namespace GDCC::CPP
                if(argi + 1 == argv.end())
                {
                   if(macro.args.back())
-                     throw Core::ExceptStr(itr->pos, "too many macro args");
+                     Core::Error(itr->pos, "too many macro args");
                   else
                      break;
                }
@@ -130,7 +130,7 @@ namespace GDCC::CPP
          if(argi + 1 != argv.end())
          {
             if(macro.args.back() || argi + 2 != argv.end())
-               throw Core::ExceptStr(argRng.begin()->pos, "not enough macro args");
+               Core::Error(argRng.begin()->pos, "not enough macro args");
 
             *++argi = {argRng.end(), argRng.end()};
          }
@@ -225,7 +225,7 @@ namespace GDCC::CPP
             if(itr->tok == Core::TOK_ParenC) {if(depth) --depth; else break;}
 
             if(itr->tok == Core::TOK_EOF)
-               throw Core::ExceptStr(first->pos, "unterminated macro call");
+               Core::Error(first->pos, "unterminated macro call");
          }
 
          auto argLast = itr++; ++argFirst;
@@ -273,7 +273,7 @@ namespace GDCC::CPP
                ++itr;
 
             if(itr + 1 == end || !(arg = FindArg(itr[1], macro, argv, vaArgStr)))
-               throw Core::ExceptStr(e->pos, "# not followed by arg");
+               Core::Error(e->pos, "# not followed by arg");
 
             buf.emplace(e, e->pos, stringize(*arg), Core::TOK_String);
             ++itr;

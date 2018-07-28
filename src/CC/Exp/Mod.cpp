@@ -42,12 +42,12 @@ namespace GDCC::CC
          std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
 
          if(!type->isCTypeInteg() && !type->isCTypeFixed())
-            throw Core::ExceptStr(pos, "expected integer or fixed-point");
+            Core::Error(pos, "expected integer or fixed-point");
 
          return ExpCreate_Arith<SR::Exp_Mod, IR::CodeSet_Mod>(type, expL, expR, pos);
       }
 
-      throw Core::ExceptStr(pos, "invalid operands to 'operator %'");
+      Core::Error(pos, "invalid operands to 'operator %'");
    }
 
    //
@@ -57,7 +57,7 @@ namespace GDCC::CC
       Core::Origin pos)
    {
       if(!IsModLValue(expL))
-         throw Core::ExceptStr(pos, "expected modifiable lvalue");
+         Core::Error(pos, "expected modifiable lvalue");
 
       auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
 
@@ -71,13 +71,13 @@ namespace GDCC::CC
          std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
 
          if(!evalT->isCTypeInteg() && !evalT->isCTypeFixed())
-            throw Core::ExceptStr(pos, "expected integer or fixed-point");
+            Core::Error(pos, "expected integer or fixed-point");
 
          return ExpCreate_ArithEq<SR::Exp_Mod, IR::CodeSet_Mod>(
             evalT, typeL, expL, expR, pos);
       }
 
-      throw Core::ExceptStr(pos, "invalid operands to 'operator %='");
+      Core::Error(pos, "invalid operands to 'operator %='");
    }
 }
 

@@ -103,11 +103,11 @@ namespace GDCC::CC
       if(typeL == TypeFloatCSLL || typeL == TypeFloatISLL || typeL == TypeFloatRSLL ||
          typeR == TypeFloatCSLL || typeR == TypeFloatISLL || typeR == TypeFloatRSLL)
       {
-               if(cplxL) expL = ExpConvert_Arith(TypeFloatCSLL, expL, pos);
+              if(cplxL) expL = ExpConvert_Arith(TypeFloatCSLL, expL, pos);
          else if(imagL) expL = ExpConvert_Arith(TypeFloatISLL, expL, pos);
          else           expL = ExpConvert_Arith(TypeFloatRSLL, expL, pos);
 
-               if(cplxR) expR = ExpConvert_Arith(TypeFloatCSLL, expR, pos);
+              if(cplxR) expR = ExpConvert_Arith(TypeFloatCSLL, expR, pos);
          else if(imagR) expR = ExpConvert_Arith(TypeFloatISLL, expR, pos);
          else           expR = ExpConvert_Arith(TypeFloatRSLL, expR, pos);
 
@@ -120,11 +120,11 @@ namespace GDCC::CC
       if(typeL == TypeFloatCSL || typeL == TypeFloatISL || typeL == TypeFloatRSL ||
          typeR == TypeFloatCSL || typeR == TypeFloatISL || typeR == TypeFloatRSL)
       {
-               if(cplxL) expL = ExpConvert_Arith(TypeFloatCSL, expL, pos);
+              if(cplxL) expL = ExpConvert_Arith(TypeFloatCSL, expL, pos);
          else if(imagL) expL = ExpConvert_Arith(TypeFloatISL, expL, pos);
          else           expL = ExpConvert_Arith(TypeFloatRSL, expL, pos);
 
-               if(cplxR) expR = ExpConvert_Arith(TypeFloatCSL, expR, pos);
+              if(cplxR) expR = ExpConvert_Arith(TypeFloatCSL, expR, pos);
          else if(imagR) expR = ExpConvert_Arith(TypeFloatISL, expR, pos);
          else           expR = ExpConvert_Arith(TypeFloatRSL, expR, pos);
 
@@ -137,11 +137,11 @@ namespace GDCC::CC
       if(typeL == TypeFloatCS || typeL == TypeFloatIS || typeL == TypeFloatRS ||
          typeR == TypeFloatCS || typeR == TypeFloatIS || typeR == TypeFloatRS)
       {
-               if(cplxL) expL = ExpConvert_Arith(TypeFloatCS, expL, pos);
+              if(cplxL) expL = ExpConvert_Arith(TypeFloatCS, expL, pos);
          else if(imagL) expL = ExpConvert_Arith(TypeFloatIS, expL, pos);
          else           expL = ExpConvert_Arith(TypeFloatRS, expL, pos);
 
-               if(cplxR) expR = ExpConvert_Arith(TypeFloatCS, expR, pos);
+              if(cplxR) expR = ExpConvert_Arith(TypeFloatCS, expR, pos);
          else if(imagR) expR = ExpConvert_Arith(TypeFloatIS, expR, pos);
          else           expR = ExpConvert_Arith(TypeFloatRS, expR, pos);
 
@@ -150,7 +150,7 @@ namespace GDCC::CC
                               return std::make_tuple(TypeFloatRS, expL, expR);
       }
 
-      throw Core::ExceptStr(pos, "cannot determine common floating type");
+      Core::Error(pos, "cannot determine common floating type");
    }
 
    //
@@ -178,7 +178,7 @@ namespace GDCC::CC
       }
       catch(SR::TypeError const &)
       {
-         throw Core::ExceptStr(pos, "expected ranked types");
+         Core::Error(pos, "expected ranked types");
       }
 
       // If one has a higher rank, convert to that.
@@ -236,7 +236,7 @@ namespace GDCC::CC
       if(typeL->isCTypeInteg() && typeR->isCTypeInteg())
          return ExpPromo_Arith_Integ(expL, expR, pos);
 
-      throw Core::ExceptStr(pos, "cannot determine common real type");
+      Core::Error(pos, "cannot determine common real type");
    }
 
    //

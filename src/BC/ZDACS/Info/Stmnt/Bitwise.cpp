@@ -584,7 +584,7 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       if(n != 1)
-         throw Core::ExceptStr(stmnt->pos, "Bget_W must have size 1");
+         Core::Error(stmnt->pos, "Bget_W must have size 1");
 
       trStmntStk2();
    }
@@ -601,7 +601,7 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       if(n != 1)
-         throw Core::ExceptStr(stmnt->pos, "Bset_W must have size 1");
+         Core::Error(stmnt->pos, "Bset_W must have size 1");
 
       moveArgStk_src(stmnt->args[1]);
    }

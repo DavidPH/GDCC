@@ -28,148 +28,62 @@ namespace GDCC::Core
    class Exception : public std::exception
    {
    public:
-      Exception() : pos{nullptr, 0} {}
       Exception(Exception const &e);
       Exception(Exception &&) = default;
-      explicit Exception(Origin pos_) noexcept : pos{pos_} {}
 
-      virtual char const *what() const noexcept
-         {if(!msg) genMsg(); return msg.get();}
+      virtual char const *what() const noexcept;
 
-      void setOrigin(Origin const &pos_) {pos = pos_;}
+      void setOrigin(Origin pos_) {pos = pos_;}
 
    protected:
-      virtual void genMsg() const;
+      Exception() noexcept : pos{nullptr, 0} {}
+      Exception(Origin pos_) noexcept : pos{pos_} {}
 
-      std::ostream &putOrigin(std::ostream &out) const;
+      std::ostream &putOrigin(std::ostream &out) const noexcept;
 
-      void setMsg(std::string const &str) const;
+      virtual char const *whatGen() const noexcept = 0;
+
+      char const *whatSet(std::string const &str) const noexcept;
 
       Origin pos;
 
-      mutable std::unique_ptr<char[]> msg;
+      mutable std::unique_ptr<char[]> whatCache;
    };
+}
 
-   //
-   // ExceptFile
-   //
-   class ExceptFile : public Exception
-   {
-   public:
-      ExceptFile(String filename_, String mode_) noexcept :
-         Exception{{nullptr, 0}}, filename{filename_}, mode{mode_} {}
 
-   private:
-      virtual void genMsg() const;
+//----------------------------------------------------------------------------|
+// Extern Functions                                                           |
+//
 
-      String const filename;
-      String const mode;
-   };
+namespace GDCC::Core
+{
+   [[noreturn]]
+   void Error(Origin pos, char const *msg);
+   [[noreturn]]
+   void Error(Origin pos, String msg);
 
-   //
-   // ExceptStr
-   //
-   // Carries a simple string message.
-   //
-   class ExceptStr : public Exception
-   {
-   public:
-      ExceptStr(Origin pos_, String str_) noexcept :
-         Exception{pos_}, str{str_} {}
+   [[noreturn]]
+   void ErrorExpect(char const *exp, Token const &got, bool expQ = false, bool gotQ = true);
+   [[noreturn]]
+   void ErrorExpect(Origin pos, char const *exp, String got, bool expQ = false, bool gotQ = true);
+   [[noreturn]]
+   void ErrorExpect(Origin pos, String exp, String got, bool expQ = false, bool gotQ = true);
+   [[noreturn]]
+   void ErrorExpect(String exp, Token const &got, bool expQ = false, bool gotQ = true);
 
-   protected:
-      virtual void genMsg() const;
+   [[noreturn]]
+   void ErrorFile(String filename, char const *mode);
 
-      String const str;
-   };
+   [[noreturn]]
+   void ErrorFileInc(Origin pos, String filename);
+   [[noreturn]]
+   void ErrorFileInc(Origin pos, String filename, char l, char r);
 
-   //
-   // ExceptUndef
-   //
-   class ExceptUndef : public Exception
-   {
-   public:
-      ExceptUndef(String type_, String name_) noexcept :
-         Exception{{}}, type{type_}, name{name_} {}
-
-   protected:
-      virtual void genMsg() const;
-
-      String const type;
-      String const name;
-   };
-
-   //
-   // ParseException
-   //
-   // Thrown by Parse and Get functions when encountering invalid syntax.
-   //
-   class ParseException : public Exception
-   {
-   public:
-      using Exception::Exception;
-   };
-
-   //
-   // ParseExceptExpect
-   //
-   class ParseExceptExpect : public ParseException
-   {
-   public:
-      //
-      // constructor
-      //
-      ParseExceptExpect(Origin pos_, String exp_, String got_, bool expQ_,
-         bool gotQ_ = true) noexcept :
-         ParseException{pos_},
-         exp {exp_},
-         got {got_},
-         expQ{expQ_},
-         gotQ{gotQ_}
-      {
-      }
-
-      //
-      // constructor
-      //
-      ParseExceptExpect(String exp_, String got_, bool expQ_,
-         bool gotQ_ = true) noexcept :
-         ParseException{},
-         exp {exp_},
-         got {got_},
-         expQ{expQ_},
-         gotQ{gotQ_}
-      {
-      }
-
-      ParseExceptExpect(Token const &tok, String exp, bool expQ,
-         bool gotQ = true) noexcept;
-
-   protected:
-      virtual void genMsg() const;
-
-      Core::String const exp;
-      Core::String const got;
-      bool         const expQ : 1;
-      bool         const gotQ : 1;
-   };
-
-   //
-   // ParseExceptStr
-   //
-   // Carries a simple string message.
-   //
-   class ParseExceptStr : public ParseException
-   {
-   public:
-      ParseExceptStr(Origin pos_, String str_) noexcept :
-         ParseException{pos_}, str{str_} {}
-
-   protected:
-      virtual void genMsg() const;
-
-      String const str;
-   };
+   [[noreturn]]
+   void ErrorUndef(Origin pos, String type, String name);
+   [[noreturn]]
+   void ErrorUndef(String type, String name);
 }
 
 #endif//GDCC__Core__Exception_H__

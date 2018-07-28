@@ -55,7 +55,7 @@ namespace GDCC::CC
 
       // ???
       else
-         throw Core::ExceptStr(pos, "unsupported arithmetic type");
+         Core::Error(pos, "unsupported arithmetic type");
 
       return SR::Exp_Arith<Base>::Create(code, bt, l, r, pos);
    }

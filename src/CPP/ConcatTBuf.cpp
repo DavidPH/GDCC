@@ -48,7 +48,7 @@ namespace GDCC::CPP
          case Core::TOK_StrU32:
          case Core::TOK_StrWid:
             if(buf[0].tok != Core::TOK_String && buf[0].tok != src.peek().tok)
-               throw Core::ExceptStr(src.peek().pos, "invalid concatenation");
+               Core::Error(src.peek().pos, "invalid concatenation");
 
             buf[0].tok = src.peek().tok;
          case Core::TOK_String:

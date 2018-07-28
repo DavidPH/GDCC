@@ -84,8 +84,7 @@ namespace GDCC::CC
       auto pos = ctx.in.get().pos;
 
       // (
-      if(!ctx.in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+      ctx.expect(Core::TOK_ParenO);
 
       // assignment-expression
       auto exp = ctx.getExp_Assi(scope);
@@ -107,8 +106,7 @@ namespace GDCC::CC
             auto type = ctx.getType(scope);
 
             // :
-            if(!ctx.in.drop(Core::TOK_Colon))
-               throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
+            ctx.expect(Core::TOK_Colon);
 
             // assignment-expression
             vec.emplace_back(type, ctx.getExp_Assi(scope));
@@ -118,23 +116,21 @@ namespace GDCC::CC
          else if(ctx.in.drop(Core::TOK_KeyWrd, Core::STR_default))
          {
             if(def)
-               throw Core::ExceptStr(ctx.in.peek().pos, "multiple default");
+               Core::Error(ctx.in.peek().pos, "multiple default");
 
             // :
-            if(!ctx.in.drop(Core::TOK_Colon))
-               throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
+            ctx.expect(Core::TOK_Colon);
 
             // assignment-expression
             def = ctx.getExp_Assi(scope);
          }
 
          else
-            throw Core::ParseExceptExpect(ctx.in.peek(), "generic-association", false);
+            Core::ErrorExpect("generic-association", ctx.in.peek());
       }
 
       // )
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
 
       return ExpCreate_GenSel(exp, def, {Core::Move, vec.begin(), vec.end()}, pos);
    }
@@ -152,7 +148,7 @@ namespace GDCC::CC
 
       Scope_Local *scopeLocal;
       if(!(scopeLocal = dynamic_cast<Scope_Local *>(&scope)))
-         throw Core::ExceptStr(pos, "invalid scope for va_start");
+         Core::Error(pos, "invalid scope for va_start");
 
       auto base = SR::Type::Void->getTypeQual({{IR::AddrBase::Aut, Core::STR_}});
       auto type = base->getTypePointer();
@@ -174,7 +170,7 @@ namespace GDCC::CC
          break;
 
       default:
-         throw Core::ExceptStr(pos, "invalid call type for va_start");
+         Core::Error(pos, "invalid call type for va_start");
       }
 
       auto exp = IR::ExpCreate_Value(std::move(val), pos);
@@ -226,13 +222,13 @@ namespace GDCC::CC
          return ExpCreate_Obj(ctx.prog, lookup.resObj, tok.pos);
 
       default:
-         throw Core::ParseExceptExpect(tok, "primary-expression", false);
+         Core::ErrorExpect("primary-expression", tok);
       }
 
       // TODO: implicit function declaration
       // It sucks, but it is traditional and the method will be needed for ACS.
 
-      throw Core::ParseExceptExpect(tok.pos, "declared identifier", tok.str, false);
+      Core::ErrorExpect("declared identifier", tok);
    }
 
    //
@@ -244,7 +240,7 @@ namespace GDCC::CC
       {
       case Core::STR__Generic: return GetExp_Prim_generic(ctx, scope);
       default:
-         throw Core::ParseExceptExpect(ctx.in.peek(), "primary-expression", false);
+         Core::ErrorExpect("primary-expression", ctx.in.peek());
       }
    }
 
@@ -269,20 +265,20 @@ namespace GDCC::CC
       int  l;
       bool u;
 
-            if(*itr == 'U' || *itr == 'u') u = true, ++itr;
+           if(*itr == 'U' || *itr == 'u') u = true, ++itr;
       else                                u = false;
 
-            if(*itr == 'H' || *itr == 'h') l = -1, ++itr;
+           if(*itr == 'H' || *itr == 'h') l = -1, ++itr;
       else if(*itr == 'L' || *itr == 'l') l = +1, ++itr;
       else                                l =  0;
 
-            if(*itr == 'K' || *itr == 'k') k = true,  ++itr;
+           if(*itr == 'K' || *itr == 'k') k = true,  ++itr;
       else if(*itr == 'R' || *itr == 'r') k = false, ++itr;
       else                                k = true;
 
       // Must be end of string.
       if(itr != end)
-         throw Core::ExceptStr(tok.pos, "malformed fixed-constant");
+         Core::Error(tok.pos, "malformed fixed-constant");
 
       // Dtermine type.
       SR::Type::CPtr type;
@@ -349,14 +345,14 @@ namespace GDCC::CC
       }
       else
       {
-               if(*itr == 'F' || *itr == 'f') l =  0, ++itr;
+              if(*itr == 'F' || *itr == 'f') l =  0, ++itr;
          else if(*itr == 'L' || *itr == 'l') l = +2, ++itr;
          else                                l = +1;
       }
 
       // Must be end of string.
       if(itr != end)
-         throw Core::ExceptStr(tok.pos, "malformed floating-constant");
+         Core::Error(tok.pos, "malformed floating-constant");
 
       // Dtermine type.
       SR::Type::CPtr type;
@@ -395,17 +391,17 @@ namespace GDCC::CC
       for(; itr != end; ++itr) switch(*itr)
       {
       case 'L': case 'l':
-         if(l) throw Core::ExceptStr(tok.pos, "duplicate L");
+         if(l) Core::Error(tok.pos, "duplicate L");
          l = itr[1] == itr[0] ? ++itr, 2 : 1;
          break;
 
       case 'U': case 'u':
-         if(u) throw Core::ExceptStr(tok.pos, "duplicate U");
+         if(u) Core::Error(tok.pos, "duplicate U");
          u = true;
          break;
 
       default:
-         throw Core::ExceptStr(tok.pos, "malformed integer-constant");
+         Core::Error(tok.pos, "malformed integer-constant");
       }
 
       // Octal/hex literals will promote to unsigned if necessary.
@@ -428,7 +424,7 @@ namespace GDCC::CC
          tryCreate(!u, TypeIntegPrSLL);
          tryCreate( x, TypeIntegPrULL);
       default:
-         throw Core::ExceptStr(tok.pos, "oversized integer-constant");
+         Core::Error(tok.pos, "oversized integer-constant");
 
          #undef tryCreate
       }
@@ -439,15 +435,9 @@ namespace GDCC::CC
    //
    static SR::Exp::CRef GetExp_Prim_ParenO(Parser &ctx, Scope &scope)
    {
-      // (
       ctx.in.get();
-
-      // expression
       auto exp = ctx.getExp(scope);
-
-      // )
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
 
       return exp;
    }
@@ -549,7 +539,7 @@ namespace GDCC::CC
       case Core::TOK_ParenO: return GetExp_Prim_ParenO(*this, scope);
 
       default:
-         throw Core::ParseExceptExpect(in.peek(), "primary-expression", false);
+         Core::ErrorExpect("primary-expression", in.peek());
       }
    }
 }

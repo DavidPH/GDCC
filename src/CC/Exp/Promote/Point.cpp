@@ -48,7 +48,7 @@ namespace GDCC::CC
          if(IR::IsAddrEnclosed(addrR, addrL))
             return addrR;
          else
-            throw Core::ExceptStr(pos, "cannot promote disjoint address spaces");
+            Core::Error(pos, "cannot promote disjoint address spaces");
       }
    }
 
@@ -93,14 +93,14 @@ namespace GDCC::CC
 
       // Both operands must be pointers.
       if(!(nulL || typeL->isTypePointer()) || !(nulR || typeR->isTypePointer()))
-         throw Core::ExceptStr(pos, "expected pointer");
+         Core::Error(pos, "expected pointer");
 
       // One operand is a pointer and the other is a null pointer constant.
       if(nulL)
       {
          // This needs to fall under arithmetic comparison.
          if(nulR)
-            throw Core::ExceptStr(pos, "unexpected two null pointer constants");
+            Core::Error(pos, "unexpected two null pointer constants");
 
          expL = ExpConvert_PtrArith(typeR, expL, pos);
          return std::make_tuple(typeR, expL, expR);
@@ -133,7 +133,7 @@ namespace GDCC::CC
       if(baseL->isTypeVoid() || baseR->isTypeVoid())
       {
          if(!baseL->isCTypeObject() || !baseR->isCTypeObject())
-            throw Core::ExceptStr(pos, "expected pointer to object");
+            Core::Error(pos, "expected pointer to object");
 
          auto qual = QualPromo(baseL->getQual(), baseR->getQual(), pos);
          auto type = SR::Type::Void->getTypeQual(qual)
@@ -145,7 +145,7 @@ namespace GDCC::CC
          return std::make_tuple(type, expL, expR);
       }
 
-      throw Core::ExceptStr(pos, "incompatible pointers");
+      Core::Error(pos, "incompatible pointers");
    }
 
    //
@@ -161,18 +161,18 @@ namespace GDCC::CC
 
       // Both operands must be pointers.
       if(!typeL->isTypePointer() || !typeR->isTypePointer())
-         throw Core::ExceptStr(pos, "expected pointer");
+         Core::Error(pos, "expected pointer");
 
       auto baseL = typeL->getBaseType();
       auto baseR = typeR->getBaseType();
 
       // Relational pointers must have compatible types.
       if(baseL->getTypeQual() != baseR->getTypeQual())
-         throw Core::ExceptStr(pos, "incompatible pointers");
+         Core::Error(pos, "incompatible pointers");
 
       // Relational pointers must refer to objects.
       if(!baseL->isCTypeObject() || !baseR->isCTypeObject())
-         throw Core::ExceptStr(pos, "expected pointer to object");
+         Core::Error(pos, "expected pointer to object");
 
       // Convert to common pointer type.
       auto qual = QualPromo(baseL->getQual(), baseR->getQual(), pos);

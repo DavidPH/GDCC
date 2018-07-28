@@ -34,7 +34,7 @@ namespace GDCC::AR::Wad
    {
       // A valid wad archive must be at least 12 bytes.
       if(size < 12)
-         throw ReadError("wad header out of bounds");
+         Error("wad header out of bounds");
 
       // Read wad header.
       ident = {{data[0], data[1], data[2], data[3]}};
@@ -43,7 +43,7 @@ namespace GDCC::AR::Wad
 
       // Must both contain the index and have enough space there.
       if(size < iter || size - iter < count * 16)
-         throw ReadError("wad table out of bounds");
+         Error("wad table out of bounds");
 
       // Read lump headers.
       for(Lump &lump : lumps = Core::Array<Lump>{count})
@@ -54,7 +54,7 @@ namespace GDCC::AR::Wad
 
          // Must both contain the index and have enough space there.
          if(size < idx || size - idx < lump.size)
-            throw ReadError("wad lump out of bounds");
+            Error("wad lump out of bounds");
 
          lump.data = data + idx;
       }
@@ -83,7 +83,7 @@ namespace GDCC::AR::Wad
             for(auto ends = GetNameEnd(head->name);; ++iter)
             {
                if(iter == last)
-                  throw ReadError("unterminated X_START");
+                  Error("unterminated X_START");
 
                if(iter->name == ends.first || iter->name == ends.second)
                   break;
@@ -120,7 +120,7 @@ namespace GDCC::AR::Wad
             while(iter->name != NameENDMAP)
             {
                if(++iter == last)
-                  throw ReadError("unterminated TEXTMAP");
+                  Error("unterminated TEXTMAP");
             }
 
             found.push_back({{first, iter}, head, iter, head->name});

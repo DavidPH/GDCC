@@ -171,7 +171,7 @@ namespace GDCC::AS
 
       default:
          ctx.in.unget();
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Arg", false);
+         Core::ErrorExpect("Arg", ctx.in.peek());
       }
    }
 }

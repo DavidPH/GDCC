@@ -18,6 +18,118 @@
 
 
 //----------------------------------------------------------------------------|
+// Types                                                                      |
+//
+
+namespace GDCC::Core
+{
+   //
+   // ExceptFile
+   //
+   class ExceptFile : public Exception
+   {
+   public:
+      ExceptFile(String filename_, String mode_) noexcept :
+         Exception{}, filename{filename_}, mode{mode_} {}
+
+   protected:
+      virtual char const *whatGen() const noexcept;
+
+      String const filename;
+      String const mode;
+   };
+
+   //
+   // ExceptFileInc
+   //
+   class ExceptFileInc : public Exception
+   {
+   public:
+      ExceptFileInc(Origin pos_, String filename_, char l_, char r_) noexcept :
+         Exception{pos_}, filename{filename_}, l{l_}, r{r_} {}
+
+   protected:
+      virtual char const *whatGen() const noexcept;
+
+      Core::String const filename;
+      char         const l, r;
+   };
+
+   //
+   // ExceptString
+   //
+   class ExceptString : public Exception
+   {
+   public:
+      ExceptString(Origin pos_, String str_) noexcept :
+         Exception{pos_}, str{str_} {}
+
+   protected:
+      virtual char const *whatGen() const noexcept;
+
+      String const str;
+   };
+
+   //
+   // ExceptStringC
+   //
+   class ExceptStringC : public Exception
+   {
+   public:
+      ExceptStringC(Origin pos_, char const *str_) noexcept :
+         Exception{pos_}, str{str_} {}
+
+   protected:
+      virtual char const *whatGen() const noexcept;
+
+      char const *const str;
+   };
+
+   //
+   // ExceptUndef
+   //
+   class ExceptUndef : public Exception
+   {
+   public:
+      ExceptUndef(Origin pos_, String type_, String name_) noexcept :
+         Exception{pos_}, type{type_}, name{name_} {}
+
+   protected:
+      virtual char const *whatGen() const noexcept;
+
+      String const type;
+      String const name;
+   };
+
+   //
+   // ExceptExpect
+   //
+   class ExceptExpect : public Exception
+   {
+   public:
+      ExceptExpect(Origin pos_, char const *exp_, String got_, bool expQ_, bool gotQ_) noexcept :
+         Exception{pos_}, expC{exp_}, got{got_}, expQ{expQ_}, gotQ{gotQ_}, isExpC{true} {}
+      ExceptExpect(Origin pos_, String exp_, String got_, bool expQ_, bool gotQ_) noexcept :
+         Exception{pos_}, expS{exp_}, got{got_}, expQ{expQ_}, gotQ{gotQ_}, isExpC{false} {}
+
+   protected:
+      virtual char const *whatGen() const noexcept;
+
+      union
+      {
+         Core::String const expS;
+         char const  *const expC;
+      };
+
+      Core::String const got;
+      bool         const expQ : 1;
+      bool         const gotQ : 1;
+      bool         const isExpC : 1;
+   };
+}
+
+
+//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
@@ -28,85 +140,96 @@ namespace GDCC::Core
    //
    Exception::Exception(Exception const &e) :
       pos{e.pos},
-      msg{e.msg ? StrDup(e.msg.get()) : nullptr}
+      whatCache{e.whatCache ? StrDup(e.whatCache.get()) : nullptr}
    {
-   }
-
-   //
-   // Exception::genMsg
-   //
-   void Exception::genMsg() const
-   {
-      std::ostringstream oss;
-      putOrigin(oss) << "unknown error";
-      setMsg(oss.str());
    }
 
    //
    // Exception::putOrigin
    //
-   std::ostream &Exception::putOrigin(std::ostream &out) const
+   std::ostream &Exception::putOrigin(std::ostream &out) const noexcept
    {
       if(pos.file) out << pos << ": ";
       return out;
    }
 
    //
-   // Exception::setMsg
+   // Exception::what
    //
-   void Exception::setMsg(std::string const &str) const
+   char const *Exception::what() const noexcept
    {
-      msg = StrDup(str. data(), str.size());
+      return whatCache ? whatCache.get() : whatGen();
    }
 
    //
-   // ExceptFile::genMsg
+   // Exception::whatSet
    //
-   void ExceptFile::genMsg() const
+   char const *Exception::whatSet(std::string const &str) const noexcept
+   {
+      try
+      {
+         return (whatCache = StrDup(str. data(), str.size())).get();
+      }
+      catch(std::bad_alloc const &)
+      {
+         return "";
+      }
+   }
+
+   //
+   // ExceptFile::whatGen
+   //
+   char const *ExceptFile::whatGen() const noexcept
    {
       std::ostringstream oss;
       putOrigin(oss) << "could not open '" << filename << "' for " << mode;
-      setMsg(oss.str());
+      return whatSet(oss.str());
    }
 
    //
-   // ExceptStr::genMsg
+   // ExceptFileInc::whatGen
    //
-   void ExceptStr::genMsg() const
+   char const *ExceptFileInc::whatGen() const noexcept
+   {
+      std::ostringstream oss;
+      putOrigin(oss) << "could not include " << l << filename << r;
+      return whatSet(oss.str());
+   }
+
+   //
+   // ExceptString::whatGen
+   //
+   char const *ExceptString::whatGen() const noexcept
    {
       std::ostringstream oss;
       putOrigin(oss) << str;
-      auto const &tmp = oss.str();
-      msg = StrDup(tmp.data(), tmp.size());
+      return whatSet(oss.str());
    }
 
    //
-   // ExceptUndef::genMsg
+   // ExceptStringC::whatGen
    //
-   void ExceptUndef::genMsg() const
+   char const *ExceptStringC::whatGen() const noexcept
+   {
+      std::ostringstream oss;
+      putOrigin(oss) << str;
+      return whatSet(oss.str());
+   }
+
+   //
+   // ExceptUndef::whatGen
+   //
+   char const *ExceptUndef::whatGen() const noexcept
    {
       std::ostringstream oss;
       putOrigin(oss) << type << " undefined: '" << name << '\'';
-      setMsg(oss.str());
+      return whatSet(oss.str());
    }
 
    //
-   // ParseExceptExpect constructor
+   // ExceptExpect::whatGen
    //
-   ParseExceptExpect::ParseExceptExpect(Token const &tok, String exp_,
-      bool expQ_, bool gotQ_) noexcept :
-      ParseException{tok.pos},
-      exp {exp_},
-      got {tok.str},
-      expQ{expQ_},
-      gotQ{gotQ_}
-   {
-   }
-
-   //
-   // ParseExceptExpect::genMsg
-   //
-   void ParseExceptExpect::genMsg() const
+   char const *ExceptExpect::whatGen() const noexcept
    {
       std::ostringstream oss;
 
@@ -114,7 +237,7 @@ namespace GDCC::Core
 
       oss << " expected ";
       if(expQ) oss << '\'';
-      oss << exp;
+      if(isExpC) oss << expC; else oss << expS;
       if(expQ) oss << '\'';
 
       oss << " got ";
@@ -122,18 +245,50 @@ namespace GDCC::Core
       oss << got;
       if(gotQ) oss << '\'';
 
-      setMsg(oss.str());
+      return whatSet(oss.str());
    }
 
    //
-   // ParseExceptStr::genMsg
+   // Error
    //
-   void ParseExceptStr::genMsg() const
-   {
-      std::ostringstream oss;
-      putOrigin(oss) << str;
-      setMsg(oss.str());
-   }
+   void Error(Origin pos, char const *msg)
+      {throw ExceptStringC(pos, msg);}
+   void Error(Origin pos, String msg)
+      {throw ExceptString(pos, msg);}
+
+   //
+   // ErrorExpect
+   //
+   void ErrorExpect(char const *exp, Token const &got, bool expQ, bool gotQ)
+      {throw ExceptExpect(got.pos, exp, got.str, expQ, gotQ);}
+   void ErrorExpect(Origin pos, char const *exp, String got, bool expQ, bool gotQ)
+      {throw ExceptExpect(pos, exp, got, expQ, gotQ);}
+   void ErrorExpect(Origin pos, String exp, String got, bool expQ, bool gotQ)
+      {throw ExceptExpect(pos, exp, got, expQ, gotQ);}
+   void ErrorExpect(String exp, Token const &got, bool expQ, bool gotQ)
+      {throw ExceptExpect(got.pos, exp, got.str, expQ, gotQ);}
+
+   //
+   // ErrorFile
+   //
+   void ErrorFile(String filename, char const *mode)
+      {throw ExceptFile(filename, mode);}
+
+   //
+   // ErrorFileInc
+   //
+   void ErrorFileInc(Origin pos, String filename)
+      {throw ExceptFileInc(pos, filename, '"', '"');}
+   void ErrorFileInc(Origin pos, String filename, char l, char r)
+      {throw ExceptFileInc(pos, filename, l, r);}
+
+   //
+   // ErrorUndef
+   //
+   void ErrorUndef(Origin pos, String type, String name)
+      {throw ExceptUndef(pos, type, name);}
+   void ErrorUndef(String type, String name)
+      {throw ExceptUndef({}, type, name);}
 }
 
 // EOF

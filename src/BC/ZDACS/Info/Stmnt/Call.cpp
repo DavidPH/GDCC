@@ -58,7 +58,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad gen Call");
+         Core::Error(stmnt->pos, "bad gen Call");
       }
    }
 
@@ -187,7 +187,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad gen Cspr");
+         Core::Error(stmnt->pos, "bad gen Cspr");
       }
    }
 
@@ -225,7 +225,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad gen Retn");
+         Core::Error(stmnt->pos, "bad gen Retn");
       }
    }
 
@@ -276,7 +276,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad put Call");
+         Core::Error(stmnt->pos, "bad put Call");
       }
    }
 
@@ -517,7 +517,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad put Cspe");
+         Core::Error(stmnt->pos, "bad put Cspe");
       }
    }
 
@@ -585,7 +585,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad put Retn");
+         Core::Error(stmnt->pos, "bad put Retn");
       }
    }
 
@@ -605,7 +605,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad tr Call");
+         Core::Error(stmnt->pos, "bad tr Call");
       }
 
       moveArgStk_dst(stmnt->args[0]);
@@ -632,7 +632,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad tr Casm");
+         Core::Error(stmnt->pos, "bad tr Casm");
       }
 
       moveArgStk_dst(stmnt->args[0]);
@@ -715,11 +715,11 @@ namespace GDCC::BC::ZDACS
       auto ret = stmnt->args[0].a == IR::ArgBase::Nul ? 0 : stmnt->args[0].getSize();
 
       if(ret > 1)
-         throw Core::ExceptStr(stmnt->pos, "bad tr Cspe ret");
+         Core::Error(stmnt->pos, "bad tr Cspe ret");
 
       // Too many call args.
       if(getStmntSize() > 5)
-         throw Core::ExceptStr(stmnt->pos, "bad tr Cspe argc");
+         Core::Error(stmnt->pos, "bad tr Cspe argc");
 
       // No call args.
       if(stmnt->args.size() == 2)
@@ -738,7 +738,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad tr Cspe");
+         Core::Error(stmnt->pos, "bad tr Cspe");
       }
 
       moveArgStk_dst(stmnt->args[0]);

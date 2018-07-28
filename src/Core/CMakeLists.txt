@@ -33,6 +33,7 @@ add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    String.cpp
    StringGen.cpp
    StringOption.cpp
+   Token.cpp
    Warning.cpp
 
    ../../inc/Core/Array.hpp

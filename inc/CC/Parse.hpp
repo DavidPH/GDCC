@@ -15,6 +15,8 @@
 
 #include "../CC/Types.hpp"
 
+#include "../Core/Token.hpp"
+
 #include <memory>
 
 
@@ -43,6 +45,11 @@ namespace GDCC::CC
 
       std::unique_ptr<Parser> clone(Core::TokenStream &in_) const
          {return static_cast<std::unique_ptr<Parser>>(cloneRaw(in_));}
+
+      Core::Token const &expect(Core::TokenType tok);
+      Core::Token const &expect(Core::TokenType tok, Core::String str);
+      Core::Token const &expectIdenti(bool orKeyWrd = false);
+      Core::Token const &expectString();
 
       virtual StatementCRef getDecl(Scope_Global &scope);
       StatementCRef getDecl(Scope_Local &scope);

@@ -43,7 +43,7 @@ namespace GDCC::AS
       case Core::STR_valueStr: str.valueStr = GetString(TokenDropEq(ctx)); break;
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.reget(), "StrEnt argument", false);
+         Core::ErrorExpect("StrEnt argument", ctx.in.reget());
       }
    }
 }

@@ -220,7 +220,7 @@ namespace GDCC::BC::DGE
       case IR::ArgBase::Sta:    putSta(arg.aSta);    break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad putStmntDropArg");
+         Core::Error(stmnt->pos, "bad putStmntDropArg");
       }
    }
 
@@ -336,7 +336,7 @@ namespace GDCC::BC::DGE
       case IR::ArgBase::Sta:    putSta(arg.aSta);    break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad putStmntPushArg");
+         Core::Error(stmnt->pos, "bad putStmntPushArg");
       }
    }
 
@@ -374,7 +374,7 @@ namespace GDCC::BC::DGE
       case IR::ArgBase::Sta: putSta(arg.aSta); break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad putStmntPushIdx");
+         Core::Error(stmnt->pos, "bad putStmntPushIdx");
       }
    }
 

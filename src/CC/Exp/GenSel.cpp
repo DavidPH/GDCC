@@ -30,7 +30,7 @@ namespace GDCC::CC
    {
       for(auto const &assoc : sel)
          if(!assoc.type->isCTypeObject() || !assoc.type->isTypeComplete())
-            throw Core::ExceptStr(pos, "expected complete object type");
+            Core::Error(pos, "expected complete object type");
    }
 }
 
@@ -53,7 +53,7 @@ namespace GDCC::CC
 
       if(def) return static_cast<SR::Exp::CRef>(def);
 
-      throw Core::ExceptStr(pos, "no matching generic-selection");
+      Core::Error(pos, "no matching generic-selection");
    }
 
    //

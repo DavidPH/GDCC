@@ -62,26 +62,24 @@ namespace GDCC::ACC
          attr.callt = IR::CallType::AsmFunc;
 
          if(!ctx.in.peek(Core::TOK_NumInt))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "integer-constant", false);
+            Core::ErrorExpect("integer-constant", ctx.in.peek());
 
          attr.addrI = ctx.getExp_Prim(scope)->getIRExp();
 
          if(ctx.in.drop(Core::TOK_Comma))
          {
             if(!ctx.in.peek(Core::TOK_NumInt))
-               throw Core::ParseExceptExpect(ctx.in.peek(), "integer-constant", false);
+               Core::ErrorExpect("integer-constant", ctx.in.peek());
 
             attr.addrL = ctx.getExp_Prim(scope)->getIRExp();
          }
 
-         if(!ctx.in.drop(Core::TOK_BraceC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "}", true);
+         ctx.expect(Core::TOK_BraceC);
       }
       else
-         throw Core::ParseExceptExpect(ctx.in.peek(), "special-address", false);
+         Core::ErrorExpect("special-address", ctx.in.peek());
 
-      if(!ctx.in.drop(Core::TOK_Colon))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
+      ctx.expect(Core::TOK_Colon);
    }
 
    //
@@ -121,7 +119,7 @@ namespace GDCC::ACC
          }
 
          if(argMin > types->size())
-            throw Core::ExceptStr(pos, "more minimum args than actual args");
+            Core::Error(pos, "more minimum args than actual args");
 
          attr.type     = attr.type->getTypeFunction(types, attr.callt);
          attr.paramOpt = types->size() - argMin;
@@ -146,10 +144,7 @@ namespace GDCC::ACC
    //
    SR::Statement::CRef Parser::getDecl_Special(Scope_Global &scope)
    {
-      if(!in.peek(Core::TOK_KeyWrd, Core::STR_special))
-         throw Core::ParseExceptExpect(in.peek(), "special-declaration", false);
-
-      auto pos = in.get().pos;
+      auto pos = expect(Core::TOK_KeyWrd, Core::STR_special).pos;
 
       // special-list:
       //    special-item
@@ -177,31 +172,24 @@ namespace GDCC::ACC
          ParseAddress(*this, scope, attr);
 
          // identifier
-         if(!in.peek(Core::TOK_Identi))
-            throw Core::ParseExceptExpect(in.peek(), "identifier", false);
-
-         attr.setName(in.get());
+         attr.setName(expectIdenti());
 
          // (
-         if(!in.drop(Core::TOK_ParenO))
-            throw Core::ParseExceptExpect(in.peek(), "(", true);
+         expect(Core::TOK_ParenO);
 
          ParseParameters(*this, scope, attr);
 
          // )
-         if(!in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(in.peek(), ")", true);
+         expect(Core::TOK_ParenC);
 
          // Check compatibility with existing symbol, if any.
          if(auto lookup = scope.find(attr.name))
          {
             if(lookup.res != CC::Lookup::Func)
-               throw Core::ExceptStr(attr.namePos,
-                  "name redefined as different kind of symbol");
+               Core::Error(attr.namePos, "name redefined as different kind of symbol");
 
             if(lookup.resFunc->retrn != attr.type->getBaseType())
-               throw Core::ExceptStr(attr.namePos,
-                  "function redeclared with different return type");
+               Core::Error(attr.namePos, "function redeclared with different return type");
          }
 
          auto fn = scope.getFunction(attr);
@@ -216,8 +204,7 @@ namespace GDCC::ACC
       }
       while(in.drop(Core::TOK_Comma));
 
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      expect(Core::TOK_Semico);
 
       return SR::StatementCreate_Empty(pos);
    }

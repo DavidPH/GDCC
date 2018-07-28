@@ -218,7 +218,7 @@ namespace GDCC::CC
       case IR::CallType::StdCall:  code = IR::Code::Call;    break;
       case IR::CallType::StkCall:  code = IR::Code::Call;    break;
       default:
-         throw Core::ExceptStr(pos, "unsupported call type");
+         Core::Error(pos, "unsupported call type");
       }
       ctx.block.addStmntArgs(code, std::move(irArgs));
 

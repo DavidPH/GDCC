@@ -22,7 +22,6 @@
 
 namespace GDCC::AR
 {
-   class ReadError;
 }
 
 #endif//GDCC__AR__Types_H__

@@ -124,7 +124,7 @@ namespace GDCC::CC
             auto offs = type->getSizeBitsO();
 
             if(!tmp.isIRArg())
-               throw Core::ExceptStr(pos, "bitfield init must be IR arg");
+               Core::Error(pos, "bitfield init must be IR arg");
 
             value->genStmntStk(ctx);
             ctx.block.setArgSize().addStmnt(IR::Code::Bset,
@@ -225,7 +225,7 @@ namespace GDCC::CC
    //
    IR::Exp::CRef Init::v_getIRExp() const
    {
-      throw Core::ExceptStr(pos, "expected constant initializer");
+      Core::Error(pos, "expected constant initializer");
    }
 
    //
@@ -266,7 +266,7 @@ namespace GDCC::CC
          value = ctx.clone(str)->getExp_Prim(scope);
       }
       else
-         throw Core::ExceptStr(raw.valueTok.pos, "expected expression");
+         Core::Error(raw.valueTok.pos, "expected expression");
    }
 
    //
@@ -274,7 +274,7 @@ namespace GDCC::CC
    //
    void Init::v_parseString(Core::Token const &tok)
    {
-      throw Core::ExceptStr(tok.pos, "Init::v_parseString");
+      Core::Error(tok.pos, "Init::v_parseString");
    }
 
    //
@@ -291,7 +291,7 @@ namespace GDCC::CC
          if(auto t = dynamic_cast<SR::Type_Array const *>(type))
             return Ptr(new Init_Array(t, offset, pos, t->getSizeWidth()));
 
-         throw Core::ExceptStr(pos, "invalid array type for initializer");
+         Core::Error(pos, "invalid array type for initializer");
       }
 
       if(type->isCTypeStruct())
@@ -302,7 +302,7 @@ namespace GDCC::CC
          if(auto t = dynamic_cast<Type_Div const *>(type))
             return Ptr(new Init_Div(t, offset, pos));
 
-         throw Core::ExceptStr(pos, "invalid structure type for initializer");
+         Core::Error(pos, "invalid structure type for initializer");
       }
 
       if(type->isCTypeUnion())
@@ -310,7 +310,7 @@ namespace GDCC::CC
          if(auto t = dynamic_cast<Type_Struct const *>(type))
             return Ptr(new Init_Union(t, offset, pos));
 
-         throw Core::ExceptStr(pos, "invalid union type for initializer");
+         Core::Error(pos, "invalid union type for initializer");
       }
 
       return Ptr(new Init_Value(type, offset, pos));
@@ -375,7 +375,7 @@ namespace GDCC::CC
       if(desig[desigIdx].desigStr)
       {
          if(!type->isCTypeStruct() && !type->isCTypeUnion())
-            throw Core::ExceptStr(pos, "expected structure type");
+            Core::Error(pos, "expected structure type");
 
          index = findSub(desig[desigIdx].desigStr);
       }
@@ -384,14 +384,14 @@ namespace GDCC::CC
       else
       {
          if(!type->isTypeArray())
-            throw Core::ExceptStr(pos, "expected array type");
+            Core::Error(pos, "expected array type");
 
          index = desig[desigIdx].desigInt;
       }
 
       // Check validity of index.
       auto sub = getSub(index);
-      if(!sub) throw Core::ExceptStr(pos, "out of bounds designator");
+      if(!sub) Core::Error(pos, "out of bounds designator");
 
       // Designator list terminated by =.
       if(desigIdx + 1 == desig.size())
@@ -401,7 +401,7 @@ namespace GDCC::CC
       auto subAgg = dynamic_cast<Init_Aggregate *>(sub);
 
       if(!subAgg)
-         throw Core::ExceptStr(pos, "invalid nested designator");
+         Core::Error(pos, "invalid nested designator");
 
       return {index, subAgg->getDes(desig, desigIdx + 1).second};
    }
@@ -931,7 +931,7 @@ namespace GDCC::CC
       SR::Arg const &, bool) const
    {
       // This shouldn't be called.
-      throw Core::ExceptStr(pos, "Init_Value::v_genStmnt");
+      Core::Error(pos, "Init_Value::v_genStmnt");
    }
 
    //

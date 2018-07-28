@@ -116,7 +116,7 @@ namespace GDCC::BC::ZDACS
 
       // ???
       else
-         throw Core::ExceptStr(stmnt->pos, "bad gen Move_W");
+         Core::Error(stmnt->pos, "bad gen Move_W");
    }
 
    //
@@ -289,7 +289,7 @@ namespace GDCC::BC::ZDACS
 
       // ???
       else
-         throw Core::ExceptStr(stmnt->pos, "bad put Move_W");
+         Core::Error(stmnt->pos, "bad put Move_W");
    }
 
    //
@@ -361,7 +361,7 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::StrArs: moveIdx(StrArs, 1); break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad tr Move_W push");
+         Core::Error(stmnt->pos, "bad tr Move_W push");
       }
 
       // Drop from stack?
@@ -382,7 +382,7 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::StrArs: moveIdx(StrArs, 0); break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad tr Move_W drop");
+         Core::Error(stmnt->pos, "bad tr Move_W drop");
       }
 
       // Neither stack, split move and rescan.

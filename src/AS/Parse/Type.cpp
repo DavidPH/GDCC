@@ -38,7 +38,7 @@ namespace GDCC::AS
          #include "IR/TypeList.hpp"
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.reget(), "Type", false);
+         Core::ErrorExpect("Type", ctx.in.reget());
       }
    }
 
@@ -48,7 +48,7 @@ namespace GDCC::AS
    IR::Type_Array GetType_Array(ParserCtx const &ctx)
    {
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Array))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Array", false);
+         Core::ErrorExpect("Type_Array", ctx.in.peek());
 
       TokenDrop(ctx, Core::TOK_ParenO, "'('");
       auto elemT = GetType(ctx);
@@ -64,7 +64,7 @@ namespace GDCC::AS
    IR::Type_Assoc GetType_Assoc(ParserCtx const &ctx)
    {
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Assoc))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Assoc", false);
+         Core::ErrorExpect("Type_Assoc", ctx.in.peek());
 
       std::vector<IR::TypeAssoc> assoc;
 
@@ -88,7 +88,7 @@ namespace GDCC::AS
    IR::Type_DJump GetType_DJump(ParserCtx const &ctx)
    {
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR_DJump))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_DJump", false);
+         Core::ErrorExpect("Type_DJump", ctx.in.peek());
 
       TokenDrop(ctx, Core::TOK_ParenO, "'('");
       TokenDrop(ctx, Core::TOK_ParenC, "')'");
@@ -102,7 +102,7 @@ namespace GDCC::AS
    IR::Type_Empty GetType_Empty(ParserCtx const &ctx)
    {
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Empty))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Empty", false);
+         Core::ErrorExpect("Type_Empty", ctx.in.peek());
 
       TokenDrop(ctx, Core::TOK_ParenO, "'('");
       TokenDrop(ctx, Core::TOK_ParenC, "')'");
@@ -116,7 +116,7 @@ namespace GDCC::AS
    IR::Type_Fixed GetType_Fixed(ParserCtx const &ctx)
    {
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Fixed))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Fixed", false);
+         Core::ErrorExpect("Type_Fixed", ctx.in.peek());
 
       TokenDrop(ctx, Core::TOK_ParenO, "'('");
       auto bitsI = GetFastU(ctx);
@@ -134,7 +134,7 @@ namespace GDCC::AS
    IR::Type_Float GetType_Float(ParserCtx const &ctx)
    {
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Float))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Float", false);
+         Core::ErrorExpect("Type_Float", ctx.in.peek());
 
       TokenDrop(ctx, Core::TOK_ParenO, "'('");
       auto bitsI = GetFastU(ctx);
@@ -152,7 +152,7 @@ namespace GDCC::AS
    IR::Type_Funct GetType_Funct(ParserCtx const &ctx)
    {
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Funct))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Funct", false);
+         Core::ErrorExpect("Type_Funct", ctx.in.peek());
 
       TokenDrop(ctx, Core::TOK_ParenO, "'('");
       auto callT = GetCallType(ctx);
@@ -167,7 +167,7 @@ namespace GDCC::AS
    IR::Type_Point GetType_Point(ParserCtx const &ctx)
    {
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Point))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Point", false);
+         Core::ErrorExpect("Type_Point", ctx.in.peek());
 
       TokenDrop(ctx, Core::TOK_ParenO, "'('");
       auto addrB = GetAddrBase(ctx);
@@ -185,7 +185,7 @@ namespace GDCC::AS
    IR::Type_StrEn GetType_StrEn(ParserCtx const &ctx)
    {
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR_StrEn))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_StrEn", false);
+         Core::ErrorExpect("Type_StrEn", ctx.in.peek());
 
       TokenDrop(ctx, Core::TOK_ParenO, "'('");
       TokenDrop(ctx, Core::TOK_ParenC, "')'");
@@ -199,7 +199,7 @@ namespace GDCC::AS
    IR::Type_Tuple GetType_Tuple(ParserCtx const &ctx)
    {
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Tuple))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Tuple", false);
+         Core::ErrorExpect("Type_Tuple", ctx.in.peek());
 
       std::vector<IR::Type> typev;
 
@@ -217,7 +217,7 @@ namespace GDCC::AS
    IR::Type_Union GetType_Union(ParserCtx const &ctx)
    {
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Union))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Type_Union", false);
+         Core::ErrorExpect("Type_Union", ctx.in.peek());
 
       std::vector<IR::Type> typev;
 

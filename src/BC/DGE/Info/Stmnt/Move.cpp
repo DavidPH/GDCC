@@ -36,7 +36,7 @@ namespace GDCC::BC::DGE
       if(n == 1)
          return putCode("Copy");
 
-      throw Core::ExceptStr(stmnt->pos, "unsupported size for Copy_W");
+      Core::Error(stmnt->pos, "unsupported size for Copy_W");
    }
 
    //
@@ -165,7 +165,7 @@ namespace GDCC::BC::DGE
 
       // ???
       else
-         throw Core::ExceptStr(stmnt->pos, "bad put Move_W");
+         Core::Error(stmnt->pos, "bad put Move_W");
    }
 
    //
@@ -210,12 +210,12 @@ namespace GDCC::BC::DGE
       // Multi-word?
       if(n > 4)
       {
-         if(n % 4) throw Core::ExceptStr(stmnt->pos, "bad Move_W size");
+         if(n % 4) Core::Error(stmnt->pos, "bad Move size");
          return;
       }
 
       if(n != 1 && n != 2 && n != 4)
-         throw Core::ExceptStr(stmnt->pos, "unsupported size for Move_W");
+         Core::Error(stmnt->pos, "unsupported size for Move");
 
       #define moveIdx(name, i) \
          moveArgStk_src(*stmnt->args[i].a##name.idx)
@@ -231,7 +231,7 @@ namespace GDCC::BC::DGE
       case IR::ArgBase::StrArs: moveIdx(StrArs, 1); break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad tr Move_W push");
+         Core::Error(stmnt->pos, "bad tr Move_W push");
       }
 
       // Drop from stack?
@@ -245,7 +245,7 @@ namespace GDCC::BC::DGE
       case IR::ArgBase::StrArs: moveIdx(StrArs, 0); break;
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad tr Move_W drop");
+         Core::Error(stmnt->pos, "bad tr Move_W drop");
       }
 
       // Neither stack, split move and rescan.

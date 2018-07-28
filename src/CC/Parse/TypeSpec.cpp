@@ -33,17 +33,17 @@ namespace GDCC::CC
    void TypeSpec::finish(SR::Attribute &attr, SR::TypeQual qual, Core::Origin pos) const
    {
       // Validate.
-      if(specCplx && specImag) throw Core::ExceptStr(pos, "complex imaginary");
-      if(specLong && specShrt) throw Core::ExceptStr(pos, "long short");
-      if(specSign && specUnsi) throw Core::ExceptStr(pos, "signed unsigned");
+      if(specCplx && specImag) Core::Error(pos, "complex imaginary");
+      if(specLong && specShrt) Core::Error(pos, "long short");
+      if(specSign && specUnsi) Core::Error(pos, "signed unsigned");
 
-      if(specCplx > 1) throw Core::ExceptStr(pos, "complex complex");
-      if(specImag > 1) throw Core::ExceptStr(pos, "imaginary imaginary");
-      if(specLong > 2) throw Core::ExceptStr(pos, "long long long");
-      if(specSatu > 1) throw Core::ExceptStr(pos, "sat sat");
-      if(specShrt > 1) throw Core::ExceptStr(pos, "short short");
-      if(specSign > 1) throw Core::ExceptStr(pos, "signed signed");
-      if(specUnsi > 1) throw Core::ExceptStr(pos, "unsigned unsigned");
+      if(specCplx > 1) Core::Error(pos, "complex complex");
+      if(specImag > 1) Core::Error(pos, "imaginary imaginary");
+      if(specLong > 2) Core::Error(pos, "long long long");
+      if(specSatu > 1) Core::Error(pos, "sat sat");
+      if(specShrt > 1) Core::Error(pos, "short short");
+      if(specSign > 1) Core::Error(pos, "signed signed");
+      if(specUnsi > 1) Core::Error(pos, "unsigned unsigned");
 
       // Set attribute type.
       switch(specBase)
@@ -52,16 +52,16 @@ namespace GDCC::CC
          if(specLong || specShrt || specSign || specUnsi)
             goto case_BaseInte;
 
-         throw Core::ExceptStr(pos, "missing type specifier");
+         Core::Error(pos, "missing type specifier");
 
       case BaseName:
-         if(specCplx) throw Core::ExceptStr(pos, "complex typedef-name");
-         if(specImag) throw Core::ExceptStr(pos, "imaginary typedef-name");
-         if(specLong) throw Core::ExceptStr(pos, "long typedef-name");
-         if(specSatu) throw Core::ExceptStr(pos, "sat typedef-name");
-         if(specShrt) throw Core::ExceptStr(pos, "short typedef-name");
-         if(specSign) throw Core::ExceptStr(pos, "signed typedef-name");
-         if(specUnsi) throw Core::ExceptStr(pos, "unsigned typedef-name");
+         if(specCplx) Core::Error(pos, "complex typedef-name");
+         if(specImag) Core::Error(pos, "imaginary typedef-name");
+         if(specLong) Core::Error(pos, "long typedef-name");
+         if(specSatu) Core::Error(pos, "sat typedef-name");
+         if(specShrt) Core::Error(pos, "short typedef-name");
+         if(specSign) Core::Error(pos, "signed typedef-name");
+         if(specUnsi) Core::Error(pos, "unsigned typedef-name");
 
          // Merge qualifiers from typedef.
          {
@@ -75,7 +75,7 @@ namespace GDCC::CC
             if(qualTmp.space.base == IR::AddrBase::Gen)
                qualTmp.space = qual.space;
             else if(qual.space.base != IR::AddrBase::Gen)
-               throw Core::ExceptStr(pos, "multiple address-space-specifier");
+               Core::Error(pos, "multiple address-space-specifier");
 
             qual = qualTmp;
          }
@@ -83,52 +83,52 @@ namespace GDCC::CC
          break;
 
       case BaseBool:
-         if(specCplx) throw Core::ExceptStr(pos, "complex bool");
-         if(specImag) throw Core::ExceptStr(pos, "imaginary bool");
-         if(specLong) throw Core::ExceptStr(pos, "long bool");
-         if(specSatu) throw Core::ExceptStr(pos, "sat bool");
-         if(specShrt) throw Core::ExceptStr(pos, "short bool");
-         if(specSign) throw Core::ExceptStr(pos, "signed bool");
-         if(specUnsi) throw Core::ExceptStr(pos, "unsigned bool");
+         if(specCplx) Core::Error(pos, "complex bool");
+         if(specImag) Core::Error(pos, "imaginary bool");
+         if(specLong) Core::Error(pos, "long bool");
+         if(specSatu) Core::Error(pos, "sat bool");
+         if(specShrt) Core::Error(pos, "short bool");
+         if(specSign) Core::Error(pos, "signed bool");
+         if(specUnsi) Core::Error(pos, "unsigned bool");
 
          attr.type = TypeBool;
 
          break;
 
       case BaseChar:
-         if(specCplx) throw Core::ExceptStr(pos, "complex char");
-         if(specImag) throw Core::ExceptStr(pos, "imaginary char");
-         if(specLong) throw Core::ExceptStr(pos, "long char");
-         if(specSatu) throw Core::ExceptStr(pos, "sat char");
-         if(specShrt) throw Core::ExceptStr(pos, "short char");
+         if(specCplx) Core::Error(pos, "complex char");
+         if(specImag) Core::Error(pos, "imaginary char");
+         if(specLong) Core::Error(pos, "long char");
+         if(specSatu) Core::Error(pos, "sat char");
+         if(specShrt) Core::Error(pos, "short char");
 
-               if(specSign) attr.type = TypeIntegPrSHH;
+              if(specSign) attr.type = TypeIntegPrSHH;
          else if(specUnsi) attr.type = TypeIntegPrUHH;
          else              attr.type = TypeChar;
 
          break;
 
       case BaseDoub:
-         if(specLong > 1) throw Core::ExceptStr(pos, "long long double");
-         if(specSatu)     throw Core::ExceptStr(pos, "sat double");
-         if(specShrt)     throw Core::ExceptStr(pos, "short double");
-         if(specSign)     throw Core::ExceptStr(pos, "signed double");
-         if(specUnsi)     throw Core::ExceptStr(pos, "unsigned double");
+         if(specLong > 1) Core::Error(pos, "long long double");
+         if(specSatu)     Core::Error(pos, "sat double");
+         if(specShrt)     Core::Error(pos, "short double");
+         if(specSign)     Core::Error(pos, "signed double");
+         if(specUnsi)     Core::Error(pos, "unsigned double");
 
-               if(specCplx) attr.type = specLong ? TypeFloatCSLL : TypeFloatCSL;
+              if(specCplx) attr.type = specLong ? TypeFloatCSLL : TypeFloatCSL;
          else if(specImag) attr.type = specLong ? TypeFloatISLL : TypeFloatISL;
          else              attr.type = specLong ? TypeFloatRSLL : TypeFloatRSL;
 
          break;
 
       case BaseFloa:
-         if(specLong) throw Core::ExceptStr(pos, "long float");
-         if(specSatu) throw Core::ExceptStr(pos, "sat float");
-         if(specShrt) throw Core::ExceptStr(pos, "short float");
-         if(specSign) throw Core::ExceptStr(pos, "signed float");
-         if(specUnsi) throw Core::ExceptStr(pos, "unsigned float");
+         if(specLong) Core::Error(pos, "long float");
+         if(specSatu) Core::Error(pos, "sat float");
+         if(specShrt) Core::Error(pos, "short float");
+         if(specSign) Core::Error(pos, "signed float");
+         if(specUnsi) Core::Error(pos, "unsigned float");
 
-               if(specCplx) attr.type = TypeFloatCS;
+              if(specCplx) attr.type = TypeFloatCS;
          else if(specImag) attr.type = TypeFloatIS;
          else              attr.type = TypeFloatRS;
 
@@ -136,9 +136,9 @@ namespace GDCC::CC
 
       case_BaseInte:
       case BaseInte:
-         if(specCplx) throw Core::ExceptStr(pos, "complex int");
-         if(specImag) throw Core::ExceptStr(pos, "imaginary int");
-         if(specSatu) throw Core::ExceptStr(pos, "sat int");
+         if(specCplx) Core::Error(pos, "complex int");
+         if(specImag) Core::Error(pos, "imaginary int");
+         if(specSatu) Core::Error(pos, "sat int");
 
          switch(static_cast<int>(specLong) - static_cast<int>(specShrt))
          {
@@ -151,22 +151,22 @@ namespace GDCC::CC
          break;
 
       case BaseVoid:
-         if(specCplx) throw Core::ExceptStr(pos, "complex void");
-         if(specImag) throw Core::ExceptStr(pos, "imaginary void");
-         if(specLong) throw Core::ExceptStr(pos, "long void");
-         if(specSatu) throw Core::ExceptStr(pos, "sat void");
-         if(specShrt) throw Core::ExceptStr(pos, "short void");
-         if(specSign) throw Core::ExceptStr(pos, "signed void");
-         if(specUnsi) throw Core::ExceptStr(pos, "unsigned void");
+         if(specCplx) Core::Error(pos, "complex void");
+         if(specImag) Core::Error(pos, "imaginary void");
+         if(specLong) Core::Error(pos, "long void");
+         if(specSatu) Core::Error(pos, "sat void");
+         if(specShrt) Core::Error(pos, "short void");
+         if(specSign) Core::Error(pos, "signed void");
+         if(specUnsi) Core::Error(pos, "unsigned void");
 
          attr.type = SR::Type::Void;
 
          break;
 
       case BaseAccu:
-         if(specCplx)     throw Core::ExceptStr(pos, "complex accum");
-         if(specImag)     throw Core::ExceptStr(pos, "imaginary accum");
-         if(specLong > 1) throw Core::ExceptStr(pos, "long long accum");
+         if(specCplx)     Core::Error(pos, "complex accum");
+         if(specImag)     Core::Error(pos, "imaginary accum");
+         if(specLong > 1) Core::Error(pos, "long long accum");
 
          if(specSatu) switch(static_cast<int>(specLong) - static_cast<int>(specShrt))
          {
@@ -184,9 +184,9 @@ namespace GDCC::CC
          break;
 
       case BaseFrac:
-         if(specCplx)     throw Core::ExceptStr(pos, "complex fract");
-         if(specImag)     throw Core::ExceptStr(pos, "imaginary fract");
-         if(specLong > 1) throw Core::ExceptStr(pos, "long long fract");
+         if(specCplx)     Core::Error(pos, "complex fract");
+         if(specImag)     Core::Error(pos, "imaginary fract");
+         if(specLong > 1) Core::Error(pos, "long long fract");
 
          if(specSatu) switch(static_cast<int>(specLong) - static_cast<int>(specShrt))
          {
@@ -204,23 +204,23 @@ namespace GDCC::CC
          break;
 
       case BaseStri:
-         if(specCplx) throw Core::ExceptStr(pos, "complex str");
-         if(specImag) throw Core::ExceptStr(pos, "imaginary str");
-         if(specLong) throw Core::ExceptStr(pos, "long str");
-         if(specSatu) throw Core::ExceptStr(pos, "sat str");
-         if(specShrt) throw Core::ExceptStr(pos, "short str");
-         if(specSign) throw Core::ExceptStr(pos, "signed str");
-         if(specUnsi) throw Core::ExceptStr(pos, "unsigned str");
+         if(specCplx) Core::Error(pos, "complex str");
+         if(specImag) Core::Error(pos, "imaginary str");
+         if(specLong) Core::Error(pos, "long str");
+         if(specSatu) Core::Error(pos, "sat str");
+         if(specShrt) Core::Error(pos, "short str");
+         if(specSign) Core::Error(pos, "signed str");
+         if(specUnsi) Core::Error(pos, "unsigned str");
 
          attr.type = SR::Type::StrEnt->getTypePointer();
 
          break;
 
       case BaseDivT:
-         if(specCplx) throw Core::ExceptStr(pos, "complex div_t");
-         if(specImag) throw Core::ExceptStr(pos, "imaginary div_t");
-         if(specSatu) throw Core::ExceptStr(pos, "sat div_t");
-         if(specShrt) throw Core::ExceptStr(pos, "short div_t");
+         if(specCplx) Core::Error(pos, "complex div_t");
+         if(specImag) Core::Error(pos, "imaginary div_t");
+         if(specSatu) Core::Error(pos, "sat div_t");
+         if(specShrt) Core::Error(pos, "short div_t");
 
          switch(specLong)
          {
@@ -234,39 +234,39 @@ namespace GDCC::CC
          break;
 
       case BaseLabl:
-         if(specCplx) throw Core::ExceptStr(pos, "complex label");
-         if(specImag) throw Core::ExceptStr(pos, "imaginary label");
-         if(specLong) throw Core::ExceptStr(pos, "long label");
-         if(specSatu) throw Core::ExceptStr(pos, "sat label");
-         if(specShrt) throw Core::ExceptStr(pos, "short label");
-         if(specSign) throw Core::ExceptStr(pos, "signed label");
-         if(specUnsi) throw Core::ExceptStr(pos, "unsigned label");
+         if(specCplx) Core::Error(pos, "complex label");
+         if(specImag) Core::Error(pos, "imaginary label");
+         if(specLong) Core::Error(pos, "long label");
+         if(specSatu) Core::Error(pos, "sat label");
+         if(specShrt) Core::Error(pos, "short label");
+         if(specSign) Core::Error(pos, "signed label");
+         if(specUnsi) Core::Error(pos, "unsigned label");
 
          attr.type = SR::Type::Label;
 
          break;
 
       case BaseStrE:
-         if(specCplx) throw Core::ExceptStr(pos, "complex str_ent");
-         if(specImag) throw Core::ExceptStr(pos, "imaginary str_ent");
-         if(specLong) throw Core::ExceptStr(pos, "long str_ent");
-         if(specSatu) throw Core::ExceptStr(pos, "sat str_ent");
-         if(specShrt) throw Core::ExceptStr(pos, "short str_ent");
-         if(specSign) throw Core::ExceptStr(pos, "signed str_ent");
-         if(specUnsi) throw Core::ExceptStr(pos, "unsigned str_ent");
+         if(specCplx) Core::Error(pos, "complex str_ent");
+         if(specImag) Core::Error(pos, "imaginary str_ent");
+         if(specLong) Core::Error(pos, "long str_ent");
+         if(specSatu) Core::Error(pos, "sat str_ent");
+         if(specShrt) Core::Error(pos, "short str_ent");
+         if(specSign) Core::Error(pos, "signed str_ent");
+         if(specUnsi) Core::Error(pos, "unsigned str_ent");
 
          attr.type = SR::Type::StrEnt;
 
          break;
 
       case BaseVaLi:
-         if(specCplx) throw Core::ExceptStr(pos, "complex va_list");
-         if(specImag) throw Core::ExceptStr(pos, "imaginary va_list");
-         if(specLong) throw Core::ExceptStr(pos, "long va_list");
-         if(specSatu) throw Core::ExceptStr(pos, "sat va_list");
-         if(specShrt) throw Core::ExceptStr(pos, "short va_list");
-         if(specSign) throw Core::ExceptStr(pos, "signed va_list");
-         if(specUnsi) throw Core::ExceptStr(pos, "unsigned va_list");
+         if(specCplx) Core::Error(pos, "complex va_list");
+         if(specImag) Core::Error(pos, "imaginary va_list");
+         if(specLong) Core::Error(pos, "long va_list");
+         if(specSatu) Core::Error(pos, "sat va_list");
+         if(specShrt) Core::Error(pos, "short va_list");
+         if(specSign) Core::Error(pos, "signed va_list");
+         if(specUnsi) Core::Error(pos, "unsigned va_list");
 
          attr.type = SR::Type::Void
             ->getTypeQual({{IR::AddrBase::Sta, Core::STR_}})
@@ -279,10 +279,10 @@ namespace GDCC::CC
       if(qual.aAtom)
       {
          if(attr.type->isTypeArray())
-            throw Core::ExceptStr(pos, "atomic array");
+            Core::Error(pos, "atomic array");
 
          if(attr.type->isCTypeFunction())
-            throw Core::ExceptStr(pos, "atomic function");
+            Core::Error(pos, "atomic function");
       }
 
       // Apply qualifiers.
@@ -343,9 +343,7 @@ namespace GDCC::CC
    //
    void Parser::parseTypeSpec(Scope &scope, SR::Attribute &attr, TypeSpec &spec)
    {
-      auto const &tok = in.get();
-      if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
-         throw Core::ExceptStr(tok.pos, "expected type-specifier");
+      auto const &tok = expectIdenti(true);
 
       //
       // setSpecBase
@@ -353,7 +351,7 @@ namespace GDCC::CC
       auto setSpecBase = [&](TypeSpec::SpecBase base)
       {
          if(spec.specBase)
-            throw Core::ExceptStr(tok.pos, "multiple type-specifier base");
+            Core::Error(tok.pos, "multiple type-specifier base");
 
          spec.specBase = base;
       };
@@ -397,7 +395,7 @@ namespace GDCC::CC
          // typedef-name
          auto lookup = scope.lookup(tok.str);
          if(lookup.res != Lookup::Type)
-            throw Core::ExceptStr(tok.pos, "expected type-specifier");
+            Core::ErrorExpect("type-specifier", tok);
 
          setSpecBase(TypeSpec::BaseName);
          attr.type = lookup.resType;

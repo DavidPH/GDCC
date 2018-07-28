@@ -45,15 +45,11 @@ namespace GDCC::CC
 
       // To far.
       if(addrL.base == IR::AddrBase::Far)
-      {
-         throw Core::ExceptStr(pos, "convert to far pointer stub");
-      }
+         Core::Error(pos, "convert to far pointer stub");
 
       // From far.
       if(addrR.base == IR::AddrBase::Far)
-      {
-         throw Core::ExceptStr(pos, "convert from far pointer stub");
-      }
+         Core::Error(pos, "convert from far pointer stub");
 
       // As a last resort, same size pointers can fall back to direct bitwise copy.
       if(typeL->getSizeWords() == typeR->getSizeWords())
@@ -68,7 +64,7 @@ namespace GDCC::CC
             return Exp_ConvertPtr::Create(typeR, exp, pos);
       }
 
-      throw Core::ExceptStr(pos, "unsupported pointer conversion");
+      Core::Error(pos, "unsupported pointer conversion");
    }
 }
 
@@ -215,15 +211,15 @@ namespace GDCC::CC
       auto typeR = exp->getType();
 
       if(typeL->isCTypeFloat())
-         throw Core::ExceptStr(pos, "pointer to float stub");
+         Core::Error(pos, "pointer to float stub");
 
       if(typeL->isCTypeFixed())
-         throw Core::ExceptStr(pos, "pointer to fixed stub");
+         Core::Error(pos, "pointer to fixed stub");
 
       if(typeL->isCTypeInteg())
          return Exp_ConvertPtrInt::Create(typeL, exp, pos);
 
-      throw Core::ExceptStr(pos, "unsupported pointer to arithmetic");
+      Core::Error(pos, "unsupported pointer to arithmetic");
    }
 
    //
@@ -258,7 +254,7 @@ namespace GDCC::CC
 
       // Remainder of function concerns pointer-to-object.
       if(!baseL->isCTypeObject() || !baseR->isCTypeObject())
-         throw Core::ExceptStr(e->pos, "expected pointer to object");
+         Core::Error(e->pos, "expected pointer to object");
 
       // Special step for conversion from pointer-to-Aut.
       if(baseR->getQualAddr().base == IR::AddrBase::Aut &&
@@ -307,10 +303,10 @@ namespace GDCC::CC
       auto typeR = exp->getType();
 
       if(typeR->isCTypeFloat())
-         throw Core::ExceptStr(pos, "float to pointer stub");
+         Core::Error(pos, "float to pointer stub");
 
       if(typeR->isCTypeFixed())
-         throw Core::ExceptStr(pos, "fixed to pointer stub");
+         Core::Error(pos, "fixed to pointer stub");
 
       if(typeR->isCTypeInteg())
       {
@@ -320,7 +316,7 @@ namespace GDCC::CC
          return Exp_ConvertPtrInt::Create(typeL, exp, pos);
       }
 
-      throw Core::ExceptStr(pos, "unsupported arithmetic to pointer");
+      Core::Error(pos, "unsupported arithmetic to pointer");
    }
 }
 

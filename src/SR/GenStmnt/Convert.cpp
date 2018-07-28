@@ -241,7 +241,7 @@ namespace GDCC::SR
             return GenStmnt_ConvertFloat(exp, dstT, srcT, ctx);
       }
 
-      throw Core::ExceptStr(exp->pos, "convert arith stub");
+      Core::Error(exp->pos, "convert arith stub");
    }
 
    //
@@ -521,7 +521,7 @@ namespace GDCC::SR
          }
 
          if(shiftCode == IR::Code::None)
-            throw Core::ExceptStr(exp->pos, "no shift code for conversion");
+            Core::Error(exp->pos, "no shift code for conversion");
 
          // Generate shift.
          ctx.block.setArgSize().addStmnt(shiftCode,

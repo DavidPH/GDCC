@@ -17,7 +17,6 @@
 #include "CC/Exp.hpp"
 #include "CC/Type/Enum.hpp"
 
-#include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
 #include "SR/Statement.hpp"
@@ -39,10 +38,7 @@ namespace GDCC::ACC
       //    <enum> identifier(opt) { enumeration-member-declaration-list , }
 
       // <enum>
-      if(!in.peek(Core::TOK_KeyWrd, Core::STR_enum))
-         throw Core::ParseExceptExpect(in.peek(), "enum-declaration", false);
-
-      auto pos = in.get().pos;
+      auto pos = expect(Core::TOK_KeyWrd, Core::STR_enum).pos;
 
       CC::Type_Enum::Ptr type;
 
@@ -54,8 +50,8 @@ namespace GDCC::ACC
          scope.add(name, type);
       }
 
-      if(!in.drop(Core::TOK_BraceO))
-         throw Core::ParseExceptExpect(in.peek(), "{", true);
+      // {
+      expect(Core::TOK_BraceO);
 
       Core::Integ value = 0;
 
@@ -68,10 +64,7 @@ namespace GDCC::ACC
          //    identifier
          //    identifier = constant-expression
 
-         if(in.peek().tok != Core::TOK_Identi)
-            throw Core::ParseExceptExpect(in.peek(), "identifier", false);
-
-         auto name = in.get().str;
+         auto name = expectIdenti().str;
 
          // = constant-expression
          if(in.drop(Core::TOK_Equal))
@@ -83,8 +76,8 @@ namespace GDCC::ACC
       }
       while(in.drop(Core::TOK_Comma) && !in.peek(Core::TOK_BraceC));
 
-      if(!in.drop(Core::TOK_BraceC))
-         throw Core::ParseExceptExpect(in.peek(), "}", true);
+      // }
+      expect(Core::TOK_BraceC);
 
       if(type)
          type->setComplete(CC::TypeIntegPrS);

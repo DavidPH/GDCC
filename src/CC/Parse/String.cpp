@@ -180,7 +180,7 @@ namespace GDCC::CC
       case Core::TOK_String: return GetString(tok.str);
 
       default:
-         throw Core::ExceptStr(tok.pos, "invalid string literal token");
+         Core::Error(tok.pos, "invalid string literal token");
       }
    }
 }

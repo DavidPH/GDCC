@@ -89,12 +89,12 @@ namespace GDCC::BC
          #include "IR/CodeList.hpp"
 
       default:
-         throw Core::ExceptStr(stmnt->pos, "bad getFuncName code");
+         Core::Error(stmnt->pos, "bad getFuncName code");
       }
 
       // Convert size to int.
       if(n > INT_MAX)
-         throw Core::ExceptStr(stmnt->pos, "bad getFuncName size");
+         Core::Error(stmnt->pos, "bad getFuncName size");
 
       size = static_cast<int>(n);
 
@@ -102,7 +102,7 @@ namespace GDCC::BC
       len = std::snprintf(buf, sizeof(buf), "___GDCC__%s%i", name, size);
 
       if(len >= sizeof(buf))
-         throw Core::ExceptStr(stmnt->pos, "bad getFuncName");
+         Core::Error(stmnt->pos, "bad getFuncName");
 
       return {buf, len};
    }

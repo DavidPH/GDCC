@@ -63,7 +63,7 @@ namespace GDCC::ACC
       if(src.peek().tok == Core::TOK_WSpace) src.get();
 
       if(src.peek().tok != Core::TOK_Identi)
-         throw Core::ParseExceptExpect(src.peek(), "identifier", false);
+         Core::ErrorExpect("identifier", src.peek());
 
       Core::Token name = src.get();
 
@@ -94,10 +94,7 @@ namespace GDCC::ACC
 
       // Check against existing macro.
       if(auto oldMacro = macros.find(name)) if(*oldMacro != newMacro)
-      {
-         throw Core::ParseExceptStr(name.pos,
-            "incompatible macro redefinition");
-      }
+         Core::Error(name.pos, "incompatible macro redefinition");
 
       macros.add(name.str, std::move(newMacro));
       if(isTemp) macros.tempAdd(name.str);

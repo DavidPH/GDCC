@@ -40,11 +40,11 @@ namespace GDCC::ACC
          break;
 
       case Core::TOK_Number:
-               if(IsNumInt(buf[0].str)) buf[0].tok = Core::TOK_NumInt;
+              if(IsNumInt(buf[0].str)) buf[0].tok = Core::TOK_NumInt;
          else if(IsNumFix(buf[0].str)) buf[0].tok = Core::TOK_NumFix;
          else if(IsNumFlt(buf[0].str)) buf[0].tok = Core::TOK_NumFlt;
          else
-            throw Core::ParseExceptExpect(buf[0], "number", false);
+            Core::ErrorExpect("number", buf[0]);
          break;
 
       default:

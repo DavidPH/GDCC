@@ -79,7 +79,7 @@ namespace GDCC::BC::DGE
 
       default:
       case_def:
-         throw Core::ExceptStr(stmnt ? stmnt->pos : func->getOrigin(), "bad getStkPtrIdx");
+         Core::Error(stmnt ? stmnt->pos : func->getOrigin(), "bad getStkPtrIdx");
       }
    }
 
@@ -90,7 +90,7 @@ namespace GDCC::BC::DGE
    {
       auto n = getStmntSize();
 
-      if(n % 4) throw Core::ExceptStr(stmnt->pos, "expected word statement");
+      if(n % 4) Core::Error(stmnt->pos, "expected word statement");
 
       return n / 4;
    }

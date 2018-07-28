@@ -64,8 +64,7 @@ namespace GDCC::BC::ZDACS
             break;
 
          default:
-            throw Core::ParseExceptExpect(func->getOrigin(),
-               "ZDACS script type", st, false);
+            Core::ErrorExpect(func->getOrigin(), "ZDACS script type", st);
          }
 
          break;

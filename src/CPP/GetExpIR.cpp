@@ -176,30 +176,30 @@ namespace GDCC::CPP
       std::tie(itr, base) = Core::ParseNumberBaseC(itr);
       std::tie(itr, val, std::ignore) = Core::ParseNumberRatioC(itr, base);
 
-            if(*itr == 'U' || *itr == 'u') u = true, ++itr;
-            if(*itr == 'H' || *itr == 'h') h = true, ++itr;
+           if(*itr == 'U' || *itr == 'u') u = true, ++itr;
+           if(*itr == 'H' || *itr == 'h') h = true, ++itr;
       else if(*itr == 'L' || *itr == 'l') l = true, ++itr;
-            if(*itr == 'K' || *itr == 'k') k = true, ++itr;
+           if(*itr == 'K' || *itr == 'k') k = true, ++itr;
       else if(*itr == 'R' || *itr == 'r') r = true, ++itr;
 
       if(r)
       {
          t.bitsI = 0;
 
-               if(h) {t.bitsF = 15 + u;}
+              if(h) {t.bitsF = 15 + u;}
          else if(l) {t.bitsF = 31 + u;}
          else       {t.bitsF = 15 + u;}
       }
       else if(k)
       {
-               if(h) {t.bitsI = 15 + u; t.bitsF = 16;}
+              if(h) {t.bitsI = 15 + u; t.bitsF = 16;}
          else if(l) {t.bitsI = 31 + u; t.bitsF = 32;}
          else       {t.bitsI = 15 + u; t.bitsF = 16;}
       }
       else
       {
          // Shouldn't get here, but just in case.
-         throw Core::ExceptStr(tok.pos, "expected k or r suffix");
+         Core::Error(tok.pos, "expected k or r suffix");
       }
 
       t.bitsS = !u;
@@ -223,7 +223,7 @@ namespace GDCC::CPP
       std::tie(itr, base) = Core::ParseNumberBaseC(itr);
       std::tie(itr, val, std::ignore) = Core::ParseNumberRatioC(itr, base);
 
-            if(*itr == 'F' || *itr == 'f') t = TypeFlt();
+           if(*itr == 'F' || *itr == 'f') t = TypeFlt();
       else if(*itr == 'L' || *itr == 'l') t = TypeFltLL();
       else                                t = TypeFltL();
 
@@ -252,19 +252,16 @@ namespace GDCC::CPP
          return GetExpIR_Prim_NumInt(tok);
 
       case Core::TOK_String:
-         std::cerr << "ERROR: " << tok.pos << ": string-literal in constant-expression\n";
-         throw EXIT_FAILURE;
+         Core::Error(tok.pos, "string-literal in constant-expression");
 
       case Core::TOK_ParenO:
-         if(auto exp = GetExpIR(in)) if((tok = in.get()).tok == Core::TOK_ParenC)
+         if(auto exp = GetExpIR(in); (tok = in.get()).tok == Core::TOK_ParenC)
             return exp;
 
-         std::cerr << "ERROR: " << tok.pos << ": expected )\n";
-         throw EXIT_FAILURE;
+         Core::ErrorExpect(")", tok, true);
 
       default:
-         std::cerr << "ERROR: " << tok.pos << ": expected primary-expression\n";
-         throw EXIT_FAILURE;
+         Core::ErrorExpect("primary-expression", tok);
       }
    }
 
@@ -278,28 +275,22 @@ namespace GDCC::CPP
       for(Core::Token tok;;) switch((tok = in.get()).tok)
       {
       case Core::TOK_Add2:
-         std::cerr << "ERROR: " << tok.pos << ": increment in constant-expression\n";
-         throw EXIT_FAILURE;
+         Core::Error(tok.pos, "increment in constant-expression");
 
       case Core::TOK_Dot:
-         std::cerr << "ERROR: " << tok.pos << ": member in constant-expression\n";
-         throw EXIT_FAILURE;
+         Core::Error(tok.pos, "member in constant-expression");
 
       case Core::TOK_Mem:
-         std::cerr << "ERROR: " << tok.pos << ": member in constant-expression\n";
-         throw EXIT_FAILURE;
+         Core::Error(tok.pos, "member in constant-expression");
 
       case Core::TOK_Sub2:
-         std::cerr << "ERROR: " << tok.pos << ": decrement in constant-expression\n";
-         throw EXIT_FAILURE;
+         Core::Error(tok.pos, "decrement in constant-expression");
 
       case Core::TOK_BrackO:
-         std::cerr << "ERROR: " << tok.pos << ": subscript in constant-expression\n";
-         throw EXIT_FAILURE;
+         Core::Error(tok.pos, "subscript in constant-expression");
 
       case Core::TOK_ParenO:
-         std::cerr << "ERROR: " << tok.pos << ": call in constant-expression\n";
-         throw EXIT_FAILURE;
+         Core::Error(tok.pos, "call in constant-expression");
 
       default: in.unget(); return e;
       }
@@ -316,19 +307,16 @@ namespace GDCC::CPP
          return GetExpIR_Unar(in);
 
       case Core::TOK_Add2:
-         std::cerr << "ERROR: " << tok.pos << ": increment in constant-expression\n";
-         throw EXIT_FAILURE;
+         Core::Error(tok.pos, "increment in constant-expression");
 
       case Core::TOK_And:
-         std::cerr << "ERROR: " << tok.pos << ": address-of in constant-expression\n";
-         throw EXIT_FAILURE;
+         Core::Error(tok.pos, "address-of in constant-expression");
 
       case Core::TOK_Inv:
          return IR::ExpCreate_Inv(GetExpIR_Unar(in), tok.pos);
 
       case Core::TOK_Mul:
-         std::cerr << "ERROR: " << tok.pos << ": indirection in constant-expression\n";
-         throw EXIT_FAILURE;
+         Core::Error(tok.pos, "indirection in constant-expression");
 
       case Core::TOK_Not:
          return IR::ExpCreate_Cst(TypeIntMax(),
@@ -338,8 +326,7 @@ namespace GDCC::CPP
          return IR::ExpCreate_Neg(GetExpIR_Unar(in), tok.pos);
 
       case Core::TOK_Sub2:
-         std::cerr << "ERROR: " << tok.pos << ": decrement in constant-expression\n";
-         throw EXIT_FAILURE;
+         Core::Error(tok.pos, "decrement in constant-expression");
 
       default: in.unget(); return GetExpIR_Post(in);
       }
@@ -582,10 +569,7 @@ namespace GDCC::CPP
          l = GetExpIR(in);
 
          if(!in.drop(Core::TOK_Colon))
-         {
-            std::cerr << "ERROR: " << in.peek().pos << ": expected :\n";
-            throw EXIT_FAILURE;
-         }
+            Core::ErrorExpect(":", in.peek(), true);
 
          std::tie(l, r) = Promote(l, GetExpIR_Cond(in));
          return IR::ExpCreate_Cnd(c, l, r, tok.pos);
@@ -614,7 +598,7 @@ namespace GDCC::CPP
       case Core::TOK_ShLEq:
       case Core::TOK_ShREq:
       case Core::TOK_SubEq:
-         std::cerr << "ERROR: " << tok.pos << ": assignment in constant-expression\n";
+         Core::Error(tok.pos, "assignment in constant-expression");
 
       default: in.unget(); return l;
       }

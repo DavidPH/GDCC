@@ -59,7 +59,7 @@ namespace GDCC::CPP
 
       // Ensure full consumption.
       if(in.peek().tok != Core::TOK_EOF)
-         throw Core::ExceptStr(in.peek().pos, "unused tokens");
+         Core::Error(in.peek().pos, "unused tokens");
 
       // Evaluate expression.
       return !exp->getValue();
@@ -79,7 +79,7 @@ namespace GDCC::CPP
          src.get();
 
          if(state.empty())
-            throw Core::ExceptStr(tok.pos, "unmatched #endif");
+            Core::Error(tok.pos, "unmatched #endif");
 
          state.pop_back();
 
@@ -89,10 +89,10 @@ namespace GDCC::CPP
          src.get();
 
          if(state.empty())
-            throw Core::ExceptStr(tok.pos, "unmatched #elif");
+            Core::Error(tok.pos, "unmatched #elif");
 
          if(state.back().isElse)
-            throw Core::ExceptStr(tok.pos, "#elif after #else");
+            Core::Error(tok.pos, "#elif after #else");
 
          // If not possible to not skip, don't try to process expression.
          if(state.back().isDead || state.back().isElif)
@@ -107,10 +107,10 @@ namespace GDCC::CPP
          src.get();
 
          if(state.empty())
-            throw Core::ExceptStr(tok.pos, "unmatched #else");
+            Core::Error(tok.pos, "unmatched #else");
 
          if(state.back().isElse)
-            throw Core::ExceptStr(tok.pos, "duplicate #else");
+            Core::Error(tok.pos, "duplicate #else");
 
          state.back().isElse = true;
          state.back().isSkip = state.back().isElif || state.back().isDead;
@@ -139,7 +139,7 @@ namespace GDCC::CPP
          if(src.peek().tok == Core::TOK_WSpace) src.get();
 
          if(src.peek().tok != Core::TOK_Identi)
-            throw Core::ExceptStr(tok.pos, "expected identifier");
+            Core::Error(tok.pos, "expected identifier");
 
          state.back().isSkip = state.back().isDead || !macros.find(src.get());
          state.back().isElif = !state.back().isSkip;
@@ -154,7 +154,7 @@ namespace GDCC::CPP
          if(src.peek().tok == Core::TOK_WSpace) src.get();
 
          if(src.peek().tok != Core::TOK_Identi)
-            throw Core::ExceptStr(tok.pos, "expected identifier");
+            Core::Error(tok.pos, "expected identifier");
 
          state.back().isSkip = state.back().isDead || macros.find(src.get());
          state.back().isElif = !state.back().isSkip;
@@ -200,7 +200,7 @@ namespace GDCC::CPP
          }
 
          if(src.peek().tok != Core::TOK_Identi)
-            throw Core::ExceptStr(src.peek().pos, "expected identifier");
+            Core::Error(src.peek().pos, "expected identifier");
 
          buf[0].tok = Core::TOK_Number;
          buf[0].str = macros.find(src.get()) ? Core::STR_1 : Core::STR_0;
@@ -210,7 +210,7 @@ namespace GDCC::CPP
             if(src.peek().tok == Core::TOK_WSpace) src.get();
 
             if(src.peek().tok != Core::TOK_ParenC)
-               throw Core::ExceptStr(src.peek().pos, "expected ')'");
+               Core::ErrorExpect(")", src.peek(), true);
 
             src.get();
          }

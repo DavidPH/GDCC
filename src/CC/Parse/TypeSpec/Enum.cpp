@@ -40,7 +40,7 @@ namespace GDCC::CC
    void Parser::parseTypeSpec_enum(Scope &scope, SR::Attribute &attr, TypeSpec &spec)
    {
       if(spec.specBase)
-         throw Core::ExceptStr(in.reget().pos, "multiple type-specifier base");
+         Core::Error(in.reget().pos, "multiple type-specifier base");
 
       spec.specBase = TypeSpec::BaseName;
 
@@ -67,14 +67,14 @@ namespace GDCC::CC
             char const *err = nullptr;
 
             if(!lookup->isCTypeEnum())
-               err = "tag redefined as union";
+               err = "tag redefined as enum";
 
             else if(defin && lookup->isTypeComplete())
                err = "tag redefined";
 
             if(err)
             {
-               if(local) throw Core::ExceptStr(name.pos, err);
+               if(local) Core::Error(name.pos, err);
                lookup = nullptr;
             }
          }
@@ -93,8 +93,8 @@ namespace GDCC::CC
       else
       {
          // Must be a definition.
-         if(in.peek().tok != Core::TOK_BraceO)
-            throw Core::ExceptStr(in.peek().pos, "expected identifier");
+         if(!in.peek(Core::TOK_BraceO))
+            Core::ErrorExpect("identifier", in.peek());
 
          type = Type_Enum::Create(nullptr);
       }
@@ -106,7 +106,7 @@ namespace GDCC::CC
          return;
 
       if(in.peek().tok == Core::TOK_BraceC)
-         throw Core::ExceptStr(in.peek().pos, "empty enumerator-list");
+         Core::Error(in.peek().pos, "empty enumerator-list");
 
       Core::Integ value = 0;
 
@@ -120,10 +120,7 @@ namespace GDCC::CC
          // enumerator:
          //    enumeration-constant
          //    enumeration-constant = constant-expression
-         if(in.peek().tok != Core::TOK_Identi)
-            throw Core::ExceptStr(in.peek().pos, "expected identifier");
-
-         auto name = in.get().str;
+         auto name = expectIdenti().str;
 
          // = constant-expression
          if(in.drop(Core::TOK_Equal))
@@ -136,8 +133,7 @@ namespace GDCC::CC
       }
       while(in.drop(Core::TOK_Comma));
 
-      if(!in.drop(Core::TOK_BraceC))
-         throw Core::ExceptStr(in.peek().pos, "expected '}'");
+      expect(Core::TOK_BraceC);
 
       type->setComplete(TypeIntegPrS);
    }

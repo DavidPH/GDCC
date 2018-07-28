@@ -30,7 +30,7 @@ namespace GDCC::CC
    SR::Exp::CRef ExpCreate_Add(SR::Exp const *e, Core::Origin pos)
    {
       if(!e->getType()->isCTypeArith())
-         throw Core::ExceptStr(pos, "expected arithmetic operand");
+         Core::Error(pos, "expected arithmetic operand");
 
       return ExpPromo_Int(ExpPromo_LValue(e, pos), pos);
    }
@@ -55,7 +55,7 @@ namespace GDCC::CC
       if(typeL->isTypePointer())
       {
          if(!typeR->isCTypeInteg())
-            throw Core::ExceptStr(pos, "expected integer operand");
+            Core::Error(pos, "expected integer operand");
 
          // Convert integer to int rank, retaining sign.
          if(typeR->getSizeBitsS())
@@ -75,7 +75,7 @@ namespace GDCC::CC
          }
 
          if(!baseL->isTypeComplete() || !baseL->isCTypeObject())
-            throw Core::ExceptStr(pos, "expected pointer to complete object");
+            Core::Error(pos, "expected pointer to complete object");
 
          // As of the time of this comment, multi-word pointers only need
          // their high word modified to be added to, and therefore do not
@@ -92,7 +92,7 @@ namespace GDCC::CC
          return ExpCreate_Arith<SR::Exp_Add, IR::CodeSet_Add>(type, expL, expR, pos);
       }
 
-      throw Core::ExceptStr(pos, "invalid operands to 'operator +'");
+      Core::Error(pos, "invalid operands to 'operator +'");
    }
 
    // ExpCreate_AddEq
@@ -106,7 +106,7 @@ namespace GDCC::CC
       Core::Origin pos, bool post)
    {
       if(!IsModLValue(expL))
-         throw Core::ExceptStr(pos, "expected modifiable lvalue");
+         Core::Error(pos, "expected modifiable lvalue");
 
       auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
 
@@ -117,12 +117,12 @@ namespace GDCC::CC
       if(typeL->isTypePointer())
       {
          if(!typeR->isCTypeInteg())
-            throw Core::ExceptStr(pos, "expected integer operand");
+            Core::Error(pos, "expected integer operand");
 
          auto baseL = typeL->getBaseType();
 
          if(!baseL->isTypeComplete() || !baseL->isCTypeObject())
-            throw Core::ExceptStr(pos, "expected pointer to complete object");
+            Core::Error(pos, "expected pointer to complete object");
 
          // Convert integer to int rank, retaining sign.
          if(typeR->getSizeBitsS())
@@ -143,7 +143,7 @@ namespace GDCC::CC
             evalT, typeL, expL, expR, pos, post);
       }
 
-      throw Core::ExceptStr(pos, "invalid operands to 'operator +='");
+      Core::Error(pos, "invalid operands to 'operator +='");
    }
 }
 

@@ -46,6 +46,50 @@ namespace GDCC::CC
    }
 
    //
+   // Parser::expect
+   //
+   Core::Token const &Parser::expect(Core::TokenType tok)
+   {
+      if(!in.peek(tok))
+         Core::ErrorExpect(Core::Token::GetString(tok), in.peek(), true);
+
+      return in.get();
+   }
+
+   //
+   // Parser::expect
+   //
+   Core::Token const &Parser::expect(Core::TokenType tok, Core::String str)
+   {
+      if(!in.peek(tok, str))
+         Core::ErrorExpect(str, in.peek(), true);
+
+      return in.get();
+   }
+
+   //
+   // Parser::expectIdenti
+   //
+   Core::Token const &Parser::expectIdenti(bool orKeyWrd)
+   {
+      if(!in.peek(Core::TOK_Identi) && (!orKeyWrd || !in.peek(Core::TOK_KeyWrd)))
+         Core::ErrorExpect("identifier", in.peek());
+
+      return in.get();
+   }
+
+   //
+   // Parser::expectString
+   //
+   Core::Token const &Parser::expectString()
+   {
+      if(!in.peek().isTokString())
+         Core::ErrorExpect("string-literal", in.peek());
+
+      return in.get();
+   }
+
+   //
    // Parser::getType
    //
    // type-name:
@@ -121,8 +165,7 @@ namespace GDCC::CC
          // Disallow extern, static, or typedef. Also ACS global or world.
          if(param.isTypedef || param.storeExt || param.storeInt ||
             param.storeGbl || param.storeHub)
-            throw Core::ExceptStr(in.reget().pos,
-               "bad parameter storage class");
+            Core::Error(in.reget().pos, "bad parameter storage class");
 
          // declarator
          // abstract-declarator(opt)

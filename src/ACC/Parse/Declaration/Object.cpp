@@ -58,7 +58,7 @@ namespace GDCC::ACC
 
       // declaration-specifiers
       if(!ctx.isDeclSpec(scope))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "object-declaration", false);
+         Core::ErrorExpect("object-declaration", ctx.in.peek());
 
       auto pos = ctx.in.peek().pos;
 
@@ -81,14 +81,14 @@ namespace GDCC::ACC
 
          // Objects must have object type.
          if(!attr.type->isCTypeObject())
-            throw Core::ExceptStr(attr.namePos, "expected object type");
+            Core::Error(attr.namePos, "expected object type");
 
          ParseDeclObject(ctx, scope, attr, inits);
       }
       while(ctx.in.drop(Core::TOK_Comma));
 
-      if(!ctx.in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ";", true);
+      // ;
+      ctx.expect(Core::TOK_Semico);
 
       switch(inits.size())
       {
@@ -129,7 +129,7 @@ namespace GDCC::ACC
       CC::Scope_Global &scope, SR::Attribute &attr, bool init)
    {
       if(attr.storeInt)
-         throw Core::ExceptStr(attr.namePos, "file scope static");
+         Core::Error(attr.namePos, "file scope static");
 
       if(attr.storeGbl)
       {
@@ -167,8 +167,7 @@ namespace GDCC::ACC
             if(obj->type->isTypeArray() && (attr.storeGbl || attr.storeHub))
                obj->type = obj->type->getBaseType()->getTypeArray(1);
             else
-               throw Core::ExceptStr(attr.namePos,
-                  "object with incomplete type");
+               Core::Error(attr.namePos, "object with incomplete type");
          }
 
          obj->defin = !ctx.importing;
@@ -192,10 +191,10 @@ namespace GDCC::ACC
       attr.linka = IR::Linkage::None;
 
       if(attr.storeGbl)
-         throw Core::ExceptStr(attr.namePos, "block scope global");
+         Core::Error(attr.namePos, "block scope global");
 
       if(attr.storeHub)
-         throw Core::ExceptStr(attr.namePos, "block scope world");
+         Core::Error(attr.namePos, "block scope world");
 
       if(attr.storeInt)
       {
@@ -223,8 +222,7 @@ namespace GDCC::ACC
          {
             // First, make sure it has a complete type.
             if(!obj->type->isTypeComplete())
-               throw Core::ExceptStr(attr.namePos,
-                  "object with incomplete type");
+               Core::Error(attr.namePos, "object with incomplete type");
 
             obj->defin = !ctx.importing;
 
@@ -254,8 +252,7 @@ namespace GDCC::ACC
       if(auto lookup = scope.find(attr.name))
       {
          if(lookup.res != CC::Lookup::Obj)
-            throw Core::ExceptStr(attr.namePos,
-               "name redefined as different kind of symbol");
+            Core::Error(attr.namePos, "name redefined as different kind of symbol");
 
          // Defer type compatibility check for later.
          lookupType = lookup.resObj->type;
@@ -278,8 +275,7 @@ namespace GDCC::ACC
             obj->type = obj->init->getType();
 
             if(obj->store == SR::Storage::Static && !obj->init->isIRExp())
-               throw Core::ExceptStr(obj->init->pos,
-                  "non-constant initializer for static storage object");
+               Core::Error(obj->init->pos, "non-constant initializer for static storage object");
 
             SetDeclObjectInit(ctx, scope, attr, inits, obj);
          }
@@ -304,8 +300,7 @@ namespace GDCC::ACC
          (!lookupType->isTypeArray() || !attr.type->isTypeArray() ||
             lookupType->getBaseType() != attr.type->getBaseType()))
       {
-         throw Core::ExceptStr(attr.namePos,
-            "object redeclared with different type");
+         Core::Error(attr.namePos, "object redeclared with different type");
       }
    }
 

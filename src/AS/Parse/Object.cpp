@@ -44,7 +44,7 @@ namespace GDCC::AS
       case Core::STR_words: obj.words = GetFastU(TokenDropEq(ctx));     break;
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.reget(), "Object argument", false);
+         Core::ErrorExpect("Object argument", ctx.in.reget());
       }
    }
 }

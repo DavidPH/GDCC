@@ -80,7 +80,7 @@ namespace GDCC::AS
          break;
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.reget(), "Function argument", false);
+         Core::ErrorExpect("Function argument", ctx.in.reget());
       }
    }
 }

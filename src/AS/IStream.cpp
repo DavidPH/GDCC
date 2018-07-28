@@ -114,7 +114,7 @@ namespace GDCC::AS
 
             return in;
          }
-         catch(Core::ParseException &e)
+         catch(Core::Exception &e)
          {
             e.setOrigin(out.pos);
             throw;

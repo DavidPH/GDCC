@@ -113,7 +113,7 @@ namespace GDCC::CC
       if(auto label = ctx.getLabelBreak())
          return Statement_Goto::Create(labels, pos, label);
 
-      throw Core::ExceptStr(pos, "invalid break");
+      Core::Error(pos, "invalid break");
    }
 
    //
@@ -125,7 +125,7 @@ namespace GDCC::CC
       if(auto label = ctx.getLabelBreak())
          return Statement_Goto::Create(std::move(labels), pos, label);
 
-      throw Core::ExceptStr(pos, "invalid break");
+      Core::Error(pos, "invalid break");
    }
 
    //
@@ -138,7 +138,7 @@ namespace GDCC::CC
       if(auto label = ctx.getLabelContinue())
          return Statement_Goto::Create(labels, pos, label);
 
-      throw Core::ExceptStr(pos, "invalid continue");
+      Core::Error(pos, "invalid continue");
    }
 
    //
@@ -150,7 +150,7 @@ namespace GDCC::CC
       if(auto label = ctx.getLabelContinue())
          return Statement_Goto::Create(std::move(labels), pos, label);
 
-      throw Core::ExceptStr(pos, "invalid continue");
+      Core::Error(pos, "invalid continue");
    }
 
    //

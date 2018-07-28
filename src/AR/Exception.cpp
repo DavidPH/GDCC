@@ -22,16 +22,11 @@
 namespace GDCC::AR
 {
    //
-   // ReadError::genMsg
+   // Error
    //
-   void ReadError::genMsg() const
+   void Error(char const *str)
    {
-      std::ostringstream oss;
-      oss << "ERROR: ";
-      if(pos.file) oss << pos << ": ";
-      oss << err;
-      auto const &tmp = oss.str();
-      msg = Core::StrDup(tmp.data(), tmp.size());
+      Core::Error({}, str);
    }
 }
 

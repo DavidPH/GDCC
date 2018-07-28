@@ -33,7 +33,7 @@ namespace GDCC::AS
    IR::Value GetValue(ParserCtx const &ctx)
    {
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR_Value))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Value", true);
+         Core::ErrorExpect("Value", ctx.in.peek(), true);
 
       switch(TokenPeekIdenti(ctx).in.peek().str)
       {
@@ -42,7 +42,7 @@ namespace GDCC::AS
          #include "IR/TypeList.hpp"
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.peek(), "Value", false);
+         Core::ErrorExpect("Value", ctx.in.peek());
       }
    }
 
@@ -114,7 +114,7 @@ namespace GDCC::AS
    //
    IR::Value_Fixed GetValue_Fixed(ParserCtx const &ctx)
    {
-      throw Core::ExceptStr(ctx.in.reget().pos, "Value_Fixed stub");
+      Core::Error(ctx.in.reget().pos, "Value_Fixed stub");
    }
 
    //
@@ -122,7 +122,7 @@ namespace GDCC::AS
    //
    IR::Value_Float GetValue_Float(ParserCtx const &ctx)
    {
-      throw Core::ExceptStr(ctx.in.reget().pos, "Value_Float stub");
+      Core::Error(ctx.in.reget().pos, "Value_Float stub");
    }
 
    //

@@ -355,7 +355,7 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       if(n != 1)
-         throw Core::ExceptStr(stmnt->pos, "unsupported AdXU_W size");
+         Core::Error(stmnt->pos, "unsupported AdXU_W size");
 
       moveArgStk_dst(stmnt->args[0]);
 
@@ -431,7 +431,7 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       if(n != 1)
-         throw Core::ExceptStr(stmnt->pos, "unsupported SuXU_W size");
+         Core::Error(stmnt->pos, "unsupported SuXU_W size");
 
       moveArgStk_dst(stmnt->args[0]);
 

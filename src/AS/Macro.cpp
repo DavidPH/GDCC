@@ -34,8 +34,7 @@ namespace GDCC::AS
          for(auto &arg : args) if(arg.a == IR::ArgBase::Cpy)
          {
             if(arg.aCpy.value >= argc)
-               throw Core::ExceptStr(block.getOrigin(),
-                  "insufficient macro arguments");
+               Core::Error(block.getOrigin(), "insufficient macro arguments");
 
             arg = argv[arg.aCpy.value];
          }

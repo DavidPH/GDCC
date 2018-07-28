@@ -113,7 +113,7 @@ namespace GDCC::BC::DGE
       auto n = getStmntSizeW();
 
       if(n != 1)
-         throw Core::ExceptStr(stmnt->pos, "unsupported AdXU_W size");
+         Core::Error(stmnt->pos, "unsupported AdXU_W size");
 
       if(stmnt->args.size() > 3)
       {
@@ -144,7 +144,7 @@ namespace GDCC::BC::DGE
       auto n = getStmntSizeW();
 
       if(n != 1)
-         throw Core::ExceptStr(stmnt->pos, "unsupported SuXU_W size");
+         Core::Error(stmnt->pos, "unsupported SuXU_W size");
 
       if(stmnt->args.size() > 3)
       {
@@ -153,7 +153,7 @@ namespace GDCC::BC::DGE
          bool stk3 = stmnt->args[3].a == IR::ArgBase::Stk;
 
          if((!stk1 && (stk2 || stk3)) || (!stk2 && stk3))
-            throw Core::ExceptStr(stmnt->pos, "SuXU_W disorder");
+            Core::Error(stmnt->pos, "SuXU_W disorder");
 
          moveArgStk_dst(stmnt->args[0]);
          moveArgStk_src(stmnt->args[1]);

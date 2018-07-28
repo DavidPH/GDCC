@@ -146,7 +146,7 @@ namespace GDCC::SR
    template<> void GenStmnt_PointEqT<IR::Arg_Cpy>(Exp_Binary const *exp,
       IR::Code, GenStmntCtx const &, Arg const &, bool, Arg const &)
    {
-      throw Core::ExceptStr(exp->pos, "AddrBase::Cpy op=");
+      Core::Error(exp->pos, "AddrBase::Cpy op=");
    }
 
    //
@@ -155,7 +155,7 @@ namespace GDCC::SR
    template<> void GenStmnt_PointEqT<IR::Arg_Lit>(Exp_Binary const *exp,
       IR::Code, GenStmntCtx const &, Arg const &, bool, Arg const &)
    {
-      throw Core::ExceptStr(exp->pos, "AddrBase::Lit op=");
+      Core::Error(exp->pos, "AddrBase::Lit op=");
    }
 
    //
@@ -164,7 +164,7 @@ namespace GDCC::SR
    template<> void GenStmnt_PointEqT<IR::Arg_Nul>(Exp_Binary const *exp,
       IR::Code, GenStmntCtx const &, Arg const &, bool, Arg const &)
    {
-      throw Core::ExceptStr(exp->pos, "AddrBase::Nul op=");
+      Core::Error(exp->pos, "AddrBase::Nul op=");
    }
 
    //
@@ -173,7 +173,7 @@ namespace GDCC::SR
    template<> void GenStmnt_PointEqT<IR::Arg_Stk>(Exp_Binary const *exp,
       IR::Code, GenStmntCtx const &, Arg const &, bool, Arg const &)
    {
-      throw Core::ExceptStr(exp->pos, "AddrBase::Stk op=");
+      Core::Error(exp->pos, "AddrBase::Stk op=");
    }
 }
 

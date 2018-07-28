@@ -329,7 +329,7 @@ namespace GDCC::CC
       auto type = cond->getType();
 
       if(!type->isCTypeInteg())
-         throw Core::ExceptStr(pos, "expected integer type");
+         Core::Error(pos, "expected integer type");
 
       return Statement_Switch::Create(labels, pos, scope, cond, body);
    }
@@ -345,7 +345,7 @@ namespace GDCC::CC
       auto type = cond->getType();
 
       if(!type->isCTypeInteg())
-         throw Core::ExceptStr(pos, "expected integer type");
+         Core::Error(pos, "expected integer type");
 
       return Statement_Switch::Create(std::move(labels), pos, scope, cond, body);
    }

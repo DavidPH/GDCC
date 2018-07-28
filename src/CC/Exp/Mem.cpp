@@ -61,7 +61,7 @@ namespace GDCC::CC
       }
       catch(SR::TypeError const &)
       {
-         throw Core::ExceptStr(pos, "invalid member");
+         Core::Error(pos, "invalid member");
       }
    }
 
@@ -76,7 +76,7 @@ namespace GDCC::CC
       }
       catch(SR::TypeError const &)
       {
-         throw Core::ExceptStr(pos, "invalid member");
+         Core::Error(pos, "invalid member");
       }
    }
 
@@ -137,7 +137,7 @@ namespace GDCC::CC
             if(!arg.val)
             {
                if(argi == arge)
-                  throw Core::ExceptStr{pos, "insufficient property args"};
+                  Core::Error(pos, "insufficient property args");
 
                args.emplace_back(*argi++);
             }
@@ -177,7 +177,7 @@ namespace GDCC::CC
      auto prop = type->getProp(expR);
 
       if(!prop.propGet)
-         throw Core::ExceptStr{pos, "structure property has no get"};
+         Core::Error(pos, "structure property has no get");
 
       return createExp(prop, prop.propGet, nullptr, 0);
    }
@@ -190,7 +190,7 @@ namespace GDCC::CC
      auto prop = type->getProp(expR);
 
       if(!prop.propSet)
-         throw Core::ExceptStr{pos, "structure property has no set"};
+         Core::Error(pos, "structure property has no set");
 
       return createExp(prop, prop.propSet, &arg, 1);
    }
@@ -200,7 +200,7 @@ namespace GDCC::CC
    //
    SR::Arg Exp_MemProp::v_getArg() const
    {
-      throw Core::ExceptStr{pos, "structure property cannot be evaulated"};
+      Core::Error(pos, "structure property cannot be evaulated");
    }
 
    //
@@ -208,7 +208,7 @@ namespace GDCC::CC
    //
    SR::Type::CRef Exp_MemProp::v_getType() const
    {
-      throw Core::ExceptStr{pos, "structure property has no type"};
+      Core::Error(pos, "structure property has no type");
    }
 
    //

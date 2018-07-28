@@ -74,8 +74,7 @@ namespace GDCC::ACC
          args = ctx.getExpList(scope);
 
       // )
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
 
       // Perform argument promotion before extracting types.
       // Yes, this will promote floats to double. No, I do not care.
@@ -139,14 +138,14 @@ namespace GDCC::ACC
          return CC::ExpCreate_Obj(ctx.prog, lookup.resObj, tok.pos);
 
       default:
-         throw Core::ParseExceptExpect(tok, "primary-expression", false);
+         Core::ErrorExpect("primary-expression", tok);
       }
 
       // Is this a forward function reference?
       if(ctx.in.peek(Core::TOK_ParenO))
          return GetExp_ForwardFunc(ctx, scope, tok);
 
-      throw Core::ParseExceptExpect(tok, "declared identifier", false);
+      Core::ErrorExpect("declared identifier", tok);
    }
 
    //
@@ -170,19 +169,19 @@ namespace GDCC::ACC
       int  l;
       bool u;
 
-            if(*itr == 'U' || *itr == 'u') u = true, ++itr;
+           if(*itr == 'U' || *itr == 'u') u = true, ++itr;
       else                                u = false;
 
-            if(*itr == 'H' || *itr == 'h') l = -1, ++itr;
+           if(*itr == 'H' || *itr == 'h') l = -1, ++itr;
       else if(*itr == 'L' || *itr == 'l') l = +1, ++itr;
       else                                l =  0;
 
-            if(*itr == 'K' || *itr == 'k') k = true,  ++itr;
+           if(*itr == 'K' || *itr == 'k') k = true,  ++itr;
       else                                k = false;
 
       // Must be end of string.
       if(itr != end)
-         throw Core::ExceptStr(tok.pos, "malformed fixed-constant");
+         Core::Error(tok.pos, "malformed fixed-constant");
 
       // Dtermine type.
       SR::Type::CPtr type;
@@ -231,7 +230,7 @@ namespace GDCC::ACC
 
       // Must be end of string.
       if(itr != end)
-         throw Core::ExceptStr(tok.pos, "malformed floating-constant");
+         Core::Error(tok.pos, "malformed floating-constant");
 
       // Dtermine type.
       SR::Type::CPtr type;
@@ -270,17 +269,17 @@ namespace GDCC::ACC
       for(; itr != end; ++itr) switch(*itr)
       {
       case 'L': case 'l':
-         if(l) throw Core::ExceptStr(tok.pos, "duplicate L");
+         if(l) Core::Error(tok.pos, "duplicate L");
          l = itr[1] == itr[0] ? ++itr, 2 : 1;
          break;
 
       case 'U': case 'u':
-         if(u) throw Core::ExceptStr(tok.pos, "duplicate U");
+         if(u) Core::Error(tok.pos, "duplicate U");
          u = true;
          break;
 
       default:
-         throw Core::ExceptStr(tok.pos, "malformed integer-constant");
+         Core::Error(tok.pos, "malformed integer-constant");
       }
 
       // Octal/hex literals will promote to unsigned if necessary.
@@ -303,7 +302,7 @@ namespace GDCC::ACC
          tryCreate(!u, CC::TypeIntegPrSLL);
          tryCreate( x, CC::TypeIntegPrULL);
       default:
-         throw Core::ExceptStr(tok.pos, "oversized integer-constant");
+         Core::Error(tok.pos, "oversized integer-constant");
 
          #undef tryCreate
       }
@@ -314,15 +313,9 @@ namespace GDCC::ACC
    //
    static SR::Exp::CRef GetExp_Prim_ParenO(Parser &ctx, CC::Scope &scope)
    {
-      // (
-      ctx.in.get();
-
-      // expression
+      ctx.expect(Core::TOK_ParenO);
       auto exp = ctx.getExp(scope);
-
-      // )
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
 
       return exp;
    }
@@ -361,7 +354,7 @@ namespace GDCC::ACC
       case Core::TOK_ParenO: return GetExp_Prim_ParenO(*this, scope);
 
       default:
-         throw Core::ParseExceptExpect(in.peek(), "primary-expression", false);
+         Core::ErrorExpect("primary-expression", in.peek());
       }
    }
 }

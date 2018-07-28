@@ -76,7 +76,7 @@ namespace GDCC::CC
       auto type = exp->getType();
 
       if(!type->isTypePointer())
-         throw Core::ExceptStr(pos, "expected pointer");
+         Core::Error(pos, "expected pointer");
 
       type = type->getBaseType();
 

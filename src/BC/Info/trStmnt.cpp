@@ -70,7 +70,7 @@ namespace GDCC::BC
 
       if(stmnt->args[1].a != IR::ArgBase::Stk &&
          stmnt->args[2].a == IR::ArgBase::Stk)
-         throw Core::ExceptStr(stmnt->pos, "trStmntShift disorder");
+         Core::Error(stmnt->pos, "trStmntShift disorder");
 
       moveArgStk_dst(stmnt->args[0]);
       moveArgStk_src(stmnt->args[1]);

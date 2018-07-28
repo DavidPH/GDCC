@@ -127,7 +127,7 @@ namespace GDCC::CPP
          in.drop(Core::TOK_WSpace);
 
          if(in.peek().tok != Core::TOK_String)
-            throw Core::ParseExceptExpect(in.peek(), "string-literal", false);
+            Core::ErrorExpect("string-literal", in.peek());
 
          data.stateLibrary.emplace_back(Core::ParseStringC(in.get().str, 0, '"'));
 

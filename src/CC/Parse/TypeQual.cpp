@@ -49,7 +49,7 @@ namespace GDCC::CC
    {
       // If followed by a parenthesis, it is a type-specifier.
       if(ctx.in.peek().tok == Core::TOK_ParenO)
-         throw Core::ParseExceptExpect(ctx.in.reget(), "type-qualifier", false);
+         Core::ErrorExpect("type-qualifier", ctx.in.reget());
 
       qual.aAtom = true;
    }
@@ -109,9 +109,7 @@ namespace GDCC::CC
    //
    void Parser::parseTypeQual(Scope &scope, SR::TypeQual &qual)
    {
-      auto const &tok = in.get();
-      if(tok.tok != Core::TOK_Identi && tok.tok != Core::TOK_KeyWrd)
-         throw Core::ParseExceptExpect(tok, "identifier", false);
+      auto const &tok = expectIdenti(true);
 
       //
       // setSpace
@@ -119,7 +117,7 @@ namespace GDCC::CC
       auto setSpace = [&](IR::AddrBase space)
       {
          if(qual.space.base != IR::AddrBase::Gen)
-            throw Core::ExceptStr(tok.pos, "multiple address-space-specifier");
+            Core::Error(tok.pos, "multiple address-space-specifier");
 
          qual.space = space;
       };
@@ -163,10 +161,10 @@ namespace GDCC::CC
       default:
          auto lookup = scope.lookup(tok.str);
          if(lookup.res != Lookup::Space)
-            throw Core::ParseExceptExpect(tok, "type-qualifier", false);
+            Core::ErrorExpect("type-qualifier", tok);
 
          if(qual.space.base != IR::AddrBase::Gen)
-            throw Core::ExceptStr(tok.pos, "multiple address-space-specifier");
+            Core::Error(tok.pos, "multiple address-space-specifier");
 
          qual.space.base = lookup.resSpace->space;
          qual.space.name = lookup.resSpace->glyph;

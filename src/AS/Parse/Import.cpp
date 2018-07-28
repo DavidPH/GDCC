@@ -34,7 +34,7 @@ namespace GDCC::AS
          switch(TokenPeekIdenti(ctx).in.get().str)
       {
       default:
-         throw Core::ParseExceptExpect(ctx.in.reget(), "Import argument", false);
+         Core::ErrorExpect("Import argument", ctx.in.reget());
       }
    }
 }

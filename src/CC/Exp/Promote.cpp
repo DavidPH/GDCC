@@ -103,7 +103,7 @@ namespace GDCC::CC
       if(typeL->isCTypeArith())
       {
          if(!typeR->isCTypeArith())
-            throw Core::ExceptStr(pos, "cannot implicitly convert to "
+            Core::Error(pos, "cannot implicitly convert to "
                "arithmetic type from non-arithmetic type");
 
          return ExpConvert_Arith(typeL, exp, pos);
@@ -113,7 +113,7 @@ namespace GDCC::CC
       if(typeL->isCTypeStruct() || typeL->isCTypeUnion())
       {
          if(typeL->getTypeQual() != typeR->getTypeQual())
-            throw Core::ExceptStr(pos, "cannot implicitly convert to "
+            Core::Error(pos, "cannot implicitly convert to "
                "incompatible structure or union type");
 
          return exp;
@@ -127,7 +127,7 @@ namespace GDCC::CC
             return ExpConvert_PtrArith(typeL, exp, pos);
 
          if(!typeR->isTypePointer())
-            throw Core::ExceptStr(pos, "cannot implicitly convert to "
+            Core::Error(pos, "cannot implicitly convert to "
                "pointer type from non-pointer type");
 
          auto baseL = typeL->getBaseType();
@@ -144,7 +144,7 @@ namespace GDCC::CC
          // Check underlying type compatibility.
          if(!baseL->isTypeVoid() && !baseR->isTypeVoid() &&
             baseL->getTypeArrayQual() != baseR->getTypeArrayQual())
-            throw Core::ExceptStr(pos, "cannot implicitly convert to "
+            Core::Error(pos, "cannot implicitly convert to "
                "incompatible pointer type");
 
          auto qualL = baseL->getQual();
@@ -152,18 +152,18 @@ namespace GDCC::CC
 
          // Check address space compatibility.
          if(!IR::IsAddrEnclosed(qualL.space, qualR.space))
-            throw Core::ExceptStr(pos, "cannot implicitly convert to "
+            Core::Error(pos, "cannot implicitly convert to "
                "pointer to disjoint address space");
 
          // Check for discarded qualifiers.
          if((!qualL.aAtom && qualR.aAtom) || (!qualL.aCons && qualR.aCons) ||
             (!qualL.aRest && qualR.aRest) || (!qualL.aVola && qualR.aVola))
-            throw Core::ExceptStr(pos, "cannot implicitly discard qualifiers");
+            Core::Error(pos, "cannot implicitly discard qualifiers");
 
          return ExpConvert_Pointer(typeL, exp, pos);
       }
 
-      throw Core::ExceptStr(pos, "cannot implicitly convert");
+      Core::Error(pos, "cannot implicitly convert");
    }
 
    //
@@ -214,7 +214,7 @@ namespace GDCC::CC
       SR::Exp::CRef exp = ExpPromo_LValue(e, pos);
 
       if(!exp->getType()->isCTypeScalar())
-         throw Core::ExceptStr(pos, "expected scalar type");
+         Core::Error(pos, "expected scalar type");
 
       return ExpConvert_BoolSoft(exp, pos);
    }
@@ -250,7 +250,7 @@ namespace GDCC::CC
          typeR->isCTypeStruct() || typeR->isCTypeUnion())
       {
          if(typeL != typeR)
-            throw Core::ExceptStr(pos, "non-matching structure types");
+            Core::Error(pos, "non-matching structure types");
 
          return std::make_tuple(typeL, expL, expR);
       }
@@ -302,7 +302,7 @@ namespace GDCC::CC
       }
       catch(SR::TypeError const &)
       {
-         throw Core::ExceptStr(pos, "unranked integer type");
+         Core::Error(pos, "unranked integer type");
       }
 
       // Int and unsigned int are unaffected.

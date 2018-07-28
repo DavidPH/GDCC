@@ -322,7 +322,7 @@ namespace GDCC::BC::ZDACS
             auto localReg = std::max(f->getLocalReg(), f->param);
 
             if(localReg > 255)
-               throw Core::ExceptStr(f->getOrigin(), "too many registers");
+               Core::Error(f->getOrigin(), "too many registers");
 
             putByte(param);
             putByte(localReg);
@@ -337,7 +337,7 @@ namespace GDCC::BC::ZDACS
             {
                // Must have imports to import from.
                if(!prog->sizeImport())
-                  throw Core::ExceptUndef("Function", f->glyph);
+                  Core::ErrorUndef("Function", f->glyph);
 
                putWord(0);
             }
@@ -696,7 +696,7 @@ namespace GDCC::BC::ZDACS
          if(itr.getLocalReg() <= 20) continue;
 
          if(itr.getLocalReg() > 65535)
-            throw Core::ExceptStr(itr.getOrigin(), "too many registers");
+            Core::Error(itr.getOrigin(), "too many registers");
 
          putHWord(GetScriptValue(itr));
          putHWord(itr.getLocalReg());

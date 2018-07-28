@@ -100,7 +100,7 @@ namespace GDCC::CC
          return ExpCreate_ArithInteg<Base, Codes>(t, l, r, pos);
 
       // ???
-      throw Core::ExceptStr(pos, "unsupported arithmetic type");
+      Core::Error(pos, "unsupported arithmetic type");
    }
 
    //
@@ -179,7 +179,7 @@ namespace GDCC::CC
          return ExpCreate_ArithEqInteg<Base, Codes>(evalT, t, l, r, pos, post);
 
       // ???
-      throw Core::ExceptStr(pos, "unsupported arithmetic type");
+      Core::Error(pos, "unsupported arithmetic type");
    }
 }
 

@@ -42,7 +42,7 @@ namespace GDCC::ACC
    {
       auto propItr = print->props.find(name);
       if(propItr == print->props.end())
-         throw Core::ParseExceptExpect(pos, "print-specifier", name, false);
+         Core::ErrorExpect(pos, "print-specifier", name);
 
       return propItr->second;
    }
@@ -95,8 +95,7 @@ namespace GDCC::ACC
 
          args = ctx.getExpList(scope);
 
-         if(!ctx.in.drop(Core::TOK_ParenC))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+         ctx.expect(Core::TOK_ParenC);
       }
       // assignment-expression
       else
@@ -146,7 +145,7 @@ namespace GDCC::ACC
       if(prop.prop)
          return CC::ExpCreate_Call(prop.prop, std::move(args), scope, pos);
 
-      throw Core::ExceptStr(pos, "no valid print property");
+      Core::Error(pos, "no valid print property");
    }
 
    //
@@ -165,17 +164,13 @@ namespace GDCC::ACC
          //    identifier : print-specifier-argument
 
          // identifier
-         if(!ctx.in.peek(Core::TOK_Identi))
-            throw Core::ParseExceptExpect(ctx.in.peek(), "identifier", false);
-
-         auto name = ctx.in.get();
+         auto name = ctx.expectIdenti();
 
          // :
-         if(!ctx.in.drop(Core::TOK_Colon))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ":", true);
+         ctx.expect(Core::TOK_Colon);
 
          PrintProp const &prop = GetPrintProp(print, name.str, name.pos);
-         SR::Exp::CRef   spec = GetPrintSpec(ctx, scope, prop, name.pos);
+         SR::Exp::CRef   spec  = GetPrintSpec(ctx, scope, prop, name.pos);
 
          exp = CC::ExpCreate_Comma(exp, spec, name.pos);
       }
@@ -209,7 +204,7 @@ namespace GDCC::ACC
          if(strStr != strItr)
          {
             if(!print->propStr)
-               throw Core::ExceptStr(pos, "no (str) property");
+               Core::Error(pos, "no (str) property");
 
             auto strExp = CC::ExpCreate_StrIdx(ctx.prog, scope, {strStr, strItr}, pos);
             auto call   = CC::ExpCreate_Call(print->propStr, {strExp}, scope, pos);
@@ -228,8 +223,7 @@ namespace GDCC::ACC
             ++strItr;
 
          // Handle specifier.
-         if(!ctx.in.drop(Core::TOK_Comma))
-            throw Core::ParseExceptExpect(ctx.in.peek(), ",", true);
+         ctx.expect(Core::TOK_Comma);
 
          PrintProp const &prop = GetPrintProp(print, {strStr, strItr}, pos);
          SR::Exp::CRef   spec = GetPrintSpec(ctx, scope, prop, pos);
@@ -274,8 +268,7 @@ namespace GDCC::ACC
             CC::ExpCreate_Call(print->propBegin, {}, scope, pos), pos);
 
       // (
-      if(!in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(in.peek(), "(", true);
+      expect(Core::TOK_ParenO);
 
       // print-specifier-string
       if(in.peek().isTokString())
@@ -300,7 +293,7 @@ namespace GDCC::ACC
                ->getParameters()->size();
 
             if(paramc > argc)
-               throw Core::ExceptStr(pos, "insufficient arguments");
+               Core::Error(pos, "insufficient arguments");
 
             exp = CC::ExpCreate_Comma(exp, CC::ExpCreate_Call(
                print->propMore, {argp, argp + paramc}, scope, pos), pos);
@@ -315,7 +308,7 @@ namespace GDCC::ACC
                ->getParameters()->size();
 
             if(paramc > argc)
-               throw Core::ExceptStr(pos, "insufficient arguments");
+               Core::Error(pos, "insufficient arguments");
 
             exp = CC::ExpCreate_Comma(exp, CC::ExpCreate_Call(
                print->propOpt, {argp, argp + paramc}, scope, pos), pos);
@@ -338,8 +331,7 @@ namespace GDCC::ACC
       }
 
       // )
-      if(!in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(in.peek(), ")", true);
+      expect(Core::TOK_ParenC);
 
       return exp;
    }

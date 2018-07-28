@@ -94,7 +94,7 @@ namespace GDCC::ACC
       bool invert;
       if(!(invert = in.drop(Core::TOK_KeyWrd, Core::STR_until)) &&
          !in.drop(Core::TOK_KeyWrd, Core::STR_while))
-         throw Core::ParseExceptExpect(in.peek(), "'while' or 'until'", false);
+         Core::ErrorExpect("'while' or 'until'", in.peek());
 
       // ( expression )
       auto cond = getStatementCond(loopScope);
@@ -102,8 +102,7 @@ namespace GDCC::ACC
          cond = CC::ExpCreate_Not(cond, cond->pos);
 
       // ;
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      expect(Core::TOK_Semico);
 
       return CC::StatementCreate_Do(std::move(labels), pos, loopScope, body, cond);
    }
@@ -119,8 +118,7 @@ namespace GDCC::ACC
       auto pos = in.get().pos;
 
       // ;
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      expect(Core::TOK_Semico);
 
       return CC::Statement_Goto::Create(std::move(labels), pos, scope.fn.fn->getLabelRes());
    }
@@ -162,8 +160,7 @@ namespace GDCC::ACC
       auto pos = in.get().pos;
 
       // ;
-      if(!in.drop(Core::TOK_Semico))
-         throw Core::ParseExceptExpect(in.peek(), ";", true);
+      expect(Core::TOK_Semico);
 
       return CC::StatementCreate_Return(std::move(labels), pos, scope.fn);
    }

@@ -48,7 +48,7 @@ namespace GDCC::AS
       std::tie(s, bitsI, std::ignore) = Core::ParseNumberFastU(s, 10);
 
       if(*s != '.')
-         throw Core::ParseExceptExpect(tok, "number", false);
+         Core::ErrorExpect("number", tok);
 
       std::tie(s, bitsF, std::ignore) = Core::ParseNumberFastU(++s, 10);
       satur = *s == 'S' || *s == 's' ? ++s, true : false;
@@ -184,7 +184,7 @@ namespace GDCC::AS
             return IR::ExpCreate_Value(GetArrayString(ctx), tok.pos);
 
          default:
-            throw Core::ParseExceptExpect(tok, "expression", false);
+            Core::ErrorExpect("expression", tok);
          }
 
       case Core::TOK_Number:
@@ -243,7 +243,7 @@ namespace GDCC::AS
          return IR::ExpCreate_Value(GetTuple(ctx), tok.pos);
 
       default:
-         throw Core::ParseExceptExpect(tok, "expression", false);
+         Core::ErrorExpect("expression", tok);
       }
    }
 
@@ -281,8 +281,7 @@ namespace GDCC::AS
          return val.vFixed.value >> val.vFixed.vtype.bitsF;
 
       default:
-         throw Core::ParseExceptExpect(exp->pos, "integer expression",
-            "non-integer expression", false, false);
+         Core::Error(exp->pos, "expected integer expression");
       }
    }
 
@@ -352,7 +351,7 @@ namespace GDCC::AS
 
       // Check that end of string was reached.
       if(*s)
-         throw Core::ParseExceptExpect(tok, "number", false);
+         Core::ErrorExpect("number", tok);
 
       if(fixed)
       {

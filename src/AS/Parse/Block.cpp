@@ -100,7 +100,7 @@ namespace GDCC::AS
             macro->expand(block, args.data(), args.size());
          }
          else
-            throw Core::ParseExceptExpect(ctx.in.peek(), "macro name", false);
+            Core::ErrorExpect("macro name", ctx.in.peek());
 
          break;
 
@@ -109,7 +109,7 @@ namespace GDCC::AS
          break;
 
       default:
-         throw Core::ParseExceptExpect(ctx.in.peek(), "block terminator", false);
+         Core::ErrorExpect("block terminator", ctx.in.peek());
       }
    }
 }

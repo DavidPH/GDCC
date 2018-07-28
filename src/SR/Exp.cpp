@@ -122,7 +122,7 @@ namespace GDCC::SR
       {
       case IR::AddrBase::Cpy:
       case IR::AddrBase::Lit:
-         throw Core::ExceptStr(pos, "expected destination expression");
+         Core::Error(pos, "expected destination expression");
 
       default:
          return arg;
@@ -140,7 +140,7 @@ namespace GDCC::SR
       case IR::AddrBase::Cpy:
       case IR::AddrBase::Lit:
       case IR::AddrBase::Nul:
-         throw Core::ExceptStr(pos, "expected duplication expression");
+         Core::Error(pos, "expected duplication expression");
 
       default:
          return arg;
@@ -157,7 +157,7 @@ namespace GDCC::SR
       {
       case IR::AddrBase::Cpy:
       case IR::AddrBase::Nul:
-         throw Core::ExceptStr(pos, "expected source expression");
+         Core::Error(pos, "expected source expression");
 
       default:
          return arg;
@@ -311,7 +311,7 @@ namespace GDCC::SR
    //
    Function::Ref Exp::v_getFunction() const
    {
-      throw Core::ExceptStr(pos, "expected function designator expression");
+      Core::Error(pos, "expected function designator expression");
    }
 
    //
@@ -319,7 +319,7 @@ namespace GDCC::SR
    //
    IR::Exp::CRef Exp::v_getIRExp() const
    {
-      throw Core::ExceptStr(pos, "expected constant expression");
+      Core::Error(pos, "expected constant expression");
    }
 
    //
@@ -327,7 +327,7 @@ namespace GDCC::SR
    //
    Object::Ref Exp::v_getObject() const
    {
-      throw Core::ExceptStr(pos, "expected object designator expression");
+      Core::Error(pos, "expected object designator expression");
    }
 
    //

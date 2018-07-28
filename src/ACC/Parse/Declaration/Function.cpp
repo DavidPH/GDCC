@@ -71,12 +71,10 @@ namespace GDCC::ACC
       if(auto lookup = scope.find(attr.name))
       {
          if(lookup.res != CC::Lookup::Func)
-            throw Core::ExceptStr(attr.namePos,
-               "name redefined as different kind of symbol");
+            Core::Error(attr.namePos, "name redefined as different kind of symbol");
 
          if(lookup.resFunc->retrn != attr.type->getBaseType())
-            throw Core::ExceptStr(attr.namePos,
-               "function redeclared with different return type");
+            Core::Error(attr.namePos, "function redeclared with different return type");
       }
 
       if(ctx.importing)
@@ -96,7 +94,7 @@ namespace GDCC::ACC
          return;
 
       if(!fn->retrn->isTypeComplete() && !fn->retrn->isTypeVoid())
-         throw Core::ExceptStr(attr.namePos, "incomplete return");
+         Core::Error(attr.namePos, "incomplete return");
 
       auto &fnScope = scope.createScope(attr, fn);
 
@@ -114,7 +112,7 @@ namespace GDCC::ACC
       fn->setAllocAut(attr.allocAut);
 
       if(!fn->retrn->isTypeVoid() && fn->stmnt->isNoReturn())
-         throw Core::ExceptStr(attr.namePos, "no return in non-void function");
+         Core::Error(attr.namePos, "no return in non-void function");
    }
 
    //
@@ -139,7 +137,7 @@ namespace GDCC::ACC
       }
       else
       {
-         throw Core::ParseExceptExpect(ctx.in.peek(), "script-address", false);
+         Core::ErrorExpect("script-address", ctx.in.peek());
       }
    }
 
@@ -153,8 +151,7 @@ namespace GDCC::ACC
       //    ( parameter-type-list )
 
       // (
-      if(!ctx.in.drop(Core::TOK_ParenO))
-         throw Core::ParseExceptExpect(ctx.in.peek(), "(", true);
+      ctx.expect(Core::TOK_ParenO);
 
       // parameter-type-list
       SR::TypeSet::CPtr types;
@@ -162,8 +159,7 @@ namespace GDCC::ACC
       attr.type = attr.type->getTypeFunction(types, attr.callt);
 
       // )
-      if(!ctx.in.drop(Core::TOK_ParenC))
-         throw Core::ParseExceptExpect(ctx.in.peek(), ")", true);
+      ctx.expect(Core::TOK_ParenC);
    }
 }
 
@@ -191,19 +187,13 @@ namespace GDCC::ACC
       attr.linka = IR::Linkage::ExtACS;
 
       // <function>
-      if(!in.peek(Core::TOK_KeyWrd, Core::STR_function))
-         throw Core::ParseExceptExpect(in.peek(), "function-declaration", false);
-
-      auto pos = in.get().pos;
+      auto pos = expect(Core::TOK_KeyWrd, Core::STR_function).pos;
 
       // declaration-specifiers
       parseDeclSpec(scope, attr);
 
       // identifier
-      if(!in.peek(Core::TOK_Identi))
-         throw Core::ParseExceptExpect(in.peek(), "identifier", false);
-
-      attr.setName(in.get());
+      attr.setName(expectIdenti());
 
       // ( parameter-type-list )
       ParseScriptParameters(*this, scope, attr);
@@ -234,10 +224,7 @@ namespace GDCC::ACC
       attr.type = SR::Type::Void;
 
       // <script>
-      if(!in.peek(Core::TOK_KeyWrd, Core::STR_script))
-         throw Core::ParseExceptExpect(in.peek(), "script-declaration", false);
-
-      auto pos = in.get().pos;
+      auto pos = expect(Core::TOK_KeyWrd, Core::STR_script).pos;
 
       // script-address
       ParseScriptAddr(*this, scope, attr);
@@ -255,7 +242,7 @@ namespace GDCC::ACC
          attr.stype.push_back(in.get().str);
 
       if(!in.peek(Core::TOK_BraceO))
-         throw Core::ParseExceptExpect(in.peek(), "{", true);
+         Core::ErrorExpect("{", in.peek(), true);
 
       ParseDeclFunction(*this, scope, attr);
 

@@ -169,6 +169,10 @@ namespace GDCC::Core
       Origin    pos;
       String    str;
       TokenType tok;
+
+
+      // Returns the canonical token representation listed above.
+      static Core::String GetString(TokenType tok);
    };
 }
 
