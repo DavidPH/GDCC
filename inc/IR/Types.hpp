@@ -15,6 +15,10 @@
 
 #include "../Platform/Types.hpp"
 
+#if !GDCC_Core_BigNum
+#error "GDCC::IR requires GDCC_Core_BigNum"
+#endif
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
