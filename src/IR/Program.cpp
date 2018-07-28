@@ -16,9 +16,8 @@
 #include "IR/Linkage.hpp"
 #include "IR/OArchive.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/Warning.hpp"
-
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -317,8 +316,7 @@ namespace GDCC::IR
       case AddrBase::Sta:    return getSpaceSta();
 
       default:
-         std::cerr << "GDCC::IR::Program::getSpace: bad AddrBase\n";
-         throw EXIT_FAILURE;
+         Core::Error({}, "GDCC::IR::Program::getSpace: bad AddrBase");
       }
    }
 

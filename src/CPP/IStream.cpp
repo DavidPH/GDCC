@@ -18,7 +18,6 @@
 #include "Core/Warning.hpp"
 
 #include <cctype>
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|

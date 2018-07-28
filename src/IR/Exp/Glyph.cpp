@@ -14,7 +14,7 @@
 
 #include "IR/IArchive.hpp"
 
-#include <iostream>
+#include "Core/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -38,12 +38,8 @@ namespace GDCC::IR
    {
       if(auto value = glyph.getData().value)
          return value->getValue();
-      else
-      {
-         std::cerr << "ERROR: " << pos << ": undefined glyph: '"
-            << static_cast<Core::String>(glyph) << "'\n";
-         throw EXIT_FAILURE;
-      }
+
+      Core::ErrorUndef(pos, "glyph", static_cast<Core::String>(glyph));
    }
 
    //

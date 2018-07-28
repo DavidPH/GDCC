@@ -14,11 +14,11 @@
 
 #include "CPP/IStream.hpp"
 
+#include "Core/Exception.hpp"
 #include "Core/StreamTBuf.hpp"
 #include "Core/StringBuf.hpp"
 #include "Core/TokenStream.hpp"
 
-#include <iostream>
 #include <vector>
 
 
@@ -94,8 +94,7 @@ namespace GDCC::CPP
             (buf[0] = skipWS()).tok != Core::TOK_String ||
             skipWS().tok != Core::TOK_ParenC)
          {
-            std::cerr << "ERROR: " << pos << ": bad _Pragma\n";
-            throw EXIT_FAILURE;
+            Core::Error(pos, "bad _Pragma");
          }
 
          // Limited string processing.

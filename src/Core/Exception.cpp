@@ -14,8 +14,6 @@
 
 #include "Core/Token.hpp"
 
-#include <sstream>
-
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -56,21 +54,6 @@ namespace GDCC::Core
    };
 
    //
-   // ExceptString
-   //
-   class ExceptString : public Exception
-   {
-   public:
-      ExceptString(Origin pos_, String str_) noexcept :
-         Exception{pos_}, str{str_} {}
-
-   protected:
-      virtual char const *whatGen() const noexcept;
-
-      String const str;
-   };
-
-   //
    // ExceptStringC
    //
    class ExceptStringC : public Exception
@@ -83,6 +66,51 @@ namespace GDCC::Core
       virtual char const *whatGen() const noexcept;
 
       char const *const str;
+   };
+
+   //
+   // ExceptStringS
+   //
+   class ExceptStringS : public Exception
+   {
+   public:
+      ExceptStringS(Origin pos_, String str_) noexcept :
+         Exception{pos_}, str{str_} {}
+
+   protected:
+      virtual char const *whatGen() const noexcept;
+
+      String const str;
+   };
+
+   //
+   // ExceptStringU
+   //
+   class ExceptStringU : public Exception
+   {
+   public:
+      ExceptStringU(Origin pos_, std::unique_ptr<char[]> &&str_) noexcept :
+         Exception{pos_}, str{std::move(str_)} {}
+
+   protected:
+      virtual char const *whatGen() const noexcept;
+
+      std::unique_ptr<char[]> const str;
+   };
+
+   //
+   // ExceptStringZ
+   //
+   class ExceptStringZ : public Exception
+   {
+   public:
+      ExceptStringZ(Origin pos_, std::string &&str_) noexcept :
+         Exception{pos_}, str{std::move(str_)} {}
+
+   protected:
+      virtual char const *whatGen() const noexcept;
+
+      std::string const str;
    };
 
    //
@@ -197,9 +225,9 @@ namespace GDCC::Core
    }
 
    //
-   // ExceptString::whatGen
+   // ExceptStringC::whatGen
    //
-   char const *ExceptString::whatGen() const noexcept
+   char const *ExceptStringC::whatGen() const noexcept
    {
       std::ostringstream oss;
       putOrigin(oss) << str;
@@ -207,9 +235,29 @@ namespace GDCC::Core
    }
 
    //
-   // ExceptStringC::whatGen
+   // ExceptStringS::whatGen
    //
-   char const *ExceptStringC::whatGen() const noexcept
+   char const *ExceptStringS::whatGen() const noexcept
+   {
+      std::ostringstream oss;
+      putOrigin(oss) << str;
+      return whatSet(oss.str());
+   }
+
+   //
+   // ExceptStringU::whatGen
+   //
+   char const *ExceptStringU::whatGen() const noexcept
+   {
+      std::ostringstream oss;
+      putOrigin(oss) << str.get();
+      return whatSet(oss.str());
+   }
+
+   //
+   // ExceptStringZ::whatGen
+   //
+   char const *ExceptStringZ::whatGen() const noexcept
    {
       std::ostringstream oss;
       putOrigin(oss) << str;
@@ -251,21 +299,25 @@ namespace GDCC::Core
    //
    // Error
    //
+   void Error(Origin pos, String msg)
+      {throw ExceptStringS(pos, msg);}
    void Error(Origin pos, char const *msg)
       {throw ExceptStringC(pos, msg);}
-   void Error(Origin pos, String msg)
-      {throw ExceptString(pos, msg);}
+   void Error(Origin pos, std::string &&msg)
+      {throw ExceptStringZ(pos, std::move(msg));}
+   void Error(Origin pos, std::unique_ptr<char[]> &&msg)
+      {throw ExceptStringU(pos, std::move(msg));}
 
    //
    // ErrorExpect
    //
-   void ErrorExpect(char const *exp, Token const &got, bool expQ, bool gotQ)
-      {throw ExceptExpect(got.pos, exp, got.str, expQ, gotQ);}
-   void ErrorExpect(Origin pos, char const *exp, String got, bool expQ, bool gotQ)
-      {throw ExceptExpect(pos, exp, got, expQ, gotQ);}
    void ErrorExpect(Origin pos, String exp, String got, bool expQ, bool gotQ)
       {throw ExceptExpect(pos, exp, got, expQ, gotQ);}
+   void ErrorExpect(Origin pos, char const *exp, String got, bool expQ, bool gotQ)
+      {throw ExceptExpect(pos, exp, got, expQ, gotQ);}
    void ErrorExpect(String exp, Token const &got, bool expQ, bool gotQ)
+      {throw ExceptExpect(got.pos, exp, got.str, expQ, gotQ);}
+   void ErrorExpect(char const *exp, Token const &got, bool expQ, bool gotQ)
       {throw ExceptExpect(got.pos, exp, got.str, expQ, gotQ);}
 
    //

@@ -22,6 +22,7 @@
 #include "BC/ZDACS/Info.hpp"
 #endif
 
+#include "Core/Exception.hpp"
 #include "Core/File.hpp"
 #include "Core/Option.hpp"
 
@@ -32,8 +33,6 @@
 #include "Option/CStrV.hpp"
 
 #include "Platform/Platform.hpp"
-
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -162,10 +161,7 @@ namespace GDCC::LD
    void PutBytecode(std::ostream &out, IR::Program &prog, BC::Info *info)
    {
       if(!info)
-      {
-         std::cerr << "invalid target\n";
-         throw EXIT_FAILURE;
-      }
+         Core::Error({}, "invalid target");
 
       ProcessIR(prog, info);
 

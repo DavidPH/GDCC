@@ -17,8 +17,6 @@
 #include "IR/CallType.hpp"
 #include "IR/Program.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -153,9 +151,7 @@ namespace GDCC::BC::DGE
          break;
 
       default:
-         std::cerr << "ERROR: " << pos << ": DGE cannot use Arg: "
-            << arg.a << '\n';
-         throw EXIT_FAILURE;
+         Core::Error(pos, "DGE cannot use Arg: ", arg.a);
       }
    }
 }

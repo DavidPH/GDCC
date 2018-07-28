@@ -15,9 +15,7 @@
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
-#include "Core/String.hpp"
-
-#include <iostream>
+#include "Core/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -39,8 +37,7 @@ namespace GDCC::IR
       case Code::None: return out << Core::STR_None;
       }
 
-      std::cerr << "invalid enum GDCC::IR::Code\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid enum GDCC::IR::Code");
    }
 
    //
@@ -56,8 +53,7 @@ namespace GDCC::IR
       case Code::None: return out << "None";
       }
 
-      std::cerr << "invalid enum GDCC::IR::Code\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid enum GDCC::IR::Code");
    }
 
    //
@@ -73,8 +69,7 @@ namespace GDCC::IR
       case Core::STR_None: out = Code::None; return in;
 
       default:
-         std::cerr << "invalid Code\n";
-         throw EXIT_FAILURE;
+         Core::Error({}, "invalid Code");
       }
    }
 }

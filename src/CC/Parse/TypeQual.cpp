@@ -21,8 +21,6 @@
 #include "SR/Type.hpp"
 #include "SR/Warning.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Static Functions                                                           |

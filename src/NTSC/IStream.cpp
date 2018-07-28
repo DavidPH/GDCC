@@ -17,7 +17,6 @@
 #include "Core/Token.hpp"
 
 #include <cctype>
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|

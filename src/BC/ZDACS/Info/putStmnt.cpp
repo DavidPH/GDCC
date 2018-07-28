@@ -20,8 +20,6 @@
 #include "IR/Function.hpp"
 #include "IR/Glyph.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -181,9 +179,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Xcod_SID: putStmnt_Xcod_SID(); break;
 
       default:
-         std::cerr << "ERROR: " << stmnt->pos
-            << ": cannot put Code for ZDACS: " << stmnt->code << '\n';
-         throw EXIT_FAILURE;
+         Core::Error(stmnt->pos, "ZDACS cannot put Code: ", stmnt->code);
       }
    }
 

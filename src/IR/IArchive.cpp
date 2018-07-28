@@ -12,9 +12,8 @@
 
 #include "IR/IArchive.hpp"
 
-#include "Core/Origin.hpp"
+#include "Core/Exception.hpp"
 
-#include <iostream>
 #include <cstring>
 
 
@@ -120,8 +119,7 @@ namespace GDCC::IR
          std::strcmp(get(), "GDCC::IR") ||
          std::strcmp(get(), ""))
       {
-         std::cerr << "not IR\n";
-         throw EXIT_FAILURE;
+         Core::Error({}, "not IR");
       }
 
       getTablesString();
@@ -163,9 +161,8 @@ namespace GDCC::IR
          out = in.stab[n];
       else
       {
-         std::cerr << "invalid String: " << std::hex << n + Core::STRMAX
-            << "/(" << Core::STRMAX << '+' << in.stab.size() << ")\n";
-         throw EXIT_FAILURE;
+         Core::Error({}, "invalid String: ", n + Core::STRMAX,
+            "/(", Core::STRMAX, '+', in.stab.size(), ')');
       }
 
       return in;
@@ -184,9 +181,8 @@ namespace GDCC::IR
          out = Core::STRNULL;
       else
       {
-         std::cerr << "invalid StringIndex: " << std::hex << n + Core::STRMAX
-            << "/(" << Core::STRMAX << '+' << in.stab.size() << ")\n";
-         throw EXIT_FAILURE;
+         Core::Error({}, "invalid StringIndex: ", n + Core::STRMAX,
+            "/(", Core::STRMAX, '+', in.stab.size(), ')');
       }
 
       return in;

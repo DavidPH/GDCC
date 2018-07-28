@@ -15,9 +15,7 @@
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
-#include "Core/String.hpp"
-
-#include <iostream>
+#include "Core/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -38,8 +36,7 @@ namespace GDCC::IR
       #include "IR/LinkageList.hpp"
       }
 
-      std::cerr << "invalid enum GDCC::IR::Linkage\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid enum GDCC::IR::Linkage");
    }
 
    //
@@ -54,8 +51,7 @@ namespace GDCC::IR
       #include "IR/LinkageList.hpp"
       }
 
-      std::cerr << "invalid enum GDCC::IR::Linkage\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid enum GDCC::IR::Linkage");
    }
 
    //
@@ -70,8 +66,7 @@ namespace GDCC::IR
       #include "IR/LinkageList.hpp"
 
       default:
-         std::cerr << "invalid GDCC::IR::Linkage\n";
-         throw EXIT_FAILURE;
+         Core::Error({}, "invalid Linkage");
       }
    }
 

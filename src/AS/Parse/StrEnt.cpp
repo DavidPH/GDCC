@@ -17,8 +17,6 @@
 
 #include "IR/StrEnt.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |

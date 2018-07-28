@@ -17,8 +17,6 @@
 #include "IR/CallType.hpp"
 #include "IR/Function.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |

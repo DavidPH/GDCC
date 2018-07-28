@@ -16,8 +16,6 @@
 
 #include "IR/Program.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -184,9 +182,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Xcod_SID: numChunkCODE += 32; break;
 
       default:
-         std::cerr << "ERROR: " << stmnt->pos
-            << ": cannot gen Code for ZDACS: " << stmnt->code << '\n';
-         throw EXIT_FAILURE;
+         Core::Error(stmnt->pos, "ZDACS cannot gen Code: ", stmnt->code);
       }
    }
 

@@ -26,7 +26,6 @@
 #include "Platform/Platform.hpp"
 
 #include <climits>
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -589,8 +588,7 @@ namespace GDCC::BC::ZDACS
 
       default:
       case_def:
-         std::cerr << "ERROR: " << stmnt->pos << ": bad getStkPtrIdx\n";
-         throw EXIT_FAILURE;
+         Core::Error(stmnt->pos, "bad getStkPtrIdx");
       }
    }
 
@@ -1056,9 +1054,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       default:
-         std::cerr << "ERROR: " << pos << ": ZDACS cannot use Arg: "
-            << arg.a << '\n';
-         throw EXIT_FAILURE;
+         Core::Error(pos, "ZDACS cannot use Arg: ", arg.a);
       }
    }
 

@@ -17,8 +17,6 @@
 
 #include "IR/Space.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |

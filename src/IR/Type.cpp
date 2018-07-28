@@ -17,7 +17,7 @@
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
-#include <iostream>
+#include "Core/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -334,8 +334,7 @@ namespace GDCC::IR
          #include "IR/TypeList.hpp"
       }
 
-      std::cerr << "invalid GDCC::IR::Type\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid enum GDCC::IR::TypeBase");
    }
 
    //
@@ -350,8 +349,7 @@ namespace GDCC::IR
          #include "IR/TypeList.hpp"
       }
 
-      std::cerr << "invalid enum GDCC::IR::TypeBase\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid enum GDCC::IR::TypeBase");
    }
 
    //
@@ -374,8 +372,7 @@ namespace GDCC::IR
          #include "IR/TypeList.hpp"
       }
 
-      std::cerr << "invalid enum GDCC::IR::TypeBase\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid enum GDCC::IR::TypeBase");
    }
 
    //
@@ -488,8 +485,7 @@ namespace GDCC::IR
          #include "IR/TypeList.hpp"
       }
 
-      std::cerr << "invalid GDCC::IR::Type\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid TypeBase");
    }
 
    //
@@ -504,8 +500,7 @@ namespace GDCC::IR
          #include "IR/TypeList.hpp"
 
       default:
-         std::cerr << "invalid enum GDCC::IR::TypeBase\n";
-         throw EXIT_FAILURE;
+         Core::Error({}, "invalid TypeBase");
       }
    }
 

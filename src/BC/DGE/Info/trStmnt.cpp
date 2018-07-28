@@ -16,8 +16,6 @@
 
 #include "IR/Function.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -114,9 +112,7 @@ namespace GDCC::BC::DGE
       case IR::Code::Swap: trStmnt_Swap(); break;
 
       default:
-         std::cerr << "ERROR: " << stmnt->pos
-            << ": cannot translate Code for DGE: " << stmnt->code << '\n';
-         throw EXIT_FAILURE;
+         Core::Error(stmnt->pos, "DGE cannot tr Code: ", stmnt->code);
       }
    }
 

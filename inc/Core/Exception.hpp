@@ -15,6 +15,8 @@
 
 #include "../Core/Origin.hpp"
 
+#include <sstream>
+
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
@@ -59,18 +61,22 @@ namespace GDCC::Core
 namespace GDCC::Core
 {
    [[noreturn]]
+   void Error(Origin pos, String msg);
+   [[noreturn]]
    void Error(Origin pos, char const *msg);
    [[noreturn]]
-   void Error(Origin pos, String msg);
+   void Error(Origin pos, std::string &&msg);
+   [[noreturn]]
+   void Error(Origin pos, std::unique_ptr<char[]> &&msg);
 
-   [[noreturn]]
-   void ErrorExpect(char const *exp, Token const &got, bool expQ = false, bool gotQ = true);
-   [[noreturn]]
-   void ErrorExpect(Origin pos, char const *exp, String got, bool expQ = false, bool gotQ = true);
    [[noreturn]]
    void ErrorExpect(Origin pos, String exp, String got, bool expQ = false, bool gotQ = true);
    [[noreturn]]
    void ErrorExpect(String exp, Token const &got, bool expQ = false, bool gotQ = true);
+   [[noreturn]]
+   void ErrorExpect(Origin pos, char const *exp, String got, bool expQ = false, bool gotQ = true);
+   [[noreturn]]
+   void ErrorExpect(char const *exp, Token const &got, bool expQ = false, bool gotQ = true);
 
    [[noreturn]]
    void ErrorFile(String filename, char const *mode);
@@ -84,6 +90,15 @@ namespace GDCC::Core
    void ErrorUndef(Origin pos, String type, String name);
    [[noreturn]]
    void ErrorUndef(String type, String name);
+
+   template<typename... Args>
+   [[noreturn]]
+   void Error(Origin pos, Args const &...args)
+   {
+      std::ostringstream oss;
+      ((oss << args), ...);
+      Error(pos, oss.str());
+   }
 }
 
 #endif//GDCC__Core__Exception_H__

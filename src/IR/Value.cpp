@@ -16,9 +16,9 @@
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Core/Exception.hpp"
 
-#include <iostream>
+#include "Platform/Platform.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -269,8 +269,7 @@ namespace GDCC::IR
          return vStrEn.value;
 
       default:
-         std::cerr << "ERROR: Bad Value::getFastU: " << v << '\n';
-         throw EXIT_FAILURE;
+         Core::Error({}, "bad Value::getFastU: ", v);
       }
    }
 
@@ -375,8 +374,7 @@ namespace GDCC::IR
          #include "IR/TypeList.hpp"
       }
 
-      std::cerr << "invalid enum GDCC::IR::Value\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid enum GDCC::IR::ValueBase");
    }
 
    //
@@ -486,8 +484,7 @@ namespace GDCC::IR
          #include "IR/TypeList.hpp"
       }
 
-      std::cerr << "invalid enum GDCC::IR::Value\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid ValueBase");
    }
 }
 

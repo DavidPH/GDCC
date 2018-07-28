@@ -15,7 +15,7 @@
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
-#include <iostream>
+#include "Core/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -36,8 +36,7 @@ namespace GDCC::IR
          #include "IR/AddrList.hpp"
       }
 
-      std::cerr << "invalid enum GDCC::IR::AddrBase\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid enum GDCC::IR::AddrBase");
    }
 
    //
@@ -60,8 +59,7 @@ namespace GDCC::IR
          #include "IR/AddrList.hpp"
       }
 
-      std::cerr << "invalid enum GDCC::IR::AddrBase\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid enum GDCC::IR::AddrBase");
    }
 
    //
@@ -76,8 +74,7 @@ namespace GDCC::IR
          #include "IR/AddrList.hpp"
 
       default:
-         std::cerr << "invalid AddrBase\n";
-         throw EXIT_FAILURE;
+         Core::Error({}, "invalid AddrBase");
       }
    }
 

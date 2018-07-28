@@ -12,8 +12,9 @@
 
 #include "CPP/PPTokenTBuf.hpp"
 
+#include "Core/Exception.hpp"
+
 #include <cctype>
-#include <iostream>
 
 
 //----------------------------------------------------------------------------|
@@ -37,15 +38,11 @@ namespace GDCC::CPP
          break;
 
       case Core::TOK_Number:
-               if(IsNumInt(buf[0].str)) buf[0].tok = Core::TOK_NumInt;
+              if(IsNumInt(buf[0].str)) buf[0].tok = Core::TOK_NumInt;
          else if(IsNumFix(buf[0].str)) buf[0].tok = Core::TOK_NumFix;
          else if(IsNumFlt(buf[0].str)) buf[0].tok = Core::TOK_NumFlt;
          else
-         {
-            std::cerr << "ERROR: " << buf[0].pos << ": not valid number: '"
-               << buf[0].str << "'\n";
-            throw EXIT_FAILURE;
-         }
+            Core::ErrorExpect("number", buf[0]);
          break;
 
       default:

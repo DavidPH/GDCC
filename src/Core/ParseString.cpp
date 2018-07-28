@@ -174,7 +174,7 @@ namespace GDCC::Core
                char str[] = "unknown escape character: ' '";
                std::size_t len = sizeof(str) - 1;
                str[len - 2] = static_cast<char>(c);
-               Error({}, {str, len});
+               Error({}, StrDup(str, len));
             }
          }
          else

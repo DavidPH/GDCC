@@ -16,8 +16,6 @@
 
 #include "IR/Program.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
@@ -408,11 +406,7 @@ namespace GDCC::BC
    void Info::CheckArgB(IR::Arg const &arg, IR::AddrBase b, Core::Origin pos)
    {
       if(arg.a != b)
-      {
-         std::cerr << "ERROR: " << pos << ": " << arg.a << " must have "
-            << b << " parameter\n";
-         throw EXIT_FAILURE;
-      }
+         Core::Error(pos, arg.a, " must have", b, " parameter");
    }
 
    //
@@ -421,11 +415,7 @@ namespace GDCC::BC
    void Info::CheckArgB(IR::Statement *stmnt, std::size_t a, IR::ArgBase b)
    {
       if(stmnt->args[a].a != b)
-      {
-         std::cerr << "ERROR: " << stmnt->pos << ": " << stmnt->code
-            << " must have " << b << " args[" << a << "]\n";
-         throw EXIT_FAILURE;
-      }
+         Core::Error(stmnt->pos, stmnt->code, " must have ", b, " args[", a, "]");
    }
 
    //
@@ -433,12 +423,8 @@ namespace GDCC::BC
    //
    void Info::CheckArgC(IR::Statement *stmnt, std::size_t c)
    {
-      if(stmnt->args.size() < c)
-      {
-         std::cerr << "ERROR: " << stmnt->pos << ": bad argc for " << stmnt->code
-            << ": " << stmnt->args.size() << " < " << c << '\n';
-         throw EXIT_FAILURE;
-      }
+      if(auto argc = stmnt->args.size(); argc < c)
+         Core::Error(stmnt->pos, "bad argc for ", stmnt->code, ": ", argc, " < ", c);
    }
 }
 

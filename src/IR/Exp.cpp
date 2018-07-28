@@ -17,8 +17,6 @@
 
 #include "Core/Exception.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -148,8 +146,7 @@ namespace GDCC::IR
       case Core::STR_Value:     return ExpGetIR_Value    (in);
 
       default:
-         std::cerr << "invalid Exp\n";
-         throw EXIT_FAILURE;
+         Core::Error({}, "invalid Exp");
       }
    }
 
@@ -161,8 +158,7 @@ namespace GDCC::IR
       if(auto exp = GetIR<Exp::CPtr>(in))
          return static_cast<Exp::CRef>(exp);
 
-      std::cerr << "invalid Exp::Ref\n";
-      throw EXIT_FAILURE;
+      Core::Error({}, "invalid Exp::Ref");
    }
 
    //

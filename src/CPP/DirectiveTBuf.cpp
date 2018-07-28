@@ -12,7 +12,7 @@
 
 #include "CPP/DirectiveTBuf.hpp"
 
-#include <iostream>
+#include "Core/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -98,13 +98,12 @@ namespace GDCC::CPP
       if(tok.tok != Core::TOK_Identi || tok.str != Core::STR_error)
          return false;
 
-      std::cerr << "ERROR: " << tok.pos << ": #error:";
+      std::ostringstream oss("#error: ");
 
       for(src.get(); src.peek().tok != Core::TOK_LnEnd && src.peek().tok != Core::TOK_EOF;)
-         std::cerr << src.get().str;
+         oss << src.get().str;
 
-      std::cerr << std::endl;
-      throw EXIT_FAILURE;
+      Core::Error(tok.pos, oss.str());
    }
 }
 

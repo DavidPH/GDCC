@@ -16,8 +16,6 @@
 
 #include "IR/Statement.hpp"
 
-#include <iostream>
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -174,9 +172,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Xcod_SID: break;
 
       default:
-         std::cerr << "ERROR: " << stmnt->pos
-            << ": cannot translate Code for ZDACS: " << stmnt->code << '\n';
-         throw EXIT_FAILURE;
+         Core::Error(stmnt->pos, "ZDACS cannot tr Code: ", stmnt->code);
       }
    }
 }
