@@ -210,6 +210,14 @@ namespace GDCC::CC
 
       auto typeR = exp->getType();
 
+      // Convert Aut pointer to Sta before converting to arithmetic type.
+      if(typeR->getBaseType()->getQualAddr().base == IR::AddrBase::Aut)
+      {
+         typeR = typeR->getBaseType()
+            ->getTypeQualAddr({IR::AddrBase::Sta, Core::STR_})->getTypePointer();
+         typeR = (exp = Exp_ConvertPtrLoc::Create(typeR, exp, pos))->getType();
+      }
+
       if(typeL->isCTypeFloat())
          Core::Error(pos, "pointer to float stub");
 
