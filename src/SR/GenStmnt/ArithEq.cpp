@@ -25,6 +25,162 @@
 namespace GDCC::SR
 {
    //
+   // GenStmnt_ArithEqBitIdx
+   //
+   // Does general statemenet generation with an IR arg for l.
+   //
+   template<typename ArgT, typename IdxT>
+   static void GenStmnt_ArithEqBitIdx(Exp_Binary const *exp, IR::Code code,
+      GenStmntCtx const &ctx, Arg const &dst, Type const *evalT, bool post,
+      Arg const &arg, IdxT const &idx)
+   {
+      // Bitfield info.
+      auto bitsT = exp->expL->getType();
+      bool bitsS = bitsT->getSizeBitsS();
+      auto bitsW = ctx.block.getExp(bitsT->getSizeBitsF() + bitsT->getSizeBitsI() + bitsS);
+      auto bitsO = ctx.block.getExp(bitsT->getSizeBitsO());
+      auto bitsG = bitsS ? IR::Code::Bges : IR::Code::Bget;
+
+      ctx.block.setArgSize();
+
+      // Duplicate to destination, if necessary.
+      if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
+      {
+         // Push l.
+         ctx.block.addStmnt(bitsG,
+            dst.getIRArgStk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0),
+            bitsW, bitsO);
+
+         // Assign dst.
+         GenStmnt_MovePart(exp, ctx, dst, false, true);
+      }
+
+      // Push l.
+      ctx.block.addStmnt(bitsG,
+         arg.getIRArgStk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0),
+         bitsW, bitsO);
+
+      // Convert to evaluation type.
+      GenStmnt_ConvertArith(exp, evalT, exp->type, ctx);
+
+      // Attempt to turn r into an IR Arg.
+      if(exp->expR->getArg().isIRArg())
+      {
+         ctx.block.addStmnt(code,
+            dst.getIRArgStk(), arg.getIRArgStk(),
+            exp->expR->getArg().getIRArg(ctx.prog));
+      }
+
+      // Otherwise, just operate on stack.
+      else
+      {
+         // Push r.
+         exp->expR->genStmntStk(ctx);
+
+         // Operate on stack.
+         ctx.block.addStmnt(code,
+            dst.getIRArgStk(), arg.getIRArgStk(), arg.getIRArgStk());
+      }
+
+      // Convert to result type.
+      GenStmnt_ConvertArith(exp, exp->type, evalT, ctx);
+
+      // Assign l.
+      ctx.block.addStmnt(IR::Code::Bset,
+         GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0), arg.getIRArgStk(),
+         bitsW, bitsO);
+
+      // Duplicate to destination, if necessary.
+      if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
+      {
+         // Push l.
+         ctx.block.addStmnt(bitsG,
+            dst.getIRArgStk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0),
+            bitsW, bitsO);
+
+         // Assign dst.
+         GenStmnt_MovePart(exp, ctx, dst, false, true);
+      }
+   }
+
+   //
+   // GenStmnt_ArithEqBitT
+   //
+   template<typename ArgT>
+   static void GenStmnt_ArithEqBitT(Exp_Binary const *exp, IR::Code code,
+      GenStmntCtx const &ctx, Arg const &dst, Type const *evalT, bool post,
+      Arg const &arg)
+   {
+      // If arg address is a constant, then use Arg_Lit address.
+      if(arg.data->isIRExp())
+      {
+         // Evaluate arg's data for side effects.
+         arg.data->genStmnt(ctx);
+
+         // Use literal as index.
+         GenStmnt_ArithEqBitIdx<ArgT>(exp, code, ctx, dst, evalT, post, arg,
+            IR::Arg_Lit(arg.type->getSizeBytes(), arg.data->getIRExp()));
+
+         return;
+      }
+
+      // As a fallback, just evaluate the pointer and store in a temporary.
+      {
+         // Evaluate arg's data.
+         arg.data->genStmntStk(ctx);
+
+         // Move to temporary.
+         Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
+         ctx.block.addStmnt(IR::Code::Move, tmp.getArg(), tmp.getArgStk());
+
+         // Use temporary as index.
+         GenStmnt_ArithEqBitIdx<ArgT>(exp, code, ctx, dst, evalT, post, arg, tmp.getArg());
+
+         return;
+      }
+   }
+
+   //
+   // GenStmnt_ArithEqBitT<IR::Arg_Cpy>
+   //
+   template<>
+   void GenStmnt_ArithEqBitT<IR::Arg_Cpy>(Exp_Binary const *exp, IR::Code,
+      GenStmntCtx const &, Arg const &, Type const *, bool, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Cpy op=");
+   }
+
+   //
+   // GenStmnt_ArithEqBitT<IR::Arg_Lit>
+   //
+   template<>
+   void GenStmnt_ArithEqBitT<IR::Arg_Lit>(Exp_Binary const *exp, IR::Code,
+      GenStmntCtx const &, Arg const &, Type const *, bool, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Lit op=");
+   }
+
+   //
+   // GenStmnt_ArithEqBitT<IR::Arg_Nul>
+   //
+   template<>
+   void GenStmnt_ArithEqBitT<IR::Arg_Nul>(Exp_Binary const *exp, IR::Code,
+      GenStmntCtx const &, Arg const &, Type const *, bool, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Nul op=");
+   }
+
+   //
+   // GenStmnt_ArithEqBitT<IR::Arg_Stk>
+   //
+   template<>
+   void GenStmnt_ArithEqBitT<IR::Arg_Stk>(Exp_Binary const *exp, IR::Code,
+      GenStmntCtx const &, Arg const &, Type const *, bool, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Stk op=");
+   }
+
+   //
    // GenStmnt_ArithEqIdx
    //
    // Does general statemenet generation with an IR arg for l.
@@ -98,8 +254,6 @@ namespace GDCC::SR
       GenStmntCtx const &ctx, Arg const &dst, Type const *evalT, bool post,
       Arg const &arg)
    {
-      using namespace GDCC;
-
       // If arg address is a constant, then use Arg_Lit address.
       if(arg.data->isIRExp())
       {
@@ -188,6 +342,22 @@ namespace GDCC::SR
       // Map from generic address space for codegen.
       if(arg.type->getQualAddr().base == IR::AddrBase::Gen)
          arg.type = arg.type->getTypeQual(IR::GetAddrGen());
+
+      // Bitfield op?
+      if(exp->expL->getType()->isTypeBitfield())
+      {
+         switch(arg.type->getQualAddr().base)
+         {
+            #define GDCC_IR_AddrList(addr) \
+            case IR::AddrBase::addr: \
+               GenStmnt_ArithEqBitT<IR::Arg_##addr>( \
+                  exp, code, ctx, dst, evalT, post, arg); \
+               break;
+            #include "IR/AddrList.hpp"
+         }
+
+         return;
+      }
 
       // If possible, operate with IR args.
       auto argL = exp->expL->getArg();
