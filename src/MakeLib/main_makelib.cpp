@@ -115,6 +115,7 @@ static void MakeLib_libc(GDCC::IR::Program &prog, bool nomath = false)
    MakeLib_CC(prog, path, "printf.c");
    MakeLib_CC(prog, path, "scanf.c");
    MakeLib_CC(prog, path, "setjmp.c");
+   MakeLib_CC(prog, path, "signal.c");
    MakeLib_CC(prog, path, "sort.c");
    MakeLib_CC(prog, path, "stdfix.c");
    MakeLib_CC(prog, path, "stdio.c");
