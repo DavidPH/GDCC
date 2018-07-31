@@ -28,6 +28,7 @@ typedef signed int __intptr_t;
 typedef int __max_align_t;
 typedef long int __off_t;
 typedef int __ptrdiff_t;
+typedef int __sig_atomic_t;
 typedef unsigned int __size_t;
 typedef int __ssize_t;
 typedef long int __time_t;
@@ -45,6 +46,8 @@ typedef int __cookie_close_function_t(void *);
 
 struct __FILE;
 struct __cookie_io_functions_t;
+struct __fenv_t;
+struct __fexcept_t;
 struct __mbstate_t;
 
 #endif//__GDCC_Header__C__bits__types_h__

@@ -107,6 +107,7 @@ static void MakeLib_libc(GDCC::IR::Program &prog, bool nomath = false)
 
    MakeLib_CC(prog, path, "ctype.c");
    MakeLib_CC(prog, path, "errno.c");
+   MakeLib_CC(prog, path, "fenv.c");
    MakeLib_CC(prog, path, "fmemopen.c");
    MakeLib_CC(prog, path, "fopen.c");
    MakeLib_CC(prog, path, "format.c");

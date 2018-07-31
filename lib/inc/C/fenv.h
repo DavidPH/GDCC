@@ -8,12 +8,12 @@
 //
 // Header for target library libc.
 //
-// Signal handling.
+// Floating-point environment.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef __GDCC_Header__C__signal_h__
-#define __GDCC_Header__C__signal_h__
+#ifndef __GDCC_Header__C__fenv_h__
+#define __GDCC_Header__C__fenv_h__
 
 #include <bits/types.h>
 
@@ -22,26 +22,28 @@
 extern "C" {
 #endif
 
+
 //----------------------------------------------------------------------------|
 // Macros                                                                     |
 //
 
 //
-// SIG_*
+// FE_* exceptions
 //
-#define SIG_DFL ((void (*)(int))-2)
-#define SIG_ERR ((void (*)(int))-3)
-#define SIG_IGN ((void (*)(int))-4)
 
 //
-// SIG*
+// FE_ALL_EXCEPT
 //
-#define SIGABRT 1
-#define SIGFPE  2
-#define SIGILL  3
-#define SIGINT  4
-#define SIGSEGV 5
-#define SIGTERM 6
+#define FE_ALL_EXCEPT 0
+
+//
+// FE_* rounding
+//
+
+//
+// FL_DFL_ENV
+//
+#define FL_DFL_ENV ((fenv_t const *)0)
 
 
 //----------------------------------------------------------------------------|
@@ -49,12 +51,14 @@ extern "C" {
 //
 
 //
-// sig_atomic_t
+// fenv_t
 //
-#ifndef __GDCC_Have__sig_atomic_t__
-#define __GDCC_Have__sig_atomic_t__
-typedef __sig_atomic_t sig_atomic_t;
-#endif
+typedef struct __fenv_t fenv_t;
+
+//
+// fexcept_t
+//
+typedef struct __fexcept_t fexcept_t;
 
 
 //----------------------------------------------------------------------------|
@@ -62,20 +66,34 @@ typedef __sig_atomic_t sig_atomic_t;
 //
 
 //
-// Specify signal handling.
+// Floating-point exceptions.
 //
 
-void (*signal(int _sig, void (*_func)(int)))(int);
+int feclearexcept(int _excepts);
+int fegetexceptflag(fexcept_t *_flagp, int _excepts);
+int feraiseexcept(int _excepts);
+int fesetexceptflag(fexcept_t const *_flagp, int _excepts);
+int fetestexcept(int _excepts);
 
 //
-// Send signal.
+// Rounding.
 //
 
-int raise(int _sig);
+int fegetround(void);
+int fesetround(int _round);
+
+//
+// Environment.
+//
+
+int fegetenv(fenv_t *_envp);
+int feholdexcept(fenv_t *_envp);
+int fesetenv(const fenv_t *_envp);
+int feupdateenv(const fenv_t *_envp);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif//__GDCC_Header__C__signal_h__
+#endif//__GDCC_Header__C__fenv_h__
 

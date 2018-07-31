@@ -32,6 +32,10 @@ static void (*FuncSIGTERM)(int) = SIG_IGN;
 // Extern Functions                                                           |
 //
 
+//=========================================================
+// Specify signal handling.
+//
+
 //
 // signal
 //
@@ -56,6 +60,10 @@ void (*signal(int sig, void (*func)(int)))(int)
    *funp = func == SIG_DFL ? SIG_IGN : func;
    return oldf;
 }
+
+//=========================================================
+// Send signal.
+//
 
 //
 // raise
