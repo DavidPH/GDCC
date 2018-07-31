@@ -367,7 +367,7 @@ namespace GDCC::BC::ZDACS
 
       data.type  = TypeWord;
       data.value = IR::ExpCreate_Value(
-         IR::Value_Fixed(val, TypeWord), Core::Origin(Core::STRNULL, 0));
+         IR::Value_Fixed(Core::NumberCast<Core::Integ>(val), TypeWord), {});
    }
 
    //

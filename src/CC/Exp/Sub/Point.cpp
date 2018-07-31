@@ -112,9 +112,8 @@ namespace GDCC::CC
          // negative integers is acceptable. (That is, it will only break
          // if the pointers are already not properly aligned.)
 
-         auto lit = ExpCreate_LitInt(type, point, pos)->getIRExp();
          ctx.block.setArgSize().addStmnt(IR::Code::DivI,
-            IR::Block::Stk(), IR::Block::Stk(), lit);
+            IR::Block::Stk(), IR::Block::Stk(), point);
       }
 
       // Move to destination.

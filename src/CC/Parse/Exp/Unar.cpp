@@ -147,7 +147,8 @@ namespace GDCC::CC
 
       try
       {
-         return ExpCreate_LitInt(SR::Type::Size, type->getMember(name).addr, pos);
+         return ExpCreate_LitInt(SR::Type::Size,
+            Core::NumberCast<Core::Integ>(type->getMember(name).addr), pos);
       }
       catch(SR::TypeError const &)
       {

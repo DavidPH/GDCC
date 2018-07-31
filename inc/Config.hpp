@@ -22,5 +22,8 @@
 #cmakedefine01 GDCC_BC_ZDACS
 #cmakedefine01 GDCC_Core_BigNum
 
+#define GDCC_Core_SizeLong     ${GDCC_Core_SizeLong}
+#define GDCC_Core_SizeLongLong ${GDCC_Core_SizeLongLong}
+
 #endif//GDCC__Config_H__
 

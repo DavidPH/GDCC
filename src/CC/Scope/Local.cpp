@@ -123,7 +123,8 @@ namespace GDCC::CC
       Core::FastU value = *idx * Platform::GetWordBytes() / Platform::GetWordShift();
 
       // Set object's value (index/address).
-      obj->value = IR::ExpCreate_Value(IR::Value_Fixed(value, idxType), {});
+      obj->value = IR::ExpCreate_Value(IR::Value_Fixed(
+         Core::NumberCast<Core::Integ>(value), idxType), {});
 
       // Update allocation info.
       *idx += obj->type->getSizeWords();
@@ -138,7 +139,7 @@ namespace GDCC::CC
 
       // Set space's value (index/address).
       space->value = IR::ExpCreate_Value(
-         IR::Value_Fixed(alloc.localArr, idxType), {nullptr, 0});
+         IR::Value_Fixed(Core::NumberCast<Core::Integ>(alloc.localArr), idxType), {});
 
       // Update allocation info.
       alloc.localArr += 1;

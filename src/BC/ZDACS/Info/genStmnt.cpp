@@ -31,8 +31,9 @@ namespace GDCC::BC::ZDACS
       // Generate label glyphs.
       if(!stmnt->labs.empty())
       {
+         auto ip = Core::NumberCast<Core::Integ>(CodeBase() + numChunkCODE);
          auto val = IR::ExpCreate_Value(
-            IR::Value_Fixed(CodeBase() + numChunkCODE, TypeWord), stmnt->pos);
+            IR::Value_Fixed(std::move(ip), TypeWord), stmnt->pos);
 
          for(auto const &lab : stmnt->labs)
          {

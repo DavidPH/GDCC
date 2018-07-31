@@ -16,6 +16,7 @@ project(gdcc)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
 include(CheckCXXCompilerFlag)
+include(CheckTypeSize)
 
 
 ##----------------------------------------------------------------------------|
@@ -96,6 +97,9 @@ if(MSVC)
 endif()
 
 find_package(GMP)
+
+CHECK_TYPE_SIZE("long" GDCC_Core_SizeLong)
+CHECK_TYPE_SIZE("long long" GDCC_Core_SizeLongLong)
 
 
 ##----------------------------------------------------------------------------|

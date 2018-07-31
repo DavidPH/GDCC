@@ -37,7 +37,8 @@ namespace GDCC::SR
          ctx.block.setArgSize();
          if(idx->isIRExp())
          {
-            auto pointV = IR::Value_Fixed(point, idx->getType()->getIRType().tFixed);
+            auto pointV = IR::Value_Fixed(Core::NumberCast<Core::Integ>(point),
+               idx->getType()->getIRType().tFixed);
             auto pointE = IR::ExpCreate_Value(std::move(pointV), idx->pos);
 
             ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(),
@@ -240,7 +241,7 @@ namespace GDCC::SR
             ctx.block.addStmnt(code, irArgL, irArgL, irArgR);
          else
          {
-            auto pointV = IR::Value_Fixed(point,
+            auto pointV = IR::Value_Fixed(Core::NumberCast<Core::Integ>(point),
                exp->expR->getType()->getIRType().tFixed);
             auto pointE = IR::ExpCreate_Value(std::move(pointV), exp->pos);
 

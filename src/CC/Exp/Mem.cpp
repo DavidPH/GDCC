@@ -49,12 +49,13 @@ namespace GDCC::CC
 
          // Calculate pointer offset.
          auto off  = mem.addr / mem.type->getSizeShift();
-         auto expO = ExpCreate_LitInt(SR::Type::Size, off, pos);
+         auto expO = ExpCreate_LitInt(SR::Type::Size,
+            Core::NumberCast<Core::Integ>(off), pos);
 
          // Create pointer expression.
          auto type = mem.type->getTypePointer();
          auto addr = ExpConvert_Pointer(type, expL->getArg().data, pos);
-               addr = Exp_AddPtrRaw::Create(type, addr, expO, pos);
+              addr = Exp_AddPtrRaw::Create(type, addr, expO, pos);
 
          // Convert pointer into an arg.
          return {mem.type, addr};

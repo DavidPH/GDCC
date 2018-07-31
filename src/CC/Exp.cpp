@@ -326,7 +326,8 @@ namespace GDCC::CC
       if(!t->isCTypeObject() || !t->isTypeComplete())
          Core::Error(pos, "expected complete object type");
 
-      return ExpCreate_LitInt(TypeIntegPrU, t->getSizeAlign(), pos);
+      return ExpCreate_LitInt(TypeIntegPrU,
+         Core::NumberCast<Core::Integ>(t->getSizeAlign()), pos);
    }
 
    //
@@ -348,7 +349,8 @@ namespace GDCC::CC
       if(t->isTypeBitfield())
          Core::Error(pos, "cannot sizeof bitfield");
 
-      return ExpCreate_LitInt(TypeIntegPrU, t->getSizeBytes(), pos);
+      return ExpCreate_LitInt(TypeIntegPrU,
+         Core::NumberCast<Core::Integ>(t->getSizeBytes()), pos);
    }
 
    //

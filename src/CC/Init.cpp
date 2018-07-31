@@ -110,7 +110,8 @@ namespace GDCC::CC
             auto offsetPtrT = offsetType->getTypePointer();
 
             auto offsetRaw = offset / type->getSizeShift();
-            auto offsetExp = ExpCreate_LitInt(SR::Type::Size, offsetRaw, pos);
+            auto offsetExp = ExpCreate_LitInt(SR::Type::Size,
+               Core::NumberCast<Core::Integ>(offsetRaw), pos);
             auto offsetPtr = ExpConvert_Pointer(offsetPtrT, dst.data, pos);
             offsetPtr = Exp_AddPtrRaw::Create(
                offsetPtrT, offsetPtr, offsetExp, pos);

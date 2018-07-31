@@ -71,7 +71,8 @@ namespace GDCC::IR
    //
    Exp::CRef Block::getExp(Core::FastI value)
    {
-      Value_Fixed val{value, {sizeof(value) * CHAR_BIT, 0, true, false}};
+      Value_Fixed val{Core::NumberCast<Core::Integ>(value),
+         {sizeof(value) * CHAR_BIT, 0, true, false}};
       return ExpCreate_Value(std::move(val), head.pos);
    }
 
@@ -80,7 +81,8 @@ namespace GDCC::IR
    //
    Exp::CRef Block::getExp(Core::FastU value)
    {
-      Value_Fixed val{value, {sizeof(value) * CHAR_BIT, 0, false, false}};
+      Value_Fixed val{Core::NumberCast<Core::Integ>(value),
+         {sizeof(value) * CHAR_BIT, 0, false, false}};
       return ExpCreate_Value(std::move(val), head.pos);
    }
 
@@ -89,7 +91,8 @@ namespace GDCC::IR
    //
    Exp::CRef Block::getExp(int value)
    {
-      Value_Fixed val{value, {sizeof(value) * CHAR_BIT, 0, true, false}};
+      Value_Fixed val{Core::NumberCast<Core::Integ>(value),
+         {sizeof(value) * CHAR_BIT, 0, true, false}};
       return ExpCreate_Value(std::move(val), head.pos);
    }
 
@@ -98,7 +101,8 @@ namespace GDCC::IR
    //
    Exp::CRef Block::getExp(unsigned value)
    {
-      Value_Fixed val{value, {sizeof(value) * CHAR_BIT, 0, false, false}};
+      Value_Fixed val{Core::NumberCast<Core::Integ>(value),
+         {sizeof(value) * CHAR_BIT, 0, false, false}};
       return ExpCreate_Value(std::move(val), head.pos);
    }
 

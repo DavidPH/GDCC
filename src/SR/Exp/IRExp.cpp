@@ -88,8 +88,8 @@ namespace GDCC::SR
    {
       return ExpCreate_IRExp(
          IR::ExpCreate_Value(
-            IR::Value_Fixed(size, Type::Size->getIRType().tFixed),
-            Core::Origin(Core::STR_, 0)),
+            IR::Value_Fixed(Core::NumberCast<Core::Integ>(size),
+               Type::Size->getIRType().tFixed), {}),
          Type::Size);
    }
 }

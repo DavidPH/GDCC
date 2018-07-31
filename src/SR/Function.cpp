@@ -203,7 +203,7 @@ namespace GDCC::SR
 
          gdata.type  = Type::Size->getIRType();
          gdata.value = IR::ExpCreate_Value(
-            IR::Value_Fixed(localReg * Platform::GetWordBytes(),
+            IR::Value_Fixed(Core::NumberCast<Core::Integ>(localReg * Platform::GetWordBytes()),
             gdata.type.tFixed), {nullptr, 0});
       }
 
