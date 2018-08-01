@@ -191,7 +191,7 @@ endif()
 ## Environment Configuration                                                  |
 ##
 
-configure_file(inc/Config.hpp inc/GDCC/Config.hpp)
+configure_file(src/Config.hpp inc/GDCC/Config.hpp)
 
 include_directories(${CMAKE_BINARY_DIR}/inc inc src)
 
@@ -208,6 +208,7 @@ add_subdirectory(src)
 
 if(GDCC_INSTALL_API)
    install(DIRECTORY inc/ DESTINATION include/GDCC)
+   install(FILES ${CMAKE_BINARY_DIR}/inc/GDCC/Config.hpp DESTINATION include/GDCC)
 endif()
 
 if(WIN32)
