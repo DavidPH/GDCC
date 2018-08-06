@@ -41,6 +41,8 @@ namespace GDCC::SR
       auto bitsO = ctx.block.getExp(bitsT->getSizeBitsO());
       auto bitsG = bitsS ? IR::Code::Bges : IR::Code::Bget;
 
+      IR::Arg_Stk stkR = exp->expR->getIRArgStk();
+
       ctx.block.setArgSize();
 
       // Duplicate to destination, if necessary.
@@ -66,9 +68,7 @@ namespace GDCC::SR
       // Attempt to turn r into an IR Arg.
       if(exp->expR->getArg().isIRArg())
       {
-         ctx.block.addStmnt(code,
-            dst.getIRArgStk(), arg.getIRArgStk(),
-            exp->expR->getArg().getIRArg(ctx.prog));
+         ctx.block.addStmnt(code, stkR, stkR, exp->expR->getArg().getIRArg(ctx.prog));
       }
 
       // Otherwise, just operate on stack.
@@ -78,8 +78,7 @@ namespace GDCC::SR
          exp->expR->genStmntStk(ctx);
 
          // Operate on stack.
-         ctx.block.addStmnt(code,
-            dst.getIRArgStk(), arg.getIRArgStk(), arg.getIRArgStk());
+         ctx.block.addStmnt(code, stkR, stkR, stkR);
       }
 
       // Convert to result type.
@@ -190,6 +189,8 @@ namespace GDCC::SR
       GenStmntCtx const &ctx, Arg const &dst, Type const *evalT, bool post,
       Arg const &arg, IdxT const &idx)
    {
+      IR::Arg_Stk stkR = exp->expR->getIRArgStk();
+
       // Duplicate to destination, if necessary.
       if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
@@ -209,11 +210,10 @@ namespace GDCC::SR
       GenStmnt_ConvertArith(exp, evalT, exp->type, ctx);
 
       // Attempt to turn r into an IR Arg.
+      ctx.block.setArgSize(evalT->getSizeBytes());
       if(exp->expR->getArg().isIRArg())
       {
-         ctx.block.addStmnt(code,
-            dst.getIRArgStk(), arg.getIRArgStk(),
-            exp->expR->getArg().getIRArg(ctx.prog));
+         ctx.block.addStmnt(code, stkR, stkR, exp->expR->getArg().getIRArg(ctx.prog));
       }
 
       // Otherwise, just operate on stack.
@@ -223,8 +223,7 @@ namespace GDCC::SR
          exp->expR->genStmntStk(ctx);
 
          // Operate on stack.
-         ctx.block.addStmnt(code,
-            dst.getIRArgStk(), arg.getIRArgStk(), arg.getIRArgStk());
+         ctx.block.addStmnt(code, stkR, stkR, stkR);
       }
 
       // Convert to result type.
