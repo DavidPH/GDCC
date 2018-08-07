@@ -38,6 +38,8 @@ namespace GDCC::BC::ZDACS
          if(!func->valueStr)
             func->valueStr = func->glyph;
 
+      case IR::CallType::SScriptI:
+      case IR::CallType::ScriptI:
          // Check script types.
          for(auto const &st : func->stype) switch(st)
          {
