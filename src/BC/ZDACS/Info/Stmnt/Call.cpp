@@ -440,13 +440,7 @@ namespace GDCC::BC::ZDACS
       auto argc = getStmntSize();
       auto ret  = stmnt->args[0].a == IR::ArgBase::Nul ? 0 : stmnt->args[0].getSize();
 
-      IR::ArgBase a;
-      if(argc == 0)
-         a = ret ? IR::ArgBase::Stk : IR::ArgBase::Lit;
-      else
-         a = stmnt->args[2].a;
-
-      switch(a)
+      switch(stmnt->args.size() > 2 ? stmnt->args[2].a : IR::ArgBase::Lit)
       {
       case IR::ArgBase::Lit:
          if(ret)
@@ -456,6 +450,9 @@ namespace GDCC::BC::ZDACS
                for(Core::FastU i = 0; i != arg.aLit.size; ++i)
                   putCode(Code::Push_Lit, getWord(arg.aLit, i));
             }
+
+            for(Core::FastU i = argc; i != 5; ++i)
+               putCode(Code::Push_Lit, 0);
 
             putCode(Code::Cspe_5R1, getWord(stmnt->args[1].aLit));
 
