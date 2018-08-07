@@ -175,7 +175,10 @@ namespace GDCC::BC::ZDACS
       switch(stmnt->args[2].a)
       {
       case IR::ArgBase::Lit:
-         numChunkCODE += 8 + argc * (ret ? 8 : 4);
+         if(ret)
+            numChunkCODE += 48;
+         else
+            numChunkCODE += 8 + argc * 4;
          break;
 
       case IR::ArgBase::Stk:
