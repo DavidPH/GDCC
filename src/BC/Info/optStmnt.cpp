@@ -12,7 +12,33 @@
 
 #include "BC/Info.hpp"
 
+#include "Core/Option.hpp"
+
 #include "IR/Statement.hpp"
+
+#include "Option/Bool.hpp"
+
+
+//----------------------------------------------------------------------------|
+// Options                                                                    |
+//
+
+namespace GDCC::BC
+{
+   //
+   // --bc-opt
+   //
+   static bool OptPass = true;
+   static Option::Bool OptionOpt
+   {
+      &Core::GetOptionList(), Option::Base::Info()
+         .setName("bc-opt")
+         .setGroup("codegen")
+         .setDescS("Enables or disables opt pass."),
+
+      &OptPass
+   };
+}
 
 
 //----------------------------------------------------------------------------|
@@ -26,6 +52,9 @@ namespace GDCC::BC
    //
    void Info::optStmnt()
    {
+      if(!OptPass)
+         return;
+
       optStmnt_Cspe_Drop();
    }
 
