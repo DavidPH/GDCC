@@ -741,7 +741,8 @@ namespace GDCC::BC::ZDACS
          Core::Error(stmnt->pos, "bad tr Cspe");
       }
 
-      moveArgStk_dst(stmnt->args[0]);
+      if(stmnt->args[0].a != IR::ArgBase::Nul)
+         moveArgStk_dst(stmnt->args[0]);
    }
 
    //
