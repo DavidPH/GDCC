@@ -106,6 +106,32 @@ namespace GDCC::BC::ZDACS
       void backGlyphStr(Core::String glyph, Core::FastU val);
       void backGlyphWord(Core::String glyph, Core::FastU val);
 
+      virtual void chkStmnt();
+
+      void chkStmnt_AdXU();
+      void chkStmnt_Bges() {chkStmnt_Bget();}
+      void chkStmnt_Bget();
+      void chkStmnt_Bset() {chkStmnt_Bget();}
+      void chkStmnt_Call();
+      void chkStmnt_Casm();
+      void chkStmnt_Cnat();
+      void chkStmnt_Copy();
+      void chkStmnt_Cscr_IA();
+      void chkStmnt_Cscr_IS();
+      void chkStmnt_Cscr_SA() {chkStmnt_Cscr_IA();}
+      void chkStmnt_Cscr_SS() {chkStmnt_Cscr_IS();}
+      void chkStmnt_Cspe();
+      void chkStmnt_Jcnd_Nil();
+      void chkStmnt_Jcnd_Tab();
+      void chkStmnt_Jcnd_Tru() {chkStmnt_Jcnd_Nil();}
+      void chkStmnt_Jfar();
+      void chkStmnt_Jset();
+      void chkStmnt_Jump();
+      void chkStmnt_Swap();
+      void chkStmnt_SuXU() {chkStmnt_AdXU();}
+
+      virtual void chkStmntArg(IR::Arg const &arg);
+
       virtual void gen();
 
       virtual void genDJump();
@@ -428,22 +454,23 @@ namespace GDCC::BC::ZDACS
       void trStmnt_Bget();
       void trStmnt_Bset();
       void trStmnt_Call();
-      void trStmnt_Casm();
+      void trStmnt_Casm() {trStmnt_Call();}
       void trStmnt_CmpU_EQ();
-      void trStmnt_Cnat();
-      void trStmnt_Cscr_IA();
-      void trStmnt_Cscr_IS();
-      void trStmnt_Cscr_SA();
-      void trStmnt_Cscr_SS();
+      void trStmnt_Cnat() {trStmnt_Call();}
+      void trStmnt_Copy() {}
+      void trStmnt_Cscr_IA() {trStmnt_Call();}
+      void trStmnt_Cscr_IS() {trStmnt_Call();}
+      void trStmnt_Cscr_SA() {trStmnt_Call();}
+      void trStmnt_Cscr_SS() {trStmnt_Call();}
       void trStmnt_Cspe();
       void trStmnt_DiXI();
       void trStmnt_DiXU();
       void trStmnt_Jcnd_Nil();
-      void trStmnt_Jcnd_Tab();
-      void trStmnt_Jcnd_Tru();
+      void trStmnt_Jcnd_Tab() {}
+      void trStmnt_Jcnd_Tru() {trStmnt_Jcnd_Nil();}
       void trStmnt_Jfar();
-      void trStmnt_Jset();
-      void trStmnt_Jump();
+      void trStmnt_Jset() {}
+      void trStmnt_Jump() {}
       void trStmnt_ModI();
       void trStmnt_ModU();
       void trStmnt_Move();
@@ -491,8 +518,6 @@ namespace GDCC::BC::ZDACS
       Core::FastU numChunkSTRL;
       Core::FastU numChunkSVCT;
 
-
-      static void CheckArg(IR::Arg const &arg, Core::Origin pos);
 
       static Core::FastU CodeBase();
 

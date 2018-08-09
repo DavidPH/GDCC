@@ -36,6 +36,7 @@ add_library(gdcc-bc-lib ${GDCC_SHARED_DECL}
    Info/Stmnt/Neg.cpp
    Info/Stmnt/Sh.cpp
    Info/addFunc.cpp
+   Info/chk.cpp
    Info/getWord.cpp
    Info/moveArg.cpp
    Info/optStmnt.cpp

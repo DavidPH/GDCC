@@ -12,9 +12,7 @@
 
 #include "BC/DGE/Info.hpp"
 
-#include "Core/Exception.hpp"
-
-#include "IR/Statement.hpp"
+#include "IR/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -23,6 +21,15 @@
 
 namespace GDCC::BC::DGE
 {
+   //
+   // Info::chkStmnt_AdXU
+   //
+   void Info::chkStmnt_AdXU()
+   {
+      if(getStmntSizeW() != 1)
+         IR::ErrorCode(stmnt, "unsupported size");
+   }
+
    //
    // Info::preStmnt_AddU
    //
@@ -108,13 +115,6 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_AdXU()
    {
-      CheckArgC(stmnt, 3);
-
-      auto n = getStmntSizeW();
-
-      if(n != 1)
-         Core::Error(stmnt->pos, "unsupported AdXU_W size");
-
       if(stmnt->args.size() > 3)
       {
          moveArgStk_dst(stmnt->args[0]);
@@ -139,13 +139,6 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_SuXU()
    {
-      CheckArgC(stmnt, 3);
-
-      auto n = getStmntSizeW();
-
-      if(n != 1)
-         Core::Error(stmnt->pos, "unsupported SuXU_W size");
-
       if(stmnt->args.size() > 3)
       {
          bool stk1 = stmnt->args[1].a == IR::ArgBase::Stk;
@@ -153,7 +146,7 @@ namespace GDCC::BC::DGE
          bool stk3 = stmnt->args[3].a == IR::ArgBase::Stk;
 
          if((!stk1 && (stk2 || stk3)) || (!stk2 && stk3))
-            Core::Error(stmnt->pos, "SuXU_W disorder");
+            IR::ErrorCode(stmnt, "disorder");
 
          moveArgStk_dst(stmnt->args[0]);
          moveArgStk_src(stmnt->args[1]);

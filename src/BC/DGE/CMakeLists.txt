@@ -32,6 +32,7 @@ if(GDCC_BC_DGE)
       Info/Stmnt/Mul.cpp
       Info/Stmnt/Neg.cpp
       Info/Stmnt/Sh.cpp
+      Info/chk.cpp
       Info/gen.cpp
       Info/preStmnt.cpp
       Info/put.cpp

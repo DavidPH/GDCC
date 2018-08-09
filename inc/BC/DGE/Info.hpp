@@ -36,6 +36,23 @@ namespace GDCC::BC::DGE
    protected:
       void backGlyphObj(Core::String glyph, Core::FastU val);
 
+      virtual void chkStmnt();
+
+      void chkStmnt_AdXU();
+      void chkStmnt_Call();
+      void chkStmnt_Cnat();
+      void chkStmnt_Copy();
+      void chkStmnt_Jcnd_Nil();
+      void chkStmnt_Jcnd_Tab();
+      void chkStmnt_Jcnd_Tru() {chkStmnt_Jcnd_Nil();}
+      void chkStmnt_Jfar();
+      void chkStmnt_Jset();
+      void chkStmnt_Move();
+      void chkStmnt_SuXU() {chkStmnt_AdXU();}
+      void chkStmnt_Swap();
+
+      virtual void chkStmntArg(IR::Arg const &arg);
+
       virtual void genObj();
 
       virtual FixedInfo getFixedInfo(Core::FastU n, bool s);
@@ -275,7 +292,7 @@ namespace GDCC::BC::DGE
       void trStmnt_CmpU_LT() {trStmntStkCmp(true);}
       void trStmnt_CmpU_NE() {trStmntStkCmp(false);}
       void trStmnt_Cnat();
-      void trStmnt_Copy();
+      void trStmnt_Copy() {}
       void trStmnt_DiXI() {trStmnt_DiXU();}
       void trStmnt_DiXU();
       void trStmnt_DivF() {trStmntStkBin(true);}
@@ -284,10 +301,10 @@ namespace GDCC::BC::DGE
       void trStmnt_DivU() {trStmntStkBin(true);}
       void trStmnt_DivX() {trStmntStkBin(true);}
       void trStmnt_Jcnd_Nil();
-      void trStmnt_Jcnd_Tab();
-      void trStmnt_Jcnd_Tru();
-      void trStmnt_Jfar();
-      void trStmnt_Jset();
+      void trStmnt_Jcnd_Tab() {}
+      void trStmnt_Jcnd_Tru() {trStmnt_Jcnd_Nil();}
+      void trStmnt_Jfar() {}
+      void trStmnt_Jset() {}
       void trStmnt_Jump();
       void trStmnt_LAnd();
       void trStmnt_LNot();
@@ -322,9 +339,6 @@ namespace GDCC::BC::DGE
       void trStmntStkUna();
 
       void trStmntTmp(Core::FastU n);
-
-
-      static void CheckArg(IR::Arg const &arg, Core::Origin const &pos);
 
    private:
       void putCodeArg(char const        *arg) {putNTS(arg);}

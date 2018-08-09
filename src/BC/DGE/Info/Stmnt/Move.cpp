@@ -12,9 +12,7 @@
 
 #include "BC/DGE/Info.hpp"
 
-#include "Core/Exception.hpp"
-
-#include "IR/Statement.hpp"
+#include "IR/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -23,6 +21,45 @@
 
 namespace GDCC::BC::DGE
 {
+   //
+   // Info::chkStmnt_Copy
+   //
+   void Info::chkStmnt_Copy()
+   {
+      chkStmntArgB(0, IR::ArgBase::Stk);
+      chkStmntArgB(1, IR::ArgBase::Stk);
+
+      if(getStmntSizeW() > 1)
+         IR::ErrorCode(stmnt, "unsupported size");
+   }
+
+   //
+   // Info::chkStmnt_Move
+   //
+   void Info::chkStmnt_Move()
+   {
+      auto n = getStmntSize();
+
+      // Multi-word?
+      if(n > 4)
+      {
+         if(n % 4) IR::ErrorCode(stmnt, "bad size");
+         return;
+      }
+
+      if(n != 1 && n != 2 && n != 4)
+         IR::ErrorCode(stmnt, "unsupported size");
+   }
+
+   //
+   // Info::chkStmnt_Swap
+   //
+   void Info::chkStmnt_Swap()
+   {
+      chkStmntArgB(0, IR::ArgBase::Stk);
+      chkStmntArgB(1, IR::ArgBase::Stk);
+   }
+
    //
    // Info::putStmnt_Copy
    //
@@ -33,10 +70,7 @@ namespace GDCC::BC::DGE
       if(n == 0)
          return;
 
-      if(n == 1)
-         return putCode("Copy");
-
-      Core::Error(stmnt->pos, "unsupported size for Copy_W");
+      return putCode("Copy");
    }
 
    //
@@ -165,7 +199,7 @@ namespace GDCC::BC::DGE
 
       // ???
       else
-         Core::Error(stmnt->pos, "bad put Move_W");
+         IR::ErrorCode(stmnt, "bad put");
    }
 
    //
@@ -187,35 +221,15 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_Copy
-   //
-   void Info::trStmnt_Copy()
-   {
-      CheckArgC(stmnt, 2);
-      CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-      CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-   }
-
-   //
    // Info::trStmnt_Move
    //
    void Info::trStmnt_Move()
    {
-      CheckArgC(stmnt, 2);
-      CheckArg(stmnt->args[0], stmnt->pos);
-      CheckArg(stmnt->args[1], stmnt->pos);
-
       auto n = getStmntSize();
 
       // Multi-word?
       if(n > 4)
-      {
-         if(n % 4) Core::Error(stmnt->pos, "bad Move size");
          return;
-      }
-
-      if(n != 1 && n != 2 && n != 4)
-         Core::Error(stmnt->pos, "unsupported size for Move");
 
       #define moveIdx(name, i) \
          moveArgStk_src(*stmnt->args[i].a##name.idx)
@@ -231,7 +245,7 @@ namespace GDCC::BC::DGE
       case IR::ArgBase::StrArs: moveIdx(StrArs, 1); break;
 
       default:
-         Core::Error(stmnt->pos, "bad tr Move_W push");
+         IR::ErrorCode(stmnt, "bad tr push");
       }
 
       // Drop from stack?
@@ -245,7 +259,7 @@ namespace GDCC::BC::DGE
       case IR::ArgBase::StrArs: moveIdx(StrArs, 0); break;
 
       default:
-         Core::Error(stmnt->pos, "bad tr Move_W drop");
+         IR::ErrorCode(stmnt, "bad tr drop");
       }
 
       // Neither stack, split move and rescan.
@@ -260,10 +274,6 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_Swap()
    {
-      CheckArgC(stmnt, 2);
-      CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-      CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-
       auto n = getStmntSizeW();
 
       if(n <= 1)

@@ -23,40 +23,23 @@
 namespace GDCC::BC::DGE
 {
    //
-   // Info::trStmnt_Call
+   // Info::chkStmnt_Call
    //
-   void Info::trStmnt_Call()
+   void Info::chkStmnt_Call()
    {
-      CheckArgC(stmnt, 1);
-
-      moveArgStk_dst(stmnt->args[0]);
-      moveArgStk_src(stmnt->args[1]);
-
       for(auto n = stmnt->args.size(); --n != 1;)
-         CheckArgB(stmnt, n, IR::ArgBase::Stk);
+         chkStmntArgB(n, IR::ArgBase::Stk);
    }
 
    //
-   // Info::trStmnt_Cnat
+   // Info::chkStmnt_Cnat
    //
-   void Info::trStmnt_Cnat()
+   void Info::chkStmnt_Cnat()
    {
-      CheckArgC(stmnt, 1);
-      CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-
-      moveArgStk_dst(stmnt->args[0]);
+      chkStmntArgB(1, IR::ArgBase::Lit);
 
       for(auto n = stmnt->args.size(); --n != 1;)
-         CheckArgB(stmnt, n, IR::ArgBase::Stk);
-   }
-
-   //
-   // Info::trStmnt_Retn
-   //
-   void Info::trStmnt_Retn()
-   {
-      if(!stmnt->args.empty())
-         moveArgStk_src(stmnt->args[0]);
+         chkStmntArgB(n, IR::ArgBase::Stk);
    }
 
    //
@@ -88,6 +71,32 @@ namespace GDCC::BC::DGE
       }
 
       putCode("Retn");
+   }
+
+   //
+   // Info::trStmnt_Call
+   //
+   void Info::trStmnt_Call()
+   {
+      moveArgStk_dst(stmnt->args[0]);
+      moveArgStk_src(stmnt->args[1]);
+   }
+
+   //
+   // Info::trStmnt_Cnat
+   //
+   void Info::trStmnt_Cnat()
+   {
+      moveArgStk_dst(stmnt->args[0]);
+   }
+
+   //
+   // Info::trStmnt_Retn
+   //
+   void Info::trStmnt_Retn()
+   {
+      if(!stmnt->args.empty())
+         moveArgStk_src(stmnt->args[0]);
    }
 }
 

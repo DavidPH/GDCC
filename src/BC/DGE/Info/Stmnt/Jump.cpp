@@ -12,9 +12,7 @@
 
 #include "BC/DGE/Info.hpp"
 
-#include "Core/Exception.hpp"
-
-#include "IR/Statement.hpp"
+#include "IR/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -23,6 +21,52 @@
 
 namespace GDCC::BC::DGE
 {
+   //
+   // Info::chkStmnt_Jcnd_Nil
+   //
+   void Info::chkStmnt_Jcnd_Nil()
+   {
+      chkStmntArgB(1, IR::ArgBase::Lit);
+   }
+
+   //
+   // Info::chkStmnt_Jcnd_Tab
+   //
+   void Info::chkStmnt_Jcnd_Tab()
+   {
+      auto n = getStmntSizeW();
+
+      if(n != 1)
+         IR::ErrorCode(stmnt, "unsupported size");
+
+      for(Core::FastU i = 1; i != stmnt->args.size(); ++i)
+         chkStmntArgB(i, IR::ArgBase::Lit);
+
+      // Argument gets left on stack, so do not just move to stack.
+      chkStmntArgB(0, IR::ArgBase::Stk);
+   }
+
+   //
+   // Info::chkStmnt_Jfar
+   //
+   void Info::chkStmnt_Jfar()
+   {
+      chkStmntArgB(0, IR::ArgBase::Lit);
+      chkStmntArgB(1, IR::ArgBase::Stk);
+
+      if(stmnt->args.size() > 2)
+         chkStmntArgB(2, IR::ArgBase::Sta);
+   }
+
+   //
+   // Info::chkStmnt_Jset
+   //
+   void Info::chkStmnt_Jset()
+   {
+      chkStmntArgB(0, IR::ArgBase::Sta);
+      chkStmntArgB(1, IR::ArgBase::Lit);
+   }
+
    //
    // Info::putStmnt_Jcnd_Nil
    //
@@ -127,65 +171,7 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_Jcnd_Nil()
    {
-      CheckArgC(stmnt, 2);
       moveArgStk_src(stmnt->args[0]);
-      CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-   }
-
-   //
-   // Info::trStmnt_Jcnd_Tab
-   //
-   void Info::trStmnt_Jcnd_Tab()
-   {
-      auto n = getStmntSizeW();
-
-      if(n != 1)
-         Core::Error(stmnt->pos, "unsupported op size for Jcnd_Tab");
-
-      if(stmnt->args.size() % 2 != 1)
-         Core::Error(stmnt->pos, "invalied arg count for Jcnd_Tab");
-
-      for(Core::FastU i = 1; i != stmnt->args.size(); ++i)
-         CheckArgB(stmnt, i, IR::ArgBase::Lit);
-
-      // Argument gets left on stack, so do not just move to stack.
-      CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-   }
-
-   //
-   // Info::trStmnt_Jcnd_Tru
-   //
-   void Info::trStmnt_Jcnd_Tru()
-   {
-      trStmnt_Jcnd_Nil();
-   }
-
-   //
-   // Info::trStmnt_Jfar
-   //
-   void Info::trStmnt_Jfar()
-   {
-      CheckArgC(stmnt, 2);
-
-      CheckArgB(stmnt, 0, IR::ArgBase::Lit);
-      CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-
-      if(stmnt->args.size() > 2)
-      {
-         CheckArgC(stmnt, 4);
-         CheckArgB(stmnt, 2, IR::ArgBase::Sta);
-      }
-   }
-
-   //
-   // Info::trStmnt_Jset
-   //
-   void Info::trStmnt_Jset()
-   {
-      CheckArgC(stmnt, 2);
-
-      CheckArgB(stmnt, 0, IR::ArgBase::Sta);
-      CheckArgB(stmnt, 1, IR::ArgBase::Lit);
    }
 
    //
@@ -193,7 +179,6 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_Jump()
    {
-      CheckArgC(stmnt, 1);
       if(stmnt->args[0].a != IR::ArgBase::Lit)
          moveArgStk_src(stmnt->args[0]);
    }

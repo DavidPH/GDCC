@@ -122,38 +122,6 @@ namespace GDCC::BC::DGE
       default:                  return false;
       }
    }
-
-   //
-   // Info::CheckArg
-   //
-   void Info::CheckArg(IR::Arg const &arg, Core::Origin const &pos)
-   {
-      switch(arg.a)
-      {
-      case IR::ArgBase::Aut:
-         CheckArg(*arg.aAut.idx, pos);
-         break;
-
-      case IR::ArgBase::Lit: break;
-      case IR::ArgBase::Nul: break;
-      case IR::ArgBase::Stk: break;
-
-      case IR::ArgBase::LocReg:
-         CheckArgB(*arg.aLocReg.idx, IR::ArgBase::Lit, pos);
-         break;
-
-      case IR::ArgBase::Sta:
-         CheckArg(*arg.aSta.idx, pos);
-         break;
-
-      case IR::ArgBase::StrArs:
-         CheckArg(*arg.aStrArs.idx, pos);
-         break;
-
-      default:
-         Core::Error(pos, "DGE cannot use Arg: ", arg.a);
-      }
-   }
 }
 
 // EOF

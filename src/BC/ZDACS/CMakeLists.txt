@@ -32,6 +32,7 @@ if(GDCC_BC_ZDACS)
       Info/Stmnt/NegI.cpp
       Info/Stmnt/Shift.cpp
       Info/Stmnt/Swap.cpp
+      Info/chk.cpp
       Info/gen.cpp
       Info/genIniti.cpp
       Info/genSpace.cpp

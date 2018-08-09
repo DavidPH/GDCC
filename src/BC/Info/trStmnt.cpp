@@ -28,8 +28,6 @@ namespace GDCC::BC
    //
    void Info::trStmntStk2()
    {
-      CheckArgC(stmnt, 2);
-
       moveArgStk_dst(stmnt->args[0]);
       moveArgStk_src(stmnt->args[1]);
    }
@@ -39,8 +37,6 @@ namespace GDCC::BC
    //
    void Info::trStmntStk3(bool ordered)
    {
-      CheckArgC(stmnt, 3);
-
       moveArgStk_dst(stmnt->args[0]);
 
       auto size = stmnt->args[1].getSize();
@@ -66,8 +62,6 @@ namespace GDCC::BC
    //
    bool Info::trStmntShift(bool moveLit)
    {
-      CheckArgC(stmnt, 3);
-
       if(stmnt->args[1].a != IR::ArgBase::Stk &&
          stmnt->args[2].a == IR::ArgBase::Stk)
          Core::Error(stmnt->pos, "trStmntShift disorder");

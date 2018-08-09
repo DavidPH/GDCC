@@ -14,9 +14,9 @@
 
 #include "BC/ZDACS/Code.hpp"
 
-#include "Core/Exception.hpp"
 #include "Core/Range.hpp"
 
+#include "IR/Exception.hpp"
 #include "IR/Function.hpp"
 #include "IR/CallType.hpp"
 
@@ -27,6 +27,113 @@
 
 namespace GDCC::BC::ZDACS
 {
+   //
+   // Info::chkStmnt_Call
+   //
+   void Info::chkStmnt_Call()
+   {
+      for(auto n = stmnt->args.size(); --n != 1;)
+         chkStmntArgB(n, IR::ArgBase::Stk);
+
+      switch(stmnt->args[1].a)
+      {
+      case IR::ArgBase::Lit:
+      case IR::ArgBase::Stk:
+         break;
+
+      default:
+         IR::ErrorCode(stmnt, "unsupported arg type");
+      }
+   }
+
+   //
+   // Info::chkStmnt_Casm
+   //
+   void Info::chkStmnt_Casm()
+   {
+      chkStmntArgB(1, IR::ArgBase::Lit);
+
+      if(stmnt->args.size() > 2) switch(stmnt->args[2].a)
+      {
+      case IR::ArgBase::Lit:
+         for(auto n = stmnt->args.size(); --n != 2;)
+            chkStmntArgB(n, IR::ArgBase::Lit);
+         break;
+
+      case IR::ArgBase::Stk:
+         for(auto n = stmnt->args.size(); --n != 2;)
+            chkStmntArgB(n, IR::ArgBase::Stk);
+         break;
+
+      default:
+         IR::ErrorCode(stmnt, "unsupported arg type");
+      }
+
+   }
+
+   //
+   // Info::chkStmnt_Cnat
+   //
+   void Info::chkStmnt_Cnat()
+   {
+      chkStmntArgB(1, IR::ArgBase::Lit);
+      for(auto n = stmnt->args.size(); --n != 1;)
+         chkStmntArgB(n, IR::ArgBase::Stk);
+   }
+
+   //
+   // Info::chkStmnt_Cscr_IA
+   //
+   void Info::chkStmnt_Cscr_IA()
+   {
+      chkStmntArgB(1, IR::ArgBase::Stk);
+      for(auto n = stmnt->args.size(); --n != 1;)
+         chkStmntArgB(n, IR::ArgBase::Stk);
+   }
+
+   //
+   // Info::chkStmnt_Cscr_IS
+   //
+   void Info::chkStmnt_Cscr_IS()
+   {
+      chkStmntArgB(1, IR::ArgBase::Stk);
+      for(auto n = stmnt->args.size(); --n != 2;)
+         chkStmntArgB(n, IR::ArgBase::Stk);
+   }
+
+   //
+   // Info::chkStmnt_Cspe
+   //
+   void Info::chkStmnt_Cspe()
+   {
+      chkStmntArgB(1, IR::ArgBase::Lit);
+
+      auto ret = stmnt->args[0].a == IR::ArgBase::Nul ? 0 : stmnt->args[0].getSize();
+
+      if(ret > 1)
+         IR::ErrorCode(stmnt, "unsupported ret");
+
+      // Too many call args.
+      if(getStmntSize() > 5)
+         IR::ErrorCode(stmnt, "unsupported argc");
+
+      if(stmnt->args.size() > 2) switch(stmnt->args[2].a)
+      {
+      case IR::ArgBase::Lit:
+         for(auto n = stmnt->args.size(); --n != 2;)
+            chkStmntArgB(n, IR::ArgBase::Lit);
+         break;
+
+      case IR::ArgBase::Stk:
+         for(auto n = stmnt->args.size(); --n != 2;)
+            chkStmntArgB(n, IR::ArgBase::Stk);
+         break;
+
+      default:
+         IR::ErrorCode(stmnt, "unsupported arg type");
+      }
+   }
+
    //
    // Info::genStmnt_Call
    //
@@ -594,113 +701,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_Call()
    {
-      CheckArgC(stmnt, 2);
-      for(auto n = stmnt->args.size(); --n != 1;)
-         CheckArgB(stmnt, n, IR::ArgBase::Stk);
-
-      switch(stmnt->args[1].a)
-      {
-      case IR::ArgBase::Lit:
-      case IR::ArgBase::Stk:
-         break;
-
-      default:
-         Core::Error(stmnt->pos, "bad tr Call");
-      }
-
-      moveArgStk_dst(stmnt->args[0]);
-   }
-
-   //
-   // Info::trStmnt_Casm
-   //
-   void Info::trStmnt_Casm()
-   {
-      CheckArgC(stmnt, 2);
-      CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-
-      if(stmnt->args.size() > 2) switch(stmnt->args[2].a)
-      {
-      case IR::ArgBase::Lit:
-         for(auto n = stmnt->args.size(); --n != 2;)
-            CheckArgB(stmnt, n, IR::ArgBase::Lit);
-         break;
-
-      case IR::ArgBase::Stk:
-         for(auto n = stmnt->args.size(); --n != 2;)
-            CheckArgB(stmnt, n, IR::ArgBase::Stk);
-         break;
-
-      default:
-         Core::Error(stmnt->pos, "bad tr Casm");
-      }
-
-      moveArgStk_dst(stmnt->args[0]);
-   }
-
-   //
-   // Info::trStmnt_Cnat
-   //
-   void Info::trStmnt_Cnat()
-   {
-      CheckArgC(stmnt, 2);
-      CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-
-      for(auto n = stmnt->args.size(); --n != 1;)
-         CheckArgB(stmnt, n, IR::ArgBase::Stk);
-
-      moveArgStk_dst(stmnt->args[0]);
-   }
-
-   //
-   // Info::trStmnt_Cscr_IA
-   //
-   void Info::trStmnt_Cscr_IA()
-   {
-      CheckArgC(stmnt, 2);
-      CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-      for(auto n = stmnt->args.size(); --n != 1;)
-         CheckArgB(stmnt, n, IR::ArgBase::Stk);
-
-      moveArgStk_dst(stmnt->args[0]);
-   }
-
-   //
-   // Info::trStmnt_Cscr_IS
-   //
-   void Info::trStmnt_Cscr_IS()
-   {
-      CheckArgC(stmnt, 3);
-      CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-      for(auto n = stmnt->args.size(); --n != 2;)
-         CheckArgB(stmnt, n, IR::ArgBase::Stk);
-
-      moveArgStk_dst(stmnt->args[0]);
-   }
-
-   //
-   // Info::trStmnt_Cscr_SA
-   //
-   void Info::trStmnt_Cscr_SA()
-   {
-      CheckArgC(stmnt, 2);
-      CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-      for(auto n = stmnt->args.size(); --n != 1;)
-         CheckArgB(stmnt, n, IR::ArgBase::Stk);
-
-      moveArgStk_dst(stmnt->args[0]);
-   }
-
-   //
-   // Info::trStmnt_Cscr_SS
-   //
-   void Info::trStmnt_Cscr_SS()
-   {
-      CheckArgC(stmnt, 3);
-      CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-      for(auto n = stmnt->args.size(); --n != 2;)
-         CheckArgB(stmnt, n, IR::ArgBase::Stk);
-
       moveArgStk_dst(stmnt->args[0]);
    }
 
@@ -709,38 +709,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_Cspe()
    {
-      CheckArgC(stmnt, 2);
-      CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-
-      auto ret = stmnt->args[0].a == IR::ArgBase::Nul ? 0 : stmnt->args[0].getSize();
-
-      if(ret > 1)
-         Core::Error(stmnt->pos, "bad tr Cspe ret");
-
-      // Too many call args.
-      if(getStmntSize() > 5)
-         Core::Error(stmnt->pos, "bad tr Cspe argc");
-
-      // No call args.
-      if(stmnt->args.size() == 2)
-         return;
-
-      switch(stmnt->args[2].a)
-      {
-      case IR::ArgBase::Lit:
-         for(auto n = stmnt->args.size(); --n != 2;)
-            CheckArgB(stmnt, n, IR::ArgBase::Lit);
-         break;
-
-      case IR::ArgBase::Stk:
-         for(auto n = stmnt->args.size(); --n != 2;)
-            CheckArgB(stmnt, n, IR::ArgBase::Stk);
-         break;
-
-      default:
-         Core::Error(stmnt->pos, "bad tr Cspe");
-      }
-
       if(stmnt->args[0].a != IR::ArgBase::Nul)
          moveArgStk_dst(stmnt->args[0]);
    }

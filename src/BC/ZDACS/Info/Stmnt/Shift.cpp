@@ -14,8 +14,7 @@
 
 #include "BC/ZDACS/Code.hpp"
 
-#include "Core/Exception.hpp"
-
+#include "IR/Exception.hpp"
 #include "IR/Function.hpp"
 #include "IR/Glyph.hpp"
 
@@ -585,11 +584,9 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_ShRU1()
    {
-      CheckArgC(stmnt, 3);
-
       if(stmnt->args[1].a != IR::ArgBase::Stk &&
          stmnt->args[2].a == IR::ArgBase::Stk)
-         Core::Error(stmnt->pos, "trStmnt_ShRU1 disorder");
+         IR::ErrorCode(stmnt, "disorder");
 
       moveArgStk_dst(stmnt->args[0]);
       moveArgStk_src(stmnt->args[1]);

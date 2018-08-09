@@ -43,7 +43,7 @@ Function "___approx_cbrt"
       ShLU W 1(Stk() Stk() Lit(20))
       BOrI W 1(Stk() Stk() Stk())
 
-      Retn W 2(Stk() Stk())
+      Retn W 2(Stk())
    )
 )
 
@@ -101,7 +101,7 @@ Function "___approx_cbrtl"
       ShLU W 1(Stk() Stk() Lit(20))
       BOrI W 1(Stk() Stk() Stk())
 
-      Retn W 2(Stk() Stk())
+      Retn W 2(Stk())
    )
 )
 
@@ -389,7 +389,7 @@ Function "___approx_modff"
    :"$onlyi"
       BAnd W 1(Stk() LocReg(Lit(0)) Lit(0x80000000))
       Move W 1(Stk() LocReg(Lit(0)))
-      Retn W 2(Stk() Stk())
+      Retn W 2(Stk())
 
    :"$onlyf"
       Move W 1(Stk() LocReg(Lit(0)))

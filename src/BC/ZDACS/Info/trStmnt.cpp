@@ -12,8 +12,7 @@
 
 #include "BC/ZDACS/Info.hpp"
 
-#include "Core/Exception.hpp"
-
+#include "IR/Exception.hpp"
 #include "IR/Statement.hpp"
 
 
@@ -92,12 +91,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       case IR::Code::Cnat: trStmnt_Cnat(); break;
-
-      case IR::Code::Copy:
-         CheckArgC(stmnt, 2);
-         CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-         CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-         break;
+      case IR::Code::Copy: trStmnt_Copy(); break;
 
       case IR::Code::Cscr_IA: trStmnt_Cscr_IA(); break;
       case IR::Code::Cscr_IS: trStmnt_Cscr_IS(); break;
@@ -123,7 +117,6 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
 
       case IR::Code::Jdyn:
-         CheckArgC(stmnt, 1);
          moveArgStk_src(stmnt->args[0]);
          break;
 
@@ -172,7 +165,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Xcod_SID: break;
 
       default:
-         Core::Error(stmnt->pos, "ZDACS cannot tr Code: ", stmnt->code);
+         IR::ErrorCode(stmnt, "unsupported tr");
       }
    }
 }

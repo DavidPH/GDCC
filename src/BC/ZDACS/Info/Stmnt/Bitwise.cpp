@@ -16,8 +16,7 @@
 
 #include "BC/AddFunc.hpp"
 
-#include "Core/Exception.hpp"
-
+#include "IR/Exception.hpp"
 #include "IR/Program.hpp"
 
 
@@ -27,6 +26,18 @@
 
 namespace GDCC::BC::ZDACS
 {
+   //
+   // Info::chkStmnt_Bget
+   //
+   void Info::chkStmnt_Bget()
+   {
+      chkStmntArgB(2, IR::ArgBase::Lit);
+      chkStmntArgB(3, IR::ArgBase::Lit);
+
+      if(getStmntSize() != 1)
+         IR::ErrorCode(stmnt, "unsupported size");
+   }
+
    //
    // Info::genStmnt_BNot
    //
@@ -525,8 +536,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_BNot()
    {
-      CheckArgC(stmnt, 2);
-
       auto n = getStmntSize();
 
       if(isPushArg(stmnt->args[1]))
@@ -548,8 +557,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_Bclz()
    {
-      CheckArgC(stmnt, 2);
-
       auto n = getStmntSize();
 
       if(n <= 1)
@@ -577,15 +584,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_Bget()
    {
-      CheckArgC(stmnt, 4);
-      CheckArgB(stmnt, 2, IR::ArgBase::Lit);
-      CheckArgB(stmnt, 3, IR::ArgBase::Lit);
-
-      auto n = getStmntSize();
-
-      if(n != 1)
-         Core::Error(stmnt->pos, "Bget_W must have size 1");
-
       trStmntStk2();
    }
 
@@ -594,15 +592,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_Bset()
    {
-      CheckArgC(stmnt, 4);
-      CheckArgB(stmnt, 2, IR::ArgBase::Lit);
-      CheckArgB(stmnt, 3, IR::ArgBase::Lit);
-
-      auto n = getStmntSize();
-
-      if(n != 1)
-         Core::Error(stmnt->pos, "Bset_W must have size 1");
-
       moveArgStk_src(stmnt->args[1]);
    }
 
@@ -611,8 +600,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmntBitwise()
    {
-      CheckArgC(stmnt, 3);
-
       auto n = getStmntSize();
 
       if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))

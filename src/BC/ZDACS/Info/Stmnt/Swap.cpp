@@ -24,6 +24,15 @@
 namespace GDCC::BC::ZDACS
 {
    //
+   // Info::chkStmnt_Swap
+   //
+   void Info::chkStmnt_Swap()
+   {
+      chkStmntArgB(0, IR::ArgBase::Stk);
+      chkStmntArgB(1, IR::ArgBase::Stk);
+   }
+
+   //
    // Info::genStmnt_Swap
    //
    void Info::genStmnt_Swap()
@@ -65,15 +74,10 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_Swap()
    {
-      CheckArgC(stmnt, 2);
-
       auto n = getStmntSize();
 
       if(n != 1)
          func->setLocalTmp(n * 2);
-
-      CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-      CheckArgB(stmnt, 1, IR::ArgBase::Stk);
    }
 }
 

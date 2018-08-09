@@ -14,8 +14,7 @@
 
 #include "BC/ZDACS/Code.hpp"
 
-#include "Core/Exception.hpp"
-
+#include "IR/Exception.hpp"
 #include "IR/Function.hpp"
 
 
@@ -25,6 +24,58 @@
 
 namespace GDCC::BC::ZDACS
 {
+
+   //
+   // Info::chkStmnt_Jcnd_Nil
+   //
+   void Info::chkStmnt_Jcnd_Nil()
+   {
+      chkStmntArgB(1, IR::ArgBase::Lit);
+   }
+
+   //
+   // Info::chkStmnt_Jcnd_Tab
+   //
+   void Info::chkStmnt_Jcnd_Tab()
+   {
+      if(stmnt->args[0].getSize() != 1)
+         IR::ErrorCode(stmnt, "unsupported size");
+
+      for(Core::FastU i = 1; i != stmnt->args.size(); ++i)
+         chkStmntArgB(i, IR::ArgBase::Lit);
+
+      // Argument gets left on stack, so do not just move to stack.
+      chkStmntArgB(0, IR::ArgBase::Stk);
+   }
+
+   //
+   // Info::chkStmnt_Jfar
+   //
+   void Info::chkStmnt_Jfar()
+   {
+      chkStmntArgB(0, IR::ArgBase::Lit);
+      chkStmntArgB(1, IR::ArgBase::Stk);
+
+      if(stmnt->args.size() > 2)
+         chkStmntArgB(2, IR::ArgBase::Sta);
+   }
+
+   //
+   // Info::chkStmnt_Jset
+   //
+   void Info::chkStmnt_Jset()
+   {
+      chkStmntArgB(0, IR::ArgBase::Sta);
+   }
+
+   //
+   // Info::chkStmnt_Jump
+   //
+   void Info::chkStmnt_Jump()
+   {
+      chkStmntArgB(0, IR::ArgBase::Lit);
+   }
+
    //
    // Info::genStmnt_Jcnd_Nil
    //
@@ -280,36 +331,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_Jcnd_Nil()
    {
-      CheckArgC(stmnt, 2);
-      CheckArgB(stmnt, 1, IR::ArgBase::Lit);
-      moveArgStk_src(stmnt->args[0]);
-   }
-
-   //
-   // Info::trStmnt_Jcnd_Tab
-   //
-   void Info::trStmnt_Jcnd_Tab()
-   {
-      if(stmnt->args[0].getSize() != 1)
-         Core::Error(stmnt->pos, "unsupported op size for Jcnd_Tab");
-
-      if(stmnt->args.size() % 2 != 1)
-         Core::Error(stmnt->pos, "invalied arg count for Jcnd_Tab");
-
-      for(Core::FastU i = 1; i != stmnt->args.size(); ++i)
-         CheckArgB(stmnt, i, IR::ArgBase::Lit);
-
-      // Argument gets left on stack, so do not just move to stack.
-      CheckArgB(stmnt, 0, IR::ArgBase::Stk);
-   }
-
-   //
-   // Info::trStmnt_Jcnd_Tru
-   //
-   void Info::trStmnt_Jcnd_Tru()
-   {
-      CheckArgC(stmnt, 2);
-      CheckArgB(stmnt, 1, IR::ArgBase::Lit);
       moveArgStk_src(stmnt->args[0]);
    }
 
@@ -318,39 +339,10 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_Jfar()
    {
-      CheckArgC(stmnt, 2);
-
-      CheckArgB(stmnt, 0, IR::ArgBase::Lit);
-      CheckArgB(stmnt, 1, IR::ArgBase::Stk);
-
       auto n = stmnt->args[1].getSize();
-
-      if(stmnt->args.size() > 2)
-      {
-         CheckArgC(stmnt, 4);
-         CheckArgB(stmnt, 2, IR::ArgBase::Sta);
-      }
 
       if(n)
          func->setLocalTmp(1);
-   }
-
-   //
-   // Info::trStmnt_Jset
-   //
-   void Info::trStmnt_Jset()
-   {
-      CheckArgC(stmnt, 2);
-      CheckArgB(stmnt, 0, IR::ArgBase::Sta);
-   }
-
-   //
-   // Info::trStmnt_Jump
-   //
-   void Info::trStmnt_Jump()
-   {
-      CheckArgC(stmnt, 1);
-      CheckArgB(stmnt, 0, IR::ArgBase::Lit);
    }
 }
 

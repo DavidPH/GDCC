@@ -14,9 +14,7 @@
 
 #include "BC/ZDACS/Code.hpp"
 
-#include "Core/Exception.hpp"
-
-#include "IR/Statement.hpp"
+#include "IR/Exception.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -25,6 +23,18 @@
 
 namespace GDCC::BC::ZDACS
 {
+   //
+   // Info::chkStmnt_Copy
+   //
+   void Info::chkStmnt_Copy()
+   {
+      chkStmntArgB(0, IR::ArgBase::Stk);
+      chkStmntArgB(1, IR::ArgBase::Stk);
+
+      if(getStmntSize() > 1)
+         IR::ErrorCode(stmnt, "unsupported size");
+   }
+
    //
    // Info::genStmnt_Move
    //
@@ -330,10 +340,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_Move()
    {
-      CheckArgC(stmnt, 2);
-      CheckArg(stmnt->args[0], stmnt->pos);
-      CheckArg(stmnt->args[1], stmnt->pos);
-
       auto n = getStmntSize();
 
       // Multi-word?

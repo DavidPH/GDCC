@@ -144,8 +144,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_NegI()
    {
-      CheckArgC(stmnt, 2);
-
       auto n = getStmntSize();
 
       if(!isCopyArg(stmnt->args[0]) || !isFastArg(stmnt->args[0]))

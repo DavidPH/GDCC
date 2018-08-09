@@ -97,6 +97,7 @@ namespace GDCC::IR
    class TypeError;
    class Value;
 
+   typedef AddrBase ArgBase;
    typedef TypeBase ValueBase;
 
    #define GDCC_IR_AddrList(name) class Arg_##name;

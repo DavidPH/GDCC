@@ -105,9 +105,6 @@
 
 namespace GDCC::IR
 {
-
-   typedef AddrBase ArgBase;
-
    bool operator == (Arg const &l, Arg const &r);
 
    //

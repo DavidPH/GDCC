@@ -25,6 +25,7 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    CallType.cpp
    Code.cpp
    DJump.cpp
+   Exception.cpp
    Exp.cpp
    Exp/Binary.cpp
    Exp/Branch.cpp
@@ -71,6 +72,7 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    ../../inc/IR/CodeSet/Cmp.hpp
    ../../inc/IR/CodeSet/Unary.hpp
    ../../inc/IR/DJump.hpp
+   ../../inc/IR/Exception.hpp
    ../../inc/IR/Exp.hpp
    ../../inc/IR/Exp/Binary.hpp
    ../../inc/IR/Exp/Branch.hpp

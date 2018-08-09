@@ -12,8 +12,7 @@
 
 #include "BC/DGE/Info.hpp"
 
-#include "Core/Exception.hpp"
-
+#include "IR/Exception.hpp"
 #include "IR/Function.hpp"
 
 
@@ -112,7 +111,7 @@ namespace GDCC::BC::DGE
       case IR::Code::Swap: trStmnt_Swap(); break;
 
       default:
-         Core::Error(stmnt->pos, "DGE cannot tr Code: ", stmnt->code);
+         IR::ErrorCode(stmnt, "unsupported tr");
       }
    }
 
@@ -121,7 +120,6 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt_Pltn()
    {
-      CheckArgC(stmnt, 2);
       moveArgStk_dst(stmnt->args[0]);
       moveArgStk_src(stmnt->args[1]);
    }

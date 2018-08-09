@@ -145,8 +145,6 @@ namespace GDCC::BC::DGE
       if(n <= 1)
          trStmntStk3(false);
 
-      CheckArgC(stmnt, 3);
-
       if(!isPushArg(stmnt->args[1]) || !isPushArg(stmnt->args[2]))
       {
          trStmntStk3(false);
@@ -165,8 +163,6 @@ namespace GDCC::BC::DGE
 
       if(n <= 1)
          trStmntStk2();
-
-      CheckArgC(stmnt, 2);
 
       bool stk0, stk1;
 

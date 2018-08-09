@@ -14,8 +14,7 @@
 
 #include "BC/ZDACS/Code.hpp"
 
-#include "Core/Exception.hpp"
-
+#include "IR/Exception.hpp"
 #include "IR/Program.hpp"
 
 
@@ -25,6 +24,15 @@
 
 namespace GDCC::BC::ZDACS
 {
+   //
+   // Info::chkStmnt_AdXU
+   //
+   void Info::chkStmnt_AdXU()
+   {
+      if(getStmntSize() != 1)
+         IR::ErrorCode(stmnt, "unsupported size");
+   }
+
    //
    // Info::genStmnt_AdXU
    //
@@ -350,13 +358,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_AdXU()
    {
-      CheckArgC(stmnt, 3);
-
-      auto n = getStmntSize();
-
-      if(n != 1)
-         Core::Error(stmnt->pos, "unsupported AdXU_W size");
-
       moveArgStk_dst(stmnt->args[0]);
 
       if(stmnt->args.size() > 3)
@@ -426,13 +427,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_SuXU()
    {
-      CheckArgC(stmnt, 3);
-
-      auto n = getStmntSize();
-
-      if(n != 1)
-         Core::Error(stmnt->pos, "unsupported SuXU_W size");
-
       moveArgStk_dst(stmnt->args[0]);
 
       if(stmnt->args.size() > 3)

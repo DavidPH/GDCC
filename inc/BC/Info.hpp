@@ -124,7 +124,7 @@ namespace GDCC::BC
               void chkObj(IR::Object &obj);
       virtual void chkSpace() {}
               void chkSpace(IR::Space &space);
-      virtual void chkStmnt() {}
+      virtual void chkStmnt();
               void chkStmnt(IR::Statement &stmnt);
       virtual void chkStr() {}
               void chkStr(IR::StrEnt &str);
@@ -252,6 +252,18 @@ namespace GDCC::BC
       void addFunc_SubF_W(Core::FastU n);
       void addFunc_SubU_W(Core::FastU n);
 
+      virtual void chkStmntArg(IR::Arg const &arg);
+
+      void chkStmntArgA(IR::ArgPtr2 const &arg, IR::ArgBase a);
+
+      void chkStmntArgB(Core::FastU arg, IR::ArgBase a);
+
+      void chkStmntArgC(Core::FastU n) {chkStmntArgC(n, n);}
+      void chkStmntArgC(Core::FastU min, Core::FastU max);
+
+      void chkStmntArgI(IR::ArgPtr1 const &arg, IR::ArgBase a);
+      void chkStmntArgI(IR::ArgPtr2 const &arg, IR::ArgBase a);
+
       virtual FixedInfo getFixedInfo(Core::FastU n, bool s);
 
       // Default behavior is to assume IEEE float layout and 32-bit word.
@@ -305,12 +317,6 @@ namespace GDCC::BC
       IR::Statement *stmnt;
       IR::StrEnt    *str;
       std::size_t   putPos;
-
-
-      static void CheckArgB(IR::Arg const &arg, IR::AddrBase b, Core::Origin pos);
-      static void CheckArgB(IR::Statement *stmnt, std::size_t a, IR::AddrBase b);
-
-      static void CheckArgC(IR::Statement *stmnt, std::size_t c);
 
    private:
       void addFunc_AddU_W(Core::FastU n, IR::Code codeAdd, IR::Code codeAdX);

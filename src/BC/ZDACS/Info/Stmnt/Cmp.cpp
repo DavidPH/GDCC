@@ -363,8 +363,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_CmpU_EQ()
    {
-      CheckArgC(stmnt, 3);
-
       if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
          moveArgStk_dst(stmnt->args[0]);
       else

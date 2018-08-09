@@ -399,33 +399,6 @@ namespace GDCC::BC
 
       Core::Error(stmnt->pos, "irregular statement size");
    }
-
-   //
-   // Info::CheckArgB
-   //
-   void Info::CheckArgB(IR::Arg const &arg, IR::AddrBase b, Core::Origin pos)
-   {
-      if(arg.a != b)
-         Core::Error(pos, arg.a, " must have", b, " parameter");
-   }
-
-   //
-   // Info::CheckArgB
-   //
-   void Info::CheckArgB(IR::Statement *stmnt, std::size_t a, IR::ArgBase b)
-   {
-      if(stmnt->args[a].a != b)
-         Core::Error(stmnt->pos, stmnt->code, " must have ", b, " args[", a, "]");
-   }
-
-   //
-   // Info::CheckArgC
-   //
-   void Info::CheckArgC(IR::Statement *stmnt, std::size_t c)
-   {
-      if(auto argc = stmnt->args.size(); argc < c)
-         Core::Error(stmnt->pos, "bad argc for ", stmnt->code, ": ", argc, " < ", c);
-   }
 }
 
 // EOF
