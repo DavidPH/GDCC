@@ -62,7 +62,7 @@
       \
       for(auto &itr : prog->rangeDJump())  set##DJump(itr); \
       for(auto &itr : prog->rangeObject()) set##Obj(itr); \
-      for(auto &itr : prog->rangeStrEnt()) set##Str(itr); \
+      for(auto &itr : prog->rangeStrEnt()) set##StrEnt(itr); \
    }
 
 //
@@ -128,7 +128,7 @@
    DeferFunc(Object,    set##Obj,      obj) \
    DeferFunc(Space,     set##Space,    space) \
    DeferFunc(Statement, set##Stmnt,    stmnt) \
-   DeferFunc(StrEnt,    set##Str,      str) \
+   DeferFunc(StrEnt,    set##StrEnt,   strent) \
 
 
 //----------------------------------------------------------------------------|

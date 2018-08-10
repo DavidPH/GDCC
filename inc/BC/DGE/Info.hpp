@@ -250,8 +250,8 @@ namespace GDCC::BC::DGE
       void putStmntStkShi(char const *code = nullptr);
       void putStmntStkUna(char const *code = nullptr);
 
-      virtual void putStr();
-      using InfoBase::putStr;
+      virtual void putStrEnt();
+      using InfoBase::putStrEnt;
 
       void putValue(Core::Origin pos, IR::Value const &val); // Full output.
       void putValue(Core::Origin pos, IR::Value const &val, Core::FastU w);

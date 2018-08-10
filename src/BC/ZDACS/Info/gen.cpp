@@ -200,20 +200,20 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStr
+   // Info::genStrEnt
    //
-   void Info::genStr()
+   void Info::genStrEnt()
    {
-      if(!str->defin) return;
+      if(!strent->defin) return;
 
-      if(str->alloc)
-         str->allocValue(*prog, getAllocStrEnt());
+      if(strent->alloc)
+         strent->allocValue(*prog, getAllocStrEnt());
 
       // Back address glyph.
-      backGlyphStr(str->glyph, str->valueInt);
+      backGlyphStrEnt(strent->glyph, strent->valueInt);
 
-      if(numChunkSTRL <= str->valueInt)
-         numChunkSTRL = str->valueInt + 1;
+      if(numChunkSTRL <= strent->valueInt)
+         numChunkSTRL = strent->valueInt + 1;
    }
 }
 

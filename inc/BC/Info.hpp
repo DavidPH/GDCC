@@ -75,7 +75,7 @@ namespace GDCC::BC
          prog{nullptr},
          space{nullptr},
          stmnt{nullptr},
-         str{nullptr},
+         strent{nullptr},
          putPos{0}
       {
       }
@@ -126,8 +126,8 @@ namespace GDCC::BC
               void chkSpace(IR::Space &space);
       virtual void chkStmnt();
               void chkStmnt(IR::Statement &stmnt);
-      virtual void chkStr() {}
-              void chkStr(IR::StrEnt &str);
+      virtual void chkStrEnt() {}
+              void chkStrEnt(IR::StrEnt &strent);
 
       virtual void gen();
       virtual void genBlock();
@@ -142,8 +142,8 @@ namespace GDCC::BC
               void genSpace(IR::Space &space);
       virtual void genStmnt() {}
               void genStmnt(IR::Statement &stmnt);
-      virtual void genStr() {}
-              void genStr(IR::StrEnt &str);
+      virtual void genStrEnt() {}
+              void genStrEnt(IR::StrEnt &strent);
 
       virtual void opt();
       virtual void optBlock();
@@ -158,8 +158,8 @@ namespace GDCC::BC
               void optSpace(IR::Space &space);
       virtual void optStmnt();
               void optStmnt(IR::Statement &stmnt);
-      virtual void optStr() {}
-              void optStr(IR::StrEnt &str);
+      virtual void optStrEnt() {}
+              void optStrEnt(IR::StrEnt &strent);
 
       virtual void pre();
       virtual void preBlock();
@@ -174,8 +174,8 @@ namespace GDCC::BC
               void preSpace(IR::Space &space);
       virtual void preStmnt() {}
               void preStmnt(IR::Statement &stmnt);
-      virtual void preStr() {}
-              void preStr(IR::StrEnt &str);
+      virtual void preStrEnt() {}
+              void preStrEnt(IR::StrEnt &strent);
 
       virtual void put() = 0;
       virtual void putBlock();
@@ -190,8 +190,8 @@ namespace GDCC::BC
               void putSpace(IR::Space &space);
       virtual void putStmnt() {}
               void putStmnt(IR::Statement &stmnt);
-      virtual void putStr() {}
-              void putStr(IR::StrEnt &str);
+      virtual void putStrEnt() {}
+              void putStrEnt(IR::StrEnt &strent);
 
       virtual void putExtra() {}
 
@@ -208,8 +208,8 @@ namespace GDCC::BC
               void trSpace(IR::Space &space);
       virtual void trStmnt() {}
               void trStmnt(IR::Statement &stmnt);
-      virtual void trStr() {}
-              void trStr(IR::StrEnt &str);
+      virtual void trStrEnt() {}
+              void trStrEnt(IR::StrEnt &strent);
 
       void addFunc(Core::String name, Core::FastU retrn, Core::FastU param);
 
@@ -315,8 +315,8 @@ namespace GDCC::BC
       IR::Program   *prog;
       IR::Space     *space;
       IR::Statement *stmnt;
-      IR::StrEnt    *str;
-      std::size_t   putPos;
+      IR::StrEnt    *strent;
+      std::size_t    putPos;
 
    private:
       void addFunc_AddU_W(Core::FastU n, IR::Code codeAdd, IR::Code codeAdX);

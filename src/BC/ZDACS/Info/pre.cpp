@@ -165,11 +165,11 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::preStr
+   // Info::preStrEnt
    //
-   void Info::preStr()
+   void Info::preStrEnt()
    {
-      prog->getGlyphData(str->glyph).type = IR::Type_StrEn();
+      prog->getGlyphData(strent->glyph).type = IR::Type_StrEn();
    }
 }
 

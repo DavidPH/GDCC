@@ -64,7 +64,7 @@ namespace GDCC::BC::DGE
       for(auto &itr : prog->rangeDJump())    putDJump(itr);
       for(auto &itr : prog->rangeFunction()) putFunc(itr);
       for(auto &itr : prog->rangeObject())   putObj(itr);
-      for(auto &itr : prog->rangeStrEnt())   putStr(itr);
+      for(auto &itr : prog->rangeStrEnt())   putStrEnt(itr);
    }
 
    //
@@ -379,16 +379,16 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStr
+   // Info::putStrEnt
    //
-   void Info::putStr()
+   void Info::putStrEnt()
    {
-      if(!str->defin) return;
+      if(!strent->defin) return;
 
       putNTS("define");
-      putNTS(str->glyph);
+      putNTS(strent->glyph);
       putNTS('=');
-      putData("{s}", 3); putNTS(str->valueStr);
+      putData("{s}", 3); putNTS(strent->valueStr);
       putNTS(';');
    }
 

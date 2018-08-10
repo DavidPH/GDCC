@@ -103,7 +103,7 @@ namespace GDCC::BC::ZDACS
       void backGlyphFunc(Core::String glyph, Core::FastU val, IR::CallType ctype);
       void backGlyphGlyph(Core::String glyph, Core::String val);
       void backGlyphObj(Core::String glyph, Core::FastU val);
-      void backGlyphStr(Core::String glyph, Core::FastU val);
+      void backGlyphStrEnt(Core::String glyph, Core::FastU val);
       void backGlyphWord(Core::String glyph, Core::FastU val);
 
       virtual void chkStmnt();
@@ -201,7 +201,7 @@ namespace GDCC::BC::ZDACS
       void genStmntPushArg(IR::Arg const &arg, Core::FastU w);
       void genStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
-      virtual void genStr();
+      virtual void genStrEnt();
 
       Core::NumberAllocMerge<Core::FastU> &getAllocDJump();
       Core::NumberAllocMerge<Core::FastU> &getAllocFunc(IR::CallType call);
@@ -318,7 +318,7 @@ namespace GDCC::BC::ZDACS
          Core::FastU param, Core::FastU localReg, char const *file,
          std::size_t line);
 
-      virtual void preStr();
+      virtual void preStrEnt();
 
       virtual void put();
 

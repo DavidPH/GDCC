@@ -346,9 +346,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::backGlyphStr
+   // Info::backGlyphStrEnt
    //
-   void Info::backGlyphStr(Core::String glyph, Core::FastU val)
+   void Info::backGlyphStrEnt(Core::String glyph, Core::FastU val)
    {
       auto &data = prog->getGlyphData(glyph);
 
