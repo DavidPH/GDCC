@@ -22,16 +22,15 @@ if(GDCC_BC_ZDACS)
    add_library(gdcc-bc-zdacs-lib ${GDCC_SHARED_DECL}
       Info.cpp
       Info/Stmnt/Add.cpp
-      Info/Stmnt/Bitwise.cpp
+      Info/Stmnt/Bit.cpp
       Info/Stmnt/Call.cpp
       Info/Stmnt/Cmp.cpp
       Info/Stmnt/Div.cpp
       Info/Stmnt/Jump.cpp
       Info/Stmnt/Move.cpp
       Info/Stmnt/Mul.cpp
-      Info/Stmnt/NegI.cpp
-      Info/Stmnt/Shift.cpp
-      Info/Stmnt/Swap.cpp
+      Info/Stmnt/Neg.cpp
+      Info/Stmnt/Sh.cpp
       Info/chk.cpp
       Info/gen.cpp
       Info/genIniti.cpp
@@ -45,7 +44,6 @@ if(GDCC_BC_ZDACS)
       Info/putIniti.cpp
       Info/putStmnt.cpp
       Info/tr.cpp
-      Info/trStmnt.cpp
 
       ../../../inc/BC/ZDACS/Info.hpp
       ../../../inc/BC/ZDACS/Code.hpp

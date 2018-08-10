@@ -15,6 +15,7 @@
 #include "BC/ZDACS/Code.hpp"
 
 #include "IR/Exception.hpp"
+#include "IR/Function.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -33,6 +34,15 @@ namespace GDCC::BC::ZDACS
 
       if(getStmntSize() > 1)
          IR::ErrorCode(stmnt, "unsupported size");
+   }
+
+   //
+   // Info::chkStmnt_Swap
+   //
+   void Info::chkStmnt_Swap()
+   {
+      chkStmntArgB(0, IR::ArgBase::Stk);
+      chkStmntArgB(1, IR::ArgBase::Stk);
    }
 
    //
@@ -145,6 +155,19 @@ namespace GDCC::BC::ZDACS
       numChunkCODE += arr.off ? 20 : 8;
    }
 
+
+   //
+   // Info::genStmnt_Swap
+   //
+   void Info::genStmnt_Swap()
+   {
+      auto n = getStmntSize();
+
+      if(n == 1)
+         numChunkCODE += 4;
+      else
+         numChunkCODE += n * 32;
+   }
    //
    // Info::putStmnt_Move
    //
@@ -336,6 +359,30 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::putStmnt_Swap
+   //
+   void Info::putStmnt_Swap()
+   {
+      auto n = getStmntSize();
+
+      if(n == 1)
+      {
+         putCode(Code::Swap);
+         return;
+      }
+
+      for(Core::FastU i = n; i--;)
+         putCode(Code::Drop_LocReg, func->localReg + i);
+      for(Core::FastU i = n; i--;)
+         putCode(Code::Drop_LocReg, func->localReg + i + n);
+
+      for(Core::FastU i = 0; i != n; ++i)
+         putCode(Code::Push_LocReg, func->localReg + i);
+      for(Core::FastU i = 0; i != n; ++i)
+         putCode(Code::Push_LocReg, func->localReg + i + n);
+   }
+
+   //
    // Info::trStmnt_Move
    //
    void Info::trStmnt_Move()
@@ -396,6 +443,17 @@ namespace GDCC::BC::ZDACS
          moveArgStk_src(stmnt->args[1]);
 
       #undef moveIdx
+   }
+
+   //
+   // Info::trStmnt_Swap
+   //
+   void Info::trStmnt_Swap()
+   {
+      auto n = getStmntSize();
+
+      if(n != 1)
+         func->setLocalTmp(n * 2);
    }
 }
 

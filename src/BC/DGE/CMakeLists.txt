@@ -34,10 +34,10 @@ if(GDCC_BC_DGE)
       Info/Stmnt/Sh.cpp
       Info/chk.cpp
       Info/gen.cpp
-      Info/preStmnt.cpp
+      Info/pre.cpp
       Info/put.cpp
       Info/putStmnt.cpp
-      Info/trStmnt.cpp
+      Info/tr.cpp
 
       ../../../inc/BC/DGE/Info.hpp
       ../../../inc/BC/DGE/Types.hpp
