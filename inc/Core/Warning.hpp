@@ -13,9 +13,9 @@
 #ifndef GDCC__Core__Warning_H__
 #define GDCC__Core__Warning_H__
 
-#include "../Core/Origin.hpp"
+#include "../Core/Exception.hpp"
 
-#include "../Option/Base.hpp"
+#include "../Option/Bool.hpp"
 
 #include <iostream>
 
@@ -54,10 +54,11 @@ namespace GDCC::Core
 
       Option::Program &list;
 
-      WarnOpt optAll;
-      WarnOpt optCommon;
-      WarnOpt optExtra;
-      WarnOpt optStrict;
+      WarnOpt      optAll;
+      WarnOpt      optCommon;
+      Option::Bool optError;
+      WarnOpt      optExtra;
+      WarnOpt      optStrict;
    };
 
    //
@@ -81,27 +82,20 @@ namespace GDCC::Core
       {
          if(!*this) return;
 
+         if(WarnError)
+            Error(pos, args..., " [--warn-error]");
+
          warnPre(pos);
-         warnArg(args...);
+         ((std::cerr << args), ...);
          warnPro();
       }
 
 
       friend class WarnOpt;
 
+      static bool WarnError;
+
    private:
-      void warnArg() const {}
-
-      //
-      // warnArg
-      //
-      template<typename Arg0, typename... Args>
-      void warnArg(Arg0 const &arg0, Args const &...args) const
-      {
-         std::cerr << arg0;
-         warnArg(args...);
-      }
-
       void warnPre(Origin pos) const;
       void warnPro() const;
 

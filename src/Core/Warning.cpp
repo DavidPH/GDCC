@@ -21,9 +21,11 @@
 
 namespace GDCC::Core
 {
+   bool Warning::WarnError{false};
+
    Warning WarnAll   {nullptr,    "--warn-all"};
-   Warning WarnExtra {&WarnAll,   "--warn-extra"};
    Warning WarnCommon{&WarnExtra, "--warn-common", Warning::State::On};
+   Warning WarnExtra {&WarnAll,   "--warn-extra"};
    Warning WarnStrict{&WarnAll,   "--warn-strict"};
 }
 
@@ -67,6 +69,16 @@ namespace GDCC::Core
             .setDescS("Enables common warnings."),
 
          &WarnCommon
+      },
+
+      optError
+      {
+         &list, Option::Base::Info()
+            .setName("warn-error")
+            .setGroup("warnings")
+            .setDescS("Makes warnings into errors."),
+
+         &Warning::WarnError
       },
 
       optExtra
