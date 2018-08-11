@@ -47,6 +47,7 @@
 #include "CC/Parse.hpp"
 
 #include "CC/Exp.hpp"
+#include "CC/Warning.hpp"
 
 #include "SR/Attribute.hpp"
 #include "SR/Exp.hpp"
@@ -377,6 +378,8 @@ namespace GDCC::CC
          ParseAttr_script(*this, scope, attr); break;
 
       default:
+         WarnUnknownAttr(name.pos, "unknown attribute: ", name.str);
+
          // Skip unknown attribute's arguments, if any.
          if(in.peek(Core::TOK_ParenO))
             skipBalancedToken();

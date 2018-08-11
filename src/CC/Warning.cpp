@@ -63,6 +63,21 @@ namespace GDCC::CC
 
       &WarnForwardRef
    };
+
+   //
+   // --warn-unknown-attribute
+   //
+   static Core::WarnOpt WarnUnknownAttrOpt
+   {
+      &Core::GetWarnOptList(), Option::Base::Info()
+         .setName("warn-unknown-attribute")
+         .setGroup("warnings")
+         .setDescS("Warns on unknown attributes.")
+         .setDescL("Warns on unknown attributes.\n\n"
+            "Enabled by --warn-common."),
+
+      &WarnUnknownAttr
+   };
 }
 
 
@@ -75,6 +90,7 @@ namespace GDCC::CC
    Core::Warning WarnDeclCompat{&Core::WarnCommon, "--warn-incompatible-declaration"};
    Core::Warning WarnFileSemico{&Core::WarnStrict, "--warn-file-scope-semicolon"};
    Core::Warning WarnForwardRef{&Core::WarnCommon, "--warn-forward-reference"};
+   Core::Warning WarnUnknownAttr{&Core::WarnCommon, "--warn-unknown-attribute"};
 }
 
 // EOF

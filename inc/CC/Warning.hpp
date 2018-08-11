@@ -27,6 +27,7 @@ namespace GDCC::CC
    extern Core::Warning WarnDeclCompat;
    extern Core::Warning WarnFileSemico;
    extern Core::Warning WarnForwardRef;
+   extern Core::Warning WarnUnknownAttr;
 }
 
 #endif//GDCC__CC__Warning_H__
