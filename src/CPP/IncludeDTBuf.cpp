@@ -12,7 +12,9 @@
 
 #include "CPP/IncludeDTBuf.hpp"
 
+#include "CPP/IStream.hpp"
 #include "CPP/Macro.hpp"
+#include "CPP/TSource.hpp"
 #include "CPP/TStream.hpp"
 
 #include "Core/Exception.hpp"
@@ -84,15 +86,15 @@ namespace GDCC::CPP
    //
    // IncludeDTBuf constructor
    //
-   IncludeDTBuf::IncludeDTBuf(Core::TokenBuf &src_, IStreamHeader &istr_,
+   IncludeDTBuf::IncludeDTBuf(Core::TokenBuf &src_, Core::TokenSource &tsrc_,
       IncludeLang &langs_, MacroMap &macros_, PragmaDataBase &pragd_,
       PragmaParserBase &pragp_, Core::String dir_) :
       DirectiveTBuf{src_},
-      istr  (istr_),
-      langs (langs_),
-      macros(macros_),
-      pragd (pragd_),
-      pragp (pragp_),
+      tsrc  {tsrc_},
+      langs {langs_},
+      macros{macros_},
+      pragd {pragd_},
+      pragp {pragp_},
       dir   {dir_}
    {
    }
@@ -124,12 +126,14 @@ namespace GDCC::CPP
    // IncludeDTBuf::doInc
    //
    void IncludeDTBuf::doInc(Core::String name,
-      std::unique_ptr<std::streambuf> &&newStr)
+      std::unique_ptr<std::streambuf> &&newBuf)
    {
       macros.linePush(Macro::Stringize(name));
 
-      str = std::move(newStr);
-      inc.reset(new IncStream(*str, langs, macros, pragd, pragp, name,
+      incBuf = std::move(newBuf);
+      incStr.reset(new IStream(*incBuf, name));
+      incSrc.reset(new TSource(*incStr, incStr->getOriginSource()));
+      inc.reset(new IncStream(*incSrc, langs, macros, pragd, pragp,
          Core::PathDirname(name)));
    }
 
@@ -162,9 +166,10 @@ namespace GDCC::CPP
    {
       // Read header token(s).
       std::vector<Core::Token> toks;
-      istr.setNeedHeader(); // Try to get header token.
+      tsrc.enableToken(Core::TOK_Header); // Try to get header tokens.
       while(src.peek().tok != Core::TOK_LnEnd && src.peek().tok != Core::TOK_EOF)
          toks.emplace_back(src.get());
+      tsrc.disableToken(Core::TOK_Header);
 
       // Build macro buffer.
       Core::ArrayTBuf abuf{toks.data(), toks.size()};
@@ -280,7 +285,9 @@ namespace GDCC::CPP
 
          macros.lineDrop();
          inc.reset();
-         str.reset();
+         incSrc.reset();
+         incStr.reset();
+         incBuf.reset();
       }
 
       DirectiveTBuf::underflow();

@@ -10,8 +10,10 @@
 //
 //-----------------------------------------------------------------------------
 
+#include "CPP/IStream.hpp"
 #include "CPP/Macro.hpp"
 #include "CPP/TStream.hpp"
+#include "CPP/TSource.hpp"
 
 #include "Core/File.hpp"
 #include "Core/Option.hpp"
@@ -56,7 +58,9 @@ static void ProcessFile(std::ostream &out, char const *inName)
    GDCC::Core::String      path {GDCC::Core::PathDirname(file)};
    GDCC::CPP::PragmaData   pragd{};
    GDCC::CPP::PragmaParser pragp{pragd};
-   GDCC::CPP::PPStream     in   {*buf, langs, macr, pragd, pragp, file, path};
+   GDCC::CPP::IStream      istr {*buf, file};
+   GDCC::CPP::TSource      tsrc {istr, istr.getOriginSource()};
+   GDCC::CPP::PPStream     in   {tsrc, langs, macr, pragd, pragp, path};
 
    for(GDCC::Core::Token tok; in >> tok;) switch(tok.tok)
    {

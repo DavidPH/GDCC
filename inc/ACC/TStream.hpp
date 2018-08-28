@@ -13,13 +13,12 @@
 #ifndef GDCC__ACC__TStream_H__
 #define GDCC__ACC__TStream_H__
 
-#include "../ACC/IStream.hpp"
-
 #include "../ACC/DirectiveTBuf.hpp"
 #include "../ACC/IncludeDTBuf.hpp"
 #include "../ACC/Macro.hpp"
 #include "../ACC/MacroDTBuf.hpp"
 #include "../ACC/PPTokenTBuf.hpp"
+#include "../ACC/Parse.hpp"
 #include "../ACC/Pragma.hpp"
 
 #include "../CPP/ConcatTBuf.hpp"
@@ -30,7 +29,7 @@
 #include "../CPP/StringTBuf.hpp"
 
 #include "../Core/BufferTBuf.hpp"
-#include "../Core/StreamTBuf.hpp"
+#include "../Core/SourceTBuf.hpp"
 #include "../Core/TokenStream.hpp"
 #include "../Core/WSpaceTBuf.hpp"
 
@@ -50,11 +49,10 @@ namespace GDCC::ACC
       //
       // constructor
       //
-      ImportStream(std::streambuf &buf_, MacroMap &macros, PragmaData &pragd,
-         CPP::PragmaParserBase &pragp, Core::String file) :
+      ImportStream(Core::TokenSource &tsrc, MacroMap &macros,
+         PragmaData &pragd, CPP::PragmaParserBase &pragp) :
          Core::TokenStream{&bbuf},
-         istr{buf_, file},
-         tbuf{istr},
+         tbuf{tsrc},
          cdir{tbuf, macros},
          ddir{cdir, macros, pragd, true},
          ldir{ddir, pragd},
@@ -73,8 +71,7 @@ namespace GDCC::ACC
       }
 
    protected:
-      using IStr = IStream;
-      using TBuf = Core::StreamTBuf<IStream>;
+      using TBuf = Core::SourceTBuf<>;
       using CDir = CPP::ConditionDTBuf;
       using DDir = DefineDTBuf;
       using LDir = LibraryDTBuf;
@@ -90,7 +87,6 @@ namespace GDCC::ACC
       using PPBf = PPTokenTBuf;
       using BBuf = Core::BufferTBuf<8, 3>;
 
-      IStr istr;
       TBuf tbuf;
       CDir cdir;
       DDir ddir;
@@ -117,17 +113,15 @@ namespace GDCC::ACC
       //
       // constructor
       //
-      IncStream(std::streambuf &buf_, CPP::IncludeLang &langs,
+      IncStream(Core::TokenSource &tsrc, CPP::IncludeLang &langs,
          MacroMap &macros, PragmaData &pragd, CPP::PragmaParserBase &pragp,
-         Core::String file, Core::String dir, Scope_Global &scope,
-         IR::Program &prog) :
+         Core::String dir, Scope_Global &scope, IR::Program &prog) :
          Core::TokenStream{&udir},
-         istr{buf_, file},
-         tbuf{istr},
+         tbuf{tsrc},
          cdir{tbuf, macros},
          ddir{cdir, macros, pragd, false},
-         impd{ddir, istr, langs, macros, pragd, pragp, dir, scope, prog},
-         idir{impd, istr, langs, macros, pragd, pragp, dir, scope, prog},
+         impd{ddir, tsrc, langs, macros, pragd, pragp, dir, scope, prog},
+         idir{impd, tsrc, langs, macros, pragd, pragp, dir, scope, prog},
          pdir{idir, pragp},
          ignd{pdir, false},
          udir{ignd, macros}
@@ -135,8 +129,7 @@ namespace GDCC::ACC
       }
 
    protected:
-      using IStr = IStream;
-      using TBuf = Core::StreamTBuf<IStream>;
+      using TBuf = Core::SourceTBuf<>;
       using CDir = CPP::ConditionDTBuf;
       using DDir = DefineDTBuf;
       using ImpD = ImportDTBuf;
@@ -145,7 +138,6 @@ namespace GDCC::ACC
       using IgnD = IgnoreDTBuf;
       using UDir = CPP::UndefDTBuf;
 
-      IStr istr;
       TBuf tbuf;
       CDir cdir;
       DDir ddir;
@@ -165,11 +157,10 @@ namespace GDCC::ACC
       //
       // constructor
       //
-      PPStream(std::streambuf &buf_, CPP::IncludeLang &langs,
+      PPStream(Core::TokenSource &tsrc, CPP::IncludeLang &langs,
          MacroMap &macros, PragmaData &pragd, CPP::PragmaParserBase &pragp,
-         Core::String file, Core::String dir, Scope_Global &scope,
-         IR::Program &prog) :
-         IncStream{buf_, langs, macros, pragd, pragp, file, dir, scope, prog},
+         Core::String dir, Scope_Global &scope, IR::Program &prog) :
+         IncStream{tsrc, langs, macros, pragd, pragp, dir, scope, prog},
          mbuf{udir, macros, Core::STR___va_args__},
          pubf{mbuf, pragd},
          sbuf{pubf, ParseEscape},
@@ -199,11 +190,10 @@ namespace GDCC::ACC
       //
       // constructor
       //
-      TStream(std::streambuf &buf_, CPP::IncludeLang &langs,
+      TStream(Core::TokenSource &tsrc, CPP::IncludeLang &langs,
          MacroMap &macros, PragmaData &pragd, CPP::PragmaParserBase &pragp,
-         Core::String file, Core::String dir, Scope_Global &scope,
-         IR::Program &prog) :
-         PPStream{buf_, langs, macros, pragd, pragp, file, dir, scope, prog},
+         Core::String dir, Scope_Global &scope, IR::Program &prog) :
+         PPStream{tsrc, langs, macros, pragd, pragp, dir, scope, prog},
          wbuf{cbuf},
          ppbf{wbuf},
          bbuf{ppbf}

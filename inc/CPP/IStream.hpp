@@ -31,66 +31,33 @@
 namespace GDCC::CPP
 {
    //
-   // IStreamHeader
-   //
-   class IStreamHeader : public std::istream
-   {
-   public:
-      IStreamHeader(std::streambuf *buf) : std::istream{buf} {}
-
-      virtual void setNeedHeader() = 0;
-
-
-      static bool GetHeader(std::istream &in, Core::Token &out);
-   };
-
-   //
    // IStream
    //
-   class IStream : public IStreamHeader
+   class IStream : public std::istream
    {
    public:
       IStream(std::streambuf &buf, Core::String file, std::size_t line = 1) :
-         IStreamHeader{&cbuf}, needHeader{false}, lbuf{buf},
-         obuf{lbuf, {file, line, 1}}, tbuf{obuf}, ebuf{tbuf}, cbuf{ebuf} {}
+         std::istream{&ebuf},
+         lbuf{buf},
+         obuf{lbuf, {file, line, 1}},
+         tbuf{obuf},
+         ebuf{tbuf}
+      {
+      }
 
-      void disableComments() {rdbuf(&ebuf);}
-
-      void enableComments() {rdbuf(&cbuf);}
-
-      Core::Origin getOrigin() const {return obuf.getOrigin();}
-
-      using CommentsHold = Core::FeatureHold<IStream,
-         &IStream::disableComments, &IStream::enableComments>;
-
-      CommentsHold holdComments() {return CommentsHold(*this);}
-
-      virtual void setNeedHeader() {needHeader = true;}
-
-      bool needHeader : 1;
+      Core::OriginSource &getOriginSource() {return obuf;}
 
    protected:
       using LBuf = Core::LineTermBuf<8>;
       using OBuf = Core::OriginBuf<8, 2>;
       using TBuf = TrigraphBuf<8>;
       using EBuf = Core::StripEscapeBuf<8, 1, 1, char, '\n'>;
-      using CBuf = Core::CCommentBuf<8>;
 
       LBuf lbuf;
       OBuf obuf;
       TBuf tbuf;
       EBuf ebuf;
-      CBuf cbuf;
    };
-}
-
-//----------------------------------------------------------------------------|
-// Extern Functions                                                           |
-//
-
-namespace GDCC::CPP
-{
-   IStream &operator >> (IStream &in, Core::Token &out);
 }
 
 #endif//GDCC__CPP__IStream_H__

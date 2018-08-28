@@ -12,7 +12,8 @@
 
 #include "ACC/DirectiveTBuf.hpp"
 
-#include "ACC/IStream.hpp"
+#include "ACC/TSource.hpp"
+#include "ACC/Parse.hpp"
 #include "ACC/Pragma.hpp"
 
 #include "Core/Exception.hpp"

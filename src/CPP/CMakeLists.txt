@@ -23,7 +23,6 @@ add_library(gdcc-cpp-lib ${GDCC_SHARED_DECL}
    ConditionDTBuf.cpp
    DirectiveTBuf.cpp
    GetExpIR.cpp
-   IStream.cpp
    IncludeDTBuf.cpp
    Macro.cpp
    MacroDTBuf.cpp
@@ -32,6 +31,7 @@ add_library(gdcc-cpp-lib ${GDCC_SHARED_DECL}
    Pragma.cpp
    PragmaDTBuf.cpp
    StringTBuf.cpp
+   TSource.cpp
 
    ../../inc/CPP/ConcatTBuf.hpp
    ../../inc/CPP/ConditionDTBuf.hpp
@@ -46,6 +46,7 @@ add_library(gdcc-cpp-lib ${GDCC_SHARED_DECL}
    ../../inc/CPP/Pragma.hpp
    ../../inc/CPP/PragmaDTBuf.hpp
    ../../inc/CPP/StringTBuf.hpp
+   ../../inc/CPP/TSource.hpp
    ../../inc/CPP/TStream.hpp
    ../../inc/CPP/TrigraphBuf.hpp
    ../../inc/CPP/Types.hpp

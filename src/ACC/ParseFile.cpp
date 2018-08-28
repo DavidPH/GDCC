@@ -15,9 +15,12 @@
 #include "ACC/Exp.hpp"
 #include "ACC/Macro.hpp"
 #include "ACC/Scope.hpp"
+#include "ACC/TSource.hpp"
 #include "ACC/TStream.hpp"
 
 #include "CC/Exp.hpp"
+
+#include "CPP/IStream.hpp"
 
 #include "Core/File.hpp"
 #include "Core/Path.hpp"
@@ -68,8 +71,10 @@ namespace GDCC::ACC
       PragmaData       pragd{};
       PragmaParser     pragp{pragd};
       Core::StringBuf  sbuf{buf->data(), buf->size()};
+      CPP::IStream     istr{sbuf, file};
+      TSource          tsrc{istr, istr.getOriginSource()};
       Scope_Global     scope{CC::GetGlobalLabel(buf->getHash())};
-      TStream          tstr{sbuf, langs, macr, pragd, pragp, file, path, scope, prog};
+      TStream          tstr{tsrc, langs, macr, pragd, pragp, path, scope, prog};
       Parser           ctx {tstr, pragd, prog};
 
       // Read declarations.

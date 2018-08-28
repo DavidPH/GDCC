@@ -13,9 +13,10 @@
 #include "CPP/PragmaDTBuf.hpp"
 
 #include "CPP/IStream.hpp"
+#include "CPP/TSource.hpp"
 
 #include "Core/Exception.hpp"
-#include "Core/StreamTBuf.hpp"
+#include "Core/SourceTBuf.hpp"
 #include "Core/StringBuf.hpp"
 #include "Core/TokenStream.hpp"
 
@@ -111,9 +112,10 @@ namespace GDCC::CPP
          }
 
          // Build token stream.
-         Core::StringBuf sbuf{str.data(), str.size()};
-         IStream istr{sbuf, pos.file, pos.line};
-         Core::StreamTBuf<IStream> tbuf{istr};
+         Core::StringBuf    sbuf{str.data(), str.size()};
+         IStream            istr{sbuf, pos.file, pos.line};
+         TSource            tsrc{istr, istr.getOriginSource()};
+         Core::SourceTBuf<> tbuf{tsrc};
 
          // Read tokens.
          std::vector<Core::Token> toks;

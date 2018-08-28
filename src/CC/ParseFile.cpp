@@ -14,7 +14,9 @@
 
 #include "CC/Scope/Global.hpp"
 
+#include "CPP/IStream.hpp"
 #include "CPP/Macro.hpp"
+#include "CPP/TSource.hpp"
 #include "CPP/TStream.hpp"
 
 #include "Core/File.hpp"
@@ -61,7 +63,9 @@ namespace GDCC::CC
       CPP::PragmaData   pragd{};
       CPP::PragmaParser pragp{pragd};
       Core::StringBuf   sbuf {buf->data(), buf->size()};
-      CPP::TStream      tstr {sbuf, langs, macr, pragd, pragp, file, path};
+      CPP::IStream      istr {sbuf, file};
+      CPP::TSource      tsrc {istr, istr.getOriginSource()};
+      CPP::TStream      tstr {tsrc, langs, macr, pragd, pragp, path};
       Parser            ctx  {tstr, pragd, prog};
       Scope_Global      scope{GetGlobalLabel(buf->getHash())};
 

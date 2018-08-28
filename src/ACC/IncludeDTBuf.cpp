@@ -13,8 +13,10 @@
 #include "ACC/IncludeDTBuf.hpp"
 
 #include "ACC/Parse.hpp"
+#include "ACC/TSource.hpp"
 #include "ACC/TStream.hpp"
 
+#include "CPP/IStream.hpp"
 #include "CPP/Macro.hpp"
 
 #include "Core/Path.hpp"
@@ -33,7 +35,7 @@ namespace GDCC::ACC
    //
    IncludeDTBuf::IncludeDTBuf(
       Core::TokenBuf        &src_,
-      CPP::IStreamHeader    &istr_,
+      Core::TokenSource     &tsrc_,
       CPP::IncludeLang      &langs_,
       MacroMap              &macros_,
       PragmaData            &pragd_,
@@ -41,7 +43,7 @@ namespace GDCC::ACC
       Core::String           dir_,
       Scope_Global          &scope_,
       IR::Program           &prog_) :
-      CPP::IncludeDTBuf{src_, istr_, langs_, macros_, pragd_, pragp_, dir_},
+      CPP::IncludeDTBuf{src_, tsrc_, langs_, macros_, pragd_, pragp_, dir_},
       macros(macros_),
       pragd(pragd_),
       prog (prog_),
@@ -54,7 +56,7 @@ namespace GDCC::ACC
    //
    ImportDTBuf::ImportDTBuf(
       Core::TokenBuf        &src_,
-      CPP::IStreamHeader    &istr_,
+      Core::TokenSource     &tsrc_,
       CPP::IncludeLang      &langs_,
       MacroMap              &macros_,
       PragmaData            &pragd_,
@@ -62,7 +64,7 @@ namespace GDCC::ACC
       Core::String           dir_,
       Scope_Global          &scope_,
       IR::Program           &prog_) :
-      IncludeDTBuf{src_, istr_, langs_, macros_, pragd_, pragp_, dir_, scope_, prog_}
+      IncludeDTBuf{src_, tsrc_, langs_, macros_, pragd_, pragp_, dir_, scope_, prog_}
    {
    }
 
@@ -70,12 +72,14 @@ namespace GDCC::ACC
    // IncludeDTBuf::doInc
    //
    void IncludeDTBuf::doInc(Core::String name,
-      std::unique_ptr<std::streambuf> &&newStr)
+      std::unique_ptr<std::streambuf> &&newBuf)
    {
       macros.linePush(CPP::Macro::Stringize(name));
 
-      str = std::move(newStr);
-      inc.reset(new IncStream(*str, langs, macros, pragd, pragp, name,
+      incBuf = std::move(newBuf);
+      incStr.reset(new CPP::IStream(*incBuf, name));
+      incSrc.reset(new TSource(*incStr, incStr->getOriginSource()));
+      inc.reset(new IncStream(*incSrc, langs, macros, pragd, pragp,
          Core::PathDirname(name), scope, prog));
    }
 
@@ -99,9 +103,11 @@ namespace GDCC::ACC
    // ImportDTBuf::doInc
    //
    void ImportDTBuf::doInc(Core::String name,
-      std::unique_ptr<std::streambuf> &&newStr)
+      std::unique_ptr<std::streambuf> &&newBuf)
    {
-      ImportStream tstr{*newStr, macros, pragd, pragp, name};
+      CPP::IStream istr{*newBuf, name};
+      TSource      tsrc{istr, istr.getOriginSource()};
+      ImportStream tstr{tsrc, macros, pragd, pragp};
       Parser       ctx {tstr, pragd, prog, true};
 
       pragd.push();

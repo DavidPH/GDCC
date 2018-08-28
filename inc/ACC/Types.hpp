@@ -26,7 +26,6 @@ namespace GDCC::ACC
    class CreateTransProp;
    class CreateTransPropName;
    class DefineDTBuf;
-   class IStream;
    class IgnoreDTBuf;
    class ImportDTBuf;
    class ImportStream;
@@ -42,6 +41,7 @@ namespace GDCC::ACC
    class PrintDecl;
    class PrintProp;
    class Scope_Global;
+   class TSource;
    class TStream;
 
    using PragmaParser = CPP::PragmaParserVA<

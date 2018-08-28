@@ -33,7 +33,7 @@ namespace GDCC::Core
       typename    CharT   = char,
       typename    Traits  = std::char_traits<CharT>>
    class OriginBuf final :
-      public IBufferBuf<BufSize, BufBack, BufRead, CharT, Traits>
+      public IBufferBuf<BufSize, BufBack, BufRead, CharT, Traits>, public OriginSource
    {
    public:
       using Super = IBufferBuf<BufSize, BufBack, BufRead, CharT, Traits>;
@@ -43,8 +43,6 @@ namespace GDCC::Core
 
 
       OriginBuf(Src &src_, Origin pos_) : Super{src_}, pos{pos_} {}
-
-      Origin getOrigin() const {return pos;}
 
    protected:
       //
@@ -65,7 +63,8 @@ namespace GDCC::Core
          return c;
       }
 
-   private:
+      virtual Origin v_getOrigin() const {return pos;}
+
       Origin pos;
    };
 }

@@ -30,7 +30,7 @@ namespace GDCC::ACC
    class IncludeDTBuf : public CPP::IncludeDTBuf
    {
    public:
-      IncludeDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
+      IncludeDTBuf(Core::TokenBuf &src, Core::TokenSource &tsrc,
          CPP::IncludeLang &langs, MacroMap &macros, PragmaData &pragd,
          CPP::PragmaParserBase &pragp, Core::String dir,
          Scope_Global &scope, IR::Program &prog);
@@ -50,7 +50,7 @@ namespace GDCC::ACC
    class ImportDTBuf : public IncludeDTBuf
    {
    public:
-      ImportDTBuf(Core::TokenBuf &src, CPP::IStreamHeader &istr,
+      ImportDTBuf(Core::TokenBuf &src, Core::TokenSource &tsrc,
          CPP::IncludeLang &langs, MacroMap &macros, PragmaData &pragd,
          CPP::PragmaParserBase &pragp, Core::String dir,
          Scope_Global &scope, IR::Program &prog);

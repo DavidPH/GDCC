@@ -60,6 +60,7 @@ add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    ../../inc/Core/Parse.hpp
    ../../inc/Core/Path.hpp
    ../../inc/Core/Range.hpp
+   ../../inc/Core/SourceTBuf.hpp
    ../../inc/Core/StreamTBuf.hpp
    ../../inc/Core/String.hpp
    ../../inc/Core/StringBuf.hpp
@@ -68,6 +69,7 @@ add_library(gdcc-core-lib ${GDCC_SHARED_DECL}
    ../../inc/Core/StringOption.hpp
    ../../inc/Core/Token.hpp
    ../../inc/Core/TokenBuf.hpp
+   ../../inc/Core/TokenSource.hpp
    ../../inc/Core/TokenStream.hpp
    ../../inc/Core/Types.hpp
    ../../inc/Core/WSpaceTBuf.hpp

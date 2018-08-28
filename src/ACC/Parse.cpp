@@ -14,6 +14,8 @@
 
 #include "ACC/Pragma.hpp"
 
+#include "Core/Parse.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -55,6 +57,37 @@ namespace GDCC::ACC
    //
    void Parser::parseAttrSpec(CC::Scope &, SR::Attribute &)
    {
+   }
+
+   //
+   // ParseEscape
+   //
+   bool ParseEscape(std::ostream &out, std::istream &in, char escape)
+   {
+      switch(escape)
+      {
+      case 'c': out.put('\x1C'); return true;
+
+      case '\'':
+      case '\"':
+      case '\\':
+
+      case 'a':
+      case 'b':
+      case 'f':
+      case 'n':
+      case 'r':
+      case 't':
+      case 'v':
+      case 'x':
+
+      case '0': case '1': case '2': case '3':
+      case '4': case '5': case '6': case '7':
+         return Core::ParseEscapeC(out, in, escape);
+
+      default:
+         return false;
+      }
    }
 }
 

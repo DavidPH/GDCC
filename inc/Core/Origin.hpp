@@ -44,6 +44,20 @@ namespace GDCC::Core
       std::size_t line;
       std::size_t col;
    };
+
+   //
+   // OriginSource
+   //
+   class OriginSource
+   {
+   public:
+      virtual ~OriginSource() {}
+
+      Origin getOrigin() const {return v_getOrigin();}
+
+   protected:
+      virtual Origin v_getOrigin() const = 0;
+   };
 }
 
 

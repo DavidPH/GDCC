@@ -27,6 +27,7 @@ namespace GDCC::Core
    template<typename T>
    class Array;
    class ArrayTBuf;
+   class ArrayTSource;
    class ArrayTStream;
    template<typename T>
    class ConditionalDeleter;
@@ -48,6 +49,7 @@ namespace GDCC::Core
    class NumberAllocMerge;
    class OptionList;
    class Origin;
+   class OriginSource;
    class PackType;
    class PathRestore;
    template<typename T>
@@ -62,6 +64,7 @@ namespace GDCC::Core
    class SystemSourceOption;
    class Token;
    class TokenBuf;
+   class TokenSource;
    class TokenStream;
    class WSpaceTBuf;
    class WarnOpt;

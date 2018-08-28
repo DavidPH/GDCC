@@ -29,7 +29,6 @@ namespace GDCC::CPP
    class DirectiveTBuf;
    class ErrorDTBuf;
    class IStream;
-   class IStreamHeader;
    class IdentiTBuf;
    class IncStream;
    class IncludeDTBuf;
@@ -52,6 +51,7 @@ namespace GDCC::CPP
    class PragmaPushTBuf;
    class PragmaTBuf;
    class StringTBuf;
+   class TSource;
    class TStream;
    class UndefDTBuf;
 

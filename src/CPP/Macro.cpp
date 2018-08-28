@@ -13,9 +13,10 @@
 #include "CPP/Macro.hpp"
 
 #include "CPP/IStream.hpp"
+#include "CPP/TSource.hpp"
 
 #include "Core/Option.hpp"
-#include "Core/StreamTBuf.hpp"
+#include "Core/SourceTBuf.hpp"
 #include "Core/StringBuf.hpp"
 #include "Core/TokenStream.hpp"
 
@@ -61,11 +62,12 @@ namespace GDCC::CPP
             Option::Exception::Error(oargs, "argument required");
 
          // Tokenize argument.
-         char const               *arg {oargs.argV[0]};
-         Core::StringBuf           sbuf{arg, std::strlen(arg)};
-         IStream                   istr{sbuf, Core::STR_};
-         Core::StreamTBuf<IStream> tbuf{istr};
-         Core::TokenStream         in  {&tbuf};
+         char const         *arg {oargs.argV[0]};
+         Core::StringBuf    sbuf{arg, std::strlen(arg)};
+         IStream            istr{sbuf, Core::STR_};
+         TSource            tsrc{istr, istr.getOriginSource()};
+         Core::SourceTBuf<> tbuf{tsrc};
+         Core::TokenStream  in  {&tbuf};
 
          if(in.peek().tok != Core::TOK_Identi)
             Option::Exception::Error(oargs, "expected identifier");

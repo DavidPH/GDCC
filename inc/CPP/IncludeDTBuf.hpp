@@ -31,7 +31,7 @@ namespace GDCC::CPP
    class IncludeDTBuf : public DirectiveTBuf
    {
    public:
-      IncludeDTBuf(Core::TokenBuf &src, IStreamHeader &istr,
+      IncludeDTBuf(Core::TokenBuf &src, Core::TokenSource &tsrc,
          IncludeLang &langs, MacroMap &macros, PragmaDataBase &pragd,
          PragmaParserBase &pragp, Core::String dir);
 
@@ -52,15 +52,17 @@ namespace GDCC::CPP
 
       virtual void underflow();
 
-      std::unique_ptr<std::streambuf>    str;
+      std::unique_ptr<std::streambuf>    incBuf;
+      std::unique_ptr<IStream>           incStr;
+      std::unique_ptr<Core::TokenSource> incSrc;
       std::unique_ptr<Core::TokenStream> inc;
 
-      IStreamHeader    &istr;
-      IncludeLang      &langs;
-      MacroMap         &macros;
-      PragmaDataBase   &pragd;
-      PragmaParserBase &pragp;
-      Core::String      dir;
+      Core::TokenSource &tsrc;
+      IncludeLang       &langs;
+      MacroMap          &macros;
+      PragmaDataBase    &pragd;
+      PragmaParserBase  &pragp;
+      Core::String       dir;
    };
 
    //

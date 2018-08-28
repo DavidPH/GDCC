@@ -126,6 +126,8 @@ namespace GDCC::ACC
 
 namespace GDCC::ACC
 {
+   bool ParseEscape(std::ostream &out, std::istream &in, char escape);
+
    void ParseFile(char const *inName, IR::Program &prog);
 }
 
