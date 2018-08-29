@@ -30,6 +30,7 @@ namespace GDCC::Core
 {
    class MoveType {};
    class PackType {};
+   class SizeType {};
 
    //
    // Array
@@ -60,6 +61,8 @@ namespace GDCC::Core
       // Sized constructor.
       template<typename... Args>
       Array(size_type s, Args const &...args) : p{New(s, args...)}, e{p + s} {}
+      template<typename... Args>
+      Array(SizeType, size_type s, Args const &...args) : p{New(s, args...)}, e{p + s} {}
 
       // Range-copy constructor.
       template<typename Itr>
@@ -345,6 +348,7 @@ namespace GDCC::Core
 {
    constexpr MoveType Move = {};
    constexpr PackType Pack = {};
+   constexpr SizeType Size = {};
 }
 
 

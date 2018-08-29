@@ -39,77 +39,71 @@ namespace GDCC::IR
    public:
       explicit IArchive(std::istream &in);
 
-      explicit operator bool () const {return itr != str.end();}
-
       IArchive &operator >> (bool &out) {out = getBool(); return *this;}
 
-      IArchive &operator >> (signed           char &out) {return getNumber(out);}
-      IArchive &operator >> (signed     short int  &out) {return getNumber(out);}
-      IArchive &operator >> (signed           int  &out) {return getNumber(out);}
-      IArchive &operator >> (signed      long int  &out) {return getNumber(out);}
-      IArchive &operator >> (signed long long int  &out) {return getNumber(out);}
+      IArchive &operator >> (signed           char &out) {return getI(out), *this;}
+      IArchive &operator >> (signed     short int  &out) {return getI(out), *this;}
+      IArchive &operator >> (signed           int  &out) {return getI(out), *this;}
+      IArchive &operator >> (signed      long int  &out) {return getI(out), *this;}
+      IArchive &operator >> (signed long long int  &out) {return getI(out), *this;}
 
-      IArchive &operator >> (unsigned           char &out) {return getNumber(out);}
-      IArchive &operator >> (unsigned     short int  &out) {return getNumber(out);}
-      IArchive &operator >> (unsigned           int  &out) {return getNumber(out);}
-      IArchive &operator >> (unsigned      long int  &out) {return getNumber(out);}
-      IArchive &operator >> (unsigned long long int  &out) {return getNumber(out);}
+      IArchive &operator >> (unsigned           char &out) {return getU(out), *this;}
+      IArchive &operator >> (unsigned     short int  &out) {return getU(out), *this;}
+      IArchive &operator >> (unsigned           int  &out) {return getU(out), *this;}
+      IArchive &operator >> (unsigned      long int  &out) {return getU(out), *this;}
+      IArchive &operator >> (unsigned long long int  &out) {return getU(out), *this;}
 
-      IArchive &operator >> (     float  &out) {return getNumber(out);}
-      IArchive &operator >> (     double &out) {return getNumber(out);}
-      IArchive &operator >> (long double &out) {return getNumber(out);}
+      IArchive &operator >> (     float  &out) = delete;
+      IArchive &operator >> (     double &out) = delete;
+      IArchive &operator >> (long double &out) = delete;
 
-      IArchive &operator >> (Core::Float &out);
-      IArchive &operator >> (Core::Integ &out);
+      IArchive &operator >> (Core::Float &out) {return out = getRatio(), *this;}
+      IArchive &operator >> (Core::Integ &out) {return out = getInteg(), *this;}
+      IArchive &operator >> (Core::Ratio &out) {return out = getRatio(), *this;}
 
-      char const *get() {return itr != str.end() ? *itr++ : "";}
+      IArchive &operator >> (Core::String      &out);
+      IArchive &operator >> (Core::StringIndex &out);
 
-      //
-      // getBool
-      //
-      bool getBool()
-      {
-         return !std::strcmp(get(), "1");
-      }
-
-      template<typename T>
-      T getNumber() {T n; getNumber(n); return n;}
-
-      //
-      // getNumber
-      //
-      template<typename T>
-      IArchive &getNumber(T &out)
-      {
-         auto s = get();
-
-         if(*s)
-         {
-            Core::StringStream in{s, std::strlen(s)};
-            in >> std::hex >> out;
-         }
-         else
-            out = 0;
-
-         return *this;
-      }
-
-      IArchive &getHeader();
+      bool getBool();
 
       Program *prog;
 
-
-      friend IArchive &operator >> (IArchive &in, Core::String      &out);
-      friend IArchive &operator >> (IArchive &in, Core::StringIndex &out);
-
    private:
-      IArchive &getTablesString();
+      template<typename T>
+      T getI()
+      {
+         bool sign = getBool();
+         T out = getU<std::make_unsigned_t<T>>();
+         return sign ? -out : out;
+      }
 
-      std::vector<char>         data;
-      Core::Array<char const *> str;
-      Core::Array<Core::String> stab;
+      template<typename T>
+      T &getI(T &out) {return out = getI<T>();}
 
-      Core::Array<char const *>::iterator itr;
+      Core::Integ getInteg();
+      Core::Ratio getRatio();
+
+      template<typename T>
+      T getU()
+      {
+         T out{0};
+
+         unsigned char c;
+         while(((c = in.get()) & 0x80) && in)
+            out <<= 7, out += c & 0x7F;
+         out <<= 7, out += c;
+
+         return out;
+      }
+
+      template<typename T>
+      T &getU(T &out) {return out = getU<T>();}
+
+      void getStrTab();
+
+      Core::Array<Core::String> strTab;
+
+      std::istream &in;
    };
 
    //
@@ -150,9 +144,6 @@ namespace GDCC::IR
    IArchive &operator >> (IArchive &in, Core::Array<T> &out);
 
    IArchive &operator >> (IArchive &in, Core::Origin &out);
-
-   IArchive &operator >> (IArchive &in, Core::String      &out);
-   IArchive &operator >> (IArchive &in, Core::StringIndex &out);
 
    template<typename T>
    IArchive &operator >> (IArchive &in, std::vector<T> &out);

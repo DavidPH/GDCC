@@ -37,44 +37,65 @@ namespace GDCC::IR
    class OArchive
    {
    public:
-      explicit OArchive(std::ostream &out_) : out(out_) {}
+      explicit OArchive(std::ostream &out);
 
-      OArchive &operator << (bool in) {out << (in ? "1" : "0") << '\0'; return *this;}
+      OArchive &operator << (bool in) {return out.put(in), *this;}
 
-      OArchive &operator << (signed           char in) {return putNumber(in);}
-      OArchive &operator << (signed     short int  in) {return putNumber(in);}
-      OArchive &operator << (signed           int  in) {return putNumber(in);}
-      OArchive &operator << (signed      long int  in) {return putNumber(in);}
-      OArchive &operator << (signed long long int  in) {return putNumber(in);}
+      OArchive &operator << (signed           char in) {return putI(in), *this;}
+      OArchive &operator << (signed     short int  in) {return putI(in), *this;}
+      OArchive &operator << (signed           int  in) {return putI(in), *this;}
+      OArchive &operator << (signed      long int  in) {return putI(in), *this;}
+      OArchive &operator << (signed long long int  in) {return putI(in), *this;}
 
-      OArchive &operator << (unsigned           char in) {return putNumber(in);}
-      OArchive &operator << (unsigned     short int  in) {return putNumber(in);}
-      OArchive &operator << (unsigned           int  in) {return putNumber(in);}
-      OArchive &operator << (unsigned      long int  in) {return putNumber(in);}
-      OArchive &operator << (unsigned long long int  in) {return putNumber(in);}
+      OArchive &operator << (unsigned           char in) {return putU(in), *this;}
+      OArchive &operator << (unsigned     short int  in) {return putU(in), *this;}
+      OArchive &operator << (unsigned           int  in) {return putU(in), *this;}
+      OArchive &operator << (unsigned      long int  in) {return putU(in), *this;}
+      OArchive &operator << (unsigned long long int  in) {return putU(in), *this;}
 
-      OArchive &operator << (     float  in) {return putNumber(in);}
-      OArchive &operator << (     double in) {return putNumber(in);}
-      OArchive &operator << (long double in) {return putNumber(in);}
+      OArchive &operator << (     float  in) = delete;
+      OArchive &operator << (     double in) = delete;
+      OArchive &operator << (long double in) = delete;
 
-      OArchive &operator << (Core::Float const &in) {return putNumber(in);}
-      OArchive &operator << (Core::Integ const &in) {return putNumber(in);}
+      OArchive &operator << (Core::Float const &in) {return putRatio(Core::Ratio(in)), *this;}
+      OArchive &operator << (Core::Integ const &in) {return putInteg(in), *this;}
+      OArchive &operator << (Core::Ratio const &in) {return putRatio(in), *this;}
 
-      OArchive &putHeader();
+      OArchive &operator << (Core::String      in);
+      OArchive &operator << (Core::StringIndex in);
 
-      //
-      // putNumber
-      //
-      template<typename T>
-      OArchive &putNumber(T const &n)
-      {
-         out.precision(256);
-         out << std::hex << n << '\0';
-         return *this;
-      }
+      void putHead();
+      void putTail();
 
    private:
-      OArchive &putTablesString();
+      template<typename T>
+      void putI(T in)
+      {
+         bool sign = in < 0;
+         out.put(sign);
+         putU(static_cast<std::make_unsigned_t<T>>(sign ? -in : in));
+      }
+
+      void putInteg(Core::Integ in);
+
+      void putRatio(Core::Ratio const &in);
+
+      void putStrTab();
+
+      template<typename T>
+      void putU(T in)
+      {
+         constexpr std::size_t len = (sizeof(T) * CHAR_BIT + 6) / 7;
+         char buf[len], *ptr = buf + len;
+
+         *--ptr = static_cast<char>(in & 0x7F);
+         while((in >>= 7))
+            *--ptr = static_cast<char>(in & 0x7F) | 0x80;
+
+         out.write(ptr, (buf + len) - ptr);
+      }
+
+      Core::Array<bool> strUse;
 
       std::ostream &out;
    };
@@ -91,9 +112,6 @@ namespace GDCC::IR
    OArchive &operator << (OArchive &out, Core::Array<T> const &in);
 
    OArchive &operator << (OArchive &out, Core::Origin const &in);
-
-   OArchive &operator << (OArchive &out, Core::String      in);
-   OArchive &operator << (OArchive &out, Core::StringIndex in);
 
    template<typename T1, typename T2>
    OArchive &operator << (OArchive &out, std::pair<T1, T2> const &in);

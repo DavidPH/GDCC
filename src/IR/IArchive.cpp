@@ -18,48 +18,6 @@
 
 
 //----------------------------------------------------------------------------|
-// Static Functions                                                           |
-//
-
-namespace GDCC::IR
-{
-   //
-   // AddStringNTS
-   //
-   // Adds a string that may contain \xC0\x80 nulls.
-   //
-   static Core::String AddStringNTS(char const *str)
-   {
-      Core::Array<char> tmp;
-      std::size_t             len    = 0;
-      bool                    hasNul = false;
-
-      for(auto s = str; *s; ++s, ++len)
-      {
-         if(s[0] == '\xC0' && s[1] == '\x80')
-            hasNul = true, ++s;
-      }
-
-      if(hasNul)
-      {
-         tmp = Core::Array<char>(len);
-         for(auto s = tmp.begin(), e = tmp.end(); s != e; ++s, ++str)
-         {
-            if(str[0] == '\xC0' && str[1] == '\x80')
-               *s = '\0', ++str;
-            else
-               *s = *str;
-         }
-
-         str = tmp.data();
-      }
-
-      return {str, len};
-   }
-}
-
-
-//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
@@ -68,76 +26,111 @@ namespace GDCC::IR
    //
    // IArchive constructor
    //
-   IArchive::IArchive(std::istream &in)
+   IArchive::IArchive(std::istream &in_) :
+      prog{nullptr},
+      in{in_}
    {
-      std::size_t count = 0;
-      for(int c; (c = in.get()), in; data.push_back(static_cast<char>(c)))
-         if(!c) ++count;
-
-      if(!count) return;
-
-      str = Core::Array<char const *>(count);
-      auto si = itr = str.begin();
-
-      *si++ = data.data();
-      for(auto ci = data.begin(), ce = data.end(); ci != ce; ++ci)
-         if(!*ci && ci + 1 != ce) *si++ = &ci[1];
-   }
-
-   //
-   // IArchive::operator >> Core::Float
-   //
-   IArchive &IArchive::operator >> (Core::Float &out)
-   {
-      if(auto s = get())
-         out = Core::Float(s, mpf_get_default_prec(), 16);
-      else
-         out = 0;
-
-      return *this;
-   }
-
-   //
-   // IArchive::operator >> Core::Integ
-   //
-   IArchive &IArchive::operator >> (Core::Integ &out)
-   {
-      if(auto s = get())
-         out = Core::Integ(s, 16);
-      else
-         out = 0;
-
-      return *this;
-   }
-
-   //
-   // IArchive::getHeader
-   //
-   IArchive &IArchive::getHeader()
-   {
-      if(std::strcmp(get(), "DGE_NTS")  ||
-         std::strcmp(get(), "GDCC::IR") ||
-         std::strcmp(get(), ""))
-      {
+      // Check header.
+      if(char buf[16]; !in.read(buf, 16) || std::memcmp(buf, "GDCC::IR\0\0\0\0\0\0\0", 16))
          Core::Error({}, "not IR");
-      }
 
-      getTablesString();
+      // Read start of table index.
+      in.seekg(-1, std::ios_base::end);
+      std::size_t idxLen = in.get();
+      in.seekg(-static_cast<std::istream::off_type>(idxLen), std::ios_base::cur);
+
+      std::size_t idx = 0;
+      for(auto i = idxLen; --i;)
+         idx = (idx << 8) + in.get();
+
+      // Read tables.
+      if(!in.seekg(idx))
+         Core::Error({}, "bad IR idx");
+
+      getStrTab();
+
+      in.seekg(16);
+   }
+
+   //
+   // IArchive::operator >> Core::String
+   //
+   IArchive &IArchive::operator >> (Core::String &out)
+   {
+      auto idx = getU<std::size_t>();
+
+      if(idx < strTab.size())
+         out = strTab[idx];
+      else
+         Core::Error({}, "invalid String: ", idx, '/', strTab.size());
 
       return *this;
    }
 
    //
-   // IArchive::getTablesString
+   // IArchive::operator >> Core::StringIndex
    //
-   IArchive &IArchive::getTablesString()
+   IArchive &IArchive::operator >> (Core::StringIndex &out)
    {
-      auto count = getNumber<std::size_t>();
+      auto idx = getU<std::size_t>();
 
-      for(auto &s : (stab = Core::Array<Core::String>(count)))
-         s = AddStringNTS(get());
+      if(idx < strTab.size())
+         out = static_cast<Core::StringIndex>(strTab[idx]);
+      else
+         Core::Error({}, "invalid String: ", idx, '/', strTab.size());
 
       return *this;
+   }
+
+   //
+   // IArchive::getBool
+   //
+   bool IArchive::getBool()
+   {
+      return !!in.get();
+   }
+
+   //
+   // IArchive::getInteg
+   //
+   Core::Integ IArchive::getInteg()
+   {
+      bool sign = getBool();
+      Core::Integ out = 0;
+
+      unsigned char c;
+      while(((c = in.get()) & 0x80) && in)
+         out <<= 7, out += (c & 0x7F);
+      out <<= 7, out += c;
+
+      if(sign) out = -out;
+      return out;
+   }
+
+   //
+   // IArchive::getRatio
+   //
+   Core::Ratio IArchive::getRatio()
+   {
+      Core::Integ num = getInteg();
+      Core::Integ den = getInteg();
+      return {num, den};
+   }
+
+   //
+   // IArchive::getStrTab
+   //
+   void IArchive::getStrTab()
+   {
+      std::vector<char> strBuf;
+
+      for(auto &str : strTab = {Core::Size, getU<std::size_t>()})
+      {
+         strBuf.resize(getU<std::size_t>());
+         if(!in.read(strBuf.data(), strBuf.size()))
+            Core::Error({}, "bad IR str");
+         str = {strBuf.data(), strBuf.size()};
+      }
    }
 
    //
@@ -146,46 +139,6 @@ namespace GDCC::IR
    IArchive &operator >> (IArchive &in, Core::Origin &out)
    {
       return in >> out.file >> out.line >> out.col;
-   }
-
-   //
-   // operator IArchive >> Core::String
-   //
-   IArchive &operator >> (IArchive &in, Core::String &out)
-   {
-      auto n = in.getNumber<std::size_t>();
-
-      if(n < Core::STRMAX)
-         out = static_cast<Core::String>(n);
-      else if((n -= Core::STRMAX) < in.stab.size())
-         out = in.stab[n];
-      else
-      {
-         Core::Error({}, "invalid String: ", n + Core::STRMAX,
-            "/(", Core::STRMAX, '+', in.stab.size(), ')');
-      }
-
-      return in;
-   }
-
-   //
-   // operator IArchive >> Core::StringIndex
-   //
-   IArchive &operator >> (IArchive &in, Core::StringIndex &out)
-   {
-      auto n = in.getNumber<std::size_t>();
-
-      if(n < Core::STRMAX)
-         out = static_cast<Core::StringIndex>(n);
-      else if((n -= Core::STRMAX) < in.stab.size())
-         out = Core::STRNULL;
-      else
-      {
-         Core::Error({}, "invalid StringIndex: ", n + Core::STRMAX,
-            "/(", Core::STRMAX, '+', in.stab.size(), ')');
-      }
-
-      return in;
    }
 }
 

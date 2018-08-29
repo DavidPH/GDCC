@@ -22,39 +22,116 @@
 namespace GDCC::IR
 {
    //
-   // OArchive::putHeader
+   // OArchive constructor
    //
-   OArchive &OArchive::putHeader()
+   OArchive::OArchive(std::ostream &out_) :
+      strUse{Core::Size, Core::String::GetDataC(), false},
+      out{out_}
    {
-      out << "DGE_NTS" << '\0' << "GDCC::IR" << '\0' << '\0';
-      putTablesString();
+   }
+
+   //
+   // OArchive::operator << Core::String
+   //
+   OArchive &OArchive::operator << (Core::String in)
+   {
+      auto idx = static_cast<std::size_t>(in);
+      strUse[idx] = true;
+      putU(idx);
+
       return *this;
    }
 
    //
-   // OArchive::putTablesString
+   // OArchive::operator << Core::StringIndex
    //
-   OArchive &OArchive::putTablesString()
+   OArchive &OArchive::operator << (Core::StringIndex in)
    {
-      auto begin = Core::String::GetDataV() + Core::STRMAX;
-      auto end   = Core::String::GetDataV() + Core::String::GetDataC();
-
-      *this << std::distance(begin, end);
-
-      for(auto itr = begin; itr != end; ++itr)
-      {
-         for(auto ci = itr->data(), ce = ci + itr->size(); ci != ce; ++ci)
-         {
-            if(*ci)
-               out << *ci;
-            else
-               out << '\xC0' << '\x80';
-         }
-
-         out << '\0';
-      }
+      auto idx = static_cast<std::size_t>(in);
+      strUse[idx] = true;
+      putU(idx);
 
       return *this;
+   }
+
+   //
+   // OArchive::putHead
+   //
+   void OArchive::putHead()
+   {
+      out.write("GDCC::IR\0\0\0\0\0\0\0", 16);
+   }
+
+   //
+   // OArchive::putInteg
+   //
+   void OArchive::putInteg(Core::Integ in)
+   {
+      int sign = sgn(in);
+      out.put(sign < 0);
+      if(sign == 0) {out.put(0); return;}
+      if(sign < 0) in = -in;
+
+      std::size_t len = (mpz_size(in.get_mpz_t()) * sizeof(mp_limb_t) * CHAR_BIT + 6) / 7 + 1;
+      std::unique_ptr<char[]> buf{new char[len]};
+      char *ptr = &buf[len];
+
+      *--ptr = static_cast<char>(in.get_ui() & 0x7F);
+      while((in >>= 7))
+         *--ptr = static_cast<char>(in.get_ui() & 0x7F) | 0x80;
+
+      out.write(ptr, (&buf[len]) - ptr);
+   }
+
+   //
+   // OArchive::putRatio
+   //
+   void OArchive::putRatio(Core::Ratio const &in)
+   {
+      putInteg(in.get_num());
+      putInteg(in.get_den());
+   }
+
+   //
+   // OArchive::putStrTab
+   //
+   void OArchive::putStrTab()
+   {
+      putU(strUse.size());
+
+      auto str = Core::String::GetDataV();
+      for(auto &use : strUse)
+      {
+         if(use)
+         {
+            putU(str->size());
+            out.write(str->data(), str->size());
+         }
+         else
+            out.put(0);
+
+         ++str;
+      }
+   }
+
+   //
+   // OArchive::putTail
+   //
+   void OArchive::putTail()
+   {
+      std::size_t idx = out.tellp();
+
+      putStrTab();
+
+      // Write index to tail data.
+      constexpr std::size_t idxLen = sizeof(idx) * CHAR_BIT / 8;
+      static_assert(idxLen < 256, "pos_type too large");
+
+      char idxBuf[idxLen];
+      for(auto c = idxBuf + idxLen; c != idxBuf; idx = idx >> 8)
+         *--c = idx & 0xFF;
+      out.write(idxBuf, idxLen);
+      out.put(idxLen);
    }
 
    //
@@ -63,22 +140,6 @@ namespace GDCC::IR
    OArchive &operator << (OArchive &out, Core::Origin const &in)
    {
       return out << in.file << in.line << in.col;
-   }
-
-   //
-   // operator OArchive << Core::String
-   //
-   OArchive &operator << (OArchive &out, Core::String in)
-   {
-      return out << static_cast<std::size_t>(in);
-   }
-
-   //
-   // operator OArchive << Core::StringIndex
-   //
-   OArchive &operator << (OArchive &out, Core::StringIndex in)
-   {
-      return out << static_cast<std::size_t>(in);
    }
 }
 

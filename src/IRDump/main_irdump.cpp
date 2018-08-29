@@ -54,7 +54,8 @@ static void ProcessFile(char const *inName, GDCC::IR::Program &prog)
 {
    auto buf = GDCC::Core::FileOpenStream(inName, std::ios_base::in | std::ios_base::binary);
    std::istream in{buf.get()};
-   GDCC::IR::IArchive(in).getHeader() >> prog;
+   GDCC::IR::IArchive arc{in};
+   arc >> prog;
 }
 
 

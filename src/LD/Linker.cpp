@@ -174,7 +174,10 @@ namespace GDCC::LD
    //
    void PutIR(std::ostream &out, IR::Program &prog, BC::Info *)
    {
-      IR::OArchive(out).putHeader() << prog;
+      IR::OArchive arc{out};
+      arc.putHead();
+      arc << prog;
+      arc.putTail();
    }
 }
 
