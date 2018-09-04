@@ -20,6 +20,7 @@
 #include "../Core/FeatureHold.hpp"
 #include "../Core/LineTermBuf.hpp"
 #include "../Core/OriginBuf.hpp"
+#include "../Core/UTFBuf.hpp"
 
 #include <istream>
 
@@ -37,26 +38,32 @@ namespace GDCC::CPP
    {
    public:
       IStream(std::streambuf &buf, Core::String file, std::size_t line = 1) :
-         std::istream{&ebuf},
-         lbuf{buf},
+         std::istream{&nbuf},
+         wbuf{buf},
+         lbuf{wbuf},
          obuf{lbuf, {file, line, 1}},
          tbuf{obuf},
-         ebuf{tbuf}
+         ebuf{tbuf},
+         nbuf{ebuf}
       {
       }
 
       Core::OriginSource &getOriginSource() {return obuf;}
 
    protected:
-      using LBuf = Core::LineTermBuf<8>;
-      using OBuf = Core::OriginBuf<8, 2>;
-      using TBuf = TrigraphBuf<8>;
-      using EBuf = Core::StripEscapeBuf<8, 1, 1, char, '\n'>;
+      using WBuf = Core::UTF8to32Buf<>;
+      using LBuf = Core::LineTermBuf<8, 1, 1, char32_t>;
+      using OBuf = Core::OriginBuf<8, 2, 1, char32_t>;
+      using TBuf = TrigraphBuf<8, 1, 1, char32_t>;
+      using EBuf = Core::StripEscapeBuf<8, 1, 1, char32_t, '\n'>;
+      using NBuf = Core::UTF32to8Buf<>;
 
+      WBuf wbuf;
       LBuf lbuf;
       OBuf obuf;
       TBuf tbuf;
       EBuf ebuf;
+      NBuf nbuf;
    };
 }
 
