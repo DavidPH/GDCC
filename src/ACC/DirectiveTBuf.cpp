@@ -66,7 +66,7 @@ namespace GDCC::ACC
 
       src.get();
 
-      if(src.peek().tok == Core::TOK_WSpace) src.get();
+      while(src.peek().tok == Core::TOK_WSpace) src.get();
 
       if(src.peek().tok != Core::TOK_String)
          Core::ErrorExpect("string-literal", src.peek());
@@ -74,7 +74,7 @@ namespace GDCC::ACC
       prag.stateLibrary.emplace_back(
          Core::ParseStringC(src.get().str, 0, '"', ParseEscape));
 
-      if(src.peek().tok == Core::TOK_WSpace) src.get();
+      while(src.peek().tok == Core::TOK_WSpace) src.get();
 
       if(src.peek().tok != Core::TOK_LnEnd && src.peek().tok != Core::TOK_EOF)
          Core::ErrorExpect("end-line", src.peek());

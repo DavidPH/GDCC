@@ -283,7 +283,7 @@ namespace GDCC::Core
 
       putOrigin(oss);
 
-      oss << " expected ";
+      oss << "expected ";
       if(expQ) oss << '\'';
       if(isExpC) oss << expC; else oss << expS;
       if(expQ) oss << '\'';

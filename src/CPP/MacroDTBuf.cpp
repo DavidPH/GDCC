@@ -36,7 +36,7 @@ namespace GDCC::CPP
 
       src.get();
 
-      if(src.peek().tok == Core::TOK_WSpace) src.get();
+      while(src.peek().tok == Core::TOK_WSpace) src.get();
 
       if(src.peek().tok != Core::TOK_Identi)
          Core::ErrorExpect("identifier", src.peek());
@@ -65,7 +65,7 @@ namespace GDCC::CPP
 
       for(;;)
       {
-         if(src.peek().tok == Core::TOK_WSpace) src.get();
+         while(src.peek().tok == Core::TOK_WSpace) src.get();
 
          if(src.peek().tok == Core::TOK_ParenC) {src.get(); break;}
 
@@ -73,7 +73,7 @@ namespace GDCC::CPP
          {
             args.emplace_back(src.get().str);
 
-            if(src.peek().tok == Core::TOK_WSpace) src.get();
+            while(src.peek().tok == Core::TOK_WSpace) src.get();
 
             if(src.peek().tok == Core::TOK_Comma) {src.get(); continue;}
             if(src.peek().tok == Core::TOK_ParenC) {src.get(); break;}
@@ -85,7 +85,7 @@ namespace GDCC::CPP
          {
             args.emplace_back((src.get(), nullptr));
 
-            if(src.peek().tok == Core::TOK_WSpace) src.get();
+            while(src.peek().tok == Core::TOK_WSpace) src.get();
 
             if(src.peek().tok == Core::TOK_ParenC) {src.get(); break;}
 
@@ -144,7 +144,7 @@ namespace GDCC::CPP
       std::vector<Core::Token> list;
 
       // Skip leading whitespace.
-      if(src.peek().tok == Core::TOK_WSpace) src.get();
+      while(src.peek().tok == Core::TOK_WSpace) src.get();
 
       // Read replacement list.
       while(src.peek().tok != Core::TOK_LnEnd && src.peek().tok != Core::TOK_EOF)
@@ -227,14 +227,14 @@ namespace GDCC::CPP
 
       src.get();
 
-      if(src.peek().tok == Core::TOK_WSpace) src.get();
+      while(src.peek().tok == Core::TOK_WSpace) src.get();
 
       if(src.peek().tok != Core::TOK_Identi)
          Core::ErrorExpect("identifier", src.peek());
 
       macros.rem(src.get().str);
 
-      if(src.peek().tok == Core::TOK_WSpace) src.get();
+      while(src.peek().tok == Core::TOK_WSpace) src.get();
 
       if(src.peek().tok != Core::TOK_LnEnd && src.peek().tok != Core::TOK_EOF)
          Core::ErrorExpect("end-line", src.peek());

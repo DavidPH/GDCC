@@ -136,7 +136,7 @@ namespace GDCC::CPP
 
          state.emplace_back(isSkip());
 
-         if(src.peek().tok == Core::TOK_WSpace) src.get();
+         while(src.peek().tok == Core::TOK_WSpace) src.get();
 
          if(src.peek().tok != Core::TOK_Identi)
             Core::Error(tok.pos, "expected identifier");
@@ -151,7 +151,7 @@ namespace GDCC::CPP
 
          state.emplace_back(isSkip());
 
-         if(src.peek().tok == Core::TOK_WSpace) src.get();
+         while(src.peek().tok == Core::TOK_WSpace) src.get();
 
          if(src.peek().tok != Core::TOK_Identi)
             Core::Error(tok.pos, "expected identifier");
@@ -188,7 +188,7 @@ namespace GDCC::CPP
 
       if((buf[0] = src.get()).tok == Core::TOK_Identi && buf[0].str == Core::STR_defined)
       {
-         if(src.peek().tok == Core::TOK_WSpace) src.get();
+         while(src.peek().tok == Core::TOK_WSpace) src.get();
 
          bool paren = src.peek().tok == Core::TOK_ParenO;
 
@@ -196,7 +196,7 @@ namespace GDCC::CPP
          {
             src.get();
 
-            if(src.peek().tok == Core::TOK_WSpace) src.get();
+            while(src.peek().tok == Core::TOK_WSpace) src.get();
          }
 
          if(src.peek().tok != Core::TOK_Identi)
@@ -207,7 +207,7 @@ namespace GDCC::CPP
 
          if(paren)
          {
-            if(src.peek().tok == Core::TOK_WSpace) src.get();
+            while(src.peek().tok == Core::TOK_WSpace) src.get();
 
             if(src.peek().tok != Core::TOK_ParenC)
                Core::ErrorExpect(")", src.peek(), true);

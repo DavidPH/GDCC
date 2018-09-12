@@ -60,7 +60,7 @@ namespace GDCC::ACC
 
       src.get();
 
-      if(src.peek().tok == Core::TOK_WSpace) src.get();
+      while(src.peek().tok == Core::TOK_WSpace) src.get();
 
       if(src.peek().tok != Core::TOK_Identi)
          Core::ErrorExpect("identifier", src.peek());

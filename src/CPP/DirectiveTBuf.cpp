@@ -37,6 +37,7 @@ namespace GDCC::CPP
          if(src.peek().tok == Core::TOK_WSpace)
          {
             buf[1] = src.get();
+            while(src.peek().tok == Core::TOK_WSpace) buf[1].str += src.get().str;
             sett(buf, buf, buf + 2);
          }
          else
