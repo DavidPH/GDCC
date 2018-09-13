@@ -41,6 +41,7 @@ namespace GDCC::BC
          chkStmntArgC(0, 1);
          break;
 
+      case IR::Code::Jdyn:
       case IR::Code::Jump:
          chkStmntArgC(1);
          break;
@@ -51,7 +52,6 @@ namespace GDCC::BC
       case IR::Code::Copy:
       case IR::Code::Jcnd_Nil:
       case IR::Code::Jcnd_Tru:
-      case IR::Code::Jdyn:
       case IR::Code::Jset:
       case IR::Code::LNot:
       case IR::Code::Move:
