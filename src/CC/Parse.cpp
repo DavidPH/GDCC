@@ -51,7 +51,13 @@ namespace GDCC::CC
    Core::Token const &Parser::expect(Core::TokenType tok)
    {
       if(!in.peek(tok))
-         Core::ErrorExpect(Core::Token::GetString(tok), in.peek(), true);
+      {
+         Core::String str = Core::Token::GetString(tok);
+         if(in.peek().tok == Core::TOK_EOF)
+            Core::ErrorExpect(in.reget().pos, str, "EOF", true, false);
+         else
+            Core::ErrorExpect(str, in.peek(), true);
+      }
 
       return in.get();
    }
@@ -62,7 +68,12 @@ namespace GDCC::CC
    Core::Token const &Parser::expect(Core::TokenType tok, Core::String str)
    {
       if(!in.peek(tok, str))
-         Core::ErrorExpect(str, in.peek(), true);
+      {
+         if(in.peek().tok == Core::TOK_EOF)
+            Core::ErrorExpect(in.reget().pos, str, "EOF", true, false);
+         else
+            Core::ErrorExpect(str, in.peek(), true);
+      }
 
       return in.get();
    }
@@ -73,7 +84,12 @@ namespace GDCC::CC
    Core::Token const &Parser::expectIdenti(bool orKeyWrd)
    {
       if(!in.peek(Core::TOK_Identi) && (!orKeyWrd || !in.peek(Core::TOK_KeyWrd)))
-         Core::ErrorExpect("identifier", in.peek());
+      {
+         if(in.peek().tok == Core::TOK_EOF)
+            Core::ErrorExpect(in.reget().pos, "identifier", "EOF", false, false);
+         else
+            Core::ErrorExpect("identifier", in.peek());
+     }
 
       return in.get();
    }
@@ -84,7 +100,12 @@ namespace GDCC::CC
    Core::Token const &Parser::expectString()
    {
       if(!in.peek().isTokString())
-         Core::ErrorExpect("string-literal", in.peek());
+      {
+         if(in.peek().tok == Core::TOK_EOF)
+            Core::ErrorExpect(in.reget().pos, "string-literal", "EOF", false, false);
+         else
+            Core::ErrorExpect("string-literal", in.peek());
+      }
 
       return in.get();
    }
