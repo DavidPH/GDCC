@@ -38,13 +38,14 @@ namespace GDCC::CPP
    {
    public:
       IStream(std::streambuf &buf, Core::String file, std::size_t line = 1) :
-         std::istream{&nbuf},
+         std::istream{&bbuf},
          wbuf{buf},
          lbuf{wbuf},
          obuf{lbuf, {file, line, 1}},
          tbuf{obuf},
          ebuf{tbuf},
-         nbuf{ebuf}
+         nbuf{ebuf},
+         bbuf{nbuf}
       {
       }
 
@@ -57,6 +58,7 @@ namespace GDCC::CPP
       using TBuf = TrigraphBuf<8, 1, 1, char32_t>;
       using EBuf = Core::StripEscapeBuf<8, 1, 1, char32_t, '\n'>;
       using NBuf = Core::UTF32to8Buf<>;
+      using BBuf = Core::IBufferBuf<8, 2, 1, char>;
 
       WBuf wbuf;
       LBuf lbuf;
@@ -64,6 +66,7 @@ namespace GDCC::CPP
       TBuf tbuf;
       EBuf ebuf;
       NBuf nbuf;
+      BBuf bbuf;
    };
 }
 
