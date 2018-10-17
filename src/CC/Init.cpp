@@ -887,7 +887,7 @@ namespace GDCC::CC
    void Init_Union::v_genStmnt(SR::GenStmntCtx const &ctx,
       SR::Arg const &arg, bool skipZero) const
    {
-      subs[subInit].init->genStmnt(ctx, arg, skipZero);
+      getMem(subInit)->init->genStmnt(ctx, arg, skipZero);
    }
 
    //
@@ -896,7 +896,7 @@ namespace GDCC::CC
    IR::Exp::CRef Init_Union::v_getIRExp() const
    {
       return IR::ExpCreate_Union(type->getIRType().tUnion,
-         subs[subInit].init->getIRExp(), pos);
+         getMem(subInit)->init->getIRExp(), pos);
    }
 
    //
@@ -904,7 +904,7 @@ namespace GDCC::CC
    //
    bool Init_Union::v_isIRExp() const
    {
-      return subs[subInit].init->isIRExp();
+      return getMem(subInit)->init->isIRExp();
    }
 
    //
@@ -912,7 +912,7 @@ namespace GDCC::CC
    //
    bool Init_Union::v_isNoAuto() const
    {
-      return subs[subInit].init->isNoAuto();
+      return getMem(subInit)->init->isNoAuto();
    }
 
    //
