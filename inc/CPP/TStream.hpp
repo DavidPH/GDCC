@@ -45,7 +45,7 @@ namespace GDCC::CPP
       //
       IncStream(Core::TokenSource &tsrc, IncludeLang &langs, MacroMap &macros,
          PragmaDataBase &pragd, PragmaParserBase &pragp, Core::String dir) :
-         Core::TokenStream{&pbuf},
+         Core::TokenStream{&udir},
          tbuf{tsrc},
          cdir{tbuf, macros},
          ddir{cdir, macros},
@@ -53,8 +53,7 @@ namespace GDCC::CPP
          idir{edir, tsrc, langs, macros, pragd, pragp, dir},
          ldir{idir, macros},
          pdir{ldir, pragp},
-         udir{pdir, macros},
-         pbuf{udir, pragp}
+         udir{pdir, macros}
       {
       }
 
@@ -67,7 +66,6 @@ namespace GDCC::CPP
       using LDir = LineDTBuf;
       using PDir = PragmaDTBuf;
       using UDir = UndefDTBuf;
-      using PBuf = PragmaTBuf;
 
       TBuf tbuf;
       CDir cdir;
@@ -77,7 +75,6 @@ namespace GDCC::CPP
       LDir ldir;
       PDir pdir;
       UDir udir;
-      PBuf pbuf;
    };
 
    //
@@ -92,8 +89,9 @@ namespace GDCC::CPP
       PPStream(Core::TokenSource &tsrc, IncludeLang &langs, MacroMap &macros,
          PragmaDataBase &pragd, PragmaParserBase &pragp, Core::String dir) :
          IncStream{tsrc, langs, macros, pragd, pragp, dir},
-         mbuf{pbuf, macros},
-         pubf{mbuf, pragd},
+         mbuf{udir, macros},
+         pbuf{mbuf, pragp},
+         pubf{pbuf, pragd},
          sbuf{pubf},
          cbuf{sbuf}
       {
@@ -102,11 +100,13 @@ namespace GDCC::CPP
 
    protected:
       using MBuf = MacroTBuf;
+      using PBuf = PragmaTBuf;
       using PuBf = PragmaPushTBuf;
       using SBuf = StringTBuf;
       using CBuf = ConcatTBuf;
 
       MBuf mbuf;
+      PBuf pbuf;
       PuBf pubf;
       SBuf sbuf;
       CBuf cbuf;
