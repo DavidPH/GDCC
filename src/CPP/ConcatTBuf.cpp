@@ -34,6 +34,7 @@ namespace GDCC::CPP
 
       switch(buf[0].tok)
       {
+      case Core::TOK_StrChr:
       case Core::TOK_StrIdx:
       case Core::TOK_StrU08:
       case Core::TOK_StrU16:
@@ -42,6 +43,7 @@ namespace GDCC::CPP
       case Core::TOK_String:
          for(;;) switch(src.peek().tok)
          {
+         case Core::TOK_StrChr:
          case Core::TOK_StrIdx:
          case Core::TOK_StrU08:
          case Core::TOK_StrU16:
