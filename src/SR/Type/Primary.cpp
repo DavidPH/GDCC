@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,7 +14,7 @@
 
 #include "IR/Type.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -43,7 +43,7 @@ namespace GDCC::SR
    //
    Core::FastU Type_Size::getSizeAlign() const
    {
-      return Platform::GetWordAlign();
+      return Target::GetWordAlign();
    }
 
    //
@@ -59,7 +59,7 @@ namespace GDCC::SR
    //
    Core::FastU Type_Size::getSizeBytes() const
    {
-      return Platform::GetWordBytes();
+      return Target::GetWordBytes();
    }
 
    //
@@ -75,7 +75,7 @@ namespace GDCC::SR
    //
    Core::FastU Type_Size::getSizeShift() const
    {
-      return Platform::GetWordShift();
+      return Target::GetWordShift();
    }
 
    //

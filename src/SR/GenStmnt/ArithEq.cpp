@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -340,19 +340,19 @@ namespace GDCC::SR
 
       // Map from generic address space for codegen.
       if(arg.type->getQualAddr().base == IR::AddrBase::Gen)
-         arg.type = arg.type->getTypeQual(IR::GetAddrGen());
+         arg.type = arg.type->getTypeQual(Target::GetAddrGen());
 
       // Bitfield op?
       if(exp->expL->getType()->isTypeBitfield())
       {
          switch(arg.type->getQualAddr().base)
          {
-            #define GDCC_IR_AddrList(addr) \
+            #define GDCC_Target_AddrList(addr) \
             case IR::AddrBase::addr: \
                GenStmnt_ArithEqBitT<IR::Arg_##addr>( \
                   exp, code, ctx, dst, evalT, post, arg); \
                break;
-            #include "IR/AddrList.hpp"
+            #include "Target/AddrList.hpp"
          }
 
          return;
@@ -388,12 +388,12 @@ namespace GDCC::SR
 
       switch(arg.type->getQualAddr().base)
       {
-         #define GDCC_IR_AddrList(addr) \
+         #define GDCC_Target_AddrList(addr) \
          case IR::AddrBase::addr: \
             GenStmnt_ArithEqT<IR::Arg_##addr>( \
                exp, code, ctx, dst, evalT, post, arg); \
             break;
-         #include "IR/AddrList.hpp"
+         #include "Target/AddrList.hpp"
       }
    }
 }

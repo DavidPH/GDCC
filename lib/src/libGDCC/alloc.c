@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2018 David Hill
+// Copyright(C) 2014-2019 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -16,7 +16,7 @@
 #include <ACS_ZDoom.h>
 #endif
 
-#if __GDCC_Target__Doominati__
+#if __GDCC_Engine__Doominati__
 #include <Doominati.h>
 #endif
 
@@ -206,7 +206,7 @@ static void AllocInit(void)
    #if __GDCC_Family__ZDACS__
    allocSize = __GDCC__AllocSize;
    AllocBase = AllocIter = (MemBlockPtr)AllocHeapRaw;
-   #elif __GDCC_Target__Doominati__
+   #elif __GDCC_Engine__Doominati__
    allocSize = (char *)DGE_FreestoreEnd() - (char *)DGE_FreestoreBegin();
    AllocBase = AllocIter = (MemBlockPtr)DGE_FreestoreBegin();
    #endif

@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2018 David Hill
+## Copyright (C) 2013-2019 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -19,10 +19,8 @@
 ## gdcc-ir-lib
 ##
 add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
-   Addr.cpp
    Arg.cpp
    Block.cpp
-   CallType.cpp
    Code.cpp
    DJump.cpp
    Exception.cpp
@@ -60,11 +58,8 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    Value/Sub.cpp
    Value/Unary.cpp
 
-   ../../inc/IR/Addr.hpp
-   ../../inc/IR/AddrList.hpp
    ../../inc/IR/Arg.hpp
    ../../inc/IR/Block.hpp
-   ../../inc/IR/CallType.hpp
    ../../inc/IR/Code.hpp
    ../../inc/IR/CodeList.hpp
    ../../inc/IR/CodeSet/Arith.hpp
@@ -97,7 +92,7 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    ../../inc/IR/Value.hpp
 )
 
-target_link_libraries(gdcc-ir-lib gdcc-platform-lib)
+target_link_libraries(gdcc-ir-lib gdcc-target-lib)
 
 GDCC_INSTALL_PART(ir FALSE TRUE)
 

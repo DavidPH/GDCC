@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,7 +16,7 @@
 
 #include "IR/Program.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 #include <sstream>
 
@@ -40,7 +40,7 @@ namespace GDCC::BC::ZDACS
 
       ++numChunkSPTR;
 
-      if(Platform::TargetCur == Platform::Target::Zandronum)
+      if(Target::EngineCur == Target::Engine::Zandronum)
          ++numChunkSPTR, ++numChunkSFLG;
 
       // Extra information for named init script.
@@ -50,7 +50,7 @@ namespace GDCC::BC::ZDACS
 
          ++numChunkSNAM;
 
-         if(Platform::TargetCur == Platform::Target::Zandronum)
+         if(Target::EngineCur == Target::Engine::Zandronum)
             ++numChunkSNAM, --InitScriptNumber;
 
          // If no name set, generate one.

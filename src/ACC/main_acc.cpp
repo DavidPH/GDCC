@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,7 +21,7 @@
 
 #include "LD/Linker.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 #include <iostream>
 
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
    opts.optSysSource.insert(&opts.list);
 
    // Default target to ZDoom, like acc.
-   GDCC::Platform::TargetCur = GDCC::Platform::Target::ZDoom;
+   GDCC::Target::EngineCur = GDCC::Target::Engine::ZDoom;
 
    try
    {

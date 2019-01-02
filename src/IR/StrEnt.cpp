@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,7 +18,7 @@
 
 #include "Core/NumberAlloc.hpp"
 
-#include "Platform/Alloc.hpp"
+#include "Target/Alloc.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -47,7 +47,7 @@ namespace GDCC::IR
    //
    void StrEnt::allocValue(Program &prog, Core::NumberAllocMerge<Core::FastU> &allocator)
    {
-      Core::FastU allocMin = Platform::GetAllocMin_StrEn();
+      Core::FastU allocMin = Target::GetAllocMin_StrEn();
 
       if(valueInt < allocMin)
          valueInt = allocMin;

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,10 +12,11 @@
 
 #include "SR/Space.hpp"
 
-#include "IR/Addr.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/Program.hpp"
+
+#include "Target/Addr.hpp"
 
 
 //----------------------------------------------------------------------------|

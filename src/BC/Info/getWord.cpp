@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,7 +17,7 @@
 #include "IR/Exp/Multi.hpp"
 #include "IR/Program.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -156,7 +156,7 @@ namespace GDCC::BC
       Core::FastU size = 0;
 
       for(auto const &a : type.assoc)
-         size = std::max(size, a.addr / Platform::GetWordBytes() + getWordCount(a.type));
+         size = std::max(size, a.addr / Target::GetWordBytes() + getWordCount(a.type));
 
       return size;
    }
@@ -276,7 +276,7 @@ namespace GDCC::BC
 
       for(std::size_t i = 0; i != exp->elemV.size(); ++i)
       {
-         Core::FastU idx = exp->elemT.assoc[i].addr / Platform::GetWordBytes();
+         Core::FastU idx = exp->elemT.assoc[i].addr / Target::GetWordBytes();
 
          auto w = getWords(exp->elemV[i]);
 

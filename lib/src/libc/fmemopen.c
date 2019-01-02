@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2017 David Hill
+// Copyright(C) 2019 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -29,7 +29,7 @@
 #include <ACS_ZDoom.h>
 #endif
 
-#if __GDCC_Target__Doominati__
+#if __GDCC_Engine__Doominati__
 #include <Doominati.h>
 #endif
 

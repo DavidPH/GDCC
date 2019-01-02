@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,7 +20,7 @@
 #include "IR/Linkage.hpp"
 #include "IR/Program.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -65,7 +65,7 @@ namespace GDCC::SR
    {
       IR::AddrSpace objSpace = type->getQualAddr();
 
-      if(!defin && !used && !Platform::MustEmitObject(objSpace.base))
+      if(!defin && !used && !Target::MustEmitObject(objSpace.base))
          return;
 
       IR::Object obj{glyph};
@@ -79,7 +79,7 @@ namespace GDCC::SR
 
       // Map generic address space to implementation.
       if(obj.space.base == IR::AddrBase::Gen)
-         obj.space = IR::GetAddrGen();
+         obj.space = Target::GetAddrGen();
 
       if(init && init->isIRExp())
          obj.initi = init->getIRExp();

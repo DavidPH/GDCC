@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,14 +10,14 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "Platform/Alloc.hpp"
+#include "Target/Alloc.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Addr.hpp"
+#include "Target/CallType.hpp"
+#include "Target/Info.hpp"
 
 #include "Core/Option.hpp"
 
-#include "IR/Addr.hpp"
-#include "IR/CallType.hpp"
 
 #include "Option/Exception.hpp"
 #include "Option/Function.hpp"
@@ -29,10 +29,10 @@
 // Options                                                                    |
 //
 
-namespace GDCC::Platform
+namespace GDCC::Target
 {
-   static std::unordered_map<IR::AddrSpace, Core::FastU> AllocMin;
-   static std::unordered_map<IR::CallType, Core::FastU> FuncMin;
+   static std::unordered_map<AddrSpace, Core::FastU> AllocMin;
+   static std::unordered_map<CallType, Core::FastU> FuncMin;
 
    //
    // --alloc-minimum
@@ -62,13 +62,13 @@ namespace GDCC::Platform
          else if(args.argC < 3)
             Option::Exception::Error(args, "3 arguments required");
 
-         IR::AddrSpace space;
+         AddrSpace space;
 
          switch(Core::String::Find(args.argV[0]))
          {
-            #define GDCC_IR_AddrList(name) \
-               case Core::STR_##name: space.base = IR::AddrBase::name; break;
-            #include "IR/AddrList.hpp"
+            #define GDCC_Target_AddrList(name) \
+               case Core::STR_##name: space.base = AddrBase::name; break;
+            #include "Target/AddrList.hpp"
 
          default:
             Option::Exception::Error(args, "invalid address space base");
@@ -124,13 +124,13 @@ namespace GDCC::Platform
          else if(args.argC < 2)
             Option::Exception::Error(args, "2 arguments required");
 
-         IR::CallType ctype;
+         CallType ctype;
 
          switch(Core::String::Find(args.argV[0]))
          {
-            #define GDCC_IR_CallTypeList(name) \
-               case Core::STR_##name: ctype = IR::CallType::name; break;
-            #include "IR/CallTypeList.hpp"
+            #define GDCC_Target_CallTypeList(name) \
+               case Core::STR_##name: ctype = CallType::name; break;
+            #include "Target/CallTypeList.hpp"
 
          default:
             Option::Exception::Error(args, "invalid calling convention");
@@ -163,12 +163,12 @@ namespace GDCC::Platform
 // Extern Functions                                                           |
 //
 
-namespace GDCC::Platform
+namespace GDCC::Target
 {
    //
    // GetAllocMin
    //
-   Core::FastU GetAllocMin(IR::AddrSpace space)
+   Core::FastU GetAllocMin(AddrSpace space)
    {
       auto itr = AllocMin.find(space);
 
@@ -176,7 +176,7 @@ namespace GDCC::Platform
          return itr->second;
 
       // Special rules for allocation minimum.
-      if(IsFamily_ZDACS() && space.base == IR::AddrBase::Sta)
+      if(IsFamily_ZDACS() && space.base == AddrBase::Sta)
          return 2;
 
       return IsZeroNull_Point(space.base) ? 1 : 0;
@@ -185,7 +185,7 @@ namespace GDCC::Platform
    //
    // GetAllocMin_Funct
    //
-   Core::FastU GetAllocMin_Funct(IR::CallType ctype)
+   Core::FastU GetAllocMin_Funct(CallType ctype)
    {
       auto itr = FuncMin.find(ctype);
 
@@ -194,8 +194,8 @@ namespace GDCC::Platform
 
       switch(ctype)
       {
-      case IR::CallType::SScriptI:
-      case IR::CallType::ScriptI:
+      case CallType::SScriptI:
+      case CallType::ScriptI:
          return 1;
 
       default:

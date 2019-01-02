@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,7 +12,10 @@
 
 #include "IR/OArchive.hpp"
 
-#include "Core/Origin.hpp"
+#include "Core/Exception.hpp"
+
+#include "Target/Addr.hpp"
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -52,6 +55,44 @@ namespace GDCC::IR
       putU(idx);
 
       return *this;
+   }
+
+   //
+   // operator OArchive << Target::AddrBase
+   //
+   OArchive &operator << (OArchive &out, Target::AddrBase in)
+   {
+      switch(in)
+      {
+         #define GDCC_Target_AddrList(name) \
+            case Target::AddrBase::name: return out << Core::STR_##name;
+         #include "Target/AddrList.hpp"
+      }
+
+      Core::Error({}, "invalid enum GDCC::Target::AddrBase");
+   }
+
+   //
+   // operator OArchive << Target::AddrSpace
+   //
+   OArchive &operator << (OArchive &out, Target::AddrSpace in)
+   {
+      return out << in.base << in.name;
+   }
+
+   //
+   // operator OArchive << Target::CallType
+   //
+   OArchive &operator << (OArchive &out, Target::CallType in)
+   {
+      switch(in)
+      {
+         #define GDCC_Target_CallTypeList(name) \
+            case Target::CallType::name: return out << Core::STR_##name;
+         #include "Target/CallTypeList.hpp"
+      }
+
+      Core::Error({}, "invalid enum GDCC::Target::CallType");
    }
 
    //

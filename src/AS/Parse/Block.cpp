@@ -19,7 +19,7 @@
 
 #include "IR/Block.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -51,9 +51,9 @@ namespace GDCC::AS
          if(ctx.in.drop(Core::TOK_Identi, Core::STR_B))
             w = 1, n = 1;
          else if(ctx.in.drop(Core::TOK_Identi, Core::STR_W))
-            w = Platform::GetWordBytes(), n = 1;
+            w = Target::GetWordBytes(), n = 1;
          else
-            w = 1, n = Platform::GetWordBytes();
+            w = 1, n = Target::GetWordBytes();
 
          if(!ctx.in.peek(Core::TOK_ParenO))
             n = GetFastU(ctx);
@@ -79,9 +79,9 @@ namespace GDCC::AS
             if(ctx.in.drop(Core::TOK_Identi, Core::STR_B))
                w = 1, n = 1;
             else if(ctx.in.drop(Core::TOK_Identi, Core::STR_W))
-               w = Platform::GetWordBytes(), n = 1;
+               w = Target::GetWordBytes(), n = 1;
             else
-               w = 1, n = Platform::GetWordBytes();
+               w = 1, n = Target::GetWordBytes();
 
             if(!ctx.in.peek(Core::TOK_ParenO))
                n = GetFastU(ctx);

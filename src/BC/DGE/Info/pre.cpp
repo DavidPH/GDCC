@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,9 +12,7 @@
 
 #include "BC/DGE/Info.hpp"
 
-#include "IR/CallType.hpp"
-#include "IR/Linkage.hpp"
-#include "IR/Program.hpp"
+#include "IR/Statement.hpp"
 
 
 //----------------------------------------------------------------------------|

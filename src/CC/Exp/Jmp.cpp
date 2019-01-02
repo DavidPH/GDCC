@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,12 +19,12 @@
 
 #include "IR/Program.hpp"
 
-#include "Platform/Platform.hpp"
-
 #include "SR/Arg.hpp"
 #include "SR/Function.hpp"
 #include "SR/Temporary.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -41,7 +41,7 @@ namespace GDCC::CC
       // Generate IR arg for env.
       IR::Arg envArg;
       if(env->getArg().isIRArg())
-         envArg = IR::Arg_Sta(Platform::GetWordBytes(),
+         envArg = IR::Arg_Sta(Target::GetWordBytes(),
             env->getArg().getIRArg(ctx.prog));
       else
          Core::Error(pos, "non-IRArg env stub");
@@ -83,13 +83,13 @@ namespace GDCC::CC
       SR::Temporary envTmp{ctx, pos};
       IR::Arg       envArg;
       if(env->getArg().isIRArg())
-         envArg = IR::Arg_Sta(Platform::GetWordBytes(),
+         envArg = IR::Arg_Sta(Target::GetWordBytes(),
             env->getArg().getIRArg(ctx.prog));
       else
       {
          SR::Type::CRef envType = env->getType();
          envTmp.alloc(envType->getSizeWords());
-         envArg = IR::Arg_Sta(Platform::GetWordBytes(), envTmp.getArg());
+         envArg = IR::Arg_Sta(Target::GetWordBytes(), envTmp.getArg());
 
          // TODO: Convert envTmp to an SR::Arg to avoid stack op.
          env->genStmntStk(ctx);

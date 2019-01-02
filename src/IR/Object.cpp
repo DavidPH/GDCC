@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,8 +19,8 @@
 
 #include "Core/NumberAlloc.hpp"
 
-#include "Platform/Alloc.hpp"
-#include "Platform/Platform.hpp"
+#include "Target/Alloc.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -58,7 +58,7 @@ namespace GDCC::IR
    //
    void Object::allocValue(Core::NumberAllocMerge<Core::FastU> &allocator)
    {
-      auto valueMin = Platform::GetAllocMin(space);
+      auto valueMin = Target::GetAllocMin(space);
 
       if(value < valueMin)
          value = valueMin;

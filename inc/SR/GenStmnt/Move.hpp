@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,7 +20,7 @@
 #include "../../IR/Block.hpp"
 #include "../../IR/Glyph.hpp"
 
-#include "../../Platform/Platform.hpp"
+#include "../../Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -38,7 +38,7 @@
    { \
       IR::Glyph glyph{&ctx.prog, arg.type->getQualAddr().name}; \
       auto arr = IR::ExpCreate_Glyph(glyph, exp->pos); \
-      auto arrN = Platform::GetWordBytes(); \
+      auto arrN = Target::GetWordBytes(); \
       \
       return ArgT(arg.type->getSizeBytes(), IR::Arg_Lit(arrN, arr), idx, off); \
    } \
@@ -48,7 +48,7 @@
    { \
       IR::Glyph glyph{&ctx.prog, arg.type->getQualAddr().name}; \
       auto arr = IR::ExpCreate_Glyph(glyph, exp->pos); \
-      auto arrN = Platform::GetWordBytes(); \
+      auto arrN = Target::GetWordBytes(); \
       \
       return ArgT(arg.type->getSizeBytes(), IR::Arg_Lit(arrN, arr), std::move(idx), off); \
    }

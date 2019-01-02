@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,7 +17,7 @@
 
 #include "IR/Arg.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -34,7 +34,7 @@ namespace GDCC::AS
       if(ctx.in.drop(Core::TOK_Identi, Core::STR_B))
          w = 1, n = 1;
       else if(ctx.in.drop(Core::TOK_Identi, Core::STR_W))
-         w = Platform::GetWordBytes(), n = 1;
+         w = Target::GetWordBytes(), n = 1;
 
       if(!ctx.in.peek(Core::TOK_ParenO))
          n = GetFastU(ctx);
@@ -101,7 +101,7 @@ namespace GDCC::AS
       Core::FastU size = GetArgSize(ctx, w, n);
 
       TokenDrop(ctx, Core::TOK_ParenO, "'('");
-      auto arg = GetArg(ctx, Platform::GetWordBytes(), 1);
+      auto arg = GetArg(ctx, Target::GetWordBytes(), 1);
       if(!ctx.in.peek(Core::TOK_ParenC))
          off = GetFastU(ctx);
       TokenDrop(ctx, Core::TOK_ParenC, "')'");
@@ -119,8 +119,8 @@ namespace GDCC::AS
       Core::FastU size = GetArgSize(ctx, w, n);
 
       TokenDrop(ctx, Core::TOK_ParenO, "'('");
-      auto arg0 = GetArg(ctx, Platform::GetWordBytes(), 1);
-      auto arg1 = GetArg(ctx, Platform::GetWordBytes(), 1);
+      auto arg0 = GetArg(ctx, Target::GetWordBytes(), 1);
+      auto arg1 = GetArg(ctx, Target::GetWordBytes(), 1);
       if(!ctx.in.peek(Core::TOK_ParenC))
          off = GetFastU(ctx);
       TokenDrop(ctx, Core::TOK_ParenC, "')'");

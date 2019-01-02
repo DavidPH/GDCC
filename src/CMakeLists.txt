@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2018 David Hill
+## Copyright (C) 2013-2019 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -67,12 +67,12 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/src/Option")
    add_subdirectory(Option)
 endif()
 
-if(EXISTS "${CMAKE_SOURCE_DIR}/src/Platform")
-   add_subdirectory(Platform)
-endif()
-
 if(EXISTS "${CMAKE_SOURCE_DIR}/src/SR")
    add_subdirectory(SR)
+endif()
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/src/Target")
+   add_subdirectory(Target)
 endif()
 
 ## EOF

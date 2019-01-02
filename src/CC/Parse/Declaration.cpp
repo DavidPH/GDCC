@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,7 +23,6 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
-#include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 
@@ -34,6 +33,8 @@
 #include "SR/Storage.hpp"
 #include "SR/Type.hpp"
 #include "SR/Warning.hpp"
+
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|

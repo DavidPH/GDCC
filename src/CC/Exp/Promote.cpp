@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,10 +17,10 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/CallType.hpp"
-
 #include "SR/Exp.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -151,7 +151,7 @@ namespace GDCC::CC
          auto qualR = baseR->getQual();
 
          // Check address space compatibility.
-         if(!IR::IsAddrEnclosed(qualL.space, qualR.space))
+         if(!Target::IsAddrEnclosed(qualL.space, qualR.space))
             Core::Error(pos, "cannot implicitly convert to "
                "pointer to disjoint address space");
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -130,10 +130,10 @@ namespace GDCC::IR
          return sizeof...(Args);
       }
 
-      #define GDCC_IR_AddrList(a) \
+      #define GDCC_Target_AddrList(a) \
          void unpackArg(Arg *argv, Arg_##a const &arg0) {*argv = arg0;} \
          void unpackArg(Arg *argv, Arg_##a      &&arg0) {*argv = std::move(arg0);}
-      #include "../IR/AddrList.hpp"
+      #include "../Target/AddrList.hpp"
 
       void unpackArg(Arg *argv, Arg const &arg0) {*argv = arg0;}
       void unpackArg(Arg *argv, Arg      &&arg0) {*argv = std::move(arg0);}

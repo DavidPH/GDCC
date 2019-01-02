@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,7 +23,6 @@
 #include "Core/Parse.hpp"
 #include "Core/TokenStream.hpp"
 
-#include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 
 #include "SR/Attribute.hpp"
@@ -32,6 +31,8 @@
 #include "SR/Object.hpp"
 #include "SR/Type.hpp"
 #include "SR/Warning.hpp"
+
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -158,7 +159,7 @@ namespace GDCC::CC
       val.addrB = base->getQualAddr().base;
       val.addrN = base->getQualAddr().name;
 
-      switch(IR::GetCallTypeIR(scopeLocal->fn.fn->ctype))
+      switch(Target::GetCallTypeIR(scopeLocal->fn.fn->ctype))
       {
       case IR::CallType::SScriptI:
       case IR::CallType::SScriptS:

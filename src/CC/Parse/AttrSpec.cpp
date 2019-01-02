@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -55,9 +55,10 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
-#include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
+
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -169,9 +170,9 @@ namespace GDCC::CC
       // string-literal
       switch(ctx.expectString().str)
       {
-         #define GDCC_IR_CallTypeList(name) \
+         #define GDCC_Target_CallTypeList(name) \
             case Core::STR_##name: attr.callt = IR::CallType::name; break;
-         #include "IR/CallTypeList.hpp"
+         #include "Target/CallTypeList.hpp"
 
       default:
          Core::Error(ctx.in.reget().pos, "invalid call");

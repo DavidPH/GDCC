@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,12 +19,12 @@
 
 #include "Core/Exception.hpp"
 
-#include "Platform/Platform.hpp"
-
 #include "IR/Block.hpp"
 #include "IR/CodeSet/Bitwise.hpp"
 #include "IR/CodeSet/Unary.hpp"
 #include "IR/Glyph.hpp"
+
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -49,7 +49,7 @@ namespace GDCC::SR
          IR::Block::Stk(), src.getArg(src.size() - 1), GetMaskExp(srcT));
 
       ctx.block.addStmnt(codeCmp, IR::Block::Stk(), IR::Block::Stk(),
-         exp << (srcT->getSizeBitsI() % Platform::GetWordBits()));
+         exp << (srcT->getSizeBitsI() % Target::GetWordBits()));
 
       ctx.block.addStmnt(codeJcnd, IR::Block::Stk(), label);
    }
@@ -85,7 +85,7 @@ namespace GDCC::SR
       // Duplicate leading word and signed shift.
       ctx.block.addStmnt(IR::Code::Copy, IR::Block::Stk(), IR::Block::Stk());
       ctx.block.addStmnt(IR::Code::ShRI,
-         IR::Block::Stk(), IR::Block::Stk(), Platform::GetWordBits() - 1);
+         IR::Block::Stk(), IR::Block::Stk(), Target::GetWordBits() - 1);
 
       // Duplicate that result for any additional words.
       for(auto i = diffWords; --i;)
@@ -137,7 +137,7 @@ namespace GDCC::SR
          IR::Block::Stk(), src.getArg(src.size() - 1), GetMaskExp(srcT));
 
       ctx.block.addStmnt(IR::Code::ShRI, IR::Block::Stk(),
-         IR::Block::Stk(), srcT->getSizeBitsI() % Platform::GetWordBits());
+         IR::Block::Stk(), srcT->getSizeBitsI() % Target::GetWordBits());
    }
 
    //
@@ -161,7 +161,7 @@ namespace GDCC::SR
    static Core::FastU GetMaskExp(Type const *t)
    {
       Core::FastU bitsF = t->getSizeBitsF();
-      Core::FastU bitsI = t->getSizeBitsI() % Platform::GetWordBits();
+      Core::FastU bitsI = t->getSizeBitsI() % Target::GetWordBits();
 
       return ((Core::FastU(1) << bitsF) - 1) << bitsI;
    }
@@ -171,7 +171,7 @@ namespace GDCC::SR
    //
    static Core::FastU GetMaskMan(Type const *t)
    {
-      Core::FastU bitsI = t->getSizeBitsI() % Platform::GetWordBits();
+      Core::FastU bitsI = t->getSizeBitsI() % Target::GetWordBits();
 
       return (Core::FastU(1) << bitsI) - 1;
    }
@@ -184,7 +184,7 @@ namespace GDCC::SR
       Core::FastU bitsF = t->getSizeBitsF();
       Core::FastU bitsI = t->getSizeBitsI();
 
-      return Core::FastU(1) << ((bitsI + bitsF) % Platform::GetWordBits());
+      return Core::FastU(1) << ((bitsI + bitsF) % Target::GetWordBits());
    }
 }
 
@@ -288,7 +288,7 @@ namespace GDCC::SR
    void GenStmnt_ConvertFixFlt(Exp const *exp, Type const *dstT,
       Type const *srcT, GenStmntCtx const &ctx)
    {
-      auto wordBits  = Platform::GetWordBits();
+      auto wordBits  = Target::GetWordBits();
       auto diffWords = static_cast<Core::FastI>(dstT->getSizeWords()) -
                        static_cast<Core::FastI>(srcT->getSizeWords());
 
@@ -469,7 +469,7 @@ namespace GDCC::SR
       if(srcT->isTypeSubWord() && srcT->getSizeBitsS())
       {
          auto srcBits = srcT->getSizeBitsF() + srcT->getSizeBitsI() + srcT->getSizeBitsS();
-         auto shift   = Platform::GetWordBits() - srcBits;
+         auto shift   = Target::GetWordBits() - srcBits;
 
          ctx.block.setArgSize();
          ctx.block.addStmnt(IR::Code::ShLU, IR::Block::Stk(), IR::Block::Stk(), shift);
@@ -546,7 +546,7 @@ namespace GDCC::SR
          ctx.block.setArgSize();
          if(dstT->getSizeBitsS())
          {
-            auto shift = Platform::GetWordBits() - dstBits;
+            auto shift = Target::GetWordBits() - dstBits;
 
             ctx.block.addStmnt(IR::Code::ShLU, IR::Block::Stk(), IR::Block::Stk(), shift);
             ctx.block.addStmnt(IR::Code::ShRI, IR::Block::Stk(), IR::Block::Stk(), shift);
@@ -573,7 +573,7 @@ namespace GDCC::SR
    void GenStmnt_ConvertFloat(Exp const *exp, Type const *dstT,
       Type const *srcT, GenStmntCtx const &ctx)
    {
-      Core::FastU wordBits = Platform::GetWordBits();
+      Core::FastU wordBits = Target::GetWordBits();
 
       auto diffWords = static_cast<Core::FastI>(dstT->getSizeWords()) -
                        static_cast<Core::FastI>(srcT->getSizeWords());
@@ -621,9 +621,9 @@ namespace GDCC::SR
       ctx.block.setArgSize();
       for(auto i = dstT->getSizeWords(); --i;)
          ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(),
-            (Core::FastU(1) << Platform::GetWordBits()) - 1);
+            (Core::FastU(1) << Target::GetWordBits()) - 1);
       ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(),
-         (Core::FastU(1) << (Platform::GetWordBits() - 1)) - 1);
+         (Core::FastU(1) << (Target::GetWordBits() - 1)) - 1);
       ctx.block.addStmnt(IR::Code::Jump, labelSig);
 
       // Check if result is INF.
@@ -755,7 +755,7 @@ namespace GDCC::SR
 
       // Set initial exponent value.
       ctx.block.setArgSize().addStmnt(IR::Code::Move, dst.getArg(),
-         expMid << (dstT->getSizeBitsI() % Platform::GetWordBits()));
+         expMid << (dstT->getSizeBitsI() % Target::GetWordBits()));
 
       // Sign handling, if source type is signed.
       // Must do this before counting leading zeros.
@@ -827,7 +827,7 @@ namespace GDCC::SR
          IR::Arg_Stk(codeBytes), IR::Arg_Stk(codeBytes), clz.getArg());
 
       ctx.block.addStmnt(IR::Code::ShLU,
-         IR::Block::Stk(), clz.getArg(), Platform::GetWordBits() - headBits);
+         IR::Block::Stk(), clz.getArg(), Target::GetWordBits() - headBits);
       ctx.block.addStmnt(IR::Code::AddU,
          dst.getArg(), dst.getArg(), IR::Block::Stk());
 
@@ -849,7 +849,7 @@ namespace GDCC::SR
          IR::Arg_Stk(codeBytes), IR::Arg_Stk(codeBytes), clz.getArg());
 
       ctx.block.addStmnt(IR::Code::ShLU,
-         IR::Block::Stk(), clz.getArg(), Platform::GetWordBits() - headBits);
+         IR::Block::Stk(), clz.getArg(), Target::GetWordBits() - headBits);
       ctx.block.addStmnt(IR::Code::SubU,
          dst.getArg(), dst.getArg(), IR::Block::Stk());
 

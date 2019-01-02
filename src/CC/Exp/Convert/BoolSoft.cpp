@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,9 +18,9 @@
 
 #include "IR/Block.hpp"
 
-#include "Platform/Platform.hpp"
-
 #include "SR/Type.hpp"
+
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -66,7 +66,7 @@ namespace GDCC::CC
 
       ctx.block.addStmnt(IR::Code::BAnd,
          IR::Block::Stk(), IR::Block::Stk(),
-         (Core::FastU(1) << (bitsIF % Platform::GetWordBits())) - 1);
+         (Core::FastU(1) << (bitsIF % Target::GetWordBits())) - 1);
 
       for(auto n = exp->getType()->getSizeWords(); --n;)
          ctx.block.addStmnt(IR::Code::BOrI,
@@ -121,7 +121,7 @@ namespace GDCC::CC
 
       if(type->isTypePointer())
       {
-         if(Platform::IsZeroNull_Point(type->getBaseType()->getQualAddr().base))
+         if(Target::IsZeroNull_Point(type->getBaseType()->getQualAddr().base))
          {
             if(type->getSizeWords() == 1)
                return exp;

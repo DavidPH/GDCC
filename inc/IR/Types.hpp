@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2018 David Hill
+// Copyright (C) 2018-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef GDCC__IR__Types_H__
 #define GDCC__IR__Types_H__
 
-#include "../Platform/Types.hpp"
+#include "../Target/Types.hpp"
 
 #if !GDCC_Core_BigNum
 #error "GDCC::IR requires GDCC_Core_BigNum"
@@ -26,13 +26,14 @@
 
 namespace GDCC::IR
 {
-   enum class AddrBase;
-   enum class CallType;
+   using Target::AddrBase;
+   using Target::AddrSpace;
+   using Target::CallType;
+
    enum class Code;
    enum class Linkage;
    enum class TypeBase;
 
-   class AddrSpace;
    class Arg;
    class ArgPart;
    class ArgPtr1;
@@ -100,8 +101,8 @@ namespace GDCC::IR
    typedef AddrBase ArgBase;
    typedef TypeBase ValueBase;
 
-   #define GDCC_IR_AddrList(name) class Arg_##name;
-   #include "../IR/AddrList.hpp"
+   #define GDCC_Target_AddrList(name) class Arg_##name;
+   #include "../Target/AddrList.hpp"
 
    #define GDCC_IR_TypeList(name) class Type_##name;
    #include "../IR/TypeList.hpp"

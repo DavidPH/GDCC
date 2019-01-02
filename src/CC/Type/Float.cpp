@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,7 +14,7 @@
 
 #include "IR/Type.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -122,7 +122,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Float::getSizeAlign() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return 1;
 
       return !size && !cplx ? 2 : 4;
@@ -149,7 +149,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Float::getSizeBytes() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return FloatTable_SizeBytes_ZDACS[(size << 1) | cplx];
 
       return FloatTable_SizeBytes_B8[(size << 1) | cplx];
@@ -160,7 +160,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Float::getSizePoint() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return FloatTable_SizeBytes_ZDACS[(size << 1) | cplx];
 
       return FloatTable_SizePoint_B8[(size << 1) | cplx];
@@ -179,7 +179,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Float::getSizeWords() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return FloatTable_SizeBytes_ZDACS[(size << 1) | cplx];
 
       return FloatTable_SizeWords_B8[(size << 1) | cplx];

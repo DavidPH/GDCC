@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -144,6 +144,11 @@ namespace GDCC::IR
    IArchive &operator >> (IArchive &in, Core::Array<T> &out);
 
    IArchive &operator >> (IArchive &in, Core::Origin &out);
+
+   IArchive &operator >> (IArchive &in, AddrBase  &out);
+   IArchive &operator >> (IArchive &in, AddrSpace &out);
+
+   IArchive &operator >> (IArchive &in, CallType &out);
 
    template<typename T>
    IArchive &operator >> (IArchive &in, std::vector<T> &out);

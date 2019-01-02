@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,7 +14,7 @@
 
 #include "IR/Type.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -47,7 +47,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Char::getSizeBitsI() const
    {
-      return Platform::GetByteBitsI() - getSizeBitsS();
+      return Target::GetByteBitsI() - getSizeBitsS();
    }
 
    //
@@ -55,7 +55,7 @@ namespace GDCC::CC
    //
    bool Type_Char::getSizeBitsS() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return true;
 
       return false;
@@ -66,7 +66,7 @@ namespace GDCC::CC
    //
    bool Type_Char::isTypeSubWord() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return false;
 
       return true;

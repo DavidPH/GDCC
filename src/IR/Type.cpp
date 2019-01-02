@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,12 +12,13 @@
 
 #include "IR/Type.hpp"
 
-#include "IR/Addr.hpp"
-#include "IR/CallType.hpp"
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
 #include "Core/Exception.hpp"
+
+#include "Target/Addr.hpp"
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|

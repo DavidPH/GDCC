@@ -1,12 +1,12 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2014-2018 David Hill
+## Copyright (C) 2014-2019 David Hill
 ##
 ## See COPYING for license information.
 ##
 ##-----------------------------------------------------------------------------
 ##
-## CMake file for gdcc-platform.
+## CMake file for gdcc-target.
 ##
 ##-----------------------------------------------------------------------------
 
@@ -16,20 +16,26 @@
 ##
 
 ##
-## gdcc-platform-lib
+## gdcc-target-lib
 ##
-add_library(gdcc-platform-lib ${GDCC_SHARED_DECL}
+add_library(gdcc-target-lib ${GDCC_SHARED_DECL}
+   Addr.cpp
    Alloc.cpp
-   Platform.cpp
+   CallType.cpp
+   Info.cpp
 
-   ../../inc/Platform/Alloc.hpp
-   ../../inc/Platform/Platform.hpp
-   ../../inc/Platform/Types.hpp
+   ../../inc/Target/Addr.hpp
+   ../../inc/Target/AddrList.hpp
+   ../../inc/Target/Alloc.hpp
+   ../../inc/Target/CallType.hpp
+   ../../inc/Target/CallTypeList.hpp
+   ../../inc/Target/Info.hpp
+   ../../inc/Target/Types.hpp
 )
 
-target_link_libraries(gdcc-platform-lib gdcc-core-lib)
+target_link_libraries(gdcc-target-lib gdcc-core-lib)
 
-GDCC_INSTALL_PART(platform FALSE TRUE)
+GDCC_INSTALL_PART(target FALSE TRUE)
 
 ## EOF
 

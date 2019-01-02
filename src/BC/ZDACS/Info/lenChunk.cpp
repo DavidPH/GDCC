@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,10 +12,10 @@
 
 #include "BC/ZDACS/Info.hpp"
 
-#include "IR/CallType.hpp"
 #include "IR/Program.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/CallType.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -352,7 +352,7 @@ namespace GDCC::BC::ZDACS
       {
          *(strs.end() - 1) = InitScriptName;
 
-         if(Platform::TargetCur == Platform::Target::Zandronum)
+         if(Target::EngineCur == Target::Engine::Zandronum)
             *(strs.end() - 2) = InitScriptName + "_ClS";
       }
 

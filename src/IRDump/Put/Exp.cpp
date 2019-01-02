@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,8 +14,6 @@
 
 #include "Core/Option.hpp"
 
-#include "IR/Addr.hpp"
-#include "IR/CallType.hpp"
 #include "IR/Exp/Binary.hpp"
 #include "IR/Exp/Branch.hpp"
 #include "IR/Exp/Glyph.hpp"
@@ -24,6 +22,9 @@
 #include "IR/Exp/Value.hpp"
 
 #include "Option/Bool.hpp"
+
+#include "Target/Addr.hpp"
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|

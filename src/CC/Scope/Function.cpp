@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,13 +14,12 @@
 
 #include "CC/Scope/Block.hpp"
 
-#include "IR/CallType.hpp"
-
-#include "Platform/Platform.hpp"
-
 #include "SR/Exp.hpp"
 #include "SR/Function.hpp"
 #include "SR/Object.hpp"
+
+#include "Target/CallType.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -60,7 +59,7 @@ namespace GDCC::CC
    {
       AllocAutoInfo alloc;
 
-      if(Platform::IsCallAutoProp(IR::GetCallTypeIR(fn->ctype)))
+      if(Target::IsCallAutoProp(Target::GetCallTypeIR(fn->ctype)))
          ++alloc.localReg;
 
       // Allocate parameter objects.

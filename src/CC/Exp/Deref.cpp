@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,7 +14,7 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/Addr.hpp"
+#include "Target/Addr.hpp"
 
 #include "SR/Arg.hpp"
 #include "SR/Type.hpp"

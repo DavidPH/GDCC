@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2016 David Hill
+// Copyright(C) 2014-2019 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -27,7 +27,7 @@
 #include <ACS_ZDoom.h>
 #endif
 
-#if __GDCC_Target__Doominati__
+#if __GDCC_Engine__Doominati__
 #include <Doominati.h>
 #endif
 
@@ -225,7 +225,7 @@
    \
    default: return ~ret; \
    }
-#elif __GDCC_Target__Doominati__
+#elif __GDCC_Engine__Doominati__
 #define FormatStr() \
    switch(fmtLen) \
    { \

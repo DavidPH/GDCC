@@ -15,10 +15,11 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
-#include "IR/Addr.hpp"
-#include "IR/CallType.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/Code.hpp"
+
+#include "Target/Addr.hpp"
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -34,9 +35,9 @@ namespace GDCC::AS
    {
       switch(TokenPeekIdenti(ctx).in.get().str)
       {
-         #define GDCC_IR_AddrList(name) \
+         #define GDCC_Target_AddrList(name) \
             case Core::STR_##name: return IR::AddrBase::name;
-         #include "IR/AddrList.hpp"
+         #include "Target/AddrList.hpp"
 
       default:
          Core::ErrorExpect("AddrBase", ctx.in.reget());
@@ -66,9 +67,9 @@ namespace GDCC::AS
    {
       switch(TokenPeekIdenti(ctx).in.get().str)
       {
-         #define GDCC_IR_CallTypeList(name) \
+         #define GDCC_Target_CallTypeList(name) \
             case Core::STR_##name: return IR::CallType::name;
-         #include "IR/CallTypeList.hpp"
+         #include "Target/CallTypeList.hpp"
 
       default:
          Core::ErrorExpect("CallType", ctx.in.reget());

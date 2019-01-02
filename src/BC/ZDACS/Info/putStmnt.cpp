@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,9 +16,10 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/CallType.hpp"
 #include "IR/Function.hpp"
 #include "IR/Glyph.hpp"
+
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|

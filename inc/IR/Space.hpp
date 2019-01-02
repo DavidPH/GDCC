@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,9 +13,11 @@
 #ifndef GDCC__IR__Space_H__
 #define GDCC__IR__Space_H__
 
-#include "../IR/Addr.hpp"
+#include "../IR/Types.hpp"
 
 #include "../Core/Number.hpp"
+
+#include "../Target/Addr.hpp"
 
 
 //----------------------------------------------------------------------------|

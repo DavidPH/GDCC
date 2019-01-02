@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,7 +20,7 @@
 #include "IR/Arg.hpp"
 #include "IR/Glyph.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -36,7 +36,7 @@
    { \
       IR::Glyph glyph{prog, arg.type->getQualAddr().name}; \
       auto arr = IR::ExpCreate_Glyph(glyph, arg.data->pos); \
-      auto arrN = Platform::GetWordBytes(); \
+      auto arrN = Target::GetWordBytes(); \
       \
       return {arg.type->getSizeBytes(), IR::Arg_Lit(arrN, arr), \
          arg.data->getArg().getIRArg(prog)}; \
@@ -178,14 +178,14 @@ namespace GDCC::SR
    {
       auto addr = type->getQualAddr();
       if(addr.base == IR::AddrBase::Gen)
-         addr = IR::GetAddrGen();
+         addr = Target::GetAddrGen();
 
       switch(addr.base)
       {
-         #define GDCC_IR_AddrList(addr) \
+         #define GDCC_Target_AddrList(addr) \
          case IR::AddrBase::addr: \
             return GetIRArg<IR::Arg_##addr>(*this, prog);
-         #include "IR/AddrList.hpp"
+         #include "Target/AddrList.hpp"
       }
 
       // Callers should always check isIRArg, so this should never get
@@ -219,14 +219,14 @@ namespace GDCC::SR
 
       auto addr = type->getQualAddr();
       if(addr.base == IR::AddrBase::Gen)
-         addr = IR::GetAddrGen();
+         addr = Target::GetAddrGen();
 
       switch(addr.base)
       {
-         #define GDCC_IR_AddrList(addr) \
+         #define GDCC_Target_AddrList(addr) \
          case IR::AddrBase::addr: \
             return IsIRArg<IR::Arg_##addr>(*this);
-         #include "IR/AddrList.hpp"
+         #include "Target/AddrList.hpp"
       }
 
       return false;

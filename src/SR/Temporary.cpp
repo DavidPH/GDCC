@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,7 +18,7 @@
 #include "IR/Exp.hpp"
 #include "IR/Glyph.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -34,7 +34,7 @@ namespace GDCC::SR
       pos  {pos_},
       fn   {ctx.fn},
       prog {&ctx.prog},
-      w    {Platform::GetWordBytes()}
+      w    {Target::GetWordBytes()}
    {
       init();
    }
@@ -47,7 +47,7 @@ namespace GDCC::SR
       pos  {pos_},
       fn   {ctx.fn},
       prog {&ctx.prog},
-      w    {Platform::GetWordBytes()}
+      w    {Target::GetWordBytes()}
    {
       init();
       alloc(allocSize);

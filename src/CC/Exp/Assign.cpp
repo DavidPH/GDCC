@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,12 +19,12 @@
 #include "IR/Block.hpp"
 #include "IR/Exp.hpp"
 
-#include "Platform/Platform.hpp"
-
 #include "SR/Arg.hpp"
 #include "SR/GenStmnt/Move.hpp"
 #include "SR/Temporary.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -62,7 +62,7 @@ namespace GDCC::CC
 
          // Use literal as index.
          GenStmnt_SetBitsPartIdx<ArgT>(exp, ctx, arg,
-            IR::Arg_Lit(Platform::GetWordBytes(), arg.data->getIRExp()), bits, offs);
+            IR::Arg_Lit(Target::GetWordBytes(), arg.data->getIRExp()), bits, offs);
 
          return;
       }
@@ -171,15 +171,15 @@ namespace GDCC::CC
 
          // Map from generic address space for codegen.
          if(argL.type->getQualAddr().base == IR::AddrBase::Gen)
-            argL.type = argL.type->getTypeQual(IR::GetAddrGen());
+            argL.type = argL.type->getTypeQual(Target::GetAddrGen());
 
          switch(argL.type->getQualAddr().base)
          {
-            #define GDCC_IR_AddrList(addr) \
+            #define GDCC_Target_AddrList(addr) \
             case IR::AddrBase::addr: \
                GenStmnt_SetBitsPartT<IR::Arg_##addr>(this, ctx, argL, bits, offs); \
                break;
-            #include "IR/AddrList.hpp"
+            #include "Target/AddrList.hpp"
          }
 
          // Move duplicated result, if needed.

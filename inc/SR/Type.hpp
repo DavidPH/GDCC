@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,7 +18,7 @@
 #include "../Core/Counter.hpp"
 #include "../Core/Number.hpp"
 
-#include "../IR/Addr.hpp"
+#include "../Target/Addr.hpp"
 
 
 //----------------------------------------------------------------------------|

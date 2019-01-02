@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,14 +18,14 @@
 #include "Core/Exception.hpp"
 #include "Core/Option.hpp"
 
-#include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/Program.hpp"
 
 #include "Option/Int.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/CallType.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -117,7 +117,7 @@ namespace GDCC::SR
       // Operate on a temporary function to be merged later.
       IR::Function fn{glyph};
 
-      fn.ctype = IR::GetCallTypeIR(ctype);
+      fn.ctype = Target::GetCallTypeIR(ctype);
       fn.linka = linka;
       fn.stype = stype;
 
@@ -156,7 +156,7 @@ namespace GDCC::SR
       }
 
       fn.allocAut = allocAut;
-      fn.ctype    = IR::GetCallTypeIR(ctype);
+      fn.ctype    = Target::GetCallTypeIR(ctype);
       fn.label    = label;
       fn.linka    = linka;
       fn.localArr = localArr;
@@ -170,7 +170,7 @@ namespace GDCC::SR
       // Special rules for certain calling conventions.
 
       // Extra parameter for stack pointer.
-      if(Platform::IsCallAutoProp(fn.ctype))
+      if(Target::IsCallAutoProp(fn.ctype))
          ++fn.param;
 
       if(fn.allocAut &&
@@ -203,7 +203,7 @@ namespace GDCC::SR
 
          gdata.type  = Type::Size->getIRType();
          gdata.value = IR::ExpCreate_Value(
-            IR::Value_Fixed(Core::NumberCast<Core::Integ>(localReg * Platform::GetWordBytes()),
+            IR::Value_Fixed(Core::NumberCast<Core::Integ>(localReg * Target::GetWordBytes()),
             gdata.type.tFixed), {nullptr, 0});
       }
 
@@ -273,7 +273,7 @@ namespace GDCC::SR
       if(exp)
          allocAut = exp->getValue().getFastU();
 
-      else switch(IR::GetCallTypeIR(ctype))
+      else switch(Target::GetCallTypeIR(ctype))
       {
       case IR::CallType::ScriptI:
       case IR::CallType::ScriptS:

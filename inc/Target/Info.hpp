@@ -1,27 +1,38 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// Platform information/selection.
+// Target information/selection.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__Platform__Platform_H__
-#define GDCC__Platform__Platform_H__
+#ifndef GDCC__Target__Info_H__
+#define GDCC__Target__Info_H__
 
-#include "../Platform/Types.hpp"
+#include "../Target/Types.hpp"
 
 
 //----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
-namespace GDCC::Platform
+namespace GDCC::Target
 {
+   //
+   // Engine
+   //
+   enum class Engine
+   {
+      None,
+      Doominati,
+      ZDoom,
+      Zandronum,
+   };
+
    //
    // Format
    //
@@ -31,17 +42,6 @@ namespace GDCC::Platform
       ACSE,
       DGE_NTS,
    };
-
-   //
-   // Target
-   //
-   enum class Target
-   {
-      None,
-      Doominati,
-      ZDoom,
-      Zandronum,
-   };
 }
 
 
@@ -49,10 +49,10 @@ namespace GDCC::Platform
 // Extern Objects                                                             |
 //
 
-namespace GDCC::Platform
+namespace GDCC::Target
 {
+   extern Engine EngineCur;
    extern Format FormatCur;
-   extern Target TargetCur;
 }
 
 
@@ -60,12 +60,12 @@ namespace GDCC::Platform
 // Extern Functions                                                           |
 //
 
-namespace GDCC::Platform
+namespace GDCC::Target
 {
    unsigned GetByteBitsI();
 
    // How many extra auto words does this type of call require?
-   unsigned GetCallAutoAdd(IR::CallType call);
+   unsigned GetCallAutoAdd(CallType call);
 
    unsigned GetWordAlign();
    unsigned GetWordBits();
@@ -74,22 +74,22 @@ namespace GDCC::Platform
    unsigned GetWordShift();
 
    // Does this type of call require explicit auto pointer propagation?
-   bool IsCallAutoProp(IR::CallType call);
+   bool IsCallAutoProp(CallType call);
 
    // Do extra arguments to this type of call require variadic handling?
-   bool IsCallVaria(IR::CallType call);
+   bool IsCallVaria(CallType call);
 
    bool IsFamily_ZDACS();
 
    // Does null have a zero representation?
    bool IsZeroNull_DJump();
-   bool IsZeroNull_Funct(IR::CallType call);
-   bool IsZeroNull_Point(IR::AddrBase addr);
+   bool IsZeroNull_Funct(CallType call);
+   bool IsZeroNull_Point(AddrBase addr);
    bool IsZeroNull_StrEn();
 
    // Must unused, undefined objects in this space be emitted?
-   bool MustEmitObject(IR::AddrBase addr);
+   bool MustEmitObject(AddrBase addr);
 }
 
-#endif//GDCC__Platform__Platform_H__
+#endif//GDCC__Target__Info_H__
 

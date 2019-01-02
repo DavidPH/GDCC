@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015-2017 David Hill
+// Copyright(C) 2015-2019 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -91,7 +91,7 @@
 //
 // SACCUM_*
 //
-#if __GDCC_Target__Doominati__
+#if __GDCC_Engine__Doominati__
 # define SACCUM_FBIT 7
 # define SACCUM_IBIT 24
 # define SACCUM_MIN (-0x800000p-0HK-0x800000p-0HK)
@@ -108,7 +108,7 @@
 //
 // USACCUM_*
 //
-#if __GDCC_Target__Doominati__
+#if __GDCC_Engine__Doominati__
 # define USACCUM_FBIT 7
 # define USACCUM_IBIT 25
 # define USACCUM_MAX 0x1FFFFFF.FEp-0UHK
@@ -123,7 +123,7 @@
 //
 // ACCUM_*
 //
-#if __GDCC_Target__Doominati__
+#if __GDCC_Engine__Doominati__
 # define ACCUM_FBIT 15
 # define ACCUM_IBIT 48
 # define ACCUM_MIN (-0x800000000000p-0K-0x800000000000p-0K)
@@ -140,7 +140,7 @@
 //
 // UACCUM_*
 //
-#if __GDCC_Target__Doominati__
+#if __GDCC_Engine__Doominati__
 # define UACCUM_FBIT 15
 # define UACCUM_IBIT 49
 # define UACCUM_MAX 0x1FFFFFFFFFFFF.FFFEp-0K
@@ -155,7 +155,7 @@
 //
 // LACCUM_*
 //
-#if __GDCC_Target__Doominati__
+#if __GDCC_Engine__Doominati__
 # define LACCUM_FBIT 32
 # define LACCUM_IBIT 63
 # define LACCUM_MIN (-0x4000000000000000p-0LK-0x4000000000000000p-0LK)
@@ -172,7 +172,7 @@
 //
 // ULACCUM_*
 //
-#if __GDCC_Target__Doominati__
+#if __GDCC_Engine__Doominati__
 # define ULACCUM_FBIT 32
 # define ULACCUM_IBIT 64
 # define ULACCUM_MAX 0xFFFFFFFFFFFFFFFF.FFFFFFFFp-0ULK

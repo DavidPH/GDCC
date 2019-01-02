@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,8 +21,6 @@
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
-
-#include "Platform/Platform.hpp"
 
 #include "SR/Attribute.hpp"
 #include "SR/Exp.hpp"

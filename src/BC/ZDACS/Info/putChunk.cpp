@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,10 +14,10 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/CallType.hpp"
 #include "IR/Program.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/CallType.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -526,7 +526,7 @@ namespace GDCC::BC::ZDACS
          putHWord(flags);
       }
 
-      if(codeInit && Platform::TargetCur == Platform::Target::Zandronum)
+      if(codeInit && Target::EngineCur == Target::Engine::Zandronum)
       {
          putHWord(InitScriptNumber + 1);
          putHWord(0x0002);
@@ -556,7 +556,7 @@ namespace GDCC::BC::ZDACS
       {
          *(strs.end() - 1) = InitScriptName;
 
-         if(Platform::TargetCur == Platform::Target::Zandronum)
+         if(Target::EngineCur == Target::Engine::Zandronum)
             *(strs.end() - 2) = InitScriptName + "_ClS";
       }
 
@@ -633,7 +633,7 @@ namespace GDCC::BC::ZDACS
             putByte(0);
             putWord(codeInit);
 
-            if(Platform::TargetCur == Platform::Target::Zandronum)
+            if(Target::EngineCur == Target::Engine::Zandronum)
             {
                putHWord(InitScriptNumber + 1);
                putByte(1);
@@ -648,7 +648,7 @@ namespace GDCC::BC::ZDACS
             putWord(codeInit);
             putWord(0);
 
-            if(Platform::TargetCur == Platform::Target::Zandronum)
+            if(Target::EngineCur == Target::Engine::Zandronum)
             {
                putHWord(InitScriptNumber + 1);
                putHWord(1);

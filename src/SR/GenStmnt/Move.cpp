@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -232,15 +232,15 @@ namespace GDCC::SR
 
       // Map from generic address space for codegen.
       if(arg.type->getQualAddr().base == IR::AddrBase::Gen)
-         arg.type = arg.type->getTypeQual(IR::GetAddrGen());
+         arg.type = arg.type->getTypeQual(Target::GetAddrGen());
 
       switch(arg.type->getQualAddr().base)
       {
-         #define GDCC_IR_AddrList(addr) \
+         #define GDCC_Target_AddrList(addr) \
          case IR::AddrBase::addr: \
             GenStmnt_MovePartT<IR::Arg_##addr>(exp, ctx, arg, get, set); \
             break;
-         #include "IR/AddrList.hpp"
+         #include "Target/AddrList.hpp"
       }
    }
 }

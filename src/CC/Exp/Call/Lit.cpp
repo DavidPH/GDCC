@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,12 +16,12 @@
 
 #include "IR/Arg.hpp"
 #include "IR/Block.hpp"
-#include "IR/CallType.hpp"
-
-#include "Platform/Platform.hpp"
 
 #include "SR/Function.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/CallType.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -36,7 +36,7 @@ namespace GDCC::CC
    void Exp_CallLit::v_genStmnt(SR::GenStmntCtx const &ctx,
       SR::Arg const &dst) const
    {
-      IR::CallType callType = IR::GetCallTypeIR(func->getCallType());
+      IR::CallType callType = Target::GetCallTypeIR(func->getCallType());
 
       // Evaluate expression and arguments for side effects.
       exp->genStmnt(ctx);
@@ -50,9 +50,9 @@ namespace GDCC::CC
          ? 0 : func->getBaseType()->getSizeBytes());
 
       if(callType == IR::CallType::AsmFunc)
-         irArgs[1] = IR::Arg_Lit(Platform::GetWordBytes(), exp->getFunction()->valueLit);
+         irArgs[1] = IR::Arg_Lit(Target::GetWordBytes(), exp->getFunction()->valueLit);
       else
-         irArgs[1] = IR::Arg_Lit(Platform::GetWordBytes(), exp->getIRExp());
+         irArgs[1] = IR::Arg_Lit(Target::GetWordBytes(), exp->getIRExp());
 
       for(std::size_t i = 0, e = args.size(); i != e; ++i)
          irArgs[i + 2] = IR::Arg_Lit(args[i]->getType()->getSizeBytes(), args[i]->getIRExp());

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,10 +19,10 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/CallType.hpp"
-
 #include "SR/Function.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -39,7 +39,7 @@ namespace GDCC::CC
    {
       auto type = exp->getType()->getBaseType();
 
-      switch(IR::GetCallTypeIR(type->getCallType()))
+      switch(Target::GetCallTypeIR(type->getCallType()))
       {
       case IR::CallType::AsmFunc:
          if(!exp->isIRExp() || !exp->isFunction() || !exp->getFunction()->valueLit)
@@ -112,7 +112,7 @@ namespace GDCC::CC
    //
    bool Exp_Call::v_isNoAuto() const
    {
-      switch(IR::GetCallTypeIR(func->getCallType()))
+      switch(Target::GetCallTypeIR(func->getCallType()))
       {
       case IR::CallType::SScriptI:
       case IR::CallType::SScriptS:
@@ -168,7 +168,7 @@ namespace GDCC::CC
          if(!fn || param->size() - args.size() > fn->paramOpt)
             Core::Error(pos, "insufficient arguments");
 
-         switch(IR::GetCallTypeIR(type->getCallType()))
+         switch(Target::GetCallTypeIR(type->getCallType()))
          {
          case IR::CallType::Native:
          case IR::CallType::Special:

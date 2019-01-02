@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,13 +12,13 @@
 
 #include "IR/Value.hpp"
 
-#include "IR/Addr.hpp"
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
 #include "Core/Exception.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Addr.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -113,7 +113,7 @@ namespace GDCC::IR
    //
    Value_Funct::operator bool () const
    {
-      if(Platform::IsZeroNull_Funct(vtype.callT))
+      if(Target::IsZeroNull_Funct(vtype.callT))
          return value != 0;
       else
          return value != static_cast<Core::FastU>(-1);
@@ -132,7 +132,7 @@ namespace GDCC::IR
    //
    Value_Point::operator bool () const
    {
-      if(Platform::IsZeroNull_Point(vtype.reprB))
+      if(Target::IsZeroNull_Point(vtype.reprB))
          return value != 0;
       else
          return value != static_cast<Core::FastU>(-1);
@@ -150,7 +150,7 @@ namespace GDCC::IR
    //
    Value_StrEn::operator bool () const
    {
-      if(Platform::IsZeroNull_StrEn())
+      if(Target::IsZeroNull_StrEn())
          return value != 0;
       else
          return value != static_cast<Core::FastU>(-1);

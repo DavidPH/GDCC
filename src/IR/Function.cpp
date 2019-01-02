@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,14 +12,14 @@
 
 #include "IR/Function.hpp"
 
-#include "IR/CallType.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
 #include "Core/NumberAlloc.hpp"
 
-#include "Platform/Alloc.hpp"
+#include "Target/Alloc.hpp"
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -57,7 +57,7 @@ namespace GDCC::IR
    //
    void Function::allocValue(Core::NumberAllocMerge<Core::FastU> &allocator)
    {
-      auto valueMin = Platform::GetAllocMin_Funct(ctype);
+      auto valueMin = Target::GetAllocMin_Funct(ctype);
 
       if(valueInt < valueMin)
          valueInt = valueMin;

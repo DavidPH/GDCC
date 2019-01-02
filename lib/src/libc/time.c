@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015-2018 David Hill
+// Copyright(C) 2015-2019 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -61,7 +61,7 @@ clock_t clock()
 {
    #if __GDCC_Family__ZDACS__
    return ACS_Timer();
-   #elif __GDCC_Target__Doominati__
+   #elif __GDCC_Engine__Doominati__
    // TODO
    return 0;
    #else

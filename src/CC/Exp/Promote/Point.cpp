@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -32,20 +32,20 @@ namespace GDCC::CC
    static IR::AddrSpace AddrPromo(IR::AddrSpace addrL, IR::AddrSpace addrR,
       Core::Origin pos)
    {
-      if(IR::IsAddrEnclosed(addrL, addrR))
+      if(Target::IsAddrEnclosed(addrL, addrR))
       {
          // If both enclose the other, they are either the same address space, or
          // one is the generic address space and the other is the implementation
          // of the generic address space. In the latter case, return the other
          // address space in keeping with producing the most-qualified type.
-         if(IR::IsAddrEnclosed(addrR, addrL))
+         if(Target::IsAddrEnclosed(addrR, addrL))
             return addrL.base == IR::AddrBase::Gen ? addrR : addrL;
          else
             return addrL;
       }
       else
       {
-         if(IR::IsAddrEnclosed(addrR, addrL))
+         if(Target::IsAddrEnclosed(addrR, addrL))
             return addrR;
          else
             Core::Error(pos, "cannot promote disjoint address spaces");

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,14 +17,14 @@
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
-#include "IR/CallType.hpp"
 #include "IR/Glyph.hpp"
-
-#include "Platform/Platform.hpp"
 
 #include "SR/Arg.hpp"
 #include "SR/Function.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/CallType.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -82,12 +82,12 @@ namespace GDCC::CC
    void Exp_CallStk::v_genStmnt(SR::GenStmntCtx const &ctx,
       SR::Arg const &dst) const
    {
-      IR::CallType callType  = IR::GetCallTypeIR(func->getCallType());
+      IR::CallType callType  = Target::GetCallTypeIR(func->getCallType());
       Core::FastU  callWords = func->getCallWords();
       Core::FastU  retBytes;
       Core::FastU  stkWords  = 0;
       Core::FastU  vaWords   = 0;
-      Core::FastU  wordBytes = Platform::GetWordBytes();
+      Core::FastU  wordBytes = Target::GetWordBytes();
 
       bool addrPre = IsAddrPre(callType);
 
@@ -104,17 +104,17 @@ namespace GDCC::CC
          stkWords += arg->getType()->getSizeWords();
 
       // Is this a variadic call?
-      if(stkWords > func->getCallWords() && Platform::IsCallVaria(callType))
+      if(stkWords > func->getCallWords() && Target::IsCallVaria(callType))
       {
          vaWords  = stkWords - callWords;
          stkWords = callWords;
       }
 
       // Propagate stack pointer.
-      if(Platform::IsCallAutoProp(callType))
+      if(Target::IsCallAutoProp(callType))
       {
          Core::FastU autWords = ctx.fn->localAut + vaWords
-            + Platform::GetCallAutoAdd(callType);
+            + Target::GetCallAutoAdd(callType);
 
          // Ensure auto pointer is unique for longjmp checks.
          // TODO: Only ensure this for functions which use setjmp.
@@ -142,7 +142,7 @@ namespace GDCC::CC
          for(; argItr != argEnd; ++argItr)
             (*argItr)->genStmntStk(ctx);
          Core::FastU autItr =
-            (ctx.fn->localAut + Platform::GetCallAutoAdd(callType)) * wordBytes;
+            (ctx.fn->localAut + Target::GetCallAutoAdd(callType)) * wordBytes;
          for(; argItr-- != argEndStk;)
          {
             auto autBytes = (*argItr)->getType()->getSizeBytes();

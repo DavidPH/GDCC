@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -32,7 +32,7 @@
 #include "Option/Bool.hpp"
 #include "Option/CStrV.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -88,23 +88,23 @@ namespace GDCC::LD
    //
    // GetBytecodeInfo
    //
-   std::unique_ptr<BC::Info> GetBytecodeInfo(Platform::Target target,
-      Platform::Format)
+   std::unique_ptr<BC::Info> GetBytecodeInfo(Target::Engine engine,
+      Target::Format)
    {
-      switch(target)
+      switch(engine)
       {
-      case Platform::Target::None:
+      case Target::Engine::None:
          return nullptr;
 
-      case Platform::Target::Doominati:
+      case Target::Engine::Doominati:
          #if GDCC_BC_DGE
          return std::unique_ptr<BC::Info>{new BC::DGE::Info};
          #else
          return nullptr;
          #endif
 
-      case Platform::Target::ZDoom:
-      case Platform::Target::Zandronum:
+      case Target::Engine::ZDoom:
+      case Target::Engine::Zandronum:
          #if GDCC_BC_ZDACS
          return std::unique_ptr<BC::Info>{new BC::ZDACS::Info};
          #else
@@ -127,7 +127,7 @@ namespace GDCC::LD
       auto buf = Core::FileOpenStream(outName, std::ios_base::out | std::ios_base::binary);
       std::ostream out{buf.get()};
 
-      auto info = GetBytecodeInfo(Platform::TargetCur, Platform::FormatCur);
+      auto info = GetBytecodeInfo(Target::EngineCur, Target::FormatCur);
 
       if(OutputIR)
          PutIR(out, prog, info.get());

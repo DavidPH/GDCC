@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,10 +18,10 @@
 #include "CC/Exp.hpp"
 #include "CC/Type.hpp"
 
-#include "IR/CallType.hpp"
-
 #include "SR/Exp.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|

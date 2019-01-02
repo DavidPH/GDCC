@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,8 +12,9 @@
 
 #include "IRDump/Put.hpp"
 
-#include "IR/Addr.hpp"
 #include "IR/Value.hpp"
+
+#include "Target/Addr.hpp"
 
 
 //----------------------------------------------------------------------------|

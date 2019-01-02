@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,12 +21,12 @@
 #include "IR/CodeSet/Cmp.hpp"
 #include "IR/Glyph.hpp"
 
-#include "Platform/Platform.hpp"
-
 #include "SR/Exp.hpp"
 #include "SR/Function.hpp"
 #include "SR/Temporary.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -253,7 +253,7 @@ namespace GDCC::CC
    void Statement_Switch::v_genStmnt(SR::GenStmntCtx const &ctx) const
    {
       // Generate condition.
-      if(Platform::IsFamily_ZDACS() && cond->getType()->getSizeWords() == 1)
+      if(Target::IsFamily_ZDACS() && cond->getType()->getSizeWords() == 1)
          GenCond_Search_Jcnd_Tab(this, ctx);
       else
          GenCond_Search(this, ctx, GenCond_Codes(this, cond->getType()));

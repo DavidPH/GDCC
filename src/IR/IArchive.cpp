@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,9 @@
 #include "IR/IArchive.hpp"
 
 #include "Core/Exception.hpp"
+
+#include "Target/Addr.hpp"
+#include "Target/CallType.hpp"
 
 #include <cstring>
 
@@ -80,6 +83,46 @@ namespace GDCC::IR
          Core::Error({}, "invalid String: ", idx, '/', strTab.size());
 
       return *this;
+   }
+
+   //
+   // operator IArchive >> Target::AddrBase
+   //
+   IArchive &operator >> (IArchive &in, Target::AddrBase &out)
+   {
+      switch(GetIR<Core::StringIndex>(in))
+      {
+         #define GDCC_Target_AddrList(name) \
+            case Core::STR_##name: out = Target::AddrBase::name; return in;
+         #include "Target/AddrList.hpp"
+
+      default:
+         Core::Error({}, "invalid Target::AddrBase");
+      }
+   }
+
+   //
+   // operator IArchive >> Target::AddrSpace
+   //
+   IArchive &operator >> (IArchive &in, Target::AddrSpace &out)
+   {
+      return in >> out.base >> out.name;
+   }
+
+   //
+   // operator IArchive >> Target::CallType
+   //
+   IArchive &operator >> (IArchive &in, Target::CallType &out)
+   {
+      switch(GetIR<Core::String>(in))
+      {
+         #define GDCC_Target_CallTypeList(name) \
+            case Core::STR_##name: out = Target::CallType::name; return in;
+         #include "Target/CallTypeList.hpp"
+
+      default:
+         Core::Error({}, "invalid Target::CallType");
+      }
    }
 
    //

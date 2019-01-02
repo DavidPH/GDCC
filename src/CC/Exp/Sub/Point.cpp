@@ -16,10 +16,10 @@
 
 #include "IR/Block.hpp"
 
-#include "Platform/Platform.hpp"
-
 #include "SR/Temporary.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -78,7 +78,7 @@ namespace GDCC::CC
 
       if(pointWords > 1)
       {
-         auto diffBytes = (pointWords - 1) * Platform::GetWordBytes();
+         auto diffBytes = (pointWords - 1) * Target::GetWordBytes();
 
          SR::Temporary tmp{ctx, pos, 1};
 

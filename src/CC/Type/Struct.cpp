@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,7 +14,7 @@
 
 #include "IR/Type.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 #include <map>
 #include <vector>
@@ -418,13 +418,13 @@ namespace GDCC::CC
       // TODO: Should be able to generate sub-word structures for targets
       // that do not need special sub-word pointers.
 
-      Core::FastU wordBytes = Platform::GetWordBytes();
+      Core::FastU wordBytes = Target::GetWordBytes();
 
-      data.sizeAlign = Platform::GetWordAlign();
+      data.sizeAlign = Target::GetWordAlign();
       data.sizeWords = (sizeBytes + wordBytes - 1) / wordBytes;
       data.sizeBytes = data.sizeWords * wordBytes;
-      data.sizePoint = Platform::GetWordPoint() * data.sizeWords;
-      data.sizeShift = Platform::GetWordShift();
+      data.sizePoint = Target::GetWordPoint() * data.sizeWords;
+      data.sizeShift = Target::GetWordShift();
 
       data.complete = true;
    }

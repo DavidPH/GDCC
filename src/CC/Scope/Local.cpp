@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,14 +22,14 @@
 #include "IR/Exp.hpp"
 #include "IR/Linkage.hpp"
 
-#include "Platform/Platform.hpp"
-
 #include "SR/Attribute.hpp"
 #include "SR/Function.hpp"
 #include "SR/Object.hpp"
 #include "SR/Space.hpp"
 #include "SR/Storage.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -91,7 +91,7 @@ namespace GDCC::CC
       if(obj->store != SR::Storage::Auto)
          return;
 
-      IR::Type_Fixed idxType{Platform::GetWordBits(), 0, 0, 0};
+      IR::Type_Fixed idxType{Target::GetWordBits(), 0, 0, 0};
 
       auto objSpace = obj->type->getQualAddr();
 
@@ -120,7 +120,7 @@ namespace GDCC::CC
       default: return; // Any other address space is an error.
       }
 
-      Core::FastU value = *idx * Platform::GetWordBytes() / Platform::GetWordShift();
+      Core::FastU value = *idx * Target::GetWordBytes() / Target::GetWordShift();
 
       // Set object's value (index/address).
       obj->value = IR::ExpCreate_Value(IR::Value_Fixed(
@@ -135,7 +135,7 @@ namespace GDCC::CC
    //
    void Scope_Local::allocAutoSpace(AllocAutoInfo &alloc, SR::Space *space)
    {
-      IR::Type_Fixed idxType{Platform::GetWordBits(), 0, 0, 0};
+      IR::Type_Fixed idxType{Target::GetWordBits(), 0, 0, 0};
 
       // Set space's value (index/address).
       space->value = IR::ExpCreate_Value(

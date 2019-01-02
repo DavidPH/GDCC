@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -20,7 +20,7 @@
 #include "../Core/Number.hpp"
 #include "../Core/Origin.hpp"
 
-#include "../IR/Addr.hpp"
+#include "../Target/Addr.hpp"
 
 #include <vector>
 

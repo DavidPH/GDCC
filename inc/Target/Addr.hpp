@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,10 +10,10 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__IR__Addr_H__
-#define GDCC__IR__Addr_H__
+#ifndef GDCC__Target__Addr_H__
+#define GDCC__Target__Addr_H__
 
-#include "../IR/Types.hpp"
+#include "../Target/Types.hpp"
 
 #include "../Core/String.hpp"
 
@@ -22,15 +22,15 @@
 // Types                                                                      |
 //
 
-namespace GDCC::IR
+namespace GDCC::Target
 {
    //
    // AddrBase
    //
    enum class AddrBase
    {
-      #define GDCC_IR_AddrList(name) name,
-      #include "../IR/AddrList.hpp"
+      #define GDCC_Target_AddrList(name) name,
+      #include "../Target/AddrList.hpp"
    };
 
    //
@@ -61,20 +61,20 @@ namespace GDCC::IR
 namespace std
 {
    //
-   // hash<::GDCC::IR::AddrBase>
+   // hash<::GDCC::Target::AddrBase>
    //
-   template<> struct hash<::GDCC::IR::AddrBase>
+   template<> struct hash<::GDCC::Target::AddrBase>
    {
-      size_t operator () (::GDCC::IR::AddrBase base) const
+      size_t operator () (::GDCC::Target::AddrBase base) const
          {return static_cast<size_t>(base);}
    };
 
    //
-   // hash<::GDCC::IR::AddrSpace>
+   // hash<::GDCC::Target::AddrSpace>
    //
-   template<> struct hash<::GDCC::IR::AddrSpace>
+   template<> struct hash<::GDCC::Target::AddrSpace>
    {
-      size_t operator () (::GDCC::IR::AddrSpace space) const
+      size_t operator () (::GDCC::Target::AddrSpace space) const
          {return space.name.getHash() ^ static_cast<size_t>(space.base);}
    };
 }
@@ -84,19 +84,14 @@ namespace std
 // Extern Functions                                                           |
 //
 
-namespace GDCC::IR
+namespace GDCC::Target
 {
-   OArchive &operator << (OArchive &out, AddrBase  in);
-   OArchive &operator << (OArchive &out, AddrSpace in);
    std::ostream &operator << (std::ostream &out, AddrBase in);
-
-   IArchive &operator >> (IArchive &in, AddrBase  &out);
-   IArchive &operator >> (IArchive &in, AddrSpace &out);
 
    AddrSpace GetAddrGen();
 
    bool IsAddrEnclosed(AddrSpace encloser, AddrSpace enclosee);
 }
 
-#endif//GDCC__IR__Addr_H__
+#endif//GDCC__Target__Addr_H__
 

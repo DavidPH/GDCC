@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,13 +18,14 @@
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
-#include "IR/CallType.hpp"
 #include "IR/Glyph.hpp"
 
 #include "SR/Arg.hpp"
 #include "SR/Exp.hpp"
 #include "SR/Function.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/CallType.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -108,7 +109,7 @@ namespace GDCC::CC
    //
    void Statement_ReturnExp::v_genStmnt(SR::GenStmntCtx const &ctx) const
    {
-      auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
+      auto ctype = Target::GetCallTypeIR(scope.fn->ctype);
 
       exp->genStmntStk(ctx);
 
@@ -142,7 +143,7 @@ namespace GDCC::CC
    //
    void Statement_ReturnNul::v_genStmnt(SR::GenStmntCtx const &ctx) const
    {
-      auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
+      auto ctype = Target::GetCallTypeIR(scope.fn->ctype);
 
       if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
       {

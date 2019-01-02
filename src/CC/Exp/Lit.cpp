@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,14 +14,14 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/CallType.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Value.hpp"
 
-#include "Platform/Platform.hpp"
-
 #include "SR/Exp.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/CallType.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -66,9 +66,9 @@ namespace GDCC::CC
          if(base->isCTypeFunction())
          {
             IR::Value_Funct val;
-            val.vtype.callT = IR::GetCallTypeIR(base->getCallType());
+            val.vtype.callT = Target::GetCallTypeIR(base->getCallType());
 
-            if(Platform::IsZeroNull_Funct(val.vtype.callT))
+            if(Target::IsZeroNull_Funct(val.vtype.callT))
                val.value = 0;
             else
                val.value = static_cast<Core::FastU>(-1);
@@ -85,7 +85,7 @@ namespace GDCC::CC
             val.addrB = base->getQualAddr().base;
             val.addrN = base->getQualAddr().name;
 
-            if(Platform::IsZeroNull_Point(val.addrB))
+            if(Target::IsZeroNull_Point(val.addrB))
                val.value = 0;
             else
                val.value = static_cast<Core::FastU>(-1);
@@ -100,7 +100,7 @@ namespace GDCC::CC
             IR::Value_StrEn val;
             val.vtype = {};
 
-            if(Platform::IsZeroNull_StrEn())
+            if(Target::IsZeroNull_StrEn())
                val.value = 0;
             else
                val.value = static_cast<Core::FastU>(-1);
@@ -115,7 +115,7 @@ namespace GDCC::CC
             IR::Value_DJump val;
             val.vtype = {};
 
-            if(Platform::IsZeroNull_DJump())
+            if(Target::IsZeroNull_DJump())
                val.value = 0;
             else
                val.value = static_cast<Core::FastU>(-1);

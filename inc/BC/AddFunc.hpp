@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,7 +21,7 @@
 
 #include "../IR/Block.hpp"
 
-#include "../Platform/Platform.hpp"
+#include "../Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -52,7 +52,7 @@
 // GDCC_BC_AddFuncObj
 //
 #define GDCC_BC_AddFuncObj() \
-   [[maybe_unused]] Core::FastU w = Platform::GetWordBytes(); \
+   [[maybe_unused]] Core::FastU w = Target::GetWordBytes(); \
    \
    [[maybe_unused]] ::GDCC::IR::Block::Nul nul{}; \
    [[maybe_unused]] ::GDCC::IR::Block::Stk stk{}

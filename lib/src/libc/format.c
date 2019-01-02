@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2016 David Hill
+// Copyright(C) 2014-2019 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -529,7 +529,7 @@
 //
 // FormatTypeInt_k
 //
-#if __GDCC_Target__Doominati__
+#if __GDCC_Engine__Doominati__
 #define FormatTypeInt_k long
 #else
 #define FormatTypeInt_k
@@ -543,7 +543,7 @@
 //
 // FormatTypeInt_kl
 //
-#if __GDCC_Target__Doominati__
+#if __GDCC_Engine__Doominati__
 #define FormatTypeInt_kl long
 #else
 #define FormatTypeInt_kl long

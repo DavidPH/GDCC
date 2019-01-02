@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2016-2017 David Hill
+// Copyright(C) 2016-2019 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -29,7 +29,7 @@
 #include <ACS_ZDoom.h>
 #endif
 
-#if __GDCC_Target__Doominati__
+#if __GDCC_Engine__Doominati__
 #include <Doominati.h>
 #endif
 
@@ -43,7 +43,7 @@
 //
 typedef struct __cookie_file
 {
-   #if __GDCC_Target__Doominati__
+   #if __GDCC_Engine__Doominati__
    unsigned int  fd;
    unsigned long pos;
    #else
@@ -154,7 +154,7 @@ static int FILE_fn_file_close(void *cookie_)
 {
    __cookie_file *cookie = cookie_;
 
-   #if __GDCC_Target__Doominati__
+   #if __GDCC_Engine__Doominati__
    DGE_File_Close(cookie->fd);
    #endif
 
@@ -168,7 +168,7 @@ static ssize_t FILE_fn_file_read(void *cookie_, char *buf, size_t size)
 {
    __cookie_file *cookie = cookie_;
 
-   #if __GDCC_Target__Doominati__
+   #if __GDCC_Engine__Doominati__
    int read = DGE_File_Read(cookie->fd, cookie->pos, buf, size);
 
    if(read < 0)
@@ -198,7 +198,7 @@ static int FILE_fn_file_seek(void *cookie_, off_t *offset, int whence)
 {
    __cookie_file *cookie = cookie_;
 
-   #if __GDCC_Target__Doominati__
+   #if __GDCC_Engine__Doominati__
    switch(whence)
    {
    case SEEK_END:
@@ -229,7 +229,7 @@ static int FILE_fn_file_seek(void *cookie_, off_t *offset, int whence)
 //
 static ssize_t FILE_fn_stdin_read(void *cookie, char *buf, size_t size)
 {
-   #if __GDCC_Target__Doominati__
+   #if __GDCC_Engine__Doominati__
    int res;
    while((res = DGE_Shell_ReadStd(0, buf, size)) == 0)
       DGE_Task_Sleep(0, 1);
@@ -257,7 +257,7 @@ static ssize_t FILE_fn_stdout_write(void *cookie, char const *buf, size_t size)
    ACS_EndLog();
 
    return size;
-   #elif __GDCC_Target__Doominati__
+   #elif __GDCC_Engine__Doominati__
    return DGE_Shell_WriteStd(0, buf, size);
    #else
    return 0;
@@ -346,7 +346,7 @@ FILE *fopen(char const *restrict filename, char const *restrict mode)
       .close = FILE_fn_file_close,
    };
 
-   #if __GDCC_Target__Doominati__
+   #if __GDCC_Engine__Doominati__
    int fd;
    if(*mode == 'r')
    {

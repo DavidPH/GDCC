@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,9 +18,9 @@
 
 #include "IR/Block.hpp"
 
-#include "Platform/Platform.hpp"
-
 #include "SR/Type.hpp"
+
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -58,7 +58,7 @@ namespace GDCC::CC
          typeR = baseR->getTypePointer();
 
          // If null representation is different, perform inversion.
-         if(Platform::IsZeroNull_Point(addrL.base) != Platform::IsZeroNull_Point(addrR.base))
+         if(Target::IsZeroNull_Point(addrL.base) != Target::IsZeroNull_Point(addrR.base))
             return Exp_ConvertPtrInv::Create(typeR, exp, pos);
          else
             return Exp_ConvertPtr::Create(typeR, exp, pos);

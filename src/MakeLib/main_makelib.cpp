@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,7 +23,7 @@
 
 #include "Option/Bool.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 #include <iostream>
 
@@ -135,7 +135,7 @@ static void MakeLib_libc(GDCC::IR::Program &prog, bool nomath = false)
       MakeLib_CC(prog, path, "trig.c");
    }
 
-   if(GDCC::Platform::TargetCur == GDCC::Platform::Target::Doominati)
+   if(GDCC::Target::EngineCur == GDCC::Target::Engine::Doominati)
    {
       std::string pathSub = path;
       GDCC::Core::PathAppend(pathSub, "DGE");
@@ -143,7 +143,7 @@ static void MakeLib_libc(GDCC::IR::Program &prog, bool nomath = false)
       MakeLib_AS(prog, pathSub, "defs.asm");
    }
 
-   if(GDCC::Platform::IsFamily_ZDACS())
+   if(GDCC::Target::IsFamily_ZDACS())
    {
       std::string pathSub = path;
       GDCC::Core::PathAppend(pathSub, "ZDACS");

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,10 +19,10 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
-#include "Platform/Platform.hpp"
-
 #include "SR/Attribute.hpp"
 #include "SR/Exp.hpp"
+
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -125,9 +125,9 @@ namespace GDCC::CC
 
       // Bit-field information.
       Core::FastU bitsAddr = 0;
-      Core::FastU bitsAlig = Platform::GetWordAlign();
-      Core::FastU bitsSize = Platform::GetWordBytes();
-      Core::FastU bitsWord = Platform::GetWordBits();
+      Core::FastU bitsAlig = Target::GetWordAlign();
+      Core::FastU bitsSize = Target::GetWordBytes();
+      Core::FastU bitsWord = Target::GetWordBits();
 
       //
       // addrAlign

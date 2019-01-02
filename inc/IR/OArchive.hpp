@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -112,6 +112,11 @@ namespace GDCC::IR
    OArchive &operator << (OArchive &out, Core::Array<T> const &in);
 
    OArchive &operator << (OArchive &out, Core::Origin const &in);
+
+   OArchive &operator << (OArchive &out, AddrBase  in);
+   OArchive &operator << (OArchive &out, AddrSpace in);
+
+   OArchive &operator << (OArchive &out, CallType in);
 
    template<typename T1, typename T2>
    OArchive &operator << (OArchive &out, std::pair<T1, T2> const &in);

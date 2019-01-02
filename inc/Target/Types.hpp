@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2018 David Hill
+// Copyright (C) 2018-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,8 +10,8 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__Platform__Types_H__
-#define GDCC__Platform__Types_H__
+#ifndef GDCC__Target__Types_H__
+#define GDCC__Target__Types_H__
 
 #include "../Core/Types.hpp"
 
@@ -20,19 +20,15 @@
 // Types                                                                      |
 //
 
-namespace GDCC::IR
+namespace GDCC::Target
 {
    enum class AddrBase;
    enum class CallType;
+   enum class Engine;
+   enum class Format;
 
    class AddrSpace;
 }
 
-namespace GDCC::Platform
-{
-   enum class Format;
-   enum class Target;
-}
-
-#endif//GDCC__Platform__Types_H__
+#endif//GDCC__Target__Types_H__
 

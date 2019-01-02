@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,14 +16,13 @@
 #include "Core/Option.hpp"
 #include "Core/StringOption.hpp"
 
-#include "IR/CallType.hpp"
 #include "IR/Program.hpp"
 
 #include "Option/Bool.hpp"
 #include "Option/Exception.hpp"
 #include "Option/Int.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 #include <climits>
 
@@ -1045,7 +1044,7 @@ namespace GDCC::BC::ZDACS
    //
    bool Info::IsNull(IR::Value_Funct const &val)
    {
-      if(Platform::IsZeroNull_Funct(val.vtype.callT))
+      if(Target::IsZeroNull_Funct(val.vtype.callT))
          return (val.value & 0xFFFFFFFF) == 0;
       else
          return (val.value & 0xFFFFFFFF) == 0xFFFFFFFF;
@@ -1056,7 +1055,7 @@ namespace GDCC::BC::ZDACS
    //
    bool Info::IsNull(IR::Value_StrEn const &val)
    {
-      if(Platform::IsZeroNull_StrEn())
+      if(Target::IsZeroNull_StrEn())
          return (val.value & 0xFFFFFFFF) == 0;
       else
          return (val.value & 0xFFFFFFFF) == 0xFFFFFFFF;
@@ -1067,7 +1066,7 @@ namespace GDCC::BC::ZDACS
    //
    bool Info::IsNull_Funct(Core::FastU val)
    {
-      if(Platform::IsZeroNull_Funct(IR::CallType::StdCall))
+      if(Target::IsZeroNull_Funct(IR::CallType::StdCall))
          return (val & 0xFFFFFFFF) == 0;
       else
          return (val & 0xFFFFFFFF) == 0xFFFFFFFF;
@@ -1078,7 +1077,7 @@ namespace GDCC::BC::ZDACS
    //
    bool Info::IsNull_StrEn(Core::FastU val)
    {
-      if(Platform::IsZeroNull_StrEn())
+      if(Target::IsZeroNull_StrEn())
          return (val & 0xFFFFFFFF) == 0;
       else
          return (val & 0xFFFFFFFF) == 0xFFFFFFFF;

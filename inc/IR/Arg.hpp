@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,8 +13,9 @@
 #ifndef GDCC__IR__Arg_H__
 #define GDCC__IR__Arg_H__
 
-#include "../IR/Addr.hpp"
 #include "../IR/Exp.hpp"
+
+#include "../Target/Addr.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -390,9 +391,9 @@ namespace GDCC::IR
       {
          switch(a)
          {
-            #define GDCC_IR_AddrList(name) case ArgBase::name: \
+            #define GDCC_Target_AddrList(name) case ArgBase::name: \
                new(&a##name) Arg_##name(arg.a##name); break;
-            #include "../IR/AddrList.hpp"
+            #include "../Target/AddrList.hpp"
          }
       }
 
@@ -403,19 +404,19 @@ namespace GDCC::IR
       {
          switch(a)
          {
-            #define GDCC_IR_AddrList(name) case ArgBase::name: \
+            #define GDCC_Target_AddrList(name) case ArgBase::name: \
                new(&a##name) Arg_##name(std::move(arg.a##name)); break;
-            #include "../IR/AddrList.hpp"
+            #include "../Target/AddrList.hpp"
          }
       }
 
       //
       // cast constructors
       //
-      #define GDCC_IR_AddrList(name) \
+      #define GDCC_Target_AddrList(name) \
          Arg(Arg_##name const &arg) : a{ArgBase::name}, a##name(          arg ) {} \
          Arg(Arg_##name      &&arg) : a{ArgBase::name}, a##name(std::move(arg)) {}
-      #include "../IR/AddrList.hpp"
+      #include "../Target/AddrList.hpp"
 
       explicit Arg(IArchive &in);
 
@@ -426,9 +427,9 @@ namespace GDCC::IR
       {
          switch(a)
          {
-            #define GDCC_IR_AddrList(name) \
+            #define GDCC_Target_AddrList(name) \
                case ArgBase::name: a##name.~Arg_##name(); break;
-            #include "../IR/AddrList.hpp"
+            #include "../Target/AddrList.hpp"
          }
       }
 
@@ -439,9 +440,9 @@ namespace GDCC::IR
       {
          if(arg.a == a) switch(a)
          {
-            #define GDCC_IR_AddrList(name) \
+            #define GDCC_Target_AddrList(name) \
                case ArgBase::name: a##name = arg.a##name; break;
-            #include "../IR/AddrList.hpp"
+            #include "../Target/AddrList.hpp"
          }
          else
             new((this->~Arg(), this)) Arg(arg);
@@ -456,9 +457,9 @@ namespace GDCC::IR
       {
          if(arg.a == a) switch(a)
          {
-            #define GDCC_IR_AddrList(name) \
+            #define GDCC_Target_AddrList(name) \
                case ArgBase::name: a##name = std::move(arg.a##name); break;
-            #include "../IR/AddrList.hpp"
+            #include "../Target/AddrList.hpp"
          }
          else
             new((this->~Arg(), this)) Arg(std::move(arg));
@@ -469,7 +470,7 @@ namespace GDCC::IR
       //
       // cast assignments
       //
-      #define GDCC_IR_AddrList(name) \
+      #define GDCC_Target_AddrList(name) \
          Arg &operator = (Arg_##name const &arg) \
          { \
             if(a == ArgBase::name) a##name = arg; \
@@ -482,7 +483,7 @@ namespace GDCC::IR
             else new((this->~Arg(), this)) Arg(std::move(arg)); \
             return *this; \
          }
-      #include "../IR/AddrList.hpp"
+      #include "../Target/AddrList.hpp"
 
       //
       // getOffset
@@ -491,9 +492,9 @@ namespace GDCC::IR
       {
          switch(a)
          {
-            #define GDCC_IR_AddrList(name) \
+            #define GDCC_Target_AddrList(name) \
                case ArgBase::name: return a##name.getOffset(w);
-            #include "../IR/AddrList.hpp"
+            #include "../Target/AddrList.hpp"
          }
 
          return *this;
@@ -506,9 +507,9 @@ namespace GDCC::IR
       {
          switch(a)
          {
-            #define GDCC_IR_AddrList(name) \
+            #define GDCC_Target_AddrList(name) \
                case ArgBase::name: return a##name.size;
-            #include "../IR/AddrList.hpp"
+            #include "../Target/AddrList.hpp"
          }
 
          return 0;
@@ -518,8 +519,8 @@ namespace GDCC::IR
 
       union
       {
-         #define GDCC_IR_AddrList(name) Arg_##name a##name;
-         #include "../IR/AddrList.hpp"
+         #define GDCC_Target_AddrList(name) Arg_##name a##name;
+         #include "../Target/AddrList.hpp"
       };
    };
 }
@@ -534,17 +535,17 @@ namespace GDCC::IR
    bool operator == (Arg const &l, Arg const &r);
    bool operator != (Arg const &l, Arg const &r);
 
-   #define GDCC_IR_AddrList(name) \
+   #define GDCC_Target_AddrList(name) \
       inline OArchive &operator << (OArchive &out, Arg_##name const &in) \
          {return in.putIR(out);}
-   #include "../IR/AddrList.hpp"
+   #include "../Target/AddrList.hpp"
 
    OArchive &operator << (OArchive &out, Arg const &in);
 
-   #define GDCC_IR_AddrList(name) \
+   #define GDCC_Target_AddrList(name) \
       inline IArchive &operator >> (IArchive &in, Arg_##name &out) \
          {return out.getIR(in);}
-   #include "../IR/AddrList.hpp"
+   #include "../Target/AddrList.hpp"
 
    IArchive &operator >> (IArchive &in, Arg &out);
 }

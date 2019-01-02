@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,10 +12,10 @@
 
 #include "SR/Type/Pointer.hpp"
 
-#include "IR/CallType.hpp"
 #include "IR/Type.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/CallType.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -57,7 +57,7 @@ namespace GDCC::SR
    IR::Type Type_PtrBase::getIRType() const
    {
       if(base->isTypeFunction())
-         return IR::Type_Funct(IR::GetCallTypeIR(base->getCallType()));
+         return IR::Type_Funct(Target::GetCallTypeIR(base->getCallType()));
 
       if(base->isTypeLabel())
          return IR::Type_DJump();
@@ -68,7 +68,7 @@ namespace GDCC::SR
       // Map Gen for IR.
       auto addr = base->getQualAddr();
       if(addr.base == IR::AddrBase::Gen)
-         addr = IR::GetAddrGen();
+         addr = Target::GetAddrGen();
 
       // If underlying type is incomplete, don't fail to generate IR type.
       Core::FastU sizePoint = 0;
@@ -89,7 +89,7 @@ namespace GDCC::SR
    //
    Core::FastU Type_PtrBase::getSizeAlign() const
    {
-      return Platform::GetWordAlign();
+      return Target::GetWordAlign();
    }
 
    //
@@ -97,7 +97,7 @@ namespace GDCC::SR
    //
    Core::FastU Type_PtrBase::getSizeBytes() const
    {
-      return getSizeWords() * Platform::GetWordBytes();
+      return getSizeWords() * Target::GetWordBytes();
    }
 
    //
@@ -113,7 +113,7 @@ namespace GDCC::SR
    //
    Core::FastU Type_PtrBase::getSizeShift() const
    {
-      return Platform::GetWordShift();
+      return Target::GetWordShift();
    }
 
    //

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,7 +16,7 @@
 
 #include "IR/Type.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -153,7 +153,7 @@ namespace GDCC::SR
    //
    Exp::CRef Type_ArrVM::getSizeWordsVM() const
    {
-      auto wordBytes = Platform::GetWordBytes();
+      auto wordBytes = Target::GetWordBytes();
 
       if(wordBytes == 1)
          return ExpCreate_MulSize(size, base->getSizeWordsVM());
@@ -283,7 +283,7 @@ namespace GDCC::SR
    //
    Core::FastU Type_Array::getSizeWords() const
    {
-      auto wordBytes = Platform::GetWordBytes();
+      auto wordBytes = Target::GetWordBytes();
 
       if(wordBytes == 1)
          return getSizeBytes();
@@ -296,7 +296,7 @@ namespace GDCC::SR
    //
    Exp::CRef Type_Array::getSizeWordsVM() const
    {
-      auto wordBytes = Platform::GetWordBytes();
+      auto wordBytes = Target::GetWordBytes();
 
       if(wordBytes == 1)
          return ExpCreate_MulSize(base->getSizeWordsVM(), ExpCreate_Size(size));

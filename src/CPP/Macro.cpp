@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,7 +23,7 @@
 #include "Option/Exception.hpp"
 #include "Option/Function.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 #include <climits>
 #include <cstring>
@@ -487,10 +487,10 @@ namespace GDCC::CPP
          InsertN(name, Core::STR_1)
 
       #define FamilyCheck(e, n) \
-         if(Platform::Is##e##_##n()) Insert1("__GDCC_" #e "__" #n "__")
+         if(Target::Is##e##_##n()) Insert1("__GDCC_" #e "__" #n "__")
 
-      #define PlatformCase(e, n) \
-         case Platform::e::n: Insert1("__GDCC_" #e "__" #n "__"); break
+      #define TargetCase(e, n) \
+         case Target::e::n: Insert1("__GDCC_" #e "__" #n "__"); break
 
       // __GDCC__
       Insert1("__GDCC__");
@@ -499,20 +499,20 @@ namespace GDCC::CPP
       FamilyCheck(Family, ZDACS);
 
       // Set up __GDCC_Format__*__.
-      switch(Platform::FormatCur)
+      switch(Target::FormatCur)
       {
-         PlatformCase(Format, None);
-         PlatformCase(Format, ACSE);
-         PlatformCase(Format, DGE_NTS);
+         TargetCase(Format, None);
+         TargetCase(Format, ACSE);
+         TargetCase(Format, DGE_NTS);
       }
 
-      // Set up __GDCC_Target__*__.
-      switch(Platform::TargetCur)
+      // Set up __GDCC_Engine__*__.
+      switch(Target::EngineCur)
       {
-         PlatformCase(Target, None);
-         PlatformCase(Target, Doominati);
-         PlatformCase(Target, ZDoom);
-         PlatformCase(Target, Zandronum);
+         TargetCase(Engine, None);
+         TargetCase(Engine, Doominati);
+         TargetCase(Engine, ZDoom);
+         TargetCase(Engine, Zandronum);
       }
 
       // __STDC__
@@ -527,7 +527,7 @@ namespace GDCC::CPP
       // __STDC_VERSION__
       InsertN("__STDC_VERSION__", "201112L");
 
-      #undef PlatformCase
+      #undef TargetCase
       #undef FamilyCheck
       #undef Insert1
       #undef InsertN

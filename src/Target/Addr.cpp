@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,10 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IR/Addr.hpp"
-
-#include "IR/IArchive.hpp"
-#include "IR/OArchive.hpp"
+#include "Target/Addr.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -22,31 +19,8 @@
 // Extern Functions                                                           |
 //
 
-namespace GDCC::IR
+namespace GDCC::Target
 {
-   //
-   // operator OArchive << AddrBase
-   //
-   OArchive &operator << (OArchive &out, AddrBase in)
-   {
-      switch(in)
-      {
-         #define GDCC_IR_AddrList(name) \
-            case AddrBase::name: return out << Core::STR_##name;
-         #include "IR/AddrList.hpp"
-      }
-
-      Core::Error({}, "invalid enum GDCC::IR::AddrBase");
-   }
-
-   //
-   // operator OArchive << AddrSpace
-   //
-   OArchive &operator << (OArchive &out, AddrSpace in)
-   {
-      return out << in.base << in.name;
-   }
-
    //
    // operator std::ostream << AddrBase
    //
@@ -54,36 +28,12 @@ namespace GDCC::IR
    {
       switch(in)
       {
-         #define GDCC_IR_AddrList(name) \
+         #define GDCC_Target_AddrList(name) \
             case AddrBase::name: return out << #name;
-         #include "IR/AddrList.hpp"
+         #include "Target/AddrList.hpp"
       }
 
-      Core::Error({}, "invalid enum GDCC::IR::AddrBase");
-   }
-
-   //
-   // operator IArchive >> AddrBase
-   //
-   IArchive &operator >> (IArchive &in, AddrBase &out)
-   {
-      switch(GetIR<Core::StringIndex>(in))
-      {
-         #define GDCC_IR_AddrList(name) \
-            case Core::STR_##name: out = AddrBase::name; return in;
-         #include "IR/AddrList.hpp"
-
-      default:
-         Core::Error({}, "invalid AddrBase");
-      }
-   }
-
-   //
-   // operator IArchive >> AddrSpace
-   //
-   IArchive &operator >> (IArchive &in, AddrSpace &out)
-   {
-      return in >> out.base >> out.name;
+      Core::Error({}, "invalid enum GDCC::Target::AddrBase");
    }
 
    //

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,8 +22,8 @@
 #include "../../Core/Number.hpp"
 #include "../../Core/NumberAlloc.hpp"
 
-#include "../../IR/Addr.hpp"
-#include "../../IR/CallType.hpp"
+#include "../../Target/Addr.hpp"
+#include "../../Target/CallType.hpp"
 
 #include <unordered_map>
 

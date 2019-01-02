@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,7 +14,7 @@
 
 #include "IR/Type.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -179,7 +179,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Fixed::getSizeAlign() const
    {
-      return Platform::GetWordAlign();
+      return Target::GetWordAlign();
    }
 
    //
@@ -187,7 +187,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Fixed::getSizeBitsF() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return size <= 1 ? 16 : 32;
 
       return size <= 1 ? (8 << size) - 1 : 32;
@@ -198,7 +198,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Fixed::getSizeBitsI() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return (size <= 1 ? 15 : 31) + unsi;
 
       return (size <= 1 ? (24 << size) : 63) + unsi;
@@ -209,10 +209,10 @@ namespace GDCC::CC
    //
    Core::FastU Type_Fixed::getSizeBytes() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return size <= 1 ? 1 : 2;
 
-      return (size + 1) * Platform::GetWordBytes();
+      return (size + 1) * Target::GetWordBytes();
    }
 
    //
@@ -220,10 +220,10 @@ namespace GDCC::CC
    //
    Core::FastU Type_Fixed::getSizePoint() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return size <= 1 ? 1 : 2;
 
-      return (size + 1) * Platform::GetWordPoint();
+      return (size + 1) * Target::GetWordPoint();
    }
 
    //
@@ -239,7 +239,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Fixed::getSizeWords() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return size <= 1 ? 1 : 2;
 
       return size + 1;
@@ -298,7 +298,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Fract::getSizeAlign() const
    {
-      return Platform::GetWordAlign();
+      return Target::GetWordAlign();
    }
 
    //
@@ -314,7 +314,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Fract::getSizeBytes() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return 1;
 
       return 1 << size;
@@ -325,7 +325,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Fract::getSizePoint() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return 1;
 
       return 1 << size;
@@ -360,7 +360,7 @@ namespace GDCC::CC
    //
    bool Type_Fract::isTypeSubWord() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return false;
 
       return size < 2;
@@ -404,10 +404,10 @@ namespace GDCC::CC
    //
    Core::FastU Type_Integ::getSizeAlign() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return 1;
 
-      return size <= 1 ? 1 << size : Platform::GetWordAlign();
+      return size <= 1 ? 1 << size : Target::GetWordAlign();
    }
 
    //
@@ -415,7 +415,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Integ::getSizeBitsI() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return IntegTable_SizeBitsI_ZDACS[size] - sign;
 
       return (size <= 3 ? 8 << size : 96) - sign;
@@ -426,7 +426,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Integ::getSizeBytes() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return IntegTable_SizeBytes_ZDACS[size];
 
       return size <= 3 ? 1 << size : 12;
@@ -437,7 +437,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Integ::getSizePoint() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return IntegTable_SizeBytes_ZDACS[size];
 
       return size <= 3 ? 1 << size : 12;
@@ -456,7 +456,7 @@ namespace GDCC::CC
    //
    Core::FastU Type_Integ::getSizeWords() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return IntegTable_SizeBytes_ZDACS[size] ;
 
       return size <= 2 ? 1 : size - 1;
@@ -475,7 +475,7 @@ namespace GDCC::CC
    //
    bool Type_Integ::isTypeSubWord() const
    {
-      if(Platform::IsFamily_ZDACS())
+      if(Target::IsFamily_ZDACS())
          return false;
 
       return size < 2;

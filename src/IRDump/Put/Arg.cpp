@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -92,9 +92,9 @@ namespace GDCC::IRDump
 
       switch(arg.a)
       {
-         #define GDCC_IR_AddrList(name) case IR::ArgBase::name: \
+         #define GDCC_Target_AddrList(name) case IR::ArgBase::name: \
             PutArgPart(out, arg.a##name); break;
-         #include "IR/AddrList.hpp"
+         #include "Target/AddrList.hpp"
       }
 
       out << ')';

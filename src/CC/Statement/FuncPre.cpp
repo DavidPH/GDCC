@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,14 +17,14 @@
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
-#include "IR/CallType.hpp"
-
-#include "Platform/Platform.hpp"
 
 #include "SR/Exp.hpp"
 #include "SR/Function.hpp"
 #include "SR/Object.hpp"
 #include "SR/Type.hpp"
+
+#include "Target/CallType.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -40,8 +40,8 @@ namespace GDCC::CC
    static void MoveParam(SR::GenStmntCtx const &ctx, Core::FastU paramIdx,
       Core::FastU objValue, Core::FastU objBytes)
    {
-      IR::Arg_Lit dstIdx{Platform::GetWordBytes(), SR::ExpCreate_Size(objValue)->getIRExp()};
-      IR::Arg_Lit srcIdx{Platform::GetWordBytes(), SR::ExpCreate_Size(paramIdx)->getIRExp()};
+      IR::Arg_Lit dstIdx{Target::GetWordBytes(), SR::ExpCreate_Size(objValue)->getIRExp()};
+      IR::Arg_Lit srcIdx{Target::GetWordBytes(), SR::ExpCreate_Size(paramIdx)->getIRExp()};
 
       ctx.block.addStmnt(IR::Code::Move,
          ArgT(objBytes, dstIdx), IR::Arg_LocReg(objBytes, srcIdx));
@@ -77,13 +77,13 @@ namespace GDCC::CC
    //
    void Statement_FuncPre::v_genStmnt(SR::GenStmntCtx const &ctx) const
    {
-      auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
+      auto ctype = Target::GetCallTypeIR(scope.fn->ctype);
 
       // Move parameter data to actual storage location.
       Core::FastU paramIdx = 0;
 
-      if(Platform::IsCallAutoProp(ctype))
-         paramIdx += Platform::GetWordBytes();
+      if(Target::IsCallAutoProp(ctype))
+         paramIdx += Target::GetWordBytes();
 
       for(auto const &obj : scope.params)
       {
@@ -122,7 +122,7 @@ namespace GDCC::CC
    //
    void Statement_FuncPro::v_genStmnt(SR::GenStmntCtx const &ctx) const
    {
-      auto ctype = IR::GetCallTypeIR(scope.fn->ctype);
+      auto ctype = Target::GetCallTypeIR(scope.fn->ctype);
 
       // Add label for exit point. Unless it was never generated and is
       // therefore unused.

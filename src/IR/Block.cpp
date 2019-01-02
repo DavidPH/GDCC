@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,7 +16,7 @@
 #include "IR/IArchive.hpp"
 #include "IR/OArchive.hpp"
 
-#include "Platform/Platform.hpp"
+#include "Target/Info.hpp"
 
 #include <climits>
 
@@ -111,7 +111,7 @@ namespace GDCC::IR
    //
    Block &Block::setArgSize()
    {
-      argSize = Platform::GetWordBytes();
+      argSize = Target::GetWordBytes();
       return *this;
    }
 
