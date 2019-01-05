@@ -22,6 +22,7 @@
 #include "Core/TokenStream.hpp"
 
 #include "IR/Exp.hpp"
+#include "IR/Glyph.hpp"
 #include "IR/Linkage.hpp"
 
 #include "SR/Attribute.hpp"
@@ -39,46 +40,60 @@
 namespace GDCC::ACC
 {
    //
+   // ParseAddressValue
+   //
+   static void ParseAddressValue(IR::Exp::CPtr &addrI, Core::String *addrS, Parser &ctx, CC::Scope &scope)
+   {
+      // special-address-value:
+      //    integer-literal
+      //    string-literal
+
+      if(ctx.in.peek(Core::TOK_NumInt))
+         addrI = ctx.getExp_Prim(scope)->getIRExp();
+
+      else if(ctx.in.peek().isTokString())
+      {
+         auto tok = ctx.in.get();
+         if(addrS)
+            *addrS = tok.str;
+         else
+            addrI = IR::ExpCreate_Glyph({ctx.prog, tok.str}, tok.pos);
+      }
+      else
+         Core::ErrorExpect("special-address-value", ctx.in.peek());
+   }
+
+   //
    // ParseAddress
    //
    static void ParseAddress(Parser &ctx, CC::Scope &scope, SR::Attribute &attr)
    {
       // special-address:
-      //    integer-constant :
-      //    - integer-constant :
-      //    { integer-constant } :
-      //    { integer-constant , integer-constant } :
-      if(ctx.in.peek(Core::TOK_NumInt))
-      {
-         attr.callt = IR::CallType::Special;
-         attr.addrI = ctx.getExp_Prim(scope)->getIRExp();
-      }
-      else if(ctx.in.drop(Core::TOK_Sub))
+      //    special-address-value :
+      //    - special-address-value :
+      //    { special-address-value } :
+      //    { special-address-value , special-address-value } :
+      if(ctx.in.drop(Core::TOK_Sub))
       {
          attr.callt = IR::CallType::Native;
-         attr.addrI = ctx.getExp_Prim(scope)->getIRExp();
+         ParseAddressValue(attr.addrI, &attr.addrS, ctx, scope);
       }
       else if(ctx.in.drop(Core::TOK_BraceO))
       {
          attr.callt = IR::CallType::AsmFunc;
 
-         if(!ctx.in.peek(Core::TOK_NumInt))
-            Core::ErrorExpect("integer-constant", ctx.in.peek());
-
-         attr.addrI = ctx.getExp_Prim(scope)->getIRExp();
+         ParseAddressValue(attr.addrI, &attr.addrS, ctx, scope);
 
          if(ctx.in.drop(Core::TOK_Comma))
-         {
-            if(!ctx.in.peek(Core::TOK_NumInt))
-               Core::ErrorExpect("integer-constant", ctx.in.peek());
-
-            attr.addrL = ctx.getExp_Prim(scope)->getIRExp();
-         }
+            ParseAddressValue(attr.addrL, nullptr, ctx, scope);
 
          ctx.expect(Core::TOK_BraceC);
       }
       else
-         Core::ErrorExpect("special-address", ctx.in.peek());
+      {
+         attr.callt = IR::CallType::Special;
+         ParseAddressValue(attr.addrI, &attr.addrS, ctx, scope);
+      }
 
       ctx.expect(Core::TOK_Colon);
    }
@@ -89,9 +104,9 @@ namespace GDCC::ACC
    static void ParseParameters(Parser &ctx, CC::Scope &scope, SR::Attribute &attr)
    {
       // special-parameters:
-      //    integer-constant
-      //    integer-constant , integer-constant
-      //    integer-constant , parameter-type-list
+      //    integer-literal
+      //    integer-literal , integer-literal
+      //    integer-literal , parameter-type-list
       //    parameter-type-list
       if(ctx.in.peek(Core::TOK_NumInt))
       {
@@ -197,6 +212,9 @@ namespace GDCC::ACC
 
          if(attr.addrI)
             fn->valueInt = attr.addrI;
+
+         if(attr.addrS)
+            fn->valueStr = attr.addrS;
 
          if(attr.addrL)
             fn->valueLit = attr.addrL;

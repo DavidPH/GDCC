@@ -122,11 +122,14 @@ Syntax:
     type-name special-address identifier ( special-parameters )
 
   special-address: add
-    { integer-constant } :
-    { integer-constant , integer-constant } :
+    { special-address-value } :
+    { special-address-value , special-address-value } :
+
+  special-address-value: add
+    string-literal
 
   special-parameters: add
-    integer-constant , parameter-type-list
+    integer-literal , parameter-type-list
     parameter-type-list
 
 ===========================================================

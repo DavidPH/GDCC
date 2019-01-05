@@ -593,8 +593,11 @@ Syntax:
     special-address identifier ( special-parameters )
 
   special-address:
-    integer-literal :
-    - integer-literal :
+    special-address-value :
+    - special-address-value :
+
+  special-address-value:
+    integer-literal
 
   special-parameters:
     integer-literal

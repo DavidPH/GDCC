@@ -22,6 +22,8 @@
 
 #include "Option/Bool.hpp"
 
+#include "Target/CallType.hpp"
+
 #include <cstdio>
 
 
@@ -239,6 +241,15 @@ namespace GDCC::BC::DGE
    //
    void Info::putFunc()
    {
+      if(func->ctype == IR::CallType::Native && func->valueStr)
+      {
+         putNTS("define");
+         putNTS(func->glyph);
+         putNTS('=');
+         putNTS(func->valueStr);
+         putNTS(';');
+      }
+
       if(!func->defin) return;
 
       // Put the function header.
