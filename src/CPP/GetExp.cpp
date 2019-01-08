@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,7 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "CPP/GetExpIR.hpp"
+#include "CPP/GetExp.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/Parse.hpp"
@@ -129,9 +129,9 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_Prim_NumInt
+   // GetExp_Prim_NumInt
    //
-   static IR::Exp::CRef GetExpIR_Prim_NumInt(Core::Token const &tok)
+   static IR::Exp::CRef GetExp_Prim_NumInt(Core::Token const &tok)
    {
       char const *itr = tok.str.begin();
       unsigned base;
@@ -160,9 +160,9 @@ namespace GDCC::CPP
 namespace GDCC::CPP
 {
    //
-   // GetExpIR_Prim_NumFix
+   // GetExp_Prim_NumFix
    //
-   IR::Exp::CRef GetExpIR_Prim_NumFix(Core::Token const &tok)
+   IR::Exp::CRef GetExp_Prim_NumFix(Core::Token const &tok)
    {
       char const *itr = tok.str.begin();
       unsigned base;
@@ -209,9 +209,9 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_Prim_NumFlt
+   // GetExp_Prim_NumFlt
    //
-   IR::Exp::CRef GetExpIR_Prim_NumFlt(Core::Token const &tok)
+   IR::Exp::CRef GetExp_Prim_NumFlt(Core::Token const &tok)
    {
       char const *itr = tok.str.begin();
       unsigned base;
@@ -230,9 +230,9 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_Prim
+   // GetExp_Prim
    //
-   IR::Exp::CRef GetExpIR_Prim(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_Prim(Core::TokenStream &in)
    {
       auto tok = in.get(); switch(tok.tok)
       {
@@ -241,19 +241,19 @@ namespace GDCC::CPP
             IR::Value_Fixed(*tok.str.begin(), TypeIntMax()), tok.pos);
 
       case Core::TOK_NumFix:
-         return GetExpIR_Prim_NumFix(tok);
+         return GetExp_Prim_NumFix(tok);
 
       case Core::TOK_NumFlt:
-         return GetExpIR_Prim_NumFlt(tok);
+         return GetExp_Prim_NumFlt(tok);
 
       case Core::TOK_NumInt:
-         return GetExpIR_Prim_NumInt(tok);
+         return GetExp_Prim_NumInt(tok);
 
       case Core::TOK_String:
          Core::Error(tok.pos, "string-literal in constant-expression");
 
       case Core::TOK_ParenO:
-         if(auto exp = GetExpIR(in); (tok = in.get()).tok == Core::TOK_ParenC)
+         if(auto exp = GetExp(in); (tok = in.get()).tok == Core::TOK_ParenC)
             return exp;
 
          Core::ErrorExpect(")", tok, true);
@@ -264,11 +264,11 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_Post
+   // GetExp_Post
    //
-   IR::Exp::CRef GetExpIR_Post(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_Post(Core::TokenStream &in)
    {
-      IR::Exp::CRef e = GetExpIR_Prim(in);
+      IR::Exp::CRef e = GetExp_Prim(in);
 
       for(Core::Token tok;;) switch((tok = in.get()).tok)
       {
@@ -295,14 +295,14 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_Unar
+   // GetExp_Unar
    //
-   IR::Exp::CRef GetExpIR_Unar(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_Unar(Core::TokenStream &in)
    {
       auto tok = in.get(); switch(tok.tok)
       {
       case Core::TOK_Add:
-         return GetExpIR_Unar(in);
+         return GetExp_Unar(in);
 
       case Core::TOK_Add2:
          Core::Error(tok.pos, "increment in constant-expression");
@@ -311,46 +311,46 @@ namespace GDCC::CPP
          Core::Error(tok.pos, "address-of in constant-expression");
 
       case Core::TOK_Inv:
-         return IR::ExpCreate_Inv(GetExpIR_Unar(in), tok.pos);
+         return IR::ExpCreate_Inv(GetExp_Unar(in), tok.pos);
 
       case Core::TOK_Mul:
          Core::Error(tok.pos, "indirection in constant-expression");
 
       case Core::TOK_Not:
          return IR::ExpCreate_Cst(TypeIntMax(),
-            IR::ExpCreate_Not(GetExpIR_Unar(in), tok.pos));
+            IR::ExpCreate_Not(GetExp_Unar(in), tok.pos));
 
       case Core::TOK_Sub:
-         return IR::ExpCreate_Neg(GetExpIR_Unar(in), tok.pos);
+         return IR::ExpCreate_Neg(GetExp_Unar(in), tok.pos);
 
       case Core::TOK_Sub2:
          Core::Error(tok.pos, "decrement in constant-expression");
 
-      default: in.unget(); return GetExpIR_Post(in);
+      default: in.unget(); return GetExp_Post(in);
       }
    }
 
    //
-   // GetExpIR_Mult
+   // GetExp_Mult
    //
-   IR::Exp::CRef GetExpIR_Mult(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_Mult(Core::TokenStream &in)
    {
-      IR::Exp::CRef l = GetExpIR_Unar(in); IR::Exp::CPtr r;
+      IR::Exp::CRef l = GetExp_Unar(in); IR::Exp::CPtr r;
 
       for(Core::Token tok;;) switch((tok = in.get()).tok)
       {
       case Core::TOK_Div:
-         std::tie(l, r) = Promote(l, GetExpIR_Unar(in));
+         std::tie(l, r) = Promote(l, GetExp_Unar(in));
          l = IR::ExpCreate_Div(l, r, tok.pos);
          break;
 
       case Core::TOK_Mod:
-         std::tie(l, r) = Promote(l, GetExpIR_Unar(in));
+         std::tie(l, r) = Promote(l, GetExp_Unar(in));
          l = IR::ExpCreate_Mod(l, r, tok.pos);
          break;
 
       case Core::TOK_Mul:
-         std::tie(l, r) = Promote(l, GetExpIR_Unar(in));
+         std::tie(l, r) = Promote(l, GetExp_Unar(in));
          l = IR::ExpCreate_Mul(l, r, tok.pos);
          break;
 
@@ -359,21 +359,21 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_Addi
+   // GetExp_Addi
    //
-   IR::Exp::CRef GetExpIR_Addi(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_Addi(Core::TokenStream &in)
    {
-      IR::Exp::CRef l = GetExpIR_Mult(in); IR::Exp::CPtr r;
+      IR::Exp::CRef l = GetExp_Mult(in); IR::Exp::CPtr r;
 
       for(Core::Token tok;;) switch((tok = in.get()).tok)
       {
       case Core::TOK_Add:
-         std::tie(l, r) = Promote(l, GetExpIR_Mult(in));
+         std::tie(l, r) = Promote(l, GetExp_Mult(in));
          l = IR::ExpCreate_Add(l, r, tok.pos);
          break;
 
       case Core::TOK_Sub:
-         std::tie(l, r) = Promote(l, GetExpIR_Mult(in));
+         std::tie(l, r) = Promote(l, GetExp_Mult(in));
          l = IR::ExpCreate_Sub(l, r, tok.pos);
          break;
 
@@ -382,20 +382,20 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_Shft
+   // GetExp_Shft
    //
-   IR::Exp::CRef GetExpIR_Shft(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_Shft(Core::TokenStream &in)
    {
-      IR::Exp::CRef l = GetExpIR_Addi(in);
+      IR::Exp::CRef l = GetExp_Addi(in);
 
       for(Core::Token tok;;) switch((tok = in.get()).tok)
       {
       case Core::TOK_ShL:
-         l = IR::ExpCreate_ShL(l, GetExpIR_Addi(in), tok.pos);
+         l = IR::ExpCreate_ShL(l, GetExp_Addi(in), tok.pos);
          break;
 
       case Core::TOK_ShR:
-         l = IR::ExpCreate_ShR(l, GetExpIR_Addi(in), tok.pos);
+         l = IR::ExpCreate_ShR(l, GetExp_Addi(in), tok.pos);
          break;
 
       default: in.unget(); return l;
@@ -403,34 +403,34 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_Rela
+   // GetExp_Rela
    //
-   IR::Exp::CRef GetExpIR_Rela(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_Rela(Core::TokenStream &in)
    {
-      IR::Exp::CRef l = GetExpIR_Shft(in); IR::Exp::CPtr r;
+      IR::Exp::CRef l = GetExp_Shft(in); IR::Exp::CPtr r;
 
       for(Core::Token tok;;) switch((tok = in.get()).tok)
       {
       case Core::TOK_CmpGE:
-         std::tie(l, r) = Promote(l, GetExpIR_Shft(in));
+         std::tie(l, r) = Promote(l, GetExp_Shft(in));
          l = IR::ExpCreate_Cst(TypeIntMax(),
             IR::ExpCreate_CmpGE(l, r, tok.pos));
          break;
 
       case Core::TOK_CmpGT:
-         std::tie(l, r) = Promote(l, GetExpIR_Shft(in));
+         std::tie(l, r) = Promote(l, GetExp_Shft(in));
          l = IR::ExpCreate_Cst(TypeIntMax(),
             IR::ExpCreate_CmpGT(l, r, tok.pos));
          break;
 
       case Core::TOK_CmpLE:
-         std::tie(l, r) = Promote(l, GetExpIR_Shft(in));
+         std::tie(l, r) = Promote(l, GetExp_Shft(in));
          l = IR::ExpCreate_Cst(TypeIntMax(),
             IR::ExpCreate_CmpLE(l, r, tok.pos));
          break;
 
       case Core::TOK_CmpLT:
-         std::tie(l, r) = Promote(l, GetExpIR_Shft(in));
+         std::tie(l, r) = Promote(l, GetExp_Shft(in));
          l = IR::ExpCreate_Cst(TypeIntMax(),
             IR::ExpCreate_CmpLT(l, r, tok.pos));
          break;
@@ -440,22 +440,22 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_Equa
+   // GetExp_Equa
    //
-   IR::Exp::CRef GetExpIR_Equa(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_Equa(Core::TokenStream &in)
    {
-      IR::Exp::CRef l = GetExpIR_Rela(in); IR::Exp::CPtr r;
+      IR::Exp::CRef l = GetExp_Rela(in); IR::Exp::CPtr r;
 
       for(Core::Token tok;;) switch((tok = in.get()).tok)
       {
       case Core::TOK_CmpEQ:
-         std::tie(l, r) = Promote(l, GetExpIR_Rela(in));
+         std::tie(l, r) = Promote(l, GetExp_Rela(in));
          l = IR::ExpCreate_Cst(TypeIntMax(),
             IR::ExpCreate_CmpEQ(l, r, tok.pos));
          break;
 
       case Core::TOK_CmpNE:
-         std::tie(l, r) = Promote(l, GetExpIR_Rela(in));
+         std::tie(l, r) = Promote(l, GetExp_Rela(in));
          l = IR::ExpCreate_Cst(TypeIntMax(),
             IR::ExpCreate_CmpNE(l, r, tok.pos));
          break;
@@ -465,16 +465,16 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_BAnd
+   // GetExp_BAnd
    //
-   IR::Exp::CRef GetExpIR_BAnd(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_BAnd(Core::TokenStream &in)
    {
-      IR::Exp::CRef l = GetExpIR_Equa(in); IR::Exp::CPtr r;
+      IR::Exp::CRef l = GetExp_Equa(in); IR::Exp::CPtr r;
 
       for(Core::Token tok;;) switch((tok = in.get()).tok)
       {
       case Core::TOK_And:
-         std::tie(l, r) = Promote(l, GetExpIR_Equa(in));
+         std::tie(l, r) = Promote(l, GetExp_Equa(in));
          l = IR::ExpCreate_BitAnd(l, r, tok.pos);
          break;
 
@@ -483,16 +483,16 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_BOrX
+   // GetExp_BOrX
    //
-   IR::Exp::CRef GetExpIR_BOrX(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_BOrX(Core::TokenStream &in)
    {
-      IR::Exp::CRef l = GetExpIR_BAnd(in); IR::Exp::CPtr r;
+      IR::Exp::CRef l = GetExp_BAnd(in); IR::Exp::CPtr r;
 
       for(Core::Token tok;;) switch((tok = in.get()).tok)
       {
       case Core::TOK_OrX:
-         std::tie(l, r) = Promote(l, GetExpIR_BAnd(in));
+         std::tie(l, r) = Promote(l, GetExp_BAnd(in));
          l = IR::ExpCreate_BitOrX(l, r, tok.pos);
          break;
 
@@ -501,16 +501,16 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_BOrI
+   // GetExp_BOrI
    //
-   IR::Exp::CRef GetExpIR_BOrI(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_BOrI(Core::TokenStream &in)
    {
-      IR::Exp::CRef l = GetExpIR_BOrX(in); IR::Exp::CPtr r;
+      IR::Exp::CRef l = GetExp_BOrX(in); IR::Exp::CPtr r;
 
       for(Core::Token tok;;) switch((tok = in.get()).tok)
       {
       case Core::TOK_OrI:
-         std::tie(l, r) = Promote(l, GetExpIR_BOrX(in));
+         std::tie(l, r) = Promote(l, GetExp_BOrX(in));
          l = IR::ExpCreate_BitOrI(l, r, tok.pos);
          break;
 
@@ -519,17 +519,17 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_LAnd
+   // GetExp_LAnd
    //
-   IR::Exp::CRef GetExpIR_LAnd(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_LAnd(Core::TokenStream &in)
    {
-      IR::Exp::CRef l = GetExpIR_BOrI(in);
+      IR::Exp::CRef l = GetExp_BOrI(in);
 
       for(Core::Token tok;;) switch((tok = in.get()).tok)
       {
       case Core::TOK_And2:
          l = IR::ExpCreate_Cst(TypeIntMax(),
-            IR::ExpCreate_LogAnd(l, GetExpIR_BOrI(in), tok.pos));
+            IR::ExpCreate_LogAnd(l, GetExp_BOrI(in), tok.pos));
          break;
 
       default: in.unget(); return l;
@@ -537,17 +537,17 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_LOrI
+   // GetExp_LOrI
    //
-   IR::Exp::CRef GetExpIR_LOrI(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_LOrI(Core::TokenStream &in)
    {
-      IR::Exp::CRef l = GetExpIR_LAnd(in);
+      IR::Exp::CRef l = GetExp_LAnd(in);
 
       for(Core::Token tok;;) switch((tok = in.get()).tok)
       {
       case Core::TOK_OrI2:
          l = IR::ExpCreate_Cst(TypeIntMax(),
-            IR::ExpCreate_LogOrI(l, GetExpIR_LAnd(in), tok.pos));
+            IR::ExpCreate_LogOrI(l, GetExp_LAnd(in), tok.pos));
          break;
 
       default: in.unget(); return l;
@@ -555,21 +555,21 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_Cond
+   // GetExp_Cond
    //
-   IR::Exp::CRef GetExpIR_Cond(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_Cond(Core::TokenStream &in)
    {
-      IR::Exp::CRef c = GetExpIR_LOrI(in); IR::Exp::CPtr l, r;
+      IR::Exp::CRef c = GetExp_LOrI(in); IR::Exp::CPtr l, r;
 
       auto tok = in.get(); switch(tok.tok)
       {
       case Core::TOK_Query:
-         l = GetExpIR(in);
+         l = GetExp(in);
 
          if(!in.drop(Core::TOK_Colon))
             Core::ErrorExpect(":", in.peek(), true);
 
-         std::tie(l, r) = Promote(l, GetExpIR_Cond(in));
+         std::tie(l, r) = Promote(l, GetExp_Cond(in));
          return IR::ExpCreate_Cnd(c, l, r, tok.pos);
 
       default: in.unget(); return c;
@@ -577,11 +577,11 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR_Assi
+   // GetExp_Assi
    //
-   IR::Exp::CRef GetExpIR_Assi(Core::TokenStream &in)
+   IR::Exp::CRef GetExp_Assi(Core::TokenStream &in)
    {
-      IR::Exp::CRef l = GetExpIR_Cond(in);
+      IR::Exp::CRef l = GetExp_Cond(in);
 
       auto tok = in.get(); switch(tok.tok)
       {
@@ -603,14 +603,14 @@ namespace GDCC::CPP
    }
 
    //
-   // GetExpIR
+   // GetExp
    //
-   IR::Exp::CRef GetExpIR(Core::TokenStream &in)
+   IR::Exp::CRef GetExp(Core::TokenStream &in)
    {
-      IR::Exp::CRef e = GetExpIR_Assi(in);
+      IR::Exp::CRef e = GetExp_Assi(in);
 
       while(in.peek().tok == Core::TOK_Comma)
-         in.get(), e = GetExpIR_Assi(in);
+         in.get(), e = GetExp_Assi(in);
 
       return e;
    }

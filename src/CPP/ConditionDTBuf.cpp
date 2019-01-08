@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #include "CPP/ConditionDTBuf.hpp"
 
 #include "CPP/ConcatTBuf.hpp"
-#include "CPP/GetExpIR.hpp"
+#include "CPP/GetExp.hpp"
 #include "CPP/Macro.hpp"
 #include "CPP/MacroTBuf.hpp"
 #include "CPP/PPTokenTBuf.hpp"
@@ -55,7 +55,7 @@ namespace GDCC::CPP
       Core::TokenStream in{&pbuf};
 
       // Read expression.
-      auto exp = GetExpIR(in);
+      auto exp = GetExp(in);
 
       // Ensure full consumption.
       if(in.peek().tok != Core::TOK_EOF)

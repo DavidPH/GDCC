@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2018 David Hill
+## Copyright (C) 2013-2019 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -22,7 +22,7 @@ add_library(gdcc-cpp-lib ${GDCC_SHARED_DECL}
    ConcatTBuf.cpp
    ConditionDTBuf.cpp
    DirectiveTBuf.cpp
-   GetExpIR.cpp
+   GetExp.cpp
    IncludeDTBuf.cpp
    Macro.cpp
    MacroDTBuf.cpp
@@ -36,7 +36,7 @@ add_library(gdcc-cpp-lib ${GDCC_SHARED_DECL}
    ../../inc/CPP/ConcatTBuf.hpp
    ../../inc/CPP/ConditionDTBuf.hpp
    ../../inc/CPP/DirectiveTBuf.hpp
-   ../../inc/CPP/GetExpIR.hpp
+   ../../inc/CPP/GetExp.hpp
    ../../inc/CPP/IncludeDTBuf.hpp
    ../../inc/CPP/IStream.hpp
    ../../inc/CPP/Macro.hpp
