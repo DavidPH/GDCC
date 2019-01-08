@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -41,6 +41,20 @@ static GDCC::Option::Bool ExtractOpt
 };
 
 //
+// --iwad
+//
+static bool IWad = false;
+static GDCC::Option::Bool IWadOpt
+{
+   &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
+      .setName("iwad")
+      .setGroup("output")
+      .setDescS("Writes an IWAD instead of a PWAD."),
+
+   &Extract
+};
+
+//
 // --list
 //
 static GDCC::Option::CStr OptionList
@@ -64,6 +78,7 @@ static void ProcessFile(char const *data, GDCC::AR::Wad::Wad &wad);
 static void MakeWad()
 {
    GDCC::AR::Wad::Wad wad;
+   wad.iwad = IWad;
 
    // Process inputs.
    for(auto const &arg : GDCC::Core::GetOptionArgs())
