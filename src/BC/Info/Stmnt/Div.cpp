@@ -144,14 +144,7 @@ namespace GDCC::BC
       GDCC_BC_AddStmnt(Code::ShRU, 1, mask, mask, 1);
 
       GDCC_BC_AddLabel(labelLoopCond);
-      // TODO: Use multiword LAnd.
-      GDCC_BC_AddStmnt(Code::Move,     n, stk, mask);
-      for(Core::FastU i = n; --i;)
-         GDCC_BC_AddStmnt(Code::BOrI,  1, stk, stk, stk);
-      GDCC_BC_AddStmnt(Code::Move,     n, stk, rem);
-      for(Core::FastU i = n; --i;)
-         GDCC_BC_AddStmnt(Code::BOrI,  1, stk, stk, stk);
-      GDCC_BC_AddStmnt(Code::LAnd,     1, stk, stk, stk);
+      GDCC_BC_AddStmnt(Code::LAnd,     1, stk, mask, rem);
       GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelLoopBody);
 
       GDCC_BC_AddLabel(labelRetn);
