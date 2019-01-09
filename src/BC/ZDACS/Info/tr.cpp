@@ -174,21 +174,13 @@ namespace GDCC::BC::ZDACS
          break;
 
       case IR::Code::Jfar: trStmnt_Jfar(); break;
-
       case IR::Code::Jset: trStmnt_Jset(); break;
-
       case IR::Code::Jump: trStmnt_Jump(); break;
-
-      case IR::Code::LAnd:
-      case IR::Code::LOrI:
-         trStmntStk3(false);
-         break;
-
-      case IR::Code::LNot: trStmntStk2(); break;
-
+      case IR::Code::LAnd: trStmnt_LAnd(); break;
+      case IR::Code::LNot: trStmnt_LNot(); break;
+      case IR::Code::LOrI: trStmnt_LOrI(); break;
       case IR::Code::ModI: trStmnt_ModI(); break;
       case IR::Code::ModU: trStmnt_ModU(); break;
-
       case IR::Code::Move: trStmnt_Move(); break;
 
       case IR::Code::MuXU:
@@ -220,6 +212,14 @@ namespace GDCC::BC::ZDACS
       default:
          IR::ErrorCode(stmnt, "unsupported tr");
       }
+   }
+
+   //
+   // Info::trStmntTmp
+   //
+   void Info::trStmntTmp(Core::FastU n)
+   {
+      func->setLocalTmp(n);
    }
 }
 

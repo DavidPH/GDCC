@@ -104,12 +104,6 @@ namespace GDCC::BC::ZDACS
       case IR::Code::DivU: preStmnt_DiXU(); break;
       case IR::Code::DivX: preStmnt_DivX(IR::Code::DiXI); break;
 
-      case IR::Code::LAnd:
-      case IR::Code::LOrI:
-         if(auto n = getStmntSize(); n > 1)
-            preStmntCall(1, n * 2);
-         break;
-
       case IR::Code::ModI: preStmnt_DiXI(); break;
       case IR::Code::ModU: preStmnt_DiXU(); break;
       case IR::Code::MuXU: preStmnt_MuXU(); break;

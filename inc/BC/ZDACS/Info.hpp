@@ -15,6 +15,8 @@
 
 #include "../../BC/ZDACS/Types.hpp"
 
+#include "../../BC/ZDACS/Code.hpp"
+
 #include "../../BC/Info.hpp"
 
 #include "../../Core/Array.hpp"
@@ -127,6 +129,9 @@ namespace GDCC::BC::ZDACS
       void chkStmnt_Jfar();
       void chkStmnt_Jset();
       void chkStmnt_Jump();
+      void chkStmnt_LAnd();
+      void chkStmnt_LNot() {chkStmnt_LAnd();}
+      void chkStmnt_LOrI() {chkStmnt_LAnd();}
       void chkStmnt_Swap();
       void chkStmnt_SuXU() {chkStmnt_AdXU();}
 
@@ -175,6 +180,9 @@ namespace GDCC::BC::ZDACS
       void genStmnt_Jfar();
       void genStmnt_Jset();
       void genStmnt_Jump();
+      void genStmnt_LAnd();
+      void genStmnt_LNot();
+      void genStmnt_LOrI() {genStmnt_LAnd();}
       void genStmnt_ModI();
       void genStmnt_ModU();
       void genStmnt_Move();
@@ -257,14 +265,15 @@ namespace GDCC::BC::ZDACS
 
       Core::FastU lenDropArg(IR::Arg const &arg, Core::FastU w);
       Core::FastU lenDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
+      Core::FastU lenDropTmp(Core::FastU w);
 
       Core::FastU lenIncUArg(IR::Arg const &arg, Core::FastU w);
       Core::FastU lenIncUArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
       Core::FastU lenPushArg(IR::Arg const &arg, Core::FastU w);
       Core::FastU lenPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
-
       Core::FastU lenPushIdx(IR::Arg const &arg, Core::FastU w);
+      Core::FastU lenPushTmp(Core::FastU w);
 
       std::size_t lenString(Core::String str);
 
@@ -391,7 +400,9 @@ namespace GDCC::BC::ZDACS
       void putStmnt_Jfar();
       void putStmnt_Jset();
       void putStmnt_Jump();
+      void putStmnt_LAnd(Code code = Code::LAnd);
       void putStmnt_LNot();
+      void putStmnt_LOrI() {putStmnt_LAnd(Code::LOrI);}
       void putStmnt_ModI();
       void putStmnt_ModU();
       void putStmnt_Move();
@@ -421,6 +432,8 @@ namespace GDCC::BC::ZDACS
 
       void putStmntDropRetn(Core::FastU ret);
 
+      void putStmntDropTmp(Core::FastU w);
+
       void putStmntIncUArg(IR::Arg const &arg, Core::FastU w);
       void putStmntIncUArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
@@ -434,6 +447,8 @@ namespace GDCC::BC::ZDACS
       void putStmntPushRetn(Core::FastU ret);
 
       void putStmntPushStrEn(Core::FastU value);
+
+      void putStmntPushTmp(Core::FastU w);
 
       void putStmntShiftRU(Core::FastU shift);
 
@@ -471,6 +486,9 @@ namespace GDCC::BC::ZDACS
       void trStmnt_Jfar();
       void trStmnt_Jset() {}
       void trStmnt_Jump() {}
+      void trStmnt_LAnd();
+      void trStmnt_LNot();
+      void trStmnt_LOrI() {trStmnt_LAnd();}
       void trStmnt_ModI();
       void trStmnt_ModU();
       void trStmnt_Move();
@@ -486,6 +504,7 @@ namespace GDCC::BC::ZDACS
       void trStmnt_Swap();
 
       void trStmntBitwise();
+      void trStmntTmp(Core::FastU n);
 
       std::unique_ptr<Core::NumberAllocMerge<Core::FastU>> allocDJump;
       std::unordered_map<IR::CallType, Core::NumberAllocMerge<Core::FastU>> allocFunc;

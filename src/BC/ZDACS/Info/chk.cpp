@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2018 David Hill
+// Copyright (C) 2018-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -53,6 +53,9 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Jfar: chkStmnt_Jfar(); break;
       case IR::Code::Jset: chkStmnt_Jset(); break;
       case IR::Code::Jump: chkStmnt_Jump(); break;
+      case IR::Code::LAnd: chkStmnt_LAnd(); break;
+      case IR::Code::LNot: chkStmnt_LNot(); break;
+      case IR::Code::LOrI: chkStmnt_LOrI(); break;
       case IR::Code::SuXU: chkStmnt_SuXU(); break;
       case IR::Code::Swap: chkStmnt_Swap(); break;
 

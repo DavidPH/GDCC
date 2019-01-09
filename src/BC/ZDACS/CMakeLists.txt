@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2018 David Hill
+## Copyright (C) 2013-2019 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -27,6 +27,7 @@ if(GDCC_BC_ZDACS)
       Info/Stmnt/Cmp.cpp
       Info/Stmnt/Div.cpp
       Info/Stmnt/Jump.cpp
+      Info/Stmnt/Log.cpp
       Info/Stmnt/Move.cpp
       Info/Stmnt/Mul.cpp
       Info/Stmnt/Neg.cpp

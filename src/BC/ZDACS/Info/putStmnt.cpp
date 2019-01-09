@@ -114,30 +114,13 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Jdyn: putCode(Code::Jdyn); break;
 
       case IR::Code::Jfar: putStmnt_Jfar(); break;
-
       case IR::Code::Jset: putStmnt_Jset(); break;
-
       case IR::Code::Jump: putStmnt_Jump(); break;
-
-      case IR::Code::LAnd:
-         if(auto n = getStmntSize(); n == 1)
-            putCode(Code::LAnd);
-         else
-            putStmntCall(n);
-         break;
-
+      case IR::Code::LAnd: putStmnt_LAnd(); break;
       case IR::Code::LNot: putStmnt_LNot(); break;
-
-      case IR::Code::LOrI:
-         if(auto n = getStmntSize(); n == 1)
-            putCode(Code::LOrI);
-         else
-            putStmntCall(n);
-         break;
-
+      case IR::Code::LOrI: putStmnt_LOrI(); break;
       case IR::Code::ModI: putStmnt_ModI(); break;
       case IR::Code::ModU: putStmnt_ModU(); break;
-
       case IR::Code::Move: putStmnt_Move(); break;
 
       case IR::Code::MuXU: putStmntCall(getStmntSize() * 2); break;
@@ -182,17 +165,6 @@ namespace GDCC::BC::ZDACS
       default:
          Core::Error(stmnt->pos, "ZDACS cannot put Code: ", stmnt->code);
       }
-   }
-
-   //
-   // Info::putStmnt_LNot
-   //
-   void Info::putStmnt_LNot()
-   {
-      auto n = getStmntSize();
-
-      if(auto i = n) while(--i) putCode(Code::BOrI);
-      putCode(Code::LNot);
    }
 
    //
@@ -399,6 +371,14 @@ namespace GDCC::BC::ZDACS
          putCode(Code::Drop_GblArr);
          putWord(StaArray);
       }
+   }
+
+   //
+   // Info::putStmntDropTmp
+   //
+   void Info::putStmntDropTmp(Core::FastU w)
+   {
+      putCode(Code::Drop_LocReg, func->localReg + w);
    }
 
    //
@@ -654,6 +634,14 @@ namespace GDCC::BC::ZDACS
    {
       putCode(Code::Push_Lit, value);
       putCode(IsNull_StrEn(value) ? Code::Nop : Code::Pstr_Stk);
+   }
+
+   //
+   // Info::putStmntPushTmp
+   //
+   void Info::putStmntPushTmp(Core::FastU w)
+   {
+      putCode(Code::Push_LocReg, func->localReg + w);
    }
 }
 

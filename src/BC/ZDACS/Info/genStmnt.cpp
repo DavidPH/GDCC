@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -132,24 +132,13 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Jdyn: numChunkCODE += 4; break;
 
       case IR::Code::Jfar: genStmnt_Jfar(); break;
-
       case IR::Code::Jset: genStmnt_Jset(); break;
-
       case IR::Code::Jump: genStmnt_Jump(); break;
-
-      case IR::Code::LAnd:
-      case IR::Code::LOrI:
-         if(auto n = getStmntSize(); n == 1)
-            numChunkCODE += 4;
-         else
-            genStmntCall(getStmntSize());
-         break;
-
-      case IR::Code::LNot: numChunkCODE += getStmntSize() * 4; break;
-
+      case IR::Code::LAnd: genStmnt_LAnd(); break;
+      case IR::Code::LNot: genStmnt_LNot(); break;
+      case IR::Code::LOrI: genStmnt_LOrI(); break;
       case IR::Code::ModI: genStmnt_ModI(); break;
       case IR::Code::ModU: genStmnt_ModU(); break;
-
       case IR::Code::Move: genStmnt_Move(); break;
 
       case IR::Code::MuXU: genStmntCall(getStmntSize() * 2); break;

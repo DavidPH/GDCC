@@ -785,6 +785,14 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::lenDropTmp
+   //
+   Core::FastU Info::lenDropTmp(Core::FastU)
+   {
+      return 8;
+   }
+
+   //
    // Info::lenIncUArg
    //
    Core::FastU Info::lenIncUArg(IR::Arg const &arg, Core::FastU)
@@ -952,6 +960,14 @@ namespace GDCC::BC::ZDACS
       default:
          Core::Error(stmnt->pos, "bad lenPushIdx");
       }
+   }
+
+   //
+   // Info::lenPushTmp
+   //
+   Core::FastU Info::lenPushTmp(Core::FastU)
+   {
+      return 8;
    }
 
    //
