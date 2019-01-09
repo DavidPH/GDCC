@@ -173,8 +173,10 @@ namespace GDCC::BC::ZDACS
          moveArgStk_src(stmnt->args[0]);
          break;
 
-      case IR::Code::Jfar: trStmnt_Jfar(); break;
-      case IR::Code::Jset: trStmnt_Jset(); break;
+      case IR::Code::Jfar_Pro: trStmnt_Jfar_Pro(); break;
+      case IR::Code::Jfar_Set: trStmnt_Jfar_Set(); break;
+      case IR::Code::Jfar_Sta: trStmnt_Jfar_Sta(); break;
+
       case IR::Code::Jump: trStmnt_Jump(); break;
       case IR::Code::LAnd: trStmnt_LAnd(); break;
       case IR::Code::LNot: trStmnt_LNot(); break;

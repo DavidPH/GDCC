@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -125,12 +125,14 @@ GDCC_IR_CodeList(Jcnd_Tru)
 // Jdyn src
 GDCC_IR_CodeList(Jdyn)
 
-// Jfar addr drop
-// Jfar addr drop jmpbuf res
-GDCC_IR_CodeList(Jfar)
+// Jfar_Pro addr drop
+GDCC_IR_CodeList(Jfar_Pro)
 
-// Jset jmpbuf addr
-GDCC_IR_CodeList(Jset)
+// Jfar_Set addr jmpbuf
+GDCC_IR_CodeList(Jfar_Set)
+
+// Jfar_Sta addr jmpbuf res
+GDCC_IR_CodeList(Jfar_Sta)
 
 // Jump src
 GDCC_IR_CodeList(Jump)

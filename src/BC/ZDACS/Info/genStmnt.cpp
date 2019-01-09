@@ -131,8 +131,10 @@ namespace GDCC::BC::ZDACS
 
       case IR::Code::Jdyn: numChunkCODE += 4; break;
 
-      case IR::Code::Jfar: genStmnt_Jfar(); break;
-      case IR::Code::Jset: genStmnt_Jset(); break;
+      case IR::Code::Jfar_Pro: genStmnt_Jfar_Pro(); break;
+      case IR::Code::Jfar_Set: genStmnt_Jfar_Set(); break;
+      case IR::Code::Jfar_Sta: genStmnt_Jfar_Sta(); break;
+
       case IR::Code::Jump: genStmnt_Jump(); break;
       case IR::Code::LAnd: genStmnt_LAnd(); break;
       case IR::Code::LNot: genStmnt_LNot(); break;

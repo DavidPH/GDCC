@@ -53,9 +53,9 @@ namespace GDCC::CC
       else
          Core::Error(pos, "non-IRArg val stub");
 
-      ctx.block.setArgSize().addStmnt(IR::Code::Jfar,
+      ctx.block.setArgSize().addStmnt(IR::Code::Jfar_Sta,
          IR::Glyph(ctx.prog, scope.fn.getLabelLJR()),
-         IR::Arg_Stk(0), std::move(envArg), std::move(valArg));
+         std::move(envArg), std::move(valArg));
    }
 
    //
@@ -103,8 +103,8 @@ namespace GDCC::CC
       addrDJump.alloc = true;
       addrDJump.defin = true;
 
-      ctx.block.setArgSize().addStmnt(IR::Code::Jset,
-         std::move(envArg), IR::Glyph(ctx.prog, addrDJump.glyph));
+      ctx.block.setArgSize().addStmnt(IR::Code::Jfar_Set,
+         IR::Glyph(ctx.prog, addrDJump.glyph), std::move(envArg));
 
       ctx.block.addLabel(addrLabel);
 

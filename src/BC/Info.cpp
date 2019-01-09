@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -259,7 +259,8 @@ namespace GDCC::BC
 
       case IR::Code::None:
       case IR::Code::Casm:
-      case IR::Code::Jset:
+      case IR::Code::Jfar_Set:
+      case IR::Code::Jfar_Sta:
       case IR::Code::Jump:
       case IR::Code::Pltn:
       case IR::Code::Xcod_SID:
@@ -333,7 +334,7 @@ namespace GDCC::BC
 
       case IR::Code::Bclo:
       case IR::Code::Bclz:
-      case IR::Code::Jfar:
+      case IR::Code::Jfar_Pro:
       case IR::Code::LNot:
          return stmnt->args[1].getSize();
 

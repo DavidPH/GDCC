@@ -49,9 +49,10 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Jcnd_Nil: chkStmnt_Jcnd_Nil(); break;
       case IR::Code::Jcnd_Tab: chkStmnt_Jcnd_Tab(); break;
       case IR::Code::Jcnd_Tru: chkStmnt_Jcnd_Tru(); break;
+      case IR::Code::Jfar_Pro: chkStmnt_Jfar_Pro(); break;
+      case IR::Code::Jfar_Set: chkStmnt_Jfar_Set(); break;
+      case IR::Code::Jfar_Sta: chkStmnt_Jfar_Sta(); break;
 
-      case IR::Code::Jfar: chkStmnt_Jfar(); break;
-      case IR::Code::Jset: chkStmnt_Jset(); break;
       case IR::Code::Jump: chkStmnt_Jump(); break;
       case IR::Code::LAnd: chkStmnt_LAnd(); break;
       case IR::Code::LNot: chkStmnt_LNot(); break;

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2018 David Hill
+// Copyright (C) 2018-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -52,7 +52,8 @@ namespace GDCC::BC
       case IR::Code::Copy:
       case IR::Code::Jcnd_Nil:
       case IR::Code::Jcnd_Tru:
-      case IR::Code::Jset:
+      case IR::Code::Jfar_Pro:
+      case IR::Code::Jfar_Set:
       case IR::Code::LNot:
       case IR::Code::Move:
       case IR::Code::NegF:
@@ -104,6 +105,7 @@ namespace GDCC::BC
       case IR::Code::DivR:
       case IR::Code::DivU:
       case IR::Code::DivX:
+      case IR::Code::Jfar_Sta:
       case IR::Code::LAnd:
       case IR::Code::LOrI:
       case IR::Code::ModI:
@@ -145,11 +147,6 @@ namespace GDCC::BC
 
       case IR::Code::Jcnd_Tab:
          if(stmnt->args.size() % 2 == 0)
-            IR::ErrorCode(stmnt, "bad arg count");
-         break;
-
-      case IR::Code::Jfar:
-         if(stmnt->args.size() != 2 && stmnt->args.size() != 4)
             IR::ErrorCode(stmnt, "bad arg count");
          break;
 

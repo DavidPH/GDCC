@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -47,24 +47,30 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::chkStmnt_Jfar
+   // Info::chkStmnt_Jfar_Pro
    //
-   void Info::chkStmnt_Jfar()
+   void Info::chkStmnt_Jfar_Pro()
    {
       chkStmntArgB(0, IR::ArgBase::Lit);
       chkStmntArgB(1, IR::ArgBase::Stk);
-
-      if(stmnt->args.size() > 2)
-         chkStmntArgB(2, IR::ArgBase::Sta);
    }
 
    //
-   // Info::chkStmnt_Jset
+   // Info::chkStmnt_Jfar_Set
    //
-   void Info::chkStmnt_Jset()
+   void Info::chkStmnt_Jfar_Set()
    {
-      chkStmntArgB(0, IR::ArgBase::Sta);
-      chkStmntArgB(1, IR::ArgBase::Lit);
+      chkStmntArgB(0, IR::ArgBase::Lit);
+      chkStmntArgB(1, IR::ArgBase::Sta);
+   }
+
+   //
+   // Info::chkStmnt_Jfar_Sta
+   //
+   void Info::chkStmnt_Jfar_Sta()
+   {
+      chkStmntArgB(0, IR::ArgBase::Lit);
+      chkStmntArgB(1, IR::ArgBase::Sta);
    }
 
    //
@@ -123,36 +129,35 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_Jfar
+   // Info::putStmnt_Jfar_Pro
    //
-   void Info::putStmnt_Jfar()
+   void Info::putStmnt_Jfar_Pro()
    {
-      auto n = getStmntSizeW();
-
-      if(stmnt->args.size() > 2)
-      {
-         // Initiate far jump.
-         putStmntPushArg(stmnt->args[3], 0);
-         putStmntPushIdx(stmnt->args[2], 0);
-         putCode("Jfar_Sta", 1, stmnt->args[0].aLit);
-      }
-      else
-      {
-         // Check for ongoing far jump.
-         putCode("Jfar_Pro", n, stmnt->args[0].aLit);
-      }
+      // Check for ongoing far jump.
+      putCode("Jfar_Pro", getStmntSizeW(), stmnt->args[0].aLit);
    }
 
    //
-   // Info::putStmnt_Jset
+   // Info::putStmnt_Jfar_Set
    //
-   void Info::putStmnt_Jset()
+   void Info::putStmnt_Jfar_Set()
    {
       // Push non-jump result.
       putCode("Push_Lit", 0);
 
-      putStmntPushIdx(stmnt->args[0], 0);
-      putCode("Jfar_Set", 1, stmnt->args[1].aLit);
+      putStmntPushIdx(stmnt->args[1], 0);
+      putCode("Jfar_Set", 1, stmnt->args[0].aLit);
+   }
+
+   //
+   // Info::putStmnt_Jfar_Sta
+   //
+   void Info::putStmnt_Jfar_Sta()
+   {
+      // Initiate far jump.
+      putStmntPushArg(stmnt->args[2], 0);
+      putStmntPushIdx(stmnt->args[1], 0);
+      putCode("Jfar_Sta", 1, stmnt->args[0].aLit);
    }
 
    //

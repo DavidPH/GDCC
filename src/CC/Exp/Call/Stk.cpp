@@ -224,7 +224,7 @@ namespace GDCC::CC
 
       // Long jump propagation.
       if(IsLongJump(callType))
-         ctx.block.setArgSize().addStmnt(IR::Code::Jfar,
+         ctx.block.setArgSize().addStmnt(IR::Code::Jfar_Pro,
             IR::Glyph(ctx.prog, scope.fn.getLabelLJR()), IR::Arg_Stk(retBytes));
 
       // Move to destination.

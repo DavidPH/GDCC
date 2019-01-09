@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -76,9 +76,10 @@ namespace GDCC::BC::DGE
       case IR::Code::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
       case IR::Code::Jcnd_Tab: trStmnt_Jcnd_Tab(); break;
       case IR::Code::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
+      case IR::Code::Jfar_Pro: trStmnt_Jfar_Pro(); break;
+      case IR::Code::Jfar_Set: trStmnt_Jfar_Set(); break;
+      case IR::Code::Jfar_Sta: trStmnt_Jfar_Sta(); break;
 
-      case IR::Code::Jfar: trStmnt_Jfar(); break;
-      case IR::Code::Jset: trStmnt_Jset(); break;
       case IR::Code::Jump: trStmnt_Jump(); break;
       case IR::Code::LAnd: trStmnt_LAnd(); break;
       case IR::Code::LNot: trStmnt_LNot(); break;

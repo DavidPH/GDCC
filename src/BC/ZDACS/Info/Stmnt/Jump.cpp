@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -49,23 +49,30 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::chkStmnt_Jfar
+   // Info::chkStmnt_Jfar_Pro
    //
-   void Info::chkStmnt_Jfar()
+   void Info::chkStmnt_Jfar_Pro()
    {
       chkStmntArgB(0, IR::ArgBase::Lit);
       chkStmntArgB(1, IR::ArgBase::Stk);
-
-      if(stmnt->args.size() > 2)
-         chkStmntArgB(2, IR::ArgBase::Sta);
    }
 
    //
-   // Info::chkStmnt_Jset
+   // Info::chkStmnt_Jfar_Set
    //
-   void Info::chkStmnt_Jset()
+   void Info::chkStmnt_Jfar_Set()
    {
-      chkStmntArgB(0, IR::ArgBase::Sta);
+      chkStmntArgB(0, IR::ArgBase::Lit);
+      chkStmntArgB(1, IR::ArgBase::Sta);
+   }
+
+   //
+   // Info::chkStmnt_Jfar_Sta
+   //
+   void Info::chkStmnt_Jfar_Sta()
+   {
+      chkStmntArgB(0, IR::ArgBase::Lit);
+      chkStmntArgB(1, IR::ArgBase::Sta);
    }
 
    //
@@ -120,31 +127,44 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Jfar()
    {
-      auto n = stmnt->args[1].getSize();
-
-      if(stmnt->args.size() > 2)
-      {
-         numChunkCODE += lenPushArg(stmnt->args[3], 0) + lenDropArg(stmnt->args[2], 2);
-         numChunkCODE += 8 + lenPushIdx(stmnt->args[2], 0) + 8;
-         numChunkCODE += lenPushIdx(stmnt->args[2], 0);
-      }
-      else
-      {
-         numChunkCODE += 28;
-      }
-
-      numChunkCODE += !!n * 16 + n * 4
-         + 28 + 8 + (36 + 36 + 24 + 4);
+      numChunkCODE += 28 + 8 + (36 + 36 + 24 + 4);
    }
 
    //
-   // Info::genStmnt_Jset
+   // Info::genStmnt_Jfar_Pro
    //
-   void Info::genStmnt_Jset()
+   void Info::genStmnt_Jfar_Pro()
    {
-      numChunkCODE += lenPushArg(stmnt->args[1], 0) + lenDropArg(stmnt->args[0], 1);
-      numChunkCODE += 8 + lenDropArg(stmnt->args[0], 0);
+      auto n = stmnt->args[1].getSize();
+
+      numChunkCODE += 28;
+
+      if(n)
+         numChunkCODE += n * 4 + lenDropTmp(0) + lenPushTmp(0);
+
+      genStmnt_Jfar();
+   }
+
+   //
+   // Info::genStmnt_Jfar_Set
+   //
+   void Info::genStmnt_Jfar_Set()
+   {
+      numChunkCODE += lenPushArg(stmnt->args[0], 0) + lenDropArg(stmnt->args[1], 1);
+      numChunkCODE += 8 + lenDropArg(stmnt->args[1], 0);
       numChunkCODE += 8;
+   }
+
+   //
+   // Info::genStmnt_Jfar_Sta
+   //
+   void Info::genStmnt_Jfar_Sta()
+   {
+      numChunkCODE += lenPushArg(stmnt->args[2], 0) + lenDropArg(stmnt->args[1], 2);
+      numChunkCODE += 8 + lenPushIdx(stmnt->args[1], 0) + 8;
+      numChunkCODE += lenPushIdx(stmnt->args[1], 0);
+
+      genStmnt_Jfar();
    }
 
    //
@@ -239,42 +259,6 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt_Jfar()
    {
-      auto n = stmnt->args[1].getSize();
-
-      if(stmnt->args.size() > 2)
-      {
-         // Initiate far jump.
-
-         putStmntPushArg(stmnt->args[3], 0);
-         putStmntDropArg(stmnt->args[2], 2);
-
-         putCode(Code::Push_Lit,    FarJumpIndex);
-         putStmntPushIdx(stmnt->args[2], 0);
-         putCode(Code::Drop_GblArr, StaArray);
-
-         putStmntPushIdx(stmnt->args[2], 0);
-      }
-      else
-      {
-         // Check for ongoing far jump.
-
-         putCode(Code::Push_Lit,    FarJumpIndex);
-         putCode(Code::Push_GblArr, StaArray);
-         putCode(Code::Jcnd_Lit,    0, putPos + 12
-            + !!n * 16 + n * 4
-            + 28 + 8 + (36 + 36 + 24 + 4));
-      }
-
-      if(n)
-      {
-         putCode(Code::Drop_LocReg, func->localReg + 0);
-
-         for(auto i = n; i--;)
-            putCode(Code::Drop_Nul);
-
-         putCode(Code::Push_LocReg, func->localReg + 0);
-      }
-
       // Check auto pointer match.
       putCode(Code::Push_GblArr, StaArray);
       putCode(Code::Push_LocReg, getStkPtrIdx());
@@ -305,17 +289,66 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_Jset
+   // Info::putStmnt_Jfar_Pro
    //
-   void Info::putStmnt_Jset()
+   void Info::putStmnt_Jfar_Pro()
    {
-      putStmntPushArg(stmnt->args[1], 0);
-      putStmntDropArg(stmnt->args[0], 1);
+      auto n = stmnt->args[1].getSize();
+
+      // Check for ongoing far jump.
+
+      putCode(Code::Push_Lit,    FarJumpIndex);
+      putCode(Code::Push_GblArr, StaArray);
+      putCode(Code::Jcnd_Lit,    0, putPos + 12
+         + !!n * 16 + n * 4
+         + 28 + 8 + (36 + 36 + 24 + 4));
+
+      if(n)
+      {
+         putStmntDropTmp(0);
+
+         for(auto i = n; i--;)
+            putCode(Code::Drop_Nul);
+
+         putStmntPushTmp(0);
+      }
+
+      // Propagate far jump.
+      putStmnt_Jfar();
+   }
+
+   //
+   // Info::putStmnt_Jfar_Set
+   //
+   void Info::putStmnt_Jfar_Set()
+   {
+      putStmntPushArg(stmnt->args[0], 0);
+      putStmntDropArg(stmnt->args[1], 1);
 
       putCode(Code::Push_LocReg, getStkPtrIdx());
-      putStmntDropArg(stmnt->args[0], 0);
+      putStmntDropArg(stmnt->args[1], 0);
 
       putCode(Code::Push_Lit, 0);
+   }
+
+   //
+   // Info::putStmnt_Jfar_Sta
+   //
+   void Info::putStmnt_Jfar_Sta()
+   {
+      // Initiate far jump.
+
+      putStmntPushArg(stmnt->args[2], 0);
+      putStmntDropArg(stmnt->args[1], 2);
+
+      putCode(Code::Push_Lit,    FarJumpIndex);
+      putStmntPushIdx(stmnt->args[1], 0);
+      putCode(Code::Drop_GblArr, StaArray);
+
+      putStmntPushIdx(stmnt->args[1], 0);
+
+      // Propagate far jump.
+      putStmnt_Jfar();
    }
 
    //
@@ -335,14 +368,12 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_Jfar
+   // Info::trStmnt_Jfar_Pro
    //
-   void Info::trStmnt_Jfar()
+   void Info::trStmnt_Jfar_Pro()
    {
-      auto n = stmnt->args[1].getSize();
-
-      if(n)
-         func->setLocalTmp(1);
+      if(stmnt->args[1].getSize())
+         trStmntTmp(1);
    }
 }
 

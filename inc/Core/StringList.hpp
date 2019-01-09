@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -237,8 +237,9 @@ GDCC_Core_StringList(Jcnd_Nil, "Jcnd_Nil")
 GDCC_Core_StringList(Jcnd_Tab, "Jcnd_Tab")
 GDCC_Core_StringList(Jcnd_Tru, "Jcnd_Tru")
 GDCC_Core_StringList(Jdyn, "Jdyn")
-GDCC_Core_StringList(Jfar, "Jfar")
-GDCC_Core_StringList(Jset, "Jset")
+GDCC_Core_StringList(Jfar_Pro, "Jfar_Pro")
+GDCC_Core_StringList(Jfar_Set, "Jfar_Set")
+GDCC_Core_StringList(Jfar_Sta, "Jfar_Sta")
 GDCC_Core_StringList(Jump, "Jump")
 GDCC_Core_StringList(LAnd, "LAnd")
 GDCC_Core_StringList(LNot, "LNot")

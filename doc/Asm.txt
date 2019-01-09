@@ -558,6 +558,9 @@ Syntax:
     <DivX_W>
     <Jcnd_Nil>
     <Jcnd_Tru>
+    <Jfar_Pro>
+    <Jfar_Set>
+    <Jfar_Sta>
     <Jump>
     <LAnd>
     <LNot>
@@ -818,33 +821,41 @@ Semantics:
   Branches execution to dynamic jump target addr.
 
 -----------------------------------------------------------
-Jfar (Far Jump)
+Jfar_Pro (Far Jump Propagate)
 -----------------------------------------------------------
 
 Arguments:
-  Jfar N, source[1] addr
-  Jfar N, source[1] addr, destination[3] jmpbuf, source[1] result
+  Jfar_Pro N, source[1] addr, source[N] drop
 
 Semantics:
-  The first form checks for an ongoing far jump. If there is not one, then no
-  further action is taken. Otherwise, the instruction performs far jump
-  propagation as described below.
-  The second form initiates a far jump by setting global state and then
-  performs propagation as described below.
+  Checks for an ongoing far jump. If there is not one, then no further action
+  is taken. Otherwise, the instruction drops N words from the stack and
+  performs far jump propagation as described below.
 
-  The instruction drops N words from the stack before checking if the jump
-  target is in the current function. If so, the jump result is pushed and the
-  jump target is branched to. Otherwise, addr is branched to.
+  The instruction checks if the jump target is in the current function. If so,
+  the jump result is pushed and the jump target is branched to. Otherwise, addr
+  is branched to.
 
 -----------------------------------------------------------
-Jset (Set Jump)
+Jfar_Set (Far Jump Set)
 -----------------------------------------------------------
 
 Arguments:
-  Jset 0, destination[3] jmpbuf, source[1] addr
+  Jfar_Set 0, source[1] addr, destination[3] jmpbuf
 
 Semantics:
   Stores far jump information in jmpbuf and pushes 0 to stack.
+
+-----------------------------------------------------------
+Jfar_Sta (Far Jump Start)
+-----------------------------------------------------------
+
+Arguments:
+  Jfar_Sta N, source[1] addr, destination[3] jmpbuf, source[1] result
+
+Semantics:
+  Initiates a far jump by setting global state and then performs propagation as
+  described in Jfar_Pro.
 
 -----------------------------------------------------------
 Jump
@@ -1639,6 +1650,9 @@ Grammar
     <DivX_W>
     <Jcnd_Nil>
     <Jcnd_Tru>
+    <Jfar_Pro>
+    <Jfar_Set>
+    <Jfar_Sta>
     <Jump>
     <LAnd>
     <LNot>

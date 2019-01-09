@@ -113,8 +113,10 @@ namespace GDCC::BC::ZDACS
 
       case IR::Code::Jdyn: putCode(Code::Jdyn); break;
 
-      case IR::Code::Jfar: putStmnt_Jfar(); break;
-      case IR::Code::Jset: putStmnt_Jset(); break;
+      case IR::Code::Jfar_Pro: putStmnt_Jfar_Pro(); break;
+      case IR::Code::Jfar_Set: putStmnt_Jfar_Set(); break;
+      case IR::Code::Jfar_Sta: putStmnt_Jfar_Sta(); break;
+
       case IR::Code::Jump: putStmnt_Jump(); break;
       case IR::Code::LAnd: putStmnt_LAnd(); break;
       case IR::Code::LNot: putStmnt_LNot(); break;

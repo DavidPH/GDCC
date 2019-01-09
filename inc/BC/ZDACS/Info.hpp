@@ -126,8 +126,9 @@ namespace GDCC::BC::ZDACS
       void chkStmnt_Jcnd_Nil();
       void chkStmnt_Jcnd_Tab();
       void chkStmnt_Jcnd_Tru() {chkStmnt_Jcnd_Nil();}
-      void chkStmnt_Jfar();
-      void chkStmnt_Jset();
+      void chkStmnt_Jfar_Pro();
+      void chkStmnt_Jfar_Set();
+      void chkStmnt_Jfar_Sta();
       void chkStmnt_Jump();
       void chkStmnt_LAnd();
       void chkStmnt_LNot() {chkStmnt_LAnd();}
@@ -178,7 +179,9 @@ namespace GDCC::BC::ZDACS
       void genStmnt_Jcnd_Tab();
       void genStmnt_Jcnd_Tru();
       void genStmnt_Jfar();
-      void genStmnt_Jset();
+      void genStmnt_Jfar_Pro();
+      void genStmnt_Jfar_Set();
+      void genStmnt_Jfar_Sta();
       void genStmnt_Jump();
       void genStmnt_LAnd();
       void genStmnt_LNot();
@@ -398,7 +401,9 @@ namespace GDCC::BC::ZDACS
       void putStmnt_Jcnd_Tab();
       void putStmnt_Jcnd_Tru();
       void putStmnt_Jfar();
-      void putStmnt_Jset();
+      void putStmnt_Jfar_Pro();
+      void putStmnt_Jfar_Set();
+      void putStmnt_Jfar_Sta();
       void putStmnt_Jump();
       void putStmnt_LAnd(Code code = Code::LAnd);
       void putStmnt_LNot();
@@ -483,8 +488,9 @@ namespace GDCC::BC::ZDACS
       void trStmnt_Jcnd_Nil();
       void trStmnt_Jcnd_Tab() {}
       void trStmnt_Jcnd_Tru() {trStmnt_Jcnd_Nil();}
-      void trStmnt_Jfar();
-      void trStmnt_Jset() {}
+      void trStmnt_Jfar_Pro();
+      void trStmnt_Jfar_Set() {}
+      void trStmnt_Jfar_Sta() {}
       void trStmnt_Jump() {}
       void trStmnt_LAnd();
       void trStmnt_LNot();
