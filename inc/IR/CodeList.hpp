@@ -113,13 +113,13 @@ GDCC_IR_CodeList(DivR)
 GDCC_IR_CodeList(DivU)
 GDCC_IR_CodeList(DivX)
 
-// Jcnd_Nil src lab
+// Jcnd_Nil src addr
 GDCC_IR_CodeList(Jcnd_Nil)
 
-// Jcnd_Tab src [value lab]...
+// Jcnd_Tab src [value addr]...
 GDCC_IR_CodeList(Jcnd_Tab)
 
-// Jcnd_Tru src lab
+// Jcnd_Tru src addr
 GDCC_IR_CodeList(Jcnd_Tru)
 
 // Jdyn src

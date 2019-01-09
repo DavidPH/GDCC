@@ -504,8 +504,9 @@ Syntax:
     argument-sequence argument
 
 Semantics:
-  A statement is the IR's instruction. The argument size is used for contained
-  arguments without a specified size.
+  A statement is the IR's instruction. The argument size is used for top level
+  arguments without a specified size. The preceding string sequences are used
+  to add labels to the statement.
 
   Statements starting with a ! are a macro invocation.
 
@@ -516,48 +517,50 @@ Statement Names
 Syntax:
   statement-name:
     <Nop>
-    <AdXU_W>
-    <AddF_W>
-    <AddI_W>
-    <AddU_W>
-    <BAnd_W>
-    <BNot_W>
-    <BOrI_W>
-    <BOrX_W>
+    <AdXU>
+    <AddF>
+    <AddI>
+    <AddU>
+    <BAnd>
+    <BNot>
+    <BOrI>
+    <BOrX>
     <Call>
     <Casm>
-    <CmpF_EQ_W>
-    <CmpF_GE_W>
-    <CmpF_GT_W>
-    <CmpF_LE_W>
-    <CmpF_LT_W>
-    <CmpF_NE_W>
-    <CmpI_EQ_W>
-    <CmpI_GE_W>
-    <CmpI_GT_W>
-    <CmpI_LE_W>
-    <CmpI_LT_W>
-    <CmpI_NE_W>
-    <CmpU_EQ_W>
-    <CmpU_GE_W>
-    <CmpU_GT_W>
-    <CmpU_LE_W>
-    <CmpU_LT_W>
-    <CmpU_NE_W>
+    <CmpF_EQ>
+    <CmpF_GE>
+    <CmpF_GT>
+    <CmpF_LE>
+    <CmpF_LT>
+    <CmpF_NE>
+    <CmpI_EQ>
+    <CmpI_GE>
+    <CmpI_GT>
+    <CmpI_LE>
+    <CmpI_LT>
+    <CmpI_NE>
+    <CmpU_EQ>
+    <CmpU_GE>
+    <CmpU_GT>
+    <CmpU_LE>
+    <CmpU_LT>
+    <CmpU_NE>
     <Cnat>
-    <Copy_W>
+    <Copy>
     <Cscr_IA>
     <Cscr_IS>
     <Cscr_SA>
     <Cscr_SS>
     <Cspe>
-    <DiXI_W>
-    <DiXU_W>
-    <DivF_W>
-    <DivI_W>
-    <DivX_W>
+    <DiXI>
+    <DiXU>
+    <DivF>
+    <DivI>
+    <DivX>
     <Jcnd_Nil>
+    <Jcnd_Tab>
     <Jcnd_Tru>
+    <Jdyn>
     <Jfar_Pro>
     <Jfar_Set>
     <Jfar_Sta>
@@ -565,43 +568,43 @@ Syntax:
     <LAnd>
     <LNot>
     <LOrI>
-    <ModI_W>
-    <Move_W>
-    <MuXU_W>
-    <MulF_W>
-    <MulI_W>
-    <MulX_W>
-    <NegF_W>
-    <NegI_W>
+    <ModI>
+    <Move>
+    <MuXU>
+    <MulF>
+    <MulI>
+    <MulX>
+    <NegF>
+    <NegI>
     <Pltn>
     <Retn>
-    <ShLF_W>
-    <ShLU_W>
-    <ShRF_W>
-    <ShRI_W>
-    <ShRU_W>
-    <SubF_W>
-    <SubI_W>
-    <SubU_W>
-    <Swap_W>
+    <ShLF>
+    <ShLU>
+    <ShRF>
+    <ShRI>
+    <ShRU>
+    <SubF>
+    <SubI>
+    <SubU>
+    <Swap>
 
 -----------------------------------------------------------
-Nop
+Nop (No Operation)
 -----------------------------------------------------------
 
 Arguments:
-  Nop 0
+  Nop()
 
 Semantics:
   Does nothing.
 
 -----------------------------------------------------------
-AdXU_W (Expanding Add Unsigned Integer Word)
+AdXU (Expanding Add Unsigned Integer)
 -----------------------------------------------------------
 
 Arguments:
-  AdXU_W N, destination[N+1] dst, source[N] lop, source[N] rop
-  AdXU_W N, destination[N+1] dst, source[1] carry, source[N] lop, source[N] rop
+  AdXU(dst, lop, rop)
+  AdXU(dst, carry, lop, rop)
 
 Semantics:
   Adds rop to lop and stores the result with carry in dst.
@@ -609,99 +612,99 @@ Semantics:
   If carry provided, it is also added to lop.
 
 -----------------------------------------------------------
-AddF_W (Add Signed Float Word)
-AddI_W (Add Signed Integer Word)
-AddU_W (Add Unsigned Integer Word)
+AddF (Add Signed Float)
+AddI (Add Signed Integer)
+AddU (Add Unsigned Integer)
 -----------------------------------------------------------
 
 Arguments:
-  AddF_W N, desintation[N] dst, source[N] lop, source[N] rop
-  AddI_W N, desintation[N] dst, source[N] lop, source[N] rop
-  AddU_W N, desintation[N] dst, source[N] lop, source[N] rop
+  AddF_W(dst, lop, rop)
+  AddI_W(dst, lop, rop)
+  AddU_W(dst, lop, rop)
 
 Semantics:
   Adds rop to lop and stores the result in dst.
 
 -----------------------------------------------------------
-BAnd_W (Bitwise And Word)
+BAnd (Bitwise And)
 -----------------------------------------------------------
 
 Arguments:
-  BAnd_W N, desination[N] dst, source[N] lop, source[N] rop
+  BAnd(dst, lop, rop)
 
 Semantics:
   Bitwise ands lop with rop and stores the result in dst.
 
 -----------------------------------------------------------
-BNot_W (Bitwise Invert Word)
+BNot (Bitwise Invert)
 -----------------------------------------------------------
 
 Argument:
-  BNot_W N, destination[N] dst, source[N] src
+  BNot(dst, src)
 
 Semantics:
   Bitwise inverts src and stores the result in dst.
 
 -----------------------------------------------------------
-BOrI_W (Bitwise Inclusive Or Word)
+BOrI (Bitwise Inclusive Or)
 -----------------------------------------------------------
 
 Arguments:
-  BOrI_W N, destination[N] dst, source[N] lop, source[N] rop
+  BOrI(dst, lop, rop)
 
 Semantics:
   Bitwise inclusive ors lop with rop and stores the result in dst.
 
 -----------------------------------------------------------
-BOrX_W (Bitwise Exclusive Or Word)
+BOrX (Bitwise Exclusive Or)
 -----------------------------------------------------------
 
 Arguments:
-  BOrX_W N, destination[N] dst, source[N] lop, source[N] rop
+  BOrX(dst, lop, rop)
 
 Semantics:
   Bitwise exclusive ors lop with rop and stores the result in dst.
 
 -----------------------------------------------------------
-Call
+Call (Call Function)
 -----------------------------------------------------------
 
 Arguments:
-  Call ret, source[1] addr, ...
+  Call(dst, src, ...)
 
 Semantics:
-  Calls a function at addr which returns ret words. Each additional argument is
-  a word to pass to the called function.
+  Calls a function at src and stores the result in dst. Each additional
+  argument is passed to the called function.
 
   This instruction is meant to map to the typical function dispatch method for
   the target.
 
 -----------------------------------------------------------
-Casm (Call Assembly)
+Casm (Call Assembly Function)
 -----------------------------------------------------------
 
 Arguments:
-  Casm ret, source[1] addr, ...
+  Casm(dst, src, ...)
 
 Semantics:
-  Calls a function at addr which returns ret words. Each additional argument is
-  a word to pass to the called function.
+  Calls a function at src and stores the result in dst. Each additional
+  argument is passed to the called function.
 
   This instruction is meant to map to functions implemented as an instruction.
 
-  For ZDACS targets, all arguments must have Lit type. The addr is used as an
+  For ZDACS targets, all arguments must have Lit type. src is used as an
   instruction number and the other arguments are immediate operands.
 
 -----------------------------------------------------------
-CmpF_*_W (Compare Signed Float Word)
-CmpI_*_W (Compare Signed Integer Word)
-CmpU_*_W (Compare Unsigned Integer Word)
+CmpF_* (Compare Signed Float)
+CmpI_* (Compare Signed Integer)
+CmpU_* (Compare Unsigned Integer)
 -----------------------------------------------------------
 
 Arguments:
-  CmpF_*_W N, destination[1] dst, source[N] lop, source[N] rop
-  CmpI_*_W N, destination[1] dst, source[N] lop, source[N] rop
-  CmpU_*_W N, destination[1] dst, source[N] lop, source[N] rop
+  CmpF_*(dst, lop, rop)
+  CmpI_*(dst, lop, rop)
+  CmpU_*(dst, lop, rop)
 
 Semantics:
   EQ, GE, GT, LE, LT, NE variants compare if lop is equal, greater or equal,
@@ -709,87 +712,88 @@ Semantics:
   comparison is true, 1 is stored in dst. Otherwise, 0 is stored.
 
 -----------------------------------------------------------
-Cnat (Call Native)
+Cnat (Call Native Function)
 -----------------------------------------------------------
 
 Arguments:
-  Cnat ret, source[1] addr, ...
+  Cnat(dst, src, ...)
 
 Semantics:
-  Calls a function at addr which returns ret words. Each additional argument is
-  a word to pass to the called function.
+  Calls a function at src and stores the result in dst. Each additional
+  argument is passed to the called function.
 
   This instruction is meant to map to the native/builtin function dispatch
   method for the target.
 
 -----------------------------------------------------------
-Copy_W (Copy Word)
+Copy (Copy Data)
 -----------------------------------------------------------
 
 Arguments:
-  Copy_W N, destination[N] dst, source[N] src
+  Copy(dst, src)
 
 Semantics:
-  Copies a word from src to dst.
+  Copies data from src to dst.
 
 -----------------------------------------------------------
-Cscr_IA (Call Script, Integer Asynchronous)
-Cscr_IS (Call Script, Integer Synchronous)
-Cscr_SA (Call Script, String Asynchronous)
-Cscr_SS (Call Script, String Synchronous)
+Cscr_IA (Call Script Function, Integer Asynchronous)
+Cscr_IS (Call Script Function, Integer Synchronous)
+Cscr_SA (Call Script Function, String Asynchronous)
+Cscr_SS (Call Script Function, String Synchronous)
 -----------------------------------------------------------
 
 Arguments:
-  Cscr_IA ret, source[1] addr, ...
-  Cscr_IS ret, source[1] addr, duplicate[ret+1] data, ...
-  Cscr_SA ret, source[1] addr, ...
-  Cscr_SS ret, source[1] addr, duplicate[ret+1] data, ...
+  Cscr_IA(dst, src, ...)
+  Cscr_IS(dst, src, tmp, ...)
+  Cscr_SA(dst, src, ...)
+  Cscr_SS(dst, src, tmp, ...)
 
 Semantics:
-  Calls a function at addr which returns ret words. Each additional argument is
-  a word to pass to the called function.
+  Calls a function at src and stores the result in dst. Each additional
+  argument is passed to the called function.
 
   This instruction is meant to map to the ZDACS script dispatch method and may
   not be meaningful for other targets.
 
-  The data argument is used for return data and should have type Loc.
+  The tmp argument is used for return data and should have type Aut and be one
+  word larger than dst.
 
 -----------------------------------------------------------
-Cspe (Call Special)
+Cspe (Call Special Function)
 -----------------------------------------------------------
 
 Arguments:
-  Cspe ret, source[1] addr, ...
+  Cspe(dst, src, ...)
 
 Semantics:
-  Calls a function at addr which returns ret words. Each additional argument is
-  a word to pass to the called function.
+  Calls a function at src and stores the result in dst. Each additional
+  argument is passed to the called function.
 
   This instruction is meant to map to the ZDACS line special dispatch method
   and may not be meaningful for other targets.
 
 -----------------------------------------------------------
-DiXI_W (Expanding Divide Signed Integer Word)
-DiXU_W (Expanding Divide Unsigned Integer Word)
+DiXI (Expanding Divide Signed Integer)
+DiXU (Expanding Divide Unsigned Integer)
 -----------------------------------------------------------
 
 Argument:
-  DiXI_W N, destination[N*2] dst, source[N] lop, source[N] rop
-  DiXU_W N, destination[N*2] dst, source[N] lop, source[N] rop
+  DiXI_W(dst, lop, rop)
+  DiXU_W(dst, lop, rop)
 
 Semantics:
   Divides lop by rop and stores the quotient and remainder in dst.
 
 -----------------------------------------------------------
-DivF_W (Divide Signed Integer Word)
-DivI_W (Divide Signed Integer Word)
-DivU_W (Divide Unsigned Integer Word)
+DivF (Divide Signed Integer)
+DivI (Divide Signed Integer)
+DivU (Divide Unsigned Integer)
 -----------------------------------------------------------
 
 Argument:
-  DivF_W N, destination[N] dst, source[N] lop, source[N] rop
-  DivI_W N, destination[N] dst, source[N] lop, source[N] rop
-  DivU_W N, destination[N] dst, source[N] lop, source[N] rop
+  DivF(dst, lop, rop)
+  DivI(dst, lop, rop)
+  DivU(dst, lop, rop)
 
 Semantics:
   Divides lop by rop and stores the quotient in dst.
@@ -800,22 +804,33 @@ Jcnd_Tru (Conditional Jump, True)
 -----------------------------------------------------------
 
 Arguments:
-  Jcnd_Nil N, source[N] cnd, source[1] addr
-  Jcnd_Tru N, source[N] cnd, source[1] addr
+  Jcnd_Nil(src, addr)
+  Jcnd_Tru(src, addr)
 
 Semantics:
-  Jcnd_Nil checks if cnd is zero.
+  Jcnd_Nil checks if src is zero.
 
-  Jcnd_Tru checks if cnd is nonzero.
+  Jcnd_Tru checks if src is nonzero.
 
   If condition passes, branches execution to addr.
+
+-----------------------------------------------------------
+Jcnd_Tab (Conditional Jump Table)
+-----------------------------------------------------------
+
+Arguments:
+  Jcnd_Tab(src, ...)
+
+Semantics:
+  Specifies a jump table of value-address pairs. If no jump is made and src is
+  Stk, then the value is left on the stack.
 
 -----------------------------------------------------------
 Jdyn (Dynamic Jump)
 -----------------------------------------------------------
 
 Arguments:
-  Jdyn 0, source[1] addr
+  Jdyn(addr)
 
 Semantics:
   Branches execution to dynamic jump target addr.
@@ -825,11 +840,11 @@ Jfar_Pro (Far Jump Propagate)
 -----------------------------------------------------------
 
 Arguments:
-  Jfar_Pro N, source[1] addr, source[N] drop
+  Jfar_Pro(addr, drop)
 
 Semantics:
   Checks for an ongoing far jump. If there is not one, then no further action
-  is taken. Otherwise, the instruction drops N words from the stack and
+  is taken. Otherwise, the instruction drops drop from the stack and
   performs far jump propagation as described below.
 
   The instruction checks if the jump target is in the current function. If so,
@@ -841,7 +856,7 @@ Jfar_Set (Far Jump Set)
 -----------------------------------------------------------
 
 Arguments:
-  Jfar_Set 0, source[1] addr, destination[3] jmpbuf
+  Jfar_Set(addr, jmpbuf)
 
 Semantics:
   Stores far jump information in jmpbuf and pushes 0 to stack.
@@ -851,18 +866,18 @@ Jfar_Sta (Far Jump Start)
 -----------------------------------------------------------
 
 Arguments:
-  Jfar_Sta N, source[1] addr, destination[3] jmpbuf, source[1] result
+  Jfar_Sta(addr, jmpbuf, result)
 
 Semantics:
   Initiates a far jump by setting global state and then performs propagation as
   described in Jfar_Pro.
 
 -----------------------------------------------------------
-Jump
+Jump (Unconditional Jump)
 -----------------------------------------------------------
 
 Arguments:
-  Jump 0, source[1] addr
+  Jump(addr)
 
 Semantics:
   Branches execution to addr.
@@ -872,7 +887,7 @@ LAnd (Logical And)
 -----------------------------------------------------------
 
 Arguments:
-  LAnd N, destination[1] dst, source[N] lop, source[N] rop
+  LAnd(dst, lop, rop)
 
 Semantics:
   Logically ands lop with rop and stores the result in dst.
@@ -882,7 +897,7 @@ LNot (Logical Invert)
 -----------------------------------------------------------
 
 Arguments:
-  LNot N, destination[1] dst, source[N] src
+  LNot(dst, src)
 
 Semantics:
   Logically inverts src and stores the result in dst.
@@ -892,65 +907,65 @@ LOrI (Logical Inclusive Or)
 -----------------------------------------------------------
 
 Arguments:
-  LOrI N, destination[1] dst, source[N] lop, source[N] rop
+  LOrI(dst, lop, rop)
 
 Semantics:
   Logically inclusive ors lop with rop and stores the result in dst.
 
 -----------------------------------------------------------
-ModI_W (Modulus Signed Integer Word)
-ModU_W (Modulus Unsigned Integer Word)
+ModI (Modulus Signed Integer)
+ModU (Modulus Unsigned Integer)
 -----------------------------------------------------------
 
 Argument:
-  ModI_W N, destination[N] dst, source[N] lop, source[N] rop
-  ModU_W N, destination[N] dst, source[N] lop, source[N] rop
+  ModI(dst, lop, rop)
+  ModU(dst, lop, rop)
 
 Semantics:
   Divides lop by rop and stores the remainder in dst.
 
 -----------------------------------------------------------
-Move_W (Move Word)
+Move (Move)
 -----------------------------------------------------------
 
 Arguments:
-  Move_W N, destination[N] dst, source[N] src
+  Move(dst, src)
 
 Semantics:
-  Moves a word from src to dst.
+  Moves data from src to dst.
 
 -----------------------------------------------------------
-MuXU_W (Expanding Multiply Unsigned Integer Word)
+MuXU (Expanding Multiply Unsigned Integer)
 -----------------------------------------------------------
 
 Arguments:
-  MuXU_W N, destination[N*2] dst, source[N] lop, source[N] rop
+  MuXU(dst, lop, rop)
 
 Semantics:
   Multiplies lop by rop and stores the full result in dst.
 
 -----------------------------------------------------------
-MulF_W (Multiply Signed Float Word)
-MulI_W (Multiply Signed Integer Word)
-MulU_W (Multiply Unsigned Integer Word)
+MulF (Multiply Signed Float)
+MulI (Multiply Signed Integer)
+MulU (Multiply Unsigned Integer)
 -----------------------------------------------------------
 
 Arguments:
-  MulF_W N, destination[N] dst, source[N] lop, source[N] rop
-  MulI_W N, destination[N] dst, source[N] lop, source[N] rop
-  MulU_W N, destination[N] dst, source[N] lop, source[N] rop
+  MulF(dst, lop, rop)
+  MulI(dst, lop, rop)
+  MulU(dst, lop, rop)
 
 Semantics:
   Multiplies lop by rop and stores the truncated result in dst.
 
 -----------------------------------------------------------
-NegF_W (Negate Signed Float Word)
-NegI_W (Negate Signed Integer Word)
+NegF (Negate Signed Float)
+NegI (Negate Signed Integer)
 -----------------------------------------------------------
 
 Arguments:
-  NegF_W N, destination[N] dst, source[N] src
-  NegI_W N, destination[N] dst, source[N] src
+  NegF(dst, src)
+  NegI(dst, src)
 
 Semantics:
   Negates src and stores the result in dst.
@@ -960,31 +975,31 @@ Pltn (Pointer, Local To Near)
 -----------------------------------------------------------
 
 Arguments:
-  Pltn 0, destination[1] dst, source[1] src
+  Pltn(dst, src)
 
 Semantics:
-  Converts from a Loc pointer in src to a LocArs pointer in dst.
+  Converts from a Aut pointer in src to a Sta pointer in dst.
 
 -----------------------------------------------------------
 Retn (Return)
 -----------------------------------------------------------
 
 Arguments:
-  Retn 0
-  Retn N, source[N] src
+  Retn()
+  Retn(src)
 
 Semantics:
-  Returns control to the caller with the data in src. If N is zero, no data is
-  returned and src may be omitted.
+  Returns control to the caller with the data in src. If src is omitted, no
+  data is returned.
 
 -----------------------------------------------------------
-ShLF_W (Shift Left Signed Float Word)
-ShLU_W (Shift Left Unsigned Integer Word)
+ShLF (Shift Left Signed Float)
+ShLU (Shift Left Unsigned Integer)
 -----------------------------------------------------------
 
 Arguments:
-  ShLF_W N, destination[N] dst, source[N] lop, source[1] rop
-  ShLU_W N, destination[N] dst, source[N] lop, source[1] rop
+  ShLF(dst, lop, rop)
+  ShLU(dst, lop, rop)
 
 Semantics:
   Left-shifts lop by rop and stores the result in dst.
@@ -992,15 +1007,15 @@ Semantics:
   For float ops, this adds to the exponent.
 
 -----------------------------------------------------------
-ShRF_W (Shift Right Signed Float Word)
-ShRI_W (Shift Right Signed Integer Word)
-ShRU_W (Shift Right Unsigned Integer Word)
+ShRF (Shift Right Signed Float)
+ShRI (Shift Right Signed Integer)
+ShRU (Shift Right Unsigned Integer)
 -----------------------------------------------------------
 
 Arguments:
-  ShRF_W N, destination[N] dst, source[N] lop, source[1] rop
-  ShRI_W N, destination[N] dst, source[N] lop, source[1] rop
-  ShRU_W N, destination[N] dst, source[N] lop, source[1] rop
+  ShRF_W(dst, lop, rop)
+  ShRI_W(dst, lop, rop)
+  ShRU_W(dst, lop, rop)
 
 Semantics:
   Right-shifts lop by rop and stores the result in dst.
@@ -1010,12 +1025,12 @@ Semantics:
   For signed fixed-point ops, this may sign-extend.
 
 -----------------------------------------------------------
-SuXU_W (Expanding Subtract Unsigned Integer Word)
+SuXU (Expanding Subtract Unsigned Integer)
 -----------------------------------------------------------
 
 Arguments:
-  SuXU_W N, destination[N+1] dst, source[N] lop, source[N] rop
-  SuXU_W N, destination[N+1] dst, source[1] carry, source[N] lop, source[N] rop
+  SuXU_W(dst, lop, rop)
+  SuXU_W(dst, carry, lop, rop)
 
 Semantics:
   Subtracts rop from lop and stores the result with carry in dst.
@@ -1023,25 +1038,25 @@ Semantics:
   If carry provided, it is also added to lop.
 
 -----------------------------------------------------------
-SubF_W (Subtract Signed Float Word)
-SubI_W (Subtract Signed Integer Word)
-SubU_W (Subtract Unsigned Integer Word)
+SubF (Subtract Signed Float)
+SubI (Subtract Signed Integer)
+SubU (Subtract Unsigned Integer)
 -----------------------------------------------------------
 
 Arguments:
-  SubF_W N, desintation[N] dst, source[N] lop, source[N] rop
-  SubI_W N, desintation[N] dst, source[N] lop, source[N] rop
-  SubU_W N, desintation[N] dst, source[N] lop, source[N] rop
+  SubF(dst, lop, rop)
+  SubI(dst, lop, rop)
+  SubU(dst, lop, rop)
 
 Semantics:
   Subtracts rop from lop and stores the result in dst.
 
 -----------------------------------------------------------
-Swap_W (Swap Word)
+Swap (Swap Data)
 -----------------------------------------------------------
 
 Arguments:
-  Swap_W N, duplicate[N] lop, duplicate[N] rop
+  Swap(lop, rop)
 
 Semantics:
   Swaps lop with rop.
@@ -1078,6 +1093,16 @@ Syntax:
     <B> expression(opt)
     <W> expression(opt)
     expression
+
+Semantics:
+  If the argument size starts with W, the expression is multiplied by the word
+  size of the target. Otherwise, the expression is taken as a number of bytes.
+  If the expression is omitted, then W uses a single word and B uses a single
+  byte.
+
+  If the argument size is omitted, then top level arguments use the size of the
+  statement. If the statement has no size, then the size is a single word.
+  Other arguments will use the size appropriate to the containing argument.
 
 ===============================================================================
 Expressions
@@ -1427,6 +1452,7 @@ Specifiers
 
 Syntax:
   address-specifier:
+    <Aut>
     <Cpy>
     <Far>
     <GblArr>
@@ -1437,13 +1463,12 @@ Syntax:
     <HubArs>
     <HubReg>
     <Lit>
-    <Loc>
-    <LocArs>
     <LocReg>
     <ModArr>
     <ModArs>
     <ModReg>
     <Nul>
+    <Sta>
     <Stk>
     <StrArr>
     <StrArs>
@@ -1610,46 +1635,50 @@ Grammar
 
   statement-name:
     <Nop>
-    <AdXU_W>
-    <AddF_W>
-    <AddI_W>
-    <AddU_W>
-    <BAnd_W>
-    <BNot_W>
-    <BOrI_W>
-    <BOrX_W>
+    <AdXU>
+    <AddF>
+    <AddI>
+    <AddU>
+    <BAnd>
+    <BNot>
+    <BOrI>
+    <BOrX>
     <Call>
     <Casm>
-    <CmpF_EQ_W>
-    <CmpF_GE_W>
-    <CmpF_GT_W>
-    <CmpF_LE_W>
-    <CmpF_LT_W>
-    <CmpF_NE_W>
-    <CmpI_EQ_W>
-    <CmpI_GE_W>
-    <CmpI_GT_W>
-    <CmpI_LE_W>
-    <CmpI_LT_W>
-    <CmpI_NE_W>
-    <CmpU_EQ_W>
-    <CmpU_GE_W>
-    <CmpU_GT_W>
-    <CmpU_LE_W>
-    <CmpU_LT_W>
-    <CmpU_NE_W>
+    <CmpF_EQ>
+    <CmpF_GE>
+    <CmpF_GT>
+    <CmpF_LE>
+    <CmpF_LT>
+    <CmpF_NE>
+    <CmpI_EQ>
+    <CmpI_GE>
+    <CmpI_GT>
+    <CmpI_LE>
+    <CmpI_LT>
+    <CmpI_NE>
+    <CmpU_EQ>
+    <CmpU_GE>
+    <CmpU_GT>
+    <CmpU_LE>
+    <CmpU_LT>
+    <CmpU_NE>
     <Cnat>
-    <Copy_W>
+    <Copy>
     <Cscr_IA>
     <Cscr_IS>
     <Cscr_SA>
     <Cscr_SS>
     <Cspe>
-    <DivF_W>
-    <DivI_W>
-    <DivX_W>
+    <DiXI>
+    <DiXU>
+    <DivF>
+    <DivI>
+    <DivX>
     <Jcnd_Nil>
+    <Jcnd_Tab>
     <Jcnd_Tru>
+    <Jdyn>
     <Jfar_Pro>
     <Jfar_Set>
     <Jfar_Sta>
@@ -1657,24 +1686,25 @@ Grammar
     <LAnd>
     <LNot>
     <LOrI>
-    <ModI_W>
-    <Move_W>
-    <MulF_W>
-    <MulI_W>
-    <MulX_W>
-    <NegF_W>
-    <NegI_W>
+    <ModI>
+    <Move>
+    <MuXU>
+    <MulF>
+    <MulI>
+    <MulX>
+    <NegF>
+    <NegI>
     <Pltn>
     <Retn>
-    <ShLF_W>
-    <ShLU_W>
-    <ShRF_W>
-    <ShRI_W>
-    <ShRU_W>
-    <SubF_W>
-    <SubI_W>
-    <SubU_W>
-    <Swap_W>
+    <ShLF>
+    <ShLU>
+    <ShRF>
+    <ShRI>
+    <ShRU>
+    <SubF>
+    <SubI>
+    <SubU>
+    <Swap>
 
   argument:
     <Aut> argument-size(opt) ( argument expression(opt) )
@@ -1962,6 +1992,7 @@ Grammar
     type-Union ( expression )
 
   address-specifier:
+    <Aut>
     <Cpy>
     <Far>
     <GblArr>
@@ -1972,13 +2003,12 @@ Grammar
     <HubArs>
     <HubReg>
     <Lit>
-    <Loc>
-    <LocArs>
     <LocReg>
     <ModArr>
     <ModArs>
     <ModReg>
     <Nul>
+    <Sta>
     <Stk>
     <StrArr>
     <StrArs>
