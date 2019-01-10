@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,8 @@
 #define GDCC__Core__Counter_H__
 
 #include "../Core/Types.hpp"
+
+#include <functional>
 
 
 //----------------------------------------------------------------------------|
@@ -274,6 +276,25 @@ namespace GDCC::Core
 
    protected:
       virtual ~Counter() {}
+   };
+}
+
+namespace std
+{
+   //
+   // hash<::GDCC::Core::CounterPtr>
+   //
+   template<typename T>
+   struct hash<::GDCC::Core::CounterPtr<T>> : public hash<T *>
+   {
+   };
+
+   //
+   // hash<::GDCC::Core::CounterRef>
+   //
+   template<typename T>
+   struct hash<::GDCC::Core::CounterRef<T>> : public hash<T *>
+   {
    };
 }
 
