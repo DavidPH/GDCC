@@ -118,6 +118,9 @@ Semantics:
   Defines a function. This includes ACS scripts, which are distinguished by the
   call type.
 
+  Any string in the function argument sequence that is prefixed with a : will
+  have the function's name prepended to it.
+
 -----------------------------------------------------------
 allocAut
 -----------------------------------------------------------
