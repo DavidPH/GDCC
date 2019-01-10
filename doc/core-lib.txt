@@ -884,6 +884,7 @@ Synopsis:
 
     String      file;
     std::size_t line;
+    std::size_t col;
   };
 
 Description:
@@ -895,12 +896,12 @@ GDCC::Core::Origin::Origin
 
 Synopsis:
   Origin();
-  constexpr Origin(String file, std::size_t line);
+  constexpr Origin(String file, std::size_t line = 0, std::size_t col = 0);
 
 Description:
   The first form performs no initialization.
 
-  The second form initializes file and line from parameters.
+  The second form initializes file, line, and col from parameters.
 
 -----------------------------------------------------------
 GDCC::Core::Origin::operator bool
@@ -910,8 +911,8 @@ Synopsis:
   constexpr explicit operator bool () const;
 
 Description:
-  Converts to a boolean. True if file is not null or line is not 0. Otherwise,
-  false.
+  Converts to a boolean. True if file is not null, line is not 0, or col is not
+  0. Otherwise, false.
 
 Returns:
   The boolean sense of the object.
@@ -924,7 +925,8 @@ Synopsis:
   constexpr bool operator == (Origin const &pos) const;
 
 Description:
-  Compares two Origin objects. They are equal if both file and line are equal.
+  Compares two Origin objects. They are equal if both file, line, and col are
+  equal.
 
 Returns:
   The equality of the two objects.
@@ -937,8 +939,8 @@ Synopsis:
   constexpr bool operator != (Origin const &pos) const;
 
 Description:
-  Compares two Origin objects. They are inequal if either file or line are
-  inequal.
+  Compares two Origin objects. They are inequal if either file, line, or col
+  are inequal.
 
 Returns:
   The inequality of the two objects.
@@ -951,7 +953,7 @@ Synopsis:
   String file;
 
 Description:
-  The name of the file for the position.
+  The name of the file for the position. Null if there is no filename.
 
 -----------------------------------------------------------
 GDCC::Core::Origin::line
@@ -961,7 +963,17 @@ Synopsis:
   std::size_t line;
 
 Description:
-  The line of the file for the position.
+  The line of the file for the position. 0 if there is no line.
+
+-----------------------------------------------------------
+GDCC::Core::Origin::col
+-----------------------------------------------------------
+
+Synopsis:
+  std::size_t col;
+
+Description:
+  The column of the file for the position. 0 if there is no column.
 
 ===============================================================================
 String Table and Utilities <GDCC/Core/String.hpp>
@@ -980,8 +992,8 @@ Synopsis:
     String(char const *str);
     String(char const *str, std::size_t len);
     String(char const *str, std::size_t len, std::size_t hash);
-    String(std::nullptr_t);
-    explicit String(std::size_t idx);
+    constexpr String(std::nullptr_t);
+    explicit constexpr String(std::size_t idx);
     constexpr String(StringIndex idx);
 
     explicit constexpr operator bool () const;
@@ -1031,8 +1043,8 @@ Synopsis:
   String(char const *str);
   String(char const *str, std::size_t len);
   String(char const *str, std::size_t len, std::size_t hash);
-  String(std::nullptr_t);
-  explicit String(std::size_t idx);
+  constexpr String(std::nullptr_t);
+  explicit constexpr String(std::size_t idx);
   constexpr String(StringIndex idx);
 
 Description:
