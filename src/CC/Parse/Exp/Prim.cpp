@@ -176,7 +176,7 @@ namespace GDCC::CC
       }
 
       auto exp = IR::ExpCreate_Value(std::move(val), pos);
-      return SR::ExpCreate_IRExp(exp, type, pos);
+      return ctx.fact.expCreate_IRExp(exp, type, pos);
    }
 
    //
@@ -369,7 +369,7 @@ namespace GDCC::CC
       // Create expression.
       auto valIR = IR::Value_Float(std::move(val), type->getIRType().tFloat);
       auto expIR = IR::ExpCreate_Value(std::move(valIR), tok.pos);
-      return SR::ExpCreate_IRExp(expIR, type, tok.pos);
+      return ctx.fact.expCreate_IRExp(expIR, type, tok.pos);
    }
 
    //

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -36,7 +36,6 @@ namespace GDCC::SR
 
    public:
       using Labels = Core::Array<Core::String>;
-      using Stmnts = Core::Array<CRef>;
 
 
       void genLabel(IR::Block &block) const;
@@ -83,40 +82,6 @@ namespace GDCC::SR
       virtual bool v_isNoReturn() const {return true;}
       virtual bool v_isReturn() const {return false;}
    };
-}
-
-
-//----------------------------------------------------------------------------|
-// Extern Functions                                                           |
-//
-
-namespace GDCC::SR
-{
-   Statement::CRef StatementCreate_Empty(Statement::Labels const &labels,
-      Core::Origin pos);
-   Statement::CRef StatementCreate_Empty(Statement::Labels      &&labels,
-      Core::Origin pos);
-   Statement::CRef StatementCreate_Empty(Core::Origin pos);
-
-   Statement::CRef StatementCreate_Exp(Statement::Labels const &labels,
-      Core::Origin pos, Exp const *exp);
-   Statement::CRef StatementCreate_Exp(Statement::Labels      &&labels,
-      Core::Origin pos, Exp const *exp);
-   Statement::CRef StatementCreate_Exp(Core::Origin pos, Exp const *exp);
-   Statement::CRef StatementCreate_Exp(Exp const *exp);
-
-   Statement::CRef StatementCreate_Multi(Statement::Labels const &labels,
-      Core::Origin pos, Statement::Stmnts const &stmnts);
-   Statement::CRef StatementCreate_Multi(Statement::Labels const &labels,
-      Core::Origin pos, Statement::Stmnts      &&stmnts);
-   Statement::CRef StatementCreate_Multi(Statement::Labels      &&labels,
-      Core::Origin pos, Statement::Stmnts const &stmnts);
-   Statement::CRef StatementCreate_Multi(Statement::Labels      &&labels,
-      Core::Origin pos, Statement::Stmnts      &&stmnts);
-   Statement::CRef StatementCreate_Multi(
-      Core::Origin pos, Statement::Stmnts const &stmnts);
-   Statement::CRef StatementCreate_Multi(
-      Core::Origin pos, Statement::Stmnts      &&stmnts);
 }
 
 #endif//GDCC__SR__Statement_H__

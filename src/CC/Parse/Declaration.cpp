@@ -252,7 +252,7 @@ namespace GDCC::CC
       auto initExp = ctx.fact.expCreate_Obj(ctx.prog, obj, attr.namePos);
       initExp = Exp_Assign::Create(initExp, obj->init, obj->init->pos);
 
-      inits.emplace_back(SR::StatementCreate_Exp(initExp));
+      inits.emplace_back(ctx.fact.stCreate_Exp({}, initExp));
    }
 
    //
@@ -274,7 +274,7 @@ namespace GDCC::CC
       Core::Array<SR::Statement::CRef> stmnts =
          {Core::Pack, stmntPre, stmntBody, stmntPro};
 
-      fn->stmnt = SR::StatementCreate_Multi(attr.namePos, std::move(stmnts));
+      fn->stmnt = ctx.fact.stCreate_Multi({}, attr.namePos, std::move(stmnts));
       fn->defin = true;
 
       fn->setAllocAut(attr.allocAut);
@@ -430,11 +430,11 @@ namespace GDCC::CC
 
       // address-space-declaration
       if(ctx.isAddrDecl(scope))
-         return ctx.parseAddrDecl(scope, attrBase), SR::StatementCreate_Empty(pos);
+         return ctx.parseAddrDecl(scope, attrBase), ctx.fact.stCreate_Empty({}, pos);
 
       // static_assert-declaration
       if(ctx.isStaticAssert(scope))
-         return ctx.parseStaticAssert(scope), SR::StatementCreate_Empty(pos);
+         return ctx.parseStaticAssert(scope), ctx.fact.stCreate_Empty({}, pos);
 
       std::vector<SR::Statement::CRef> inits;
 
@@ -480,10 +480,10 @@ namespace GDCC::CC
       decl_end:
       switch(inits.size())
       {
-      case  0: return SR::StatementCreate_Empty(std::move(labels), pos);
+      case  0: return ctx.fact.stCreate_Empty(std::move(labels), pos);
       case  1: if(labels.empty()) return inits[0];
-      default: return SR::StatementCreate_Multi(std::move(labels), pos,
-         Core::Array<SR::Statement::CRef>(inits.begin(), inits.end()));
+      default: return ctx.fact.stCreate_Multi(std::move(labels), pos,
+         {inits.begin(), inits.end()});
       }
    }
 }
@@ -504,7 +504,7 @@ namespace GDCC::CC
       {
          Core::Origin pos = in.get().pos;
          WarnFileSemico(pos, "extraneous file-scope semicolon");
-         return SR::StatementCreate_Empty(in.reget().pos);
+         return fact.stCreate_Empty({}, in.reget().pos);
       }
 
       return GetDeclBase(*this, scope, {});

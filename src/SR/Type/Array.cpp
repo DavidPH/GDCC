@@ -12,7 +12,8 @@
 
 #include "SR/Type/Array.hpp"
 
-#include "SR/Exp.hpp"
+#include "SR/Exp/IRExp.hpp"
+#include "SR/Exp/MulSize.hpp"
 
 #include "IR/Type.hpp"
 
@@ -137,7 +138,7 @@ namespace GDCC::SR
    //
    Exp::CRef Type_ArrVM::getSizeBytesVM() const
    {
-      return ExpCreate_MulSize(size, base->getSizeBytesVM());
+      return Exp_MulSize::Create(size, base->getSizeBytesVM());
    }
 
    //
@@ -145,7 +146,7 @@ namespace GDCC::SR
    //
    Exp::CRef Type_ArrVM::getSizePointVM() const
    {
-      return ExpCreate_MulSize(size, base->getSizePointVM());
+      return Exp_MulSize::Create(size, base->getSizePointVM());
    }
 
    //
@@ -156,7 +157,7 @@ namespace GDCC::SR
       auto wordBytes = Target::GetWordBytes();
 
       if(wordBytes == 1)
-         return ExpCreate_MulSize(size, base->getSizeWordsVM());
+         return Exp_MulSize::Create(size, base->getSizeWordsVM());
 
       throw TypeError();
    }
@@ -259,7 +260,7 @@ namespace GDCC::SR
    //
    Exp::CRef Type_Array::getSizeBytesVM() const
    {
-      return ExpCreate_MulSize(base->getSizeBytesVM(), ExpCreate_Size(size));
+      return Exp_MulSize::Create(base->getSizeBytesVM(), Exp_IRExp::Create_Size(size));
    }
 
    //
@@ -275,7 +276,7 @@ namespace GDCC::SR
    //
    Exp::CRef Type_Array::getSizePointVM() const
    {
-      return ExpCreate_MulSize(base->getSizePointVM(), ExpCreate_Size(size));
+      return Exp_MulSize::Create(base->getSizePointVM(), Exp_IRExp::Create_Size(size));
    }
 
    //
@@ -299,7 +300,7 @@ namespace GDCC::SR
       auto wordBytes = Target::GetWordBytes();
 
       if(wordBytes == 1)
-         return ExpCreate_MulSize(base->getSizeWordsVM(), ExpCreate_Size(size));
+         return Exp_MulSize::Create(base->getSizeWordsVM(), Exp_IRExp::Create_Size(size));
 
       throw TypeError();
    }

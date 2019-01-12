@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -55,15 +55,6 @@ namespace GDCC::SR
    Type::CRef Exp_MulSize::v_getType() const
    {
       return Type::Size;
-   }
-
-   //
-   // ExpCreate_MulSize
-   //
-   Exp::CRef ExpCreate_MulSize(Exp const *l, Exp const *r)
-   {
-      auto pos = l->pos ? l->pos : r->pos;
-      return static_cast<Exp::CRef>(new Exp_MulSize(l, r, pos));
    }
 }
 

@@ -25,22 +25,6 @@
 namespace GDCC::SR
 {
    //
-   // Exp_IRExp constructor
-   //
-   Exp_IRExp::Exp_IRExp(IR::Exp const *exp_, Type const *type_,
-      Core::Origin pos_) :
-      Super{pos_}, exp{exp_}, type{type_}
-   {
-   }
-
-   //
-   // Exp_IRExp destructor
-   //
-   Exp_IRExp::~Exp_IRExp()
-   {
-   }
-
-   //
    // Exp_IRExp::v_genStmnt
    //
    void Exp_IRExp::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
@@ -65,32 +49,15 @@ namespace GDCC::SR
    }
 
    //
-   // ExpCreate_IRExp
+   // Exp_IRExp::Create_Size
    //
-   Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type)
+   Exp_IRExp::CRef Exp_IRExp::Create_Size(Core::FastU size)
    {
-      return static_cast<Exp::CRef>(new Exp_IRExp(exp, type, exp->pos));
-   }
+      auto e = IR::ExpCreate_Value(
+         IR::Value_Fixed(Core::NumberCast<Core::Integ>(size),
+            Type::Size->getIRType().tFixed), {});
 
-   //
-   // ExpCreate_IRExp
-   //
-   Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type,
-      Core::Origin pos)
-   {
-      return static_cast<Exp::CRef>(new Exp_IRExp(exp, type, pos));
-   }
-
-   //
-   // ExpCreate_Size
-   //
-   Exp::CRef ExpCreate_Size(Core::FastU size)
-   {
-      return ExpCreate_IRExp(
-         IR::ExpCreate_Value(
-            IR::Value_Fixed(Core::NumberCast<Core::Integ>(size),
-               Type::Size->getIRType().tFixed), {}),
-         Type::Size);
+      return Create(e, Type::Size, e->pos);
    }
 }
 

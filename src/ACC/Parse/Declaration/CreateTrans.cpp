@@ -142,7 +142,7 @@ namespace GDCC::ACC
 
       scope.addCreateTrans(name, std::move(decl));
 
-      return SR::StatementCreate_Empty(pos);
+      return fact.stCreate_Empty({}, pos);
    }
 }
 

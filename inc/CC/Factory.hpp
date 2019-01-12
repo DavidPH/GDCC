@@ -46,6 +46,8 @@ namespace GDCC::CC
       using TypeRef = Core::CounterRef<Type const>;
 
    public:
+      virtual ExpRef expCreate_Arg(SR::Arg const &arg, Origin pos);
+
       virtual ExpRef expConvert_Arith(Type const *t, Exp const *e, Origin pos);
 
       virtual ExpRef expConvert_ArithPtr(Type const *t, Exp const *e, Origin pos);
@@ -113,6 +115,9 @@ namespace GDCC::CC
 
       virtual ExpRef expCreate_GenSel(Exp const *exp, Exp const *def,
          Core::Array<GenAssoc> &&a, Origin pos);
+
+      ExpRef expCreate_IRExp(IR::Exp const *exp, Type const *type);
+      virtual ExpRef expCreate_IRExp(IR::Exp const *exp, Type const *type, Origin pos);
 
       virtual ExpRef expCreate_IncPre(Exp const *e, Origin pos);
       virtual ExpRef expCreate_IncSuf(Exp const *e, Origin pos);
@@ -241,6 +246,11 @@ namespace GDCC::CC
       virtual StRef stCreate_Do(Labels &&labels, Origin pos, Scope_Local &ctx,
          St const *body, Exp const *cond);
 
+      virtual StRef stCreate_Empty(Labels &&labels, Origin pos);
+
+      StRef stCreate_Exp(Labels &&labels, Exp const *exp);
+      virtual StRef stCreate_Exp(Labels &&labels, Origin pos, Exp const *exp);
+
       virtual StRef stCreate_For(Labels &&labels, Origin pos, Scope_Local &ctx,
          St const *init, Exp const *cond, St const *iter, St const *body);
 
@@ -258,6 +268,9 @@ namespace GDCC::CC
 
       virtual StRef stCreate_If(Labels &&labels, Origin pos, Exp const *cond,
          St const *bodyT, St const *bodyF);
+
+      virtual StRef stCreate_Multi(Labels &&labels, Origin pos,
+         Core::Array<StRef> &&sts);
 
       virtual StRef stCreate_Return(Labels &&labels, Origin pos,
          Scope_Function &scope, Exp const *exp = nullptr);

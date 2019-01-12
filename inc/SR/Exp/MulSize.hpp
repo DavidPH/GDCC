@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -31,7 +31,8 @@ namespace GDCC::SR
          GDCC::SR::Exp_MulSize, GDCC::SR::Exp_Binary);
 
    public:
-      friend Exp::CRef ExpCreate_MulSize(Exp const *l, Exp const *r);
+      static CRef Create(Exp const *l, Exp const *r)
+         {return CRef(new This(l, r, l->pos ? l->pos : r->pos));}
 
    protected:
       Exp_MulSize(Exp const *l, Exp const *r, Core::Origin pos);

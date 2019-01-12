@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -140,16 +140,6 @@ namespace GDCC::SR
 
 namespace GDCC::SR
 {
-   Exp::CRef ExpCreate_Arg(Arg const &arg, Core::Origin pos);
-
-   Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type);
-   Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type,
-      Core::Origin pos);
-
-   Exp::CRef ExpCreate_MulSize(Exp const *l, Exp const *r);
-
-   Exp::CRef ExpCreate_Size(Core::FastU value);
-
    // Moves data from one Arg to another.
    void GenStmnt_Move(Exp const *exp, GenStmntCtx const &ctx,
       Arg const &dst, Arg const &src);

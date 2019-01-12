@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -31,24 +31,15 @@ namespace GDCC::SR
          GDCC::SR::Statement_Exp, GDCC::SR::Statement);
 
    public:
-      friend Statement::CRef StatementCreate_Exp(
-         Core::Array<Core::String> const &labels, Core::Origin pos,
-         Exp const *exp);
-      friend Statement::CRef StatementCreate_Exp(
-         Core::Array<Core::String> &&labels, Core::Origin pos,
-         Exp const *exp);
-      friend Statement::CRef StatementCreate_Exp(Core::Origin pos,
-         Exp const *exp);
-      friend Statement::CRef StatementCreate_Exp(Exp const *exp);
-
       Core::CounterRef<Exp const> const exp;
 
+
+      static CRef Create(Labels &&labels, Core::Origin pos, Exp const *exp)
+         {return CRef(new This(std::move(labels), pos, exp));}
+
    protected:
-      Statement_Exp(Core::Array<Core::String> const &labels,
-         Core::Origin pos, Exp const *exp);
-      Statement_Exp(Core::Array<Core::String>      &&labels,
-         Core::Origin pos, Exp const *exp);
-      Statement_Exp(Core::Origin pos, Exp const *exp);
+      Statement_Exp(Labels &&labels_, Core::Origin pos_, Exp const *exp_) :
+         Super{std::move(labels_), pos_}, exp{exp_} {}
       virtual ~Statement_Exp();
 
       virtual void v_genStmnt(GenStmntCtx const &ctx) const;

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,8 +24,8 @@ namespace GDCC::SR
    //
    void Statement_Multi::v_genLabel(IR::Block &block) const
    {
-      for(auto const &stmnt : stmnts)
-         stmnt->genLabel(block);
+      for(auto const &st : sts)
+         st->genLabel(block);
    }
 
    //
@@ -33,8 +33,8 @@ namespace GDCC::SR
    //
    void Statement_Multi::v_genStmnt(GenStmntCtx const &ctx) const
    {
-      for(auto const &stmnt : stmnts)
-         stmnt->genStmnt(ctx);
+      for(auto const &st : sts)
+         st->genStmnt(ctx);
    }
 
    //
@@ -42,8 +42,8 @@ namespace GDCC::SR
    //
    bool Statement_Multi::v_isBranch() const
    {
-      for(auto const &stmnt : stmnts)
-         if(stmnt->isBranch()) return true;
+      for(auto const &st : sts)
+         if(st->isBranch()) return true;
 
       return false;
    }
@@ -53,8 +53,8 @@ namespace GDCC::SR
    //
    bool Statement_Multi::v_isEffect() const
    {
-      for(auto const &stmnt : stmnts)
-         if(stmnt->isEffect()) return true;
+      for(auto const &st : sts)
+         if(st->isEffect()) return true;
 
       return false;
    }
@@ -64,8 +64,8 @@ namespace GDCC::SR
    //
    bool Statement_Multi::v_isLabel() const
    {
-      for(auto const &stmnt : stmnts)
-         if(stmnt->isLabel()) return true;
+      for(auto const &st : sts)
+         if(st->isLabel()) return true;
 
       return false;
    }
@@ -75,8 +75,8 @@ namespace GDCC::SR
    //
    bool Statement_Multi::v_isNoAuto() const
    {
-      for(auto const &stmnt : stmnts)
-         if(!stmnt->isNoAuto()) return false;
+      for(auto const &st : sts)
+         if(!st->isNoAuto()) return false;
 
       return true;
    }
@@ -86,8 +86,8 @@ namespace GDCC::SR
    //
    bool Statement_Multi::v_isNoReturn() const
    {
-      for(auto const &stmnt : stmnts)
-         if(!stmnt->isNoReturn()) return false;
+      for(auto const &st : sts)
+         if(!st->isNoReturn()) return false;
 
       return true;
    }
@@ -97,64 +97,10 @@ namespace GDCC::SR
    //
    bool Statement_Multi::v_isReturn() const
    {
-      for(auto const &stmnt : stmnts)
-         if(stmnt->isReturn()) return true;
+      for(auto const &st : sts)
+         if(st->isReturn()) return true;
 
       return false;
-   }
-
-   //
-   // StatementCreate_Multi
-   //
-   Statement::CRef StatementCreate_Multi(Statement::Labels const &labels,
-      Core::Origin pos, Statement::Stmnts const &stmnts)
-   {
-      return Statement_Multi::Create(labels, pos, stmnts);
-   }
-
-   //
-   // StatementCreate_Multi
-   //
-   Statement::CRef StatementCreate_Multi(Statement::Labels const &labels,
-      Core::Origin pos, Statement::Stmnts &&stmnts)
-   {
-      return Statement_Multi::Create(labels, pos, std::move(stmnts));
-   }
-
-   //
-   // StatementCreate_Multi
-   //
-   Statement::CRef StatementCreate_Multi(Statement::Labels &&labels,
-      Core::Origin pos, Statement::Stmnts const &stmnts)
-   {
-      return Statement_Multi::Create(std::move(labels), pos, stmnts);
-   }
-
-   //
-   // StatementCreate_Multi
-   //
-   Statement::CRef StatementCreate_Multi(Statement::Labels &&labels,
-      Core::Origin pos, Statement::Stmnts &&stmnts)
-   {
-      return Statement_Multi::Create(std::move(labels), pos, std::move(stmnts));
-   }
-
-   //
-   // StatementCreate_Multi
-   //
-   Statement::CRef StatementCreate_Multi(Core::Origin pos,
-      Statement::Stmnts const &stmnts)
-   {
-      return Statement_Multi::Create(pos, stmnts);
-   }
-
-   //
-   // StatementCreate_Multi
-   //
-   Statement::CRef StatementCreate_Multi(Core::Origin pos,
-      Statement::Stmnts &&stmnts)
-   {
-      return Statement_Multi::Create(pos, std::move(stmnts));
    }
 }
 

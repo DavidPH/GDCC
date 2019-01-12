@@ -270,9 +270,9 @@ namespace GDCC::CC
       {
          // expression(opt)
          if(in.peek().tok != Core::TOK_Semico)
-            init = SR::StatementCreate_Exp(getExp(loopScope));
+            init = fact.stCreate_Exp({}, getExp(loopScope));
          else
-            init = SR::StatementCreate_Empty(pos);
+            init = fact.stCreate_Empty({}, pos);
 
          // ;
          expect(Core::TOK_Semico);
@@ -291,9 +291,9 @@ namespace GDCC::CC
       // expression(opt)
       SR::Statement::CPtr iter;
       if(in.peek().tok != Core::TOK_ParenC)
-         iter = SR::StatementCreate_Exp(getExp(loopScope));
+         iter = fact.stCreate_Exp({}, getExp(loopScope));
       else
-         iter = SR::StatementCreate_Empty(pos);
+         iter = fact.stCreate_Empty({}, pos);
 
       // )
       expect(Core::TOK_ParenC);
@@ -463,7 +463,7 @@ namespace GDCC::CC
          else
          {
             // expression
-            stmnts.push_back(SR::StatementCreate_Exp(getExp(withScope)));
+            stmnts.push_back(fact.stCreate_Exp({}, getExp(withScope)));
 
             // ;
             expect(Core::TOK_Semico);
@@ -476,7 +476,7 @@ namespace GDCC::CC
       // statement
       stmnts.push_back(getStatement(withScope));
 
-      return SR::StatementCreate_Multi(std::move(labels), pos,
+      return fact.stCreate_Multi(std::move(labels), pos,
          {stmnts.begin(), stmnts.end()});
    }
 
@@ -514,7 +514,7 @@ namespace GDCC::CC
 
       // }
 
-      return SR::StatementCreate_Multi(std::move(labels), pos,
+      return fact.stCreate_Multi(std::move(labels), pos,
          {stmnts.begin(), stmnts.end()});
    }
 
@@ -570,7 +570,7 @@ namespace GDCC::CC
 
       // ;
       if(in.drop(Core::TOK_Semico))
-         return SR::StatementCreate_Empty(std::move(labels), pos);
+         return fact.stCreate_Empty(std::move(labels), pos);
 
       // expression
       auto exp = getExp(scope);
@@ -581,7 +581,7 @@ namespace GDCC::CC
       if(!exp->isEffect() && !exp->getType()->isTypeVoid())
          SR::WarnUnusedValue(exp->pos, "expression result unused");
 
-      return SR::StatementCreate_Exp(std::move(labels), pos, exp);
+      return fact.stCreate_Exp(std::move(labels), pos, exp);
    }
 }
 

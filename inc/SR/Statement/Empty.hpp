@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -31,18 +31,12 @@ namespace GDCC::SR
          GDCC::SR::Statement_Empty, GDCC::SR::Statement);
 
    public:
-      friend Statement::CRef StatementCreate_Empty(
-         Core::Array<Core::String> const &labels, Core::Origin pos);
-      friend Statement::CRef StatementCreate_Empty(
-         Core::Array<Core::String>      &&labels, Core::Origin pos);
-      friend Statement::CRef StatementCreate_Empty(Core::Origin pos);
+      static CRef Create(Labels &&labels, Core::Origin pos)
+         {return CRef(new This(std::move(labels), pos));}
 
    protected:
-      Statement_Empty(Core::Array<Core::String> const &labels_, Core::Origin pos_) :
-         Super{labels_, pos_} {}
-      Statement_Empty(Core::Array<Core::String> &&labels_, Core::Origin pos_) :
+      Statement_Empty(Labels &&labels_, Core::Origin pos_) :
          Super{std::move(labels_), pos_} {}
-      Statement_Empty(Core::Origin pos_) : Super{pos_} {}
 
       virtual void v_genStmnt(GenStmntCtx const &ctx) const;
 

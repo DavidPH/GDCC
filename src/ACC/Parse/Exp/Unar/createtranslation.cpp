@@ -15,6 +15,7 @@
 #include "ACC/Factory.hpp"
 #include "ACC/PropDecl.hpp"
 
+#include "SR/Exp/IRExp.hpp"
 #include "SR/Type.hpp"
 
 #include "CC/Exp.hpp"
@@ -141,7 +142,7 @@ namespace GDCC::ACC
       expect(Core::TOK_ParenO);
 
       // Start with a no-op expression.
-      auto exp = SR::ExpCreate_Size(0);
+      SR::Exp::CRef exp = SR::Exp_IRExp::Create_Size(0);
 
       if(ctrans->propBegin)
       {

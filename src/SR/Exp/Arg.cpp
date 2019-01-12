@@ -24,14 +24,6 @@
 namespace GDCC::SR
 {
    //
-   // Exp_Arg constructor
-   //
-   Exp_Arg::Exp_Arg(Arg const &arg_, Core::Origin pos_) :
-      Super{pos_}, arg{arg_}
-   {
-   }
-
-   //
    // Exp_Arg::v_genStmnt
    //
    void Exp_Arg::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
@@ -91,14 +83,6 @@ namespace GDCC::SR
    bool Exp_Arg::v_isNoAuto() const
    {
       return arg.type->getQualAddr().base != IR::AddrBase::Aut;
-   }
-
-   //
-   // ExpCreate_Arg
-   //
-   Exp::CRef ExpCreate_Arg(Arg const &arg, Core::Origin pos)
-   {
-      return static_cast<Exp::CRef>(new Exp_Arg(arg, pos));
    }
 }
 

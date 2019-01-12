@@ -106,7 +106,7 @@ namespace GDCC::ACC
       Core::Array<SR::Statement::CRef> stmnts =
          {Core::Pack, stmntPre, stmntBody, stmntPro};
 
-      fn->stmnt = SR::StatementCreate_Multi(attr.namePos, std::move(stmnts));
+      fn->stmnt = ctx.fact.stCreate_Multi({}, attr.namePos, std::move(stmnts));
       fn->defin = true;
 
       fn->setAllocAut(attr.allocAut);
@@ -204,7 +204,7 @@ namespace GDCC::ACC
 
       ParseDeclFunction(*this, scope, attr);
 
-      return SR::StatementCreate_Empty(pos);
+      return fact.stCreate_Empty({}, pos);
    }
 
    //
@@ -246,7 +246,7 @@ namespace GDCC::ACC
 
       ParseDeclFunction(*this, scope, attr);
 
-      return SR::StatementCreate_Empty(pos);
+      return fact.stCreate_Empty({}, pos);
    }
 }
 

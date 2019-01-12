@@ -24,7 +24,7 @@
 #include "IR/Exp.hpp"
 #include "IR/Glyph.hpp"
 
-#include "SR/Exp.hpp"
+#include "SR/Exp/IRExp.hpp"
 #include "SR/Type.hpp"
 
 
@@ -59,7 +59,7 @@ namespace GDCC::ACC
       auto space = type->getQualAddr();
 
       auto indexExp = ctx.fact.expCreate_Cst(CC::TypeIntegPrS, args[0]);
-      auto spaceExp = SR::ExpCreate_IRExp(IR::ExpCreate_Glyph(
+      auto spaceExp = ctx.fact.expCreate_IRExp(IR::ExpCreate_Glyph(
          {ctx.prog, space.name}, pos), CC::TypeIntegPrS, pos);
 
       if(args.size() == 1 && propArray)
@@ -261,7 +261,7 @@ namespace GDCC::ACC
       auto pos = in.get().pos;
 
       // Start with a no-op expression.
-      auto exp = SR::ExpCreate_Size(0);
+      SR::Exp::CRef exp = SR::Exp_IRExp::Create_Size(0);
 
       if(print->propBegin)
          exp = fact.expCreate_Comma(exp,

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Factory.hpp"
 #include "ACC/Scope.hpp"
 
 #include "CC/Exp.hpp"
@@ -82,7 +83,7 @@ namespace GDCC::ACC
       if(type)
          type->setComplete(CC::TypeIntegPrS);
 
-      return SR::StatementCreate_Empty(pos);
+      return fact.stCreate_Empty({}, pos);
    }
 }
 

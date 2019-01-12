@@ -12,6 +12,7 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Factory.hpp"
 #include "ACC/Scope.hpp"
 
 #include "CC/Exp.hpp"
@@ -225,7 +226,7 @@ namespace GDCC::ACC
 
       expect(Core::TOK_Semico);
 
-      return SR::StatementCreate_Empty(pos);
+      return fact.stCreate_Empty({}, pos);
    }
 }
 

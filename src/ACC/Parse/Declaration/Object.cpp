@@ -92,10 +92,10 @@ namespace GDCC::ACC
 
       switch(inits.size())
       {
-      case  0: return SR::StatementCreate_Empty(std::move(labels), pos);
+      case  0: return ctx.fact.stCreate_Empty(std::move(labels), pos);
       case  1: if(labels.empty()) return inits[0];
-      default: return SR::StatementCreate_Multi(std::move(labels), pos,
-         Core::Array<SR::Statement::CRef>(inits.begin(), inits.end()));
+      default: return ctx.fact.stCreate_Multi(std::move(labels), pos,
+         {inits.begin(), inits.end()});
       }
    }
 
@@ -336,7 +336,7 @@ namespace GDCC::ACC
       auto initExp = ctx.fact.expCreate_Obj(ctx.prog, obj, attr.namePos);
       initExp = CC::Exp_Assign::Create(initExp, obj->init, obj->init->pos);
 
-      inits.emplace_back(SR::StatementCreate_Exp(initExp));
+      inits.emplace_back(ctx.fact.stCreate_Exp({}, initExp));
    }
 }
 

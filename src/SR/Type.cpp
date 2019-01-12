@@ -12,7 +12,7 @@
 
 #include "SR/Type.hpp"
 
-#include "SR/Exp.hpp"
+#include "SR/Exp/IRExp.hpp"
 
 #include "Core/Array.hpp"
 
@@ -135,7 +135,7 @@ namespace GDCC::SR
    //
    Exp::CRef Type::getSizeBytesVM() const
    {
-      return ExpCreate_Size(getSizeBytes());
+      return Exp_IRExp::Create_Size(getSizeBytes());
    }
 
    //
@@ -143,7 +143,7 @@ namespace GDCC::SR
    //
    Exp::CRef Type::getSizePointVM() const
    {
-      return ExpCreate_Size(getSizePoint());
+      return Exp_IRExp::Create_Size(getSizePoint());
    }
 
    //
@@ -151,7 +151,7 @@ namespace GDCC::SR
    //
    Exp::CRef Type::getSizeWordsVM() const
    {
-      return ExpCreate_Size(getSizeWords());
+      return Exp_IRExp::Create_Size(getSizeWords());
    }
 
    //

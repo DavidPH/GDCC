@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,8 @@
 #define GDCC__SR__Exp__IRExp_H__
 
 #include "../../SR/Exp.hpp"
+
+#include "../../IR/Exp.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -34,13 +36,14 @@ namespace GDCC::SR
       TypeCRef  const type;
 
 
-      friend Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type);
-      friend Exp::CRef ExpCreate_IRExp(IR::Exp const *exp, Type const *type,
-         Core::Origin pos);
+      static CRef Create(IR::Exp const *exp, Type const *type, Core::Origin pos)
+         {return CRef(new This(exp, type, pos));}
+
+      static CRef Create_Size(Core::FastU size);
 
    protected:
-      Exp_IRExp(IR::Exp const *exp, Type const *type, Core::Origin pos);
-      virtual ~Exp_IRExp();
+      Exp_IRExp(IR::Exp const *exp_, Type const *type_, Core::Origin pos_) :
+         Super{pos_}, exp{exp_}, type{type_} {}
 
       virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 

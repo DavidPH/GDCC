@@ -246,7 +246,7 @@ namespace GDCC::ACC
       // Create expression.
       auto valIR = IR::Value_Float(std::move(val), type->getIRType().tFloat);
       auto expIR = IR::ExpCreate_Value(std::move(valIR), tok.pos);
-      return SR::ExpCreate_IRExp(expIR, type, tok.pos);
+      return ctx.fact.expCreate_IRExp(expIR, type, tok.pos);
    }
 
    //

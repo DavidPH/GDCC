@@ -519,7 +519,7 @@ namespace GDCC::CC
          if(auto sub = getSub(index))
          {
             auto cIR = IR::ExpCreate_Value(std::move(c), pos);
-            sub->value = SR::ExpCreate_IRExp(cIR, sub->type, pos);
+            sub->value = fact.expCreate_IRExp(cIR, sub->type, pos);
          }
 
          index = nextSub(index);

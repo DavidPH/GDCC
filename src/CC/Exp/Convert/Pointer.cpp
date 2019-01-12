@@ -19,6 +19,7 @@
 
 #include "IR/Block.hpp"
 
+#include "SR/Exp/IRExp.hpp"
 #include "SR/Type.hpp"
 
 #include "Target/Info.hpp"
@@ -188,12 +189,12 @@ namespace GDCC::CC
       ctx.block.setArgSize();
       if(shiftL > shiftR)
       {
-         auto lit = SR::ExpCreate_Size(shiftL / shiftR)->getIRExp();
+         auto lit = SR::Exp_IRExp::Create_Size(shiftL / shiftR)->getIRExp();
          ctx.block.addStmnt(IR::Code::DivU, IR::Block::Stk(), IR::Block::Stk(), lit);
       }
       else
       {
-         auto lit = SR::ExpCreate_Size(shiftR / shiftL)->getIRExp();
+         auto lit = SR::Exp_IRExp::Create_Size(shiftR / shiftL)->getIRExp();
          ctx.block.addStmnt(IR::Code::MulU, IR::Block::Stk(), IR::Block::Stk(), lit);
       }
 

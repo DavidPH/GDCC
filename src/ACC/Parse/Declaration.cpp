@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "ACC/Parse.hpp"
+
+#include "ACC/Factory.hpp"
 
 #include "CC/Warning.hpp"
 
@@ -34,7 +36,7 @@ namespace GDCC::ACC
       {
          Core::Origin pos = in.get().pos;
          CC::WarnFileSemico(pos, "extraneous file-scope semicolon");
-         return SR::StatementCreate_Empty(in.reget().pos);
+         return fact.stCreate_Empty({}, in.reget().pos);
       }
 
       if(in.peek(Core::TOK_KeyWrd) || in.peek(Core::TOK_Identi)) switch(in.peek().str)

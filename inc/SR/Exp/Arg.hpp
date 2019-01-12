@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -35,10 +35,12 @@ namespace GDCC::SR
       Arg const arg;
 
 
-      friend Exp::CRef ExpCreate_Arg(Arg const &arg, Core::Origin pos);
+      static CRef Create(Arg const &arg, Core::Origin pos)
+         {return CRef(new This(arg, pos));}
 
    protected:
-      Exp_Arg(Arg const &arg, Core::Origin pos);
+      Exp_Arg(Arg const &arg_, Core::Origin pos_) :
+         Super{pos_}, arg{arg_} {}
 
       virtual void v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const;
 

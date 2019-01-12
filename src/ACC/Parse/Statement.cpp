@@ -203,8 +203,7 @@ namespace GDCC::ACC
 
       // }
 
-      return SR::StatementCreate_Multi(std::move(labels), pos,
-         {stmnts.begin(), stmnts.end()});
+      return fact.stCreate_Multi(std::move(labels), pos, {stmnts.begin(), stmnts.end()});
    }
 }
 

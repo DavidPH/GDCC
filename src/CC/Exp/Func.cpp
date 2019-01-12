@@ -20,6 +20,7 @@
 #include "IR/Glyph.hpp"
 
 #include "SR/Arg.hpp"
+#include "SR/Exp/IRExp.hpp"
 #include "SR/Function.hpp"
 #include "SR/Type.hpp"
 
@@ -67,7 +68,7 @@ namespace GDCC::CC
       IR::Glyph glyph{&prog, fn->glyph};
       auto addr = IR::ExpCreate_Glyph(glyph, pos);
       auto type = fn->type->getTypePointer();
-      auto exp  = SR::ExpCreate_IRExp(addr, type, pos);
+      auto exp  = SR::Exp_IRExp::Create(addr, type, pos);
 
       return SR::Arg(fn->type, exp);
    }

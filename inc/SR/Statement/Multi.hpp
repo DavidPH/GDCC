@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -31,34 +31,16 @@ namespace GDCC::SR
          GDCC::SR::Statement_Multi, GDCC::SR::Statement);
 
    public:
-      static CRef Create(Labels const &labels, Core::Origin pos, Stmnts const &stmnts)
-         {return CRef(new This(labels, pos, stmnts));}
-      static CRef Create(Labels const &labels, Core::Origin pos, Stmnts &&stmnts)
-         {return CRef(new This(labels, pos, std::move(stmnts)));}
-      static CRef Create(Labels &&labels, Core::Origin pos, Stmnts const &stmnts)
-         {return CRef(new This(std::move(labels), pos, stmnts));}
-      static CRef Create(Labels &&labels, Core::Origin pos, Stmnts &&stmnts)
-         {return CRef(new This(std::move(labels), pos, std::move(stmnts)));}
-      static CRef Create(Core::Origin pos, Stmnts const &stmnts)
-         {return CRef(new This(pos, stmnts));}
-      static CRef Create(Core::Origin pos, Stmnts &&stmnts)
-         {return CRef(new This(pos, std::move(stmnts)));}
+      static CRef Create(Labels &&labels, Core::Origin pos,
+         Core::Array<Statement::CRef> &&sts)
+         {return CRef(new This(std::move(labels), pos, std::move(sts)));}
 
-      Stmnts const stmnts;
+      Core::Array<Statement::CRef> const sts;
 
    protected:
-      Statement_Multi(Labels const &lbl, Core::Origin pos_, Stmnts const &stmnts_) :
-         Super{lbl, pos_}, stmnts{stmnts_} {}
-      Statement_Multi(Labels const &lbl, Core::Origin pos_, Stmnts &&stmnts_) :
-         Super{lbl, pos_}, stmnts{std::move(stmnts_)} {}
-      Statement_Multi(Labels &&lbl, Core::Origin pos_, Stmnts const &stmnts_) :
-         Super{std::move(lbl), pos_}, stmnts{stmnts_} {}
-      Statement_Multi(Labels &&lbl, Core::Origin pos_, Stmnts &&stmnts_) :
-         Super{std::move(lbl), pos_}, stmnts{std::move(stmnts_)} {}
-      Statement_Multi(Core::Origin pos_, Stmnts const &stmnts_) :
-         Super{pos_}, stmnts{stmnts_} {}
-      Statement_Multi(Core::Origin pos_, Stmnts &&stmnts_) :
-         Super{pos_}, stmnts{std::move(stmnts_)} {}
+      Statement_Multi(Labels &&lbl, Core::Origin pos_,
+         Core::Array<Statement::CRef> &&sts_) :
+         Super{std::move(lbl), pos_}, sts{std::move(sts_)} {}
 
       virtual void v_genLabel(IR::Block &block) const;
       virtual void v_genStmnt(GenStmntCtx const &ctx) const;

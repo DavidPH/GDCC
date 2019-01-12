@@ -95,7 +95,7 @@ namespace GDCC::CC
       auto &glyphData = glyph.getData();
       glyphData.type = type->getIRType();
 
-      return SR::ExpCreate_IRExp(IR::ExpCreate_Glyph(glyph, pos), type, pos);
+      return ctx.fact.expCreate_IRExp(IR::ExpCreate_Glyph(glyph, pos), type, pos);
    }
 
    //
@@ -269,7 +269,7 @@ namespace GDCC::CC
 
       ctx.prog.getGlyphData(djump.glyph).type = IR::Type_DJump();
 
-      return SR::ExpCreate_IRExp(
+      return ctx.fact.expCreate_IRExp(
          IR::ExpCreate_Glyph({ctx.prog, djump.glyph}, pos),
          SR::Type::Label->getTypePointer(), pos);
    }

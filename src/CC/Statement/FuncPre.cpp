@@ -19,7 +19,7 @@
 
 #include "IR/Block.hpp"
 
-#include "SR/Exp.hpp"
+#include "SR/Exp/IRExp.hpp"
 #include "SR/Function.hpp"
 #include "SR/Object.hpp"
 #include "SR/Type.hpp"
@@ -41,8 +41,9 @@ namespace GDCC::CC
    static void MoveParam(SR::GenStmntCtx const &ctx, Core::FastU paramIdx,
       Core::FastU objValue, Core::FastU objBytes)
    {
-      IR::Arg_Lit dstIdx{Target::GetWordBytes(), SR::ExpCreate_Size(objValue)->getIRExp()};
-      IR::Arg_Lit srcIdx{Target::GetWordBytes(), SR::ExpCreate_Size(paramIdx)->getIRExp()};
+      // TODO: Replace the Create_Size call with something more direct.
+      IR::Arg_Lit dstIdx{Target::GetWordBytes(), SR::Exp_IRExp::Create_Size(objValue)->getIRExp()};
+      IR::Arg_Lit srcIdx{Target::GetWordBytes(), SR::Exp_IRExp::Create_Size(paramIdx)->getIRExp()};
 
       ctx.block.addStmnt(IR::Code::Move,
          ArgT(objBytes, dstIdx), IR::Arg_LocReg(objBytes, srcIdx));

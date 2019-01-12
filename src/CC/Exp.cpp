@@ -22,10 +22,11 @@
 #include "IR/Exp.hpp"
 #include "IR/Value.hpp"
 
-#include "SR/Arg.hpp"
+#include "SR/Exp/Arg.hpp"
 #include "SR/Exp/Binary.hpp"
 #include "SR/Exp/Cnd.hpp"
 #include "SR/Exp/Convert.hpp"
+#include "SR/Exp/IRExp.hpp"
 #include "SR/Exp/Logical.hpp"
 #include "SR/Type.hpp"
 
@@ -102,6 +103,14 @@ namespace GDCC::CC
       // TODO: Check struct/union members.
 
       return true;
+   }
+
+   //
+   // Factory::expCreate_Arg
+   //
+   SR::Exp::CRef Factory::expCreate_Arg(SR::Arg const &arg, Core::Origin pos)
+   {
+      return SR::Exp_Arg::Create(arg, pos);
    }
 
    //
@@ -268,6 +277,23 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_DecSuf(SR::Exp const *e, Core::Origin pos)
    {
       return expCreate_SubEq(e, expCreate_LitInt(TypeIntegPrS, 1, pos), pos, true);
+   }
+
+   //
+   // Factory::expCreate_IRExp
+   //
+   SR::Exp::CRef Factory::expCreate_IRExp(IR::Exp const *exp, SR::Type const *type)
+   {
+      return expCreate_IRExp(exp, type, exp->pos);
+   }
+
+   //
+   // Factory::expCreate_IRExp
+   //
+   SR::Exp::CRef Factory::expCreate_IRExp(IR::Exp const *exp, SR::Type const *type,
+      Core::Origin pos)
+   {
+      return SR::Exp_IRExp::Create(exp, type, pos);
    }
 
    //

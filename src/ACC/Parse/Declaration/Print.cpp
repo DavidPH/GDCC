@@ -169,7 +169,7 @@ namespace GDCC::ACC
 
       scope.addPrint(name, std::move(decl));
 
-      return SR::StatementCreate_Empty(pos);
+      return fact.stCreate_Empty({}, pos);
    }
 }
 
