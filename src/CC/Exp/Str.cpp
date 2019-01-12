@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "CC/Exp.hpp"
 
+#include "CC/Factory.hpp"
 #include "CC/Parse.hpp"
 #include "CC/Scope/Global.hpp"
 #include "CC/Type.hpp"
@@ -36,7 +37,7 @@ namespace GDCC::CC
    //
    // CreateStr
    //
-   static SR::Exp::CRef CreateStr(Core::Array<IR::Value> &&val,
+   static SR::Exp::CRef CreateStr(Factory &fact, Core::Array<IR::Value> &&val,
       IR::Program &prog, Scope &scope, Core::Origin pos, SR::Type const *type)
    {
       // Set literal object's attributes.
@@ -61,7 +62,7 @@ namespace GDCC::CC
       obj->init = SR::ExpCreate_IRExp(initExp, attr.type, pos);
 
       // The expression's result is the newly created object.
-      return ExpCreate_Obj(prog, obj, pos);
+      return fact.expCreate_Obj(prog, obj, pos);
    }
 }
 
@@ -73,9 +74,9 @@ namespace GDCC::CC
 namespace GDCC::CC
 {
    //
-   // ExpCreate_StrIdx
+   // Factory::expCreate_StrIdx
    //
-   SR::Exp::CRef ExpCreate_StrIdx(IR::Program &prog, Scope &scope,
+   SR::Exp::CRef Factory::expCreate_StrIdx(IR::Program &prog, Scope &scope,
       Core::String str, Core::Origin pos)
    {
       // Generate glyph.
@@ -102,39 +103,39 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_StrU08
+   // Factory::expCreate_StrU08
    //
-   SR::Exp::CRef ExpCreate_StrU08(IR::Program &prog, Scope &scope,
+   SR::Exp::CRef Factory::expCreate_StrU08(IR::Program &prog, Scope &scope,
       Core::String str, Core::Origin pos)
    {
-      return CreateStr(GetStrU08(str), prog, scope, pos, TypeChar);
+      return CreateStr(*this, GetStrU08(str), prog, scope, pos, TypeChar);
    }
 
    //
-   // ExpCreate_StrU16
+   // Factory::expCreate_StrU16
    //
-   SR::Exp::CRef ExpCreate_StrU16(IR::Program &prog, Scope &scope,
+   SR::Exp::CRef Factory::expCreate_StrU16(IR::Program &prog, Scope &scope,
       Core::String str, Core::Origin pos)
    {
-      return CreateStr(GetStrU16(str), prog, scope, pos, TypeIntegPrUH);
+      return CreateStr(*this, GetStrU16(str), prog, scope, pos, TypeIntegPrUH);
    }
 
    //
-   // ExpCreate_StrU32
+   // Factory::expCreate_StrU32
    //
-   SR::Exp::CRef ExpCreate_StrU32(IR::Program &prog, Scope &scope,
+   SR::Exp::CRef Factory::expCreate_StrU32(IR::Program &prog, Scope &scope,
       Core::String str, Core::Origin pos)
    {
-      return CreateStr(GetStrU32(str), prog, scope, pos, TypeIntegPrU);
+      return CreateStr(*this, GetStrU32(str), prog, scope, pos, TypeIntegPrU);
    }
 
    //
-   // ExpCreate_String
+   // Factory::expCreate_String
    //
-   SR::Exp::CRef ExpCreate_String(IR::Program &prog, Scope &scope,
+   SR::Exp::CRef Factory::expCreate_String(IR::Program &prog, Scope &scope,
       Core::String str, Core::Origin pos)
    {
-      return CreateStr(GetString(str), prog, scope, pos, TypeChar);
+      return CreateStr(*this, GetString(str), prog, scope, pos, TypeChar);
    }
 }
 

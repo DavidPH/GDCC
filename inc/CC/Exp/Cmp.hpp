@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -32,8 +32,8 @@ namespace GDCC::CC
    // comparator expression creation.
    //
    template<typename Base, typename Codes>
-   SR::Exp::CRef ExpCreate_CmpArith(SR::Type const *bt, SR::Type const *t,
-      SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   SR::Exp::CRef ExpCreate_CmpArith(Factory &, SR::Type const *bt,
+      SR::Type const *t, SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
       IR::Code code;
 

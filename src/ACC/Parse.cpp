@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Factory.hpp"
 #include "ACC/Pragma.hpp"
 
 #include "Core/Parse.hpp"
@@ -26,10 +27,10 @@ namespace GDCC::ACC
    //
    // Parser constructor
    //
-   Parser::Parser(Core::TokenStream &in_, PragmaData &prag_,
+   Parser::Parser(Core::TokenStream &in_, Factory &fact_, PragmaData &prag_,
       IR::Program &prog_, bool importing_) :
-      CC::Parser{in_, prag_, prog_},
-      prag     (prag_),
+      CC::Parser{in_, fact_, prag_, prog_},
+      prag     {prag_},
       importing{importing_}
    {
    }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "CC/Exp/Func.hpp"
+
+#include "CC/Factory.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -106,9 +108,9 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_Func
+   // Factory::expCreate_Func
    //
-   SR::Exp::CRef ExpCreate_Func(IR::Program &prog, SR::Function *fn,
+   SR::Exp::CRef Factory::expCreate_Func(IR::Program &prog, SR::Function *fn,
       Core::Origin pos)
    {
       return Exp_Func::Create(prog, fn, pos);

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -36,6 +36,7 @@ namespace GDCC::ACC
    IncludeDTBuf::IncludeDTBuf(
       Core::TokenBuf        &src_,
       Core::TokenSource     &tsrc_,
+      Factory               &fact_,
       CPP::IncludeLang      &langs_,
       MacroMap              &macros_,
       PragmaData            &pragd_,
@@ -44,10 +45,11 @@ namespace GDCC::ACC
       Scope_Global          &scope_,
       IR::Program           &prog_) :
       CPP::IncludeDTBuf{src_, tsrc_, langs_, macros_, pragd_, pragp_, dir_},
-      macros(macros_),
-      pragd(pragd_),
-      prog (prog_),
-      scope(scope_)
+      fact  {fact_},
+      macros{macros_},
+      pragd {pragd_},
+      prog  {prog_},
+      scope {scope_}
    {
    }
 
@@ -57,6 +59,7 @@ namespace GDCC::ACC
    ImportDTBuf::ImportDTBuf(
       Core::TokenBuf        &src_,
       Core::TokenSource     &tsrc_,
+      Factory               &fact_,
       CPP::IncludeLang      &langs_,
       MacroMap              &macros_,
       PragmaData            &pragd_,
@@ -64,7 +67,7 @@ namespace GDCC::ACC
       Core::String           dir_,
       Scope_Global          &scope_,
       IR::Program           &prog_) :
-      IncludeDTBuf{src_, tsrc_, langs_, macros_, pragd_, pragp_, dir_, scope_, prog_}
+      IncludeDTBuf{src_, tsrc_, fact_, langs_, macros_, pragd_, pragp_, dir_, scope_, prog_}
    {
    }
 
@@ -79,7 +82,7 @@ namespace GDCC::ACC
       incBuf = std::move(newBuf);
       incStr.reset(new CPP::IStream(*incBuf, name));
       incSrc.reset(new TSource(*incStr, incStr->getOriginSource()));
-      inc.reset(new IncStream(*incSrc, langs, macros, pragd, pragp,
+      inc.reset(new IncStream(*incSrc, fact, langs, macros, pragd, pragp,
          Core::PathDirname(name), scope, prog));
    }
 
@@ -108,7 +111,7 @@ namespace GDCC::ACC
       CPP::IStream istr{*newBuf, name};
       TSource      tsrc{istr, istr.getOriginSource()};
       ImportStream tstr{tsrc, macros, pragd, pragp};
-      Parser       ctx {tstr, pragd, prog, true};
+      Parser       ctx {tstr, fact, pragd, prog, true};
 
       pragd.push();
       macros.tempPush();

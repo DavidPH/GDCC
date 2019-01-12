@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,9 +12,9 @@
 
 #include "ACC/Parse.hpp"
 
+#include "CC/Factory.hpp"
 #include "ACC/Scope.hpp"
 
-#include "CC/Exp.hpp"
 #include "CC/Type.hpp"
 
 #include "Core/Array.hpp"
@@ -58,19 +58,19 @@ namespace GDCC::ACC
 
       auto space = type->getQualAddr();
 
-      auto indexExp = CC::ExpCreate_Cst(CC::TypeIntegPrS, args[0]);
+      auto indexExp = ctx.fact.expCreate_Cst(CC::TypeIntegPrS, args[0]);
       auto spaceExp = SR::ExpCreate_IRExp(IR::ExpCreate_Glyph(
          {ctx.prog, space.name}, pos), CC::TypeIntegPrS, pos);
 
       if(args.size() == 1 && propArray)
-         return CC::ExpCreate_Call(propArray, {indexExp, spaceExp}, scope, pos);
+         return ctx.fact.expCreate_Call(propArray, {indexExp, spaceExp}, scope, pos);
 
       if(args.size() == 2 && propRange)
-         return CC::ExpCreate_Call(propRange, {indexExp, spaceExp, args[1],
-            CC::ExpCreate_LitInt(CC::TypeIntegPrS, 0x7FFFFFFF, pos)}, scope, pos);
+         return ctx.fact.expCreate_Call(propRange, {indexExp, spaceExp, args[1],
+            ctx.fact.expCreate_LitInt(CC::TypeIntegPrS, 0x7FFFFFFF, pos)}, scope, pos);
 
       if(args.size() == 3 && propRange)
-         return CC::ExpCreate_Call(propRange, {indexExp, spaceExp, args[1],
+         return ctx.fact.expCreate_Call(propRange, {indexExp, spaceExp, args[1],
             args[2]}, scope, pos);
 
       return nullptr;
@@ -102,7 +102,7 @@ namespace GDCC::ACC
          args = {Core::Pack, ctx.getExp_Assi(scope)};
 
       for(auto &arg : args)
-         arg = CC::ExpPromo_LValue(arg);
+         arg = ctx.fact.expPromo_LValue(arg);
 
       // Possibly array special print?
       if(args.size() >= 1 && args[0]->getType()->isTypePointer())
@@ -143,7 +143,7 @@ namespace GDCC::ACC
       }
 
       if(prop.prop)
-         return CC::ExpCreate_Call(prop.prop, std::move(args), scope, pos);
+         return ctx.fact.expCreate_Call(prop.prop, std::move(args), scope, pos);
 
       Core::Error(pos, "no valid print property");
    }
@@ -172,7 +172,7 @@ namespace GDCC::ACC
          PrintProp const &prop = GetPrintProp(print, name.str, name.pos);
          SR::Exp::CRef   spec  = GetPrintSpec(ctx, scope, prop, name.pos);
 
-         exp = CC::ExpCreate_Comma(exp, spec, name.pos);
+         exp = ctx.fact.expCreate_Comma(exp, spec, name.pos);
       }
       while(ctx.in.drop(Core::TOK_Comma));
 
@@ -206,10 +206,10 @@ namespace GDCC::ACC
             if(!print->propStr)
                Core::Error(pos, "no (str) property");
 
-            auto strExp = CC::ExpCreate_StrIdx(ctx.prog, scope, {strStr, strItr}, pos);
-            auto call   = CC::ExpCreate_Call(print->propStr, {strExp}, scope, pos);
+            auto strExp = ctx.fact.expCreate_StrIdx(ctx.prog, scope, {strStr, strItr}, pos);
+            auto call   = ctx.fact.expCreate_Call(print->propStr, {strExp}, scope, pos);
 
-            exp = CC::ExpCreate_Comma(exp, call, pos);
+            exp = ctx.fact.expCreate_Comma(exp, call, pos);
          }
 
          // If end-of-string, terminate.
@@ -228,7 +228,7 @@ namespace GDCC::ACC
          PrintProp const &prop = GetPrintProp(print, {strStr, strItr}, pos);
          SR::Exp::CRef   spec = GetPrintSpec(ctx, scope, prop, pos);
 
-         exp = CC::ExpCreate_Comma(exp, spec, pos);
+         exp = ctx.fact.expCreate_Comma(exp, spec, pos);
 
          // If end-of-string, terminate.
          if(strItr == strEnd) break;
@@ -264,8 +264,8 @@ namespace GDCC::ACC
       auto exp = SR::ExpCreate_Size(0);
 
       if(print->propBegin)
-         exp = CC::ExpCreate_Comma(exp,
-            CC::ExpCreate_Call(print->propBegin, {}, scope, pos), pos);
+         exp = fact.expCreate_Comma(exp,
+            fact.expCreate_Call(print->propBegin, {}, scope, pos), pos);
 
       // (
       expect(Core::TOK_ParenO);
@@ -295,7 +295,7 @@ namespace GDCC::ACC
             if(paramc > argc)
                Core::Error(pos, "insufficient arguments");
 
-            exp = CC::ExpCreate_Comma(exp, CC::ExpCreate_Call(
+            exp = fact.expCreate_Comma(exp, fact.expCreate_Call(
                print->propMore, {argp, argp + paramc}, scope, pos), pos);
 
             argp += paramc;
@@ -310,7 +310,7 @@ namespace GDCC::ACC
             if(paramc > argc)
                Core::Error(pos, "insufficient arguments");
 
-            exp = CC::ExpCreate_Comma(exp, CC::ExpCreate_Call(
+            exp = fact.expCreate_Comma(exp, fact.expCreate_Call(
                print->propOpt, {argp, argp + paramc}, scope, pos), pos);
 
             argp += paramc;
@@ -319,15 +319,15 @@ namespace GDCC::ACC
 
          if(print->propEnd)
          {
-            exp = CC::ExpCreate_Comma(exp, CC::ExpCreate_Call(
+            exp = fact.expCreate_Comma(exp, fact.expCreate_Call(
                print->propEnd, {argp, argp + argc}, scope, pos), pos);
          }
       }
       else
       {
          if(print->propEnd)
-            exp = CC::ExpCreate_Comma(exp,
-               CC::ExpCreate_Call(print->propEnd, {}, scope, pos), pos);
+            exp = fact.expCreate_Comma(exp,
+               fact.expCreate_Call(print->propEnd, {}, scope, pos), pos);
       }
 
       // )

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "CC/Exp/Obj.hpp"
+
+#include "CC/Factory.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -165,9 +167,9 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_Obj
+   // Factory::expCreate_Obj
    //
-   SR::Exp::CRef ExpCreate_Obj(IR::Program &prog, SR::Object *obj,
+   SR::Exp::CRef Factory::expCreate_Obj(IR::Program &prog, SR::Object *obj,
       Core::Origin pos)
    {
       if(obj->store == SR::Storage::Auto)

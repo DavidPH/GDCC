@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef GDCC__CC___Statement__If_H__
 #define GDCC__CC___Statement__If_H__
 
-#include "../../CC/Statement.hpp"
+#include "../../CC/Types.hpp"
 
 #include "../../SR/Statement.hpp"
 
@@ -41,16 +41,6 @@ namespace GDCC::CC
       //
       // Create
       //
-      static CRef Create(Labels const &labels, Core::Origin pos,
-         SR::Exp const *cond, SR::Statement const *bodyT,
-         SR::Statement const *bodyF = nullptr)
-      {
-         return CRef(new This(labels, pos, cond, bodyT, bodyF));
-      }
-
-      //
-      // Create
-      //
       static CRef Create(Labels &&labels, Core::Origin pos,
          SR::Exp const *cond, SR::Statement const *bodyT,
          SR::Statement const *bodyF = nullptr)
@@ -59,9 +49,6 @@ namespace GDCC::CC
       }
 
    protected:
-      Statement_If(Labels const &labels, Core::Origin pos,
-         SR::Exp const *cond, SR::Statement const *bodyT,
-         SR::Statement const *bodyF);
       Statement_If(Labels &&labels, Core::Origin pos, SR::Exp const *cond,
          SR::Statement const *bodyT, SR::Statement const *bodyF);
 

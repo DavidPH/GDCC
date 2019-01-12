@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -31,13 +31,14 @@ namespace GDCC::ACC
    {
    public:
       IncludeDTBuf(Core::TokenBuf &src, Core::TokenSource &tsrc,
-         CPP::IncludeLang &langs, MacroMap &macros, PragmaData &pragd,
-         CPP::PragmaParserBase &pragp, Core::String dir,
+         Factory &fact_, CPP::IncludeLang &langs, MacroMap &macros,
+         PragmaData &pragd, CPP::PragmaParserBase &pragp, Core::String dir,
          Scope_Global &scope, IR::Program &prog);
 
    protected:
       virtual void doInc(Core::String name, std::unique_ptr<std::streambuf> &&buf);
 
+      Factory      &fact;
       MacroMap     &macros;
       PragmaData   &pragd;
       IR::Program  &prog;
@@ -51,8 +52,8 @@ namespace GDCC::ACC
    {
    public:
       ImportDTBuf(Core::TokenBuf &src, Core::TokenSource &tsrc,
-         CPP::IncludeLang &langs, MacroMap &macros, PragmaData &pragd,
-         CPP::PragmaParserBase &pragp, Core::String dir,
+         Factory &fact, CPP::IncludeLang &langs, MacroMap &macros,
+         PragmaData &pragd, CPP::PragmaParserBase &pragp, Core::String dir,
          Scope_Global &scope, IR::Program &prog);
 
    protected:

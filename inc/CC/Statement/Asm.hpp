@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef GDCC__CC__Statement__Asm_H__
 #define GDCC__CC__Statement__Asm_H__
 
-#include "../../CC/Statement.hpp"
+#include "../../CC/Types.hpp"
 
 #include "../../SR/Statement.hpp"
 

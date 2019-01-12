@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,7 +12,7 @@
 
 #include "ACC/Parse.hpp"
 
-#include "ACC/Exp.hpp"
+#include "ACC/Factory.hpp"
 #include "ACC/Macro.hpp"
 #include "ACC/Scope.hpp"
 #include "ACC/TSource.hpp"
@@ -42,26 +42,6 @@ namespace GDCC::ACC
    //
    void ParseFile(char const *inName, IR::Program &prog)
    {
-      // Saves and restores certain global function pointers.
-      struct FuncSave
-      {
-         FuncSave()
-         {
-            expPromo_Assign_Ptr = CC::ExpPromo_Assign_Ptr;
-            CC::ExpPromo_Assign_Ptr = ACC::ExpPromo_Assign;
-         }
-
-         ~FuncSave()
-         {
-            CC::ExpPromo_Assign_Ptr = expPromo_Assign_Ptr;
-         }
-
-         SR::Exp::CRef (*expPromo_Assign_Ptr)(SR::Type const *typeL,
-            SR::Exp const *e, Core::Origin pos);
-
-      } funcSave;
-
-
       auto buf = Core::FileOpenBlock(inName);
 
       Core::String     file {inName};
@@ -70,12 +50,13 @@ namespace GDCC::ACC
       Core::String     path {Core::PathDirname(file)};
       PragmaData       pragd{};
       PragmaParser     pragp{pragd};
-      Core::StringBuf  sbuf{buf->data(), buf->size()};
-      CPP::IStream     istr{sbuf, file};
-      TSource          tsrc{istr, istr.getOriginSource()};
+      Core::StringBuf  sbuf {buf->data(), buf->size()};
+      CPP::IStream     istr {sbuf, file};
+      TSource          tsrc {istr, istr.getOriginSource()};
       Scope_Global     scope{CC::GetGlobalLabel(buf->getHash())};
-      TStream          tstr{tsrc, langs, macr, pragd, pragp, path, scope, prog};
-      Parser           ctx {tstr, pragd, prog};
+      Factory          fact {};
+      TStream          tstr {tsrc, fact, langs, macr, pragd, pragp, path, scope, prog};
+      Parser           ctx  {tstr, fact, pragd, prog};
 
       // Read declarations.
       while(ctx.in.peek().tok != Core::TOK_EOF)

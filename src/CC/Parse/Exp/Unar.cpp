@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,7 +12,7 @@
 
 #include "CC/Parse.hpp"
 
-#include "CC/Exp.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Scope/Local.hpp"
 
 #include "Core/Exception.hpp"
@@ -41,7 +41,7 @@ namespace GDCC::CC
       auto type = ctx.getType(scope);
       ctx.expect(Core::TOK_ParenC);
 
-      return ExpCreate_SizeAlign(type, pos);
+      return ctx.fact.expCreate_SizeAlign(type, pos);
    }
 
    //
@@ -59,7 +59,7 @@ namespace GDCC::CC
       auto r = ctx.getExp_Assi(scope);
       ctx.expect(Core::TOK_ParenC);
 
-      return ExpCreate_DivEx(l, r, pos);
+      return ctx.fact.expCreate_DivEx(l, r, pos);
    }
 
    //
@@ -113,7 +113,7 @@ namespace GDCC::CC
       auto val = ctx.getExp_Assi(scope);
       ctx.expect(Core::TOK_ParenC);
 
-      return ExpCreate_JmpLng(scope, env, val, pos);
+      return ctx.fact.expCreate_JmpLng(scope, env, val, pos);
    }
 
    //
@@ -147,7 +147,7 @@ namespace GDCC::CC
 
       try
       {
-         return ExpCreate_LitInt(SR::Type::Size,
+         return ctx.fact.expCreate_LitInt(SR::Type::Size,
             Core::NumberCast<Core::Integ>(type->getMember(name).addr), pos);
       }
       catch(SR::TypeError const &)
@@ -169,7 +169,7 @@ namespace GDCC::CC
       auto env = ctx.getExp_Assi(scope);
       ctx.expect(Core::TOK_ParenC);
 
-      return ExpCreate_JmpSet(env, pos);
+      return ctx.fact.expCreate_JmpSet(env, pos);
    }
 
    //
@@ -190,7 +190,7 @@ namespace GDCC::CC
             // )
             ctx.expect(Core::TOK_ParenC);
 
-            return ExpCreate_SizeBytes(type, pos);
+            return ctx.fact.expCreate_SizeBytes(type, pos);
          }
 
          ctx.in.unget();
@@ -198,7 +198,7 @@ namespace GDCC::CC
       else
          SR::WarnParentheses(pos, "sizeof without parentheses");
 
-      return ExpCreate_SizeBytes(ctx.getExp_Unar(scope), pos);
+      return ctx.fact.expCreate_SizeBytes(ctx.getExp_Unar(scope), pos);
    }
 
    //
@@ -216,7 +216,7 @@ namespace GDCC::CC
       auto type = ctx.getType(scope);
       ctx.expect(Core::TOK_ParenC);
 
-      return ExpCreate_VaArg(type, exp, pos);
+      return ctx.fact.expCreate_VaArg(type, exp, pos);
    }
 
    //
@@ -226,7 +226,7 @@ namespace GDCC::CC
    {
       auto pos = ctx.in.get().pos;
 
-      return ExpCreate_Add(ctx.getExp_Cast(scope), pos);
+      return ctx.fact.expCreate_Add(ctx.getExp_Cast(scope), pos);
    }
 
    //
@@ -236,7 +236,7 @@ namespace GDCC::CC
    {
       auto pos = ctx.in.get().pos;
 
-      return ExpCreate_IncPre(ctx.getExp_Unar(scope), pos);
+      return ctx.fact.expCreate_IncPre(ctx.getExp_Unar(scope), pos);
    }
 
    //
@@ -246,7 +246,7 @@ namespace GDCC::CC
    {
       auto pos = ctx.in.get().pos;
 
-      return ExpCreate_Refer(ctx.getExp_Cast(scope), pos);
+      return ctx.fact.expCreate_Refer(ctx.getExp_Cast(scope), pos);
    }
 
    //
@@ -281,7 +281,7 @@ namespace GDCC::CC
    {
       auto pos = ctx.in.get().pos;
 
-      return ExpCreate_Inv(ctx.getExp_Cast(scope), pos);
+      return ctx.fact.expCreate_Inv(ctx.getExp_Cast(scope), pos);
    }
 
    //
@@ -291,7 +291,7 @@ namespace GDCC::CC
    {
       auto pos = ctx.in.get().pos;
 
-      return ExpCreate_Deref(ctx.getExp_Cast(scope), pos);
+      return ctx.fact.expCreate_Deref(ctx.getExp_Cast(scope), pos);
    }
 
    //
@@ -301,7 +301,7 @@ namespace GDCC::CC
    {
       auto pos = ctx.in.get().pos;
 
-      return ExpCreate_Not(ctx.getExp_Cast(scope), pos);
+      return ctx.fact.expCreate_Not(ctx.getExp_Cast(scope), pos);
    }
 
    //
@@ -311,7 +311,7 @@ namespace GDCC::CC
    {
       auto pos = ctx.in.get().pos;
 
-      return ExpCreate_Sub(ctx.getExp_Cast(scope), pos);
+      return ctx.fact.expCreate_Sub(ctx.getExp_Cast(scope), pos);
    }
 
    //
@@ -321,7 +321,7 @@ namespace GDCC::CC
    {
       auto pos = ctx.in.get().pos;
 
-      return ExpCreate_DecPre(ctx.getExp_Unar(scope), pos);
+      return ctx.fact.expCreate_DecPre(ctx.getExp_Unar(scope), pos);
    }
 }
 

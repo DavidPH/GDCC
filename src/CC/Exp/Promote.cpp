@@ -13,6 +13,7 @@
 #include "CC/Exp.hpp"
 
 #include "CC/Exp/Mem.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -30,23 +31,23 @@
 namespace GDCC::CC
 {
    //
-   // ExpPromo_Arg
+   // Factory::expPromo_Arg
    //
-   SR::Exp::CRef ExpPromo_Arg(SR::Exp const *e, Core::Origin pos)
+   SR::Exp::CRef Factory::expPromo_Arg(SR::Exp const *e, Core::Origin pos)
    {
-      auto exp = ExpPromo_Int(ExpPromo_LValue(e, pos), pos);
+      auto exp = expPromo_Int(expPromo_LValue(e, pos), pos);
 
       auto type = exp->getType();
 
       // Promote float to double.
       if(type->getTypeQual() == TypeFloatRS)
-         return ExpConvert_Arith(TypeFloatRSL, exp, pos);
+         return expConvert_Arith(TypeFloatRSL, exp, pos);
 
       // Promote Aut* to Sta*.
       if(type->isTypePointer() &&
          type->getBaseType()->getQualAddr().base == IR::AddrBase::Aut)
       {
-         return ExpConvert_Pointer(type->getBaseType()
+         return expConvert_Pointer(type->getBaseType()
             ->getTypeQualAddr({IR::AddrBase::Sta, Core::STR_})
             ->getTypePointer(), exp, pos);
       }
@@ -55,29 +56,20 @@ namespace GDCC::CC
    }
 
    //
-   // ExpPromo_Assign
+   // Factory::expPromo_Assign
    //
-   SR::Exp::CRef ExpPromo_Assign(SR::Type const *t, SR::Exp const *e)
+   SR::Exp::CRef Factory::expPromo_Assign(SR::Type const *t, SR::Exp const *e)
    {
-      return ExpPromo_Assign_Ptr(t, e, e->pos);
+      return expPromo_Assign(t, e, e->pos);
    }
 
    //
-   // ExpPromo_Assign
+   // Factory::expPromo_Assign
    //
-   SR::Exp::CRef ExpPromo_Assign(SR::Type const *t, SR::Exp const *e,
-      Core::Origin pos)
-   {
-      return ExpPromo_Assign_Ptr(t, e, pos);
-   }
-
-   //
-   // ExpPromo_Assign_Base
-   //
-   SR::Exp::CRef ExpPromo_Assign_Base(SR::Type const *typeL,
+   SR::Exp::CRef Factory::expPromo_Assign(SR::Type const *typeL,
       SR::Exp const *e, Core::Origin pos)
    {
-      auto exp   = ExpPromo_LValue(e, pos);
+      auto exp   = expPromo_LValue(e, pos);
       auto typeR = exp->getType();
 
       // If assigning to same type, no conversion is needed.
@@ -88,7 +80,7 @@ namespace GDCC::CC
       // bool = arithmetic
       if(typeL->isTypeBoolean() && (typeR->isTypePointer() || typeR->isCTypeArith()))
       {
-         return ExpConvert_Bool(typeL, exp, pos);
+         return expConvert_Bool(typeL, exp, pos);
       }
 
       // integer = line-special
@@ -96,7 +88,7 @@ namespace GDCC::CC
          typeR->getBaseType()->isTypeFunction() &&
          typeR->getBaseType()->getCallType() == IR::CallType::Special)
       {
-         return ExpConvert_ArithPtr(typeL, exp, pos);
+         return expConvert_ArithPtr(typeL, exp, pos);
       }
 
       // arithmetic = arithmetic
@@ -106,7 +98,7 @@ namespace GDCC::CC
             Core::Error(pos, "cannot implicitly convert to "
                "arithmetic type from non-arithmetic type");
 
-         return ExpConvert_Arith(typeL, exp, pos);
+         return expConvert_Arith(typeL, exp, pos);
       }
 
       // struct = struct
@@ -124,7 +116,7 @@ namespace GDCC::CC
       {
          // Check for exp being a null pointer constant.
          if(typeR->isCTypeInteg() && exp->isZero())
-            return ExpConvert_PtrArith(typeL, exp, pos);
+            return expConvert_PtrArith(typeL, exp, pos);
 
          if(!typeR->isTypePointer())
             Core::Error(pos, "cannot implicitly convert to "
@@ -160,73 +152,73 @@ namespace GDCC::CC
             (!qualL.aRest && qualR.aRest) || (!qualL.aVola && qualR.aVola))
             Core::Error(pos, "cannot implicitly discard qualifiers");
 
-         return ExpConvert_Pointer(typeL, exp, pos);
+         return expConvert_Pointer(typeL, exp, pos);
       }
 
       Core::Error(pos, "cannot implicitly convert");
    }
 
    //
-   // ExpPromo_CmpEqu
+   // Factory::expPromo_CmpEqu
    //
    std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
-   ExpPromo_CmpEqu(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   Factory::expPromo_CmpEqu(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
-      auto expL = ExpPromo_LValue(l, pos);
-      auto expR = ExpPromo_LValue(r, pos);
+      auto expL = expPromo_LValue(l, pos);
+      auto expR = expPromo_LValue(r, pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
 
       // Both operands have arithmetic types.
       if(typeL->isCTypeArith() && typeR->isCTypeArith())
-         return ExpPromo_ArithAlways(expL, expR, pos);
+         return expPromo_ArithAlways(expL, expR, pos);
 
       // Otherwise, they must be pointers.
-      return ExpPromo_PtrEqu(expL, expR, pos);
+      return expPromo_PtrEqu(expL, expR, pos);
    }
 
    //
-   // ExpPromo_CmpRel
+   // Factory::expPromo_CmpRel
    //
    std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
-   ExpPromo_CmpRel(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   Factory::expPromo_CmpRel(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
-      auto expL = ExpPromo_LValue(l, pos);
-      auto expR = ExpPromo_LValue(r, pos);
+      auto expL = expPromo_LValue(l, pos);
+      auto expR = expPromo_LValue(r, pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
 
       // C requires relational-expression operands to have real types.
       if(typeL->isCTypeReal() && typeR->isCTypeReal())
-         return ExpPromo_ArithAlways(expL, expR, pos);
+         return expPromo_ArithAlways(expL, expR, pos);
 
       // Otherwise, they must be pointers.
-      return ExpPromo_PtrRel(expL, expR, pos);
+      return expPromo_PtrRel(expL, expR, pos);
    }
 
    //
-   // ExpPromo_Cond
+   // Factory::expPromo_Cond
    //
-   SR::Exp::CRef ExpPromo_Cond(SR::Exp const *e, Core::Origin pos)
+   SR::Exp::CRef Factory::expPromo_Cond(SR::Exp const *e, Core::Origin pos)
    {
-      SR::Exp::CRef exp = ExpPromo_LValue(e, pos);
+      SR::Exp::CRef exp = expPromo_LValue(e, pos);
 
       if(!exp->getType()->isCTypeScalar())
          Core::Error(pos, "expected scalar type");
 
-      return ExpConvert_BoolSoft(exp, pos);
+      return expConvert_BoolSoft(exp, pos);
    }
 
    //
-   // ExpPromo_Cond
+   // Factory::expPromo_Cond
    //
    std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
-   ExpPromo_Cond(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   Factory::expPromo_Cond(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
-      auto expL = ExpPromo_LValue(l, pos);
-      auto expR = ExpPromo_LValue(r, pos);
+      auto expL = expPromo_LValue(l, pos);
+      auto expR = expPromo_LValue(r, pos);
 
       auto typeL = expL->getType()->getTypeQual();
       auto typeR = expR->getType()->getTypeQual();
@@ -236,11 +228,11 @@ namespace GDCC::CC
       {
          // Use normal arithmetic promotion.
          SR::Type::CRef type = SR::Type::None;
-         std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
+         std::tie(type, expL, expR) = expPromo_Arith(expL, expR, pos);
 
          // But always convert to the result type.
-         expL = ExpConvert_Arith(type, expL, pos);
-         expR = ExpConvert_Arith(type, expR, pos);
+         expL = expConvert_Arith(type, expL, pos);
+         expR = expConvert_Arith(type, expR, pos);
 
          return std::make_tuple(type, expL, expR);
       }
@@ -260,28 +252,25 @@ namespace GDCC::CC
          return std::make_tuple(SR::Type::Void, expL, expR);
 
       // Remaining constraints all concern pointers.
-      return ExpPromo_PtrEqu(expL, expR, pos);
+      return expPromo_PtrEqu(expL, expR, pos);
    }
 
    //
-   // ExpPromo_Cond
+   // Factory::expPromo_Cond
    //
    std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef, SR::Exp::CRef>
-   ExpPromo_Cond(SR::Exp const *c, SR::Exp const *l, SR::Exp const *r,
+   Factory::expPromo_Cond(SR::Exp const *c, SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      SR::Type::CRef type = SR::Type::None;
-      SR::Exp::CRef expL{l}, expR{r};
+      auto [type, expL, expR] = expPromo_Cond(l, r, pos);
 
-      std::tie(type, expL, expR) = ExpPromo_Cond(expL, expR, pos);
-
-      return std::make_tuple(type, ExpPromo_Cond(c, pos), expL, expR);
+      return std::make_tuple(type, expPromo_Cond(c, pos), expL, expR);
    }
 
    //
-   // ExpPromo_Int
+   // Factory::expPromo_Int
    //
-   SR::Exp::CRef ExpPromo_Int(SR::Exp const *e, Core::Origin pos)
+   SR::Exp::CRef Factory::expPromo_Int(SR::Exp const *e, Core::Origin pos)
    {
       SR::Exp::CRef exp{e};
       auto          type = exp->getType()->getTypeQual();
@@ -292,7 +281,7 @@ namespace GDCC::CC
 
       // Bitfield of T -> T.
       if(type->isTypeBitfield())
-         type = (exp = ExpConvert_Bitfield(exp, pos))->getType();
+         type = (exp = expConvert_Bitfield(exp, pos))->getType();
 
       // Types with a rank higher than int are unaffected.
       try
@@ -311,24 +300,24 @@ namespace GDCC::CC
 
       // If the original type can be represented in int, convert to that.
       if(type->getSizeBitsI() <= TypeIntegPrS->getSizeBitsI())
-         return ExpConvert_Arith(TypeIntegPrS, exp, pos);
+         return expConvert_Arith(TypeIntegPrS, exp, pos);
       // Otherwise, unsigned int.
       else
-         return ExpConvert_Arith(TypeIntegPrU, exp, pos);
+         return expConvert_Arith(TypeIntegPrU, exp, pos);
    }
 
    //
-   // ExpPromo_LValue
+   // Factory::expPromo_LValue
    //
-   SR::Exp::CRef ExpPromo_LValue(SR::Exp const *exp)
+   SR::Exp::CRef Factory::expPromo_LValue(SR::Exp const *exp)
    {
-      return ExpPromo_LValue(exp, exp->pos);
+      return expPromo_LValue(exp, exp->pos);
    }
 
    //
-   // ExpPromo_LValue
+   // Factory::expPromo_LValue
    //
-   SR::Exp::CRef ExpPromo_LValue(SR::Exp const *e, Core::Origin pos)
+   SR::Exp::CRef Factory::expPromo_LValue(SR::Exp const *e, Core::Origin pos)
    {
       // Special check for structure property.
       if(auto exp = dynamic_cast<Exp_MemProp const *>(e))
@@ -339,20 +328,20 @@ namespace GDCC::CC
 
       // Bitfield of T -> T.
       if(type->isTypeBitfield())
-         type = (exp = ExpConvert_Bitfield(exp, pos))->getType();
+         type = (exp = expConvert_Bitfield(exp, pos))->getType();
 
       // Array of T -> pointer to T.
       if(type->isTypeArray())
       {
          // Mark exp as referred and then reacquire its type.
-         auto ref = ExpCreate_Refer(exp, pos);
+         auto ref = expCreate_Refer(exp, pos);
          type = exp->getType()->getBaseType()->getTypePointer();
-         return ExpCreate_Cst(type, ref, pos);
+         return expCreate_Cst(type, ref, pos);
       }
 
       // Function returning T -> pointer to function returning T.
       if(type->isCTypeFunction())
-         return ExpCreate_Refer(exp, pos);
+         return expCreate_Refer(exp, pos);
 
       // Conversion of lvalue to rvalue is internally implicit.
       return exp;

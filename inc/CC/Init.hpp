@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -94,16 +94,18 @@ namespace GDCC::CC
 
 
       // Creates an initializer hierarchy for a given type.
-      static Ptr Create(SR::Type const *type, Core::FastU offset, Core::Origin pos);
+      static Ptr Create(SR::Type const *type, Core::FastU offset,
+         Core::Origin pos, Factory &fact);
 
       static Ptr Create(InitRaw const &raw, Parser &ctx, Scope &scope,
-         SR::Type const *type);
+         SR::Type const *type, Factory &fact);
 
       static bool IsInitString(Core::Token const &tok, SR::Type const *type);
 
    protected:
-      Init(SR::Type const *type_, Core::FastU offset_, Core::Origin pos_) :
-         pos{pos_}, type{type_}, offset{offset_}, parsed{false} {}
+      Init(SR::Type const *type_, Core::FastU offset_, Core::Origin pos_,
+         Factory &fact_) :
+         pos{pos_}, type{type_}, offset{offset_}, fact{fact_}, parsed{false} {}
 
       virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
          SR::Arg const &dst, bool skipZero) const = 0;
@@ -124,6 +126,8 @@ namespace GDCC::CC
       virtual void v_parseSingle(InitRaw const &raw, Parser &ctx, Scope &scope);
 
       virtual void v_parseString(Core::Token const &tok);
+
+      Factory &fact;
 
       bool parsed : 1;
    };
@@ -147,7 +151,7 @@ namespace GDCC::CC
    {
    protected:
       Init_Aggregate(SR::Type const *type_, Core::FastU offset_,
-         Core::Origin pos_) : Init{type_, offset_, pos_} {}
+         Core::Origin pos_, Factory &fact_) : Init{type_, offset_, pos_, fact_} {}
 
       virtual std::size_t findSub(Core::String name);
 
@@ -176,7 +180,7 @@ namespace GDCC::CC
    {
    public:
       Init_Array(SR::Type const *type, Core::FastU offset,
-         Core::Origin pos, std::size_t width);
+         Core::Origin pos, std::size_t width, Factory &fact);
 
    protected:
       virtual Init *getSub(std::size_t index);
@@ -200,7 +204,7 @@ namespace GDCC::CC
    {
    public:
       Init_Array0(SR::Type const *type, Core::FastU offset,
-         Core::Origin pos);
+         Core::Origin pos, Factory &fact);
 
    protected:
       virtual Init *getSub(std::size_t index);
@@ -226,7 +230,8 @@ namespace GDCC::CC
    class Init_Div : public Init_Aggregate
    {
    public:
-      Init_Div(Type_Div const *type, Core::FastU offset, Core::Origin pos);
+      Init_Div(Type_Div const *type, Core::FastU offset, Core::Origin pos,
+         Factory &fact);
 
    protected:
       virtual std::size_t findSub(Core::String name);
@@ -254,7 +259,7 @@ namespace GDCC::CC
    {
    public:
       Init_Struct(Type_Struct const *type, Core::FastU offset,
-         Core::Origin pos);
+         Core::Origin pos, Factory &fact);
 
    protected:
       virtual std::size_t findSub(Core::String name);
@@ -286,7 +291,7 @@ namespace GDCC::CC
    {
    public:
       Init_Union(Type_Struct const *type, Core::FastU offset,
-         Core::Origin pos);
+         Core::Origin pos, Factory &fact);
 
    protected:
       virtual void v_genStmnt(SR::GenStmntCtx const &ctx,
@@ -305,7 +310,8 @@ namespace GDCC::CC
    class Init_Value : public Init
    {
    public:
-      Init_Value(SR::Type const *type, Core::FastU offset, Core::Origin pos);
+      Init_Value(SR::Type const *type, Core::FastU offset, Core::Origin pos,
+         Factory &fact);
 
    protected:
       virtual void v_genStmnt(SR::GenStmntCtx const &ctx,

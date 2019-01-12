@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "CC/Exp/Convert/Void.hpp"
+
+#include "CC/Factory.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -37,9 +39,9 @@ namespace GDCC::CC
    }
 
    //
-   // ExpConvert_Void
+   // Factory::expConvert_Void
    //
-   SR::Exp::CRef ExpConvert_Void(SR::Type const *t, SR::Exp const *e,
+   SR::Exp::CRef Factory::expConvert_Void(SR::Type const *t, SR::Exp const *e,
       Core::Origin pos)
    {
       return Exp_ConvertVoid::Create(t, e, pos);

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -113,15 +113,15 @@ namespace GDCC::ACC
       //
       // constructor
       //
-      IncStream(Core::TokenSource &tsrc, CPP::IncludeLang &langs,
+      IncStream(Core::TokenSource &tsrc, Factory &fact, CPP::IncludeLang &langs,
          MacroMap &macros, PragmaData &pragd, CPP::PragmaParserBase &pragp,
          Core::String dir, Scope_Global &scope, IR::Program &prog) :
          Core::TokenStream{&udir},
          tbuf{tsrc},
          cdir{tbuf, macros},
          ddir{cdir, macros, pragd, false},
-         impd{ddir, tsrc, langs, macros, pragd, pragp, dir, scope, prog},
-         idir{impd, tsrc, langs, macros, pragd, pragp, dir, scope, prog},
+         impd{ddir, tsrc, fact, langs, macros, pragd, pragp, dir, scope, prog},
+         idir{impd, tsrc, fact, langs, macros, pragd, pragp, dir, scope, prog},
          pdir{idir, pragp},
          ignd{pdir, false},
          udir{ignd, macros}
@@ -157,10 +157,10 @@ namespace GDCC::ACC
       //
       // constructor
       //
-      PPStream(Core::TokenSource &tsrc, CPP::IncludeLang &langs,
+      PPStream(Core::TokenSource &tsrc, Factory &fact, CPP::IncludeLang &langs,
          MacroMap &macros, PragmaData &pragd, CPP::PragmaParserBase &pragp,
          Core::String dir, Scope_Global &scope, IR::Program &prog) :
-         IncStream{tsrc, langs, macros, pragd, pragp, dir, scope, prog},
+         IncStream{tsrc, fact, langs, macros, pragd, pragp, dir, scope, prog},
          mbuf{udir, macros, Core::STR___va_args__},
          pubf{mbuf, pragd},
          sbuf{pubf, ParseEscape},
@@ -190,10 +190,10 @@ namespace GDCC::ACC
       //
       // constructor
       //
-      TStream(Core::TokenSource &tsrc, CPP::IncludeLang &langs,
+      TStream(Core::TokenSource &tsrc, Factory &fact, CPP::IncludeLang &langs,
          MacroMap &macros, PragmaData &pragd, CPP::PragmaParserBase &pragp,
          Core::String dir, Scope_Global &scope, IR::Program &prog) :
-         PPStream{tsrc, langs, macros, pragd, pragp, dir, scope, prog},
+         PPStream{tsrc, fact, langs, macros, pragd, pragp, dir, scope, prog},
          wbuf{cbuf},
          ppbf{wbuf},
          bbuf{ppbf}

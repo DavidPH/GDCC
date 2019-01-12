@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef GDCC__CC__Statement__Switch_H__
 #define GDCC__CC__Statement__Switch_H__
 
-#include "../../CC/Statement.hpp"
+#include "../../CC/Types.hpp"
 
 #include "../../SR/Statement.hpp"
 
@@ -39,18 +39,11 @@ namespace GDCC::CC
 
 
       // Create
-      static CRef Create(Labels const &labels, Core::Origin pos,
-         Scope_Case &scope, SR::Exp const *cond, SR::Statement const *body)
-         {return CRef(new This(labels, pos, scope, cond, body));}
-
-      // Create
       static CRef Create(Labels &&labels, Core::Origin pos,
          Scope_Case &scope, SR::Exp const *cond, SR::Statement const *body)
          {return CRef(new This(std::move(labels), pos, scope, cond, body));}
 
    protected:
-      Statement_Switch(Labels const &labels, Core::Origin pos,
-         Scope_Case &scope, SR::Exp const *cond, SR::Statement const *body);
       Statement_Switch(Labels &&labels, Core::Origin pos, Scope_Case &scope,
          SR::Exp const *cond, SR::Statement const *body);
 

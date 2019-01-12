@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,7 @@
 
 #include "CC/Exp.hpp"
 #include "CC/Exp/Add.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Parse.hpp"
 #include "CC/Type.hpp"
 #include "CC/Type/Struct.hpp"
@@ -66,7 +67,7 @@ namespace GDCC::CC
    // SubInit
    //
    static void SubInit(Type_Struct const *type, InitMem *&sub,
-      Core::FastU offset, Core::Origin pos)
+      Core::FastU offset, Core::Origin pos, Factory &fact)
    {
       auto const &data = type->getData();
 
@@ -75,7 +76,7 @@ namespace GDCC::CC
          if(itr->name || itr->anon)
          {
             sub->name = itr->name;
-            sub->init = Init::Create(itr->type, offset + itr->addr, pos);
+            sub->init = Init::Create(itr->type, offset + itr->addr, pos, fact);
             sub->step = data.isUnion ? SubCount(itr, end) : 1;
             sub->anon = itr->anon;
             ++sub;
@@ -110,9 +111,9 @@ namespace GDCC::CC
             auto offsetPtrT = offsetType->getTypePointer();
 
             auto offsetRaw = offset / type->getSizeShift();
-            auto offsetExp = ExpCreate_LitInt(SR::Type::Size,
+            auto offsetExp = fact.expCreate_LitInt(SR::Type::Size,
                Core::NumberCast<Core::Integ>(offsetRaw), pos);
-            auto offsetPtr = ExpConvert_Pointer(offsetPtrT, dst.data, pos);
+            auto offsetPtr = fact.expConvert_Pointer(offsetPtrT, dst.data, pos);
             offsetPtr = Exp_AddPtrRaw::Create(
                offsetPtrT, offsetPtr, offsetExp, pos);
 
@@ -188,7 +189,7 @@ namespace GDCC::CC
          v_parseBlock(raw, ctx, scope);
 
       if(value)
-         value = ExpPromo_Assign(type, value, value->pos);
+         value = fact.expPromo_Assign(type, value, value->pos);
 
       parsed = true;
    }
@@ -214,7 +215,7 @@ namespace GDCC::CC
          ++rawIdx, v_parseBlock(rawRef, ctx, scope);
 
       if(value)
-         value = ExpPromo_Assign(type, value, value->pos);
+         value = fact.expPromo_Assign(type, value, value->pos);
 
       parsed = true;
 
@@ -281,16 +282,16 @@ namespace GDCC::CC
    //
    // Init::Create
    //
-   Init::Ptr Init::Create(SR::Type const *type,
-      Core::FastU offset, Core::Origin pos)
+   Init::Ptr Init::Create(SR::Type const *type, Core::FastU offset,
+      Core::Origin pos, Factory &fact)
    {
       if(type->isTypeArray())
       {
          if(dynamic_cast<SR::Type_Array0 const *>(type))
-            return Ptr(new Init_Array0(type, offset, pos));
+            return Ptr(new Init_Array0(type, offset, pos, fact));
 
          if(auto t = dynamic_cast<SR::Type_Array const *>(type))
-            return Ptr(new Init_Array(t, offset, pos, t->getSizeWidth()));
+            return Ptr(new Init_Array(t, offset, pos, t->getSizeWidth(), fact));
 
          Core::Error(pos, "invalid array type for initializer");
       }
@@ -298,10 +299,10 @@ namespace GDCC::CC
       if(type->isCTypeStruct())
       {
          if(auto t = dynamic_cast<Type_Struct const *>(type))
-            return Ptr(new Init_Struct(t, offset, pos));
+            return Ptr(new Init_Struct(t, offset, pos, fact));
 
          if(auto t = dynamic_cast<Type_Div const *>(type))
-            return Ptr(new Init_Div(t, offset, pos));
+            return Ptr(new Init_Div(t, offset, pos, fact));
 
          Core::Error(pos, "invalid structure type for initializer");
       }
@@ -309,21 +310,21 @@ namespace GDCC::CC
       if(type->isCTypeUnion())
       {
          if(auto t = dynamic_cast<Type_Struct const *>(type))
-            return Ptr(new Init_Union(t, offset, pos));
+            return Ptr(new Init_Union(t, offset, pos, fact));
 
          Core::Error(pos, "invalid union type for initializer");
       }
 
-      return Ptr(new Init_Value(type, offset, pos));
+      return Ptr(new Init_Value(type, offset, pos, fact));
    }
 
    //
    // Init::Create
    //
    Init::Ptr Init::Create(InitRaw const &raw, Parser &ctx, Scope &scope,
-      SR::Type const *type)
+      SR::Type const *type, Factory &fact)
    {
-      auto init = Create(type, 0, raw.valueTok.pos);
+      auto init = Create(type, 0, raw.valueTok.pos, fact);
       init->parse(raw, ctx, scope);
       return init;
    }
@@ -529,8 +530,8 @@ namespace GDCC::CC
    // Init_Array constructor
    //
    Init_Array::Init_Array(SR::Type const *type_, Core::FastU offset_,
-      Core::Origin pos_, std::size_t width) :
-      Init_Aggregate{type_, offset_, pos_}, subs{width}
+      Core::Origin pos_, std::size_t width, Factory &fact_) :
+      Init_Aggregate{type_, offset_, pos_, fact_}, subs{width}
    {
       auto subT = type->getBaseType();
       auto subB = subT->getSizeBytes();
@@ -538,7 +539,7 @@ namespace GDCC::CC
       std::size_t subC = 0;
 
       for(auto &mem : subs)
-         mem = Create(subT, offset + subC++ * subB, pos);
+         mem = Create(subT, offset + subC++ * subB, pos, fact);
    }
 
    //
@@ -590,8 +591,8 @@ namespace GDCC::CC
    // Init_Array0 constructor
    //
    Init_Array0::Init_Array0(SR::Type const *type_, Core::FastU offset_,
-      Core::Origin pos_) :
-      Init_Aggregate{type_, offset_, pos_},
+      Core::Origin pos_, Factory &fact_) :
+      Init_Aggregate{type_, offset_, pos_, fact_},
       subT{type->getBaseType()},
       subB{subT->getSizeBytes()}
    {
@@ -605,7 +606,7 @@ namespace GDCC::CC
       if(index >= subs.size())
       {
          do
-            subs.emplace_back(Create(subT, offset + subs.size() * subB, pos));
+            subs.emplace_back(Create(subT, offset + subs.size() * subB, pos, fact));
          while(index >= subs.size());
 
          type = type->getBaseType()->getTypeArray(subs.size())
@@ -656,14 +657,14 @@ namespace GDCC::CC
    // Init_Div constructor
    //
    Init_Div::Init_Div(Type_Div const *typeD, Core::FastU offset_,
-      Core::Origin pos_) :
-      Init_Aggregate{typeD, offset_, pos_},
+      Core::Origin pos_, Factory &fact_) :
+      Init_Aggregate{typeD, offset_, pos_, fact_},
       subs   {}
    {
       auto mem = typeD->getMember(Core::STR_quot);
-      subs[0] = Create(mem.type, mem.addr, pos);
+      subs[0] = Create(mem.type, mem.addr, pos, fact);
       mem = typeD->getMember(Core::STR_rem);
-      subs[1] = Create(mem.type, mem.addr, pos);
+      subs[1] = Create(mem.type, mem.addr, pos, fact);
    }
 
    //
@@ -732,14 +733,14 @@ namespace GDCC::CC
    // Init_Struct constructor
    //
    Init_Struct::Init_Struct(Type_Struct const *typeS, Core::FastU offset_,
-      Core::Origin pos_) :
-      Init_Aggregate{typeS, offset_, pos_},
+      Core::Origin pos_, Factory &fact_) :
+      Init_Aggregate{typeS, offset_, pos_, fact_},
       subs    {SubCount(typeS)},
       subInit {0},
       subTotal{0}
    {
       auto subItr = subs.begin();
-      SubInit(typeS, subItr, offset, pos);
+      SubInit(typeS, subItr, offset, pos, fact);
 
       subTotal = subs.size();
 
@@ -877,7 +878,8 @@ namespace GDCC::CC
    // Init_Union constructor
    //
    Init_Union::Init_Union(Type_Struct const *typeS, Core::FastU offset_,
-      Core::Origin pos_) : Init_Struct{typeS, offset_, pos_}
+      Core::Origin pos_, Factory &fact_) :
+      Init_Struct{typeS, offset_, pos_, fact_}
    {
    }
 
@@ -919,10 +921,11 @@ namespace GDCC::CC
    // Init_Value constructor
    //
    Init_Value::Init_Value(SR::Type const *type_, Core::FastU offset_,
-      Core::Origin pos_) :
-      Init{type_, offset_, pos_}
+      Core::Origin pos_, Factory &fact_) :
+      Init{type_, offset_, pos_, fact_}
    {
-      value = ExpPromo_Assign(type, ExpCreate_LitInt(TypeIntegPrS, 0, pos), pos);
+      value = fact.expPromo_Assign(type,
+         fact.expCreate_LitInt(TypeIntegPrS, 0, pos), pos);
    }
 
    //

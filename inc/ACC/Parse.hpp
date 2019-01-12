@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -36,8 +36,8 @@ namespace GDCC::ACC
       using CC::Parser::getExp_Post;
       using CC::Parser::getStatement;
 
-      Parser(Core::TokenStream &in, PragmaData &prag, IR::Program &prog,
-         bool importing = false);
+      Parser(Core::TokenStream &in, Factory &fact, PragmaData &prag,
+         IR::Program &prog, bool importing = false);
 
       std::unique_ptr<Parser> clone(Core::TokenStream &in_) const
          {return static_cast<std::unique_ptr<Parser>>(cloneRaw(in_));}

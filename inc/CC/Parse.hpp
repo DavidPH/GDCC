@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,7 +39,8 @@ namespace GDCC::CC
       using TypeSetCRef   = Core::CounterRef<SR::TypeSet   const>;
 
    public:
-      Parser(Core::TokenStream &in, CPP::PragmaData &prag, IR::Program &prog);
+      Parser(Core::TokenStream &in, Factory &fact, CPP::PragmaData &prag,
+         IR::Program &prog);
 
       virtual ~Parser() {}
 
@@ -164,6 +165,7 @@ namespace GDCC::CC
 
       virtual void skipBalancedToken();
 
+      Factory           &fact;
       Core::TokenStream &in;
       CPP::PragmaData   &prag;
       IR::Program       &prog;

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Factory.hpp"
 #include "ACC/Scope.hpp"
 
 #include "CC/Exp.hpp"
@@ -80,7 +81,7 @@ namespace GDCC::ACC
       ctx.expect(Core::TOK_Colon);
 
       // constant-expression;
-      auto exp = CC::ExpPromo_LValue(ctx.getExp_Assi(scope));
+      auto exp = ctx.fact.expPromo_LValue(ctx.getExp_Assi(scope));
 
       auto type = exp->getType();
 

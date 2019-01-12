@@ -12,16 +12,15 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Factory.hpp"
 #include "ACC/Scope.hpp"
 
-#include "CC/Exp.hpp"
 #include "CC/Exp/Assign.hpp"
 #include "CC/Exp/Init.hpp"
 #include "CC/Init.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Scope/Global.hpp"
 #include "CC/Scope/Local.hpp"
-#include "CC/Statement.hpp"
 #include "CC/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -99,9 +98,9 @@ namespace GDCC::ACC
 
       auto &fnScope = scope.createScope(attr, fn);
 
-      auto stmntPre  = CC::StatementCreate_FuncPre(ctx.in.peek().pos, fnScope);
+      auto stmntPre  = ctx.fact.stCreate_FuncPre(ctx.in.peek().pos, fnScope);
       auto stmntBody = ctx.getStatement(fnScope);
-      auto stmntPro  = CC::StatementCreate_FuncPro(ctx.in.reget().pos, fnScope);
+      auto stmntPro  = ctx.fact.stCreate_FuncPro(ctx.in.reget().pos, fnScope);
 
       // Create statements for the function.
       Core::Array<SR::Statement::CRef> stmnts =

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "CC/Exp/Refer.hpp"
+
+#include "CC/Factory.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -94,9 +96,9 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_Refer
+   // Factory::expCreate_Refer
    //
-   SR::Exp::CRef ExpCreate_Refer(SR::Exp const *e, Core::Origin pos)
+   SR::Exp::CRef Factory::expCreate_Refer(SR::Exp const *e, Core::Origin pos)
    {
       auto type = e->getType();
 

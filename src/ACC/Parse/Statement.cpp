@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "ACC/Parse.hpp"
+
+#include "ACC/Factory.hpp"
 
 #include "AS/LabelTBuf.hpp"
 #include "AS/TStream.hpp"
@@ -99,12 +101,12 @@ namespace GDCC::ACC
       // ( expression )
       auto cond = getStatementCond(loopScope);
       if(invert)
-         cond = CC::ExpCreate_Not(cond, cond->pos);
+         cond = fact.expCreate_Not(cond, cond->pos);
 
       // ;
       expect(Core::TOK_Semico);
 
-      return CC::StatementCreate_Do(std::move(labels), pos, loopScope, body, cond);
+      return fact.stCreate_Do(std::move(labels), pos, loopScope, body, cond);
    }
 
    //
@@ -141,12 +143,12 @@ namespace GDCC::ACC
       // ( expression )
       auto cond = getStatementCond(loopScope);
       if(invert)
-         cond = CC::ExpCreate_Not(cond, cond->pos);
+         cond = fact.expCreate_Not(cond, cond->pos);
 
       // statement
       auto body = getStatement(loopScope);
 
-      return CC::StatementCreate_While(std::move(labels), pos, loopScope, cond, body);
+      return fact.stCreate_While(std::move(labels), pos, loopScope, cond, body);
    }
 
    //
@@ -162,7 +164,7 @@ namespace GDCC::ACC
       // ;
       expect(Core::TOK_Semico);
 
-      return CC::StatementCreate_Return(std::move(labels), pos, scope.fn);
+      return fact.stCreate_Return(std::move(labels), pos, scope.fn);
    }
 
    //

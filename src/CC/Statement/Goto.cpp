@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,7 +12,7 @@
 
 #include "CC/Statement/Goto.hpp"
 
-#include "CC/Exp.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Scope/Local.hpp"
 
 #include "Core/Exception.hpp"
@@ -31,17 +31,6 @@
 
 namespace GDCC::CC
 {
-   //
-   // Statement_Goto constructor
-   //
-   Statement_Goto::Statement_Goto(Labels const &labels_, Core::Origin pos_,
-      Core::String label_) :
-      Super{labels_, pos_},
-
-      label{label_}
-   {
-   }
-
    //
    // Statement_Goto constructor
    //
@@ -104,22 +93,9 @@ namespace GDCC::CC
    }
 
    //
-   // StatementCreate_Break
+   // Factory::stCreate_Break
    //
-   SR::Statement::CRef StatementCreate_Break(
-      SR::Statement::Labels const &labels, Core::Origin pos,
-      Scope_Local &ctx)
-   {
-      if(auto label = ctx.getLabelBreak())
-         return Statement_Goto::Create(labels, pos, label);
-
-      Core::Error(pos, "invalid break");
-   }
-
-   //
-   // StatementCreate_Break
-   //
-   SR::Statement::CRef StatementCreate_Break(
+   SR::Statement::CRef Factory::stCreate_Break(
       SR::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx)
    {
       if(auto label = ctx.getLabelBreak())
@@ -129,22 +105,9 @@ namespace GDCC::CC
    }
 
    //
-   // StatementCreate_Continue
+   // Factory::stCreate_Continue
    //
-   SR::Statement::CRef StatementCreate_Continue(
-      SR::Statement::Labels const &labels, Core::Origin pos,
-      Scope_Local &ctx)
-   {
-      if(auto label = ctx.getLabelContinue())
-         return Statement_Goto::Create(labels, pos, label);
-
-      Core::Error(pos, "invalid continue");
-   }
-
-   //
-   // StatementCreate_Continue
-   //
-   SR::Statement::CRef StatementCreate_Continue(
+   SR::Statement::CRef Factory::stCreate_Continue(
       SR::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx)
    {
       if(auto label = ctx.getLabelContinue())
@@ -154,30 +117,20 @@ namespace GDCC::CC
    }
 
    //
-   // StatementCreate_Goto
+   // Factory::stCreate_Goto
    //
-   SR::Statement::CRef StatementCreate_Goto(SR::Statement::Labels &&labels,
+   SR::Statement::CRef Factory::stCreate_Goto(SR::Statement::Labels &&labels,
          Core::Origin pos, SR::Exp const *exp_)
    {
-      auto exp = ExpPromo_Assign(SR::Type::Label->getTypePointer(), exp_, pos);
+      auto exp = expPromo_Assign(SR::Type::Label->getTypePointer(), exp_, pos);
 
       return Statement_GotoDyn::Create(std::move(labels), pos, exp);
    }
 
    //
-   // StatementCreate_Goto
+   // Factory::stCreate_Goto
    //
-   SR::Statement::CRef StatementCreate_Goto(
-      SR::Statement::Labels const &labels, Core::Origin pos,
-      Scope_Local &ctx, Core::String name)
-   {
-      return Statement_Goto::Create(labels, pos, ctx.getLabel(name));
-   }
-
-   //
-   // StatementCreate_Goto
-   //
-   SR::Statement::CRef StatementCreate_Goto(
+   SR::Statement::CRef Factory::stCreate_Goto(
       SR::Statement::Labels &&labels, Core::Origin pos, Scope_Local &ctx,
       Core::String name)
    {

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,7 @@
 
 #include "CC/Exp/Assign.hpp"
 #include "CC/Exp/Init.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Init.hpp"
 #include "CC/Scope/Global.hpp"
 #include "CC/Scope/Local.hpp"
@@ -47,7 +48,7 @@ namespace GDCC::CC
       obj->defin = true;
       obj->init  = init;
 
-      return ExpCreate_Obj(ctx.prog, obj, attr.namePos);
+      return ctx.fact.expCreate_Obj(ctx.prog, obj, attr.namePos);
    }
 
    //
@@ -65,11 +66,11 @@ namespace GDCC::CC
       obj->defin = true;
       obj->init  = init;
 
-      auto objExp = ExpCreate_Obj(ctx.prog, obj, pos);
+      auto objExp = ctx.fact.expCreate_Obj(ctx.prog, obj, pos);
       auto objSet = Exp_Assign::Create(objExp, init, pos);
-      auto objRef = ExpCreate_Refer(objExp, pos);
+      auto objRef = ctx.fact.expCreate_Refer(objExp, pos);
 
-      return ExpCreate_Deref(ExpCreate_Comma(objSet, objRef, pos), pos);
+      return ctx.fact.expCreate_Deref(ctx.fact.expCreate_Comma(objSet, objRef, pos), pos);
    }
 }
 
@@ -139,7 +140,7 @@ namespace GDCC::CC
             return getExp_Post(scope, getExp_CLit(scope, type));
          }
 
-         return ExpCreate_Cst(type, getExp_Cast(scope), pos);
+         return fact.expCreate_Cst(type, getExp_Cast(scope), pos);
       }
 
       return getExp_Unar(scope);

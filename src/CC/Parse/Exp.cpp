@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,7 +12,7 @@
 
 #include "CC/Parse.hpp"
 
-#include "CC/Exp.hpp"
+#include "CC/Factory.hpp"
 
 #include "Core/Array.hpp"
 #include "Core/TokenStream.hpp"
@@ -31,11 +31,11 @@
 #define DeclExpCreate(getter1, getter2) \
    auto exp = getter1(scope); \
    \
-   auto expCreate = [&](SR::Exp::CRef (*creator)(SR::Exp const *, \
+   auto expCreate = [&](SR::Exp::CRef (Factory::*creator)(SR::Exp const *, \
       SR::Exp const *, Core::Origin)) \
    { \
       auto pos = in.get().pos; \
-      return creator(exp, getter2(scope), pos); \
+      return (fact.*creator)(exp, getter2(scope), pos); \
    }
 
 
@@ -54,9 +54,9 @@ namespace GDCC::CC
 
       for(;;) switch(in.peek().tok)
       {
-      case Core::TOK_Mul: exp = expCreate(ExpCreate_Mul); break;
-      case Core::TOK_Div: exp = expCreate(ExpCreate_Div); break;
-      case Core::TOK_Mod: exp = expCreate(ExpCreate_Mod); break;
+      case Core::TOK_Mul: exp = expCreate(&Factory::expCreate_Mul); break;
+      case Core::TOK_Div: exp = expCreate(&Factory::expCreate_Div); break;
+      case Core::TOK_Mod: exp = expCreate(&Factory::expCreate_Mod); break;
 
       default:
          return exp;
@@ -73,8 +73,8 @@ namespace GDCC::CC
 
       for(;;) switch(in.peek().tok)
       {
-      case Core::TOK_Add: exp = expCreate(ExpCreate_Add); break;
-      case Core::TOK_Sub: exp = expCreate(ExpCreate_Sub); break;
+      case Core::TOK_Add: exp = expCreate(&Factory::expCreate_Add); break;
+      case Core::TOK_Sub: exp = expCreate(&Factory::expCreate_Sub); break;
 
       default:
          return exp;
@@ -90,8 +90,8 @@ namespace GDCC::CC
 
       for(;;) switch(in.peek().tok)
       {
-      case Core::TOK_ShL: exp = expCreate(ExpCreate_ShL); break;
-      case Core::TOK_ShR: exp = expCreate(ExpCreate_ShR); break;
+      case Core::TOK_ShL: exp = expCreate(&Factory::expCreate_ShL); break;
+      case Core::TOK_ShR: exp = expCreate(&Factory::expCreate_ShR); break;
 
       default:
          return exp;
@@ -107,10 +107,10 @@ namespace GDCC::CC
 
       for(;;) switch(in.peek().tok)
       {
-      case Core::TOK_CmpLT: exp = expCreate(ExpCreate_CmpLT); break;
-      case Core::TOK_CmpGT: exp = expCreate(ExpCreate_CmpGT); break;
-      case Core::TOK_CmpLE: exp = expCreate(ExpCreate_CmpLE); break;
-      case Core::TOK_CmpGE: exp = expCreate(ExpCreate_CmpGE); break;
+      case Core::TOK_CmpLT: exp = expCreate(&Factory::expCreate_CmpLT); break;
+      case Core::TOK_CmpGT: exp = expCreate(&Factory::expCreate_CmpGT); break;
+      case Core::TOK_CmpLE: exp = expCreate(&Factory::expCreate_CmpLE); break;
+      case Core::TOK_CmpGE: exp = expCreate(&Factory::expCreate_CmpGE); break;
 
       default:
          return exp;
@@ -126,8 +126,8 @@ namespace GDCC::CC
 
       for(;;) switch(in.peek().tok)
       {
-      case Core::TOK_CmpEQ: exp = expCreate(ExpCreate_CmpEQ); break;
-      case Core::TOK_CmpNE: exp = expCreate(ExpCreate_CmpNE); break;
+      case Core::TOK_CmpEQ: exp = expCreate(&Factory::expCreate_CmpEQ); break;
+      case Core::TOK_CmpNE: exp = expCreate(&Factory::expCreate_CmpNE); break;
 
       default:
          return exp;
@@ -142,7 +142,7 @@ namespace GDCC::CC
       DeclExpCreate(getExp_Equa, getExp_Equa);
 
       while(in.peek().tok == Core::TOK_And)
-         exp = expCreate(ExpCreate_BitAnd);
+         exp = expCreate(&Factory::expCreate_BitAnd);
 
       return exp;
    }
@@ -155,7 +155,7 @@ namespace GDCC::CC
       DeclExpCreate(getExp_BAnd, getExp_BAnd);
 
       while(in.peek().tok == Core::TOK_OrX)
-         exp = expCreate(ExpCreate_BitOrX);
+         exp = expCreate(&Factory::expCreate_BitOrX);
 
       return exp;
    }
@@ -168,7 +168,7 @@ namespace GDCC::CC
       DeclExpCreate(getExp_BOrX, getExp_BOrX);
 
       while(in.peek().tok == Core::TOK_OrI)
-         exp = expCreate(ExpCreate_BitOrI);
+         exp = expCreate(&Factory::expCreate_BitOrI);
 
       return exp;
    }
@@ -181,7 +181,7 @@ namespace GDCC::CC
       DeclExpCreate(getExp_BOrI, getExp_BOrI);
 
       while(in.peek().tok == Core::TOK_And2)
-         exp = expCreate(ExpCreate_LogAnd);
+         exp = expCreate(&Factory::expCreate_LogAnd);
 
       return exp;
    }
@@ -194,7 +194,7 @@ namespace GDCC::CC
       DeclExpCreate(getExp_LAnd, getExp_LAnd);
 
       while(in.peek().tok == Core::TOK_OrI2)
-         exp = expCreate(ExpCreate_LogOrI);
+         exp = expCreate(&Factory::expCreate_LogOrI);
 
       return exp;
    }
@@ -214,7 +214,7 @@ namespace GDCC::CC
 
          expect(Core::TOK_Colon);
 
-         return ExpCreate_Cnd(exp, expT, getExp_Cond(scope), pos);
+         return fact.expCreate_Cnd(exp, expT, getExp_Cond(scope), pos);
       }
 
       return exp;
@@ -229,17 +229,17 @@ namespace GDCC::CC
 
       switch(in.peek().tok)
       {
-      case Core::TOK_Equal: return expCreate(ExpCreate_Assign);
-      case Core::TOK_MulEq: return expCreate(ExpCreate_MulEq);
-      case Core::TOK_DivEq: return expCreate(ExpCreate_DivEq);
-      case Core::TOK_ModEq: return expCreate(ExpCreate_ModEq);
-      case Core::TOK_AddEq: return expCreate(ExpCreate_AddEq);
-      case Core::TOK_SubEq: return expCreate(ExpCreate_SubEq);
-      case Core::TOK_ShLEq: return expCreate(ExpCreate_ShLEq);
-      case Core::TOK_ShREq: return expCreate(ExpCreate_ShREq);
-      case Core::TOK_AndEq: return expCreate(ExpCreate_BitAndEq);
-      case Core::TOK_OrXEq: return expCreate(ExpCreate_BitOrXEq);
-      case Core::TOK_OrIEq: return expCreate(ExpCreate_BitOrIEq);
+      case Core::TOK_Equal: return expCreate(&Factory::expCreate_Assign);
+      case Core::TOK_MulEq: return expCreate(&Factory::expCreate_MulEq);
+      case Core::TOK_DivEq: return expCreate(&Factory::expCreate_DivEq);
+      case Core::TOK_ModEq: return expCreate(&Factory::expCreate_ModEq);
+      case Core::TOK_AddEq: return expCreate(&Factory::expCreate_AddEq);
+      case Core::TOK_SubEq: return expCreate(&Factory::expCreate_SubEq);
+      case Core::TOK_ShLEq: return expCreate(&Factory::expCreate_ShLEq);
+      case Core::TOK_ShREq: return expCreate(&Factory::expCreate_ShREq);
+      case Core::TOK_AndEq: return expCreate(&Factory::expCreate_BitAndEq);
+      case Core::TOK_OrXEq: return expCreate(&Factory::expCreate_BitOrXEq);
+      case Core::TOK_OrIEq: return expCreate(&Factory::expCreate_BitOrIEq);
 
       default:
          return exp;
@@ -258,7 +258,7 @@ namespace GDCC::CC
          if(!exp->isEffect() && !exp->getType()->isTypeVoid())
             SR::WarnUnusedValue(exp->pos, "expression result unused");
 
-         exp = expCreate(ExpCreate_Comma);
+         exp = expCreate(&Factory::expCreate_Comma);
       }
 
       return exp;

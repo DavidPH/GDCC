@@ -12,6 +12,7 @@
 
 #include "CC/Exp/Jmp.hpp"
 
+#include "CC/Factory.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Type.hpp"
 
@@ -129,13 +130,13 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_JmpLng
+   // Factory::expCreate_JmpLng
    //
-   SR::Exp::CRef ExpCreate_JmpLng(Scope &scope, SR::Exp const *env_,
+   SR::Exp::CRef Factory::expCreate_JmpLng(Scope &scope, SR::Exp const *env_,
       SR::Exp const *val_, Core::Origin pos)
    {
-      auto env = ExpPromo_Assign(TypeIntegPrS->getTypePointer(), env_, pos);
-      auto val = ExpPromo_Assign(TypeIntegPrS, val_, pos);
+      auto env = expPromo_Assign(TypeIntegPrS->getTypePointer(), env_, pos);
+      auto val = expPromo_Assign(TypeIntegPrS, val_, pos);
 
       if(auto scopeLocal = dynamic_cast<Scope_Local *>(&scope))
          return Exp_JmpLng::Create(*scopeLocal, env, val, pos);
@@ -145,11 +146,11 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_JmpSet
+   // Factory::expCreate_JmpSet
    //
-   SR::Exp::CRef ExpCreate_JmpSet(SR::Exp const *env_, Core::Origin pos)
+   SR::Exp::CRef Factory::expCreate_JmpSet(SR::Exp const *env_, Core::Origin pos)
    {
-      auto env = ExpPromo_Assign(TypeIntegPrS->getTypePointer(), env_, pos);
+      auto env = expPromo_Assign(TypeIntegPrS->getTypePointer(), env_, pos);
 
       return Exp_JmpSet::Create(env, pos);
    }

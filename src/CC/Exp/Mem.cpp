@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,7 @@
 #include "CC/Exp/Mem.hpp"
 
 #include "CC/Exp/Add.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Type/Struct.hpp"
 
 #include "SR/Arg.hpp"
@@ -49,12 +50,12 @@ namespace GDCC::CC
 
          // Calculate pointer offset.
          auto off  = mem.addr / mem.type->getSizeShift();
-         auto expO = ExpCreate_LitInt(SR::Type::Size,
+         auto expO = fact.expCreate_LitInt(SR::Type::Size,
             Core::NumberCast<Core::Integ>(off), pos);
 
          // Create pointer expression.
          auto type = mem.type->getTypePointer();
-         auto addr = ExpConvert_Pointer(type, expL->getArg().data, pos);
+         auto addr = fact.expConvert_Pointer(type, expL->getArg().data, pos);
               addr = Exp_AddPtrRaw::Create(type, addr, expO, pos);
 
          // Convert pointer into an arg.
@@ -121,12 +122,12 @@ namespace GDCC::CC
          {
          case StructPropArg::Member:
             // TODO: Avoid multiple evaluation.
-            args.emplace_back(ExpCreate_Mem(expL, arg.name, pos, scope));
+            args.emplace_back(fact.expCreate_Mem(expL, arg.name, pos, scope));
             break;
 
          case StructPropArg::ThisPtr:
             // TODO: Avoid multiple evaluation.
-            args.emplace_back(ExpCreate_Refer(expL, pos));
+            args.emplace_back(fact.expCreate_Refer(expL, pos));
             break;
 
          case StructPropArg::ThisRef:
@@ -153,7 +154,7 @@ namespace GDCC::CC
 
       // TODO: If this not referenced, evaluate it.
 
-      return ExpCreate_Call(func->func, {args.begin(), args.end()}, scope, pos);
+      return fact.expCreate_Call(func->func, {args.begin(), args.end()}, scope, pos);
    }
 
    //
@@ -165,7 +166,7 @@ namespace GDCC::CC
 
       // If no call property defined, fall back to get property.
       if(!prop.propCall)
-         return ExpCreate_Call(createExp_get(), std::move(args), scope, pos);
+         return fact.expCreate_Call(createExp_get(), std::move(args), scope, pos);
 
       return createExp(prop, prop.propCall, args.data(), args.size());
    }
@@ -213,29 +214,29 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_Mem
+   // Factory::expCreate_Mem
    //
-   SR::Exp::CRef ExpCreate_Mem(SR::Exp const *l, Core::String r,
+   SR::Exp::CRef Factory::expCreate_Mem(SR::Exp const *l, Core::String r,
       Core::Origin pos, Scope &scope)
    {
       // Special check for structure property.
       if(Type_Struct::CPtr type = dynamic_cast<Type_Struct const *>(&*l->getType()))
       {
          if(type->hasProp(r))
-            return Exp_MemProp::Create(l, r, pos, type, scope);
+            return Exp_MemProp::Create(l, r, pos, *this, type, scope);
       }
 
       // Otherwise, normal member.
-      return Exp_Mem::Create(l, r, pos);
+      return Exp_Mem::Create(l, r, pos, *this);
    }
 
    //
-   // ExpCreate_MemPt
+   // Factory::expCreate_MemPt
    //
-   SR::Exp::CRef ExpCreate_MemPt(SR::Exp const *l, Core::String r,
+   SR::Exp::CRef Factory::expCreate_MemPt(SR::Exp const *l, Core::String r,
       Core::Origin pos, Scope &scope)
    {
-      return ExpCreate_Mem(ExpCreate_Deref(l, pos), r, pos, scope);
+      return expCreate_Mem(expCreate_Deref(l, pos), r, pos, scope);
    }
 }
 

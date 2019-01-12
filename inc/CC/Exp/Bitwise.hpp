@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,6 +15,7 @@
 
 #include "../../CC/Exp/Arith.hpp"
 
+#include "../../CC/Factory.hpp"
 #include "../../CC/Type.hpp"
 
 #include "../../SR/Exp/Bitwise.hpp"
@@ -33,11 +34,11 @@ namespace GDCC::CC
    // creation.
    //
    template<typename Base, typename Codes>
-   SR::Exp::CRef ExpCreate_Bitwise(SR::Exp const *l, SR::Exp const *r,
-      Core::Origin pos)
+   SR::Exp::CRef ExpCreate_Bitwise(Factory &fact, SR::Exp const *l,
+      SR::Exp const *r, Core::Origin pos)
    {
-      auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expL = fact.expPromo_Int(fact.expPromo_LValue(l, pos), pos);
+      auto expR = fact.expPromo_Int(fact.expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -46,9 +47,9 @@ namespace GDCC::CC
       if(typeL->isCTypeInteg() && typeR->isCTypeInteg())
       {
          auto type = SR::Type::None;
-         std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
+         std::tie(type, expL, expR) = fact.expPromo_Arith(expL, expR, pos);
 
-         return ExpCreate_ArithInteg<Base, Codes>(type, expL, expR, pos);
+         return ExpCreate_ArithInteg<Base, Codes>(fact, type, expL, expR, pos);
       }
 
       Core::Error(pos, "expected integer type");
@@ -60,10 +61,10 @@ namespace GDCC::CC
    // expression creation.
    //
    template<typename Base, typename Codes>
-   SR::Exp::CRef ExpCreate_BitwiseEq(SR::Exp const *expL,
+   SR::Exp::CRef ExpCreate_BitwiseEq(Factory &fact, SR::Exp const *expL,
       SR::Exp const *r, Core::Origin pos)
    {
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expR = fact.expPromo_Int(fact.expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -72,9 +73,9 @@ namespace GDCC::CC
       if(typeL->isCTypeInteg() && typeR->isCTypeInteg())
       {
          SR::Type::CPtr evalT;
-         std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
+         std::tie(evalT, std::ignore, expR) = fact.expPromo_Arith(expL, expR, pos);
 
-         return ExpCreate_ArithEqInteg<Base, Codes>(evalT, typeL, expL, expR, pos);
+         return ExpCreate_ArithEqInteg<Base, Codes>(fact, evalT, typeL, expL, expR, pos);
       }
 
       Core::Error(pos, "expected integer type");
@@ -87,11 +88,11 @@ namespace GDCC::CC
    // creation.
    //
    template<typename Base, typename Codes>
-   SR::Exp::CRef ExpCreate_Shift(SR::Exp const *l, SR::Exp const *r,
-      Core::Origin pos)
+   SR::Exp::CRef ExpCreate_Shift(Factory &fact, SR::Exp const *l,
+      SR::Exp const *r, Core::Origin pos)
    {
-      auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expL = fact.expPromo_Int(fact.expPromo_LValue(l, pos), pos);
+      auto expR = fact.expPromo_Int(fact.expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -102,9 +103,9 @@ namespace GDCC::CC
 
       // Convert to int rank, retaining sign.
       if(typeR->getSizeBitsS())
-         expR = ExpConvert_Arith(TypeIntegPrS, expR, pos);
+         expR = fact.expConvert_Arith(TypeIntegPrS, expR, pos);
       else
-         expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
+         expR = fact.expConvert_Arith(TypeIntegPrU, expR, pos);
 
       auto code = SR::ExpCode_Arith<Codes>(typeL);
 
@@ -118,10 +119,10 @@ namespace GDCC::CC
    // creation.
    //
    template<typename Base, typename Codes>
-   SR::Exp::CRef ExpCreate_ShiftEq(SR::Exp const *expL, SR::Exp const *r,
+   SR::Exp::CRef ExpCreate_ShiftEq(Factory &fact, SR::Exp const *expL, SR::Exp const *r,
       Core::Origin pos)
    {
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expR = fact.expPromo_Int(fact.expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -132,9 +133,9 @@ namespace GDCC::CC
 
       // Convert to int rank, retaining sign.
       if(typeR->getSizeBitsS())
-         expR = ExpConvert_Arith(TypeIntegPrS, expR, pos);
+         expR = fact.expConvert_Arith(TypeIntegPrS, expR, pos);
       else
-         expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
+         expR = fact.expConvert_Arith(TypeIntegPrU, expR, pos);
 
       auto code = SR::ExpCode_Arith<Codes>(typeL);
 

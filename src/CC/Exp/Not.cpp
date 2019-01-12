@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "CC/Exp/Not.hpp"
 
+#include "CC/Factory.hpp"
 #include "CC/Type.hpp"
 
 #include "IR/Block.hpp"
@@ -61,11 +62,11 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_Not
+   // Factory::expCreate_Not
    //
-   SR::Exp::CRef ExpCreate_Not(SR::Exp const *e, Core::Origin pos)
+   SR::Exp::CRef Factory::expCreate_Not(SR::Exp const *e, Core::Origin pos)
    {
-      return Exp_Not::Create(TypeIntegPrS, ExpPromo_Cond(e, pos), pos);
+      return Exp_Not::Create(TypeIntegPrS, expPromo_Cond(e, pos), pos);
    }
 }
 

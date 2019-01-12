@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2018 David Hill
+## Copyright (C) 2013-2019 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -121,6 +121,7 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    ../../inc/CC/Exp/Refer.hpp
    ../../inc/CC/Exp/Sub.hpp
    ../../inc/CC/Exp/VaArg.hpp
+   ../../inc/CC/Factory.hpp
    ../../inc/CC/Init.hpp
    ../../inc/CC/Parse.hpp
    ../../inc/CC/Scope.hpp
@@ -131,7 +132,6 @@ add_library(gdcc-cc-lib ${GDCC_SHARED_DECL}
    ../../inc/CC/Scope/Global.hpp
    ../../inc/CC/Scope/Local.hpp
    ../../inc/CC/Scope/Loop.hpp
-   ../../inc/CC/Statement.hpp
    ../../inc/CC/Statement/Asm.hpp
    ../../inc/CC/Statement/FuncPre.hpp
    ../../inc/CC/Statement/Goto.hpp

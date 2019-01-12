@@ -13,6 +13,7 @@
 #include "CC/Statement/Switch.hpp"
 
 #include "CC/Exp/Arith.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Scope/Case.hpp"
 
 #include "Core/Exception.hpp"
@@ -223,16 +224,6 @@ namespace GDCC::CC
    //
    // Statement_Switch constructor
    //
-   Statement_Switch::Statement_Switch(Labels const &labels_,
-      Core::Origin pos_, Scope_Case &scope_, SR::Exp const *cond_,
-      SR::Statement const *body_) :
-      Super{labels_, pos_}, scope(scope_), cond{cond_}, body{body_}
-   {
-   }
-
-   //
-   // Statement_Switch constructor
-   //
    Statement_Switch::Statement_Switch(Labels &&labels_, Core::Origin pos_,
       Scope_Case &scope_, SR::Exp const *cond_, SR::Statement const *body_) :
       Super{std::move(labels_), pos_}, scope(scope_), cond{cond_}, body{body_}
@@ -319,29 +310,13 @@ namespace GDCC::CC
    }
 
    //
-   // StatementCreate_Switch
+   // Factory::stCreate_Switch
    //
-   SR::Statement::CRef StatementCreate_Switch(
-      SR::Statement::Labels const &labels, Core::Origin pos,
-      Scope_Case &scope, SR::Exp const *cond_, SR::Statement const *body)
-   {
-      auto cond = ExpPromo_Int(ExpPromo_LValue(cond_), pos);
-      auto type = cond->getType();
-
-      if(!type->isCTypeInteg())
-         Core::Error(pos, "expected integer type");
-
-      return Statement_Switch::Create(labels, pos, scope, cond, body);
-   }
-
-   //
-   // StatementCreate_Switch
-   //
-   SR::Statement::CRef StatementCreate_Switch(
+   SR::Statement::CRef Factory::stCreate_Switch(
       SR::Statement::Labels &&labels, Core::Origin pos,
       Scope_Case &scope, SR::Exp const *cond_, SR::Statement const *body)
    {
-      auto cond = ExpPromo_Int(ExpPromo_LValue(cond_), pos);
+      auto cond = expPromo_Int(expPromo_LValue(cond_), pos);
       auto type = cond->getType();
 
       if(!type->isCTypeInteg())

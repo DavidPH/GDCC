@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2015-2018 David Hill
+## Copyright (C) 2015-2019 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -50,7 +50,7 @@ add_library(gdcc-acc-lib ${GDCC_SHARED_DECL}
    TSource.cpp
 
    ../../inc/ACC/DirectiveTBuf.hpp
-   ../../inc/ACC/Exp.hpp
+   ../../inc/ACC/Factory.hpp
    ../../inc/ACC/IncludeDTBuf.hpp
    ../../inc/ACC/Macro.hpp
    ../../inc/ACC/MacroDTBuf.hpp

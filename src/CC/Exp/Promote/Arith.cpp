@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "CC/Exp.hpp"
 
+#include "CC/Factory.hpp"
 #include "CC/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -30,7 +31,8 @@ namespace GDCC::CC
    // ExpPromo_Arith_Fixed
    //
    static std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
-   ExpPromo_Arith_Fixed(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   ExpPromo_Arith_Fixed(Factory &fact, SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos)
    {
       SR::Exp::CRef expL{l}, expR{r};
       auto typeL = expL->getType();
@@ -41,12 +43,12 @@ namespace GDCC::CC
       auto signR = typeR->getSizeBitsS();
       if(signL && !signR)
       {
-         expR  = ExpConvert_Arith(typeR->getSignType(), expR, pos);
+         expR  = fact.expConvert_Arith(typeR->getSignType(), expR, pos);
          typeR = expR->getType();
       }
       else if(!signL && signR)
       {
-         expL  = ExpConvert_Arith(typeL->getSignType(), expL, pos);
+         expL  = fact.expConvert_Arith(typeL->getSignType(), expL, pos);
          typeL = expL->getType();
       }
 
@@ -55,12 +57,12 @@ namespace GDCC::CC
       bool satuR = typeR->isTypeSaturate();
       if(satuL && !satuR)
       {
-         expR  = ExpConvert_Arith(typeR->getSatuType(), expR, pos);
+         expR  = fact.expConvert_Arith(typeR->getSatuType(), expR, pos);
          typeR = expR->getType();
       }
       else if(!satuL && satuR)
       {
-         expL  = ExpConvert_Arith(typeL->getSatuType(), expL, pos);
+         expL  = fact.expConvert_Arith(typeL->getSatuType(), expL, pos);
          typeL = expL->getType();
       }
 
@@ -68,9 +70,9 @@ namespace GDCC::CC
       auto rankL = typeL->getRankC();
       auto rankR = typeR->getRankC();
       if(rankL < rankR)
-         return std::make_tuple(typeR, ExpConvert_Arith(typeR, expL, pos), expR);
+         return std::make_tuple(typeR, fact.expConvert_Arith(typeR, expL, pos), expR);
       if(rankL > rankR)
-         return std::make_tuple(typeL, expL, ExpConvert_Arith(typeL, expR, pos));
+         return std::make_tuple(typeL, expL, fact.expConvert_Arith(typeL, expR, pos));
 
       // If same rank, they should be compatible types.
       return std::make_tuple(typeL, expL, expR);
@@ -80,11 +82,9 @@ namespace GDCC::CC
    // ExpPromo_Arith_Float
    //
    static std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
-   ExpPromo_Arith_Float(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   ExpPromo_Arith_Float(Factory &fact, SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos)
    {
-      using namespace GDCC;
-      using namespace CC;
-
       SR::Exp::CRef expL{l}, expR{r};
 
       auto typeL = expL->getType()->getTypeQual();
@@ -103,51 +103,51 @@ namespace GDCC::CC
       if(typeL == TypeFloatCSLL || typeL == TypeFloatISLL || typeL == TypeFloatRSLL ||
          typeR == TypeFloatCSLL || typeR == TypeFloatISLL || typeR == TypeFloatRSLL)
       {
-              if(cplxL) expL = ExpConvert_Arith(TypeFloatCSLL, expL, pos);
-         else if(imagL) expL = ExpConvert_Arith(TypeFloatISLL, expL, pos);
-         else           expL = ExpConvert_Arith(TypeFloatRSLL, expL, pos);
+              if(cplxL) expL = fact.expConvert_Arith(TypeFloatCSLL, expL, pos);
+         else if(imagL) expL = fact.expConvert_Arith(TypeFloatISLL, expL, pos);
+         else           expL = fact.expConvert_Arith(TypeFloatRSLL, expL, pos);
 
-              if(cplxR) expR = ExpConvert_Arith(TypeFloatCSLL, expR, pos);
-         else if(imagR) expR = ExpConvert_Arith(TypeFloatISLL, expR, pos);
-         else           expR = ExpConvert_Arith(TypeFloatRSLL, expR, pos);
+              if(cplxR) expR = fact.expConvert_Arith(TypeFloatCSLL, expR, pos);
+         else if(imagR) expR = fact.expConvert_Arith(TypeFloatISLL, expR, pos);
+         else           expR = fact.expConvert_Arith(TypeFloatRSLL, expR, pos);
 
          if(resDomain == 1) return std::make_tuple(TypeFloatCSLL, expL, expR);
          if(resDomain == 2) return std::make_tuple(TypeFloatISLL, expL, expR);
-                              return std::make_tuple(TypeFloatRSLL, expL, expR);
+                            return std::make_tuple(TypeFloatRSLL, expL, expR);
       }
 
       // double
       if(typeL == TypeFloatCSL || typeL == TypeFloatISL || typeL == TypeFloatRSL ||
          typeR == TypeFloatCSL || typeR == TypeFloatISL || typeR == TypeFloatRSL)
       {
-              if(cplxL) expL = ExpConvert_Arith(TypeFloatCSL, expL, pos);
-         else if(imagL) expL = ExpConvert_Arith(TypeFloatISL, expL, pos);
-         else           expL = ExpConvert_Arith(TypeFloatRSL, expL, pos);
+              if(cplxL) expL = fact.expConvert_Arith(TypeFloatCSL, expL, pos);
+         else if(imagL) expL = fact.expConvert_Arith(TypeFloatISL, expL, pos);
+         else           expL = fact.expConvert_Arith(TypeFloatRSL, expL, pos);
 
-              if(cplxR) expR = ExpConvert_Arith(TypeFloatCSL, expR, pos);
-         else if(imagR) expR = ExpConvert_Arith(TypeFloatISL, expR, pos);
-         else           expR = ExpConvert_Arith(TypeFloatRSL, expR, pos);
+              if(cplxR) expR = fact.expConvert_Arith(TypeFloatCSL, expR, pos);
+         else if(imagR) expR = fact.expConvert_Arith(TypeFloatISL, expR, pos);
+         else           expR = fact.expConvert_Arith(TypeFloatRSL, expR, pos);
 
          if(resDomain == 1) return std::make_tuple(TypeFloatCSL, expL, expR);
          if(resDomain == 2) return std::make_tuple(TypeFloatISL, expL, expR);
-                              return std::make_tuple(TypeFloatRSL, expL, expR);
+                            return std::make_tuple(TypeFloatRSL, expL, expR);
       }
 
       // float
       if(typeL == TypeFloatCS || typeL == TypeFloatIS || typeL == TypeFloatRS ||
          typeR == TypeFloatCS || typeR == TypeFloatIS || typeR == TypeFloatRS)
       {
-              if(cplxL) expL = ExpConvert_Arith(TypeFloatCS, expL, pos);
-         else if(imagL) expL = ExpConvert_Arith(TypeFloatIS, expL, pos);
-         else           expL = ExpConvert_Arith(TypeFloatRS, expL, pos);
+              if(cplxL) expL = fact.expConvert_Arith(TypeFloatCS, expL, pos);
+         else if(imagL) expL = fact.expConvert_Arith(TypeFloatIS, expL, pos);
+         else           expL = fact.expConvert_Arith(TypeFloatRS, expL, pos);
 
-              if(cplxR) expR = ExpConvert_Arith(TypeFloatCS, expR, pos);
-         else if(imagR) expR = ExpConvert_Arith(TypeFloatIS, expR, pos);
-         else           expR = ExpConvert_Arith(TypeFloatRS, expR, pos);
+              if(cplxR) expR = fact.expConvert_Arith(TypeFloatCS, expR, pos);
+         else if(imagR) expR = fact.expConvert_Arith(TypeFloatIS, expR, pos);
+         else           expR = fact.expConvert_Arith(TypeFloatRS, expR, pos);
 
          if(resDomain == 1) return std::make_tuple(TypeFloatCS, expL, expR);
          if(resDomain == 2) return std::make_tuple(TypeFloatIS, expL, expR);
-                              return std::make_tuple(TypeFloatRS, expL, expR);
+                            return std::make_tuple(TypeFloatRS, expL, expR);
       }
 
       Core::Error(pos, "cannot determine common floating type");
@@ -157,12 +157,11 @@ namespace GDCC::CC
    // ExpPromo_Arith_Integ
    //
    static std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
-   ExpPromo_Arith_Integ(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   ExpPromo_Arith_Integ(Factory &fact, SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos)
    {
-      using namespace GDCC;
-
-      auto expL = ExpPromo_Int(l, pos);
-      auto expR = ExpPromo_Int(r, pos);
+      auto expL = fact.expPromo_Int(l, pos);
+      auto expR = fact.expPromo_Int(r, pos);
 
       auto typeL = expL->getType()->getTypeQual();
       auto typeR = expR->getType()->getTypeQual();
@@ -183,15 +182,15 @@ namespace GDCC::CC
 
       // If one has a higher rank, convert to that.
       if(rankL < rankR)
-         return std::make_tuple(typeR, ExpConvert_Arith(typeR, expL, pos), expR);
+         return std::make_tuple(typeR, fact.expConvert_Arith(typeR, expL, pos), expR);
       if(rankL > rankR)
-         return std::make_tuple(typeL, expL, ExpConvert_Arith(typeL, expR, pos));
+         return std::make_tuple(typeL, expL, fact.expConvert_Arith(typeL, expR, pos));
 
       // Try to promote to unsigned.
       if(typeL->isCTypeIntegU())
-         return std::make_tuple(typeL, expL, ExpConvert_Arith(typeL, expR, pos));
+         return std::make_tuple(typeL, expL, fact.expConvert_Arith(typeL, expR, pos));
       if(typeR->isCTypeIntegU())
-         return std::make_tuple(typeR, ExpConvert_Arith(typeR, expL, pos), expR);
+         return std::make_tuple(typeR, fact.expConvert_Arith(typeR, expL, pos), expR);
 
       // Same rank and both signed, should mean they're compatible.
       return std::make_tuple(typeL, expL, expR);
@@ -206,10 +205,10 @@ namespace GDCC::CC
 namespace GDCC::CC
 {
    //
-   // ExpPromo_Arith
+   // Factory::expPromo_Arith
    //
    std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
-   ExpPromo_Arith(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   Factory::expPromo_Arith(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
       SR::Exp::CRef expL{l}, expR{r};
 
@@ -218,43 +217,40 @@ namespace GDCC::CC
 
       // Floating types.
       if(typeL->isCTypeFloat() || typeR->isCTypeFloat())
-         return ExpPromo_Arith_Float(expL, expR, pos);
+         return ExpPromo_Arith_Float(*this, expL, expR, pos);
 
       // Fixed-point types.
       if(typeL->isCTypeFixed())
       {
          if(typeR->isCTypeFixed())
-            return ExpPromo_Arith_Fixed(expL, expR, pos);
+            return ExpPromo_Arith_Fixed(*this, expL, expR, pos);
 
          else if(typeR->isCTypeInteg())
-            return std::make_tuple(typeL, expL, ExpPromo_Int(expR, pos));
+            return std::make_tuple(typeL, expL, expPromo_Int(expR, pos));
       }
       else if(typeR->isCTypeFixed() && typeL->isCTypeInteg())
-         return std::make_tuple(typeR, ExpPromo_Int(expL, pos), expR);
+         return std::make_tuple(typeR, expPromo_Int(expL, pos), expR);
 
       // Integer types.
       if(typeL->isCTypeInteg() && typeR->isCTypeInteg())
-         return ExpPromo_Arith_Integ(expL, expR, pos);
+         return ExpPromo_Arith_Integ(*this, expL, expR, pos);
 
       Core::Error(pos, "cannot determine common real type");
    }
 
    //
-   // ExpPromo_ArithAlways
+   // Factory::expPromo_ArithAlways
    //
    std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
-   ExpPromo_ArithAlways(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   Factory::expPromo_ArithAlways(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
-      SR::Exp::CRef  expL{l}, expR{r};
-      SR::Type::CRef type{SR::Type::None};
-
-      std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
+      auto [type, expL, expR] = expPromo_Arith(l, r, pos);
 
       if(expL->getType()->getTypeQual() != type)
-         expL = ExpConvert_Arith(type, expL, pos);
+         expL = expConvert_Arith(type, expL, pos);
 
       if(expR->getType()->getTypeQual() != type)
-         expR = ExpConvert_Arith(type, expR, pos);
+         expR = expConvert_Arith(type, expR, pos);
 
       return std::make_tuple(type, expL, expR);
    }

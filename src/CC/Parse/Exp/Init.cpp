@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -62,7 +62,7 @@ namespace GDCC::CC
    {
       auto raw = getInitRaw(scope);
 
-      return Exp_Init::Create(Init::Create(raw, *this, scope, type), false);
+      return Exp_Init::Create(Init::Create(raw, *this, scope, type, fact), false);
    }
 
    //

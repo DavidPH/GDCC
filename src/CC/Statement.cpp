@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -10,9 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "CC/Statement.hpp"
-
-#include "Core/Exception.hpp"
+#include "CC/Factory.hpp"
 
 #include "SR/Statement.hpp"
 
@@ -24,9 +22,9 @@
 namespace GDCC::CC
 {
    //
-   // StatementCreate_Decl
+   // Factory::stCreate_Decl
    //
-   SR::Statement::CRef StatementCreate_Decl(Core::Origin pos, Scope &)
+   SR::Statement::CRef Factory::stCreate_Decl(Core::Origin pos, Scope &)
    {
       return SR::StatementCreate_Empty(pos);
    }

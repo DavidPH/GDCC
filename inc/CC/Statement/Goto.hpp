@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef GDCC__CC__Statement__Goto_H__
 #define GDCC__CC__Statement__Goto_H__
 
-#include "../../CC/Statement.hpp"
+#include "../../CC/Types.hpp"
 
 #include "../../SR/Statement.hpp"
 
@@ -36,13 +36,10 @@ namespace GDCC::CC
       Core::String const label;
 
 
-      static CRef Create(Labels const &labels, Core::Origin pos, Core::String label)
-         {return CRef(new This(labels, pos, label));}
       static CRef Create(Labels &&labels, Core::Origin pos, Core::String label)
          {return CRef(new This(std::move(labels), pos, label));}
 
    protected:
-      Statement_Goto(Labels const &labels, Core::Origin pos, Core::String label);
       Statement_Goto(Labels &&labels, Core::Origin pos, Core::String label);
 
       virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;

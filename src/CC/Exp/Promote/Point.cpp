@@ -12,6 +12,7 @@
 
 #include "CC/Exp.hpp"
 
+#include "CC/Factory.hpp"
 #include "CC/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -77,10 +78,10 @@ namespace GDCC::CC
 namespace GDCC::CC
 {
    //
-   // ExpPromo_PtrEqu
+   // Factory::expPromo_PtrEqu
    //
    std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
-   ExpPromo_PtrEqu(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   Factory::expPromo_PtrEqu(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
       SR::Exp::CRef expL{l}, expR{r};
 
@@ -102,12 +103,12 @@ namespace GDCC::CC
          if(nulR)
             Core::Error(pos, "unexpected two null pointer constants");
 
-         expL = ExpConvert_PtrArith(typeR, expL, pos);
+         expL = expConvert_PtrArith(typeR, expL, pos);
          return std::make_tuple(typeR, expL, expR);
       }
       else if(nulR)
       {
-         expR = ExpConvert_PtrArith(typeL, expR, pos);
+         expR = expConvert_PtrArith(typeL, expR, pos);
          return std::make_tuple(typeL, expL, expR);
       }
 
@@ -122,8 +123,8 @@ namespace GDCC::CC
          auto type = baseL->getTypeQual(qual)
             ->getTypeArrayQualAddr(qual.space)->getTypePointer();
 
-         expL = ExpConvert_Pointer(type, expL, pos);
-         expR = ExpConvert_Pointer(type, expR, pos);
+         expL = expConvert_Pointer(type, expL, pos);
+         expR = expConvert_Pointer(type, expR, pos);
 
          return std::make_tuple(type, expL, expR);
       }
@@ -139,8 +140,8 @@ namespace GDCC::CC
          auto type = SR::Type::Void->getTypeQual(qual)
             ->getTypeArrayQualAddr(qual.space)->getTypePointer();
 
-         expL = ExpConvert_Pointer(type, expL, pos);
-         expR = ExpConvert_Pointer(type, expR, pos);
+         expL = expConvert_Pointer(type, expL, pos);
+         expR = expConvert_Pointer(type, expR, pos);
 
          return std::make_tuple(type, expL, expR);
       }
@@ -149,10 +150,10 @@ namespace GDCC::CC
    }
 
    //
-   // ExpPromo_PtrRel
+   // Factory::expPromo_PtrRel
    //
    std::tuple<SR::Type::CRef, SR::Exp::CRef, SR::Exp::CRef>
-   ExpPromo_PtrRel(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
+   Factory::expPromo_PtrRel(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
       SR::Exp::CRef expL{l}, expR{r};
 
@@ -179,8 +180,8 @@ namespace GDCC::CC
       auto type = baseL->getTypeQual(qual)
          ->getTypeArrayQualAddr(qual.space)->getTypePointer();
 
-      expL = ExpConvert_Pointer(type, expL, pos);
-      expR = ExpConvert_Pointer(type, expR, pos);
+      expL = expConvert_Pointer(type, expL, pos);
+      expR = expConvert_Pointer(type, expR, pos);
 
       return std::make_tuple(type, expL, expR);
    }

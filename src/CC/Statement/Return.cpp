@@ -12,7 +12,7 @@
 
 #include "CC/Statement/Return.hpp"
 
-#include "CC/Exp.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Scope/Function.hpp"
 
 #include "Core/Exception.hpp"
@@ -37,7 +37,7 @@ namespace GDCC::CC
    //
    // CheckConstraint
    //
-   static SR::Exp::CPtr CheckConstraint(Core::Origin pos,
+   static SR::Exp::CPtr CheckConstraint(Factory &fact, Core::Origin pos,
       CC::Scope_Function &scope, SR::Exp const *exp)
    {
       bool isVoid = scope.fn->retrn->isTypeVoid();
@@ -51,7 +51,7 @@ namespace GDCC::CC
          if(isVoid)
             Core::Error(pos, "return expression forbidden");
 
-         return CC::ExpPromo_Assign(scope.fn->retrn, exp, pos);
+         return fact.expPromo_Assign(scope.fn->retrn, exp, pos);
       }
       else
       {
@@ -73,27 +73,9 @@ namespace GDCC::CC
    //
    // Statement_ReturnExp constructor
    //
-   Statement_ReturnExp::Statement_ReturnExp(Labels const &labels_,
-      Core::Origin pos_, SR::Exp const *exp_, Scope_Function &scope_) :
-      Super{labels_, pos_}, exp{exp_}, scope(scope_)
-   {
-   }
-
-   //
-   // Statement_ReturnExp constructor
-   //
    Statement_ReturnExp::Statement_ReturnExp(Labels &&labels_,
       Core::Origin pos_, SR::Exp const *exp_, Scope_Function &scope_) :
       Super{std::move(labels_), pos_}, exp{exp_}, scope(scope_)
-   {
-   }
-
-   //
-   // Statement_ReturnExp constructor
-   //
-   Statement_ReturnExp::Statement_ReturnExp(Core::Origin pos_,
-      SR::Exp const *exp_, Scope_Function &scope_) :
-      Super{pos_}, exp{exp_}, scope(scope_)
    {
    }
 
@@ -155,41 +137,16 @@ namespace GDCC::CC
    }
 
    //
-   // StatementCreate_Return
+   // Factory::stCreate_Return
    //
-   SR::Statement::CRef StatementCreate_Return(
-      SR::Statement::Labels const &labels, Core::Origin pos,
-      Scope_Function &scope, SR::Exp const *e)
-   {
-      if(auto exp = CheckConstraint(pos, scope, e))
-         return Statement_ReturnExp::Create(labels, pos, exp, scope);
-      else
-         return Statement_ReturnNul::Create(labels, pos, scope);
-   }
-
-   //
-   // StatementCreate_Return
-   //
-   SR::Statement::CRef StatementCreate_Return(
+   SR::Statement::CRef Factory::stCreate_Return(
       SR::Statement::Labels &&labels, Core::Origin pos,
       Scope_Function &scope, SR::Exp const *e)
    {
-      if(auto exp = CheckConstraint(pos, scope, e))
+      if(auto exp = CheckConstraint(*this, pos, scope, e))
          return Statement_ReturnExp::Create(std::move(labels), pos, exp, scope);
       else
          return Statement_ReturnNul::Create(std::move(labels), pos, scope);
-   }
-
-   //
-   // StatementCreate_Return
-   //
-   SR::Statement::CRef StatementCreate_Return(Core::Origin pos,
-      Scope_Function &scope, SR::Exp const *e)
-   {
-      if(auto exp = CheckConstraint(pos, scope, e))
-         return Statement_ReturnExp::Create(pos, exp, scope);
-      else
-         return Statement_ReturnNul::Create(pos, scope);
    }
 }
 

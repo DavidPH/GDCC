@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -25,13 +25,13 @@
 namespace GDCC::CC
 {
    //
-   // ExpCreate_Div
+   // Factory::expCreate_Div
    //
-   SR::Exp::CRef ExpCreate_Div(SR::Exp const *l, SR::Exp const *r,
+   SR::Exp::CRef Factory::expCreate_Div(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expL = expPromo_Int(expPromo_LValue(l, pos), pos);
+      auto expR = expPromo_Int(expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -40,26 +40,27 @@ namespace GDCC::CC
       if(typeL->isCTypeArith() && typeR->isCTypeArith())
       {
          auto type = SR::Type::None;
-         std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
+         std::tie(type, expL, expR) = expPromo_Arith(expL, expR, pos);
 
          // TODO: fixed / integer doesn't require conversion.
 
-         return ExpCreate_Arith<SR::Exp_Div, IR::CodeSet_Div>(type, expL, expR, pos);
+         return ExpCreate_Arith<SR::Exp_Div, IR::CodeSet_Div>(
+            *this, type, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator /'");
    }
 
    //
-   // ExpCreate_DivEq
+   // Factory::expCreate_DivEq
    //
-   SR::Exp::CRef ExpCreate_DivEq(SR::Exp const *expL, SR::Exp const *r,
+   SR::Exp::CRef Factory::expCreate_DivEq(SR::Exp const *expL, SR::Exp const *r,
       Core::Origin pos)
    {
       if(!IsModLValue(expL))
          Core::Error(pos, "expected modifiable lvalue");
 
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expR = expPromo_Int(expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -68,25 +69,25 @@ namespace GDCC::CC
       if(typeL->isCTypeArith() && typeR->isCTypeArith())
       {
          SR::Type::CPtr evalT;
-         std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
+         std::tie(evalT, std::ignore, expR) = expPromo_Arith(expL, expR, pos);
 
          // TODO: fixed /= integer doesn't require conversion.
 
          return ExpCreate_ArithEq<SR::Exp_Div, IR::CodeSet_Div>(
-            evalT, typeL, expL, expR, pos);
+            *this, evalT, typeL, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator /='");
    }
 
    //
-   // ExpCreate_DivEx
+   // Factory::expCreate_DivEx
    //
-   SR::Exp::CRef ExpCreate_DivEx(SR::Exp const *l, SR::Exp const *r,
+   SR::Exp::CRef Factory::expCreate_DivEx(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expL = expPromo_Int(expPromo_LValue(l, pos), pos);
+      auto expR = expPromo_Int(expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -94,8 +95,8 @@ namespace GDCC::CC
       // __div(integer, integer)
       if(typeL->isCTypeInteg() && typeR->isCTypeInteg())
       {
-         auto type = SR::Type::None;
-         std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
+         SR::Type::CPtr type;
+         std::tie(type, expL, expR) = expPromo_Arith(expL, expR, pos);
 
          auto code = SR::ExpCode_ArithInteg<IR::CodeSet_DiX>(type);
 

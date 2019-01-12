@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -25,24 +25,24 @@
 namespace GDCC::CC
 {
    //
-   // ExpCreate_Add
+   // Factory::expCreate_Add
    //
-   SR::Exp::CRef ExpCreate_Add(SR::Exp const *e, Core::Origin pos)
+   SR::Exp::CRef Factory::expCreate_Add(SR::Exp const *e, Core::Origin pos)
    {
       if(!e->getType()->isCTypeArith())
          Core::Error(pos, "expected arithmetic operand");
 
-      return ExpPromo_Int(ExpPromo_LValue(e, pos), pos);
+      return expPromo_Int(expPromo_LValue(e, pos), pos);
    }
 
    //
-   // ExpCreate_Add
+   // Factory::ExpCreate_Add
    //
-   SR::Exp::CRef ExpCreate_Add(SR::Exp const *l, SR::Exp const *r,
+   SR::Exp::CRef Factory::expCreate_Add(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expL = expPromo_Int(expPromo_LValue(l, pos), pos);
+      auto expR = expPromo_Int(expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -59,9 +59,9 @@ namespace GDCC::CC
 
          // Convert integer to int rank, retaining sign.
          if(typeR->getSizeBitsS())
-            expR = ExpConvert_Arith(TypeIntegPrS, expR, pos);
+            expR = expConvert_Arith(TypeIntegPrS, expR, pos);
          else
-            expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
+            expR = expConvert_Arith(TypeIntegPrU, expR, pos);
 
          auto baseL = typeL->getBaseType();
 
@@ -86,29 +86,34 @@ namespace GDCC::CC
       // arithmetic + arithmetic
       if(typeL->isCTypeArith() && typeR->isCTypeArith())
       {
-         auto type = SR::Type::None;
-         std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
+         SR::Type::CPtr type;
+         std::tie(type, expL, expR) = expPromo_Arith(expL, expR, pos);
 
-         return ExpCreate_Arith<SR::Exp_Add, IR::CodeSet_Add>(type, expL, expR, pos);
+         return ExpCreate_Arith<SR::Exp_Add, IR::CodeSet_Add>(*this, type, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator +'");
    }
 
-   // ExpCreate_AddEq
-   SR::Exp::CRef ExpCreate_AddEq(SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
-      {return ExpCreate_AddEq(l, r, pos, false);}
+   //
+   // Factory::expCreate_AddEq
+   //
+   SR::Exp::CRef Factory::expCreate_AddEq(SR::Exp const *l, SR::Exp const *r,
+      Core::Origin pos)
+   {
+      return expCreate_AddEq(l, r, pos, false);
+   }
 
    //
-   // ExpCreate_AddEq
+   // Factory::expCreate_AddEq
    //
-   SR::Exp::CRef ExpCreate_AddEq(SR::Exp const *expL, SR::Exp const *r,
+   SR::Exp::CRef Factory::expCreate_AddEq(SR::Exp const *expL, SR::Exp const *r,
       Core::Origin pos, bool post)
    {
       if(!IsModLValue(expL))
          Core::Error(pos, "expected modifiable lvalue");
 
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expR = expPromo_Int(expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -126,9 +131,9 @@ namespace GDCC::CC
 
          // Convert integer to int rank, retaining sign.
          if(typeR->getSizeBitsS())
-            expR = ExpConvert_Arith(TypeIntegPrS, expR, pos);
+            expR = expConvert_Arith(TypeIntegPrS, expR, pos);
          else
-            expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
+            expR = expConvert_Arith(TypeIntegPrU, expR, pos);
 
          return Exp_AddPointEq::Create(post, typeL, expL, expR, pos);
       }
@@ -137,10 +142,10 @@ namespace GDCC::CC
       if(typeL->isCTypeArith() && typeR->isCTypeArith())
       {
          SR::Type::CPtr evalT;
-         std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
+         std::tie(evalT, std::ignore, expR) = expPromo_Arith(expL, expR, pos);
 
          return ExpCreate_ArithEq<SR::Exp_Add, IR::CodeSet_Add>(
-            evalT, typeL, expL, expR, pos, post);
+            *this, evalT, typeL, expL, expR, pos, post);
       }
 
       Core::Error(pos, "invalid operands to 'operator +='");

@@ -12,17 +12,16 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Factory.hpp"
 #include "ACC/Pragma.hpp"
 #include "ACC/Scope.hpp"
 
-#include "CC/Exp.hpp"
 #include "CC/Exp/Assign.hpp"
 #include "CC/Exp/Init.hpp"
 #include "CC/Init.hpp"
 #include "CC/Scope/Block.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Scope/Global.hpp"
-#include "CC/Statement.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
@@ -229,7 +228,7 @@ namespace GDCC::ACC
 
             // Give default initializer.
             obj->init = CC::Exp_Init::Create(
-               CC::Init::Create(obj->type, 0, attr.namePos), true);
+               CC::Init::Create(obj->type, 0, attr.namePos, ctx.fact), true);
          }
       }
 
@@ -261,7 +260,7 @@ namespace GDCC::ACC
 
       // Insert special declaration statement.
       if(inits.empty())
-         inits.emplace_back(CC::StatementCreate_Decl(attr.namePos, scope));
+         inits.emplace_back(ctx.fact.stCreate_Decl(attr.namePos, scope));
 
       // = initializer
       if(ctx.in.drop(Core::TOK_Equal))
@@ -334,7 +333,7 @@ namespace GDCC::ACC
       if(obj->store == SR::Storage::Static)
          return;
 
-      auto initExp = CC::ExpCreate_Obj(ctx.prog, obj, attr.namePos);
+      auto initExp = ctx.fact.expCreate_Obj(ctx.prog, obj, attr.namePos);
       initExp = CC::Exp_Assign::Create(initExp, obj->init, obj->init->pos);
 
       inits.emplace_back(SR::StatementCreate_Exp(initExp));

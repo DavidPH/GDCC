@@ -12,6 +12,8 @@
 
 #include "CC/Exp/Deref.hpp"
 
+#include "CC/Factory.hpp"
+
 #include "Core/Exception.hpp"
 
 #include "Target/Addr.hpp"
@@ -68,11 +70,11 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_Deref
+   // Factory::expCreate_Deref
    //
-   SR::Exp::CRef ExpCreate_Deref(SR::Exp const *e, Core::Origin pos)
+   SR::Exp::CRef Factory::expCreate_Deref(SR::Exp const *e, Core::Origin pos)
    {
-      auto exp  = ExpPromo_LValue(e, pos);
+      auto exp  = expPromo_LValue(e, pos);
       auto type = exp->getType();
 
       if(!type->isTypePointer())

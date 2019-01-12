@@ -13,6 +13,7 @@
 #include "CC/Exp/Assign.hpp"
 
 #include "CC/Exp/Mem.hpp"
+#include "CC/Factory.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -221,9 +222,9 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_Assign
+   // Factory::expCreate_Assign
    //
-   SR::Exp::CRef ExpCreate_Assign(SR::Exp const *l, SR::Exp const *r,
+   SR::Exp::CRef Factory::expCreate_Assign(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
       // Special check for structure property.
@@ -237,7 +238,7 @@ namespace GDCC::CC
       if(type->isTypeBitfield())
          type = type->getBaseType();
 
-      auto expR = ExpPromo_Assign(type, r, pos);
+      auto expR = expPromo_Assign(type, r, pos);
 
       return Exp_Assign::Create(l, expR, pos);
    }

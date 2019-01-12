@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,7 +12,7 @@
 
 #include "CC/Parse.hpp"
 
-#include "CC/Exp.hpp"
+#include "CC/Factory.hpp"
 
 #include "Core/Array.hpp"
 #include "Core/TokenStream.hpp"
@@ -32,7 +32,7 @@ namespace GDCC::CC
    //
    static SR::Exp::CRef GetExp_Post_Add2(Parser &ctx, Scope &, SR::Exp const *exp)
    {
-      return ExpCreate_IncSuf(exp, ctx.in.get().pos);
+      return ctx.fact.expCreate_IncSuf(exp, ctx.in.get().pos);
    }
 
    //
@@ -46,7 +46,7 @@ namespace GDCC::CC
 
       ctx.expect(Core::TOK_BrackC);
 
-      return ExpCreate_Array(exp, idx, pos);
+      return ctx.fact.expCreate_Array(exp, idx, pos);
    }
 
    //
@@ -56,7 +56,7 @@ namespace GDCC::CC
    {
       auto pos = ctx.in.get().pos;
 
-      return ExpCreate_Mem(exp,
+      return ctx.fact.expCreate_Mem(exp,
          ctx.expectIdenti().str, pos, scope);
    }
 
@@ -67,7 +67,7 @@ namespace GDCC::CC
    {
       auto pos = ctx.in.get().pos;
 
-      return ExpCreate_MemPt(exp,
+      return ctx.fact.expCreate_MemPt(exp,
          ctx.expectIdenti().str, pos, scope);
    }
 
@@ -76,7 +76,7 @@ namespace GDCC::CC
    //
    static SR::Exp::CRef GetExp_Post_Sub2(Parser &ctx, Scope &, SR::Exp const *exp)
    {
-      return ExpCreate_DecSuf(exp, ctx.in.get().pos);
+      return ctx.fact.expCreate_DecSuf(exp, ctx.in.get().pos);
    }
 }
 
@@ -101,7 +101,7 @@ namespace GDCC::CC
 
       expect(Core::TOK_ParenC);
 
-      return ExpCreate_Call(exp, std::move(args), scope, pos);
+      return fact.expCreate_Call(exp, std::move(args), scope, pos);
    }
 
    //

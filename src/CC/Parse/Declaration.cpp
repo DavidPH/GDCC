@@ -14,10 +14,10 @@
 
 #include "CC/Exp/Assign.hpp"
 #include "CC/Exp/Init.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Init.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Scope/Global.hpp"
-#include "CC/Statement.hpp"
 #include "CC/Warning.hpp"
 
 #include "Core/Exception.hpp"
@@ -123,7 +123,7 @@ namespace GDCC::CC
    //
    // GetDeclObj (global)
    //
-   static SR::Object::Ref GetDeclObj(Scope_Global &scope,
+   static SR::Object::Ref GetDeclObj(Parser &ctx, Scope_Global &scope,
       SR::Attribute &attr, bool init)
    {
       if(attr.storeAuto)
@@ -153,7 +153,7 @@ namespace GDCC::CC
          if(!attr.objNoInit)
          {
             obj->init = Exp_Init::Create(
-               Init::Create(obj->type, 0, attr.namePos), true);
+               Init::Create(obj->type, 0, attr.namePos, ctx.fact), true);
          }
       }
 
@@ -167,7 +167,7 @@ namespace GDCC::CC
    //
    // GetDeclObj (local)
    //
-   static SR::Object::Ref GetDeclObj(Scope_Local &scope,
+   static SR::Object::Ref GetDeclObj(Parser &ctx, Scope_Local &scope,
       SR::Attribute &attr, bool init)
    {
       // Determine linkage.
@@ -208,7 +208,7 @@ namespace GDCC::CC
             if(obj->store == SR::Storage::Static && !attr.objNoInit)
             {
                obj->init = Exp_Init::Create(
-                  Init::Create(obj->type, 0, attr.namePos), true);
+                  Init::Create(obj->type, 0, attr.namePos, ctx.fact), true);
             }
          }
       }
@@ -249,7 +249,7 @@ namespace GDCC::CC
       if(obj->store == SR::Storage::Static)
          return;
 
-      auto initExp = ExpCreate_Obj(ctx.prog, obj, attr.namePos);
+      auto initExp = ctx.fact.expCreate_Obj(ctx.prog, obj, attr.namePos);
       initExp = Exp_Assign::Create(initExp, obj->init, obj->init->pos);
 
       inits.emplace_back(SR::StatementCreate_Exp(initExp));
@@ -266,9 +266,9 @@ namespace GDCC::CC
 
       auto &fnScope = scope.createScope(attr, fn);
 
-      auto stmntPre  = StatementCreate_FuncPre(ctx.in.peek().pos, fnScope);
+      auto stmntPre  = ctx.fact.stCreate_FuncPre(ctx.in.peek().pos, fnScope);
       auto stmntBody = ctx.getStatement(fnScope);
-      auto stmntPro  = StatementCreate_FuncPro(ctx.in.reget().pos, fnScope);
+      auto stmntPro  = ctx.fact.stCreate_FuncPro(ctx.in.reget().pos, fnScope);
 
       // Create statements for the function.
       Core::Array<SR::Statement::CRef> stmnts =
@@ -386,12 +386,12 @@ namespace GDCC::CC
 
       // Insert special declaration statement.
       if(inits.empty())
-         inits.emplace_back(StatementCreate_Decl(attr.namePos, scope));
+         inits.emplace_back(ctx.fact.stCreate_Decl(attr.namePos, scope));
 
       // = initializer
       if(ctx.in.drop(Core::TOK_Equal))
       {
-         auto obj = GetDeclObj(scope, attr, true);
+         auto obj = GetDeclObj(ctx, scope, attr, true);
 
          scope.add(attr.name, obj);
 
@@ -404,7 +404,7 @@ namespace GDCC::CC
          SetDeclObjInit(ctx, scope, attr, inits, obj);
       }
       else
-         scope.add(attr.name, GetDeclObj(scope, attr, false));
+         scope.add(attr.name, GetDeclObj(ctx,scope, attr, false));
    }
 
    //

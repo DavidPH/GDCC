@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Factory.hpp"
 #include "ACC/Scope.hpp"
 
 #include "CC/Exp.hpp"
@@ -46,7 +47,7 @@ namespace GDCC::ACC
          // )
          expect(Core::TOK_ParenC);
 
-         return CC::ExpCreate_Cst(type, getExp_Cast(scope), pos);
+         return fact.expCreate_Cst(type, getExp_Cast(scope), pos);
       }
 
       return getExp_Unar(scope);
@@ -70,7 +71,7 @@ namespace GDCC::ACC
 
       expect(Core::TOK_ParenC);
 
-      return CC::ExpCreate_Call(exp, std::move(args), scope, pos);
+      return fact.expCreate_Call(exp, std::move(args), scope, pos);
    }
 
    //

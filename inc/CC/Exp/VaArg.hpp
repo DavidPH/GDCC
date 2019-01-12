@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -31,14 +31,24 @@ namespace GDCC::CC
    {
       GDCC_Core_CounterPreamble(GDCC::CC::Exp_VaArg, GDCC::SR::Exp_Unary);
 
-      GDCC_SR_Exp_UnaryCreator(Exp_VaArg);
+   public:
+      static SR::Exp::CRef Create(SR::Type const *t, SR::Exp const *e,
+         Core::Origin pos, Factory &fact)
+      {
+         return CRef(new This(t, e, pos, fact));
+      }
 
    protected:
+      Exp_VaArg(SR::Type const *t, SR::Exp const *e, Core::Origin pos_,
+         Factory &fact_) : Super{t, e, pos_}, fact{fact_} {}
+
       virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
       virtual SR::Arg v_getArg() const;
 
       virtual bool v_isIRExp() const;
+
+      Factory &fact;
    };
 }
 

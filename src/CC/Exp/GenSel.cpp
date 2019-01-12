@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "CC/Exp/GenSel.hpp"
+
+#include "CC/Factory.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -57,20 +59,9 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_GenSel
+   // Factory::expCreate_GenSel
    //
-   SR::Exp::CRef ExpCreate_GenSel(SR::Exp const *exp, SR::Exp const *def,
-      Core::Array<GenAssoc> const &sel, Core::Origin pos)
-   {
-      CheckConstraint(sel, pos);
-
-      return Exp_GenSel::Create(exp, def, sel, pos);
-   }
-
-   //
-   // ExpCreate_GenSel
-   //
-   SR::Exp::CRef ExpCreate_GenSel(SR::Exp const *exp, SR::Exp const *def,
+   SR::Exp::CRef Factory::expCreate_GenSel(SR::Exp const *exp, SR::Exp const *def,
       Core::Array<GenAssoc> &&sel, Core::Origin pos)
    {
       CheckConstraint(sel, pos);

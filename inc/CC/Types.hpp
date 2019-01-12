@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2018 David Hill
+// Copyright (C) 2018-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -58,6 +58,7 @@ namespace GDCC::CC
    class Exp_SubPtrIntEq;
    class Exp_SubPtrPtrW;
    class Exp_VaArg;
+   class Factory;
    class GenAssoc;
    class Init;
    class InitMem;

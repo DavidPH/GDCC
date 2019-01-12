@@ -12,6 +12,7 @@
 
 #include "CC/Statement/FuncPre.hpp"
 
+#include "CC/Factory.hpp"
 #include "CC/Scope/Function.hpp"
 
 #include "Core/Exception.hpp"
@@ -152,18 +153,18 @@ namespace GDCC::CC
    }
 
    //
-   // StatementCreate_FuncPre
+   // Factory::stCreate_FuncPre
    //
-   SR::Statement::CRef StatementCreate_FuncPre(Core::Origin pos,
+   SR::Statement::CRef Factory::stCreate_FuncPre(Core::Origin pos,
       Scope_Function &scope)
    {
       return Statement_FuncPre::Create(pos, scope);
    }
 
    //
-   // StatementCreate_FuncPro
+   // Factory::stCreate_FuncPro
    //
-   SR::Statement::CRef StatementCreate_FuncPro(Core::Origin pos,
+   SR::Statement::CRef Factory::stCreate_FuncPro(Core::Origin pos,
       Scope_Function &scope)
    {
       return Statement_FuncPro::Create(pos, scope);

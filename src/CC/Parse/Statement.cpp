@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,9 +14,9 @@
 
 #include "CC/AsmGlyphTBuf.hpp"
 #include "CC/Exp/Assign.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Scope/Case.hpp"
 #include "CC/Scope/Function.hpp"
-#include "CC/Statement.hpp"
 #include "CC/Type.hpp"
 
 #include "AS/LabelTBuf.hpp"
@@ -187,7 +187,7 @@ namespace GDCC::CC
       while(tstr >> tok) tokens.push_back(tok);
       tokens.emplace_back(tok.pos, nullptr, Core::TOK_EOF);
 
-      return StatementCreate_Asm(std::move(labels), pos,
+      return fact.stCreate_Asm(std::move(labels), pos,
          {Core::Move, tokens.begin(), tokens.end()});
    }
 
@@ -200,7 +200,7 @@ namespace GDCC::CC
       auto pos = in.get().pos;
       expect(Core::TOK_Semico);
 
-      return StatementCreate_Break(std::move(labels), pos, scope);
+      return fact.stCreate_Break(std::move(labels), pos, scope);
    }
 
    //
@@ -213,7 +213,7 @@ namespace GDCC::CC
       auto pos = in.get().pos;
       expect(Core::TOK_Semico);
 
-      return StatementCreate_Continue(std::move(labels), pos, scope);
+      return fact.stCreate_Continue(std::move(labels), pos, scope);
    }
 
    //
@@ -240,7 +240,7 @@ namespace GDCC::CC
       // ;
       expect(Core::TOK_Semico);
 
-      return StatementCreate_Do(std::move(labels), pos, loopScope, body, cond);
+      return fact.stCreate_Do(std::move(labels), pos, loopScope, body, cond);
    }
 
    //
@@ -283,7 +283,7 @@ namespace GDCC::CC
       if(in.peek().tok != Core::TOK_Semico)
          cond = getStatementCondExp(loopScope);
       else
-         cond = ExpCreate_LitInt(TypeIntegPrS, 1, pos);
+         cond = fact.expCreate_LitInt(TypeIntegPrS, 1, pos);
 
       // ;
       expect(Core::TOK_Semico);
@@ -301,7 +301,7 @@ namespace GDCC::CC
       // statement
       auto body = getStatement(loopScope);
 
-      return StatementCreate_For(std::move(labels), pos, loopScope, init,
+      return fact.stCreate_For(std::move(labels), pos, loopScope, init,
          cond, iter, body);
    }
 
@@ -322,7 +322,7 @@ namespace GDCC::CC
          auto exp = getExp_Cast(scope);
          expect(Core::TOK_Semico);
 
-         return StatementCreate_Goto(std::move(labels), pos, exp);
+         return fact.stCreate_Goto(std::move(labels), pos, exp);
       }
 
       // identifier
@@ -331,7 +331,7 @@ namespace GDCC::CC
       // ;
       expect(Core::TOK_Semico);
 
-      return StatementCreate_Goto(std::move(labels), pos, scope, name);
+      return fact.stCreate_Goto(std::move(labels), pos, scope, name);
    }
 
    //
@@ -357,10 +357,10 @@ namespace GDCC::CC
          // statement
          auto bodyF = getStatement(scope);
 
-         return StatementCreate_If(std::move(labels), pos, cond, bodyT, bodyF);
+         return fact.stCreate_If(std::move(labels), pos, cond, bodyT, bodyF);
       }
 
-      return StatementCreate_If(std::move(labels), pos, cond, bodyT);
+      return fact.stCreate_If(std::move(labels), pos, cond, bodyT);
    }
 
    //
@@ -375,7 +375,7 @@ namespace GDCC::CC
 
       // ;
       if(in.drop(Core::TOK_Semico))
-         return StatementCreate_Return(std::move(labels), pos, scope.fn);
+         return fact.stCreate_Return(std::move(labels), pos, scope.fn);
 
       // expression
       auto exp = getExp(scope);
@@ -383,7 +383,7 @@ namespace GDCC::CC
       // ;
       expect(Core::TOK_Semico);
 
-      return StatementCreate_Return(std::move(labels), pos, scope.fn, exp);
+      return fact.stCreate_Return(std::move(labels), pos, scope.fn, exp);
    }
 
    //
@@ -404,8 +404,7 @@ namespace GDCC::CC
       // statement
       auto body = getStatement(switchScope);
 
-      return StatementCreate_Switch(std::move(labels), pos, switchScope,
-         cond, body);
+      return fact.stCreate_Switch(std::move(labels), pos, switchScope, cond, body);
    }
 
    //
@@ -426,7 +425,7 @@ namespace GDCC::CC
       // statement
       auto body = getStatement(loopScope);
 
-      return StatementCreate_While(std::move(labels), pos, loopScope, cond, body);
+      return fact.stCreate_While(std::move(labels), pos, loopScope, cond, body);
    }
 
    //

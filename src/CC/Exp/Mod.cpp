@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,13 +24,13 @@
 namespace GDCC::CC
 {
    //
-   // ExpCreate_Mod
+   // Factory::expCreate_Mod
    //
-   SR::Exp::CRef ExpCreate_Mod(SR::Exp const *l, SR::Exp const *r,
+   SR::Exp::CRef Factory::expCreate_Mod(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expL = expPromo_Int(expPromo_LValue(l, pos), pos);
+      auto expR = expPromo_Int(expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -38,28 +38,29 @@ namespace GDCC::CC
       // arithmetic % arithmetic
       if(typeL->isCTypeArith() && typeR->isCTypeArith())
       {
-         auto type = SR::Type::None;
-         std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
+         SR::Type::CPtr type;
+         std::tie(type, expL, expR) = expPromo_Arith(expL, expR, pos);
 
          if(!type->isCTypeInteg() && !type->isCTypeFixed())
             Core::Error(pos, "expected integer or fixed-point");
 
-         return ExpCreate_Arith<SR::Exp_Mod, IR::CodeSet_Mod>(type, expL, expR, pos);
+         return ExpCreate_Arith<SR::Exp_Mod, IR::CodeSet_Mod>(
+            *this, type, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator %'");
    }
 
    //
-   // ExpCreate_ModEq
+   // Factory::expCreate_ModEq
    //
-   SR::Exp::CRef ExpCreate_ModEq(SR::Exp const *expL, SR::Exp const *r,
+   SR::Exp::CRef Factory::expCreate_ModEq(SR::Exp const *expL, SR::Exp const *r,
       Core::Origin pos)
    {
       if(!IsModLValue(expL))
          Core::Error(pos, "expected modifiable lvalue");
 
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expR = expPromo_Int(expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -68,13 +69,13 @@ namespace GDCC::CC
       if(typeL->isCTypeArith() && typeR->isCTypeArith())
       {
          SR::Type::CPtr evalT;
-         std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
+         std::tie(evalT, std::ignore, expR) = expPromo_Arith(expL, expR, pos);
 
          if(!evalT->isCTypeInteg() && !evalT->isCTypeFixed())
             Core::Error(pos, "expected integer or fixed-point");
 
          return ExpCreate_ArithEq<SR::Exp_Mod, IR::CodeSet_Mod>(
-            evalT, typeL, expL, expR, pos);
+            *this, evalT, typeL, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator %='");

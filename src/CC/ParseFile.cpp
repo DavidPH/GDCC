@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "CC/Parse.hpp"
 
+#include "CC/Factory.hpp"
 #include "CC/Scope/Global.hpp"
 
 #include "CPP/IStream.hpp"
@@ -66,7 +67,8 @@ namespace GDCC::CC
       CPP::IStream      istr {sbuf, file};
       CPP::TSource      tsrc {istr, istr.getOriginSource()};
       CPP::TStream      tstr {tsrc, langs, macr, pragd, pragp, path};
-      Parser            ctx  {tstr, pragd, prog};
+      Factory           fact {};
+      Parser            ctx  {tstr, fact, pragd, prog};
       Scope_Global      scope{GetGlobalLabel(buf->getHash())};
 
       // Read declarations.

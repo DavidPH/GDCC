@@ -12,6 +12,8 @@
 
 #include "CC/Exp.hpp"
 
+#include "CC/Factory.hpp"
+
 #include "Core/Exception.hpp"
 
 #include "IR/Exp.hpp"
@@ -31,9 +33,9 @@
 namespace GDCC::CC
 {
    //
-   // ExpCreate_LitInt
+   // Factory::expCreate_LitInt
    //
-   SR::Exp::CRef ExpCreate_LitInt(SR::Type const *t, Core::Integ const &i,
+   SR::Exp::CRef Factory::expCreate_LitInt(SR::Type const *t, Core::Integ const &i,
       Core::Origin pos)
    {
       auto val = IR::Value_Fixed(i, t->getIRType().tFixed);
@@ -42,9 +44,9 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_LitInt
+   // Factory::expCreate_LitInt
    //
-   SR::Exp::CRef ExpCreate_LitInt(SR::Type const *t, Core::Integ &&i,
+   SR::Exp::CRef Factory::expCreate_LitInt(SR::Type const *t, Core::Integ &&i,
       Core::Origin pos)
    {
       auto val = IR::Value_Fixed(std::move(i), t->getIRType().tFixed);
@@ -53,9 +55,9 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_LitNul
+   // Factory::expCreate_LitNul
    //
-   SR::Exp::CRef ExpCreate_LitNul(SR::Type const *type, Core::Origin pos)
+   SR::Exp::CRef Factory::expCreate_LitNul(SR::Type const *type, Core::Origin pos)
    {
       // Pointer.
       if(type->isTypePointer())

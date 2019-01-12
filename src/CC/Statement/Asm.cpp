@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "CC/Statement/Asm.hpp"
+
+#include "CC/Factory.hpp"
 
 #include "AS/Macro.hpp"
 #include "AS/Parse.hpp"
@@ -47,9 +49,9 @@ namespace GDCC::CC
    }
 
    //
-   // StatementCreate_Asm
+   // Factory::stCreate_Asm
    //
-   SR::Statement::CRef StatementCreate_Asm(
+   SR::Statement::CRef Factory::stCreate_Asm(
       SR::Statement::Labels &&labels, Core::Origin pos,
       Statement_Asm::Tokens &&tokens)
    {

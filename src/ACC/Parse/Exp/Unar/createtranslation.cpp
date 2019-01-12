@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,7 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Factory.hpp"
 #include "ACC/PropDecl.hpp"
 
 #include "SR/Type.hpp"
@@ -111,7 +112,7 @@ namespace GDCC::ACC
       if(propItr == ctrans->props.end())
          Core::Error(pos, "no matching translation function");
 
-      return CC::ExpCreate_Call(propItr->second.prop,
+      return ctx.fact.expCreate_Call(propItr->second.prop,
          {expv.begin(), expv.end()}, scope, pos);
    }
 }
@@ -161,7 +162,7 @@ namespace GDCC::ACC
             }
          }
 
-         exp = CC::ExpCreate_Comma(exp, CC::ExpCreate_Call(ctrans->propBegin,
+         exp = fact.expCreate_Comma(exp, fact.expCreate_Call(ctrans->propBegin,
             {argv.begin(), argv.end()}, scope, pos), pos);
       }
 
@@ -169,12 +170,12 @@ namespace GDCC::ACC
       //    translation
       //    translation-list , translation
       while(in.drop(Core::TOK_Comma))
-         exp = CC::ExpCreate_Comma(exp, GetTranslation(*this, scope, ctrans), pos);
+         exp = fact.expCreate_Comma(exp, GetTranslation(*this, scope, ctrans), pos);
 
       if(ctrans->propEnd)
       {
-         exp = CC::ExpCreate_Comma(exp,
-            CC::ExpCreate_Call(ctrans->propEnd, {}, scope, pos), pos);
+         exp = fact.expCreate_Comma(exp,
+            fact.expCreate_Call(ctrans->propEnd, {}, scope, pos), pos);
       }
 
       // )

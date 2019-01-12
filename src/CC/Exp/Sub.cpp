@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -28,11 +28,11 @@
 namespace GDCC::CC
 {
    //
-   // ExpCreate_Sub
+   // Factory::expCreate_Sub
    //
-   SR::Exp::CRef ExpCreate_Sub(SR::Exp const *e, Core::Origin pos)
+   SR::Exp::CRef Factory::expCreate_Sub(SR::Exp const *e, Core::Origin pos)
    {
-      auto exp  = ExpPromo_Int(ExpPromo_LValue(e, pos), pos);
+      auto exp  = expPromo_Int(expPromo_LValue(e, pos), pos);
       auto type = exp->getType();
 
       if(!type->isCTypeArith())
@@ -44,13 +44,13 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_Sub
+   // Factory::expCreate_Sub
    //
-   SR::Exp::CRef ExpCreate_Sub(SR::Exp const *l, SR::Exp const *r,
+   SR::Exp::CRef Factory::expCreate_Sub(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      auto expL = ExpPromo_Int(ExpPromo_LValue(l, pos), pos);
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expL = expPromo_Int(expPromo_LValue(l, pos), pos);
+      auto expR = expPromo_Int(expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -68,9 +68,9 @@ namespace GDCC::CC
          {
             // Convert integer to int rank, retaining sign.
             if(typeR->getSizeBitsS())
-               expR = ExpConvert_Arith(TypeIntegPrS, expR, pos);
+               expR = expConvert_Arith(TypeIntegPrS, expR, pos);
             else
-               expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
+               expR = expConvert_Arith(TypeIntegPrU, expR, pos);
 
             // As of the time of this comment, multi-word pointers only need
             // their high word modified to be added to, and therefore do not
@@ -95,30 +95,35 @@ namespace GDCC::CC
       // arithmetic - arithmetic
       if(typeL->isCTypeArith() && typeR->isCTypeArith())
       {
-         auto type = SR::Type::None;
-         std::tie(type, expL, expR) = ExpPromo_Arith(expL, expR, pos);
+         SR::Type::CPtr type;
+         std::tie(type, expL, expR) = expPromo_Arith(expL, expR, pos);
 
-         return ExpCreate_Arith<SR::Exp_Sub, IR::CodeSet_Sub>(type, expL, expR, pos);
+         return ExpCreate_Arith<SR::Exp_Sub, IR::CodeSet_Sub>(
+            *this, type, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator -'");
    }
 
-   // ExpCreate_SubEq
-   SR::Exp::CRef ExpCreate_SubEq(SR::Exp const *l, SR::Exp const *r,
+   //
+   // Factory::expCreate_SubEq
+   //
+   SR::Exp::CRef Factory::expCreate_SubEq(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
-      {return ExpCreate_SubEq(l, r, pos, false);}
+   {
+      return expCreate_SubEq(l, r, pos, false);
+   }
 
    //
-   // ExpCreate_SubEq
+   // Factory::expCreate_SubEq
    //
-   SR::Exp::CRef ExpCreate_SubEq(SR::Exp const *expL, SR::Exp const *r,
+   SR::Exp::CRef Factory::expCreate_SubEq(SR::Exp const *expL, SR::Exp const *r,
       Core::Origin pos, bool post)
    {
       if(!IsModLValue(expL))
          Core::Error(pos, "expected modifiable lvalue");
 
-      auto expR = ExpPromo_Int(ExpPromo_LValue(r, pos), pos);
+      auto expR = expPromo_Int(expPromo_LValue(r, pos), pos);
 
       auto typeL = expL->getType();
       auto typeR = expR->getType();
@@ -136,9 +141,9 @@ namespace GDCC::CC
 
          // Convert integer to int rank, retaining sign.
          if(typeR->getSizeBitsS())
-            expR = ExpConvert_Arith(TypeIntegPrS, expR, pos);
+            expR = expConvert_Arith(TypeIntegPrS, expR, pos);
          else
-            expR = ExpConvert_Arith(TypeIntegPrU, expR, pos);
+            expR = expConvert_Arith(TypeIntegPrU, expR, pos);
 
          return Exp_SubPtrIntEq::Create(post, typeL, expL, expR, pos);
       }
@@ -147,10 +152,10 @@ namespace GDCC::CC
       if(typeL->isCTypeArith() && typeR->isCTypeArith())
       {
          SR::Type::CPtr evalT;
-         std::tie(evalT, std::ignore, expR) = ExpPromo_Arith(expL, expR, pos);
+         std::tie(evalT, std::ignore, expR) = expPromo_Arith(expL, expR, pos);
 
          return ExpCreate_ArithEq<SR::Exp_Sub, IR::CodeSet_Sub>(
-            evalT, typeL, expL, expR, pos, post);
+            *this, evalT, typeL, expL, expR, pos, post);
       }
 
       Core::Error(pos, "invalid operands to 'operator -='");

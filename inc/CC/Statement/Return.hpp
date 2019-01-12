@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef GDCC__CC__Statement__Return_H__
 #define GDCC__CC__Statement__Return_H__
 
-#include "../../CC/Statement.hpp"
+#include "../../CC/Types.hpp"
 
 #include "../../SR/Statement.hpp"
 
@@ -38,26 +38,13 @@ namespace GDCC::CC
 
 
       // Create
-      static CRef Create(Labels const &labels, Core::Origin pos,
-         SR::Exp const *exp, Scope_Function &scope)
-         {return CRef(new This(labels, pos, exp, scope));}
-
-      // Create
       static CRef Create(Labels &&labels, Core::Origin pos,
          SR::Exp const *exp, Scope_Function &scope)
          {return CRef(new This(std::move(labels), pos, exp, scope));}
 
-      // Create
-      static CRef Create(Core::Origin pos, SR::Exp const *exp, Scope_Function &scope)
-         {return CRef(new This(pos, exp, scope));}
-
    protected:
-      Statement_ReturnExp(Labels const &labels, Core::Origin pos,
-         SR::Exp const *exp, Scope_Function &scope);
       Statement_ReturnExp(Labels &&labels, Core::Origin pos,
          SR::Exp const *exp, Scope_Function &scope);
-      Statement_ReturnExp(Core::Origin pos, SR::Exp const *exp,
-         Scope_Function &scope);
       virtual ~Statement_ReturnExp();
 
       virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
@@ -82,25 +69,12 @@ namespace GDCC::CC
 
 
       // Create
-      static CRef Create(Labels const &labels, Core::Origin pos, Scope_Function &scope)
-         {return CRef(new This(labels, pos, scope));}
-
-      // Create
       static CRef Create(Labels &&labels, Core::Origin pos, Scope_Function &scope)
          {return CRef(new This(std::move(labels), pos, scope));}
 
-      // Create
-      static CRef Create(Core::Origin pos, Scope_Function &scope)
-         {return CRef(new This(pos, scope));}
-
    protected:
-      Statement_ReturnNul(Labels const &labels_, Core::Origin pos_,
-         Scope_Function &scope_) : Super{labels_, pos_}, scope(scope_) {}
-      Statement_ReturnNul(Labels &&labels_, Core::Origin pos_,
-         Scope_Function &scope_) :
+      Statement_ReturnNul(Labels &&labels_, Core::Origin pos_, Scope_Function &scope_) :
          Super{std::move(labels_), pos_}, scope(scope_) {}
-      Statement_ReturnNul(Core::Origin pos_, Scope_Function &scope_) :
-         Super{pos_}, scope(scope_) {}
 
       virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2018 David Hill
+// Copyright (C) 2018-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -26,6 +26,7 @@ namespace GDCC::ACC
    class CreateTransProp;
    class CreateTransPropName;
    class DefineDTBuf;
+   class Factory;
    class IgnoreDTBuf;
    class ImportDTBuf;
    class ImportStream;

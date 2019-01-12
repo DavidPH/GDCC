@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,7 +13,7 @@
 #ifndef GDCC__CC__Statement__Loop_H__
 #define GDCC__CC__Statement__Loop_H__
 
-#include "../../CC/Statement.hpp"
+#include "../../CC/Types.hpp"
 
 #include "../../SR/Statement.hpp"
 
@@ -44,17 +44,6 @@ namespace GDCC::CC
       //
       // Create
       //
-      static CRef Create(Labels const &labels, Core::Origin pos,
-         Scope_Local &ctx, SR::Statement const *init, SR::Exp const *cond,
-         SR::Statement const *iter, SR::Statement const *body, bool post)
-      {
-         return CRef(new This(labels, pos, ctx,
-            init, cond, iter, body, post));
-      }
-
-      //
-      // Create
-      //
       static CRef Create(Labels &&labels, Core::Origin pos,
          Scope_Local &ctx, SR::Statement const *init, SR::Exp const *cond,
          SR::Statement const *iter, SR::Statement const *body, bool post)
@@ -64,9 +53,6 @@ namespace GDCC::CC
       }
 
    protected:
-      Statement_Loop(Labels const &labels, Core::Origin pos,
-         Scope_Local &ctx, SR::Statement const *init, SR::Exp const *cond,
-         SR::Statement const *iter, SR::Statement const *body, bool post);
       Statement_Loop(Labels &&labels, Core::Origin pos,
          Scope_Local &ctx, SR::Statement const *init, SR::Exp const *cond,
          SR::Statement const *iter, SR::Statement const *body, bool post);

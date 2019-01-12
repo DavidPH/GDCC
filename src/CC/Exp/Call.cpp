@@ -14,6 +14,7 @@
 
 #include "CC/Exp/Init.hpp"
 #include "CC/Exp/Mem.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Init.hpp"
 #include "CC/Scope/Local.hpp"
 
@@ -130,27 +131,16 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_Call
+   // Factory::expCreate_Call
    //
-   SR::Exp::CRef ExpCreate_Call(SR::Exp const *e,
-      Core::Array<SR::Exp::CRef> const &args_, Scope &scope,
-      Core::Origin pos)
-   {
-      auto args = args_;
-      return ExpCreate_Call(e, std::move(args), scope, pos);
-   }
-
-   //
-   // ExpCreate_Call
-   //
-   SR::Exp::CRef ExpCreate_Call(SR::Exp const *e,
+   SR::Exp::CRef Factory::expCreate_Call(SR::Exp const *e,
       Core::Array<SR::Exp::CRef> &&args, Scope &scope, Core::Origin pos)
    {
       // Special check for structure property.
       if(auto exp = dynamic_cast<Exp_MemProp const *>(e))
          return exp->createExp_call(std::move(args));
 
-      auto exp  = ExpPromo_LValue(e, pos);
+      auto exp  = expPromo_LValue(e, pos);
       auto type = exp->getType();
 
       if(!type->isTypePointer() || !(type = type->getBaseType())->isCTypeFunction())
@@ -185,7 +175,7 @@ namespace GDCC::CC
                argsNew.emplace_back(*argsItr);
             for(; paramItr != paramEnd; ++paramItr)
                argsNew.emplace_back(Exp_Init::Create(
-                  Init::Create(*paramItr, 0, pos), false, pos));
+                  Init::Create(*paramItr, 0, pos, *this), false, pos));
 
             args = {Core::Move, argsNew.begin(), argsNew.end()};
 
@@ -201,9 +191,9 @@ namespace GDCC::CC
       auto argsItr  = args.begin(),   argsEnd  = args.end();
 
       for(; paramItr != paramEnd && argsItr != argsEnd; ++paramItr, ++argsItr)
-         *argsItr = ExpPromo_Assign(*paramItr, *argsItr);
+         *argsItr = expPromo_Assign(*paramItr, *argsItr);
       for(; argsItr != argsEnd; ++argsItr)
-         *argsItr = ExpPromo_Arg(*argsItr, pos);
+         *argsItr = expPromo_Arg(*argsItr, pos);
 
       // Check for constant parameters.
       if(IsCallLit(exp, args))

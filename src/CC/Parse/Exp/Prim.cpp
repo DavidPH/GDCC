@@ -13,6 +13,7 @@
 #include "CC/Parse.hpp"
 
 #include "CC/Exp.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Type.hpp"
 
@@ -68,7 +69,7 @@ namespace GDCC::CC
       auto tok = ctx.in.get();
 
       if(!scopeFn.nameObj)
-         scopeFn.nameObj = ExpCreate_String(ctx.prog, scope, scopeFn.fn->name, tok.pos);
+         scopeFn.nameObj = ctx.fact.expCreate_String(ctx.prog, scope, scopeFn.fn->name, tok.pos);
 
       return static_cast<SR::Exp::CRef>(scopeFn.nameObj);
    }
@@ -133,7 +134,7 @@ namespace GDCC::CC
       // )
       ctx.expect(Core::TOK_ParenC);
 
-      return ExpCreate_GenSel(exp, def, {Core::Move, vec.begin(), vec.end()}, pos);
+      return ctx.fact.expCreate_GenSel(exp, def, {Core::Move, vec.begin(), vec.end()}, pos);
    }
 
    //
@@ -187,7 +188,7 @@ namespace GDCC::CC
 
       auto type = tok.tok == Core::TOK_Charac ? TypeIntegPrS : TypeIntegPrU;
 
-      return ExpCreate_LitInt(type, tok.str[0], tok.pos);
+      return ctx.fact.expCreate_LitInt(type, tok.str[0], tok.pos);
    }
 
    //
@@ -212,15 +213,15 @@ namespace GDCC::CC
       if(auto lookup = scope.lookup(tok.str)) switch(lookup.res)
       {
       case Lookup::Enum:
-         return ExpCreate_LitInt(TypeIntegPrS, *lookup.resEnum, tok.pos);
+         return ctx.fact.expCreate_LitInt(TypeIntegPrS, *lookup.resEnum, tok.pos);
 
       case Lookup::Func:
          CheckDeprecated(tok, lookup.resFunc);
-         return ExpCreate_Func(ctx.prog, lookup.resFunc, tok.pos);
+         return ctx.fact.expCreate_Func(ctx.prog, lookup.resFunc, tok.pos);
 
       case Lookup::Obj:
          CheckDeprecated(tok, lookup.resObj);
-         return ExpCreate_Obj(ctx.prog, lookup.resObj, tok.pos);
+         return ctx.fact.expCreate_Obj(ctx.prog, lookup.resObj, tok.pos);
 
       default:
          Core::ErrorExpect("primary-expression", tok);
@@ -305,7 +306,7 @@ namespace GDCC::CC
          val <<= type->getSizeBitsF();
 
       // Create expression.
-      return ExpCreate_LitInt(type, Core::NumberCast<Core::Integ>(val), tok.pos);
+      return ctx.fact.expCreate_LitInt(type, Core::NumberCast<Core::Integ>(val), tok.pos);
    }
 
    //
@@ -413,7 +414,7 @@ namespace GDCC::CC
       {
          #define tryCreate(c, t) \
             if((c) && (val >> (t)->getSizeBitsI()) == 0) \
-               return ExpCreate_LitInt((t), std::move(val), tok.pos)
+               return ctx.fact.expCreate_LitInt((t), std::move(val), tok.pos)
 
       case 0:
          tryCreate(!u, TypeIntegPrS);
@@ -450,7 +451,7 @@ namespace GDCC::CC
    {
       auto tok = ctx.in.get();
 
-      return ExpCreate_String(ctx.prog, scope, tok.str, tok.pos);
+      return ctx.fact.expCreate_String(ctx.prog, scope, tok.str, tok.pos);
    }
 
    //
@@ -460,7 +461,7 @@ namespace GDCC::CC
    {
       auto tok = ctx.in.get();
 
-      return ExpCreate_StrIdx(ctx.prog, scope, tok.str, tok.pos);
+      return ctx.fact.expCreate_StrIdx(ctx.prog, scope, tok.str, tok.pos);
    }
 
    //
@@ -470,7 +471,7 @@ namespace GDCC::CC
    {
       auto tok = ctx.in.get();
 
-      return ExpCreate_StrU08(ctx.prog, scope, tok.str, tok.pos);
+      return ctx.fact.expCreate_StrU08(ctx.prog, scope, tok.str, tok.pos);
    }
 
    //
@@ -480,7 +481,7 @@ namespace GDCC::CC
    {
       auto tok = ctx.in.get();
 
-      return ExpCreate_StrU16(ctx.prog, scope, tok.str, tok.pos);
+      return ctx.fact.expCreate_StrU16(ctx.prog, scope, tok.str, tok.pos);
    }
 
    //
@@ -490,7 +491,7 @@ namespace GDCC::CC
    {
       auto tok = ctx.in.get();
 
-      return ExpCreate_StrU32(ctx.prog, scope, tok.str, tok.pos);
+      return ctx.fact.expCreate_StrU32(ctx.prog, scope, tok.str, tok.pos);
    }
 
    //
@@ -501,9 +502,9 @@ namespace GDCC::CC
       auto tok = ctx.in.get();
 
       if(ctx.prag.stateStrEntLiteral)
-         return ExpCreate_StrIdx(ctx.prog, scope, tok.str, tok.pos);
+         return ctx.fact.expCreate_StrIdx(ctx.prog, scope, tok.str, tok.pos);
       else
-         return ExpCreate_String(ctx.prog, scope, tok.str, tok.pos);
+         return ctx.fact.expCreate_String(ctx.prog, scope, tok.str, tok.pos);
    }
 }
 

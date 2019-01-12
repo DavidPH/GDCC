@@ -12,6 +12,7 @@
 
 #include "CC/Exp/Convert/BoolSoft.hpp"
 
+#include "CC/Factory.hpp"
 #include "CC/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -100,12 +101,12 @@ namespace GDCC::CC
    }
 
    //
-   // ExpConvert_BoolSoft
+   // Factory::expConvert_BoolSoft
    //
-   SR::Exp::CRef ExpConvert_BoolSoft(SR::Exp const *e, Core::Origin pos)
+   SR::Exp::CRef Factory::expConvert_BoolSoft(SR::Exp const *e, Core::Origin pos)
    {
       // TODO: Bitfield conversion with mask, but not shift.
-      SR::Exp::CRef exp  = ExpPromo_LValue(e, pos);
+      SR::Exp::CRef exp  = expPromo_LValue(e, pos);
       auto          type = exp->getType();
 
       if(type->isCTypeFixed() || type->isCTypeInteg())

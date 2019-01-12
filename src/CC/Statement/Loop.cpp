@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,7 +12,7 @@
 
 #include "CC/Statement/Loop.hpp"
 
-#include "CC/Exp.hpp"
+#include "CC/Factory.hpp"
 #include "CC/Scope/Local.hpp"
 
 #include "SR/Exp.hpp"
@@ -28,17 +28,6 @@
 
 namespace GDCC::CC
 {
-   //
-   // Statement_Loop constructor
-   //
-   Statement_Loop::Statement_Loop(Labels const &labels_, Core::Origin pos_,
-      Scope_Local &ctx, SR::Statement const *init_, SR::Exp const *cond_,
-      SR::Statement const *iter_, SR::Statement const *body_, bool post_) :
-      Super{labels_, pos_}, scope(ctx),
-      init{init_}, cond{cond_}, iter{iter_}, body{body_}, post{post_}
-   {
-   }
-
    //
    // Statement_Loop constructor
    //
@@ -169,71 +158,37 @@ namespace GDCC::CC
    }
 
    //
-   // StatementCreate_Do
+   // Factory::stCreate_Do
    //
-   SR::Statement::CRef StatementCreate_Do(
-      SR::Statement::Labels const &labels, Core::Origin pos,
-      Scope_Local &ctx, SR::Statement const *body, SR::Exp const *cond)
-   {
-      return Statement_Loop::Create(labels, pos, ctx,
-         nullptr, ExpPromo_Cond(cond, pos), nullptr, body, true);
-   }
-
-   //
-   // StatementCreate_Do
-   //
-   SR::Statement::CRef StatementCreate_Do(
+   SR::Statement::CRef Factory::stCreate_Do(
       SR::Statement::Labels &&labels, Core::Origin pos,
       Scope_Local &ctx, SR::Statement const *body, SR::Exp const *cond)
    {
       return Statement_Loop::Create(std::move(labels), pos, ctx,
-         nullptr, ExpPromo_Cond(cond, pos), nullptr, body, true);
+         nullptr, expPromo_Cond(cond, pos), nullptr, body, true);
    }
 
    //
-   // StatementCreate_For
+   // Factory::stCreate_For
    //
-   SR::Statement::CRef StatementCreate_For(
-      SR::Statement::Labels const &labels, Core::Origin pos,
-      Scope_Local &ctx, SR::Statement const *init, SR::Exp const *cond,
-      SR::Statement const *iter, SR::Statement const *body)
-   {
-      return Statement_Loop::Create(labels, pos, ctx,
-         init, ExpPromo_Cond(cond, pos), iter, body, false);
-   }
-
-   //
-   // StatementCreate_For
-   //
-   SR::Statement::CRef StatementCreate_For(
+   SR::Statement::CRef Factory::stCreate_For(
       SR::Statement::Labels &&labels, Core::Origin pos,
       Scope_Local &ctx, SR::Statement const *init, SR::Exp const *cond,
       SR::Statement const *iter, SR::Statement const *body)
    {
       return Statement_Loop::Create(std::move(labels), pos, ctx,
-         init, ExpPromo_Cond(cond, pos), iter, body, false);
+         init, expPromo_Cond(cond, pos), iter, body, false);
    }
 
    //
-   // StatementCreate_While
+   // Factory::stCreate_While
    //
-   SR::Statement::CRef StatementCreate_While(
-      SR::Statement::Labels const &labels, Core::Origin pos,
-      Scope_Local &ctx, SR::Exp const *cond, SR::Statement const *body)
-   {
-      return Statement_Loop::Create(labels, pos, ctx,
-         nullptr, ExpPromo_Cond(cond, pos), nullptr, body, false);
-   }
-
-   //
-   // StatementCreate_While
-   //
-   SR::Statement::CRef StatementCreate_While(
+   SR::Statement::CRef Factory::stCreate_While(
       SR::Statement::Labels &&labels, Core::Origin pos,
       Scope_Local &ctx, SR::Exp const *cond, SR::Statement const *body)
    {
       return Statement_Loop::Create(std::move(labels), pos, ctx,
-         nullptr, ExpPromo_Cond(cond, pos), nullptr, body, false);
+         nullptr, expPromo_Cond(cond, pos), nullptr, body, false);
    }
 }
 

@@ -10,13 +10,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__ACC__Exp_H__
-#define GDCC__ACC__Exp_H__
-
-#include "ACC/Exp.hpp"
-
-#include "CC/Exp.hpp"
-#include "CC/Type.hpp"
+#include "ACC/Factory.hpp"
 
 #include "SR/Exp.hpp"
 #include "SR/Type.hpp"
@@ -31,28 +25,28 @@
 namespace GDCC::ACC
 {
    //
-   // ExpPromo_Assign
+   // Factory::expPromo_Assign
    //
    // Allows additional implicit conversions over C.
    //
-   SR::Exp::CRef ExpPromo_Assign(SR::Type const *typeL, SR::Exp const *e,
+   SR::Exp::CRef Factory::expPromo_Assign(SR::Type const *typeL, SR::Exp const *e,
       Core::Origin pos)
    {
-      auto exp   = CC::ExpPromo_LValue(e, pos);
+      auto exp   = expPromo_LValue(e, pos);
       auto typeR = exp->getType();
 
       // integer = str
       if(typeL->isCTypeInteg() &&
          typeR->isTypePointer() && typeR->getBaseType()->isTypeStrEnt())
       {
-         return CC::ExpConvert_ArithPtr(typeL, exp, pos);
+         return expConvert_ArithPtr(typeL, exp, pos);
       }
 
       // str = integer
       if(typeL->isTypePointer() && typeL->getBaseType()->isTypeStrEnt() &&
          typeR->isCTypeInteg())
       {
-         return CC::ExpConvert_PtrArith(typeL, exp, pos);
+         return expConvert_PtrArith(typeL, exp, pos);
       }
 
       // integer = special
@@ -60,13 +54,13 @@ namespace GDCC::ACC
          typeR->isTypePointer() && typeR->getBaseType()->isTypeFunction() &&
             typeR->getBaseType()->getCallType() == IR::CallType::Special)
       {
-         return CC::ExpConvert_ArithPtr(typeL, exp, pos);
+         return expConvert_ArithPtr(typeL, exp, pos);
       }
 
       // Defer to C rules.
-      return CC::ExpPromo_Assign_Base(typeL, exp, pos);
+      return CC::Factory::expPromo_Assign(typeL, exp, pos);
    }
 }
 
-#endif//GDCC__ACC__Exp_H__
+// EOF
 

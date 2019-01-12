@@ -12,6 +12,7 @@
 
 #include "CC/Exp/Convert/Pointer.hpp"
 
+#include "CC/Factory.hpp"
 #include "CC/Type.hpp"
 
 #include "Core/Exception.hpp"
@@ -201,9 +202,9 @@ namespace GDCC::CC
    }
 
    //
-   // ExpConvert_ArithPtr
+   // Factory::expConvert_ArithPtr
    //
-   SR::Exp::CRef ExpConvert_ArithPtr(SR::Type const *typeL,
+   SR::Exp::CRef Factory::expConvert_ArithPtr(SR::Type const *typeL,
       SR::Exp const *e, Core::Origin pos)
    {
       SR::Exp::CRef exp{e};
@@ -231,9 +232,9 @@ namespace GDCC::CC
    }
 
    //
-   // ExpConvert_Pointer
+   // Factory::expConvert_Pointer
    //
-   SR::Exp::CRef ExpConvert_Pointer(SR::Type const *typeL,
+   SR::Exp::CRef Factory::expConvert_Pointer(SR::Type const *typeL,
       SR::Exp const *e, Core::Origin pos)
    {
       SR::Exp::CRef exp{e};
@@ -255,7 +256,7 @@ namespace GDCC::CC
       // const __str_ars* first.
       if(baseR->isTypeStrEnt() && baseL->getQualAddr().base == IR::AddrBase::StrArs)
       {
-         exp   = ExpCreate_Add(e, ExpCreate_LitInt(TypeIntegPrS, 0, pos), pos);
+         exp   = expCreate_Add(e, expCreate_LitInt(TypeIntegPrS, 0, pos), pos);
          typeR = exp->getType();
          baseR = typeR->getBaseType();
       }
@@ -301,9 +302,9 @@ namespace GDCC::CC
    }
 
    //
-   // ExpConvert_PtrArith
+   // Factory::expConvert_PtrArith
    //
-   SR::Exp::CRef ExpConvert_PtrArith(SR::Type const *typeL,
+   SR::Exp::CRef Factory::expConvert_PtrArith(SR::Type const *typeL,
       SR::Exp const *e, Core::Origin pos)
    {
       SR::Exp::CRef exp{e};
@@ -319,7 +320,7 @@ namespace GDCC::CC
       if(typeR->isCTypeInteg())
       {
          if(exp->isZero())
-            return ExpCreate_Comma(exp, ExpCreate_LitNul(typeL, pos), pos);
+            return expCreate_Comma(exp, expCreate_LitNul(typeL, pos), pos);
 
          return Exp_ConvertPtrInt::Create(typeL, exp, pos);
       }

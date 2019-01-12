@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "CC/Exp/VaArg.hpp"
+
+#include "CC/Factory.hpp"
 
 #include "SR/Arg.hpp"
 #include "SR/Type.hpp"
@@ -42,9 +44,9 @@ namespace GDCC::CC
       auto typeCst = typeArg->getTypePointer()
          ->getTypeQual({exp->getType()->getQualAddr()})->getTypePointer();
 
-      auto expPtr = ExpConvert_Pointer(typeCst, exp->getArgDup().data, pos);
+      auto expPtr = fact.expConvert_Pointer(typeCst, exp->getArgDup().data, pos);
 
-      return {typeArg, ExpCreate_DecPre(ExpCreate_Deref(expPtr, pos), pos)};
+      return {typeArg, fact.expCreate_DecPre(fact.expCreate_Deref(expPtr, pos), pos)};
    }
 
    //
@@ -56,12 +58,12 @@ namespace GDCC::CC
    }
 
    //
-   // ExpCreate_VaArg
+   // Factory::expCreate_VaArg
    //
-   SR::Exp::CRef ExpCreate_VaArg(SR::Type const *type,
+   SR::Exp::CRef Factory::expCreate_VaArg(SR::Type const *type,
       SR::Exp const *exp, Core::Origin pos)
    {
-      return Exp_VaArg::Create(type, exp, pos);
+      return Exp_VaArg::Create(type, exp, pos, *this);
    }
 }
 

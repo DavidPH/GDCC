@@ -12,9 +12,9 @@
 
 #include "ACC/Parse.hpp"
 
+#include "ACC/Factory.hpp"
 #include "ACC/Pragma.hpp"
 
-#include "CC/Exp.hpp"
 #include "CC/Scope/Global.hpp"
 #include "CC/Type.hpp"
 #include "CC/Warning.hpp"
@@ -80,7 +80,7 @@ namespace GDCC::ACC
       // Perform argument promotion before extracting types.
       // Yes, this will promote floats to double. No, I do not care.
       for(auto &arg : args)
-         arg = CC::ExpPromo_Arg(arg, pos);
+         arg = ctx.fact.expPromo_Arg(arg, pos);
 
       Core::Array<SR::Type::CRef> types{args.begin(), args.end(),
          [](SR::Exp const *e) {return e->getType()->getTypeQual();}};
@@ -99,11 +99,11 @@ namespace GDCC::ACC
 
       // Generate function.
       auto fn    = scope.global.getFunction(attr);
-      auto fnExp = CC::ExpCreate_Func(ctx.prog, fn, name.pos);
+      auto fnExp = ctx.fact.expCreate_Func(ctx.prog, fn, name.pos);
 
       scope.add(name.str, fn);
 
-      return CC::ExpCreate_Call(fnExp, std::move(args), scope, pos);
+      return ctx.fact.expCreate_Call(fnExp, std::move(args), scope, pos);
    }
 
    //
@@ -115,7 +115,7 @@ namespace GDCC::ACC
 
       auto type = tok.tok == Core::TOK_Charac ? CC::TypeIntegPrS : CC::TypeIntegPrU;
 
-      return CC::ExpCreate_LitInt(type, tok.str[0], tok.pos);
+      return ctx.fact.expCreate_LitInt(type, tok.str[0], tok.pos);
    }
 
    //
@@ -128,15 +128,15 @@ namespace GDCC::ACC
       if(auto lookup = scope.lookup(tok.str)) switch(lookup.res)
       {
       case CC::Lookup::Enum:
-         return CC::ExpCreate_LitInt(CC::TypeIntegPrS, *lookup.resEnum, tok.pos);
+         return ctx.fact.expCreate_LitInt(CC::TypeIntegPrS, *lookup.resEnum, tok.pos);
 
       case CC::Lookup::Func:
          CheckDeprecated(tok, lookup.resFunc);
-         return CC::ExpCreate_Func(ctx.prog, lookup.resFunc, tok.pos);
+         return ctx.fact.expCreate_Func(ctx.prog, lookup.resFunc, tok.pos);
 
       case CC::Lookup::Obj:
          CheckDeprecated(tok, lookup.resObj);
-         return CC::ExpCreate_Obj(ctx.prog, lookup.resObj, tok.pos);
+         return ctx.fact.expCreate_Obj(ctx.prog, lookup.resObj, tok.pos);
 
       default:
          Core::ErrorExpect("primary-expression", tok);
@@ -200,7 +200,7 @@ namespace GDCC::ACC
          type = u ? CC::TypeIntegPrU : CC::TypeIntegPrS;
 
       // Create expression.
-      return CC::ExpCreate_LitInt(type, Core::NumberCast<Core::Integ>(val), tok.pos);
+      return ctx.fact.expCreate_LitInt(type, Core::NumberCast<Core::Integ>(val), tok.pos);
    }
 
    //
@@ -291,7 +291,7 @@ namespace GDCC::ACC
       {
          #define tryCreate(c, t) \
             if((c) && (val >> (t)->getSizeBitsI()) == 0) \
-               return CC::ExpCreate_LitInt((t), std::move(val), tok.pos)
+               return ctx.fact.expCreate_LitInt((t), std::move(val), tok.pos)
 
       case 0:
          tryCreate(!u, CC::TypeIntegPrS);
@@ -328,7 +328,7 @@ namespace GDCC::ACC
    {
       auto tok = ctx.in.get();
 
-      return CC::ExpCreate_StrIdx(ctx.prog, scope, tok.str, tok.pos);
+      return ctx.fact.expCreate_StrIdx(ctx.prog, scope, tok.str, tok.pos);
    }
 }
 

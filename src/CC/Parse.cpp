@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -30,18 +30,20 @@ namespace GDCC::CC
    //
    // Parser constructor
    //
-   Parser::Parser(Core::TokenStream &in_, CPP::PragmaData &prag_,
+   Parser::Parser(Core::TokenStream &in_, Factory &fact_, CPP::PragmaData &prag_,
       IR::Program &prog_) :
-      in  (in_),
-      prag(prag_),
-      prog(prog_)
+      fact{fact_},
+      in  {in_},
+      prag{prag_},
+      prog{prog_}
    {
    }
 
    Parser::Parser(Parser const &ctx, Core::TokenStream &in_) :
-      in  (in_),
-      prag(ctx.prag),
-      prog(ctx.prog)
+      fact{ctx.fact},
+      in  {in_},
+      prag{ctx.prag},
+      prog{ctx.prog}
    {
    }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,12 +39,13 @@ namespace GDCC::CC
 
 
       // Create
-      static CRef Create(SR::Exp const *l, Core::String r, Core::Origin pos)
-         {return CRef(new This(l, r, pos));}
+      static CRef Create(SR::Exp const *l, Core::String r, Core::Origin pos,
+         Factory &fact)
+         {return CRef(new This(l, r, pos, fact));}
 
    protected:
-      Exp_Mem(SR::Exp const *l, Core::String r, Core::Origin pos_) :
-         Super{pos_}, expL{l}, expR{r} {}
+      Exp_Mem(SR::Exp const *l, Core::String r, Core::Origin pos_, Factory &fact_) :
+         Super{pos_}, expL{l}, expR{r}, fact{fact_} {}
 
       virtual void v_genStmnt(SR::GenStmntCtx const &ctx, SR::Arg const &dst) const;
 
@@ -59,6 +60,8 @@ namespace GDCC::CC
       virtual bool v_isNoAuto() const;
 
       virtual void v_setRefer() const;
+
+      Factory &fact;
    };
 
    //
@@ -82,13 +85,13 @@ namespace GDCC::CC
 
       // Create
       static CRef Create(SR::Exp const *l, Core::String r, Core::Origin pos,
-         Type_Struct const *t, Scope &scope)
-         {return CRef(new This(l, r, pos, t, scope));}
+         Factory &fact, Type_Struct const *t, Scope &scope)
+         {return CRef(new This(l, r, pos, fact, t, scope));}
 
    protected:
       Exp_MemProp(SR::Exp const *l, Core::String r, Core::Origin pos_,
-         Type_Struct const *t, Scope &scope_) :
-         Super{l, r, pos_}, type{t}, scope{scope_} {}
+         Factory &fact_, Type_Struct const *t, Scope &scope_) :
+         Super{l, r, pos_, fact_}, type{t}, scope{scope_} {}
 
       SR::Exp::CRef createExp(Type_Struct::Prop const &prop, StructProp const *func,
          SR::Exp::CRef const *argv, std::size_t argc) const;

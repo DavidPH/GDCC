@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,7 +12,7 @@
 
 #include "CC/Statement/If.hpp"
 
-#include "CC/Exp.hpp"
+#include "CC/Factory.hpp"
 
 #include "IR/Block.hpp"
 #include "IR/Glyph.hpp"
@@ -27,20 +27,6 @@
 
 namespace GDCC::CC
 {
-   //
-   // Statement_If contructor
-   //
-   Statement_If::Statement_If(Labels const &labels_, Core::Origin pos_,
-      SR::Exp const *cond_, SR::Statement const *bodyT_,
-      SR::Statement const *bodyF_) :
-      Super{labels_, pos_},
-
-      cond {cond_},
-      bodyT{bodyT_},
-      bodyF{bodyF_}
-   {
-   }
-
    //
    // Statement_If constructor
    //
@@ -177,47 +163,24 @@ namespace GDCC::CC
    }
 
    //
-   // StatementCreate_If
+   // Factory::stCreate_If
    //
-   SR::Statement::CRef StatementCreate_If(
-      SR::Statement::Labels const &labels, Core::Origin pos,
-      SR::Exp const *cond, SR::Statement const *body)
-   {
-      return Statement_If::Create(
-         labels, pos, ExpPromo_Cond(cond, pos), body);
-   }
-
-   //
-   // StatementCreate_If
-   //
-   SR::Statement::CRef StatementCreate_If(SR::Statement::Labels &&labels,
+   SR::Statement::CRef Factory::stCreate_If(SR::Statement::Labels &&labels,
       Core::Origin pos, SR::Exp const *cond, SR::Statement const *body)
    {
       return Statement_If::Create(
-         std::move(labels), pos, ExpPromo_Cond(cond, pos), body);
+         std::move(labels), pos, expPromo_Cond(cond, pos), body);
    }
 
    //
-   // StatementCreate_If
+   // Factory::stCreate_If
    //
-   SR::Statement::CRef StatementCreate_If(
-      SR::Statement::Labels const &labels, Core::Origin pos,
-      SR::Exp const *cond, SR::Statement const *bodyT,
-      SR::Statement const *bodyF)
-   {
-      return Statement_If::Create(
-         labels, pos, ExpPromo_Cond(cond, pos), bodyT, bodyF);
-   }
-
-   //
-   // StatementCreate_If
-   //
-   SR::Statement::CRef StatementCreate_If(SR::Statement::Labels &&labels,
+   SR::Statement::CRef Factory::stCreate_If(SR::Statement::Labels &&labels,
       Core::Origin pos, SR::Exp const *cond, SR::Statement const *bodyT,
       SR::Statement const *bodyF)
    {
       return Statement_If::Create(
-         std::move(labels), pos, ExpPromo_Cond(cond, pos), bodyT, bodyF);
+         std::move(labels), pos, expPromo_Cond(cond, pos), bodyT, bodyF);
    }
 }
 
