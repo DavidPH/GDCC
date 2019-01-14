@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -38,7 +38,10 @@ namespace GDCC::Option
       hash{StrHash(optInfo.nameL)},
       lenL{optInfo.nameL ? std::strlen(optInfo.nameL) : 0}
    {
-      if(program) program->insert(this);
+      if(program)
+         program->insert(this);
+      else
+         prog = nullptr;
    }
 
    //
