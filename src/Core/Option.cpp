@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -189,7 +189,7 @@ namespace GDCC::Core
       bool needOutput)
    {
       if(!opts.list.version)
-         opts.list.version = "v0.14.3";
+         opts.list.version = "v0.14.4";
 
       if(argc <= 1)
       {
