@@ -235,7 +235,7 @@ namespace GDCC::BC
 
       for(Core::FastU col = 1; col != n; ++col)
       {
-         if(n - col > 3)
+         if(n - col >= 3)
             GDCC_BC_AddStmnt(Code::Move, 1, stk, 0);
 
          Core::FastU sizeAdd = std::min<Core::FastU>(3, n - col);
