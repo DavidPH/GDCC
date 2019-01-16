@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -332,10 +332,7 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       if(n != 1)
-      {
-         putStmntCall(n * 2);
-         return;
-      }
+         return putStmntCall(getCallName(stmnt->code, n), n * 2);
 
       if(stmnt->args[1].a == IR::ArgBase::Stk &&
          stmnt->args[2].a == IR::ArgBase::Stk)
@@ -411,7 +408,7 @@ namespace GDCC::BC::ZDACS
       if(n == 1)
          putCode(Code::DivX);
       else
-         putStmntCall(n);
+         putStmntCall(getCallName(stmnt->code, n), n);
    }
 
    //

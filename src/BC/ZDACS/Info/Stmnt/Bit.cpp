@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -36,6 +36,28 @@ namespace GDCC::BC::ZDACS
 
       if(getStmntSize() != 1)
          IR::ErrorCode(stmnt, "unsupported size");
+   }
+
+   //
+   // Info::genStmnt_BAnd
+   //
+   void Info::genStmnt_BAnd()
+   {
+      auto n = getStmntSize();
+
+      if(stmnt->args[1].a == IR::ArgBase::Stk &&
+         stmnt->args[2].a == IR::ArgBase::Stk)
+      {
+         if(n > 1)
+            numChunkCODE += (n * 4 - 2) * 8;
+         numChunkCODE += n * 4;
+      }
+      else
+      {
+         numChunkCODE += lenPushArg(stmnt->args[1], 0, n);
+         numChunkCODE += lenPushArg(stmnt->args[2], 0, n);
+         numChunkCODE += n * 4;
+      }
    }
 
    //
@@ -143,28 +165,6 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmntBitwise
-   //
-   void Info::genStmntBitwise()
-   {
-      auto n = getStmntSize();
-
-      if(stmnt->args[1].a == IR::ArgBase::Stk &&
-         stmnt->args[2].a == IR::ArgBase::Stk)
-      {
-         if(n > 1)
-            numChunkCODE += (n * 4 - 2) * 8;
-         numChunkCODE += n * 4;
-      }
-      else
-      {
-         numChunkCODE += lenPushArg(stmnt->args[1], 0, n);
-         numChunkCODE += lenPushArg(stmnt->args[2], 0, n);
-         numChunkCODE += n * 4;
-      }
-   }
-
-   //
    // Info::preStmnt_Bclz
    //
    void Info::preStmnt_Bclz(bool ones)
@@ -265,6 +265,44 @@ namespace GDCC::BC::ZDACS
       leaf("$80000000",          0);
 
       GDCC_BC_AddFuncEnd();
+   }
+
+   //
+   // Info::putStmnt_BAnd
+   //
+   void Info::putStmnt_BAnd(Code code)
+   {
+      auto n = getStmntSize();
+
+      if(stmnt->args[1].a == IR::ArgBase::Stk &&
+         stmnt->args[2].a == IR::ArgBase::Stk)
+      {
+         if(n > 1)
+         {
+            for(Core::FastU i = 0, e = n * 2 - 1; i != e; ++i)
+               putCode(Code::Drop_LocReg, func->localReg + i);
+
+            putCode(Code::Push_LocReg, func->localReg + n - 1);
+         }
+
+         putCode(code);
+
+         if(n > 1) for(Core::FastU i = n - 1; i--;)
+         {
+            putCode(Code::Push_LocReg, func->localReg + n + i);
+            putCode(Code::Push_LocReg, func->localReg + i);
+            putCode(code);
+         }
+      }
+      else
+      {
+         for(Core::FastU i = 0; i != n; ++i)
+         {
+            putStmntPushArg(stmnt->args[1], i);
+            putStmntPushArg(stmnt->args[2], i);
+            putCode(code);
+         }
+      }
    }
 
    //
@@ -494,40 +532,22 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmntBitwise
+   // Info::trStmnt_BAnd
    //
-   void Info::putStmntBitwise(Code code)
+   void Info::trStmnt_BAnd()
    {
       auto n = getStmntSize();
 
-      if(stmnt->args[1].a == IR::ArgBase::Stk &&
-         stmnt->args[2].a == IR::ArgBase::Stk)
+      if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
       {
-         if(n > 1)
-         {
-            for(Core::FastU i = 0, e = n * 2 - 1; i != e; ++i)
-               putCode(Code::Drop_LocReg, func->localReg + i);
-
-            putCode(Code::Push_LocReg, func->localReg + n - 1);
-         }
-
-         putCode(code);
-
-         if(n > 1) for(Core::FastU i = n - 1; i--;)
-         {
-            putCode(Code::Push_LocReg, func->localReg + n + i);
-            putCode(Code::Push_LocReg, func->localReg + i);
-            putCode(code);
-         }
+         moveArgStk_dst(stmnt->args[0]);
       }
       else
       {
-         for(Core::FastU i = 0; i != n; ++i)
-         {
-            putStmntPushArg(stmnt->args[1], i);
-            putStmntPushArg(stmnt->args[2], i);
-            putCode(code);
-         }
+         trStmntStk3(false);
+
+         if(n > 1)
+            func->setLocalTmp(n * 2 - 1);
       }
    }
 
@@ -593,26 +613,6 @@ namespace GDCC::BC::ZDACS
    void Info::trStmnt_Bset()
    {
       moveArgStk_src(stmnt->args[1]);
-   }
-
-   //
-   // Info::trStmntBitwise
-   //
-   void Info::trStmntBitwise()
-   {
-      auto n = getStmntSize();
-
-      if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
-      {
-         moveArgStk_dst(stmnt->args[0]);
-      }
-      else
-      {
-         trStmntStk3(false);
-
-         if(n > 1)
-            func->setLocalTmp(n * 2 - 1);
-      }
    }
 }
 

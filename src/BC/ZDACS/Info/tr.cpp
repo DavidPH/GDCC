@@ -85,63 +85,39 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Nop: break;
 
       case IR::Code::AdXU: trStmnt_AdXU(); break;
-
-      case IR::Code::AddF:
-      case IR::Code::MulF:
-      case IR::Code::MulI:
-      case IR::Code::MulK:
-      case IR::Code::MulU:
-      case IR::Code::MulX:
-         trStmntStk3(false);
-         break;
-
-      case IR::Code::AddI:
+      case IR::Code::AddF: trStmnt_AddF(); break;
+      case IR::Code::AddI: trStmnt_AddI(); break;
       case IR::Code::AddU: trStmnt_AddU(); break;
-
-      case IR::Code::BAnd: trStmntBitwise(); break;
+      case IR::Code::BAnd: trStmnt_BAnd(); break;
       case IR::Code::BNot: trStmnt_BNot(); break;
-      case IR::Code::BOrI: trStmntBitwise(); break;
-      case IR::Code::BOrX: trStmntBitwise(); break;
-
+      case IR::Code::BOrI: trStmnt_BOrI(); break;
+      case IR::Code::BOrX: trStmnt_BOrX(); break;
       case IR::Code::Bclo: trStmnt_Bclz(); break;
       case IR::Code::Bclz: trStmnt_Bclz(); break;
-      case IR::Code::Bges: trStmnt_Bget(); break;
+      case IR::Code::Bges: trStmnt_Bges(); break;
       case IR::Code::Bget: trStmnt_Bget(); break;
       case IR::Code::Bset: trStmnt_Bset(); break;
-
       case IR::Code::Call: trStmnt_Call(); break;
-
       case IR::Code::Casm: trStmnt_Casm(); break;
 
-      case IR::Code::CmpF_EQ:
-      case IR::Code::CmpF_NE:
-         trStmntStk3(false);
-         break;
-
-      case IR::Code::CmpF_GE:
-      case IR::Code::CmpF_GT:
-      case IR::Code::CmpF_LE:
-      case IR::Code::CmpF_LT:
-         trStmntStk3(true);
-         break;
-
-      case IR::Code::CmpI_EQ:
-      case IR::Code::CmpI_NE:
-      case IR::Code::CmpU_EQ:
-      case IR::Code::CmpU_NE:
-         trStmnt_CmpU_EQ();
-         break;
-
-      case IR::Code::CmpI_GE:
-      case IR::Code::CmpI_GT:
-      case IR::Code::CmpI_LE:
-      case IR::Code::CmpI_LT:
-      case IR::Code::CmpU_GE:
-      case IR::Code::CmpU_GT:
-      case IR::Code::CmpU_LE:
-      case IR::Code::CmpU_LT:
-         trStmntStk3(true);
-         break;
+      case IR::Code::CmpF_EQ: trStmnt_CmpF_EQ(); break;
+      case IR::Code::CmpF_GE: trStmnt_CmpF_GE(); break;
+      case IR::Code::CmpF_GT: trStmnt_CmpF_GT(); break;
+      case IR::Code::CmpF_LE: trStmnt_CmpF_LE(); break;
+      case IR::Code::CmpF_LT: trStmnt_CmpF_LT(); break;
+      case IR::Code::CmpF_NE: trStmnt_CmpF_NE(); break;
+      case IR::Code::CmpI_EQ: trStmnt_CmpI_EQ(); break;
+      case IR::Code::CmpI_GE: trStmnt_CmpI_GE(); break;
+      case IR::Code::CmpI_GT: trStmnt_CmpI_GT(); break;
+      case IR::Code::CmpI_LE: trStmnt_CmpI_LE(); break;
+      case IR::Code::CmpI_LT: trStmnt_CmpI_LT(); break;
+      case IR::Code::CmpI_NE: trStmnt_CmpI_NE(); break;
+      case IR::Code::CmpU_EQ: trStmnt_CmpU_EQ(); break;
+      case IR::Code::CmpU_GE: trStmnt_CmpU_GE(); break;
+      case IR::Code::CmpU_GT: trStmnt_CmpU_GT(); break;
+      case IR::Code::CmpU_LE: trStmnt_CmpU_LE(); break;
+      case IR::Code::CmpU_LT: trStmnt_CmpU_LT(); break;
+      case IR::Code::CmpU_NE: trStmnt_CmpU_NE(); break;
 
       case IR::Code::Cnat: trStmnt_Cnat(); break;
       case IR::Code::Copy: trStmnt_Copy(); break;
@@ -152,26 +128,19 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Cscr_SS: trStmnt_Cscr_SS(); break;
 
       case IR::Code::Cspe: trStmnt_Cspe(); break;
-
       case IR::Code::DiXI: trStmnt_DiXI(); break;
       case IR::Code::DiXU: trStmnt_DiXU(); break;
-
-      case IR::Code::DivF:
-      case IR::Code::DivI:
-      case IR::Code::DivK:
-      case IR::Code::DivU:
-      case IR::Code::DivX:
-      case IR::Code::SubF:
-         trStmntStk3(true);
-         break;
+      case IR::Code::DivF: trStmnt_DivF(); break;
+      case IR::Code::DivI: trStmnt_DivI(); break;
+      case IR::Code::DivK: trStmnt_DivK(); break;
+      case IR::Code::DivU: trStmnt_DivU(); break;
+      case IR::Code::DivX: trStmnt_DivX(); break;
 
       case IR::Code::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
       case IR::Code::Jcnd_Tab: trStmnt_Jcnd_Tab(); break;
       case IR::Code::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
 
-      case IR::Code::Jdyn:
-         moveArgStk_src(stmnt->args[0]);
-         break;
+      case IR::Code::Jdyn: trStmnt_Jdyn(); break;
 
       case IR::Code::Jfar_Pro: trStmnt_Jfar_Pro(); break;
       case IR::Code::Jfar_Set: trStmnt_Jfar_Set(); break;
@@ -184,29 +153,25 @@ namespace GDCC::BC::ZDACS
       case IR::Code::ModI: trStmnt_ModI(); break;
       case IR::Code::ModU: trStmnt_ModU(); break;
       case IR::Code::Move: trStmnt_Move(); break;
-
-      case IR::Code::MuXU:
-         trStmntStk3(false);
-         break;
-
-      case IR::Code::NegF: trStmntStk2(); break;
+      case IR::Code::MuXU: trStmnt_MuXU(); break;
+      case IR::Code::MulF: trStmnt_MulF(); break;
+      case IR::Code::MulI: trStmnt_MulI(); break;
+      case IR::Code::MulK: trStmnt_MulK(); break;
+      case IR::Code::MulU: trStmnt_MulU(); break;
+      case IR::Code::MulX: trStmnt_MulX(); break;
+      case IR::Code::NegF: trStmnt_NegF(); break;
       case IR::Code::NegI: trStmnt_NegI(); break;
-
-      case IR::Code::Pltn: trStmntStk2(); break;
-
+      case IR::Code::Pltn: trStmnt_Pltn(); break;
       case IR::Code::Retn: trStmnt_Retn(); break;
-
       case IR::Code::ShLF: trStmnt_ShLF(); break;
       case IR::Code::ShLU: trStmnt_ShLU(); break;
-      case IR::Code::ShRF: trStmnt_ShLF(); break;
+      case IR::Code::ShRF: trStmnt_ShRF(); break;
       case IR::Code::ShRI: trStmnt_ShRI(); break;
       case IR::Code::ShRU: trStmnt_ShRU(); break;
-
       case IR::Code::SuXU: trStmnt_SuXU(); break;
-
-      case IR::Code::SubI:
+      case IR::Code::SubF: trStmnt_SubF(); break;
+      case IR::Code::SubI: trStmnt_SubI(); break;
       case IR::Code::SubU: trStmnt_SubU(); break;
-
       case IR::Code::Swap: trStmnt_Swap(); break;
 
       case IR::Code::Xcod_SID: break;
@@ -214,6 +179,30 @@ namespace GDCC::BC::ZDACS
       default:
          IR::ErrorCode(stmnt, "unsupported tr");
       }
+   }
+
+   //
+   // Info::trStmntStkBin
+   //
+   void Info::trStmntStkBin(bool ordered)
+   {
+      trStmntStk3(ordered);
+   }
+
+   //
+   // Info::trStmntStkCmp
+   //
+   void Info::trStmntStkCmp(bool ordered)
+   {
+      trStmntStk3(ordered);
+   }
+
+   //
+   // Info::trStmntStkUna
+   //
+   void Info::trStmntStkUna()
+   {
+      trStmntStk2();
    }
 
    //

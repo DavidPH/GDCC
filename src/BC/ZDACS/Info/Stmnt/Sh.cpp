@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -216,7 +216,7 @@ namespace GDCC::BC::ZDACS
       if(n == 0)
          return putCode(Code::Drop_Nul);
 
-      putStmntCall(n);
+      putStmntCall(getCallName(stmnt->code, n), n);
    }
 
    //
@@ -239,10 +239,7 @@ namespace GDCC::BC::ZDACS
       }
 
       if(stmnt->args[2].a != IR::ArgBase::Lit)
-      {
-         putStmntCall(n);
-         return;
-      }
+         return putStmntCall(getCallName(stmnt->code, n), n);
 
       Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
 
@@ -311,10 +308,7 @@ namespace GDCC::BC::ZDACS
       }
 
       if(stmnt->args[2].a != IR::ArgBase::Lit)
-      {
-         putStmntCall(n);
-         return;
-      }
+         return putStmntCall(getCallName(stmnt->code, n), n);
 
       Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
 
@@ -390,10 +384,7 @@ namespace GDCC::BC::ZDACS
       }
 
       if(stmnt->args[2].a != IR::ArgBase::Lit)
-      {
-         putStmntCall(n);
-         return;
-      }
+         return putStmntCall(getCallName(stmnt->code, n), n);
 
       Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
 

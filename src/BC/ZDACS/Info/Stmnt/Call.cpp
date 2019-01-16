@@ -184,6 +184,14 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::genStmnt_Cnat
+   //
+   void Info::genStmnt_Cnat()
+   {
+      numChunkCODE += 12;
+   }
+
+   //
    // Info::genStmnt_Cscr_IA
    //
    void Info::genStmnt_Cscr_IA()

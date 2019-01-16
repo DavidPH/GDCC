@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -43,6 +43,14 @@ namespace GDCC::BC::ZDACS
    {
       chkStmntArgB(0, IR::ArgBase::Stk);
       chkStmntArgB(1, IR::ArgBase::Stk);
+   }
+
+   //
+   // Info::genStmnt_Copy
+   //
+   void Info::genStmnt_Copy()
+   {
+      numChunkCODE += 4;
    }
 
    //
@@ -155,7 +163,6 @@ namespace GDCC::BC::ZDACS
       numChunkCODE += arr.off ? 20 : 8;
    }
 
-
    //
    // Info::genStmnt_Swap
    //
@@ -168,6 +175,15 @@ namespace GDCC::BC::ZDACS
       else
          numChunkCODE += n * 32;
    }
+
+   //
+   // Info::putStmnt_Copy
+   //
+   void Info::putStmnt_Copy()
+   {
+      putCode(Code::Copy);
+   }
+
    //
    // Info::putStmnt_Move
    //

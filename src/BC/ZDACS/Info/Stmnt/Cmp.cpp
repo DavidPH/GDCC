@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -30,21 +30,6 @@
 
 namespace GDCC::BC::ZDACS
 {
-   //
-   // Info::genStmnt_CmpI
-   //
-   void Info::genStmnt_CmpI()
-   {
-      auto n = getStmntSize();
-
-      if(n == 0) return;
-
-      if(n == 1)
-         numChunkCODE += 4;
-      else
-         genStmntCall(1);
-   }
-
    //
    // Info::genStmnt_CmpU_EQ
    //
@@ -284,21 +269,6 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_CmpI
-   //
-   void Info::putStmnt_CmpI(Code code)
-   {
-      auto n = getStmntSize();
-
-      if(n == 0) return;
-
-      if(n == 1)
-         putCode(code);
-      else
-         putStmntCall(1);
-   }
-
-   //
    // Info::putStmnt_CmpU_EQ
    //
    void Info::putStmnt_CmpU_EQ()
@@ -325,7 +295,7 @@ namespace GDCC::BC::ZDACS
       else if(n == 1)
          putCode(Code::CmpU_EQ);
       else
-         putStmntCall(1);
+         putStmntCall(getCallName(stmnt->code, n), 1);
    }
 
    //
@@ -355,7 +325,7 @@ namespace GDCC::BC::ZDACS
       else if(n == 1)
          putCode(Code::CmpU_NE);
       else
-         putStmntCall(1);
+         putStmntCall(getCallName(stmnt->code, n), 1);
    }
 
    //
@@ -366,7 +336,7 @@ namespace GDCC::BC::ZDACS
       if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
          moveArgStk_dst(stmnt->args[0]);
       else
-         trStmntStk3(false);
+         trStmntStkBin(false);
    }
 }
 

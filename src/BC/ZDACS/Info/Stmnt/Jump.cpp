@@ -24,7 +24,6 @@
 
 namespace GDCC::BC::ZDACS
 {
-
    //
    // Info::chkStmnt_Jcnd_Nil
    //
@@ -120,6 +119,14 @@ namespace GDCC::BC::ZDACS
       if(n == 0) return;
 
       numChunkCODE += n * 4 + 4;
+   }
+
+   //
+   // Info::genStmnt_Jdyn
+   //
+   void Info::genStmnt_Jdyn()
+   {
+      numChunkCODE += 4;
    }
 
    //
@@ -255,6 +262,14 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::putStmnt_Jdyn
+   //
+   void Info::putStmnt_Jdyn()
+   {
+      putCode(Code::Jdyn);
+   }
+
+   //
    // Info::putStmnt_Jfar
    //
    void Info::putStmnt_Jfar()
@@ -363,6 +378,14 @@ namespace GDCC::BC::ZDACS
    // Info::trStmnt_Jcnd_Nil
    //
    void Info::trStmnt_Jcnd_Nil()
+   {
+      moveArgStk_src(stmnt->args[0]);
+   }
+
+   //
+   // Info::trStmnt_Jdyn
+   //
+   void Info::trStmnt_Jdyn()
    {
       moveArgStk_src(stmnt->args[0]);
    }
