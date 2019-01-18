@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2018 David Hill
+// Copyright (C) 2018-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -22,6 +22,8 @@
 
 namespace GDCC::AR::Wad
 {
+   using LumpPath = Core::Array<Core::String>;
+
    enum class LumpType;
 
    class Lump;
@@ -29,6 +31,7 @@ namespace GDCC::AR::Wad
    class Lump_Empty;
    class Lump_File;
    class Lump_FilePart;
+   class Lump_Wad;
    class LumpInfo;
 }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -15,6 +15,7 @@
 
 #include "../../AR/Wad/Lump.hpp"
 
+#include "../../Core/Array.hpp"
 #include "../../Core/String.hpp"
 
 
@@ -31,6 +32,7 @@ namespace GDCC::AR::Wad
    {
       Data,
       File,
+      Special,
       Wad,
    };
 
@@ -40,8 +42,13 @@ namespace GDCC::AR::Wad
    class LumpInfo
    {
    public:
-      char const  *data;
+      bool dataBool() const;
+
+      LumpInfo dataInfo() const;
+
+      LumpPath     path;
       Core::String name;
+      char const  *data;
       LumpType     type;
    };
 }
@@ -53,6 +60,10 @@ namespace GDCC::AR::Wad
 
 namespace GDCC::AR::Wad
 {
+   extern Core::String const Name_embed;
+   extern Core::String const Name_head;
+   extern Core::String const Name_tail;
+
    extern Core::String const NameBEHAVIOR;
    extern Core::String const NameBLOCKMAP;
    extern Core::String const NameENDMAP;

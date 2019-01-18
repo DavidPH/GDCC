@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,6 +12,8 @@
 
 #include "AR/Wad/LumpInfo.hpp"
 
+#include "Core/Exception.hpp"
+
 #include <algorithm>
 #include <cstring>
 
@@ -22,6 +24,10 @@
 
 namespace GDCC::AR::Wad
 {
+   extern Core::String const Name_embed{"embed"};
+   extern Core::String const Name_head {"head"};
+   extern Core::String const Name_tail {"tail"};
+
    extern Core::String const NameBEHAVIOR{"BEHAVIOR"};
    extern Core::String const NameBLOCKMAP{"BLOCKMAP"};
    extern Core::String const NameENDMAP  {"ENDMAP"};
@@ -62,6 +68,28 @@ namespace GDCC::AR::Wad
 namespace GDCC::AR::Wad
 {
    //
+   // LumpInfo::dataBool
+   //
+   bool LumpInfo::dataBool() const
+   {
+      if(!std::strcmp(data, "false") || !std::strcmp(data, "0"))
+         return false;
+
+      if(!std::strcmp(data, "true") || !std::strcmp(data, "1"))
+         return true;
+
+      Core::ErrorExpect({}, "boolean", data);
+   }
+
+   //
+   // LumpInfo::dataInfo
+   //
+   LumpInfo LumpInfo::dataInfo() const
+   {
+      return GetLumpInfo(data);
+   }
+
+   //
    // GetFileFromName
    //
    Core::String GetFileFromName(Core::String name)
@@ -98,6 +126,9 @@ namespace GDCC::AR::Wad
       else if(CheckLumpType(data, "file:"))
          info.type = LumpType::File, data += 5;
 
+      else if(CheckLumpType(data, "special:"))
+         info.type = LumpType::Special, data += 8;
+
       else if(CheckLumpType(data, "wad:"))
          info.type = LumpType::Wad, data += 4;
 
@@ -110,9 +141,17 @@ namespace GDCC::AR::Wad
          info.name = nullptr;
          data     += 1;
       }
-      else if(auto eq = std::strchr(data, '='))
+      else if(char const *eq = std::strchr(data, '='))
       {
-         // TODO: Process path.
+         if(std::size_t pathN = std::count(data, eq, '/'))
+         {
+            for(auto &path : info.path = LumpPath{pathN})
+            {
+               char const *sep = strchr(data, '/');
+               path = {data, sep};
+               data = sep + 1;
+            }
+         }
 
          info.name = {data, eq};
          data      = eq + 1;

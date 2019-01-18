@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,8 +16,10 @@
 #include "AR/Wad/WadHeader.hpp"
 
 #include "Core/Dir.hpp"
+#include "Core/Exception.hpp"
 #include "Core/File.hpp"
 #include "Core/Path.hpp"
+#include "Core/Range.hpp"
 
 #include <cstring>
 #include <vector>
@@ -364,6 +366,32 @@ namespace GDCC::AR::Wad
 
       return new Lump_File{name, Core::StrDup(info.data)};
    }
+
+   //
+   // CreateLumpSingle
+   //
+   static Lump *CreateLumpSingle(LumpInfo const &info)
+   {
+      switch(info.type)
+      {
+      case LumpType::Data:
+         return CreateLump_Data(info);
+
+      case LumpType::File:
+         if(Core::IsDir(info.data))
+            break;
+         else
+            return CreateLump_File(info);
+
+      case LumpType::Special:
+         break;
+
+      case LumpType::Wad:
+         break;
+      }
+
+      Core::ErrorExpect({}, "single lump", info.name);
+   }
 }
 
 
@@ -376,8 +404,27 @@ namespace GDCC::AR::Wad
    //
    // Wad::addLump
    //
+   void Wad::addLump(Lump *lump)
+   {
+      ListUtil::Insert(lump, &head);
+   }
+
+   //
+   // Wad::addLump
+   //
    void Wad::addLump(LumpInfo const &info)
    {
+      addLump(info, Core::MakeRange(info.path));
+   }
+
+   //
+   // Wad::addLump
+   //
+   void Wad::addLump(LumpInfo const &info, Core::Range<Core::String const *> path)
+   {
+      if(!path.empty())
+         return getSub(*path.begin()).addLump(info, path + 1);
+
       switch(info.type)
       {
       case LumpType::Data:
@@ -391,6 +438,9 @@ namespace GDCC::AR::Wad
             addLump(CreateLump_File(info));
          break;
 
+      case LumpType::Special:
+         Core::ErrorExpect({}, "special", info.name);
+
       case LumpType::Wad:
          if(Core::IsDir(info.data))
             AddWadDir(this, info.name, Core::DirOpenStream(info.data).get());
@@ -398,6 +448,27 @@ namespace GDCC::AR::Wad
             AddWadFile(this, info.name, info.data);
          break;
       }
+   }
+
+   //
+   // Lump_Wad::addLump
+   //
+   void Lump_Wad::addLump(LumpInfo const &info, Core::Range<Core::String const *> path)
+   {
+      if(!path.empty() || info.type != LumpType::Special)
+         return wad.addLump(info, path);
+
+      if(info.name == Name_embed)
+         embed = info.dataBool();
+
+      else if(info.name == Name_head)
+         head.reset(CreateLumpSingle(info.dataInfo()));
+
+      else if(info.name == Name_tail)
+         tail.reset(CreateLumpSingle(info.dataInfo()));
+
+      else
+         return wad.addLump(info, path);
    }
 }
 

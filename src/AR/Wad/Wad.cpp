@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -41,11 +41,21 @@ namespace GDCC::AR::Wad
    }
 
    //
-   // Wad::addLump
+   // Wad::getSub
    //
-   void Wad::addLump(Lump *lump)
+   Lump_Wad &Wad::getSub(Core::String name)
    {
-      ListUtil::Insert(lump, &head);
+      for(auto &lump : *this)
+      {
+         if(lump.name != name)
+            continue;
+
+         if(auto wad = dynamic_cast<Lump_Wad *>(&lump))
+            return *wad;
+      }
+
+      auto wad = new Lump_Wad{name};
+      return addLump(wad), *wad;
    }
 
    //

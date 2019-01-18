@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -34,6 +34,10 @@ namespace GDCC::Core
       Range() = default;
       constexpr Range(T first_, T last_) : first{first_}, last{last_} {}
 
+      Range &operator ++ () {return ++first, *this;}
+
+      Range operator + (std::size_t n) const {return {first + n, last};}
+
       T begin() const {return first;}
 
       bool empty() const {return first == last;}
@@ -53,13 +57,22 @@ namespace GDCC::Core
 
 namespace GDCC::Core
 {
-      //
+   //
    // MakeRange
    //
    template<typename T>
    Range<T> MakeRange(T first, T last)
    {
       return Range<T>(first, last);
+   }
+
+   //
+   // MakeRange
+   //
+   template<typename T>
+   auto MakeRange(T &&obj) -> Range<decltype(obj.begin())>
+   {
+      return MakeRange(obj.begin(), obj.end());
    }
 }
 

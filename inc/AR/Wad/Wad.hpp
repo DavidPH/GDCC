@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -44,6 +44,7 @@ namespace GDCC::AR::Wad
 
       void addLump(Lump *lump);
       void addLump(LumpInfo const &info);
+      void addLump(LumpInfo const &info, Core::Range<Core::String const *> path);
 
             iterator begin()       {return static_cast<      iterator>(head.wadNext);}
       const_iterator begin() const {return static_cast<const_iterator>(head.wadNext);}
@@ -65,6 +66,8 @@ namespace GDCC::AR::Wad
       bool iwad;
 
    private:
+      Lump_Wad &getSub(Core::String name);
+
       Lump_Empty head;
    };
 
@@ -75,6 +78,8 @@ namespace GDCC::AR::Wad
    {
    public:
       Lump_Wad(Core::String name);
+
+      void addLump(LumpInfo const &info, Core::Range<Core::String const *> path);
 
       virtual std::size_t sizeData() const;
       virtual std::size_t sizeHead() const;
