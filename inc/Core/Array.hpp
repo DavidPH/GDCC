@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -94,6 +94,14 @@ namespace GDCC::Core
       const_reference operator [] (size_type i) const {return p[i];}
 
       //
+      // operator Array + Array
+      //
+      Array operator + (Array const &r) const
+      {
+         return {Cpy(p, e, r.p, r.e), size() + r.size()};
+      }
+
+      //
       // copy assignment
       //
       Array &operator = (Array const &a)
@@ -106,6 +114,9 @@ namespace GDCC::Core
 
       // move assignment
       Array &operator = (Array &&a) {swap(a); return *this;}
+
+      // operator Array += Array
+      Array &operator += (Array const &r) {return swap(*this + r), *this;}
 
       //
       // at
@@ -238,6 +249,30 @@ namespace GDCC::Core
       }
 
       //
+      // Cpy
+      //
+      template<typename Itr>
+      static pointer Cpy(Itr first1, Itr last1, Itr first2, Itr last2)
+      {
+         size_type s = std::distance(first1, last1) + std::distance(first2, last2);
+         pointer   n = Raw(s), i = n;
+
+         try
+         {
+            while(first1 != last1) new(i++) value_type(*first1++);
+            while(first2 != last2) new(i++) value_type(*first2++);
+         }
+         catch(...)
+         {
+            while(i != n) (--i)->~value_type();
+            ::operator delete(n);
+            throw;
+         }
+
+         return n;
+      }
+
+      //
       // Del
       //
       static void Del(const_pointer first, const_pointer last)
@@ -315,7 +350,10 @@ namespace GDCC::Core
       }
 
    private:
+      Array(pointer p_, size_type s) : p{p_}, e{p + s} {}
+
       pointer p, e;
+
 
       //
       // UnPak

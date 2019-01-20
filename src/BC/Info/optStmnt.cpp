@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,9 +14,12 @@
 
 #include "Core/Option.hpp"
 
+#include "IR/Exp/Glyph.hpp"
 #include "IR/Statement.hpp"
 
 #include "Option/Bool.hpp"
+
+#include <algorithm>
 
 
 //----------------------------------------------------------------------------|
@@ -56,6 +59,7 @@ namespace GDCC::BC
          return;
 
       optStmnt_Cspe_Drop();
+      optStmnt_JumpNext();
    }
 
    //
@@ -93,6 +97,45 @@ namespace GDCC::BC
       // Transform sequence.
       stmnt->args[0] = std::move(next->args[0]);
       delete next;
+
+      return true;
+   }
+
+   //
+   // Info::optStmnt_JumpNext
+   //
+   // The sequence:
+   //    Jump(Lit("label"))
+   //    "label"
+   //    ....
+   // Can be transformed into:
+   //    "label"
+   //    ....
+   //
+   bool Info::optStmnt_JumpNext()
+   {
+      // Must be Jump(Lit(...))
+      if(stmnt->code != IR::Code::Jump || stmnt->args[0].a != IR::ArgBase::Lit)
+         return false;
+
+      // Argument must be a glyph expression.
+      auto jumpExp = dynamic_cast<IR::Exp_Glyph const *>(&*stmnt->args[0].aLit.value);
+      if(!jumpExp)
+         return false;
+
+      Core::String jumpStr = jumpExp->glyph;
+
+      auto next = stmnt->next;
+
+      // Check if next has the target label.
+      if(std::find(next->labs.begin(), next->labs.end(), jumpStr) == next->labs.end())
+         return false;
+
+      // Remove branch.
+      if(!stmnt->labs.empty())
+         next->labs += stmnt->labs;
+      stmnt = stmnt->prev;
+      delete stmnt->next;
 
       return true;
    }

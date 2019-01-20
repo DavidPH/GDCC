@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -302,6 +302,7 @@ namespace GDCC::BC
       void moveArgStk_src(IR::Arg &idx);
 
       bool optStmnt_Cspe_Drop();
+      bool optStmnt_JumpNext();
 
       void trStmntStk2();
       void trStmntStk3(bool ordered);
