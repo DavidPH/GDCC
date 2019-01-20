@@ -30,6 +30,8 @@
 #include "IR/Program.hpp"
 
 #include "Option/Bool.hpp"
+#include "Option/Exception.hpp"
+#include "Option/Function.hpp"
 #include "Option/CStrV.hpp"
 
 #include "Target/Info.hpp"
@@ -52,6 +54,37 @@ namespace GDCC::LD
          .setDescS("Generate an IR file instead of bytecode."),
 
       &OutputIR
+   };
+
+   //
+   // --ir-process
+   //
+   static std::vector<std::string> ProcessIRList;
+   static Option::Function ProcessIROpt
+   {
+      &Core::GetOptionList(), Option::Base::Info()
+         .setName("ir-process")
+         .setGroup("debugging")
+         .setDescS("Specifies IR processing steps.")
+         .setDescL("Specifies IR processing steps. Steps are specified as a "
+            "colon-separated list of step names. This option is only "
+            "useful for debugging compiler internals."),
+
+      [](Option::Base *, Option::Args const &args) -> std::size_t
+      {
+         if(args.optFalse)
+            return ProcessIRList.clear(), 0;
+
+         if(!args.argC)
+            Option::Exception::Error(args, "argument required");
+
+         char const *itr = args.argV[0];
+         for(char const *sep; (sep = std::strchr(itr, ':')); itr = sep + 1)
+            ProcessIRList.emplace_back(itr, sep);
+         ProcessIRList.emplace_back(itr);
+
+         return 1;
+      }
    };
 
    //
@@ -147,12 +180,23 @@ namespace GDCC::LD
    {
       if(!info) return;
 
-      info->chk(prog);
-      info->pre(prog);
-      info->opt(prog);
-      info->tr(prog);
-      info->opt(prog);
-      info->tr(prog);
+      if(ProcessIROpt.processed) for(auto const &proc : ProcessIRList)
+      {
+              if(proc == "chk") info->chk(prog);
+         else if(proc == "gen") info->gen(prog);
+         else if(proc == "opt") info->opt(prog);
+         else if(proc == "pre") info->pre(prog);
+         else if(proc == "tr")  info->tr(prog);
+      }
+      else
+      {
+         info->chk(prog);
+         info->pre(prog);
+         info->opt(prog);
+         info->tr(prog);
+         info->opt(prog);
+         info->tr(prog);
+      }
    }
 
    //
@@ -172,8 +216,11 @@ namespace GDCC::LD
    //
    // PutIR
    //
-   void PutIR(std::ostream &out, IR::Program &prog, BC::Info *)
+   void PutIR(std::ostream &out, IR::Program &prog, BC::Info *info)
    {
+      if(ProcessIROpt.processed)
+         ProcessIR(prog, info);
+
       IR::OArchive arc{out};
       arc.putHead();
       arc << prog;
