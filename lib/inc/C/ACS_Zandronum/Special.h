@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014 David Hill
+// Copyright(C) 2014-2019 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -19,13 +19,13 @@
 
 
 //----------------------------------------------------------------------------|
-// Global Functions                                                           |
+// Extern Functions                                                           |
 //
 
-ACS_SpecialDeclFull(145, 0, int, Player_SetTeam, int);
+ACS_SpecialDeclFull(145, 0, int, Player_SetTeam, (int));
 
-ACS_SpecialDeclFull(152, 0, int, Team_Score, int, int);
-ACS_SpecialDeclFull(153, 0, int, Team_GivePoints, int, int, int);
+ACS_SpecialDeclFull(152, 0, int, Team_Score, (int, int));
+ACS_SpecialDeclFull(153, 0, int, Team_GivePoints, (int, int, int));
 
 #endif//__GDCC_Header__C__ACS_Zandronum__Special_h__
 
