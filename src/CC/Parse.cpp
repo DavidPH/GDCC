@@ -15,6 +15,8 @@
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
 
+#include "IR/Linkage.hpp"
+
 #include "SR/Attribute.hpp"
 #include "SR/Type.hpp"
 
@@ -45,6 +47,14 @@ namespace GDCC::CC
       prag{ctx.prag},
       prog{ctx.prog}
    {
+   }
+
+   //
+   // Parser::defLinkage
+   //
+   IR::Linkage Parser::defLinkage() const
+   {
+      return IR::Linkage::ExtC;
    }
 
    //

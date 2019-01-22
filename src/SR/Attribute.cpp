@@ -85,6 +85,15 @@ namespace GDCC::SR
    }
 
    //
+   // Attribute::clear
+   //
+   void Attribute::clear()
+   {
+      this->~Attribute();
+      new(this) Attribute;
+   }
+
+   //
    // Attribute::setName
    //
    void Attribute::setName(Core::Token const &tok)

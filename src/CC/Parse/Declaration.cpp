@@ -267,7 +267,7 @@ namespace GDCC::CC
       auto &fnScope = scope.createScope(attr, fn);
 
       auto stmntPre  = ctx.fact.stCreate_FuncPre(ctx.in.peek().pos, fnScope);
-      auto stmntBody = ctx.getStatement(fnScope);
+      auto stmntBody = ctx.getStCompound(fnScope, {}, {});
       auto stmntPro  = ctx.fact.stCreate_FuncPro(ctx.in.reget().pos, fnScope);
 
       // Create statements for the function.
@@ -412,7 +412,7 @@ namespace GDCC::CC
    //
    template<typename T>
    static SR::Statement::CRef GetDeclBase(Parser &ctx, T &scope,
-      Core::Array<Core::String> &&labels)
+      SR::Attribute &&attrBase, Core::Array<Core::String> &&labels)
    {
       auto pos = ctx.in.peek().pos;
 
@@ -421,12 +421,6 @@ namespace GDCC::CC
       //       init-declarator-list(opt) ;
       //    static_assert-declaration
       //    address-space-declaration
-
-      // attribute-specifier-list
-      SR::Attribute attrBase;
-      attrBase.linka = IR::Linkage::ExtC;
-      if(ctx.isAttrSpec(scope))
-         ctx.parseAttrSpecList(scope, attrBase);
 
       // address-space-declaration
       if(ctx.isAddrDecl(scope))
@@ -500,6 +494,11 @@ namespace GDCC::CC
    //
    SR::Statement::CRef Parser::getDecl(Scope_Global &scope)
    {
+      SR::Attribute attr;
+      attr.linka = defLinkage();
+      if(isAttrSpec(scope))
+         parseAttrSpecList(scope, attr);
+
       if(in.peek(Core::TOK_Semico))
       {
          Core::Origin pos = in.get().pos;
@@ -507,23 +506,15 @@ namespace GDCC::CC
          return fact.stCreate_Empty({}, in.reget().pos);
       }
 
-      return GetDeclBase(*this, scope, {});
+      return GetDeclBase(*this, scope, std::move(attr), {});
    }
 
    //
    // Parser::getDecl
    //
-   SR::Statement::CRef Parser::getDecl(Scope_Local &scope)
+   SR::Statement::CRef Parser::getDecl(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels)
    {
-      return getDecl(scope, {});
-   }
-
-   //
-   // Parser::getDecl
-   //
-   SR::Statement::CRef Parser::getDecl(Scope_Local &scope, Labels &&labels)
-   {
-      return GetDeclBase(*this, scope, std::move(labels));
+      return GetDeclBase(*this, scope, std::move(attr), std::move(labels));
    }
 
    //
@@ -533,7 +524,6 @@ namespace GDCC::CC
    {
       return
          isAddrDecl(scope) ||
-         isAttrSpec(scope) ||
          isStaticAssert(scope) ||
          isDeclSpec(scope);
    }

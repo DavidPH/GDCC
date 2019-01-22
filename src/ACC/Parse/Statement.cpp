@@ -40,45 +40,47 @@
 namespace GDCC::ACC
 {
    //
-   // Parser::getStatement
+   // Parser::getSt
    //
-   SR::Statement::CRef Parser::getStatement(CC::Scope_Local &scope, Labels &&labels)
+   SR::Statement::CRef Parser::getSt(CC::Scope_Local &scope,
+      SR::Attribute &&attr, Labels &&labels)
    {
       // compound-statement
       if(in.peek().tok == Core::TOK_BraceO)
-         return getStatementCompound(scope, std::move(labels));
+         return getStCompound(scope, std::move(attr), std::move(labels));
 
       if(in.peek(Core::TOK_KeyWrd))
          switch(in.peek().str)
       {
          // selection-statement
-      case Core::STR_if:     return getStatement_if    (scope, std::move(labels));
-      case Core::STR_switch: return getStatement_switch(scope, std::move(labels));
+      case Core::STR_if:     return getSt_if    (scope, std::move(attr), std::move(labels));
+      case Core::STR_switch: return getSt_switch(scope, std::move(attr), std::move(labels));
 
          // iteration-statement
-      case Core::STR_while: return getStatement_while(scope, std::move(labels));
-      case Core::STR_until: return getStatement_while(scope, std::move(labels));
-      case Core::STR_do:    return getStatement_do   (scope, std::move(labels));
-      case Core::STR_for:   return getStatement_for  (scope, std::move(labels));
+      case Core::STR_while: return getSt_while(scope, std::move(attr), std::move(labels));
+      case Core::STR_until: return getSt_while(scope, std::move(attr), std::move(labels));
+      case Core::STR_do:    return getSt_do   (scope, std::move(attr), std::move(labels));
+      case Core::STR_for:   return getSt_for  (scope, std::move(attr), std::move(labels));
 
          // jump-statement
-      case Core::STR_continue:  return getStatement_continue (scope, std::move(labels));
-      case Core::STR_break:     return getStatement_break    (scope, std::move(labels));
-      case Core::STR_return:    return getStatement_return   (scope, std::move(labels));
-      case Core::STR_restart:   return getStatement_restart  (scope, std::move(labels));
-      case Core::STR_terminate: return getStatement_terminate(scope, std::move(labels));
+      case Core::STR_continue:  return getSt_continue (scope, std::move(attr), std::move(labels));
+      case Core::STR_break:     return getSt_break    (scope, std::move(attr), std::move(labels));
+      case Core::STR_return:    return getSt_return   (scope, std::move(attr), std::move(labels));
+      case Core::STR_restart:   return getSt_restart  (scope, std::move(attr), std::move(labels));
+      case Core::STR_terminate: return getSt_terminate(scope, std::move(attr), std::move(labels));
 
       default: break;
       }
 
       // expression-statement
-      return getStatementExp(scope, std::move(labels));
+      return getStExp(scope, std::move(attr), std::move(labels));
    }
 
    //
-   // Parser::getStatement_do
+   // Parser::getSt_do
    //
-   SR::Statement::CRef Parser::getStatement_do(CC::Scope_Local &scope, Labels &&labels)
+   SR::Statement::CRef Parser::getSt_do(CC::Scope_Local &scope,
+      SR::Attribute &&, Labels &&labels)
    {
       auto &loopScope = scope.createScopeLoop();
 
@@ -89,7 +91,7 @@ namespace GDCC::ACC
       auto pos = in.get().pos;
 
       // statement
-      auto body = getStatement(loopScope);
+      auto body = getSt(loopScope);
 
       // <while>
       // <until>
@@ -99,7 +101,7 @@ namespace GDCC::ACC
          Core::ErrorExpect("'while' or 'until'", in.peek());
 
       // ( expression )
-      auto cond = getStatementCond(loopScope);
+      auto cond = getStCond(loopScope);
       if(invert)
          cond = fact.expCreate_Not(cond, cond->pos);
 
@@ -110,9 +112,10 @@ namespace GDCC::ACC
    }
 
    //
-   // Parser::getStatement_restart
+   // Parser::getSt_restart
    //
-   SR::Statement::CRef Parser::getStatement_restart(CC::Scope_Local &scope, Labels &&labels)
+   SR::Statement::CRef Parser::getSt_restart(CC::Scope_Local &scope,
+      SR::Attribute &&, Labels &&labels)
    {
       // <restart> ;
 
@@ -126,9 +129,10 @@ namespace GDCC::ACC
    }
 
    //
-   // Parser::getStatement_while
+   // Parser::getSt_while
    //
-   SR::Statement::CRef Parser::getStatement_while(CC::Scope_Local &scope, Labels &&labels)
+   SR::Statement::CRef Parser::getSt_while(CC::Scope_Local &scope,
+      SR::Attribute &&, Labels &&labels)
    {
       auto &loopScope = scope.createScopeLoop();
 
@@ -141,20 +145,21 @@ namespace GDCC::ACC
       auto pos    = in.get().pos;
 
       // ( expression )
-      auto cond = getStatementCond(loopScope);
+      auto cond = getStCond(loopScope);
       if(invert)
          cond = fact.expCreate_Not(cond, cond->pos);
 
       // statement
-      auto body = getStatement(loopScope);
+      auto body = getSt(loopScope);
 
       return fact.stCreate_While(std::move(labels), pos, loopScope, cond, body);
    }
 
    //
-   // Parser::getStatement_terminate
+   // Parser::getSt_terminate
    //
-   SR::Statement::CRef Parser::getStatement_terminate(CC::Scope_Local &scope, Labels &&labels)
+   SR::Statement::CRef Parser::getSt_terminate(CC::Scope_Local &scope,
+      SR::Attribute &&, Labels &&labels)
    {
       // <terminate> ;
 
@@ -165,45 +170,6 @@ namespace GDCC::ACC
       expect(Core::TOK_Semico);
 
       return fact.stCreate_Return(std::move(labels), pos, scope.fn);
-   }
-
-   //
-   // Parser::getStatementCompound
-   //
-   SR::Statement::CRef Parser::getStatementCompound(CC::Scope_Local &scope, Labels &&labels)
-   {
-      // compound-statement:
-      //    { block-item-list(opt) }
-
-      // {
-      auto pos = in.get().pos;
-
-      std::vector<SR::Statement::CRef> stmnts;
-      auto &blockScope = scope.createScopeBlock();
-
-      // block-item-list:
-      //    block-item
-      //    block-item-list block-item
-      while(!in.drop(Core::TOK_BraceC))
-      {
-         // block-item:
-         //    declaration
-         //    statement
-
-         auto labs = getLabels(blockScope);
-
-         // declaration
-         if(isDecl(blockScope))
-            stmnts.emplace_back(getDecl(blockScope, std::move(labs)));
-
-         // statement
-         else
-            stmnts.emplace_back(getStatement(blockScope, std::move(labs)));
-      }
-
-      // }
-
-      return fact.stCreate_Multi(std::move(labels), pos, {stmnts.begin(), stmnts.end()});
    }
 }
 

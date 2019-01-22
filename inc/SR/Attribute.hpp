@@ -41,6 +41,8 @@ namespace GDCC::SR
       Attribute(Attribute &&attr);
       ~Attribute();
 
+      void clear();
+
       void setName(Core::Token const &tok);
 
       Core::CounterPtr<IR::Exp const> addrI;

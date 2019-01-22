@@ -34,7 +34,7 @@ namespace GDCC::ACC
    public:
       using CC::Parser::getDecl;
       using CC::Parser::getExp_Post;
-      using CC::Parser::getStatement;
+      using CC::Parser::getSt;
 
       Parser(Core::TokenStream &in, Factory &fact, PragmaData &prag,
          IR::Program &prog, bool importing = false);
@@ -43,7 +43,7 @@ namespace GDCC::ACC
          {return static_cast<std::unique_ptr<Parser>>(cloneRaw(in_));}
 
       virtual StatementCRef getDecl(Scope_Global &scope);
-      virtual StatementCRef getDecl(CC::Scope_Local &scope, Labels &&labels);
+      virtual StatementCRef getDecl(CC::Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
 
       virtual StatementCRef getDecl_CreateTrans(Scope_Global &scope);
 
@@ -77,12 +77,11 @@ namespace GDCC::ACC
 
       virtual CC::InitRaw getInitRaw(CC::Scope &scope);
 
-      virtual StatementCRef getStatement(CC::Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_do(CC::Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_restart(CC::Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_while(CC::Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_terminate(CC::Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatementCompound(CC::Scope_Local &scope, Labels &&labels);
+      virtual StatementCRef getSt(CC::Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_do(CC::Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_restart(CC::Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_while(CC::Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_terminate(CC::Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
 
       virtual bool isAttrSpec(CC::Scope &scope);
 
@@ -116,6 +115,8 @@ namespace GDCC::ACC
 
       virtual Parser *cloneRaw(Core::TokenStream &in_) const
          {return new Parser(*this, in_);}
+
+      virtual IR::Linkage defLinkage() const;
    };
 }
 

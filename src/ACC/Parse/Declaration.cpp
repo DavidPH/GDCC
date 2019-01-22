@@ -57,7 +57,8 @@ namespace GDCC::ACC
    //
    // Parser::getDecl
    //
-   SR::Statement::CRef Parser::getDecl(CC::Scope_Local &scope, Labels &&labels)
+   SR::Statement::CRef Parser::getDecl(CC::Scope_Local &scope,
+      SR::Attribute &&, Labels &&labels)
    {
       return getDecl_Object(scope, std::move(labels));
    }

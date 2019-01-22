@@ -99,7 +99,7 @@ namespace GDCC::ACC
       auto &fnScope = scope.createScope(attr, fn);
 
       auto stmntPre  = ctx.fact.stCreate_FuncPre(ctx.in.peek().pos, fnScope);
-      auto stmntBody = ctx.getStatement(fnScope);
+      auto stmntBody = ctx.getStCompound(fnScope, {}, {});
       auto stmntPro  = ctx.fact.stCreate_FuncPro(ctx.in.reget().pos, fnScope);
 
       // Create statements for the function.

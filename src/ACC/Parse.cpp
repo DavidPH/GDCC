@@ -17,6 +17,8 @@
 
 #include "Core/Parse.hpp"
 
+#include "IR/Linkage.hpp"
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -43,6 +45,14 @@ namespace GDCC::ACC
       prag     (ctx.prag),
       importing{ctx.importing}
    {
+   }
+
+   //
+   // Parser::defLinkage
+   //
+   IR::Linkage Parser::defLinkage() const
+   {
+      return IR::Linkage::ExtACS;
    }
 
    //

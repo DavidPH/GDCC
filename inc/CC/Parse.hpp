@@ -53,8 +53,7 @@ namespace GDCC::CC
       Core::Token const &expectString();
 
       virtual StatementCRef getDecl(Scope_Global &scope);
-      StatementCRef getDecl(Scope_Local &scope);
-      virtual StatementCRef getDecl(Scope_Local &scope, Labels &&labels);
+      virtual StatementCRef getDecl(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
 
       virtual ExpCRef getExp_CLit(Scope &scope);
       virtual ExpCRef getExp_CLit(Scope &scope, SR::Type const *type);
@@ -89,26 +88,26 @@ namespace GDCC::CC
 
       virtual InitRaw getInitRaw(Scope &scope);
 
-      virtual Labels getLabels(Scope_Local &scope);
+      virtual Labels getLabels(Scope_Local &scope, SR::Attribute &attr);
 
-      StatementCRef getStatement(Scope_Local &scope);
-      virtual StatementCRef getStatement(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_asm(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_break(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_continue(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_do(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_for(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_goto(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_if(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_return(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_switch(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_while(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatement_with(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatementCompound(Scope_Local &scope, Labels &&labels);
-      virtual StatementCRef getStatementExp(Scope_Local &scope, Labels &&labels);
+      virtual StatementCRef getSt(Scope_Local &scope);
+      virtual StatementCRef getSt(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_asm(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_break(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_continue(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_do(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_for(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_goto(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_if(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_return(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_switch(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_while(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_with(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getStCompound(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getStExp(Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
 
-      virtual ExpCRef getStatementCond(Scope &scope);
-      virtual ExpCRef getStatementCondExp(Scope &scope);
+      virtual ExpCRef getStCond(Scope &scope);
+      virtual ExpCRef getStCondExp(Scope &scope);
 
       virtual TypeCRef getType(Scope &scope);
 
@@ -175,6 +174,8 @@ namespace GDCC::CC
 
       virtual Parser *cloneRaw(Core::TokenStream &in_) const
          {return new Parser(*this, in_);}
+
+      virtual IR::Linkage defLinkage() const;
    };
 
    //
