@@ -264,6 +264,10 @@ namespace GDCC::CC
       if(!fn->retrn->isTypeComplete() && !fn->retrn->isTypeVoid())
          Core::Error(attr.namePos, "incomplete return");
 
+      for(auto const &param : attr.param)
+         if(!param.type || !param.type->isTypeComplete())
+            Core::Error(param.namePos, "incomplete argument");
+
       auto &fnScope = scope.createScope(attr, fn);
 
       auto stmntPre  = ctx.fact.stCreate_FuncPre(ctx.in.peek().pos, fnScope);

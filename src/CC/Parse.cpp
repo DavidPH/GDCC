@@ -204,6 +204,8 @@ namespace GDCC::CC
          // abstract-declarator(opt)
          if(isDeclarator(scope))
             parseDeclarator(scope, param);
+         else
+            param.namePos = in.reget().pos;
 
          // Change function to pointer-to-function.
          if(param.type->isCTypeFunction())
