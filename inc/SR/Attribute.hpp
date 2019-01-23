@@ -62,6 +62,7 @@ namespace GDCC::SR
 
       bool declAuto : 1;
 
+      bool funcDelay    : 1;
       bool funcInline   : 1;
       bool funcNoParam  : 1;
       bool funcNoReturn : 1;

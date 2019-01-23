@@ -25,13 +25,28 @@ namespace GDCC::CC
    static Core::WarnOpt WarnDeclCompatOpt
    {
       &Core::GetWarnOptList(), Option::Base::Info()
-         .setName("warn-incompatible-declarationn")
+         .setName("warn-incompatible-declaration")
          .setGroup("warnings")
          .setDescS("Warns on incompatible declarations.")
          .setDescL("Warns on incompatible declarations.\n\n"
             "Enabled by --warn-common."),
 
       &WarnDeclCompat
+   };
+
+   //
+   // --warn-delay-call
+   //
+   static Core::WarnOpt WarnDelayCallOpt
+   {
+      &Core::GetWarnOptList(), Option::Base::Info()
+         .setName("warn-delay-call")
+         .setGroup("warnings")
+         .setDescS("Warns on calls to delay functions.")
+         .setDescL("Warns on calls to delay functions.\n\n"
+            "Enabled by --warn-common."),
+
+      &WarnDelayCall
    };
 
    //
@@ -88,6 +103,7 @@ namespace GDCC::CC
 namespace GDCC::CC
 {
    Core::Warning WarnDeclCompat{&Core::WarnCommon, "--warn-incompatible-declaration"};
+   Core::Warning WarnDelayCall{&Core::WarnCommon, "--warn-delay-call"};
    Core::Warning WarnFileSemico{&Core::WarnStrict, "--warn-file-scope-semicolon"};
    Core::Warning WarnForwardRef{&Core::WarnCommon, "--warn-forward-reference"};
    Core::Warning WarnUnknownAttr{&Core::WarnCommon, "--warn-unknown-attribute"};

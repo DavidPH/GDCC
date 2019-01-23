@@ -16,7 +16,8 @@
 #include "CC/Exp/Mem.hpp"
 #include "CC/Factory.hpp"
 #include "CC/Init.hpp"
-#include "CC/Scope/Local.hpp"
+#include "CC/Scope/Function.hpp"
+#include "CC/Warning.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -24,6 +25,7 @@
 #include "SR/Type.hpp"
 
 #include "Target/CallType.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -146,14 +148,38 @@ namespace GDCC::CC
       if(!type->isTypePointer() || !(type = type->getBaseType())->isCTypeFunction())
          Core::Error(pos, "expected pointer-to-function");
 
+      SR::Function::Ptr fn;
+      if(exp->isFunction())
+         fn = exp->getFunction();
+
+      auto scopeLocal = dynamic_cast<Scope_Local *>(&scope);
+
+      // Check for call to delay function.
+      if(fn && fn->delay && scopeLocal)
+      {
+         switch(Target::GetCallTypeIR(scopeLocal->fn.fn->ctype))
+         {
+         case IR::CallType::ScriptI:
+         case IR::CallType::ScriptS:
+            if(!scopeLocal->fn.fn->retrn->isTypeVoid())
+               WarnDelayCall(pos, "delay in non-void async script");
+            break;
+
+         case IR::CallType::StdCall:
+         case IR::CallType::StkCall:
+            if(Target::IsDelayFunction())
+               WarnDelayCall(pos, "delay in function");
+            break;
+
+         default:
+            break;
+         }
+      }
+
       // Check argument count.
       auto param = type->getParameters();
       if(args.size() < param->size())
       {
-         SR::Function::Ptr fn;
-         if(exp->isFunction())
-            fn = exp->getFunction();
-
          // Possible optional args?
          if(!fn || param->size() - args.size() > fn->paramOpt)
             Core::Error(pos, "insufficient arguments");
@@ -199,7 +225,7 @@ namespace GDCC::CC
       if(IsCallLit(exp, args))
          return Exp_CallLit::Create(exp, pos, std::move(args));
 
-      if(auto scopeLocal = dynamic_cast<Scope_Local *>(&scope))
+      if(scopeLocal)
          return Exp_CallStk::Create(exp, pos, std::move(args), *scopeLocal);
       else
          Core::Error(pos, "invalid scope for call");

@@ -177,7 +177,7 @@ ACS_AsmFuncDeclFull(357,    , 0, int,    StrArsCpyToWorldCharRange, (int, int, i
 ACS_AsmFuncDeclFull(358,    , 0, int,    StrCpyToGlobalCharRange, (int, int, int, int, __str, int));
 ACS_AsmFuncDeclFull(358,    , 0, int,    StrArsCpyToGlobalCharRange, (int, int, int, int, char __str_ars const *));
 
-ACS_AsmFuncDeclFull(361,    , 0, void,   NamedScriptWait, (__str));
+ACS_AsmFuncDeclFull(361,    , 0, void,   NamedScriptWait, (__str), delay);
 ACS_AsmFuncDeclFull(362,    , 0, void,   CreateTranslationDesat, (int, int, _Accum, _Accum, _Accum, _Accum, _Accum, _Accum));
 
 ACS_AsmFuncDeclFull(378,    , 0, void,   PrintLocalCharArray, (int, int));

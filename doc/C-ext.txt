@@ -249,6 +249,21 @@ Semantics:
   LangACS functions map to this.
 
 ===========================================================
+Delay
+===========================================================
+
+Syntax:
+  attribute-delay:
+    attribute-delay-name
+
+  attribute-delay-name:
+    <delay>
+    <__delay>
+
+Semantics:
+  Marks a function as delaying or potentially delaying execution when called.
+
+===========================================================
 Extern
 ===========================================================
 

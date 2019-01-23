@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -25,6 +25,7 @@
 namespace GDCC::CC
 {
    extern Core::Warning WarnDeclCompat;
+   extern Core::Warning WarnDelayCall;
    extern Core::Warning WarnFileSemico;
    extern Core::Warning WarnForwardRef;
    extern Core::Warning WarnUnknownAttr;

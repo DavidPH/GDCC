@@ -82,6 +82,7 @@ namespace GDCC::SR
 
       declAuto{false},
       defin   {false},
+      delay   {false},
       used    {false},
       warnDone{false},
 

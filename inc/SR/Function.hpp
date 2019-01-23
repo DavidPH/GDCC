@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -89,6 +89,7 @@ namespace GDCC::SR
 
       bool           declAuto : 1;
       bool           defin    : 1;
+      bool           delay    : 1;
       bool           used     : 1;
       bool           warnDone : 1;
 

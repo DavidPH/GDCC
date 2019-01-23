@@ -183,6 +183,21 @@ namespace GDCC::CC
    }
 
    //
+   // ParseAttr_delay
+   //
+   // attribute-delay:
+   //    attribute-delay-name ( string-literal )
+   //
+   // attribute-delay-name:
+   //    <delay>
+   //    <__delay>
+   //
+   static void ParseAttr_delay(Parser &, Scope &, SR::Attribute &attr)
+   {
+      attr.funcDelay = true;
+   }
+
+   //
    // ParseAttr_deprecated
    //
    // attribute-deprecated:
@@ -362,6 +377,9 @@ namespace GDCC::CC
 
       case Core::STR_call: case Core::STR___call:
          ParseAttr_call(*this, scope, attr); break;
+
+      case Core::STR_delay: case Core::STR___delay:
+         ParseAttr_delay(*this, scope, attr); break;
 
       case Core::STR_deprecated: case Core::STR___deprecated:
          ParseAttr_deprecated(*this, scope, attr); break;

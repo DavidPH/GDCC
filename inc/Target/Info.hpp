@@ -29,6 +29,7 @@ namespace GDCC::Target
    {
       None,
       Doominati,
+      Eternity,
       ZDoom,
       Zandronum,
    };
@@ -78,6 +79,8 @@ namespace GDCC::Target
 
    // Do extra arguments to this type of call require variadic handling?
    bool IsCallVaria(CallType call);
+
+   bool IsDelayFunction();
 
    bool IsFamily_ZDACS();
 

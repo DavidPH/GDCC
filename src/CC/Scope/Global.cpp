@@ -186,6 +186,7 @@ namespace GDCC::CC
          fn->warnUse  = attr.warnUse;
 
          fn->declAuto = attr.declAuto;
+         fn->delay    = attr.funcDelay;
 
          itr = globalFunc.emplace(glyph, fn).first;
       }
@@ -196,6 +197,8 @@ namespace GDCC::CC
          SR::Function::Ref &fn = itr->second;
 
          fn->stype = {attr.stype.begin(), attr.stype.end()};
+
+         fn->delay = attr.funcDelay;
 
          // If previously auto-declared, replace type information.
          if(fn->declAuto)

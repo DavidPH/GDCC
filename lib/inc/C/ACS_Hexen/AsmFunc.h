@@ -60,17 +60,17 @@
 // Extern Functions                                                           |
 //
 
-ACS_AsmFuncDeclFull( 55, 56, 0, void,   Delay, (int));
+ACS_AsmFuncDeclFull( 55, 56, 0, void,   Delay, (int), delay);
 ACS_AsmFuncDeclFull( 57, 58, 0, int,    Random, (int, int));
 ACS_AsmFuncDeclFull( 57, 58, 0, _Accum, RandomFixed, (_Accum, _Accum));
 ACS_AsmFuncDeclFull( 59, 60, 0, int,    ThingCount, (int, int));
-ACS_AsmFuncDeclFull( 61, 62, 0, void,   TagWait, (int));
-ACS_AsmFuncDeclFull( 63, 64, 0, void,   PolyWait, (int));
+ACS_AsmFuncDeclFull( 61, 62, 0, void,   TagWait, (int), delay);
+ACS_AsmFuncDeclFull( 63, 64, 0, void,   PolyWait, (int), delay);
 ACS_AsmFuncDeclFull( 65, 66, 0, void,   ChangeFloor, (int, __str));
 ACS_AsmFuncDeclFull( 67, 68, 0, void,   ChangeCeiling, (int, __str));
 
 ACS_AsmFuncDeclFull( 80,   , 0, int,    LineSide, (void));
-ACS_AsmFuncDeclFull( 81, 82, 0, void,   ScriptWait, (int));
+ACS_AsmFuncDeclFull( 81, 82, 0, void,   ScriptWait, (int), delay);
 ACS_AsmFuncDeclFull( 83,   , 0, void,   ClearLineSpecial, (void));
 
 ACS_AsmFuncDeclFull( 85,   , 0, void,   BeginPrint, (void));

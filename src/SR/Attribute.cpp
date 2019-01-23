@@ -48,6 +48,7 @@ namespace GDCC::SR
 
       declAuto{false},
 
+      funcDelay   {false},
       funcInline  {false},
       funcNoParam {false},
       funcNoReturn{false},

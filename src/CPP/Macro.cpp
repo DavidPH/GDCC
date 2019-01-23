@@ -511,6 +511,7 @@ namespace GDCC::CPP
       {
          TargetCase(Engine, None);
          TargetCase(Engine, Doominati);
+         TargetCase(Engine, Eternity);
          TargetCase(Engine, ZDoom);
          TargetCase(Engine, Zandronum);
       }
