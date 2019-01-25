@@ -280,6 +280,8 @@ namespace GDCC::BC::ZDACS
 
       bool isFastArg(IR::Arg const &arg);
 
+      bool isFuncJfar_Set(IR::Function const *func);
+
       bool isInitiGblArr();
       bool isInitiHubArr();
 
@@ -657,6 +659,8 @@ namespace GDCC::BC::ZDACS
 
       Core::FastU codeInit;
       Core::FastU codeInitEnd;
+
+      std::unordered_map<IR::Function const *, bool> funcJfar_Set;
 
       std::unordered_map<IR::Space const *, InitData> init;
 

@@ -144,12 +144,24 @@ namespace GDCC::BC::ZDACS
    {
       auto n = stmnt->args[1].getSize();
 
-      numChunkCODE += 28;
+      if(isFuncJfar_Set(func))
+      {
+         numChunkCODE += 28;
 
-      if(n)
-         numChunkCODE += n * 4 + lenDropTmp(0) + lenPushTmp(0);
+         if(n)
+            numChunkCODE += n * 4 + lenDropTmp(0) + lenPushTmp(0);
 
-      genStmnt_Jfar();
+         genStmnt_Jfar();
+      }
+      else
+      {
+         numChunkCODE += 16;
+
+         if(n)
+            numChunkCODE += 8 + n * 4 + 8;
+         else
+            numChunkCODE += 8;
+      }
    }
 
    //
@@ -169,9 +181,14 @@ namespace GDCC::BC::ZDACS
    {
       numChunkCODE += lenPushArg(stmnt->args[2], 0) + lenDropArg(stmnt->args[1], 2);
       numChunkCODE += 8 + lenPushIdx(stmnt->args[1], 0) + 8;
-      numChunkCODE += lenPushIdx(stmnt->args[1], 0);
 
-      genStmnt_Jfar();
+      if(isFuncJfar_Set(func))
+      {
+         numChunkCODE += lenPushIdx(stmnt->args[1], 0);
+         genStmnt_Jfar();
+      }
+      else
+         numChunkCODE += 8;
    }
 
    //
@@ -310,26 +327,46 @@ namespace GDCC::BC::ZDACS
    {
       auto n = stmnt->args[1].getSize();
 
-      // Check for ongoing far jump.
-
-      putCode(Code::Push_Lit,    FarJumpIndex);
-      putCode(Code::Push_GblArr, StaArray);
-      putCode(Code::Jcnd_Lit,    0, putPos + 12
-         + !!n * 16 + n * 4
-         + 28 + 8 + (36 + 36 + 24 + 4));
-
-      if(n)
+      if(isFuncJfar_Set(func))
       {
-         putStmntDropTmp(0);
+         // Check for ongoing far jump.
+         putCode(Code::Push_Lit,    FarJumpIndex);
+         putCode(Code::Push_GblArr, StaArray);
+         putCode(Code::Jcnd_Lit,    0, putPos + 12
+            + !!n * 16 + n * 4
+            + 28 + 8 + (36 + 36 + 24 + 4));
 
-         for(auto i = n; i--;)
-            putCode(Code::Drop_Nul);
+         if(n)
+         {
+            putStmntDropTmp(0);
 
-         putStmntPushTmp(0);
+            for(auto i = n; i--;)
+               putCode(Code::Drop_Nul);
+
+            putStmntPushTmp(0);
+         }
+
+         // Propagate far jump.
+         putStmnt_Jfar();
       }
+      else
+      {
+         // Check for ongoing far jump.
+         putCode(Code::Push_Lit,    FarJumpIndex);
+         putCode(Code::Push_GblArr, StaArray);
 
-      // Propagate far jump.
-      putStmnt_Jfar();
+         if(n)
+         {
+            putCode(Code::Jcnd_Nil, putPos + 8 + n * 4 + 8);
+
+            for(auto i = n; i--;)
+               putCode(Code::Drop_Nul);
+
+            putCode(Code::Jump_Lit, getWord(stmnt->args[0].aLit.value));
+         }
+         else
+            putCode(Code::Jcnd_Tru, getWord(stmnt->args[0].aLit.value));
+      }
    }
 
    //
@@ -360,10 +397,15 @@ namespace GDCC::BC::ZDACS
       putStmntPushIdx(stmnt->args[1], 0);
       putCode(Code::Drop_GblArr, StaArray);
 
-      putStmntPushIdx(stmnt->args[1], 0);
+      if(isFuncJfar_Set(func))
+      {
+         putStmntPushIdx(stmnt->args[1], 0);
 
-      // Propagate far jump.
-      putStmnt_Jfar();
+         // Propagate far jump.
+         putStmnt_Jfar();
+      }
+      else
+         putCode(Code::Jump_Lit, getWord(stmnt->args[0].aLit.value));
    }
 
    //

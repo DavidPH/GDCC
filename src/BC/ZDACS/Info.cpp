@@ -651,6 +651,24 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::isFuncJfar_Set
+   //
+   bool Info::isFuncJfar_Set(IR::Function const *f)
+   {
+      return true;
+
+      if(auto itr = funcJfar_Set.find(f); itr != funcJfar_Set.end())
+         return itr->second;
+
+      bool found = false;
+      for(auto const &itr : f->block)
+         if(itr.code == IR::Code::Jfar_Set)
+            {found = true; break;}
+
+      return funcJfar_Set.emplace(f, found).second;
+   }
+
+   //
    // Info::isInitiGblArr
    //
    bool Info::isInitiGblArr()
