@@ -136,6 +136,7 @@ namespace GDCC::LD
          return nullptr;
          #endif
 
+      case Target::Engine::Eternity:
       case Target::Engine::ZDoom:
       case Target::Engine::Zandronum:
          #if GDCC_BC_ZDACS
