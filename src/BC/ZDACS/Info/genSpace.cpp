@@ -112,7 +112,7 @@ namespace GDCC::BC::ZDACS
             ini.max = idx;
       }
 
-      if(space->space.base == IR::AddrBase::ModArr)
+      if(space->space.base == IR::AddrBase::ModArr && space->defin)
       {
          for(auto const &i : ini.vals)
          {

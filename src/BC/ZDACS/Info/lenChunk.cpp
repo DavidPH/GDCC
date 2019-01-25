@@ -101,7 +101,8 @@ namespace GDCC::BC::ZDACS
       Core::FastU len = 0;
 
       for(auto const &itr : init)
-         if(itr.first->space.base == IR::AddrBase::ModArr && !itr.second.onlyNil)
+         if(itr.first->space.base == IR::AddrBase::ModArr &&
+            itr.first->defin && !itr.second.onlyNil)
             len += itr.second.max * 4 + 12;
 
       return len;
@@ -137,7 +138,7 @@ namespace GDCC::BC::ZDACS
       Core::FastU len = 0;
 
       for(auto const &itr : init)
-         if(itr.first->space.base == IR::AddrBase::ModArr)
+         if(itr.first->space.base == IR::AddrBase::ModArr && itr.first->defin)
       {
          if(itr.second.needTag && !itr.second.onlyStr)
             len += itr.second.max + 13;
