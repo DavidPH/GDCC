@@ -398,19 +398,6 @@ namespace GDCC::Target
       }
 
    }
-
-   //
-   // MustEmitObject
-   //
-   bool MustEmitObject(AddrBase addr)
-   {
-      switch(addr)
-      {
-      case AddrBase::ModArr: return true;
-
-      default: return false;
-      }
-   }
 }
 
 // EOF

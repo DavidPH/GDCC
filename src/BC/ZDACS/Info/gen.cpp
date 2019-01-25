@@ -162,10 +162,18 @@ namespace GDCC::BC::ZDACS
       case IR::AddrBase::GblReg:
       case IR::AddrBase::HubArr:
       case IR::AddrBase::HubReg:
-      case IR::AddrBase::ModArr:
       case IR::AddrBase::Sta:
          if(obj->alloc)
             obj->allocValue(getAllocObj(obj->space));
+         break;
+
+      case IR::AddrBase::ModArr:
+         if(obj->alloc)
+            obj->allocValue(getAllocObj(obj->space));
+
+         if(obj->defin)
+            spaceUsed[prog->findSpace(obj->space)] = true;
+
          break;
 
       case IR::AddrBase::ModReg:

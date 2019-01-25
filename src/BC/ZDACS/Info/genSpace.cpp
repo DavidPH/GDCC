@@ -70,7 +70,7 @@ namespace GDCC::BC::ZDACS
             if(numChunkMEXP <= space->value)
                numChunkMEXP = space->value + 1;
          }
-         else
+         else if(spaceUsed[space])
             ++numChunkAIMP;
 
          // Back address glyph.

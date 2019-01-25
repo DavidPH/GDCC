@@ -655,10 +655,10 @@ namespace GDCC::BC::ZDACS
       std::unordered_map<IR::AddrBase, Core::NumberAllocMerge<Core::FastU>> allocSpace;
       std::unique_ptr<Core::NumberAllocMerge<Core::FastU>> allocStrEnt;
 
-      std::unordered_map<IR::Space const *, InitData> init;
-
       Core::FastU codeInit;
       Core::FastU codeInitEnd;
+
+      std::unordered_map<IR::Space const *, InitData> init;
 
       Core::FastU numChunkAIMP;
       Core::FastU numChunkAINI;
@@ -679,6 +679,8 @@ namespace GDCC::BC::ZDACS
       Core::FastU numChunkSPTR;
       Core::FastU numChunkSTRL;
       Core::FastU numChunkSVCT;
+
+      std::unordered_map<IR::Space const *, bool> spaceUsed;
 
 
       static Core::FastU CodeBase();

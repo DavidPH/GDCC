@@ -85,8 +85,8 @@ namespace GDCC::BC::ZDACS
 
       Core::FastU len = numChunkAIMP * 8 + 12;
 
-      for(auto const &itr : prog->rangeSpaceModArs())
-         if(!itr.defin) len += lenString(itr.glyph);
+      for(auto const &sp : prog->rangeSpaceModArs())
+         if(!sp.defin && spaceUsed[&sp]) len += lenString(sp.glyph);
 
       return len;
    }

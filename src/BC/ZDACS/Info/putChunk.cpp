@@ -115,7 +115,7 @@ namespace GDCC::BC::ZDACS
 
       auto itr = imps.begin();
       for(auto const &sp : prog->rangeSpaceModArs())
-         if(!sp.defin) *itr++ = &sp;
+         if(!sp.defin && spaceUsed[&sp]) *itr++ = &sp;
 
       Core::FastU size = numChunkAIMP * 8 + 4;
       for(auto const &imp : imps)

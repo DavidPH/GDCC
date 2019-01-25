@@ -65,7 +65,7 @@ namespace GDCC::SR
    {
       IR::AddrSpace objSpace = type->getQualAddr();
 
-      if(!defin && !used && !Target::MustEmitObject(objSpace.base))
+      if(!defin && !used)
          return;
 
       IR::Object obj{glyph};

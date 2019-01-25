@@ -89,9 +89,6 @@ namespace GDCC::Target
    bool IsZeroNull_Funct(CallType call);
    bool IsZeroNull_Point(AddrBase addr);
    bool IsZeroNull_StrEn();
-
-   // Must unused, undefined objects in this space be emitted?
-   bool MustEmitObject(AddrBase addr);
 }
 
 #endif//GDCC__Target__Info_H__
