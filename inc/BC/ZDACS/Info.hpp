@@ -196,6 +196,7 @@ namespace GDCC::BC::ZDACS
       void genStmnt_Cscr_IS();
       void genStmnt_Cscr_SA();
       void genStmnt_Cscr_SS();
+      void genStmnt_Cscr_SS_post();
       void genStmnt_Cspe();
       void genStmnt_DiXI();
       void genStmnt_DiXU() {genStmntStkBin();}
@@ -471,6 +472,7 @@ namespace GDCC::BC::ZDACS
       void putStmnt_Cscr_IS();
       void putStmnt_Cscr_SA();
       void putStmnt_Cscr_SS();
+      void putStmnt_Cscr_SS_post();
       void putStmnt_Cspe();
       void putStmnt_DiXI();
       void putStmnt_DiXU() {putStmntStkBin();}

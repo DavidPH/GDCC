@@ -220,17 +220,13 @@ namespace GDCC::BC::ZDACS
    {
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptI);
-      auto ret  = stmnt->args[0].getSize();
 
       if(argc > argm)
          numChunkCODE += (argc - argm) * 20;
 
-      numChunkCODE += 8 + 8 + 24
-         + lenDropArg(stmnt->args[2], 0)
-         + lenPushArg(stmnt->args[2], 0);
+      numChunkCODE += 16 + lenDropArg(stmnt->args[2], 0);
 
-      if(ret)
-         numChunkCODE += lenPushArg(stmnt->args[2], 1, 1 + ret);
+      genStmnt_Cscr_SS_post();
    }
 
    //
@@ -260,14 +256,26 @@ namespace GDCC::BC::ZDACS
    {
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptS);
-      auto ret  = stmnt->args[0].getSize();
 
       if(argc > argm)
          numChunkCODE += (argc - argm) * 20;
 
-      numChunkCODE += 48
-         + lenDropArg(stmnt->args[2], 0)
-         + lenPushArg(stmnt->args[2], 0);
+      numChunkCODE += 24 + lenDropArg(stmnt->args[2], 0);
+
+      genStmnt_Cscr_SS_post();
+   }
+
+   //
+   // Info::genStmnt_Cscr_SS_post
+   //
+   void Info::genStmnt_Cscr_SS_post()
+   {
+      auto ret = stmnt->args[0].getSize();
+
+      numChunkCODE += 80
+         + lenDropTmp(0)
+         + lenPushArg(stmnt->args[2], 0)
+         + lenPushTmp(0);
 
       if(ret)
          numChunkCODE += lenPushArg(stmnt->args[2], 1, 1 + ret);
@@ -466,7 +474,6 @@ namespace GDCC::BC::ZDACS
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptI);
       auto argn = argc < argm ? argc : argm;
-      auto ret  = stmnt->args[0].getSize();
 
       if(argc > argm)
          putStmntDropRetn(argc - argm);
@@ -486,15 +493,7 @@ namespace GDCC::BC::ZDACS
 
       putWord(84); // ACS_ExecuteWithResult
 
-      // Check returned flag.
-      putCode(Code::Jump_Lit, putPos + 16);
-      putCode(Code::Wait_Lit, 1);
-      putStmntPushArg(stmnt->args[2], 0);
-      putCode(Code::Jcnd_Nil, putPos - 8 - lenPushArg(stmnt->args[2], 0));
-
-      // Push any return words.
-      if(ret)
-         putStmntPushArg(stmnt->args[2], 1, 1 + ret);
+      putStmnt_Cscr_SS_post();
    }
 
    //
@@ -526,7 +525,6 @@ namespace GDCC::BC::ZDACS
    {
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptS);
-      auto ret  = stmnt->args[0].getSize();
 
       if(argc > argm)
          putStmntDropRetn(argc - argm);
@@ -540,11 +538,34 @@ namespace GDCC::BC::ZDACS
       putWord(44); // ACS_NamedExecuteWithResult
       putCode(Code::Drop_Nul);
 
+      putStmnt_Cscr_SS_post();
+   }
+
+   //
+   // Info::putStmnt_Cscr_SS_post
+   //
+   void Info::putStmnt_Cscr_SS_post()
+   {
+      auto ret  = stmnt->args[0].getSize();
+
+      // Save far jump state.
+      putCode(Code::Push_Lit,    FarJumpIndex);
+      putCode(Code::Push_GblArr, StaArray);
+      putStmntDropTmp(0);
+      putCode(Code::Push_Lit,    FarJumpIndex);
+      putCode(Code::Push_Lit,    0);
+      putCode(Code::Drop_GblArr, StaArray);
+
       // Check returned flag.
       putCode(Code::Jump_Lit, putPos + 16);
       putCode(Code::Wait_Lit, 1);
       putStmntPushArg(stmnt->args[2], 0);
       putCode(Code::Jcnd_Nil, putPos - 8 - lenPushArg(stmnt->args[2], 0));
+
+      // Restore far jump state;
+      putCode(Code::Push_Lit,    FarJumpIndex);
+      putStmntPushTmp(0);
+      putCode(Code::Drop_GblArr, StaArray);
 
       // Push any return words.
       if(ret)
