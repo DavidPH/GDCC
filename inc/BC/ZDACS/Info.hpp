@@ -249,8 +249,14 @@ namespace GDCC::BC::ZDACS
       void genStmntDropArg(IR::Arg const &arg, Core::FastU w);
       void genStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
+      void genStmntDropParam(Core::FastU param, Core::FastU paramMax);
+
+      void genStmntDropRetn(Core::FastU retn, Core::FastU retnMax);
+
       void genStmntPushArg(IR::Arg const &arg, Core::FastU w);
       void genStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
+
+      void genStmntPushRetn(Core::FastU retn, Core::FastU retnMax);
 
       void genStmntStkBin(Code code = Code::Nop);
       void genStmntStkCmp(Code code = Code::Nop);
@@ -528,7 +534,9 @@ namespace GDCC::BC::ZDACS
       void putStmntDropArg(IR::Arg const &arg, Core::FastU w);
       void putStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
-      void putStmntDropRetn(Core::FastU ret);
+      void putStmntDropParam(Core::FastU param, Core::FastU paramMax);
+
+      void putStmntDropRetn(Core::FastU retn, Core::FastU retnMax);
 
       void putStmntDropTmp(Core::FastU w);
 
@@ -542,7 +550,7 @@ namespace GDCC::BC::ZDACS
 
       void putStmntPushIdx(IR::Arg const &arg, Core::FastU w);
 
-      void putStmntPushRetn(Core::FastU ret);
+      void putStmntPushRetn(Core::FastU retn, Core::FastU retnMax);
 
       void putStmntPushStrEn(Core::FastU value);
 
@@ -690,6 +698,8 @@ namespace GDCC::BC::ZDACS
       static Core::FastU CodeBase();
 
       static Core::FastU GetParamMax(IR::CallType call);
+
+      static Core::FastU GetRetnMax(IR::CallType call);
 
       static Core::FastU GetScriptValue(IR::Function const &script);
 

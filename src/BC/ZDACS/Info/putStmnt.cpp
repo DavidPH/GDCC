@@ -185,12 +185,10 @@ namespace GDCC::BC::ZDACS
    //
    // Info::putStmntCall
    //
-   void Info::putStmntCall(Core::String name, Core::FastU ret)
+   void Info::putStmntCall(Core::String name, Core::FastU retn)
    {
-      putCode(ret ? Code::Call_Lit : Code::Call_Nul);
-      putWord(getWord(resolveGlyph(name)));
-
-      if(ret) putStmntPushRetn(ret - 1);
+      putCode(retn ? Code::Call_Lit : Code::Call_Nul, getWord(resolveGlyph(name)));
+      putStmntPushRetn(retn, GetRetnMax(IR::CallType::StkCall));
    }
 
    //
@@ -319,17 +317,23 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::putStmntDropParam
+   //
+   void Info::putStmntDropParam(Core::FastU param, Core::FastU paramMax)
+   {
+      putStmntDropRetn(param, paramMax);
+   }
+
+   //
    // Info::putStmntDropRetn
    //
-   void Info::putStmntDropRetn(Core::FastU ret)
+   void Info::putStmntDropRetn(Core::FastU retn, Core::FastU retnMax)
    {
-      for(Core::FastU i = ret; i--;)
+      if(retn > retnMax) for(Core::FastU i = retn - retnMax; i--;)
       {
-         putCode(Code::Push_Lit);
-         putWord(~i);
+         putCode(Code::Push_Lit, ~i);
          putCode(Code::Swap);
-         putCode(Code::Drop_GblArr);
-         putWord(StaArray);
+         putCode(Code::Drop_GblArr, StaArray);
       }
    }
 
@@ -576,14 +580,12 @@ namespace GDCC::BC::ZDACS
    //
    // Info::putStmntPushRetn
    //
-   void Info::putStmntPushRetn(Core::FastU ret)
+   void Info::putStmntPushRetn(Core::FastU retn, Core::FastU retnMax)
    {
-      for(Core::FastU i = 0; i != ret; ++i)
+      if(retn > retnMax) for(Core::FastU i = 0; i != retn - retnMax; ++i)
       {
-         putCode(Code::Push_Lit);
-         putWord(~i);
-         putCode(Code::Push_GblArr);
-         putWord(StaArray);
+         putCode(Code::Push_Lit, ~i);
+         putCode(Code::Push_GblArr, StaArray);
       }
    }
 

@@ -164,9 +164,10 @@ namespace GDCC::BC::ZDACS
    //
    // Info::genStmntCall
    //
-   void Info::genStmntCall(Core::FastU ret)
+   void Info::genStmntCall(Core::FastU retn)
    {
-      numChunkCODE += (ret ? (ret - 1) * 16 : 0) + 8;
+      numChunkCODE += 8;
+      genStmntPushRetn(retn, GetRetnMax(IR::CallType::StkCall));
    }
 
    //
@@ -186,6 +187,15 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::genStmntDropRetn
+   //
+   void Info::genStmntDropRetn(Core::FastU retn, Core::FastU retnMax)
+   {
+      if(retn > retnMax)
+         numChunkCODE += (retn - retnMax) * 20;
+   }
+
+   //
    // Info::genStmntPushArg
    //
    void Info::genStmntPushArg(IR::Arg const &arg, Core::FastU w)
@@ -199,6 +209,23 @@ namespace GDCC::BC::ZDACS
    void Info::genStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
    {
       numChunkCODE += lenPushArg(arg, lo, hi);
+   }
+
+   //
+   // Info::genStmntDropParam
+   //
+   void Info::genStmntDropParam(Core::FastU param, Core::FastU paramMax)
+   {
+      genStmntDropRetn(param, paramMax);
+   }
+
+   //
+   // Info::genStmntPushRetn
+   //
+   void Info::genStmntPushRetn(Core::FastU retn, Core::FastU retnMax)
+   {
+      if(retn > retnMax)
+         numChunkCODE += (retn - retnMax) * 16;
    }
 
    //

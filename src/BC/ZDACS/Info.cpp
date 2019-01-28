@@ -235,6 +235,22 @@ namespace GDCC::BC::ZDACS
 
       &ScriptSParam
    };
+
+   //
+   // --bc-zdacs-stkcall-retn
+   //
+   static Core::FastU StkCallRetn = 1;
+   static Option::Int<Core::FastU> StkCallRetnOpt
+   {
+      &Core::GetOptionList(), Option::Base::Info()
+         .setName("bc-zdacs-stkcall-retn")
+         .setGroup("codegen")
+         .setDescS("Sets the number of native return words for functions.")
+         .setDescL("Sets the number of native return works for functions. "
+            "Default is 1."),
+
+      &StkCallRetn
+   };
 }
 
 
@@ -1059,6 +1075,28 @@ namespace GDCC::BC::ZDACS
 
       default:
          return -1;
+      }
+   }
+
+   //
+   // Info::GetRetnMax
+   //
+   Core::FastU Info::GetRetnMax(IR::CallType call)
+   {
+      switch(call)
+      {
+         // Sync Scripts.
+      case IR::CallType::SScriptI:
+      case IR::CallType::SScriptS:
+         return 0;
+
+         // Normal functions.
+      case IR::CallType::StdCall:
+      case IR::CallType::StkCall:
+         return StkCallRetn;
+
+      default:
+         return 1;
       }
    }
 

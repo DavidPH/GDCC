@@ -141,27 +141,24 @@ namespace GDCC::BC::ZDACS
    void Info::genStmnt_Call()
    {
       auto argc = getStmntSize();
-      auto argm = GetParamMax(IR::CallType::StdCall);
-      auto ret  = stmnt->args[0].getSize();
+      auto retn = stmnt->args[0].getSize();
 
-      if(argc > argm)
-         numChunkCODE += (argc - argm) * 20;
+      putStmntDropParam(argc, GetParamMax(IR::CallType::StdCall));
 
       switch(stmnt->args[1].a)
       {
       case IR::ArgBase::Lit:
-         if(ret == 0)
-            numChunkCODE += 8;
-         else
-            numChunkCODE += 8 + (ret - 1) * 16;
-
+         numChunkCODE += 8;
+         genStmntPushRetn(retn, GetRetnMax(IR::CallType::StdCall));
          break;
 
       case IR::ArgBase::Stk:
-         if(ret == 0)
-            numChunkCODE += 8;
+         numChunkCODE += 4;
+
+         if(retn)
+            genStmntPushRetn(retn, GetRetnMax(IR::CallType::StdCall));
          else
-            numChunkCODE += 4 + (ret - 1) * 16;
+            numChunkCODE += 4;
 
          break;
 
@@ -199,18 +196,16 @@ namespace GDCC::BC::ZDACS
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::ScriptI);
       auto argn = argc < argm ? argc : argm;
-      auto ret  = stmnt->args[0].getSize();
+      auto retn = stmnt->args[0].getSize();
 
-      if(argc > argm)
-         numChunkCODE += (argc - argm) * 20;
+      genStmntDropParam(argc, argm);
 
-      if(ret && argn < 4)
+      if(retn && argn < 4)
          numChunkCODE += (4 - argn) * 8;
 
       numChunkCODE += 8;
 
-      if(ret)
-         numChunkCODE += (ret - 1) * 16;
+      genStmntPushRetn(retn, GetRetnMax(IR::CallType::ScriptI));
    }
 
    //
@@ -221,8 +216,7 @@ namespace GDCC::BC::ZDACS
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptI);
 
-      if(argc > argm)
-         numChunkCODE += (argc - argm) * 20;
+      genStmntDropParam(argc, argm);
 
       numChunkCODE += 16 + lenDropArg(stmnt->args[2], 0);
 
@@ -236,15 +230,14 @@ namespace GDCC::BC::ZDACS
    {
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::ScriptS);
-      auto ret  = stmnt->args[0].getSize();
+      auto retn = stmnt->args[0].getSize();
 
-      if(argc > argm)
-         numChunkCODE += (argc - argm) * 20;
+      genStmntDropParam(argc, argm);
 
       numChunkCODE += 12;
 
-      if(ret)
-         numChunkCODE += (ret - 1) * 16;
+      if(retn)
+         genStmntPushRetn(retn, GetRetnMax(IR::CallType::ScriptS));
       else
          numChunkCODE += 4;
    }
@@ -257,8 +250,7 @@ namespace GDCC::BC::ZDACS
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptS);
 
-      if(argc > argm)
-         numChunkCODE += (argc - argm) * 20;
+      genStmntDropParam(argc, argm);
 
       numChunkCODE += 24 + lenDropArg(stmnt->args[2], 0);
 
@@ -323,7 +315,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Retn()
    {
-      auto ret = getStmntSize();
+      auto retn = getStmntSize();
 
       if(func->allocAut)
          numChunkCODE += 16;
@@ -332,23 +324,23 @@ namespace GDCC::BC::ZDACS
       {
       case IR::CallType::SScriptI:
       case IR::CallType::SScriptS:
-         numChunkCODE += 40 + ret * 32;
+         numChunkCODE += 40 + retn * 32;
          break;
 
       case IR::CallType::StdCall:
       case IR::CallType::StkCall:
-         if(ret == 0)
-            numChunkCODE += 4;
-         else
-            numChunkCODE += 4 + (ret - 1) * 20;
+         genStmntDropRetn(retn, GetRetnMax(func->ctype));
+         numChunkCODE += 4;
          break;
 
       case IR::CallType::ScriptI:
       case IR::CallType::ScriptS:
-         if(ret == 0)
+         if(retn)
+         {
+            genStmntDropRetn(retn, GetRetnMax(func->ctype));
             numChunkCODE += 4;
-         else
-            numChunkCODE += 8 + (ret - 1) * 20;
+         }
+         numChunkCODE += 4;
          break;
 
       default:
@@ -371,34 +363,24 @@ namespace GDCC::BC::ZDACS
    void Info::putStmnt_Call()
    {
       auto argc = getStmntSize();
-      auto argm = GetParamMax(IR::CallType::StdCall);
-      auto ret  = stmnt->args[0].getSize();
+      auto retn = stmnt->args[0].getSize();
 
-      if(argc > argm)
-         putStmntDropRetn(argc - argm);
+      putStmntDropParam(argc, GetParamMax(IR::CallType::StdCall));
 
       switch(stmnt->args[1].a)
       {
       case IR::ArgBase::Lit:
-         if(ret == 0)
-            putCode(Code::Call_Nul);
-         else
-            putCode(Code::Call_Lit);
-
-         putWord(getWord(stmnt->args[1].aLit));
-
-         if(ret)
-            putStmntPushRetn(ret - 1);
-
+         putCode(retn ? Code::Call_Lit : Code::Call_Nul, getWord(stmnt->args[1].aLit));
+         putStmntPushRetn(retn, GetRetnMax(IR::CallType::StdCall));
          break;
 
       case IR::ArgBase::Stk:
          putCode(Code::Call_Stk);
 
-         if(ret == 0)
-            putCode(Code::Drop_Nul);
+         if(retn)
+            putStmntPushRetn(retn, GetRetnMax(IR::CallType::StdCall));
          else
-            putStmntPushRetn(ret - 1);
+            putCode(Code::Drop_Nul);
 
          break;
 
@@ -438,12 +420,11 @@ namespace GDCC::BC::ZDACS
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::ScriptI);
       auto argn = argc < argm ? argc : argm;
-      auto ret  = stmnt->args[0].getSize();
+      auto retn = stmnt->args[0].getSize();
 
-      if(argc > argm)
-         putStmntDropRetn(argc - argm);
+      putStmntDropParam(argc, argm);
 
-      if(ret) switch(argn)
+      if(retn) switch(argn)
       {
       case  0: putCode(Code::Push_Lit, 0);
       case  1: putCode(Code::Push_Lit, 0);
@@ -462,8 +443,7 @@ namespace GDCC::BC::ZDACS
 
       putWord(84); // ACS_ExecuteWithResult
 
-      if(ret)
-         putStmntPushRetn(ret - 1);
+      putStmntPushRetn(retn, GetRetnMax(IR::CallType::ScriptI));
    }
 
    //
@@ -475,8 +455,7 @@ namespace GDCC::BC::ZDACS
       auto argm = GetParamMax(IR::CallType::SScriptI);
       auto argn = argc < argm ? argc : argm;
 
-      if(argc > argm)
-         putStmntDropRetn(argc - argm);
+      putStmntDropParam(argc, argm);
 
       // Clear returned flag.
       putCode(Code::Push_Lit, 0);
@@ -503,17 +482,16 @@ namespace GDCC::BC::ZDACS
    {
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::ScriptS);
-      auto ret  = stmnt->args[0].getSize();
+      auto retn = stmnt->args[0].getSize();
 
-      if(argc > argm)
-         putStmntDropRetn(argc - argm);
+      putStmntDropParam(argc, argm);
 
       putCode(Code::Cnat);
       putWord(argc < argm ? argc + 1 : argm + 1);
       putWord(44); // ACS_NamedExecuteWithResult
 
-      if(ret)
-         putStmntPushRetn(ret - 1);
+      if(retn)
+         putStmntPushRetn(retn, GetRetnMax(IR::CallType::ScriptS));
       else
          putCode(Code::Drop_Nul);
    }
@@ -526,8 +504,7 @@ namespace GDCC::BC::ZDACS
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptS);
 
-      if(argc > argm)
-         putStmntDropRetn(argc - argm);
+      putStmntDropParam(argc, argm);
 
       // Clear returned flag.
       putCode(Code::Push_Lit, 0);
@@ -663,7 +640,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt_Retn()
    {
-      auto ret = getStmntSize();
+      auto retn = getStmntSize();
 
       if(func->allocAut)
       {
@@ -683,7 +660,7 @@ namespace GDCC::BC::ZDACS
          putCode(Code::Drop_GblArr, StaArray);
 
          // Set return data.
-         for(Core::FastU i = ret; i--;)
+         for(Core::FastU i = retn; i--;)
          {
             putCode(Code::Push_LocReg, getStkPtrIdx());
             putCode(Code::Push_Lit,    i);
@@ -698,27 +675,18 @@ namespace GDCC::BC::ZDACS
 
       case IR::CallType::StdCall:
       case IR::CallType::StkCall:
-         if(ret == 0)
-            putCode(Code::Retn_Nul);
-         else
-         {
-            putStmntDropRetn(ret - 1);
-            putCode(Code::Retn_Stk);
-         }
+         putStmntDropRetn(retn, GetRetnMax(func->ctype));
+         putCode(retn ? Code::Retn_Stk : Code::Retn_Nul);
          break;
 
       case IR::CallType::ScriptI:
       case IR::CallType::ScriptS:
-         if(ret == 0)
+         if(retn)
          {
-            putCode(Code::Rscr);
-         }
-         else
-         {
-            putStmntDropRetn(ret - 1);
+            putStmntDropRetn(retn, GetRetnMax(func->ctype));
             putCode(Code::Drop_ScrRet);
-            putCode(Code::Rscr);
          }
+         putCode(Code::Rscr);
          break;
 
       default:
