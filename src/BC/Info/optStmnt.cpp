@@ -60,6 +60,7 @@ namespace GDCC::BC
 
       optStmnt_Cspe_Drop();
       optStmnt_JumpNext();
+      optStmnt_LNot_Jcnd();
    }
 
    //
@@ -80,7 +81,7 @@ namespace GDCC::BC
 
       auto next = stmnt->next;
 
-      // Must have no label on subsequent statements.
+      // Must have no label on subsequent statement.
       if(!next->labs.empty())
          return false;
 
@@ -114,7 +115,7 @@ namespace GDCC::BC
    //
    bool Info::optStmnt_JumpNext()
    {
-      // Must be Jump(Lit(...))
+      // Must be Jump(Lit(...)).
       if(stmnt->code != IR::Code::Jump || stmnt->args[0].a != IR::ArgBase::Lit)
          return false;
 
@@ -132,6 +133,52 @@ namespace GDCC::BC
          return false;
 
       // Remove branch.
+      if(!stmnt->labs.empty())
+         next->labs += stmnt->labs;
+      stmnt = stmnt->prev;
+      delete stmnt->next;
+
+      return true;
+   }
+
+   //
+   // Info::optStmnt_LNot_Jcnd
+   //
+   // The squence:
+   //    LNot(Stk N() ArgX)
+   //    Jcnd_Nil(Stk N() ...)
+   // Can be transformed into:
+   //    Jcnd_Tru(ArgX ...)
+   //
+   bool Info::optStmnt_LNot_Jcnd()
+   {
+      // Must be LNot(Stk N() ...).
+      if(stmnt->code != IR::Code::LNot || stmnt->args[0].a != IR::ArgBase::Stk)
+         return false;
+
+      auto next = stmnt->next;
+
+      // Must have no label on subsequent statement.
+      if(!next->labs.empty())
+         return false;
+
+      // Must be followed by Jcnd_Nil(Stk N() ...).
+      if((next->code != IR::Code::Jcnd_Nil && next->code != IR::Code::Jcnd_Tru) ||
+         next->args[0].a != IR::ArgBase::Stk)
+         return false;
+
+      // Must have the same size for all three args.
+      auto n = stmnt->args[0].aStk.size;
+      if(stmnt->args[1].getSize() != n || next->args[0].aStk.size != n)
+         return false;
+
+      // Invert jump condition and move src.
+      next->code = next->code == IR::Code::Jcnd_Nil
+         ? IR::Code::Jcnd_Tru : IR::Code::Jcnd_Nil;
+
+      next->args[0] = std::move(stmnt->args[1]);
+
+      // Remove LNot.
       if(!stmnt->labs.empty())
          next->labs += stmnt->labs;
       stmnt = stmnt->prev;

@@ -303,6 +303,7 @@ namespace GDCC::BC
 
       bool optStmnt_Cspe_Drop();
       bool optStmnt_JumpNext();
+      bool optStmnt_LNot_Jcnd();
 
       void trStmntStk2();
       void trStmntStk3(bool ordered);
