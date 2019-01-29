@@ -107,7 +107,7 @@ namespace GDCC::Target
          .setGroup("codegen")
          .setDescS("Sets the minimum address for functions.")
          .setDescL(
-            "Sets the minimum address for functions. Consumes two argumetns, "
+            "Sets the minimum address for functions. Consumes two arguments, "
             "the calling convention and the minimum value.\n"
             "\n"
             "If the long option is negated with no-, the minimum for that "

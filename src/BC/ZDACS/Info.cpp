@@ -36,7 +36,7 @@ namespace GDCC::BC::ZDACS
    //
    // --bc-zdacs-Sta-array
    //
-   static Option::Int<Core::FastU> LocArsArrayOpt
+   static Option::Int<Core::FastU> StaArrayOpt
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-Sta-array")
@@ -101,7 +101,7 @@ namespace GDCC::BC::ZDACS
          .setDescS("Sets the global array used to store init status.")
          .setDescL(
             "Sets the global array used to store initialization status. "
-            "Default is to use the LocArs array."),
+            "Default is to use the Sta array."),
 
       &InitGblArray
    };
@@ -118,7 +118,7 @@ namespace GDCC::BC::ZDACS
          .setDescS("Sets the global array index used to store init status.")
          .setDescL(
             "Sets the global array index used to store initialization "
-            "status. Default is 0 if using the LocArs array, -1 "
+            "status. Default is 0 if using the Sta array, -1 "
             "otherwise."),
 
       &InitGblIndex
@@ -246,7 +246,7 @@ namespace GDCC::BC::ZDACS
          .setName("bc-zdacs-stkcall-retn")
          .setGroup("codegen")
          .setDescS("Sets the number of native return words for functions.")
-         .setDescL("Sets the number of native return works for functions. "
+         .setDescL("Sets the number of native return words for functions. "
             "Default is 1."),
 
       &StkCallRetn
