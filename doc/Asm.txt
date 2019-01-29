@@ -581,6 +581,7 @@ Syntax:
     <NegI>
     <Pltn>
     <Retn>
+    <Rjnk>
     <ShLF>
     <ShLU>
     <ShRF>
@@ -985,15 +986,21 @@ Semantics:
 
 -----------------------------------------------------------
 Retn (Return)
+Rjnk (Return Junk)
 -----------------------------------------------------------
 
 Arguments:
   Retn()
   Retn(src)
+  Rjnk()
+  Rjnk(src)
 
 Semantics:
   Returns control to the caller with the data in src. If src is omitted, no
   data is returned.
+
+  Rjnk does the same, but may discard the data in src and only use it for its
+  size.
 
 -----------------------------------------------------------
 ShLF (Shift Left Signed Float)
@@ -1699,6 +1706,7 @@ Grammar
     <NegI>
     <Pltn>
     <Retn>
+    <Rjnk>
     <ShLF>
     <ShLU>
     <ShRF>

@@ -117,6 +117,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::NegI: putStmnt_NegI(); break;
       case IR::Code::Pltn: putStmnt_Pltn(); break;
       case IR::Code::Retn: putStmnt_Retn(); break;
+      case IR::Code::Rjnk: putStmnt_Rjnk(); break;
       case IR::Code::ShLF: putStmnt_ShLF(); break;
       case IR::Code::ShLU: putStmnt_ShLU(); break;
       case IR::Code::ShRF: putStmnt_ShRF(); break;

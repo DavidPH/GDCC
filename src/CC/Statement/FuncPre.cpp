@@ -147,9 +147,9 @@ namespace GDCC::CC
          ctx.block.addLabel(scope.labelLJR);
 
          if(scope.fn->retrn->isTypeVoid())
-            ctx.block.addStmnt(IR::Code::Retn);
+            ctx.block.addStmnt(IR::Code::Rjnk);
          else
-            ctx.block.setArgSize(scope.fn->retrn->getSizeBytes()).addStmnt(IR::Code::Retn, 0);
+            ctx.block.setArgSize(scope.fn->retrn->getSizeBytes()).addStmnt(IR::Code::Rjnk, 0);
       }
    }
 

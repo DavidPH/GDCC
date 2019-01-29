@@ -136,6 +136,15 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::chkStmnt_Rjnk
+   //
+   void Info::chkStmnt_Rjnk()
+   {
+      if(!stmnt->args.empty())
+         chkStmntArgB(0, IR::ArgBase::Lit);
+   }
+
+   //
    // Info::genStmnt_Call
    //
    void Info::genStmnt_Call()
@@ -345,6 +354,41 @@ namespace GDCC::BC::ZDACS
 
       default:
          Core::Error(stmnt->pos, "bad gen Retn");
+      }
+   }
+
+   //
+   // Info::genStmnt_Rjnk
+   //
+   void Info::genStmnt_Rjnk()
+   {
+      auto retm = GetRetnMax(func->ctype);
+      auto retn = getStmntSize();
+
+      if(func->allocAut)
+         numChunkCODE += 16;
+
+      switch(func->ctype)
+      {
+      case IR::CallType::SScriptI:
+      case IR::CallType::SScriptS:
+         numChunkCODE += 40;
+         break;
+
+      case IR::CallType::StdCall:
+      case IR::CallType::StkCall:
+         if(retn && retm)
+            numChunkCODE += (std::min(retn, retm) - 1) * 8;
+         numChunkCODE += 4;
+         break;
+
+      case IR::CallType::ScriptI:
+      case IR::CallType::ScriptS:
+         numChunkCODE += 4;
+         break;
+
+      default:
+         Core::Error(stmnt->pos, "bad gen Rjnk");
       }
    }
 
@@ -691,6 +735,55 @@ namespace GDCC::BC::ZDACS
 
       default:
          Core::Error(stmnt->pos, "bad put Retn");
+      }
+   }
+
+   //
+   // Info::putStmnt_Rjnk
+   //
+   void Info::putStmnt_Rjnk()
+   {
+      auto retm = GetRetnMax(func->ctype);
+      auto retn = getStmntSize();
+
+      if(func->allocAut)
+      {
+         putCode(Code::Push_LocReg, getStkPtrIdx());
+         putCode(Code::Call_Nul,    getWord(resolveGlyph("___GDCC__Plsf")));
+      }
+
+      switch(func->ctype)
+      {
+      case IR::CallType::SScriptI:
+      case IR::CallType::SScriptS:
+         // Set return flag.
+         putCode(Code::Push_LocReg, getStkPtrIdx());
+         putCode(Code::Push_Lit,    1);
+         putCode(Code::SubU);
+         putCode(Code::Push_Lit,    1);
+         putCode(Code::Drop_GblArr, StaArray);
+
+         putCode(Code::Rscr);
+
+         break;
+
+      case IR::CallType::StdCall:
+      case IR::CallType::StkCall:
+         if(retn && retm)
+         {
+            for(Core::FastU i = 0, e = std::min(retn, retm) - 1; i != e; ++i)
+               putCode(Code::Push_Lit, 0);
+         }
+         putCode(Code::Retn_Nul);
+         break;
+
+      case IR::CallType::ScriptI:
+      case IR::CallType::ScriptS:
+         putCode(Code::Rscr);
+         break;
+
+      default:
+         Core::Error(stmnt->pos, "bad put Rjnk");
       }
    }
 

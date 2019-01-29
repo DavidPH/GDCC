@@ -57,6 +57,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::LAnd: chkStmnt_LAnd(); break;
       case IR::Code::LNot: chkStmnt_LNot(); break;
       case IR::Code::LOrI: chkStmnt_LOrI(); break;
+      case IR::Code::Rjnk: chkStmnt_Rjnk(); break;
       case IR::Code::SuXU: chkStmnt_SuXU(); break;
       case IR::Code::Swap: chkStmnt_Swap(); break;
 

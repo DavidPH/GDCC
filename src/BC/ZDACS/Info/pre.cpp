@@ -104,6 +104,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::MulU: preStmnt_MulU(); break;
       case IR::Code::MulX: preStmnt_MulX(); break;
       case IR::Code::Retn: preStmnt_Retn(); break;
+      case IR::Code::Rjnk: preStmnt_Rjnk(); break;
       case IR::Code::ShLF: preStmnt_ShLF(); break;
       case IR::Code::ShLU: preStmnt_ShLU(); break;
       case IR::Code::ShRF: preStmnt_ShRF(); break;

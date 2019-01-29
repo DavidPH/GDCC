@@ -163,6 +163,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::NegI: trStmnt_NegI(); break;
       case IR::Code::Pltn: trStmnt_Pltn(); break;
       case IR::Code::Retn: trStmnt_Retn(); break;
+      case IR::Code::Rjnk: trStmnt_Rjnk(); break;
       case IR::Code::ShLF: trStmnt_ShLF(); break;
       case IR::Code::ShLU: trStmnt_ShLU(); break;
       case IR::Code::ShRF: trStmnt_ShRF(); break;

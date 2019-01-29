@@ -127,6 +127,7 @@ namespace GDCC::BC::ZDACS
       case IR::Code::NegI: genStmnt_NegI(); break;
       case IR::Code::Pltn: genStmnt_Pltn(); break;
       case IR::Code::Retn: genStmnt_Retn(); break;
+      case IR::Code::Rjnk: genStmnt_Rjnk(); break;
       case IR::Code::ShLF: genStmnt_ShLF(); break;
       case IR::Code::ShLU: genStmnt_ShLU(); break;
       case IR::Code::ShRF: genStmnt_ShLF(); break;

@@ -220,6 +220,7 @@ namespace GDCC::BC::DGE
       void putStmnt_NegI() {putStmntStkUna("NegI");}
       void putStmnt_Pltn();
       void putStmnt_Retn();
+      void putStmnt_Rjnk() {putStmnt_Retn();}
       void putStmnt_ShLF() {putStmntStkShi();}
       void putStmnt_ShLU(char const *code = "ShLU");
       void putStmnt_ShRF() {putStmntStkShi();}
@@ -325,6 +326,7 @@ namespace GDCC::BC::DGE
       void trStmnt_NegI() {trStmntStkUna();}
       void trStmnt_Pltn();
       void trStmnt_Retn();
+      void trStmnt_Rjnk() {trStmnt_Retn();}
       void trStmnt_ShLF() {trStmntStkShi();}
       void trStmnt_ShLU();
       void trStmnt_ShRF() {trStmntStkShi();}

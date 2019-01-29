@@ -395,6 +395,7 @@ namespace GDCC::BC
       case IR::Code::Jcnd_Tru:
       case IR::Code::Jdyn:
       case IR::Code::Retn:
+      case IR::Code::Rjnk:
          return stmnt->args[0].getSize();
       }
 

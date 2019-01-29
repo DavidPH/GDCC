@@ -38,6 +38,7 @@ namespace GDCC::BC
          break;
 
       case IR::Code::Retn:
+      case IR::Code::Rjnk:
          chkStmntArgC(0, 1);
          break;
 

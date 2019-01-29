@@ -176,6 +176,10 @@ GDCC_IR_CodeList(Pltn)
 // Retn src
 GDCC_IR_CodeList(Retn)
 
+// Rjnk
+// Rjnk src
+GDCC_IR_CodeList(Rjnk)
+
 // ShL* dst lop rop
 GDCC_IR_CodeList(ShLF)
 GDCC_IR_CodeList(ShLU)

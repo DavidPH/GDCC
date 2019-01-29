@@ -135,6 +135,7 @@ namespace GDCC::BC::ZDACS
       void chkStmnt_LAnd();
       void chkStmnt_LNot() {chkStmnt_LAnd();}
       void chkStmnt_LOrI() {chkStmnt_LAnd();}
+      void chkStmnt_Rjnk();
       void chkStmnt_Swap();
       void chkStmnt_SuXU() {chkStmnt_AdXU();}
 
@@ -232,6 +233,7 @@ namespace GDCC::BC::ZDACS
       void genStmnt_NegI();
       void genStmnt_Pltn();
       void genStmnt_Retn();
+      void genStmnt_Rjnk();
       void genStmnt_ShLF();
       void genStmnt_ShLU();
       void genStmnt_ShRI();
@@ -379,6 +381,7 @@ namespace GDCC::BC::ZDACS
       void preStmnt_MulU();
       void preStmnt_MulX();
       void preStmnt_Retn();
+      void preStmnt_Rjnk() {preStmnt_Retn();}
       void preStmnt_ShLF();
       void preStmnt_ShLU();
       void preStmnt_ShRF() {preStmnt_ShLF();}
@@ -516,6 +519,7 @@ namespace GDCC::BC::ZDACS
       void putStmnt_NegI();
       void putStmnt_Pltn();
       void putStmnt_Retn();
+      void putStmnt_Rjnk();
       void putStmnt_ShLF();
       void putStmnt_ShLU();
       void putStmnt_ShRF() {putStmnt_ShLF();}
@@ -641,6 +645,7 @@ namespace GDCC::BC::ZDACS
       void trStmnt_NegI();
       void trStmnt_Pltn() {trStmntStkUna();}
       void trStmnt_Retn();
+      void trStmnt_Rjnk() {}
       void trStmnt_ShLF();
       void trStmnt_ShLU();
       void trStmnt_ShRF() {trStmnt_ShLF();}
