@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,6 +18,8 @@
 
 #include "IR/Exp.hpp"
 #include "IR/Glyph.hpp"
+
+#include "Target/Info.hpp"
 
 #include <vector>
 
@@ -179,6 +181,10 @@ namespace GDCC::AS
          case Core::STR_Value:
             ctx.in.unget();
             return IR::ExpCreate_Value(GetValue(ctx), tok.pos);
+
+         case Core::STR_W:
+            return IR::ExpCreate_Value(
+               IR::Value_Fixed(Target::GetWordBytes(), {32, 0, 0, 0}), tok.pos);
 
          case Core::STR_string:
             return IR::ExpCreate_Value(GetArrayString(ctx), tok.pos);

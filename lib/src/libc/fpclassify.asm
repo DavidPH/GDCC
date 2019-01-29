@@ -1,6 +1,6 @@
 ;;-----------------------------------------------------------------------------
 ;;
-;; Copyright(C) 2015-2018 David Hill
+;; Copyright(C) 2015-2019 David Hill
 ;;
 ;; See COPYLIB for license information.
 ;;
@@ -146,7 +146,7 @@ Function "___fpclassify"
    retrn    = 1
    block
    (
-      BAnd     W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x7FF00000))
+      BAnd     W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
       Jcnd_Tab W 1(Stk()
          Lit(0x7FF00000) Lit(:"$emax")
          Lit(0x00000000) Lit(:"$emin"))
@@ -155,14 +155,14 @@ Function "___fpclassify"
       Retn     W 1(Stk())
 
    :"$emax"
-      BAnd W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x000FFFFF))
+      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x000FFFFF))
       BOrI W 1(Stk() Stk() LocReg(Lit(0)))
       LNot W 1(Stk() Stk())
       AddU W 1(Stk() Stk() Lit(1))
       Retn W 1(Stk())
 
    :"$emin"
-      BAnd W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x000FFFFF))
+      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x000FFFFF))
       BOrI W 1(Stk() Stk() LocReg(Lit(0)))
       LNot W 1(Stk() Stk())
       AddU W 1(Stk() Stk() Lit(4))
@@ -224,7 +224,7 @@ Function "___fpclassifyl"
    retrn    = 1
    block
    (
-      BAnd     W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x7FF00000))
+      BAnd     W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
       Jcnd_Tab W 1(Stk()
          Lit(0x7FF00000) Lit(:"$emax")
          Lit(0x00000000) Lit(:"$emin"))
@@ -233,14 +233,14 @@ Function "___fpclassifyl"
       Retn     W 1(Stk())
 
    :"$emax"
-      BAnd W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x000FFFFF))
+      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x000FFFFF))
       BOrI W 1(Stk() Stk() LocReg(Lit(0)))
       LNot W 1(Stk() Stk())
       AddU W 1(Stk() Stk() Lit(1))
       Retn W 1(Stk())
 
    :"$emin"
-      BAnd W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x000FFFFF))
+      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x000FFFFF))
       BOrI W 1(Stk() Stk() LocReg(Lit(0)))
       LNot W 1(Stk() Stk())
       AddU W 1(Stk() Stk() Lit(4))
@@ -263,7 +263,7 @@ Function "___isfinite"
    retrn    = 1
    block
    (
-      BAnd    W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x7FF00000))
+      BAnd    W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
       CmpI_NE W 1(Stk() Stk() Lit(0x7FF00000))
       Retn    W 1(Stk())
    )
@@ -305,7 +305,7 @@ Function "___isfinitel"
    retrn    = 1
    block
    (
-      BAnd    W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x7FF00000))
+      BAnd    W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
       CmpI_NE W 1(Stk() Stk() Lit(0x7FF00000))
       Retn    W 1(Stk())
    )
@@ -326,7 +326,7 @@ Function "___isinf"
    retrn    = 1
    block
    (
-      BAnd    W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x7FFFFFFF))
+      BAnd    W 1(Stk() LocReg(Lit(W)) Lit(0x7FFFFFFF))
       CmpI_EQ W 1(Stk() Stk() Lit(0x7FF00000))
       Retn    W 1(Stk())
    )
@@ -368,7 +368,7 @@ Function "___isinfl"
    retrn    = 1
    block
    (
-      BAnd    W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x7FFFFFFF))
+      BAnd    W 1(Stk() LocReg(Lit(W)) Lit(0x7FFFFFFF))
       CmpI_EQ W 1(Stk() Stk() Lit(0x7FF00000))
       Retn    W 1(Stk())
    )
@@ -389,7 +389,7 @@ Function "___isnan"
    retrn    = 1
    block
    (
-      BAnd    W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x7FFFFFFF))
+      BAnd    W 1(Stk() LocReg(Lit(W)) Lit(0x7FFFFFFF))
       CmpI_GT W 1(Stk() Stk() Lit(0x7FF00000))
       Retn    W 1(Stk())
    )
@@ -431,7 +431,7 @@ Function "___isnanl"
    retrn    = 1
    block
    (
-      BAnd    W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x7FFFFFFF))
+      BAnd    W 1(Stk() LocReg(Lit(W)) Lit(0x7FFFFFFF))
       CmpI_GT W 1(Stk() Stk() Lit(0x7FF00000))
       Retn    W 1(Stk())
    )
@@ -452,9 +452,9 @@ Function "___isnormal"
    retrn    = 1
    block
    (
-      BAnd    W 1(LocReg(Lit("___MathRegSize")) LocReg(Lit("___MathRegSize")) Lit(0x7FF00000))
-      CmpI_LE W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x7FE00000))
-      CmpI_GE W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x00100000))
+      BAnd    W 1(LocReg(Lit(W)) LocReg(Lit(W)) Lit(0x7FF00000))
+      CmpI_LE W 1(Stk() LocReg(Lit(W)) Lit(0x7FE00000))
+      CmpI_GE W 1(Stk() LocReg(Lit(W)) Lit(0x00100000))
       BAnd    W 1(Stk() Stk() Stk())
       Retn    W 1(Stk())
    )
@@ -498,9 +498,9 @@ Function "___isnormall"
    retrn    = 1
    block
    (
-      BAnd    W 1(LocReg(Lit("___MathRegSize")) LocReg(Lit("___MathRegSize")) Lit(0x7FF00000))
-      CmpI_LE W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x7FE00000))
-      CmpI_GE W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x00100000))
+      BAnd    W 1(LocReg(Lit(W)) LocReg(Lit(W)) Lit(0x7FF00000))
+      CmpI_LE W 1(Stk() LocReg(Lit(W)) Lit(0x7FE00000))
+      CmpI_GE W 1(Stk() LocReg(Lit(W)) Lit(0x00100000))
       BAnd    W 1(Stk() Stk() Stk())
       Retn    W 1(Stk())
    )
@@ -521,7 +521,7 @@ Function "___signbit"
    retrn    = 1
    block
    (
-      BAnd W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x80000000))
+      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x80000000))
       Retn W 1(Stk())
    )
 )
@@ -561,7 +561,7 @@ Function "___signbitl"
    retrn    = 1
    block
    (
-      BAnd W 1(Stk() LocReg(Lit("___MathRegSize")) Lit(0x80000000))
+      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x80000000))
       Retn W 1(Stk())
    )
 )

@@ -134,22 +134,6 @@ static void MakeLib_libc(GDCC::IR::Program &prog, bool nomath = false)
       MakeLib_CC(prog, path, "round.c");
       MakeLib_CC(prog, path, "trig.c");
    }
-
-   if(GDCC::Target::EngineCur == GDCC::Target::Engine::Doominati)
-   {
-      std::string pathSub = path;
-      GDCC::Core::PathAppend(pathSub, "DGE");
-
-      MakeLib_AS(prog, pathSub, "defs.asm");
-   }
-
-   if(GDCC::Target::IsFamily_ZDACS())
-   {
-      std::string pathSub = path;
-      GDCC::Core::PathAppend(pathSub, "ZDACS");
-
-      MakeLib_AS(prog, pathSub, "defs.asm");
-   }
 }
 
 //

@@ -1150,6 +1150,7 @@ Syntax:
     <ShL> ( expression expression )
     <ShR> ( expression expression )
     <Sub> ( expression expression )
+    <W>
     -- expression
     ~ expression
     ! expression
@@ -1776,6 +1777,7 @@ Grammar
     <ShL> ( expression expression )
     <ShR> ( expression expression )
     <Sub> ( expression expression )
+    <W>
     -- expression
     ~ expression
     ! expression
