@@ -12,6 +12,8 @@
 
 #include "BC/DGE/Info.hpp"
 
+#include "Core/Exception.hpp"
+
 #include "IR/Statement.hpp"
 
 
@@ -55,17 +57,21 @@ namespace GDCC::BC::DGE
 
       case IR::Code::DiXI: preStmnt_DiXI(); break;
       case IR::Code::DiXU: preStmnt_DiXU(); break;
+      case IR::Code::DivA: preStmnt_DivA(); break;
       case IR::Code::DivF: preStmnt_DivF(); break;
       case IR::Code::DivI: preStmnt_DivI(); break;
       case IR::Code::DivK: preStmnt_DivK(); break;
+      case IR::Code::DivR: preStmnt_DivR(); break;
       case IR::Code::DivU: preStmnt_DivU(); break;
       case IR::Code::DivX: preStmnt_DivX(); break;
       case IR::Code::ModI: preStmnt_ModI(); break;
       case IR::Code::ModU: preStmnt_ModU(); break;
       case IR::Code::MuXU: preStmnt_MuXU(); break;
+      case IR::Code::MulA: preStmnt_MulA(); break;
       case IR::Code::MulF: preStmnt_MulF(); break;
       case IR::Code::MulI: preStmnt_MulI(); break;
       case IR::Code::MulK: preStmnt_MulK(); break;
+      case IR::Code::MulR: preStmnt_MulR(); break;
       case IR::Code::MulU: preStmnt_MulU(); break;
       case IR::Code::MulX: preStmnt_MulX(); break;
       case IR::Code::NegI: preStmnt_NegI(); break;
@@ -88,7 +94,12 @@ namespace GDCC::BC::DGE
    //
    void Info::preStmntStkBin(Core::FastU min, AddFunc add)
    {
-      auto n = getStmntSizeW();
+      auto b = getStmntSize();
+
+      if(b <= 2)
+         return;
+
+      auto n = getStmntSizeW(b);
 
       if(n < min)
          return;

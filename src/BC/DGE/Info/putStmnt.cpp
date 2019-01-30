@@ -72,9 +72,11 @@ namespace GDCC::BC::DGE
       case IR::Code::Copy: putStmnt_Copy(); break;
       case IR::Code::DiXI: putStmnt_DiXI(); break;
       case IR::Code::DiXU: putStmnt_DiXU(); break;
+      case IR::Code::DivA: putStmnt_DivA(); break;
       case IR::Code::DivF: putStmnt_DivF(); break;
       case IR::Code::DivI: putStmnt_DivI(); break;
       case IR::Code::DivK: putStmnt_DivK(); break;
+      case IR::Code::DivR: putStmnt_DivR(); break;
       case IR::Code::DivU: putStmnt_DivU(); break;
       case IR::Code::DivX: putStmnt_DivX(); break;
 
@@ -93,9 +95,11 @@ namespace GDCC::BC::DGE
       case IR::Code::ModU: putStmnt_ModU(); break;
       case IR::Code::Move: putStmnt_Move(); break;
       case IR::Code::MuXU: putStmnt_MuXU(); break;
+      case IR::Code::MulA: putStmnt_MulA(); break;
       case IR::Code::MulF: putStmnt_MulF(); break;
       case IR::Code::MulI: putStmnt_MulI(); break;
       case IR::Code::MulK: putStmnt_MulK(); break;
+      case IR::Code::MulR: putStmnt_MulR(); break;
       case IR::Code::MulU: putStmnt_MulU(); break;
       case IR::Code::MulX: putStmnt_MulX(); break;
       case IR::Code::NegF: putStmnt_NegF(); break;

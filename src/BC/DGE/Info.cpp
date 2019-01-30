@@ -87,11 +87,17 @@ namespace GDCC::BC::DGE
    //
    Core::FastU Info::getStmntSizeW()
    {
-      auto n = getStmntSize();
+      return getStmntSizeW(getStmntSize());
+   }
 
-      if(n % 4) Core::Error(stmnt->pos, "expected word statement");
+   //
+   // Info::getStmntSizeW
+   //
+   Core::FastU Info::getStmntSizeW(Core::FastU b)
+   {
+      if(b % 4) Core::Error(stmnt->pos, "expected word statement");
 
-      return n / 4;
+      return b / 4;
    }
 
    //
