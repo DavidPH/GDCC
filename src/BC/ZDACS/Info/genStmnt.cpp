@@ -94,8 +94,10 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Cspe: genStmnt_Cspe(); break;
       case IR::Code::DiXI: genStmnt_DiXI(); break;
       case IR::Code::DiXU: genStmnt_DiXU(); break;
+      case IR::Code::DivA: genStmnt_DivA(); break;
       case IR::Code::DivF: genStmnt_DivF(); break;
       case IR::Code::DivK: genStmnt_DivK(); break;
+      case IR::Code::DivR: genStmnt_DivR(); break;
       case IR::Code::DivI: genStmnt_DivI(); break;
       case IR::Code::DivU: genStmnt_DivU(); break;
       case IR::Code::DivX: genStmnt_DivX(); break;
@@ -118,9 +120,11 @@ namespace GDCC::BC::ZDACS
       case IR::Code::ModU: genStmnt_ModU(); break;
       case IR::Code::Move: genStmnt_Move(); break;
       case IR::Code::MuXU: genStmnt_MuXU(); break;
+      case IR::Code::MulA: genStmnt_MulA(); break;
       case IR::Code::MulF: genStmnt_MulF(); break;
       case IR::Code::MulI: genStmnt_MulI(); break;
       case IR::Code::MulK: genStmnt_MulK(); break;
+      case IR::Code::MulR: genStmnt_MulR(); break;
       case IR::Code::MulU: genStmnt_MulU(); break;
       case IR::Code::MulX: genStmnt_MulX(); break;
       case IR::Code::NegF: genStmnt_NegF(); break;

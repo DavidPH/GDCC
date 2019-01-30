@@ -63,6 +63,42 @@ namespace GDCC::BC
    }
 
    //
+   // Info::addFunc_MulA_W
+   //
+   void Info::addFunc_MulA_W(Core::FastU n)
+   {
+      GDCC_BC_AddFuncPre(Code::MulA, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncObjBin(n, n);
+
+      Core::FastU nf = n;
+      Core::FastU nm = n + nf;
+
+      if(nm == n * 2)
+      {
+         GDCC_BC_AddStmnt(Code::MuXU, nm, stk, lop, rop);
+         GDCC_BC_AddStmnt(Code::ShRU, nm, stk, stk, n * 32);
+         GDCC_BC_AddStmnt(Code::Move, nf, nul, stk);
+         GDCC_BC_AddStmnt(Code::Retn, n,  stk);
+      }
+      else
+      {
+         GDCC_BC_AddStmnt(Code::Move, n,  stk, lop);
+         GDCC_BC_AddStmnt(Code::Move, nf, stk, 0);
+         GDCC_BC_AddStmnt(Code::Move, n,  stk, rop);
+         GDCC_BC_AddStmnt(Code::Move, nf, stk, 0);
+
+         GDCC_BC_AddStmnt(Code::MulU, nm, stk, stk, stk);
+
+         GDCC_BC_AddStmnt(Code::Move, n,  lop, stk);
+         GDCC_BC_AddStmnt(Code::Move, nf, nul, stk);
+
+         GDCC_BC_AddStmnt(Code::Retn, n,  lop);
+      }
+
+      GDCC_BC_AddFuncEnd();
+   }
+
+   //
    // Info::addFunc_MulF_W
    //
    void Info::addFunc_MulF_W(Core::FastU n)
@@ -216,6 +252,37 @@ namespace GDCC::BC
 
          GDCC_BC_AddStmnt(Code::Retn, n,  lop);
       }
+
+      GDCC_BC_AddFuncEnd();
+   }
+
+   //
+   // Info::addFunc_MulR_W
+   //
+   void Info::addFunc_MulR_W(Core::FastU n)
+   {
+      GDCC_BC_AddFuncPre(Code::MulR, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncObjBin(n, n);
+
+      Core::FastU nf = n;
+      Core::FastU nm = n + nf;
+
+      GDCC_BC_AddStmnt(Code::Move, n, stk, lop);
+      GDCC_BC_AddStmnt(Code::ShRI, 1, stk, lop.hi, 31);
+      for(Core::FastU i = nf - 1; i--;)
+         GDCC_BC_AddStmnt(Code::Copy, 1, stk, stk);
+
+      GDCC_BC_AddStmnt(Code::Move, n, stk, rop);
+      GDCC_BC_AddStmnt(Code::ShRI, 1, stk, rop.hi, 31);
+      for(Core::FastU i = nf - 1; i--;)
+         GDCC_BC_AddStmnt(Code::Copy, 1, stk, stk);
+
+      GDCC_BC_AddStmnt(Code::MulI, nm, stk, stk, stk);
+
+      GDCC_BC_AddStmnt(Code::Move, n,  lop, stk);
+      GDCC_BC_AddStmnt(Code::Move, nf, nul, stk);
+
+      GDCC_BC_AddStmnt(Code::Retn, n,  lop);
 
       GDCC_BC_AddFuncEnd();
    }

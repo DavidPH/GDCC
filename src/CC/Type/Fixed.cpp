@@ -306,6 +306,9 @@ namespace GDCC::CC
    //
    Core::FastU Type_Fract::getSizeBitsF() const
    {
+      if(Target::IsFamily_ZDACS())
+         return 32 - sign;
+
       return (8 << size) - sign;
    }
 

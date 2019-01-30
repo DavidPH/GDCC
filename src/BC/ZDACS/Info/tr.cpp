@@ -130,9 +130,11 @@ namespace GDCC::BC::ZDACS
       case IR::Code::Cspe: trStmnt_Cspe(); break;
       case IR::Code::DiXI: trStmnt_DiXI(); break;
       case IR::Code::DiXU: trStmnt_DiXU(); break;
+      case IR::Code::DivA: trStmnt_DivA(); break;
       case IR::Code::DivF: trStmnt_DivF(); break;
       case IR::Code::DivI: trStmnt_DivI(); break;
       case IR::Code::DivK: trStmnt_DivK(); break;
+      case IR::Code::DivR: trStmnt_DivR(); break;
       case IR::Code::DivU: trStmnt_DivU(); break;
       case IR::Code::DivX: trStmnt_DivX(); break;
 
@@ -154,9 +156,11 @@ namespace GDCC::BC::ZDACS
       case IR::Code::ModU: trStmnt_ModU(); break;
       case IR::Code::Move: trStmnt_Move(); break;
       case IR::Code::MuXU: trStmnt_MuXU(); break;
+      case IR::Code::MulA: trStmnt_MulA(); break;
       case IR::Code::MulF: trStmnt_MulF(); break;
       case IR::Code::MulI: trStmnt_MulI(); break;
       case IR::Code::MulK: trStmnt_MulK(); break;
+      case IR::Code::MulR: trStmnt_MulR(); break;
       case IR::Code::MulU: trStmnt_MulU(); break;
       case IR::Code::MulX: trStmnt_MulX(); break;
       case IR::Code::NegF: trStmnt_NegF(); break;

@@ -89,16 +89,21 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::preStmnt_MulA
+   //
+   void Info::preStmnt_MulA()
+   {
+      if(auto n = getStmntSize())
+         addFunc_MulA_W(n);
+   }
+
+   //
    // Info:preStmnt_MulF
    //
    void Info::preStmnt_MulF()
    {
-      auto n = getStmntSize();
-
-      if(n == 0)
-         return;
-
-      addFunc_MulF_W(n);
+      if(auto n = getStmntSize())
+         addFunc_MulF_W(n);
    }
 
    //
@@ -106,12 +111,17 @@ namespace GDCC::BC::ZDACS
    //
    void Info::preStmnt_MulK()
    {
-      auto n = getStmntSize();
+      if(auto n = getStmntSize())
+         addFunc_MulK_W(n);
+   }
 
-      if(n == 0)
-         return;
-
-      addFunc_MulK_W(n);
+   //
+   // Info::preStmnt_MulR
+   //
+   void Info::preStmnt_MulR()
+   {
+      if(auto n = getStmntSize())
+         addFunc_MulR_W(n);
    }
 
    //

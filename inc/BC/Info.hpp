@@ -235,12 +235,16 @@ namespace GDCC::BC
       void addFunc_CmpU_NE_W(Core::FastU n);
       void addFunc_DiXI_W(Core::FastU n);
       void addFunc_DiXU_W(Core::FastU n);
+      void addFunc_DivA_W(Core::FastU n);
       void addFunc_DivF_W(Core::FastU n);
       void addFunc_DivK_W(Core::FastU n);
+      void addFunc_DivR_W(Core::FastU n);
       void addFunc_DivX_W(Core::FastU n);
       void addFunc_MuXU_W(Core::FastU n);
+      void addFunc_MulA_W(Core::FastU n);
       void addFunc_MulF_W(Core::FastU n);
       void addFunc_MulK_W(Core::FastU n);
+      void addFunc_MulR_W(Core::FastU n);
       void addFunc_MulU_W(Core::FastU n);
       void addFunc_MulX_W(Core::FastU n);
       void addFunc_NegI_W(Core::FastU n);

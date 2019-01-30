@@ -288,16 +288,30 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::preStmnt_DivA
+   //
+   void Info::preStmnt_DivA()
+   {
+      if(auto n = getStmntSize())
+         addFunc_DivA_W(n);
+   }
+
+   //
    // Info::preStmnt_DivF
    //
    void Info::preStmnt_DivF()
    {
-      auto n = getStmntSize();
+      if(auto n = getStmntSize())
+         addFunc_DivF_W(n);
+   }
 
-      if(n == 0)
-         return;
-
-      addFunc_DivF_W(n);
+   //
+   // Info::preStmnt_DivR
+   //
+   void Info::preStmnt_DivR()
+   {
+      if(auto n = getStmntSize())
+         addFunc_DivR_W(n);
    }
 
    //

@@ -201,9 +201,11 @@ namespace GDCC::BC::ZDACS
       void genStmnt_Cspe();
       void genStmnt_DiXI();
       void genStmnt_DiXU() {genStmntStkBin();}
+      void genStmnt_DivA() {genStmntStkBin();}
       void genStmnt_DivF() {genStmntStkBin();}
       void genStmnt_DivI();
       void genStmnt_DivK() {genStmntStkBin();}
+      void genStmnt_DivR() {genStmntStkBin();}
       void genStmnt_DivU();
       void genStmnt_DivX();
       void genStmnt_Jcnd_Nil();
@@ -224,9 +226,11 @@ namespace GDCC::BC::ZDACS
       void genStmnt_Move__Arr_Stk(IR::ArgPtr2 const &arr);
       void genStmnt_Move__Stk_Arr(IR::ArgPtr2 const &arr);
       void genStmnt_MuXU() {genStmntStkBin();}
+      void genStmnt_MulA() {genStmntStkBin();}
       void genStmnt_MulF() {genStmntStkBin();}
       void genStmnt_MulI() {genStmnt_MulU();}
       void genStmnt_MulK() {genStmntStkBin();}
+      void genStmnt_MulR() {genStmntStkBin();}
       void genStmnt_MulU() {genStmntStkBin(Code::MulU);}
       void genStmnt_MulX() {genStmntStkBin(Code::MulX);}
       void genStmnt_NegF();
@@ -366,18 +370,22 @@ namespace GDCC::BC::ZDACS
       void preStmnt_DiXI();
       void preStmnt_DiXU();
       void preStmnt_DiXU1();
+      void preStmnt_DivA();
       void preStmnt_DivF();
       void preStmnt_DivI() {preStmnt_DiXI();}
       void preStmnt_DivK() {preStmnt_DivX(IR::Code::DiXU);}
+      void preStmnt_DivR();
       void preStmnt_DivU() {preStmnt_DiXU();}
       void preStmnt_DivX(IR::Code code = IR::Code::DiXI);
       void preStmnt_ModI() {preStmnt_DiXI();}
       void preStmnt_ModU() {preStmnt_DiXU();}
       void preStmnt_MuXU();
       void preStmnt_MuXU1();
+      void preStmnt_MulA();
       void preStmnt_MulF();
       void preStmnt_MulI() {preStmnt_MulU();}
       void preStmnt_MulK();
+      void preStmnt_MulR();
       void preStmnt_MulU();
       void preStmnt_MulX();
       void preStmnt_Retn();
@@ -487,9 +495,11 @@ namespace GDCC::BC::ZDACS
       void putStmnt_Cspe();
       void putStmnt_DiXI();
       void putStmnt_DiXU() {putStmntStkBin();}
+      void putStmnt_DivA() {putStmntStkBin();}
       void putStmnt_DivF() {putStmntStkBin();}
       void putStmnt_DivI();
       void putStmnt_DivK() {putStmntStkBin();}
+      void putStmnt_DivR() {putStmntStkBin();}
       void putStmnt_DivU();
       void putStmnt_DivX();
       void putStmnt_Jcnd_Nil();
@@ -510,9 +520,11 @@ namespace GDCC::BC::ZDACS
       void putStmnt_Move__Arr_Stk(IR::ArgPtr2 const &arr, Code code);
       void putStmnt_Move__Stk_Arr(IR::ArgPtr2 const &arr, Code code);
       void putStmnt_MuXU() {putStmntStkBin();}
+      void putStmnt_MulA() {putStmntStkBin();}
       void putStmnt_MulF() {putStmntStkBin();}
       void putStmnt_MulI() {putStmnt_MulU();}
       void putStmnt_MulK() {putStmntStkBin();}
+      void putStmnt_MulR() {putStmntStkBin();}
       void putStmnt_MulU() {putStmntStkBin(Code::MulU);}
       void putStmnt_MulX() {putStmntStkBin(Code::MulX);}
       void putStmnt_NegF();
@@ -616,9 +628,11 @@ namespace GDCC::BC::ZDACS
       void trStmnt_Cspe();
       void trStmnt_DiXI();
       void trStmnt_DiXU();
+      void trStmnt_DivA() {trStmntStkBin(true);}
       void trStmnt_DivF() {trStmntStkBin(true);}
       void trStmnt_DivI() {trStmntStkBin(true);}
       void trStmnt_DivK() {trStmntStkBin(true);}
+      void trStmnt_DivR() {trStmntStkBin(true);}
       void trStmnt_DivU() {trStmntStkBin(true);}
       void trStmnt_DivX() {trStmntStkBin(true);}
       void trStmnt_Jcnd_Nil();
@@ -636,9 +650,11 @@ namespace GDCC::BC::ZDACS
       void trStmnt_ModU();
       void trStmnt_Move();
       void trStmnt_MuXU() {trStmntStkBin(false);}
+      void trStmnt_MulA() {trStmntStkBin(false);}
       void trStmnt_MulF() {trStmntStkBin(false);}
       void trStmnt_MulI() {trStmntStkBin(false);}
       void trStmnt_MulK() {trStmntStkBin(false);}
+      void trStmnt_MulR() {trStmntStkBin(false);}
       void trStmnt_MulU() {trStmntStkBin(false);}
       void trStmnt_MulX() {trStmntStkBin(false);}
       void trStmnt_NegF() {trStmntStkUna();}

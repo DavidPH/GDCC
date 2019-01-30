@@ -154,6 +154,31 @@ namespace GDCC::BC
    }
 
    //
+   // Info::addFunc_DivA_W
+   //
+   void Info::addFunc_DivA_W(Core::FastU n)
+   {
+      GDCC_BC_AddFuncPre(Code::DivA, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncObjBin(n, n);
+
+      Core::FastU nf = n;
+      Core::FastU nd = n + nf;
+
+      GDCC_BC_AddStmnt(Code::Move, nf, stk, 0);
+      GDCC_BC_AddStmnt(Code::Move, n,  stk, lop);
+
+      GDCC_BC_AddStmnt(Code::Move, n,  stk, rop);
+      GDCC_BC_AddStmnt(Code::Move, nf, stk, 0);
+
+      GDCC_BC_AddStmnt(Code::DiXU, nd, stk, stk, stk);
+      GDCC_BC_AddStmnt(Code::Move, nf, nul, stk);
+
+      GDCC_BC_AddStmnt(Code::Retn, n, stk);
+
+      GDCC_BC_AddFuncEnd();
+   }
+
+   //
    // Info::addFunc_DivF_W
    //
    void Info::addFunc_DivF_W(Core::FastU n)
@@ -317,6 +342,34 @@ namespace GDCC::BC
    void Info::addFunc_DivK_W(Core::FastU n)
    {
       addFunc_DivX_W(n, IR::Code::DivK, IR::Code::DivU, false);
+   }
+
+   //
+   // Info::addFunc_DivR_W
+   //
+   void Info::addFunc_DivR_W(Core::FastU n)
+   {
+      GDCC_BC_AddFuncPre(Code::DivR, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncObjBin(n, n);
+
+      Core::FastU nf = n;
+      Core::FastU nd = n + nf;
+
+      GDCC_BC_AddStmnt(Code::Move, nf, stk, 0);
+      GDCC_BC_AddStmnt(Code::Move, n,  stk, lop);
+
+      GDCC_BC_AddStmnt(Code::Move, n, stk, rop);
+      GDCC_BC_AddStmnt(Code::Copy, 1, stk, stk);
+      GDCC_BC_AddStmnt(Code::ShRI, 1, stk, stk, 31);
+      for(Core::FastU i = nf - 1; i--;)
+         GDCC_BC_AddStmnt(Code::Copy, 1, stk, stk);
+
+      GDCC_BC_AddStmnt(Code::DiXI, nd, stk, stk, stk);
+      GDCC_BC_AddStmnt(Code::Move, nf, nul, stk);
+
+      GDCC_BC_AddStmnt(Code::Retn, n, stk);
+
+      GDCC_BC_AddFuncEnd();
    }
 
    //

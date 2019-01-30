@@ -46,32 +46,58 @@
 //
 // SFRACT_*
 //
+#if __GDCC_Family__ZDACS__
+#define SFRACT_FBIT 31
+#define SFRACT_MIN (-0.5HR-0.5HR)
+#define SFRACT_MAX 0x.FFFFFFFEp-0HR
+#define SFRACT_EPSILON 0x1p-31HR
+#else
 #define SFRACT_FBIT 7
 #define SFRACT_MIN (-0.5HR-0.5HR)
 #define SFRACT_MAX 0x.FEp-0HR
 #define SFRACT_EPSILON 0x1p-7HR
+#endif
 
 //
 // USFRACT_*
 //
+#if __GDCC_Family__ZDACS__
+#define USFRACT_FBIT 32
+#define USFRACT_MAX 0x.FFFFFFFFp-0UHR
+#define USFRACT_EPSILON 0x1p-32UHR
+#else
 #define USFRACT_FBIT 8
 #define USFRACT_MAX 0x.FFp-0UHR
 #define USFRACT_EPSILON 0x1p-8UHR
+#endif
 
 //
 // FRACT_*
 //
+#if __GDCC_Family__ZDACS__
+#define FRACT_FBIT 31
+#define FRACT_MIN (-0.5R-0.5R)
+#define FRACT_MAX 0x.FFFFFFFEp-0R
+#define FRACT_EPSILON 0x1p-31R
+#else
 #define FRACT_FBIT 15
 #define FRACT_MIN (-0.5R-0.5R)
 #define FRACT_MAX 0x.FFFEp-0R
 #define FRACT_EPSILON 0x1p-15R
+#endif
 
 //
 // UFRACT_*
 //
+#if __GDCC_Family__ZDACS__
+#define UFRACT_FBIT 32
+#define UFRACT_MAX 0x.FFFFFFFFp-0UR
+#define UFRACT_EPSILON 0x1p-32UR
+#else
 #define UFRACT_FBIT 16
 #define UFRACT_MAX 0x.FFFFp-0UR
 #define UFRACT_EPSILON 0x1p-16UR
+#endif
 
 //
 // LFRACT_*
