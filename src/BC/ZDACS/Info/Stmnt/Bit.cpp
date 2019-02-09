@@ -27,6 +27,104 @@
 namespace GDCC::BC::ZDACS
 {
    //
+   // Info::addFunc_Bclz_W1
+   //
+   void Info::addFunc_Bclz_W1(bool ones)
+   {
+      GDCC_BC_AddFuncPre(ones ? Code::Bclo : Code::Bclz, 1, 1, 1, 1, __FILE__);
+      GDCC_BC_AddFuncObjUna(1);
+
+      // Counting leading ones works the same way if inverted.
+      // May be advantageous to invert the conditions, instead, though.
+      if(ones)
+         GDCC_BC_AddStmnt(Code::BNot, 1, lop, lop);
+
+      // Node codegen, mask-and-branch.
+      auto node = [&](char const *label, Core::FastU mask, char const *dst)
+      {
+         if(label) GDCC_BC_AddLabel(name + label);
+         IR::Glyph dstGlyph{prog, name + dst};
+         GDCC_BC_AddStmnt(Code::BAnd,     1, stk, lop, mask);
+         GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, dstGlyph);
+      };
+
+      // Leaf codegen, return literal.
+      auto leaf = [&](char const *label, Core::FastU ret)
+      {
+         if(label) GDCC_BC_AddLabel(name + label);
+         GDCC_BC_AddStmnt(Code::Retn, 1, ret);
+      };
+
+      // Binary search tree to find first set bit.
+      node(nullptr,     0xFFFF0000, "$FFFF0000");
+      node(nullptr,     0x0000FF00, "$0000FF00");
+      node(nullptr,     0x000000F0, "$000000F0");
+      node(nullptr,     0x0000000C, "$0000000C");
+      node(nullptr,     0x00000002, "$00000002");
+      GDCC_BC_AddStmnt(Code::Sub+U, 1, stk, 32, lop);
+      GDCC_BC_AddStmnt(Code::Retn,  1, stk);
+      leaf("$00000002",         30);
+      node("$0000000C", 0x00000008, "$00000008");
+      leaf(nullptr,             29);
+      leaf("$00000008",         28);
+      node("$000000F0", 0x000000C0, "$000000C0");
+      node(nullptr,     0x00000020, "$00000020");
+      leaf(nullptr,             27);
+      leaf("$00000020",         26);
+      node("$000000C0", 0x00000080, "$00000080");
+      leaf(nullptr,             25);
+      leaf("$00000080",         24);
+      node("$0000FF00", 0x0000F000, "$0000F000");
+      node(nullptr,     0x00000C00, "$00000C00");
+      node(nullptr,     0x00000200, "$00000200");
+      leaf(nullptr,             23);
+      leaf("$00000200",         22);
+      node("$00000C00", 0x00000800, "$00000800");
+      leaf(nullptr,             21);
+      leaf("$00000800",         20);
+      node("$0000F000", 0x0000C000, "$0000C000");
+      node(nullptr,     0x00002000, "$00002000");
+      leaf(nullptr,             19);
+      leaf("$00002000",         18);
+      node("$0000C000", 0x00008000, "$00008000");
+      leaf(nullptr,             17);
+      leaf("$00008000",         16);
+      node("$FFFF0000", 0xFF000000, "$FF000000");
+      node(nullptr,     0x00F00000, "$00F00000");
+      node(nullptr,     0x000C0000, "$000C0000");
+      node(nullptr,     0x00020000, "$00020000");
+      leaf(nullptr,             15);
+      leaf("$00020000",         14);
+      node("$000C0000", 0x00080000, "$00080000");
+      leaf(nullptr,             13);
+      leaf("$00080000",         12);
+      node("$00F00000", 0x00C00000, "$00C00000");
+      node(nullptr,     0x00200000, "$00200000");
+      leaf(nullptr,             11);
+      leaf("$00200000",         10);
+      node("$00C00000", 0x00800000, "$00800000");
+      leaf(nullptr,              9);
+      leaf("$00800000",          8);
+      node("$FF000000", 0xF0000000, "$F0000000");
+      node(nullptr,     0x0C000000, "$0C000000");
+      node(nullptr,     0x02000000, "$02000000");
+      leaf(nullptr,              7);
+      leaf("$02000000",          6);
+      node("$0C000000", 0x08000000, "$08000000");
+      leaf(nullptr,              5);
+      leaf("$08000000",          4);
+      node("$F0000000", 0xC0000000, "$C0000000");
+      node(nullptr,     0x20000000, "$20000000");
+      leaf(nullptr,              3);
+      leaf("$20000000",          2);
+      node("$C0000000", 0x80000000, "$80000000");
+      leaf(nullptr,              1);
+      leaf("$80000000",          0);
+
+      GDCC_BC_AddFuncEnd();
+   }
+
+   //
    // Info::chkStmnt_Bget
    //
    void Info::chkStmnt_Bget()
@@ -174,97 +272,7 @@ namespace GDCC::BC::ZDACS
       if(n == 0)
          return;
 
-      GDCC_BC_AddFuncPre(ones ? Code::Bclo : Code::Bclz, 1, 1, 1, 1, __FILE__);
-      GDCC_BC_AddFuncObjUna(1);
-
-      // Counting leading ones works the same way if inverted.
-      // May be advantageous to invert the conditions, instead, though.
-      if(ones)
-         GDCC_BC_AddStmnt(Code::BNot, 1, lop, lop);
-
-      // Node codegen, mask-and-branch.
-      auto node = [&](char const *label, Core::FastU mask, char const *dst)
-      {
-         if(label) GDCC_BC_AddLabel(name + label);
-         IR::Glyph dstGlyph{prog, name + dst};
-         GDCC_BC_AddStmnt(Code::BAnd,     1, stk, lop, mask);
-         GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, dstGlyph);
-      };
-
-      // Leaf codegen, return literal.
-      auto leaf = [&](char const *label, Core::FastU ret)
-      {
-         if(label) GDCC_BC_AddLabel(name + label);
-         GDCC_BC_AddStmnt(Code::Retn, 1, ret);
-      };
-
-      // Binary search tree to find first set bit.
-      node(nullptr,     0xFFFF0000, "$FFFF0000");
-      node(nullptr,     0x0000FF00, "$0000FF00");
-      node(nullptr,     0x000000F0, "$000000F0");
-      node(nullptr,     0x0000000C, "$0000000C");
-      node(nullptr,     0x00000002, "$00000002");
-      GDCC_BC_AddStmnt(Code::SubU, 1, stk, 32, lop);
-      GDCC_BC_AddStmnt(Code::Retn, 1, stk);
-      leaf("$00000002",         30);
-      node("$0000000C", 0x00000008, "$00000008");
-      leaf(nullptr,             29);
-      leaf("$00000008",         28);
-      node("$000000F0", 0x000000C0, "$000000C0");
-      node(nullptr,     0x00000020, "$00000020");
-      leaf(nullptr,             27);
-      leaf("$00000020",         26);
-      node("$000000C0", 0x00000080, "$00000080");
-      leaf(nullptr,             25);
-      leaf("$00000080",         24);
-      node("$0000FF00", 0x0000F000, "$0000F000");
-      node(nullptr,     0x00000C00, "$00000C00");
-      node(nullptr,     0x00000200, "$00000200");
-      leaf(nullptr,             23);
-      leaf("$00000200",         22);
-      node("$00000C00", 0x00000800, "$00000800");
-      leaf(nullptr,             21);
-      leaf("$00000800",         20);
-      node("$0000F000", 0x0000C000, "$0000C000");
-      node(nullptr,     0x00002000, "$00002000");
-      leaf(nullptr,             19);
-      leaf("$00002000",         18);
-      node("$0000C000", 0x00008000, "$00008000");
-      leaf(nullptr,             17);
-      leaf("$00008000",         16);
-      node("$FFFF0000", 0xFF000000, "$FF000000");
-      node(nullptr,     0x00F00000, "$00F00000");
-      node(nullptr,     0x000C0000, "$000C0000");
-      node(nullptr,     0x00020000, "$00020000");
-      leaf(nullptr,             15);
-      leaf("$00020000",         14);
-      node("$000C0000", 0x00080000, "$00080000");
-      leaf(nullptr,             13);
-      leaf("$00080000",         12);
-      node("$00F00000", 0x00C00000, "$00C00000");
-      node(nullptr,     0x00200000, "$00200000");
-      leaf(nullptr,             11);
-      leaf("$00200000",         10);
-      node("$00C00000", 0x00800000, "$00800000");
-      leaf(nullptr,              9);
-      leaf("$00800000",          8);
-      node("$FF000000", 0xF0000000, "$F0000000");
-      node(nullptr,     0x0C000000, "$0C000000");
-      node(nullptr,     0x02000000, "$02000000");
-      leaf(nullptr,              7);
-      leaf("$02000000",          6);
-      node("$0C000000", 0x08000000, "$08000000");
-      leaf(nullptr,              5);
-      leaf("$08000000",          4);
-      node("$F0000000", 0xC0000000, "$C0000000");
-      node(nullptr,     0x20000000, "$20000000");
-      leaf(nullptr,              3);
-      leaf("$20000000",          2);
-      node("$C0000000", 0x80000000, "$80000000");
-      leaf(nullptr,              1);
-      leaf("$80000000",          0);
-
-      GDCC_BC_AddFuncEnd();
+      addFunc_Bclz_W1(ones);
    }
 
    //
@@ -365,18 +373,12 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       if(n == 0)
-      {
-         putCode(Code::Push_Lit, 0);
-         return;
-      }
+         return putCode(Code::Push_Lit, 0);
 
-      Core::String name = getCallName(ones ? IR::Code::Bclo : IR::Code::Bclz, 1);
+      Core::String name = getFuncName(ones ? IR::CodeBase::Bclo : IR::CodeBase::Bclz, 1);
 
       if(n == 1)
-      {
-         putStmntCall(name, 1);
-         return;
-      }
+         return putStmntCall(name, 1);
 
       Core::FastU skip = ones ? 0xFFFFFFFF : 0;
       Core::FastU fIdx = getWord(resolveGlyph(name));

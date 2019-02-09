@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2018 David Hill
+// Copyright (C) 2015-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,31 +24,21 @@
 
 namespace GDCC::BC::ZDACS
 {
+   GDCC_BC_CodeTypeSwitchFn(gen, Mul,)
+   GDCC_BC_CodeTypeSwitchFn(gen, MulX, Ux)
+
+   GDCC_BC_CodeTypeSwitchFn(pre, Mul,)
+   GDCC_BC_CodeTypeSwitchFn(pre, MulX, Ux)
+
+   GDCC_BC_CodeTypeSwitchFn(put, Mul,)
+   GDCC_BC_CodeTypeSwitchFn(put, MulX, Ux)
+
    //
-   // Info::preStmnt_MuXU
+   // Info::addFunc_MulX_UW1
    //
-   void Info::preStmnt_MuXU()
+   void Info::addFunc_MulX_UW1()
    {
-      auto n = getStmntSize();
-
-      if(n == 0)
-         return;
-
-      if(n == 1)
-      {
-         preStmnt_MuXU1();
-         return;
-      }
-
-      addFunc_MuXU_W(n);
-   }
-
-   //
-   // Info::preStmnt_MuXU1
-   //
-   void Info::preStmnt_MuXU1()
-   {
-      GDCC_BC_AddFuncPre(Code::MuXU, 1, 2, 2, 5, __FILE__);
+      GDCC_BC_AddFuncPre(Code::MulX+U, 1, 2, 2, 5, __FILE__);
       GDCC_BC_AddFuncObjBin(1, 1);
 
       GDCC_BC_AddFuncObjReg(llo, 1, 0);
@@ -58,96 +48,50 @@ namespace GDCC::BC::ZDACS
       GDCC_BC_AddFuncObjReg(tmp, 1, 4);
 
       // Split arguments to 16-bit pieces. Take care due to aliasing.
-      GDCC_BC_AddStmnt(IR::Code::BAnd, 1, rlo, rop, 0xFFFF);
-      GDCC_BC_AddStmnt(IR::Code::ShRU, 1, rhi, rop, 16);
-      GDCC_BC_AddStmnt(IR::Code::ShRU, 1, lhi, lop, 16);
-      GDCC_BC_AddStmnt(IR::Code::BAnd, 1, llo, lop, 0xFFFF);
+      GDCC_BC_AddStmnt(Code::BAnd,  1, rlo, rop, 0xFFFF);
+      GDCC_BC_AddStmnt(Code::ShR+U, 1, rhi, rop, 16);
+      GDCC_BC_AddStmnt(Code::ShR+U, 1, lhi, lop, 16);
+      GDCC_BC_AddStmnt(Code::BAnd,  1, llo, lop, 0xFFFF);
 
       // Column 0.
-      GDCC_BC_AddStmnt(IR::Code::MulU, 1, stk, llo, rlo);
-      GDCC_BC_AddStmnt(IR::Code::Move, 1, stk, 0);
+      GDCC_BC_AddStmnt(Code::Mul+U, 1, stk, llo, rlo);
+      GDCC_BC_AddStmnt(Code::Move,  1, stk, 0);
 
       // Column 1.
-      GDCC_BC_AddStmnt(IR::Code::MulU, 1, tmp, llo, rhi);
-      GDCC_BC_AddStmnt(IR::Code::ShLU, 1, stk, tmp, 16);
-      GDCC_BC_AddStmnt(IR::Code::ShRU, 1, stk, tmp, 16);
+      GDCC_BC_AddStmnt(Code::Mul+U, 1, tmp, llo, rhi);
+      GDCC_BC_AddStmnt(Code::ShL+U, 1, stk, tmp, 16);
+      GDCC_BC_AddStmnt(Code::ShR+U, 1, stk, tmp, 16);
 
-      GDCC_BC_AddStmnt(IR::Code::MulU, 1, tmp, lhi, rlo);
-      GDCC_BC_AddStmnt(IR::Code::ShLU, 1, stk, tmp, 16);
-      GDCC_BC_AddStmnt(IR::Code::ShRU, 1, stk, tmp, 16);
+      GDCC_BC_AddStmnt(Code::Mul+U, 1, tmp, lhi, rlo);
+      GDCC_BC_AddStmnt(Code::ShL+U, 1, stk, tmp, 16);
+      GDCC_BC_AddStmnt(Code::ShR+U, 1, stk, tmp, 16);
 
       // Column 2.
-      GDCC_BC_AddStmnt(IR::Code::MulU, 1, stk, lhi, rhi);
-      GDCC_BC_AddStmnt(IR::Code::AddU, 1, stk, stk, stk);
+      GDCC_BC_AddStmnt(Code::Mul+U, 1, stk, lhi, rhi);
+      GDCC_BC_AddStmnt(Code::Add+U, 1, stk, stk, stk);
 
-      GDCC_BC_AddStmnt(IR::Code::AddU, 2, stk, stk, stk);
-      GDCC_BC_AddStmnt(IR::Code::AddU, 2, stk, stk, stk);
+      GDCC_BC_AddStmnt(Code::Add+U, 2, stk, stk, stk);
+      GDCC_BC_AddStmnt(Code::Add+U, 2, stk, stk, stk);
 
-      GDCC_BC_AddStmnt(IR::Code::Retn, 2, stk);
+      GDCC_BC_AddStmnt(Code::Retn,  2, stk);
 
       GDCC_BC_AddFuncEnd();
    }
 
    //
-   // Info::preStmnt_MulA
+   // Info::preStmnt_MulX_U
    //
-   void Info::preStmnt_MulA()
-   {
-      if(auto n = getStmntSize())
-         addFunc_MulA_W(n);
-   }
-
-   //
-   // Info:preStmnt_MulF
-   //
-   void Info::preStmnt_MulF()
-   {
-      if(auto n = getStmntSize())
-         addFunc_MulF_W(n);
-   }
-
-   //
-   // Info::preStmnt_MulK
-   //
-   void Info::preStmnt_MulK()
-   {
-      if(auto n = getStmntSize())
-         addFunc_MulK_W(n);
-   }
-
-   //
-   // Info::preStmnt_MulR
-   //
-   void Info::preStmnt_MulR()
-   {
-      if(auto n = getStmntSize())
-         addFunc_MulR_W(n);
-   }
-
-   //
-   // Info::preStmnt_MulU
-   //
-   void Info::preStmnt_MulU()
+   void Info::preStmnt_MulX_U()
    {
       auto n = getStmntSize();
 
-      if(n <= 1)
+      if(n == 0)
          return;
 
-      addFunc_MulU_W(n);
-   }
+      if(n == 1)
+         return addFunc_MulX_UW1();
 
-   //
-   // Info::preStmnt_MulX
-   //
-   void Info::preStmnt_MulX()
-   {
-      auto n = getStmntSize();
-
-      if(n <= 1)
-         return;
-
-      addFunc_MulX_W(n);
+      addFunc_MulX_UW(n);
    }
 }
 

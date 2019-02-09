@@ -27,40 +27,43 @@
 
 namespace GDCC::BC::ZDACS
 {
+   GDCC_BC_CodeTypeSwitchFn(gen, ShL, FIU)
+   GDCC_BC_CodeTypeSwitchFn(gen, ShR, FIU)
+
+   GDCC_BC_CodeTypeSwitchFn(pre, ShL, FIU)
+   GDCC_BC_CodeTypeSwitchFn(pre, ShR, FIU)
+
+   GDCC_BC_CodeTypeSwitchFn(put, ShL, FIU)
+   GDCC_BC_CodeTypeSwitchFn(put, ShR, FIU)
+
+   GDCC_BC_CodeTypeSwitchFn(tr, ShL, FIU)
+   GDCC_BC_CodeTypeSwitchFn(tr, ShR, FIU)
+
    //
-   // Info::genStmnt_ShLF
+   // Info::genStmnt_ShL_F
    //
-   void Info::genStmnt_ShLF()
+   void Info::genStmnt_ShL_F()
    {
       auto n = getStmntSize();
 
       if(n == 0)
-      {
-         numChunkCODE += 4;
-         return;
-      }
+         return (void)(numChunkCODE += 4);
 
       genStmntCall(n);
    }
 
    //
-   // Info::genStmnt_ShLU
+   // Info::genStmnt_ShL_U
    //
-   void Info::genStmnt_ShLU()
+   void Info::genStmnt_ShL_U()
    {
       auto n = getStmntSize();
 
       if(n <= 1)
-      {
-         numChunkCODE += 4;
-         return;
-      }
+         return (void)(numChunkCODE += 4);
 
       if(stmnt->args[2].a != IR::ArgBase::Lit)
-      {
-         genStmntCall(n);
-         return;
-      }
+         return genStmntCall(n);
 
       Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
 
@@ -79,23 +82,17 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_ShRI
+   // Info::genStmnt_ShR_I
    //
-   void Info::genStmnt_ShRI()
+   void Info::genStmnt_ShR_I()
    {
       auto n = getStmntSize();
 
       if(n <= 1)
-      {
-         numChunkCODE += 4;
-         return;
-      }
+         return (void)(numChunkCODE += 4);
 
       if(stmnt->args[2].a != IR::ArgBase::Lit)
-      {
-         genStmntCall(n);
-         return;
-      }
+         return genStmntCall(n);
 
       Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
 
@@ -117,29 +114,20 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_ShRU
+   // Info::genStmnt_ShR_U
    //
-   void Info::genStmnt_ShRU()
+   void Info::genStmnt_ShR_U()
    {
       auto n = getStmntSize();
 
       if(n == 0)
-      {
-         numChunkCODE += 4;
-         return;
-      }
+         return (void)(numChunkCODE += 4);
 
       if(n == 1)
-      {
-         genStmnt_ShRU1();
-         return;
-      }
+         return genStmnt_ShR_U1();
 
       if(stmnt->args[2].a != IR::ArgBase::Lit)
-      {
-         genStmntCall(n);
-         return;
-      }
+         return genStmntCall(n);
 
       Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
 
@@ -160,9 +148,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::genStmnt_ShRU1
+   // Info::genStmnt_ShR_U1
    //
-   void Info::genStmnt_ShRU1()
+   void Info::genStmnt_ShR_U1()
    {
       if(stmnt->args[2].a == IR::ArgBase::Lit)
          numChunkCODE += 24;
@@ -173,73 +161,33 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::preStmnt_ShLF
+   // Info::putStmnt_ShL_F
    //
-   void Info::preStmnt_ShLF()
-   {
-      auto n = getStmntSize();
-
-      if(n == 0)
-         return;
-
-      if(stmnt->code == IR::Code::ShLF)
-         addFunc_ShLF_W(n);
-      else
-         addFunc_ShRF_W(n);
-   }
-
-   //
-   // Info::preStmnt_ShLU
-   //
-   void Info::preStmnt_ShLU()
-   {
-      auto n = getStmntSize();
-
-      if(n <= 1)
-         return;
-
-      if(stmnt->code == IR::Code::ShLU)
-         addFunc_ShLU_W(n);
-      else if(stmnt->code == IR::Code::ShRI)
-         addFunc_ShRI_W(n);
-      else
-         addFunc_ShRU_W(n);
-   }
-
-   //
-   // Info::putStmnt_ShLF
-   //
-   void Info::putStmnt_ShLF()
+   void Info::putStmnt_ShL_F()
    {
       auto n = getStmntSize();
 
       if(n == 0)
          return putCode(Code::Drop_Nul);
 
-      putStmntCall(getCallName(stmnt->code, n), n);
+      putStmntCall(getFuncName(stmnt->code, n), n);
    }
 
    //
-   // Info::putStmnt_ShLU
+   // Info::putStmnt_ShL_U
    //
-   void Info::putStmnt_ShLU()
+   void Info::putStmnt_ShL_U()
    {
       auto n = getStmntSize();
 
       if(n == 0)
-      {
-         putCode(Code::Drop_Nul);
-         return;
-      }
+         return putCode(Code::Drop_Nul);
 
       if(n == 1)
-      {
-         putCode(Code::ShLU);
-         return;
-      }
+         return putCode(Code::ShLU);
 
       if(stmnt->args[2].a != IR::ArgBase::Lit)
-         return putStmntCall(getCallName(stmnt->code, n), n);
+         return putStmntCall(getFuncName(IR::CodeBase::ShL+'U', n), n);
 
       Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
 
@@ -289,26 +237,20 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_ShRI
+   // Info::putStmnt_ShR_I
    //
-   void Info::putStmnt_ShRI()
+   void Info::putStmnt_ShR_I()
    {
       auto n = getStmntSize();
 
       if(n == 0)
-      {
-         putCode(Code::Drop_Nul);
-         return;
-      }
+         return putCode(Code::Drop_Nul);
 
       if(n == 1)
-      {
-         putCode(Code::ShRI);
-         return;
-      }
+         return putCode(Code::ShRI);
 
       if(stmnt->args[2].a != IR::ArgBase::Lit)
-         return putStmntCall(getCallName(stmnt->code, n), n);
+         return putStmntCall(getFuncName(IR::CodeBase::ShR+'I', n), n);
 
       Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
 
@@ -365,26 +307,20 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_ShRU
+   // Info::putStmnt_ShR_U
    //
-   void Info::putStmnt_ShRU()
+   void Info::putStmnt_ShR_U()
    {
       auto n = getStmntSize();
 
       if(n == 0)
-      {
-         putCode(Code::Drop_Nul);
-         return;
-      }
+         return putCode(Code::Drop_Nul);
 
       if(n == 1)
-      {
-         putStmnt_ShRU1();
-         return;
-      }
+         return putStmnt_ShR_U1();
 
       if(stmnt->args[2].a != IR::ArgBase::Lit)
-         return putStmntCall(getCallName(stmnt->code, n), n);
+         return putStmntCall(getFuncName(IR::CodeBase::ShR+'U', n), n);
 
       Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
 
@@ -433,9 +369,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_ShRU1
+   // Info::putStmnt_ShR_U1
    //
-   void Info::putStmnt_ShRU1()
+   void Info::putStmnt_ShR_U1()
    {
       if(stmnt->args[2].a == IR::ArgBase::Lit)
       {
@@ -495,9 +431,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_ShLF
+   // Info::trStmnt_ShL_F
    //
-   void Info::trStmnt_ShLF()
+   void Info::trStmnt_ShL_F()
    {
       auto n = getStmntSize();
 
@@ -511,9 +447,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_ShLU
+   // Info::trStmnt_ShL_U
    //
-   void Info::trStmnt_ShLU()
+   void Info::trStmnt_ShL_U()
    {
       auto n = getStmntSize();
 
@@ -530,9 +466,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_ShRI
+   // Info::trStmnt_ShR_I
    //
-   void Info::trStmnt_ShRI()
+   void Info::trStmnt_ShR_I()
    {
       auto n = getStmntSize();
 
@@ -549,9 +485,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_ShRU
+   // Info::trStmnt_ShR_U
    //
-   void Info::trStmnt_ShRU()
+   void Info::trStmnt_ShR_U()
    {
       auto n = getStmntSize();
 
@@ -559,7 +495,7 @@ namespace GDCC::BC::ZDACS
          return (void)trStmntShift(true);
 
       if(n == 1)
-         return trStmnt_ShRU1();
+         return trStmnt_ShR_U1();
 
       if(!trStmntShift(false))
          return;
@@ -571,9 +507,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_ShRU1
+   // Info::trStmnt_ShR_U1
    //
-   void Info::trStmnt_ShRU1()
+   void Info::trStmnt_ShR_U1()
    {
       if(stmnt->args[1].a != IR::ArgBase::Stk &&
          stmnt->args[2].a == IR::ArgBase::Stk)

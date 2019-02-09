@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -66,7 +66,7 @@ namespace GDCC::SR
       auto sign = bitT->getSizeBitsS();
       auto bits = bitT->getSizeBitsF() + bitT->getSizeBitsI() + sign;
       auto offs = bitT->getSizeBitsO();
-      auto code = sign ? IR::Code::Bges : IR::Code::Bget;
+      auto code = sign ? IR::CodeBase::Bges : IR::CodeBase::Bget;
       ctx.block.setArgSize()
          .addStmnt(code, dst.getIRArgStk(), exp->getIRArgStk(), bits, offs);
 

@@ -15,8 +15,6 @@
 #include "CC/Exp/Arith.hpp"
 #include "CC/Type.hpp"
 
-#include "IR/CodeSet/Arith.hpp"
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -89,7 +87,7 @@ namespace GDCC::CC
          SR::Type::CPtr type;
          std::tie(type, expL, expR) = expPromo_Arith(expL, expR, pos);
 
-         return ExpCreate_Arith<SR::Exp_Add, IR::CodeSet_Add>(*this, type, expL, expR, pos);
+         return ExpCreate_Arith<SR::Exp_Add>(*this, IR::CodeBase::Add, type, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator +'");
@@ -144,8 +142,8 @@ namespace GDCC::CC
          SR::Type::CPtr evalT;
          std::tie(evalT, std::ignore, expR) = expPromo_Arith(expL, expR, pos);
 
-         return ExpCreate_ArithEq<SR::Exp_Add, IR::CodeSet_Add>(
-            *this, evalT, typeL, expL, expR, pos, post);
+         return ExpCreate_ArithEq<SR::Exp_Add>(
+            *this, IR::CodeBase::Add, evalT, typeL, expL, expR, pos, post);
       }
 
       Core::Error(pos, "invalid operands to 'operator +='");

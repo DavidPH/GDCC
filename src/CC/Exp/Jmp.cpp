@@ -54,7 +54,7 @@ namespace GDCC::CC
       else
          Core::Error(pos, "non-IRArg val stub");
 
-      ctx.block.setArgSize().addStmnt(IR::Code::Jfar_Sta,
+      ctx.block.setArgSize().addStmnt(IR::CodeBase::Jfar_Sta,
          IR::Glyph(ctx.prog, scope.fn.getLabelLJR()),
          std::move(envArg), std::move(valArg));
    }
@@ -94,7 +94,7 @@ namespace GDCC::CC
 
          // TODO: Convert envTmp to an SR::Arg to avoid stack op.
          env->genStmntStk(ctx);
-         ctx.block.addStmnt(IR::Code::Move, envTmp.getArg(), envTmp.getArgStk());
+         ctx.block.addStmnt(IR::CodeBase::Move, envTmp.getArg(), envTmp.getArgStk());
       }
 
       // Generate dynamic jump target for addr.
@@ -104,7 +104,7 @@ namespace GDCC::CC
       addrDJump.alloc = true;
       addrDJump.defin = true;
 
-      ctx.block.setArgSize().addStmnt(IR::Code::Jfar_Set,
+      ctx.block.setArgSize().addStmnt(IR::CodeBase::Jfar_Set,
          IR::Glyph(ctx.prog, addrDJump.glyph), std::move(envArg));
 
       ctx.block.addLabel(addrLabel);

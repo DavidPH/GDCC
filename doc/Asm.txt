@@ -498,9 +498,12 @@ Statements
 
 Syntax:
   statement:
-    string-sequence(opt) statement-name argument-size(opt)
+    string-sequence(opt) statement-name statement-type(opt) argument-size(opt)
       ( argument-sequence(opt) )
     string-sequence(opt) ! string argument-size(opt) ( argument-sequence(opt) )
+
+  statement-type:
+    : identifier
 
   argument-sequence:
     argument
@@ -520,34 +523,20 @@ Statement Names
 Syntax:
   statement-name:
     <Nop>
-    <AdXU>
-    <AddF>
-    <AddI>
-    <AddU>
+    <Add>
+    <AddX>
     <BAnd>
     <BNot>
     <BOrI>
     <BOrX>
     <Call>
     <Casm>
-    <CmpF_EQ>
-    <CmpF_GE>
-    <CmpF_GT>
-    <CmpF_LE>
-    <CmpF_LT>
-    <CmpF_NE>
-    <CmpI_EQ>
-    <CmpI_GE>
-    <CmpI_GT>
-    <CmpI_LE>
-    <CmpI_LT>
-    <CmpI_NE>
-    <CmpU_EQ>
-    <CmpU_GE>
-    <CmpU_GT>
-    <CmpU_LE>
-    <CmpU_LT>
-    <CmpU_NE>
+    <CmpEQ>
+    <CmpGE>
+    <CmpGT>
+    <CmpLE>
+    <CmpLT>
+    <CmpNE>
     <Cnat>
     <Copy>
     <Cscr_IA>
@@ -555,10 +544,7 @@ Syntax:
     <Cscr_SA>
     <Cscr_SS>
     <Cspe>
-    <DiXI>
-    <DiXU>
-    <DivF>
-    <DivI>
+    <Div>
     <DivX>
     <Jcnd_Nil>
     <Jcnd_Tab>
@@ -571,25 +557,18 @@ Syntax:
     <LAnd>
     <LNot>
     <LOrI>
-    <ModI>
+    <Mod>
     <Move>
-    <MuXU>
-    <MulF>
-    <MulI>
+    <Mul>
     <MulX>
-    <NegF>
-    <NegI>
+    <Neg>
     <Pltn>
     <Retn>
     <Rjnk>
-    <ShLF>
-    <ShLU>
-    <ShRF>
-    <ShRI>
-    <ShRU>
-    <SubF>
-    <SubI>
-    <SubU>
+    <ShL>
+    <ShR>
+    <Sub>
+    <SubX>
     <Swap>
 
 -----------------------------------------------------------
@@ -603,31 +582,27 @@ Semantics:
   Does nothing.
 
 -----------------------------------------------------------
-AdXU (Expanding Add Unsigned Integer)
+Add (Add)
 -----------------------------------------------------------
 
 Arguments:
-  AdXU(dst, lop, rop)
-  AdXU(dst, carry, lop, rop)
+  Add(dst, lop, rop)
+
+Semantics:
+  Adds rop to lop and stores the result in dst.
+
+-----------------------------------------------------------
+AddX (Expanding Add)
+-----------------------------------------------------------
+
+Arguments:
+  AddX(dst, lop, rop)
+  AddX(dst, carry, lop, rop)
 
 Semantics:
   Adds rop to lop and stores the result with carry in dst.
 
   If carry provided, it is also added to lop.
-
------------------------------------------------------------
-AddF (Add Signed Float)
-AddI (Add Signed Integer)
-AddU (Add Unsigned Integer)
------------------------------------------------------------
-
-Arguments:
-  AddF_W(dst, lop, rop)
-  AddI_W(dst, lop, rop)
-  AddU_W(dst, lop, rop)
-
-Semantics:
-  Adds rop to lop and stores the result in dst.
 
 -----------------------------------------------------------
 BAnd (Bitwise And)
@@ -700,15 +675,11 @@ Semantics:
   instruction number and the other arguments are immediate operands.
 
 -----------------------------------------------------------
-CmpF_* (Compare Signed Float)
-CmpI_* (Compare Signed Integer)
-CmpU_* (Compare Unsigned Integer)
+Cmp* (Compare)
 -----------------------------------------------------------
 
 Arguments:
-  CmpF_*(dst, lop, rop)
-  CmpI_*(dst, lop, rop)
-  CmpU_*(dst, lop, rop)
+  Cmp(dst, lop, rop)
 
 Semantics:
   EQ, GE, GT, LE, LT, NE variants compare if lop is equal, greater or equal,
@@ -777,30 +748,24 @@ Semantics:
   and may not be meaningful for other targets.
 
 -----------------------------------------------------------
-DiXI (Expanding Divide Signed Integer)
-DiXU (Expanding Divide Unsigned Integer)
+Div (Divide)
 -----------------------------------------------------------
 
 Argument:
-  DiXI_W(dst, lop, rop)
-  DiXU_W(dst, lop, rop)
-
-Semantics:
-  Divides lop by rop and stores the quotient and remainder in dst.
-
------------------------------------------------------------
-DivF (Divide Signed Integer)
-DivI (Divide Signed Integer)
-DivU (Divide Unsigned Integer)
------------------------------------------------------------
-
-Argument:
-  DivF(dst, lop, rop)
-  DivI(dst, lop, rop)
-  DivU(dst, lop, rop)
+  Div(dst, lop, rop)
 
 Semantics:
   Divides lop by rop and stores the quotient in dst.
+
+-----------------------------------------------------------
+DivX (Expanding Divide)
+-----------------------------------------------------------
+
+Argument:
+  DivX(dst, lop, rop)
+
+Semantics:
+  Divides lop by rop and stores the quotient and remainder in dst.
 
 -----------------------------------------------------------
 Jcnd_Nil (Conditional Jump, Nil)
@@ -917,13 +882,11 @@ Semantics:
   Logically inclusive ors lop with rop and stores the result in dst.
 
 -----------------------------------------------------------
-ModI (Modulus Signed Integer)
-ModU (Modulus Unsigned Integer)
+Mod (Modulus)
 -----------------------------------------------------------
 
 Argument:
-  ModI(dst, lop, rop)
-  ModU(dst, lop, rop)
+  Mod(dst, lop, rop)
 
 Semantics:
   Divides lop by rop and stores the remainder in dst.
@@ -939,37 +902,31 @@ Semantics:
   Moves data from src to dst.
 
 -----------------------------------------------------------
-MuXU (Expanding Multiply Unsigned Integer)
+Mul (Multiply)
 -----------------------------------------------------------
 
 Arguments:
-  MuXU(dst, lop, rop)
-
-Semantics:
-  Multiplies lop by rop and stores the full result in dst.
-
------------------------------------------------------------
-MulF (Multiply Signed Float)
-MulI (Multiply Signed Integer)
-MulU (Multiply Unsigned Integer)
------------------------------------------------------------
-
-Arguments:
-  MulF(dst, lop, rop)
-  MulI(dst, lop, rop)
-  MulU(dst, lop, rop)
+  Mul(dst, lop, rop)
 
 Semantics:
   Multiplies lop by rop and stores the truncated result in dst.
 
 -----------------------------------------------------------
-NegF (Negate Signed Float)
-NegI (Negate Signed Integer)
+MulX (Expanding Multiply)
 -----------------------------------------------------------
 
 Arguments:
-  NegF(dst, src)
-  NegI(dst, src)
+  MulX(dst, lop, rop)
+
+Semantics:
+  Multiplies lop by rop and stores the full result in dst.
+
+-----------------------------------------------------------
+Neg (Negate)
+-----------------------------------------------------------
+
+Arguments:
+  Neg(dst, src)
 
 Semantics:
   Negates src and stores the result in dst.
@@ -1003,13 +960,11 @@ Semantics:
   size.
 
 -----------------------------------------------------------
-ShLF (Shift Left Signed Float)
-ShLU (Shift Left Unsigned Integer)
+ShL (Shift Left)
 -----------------------------------------------------------
 
 Arguments:
-  ShLF(dst, lop, rop)
-  ShLU(dst, lop, rop)
+  ShL(dst, lop, rop)
 
 Semantics:
   Left-shifts lop by rop and stores the result in dst.
@@ -1017,15 +972,11 @@ Semantics:
   For float ops, this adds to the exponent.
 
 -----------------------------------------------------------
-ShRF (Shift Right Signed Float)
-ShRI (Shift Right Signed Integer)
-ShRU (Shift Right Unsigned Integer)
+ShR (Shift Right)
 -----------------------------------------------------------
 
 Arguments:
-  ShRF_W(dst, lop, rop)
-  ShRI_W(dst, lop, rop)
-  ShRU_W(dst, lop, rop)
+  ShR(dst, lop, rop)
 
 Semantics:
   Right-shifts lop by rop and stores the result in dst.
@@ -1035,7 +986,17 @@ Semantics:
   For signed fixed-point ops, this may sign-extend.
 
 -----------------------------------------------------------
-SuXU (Expanding Subtract Unsigned Integer)
+Sub (Subtract)
+-----------------------------------------------------------
+
+Arguments:
+  Sub(dst, lop, rop)
+
+Semantics:
+  Subtracts rop from lop and stores the result in dst.
+
+-----------------------------------------------------------
+SubX (Expanding Subtract)
 -----------------------------------------------------------
 
 Arguments:
@@ -1046,20 +1007,6 @@ Semantics:
   Subtracts rop from lop and stores the result with carry in dst.
 
   If carry provided, it is also added to lop.
-
------------------------------------------------------------
-SubF (Subtract Signed Float)
-SubI (Subtract Signed Integer)
-SubU (Subtract Unsigned Integer)
------------------------------------------------------------
-
-Arguments:
-  SubF(dst, lop, rop)
-  SubI(dst, lop, rop)
-  SubU(dst, lop, rop)
-
-Semantics:
-  Subtracts rop from lop and stores the result in dst.
 
 -----------------------------------------------------------
 Swap (Swap Data)
@@ -1636,9 +1583,12 @@ Grammar
     <valueStr> = string
 
   statement:
-    string-sequence(opt) statement-name argument-size(opt)
+    string-sequence(opt) statement-name statement-type(opt) argument-size(opt)
       ( argument-sequence(opt) )
     string-sequence(opt) ! string argument-size(opt) ( argument-sequence(opt) )
+
+  statement-type:
+    : identifier
 
   argument-sequence:
     argument
@@ -1646,34 +1596,20 @@ Grammar
 
   statement-name:
     <Nop>
-    <AdXU>
-    <AddF>
-    <AddI>
-    <AddU>
+    <Add>
+    <AddX>
     <BAnd>
     <BNot>
     <BOrI>
     <BOrX>
     <Call>
     <Casm>
-    <CmpF_EQ>
-    <CmpF_GE>
-    <CmpF_GT>
-    <CmpF_LE>
-    <CmpF_LT>
-    <CmpF_NE>
-    <CmpI_EQ>
-    <CmpI_GE>
-    <CmpI_GT>
-    <CmpI_LE>
-    <CmpI_LT>
-    <CmpI_NE>
-    <CmpU_EQ>
-    <CmpU_GE>
-    <CmpU_GT>
-    <CmpU_LE>
-    <CmpU_LT>
-    <CmpU_NE>
+    <CmpEQ>
+    <CmpGE>
+    <CmpGT>
+    <CmpLE>
+    <CmpLT>
+    <CmpNE>
     <Cnat>
     <Copy>
     <Cscr_IA>
@@ -1681,10 +1617,7 @@ Grammar
     <Cscr_SA>
     <Cscr_SS>
     <Cspe>
-    <DiXI>
-    <DiXU>
-    <DivF>
-    <DivI>
+    <Div>
     <DivX>
     <Jcnd_Nil>
     <Jcnd_Tab>
@@ -1697,25 +1630,18 @@ Grammar
     <LAnd>
     <LNot>
     <LOrI>
-    <ModI>
+    <Mod>
     <Move>
-    <MuXU>
-    <MulF>
-    <MulI>
+    <Mul>
     <MulX>
-    <NegF>
-    <NegI>
+    <Neg>
     <Pltn>
     <Retn>
     <Rjnk>
-    <ShLF>
-    <ShLU>
-    <ShRF>
-    <ShRI>
-    <ShRU>
-    <SubF>
-    <SubI>
-    <SubU>
+    <ShL>
+    <ShR>
+    <Sub>
+    <SubX>
     <Swap>
 
   argument:

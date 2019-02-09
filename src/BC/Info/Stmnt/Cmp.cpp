@@ -29,43 +29,43 @@ namespace GDCC::BC
    //
    // Info::addFunc_Cmp*_*
    //
-   void Info::addFunc_CmpF_EQ_W(Core::FastU n)
-      {addFunc_CmpF_W(n, IR::Code::CmpF_EQ, IR::Code::CmpI_EQ, IR::Code::CmpI_EQ);}
-   void Info::addFunc_CmpF_GE_W(Core::FastU n)
-      {addFunc_CmpF_W(n, IR::Code::CmpF_GE, IR::Code::CmpI_GE, IR::Code::CmpI_LE);}
-   void Info::addFunc_CmpF_GT_W(Core::FastU n)
-      {addFunc_CmpF_W(n, IR::Code::CmpF_GT, IR::Code::CmpI_GT, IR::Code::CmpI_LT);}
-   void Info::addFunc_CmpF_LE_W(Core::FastU n)
-      {addFunc_CmpF_W(n, IR::Code::CmpF_LE, IR::Code::CmpI_LE, IR::Code::CmpI_GE);}
-   void Info::addFunc_CmpF_LT_W(Core::FastU n)
-      {addFunc_CmpF_W(n, IR::Code::CmpF_LT, IR::Code::CmpI_LT, IR::Code::CmpI_GT);}
-   void Info::addFunc_CmpF_NE_W(Core::FastU n)
-      {addFunc_CmpF_W(n, IR::Code::CmpF_NE, IR::Code::CmpI_NE, IR::Code::CmpI_NE);}
-   void Info::addFunc_CmpI_GE_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpI_GE, IR::Code::CmpU_GE);}
-   void Info::addFunc_CmpI_GT_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpI_GT, IR::Code::CmpU_GT);}
-   void Info::addFunc_CmpI_LE_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpI_LE, IR::Code::CmpU_LE);}
-   void Info::addFunc_CmpI_LT_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpI_LT, IR::Code::CmpU_LT);}
-   void Info::addFunc_CmpU_EQ_W(Core::FastU n)
-      {addFunc_CmpU_EQ_W(n, IR::Code::CmpU_EQ, IR::Code::BAnd);}
-   void Info::addFunc_CmpU_GE_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpU_GE, IR::Code::CmpU_GE);}
-   void Info::addFunc_CmpU_GT_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpU_GT, IR::Code::CmpU_GT);}
-   void Info::addFunc_CmpU_LE_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpU_LE, IR::Code::CmpU_LE);}
-   void Info::addFunc_CmpU_LT_W(Core::FastU n)
-      {addFunc_CmpU_GE_W(n, IR::Code::CmpU_LT, IR::Code::CmpU_LT);}
-   void Info::addFunc_CmpU_NE_W(Core::FastU n)
-      {addFunc_CmpU_EQ_W(n, IR::Code::CmpU_NE, IR::Code::BOrI);}
+   void Info::addFunc_CmpEQ_FW(Core::FastU n)
+      {addFunc_Cmp_FW(n, IR::CodeBase::CmpEQ+'F', IR::CodeBase::CmpEQ+'I', IR::CodeBase::CmpEQ+'I');}
+   void Info::addFunc_CmpGE_FW(Core::FastU n)
+      {addFunc_Cmp_FW(n, IR::CodeBase::CmpGE+'F', IR::CodeBase::CmpGE+'I', IR::CodeBase::CmpLE+'I');}
+   void Info::addFunc_CmpGT_FW(Core::FastU n)
+      {addFunc_Cmp_FW(n, IR::CodeBase::CmpGT+'F', IR::CodeBase::CmpGT+'I', IR::CodeBase::CmpLT+'I');}
+   void Info::addFunc_CmpLE_FW(Core::FastU n)
+      {addFunc_Cmp_FW(n, IR::CodeBase::CmpLE+'F', IR::CodeBase::CmpLE+'I', IR::CodeBase::CmpGE+'I');}
+   void Info::addFunc_CmpLT_FW(Core::FastU n)
+      {addFunc_Cmp_FW(n, IR::CodeBase::CmpLT+'F', IR::CodeBase::CmpLT+'I', IR::CodeBase::CmpGT+'I');}
+   void Info::addFunc_CmpNE_FW(Core::FastU n)
+      {addFunc_Cmp_FW(n, IR::CodeBase::CmpNE+'F', IR::CodeBase::CmpNE+'I', IR::CodeBase::CmpNE+'I');}
+   void Info::addFunc_CmpGE_IW(Core::FastU n)
+      {addFunc_CmpGE_UW(n, IR::CodeBase::CmpGE+'I', IR::CodeBase::CmpGE+'U');}
+   void Info::addFunc_CmpGT_IW(Core::FastU n)
+      {addFunc_CmpGE_UW(n, IR::CodeBase::CmpGT+'I', IR::CodeBase::CmpGT+'U');}
+   void Info::addFunc_CmpLE_IW(Core::FastU n)
+      {addFunc_CmpGE_UW(n, IR::CodeBase::CmpLE+'I', IR::CodeBase::CmpLE+'U');}
+   void Info::addFunc_CmpLT_IW(Core::FastU n)
+      {addFunc_CmpGE_UW(n, IR::CodeBase::CmpLT+'I', IR::CodeBase::CmpLT+'U');}
+   void Info::addFunc_CmpEQ_UW(Core::FastU n)
+      {addFunc_CmpEQ_UW(n, IR::CodeBase::CmpEQ+'U', IR::CodeBase::BAnd);}
+   void Info::addFunc_CmpGE_UW(Core::FastU n)
+      {addFunc_CmpGE_UW(n, IR::CodeBase::CmpGE+'U', IR::CodeBase::CmpGE+'U');}
+   void Info::addFunc_CmpGT_UW(Core::FastU n)
+      {addFunc_CmpGE_UW(n, IR::CodeBase::CmpGT+'U', IR::CodeBase::CmpGT+'U');}
+   void Info::addFunc_CmpLE_UW(Core::FastU n)
+      {addFunc_CmpGE_UW(n, IR::CodeBase::CmpLE+'U', IR::CodeBase::CmpLE+'U');}
+   void Info::addFunc_CmpLT_UW(Core::FastU n)
+      {addFunc_CmpGE_UW(n, IR::CodeBase::CmpLT+'U', IR::CodeBase::CmpLT+'U');}
+   void Info::addFunc_CmpNE_UW(Core::FastU n)
+      {addFunc_CmpEQ_UW(n, IR::CodeBase::CmpNE+'U', IR::CodeBase::BOrI);}
 
    //
-   // Info::addFunc_CmpF_W
+   // Info::addFunc_Cmp_FW
    //
-   void Info::addFunc_CmpF_W(Core::FastU n, IR::Code code, IR::Code codePos, IR::Code codeNeg)
+   void Info::addFunc_Cmp_FW(Core::FastU n, IR::Code code, IR::Code codePos, IR::Code codeNeg)
    {
       GDCC_BC_AddFuncPre(code, n, 1, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
@@ -73,11 +73,11 @@ namespace GDCC::BC
       FloatInfo fi = getFloatInfo(n);
 
       bool cmpGT =
-         codePos == IR::Code::CmpI_GE ||
-         codePos == IR::Code::CmpI_GT;
+         codePos == IR::CodeBase::CmpGE+'I' ||
+         codePos == IR::CodeBase::CmpGT+'I';
 
       bool cmpNE =
-         codePos == IR::Code::CmpI_NE;
+         codePos == IR::CodeBase::CmpNE+'I';
 
       IR::Glyph label0{prog, name + "$0"};
       IR::Glyph label1{prog, name + "$1"};
@@ -180,9 +180,9 @@ namespace GDCC::BC
    }
 
    //
-   // Info::addFunc_CmpU_EQ_W
+   // Info::addFunc_CmpEQ_UW
    //
-   void Info::addFunc_CmpU_EQ_W(Core::FastU n, IR::Code codeCmp, IR::Code codeAnd)
+   void Info::addFunc_CmpEQ_UW(Core::FastU n, IR::Code codeCmp, IR::Code codeAnd)
    {
       GDCC_BC_AddFuncPre(codeCmp, n, 1, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
@@ -203,9 +203,9 @@ namespace GDCC::BC
    }
 
    //
-   // Info::addFunc_CmpU_GE_W
+   // Info::addFunc_CmpGE_UW
    //
-   void Info::addFunc_CmpU_GE_W(Core::FastU n, IR::Code codeCmpHi, IR::Code codeCmpLo)
+   void Info::addFunc_CmpGE_UW(Core::FastU n, IR::Code codeCmpHi, IR::Code codeCmpLo)
    {
       GDCC_BC_AddFuncPre(codeCmpHi, n, 1, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
@@ -220,7 +220,7 @@ namespace GDCC::BC
       }
 
       // First words
-      GDCC_BC_AddStmnt(Code::CmpU_EQ,  1, stk, lop.hi, rop.hi);
+      GDCC_BC_AddStmnt(Code::CmpEQ+U,  1, stk, lop.hi, rop.hi);
       GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelEq[n - 2]);
 
       GDCC_BC_AddStmnt(codeCmpHi,  1, stk, lop.hi, rop.hi);
@@ -230,7 +230,7 @@ namespace GDCC::BC
       for(Core::FastU i = n - 2; i; --i)
       {
          GDCC_BC_AddLabel(labelEq[i]);
-         GDCC_BC_AddStmnt(Code::CmpU_EQ,  1, stk, lop[i], rop[i]);
+         GDCC_BC_AddStmnt(Code::CmpEQ+U,  1, stk, lop[i], rop[i]);
          GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelEq[i - 1]);
 
          GDCC_BC_AddStmnt(codeCmpLo,  1, stk, lop[i], rop[i]);

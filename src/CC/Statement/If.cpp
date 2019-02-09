@@ -76,14 +76,14 @@ namespace GDCC::CC
          cond->genStmnt(ctx);
 
          if(needT)
-            ctx.block.setArgSize().addStmnt(IR::Code::Jump,
+            ctx.block.setArgSize().addStmnt(IR::CodeBase::Jump,
                labelT = {ctx.prog, ctx.fn->genLabel()});
       }
       else
       {
          cond->genStmntStk(ctx);
 
-         ctx.block.setArgSize().addStmnt(IR::Code::Jcnd_Nil,
+         ctx.block.setArgSize().addStmnt(IR::CodeBase::Jcnd_Nil,
             IR::Block::Stk(), labelT = {ctx.prog, ctx.fn->genLabel()});
       }
 
@@ -98,7 +98,7 @@ namespace GDCC::CC
          if(!bodyF->isTrivial())
          {
             IR::Glyph labelF = {ctx.prog, ctx.fn->genLabel()};
-            ctx.block.setArgSize().addStmnt(IR::Code::Jump, labelF);
+            ctx.block.setArgSize().addStmnt(IR::CodeBase::Jump, labelF);
 
             if(labelT) ctx.block.addLabel(labelT);
             bodyF->genStmnt(ctx);

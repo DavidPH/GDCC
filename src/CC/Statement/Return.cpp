@@ -97,11 +97,12 @@ namespace GDCC::CC
 
       if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
       {
-         ctx.block.setArgSize().addStmnt(IR::Code::Jump,
+         ctx.block.setArgSize().addStmnt(IR::CodeBase::Jump,
             IR::Glyph(ctx.prog, scope.fn->getLabelEnd()));
       }
       else
-         ctx.block.addStmnt(IR::Code::Retn, IR::Arg_Stk(exp->getType()->getSizeBytes()));
+         ctx.block.addStmnt(IR::CodeBase::Retn,
+            IR::Arg_Stk(exp->getType()->getSizeBytes()));
    }
 
    //
@@ -129,11 +130,11 @@ namespace GDCC::CC
 
       if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
       {
-         ctx.block.setArgSize().addStmnt(IR::Code::Jump,
+         ctx.block.setArgSize().addStmnt(IR::CodeBase::Jump,
             IR::Glyph(ctx.prog, scope.fn->getLabelEnd()));
       }
       else
-         ctx.block.addStmnt(IR::Code::Retn);
+         ctx.block.addStmnt(IR::CodeBase::Retn);
    }
 
    //

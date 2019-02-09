@@ -144,7 +144,7 @@ namespace GDCC::SR
       {
          stmnt->genStmnt({fn.block, this, prog});
          if(fn.block.hasLabelPending())
-            fn.block.addStmnt(IR::Code::Nop);
+            fn.block.addStmnt(IR::CodeBase::Nop);
       }
 
       try

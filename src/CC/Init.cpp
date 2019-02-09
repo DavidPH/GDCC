@@ -129,7 +129,7 @@ namespace GDCC::CC
                Core::Error(pos, "bitfield init must be IR arg");
 
             value->genStmntStk(ctx);
-            ctx.block.setArgSize().addStmnt(IR::Code::Bset,
+            ctx.block.setArgSize().addStmnt(IR::CodeBase::Bset,
                tmp.getIRArg(ctx.prog), IR::Arg_Stk(type->getSizeBytes()), bits, offs);
          }
          else

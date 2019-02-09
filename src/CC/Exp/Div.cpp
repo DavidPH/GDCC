@@ -15,8 +15,6 @@
 #include "CC/Exp/Arith.hpp"
 #include "CC/Type/Struct.hpp"
 
-#include "IR/CodeSet/Arith.hpp"
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -44,8 +42,8 @@ namespace GDCC::CC
 
          // TODO: fixed / integer doesn't require conversion.
 
-         return ExpCreate_Arith<SR::Exp_Div, IR::CodeSet_Div>(
-            *this, type, expL, expR, pos);
+         return ExpCreate_Arith<SR::Exp_Div>(
+            *this, IR::CodeBase::Div, type, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator /'");
@@ -73,8 +71,8 @@ namespace GDCC::CC
 
          // TODO: fixed /= integer doesn't require conversion.
 
-         return ExpCreate_ArithEq<SR::Exp_Div, IR::CodeSet_Div>(
-            *this, evalT, typeL, expL, expR, pos);
+         return ExpCreate_ArithEq<SR::Exp_Div>(
+            *this, IR::CodeBase::Div, evalT, typeL, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator /='");
@@ -98,7 +96,7 @@ namespace GDCC::CC
          SR::Type::CPtr type;
          std::tie(type, expL, expR) = expPromo_Arith(expL, expR, pos);
 
-         auto code = SR::ExpCode_ArithInteg<IR::CodeSet_DiX>(type);
+         auto code = SR::ExpCode_ArithInteg(IR::CodeBase::DivX, type);
 
          return SR::Exp_Arith<SR::Exp_DivEx>::Create(
             code, Type_Div::Get(type), expL, expR, pos);

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -29,15 +29,31 @@ namespace GDCC::IR
    //
    OArchive &operator << (OArchive &out, Code in)
    {
+      return out << in.base << in.type;
+   }
+
+   //
+   // operator OArchive << CodeBase
+   //
+   OArchive &operator << (OArchive &out, CodeBase in)
+   {
       switch(in)
       {
          #define GDCC_IR_CodeList(name) \
-            case Code::name: return out << Core::STR_##name;
+            case CodeBase::name: return out << Core::STR_##name;
          #include "IR/CodeList.hpp"
-      case Code::None: return out << Core::STR_None;
+      case CodeBase::None: return out << Core::STR_None;
       }
 
-      Core::Error({}, "invalid enum GDCC::IR::Code");
+      Core::Error({}, "invalid enum GDCC::IR::CodeBase");
+   }
+
+   //
+   // operator OArchive << CodeType
+   //
+   OArchive &operator << (OArchive &out, CodeType in)
+   {
+      return out << in[0] << in[1] << in[2] << in[3];
    }
 
    //
@@ -45,15 +61,35 @@ namespace GDCC::IR
    //
    std::ostream &operator << (std::ostream &out, Code in)
    {
+      out << in.base;
+      if(in.type) out << ':' << in.type;
+      return out;
+   }
+
+   //
+   // operator std::ostream << CodeBase
+   //
+   std::ostream &operator << (std::ostream &out, CodeBase in)
+   {
       switch(in)
       {
          #define GDCC_IR_CodeList(name) \
-            case Code::name: return out << #name;
+            case CodeBase::name: return out << #name;
          #include "IR/CodeList.hpp"
-      case Code::None: return out << "None";
+      case CodeBase::None: return out << "None";
       }
 
-      Core::Error({}, "invalid enum GDCC::IR::Code");
+      Core::Error({}, "invalid enum GDCC::IR::CodeBase");
+   }
+
+   //
+   // operator std::ostream << CodeType
+   //
+   std::ostream &operator << (std::ostream &out, CodeType in)
+   {
+      for(auto t : in)
+         out << t;
+      return out;
    }
 
    //
@@ -61,16 +97,32 @@ namespace GDCC::IR
    //
    IArchive &operator >> (IArchive &in, Code &out)
    {
+      return in >> out.base >> out.type;
+   }
+
+   //
+   // operator IArchive >> CodeBase
+   //
+   IArchive &operator >> (IArchive &in, CodeBase &out)
+   {
       switch(GetIR<Core::StringIndex>(in))
       {
          #define GDCC_IR_CodeList(name) \
-            case Core::STR_##name: out = Code::name; return in;
+            case Core::STR_##name: out = CodeBase::name; return in;
          #include "IR/CodeList.hpp"
-      case Core::STR_None: out = Code::None; return in;
+      case Core::STR_None: out = CodeBase::None; return in;
 
       default:
-         Core::Error({}, "invalid Code");
+         Core::Error({}, "invalid CodeBase");
       }
+   }
+
+   //
+   // operator IArchive >> CodeType
+   //
+   IArchive &operator >> (IArchive &in, CodeType &out)
+   {
+      return in >> out[0] >> out[1] >> out[2] >> out[3];
    }
 }
 

@@ -33,11 +33,11 @@ namespace GDCC::SR
       IR::Arg_Stk stk{arg.type->getSizeBytes()};
 
       if(set)
-         ctx.block.addStmnt(IR::Code::Move,
+         ctx.block.addStmnt(IR::CodeBase::Move,
             GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0), stk);
 
       if(get)
-         ctx.block.addStmnt(IR::Code::Move,
+         ctx.block.addStmnt(IR::CodeBase::Move,
             stk, GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
    }
 
@@ -91,7 +91,7 @@ namespace GDCC::SR
 
          // Move to temporary.
          Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
-         ctx.block.addStmnt(IR::Code::Move, tmp.getArg(), tmp.getArgStk());
+         ctx.block.addStmnt(IR::CodeBase::Move, tmp.getArg(), tmp.getArgStk());
 
          // Use temporary as index.
          GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg, tmp.getArg(), get, set);
@@ -125,7 +125,7 @@ namespace GDCC::SR
             arg.data->genStmnt(ctx);
 
             ctx.block.setArgSize(arg.type->getSizeBytes()).addStmnt(
-               IR::Code::Move, IR::Block::Stk(), arg.data->getIRExp());
+               IR::CodeBase::Move, IR::Block::Stk(), arg.data->getIRExp());
          }
          else
             arg.data->genStmnt(ctx, Arg(arg.type, IR::AddrBase::Stk));
@@ -141,7 +141,7 @@ namespace GDCC::SR
       if(set)
       {
          ctx.block.setArgSize(arg.type->getSizeBytes()).addStmnt(
-            IR::Code::Move, IR::Block::Nul(), IR::Block::Stk());
+            IR::CodeBase::Move, IR::Block::Nul(), IR::Block::Stk());
       }
 
       if(get) Core::Error(exp->pos, "AddrBase::Nul get");
@@ -175,7 +175,7 @@ namespace GDCC::SR
       // Try to use IR args.
       if(dst.isIRArg() && src.isIRArg())
       {
-         ctx.block.addStmnt(IR::Code::Move,
+         ctx.block.addStmnt(IR::CodeBase::Move,
             dst.getIRArg(ctx.prog), src.getIRArg(ctx.prog));
 
          return;
@@ -197,10 +197,10 @@ namespace GDCC::SR
       {
          auto dupIR = dup.getIRArg(ctx.prog);
 
-         ctx.block.addStmnt(IR::Code::Move,
+         ctx.block.addStmnt(IR::CodeBase::Move,
             dupIR, src.getIRArg(ctx.prog));
 
-         ctx.block.addStmnt(IR::Code::Move,
+         ctx.block.addStmnt(IR::CodeBase::Move,
             dst.getIRArg(ctx.prog), dupIR);
 
          return;

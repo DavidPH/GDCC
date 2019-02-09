@@ -12,8 +12,7 @@
 
 #include "BC/ZDACS/Info.hpp"
 
-#include "Core/Exception.hpp"
-
+#include "IR/Exception.hpp"
 #include "IR/Program.hpp"
 
 
@@ -44,109 +43,66 @@ namespace GDCC::BC::ZDACS
          }
       }
 
-      switch(stmnt->code)
+      switch(stmnt->code.base)
       {
-      case IR::Code::Nop: numChunkCODE += 4; break;
+      case IR::CodeBase::Nop: numChunkCODE += 4; break;
 
-      case IR::Code::AdXU: genStmnt_AdXU(); break;
-      case IR::Code::AddF: genStmnt_AddF(); break;
-      case IR::Code::AddI: genStmnt_AddI(); break;
-      case IR::Code::AddU: genStmnt_AddU(); break;
-      case IR::Code::BAnd: genStmnt_BAnd(); break;
-      case IR::Code::BNot: genStmnt_BNot(); break;
-      case IR::Code::BOrI: genStmnt_BOrI(); break;
-      case IR::Code::BOrX: genStmnt_BOrX(); break;
-      case IR::Code::Bclo: genStmnt_Bclo(); break;
-      case IR::Code::Bclz: genStmnt_Bclz(); break;
-      case IR::Code::Bges: genStmnt_Bges(); break;
-      case IR::Code::Bget: genStmnt_Bget(); break;
-      case IR::Code::Bset: genStmnt_Bset(); break;
-      case IR::Code::Call: genStmnt_Call(); break;
-      case IR::Code::Casm: genStmnt_Casm(); break;
-
-      case IR::Code::CmpF_EQ: genStmnt_CmpF_EQ(); break;
-      case IR::Code::CmpF_GE: genStmnt_CmpF_GE(); break;
-      case IR::Code::CmpF_GT: genStmnt_CmpF_LT(); break;
-      case IR::Code::CmpF_LE: genStmnt_CmpF_LE(); break;
-      case IR::Code::CmpF_LT: genStmnt_CmpF_LT(); break;
-      case IR::Code::CmpF_NE: genStmnt_CmpF_NE(); break;
-      case IR::Code::CmpI_EQ: genStmnt_CmpI_EQ(); break;
-      case IR::Code::CmpI_GE: genStmnt_CmpI_GE(); break;
-      case IR::Code::CmpI_GT: genStmnt_CmpI_GT(); break;
-      case IR::Code::CmpI_LE: genStmnt_CmpI_LE(); break;
-      case IR::Code::CmpI_LT: genStmnt_CmpI_LT(); break;
-      case IR::Code::CmpI_NE: genStmnt_CmpI_NE(); break;
-      case IR::Code::CmpU_EQ: genStmnt_CmpU_EQ(); break;
-      case IR::Code::CmpU_GE: genStmnt_CmpU_GE(); break;
-      case IR::Code::CmpU_GT: genStmnt_CmpU_GT(); break;
-      case IR::Code::CmpU_LE: genStmnt_CmpU_LE(); break;
-      case IR::Code::CmpU_LT: genStmnt_CmpU_LT(); break;
-      case IR::Code::CmpU_NE: genStmnt_CmpU_NE(); break;
-
-      case IR::Code::Copy: genStmnt_Copy(); break;
-      case IR::Code::Cnat: genStmnt_Cnat(); break;
-
-      case IR::Code::Cscr_IA: genStmnt_Cscr_IA(); break;
-      case IR::Code::Cscr_IS: genStmnt_Cscr_IS(); break;
-      case IR::Code::Cscr_SA: genStmnt_Cscr_SA(); break;
-      case IR::Code::Cscr_SS: genStmnt_Cscr_SS(); break;
-
-      case IR::Code::Cspe: genStmnt_Cspe(); break;
-      case IR::Code::DiXI: genStmnt_DiXI(); break;
-      case IR::Code::DiXU: genStmnt_DiXU(); break;
-      case IR::Code::DivA: genStmnt_DivA(); break;
-      case IR::Code::DivF: genStmnt_DivF(); break;
-      case IR::Code::DivK: genStmnt_DivK(); break;
-      case IR::Code::DivR: genStmnt_DivR(); break;
-      case IR::Code::DivI: genStmnt_DivI(); break;
-      case IR::Code::DivU: genStmnt_DivU(); break;
-      case IR::Code::DivX: genStmnt_DivX(); break;
-
-      case IR::Code::Jcnd_Nil: genStmnt_Jcnd_Nil(); break;
-      case IR::Code::Jcnd_Tab: genStmnt_Jcnd_Tab(); break;
-      case IR::Code::Jcnd_Tru: genStmnt_Jcnd_Tru(); break;
-
-      case IR::Code::Jdyn: genStmnt_Jdyn(); break;
-
-      case IR::Code::Jfar_Pro: genStmnt_Jfar_Pro(); break;
-      case IR::Code::Jfar_Set: genStmnt_Jfar_Set(); break;
-      case IR::Code::Jfar_Sta: genStmnt_Jfar_Sta(); break;
-
-      case IR::Code::Jump: genStmnt_Jump(); break;
-      case IR::Code::LAnd: genStmnt_LAnd(); break;
-      case IR::Code::LNot: genStmnt_LNot(); break;
-      case IR::Code::LOrI: genStmnt_LOrI(); break;
-      case IR::Code::ModI: genStmnt_ModI(); break;
-      case IR::Code::ModU: genStmnt_ModU(); break;
-      case IR::Code::Move: genStmnt_Move(); break;
-      case IR::Code::MuXU: genStmnt_MuXU(); break;
-      case IR::Code::MulA: genStmnt_MulA(); break;
-      case IR::Code::MulF: genStmnt_MulF(); break;
-      case IR::Code::MulI: genStmnt_MulI(); break;
-      case IR::Code::MulK: genStmnt_MulK(); break;
-      case IR::Code::MulR: genStmnt_MulR(); break;
-      case IR::Code::MulU: genStmnt_MulU(); break;
-      case IR::Code::MulX: genStmnt_MulX(); break;
-      case IR::Code::NegF: genStmnt_NegF(); break;
-      case IR::Code::NegI: genStmnt_NegI(); break;
-      case IR::Code::Pltn: genStmnt_Pltn(); break;
-      case IR::Code::Retn: genStmnt_Retn(); break;
-      case IR::Code::Rjnk: genStmnt_Rjnk(); break;
-      case IR::Code::ShLF: genStmnt_ShLF(); break;
-      case IR::Code::ShLU: genStmnt_ShLU(); break;
-      case IR::Code::ShRF: genStmnt_ShLF(); break;
-      case IR::Code::ShRI: genStmnt_ShRI(); break;
-      case IR::Code::ShRU: genStmnt_ShRU(); break;
-      case IR::Code::SuXU: genStmnt_SuXU(); break;
-      case IR::Code::SubF: genStmnt_SubF(); break;
-      case IR::Code::SubI: genStmnt_SubI(); break;
-      case IR::Code::SubU: genStmnt_SubU(); break;
-      case IR::Code::Swap: genStmnt_Swap(); break;
-
-      case IR::Code::Xcod_SID: genStmnt_Xcod_SID(); break;
+      case IR::CodeBase::Add:      genStmnt_Add(); break;
+      case IR::CodeBase::AddX:     genStmnt_AddX(); break;
+      case IR::CodeBase::BAnd:     genStmnt_BAnd(); break;
+      case IR::CodeBase::BNot:     genStmnt_BNot(); break;
+      case IR::CodeBase::BOrI:     genStmnt_BOrI(); break;
+      case IR::CodeBase::BOrX:     genStmnt_BOrX(); break;
+      case IR::CodeBase::Bclo:     genStmnt_Bclo(); break;
+      case IR::CodeBase::Bclz:     genStmnt_Bclz(); break;
+      case IR::CodeBase::Bges:     genStmnt_Bges(); break;
+      case IR::CodeBase::Bget:     genStmnt_Bget(); break;
+      case IR::CodeBase::Bset:     genStmnt_Bset(); break;
+      case IR::CodeBase::Call:     genStmnt_Call(); break;
+      case IR::CodeBase::Casm:     genStmnt_Casm(); break;
+      case IR::CodeBase::CmpEQ:    genStmnt_CmpEQ(); break;
+      case IR::CodeBase::CmpGE:    genStmnt_CmpGE(); break;
+      case IR::CodeBase::CmpGT:    genStmnt_CmpLT(); break;
+      case IR::CodeBase::CmpLE:    genStmnt_CmpLE(); break;
+      case IR::CodeBase::CmpLT:    genStmnt_CmpLT(); break;
+      case IR::CodeBase::CmpNE:    genStmnt_CmpNE(); break;
+      case IR::CodeBase::Copy:     genStmnt_Copy(); break;
+      case IR::CodeBase::Cnat:     genStmnt_Cnat(); break;
+      case IR::CodeBase::Cscr_IA:  genStmnt_Cscr_IA(); break;
+      case IR::CodeBase::Cscr_IS:  genStmnt_Cscr_IS(); break;
+      case IR::CodeBase::Cscr_SA:  genStmnt_Cscr_SA(); break;
+      case IR::CodeBase::Cscr_SS:  genStmnt_Cscr_SS(); break;
+      case IR::CodeBase::Cspe:     genStmnt_Cspe(); break;
+      case IR::CodeBase::Div:      genStmnt_Div(); break;
+      case IR::CodeBase::DivX:     genStmnt_DivX(); break;
+      case IR::CodeBase::Jcnd_Nil: genStmnt_Jcnd_Nil(); break;
+      case IR::CodeBase::Jcnd_Tab: genStmnt_Jcnd_Tab(); break;
+      case IR::CodeBase::Jcnd_Tru: genStmnt_Jcnd_Tru(); break;
+      case IR::CodeBase::Jdyn:     genStmnt_Jdyn(); break;
+      case IR::CodeBase::Jfar_Pro: genStmnt_Jfar_Pro(); break;
+      case IR::CodeBase::Jfar_Set: genStmnt_Jfar_Set(); break;
+      case IR::CodeBase::Jfar_Sta: genStmnt_Jfar_Sta(); break;
+      case IR::CodeBase::Jump:     genStmnt_Jump(); break;
+      case IR::CodeBase::LAnd:     genStmnt_LAnd(); break;
+      case IR::CodeBase::LNot:     genStmnt_LNot(); break;
+      case IR::CodeBase::LOrI:     genStmnt_LOrI(); break;
+      case IR::CodeBase::Mod:      genStmnt_Mod(); break;
+      case IR::CodeBase::Move:     genStmnt_Move(); break;
+      case IR::CodeBase::Mul:      genStmnt_Mul(); break;
+      case IR::CodeBase::MulX:     genStmnt_MulX(); break;
+      case IR::CodeBase::Neg:      genStmnt_Neg(); break;
+      case IR::CodeBase::Pltn:     genStmnt_Pltn(); break;
+      case IR::CodeBase::Retn:     genStmnt_Retn(); break;
+      case IR::CodeBase::Rjnk:     genStmnt_Rjnk(); break;
+      case IR::CodeBase::ShL:      genStmnt_ShL(); break;
+      case IR::CodeBase::ShR:      genStmnt_ShR(); break;
+      case IR::CodeBase::Sub:      genStmnt_Sub(); break;
+      case IR::CodeBase::SubX:     genStmnt_SubX(); break;
+      case IR::CodeBase::Swap:     genStmnt_Swap(); break;
+      case IR::CodeBase::Xcod_SID: genStmnt_Xcod_SID(); break;
 
       default:
-         Core::Error(stmnt->pos, "ZDACS cannot gen Code: ", stmnt->code);
+         IR::ErrorCode(stmnt, "unsupported gen");
       }
    }
 

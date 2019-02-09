@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -70,6 +70,8 @@ namespace GDCC::AS
    IR::CallType GetCallType(ParserCtx const &ctx);
 
    IR::Code GetCode(ParserCtx const &ctx);
+   IR::CodeBase GetCodeBase(ParserCtx const &ctx);
+   IR::CodeType GetCodeType(ParserCtx const &ctx);
 
    Core::CounterRef<IR::Exp const> GetExp(ParserCtx const &ctx);
 

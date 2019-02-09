@@ -41,14 +41,14 @@ namespace GDCC::SR
                idx->getType()->getIRType().tFixed);
             auto pointE = IR::ExpCreate_Value(std::move(pointV), idx->pos);
 
-            ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(),
+            ctx.block.addStmnt(IR::CodeBase::Move, IR::Block::Stk(),
                IR::ExpCreate_Mul(idx->getIRExp(), pointE, idx->pos));
          }
          else
          {
             idx->genStmntStk(ctx);
-            ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), point);
-            ctx.block.addStmnt(IR::Code::MulU,
+            ctx.block.addStmnt(IR::CodeBase::Move, IR::Block::Stk(), point);
+            ctx.block.addStmnt(IR::CodeBase::Mul+'U',
                IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
          }
       }
@@ -73,7 +73,7 @@ namespace GDCC::SR
       if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
          // Push l.
-         ctx.block.addStmnt(IR::Code::Move, stkL,
+         ctx.block.addStmnt(IR::CodeBase::Move, stkL,
             GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
          // Assign dst.
@@ -81,7 +81,7 @@ namespace GDCC::SR
       }
 
       // Push l.
-      ctx.block.addStmnt(IR::Code::Move, stkL,
+      ctx.block.addStmnt(IR::CodeBase::Move, stkL,
          GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
       // Push r.
@@ -91,14 +91,14 @@ namespace GDCC::SR
       ctx.block.addStmnt(code, stkR, stkR, stkR);
 
       // Assign l.
-      ctx.block.addStmnt(IR::Code::Move,
+      ctx.block.addStmnt(IR::CodeBase::Move,
          GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0), stkL);
 
       // Duplicate to destination, if necessary.
       if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
          // Push l.
-         ctx.block.addStmnt(IR::Code::Move,
+         ctx.block.addStmnt(IR::CodeBase::Move,
             stkL, GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
          // Assign dst.
@@ -132,7 +132,7 @@ namespace GDCC::SR
 
          // Move to temporary.
          Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
-         ctx.block.addStmnt(IR::Code::Move, tmp.getArg(), tmp.getArgStk());
+         ctx.block.addStmnt(IR::CodeBase::Move, tmp.getArg(), tmp.getArgStk());
 
          // Use temporary as index.
          GenStmnt_PointEqIdx<ArgT>(exp, code, ctx, dst, post, arg, tmp.getArg());
@@ -233,7 +233,7 @@ namespace GDCC::SR
          // Duplicate to destination, if necessary.
          if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
          {
-            ctx.block.addStmnt(IR::Code::Move, argL.getIRArgStk(), irArgL);
+            ctx.block.addStmnt(IR::CodeBase::Move, argL.getIRArgStk(), irArgL);
             GenStmnt_MovePart(exp, ctx, dst, false, true);
          }
 
@@ -252,7 +252,7 @@ namespace GDCC::SR
          // Duplicate to destination, if necessary.
          if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
          {
-            ctx.block.addStmnt(IR::Code::Move, argL.getIRArgStk(), irArgL);
+            ctx.block.addStmnt(IR::CodeBase::Move, argL.getIRArgStk(), irArgL);
             GenStmnt_MovePart(exp, ctx, dst, false, true);
          }
 

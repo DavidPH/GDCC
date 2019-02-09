@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,68 +21,11 @@
 
 namespace GDCC::BC::DGE
 {
-   //
-   // Info::preStmnt_ShLU
-   //
-   void Info::preStmnt_ShLU()
-   {
-      auto n = getStmntSizeW();
+   GDCC_BC_CodeTypeSwitchFn(pre, ShL, FIU)
+   GDCC_BC_CodeTypeSwitchFn(pre, ShR, FIU)
 
-      if(n <= 1)
-         return;
-
-      addFunc_ShLU_W(n);
-   }
-
-   //
-   // Info::preStmnt_ShRI
-   //
-   void Info::preStmnt_ShRI()
-   {
-      auto n = getStmntSizeW();
-
-      if(n <= 1)
-         return;
-
-      addFunc_ShRI_W(n);
-   }
-
-   //
-   // Info::preStmnt_ShRU
-   //
-   void Info::preStmnt_ShRU()
-   {
-      auto n = getStmntSizeW();
-
-      if(n <= 1)
-         return;
-
-      addFunc_ShRU_W(n);
-   }
-
-   //
-   // Info::putStmnt_ShLU
-   //
-   void Info::putStmnt_ShLU(char const *code)
-   {
-      auto n = getStmntSizeW();
-
-      if(n == 0)
-         return putCode("Drop_Nul");
-
-      if(n == 1)
-         return putCode(code);
-
-      putStmntCall(getFuncName(stmnt->code, n), n + 1);
-   }
-
-   //
-   // Info::trStmnt_ShLU
-   //
-   void Info::trStmnt_ShLU()
-   {
-      trStmntShift(true);
-   }
+   GDCC_BC_CodeTypeSwitchFn(put, ShL, FIU)
+   GDCC_BC_CodeTypeSwitchFn(put, ShR, FIU)
 }
 
 // EOF

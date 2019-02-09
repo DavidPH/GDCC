@@ -32,18 +32,18 @@ Function "___approx_cbrt"
    retrn    = 2
    block
    (
-      Move W 1(Stk() LocReg(Lit(0)))
+      Move  W 1(Stk() LocReg(Lit(0)))
 
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x800FFFFF))
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
-      ShRI W 1(Stk() Stk() Lit(20))
-      SubI W 1(Stk() Stk() Lit(1023))
-      DivI W 1(Stk() Stk() Lit(3))
-      AddI W 1(Stk() Stk() Lit(1023))
-      ShLU W 1(Stk() Stk() Lit(20))
-      BOrI W 1(Stk() Stk() Stk())
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x800FFFFF))
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
+      ShR:I W 1(Stk() Stk() Lit(20))
+      Sub:I W 1(Stk() Stk() Lit(1023))
+      Div:I W 1(Stk() Stk() Lit(3))
+      Add:I W 1(Stk() Stk() Lit(1023))
+      ShL:U W 1(Stk() Stk() Lit(20))
+      BOrI  W 1(Stk() Stk() Stk())
 
-      Retn W 2(Stk())
+      Retn  W 2(Stk())
    )
 )
 
@@ -62,16 +62,16 @@ Function "___approx_cbrtf"
    retrn    = 1
    block
    (
-      BAnd W 1(Stk() LocReg(Lit(0)) Lit(0x807FFFFF))
-      BAnd W 1(Stk() LocReg(Lit(0)) Lit(0x7F800000))
-      ShRI W 1(Stk() Stk() Lit(23))
-      SubI W 1(Stk() Stk() Lit(127))
-      DivI W 1(Stk() Stk() Lit(3))
-      AddI W 1(Stk() Stk() Lit(127))
-      ShLU W 1(Stk() Stk() Lit(23))
-      BOrI W 1(Stk() Stk() Stk())
+      BAnd  W 1(Stk() LocReg(Lit(0)) Lit(0x807FFFFF))
+      BAnd  W 1(Stk() LocReg(Lit(0)) Lit(0x7F800000))
+      ShR:I W 1(Stk() Stk() Lit(23))
+      Sub:I W 1(Stk() Stk() Lit(127))
+      Div:I W 1(Stk() Stk() Lit(3))
+      Add:I W 1(Stk() Stk() Lit(127))
+      ShL:U W 1(Stk() Stk() Lit(23))
+      BOrI  W 1(Stk() Stk() Stk())
 
-      Retn W 1(Stk())
+      Retn  W 1(Stk())
    )
 )
 
@@ -90,18 +90,18 @@ Function "___approx_cbrtl"
    retrn    = 2
    block
    (
-      Move W 1(Stk() LocReg(Lit(0)))
+      Move  W 1(Stk() LocReg(Lit(0)))
 
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x800FFFFF))
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
-      ShRI W 1(Stk() Stk() Lit(20))
-      SubI W 1(Stk() Stk() Lit(1023))
-      DivI W 1(Stk() Stk() Lit(3))
-      AddI W 1(Stk() Stk() Lit(1023))
-      ShLU W 1(Stk() Stk() Lit(20))
-      BOrI W 1(Stk() Stk() Stk())
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x800FFFFF))
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
+      ShR:I W 1(Stk() Stk() Lit(20))
+      Sub:I W 1(Stk() Stk() Lit(1023))
+      Div:I W 1(Stk() Stk() Lit(3))
+      Add:I W 1(Stk() Stk() Lit(1023))
+      ShL:U W 1(Stk() Stk() Lit(20))
+      BOrI  W 1(Stk() Stk() Stk())
 
-      Retn W 2(Stk())
+      Retn  W 2(Stk())
    )
 )
 
@@ -120,15 +120,15 @@ Function "___approx_frexp"
    retrn    = 3
    block
    (
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
-      ShRI W 1(Stk() Stk() Lit(20))
-      SubI W 1(LocReg(Lit(Mul(W 2))) Stk() Lit(1022))
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
+      ShR:I W 1(Stk() Stk() Lit(20))
+      Sub:I W 1(LocReg(Lit(Mul(W 2))) Stk() Lit(1022))
 
-      Move W 1(Stk() LocReg(Lit(0)))
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x800FFFFF))
-      BOrI W 1(Stk() Stk()                         Lit(0x3FE00000))
-      Move W 1(Stk() LocReg(Lit(Mul(W 2))))
-      Retn W 3(Stk())
+      Move  W 1(Stk() LocReg(Lit(0)))
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x800FFFFF))
+      BOrI  W 1(Stk() Stk()          Lit(0x3FE00000))
+      Move  W 1(Stk() LocReg(Lit(Mul(W 2))))
+      Retn  W 3(Stk())
    )
 )
 
@@ -147,14 +147,14 @@ Function "___approx_frexpf"
    retrn    = 2
    block
    (
-      BAnd W 1(Stk() LocReg(Lit(0)) Lit(0x7F800000))
-      ShRI W 1(Stk() Stk() Lit(23))
-      SubI W 1(LocReg(Lit(W)) Stk() Lit(126))
+      BAnd  W 1(Stk() LocReg(Lit(0)) Lit(0x7F800000))
+      ShR:I W 1(Stk() Stk() Lit(23))
+      Sub:I W 1(LocReg(Lit(W)) Stk() Lit(126))
 
-      BAnd W 1(Stk() LocReg(Lit(0)) Lit(0x807FFFFF))
-      BOrI W 1(Stk() Stk()          Lit(0x3F000000))
-      Move W 1(Stk() LocReg(Lit(W)))
-      Retn W 2(Stk())
+      BAnd  W 1(Stk() LocReg(Lit(0)) Lit(0x807FFFFF))
+      BOrI  W 1(Stk() Stk()          Lit(0x3F000000))
+      Move  W 1(Stk() LocReg(Lit(W)))
+      Retn  W 2(Stk())
    )
 )
 
@@ -173,15 +173,15 @@ Function "___approx_frexpl"
    retrn    = 3
    block
    (
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
-      ShRI W 1(Stk() Stk() Lit(20))
-      SubI W 1(LocReg(Lit(Mul(W 2))) Stk() Lit(1022))
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
+      ShR:I W 1(Stk() Stk() Lit(20))
+      Sub:I W 1(LocReg(Lit(Mul(W 2))) Stk() Lit(1022))
 
-      Move W 1(Stk() LocReg(Lit(0)))
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x800FFFFF))
-      BOrI W 1(Stk() Stk()                         Lit(0x3FE00000))
-      Move W 1(Stk() LocReg(Lit(Mul(W 2))))
-      Retn W 3(Stk())
+      Move  W 1(Stk() LocReg(Lit(0)))
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x800FFFFF))
+      BOrI  W 1(Stk() Stk()          Lit(0x3FE00000))
+      Move  W 1(Stk() LocReg(Lit(Mul(W 2))))
+      Retn  W 3(Stk())
    )
 )
 
@@ -200,9 +200,9 @@ Function "___approx_log2"
    retrn    = 1
    block
    (
-      ShRI W 1(Stk() LocReg(Lit(W)) Lit(20))
-      SubI W 1(Stk() Stk() Lit(1023))
-      Retn W 1(Stk())
+      ShR:I W 1(Stk() LocReg(Lit(W)) Lit(20))
+      Sub:I W 1(Stk() Stk() Lit(1023))
+      Retn  W 1(Stk())
    )
 )
 
@@ -221,9 +221,9 @@ Function "___approx_log2f"
    retrn    = 1
    block
    (
-      ShRI W 1(Stk() LocReg(Lit(0)) Lit(23))
-      SubI W 1(Stk() Stk() Lit(127))
-      Retn W 1(Stk())
+      ShR:I W 1(Stk() LocReg(Lit(0)) Lit(23))
+      Sub:I W 1(Stk() Stk() Lit(127))
+      Retn  W 1(Stk())
    )
 )
 
@@ -242,9 +242,9 @@ Function "___approx_log2l"
    retrn    = 1
    block
    (
-      ShRI W 1(Stk() LocReg(Lit(W)) Lit(20))
-      SubI W 1(Stk() Stk() Lit(1023))
-      Retn W 1(Stk())
+      ShR:I W 1(Stk() LocReg(Lit(W)) Lit(20))
+      Sub:I W 1(Stk() Stk() Lit(1023))
+      Retn  W 1(Stk())
    )
 )
 
@@ -264,22 +264,22 @@ Function "___approx_modf"
    block
    (
       ; Extract exponent as signed int.
-      BAnd W 1(Stk() LocReg(Lit(Mul(W 1))) Lit(0x7FF00000))
-      ShRI W 1(Stk() Stk() Lit(20))
-      SubI W 1(LocReg(Lit(Mul(W 2))) Stk() Lit(1023))
+      BAnd  W 1(Stk() LocReg(Lit(Mul(W 1))) Lit(0x7FF00000))
+      ShR:I W 1(Stk() Stk() Lit(20))
+      Sub:I W 1(LocReg(Lit(Mul(W 2))) Stk() Lit(1023))
 
       ; Check for having only integral or fractional component.
-      CmpI_GT  W 1(Stk() LocReg(Lit(Mul(W 2))) Lit(52))
+      CmpGT:I  W 1(Stk() LocReg(Lit(Mul(W 2))) Lit(52))
       Jcnd_Tru W 1(Stk() Lit(:"$onlyi"))
-      CmpI_LT  W 1(Stk() LocReg(Lit(Mul(W 2))) Lit(0))
+      CmpLT:I  W 1(Stk() LocReg(Lit(Mul(W 2))) Lit(0))
       Jcnd_Tru W 1(Stk() Lit(:"$onlyf"))
 
       ; Extract low bits.
-      ShRI W 2(Stk() Lit(0x000FFFFFFFFFFFFF_64.0) LocReg 1(Lit(Mul(W 2))))
-      BAnd W 2(LocReg(Lit(Mul(W 3))) Stk() LocReg(Lit(0)))
+      ShR:I W 2(Stk() Lit(0x000FFFFFFFFFFFFF_64.0) LocReg 1(Lit(Mul(W 2))))
+      BAnd  W 2(LocReg(Lit(Mul(W 3))) Stk() LocReg(Lit(0)))
 
-      Move W 1(LocReg(Lit(Mul(W 5))) Lit(0))
-      ShLU W 2(LocReg(Lit(Mul(W 3))) LocReg(Lit(Mul(W 3))) LocReg 1(Lit(Mul(W 2))))
+      Move  W 1(LocReg(Lit(Mul(W 5))) Lit(0))
+      ShL:U W 2(LocReg(Lit(Mul(W 3))) LocReg(Lit(Mul(W 3))) LocReg 1(Lit(Mul(W 2))))
 
       BOrI     W 1(Stk() LocReg(Lit(Mul(W 3))) LocReg(Lit(Mul(W 4))))
       Jcnd_Tru W 1(Stk() Lit(:"$fracl"))
@@ -289,27 +289,27 @@ Function "___approx_modf"
       Jump W 1(Lit(:"$integ"))
 
    :"$fracl"
-      ShLU W 2(LocReg(Lit(Mul(W 3))) LocReg(Lit(Mul(W 3))) Lit 1(1))
-      SubI W 1(LocReg(Lit(Mul(W 5))) LocReg(Lit(Mul(W 5))) Lit(1))
+      ShL:U W 2(LocReg(Lit(Mul(W 3))) LocReg(Lit(Mul(W 3))) Lit 1(1))
+      Sub:I W 1(LocReg(Lit(Mul(W 5))) LocReg(Lit(Mul(W 5))) Lit(1))
 
       BAnd     W 1(Stk() LocReg(Lit(Mul(W 4))) Lit(0x00100000))
       Jcnd_Nil W 1(Stk() Lit(:"$fracl"))
 
-      Move W 2(Stk() LocReg(Lit(Mul(W 3))))
-      BAnd W 1(Stk() Stk() Lit(0x000FFFFF))
-      AddI W 1(Stk() LocReg(Lit(Mul(W 5))) Lit(1023))
-      ShLU W 1(Stk() Stk() Lit(20))
-      BOrI W 1(Stk() Stk() Stk())
-      BAnd W 1(Stk() LocReg(Lit(Mul(W 1))) Lit(0x80000000))
-      BOrI W 1(Stk() Stk() Stk())
+      Move  W 2(Stk() LocReg(Lit(Mul(W 3))))
+      BAnd  W 1(Stk() Stk() Lit(0x000FFFFF))
+      Add:I W 1(Stk() LocReg(Lit(Mul(W 5))) Lit(1023))
+      ShL:U W 1(Stk() Stk() Lit(20))
+      BOrI  W 1(Stk() Stk() Stk())
+      BAnd  W 1(Stk() LocReg(Lit(Mul(W 1))) Lit(0x80000000))
+      BOrI  W 1(Stk() Stk() Stk())
 
       ; Mask out the low bits for integral result.
    :"$integ"
-      ShRI W 2(Stk() Lit(0x000FFFFFFFFFFFFF_64.0) LocReg 1(Lit(Mul(W 2))))
-      BNot W 2(Stk() Stk())
-      BAnd W 2(Stk() Stk() LocReg(Lit(0)))
+      ShR:I W 2(Stk() Lit(0x000FFFFFFFFFFFFF_64.0) LocReg 1(Lit(Mul(W 2))))
+      BNot  W 2(Stk() Stk())
+      BAnd  W 2(Stk() Stk() LocReg(Lit(0)))
 
-      Retn W 4(Stk())
+      Retn  W 4(Stk())
 
    :"$onlyi"
       Move W 1(Stk() Lit(0))
@@ -341,22 +341,22 @@ Function "___approx_modff"
    block
    (
       ; Extract exponent as signed int.
-      BAnd W 1(Stk() LocReg(Lit(0)) Lit(0x7F800000))
-      ShRI W 1(Stk() Stk() Lit(23))
-      SubI W 1(LocReg(Lit(Mul(W 1))) Stk() Lit(127))
+      BAnd  W 1(Stk() LocReg(Lit(0)) Lit(0x7F800000))
+      ShR:I W 1(Stk() Stk() Lit(23))
+      Sub:I W 1(LocReg(Lit(Mul(W 1))) Stk() Lit(127))
 
       ; Check for having only integral or fractional component.
-      CmpI_GT  W 1(Stk() LocReg(Lit(Mul(W 1))) Lit(23))
+      CmpGT:I  W 1(Stk() LocReg(Lit(Mul(W 1))) Lit(23))
       Jcnd_Tru W 1(Stk() Lit(:"$onlyi"))
-      CmpI_LT  W 1(Stk() LocReg(Lit(Mul(W 1))) Lit(0))
+      CmpLT:I  W 1(Stk() LocReg(Lit(Mul(W 1))) Lit(0))
       Jcnd_Tru W 1(Stk() Lit(:"$onlyf"))
 
       ; Extract low bits.
-      ShRI W 1(Stk() Lit(0x007FFFFF_32.0) LocReg(Lit(Mul(W 1))))
-      BAnd W 1(LocReg(Lit(Mul(W 2))) Stk() LocReg(Lit(0)))
+      ShR:I W 1(Stk() Lit(0x007FFFFF_32.0) LocReg(Lit(Mul(W 1))))
+      BAnd  W 1(LocReg(Lit(Mul(W 2))) Stk() LocReg(Lit(0)))
 
-      Move W 1(LocReg(Lit(Mul(W 3))) Lit(0))
-      ShLU W 1(LocReg(Lit(Mul(W 2))) LocReg(Lit(Mul(W 2))) LocReg(Lit(Mul(W 1))))
+      Move  W 1(LocReg(Lit(Mul(W 3))) Lit(0))
+      ShL:U W 1(LocReg(Lit(Mul(W 2))) LocReg(Lit(Mul(W 2))) LocReg(Lit(Mul(W 1))))
 
       Jcnd_Tru W 1(LocReg(Lit(Mul(W 2))) Lit(:"$fracl"))
 
@@ -364,27 +364,27 @@ Function "___approx_modff"
       Jump W 1(Lit(:"$integ"))
 
    :"$fracl"
-      ShLU W 1(LocReg(Lit(Mul(W 2))) LocReg(Lit(Mul(W 2))) Lit(1))
-      SubI W 1(LocReg(Lit(Mul(W 3))) LocReg(Lit(Mul(W 3))) Lit(1))
+      ShL:U W 1(LocReg(Lit(Mul(W 2))) LocReg(Lit(Mul(W 2))) Lit(1))
+      Sub:I W 1(LocReg(Lit(Mul(W 3))) LocReg(Lit(Mul(W 3))) Lit(1))
 
       BAnd     W 1(Stk() LocReg(Lit(Mul(W 2))) Lit(0x00800000))
       Jcnd_Nil W 1(Stk() Lit(:"$fracl"))
 
-      Move W 1(Stk() LocReg(Lit(Mul(W 2))))
-      BAnd W 1(Stk() Stk() Lit(0x007FFFFF))
-      AddI W 1(Stk() LocReg(Lit(Mul(W 3))) Lit(127))
-      ShLU W 1(Stk() Stk() Lit(23))
-      BOrI W 1(Stk() Stk() Stk())
-      BAnd W 1(Stk() LocReg(Lit(0)) Lit(0x80000000))
-      BOrI W 1(Stk() Stk() Stk())
+      Move  W 1(Stk() LocReg(Lit(Mul(W 2))))
+      BAnd  W 1(Stk() Stk() Lit(0x007FFFFF))
+      Add:I W 1(Stk() LocReg(Lit(Mul(W 3))) Lit(127))
+      ShL:U W 1(Stk() Stk() Lit(23))
+      BOrI  W 1(Stk() Stk() Stk())
+      BAnd  W 1(Stk() LocReg(Lit(0)) Lit(0x80000000))
+      BOrI  W 1(Stk() Stk() Stk())
 
       ; Mask out the low bits for integral result.
    :"$integ"
-      ShRI W 1(Stk() Lit(0x007FFFFF_32.0) LocReg(Lit(Mul(W 1))))
-      BNot W 1(Stk() Stk())
-      BAnd W 1(Stk() Stk() LocReg(Lit(0)))
+      ShR:I W 1(Stk() Lit(0x007FFFFF_32.0) LocReg(Lit(Mul(W 1))))
+      BNot  W 1(Stk() Stk())
+      BAnd  W 1(Stk() Stk() LocReg(Lit(0)))
 
-      Retn W 2(Stk())
+      Retn  W 2(Stk())
 
    :"$onlyi"
       BAnd W 1(Stk() LocReg(Lit(0)) Lit(0x80000000))
@@ -414,22 +414,22 @@ Function "___approx_modfl"
    block
    (
       ; Extract exponent as signed int.
-      BAnd W 1(Stk() LocReg(Lit(Mul(W 1))) Lit(0x7FF00000))
-      ShRI W 1(Stk() Stk() Lit(20))
-      SubI W 1(LocReg(Lit(Mul(W 2))) Stk() Lit(1023))
+      BAnd  W 1(Stk() LocReg(Lit(Mul(W 1))) Lit(0x7FF00000))
+      ShR:I W 1(Stk() Stk() Lit(20))
+      Sub:I W 1(LocReg(Lit(Mul(W 2))) Stk() Lit(1023))
 
       ; Check for having only integral or fractional component.
-      CmpI_GT  W 1(Stk() LocReg(Lit(Mul(W 2))) Lit(52))
+      CmpGT:I  W 1(Stk() LocReg(Lit(Mul(W 2))) Lit(52))
       Jcnd_Tru W 1(Stk() Lit(:"$onlyi"))
-      CmpI_LT  W 1(Stk() LocReg(Lit(Mul(W 2))) Lit(0))
+      CmpLT:I  W 1(Stk() LocReg(Lit(Mul(W 2))) Lit(0))
       Jcnd_Tru W 1(Stk() Lit(:"$onlyf"))
 
       ; Extract low bits.
-      ShRI W 2(Stk() Lit(0x000FFFFFFFFFFFFF_64.0) LocReg 1(Lit(Mul(W 2))))
-      BAnd W 2(LocReg(Lit(Mul(W 3))) Stk() LocReg(Lit(0)))
+      ShR:I W 2(Stk() Lit(0x000FFFFFFFFFFFFF_64.0) LocReg 1(Lit(Mul(W 2))))
+      BAnd  W 2(LocReg(Lit(Mul(W 3))) Stk() LocReg(Lit(0)))
 
-      Move W 1(LocReg(Lit(Mul(W 5))) Lit(0))
-      ShLU W 2(LocReg(Lit(Mul(W 3))) LocReg(Lit(Mul(W 3))) LocReg 1(Lit(Mul(W 2))))
+      Move  W 1(LocReg(Lit(Mul(W 5))) Lit(0))
+      ShL:U W 2(LocReg(Lit(Mul(W 3))) LocReg(Lit(Mul(W 3))) LocReg 1(Lit(Mul(W 2))))
 
       BOrI     W 1(Stk() LocReg(Lit(Mul(W 3))) LocReg(Lit(Mul(W 4))))
       Jcnd_Tru W 1(Stk() Lit(:"$fracl"))
@@ -439,27 +439,27 @@ Function "___approx_modfl"
       Jump W 1(Lit(:"$integ"))
 
    :"$fracl"
-      ShLU W 2(LocReg(Lit(Mul(W 3))) LocReg(Lit(Mul(W 3))) Lit 1(1))
-      SubI W 1(LocReg(Lit(Mul(W 5))) LocReg(Lit(Mul(W 5))) Lit(1))
+      ShL:U W 2(LocReg(Lit(Mul(W 3))) LocReg(Lit(Mul(W 3))) Lit 1(1))
+      Sub:I W 1(LocReg(Lit(Mul(W 5))) LocReg(Lit(Mul(W 5))) Lit(1))
 
       BAnd     W 1(Stk() LocReg(Lit(Mul(W 4))) Lit(0x00100000))
       Jcnd_Nil W 1(Stk() Lit(:"$fracl"))
 
-      Move W 2(Stk() LocReg(Lit(Mul(W 3))))
-      BAnd W 1(Stk() Stk() Lit(0x000FFFFF))
-      AddI W 1(Stk() LocReg(Lit(Mul(W 5))) Lit(1023))
-      ShLU W 1(Stk() Stk() Lit(20))
-      BOrI W 1(Stk() Stk() Stk())
-      BAnd W 1(Stk() LocReg(Lit(Mul(W 1))) Lit(0x80000000))
-      BOrI W 1(Stk() Stk() Stk())
+      Move  W 2(Stk() LocReg(Lit(Mul(W 3))))
+      BAnd  W 1(Stk() Stk() Lit(0x000FFFFF))
+      Add:I W 1(Stk() LocReg(Lit(Mul(W 5))) Lit(1023))
+      ShL:U W 1(Stk() Stk() Lit(20))
+      BOrI  W 1(Stk() Stk() Stk())
+      BAnd  W 1(Stk() LocReg(Lit(Mul(W 1))) Lit(0x80000000))
+      BOrI  W 1(Stk() Stk() Stk())
 
       ; Mask out the low bits for integral result.
    :"$integ"
-      ShRI W 2(Stk() Lit(0x000FFFFFFFFFFFFF_64.0) LocReg 1(Lit(Mul(W 2))))
-      BNot W 2(Stk() Stk())
-      BAnd W 2(Stk() Stk() LocReg(Lit(0)))
+      ShR:I W 2(Stk() Lit(0x000FFFFFFFFFFFFF_64.0) LocReg 1(Lit(Mul(W 2))))
+      BNot  W 2(Stk() Stk())
+      BAnd  W 2(Stk() Stk() LocReg(Lit(0)))
 
-      Retn W 4(Stk())
+      Retn  W 4(Stk())
 
    :"$onlyi"
       Move W 1(Stk() Lit(0))
@@ -491,18 +491,18 @@ Function "___approx_sqrt"
    retrn    = 2
    block
    (
-      Move W 1(Stk() LocReg(Lit(0)))
+      Move  W 1(Stk() LocReg(Lit(0)))
 
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x800FFFFF))
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
-      ShRI W 1(Stk() Stk() Lit(20))
-      SubI W 1(Stk() Stk() Lit(1023))
-      ShRI W 1(Stk() Stk() Lit(1))
-      AddI W 1(Stk() Stk() Lit(1023))
-      ShLU W 1(Stk() Stk() Lit(20))
-      BOrI W 1(Stk() Stk() Stk())
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x800FFFFF))
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
+      ShR:I W 1(Stk() Stk() Lit(20))
+      Sub:I W 1(Stk() Stk() Lit(1023))
+      ShR:I W 1(Stk() Stk() Lit(1))
+      Add:I W 1(Stk() Stk() Lit(1023))
+      ShL:U W 1(Stk() Stk() Lit(20))
+      BOrI  W 1(Stk() Stk() Stk())
 
-      Retn W 2(Stk())
+      Retn  W 2(Stk())
    )
 )
 
@@ -521,16 +521,16 @@ Function "___approx_sqrtf"
    retrn    = 1
    block
    (
-      BAnd W 1(Stk() LocReg(Lit(0)) Lit(0x807FFFFF))
-      BAnd W 1(Stk() LocReg(Lit(0)) Lit(0x7F800000))
-      ShRI W 1(Stk() Stk() Lit(23))
-      SubI W 1(Stk() Stk() Lit(127))
-      ShRI W 1(Stk() Stk() Lit(1))
-      AddI W 1(Stk() Stk() Lit(127))
-      ShLU W 1(Stk() Stk() Lit(23))
-      BOrI W 1(Stk() Stk() Stk())
+      BAnd  W 1(Stk() LocReg(Lit(0)) Lit(0x807FFFFF))
+      BAnd  W 1(Stk() LocReg(Lit(0)) Lit(0x7F800000))
+      ShR:I W 1(Stk() Stk() Lit(23))
+      Sub:I W 1(Stk() Stk() Lit(127))
+      ShR:I W 1(Stk() Stk() Lit(1))
+      Add:I W 1(Stk() Stk() Lit(127))
+      ShL:U W 1(Stk() Stk() Lit(23))
+      BOrI  W 1(Stk() Stk() Stk())
 
-      Retn W 1(Stk())
+      Retn  W 1(Stk())
    )
 )
 
@@ -549,18 +549,18 @@ Function "___approx_sqrtl"
    retrn    = 2
    block
    (
-      Move W 1(Stk() LocReg(Lit(0)))
+      Move  W 1(Stk() LocReg(Lit(0)))
 
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x800FFFFF))
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
-      ShRI W 1(Stk() Stk() Lit(20))
-      SubI W 1(Stk() Stk() Lit(1023))
-      ShRI W 1(Stk() Stk() Lit(1))
-      AddI W 1(Stk() Stk() Lit(1023))
-      ShLU W 1(Stk() Stk() Lit(20))
-      BOrI W 1(Stk() Stk() Stk())
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x800FFFFF))
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
+      ShR:I W 1(Stk() Stk() Lit(20))
+      Sub:I W 1(Stk() Stk() Lit(1023))
+      ShR:I W 1(Stk() Stk() Lit(1))
+      Add:I W 1(Stk() Stk() Lit(1023))
+      ShL:U W 1(Stk() Stk() Lit(20))
+      BOrI  W 1(Stk() Stk() Stk())
 
-      Retn W 2(Stk())
+      Retn  W 2(Stk())
    )
 )
 

@@ -513,25 +513,6 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::getCallName
-   //
-   Core::String Info::getCallName(IR::Code code, Core::FastU n)
-   {
-      // Some codes get mapped to other function names.
-      switch(code)
-      {
-      case IR::Code::AddI:    code = IR::Code::AddU;    break;
-      case IR::Code::CmpI_EQ: code = IR::Code::CmpU_EQ; break;
-      case IR::Code::CmpI_NE: code = IR::Code::CmpU_NE; break;
-      case IR::Code::MulI:    code = IR::Code::MulU;    break;
-      case IR::Code::SubI:    code = IR::Code::SubU;    break;
-      default: break;
-      }
-
-      return getFuncName(code, n);
-   }
-
-   //
    // Info::getInitGblArray
    //
    Core::FastU Info::getInitGblArray()
@@ -678,7 +659,7 @@ namespace GDCC::BC::ZDACS
 
       bool found = false;
       for(auto const &itr : f->block)
-         if(itr.code == IR::Code::Jfar_Set)
+         if(itr.code.base == IR::CodeBase::Jfar_Set)
             {found = true; break;}
 
       return funcJfar_Set.emplace(f, found).second;

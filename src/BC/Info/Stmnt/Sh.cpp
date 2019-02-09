@@ -27,17 +27,17 @@
 namespace GDCC::BC
 {
    //
-   // Info::addFunc_ShLF_W
+   // Info::addFunc_ShL_FW
    //
-   void Info::addFunc_ShLF_W(Core::FastU n)
+   void Info::addFunc_ShL_FW(Core::FastU n)
    {
-      addFunc_ShLF_W(n, IR::Code::ShLF, true);
+      addFunc_ShL_FW(n, IR::CodeBase::ShL+'F', true);
    }
 
    //
-   // Info::addFunc_ShLF_W
+   // Info::addFunc_ShL_FW
    //
-   void Info::addFunc_ShLF_W(Core::FastU n, IR::Code code, bool left)
+   void Info::addFunc_ShL_FW(Core::FastU n, IR::Code code, bool left)
    {
       GDCC_BC_AddFuncPre(code, n, n, n + 1, n + 1, __FILE__);
       GDCC_BC_AddFuncObjBin(n, 1);
@@ -48,31 +48,31 @@ namespace GDCC::BC
       IR::Glyph labelInf {prog, name + "$inf"};
 
       if(!left)
-         GDCC_BC_AddStmnt(Code::ShLU, 1, rop, rop, 31 - fi.bitsExp);
+         GDCC_BC_AddStmnt(Code::ShL+U, 1, rop, rop, 31 - fi.bitsExp);
 
       GDCC_BC_AddStmnt(Code::BAnd,     1, stk, lop.hi, fi.maskExp);
       GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, fi.maskExp, labelEMax, 0, labelEMax);
 
       if(left)
       {
-         GDCC_BC_AddStmnt(Code::ShRI, 1, stk, stk, 31 - fi.bitsExp);
-         GDCC_BC_AddStmnt(Code::AddU, 1, rop, rop, stk);
+         GDCC_BC_AddStmnt(Code::ShR+I, 1, stk, stk, 31 - fi.bitsExp);
+         GDCC_BC_AddStmnt(Code::Add+U, 1, rop, rop, stk);
 
-         GDCC_BC_AddStmnt(Code::CmpI_GE,  1, stk, rop, fi.maxExp);
+         GDCC_BC_AddStmnt(Code::CmpGE+I,  1, stk, rop, fi.maxExp);
          GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelInf);
 
-         GDCC_BC_AddStmnt(Code::Move, n, stk, lop);
-         GDCC_BC_AddStmnt(Code::BAnd, 1, stk, stk, ~fi.maskExp);
-         GDCC_BC_AddStmnt(Code::ShLU, 1, stk, rop, 31 - fi.bitsExp);
-         GDCC_BC_AddStmnt(Code::BOrI, 1, stk, stk, stk);
+         GDCC_BC_AddStmnt(Code::Move,  n, stk, lop);
+         GDCC_BC_AddStmnt(Code::BAnd,  1, stk, stk, ~fi.maskExp);
+         GDCC_BC_AddStmnt(Code::ShL+U, 1, stk, rop, 31 - fi.bitsExp);
+         GDCC_BC_AddStmnt(Code::BOrI,  1, stk, stk, stk);
       }
       else
       {
-         GDCC_BC_AddStmnt(Code::CmpI_LE,  1, stk, stk, rop);
+         GDCC_BC_AddStmnt(Code::CmpLE+I,  1, stk, stk, rop);
          GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelInf);
 
-         GDCC_BC_AddStmnt(Code::Move, n, stk, lop);
-         GDCC_BC_AddStmnt(Code::SubU, 1, stk, stk, rop);
+         GDCC_BC_AddStmnt(Code::Move,  n, stk, lop);
+         GDCC_BC_AddStmnt(Code::Sub+U, 1, stk, stk, rop);
       }
 
       GDCC_BC_AddStmnt(Code::Retn, n, stk);
@@ -99,17 +99,17 @@ namespace GDCC::BC
    }
 
    //
-   // Info::addFunc_ShLU_W
+   // Info::addFunc_ShL_UW
    //
-   void Info::addFunc_ShLU_W(Core::FastU n)
+   void Info::addFunc_ShL_UW(Core::FastU n)
    {
-      addFunc_ShLU_W(n, IR::Code::ShLU, true, false);
+      addFunc_ShL_UW(n, IR::CodeBase::ShL+'U', true, false);
    }
 
    //
-   // Info::addFunc_ShLU_W
+   // Info::addFunc_ShL_UW
    //
-   void Info::addFunc_ShLU_W(Core::FastU n, IR::Code code, bool left, bool sign)
+   void Info::addFunc_ShL_UW(Core::FastU n, IR::Code code, bool left, bool sign)
    {
       GDCC_BC_AddFuncPre(code, n, n, n + 1, n + 1, __FILE__);
       GDCC_BC_AddFuncObjBin(n, 1);
@@ -141,7 +141,7 @@ namespace GDCC::BC
 
          if(sign)
          {
-            GDCC_BC_AddStmnt(Code::ShRI, 1, stk, lop.hi, 31);
+            GDCC_BC_AddStmnt(Code::ShR+I, 1, stk, lop.hi, 31);
 
             for(Core::FastU i = words - 1; i--;)
                GDCC_BC_AddStmnt(Code::Copy, 1, stk, stk);
@@ -151,7 +151,7 @@ namespace GDCC::BC
       };
 
       // Calculate shiftWords.
-      GDCC_BC_AddStmnt(Code::ShRI, 1, stk, rop, 5);
+      GDCC_BC_AddStmnt(Code::ShR+I, 1, stk, rop, 5);
 
       // Calculate shiftBits
       GDCC_BC_AddStmnt(Code::BAnd, 1, stk, rop, 31);
@@ -212,26 +212,26 @@ namespace GDCC::BC
 
             for(Core::FastU i = 1; i != keepWords; ++i)
             {
-               GDCC_BC_AddStmnt(Code::Move, 1, stk, lop[i - 1]);
-               GDCC_BC_AddStmnt(Code::SubU, 1, stk, 32, rop);
-               GDCC_BC_AddStmnt(Code::ShRU, 1, stk, stk, stk);
+               GDCC_BC_AddStmnt(Code::Move,  1, stk, lop[i - 1]);
+               GDCC_BC_AddStmnt(Code::Sub+U, 1, stk, 32, rop);
+               GDCC_BC_AddStmnt(Code::ShR+U, 1, stk, stk, stk);
 
-               GDCC_BC_AddStmnt(Code::ShLU, 1, stk, lop[i], rop);
+               GDCC_BC_AddStmnt(Code::ShL+U, 1, stk, lop[i], rop);
 
-               GDCC_BC_AddStmnt(Code::BOrI, 1, stk, stk, stk);
+               GDCC_BC_AddStmnt(Code::BOrI,  1, stk, stk, stk);
             }
          }
          else
          {
             for(Core::FastU i = 0; i != keepWords - 1;)
             {
-               GDCC_BC_AddStmnt(Code::ShRU, 1, stk, lop[shiftWords + i], rop);
+               GDCC_BC_AddStmnt(Code::ShR+U, 1, stk, lop[shiftWords + i], rop);
 
-               GDCC_BC_AddStmnt(Code::Move, 1, stk, lop[shiftWords + ++i]);
-               GDCC_BC_AddStmnt(Code::SubU, 1, stk, 32, rop);
-               GDCC_BC_AddStmnt(Code::ShLU, 1, stk, stk, stk);
+               GDCC_BC_AddStmnt(Code::Move,  1, stk, lop[shiftWords + ++i]);
+               GDCC_BC_AddStmnt(Code::Sub+U, 1, stk, 32, rop);
+               GDCC_BC_AddStmnt(Code::ShL+U, 1, stk, stk, stk);
 
-               GDCC_BC_AddStmnt(Code::BOrI, 1, stk, stk, stk);
+               GDCC_BC_AddStmnt(Code::BOrI,  1, stk, stk, stk);
             }
 
             GDCC_BC_AddStmnt(code, 1, stk, lop.hi, rop);
@@ -264,27 +264,27 @@ namespace GDCC::BC
    }
 
    //
-   // Info::addFunc_ShRF_W
+   // Info::addFunc_ShR_FW
    //
-   void Info::addFunc_ShRF_W(Core::FastU n)
+   void Info::addFunc_ShR_FW(Core::FastU n)
    {
-      addFunc_ShLF_W(n, IR::Code::ShRF, false);
+      addFunc_ShL_FW(n, IR::CodeBase::ShR+'F', false);
    }
 
    //
-   // Info::addFunc_ShRI_W
+   // Info::addFunc_ShR_IW
    //
-   void Info::addFunc_ShRI_W(Core::FastU n)
+   void Info::addFunc_ShR_IW(Core::FastU n)
    {
-      addFunc_ShLU_W(n, IR::Code::ShRI, false, true);
+      addFunc_ShL_UW(n, IR::CodeBase::ShR+'I', false, true);
    }
 
    //
-   // Info::addFunc_ShRU_W
+   // Info::addFunc_ShR_UW
    //
-   void Info::addFunc_ShRU_W(Core::FastU n)
+   void Info::addFunc_ShR_UW(Core::FastU n)
    {
-      addFunc_ShLU_W(n, IR::Code::ShRU, false, false);
+      addFunc_ShL_UW(n, IR::CodeBase::ShR+'U', false, false);
    }
 }
 

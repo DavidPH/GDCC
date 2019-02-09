@@ -19,7 +19,6 @@
 #include "Core/Exception.hpp"
 
 #include "IR/Block.hpp"
-#include "IR/CodeSet/Cmp.hpp"
 #include "IR/Glyph.hpp"
 
 #include "SR/Exp.hpp"
@@ -51,8 +50,8 @@ namespace GDCC::CC
    //
    static CodePair GenCond_Codes(SR::Statement const *, SR::Type const *t)
    {
-      return {SR::ExpCode_ArithInteg<IR::CodeSet_CmpLT>(t),
-               SR::ExpCode_ArithInteg<IR::CodeSet_CmpEQ>(t)};
+      return {SR::ExpCode_ArithInteg(IR::CodeBase::CmpLT, t),
+              SR::ExpCode_ArithInteg(IR::CodeBase::CmpEQ, t)};
    }
 
    //
@@ -76,7 +75,7 @@ namespace GDCC::CC
       IR::Glyph defLabel = {ctx.prog, stmnt->scope.getLabelDefault(false)};
 
       // Unconditional branch.
-      ctx.block.setArgSize().addStmnt(IR::Code::Jump, defLabel);
+      ctx.block.setArgSize().addStmnt(IR::CodeBase::Jump, defLabel);
    }
 
    //
@@ -106,7 +105,7 @@ namespace GDCC::CC
          // If this case is one more than the previous and one less than the
          // next, then there is no need for further comparisons.
          if(begin[-1] && begin[+1] && begin[-1]->value + 1 == begin[+1]->value - 1)
-            ctx.block.setArgSize().addStmnt(IR::Code::Jump, caseLabel);
+            ctx.block.setArgSize().addStmnt(IR::CodeBase::Jump, caseLabel);
 
          // Otherwise, check against value.
          else
@@ -120,7 +119,7 @@ namespace GDCC::CC
                IR::Block::Stk(), cond.getArg(), caseValue);
 
             // If true, branch to case.
-            ctx.block.addStmnt(IR::Code::Jcnd_Tru, IR::Block::Stk(), caseLabel);
+            ctx.block.addStmnt(IR::CodeBase::Jcnd_Tru, IR::Block::Stk(), caseLabel);
 
             // Otherwise, branch to default.
             GenCond_BranchDefault(stmnt, ctx);
@@ -141,7 +140,7 @@ namespace GDCC::CC
          IR::Block::Stk(), cond.getArg(), IR::Arg_Lit(cond.sizeBytes(), pivotValue));
 
       // Skip if false.
-      ctx.block.addStmnt(IR::Code::Jcnd_Nil, IR::Block::Stk(), pivotLabel);
+      ctx.block.addStmnt(IR::CodeBase::Jcnd_Nil, IR::Block::Stk(), pivotLabel);
 
       // Search left half.
       GenCond_SearchPart(stmnt, ctx, codes, cond, begin, pivot);
@@ -174,7 +173,7 @@ namespace GDCC::CC
       stmnt->cond->genStmntStk(ctx);
 
       SR::Temporary tmp{ctx, stmnt->pos, stmnt->cond->getType()->getSizeWords()};
-      ctx.block.addStmnt(IR::Code::Move, tmp.getArg(), tmp.getArgStk());
+      ctx.block.addStmnt(IR::CodeBase::Move, tmp.getArg(), tmp.getArgStk());
 
       // Begin binary search.
       GenCond_SearchPart(stmnt, ctx, codes, tmp, cases.data() + 1,
@@ -207,8 +206,8 @@ namespace GDCC::CC
          *argItr++ = IR::Arg_Lit(caseSize, ctx.block.getExp({ctx.prog, c.label}));
       }
 
-      ctx.block.addStmntArgs(IR::Code::Jcnd_Tab, std::move(args));
-      ctx.block.addStmnt(IR::Code::Move,
+      ctx.block.addStmntArgs(IR::CodeBase::Jcnd_Tab, std::move(args));
+      ctx.block.addStmnt(IR::CodeBase::Move,
          IR::Arg_Nul(caseSize), IR::Arg_Stk(caseSize));
       GenCond_BranchDefault(stmnt, ctx);
    }

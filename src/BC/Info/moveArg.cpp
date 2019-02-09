@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -34,7 +34,7 @@ namespace GDCC::BC
       auto size = idx.getSize();
 
       block->setOrigin(stmnt->pos);
-      block->addStmnt(stmnt->next, IR::Code::Move, std::move(idx), IR::Arg_Stk(size));
+      block->addStmnt(stmnt->next, IR::CodeBase::Move, std::move(idx), IR::Arg_Stk(size));
 
       idx = IR::Arg_Stk(size);
    }
@@ -52,7 +52,7 @@ namespace GDCC::BC
 
       block->setOrigin(stmnt->pos);
       block->addLabel(std::move(stmnt->labs));
-      block->addStmnt(stmnt, IR::Code::Move, IR::Arg_Stk(size), std::move(idx));
+      block->addStmnt(stmnt, IR::CodeBase::Move, IR::Arg_Stk(size), std::move(idx));
 
       idx = IR::Arg_Stk(size);
 

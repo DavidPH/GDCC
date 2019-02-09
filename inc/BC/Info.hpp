@@ -22,6 +22,84 @@
 
 
 //----------------------------------------------------------------------------|
+// Macros                                                                     |
+//
+
+//
+// GDCC_BC_CodeTypeCases
+//
+#define GDCC_BC_CodeTypeCases(phase, name) \
+   case 'A': phase##Stmnt_##name##_A(); break; \
+ /*case 'E': phase##Stmnt_##name##_E(); break;*/ \
+   case 'F': phase##Stmnt_##name##_F(); break; \
+   case 'I': phase##Stmnt_##name##_I(); break; \
+   case 'K': phase##Stmnt_##name##_K(); break; \
+   case 'R': phase##Stmnt_##name##_R(); break; \
+   case 'U': phase##Stmnt_##name##_U(); break; \
+   case 'X': phase##Stmnt_##name##_X(); break
+
+//
+// GDCC_BC_CodeTypeCasesFIU
+//
+#define GDCC_BC_CodeTypeCasesFIU(phase, name) \
+   case 'A': phase##Stmnt_##name##_U(); break; \
+   case 'F': phase##Stmnt_##name##_F(); break; \
+   case 'I': phase##Stmnt_##name##_I(); break; \
+   case 'K': phase##Stmnt_##name##_U(); break; \
+   case 'R': phase##Stmnt_##name##_I(); break; \
+   case 'U': phase##Stmnt_##name##_U(); break; \
+   case 'X': phase##Stmnt_##name##_I(); break
+
+//
+// GDCC_BC_CodeTypeCasesIU
+//
+#define GDCC_BC_CodeTypeCasesIU(phase, name) \
+   case 'A': phase##Stmnt_##name##_U(); break; \
+   case 'I': phase##Stmnt_##name##_I(); break; \
+   case 'K': phase##Stmnt_##name##_U(); break; \
+   case 'R': phase##Stmnt_##name##_I(); break; \
+   case 'U': phase##Stmnt_##name##_U(); break; \
+   case 'X': phase##Stmnt_##name##_I(); break
+
+//
+// GDCC_BC_CodeTypeCasesIUx
+//
+#define GDCC_BC_CodeTypeCasesIUx(phase, name) \
+   case 'I': phase##Stmnt_##name##_I(); break; \
+   case 'U': phase##Stmnt_##name##_U(); break
+
+//
+// GDCC_BC_CodeTypeCasesUx
+//
+#define GDCC_BC_CodeTypeCasesUx(phase, name) \
+   case 'U': phase##Stmnt_##name##_U(); break
+
+//
+// GDCC_BC_CodeTypeSwitch
+//
+#define GDCC_BC_CodeTypeSwitch(phase, name, cases) \
+   if(!stmnt->code.type[0]) \
+      phase##Stmnt_##name##_U(); \
+   \
+   else if(!stmnt->code.type[1]) switch(stmnt->code.type[0]) \
+   { \
+      GDCC_BC_CodeTypeCases##cases(phase, name); \
+   default: errorCode("unsupported " #phase); \
+   } \
+   else \
+      errorCode("unsupported " #phase);
+
+//
+// GDCC_BC_CodeTypeSwitchFn
+//
+#define GDCC_BC_CodeTypeSwitchFn(phase, name, cases) \
+   void Info::phase##Stmnt_##name() \
+   { \
+      GDCC_BC_CodeTypeSwitch(phase, name, cases); \
+   }
+
+
+//----------------------------------------------------------------------------|
 // Types                                                                      |
 //
 
@@ -213,48 +291,48 @@ namespace GDCC::BC
 
       void addFunc(Core::String name, Core::FastU retrn, Core::FastU param);
 
-      void addFunc_AddF_W(Core::FastU n);
-      void addFunc_AddU_W(Core::FastU n);
+      void addFunc_Add_FW(Core::FastU n);
+      void addFunc_Add_UW(Core::FastU n);
       void addFunc_Bclo_W(Core::FastU n);
       void addFunc_Bclz_W(Core::FastU n);
-      void addFunc_CmpF_EQ_W(Core::FastU n);
-      void addFunc_CmpF_GE_W(Core::FastU n);
-      void addFunc_CmpF_GT_W(Core::FastU n);
-      void addFunc_CmpF_LE_W(Core::FastU n);
-      void addFunc_CmpF_LT_W(Core::FastU n);
-      void addFunc_CmpF_NE_W(Core::FastU n);
-      void addFunc_CmpI_GE_W(Core::FastU n);
-      void addFunc_CmpI_GT_W(Core::FastU n);
-      void addFunc_CmpI_LE_W(Core::FastU n);
-      void addFunc_CmpI_LT_W(Core::FastU n);
-      void addFunc_CmpU_EQ_W(Core::FastU n);
-      void addFunc_CmpU_GE_W(Core::FastU n);
-      void addFunc_CmpU_GT_W(Core::FastU n);
-      void addFunc_CmpU_LE_W(Core::FastU n);
-      void addFunc_CmpU_LT_W(Core::FastU n);
-      void addFunc_CmpU_NE_W(Core::FastU n);
-      void addFunc_DiXI_W(Core::FastU n);
-      void addFunc_DiXU_W(Core::FastU n);
-      void addFunc_DivA_W(Core::FastU n);
-      void addFunc_DivF_W(Core::FastU n);
-      void addFunc_DivK_W(Core::FastU n);
-      void addFunc_DivR_W(Core::FastU n);
-      void addFunc_DivX_W(Core::FastU n);
-      void addFunc_MuXU_W(Core::FastU n);
-      void addFunc_MulA_W(Core::FastU n);
-      void addFunc_MulF_W(Core::FastU n);
-      void addFunc_MulK_W(Core::FastU n);
-      void addFunc_MulR_W(Core::FastU n);
-      void addFunc_MulU_W(Core::FastU n);
-      void addFunc_MulX_W(Core::FastU n);
-      void addFunc_NegI_W(Core::FastU n);
-      void addFunc_ShLF_W(Core::FastU n);
-      void addFunc_ShLU_W(Core::FastU n);
-      void addFunc_ShRF_W(Core::FastU n);
-      void addFunc_ShRI_W(Core::FastU n);
-      void addFunc_ShRU_W(Core::FastU n);
-      void addFunc_SubF_W(Core::FastU n);
-      void addFunc_SubU_W(Core::FastU n);
+      void addFunc_CmpEQ_FW(Core::FastU n);
+      void addFunc_CmpGE_FW(Core::FastU n);
+      void addFunc_CmpGT_FW(Core::FastU n);
+      void addFunc_CmpLE_FW(Core::FastU n);
+      void addFunc_CmpLT_FW(Core::FastU n);
+      void addFunc_CmpNE_FW(Core::FastU n);
+      void addFunc_CmpGE_IW(Core::FastU n);
+      void addFunc_CmpGT_IW(Core::FastU n);
+      void addFunc_CmpLE_IW(Core::FastU n);
+      void addFunc_CmpLT_IW(Core::FastU n);
+      void addFunc_CmpEQ_UW(Core::FastU n);
+      void addFunc_CmpGE_UW(Core::FastU n);
+      void addFunc_CmpGT_UW(Core::FastU n);
+      void addFunc_CmpLE_UW(Core::FastU n);
+      void addFunc_CmpLT_UW(Core::FastU n);
+      void addFunc_CmpNE_UW(Core::FastU n);
+      void addFunc_Div_AW(Core::FastU n);
+      void addFunc_Div_FW(Core::FastU n);
+      void addFunc_Div_KW(Core::FastU n);
+      void addFunc_Div_RW(Core::FastU n);
+      void addFunc_Div_XW(Core::FastU n);
+      void addFunc_DivX_IW(Core::FastU n);
+      void addFunc_DivX_UW(Core::FastU n);
+      void addFunc_Mul_AW(Core::FastU n);
+      void addFunc_Mul_FW(Core::FastU n);
+      void addFunc_Mul_KW(Core::FastU n);
+      void addFunc_Mul_RW(Core::FastU n);
+      void addFunc_Mul_UW(Core::FastU n);
+      void addFunc_Mul_XW(Core::FastU n);
+      void addFunc_MulX_UW(Core::FastU n);
+      void addFunc_Neg_IW(Core::FastU n);
+      void addFunc_ShL_FW(Core::FastU n);
+      void addFunc_ShL_UW(Core::FastU n);
+      void addFunc_ShR_FW(Core::FastU n);
+      void addFunc_ShR_IW(Core::FastU n);
+      void addFunc_ShR_UW(Core::FastU n);
+      void addFunc_Sub_FW(Core::FastU n);
+      void addFunc_Sub_UW(Core::FastU n);
 
       virtual void chkStmntArg(IR::Arg const &arg);
 
@@ -267,6 +345,9 @@ namespace GDCC::BC
 
       void chkStmntArgI(IR::ArgPtr1 const &arg, IR::ArgBase a);
       void chkStmntArgI(IR::ArgPtr2 const &arg, IR::ArgBase a);
+
+      [[noreturn]]
+      void errorCode(char const *msg);
 
       virtual FixedInfo getFixedInfo(Core::FastU n, bool s);
 
@@ -325,14 +406,14 @@ namespace GDCC::BC
       std::size_t    putPos;
 
    private:
-      void addFunc_AddU_W(Core::FastU n, IR::Code codeAdd, IR::Code codeAdX);
+      void addFunc_Add_UW(Core::FastU n, IR::Code codeAdd, IR::Code codeAdX);
       void addFunc_Bclz_W(Core::FastU n, IR::Code code, Core::FastU skip);
-      void addFunc_CmpF_W(Core::FastU n, IR::Code code, IR::Code codePos, IR::Code codeNeg);
-      void addFunc_CmpU_EQ_W(Core::FastU n, IR::Code codeCmp, IR::Code codeAnd);
-      void addFunc_CmpU_GE_W(Core::FastU n, IR::Code codeCmpHi, IR::Code codeCmpLo);
-      void addFunc_DivX_W(Core::FastU n, IR::Code code, IR::Code codeDiv, bool sign);
-      void addFunc_ShLF_W(Core::FastU n, IR::Code code, bool left);
-      void addFunc_ShLU_W(Core::FastU n, IR::Code code, bool left, bool sign);
+      void addFunc_Cmp_FW(Core::FastU n, IR::Code code, IR::Code codePos, IR::Code codeNeg);
+      void addFunc_CmpEQ_UW(Core::FastU n, IR::Code codeCmp, IR::Code codeAnd);
+      void addFunc_CmpGE_UW(Core::FastU n, IR::Code codeCmpHi, IR::Code codeCmpLo);
+      void addFunc_Div_XW(Core::FastU n, IR::Code code, IR::Code codeDiv, bool sign);
+      void addFunc_ShL_FW(Core::FastU n, IR::Code code, bool left);
+      void addFunc_ShL_UW(Core::FastU n, IR::Code code, bool left, bool sign);
    };
 }
 

@@ -42,7 +42,7 @@ namespace GDCC::CC
       SR::GenStmntCtx const &ctx, SR::Arg const &arg, IdxT &&idx,
       Core::FastU bits, Core::FastU offs)
    {
-      ctx.block.addStmnt(IR::Code::Bset,
+      ctx.block.addStmnt(IR::CodeBase::Bset,
          SR::GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, std::forward<IdxT>(idx), 0),
          IR::Arg_Stk(arg.type->getSizeBytes()), bits, offs);
    }
@@ -85,7 +85,7 @@ namespace GDCC::CC
 
          // Move to temporary.
          SR::Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
-         ctx.block.addStmnt(IR::Code::Move, tmp.getArg(), tmp.getArgStk());
+         ctx.block.addStmnt(IR::CodeBase::Move, tmp.getArg(), tmp.getArgStk());
 
          // Use temporary as index.
          GenStmnt_SetBitsPartIdx<ArgT>(exp, ctx, arg, tmp.getArg(), bits, offs);
@@ -119,7 +119,7 @@ namespace GDCC::CC
       SR::GenStmntCtx const &ctx, SR::Arg const &arg, Core::FastU, Core::FastU)
    {
       ctx.block.setArgSize(arg.type->getSizeBytes()).addStmnt(
-         IR::Code::Move, IR::Block::Nul(), IR::Block::Stk());
+         IR::CodeBase::Move, IR::Block::Nul(), IR::Block::Stk());
    }
 
    //
@@ -166,7 +166,7 @@ namespace GDCC::CC
          // If duplicating the result, just duplicate it on the stack.
          if(dst.type->getQualAddr().base != IR::AddrBase::Nul)
             ctx.block.setArgSize(expR->getType()->getSizeBytes()).addStmnt(
-               IR::Code::Copy, IR::Block::Stk(), IR::Block::Stk());
+               IR::CodeBase::Copy, IR::Block::Stk(), IR::Block::Stk());
 
          auto argL = expL->getArg();
 

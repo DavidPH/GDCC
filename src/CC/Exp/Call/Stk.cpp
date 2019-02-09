@@ -121,7 +121,7 @@ namespace GDCC::CC
          if(!autWords)
             autWords = 1;
 
-         ctx.block.setArgSize().addStmnt(IR::Code::Pltn,
+         ctx.block.setArgSize().addStmnt(IR::CodeBase::Pltn,
             IR::Block::Stk(), autWords * wordBytes);
 
          ++stkWords;
@@ -156,7 +156,7 @@ namespace GDCC::CC
 
             auto autExp = IR::ExpCreate_Value(std::move(autVal), pos);
 
-            ctx.block.addStmnt(IR::Code::Move,
+            ctx.block.addStmnt(IR::CodeBase::Move,
                IR::Arg_Aut(autBytes, IR::Arg_Lit(wordBytes, autExp)),
                IR::Arg_Stk(autBytes));
 
@@ -208,15 +208,15 @@ namespace GDCC::CC
       IR::Code code;
       switch(callType)
       {
-      case IR::CallType::AsmFunc:  code = IR::Code::Casm;    break;
-      case IR::CallType::Native:   code = IR::Code::Cnat;    break;
-      case IR::CallType::SScriptI: code = IR::Code::Cscr_IS; break;
-      case IR::CallType::SScriptS: code = IR::Code::Cscr_SS; break;
-      case IR::CallType::ScriptI:  code = IR::Code::Cscr_IA; break;
-      case IR::CallType::ScriptS:  code = IR::Code::Cscr_SA; break;
-      case IR::CallType::Special:  code = IR::Code::Cspe;    break;
-      case IR::CallType::StdCall:  code = IR::Code::Call;    break;
-      case IR::CallType::StkCall:  code = IR::Code::Call;    break;
+      case IR::CallType::AsmFunc:  code = IR::CodeBase::Casm;    break;
+      case IR::CallType::Native:   code = IR::CodeBase::Cnat;    break;
+      case IR::CallType::SScriptI: code = IR::CodeBase::Cscr_IS; break;
+      case IR::CallType::SScriptS: code = IR::CodeBase::Cscr_SS; break;
+      case IR::CallType::ScriptI:  code = IR::CodeBase::Cscr_IA; break;
+      case IR::CallType::ScriptS:  code = IR::CodeBase::Cscr_SA; break;
+      case IR::CallType::Special:  code = IR::CodeBase::Cspe;    break;
+      case IR::CallType::StdCall:  code = IR::CodeBase::Call;    break;
+      case IR::CallType::StkCall:  code = IR::CodeBase::Call;    break;
       default:
          Core::Error(pos, "unsupported call type");
       }
@@ -224,7 +224,7 @@ namespace GDCC::CC
 
       // Long jump propagation.
       if(IsLongJump(callType))
-         ctx.block.setArgSize().addStmnt(IR::Code::Jfar_Pro,
+         ctx.block.setArgSize().addStmnt(IR::CodeBase::Jfar_Pro,
             IR::Glyph(ctx.prog, scope.fn.getLabelLJR()), IR::Arg_Stk(retBytes));
 
       // Move to destination.

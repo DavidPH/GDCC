@@ -40,7 +40,17 @@
 #define GDCC_BC_AddFuncPre(code, size, retrn, param, local, file) \
    Core::String name; \
    { \
-      using IR::Code; \
+      [[maybe_unused]] typedef ::GDCC::IR::CodeBase Code; \
+      \
+      [[maybe_unused]] constexpr char A = 'A'; \
+      [[maybe_unused]] constexpr char E = 'E'; \
+      [[maybe_unused]] constexpr char F = 'F'; \
+      [[maybe_unused]] constexpr char I = 'I'; \
+      [[maybe_unused]] constexpr char K = 'K'; \
+      [[maybe_unused]] constexpr char R = 'R'; \
+      [[maybe_unused]] constexpr char U = 'U'; \
+      [[maybe_unused]] constexpr char X = 'X'; \
+      \
       name = getFuncName(code, size); \
    } \
    auto newFunc = getFuncDefn(name, retrn, param, local, file); \
@@ -94,7 +104,17 @@
    { \
       [[maybe_unused]] typedef ::GDCC::IR::Block::Stk Stk; \
       [[maybe_unused]] typedef ::GDCC::IR::Block::Nul Nul; \
-      using ::GDCC::IR::Code; \
+      [[maybe_unused]] typedef ::GDCC::IR::CodeBase Code; \
+      \
+      [[maybe_unused]] constexpr char A = 'A'; \
+      [[maybe_unused]] constexpr char E = 'E'; \
+      [[maybe_unused]] constexpr char F = 'F'; \
+      [[maybe_unused]] constexpr char I = 'I'; \
+      [[maybe_unused]] constexpr char K = 'K'; \
+      [[maybe_unused]] constexpr char R = 'R'; \
+      [[maybe_unused]] constexpr char U = 'U'; \
+      [[maybe_unused]] constexpr char X = 'X'; \
+      \
       newFunc->block \
          .setArgSize((size) * w) \
          .setOrigin(__LINE__) \
@@ -110,7 +130,17 @@
    { \
       [[maybe_unused]] typedef ::GDCC::IR::Block::Stk Stk; \
       [[maybe_unused]] typedef ::GDCC::IR::Block::Nul Nul; \
-      using ::GDCC::IR::Code; \
+      [[maybe_unused]] typedef ::GDCC::IR::CodeBase Code; \
+      \
+      [[maybe_unused]] constexpr char A = 'A'; \
+      [[maybe_unused]] constexpr char E = 'E'; \
+      [[maybe_unused]] constexpr char F = 'F'; \
+      [[maybe_unused]] constexpr char I = 'I'; \
+      [[maybe_unused]] constexpr char K = 'K'; \
+      [[maybe_unused]] constexpr char R = 'R'; \
+      [[maybe_unused]] constexpr char U = 'U'; \
+      [[maybe_unused]] constexpr char X = 'X'; \
+      \
       newFunc->block \
          .setArgSize((size) * w) \
          .setOrigin(__LINE__) \

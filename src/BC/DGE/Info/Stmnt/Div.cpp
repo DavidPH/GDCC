@@ -21,10 +21,20 @@
 
 namespace GDCC::BC::DGE
 {
+   GDCC_BC_CodeTypeSwitchFn(pre, Div,)
+   GDCC_BC_CodeTypeSwitchFn(pre, DivX, IUx)
+   GDCC_BC_CodeTypeSwitchFn(pre, Mod, IU)
+
+   GDCC_BC_CodeTypeSwitchFn(put, Div,)
+   GDCC_BC_CodeTypeSwitchFn(put, DivX, IUx)
+   GDCC_BC_CodeTypeSwitchFn(put, Mod, IU)
+
+   GDCC_BC_CodeTypeSwitchFn(tr, Mod, IU)
+
    //
-   // Info::putStmnt_DivA
+   // Info::putStmnt_Div_A
    //
-   void Info::putStmnt_DivA()
+   void Info::putStmnt_Div_A()
    {
       auto b = getStmntSize();
 
@@ -49,9 +59,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_DivR
+   // Info::putStmnt_Div_R
    //
-   void Info::putStmnt_DivR()
+   void Info::putStmnt_Div_R()
    {
       auto b = getStmntSize();
 
@@ -86,9 +96,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_DivU
+   // Info::putStmnt_Div_U
    //
-   void Info::putStmnt_DivU(char const *code, IR::Code codeX, bool mod)
+   void Info::putStmnt_Div_U(char const *code, IR::Code codeX, bool mod)
    {
       auto n = getStmntSizeW();
 
@@ -105,17 +115,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_DiXU
+   // Info::trStmnt_Mod_U
    //
-   void Info::trStmnt_DiXU()
-   {
-      trStmntStk3(true);
-   }
-
-   //
-   // Info::trStmnt_ModU
-   //
-   void Info::trStmnt_ModU()
+   void Info::trStmnt_Mod_U()
    {
       auto n = getStmntSizeW();
 

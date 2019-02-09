@@ -33,9 +33,9 @@ namespace GDCC::CC
    // Uses a base type and code set to generalize basic bitwise expression
    // creation.
    //
-   template<typename Base, typename Codes>
-   SR::Exp::CRef ExpCreate_Bitwise(Factory &fact, SR::Exp const *l,
-      SR::Exp const *r, Core::Origin pos)
+   template<typename Base>
+   SR::Exp::CRef ExpCreate_Bitwise(Factory &fact, IR::CodeBase base,
+      SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
       auto expL = fact.expPromo_Int(fact.expPromo_LValue(l, pos), pos);
       auto expR = fact.expPromo_Int(fact.expPromo_LValue(r, pos), pos);
@@ -49,20 +49,21 @@ namespace GDCC::CC
          auto type = SR::Type::None;
          std::tie(type, expL, expR) = fact.expPromo_Arith(expL, expR, pos);
 
-         return ExpCreate_ArithInteg<Base, Codes>(fact, type, expL, expR, pos);
+         return SR::Exp_Arith<Base>::Create(base, type, expL, expR, pos);
       }
 
       Core::Error(pos, "expected integer type");
    }
+
    //
    // ExpCreate_BitwiseEq
    //
    // Uses a base type and code set to generalize basic bitwise assignment
    // expression creation.
    //
-   template<typename Base, typename Codes>
-   SR::Exp::CRef ExpCreate_BitwiseEq(Factory &fact, SR::Exp const *expL,
-      SR::Exp const *r, Core::Origin pos)
+   template<typename Base>
+   SR::Exp::CRef ExpCreate_BitwiseEq(Factory &fact, IR::CodeBase base,
+      SR::Exp const *expL, SR::Exp const *r, Core::Origin pos)
    {
       auto expR = fact.expPromo_Int(fact.expPromo_LValue(r, pos), pos);
 
@@ -75,7 +76,7 @@ namespace GDCC::CC
          SR::Type::CPtr evalT;
          std::tie(evalT, std::ignore, expR) = fact.expPromo_Arith(expL, expR, pos);
 
-         return ExpCreate_ArithEqInteg<Base, Codes>(fact, evalT, typeL, expL, expR, pos);
+         return SR::Exp_ArithEq<Base>::Create(evalT, base, false, typeL, expL, expR, pos);
       }
 
       Core::Error(pos, "expected integer type");
@@ -87,9 +88,9 @@ namespace GDCC::CC
    // Uses a base type and code set to generalize basic shift expression
    // creation.
    //
-   template<typename Base, typename Codes>
-   SR::Exp::CRef ExpCreate_Shift(Factory &fact, SR::Exp const *l,
-      SR::Exp const *r, Core::Origin pos)
+   template<typename Base>
+   SR::Exp::CRef ExpCreate_Shift(Factory &fact, IR::CodeBase base,
+      SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
       auto expL = fact.expPromo_Int(fact.expPromo_LValue(l, pos), pos);
       auto expR = fact.expPromo_Int(fact.expPromo_LValue(r, pos), pos);
@@ -107,7 +108,7 @@ namespace GDCC::CC
       else
          expR = fact.expConvert_Arith(TypeIntegPrU, expR, pos);
 
-      auto code = SR::ExpCode_Arith<Codes>(typeL);
+      auto code = SR::ExpCode_Arith(base, typeL);
 
       return SR::Exp_Arith<Base>::Create(code, typeL, expL, expR, pos);
    }
@@ -118,9 +119,9 @@ namespace GDCC::CC
    // Uses a base type and code set to generalize basic shift expression
    // creation.
    //
-   template<typename Base, typename Codes>
-   SR::Exp::CRef ExpCreate_ShiftEq(Factory &fact, SR::Exp const *expL, SR::Exp const *r,
-      Core::Origin pos)
+   template<typename Base>
+   SR::Exp::CRef ExpCreate_ShiftEq(Factory &fact, IR::CodeBase base,
+      SR::Exp const *expL, SR::Exp const *r, Core::Origin pos)
    {
       auto expR = fact.expPromo_Int(fact.expPromo_LValue(r, pos), pos);
 
@@ -137,7 +138,7 @@ namespace GDCC::CC
       else
          expR = fact.expConvert_Arith(TypeIntegPrU, expR, pos);
 
-      auto code = SR::ExpCode_Arith<Codes>(typeL);
+      auto code = SR::ExpCode_Arith(base, typeL);
 
       return SR::Exp_ArithEq<Base>::Create(typeL, code, false, typeL, expL, expR, pos);
    }

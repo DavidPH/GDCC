@@ -77,20 +77,21 @@ namespace GDCC::BC
    //
    Core::String Info::getFuncName(IR::Code code, Core::FastU n)
    {
-      char        buf[sizeof("___GDCC__Code_XX_Wxx")];
+      char        buf[sizeof("___GDCC__cccccccc_ttttnn")];
       std::size_t len;
 
-      char const *name;
+      char const *base;
+      char        type[5] = {code.type[0], code.type[1], code.type[2], code.type[3]};
       int         size;
 
-      // Convert code to string.
-      switch(code)
+      // Convert code base to string.
+      switch(code.base)
       {
-         #define GDCC_IR_CodeList(c) case IR::Code::c: name = #c; break;
+         #define GDCC_IR_CodeList(c) case IR::CodeBase::c: base = #c; break;
          #include "IR/CodeList.hpp"
 
       default:
-         Core::Error(stmnt->pos, "bad getFuncName code");
+         Core::Error(stmnt->pos, "bad getFuncName base");
       }
 
       // Convert size to int.
@@ -100,7 +101,7 @@ namespace GDCC::BC
       size = static_cast<int>(n);
 
       // Format function name.
-      len = std::snprintf(buf, sizeof(buf), "___GDCC__%s%i", name, size);
+      len = std::snprintf(buf, sizeof(buf), "___GDCC__%s_%s%i", base, type, size);
 
       if(len >= sizeof(buf))
          Core::Error(stmnt->pos, "bad getFuncName");

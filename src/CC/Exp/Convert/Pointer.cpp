@@ -103,12 +103,12 @@ namespace GDCC::CC
       if(srcW < dstW)
       {
          for(auto i = srcW - dstW; i--;)
-            ctx.block.addStmnt(IR::Code::Move, IR::Block::Stk(), 0);
+            ctx.block.addStmnt(IR::CodeBase::Move, IR::Block::Stk(), 0);
       }
       else if(srcW > dstW)
       {
          for(auto i = srcW - dstW; i--;)
-            ctx.block.addStmnt(IR::Code::Move,
+            ctx.block.addStmnt(IR::CodeBase::Move,
                IR::Block::Nul(), IR::Block::Stk());
       }
 
@@ -146,7 +146,7 @@ namespace GDCC::CC
       exp->genStmntStk(ctx);
 
       // Operate on stack.
-      ctx.block.setArgSize().addStmnt(IR::Code::BNot,
+      ctx.block.setArgSize().addStmnt(IR::CodeBase::BNot,
          IR::Block::Stk(), IR::Block::Stk());
 
       // Move to destination.
@@ -165,7 +165,7 @@ namespace GDCC::CC
       exp->genStmntStk(ctx);
 
       // Operate on stack.
-      ctx.block.setArgSize().addStmnt(IR::Code::Pltn,
+      ctx.block.setArgSize().addStmnt(IR::CodeBase::Pltn,
          IR::Block::Stk(), IR::Block::Stk());
 
       // Move to destination.
@@ -190,12 +190,12 @@ namespace GDCC::CC
       if(shiftL > shiftR)
       {
          auto lit = SR::Exp_IRExp::Create_Size(shiftL / shiftR)->getIRExp();
-         ctx.block.addStmnt(IR::Code::DivU, IR::Block::Stk(), IR::Block::Stk(), lit);
+         ctx.block.addStmnt(IR::CodeBase::Div+'U', IR::Block::Stk(), IR::Block::Stk(), lit);
       }
       else
       {
          auto lit = SR::Exp_IRExp::Create_Size(shiftR / shiftL)->getIRExp();
-         ctx.block.addStmnt(IR::Code::MulU, IR::Block::Stk(), IR::Block::Stk(), lit);
+         ctx.block.addStmnt(IR::CodeBase::Mul+'U', IR::Block::Stk(), IR::Block::Stk(), lit);
       }
 
       // Move to destination.

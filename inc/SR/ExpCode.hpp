@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -27,74 +27,69 @@ namespace GDCC::SR
    //
    // ExpCode_ArithFixed
    //
-   template<typename Codes>
-   IR::Code ExpCode_ArithFixed(Type const *t)
+   inline IR::Code ExpCode_ArithFixed(IR::CodeBase base, Type const *t)
    {
       if(t->isCTypeAccum())
       {
          if(t->getSizeBitsS())
-            return Codes::CodeX;
+            return {base, 'X'};
          else
-            return Codes::CodeK;
+            return {base, 'K'};
       }
       else
       {
          if(t->getSizeBitsS())
-            return Codes::CodeR;
+            return {base, 'R'};
          else
-            return Codes::CodeA;
+            return {base, 'A'};
       }
    }
 
    //
    // ExpCode_ArithFloat
    //
-   template<typename Codes>
-   IR::Code ExpCode_ArithFloat(Type const *t)
+   inline IR::Code ExpCode_ArithFloat(IR::CodeBase base, Type const *t)
    {
       if(t->getSizeBitsS())
-         return Codes::CodeF;
+         return {base, 'F'};
       else
-         return IR::Code::None;
+         return {base, 'E'};
    }
 
    //
    // ExpCode_ArithInteg
    //
-   template<typename Codes>
-   IR::Code ExpCode_ArithInteg(Type const *t)
+   inline IR::Code ExpCode_ArithInteg(IR::CodeBase base, Type const *t)
    {
       if(t->getSizeBitsS())
-         return Codes::CodeI;
+         return {base, 'I'};
       else
-         return Codes::CodeU;
+         return {base, 'U'};
    }
 
    //
    // ExpCode_ArithPoint
    //
-   template<typename Codes>
-   IR::Code ExpCode_ArithPoint(Type const *)
+   inline IR::Code ExpCode_ArithPoint(IR::CodeBase base, Type const *)
    {
-      return Codes::CodeU;
+      return {base, 'U'};
    }
 
    //
    // ExpCode_Arith
    //
-   template<typename Codes>
-   IR::Code ExpCode_Arith(Type const *t)
+   inline IR::Code ExpCode_Arith(IR::CodeBase base, Type const *t)
    {
       if(t->isCTypeInteg())
-         return ExpCode_ArithInteg<Codes>(t);
+         return ExpCode_ArithInteg(base, t);
 
       if(t->isCTypeFixed())
-         return ExpCode_ArithFixed<Codes>(t);
+         return ExpCode_ArithFixed(base, t);
 
       if(t->isCTypeRealFlt())
-         return ExpCode_ArithFloat<Codes>(t);
+         return ExpCode_ArithFloat(base, t);
 
-      return IR::Code::None;
+      return IR::CodeBase::None;
    }
 }
 

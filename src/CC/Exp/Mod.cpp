@@ -14,8 +14,6 @@
 
 #include "CC/Exp/Arith.hpp"
 
-#include "IR/CodeSet/Arith.hpp"
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -44,8 +42,8 @@ namespace GDCC::CC
          if(!type->isCTypeInteg() && !type->isCTypeFixed())
             Core::Error(pos, "expected integer or fixed-point");
 
-         return ExpCreate_Arith<SR::Exp_Mod, IR::CodeSet_Mod>(
-            *this, type, expL, expR, pos);
+         return ExpCreate_Arith<SR::Exp_Mod>(
+            *this, IR::CodeBase::Mod, type, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator %'");
@@ -74,8 +72,8 @@ namespace GDCC::CC
          if(!evalT->isCTypeInteg() && !evalT->isCTypeFixed())
             Core::Error(pos, "expected integer or fixed-point");
 
-         return ExpCreate_ArithEq<SR::Exp_Mod, IR::CodeSet_Mod>(
-            *this, evalT, typeL, expL, expR, pos);
+         return ExpCreate_ArithEq<SR::Exp_Mod>(
+            *this, IR::CodeBase::Mod, evalT, typeL, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator %='");

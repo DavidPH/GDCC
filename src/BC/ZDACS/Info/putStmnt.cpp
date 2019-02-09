@@ -14,8 +14,7 @@
 
 #include "BC/ZDACS/Code.hpp"
 
-#include "Core/Exception.hpp"
-
+#include "IR/Exception.hpp"
 #include "IR/Function.hpp"
 #include "IR/Glyph.hpp"
 
@@ -33,110 +32,67 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putStmnt()
    {
-      switch(stmnt->code)
+      switch(stmnt->code.base)
       {
-      case IR::Code::Nop: putCode(Code::Nop); break;
+      case IR::CodeBase::Nop: putCode(Code::Nop); break;
 
-      case IR::Code::AdXU: putStmnt_AdXU(); break;
+      case IR::CodeBase::AddX:     putStmnt_AddX(); break;
 
-      case IR::Code::AddF: putStmnt_AddF(); break;
-      case IR::Code::AddI: putStmnt_AddI(); break;
-      case IR::Code::AddU: putStmnt_AddU(); break;
-      case IR::Code::BAnd: putStmnt_BAnd(); break;
-      case IR::Code::BNot: putStmnt_BNot(); break;
-      case IR::Code::BOrI: putStmnt_BOrI(); break;
-      case IR::Code::BOrX: putStmnt_BOrX(); break;
-      case IR::Code::Bclo: putStmnt_Bclo(); break;
-      case IR::Code::Bclz: putStmnt_Bclz(); break;
-      case IR::Code::Bges: putStmnt_Bges(); break;
-      case IR::Code::Bget: putStmnt_Bget(); break;
-      case IR::Code::Bset: putStmnt_Bset(); break;
-      case IR::Code::Call: putStmnt_Call(); break;
-      case IR::Code::Casm: putStmnt_Casm(); break;
-
-      case IR::Code::CmpF_EQ: putStmnt_CmpF_EQ(); break;
-      case IR::Code::CmpF_GE: putStmnt_CmpF_GE(); break;
-      case IR::Code::CmpF_GT: putStmnt_CmpF_LT(); break;
-      case IR::Code::CmpF_LE: putStmnt_CmpF_LE(); break;
-      case IR::Code::CmpF_LT: putStmnt_CmpF_LT(); break;
-      case IR::Code::CmpF_NE: putStmnt_CmpF_NE(); break;
-      case IR::Code::CmpI_EQ: putStmnt_CmpI_EQ(); break;
-      case IR::Code::CmpI_GE: putStmnt_CmpI_GE(); break;
-      case IR::Code::CmpI_GT: putStmnt_CmpI_GT(); break;
-      case IR::Code::CmpI_LE: putStmnt_CmpI_LE(); break;
-      case IR::Code::CmpI_LT: putStmnt_CmpI_LT(); break;
-      case IR::Code::CmpI_NE: putStmnt_CmpI_NE(); break;
-      case IR::Code::CmpU_EQ: putStmnt_CmpU_EQ(); break;
-      case IR::Code::CmpU_GE: putStmnt_CmpU_GE(); break;
-      case IR::Code::CmpU_GT: putStmnt_CmpU_GT(); break;
-      case IR::Code::CmpU_LE: putStmnt_CmpU_LE(); break;
-      case IR::Code::CmpU_LT: putStmnt_CmpU_LT(); break;
-      case IR::Code::CmpU_NE: putStmnt_CmpU_NE(); break;
-
-      case IR::Code::Cnat: putStmnt_Cnat(); break;
-      case IR::Code::Copy: putStmnt_Copy(); break;
-
-      case IR::Code::Cscr_IA: putStmnt_Cscr_IA(); break;
-      case IR::Code::Cscr_IS: putStmnt_Cscr_IS(); break;
-      case IR::Code::Cscr_SA: putStmnt_Cscr_SA(); break;
-      case IR::Code::Cscr_SS: putStmnt_Cscr_SS(); break;
-
-      case IR::Code::Cspe: putStmnt_Cspe(); break;
-      case IR::Code::DiXI: putStmnt_DiXI(); break;
-      case IR::Code::DiXU: putStmnt_DiXU(); break;
-      case IR::Code::DivA: putStmnt_DivA(); break;
-      case IR::Code::DivF: putStmnt_DivF(); break;
-      case IR::Code::DivK: putStmnt_DivK(); break;
-      case IR::Code::DivR: putStmnt_DivR(); break;
-      case IR::Code::DivI: putStmnt_DivI(); break;
-      case IR::Code::DivU: putStmnt_DivU(); break;
-      case IR::Code::DivX: putStmnt_DivX(); break;
-
-      case IR::Code::Jcnd_Nil: putStmnt_Jcnd_Nil(); break;
-      case IR::Code::Jcnd_Tab: putStmnt_Jcnd_Tab(); break;
-      case IR::Code::Jcnd_Tru: putStmnt_Jcnd_Tru(); break;
-
-      case IR::Code::Jdyn: putStmnt_Jdyn(); break;
-
-      case IR::Code::Jfar_Pro: putStmnt_Jfar_Pro(); break;
-      case IR::Code::Jfar_Set: putStmnt_Jfar_Set(); break;
-      case IR::Code::Jfar_Sta: putStmnt_Jfar_Sta(); break;
-
-      case IR::Code::Jump: putStmnt_Jump(); break;
-      case IR::Code::LAnd: putStmnt_LAnd(); break;
-      case IR::Code::LNot: putStmnt_LNot(); break;
-      case IR::Code::LOrI: putStmnt_LOrI(); break;
-      case IR::Code::ModI: putStmnt_ModI(); break;
-      case IR::Code::ModU: putStmnt_ModU(); break;
-      case IR::Code::Move: putStmnt_Move(); break;
-      case IR::Code::MuXU: putStmnt_MuXU(); break;
-      case IR::Code::MulA: putStmnt_MulA(); break;
-      case IR::Code::MulF: putStmnt_MulF(); break;
-      case IR::Code::MulI: putStmnt_MulI(); break;
-      case IR::Code::MulK: putStmnt_MulK(); break;
-      case IR::Code::MulR: putStmnt_MulR(); break;
-      case IR::Code::MulU: putStmnt_MulU(); break;
-      case IR::Code::MulX: putStmnt_MulX(); break;
-      case IR::Code::NegF: putStmnt_NegF(); break;
-      case IR::Code::NegI: putStmnt_NegI(); break;
-      case IR::Code::Pltn: putStmnt_Pltn(); break;
-      case IR::Code::Retn: putStmnt_Retn(); break;
-      case IR::Code::Rjnk: putStmnt_Rjnk(); break;
-      case IR::Code::ShLF: putStmnt_ShLF(); break;
-      case IR::Code::ShLU: putStmnt_ShLU(); break;
-      case IR::Code::ShRF: putStmnt_ShRF(); break;
-      case IR::Code::ShRI: putStmnt_ShRI(); break;
-      case IR::Code::ShRU: putStmnt_ShRU(); break;
-      case IR::Code::SuXU: putStmnt_SuXU(); break;
-      case IR::Code::SubF: putStmnt_SubF(); break;
-      case IR::Code::SubI: putStmnt_SubI(); break;
-      case IR::Code::SubU: putStmnt_SubU(); break;
-      case IR::Code::Swap: putStmnt_Swap(); break;
-
-      case IR::Code::Xcod_SID: putStmnt_Xcod_SID(); break;
+      case IR::CodeBase::Add:      putStmnt_Add(); break;
+      case IR::CodeBase::BAnd:     putStmnt_BAnd(); break;
+      case IR::CodeBase::BNot:     putStmnt_BNot(); break;
+      case IR::CodeBase::BOrI:     putStmnt_BOrI(); break;
+      case IR::CodeBase::BOrX:     putStmnt_BOrX(); break;
+      case IR::CodeBase::Bclo:     putStmnt_Bclo(); break;
+      case IR::CodeBase::Bclz:     putStmnt_Bclz(); break;
+      case IR::CodeBase::Bges:     putStmnt_Bges(); break;
+      case IR::CodeBase::Bget:     putStmnt_Bget(); break;
+      case IR::CodeBase::Bset:     putStmnt_Bset(); break;
+      case IR::CodeBase::Call:     putStmnt_Call(); break;
+      case IR::CodeBase::Casm:     putStmnt_Casm(); break;
+      case IR::CodeBase::CmpEQ:    putStmnt_CmpEQ(); break;
+      case IR::CodeBase::CmpGE:    putStmnt_CmpGE(); break;
+      case IR::CodeBase::CmpGT:    putStmnt_CmpGT(); break;
+      case IR::CodeBase::CmpLE:    putStmnt_CmpLE(); break;
+      case IR::CodeBase::CmpLT:    putStmnt_CmpLT(); break;
+      case IR::CodeBase::CmpNE:    putStmnt_CmpNE(); break;
+      case IR::CodeBase::Cnat:     putStmnt_Cnat(); break;
+      case IR::CodeBase::Copy:     putStmnt_Copy(); break;
+      case IR::CodeBase::Cscr_IA:  putStmnt_Cscr_IA(); break;
+      case IR::CodeBase::Cscr_IS:  putStmnt_Cscr_IS(); break;
+      case IR::CodeBase::Cscr_SA:  putStmnt_Cscr_SA(); break;
+      case IR::CodeBase::Cscr_SS:  putStmnt_Cscr_SS(); break;
+      case IR::CodeBase::Cspe:     putStmnt_Cspe(); break;
+      case IR::CodeBase::Div:      putStmnt_Div(); break;
+      case IR::CodeBase::DivX:     putStmnt_DivX(); break;
+      case IR::CodeBase::Jcnd_Nil: putStmnt_Jcnd_Nil(); break;
+      case IR::CodeBase::Jcnd_Tab: putStmnt_Jcnd_Tab(); break;
+      case IR::CodeBase::Jcnd_Tru: putStmnt_Jcnd_Tru(); break;
+      case IR::CodeBase::Jdyn:     putStmnt_Jdyn(); break;
+      case IR::CodeBase::Jfar_Pro: putStmnt_Jfar_Pro(); break;
+      case IR::CodeBase::Jfar_Set: putStmnt_Jfar_Set(); break;
+      case IR::CodeBase::Jfar_Sta: putStmnt_Jfar_Sta(); break;
+      case IR::CodeBase::Jump:     putStmnt_Jump(); break;
+      case IR::CodeBase::LAnd:     putStmnt_LAnd(); break;
+      case IR::CodeBase::LNot:     putStmnt_LNot(); break;
+      case IR::CodeBase::LOrI:     putStmnt_LOrI(); break;
+      case IR::CodeBase::Mod:      putStmnt_Mod(); break;
+      case IR::CodeBase::Move:     putStmnt_Move(); break;
+      case IR::CodeBase::Mul:      putStmnt_Mul(); break;
+      case IR::CodeBase::MulX:     putStmnt_MulX(); break;
+      case IR::CodeBase::Neg:      putStmnt_Neg(); break;
+      case IR::CodeBase::Pltn:     putStmnt_Pltn(); break;
+      case IR::CodeBase::Retn:     putStmnt_Retn(); break;
+      case IR::CodeBase::Rjnk:     putStmnt_Rjnk(); break;
+      case IR::CodeBase::ShL:      putStmnt_ShL(); break;
+      case IR::CodeBase::ShR:      putStmnt_ShR(); break;
+      case IR::CodeBase::Sub:      putStmnt_Sub(); break;
+      case IR::CodeBase::SubX:     putStmnt_SubX(); break;
+      case IR::CodeBase::Swap:     putStmnt_Swap(); break;
+      case IR::CodeBase::Xcod_SID: putStmnt_Xcod_SID(); break;
 
       default:
-         Core::Error(stmnt->pos, "ZDACS cannot put Code: ", stmnt->code);
+         IR::ErrorCode(stmnt, "unsupported put");
       }
    }
 
@@ -614,7 +570,7 @@ namespace GDCC::BC::ZDACS
    //
    // Info::putStmntStkBin
    //
-   void Info::putStmntStkBin(Code code)
+   void Info::putStmntStkBin(IR::CodeType type, Code code)
    {
       auto n = getStmntSize();
 
@@ -624,13 +580,13 @@ namespace GDCC::BC::ZDACS
       if(n == 1 && code != Code::Nop)
          return putCode(code);
 
-      putStmntCall(getCallName(stmnt->code, n), stmnt->args[0].getSize());
+      putStmntCall(getFuncName(stmnt->code.base+type, n), stmnt->args[0].getSize());
    }
 
    //
    // Info::putStmntStkCmp
    //
-   void Info::putStmntStkCmp(int res0, Code code)
+   void Info::putStmntStkCmp(int res0, IR::CodeType type, Code code)
    {
       auto n = getStmntSize();
 
@@ -640,7 +596,7 @@ namespace GDCC::BC::ZDACS
       if(n == 1 && code != Code::Nop)
          return putCode(code);
 
-      putStmntCall(getCallName(stmnt->code, n), stmnt->args[0].getSize());
+      putStmntCall(getFuncName(stmnt->code.base+type, n), stmnt->args[0].getSize());
    }
 }
 

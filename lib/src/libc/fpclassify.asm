@@ -155,18 +155,18 @@ Function "___fpclassify"
       Retn     W 1(Stk())
 
    :"$emax"
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x000FFFFF))
-      BOrI W 1(Stk() Stk() LocReg(Lit(0)))
-      LNot W 1(Stk() Stk())
-      AddU W 1(Stk() Stk() Lit(1))
-      Retn W 1(Stk())
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x000FFFFF))
+      BOrI  W 1(Stk() Stk() LocReg(Lit(0)))
+      LNot  W 1(Stk() Stk())
+      Add:U W 1(Stk() Stk() Lit(1))
+      Retn  W 1(Stk())
 
    :"$emin"
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x000FFFFF))
-      BOrI W 1(Stk() Stk() LocReg(Lit(0)))
-      LNot W 1(Stk() Stk())
-      AddU W 1(Stk() Stk() Lit(4))
-      Retn W 1(Stk())
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x000FFFFF))
+      BOrI  W 1(Stk() Stk() LocReg(Lit(0)))
+      LNot  W 1(Stk() Stk())
+      Add:U W 1(Stk() Stk() Lit(4))
+      Retn  W 1(Stk())
    )
 )
 
@@ -194,18 +194,18 @@ Function "___fpclassifyf"
       Retn     W 1(Stk())
 
    :"$emax"
-      BAnd W 1(Stk() LocReg(Lit(0)) Lit(0x007FFFFF))
-      BOrI W 1(Stk() Stk() LocReg(Lit(0)))
-      LNot W 1(Stk() Stk())
-      AddU W 1(Stk() Stk() Lit(1))
-      Retn W 1(Stk())
+      BAnd  W 1(Stk() LocReg(Lit(0)) Lit(0x007FFFFF))
+      BOrI  W 1(Stk() Stk() LocReg(Lit(0)))
+      LNot  W 1(Stk() Stk())
+      Add:U W 1(Stk() Stk() Lit(1))
+      Retn  W 1(Stk())
 
    :"$emin"
-      BAnd W 1(Stk() LocReg(Lit(0)) Lit(0x007FFFFF))
-      BOrI W 1(Stk() Stk() LocReg(Lit(0)))
-      LNot W 1(Stk() Stk())
-      AddU W 1(Stk() Stk() Lit(4))
-      Retn W 1(Stk())
+      BAnd  W 1(Stk() LocReg(Lit(0)) Lit(0x007FFFFF))
+      BOrI  W 1(Stk() Stk() LocReg(Lit(0)))
+      LNot  W 1(Stk() Stk())
+      Add:U W 1(Stk() Stk() Lit(4))
+      Retn  W 1(Stk())
    )
 )
 
@@ -233,18 +233,18 @@ Function "___fpclassifyl"
       Retn     W 1(Stk())
 
    :"$emax"
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x000FFFFF))
-      BOrI W 1(Stk() Stk() LocReg(Lit(0)))
-      LNot W 1(Stk() Stk())
-      AddU W 1(Stk() Stk() Lit(1))
-      Retn W 1(Stk())
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x000FFFFF))
+      BOrI  W 1(Stk() Stk() LocReg(Lit(0)))
+      LNot  W 1(Stk() Stk())
+      Add:U W 1(Stk() Stk() Lit(1))
+      Retn  W 1(Stk())
 
    :"$emin"
-      BAnd W 1(Stk() LocReg(Lit(W)) Lit(0x000FFFFF))
-      BOrI W 1(Stk() Stk() LocReg(Lit(0)))
-      LNot W 1(Stk() Stk())
-      AddU W 1(Stk() Stk() Lit(4))
-      Retn W 1(Stk())
+      BAnd  W 1(Stk() LocReg(Lit(W)) Lit(0x000FFFFF))
+      BOrI  W 1(Stk() Stk() LocReg(Lit(0)))
+      LNot  W 1(Stk() Stk())
+      Add:U W 1(Stk() Stk() Lit(4))
+      Retn  W 1(Stk())
    )
 )
 
@@ -264,7 +264,7 @@ Function "___isfinite"
    block
    (
       BAnd    W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
-      CmpI_NE W 1(Stk() Stk() Lit(0x7FF00000))
+      CmpNE:U W 1(Stk() Stk() Lit(0x7FF00000))
       Retn    W 1(Stk())
    )
 )
@@ -285,7 +285,7 @@ Function "___isfinitef"
    block
    (
       BAnd    W 1(Stk() LocReg(Lit(0)) Lit(0x7F800000))
-      CmpI_NE W 1(Stk() Stk() Lit(0x7F800000))
+      CmpNE:U W 1(Stk() Stk() Lit(0x7F800000))
       Retn    W 1(Stk())
    )
 )
@@ -306,7 +306,7 @@ Function "___isfinitel"
    block
    (
       BAnd    W 1(Stk() LocReg(Lit(W)) Lit(0x7FF00000))
-      CmpI_NE W 1(Stk() Stk() Lit(0x7FF00000))
+      CmpNE:U W 1(Stk() Stk() Lit(0x7FF00000))
       Retn    W 1(Stk())
    )
 )
@@ -327,7 +327,7 @@ Function "___isinf"
    block
    (
       BAnd    W 1(Stk() LocReg(Lit(W)) Lit(0x7FFFFFFF))
-      CmpI_EQ W 1(Stk() Stk() Lit(0x7FF00000))
+      CmpEQ:U W 1(Stk() Stk() Lit(0x7FF00000))
       Retn    W 1(Stk())
    )
 )
@@ -348,7 +348,7 @@ Function "___isinff"
    block
    (
       BAnd    W 1(Stk() LocReg(Lit(0)) Lit(0x7FFFFFFF))
-      CmpI_EQ W 1(Stk() Stk() Lit(0x7F800000))
+      CmpEQ:U W 1(Stk() Stk() Lit(0x7F800000))
       Retn    W 1(Stk())
    )
 )
@@ -369,7 +369,7 @@ Function "___isinfl"
    block
    (
       BAnd    W 1(Stk() LocReg(Lit(W)) Lit(0x7FFFFFFF))
-      CmpI_EQ W 1(Stk() Stk() Lit(0x7FF00000))
+      CmpEQ:U W 1(Stk() Stk() Lit(0x7FF00000))
       Retn    W 1(Stk())
    )
 )
@@ -390,7 +390,7 @@ Function "___isnan"
    block
    (
       BAnd    W 1(Stk() LocReg(Lit(W)) Lit(0x7FFFFFFF))
-      CmpI_GT W 1(Stk() Stk() Lit(0x7FF00000))
+      CmpGT:I W 1(Stk() Stk() Lit(0x7FF00000))
       Retn    W 1(Stk())
    )
 )
@@ -411,7 +411,7 @@ Function "___isnanf"
    block
    (
       BAnd    W 1(Stk() LocReg(Lit(0)) Lit(0x7FFFFFFF))
-      CmpI_GT W 1(Stk() Stk() Lit(0x7F800000))
+      CmpGT:I W 1(Stk() Stk() Lit(0x7F800000))
       Retn    W 1(Stk())
    )
 )
@@ -432,7 +432,7 @@ Function "___isnanl"
    block
    (
       BAnd    W 1(Stk() LocReg(Lit(W)) Lit(0x7FFFFFFF))
-      CmpI_GT W 1(Stk() Stk() Lit(0x7FF00000))
+      CmpGT:I W 1(Stk() Stk() Lit(0x7FF00000))
       Retn    W 1(Stk())
    )
 )
@@ -453,8 +453,8 @@ Function "___isnormal"
    block
    (
       BAnd    W 1(LocReg(Lit(W)) LocReg(Lit(W)) Lit(0x7FF00000))
-      CmpI_LE W 1(Stk() LocReg(Lit(W)) Lit(0x7FE00000))
-      CmpI_GE W 1(Stk() LocReg(Lit(W)) Lit(0x00100000))
+      CmpLE:I W 1(Stk() LocReg(Lit(W)) Lit(0x7FE00000))
+      CmpGE:I W 1(Stk() LocReg(Lit(W)) Lit(0x00100000))
       BAnd    W 1(Stk() Stk() Stk())
       Retn    W 1(Stk())
    )
@@ -476,8 +476,8 @@ Function "___isnormalf"
    block
    (
       BAnd    W 1(LocReg(Lit(0)) LocReg(Lit(0)) Lit(0x7F800000))
-      CmpI_LE W 1(Stk() LocReg(Lit(0)) Lit(0x7F000000))
-      CmpI_GE W 1(Stk() LocReg(Lit(0)) Lit(0x00800000))
+      CmpLE:I W 1(Stk() LocReg(Lit(0)) Lit(0x7F000000))
+      CmpGE:I W 1(Stk() LocReg(Lit(0)) Lit(0x00800000))
       BAnd    W 1(Stk() Stk() Stk())
       Retn    W 1(Stk())
    )
@@ -499,8 +499,8 @@ Function "___isnormall"
    block
    (
       BAnd    W 1(LocReg(Lit(W)) LocReg(Lit(W)) Lit(0x7FF00000))
-      CmpI_LE W 1(Stk() LocReg(Lit(W)) Lit(0x7FE00000))
-      CmpI_GE W 1(Stk() LocReg(Lit(W)) Lit(0x00100000))
+      CmpLE:I W 1(Stk() LocReg(Lit(W)) Lit(0x7FE00000))
+      CmpGE:I W 1(Stk() LocReg(Lit(W)) Lit(0x00100000))
       BAnd    W 1(Stk() Stk() Stk())
       Retn    W 1(Stk())
    )

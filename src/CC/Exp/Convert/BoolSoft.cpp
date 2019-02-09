@@ -43,7 +43,7 @@ namespace GDCC::CC
       ctx.block.setArgSize();
 
       for(auto n = exp->getType()->getSizeWords(); --n;)
-         ctx.block.addStmnt(IR::Code::BOrI,
+         ctx.block.addStmnt(IR::CodeBase::BOrI,
             IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
 
       // Move to destination.
@@ -65,12 +65,12 @@ namespace GDCC::CC
 
       ctx.block.setArgSize();
 
-      ctx.block.addStmnt(IR::Code::BAnd,
+      ctx.block.addStmnt(IR::CodeBase::BAnd,
          IR::Block::Stk(), IR::Block::Stk(),
          (Core::FastU(1) << (bitsIF % Target::GetWordBits())) - 1);
 
       for(auto n = exp->getType()->getSizeWords(); --n;)
-         ctx.block.addStmnt(IR::Code::BOrI,
+         ctx.block.addStmnt(IR::CodeBase::BOrI,
             IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
 
       // Move to destination.
@@ -90,10 +90,10 @@ namespace GDCC::CC
       ctx.block.setArgSize();
 
       for(auto n = exp->getType()->getSizeWords(); --n;)
-         ctx.block.addStmnt(IR::Code::BAnd,
+         ctx.block.addStmnt(IR::CodeBase::BAnd,
             IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
 
-      ctx.block.addStmnt(IR::Code::BNot,
+      ctx.block.addStmnt(IR::CodeBase::BNot,
          IR::Block::Stk(), IR::Block::Stk());
 
       // Move to destination.

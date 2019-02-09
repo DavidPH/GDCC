@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,45 +21,27 @@
 
 namespace GDCC::BC::DGE
 {
+   GDCC_BC_CodeTypeSwitchFn(pre, Add, FIU)
+   GDCC_BC_CodeTypeSwitchFn(pre, Sub, FIU)
+
+   GDCC_BC_CodeTypeSwitchFn(put, Add, FIU)
+   GDCC_BC_CodeTypeSwitchFn(put, AddX, Ux)
+   GDCC_BC_CodeTypeSwitchFn(put, Sub, FIU)
+   GDCC_BC_CodeTypeSwitchFn(put, SubX, Ux)
+
    //
-   // Info::chkStmnt_AdXU
+   // Info::chkStmnt_AddX
    //
-   void Info::chkStmnt_AdXU()
+   void Info::chkStmnt_AddX()
    {
       if(getStmntSizeW() != 1)
          IR::ErrorCode(stmnt, "unsupported size");
    }
 
    //
-   // Info::preStmnt_AddU
+   // Info::putStmnt_AddX_U
    //
-   void Info::preStmnt_AddU()
-   {
-      auto n = getStmntSizeW();
-
-      if(n <= 1)
-         return;
-
-      addFunc_AddU_W(n);
-   }
-
-   //
-   // Info::preStmnt_SubU
-   //
-   void Info::preStmnt_SubU()
-   {
-      auto n = getStmntSizeW();
-
-      if(n <= 1)
-         return;
-
-      addFunc_SubU_W(n);
-   }
-
-   //
-   // Info::putStmnt_AdXU
-   //
-   void Info::putStmnt_AdXU()
+   void Info::putStmnt_AddX_U()
    {
       if(stmnt->args.size() > 3)
          putCode("Ad3U");
@@ -68,25 +50,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_AddU
+   // Info::putStmnt_SubX_U
    //
-   void Info::putStmnt_AddU()
-   {
-      auto n = getStmntSizeW();
-
-      if(n == 0)
-         return;
-
-      if(n == 1)
-         return putCode("AddU");
-
-      putStmntCall(getFuncName(IR::Code::AddU, n), n * 2);
-   }
-
-   //
-   // Info::putStmnt_SuXU
-   //
-   void Info::putStmnt_SuXU()
+   void Info::putStmnt_SubX_U()
    {
       if(stmnt->args.size() > 3)
          putCode("Su3U");
@@ -95,25 +61,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_SubU
+   // Info::trStmnt_AddX
    //
-   void Info::putStmnt_SubU()
-   {
-      auto n = getStmntSizeW();
-
-      if(n == 0)
-         return;
-
-      if(n == 1)
-         return putCode("SubU");
-
-      putStmntCall(getFuncName(IR::Code::SubU, n), n * 2);
-   }
-
-   //
-   // Info::trStmnt_AdXU
-   //
-   void Info::trStmnt_AdXU()
+   void Info::trStmnt_AddX()
    {
       if(stmnt->args.size() > 3)
       {
@@ -127,17 +77,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::trStmnt_AddU
+   // Info::trStmnt_SubX_U
    //
-   void Info::trStmnt_AddU()
-   {
-      trStmntStk3(false);
-   }
-
-   //
-   // Info::trStmnt_SuXU
-   //
-   void Info::trStmnt_SuXU()
+   void Info::trStmnt_SubX()
    {
       if(stmnt->args.size() > 3)
       {
@@ -155,14 +97,6 @@ namespace GDCC::BC::DGE
       }
       else
          trStmntStk3(true);
-   }
-
-   //
-   // Info::trStmnt_SubU
-   //
-   void Info::trStmnt_SubU()
-   {
-      trStmntStk3(true);
    }
 }
 

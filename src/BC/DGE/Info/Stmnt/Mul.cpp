@@ -21,10 +21,16 @@
 
 namespace GDCC::BC::DGE
 {
+   GDCC_BC_CodeTypeSwitchFn(pre, Mul,)
+   GDCC_BC_CodeTypeSwitchFn(pre, MulX, Ux)
+
+   GDCC_BC_CodeTypeSwitchFn(put, Mul,)
+   GDCC_BC_CodeTypeSwitchFn(put, MulX, Ux)
+
    //
-   // Info::putStmnt_MulA
+   // Info::putStmnt_Mul_A
    //
-   void Info::putStmnt_MulA()
+   void Info::putStmnt_Mul_A()
    {
       auto b = getStmntSize();
 
@@ -47,9 +53,9 @@ namespace GDCC::BC::DGE
    }
 
    //
-   // Info::putStmnt_MulR
+   // Info::putStmnt_Mul_R
    //
-   void Info::putStmnt_MulR()
+   void Info::putStmnt_Mul_R()
    {
       auto b = getStmntSize();
 
@@ -81,30 +87,6 @@ namespace GDCC::BC::DGE
       auto n = getStmntSizeW(b);
 
       putStmntCall(getFuncName(stmnt->code, n), n * 2);
-   }
-
-   //
-   // Info::putStmnt_MulU
-   //
-   void Info::putStmnt_MulU()
-   {
-      auto n = getStmntSizeW();
-
-      if(n == 0)
-         return;
-
-      if(n == 1)
-         return putCode("MulU");
-
-      putStmntCall(getFuncName(IR::Code::MulU, n), n * 2);
-   }
-
-   //
-   // Info::trStmnt_MuXU
-   //
-   void Info::trStmnt_MuXU()
-   {
-      trStmntStk3(false);
    }
 }
 

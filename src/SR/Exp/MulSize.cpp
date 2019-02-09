@@ -38,7 +38,7 @@ namespace GDCC::SR
    //
    void Exp_MulSize::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
    {
-      GenStmnt_Arith(this, IR::Code::MulU, ctx, dst);
+      GenStmnt_Arith(this, IR::CodeBase::Mul+'U', ctx, dst);
    }
 
    //

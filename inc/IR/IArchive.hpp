@@ -41,6 +41,8 @@ namespace GDCC::IR
 
       IArchive &operator >> (bool &out) {out = getBool(); return *this;}
 
+      IArchive &operator >> (char &out) {return out = in.get(), *this;}
+
       IArchive &operator >> (signed           char &out) {return getI(out), *this;}
       IArchive &operator >> (signed     short int  &out) {return getI(out), *this;}
       IArchive &operator >> (signed           int  &out) {return getI(out), *this;}

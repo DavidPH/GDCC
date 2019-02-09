@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -33,7 +33,7 @@ namespace GDCC::SR
    static void GenStmnt_Logical(Exp_Binary const *exp,
       GenStmntCtx const &ctx, Arg const &dst, bool valShrt)
    {
-      IR::Code codeShrt = valShrt ? IR::Code::Jcnd_Tru : IR::Code::Jcnd_Nil;
+      IR::Code codeShrt = valShrt ? IR::CodeBase::Jcnd_Tru : IR::CodeBase::Jcnd_Nil;
       bool valLong = !valShrt;
 
       // Only evaluating for side-effects?
@@ -85,8 +85,8 @@ namespace GDCC::SR
          {
             exp->expR->genStmntStk(ctx);
 
-            ctx.block.addStmnt(IR::Code::LNot, dst.getIRArgStk(), exp->expR->getIRArgStk());
-            ctx.block.addStmnt(IR::Code::LNot, dst.getIRArgStk(), dst.getIRArgStk());
+            ctx.block.addStmnt(IR::CodeBase::LNot, dst.getIRArgStk(), exp->expR->getIRArgStk());
+            ctx.block.addStmnt(IR::CodeBase::LNot, dst.getIRArgStk(), dst.getIRArgStk());
 
             // Move to destination.
             GenStmnt_MovePart(exp, ctx, dst, false, true);
@@ -115,7 +115,7 @@ namespace GDCC::SR
       // If expR is already boolean, use its result directly.
       if(exp->expR->isBoolean())
       {
-         ctx.block.setArgSize().addStmnt(IR::Code::Jump, labelEnd);
+         ctx.block.setArgSize().addStmnt(IR::CodeBase::Jump, labelEnd);
       }
       else
       {
@@ -125,13 +125,13 @@ namespace GDCC::SR
          ctx.block.addStmnt(codeShrt, exp->expR->getIRArgStk(), labelShort);
 
          // Long result.
-         ctx.block.addStmnt(IR::Code::Move, dst.getIRArgStk(), valLong);
-         ctx.block.addStmnt(IR::Code::Jump, labelEnd);
+         ctx.block.addStmnt(IR::CodeBase::Move, dst.getIRArgStk(), valLong);
+         ctx.block.addStmnt(IR::CodeBase::Jump, labelEnd);
       }
 
       // Short result.
       ctx.block.addLabel(labelShort);
-      ctx.block.addStmnt(IR::Code::Move, dst.getIRArgStk(), valShrt);
+      ctx.block.addStmnt(IR::CodeBase::Move, dst.getIRArgStk(), valShrt);
 
       // End.
       ctx.block.addLabel(labelEnd);

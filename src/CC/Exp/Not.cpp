@@ -38,7 +38,7 @@ namespace GDCC::CC
       exp->genStmntStk(ctx);
 
       // Operate on stack.
-      ctx.block.setArgSize().addStmnt(IR::Code::LNot,
+      ctx.block.setArgSize().addStmnt(IR::CodeBase::LNot,
          IR::Block::Stk(), IR::Block::Stk());
 
       // Move to destination.

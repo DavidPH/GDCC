@@ -17,9 +17,6 @@
 
 #include "SR/Exp/Unary.hpp"
 
-#include "IR/CodeSet/Arith.hpp"
-#include "IR/CodeSet/Unary.hpp"
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -38,7 +35,7 @@ namespace GDCC::CC
       if(!type->isCTypeArith())
          Core::Error(pos, "expected arithmetic operand");
 
-      auto code = SR::ExpCode_Arith<IR::CodeSet_Neg>(type);
+      auto code = SR::ExpCode_Arith(IR::CodeBase::Neg, type);
 
       return SR::Exp_UnaryCode<SR::Exp_Neg>::Create(code, type, exp, pos);
    }
@@ -98,8 +95,8 @@ namespace GDCC::CC
          SR::Type::CPtr type;
          std::tie(type, expL, expR) = expPromo_Arith(expL, expR, pos);
 
-         return ExpCreate_Arith<SR::Exp_Sub, IR::CodeSet_Sub>(
-            *this, type, expL, expR, pos);
+         return ExpCreate_Arith<SR::Exp_Sub>(
+            *this, IR::CodeBase::Sub, type, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator -'");
@@ -154,8 +151,8 @@ namespace GDCC::CC
          SR::Type::CPtr evalT;
          std::tie(evalT, std::ignore, expR) = expPromo_Arith(expL, expR, pos);
 
-         return ExpCreate_ArithEq<SR::Exp_Sub, IR::CodeSet_Sub>(
-            *this, evalT, typeL, expL, expR, pos, post);
+         return ExpCreate_ArithEq<SR::Exp_Sub>(
+            *this, IR::CodeBase::Sub, evalT, typeL, expL, expR, pos, post);
       }
 
       Core::Error(pos, "invalid operands to 'operator -='");

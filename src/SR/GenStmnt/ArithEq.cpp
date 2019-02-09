@@ -39,7 +39,7 @@ namespace GDCC::SR
       bool bitsS = bitsT->getSizeBitsS();
       auto bitsW = ctx.block.getExp(bitsT->getSizeBitsF() + bitsT->getSizeBitsI() + bitsS);
       auto bitsO = ctx.block.getExp(bitsT->getSizeBitsO());
-      auto bitsG = bitsS ? IR::Code::Bges : IR::Code::Bget;
+      auto bitsG = bitsS ? IR::CodeBase::Bges : IR::CodeBase::Bget;
 
       IR::Arg_Stk stkR = exp->expR->getIRArgStk();
 
@@ -85,7 +85,7 @@ namespace GDCC::SR
       GenStmnt_ConvertArith(exp, exp->type, evalT, ctx);
 
       // Assign l.
-      ctx.block.addStmnt(IR::Code::Bset,
+      ctx.block.addStmnt(IR::CodeBase::Bset,
          GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0), arg.getIRArgStk(),
          bitsW, bitsO);
 
@@ -130,7 +130,7 @@ namespace GDCC::SR
 
          // Move to temporary.
          Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
-         ctx.block.addStmnt(IR::Code::Move, tmp.getArg(), tmp.getArgStk());
+         ctx.block.addStmnt(IR::CodeBase::Move, tmp.getArg(), tmp.getArgStk());
 
          // Use temporary as index.
          GenStmnt_ArithEqBitIdx<ArgT>(exp, code, ctx, dst, evalT, post, arg, tmp.getArg());
@@ -195,7 +195,7 @@ namespace GDCC::SR
       if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
          // Push l.
-         ctx.block.addStmnt(IR::Code::Move,
+         ctx.block.addStmnt(IR::CodeBase::Move,
             dst.getIRArgStk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
          // Assign dst.
@@ -203,7 +203,7 @@ namespace GDCC::SR
       }
 
       // Push l.
-      ctx.block.addStmnt(IR::Code::Move,
+      ctx.block.addStmnt(IR::CodeBase::Move,
          arg.getIRArgStk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
       // Convert to evaluation type.
@@ -230,14 +230,14 @@ namespace GDCC::SR
       GenStmnt_ConvertArith(exp, exp->type, evalT, ctx);
 
       // Assign l.
-      ctx.block.addStmnt(IR::Code::Move,
+      ctx.block.addStmnt(IR::CodeBase::Move,
          GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0), arg.getIRArgStk());
 
       // Duplicate to destination, if necessary.
       if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
          // Push l.
-         ctx.block.addStmnt(IR::Code::Move,
+         ctx.block.addStmnt(IR::CodeBase::Move,
             dst.getIRArgStk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
          // Assign dst.
@@ -273,7 +273,7 @@ namespace GDCC::SR
 
          // Move to temporary.
          Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
-         ctx.block.addStmnt(IR::Code::Move, tmp.getArg(), tmp.getArgStk());
+         ctx.block.addStmnt(IR::CodeBase::Move, tmp.getArg(), tmp.getArgStk());
 
          // Use temporary as index.
          GenStmnt_ArithEqIdx<ArgT>(exp, code, ctx, dst, evalT, post, arg, tmp.getArg());
@@ -370,7 +370,7 @@ namespace GDCC::SR
          // Duplicate to destination, if necessary.
          if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
          {
-            ctx.block.addStmnt(IR::Code::Move, dst.getIRArgStk(), irArgL);
+            ctx.block.addStmnt(IR::CodeBase::Move, dst.getIRArgStk(), irArgL);
             GenStmnt_MovePart(exp, ctx, dst, false, true);
          }
 
@@ -379,7 +379,7 @@ namespace GDCC::SR
          // Duplicate to destination, if necessary.
          if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
          {
-            ctx.block.addStmnt(IR::Code::Move, dst.getIRArgStk(), irArgL);
+            ctx.block.addStmnt(IR::CodeBase::Move, dst.getIRArgStk(), irArgL);
             GenStmnt_MovePart(exp, ctx, dst, false, true);
          }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -17,6 +17,7 @@
 
 #include "../../SR/Type.hpp"
 
+#include "../../IR/Code.hpp"
 #include "../../IR/Exp.hpp"
 
 

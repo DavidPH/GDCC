@@ -62,10 +62,6 @@ add_library(gdcc-ir-lib ${GDCC_SHARED_DECL}
    ../../inc/IR/Block.hpp
    ../../inc/IR/Code.hpp
    ../../inc/IR/CodeList.hpp
-   ../../inc/IR/CodeSet/Arith.hpp
-   ../../inc/IR/CodeSet/Bitwise.hpp
-   ../../inc/IR/CodeSet/Cmp.hpp
-   ../../inc/IR/CodeSet/Unary.hpp
    ../../inc/IR/DJump.hpp
    ../../inc/IR/Exception.hpp
    ../../inc/IR/Exp.hpp

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -48,7 +48,7 @@ namespace GDCC::BC
       catch(ResetStmnt const &)
       {
          if(ordered && stmnt->next->args[2].a == IR::ArgBase::Stk)
-            block->addStmnt(stmnt->next, IR::Code::Swap,
+            block->addStmnt(stmnt->next, IR::CodeBase::Swap,
                IR::Arg_Stk(size), IR::Arg_Stk(size));
 
          throw;

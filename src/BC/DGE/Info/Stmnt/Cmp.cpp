@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,31 +21,32 @@
 
 namespace GDCC::BC::DGE
 {
-   //
-   // Info::preStmnt_CmpU_EQ
-   //
-   void Info::preStmnt_CmpU_EQ(AddFunc add)
-   {
-      auto n = getStmntSizeW();
+   GDCC_BC_CodeTypeSwitchFn(pre, CmpEQ, FIU)
+   GDCC_BC_CodeTypeSwitchFn(pre, CmpGE, FIU)
+   GDCC_BC_CodeTypeSwitchFn(pre, CmpGT, FIU)
+   GDCC_BC_CodeTypeSwitchFn(pre, CmpLE, FIU)
+   GDCC_BC_CodeTypeSwitchFn(pre, CmpLT, FIU)
+   GDCC_BC_CodeTypeSwitchFn(pre, CmpNE, FIU)
 
-      if(n <= 1)
-         return;
-
-      (this->*add)(n);
-   }
+   GDCC_BC_CodeTypeSwitchFn(put, CmpEQ, FIU)
+   GDCC_BC_CodeTypeSwitchFn(put, CmpGE, FIU)
+   GDCC_BC_CodeTypeSwitchFn(put, CmpGT, FIU)
+   GDCC_BC_CodeTypeSwitchFn(put, CmpLE, FIU)
+   GDCC_BC_CodeTypeSwitchFn(put, CmpLT, FIU)
+   GDCC_BC_CodeTypeSwitchFn(put, CmpNE, FIU)
 
    //
-   // Info::putStmnt_CmpU_EQ
+   // Info::putStmnt_CmpEQ_U
    //
-   void Info::putStmnt_CmpU_EQ(IR::Code code)
+   void Info::putStmnt_CmpEQ_U(IR::Code code)
    {
       auto n = getStmntSizeW();
 
       if(n == 0)
-         return putCode("Push_Lit", code == IR::Code::CmpU_EQ);
+         return putCode("Push_Lit", code == IR::CodeBase::CmpEQ+'U');
 
       if(n == 1)
-         return putCode(code == IR::Code::CmpU_EQ ? "CmpU_EQ" : "CmpU_NE");
+         return putCode(code == IR::CodeBase::CmpEQ+'U' ? "CmpU_EQ" : "CmpU_NE");
 
       putStmntCall(getFuncName(code, n), n * 2);
    }

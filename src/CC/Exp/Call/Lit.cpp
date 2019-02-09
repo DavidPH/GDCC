@@ -61,8 +61,8 @@ namespace GDCC::CC
       IR::Code code;
       switch(callType)
       {
-      case IR::CallType::AsmFunc: code = IR::Code::Casm; break;
-      case IR::CallType::Special: code = IR::Code::Cspe; break;
+      case IR::CallType::AsmFunc: code = IR::CodeBase::Casm; break;
+      case IR::CallType::Special: code = IR::CodeBase::Cspe; break;
       default:
          Core::Error(pos, "unsupported call type");
       }

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -39,18 +39,18 @@ namespace GDCC::SR
       if(auto argC = expC->getArg(); argC.isIRArg())
       {
          ctx.block.setArgSize()
-            .addStmnt(IR::Code::Jcnd_Nil, argC.getIRArg(ctx.prog), labelNil);
+            .addStmnt(IR::CodeBase::Jcnd_Nil, argC.getIRArg(ctx.prog), labelNil);
       }
       else
       {
          expC->genStmntStk(ctx);
          ctx.block.setArgSize()
-            .addStmnt(IR::Code::Jcnd_Nil, expC->getIRArgStk(), labelNil);
+            .addStmnt(IR::CodeBase::Jcnd_Nil, expC->getIRArgStk(), labelNil);
       }
 
       // Left (true) expression.
       expL->genStmnt(ctx, dst);
-      ctx.block.setArgSize().addStmnt(IR::Code::Jump, labelEnd);
+      ctx.block.setArgSize().addStmnt(IR::CodeBase::Jump, labelEnd);
 
       // Right (false) expression.
       ctx.block.addLabel(labelNil);

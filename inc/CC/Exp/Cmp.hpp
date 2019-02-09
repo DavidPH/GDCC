@@ -31,27 +31,27 @@ namespace GDCC::CC
    // Uses a base type and code set to generalize basic arithmetic
    // comparator expression creation.
    //
-   template<typename Base, typename Codes>
-   SR::Exp::CRef ExpCreate_CmpArith(Factory &, SR::Type const *bt,
+   template<typename Base>
+   SR::Exp::CRef ExpCreate_CmpArith(Factory &, IR::CodeBase base, SR::Type const *bt,
       SR::Type const *t, SR::Exp const *l, SR::Exp const *r, Core::Origin pos)
    {
       IR::Code code;
 
       // Floating types.
       if(t->isCTypeFloat())
-         code = SR::ExpCode_ArithFloat<Codes>(t);
+         code = SR::ExpCode_ArithFloat(base, t);
 
       // Fixed-point types.
       else if(t->isCTypeFixed())
-         code = SR::ExpCode_ArithFixed<Codes>(t);
+         code = SR::ExpCode_ArithFixed(base, t);
 
       // Integer types.
       else if(t->isCTypeInteg())
-         code = SR::ExpCode_ArithInteg<Codes>(t);
+         code = SR::ExpCode_ArithInteg(base, t);
 
       // Pointer types.
       else if(t->isTypePointer())
-         code = SR::ExpCode_ArithPoint<Codes>(t);
+         code = SR::ExpCode_ArithPoint(base, t);
 
       // ???
       else

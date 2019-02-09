@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -31,7 +31,7 @@ namespace GDCC::CC
    void Exp_AddPoint::v_genStmnt(SR::GenStmntCtx const &ctx,
       SR::Arg const &dst) const
    {
-      SR::GenStmnt_Point(this, IR::Code::AddU, ctx, dst);
+      SR::GenStmnt_Point(this, IR::CodeBase::Add+'U', ctx, dst);
    }
 
    //
@@ -40,7 +40,7 @@ namespace GDCC::CC
    void Exp_AddPointEq::v_genStmnt(SR::GenStmntCtx const &ctx,
       SR::Arg const &dst) const
    {
-      SR::GenStmnt_PointEq(this, IR::Code::AddU, ctx, dst, post);
+      SR::GenStmnt_PointEq(this, IR::CodeBase::Add+'U', ctx, dst, post);
    }
 
    //
@@ -74,7 +74,7 @@ namespace GDCC::CC
       expR->genStmntStk(ctx);
 
       // Add on stack.
-      ctx.block.setArgSize().addStmnt(IR::Code::AddU,
+      ctx.block.setArgSize().addStmnt(IR::CodeBase::Add+'U',
          IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
 
       // Move to destination.

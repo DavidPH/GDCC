@@ -28,38 +28,34 @@ namespace GDCC::BC::ZDACS
    {
       InfoBase::chkStmnt();
 
-      switch(stmnt->code)
+      switch(stmnt->code.base)
       {
-      case IR::Code::AdXU: chkStmnt_AdXU(); break;
-      case IR::Code::Bges: chkStmnt_Bges(); break;
-      case IR::Code::Bget: chkStmnt_Bget(); break;
-      case IR::Code::Bset: chkStmnt_Bset(); break;
-      case IR::Code::Call: chkStmnt_Call(); break;
-      case IR::Code::Casm: chkStmnt_Casm(); break;
-      case IR::Code::Cnat: chkStmnt_Cnat(); break;
-      case IR::Code::Copy: chkStmnt_Copy(); break;
-
-      case IR::Code::Cscr_IA: chkStmnt_Cscr_IA(); break;
-      case IR::Code::Cscr_IS: chkStmnt_Cscr_IS(); break;
-      case IR::Code::Cscr_SA: chkStmnt_Cscr_SA(); break;
-      case IR::Code::Cscr_SS: chkStmnt_Cscr_SS(); break;
-
-      case IR::Code::Cspe: chkStmnt_Cspe(); break;
-
-      case IR::Code::Jcnd_Nil: chkStmnt_Jcnd_Nil(); break;
-      case IR::Code::Jcnd_Tab: chkStmnt_Jcnd_Tab(); break;
-      case IR::Code::Jcnd_Tru: chkStmnt_Jcnd_Tru(); break;
-      case IR::Code::Jfar_Pro: chkStmnt_Jfar_Pro(); break;
-      case IR::Code::Jfar_Set: chkStmnt_Jfar_Set(); break;
-      case IR::Code::Jfar_Sta: chkStmnt_Jfar_Sta(); break;
-
-      case IR::Code::Jump: chkStmnt_Jump(); break;
-      case IR::Code::LAnd: chkStmnt_LAnd(); break;
-      case IR::Code::LNot: chkStmnt_LNot(); break;
-      case IR::Code::LOrI: chkStmnt_LOrI(); break;
-      case IR::Code::Rjnk: chkStmnt_Rjnk(); break;
-      case IR::Code::SuXU: chkStmnt_SuXU(); break;
-      case IR::Code::Swap: chkStmnt_Swap(); break;
+      case IR::CodeBase::AddX:     chkStmnt_AddX(); break;
+      case IR::CodeBase::Bges:     chkStmnt_Bges(); break;
+      case IR::CodeBase::Bget:     chkStmnt_Bget(); break;
+      case IR::CodeBase::Bset:     chkStmnt_Bset(); break;
+      case IR::CodeBase::Call:     chkStmnt_Call(); break;
+      case IR::CodeBase::Casm:     chkStmnt_Casm(); break;
+      case IR::CodeBase::Cnat:     chkStmnt_Cnat(); break;
+      case IR::CodeBase::Copy:     chkStmnt_Copy(); break;
+      case IR::CodeBase::Cscr_IA:  chkStmnt_Cscr_IA(); break;
+      case IR::CodeBase::Cscr_IS:  chkStmnt_Cscr_IS(); break;
+      case IR::CodeBase::Cscr_SA:  chkStmnt_Cscr_SA(); break;
+      case IR::CodeBase::Cscr_SS:  chkStmnt_Cscr_SS(); break;
+      case IR::CodeBase::Cspe:     chkStmnt_Cspe(); break;
+      case IR::CodeBase::Jcnd_Nil: chkStmnt_Jcnd_Nil(); break;
+      case IR::CodeBase::Jcnd_Tab: chkStmnt_Jcnd_Tab(); break;
+      case IR::CodeBase::Jcnd_Tru: chkStmnt_Jcnd_Tru(); break;
+      case IR::CodeBase::Jfar_Pro: chkStmnt_Jfar_Pro(); break;
+      case IR::CodeBase::Jfar_Set: chkStmnt_Jfar_Set(); break;
+      case IR::CodeBase::Jfar_Sta: chkStmnt_Jfar_Sta(); break;
+      case IR::CodeBase::Jump:     chkStmnt_Jump(); break;
+      case IR::CodeBase::LAnd:     chkStmnt_LAnd(); break;
+      case IR::CodeBase::LNot:     chkStmnt_LNot(); break;
+      case IR::CodeBase::LOrI:     chkStmnt_LOrI(); break;
+      case IR::CodeBase::Rjnk:     chkStmnt_Rjnk(); break;
+      case IR::CodeBase::SubX:     chkStmnt_SubX(); break;
+      case IR::CodeBase::Swap:     chkStmnt_Swap(); break;
 
       default:
          break;

@@ -27,90 +27,52 @@ namespace GDCC::BC::DGE
    //
    void Info::trStmnt()
    {
-      switch(stmnt->code)
+      switch(stmnt->code.base)
       {
-      case IR::Code::Nop: break;
+      case IR::CodeBase::Nop: break;
 
-      case IR::Code::AdXU: trStmnt_AdXU(); break;
-      case IR::Code::AddF: trStmnt_AddF(); break;
-      case IR::Code::AddI: trStmnt_AddI(); break;
-      case IR::Code::AddU: trStmnt_AddU(); break;
-      case IR::Code::BAnd: trStmnt_BAnd(); break;
-      case IR::Code::BNot: trStmnt_BNot(); break;
-      case IR::Code::BOrI: trStmnt_BOrI(); break;
-      case IR::Code::BOrX: trStmnt_BOrX(); break;
-      case IR::Code::Bclo: trStmnt_Bclo(); break;
-      case IR::Code::Bclz: trStmnt_Bclz(); break;
-
-      case IR::Code::CmpF_EQ: trStmnt_CmpF_EQ(); break;
-      case IR::Code::CmpF_GE: trStmnt_CmpF_GE(); break;
-      case IR::Code::CmpF_GT: trStmnt_CmpF_GT(); break;
-      case IR::Code::CmpF_LE: trStmnt_CmpF_LE(); break;
-      case IR::Code::CmpF_LT: trStmnt_CmpF_LT(); break;
-      case IR::Code::CmpF_NE: trStmnt_CmpF_NE(); break;
-      case IR::Code::CmpI_EQ: trStmnt_CmpI_EQ(); break;
-      case IR::Code::CmpI_GE: trStmnt_CmpI_GE(); break;
-      case IR::Code::CmpI_GT: trStmnt_CmpI_GT(); break;
-      case IR::Code::CmpI_LE: trStmnt_CmpI_LE(); break;
-      case IR::Code::CmpI_LT: trStmnt_CmpI_LT(); break;
-      case IR::Code::CmpI_NE: trStmnt_CmpI_NE(); break;
-      case IR::Code::CmpU_EQ: trStmnt_CmpU_EQ(); break;
-      case IR::Code::CmpU_GE: trStmnt_CmpU_GE(); break;
-      case IR::Code::CmpU_GT: trStmnt_CmpU_GT(); break;
-      case IR::Code::CmpU_LE: trStmnt_CmpU_LE(); break;
-      case IR::Code::CmpU_LT: trStmnt_CmpU_LT(); break;
-      case IR::Code::CmpU_NE: trStmnt_CmpU_NE(); break;
-
-      case IR::Code::Call: trStmnt_Call(); break;
-      case IR::Code::Cnat: trStmnt_Cnat(); break;
-      case IR::Code::Copy: trStmnt_Copy(); break;
-      case IR::Code::DiXI: trStmnt_DiXI(); break;
-      case IR::Code::DiXU: trStmnt_DiXU(); break;
-      case IR::Code::DivA: trStmnt_DivA(); break;
-      case IR::Code::DivF: trStmnt_DivF(); break;
-      case IR::Code::DivI: trStmnt_DivI(); break;
-      case IR::Code::DivK: trStmnt_DivK(); break;
-      case IR::Code::DivR: trStmnt_DivR(); break;
-      case IR::Code::DivU: trStmnt_DivU(); break;
-      case IR::Code::DivX: trStmnt_DivX(); break;
-
-      case IR::Code::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
-      case IR::Code::Jcnd_Tab: trStmnt_Jcnd_Tab(); break;
-      case IR::Code::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
-      case IR::Code::Jfar_Pro: trStmnt_Jfar_Pro(); break;
-      case IR::Code::Jfar_Set: trStmnt_Jfar_Set(); break;
-      case IR::Code::Jfar_Sta: trStmnt_Jfar_Sta(); break;
-
-      case IR::Code::Jump: trStmnt_Jump(); break;
-      case IR::Code::LAnd: trStmnt_LAnd(); break;
-      case IR::Code::LNot: trStmnt_LNot(); break;
-      case IR::Code::LOrI: trStmnt_LOrI(); break;
-      case IR::Code::ModI: trStmnt_ModI(); break;
-      case IR::Code::ModU: trStmnt_ModU(); break;
-      case IR::Code::Move: trStmnt_Move(); break;
-      case IR::Code::MuXU: trStmnt_MuXU(); break;
-      case IR::Code::MulA: trStmnt_MulA(); break;
-      case IR::Code::MulF: trStmnt_MulF(); break;
-      case IR::Code::MulI: trStmnt_MulI(); break;
-      case IR::Code::MulK: trStmnt_MulK(); break;
-      case IR::Code::MulR: trStmnt_MulR(); break;
-      case IR::Code::MulU: trStmnt_MulU(); break;
-      case IR::Code::MulX: trStmnt_MulX(); break;
-      case IR::Code::NegF: trStmnt_NegF(); break;
-      case IR::Code::NegI: trStmnt_NegI(); break;
-      case IR::Code::Pltn: trStmnt_Pltn(); break;
-      case IR::Code::Retn: trStmnt_Retn(); break;
-      case IR::Code::Rjnk: trStmnt_Rjnk(); break;
-      case IR::Code::ShLF: trStmnt_ShLF(); break;
-      case IR::Code::ShLU: trStmnt_ShLU(); break;
-      case IR::Code::ShRF: trStmnt_ShRF(); break;
-      case IR::Code::ShRI: trStmnt_ShRI(); break;
-      case IR::Code::ShRU: trStmnt_ShRU(); break;
-      case IR::Code::SuXU: trStmnt_SuXU(); break;
-      case IR::Code::SubF: trStmnt_SubF(); break;
-      case IR::Code::SubI: trStmnt_SubI(); break;
-      case IR::Code::SubU: trStmnt_SubU(); break;
-      case IR::Code::Swap: trStmnt_Swap(); break;
+      case IR::CodeBase::Add:      trStmnt_Add(); break;
+      case IR::CodeBase::AddX:     trStmnt_AddX(); break;
+      case IR::CodeBase::BAnd:     trStmnt_BAnd(); break;
+      case IR::CodeBase::BNot:     trStmnt_BNot(); break;
+      case IR::CodeBase::BOrI:     trStmnt_BOrI(); break;
+      case IR::CodeBase::BOrX:     trStmnt_BOrX(); break;
+      case IR::CodeBase::Bclo:     trStmnt_Bclo(); break;
+      case IR::CodeBase::Bclz:     trStmnt_Bclz(); break;
+      case IR::CodeBase::CmpEQ:    trStmnt_CmpEQ(); break;
+      case IR::CodeBase::CmpGE:    trStmnt_CmpGE(); break;
+      case IR::CodeBase::CmpGT:    trStmnt_CmpGT(); break;
+      case IR::CodeBase::CmpLE:    trStmnt_CmpLE(); break;
+      case IR::CodeBase::CmpLT:    trStmnt_CmpLT(); break;
+      case IR::CodeBase::CmpNE:    trStmnt_CmpNE(); break;
+      case IR::CodeBase::Call:     trStmnt_Call(); break;
+      case IR::CodeBase::Cnat:     trStmnt_Cnat(); break;
+      case IR::CodeBase::Copy:     trStmnt_Copy(); break;
+      case IR::CodeBase::Div:      trStmnt_Div(); break;
+      case IR::CodeBase::DivX:     trStmnt_DivX(); break;
+      case IR::CodeBase::Jcnd_Nil: trStmnt_Jcnd_Nil(); break;
+      case IR::CodeBase::Jcnd_Tab: trStmnt_Jcnd_Tab(); break;
+      case IR::CodeBase::Jcnd_Tru: trStmnt_Jcnd_Tru(); break;
+      case IR::CodeBase::Jfar_Pro: trStmnt_Jfar_Pro(); break;
+      case IR::CodeBase::Jfar_Set: trStmnt_Jfar_Set(); break;
+      case IR::CodeBase::Jfar_Sta: trStmnt_Jfar_Sta(); break;
+      case IR::CodeBase::Jump:     trStmnt_Jump(); break;
+      case IR::CodeBase::LAnd:     trStmnt_LAnd(); break;
+      case IR::CodeBase::LNot:     trStmnt_LNot(); break;
+      case IR::CodeBase::LOrI:     trStmnt_LOrI(); break;
+      case IR::CodeBase::Mod:      trStmnt_Mod(); break;
+      case IR::CodeBase::Move:     trStmnt_Move(); break;
+      case IR::CodeBase::Mul:      trStmnt_Mul(); break;
+      case IR::CodeBase::MulX:     trStmnt_MulX(); break;
+      case IR::CodeBase::Neg:      trStmnt_Neg(); break;
+      case IR::CodeBase::Pltn:     trStmnt_Pltn(); break;
+      case IR::CodeBase::Retn:     trStmnt_Retn(); break;
+      case IR::CodeBase::Rjnk:     trStmnt_Rjnk(); break;
+      case IR::CodeBase::ShL:      trStmnt_ShL(); break;
+      case IR::CodeBase::ShR:      trStmnt_ShR(); break;
+      case IR::CodeBase::Sub:      trStmnt_Sub(); break;
+      case IR::CodeBase::SubX:     trStmnt_SubX(); break;
+      case IR::CodeBase::Swap:     trStmnt_Swap(); break;
 
       default:
          IR::ErrorCode(stmnt, "unsupported tr");

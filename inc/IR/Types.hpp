@@ -30,7 +30,7 @@ namespace GDCC::IR
    using Target::AddrSpace;
    using Target::CallType;
 
-   enum class Code;
+   enum class CodeBase;
    enum class Linkage;
    enum class TypeBase;
 
@@ -39,6 +39,8 @@ namespace GDCC::IR
    class ArgPtr1;
    class ArgPtr2;
    class Block;
+   class Code;
+   class CodeType;
    class DJump;
    class Glyph;
    template<typename T>

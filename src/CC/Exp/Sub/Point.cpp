@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -34,7 +34,7 @@ namespace GDCC::CC
    void Exp_SubPtrInt::v_genStmnt(SR::GenStmntCtx const &ctx,
       SR::Arg const &dst) const
    {
-      SR::GenStmnt_Point(this, IR::Code::SubU, ctx, dst);
+      SR::GenStmnt_Point(this, IR::CodeBase::Sub+'U', ctx, dst);
    }
 
    //
@@ -43,7 +43,7 @@ namespace GDCC::CC
    void Exp_SubPtrIntEq::v_genStmnt(SR::GenStmntCtx const &ctx,
       SR::Arg const &dst) const
    {
-      SR::GenStmnt_PointEq(this, IR::Code::SubU, ctx, dst, post);
+      SR::GenStmnt_PointEq(this, IR::CodeBase::Sub+'U', ctx, dst, post);
    }
 
    //
@@ -82,23 +82,23 @@ namespace GDCC::CC
 
          SR::Temporary tmp{ctx, pos, 1};
 
-         ctx.block.addStmnt(IR::Code::Move,
+         ctx.block.addStmnt(IR::CodeBase::Move,
             tmp. getArg(), tmp.getArgStk());
-         ctx.block.addStmnt(IR::Code::Move,
+         ctx.block.addStmnt(IR::CodeBase::Move,
             IR::Arg_Nul(diffBytes), IR::Arg_Stk(diffBytes));
 
-         ctx.block.addStmnt(IR::Code::SubI,
+         ctx.block.addStmnt(IR::CodeBase::Sub+'I',
             tmp.getArg(), tmp.getArgStk(), tmp.getArg());
-         ctx.block.addStmnt(IR::Code::Move,
+         ctx.block.addStmnt(IR::CodeBase::Move,
             IR::Arg_Nul(diffBytes), IR::Arg_Stk(diffBytes));
 
-         ctx.block.addStmnt(IR::Code::Move,
+         ctx.block.addStmnt(IR::CodeBase::Move,
             tmp.getArgStk(), tmp.getArg());
       }
       else
       {
          // Subtract on stack.
-         ctx.block.setArgSize().addStmnt(IR::Code::SubI,
+         ctx.block.setArgSize().addStmnt(IR::CodeBase::Sub+'I',
             IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
       }
 
@@ -112,7 +112,7 @@ namespace GDCC::CC
          // negative integers is acceptable. (That is, it will only break
          // if the pointers are already not properly aligned.)
 
-         ctx.block.setArgSize().addStmnt(IR::Code::DivI,
+         ctx.block.setArgSize().addStmnt(IR::CodeBase::Div+'I',
             IR::Block::Stk(), IR::Block::Stk(), point);
       }
 

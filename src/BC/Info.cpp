@@ -12,8 +12,7 @@
 
 #include "BC/Info.hpp"
 
-#include "Core/Exception.hpp"
-
+#include "IR/Exception.hpp"
 #include "IR/Program.hpp"
 
 
@@ -190,6 +189,15 @@ namespace GDCC::BC
    }
 
    //
+   // Info::errorCode
+   //
+   [[noreturn]]
+   void Info::errorCode(char const *msg)
+   {
+      IR::ErrorCode(stmnt, msg);
+   }
+
+   //
    // Info::getFixedInfo
    //
    FixedInfo Info::getFixedInfo(Core::FastU n, bool s)
@@ -252,22 +260,22 @@ namespace GDCC::BC
 
       Core::FastU size;
 
-      switch(stmnt->code)
+      switch(stmnt->code.base)
       {
-      case IR::Code::Nop:
+      case IR::CodeBase::Nop:
          return 0;
 
-      case IR::Code::None:
-      case IR::Code::Casm:
-      case IR::Code::Jfar_Set:
-      case IR::Code::Jfar_Sta:
-      case IR::Code::Jump:
-      case IR::Code::Pltn:
-      case IR::Code::Xcod_SID:
+      case IR::CodeBase::None:
+      case IR::CodeBase::Casm:
+      case IR::CodeBase::Jfar_Set:
+      case IR::CodeBase::Jfar_Sta:
+      case IR::CodeBase::Jump:
+      case IR::CodeBase::Pltn:
+      case IR::CodeBase::Xcod_SID:
          Core::Error(stmnt->pos, "irregular statement size");
 
-      case IR::Code::AdXU:
-      case IR::Code::SuXU:
+      case IR::CodeBase::AddX:
+      case IR::CodeBase::SubX:
          size = stmnt->args[2].getSize();
          if(stmnt->args.size() == 3)
          {
@@ -283,119 +291,85 @@ namespace GDCC::BC
          }
          return size;
 
-      case IR::Code::AddF:
-      case IR::Code::AddI:
-      case IR::Code::AddU:
-      case IR::Code::BAnd:
-      case IR::Code::BOrI:
-      case IR::Code::BOrX:
-      case IR::Code::DivA:
-      case IR::Code::DivF:
-      case IR::Code::DivI:
-      case IR::Code::DivK:
-      case IR::Code::DivR:
-      case IR::Code::DivU:
-      case IR::Code::DivX:
-      case IR::Code::ModI:
-      case IR::Code::ModU:
-      case IR::Code::MulA:
-      case IR::Code::MulF:
-      case IR::Code::MulI:
-      case IR::Code::MulK:
-      case IR::Code::MulR:
-      case IR::Code::MulU:
-      case IR::Code::MulX:
-      case IR::Code::SubF:
-      case IR::Code::SubI:
-      case IR::Code::SubU:
+      case IR::CodeBase::Add:
+      case IR::CodeBase::BAnd:
+      case IR::CodeBase::BOrI:
+      case IR::CodeBase::BOrX:
+      case IR::CodeBase::Div:
+      case IR::CodeBase::Mod:
+      case IR::CodeBase::Mul:
+      case IR::CodeBase::Sub:
          size = stmnt->args[0].getSize();
          if(stmnt->args[1].getSize() != size || stmnt->args[2].getSize() != size)
             Core::Error(stmnt->pos, "irregular statement size");
          return size;
 
-      case IR::Code::BNot:
-      case IR::Code::Bges:
-      case IR::Code::Bget:
-      case IR::Code::Bset:
-      case IR::Code::Copy:
-      case IR::Code::Move:
-      case IR::Code::NegF:
-      case IR::Code::NegI:
-      case IR::Code::ShLF:
-      case IR::Code::ShLU:
-      case IR::Code::ShRF:
-      case IR::Code::ShRI:
-      case IR::Code::ShRU:
-      case IR::Code::Swap:
+      case IR::CodeBase::BNot:
+      case IR::CodeBase::Bges:
+      case IR::CodeBase::Bget:
+      case IR::CodeBase::Bset:
+      case IR::CodeBase::Copy:
+      case IR::CodeBase::Move:
+      case IR::CodeBase::Neg:
+      case IR::CodeBase::ShL:
+      case IR::CodeBase::ShR:
+      case IR::CodeBase::Swap:
          size = stmnt->args[0].getSize();
          if(stmnt->args[1].getSize() != size)
             Core::Error(stmnt->pos, "irregular statement size");
          return size;
 
-      case IR::Code::Bclo:
-      case IR::Code::Bclz:
-      case IR::Code::Jfar_Pro:
-      case IR::Code::LNot:
+      case IR::CodeBase::Bclo:
+      case IR::CodeBase::Bclz:
+      case IR::CodeBase::Jfar_Pro:
+      case IR::CodeBase::LNot:
          return stmnt->args[1].getSize();
 
-      case IR::Code::Call:
-      case IR::Code::Cnat:
-      case IR::Code::Cscr_IA:
-      case IR::Code::Cscr_SA:
-      case IR::Code::Cspe:
+      case IR::CodeBase::Call:
+      case IR::CodeBase::Cnat:
+      case IR::CodeBase::Cscr_IA:
+      case IR::CodeBase::Cscr_SA:
+      case IR::CodeBase::Cspe:
          size = 0;
          if(stmnt->args.size() > 2)
             for(auto i = stmnt->args.begin() + 2, e = stmnt->args.end(); i != e; ++i)
                size += i->getSize();
          return size;
 
-      case IR::Code::CmpF_EQ:
-      case IR::Code::CmpF_GE:
-      case IR::Code::CmpF_GT:
-      case IR::Code::CmpF_LE:
-      case IR::Code::CmpF_LT:
-      case IR::Code::CmpF_NE:
-      case IR::Code::CmpI_EQ:
-      case IR::Code::CmpI_GE:
-      case IR::Code::CmpI_GT:
-      case IR::Code::CmpI_LE:
-      case IR::Code::CmpI_LT:
-      case IR::Code::CmpI_NE:
-      case IR::Code::CmpU_EQ:
-      case IR::Code::CmpU_GE:
-      case IR::Code::CmpU_GT:
-      case IR::Code::CmpU_LE:
-      case IR::Code::CmpU_LT:
-      case IR::Code::CmpU_NE:
-      case IR::Code::LAnd:
-      case IR::Code::LOrI:
+      case IR::CodeBase::CmpEQ:
+      case IR::CodeBase::CmpGE:
+      case IR::CodeBase::CmpGT:
+      case IR::CodeBase::CmpLE:
+      case IR::CodeBase::CmpLT:
+      case IR::CodeBase::CmpNE:
+      case IR::CodeBase::LAnd:
+      case IR::CodeBase::LOrI:
          size = stmnt->args[1].getSize();
          if(stmnt->args[2].getSize() != size)
             Core::Error(stmnt->pos, "irregular statement size");
          return size;
 
-      case IR::Code::Cscr_IS:
-      case IR::Code::Cscr_SS:
+      case IR::CodeBase::Cscr_IS:
+      case IR::CodeBase::Cscr_SS:
          size = 0;
          if(stmnt->args.size() > 3)
             for(auto i = stmnt->args.begin() + 3, e = stmnt->args.end(); i != e; ++i)
                size += i->getSize();
          return size;
 
-      case IR::Code::DiXI:
-      case IR::Code::DiXU:
-      case IR::Code::MuXU:
+      case IR::CodeBase::DivX:
+      case IR::CodeBase::MulX:
          size = stmnt->args[1].getSize();
          if(stmnt->args[0].getSize() != size * 2 || stmnt->args[2].getSize() != size)
             Core::Error(stmnt->pos, "irregular statement size");
          return size;
 
-      case IR::Code::Jcnd_Nil:
-      case IR::Code::Jcnd_Tab:
-      case IR::Code::Jcnd_Tru:
-      case IR::Code::Jdyn:
-      case IR::Code::Retn:
-      case IR::Code::Rjnk:
+      case IR::CodeBase::Jcnd_Nil:
+      case IR::CodeBase::Jcnd_Tab:
+      case IR::CodeBase::Jcnd_Tru:
+      case IR::CodeBase::Jdyn:
+      case IR::CodeBase::Retn:
+      case IR::CodeBase::Rjnk:
          return stmnt->args[0].getSize();
       }
 

@@ -15,8 +15,6 @@
 #include "CC/Factory.hpp"
 #include "CC/Type.hpp"
 
-#include "IR/CodeSet/Cmp.hpp"
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -33,8 +31,8 @@ namespace GDCC::CC
       auto [type, expL, expR] = expPromo_CmpEqu(l, r, pos);
 
       if(type->isCTypeArith() || type->isTypePointer())
-         return ExpCreate_CmpArith<SR::Exp_CmpEQ, IR::CodeSet_CmpEQ>(
-            *this, TypeIntegPrS, type, expL, expR, pos);
+         return ExpCreate_CmpArith<SR::Exp_CmpEQ>(
+            *this, IR::CodeBase::CmpEQ, TypeIntegPrS, type, expL, expR, pos);
 
       Core::Error(pos, "invalid operands to 'operator =='");
    }
@@ -48,8 +46,8 @@ namespace GDCC::CC
       auto [type, expL, expR] = expPromo_CmpRel(l, r, pos);
 
       if(type->isCTypeArith() || type->isTypePointer())
-         return ExpCreate_CmpArith<SR::Exp_CmpGE, IR::CodeSet_CmpGE>(
-            *this, TypeIntegPrS, type, expL, expR, pos);
+         return ExpCreate_CmpArith<SR::Exp_CmpGE>(
+            *this, IR::CodeBase::CmpGE, TypeIntegPrS, type, expL, expR, pos);
 
       Core::Error(pos, "invalid operands to 'operator >='");
    }
@@ -63,8 +61,8 @@ namespace GDCC::CC
       auto [type, expL, expR] = expPromo_CmpRel(l, r, pos);
 
       if(type->isCTypeArith() || type->isTypePointer())
-         return ExpCreate_CmpArith<SR::Exp_CmpGT, IR::CodeSet_CmpGT>(
-            *this, TypeIntegPrS, type, expL, expR, pos);
+         return ExpCreate_CmpArith<SR::Exp_CmpGT>(
+            *this, IR::CodeBase::CmpGT, TypeIntegPrS, type, expL, expR, pos);
 
       Core::Error(pos, "invalid operands to 'operator >='");
    }
@@ -78,8 +76,8 @@ namespace GDCC::CC
       auto [type, expL, expR] = expPromo_CmpRel(l, r, pos);
 
       if(type->isCTypeArith() || type->isTypePointer())
-         return ExpCreate_CmpArith<SR::Exp_CmpLE, IR::CodeSet_CmpLE>(
-            *this, TypeIntegPrS, type, expL, expR, pos);
+         return ExpCreate_CmpArith<SR::Exp_CmpLE>(
+            *this, IR::CodeBase::CmpLE, TypeIntegPrS, type, expL, expR, pos);
 
       Core::Error(pos, "invalid operands to 'operator >='");
    }
@@ -93,8 +91,8 @@ namespace GDCC::CC
       auto [type, expL, expR] = expPromo_CmpRel(l, r, pos);
 
       if(type->isCTypeArith() || type->isTypePointer())
-         return ExpCreate_CmpArith<SR::Exp_CmpLT, IR::CodeSet_CmpLT>(
-            *this, TypeIntegPrS, type, expL, expR, pos);
+         return ExpCreate_CmpArith<SR::Exp_CmpLT>(
+            *this, IR::CodeBase::CmpLT, TypeIntegPrS, type, expL, expR, pos);
 
       Core::Error(pos, "invalid operands to 'operator >='");
    }
@@ -108,8 +106,8 @@ namespace GDCC::CC
       auto [type, expL, expR] = expPromo_CmpEqu(l, r, pos);
 
       if(type->isCTypeArith() || type->isTypePointer())
-         return ExpCreate_CmpArith<SR::Exp_CmpNE, IR::CodeSet_CmpNE>(
-            *this, TypeIntegPrS, type, expL, expR, pos);
+         return ExpCreate_CmpArith<SR::Exp_CmpNE>(
+            *this, IR::CodeBase::CmpNE, TypeIntegPrS, type, expL, expR, pos);
 
       Core::Error(pos, "invalid operands to 'operator !='");
    }

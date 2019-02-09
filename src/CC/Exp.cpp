@@ -17,8 +17,6 @@
 
 #include "Core/Exception.hpp"
 
-#include "IR/CodeSet/Bitwise.hpp"
-#include "IR/CodeSet/Unary.hpp"
 #include "IR/Exp.hpp"
 #include "IR/Value.hpp"
 
@@ -154,7 +152,7 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_BitAnd(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      return ExpCreate_Bitwise<SR::Exp_BitAnd, IR::CodeSet_And>(*this, l, r, pos);
+      return ExpCreate_Bitwise<SR::Exp_BitAnd>(*this, IR::CodeBase::BAnd, l, r, pos);
    }
 
    //
@@ -163,7 +161,7 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_BitAndEq(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      return ExpCreate_BitwiseEq<SR::Exp_BitAnd, IR::CodeSet_And>(*this, l, r, pos);
+      return ExpCreate_BitwiseEq<SR::Exp_BitAnd>(*this, IR::CodeBase::BAnd, l, r, pos);
    }
 
    //
@@ -172,7 +170,7 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_BitOrI(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      return ExpCreate_Bitwise<SR::Exp_BitOrI, IR::CodeSet_OrI>(*this, l, r, pos);
+      return ExpCreate_Bitwise<SR::Exp_BitOrI>(*this, IR::CodeBase::BOrI, l, r, pos);
    }
 
    //
@@ -181,7 +179,7 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_BitOrIEq(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      return ExpCreate_BitwiseEq<SR::Exp_BitOrI, IR::CodeSet_OrI>(*this, l, r, pos);
+      return ExpCreate_BitwiseEq<SR::Exp_BitOrI>(*this, IR::CodeBase::BOrI, l, r, pos);
    }
 
    //
@@ -190,7 +188,7 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_BitOrX(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      return ExpCreate_Bitwise<SR::Exp_BitOrX, IR::CodeSet_OrX>(*this, l, r, pos);
+      return ExpCreate_Bitwise<SR::Exp_BitOrX>(*this, IR::CodeBase::BOrX, l, r, pos);
    }
 
    //
@@ -199,7 +197,7 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_BitOrXEq(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      return ExpCreate_BitwiseEq<SR::Exp_BitOrX, IR::CodeSet_OrX>(*this, l, r, pos);
+      return ExpCreate_BitwiseEq<SR::Exp_BitOrX>(*this, IR::CodeBase::BOrX, l, r, pos);
    }
 
    //
@@ -323,12 +321,8 @@ namespace GDCC::CC
       if(!type->isCTypeInteg())
          Core::Error(pos, "expected integer type");
 
-      auto code = SR::ExpCode_ArithInteg<IR::CodeSet_Inv>(type);
-
-      if(code == IR::Code::None)
-         Core::Error(pos, "unsupported operand size");
-
-      return SR::Exp_UnaryCode<SR::Exp_Inv>::Create(code, type, exp, pos);
+      return SR::Exp_UnaryCode<SR::Exp_Inv>::Create(
+         IR::CodeBase::BNot, type, exp, pos);
    }
 
    //
@@ -357,7 +351,7 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_ShL(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      return ExpCreate_Shift<SR::Exp_ShL, IR::CodeSet_ShL>(*this, l, r, pos);
+      return ExpCreate_Shift<SR::Exp_ShL>(*this, IR::CodeBase::ShL, l, r, pos);
    }
 
    //
@@ -366,7 +360,7 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_ShLEq(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      return ExpCreate_ShiftEq<SR::Exp_ShL, IR::CodeSet_ShL>(*this, l, r, pos);
+      return ExpCreate_ShiftEq<SR::Exp_ShL>(*this, IR::CodeBase::ShL, l, r, pos);
    }
 
    //
@@ -375,7 +369,7 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_ShR(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      return ExpCreate_Shift<SR::Exp_ShR, IR::CodeSet_ShR>(*this, l, r, pos);
+      return ExpCreate_Shift<SR::Exp_ShR>(*this, IR::CodeBase::ShR, l, r, pos);
    }
 
    //
@@ -384,7 +378,7 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_ShREq(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
-      return ExpCreate_ShiftEq<SR::Exp_ShR, IR::CodeSet_ShR>(*this, l, r, pos);
+      return ExpCreate_ShiftEq<SR::Exp_ShR>(*this, IR::CodeBase::ShR, l, r, pos);
    }
 
    //

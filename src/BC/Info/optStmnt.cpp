@@ -75,8 +75,7 @@ namespace GDCC::BC
    bool Info::optStmnt_Cspe_Drop()
    {
       // Must be Cspe(Stk() ...).
-      if(stmnt->code != IR::Code::Cspe || stmnt->args.size() < 1 ||
-         stmnt->args[0].a != IR::ArgBase::Stk)
+      if(stmnt->code != IR::CodeBase::Cspe || stmnt->args[0].a != IR::ArgBase::Stk)
          return false;
 
       auto next = stmnt->next;
@@ -86,7 +85,7 @@ namespace GDCC::BC
          return false;
 
       // Must be followed by a Move(Nul() Stk()).
-      if(next->code != IR::Code::Move || next->args.size() != 2 ||
+      if(next->code != IR::CodeBase::Move ||
          next->args[0].a != IR::ArgBase::Nul || next->args[1].a != IR::ArgBase::Stk)
          return false;
 
@@ -116,7 +115,7 @@ namespace GDCC::BC
    bool Info::optStmnt_JumpNext()
    {
       // Must be Jump(Lit(...)).
-      if(stmnt->code != IR::Code::Jump || stmnt->args[0].a != IR::ArgBase::Lit)
+      if(stmnt->code != IR::CodeBase::Jump || stmnt->args[0].a != IR::ArgBase::Lit)
          return false;
 
       // Argument must be a glyph expression.
@@ -153,7 +152,7 @@ namespace GDCC::BC
    bool Info::optStmnt_LNot_Jcnd()
    {
       // Must be LNot(Stk N() ...).
-      if(stmnt->code != IR::Code::LNot || stmnt->args[0].a != IR::ArgBase::Stk)
+      if(stmnt->code != IR::CodeBase::LNot || stmnt->args[0].a != IR::ArgBase::Stk)
          return false;
 
       auto next = stmnt->next;
@@ -163,7 +162,7 @@ namespace GDCC::BC
          return false;
 
       // Must be followed by Jcnd_Nil(Stk N() ...).
-      if((next->code != IR::Code::Jcnd_Nil && next->code != IR::Code::Jcnd_Tru) ||
+      if((next->code != IR::CodeBase::Jcnd_Nil && next->code != IR::CodeBase::Jcnd_Tru) ||
          next->args[0].a != IR::ArgBase::Stk)
          return false;
 
@@ -173,8 +172,8 @@ namespace GDCC::BC
          return false;
 
       // Invert jump condition and move src.
-      next->code = next->code == IR::Code::Jcnd_Nil
-         ? IR::Code::Jcnd_Tru : IR::Code::Jcnd_Nil;
+      next->code = next->code == IR::CodeBase::Jcnd_Nil
+         ? IR::CodeBase::Jcnd_Tru : IR::CodeBase::Jcnd_Nil;
 
       next->args[0] = std::move(stmnt->args[1]);
 

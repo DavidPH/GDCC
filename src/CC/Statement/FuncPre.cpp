@@ -45,7 +45,7 @@ namespace GDCC::CC
       IR::Arg_Lit dstIdx{Target::GetWordBytes(), SR::Exp_IRExp::Create_Size(objValue)->getIRExp()};
       IR::Arg_Lit srcIdx{Target::GetWordBytes(), SR::Exp_IRExp::Create_Size(paramIdx)->getIRExp()};
 
-      ctx.block.addStmnt(IR::Code::Move,
+      ctx.block.addStmnt(IR::CodeBase::Move,
          ArgT(objBytes, dstIdx), IR::Arg_LocReg(objBytes, srcIdx));
    }
 
@@ -113,7 +113,7 @@ namespace GDCC::CC
       }
 
       if(NeedSID(ctype, scope.fn->stype))
-         ctx.block.addStmnt(IR::Code::Xcod_SID);
+         ctx.block.addStmnt(IR::CodeBase::Xcod_SID);
 
       if(scope.fn->labelRes)
          ctx.block.addLabel(scope.fn->labelRes);
@@ -134,11 +134,11 @@ namespace GDCC::CC
       // Perform return.
       if(scope.fn->retrn->isTypeVoid())
       {
-         ctx.block.addStmnt(IR::Code::Retn);
+         ctx.block.addStmnt(IR::CodeBase::Retn);
       }
       else if(ctype == IR::CallType::ScriptI || ctype == IR::CallType::ScriptS)
       {
-         ctx.block.addStmnt(IR::Code::Retn, IR::Arg_Stk(scope.fn->retrn->getSizeBytes()));
+         ctx.block.addStmnt(IR::CodeBase::Retn, IR::Arg_Stk(scope.fn->retrn->getSizeBytes()));
       }
 
       // Generate long jump return, if needed.
@@ -147,9 +147,10 @@ namespace GDCC::CC
          ctx.block.addLabel(scope.labelLJR);
 
          if(scope.fn->retrn->isTypeVoid())
-            ctx.block.addStmnt(IR::Code::Rjnk);
+            ctx.block.addStmnt(IR::CodeBase::Rjnk);
          else
-            ctx.block.setArgSize(scope.fn->retrn->getSizeBytes()).addStmnt(IR::Code::Rjnk, 0);
+            ctx.block.setArgSize(scope.fn->retrn->getSizeBytes())
+               .addStmnt(IR::CodeBase::Rjnk, 0);
       }
    }
 

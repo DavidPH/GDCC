@@ -14,8 +14,6 @@
 
 #include "CC/Exp/Arith.hpp"
 
-#include "IR/CodeSet/Arith.hpp"
-
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -43,8 +41,8 @@ namespace GDCC::CC
 
          // TODO: fixed * integer doesn't require conversion.
 
-         return ExpCreate_Arith<SR::Exp_Mul, IR::CodeSet_Mul>(
-            *this, type, expL, expR, pos);
+         return ExpCreate_Arith<SR::Exp_Mul>(
+            *this, IR::CodeBase::Mul, type, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator *'");
@@ -72,8 +70,8 @@ namespace GDCC::CC
 
          // TODO: fixed *= integer doesn't require conversion.
 
-         return ExpCreate_ArithEq<SR::Exp_Mul, IR::CodeSet_Mul>(
-            *this, evalT, typeL, expL, expR, pos);
+         return ExpCreate_ArithEq<SR::Exp_Mul>(
+            *this, IR::CodeBase::Mul, evalT, typeL, expL, expR, pos);
       }
 
       Core::Error(pos, "invalid operands to 'operator *='");

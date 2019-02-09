@@ -47,7 +47,7 @@ namespace GDCC::CC
    //
    void Statement_Goto::v_genStmnt(SR::GenStmntCtx const &ctx) const
    {
-      ctx.block.setArgSize().addStmnt(IR::Code::Jump, IR::Glyph(ctx.prog, label));
+      ctx.block.setArgSize().addStmnt(IR::CodeBase::Jump, IR::Glyph(ctx.prog, label));
    }
 
    //
@@ -75,12 +75,12 @@ namespace GDCC::CC
    {
       if(exp->getArg().isIRArg())
       {
-         ctx.block.addStmnt(IR::Code::Jdyn, exp->getArg().getIRArg(ctx.prog));
+         ctx.block.addStmnt(IR::CodeBase::Jdyn, exp->getArg().getIRArg(ctx.prog));
       }
       else
       {
          exp->genStmntStk(ctx);
-         ctx.block.setArgSize().addStmnt(IR::Code::Jdyn, IR::Block::Stk());
+         ctx.block.setArgSize().addStmnt(IR::CodeBase::Jdyn, IR::Block::Stk());
       }
    }
 

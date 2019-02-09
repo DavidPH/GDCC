@@ -30,129 +30,173 @@ namespace GDCC::BC
       for(auto &arg : stmnt->args)
          chkStmntArg(arg);
 
-      switch(stmnt->code)
+      for(auto t : stmnt->code.type) switch(t)
       {
-      case IR::Code::Nop:
-      case IR::Code::Xcod_SID:
+      case 'A': case 'E': case 'F': case 'I':
+      case 'K': case 'R': case 'U': case 'X':
+         break;
+
+      default:
+         IR::ErrorCode(stmnt, "bad code type");
+      }
+
+      switch(stmnt->code.base)
+      {
+      case IR::CodeBase::Nop:
+      case IR::CodeBase::Xcod_SID:
          chkStmntArgC(0);
          break;
 
-      case IR::Code::Retn:
-      case IR::Code::Rjnk:
+      case IR::CodeBase::Retn:
+      case IR::CodeBase::Rjnk:
          chkStmntArgC(0, 1);
          break;
 
-      case IR::Code::Jdyn:
-      case IR::Code::Jump:
+      case IR::CodeBase::Jdyn:
+      case IR::CodeBase::Jump:
          chkStmntArgC(1);
          break;
 
-      case IR::Code::BNot:
-      case IR::Code::Bclo:
-      case IR::Code::Bclz:
-      case IR::Code::Copy:
-      case IR::Code::Jcnd_Nil:
-      case IR::Code::Jcnd_Tru:
-      case IR::Code::Jfar_Pro:
-      case IR::Code::Jfar_Set:
-      case IR::Code::LNot:
-      case IR::Code::Move:
-      case IR::Code::NegF:
-      case IR::Code::NegI:
-      case IR::Code::Pltn:
-      case IR::Code::Swap:
+      case IR::CodeBase::BNot:
+      case IR::CodeBase::Bclo:
+      case IR::CodeBase::Bclz:
+      case IR::CodeBase::Copy:
+      case IR::CodeBase::Jcnd_Nil:
+      case IR::CodeBase::Jcnd_Tru:
+      case IR::CodeBase::Jfar_Pro:
+      case IR::CodeBase::Jfar_Set:
+      case IR::CodeBase::LNot:
+      case IR::CodeBase::Move:
+      case IR::CodeBase::Neg:
+      case IR::CodeBase::Pltn:
+      case IR::CodeBase::Swap:
          chkStmntArgC(2);
          break;
 
-      case IR::Code::Call:
-      case IR::Code::Casm:
-      case IR::Code::Cnat:
-      case IR::Code::Cscr_IA:
-      case IR::Code::Cscr_SA:
-      case IR::Code::Cspe:
+      case IR::CodeBase::Call:
+      case IR::CodeBase::Casm:
+      case IR::CodeBase::Cnat:
+      case IR::CodeBase::Cscr_IA:
+      case IR::CodeBase::Cscr_SA:
+      case IR::CodeBase::Cspe:
          chkStmntArgC(2, -1);
          break;
 
-      case IR::Code::AddF:
-      case IR::Code::AddI:
-      case IR::Code::AddU:
-      case IR::Code::BAnd:
-      case IR::Code::BOrI:
-      case IR::Code::BOrX:
-      case IR::Code::CmpF_EQ:
-      case IR::Code::CmpF_GE:
-      case IR::Code::CmpF_GT:
-      case IR::Code::CmpF_LE:
-      case IR::Code::CmpF_LT:
-      case IR::Code::CmpF_NE:
-      case IR::Code::CmpI_EQ:
-      case IR::Code::CmpI_GE:
-      case IR::Code::CmpI_GT:
-      case IR::Code::CmpI_LE:
-      case IR::Code::CmpI_LT:
-      case IR::Code::CmpI_NE:
-      case IR::Code::CmpU_EQ:
-      case IR::Code::CmpU_GE:
-      case IR::Code::CmpU_GT:
-      case IR::Code::CmpU_LE:
-      case IR::Code::CmpU_LT:
-      case IR::Code::CmpU_NE:
-      case IR::Code::DiXI:
-      case IR::Code::DiXU:
-      case IR::Code::DivA:
-      case IR::Code::DivF:
-      case IR::Code::DivI:
-      case IR::Code::DivK:
-      case IR::Code::DivR:
-      case IR::Code::DivU:
-      case IR::Code::DivX:
-      case IR::Code::Jfar_Sta:
-      case IR::Code::LAnd:
-      case IR::Code::LOrI:
-      case IR::Code::ModI:
-      case IR::Code::ModU:
-      case IR::Code::MuXU:
-      case IR::Code::MulA:
-      case IR::Code::MulF:
-      case IR::Code::MulI:
-      case IR::Code::MulK:
-      case IR::Code::MulR:
-      case IR::Code::MulU:
-      case IR::Code::MulX:
-      case IR::Code::ShLF:
-      case IR::Code::ShLU:
-      case IR::Code::ShRF:
-      case IR::Code::ShRI:
-      case IR::Code::ShRU:
-      case IR::Code::SubF:
-      case IR::Code::SubI:
-      case IR::Code::SubU:
+      case IR::CodeBase::Add:
+      case IR::CodeBase::BAnd:
+      case IR::CodeBase::BOrI:
+      case IR::CodeBase::BOrX:
+      case IR::CodeBase::CmpEQ:
+      case IR::CodeBase::CmpGE:
+      case IR::CodeBase::CmpGT:
+      case IR::CodeBase::CmpLE:
+      case IR::CodeBase::CmpLT:
+      case IR::CodeBase::CmpNE:
+      case IR::CodeBase::Div:
+      case IR::CodeBase::DivX:
+      case IR::CodeBase::Jfar_Sta:
+      case IR::CodeBase::LAnd:
+      case IR::CodeBase::LOrI:
+      case IR::CodeBase::Mod:
+      case IR::CodeBase::Mul:
+      case IR::CodeBase::MulX:
+      case IR::CodeBase::ShL:
+      case IR::CodeBase::ShR:
+      case IR::CodeBase::Sub:
          chkStmntArgC(3);
          break;
 
-      case IR::Code::Cscr_IS:
-      case IR::Code::Cscr_SS:
+      case IR::CodeBase::Cscr_IS:
+      case IR::CodeBase::Cscr_SS:
          chkStmntArgC(3, -1);
          break;
 
-      case IR::Code::AdXU:
-      case IR::Code::SuXU:
+      case IR::CodeBase::AddX:
+      case IR::CodeBase::SubX:
          chkStmntArgC(3, 4);
          break;
 
-      case IR::Code::Bges:
-      case IR::Code::Bget:
-      case IR::Code::Bset:
+      case IR::CodeBase::Bges:
+      case IR::CodeBase::Bget:
+      case IR::CodeBase::Bset:
          chkStmntArgC(4);
          break;
 
-      case IR::Code::Jcnd_Tab:
+      case IR::CodeBase::Jcnd_Tab:
          if(stmnt->args.size() % 2 == 0)
             IR::ErrorCode(stmnt, "bad arg count");
          break;
 
-      case IR::Code::None:
-         IR::ErrorCode(stmnt, "bad code");
+      case IR::CodeBase::None:
+         IR::ErrorCode(stmnt, "bad code base");
+      }
+
+      switch(auto size = stmnt->code.type.size(); stmnt->code.base)
+      {
+      case IR::CodeBase::Nop:
+      case IR::CodeBase::BAnd:
+      case IR::CodeBase::BNot:
+      case IR::CodeBase::BOrI:
+      case IR::CodeBase::BOrX:
+      case IR::CodeBase::Bclo:
+      case IR::CodeBase::Bclz:
+      case IR::CodeBase::Bges:
+      case IR::CodeBase::Bget:
+      case IR::CodeBase::Bset:
+      case IR::CodeBase::Call:
+      case IR::CodeBase::Casm:
+      case IR::CodeBase::Cnat:
+      case IR::CodeBase::Copy:
+      case IR::CodeBase::Cscr_IA:
+      case IR::CodeBase::Cscr_IS:
+      case IR::CodeBase::Cscr_SA:
+      case IR::CodeBase::Cscr_SS:
+      case IR::CodeBase::Cspe:
+      case IR::CodeBase::Jcnd_Nil:
+      case IR::CodeBase::Jcnd_Tab:
+      case IR::CodeBase::Jcnd_Tru:
+      case IR::CodeBase::Jdyn:
+      case IR::CodeBase::Jfar_Pro:
+      case IR::CodeBase::Jfar_Set:
+      case IR::CodeBase::Jfar_Sta:
+      case IR::CodeBase::Jump:
+      case IR::CodeBase::LAnd:
+      case IR::CodeBase::LNot:
+      case IR::CodeBase::LOrI:
+      case IR::CodeBase::Move:
+      case IR::CodeBase::Pltn:
+      case IR::CodeBase::Retn:
+      case IR::CodeBase::Rjnk:
+      case IR::CodeBase::Swap:
+      case IR::CodeBase::Xcod_SID:
+         if(size != 0)
+            IR::ErrorCode(stmnt, "bad code type");
+         break;
+
+      case IR::CodeBase::Add:
+      case IR::CodeBase::AddX:
+      case IR::CodeBase::CmpEQ:
+      case IR::CodeBase::CmpGE:
+      case IR::CodeBase::CmpGT:
+      case IR::CodeBase::CmpLE:
+      case IR::CodeBase::CmpLT:
+      case IR::CodeBase::CmpNE:
+      case IR::CodeBase::Div:
+      case IR::CodeBase::DivX:
+      case IR::CodeBase::Mod:
+      case IR::CodeBase::Mul:
+      case IR::CodeBase::MulX:
+      case IR::CodeBase::Neg:
+      case IR::CodeBase::ShL:
+      case IR::CodeBase::ShR:
+      case IR::CodeBase::Sub:
+      case IR::CodeBase::SubX:
+         if(size != 0 && size != 1)
+            IR::ErrorCode(stmnt, "bad code type");
+         break;
+
+      case IR::CodeBase::None:
+         IR::ErrorCode(stmnt, "bad code type");
       }
    }
 

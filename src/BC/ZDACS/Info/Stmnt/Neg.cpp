@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -25,18 +25,24 @@
 
 namespace GDCC::BC::ZDACS
 {
+   GDCC_BC_CodeTypeSwitchFn(gen, Neg, FIU)
+
+   GDCC_BC_CodeTypeSwitchFn(put, Neg, FIU)
+
+   GDCC_BC_CodeTypeSwitchFn(tr, Neg, FIU)
+
    //
-   // Info::genStmnt_NegF
+   // Info::genStmnt_Neg_F
    //
-   void Info::genStmnt_NegF()
+   void Info::genStmnt_Neg_F()
    {
       numChunkCODE += 12;
    }
 
    //
-   // Info::genStmnt_NegI
+   // Info::genStmnt_Neg_I
    //
-   void Info::genStmnt_NegI()
+   void Info::genStmnt_Neg_I()
    {
       auto n = getStmntSize();
 
@@ -68,18 +74,18 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::putStmnt_NegF
+   // Info::putStmnt_Neg_F
    //
-   void Info::putStmnt_NegF()
+   void Info::putStmnt_Neg_F()
    {
       putCode(Code::Push_Lit, 0x80000000);
       putCode(Code::BOrX);
    }
 
    //
-   // Info::putStmnt_NegI
+   // Info::putStmnt_Neg_I
    //
-   void Info::putStmnt_NegI()
+   void Info::putStmnt_Neg_I()
    {
       auto n = getStmntSize();
 
@@ -140,9 +146,9 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_NegI
+   // Info::trStmnt_Neg_I
    //
-   void Info::trStmnt_NegI()
+   void Info::trStmnt_Neg_I()
    {
       auto n = getStmntSize();
 

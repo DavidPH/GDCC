@@ -477,14 +477,14 @@ double nextafter(double x, double y)
       if(x == -DBL_MIN) return 0;
       if(x == 0) return +DBL_MIN;
 
-      __asm("AddU W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
+      __asm("Add:U W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
    }
    else if(x > y)
    {
       if(x == +DBL_MIN) return 0;
       if(x == 0) return -DBL_MIN;
 
-      __asm("SubU W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
+      __asm("Sub:U W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
    }
 
    return x;
@@ -500,14 +500,14 @@ float nextafterf(float x, float y)
       if(x == -FLT_MIN) return 0;
       if(x == 0) return +FLT_MIN;
 
-      __asm("AddU W 1(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
+      __asm("Add:U W 1(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
    }
    else if(x > y)
    {
       if(x == +FLT_MIN) return 0;
       if(x == 0) return -FLT_MIN;
 
-      __asm("SubU W 1(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
+      __asm("Sub:U W 1(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
    }
 
    return x;
@@ -523,14 +523,14 @@ long double nextafterl(long double x, long double y)
       if(x == -LDBL_MIN) return 0;
       if(x == 0) return +LDBL_MIN;
 
-      __asm("AddU W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
+      __asm("Add:U W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
    }
    else if(x > y)
    {
       if(x == +LDBL_MIN) return 0;
       if(x == 0) return -LDBL_MIN;
 
-      __asm("SubU W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
+      __asm("Sub:U W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
    }
 
    return x;
@@ -546,14 +546,14 @@ double nexttoward(double x, long double y)
       if(x == -DBL_MIN) return 0;
       if(x == 0) return +DBL_MIN;
 
-      __asm("AddU W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
+      __asm("Add:U W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
    }
    else if(x > y)
    {
       if(x == +DBL_MIN) return 0;
       if(x == 0) return -DBL_MIN;
 
-      __asm("SubU W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
+      __asm("Sub:U W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
    }
 
    return x;
@@ -569,14 +569,14 @@ float nexttowardf(float x, long double y)
       if(x == -FLT_MIN) return 0;
       if(x == 0) return +FLT_MIN;
 
-      __asm("AddU W 1(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
+      __asm("Add:U W 1(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
    }
    else if(x > y)
    {
       if(x == +FLT_MIN) return 0;
       if(x == 0) return -FLT_MIN;
 
-      __asm("SubU W 1(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
+      __asm("Sub:U W 1(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
    }
 
    return x;
@@ -592,14 +592,14 @@ long double nexttowardl(long double x, long double y)
       if(x == -LDBL_MIN) return 0;
       if(x == 0) return +LDBL_MIN;
 
-      __asm("AddU W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
+      __asm("Add:U W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
    }
    else if(x > y)
    {
       if(x == +LDBL_MIN) return 0;
       if(x == 0) return -LDBL_MIN;
 
-      __asm("SubU W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
+      __asm("Sub:U W 2(LocReg(Lit(:x)) LocReg(Lit(:x)) Lit(1))");
    }
 
    return x;

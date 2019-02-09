@@ -41,6 +41,8 @@ namespace GDCC::IR
 
       OArchive &operator << (bool in) {return out.put(in), *this;}
 
+      OArchive &operator << (char in) {return out.put(in), *this;}
+
       OArchive &operator << (signed           char in) {return putI(in), *this;}
       OArchive &operator << (signed     short int  in) {return putI(in), *this;}
       OArchive &operator << (signed           int  in) {return putI(in), *this;}
