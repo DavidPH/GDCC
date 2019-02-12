@@ -271,6 +271,7 @@ namespace GDCC::BC
       case IR::CodeBase::Jfar_Sta:
       case IR::CodeBase::Jump:
       case IR::CodeBase::Pltn:
+      case IR::CodeBase::Tr:
       case IR::CodeBase::Xcod_SID:
          Core::Error(stmnt->pos, "irregular statement size");
 

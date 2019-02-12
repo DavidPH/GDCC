@@ -70,6 +70,7 @@ namespace GDCC::BC
       case IR::CodeBase::Neg:
       case IR::CodeBase::Pltn:
       case IR::CodeBase::Swap:
+      case IR::CodeBase::Tr:
          chkStmntArgC(2);
          break;
 
@@ -192,6 +193,11 @@ namespace GDCC::BC
       case IR::CodeBase::Sub:
       case IR::CodeBase::SubX:
          if(size != 0 && size != 1)
+            IR::ErrorCode(stmnt, "bad code type");
+         break;
+
+      case IR::CodeBase::Tr:
+         if(size != 0 && size != 1 && size != 2)
             IR::ErrorCode(stmnt, "bad code type");
          break;
 

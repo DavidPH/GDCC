@@ -158,6 +158,9 @@ GDCC_IR_CodeList(SubX)
 // Swap lop rop
 GDCC_IR_CodeList(Swap)
 
+// Tr dst src
+GDCC_IR_CodeList(Tr)
+
 // Xcod_SID (Static Initialization Delay)
 GDCC_IR_CodeList(Xcod_SID)
 
