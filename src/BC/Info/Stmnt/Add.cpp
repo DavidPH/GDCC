@@ -29,14 +29,14 @@ namespace GDCC::BC
    //
    void Info::addFunc_Add_FW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::Add+F, n, n, n * 2, n * 3 + 2, __FILE__);
+      GDCC_BC_AddFuncPre((Code::Add+F, n), n, n * 2, n * 3 + 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       GDCC_BC_AddFuncObjReg(tmp,  n, n * 2);
       GDCC_BC_AddFuncObjReg(expL, 1, n * 3 + 0);
       GDCC_BC_AddFuncObjReg(expR, 1, n * 3 + 1);
 
-      FloatInfo fi = getFloatInfo(n);
+      FloatInfo fi = getFloatInfo(n, true);
 
       IR::Glyph labelLPos{prog, name + "$lpos"};
       IR::Glyph labelRPos{prog, name + "$rpos"};
@@ -245,7 +245,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Add_UW(Core::FastU n, IR::Code codeAdd, IR::Code codeAddX)
    {
-      GDCC_BC_AddFuncPre(codeAdd, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((codeAdd, n), n, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       // First words.
@@ -270,14 +270,14 @@ namespace GDCC::BC
    //
    void Info::addFunc_Sub_FW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::Sub+F, n, n, n * 2, n * 3 + 2, __FILE__);
+      GDCC_BC_AddFuncPre((Code::Sub+F, n), n, n * 2, n * 3 + 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       GDCC_BC_AddFuncObjReg(tmp,  n, n * 2);
       GDCC_BC_AddFuncObjReg(expL, 1, n * 3 + 0);
       GDCC_BC_AddFuncObjReg(expR, 1, n * 3 + 1);
 
-      FloatInfo fi = getFloatInfo(n);
+      FloatInfo fi = getFloatInfo(n, true);
 
       IR::Glyph labelLPos{prog, name + "$lpos"};
       IR::Glyph labelRPos{prog, name + "$rpos"};

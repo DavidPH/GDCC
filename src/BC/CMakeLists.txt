@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2018 David Hill
+## Copyright (C) 2013-2019 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -35,6 +35,7 @@ add_library(gdcc-bc-lib ${GDCC_SHARED_DECL}
    Info/Stmnt/Mul.cpp
    Info/Stmnt/Neg.cpp
    Info/Stmnt/Sh.cpp
+   Info/Stmnt/Tr.cpp
    Info/addFunc.cpp
    Info/chk.cpp
    Info/getWord.cpp

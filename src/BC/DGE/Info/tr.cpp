@@ -73,6 +73,7 @@ namespace GDCC::BC::DGE
       case IR::CodeBase::Sub:      trStmnt_Sub(); break;
       case IR::CodeBase::SubX:     trStmnt_SubX(); break;
       case IR::CodeBase::Swap:     trStmnt_Swap(); break;
+      case IR::CodeBase::Tr:       trStmnt_Tr(); break;
 
       default:
          IR::ErrorCode(stmnt, "unsupported tr");

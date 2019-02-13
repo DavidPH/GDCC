@@ -48,6 +48,7 @@ namespace GDCC::BC::DGE
       case IR::CodeBase::ShL:   preStmnt_ShL(); break;
       case IR::CodeBase::ShR:   preStmnt_ShR(); break;
       case IR::CodeBase::Sub:   preStmnt_Sub(); break;
+      case IR::CodeBase::Tr:    preStmnt_Tr(); break;
 
       default:
          break;

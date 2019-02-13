@@ -139,6 +139,7 @@ namespace GDCC::BC::DGE
       void preStmnt_Sub_F() {preStmntStkBin(1, &Info::addFunc_Sub_FW);}
       void preStmnt_Sub_I() {preStmntStkBin(2, &Info::addFunc_Sub_UW);}
       void preStmnt_Sub_U() {preStmntStkBin(2, &Info::addFunc_Sub_UW);}
+      void preStmnt_Tr();
 
       void preStmntStkBin(Core::FastU min, AddFunc add);
       void preStmntStkCmp(Core::FastU min, AddFunc add) {preStmntStkBin(min, add);}
@@ -279,6 +280,7 @@ namespace GDCC::BC::DGE
       void putStmnt_SubX();
       void putStmnt_SubX_U();
       void putStmnt_Swap();
+      void putStmnt_Tr();
 
       void putStmntCall(Core::String name, Core::FastU argc);
 
@@ -357,6 +359,7 @@ namespace GDCC::BC::DGE
       void trStmnt_Sub() {trStmntStkBin(true);}
       void trStmnt_SubX();
       void trStmnt_Swap();
+      void trStmnt_Tr() {trStmntStkUna();}
 
       void trStmntStkBin(bool ordered);
       void trStmntStkCmp(bool ordered);

@@ -66,14 +66,12 @@ namespace GDCC::BC::ZDACS
       case IR::CodeBase::AddX:  preStmnt_AddX(); break;
       case IR::CodeBase::Bclo:  preStmnt_Bclo(); break;
       case IR::CodeBase::Bclz:  preStmnt_Bclz(); break;
-
       case IR::CodeBase::CmpEQ: preStmnt_CmpEQ(); break;
       case IR::CodeBase::CmpGE: preStmnt_CmpGE(); break;
       case IR::CodeBase::CmpGT: preStmnt_CmpGT(); break;
       case IR::CodeBase::CmpLE: preStmnt_CmpLE(); break;
       case IR::CodeBase::CmpLT: preStmnt_CmpLT(); break;
       case IR::CodeBase::CmpNE: preStmnt_CmpNE(); break;
-
       case IR::CodeBase::Div:   preStmnt_Div(); break;
       case IR::CodeBase::DivX:  preStmnt_DivX(); break;
       case IR::CodeBase::Mod:   preStmnt_Mod(); break;
@@ -85,6 +83,7 @@ namespace GDCC::BC::ZDACS
       case IR::CodeBase::ShR:   preStmnt_ShR(); break;
       case IR::CodeBase::Sub:   preStmnt_Sub(); break;
       case IR::CodeBase::SubX:  preStmnt_SubX(); break;
+      case IR::CodeBase::Tr:    preStmnt_Tr(); break;
 
       default:
          break;

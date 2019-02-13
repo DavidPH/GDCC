@@ -39,10 +39,10 @@ namespace GDCC::BC
    //
    void Info::addFunc_ShL_FW(Core::FastU n, IR::Code code, bool left)
    {
-      GDCC_BC_AddFuncPre(code, n, n, n + 1, n + 1, __FILE__);
+      GDCC_BC_AddFuncPre((code, n), n, n + 1, n + 1, __FILE__);
       GDCC_BC_AddFuncObjBin(n, 1);
 
-      FloatInfo fi = getFloatInfo(n);
+      FloatInfo fi = getFloatInfo(n, true);
 
       IR::Glyph labelEMax{prog, name + "$emax"};
       IR::Glyph labelInf {prog, name + "$inf"};
@@ -111,7 +111,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_ShL_UW(Core::FastU n, IR::Code code, bool left, bool sign)
    {
-      GDCC_BC_AddFuncPre(code, n, n, n + 1, n + 1, __FILE__);
+      GDCC_BC_AddFuncPre((code, n), n, n + 1, n + 1, __FILE__);
       GDCC_BC_AddFuncObjBin(n, 1);
 
       // Generate labels.

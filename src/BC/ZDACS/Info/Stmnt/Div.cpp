@@ -46,7 +46,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::addFunc_DivX_UW1()
    {
-      GDCC_BC_AddFuncPre(Code::DivX+U, 1, 2, 2, 3, __FILE__);
+      GDCC_BC_AddFuncPre((Code::DivX+U, 1), 2, 2, 3, __FILE__);
       GDCC_BC_AddFuncObjBin(1, 1);
 
       IR::Glyph labelL0     {prog, name + "$l0"};

@@ -99,6 +99,7 @@ namespace GDCC::BC::ZDACS
       case IR::CodeBase::Sub:      genStmnt_Sub(); break;
       case IR::CodeBase::SubX:     genStmnt_SubX(); break;
       case IR::CodeBase::Swap:     genStmnt_Swap(); break;
+      case IR::CodeBase::Tr:       genStmnt_Tr(); break;
       case IR::CodeBase::Xcod_SID: genStmnt_Xcod_SID(); break;
 
       default:

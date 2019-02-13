@@ -65,7 +65,7 @@ namespace GDCC::BC::ZDACS
       // else               {if(  r & 0x80000000 ) return -1;}
       // return cmp((int)l, (int)r)
 
-      GDCC_BC_AddFuncPre(base+U, 1, 1, 2, 2, __FILE__);
+      GDCC_BC_AddFuncPre((base+U, 1), 1, 2, 2, __FILE__);
       GDCC_BC_AddFuncObjBin(1, 1);
 
       IR::Glyph labelPos{prog, name + "$pos"};

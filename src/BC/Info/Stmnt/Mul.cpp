@@ -29,7 +29,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Mul_AW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::Mul+A, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((Code::Mul+A, n), n, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       Core::FastU nf = n;
@@ -65,14 +65,14 @@ namespace GDCC::BC
    //
    void Info::addFunc_Mul_FW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::Mul+F, n, n, n * 2, n * 3 + 2, __FILE__);
+      GDCC_BC_AddFuncPre((Code::Mul+F, n), n, n * 2, n * 3 + 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       GDCC_BC_AddFuncObjReg(tmp, n, n * 2);
       GDCC_BC_AddFuncObjReg(exp, 1, n * 3 + 0);
       GDCC_BC_AddFuncObjReg(sig, 1, n * 3 + 1);
 
-      FloatInfo fi = getFloatInfo(n);
+      FloatInfo fi = getFloatInfo(n, true);
 
       IR::Glyph labelCapMan{prog, name + "$capman"};
       IR::Glyph labelRet0  {prog, name + "$ret0"};
@@ -185,7 +185,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Mul_KW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::Mul+K, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((Code::Mul+K, n), n, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       FixedInfo fi = getFixedInfo(n, false);
@@ -223,7 +223,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Mul_RW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::Mul+R, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((Code::Mul+R, n), n, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       Core::FastU nf = n;
@@ -254,7 +254,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Mul_UW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::Mul+U, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((Code::Mul+U, n), n, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       GDCC_BC_AddStmnt(Code::MulX+U, 2, stk, lop[0], rop[0]);
@@ -295,7 +295,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Mul_XW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::Mul+X, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((Code::Mul+X, n), n, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       FixedInfo fi = getFixedInfo(n, true);
@@ -338,7 +338,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_MulX_UW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::MulX+U, n, n * 2, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((Code::MulX+U, n), n * 2, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       GDCC_BC_AddStmnt(Code::MulX+U, 2, stk, lop[0], rop[0]);

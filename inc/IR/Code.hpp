@@ -57,6 +57,8 @@ namespace GDCC::IR
       constexpr CodeType(char t0, char t1) : t{t0, t1} {}
       constexpr CodeType(char t0, char t1, char t2) : t{t0, t1, t2} {}
       constexpr CodeType(char t0, char t1, char t2, char t3) : t{t0, t1, t2, t3} {}
+      constexpr CodeType(char const (&t_)[2]) : t{t_[0], t_[1]} {}
+      constexpr CodeType(char const (&t_)[3]) : t{t_[0], t_[1], t_[2]} {}
 
       constexpr char const *begin() const {return t;}
 

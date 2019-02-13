@@ -31,20 +31,20 @@ namespace GDCC::BC::ZDACS
    //
    void Info::addFunc_Bclz_W1(bool ones)
    {
-      GDCC_BC_AddFuncPre(ones ? Code::Bclo : Code::Bclz, 1, 1, 1, 1, __FILE__);
+      GDCC_BC_AddFuncPre((ones ? Code::Bclo : Code::Bclz, 1), 1, 1, 1, __FILE__);
       GDCC_BC_AddFuncObjUna(1);
 
       // Counting leading ones works the same way if inverted.
       // May be advantageous to invert the conditions, instead, though.
       if(ones)
-         GDCC_BC_AddStmnt(Code::BNot, 1, lop, lop);
+         GDCC_BC_AddStmnt(Code::BNot, 1, src, src);
 
       // Node codegen, mask-and-branch.
       auto node = [&](char const *label, Core::FastU mask, char const *dst)
       {
          if(label) GDCC_BC_AddLabel(name + label);
          IR::Glyph dstGlyph{prog, name + dst};
-         GDCC_BC_AddStmnt(Code::BAnd,     1, stk, lop, mask);
+         GDCC_BC_AddStmnt(Code::BAnd,     1, stk, src, mask);
          GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, dstGlyph);
       };
 
@@ -61,7 +61,7 @@ namespace GDCC::BC::ZDACS
       node(nullptr,     0x000000F0, "$000000F0");
       node(nullptr,     0x0000000C, "$0000000C");
       node(nullptr,     0x00000002, "$00000002");
-      GDCC_BC_AddStmnt(Code::Sub+U, 1, stk, 32, lop);
+      GDCC_BC_AddStmnt(Code::Sub+U, 1, stk, 32, src);
       GDCC_BC_AddStmnt(Code::Retn,  1, stk);
       leaf("$00000002",         30);
       node("$0000000C", 0x00000008, "$00000008");

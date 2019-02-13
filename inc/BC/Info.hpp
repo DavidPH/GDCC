@@ -115,6 +115,7 @@ namespace GDCC::BC
       Core::FastU bitsI;
       Core::FastU bitsS;
 
+      Core::FastU words;
       Core::FastU wordsF;
       Core::FastU wordsI;
    };
@@ -137,6 +138,10 @@ namespace GDCC::BC
       Core::FastU maxExp;
 
       Core::FastU offExp;
+
+      Core::FastU words;
+      Core::FastU wordsExp;
+      Core::FastU wordsMan;
    };
 
    //
@@ -333,6 +338,7 @@ namespace GDCC::BC
       void addFunc_ShR_UW(Core::FastU n);
       void addFunc_Sub_FW(Core::FastU n);
       void addFunc_Sub_UW(Core::FastU n);
+      void addFunc_Tr_W(IR::CodeType type, Core::FastU dstN, Core::FastU srcN);
 
       virtual void chkStmntArg(IR::Arg const &arg);
 
@@ -350,14 +356,20 @@ namespace GDCC::BC
       void errorCode(char const *msg);
 
       virtual FixedInfo getFixedInfo(Core::FastU n, bool s);
+      FixedInfo getFixedInfo(Core::FastU n, char t);
 
       // Default behavior is to assume IEEE float layout and 32-bit word.
-      virtual FloatInfo getFloatInfo(Core::FastU n);
+      virtual FloatInfo getFloatInfo(Core::FastU n, bool s);
+      FloatInfo getFloatInfo(Core::FastU n, char t);
+
+      virtual FixedInfo getFractInfo(Core::FastU n, bool s);
 
       IR::Function *getFuncDefn(Core::String name, Core::FastU retrn,
          Core::FastU param, Core::FastU localReg, char const *file);
 
-      Core::String getFuncName(IR::Code code, Core::FastU n);
+      Core::String getFuncName(IR::Code code, Core::FastU n0, Core::FastU n1 = 0);
+
+      virtual FixedInfo getIntegInfo(Core::FastU n, bool s);
 
       virtual Core::FastU getStmntSize();
 
@@ -414,6 +426,10 @@ namespace GDCC::BC
       void addFunc_Div_XW(Core::FastU n, IR::Code code, IR::Code codeDiv, bool sign);
       void addFunc_ShL_FW(Core::FastU n, IR::Code code, bool left);
       void addFunc_ShL_UW(Core::FastU n, IR::Code code, bool left, bool sign);
+      void addFunc_Tr_W(IR::CodeType type, FixedInfo dstFI, FixedInfo srcFI);
+      void addFunc_Tr_W(IR::CodeType type, FixedInfo dstFI, FloatInfo srcFI);
+      void addFunc_Tr_W(IR::CodeType type, FloatInfo dstFI, FixedInfo srcFI);
+      void addFunc_Tr_W(IR::CodeType type, FloatInfo dstFI, FloatInfo srcFI);
    };
 }
 

@@ -12,8 +12,7 @@
 
 #include "BC/Info.hpp"
 
-#include "Core/Exception.hpp"
-
+#include "IR/Exception.hpp"
 #include "IR/Linkage.hpp"
 #include "IR/Program.hpp"
 
@@ -75,14 +74,14 @@ namespace GDCC::BC
    //
    // Info::getFuncName
    //
-   Core::String Info::getFuncName(IR::Code code, Core::FastU n)
+   Core::String Info::getFuncName(IR::Code code, Core::FastU n0, Core::FastU n1)
    {
-      char        buf[sizeof("___GDCC__cccccccc_ttttnn")];
+      char        buf[sizeof("___GDCC__cccccccc_tttt_nn_nn")];
       std::size_t len;
 
       char const *base;
       char        type[5] = {code.type[0], code.type[1], code.type[2], code.type[3]};
-      int         size;
+      int         size[2];
 
       // Convert code base to string.
       switch(code.base)
@@ -91,20 +90,29 @@ namespace GDCC::BC
          #include "IR/CodeList.hpp"
 
       default:
-         Core::Error(stmnt->pos, "bad getFuncName base");
+         IR::ErrorCode(stmnt, "bad getFuncName base");
       }
 
       // Convert size to int.
-      if(n > INT_MAX)
-         Core::Error(stmnt->pos, "bad getFuncName size");
+      if(n0 > INT_MAX || n1 > INT_MAX)
+         IR::ErrorCode(stmnt, "bad getFuncName size");
 
-      size = static_cast<int>(n);
+      size[0] = static_cast<int>(n0);
+      size[1] = static_cast<int>(n1);
 
       // Format function name.
-      len = std::snprintf(buf, sizeof(buf), "___GDCC__%s_%s%i", base, type, size);
+      len = std::snprintf(buf, sizeof(buf),
+         type[0] ?
+            size[1] ? "___GDCC__%s_%s_%i_%i" :
+            size[0] ? "___GDCC__%s_%s%i" :
+                      "___GDCC__%s_%s" :
+            size[1] ? "___GDCC__%s%s_%i_%i" :
+            size[0] ? "___GDCC__%s%s%i" :
+                      "___GDCC__%s%s",
+         base, type, size[0], size[1]);
 
       if(len >= sizeof(buf))
-         Core::Error(stmnt->pos, "bad getFuncName");
+         IR::ErrorCode(stmnt, "bad getFuncName");
 
       return {buf, len};
    }

@@ -29,7 +29,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Div_AW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::Div+A, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((Code::Div+A, n), n, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       Core::FastU nf = n;
@@ -54,7 +54,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Div_FW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::Div+F, n, n, n * 2, n * 3 + 3, __FILE__);
+      GDCC_BC_AddFuncPre((Code::Div+F, n), n, n * 2, n * 3 + 3, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       GDCC_BC_AddFuncObjReg(man, n, n * 2);
@@ -62,7 +62,7 @@ namespace GDCC::BC
       GDCC_BC_AddFuncObjReg(exp, 1, n * 3 + 1);
       GDCC_BC_AddFuncObjReg(tmp, 1, n * 3 + 2);
 
-      FloatInfo fi = getFloatInfo(n);
+      FloatInfo fi = getFloatInfo(n, true);
 
       IR::Glyph labelL0  {prog, name + "$l0"};
       IR::Glyph labelLINF{prog, name + "$linf"};
@@ -220,7 +220,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Div_RW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::Div+R, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((Code::Div+R, n), n, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       Core::FastU nf = n;
@@ -256,7 +256,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Div_XW(Core::FastU n, IR::Code code, IR::Code codeDiv, bool sign)
    {
-      GDCC_BC_AddFuncPre(code, n, n, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((code, n), n, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       FixedInfo fi = getFixedInfo(n, sign);
@@ -309,7 +309,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_DivX_IW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::DivX+I, n, n * 2, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((Code::DivX+I, n), n * 2, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       IR::Glyph labelL0R1{prog, name + "$l0r1"};
@@ -365,7 +365,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_DivX_UW(Core::FastU n)
    {
-      GDCC_BC_AddFuncPre(Code::DivX+U, n, n * 2, n * 2, n * 5, __FILE__);
+      GDCC_BC_AddFuncPre((Code::DivX+U, n), n * 2, n * 2, n * 5, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       IR::Glyph labelFull    {prog, name + "$full"};

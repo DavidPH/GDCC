@@ -38,7 +38,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::addFunc_MulX_UW1()
    {
-      GDCC_BC_AddFuncPre(Code::MulX+U, 1, 2, 2, 5, __FILE__);
+      GDCC_BC_AddFuncPre((Code::MulX+U, 1), 2, 2, 5, __FILE__);
       GDCC_BC_AddFuncObjBin(1, 1);
 
       GDCC_BC_AddFuncObjReg(llo, 1, 0);

@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2016-2018 David Hill
+## Copyright (C) 2016-2019 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -32,6 +32,7 @@ if(GDCC_BC_DGE)
       Info/Stmnt/Mul.cpp
       Info/Stmnt/Neg.cpp
       Info/Stmnt/Sh.cpp
+      Info/Stmnt/Tr.cpp
       Info/chk.cpp
       Info/gen.cpp
       Info/pre.cpp

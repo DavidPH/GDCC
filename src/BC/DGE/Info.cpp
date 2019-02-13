@@ -54,6 +54,7 @@ namespace GDCC::BC::DGE
 
       fi.bitsI = n * 32 - fi.bitsF - fi.bitsS;
 
+      fi.words  = n;
       fi.wordsF = (fi.bitsF + 31) / 32;
       fi.wordsI = (fi.bitsI + 31) / 32;
 

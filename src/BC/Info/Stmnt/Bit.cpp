@@ -47,7 +47,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_Bclz_W(Core::FastU n, IR::Code code, Core::FastU skip)
    {
-      GDCC_BC_AddFuncPre(code, n, 1, n, n, __FILE__);
+      GDCC_BC_AddFuncPre((code, n), 1, n, n, __FILE__);
       GDCC_BC_AddFuncObjUna(n);
 
       // Generate labels.
@@ -63,7 +63,7 @@ namespace GDCC::BC
 
       Core::FastU i = n;
 
-      GDCC_BC_AddStmnt(Code::Move,     1, stk, lop[--i]);
+      GDCC_BC_AddStmnt(Code::Move,     1, stk, src[--i]);
       GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, skip, labelSkip[i]);
 
       GDCC_BC_AddStmnt(code,           1, stk, stk);
@@ -72,7 +72,7 @@ namespace GDCC::BC
       while(i)
       {
          newFunc->block.addLabel(labelSkip[i]);
-         GDCC_BC_AddStmnt(Code::Move,     1, stk, lop[--i]);
+         GDCC_BC_AddStmnt(Code::Move,     1, stk, src[--i]);
          GDCC_BC_AddStmnt(Code::Jcnd_Tab, 1, stk, skip, labelSkip[i]);
 
          GDCC_BC_AddStmnt(code,           1, stk, stk);

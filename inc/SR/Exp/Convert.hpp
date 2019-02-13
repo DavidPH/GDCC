@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -77,20 +77,11 @@ namespace GDCC::SR
    void GenStmnt_ConvertArith(Exp const *exp, Type const *dstT,
       Type const *srcT, GenStmntCtx const &ctx);
 
-   // Converts a fixed-point value to a floating-point type on the stack.
-   void GenStmnt_ConvertFixFlt(Exp const *exp, Type const *dstT,
+   void GenStmnt_ConvertBool(Exp const *exp, Type const *dstT,
       Type const *srcT, GenStmntCtx const &ctx);
 
    // Converts a fixed-point value to a fixed-point type on the stack.
    void GenStmnt_ConvertFixed(Exp const *exp, Type const *dstT,
-      Type const *srcT, GenStmntCtx const &ctx);
-
-   // Converts a floating-point value to a floating-point type on the stack.
-   void GenStmnt_ConvertFloat(Exp const *exp, Type const *dstT,
-      Type const *srcT, GenStmntCtx const &ctx);
-
-   // Converts a floating-point value to a fixed-point type on the stack.
-   void GenStmnt_ConvertFltFix(Exp const *exp, Type const *dstT,
       Type const *srcT, GenStmntCtx const &ctx);
 }
 

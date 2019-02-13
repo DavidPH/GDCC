@@ -67,10 +67,10 @@ namespace GDCC::BC
    //
    void Info::addFunc_Cmp_FW(Core::FastU n, IR::Code code, IR::Code codePos, IR::Code codeNeg)
    {
-      GDCC_BC_AddFuncPre(code, n, 1, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((code, n), 1, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
-      FloatInfo fi = getFloatInfo(n);
+      FloatInfo fi = getFloatInfo(n, true);
 
       bool cmpGT =
          codePos == IR::CodeBase::CmpGE+'I' ||
@@ -184,7 +184,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_CmpEQ_UW(Core::FastU n, IR::Code codeCmp, IR::Code codeAnd)
    {
-      GDCC_BC_AddFuncPre(codeCmp, n, 1, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((codeCmp, n), 1, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       // First words.
@@ -207,7 +207,7 @@ namespace GDCC::BC
    //
    void Info::addFunc_CmpGE_UW(Core::FastU n, IR::Code codeCmpHi, IR::Code codeCmpLo)
    {
-      GDCC_BC_AddFuncPre(codeCmpHi, n, 1, n * 2, n * 2, __FILE__);
+      GDCC_BC_AddFuncPre((codeCmpHi, n), 1, n * 2, n * 2, __FILE__);
       GDCC_BC_AddFuncObjBin(n, n);
 
       // Generate labels.

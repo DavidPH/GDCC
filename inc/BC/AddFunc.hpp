@@ -37,7 +37,7 @@
 //
 // GDCC_BC_AddFuncPre
 //
-#define GDCC_BC_AddFuncPre(code, size, retrn, param, local, file) \
+#define GDCC_BC_AddFuncPre(code, retrn, param, local, file) \
    Core::String name; \
    { \
       [[maybe_unused]] typedef ::GDCC::IR::CodeBase Code; \
@@ -51,7 +51,7 @@
       [[maybe_unused]] constexpr char U = 'U'; \
       [[maybe_unused]] constexpr char X = 'X'; \
       \
-      name = getFuncName(code, size); \
+      name = getFuncName code; \
    } \
    auto newFunc = getFuncDefn(name, retrn, param, local, file); \
    \
@@ -88,7 +88,7 @@
 #define GDCC_BC_AddFuncObjUna(size) \
    GDCC_BC_AddFuncObj(); \
    \
-   GDCC_BC_AddFuncObjReg(lop, size, 0)
+   GDCC_BC_AddFuncObjReg(src, size, 0)
 
 //
 // GDCC_BC_AddLabel

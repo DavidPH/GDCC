@@ -274,6 +274,7 @@ namespace GDCC::BC::ZDACS
       void genStmnt_SubX();
       void genStmnt_SubX_U();
       void genStmnt_Swap();
+      void genStmnt_Tr();
       void genStmnt_Xcod_SID();
 
       void genStmntCall(Core::FastU ret);
@@ -438,6 +439,7 @@ namespace GDCC::BC::ZDACS
       void preStmnt_Sub_U() {preStmntStkCmp(2, &Info::addFunc_Sub_UW);}
       void preStmnt_SubX();
       void preStmnt_SubX_U();
+      void preStmnt_Tr();
 
       void preStmntCall(Core::String name, Core::FastU retrn, Core::FastU param);
 
@@ -606,6 +608,7 @@ namespace GDCC::BC::ZDACS
       void putStmnt_SubX();
       void putStmnt_SubX_U();
       void putStmnt_Swap();
+      void putStmnt_Tr();
       void putStmnt_Xcod_SID();
 
       void putStmntCall(Core::String name, Core::FastU ret);
@@ -727,6 +730,7 @@ namespace GDCC::BC::ZDACS
       void trStmnt_Sub_U();
       void trStmnt_SubX();
       void trStmnt_Swap();
+      void trStmnt_Tr() {trStmntStkUna();}
       void trStmnt_Xcod_SID() {}
 
       void trStmntStkBin(bool ordered);

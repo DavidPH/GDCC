@@ -78,6 +78,7 @@ namespace GDCC::BC::DGE
       case IR::CodeBase::Sub:      putStmnt_Sub(); break;
       case IR::CodeBase::SubX:     putStmnt_SubX(); break;
       case IR::CodeBase::Swap:     putStmnt_Swap(); break;
+      case IR::CodeBase::Tr:       putStmnt_Tr(); break;
 
       default:
          IR::ErrorCode(stmnt, "unsupported put");
