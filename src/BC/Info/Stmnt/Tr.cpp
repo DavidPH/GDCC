@@ -140,11 +140,6 @@ namespace GDCC::BC
       IR::Glyph labelPos = {prog, name + "$pos"};
       IR::Glyph labelSig = {prog, name + "$sig"};
 
-      // Check if result is INF.
-      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, src.hi, srcFI.maskExp);
-      GDCC_BC_AddStmnt(Code::CmpGE+I,  1, stk, stk,    expMax << srcFI.bitsMan);
-      GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelINF);
-
       // Check if exponent more than mid.
       GDCC_BC_AddStmnt(Code::BAnd,     1, stk, src.hi, srcFI.maskExp);
       GDCC_BC_AddStmnt(Code::CmpGT+I,  1, stk, stk,    expMid << srcFI.bitsMan);
@@ -163,6 +158,11 @@ namespace GDCC::BC
 
       // Exponent is more than mid.
       GDCC_BC_AddLabel(labelGT);
+
+      // Check if result is INF.
+      GDCC_BC_AddStmnt(Code::BAnd,     1, stk, src.hi, srcFI.maskExp);
+      GDCC_BC_AddStmnt(Code::CmpGE+I,  1, stk, stk,    expMax << srcFI.bitsMan);
+      GDCC_BC_AddStmnt(Code::Jcnd_Tru, 1, stk, labelINF);
 
       // Shift mantissa left.
       GDCC_BC_AddStmnt(Code::Move, srcFI.words, stk, src);
@@ -216,7 +216,7 @@ namespace GDCC::BC
          for(auto i = diffWords; i--;)
             GDCC_BC_AddStmnt(Code::Move, 1, stk, 0);
       }
-      else
+      else if(diffWords < 0)
          GDCC_BC_AddStmnt(Code::Move, -diffWords, nul, stk);
 
       // Convert sign.
