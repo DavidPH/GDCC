@@ -40,8 +40,6 @@ namespace GDCC::LD
 
    void Link(IR::Program &prog, char const *outName);
 
-   void ProcessIR(IR::Program &prog, BC::Info *info);
-
    void PutBytecode(std::ostream &out, IR::Program &prog, BC::Info *info);
    void PutIR(std::ostream &out, IR::Program &prog, BC::Info *info);
 }

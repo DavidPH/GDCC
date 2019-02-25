@@ -30,8 +30,6 @@
 #include "IR/Program.hpp"
 
 #include "Option/Bool.hpp"
-#include "Option/Exception.hpp"
-#include "Option/Function.hpp"
 #include "Option/CStrV.hpp"
 
 #include "Target/Info.hpp"
@@ -59,8 +57,7 @@ namespace GDCC::LD
    //
    // --ir-process
    //
-   static std::vector<std::string> ProcessIRList;
-   static Option::Function ProcessIROpt
+   static Option::CStr ProcessIROpt
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("ir-process")
@@ -68,23 +65,7 @@ namespace GDCC::LD
          .setDescS("Specifies IR processing steps.")
          .setDescL("Specifies IR processing steps. Steps are specified as a "
             "colon-separated list of step names. This option is only "
-            "useful for debugging compiler internals."),
-
-      [](Option::Base *, Option::Args const &args) -> std::size_t
-      {
-         if(args.optFalse)
-            return ProcessIRList.clear(), 0;
-
-         if(!args.argC)
-            Option::Exception::Error(args, "argument required");
-
-         char const *itr = args.argV[0];
-         for(char const *sep; (sep = std::strchr(itr, ':')); itr = sep + 1)
-            ProcessIRList.emplace_back(itr, sep);
-         ProcessIRList.emplace_back(itr);
-
-         return 1;
-      }
+            "useful for debugging compiler internals.")
    };
 
    //
@@ -109,6 +90,43 @@ namespace GDCC::LD
 namespace GDCC::LD
 {
    bool OutputIR = false;
+}
+
+
+//----------------------------------------------------------------------------|
+// Static Functions                                                           |
+//
+
+namespace GDCC::LD
+{
+   //
+   // ProcessIR
+   //
+   static void ProcessIR(IR::Program &prog, BC::Info *info)
+   {
+      char const *data = ProcessIROpt.data();
+
+      if(!data) return;
+
+      auto proc = [&](char const *str, std::size_t len)
+      {
+         if(len == 0) {}
+
+         else if(len == 2 && !std::memcmp(str, "tr", 2)) info->tr(prog);
+
+         else if(len == 3 && !std::memcmp(str, "chk", 3)) info->chk(prog);
+         else if(len == 3 && !std::memcmp(str, "gen", 3)) info->gen(prog);
+         else if(len == 3 && !std::memcmp(str, "opt", 3)) info->opt(prog);
+         else if(len == 3 && !std::memcmp(str, "pre", 3)) info->pre(prog);
+
+         else
+            Core::ErrorExpect({}, "IR processing step", {str, len});
+      };
+
+      for(char const *next; (next = std::strchr(data, ':')); data = next + 1)
+         proc(data, next - data);
+      proc(data, std::strlen(data));
+   }
 }
 
 
@@ -175,19 +193,16 @@ namespace GDCC::LD
    }
 
    //
-   // ProcessIR
+   // PutBytecode
    //
-   void ProcessIR(IR::Program &prog, BC::Info *info)
+   void PutBytecode(std::ostream &out, IR::Program &prog, BC::Info *info)
    {
-      if(!info) return;
+      if(!info)
+         Core::Error({}, "invalid target");
 
-      if(ProcessIROpt.processed) for(auto const &proc : ProcessIRList)
+      if(ProcessIROpt.processed)
       {
-              if(proc == "chk") info->chk(prog);
-         else if(proc == "gen") info->gen(prog);
-         else if(proc == "opt") info->opt(prog);
-         else if(proc == "pre") info->pre(prog);
-         else if(proc == "tr")  info->tr(prog);
+         ProcessIR(prog, info);
       }
       else
       {
@@ -197,20 +212,9 @@ namespace GDCC::LD
          info->tr(prog);
          info->opt(prog);
          info->tr(prog);
+         info->gen(prog);
       }
-   }
 
-   //
-   // PutBytecode
-   //
-   void PutBytecode(std::ostream &out, IR::Program &prog, BC::Info *info)
-   {
-      if(!info)
-         Core::Error({}, "invalid target");
-
-      ProcessIR(prog, info);
-
-      info->gen(prog);
       info->put(prog, out);
    }
 
@@ -219,7 +223,7 @@ namespace GDCC::LD
    //
    void PutIR(std::ostream &out, IR::Program &prog, BC::Info *info)
    {
-      if(ProcessIROpt.processed)
+      if(ProcessIROpt.processed && info)
          ProcessIR(prog, info);
 
       IR::OArchive arc{out};
