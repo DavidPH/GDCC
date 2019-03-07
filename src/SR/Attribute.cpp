@@ -58,6 +58,8 @@ namespace GDCC::SR
       objAnonymous{false},
       objNoInit   {false},
 
+      stReturn{false},
+
       storeAuto  {false},
       storeExt   {false},
       storeGbl   {false},

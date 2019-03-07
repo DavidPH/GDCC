@@ -58,9 +58,9 @@
 #define FormatCases() \
    case 'A': FormatF(__GDCC__FormatF_X_g); break; \
    case 'B': FormatU(__GDCC__FormatU_b_g); break; \
-   case 'E': return ~ret; /* TODO */ \
-   case 'F': return ~ret; /* TODO */ \
-   case 'G': return ~ret; /* TODO */ \
+   case 'E': FormatF(__GDCC__FormatF_E_g); break; \
+   case 'F': FormatF(__GDCC__FormatF_F_g); break; \
+   case 'G': FormatF(__GDCC__FormatF_G_g); break; \
    case 'K': FormatK(__GDCC__FormatK_d_g); break; \
    case 'R': return ~ret; /* TODO */ \
    case 'S': FormatStr();                  break; \
@@ -68,9 +68,9 @@
    case 'a': FormatF(__GDCC__FormatF_x_g); break; \
    case 'c': FormatC();                    break; \
    case 'd': FormatI(__GDCC__FormatI_d_g); break; \
-   case 'e': return ~ret; /* TODO */ \
-   case 'f': return ~ret; /* TODO */ \
-   case 'g': return ~ret; /* TODO */ \
+   case 'e': FormatF(__GDCC__FormatF_e_g); break; \
+   case 'f': FormatF(__GDCC__FormatF_f_g); break; \
+   case 'g': FormatF(__GDCC__FormatF_g_g); break; \
    case 'i': FormatI(__GDCC__FormatI_d_g); break; \
    case 'k': FormatX(__GDCC__FormatX_d_g); break; \
    case 'n': FormatN();                    break; \

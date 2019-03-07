@@ -320,6 +320,24 @@ Semantics:
   arguments, omitted arguments are replaced as if by static initialization.
 
 ===========================================================
+Return
+===========================================================
+
+Syntax:
+  attribute-return:
+    attribute-return-name
+
+  attribute-return-name:
+    <return>
+    <__return>
+
+Constraints:
+  Shall only be applied to statements.
+
+Semantics:
+  Indicates that the affected __asm statement has a return in it.
+
+===========================================================
 Script
 ===========================================================
 

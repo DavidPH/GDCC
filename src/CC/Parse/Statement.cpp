@@ -182,7 +182,7 @@ namespace GDCC::CC
    // Parser::getSt_asm
    //
    SR::Statement::CRef Parser::getSt_asm(Scope_Local &scope,
-      SR::Attribute &&, Labels &&labels)
+      SR::Attribute &&attr, Labels &&labels)
    {
       // <__asm> ( string-literal ) ;
       auto pos = in.get().pos;
@@ -203,7 +203,7 @@ namespace GDCC::CC
       tokens.emplace_back(tok.pos, nullptr, Core::TOK_EOF);
 
       return fact.stCreate_Asm(std::move(labels), pos,
-         {Core::Move, tokens.begin(), tokens.end()});
+         {Core::Move, tokens.begin(), tokens.end()}, attr.stReturn);
    }
 
    //

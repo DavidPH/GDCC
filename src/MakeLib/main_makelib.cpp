@@ -111,6 +111,7 @@ static void MakeLib_libc(GDCC::IR::Program &prog, bool nomath = false)
    MakeLib_CC(prog, path, "fmemopen.c");
    MakeLib_CC(prog, path, "fopen.c");
    MakeLib_CC(prog, path, "format.c");
+   MakeLib_CC(prog, path, "formatf.c");
    MakeLib_AS(prog, path, "fpclassify.asm");
    MakeLib_CC(prog, path, "locale.c");
    MakeLib_CC(prog, path, "printf.c");

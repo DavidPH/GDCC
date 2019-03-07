@@ -456,7 +456,7 @@ double __rinf(double x)
    if(u.i & mask)
    {
       u.i &= ~mask;
-      u.i += 1L << exp;
+      u.i += mask + 1;
    }
 
    return u.f;
@@ -479,7 +479,7 @@ float __rinff(float x)
    if(u.i & mask)
    {
       u.i &= ~mask;
-      u.i += 1 << exp;
+      u.i += mask + 1;
    }
 
    return u.f;
@@ -502,7 +502,7 @@ long double __rinfl(long double x)
    if(u.i & mask)
    {
       u.i &= ~mask;
-      u.i += 1L << exp;
+      u.i += mask + 1;
    }
 
    return u.f;

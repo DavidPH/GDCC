@@ -30,9 +30,12 @@ namespace GDCC::CC
    // Statement_Asm constructor
    //
    Statement_Asm::Statement_Asm(Labels &&labels_, Core::Origin pos_,
-      Tokens &&tokens_) :
+      Tokens &&tokens_, bool retn_) :
       Super{std::move(labels_), pos_},
-      tokens{std::move(tokens_)}
+
+      tokens{std::move(tokens_)},
+
+      retn{retn_}
    {
    }
 
@@ -53,9 +56,9 @@ namespace GDCC::CC
    //
    SR::Statement::CRef Factory::stCreate_Asm(
       SR::Statement::Labels &&labels, Core::Origin pos,
-      Statement_Asm::Tokens &&tokens)
+      Statement_Asm::Tokens &&tokens, bool retn)
    {
-      return Statement_Asm::Create(std::move(labels), pos, std::move(tokens));
+      return Statement_Asm::Create(std::move(labels), pos, std::move(tokens), retn);
    }
 }
 

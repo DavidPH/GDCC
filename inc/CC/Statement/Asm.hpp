@@ -38,18 +38,22 @@ namespace GDCC::CC
 
       Tokens const tokens;
 
+      bool const retn : 1;
+
 
       // Create
-      static CRef Create(Labels &&labels, Core::Origin pos, Tokens &&tokens)
-         {return CRef(new This(std::move(labels), pos, std::move(tokens)));}
+      static CRef Create(Labels &&labels, Core::Origin pos, Tokens &&tokens, bool retn)
+         {return CRef(new This(std::move(labels), pos, std::move(tokens), retn));}
 
    protected:
-      Statement_Asm(Labels &&labels, Core::Origin pos, Tokens &&tokens);
+      Statement_Asm(Labels &&labels, Core::Origin pos, Tokens &&tokens, bool retn);
 
       virtual void v_genStmnt(SR::GenStmntCtx const &ctx) const;
 
       virtual bool v_isEffect() const {return true;}
       virtual bool v_isNoAuto() const {return true;}
+      virtual bool v_isNoReturn() const {return !retn;}
+      virtual bool v_isReturn() const {return retn;}
    };
 }
 

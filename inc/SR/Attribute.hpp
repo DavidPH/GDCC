@@ -72,6 +72,8 @@ namespace GDCC::SR
       bool objAnonymous : 1;
       bool objNoInit    : 1;
 
+      bool stReturn : 1;
+
       bool storeAuto   : 1;
       bool storeExt    : 1;
       bool storeGbl    : 1;

@@ -289,6 +289,21 @@ namespace GDCC::CC
    }
 
    //
+   // ParseAttr_return
+   //
+   // attribute-return:
+   //    attribute-return-name
+   //
+   // attribute-return-name:
+   //    <return>
+   //    <__return>
+   //
+   static void ParseAttr_return(Parser &, Scope &, SR::Attribute &attr)
+   {
+      attr.stReturn = true;
+   }
+
+   //
    // ParserAttr_script
    //
    // attribute-script:
@@ -392,6 +407,9 @@ namespace GDCC::CC
 
       case Core::STR_optional_args: case Core::STR___optional_args:
          ParseAttr_optional_args(*this, scope, attr); break;
+
+      case Core::STR_return: case Core::STR___return:
+         ParseAttr_return(*this, scope, attr); break;
 
       case Core::STR_script: case Core::STR___script:
          ParseAttr_script(*this, scope, attr); break;

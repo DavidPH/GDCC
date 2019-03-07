@@ -152,7 +152,7 @@ GDCC_IR_CodeList(ShR)
 GDCC_IR_CodeList(Sub)
 
 // SubX dst lop rop
-// SubX dst lop rop carry
+// SubX dst carry lop rop
 GDCC_IR_CodeList(SubX)
 
 // Swap lop rop

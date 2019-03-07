@@ -102,18 +102,18 @@ extern "C" {
 //
 // __GDCC__FormatF_*_g
 //
-#define __GDCC__FormatF_D_g(data, format) \
-   __GDCC__FormatGenFloat((data), (format), F, D)
 #define __GDCC__FormatF_E_g(data, format) \
    __GDCC__FormatGenFloat((data), (format), F, E)
+#define __GDCC__FormatF_F_g(data, format) \
+   __GDCC__FormatGenFloat((data), (format), F, F)
 #define __GDCC__FormatF_G_g(data, format) \
    __GDCC__FormatGenFloat((data), (format), F, G)
 #define __GDCC__FormatF_X_g(data, format) \
    __GDCC__FormatGenFloat((data), (format), F, X)
-#define __GDCC__FormatF_d_g(data, format) \
-   __GDCC__FormatGenFloat((data), (format), F, d)
 #define __GDCC__FormatF_e_g(data, format) \
    __GDCC__FormatGenFloat((data), (format), F, e)
+#define __GDCC__FormatF_f_g(data, format) \
+   __GDCC__FormatGenFloat((data), (format), F, f)
 #define __GDCC__FormatF_g_g(data, format) \
    __GDCC__FormatGenFloat((data), (format), F, g)
 #define __GDCC__FormatF_x_g(data, format) \
@@ -188,13 +188,13 @@ extern char __GDCC__FormatBuf[__GDCC__FormatBufLen];
 // Extern Functions                                                           |
 //
 
-__GDCC__FormatDecl(F, D, float);
-__GDCC__FormatDecl(F, Dl, double);
-__GDCC__FormatDecl(F, Dll, long double);
-
 __GDCC__FormatDecl(F, E, float);
 __GDCC__FormatDecl(F, El, double);
 __GDCC__FormatDecl(F, Ell, long double);
+
+__GDCC__FormatDecl(F, F, float);
+__GDCC__FormatDecl(F, Fl, double);
+__GDCC__FormatDecl(F, Fll, long double);
 
 __GDCC__FormatDecl(F, G, float);
 __GDCC__FormatDecl(F, Gl, double);
@@ -204,13 +204,13 @@ __GDCC__FormatDecl(F, X, float);
 __GDCC__FormatDecl(F, Xl, double);
 __GDCC__FormatDecl(F, Xll, long double);
 
-__GDCC__FormatDecl(F, d, float);
-__GDCC__FormatDecl(F, dl, double);
-__GDCC__FormatDecl(F, dll, long double);
-
 __GDCC__FormatDecl(F, e, float);
 __GDCC__FormatDecl(F, el, double);
 __GDCC__FormatDecl(F, ell, long double);
+
+__GDCC__FormatDecl(F, f, float);
+__GDCC__FormatDecl(F, fl, double);
+__GDCC__FormatDecl(F, fll, long double);
 
 __GDCC__FormatDecl(F, g, float);
 __GDCC__FormatDecl(F, gl, double);

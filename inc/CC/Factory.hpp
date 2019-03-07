@@ -235,7 +235,7 @@ namespace GDCC::CC
       virtual expPromo_PtrRel(Exp const *l, Exp const *r, Origin pos);
 
       virtual StRef stCreate_Asm(Labels &&labels, Origin pos,
-         Core::Array<Core::Token> &&tokens);
+         Core::Array<Core::Token> &&tokens, bool retn);
 
       virtual StRef stCreate_Break(Labels &&labels, Origin pos, Scope_Local &ctx);
 
