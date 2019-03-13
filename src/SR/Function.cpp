@@ -174,13 +174,15 @@ namespace GDCC::SR
       if(Target::IsCallAutoProp(fn.ctype))
          ++fn.param;
 
+      // Extra register for stack pointer.
       if(fn.allocAut &&
          (fn.ctype == IR::CallType::ScriptI ||
             fn.ctype == IR::CallType::ScriptS ||
             fn.ctype == IR::CallType::StkCall))
       {
-         // Extra register for stack pointer.
-         ++fn.localReg;
+         // If there are fewer local registers than parameters, make sure not
+         // to clobber any of the parameters with the stack pointer.
+         fn.localReg = std::max(fn.localReg + 1, fn.param + 1);
       }
 
       // Check for explicit allocation.
