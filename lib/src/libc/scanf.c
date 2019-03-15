@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2016 David Hill
+// Copyright(C) 2016-2019 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -164,13 +164,12 @@
       strBuf = va_arg(arg, char *); \
       strChr = fgetc(stream); \
       \
-      while(fmtArg.width && !isspace(fmtChr)) \
-      { \
-         if(strChr == EOF) \
-            return ret ? ret : EOF; \
-         \
+      if(strChr == EOF) \
+         return ret ? ret : EOF;\
+      \
+      while(fmtArg.width && !isspace(strChr) && strChr != EOF) \
          ScanBufferChar(); \
-      } \
+      *strBuf = '\0'; \
       \
       ungetc(strChr, stream); \
       \
