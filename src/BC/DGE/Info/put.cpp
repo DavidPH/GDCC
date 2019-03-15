@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -110,10 +110,7 @@ namespace GDCC::BC::DGE
       switch(exp->getName())
       {
       case Core::STR_Add:
-         // TODO: Do pointer adjustments as needed.
-         putNTS("Add");
-         putExp(static_cast<IR::Exp_Binary const *>(exp)->expL);
-         putExp(static_cast<IR::Exp_Binary const *>(exp)->expR);
+         putExp_Add(static_cast<IR::Exp_Add const *>(exp));
          break;
 
       case Core::STR_AddPtrRaw:
@@ -159,10 +156,7 @@ namespace GDCC::BC::DGE
       switch(exp->getName())
       {
       case Core::STR_Add:
-         // TODO: Do pointer adjustments as needed.
-         putNTS("Add");
-         putExp(static_cast<IR::Exp_Binary const *>(exp)->expL, 0);
-         putExp(static_cast<IR::Exp_Binary const *>(exp)->expR, 0);
+         putExp_Add(static_cast<IR::Exp_Add const *>(exp));
          break;
 
       case Core::STR_AddPtrRaw:
@@ -195,6 +189,40 @@ namespace GDCC::BC::DGE
       putNTS("Add");
       putExp(expL);
       putInt(expR);
+   }
+
+   //
+   // Info::putExpMul
+   //
+   void Info::putExpMul(IR::Exp const *expL, Core::FastU expR)
+   {
+      if(expL->isValue())
+         return putInt(getWord(expL) * expR);
+
+      putNTS("Mul");
+      putExp(expL);
+      putInt(expR);
+   }
+
+   //
+   // Info::putExp_Add
+   //
+   void Info::putExp_Add(IR::Exp_Add const *exp)
+   {
+      auto typeL = exp->expL->getType();
+      auto typeR = exp->expL->getType();
+
+      putNTS("Add");
+
+      if(typeR.t == IR::TypeBase::Point)
+         putExpMul(exp->expL, typeR.tPoint.reprS);
+      else
+         putExp(exp->expL);
+
+      if(typeL.t == IR::TypeBase::Point)
+         putExpMul(exp->expR, typeL.tPoint.reprS);
+      else
+         putExp(exp->expR);
    }
 
    //

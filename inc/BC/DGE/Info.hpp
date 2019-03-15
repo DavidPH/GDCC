@@ -161,7 +161,9 @@ namespace GDCC::BC::DGE
       void putExp(IR::Exp const *exp, Core::FastU w);
 
       void putExpAdd(IR::Exp const *expL, Core::FastU expR);
+      void putExpMul(IR::Exp const *expL, Core::FastU expR);
 
+      void putExp_Add(IR::Exp_Add const *exp);
       void putExp_Cst(IR::Exp_Cst const *exp);
 
       virtual void putFunc();
