@@ -210,7 +210,7 @@ namespace GDCC::BC::DGE
    void Info::putExp_Add(IR::Exp_Add const *exp)
    {
       auto typeL = exp->expL->getType();
-      auto typeR = exp->expL->getType();
+      auto typeR = exp->expR->getType();
 
       putNTS("Add");
 
