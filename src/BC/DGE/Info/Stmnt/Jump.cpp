@@ -134,7 +134,7 @@ namespace GDCC::BC::DGE
    void Info::putStmnt_Jfar_Pro()
    {
       // Check for ongoing far jump.
-      putCode("Jfar_Pro", getStmntSizeW(), stmnt->args[0].aLit);
+      putCode("Jfar_Pro", getStmntSize() + 3 / 4, stmnt->args[0].aLit);
    }
 
    //
