@@ -604,6 +604,8 @@ DGE_Native DGE_Point2I DGE_Texture_GetSize(DGE_Unsig tex);
 
 DGE_Native DGE_Unsig DGE_Thinker_Head(void);
 DGE_Native void DGE_Thinker_Insert(DGE_Unsig id);
+DGE_Native void DGE_Thinker_Think(DGE_Unsig id);
+DGE_Native void DGE_Thinker_ThinkAll(void);
 DGE_Native void DGE_Thinker_Unlink(DGE_Unsig id);
 
 DGE_Native DGE_Integ DGE_Window_GetHeight(void);
