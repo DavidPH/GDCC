@@ -74,6 +74,14 @@ namespace GDCC::Core
       {
          if(ended) return false;
 
+         // Skip . and .. entries.
+         while(diritr.cFileName[0] == '.' && (diritr.cFileName[1] == '\0' ||
+            (diritr.cFileName[1] == '.' && diritr.cFileName[2] == '\0')))
+         {
+            if(!FindNextFile(dir, &diritr))
+               return ended = true;
+         }
+
          // Set name.
          nameBuf.resize(nameLen);
          Core::PathAppend(nameBuf, diritr.cFileName);
