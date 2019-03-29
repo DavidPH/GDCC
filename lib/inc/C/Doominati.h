@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2016-2017 David Hill
+// Copyright(C) 2016-2019 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -454,6 +454,7 @@ DGE_Native void DGE_DebugDataStk(DGE_Unsig dump);
 DGE_Native void DGE_DebugLocReg(void);
 
 DGE_Native void DGE_Dir_Close(DGE_Integ fd);
+DGE_Native DGE_Integ DGE_Dir_Create(char const *name);
 DGE_Native DGE_Unsig DGE_Dir_Name(DGE_Integ fd, char *buf, DGE_Unsig len);
 DGE_Native DGE_Integ DGE_Dir_Open(char const *name);
 DGE_Native DGE_Integ DGE_Dir_Read(DGE_Integ fd);
@@ -486,6 +487,7 @@ DGE_Native void DGE_Draw_TriangleLine(DGE_Fixed x1, DGE_Fixed y1, DGE_Fixed x2, 
 DGE_Native DGE_Unsig DGE_Entity_Create(DGE_Unsig ext);
 
 DGE_Native void DGE_File_Close(DGE_Integ fd);
+DGE_Native DGE_Integ DGE_File_Create(char const *name, char const *data, DGE_Unsig size);
 DGE_Native DGE_Integ DGE_File_Get(DGE_Integ fd, DGE_UnsigL idx);
 DGE_Native DGE_Unsig DGE_File_Name(DGE_Integ fd, char *buf, DGE_Unsig len);
 DGE_Native DGE_Integ DGE_File_Open(char const *name);
