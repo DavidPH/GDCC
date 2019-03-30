@@ -461,6 +461,7 @@ DGE_Native DGE_Integ DGE_Dir_Read(DGE_Integ fd);
 DGE_Native DGE_Integ DGE_Dir_ReadDir(DGE_Integ fd);
 DGE_Native DGE_Integ DGE_Dir_ReadFile(DGE_Integ fd);
 DGE_Native DGE_Unsig DGE_Dir_ReadName(DGE_Integ fd, char *buf, DGE_Unsig len);
+DGE_Native DGE_Integ DGE_Dir_Remove(char const *name);
 DGE_Native void DGE_Dir_Rewind(DGE_Integ fd);
 
 DGE_Native void DGE_Draw_Circle(DGE_Fixed x, DGE_Fixed y, DGE_Fixed r);
@@ -492,6 +493,7 @@ DGE_Native DGE_Integ DGE_File_Get(DGE_Integ fd, DGE_UnsigL idx);
 DGE_Native DGE_Unsig DGE_File_Name(DGE_Integ fd, char *buf, DGE_Unsig len);
 DGE_Native DGE_Integ DGE_File_Open(char const *name);
 DGE_Native DGE_Integ DGE_File_Read(DGE_Integ fd, DGE_UnsigL idx, char *buf, DGE_Unsig len);
+DGE_Native DGE_Integ DGE_File_Remove(char const *name);
 DGE_Native DGE_UnsigL DGE_File_Size(DGE_Integ fd);
 
 DGE_Native void DGE_Font_Bind(DGE_Unsig fnt);
