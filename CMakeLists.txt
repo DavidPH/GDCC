@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2018 David Hill
+## Copyright (C) 2013-2019 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -14,9 +14,21 @@ cmake_minimum_required(VERSION 2.6)
 
 project(gdcc)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
 include(CheckCXXCompilerFlag)
 include(CheckTypeSize)
+
+
+##----------------------------------------------------------------------------|
+## CMake Configuration                                                        |
+##
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
+
+if(NOT CMAKE_BUILD_TYPE)
+   set(CMAKE_BUILD_TYPE "release")
+endif()
+
+set(CMAKE_CXX_STANDARD 17)
 
 
 ##----------------------------------------------------------------------------|
@@ -26,7 +38,12 @@ include(CheckTypeSize)
 ##
 ## GDCC_INSTALL_PART
 ##
-function(GDCC_INSTALL_PART name wantExe wantLib)
+function(GDCC_INSTALL_PART name nameAPI pathAPI wantExe wantLib)
+   if(wantLib AND GDCC_INSTALL_API)
+      install(FILES ${GDCC_${nameAPI}_H}
+         DESTINATION include/GDCC/${pathAPI})
+   endif()
+
    if(wantExe AND GDCC_INSTALL_EXE)
       install(TARGETS gdcc-${name}
          RUNTIME DESTINATION bin
@@ -77,8 +94,6 @@ if(NOT GDCC_NOFLAGS)
 
       GDCC_TRY_CXX_FLAG(-Wno-misleading-indentation Wno_misleading_indentation)
       GDCC_TRY_CXX_FLAG(-Wno-implicit-fallthrough   Wno_implicit_fallthrough)
-
-      GDCC_TRY_CXX_FLAG(-std=c++1z STD_CXX)
    endif()
 
    if(MSVC)
@@ -107,24 +122,24 @@ CHECK_TYPE_SIZE("long long" GDCC_Core_SizeLongLong)
 ##
 
 ##
-## GDCC_BC_DGE
+## GDCC_Option
 ##
-if(NOT DEFINED GDCC_BC_DGE)
-   if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/DGE")
-      set(GDCC_BC_DGE ON CACHE BOOL "Enable bytecode module: DGE")
+if(NOT DEFINED GDCC_Option)
+   if(EXISTS "${CMAKE_SOURCE_DIR}/Option")
+      set(GDCC_Option ON CACHE BOOL "Enable Option module.")
    else()
-      set(GDCC_BC_DGE OFF CACHE BOOL "Enable bytecode module: DGE")
+      set(GDCC_Option OFF CACHE BOOL "Enable Option module.")
    endif()
 endif()
 
 ##
-## GDCC_BC_ZDACS
+## GDCC_Core
 ##
-if(NOT DEFINED GDCC_BC_ZDACS)
-   if(EXISTS "${CMAKE_SOURCE_DIR}/src/BC/ZDACS")
-      set(GDCC_BC_ZDACS ON CACHE BOOL "Enable bytecode module: ZDACS")
+if(NOT DEFINED GDCC_Core)
+   if(GDCC_Option AND EXISTS "${CMAKE_SOURCE_DIR}/Core")
+      set(GDCC_Core ON CACHE BOOL "Enable core module.")
    else()
-      set(GDCC_BC_ZDACS OFF CACHE BOOL "Enable bytecode module: ZDACS")
+      set(GDCC_Core OFF CACHE BOOL "Enable core module.")
    endif()
 endif()
 
@@ -134,6 +149,50 @@ endif()
 if(NOT DEFINED GDCC_Core_BigNum)
    set(GDCC_Core_BigNum ${GMP_FOUND} CACHE BOOL
       "Enable extended precision types and functions.")
+endif()
+
+##
+## GDCC_Target
+##
+if(NOT DEFINED GDCC_Target)
+   if(GDCC_Core AND EXISTS "${CMAKE_SOURCE_DIR}/Target")
+      set(GDCC_Target ON CACHE BOOL "Enable Target module.")
+   else()
+      set(GDCC_Target OFF CACHE BOOL "Enable Target module.")
+   endif()
+endif()
+
+##
+## GDCC_IR
+##
+if(NOT DEFINED GDCC_IR)
+   if(GDCC_Target AND GDCC_Core_BigNum AND EXISTS "${CMAKE_SOURCE_DIR}/IR")
+      set(GDCC_IR ON CACHE BOOL "Enable IR module.")
+   else()
+      set(GDCC_IR OFF CACHE BOOL "Enable IR module.")
+   endif()
+endif()
+
+##
+## GDCC_BC_DGE
+##
+if(NOT DEFINED GDCC_BC_DGE)
+   if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/BC/DGE")
+      set(GDCC_BC_DGE ON CACHE BOOL "Enable BC::DGE module.")
+   else()
+      set(GDCC_BC_DGE OFF CACHE BOOL "Enable BC::DGE module.")
+   endif()
+endif()
+
+##
+## GDCC_BC_ZDACS
+##
+if(NOT DEFINED GDCC_BC_ZDACS)
+   if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/BC/ZDACS")
+      set(GDCC_BC_ZDACS ON CACHE BOOL "Enable BC::ZDACS module.")
+   else()
+      set(GDCC_BC_ZDACS OFF CACHE BOOL "Enable BC::ZDACS module.")
+   endif()
 endif()
 
 ##
@@ -191,9 +250,9 @@ endif()
 ## Environment Configuration                                                  |
 ##
 
-configure_file(src/Config.hpp inc/GDCC/Config.hpp)
+configure_file(Config.hpp inc/GDCC/Config.hpp)
 
-include_directories(${CMAKE_BINARY_DIR}/inc inc src)
+include_directories(${CMAKE_BINARY_DIR}/inc .)
 
 if(GMP_FOUND)
    include_directories(${GMP_INCLUDE_DIRS})
@@ -204,10 +263,67 @@ endif()
 ## Targets                                                                    |
 ##
 
-add_subdirectory(src)
+if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/ACC")
+   add_subdirectory(ACC)
+endif()
+
+if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/AR")
+   add_subdirectory(AR)
+endif()
+
+if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/AS")
+   add_subdirectory(AS)
+endif()
+
+if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/BC")
+   add_subdirectory(BC)
+endif()
+
+if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/CC")
+   add_subdirectory(CC)
+endif()
+
+if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/CPP")
+   add_subdirectory(CPP)
+endif()
+
+if(GDCC_Core)
+   add_subdirectory(Core)
+endif()
+
+if(GDCC_IR)
+   add_subdirectory(IR)
+endif()
+
+if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/IRDump")
+   add_subdirectory(IRDump)
+endif()
+
+if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/LD")
+   add_subdirectory(LD)
+endif()
+
+if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/MakeLib")
+   add_subdirectory(MakeLib)
+endif()
+
+if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/NTSC")
+   add_subdirectory(NTSC)
+endif()
+
+if(GDCC_Option)
+   add_subdirectory(Option)
+endif()
+
+if(GDCC_IR AND EXISTS "${CMAKE_SOURCE_DIR}/SR")
+   add_subdirectory(SR)
+endif()
+
+if(GDCC_Target)
+   add_subdirectory(Target)
+endif()
 
 if(GDCC_INSTALL_API)
-   install(DIRECTORY inc/ DESTINATION include/GDCC)
    install(FILES ${CMAKE_BINARY_DIR}/inc/GDCC/Config.hpp DESTINATION include/GDCC)
 endif()
 
