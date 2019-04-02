@@ -31,15 +31,14 @@ namespace GDCC::BC
    //
    // --bc-opt
    //
-   static bool OptPass = true;
-   static Option::Bool OptionOpt
+   static Option::Bool OptPass
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-opt")
          .setGroup("codegen")
          .setDescS("Enables or disables opt pass."),
 
-      &OptPass
+      true
    };
 }
 

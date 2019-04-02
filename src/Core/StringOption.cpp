@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,8 +24,16 @@ namespace GDCC::Core
    //
    // StringOption constructor
    //
-   StringOption::StringOption(Option::Program *program, Info const &optInfo, String *ptr) :
-      Option::Base{program, optInfo}, dptr{ptr}
+   StringOption::StringOption(Option::Program *program, Info const &optInfo) :
+      Option::Base{program, optInfo}, str{nullptr}
+   {
+   }
+
+   //
+   // StringOption constructor
+   //
+   StringOption::StringOption(Option::Program *program, Info const &optInfo, String s) :
+      Option::Base{program, optInfo}, str{s}
    {
    }
 
@@ -34,10 +42,10 @@ namespace GDCC::Core
    //
    std::size_t StringOption::v_process(Option::Args const &args)
    {
-      if(args.optFalse) return *dptr = nullptr, 0;
+      if(args.optFalse) return str = nullptr, 0;
       if(!args.argC) Option::Exception::Error(args, "argument required");
 
-      *dptr = args.argV[0];
+      str = args.argV[0];
 
       return 1;
    }

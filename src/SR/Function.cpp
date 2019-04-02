@@ -37,8 +37,7 @@ namespace GDCC::SR
    //
    // --alloc-Aut
    //
-   static Core::FastU AllocAut = 4096;
-   static Option::Int<Core::FastU> AllocAutOpt
+   static Option::Int<Core::FastU> AllocAut
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("alloc-Aut")
@@ -46,7 +45,7 @@ namespace GDCC::SR
          .setDescS("Sets the default Aut stack size.")
          .setDescL("Sets the default Aut stack size. Default is 4096."),
 
-      &AllocAut
+      4096
    };
 }
 

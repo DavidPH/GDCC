@@ -15,6 +15,8 @@
 
 #include "../IRDump/Types.hpp"
 
+#include "../Option/Bool.hpp"
+
 #include <ostream>
 
 
@@ -65,19 +67,19 @@ namespace GDCC::IRDump
 
 namespace GDCC::IRDump
 {
-   extern bool OptBlock;
-   extern bool OptDJump;
-   extern bool OptExpName;
-   extern bool OptFunction;
-   extern bool OptGlyph;
-   extern bool OptHeaders;
-   extern bool OptImport;
-   extern bool OptLabels;
-   extern bool OptObject;
-   extern bool OptOrigin;
-   extern bool OptSpace;
-   extern bool OptStatistics;
-   extern bool OptStrEnt;
+   extern Option::Bool DumpBlock;
+   extern Option::Bool DumpDJump;
+   extern Option::Bool DumpExpName;
+   extern Option::Bool DumpFunction;
+   extern Option::Bool DumpGlyph;
+   extern Option::Bool DumpHeaders;
+   extern Option::Bool DumpImport;
+   extern Option::Bool DumpLabels;
+   extern Option::Bool DumpObject;
+   extern Option::Bool DumpOrigin;
+   extern Option::Bool DumpSpace;
+   extern Option::Bool DumpStatistics;
+   extern Option::Bool DumpStrEnt;
 }
 
 #endif//GDCC__IRDump__IRDump_H__

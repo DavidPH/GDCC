@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -32,9 +32,13 @@ namespace GDCC::Option
 
       virtual ~CStrV();
 
+      char const *const &operator [] (std::size_t n) const {return strV[n];}
+
       char const *const *begin() const {return strV;}
 
       char const *const *data() const {return strV;}
+
+      bool empty() const {return strC != 0;}
 
       char const *const *end() const {return strV + strC;}
 

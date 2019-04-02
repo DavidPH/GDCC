@@ -44,14 +44,14 @@ namespace GDCC::LD
    //
    // -c, --ir-output
    //
-   static Option::Bool OutputIROpt
+   Option::Bool OutputIR
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("ir-output").setName('c')
          .setGroup("output")
          .setDescS("Generate an IR file instead of bytecode."),
 
-      &OutputIR
+      false
    };
 
    //
@@ -80,16 +80,6 @@ namespace GDCC::LD
 
       1
    };
-}
-
-
-//----------------------------------------------------------------------------|
-// Extern Obects                                                              |
-//
-
-namespace GDCC::LD
-{
-   bool OutputIR = false;
 }
 
 

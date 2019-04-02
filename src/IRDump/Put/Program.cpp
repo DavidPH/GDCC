@@ -28,118 +28,118 @@ namespace GDCC::IRDump
    //
    // --dump-djump
    //
-   static Option::Bool DumpDJump
+   Option::Bool DumpDJump
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("dump-djump")
          .setGroup("output")
          .setDescS("Dump IR::DJump objects."),
 
-      &OptDJump
+      false
    };
 
    //
    // --dump-function
    //
-   static Option::Bool DumpFunction
+   Option::Bool DumpFunction
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("dump-function")
          .setGroup("output")
          .setDescS("Dump IR::Function objects."),
 
-      &OptFunction
+      false
    };
 
    //
    // --dump-glyph
    //
-   static Option::Bool DumpGlyph
+   Option::Bool DumpGlyph
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("dump-glyph")
          .setGroup("output")
          .setDescS("Dump IR::GlyphData objects."),
 
-      &OptGlyph
+      false
    };
 
    //
    // --dump-headers
    //
-   static Option::Bool DumpHeaders
+   Option::Bool DumpHeaders
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("dump-headers")
          .setGroup("output")
          .setDescS("Include comment headers in output."),
 
-      &OptHeaders
+      false
    };
 
    //
    // --dump-import
    //
-   static Option::Bool DumpImport
+   Option::Bool DumpImport
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("dump-import")
          .setGroup("output")
          .setDescS("Dump IR::Import objects."),
 
-      &OptImport
+      false
    };
 
    //
    // --dump-object
    //
-   static Option::Bool DumpObject
+   Option::Bool DumpObject
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("dump-object")
          .setGroup("output")
          .setDescS("Dump IR::Object objects."),
 
-      &IRDump::OptObject
+      false
    };
 
    //
    // --dump-space
    //
-   static Option::Bool DumpSpace
+   Option::Bool DumpSpace
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("dump-space")
          .setGroup("output")
          .setDescS("Dump IR::Space objects."),
 
-      &OptSpace
+      false
    };
 
    //
    // --dump-statistics
    //
-   static Option::Bool DumpStatistics
+   Option::Bool DumpStatistics
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("dump-statistics")
          .setGroup("output")
          .setDescS("Dump overall statistics."),
 
-      &OptStatistics
+      false
    };
 
    //
    // --dump-strent
    //
-   static Option::Bool DumpStrEnt
+   Option::Bool DumpStrEnt
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("dump-strent")
          .setGroup("output")
          .setDescS("Dump IR::StrEnt objects."),
 
-      &OptStrEnt
+      false
    };
 }
 
@@ -176,7 +176,7 @@ namespace GDCC::IRDump
    void PutProgram(std::ostream &out, IR::Program const &prog)
    {
       // File header.
-      if(OptHeaders)
+      if(DumpHeaders)
       {
          out << ";;"; for(int i = 77; i--;) out << '-'; out << '\n';
          out << ";;\n";
@@ -186,9 +186,9 @@ namespace GDCC::IRDump
       }
 
       // Overall statistics.
-      if(OptStatistics)
+      if(DumpStatistics)
       {
-         if(OptHeaders) out << ";;\n";
+         if(DumpHeaders) out << ";;\n";
 
          out << ";; DJumps: "                  << prog.sizeDJump()       << '\n';
          out << ";; Functions: "               << prog.sizeFunction()    << '\n';
@@ -201,7 +201,7 @@ namespace GDCC::IRDump
          out << ";; Address Spaces (ModArs): " << prog.sizeSpaceModArs() << '\n';
          out << ";; String Table Entries: "    << prog.sizeStrEnt()      << '\n';
 
-         if(OptHeaders)
+         if(DumpHeaders)
          {
             out << ";;\n";
             out << ";;"; for(int i = 77; i--;) out << '-'; out << '\n';
@@ -209,44 +209,44 @@ namespace GDCC::IRDump
       }
 
       // Functions
-      if(OptDJump)
+      if(DumpDJump)
       {
-         if(OptHeaders) PutHeader(out, "DJumps");
+         if(DumpHeaders) PutHeader(out, "DJumps");
          for(auto const &jump : prog.rangeDJump()) PutDJump(out, jump);
       }
 
       // Functions
-      if(OptFunction)
+      if(DumpFunction)
       {
-         if(OptHeaders) PutHeader(out, "Functions");
+         if(DumpHeaders) PutHeader(out, "Functions");
          for(auto const &fn : prog.rangeFunction()) PutFunction(out, fn);
       }
 
       // Glyphs
-      if(OptGlyph)
+      if(DumpGlyph)
       {
-         if(OptHeaders) PutHeader(out, "Glyphs");
+         if(DumpHeaders) PutHeader(out, "Glyphs");
          for(auto const &glyph : prog.rangeGlyphData()) PutGlyphData(out, glyph);
       }
 
       // Imports
-      if(OptImport)
+      if(DumpImport)
       {
-         if(OptHeaders) PutHeader(out, "Imports");
+         if(DumpHeaders) PutHeader(out, "Imports");
          for(auto const &imp : prog.rangeImport()) PutImport(out, imp);
       }
 
       // Objects
-      if(OptObject)
+      if(DumpObject)
       {
-         if(OptHeaders) PutHeader(out, "Objects");
+         if(DumpHeaders) PutHeader(out, "Objects");
          for(auto const &obj : prog.rangeObject()) PutObject(out, obj);
       }
 
       // Spaces
-      if(OptSpace)
+      if(DumpSpace)
       {
-         if(OptHeaders) PutHeader(out, "Address Spaces");
+         if(DumpHeaders) PutHeader(out, "Address Spaces");
          for(auto const &sp : prog.rangeSpaceGblArs()) PutSpace(out, sp);
          for(auto const &sp : prog.rangeSpaceHubArs()) PutSpace(out, sp);
          for(auto const &sp : prog.rangeSpaceLocArs()) PutSpace(out, sp);
@@ -254,14 +254,14 @@ namespace GDCC::IRDump
       }
 
       // StrEnts
-      if(OptStrEnt)
+      if(DumpStrEnt)
       {
-         if(OptHeaders) PutHeader(out, "String Table Entries");
+         if(DumpHeaders) PutHeader(out, "String Table Entries");
          for(auto const &str : prog.rangeStrEnt()) PutStrEnt(out, str);
       }
 
       // File footer.
-      if(OptHeaders)
+      if(DumpHeaders)
       {
          out << "\n;; EOF\n\n";
       }

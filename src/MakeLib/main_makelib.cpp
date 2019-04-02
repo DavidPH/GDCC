@@ -35,15 +35,14 @@
 //
 // --progress
 //
-static bool Progress = false;
-static GDCC::Option::Bool ProgressOpt
+static GDCC::Option::Bool Progress
 {
    &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
       .setName("progress")
       .setGroup("output")
       .setDescS("Writes progress information to stderr."),
 
-   &Progress
+   false
 };
 
 

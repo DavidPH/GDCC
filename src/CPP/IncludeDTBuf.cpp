@@ -63,8 +63,7 @@ namespace GDCC::CPP
    //
    // --lang-include
    //
-   static bool IncludeLangEnable = true;
-   static Option::Bool IncludeLangEnableOpt
+   static Option::Bool IncludeLangEnable
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("lang-include")
@@ -72,7 +71,7 @@ namespace GDCC::CPP
          .setDescS("Enables automatic detection of system include "
             "directories by language. On by default."),
 
-      &IncludeLangEnable
+      true
    };
 }
 

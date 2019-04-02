@@ -36,15 +36,14 @@ namespace GDCC::BC::DGE
    //
    // --bc-dge-origins
    //
-   static bool OutputOrigin = false;
-   static Option::Bool OutputOriginOpt
+   static Option::Bool OutputOrigin
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-dge-origins")
          .setGroup("output")
          .setDescS("Output origin data in bytecode."),
 
-      &OutputOrigin
+      false
    };
 }
 

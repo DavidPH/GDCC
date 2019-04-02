@@ -43,7 +43,7 @@ namespace GDCC::Option
    private:
       explicit Exception(std::unique_ptr<char const[]> &&s);
 
-      std::unique_ptr<char const[]> const msg;
+      std::unique_ptr<char const[]> msg;
    };
 }
 

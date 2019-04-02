@@ -23,8 +23,12 @@
 #include "../../Core/Counter.hpp"
 #include "../../Core/Number.hpp"
 #include "../../Core/NumberAlloc.hpp"
+#include "../../Core/StringOption.hpp"
 
 #include "../../IR/Code.hpp"
+
+#include "../../Option/Bool.hpp"
+#include "../../Option/Int.hpp"
 
 #include "../../Target/Addr.hpp"
 #include "../../Target/CallType.hpp"
@@ -51,15 +55,15 @@ namespace GDCC::BC::ZDACS
 
       static Core::FastU FarJumpIndex;
 
-      static bool         InitDelay;
-      static Core::String InitScriptName;
-      static bool         InitScriptNamed;
-      static Core::FastU  InitScriptNumber;
+      static Option::Bool             InitDelay;
+      static Core::StringOption       InitScriptName;
+      static Option::Bool             InitScriptNamed;
+      static Option::Int<Core::FastU> InitScriptNumber;
 
-      static Core::FastU StaArray;
+      static Option::Int<Core::FastU> StaArray;
 
-      static bool UseChunkSTRE;
-      static bool UseFakeACS0;
+      static Option::Bool UseChunkSTRE;
+      static Option::Bool UseFakeACS0;
 
    protected:
       //

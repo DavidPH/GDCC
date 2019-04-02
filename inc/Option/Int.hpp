@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -32,8 +32,18 @@ namespace GDCC::Option
    {
    public:
       // constructor
-      Int(Program *program, Info const &optInfo, T *ptr) :
-         Base{program, optInfo}, dptr{ptr} {}
+      Int(Program *program, Info const &optInfo) :
+         Base{program, optInfo}, i{0} {}
+      Int(Program *program, Info const &optInfo, T i_) :
+         Base{program, optInfo}, i{i_} {}
+
+      explicit operator bool () const {return static_cast<bool>(i);}
+      operator T const & () const {return i;}
+
+      Int &operator = (T const &i_) {i = i_; return *this;}
+
+      T       &data()       {return i;}
+      T const &data() const {return i;}
 
    protected:
       //
@@ -41,23 +51,23 @@ namespace GDCC::Option
       //
       virtual std::size_t v_process(Args const &args)
       {
-         if(args.optFalse) {*dptr = 0; return 0;}
+         if(args.optFalse) {i = 0; return 0;}
          if(!args.argC) Exception::Error(args, "argument required");
 
-         *dptr = 0;
+         i = 0;
          for(auto s = args.argV[0]; *s; ++s)
          {
             if(*s < '0' || *s > '9')
                Exception::Error(args, "integer required");
 
-            *dptr = *dptr * 10 + (*s - '0');
+            i = i * 10 + (*s - '0');
          }
 
          return 1;
       }
 
    private:
-      T *const dptr;
+      T i;
    };
 }
 

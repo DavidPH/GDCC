@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2016-2018 David Hill
+// Copyright (C) 2016-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -30,13 +30,22 @@ namespace GDCC::Core
    class StringOption : public Option::Base
    {
    public:
-      StringOption(Option::Program *program, Info const &optInfo, String *ptr);
+      StringOption(Option::Program *program, Info const &optInfo);
+      StringOption(Option::Program *program, Info const &optInfo, String s);
+
+      explicit operator bool () const {return static_cast<bool>(str);}
+      operator String () const {return str;}
+
+      StringOption &operator = (String s) {str = s; return *this;}
+
+      String       &data()       {return str;}
+      String const &data() const {return str;}
 
    protected:
       virtual std::size_t v_process(Option::Args const &args);
 
    private:
-      String *dptr;
+      String str;
    };
 }
 

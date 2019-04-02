@@ -51,7 +51,7 @@ namespace GDCC::BC::ZDACS
          ++numChunkSNAM;
 
          if(Target::EngineCur == Target::Engine::Zandronum)
-            ++numChunkSNAM, --InitScriptNumber;
+            ++numChunkSNAM, --InitScriptNumber.data();
 
          // If no name set, generate one.
          if(!InitScriptName)

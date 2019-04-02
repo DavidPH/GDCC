@@ -36,46 +36,46 @@ namespace GDCC::BC::ZDACS
    //
    // --bc-zdacs-Sta-array
    //
-   static Option::Int<Core::FastU> StaArrayOpt
+   Option::Int<Core::FastU> Info::StaArray
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-Sta-array")
          .setGroup("codegen")
          .setDescS("Sets the global array used for Sta."),
 
-      &Info::StaArray
+      0
    };
 
    //
    // --bc-zdacs-chunk-STRE
    //
-   static Option::Bool ChunkSTREOpt
+   Option::Bool Info::UseChunkSTRE
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-chunk-STRE")
          .setGroup("output")
          .setDescS("Generates an encrypted string table."),
 
-      &Info::UseChunkSTRE
+      false
    };
 
    //
    // --bc-zdacs-fake-ACS0
    //
-   static Option::Bool FakeACS0Opt
+   Option::Bool Info::UseFakeACS0
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-fake-ACS0")
          .setGroup("output")
          .setDescS("Generates a fake ACS0 header."),
 
-      &Info::UseFakeACS0
+      false
    };
 
    //
    // --bc-zdacs-init-delay
    //
-   static Option::Bool InitDelayOpt
+   Option::Bool Info::InitDelay
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-init-delay")
@@ -86,14 +86,13 @@ namespace GDCC::BC::ZDACS
             "there might be multiple init scripts that need to run, "
             "such as from having multiple modules."),
 
-      &Info::InitDelay
+      false
    };
 
    //
    // --bc-zdacs-init-gbl-array
    //
-   static Core::FastU InitGblArray = 0;
-   static Option::Int<Core::FastU> InitGblArrayOpt
+   static Option::Int<Core::FastU> InitGblArray
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-init-gbl-array")
@@ -103,14 +102,13 @@ namespace GDCC::BC::ZDACS
             "Sets the global array used to store initialization status. "
             "Default is to use the Sta array."),
 
-      &InitGblArray
+      0
    };
 
    //
    // --bc-zdacs-init-gbl-index
    //
-   static Core::FastU InitGblIndex = 0;
-   static Option::Int<Core::FastU> InitGblIndexOpt
+   static Option::Int<Core::FastU> InitGblIndex
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-init-gbl-index")
@@ -121,14 +119,13 @@ namespace GDCC::BC::ZDACS
             "status. Default is 0 if using the Sta array, -1 "
             "otherwise."),
 
-      &InitGblIndex
+      0
    };
 
    //
    // --bc-zdacs-init-hub-array
    //
-   static Core::FastU InitHubArray = 0;
-   static Option::Int<Core::FastU> InitHubArrayOpt
+   static Option::Int<Core::FastU> InitHubArray
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-init-hub-array")
@@ -138,14 +135,13 @@ namespace GDCC::BC::ZDACS
             "Sets the hub array used to store initialization status. "
             "Default is to use any hub array with an initializer."),
 
-      &InitHubArray
+      0
    };
 
    //
    // --bc-zdacs-init-hub-index
    //
-   static Core::FastU InitHubIndex = 0xFFFFFFFF;
-   static Option::Int<Core::FastU> InitHubIndexOpt
+   static Option::Int<Core::FastU> InitHubIndex
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-init-hub-index")
@@ -155,13 +151,13 @@ namespace GDCC::BC::ZDACS
             "Sets the hub array index used to store initialization "
             "status. Default is -1."),
 
-      &InitHubIndex
+      0xFFFFFFFF
    };
 
    //
    // --bc-zdacs-init-script-name
    //
-   static Core::StringOption InitScriptNameOpt
+   Core::StringOption Info::InitScriptName
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-init-script-name")
@@ -171,13 +167,13 @@ namespace GDCC::BC::ZDACS
             "Sets the script name for the initialization script. "
             "Default is '<output filename>$init'."),
 
-      &Info::InitScriptName
+      nullptr
    };
 
    //
    // --bc-zdacs-init-script-named
    //
-   static Option::Bool InitScriptNamedOpt
+   Option::Bool Info::InitScriptNamed
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-init-script-named")
@@ -185,13 +181,13 @@ namespace GDCC::BC::ZDACS
          .setDescS("Enables a named init script.")
          .setDescL("Enables a named init script. Default is on."),
 
-      &Info::InitScriptNamed
+      true
    };
 
    //
    // --bc-zdacs-init-script-number
    //
-   static Option::Int<Core::FastU> InitScriptNumberOpt
+   Option::Int<Core::FastU> Info::InitScriptNumber
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-init-script-number")
@@ -201,14 +197,13 @@ namespace GDCC::BC::ZDACS
             "Sets the script number for the initialization script. "
             "Default is 999."),
 
-      &Info::InitScriptNumber
+      999
    };
 
    //
    // --bc-zdacs-scripti-param
    //
-   static Core::FastU ScriptIParam = 4;
-   static Option::Int<Core::FastU> ScriptIParamOpt
+   static Option::Int<Core::FastU> ScriptIParam
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-scripti-param")
@@ -217,14 +212,13 @@ namespace GDCC::BC::ZDACS
          .setDescL("Sets the number of native parameters for numbered scripts. "
             "Default is 4."),
 
-      &ScriptIParam
+      4
    };
 
    //
    // --bc-zdacs-scripts-param
    //
-   static Core::FastU ScriptSParam = 4;
-   static Option::Int<Core::FastU> ScriptSParamOpt
+   static Option::Int<Core::FastU> ScriptSParam
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-scripts-param")
@@ -233,14 +227,13 @@ namespace GDCC::BC::ZDACS
          .setDescL("Sets the number of native parameters for named scripts. "
             "Default is 4."),
 
-      &ScriptSParam
+      4
    };
 
    //
    // --bc-zdacs-stkcall-retn
    //
-   static Core::FastU StkCallRetn = 1;
-   static Option::Int<Core::FastU> StkCallRetnOpt
+   static Option::Int<Core::FastU> StkCallRetn
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("bc-zdacs-stkcall-retn")
@@ -249,7 +242,7 @@ namespace GDCC::BC::ZDACS
          .setDescL("Sets the number of native return words for functions. "
             "Default is 1."),
 
-      &StkCallRetn
+      1
    };
 }
 
@@ -263,16 +256,6 @@ namespace GDCC::BC::ZDACS
    IR::Type_Fixed const Info::TypeWord{32, 0, false, false};
 
    Core::FastU Info::FarJumpIndex = 1;
-
-   bool         Info::InitDelay        = false;
-   Core::String Info::InitScriptName   = nullptr;
-   bool         Info::InitScriptNamed  = true;
-   Core::FastU  Info::InitScriptNumber = 999;
-
-   Core::FastU Info::StaArray = 0;
-
-   bool Info::UseChunkSTRE = false;
-   bool Info::UseFakeACS0  = false;
 }
 
 
@@ -517,7 +500,7 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::getInitGblArray()
    {
-      if(InitGblArrayOpt.processed)
+      if(InitGblArray.processed)
          return InitGblArray;
 
       return StaArray;
@@ -528,10 +511,10 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::getInitGblIndex()
    {
-      if(InitGblIndexOpt.processed)
+      if(InitGblIndex.processed)
          return InitGblIndex;
 
-      if(!InitGblArrayOpt.processed || InitGblArray == StaArray)
+      if(!InitGblArray.processed || InitGblArray == StaArray)
          return 0;
 
       return -1;
@@ -542,7 +525,7 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::getInitHubArray()
    {
-      if(InitHubArrayOpt.processed)
+      if(InitHubArray.processed)
          return InitHubArray;
 
       for(auto const &itr : prog->rangeSpaceHubArs())

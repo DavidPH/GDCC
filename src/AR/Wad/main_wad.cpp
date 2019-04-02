@@ -29,29 +29,27 @@
 //
 // --extract
 //
-static bool Extract = false;
-static GDCC::Option::Bool ExtractOpt
+static GDCC::Option::Bool Extract
 {
    &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
       .setName("extract")
       .setGroup("output")
       .setDescS("Extracts to a directory instead of writing to archive."),
 
-   &Extract
+   false
 };
 
 //
 // --iwad
 //
-static bool IWad = false;
-static GDCC::Option::Bool IWadOpt
+static GDCC::Option::Bool IWad
 {
    &GDCC::Core::GetOptionList(), GDCC::Option::Base::Info()
       .setName("iwad")
       .setGroup("output")
       .setDescS("Writes an IWAD instead of a PWAD."),
 
-   &Extract
+   false
 };
 
 //

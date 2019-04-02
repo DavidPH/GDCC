@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -29,8 +29,15 @@ namespace GDCC::Option
    {
    public:
       // constructor
-      Bool(Program *program, Info const &optInfo, bool *ptr) :
-         Base{program, optInfo}, dptr{ptr} {}
+      Bool(Program *program, Info const &optInfo, bool b_ = false) :
+         Base{program, optInfo}, b{b_} {}
+
+      operator bool () const {return b;}
+
+      Bool &operator = (bool b_) {b = b_; return *this;}
+
+      bool       &data()       {return b;}
+      bool const &data() const {return b;}
 
    protected:
       //
@@ -38,12 +45,12 @@ namespace GDCC::Option
       //
       virtual std::size_t v_process(Args const &args)
       {
-         *dptr = !args.optFalse;
+         b = !args.optFalse;
          return 0;
       }
 
    private:
-      bool *const dptr;
+      bool b;
    };
 }
 

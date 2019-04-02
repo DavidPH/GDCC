@@ -36,14 +36,14 @@ namespace GDCC::IRDump
    //
    // --named-expressions
    //
-   static Option::Bool NamedExpressions
+   Option::Bool DumpExpName
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("named-expressions")
          .setGroup("output")
          .setDescS("Use expression names instead of symbols."),
 
-      &OptExpName
+      false
    };
 }
 
@@ -195,12 +195,12 @@ namespace GDCC::IRDump
    void PutExp(std::ostream &out, IR::Exp const *exp)
    {
       #define CasePart(name, sym) case Core::STR_##name: \
-         if(OptExpName) \
+         if(DumpExpName) \
             out << #name << '('; \
          else \
             out << (sym) << ' '; \
          PutExpPart(out, static_cast<IR::Exp_##name const *>(exp)); \
-         if(OptExpName) \
+         if(DumpExpName) \
             out << ')'; \
          break
 
@@ -251,9 +251,9 @@ namespace GDCC::IRDump
          break;
 
       case Core::STR_Tuple:
-         out << (OptExpName ? "Tuple(" : "{");
+         out << (DumpExpName ? "Tuple(" : "{");
          PutExpPart(out, static_cast<IR::Exp_Tuple const *>(exp));
-         out << (OptExpName ? ')' : '}');
+         out << (DumpExpName ? ')' : '}');
          break;
 
       case Core::STR_Value:

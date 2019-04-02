@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -33,7 +33,12 @@ namespace GDCC::Option
 
       virtual ~CStr();
 
+      operator char const * () const {return str;}
+
       char const *data() const {return str;}
+
+      void reset();
+      void reset(char const *s, bool copy);
 
       std::size_t size() const {return len;}
 
@@ -41,9 +46,6 @@ namespace GDCC::Option
       virtual std::size_t v_process(Args const &args);
 
    private:
-      void reset();
-      void reset(char const *s, bool copy);
-
       char const *str;
       std::size_t len;
 

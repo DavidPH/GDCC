@@ -31,40 +31,40 @@ namespace GDCC::IRDump
    //
    // --dump-block
    //
-   static Option::Bool DumpBlock
+   Option::Bool DumpBlock
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("dump-block")
          .setGroup("output")
          .setDescS("Dump IR::Block objects."),
 
-      &OptBlock
+      false
    };
 
    //
    // --dump-labels
    //
-   static Option::Bool DumpLabels
+   Option::Bool DumpLabels
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("dump-labels")
          .setGroup("output")
          .setDescS("Dump labels of statements."),
 
-      &OptLabels
+      false
    };
 
    //
    // --dump-origin
    //
-   static Option::Bool DumpOrigin
+   Option::Bool DumpOrigin
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("dump-origin")
          .setGroup("output")
          .setDescS("Dump origin of statements."),
 
-      &OptOrigin
+      false
    };
 }
 
@@ -110,7 +110,7 @@ namespace GDCC::IRDump
       if(fn.valueInt) out << "\n   valueInt=" << fn.valueInt;
       if(fn.valueStr){out << "\n   valueStr=";   PutString(out, fn.valueStr);}
 
-      if(OptBlock && !fn.block.empty())
+      if(DumpBlock && !fn.block.empty())
       {
          out << "\n   block\n   (\n";
 
@@ -119,14 +119,14 @@ namespace GDCC::IRDump
          for(auto const &stmnt : fn.block)
          {
             // Dump origin, if different from previous.
-            if(OptOrigin && stmnt.pos != pos)
+            if(DumpOrigin && stmnt.pos != pos)
             {
                if(pos.file) out << '\n';
                out << "      ; " << (pos = stmnt.pos) << '\n';
             }
 
             // Dump labels.
-            if(OptLabels) for(auto const &lab : stmnt.labs)
+            if(DumpLabels) for(auto const &lab : stmnt.labs)
             {
                out << "   ";
                PutString(out, lab);

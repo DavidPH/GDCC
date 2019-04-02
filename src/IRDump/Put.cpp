@@ -41,44 +41,22 @@ namespace GDCC::IRDump
 
       [](Option::Base *, Option::Args const &args) -> std::size_t
       {
-         OptBlock      = !args.optFalse;
-         OptDJump      = !args.optFalse;
-         OptFunction   = !args.optFalse;
-         OptGlyph      = !args.optFalse;
-         OptHeaders    = !args.optFalse;
-         OptImport     = !args.optFalse;
-         OptLabels     = !args.optFalse;
-         OptObject     = !args.optFalse;
-         OptOrigin     = !args.optFalse;
-         OptSpace      = !args.optFalse;
-         OptStatistics = !args.optFalse;
-         OptStrEnt     = !args.optFalse;
+         DumpBlock      = !args.optFalse;
+         DumpDJump      = !args.optFalse;
+         DumpFunction   = !args.optFalse;
+         DumpGlyph      = !args.optFalse;
+         DumpHeaders    = !args.optFalse;
+         DumpImport     = !args.optFalse;
+         DumpLabels     = !args.optFalse;
+         DumpObject     = !args.optFalse;
+         DumpOrigin     = !args.optFalse;
+         DumpSpace      = !args.optFalse;
+         DumpStatistics = !args.optFalse;
+         DumpStrEnt     = !args.optFalse;
 
          return 0;
       }
    };
-}
-
-
-//----------------------------------------------------------------------------|
-// Extern Objects                                                             |
-//
-
-namespace GDCC::IRDump
-{
-   bool OptBlock      = false;
-   bool OptDJump      = false;
-   bool OptExpName    = false;
-   bool OptFunction   = false;
-   bool OptGlyph      = false;
-   bool OptHeaders    = false;
-   bool OptImport     = false;
-   bool OptLabels     = false;
-   bool OptObject     = false;
-   bool OptOrigin     = false;
-   bool OptSpace      = false;
-   bool OptStatistics = false;
-   bool OptStrEnt     = false;
 }
 
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -21,7 +21,7 @@
 
 namespace GDCC::Core
 {
-   bool Warning::WarnError{false};
+   bool &Warning::WarnError{GetWarnOpts().optError.data()};
 
    Warning WarnAll   {nullptr,    "--warn-all"};
    Warning WarnCommon{&WarnExtra, "--warn-common", Warning::State::On};
@@ -78,7 +78,7 @@ namespace GDCC::Core
             .setGroup("warnings")
             .setDescS("Makes warnings into errors."),
 
-         &Warning::WarnError
+         false
       },
 
       optExtra

@@ -94,8 +94,7 @@ namespace GDCC::Target
    //
    // --zero-null-StrEn
    //
-   static bool ZeroNull_StrEn = true;
-   static Option::Bool ZeroNull_StrEnOpt
+   static Option::Bool ZeroNull_StrEn
    {
       &Core::GetOptionList(), Option::Base::Info()
          .setName("zero-null-StrEn")
@@ -104,7 +103,7 @@ namespace GDCC::Target
          .setDescL("Enables zero representation for StrEn nulls. Default is "
             "on. Option has no effect for DGE target."),
 
-      &ZeroNull_StrEn
+      true
    };
 }
 

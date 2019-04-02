@@ -15,6 +15,8 @@
 
 #include "../LD/Types.hpp"
 
+#include "../Option/Bool.hpp"
+
 #include <memory>
 #include <ostream>
 
@@ -25,7 +27,7 @@
 
 namespace GDCC::LD
 {
-   extern bool OutputIR;
+   extern Option::Bool OutputIR;
 }
 
 
