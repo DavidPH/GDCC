@@ -16,7 +16,11 @@
 ##
 
 set(GDCC_NTSC_H
+   ConcatTBuf.hpp
    IStream.hpp
+   PutToken.hpp
+   TSource.hpp
+   TStream.hpp
    Types.hpp
 )
 
@@ -30,7 +34,9 @@ set(GDCC_NTSC_H
 ##
 add_library(gdcc-ntsc-lib ${GDCC_SHARED_DECL}
    ${GDCC_NTSC_H}
-   IStream.cpp
+   ConcatTBuf.cpp
+   PutToken.cpp
+   TSource.cpp
 )
 
 ##

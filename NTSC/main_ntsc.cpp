@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,9 @@
 //-----------------------------------------------------------------------------
 
 #include "NTSC/IStream.hpp"
+#include "NTSC/PutToken.hpp"
+#include "NTSC/TSource.hpp"
+#include "NTSC/TStream.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/File.hpp"
@@ -106,9 +109,11 @@ static void MakeDefs()
 static void ProcessFile(std::ostream &out, char const *inName)
 {
    auto buf = GDCC::Core::FileOpenStream(inName, std::ios_base::in);
-   GDCC::NTSC::IStream in{*buf, inName};
-   for(GDCC::Core::Token tok; in >> tok;)
-      out << tok.str << '\0';
+   GDCC::NTSC::IStream istr{*buf, inName};
+   GDCC::NTSC::TSource tsrc{istr, istr.getOriginSource()};
+   GDCC::NTSC::TStream tstr{tsrc};
+   for(GDCC::Core::Token tok; tstr >> tok;)
+      GDCC::NTSC::PutToken(out, tok);
 }
 
 

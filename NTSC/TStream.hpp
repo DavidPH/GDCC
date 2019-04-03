@@ -1,23 +1,22 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2019 David Hill
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// NTSC input stream.
+// Assembly token stream.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__NTSC__IStream_H__
-#define GDCC__NTSC__IStream_H__
+#ifndef GDCC__NTSC__TStream_H__
+#define GDCC__NTSC__TStream_H__
 
-#include "../NTSC/Types.hpp"
+#include "../NTSC/ConcatTBuf.hpp"
 
-#include "../Core/OriginBuf.hpp"
-
-#include <istream>
+#include "../Core/SourceTBuf.hpp"
+#include "../Core/TokenStream.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -27,22 +26,22 @@
 namespace GDCC::NTSC
 {
    //
-   // IStream
+   // TStream
    //
-   class IStream : public std::istream
+   class TStream : public Core::TokenStream
    {
    public:
-      explicit IStream(std::streambuf &buf, Core::String file) :
-         std::istream{&obuf}, obuf{buf, {file, 1, 1}} {}
-
-      Core::OriginSource &getOriginSource() {return obuf;}
+      TStream(Core::TokenSource &tsrc) :
+         Core::TokenStream{&cbuf}, tbuf{tsrc}, cbuf{tbuf} {}
 
    protected:
-      using OBuf = Core::OriginBuf<8>;
+      using TBuf = Core::SourceTBuf<>;
+      using CBuf = ConcatTBuf;
 
-      OBuf obuf;
+      TBuf tbuf;
+      CBuf cbuf;
    };
 }
 
-#endif//GDCC__NTSC__IStream_H__
+#endif//GDCC__NTSC__TStream_H__
 

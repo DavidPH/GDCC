@@ -1,23 +1,21 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2019 David Hill
 //
 // See COPYING for license information.
 //
 //-----------------------------------------------------------------------------
 //
-// NTSC input stream.
+// String concatenating token buffer.
 //
 //-----------------------------------------------------------------------------
 
-#ifndef GDCC__NTSC__IStream_H__
-#define GDCC__NTSC__IStream_H__
+#ifndef GDCC__NTSC__ConcatTBuf_H__
+#define GDCC__NTSC__ConcatTBuf_H__
 
 #include "../NTSC/Types.hpp"
 
-#include "../Core/OriginBuf.hpp"
-
-#include <istream>
+#include "../Core/TokenBuf.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -27,22 +25,20 @@
 namespace GDCC::NTSC
 {
    //
-   // IStream
+   // ConcatTBuf
    //
-   class IStream : public std::istream
+   class ConcatTBuf : public Core::TokenBuf
    {
    public:
-      explicit IStream(std::streambuf &buf, Core::String file) :
-         std::istream{&obuf}, obuf{buf, {file, 1, 1}} {}
-
-      Core::OriginSource &getOriginSource() {return obuf;}
+      ConcatTBuf(Core::TokenBuf &src_) : src(src_) {}
 
    protected:
-      using OBuf = Core::OriginBuf<8>;
+      virtual void underflow();
 
-      OBuf obuf;
+      Core::TokenBuf &src;
+      Core::Token     buf[1];
    };
 }
 
-#endif//GDCC__NTSC__IStream_H__
+#endif//GDCC__NTSC__ConcatTBuf_H__
 

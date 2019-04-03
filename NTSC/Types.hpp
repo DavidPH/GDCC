@@ -22,7 +22,10 @@
 
 namespace GDCC::NTSC
 {
+   class ConcatTBuf;
    class IStream;
+   class TSource;
+   class TStream;
 }
 
 #endif//GDCC__NTSC__Types_H__
