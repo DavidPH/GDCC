@@ -29,6 +29,8 @@ set(GDCC_Core_H
    Exception.hpp
    FeatureHold.hpp
    File.hpp
+   IntItr.hpp
+   LineTermBuf.hpp
    List.hpp
    MemCmp.hpp
    MemItr.hpp
@@ -41,6 +43,7 @@ set(GDCC_Core_H
    Path.hpp
    Range.hpp
    SourceTBuf.hpp
+   Stat.hpp
    StreamTBuf.hpp
    String.hpp
    StringBuf.hpp
@@ -52,6 +55,7 @@ set(GDCC_Core_H
    TokenSource.hpp
    TokenStream.hpp
    Types.hpp
+   UTFBuf.hpp
    WSpaceTBuf.hpp
    Warning.hpp
 )
