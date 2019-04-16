@@ -73,7 +73,7 @@
 #define DGE_OM_collideF DGE_OM(collideF)
 #define DGE_OM_collideI DGE_OM(collideI)
 #define DGE_OM_damage   DGE_OM(damage)
-#define DFE_OM_emc      DGE_OM(emc)
+#define DGE_OM_emc      DGE_OM(emc)
 #define DGE_OM_entfi    DGE_OM(entfi)
 #define DGE_OM_entla    DGE_OM(entla)
 #define DGE_OM_frictair DGE_OM(frictair)
@@ -625,7 +625,7 @@ DGE_Native void DGE_Window_SetTitle(char const *str);
 // DGE_Object
 //
 #define DGE_ObjectProps() \
-   DGE_PropMem(DGE_Unsig, emc, DGE_OM_ic)
+   DGE_PropMem(DGE_Unsig, emc, DGE_OM_emc)
 typedef struct DGE_Object
 {
    DGE_Unsig id;
