@@ -14,6 +14,7 @@
 
 #include "CC/Exp.hpp"
 #include "CC/Exp/Init.hpp"
+#include "CC/Exp/Mem.hpp"
 #include "CC/Init.hpp"
 
 #include "Core/Exception.hpp"
@@ -122,6 +123,12 @@ namespace GDCC::CC
          }
 
          init.valueExp = getExp_Assi(scope);
+
+         // Special check for structure property.
+         // This is needed because the initializer's type may affect its usage.
+         // Do not do lvalue promotion, to avoid undesired transformations.
+         if(auto exp = dynamic_cast<Exp_MemProp const *>(&*init.valueExp))
+            init.valueExp = exp->createExp_get();
       }
 
       return init;
