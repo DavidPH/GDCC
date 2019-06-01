@@ -229,7 +229,7 @@ namespace GDCC::CC
    {
       // Special check for structure property.
       if(auto expL = dynamic_cast<Exp_MemProp const *>(l))
-         return expL->createExp_set(SR::Exp::CRef{r});
+         return expL->createExp_Equal(SR::Exp::CRef{r});
 
       if(!IsModLValue(l))
          Core::Error(l->pos, "expected modifiable lvalue");

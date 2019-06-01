@@ -208,6 +208,30 @@ namespace GDCC::CC
    }
 
    //
+   // Type_Struct::PropData::getProp
+   //
+   Type_Struct::Prop Type_Struct::PropData::getProp() const
+   {
+      return
+      {
+         prop.func ? &prop : nullptr,
+
+         propAddEq.func ? &propAddEq : nullptr,
+         propAndEq.func ? &propAndEq : nullptr,
+         propDivEq.func ? &propDivEq : nullptr,
+         propEqual.func ? &propEqual : nullptr,
+         propModEq.func ? &propModEq : nullptr,
+         propMulEq.func ? &propMulEq : nullptr,
+         propOrIEq.func ? &propOrIEq : nullptr,
+         propOrXEq.func ? &propOrXEq : nullptr,
+         propParen.func ? &propParen : nullptr,
+         propShLEq.func ? &propShLEq : nullptr,
+         propShREq.func ? &propShREq : nullptr,
+         propSubEq.func ? &propSubEq : nullptr,
+      };
+   }
+
+   //
    // Type_Struct constructor
    //
    Type_Struct::Type_Struct(Core::String name, bool isUnion) :
@@ -306,15 +330,7 @@ namespace GDCC::CC
       {
          // Directly contained property?
          if(prop.name == name)
-         {
-            return {prop.addr, prop.type,
-               prop.propCall.func ? &prop.propCall : nullptr,
-               prop.propGet.func  ? &prop.propGet  : nullptr,
-               prop.propSet.func  ? &prop.propSet  : nullptr};
-         }
-
-         // Anonymous struct/union contained property?
-         // TODO
+            return prop.getProp();
       }
 
       throw SR::TypeError{};

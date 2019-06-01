@@ -158,43 +158,44 @@ namespace GDCC::CC
    }
 
    //
-   // Exp_MemProp::createExp_call
+   // Exp_MemProp::createExp
    //
-   SR::Exp::CRef Exp_MemProp::createExp_call(Core::Array<SR::Exp::CRef> &&args) const
+   SR::Exp::CRef Exp_MemProp::createExp() const
+   {
+      auto prop = type->getProp(expR);
+
+      if(!prop.prop)
+         Core::Error(pos, "structure property has no default");
+
+      return createExp(prop, prop.prop, nullptr, 0);
+   }
+
+   //
+   // Exp_MemProp::createExp_Paren
+   //
+   SR::Exp::CRef Exp_MemProp::createExp_Paren(Core::Array<SR::Exp::CRef> &&args) const
    {
       auto prop = type->getProp(expR);
 
       // If no call property defined, fall back to get property.
-      if(!prop.propCall)
-         return fact.expCreate_Call(createExp_get(), std::move(args), scope, pos);
+      if(!prop.propParen)
+         return fact.expCreate_Call(createExp(), std::move(args), scope, pos);
 
-      return createExp(prop, prop.propCall, args.data(), args.size());
+      return createExp(prop, prop.propParen, args.data(), args.size());
    }
 
    //
-   // Exp_MemProp::createExp_get
+   // Exp_MemProp::createExpEq
    //
-   SR::Exp::CRef Exp_MemProp::createExp_get() const
+   SR::Exp::CRef Exp_MemProp::createExpEq(SR::Exp::CRef const &arg,
+      StructProp const *Type_Struct::Prop::*mem, char const *op) const
    {
-     auto prop = type->getProp(expR);
+      auto prop = type->getProp(expR);
 
-      if(!prop.propGet)
-         Core::Error(pos, "structure property has no get");
+      if(!(prop.*mem))
+         Core::Error(pos, "structure property has no operator", op);
 
-      return createExp(prop, prop.propGet, nullptr, 0);
-   }
-
-   //
-   // Exp_MemProp::createExp_set
-   //
-   SR::Exp::CRef Exp_MemProp::createExp_set(SR::Exp::CRef const &arg) const
-   {
-     auto prop = type->getProp(expR);
-
-      if(!prop.propSet)
-         Core::Error(pos, "structure property has no set");
-
-      return createExp(prop, prop.propSet, &arg, 1);
+      return createExp(prop, prop.*mem, &arg, 1);
    }
 
    //

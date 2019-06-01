@@ -517,12 +517,13 @@ Syntax:
       struct-property-argument-list(opt) )
 
   struct-property-name:
-    <call>
-    <get>
-    <set>
-    <__call>
-    <__get>
-    <__set>
+    <default>
+    <operator> struct-property-operator
+    <__operator> struct-property-operator
+
+  struct-property-operator:
+    ( )
+    assignment-operator
 
   struct-property-argument-list:
     struct-property-argument
@@ -530,11 +531,11 @@ Syntax:
 
   struct-property-argument:
     <this>
-    <__arg>
     <__this>
     * <this>
     * <__this>
     -> identifier
+    ...
     constant-expression
 
 -----------------------------------------------------------
@@ -542,8 +543,7 @@ Structure Property Declarations
 -----------------------------------------------------------
 
 Constraints:
-  In a struct property list, each struct property name (call, get, and set (or
-  their respective aliases, __call, __get, and __set)) shall appear at most
+  In a struct property list, each struct property name shall appear at most
   once.
 
   The primary expression in a struct property shall be a constant expression.
@@ -562,27 +562,28 @@ Semantics:
 
     Each *this is replaced with the containing object.
 
-    Each arg is replaced with a subsequent argument being passed to the
-    structure property expression.
-
     Each ->identifier is replaced with the named member of the containing
     object.
+
+    Each ... is replaced with a subsequent argument being passed to the
+    structure property expression.
   If there are any remaining arguments to the structure property expression,
   they are added as if the argument list contained a corresponding number of
-  arg arguments.
+  ... arguments.
 
   When a structure property member is accessed, the result is evaluated
   depending on context:
-    If subject to the call operator and there is a call property, then it is
-    invoked with the call expressions as arguments.
+    If subject to the call operator and there is an operator() function, then
+    it is invoked with the call expressions as arguments.
 
-    Otherwise, if subject to the call operator and there is no call property,
-    then the get property is invoked and the result is called.
+    Otherwise, if subject to the call operator and there is no operator()
+    function, then the default function is invoked and the result is called.
 
-    Otherwise, if subject to the assignment operator, the set property is
-    invoked with the right expression as the argument.
+    Otherwise, if subject to an assignment or compound assignment operator, the
+    corresponding operator function is invoked with the right expression as the
+    argument.
 
-    Otherwise, if converted to an rvalue, the get property is invoked.
+    Otherwise, if converted to an rvalue, the default function is invoked.
 
     Otherwise, the expression has no type or value.
 

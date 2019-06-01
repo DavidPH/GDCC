@@ -128,7 +128,7 @@ namespace GDCC::CC
          // This is needed because the initializer's type may affect its usage.
          // Do not do lvalue promotion, to avoid undesired transformations.
          if(auto exp = dynamic_cast<Exp_MemProp const *>(&*init.valueExp))
-            init.valueExp = exp->createExp_get();
+            init.valueExp = exp->createExp();
       }
 
       return init;

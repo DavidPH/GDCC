@@ -13,6 +13,7 @@
 #include "CC/Exp/Add.hpp"
 
 #include "CC/Exp/Arith.hpp"
+#include "CC/Exp/Mem.hpp"
 #include "CC/Type.hpp"
 
 
@@ -108,6 +109,10 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_AddEq(SR::Exp const *expL, SR::Exp const *r,
       Core::Origin pos, bool post)
    {
+      // Special check for structure property.
+      if(!post) if(auto l = dynamic_cast<Exp_MemProp const *>(expL))
+         return l->createExp_AddEq(SR::Exp::CRef{r});
+
       if(!IsModLValue(expL))
          Core::Error(pos, "expected modifiable lvalue");
 

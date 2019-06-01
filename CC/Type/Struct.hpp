@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2019 David Hill
 //
 // See COPYING for license information.
 //
@@ -121,25 +121,10 @@ namespace GDCC::CC
             Core::FastU addr_, bool anon_) :
             name{name_}, type{type_}, addr{addr_}, anon{anon_} {}
 
-         Core::String   const name;
-         SR::Type::CRef const type;
-         Core::FastU    const addr;
-         bool           const anon : 1;
-      };
-
-      //
-      // PropData
-      //
-      class PropData
-      {
-      public:
-         Core::String   const name;
-         SR::Type::CRef const type;
-         Core::FastU    const addr;
-
-         StructProp const propCall;
-         StructProp const propGet;
-         StructProp const propSet;
+         Core::String   name;
+         SR::Type::CRef type;
+         Core::FastU    addr;
+         bool           anon : 1;
       };
 
       //
@@ -148,12 +133,44 @@ namespace GDCC::CC
       class Prop
       {
       public:
-         Core::FastU addr;
-         Type::CRef  type;
+         StructProp const *prop;
+         StructProp const *propAddEq;
+         StructProp const *propAndEq;
+         StructProp const *propDivEq;
+         StructProp const *propEqual;
+         StructProp const *propModEq;
+         StructProp const *propMulEq;
+         StructProp const *propOrIEq;
+         StructProp const *propOrXEq;
+         StructProp const *propParen;
+         StructProp const *propShLEq;
+         StructProp const *propShREq;
+         StructProp const *propSubEq;
+      };
 
-         StructProp const *propCall;
-         StructProp const *propGet;
-         StructProp const *propSet;
+      //
+      // PropData
+      //
+      class PropData
+      {
+      public:
+         Prop getProp() const;
+
+         Core::String name;
+
+         StructProp prop;
+         StructProp propAddEq;
+         StructProp propAndEq;
+         StructProp propDivEq;
+         StructProp propEqual;
+         StructProp propModEq;
+         StructProp propMulEq;
+         StructProp propOrIEq;
+         StructProp propOrXEq;
+         StructProp propParen;
+         StructProp propShLEq;
+         StructProp propShREq;
+         StructProp propSubEq;
       };
 
       //
@@ -165,9 +182,9 @@ namespace GDCC::CC
          Data(Core::String name, bool isUnion, Type_Struct *type);
          ~Data();
 
-         Core::Array<MemberData> memb;
-         Core::Array<PropData>   prop;
-         Core::String      const name;
+         Core::Array<MemberData const> memb;
+         Core::Array<PropData   const> prop;
+         Core::String           const  name;
 
          Core::FastU sizeAlign;
          Core::FastU sizeBytes;

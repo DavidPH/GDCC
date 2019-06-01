@@ -13,6 +13,7 @@
 #include "CC/Exp.hpp"
 
 #include "CC/Exp/Arith.hpp"
+#include "CC/Exp/Mem.hpp"
 #include "CC/Type/Struct.hpp"
 
 
@@ -55,6 +56,10 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_DivEq(SR::Exp const *expL, SR::Exp const *r,
       Core::Origin pos)
    {
+      // Special check for structure property.
+      if(auto l = dynamic_cast<Exp_MemProp const *>(expL))
+         return l->createExp_DivEq(SR::Exp::CRef{r});
+
       if(!IsModLValue(expL))
          Core::Error(pos, "expected modifiable lvalue");
 

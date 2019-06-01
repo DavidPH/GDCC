@@ -140,7 +140,7 @@ namespace GDCC::CC
    {
       // Special check for structure property.
       if(auto exp = dynamic_cast<Exp_MemProp const *>(e))
-         return exp->createExp_call(std::move(args));
+         return exp->createExp_Paren(std::move(args));
 
       auto exp  = expPromo_LValue(e, pos);
       auto type = exp->getType();

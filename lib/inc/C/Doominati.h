@@ -194,8 +194,8 @@
 //
 #if __GDCC__
 #define DGE_PropMem(T, name, mem) \
-   __prop name {__get: DGE_Object_MemberGetT(T, ->id, mem), \
-                __set: DGE_Object_MemberSetT(T, ->id, mem, __arg)}
+   __prop name {operator=: DGE_Object_MemberSetT(T, ->id, mem, ...), \
+                default:   DGE_Object_MemberGetT(T, ->id, mem)}
 #else
 #define DGE_PropMem(T, name, mem) T name;
 #endif

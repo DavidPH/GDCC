@@ -192,10 +192,11 @@ namespace GDCC::CC
       //
       // struct-property-argument:
       //    <this>
-      //    <__arg>
       //    <__this>
       //    * <this>
       //    * <__this>
+      //    -> identifier
+      //    ...
       //    constant-expression
       //
       auto getStructPropArg = [&]() -> StructPropArg
@@ -204,15 +205,15 @@ namespace GDCC::CC
             ctx.in.drop(Core::TOK_Identi, Core::STR___this))
             return StructPropArg::ThisPtr;
 
-         if(ctx.in.drop(Core::TOK_Identi, Core::STR___arg))
-            return StructPropArg::Value;
-
          if(ctx.in.drop(Core::TOK_Mul, Core::TOK_Identi, Core::STR_this) ||
             ctx.in.drop(Core::TOK_Mul, Core::TOK_Identi, Core::STR___this))
             return StructPropArg::ThisRef;
 
          if(ctx.in.peek(Core::TOK_Mem, Core::TOK_Identi))
             return ctx.in.get(), ctx.in.get().str;
+
+         if(ctx.in.drop(Core::TOK_Dot3))
+            return StructPropArg::Value;
 
          return {ctx.getExp_Cond(scope)};
       };
@@ -265,13 +266,13 @@ namespace GDCC::CC
       //
       auto getStructPropDecl = [&]() -> Type_Struct::PropData
       {
+         Type_Struct::PropData prop;
+
          // <__prop>
          ctx.in.get();
 
          // identifier
-         Core::String name = ctx.expectIdenti().str;
-
-         StructProp propCall, propGet, propSet;
+         prop.name = ctx.expectIdenti().str;
 
          // {
          ctx.expect(Core::TOK_BraceO);
@@ -284,15 +285,26 @@ namespace GDCC::CC
             //    struct-property-list , struct-property
 
             // struct-property
-            if(ctx.in.peek(Core::TOK_Identi, Core::STR___call) ||
-               ctx.in.peek(Core::TOK_Identi, Core::STR_call))
-               propCall = getStructProp();
-            else if(ctx.in.peek(Core::TOK_Identi, Core::STR___get) ||
-               ctx.in.peek(Core::TOK_Identi, Core::STR_get))
-               propGet = getStructProp();
-            else if(ctx.in.peek(Core::TOK_Identi, Core::STR___set) ||
-               ctx.in.peek(Core::TOK_Identi, Core::STR_set))
-               propSet = getStructProp();
+            if(ctx.in.drop(Core::TOK_Identi, Core::STR___operator) ||
+               ctx.in.drop(Core::TOK_Identi, Core::STR_operator))
+               switch(ctx.in.peek().tok)
+            {
+            case Core::TOK_AddEq: prop.propAddEq = getStructProp(); break;
+            case Core::TOK_DivEq: prop.propDivEq = getStructProp(); break;
+            case Core::TOK_Equal: prop.propEqual = getStructProp(); break;
+            case Core::TOK_ModEq: prop.propModEq = getStructProp(); break;
+            case Core::TOK_MulEq: prop.propMulEq = getStructProp(); break;
+            case Core::TOK_SubEq: prop.propSubEq = getStructProp(); break;
+
+            case Core::TOK_ParenO:
+               if(ctx.in.peek(Core::TOK_ParenO, Core::TOK_ParenC))
+                  {ctx.in.get(); prop.propParen = getStructProp(); break;}
+
+            default:
+               Core::ErrorExpect("struct-property-operator", ctx.in.peek());
+            }
+            else if(ctx.in.peek(Core::TOK_KeyWrd, Core::STR_default))
+               prop.prop = getStructProp();
             else
                Core::ErrorExpect("struct-property-name", ctx.in.peek());
          }
@@ -301,8 +313,7 @@ namespace GDCC::CC
          // }
          ctx.expect(Core::TOK_BraceC);
 
-         return {name, static_cast<SR::Type::CRef>(type), 0,
-            std::move(propCall), std::move(propGet), std::move(propSet)};
+         return prop;
       };
 
       // struct-declaration-list:

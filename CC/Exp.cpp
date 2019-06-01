@@ -13,6 +13,7 @@
 #include "CC/Exp.hpp"
 
 #include "CC/Exp/Bitwise.hpp"
+#include "CC/Exp/Mem.hpp"
 #include "CC/Exp/Not.hpp"
 
 #include "Core/Exception.hpp"
@@ -161,6 +162,10 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_BitAndEq(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
+      // Special check for structure property.
+      if(auto expL = dynamic_cast<Exp_MemProp const *>(l))
+         return expL->createExp_AndEq(SR::Exp::CRef{r});
+
       return ExpCreate_BitwiseEq<SR::Exp_BitAnd>(*this, IR::CodeBase::BAnd, l, r, pos);
    }
 
@@ -179,6 +184,10 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_BitOrIEq(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
+      // Special check for structure property.
+      if(auto expL = dynamic_cast<Exp_MemProp const *>(l))
+         return expL->createExp_OrIEq(SR::Exp::CRef{r});
+
       return ExpCreate_BitwiseEq<SR::Exp_BitOrI>(*this, IR::CodeBase::BOrI, l, r, pos);
    }
 
@@ -197,6 +206,10 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_BitOrXEq(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
+      // Special check for structure property.
+      if(auto expL = dynamic_cast<Exp_MemProp const *>(l))
+         return expL->createExp_OrXEq(SR::Exp::CRef{r});
+
       return ExpCreate_BitwiseEq<SR::Exp_BitOrX>(*this, IR::CodeBase::BOrX, l, r, pos);
    }
 
@@ -360,6 +373,10 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_ShLEq(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
+      // Special check for structure property.
+      if(auto expL = dynamic_cast<Exp_MemProp const *>(l))
+         return expL->createExp_ShLEq(SR::Exp::CRef{r});
+
       return ExpCreate_ShiftEq<SR::Exp_ShL>(*this, IR::CodeBase::ShL, l, r, pos);
    }
 
@@ -378,6 +395,10 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_ShREq(SR::Exp const *l, SR::Exp const *r,
       Core::Origin pos)
    {
+      // Special check for structure property.
+      if(auto expL = dynamic_cast<Exp_MemProp const *>(l))
+         return expL->createExp_ShREq(SR::Exp::CRef{r});
+
       return ExpCreate_ShiftEq<SR::Exp_ShR>(*this, IR::CodeBase::ShR, l, r, pos);
    }
 

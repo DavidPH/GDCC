@@ -321,7 +321,7 @@ namespace GDCC::CC
    {
       // Special check for structure property.
       if(auto exp = dynamic_cast<Exp_MemProp const *>(e))
-         return exp->createExp_get();
+         return exp->createExp();
 
       SR::Exp::CRef exp{e};
       auto          type = exp->getType();

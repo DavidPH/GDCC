@@ -75,9 +75,30 @@ namespace GDCC::CC
       GDCC_Core_CounterPreamble(GDCC::CC::Exp_MemProp, GDCC::CC::Exp_Mem);
 
    public:
-      SR::Exp::CRef createExp_call(Core::Array<SR::Exp::CRef> &&args) const;
-      SR::Exp::CRef createExp_get() const;
-      SR::Exp::CRef createExp_set(SR::Exp::CRef const &arg) const;
+      SR::Exp::CRef createExp() const;
+      SR::Exp::CRef createExp_AddEq(SR::Exp::CRef const &arg) const
+         {return createExpEq(arg, &Type_Struct::Prop::propAddEq, "+=");}
+      SR::Exp::CRef createExp_AndEq(SR::Exp::CRef const &arg) const
+         {return createExpEq(arg, &Type_Struct::Prop::propAndEq, "&=");}
+      SR::Exp::CRef createExp_DivEq(SR::Exp::CRef const &arg) const
+         {return createExpEq(arg, &Type_Struct::Prop::propDivEq, "/=");}
+      SR::Exp::CRef createExp_Equal(SR::Exp::CRef const &arg) const
+         {return createExpEq(arg, &Type_Struct::Prop::propEqual, "=");}
+      SR::Exp::CRef createExp_ModEq(SR::Exp::CRef const &arg) const
+         {return createExpEq(arg, &Type_Struct::Prop::propModEq, "%=");}
+      SR::Exp::CRef createExp_MulEq(SR::Exp::CRef const &arg) const
+         {return createExpEq(arg, &Type_Struct::Prop::propMulEq, "*=");}
+      SR::Exp::CRef createExp_OrIEq(SR::Exp::CRef const &arg) const
+         {return createExpEq(arg, &Type_Struct::Prop::propOrIEq, "|=");}
+      SR::Exp::CRef createExp_OrXEq(SR::Exp::CRef const &arg) const
+         {return createExpEq(arg, &Type_Struct::Prop::propOrXEq, "^=");}
+      SR::Exp::CRef createExp_Paren(Core::Array<SR::Exp::CRef> &&args) const;
+      SR::Exp::CRef createExp_ShLEq(SR::Exp::CRef const &arg) const
+         {return createExpEq(arg, &Type_Struct::Prop::propShLEq, "<<=");}
+      SR::Exp::CRef createExp_ShREq(SR::Exp::CRef const &arg) const
+         {return createExpEq(arg, &Type_Struct::Prop::propShREq, ">>=");}
+      SR::Exp::CRef createExp_SubEq(SR::Exp::CRef const &arg) const
+         {return createExpEq(arg, &Type_Struct::Prop::propSubEq, "-=");}
 
       Type_Struct::CRef type;
       Scope            &scope;
@@ -95,6 +116,9 @@ namespace GDCC::CC
 
       SR::Exp::CRef createExp(Type_Struct::Prop const &prop, StructProp const *func,
          SR::Exp::CRef const *argv, std::size_t argc) const;
+
+      SR::Exp::CRef createExpEq(SR::Exp::CRef const &arg,
+         StructProp const *Type_Struct::Prop::*mem, char const *op) const;
 
       virtual SR::Arg v_getArg() const;
 

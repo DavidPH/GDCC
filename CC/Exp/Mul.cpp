@@ -13,6 +13,7 @@
 #include "CC/Exp.hpp"
 
 #include "CC/Exp/Arith.hpp"
+#include "CC/Exp/Mem.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -54,6 +55,10 @@ namespace GDCC::CC
    SR::Exp::CRef Factory::expCreate_MulEq(SR::Exp const *expL, SR::Exp const *r,
       Core::Origin pos)
    {
+      // Special check for structure property.
+      if(auto l = dynamic_cast<Exp_MemProp const *>(expL))
+         return l->createExp_MulEq(SR::Exp::CRef{r});
+
       if(!IsModLValue(expL))
          Core::Error(pos, "expected modifiable lvalue");
 

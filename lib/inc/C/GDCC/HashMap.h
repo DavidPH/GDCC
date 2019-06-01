@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2017 David Hill
+// Copyright(C) 2017-2019 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -55,11 +55,11 @@
 # define GDCC_HashMap_DeclStruct(name, Key, T) \
    struct name \
    { \
-      __prop clear  {call: name##_Clear(this)} \
-      __prop find   {call: name##_Find(this)} \
-      __prop insert {call: name##_Insert(this)} \
-      __prop resize {call: name##_Resize(this)} \
-      __prop unlink {call: name##_Unlink(this)} \
+      __prop clear  {operator(): name##_Clear(this)} \
+      __prop find   {operator(): name##_Find(this)} \
+      __prop insert {operator(): name##_Insert(this)} \
+      __prop resize {operator(): name##_Resize(this)} \
+      __prop unlink {operator(): name##_Unlink(this)} \
       \
       T    **chainV; \
       size_t chainC; \

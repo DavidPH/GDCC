@@ -38,6 +38,10 @@ namespace GDCC::Core
    template<typename T>
    class Array
    {
+   private:
+      using cv_value_type = std::remove_cv_t<T>;
+      using cv_pointer    = cv_value_type *;
+
    public:
       using value_type             = T;
       using const_iterator         = value_type const *;
@@ -208,8 +212,8 @@ namespace GDCC::Core
       template<typename Itr>
       static pointer Cpy(Itr first, Itr last)
       {
-         size_type s = std::distance(first, last);
-         pointer   n = Raw(s), i = n;
+         size_type  s = std::distance(first, last);
+         cv_pointer n = Raw(s), i = n;
 
          try
          {
@@ -231,8 +235,8 @@ namespace GDCC::Core
       template<typename Itr, typename Fn>
       static pointer Cpy(Itr first, Itr last, Fn const &fn)
       {
-         size_type s = std::distance(first, last);
-         pointer   n = Raw(s), i = n;
+         size_type  s = std::distance(first, last);
+         cv_pointer n = Raw(s), i = n;
 
          try
          {
@@ -254,8 +258,8 @@ namespace GDCC::Core
       template<typename Itr>
       static pointer Cpy(Itr first1, Itr last1, Itr first2, Itr last2)
       {
-         size_type s = std::distance(first1, last1) + std::distance(first2, last2);
-         pointer   n = Raw(s), i = n;
+         size_type  s = std::distance(first1, last1) + std::distance(first2, last2);
+         cv_pointer n = Raw(s), i = n;
 
          try
          {
@@ -278,7 +282,7 @@ namespace GDCC::Core
       static void Del(const_pointer first, const_pointer last)
       {
          while(last != first) (--last)->~value_type();
-         ::operator delete(const_cast<pointer>(first));
+         ::operator delete(const_cast<cv_pointer>(first));
       }
 
       //
@@ -286,7 +290,7 @@ namespace GDCC::Core
       //
       static pointer New(size_type s)
       {
-         pointer n = Raw(s), i = n;
+         cv_pointer n = Raw(s), i = n;
 
          try
          {
@@ -308,7 +312,7 @@ namespace GDCC::Core
       template<typename... Args>
       static pointer New(size_type s, Args const &...args)
       {
-         pointer n = Raw(s), i = n;
+         cv_pointer n = Raw(s), i = n;
 
          try
          {
@@ -331,7 +335,7 @@ namespace GDCC::Core
       static pointer Pak(Args &&...args)
       {
          constexpr size_type s = sizeof...(Args);
-         pointer n = Raw(s);
+         cv_pointer n = Raw(s);
 
          try {UnPak(n, std::forward<Args>(args)...);}
          catch(...) {::operator delete(n); throw;}
@@ -342,11 +346,11 @@ namespace GDCC::Core
       //
       // Raw
       //
-      static pointer Raw(size_type s)
+      static cv_pointer Raw(size_type s)
       {
          if(!s) return nullptr;
 
-         return static_cast<pointer>(::operator new(s * sizeof(value_type)));
+         return static_cast<cv_pointer>(::operator new(s * sizeof(value_type)));
       }
 
    private:
