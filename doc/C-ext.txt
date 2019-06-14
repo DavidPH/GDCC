@@ -523,6 +523,10 @@ Syntax:
 
   struct-property-operator:
     ( )
+    ++
+    ++ +
+    --
+    -- -
     assignment-operator
 
   struct-property-argument-list:
@@ -578,6 +582,12 @@ Semantics:
 
     Otherwise, if subject to the call operator and there is no operator()
     function, then the default function is invoked and the result is called.
+
+    Otherwise, if subject to the postfix ++ or -- operator, the operator+++ or
+    operator-- function is invoked respectively.
+
+    Otherwise, if subject to the prefix ++ or -- operator, the operator++ or
+    operator-- function is invoked respectively.
 
     Otherwise, if subject to an assignment or compound assignment operator, the
     corresponding operator function is invoked with the right expression as the

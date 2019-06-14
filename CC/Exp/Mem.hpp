@@ -76,6 +76,10 @@ namespace GDCC::CC
 
    public:
       SR::Exp::CRef createExp() const;
+      SR::Exp::CRef createExp_Add2() const
+         {return createExpEq(&Type_Struct::Prop::propAdd2, "++");}
+      SR::Exp::CRef createExp_Add3() const
+         {return createExpEq(&Type_Struct::Prop::propAdd3, "+++");}
       SR::Exp::CRef createExp_AddEq(SR::Exp::CRef const &arg) const
          {return createExpEq(arg, &Type_Struct::Prop::propAddEq, "+=");}
       SR::Exp::CRef createExp_AndEq(SR::Exp::CRef const &arg) const
@@ -97,6 +101,10 @@ namespace GDCC::CC
          {return createExpEq(arg, &Type_Struct::Prop::propShLEq, "<<=");}
       SR::Exp::CRef createExp_ShREq(SR::Exp::CRef const &arg) const
          {return createExpEq(arg, &Type_Struct::Prop::propShREq, ">>=");}
+      SR::Exp::CRef createExp_Sub2() const
+         {return createExpEq(&Type_Struct::Prop::propSubEq, "--");}
+      SR::Exp::CRef createExp_Sub3() const
+         {return createExpEq(&Type_Struct::Prop::propSubEq, "---");}
       SR::Exp::CRef createExp_SubEq(SR::Exp::CRef const &arg) const
          {return createExpEq(arg, &Type_Struct::Prop::propSubEq, "-=");}
 
@@ -119,6 +127,9 @@ namespace GDCC::CC
 
       SR::Exp::CRef createExpEq(SR::Exp::CRef const &arg,
          StructProp const *Type_Struct::Prop::*mem, char const *op) const;
+
+      SR::Exp::CRef createExpEq(StructProp const *Type_Struct::Prop::*mem,
+         char const *op) const;
 
       virtual SR::Arg v_getArg() const;
 

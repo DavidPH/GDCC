@@ -134,6 +134,8 @@ namespace GDCC::CC
       {
       public:
          StructProp const *prop;
+         StructProp const *propAdd2;
+         StructProp const *propAdd3;
          StructProp const *propAddEq;
          StructProp const *propAndEq;
          StructProp const *propDivEq;
@@ -145,6 +147,8 @@ namespace GDCC::CC
          StructProp const *propParen;
          StructProp const *propShLEq;
          StructProp const *propShREq;
+         StructProp const *propSub2;
+         StructProp const *propSub3;
          StructProp const *propSubEq;
       };
 
@@ -159,6 +163,8 @@ namespace GDCC::CC
          Core::String name;
 
          StructProp prop;
+         StructProp propAdd2;
+         StructProp propAdd3;
          StructProp propAddEq;
          StructProp propAndEq;
          StructProp propDivEq;
@@ -170,6 +176,8 @@ namespace GDCC::CC
          StructProp propParen;
          StructProp propShLEq;
          StructProp propShREq;
+         StructProp propSub2;
+         StructProp propSub3;
          StructProp propSubEq;
       };
 

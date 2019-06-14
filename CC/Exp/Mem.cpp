@@ -199,6 +199,20 @@ namespace GDCC::CC
    }
 
    //
+   // Exp_MemProp::createExpEq
+   //
+   SR::Exp::CRef Exp_MemProp::createExpEq(
+      StructProp const *Type_Struct::Prop::*mem, char const *op) const
+   {
+      auto prop = type->getProp(expR);
+
+      if(!(prop.*mem))
+         Core::Error(pos, "structure property has no operator", op);
+
+      return createExp(prop, prop.*mem, nullptr, 0);
+   }
+
+   //
    // Exp_MemProp::v_getArg
    //
    SR::Arg Exp_MemProp::v_getArg() const
@@ -226,6 +240,10 @@ namespace GDCC::CC
          if(type->hasProp(r))
             return Exp_MemProp::Create(l, r, pos, *this, type, scope);
       }
+
+      // Special check for structure property.
+      if(auto expL = dynamic_cast<Exp_MemProp const *>(l))
+         return Exp_Mem::Create(expL->createExp(), r, pos, *this);
 
       // Otherwise, normal member.
       return Exp_Mem::Create(l, r, pos, *this);

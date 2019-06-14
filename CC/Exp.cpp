@@ -279,6 +279,10 @@ namespace GDCC::CC
    //
    SR::Exp::CRef Factory::expCreate_DecPre(SR::Exp const *e, Core::Origin pos)
    {
+      // Special check for structure property.
+      if(auto exp = dynamic_cast<Exp_MemProp const *>(e))
+         return exp->createExp_Sub2();
+
       return expCreate_SubEq(e, expCreate_LitInt(TypeIntegPrS, 1, pos), pos, false);
    }
 
@@ -287,6 +291,10 @@ namespace GDCC::CC
    //
    SR::Exp::CRef Factory::expCreate_DecSuf(SR::Exp const *e, Core::Origin pos)
    {
+      // Special check for structure property.
+      if(auto exp = dynamic_cast<Exp_MemProp const *>(e))
+         return exp->createExp_Sub3();
+
       return expCreate_SubEq(e, expCreate_LitInt(TypeIntegPrS, 1, pos), pos, true);
    }
 
@@ -312,6 +320,10 @@ namespace GDCC::CC
    //
    SR::Exp::CRef Factory::expCreate_IncPre(SR::Exp const *e, Core::Origin pos)
    {
+      // Special check for structure property.
+      if(auto exp = dynamic_cast<Exp_MemProp const *>(e))
+         return exp->createExp_Add2();
+
       return expCreate_AddEq(e, expCreate_LitInt(TypeIntegPrS, 1, pos), pos, false);
    }
 
@@ -320,6 +332,10 @@ namespace GDCC::CC
    //
    SR::Exp::CRef Factory::expCreate_IncSuf(SR::Exp const *e, Core::Origin pos)
    {
+      // Special check for structure property.
+      if(auto exp = dynamic_cast<Exp_MemProp const *>(e))
+         return exp->createExp_Add3();
+
       return expCreate_AddEq(e, expCreate_LitInt(TypeIntegPrS, 1, pos), pos, true);
    }
 

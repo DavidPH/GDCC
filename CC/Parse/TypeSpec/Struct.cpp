@@ -290,16 +290,34 @@ namespace GDCC::CC
                switch(ctx.in.peek().tok)
             {
             case Core::TOK_AddEq: prop.propAddEq = getStructProp(); break;
+            case Core::TOK_AndEq: prop.propAndEq = getStructProp(); break;
             case Core::TOK_DivEq: prop.propDivEq = getStructProp(); break;
             case Core::TOK_Equal: prop.propEqual = getStructProp(); break;
             case Core::TOK_ModEq: prop.propModEq = getStructProp(); break;
             case Core::TOK_MulEq: prop.propMulEq = getStructProp(); break;
+            case Core::TOK_OrIEq: prop.propOrIEq = getStructProp(); break;
+            case Core::TOK_OrXEq: prop.propOrXEq = getStructProp(); break;
+            case Core::TOK_ShLEq: prop.propShLEq = getStructProp(); break;
+            case Core::TOK_ShREq: prop.propShREq = getStructProp(); break;
             case Core::TOK_SubEq: prop.propSubEq = getStructProp(); break;
+
+            case Core::TOK_Add2:
+               if(ctx.in.peek(Core::TOK_Add2, Core::TOK_Add))
+                  {ctx.in.get(); prop.propAdd3 = getStructProp();}
+               else
+                  prop.propAdd2 = getStructProp();
+               break;
+
+            case Core::TOK_Sub2:
+               if(ctx.in.peek(Core::TOK_Sub2, Core::TOK_Sub))
+                  {ctx.in.get(); prop.propSub3 = getStructProp();}
+               else
+                  prop.propSub2 = getStructProp();
+               break;
 
             case Core::TOK_ParenO:
                if(ctx.in.peek(Core::TOK_ParenO, Core::TOK_ParenC))
                   {ctx.in.get(); prop.propParen = getStructProp(); break;}
-
             default:
                Core::ErrorExpect("struct-property-operator", ctx.in.peek());
             }

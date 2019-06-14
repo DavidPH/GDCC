@@ -216,6 +216,8 @@ namespace GDCC::CC
       {
          prop.func ? &prop : nullptr,
 
+         propAdd2 .func ? &propAdd2  : nullptr,
+         propAdd3 .func ? &propAdd3  : nullptr,
          propAddEq.func ? &propAddEq : nullptr,
          propAndEq.func ? &propAndEq : nullptr,
          propDivEq.func ? &propDivEq : nullptr,
@@ -227,6 +229,8 @@ namespace GDCC::CC
          propParen.func ? &propParen : nullptr,
          propShLEq.func ? &propShLEq : nullptr,
          propShREq.func ? &propShREq : nullptr,
+         propSub2 .func ? &propSub2  : nullptr,
+         propSub3 .func ? &propSub3  : nullptr,
          propSubEq.func ? &propSubEq : nullptr,
       };
    }
