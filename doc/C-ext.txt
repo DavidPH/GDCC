@@ -584,7 +584,7 @@ Semantics:
     function, then the default function is invoked and the result is called.
 
     Otherwise, if subject to the postfix ++ or -- operator, the operator+++ or
-    operator-- function is invoked respectively.
+    operator--- function is invoked respectively.
 
     Otherwise, if subject to the prefix ++ or -- operator, the operator++ or
     operator-- function is invoked respectively.
