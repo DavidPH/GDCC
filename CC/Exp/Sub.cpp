@@ -79,10 +79,8 @@ namespace GDCC::CC
          // pointer - pointer
          if(typeR->isTypePointer())
          {
-            auto baseR = typeR->getBaseType();
-
-            if(baseL->getTypeQual() != baseR->getTypeQual())
-               Core::Error(pos, "incompatible pointer types");
+            // Promote the pointers to a common type.
+            std::tie(std::ignore, expL, expR) = expPromo_PtrRel(expL, expR, pos);
 
             // Similar to the above, although in this case there is some
             // minor extra codegen by the Exp_SubPtrPtrW class.
