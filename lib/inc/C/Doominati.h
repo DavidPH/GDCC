@@ -488,13 +488,15 @@ DGE_Native void DGE_Draw_TriangleLine(DGE_Fixed x1, DGE_Fixed y1, DGE_Fixed x2, 
 DGE_Native DGE_Unsig DGE_Entity_Create(DGE_Unsig ext);
 
 DGE_Native void DGE_File_Close(DGE_Integ fd);
-DGE_Native DGE_Integ DGE_File_Create(char const *name, char const *data, DGE_Unsig size);
+DGE_Native DGE_Integ DGE_File_Create(char const *name);
 DGE_Native DGE_Integ DGE_File_Get(DGE_Integ fd, DGE_UnsigL idx);
 DGE_Native DGE_Unsig DGE_File_Name(DGE_Integ fd, char *buf, DGE_Unsig len);
 DGE_Native DGE_Integ DGE_File_Open(char const *name);
 DGE_Native DGE_Integ DGE_File_Read(DGE_Integ fd, DGE_UnsigL idx, char *buf, DGE_Unsig len);
 DGE_Native DGE_Integ DGE_File_Remove(char const *name);
 DGE_Native DGE_UnsigL DGE_File_Size(DGE_Integ fd);
+DGE_Native DGE_Integ DGE_File_Trunc(DGE_Integ fd, DGE_UnsigL len);
+DGE_Native DGE_Integ DGE_File_Write(DGE_Integ fd, DGE_UnsigL idx, char const *buf, DGE_Unsig len);
 
 DGE_Native void DGE_Font_Bind(DGE_Unsig fnt);
 DGE_Native DGE_Unsig DGE_Font_Create(DGE_String name, char const *fname, DGE_Integ ptSize);

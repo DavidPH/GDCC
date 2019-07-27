@@ -188,7 +188,17 @@ static ssize_t FILE_fn_file_write(void *cookie_, char const *buf, size_t size)
 {
    __cookie_file *cookie = cookie_;
 
+   #if __GDCC_Engine__Doominati__
+   int write = DGE_File_Write(cookie->fd, cookie->pos, buf, size);
+
+   if(write < 0)
+      return 0;
+
+   cookie->pos += write;
+   return write;
+   #else
    return 0;
+   #endif
 }
 
 //
@@ -351,6 +361,19 @@ FILE *fopen(char const *restrict filename, char const *restrict mode)
    if(*mode == 'r')
    {
       if((fd = DGE_File_Open(filename)) == -1)
+         return NULL;
+   }
+   else if(*mode == 'w')
+   {
+      if((fd = DGE_File_Create(filename)) == -1)
+         return NULL;
+
+      if(DGE_File_Trunc(fd, 0) == -1)
+         return DGE_File_Close(fd), NULL;
+   }
+   else if(*mode == 'a')
+   {
+      if((fd = DGE_File_Create(filename)) == -1)
          return NULL;
    }
    else
