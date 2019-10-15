@@ -83,6 +83,9 @@ ACS_SpecialDeclFull(139, 2, int, Thing_SpawnFacing, (int, int, int, int));
 ACS_SpecialDeclFull(134, 0, int, Player_RemoveItem, (int, int));
 ACS_SpecialDeclFull(135, 0, int, Player_GiveItem, (int, int));
 
+ACS_SpecialDeclFull(150, 0, int, Line_SetHealth, (int, int));
+ACS_SpecialDeclFull(151, 0, int, Sector_SetHealth, (int, int, int));
+
 ACS_SpecialDeclFull(154, 1, int, Teleport_NoStop, (int, int, int));
 
 ACS_SpecialDeclFull(157, 0, int, SetGlobalFogParameter, (int, int));
@@ -197,6 +200,10 @@ ACS_SpecialDeclFull(275, 0, int, Floor_Stop, (int));
 ACS_SpecialDeclFull(276, 0, int, Ceiling_Stop, (int));
 ACS_SpecialDeclFull(277, 0, int, Sector_SetFloorGlow, (int, int, int, int, int));
 ACS_SpecialDeclFull(278, 0, int, Sector_SetCeilingGlow, (int, int, int, int, int));
+ACS_SpecialDeclFull(279, 1, int, Floor_MoveToValueAndCrush, (int, int, int, int, int));
+ACS_SpecialDeclFull(280, 1, int, Ceiling_MoveToValueAndCrush, (int, int, int, int, int));
+ACS_SpecialDeclFull(281, 0, int, Line_SetAutomapFlags, (int, int, int));
+ACS_SpecialDeclFull(282, 0, int, Line_SetAutomapStyle, (int, int));
 
 #endif//__GDCC_Header__C__ACS_ZDoom__Special_h__
 

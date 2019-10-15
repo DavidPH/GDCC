@@ -151,6 +151,10 @@
 #define CR_DARKGRAY     20
 #define CR_DARKGREY     20
 #define CR_CYAN         21
+#define CR_ICE          22
+#define CR_FIRE         23
+#define CR_SAPPHIRE     24
+#define CR_TEAL         25
 
 #define HUDMSG_PLAIN             0x00000000
 #define HUDMSG_FADEOUT           0x00000001
@@ -775,6 +779,9 @@
 #define CPXF_CLOSEST     0x00000400
 #define CPXF_SETONPTR    0x00000800
 #define CPXF_CHECKSIGHT  0x00001000
+
+#define SECPART_Floor   0
+#define SECPART_Ceiling 1
 
 #endif//__GDCC_Header__C__ACS_ZDoom__defs_h__
 

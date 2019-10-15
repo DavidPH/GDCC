@@ -151,6 +151,10 @@
 #define CR_DARKGRAY     20
 #define CR_DARKGREY     20
 #define CR_CYAN         21
+#define CR_ICE          22
+#define CR_FIRE         23
+#define CR_SAPPHIRE     24
+#define CR_TEAL         25
 
 #define HUDMSG_PLAIN             0x00000000
 #define HUDMSG_FADEOUT           0x00000001
@@ -854,6 +858,9 @@
 
 #define DB_ORDER_ASC  0
 #define DB_ORDER_DESC 1
+
+#define SECPART_Floor   0
+#define SECPART_Ceiling 1
 
 #endif//__GDCC_Header__ACS__zdefs_acs__
 

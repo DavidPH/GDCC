@@ -186,9 +186,13 @@ ACS_NativeDeclFull(209, 0, _Accum, Ceil, (_Accum));
 ACS_NativeDeclFull(210, 0, int,    ScriptCall, (__str, __str, ...));
 ACS_NativeDeclFull(210, 0, _Accum, ScriptCallFixed, (__str, __str, ...));
 ACS_NativeDeclFull(210, 0, __str,  ScriptCallString, (__str, __str, ...));
+ACS_NativeDeclFull(211, 0, int,    StartSlideshow, (__str));
+ACS_NativeDeclFull(212, 0, int,    GetSectorHealth, (int, int));
+ACS_NativeDeclFull(213, 0, int,    GetLineHealth, (int));
 
 ACS_NativeDeclFull(300, 0, _Accum, GetLineX, (int, _Accum, _Accum));
 ACS_NativeDeclFull(301, 0, _Accum, GetLineY, (int, _Accum, _Accum));
+ACS_NativeDeclFull(302, 0, int,    SetAirFriction, (_Accum));
 
 ACS_NativeDeclFull(400, 0, int,    SetSectorGlow, (int, int, int, int, int, int));
 ACS_NativeDeclFull(401, 0, int,    SetFogDensity, (int, int));

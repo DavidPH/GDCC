@@ -60,6 +60,8 @@ ACS_NativeDeclFull(126, 0, int,    NamedRequestScriptPuke, (__str, int, int, int
 ACS_NativeDeclFull(127, 0, int,    SystemTime, (void));
 ACS_NativeDeclFull(128, 0, int,    GetTimeProperty, (int, int, int));
 ACS_NativeDeclFull(129, 0, __str,  Strftime, (int, __str, int));
+ACS_NativeDeclFull(130, 0, __str,  SetDeadSpectator, (int, int));
+ACS_NativeDeclFull(131, 0, __str,  SetActivatorToPlayer, (int));
 
 #endif//__GDCC_Header__C__ACS_Zandronum__Native_h__
 

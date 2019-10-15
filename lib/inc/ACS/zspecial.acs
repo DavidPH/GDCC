@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015-2017 David Hill
+// Copyright(C) 2015-2019 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -215,6 +215,8 @@ special
    int 144:Player_GiveItem(2),
    int 145:Player_SetTeam(1),
 
+   int 150:Line_SetHealth(2),
+   int 151:Sector_SetHealth(3),
    int 152:Team_Score(2),
    int 153:Team_GivePoints(3),
    int 154:Teleport_NoStop(2, 3),
@@ -336,6 +338,10 @@ special
    int 276:Ceiling_Stop(1),
    int 277:Sector_SetFloorGlow(5),
    int 278:Sector_SetCeilingGlow(5),
+   int 279:Floor_MoveToValueAndCrush(4,5),
+   int 280:Ceiling_MoveToValueAndCrush(4,5),
+   int 281:Line_SetAutomapFlags(3),
+   int 282:Line_SetAutomapStyle(2),
 
 // int 300:Portal_Define(5),
 // int 301:Line_QuickPortal(1),
@@ -492,6 +498,8 @@ special
    int   -127:SystemTime(0),
    int   -128:GetTimeProperty(2, int, int, int),
    int   -129:Strftime(2, int, str, int),
+   int   -130:SetDeadSpectator(2, int, int),
+   int   -131:SetActivatorToPlayer(1, int),
 
    // ZDoom's (continued)
    int   -200:CheckClass(1, str, int, int),
@@ -507,10 +515,14 @@ special
    int   -210:ScriptCall(2, str, str, ...),
    fixed -210:ScriptCallFixed(2, str, str, ...),
    str   -210:ScriptCallString(2, str, str, ...),
+   int   -211:StartSlideshow(1, int),
+   int   -212:GetSectorHealth(2, int, int),
+   int   -213:GetLineHealth(1, int, int),
 
    // Eternity's
    fixed -300:GetLineX(3, int, fixed, fixed),
    fixed -301:GetLineY(3, int, fixed, fixed),
+   int   -302:SetAirFriction(1, fixed),
 
    // GZDoom's
    int   -400:SetSectorGlow(6, int, int, int, int, int, int),
