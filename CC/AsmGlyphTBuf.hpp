@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2020 David Hill
 //
 // See COPYING for license information.
 //
@@ -30,15 +30,15 @@ namespace GDCC::CC
    class AsmGlyphTBuf : public Core::TokenBuf
    {
    public:
-      AsmGlyphTBuf(Core::TokenBuf &src_, Scope &scope_) :
+      AsmGlyphTBuf(Core::TokenBuf &src_, Scope_Local &scope_) :
          src(src_), scope(scope_) {sett(buf, buf, buf);}
 
    protected:
       virtual void underflow();
 
       Core::TokenBuf &src;
-      Core::Token     buf[1];
-      Scope          &scope;
+      Core::Token     buf[2];
+      Scope_Local    &scope;
    };
 }
 

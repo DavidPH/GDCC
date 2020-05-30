@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2020 David Hill
 //
 // See COPYING for license information.
 //
@@ -12,7 +12,7 @@
 
 #include "CC/AsmGlyphTBuf.hpp"
 
-#include "CC/Scope.hpp"
+#include "CC/Scope/Local.hpp"
 
 #include "SR/Function.hpp"
 #include "SR/Object.hpp"
@@ -31,30 +31,36 @@ namespace GDCC::CC
    {
       if(tptr() != tend()) return;
 
-      if((buf[0] = src.get()).tok == Core::TOK_Colon)
+      if((buf[0] = src.get()).tok != Core::TOK_Colon)
+         return sett(buf, buf, buf + 1);
+
+      if((buf[1] = src.get()).tok != Core::TOK_Identi)
+         return sett(buf, buf, buf + 2);
+
+      // Label lookup.
+      if(src.peek().tok == Core::TOK_Colon)
       {
-         auto tok = src.peek();
-         if(tok.tok == Core::TOK_Identi)
-         {
-            if(auto lookup = scope.lookup(tok.str)) switch(lookup.res)
-            {
-            case Lookup::Func:
-               src.get();
-               buf[0].setStrTok(lookup.resFunc->glyph, Core::TOK_String);
-               break;
-
-            case Lookup::Obj:
-               src.get();
-               buf[0].setStrTok(lookup.resObj->glyph, Core::TOK_String);
-               break;
-
-            default:
-               break;
-            }
-         }
+         src.get();
+         buf[0].setStrTok(scope.getLabel(buf[1].str), Core::TOK_String);
+         return sett(buf, buf, buf + 1);
       }
 
-      sett(buf, buf, buf + 1);
+      // Scoped identifier lookup.
+      if(auto lookup = scope.lookup(buf[1].str)) switch(lookup.res)
+      {
+      case Lookup::Func:
+         buf[0].setStrTok(lookup.resFunc->glyph, Core::TOK_String);
+         return sett(buf, buf, buf + 1);
+
+      case Lookup::Obj:
+         buf[0].setStrTok(lookup.resObj->glyph, Core::TOK_String);
+         return sett(buf, buf, buf + 1);
+
+      default:
+         break;
+      }
+
+      sett(buf, buf, buf + 2);
    }
 }
 
