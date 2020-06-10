@@ -69,7 +69,7 @@ namespace GDCC::CPP
          Core::SourceTBuf<> tbuf{tsrc};
          Core::TokenStream  in  {&tbuf};
 
-         if(in.peek().tok != Core::TOK_Identi)
+         if(!in.peek(Core::TOK_Identi))
             Option::Exception::Error(oargs, "expected identifier");
 
          auto        name = in.get().str;
@@ -84,17 +84,23 @@ namespace GDCC::CPP
 
             do
             {
+               while(in.drop(Core::TOK_WSpace)) {}
+
                if(in.drop(Core::TOK_Dot3))
                   {argsVec.emplace_back(Core::STRNULL); break;}
 
-               if(in.peek().tok != Core::TOK_Identi)
+               if(!in.peek(Core::TOK_Identi))
                   Option::Exception::Error(oargs, "expected arg name");
 
                argsVec.emplace_back(in.get().str);
+
+               while(in.drop(Core::TOK_WSpace)) {}
             }
             while(in.drop(Core::TOK_Comma));
 
-            if(in.peek().tok != Core::TOK_ParenC)
+            while(in.drop(Core::TOK_WSpace)) {}
+
+            if(!in.drop(Core::TOK_ParenC))
                Option::Exception::Error(oargs, "expected )");
 
             args = Macro::Args(Core::Move, argsVec.begin(), argsVec.end());
@@ -105,14 +111,14 @@ namespace GDCC::CPP
          {
             std::vector<Core::Token> listVec;
 
-            while(in.peek().tok != Core::TOK_EOF)
+            while(!in.peek(Core::TOK_EOF))
                listVec.emplace_back(in.get());
 
             list = Macro::List(Core::Move, listVec.begin(), listVec.end());
          }
 
          // Must not be any tokens left.
-         if(in.peek().tok != Core::TOK_EOF)
+         if(!in.peek(Core::TOK_EOF))
             Option::Exception::Error(oargs, "expected end of define");
 
          Deltas.emplace_back(name, std::unique_ptr<Macro>(func
