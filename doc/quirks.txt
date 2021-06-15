@@ -1,0 +1,102 @@
+###############################################################################
+Implementation and Environmental Quirks
+###############################################################################
+
+This document is an attempt to list and describe behaviors that are either
+unexpected from the perspective of conventional programming or are incorrect
+with regards to specification and/or established norms. Where appropriate,
+mitigation and/or circumvention should also be described.
+
+===============================================================================
+ACSVM 32-bit byte
+===============================================================================
+
+Description:
+  The smallest addressable unit in ACS bytecode is 32 bits wide. While this is
+  allowable under the C specification, it may be unexpected.
+
+  This affects all ACS targets.
+
+Severity: Low.
+  Primarily a portability issue.
+
+Mitigation:
+  None.
+
+===============================================================================
+ACSVM function addresses change between maps
+===============================================================================
+
+Description:
+  In some implementations, function addresses for global modules will change
+  when moving from a map with/without a map module to a map without/with a map
+  module. This causes all existing function pointers to become invalidated.
+
+  This affects ZDoom and derived engines, but not Eternity Engine.
+
+Severity: High.
+  Calling an invalided function pointer will have undesired and most likely
+  cataclysmic results. Even if a project does not itself store function
+  pointers, the libc implementation does.
+
+Mitigation:
+  Ensuring that either all maps do or all maps do not have a map module
+  eliminates this issue.
+
+===============================================================================
+ACSVM non-script function delays cause execution error
+===============================================================================
+
+Description:
+  If a delay is used in a non-script function, some implementations will abort
+  script execution.
+
+  This affects ZDoom and derived engines, but not Eternity Engine.
+
+Severity: Moderate.
+
+Mitigation:
+  Any function which might need to have a delay must be a script function.
+
+===============================================================================
+Automatic storage memory leaks
+===============================================================================
+
+Description:
+  Functions (mostly, but not exclusively script functions) may manage storage
+  space for automatic storage objects. If such a function terminates as a
+  result of something other than reaching a return statement, that space will
+  not be freed correctly. Most notably, the use of the ACS Terminate functions
+  will not cleanly terminate such a function.
+
+  Moving between hubs will also uncleanly terminate functions, but the libGDCC
+  implementation frees any outstanding automatic storage allocations when
+  moving between hubs.
+
+  This affects all ACS targets.
+
+Severity: Moderate.
+  Can potentially result in memory exhaustion.
+
+Mitigation:
+  If a function needs to be externally terminated, it must not allocate
+  automatic storage. This can be forced using the [[alloc_Aut(0)]] attribute.
+
+===============================================================================
+C main is never called
+===============================================================================
+
+Description:
+  In C, the main function is not automatically called.
+
+Severity: Low.
+  Potentially unexpected, but not likely to be needed in the context of game
+  scripting.
+
+Mitigation:
+  Either call main from a target-specific entry-point or make main into one.
+
+###############################################################################
+EOF
+###############################################################################
+
