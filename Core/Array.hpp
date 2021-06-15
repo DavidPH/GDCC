@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2021 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <initializer_list>
 #include <iterator>
+#include <limits>
 #include <memory>
 #include <stdexcept>
 
