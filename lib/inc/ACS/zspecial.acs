@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015-2019 David Hill
+// Copyright(C) 2015-2022 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -342,6 +342,7 @@ special
    int 280:Ceiling_MoveToValueAndCrush(4,5),
    int 281:Line_SetAutomapFlags(3),
    int 282:Line_SetAutomapStyle(2),
+   int 283:Polyobj_StopSound(1),
 
 // int 300:Portal_Define(5),
 // int 301:Line_QuickPortal(1),
@@ -434,7 +435,7 @@ special
    int    -73:CheckFont(1, str),
    int    -74:DropItem(2, int, str, int, int),
    int    -75:CheckFlag(2, int, str),
-   int    -76:SetLineActivation(2, int, int),
+   int    -76:SetLineActivation(2, int, int, int),
    int    -77:GetLineActivation(1, int),
    int    -78:GetActorPowerupTics(2, int, str),
    int    -79:ChangeActorAngle(2, int, fixed, int),
@@ -500,6 +501,23 @@ special
    int   -129:Strftime(2, int, str, int),
    int   -130:SetDeadSpectator(2, int, int),
    int   -131:SetActivatorToPlayer(1, int),
+   int   -132:SetCurrentGamemode(1, str),
+   str   -133:GetCurrentGamemode(0),
+   int   -134:SetGamemodeLimit(2, int, int),
+   int   -135:SetPlayerClass(3, int, str, int),
+   int   -136:SetPlayerChasecam(2, int, int),
+   int   -137:GetPlayerChasecam(1, int),
+   int   -138:SetPlayerScore(3, int, int, int),
+   int   -139:GetPlayerScore(2, int, int),
+   int   -140:InDemoMode(0),
+   int   -144:ExecuteClientScript(2, int, int, int, int, int, int),
+   int   -145:NamedExecuteClientScript(2, str, int, int, int, int, int),
+   int   -146:SendNetworkString(2, int, str, int),
+   int   -147:NamedSendNetworkString(2, str, str, int),
+   str   -148:GetChatMessage(2, int, int),
+   int   -149:GetMapRotationSize(0),
+   int   -150:GetMapRotationInfo(2, int, int),
+   str   -150:GetMapRotationInfoString(2, int, int),
 
    // ZDoom's (continued)
    int   -200:CheckClass(1, str, int, int),
@@ -518,6 +536,7 @@ special
    int   -211:StartSlideshow(1, int),
    int   -212:GetSectorHealth(2, int, int),
    int   -213:GetLineHealth(1, int, int),
+   int   -214:SetSubtitleNumber(2, int, str),
 
    // Eternity's
    fixed -300:GetLineX(3, int, fixed, fixed),

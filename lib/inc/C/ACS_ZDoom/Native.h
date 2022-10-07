@@ -146,7 +146,7 @@ ACS_NativeDeclFull( 72, 4, int,    SpawnDecal, (int, __str, int, _Accum, _Accum,
 ACS_NativeDeclFull( 73, 0, int,    CheckFont, (__str));
 ACS_NativeDeclFull( 74, 0, int,    DropItem, (int, __str, int, int));
 ACS_NativeDeclFull( 75, 0, int,    CheckFlag, (int, __str));
-ACS_NativeDeclFull( 76, 0, int,    SetLineActivation, (int, int));
+ACS_NativeDeclFull( 76, 1, int,    SetLineActivation, (int, int, int));
 ACS_NativeDeclFull( 77, 0, int,    GetLineActivation, (int));
 ACS_NativeDeclFull( 78, 0, int,    GetActorPowerupTics, (int, __str));
 ACS_NativeDeclFull( 79, 1, int,    ChangeActorAngle, (int, _Accum, int));
@@ -189,6 +189,7 @@ ACS_NativeDeclFull(210, 0, __str,  ScriptCallString, (__str, __str, ...));
 ACS_NativeDeclFull(211, 0, int,    StartSlideshow, (__str));
 ACS_NativeDeclFull(212, 0, int,    GetSectorHealth, (int, int));
 ACS_NativeDeclFull(213, 0, int,    GetLineHealth, (int));
+ACS_NativeDeclFull(214, 0, int,    SetSubtitleNumber, (int, __str));
 
 ACS_NativeDeclFull(300, 0, _Accum, GetLineX, (int, _Accum, _Accum));
 ACS_NativeDeclFull(301, 0, _Accum, GetLineY, (int, _Accum, _Accum));

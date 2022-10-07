@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2019 David Hill
+// Copyright(C) 2014-2022 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -204,6 +204,7 @@ ACS_SpecialDeclFull(279, 1, int, Floor_MoveToValueAndCrush, (int, int, int, int,
 ACS_SpecialDeclFull(280, 1, int, Ceiling_MoveToValueAndCrush, (int, int, int, int, int));
 ACS_SpecialDeclFull(281, 0, int, Line_SetAutomapFlags, (int, int, int));
 ACS_SpecialDeclFull(282, 0, int, Line_SetAutomapStyle, (int, int));
+ACS_SpecialDeclFull(283, 0, int, Polyobj_StopSound, (int));
 
 #endif//__GDCC_Header__C__ACS_ZDoom__Special_h__
 

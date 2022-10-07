@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2019 David Hill
+// Copyright(C) 2014-2022 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -62,6 +62,23 @@ ACS_NativeDeclFull(128, 0, int,    GetTimeProperty, (int, int, int));
 ACS_NativeDeclFull(129, 0, __str,  Strftime, (int, __str, int));
 ACS_NativeDeclFull(130, 0, __str,  SetDeadSpectator, (int, int));
 ACS_NativeDeclFull(131, 0, __str,  SetActivatorToPlayer, (int));
+ACS_NativeDeclFull(132, 0, int,    SetCurrentGamemode, (__str));
+ACS_NativeDeclFull(133, 0, __str,  GetCurrentGamemode, (void));
+ACS_NativeDeclFull(134, 0, int,    SetGamemodeLimit, (int, int));
+ACS_NativeDeclFull(135, 0, int,    SetPlayerClass, (int, __str, int));
+ACS_NativeDeclFull(136, 0, int,    SetPlayerChasecam, (int, int));
+ACS_NativeDeclFull(137, 0, int,    GetPlayerChasecam, (int));
+ACS_NativeDeclFull(138, 0, int,    SetPlayerScore, (int, int, int));
+ACS_NativeDeclFull(139, 0, int,    GetPlayerScore, (int, int));
+ACS_NativeDeclFull(140, 0, int,    InDemoMode, (void));
+ACS_NativeDeclFull(144, 4, int,    ExecuteClientScript, (int, int, int, int, int, int));
+ACS_NativeDeclFull(145, 4, int,    NamedExecuteClientScript, (__str, int, int, int, int, int));
+ACS_NativeDeclFull(146, 1, int,    SendNetworkString, (int, __str, int));
+ACS_NativeDeclFull(147, 1, int,    NamedSendNetworkString, (__str, __str, int));
+ACS_NativeDeclFull(148, 0, __str,  GetChatMessage, (int, int));
+ACS_NativeDeclFull(149, 0, int,    GetMapRotationSize, (void));
+ACS_NativeDeclFull(150, 0, int,    GetMapRotationInfo, (int, int));
+ACS_NativeDeclFull(150, 0, __str,  GetMapRotationInfoString, (int, int));
 
 #endif//__GDCC_Header__C__ACS_Zandronum__Native_h__
 
