@@ -64,7 +64,7 @@ namespace GDCC::Option
       {
          if(s[0] == '0')
          {
-            if(s[1] == 'x')
+            if(s[1] == 'X' || s[1] == 'x')
                return ProcessInt(args, s + 2, 16, sign);
             else
                return ProcessInt(args, s + 1, 8, sign);
