@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2019 David Hill
+// Copyright (C) 2015-2022 David Hill
 //
 // See COPYING for license information.
 //
@@ -18,9 +18,9 @@
 
 #include "Core/Option.hpp"
 
-
 #include "Option/Exception.hpp"
 #include "Option/Function.hpp"
+#include "Option/Int.hpp"
 
 #include <unordered_map>
 
@@ -82,16 +82,7 @@ namespace GDCC::Target
             return 2;
          }
 
-         Core::FastU min = 0;
-         for(auto s = args.argV[2]; *s; ++s)
-         {
-            if(*s < '0' || *s > '9')
-               Option::Exception::Error(args, "invalid integer");
-
-            min = min * 10 + (*s - '0');
-         }
-
-         AllocMin[space] = min;
+         AllocMin[space] = Option::Int<Core::FastU>::ProcessInt(args, args.argV[2]);
 
          return 3;
       }
