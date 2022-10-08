@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2018 David Hill
+// Copyright (C) 2018-2022 David Hill
 //
 // See COPYING for license information.
 //
@@ -33,6 +33,8 @@ namespace GDCC::Option
    class Function;
    template<typename T>
    class Int;
+   template<typename Str, typename Int>
+   class IntMap;
    class Program;
 }
 

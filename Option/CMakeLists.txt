@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2019 David Hill
+## Copyright (C) 2013-2022 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -23,6 +23,7 @@ set(GDCC_Option_H
    Exception.hpp
    Function.hpp
    Int.hpp
+   IntMap.hpp
    Program.hpp
    StrUtil.hpp
    Types.hpp

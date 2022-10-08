@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2022 David Hill
 //
 // See COPYING for license information.
 //
@@ -45,6 +45,79 @@ namespace GDCC::Option
       T       &data()       {return i;}
       T const &data() const {return i;}
 
+
+      //
+      // ProcessInt
+      //
+      static T ProcessInt(Args const &args, char const *s)
+      {
+         if(s[0] == '-')
+            return ProcessInt(args, s + 1, true);
+         else
+            return ProcessInt(args, s, false);
+      }
+
+      //
+      // ProcessInt
+      //
+      static T ProcessInt(Args const &args, char const *s, bool sign)
+      {
+         if(s[0] == '0')
+         {
+            if(s[1] == 'x')
+               return ProcessInt(args, s + 2, 16, sign);
+            else
+               return ProcessInt(args, s + 1, 8, sign);
+         }
+         else
+            return ProcessInt(args, s, 10, sign);
+      }
+
+      //
+      // ProcessInt
+      //
+      static T ProcessInt(Args const &args, char const *s, unsigned base)
+      {
+         if(s[0] == '-')
+            return ProcessInt(args, s + 1, base, true);
+         else
+            return ProcessInt(args, s, base, false);
+      }
+
+      //
+      // ProcessInt
+      //
+      static T ProcessInt(Args const &args, char const *s, unsigned base, bool sign)
+      {
+         T        const max    = std::numeric_limits<T>::max() / base;
+         unsigned const digMax = std::numeric_limits<T>::max() % base;
+
+         T i = 0;
+
+         for(; *s; ++s)
+         {
+            unsigned dig;
+            if(*s >= '0' && *s <= '9')
+               dig = *s - '0';
+            else if(*s >= 'A' && *s <= 'Z')
+               dig = *s - 'A' + 10;
+            else if(*s >= 'a' && *s <= 'z')
+               dig = *s - 'a' + 10;
+            else
+               Exception::Error(args, "integer required");
+
+            if(dig >= base)
+               Exception::Error(args, "integer required");
+
+            if(i > max || (i == max && dig > digMax))
+               Exception::Error(args, "integer too large");
+
+            i = i * base + dig;
+         }
+
+         return sign ? -i : i;
+      }
+
    protected:
       //
       // v_process
@@ -54,14 +127,7 @@ namespace GDCC::Option
          if(args.optFalse) {i = 0; return 0;}
          if(!args.argC) Exception::Error(args, "argument required");
 
-         i = 0;
-         for(auto s = args.argV[0]; *s; ++s)
-         {
-            if(*s < '0' || *s > '9')
-               Exception::Error(args, "integer required");
-
-            i = i * 10 + (*s - '0');
-         }
+         i = ProcessInt(args, args.argV[0]);
 
          return 1;
       }

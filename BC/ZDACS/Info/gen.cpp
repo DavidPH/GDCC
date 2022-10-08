@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2022 David Hill
 //
 // See COPYING for license information.
 //
@@ -67,8 +67,13 @@ namespace GDCC::BC::ZDACS
       auto isScriptFlag = [](Core::Array<Core::String> const &stype)
       {
          for(auto const &st : stype)
+         {
+            if(auto flag = ScriptFlags.find(st)) if(*flag)
+               return true;
+
             if(st == Core::STR_clientside || st == Core::STR_net)
                return true;
+         }
 
          return false;
       };

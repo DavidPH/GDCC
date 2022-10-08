@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2022 David Hill
 //
 // See COPYING for license information.
 //
@@ -66,6 +66,9 @@ namespace GDCC::BC::ZDACS
             break;
 
          default:
+            if(ScriptFlags.find(st) || ScriptTypes.find(st))
+               break;
+
             Core::ErrorExpect(func->getOrigin(), "ZDACS script type", st);
          }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2022 David Hill
 //
 // See COPYING for license information.
 //
@@ -198,6 +198,42 @@ namespace GDCC::BC::ZDACS
             "Default is 999."),
 
       999
+   };
+
+   //
+   // --bc-zdacs-script-flag
+   //
+   Info::ScriptTypeMap Info::ScriptFlags
+   {
+      &Core::GetOptionList(), Option::Base::Info()
+         .setName("bc-zdacs-script-flag")
+         .setGroup("codegen")
+         .setDescS("Defines a script flag translation.")
+         .setDescL(
+            "Defines a script flag translation. Consumes two arguments, the "
+            "script flag string and the numeric value in bytecode.\n"
+            "\n"
+            "If the long option is negated with no-, the custom translation "
+            "for that script flag is removed and the option only takes the "
+            "first argument.")
+   };
+
+   //
+   // --bc-zdacs-script-type
+   //
+   Info::ScriptTypeMap Info::ScriptTypes
+   {
+      &Core::GetOptionList(), Option::Base::Info()
+         .setName("bc-zdacs-script-type")
+         .setGroup("codegen")
+         .setDescS("Defines a script type translation.")
+         .setDescL(
+            "Defines a script type translation. Consumes two arguments, the "
+            "script type string and the numeric value in bytecode.\n"
+            "\n"
+            "If the long option is negated with no-, the custom translation "
+            "for that script type is removed and the option only takes the "
+            "first argument.")
    };
 
    //
