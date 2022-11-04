@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2022 David Hill
 //
 // See COPYING for license information.
 //
@@ -376,6 +376,8 @@ namespace GDCC::BC
       Core::FastU getWord(IR::Arg_Lit const &arg, Core::FastU w = 0);
       Core::FastU getWord(IR::Exp const *exp, Core::FastU w = 0);
       virtual Core::FastU getWord(Core::Origin pos, IR::Value const &val, Core::FastU w = 0);
+      Core::FastU getWord_Array(Core::Origin pos, IR::Value_Array const &val, Core::FastU w);
+      Core::FastU getWord_Assoc(Core::Origin pos, IR::Value_Assoc const &val, Core::FastU w);
       virtual Core::FastU getWord_Fixed(IR::Value_Fixed const &val, Core::FastU w);
       virtual Core::FastU getWord_Float(IR::Value_Float const &val, Core::FastU w);
 

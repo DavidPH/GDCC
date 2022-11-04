@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2022 David Hill
 //
 // See COPYING for license information.
 //
@@ -49,6 +49,8 @@ namespace GDCC::BC
    {
       switch(val.v)
       {
+      case IR::ValueBase::Array: return getWord_Array(pos, val.vArray, w);
+      case IR::ValueBase::Assoc: return getWord_Assoc(pos, val.vAssoc, w);
       case IR::ValueBase::DJump: return w ? 0 : val.vDJump.value;
       case IR::ValueBase::Fixed: return getWord_Fixed(val.vFixed, w);
       case IR::ValueBase::Float: return getWord_Float(val.vFloat, w);
@@ -58,10 +60,6 @@ namespace GDCC::BC
 
       case IR::ValueBase::Empty:
          Core::Error(pos, "bad getWord Value: Empty");
-      case IR::ValueBase::Array:
-         Core::Error(pos, "bad getWord Value: Array");
-      case IR::ValueBase::Assoc:
-         Core::Error(pos, "bad getWord Value: Assoc");
       case IR::ValueBase::Tuple:
          Core::Error(pos, "bad getWord Value: Tuple");
       case IR::ValueBase::Union:
@@ -69,6 +67,39 @@ namespace GDCC::BC
       }
 
       Core::Error(pos, "bad getWord Value");
+   }
+
+   //
+   // Info::getWord_Array
+   //
+   Core::FastU Info::getWord_Array(Core::Origin pos, IR::Value_Array const &val, Core::FastU w)
+   {
+      auto elemSize = getWordCount(*val.vtype.elemT);
+      auto elemAddr = w / elemSize;
+
+      if(elemAddr >= val.vtype.elemC) return 0;
+
+      return getWord(pos, val.value[elemAddr], w % elemSize);
+   }
+
+   //
+   // Info::getWord_Assoc
+   //
+   Core::FastU Info::getWord_Assoc(Core::Origin pos, IR::Value_Assoc const &val, Core::FastU w)
+   {
+      for(std::size_t i = 0; i != val.value.size(); ++i)
+      {
+         // TODO/FIXME: This needs to account for byte address vs word index.
+         auto memAddr = val.vtype.assoc[i].addr;
+         if(w < memAddr) continue;
+
+         auto memSize = getWordCount(val.vtype.assoc[i].type);
+         if(w >= memAddr + memSize) continue;
+
+         return getWord(pos, val.value[i], w - memAddr);
+      }
+
+      return 0;
    }
 
    //
