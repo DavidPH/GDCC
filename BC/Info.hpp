@@ -387,6 +387,12 @@ namespace GDCC::BC
       Core::FastU getWordCount_Tuple(IR::Type_Tuple const &type);
       Core::FastU getWordCount_Union(IR::Type_Union const &type);
 
+      IR::TypeBase getWordType(IR::Type const &type, Core::FastU w = 0);
+      IR::TypeBase getWordType_Array(IR::Type_Array const &type, Core::FastU w);
+      IR::TypeBase getWordType_Assoc(IR::Type_Assoc const &type, Core::FastU w);
+      virtual IR::TypeBase getWordType_Funct(IR::Type_Funct const &type, Core::FastU w);
+      virtual IR::TypeBase getWordType_StrEn(IR::Type_StrEn const &type, Core::FastU w);
+
       WordArray getWords(IR::Arg_Lit const &arg);
       WordArray getWords(IR::Exp const *exp);
       WordArray getWords(Core::Origin pos, IR::Value const &val);

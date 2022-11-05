@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2022 David Hill
 //
 // See COPYING for license information.
 //
@@ -406,32 +406,14 @@ namespace GDCC::BC::ZDACS
       auto putLit = [&](IR::Arg_Lit const &a)
       {
          auto val  = a.value->getValue();
-         auto wLit = a.off + w;
+         auto wOff = a.off + w;
+         auto wVal = getWord(a.value->pos, val, wOff);
 
-         switch(val.v)
+         switch(getWordType(val.getType(), wOff))
          {
-         case IR::ValueBase::Funct:
-            if(wLit == 0)
-            {
-               if(IsScriptS(val.vFunct.vtype.callT))
-                  putStmntPushStrEn(val.vFunct.value);
-               else
-                  putStmntPushFunct(val.vFunct.value);
-            }
-            else
-               putCode(Code::Push_Lit, 0);
-            break;
-
-         case IR::ValueBase::StrEn:
-            if(wLit == 0)
-               putStmntPushStrEn(val.vStrEn.value);
-            else
-               putCode(Code::Push_Lit, 0);
-            break;
-
-         default:
-            putCode(Code::Push_Lit, getWord(a, w));
-            break;
+         case IR::ValueBase::Funct: putStmntPushFunct(wVal); break;
+         case IR::ValueBase::StrEn: putStmntPushStrEn(wVal); break;
+         default: putCode(Code::Push_Lit, wVal); break;
          }
       };
 

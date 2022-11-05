@@ -321,6 +321,9 @@ namespace GDCC::BC::ZDACS
 
       Core::FastU getStkPtrIdx();
 
+      virtual IR::TypeBase getWordType_Funct(IR::Type_Funct const &type, Core::FastU w);
+      virtual IR::TypeBase getWordType_StrEn(IR::Type_StrEn const &type, Core::FastU w);
+
       bool isCopyArg(IR::Arg const &arg);
 
       bool isDropArg(IR::Arg const &arg);

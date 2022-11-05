@@ -608,6 +608,24 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::getWordType_Funct
+   //
+   IR::TypeBase Info::getWordType_Funct(IR::Type_Funct const &type, Core::FastU w)
+   {
+      if(IsScriptS(type.callT)) return w ? IR::TypeBase::Fixed : IR::TypeBase::StrEn;
+      if(IsScript(type.callT))  return IR::TypeBase::Fixed;
+      return w ? IR::TypeBase::Fixed : IR::TypeBase::Funct;
+   }
+
+   //
+   // Info::getWordType_StrEn
+   //
+   IR::TypeBase Info::getWordType_StrEn(IR::Type_StrEn const &, Core::FastU w)
+   {
+      return w ? IR::TypeBase::Fixed : IR::TypeBase::StrEn;
+   }
+
+   //
    // Info::isDropArg
    //
    bool Info::isDropArg(IR::Arg const &arg)
@@ -902,16 +920,9 @@ namespace GDCC::BC::ZDACS
       auto lenLit = [&]() -> Core::FastU
       {
          auto type = arg.aLit.value->getType();
-         auto wLit = arg.aLit.off + w;
+         auto wOff = arg.aLit.off + w;
 
-         switch(type.t)
-         {
-         case IR::TypeBase::Funct:
-            return wLit == 0 && IsScriptS(type.tFunct.callT) ? 12 : 8;
-
-         case IR::TypeBase::StrEn: return wLit == 0 ? 12 : 8;
-         default:                  return 8;
-         }
+         return getWordType(type, wOff) == IR::TypeBase::StrEn ? 12 : 8;
       };
 
       //

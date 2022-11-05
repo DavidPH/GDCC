@@ -6,7 +6,7 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Target information and handling base class.
+// IR value word extraction.
 //
 //-----------------------------------------------------------------------------
 
@@ -225,6 +225,73 @@ namespace GDCC::BC
          size = std::max(size, getWordCount(t));
 
       return size;
+   }
+
+   //
+   // Info::getWordType
+   //
+   IR::TypeBase Info::getWordType(IR::Type const &type, Core::FastU w)
+   {
+      switch(type.t)
+      {
+      case IR::TypeBase::Array: return getWordType_Array(type.tArray, w);
+      case IR::TypeBase::Assoc: return getWordType_Assoc(type.tAssoc, w);
+      case IR::TypeBase::DJump: return IR::TypeBase::DJump;
+      case IR::TypeBase::Empty: return IR::TypeBase::Empty;
+      case IR::TypeBase::Fixed: return IR::TypeBase::Fixed;
+      case IR::TypeBase::Float: return IR::TypeBase::Float;
+      case IR::TypeBase::Funct: return getWordType_Funct(type.tFunct, w);
+      case IR::TypeBase::Point: return IR::TypeBase::Float;
+      case IR::TypeBase::StrEn: return getWordType_StrEn(type.tStrEn, w);
+      case IR::TypeBase::Tuple: return IR::TypeBase::Tuple; // TODO/FIXME
+      case IR::TypeBase::Union: return IR::TypeBase::Union; // TODO/FIXME
+      }
+
+      Core::Error({}, "bad getWordType Type");
+   }
+
+   //
+   // Info::getWordType_Array
+   //
+   IR::TypeBase Info::getWordType_Array(IR::Type_Array const &type, Core::FastU w)
+   {
+      return getWordType(*type.elemT, w % getWordCount(*type.elemT));
+   }
+
+   //
+   // Info::getWordType_Assoc
+   //
+   IR::TypeBase Info::getWordType_Assoc(IR::Type_Assoc const &type, Core::FastU w)
+   {
+      for(std::size_t i = 0; i != type.assoc.size(); ++i)
+      {
+         // TODO/FIXME: This needs to account for byte address vs word index.
+         auto memAddr = type.assoc[i].addr;
+         if(w < memAddr) continue;
+
+         auto memSize = getWordCount(type.assoc[i].type);
+         if(w >= memAddr + memSize) continue;
+
+         return getWordType(type.assoc[i].type, w - memAddr);
+      }
+
+      return IR::TypeBase::Empty;
+   }
+
+   //
+   // Info::getWordType_Funct
+   //
+   IR::TypeBase Info::getWordType_Funct(IR::Type_Funct const &, Core::FastU)
+   {
+      return IR::TypeBase::Funct;
+   }
+
+   //
+   // Info::getWordType_StrEn
+   //
+   IR::TypeBase Info::getWordType_StrEn(IR::Type_StrEn const &, Core::FastU)
+   {
+      return IR::TypeBase::StrEn;
    }
 
    //
