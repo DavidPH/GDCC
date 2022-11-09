@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2022 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,7 @@
 
 #include "CPP/IStream.hpp"
 #include "CPP/TSource.hpp"
+#include "CPP/Warning.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/SourceTBuf.hpp"
@@ -45,8 +46,11 @@ namespace GDCC::CPP
       while(src.peek().tok != Core::TOK_LnEnd && src.peek().tok != Core::TOK_EOF)
          toks.emplace_back(src.get());
 
+      if(toks.empty()) return true;
+
       // Process tokens.
-      prag.parse(toks.data(), toks.size());
+      if(!prag.parse(toks.data(), toks.size()))
+         WarnUnknownPragma(toks[0].pos, "unknown pragma");
 
       return true;
    }

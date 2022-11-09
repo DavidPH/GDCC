@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2019 David Hill
+## Copyright (C) 2013-2022 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -33,6 +33,7 @@ set(GDCC_CPP_H
    TStream.hpp
    TrigraphBuf.hpp
    Types.hpp
+   Warning.hpp
 )
 
 
@@ -58,6 +59,7 @@ add_library(gdcc-cpp-lib ${GDCC_SHARED_DECL}
    PragmaDTBuf.cpp
    StringTBuf.cpp
    TSource.cpp
+   Warning.cpp
 )
 
 ##

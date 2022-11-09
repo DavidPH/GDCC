@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2022 David Hill
 //
 // See COPYING for license information.
 //
@@ -26,16 +26,16 @@ namespace GDCC::CPP
    //
    // PragmaOnOff
    //
-   static void PragmaOnOff(bool &pragma, bool def, Core::TokenStream &in)
+   static bool PragmaOnOff(bool &pragma, bool def, Core::TokenStream &in)
    {
       in.drop(Core::TOK_WSpace);
 
       switch(in.get().str)
       {
-      case Core::STR_DEFAULT: pragma = def;   break;
-      case Core::STR_OFF:     pragma = false; break;
-      case Core::STR_ON:      pragma = true;  break;
-      default: break;
+      case Core::STR_DEFAULT: pragma = def;   return true;
+      case Core::STR_OFF:     pragma = false; return true;
+      case Core::STR_ON:      pragma = true;  return true;
+      default: return false;
       }
    }
 }
@@ -127,7 +127,7 @@ namespace GDCC::CPP
          in.drop(Core::TOK_WSpace);
 
          if(in.peek().tok != Core::TOK_String)
-            Core::ErrorExpect("string-literal", in.peek());
+            return false;
 
          data.stateLibrary.emplace_back(Core::ParseStringC(in.get().str, 0, '"'));
 
@@ -153,12 +153,10 @@ namespace GDCC::CPP
       switch(in.get().str)
       {
       case Core::STR_FIXED_LITERAL:
-         PragmaOnOff(data.stateFixedLiteral, false, in);
-         return true;
+         return PragmaOnOff(data.stateFixedLiteral, false, in);
 
       case Core::STR_STRENT_LITERAL:
-         PragmaOnOff(data.stateStrEntLiteral, false, in);
-         return true;
+         return PragmaOnOff(data.stateStrEntLiteral, false, in);
 
       case Core::STR_state:
          in.drop(Core::TOK_WSpace);
@@ -190,16 +188,13 @@ namespace GDCC::CPP
       switch(in.get().str)
       {
       case Core::STR_CX_LIMITED_RANGE:
-         PragmaOnOff(data.stateCXLimitedRange, true, in);
-         return true;
+         return PragmaOnOff(data.stateCXLimitedRange, true, in);
 
       case Core::STR_FENV_ACCESS:
-         PragmaOnOff(data.stateFEnvAccess, false, in);
-         return true;
+         return PragmaOnOff(data.stateFEnvAccess, false, in);
 
       case Core::STR_FP_CONTRACT:
-         PragmaOnOff(data.stateFPContract, true, in);
-         return true;
+         return PragmaOnOff(data.stateFPContract, true, in);
 
       default:
          return false;
