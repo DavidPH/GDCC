@@ -51,8 +51,6 @@ namespace GDCC::CC
    static void ParseAddrDeclBase(Parser &ctx, ScopeT &scope,
       SR::Attribute &attr)
    {
-      attr.linka = IR::Linkage::ExtC;
-
       // <__addrdef>
       if(!ctx.in.drop(Core::TOK_Identi, Core::STR___addrdef))
          Core::ErrorExpect("address-space-declaration", ctx.in.peek());
