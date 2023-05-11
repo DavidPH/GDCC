@@ -335,7 +335,7 @@ Syntax:
   print-specifier:
     identifier : print-specifier-argument
 
-  print-sepcifier-argument:
+  print-specifier-argument:
     ( expression-list )
     assignment-expression
 
