@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -256,7 +256,12 @@ namespace GDCC::CC
          return global.getObject(attr);
 
       auto glyph = genGlyphObj(attr.name, attr.linka);
-      auto obj   = SR::Object::Create(attr.name, glyph);
+      auto name  = attr.name ? attr.name : glyph;
+
+      if(localObj.find(name) != localObj.end())
+         Core::Error(attr.namePos, "local object redefined");
+
+      auto obj = SR::Object::Create(attr.name, glyph);
 
       obj->linka    = attr.linka;
       obj->type     = attr.type;
