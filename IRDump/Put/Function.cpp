@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -81,11 +81,21 @@ namespace GDCC::IRDump
    void PutFunction(std::ostream &out, IR::Function const &fn)
    {
       //
+      // putLocalArr
+      //
+      auto putLocalArr = [](std::ostream &out,
+         std::unordered_map<Core::FastU, Core::FastU> const &localArr)
+      {
+         for(auto const &itr : localArr)
+            out << "\n   localArr[" << itr.first << "]=" << itr.second;
+      };
+
+      //
       // putSType
       //
-      auto putSType = [&out](Core::Array<Core::String> const &stype)
+      auto putSType = [](std::ostream &out, Core::Array<Core::String> const &stype)
       {
-         out << '(';
+         out << "\n   stype=(";
          auto itr = stype.begin(), end = stype.end();
          if   (itr != end) PutString(out,        *itr++);
          while(itr != end) PutString(out << ' ', *itr++);
@@ -100,13 +110,12 @@ namespace GDCC::IRDump
       if(fn.defin)    out << "\n   defin="    << fn.defin;
       if(fn.label)   {out << "\n   label=";      PutString(out, fn.label);}
                       out << "\n   linka="    << fn.linka;
-      for(auto const &itr : fn.localArr)
-         out << "\n   localArr[" << itr.first << "]=" << itr.second;
+      if(!fn.localArr.empty())  putLocalArr(out, fn.localArr);
       if(fn.localAut) out << "\n   localAut=" << fn.localAut;
       if(fn.localReg) out << "\n   localReg=" << fn.localReg;
       if(fn.param)    out << "\n   param="    << fn.param;
       if(fn.retrn)    out << "\n   retrn="    << fn.retrn;
-                      out << "\n   stype=";      putSType(fn.stype);
+      if(!fn.stype.empty())     putSType(out,    fn.stype);
       if(fn.valueInt) out << "\n   valueInt=" << fn.valueInt;
       if(fn.valueStr){out << "\n   valueStr=";   PutString(out, fn.valueStr);}
 
