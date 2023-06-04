@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -135,13 +135,6 @@ namespace GDCC::SR
 namespace GDCC::SR
 {
    //
-   // Arg copy constructor
-   //
-   Arg::Arg(Arg const &arg) : type{arg.type}, data{arg.data}
-   {
-   }
-
-   //
    // Arg constructor
    //
    Arg::Arg(Type const *type_) : type{type_}, data{nullptr}
@@ -161,13 +154,6 @@ namespace GDCC::SR
    Arg::Arg(Type const *type_, IR::AddrBase base, Exp const *data_) :
       type{type_->getTypeQual({{base, Core::STR_}})},
       data{data_}
-   {
-   }
-
-   //
-   // Arg destructor
-   //
-   Arg::~Arg()
    {
    }
 

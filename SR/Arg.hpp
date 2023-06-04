@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -37,11 +37,9 @@ namespace GDCC::SR
       using TypeCRef = Core::CounterRef<Type const>;
 
    public:
-      Arg(Arg const &arg);
       explicit Arg(Type const *type);
       Arg(Type const *type, Exp const *data);
       Arg(Type const *type, IR::AddrBase base, Exp const *data = nullptr);
-      ~Arg();
 
       IR::Arg getIRArg(IR::Program &prog) const;
 
