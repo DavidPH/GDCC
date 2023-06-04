@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -90,64 +90,48 @@ namespace GDCC::CC
       auto typeL = expL->getType()->getTypeQual();
       auto typeR = expR->getType()->getTypeQual();
 
+      if(typeL == typeR) return std::make_tuple(typeL, expL, expR);
+
       auto cplxL = typeL->isTypeComplex();
       auto cplxR = typeR->isTypeComplex();
 
       auto imagL = typeL->isTypeImagin();
       auto imagR = typeR->isTypeImagin();
 
+      // Determine domain of inputs and result.
       // 0 real, 1 complex, 2 imaginary
-      int resDomain = (imagL || imagR || cplxL || cplxR) + (imagL && imagR);
+      int domL   = cplxL ? 1 : (imagL ? 2 : 0);
+      int domR   = cplxR ? 1 : (imagR ? 2 : 0);
+      int domRes = (imagL || imagR || cplxL || cplxR) + (imagL && imagR);
+
+      // Common promotion code.
+      auto promo = [&](std::array<SR::Type::CRef, 3> &&types)
+      {
+         if(typeL != types[domL]) expL = fact.expConvert_Arith(types[domL], expL, pos);
+         if(typeR != types[domR]) expR = fact.expConvert_Arith(types[domR], expR, pos);
+
+         return std::make_tuple(types[domRes], expL, expR);
+      };
 
       // long double
       if(typeL == TypeFloatCSLL || typeL == TypeFloatISLL || typeL == TypeFloatRSLL ||
          typeR == TypeFloatCSLL || typeR == TypeFloatISLL || typeR == TypeFloatRSLL)
       {
-              if(cplxL) expL = fact.expConvert_Arith(TypeFloatCSLL, expL, pos);
-         else if(imagL) expL = fact.expConvert_Arith(TypeFloatISLL, expL, pos);
-         else           expL = fact.expConvert_Arith(TypeFloatRSLL, expL, pos);
-
-              if(cplxR) expR = fact.expConvert_Arith(TypeFloatCSLL, expR, pos);
-         else if(imagR) expR = fact.expConvert_Arith(TypeFloatISLL, expR, pos);
-         else           expR = fact.expConvert_Arith(TypeFloatRSLL, expR, pos);
-
-         if(resDomain == 1) return std::make_tuple(TypeFloatCSLL, expL, expR);
-         if(resDomain == 2) return std::make_tuple(TypeFloatISLL, expL, expR);
-                            return std::make_tuple(TypeFloatRSLL, expL, expR);
+         return promo({TypeFloatRSLL, TypeFloatCSLL, TypeFloatISLL});
       }
 
       // double
       if(typeL == TypeFloatCSL || typeL == TypeFloatISL || typeL == TypeFloatRSL ||
          typeR == TypeFloatCSL || typeR == TypeFloatISL || typeR == TypeFloatRSL)
       {
-              if(cplxL) expL = fact.expConvert_Arith(TypeFloatCSL, expL, pos);
-         else if(imagL) expL = fact.expConvert_Arith(TypeFloatISL, expL, pos);
-         else           expL = fact.expConvert_Arith(TypeFloatRSL, expL, pos);
-
-              if(cplxR) expR = fact.expConvert_Arith(TypeFloatCSL, expR, pos);
-         else if(imagR) expR = fact.expConvert_Arith(TypeFloatISL, expR, pos);
-         else           expR = fact.expConvert_Arith(TypeFloatRSL, expR, pos);
-
-         if(resDomain == 1) return std::make_tuple(TypeFloatCSL, expL, expR);
-         if(resDomain == 2) return std::make_tuple(TypeFloatISL, expL, expR);
-                            return std::make_tuple(TypeFloatRSL, expL, expR);
+         return promo({TypeFloatRSL, TypeFloatCSL, TypeFloatISL});
       }
 
       // float
       if(typeL == TypeFloatCS || typeL == TypeFloatIS || typeL == TypeFloatRS ||
          typeR == TypeFloatCS || typeR == TypeFloatIS || typeR == TypeFloatRS)
       {
-              if(cplxL) expL = fact.expConvert_Arith(TypeFloatCS, expL, pos);
-         else if(imagL) expL = fact.expConvert_Arith(TypeFloatIS, expL, pos);
-         else           expL = fact.expConvert_Arith(TypeFloatRS, expL, pos);
-
-              if(cplxR) expR = fact.expConvert_Arith(TypeFloatCS, expR, pos);
-         else if(imagR) expR = fact.expConvert_Arith(TypeFloatIS, expR, pos);
-         else           expR = fact.expConvert_Arith(TypeFloatRS, expR, pos);
-
-         if(resDomain == 1) return std::make_tuple(TypeFloatCS, expL, expR);
-         if(resDomain == 2) return std::make_tuple(TypeFloatIS, expL, expR);
-                            return std::make_tuple(TypeFloatRS, expL, expR);
+         return promo({TypeFloatRS, TypeFloatCS, TypeFloatIS});
       }
 
       Core::Error(pos, "cannot determine common floating type");
