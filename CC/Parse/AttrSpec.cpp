@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -272,6 +272,21 @@ namespace GDCC::CC
    }
 
    //
+   // ParseAttr_no_init_delay
+   //
+   // attribute-no_init_delay:
+   //    attribute-no_init_delay-name
+   //
+   // attribute-no_init_delay-name:
+   //    <no_init_delay>
+   //    <__no_init_delay>
+   //
+   static void ParseAttr_no_init_delay(Parser &, Scope &, SR::Attribute &attr)
+   {
+      attr.funcNoInitDelay = true;
+   }
+
+   //
    // ParseAttr_optional_args
    //
    // attribute-optional_args:
@@ -404,6 +419,9 @@ namespace GDCC::CC
 
       case Core::STR_no_init: case Core::STR___no_init:
          ParseAttr_no_init(*this, scope, attr); break;
+
+      case Core::STR_no_init_delay: case Core::STR___no_init_delay:
+         ParseAttr_no_init_delay(*this, scope, attr); break;
 
       case Core::STR_optional_args: case Core::STR___optional_args:
          ParseAttr_optional_args(*this, scope, attr); break;

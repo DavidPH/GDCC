@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -58,6 +58,7 @@ GDCC_Core_StringList(__mod_arr, "__mod_arr")
 GDCC_Core_StringList(__mod_ars, "__mod_ars")
 GDCC_Core_StringList(__mod_reg, "__mod_reg")
 GDCC_Core_StringList(__no_init, "__no_init")
+GDCC_Core_StringList(__no_init_delay, "__no_init_delay")
 GDCC_Core_StringList(__offsetof, "__offsetof")
 GDCC_Core_StringList(__operator, "__operator")
 GDCC_Core_StringList(__optional_args, "__optional_args")
@@ -380,6 +381,7 @@ GDCC_Core_StringList(more, "more")
 GDCC_Core_StringList(multiDef, "multiDef")
 GDCC_Core_StringList(net, "net")
 GDCC_Core_StringList(no_init, "no_init")
+GDCC_Core_StringList(no_init_delay, "no_init_delay")
 GDCC_Core_StringList(nocompact, "nocompact")
 GDCC_Core_StringList(nowadauthor, "nowadauthor")
 GDCC_Core_StringList(off, "off")

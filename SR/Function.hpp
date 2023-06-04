@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -87,11 +87,12 @@ namespace GDCC::SR
       Core::String   valueStr;
       Core::String   warnUse;
 
-      bool           declAuto : 1;
-      bool           defin    : 1;
-      bool           delay    : 1;
-      bool           used     : 1;
-      bool           warnDone : 1;
+      bool           declAuto    : 1;
+      bool           defin       : 1;
+      bool           delay       : 1;
+      bool           noInitDelay : 1;
+      bool           used        : 1;
+      bool           warnDone    : 1;
 
 
       static Ref Create(Core::String name, Core::String glyph);

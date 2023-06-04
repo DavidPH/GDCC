@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -52,12 +52,15 @@ namespace GDCC::CC
    //
    // NeedSID
    //
-   static bool NeedSID(IR::CallType ctype, Core::Array<Core::String> const &stype)
+   static bool NeedSID(SR::Function *fn, IR::CallType ctype)
    {
+      if(fn->noInitDelay)
+         return false;
+
       if(ctype != IR::CallType::ScriptI && ctype != IR::CallType::ScriptS)
          return false;
 
-      for(auto const &st : stype)
+      for(auto const &st : fn->stype)
       {
          if(st == Core::STR_enter || st == Core::STR_open)
             return true;
@@ -112,7 +115,7 @@ namespace GDCC::CC
          paramIdx += objBytes;
       }
 
-      if(NeedSID(ctype, scope.fn->stype))
+      if(NeedSID(scope.fn, ctype))
          ctx.block.addStmnt(IR::CodeBase::Xcod_SID);
 
       if(scope.fn->labelRes)

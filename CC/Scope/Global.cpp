@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -185,8 +185,9 @@ namespace GDCC::CC
          fn->type     = attr.type;
          fn->warnUse  = attr.warnUse;
 
-         fn->declAuto = attr.declAuto;
-         fn->delay    = attr.funcDelay;
+         fn->declAuto    = attr.declAuto;
+         fn->delay       = attr.funcDelay;
+         fn->noInitDelay = attr.funcNoInitDelay;
 
          itr = globalFunc.emplace(glyph, fn).first;
       }

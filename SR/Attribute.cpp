@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -48,10 +48,11 @@ namespace GDCC::SR
 
       declAuto{false},
 
-      funcDelay   {false},
-      funcInline  {false},
-      funcNoParam {false},
-      funcNoReturn{false},
+      funcDelay      {false},
+      funcInline     {false},
+      funcNoInitDelay{false},
+      funcNoParam    {false},
+      funcNoReturn   {false},
 
       isTypedef{false},
 

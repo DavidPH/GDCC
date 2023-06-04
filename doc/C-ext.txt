@@ -300,6 +300,24 @@ Semantics:
   affects object definitions.
 
 ===========================================================
+No Init Delay
+===========================================================
+
+Syntax:
+  attribute-no_init_delay:
+    attribute-no_init_delay-name
+
+  attribute-no_init_delay-name:
+    <no_init_delay>
+    <__no_init_delay>
+
+Semantics:
+  Suppresses the potential implicit delay for static initialization in
+  functions which are automatically executed at startup. As a result, static
+  storage objects may or may not yet be initialized before it executes.
+  Standard library functions shall not be called from such a function.
+
+===========================================================
 Optional Args
 ===========================================================
 

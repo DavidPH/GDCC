@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -79,11 +79,12 @@ namespace GDCC::SR
       valueStr{nullptr},
       warnUse {nullptr},
 
-      declAuto{false},
-      defin   {false},
-      delay   {false},
-      used    {false},
-      warnDone{false},
+      declAuto   {false},
+      defin      {false},
+      delay      {false},
+      noInitDelay{false},
+      used       {false},
+      warnDone   {false},
 
       labeller{glyph, "$L$"}
    {

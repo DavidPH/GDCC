@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -62,10 +62,11 @@ namespace GDCC::SR
 
       bool declAuto : 1;
 
-      bool funcDelay    : 1;
-      bool funcInline   : 1;
-      bool funcNoParam  : 1;
-      bool funcNoReturn : 1;
+      bool funcDelay       : 1;
+      bool funcInline      : 1;
+      bool funcNoInitDelay : 1;
+      bool funcNoParam     : 1;
+      bool funcNoReturn    : 1;
 
       bool isTypedef : 1;
 
