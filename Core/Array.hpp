@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2021 David Hill
+// Copyright (C) 2013-2023 David Hill
 //
 // See COPYING for license information.
 //
@@ -82,7 +82,7 @@ namespace GDCC::Core
       // Range-move contructor.
       template<typename Itr>
       Array(MoveType, Itr first, Itr last) :
-         p{Cpy(first, last, std::move<typename std::iterator_traits<Itr>::reference>)},
+         p{Mov(first, last)},
          e{p + std::distance(first, last)} {}
 
       // Variadic constructor.
@@ -284,6 +284,29 @@ namespace GDCC::Core
       {
          while(last != first) (--last)->~value_type();
          ::operator delete(const_cast<cv_pointer>(first));
+      }
+
+      //
+      // Mov
+      //
+      template<typename Itr>
+      static pointer Mov(Itr first, Itr last)
+      {
+         size_type  s = std::distance(first, last);
+         cv_pointer n = Raw(s), i = n;
+
+         try
+         {
+            while(s--) new(i++) value_type(std::move(*first++));
+         }
+         catch(...)
+         {
+            while(i != n) (--i)->~value_type();
+            ::operator delete(n);
+            throw;
+         }
+
+         return n;
       }
 
       //
