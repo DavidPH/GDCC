@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2019 David Hill
+// Copyright(C) 2014-2023 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -40,7 +40,7 @@
 // Controls the total size of the allocation heap, in bytes.
 //
 #ifndef __GDCC__AllocSize
-#define __GDCC__AllocSize (256*1024*1024)
+#define __GDCC__AllocSize (2*1024*1024*1024)
 #endif
 
 //
