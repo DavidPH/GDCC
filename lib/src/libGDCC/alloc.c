@@ -40,7 +40,7 @@
 // Controls the total size of the allocation heap, in bytes.
 //
 #ifndef __GDCC__AllocSize
-#define __GDCC__AllocSize (2*1024*1024*1024)
+#define __GDCC__AllocSize (2*1024*1024*1024u)
 #endif
 
 //
