@@ -857,7 +857,7 @@ __GDCC_Engine__*__
 Depending on the --target-engine option, one of the following will be defined
 as 1:
   __GDCC_Engine__None__
-  __GDCC_Engine__Doominate__
+  __GDCC_Engine__Doominati__
   __GDCC_Engine__Eternity__
   __GDCC_Engine__ZDoom__
   __GDCC_Engine__Zandronum__
