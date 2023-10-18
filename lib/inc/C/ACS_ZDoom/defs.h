@@ -809,5 +809,17 @@
 #define AMLS_UnexploredSecret 12
 #define AMLS_Portal           13
 
+#define LUMP_OPEN_FULLPATH 0x00000001
+
+#define LUMP_READ_BYTE   0
+#define LUMP_READ_UBYTE  1
+#define LUMP_READ_SHORT  2
+#define LUMP_READ_USHORT 3
+#define LUMP_READ_INT    4
+#define LUMP_READ_FLOAT  5
+
+#define LUMP_INFO_SIZE 0
+#define LUMP_INFO_NAME 1
+
 #endif//__GDCC_Header__C__ACS_ZDoom__defs_h__
 

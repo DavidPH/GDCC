@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2016-2019 David Hill
+// Copyright(C) 2016-2023 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -43,7 +43,10 @@
 //
 typedef struct __cookie_file
 {
-   #if __GDCC_Engine__Doominati__
+   #if __GDCC_Family__ZDACS__
+   unsigned int fd;
+   unsigned int pos;
+   #elif __GDCC_Engine__Doominati__
    unsigned int  fd;
    unsigned long pos;
    #else
@@ -154,7 +157,9 @@ static int FILE_fn_file_close(void *cookie_)
 {
    __cookie_file *cookie = cookie_;
 
-   #if __GDCC_Engine__Doominati__
+   #if __GDCC_Family__ZDACS__
+   ACS_LumpClose(cookie->fd);
+   #elif __GDCC_Engine__Doominati__
    DGE_File_Close(cookie->fd);
    #endif
 
@@ -167,18 +172,21 @@ static int FILE_fn_file_close(void *cookie_)
 static ssize_t FILE_fn_file_read(void *cookie_, char *buf, size_t size)
 {
    __cookie_file *cookie = cookie_;
+   int            read;
 
-   #if __GDCC_Engine__Doominati__
-   int read = DGE_File_Read(cookie->fd, cookie->pos, buf, size);
+   #if __GDCC_Family__ZDACS__
+   read = ACS_LumpReadGlobalCharArray(cookie->fd, cookie->pos, __GDCC__Sta, (int)buf, size);
+   #elif __GDCC_Engine__Doominati__
+   read = DGE_File_Read(cookie->fd, cookie->pos, buf, size);
+   #else
+   read = -1;
+   #endif
 
    if(read < 0)
       return EOF;
 
    cookie->pos += read;
    return read;
-   #else
-   return 0;
-   #endif
 }
 
 //
@@ -208,11 +216,14 @@ static int FILE_fn_file_seek(void *cookie_, off_t *offset, int whence)
 {
    __cookie_file *cookie = cookie_;
 
-   #if __GDCC_Engine__Doominati__
    switch(whence)
    {
    case SEEK_END:
+      #if __GDCC_Family__ZDACS__
+      *offset = cookie->pos = ACS_LumpGetInfo(cookie->fd, LUMP_INFO_SIZE) - *offset;
+      #elif __GDCC_Engine__Doominati__
       *offset = cookie->pos = DGE_File_Size(cookie->fd) - *offset;
+      #endif
       break;
 
    case SEEK_CUR:
@@ -225,9 +236,6 @@ static int FILE_fn_file_seek(void *cookie_, off_t *offset, int whence)
    }
 
    return 0;
-   #else
-   return EOF;
-   #endif
 }
 
 //=========================================================
@@ -356,8 +364,26 @@ FILE *fopen(char const *restrict filename, char const *restrict mode)
       .close = FILE_fn_file_close,
    };
 
-   #if __GDCC_Engine__Doominati__
    int fd;
+
+   #if __GDCC_Family__ZDACS__
+   #define FD_CLOSE_FUNC ACS_LumpClose
+
+   ACS_BeginStrParam();
+   ACS_PrintGlobalCharArray(__GDCC__Sta, (int)filename);
+   __str filename_str = ACS_EndStrParam();
+
+   if(*mode == 'r')
+   {
+      if((fd = ACS_LumpOpen(filename_str, -1, LUMP_OPEN_FULLPATH)) < 0)
+         return NULL;
+   }
+   else
+      return NULL;
+
+   #elif __GDCC_Engine__Doominati__
+   #define FD_CLOSE_FUNC DGE_File_Close
+
    if(*mode == 'r')
    {
       if((fd = DGE_File_Open(filename)) == -1)
@@ -379,8 +405,14 @@ FILE *fopen(char const *restrict filename, char const *restrict mode)
    else
       return NULL;
 
+   #else
+   #define FD_CLOSE_FUNC
+
+   return NULL;
+   #endif
+
    FILE *stream = malloc(sizeof(FILE) + sizeof(__cookie_file) + BUFSIZ);
-   if(!stream) return DGE_File_Close(fd), NULL;
+   if(!stream) return FD_CLOSE_FUNC(fd), NULL;
 
    __cookie_file *cookie = (__cookie_file *)(stream + 1);
    char          *buffer = (char *)(cookie + 1);
@@ -389,16 +421,15 @@ FILE *fopen(char const *restrict filename, char const *restrict mode)
    cookie->pos = 0;
 
    if(!__fopencookie_ctor(stream, cookie, mode, io_funcs))
-      return free(stream), DGE_File_Close(fd), NULL;
+      return free(stream), FD_CLOSE_FUNC(fd), NULL;
 
    stream->_flag |= _FILEFLAG_FRF;
 
    setvbuf(stream, buffer, _IOFBF, BUFSIZ);
 
    return stream;
-   #else
-   return NULL;
-   #endif
+
+   #undef FD_CLOSE_FUNC
 }
 
 //

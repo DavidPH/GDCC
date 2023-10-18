@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015-2022 David Hill
+// Copyright(C) 2015-2023 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -518,6 +518,18 @@ special
    int   -149:GetMapRotationSize(0),
    int   -150:GetMapRotationInfo(2, int, int),
    str   -150:GetMapRotationInfoString(2, int, int),
+
+   int   -159:LumpOpen(1, str, int, int),
+   int   -160:LumpRead(2, int, int, int),
+   fixed -160:LumpReadFixed(2, int, int, int),
+   str   -161:LumpReadString(2, int, int, int),
+   int   -162:LumpReadLocalCharArray(3, int, int, int, int, int),
+   int   -163:LumpReadMapCharArray(3, int, int, int, int, int),
+   int   -164:LumpReadWorldCharArray(3, int, int, int, int, int),
+   int   -165:LumpReadGlobalCharArray(3, int, int, int, int, int),
+   int   -166:LumpGetInfo(2, int, int),
+   str   -166:LumpGetInfoString(2, int, int),
+   int   -167:LumpClose(1, int),
 
    // ZDoom's (continued)
    int   -200:CheckClass(1, str, int, int),

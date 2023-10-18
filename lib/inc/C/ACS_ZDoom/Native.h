@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2019 David Hill
+// Copyright(C) 2014-2023 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -172,6 +172,18 @@ ACS_NativeDeclFull( 96,14, int,    SpawnParticle, (int, int, int, int, _Accum, _
 ACS_NativeDeclFull( 97, 0, int,    SetMusicVolume, (_Accum));
 ACS_NativeDeclFull( 98, 3, int,    CheckProximity, (int, __str, _Accum, int, int, int));
 ACS_NativeDeclFull( 99, 1, int,    CheckActorState, (int, __str, int));
+
+ACS_NativeDeclFull(159, 2, int,    LumpOpen, (__str, int, int));
+ACS_NativeDeclFull(160, 1, int,    LumpRead, (int, int, int));
+ACS_NativeDeclFull(160, 1, _Accum, LumpReadFixed, (int, int, int));
+ACS_NativeDeclFull(161, 1, __str,  LumpReadString, (int, int, int));
+ACS_NativeDeclFull(162, 2, int,    LumpReadLocalCharArray, (int, int, int, int, int));
+ACS_NativeDeclFull(163, 2, int,    LumpReadMapCharArray, (int, int, int, int, int));
+ACS_NativeDeclFull(164, 2, int,    LumpReadWorldCharArray, (int, int, int, int, int));
+ACS_NativeDeclFull(165, 2, int,    LumpReadGlobalCharArray, (int, int, int, int, int));
+ACS_NativeDeclFull(166, 0, int,    LumpGetInfo, (int, int));
+ACS_NativeDeclFull(166, 0, __str,  LumpGetInfoString, (int, int));
+ACS_NativeDeclFull(167, 0, int,    LumpClose, (int));
 
 ACS_NativeDeclFull(200, 2, int,    CheckClass, (__str, int, int));
 ACS_NativeDeclFull(201, 0, int,    DamageActor, (int, int, int, int, int, __str));
