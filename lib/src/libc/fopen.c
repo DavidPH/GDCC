@@ -370,7 +370,7 @@ FILE *fopen(char const *restrict filename, char const *restrict mode)
    #define FD_CLOSE_FUNC ACS_LumpClose
 
    ACS_BeginStrParam();
-   ACS_PrintGlobalCharArray(__GDCC__Sta, (int)filename);
+   ACS_PrintGlobalCharArray((int)filename, __GDCC__Sta);
    __str filename_str = ACS_EndStrParam();
 
    if(*mode == 'r')
