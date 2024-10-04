@@ -233,7 +233,8 @@
 #define APROP_MaxDropOffHeight   45
 #define APROP_DamageType         46
 #define APROP_SoundClass         47
-#define APROP_FriendlySeesBlocks 48
+#define APROP_FriendlySeeBlocks  48
+#define APROP_WaterDepth         49
 #define APROP_Counter0          100
 #define APROP_Counter1          101
 #define APROP_Counter2          102

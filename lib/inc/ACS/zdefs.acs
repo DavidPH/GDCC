@@ -233,7 +233,8 @@
 #define APROP_MaxDropOffHeight   45
 #define APROP_DamageType         46
 #define APROP_SoundClass         47
-#define APROP_FriendlySeesBlocks 48
+#define APROP_FriendlySeeBlocks  48
+#define APROP_WaterDepth         49
 #define APROP_Counter0          100
 #define APROP_Counter1          101
 #define APROP_Counter2          102
@@ -938,6 +939,16 @@
 #define AAPTR_DAMAGE_SOURCE    0x10000000
 #define AAPTR_DAMAGE_INFLICTOR 0x40000000
 #define AAPTR_DAMAGE_TARGET    0x80000000
+
+#define PLAYERCOUNTRY_ALPHA2 0
+#define PLAYERCOUNTRY_ALPHA3 1
+#define PLAYERCOUNTRY_NAME   2
+
+#define STATUS_CHATTING  0x00000001
+#define STATUS_TALKING   0x00000002
+#define STATUS_INCONSOLE 0x00000004
+#define STATUS_INMENU    0x00000008
+#define STATUS_LAGGING   0x00000010
 
 #endif//__GDCC_Header__ACS__zdefs_acs__
 

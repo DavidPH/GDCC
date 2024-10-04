@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2022 David Hill
+// Copyright(C) 2014-2024 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -79,6 +79,29 @@ ACS_NativeDeclFull(148, 0, __str,  GetChatMessage, (int, int));
 ACS_NativeDeclFull(149, 0, int,    GetMapRotationSize, (void));
 ACS_NativeDeclFull(150, 0, int,    GetMapRotationInfo, (int, int));
 ACS_NativeDeclFull(150, 0, __str,  GetMapRotationInfoString, (int, int));
+ACS_NativeDeclFull(151, 0, int,    GetCurrentMapPosition, (void));
+ACS_NativeDeclFull(152, 0, int,    GetEventResult, (void));
+ACS_NativeDeclFull(153, 0, __str,  GetActorSectorLocation, (int, int));
+ACS_NativeDeclFull(154, 1, int,    ChangeTeamScore, (int, int, int, int));
+ACS_NativeDeclFull(155, 0, int,    SetGameplaySetting, (__str, int));
+ACS_NativeDeclFull(156, 0, int,    SetCustomPlayerValue, (__str, int, int));
+ACS_NativeDeclFull(156, 0, int,    SetCustomPlayerValueFixed, (__str, int, __fixed));
+ACS_NativeDeclFull(156, 0, int,    SetCustomPlayerValueString, (__str, int, __str));
+ACS_NativeDeclFull(157, 0, int,    GetCustomPlayerValue, (__str, int));
+ACS_NativeDeclFull(157, 0, __fixed GetCustomPlayerValueFixed, (__str, int));
+ACS_NativeDeclFull(157, 0, __str,  GetCustomPlayerValueString, (__str, int));
+ACS_NativeDeclFull(158, 0, int,    ResetCustomDataToDefault, (__str, int));
+
+ACS_NativeDeclFull(168, 2, int,    AddBot, (__str, int));
+ACS_NativeDeclFull(169, 1, int,    RemoveBot, (__str));
+ACS_NativeDeclFull(170, 0, int,    OpenMenu, (__str));
+ACS_NativeDeclFull(171, 0, int,    CloseMenu, (void));
+ACS_NativeDeclFull(172, 1, int,    BanFromGame, (int, int, __str));
+ACS_NativeDeclFull(173, 0, int,    GetPlayerStatus, (int));
+ACS_NativeDeclFull(174, 1, int,    SetPlayerWeaponZoomFactor, (int, __fixed, int));
+ACS_NativeDeclFull(175, 1, int,    SetPlayerSkin, (int, __str, int));
+ACS_NativeDeclFull(176, 0, __str,  GetPlayerSkin, (int, int));
+ACS_NativeDeclFull(177, 0, __str,  GetPlayerCountry, (int, int));
 
 #endif//__GDCC_Header__C__ACS_Zandronum__Native_h__
 
