@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015-2023 David Hill
+// Copyright(C) 2015-2024 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -579,6 +579,23 @@ special
    // GZDoom's
    int   -400:SetSectorGlow(6, int, int, int, int, int, int),
    int   -401:SetFogDensity(2, int, int),
+
+   // K8Vavoom's
+   int	 -800:Polyobj_MoveEx(7, int, int, int, int, int, int, int),
+   int   -801:Polyobj_MoveToEx(6, int, int, int, int, int, int),
+   int   -802:Polyobj_MoveToSpotEx(4, int, int, int, int),
+   fixed -803:GetPolyobjZ(1, int),
+   int   -804:Polyobj_GetFlagsEx(1, int),
+   int   -805:Polyobj_SetFlagsEx(3, int, int, int),
+   int   -806:Polyobj_IsBusy(1, int),
+   fixed -807:Polyobj_GetAngle(1, int),
+   int   -808:Polyobj_MoveRotateEx(8, int, int, int, int, int, int, fixed, int),
+   int   -809:Polyobj_MoveToRotateEx(7, int, int, int, int, int, fixed, int),
+   int   -810:Polyobj_MoveToSpotRotateEx(5, int, int, int, fixed, int),
+   int   -811:Polyobj_RotateEx(4, int, int, fixed, int),
+
+   int   -860:CalcActorLight(3, int, int, int),
+   int   -861:CalcPlayerLight(1, int),
 
    // ZDaemon's
    int -19260:GetTeamScore(1),
