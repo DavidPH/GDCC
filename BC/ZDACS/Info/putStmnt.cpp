@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2022 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -113,6 +113,9 @@ namespace GDCC::BC::ZDACS
    {
       Core::FastU arr, idx;
       Code        code;
+
+      if(isInitScriptEvent())
+         return;
 
       if(isInitiHubArr())
       {

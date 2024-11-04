@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -120,7 +120,8 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Xcod_SID()
    {
-     numChunkCODE += 32;
+      if(!isInitScriptEvent())
+         numChunkCODE += 32;
    }
 
    //

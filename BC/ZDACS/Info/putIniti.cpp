@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -33,6 +33,15 @@ namespace GDCC::BC::ZDACS
 
       if(!isGblArr && !isHubArr)
          return;
+
+      if(isInitScriptEvent())
+      {
+         // Check event type.
+         putCode(Code::Push_LocReg, 0);
+         putCode(Code::Jcnd_Lit, 16, putPos + 20);
+         putCode(Code::Drop_Nul);
+         putCode(Code::Rscr);
+      }
 
       if(isHubArr)
       {

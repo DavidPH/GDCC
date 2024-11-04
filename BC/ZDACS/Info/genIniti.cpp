@@ -69,6 +69,13 @@ namespace GDCC::BC::ZDACS
       // Save index for initializer start.
       codeInit = CodeBase() + numChunkCODE;
 
+      if(isInitScriptEvent())
+      {
+         // Check event type.
+         // Push_LocReg Jcnd_Lit Drop_Nul Rscr
+         numChunkCODE += 28;
+      }
+
       // Initialize world arrays.
       if(isHubArr)
       {

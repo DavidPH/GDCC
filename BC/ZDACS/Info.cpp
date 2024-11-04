@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2022 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -152,6 +152,22 @@ namespace GDCC::BC::ZDACS
             "status. Default is -1."),
 
       0xFFFFFFFF
+   };
+
+   //
+   // --bc-zdacs-init-script-event
+   //
+   static Option::Bool InitScriptEvent
+   {
+      &Core::GetOptionList(), Option::Base::Info()
+         .setName("bc-zdacs-init-script-event")
+         .setGroup("codegen")
+         .setDescS("Uses the init event for the init script.")
+         .setDescL(
+            "Uses the init event for the initialization script. Default is "
+            "false."),
+
+      false
    };
 
    //
@@ -700,6 +716,15 @@ namespace GDCC::BC::ZDACS
             {found = true; break;}
 
       return funcJfar_Set.emplace(f, found).second;
+   }
+
+   //
+   // Info::isInitScriptEvent
+   //
+   bool Info::isInitScriptEvent()
+   {
+      // TODO 2024-11-04: Make this default to true for Zandronum after release.
+      return InitScriptEvent;
    }
 
    //

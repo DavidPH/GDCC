@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2022 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -332,6 +332,8 @@ namespace GDCC::BC::ZDACS
 
       bool isFuncJfar_Set(IR::Function const *func);
 
+      bool isInitScriptEvent();
+
       bool isInitiGblArr();
       bool isInitiHubArr();
 
@@ -498,7 +500,7 @@ namespace GDCC::BC::ZDACS
 
       void putCode(Code code);
       void putCode(Code code, Core::FastU arg0);
-      void putCode(Code code, Core::FastU arg0, Core::FastU);
+      void putCode(Code code, Core::FastU arg0, Core::FastU arg1);
 
       using InfoBase::putFunc;
       virtual void putFunc();

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2022 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -639,34 +639,40 @@ namespace GDCC::BC::ZDACS
       // Initializer script.
       if(codeInit)
       {
+         Core::FastU stype, param;
+         if(isInitScriptEvent())
+            stype = 16, param = 1;
+         else
+            stype = 1, param = 0;
+
          if(UseFakeACS0)
          {
             putHWord(InitScriptNumber);
-            putByte(1);
-            putByte(0);
+            putByte(stype);
+            putByte(param);
             putWord(codeInit);
 
             if(Target::EngineCur == Target::Engine::Zandronum)
             {
                putHWord(InitScriptNumber + 1);
-               putByte(1);
-               putByte(0);
+               putByte(stype);
+               putByte(param);
                putWord(codeInit);
             }
          }
          else
          {
             putHWord(InitScriptNumber);
-            putHWord(1);
+            putHWord(stype);
             putWord(codeInit);
-            putWord(0);
+            putWord(param);
 
             if(Target::EngineCur == Target::Engine::Zandronum)
             {
                putHWord(InitScriptNumber + 1);
-               putHWord(1);
+               putHWord(stype);
                putWord(codeInit);
-               putWord(0);
+               putWord(param);
             }
          }
       }
