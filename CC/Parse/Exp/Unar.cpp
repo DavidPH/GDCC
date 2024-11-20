@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -96,6 +96,40 @@ namespace GDCC::CC
       glyphData.type = type->getIRType();
 
       return ctx.fact.expCreate_IRExp(IR::ExpCreate_Glyph(glyph, pos), type, pos);
+   }
+
+   //
+   // GetExp_Unar_indexof
+   //
+   static SR::Exp::CRef GetExp_Unar_indexof(Parser &ctx, Scope &scope)
+   {
+      // indexof-expression:
+      //    <__indexof> ( type-name )
+      //    <__indexof> unary-expression
+
+      auto pos = ctx.in.get().pos;
+
+      // (
+      if(ctx.in.drop(Core::TOK_ParenO))
+      {
+         // type-name
+         if(ctx.isType(scope))
+         {
+            auto type = ctx.getType(scope);
+
+            // )
+            ctx.expect(Core::TOK_ParenC);
+
+            return ctx.fact.expCreate_SizeIndex(ctx.prog, type, pos);
+         }
+
+         ctx.in.unget();
+      }
+      else
+         SR::WarnParentheses(pos, "indexof without parentheses");
+
+      // TODO 2024-11-20: Add warning if expression is not an lvalue.
+      return ctx.fact.expCreate_SizeIndex(ctx.prog, ctx.getExp_Unar(scope), pos);
    }
 
    //
@@ -341,6 +375,7 @@ namespace GDCC::CC
       {
       case Core::STR___div:      return GetExp_Unar_div(*this, scope);
       case Core::STR___glyph:    return GetExp_Unar_glyph(*this, scope);
+      case Core::STR___indexof:  return GetExp_Unar_indexof(*this, scope);
       case Core::STR___longjmp:  return GetExp_Unar_longjmp(*this, scope);
       case Core::STR___offsetof: return GetExp_Unar_offsetof(*this, scope);
       case Core::STR___setjmp:   return GetExp_Unar_setjmp(*this, scope);

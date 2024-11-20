@@ -441,6 +441,34 @@ Semantics:
   If the glyph's type does not match the specified type, the behavior is
   undefined.
 
+===========================================================
+Unary Expressions
+===========================================================
+
+Syntax:
+  unary-expression: add
+    indexof-expression
+
+-----------------------------------------------------------
+Indexof Expression
+-----------------------------------------------------------
+
+Syntax:
+  indexof-expression:
+    <__indexof> ( type-name )
+    <__indexof> unary-expression
+
+Constraints:
+  The indexof operator shall not be applied to a type without an address space
+  with an index.
+
+Semantics:
+  The indexof operator yields the index of the address space of its operand,
+  which may be an expression or the parenthesized name of a type. The operand
+  is not evaluated and the result is an integer constant.
+
+  Which address spaces have an index is implementation defined.
+
 ===============================================================================
 Declarations
 ===============================================================================

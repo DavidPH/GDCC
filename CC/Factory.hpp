@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2019 David Hill
+// Copyright (C) 2019-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -165,6 +165,9 @@ namespace GDCC::CC
 
       virtual ExpRef expCreate_SizeBytes(Exp const *type, Origin pos);
       virtual ExpRef expCreate_SizeBytes(Type const *type, Origin pos);
+
+      virtual ExpRef expCreate_SizeIndex(IR::Program &prog, Exp const *type, Origin pos);
+      virtual ExpRef expCreate_SizeIndex(IR::Program &prog, Type const *type, Origin pos);
 
       virtual ExpRef expCreate_StrIdx(IR::Program &prog, Scope &scope,
          Core::String lit, Origin pos);

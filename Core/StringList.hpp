@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2023 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -45,6 +45,7 @@ GDCC_Core_StringList(__glyph, "__glyph")
 GDCC_Core_StringList(__hub_arr, "__hub_arr")
 GDCC_Core_StringList(__hub_ars, "__hub_ars")
 GDCC_Core_StringList(__hub_reg, "__hub_reg")
+GDCC_Core_StringList(__indexof, "__indexof")
 GDCC_Core_StringList(__label, "__label")
 GDCC_Core_StringList(__loc, "__loc")
 GDCC_Core_StringList(__loc_arr, "__loc_arr")

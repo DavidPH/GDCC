@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,6 +19,7 @@
 #include "Core/Exception.hpp"
 
 #include "IR/Exp.hpp"
+#include "IR/Glyph.hpp"
 #include "IR/Value.hpp"
 
 #include "SR/Exp/Arg.hpp"
@@ -451,6 +452,49 @@ namespace GDCC::CC
 
       return expCreate_LitInt(TypeIntegPrU,
          Core::NumberCast<Core::Integ>(t->getSizeBytes()), pos);
+   }
+
+   //
+   // Factory::expCreate_SizeIndex
+   //
+   SR::Exp::CRef Factory::expCreate_SizeIndex(IR::Program &prog,
+      SR::Exp const *e, Core::Origin pos)
+   {
+      return expCreate_SizeIndex(prog, e->getArg().type, pos);
+   }
+
+   //
+   // Factory::expCreate_SizeIndex
+   //
+   SR::Exp::CRef Factory::expCreate_SizeIndex(IR::Program &prog,
+      SR::Type const *t, Core::Origin pos)
+   {
+      if(!t->isCTypeObject())
+         Core::Error(pos, "expected object type");
+
+      auto addr = t->getQualAddr();
+
+      switch(addr.base)
+      {
+      case IR::AddrBase::Gen:
+      case IR::AddrBase::Aut:
+      case IR::AddrBase::Sta:
+      case IR::AddrBase::Vaa:
+         // TODO 2024-11-20: Centralize this glyph name somewhere.
+         return expCreate_IRExp(IR::ExpCreate_Glyph({prog, "___GDCC__Sta"}, pos),
+            TypeIntegPrU, pos);
+
+      case IR::AddrBase::GblArr:
+      case IR::AddrBase::HubArr:
+      case IR::AddrBase::LocArr:
+      case IR::AddrBase::ModArr:
+      case IR::AddrBase::StrArr:
+         return expCreate_IRExp(IR::ExpCreate_Glyph({prog, addr.name}, pos),
+            TypeIntegPrU, pos);
+
+      default:
+         Core::Error(pos, "unexpected address space");
+      }
    }
 
    //
