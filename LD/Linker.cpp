@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2019 David Hill
+// Copyright (C) 2015-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -145,6 +145,7 @@ namespace GDCC::LD
          #endif
 
       case Target::Engine::Eternity:
+      case Target::Engine::Hexen:
       case Target::Engine::ZDoom:
       case Target::Engine::Zandronum:
          #if GDCC_BC_ZDACS

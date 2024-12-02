@@ -470,6 +470,12 @@ namespace GDCC::BC::ZDACS
 
       virtual void put();
 
+      void putACS0();
+      void putACS0_Code();
+      void putACS0_Scripts();
+      void putACS0_Strings();
+      void putACSE();
+
       virtual void putExtra();
 
       void putByte(Core::FastU i);
@@ -796,6 +802,7 @@ namespace GDCC::BC::ZDACS
 
       static Core::FastU GetRetnMax(IR::CallType call);
 
+      static Core::FastU GetScriptType(IR::Function const &script);
       static Core::FastU GetScriptValue(IR::Function const &script);
 
       static bool IsNull(IR::Value_Funct const &val);

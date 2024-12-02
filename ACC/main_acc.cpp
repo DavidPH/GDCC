@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2019 David Hill
+// Copyright (C) 2015-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -140,6 +140,7 @@ int main(int argc, char *argv[])
 
    // Default target to ZDoom, like acc.
    GDCC::Target::EngineCur = GDCC::Target::Engine::ZDoom;
+   GDCC::Target::FormatCur = GDCC::Target::Format::ACSE;
 
    try
    {

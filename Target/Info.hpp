@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -30,6 +30,7 @@ namespace GDCC::Target
       None,
       Doominati,
       Eternity,
+      Hexen,
       ZDoom,
       Zandronum,
    };
@@ -40,6 +41,7 @@ namespace GDCC::Target
    enum class Format
    {
       None,
+      ACS0,
       ACSE,
       DGE_NTS,
    };

@@ -238,12 +238,7 @@ namespace GDCC::BC::ZDACS
       putData("\0\0\0\0", 4);
       putWord(numChunkCODE);
 
-      // Put statements.
-      for(auto &itr : prog->rangeFunction())
-         putFunc(itr);
-
-      // Put initializers.
-      putIniti();
+      putACS0_Code();
    }
 
    //
@@ -587,50 +582,20 @@ namespace GDCC::BC::ZDACS
 
          if(!itr.defin) continue;
 
-         Core::FastU stype = 0;
-
-         // Convert script type.
-         for(auto const &st : itr.stype)
-         {
-            if(auto type = ScriptTypes.find(st))
-               stype = *type;
-
-            else switch(st)
-            {
-            case Core::STR_bluereturn:  stype =  6; break;
-            case Core::STR_death:       stype =  3; break;
-            case Core::STR_disconnect:  stype = 14; break;
-            case Core::STR_enter:       stype =  4; break;
-            case Core::STR_event:       stype = 16; break;
-            case Core::STR_kill:        stype = 17; break;
-            case Core::STR_lightning:   stype = 12; break;
-            case Core::STR_open:        stype =  1; break;
-            case Core::STR_pickup:      stype =  5; break;
-            case Core::STR_redreturn:   stype =  7; break;
-            case Core::STR_reopen:      stype = 18; break;
-            case Core::STR_respawn:     stype =  2; break;
-            case Core::STR_return:      stype = 15; break;
-            case Core::STR_unloading:   stype = 13; break;
-            case Core::STR_whitereturn: stype =  8; break;
-            default: break;
-            }
-         }
-
-         auto paramMax = GetParamMax(itr.ctype);
-         auto param    = itr.param < paramMax ? itr.param : paramMax;
+         auto param = std::min(itr.param, GetParamMax(itr.ctype));
 
          // Write entry.
          if(UseFakeACS0)
          {
             putHWord(GetScriptValue(itr));
-            putByte(stype);
+            putByte(GetScriptType(itr));
             putByte(param);
             putWord(getWord(resolveGlyph(itr.label)));
          }
          else
          {
             putHWord(GetScriptValue(itr));
-            putHWord(stype);
+            putHWord(GetScriptType(itr));
             putWord(getWord(resolveGlyph(itr.label)));
             putWord(param);
          }

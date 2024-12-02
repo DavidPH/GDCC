@@ -15,8 +15,10 @@
 #include "BC/ZDACS/Code.hpp"
 
 #include "IR/Function.hpp"
+#include "IR/Program.hpp"
 
 #include "Target/CallType.hpp"
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -29,6 +31,120 @@ namespace GDCC::BC::ZDACS
    // Info::put
    //
    void Info::put()
+   {
+      if(Target::FormatCur == Target::Format::ACS0)
+         putACS0();
+      else
+         putACSE();
+   }
+
+   //
+   // Info::putACS0
+   //
+   void Info::putACS0()
+   {
+      putData("ACS\0", 4);
+      putWord(16 + numChunkCODE);
+
+      // <shamelessplug>
+      putData("GDCC::BC", 8);
+      // </shamelessplug>
+
+      putACS0_Code();
+      putACS0_Scripts();
+      putACS0_Strings();
+   }
+
+   //
+   // Info::putACS0_Code
+   //
+   void Info::putACS0_Code()
+   {
+      // Put statements.
+      for(auto &itr : prog->rangeFunction())
+         putFunc(itr);
+
+      // Put initializers.
+      putIniti();
+   }
+
+   //
+   // Info::putACS0_Scripts
+   //
+   void Info::putACS0_Scripts()
+   {
+      // Write script count.
+      putWord(numChunkSPTR);
+
+      // Write script headers.
+      for(auto const &itr : prog->rangeFunction())
+      {
+         if(!IsScript(itr.ctype))
+            continue;
+
+         if(!itr.defin) continue;
+
+         // Write entry.
+         putWord(GetScriptValue(itr) + GetScriptType(itr) * 1000);
+         putWord(getWord(resolveGlyph(itr.label)));
+         putWord(std::min(itr.param, GetParamMax(itr.ctype)));
+      }
+
+      // Initializer script.
+      if(codeInit)
+      {
+         Core::FastU stype, param;
+         if(isInitScriptEvent())
+            stype = 16, param = 1;
+         else
+            stype = 1, param = 0;
+
+         putWord(InitScriptNumber + stype * 1000);
+         putWord(codeInit);
+         putWord(param);
+
+         if(Target::EngineCur == Target::Engine::Zandronum)
+         {
+            putWord(InitScriptNumber + 1 + stype * 1000);
+            putWord(codeInit);
+            putWord(param);
+         }
+      }
+   }
+
+   //
+   // Info::putACS0_Strings
+   //
+   void Info::putACS0_Strings()
+   {
+      // Build string table.
+      Core::Array<Core::String> strs{numChunkSTRL};
+
+      for(auto &s : strs) s = Core::STR_;
+
+      for(auto const &itr : prog->rangeStrEnt()) if(itr.defin)
+         strs[itr.valueInt] = itr.valueStr;
+
+      // Write string count.
+      putWord(numChunkSTRL);
+
+      // Write string offsets.
+      std::size_t off = putPos + numChunkSTRL * 4;
+      for(auto const &s : strs)
+      {
+         putWord(off);
+         off += lenString(s);
+      }
+
+      // Write strings.
+      for(auto const &s : strs)
+         putString(s);
+   }
+
+   //
+   // Info::putACSE
+   //
+   void Info::putACSE()
    {
       // Put header.
       if(UseFakeACS0)
@@ -54,7 +170,7 @@ namespace GDCC::BC::ZDACS
       {
          putWord(16);
          putData("ACSE", 4);
-         putWord(0);
+         putACS0_Scripts();
          putWord(0);
       }
    }
