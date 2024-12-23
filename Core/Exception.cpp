@@ -89,6 +89,9 @@ namespace GDCC::Core
    class ExceptStringU : public Exception
    {
    public:
+      ExceptStringU(ExceptStringU const &e) :
+         Exception{e}, str{StrDup(e.str.get())} {}
+      ExceptStringU(ExceptStringU &&) = default;
       ExceptStringU(Origin pos_, std::unique_ptr<char[]> &&str_) noexcept :
          Exception{pos_}, str{std::move(str_)} {}
 

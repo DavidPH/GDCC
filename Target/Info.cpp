@@ -341,6 +341,8 @@ namespace GDCC::Target
       case Engine::Zandronum:
          return false;
       }
+
+      return false;
    }
 
    //

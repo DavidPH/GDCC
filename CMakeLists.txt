@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2022 David Hill
+## Copyright (C) 2013-2024 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -10,7 +10,7 @@
 ##
 ##-----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.0...3.31)
 
 project(gdcc)
 

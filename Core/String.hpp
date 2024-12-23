@@ -48,7 +48,8 @@ namespace GDCC::Core
 
       template<std::size_t Len>
       StringData(char const (&str_)[Len], StringIndex idx_) :
-         StringData{str_, Len - 1, Option::StrHash(str_, Len - 1), idx_} {}
+         StringData{str_, Len - 1, Option::StrHash(str_, Len - 1),
+            static_cast<std::size_t>(idx_)} {}
 
       StringData(char const *str, std::size_t len, std::size_t hash, std::size_t idx);
 
