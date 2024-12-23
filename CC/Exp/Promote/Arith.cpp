@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2023 David Hill
+// Copyright (C) 2014-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -19,6 +19,8 @@
 
 #include "SR/Exp.hpp"
 #include "SR/Type.hpp"
+
+#include <array>
 
 
 //----------------------------------------------------------------------------|

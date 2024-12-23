@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -24,15 +24,17 @@
 
 namespace GDCC::Core
 {
+   template<typename Itr>
+   using MemItrVT = typename std::iterator_traits<Itr>::value_type;
+
    //
    // MemItr
    //
    // The template defaults make it suitable for wrapping STL pair iterators.
    //
    template<typename Itr,
-      typename MT = typename std::iterator_traits<Itr>::value_type::second_type,
-      MT std::iterator_traits<Itr>::value_type::*P =
-         &std::iterator_traits<Itr>::value_type::second>
+      typename MT = typename MemItrVT<Itr>::second_type,
+      MT MemItrVT<Itr>::*P = &MemItrVT<Itr>::second>
    class MemItr : public Itr
    {
    public:
