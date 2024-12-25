@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2019 David Hill
+// Copyright (C) 2015-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -79,6 +79,7 @@ namespace GDCC::ACC
 
       virtual StatementCRef getSt(CC::Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
       virtual StatementCRef getSt_do(CC::Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
+      virtual StatementCRef getSt_goto(CC::Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
       virtual StatementCRef getSt_restart(CC::Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
       virtual StatementCRef getSt_while(CC::Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);
       virtual StatementCRef getSt_terminate(CC::Scope_Local &scope, SR::Attribute &&attr, Labels &&labels);

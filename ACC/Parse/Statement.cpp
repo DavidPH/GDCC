@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2019 David Hill
+// Copyright (C) 2015-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -65,6 +65,7 @@ namespace GDCC::ACC
          // jump-statement
       case Core::STR_continue:  return getSt_continue (scope, std::move(attr), std::move(labels));
       case Core::STR_break:     return getSt_break    (scope, std::move(attr), std::move(labels));
+      case Core::STR_goto:      return getSt_goto     (scope, std::move(attr), std::move(labels));
       case Core::STR_return:    return getSt_return   (scope, std::move(attr), std::move(labels));
       case Core::STR_restart:   return getSt_restart  (scope, std::move(attr), std::move(labels));
       case Core::STR_terminate: return getSt_terminate(scope, std::move(attr), std::move(labels));
@@ -109,6 +110,26 @@ namespace GDCC::ACC
       expect(Core::TOK_Semico);
 
       return fact.stCreate_Do(std::move(labels), pos, loopScope, body, cond);
+   }
+
+   //
+   // Parser::getSt_goto
+   //
+   SR::Statement::CRef Parser::getSt_goto(CC::Scope_Local &scope,
+      SR::Attribute &&, Labels &&labels)
+   {
+      // <goto> identifier ;
+
+      // <goto>
+      auto pos = in.get().pos;
+
+      // identifier
+      auto name = expectIdenti().str;
+
+      // ;
+      expect(Core::TOK_Semico);
+
+      return fact.stCreate_Goto(std::move(labels), pos, scope, name);
    }
 
    //
