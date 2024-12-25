@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -16,6 +16,7 @@
 #include "../Core/Types.hpp"
 
 #include <cstdint>
+#include <ostream>
 #include <utility>
 
 #if GDCC_Core_BigNum
@@ -148,6 +149,17 @@ namespace GDCC::Core
 
 namespace GDCC::Core
 {
+   #if GDCC_Core_BigNum
+   // Automatically picks between decimal/hex.
+   std::ostream &WriteNumber(std::ostream &out, Float const &in);
+
+   std::ostream &WriteNumberDec(std::ostream &out, Float const &in);
+   std::ostream &WriteNumberDec(std::ostream &out, Integ const &in);
+
+   std::ostream &WriteNumberHex(std::ostream &out, Float const &in);
+   std::ostream &WriteNumberHex(std::ostream &out, Integ const &in);
+   #endif
+
    //
    // NumberCast
    //

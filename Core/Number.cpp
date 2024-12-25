@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -107,6 +107,67 @@ namespace GDCC::Core
 
       return out;
       #endif
+   }
+   #endif
+
+   #if GDCC_Core_BigNum
+   //
+   // WriteNumber
+   //
+   std::ostream &WriteNumber(std::ostream &out, Float const &in)
+   {
+      std::size_t lenDec = gmp_snprintf(nullptr, 0, "%.Ff", in.get_mpf_t()) + 1;
+      std::size_t lenHex = gmp_snprintf(nullptr, 0, "%.FA", in.get_mpf_t()) + 1;
+
+      std::unique_ptr<char[]> buf;
+      if(lenHex < lenDec)
+         gmp_snprintf((buf.reset(new char[lenHex]), buf.get()), lenHex, "%.FA", in.get_mpf_t());
+      else
+         gmp_snprintf((buf.reset(new char[lenDec]), buf.get()), lenDec, "%.Ff", in.get_mpf_t());
+
+      return out << buf.get();
+   }
+   #endif
+
+   #if GDCC_Core_BigNum
+   //
+   // WriteNumberDec
+   //
+   std::ostream &WriteNumberDec(std::ostream &out, Float const &in)
+   {
+      std::size_t len = gmp_snprintf(nullptr, 0, "%.Ff", in.get_mpf_t()) + 1;
+      std::unique_ptr<char[]> buf{new char[len]};
+      gmp_snprintf(buf.get(), len, "%.Ff", in.get_mpf_t());
+      return out << buf.get();
+   }
+
+   //
+   // WriteNumberDec
+   //
+   std::ostream &WriteNumberDec(std::ostream &out, Integ const &in)
+   {
+      return out << in.get_str(10);
+   }
+   #endif
+
+   #if GDCC_Core_BigNum
+   //
+   // WriteNumberHex
+   //
+   std::ostream &WriteNumberHex(std::ostream &out, Float const &in)
+   {
+      std::size_t len = gmp_snprintf(nullptr, 0, "%.FA", in.get_mpf_t()) + 1;
+      std::unique_ptr<char[]> buf{new char[len]};
+      gmp_snprintf(buf.get(), len, "%.FA", in.get_mpf_t());
+      return out << buf.get();
+   }
+
+   //
+   // WriteNumberHex
+   //
+   std::ostream &WriteNumberHex(std::ostream &out, Integ const &in)
+   {
+      return out << in.get_str(-16);
    }
    #endif
 }

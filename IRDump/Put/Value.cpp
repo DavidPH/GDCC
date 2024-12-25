@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -96,9 +96,9 @@ namespace GDCC::IRDump
    void PutValue_Fixed(std::ostream &out, IR::Value_Fixed const &val)
    {
       if(val.vtype.bitsF)
-         out << (static_cast<Core::Float>(val.value) >> val.vtype.bitsF);
+         Core::WriteNumber(out, Core::NumberCast<Core::Float>(val.value) >> val.vtype.bitsF);
       else
-         out << val.value;
+         Core::WriteNumberDec(out, val.value);
 
       out << '_';
       if(val.vtype.bitsS) out << 's';
@@ -112,7 +112,7 @@ namespace GDCC::IRDump
    //
    void PutValue_Float(std::ostream &out, IR::Value_Float const &val)
    {
-      out << val.value;
+      Core::WriteNumber(out, val.value);
 
       out << '_';
       out << 'f';

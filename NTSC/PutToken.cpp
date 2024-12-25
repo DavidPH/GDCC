@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2019 David Hill
+// Copyright (C) 2019-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -52,7 +52,7 @@ namespace GDCC::NTSC
       std::tie(itr, i, std::ignore) = Core::ParseNumberInteg(itr, base);
       if(itr != end)
          Core::ErrorExpect("number", tok);
-      out << '0' << std::uppercase << std::hex << i << '\0';
+      Core::WriteNumberHex(out << '0', i) << '\0';
    }
 }
 
