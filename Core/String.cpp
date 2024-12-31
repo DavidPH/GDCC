@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -32,11 +32,11 @@ namespace GDCC::Core
 // Static Objects                                                             |
 //
 
-static std::vector<std::unique_ptr<char[]>> StringTableAlloc;
-
-static constexpr std::size_t StringTableHashC = 1024;
-static std::size_t StringTableHash[StringTableHashC];
-
+namespace GDCC::Core
+{
+   static constexpr std::size_t StringTableHashC = 1024;
+   static std::size_t StringTableHash[StringTableHashC];
+}
 
 
 //----------------------------------------------------------------------------|
@@ -70,6 +70,15 @@ namespace GDCC::Core
          #include "Core/StringList.hpp"
       };
 
+      return table;
+   }
+
+   //
+   // StringTableAlloc
+   //
+   static std::vector<std::unique_ptr<char[]>> &StringTableAlloc()
+   {
+      static std::vector<std::unique_ptr<char[]>> table;
       return table;
    }
 }
@@ -234,8 +243,8 @@ namespace GDCC::Core
    String String::Add(std::unique_ptr<char[]> &&str, std::size_t len,
       std::size_t hash)
    {
-      StringTableAlloc.emplace_back(std::move(str));
-      return Add(StringTableAlloc.back().get(), len, hash);
+      StringTableAlloc().emplace_back(std::move(str));
+      return Add(StringTableAlloc().back().get(), len, hash);
    }
 
    //
