@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -47,7 +47,8 @@ namespace GDCC::IR
    //
    bool Exp_Glyph::v_isValue() const
    {
-      return glyph.getData().value;
+      auto &glyphData = glyph.getData();
+      return glyphData.value && glyphData.value->isValue();
    }
 
    //
