@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2024 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -156,6 +156,7 @@ namespace GDCC::BC::ZDACS
                {
                case InitTag::Funct: tags[i.first] = 2; break;
                case InitTag::StrEn: tags[i.first] = 1; break;
+               default:             tags[i.first] = 0; break;
                }
                module->chunkATAG.add(space->value, std::move(tags));
             }

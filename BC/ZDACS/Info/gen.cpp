@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2024 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -206,7 +206,7 @@ namespace GDCC::BC::ZDACS
          Core::Array<Core::FastU> sizes{Core::Size, func->localArr.size()};
          for(auto i = sizes.size(); --i;)
             sizes[i] = func->localArr[i];
-         return std::move(sizes);
+         return sizes;
       };
 
       // Back label glyph.

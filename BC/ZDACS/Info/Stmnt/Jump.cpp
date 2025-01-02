@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2024 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -110,8 +110,7 @@ namespace GDCC::BC::ZDACS
       }
       else
       {
-         ElemArgs    args{stmnt->args.size()};
-         std::size_t argi = 0;
+         ElemArgs args{stmnt->args.size()};
 
          args[0] = args.size() / 2;
 

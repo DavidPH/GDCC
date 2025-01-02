@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2024 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -141,8 +141,8 @@ namespace GDCC::BC::ZDACS
          putWord(elem.inits.size());
          putWord(elem.value);
 
-         for(auto const &init : elem.inits)
-            putWord(getWord(init));
+         for(auto const &ini : elem.inits)
+            putWord(getWord(ini));
       }
    }
 
@@ -334,8 +334,8 @@ namespace GDCC::BC::ZDACS
          putData("MINI", 4);
          putWord(4 + elem.inits.size() * 4);
          putWord(elem.value);
-         for(auto const &init : elem.inits)
-            putWord(getWord(init));
+         for(auto const &ini : elem.inits)
+            putWord(getWord(ini));
       }
    }
 

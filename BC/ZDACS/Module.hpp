@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2024 David Hill
+// Copyright (C) 2024-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -74,10 +74,10 @@ namespace GDCC::BC::ZDACS
       ElemArg(IR::Exp const *exp, Core::FastU w) : exp{exp}, val{w} {}
       explicit ElemArg(Core::FastU val) : exp{}, val{val} {}
 
-      ElemArg &operator = (IR::Exp const *exp)
-         {this->exp = exp; val = 0; return *this;}
-      ElemArg &operator = (Core::FastU val)
-         {exp = nullptr; this->val = val; return *this;}
+      ElemArg &operator = (IR::Exp const *exp_)
+         {exp = exp_; val = 0; return *this;}
+      ElemArg &operator = (Core::FastU val_)
+         {exp = nullptr; val = val_; return *this;}
 
       IR::Exp::CPtr exp;
       Core::FastU   val;
