@@ -12,6 +12,8 @@
 
 #include "BC/ZDACS/Info.hpp"
 
+#include "BC/ZDACS/Module.hpp"
+
 #include "Core/Exception.hpp"
 #include "Core/Option.hpp"
 #include "Core/StringOption.hpp"
@@ -320,29 +322,14 @@ namespace GDCC::BC::ZDACS
    //
    // Info default constructor
    //
-   Info::Info() :
-      codeInit   {0},
-      codeInitEnd{0},
+   Info::Info()
+   {
+   }
 
-      numChunkAIMP{0},
-      numChunkAINI{0},
-      numChunkARAY{0},
-      numChunkASTR{0},
-      numChunkATAG{0},
-      numChunkCODE{0},
-      numChunkFNAM{0},
-      numChunkFUNC{0},
-      numChunkJUMP{0},
-      numChunkLOAD{0},
-      numChunkMEXP{0},
-      numChunkMIMP{0},
-      numChunkMINI{0},
-      numChunkMSTR{0},
-      numChunkSFLG{0},
-      numChunkSNAM{0},
-      numChunkSPTR{0},
-      numChunkSTRL{0},
-      numChunkSVCT{0}
+   //
+   // Info destructor
+   //
+   Info::~Info()
    {
    }
 
@@ -393,6 +380,26 @@ namespace GDCC::BC::ZDACS
 
       data.value = IR::ExpCreate_Value(IR::Value_Point(val,
          data.type.tPoint.reprB, data.type.tPoint.reprN, data.type.tPoint), {nullptr, 0});
+   }
+
+   //
+   // Info::backGlyphLabel
+   //
+   void Info::backGlyphLabel(Core::String glyph)
+   {
+      backGlyphLabel(glyph, getCodePos());
+   }
+
+   //
+   // Info::backGlyphLabel
+   //
+   void Info::backGlyphLabel(Core::String glyph, Core::FastU val)
+   {
+      auto &data = prog->getGlyphData(glyph);
+
+      data.type  = TypeWord;
+      data.value = IR::ExpCreate_Value(
+         IR::Value_Fixed(Core::NumberCast<Core::Integ>(val), TypeWord), {nullptr, 0});
    }
 
    //
@@ -548,6 +555,14 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::getCodePos
+   //
+   Core::FastU Info::getCodePos()
+   {
+      return CodeBase() + module->chunkCODE.getPos();
+   }
+
+   //
    // Info::getInitGblArray
    //
    Core::FastU Info::getInitGblArray()
@@ -619,8 +634,19 @@ namespace GDCC::BC::ZDACS
 
       default:
       case_def:
-         Core::Error(stmnt->pos, "bad getStkPtrIdx");
+         Core::Error(getOrigin(), "bad getStkPtrIdx");
       }
+   }
+
+   //
+   // Info::getWord
+   //
+   Core::FastU Info::getWord(ElemArg const &arg)
+   {
+      if(arg.exp)
+         return getWord(arg.exp, arg.val);
+      else
+         return arg.val;
    }
 
    //
@@ -733,9 +759,9 @@ namespace GDCC::BC::ZDACS
    bool Info::isInitiGblArr()
    {
       for(auto const &itr : prog->rangeSpaceGblArs())
-         if(!init[&itr].vals.empty()) return true;
+         if(init[&itr].used) return true;
 
-      return !init[&prog->getSpaceSta()].vals.empty();
+      return init[&prog->getSpaceSta()].used;
    }
 
    //
@@ -744,7 +770,29 @@ namespace GDCC::BC::ZDACS
    bool Info::isInitiHubArr()
    {
       for(auto const &itr : prog->rangeSpaceHubArs())
-         if(!init[&itr].vals.empty()) return true;
+         if(init[&itr].used) return true;
+
+      return false;
+   }
+
+   //
+   // Info::isNull_Funct
+   //
+   bool Info::isNull_Funct(IR::Exp const *val, Core::FastU w)
+   {
+      if(val->isValue())
+         return IsNull_Funct(getWord(val, w));
+
+      return false;
+   }
+
+   //
+   // Info::isNull_StrEn
+   //
+   bool Info::isNull_StrEn(IR::Exp const *val, Core::FastU w)
+   {
+      if(val->isValue())
+         return IsNull_StrEn(getWord(val, w));
 
       return false;
    }
@@ -769,275 +817,6 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::Sta:    return isPushArg(*arg.aSta.idx);
       default:                  return false;
       }
-   }
-
-   //
-   // Info::lenDropArg
-   //
-   Core::FastU Info::lenDropArg(IR::Arg const &arg, Core::FastU w)
-   {
-      //
-      // lenArr
-      //
-      auto lenArr = [&](IR::ArgPtr2 const &a) -> Core::FastU
-      {
-         if(a.idx->a == IR::ArgBase::Lit)
-            return 20;
-         else
-         {
-            Core::FastU len = lenPushArg(*a.idx, 0) + 12;
-
-            if(a.off + w)
-               len += 12;
-
-            return len;
-         }
-      };
-
-      //
-      // lenAut
-      //
-      auto lenAut = [&](IR::Arg_Aut const &a) -> Core::FastU
-      {
-         if(a.idx->a == IR::ArgBase::Lit)
-            return 32;
-         else
-         {
-            Core::FastU len = lenPushArg(*a.idx, 0) + 24;
-
-            if(a.off + w)
-               len += 12;
-
-            return len;
-         }
-      };
-
-      //
-      // lenSta
-      //
-      auto lenSta = [&](IR::Arg_Sta const &a) -> Core::FastU
-      {
-         if(a.idx->a == IR::ArgBase::Lit)
-            return 20;
-         else
-         {
-            Core::FastU len = lenPushArg(*a.idx, 0) + 12;
-
-            if(a.off + w)
-               len += 12;
-
-            return len;
-         }
-      };
-
-      switch(arg.a)
-      {
-      case IR::ArgBase::Aut:    return lenAut(arg.aAut);
-      case IR::ArgBase::GblArr: return lenArr(arg.aGblArr);
-      case IR::ArgBase::GblReg: return 8;
-      case IR::ArgBase::HubArr: return lenArr(arg.aHubArr);
-      case IR::ArgBase::HubReg: return 8;
-      case IR::ArgBase::LocArr: return lenArr(arg.aLocArr);
-      case IR::ArgBase::LocReg: return 8;
-      case IR::ArgBase::ModArr: return lenArr(arg.aModArr);
-      case IR::ArgBase::ModReg: return 8;
-      case IR::ArgBase::Nul:    return 4;
-      case IR::ArgBase::Sta:    return lenSta(arg.aSta);
-      default:
-         Core::Error(stmnt->pos, "bad lenDropArg");
-      }
-   }
-
-   //
-   // Info::lenDropArg
-   //
-   Core::FastU Info::lenDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
-   {
-      Core::FastU len = 0;
-
-      for(; lo != hi; ++lo)
-         len += lenDropArg(arg, lo);
-
-      return len;
-   }
-
-   //
-   // Info::lenDropTmp
-   //
-   Core::FastU Info::lenDropTmp(Core::FastU)
-   {
-      return 8;
-   }
-
-   //
-   // Info::lenIncUArg
-   //
-   Core::FastU Info::lenIncUArg(IR::Arg const &arg, Core::FastU)
-   {
-      switch(arg.a)
-      {
-      case IR::ArgBase::GblReg: return 8;
-      case IR::ArgBase::HubReg: return 8;
-      case IR::ArgBase::LocReg: return 8;
-      case IR::ArgBase::ModReg: return 8;
-      default:
-         Core::Error(stmnt->pos, "bad lenIncUArg");
-      }
-   }
-
-   //
-   // Info::lenIncUArg
-   //
-   Core::FastU Info::lenIncUArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
-   {
-      Core::FastU len = 0;
-
-      for(; lo != hi; ++lo)
-         len += lenIncUArg(arg, lo);
-
-      return len;
-   }
-
-   //
-   // Info::lenPushArg
-   //
-   Core::FastU Info::lenPushArg(IR::Arg const &arg, Core::FastU w)
-   {
-      //
-      // lenArr
-      //
-      auto lenArr = [&](IR::ArgPtr2 const &a) -> Core::FastU
-      {
-         if(a.idx->a == IR::ArgBase::Lit)
-            return 16;
-         else
-         {
-            Core::FastU len = lenPushArg(*a.idx, 0) + 8;
-
-            if(a.off + w)
-               len += 12;
-
-            return len;
-         }
-      };
-
-      //
-      // lenAut
-      //
-      auto lenAut = [&](IR::Arg_Aut const &a) -> Core::FastU
-      {
-         if(a.idx->a == IR::ArgBase::Lit)
-            return 28;
-         else
-         {
-            Core::FastU len = lenPushArg(*a.idx, 0) + 20;
-
-            if(a.off + w)
-               len += 12;
-
-            return len;
-         }
-      };
-
-      //
-      // lenLit
-      //
-      auto lenLit = [&]() -> Core::FastU
-      {
-         auto type = arg.aLit.value->getType();
-         auto wOff = arg.aLit.off + w;
-
-         return getWordType(type, wOff) == IR::TypeBase::StrEn ? 12 : 8;
-      };
-
-      //
-      // lenSta
-      //
-      auto lenSta = [&](IR::Arg_Sta const &a) -> Core::FastU
-      {
-         if(a.idx->a == IR::ArgBase::Lit)
-            return 16;
-         else
-         {
-            Core::FastU len = lenPushArg(*a.idx, 0) + 8;
-
-            if(a.off + w)
-               len += 12;
-
-            return len;
-         }
-      };
-
-      switch(arg.a)
-      {
-      case IR::ArgBase::Aut:    return lenAut(arg.aAut);
-      case IR::ArgBase::GblArr: return lenArr(arg.aGblArr);
-      case IR::ArgBase::GblReg: return 8;
-      case IR::ArgBase::HubArr: return lenArr(arg.aHubArr);
-      case IR::ArgBase::HubReg: return 8;
-      case IR::ArgBase::Lit:    return lenLit();
-      case IR::ArgBase::LocArr: return lenArr(arg.aLocArr);
-      case IR::ArgBase::LocReg: return 8;
-      case IR::ArgBase::ModArr: return lenArr(arg.aModArr);
-      case IR::ArgBase::ModReg: return 8;
-      case IR::ArgBase::Sta:    return lenSta(arg.aSta);
-
-      default:
-         Core::Error(stmnt->pos, "bad lenPushArg");
-      }
-   }
-
-   //
-   // Info::lenPushArg
-   //
-   Core::FastU Info::lenPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
-   {
-      Core::FastU len = 0;
-
-      for(; lo != hi; ++lo)
-         len += lenPushArg(arg, lo);
-
-      return len;
-   }
-
-   //
-   // lenPushIdx
-   //
-   Core::FastU Info::lenPushIdx(IR::Arg const &arg, Core::FastU w)
-   {
-      //
-      // lenSta
-      //
-      auto lenSta = [&](IR::Arg_Sta const &a) -> Core::FastU
-      {
-         if(a.idx->a == IR::ArgBase::Lit)
-            return 8;
-         else
-         {
-            Core::FastU len = lenPushArg(*a.idx, 0);
-
-            if(a.off + w)
-               len += 12;
-
-            return len;
-         }
-      };
-
-      switch(arg.a)
-      {
-      case IR::ArgBase::Sta:    return lenSta(arg.aSta);
-
-      default:
-         Core::Error(stmnt->pos, "bad lenPushIdx");
-      }
-   }
-
-   //
-   // Info::lenPushTmp
-   //
-   Core::FastU Info::lenPushTmp(Core::FastU)
-   {
-      return 8;
    }
 
    //
@@ -1066,17 +845,6 @@ namespace GDCC::BC::ZDACS
       }
 
       return len + 1;
-   }
-
-   //
-   // Info::resolveGlyph
-   //
-   IR::Exp::CRef Info::resolveGlyph(Core::String glyph)
-   {
-      if(auto exp = prog->getGlyphData(glyph).value)
-         return static_cast<IR::Exp::CRef>(exp);
-
-      Core::ErrorUndef(stmnt->pos, "glyph", glyph);
    }
 
    //
@@ -1140,14 +908,38 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::GetScriptFlag
+   //
+   Core::FastU Info::GetScriptFlag(IR::Function const *script)
+   {
+      Core::FastU flags = 0;
+
+      // Convert script type.
+      for(auto const &st : script->stype)
+      {
+         if(auto flag = ScriptFlags.find(st))
+            flags |= *flag;
+
+         else switch(st)
+         {
+         case Core::STR_clientside: flags |= 0x0002; break;
+         case Core::STR_net:        flags |= 0x0001; break;
+         default: break;
+         }
+      }
+
+      return flags;
+   }
+
+   //
    // Info::GetScriptType
    //
-   Core::FastU Info::GetScriptType(IR::Function const &script)
+   Core::FastU Info::GetScriptType(IR::Function const *script)
    {
       Core::FastU stype = 0;
 
       // Convert script type.
-      for(auto const &st : script.stype)
+      for(auto const &st : script->stype)
       {
          if(auto type = ScriptTypes.find(st))
             stype = *type;
@@ -1179,12 +971,12 @@ namespace GDCC::BC::ZDACS
    //
    // Info::GetScriptValue
    //
-   Core::FastU Info::GetScriptValue(IR::Function const &script)
+   Core::FastU Info::GetScriptValue(IR::Function const *script)
    {
-      if(IsScriptS(script.ctype))
-         return ~script.valueInt;
+      if(IsScriptS(script->ctype))
+         return ~script->valueInt;
       else
-         return script.valueInt;
+         return script->valueInt;
    }
 
    //
@@ -1210,7 +1002,7 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::isNull_Funct
+   // Info::IsNull_Funct
    //
    bool Info::IsNull_Funct(Core::FastU val)
    {

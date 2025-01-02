@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "BC/ZDACS/Info.hpp"
+
+#include "BC/ZDACS/Module.hpp"
 
 #include "IR/Program.hpp"
 
@@ -81,12 +83,12 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkAIMP()
    {
-      if(!numChunkAIMP) return 0;
+      auto elemC = module->chunkAIMP.size();
+      if(!elemC) return 0;
 
-      Core::FastU len = numChunkAIMP * 8 + 12;
-
-      for(auto const &sp : prog->rangeSpaceModArs())
-         if(!sp.defin && spaceUsed[&sp]) len += lenString(sp.glyph);
+      Core::FastU len = elemC * 8 + 4;
+      for(auto const &elem : module->chunkAIMP)
+         len += lenString(elem.glyph);
 
       return len;
    }
@@ -96,14 +98,9 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkAINI()
    {
-      if(!numChunkAINI) return 0;
-
       Core::FastU len = 0;
-
-      for(auto const &itr : init)
-         if(itr.first->space.base == IR::AddrBase::ModArr &&
-            itr.first->defin && !itr.second.onlyNil)
-            len += itr.second.max * 4 + 12;
+      for(auto const &elem : module->chunkAINI)
+         len += 12 + elem.inits.size() * 4;
 
       return len;
    }
@@ -113,9 +110,10 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkARAY()
    {
-      if(!numChunkARAY) return 0;
+      auto elemC = module->chunkARAY.size();
+      if(!elemC) return 0;
 
-      return numChunkARAY * 8 + 8;
+      return 8 + elemC * 8;
    }
 
    //
@@ -123,9 +121,10 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkASTR()
    {
-      if(!numChunkASTR) return 0;
+      auto elemC = module->chunkASTR.size();
+      if(!elemC) return 0;
 
-      return numChunkASTR * 4 + 8;
+      return 8 + elemC * 4;
    }
 
    //
@@ -133,16 +132,9 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkATAG()
    {
-      if(!numChunkATAG) return 0;
-
       Core::FastU len = 0;
-
-      for(auto const &itr : init)
-         if(itr.first->space.base == IR::AddrBase::ModArr && itr.first->defin)
-      {
-         if(itr.second.needTag && !itr.second.onlyStr)
-            len += itr.second.max + 13;
-      }
+      for(auto const &elem : module->chunkATAG)
+         len += 13 + elem.tags.size();
 
       return len;
    }
@@ -152,7 +144,7 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkCODE()
    {
-      return numChunkCODE + 8;
+      return 8 + module->chunkCODE.getPos();
    }
 
    //
@@ -160,22 +152,11 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkFARY()
    {
-      Core::FastU numChunk = 0;
-      Core::FastU numArray = 0;
+      Core::FastU len = 0;
+      for(auto const &elem : module->chunkFARY)
+         len += 10 + elem.sizes.size() * 4;
 
-      for(auto const &itr : prog->rangeFunction())
-      {
-         if(itr.ctype != IR::CallType::StdCall &&
-            itr.ctype != IR::CallType::StkCall)
-            continue;
-
-         if(itr.localArr.empty()) continue;
-
-         ++numChunk;
-         numArray += itr.localArr.size();
-      }
-
-      return numChunk * 10 + numArray * 4;
+      return len;
    }
 
    //
@@ -183,22 +164,10 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkFNAM()
    {
-      if(!numChunkFNAM) return 0;
+      if(module->chunkFNAM.empty()) return 0;
 
-      Core::Array<Core::String> strs{numChunkFNAM};
-
-      for(auto &s : strs) s = Core::STR_;
-
-      for(auto const &itr : prog->rangeFunction())
-      {
-         if(itr.ctype != IR::CallType::StdCall &&
-            itr.ctype != IR::CallType::StkCall)
-            continue;
-
-         strs[itr.valueInt] = itr.glyph;
-      }
-
-      return lenChunk("FNAM", strs, false);
+      return lenChunk("FNAM", {module->chunkFNAM.begin(), module->chunkFNAM.end(),
+         [](ElemFNAM const &elem) {return elem.glyph;}}, false);
    }
 
    //
@@ -206,9 +175,10 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkFUNC()
    {
-      if(!numChunkFUNC) return 0;
+      auto elemC = module->chunkFUNC.size();
+      if(!elemC) return 0;
 
-      return numChunkFUNC * 8 + 8;
+      return 8 + elemC * 8;
    }
 
    //
@@ -216,9 +186,10 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkJUMP()
    {
-      if(!numChunkJUMP) return 0;
+      auto elemC = module->chunkJUMP.size();
+      if(!elemC) return 0;
 
-      return numChunkJUMP * 4 + 8;
+      return 8 + elemC * 4;
    }
 
    //
@@ -226,14 +197,12 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkLOAD()
    {
-      numChunkLOAD = prog->sizeImport();
-
-      if(!numChunkLOAD) return 0;
+      auto elemC = module->chunkLOAD.size();
+      if(!elemC) return 0;
 
       Core::FastU len = 8;
-
-      for(auto const &itr : prog->rangeImport())
-         len += lenString(itr.glyph);
+      for(auto const &elem : module->chunkLOAD)
+         len += lenString(elem.glyph);
 
       return len;
    }
@@ -243,21 +212,10 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkMEXP()
    {
-      if(!numChunkMEXP) return 0;
+      if(module->chunkMEXP.empty()) return 0;
 
-      Core::Array<Core::String> strs{numChunkMEXP};
-      for(auto &s : strs) s = Core::STR_;
-
-      for(auto const &itr : prog->rangeObjectBySpace({IR::AddrBase::ModReg, Core::STR_}))
-      {
-         if(itr->defin)
-            strs[itr->value] = itr->glyph;
-      }
-
-      for(auto const &itr : prog->rangeSpaceModArs())
-         if(itr.defin) strs[itr.value] = itr.glyph;
-
-      return lenChunk("MEXP", strs, false);
+      return lenChunk("MEXP", {module->chunkMEXP.begin(), module->chunkMEXP.end(),
+         [](ElemMEXP const &elem) {return elem.glyph;}}, false);
    }
 
    //
@@ -265,15 +223,12 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkMIMP()
    {
-      if(!numChunkMIMP) return 0;
+      auto elemC = module->chunkMIMP.size();
+      if(!elemC) return 0;
 
-      Core::FastU len = numChunkMIMP * 4 + 8;
-
-      for(auto const &itr : prog->rangeObjectBySpace({IR::AddrBase::ModReg, Core::STR_}))
-      {
-         if(!itr->defin)
-            len += lenString(itr->glyph);
-      }
+      Core::FastU len = 8 + elemC * 4;
+      for(auto const &elem : module->chunkMIMP)
+         len += lenString(elem.glyph);
 
       return len;
    }
@@ -283,9 +238,11 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkMINI()
    {
-      if(!numChunkMINI) return 0;
+      Core::FastU len = 0;
+      for(auto const &elem : module->chunkMINI)
+         len += 12 + elem.inits.size() * 4;
 
-      return numChunkMINI * 16;
+      return len;
    }
 
    //
@@ -293,9 +250,10 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkMSTR()
    {
-      if(!numChunkMSTR) return 0;
+      auto elemC = module->chunkMSTR.size();
+      if(!elemC) return 0;
 
-      return numChunkMSTR * 4 + 8;
+      return 8 + elemC * 4;
    }
 
    //
@@ -303,21 +261,11 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkSARY()
    {
-      Core::FastU numChunk = 0;
-      Core::FastU numArray = 0;
+      Core::FastU len = 0;
+      for(auto const &elem : module->chunkSARY)
+         len += 10 + elem.sizes.size() * 4;
 
-      for(auto const &itr : prog->rangeFunction())
-      {
-         if(!IsScriptS(itr.ctype))
-            continue;
-
-         if(itr.localArr.empty()) continue;
-
-         ++numChunk;
-         numArray += itr.localArr.size();
-      }
-
-      return numChunk * 10 + numArray * 4;
+      return len;
    }
 
    //
@@ -325,9 +273,10 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkSFLG()
    {
-      if(!numChunkSFLG) return 0;
+      auto elemC = module->chunkSFLG.size();
+      if(!elemC) return 0;
 
-      return numChunkSFLG * 4 + 8;
+      return 8 + elemC * 4;
    }
 
    //
@@ -335,29 +284,10 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkSNAM()
    {
-      if(!numChunkSNAM) return 0;
+      if(module->chunkSNAM.empty()) return 0;
 
-      Core::Array<Core::String> strs{numChunkSNAM};
-
-      for(auto &s : strs) s = Core::STR_;
-
-      for(auto const &itr : prog->rangeFunction())
-      {
-         if(!itr.defin || !IsScriptS(itr.ctype))
-            continue;
-
-         strs[itr.valueInt] = itr.valueStr;
-      }
-
-      if(codeInit && InitScriptNamed)
-      {
-         *(strs.end() - 1) = InitScriptName;
-
-         if(Target::EngineCur == Target::Engine::Zandronum)
-            *(strs.end() - 2) = InitScriptName + "_ClS";
-      }
-
-      return lenChunk("SNAM", strs, false);
+      return lenChunk("SNAM", {module->chunkSNAM.begin(), module->chunkSNAM.end(),
+         [](ElemSNAM const &elem) {return elem.glyph;}}, false);
    }
 
    //
@@ -365,9 +295,10 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkSPTR()
    {
-      if(!numChunkSPTR) return 0;
+      auto elemC = module->chunkSPTR.size();
+      if(!elemC) return 0;
 
-      return numChunkSPTR * (UseFakeACS0 ? 8 : 12) + 8;
+      return 8 + elemC * (UseFakeACS0 ? 8 : 12);
    }
 
    //
@@ -375,16 +306,11 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkSTRL()
    {
-      if(!numChunkSTRL) return 0;
+      if(module->chunkSTRL.empty()) return 0;
 
-      Core::Array<Core::String> strs{numChunkSTRL};
-
-      for(auto &s : strs) s = Core::STR_;
-
-      for(auto const &itr : prog->rangeStrEnt()) if(itr.defin)
-         strs[itr.valueInt] = itr.valueStr;
-
-      return lenChunk("STRL", strs, true);
+      return lenChunk(UseChunkSTRE ? "STRE" : "STRL", 
+         {module->chunkSTRL.begin(), module->chunkSTRL.end(),
+            [](ElemSTRL const &elem) {return elem.value;}}, true);
    }
 
    //
@@ -392,9 +318,10 @@ namespace GDCC::BC::ZDACS
    //
    Core::FastU Info::lenChunkSVCT()
    {
-      if(!numChunkSVCT) return 0;
+      auto elemC = module->chunkSVCT.size();
+      if(!elemC) return 0;
 
-      return numChunkSVCT * 4 + 8;
+      return 8 + elemC * 4;
    }
 }
 

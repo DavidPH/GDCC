@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,8 @@
 //-----------------------------------------------------------------------------
 
 #include "BC/ZDACS/Info.hpp"
+
+#include "BC/ZDACS/Module.hpp"
 
 #include "Core/Exception.hpp"
 
@@ -65,13 +67,11 @@ namespace GDCC::BC::ZDACS
 
          if(space->defin)
          {
-            ++numChunkARAY;
-
-            if(numChunkMEXP <= space->value)
-               numChunkMEXP = space->value + 1;
+            module->chunkARAY.add(space->value, space->words);
+            module->chunkMEXP[space->value] = ElemMEXP{space->glyph};
          }
          else if(spaceUsed[space])
-            ++numChunkAIMP;
+            module->chunkAIMP.add(space->glyph, space->value, space->words);
 
          // Back address glyph.
          backGlyphWord(space->glyph, space->value);
@@ -140,24 +140,39 @@ namespace GDCC::BC::ZDACS
          }
 
          if(!ini.onlyNil)
-            ++numChunkAINI;
+         {
+            ElemArgs inits{static_cast<std::size_t>(ini.max)};
+            for(auto const &i : ini.vals)
+               inits[i.first].val = i.second.val;
+            module->chunkAINI.add(space->value, std::move(inits));
+         }
 
          if(ini.needTag)
          {
-            if(ini.onlyStr)
-               ++numChunkASTR;
+            if(!ini.onlyStr)
+            {
+               Core::Array<Core::FastU> tags{Core::Size, static_cast<std::size_t>(ini.max)};
+               for(auto const &i : ini.vals) switch(i.second.tag)
+               {
+               case InitTag::Funct: tags[i.first] = 2; break;
+               case InitTag::StrEn: tags[i.first] = 1; break;
+               }
+               module->chunkATAG.add(space->value, std::move(tags));
+            }
             else
-               ++numChunkATAG;
+               module->chunkASTR.add(space->value);
          }
       }
       else if(space->space.base == IR::AddrBase::ModReg)
       {
+         // TODO 2024-12-30: This should try to combine MINI chunks.
          for(auto const &i : ini.vals)
          {
-            if(i.second.val) ++numChunkMINI;
+            if(i.second.val)
+               module->chunkMINI.add(i.first, {ElemArg{i.second.val}});
 
             if(i.second.tag == InitTag::StrEn)
-               ++numChunkMSTR;
+               module->chunkMSTR.add(i.first);
          }
       }
    }

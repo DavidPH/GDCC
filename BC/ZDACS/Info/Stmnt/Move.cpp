@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -50,7 +50,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Copy()
    {
-      numChunkCODE += 4;
+      genCode(Code::Copy);
    }
 
    //
@@ -64,10 +64,20 @@ namespace GDCC::BC::ZDACS
       if(n != 1)
       {
          if(stmnt->args[0].a != IR::ArgBase::Stk)
-            numChunkCODE += lenDropArg(stmnt->args[0], 0, n);
-
-         if(stmnt->args[1].a != IR::ArgBase::Stk)
-            numChunkCODE += lenPushArg(stmnt->args[1], 0, n);
+         {
+            if(stmnt->args[1].a != IR::ArgBase::Stk)
+            {
+               for(Core::FastU w = 0; w != n; ++w)
+               {
+                  genStmntPushArg(stmnt->args[1], w);
+                  genStmntDropArg(stmnt->args[0], w);
+               }
+            }
+            else
+               genStmntDropArg(stmnt->args[0], 0, n);
+         }
+         else if(stmnt->args[1].a != IR::ArgBase::Stk)
+            genStmntPushArg(stmnt->args[1], 0, n);
 
          return;
       }
@@ -76,31 +86,52 @@ namespace GDCC::BC::ZDACS
       if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
       {
       case IR::ArgBase::Aut:
-         numChunkCODE += stmnt->args[1].aAut.off ? 32 : 20;
+         genCode(Code::Push_LocReg, getStkPtrIdx());
+         genCode(Code::AddU);
+
+         if(stmnt->args[1].aAut.off)
+         {
+            genCode(Code::Push_Lit, stmnt->args[1].aAut.off);
+            genCode(Code::AddU);
+         }
+
+         genCode(Code::Push_GblArr, StaArray);
          break;
 
       case IR::ArgBase::GblArr:
-         genStmnt_Move__Stk_Arr(stmnt->args[1].aGblArr);
+         genStmnt_Move__Stk_Arr(stmnt->args[1].aGblArr, Code::Push_GblArr);
          break;
 
       case IR::ArgBase::HubArr:
-         genStmnt_Move__Stk_Arr(stmnt->args[1].aHubArr);
+         genStmnt_Move__Stk_Arr(stmnt->args[1].aHubArr, Code::Push_HubArr);
          break;
 
       case IR::ArgBase::LocArr:
-         genStmnt_Move__Stk_Arr(stmnt->args[1].aLocArr);
+         genStmnt_Move__Stk_Arr(stmnt->args[1].aLocArr, Code::Push_LocArr);
          break;
 
       case IR::ArgBase::ModArr:
-         genStmnt_Move__Stk_Arr(stmnt->args[1].aModArr);
+         genStmnt_Move__Stk_Arr(stmnt->args[1].aModArr, Code::Push_ModArr);
          break;
 
       case IR::ArgBase::Sta:
-         numChunkCODE += stmnt->args[1].aSta.off ? 20 : 8;
+         if(stmnt->args[1].aSta.off)
+         {
+            genCode(Code::Push_Lit, stmnt->args[1].aSta.off);
+            genCode(Code::AddU);
+         }
+
+         genCode(Code::Push_GblArr, StaArray);
          break;
 
       case IR::ArgBase::StrArs:
-         numChunkCODE += stmnt->args[1].aStrArs.off ? 24 : 12;
+         if(stmnt->args[1].aStrArs.off)
+         {
+            genCode(Code::Push_Lit, stmnt->args[1].aStrArs.off);
+            genCode(Code::AddU);
+         }
+
+         genCode(Code::Cnat, 2, 15);
          break;
 
       default:
@@ -112,29 +143,48 @@ namespace GDCC::BC::ZDACS
       else if(stmnt->args[1].a == IR::ArgBase::Stk) switch(stmnt->args[0].a)
       {
       case IR::ArgBase::Aut:
-         numChunkCODE += stmnt->args[0].aAut.off ? 36 : 24;
-         break;
+         genCode(Code::Push_LocReg, getStkPtrIdx());
+         genCode(Code::AddU);
 
-      case IR::ArgBase::Nul: numChunkCODE += 4; break;
+         if(stmnt->args[0].aAut.off)
+         {
+            genCode(Code::Push_Lit, stmnt->args[0].aAut.off);
+            genCode(Code::AddU);
+         }
+
+         genCode(Code::Swap);
+         genCode(Code::Drop_GblArr, StaArray);
+         break;
 
       case IR::ArgBase::GblArr:
-         genStmnt_Move__Arr_Stk(stmnt->args[0].aGblArr);
-         break;
-
-      case IR::ArgBase::HubArr:
-         genStmnt_Move__Arr_Stk(stmnt->args[0].aHubArr);
+         genStmnt_Move__Arr_Stk(stmnt->args[0].aGblArr, Code::Drop_GblArr);
          break;
 
       case IR::ArgBase::LocArr:
-         genStmnt_Move__Arr_Stk(stmnt->args[0].aLocArr);
+         genStmnt_Move__Arr_Stk(stmnt->args[0].aLocArr, Code::Drop_LocArr);
          break;
 
       case IR::ArgBase::ModArr:
-         genStmnt_Move__Arr_Stk(stmnt->args[0].aModArr);
+         genStmnt_Move__Arr_Stk(stmnt->args[0].aModArr, Code::Drop_ModArr);
+         break;
+
+      case IR::ArgBase::Nul:
+         genCode(Code::Drop_Nul);
          break;
 
       case IR::ArgBase::Sta:
-         numChunkCODE += stmnt->args[0].aSta.off ? 24 : 12;
+         if(stmnt->args[0].aSta.off)
+         {
+            genCode(Code::Push_Lit, stmnt->args[0].aSta.off);
+            genCode(Code::AddU);
+         }
+
+         genCode(Code::Swap);
+         genCode(Code::Drop_GblArr, StaArray);
+         break;
+
+      case IR::ArgBase::HubArr:
+         genStmnt_Move__Arr_Stk(stmnt->args[0].aHubArr, Code::Drop_HubArr);
          break;
 
       default:
@@ -144,23 +194,36 @@ namespace GDCC::BC::ZDACS
 
       // ???
       else
-         Core::Error(stmnt->pos, "bad gen Move_W");
+         Core::Error(stmnt->pos, "bad put Move_W");
    }
 
    //
    // Info::genStmnt_Move__Arr_Stk
    //
-   void Info::genStmnt_Move__Arr_Stk(IR::ArgPtr2 const &arr)
+   void Info::genStmnt_Move__Arr_Stk(IR::ArgPtr2 const &arr, Code code)
    {
-      numChunkCODE += arr.off ? 24 : 12;
+      if(arr.off)
+      {
+         genCode(Code::Push_Lit, arr.off);
+         genCode(Code::AddU);
+      }
+
+      genCode(Code::Swap);
+      genCode(code, arr.arr->aLit.value);
    }
 
    //
    // Info::genStmnt_Move__Stk_Arr
    //
-   void Info::genStmnt_Move__Stk_Arr(IR::ArgPtr2 const &arr)
+   void Info::genStmnt_Move__Stk_Arr(IR::ArgPtr2 const &arr, Code code)
    {
-      numChunkCODE += arr.off ? 20 : 8;
+      if(arr.off)
+      {
+         genCode(Code::Push_Lit, arr.off);
+         genCode(Code::AddU);
+      }
+
+      genCode(code, arr.arr->aLit.value);
    }
 
    //
@@ -171,231 +234,17 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       if(n == 1)
-         numChunkCODE += 4;
-      else
-         numChunkCODE += n * 32;
-   }
-
-   //
-   // Info::putStmnt_Copy
-   //
-   void Info::putStmnt_Copy()
-   {
-      putCode(Code::Copy);
-   }
-
-   //
-   // Info::putStmnt_Move
-   //
-   void Info::putStmnt_Move()
-   {
-      auto n = getStmntSize();
-
-      // Multi-word?
-      if(n != 1)
-      {
-         if(stmnt->args[0].a != IR::ArgBase::Stk)
-         {
-            if(stmnt->args[1].a != IR::ArgBase::Stk)
-            {
-               for(Core::FastU w = 0; w != n; ++w)
-               {
-                  putStmntPushArg(stmnt->args[1], w);
-                  putStmntDropArg(stmnt->args[0], w);
-               }
-            }
-            else
-               putStmntDropArg(stmnt->args[0], 0, n);
-         }
-         else if(stmnt->args[1].a != IR::ArgBase::Stk)
-            putStmntPushArg(stmnt->args[1], 0, n);
-
-         return;
-      }
-
-      // push_?
-      if(stmnt->args[0].a == IR::ArgBase::Stk) switch(stmnt->args[1].a)
-      {
-      case IR::ArgBase::Aut:
-         putCode(Code::Push_LocReg);
-         putWord(getStkPtrIdx());
-         putCode(Code::AddU);
-
-         if(stmnt->args[1].aAut.off)
-         {
-            putCode(Code::Push_Lit);
-            putWord(stmnt->args[1].aAut.off);
-            putCode(Code::AddU);
-         }
-
-         putCode(Code::Push_GblArr);
-         putWord(StaArray);
-         break;
-
-      case IR::ArgBase::GblArr:
-         putStmnt_Move__Stk_Arr(stmnt->args[1].aGblArr, Code::Push_GblArr);
-         break;
-
-      case IR::ArgBase::HubArr:
-         putStmnt_Move__Stk_Arr(stmnt->args[1].aHubArr, Code::Push_HubArr);
-         break;
-
-      case IR::ArgBase::LocArr:
-         putStmnt_Move__Stk_Arr(stmnt->args[1].aLocArr, Code::Push_LocArr);
-         break;
-
-      case IR::ArgBase::ModArr:
-         putStmnt_Move__Stk_Arr(stmnt->args[1].aModArr, Code::Push_ModArr);
-         break;
-
-      case IR::ArgBase::Sta:
-         if(stmnt->args[1].aSta.off)
-         {
-            putCode(Code::Push_Lit);
-            putWord(stmnt->args[1].aSta.off);
-            putCode(Code::AddU);
-         }
-
-         putCode(Code::Push_GblArr);
-         putWord(StaArray);
-         break;
-
-      case IR::ArgBase::StrArs:
-         if(stmnt->args[1].aStrArs.off)
-         {
-            putCode(Code::Push_Lit);
-            putWord(stmnt->args[1].aStrArs.off);
-            putCode(Code::AddU);
-         }
-
-         putCode(Code::Cnat);
-         putWord(2);
-         putWord(15);
-         break;
-
-      default:
-         putStmntPushArg(stmnt->args[1], 0);
-         break;
-      }
-
-      // drop_?
-      else if(stmnt->args[1].a == IR::ArgBase::Stk) switch(stmnt->args[0].a)
-      {
-      case IR::ArgBase::Aut:
-         putCode(Code::Push_LocReg);
-         putWord(getStkPtrIdx());
-         putCode(Code::AddU);
-
-         if(stmnt->args[0].aAut.off)
-         {
-            putCode(Code::Push_Lit);
-            putWord(stmnt->args[0].aAut.off);
-            putCode(Code::AddU);
-         }
-
-         putCode(Code::Swap);
-         putCode(Code::Drop_GblArr);
-         putWord(StaArray);
-         break;
-
-      case IR::ArgBase::GblArr:
-         putStmnt_Move__Arr_Stk(stmnt->args[0].aGblArr, Code::Drop_GblArr);
-         break;
-
-      case IR::ArgBase::LocArr:
-         putStmnt_Move__Arr_Stk(stmnt->args[0].aLocArr, Code::Drop_LocArr);
-         break;
-
-      case IR::ArgBase::ModArr:
-         putStmnt_Move__Arr_Stk(stmnt->args[0].aModArr, Code::Drop_ModArr);
-         break;
-
-      case IR::ArgBase::Nul:
-         putCode(Code::Drop_Nul);
-         break;
-
-      case IR::ArgBase::Sta:
-         if(stmnt->args[0].aSta.off)
-         {
-            putCode(Code::Push_Lit);
-            putWord(stmnt->args[0].aSta.off);
-            putCode(Code::AddU);
-         }
-
-         putCode(Code::Swap);
-         putCode(Code::Drop_GblArr);
-         putWord(StaArray);
-         break;
-
-      case IR::ArgBase::HubArr:
-         putStmnt_Move__Arr_Stk(stmnt->args[0].aHubArr, Code::Drop_HubArr);
-         break;
-
-      default:
-         putStmntDropArg(stmnt->args[0], 0);
-         break;
-      }
-
-      // ???
-      else
-         Core::Error(stmnt->pos, "bad put Move_W");
-   }
-
-   //
-   // Info::putStmnt_Move__Arr_Stk
-   //
-   void Info::putStmnt_Move__Arr_Stk(IR::ArgPtr2 const &arr, Code code)
-   {
-      if(arr.off)
-      {
-         putCode(Code::Push_Lit);
-         putWord(arr.off);
-         putCode(Code::AddU);
-      }
-
-      putCode(Code::Swap);
-      putCode(code);
-      putWord(getWord(arr.arr->aLit));
-   }
-
-   //
-   // Info::putStmnt_Move__Stk_Arr
-   //
-   void Info::putStmnt_Move__Stk_Arr(IR::ArgPtr2 const &arr, Code code)
-   {
-      if(arr.off)
-      {
-         putCode(Code::Push_Lit);
-         putWord(arr.off);
-         putCode(Code::AddU);
-      }
-
-      putCode(code);
-      putWord(getWord(arr.arr->aLit));
-   }
-
-   //
-   // Info::putStmnt_Swap
-   //
-   void Info::putStmnt_Swap()
-   {
-      auto n = getStmntSize();
-
-      if(n == 1)
-      {
-         putCode(Code::Swap);
-         return;
-      }
+         return genCode(Code::Swap);
 
       for(Core::FastU i = n; i--;)
-         putCode(Code::Drop_LocReg, func->localReg + i);
+         genStmntDropTmp(i);
       for(Core::FastU i = n; i--;)
-         putCode(Code::Drop_LocReg, func->localReg + i + n);
+         genStmntDropTmp(i + n);
 
       for(Core::FastU i = 0; i != n; ++i)
-         putCode(Code::Push_LocReg, func->localReg + i);
+         genStmntPushTmp(i);
       for(Core::FastU i = 0; i != n; ++i)
-         putCode(Code::Push_LocReg, func->localReg + i + n);
+         genStmntPushTmp(i + n);
    }
 
    //

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,7 @@
 #include "BC/ZDACS/Info.hpp"
 
 #include "BC/ZDACS/Code.hpp"
+#include "BC/ZDACS/Module.hpp"
 
 #include "IR/Exception.hpp"
 #include "IR/Function.hpp"
@@ -90,12 +91,12 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       if(n == 0)
-      {
-         numChunkCODE += 8;
-         return;
-      }
+         return genCode(Code::Jump_Lit, stmnt->args[1].aLit.value);
 
-      numChunkCODE += n * 4 + 4;
+      for(auto i = n; --i;)
+         genCode(Code::BOrI);
+
+      genCode(Code::Jcnd_Nil, stmnt->args[1].aLit.value);
    }
 
    //
@@ -104,9 +105,22 @@ namespace GDCC::BC::ZDACS
    void Info::genStmnt_Jcnd_Tab()
    {
       if(stmnt->args.size() == 3)
-         numChunkCODE += 12;
+      {
+         genCode(Code::Jcnd_Lit, stmnt->args[1].aLit.value, stmnt->args[2].aLit.value);
+      }
       else
-         numChunkCODE += stmnt->args.size() * 4 + 4;
+      {
+         ElemArgs    args{stmnt->args.size()};
+         std::size_t argi = 0;
+
+         args[0] = args.size() / 2;
+
+         // Table sorting is handled later when symbols can be resolved.
+         for(std::size_t i = 1; i != args.size(); ++i)
+            args[i] = stmnt->args[i].aLit.value;
+
+         genCode(Code::Jcnd_Tab, std::move(args));
+      }
    }
 
    //
@@ -118,7 +132,10 @@ namespace GDCC::BC::ZDACS
 
       if(n == 0) return;
 
-      numChunkCODE += n * 4 + 4;
+      for(auto i = n; --i;)
+         genCode(Code::BOrI);
+
+      genCode(Code::Jcnd_Tru, stmnt->args[1].aLit.value);
    }
 
    //
@@ -126,7 +143,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Jdyn()
    {
-      numChunkCODE += 4;
+      genCode(Code::Jdyn);
    }
 
    //
@@ -134,7 +151,35 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Jfar()
    {
-      numChunkCODE += 28 + 8 + (36 + 36 + 24 + 4);
+      // Check auto pointer match.
+      genCode(Code::Push_GblArr, StaArray);
+      genCode(Code::Push_LocReg, getStkPtrIdx());
+      genCode(Code::CmpU_EQ);
+      auto jump = module->chunkCODE.size();
+      genCode(Code::Jcnd_Tru,    0);
+
+      // Non-match! Branch to addr.
+      genCode(Code::Jump_Lit, stmnt->args[0].aLit.value);
+
+      // Match! Push result and execute dynamic branch.
+      module->chunkCODE[jump].args[0] = getCodePos();
+      genCode(Code::Push_Lit,    FarJumpIndex);
+      genCode(Code::Push_GblArr, StaArray);
+      genCode(Code::Push_Lit,    2);
+      genCode(Code::AddU);
+      genCode(Code::Push_GblArr, StaArray);
+
+      genCode(Code::Push_Lit,    FarJumpIndex);
+      genCode(Code::Push_GblArr, StaArray);
+      genCode(Code::Push_Lit,    1);
+      genCode(Code::AddU);
+      genCode(Code::Push_GblArr, StaArray);
+
+      genCode(Code::Push_Lit,    FarJumpIndex);
+      genCode(Code::Push_Lit,    0);
+      genCode(Code::Drop_GblArr, StaArray);
+
+      genCode(Code::Jdyn);
    }
 
    //
@@ -146,21 +191,46 @@ namespace GDCC::BC::ZDACS
 
       if(isFuncJfar_Set(func))
       {
-         numChunkCODE += 28;
+         // Check for ongoing far jump.
+         genCode(Code::Push_Lit,    FarJumpIndex);
+         genCode(Code::Push_GblArr, StaArray);
+         auto jump = module->chunkCODE.size();
+         genCode(Code::Jcnd_Lit,    0, 0);
 
          if(n)
-            numChunkCODE += n * 4 + lenDropTmp(0) + lenPushTmp(0);
+         {
+            genStmntDropTmp(0);
 
+            for(auto i = n; i--;)
+               genCode(Code::Drop_Nul);
+
+            genStmntPushTmp(0);
+         }
+
+         // Propagate far jump.
          genStmnt_Jfar();
+
+         module->chunkCODE[jump].args[1] = getCodePos();
       }
       else
       {
-         numChunkCODE += 16;
+         // Check for ongoing far jump.
+         genCode(Code::Push_Lit,    FarJumpIndex);
+         genCode(Code::Push_GblArr, StaArray);
 
          if(n)
-            numChunkCODE += 8 + n * 4 + 8;
+         {
+            auto jump = module->chunkCODE.size();
+            genCode(Code::Jcnd_Nil, 0);
+
+            for(auto i = n; i--;)
+               genCode(Code::Drop_Nul);
+
+            genCode(Code::Jump_Lit, stmnt->args[0].aLit.value);
+            module->chunkCODE[jump].args[0] = getCodePos();
+         }
          else
-            numChunkCODE += 8;
+            genCode(Code::Jcnd_Tru, stmnt->args[0].aLit.value);
       }
    }
 
@@ -169,9 +239,13 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Jfar_Set()
    {
-      numChunkCODE += lenPushArg(stmnt->args[0], 0) + lenDropArg(stmnt->args[1], 1);
-      numChunkCODE += 8 + lenDropArg(stmnt->args[1], 0);
-      numChunkCODE += 8;
+      genStmntPushArg(stmnt->args[0], 0);
+      genStmntDropArg(stmnt->args[1], 1);
+
+      genCode(Code::Push_LocReg, getStkPtrIdx());
+      genStmntDropArg(stmnt->args[1], 0);
+
+      genCode(Code::Push_Lit, 0);
    }
 
    //
@@ -179,16 +253,24 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Jfar_Sta()
    {
-      numChunkCODE += lenPushArg(stmnt->args[2], 0) + lenDropArg(stmnt->args[1], 2);
-      numChunkCODE += 8 + lenPushIdx(stmnt->args[1], 0) + 8;
+      // Initiate far jump.
+
+      genStmntPushArg(stmnt->args[2], 0);
+      genStmntDropArg(stmnt->args[1], 2);
+
+      genCode(Code::Push_Lit,    FarJumpIndex);
+      genStmntPushIdx(stmnt->args[1], 0);
+      genCode(Code::Drop_GblArr, StaArray);
 
       if(isFuncJfar_Set(func))
       {
-         numChunkCODE += lenPushIdx(stmnt->args[1], 0);
+         genStmntPushIdx(stmnt->args[1], 0);
+
+         // Propagate far jump.
          genStmnt_Jfar();
       }
       else
-         numChunkCODE += 8;
+         genCode(Code::Jump_Lit, stmnt->args[0].aLit.value);
    }
 
    //
@@ -196,224 +278,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Jump()
    {
-      numChunkCODE += 8;
-   }
-
-   //
-   // Info::putStmnt_Jcnd_Nil
-   //
-   void Info::putStmnt_Jcnd_Nil()
-   {
-      auto n = getStmntSize();
-
-      if(n == 0)
-      {
-         putCode(Code::Jump_Lit, getWord(stmnt->args[1].aLit));
-         return;
-      }
-
-      for(auto i = n; --i;)
-         putCode(Code::BOrI);
-
-      putCode(Code::Jcnd_Nil, getWord(stmnt->args[1].aLit));
-   }
-
-   //
-   // Info::putStmnt_Jcnd_Tab
-   //
-   void Info::putStmnt_Jcnd_Tab()
-   {
-      if(stmnt->args.size() == 3)
-      {
-         putCode(Code::Jcnd_Lit);
-         putWord(getWord(stmnt->args[1].aLit));
-         putWord(getWord(stmnt->args[2].aLit));
-      }
-      else
-      {
-         putCode(Code::Jcnd_Tab, stmnt->args.size() / 2);
-
-         struct JumpData {Core::FastU value, label;};
-
-         // Collect jump cases.
-         Core::Array<JumpData> Jumps{stmnt->args.size() / 2};
-         for(Core::FastU i = 0; i != Jumps.size(); ++i)
-         {
-            Jumps[i].value = getWord(stmnt->args[i * 2 + 1].aLit);
-            Jumps[i].label = getWord(stmnt->args[i * 2 + 2].aLit);
-         }
-
-         // Sort by value as signed.
-         std::sort(Jumps.begin(), Jumps.end(),
-            [](JumpData const &l, JumpData const &r) -> bool
-            {
-               if(l.value & 0x80000000)
-                  return r.value & 0x80000000 ? l.value < r.value : true;
-               else
-                  return r.value & 0x80000000 ? false : l.value < r.value;
-            }
-         );
-
-         // Write sorted jump cases.
-         for(auto const &jump : Jumps)
-         {
-            putWord(jump.value);
-            putWord(jump.label);
-         }
-      }
-   }
-
-   //
-   // Info::putStmnt_Jcnd_Tru
-   //
-   void Info::putStmnt_Jcnd_Tru()
-   {
-      auto n = getStmntSize();
-
-      if(n == 0) return;
-
-      for(auto i = n; --i;)
-         putCode(Code::BOrI);
-
-      putCode(Code::Jcnd_Tru, getWord(stmnt->args[1].aLit));
-   }
-
-   //
-   // Info::putStmnt_Jdyn
-   //
-   void Info::putStmnt_Jdyn()
-   {
-      putCode(Code::Jdyn);
-   }
-
-   //
-   // Info::putStmnt_Jfar
-   //
-   void Info::putStmnt_Jfar()
-   {
-      // Check auto pointer match.
-      putCode(Code::Push_GblArr, StaArray);
-      putCode(Code::Push_LocReg, getStkPtrIdx());
-      putCode(Code::CmpU_EQ);
-      putCode(Code::Jcnd_Tru,    putPos + 8 + 8);
-
-      // Non-match! Branch to addr.
-      putCode(Code::Jump_Lit, getWord(stmnt->args[0].aLit.value));
-
-      // Match! Push result and execute dynamic branch.
-      putCode(Code::Push_Lit,    FarJumpIndex);
-      putCode(Code::Push_GblArr, StaArray);
-      putCode(Code::Push_Lit,    2);
-      putCode(Code::AddU);
-      putCode(Code::Push_GblArr, StaArray);
-
-      putCode(Code::Push_Lit,    FarJumpIndex);
-      putCode(Code::Push_GblArr, StaArray);
-      putCode(Code::Push_Lit,    1);
-      putCode(Code::AddU);
-      putCode(Code::Push_GblArr, StaArray);
-
-      putCode(Code::Push_Lit,    FarJumpIndex);
-      putCode(Code::Push_Lit,    0);
-      putCode(Code::Drop_GblArr, StaArray);
-
-      putCode(Code::Jdyn);
-   }
-
-   //
-   // Info::putStmnt_Jfar_Pro
-   //
-   void Info::putStmnt_Jfar_Pro()
-   {
-      auto n = stmnt->args[1].getSize();
-
-      if(isFuncJfar_Set(func))
-      {
-         // Check for ongoing far jump.
-         putCode(Code::Push_Lit,    FarJumpIndex);
-         putCode(Code::Push_GblArr, StaArray);
-         putCode(Code::Jcnd_Lit,    0, putPos + 12
-            + !!n * 16 + n * 4
-            + 28 + 8 + (36 + 36 + 24 + 4));
-
-         if(n)
-         {
-            putStmntDropTmp(0);
-
-            for(auto i = n; i--;)
-               putCode(Code::Drop_Nul);
-
-            putStmntPushTmp(0);
-         }
-
-         // Propagate far jump.
-         putStmnt_Jfar();
-      }
-      else
-      {
-         // Check for ongoing far jump.
-         putCode(Code::Push_Lit,    FarJumpIndex);
-         putCode(Code::Push_GblArr, StaArray);
-
-         if(n)
-         {
-            putCode(Code::Jcnd_Nil, putPos + 8 + n * 4 + 8);
-
-            for(auto i = n; i--;)
-               putCode(Code::Drop_Nul);
-
-            putCode(Code::Jump_Lit, getWord(stmnt->args[0].aLit.value));
-         }
-         else
-            putCode(Code::Jcnd_Tru, getWord(stmnt->args[0].aLit.value));
-      }
-   }
-
-   //
-   // Info::putStmnt_Jfar_Set
-   //
-   void Info::putStmnt_Jfar_Set()
-   {
-      putStmntPushArg(stmnt->args[0], 0);
-      putStmntDropArg(stmnt->args[1], 1);
-
-      putCode(Code::Push_LocReg, getStkPtrIdx());
-      putStmntDropArg(stmnt->args[1], 0);
-
-      putCode(Code::Push_Lit, 0);
-   }
-
-   //
-   // Info::putStmnt_Jfar_Sta
-   //
-   void Info::putStmnt_Jfar_Sta()
-   {
-      // Initiate far jump.
-
-      putStmntPushArg(stmnt->args[2], 0);
-      putStmntDropArg(stmnt->args[1], 2);
-
-      putCode(Code::Push_Lit,    FarJumpIndex);
-      putStmntPushIdx(stmnt->args[1], 0);
-      putCode(Code::Drop_GblArr, StaArray);
-
-      if(isFuncJfar_Set(func))
-      {
-         putStmntPushIdx(stmnt->args[1], 0);
-
-         // Propagate far jump.
-         putStmnt_Jfar();
-      }
-      else
-         putCode(Code::Jump_Lit, getWord(stmnt->args[0].aLit.value));
-   }
-
-   //
-   // Info::putStmnt_Jump
-   //
-   void Info::putStmnt_Jump()
-   {
-      putCode(Code::Jump_Lit, getWord(stmnt->args[0].aLit));
+      genCode(Code::Jump_Lit, stmnt->args[0].aLit.value);
    }
 
    //

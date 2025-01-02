@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2023 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -64,6 +64,7 @@ namespace GDCC::Core
       ~Array() {Del(p, e);}
 
       // Sized constructor.
+      Array(SizeType, size_type s) : p{New(s)}, e{p + s} {}
       template<typename... Args>
       Array(size_type s, Args const &...args) : p{New(s, args...)}, e{p + s} {}
       template<typename... Args>

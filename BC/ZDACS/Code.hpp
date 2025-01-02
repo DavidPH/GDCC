@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -98,13 +98,19 @@ namespace GDCC::BC::ZDACS
       Retn_Stk    = 206,
       Push_ModArr = 207,
       Drop_ModArr = 208,
+      IncU_ModArr = 214,
+      DecU_ModArr = 215,
       Copy        = 216,
       Swap        = 217,
       Pstr_Stk    = 225,
       Push_HubArr = 226,
       Drop_HubArr = 227,
+      IncU_HubArr = 233,
+      DecU_HubArr = 234,
       Push_GblArr = 235,
       Drop_GblArr = 236,
+      IncU_GblArr = 242,
+      DecU_GblArr = 243,
       Jcnd_Tab    = 256,
       Drop_ScrRet = 257,
       Cspe_5R1    = 263,
@@ -115,6 +121,8 @@ namespace GDCC::BC::ZDACS
       Jdyn        = 363,
       Drop_LocArr = 364,
       Push_LocArr = 365,
+      IncU_LocArr = 371,
+      DecU_LocArr = 372,
    };
 }
 

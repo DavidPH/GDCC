@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,7 @@
 #include "BC/ZDACS/Info.hpp"
 
 #include "BC/ZDACS/Code.hpp"
+#include "BC/ZDACS/Module.hpp"
 
 #include "IR/Function.hpp"
 #include "IR/Program.hpp"
@@ -44,7 +45,7 @@ namespace GDCC::BC::ZDACS
    void Info::putACS0()
    {
       putData("ACS\0", 4);
-      putWord(16 + numChunkCODE);
+      putWord(16 + module->chunkCODE.getPos());
 
       // <shamelessplug>
       putData("GDCC::BC", 8);
@@ -60,12 +61,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putACS0_Code()
    {
-      // Put statements.
-      for(auto &itr : prog->rangeFunction())
-         putFunc(itr);
-
-      // Put initializers.
-      putIniti();
+      putCode();
    }
 
    //
@@ -74,41 +70,15 @@ namespace GDCC::BC::ZDACS
    void Info::putACS0_Scripts()
    {
       // Write script count.
-      putWord(numChunkSPTR);
+      putWord(module->chunkSPTR.size());
 
       // Write script headers.
-      for(auto const &itr : prog->rangeFunction())
+      for(auto const &elem : module->chunkSPTR)
       {
-         if(!IsScript(itr.ctype))
-            continue;
-
-         if(!itr.defin) continue;
-
          // Write entry.
-         putWord(GetScriptValue(itr) + GetScriptType(itr) * 1000);
-         putWord(getWord(resolveGlyph(itr.label)));
-         putWord(std::min(itr.param, GetParamMax(itr.ctype)));
-      }
-
-      // Initializer script.
-      if(codeInit)
-      {
-         Core::FastU stype, param;
-         if(isInitScriptEvent())
-            stype = 16, param = 1;
-         else
-            stype = 1, param = 0;
-
-         putWord(InitScriptNumber + stype * 1000);
-         putWord(codeInit);
-         putWord(param);
-
-         if(Target::EngineCur == Target::Engine::Zandronum)
-         {
-            putWord(InitScriptNumber + 1 + stype * 1000);
-            putWord(codeInit);
-            putWord(param);
-         }
+         putWord(elem.value + elem.stype * 1000);
+         putWord(getWord(elem.entry));
+         putWord(elem.param);
       }
    }
 
@@ -117,28 +87,21 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putACS0_Strings()
    {
-      // Build string table.
-      Core::Array<Core::String> strs{numChunkSTRL};
-
-      for(auto &s : strs) s = Core::STR_;
-
-      for(auto const &itr : prog->rangeStrEnt()) if(itr.defin)
-         strs[itr.valueInt] = itr.valueStr;
-
       // Write string count.
-      putWord(numChunkSTRL);
+      auto elemC = module->chunkSTRL.size();
+      putWord(elemC);
 
       // Write string offsets.
-      std::size_t off = putPos + numChunkSTRL * 4;
-      for(auto const &s : strs)
+      std::size_t off = putPos + elemC * 4;
+      for(auto const &elem : module->chunkSTRL)
       {
          putWord(off);
-         off += lenString(s);
+         off += lenString(elem.value);
       }
 
       // Write strings.
-      for(auto const &s : strs)
-         putString(s);
+      for(auto const &elem : module->chunkSTRL)
+         putString(elem.value);
    }
 
    //
@@ -188,55 +151,51 @@ namespace GDCC::BC::ZDACS
    //
    // Info::putCode
    //
-   void Info::putCode(Code code)
+   void Info::putCode()
    {
-      putWord(static_cast<Core::FastU>(code));
-   }
-
-   //
-   // Info::putCode
-   //
-   void Info::putCode(Code code, Core::FastU arg0)
-   {
-      putCode(code);
-      putWord(arg0);
-   }
-
-   //
-   // Info::putCode
-   //
-   void Info::putCode(Code code, Core::FastU arg0, Core::FastU arg1)
-   {
-      putCode(code);
-      putWord(arg0);
-      putWord(arg1);
-   }
-
-   //
-   // Info::putFunc
-   //
-   void Info::putFunc()
-   {
-      // Put function preamble.
-      if(func->defin && func->allocAut)
+      for(auto &code : module->chunkCODE) switch(static_cast<Code>(code.code))
       {
-         putCode(Code::Push_Lit,    func->allocAut);
-         putCode(Code::Call_Lit,    getWord(resolveGlyph("___GDCC__Plsa")));
-         putCode(Code::Drop_LocReg, getStkPtrIdx());
-      }
+      case Code::Jcnd_Tab:
+         putWord(code.code);
+         putWord(getWord(code.args[0]));
 
-      Core::FastU paramMax = GetParamMax(func->ctype);
-      if(func->defin && func->param > paramMax)
-      {
-         for(Core::FastU i = paramMax; i != func->param; ++i)
+         // Sort and write case data.
          {
-            putCode(Code::Push_Lit,    ~(i - paramMax));
-            putCode(Code::Push_GblArr, StaArray);
-            putCode(Code::Drop_LocReg, i);
-         }
-      }
+            using Case = std::pair<Core::FastU, Core::FastU>;
 
-      InfoBase::putFunc();
+            Core::Array<Case> cases{code.args.size() / 2};
+            auto const *arg = &code.args[1];
+            for(auto &c : cases)
+            {
+               c.first  = getWord(*arg++);
+               c.second = getWord(*arg++);
+            }
+
+            // Sort by value as signed.
+            std::sort(cases.begin(), cases.end(),
+               [](Case const &l, Case const &r)
+               {
+                  if(l.first & 0x80000000)
+                     return r.first & 0x80000000 ? l.first < r.first : true;
+                  else
+                     return r.first & 0x80000000 ? false : l.first < r.first;
+               });
+
+            for(auto const &c : cases)
+            {
+               putWord(c.first);
+               putWord(c.second);
+            }
+         }
+
+         break;
+
+      default:
+         putWord(code.code);
+         for(auto const &arg : code.args)
+            putWord(getWord(arg));
+         break;
+      }
    }
 
    //

@@ -1,6 +1,6 @@
 ##-----------------------------------------------------------------------------
 ##
-## Copyright (C) 2013-2019 David Hill
+## Copyright (C) 2013-2024 David Hill
 ##
 ## See COPYING for license information.
 ##
@@ -54,9 +54,8 @@ add_library(gdcc-bc-zdacs-lib ${GDCC_SHARED_DECL}
    Info/put.cpp
    Info/putChunk.cpp
    Info/putExtra.cpp
-   Info/putIniti.cpp
-   Info/putStmnt.cpp
    Info/tr.cpp
+   Module.hpp
 )
 
 target_link_libraries(gdcc-bc-zdacs-lib gdcc-bc-lib)

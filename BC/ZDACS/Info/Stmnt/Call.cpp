@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,7 @@
 #include "BC/ZDACS/Info.hpp"
 
 #include "BC/ZDACS/Code.hpp"
+#include "BC/ZDACS/Module.hpp"
 
 #include "Core/Range.hpp"
 
@@ -152,22 +153,22 @@ namespace GDCC::BC::ZDACS
       auto argc = getStmntSize();
       auto retn = stmnt->args[0].getSize();
 
-      putStmntDropParam(argc, GetParamMax(IR::CallType::StdCall));
+      genStmntDropParam(argc, GetParamMax(IR::CallType::StdCall));
 
       switch(stmnt->args[1].a)
       {
       case IR::ArgBase::Lit:
-         numChunkCODE += 8;
+         genCode(retn ? Code::Call_Lit : Code::Call_Nul, stmnt->args[1].aLit.value);
          genStmntPushRetn(retn, GetRetnMax(IR::CallType::StdCall));
          break;
 
       case IR::ArgBase::Stk:
-         numChunkCODE += 4;
+         genCode(Code::Call_Stk);
 
          if(retn)
             genStmntPushRetn(retn, GetRetnMax(IR::CallType::StdCall));
          else
-            numChunkCODE += 4;
+            genCode(Code::Drop_Nul);
 
          break;
 
@@ -181,12 +182,14 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Casm()
    {
-      numChunkCODE += 4;
+      std::vector<ElemArg> args;
       for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
       {
-         if(arg.a == IR::ArgBase::Lit)
-            numChunkCODE += arg.aLit.size * 4;
+         if(arg.a == IR::ArgBase::Lit) for(Core::FastU i = 0; i != arg.aLit.size; ++i)
+            args.emplace_back(arg.aLit.value, i);
       }
+      // TODO 2024-12-28: This should not call getWord.
+      genCode(static_cast<Code>(getWord(stmnt->args[1].aLit)), ElemArgs{args.begin(), args.end()});
    }
 
    //
@@ -194,7 +197,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Cnat()
    {
-      numChunkCODE += 12;
+      genCode(Code::Cnat, getStmntSize(), stmnt->args[1].aLit.value);
    }
 
    //
@@ -206,13 +209,27 @@ namespace GDCC::BC::ZDACS
       auto argm = GetParamMax(IR::CallType::ScriptI);
       auto argn = argc < argm ? argc : argm;
       auto retn = stmnt->args[0].getSize();
+      auto spec = 84; // ACS_ExecuteWithResult
 
       genStmntDropParam(argc, argm);
 
-      if(retn && argn < 4)
-         numChunkCODE += (4 - argn) * 8;
-
-      numChunkCODE += 8;
+      if(retn) switch(argn)
+      {
+         // TODO 2024-12-28: Use a multi-literal push code.
+      case  0: genCode(Code::Push_Lit, 0);
+      case  1: genCode(Code::Push_Lit, 0);
+      case  2: genCode(Code::Push_Lit, 0);
+      case  3: genCode(Code::Push_Lit, 0);
+      default: genCode(Code::Cspe_5R1, spec); break;
+      }
+      else switch(argn)
+      {
+      case  0: genCode(Code::Cspe_1, spec); break;
+      case  1: genCode(Code::Cspe_2, spec); break;
+      case  2: genCode(Code::Cspe_3, spec); break;
+      case  3: genCode(Code::Cspe_4, spec); break;
+      default: genCode(Code::Cspe_5, spec); break;
+      }
 
       genStmntPushRetn(retn, GetRetnMax(IR::CallType::ScriptI));
    }
@@ -224,10 +241,23 @@ namespace GDCC::BC::ZDACS
    {
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptI);
+      auto argn = argc < argm ? argc : argm;
+      auto spec = 84; // ACS_ExecuteWithResult
 
       genStmntDropParam(argc, argm);
 
-      numChunkCODE += 16 + lenDropArg(stmnt->args[2], 0);
+      // Clear returned flag.
+      genCode(Code::Push_Lit, 0);
+      genStmntDropArg(stmnt->args[2], 0);
+
+      switch(argn)
+      {
+      case  0: genCode(Code::Cspe_1, spec); break;
+      case  1: genCode(Code::Cspe_2, spec); break;
+      case  2: genCode(Code::Cspe_3, spec); break;
+      case  3: genCode(Code::Cspe_4, spec); break;
+      default: genCode(Code::Cspe_5, spec); break;
+      }
 
       genStmnt_Cscr_SS_post();
    }
@@ -240,15 +270,16 @@ namespace GDCC::BC::ZDACS
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::ScriptS);
       auto retn = stmnt->args[0].getSize();
+      auto spec = 44; // ACS_NamedExecuteWithResult
 
       genStmntDropParam(argc, argm);
 
-      numChunkCODE += 12;
+      genCode(Code::Cnat, argc < argm ? argc + 1 : argm + 1, spec);
 
       if(retn)
          genStmntPushRetn(retn, GetRetnMax(IR::CallType::ScriptS));
       else
-         numChunkCODE += 4;
+         genCode(Code::Drop_Nul);
    }
 
    //
@@ -258,10 +289,16 @@ namespace GDCC::BC::ZDACS
    {
       auto argc = getStmntSize();
       auto argm = GetParamMax(IR::CallType::SScriptS);
+      auto spec = 44; // ACS_NamedExecuteWithResult
 
       genStmntDropParam(argc, argm);
 
-      numChunkCODE += 24 + lenDropArg(stmnt->args[2], 0);
+      // Clear returned flag.
+      genCode(Code::Push_Lit, 0);
+      genStmntDropArg(stmnt->args[2], 0);
+
+      genCode(Code::Cnat, argc < argm ? argc + 1 : argm + 1, spec);
+      genCode(Code::Drop_Nul);
 
       genStmnt_Cscr_SS_post();
    }
@@ -271,15 +308,33 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Cscr_SS_post()
    {
-      auto ret = stmnt->args[0].getSize();
+      auto retn = stmnt->args[0].getSize();
 
-      numChunkCODE += 80
-         + lenDropTmp(0)
-         + lenPushArg(stmnt->args[2], 0)
-         + lenPushTmp(0);
+      // Save far jump state.
+      genCode(Code::Push_Lit,    FarJumpIndex);
+      genCode(Code::Push_GblArr, StaArray);
+      genStmntDropTmp(0);
+      genCode(Code::Push_Lit,    FarJumpIndex);
+      genCode(Code::Push_Lit,    0);
+      genCode(Code::Drop_GblArr, StaArray);
 
-      if(ret)
-         numChunkCODE += lenPushArg(stmnt->args[2], 1, 1 + ret);
+      // Check returned flag.
+      auto jumpOpen = module->chunkCODE.size();
+      genCode(Code::Jump_Lit, 0);
+      auto jumpWait = getCodePos();
+      genCode(Code::Wait_Lit, 1);
+      module->chunkCODE[jumpOpen].args[0] = getCodePos();
+      genStmntPushArg(stmnt->args[2], 0);
+      genCode(Code::Jcnd_Nil, jumpWait);
+
+      // Restore far jump state;
+      genCode(Code::Push_Lit,    FarJumpIndex);
+      genStmntPushTmp(0);
+      genCode(Code::Drop_GblArr, StaArray);
+
+      // Push any return words.
+      if(retn)
+         genStmntPushArg(stmnt->args[2], 1, 1 + retn);
    }
 
    //
@@ -287,35 +342,81 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Cspe()
    {
+      std::vector<ElemArg> args;
       auto argc = getStmntSize();
-      auto ret  = stmnt->args[0].a == IR::ArgBase::Nul ? 0 : stmnt->args[0].getSize();
+      auto retn = stmnt->args[0].a == IR::ArgBase::Nul ? 0 : stmnt->args[0].getSize();
 
-      // No call args.
-      if(argc == 0)
-      {
-         numChunkCODE += ret ? 48 : 12;
-         return;
-      }
-
-      switch(stmnt->args[2].a)
+      switch(stmnt->args.size() > 2 ? stmnt->args[2].a : IR::ArgBase::Lit)
       {
       case IR::ArgBase::Lit:
-         if(ret)
-            numChunkCODE += 48;
-         else
-            numChunkCODE += 8 + argc * 4;
+         if(retn)
+         {
+            for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
+            {
+               for(Core::FastU i = 0; i != arg.aLit.size; ++i)
+                  genCode(Code::Push_Lit, {arg.aLit.value, i});
+            }
+
+            for(Core::FastU i = argc; i != 5; ++i)
+               genCode(Code::Push_Lit, 0);
+
+            genCode(Code::Cspe_5R1, stmnt->args[1].aLit.value);
+
+            break;
+         }
+
+         args.emplace_back(stmnt->args[1].aLit.value);
+
+         // Dummy arg.
+         if(argc == 0)
+            args.emplace_back(0);
+
+         for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
+            for(Core::FastU i = 0; i != arg.aLit.size; ++i)
+               args.emplace_back(arg.aLit.value, i);
+
+         switch(argc)
+         {
+         case 0: genCode(Code::Cspe_1L, {args.begin(), args.end()}); break;
+         case 1: genCode(Code::Cspe_1L, {args.begin(), args.end()}); break;
+         case 2: genCode(Code::Cspe_2L, {args.begin(), args.end()}); break;
+         case 3: genCode(Code::Cspe_3L, {args.begin(), args.end()}); break;
+         case 4: genCode(Code::Cspe_4L, {args.begin(), args.end()}); break;
+         case 5: genCode(Code::Cspe_5L, {args.begin(), args.end()}); break;
+         }
+
          break;
 
       case IR::ArgBase::Stk:
-         numChunkCODE += 8;
-
-         // Dummy args.
-         if(ret) numChunkCODE += (5 - argc) * 8;
+         if(retn)
+         {
+            switch(argc)
+            {
+            case 0: genCode(Code::Push_Lit, 0);
+            case 1: genCode(Code::Push_Lit, 0);
+            case 2: genCode(Code::Push_Lit, 0);
+            case 3: genCode(Code::Push_Lit, 0);
+            case 4: genCode(Code::Push_Lit, 0);
+            case 5: genCode(Code::Cspe_5R1, stmnt->args[1].aLit.value); break;
+            }
+         }
+         else
+         {
+            switch(argc)
+            {
+            case 0: genCode(Code::Push_Lit, 0);
+            case 1: genCode(Code::Cspe_1, stmnt->args[1].aLit.value); break;
+            case 2: genCode(Code::Cspe_2, stmnt->args[1].aLit.value); break;
+            case 3: genCode(Code::Cspe_3, stmnt->args[1].aLit.value); break;
+            case 4: genCode(Code::Cspe_4, stmnt->args[1].aLit.value); break;
+            case 5: genCode(Code::Cspe_5, stmnt->args[1].aLit.value); break;
+            }
+         }
 
          break;
 
       default:
-         Core::Error(stmnt->pos, "bad gen Cspr");
+         Core::Error(stmnt->pos, "bad gen Cspe");
       }
    }
 
@@ -327,19 +428,40 @@ namespace GDCC::BC::ZDACS
       auto retn = getStmntSize();
 
       if(func->allocAut)
-         numChunkCODE += 16;
+      {
+         genCode(Code::Push_LocReg, getStkPtrIdx());
+         genCode(Code::Call_Nul,    "___GDCC__Plsf");
+      }
 
       switch(func->ctype)
       {
       case IR::CallType::SScriptI:
       case IR::CallType::SScriptS:
-         numChunkCODE += 40 + retn * 32;
+         // Set return flag.
+         genCode(Code::Push_LocReg, getStkPtrIdx());
+         genCode(Code::Push_Lit,    1);
+         genCode(Code::SubU);
+         genCode(Code::Push_Lit,    1);
+         genCode(Code::Drop_GblArr, StaArray);
+
+         // Set return data.
+         for(Core::FastU i = retn; i--;)
+         {
+            genCode(Code::Push_LocReg, getStkPtrIdx());
+            genCode(Code::Push_Lit,    i);
+            genCode(Code::AddU);
+            genCode(Code::Swap);
+            genCode(Code::Drop_GblArr, StaArray);
+         }
+
+         genCode(Code::Rscr);
+
          break;
 
       case IR::CallType::StdCall:
       case IR::CallType::StkCall:
          genStmntDropRetn(retn, GetRetnMax(func->ctype));
-         numChunkCODE += 4;
+         genCode(retn ? Code::Retn_Stk : Code::Retn_Nul);
          break;
 
       case IR::CallType::ScriptI:
@@ -347,9 +469,9 @@ namespace GDCC::BC::ZDACS
          if(retn)
          {
             genStmntDropRetn(retn, GetRetnMax(func->ctype));
-            numChunkCODE += 4;
+            genCode(Code::Drop_ScrRet);
          }
-         numChunkCODE += 4;
+         genCode(Code::Rscr);
          break;
 
       default:
@@ -366,25 +488,39 @@ namespace GDCC::BC::ZDACS
       auto retn = getStmntSize();
 
       if(func->allocAut)
-         numChunkCODE += 16;
+      {
+         genCode(Code::Push_LocReg, getStkPtrIdx());
+         genCode(Code::Call_Nul,    "___GDCC__Plsf");
+      }
 
       switch(func->ctype)
       {
       case IR::CallType::SScriptI:
       case IR::CallType::SScriptS:
-         numChunkCODE += 40;
+         // Set return flag.
+         genCode(Code::Push_LocReg, getStkPtrIdx());
+         genCode(Code::Push_Lit,    1);
+         genCode(Code::SubU);
+         genCode(Code::Push_Lit,    1);
+         genCode(Code::Drop_GblArr, StaArray);
+
+         genCode(Code::Rscr);
+
          break;
 
       case IR::CallType::StdCall:
       case IR::CallType::StkCall:
          if(retn && retm)
-            numChunkCODE += (std::min(retn, retm) - 1) * 8;
-         numChunkCODE += 4;
+         {
+            for(Core::FastU i = 0, e = std::min(retn, retm) - 1; i != e; ++i)
+               genCode(Code::Push_Lit, 0);
+         }
+         genCode(Code::Retn_Nul);
          break;
 
       case IR::CallType::ScriptI:
       case IR::CallType::ScriptS:
-         numChunkCODE += 4;
+         genCode(Code::Rscr);
          break;
 
       default:
@@ -399,392 +535,6 @@ namespace GDCC::BC::ZDACS
    {
       if(func->allocAut)
          preStmntCall("___GDCC__Plsf", 0, 1);
-   }
-
-   //
-   // Info::putStmnt_Call
-   //
-   void Info::putStmnt_Call()
-   {
-      auto argc = getStmntSize();
-      auto retn = stmnt->args[0].getSize();
-
-      putStmntDropParam(argc, GetParamMax(IR::CallType::StdCall));
-
-      switch(stmnt->args[1].a)
-      {
-      case IR::ArgBase::Lit:
-         putCode(retn ? Code::Call_Lit : Code::Call_Nul, getWord(stmnt->args[1].aLit));
-         putStmntPushRetn(retn, GetRetnMax(IR::CallType::StdCall));
-         break;
-
-      case IR::ArgBase::Stk:
-         putCode(Code::Call_Stk);
-
-         if(retn)
-            putStmntPushRetn(retn, GetRetnMax(IR::CallType::StdCall));
-         else
-            putCode(Code::Drop_Nul);
-
-         break;
-
-      default:
-         Core::Error(stmnt->pos, "bad put Call");
-      }
-   }
-
-   //
-   // Info::putStmnt_Casm
-   //
-   void Info::putStmnt_Casm()
-   {
-      putWord(getWord(stmnt->args[1].aLit));
-      for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
-      {
-         if(arg.a == IR::ArgBase::Lit) for(Core::FastU i = 0; i != arg.aLit.size; ++i)
-            putWord(getWord(arg.aLit, i));
-      }
-   }
-
-   //
-   // Info::putStmnt_Cnat
-   //
-   void Info::putStmnt_Cnat()
-   {
-      putCode(Code::Cnat);
-      putWord(getStmntSize());
-      putWord(getWord(stmnt->args[1].aLit));
-   }
-
-   //
-   // Info::putStmnt_Cscr_IA
-   //
-   void Info::putStmnt_Cscr_IA()
-   {
-      auto argc = getStmntSize();
-      auto argm = GetParamMax(IR::CallType::ScriptI);
-      auto argn = argc < argm ? argc : argm;
-      auto retn = stmnt->args[0].getSize();
-
-      putStmntDropParam(argc, argm);
-
-      if(retn) switch(argn)
-      {
-      case  0: putCode(Code::Push_Lit, 0);
-      case  1: putCode(Code::Push_Lit, 0);
-      case  2: putCode(Code::Push_Lit, 0);
-      case  3: putCode(Code::Push_Lit, 0);
-      default: putCode(Code::Cspe_5R1); break;
-      }
-      else switch(argn)
-      {
-      case  0: putCode(Code::Cspe_1); break;
-      case  1: putCode(Code::Cspe_2); break;
-      case  2: putCode(Code::Cspe_3); break;
-      case  3: putCode(Code::Cspe_4); break;
-      default: putCode(Code::Cspe_5); break;
-      }
-
-      putWord(84); // ACS_ExecuteWithResult
-
-      putStmntPushRetn(retn, GetRetnMax(IR::CallType::ScriptI));
-   }
-
-   //
-   // Info::putStmnt_Cscr_IS
-   //
-   void Info::putStmnt_Cscr_IS()
-   {
-      auto argc = getStmntSize();
-      auto argm = GetParamMax(IR::CallType::SScriptI);
-      auto argn = argc < argm ? argc : argm;
-
-      putStmntDropParam(argc, argm);
-
-      // Clear returned flag.
-      putCode(Code::Push_Lit, 0);
-      putStmntDropArg(stmnt->args[2], 0);
-
-      switch(argn)
-      {
-      case  0: putCode(Code::Cspe_1); break;
-      case  1: putCode(Code::Cspe_2); break;
-      case  2: putCode(Code::Cspe_3); break;
-      case  3: putCode(Code::Cspe_4); break;
-      default: putCode(Code::Cspe_5); break;
-      }
-
-      putWord(84); // ACS_ExecuteWithResult
-
-      putStmnt_Cscr_SS_post();
-   }
-
-   //
-   // Info::putStmnt_Cscr_SA
-   //
-   void Info::putStmnt_Cscr_SA()
-   {
-      auto argc = getStmntSize();
-      auto argm = GetParamMax(IR::CallType::ScriptS);
-      auto retn = stmnt->args[0].getSize();
-
-      putStmntDropParam(argc, argm);
-
-      putCode(Code::Cnat);
-      putWord(argc < argm ? argc + 1 : argm + 1);
-      putWord(44); // ACS_NamedExecuteWithResult
-
-      if(retn)
-         putStmntPushRetn(retn, GetRetnMax(IR::CallType::ScriptS));
-      else
-         putCode(Code::Drop_Nul);
-   }
-
-   //
-   // Info::putStmnt_Cscr_SS
-   //
-   void Info::putStmnt_Cscr_SS()
-   {
-      auto argc = getStmntSize();
-      auto argm = GetParamMax(IR::CallType::SScriptS);
-
-      putStmntDropParam(argc, argm);
-
-      // Clear returned flag.
-      putCode(Code::Push_Lit, 0);
-      putStmntDropArg(stmnt->args[2], 0);
-
-      putCode(Code::Cnat);
-      putWord(argc < argm ? argc + 1 : argm + 1);
-      putWord(44); // ACS_NamedExecuteWithResult
-      putCode(Code::Drop_Nul);
-
-      putStmnt_Cscr_SS_post();
-   }
-
-   //
-   // Info::putStmnt_Cscr_SS_post
-   //
-   void Info::putStmnt_Cscr_SS_post()
-   {
-      auto ret  = stmnt->args[0].getSize();
-
-      // Save far jump state.
-      putCode(Code::Push_Lit,    FarJumpIndex);
-      putCode(Code::Push_GblArr, StaArray);
-      putStmntDropTmp(0);
-      putCode(Code::Push_Lit,    FarJumpIndex);
-      putCode(Code::Push_Lit,    0);
-      putCode(Code::Drop_GblArr, StaArray);
-
-      // Check returned flag.
-      putCode(Code::Jump_Lit, putPos + 16);
-      putCode(Code::Wait_Lit, 1);
-      putStmntPushArg(stmnt->args[2], 0);
-      putCode(Code::Jcnd_Nil, putPos - 8 - lenPushArg(stmnt->args[2], 0));
-
-      // Restore far jump state;
-      putCode(Code::Push_Lit,    FarJumpIndex);
-      putStmntPushTmp(0);
-      putCode(Code::Drop_GblArr, StaArray);
-
-      // Push any return words.
-      if(ret)
-         putStmntPushArg(stmnt->args[2], 1, 1 + ret);
-   }
-
-   //
-   // Info::putStmnt_Cspe
-   //
-   void Info::putStmnt_Cspe()
-   {
-      auto argc = getStmntSize();
-      auto ret  = stmnt->args[0].a == IR::ArgBase::Nul ? 0 : stmnt->args[0].getSize();
-
-      switch(stmnt->args.size() > 2 ? stmnt->args[2].a : IR::ArgBase::Lit)
-      {
-      case IR::ArgBase::Lit:
-         if(ret)
-         {
-            for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
-            {
-               for(Core::FastU i = 0; i != arg.aLit.size; ++i)
-                  putCode(Code::Push_Lit, getWord(arg.aLit, i));
-            }
-
-            for(Core::FastU i = argc; i != 5; ++i)
-               putCode(Code::Push_Lit, 0);
-
-            putCode(Code::Cspe_5R1, getWord(stmnt->args[1].aLit));
-
-            break;
-         }
-
-         switch(argc)
-         {
-         case 0: putCode(Code::Cspe_1L); break;
-         case 1: putCode(Code::Cspe_1L); break;
-         case 2: putCode(Code::Cspe_2L); break;
-         case 3: putCode(Code::Cspe_3L); break;
-         case 4: putCode(Code::Cspe_4L); break;
-         case 5: putCode(Code::Cspe_5L); break;
-         }
-
-         putWord(getWord(stmnt->args[1].aLit));
-
-         // Dummy arg.
-         if(argc == 0)
-            putWord(0);
-
-         for(auto const &arg : Core::MakeRange(stmnt->args.begin() + 2, stmnt->args.end()))
-         {
-            for(Core::FastU i = 0; i != arg.aLit.size; ++i)
-               putWord(getWord(arg.aLit, i));
-         }
-
-         break;
-
-      case IR::ArgBase::Stk:
-         if(ret)
-         {
-            switch(argc)
-            {
-            case 0: putCode(Code::Push_Lit, 0);
-            case 1: putCode(Code::Push_Lit, 0);
-            case 2: putCode(Code::Push_Lit, 0);
-            case 3: putCode(Code::Push_Lit, 0);
-            case 4: putCode(Code::Push_Lit, 0);
-            case 5: putCode(Code::Cspe_5R1); break;
-            }
-         }
-         else
-         {
-            switch(argc)
-            {
-            case 0: putCode(Code::Push_Lit, 0);
-            case 1: putCode(Code::Cspe_1); break;
-            case 2: putCode(Code::Cspe_2); break;
-            case 3: putCode(Code::Cspe_3); break;
-            case 4: putCode(Code::Cspe_4); break;
-            case 5: putCode(Code::Cspe_5); break;
-            }
-         }
-
-         putWord(getWord(stmnt->args[1].aLit));
-
-         break;
-
-      default:
-         Core::Error(stmnt->pos, "bad put Cspe");
-      }
-   }
-
-   //
-   // Info::putStmnt_Retn
-   //
-   void Info::putStmnt_Retn()
-   {
-      auto retn = getStmntSize();
-
-      if(func->allocAut)
-      {
-         putCode(Code::Push_LocReg, getStkPtrIdx());
-         putCode(Code::Call_Nul,    getWord(resolveGlyph("___GDCC__Plsf")));
-      }
-
-      switch(func->ctype)
-      {
-      case IR::CallType::SScriptI:
-      case IR::CallType::SScriptS:
-         // Set return flag.
-         putCode(Code::Push_LocReg, getStkPtrIdx());
-         putCode(Code::Push_Lit,    1);
-         putCode(Code::SubU);
-         putCode(Code::Push_Lit,    1);
-         putCode(Code::Drop_GblArr, StaArray);
-
-         // Set return data.
-         for(Core::FastU i = retn; i--;)
-         {
-            putCode(Code::Push_LocReg, getStkPtrIdx());
-            putCode(Code::Push_Lit,    i);
-            putCode(Code::AddU);
-            putCode(Code::Swap);
-            putCode(Code::Drop_GblArr, StaArray);
-         }
-
-         putCode(Code::Rscr);
-
-         break;
-
-      case IR::CallType::StdCall:
-      case IR::CallType::StkCall:
-         putStmntDropRetn(retn, GetRetnMax(func->ctype));
-         putCode(retn ? Code::Retn_Stk : Code::Retn_Nul);
-         break;
-
-      case IR::CallType::ScriptI:
-      case IR::CallType::ScriptS:
-         if(retn)
-         {
-            putStmntDropRetn(retn, GetRetnMax(func->ctype));
-            putCode(Code::Drop_ScrRet);
-         }
-         putCode(Code::Rscr);
-         break;
-
-      default:
-         Core::Error(stmnt->pos, "bad put Retn");
-      }
-   }
-
-   //
-   // Info::putStmnt_Rjnk
-   //
-   void Info::putStmnt_Rjnk()
-   {
-      auto retm = GetRetnMax(func->ctype);
-      auto retn = getStmntSize();
-
-      if(func->allocAut)
-      {
-         putCode(Code::Push_LocReg, getStkPtrIdx());
-         putCode(Code::Call_Nul,    getWord(resolveGlyph("___GDCC__Plsf")));
-      }
-
-      switch(func->ctype)
-      {
-      case IR::CallType::SScriptI:
-      case IR::CallType::SScriptS:
-         // Set return flag.
-         putCode(Code::Push_LocReg, getStkPtrIdx());
-         putCode(Code::Push_Lit,    1);
-         putCode(Code::SubU);
-         putCode(Code::Push_Lit,    1);
-         putCode(Code::Drop_GblArr, StaArray);
-
-         putCode(Code::Rscr);
-
-         break;
-
-      case IR::CallType::StdCall:
-      case IR::CallType::StkCall:
-         if(retn && retm)
-         {
-            for(Core::FastU i = 0, e = std::min(retn, retm) - 1; i != e; ++i)
-               putCode(Code::Push_Lit, 0);
-         }
-         putCode(Code::Retn_Nul);
-         break;
-
-      case IR::CallType::ScriptI:
-      case IR::CallType::ScriptS:
-         putCode(Code::Rscr);
-         break;
-
-      default:
-         Core::Error(stmnt->pos, "bad put Rjnk");
-      }
    }
 
    //

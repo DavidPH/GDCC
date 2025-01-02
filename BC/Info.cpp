@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -14,6 +14,8 @@
 
 #include "IR/Exception.hpp"
 #include "IR/Program.hpp"
+
+#include "Target/Info.hpp"
 
 
 //----------------------------------------------------------------------------|
@@ -52,16 +54,16 @@
       set##Space(prog->getSpaceModReg()); \
       set##Space(prog->getSpaceSta()); \
       \
+      for(auto &itr : prog->rangeDJump())  set##DJump(itr); \
+      for(auto &itr : prog->rangeObject()) set##Obj(itr); \
+      for(auto &itr : prog->rangeStrEnt()) set##StrEnt(itr); \
+      \
       for(;;) try \
       { \
          for(auto &itr : prog->rangeFunction()) set##Func(itr); \
          break; \
       } \
       catch(ResetFunc const &) {} \
-      \
-      for(auto &itr : prog->rangeDJump())  set##DJump(itr); \
-      for(auto &itr : prog->rangeObject()) set##Obj(itr); \
-      for(auto &itr : prog->rangeStrEnt()) set##StrEnt(itr); \
    }
 
 //
@@ -198,6 +200,27 @@ namespace GDCC::BC
    }
 
    //
+   // Info::getExpAddPtr
+   //
+   IR::Exp::CRef Info::getExpAddPtr(IR::Exp const *l, Core::FastU r)
+   {
+      return IR::ExpCreate_AddPtrRaw(l,
+         IR::ExpCreate_Value(
+            IR::Value_Fixed{
+               Core::NumberCast<Core::Integ>(r),
+               IR::Type_Fixed{Target::GetWordBits(), 0, false, false}},
+            l->pos));
+   }
+
+   //
+   // Info::getExpGlyph
+   //
+   IR::Exp::CRef Info::getExpGlyph(Core::String glyph)
+   {
+      return IR::ExpCreate_Glyph({prog, glyph}, getOrigin());
+   }
+
+   //
    // Info::getFixedInfo
    //
    FixedInfo Info::getFixedInfo(Core::FastU n, bool s)
@@ -319,6 +342,16 @@ namespace GDCC::BC
       fi.wordsI = n;
 
       return fi;
+   }
+
+   //
+   // Info::getOrigin
+   //
+   Core::Origin Info::getOrigin()
+   {
+      if(stmnt) return stmnt->pos;
+      if(func) return func->getOrigin();
+      return {};
    }
 
    //

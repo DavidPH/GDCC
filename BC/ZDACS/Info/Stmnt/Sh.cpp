@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -13,6 +13,7 @@
 #include "BC/ZDACS/Info.hpp"
 
 #include "BC/ZDACS/Code.hpp"
+#include "BC/ZDACS/Module.hpp"
 
 #include "IR/Exception.hpp"
 #include "IR/Function.hpp"
@@ -33,9 +34,6 @@ namespace GDCC::BC::ZDACS
    GDCC_BC_CodeTypeSwitchFn(pre, ShL, FIU)
    GDCC_BC_CodeTypeSwitchFn(pre, ShR, FIU)
 
-   GDCC_BC_CodeTypeSwitchFn(put, ShL, FIU)
-   GDCC_BC_CodeTypeSwitchFn(put, ShR, FIU)
-
    GDCC_BC_CodeTypeSwitchFn(tr, ShL, FIU)
    GDCC_BC_CodeTypeSwitchFn(tr, ShR, FIU)
 
@@ -47,9 +45,9 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       if(n == 0)
-         return (void)(numChunkCODE += 4);
+         return genCode(Code::Drop_Nul);
 
-      genStmntCall(n);
+      genStmntCall(getFuncName(stmnt->code, n), n);
    }
 
    //
@@ -59,26 +57,61 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(n <= 1)
-         return (void)(numChunkCODE += 4);
+      if(n == 0)
+         return genCode(Code::Drop_Nul);
+
+      if(n == 1)
+         return genCode(Code::ShLU);
 
       if(stmnt->args[2].a != IR::ArgBase::Lit)
-         return genStmntCall(n);
+         return genStmntCall(getFuncName(IR::CodeBase::ShL+'U', n), n);
 
+      // TODO 2024-12-30: Only do this if expression can be resolved.
       Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
 
       // Shift of 0 is a no-op.
       if(!shift) return;
 
+      Core::FastU shiftBits  = shift % 32;
       Core::FastU shiftWords = shift / 32;
       Core::FastU keepWords  = n - shiftWords;
 
-      numChunkCODE += shiftWords * 12 + keepWords * 8;
+      for(Core::FastU i = shiftWords; i--;)
+         genCode(Code::Drop_Nul);
 
-      if(shift % 32)
-         numChunkCODE += 20 + (keepWords - 1) * 56;
+      for(Core::FastU i = keepWords; i--;)
+         genStmntDropTmp(i);
+
+      for(Core::FastU i = shiftWords; i--;)
+         genCode(Code::Push_Lit, 0);
+
+      if(shiftBits)
+      {
+         // ret[0] = l[0] << r
+         genStmntPushTmp(0);
+         genCode(Code::Push_Lit,    shiftBits);
+         genCode(Code::ShLU);
+
+         for(Core::FastU i = 1; i != keepWords; ++i)
+         {
+            // ret[i] = (l[i] << r) | (l[i-1] >> (32 - r))
+
+            genStmntPushTmp(i);
+            genCode(Code::Push_Lit, shiftBits);
+            genCode(Code::ShLU);
+
+            genStmntPushTmp(i - 1);
+            genStmntShiftRU(32 - shiftBits);
+
+            genCode(Code::BOrI);
+         }
+      }
       else
-         numChunkCODE += keepWords * 8;
+      {
+         // ret[i] = l[i]
+         for(Core::FastU i = 0; i != keepWords; ++i)
+            genStmntPushTmp(i);
+      }
    }
 
    //
@@ -88,29 +121,68 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(n <= 1)
-         return (void)(numChunkCODE += 4);
+      if(n == 0)
+         return genCode(Code::Drop_Nul);
+
+      if(n == 1)
+         return genCode(Code::ShRI);
 
       if(stmnt->args[2].a != IR::ArgBase::Lit)
-         return genStmntCall(n);
+         return genStmntCall(getFuncName(IR::CodeBase::ShR+'I', n), n);
 
+      // TODO 2024-12-30: Only do this if expression can be resolved.
       Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
 
       // Shift of 0 is a no-op.
       if(!shift) return;
 
+      Core::FastU shiftBits  = shift % 32;
       Core::FastU shiftWords = shift / 32;
       Core::FastU keepWords  = n - shiftWords;
 
-      numChunkCODE += shiftWords * 4 + keepWords * 8;
+      for(Core::FastU i = keepWords; i--;)
+         genStmntDropTmp(i);
 
-      if(shift % 32)
-         numChunkCODE += (keepWords - 1) * 56 + 20;
+      for(Core::FastU i = shiftWords; i--;)
+         genCode(Code::Drop_Nul);
+
+      if(shiftBits)
+      {
+         for(Core::FastU i = 0; i != keepWords - 1; ++i)
+         {
+            // ret[i] = (l[i] >> r) | (l[i+1] << (32 - r))
+
+            genStmntPushTmp(i);
+            genStmntShiftRU(shiftBits);
+
+            genStmntPushTmp(i + 1);
+            genCode(Code::Push_Lit, 32 - shiftBits);
+            genCode(Code::ShLU);
+
+            genCode(Code::BOrI);
+         }
+
+         // ret[N-1] = l[N-1] >> r
+         genStmntPushTmp(keepWords - 1);
+         genCode(Code::Push_Lit, shiftBits);
+         genCode(Code::ShRI);
+      }
       else
-         numChunkCODE += keepWords * 8;
+      {
+         // ret[i] = l[i]
+         for(Core::FastU i = 0; i != keepWords; ++i)
+            genCode(Code::Push_LocReg, func->localReg + i);
+      }
 
       if(shiftWords)
-         numChunkCODE += 20 + (shiftWords - 1) * 4;
+      {
+         genStmntPushTmp(keepWords - 1);
+         genCode(Code::Push_Lit, 31);
+         genCode(Code::ShRI);
+
+         for(Core::FastU i = shiftWords - 1; i--;)
+            genCode(Code::Copy);
+      }
    }
 
    //
@@ -121,30 +193,59 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       if(n == 0)
-         return (void)(numChunkCODE += 4);
+         return genCode(Code::Drop_Nul);
 
       if(n == 1)
          return genStmnt_ShR_U1();
 
       if(stmnt->args[2].a != IR::ArgBase::Lit)
-         return genStmntCall(n);
+         return genStmntCall(getFuncName(IR::CodeBase::ShR+'U', n), n);
 
+      // TODO 2024-12-30: Only do this if expression can be resolved.
       Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
 
       // Shift of 0 is a no-op.
       if(!shift) return;
 
+      Core::FastU shiftBits  = shift % 32;
       Core::FastU shiftWords = shift / 32;
       Core::FastU keepWords  = n - shiftWords;
 
-      numChunkCODE += shiftWords * 4 + keepWords * 8;
+      for(Core::FastU i = keepWords; i--;)
+         genStmntDropTmp(i);
 
-      if(shift % 32)
-         numChunkCODE += (keepWords - 1) * 56 + 32;
+      for(Core::FastU i = shiftWords; i--;)
+         genCode(Code::Drop_Nul);
+
+      if(shiftBits)
+      {
+         for(Core::FastU i = 0; i != keepWords - 1; ++i)
+         {
+            // ret[i] = (l[i] >> r) | (l[i+1] << (32 - r))
+
+            genStmntPushTmp(i);
+            genStmntShiftRU(shiftBits);
+
+            genStmntPushTmp(i + 1);
+            genCode(Code::Push_Lit, 32 - shiftBits);
+            genCode(Code::ShLU);
+
+            genCode(Code::BOrI);
+         }
+
+         // ret[N-1] = l[N-1] >> r
+         genStmntPushTmp(keepWords - 1);
+         genStmntShiftRU(shiftBits);
+      }
       else
-         numChunkCODE += keepWords * 8;
+      {
+         // ret[i] = l[i]
+         for(Core::FastU i = 0; i != keepWords; ++i)
+            genStmntPushTmp(i);
+      }
 
-      numChunkCODE += shiftWords * 8;
+      for(Core::FastU i = shiftWords; i--;)
+         genCode(Code::Push_Lit, 0);
    }
 
    //
@@ -153,281 +254,57 @@ namespace GDCC::BC::ZDACS
    void Info::genStmnt_ShR_U1()
    {
       if(stmnt->args[2].a == IR::ArgBase::Lit)
-         numChunkCODE += 24;
-      else if(stmnt->args[2].a == IR::ArgBase::Stk)
-         numChunkCODE += 68;
-      else
-         numChunkCODE += 48 + lenPushArg(stmnt->args[2], 0) * 2;
-   }
-
-   //
-   // Info::putStmnt_ShL_F
-   //
-   void Info::putStmnt_ShL_F()
-   {
-      auto n = getStmntSize();
-
-      if(n == 0)
-         return putCode(Code::Drop_Nul);
-
-      putStmntCall(getFuncName(stmnt->code, n), n);
-   }
-
-   //
-   // Info::putStmnt_ShL_U
-   //
-   void Info::putStmnt_ShL_U()
-   {
-      auto n = getStmntSize();
-
-      if(n == 0)
-         return putCode(Code::Drop_Nul);
-
-      if(n == 1)
-         return putCode(Code::ShLU);
-
-      if(stmnt->args[2].a != IR::ArgBase::Lit)
-         return putStmntCall(getFuncName(IR::CodeBase::ShL+'U', n), n);
-
-      Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
-
-      // Shift of 0 is a no-op.
-      if(!shift) return;
-
-      Core::FastU shiftBits  = shift % 32;
-      Core::FastU shiftWords = shift / 32;
-      Core::FastU keepWords  = n - shiftWords;
-
-      for(Core::FastU i = shiftWords; i--;)
-         putCode(Code::Drop_Nul);
-
-      for(Core::FastU i = keepWords; i--;)
-         putCode(Code::Drop_LocReg, func->localReg + i);
-
-      for(Core::FastU i = shiftWords; i--;)
-         putCode(Code::Push_Lit, 0);
-
-      if(shiftBits)
       {
-         // ret[0] = l[0] << r
-         putCode(Code::Push_LocReg, func->localReg + 0);
-         putCode(Code::Push_Lit,    shiftBits);
-         putCode(Code::ShLU);
-
-         for(Core::FastU i = 1; i != keepWords; ++i)
-         {
-            // ret[i] = (l[i] << r) | (l[i-1] >> (32 - r))
-
-            putCode(Code::Push_LocReg, func->localReg + i);
-            putCode(Code::Push_Lit,    shiftBits);
-            putCode(Code::ShLU);
-
-            putCode(Code::Push_LocReg, func->localReg + i - 1);
-            putStmntShiftRU(32 - shiftBits);
-
-            putCode(Code::BOrI);
-         }
-      }
-      else
-      {
-         // ret[i] = l[i]
-         for(Core::FastU i = 0; i != keepWords; ++i)
-            putCode(Code::Push_LocReg, func->localReg + i);
-      }
-   }
-
-   //
-   // Info::putStmnt_ShR_I
-   //
-   void Info::putStmnt_ShR_I()
-   {
-      auto n = getStmntSize();
-
-      if(n == 0)
-         return putCode(Code::Drop_Nul);
-
-      if(n == 1)
-         return putCode(Code::ShRI);
-
-      if(stmnt->args[2].a != IR::ArgBase::Lit)
-         return putStmntCall(getFuncName(IR::CodeBase::ShR+'I', n), n);
-
-      Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
-
-      // Shift of 0 is a no-op.
-      if(!shift) return;
-
-      Core::FastU shiftBits  = shift % 32;
-      Core::FastU shiftWords = shift / 32;
-      Core::FastU keepWords  = n - shiftWords;
-
-      for(Core::FastU i = keepWords; i--;)
-         putCode(Code::Drop_LocReg, func->localReg + i);
-
-      for(Core::FastU i = shiftWords; i--;)
-         putCode(Code::Drop_Nul);
-
-      if(shiftBits)
-      {
-         for(Core::FastU i = 0; i != keepWords - 1; ++i)
-         {
-            // ret[i] = (l[i] >> r) | (l[i+1] << (32 - r))
-
-            putCode(Code::Push_LocReg, func->localReg + i);
-            putStmntShiftRU(shiftBits);
-
-            putCode(Code::Push_LocReg, func->localReg + i + 1);
-            putCode(Code::Push_Lit,    32 - shiftBits);
-            putCode(Code::ShLU);
-
-            putCode(Code::BOrI);
-         }
-
-         // ret[N-1] = l[N-1] >> r
-         putCode(Code::Push_LocReg, func->localReg + keepWords - 1);
-         putCode(Code::Push_Lit,    shiftBits);
-         putCode(Code::ShRI);
-      }
-      else
-      {
-         // ret[i] = l[i]
-         for(Core::FastU i = 0; i != keepWords; ++i)
-            putCode(Code::Push_LocReg, func->localReg + i);
-      }
-
-      if(shiftWords)
-      {
-         putCode(Code::Push_LocReg, func->localReg + keepWords - 1);
-         putCode(Code::Push_Lit,    31);
-         putCode(Code::ShRI);
-
-         for(Core::FastU i = shiftWords - 1; i--;)
-            putCode(Code::Copy);
-      }
-   }
-
-   //
-   // Info::putStmnt_ShR_U
-   //
-   void Info::putStmnt_ShR_U()
-   {
-      auto n = getStmntSize();
-
-      if(n == 0)
-         return putCode(Code::Drop_Nul);
-
-      if(n == 1)
-         return putStmnt_ShR_U1();
-
-      if(stmnt->args[2].a != IR::ArgBase::Lit)
-         return putStmntCall(getFuncName(IR::CodeBase::ShR+'U', n), n);
-
-      Core::FastU shift = getWord(stmnt->args[2].aLit) % (32 * n);
-
-      // Shift of 0 is a no-op.
-      if(!shift) return;
-
-      Core::FastU shiftBits  = shift % 32;
-      Core::FastU shiftWords = shift / 32;
-      Core::FastU keepWords  = n - shiftWords;
-
-      for(Core::FastU i = keepWords; i--;)
-         putCode(Code::Drop_LocReg, func->localReg + i);
-
-      for(Core::FastU i = shiftWords; i--;)
-         putCode(Code::Drop_Nul);
-
-      if(shiftBits)
-      {
-         for(Core::FastU i = 0; i != keepWords - 1; ++i)
-         {
-            // ret[i] = (l[i] >> r) | (l[i+1] << (32 - r))
-
-            putCode(Code::Push_LocReg, func->localReg + i);
-            putStmntShiftRU(shiftBits);
-
-            putCode(Code::Push_LocReg, func->localReg + i + 1);
-            putCode(Code::Push_Lit,    32 - shiftBits);
-            putCode(Code::ShLU);
-
-            putCode(Code::BOrI);
-         }
-
-         // ret[N-1] = l[N-1] >> r
-         putCode(Code::Push_LocReg, func->localReg + keepWords - 1);
-         putStmntShiftRU(shiftBits);
-      }
-      else
-      {
-         // ret[i] = l[i]
-         for(Core::FastU i = 0; i != keepWords; ++i)
-            putCode(Code::Push_LocReg, func->localReg + i);
-      }
-
-      for(Core::FastU i = shiftWords; i--;)
-         putCode(Code::Push_Lit, 0);
-   }
-
-   //
-   // Info::putStmnt_ShR_U1
-   //
-   void Info::putStmnt_ShR_U1()
-   {
-      if(stmnt->args[2].a == IR::ArgBase::Lit)
-      {
-         putStmntShiftRU(getWord(stmnt->args[2].aLit));
+         genStmntShiftRU(getWord(stmnt->args[2].aLit));
       }
       else if(stmnt->args[2].a == IR::ArgBase::Stk)
       {
          // If shift is 0, jump to end.
-         putCode(Code::Jcnd_Lit);
-         putWord(0);
-         putWord(putPos + 60);
+         auto jump = module->chunkCODE.size();
+         genCode(Code::Jcnd_Lit, 0, 0);
 
-         putCode(Code::Drop_LocReg);
-         putWord(func->localReg + 0);
-         putCode(Code::Push_LocReg);
-         putWord(func->localReg + 0);
-         putCode(Code::ShRI);
-         putCode(Code::Push_Lit);
-         putWord(0x80000000);
-         putCode(Code::DecU_LocReg);
-         putWord(func->localReg + 0);
-         putCode(Code::Push_LocReg);
-         putWord(func->localReg + 0);
-         putCode(Code::ShRI);
-         putCode(Code::BNot);
-         putCode(Code::BAnd);
+         genStmntDropTmp(0);
+         genStmntPushTmp(0);
+         genCode(Code::ShRI);
+         genCode(Code::Push_Lit, 0x80000000);
+         genStmntDecUTmp(0);
+         genStmntPushTmp(0);
+         genCode(Code::ShRI);
+         genCode(Code::BNot);
+         genCode(Code::BAnd);
+
+         module->chunkCODE[jump].args[1] = getCodePos();
       }
       else
       {
-         putStmntPushArg(stmnt->args[2], 0);
+         genStmntPushArg(stmnt->args[2], 0);
 
          // If shift is 0, jump to end.
-         putCode(Code::Jcnd_Lit);
-         putWord(0);
-         putWord(putPos + 40 + lenPushArg(stmnt->args[2], 0));
+         auto jump = module->chunkCODE.size();
+         genCode(Code::Jcnd_Lit, 0, 0);
 
-         putCode(Code::ShRI);
-         putCode(Code::Push_Lit, 0x80000000);
-         putStmntPushArg(stmnt->args[2], 0);
-         putCode(Code::Push_Lit, 1);
-         putCode(Code::SubU);
-         putCode(Code::ShRI);
-         putCode(Code::BNot);
-         putCode(Code::BAnd);
+         genCode(Code::ShRI);
+         genCode(Code::Push_Lit, 0x80000000);
+         genStmntPushArg(stmnt->args[2], 0);
+         genCode(Code::Push_Lit, 1);
+         genCode(Code::SubU);
+         genCode(Code::ShRI);
+         genCode(Code::BNot);
+         genCode(Code::BAnd);
+
+         module->chunkCODE[jump].args[1] = getCodePos();
       }
    }
 
    //
-   // Info::putStmntShiftRU
+   // Info::genStmntShiftRU
    //
-   void Info::putStmntShiftRU(Core::FastU shift)
+   void Info::genStmntShiftRU(Core::FastU shift)
    {
-      putCode(Code::Push_Lit, shift % 32);
-      putCode(Code::ShRI);
-      putCode(Code::Push_Lit, 0xFFFFFFFF >> (shift % 32));
-      putCode(Code::BAnd);
+      genCode(Code::Push_Lit, shift % 32);
+      genCode(Code::ShRI);
+      genCode(Code::Push_Lit, 0xFFFFFFFF >> (shift % 32));
+      genCode(Code::BAnd);
    }
 
    //

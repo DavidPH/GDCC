@@ -30,9 +30,6 @@ namespace GDCC::BC::ZDACS
    GDCC_BC_CodeTypeSwitchFn(pre, Mul,)
    GDCC_BC_CodeTypeSwitchFn(pre, MulX, Ux)
 
-   GDCC_BC_CodeTypeSwitchFn(put, Mul,)
-   GDCC_BC_CodeTypeSwitchFn(put, MulX, Ux)
-
    //
    // Info::addFunc_MulX_UW1
    //

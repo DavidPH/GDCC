@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2019 David Hill
+// Copyright (C) 2019-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -33,30 +33,38 @@ namespace GDCC::BC::ZDACS
    //
    // Info::genStmnt_LAnd
    //
-   void Info::genStmnt_LAnd()
+   void Info::genStmnt_LAnd(Code code)
    {
       auto n = getStmntSize();
 
       if(n == 0)
-         numChunkCODE += 8;
+         return genCode(Code::Push_Lit, 0);
 
-      else if(n == 1)
-         numChunkCODE += 4;
+      if(n == 1)
+         return genCode(code);
 
+      if(stmnt->args[1].a == IR::ArgBase::Stk)
+      {
+         for(Core::FastU i = n; --i;)
+            genCode(Code::BOrI);
+         genStmntDropTmp(0);
+
+         for(Core::FastU i = n; --i;)
+            genCode(Code::BOrI);
+         genStmntPushTmp(0);
+      }
       else
       {
-         if(stmnt->args[1].a == IR::ArgBase::Stk)
-            numChunkCODE += (n - 1) * 8 + lenDropTmp(0) + lenPushTmp(0);
+         genStmntPushArg(stmnt->args[1], 0);
+         for(Core::FastU i = n; --i;)
+            genStmntPushArg(stmnt->args[1], i), genCode(Code::BOrI);
 
-         else
-         {
-            numChunkCODE += (n - 1) * 8
-               + lenPushArg(stmnt->args[1], 0, n)
-               + lenPushArg(stmnt->args[2], 0, n);
-         }
-
-         numChunkCODE += 4;
+         genStmntPushArg(stmnt->args[2], 0);
+         for(Core::FastU i = n; --i;)
+            genStmntPushArg(stmnt->args[2], i), genCode(Code::BOrI);
       }
+
+      genCode(code);
    }
 
    //
@@ -64,55 +72,10 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_LNot()
    {
-      numChunkCODE += getStmntSize() * 4;
-   }
-
-   //
-   // Info::putStmnt_LAnd
-   //
-   void Info::putStmnt_LAnd(Code code)
-   {
       auto n = getStmntSize();
 
-      if(n == 0)
-         return putCode(Code::Push_Lit, 0);
-
-      if(n == 1)
-         return putCode(code);
-
-      if(stmnt->args[1].a == IR::ArgBase::Stk)
-      {
-         for(Core::FastU i = n; --i;)
-            putCode(Code::BOrI);
-         putStmntDropTmp(0);
-
-         for(Core::FastU i = n; --i;)
-            putCode(Code::BOrI);
-         putStmntPushTmp(0);
-      }
-      else
-      {
-         putStmntPushArg(stmnt->args[1], 0);
-         for(Core::FastU i = n; --i;)
-            putStmntPushArg(stmnt->args[1], i), putCode(Code::BOrI);
-
-         putStmntPushArg(stmnt->args[2], 0);
-         for(Core::FastU i = n; --i;)
-            putStmntPushArg(stmnt->args[2], i), putCode(Code::BOrI);
-      }
-
-      putCode(code);
-   }
-
-   //
-   // Info::putStmnt_LNot
-   //
-   void Info::putStmnt_LNot()
-   {
-      auto n = getStmntSize();
-
-      if(auto i = n) while(--i) putCode(Code::BOrI);
-      putCode(Code::LNot);
+      if(auto i = n) while(--i) genCode(Code::BOrI);
+      genCode(Code::LNot);
    }
 
    //

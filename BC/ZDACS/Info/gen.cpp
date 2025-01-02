@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2022 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -11,6 +11,10 @@
 //-----------------------------------------------------------------------------
 
 #include "BC/ZDACS/Info.hpp"
+
+#include "BC/ZDACS/Module.hpp"
+
+#include "Core/Exception.hpp"
 
 #include "IR/Program.hpp"
 
@@ -28,9 +32,24 @@ namespace GDCC::BC::ZDACS
    //
    void Info::gen()
    {
+      module.reset(new Module);
+
       prog->genObjectBySpace();
 
+      // Back asm-func glyphs before generating codes.
+      for(auto &fn : prog->rangeFunction())
+      {
+         if(fn.alloc || fn.ctype != IR::CallType::AsmFunc) continue;
+
+         func = &fn;
+         backGlyphFunc(func->glyph, func->valueInt, func->ctype);
+         func = nullptr;
+      }
+
       InfoBase::gen();
+
+      for(auto const &import : prog->rangeImport())
+         module->chunkLOAD.add(import.glyph);
 
       for(auto &itr : prog->rangeSpaceGblArs()) genSpaceIniti(itr);
       for(auto &itr : prog->rangeSpaceHubArs()) genSpaceIniti(itr);
@@ -40,6 +59,125 @@ namespace GDCC::BC::ZDACS
       genSpaceIniti(prog->getSpaceSta());
 
       genIniti();
+
+      // TODO 2024-12-31: ACS0 constraint checks.
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code)
+   {
+      genCode(code, ElemArgs{});
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code, int arg0)
+   {
+      genCode(code, ElemArgs{ElemArg{static_cast<Core::FastU>(arg0)}});
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code, unsigned int arg0)
+   {
+      genCode(code, ElemArgs{ElemArg{arg0}});
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code, Core::FastU arg0)
+   {
+      genCode(code, ElemArgs{ElemArg{arg0}});
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code, Core::FastU arg0, int arg1)
+   {
+      genCode(code, ElemArgs{ElemArg{arg0}, ElemArg{static_cast<Core::FastU>(arg1)}});
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code, Core::FastU arg0, Core::FastU arg1)
+   {
+      genCode(code, ElemArgs{ElemArg{arg0}, ElemArg{arg1}});
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code, Core::FastU arg0, Core::String arg1)
+   {
+      genCode(code, ElemArgs{ElemArg{arg0}, ElemArg{getExpGlyph(arg1)}});
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code, Core::FastU arg0, IR::Exp const *arg1)
+   {
+      genCode(code, ElemArgs{ElemArg{arg0}, ElemArg{arg1}});
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code, Core::String arg0)
+   {
+      genCode(code, ElemArgs{ElemArg{getExpGlyph(arg0)}});
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code, ElemArg const &arg0)
+   {
+      genCode(code, ElemArgs{ElemArg{arg0}});
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code, IR::Exp const *arg0)
+   {
+      genCode(code, ElemArgs{ElemArg{arg0}});
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code, IR::Exp const *arg0, IR::Exp const *arg1)
+   {
+      genCode(code, ElemArgs{ElemArg{arg0}, ElemArg{arg1}});
+   }
+
+   //
+   // Info::genCode
+   //
+   void Info::genCode(Code code, ElemArgs &&args)
+   {
+      Core::FastU cpos = module->chunkCODE.getPos();
+      Core::FastU size = 4;
+
+      switch(code)
+      {
+         // TODO 2024-12-30: Add padding to Jcnd_Lit for word alignment before
+         //    implementing any codes with sub-word arguments. (Or ACSe.)
+
+      default:
+         size += args.size() * 4;
+         break;
+      }
+
+      module->chunkCODE.add(cpos, size, static_cast<Core::FastU>(code), std::move(args));
    }
 
    //
@@ -50,8 +188,7 @@ namespace GDCC::BC::ZDACS
       if(djump->alloc)
          djump->allocValue(getAllocDJump());
 
-      if(numChunkJUMP <= djump->value)
-         numChunkJUMP = djump->value + 1;
+      module->chunkJUMP[djump->value] = ElemJUMP{ElemArg{getExpGlyph(djump->label)}};
 
       backGlyphDJump(djump->glyph, djump->value);
    }
@@ -62,32 +199,37 @@ namespace GDCC::BC::ZDACS
    void Info::genFunc()
    {
       //
-      // isScriptFlag
+      // getSizes
       //
-      auto isScriptFlag = [](Core::Array<Core::String> const &stype)
+      auto getSizes = [](IR::Function *func)
       {
-         for(auto const &st : stype)
-         {
-            if(auto flag = ScriptFlags.find(st)) if(*flag)
-               return true;
-
-            if(st == Core::STR_clientside || st == Core::STR_net)
-               return true;
-         }
-
-         return false;
+         Core::Array<Core::FastU> sizes{Core::Size, func->localArr.size()};
+         for(auto i = sizes.size(); --i;)
+            sizes[i] = func->localArr[i];
+         return std::move(sizes);
       };
 
       // Back label glyph.
-      backGlyphWord(func->label, CodeBase() + numChunkCODE);
+      backGlyphWord(func->label, getCodePos());
 
       // Gen function preamble.
-      if(func->allocAut)
-         numChunkCODE += 24;
+      if(func->defin && func->allocAut)
+      {
+         genCode(Code::Push_Lit,    func->allocAut);
+         genCode(Code::Call_Lit,    "___GDCC__Plsa");
+         genCode(Code::Drop_LocReg, getStkPtrIdx());
+      }
 
       Core::FastU paramMax = GetParamMax(func->ctype);
       if(func->defin && func->param > paramMax)
-         numChunkCODE += (func->param - paramMax) * 24;
+      {
+         for(Core::FastU i = paramMax; i != func->param; ++i)
+         {
+            genCode(Code::Push_Lit,    ~(i - paramMax));
+            genCode(Code::Push_GblArr, StaArray);
+            genCode(Code::Drop_LocReg, i);
+         }
+      }
 
       genBlock(func->block);
 
@@ -98,52 +240,67 @@ namespace GDCC::BC::ZDACS
          if(func->alloc)
             func->allocValue(getAllocFunc(func->ctype));
 
-         if(numChunkFUNC <= func->valueInt)
-            numChunkFUNC = func->valueInt + 1;
+         module->chunkFUNC[func->valueInt] = ElemFUNC
+         {
+            ElemArg{func->defin ? &*getExpGlyph(func->label) : nullptr},
+            std::min(func->param, GetParamMax(func->ctype)),
+            std::max(func->param, func->getLocalReg()),
+            !!func->retrn
+         };
 
-         if(numChunkFNAM <= func->valueInt)
-            numChunkFNAM = func->valueInt + 1;
+         if(module->chunkFUNC[func->valueInt].local > 255)
+            Core::Error(func->getOrigin(), "too many registers");
+
+         module->chunkFNAM[func->valueInt] = ElemFNAM{func->glyph};
 
          backGlyphFunc(func->glyph, func->valueInt, func->ctype);
+
+         if(func->defin && !func->localArr.empty())
+            module->chunkFARY.add(func->valueInt, getSizes(func));
 
          break;
 
       case IR::CallType::SScriptI:
-      case IR::CallType::ScriptI:
-         if(func->defin)
-         {
-            if(func->alloc)
-               func->allocValue(getAllocFunc(func->ctype));
-
-            ++numChunkSPTR;
-
-            if(isScriptFlag(func->stype)) ++numChunkSFLG;
-            if(func->getLocalReg() > 20)  ++numChunkSVCT;
-         }
-
-         if(!func->alloc)
-            backGlyphWord(func->glyph, func->valueInt);
-
-         break;
-
       case IR::CallType::SScriptS:
+      case IR::CallType::ScriptI:
       case IR::CallType::ScriptS:
          if(func->defin)
          {
             if(func->alloc)
                func->allocValue(getAllocFunc(func->ctype));
 
-            ++numChunkSPTR;
+            Core::FastU value = GetScriptValue(func);
 
-            if(isScriptFlag(func->stype)) ++numChunkSFLG;
-            if(func->getLocalReg() > 20)  ++numChunkSVCT;
+            module->chunkSPTR.add(ElemArg{&*getExpGlyph(func->label)}, value,
+               GetScriptType(func), std::min(func->param, GetParamMax(func->ctype)));
 
-            if(numChunkSNAM <= func->valueInt)
-               numChunkSNAM = func->valueInt + 1;
+            if(!func->localArr.empty())
+               module->chunkSARY.add(value, getSizes(func));
+
+            if(auto flags = GetScriptFlag(func))
+               module->chunkSFLG.add(value, flags);
+
+            if(func->ctype == IR::CallType::SScriptS || func->ctype == IR::CallType::ScriptS)
+               module->chunkSNAM[func->valueInt] = ElemSNAM{func->valueStr};
+
+            // TODO 2024-12-25: The implicit register count should be an option.
+            if(func->getLocalReg() > 20)
+               module->chunkSVCT.add(value, func->getLocalReg());
+
+            if(func->getLocalReg() > 65535)
+               Core::Error(func->getOrigin(), "too many registers");
          }
 
-         if(auto s = prog->findStrEntVal(func->valueStr))
-            backGlyphGlyph(func->glyph, s->glyph);
+         if(func->ctype == IR::CallType::SScriptS || func->ctype == IR::CallType::ScriptS)
+         {
+            if(auto s = prog->findStrEntVal(func->valueStr))
+               backGlyphGlyph(func->glyph, s->glyph);
+         }
+         else
+         {
+            if(!func->alloc)
+               backGlyphWord(func->glyph, func->valueInt);
+         }
 
          break;
 
@@ -188,11 +345,11 @@ namespace GDCC::BC::ZDACS
             getAllocSpace(IR::AddrBase::ModArr).allocAt(obj->words, obj->value);
          }
 
-         if(!obj->defin)
-            ++numChunkMIMP;
-
-         if(obj->defin && numChunkMEXP <= obj->value)
-            numChunkMEXP = obj->value + 1;
+         // TODO 2024-12-25: This needs to account for multi-word objects.
+         if(obj->defin)
+            module->chunkMEXP[obj->value] = obj->glyph;
+         else
+            module->chunkMIMP.add(obj->glyph, obj->value);
 
          break;
 
@@ -211,6 +368,9 @@ namespace GDCC::BC::ZDACS
          if(auto sp = prog->findSpace(obj->space))
             if(sp->words < words) sp->words = words;
       }
+
+      if(obj->initi)
+         init[prog->findSpace(obj->space)].used = true;
    }
 
    //
@@ -226,8 +386,7 @@ namespace GDCC::BC::ZDACS
       // Back address glyph.
       backGlyphStrEnt(strent->glyph, strent->valueInt);
 
-      if(numChunkSTRL <= strent->valueInt)
-         numChunkSTRL = strent->valueInt + 1;
+      module->chunkSTRL[strent->valueInt] = ElemSTRL{strent->valueStr};
    }
 }
 

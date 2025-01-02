@@ -12,6 +12,8 @@
 
 #include "BC/ZDACS/Info.hpp"
 
+#include "BC/ZDACS/Module.hpp"
+
 #include "Core/Exception.hpp"
 
 #include "IR/Program.hpp"
@@ -109,27 +111,22 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkAIMP()
    {
-      if(!numChunkAIMP) return;
+      auto elemC = module->chunkAIMP.size();
+      if(!elemC) return;
 
-      Core::Array<IR::Space const *> imps{numChunkAIMP};
-
-      auto itr = imps.begin();
-      for(auto const &sp : prog->rangeSpaceModArs())
-         if(!sp.defin && spaceUsed[&sp]) *itr++ = &sp;
-
-      Core::FastU size = numChunkAIMP * 8 + 4;
-      for(auto const &imp : imps)
-         size += lenString(imp->glyph);
+      Core::FastU len = elemC * 8 + 4;
+      for(auto const &elem : module->chunkAIMP)
+         len += lenString(elem.glyph);
 
       putData("AIMP", 4);
-      putWord(size);
-      putWord(numChunkAIMP);
+      putWord(len);
+      putWord(elemC);
 
-      for(auto const &imp : imps)
+      for(auto const &elem : module->chunkAIMP)
       {
-         putWord(imp->value);
-         putWord(imp->words);
-         putString(imp->glyph);
+         putWord(elem.value);
+         putWord(elem.words);
+         putString(elem.glyph);
       }
    }
 
@@ -138,24 +135,14 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkAINI()
    {
-      if(!numChunkAINI) return;
-
-      for(auto const &itr : init)
-         if(itr.first->space.base == IR::AddrBase::ModArr &&
-            itr.first->defin && !itr.second.onlyNil)
+      for(auto const &elem : module->chunkAINI)
       {
          putData("AINI", 4);
-         putWord(itr.second.max * 4 + 4);
-         putWord(itr.first->value);
+         putWord(elem.inits.size());
+         putWord(elem.value);
 
-         for(Core::FastU i = 0, e = itr.second.max; i != e; ++i)
-         {
-            auto val = itr.second.vals.find(i);
-            if(val != itr.second.vals.end())
-               putWord(val->second.val);
-            else
-               putWord(0);
-         }
+         for(auto const &init : elem.inits)
+            putWord(getWord(init));
       }
    }
 
@@ -164,17 +151,16 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkARAY()
    {
-      if(!numChunkARAY) return;
+      auto elemC = module->chunkARAY.size();
+      if(!elemC) return;
 
       putData("ARAY", 4);
-      putWord(numChunkARAY * 8);
+      putWord(elemC * 8);
 
-      for(auto const &itr : prog->rangeSpaceModArs())
+      for(auto const &elem : module->chunkARAY)
       {
-         if(!itr.defin) continue;
-
-         putWord(itr.value);
-         putWord(itr.words);
+         putWord(elem.value);
+         putWord(elem.words);
       }
    }
 
@@ -183,17 +169,14 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkASTR()
    {
-      if(!numChunkASTR) return;
+      auto elemC = module->chunkASTR.size();
+      if(!elemC) return;
 
       putData("ASTR", 4);
-      putWord(numChunkASTR * 4);
+      putWord(elemC * 4);
 
-      for(auto const &itr : init)
-         if(itr.first->space.base == IR::AddrBase::ModArr && itr.first->defin)
-      {
-         if(itr.second.needTag && itr.second.onlyStr)
-            putWord(itr.first->value);
-      }
+      for(auto const &elem : module->chunkASTR)
+         putWord(elem.value);
    }
 
    //
@@ -201,32 +184,16 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkATAG()
    {
-      if(!numChunkATAG) return;
-
-      for(auto const &itr : init)
-         if(itr.first->space.base == IR::AddrBase::ModArr && itr.first->defin)
+      for(auto const &elem : module->chunkATAG)
       {
-         if(!itr.second.needTag || itr.second.onlyStr) continue;
-
          putData("ATAG", 4);
-         putWord(itr.second.max + 5);
+         putWord(elem.tags.size() + 5);
 
          putByte(0); // version
-         putWord(itr.first->value);
+         putWord(elem.value);
 
-         for(Core::FastU i = 0, e = itr.second.max; i != e; ++i)
-         {
-            auto val = itr.second.vals.find(i);
-            if(val != itr.second.vals.end()) switch(val->second.tag)
-            {
-            case InitTag::Empty: putByte(0); break;
-            case InitTag::Fixed: putByte(0); break;
-            case InitTag::Funct: putByte(2); break;
-            case InitTag::StrEn: putByte(1); break;
-            }
-            else
-               putByte(0);
-         }
+         for(auto const &tag : elem.tags)
+            putByte(tag);
       }
    }
 
@@ -236,9 +203,9 @@ namespace GDCC::BC::ZDACS
    void Info::putChunkCODE()
    {
       putData("\0\0\0\0", 4);
-      putWord(numChunkCODE);
+      putWord(module->chunkCODE.getPos());
 
-      putACS0_Code();
+      putCode();
    }
 
    //
@@ -246,21 +213,15 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkFARY()
    {
-      for(auto &itr : prog->rangeFunction())
+      for(auto const &elem : module->chunkFARY)
       {
-         if(itr.ctype != IR::CallType::StdCall &&
-            itr.ctype != IR::CallType::StkCall)
-            continue;
-
-         if(itr.localArr.empty()) continue;
-
          putData("FARY", 4);
-         putWord(itr.localArr.size() * 4 + 2);
+         putWord(elem.sizes.size() * 4 + 2);
 
-         putHWord(itr.valueInt);
+         putHWord(elem.value);
 
-         for(Core::FastU arr = 0; arr != itr.localArr.size(); ++arr)
-               putWord(itr.localArr[arr]);
+         for(auto const &size : elem.sizes)
+            putWord(size);
       }
    }
 
@@ -269,22 +230,10 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkFNAM()
    {
-      if(!numChunkFNAM) return;
+      if(module->chunkFNAM.empty()) return;
 
-      Core::Array<Core::String> strs{numChunkFNAM};
-
-      for(auto &s : strs) s = Core::STR_;
-
-      for(auto const &itr : prog->rangeFunction())
-      {
-         if(itr.ctype != IR::CallType::StdCall &&
-            itr.ctype != IR::CallType::StkCall)
-            continue;
-
-         strs[itr.valueInt] = itr.glyph;
-      }
-
-      putChunk("FNAM", strs, false);
+      putChunk("FNAM", {module->chunkFNAM.begin(), module->chunkFNAM.end(),
+         [](ElemFNAM const &elem) {return elem.glyph;}}, false);
    }
 
    //
@@ -292,54 +241,19 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkFUNC()
    {
-      if(!numChunkFUNC) return;
-
-      Core::Array<IR::Function const *> funcs{numChunkFUNC, nullptr};
-
-      for(auto const &itr : prog->rangeFunction())
-      {
-         if(itr.ctype != IR::CallType::StdCall &&
-            itr.ctype != IR::CallType::StkCall)
-            continue;
-
-         funcs[itr.valueInt] = &itr;
-      }
+      auto elemC = module->chunkFUNC.size();
+      if(!elemC) return;
 
       putData("FUNC", 4);
-      putWord(numChunkFUNC * 8);
+      putWord(elemC * 8);
 
-      for(auto f : funcs)
+      for(auto const &elem : module->chunkFUNC)
       {
-         if(f)
-         {
-            auto paramMax = GetParamMax(f->ctype);
-            auto param    = f->param < paramMax ? f->param : paramMax;
-
-            auto localReg = std::max(f->getLocalReg(), f->param);
-
-            if(localReg > 255)
-               Core::Error(f->getOrigin(), "too many registers");
-
-            putByte(param);
-            putByte(localReg);
-            putByte(!!f->retrn);
-            putByte(0);
-
-            if(f->defin)
-            {
-               putWord(getWord(resolveGlyph(f->label)));
-            }
-            else
-            {
-               // Must have imports to import from.
-               if(!prog->sizeImport())
-                  Core::ErrorUndef("Function", f->glyph);
-
-               putWord(0);
-            }
-         }
-         else
-            putData("\0\0\0\0\0\0\0\0", 8);
+         putByte(elem.param);
+         putByte(elem.local);
+         putByte(!!elem.retrn);
+         putByte(0);
+         putWord(getWord(elem.entry));
       }
    }
 
@@ -348,18 +262,14 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkJUMP()
    {
-      if(!numChunkJUMP) return;
-
-      Core::Array<IR::DJump const *> jumps{numChunkJUMP, nullptr};
-
-      for(auto const &itr : prog->rangeDJump())
-         jumps[itr.value] = &itr;
+      auto elemC = module->chunkJUMP.size();
+      if(!elemC) return;
 
       putData("JUMP", 4);
-      putWord(numChunkJUMP * 4);
+      putWord(elemC * 4);
 
-      for(auto j : jumps)
-         putWord(j ? getWord(resolveGlyph(j->label)) : 0);
+      for(auto const &elem : module->chunkJUMP)
+         putWord(getWord(elem.entry));
    }
 
    //
@@ -367,20 +277,18 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkLOAD()
    {
-      numChunkLOAD = prog->sizeImport();
+      auto elemC = module->chunkLOAD.size();
+      if(!elemC) return;
 
-      if(!numChunkLOAD) return;
-
-      Core::FastU size = 0;
-
-      for(auto const &itr : prog->rangeImport())
-         size += lenString(itr.glyph);
+      Core::FastU len = 0;
+      for(auto const &elem : module->chunkLOAD)
+         len += lenString(elem.glyph);
 
       putData("LOAD", 4);
-      putWord(size);
+      putWord(len);
 
-      for(auto const &itr : prog->rangeImport())
-         putString(itr.glyph);
+      for(auto const &elem : module->chunkLOAD)
+         putString(elem.glyph);
    }
 
    //
@@ -388,21 +296,10 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkMEXP()
    {
-      if(!numChunkMEXP) return;
+      if(module->chunkMEXP.empty()) return;
 
-      Core::Array<Core::String> strs{numChunkMEXP};
-      for(auto &s : strs) s = Core::STR_;
-
-      for(auto const &itr : prog->rangeObjectBySpace({IR::AddrBase::ModReg, Core::STR_}))
-      {
-         if(itr->defin)
-            strs[itr->value] = itr->glyph;
-      }
-
-      for(auto const &itr : prog->rangeSpaceModArs())
-         if(itr.defin) strs[itr.value] = itr.glyph;
-
-      putChunk("MEXP", strs, false);
+      putChunk("MEXP", {module->chunkMEXP.begin(), module->chunkMEXP.end(),
+         [](ElemMEXP const &elem) {return elem.glyph;}}, false);
    }
 
    //
@@ -410,30 +307,20 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkMIMP()
    {
-      if(!numChunkMIMP) return;
+      auto elemC = module->chunkMIMP.size();
+      if(!elemC) return;
 
-      Core::Array<IR::Object const *> imps{numChunkMIMP};
-
-      {
-         auto imp = imps.begin();
-         for(auto const &itr : prog->rangeObjectBySpace({IR::AddrBase::ModReg, Core::STR_}))
-         {
-            if(!itr->defin)
-               *imp++ = itr;
-         }
-      }
-
-      Core::FastU size = numChunkMIMP * 4;
-      for(auto const &imp : imps)
-         size += lenString(imp->glyph);
+      Core::FastU len = elemC * 4;
+      for(auto const &elem : module->chunkMIMP)
+         len += lenString(elem.glyph);
 
       putData("MIMP", 4);
-      putWord(size);
+      putWord(len);
 
-      for(auto const &imp : imps)
+      for(auto const &elem : module->chunkMIMP)
       {
-         putWord(imp->value);
-         putString(imp->glyph);
+         putWord(elem.value);
+         putString(elem.glyph);
       }
    }
 
@@ -442,14 +329,13 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkMINI()
    {
-      if(!numChunkMINI) return;
-
-      for(auto const &itr : init[&prog->getSpaceModReg()].vals) if(itr.second.val)
+      for(auto const &elem : module->chunkMINI)
       {
          putData("MINI", 4);
-         putWord(8);
-         putWord(itr.first);
-         putWord(itr.second.val);
+         putWord(4 + elem.inits.size() * 4);
+         putWord(elem.value);
+         for(auto const &init : elem.inits)
+            putWord(getWord(init));
       }
    }
 
@@ -458,13 +344,14 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkMSTR()
    {
-      if(!numChunkMSTR) return;
+      auto elemC = module->chunkMSTR.size();
+      if(!elemC) return;
 
       putData("MSTR", 4);
-      putWord(numChunkMSTR * 4);
+      putWord(elemC * 4);
 
-      for(auto const &itr : init[&prog->getSpaceModReg()].vals)
-         if(itr.second.tag == InitTag::StrEn) putWord(itr.first);
+      for(auto const &elem : module->chunkMSTR)
+         putWord(elem.value);
    }
 
    //
@@ -472,20 +359,15 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkSARY()
    {
-      for(auto &itr : prog->rangeFunction())
+      for(auto const &elem : module->chunkSARY)
       {
-         if(!IsScript(itr.ctype))
-            continue;
+         putData("FARY", 4);
+         putWord(elem.sizes.size() * 4 + 2);
 
-         if(itr.localArr.empty()) continue;
+         putHWord(elem.value);
 
-         putData("SARY", 4);
-         putWord(itr.localArr.size() * 4 + 2);
-
-         putHWord(GetScriptValue(itr));
-
-         for(Core::FastU arr = 0; arr != itr.localArr.size(); ++arr)
-               putWord(itr.localArr[arr]);
+         for(auto const &size : elem.sizes)
+            putWord(size);
       }
    }
 
@@ -494,44 +376,16 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkSFLG()
    {
-      if(!numChunkSFLG) return;
+      auto elemC = module->chunkSFLG.size();
+      if(!elemC) return;
 
       putData("SFLG", 4);
-      putWord(numChunkSFLG * 4);
+      putWord(elemC * 4);
 
-      for(auto const &itr : prog->rangeFunction())
+      for(auto const &elem : module->chunkSFLG)
       {
-         if(!IsScript(itr.ctype))
-            continue;
-
-         if(!itr.defin) continue;
-
-         Core::FastU flags = 0;
-
-         // Convert script flag.
-         for(auto const &st : itr.stype)
-         {
-            if(auto flag = ScriptFlags.find(st))
-               flags |= *flag;
-
-            else switch(st)
-            {
-            case Core::STR_clientside: flags |= 0x0002; break;
-            case Core::STR_net:        flags |= 0x0001; break;
-            default: break;
-            }
-         }
-
-         if(!flags) continue;
-
-         putHWord(GetScriptValue(itr));
-         putHWord(flags);
-      }
-
-      if(codeInit && Target::EngineCur == Target::Engine::Zandronum)
-      {
-         putHWord(InitScriptNumber + 1);
-         putHWord(0x0002);
+         putHWord(elem.value);
+         putHWord(elem.flags);
       }
    }
 
@@ -540,29 +394,10 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkSNAM()
    {
-      if(!numChunkSNAM) return;
+      if(module->chunkSNAM.empty()) return;
 
-      Core::Array<Core::String> strs{numChunkSNAM};
-
-      for(auto &s : strs) s = Core::STR_;
-
-      for(auto const &itr : prog->rangeFunction())
-      {
-         if(!itr.defin || !IsScriptS(itr.ctype))
-            continue;
-
-         strs[itr.valueInt] = itr.valueStr;
-      }
-
-      if(codeInit && InitScriptNamed)
-      {
-         *(strs.end() - 1) = InitScriptName;
-
-         if(Target::EngineCur == Target::Engine::Zandronum)
-            *(strs.end() - 2) = InitScriptName + "_ClS";
-      }
-
-      putChunk("SNAM", strs, false);
+      putChunk("SNAM", {module->chunkSNAM.begin(), module->chunkSNAM.end(),
+         [](ElemSNAM const &elem) {return elem.glyph;}}, false);
    }
 
    //
@@ -570,75 +405,27 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkSPTR()
    {
-      if(!numChunkSPTR) return;
+      auto elemC = module->chunkSPTR.size();
+      if(!elemC) return;
 
       putData("SPTR", 4);
-      putWord(numChunkSPTR * (UseFakeACS0 ? 8 : 12));
+      putWord(elemC * (UseFakeACS0 ? 8 : 12));
 
-      for(auto const &itr : prog->rangeFunction())
+      for(auto const &elem : module->chunkSPTR)
       {
-         if(!IsScript(itr.ctype))
-            continue;
-
-         if(!itr.defin) continue;
-
-         auto param = std::min(itr.param, GetParamMax(itr.ctype));
-
-         // Write entry.
          if(UseFakeACS0)
          {
-            putHWord(GetScriptValue(itr));
-            putByte(GetScriptType(itr));
-            putByte(param);
-            putWord(getWord(resolveGlyph(itr.label)));
+            putHWord(elem.value);
+            putByte(elem.stype);
+            putByte(elem.param);
+            putWord(getWord(elem.entry));
          }
          else
          {
-            putHWord(GetScriptValue(itr));
-            putHWord(GetScriptType(itr));
-            putWord(getWord(resolveGlyph(itr.label)));
-            putWord(param);
-         }
-      }
-
-      // Initializer script.
-      if(codeInit)
-      {
-         Core::FastU stype, param;
-         if(isInitScriptEvent())
-            stype = 16, param = 1;
-         else
-            stype = 1, param = 0;
-
-         if(UseFakeACS0)
-         {
-            putHWord(InitScriptNumber);
-            putByte(stype);
-            putByte(param);
-            putWord(codeInit);
-
-            if(Target::EngineCur == Target::Engine::Zandronum)
-            {
-               putHWord(InitScriptNumber + 1);
-               putByte(stype);
-               putByte(param);
-               putWord(codeInit);
-            }
-         }
-         else
-         {
-            putHWord(InitScriptNumber);
-            putHWord(stype);
-            putWord(codeInit);
-            putWord(param);
-
-            if(Target::EngineCur == Target::Engine::Zandronum)
-            {
-               putHWord(InitScriptNumber + 1);
-               putHWord(stype);
-               putWord(codeInit);
-               putWord(param);
-            }
+            putHWord(elem.value);
+            putHWord(elem.stype);
+            putWord(getWord(elem.entry));
+            putWord(elem.param);
          }
       }
    }
@@ -648,16 +435,11 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkSTRL()
    {
-      if(!numChunkSTRL) return;
+      if(module->chunkSTRL.empty()) return;
 
-      Core::Array<Core::String> strs{numChunkSTRL};
-
-      for(auto &s : strs) s = Core::STR_;
-
-      for(auto const &itr : prog->rangeStrEnt()) if(itr.defin)
-         strs[itr.valueInt] = itr.valueStr;
-
-      putChunk(UseChunkSTRE ? "STRE" : "STRL", strs, true);
+      putChunk(UseChunkSTRE ? "STRE" : "STRL",
+         {module->chunkSTRL.begin(), module->chunkSTRL.end(),
+            [](ElemSTRL const &elem) {return elem.value;}}, true);
    }
 
    //
@@ -665,25 +447,16 @@ namespace GDCC::BC::ZDACS
    //
    void Info::putChunkSVCT()
    {
-      if(!numChunkSVCT) return;
+      auto elemC = module->chunkSVCT.size();
+      if(!elemC) return;
 
       putData("SVCT", 4);
-      putWord(numChunkSVCT * 4);
+      putWord(elemC * 4);
 
-      for(auto const &itr : prog->rangeFunction())
+      for(auto const &elem : module->chunkSVCT)
       {
-         if(!IsScript(itr.ctype))
-            continue;
-
-         if(!itr.defin) continue;
-
-         if(itr.getLocalReg() <= 20) continue;
-
-         if(itr.getLocalReg() > 65535)
-            Core::Error(itr.getOrigin(), "too many registers");
-
-         putHWord(GetScriptValue(itr));
-         putHWord(itr.getLocalReg());
+         putHWord(elem.value);
+         putHWord(elem.local);
       }
    }
 }

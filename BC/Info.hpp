@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2022 David Hill
+// Copyright (C) 2013-2024 David Hill
 //
 // See COPYING for license information.
 //
@@ -355,6 +355,9 @@ namespace GDCC::BC
       [[noreturn]]
       void errorCode(char const *msg);
 
+      Core::CounterRef<IR::Exp const> getExpAddPtr(IR::Exp const *l, Core::FastU r);
+      Core::CounterRef<IR::Exp const> getExpGlyph(Core::String glyph);
+
       virtual FixedInfo getFixedInfo(Core::FastU n, bool s);
       FixedInfo getFixedInfo(Core::FastU n, char t);
 
@@ -370,6 +373,8 @@ namespace GDCC::BC
       Core::String getFuncName(IR::Code code, Core::FastU n0, Core::FastU n1 = 0);
 
       virtual FixedInfo getIntegInfo(Core::FastU n, bool s);
+
+      Core::Origin getOrigin();
 
       virtual Core::FastU getStmntSize();
 
