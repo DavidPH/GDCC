@@ -44,6 +44,10 @@
 #define DefaultFunc_Base(set) \
    void Info::set() \
    { \
+      for(auto &itr : prog->rangeDJump())  set##DJump(itr); \
+      for(auto &itr : prog->rangeObject()) set##Obj(itr); \
+      for(auto &itr : prog->rangeStrEnt()) set##StrEnt(itr); \
+      \
       for(auto &itr : prog->rangeSpaceGblArs()) set##Space(itr); \
       for(auto &itr : prog->rangeSpaceHubArs()) set##Space(itr); \
       for(auto &itr : prog->rangeSpaceLocArs()) set##Space(itr); \
@@ -53,10 +57,6 @@
       set##Space(prog->getSpaceHubReg()); \
       set##Space(prog->getSpaceModReg()); \
       set##Space(prog->getSpaceSta()); \
-      \
-      for(auto &itr : prog->rangeDJump())  set##DJump(itr); \
-      for(auto &itr : prog->rangeObject()) set##Obj(itr); \
-      for(auto &itr : prog->rangeStrEnt()) set##StrEnt(itr); \
       \
       for(;;) try \
       { \
