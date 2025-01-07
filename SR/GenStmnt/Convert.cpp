@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -130,7 +130,7 @@ namespace GDCC::SR
          Core::Error(exp->pos, "convert arith dst stub");
 
       if(srcT->isCTypeRealFlt())
-         t[1] = dstT->getSizeBitsS() ? 'F' : 'E';
+         t[1] = srcT->getSizeBitsS() ? 'F' : 'E';
       else if(srcT->isCTypeAccum())
          t[1] = srcT->getSizeBitsS() ? 'X' : 'K';
       else if(srcT->isCTypeFract())
