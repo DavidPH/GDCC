@@ -138,7 +138,7 @@ namespace GDCC::BC::ZDACS
       for(auto const &elem : module->chunkAINI)
       {
          putData("AINI", 4);
-         putWord(elem.inits.size());
+         putWord(4 + elem.inits.size() * 4);
          putWord(elem.value);
 
          for(auto const &ini : elem.inits)
