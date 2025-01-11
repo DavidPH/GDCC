@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2024 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -102,8 +102,10 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmnt_Pltn()
    {
+      genStmntArgR1Pre(true);
       genCode(Code::Push_LocReg, getStkPtrIdx());
       genCode(Code::AddU);
+      genStmntArgR1Suf();
    }
 
    //
@@ -134,11 +136,128 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::genStmntArg
+   //
+   void Info::genStmntArg(IR::CodeType type, Code code)
+   {
+      genStmntArg(0, type, code);
+   }
+
+   //
+   // Info::genStmntArg
+   //
+   void Info::genStmntArg(Core::FastU res0, IR::CodeType type, Code code)
+   {
+      auto n = getStmntSize();
+
+      if(n == 0)
+         return genStmntArgN0(res0);
+
+      if(stmnt->args[0].getSize() == 1)
+         return genStmntArgR1(res0, stmnt->code.base+type, code);
+
+      if(stmnt->args[1].a != IR::ArgBase::Stk)
+      {
+         genStmntPushArg(stmnt->args[1]);
+         if(stmnt->args.size() > 2) genStmntPushArg(stmnt->args[2]);
+      }
+
+      if(n == 1 && code != Code::Nop)
+      {
+         genCode(code);
+
+         if(stmnt->args[0].a != IR::ArgBase::Stk)
+            genStmntDropArg(stmnt->args[0]);
+      }
+      else
+         genStmntCall(getFuncName(stmnt->code.base+type, n), stmnt->args[0]);
+   }
+
+   //
+   // Info::genStmntArgN0
+   //
+   void Info::genStmntArgN0(Core::FastU res0)
+   {
+      // TODO 2025-01-10: Handle multi-word result, I guess.
+      if(stmnt->args[0].getSize() == 1)
+      {
+         if(stmnt->args[0].a != IR::ArgBase::Stk)
+            genStmntDropArgPre(stmnt->args[0], 0);
+
+         genCode(Code::Push_Lit, res0);
+
+         if(stmnt->args[0].a != IR::ArgBase::Stk)
+            genStmntDropArgSuf(stmnt->args[0], 0);
+      }
+   }
+
+   //
+   // Info::genStmntArgR1
+   //
+   void Info::genStmntArgR1(Core::FastU res0, IR::Code call, Code code)
+   {
+      auto n = getStmntSize();
+
+      if(n == 0)
+         return genStmntArgN0(res0);
+
+      genStmntArgR1Pre(true);
+
+      if(n == 1 && code != Code::Nop)
+         genCode(code);
+      else
+         genStmntCall(getFuncName(call, n), IR::Arg_Stk{1});
+
+      genStmntArgR1Suf();
+   }
+
+   //
+   // Info::genStmntArgR1Pre
+   //
+   void Info::genStmntArgR1Pre(bool push)
+   {
+      if(stmnt->args[1].a != IR::ArgBase::Stk)
+      {
+         if(stmnt->args[0].a != IR::ArgBase::Stk)
+            genStmntDropArgPre(stmnt->args[0], 0);
+
+         if(push)
+         {
+            genStmntPushArg(stmnt->args[1]);
+            if(stmnt->args.size() > 2) genStmntPushArg(stmnt->args[2]);
+         }
+      }
+   }
+
+   //
+   // Info::genStmntArgR1Suf
+   //
+   void Info::genStmntArgR1Suf()
+   {
+      if(stmnt->args[0].a != IR::ArgBase::Stk)
+      {
+         if(stmnt->args[1].a != IR::ArgBase::Stk)
+            genStmntDropArgSuf(stmnt->args[0], 0);
+         else
+            genStmntDropArg(stmnt->args[0], 0);
+      }
+   }
+
+   //
    // Info::genStmntCall
    //
    void Info::genStmntCall(Core::String name, Core::FastU retn)
    {
       genCode(retn ? Code::Call_Lit : Code::Call_Nul, getExpGlyph(name));
+      genStmntPushRetn(retn, GetRetnMax(IR::CallType::StkCall));
+   }
+
+   //
+   // Info::genStmntCall
+   //
+   void Info::genStmntCall(Core::String name, IR::Arg const &retn)
+   {
+      genCode(retn.getSize() ? Code::Call_Lit : Code::Call_Nul, getExpGlyph(name));
       genStmntPushRetn(retn, GetRetnMax(IR::CallType::StkCall));
    }
 
@@ -153,18 +272,58 @@ namespace GDCC::BC::ZDACS
    //
    // Info::genStmntDropArg
    //
+   void Info::genStmntDropArg(IR::Arg const &arg)
+   {
+      genStmntDropArg(arg, 0, arg.getSize());
+   }
+
+   //
+   // Info::genStmntDropArg
+   //
    void Info::genStmntDropArg(IR::Arg const &arg, Core::FastU w)
+   {
+      genStmntDropArgPre(arg, w);
+
+      switch(arg.a)
+      {
+      case IR::ArgBase::Aut:
+      case IR::ArgBase::GblArr:
+      case IR::ArgBase::HubArr:
+      case IR::ArgBase::LocArr:
+      case IR::ArgBase::ModArr:
+      case IR::ArgBase::Sta:
+         genCode(Code::Swap);
+         break;
+
+      default:
+         break;
+      }
+
+      genStmntDropArgSuf(arg, w);
+   }
+
+   //
+   // Info::genStmntDropArg
+   //
+   void Info::genStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
+   {
+      while(hi-- != lo)
+         genStmntDropArg(arg, hi);
+   }
+
+   //
+   // Info::genStmntDropArgPre
+   //
+   void Info::genStmntDropArgPre(IR::Arg const &arg, Core::FastU w)
    {
       //
       // genArr
       //
-      auto genArr = [&](IR::ArgPtr2 const &a, Code code)
+      auto genArr = [&](IR::ArgPtr2 const &a)
       {
          if(a.idx->a == IR::ArgBase::Lit)
          {
             genCode(Code::Push_Lit, getExpAddPtr(a.idx->aLit.value, a.off + w));
-            genCode(Code::Swap);
-            genCode(code,           a.arr->aLit.value);
          }
          else
          {
@@ -175,9 +334,6 @@ namespace GDCC::BC::ZDACS
                genCode(Code::Push_Lit, a.off + w);
                genCode(Code::AddU);
             }
-
-            genCode(Code::Swap);
-            genCode(code, a.arr->aLit.value);
          }
       };
 
@@ -191,8 +347,6 @@ namespace GDCC::BC::ZDACS
             genCode(Code::Push_Lit,    getExpAddPtr(a.idx->aLit.value, a.off + w));
             genCode(Code::Push_LocReg, getStkPtrIdx());
             genCode(Code::AddU);
-            genCode(Code::Swap);
-            genCode(Code::Drop_GblArr, StaArray);
          }
          else
          {
@@ -206,10 +360,90 @@ namespace GDCC::BC::ZDACS
                genCode(Code::Push_Lit, a.off + w);
                genCode(Code::AddU);
             }
-
-            genCode(Code::Swap);
-            genCode(Code::Drop_GblArr, StaArray);
          }
+      };
+
+      //
+      // genNul
+      //
+      auto genNul = [&](IR::Arg_Nul const &)
+      {
+      };
+
+      //
+      // genReg
+      //
+      auto genReg = [&](IR::ArgPtr1 const &)
+      {
+      };
+
+      //
+      // genSta
+      //
+      auto genSta = [&](IR::Arg_Sta const &a)
+      {
+         if(a.idx->a == IR::ArgBase::Lit)
+         {
+            genCode(Code::Push_Lit, getExpAddPtr(a.idx->aLit.value, a.off + w));
+         }
+         else
+         {
+            genStmntPushArg(*a.idx, 0);
+
+            if(a.off + w)
+            {
+               genCode(Code::Push_Lit, a.off + w);
+               genCode(Code::AddU);
+            }
+         }
+      };
+
+      switch(arg.a)
+      {
+      case IR::ArgBase::Aut:    genAut(arg.aAut);    break;
+      case IR::ArgBase::GblArr: genArr(arg.aGblArr); break;
+      case IR::ArgBase::GblReg: genReg(arg.aGblReg); break;
+      case IR::ArgBase::HubArr: genArr(arg.aHubArr); break;
+      case IR::ArgBase::HubReg: genReg(arg.aHubReg); break;
+      case IR::ArgBase::LocArr: genArr(arg.aLocArr); break;
+      case IR::ArgBase::LocReg: genReg(arg.aLocReg); break;
+      case IR::ArgBase::ModArr: genArr(arg.aModArr); break;
+      case IR::ArgBase::ModReg: genReg(arg.aModReg); break;
+      case IR::ArgBase::Nul:    genNul(arg.aNul);    break;
+      case IR::ArgBase::Sta:    genSta(arg.aSta);    break;
+
+      default:
+         Core::Error(stmnt->pos, "bad genStmntDropArgPre");
+      }
+   }
+
+   //
+   // Info::genStmntDropArgSuf
+   //
+   void Info::genStmntDropArgSuf(IR::Arg const &arg, Core::FastU w)
+   {
+      //
+      // genArr
+      //
+      auto genArr = [&](IR::ArgPtr2 const &a, Code code)
+      {
+         genCode(code, a.arr->aLit.value);
+      };
+
+      //
+      // genAut
+      //
+      auto genAut = [&](IR::Arg_Aut const &)
+      {
+         genCode(Code::Drop_GblArr, StaArray);
+      };
+
+      //
+      // genNul
+      //
+      auto genNul = [&](IR::Arg_Nul const &)
+      {
+         genCode(Code::Drop_Nul);
       };
 
       //
@@ -223,32 +457,14 @@ namespace GDCC::BC::ZDACS
       //
       // genSta
       //
-      auto genSta = [&](IR::Arg_Sta const &a)
+      auto genSta = [&](IR::Arg_Sta const &)
       {
-         if(a.idx->a == IR::ArgBase::Lit)
-         {
-            genCode(Code::Push_Lit,    getExpAddPtr(a.idx->aLit.value, a.off + w));
-            genCode(Code::Swap);
-            genCode(Code::Drop_GblArr, StaArray);
-         }
-         else
-         {
-            genStmntPushArg(*a.idx, 0);
-
-            if(a.off + w)
-            {
-               genCode(Code::Push_Lit, a.off + w);
-               genCode(Code::AddU);
-            }
-
-            genCode(Code::Swap);
-            genCode(Code::Drop_GblArr, StaArray);
-         }
+         genCode(Code::Drop_GblArr, StaArray);
       };
 
       switch(arg.a)
       {
-      case IR::ArgBase::Aut:    genAut(arg.aAut); break;
+      case IR::ArgBase::Aut:    genAut(arg.aAut);                       break;
       case IR::ArgBase::GblArr: genArr(arg.aGblArr, Code::Drop_GblArr); break;
       case IR::ArgBase::GblReg: genReg(arg.aGblReg, Code::Drop_GblReg); break;
       case IR::ArgBase::HubArr: genArr(arg.aHubArr, Code::Drop_HubArr); break;
@@ -257,21 +473,12 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::LocReg: genReg(arg.aLocReg, Code::Drop_LocReg); break;
       case IR::ArgBase::ModArr: genArr(arg.aModArr, Code::Drop_ModArr); break;
       case IR::ArgBase::ModReg: genReg(arg.aModReg, Code::Drop_ModReg); break;
-      case IR::ArgBase::Nul:    genCode(Code::Drop_Nul); break;
-      case IR::ArgBase::Sta:    genSta(arg.aSta); break;
+      case IR::ArgBase::Nul:    genNul(arg.aNul);                       break;
+      case IR::ArgBase::Sta:    genSta(arg.aSta);                       break;
 
       default:
-         Core::Error(stmnt->pos, "bad genStmntDropArg");
+         Core::Error(stmnt->pos, "bad genStmntDropArgSuf");
       }
-   }
-
-   //
-   // Info::genStmntDropArg
-   //
-   void Info::genStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
-   {
-      while(hi-- != lo)
-         genStmntDropArg(arg, hi);
    }
 
    //
@@ -343,6 +550,14 @@ namespace GDCC::BC::ZDACS
    void Info::genStmntIncUTmp(Core::FastU w)
    {
       genCode(Code::IncU_LocReg, func->localReg + w);
+   }
+
+   //
+   // Info::genStmntPushArg
+   //
+   void Info::genStmntPushArg(IR::Arg const &arg)
+   {
+      genStmntPushArg(arg, 0, arg.getSize());
    }
 
    //
@@ -542,6 +757,38 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::genStmntPushRetn
+   //
+   void Info::genStmntPushRetn(IR::Arg const &retn, Core::FastU retnMax)
+   {
+      if(retn.a == IR::ArgBase::Stk)
+      {
+         Core::FastU retnSize = retn.getSize();
+
+         if(retnSize > retnMax) for(Core::FastU i = 0; i != retnSize - retnMax; ++i)
+         {
+            genCode(Code::Push_Lit,    ~i);
+            genCode(Code::Push_GblArr, StaArray);
+         }
+      }
+      else
+      {
+         Core::FastU i = retn.getSize();
+
+         if(i > retnMax) while(i != retnMax)
+         {
+            genStmntDropArgPre(retn, --i);
+            genCode(Code::Push_Lit,    ~(i - retnMax));
+            genCode(Code::Push_GblArr, StaArray);
+            genStmntDropArgSuf(retn, i);
+         }
+
+         while(i)
+            genStmntDropArg(retn, --i);
+      }
+   }
+
+   //
    // Info::genStmntPushStrEn
    //
    void Info::genStmntPushStrEn(Core::FastU value)
@@ -567,38 +814,6 @@ namespace GDCC::BC::ZDACS
    void Info::genStmntPushTmp(Core::FastU w)
    {
       genCode(Code::Push_LocReg, func->localReg + w);
-   }
-
-   //
-   // Info::genStmntStkBin
-   //
-   void Info::genStmntStkBin(IR::CodeType type, Code code)
-   {
-      auto n = getStmntSize();
-
-      if(n == 0)
-         return;
-
-      if(n == 1 && code != Code::Nop)
-         return genCode(code);
-
-      genStmntCall(getFuncName(stmnt->code.base+type, n), stmnt->args[0].getSize());
-   }
-
-   //
-   // Info::genStmntStkCmp
-   //
-   void Info::genStmntStkCmp(Core::FastU res0, IR::CodeType type, Code code)
-   {
-      auto n = getStmntSize();
-
-      if(n == 0)
-         return genCode(Code::Push_Lit, res0);
-
-      if(n == 1 && code != Code::Nop)
-         return genCode(code);
-
-      genStmntCall(getFuncName(stmnt->code.base+type, n), stmnt->args[0].getSize());
    }
 }
 

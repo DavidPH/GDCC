@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2024 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -61,7 +61,9 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       // Multi-word?
-      if(n != 1)
+      if(n != 1 ||
+         ((stmnt->args[0].a == IR::ArgBase::Stk || isDropArg(stmnt->args[0])) &&
+          (stmnt->args[1].a == IR::ArgBase::Stk || isPushArg(stmnt->args[1]))))
       {
          if(stmnt->args[0].a != IR::ArgBase::Stk)
          {
@@ -69,8 +71,9 @@ namespace GDCC::BC::ZDACS
             {
                for(Core::FastU w = 0; w != n; ++w)
                {
-                  genStmntPushArg(stmnt->args[1], w);
-                  genStmntDropArg(stmnt->args[0], w);
+                  genStmntDropArgPre(stmnt->args[0], w);
+                  genStmntPushArg(   stmnt->args[1], w);
+                  genStmntDropArgSuf(stmnt->args[0], w);
                }
             }
             else
@@ -160,16 +163,16 @@ namespace GDCC::BC::ZDACS
          genStmnt_Move__Arr_Stk(stmnt->args[0].aGblArr, Code::Drop_GblArr);
          break;
 
+      case IR::ArgBase::HubArr:
+         genStmnt_Move__Arr_Stk(stmnt->args[0].aHubArr, Code::Drop_HubArr);
+         break;
+
       case IR::ArgBase::LocArr:
          genStmnt_Move__Arr_Stk(stmnt->args[0].aLocArr, Code::Drop_LocArr);
          break;
 
       case IR::ArgBase::ModArr:
          genStmnt_Move__Arr_Stk(stmnt->args[0].aModArr, Code::Drop_ModArr);
-         break;
-
-      case IR::ArgBase::Nul:
-         genCode(Code::Drop_Nul);
          break;
 
       case IR::ArgBase::Sta:
@@ -183,10 +186,6 @@ namespace GDCC::BC::ZDACS
          genCode(Code::Drop_GblArr, StaArray);
          break;
 
-      case IR::ArgBase::HubArr:
-         genStmnt_Move__Arr_Stk(stmnt->args[0].aHubArr, Code::Drop_HubArr);
-         break;
-
       default:
          genStmntDropArg(stmnt->args[0], 0);
          break;
@@ -194,7 +193,7 @@ namespace GDCC::BC::ZDACS
 
       // ???
       else
-         Core::Error(stmnt->pos, "bad put Move_W");
+         Core::Error(stmnt->pos, "bad gen Move_W");
    }
 
    //
@@ -255,7 +254,9 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       // Multi-word?
-      if(n != 1)
+      if(n != 1 ||
+         ((stmnt->args[0].a == IR::ArgBase::Stk || isDropArg(stmnt->args[0])) &&
+          (stmnt->args[1].a == IR::ArgBase::Stk || isPushArg(stmnt->args[1]))))
          return;
 
       #define moveIdx(name, i) \

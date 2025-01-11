@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2022 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -148,27 +148,24 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::trStmntArgBin
+   //
+   void Info::trStmntArgBin(bool ordered)
+   {
+      // If either source is stack, make them both stack.
+      if(stmnt->args[2].a == IR::ArgBase::Stk)
+         moveArgStk_src(stmnt->args[1], ordered);
+
+      if(stmnt->args[1].a == IR::ArgBase::Stk)
+         moveArgStk_src(stmnt->args[2]);
+   }
+
+   //
    // Info::trStmntStkBin
    //
    void Info::trStmntStkBin(bool ordered)
    {
       trStmntStk3(ordered);
-   }
-
-   //
-   // Info::trStmntStkCmp
-   //
-   void Info::trStmntStkCmp(bool ordered)
-   {
-      trStmntStk3(ordered);
-   }
-
-   //
-   // Info::trStmntStkUna
-   //
-   void Info::trStmntStkUna()
-   {
-      trStmntStk2();
    }
 
    //

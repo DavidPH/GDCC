@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2024 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -409,7 +409,7 @@ namespace GDCC::BC
       void putData(char const *data, std::size_t size);
 
       void moveArgStk_dst(IR::Arg &idx);
-      void moveArgStk_src(IR::Arg &idx);
+      void moveArgStk_src(IR::Arg &idx, bool swap = false);
 
       bool optStmnt_Cspe_Drop();
       bool optStmnt_JumpNext();

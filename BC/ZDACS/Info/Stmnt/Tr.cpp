@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2019-2024 David Hill
+// Copyright (C) 2019-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -38,7 +38,23 @@ namespace GDCC::BC::ZDACS
       if(dstN == srcN && code.type[0] == code.type[1])
          return;
 
-      genStmntCall(getFuncName(code, dstN, srcN), dstN);
+      // TODO 2025-01-10: This needs inline codegen for simple conversions.
+
+      auto name = getFuncName(code, dstN, srcN);
+
+      if(dstN == 1)
+      {
+         genStmntArgR1Pre(true);
+         genStmntCall(name, IR::Arg_Stk{dstN});
+         genStmntArgR1Suf();
+      }
+      else
+      {
+         if(stmnt->args[1].a != IR::ArgBase::Stk)
+            genStmntPushArg(stmnt->args[1]);
+
+         genStmntCall(name, stmnt->args[0]);
+      }
    }
 
    //

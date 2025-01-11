@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2024 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -144,33 +144,70 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(stmnt->args[1].a == IR::ArgBase::Stk &&
-         stmnt->args[2].a == IR::ArgBase::Stk)
+      if(stmnt->args[0].a != IR::ArgBase::Stk)
       {
-         if(n > 1)
+         if(stmnt->args[1].a != IR::ArgBase::Stk)
          {
-            for(Core::FastU i = 0, e = n * 2 - 1; i != e; ++i)
-               genStmntDropTmp(i);
-
-            genStmntPushTmp(n - 1);
+            for(Core::FastU i = 0; i != n; ++i)
+            {
+               genStmntDropArgPre(stmnt->args[0], i);
+               genStmntPushArg(stmnt->args[1], i);
+               genStmntPushArg(stmnt->args[2], i);
+               genCode(code);
+               genStmntDropArgSuf(stmnt->args[0], i);
+            }
          }
-
-         genCode(code);
-
-         if(n > 1) for(Core::FastU i = n - 1; i--;)
+         else
          {
-            genStmntPushTmp(n + i);
-            genStmntPushTmp(i);
+            if(n > 1)
+            {
+               for(Core::FastU i = 0, e = n * 2 - 1; i != e; ++i)
+                  genStmntDropTmp(i);
+
+               genStmntPushTmp(n - 1);
+            }
+
             genCode(code);
+            genStmntDropArg(stmnt->args[0], 0);
+
+            if(n > 1) for(Core::FastU i = n - 1; i--;)
+            {
+               genStmntPushTmp(n + i);
+               genStmntPushTmp(i);
+               genCode(code);
+               genStmntDropArg(stmnt->args[0], n - i);
+            }
          }
       }
       else
       {
-         for(Core::FastU i = 0; i != n; ++i)
+         if(stmnt->args[1].a != IR::ArgBase::Stk)
          {
-            genStmntPushArg(stmnt->args[1], i);
-            genStmntPushArg(stmnt->args[2], i);
+            for(Core::FastU i = 0; i != n; ++i)
+            {
+               genStmntPushArg(stmnt->args[1], i);
+               genStmntPushArg(stmnt->args[2], i);
+               genCode(code);
+            }
+         }
+         else
+         {
+            if(n > 1)
+            {
+               for(Core::FastU i = 0, e = n * 2 - 1; i != e; ++i)
+                  genStmntDropTmp(i);
+
+               genStmntPushTmp(n - 1);
+            }
+
             genCode(code);
+
+            if(n > 1) for(Core::FastU i = n - 1; i--;)
+            {
+               genStmntPushTmp(n + i);
+               genStmntPushTmp(i);
+               genCode(code);
+            }
          }
       }
    }
@@ -182,47 +219,63 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(isPushArg(stmnt->args[1]))
+      if(stmnt->args[0].a != IR::ArgBase::Stk)
       {
-         for(Core::FastU i = 0; i != n; ++i)
+         if(stmnt->args[1].a != IR::ArgBase::Stk)
          {
-            genStmntPushArg(stmnt->args[1], i);
-            genCode(Code::BNot);
+            if(auto i = n) while(i--)
+            {
+               genStmntDropArgPre(stmnt->args[0], i);
+               genStmntPushArg(stmnt->args[1], i);
+               genCode(Code::BNot);
+               genStmntDropArgSuf(stmnt->args[0], i);
+            }
          }
-      }
-      else if(isDropArg(stmnt->args[0]))
-      {
-         if(auto i = n) while(i--)
+         else
          {
-            genCode(Code::BNot);
-            genStmntDropArg(stmnt->args[0], i);
+            if(auto i = n) while(i--)
+            {
+               genCode(Code::BNot);
+               genStmntDropArg(stmnt->args[0], i);
+            }
          }
       }
       else
       {
-         if(n > 2)
+         if(stmnt->args[1].a != IR::ArgBase::Stk)
          {
-            for(Core::FastU i = n - 2; i--;)
+            for(Core::FastU i = 0; i != n; ++i)
             {
+               genStmntPushArg(stmnt->args[1], i);
                genCode(Code::BNot);
-               genStmntDropTmp(i);
             }
          }
-
-         if(n > 0)
-            genCode(Code::BNot);
-
-         if(n > 1)
+         else
          {
-            genCode(Code::Swap);
-            genCode(Code::BNot);
-            genCode(Code::Swap);
-         }
+            if(n > 2)
+            {
+               for(Core::FastU i = n - 2; i--;)
+               {
+                  genCode(Code::BNot);
+                  genStmntDropTmp(i);
+               }
+            }
 
-         if(n > 2)
-         {
-            for(Core::FastU i = 0, e = n - 2; i != e; ++i)
-               genStmntPushTmp(i);
+            if(n > 0)
+               genCode(Code::BNot);
+
+            if(n > 1)
+            {
+               genCode(Code::Swap);
+               genCode(Code::BNot);
+               genCode(Code::Swap);
+            }
+
+            if(n > 2)
+            {
+               for(Core::FastU i = 0, e = n - 2; i != e; ++i)
+                  genStmntPushTmp(i);
+            }
          }
       }
    }
@@ -234,110 +287,60 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(n == 0)
-         return genCode(Code::Push_Lit, 0);
+      if(n <= 1)
+         return genStmntArgR1(0, ones ? IR::CodeBase::Bclo : IR::CodeBase::Bclz);
 
       Core::String name = getFuncName(ones ? IR::CodeBase::Bclo : IR::CodeBase::Bclz, 1);
-
-      if(n == 1)
-         return genStmntCall(name, 1);
-
-      Core::FastU skip = ones ? 0xFFFFFFFF : 0;
+      Core::FastU  skip = ones ? 0xFFFFFFFF : 0;
 
       Core::Array<std::size_t> jumpEnd{Core::Size, n};
       std::size_t              jumpNext;
 
-      if(stmnt->args[1].a != IR::ArgBase::Stk)
+      genStmntArgR1Pre(false);
+
+      for(Core::FastU i = n; i--;)
       {
-         Core::FastU i = n - 1;
-
-         genStmntPushArg(stmnt->args[1], i);
-         jumpNext = module->chunkCODE.size();
-         genCode(Code::Jcnd_Lit, skip, 0);
-         genCode(Code::Call_Lit, name);
-         jumpEnd[i] = module->chunkCODE.size();
-         genCode(Code::Jump_Lit, 0);
-         module->chunkCODE[jumpNext].args[1] = getCodePos();
-
-         while(i--)
-         {
+         if(stmnt->args[1].a != IR::ArgBase::Stk)
             genStmntPushArg(stmnt->args[1], i);
-            jumpNext = module->chunkCODE.size();
-            genCode(Code::Jcnd_Lit, skip, 0);
-            genCode(Code::Call_Lit, name);
-            genCode(Code::Push_Lit, (n - 1 - i) * 32);
-            genCode(Code::AddU);
-            jumpEnd[i] = module->chunkCODE.size();
-            genCode(Code::Jump_Lit, 0);
-            module->chunkCODE[jumpNext].args[1] = getCodePos();
-         }
 
-         genCode(Code::Push_Lit, n * 32);
-      }
-      else if(stmnt->args[0].a != IR::ArgBase::Stk)
-      {
-         Core::FastU i = n - 1;
-
+         // If all bits unset (or set) in this word, skip to next word.
          jumpNext = module->chunkCODE.size();
          genCode(Code::Jcnd_Lit, skip, 0);
-         genCode(Code::Call_Lit, name);
-         genStmntDropArg(stmnt->args[1], 0);
-         for(auto j = i; j--;) genCode(Code::Drop_Nul);
-         jumpEnd[i] = module->chunkCODE.size();
-         genCode(Code::Jump_Lit, 0);
-         module->chunkCODE[jumpNext].args[1] = getCodePos();
 
-         while(i--)
+         // Count bits for this word.
+         genCode(Code::Call_Lit, name);
+
+         // If this is not the high word, add bits for the skipped words.
+         if(n - 1 - i)
          {
-            jumpNext = module->chunkCODE.size();
-            genCode(Code::Jcnd_Lit, skip, 0);
-            genCode(Code::Call_Lit, name);
             genCode(Code::Push_Lit, (n - 1 - i) * 32);
             genCode(Code::AddU);
-            genStmntDropArg(stmnt->args[1], 0);
-            for(auto j = i; j--;) genCode(Code::Drop_Nul);
-            jumpEnd[i] = module->chunkCODE.size();
-            genCode(Code::Jump_Lit, 0);
-            module->chunkCODE[jumpNext].args[1] = getCodePos();
          }
 
-         genCode(Code::Push_Lit, n * 32);
-         genStmntDropArg(stmnt->args[1], 0);
-      }
-      else
-      {
-         Core::FastU i = n - 1;
+         genStmntArgR1Suf();
 
-         jumpNext = module->chunkCODE.size();
-         genCode(Code::Jcnd_Lit, skip, 0);
-         genCode(Code::Call_Lit, name);
-         genStmntDropTmp(0);
-         for(auto j = i; j--;) genCode(Code::Drop_Nul);
-         genStmntPushTmp(0);
-         jumpEnd[i] = module->chunkCODE.size();
-         genCode(Code::Jump_Lit, 0);
-         module->chunkCODE[jumpNext].args[1] = getCodePos();
-
-         while(i--)
+         // If source was on stack, drop any remaining words.
+         if(stmnt->args[1].a == IR::ArgBase::Stk && i)
          {
-            jumpNext = module->chunkCODE.size();
-            genCode(Code::Jcnd_Lit, skip, 0);
-            genCode(Code::Call_Lit, name);
-            genCode(Code::Push_Lit, (n - 1 - i) * 32);
-            genCode(Code::AddU);
-            if(i)
-            {
+            if(stmnt->args[0].a == IR::ArgBase::Stk)
                genStmntDropTmp(0);
-               for(auto j = i; j--;) genCode(Code::Drop_Nul);
+
+            for(auto j = i; j--;) genCode(Code::Drop_Nul);
+
+            if(stmnt->args[0].a == IR::ArgBase::Stk)
                genStmntPushTmp(0);
-            }
-            jumpEnd[i] = module->chunkCODE.size();
-            genCode(Code::Jump_Lit, 0);
-            module->chunkCODE[jumpNext].args[1] = getCodePos();
          }
 
-         genCode(Code::Push_Lit, n * 32);
+         // Jump to end of codegen.
+         jumpEnd[i] = module->chunkCODE.size();
+         genCode(Code::Jump_Lit, 0);
+
+         module->chunkCODE[jumpNext].args[1] = getCodePos();
       }
+
+      // Fallback result.
+      genCode(Code::Push_Lit, n * 32);
+      genStmntArgR1Suf();
 
       for(auto &jump : jumpEnd)
          module->chunkCODE[jump].args[0] = getCodePos();
@@ -351,11 +354,18 @@ namespace GDCC::BC::ZDACS
       auto bits = getWord(stmnt->args[2].aLit);
       auto offs = getWord(stmnt->args[3].aLit);
 
-      genCode(Code::Push_Lit, 32 - bits - offs);
-      genCode(Code::ShLU);
+      genStmntArgR1Pre(true);
+
+      if(32 - bits - offs)
+      {
+         genCode(Code::Push_Lit, 32 - bits - offs);
+         genCode(Code::ShLU);
+      }
 
       genCode(Code::Push_Lit, 32 - bits);
       genCode(Code::ShRI);
+
+      genStmntArgR1Suf();
    }
 
    //
@@ -367,6 +377,8 @@ namespace GDCC::BC::ZDACS
       auto offs = getWord(stmnt->args[3].aLit);
       auto mask = (static_cast<Core::FastU>(1) << bits) - 1;
 
+      genStmntArgR1Pre(true);
+
       if(offs)
       {
          genCode(Code::Push_Lit, offs);
@@ -375,6 +387,8 @@ namespace GDCC::BC::ZDACS
 
       genCode(Code::Push_Lit, mask);
       genCode(Code::BAnd);
+
+      genStmntArgR1Suf();
    }
 
    //
@@ -385,6 +399,8 @@ namespace GDCC::BC::ZDACS
       auto bits = getWord(stmnt->args[2].aLit);
       auto offs = getWord(stmnt->args[3].aLit);
       auto mask = (static_cast<Core::FastU>(1) << bits) - 1;
+
+      genStmntArgR1Pre(true);
 
       genCode(Code::Push_Lit, mask);
       genCode(Code::BAnd);
@@ -399,7 +415,8 @@ namespace GDCC::BC::ZDACS
       genCode(Code::Push_Lit, ~(mask << offs));
       genCode(Code::BAnd);
       genCode(Code::BOrI);
-      genStmntDropArg(stmnt->args[0], 0);
+
+      genStmntArgR1Suf();
    }
 
    //
@@ -422,17 +439,10 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
-      {
-         moveArgStk_dst(stmnt->args[0]);
-      }
-      else
-      {
-         trStmntStk3(false);
+      trStmntArgBin(false);
 
-         if(n > 1)
-            func->setLocalTmp(n * 2 - 1);
-      }
+      if(stmnt->args[1].a == IR::ArgBase::Stk && n > 1)
+         trStmntTmp(n * 2 - 1);
    }
 
    //
@@ -442,18 +452,8 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(isPushArg(stmnt->args[1]))
-         moveArgStk_dst(stmnt->args[0]);
-      else if(isDropArg(stmnt->args[0]))
-         moveArgStk_src(stmnt->args[1]);
-      else
-      {
-         if(n > 2)
-            func->setLocalTmp(n - 2);
-
-         moveArgStk_dst(stmnt->args[0]);
-         moveArgStk_src(stmnt->args[1]);
-      }
+      if(stmnt->args[0].a == IR::ArgBase::Stk && stmnt->args[1].a == IR::ArgBase::Stk && n > 2)
+         trStmntTmp(n - 2);
    }
 
    //
@@ -463,40 +463,8 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(n <= 1)
-      {
-         trStmntStk2();
-      }
-      else if(isPushArg(stmnt->args[1]))
-      {
-         moveArgStk_dst(stmnt->args[0]);
-      }
-      else if(isDropArg(stmnt->args[0]))
-      {
-         moveArgStk_src(stmnt->args[1]);
-      }
-      else
-      {
-         trStmntStk2();
-
-         func->setLocalTmp(1);
-      }
-   }
-
-   //
-   // Info::trStmnt_Bget
-   //
-   void Info::trStmnt_Bget()
-   {
-      trStmntStk2();
-   }
-
-   //
-   // Info::trStmnt_Bset
-   //
-   void Info::trStmnt_Bset()
-   {
-      moveArgStk_src(stmnt->args[1]);
+      if(stmnt->args[0].a == IR::ArgBase::Stk && stmnt->args[1].a == IR::ArgBase::Stk && n > 1)
+         trStmntTmp(1);
    }
 }
 

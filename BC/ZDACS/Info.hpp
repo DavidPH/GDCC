@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2024 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -192,7 +192,7 @@ namespace GDCC::BC::ZDACS
 
       virtual void genStmnt();
       void genStmnt_Add();
-      void genStmnt_Add_F() {genStmntStkBin('F');}
+      void genStmnt_Add_F() {genStmntArg('F');}
       void genStmnt_Add_I() {genStmnt_Add_U();}
       void genStmnt_Add_U();
       void genStmnt_AddX();
@@ -209,28 +209,28 @@ namespace GDCC::BC::ZDACS
       void genStmnt_Call();
       void genStmnt_Casm();
       void genStmnt_CmpEQ();
-      void genStmnt_CmpEQ_F() {genStmntStkCmp(1, 'F');}
+      void genStmnt_CmpEQ_F() {genStmntArg(1, 'F');}
       void genStmnt_CmpEQ_I() {genStmnt_CmpEQ_U();}
       void genStmnt_CmpEQ_U();
       void genStmnt_CmpEQ_U(Code codeCmp, Code codeAnd, IR::Code codeCall);
       void genStmnt_CmpGE();
-      void genStmnt_CmpGE_F() {genStmntStkCmp(1, 'F');}
-      void genStmnt_CmpGE_I() {genStmntStkCmp(1, 'I', Code::CmpI_GE);}
-      void genStmnt_CmpGE_U() {genStmntStkCmp(1, 'U');}
+      void genStmnt_CmpGE_F() {genStmntArg(1, 'F');}
+      void genStmnt_CmpGE_I() {genStmntArg(1, 'I', Code::CmpI_GE);}
+      void genStmnt_CmpGE_U() {genStmntArg(1, 'U');}
       void genStmnt_CmpGT();
-      void genStmnt_CmpGT_F() {genStmntStkCmp(0, 'F');}
-      void genStmnt_CmpGT_I() {genStmntStkCmp(0, 'I', Code::CmpI_GT);}
-      void genStmnt_CmpGT_U() {genStmntStkCmp(0, 'U');}
+      void genStmnt_CmpGT_F() {genStmntArg(0, 'F');}
+      void genStmnt_CmpGT_I() {genStmntArg(0, 'I', Code::CmpI_GT);}
+      void genStmnt_CmpGT_U() {genStmntArg(0, 'U');}
       void genStmnt_CmpLE();
-      void genStmnt_CmpLE_F() {genStmntStkCmp(1, 'F');}
-      void genStmnt_CmpLE_I() {genStmntStkCmp(1, 'I', Code::CmpI_LE);}
-      void genStmnt_CmpLE_U() {genStmntStkCmp(1, 'U');}
+      void genStmnt_CmpLE_F() {genStmntArg(1, 'F');}
+      void genStmnt_CmpLE_I() {genStmntArg(1, 'I', Code::CmpI_LE);}
+      void genStmnt_CmpLE_U() {genStmntArg(1, 'U');}
       void genStmnt_CmpLT();
-      void genStmnt_CmpLT_F() {genStmntStkCmp(0, 'F');}
-      void genStmnt_CmpLT_I() {genStmntStkCmp(0, 'I', Code::CmpI_LT);}
-      void genStmnt_CmpLT_U() {genStmntStkCmp(0, 'U');}
+      void genStmnt_CmpLT_F() {genStmntArg(0, 'F');}
+      void genStmnt_CmpLT_I() {genStmntArg(0, 'I', Code::CmpI_LT);}
+      void genStmnt_CmpLT_U() {genStmntArg(0, 'U');}
       void genStmnt_CmpNE();
-      void genStmnt_CmpNE_F() {genStmntStkCmp(0, 'F');}
+      void genStmnt_CmpNE_F() {genStmntArg(0, 'F');}
       void genStmnt_CmpNE_I() {genStmnt_CmpNE_U();}
       void genStmnt_CmpNE_U();
       void genStmnt_Copy();
@@ -242,16 +242,16 @@ namespace GDCC::BC::ZDACS
       void genStmnt_Cscr_SS_post();
       void genStmnt_Cspe();
       void genStmnt_Div();
-      void genStmnt_Div_A() {genStmntStkBin('A');}
-      void genStmnt_Div_F() {genStmntStkBin('F');}
+      void genStmnt_Div_A() {genStmntArg('A');}
+      void genStmnt_Div_F() {genStmntArg('F');}
       void genStmnt_Div_I();
-      void genStmnt_Div_K() {genStmntStkBin('K');}
-      void genStmnt_Div_R() {genStmntStkBin('R');}
+      void genStmnt_Div_K() {genStmntArg('K');}
+      void genStmnt_Div_R() {genStmntArg('R');}
       void genStmnt_Div_U();
-      void genStmnt_Div_X() {genStmntStkBin('X', Code::DivX);}
+      void genStmnt_Div_X() {genStmntArg('X', Code::DivX);}
       void genStmnt_DivX();
       void genStmnt_DivX_I();
-      void genStmnt_DivX_U() {genStmntStkBin('U');}
+      void genStmnt_DivX_U() {genStmntArg('U');}
       void genStmnt_Jcnd_Nil();
       void genStmnt_Jcnd_Tab();
       void genStmnt_Jcnd_Tru();
@@ -271,15 +271,15 @@ namespace GDCC::BC::ZDACS
       void genStmnt_Move__Arr_Stk(IR::ArgPtr2 const &arr, Code code);
       void genStmnt_Move__Stk_Arr(IR::ArgPtr2 const &arr, Code code);
       void genStmnt_Mul();
-      void genStmnt_Mul_A() {genStmntStkBin('A');}
-      void genStmnt_Mul_F() {genStmntStkBin('F');}
+      void genStmnt_Mul_A() {genStmntArg('A');}
+      void genStmnt_Mul_F() {genStmntArg('F');}
       void genStmnt_Mul_I() {genStmnt_Mul_U();}
-      void genStmnt_Mul_K() {genStmntStkBin('K');}
-      void genStmnt_Mul_R() {genStmntStkBin('R');}
-      void genStmnt_Mul_U() {genStmntStkBin('U', Code::MulU);}
-      void genStmnt_Mul_X() {genStmntStkBin('X', Code::MulX);}
+      void genStmnt_Mul_K() {genStmntArg('K');}
+      void genStmnt_Mul_R() {genStmntArg('R');}
+      void genStmnt_Mul_U() {genStmntArg('U', Code::MulU);}
+      void genStmnt_Mul_X() {genStmntArg('X', Code::MulX);}
       void genStmnt_MulX();
-      void genStmnt_MulX_U() {genStmntStkBin('U');}
+      void genStmnt_MulX_U() {genStmntArg('U');}
       void genStmnt_Neg();
       void genStmnt_Neg_F();
       void genStmnt_Neg_I();
@@ -297,7 +297,7 @@ namespace GDCC::BC::ZDACS
       void genStmnt_ShR_U();
       void genStmnt_ShR_U1();
       void genStmnt_Sub();
-      void genStmnt_Sub_F() {genStmntStkBin('F');}
+      void genStmnt_Sub_F() {genStmntArg('F');}
       void genStmnt_Sub_I() {genStmnt_Sub_U();}
       void genStmnt_Sub_U();
       void genStmnt_SubX();
@@ -306,12 +306,25 @@ namespace GDCC::BC::ZDACS
       void genStmnt_Tr();
       void genStmnt_Xcod_SID();
 
+      void genStmntArg(IR::CodeType type, Code code = Code::Nop);
+      void genStmntArg(Core::FastU res0, IR::CodeType type, Code code = Code::Nop);
+      void genStmntArgN0(Core::FastU res0);
+      void genStmntArgR1(Core::FastU res0, IR::Code call, Code code = Code::Nop);
+      void genStmntArgR1Pre(bool push);
+      void genStmntArgR1Suf();
+
       void genStmntCall(Core::String name, Core::FastU retn);
+      void genStmntCall(Core::String name, IR::Arg const &retn);
 
       void genStmntDecUTmp(Core::FastU w);
 
+      void genStmntDropArg(IR::Arg const &arg);
       void genStmntDropArg(IR::Arg const &arg, Core::FastU w);
       void genStmntDropArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
+
+      void genStmntDropArgPre(IR::Arg const &arg, Core::FastU w);
+
+      void genStmntDropArgSuf(IR::Arg const &arg, Core::FastU w);
 
       void genStmntDropParam(Core::FastU param, Core::FastU paramMax);
 
@@ -324,6 +337,7 @@ namespace GDCC::BC::ZDACS
 
       void genStmntIncUTmp(Core::FastU w);
 
+      void genStmntPushArg(IR::Arg const &arg);
       void genStmntPushArg(IR::Arg const &arg, Core::FastU w);
       void genStmntPushArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
@@ -333,6 +347,7 @@ namespace GDCC::BC::ZDACS
       void genStmntPushIdx(IR::Arg const &arg, Core::FastU w);
 
       void genStmntPushRetn(Core::FastU retn, Core::FastU retnMax);
+      void genStmntPushRetn(IR::Arg const &retn, Core::FastU retnMax);
 
       void genStmntPushStrEn(Core::FastU value);
       void genStmntPushStrEn(IR::Exp const *value, Core::FastU w);
@@ -340,9 +355,6 @@ namespace GDCC::BC::ZDACS
       void genStmntPushTmp(Core::FastU w);
 
       void genStmntShiftRU(Core::FastU shift);
-
-      void genStmntStkBin(IR::CodeType type, Code code = Code::Nop);
-      void genStmntStkCmp(Core::FastU res0, IR::CodeType type, Code code = Code::Nop);
 
       virtual void genStrEnt();
 
@@ -562,23 +574,17 @@ namespace GDCC::BC::ZDACS
       void trStmnt_BOrI() {trStmnt_BAnd();}
       void trStmnt_BOrX() {trStmnt_BAnd();}
       void trStmnt_Bclz();
-      void trStmnt_Bges() {trStmnt_Bget();}
-      void trStmnt_Bget();
-      void trStmnt_Bset();
+      void trStmnt_Bges() {}
+      void trStmnt_Bget() {}
+      void trStmnt_Bset() {}
       void trStmnt_Call();
       void trStmnt_Casm() {trStmnt_Call();}
-      void trStmnt_CmpEQ();
-      void trStmnt_CmpEQ_F() {trStmntStkCmp(false);}
-      void trStmnt_CmpEQ_I() {trStmnt_CmpEQ_U();}
-      void trStmnt_CmpEQ_U();
-      void trStmnt_CmpGE() {trStmntStkCmp(true);}
-      void trStmnt_CmpGT() {trStmntStkCmp(true);}
-      void trStmnt_CmpLE() {trStmntStkCmp(true);}
-      void trStmnt_CmpLT() {trStmntStkCmp(true);}
-      void trStmnt_CmpNE();
-      void trStmnt_CmpNE_F() {trStmntStkCmp(false);}
-      void trStmnt_CmpNE_I() {trStmnt_CmpEQ_U();}
-      void trStmnt_CmpNE_U() {trStmnt_CmpEQ_U();}
+      void trStmnt_CmpEQ() {trStmntArgBin(false);}
+      void trStmnt_CmpGE() {trStmntArgBin(true);}
+      void trStmnt_CmpGT() {trStmntArgBin(true);}
+      void trStmnt_CmpLE() {trStmntArgBin(true);}
+      void trStmnt_CmpLT() {trStmntArgBin(true);}
+      void trStmnt_CmpNE() {trStmntArgBin(false);}
       void trStmnt_Cnat() {trStmnt_Call();}
       void trStmnt_Copy() {}
       void trStmnt_Cscr_IA() {trStmnt_Call();}
@@ -605,13 +611,13 @@ namespace GDCC::BC::ZDACS
       void trStmnt_Mod_I();
       void trStmnt_Mod_U();
       void trStmnt_Move();
-      void trStmnt_Mul() {trStmntStkBin(false);}
-      void trStmnt_MulX() {trStmntStkBin(false);}
+      void trStmnt_Mul() {trStmntArgBin(false);}
+      void trStmnt_MulX() {trStmntArgBin(false);}
       void trStmnt_Neg();
-      void trStmnt_Neg_F() {trStmntStkUna();}
+      void trStmnt_Neg_F() {}
       void trStmnt_Neg_I();
       void trStmnt_Neg_U() {trStmnt_Neg_I();}
-      void trStmnt_Pltn() {trStmntStkUna();}
+      void trStmnt_Pltn() {}
       void trStmnt_Retn();
       void trStmnt_Rjnk() {}
       void trStmnt_ShL();
@@ -629,12 +635,12 @@ namespace GDCC::BC::ZDACS
       void trStmnt_Sub_U();
       void trStmnt_SubX();
       void trStmnt_Swap();
-      void trStmnt_Tr() {trStmntStkUna();}
+      void trStmnt_Tr() {}
       void trStmnt_Xcod_SID() {}
 
+      void trStmntArgBin(bool ordered);
+
       void trStmntStkBin(bool ordered);
-      void trStmntStkCmp(bool ordered);
-      void trStmntStkUna();
 
       void trStmntTmp(Core::FastU n);
 
