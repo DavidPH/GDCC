@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2024 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -159,14 +159,14 @@ namespace GDCC::BC::ZDACS
       {
       case IR::ArgBase::Lit:
          genCode(retn ? Code::Call_Lit : Code::Call_Nul, stmnt->args[1].aLit.value);
-         genStmntPushRetn(retn, GetRetnMax(IR::CallType::StdCall));
+         genStmntPushRetn(stmnt->args[0], GetRetnMax(IR::CallType::StdCall));
          break;
 
       case IR::ArgBase::Stk:
          genCode(Code::Call_Stk);
 
          if(retn)
-            genStmntPushRetn(retn, GetRetnMax(IR::CallType::StdCall));
+            genStmntPushRetn(stmnt->args[0], GetRetnMax(IR::CallType::StdCall));
          else
             genCode(Code::Drop_Nul);
 
@@ -231,7 +231,7 @@ namespace GDCC::BC::ZDACS
       default: genCode(Code::Cspe_5, spec); break;
       }
 
-      genStmntPushRetn(retn, GetRetnMax(IR::CallType::ScriptI));
+      genStmntPushRetn(stmnt->args[0], GetRetnMax(IR::CallType::ScriptI));
    }
 
    //
@@ -277,7 +277,7 @@ namespace GDCC::BC::ZDACS
       genCode(Code::Cnat, argc < argm ? argc + 1 : argm + 1, spec);
 
       if(retn)
-         genStmntPushRetn(retn, GetRetnMax(IR::CallType::ScriptS));
+         genStmntPushRetn(stmnt->args[0], GetRetnMax(IR::CallType::ScriptS));
       else
          genCode(Code::Drop_Nul);
    }
@@ -334,7 +334,19 @@ namespace GDCC::BC::ZDACS
 
       // Push any return words.
       if(retn)
-         genStmntPushArg(stmnt->args[2], 1, 1 + retn);
+      {
+         if(stmnt->args[0].a != IR::ArgBase::Stk)
+         {
+            for(Core::FastU i = 0; i != retn; ++i)
+            {
+               genStmntDropArgPre(stmnt->args[0], i);
+               genStmntPushArg(stmnt->args[2], i + 1);
+               genStmntDropArgSuf(stmnt->args[0], i);
+            }
+         }
+         else
+            genStmntPushArg(stmnt->args[2], 1, 1 + retn);
+      }
    }
 
    //
@@ -445,12 +457,15 @@ namespace GDCC::BC::ZDACS
          genCode(Code::Drop_GblArr, StaArray);
 
          // Set return data.
-         for(Core::FastU i = retn; i--;)
+         if(retn) for(Core::FastU i = retn; i--;)
          {
             genCode(Code::Push_LocReg, getStkPtrIdx());
             genCode(Code::Push_Lit,    i);
             genCode(Code::AddU);
-            genCode(Code::Swap);
+            if(stmnt->args[0].a != IR::ArgBase::Stk)
+               genStmntPushArg(stmnt->args[0], i);
+            else
+               genCode(Code::Swap);
             genCode(Code::Drop_GblArr, StaArray);
          }
 
@@ -460,7 +475,8 @@ namespace GDCC::BC::ZDACS
 
       case IR::CallType::StdCall:
       case IR::CallType::StkCall:
-         genStmntDropRetn(retn, GetRetnMax(func->ctype));
+         if(retn)
+            genStmntDropRetn(stmnt->args[0], GetRetnMax(func->ctype));
          genCode(retn ? Code::Retn_Stk : Code::Retn_Nul);
          break;
 
@@ -468,7 +484,7 @@ namespace GDCC::BC::ZDACS
       case IR::CallType::ScriptS:
          if(retn)
          {
-            genStmntDropRetn(retn, GetRetnMax(func->ctype));
+            genStmntDropRetn(stmnt->args[0], GetRetnMax(func->ctype));
             genCode(Code::Drop_ScrRet);
          }
          genCode(Code::Rscr);
@@ -538,14 +554,6 @@ namespace GDCC::BC::ZDACS
    }
 
    //
-   // Info::trStmnt_Call
-   //
-   void Info::trStmnt_Call()
-   {
-      moveArgStk_dst(stmnt->args[0]);
-   }
-
-   //
    // Info::trStmnt_Cspe
    //
    void Info::trStmnt_Cspe()
@@ -559,7 +567,7 @@ namespace GDCC::BC::ZDACS
    //
    void Info::trStmnt_Retn()
    {
-      if(stmnt->args.size() > 0)
+      if(stmnt->args.size() > 0 && !isPushArg(stmnt->args[0]))
          moveArgStk_src(stmnt->args[0]);
    }
 }

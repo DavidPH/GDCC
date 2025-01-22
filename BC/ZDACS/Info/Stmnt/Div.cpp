@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2024 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -155,16 +155,17 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(n == 0)
-         return;
+      if(n <= 1)
+         return genStmntArg('I', Code::DivI);
 
-      if(n == 1)
-         return genCode(Code::DivI);
+      if(stmnt->args[1].a != IR::ArgBase::Stk)
+      {
+         genStmntPushArg(stmnt->args[1]);
+         genStmntPushArg(stmnt->args[2]);
+      }
 
-      genStmntCall(getFuncName(IR::CodeBase::DivX+'I', n), n * 2);
-
-      for(Core::FastU i = n; i--;)
-         genCode(Code::Drop_Nul);
+      genCode(Code::Call_Lit, getExpGlyph(getFuncName(IR::CodeBase::DivX+'I', n)));
+      genStmntPushRetnDiv(stmnt->args[0], GetRetnMax(IR::CallType::StkCall));
    }
 
    //
@@ -177,10 +178,14 @@ namespace GDCC::BC::ZDACS
       if(n == 0)
          return;
 
-      genStmntCall(getFuncName(IR::CodeBase::DivX+'U', n), n * 2);
+      if(stmnt->args[1].a != IR::ArgBase::Stk)
+      {
+         genStmntPushArg(stmnt->args[1]);
+         genStmntPushArg(stmnt->args[2]);
+      }
 
-      for(Core::FastU i = n; i--;)
-         genCode(Code::Drop_Nul);
+      genCode(Code::Call_Lit, getExpGlyph(getFuncName(IR::CodeBase::DivX+'U', n)));
+      genStmntPushRetnDiv(stmnt->args[0], GetRetnMax(IR::CallType::StkCall));
    }
 
    //
@@ -191,32 +196,45 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       if(n != 1)
-         return genStmntCall(getFuncName(stmnt->code, n), n * 2);
+         return genStmntArg('I');
 
-      if(stmnt->args[1].a == IR::ArgBase::Stk &&
-         stmnt->args[2].a == IR::ArgBase::Stk)
+      auto dropDstPre = [&](Core::FastU n)
+      {
+         if(stmnt->args[0].a != IR::ArgBase::Stk)
+            genStmntDropArgPre(stmnt->args[0], n);
+      };
+
+      auto dropDstSuf = [&](Core::FastU n)
+      {
+         if(stmnt->args[0].a != IR::ArgBase::Stk)
+            genStmntDropArgSuf(stmnt->args[0], n);
+      };
+
+      auto pushSrc = [&](Core::FastU n)
+      {
+         if(stmnt->args[1].a == IR::ArgBase::Stk)
+            genStmntPushTmp(n);
+         else
+            genStmntPushArg(stmnt->args[1 + n], 0);
+      };
+
+      if(stmnt->args[1].a == IR::ArgBase::Stk)
       {
          genStmntDropTmp(1);
          genStmntDropTmp(0);
-
-         genStmntPushTmp(0);
-         genStmntPushTmp(1);
-         genCode(Code::DivI);
-
-         genStmntPushTmp(0);
-         genStmntPushTmp(1);
-         genCode(Code::ModI);
       }
-      else
-      {
-         genStmntPushArg(stmnt->args[1], 0);
-         genStmntPushArg(stmnt->args[2], 0);
-         genCode(Code::DivI);
 
-         genStmntPushArg(stmnt->args[1], 0);
-         genStmntPushArg(stmnt->args[2], 0);
-         genCode(Code::ModI);
-      }
+      dropDstPre(0);
+      pushSrc(0);
+      pushSrc(1);
+      genCode(Code::DivI);
+      dropDstSuf(0);
+
+      dropDstPre(1);
+      pushSrc(0);
+      pushSrc(1);
+      genCode(Code::ModI);
+      dropDstSuf(1);
    }
 
    //
@@ -226,22 +244,17 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(n == 0)
-         return;
+      if(n <= 1)
+         return genStmntArg('I', Code::ModI);
 
-      if(n == 1)
-         return genCode(Code::ModI);
+      if(stmnt->args[1].a != IR::ArgBase::Stk)
+      {
+         genStmntPushArg(stmnt->args[1]);
+         genStmntPushArg(stmnt->args[2]);
+      }
 
-      genStmntCall(getFuncName(IR::CodeBase::DivX+'I', n), n * 2);
-
-      for(Core::FastU i = n; i--;)
-         genStmntDropTmp(i);
-
-      for(Core::FastU i = n; i--;)
-         genCode(Code::Drop_Nul);
-
-      for(Core::FastU i = 0; i != n; ++i)
-         genStmntPushTmp(i);
+      genCode(Code::Call_Lit, getExpGlyph(getFuncName(IR::CodeBase::DivX+'I', n)));
+      genStmntPushRetnMod(stmnt->args[0], GetRetnMax(IR::CallType::StkCall));
    }
 
    //
@@ -254,16 +267,14 @@ namespace GDCC::BC::ZDACS
       if(n == 0)
          return;
 
-      genStmntCall(getFuncName(IR::CodeBase::DivX+'U', n), n * 2);
+      if(stmnt->args[1].a != IR::ArgBase::Stk)
+      {
+         genStmntPushArg(stmnt->args[1]);
+         genStmntPushArg(stmnt->args[2]);
+      }
 
-      for(Core::FastU i = n; i--;)
-         genStmntDropTmp(i);
-
-      for(Core::FastU i = n; i--;)
-         genCode(Code::Drop_Nul);
-
-      for(Core::FastU i = 0; i != n; ++i)
-         genStmntPushTmp(i);
+      genCode(Code::Call_Lit, getExpGlyph(getFuncName(IR::CodeBase::DivX+'U', n)));
+      genStmntPushRetnMod(stmnt->args[0], GetRetnMax(IR::CallType::StkCall));
    }
 
    //
@@ -289,18 +300,10 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(n != 1)
-         return trStmntStk3(true);
+      trStmntArgBin(true);
 
-      if(isPushArg(stmnt->args[1]) && isPushArg(stmnt->args[2]))
-      {
-         moveArgStk_dst(stmnt->args[0]);
-      }
-      else
-      {
-         func->setLocalTmp(n * 2);
-         trStmntStk3(true);
-      }
+      if(n == 1 && stmnt->args[1].a != IR::ArgBase::Stk)
+         trStmntTmp(n * 2);
    }
 
    //
@@ -310,10 +313,10 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(n != 1)
-         func->setLocalTmp(n);
+      trStmntArgBin(true);
 
-      trStmntStk3(true);
+      if(n != 1 && stmnt->args[0].a != IR::ArgBase::Stk)
+         trStmntTmp(n);
    }
 
    //
@@ -323,8 +326,10 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      func->setLocalTmp(n);
-      trStmntStk3(true);
+      trStmntArgBin(true);
+
+      if(stmnt->args[0].a != IR::ArgBase::Stk)
+         trStmntTmp(n);
    }
 }
 

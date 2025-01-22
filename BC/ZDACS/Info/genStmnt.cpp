@@ -249,7 +249,7 @@ namespace GDCC::BC::ZDACS
    void Info::genStmntCall(Core::String name, Core::FastU retn)
    {
       genCode(retn ? Code::Call_Lit : Code::Call_Nul, getExpGlyph(name));
-      genStmntPushRetn(retn, GetRetnMax(IR::CallType::StkCall));
+      genStmntPushRetn(IR::Arg_Stk{retn}, GetRetnMax(IR::CallType::StkCall));
    }
 
    //
@@ -486,19 +486,36 @@ namespace GDCC::BC::ZDACS
    //
    void Info::genStmntDropParam(Core::FastU param, Core::FastU paramMax)
    {
-      genStmntDropRetn(param, paramMax);
+      genStmntDropRetn(IR::Arg_Stk{param}, paramMax);
    }
 
    //
    // Info::genStmntDropRetn
    //
-   void Info::genStmntDropRetn(Core::FastU retn, Core::FastU retnMax)
+   void Info::genStmntDropRetn(IR::Arg const &retn, Core::FastU retnMax)
    {
-      if(retn > retnMax) for(Core::FastU i = retn - retnMax; i--;)
+      Core::FastU retnSize = retn.getSize();
+
+      if(retn.a == IR::ArgBase::Stk)
       {
-         genCode(Code::Push_Lit, ~i);
-         genCode(Code::Swap);
-         genCode(Code::Drop_GblArr, StaArray);
+         if(retnSize > retnMax) for(Core::FastU i = retnSize - retnMax; i--;)
+         {
+            genCode(Code::Push_Lit, ~i);
+            genCode(Code::Swap);
+            genCode(Code::Drop_GblArr, StaArray);
+         }
+      }
+      else
+      {
+         if(retnSize > retnMax) for(Core::FastU i = retnMax; i != retnSize; ++i)
+         {
+            genCode(Code::Push_Lit, ~(i - retnMax));
+            genStmntPushArg(retn, i);
+            genCode(Code::Drop_GblArr, StaArray);
+         }
+
+         for(Core::FastU i = 0, e = std::min(retnSize, retnMax); i != e; ++i)
+            genStmntPushArg(retn, i);
       }
    }
 
@@ -747,44 +764,92 @@ namespace GDCC::BC::ZDACS
    //
    // Info::genStmntPushRetn
    //
-   void Info::genStmntPushRetn(Core::FastU retn, Core::FastU retnMax)
+   void Info::genStmntPushRetn(IR::Arg const &retn, Core::FastU retnMax)
    {
-      if(retn > retnMax) for(Core::FastU i = 0; i != retn - retnMax; ++i)
-      {
-         genCode(Code::Push_Lit,    ~i);
-         genCode(Code::Push_GblArr, StaArray);
-      }
+      genStmntPushRetn(retn, retnMax, 0, retn.getSize());
    }
 
    //
    // Info::genStmntPushRetn
    //
-   void Info::genStmntPushRetn(IR::Arg const &retn, Core::FastU retnMax)
+   void Info::genStmntPushRetn(IR::Arg const &retn, Core::FastU retnMax,
+      Core::FastU retnLo, Core::FastU retnHi)
    {
       if(retn.a == IR::ArgBase::Stk)
       {
-         Core::FastU retnSize = retn.getSize();
-
-         if(retnSize > retnMax) for(Core::FastU i = 0; i != retnSize - retnMax; ++i)
+         for(Core::FastU retnIdx = retnLo; retnIdx != retnHi; ++retnIdx)
          {
-            genCode(Code::Push_Lit,    ~i);
-            genCode(Code::Push_GblArr, StaArray);
+            if(retnIdx >= retnMax)
+            {
+               genCode(Code::Push_Lit,    ~(retnIdx - retnMax));
+               genCode(Code::Push_GblArr, StaArray);
+            }
          }
       }
       else
       {
-         Core::FastU i = retn.getSize();
-
-         if(i > retnMax) while(i != retnMax)
+         for(Core::FastU retnIdx = retnHi; retnIdx-- != retnLo;)
          {
-            genStmntDropArgPre(retn, --i);
-            genCode(Code::Push_Lit,    ~(i - retnMax));
-            genCode(Code::Push_GblArr, StaArray);
-            genStmntDropArgSuf(retn, i);
+            if(retnIdx >= retnMax)
+            {
+               genStmntDropArgPre(retn, retnIdx - retnLo);
+               genCode(Code::Push_Lit,    ~(retnIdx - retnMax));
+               genCode(Code::Push_GblArr, StaArray);
+               genStmntDropArgSuf(retn, retnIdx - retnLo);
+            }
+            else
+               genStmntDropArg(retn, retnIdx - retnLo);
          }
+      }
+   }
 
-         while(i)
-            genStmntDropArg(retn, --i);
+   //
+   // Info::genStmntPushRetnDiv
+   //
+   void Info::genStmntPushRetnDiv(IR::Arg const &retn, Core::FastU retnMax)
+   {
+      Core::FastU retnSize = retn.getSize();
+
+      if(retnSize < retnMax)
+         for(Core::FastU i = std::min(retnSize, retnMax - retnSize); i--;)
+            genCode(Code::Drop_Nul);
+
+      genStmntPushRetn(retn, retnMax, 0, retnSize);
+   }
+
+   //
+   // Info::genStmntPushRetnMod
+   //
+   void Info::genStmntPushRetnMod(IR::Arg const &retn, Core::FastU retnMax)
+   {
+      Core::FastU retnSize = retn.getSize();
+
+      if(retn.a == IR::ArgBase::Stk)
+      {
+         Core::FastU retnTmp =
+            retnSize < retnMax ? std::min(retnSize, retnMax - retnSize) : 0;
+
+         // Save desired words that are on the stack.
+         for(Core::FastU i = retnTmp; i--;)
+            genStmntDropTmp(i);
+
+         // Discard undesired words that are on the stack.
+         for(Core::FastU i = std::min(retnSize, retnMax); i--;)
+            genCode(Code::Drop_Nul);
+
+         // Push desired words that were saved.
+         for(Core::FastU i = 0; i != retnTmp; ++i)
+            genStmntPushTmp(i);
+
+         // Push desired words that were not on stack.
+         genStmntPushRetn(retn, retnMax, retnSize + retnTmp, retnSize * 2);
+      }
+      else
+      {
+         genStmntPushRetn(retn, retnMax, retnSize, retnSize * 2);
+
+         for(Core::FastU i = std::min(retnSize, retnMax); i--;)
+            genCode(Code::Drop_Nul);
       }
    }
 

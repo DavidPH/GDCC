@@ -328,7 +328,7 @@ namespace GDCC::BC::ZDACS
 
       void genStmntDropParam(Core::FastU param, Core::FastU paramMax);
 
-      void genStmntDropRetn(Core::FastU retn, Core::FastU retnMax);
+      void genStmntDropRetn(IR::Arg const &retn, Core::FastU retnMax);
 
       void genStmntDropTmp(Core::FastU w);
 
@@ -346,8 +346,10 @@ namespace GDCC::BC::ZDACS
 
       void genStmntPushIdx(IR::Arg const &arg, Core::FastU w);
 
-      void genStmntPushRetn(Core::FastU retn, Core::FastU retnMax);
       void genStmntPushRetn(IR::Arg const &retn, Core::FastU retnMax);
+      void genStmntPushRetn(IR::Arg const &retn, Core::FastU retnMax, Core::FastU retnLo, Core::FastU retnHi);
+      void genStmntPushRetnDiv(IR::Arg const &retn, Core::FastU retnMax);
+      void genStmntPushRetnMod(IR::Arg const &retn, Core::FastU retnMax);
 
       void genStmntPushStrEn(Core::FastU value);
       void genStmntPushStrEn(IR::Exp const *value, Core::FastU w);
@@ -577,7 +579,7 @@ namespace GDCC::BC::ZDACS
       void trStmnt_Bges() {}
       void trStmnt_Bget() {}
       void trStmnt_Bset() {}
-      void trStmnt_Call();
+      void trStmnt_Call() {}
       void trStmnt_Casm() {trStmnt_Call();}
       void trStmnt_CmpEQ() {trStmntArgBin(false);}
       void trStmnt_CmpGE() {trStmntArgBin(true);}
@@ -592,10 +594,10 @@ namespace GDCC::BC::ZDACS
       void trStmnt_Cscr_SA() {trStmnt_Call();}
       void trStmnt_Cscr_SS() {trStmnt_Call();}
       void trStmnt_Cspe();
-      void trStmnt_Div() {trStmntStkBin(true);}
+      void trStmnt_Div() {trStmntArgBin(true);}
       void trStmnt_DivX();
       void trStmnt_DivX_I();
-      void trStmnt_DivX_U() {trStmntStkBin(true);}
+      void trStmnt_DivX_U() {trStmntArgBin(true);}
       void trStmnt_Jcnd_Nil();
       void trStmnt_Jcnd_Tab() {}
       void trStmnt_Jcnd_Tru() {trStmnt_Jcnd_Nil();}
