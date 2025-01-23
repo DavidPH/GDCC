@@ -262,6 +262,31 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::genStmntDecUArg
+   //
+   void Info::genStmntDecUArg(IR::Arg const &arg, Core::FastU w)
+   {
+      //
+      // genReg
+      //
+      auto genReg = [&](IR::ArgPtr1 const &a, Code code)
+      {
+         genCode(code, getExpAddPtr(a.idx->aLit.value, a.off + w));
+      };
+
+      switch(arg.a)
+      {
+      case IR::ArgBase::GblReg: genReg(arg.aGblReg, Code::DecU_GblReg); break;
+      case IR::ArgBase::HubReg: genReg(arg.aHubReg, Code::DecU_HubReg); break;
+      case IR::ArgBase::LocReg: genReg(arg.aLocReg, Code::DecU_LocReg); break;
+      case IR::ArgBase::ModReg: genReg(arg.aModReg, Code::DecU_ModReg); break;
+
+      default:
+         Core::Error(stmnt->pos, "bad genStmntDecUArg");
+      }
+   }
+
+   //
    // Info::genStmntDecUTmp
    //
    void Info::genStmntDecUTmp(Core::FastU w)
@@ -550,15 +575,6 @@ namespace GDCC::BC::ZDACS
       default:
          Core::Error(stmnt->pos, "bad genStmntIncUArg");
       }
-   }
-
-   //
-   // Info::genStmntIncUArg
-   //
-   void Info::genStmntIncUArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi)
-   {
-      for(; lo != hi; ++lo)
-         genStmntIncUArg(arg, lo);
    }
 
    //

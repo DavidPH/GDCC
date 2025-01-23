@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -58,6 +58,21 @@
       throw TypeError(); \
    }
 
+//
+// GDCC_IR_ValueCmpOpValsImplEq
+//
+#define GDCC_IR_ValueCmpOpValsImplEq(op) \
+   bool operator op (Value const &l, Value const &r) \
+   { \
+      if(l.v != r.v) return l.v op r.v; \
+      \
+      if(l.v == ValueBase::Fixed && r.v == ValueBase::Fixed) return l.vFixed op r.vFixed; \
+      if(l.v == ValueBase::Float && r.v == ValueBase::Float) return l.vFloat op r.vFloat; \
+      if(l.v == ValueBase::Point && r.v == ValueBase::Point) return l.vPoint op r.vPoint; \
+      \
+      throw TypeError(); \
+   }
+
 
 //----------------------------------------------------------------------------|
 // Extern Functions                                                           |
@@ -80,10 +95,30 @@ namespace GDCC::IR
 
    GDCC_IR_ValueCmpOpBitsImpl(==)
    GDCC_IR_ValueCmpOpFltsImpl(==)
-   GDCC_IR_ValueCmpOpValsImpl(==)
+   GDCC_IR_ValueCmpOpValsImplEq(==)
    GDCC_IR_ValueCmpOpBitsImpl(!=)
    GDCC_IR_ValueCmpOpFltsImpl(!=)
-   GDCC_IR_ValueCmpOpValsImpl(!=)
+   GDCC_IR_ValueCmpOpValsImplEq(!=)
+
+   //
+   // Value_Point == Value_Point
+   //
+   bool operator == (Value_Point const &l, Value_Point const &r)
+   {
+      return
+         l.vtype == r.vtype &&
+         l.value == r.value &&
+         l.addrB == r.addrB &&
+         l.addrN == r.addrN;
+   }
+
+   //
+   // Value_Point != Value_Point
+   //
+   bool operator != (Value_Point const &l, Value_Point const &r)
+   {
+      return !(l == r);
+   }
 }
 
 // EOF

@@ -316,6 +316,8 @@ namespace GDCC::BC::ZDACS
       void genStmntCall(Core::String name, Core::FastU retn);
       void genStmntCall(Core::String name, IR::Arg const &retn);
 
+      void genStmntDecUArg(IR::Arg const &arg, Core::FastU w);
+
       void genStmntDecUTmp(Core::FastU w);
 
       void genStmntDropArg(IR::Arg const &arg);
@@ -333,7 +335,6 @@ namespace GDCC::BC::ZDACS
       void genStmntDropTmp(Core::FastU w);
 
       void genStmntIncUArg(IR::Arg const &arg, Core::FastU w);
-      void genStmntIncUArg(IR::Arg const &arg, Core::FastU lo, Core::FastU hi);
 
       void genStmntIncUTmp(Core::FastU w);
 
@@ -385,11 +386,15 @@ namespace GDCC::BC::ZDACS
 
       bool isCopyArg(IR::Arg const &arg);
 
+      bool isDecUArg(IR::Arg const &arg);
+
       bool isDropArg(IR::Arg const &arg);
 
       bool isFastArg(IR::Arg const &arg);
 
       bool isFuncJfar_Set(IR::Function const *func);
+
+      bool isIncUArg(IR::Arg const &arg);
 
       bool isInitScriptEvent();
 

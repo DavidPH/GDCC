@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2024 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -54,47 +54,47 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(n == 0)
-         return;
+      if(n != 1 || stmnt->args[0] != stmnt->args[1])
+         return genStmntArg('U', Code::AddU);
 
-      if(n != 1)
-         return genStmntCall(getFuncName(IR::CodeBase::Add+'U', n), n);
+      if(isIncUArg(stmnt->args[0]) &&
+         stmnt->args[2].a == IR::ArgBase::Lit &&
+         stmnt->args[2].aLit.value->isValue() &&
+         getWord(stmnt->args[2].aLit) == 1)
+      {
+         return genStmntIncUArg(stmnt->args[0], 0);
+      }
 
       //
       // genReg
       //
-      auto genReg = [this](IR::ArgPtr1 const &a, Code add, Code inc)
+      auto genReg = [this](IR::ArgPtr1 const &a, Code code)
       {
-         genCode(stmnt->args[2].a == IR::ArgBase::Lit ? inc : add,
-            getExpAddPtr(a.idx->aLit.value, a.off));
+         if(stmnt->args[2].a != IR::ArgBase::Stk)
+            genStmntPushArg(stmnt->args[2]);
+
+         genCode(code, getExpAddPtr(a.idx->aLit.value, a.off));
       };
 
       switch(stmnt->args[0].a)
       {
       case IR::ArgBase::GblReg:
-         genReg(stmnt->args[0].aGblReg, Code::AddU_GblReg, Code::IncU_GblReg);
-         break;
+         return genReg(stmnt->args[0].aGblReg, Code::AddU_GblReg);
 
       case IR::ArgBase::HubReg:
-         genReg(stmnt->args[0].aHubReg, Code::AddU_HubReg, Code::IncU_HubReg);
-         break;
+         return genReg(stmnt->args[0].aHubReg, Code::AddU_HubReg);
 
       case IR::ArgBase::LocReg:
-         genReg(stmnt->args[0].aLocReg, Code::AddU_LocReg, Code::IncU_LocReg);
-         break;
+         return genReg(stmnt->args[0].aLocReg, Code::AddU_LocReg);
 
       case IR::ArgBase::ModReg:
-         genReg(stmnt->args[0].aModReg, Code::AddU_ModReg, Code::IncU_ModReg);
-         break;
-
-      case IR::ArgBase::Stk:
-         genCode(Code::AddU);
-         break;
+         return genReg(stmnt->args[0].aModReg, Code::AddU_ModReg);
 
       default:
-         IR::ErrorCode(stmnt, "unsupported add");
          break;
       }
+
+      genStmntArg('U', Code::AddU);
    }
 
    //
@@ -152,47 +152,47 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(n == 0)
-         return;
+      if(n != 1 || stmnt->args[0] != stmnt->args[1])
+         return genStmntArg('U', Code::SubU);
 
-      if(n != 1)
-         return genStmntCall(getFuncName(IR::CodeBase::Sub+'U', n), n);
+      if(isDecUArg(stmnt->args[0]) &&
+         stmnt->args[2].a == IR::ArgBase::Lit &&
+         stmnt->args[2].aLit.value->isValue() &&
+         getWord(stmnt->args[2].aLit) == 1)
+      {
+         return genStmntDecUArg(stmnt->args[0], 0);
+      }
 
       //
       // genReg
       //
-      auto genReg = [this](IR::ArgPtr1 const &a, Code sub, Code dec)
+      auto genReg = [this](IR::ArgPtr1 const &a, Code code)
       {
-         genCode(stmnt->args[2].a == IR::ArgBase::Lit ? dec : sub,
-            getExpAddPtr(a.idx->aLit.value, a.off));
+         if(stmnt->args[2].a != IR::ArgBase::Stk)
+            genStmntPushArg(stmnt->args[2]);
+
+         genCode(code, getExpAddPtr(a.idx->aLit.value, a.off));
       };
 
       switch(stmnt->args[0].a)
       {
       case IR::ArgBase::GblReg:
-         genReg(stmnt->args[0].aGblReg, Code::SubU_GblReg, Code::DecU_GblReg);
-         break;
+         return genReg(stmnt->args[0].aGblReg, Code::SubU_GblReg);
 
       case IR::ArgBase::HubReg:
-         genReg(stmnt->args[0].aHubReg, Code::SubU_HubReg, Code::DecU_HubReg);
-         break;
+         return genReg(stmnt->args[0].aHubReg, Code::SubU_HubReg);
 
       case IR::ArgBase::LocReg:
-         genReg(stmnt->args[0].aLocReg, Code::SubU_LocReg, Code::DecU_LocReg);
-         break;
+         return genReg(stmnt->args[0].aLocReg, Code::SubU_LocReg);
 
       case IR::ArgBase::ModReg:
-         genReg(stmnt->args[0].aModReg, Code::SubU_ModReg, Code::DecU_ModReg);
-         break;
-
-      case IR::ArgBase::Stk:
-         genCode(Code::SubU);
-         break;
+         return genReg(stmnt->args[0].aModReg, Code::SubU_ModReg);
 
       default:
-         IR::ErrorCode(stmnt, "unsupported sub");
          break;
       }
+
+      genStmntArg('U', Code::SubU);
    }
 
    //
@@ -270,48 +270,29 @@ namespace GDCC::BC::ZDACS
       auto n = getStmntSize();
 
       if(n != 1)
-         return trStmntStk3(false);
+         return trStmntArgBin(false);
 
-      if(stmnt->args[0] == stmnt->args[1]) switch(stmnt->args[0].a)
+      if(stmnt->args[0] != stmnt->args[1])
       {
-      case IR::ArgBase::GblReg:
-      case IR::ArgBase::HubReg:
-      case IR::ArgBase::LocReg:
-      case IR::ArgBase::ModReg:
-         if(stmnt->args[2].a != IR::ArgBase::Lit ||
-            !stmnt->args[2].aLit.value->isValue() ||
-            getWord(stmnt->args[2].aLit) != 1)
-         {
-            moveArgStk_src(stmnt->args[2]);
-         }
-
-         return;
-
-      default:
-         break;
+         if(stmnt->args[0] == stmnt->args[2])
+            std::swap(stmnt->args[1], stmnt->args[2]);
+         else
+            return trStmntArgBin(false);
       }
-      else if(stmnt->args[0] == stmnt->args[2]) switch(stmnt->args[0].a)
+
+      switch(stmnt->args[0].a)
       {
       case IR::ArgBase::GblReg:
       case IR::ArgBase::HubReg:
       case IR::ArgBase::LocReg:
       case IR::ArgBase::ModReg:
-         std::swap(stmnt->args[1], stmnt->args[2]);
-
-         if(stmnt->args[2].a != IR::ArgBase::Lit ||
-            !stmnt->args[2].aLit.value->isValue() ||
-            getWord(stmnt->args[2].aLit) != 1)
-         {
-            moveArgStk_src(stmnt->args[2]);
-         }
-
          return;
 
       default:
          break;
       }
 
-      trStmntStk3(false);
+      trStmntArgBin(false);
    }
 
    //
@@ -335,29 +316,22 @@ namespace GDCC::BC::ZDACS
    {
       auto n = getStmntSize();
 
-      if(n != 1)
-         return trStmntStk3(true);
+      if(n != 1 || stmnt->args[0] != stmnt->args[1])
+         return trStmntArgBin(true);
 
-      if(stmnt->args[0] == stmnt->args[1]) switch(stmnt->args[0].a)
+      switch(stmnt->args[0].a)
       {
       case IR::ArgBase::GblReg:
       case IR::ArgBase::HubReg:
       case IR::ArgBase::LocReg:
       case IR::ArgBase::ModReg:
-         if(stmnt->args[2].a != IR::ArgBase::Lit ||
-            !stmnt->args[2].aLit.value->isValue() ||
-            getWord(stmnt->args[2].aLit) != 1)
-         {
-            moveArgStk_src(stmnt->args[2]);
-         }
-
          return;
 
       default:
          break;
       }
 
-      trStmntStk3(true);
+      trStmntArgBin(true);
    }
 
    //

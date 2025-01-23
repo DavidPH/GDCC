@@ -668,6 +668,21 @@ namespace GDCC::BC::ZDACS
    }
 
    //
+   // Info::isDecUArg
+   //
+   bool Info::isDecUArg(IR::Arg const &arg)
+   {
+      switch(arg.a)
+      {
+      case IR::ArgBase::GblReg: return true;
+      case IR::ArgBase::HubReg: return true;
+      case IR::ArgBase::LocReg: return true;
+      case IR::ArgBase::ModReg: return true;
+      default:                  return false;
+      }
+   }
+
+   //
    // Info::isDropArg
    //
    bool Info::isDropArg(IR::Arg const &arg)
@@ -742,6 +757,21 @@ namespace GDCC::BC::ZDACS
             {found = true; break;}
 
       return funcJfar_Set.emplace(f, found).second;
+   }
+
+   //
+   // Info::isIncUArg
+   //
+   bool Info::isIncUArg(IR::Arg const &arg)
+   {
+      switch(arg.a)
+      {
+      case IR::ArgBase::GblReg: return true;
+      case IR::ArgBase::HubReg: return true;
+      case IR::ArgBase::LocReg: return true;
+      case IR::ArgBase::ModReg: return true;
+      default:                  return false;
+      }
    }
 
    //

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -507,9 +507,11 @@ namespace GDCC::IR
    bool operator == (Value       const &l, Value       const &r);
    bool operator == (Value_Fixed const &l, Value_Fixed const &r);
    bool operator == (Value_Float const &l, Value_Float const &r);
+   bool operator == (Value_Point const &l, Value_Point const &r);
    bool operator != (Value       const &l, Value       const &r);
    bool operator != (Value_Fixed const &l, Value_Fixed const &r);
    bool operator != (Value_Float const &l, Value_Float const &r);
+   bool operator != (Value_Point const &l, Value_Point const &r);
 
    Value         operator & (Value       const &l, Value       const &r);
    Value_Fixed   operator & (Value_Fixed const &l, Value_Fixed const &r);
