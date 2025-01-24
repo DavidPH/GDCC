@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -23,63 +23,114 @@
 
 namespace GDCC::SR
 {
+
    //
-   // GenStmnt_MovePartIdx
+   // GenStmnt_MoveDstIdx
    //
    template<typename ArgT, typename IdxT>
-   static void GenStmnt_MovePartIdx(Exp const *exp, GenStmntCtx const &ctx,
-      Arg const &arg, IdxT const &idx, bool get, bool set)
+   static void GenStmnt_MoveDstIdx(Exp const *exp, GenStmntCtx const &ctx,
+      Arg const &dst, IdxT const &idx)
    {
-      IR::Arg_Stk stk{arg.type->getSizeBytes()};
+      IR::Arg_Stk stk{dst.type->getSizeBytes()};
 
-      if(set)
-         ctx.block.addStmnt(IR::CodeBase::Move,
-            GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0), stk);
-
-      if(get)
-         ctx.block.addStmnt(IR::CodeBase::Move,
-            stk, GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
+      ctx.block.addStmnt(IR::CodeBase::Move,
+         GenStmnt_Move_GenArg<ArgT>(exp, ctx, dst, idx, 0), stk);
    }
 
    //
-   // GenStmnt_MovePartT
+   // GenStmnt_MoveDupIdx
+   //
+   template<typename ArgT, typename IdxT>
+   static void GenStmnt_MoveDupIdx(Exp const *exp, GenStmntCtx const &ctx,
+      Arg const &dup, IdxT const &idx)
+   {
+      IR::Arg_Stk stk{dup.type->getSizeBytes()};
+
+      ctx.block.addStmnt(IR::CodeBase::Move,
+         GenStmnt_Move_GenArg<ArgT>(exp, ctx, dup, idx, 0), stk);
+
+      ctx.block.addStmnt(IR::CodeBase::Move,
+         stk, GenStmnt_Move_GenArg<ArgT>(exp, ctx, dup, idx, 0));
+   }
+
+   //
+   // GenStmnt_MoveSrcIdx
+   //
+   template<typename ArgT, typename IdxT>
+   static void GenStmnt_MoveSrcIdx(Exp const *exp, GenStmntCtx const &ctx,
+      Arg const &src, IdxT const &idx)
+   {
+      IR::Arg_Stk stk{src.type->getSizeBytes()};
+
+      ctx.block.addStmnt(IR::CodeBase::Move,
+         stk, GenStmnt_Move_GenArg<ArgT>(exp, ctx, src, idx, 0));
+   }
+
+   //
+   // GenStmnt_MoveDstPreT
    //
    template<typename ArgT>
-   static void GenStmnt_MovePartT(Exp const *exp, GenStmntCtx const &ctx,
-      Arg const &arg, bool get, bool set)
+   static void GenStmnt_MoveDstPreT(Exp const *, GenStmntCtx const &ctx, Arg const &dst)
    {
       // If arg address is a constant, then use Arg_Lit address.
-      if(arg.data->isIRExp())
+      if(dst.data->isIRExp())
+         return;
+
+      // If arg address is an IR arg, use it.
+      // Note that isIRArg implies a lack of side effects.
+      if(dst.data->getArgSrc().isIRArg())
+         return;
+
+      // If setting a single word, use address on stack.
+      if(dst.type->getSizeWords() == 1)
+      {
+         // Evaluate arg's data.
+         if(Target::IsAddrFirst(IR::GetArgBase<ArgT>()))
+            dst.data->genStmntStk(ctx);
+
+         return;
+      }
+
+      // As a last resort, evaluate the pointer and store in a temporary.
+   }
+
+   //
+   // GenStmnt_MoveDstSufT
+   //
+   template<typename ArgT>
+   static void GenStmnt_MoveDstSufT(Exp const *exp, GenStmntCtx const &ctx, Arg const &dst)
+   {
+      // If arg address is a constant, then use Arg_Lit address.
+      if(dst.data->isIRExp())
       {
          // Evaluate arg's data for side effects.
-         arg.data->genStmnt(ctx);
+         dst.data->genStmnt(ctx);
 
          // Use literal as index.
-         GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg,
-            arg.data->getIRArgLit(), get, set);
+         GenStmnt_MoveDstIdx<ArgT>(exp, ctx, dst, dst.data->getIRArgLit());
 
          return;
       }
 
       // If arg address is an IR arg, use it.
       // Note that isIRArg implies a lack of side effects.
-      if(arg.data->getArgSrc().isIRArg())
+      if(dst.data->getArgSrc().isIRArg())
       {
-         GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg,
-            arg.data->getArgSrc().getIRArg(ctx.prog), get, set);
+         GenStmnt_MoveDstIdx<ArgT>(exp, ctx, dst,
+            dst.data->getArgSrc().getIRArg(ctx.prog));
 
          return;
       }
 
-      // If fetching or setting a single word, use address on stack.
-      if(arg.type->getSizeWords() == 1 && get ^ set)
+      // If setting a single word, use address on stack.
+      if(dst.type->getSizeWords() == 1)
       {
          // Evaluate arg's data.
-         arg.data->genStmntStk(ctx);
+         if(!Target::IsAddrFirst(IR::GetArgBase<ArgT>()))
+            dst.data->genStmntStk(ctx);
 
          // Use Stk as index.
-         GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg,
-            arg.data->getIRArgStk(), get, set);
+         GenStmnt_MoveDstIdx<ArgT>(exp, ctx, dst, dst.data->getIRArgStk());
 
          return;
       }
@@ -87,75 +138,336 @@ namespace GDCC::SR
       // As a last resort, evaluate the pointer and store in a temporary.
       {
          // Evaluate arg's data.
-         arg.data->genStmntStk(ctx);
+         dst.data->genStmntStk(ctx);
 
          // Move to temporary.
-         Temporary tmp{ctx, exp->pos, arg.data->getType()->getSizeWords()};
+         Temporary tmp{ctx, exp->pos, dst.data->getType()->getSizeWords()};
          ctx.block.addStmnt(IR::CodeBase::Move, tmp.getArg(), tmp.getArgStk());
 
          // Use temporary as index.
-         GenStmnt_MovePartIdx<ArgT>(exp, ctx, arg, tmp.getArg(), get, set);
+         GenStmnt_MoveDstIdx<ArgT>(exp, ctx, dst, tmp.getArg());
+      }
+   }
+
+   //
+   // GenStmnt_MoveDupT
+   //
+   template<typename ArgT>
+   static void GenStmnt_MoveDupT(Exp const *exp, GenStmntCtx const &ctx, Arg const &dup)
+   {
+      // If arg address is a constant, then use Arg_Lit address.
+      if(dup.data->isIRExp())
+      {
+         // Evaluate arg's data for side effects.
+         dup.data->genStmnt(ctx);
+
+         // Use literal as index.
+         GenStmnt_MoveDupIdx<ArgT>(exp, ctx, dup, dup.data->getIRArgLit());
 
          return;
       }
-   }
 
-   //
-   // GenStmnt_MovePartT<IR::Arg_Cpy>
-   //
-   template<> void GenStmnt_MovePartT<IR::Arg_Cpy>(Exp const *exp,
-      GenStmntCtx const &, Arg const &, bool get, bool set)
-   {
-      if(set) Core::Error(exp->pos, "AddrBase::Cpy set");
-      if(get) Core::Error(exp->pos, "AddrBase::Cpy get");
-   }
-
-   //
-   // GenStmnt_MovePartT<IR::Arg_Lit>
-   //
-   template<> void GenStmnt_MovePartT<IR::Arg_Lit>(Exp const *exp,
-      GenStmntCtx const &ctx, Arg const &arg, bool get, bool set)
-   {
-      if(set) Core::Error(exp->pos, "AddrBase::Lit set");
-
-      if(get)
+      // If arg address is an IR arg, use it.
+      // Note that isIRArg implies a lack of side effects.
+      if(dup.data->getArgSrc().isIRArg())
       {
-         if(arg.data->isIRExp())
-         {
-            arg.data->genStmnt(ctx);
+         GenStmnt_MoveDupIdx<ArgT>(exp, ctx, dup,
+            dup.data->getArgSrc().getIRArg(ctx.prog));
 
-            ctx.block.setArgSize(arg.type->getSizeBytes()).addStmnt(
-               IR::CodeBase::Move, IR::Block::Stk(), arg.data->getIRExp());
-         }
-         else
-            arg.data->genStmnt(ctx, Arg(arg.type, IR::AddrBase::Stk));
+         return;
+      }
+
+      // As a last resort, evaluate the pointer and store in a temporary.
+      {
+         // Evaluate arg's data.
+         dup.data->genStmntStk(ctx);
+
+         // Move to temporary.
+         Temporary tmp{ctx, exp->pos, dup.data->getType()->getSizeWords()};
+         ctx.block.addStmnt(IR::CodeBase::Move, tmp.getArg(), tmp.getArgStk());
+
+         // Use temporary as index.
+         GenStmnt_MoveDupIdx<ArgT>(exp, ctx, dup, tmp.getArg());
       }
    }
 
    //
-   // GenStmnt_MovePartT<IR::Arg_Nul>
+   // GenStmnt_MoveSrcT
    //
-   template<> void GenStmnt_MovePartT<IR::Arg_Nul>(Exp const *exp,
-      GenStmntCtx const &ctx, Arg const &arg, bool get, bool set)
+   template<typename ArgT>
+   static void GenStmnt_MoveSrcT(Exp const *exp, GenStmntCtx const &ctx, Arg const &src)
    {
-      if(set)
+      // If arg address is a constant, then use Arg_Lit address.
+      if(src.data->isIRExp())
       {
-         ctx.block.setArgSize(arg.type->getSizeBytes()).addStmnt(
-            IR::CodeBase::Move, IR::Block::Nul(), IR::Block::Stk());
+         // Evaluate arg's data for side effects.
+         src.data->genStmnt(ctx);
+
+         // Use literal as index.
+         GenStmnt_MoveSrcIdx<ArgT>(exp, ctx, src, src.data->getIRArgLit());
+
+         return;
       }
 
-      if(get) Core::Error(exp->pos, "AddrBase::Nul get");
+      // If arg address is an IR arg, use it.
+      // Note that isIRArg implies a lack of side effects.
+      if(src.data->getArgSrc().isIRArg())
+      {
+         GenStmnt_MoveSrcIdx<ArgT>(exp, ctx, src,
+            src.data->getArgSrc().getIRArg(ctx.prog));
+
+         return;
+      }
+
+      // If fetching a single word, use address on stack.
+      if(src.type->getSizeWords() == 1)
+      {
+         // Evaluate arg's data.
+         src.data->genStmntStk(ctx);
+
+         // Use Stk as index.
+         GenStmnt_MoveSrcIdx<ArgT>(exp, ctx, src, src.data->getIRArgStk());
+
+         return;
+      }
+
+      // As a last resort, evaluate the pointer and store in a temporary.
+      {
+         // Evaluate arg's data.
+         src.data->genStmntStk(ctx);
+
+         // Move to temporary.
+         Temporary tmp{ctx, exp->pos, src.data->getType()->getSizeWords()};
+         ctx.block.addStmnt(IR::CodeBase::Move, tmp.getArg(), tmp.getArgStk());
+
+         // Use temporary as index.
+         GenStmnt_MoveSrcIdx<ArgT>(exp, ctx, src, tmp.getArg());
+      }
    }
 
    //
-   // GenStmnt_MovePartT<IR::Arg_Stk>
+   // GenStmnt_MoveDstPreT<IR::Arg_Cpy>
    //
-   template<> void GenStmnt_MovePartT<IR::Arg_Stk>(
-      Exp const *exp, GenStmntCtx const &,
-      Arg const &, bool get, bool set)
+   template<> void GenStmnt_MoveDstPreT<IR::Arg_Cpy>(
+      Exp const *exp, GenStmntCtx const &, Arg const &)
    {
-      if(get && set)
-         Core::Error(exp->pos, "AddrBase::Stk get && set");
+      Core::Error(exp->pos, "AddrBase::Cpy dst");
+   }
+
+   //
+   // GenStmnt_MoveDstSufT<IR::Arg_Cpy>
+   //
+   template<> void GenStmnt_MoveDstSufT<IR::Arg_Cpy>(
+      Exp const *exp, GenStmntCtx const &, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Cpy dst");
+   }
+
+   //
+   // GenStmnt_MoveDupT<IR::Arg_Cpy>
+   //
+   template<> void GenStmnt_MoveDupT<IR::Arg_Cpy>(
+      Exp const *exp, GenStmntCtx const &, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Cpy dup");
+   }
+
+   //
+   // GenStmnt_MoveSrcT<IR::Arg_Cpy>
+   //
+   template<> void GenStmnt_MoveSrcT<IR::Arg_Cpy>(
+      Exp const *exp, GenStmntCtx const &, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Cpy src");
+   }
+
+   //
+   // GenStmnt_MoveDstPreT<IR::Arg_Lit>
+   //
+   template<> void GenStmnt_MoveDstPreT<IR::Arg_Lit>(
+      Exp const *exp, GenStmntCtx const &, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Lit dst");
+   }
+
+   //
+   // GenStmnt_MoveDstSufT<IR::Arg_Lit>
+   //
+   template<> void GenStmnt_MoveDstSufT<IR::Arg_Lit>(
+      Exp const *exp, GenStmntCtx const &, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Lit dst");
+   }
+
+   //
+   // GenStmnt_MoveDupT<IR::Arg_Lit>
+   //
+   template<> void GenStmnt_MoveDupT<IR::Arg_Lit>(
+      Exp const *exp, GenStmntCtx const &, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Lit dup");
+   }
+
+   //
+   // GenStmnt_MoveSrcT<IR::Arg_Lit>
+   //
+   template<> void GenStmnt_MoveSrcT<IR::Arg_Lit>(
+      Exp const *, GenStmntCtx const &ctx, Arg const &src)
+   {
+      if(src.data->isIRExp())
+      {
+         src.data->genStmnt(ctx);
+
+         ctx.block.setArgSize(src.type->getSizeBytes()).addStmnt(
+            IR::CodeBase::Move, IR::Block::Stk(), src.data->getIRExp());
+      }
+      else
+         src.data->genStmnt(ctx, Arg{src.type, IR::AddrBase::Stk});
+   }
+
+   //
+   // GenStmnt_MoveDstPreT<IR::Arg_Nul>
+   //
+   template<> void GenStmnt_MoveDstPreT<IR::Arg_Nul>(
+      Exp const *, GenStmntCtx const &, Arg const &)
+   {
+   }
+
+   //
+   // GenStmnt_MoveDstSufT<IR::Arg_Nul>
+   //
+   template<> void GenStmnt_MoveDstSufT<IR::Arg_Nul>(
+      Exp const *, GenStmntCtx const &ctx, Arg const &dst)
+   {
+      ctx.block.setArgSize(dst.type->getSizeBytes()).addStmnt(
+         IR::CodeBase::Move, IR::Block::Nul(), IR::Block::Stk());
+   }
+
+   //
+   // GenStmnt_MoveDupT<IR::Arg_Nul>
+   //
+   template<> void GenStmnt_MoveDupT<IR::Arg_Nul>(
+      Exp const *exp, GenStmntCtx const &, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Nul dup");
+   }
+
+   //
+   // GenStmnt_MoveSrcT<IR::Arg_Nul>
+   //
+   template<> void GenStmnt_MoveSrcT<IR::Arg_Nul>(
+      Exp const *exp, GenStmntCtx const &, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Nul src");
+   }
+
+   //
+   // GenStmnt_MoveDstPreT<IR::Arg_Stk>
+   //
+   template<> void GenStmnt_MoveDstPreT<IR::Arg_Stk>(
+      Exp const *, GenStmntCtx const &, Arg const &)
+   {
+   }
+
+   //
+   // GenStmnt_MoveDstSufT<IR::Arg_Stk>
+   //
+   template<> void GenStmnt_MoveDstSufT<IR::Arg_Stk>(
+      Exp const *, GenStmntCtx const &, Arg const &)
+   {
+   }
+
+   //
+   // GenStmnt_MoveDupT<IR::Arg_Stk>
+   //
+   template<> void GenStmnt_MoveDupT<IR::Arg_Stk>(
+      Exp const *exp, GenStmntCtx const &, Arg const &)
+   {
+      Core::Error(exp->pos, "AddrBase::Stk dup");
+   }
+
+   //
+   // GenStmnt_MoveSrcT<IR::Arg_Stk>
+   //
+   template<> void GenStmnt_MoveSrcT<IR::Arg_Stk>(
+      Exp const *, GenStmntCtx const &, Arg const &)
+   {
+   }
+
+   //
+   // GenStmnt_MoveDstPreT<IR::Arg_Gen>
+   //
+   template<> void GenStmnt_MoveDstPreT<IR::Arg_Gen>(
+      Exp const *exp, GenStmntCtx const &ctx, Arg const &dst)
+   {
+      // Map from generic address space for codegen.
+      Arg arg{dst.type->getTypeQual(Target::GetAddrGen()), dst.data};
+
+      switch(arg.type->getQualAddr().base)
+      {
+         #define GDCC_Target_AddrList(addr) \
+         case IR::AddrBase::addr: \
+            GenStmnt_MoveDstPreT<IR::Arg_##addr>(exp, ctx, arg); \
+            break;
+         #include "Target/AddrList.hpp"
+      }
+   }
+
+   //
+   // GenStmnt_MoveDstSufT<IR::Arg_Gen>
+   //
+   template<> void GenStmnt_MoveDstSufT<IR::Arg_Gen>(
+      Exp const *exp, GenStmntCtx const &ctx, Arg const &dst)
+   {
+      // Map from generic address space for codegen.
+      Arg arg{dst.type->getTypeQual(Target::GetAddrGen()), dst.data};
+
+      switch(arg.type->getQualAddr().base)
+      {
+         #define GDCC_Target_AddrList(addr) \
+         case IR::AddrBase::addr: \
+            GenStmnt_MoveDstSufT<IR::Arg_##addr>(exp, ctx, arg); \
+            break;
+         #include "Target/AddrList.hpp"
+      }
+   }
+
+   //
+   // GenStmnt_MoveDupT<IR::Arg_Gen>
+   //
+   template<> void GenStmnt_MoveDupT<IR::Arg_Gen>(
+      Exp const *exp, GenStmntCtx const &ctx, Arg const &dup)
+   {
+      // Map from generic address space for codegen.
+      Arg arg{dup.type->getTypeQual(Target::GetAddrGen()), dup.data};
+
+      switch(arg.type->getQualAddr().base)
+      {
+         #define GDCC_Target_AddrList(addr) \
+         case IR::AddrBase::addr: \
+            GenStmnt_MoveDupT<IR::Arg_##addr>(exp, ctx, arg); \
+            break;
+         #include "Target/AddrList.hpp"
+      }
+   }
+
+   //
+   // GenStmnt_MoveSrcT<IR::Arg_Gen>
+   //
+   template<> void GenStmnt_MoveSrcT<IR::Arg_Gen>(
+      Exp const *exp, GenStmntCtx const &ctx, Arg const &src)
+   {
+      // Map from generic address space for codegen.
+      Arg arg{src.type->getTypeQual(Target::GetAddrGen()), src.data};
+
+      switch(arg.type->getQualAddr().base)
+      {
+         #define GDCC_Target_AddrList(addr) \
+         case IR::AddrBase::addr: \
+            GenStmnt_MoveSrcT<IR::Arg_##addr>(exp, ctx, arg); \
+            break;
+         #include "Target/AddrList.hpp"
+      }
    }
 }
 
@@ -182,8 +494,9 @@ namespace GDCC::SR
       }
 
       // Fall back to dumping full objects to stack.
-      GenStmnt_MovePart(exp, ctx, src, true, false);
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
+      GenStmnt_MoveDstPre(exp, ctx, dst);
+      GenStmnt_MoveSrc   (exp, ctx, src);
+      GenStmnt_MoveDstSuf(exp, ctx, dst);
    }
 
    //
@@ -207,38 +520,83 @@ namespace GDCC::SR
       }
 
       // Fall back to dumping full objects to stack.
-      GenStmnt_MovePart(exp, ctx, src, true, false);
-      GenStmnt_MovePart(exp, ctx, dup, true, true);
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
+      GenStmnt_MoveDstPre(exp, ctx, dst);
+      GenStmnt_MoveSrc   (exp, ctx, src);
+      GenStmnt_MoveDup   (exp, ctx, dup);
+      GenStmnt_MoveDstSuf(exp, ctx, dst);
    }
 
    //
-   // GenStmnt_MovePart
+   // GenStmnt_MoveDstPre
    //
-   void GenStmnt_MovePart(Exp const *exp, GenStmntCtx const &ctx,
-      Arg const &arg_, bool get, bool set)
+   void GenStmnt_MoveDstPre(Exp const *exp, GenStmntCtx const &ctx, Arg const &dst)
    {
-      auto arg = arg_;
+      // A void dst is a no-op.
+      if(dst.type->isTypeVoid())
+         return;
 
-      // Special handling of void arg.
-      if(arg.type->isTypeVoid())
-      {
-         // A void src is an error.
-         if(get) Core::Error(exp->pos, "void src");
-
-         // A void dst is a no-op.
-         if(set) return;
-      }
-
-      // Map from generic address space for codegen.
-      if(arg.type->getQualAddr().base == IR::AddrBase::Gen)
-         arg.type = arg.type->getTypeQual(Target::GetAddrGen());
-
-      switch(arg.type->getQualAddr().base)
+      switch(dst.type->getQualAddr().base)
       {
          #define GDCC_Target_AddrList(addr) \
          case IR::AddrBase::addr: \
-            GenStmnt_MovePartT<IR::Arg_##addr>(exp, ctx, arg, get, set); \
+            GenStmnt_MoveDstPreT<IR::Arg_##addr>(exp, ctx, dst); \
+            break;
+         #include "Target/AddrList.hpp"
+      }
+   }
+
+   //
+   // GenStmnt_MoveDstSuf
+   //
+   void GenStmnt_MoveDstSuf(Exp const *exp, GenStmntCtx const &ctx, Arg const &dst)
+   {
+      // A void dst is a no-op.
+      if(dst.type->isTypeVoid())
+         return;
+
+      switch(dst.type->getQualAddr().base)
+      {
+         #define GDCC_Target_AddrList(addr) \
+         case IR::AddrBase::addr: \
+            GenStmnt_MoveDstSufT<IR::Arg_##addr>(exp, ctx, dst); \
+            break;
+         #include "Target/AddrList.hpp"
+      }
+   }
+
+   //
+   // GenStmnt_MoveDup
+   //
+   void GenStmnt_MoveDup(Exp const *exp, GenStmntCtx const &ctx, Arg const &dup)
+   {
+      // A void src is an error.
+      if(dup.type->isTypeVoid())
+         Core::Error(exp->pos, "void dup");
+
+      switch(dup.type->getQualAddr().base)
+      {
+         #define GDCC_Target_AddrList(addr) \
+         case IR::AddrBase::addr: \
+            GenStmnt_MoveDupT<IR::Arg_##addr>(exp, ctx, dup); \
+            break;
+         #include "Target/AddrList.hpp"
+      }
+   }
+
+   //
+   // GenStmnt_MoveSrc
+   //
+   void GenStmnt_MoveSrc(Exp const *exp, GenStmntCtx const &ctx, Arg const &src)
+   {
+      // A void src is an error.
+      if(src.type->isTypeVoid())
+         Core::Error(exp->pos, "void src");
+
+      switch(src.type->getQualAddr().base)
+      {
+         #define GDCC_Target_AddrList(addr) \
+         case IR::AddrBase::addr: \
+            GenStmnt_MoveSrcT<IR::Arg_##addr>(exp, ctx, src); \
             break;
          #include "Target/AddrList.hpp"
       }

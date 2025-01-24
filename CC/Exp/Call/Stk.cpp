@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -94,6 +94,8 @@ namespace GDCC::CC
       // Determine return word count.
       retBytes = func->getBaseType()->isTypeVoid()
          ? 0 : func->getBaseType()->getSizeBytes();
+
+      GenStmnt_MoveDstPre(this, ctx, dst);
 
       // Evaluate address before arguments?
       if(addrPre)
@@ -228,7 +230,7 @@ namespace GDCC::CC
             IR::Glyph(ctx.prog, scope.fn.getLabelLJR()), IR::Arg_Stk(retBytes));
 
       // Move to destination.
-      GenStmnt_MovePart(this, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(this, ctx, dst);
    }
 }
 

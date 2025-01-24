@@ -178,11 +178,15 @@ namespace GDCC::BC::ZDACS
       case IR::ArgBase::Sta:
          if(stmnt->args[0].aSta.off)
          {
+            // The higher level codegen does not combine addr-on-stack with
+            // offsets, so this is just a fallback for hand-written assembly.
+            // It is still pretty gross-looking, though. Maybe add a warning?
+            genCode(Code::Swap);
             genCode(Code::Push_Lit, stmnt->args[0].aSta.off);
             genCode(Code::AddU);
+            genCode(Code::Swap);
          }
 
-         genCode(Code::Swap);
          genCode(Code::Drop_GblArr, StaArray);
          break;
 
@@ -203,11 +207,12 @@ namespace GDCC::BC::ZDACS
    {
       if(arr.off)
       {
+         genCode(Code::Swap);
          genCode(Code::Push_Lit, arr.off);
          genCode(Code::AddU);
+         genCode(Code::Swap);
       }
 
-      genCode(Code::Swap);
       genCode(code, arr.arr->aLit.value);
    }
 

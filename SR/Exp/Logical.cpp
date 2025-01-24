@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -83,13 +83,15 @@ namespace GDCC::SR
          }
          else
          {
+            GenStmnt_MoveDstPre(exp, ctx, dst);
+
             exp->expR->genStmntStk(ctx);
 
             ctx.block.addStmnt(IR::CodeBase::LNot, dst.getIRArgStk(), exp->expR->getIRArgStk());
             ctx.block.addStmnt(IR::CodeBase::LNot, dst.getIRArgStk(), dst.getIRArgStk());
 
             // Move to destination.
-            GenStmnt_MovePart(exp, ctx, dst, false, true);
+            GenStmnt_MoveDstSuf(exp, ctx, dst);
          }
 
          return;
@@ -102,6 +104,8 @@ namespace GDCC::SR
 
       IR::Glyph labelEnd   = {ctx.prog, ctx.fn->genLabel()};
       IR::Glyph labelShort = {ctx.prog, ctx.fn->genLabel()};
+
+      GenStmnt_MoveDstPre(exp, ctx, dst);
 
       // Evaluate left operand to stack.
       exp->expL->genStmntStk(ctx);
@@ -137,7 +141,7 @@ namespace GDCC::SR
       ctx.block.addLabel(labelEnd);
 
       // Move to destination.
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(exp, ctx, dst);
    }
 }
 

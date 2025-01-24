@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -58,6 +58,9 @@ namespace GDCC::SR
 
       IR::Arg irArgL, irArgR;
 
+      if(!dst.isIRArg())
+         GenStmnt_MoveDstPre(exp, ctx, dst);
+
       // Try to use IR args instead of stack args.
       // However, avoid a stack arg only on the left for asymmetric ops.
       if(argR.isIRArg())
@@ -97,7 +100,7 @@ namespace GDCC::SR
          ctx.block.addStmnt(code, irDst, irArgL, irArgR);
 
          // Move to destination.
-         GenStmnt_MovePart(exp, ctx, dst, false, true);
+         GenStmnt_MoveDstSuf(exp, ctx, dst);
       }
    }
 }

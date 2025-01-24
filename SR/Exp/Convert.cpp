@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -41,6 +41,8 @@ namespace GDCC::SR
    {
       if(GenStmntNul(this, ctx, dst)) return;
 
+      GenStmnt_MoveDstPre(exp, ctx, dst);
+
       // Evaluate expression to stack.
       exp->genStmntStk(ctx);
 
@@ -48,7 +50,7 @@ namespace GDCC::SR
       GenStmnt_ConvertArith(this, type, exp->getType(), ctx);
 
       // Move to destination.
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(exp, ctx, dst);
    }
 
    //
@@ -57,6 +59,8 @@ namespace GDCC::SR
    void Exp_ConvertBitfield::v_genStmnt(GenStmntCtx const &ctx, Arg const &dst) const
    {
       if(GenStmntNul(this, ctx, dst)) return;
+
+      GenStmnt_MoveDstPre(exp, ctx, dst);
 
       // Evaluate expression to stack.
       exp->genStmntStk(ctx);
@@ -71,7 +75,7 @@ namespace GDCC::SR
          .addStmnt(code, dst.getIRArgStk(), exp->getIRArgStk(), bits, offs);
 
       // Move to destination.
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(exp, ctx, dst);
    }
 }
 

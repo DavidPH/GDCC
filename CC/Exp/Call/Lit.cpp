@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2019 David Hill
+// Copyright (C) 2015-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -57,6 +57,8 @@ namespace GDCC::CC
       for(std::size_t i = 0, e = args.size(); i != e; ++i)
          irArgs[i + 2] = IR::Arg_Lit(args[i]->getType()->getSizeBytes(), args[i]->getIRExp());
 
+      GenStmnt_MoveDstPre(this, ctx, dst);
+
       // Generate call instruction.
       IR::Code code;
       switch(callType)
@@ -69,7 +71,7 @@ namespace GDCC::CC
       ctx.block.addStmntArgs(code, std::move(irArgs));
 
       // Move to destination.
-      GenStmnt_MovePart(this, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(this, ctx, dst);
    }
 }
 

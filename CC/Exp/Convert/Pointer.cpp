@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -95,6 +95,8 @@ namespace GDCC::CC
       auto dstW = type->getSizeWords();
       auto srcW = exp->getType()->getSizeWords();
 
+      GenStmnt_MoveDstPre(exp, ctx, dst);
+
       // Evaluate sub-expression to stack.
       exp->genStmntStk(ctx);
 
@@ -113,7 +115,7 @@ namespace GDCC::CC
       }
 
       // Move to destination.
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(exp, ctx, dst);
    }
 
    //
@@ -142,6 +144,8 @@ namespace GDCC::CC
    {
       if(GenStmntNul(this, ctx, dst)) return;
 
+      GenStmnt_MoveDstPre(exp, ctx, dst);
+
       // Evaluate sub-expression to stack.
       exp->genStmntStk(ctx);
 
@@ -150,7 +154,7 @@ namespace GDCC::CC
          IR::Block::Stk(), IR::Block::Stk());
 
       // Move to destination.
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(exp, ctx, dst);
    }
 
    //
@@ -161,6 +165,8 @@ namespace GDCC::CC
    {
       if(GenStmntNul(this, ctx, dst)) return;
 
+      GenStmnt_MoveDstPre(exp, ctx, dst);
+
       // Evaluate sub-expression to stack.
       exp->genStmntStk(ctx);
 
@@ -169,7 +175,7 @@ namespace GDCC::CC
          IR::Block::Stk(), IR::Block::Stk());
 
       // Move to destination.
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(exp, ctx, dst);
    }
 
    //
@@ -179,6 +185,8 @@ namespace GDCC::CC
       SR::Arg const &dst) const
    {
       if(GenStmntNul(this, ctx, dst)) return;
+
+      GenStmnt_MoveDstPre(exp, ctx, dst);
 
       // Evaluate sub-expression to stack.
       exp->genStmntStk(ctx);
@@ -199,7 +207,7 @@ namespace GDCC::CC
       }
 
       // Move to destination.
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(exp, ctx, dst);
    }
 
    //

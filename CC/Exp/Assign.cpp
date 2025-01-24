@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -160,6 +160,9 @@ namespace GDCC::CC
          auto bits = typeL->getSizeBitsF() + typeL->getSizeBitsI() + typeL->getSizeBitsS();
          auto offs = typeL->getSizeBitsO();
 
+         if(dst.type->getQualAddr().base != IR::AddrBase::Nul)
+            GenStmnt_MoveDstPre(this, ctx, dst);
+
          // Evaluate source to stack.
          expR->genStmntStk(ctx);
 
@@ -185,7 +188,7 @@ namespace GDCC::CC
 
          // Move duplicated result, if needed.
          if(dst.type->getQualAddr().base != IR::AddrBase::Nul)
-            GenStmnt_MovePart(this, ctx, dst, false, true);
+            GenStmnt_MoveDstSuf(this, ctx, dst);
       }
       else
       {

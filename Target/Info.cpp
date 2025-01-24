@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2024 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -266,6 +266,35 @@ namespace GDCC::Target
       }
 
       return 0;
+   }
+
+   //
+   // IsAddrFirst
+   //
+   bool IsAddrFirst(AddrBase addr)
+   {
+      switch(addr)
+      {
+      case AddrBase::GblArr:
+      case AddrBase::HubArr:
+      case AddrBase::LocArr:
+      case AddrBase::ModArr:
+      case AddrBase::Sta:
+         switch(EngineCur)
+         {
+         case Engine::Eternity:
+         case Engine::Hexen:
+         case Engine::ZDoom:
+         case Engine::Zandronum:
+            return true;
+
+         default:
+            return false;
+         }
+
+      default:
+         return false;
+      }
    }
 
    //

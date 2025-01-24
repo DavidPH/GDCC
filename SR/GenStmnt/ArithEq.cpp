@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -48,13 +48,15 @@ namespace GDCC::SR
       // Duplicate to destination, if necessary.
       if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
+         GenStmnt_MoveDstPre(exp, ctx, dst);
+
          // Push l.
          ctx.block.addStmnt(bitsG,
             dst.getIRArgStk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0),
             bitsW, bitsO);
 
          // Assign dst.
-         GenStmnt_MovePart(exp, ctx, dst, false, true);
+         GenStmnt_MoveDstSuf(exp, ctx, dst);
       }
 
       // Push l.
@@ -92,13 +94,15 @@ namespace GDCC::SR
       // Duplicate to destination, if necessary.
       if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
+         GenStmnt_MoveDstPre(exp, ctx, dst);
+
          // Push l.
          ctx.block.addStmnt(bitsG,
             dst.getIRArgStk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0),
             bitsW, bitsO);
 
          // Assign dst.
-         GenStmnt_MovePart(exp, ctx, dst, false, true);
+         GenStmnt_MoveDstSuf(exp, ctx, dst);
       }
    }
 
@@ -194,12 +198,14 @@ namespace GDCC::SR
       // Duplicate to destination, if necessary.
       if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
+         GenStmnt_MoveDstPre(exp, ctx, dst);
+
          // Push l.
          ctx.block.addStmnt(IR::CodeBase::Move,
             dst.getIRArgStk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
          // Assign dst.
-         GenStmnt_MovePart(exp, ctx, dst, false, true);
+         GenStmnt_MoveDstSuf(exp, ctx, dst);
       }
 
       // Push l.
@@ -236,12 +242,14 @@ namespace GDCC::SR
       // Duplicate to destination, if necessary.
       if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
+         GenStmnt_MoveDstPre(exp, ctx, dst);
+
          // Push l.
          ctx.block.addStmnt(IR::CodeBase::Move,
             dst.getIRArgStk(), GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
          // Assign dst.
-         GenStmnt_MovePart(exp, ctx, dst, false, true);
+         GenStmnt_MoveDstSuf(exp, ctx, dst);
       }
    }
 
@@ -370,8 +378,9 @@ namespace GDCC::SR
          // Duplicate to destination, if necessary.
          if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
          {
+            GenStmnt_MoveDstPre(exp, ctx, dst);
             ctx.block.addStmnt(IR::CodeBase::Move, dst.getIRArgStk(), irArgL);
-            GenStmnt_MovePart(exp, ctx, dst, false, true);
+            GenStmnt_MoveDstSuf(exp, ctx, dst);
          }
 
          ctx.block.addStmnt(code, irArgL, irArgL, irArgR);
@@ -379,8 +388,9 @@ namespace GDCC::SR
          // Duplicate to destination, if necessary.
          if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
          {
+            GenStmnt_MoveDstPre(exp, ctx, dst);
             ctx.block.addStmnt(IR::CodeBase::Move, dst.getIRArgStk(), irArgL);
-            GenStmnt_MovePart(exp, ctx, dst, false, true);
+            GenStmnt_MoveDstSuf(exp, ctx, dst);
          }
 
          return;

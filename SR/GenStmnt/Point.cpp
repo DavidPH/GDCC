@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -72,12 +72,14 @@ namespace GDCC::SR
       // Duplicate to destination, if necessary.
       if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
+         GenStmnt_MoveDstPre(exp, ctx, dst);
+
          // Push l.
          ctx.block.addStmnt(IR::CodeBase::Move, stkL,
             GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
          // Assign dst.
-         GenStmnt_MovePart(exp, ctx, dst, false, true);
+         GenStmnt_MoveDstSuf(exp, ctx, dst);
       }
 
       // Push l.
@@ -97,12 +99,14 @@ namespace GDCC::SR
       // Duplicate to destination, if necessary.
       if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
       {
+         GenStmnt_MoveDstPre(exp, ctx, dst);
+
          // Push l.
          ctx.block.addStmnt(IR::CodeBase::Move,
             stkL, GenStmnt_Move_GenArg<ArgT>(exp, ctx, arg, idx, 0));
 
          // Assign dst.
-         GenStmnt_MovePart(exp, ctx, dst, false, true);
+         GenStmnt_MoveDstSuf(exp, ctx, dst);
       }
    }
 
@@ -195,6 +199,8 @@ namespace GDCC::SR
 
       IR::Arg_Stk stk = exp->expR->getIRArgStk();
 
+      GenStmnt_MoveDstPre(exp, ctx, dst);
+
       // Evaluate pointer to stack.
       exp->expL->genStmntStk(ctx);
 
@@ -205,7 +211,7 @@ namespace GDCC::SR
       ctx.block.addStmnt(code, stk, stk, stk);
 
       // Move to destination.
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(exp, ctx, dst);
    }
 
    //
@@ -233,8 +239,9 @@ namespace GDCC::SR
          // Duplicate to destination, if necessary.
          if(post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
          {
+            GenStmnt_MoveDstPre(exp, ctx, dst);
             ctx.block.addStmnt(IR::CodeBase::Move, argL.getIRArgStk(), irArgL);
-            GenStmnt_MovePart(exp, ctx, dst, false, true);
+            GenStmnt_MoveDstSuf(exp, ctx, dst);
          }
 
          if(point == 1)
@@ -252,8 +259,9 @@ namespace GDCC::SR
          // Duplicate to destination, if necessary.
          if(!post && dst.type->getQualAddr().base != IR::AddrBase::Nul)
          {
+            GenStmnt_MoveDstPre(exp, ctx, dst);
             ctx.block.addStmnt(IR::CodeBase::Move, argL.getIRArgStk(), irArgL);
-            GenStmnt_MovePart(exp, ctx, dst, false, true);
+            GenStmnt_MoveDstSuf(exp, ctx, dst);
          }
 
          return;

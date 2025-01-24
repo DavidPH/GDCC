@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -548,6 +548,14 @@ namespace GDCC::IR
    #include "../Target/AddrList.hpp"
 
    IArchive &operator >> (IArchive &in, Arg &out);
+
+   template<typename T>
+   constexpr ArgBase GetArgBase();
+
+   #define GDCC_Target_AddrList(name) \
+      template<> \
+      constexpr ArgBase GetArgBase<Arg_##name>() {return ArgBase::name;}
+   #include "../Target/AddrList.hpp"
 }
 
 #endif//GDCC__IR__Arg_H__

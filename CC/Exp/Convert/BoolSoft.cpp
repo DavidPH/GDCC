@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -38,6 +38,8 @@ namespace GDCC::CC
    {
       if(GenStmntNul(this, ctx, dst)) return;
 
+      GenStmnt_MoveDstPre(this, ctx, dst);
+
       exp->genStmntStk(ctx);
 
       ctx.block.setArgSize();
@@ -47,7 +49,7 @@ namespace GDCC::CC
             IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
 
       // Move to destination.
-      GenStmnt_MovePart(this, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(this, ctx, dst);
    }
 
    //
@@ -57,6 +59,8 @@ namespace GDCC::CC
       SR::Arg const &dst) const
    {
       if(GenStmntNul(this, ctx, dst)) return;
+
+      GenStmnt_MoveDstPre(this, ctx, dst);
 
       exp->genStmntStk(ctx);
 
@@ -74,7 +78,7 @@ namespace GDCC::CC
             IR::Block::Stk(), IR::Block::Stk(), IR::Block::Stk());
 
       // Move to destination.
-      GenStmnt_MovePart(this, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(this, ctx, dst);
    }
 
    //
@@ -84,6 +88,8 @@ namespace GDCC::CC
       SR::Arg const &dst) const
    {
       if(GenStmntNul(this, ctx, dst)) return;
+
+      GenStmnt_MoveDstPre(this, ctx, dst);
 
       exp->genStmntStk(ctx);
 
@@ -97,7 +103,7 @@ namespace GDCC::CC
          IR::Block::Stk(), IR::Block::Stk());
 
       // Move to destination.
-      GenStmnt_MovePart(this, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(this, ctx, dst);
    }
 
    //

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2019 David Hill
+// Copyright (C) 2015-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -104,13 +104,15 @@ namespace GDCC::CC
       addrDJump.alloc = true;
       addrDJump.defin = true;
 
+      GenStmnt_MoveDstPre(this, ctx, dst);
+
       ctx.block.setArgSize().addStmnt(IR::CodeBase::Jfar_Set,
          IR::Glyph(ctx.prog, addrDJump.glyph), std::move(envArg));
 
       ctx.block.addLabel(addrLabel);
 
       // Move to destination from stack.
-      GenStmnt_MovePart(this, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(this, ctx, dst);
    }
 
    //

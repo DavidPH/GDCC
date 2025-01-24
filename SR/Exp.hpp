@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -148,9 +148,17 @@ namespace GDCC::SR
    void GenStmnt_Move(Exp const *exp, GenStmntCtx const &ctx,
       Arg const &dst, Arg const &dup, Arg const &src);
 
+   // Prepares for a later dst move, used before pushing the source.
+   void GenStmnt_MoveDstPre(Exp const *exp, GenStmntCtx const &ctx, Arg const &dst);
+
    // Performs one part of an Arg movement.
-   void GenStmnt_MovePart(Exp const *exp, GenStmntCtx const &ctx,
-      Arg const &arg, bool get, bool set);
+   void GenStmnt_MoveDstSuf(Exp const *exp, GenStmntCtx const &ctx, Arg const &dst);
+
+   // Performs one part of an Arg movement.
+   void GenStmnt_MoveDup(Exp const *exp, GenStmntCtx const &ctx, Arg const &dup);
+
+   // Performs one part of an Arg movement.
+   void GenStmnt_MoveSrc(Exp const *exp, GenStmntCtx const &ctx, Arg const &src);
 }
 
 #endif//GDCC__AST__Exp_H__

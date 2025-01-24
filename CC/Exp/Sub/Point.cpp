@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -72,6 +72,8 @@ namespace GDCC::CC
 
       Core::FastU pointWords = expL->getType()->getSizeWords();
 
+      GenStmnt_MoveDstPre(this, ctx, dst);
+
       // Evaluate both sub-expressions to stack.
       expL->genStmntStk(ctx);
       expR->genStmntStk(ctx);
@@ -117,7 +119,7 @@ namespace GDCC::CC
       }
 
       // Move to destination.
-      GenStmnt_MovePart(this, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(this, ctx, dst);
    }
 }
 

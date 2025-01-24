@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -111,14 +111,16 @@ namespace GDCC::SR
    {
       if(GenStmntNul(exp, ctx, dst)) return;
 
-      // Evaluate both sub-expressions to stack.
+      GenStmnt_MoveDstPre(exp, ctx, dst);
+
+      // Evaluate sub-expression to stack.
       exp->exp->genStmntStk(ctx);
 
       // Operate on stack.
       ctx.block.addStmnt(code, dst.getIRArgStk(), exp->exp->getIRArgStk());
 
       // Move to destination.
-      GenStmnt_MovePart(exp, ctx, dst, false, true);
+      GenStmnt_MoveDstSuf(exp, ctx, dst);
    }
 }
 
