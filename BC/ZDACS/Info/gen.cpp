@@ -204,7 +204,7 @@ namespace GDCC::BC::ZDACS
       auto getSizes = [](IR::Function *func)
       {
          Core::Array<Core::FastU> sizes{Core::Size, func->localArr.size()};
-         for(auto i = sizes.size(); --i;)
+         for(auto i = sizes.size(); i--;)
             sizes[i] = func->localArr[i];
          return sizes;
       };
