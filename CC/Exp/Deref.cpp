@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -50,7 +50,7 @@ namespace GDCC::CC
    //
    bool Exp_Deref::v_isEffect() const
    {
-      return type->getQualVola();
+      return type->getQualVola() || Super::v_isEffect();
    }
 
    //
