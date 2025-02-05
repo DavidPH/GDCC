@@ -230,6 +230,7 @@ namespace GDCC::BC::ZDACS
          auto jump1 = module->chunkCODE.size();
          genCode(Code::Jump_Lit, 0);
 
+         module->chunkCODE[jump0].args[0] = getCodePos();
          genSubXU1();
          genStmntDropTmp(0);
          genCode(Code::Push_Lit, 1);
@@ -241,7 +242,6 @@ namespace GDCC::BC::ZDACS
          genStmntPushTmp(0);
          genCode(Code::BOrI);
 
-         module->chunkCODE[jump0].args[0] = getCodePos();
          module->chunkCODE[jump1].args[0] = getCodePos();
       }
    }
