@@ -70,28 +70,32 @@ namespace GDCC::SR
    // GenStmnt_MoveDstPreT
    //
    template<typename ArgT>
-   static void GenStmnt_MoveDstPreT(Exp const *, GenStmntCtx const &ctx, Arg const &dst)
+   static Core::FastU GenStmnt_MoveDstPreT(Exp const *, GenStmntCtx const &ctx, Arg const &dst)
    {
       // If arg address is a constant, then use Arg_Lit address.
       if(dst.data->isIRExp())
-         return;
+         return 0;
 
       // If arg address is an IR arg, use it.
       // Note that isIRArg implies a lack of side effects.
       if(dst.data->getArgSrc().isIRArg())
-         return;
+         return 0;
 
       // If setting a single word, use address on stack.
       if(dst.type->getSizeWords() == 1)
       {
          // Evaluate arg's data.
          if(Target::IsAddrFirst(IR::GetArgBase<ArgT>()))
+         {
             dst.data->genStmntStk(ctx);
+            return dst.data->getType()->getSizeBytes();
+         }
 
-         return;
+         return 0;
       }
 
       // As a last resort, evaluate the pointer and store in a temporary.
+      return 0;
    }
 
    //
@@ -248,7 +252,7 @@ namespace GDCC::SR
    //
    // GenStmnt_MoveDstPreT<IR::Arg_Cpy>
    //
-   template<> void GenStmnt_MoveDstPreT<IR::Arg_Cpy>(
+   template<> Core::FastU GenStmnt_MoveDstPreT<IR::Arg_Cpy>(
       Exp const *exp, GenStmntCtx const &, Arg const &)
    {
       Core::Error(exp->pos, "AddrBase::Cpy dst");
@@ -284,7 +288,7 @@ namespace GDCC::SR
    //
    // GenStmnt_MoveDstPreT<IR::Arg_Lit>
    //
-   template<> void GenStmnt_MoveDstPreT<IR::Arg_Lit>(
+   template<> Core::FastU GenStmnt_MoveDstPreT<IR::Arg_Lit>(
       Exp const *exp, GenStmntCtx const &, Arg const &)
    {
       Core::Error(exp->pos, "AddrBase::Lit dst");
@@ -328,9 +332,10 @@ namespace GDCC::SR
    //
    // GenStmnt_MoveDstPreT<IR::Arg_Nul>
    //
-   template<> void GenStmnt_MoveDstPreT<IR::Arg_Nul>(
+   template<> Core::FastU GenStmnt_MoveDstPreT<IR::Arg_Nul>(
       Exp const *, GenStmntCtx const &, Arg const &)
    {
+      return 0;
    }
 
    //
@@ -364,9 +369,10 @@ namespace GDCC::SR
    //
    // GenStmnt_MoveDstPreT<IR::Arg_Stk>
    //
-   template<> void GenStmnt_MoveDstPreT<IR::Arg_Stk>(
+   template<> Core::FastU GenStmnt_MoveDstPreT<IR::Arg_Stk>(
       Exp const *, GenStmntCtx const &, Arg const &)
    {
+      return 0;
    }
 
    //
@@ -397,7 +403,7 @@ namespace GDCC::SR
    //
    // GenStmnt_MoveDstPreT<IR::Arg_Gen>
    //
-   template<> void GenStmnt_MoveDstPreT<IR::Arg_Gen>(
+   template<> Core::FastU GenStmnt_MoveDstPreT<IR::Arg_Gen>(
       Exp const *exp, GenStmntCtx const &ctx, Arg const &dst)
    {
       // Map from generic address space for codegen.
@@ -407,10 +413,11 @@ namespace GDCC::SR
       {
          #define GDCC_Target_AddrList(addr) \
          case IR::AddrBase::addr: \
-            GenStmnt_MoveDstPreT<IR::Arg_##addr>(exp, ctx, arg); \
-            break;
+            return GenStmnt_MoveDstPreT<IR::Arg_##addr>(exp, ctx, arg);
          #include "Target/AddrList.hpp"
       }
+
+      return 0;
    }
 
    //
@@ -529,20 +536,21 @@ namespace GDCC::SR
    //
    // GenStmnt_MoveDstPre
    //
-   void GenStmnt_MoveDstPre(Exp const *exp, GenStmntCtx const &ctx, Arg const &dst)
+   Core::FastU GenStmnt_MoveDstPre(Exp const *exp, GenStmntCtx const &ctx, Arg const &dst)
    {
       // A void dst is a no-op.
       if(dst.type->isTypeVoid())
-         return;
+         return 0;
 
       switch(dst.type->getQualAddr().base)
       {
          #define GDCC_Target_AddrList(addr) \
          case IR::AddrBase::addr: \
-            GenStmnt_MoveDstPreT<IR::Arg_##addr>(exp, ctx, dst); \
-            break;
+            return GenStmnt_MoveDstPreT<IR::Arg_##addr>(exp, ctx, dst);
          #include "Target/AddrList.hpp"
       }
+
+      return 0;
    }
 
    //

@@ -95,7 +95,7 @@ namespace GDCC::CC
       retBytes = func->getBaseType()->isTypeVoid()
          ? 0 : func->getBaseType()->getSizeBytes();
 
-      GenStmnt_MoveDstPre(this, ctx, dst);
+      Core::FastU preBytes = GenStmnt_MoveDstPre(this, ctx, dst);
 
       // Evaluate address before arguments?
       if(addrPre)
@@ -227,7 +227,7 @@ namespace GDCC::CC
       // Long jump propagation.
       if(IsLongJump(callType))
          ctx.block.setArgSize().addStmnt(IR::CodeBase::Jfar_Pro,
-            IR::Glyph(ctx.prog, scope.fn.getLabelLJR()), IR::Arg_Stk(retBytes));
+            IR::Glyph(ctx.prog, scope.fn.getLabelLJR()), IR::Arg_Stk(retBytes + preBytes));
 
       // Move to destination.
       GenStmnt_MoveDstSuf(this, ctx, dst);

@@ -149,7 +149,8 @@ namespace GDCC::SR
       Arg const &dst, Arg const &dup, Arg const &src);
 
    // Prepares for a later dst move, used before pushing the source.
-   void GenStmnt_MoveDstPre(Exp const *exp, GenStmntCtx const &ctx, Arg const &dst);
+   // Returns number of bytes pushed to stack.
+   Core::FastU GenStmnt_MoveDstPre(Exp const *exp, GenStmntCtx const &ctx, Arg const &dst);
 
    // Performs one part of an Arg movement.
    void GenStmnt_MoveDstSuf(Exp const *exp, GenStmntCtx const &ctx, Arg const &dst);
