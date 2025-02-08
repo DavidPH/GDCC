@@ -575,6 +575,7 @@ special
    fixed -300:GetLineX(3, int, fixed, fixed),
    fixed -301:GetLineY(3, int, fixed, fixed),
    int   -302:SetAirFriction(1, fixed),
+   int   -303:SetPolyobjXY(3, int, fixed, fixed),
 
    // GZDoom's
    int   -400:SetSectorGlow(6, int, int, int, int, int, int),

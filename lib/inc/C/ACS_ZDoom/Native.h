@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2023 David Hill
+// Copyright(C) 2014-2025 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -206,6 +206,7 @@ ACS_NativeDeclFull(214, 0, int,    SetSubtitleNumber, (int, __str));
 ACS_NativeDeclFull(300, 0, _Accum, GetLineX, (int, _Accum, _Accum));
 ACS_NativeDeclFull(301, 0, _Accum, GetLineY, (int, _Accum, _Accum));
 ACS_NativeDeclFull(302, 0, int,    SetAirFriction, (_Accum));
+ACS_NativeDeclFull(303, 0, int,    SetPolyobjXY, (int, _Accum, _Accum));
 
 ACS_NativeDeclFull(400, 0, int,    SetSectorGlow, (int, int, int, int, int, int));
 ACS_NativeDeclFull(401, 0, int,    SetFogDensity, (int, int));
