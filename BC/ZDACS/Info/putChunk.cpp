@@ -361,7 +361,7 @@ namespace GDCC::BC::ZDACS
    {
       for(auto const &elem : module->chunkSARY)
       {
-         putData("FARY", 4);
+         putData("SARY", 4);
          putWord(elem.sizes.size() * 4 + 2);
 
          putHWord(elem.value);
