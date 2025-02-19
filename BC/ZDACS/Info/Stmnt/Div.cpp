@@ -228,13 +228,14 @@ namespace GDCC::BC::ZDACS
       pushSrc(0);
       pushSrc(1);
       genCode(Code::DivI);
-      dropDstSuf(0);
 
       dropDstPre(1);
       pushSrc(0);
       pushSrc(1);
       genCode(Code::ModI);
+
       dropDstSuf(1);
+      dropDstSuf(0);
    }
 
    //
