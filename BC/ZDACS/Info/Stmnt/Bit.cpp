@@ -175,7 +175,7 @@ namespace GDCC::BC::ZDACS
                genStmntPushTmp(n + i);
                genStmntPushTmp(i);
                genCode(code);
-               genStmntDropArg(stmnt->args[0], n - i);
+               genStmntDropArg(stmnt->args[0], n - 1 - i);
             }
          }
       }
