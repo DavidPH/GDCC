@@ -61,7 +61,7 @@
 #define T_MANA1             11
 #define T_MANA2             12
 #define T_ITEMBOOTS         13
-#define T_ITEMEGG           14
+#define T_ITEMPORK          14
 #define T_ITEMFLIGHT        15
 #define T_ITEMSUMMON        16
 #define T_ITEMTPORTOTHER    17
@@ -71,6 +71,7 @@
 #define T_BRIDGE            21
 #define T_DRAGONSKINBRACERS 22
 #define T_ITEMHEALTHPOTION  23
+#define T_ITEMHEALTHFLASH   24
 #define T_ITEMHEALTHFLASK   24
 #define T_ITEMHEALTHFULL    25
 #define T_ITEMBOOSTMANA     26
@@ -136,7 +137,7 @@
 #define T_SMALLMETALKEY     86
 #define T_AXEKEY            87
 #define T_FIREKEY           88
-#define T_GREENKEY          89
+#define T_EMERALDKEY        89
 #define T_MACEKEY           90
 #define T_SILVERKEY         91
 #define T_RUSTYKEY          92
