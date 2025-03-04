@@ -333,8 +333,9 @@ namespace GDCC::BC::ZDACS
          if(obj->alloc)
             obj->allocValue(getAllocObj(obj->space));
 
-         if(obj->defin)
-            spaceUsed[prog->findSpace(obj->space)] = true;
+         // TODO 2025-03-04: Implement a check for objects being used.
+         // This cannot check obj->defin, or else imports break.
+         spaceUsed[prog->findSpace(obj->space)] = true;
 
          break;
 
