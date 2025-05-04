@@ -102,20 +102,20 @@ ACS_NativeDeclFull(174, 1, int,    SetPlayerWeaponZoomFactor, (int, _Accum, int)
 ACS_NativeDeclFull(175, 1, int,    SetPlayerSkin, (int, __str, int));
 ACS_NativeDeclFull(176, 0, __str,  GetPlayerSkin, (int, int));
 ACS_NativeDeclFull(177, 0, __str,  GetPlayerCountry, (int, int));
-ACS_NativeDeclFull(178, 0, int,    SetNextMapPosition(2, int, int));
-ACS_NativeDeclFull(179, 0, int,    GivePlayerMedal(3, int, __str, int));
-ACS_NativeDeclFull(180, 0, int,    GetPlayerJoinQueuePosition(1, int));
-ACS_NativeDeclFull(181, 0, int,    SkipJoinQueue(1, int));
-ACS_NativeDeclFull(182, 0, int,    GetControlPointInfo(2, int, int));
-ACS_NativeDeclFull(182, 0, _Accum, GetControlPointInfoFixed(2, int, int));
-ACS_NativeDeclFull(182, 0, __str,  GetControlPointInfoString(2, int, int));
-ACS_NativeDeclFull(183, 0, int,    SetControlPointInfo(3, int, int, int));
-ACS_NativeDeclFull(183, 0, int,    SetControlPointInfoFixed(3, int, int, _Accum));
-ACS_NativeDeclFull(183, 0, int,    SetControlPointInfoString(3, int, int, __str));
-ACS_NativeDeclFull(184, 2, int,    GetSkinProperty(2, int, __str, int, int));
-ACS_NativeDeclFull(184, 2, _Accum, GetSkinPropertyFixed(2, int, __str, int, int));
-ACS_NativeDeclFull(184, 2, __str,  GetSkinPropertyString(2, int, __str, int, int));
-ACS_NativeDeclFull(185, 0, int,    IsPlayerContestingControlPoint(2, int, int));
+ACS_NativeDeclFull(178, 0, int,    SetNextMapPosition, (int, int));
+ACS_NativeDeclFull(179, 0, int,    GivePlayerMedal, (int, __str, int));
+ACS_NativeDeclFull(180, 0, int,    GetPlayerJoinQueuePosition, (int));
+ACS_NativeDeclFull(181, 0, int,    SkipJoinQueue, (int));
+ACS_NativeDeclFull(182, 0, int,    GetControlPointInfo, (int, int));
+ACS_NativeDeclFull(182, 0, _Accum, GetControlPointInfoFixed, (int, int));
+ACS_NativeDeclFull(182, 0, __str,  GetControlPointInfoString, (int, int));
+ACS_NativeDeclFull(183, 0, int,    SetControlPointInfo, (int, int, int));
+ACS_NativeDeclFull(183, 0, int,    SetControlPointInfoFixed, (int, int, _Accum));
+ACS_NativeDeclFull(183, 0, int,    SetControlPointInfoString, (int, int, __str));
+ACS_NativeDeclFull(184, 2, int,    GetSkinProperty, (int, __str, int, int));
+ACS_NativeDeclFull(184, 2, _Accum, GetSkinPropertyFixed, (int, __str, int, int));
+ACS_NativeDeclFull(184, 2, __str,  GetSkinPropertyString, (int, __str, int, int));
+ACS_NativeDeclFull(185, 0, int,    IsPlayerContestingControlPoint, (int, int));
 
 #endif//__GDCC_Header__C__ACS_Zandronum__Native_h__
 
