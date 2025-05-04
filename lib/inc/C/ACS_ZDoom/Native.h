@@ -202,6 +202,8 @@ ACS_NativeDeclFull(211, 0, int,    StartSlideshow, (__str));
 ACS_NativeDeclFull(212, 0, int,    GetSectorHealth, (int, int));
 ACS_NativeDeclFull(213, 0, int,    GetLineHealth, (int));
 ACS_NativeDeclFull(214, 0, int,    SetSubtitleNumber, (int, __str));
+ACS_NativeDeclFull(215, 1, int,    GetNetID, (int, int, int));
+ACS_NativeDeclFull(216, 1, int,    SetActivatorByNetID, (int, int));
 
 ACS_NativeDeclFull(300, 0, _Accum, GetLineX, (int, _Accum, _Accum));
 ACS_NativeDeclFull(301, 0, _Accum, GetLineY, (int, _Accum, _Accum));

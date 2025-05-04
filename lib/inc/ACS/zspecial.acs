@@ -584,6 +584,8 @@ special
    int   -212:GetSectorHealth(2, int, int),
    int   -213:GetLineHealth(1, int, int),
    int   -214:SetSubtitleNumber(2, int, str),
+   int   -215:GetNetID(2, int, int, int),
+   int   -216:SetActivatorByNetID(1, int, int),
 
    // Eternity's
    fixed -300:GetLineX(3, int, fixed, fixed),
