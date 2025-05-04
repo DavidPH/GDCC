@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2015 David Hill
+// Copyright(C) 2014-2025 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -8,9 +8,7 @@
 //
 // Header for target library libGDCC.
 //
-// This header declares functions, objects, and types which are specific and
-// possibly internal to GDCC. Neither the contents or existence of this file
-// should be relied upon by external projects.
+// General declarations.
 //
 //-----------------------------------------------------------------------------
 
@@ -21,16 +19,6 @@
 
 
 //----------------------------------------------------------------------------|
-// Macros                                                                     |
-//
-
-//
-// __GDCC__Sta
-//
-#define __GDCC__Sta __glyph(int, "___GDCC__Sta")
-
-
-//----------------------------------------------------------------------------|
 // Extern Functions                                                           |
 //
 
@@ -38,9 +26,15 @@
 extern "C" {
 #endif
 
+// Dynamic memory allocation. Use null for a new allocation and 0 to free.
 [[call("StkCall")]]
 extern void __sta *__GDCC__alloc(void __sta *_ptr, __size_t _size);
 
+// As in __GDCC__alloc, but block is freed on detection of hub transition.
+[[call("StkCall")]]
+extern void __sta *__GDCC__alloc_auto(void __sta *_ptr, __size_t _size);
+
+// Writes the state of the allocator.
 [[call("StkCall")]]
 extern void __GDCC__alloc_dump(void);
 

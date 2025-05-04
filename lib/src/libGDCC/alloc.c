@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2014-2023 David Hill
+// Copyright(C) 2014-2025 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -344,11 +344,13 @@ static VoidPtr AllocNew(register __size_t size)
 [[call("ScriptS"), script("open")]]
 static void AllocTimeSet(void)
 {
-   if(!ACS_Timer())
+   // As a fallback in case all of the allocations for a hub happen in the
+   // first tick, make sure that AllocTime gets set to trigger freeing.
+   for(int i = 35; i--;)
+   {
       ACS_Delay(1);
-
-   if(ACS_Timer() == 1)
-      AllocTime = 1;
+      AllocTime = ACS_Timer();
+   }
 }
 #endif
 
@@ -364,6 +366,13 @@ static void AllocTimeSet(void)
 VoidPtr __GDCC__alloc(register VoidPtr ptrOld, register __size_t size)
 {
    if(!AllocIter) AllocInit();
+
+   #if __GDCC_Family__ZDACS__
+   // Check if a new hub was entered. If so, free automatic storage.
+   if(AllocTime > ACS_Timer())
+      AllocDelAuto();
+   AllocTime = ACS_Timer();
+   #endif
 
    // No existing allocation.
    if(!ptrOld)
@@ -427,21 +436,28 @@ void __GDCC__alloc_dump(void)
 }
 
 //
+// __GDCC__alloc_auto
+//
+[[call("StkCall")]]
+VoidPtr __GDCC__alloc_auto(register VoidPtr ptr, register __size_t size)
+{
+   if((ptr = __GDCC__alloc(ptr, size)))
+   {
+      MemBlockPtr block = PtrToBlock(ptr);
+      block->flag      |= MemBlockFlag_Auto;
+   }
+
+   return ptr;
+}
+
+//
 // __GDCC__Plsa
 //
 [[call("StkCall")]]
 VoidPtr __GDCC__Plsa(unsigned int size)
 {
-   #if __GDCC_Family__ZDACS__
-   // Check if a new hub was entered. If so, free automatic storage.
-   if(AllocTime > ACS_Timer())
-      AllocDelAuto();
-   AllocTime = ACS_Timer();
-   #endif
-
    MemBlockPtr block = PtrToBlock(__GDCC__alloc(0, size));
-
-   block->flag |= MemBlockFlag_Auto;
+   block->flag      |= MemBlockFlag_Auto;
 
    return block->data;
 }

@@ -175,7 +175,7 @@ static ssize_t FILE_fn_file_read(void *cookie_, char *buf, size_t size)
    int            read;
 
    #if __GDCC_Family__ZDACS__
-   read = ACS_LumpReadGlobalCharArray(cookie->fd, cookie->pos, __GDCC__Sta, (int)buf, size);
+   read = ACS_LumpReadGlobalCharArray(cookie->fd, cookie->pos, __indexof(*buf), (int)buf, size);
    #elif __GDCC_Engine__Doominati__
    read = DGE_File_Read(cookie->fd, cookie->pos, buf, size);
    #else
@@ -269,9 +269,9 @@ static ssize_t FILE_fn_stdout_write(void *cookie, char const *buf, size_t size)
    #if __GDCC_Family__ZDACS__
    ACS_BeginPrint();
    if(buf[size - 1] == '\n')
-      ACS_PrintGlobalCharRange((int)buf, __GDCC__Sta, 0, size - 1);
+      ACS_PrintGlobalCharRange((int)buf, __indexof(*buf), 0, size - 1);
    else
-      ACS_PrintGlobalCharRange((int)buf, __GDCC__Sta, 0, size);
+      ACS_PrintGlobalCharRange((int)buf, __indexof(*buf), 0, size);
    ACS_EndLog();
 
    return size;
@@ -370,7 +370,7 @@ FILE *fopen(char const *restrict filename, char const *restrict mode)
    #define FD_CLOSE_FUNC ACS_LumpClose
 
    ACS_BeginStrParam();
-   ACS_PrintGlobalCharArray((int)filename, __GDCC__Sta);
+   ACS_PrintGlobalCharArray((int)filename, __indexof(*filename));
    __str filename_str = ACS_EndStrParam();
 
    if(*mode == 'r')

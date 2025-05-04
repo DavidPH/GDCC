@@ -447,13 +447,13 @@
       fmtArg._width -= fmtRet._len; \
       \
       WriteWidthPre(n, fmtArg._width); \
-      ACS_PrintGlobalCharRange((int)fmtRet._begin, __GDCC__Sta, 0, fmtRet._len); \
+      ACS_PrintGlobalCharRange((int)fmtRet._begin, __indexof(*fmtRet._begin), 0, fmtRet._len); \
       WriteWidthPro(n, fmtArg._width); \
    } \
    else \
    { \
       ret += fmtRet._len; \
-      ACS_PrintGlobalCharRange((int)fmtRet._begin, __GDCC__Sta, 0, fmtRet._len); \
+      ACS_PrintGlobalCharRange((int)fmtRet._begin, __indexof(*fmtRet._begin), 0, fmtRet._len); \
    }
 
 //
