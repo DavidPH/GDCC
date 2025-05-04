@@ -35,15 +35,6 @@
 #endif
 
 //
-// __GDCC__AllocSize
-//
-// Controls the total size of the allocation heap, in bytes.
-//
-#ifndef __GDCC__AllocSize
-#define __GDCC__AllocSize (2*1024*1024*1024u)
-#endif
-
-//
 // __GDCC__MinSplit
 //
 // Blocks will not be split if the remainder would be smaller than this.
@@ -67,6 +58,25 @@
 // PtrToBlock
 //
 #define PtrToBlock(ptr) ((MemBlockPtr)((CharPtr)(ptr) - sizeof(MemBlock)))
+
+//
+// AllocBegin
+//
+#if __GDCC_Family__ZDACS__
+#define AllocBegin 0x80000000
+#elif __GDCC_Engine__Doominati__
+#define AllocBegin (DGE_FreestoreBegin())
+#endif
+
+//
+// AllocEnd
+//
+#if __GDCC_Family__ZDACS__
+// Extra space for metadata.
+#define AllocEnd (0xFFE00000 - 8)
+#elif __GDCC_Engine__Doominati__
+#define AllocEnd (DGE_FreestoreEnd())
+#endif
 
 
 //----------------------------------------------------------------------------|
@@ -100,15 +110,11 @@ struct MemBlock
 //
 
 #if __GDCC_Family__ZDACS__
-//_Alignas(MemBlock)
-[[no_init]]
-static char AllocHeapRaw[__GDCC__AllocSize];
-#endif
-
+[[address(AllocEnd + 0)]] static MemBlockPtr AllocBase;
+[[address(AllocEnd + 1)]] static MemBlockPtr AllocIter;
+[[address(AllocEnd + 2)]] static int         AllocTime;
+#else
 static MemBlockPtr AllocBase, AllocIter;
-
-#if __GDCC_Family__ZDACS__
-static int AllocTime;
 #endif
 
 
@@ -203,13 +209,8 @@ static void AllocInit(void)
 {
    __size_t allocSize;
 
-   #if __GDCC_Family__ZDACS__
-   allocSize = __GDCC__AllocSize;
-   AllocBase = AllocIter = (MemBlockPtr)AllocHeapRaw;
-   #elif __GDCC_Engine__Doominati__
-   allocSize = (char *)DGE_FreestoreEnd() - (char *)DGE_FreestoreBegin();
-   AllocBase = AllocIter = (MemBlockPtr)DGE_FreestoreBegin();
-   #endif
+   allocSize = (char *)AllocEnd - (char *)AllocBegin;
+   AllocBase = AllocIter = (MemBlockPtr)AllocBegin;
 
    AllocBase->next = AllocBase->prev = AllocBase;
    AllocBase->size = allocSize - sizeof(MemBlock);
