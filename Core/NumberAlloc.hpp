@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2018 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -270,12 +270,23 @@ namespace GDCC::Core
          // Look for an unused allocation.
          for(auto &block : *this)
          {
-            if(block.used || block.size < size || block.lo < min)
+            if(block.used || block.size < size)
                continue;
 
-            T addr = block.lo;
-            allocAt(size, addr, &block);
-            return addr;
+            // The block starts where we want, so use it as-is.
+            if(block.lo >= min)
+            {
+               T addr = block.lo;
+               allocAt(size, addr, &block);
+               return addr;
+            }
+
+            // Otherwise, check if we can fit into the block higher up.
+            if(block.size - (min - block.lo) >= size)
+            {
+               allocAt(size, min, &block);
+               return min;
+            }
          }
 
          Block &block = back();
