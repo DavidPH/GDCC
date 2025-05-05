@@ -309,7 +309,9 @@ namespace GDCC::BC::ZDACS
 {
    IR::Type_Fixed const Info::TypeWord{32, 0, false, false};
 
-   Core::FastU Info::FarJumpIndex = 1;
+   Core::FastU Info::FarJumpIndex = 0xFFE80000;
+
+   Core::FastU Info::RetnTempSize = 0x100000;
 }
 
 

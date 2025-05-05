@@ -525,7 +525,7 @@ namespace GDCC::BC::ZDACS
       {
          if(retnSize > retnMax) for(Core::FastU i = retnSize - retnMax; i--;)
          {
-            genCode(Code::Push_Lit, ~i);
+            genStmntPushRetnIdx(i);
             genCode(Code::Swap);
             genCode(Code::Drop_GblArr, StaArray);
          }
@@ -534,7 +534,7 @@ namespace GDCC::BC::ZDACS
       {
          if(retnSize > retnMax) for(Core::FastU i = retnMax; i != retnSize; ++i)
          {
-            genCode(Code::Push_Lit, ~(i - retnMax));
+            genStmntPushRetnIdx(i - retnMax);
             genStmntPushArg(retn, i);
             genCode(Code::Drop_GblArr, StaArray);
          }
@@ -797,7 +797,7 @@ namespace GDCC::BC::ZDACS
          {
             if(retnIdx >= retnMax)
             {
-               genCode(Code::Push_Lit,    ~(retnIdx - retnMax));
+               genStmntPushRetnIdx(retnIdx - retnMax);
                genCode(Code::Push_GblArr, StaArray);
             }
          }
@@ -809,7 +809,7 @@ namespace GDCC::BC::ZDACS
             if(retnIdx >= retnMax)
             {
                genStmntDropArgPre(retn, retnIdx - retnLo);
-               genCode(Code::Push_Lit,    ~(retnIdx - retnMax));
+               genStmntPushRetnIdx(retnIdx - retnMax);
                genCode(Code::Push_GblArr, StaArray);
                genStmntDropArgSuf(retn, retnIdx - retnLo);
             }
@@ -831,6 +831,17 @@ namespace GDCC::BC::ZDACS
             genCode(Code::Drop_Nul);
 
       genStmntPushRetn(retn, retnMax, 0, retnSize);
+   }
+
+   //
+   // Info::genStmntPushRetnIdx
+   //
+   void Info::genStmntPushRetnIdx(Core::FastU retnIdx)
+   {
+      if(retnIdx >= RetnTempSize)
+         Core::Error(getOrigin(), "return index out of bounds: ", retnIdx);
+
+      genCode(Code::Push_Lit, ~retnIdx);
    }
 
    //

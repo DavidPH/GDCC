@@ -64,6 +64,8 @@ namespace GDCC::BC::ZDACS
       static Option::Bool             InitScriptNamed;
       static Option::Int<Core::FastU> InitScriptNumber;
 
+      static Core::FastU RetnTempSize;
+
       static ScriptTypeMap ScriptFlags;
       static ScriptTypeMap ScriptTypes;
 
@@ -350,6 +352,7 @@ namespace GDCC::BC::ZDACS
       void genStmntPushRetn(IR::Arg const &retn, Core::FastU retnMax);
       void genStmntPushRetn(IR::Arg const &retn, Core::FastU retnMax, Core::FastU retnLo, Core::FastU retnHi);
       void genStmntPushRetnDiv(IR::Arg const &retn, Core::FastU retnMax);
+      void genStmntPushRetnIdx(Core::FastU retnIdx);
       void genStmntPushRetnMod(IR::Arg const &retn, Core::FastU retnMax);
 
       void genStmntPushStrEn(Core::FastU value);
