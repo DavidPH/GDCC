@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2023 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -110,38 +110,48 @@ namespace GDCC::CC
    //
    // Scope_Global::genGlyphObj
    //
-   Core::String Scope_Global::genGlyphObj(Core::String name, IR::Linkage linka)
+   Core::String Scope_Global::genGlyphObj(SR::Attribute const &attr)
    {
-      switch(linka)
+      if(attr.linkn) return attr.linkn;
+
+      switch(attr.linka)
       {
       case IR::Linkage::None:
-         if(!name) return stringGen();
-         return label + name;
+         if(!attr.name) return genGlyphObjAnon();
+         return label + attr.name;
 
       case IR::Linkage::ExtACS:
-         return name.getLower();
+         return attr.name.getLower();
 
       case IR::Linkage::ExtASM:
-         return name;
+         return attr.name;
 
       case IR::Linkage::ExtAXX:
          break; // TODO
 
       case IR::Linkage::ExtC:
-         return Core::STR__ + name;
+         return Core::STR__ + attr.name;
 
       case IR::Linkage::ExtCXX:
       case IR::Linkage::ExtDS:
          break; // TODO
 
       case IR::Linkage::IntC:
-         return label + name;
+         return label + attr.name;
 
       case IR::Linkage::IntCXX:
          break; // TODO
       }
 
-      return name;
+      return attr.name;
+   }
+
+   //
+   // Scope_Global::genGlyphObjAnon
+   //
+   Core::String Scope_Global::genGlyphObjAnon()
+   {
+      return stringGen();
    }
 
    //
@@ -170,7 +180,7 @@ namespace GDCC::CC
    //
    SR::Function::Ref Scope_Global::getFunction(SR::Attribute const &attr)
    {
-      auto glyph = genGlyphObj(attr.name, attr.linka);
+      auto glyph = genGlyphObj(attr);
 
       auto itr = globalFunc.find(glyph);
       if(itr == globalFunc.end())
@@ -219,7 +229,7 @@ namespace GDCC::CC
    //
    SR::Object::Ref Scope_Global::getObject(SR::Attribute const &attr)
    {
-      auto glyph = genGlyphObj(attr.name, attr.linka);
+      auto glyph = genGlyphObj(attr);
 
       auto itr = globalObj.find(glyph);
       if(itr == globalObj.end())
@@ -252,7 +262,7 @@ namespace GDCC::CC
    //
    SR::Space::Ref Scope_Global::getSpace(SR::Attribute const &attr)
    {
-      auto glyph = genGlyphObj(attr.name, attr.linka);
+      auto glyph = genGlyphObj(attr);
 
       auto itr = globalSpace.find(glyph);
       if(itr == globalSpace.end())

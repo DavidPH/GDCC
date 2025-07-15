@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -80,7 +80,7 @@ namespace GDCC::CC
       Core::String str, Core::Origin pos)
    {
       // Generate glyph.
-      auto glyph = scope.global.genGlyphObj(Core::STRNULL, IR::Linkage::None);
+      auto glyph = scope.global.genGlyphObjAnon();
 
       // Create StrEnt.
       // Is it correct to modify the IR::Program directly like this?

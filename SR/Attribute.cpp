@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2023 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -37,6 +37,7 @@ namespace GDCC::SR
       allocAut{nullptr},
       callt   {IR::CallType::None},
       linka   {IR::Linkage::None},
+      linkn   {nullptr},
       name    {nullptr},
       namePos {nullptr, 0},
       param   {},

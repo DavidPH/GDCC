@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2023 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -178,18 +178,20 @@ namespace GDCC::CC
    //
    // Scope_Local::genGlyphObj
    //
-   Core::String Scope_Local::genGlyphObj(Core::String name, IR::Linkage linka)
+   Core::String Scope_Local::genGlyphObj(SR::Attribute const &attr)
    {
+      if(attr.linkn) return attr.linkn;
+
       // Actual linkages must go through global.
-      if(linka != IR::Linkage::None)
-         return global.genGlyphObj(name, linka);
+      if(attr.linka != IR::Linkage::None)
+         return global.genGlyphObj(attr);
 
       // Anonymous objects with no linkage need a fully generated name.
-      if(!name) return fn.fn->genLabel();
+      if(!attr.name) return fn.fn->genLabel();
 
       // Otherwise, base it on the scope's prefix (generating if needed).
       if(!label) label = fn.fn->genLabel();
-      return label + name;
+      return label + attr.name;
    }
 
    //
@@ -255,7 +257,7 @@ namespace GDCC::CC
       if(attr.storeExt)
          return global.getObject(attr);
 
-      auto glyph = genGlyphObj(attr.name, attr.linka);
+      auto glyph = genGlyphObj(attr);
       auto name  = attr.name ? attr.name : glyph;
 
       if(localObj.find(name) != localObj.end())
@@ -302,7 +304,7 @@ namespace GDCC::CC
       if(attr.storeExt)
          return global.getSpace(attr);
 
-      auto glyph = genGlyphObj(attr.name, attr.linka);
+      auto glyph = genGlyphObj(attr);
       auto space = SR::Space::Create(attr.name, glyph);
 
       space->linka = attr.linka;

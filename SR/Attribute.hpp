@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2023 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -51,6 +51,7 @@ namespace GDCC::SR
       Core::CounterPtr<IR::Exp const> allocAut;
       IR::CallType                    callt;
       IR::Linkage                     linka;
+      Core::String                    linkn;
       Core::String                    name;
       Core::Origin                    namePos;
       Core::Array<Attribute>          param;

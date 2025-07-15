@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2015-2019 David Hill
+// Copyright (C) 2015-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -107,6 +107,10 @@ namespace GDCC::ACC
       SR::Attribute &attr, IR::AddrBase base)
    {
       auto spaceAttr = attr;
+
+      // The space needs to use the normal linkage for compatibility with acc.
+      spaceAttr.linkn = scope.genGlyphObj(spaceAttr);
+      attr.linkn      = spaceAttr.linkn + "$obj";
 
       spaceAttr.name      += "$arr";
       spaceAttr.space.base = base;

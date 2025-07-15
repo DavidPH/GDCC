@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2018 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -52,7 +52,7 @@ namespace GDCC::CC
       Scope_Block &createScopeLoop();
       Scope_Case  &createScopeCase();
 
-      Core::String genGlyphObj(Core::String name, IR::Linkage linka);
+      Core::String genGlyphObj(SR::Attribute const &attr);
 
       void genIR(IR::Program &prog);
 
