@@ -22,6 +22,7 @@
 #include "CC/Scope/Block.hpp"
 #include "CC/Scope/Function.hpp"
 #include "CC/Scope/Global.hpp"
+#include "CC/Type.hpp"
 
 #include "Core/Exception.hpp"
 #include "Core/TokenStream.hpp"
@@ -121,7 +122,8 @@ namespace GDCC::ACC
       space->value = spaceAttr.addrI;
 
       // Don't use the supplied address for the contained object.
-      attr.addrI = nullptr;
+      // Instead, address must be forced to 0 for compatibility.
+      attr.addrI = ctx.fact.expCreate_LitInt(CC::TypeIntegPrU, 0, attr.namePos)->getIRExp();
 
       attr.type = attr.type->getTypeArrayQualAddr({base, space->glyph});
    }
