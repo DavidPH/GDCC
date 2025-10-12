@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2024 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -502,6 +502,7 @@ namespace GDCC::CPP
       Insert1("__GDCC__");
 
       // Set up __GDCC_Family__*__.
+      FamilyCheck(Family, Hexen);
       FamilyCheck(Family, ZDACS);
 
       // Set up __GDCC_Format__*__.

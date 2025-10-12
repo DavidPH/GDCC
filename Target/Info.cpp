@@ -375,6 +375,24 @@ namespace GDCC::Target
    }
 
    //
+   // IsFamily_Hexen
+   //
+   bool IsFamily_Hexen()
+   {
+      switch(EngineCur)
+      {
+      case Engine::Eternity:
+      case Engine::Hexen:
+      case Engine::ZDoom:
+      case Engine::Zandronum:
+         return true;
+
+      default:
+         return false;
+      }
+   }
+
+   //
    // IsFamily_ZDACS
    //
    bool IsFamily_ZDACS()

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2019 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -55,7 +55,7 @@ namespace GDCC::CC
    //
    bool Type_Char::getSizeBitsS() const
    {
-      if(Target::IsFamily_ZDACS())
+      if(Target::IsFamily_Hexen())
          return true;
 
       return false;
@@ -66,7 +66,7 @@ namespace GDCC::CC
    //
    bool Type_Char::isTypeSubWord() const
    {
-      if(Target::IsFamily_ZDACS())
+      if(Target::IsFamily_Hexen())
          return false;
 
       return true;

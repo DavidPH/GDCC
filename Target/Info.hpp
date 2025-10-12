@@ -86,6 +86,7 @@ namespace GDCC::Target
 
    bool IsDelayFunction();
 
+   bool IsFamily_Hexen();
    bool IsFamily_ZDACS();
 
    // Does null have a zero representation?
