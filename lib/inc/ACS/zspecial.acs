@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright(C) 2015-2024 David Hill
+// Copyright(C) 2015-2025 David Hill
 //
 // See COPYLIB for license information.
 //
@@ -431,7 +431,7 @@ special
    str    -69:GetWeapon(0),
    int    -70:SoundVolume(int, int, fixed),
    int    -71:PlayActorSound(2, int, int, int, fixed, int, fixed),
-   int    -72:SpawnDecal(2, int, str, int, fixed, fixed, fixed),
+   int    -72:SpawnDecal(2, int, str, int, fixed, int, int),
    int    -73:CheckFont(1, str),
    int    -74:DropItem(2, int, str, int, int),
    int    -75:CheckFlag(2, int, str),

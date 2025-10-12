@@ -142,7 +142,7 @@ ACS_NativeDeclFull( 68, 0, __str,  GetActorClass, (int));
 ACS_NativeDeclFull( 69, 0, __str,  GetWeapon, (void));
 ACS_NativeDeclFull( 70, 0, int,    SoundVolume, (int, int, _Accum));
 ACS_NativeDeclFull( 71, 4, int,    PlayActorSound, (int, int, int, _Accum, int, _Accum));
-ACS_NativeDeclFull( 72, 4, int,    SpawnDecal, (int, __str, int, _Accum, _Accum, _Accum));
+ACS_NativeDeclFull( 72, 4, int,    SpawnDecal, (int, __str, int, _Accum, int, int));
 ACS_NativeDeclFull( 73, 0, int,    CheckFont, (__str));
 ACS_NativeDeclFull( 74, 0, int,    DropItem, (int, __str, int, int));
 ACS_NativeDeclFull( 75, 0, int,    CheckFlag, (int, __str));
