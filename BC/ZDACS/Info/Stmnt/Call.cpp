@@ -491,7 +491,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       default:
-         Core::Error(stmnt->pos, "bad gen Retn");
+         Core::Error(stmnt->pos, "bad gen Retn: ", func->ctype);
       }
    }
 
@@ -540,7 +540,7 @@ namespace GDCC::BC::ZDACS
          break;
 
       default:
-         Core::Error(stmnt->pos, "bad gen Rjnk");
+         Core::Error(stmnt->pos, "bad gen Rjnk: ", func->ctype);
       }
    }
 
