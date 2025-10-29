@@ -157,6 +157,20 @@ namespace GDCC::BC::ZDACS
    };
 
    //
+   // --bc-zdacs-init-script-busy
+   //
+   Option::Bool Info::InitScriptBusy
+   {
+      &Core::GetOptionList(), Option::Base::Info()
+         .setName("bc-zdacs-init-script-busy")
+         .setGroup("codegen")
+         .setDescS("Uses the \"busy\" flag for init scripts.")
+         .setDescL("Uses the \"busy\" flag for init scripts. Default is on."),
+
+      true
+   };
+
+   //
    // --bc-zdacs-init-script-event
    //
    static Option::Bool InitScriptEvent
@@ -954,6 +968,7 @@ namespace GDCC::BC::ZDACS
 
          else switch(st)
          {
+         case Core::STR_busy:       flags |= 0x0004; break;
          case Core::STR_clientside: flags |= 0x0002; break;
          case Core::STR_net:        flags |= 0x0001; break;
          default: break;

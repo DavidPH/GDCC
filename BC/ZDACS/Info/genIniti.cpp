@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2014-2019 David Hill
+// Copyright (C) 2014-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -59,7 +59,8 @@ namespace GDCC::BC::ZDACS
       // Add script table entries.
       {
          Core::FastU entry = getCodePos();
-         Core::FastU value = InitScriptNumber;
+         Core::FastU value;
+         Core::FastU valCS; // Value for secondary client-side init script.
 
          Core::FastU stype, param;
          if(isInitScriptEvent())
@@ -67,23 +68,33 @@ namespace GDCC::BC::ZDACS
          else
             stype = 1, param = 0;
 
+         Core::FastU sflag = InitScriptBusy ? 0x0004 : 0;
+
          // Extra information for named init script.
          if(InitScriptNamed)
          {
             value = ~module->chunkSNAM.elem.size();
+            valCS = value - 1;
 
             module->chunkSNAM[~value] = ElemSNAM{InitScriptName};
 
             if(Target::EngineCur == Target::Engine::Zandronum)
-               module->chunkSNAM[~--value] = ElemSNAM{InitScriptName + "$cs"};
+               module->chunkSNAM[~valCS] = ElemSNAM{InitScriptName + "$cs"};
+         }
+         else
+         {
+            value = InitScriptNumber;
+            valCS = value + 1;
          }
 
+         if(sflag)
+            module->chunkSFLG.add(value, sflag);
          module->chunkSPTR.add(ElemArg{entry}, value, stype, param);
 
          if(Target::EngineCur == Target::Engine::Zandronum)
          {
-            module->chunkSFLG.add(value + InitScriptNamed, 0x0002);
-            module->chunkSPTR.add(ElemArg{entry}, value + 1, stype, param);
+            module->chunkSFLG.add(valCS, sflag | 0x0002);
+            module->chunkSPTR.add(ElemArg{entry}, valCS, stype, param);
          }
       }
 

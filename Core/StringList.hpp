@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 //
-// Copyright (C) 2013-2024 David Hill
+// Copyright (C) 2013-2025 David Hill
 //
 // See COPYING for license information.
 //
@@ -313,6 +313,7 @@ GDCC_Core_StringList(block_scope, "block_scope")
 GDCC_Core_StringList(bluereturn, "bluereturn")
 GDCC_Core_StringList(bool, "bool")
 GDCC_Core_StringList(break, "break")
+GDCC_Core_StringList(busy, "busy")
 GDCC_Core_StringList(call, "call")
 GDCC_Core_StringList(case, "case")
 GDCC_Core_StringList(cast, "cast")

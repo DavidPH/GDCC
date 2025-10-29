@@ -60,6 +60,7 @@ namespace GDCC::BC::ZDACS
       static Core::FastU FarJumpIndex;
 
       static Option::Bool             InitDelay;
+      static Option::Bool             InitScriptBusy;
       static Core::StringOption       InitScriptName;
       static Option::Bool             InitScriptNamed;
       static Option::Int<Core::FastU> InitScriptNumber;
